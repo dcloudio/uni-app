@@ -1,0 +1,668 @@
+@font-face {
+    font-family: uniicons;
+    font-weight: normal;
+    font-style: normal;
+
+    src: url('https://img-cdn-qiniu.dcloud.net.cn/fonts/uni.ttf') format('truetype');
+}
+
+
+
+
+
+
+
+/*通用*/
+
+.uni-flex {
+    display: flex;
+    flex-direction: row;
+}
+
+.uni-h6 {
+    font-size: 24rpx;
+    color: #8f8f94;
+}
+
+.uni-h5 {
+    font-size: 28rpx;
+    color: #8f8f94;
+}
+
+.uni-h4 {
+    font-size: 36rpx;
+}
+
+.uni-h3 {
+    font-size: 48rpx;
+    font-weight: 600;
+}
+
+.uni-h2 {
+    font-size: 60rpx;
+    font-weight: 600;
+}
+
+.uni-h1 {
+    font-size: 72rpx;
+    font-weight: 600;
+}
+
+.uni-ellipsis {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.uni-input {
+    height: 2.58823529em;
+    min-height: 2.58823529em;
+    line-height: 2.58823529em;
+}
+
+.uni-label {
+    width: 105px;
+    word-wrap: break-word;
+    word-break: break-all;
+}
+
+
+
+
+/*数字角标*/
+
+.uni-badge {
+    padding: 4rpx 14rpx;
+    font-size: 24rpx;
+    height: 24rpx;
+    line-height: 1;
+    color: #333;
+    background-color: rgba(0, 0, 0, .15);
+    border-radius: 200rpx;
+}
+
+.uni-badge.uni-badge-inverted {
+    padding: 0 5px 0 0;
+    color: #929292;
+    background-color: transparent
+}
+
+.uni-badge-primary {
+    color: #fff;
+    background-color: #007aff
+}
+
+.uni-badge-blue.uni-badge-inverted,
+.uni-badge-primary.uni-badge-inverted {
+    color: #007aff;
+    background-color: transparent
+}
+
+.uni-badge-green,
+.uni-badge-success {
+    color: #fff;
+    background-color: #4cd964;
+}
+
+.uni-badge-green.uni-badge-inverted,
+.uni-badge-success.uni-badge-inverted {
+    color: #4cd964;
+    background-color: transparent
+}
+
+.uni-badge-warning,
+.uni-badge-yellow {
+    color: #fff;
+    background-color: #f0ad4e
+}
+
+.uni-badge-warning.uni-badge-inverted,
+.uni-badge-yellow.uni-badge-inverted {
+    color: #f0ad4e;
+    background-color: transparent
+}
+
+.uni-badge-danger,
+.uni-badge-red {
+    color: #fff;
+    background-color: #dd524d
+}
+
+.uni-badge-danger.uni-badge-inverted,
+.uni-badge-red.uni-badge-inverted {
+    color: #dd524d;
+    background-color: transparent
+}
+
+.uni-badge-purple,
+.uni-badge-royal {
+    color: #fff;
+    background-color: #8a6de9
+}
+
+.uni-badge-purple.uni-badge-inverted,
+.uni-badge-royal.uni-badge-inverted {
+    color: #8a6de9;
+    background-color: transparent
+}
+
+
+
+
+
+
+
+
+/*折叠面板*/
+
+.uni-collapse-content {
+    height: 0;
+    width: 100%;
+    overflow: hidden;
+}
+
+.uni-collapse-content.uni-active {
+    height: auto;
+}
+
+
+
+
+
+
+
+
+
+/*卡片视图*/
+
+.uni-card {
+    background: #fff;
+    border-radius: 8rpx;
+    margin: 20rpx;
+    position: relative;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .3);
+}
+
+.uni-card-content {
+    font-size: 30rpx;
+}
+
+.uni-card-content-inner {
+    position: relative;
+    padding: 30rpx;
+}
+
+.uni-card-footer,
+.uni-card-header {
+    position: relative;
+    display: flex;
+    min-height: 50rpx;
+    padding: 20rpx 30rpx;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.uni-card-header {
+    font-size: 36rpx;
+}
+
+.uni-card-footer {
+    color: #6d6d72;
+}
+
+.uni-card-footer:before,
+.uni-card-header:after {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 2rpx;
+    content: '';
+    -webkit-transform: scaleY(.5);
+    transform: scaleY(.5);
+    background-color: #c8c7cc;
+}
+
+.uni-card-header:after {
+    top: auto;
+    bottom: 0;
+}
+
+.uni-card-media {
+    justify-content: flex-start;
+}
+
+.uni-card-media-logo {
+    height: 84rpx;
+    width: 84rpx;
+    margin-right: 20rpx;
+}
+
+.uni-card-media-body {
+    height: 84rpx;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.uni-card-media-text-top {
+    line-height: 36rpx;
+    font-size: 34rpx;
+}
+
+.uni-card-media-text-bottom {
+    line-height: 30rpx;
+    font-size: 28rpx;
+    color: #8f8f94;
+}
+
+.uni-card-link {
+    color: #007AFF;
+}
+
+
+
+
+
+
+
+
+/*列表*/
+
+.uni-list {
+    background-color: #FFFFFF;
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.uni-list:after {
+    position: absolute;
+    z-index: 10;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 1px;
+    content: '';
+    -webkit-transform: scaleY(.5);
+    transform: scaleY(.5);
+    background-color: #c8c7cc;
+}
+
+.uni-list:before {
+    position: absolute;
+    z-index: 10;
+    right: 0;
+    top: 0;
+    left: 0;
+    height: 1px;
+    content: '';
+    -webkit-transform: scaleY(.5);
+    transform: scaleY(.5);
+    background-color: #c8c7cc;
+}
+
+.uni-list-cell {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.uni-list-cell-hover {
+    background-color: #eee;
+}
+
+.uni-list-cell-pd {
+    padding: 22rpx 30rpx;
+}
+
+.uni-list-cell-left {
+    padding: 0 30rpx;
+}
+
+.uni-list-cell-db,
+.uni-list-cell-right {
+    flex: 1;
+}
+
+.uni-list-cell:after {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 30rpx;
+    height: 1px;
+    content: '';
+    -webkit-transform: scaleY(.5);
+    transform: scaleY(.5);
+    background-color: #c8c7cc;
+}
+
+.uni-list .uni-list-cell:last-child:after {
+    height: 0px;
+}
+
+.uni-list-cell-last.uni-list-cell:after {
+    height: 0px;
+}
+
+.uni-list-cell-divider {
+    background: #fafafa;
+    position: relative;
+    display: flex;
+    color: #999;
+    background-color: #fafafa;
+    padding: 15rpx 20rpx;
+}
+
+.uni-list-cell-divider:after {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0rpx;
+    height: 1px;
+    content: '';
+    -webkit-transform: scaleY(.5);
+    transform: scaleY(.5);
+    background-color: #c8c7cc;
+}
+
+.uni-list-cell-navigate {
+    padding: 22rpx 30rpx;
+    position: relative;
+    display: flex;
+    box-sizing: border-box;
+    width: 100%;
+    flex: 1;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.uni-list-cell-navigate {
+    padding-right: 36rpx;
+}
+
+.uni-navigate-badge {
+    margin-right: 20rpx;
+}
+
+.uni-list-cell-navigate.uni-navigate-right:after {
+    font-family: uniicons;
+    content: '\e583';
+    position: absolute;
+    right: 24rpx;
+    top: 50%;
+    color: #bbb;
+    transform: translateY(-50%);
+}
+
+.uni-list-cell-navigate.uni-navigate-bottom:after {
+    font-family: uniicons;
+    content: '\e581';
+    position: absolute;
+    right: 24rpx;
+    top: 50%;
+    color: #bbb;
+    transform: translateY(-50%);
+}
+
+.uni-list-cell-navigate.uni-navigate-bottom.uni-active:after {
+    font-family: uniicons;
+    content: '\e580';
+    position: absolute;
+    right: 24rpx;
+    top: 50%;
+    color: #bbb;
+    transform: translateY(-50%);
+}
+
+.uni-collapse.uni-list-cell {
+    flex-direction: column;
+}
+
+.uni-list-cell-navigate.uni-active {
+    background: #eee;
+}
+
+.uni-list.uni-collapse {
+    box-sizing: border-box;
+    height: 0;
+    overflow: hidden;
+}
+
+.uni-collapse .uni-list-cell {
+    padding-left: 36rpx;
+}
+
+.uni-collapse .uni-list-cell:after {
+    left: 52rpx;
+}
+
+.uni-list.uni-active {
+    height: auto;
+}
+
+
+
+/*三行列表*/
+
+.uni-triplex-row {
+    display: flex;
+    flex: 1;
+    width: 100%;
+    box-sizing: border-box;
+    flex-direction: row;
+    padding: 22rpx 30rpx;
+}
+
+.uni-triplex-right,
+.uni-triplex-left {
+    display: flex;
+    flex-direction: column;
+}
+
+.uni-triplex-left {
+    width: 84%;
+}
+
+.uni-triplex-right {
+    width: 16%;
+    text-align: right;
+}
+
+
+
+
+
+/*图文列表*/
+
+.uni-media-list {
+    padding: 22rpx 30rpx;
+    box-sizing: border-box;
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+}
+
+.uni-navigate-right.uni-media-list {
+    padding-right: 74rpx;
+}
+
+.uni-pull-right {
+    flex-direction: row-reverse;
+}
+
+.uni-pull-right>.uni-media-list-logo {
+    margin-right: 0rpx;
+    margin-left: 20rpx;
+}
+
+.uni-media-list-logo {
+    height: 84rpx;
+    width: 84rpx;
+    margin-right: 20rpx;
+}
+
+.uni-media-list-body {
+    height: 84rpx;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    overflow: hidden;
+}
+
+.uni-media-list-text-top {
+    width: 100%;
+    line-height: 36rpx;
+    font-size: 34rpx;
+}
+
+.uni-media-list-text-bottom {
+    width: 100%;
+    line-height: 30rpx;
+    font-size: 28rpx;
+    color: #8f8f94;
+}
+
+
+
+
+
+
+/*九宫格*/
+
+.uni-grid-9 {
+    background: #f2f2f2;
+    width: 750rpx;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    border-top: 1px solid #eee;
+}
+
+.uni-grid-9-item {
+    width: 250rpx;
+    height: 200rpx;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 2rpx solid;
+    border-right: 2rpx solid;
+    border-color: #eee;
+    box-sizing: border-box;
+}
+
+.no-border-right {
+    border-right: none;
+}
+
+.uni-grid-9-image {
+    width: 100rpx;
+    height: 100rpx;
+}
+
+.uni-grid-9-text {
+    width: 250rpx;
+    line-height: 50rpx;
+    height: 50rpx;
+    text-align: center;
+    font-size: 30rpx;
+}
+
+.uni-grid-9-item-hover {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+
+
+
+
+/*上传*/
+
+.uni-uploader {
+    flex: 1;
+    flex-direction: column;
+}
+
+.uni-uploader-head {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.uni-uploader-info {
+    color: #B2B2B2;
+}
+
+.uni-uploader-body {
+    margin-top: 16rpx;
+    overflow: hidden;
+}
+
+.uni-uploader__file {
+    float: left;
+    margin-right: 9px;
+    margin-bottom: 9px;
+}
+
+.uni-uploader__img {
+    display: block;
+    width: 79px;
+    height: 79px;
+}
+
+.uni-uploader__input-box {
+    float: left;
+    position: relative;
+    margin-right: 9px;
+    margin-bottom: 9px;
+    width: 77px;
+    height: 77px;
+    border: 1px solid #D9D9D9;
+}
+
+.uni-uploader__input-box:before,
+.uni-uploader__input-box:after {
+    content: " ";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    background-color: #D9D9D9;
+}
+
+.uni-uploader__input-box:before {
+    width: 2px;
+    height: 39.5px;
+}
+
+.uni-uploader__input-box:after {
+    width: 39.5px;
+    height: 2px;
+}
+
+.uni-uploader__input-box:active {
+    border-color: #999999;
+}
+
+.uni-uploader__input-box:active:before,
+.uni-uploader__input-box:active:after {
+    background-color: #999999;
+}
+
+.uni-uploader__input {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+}

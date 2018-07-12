@@ -1,0 +1,454 @@
+{
+    "pages": [
+        {
+            "path": "pages/component/index",
+            "style": {
+                "navigationBarTitleText": "组件"
+            }
+        }, {
+            "path": "pages/API/index",
+            "style": {
+                "navigationBarTitleText": "接口"
+            }
+        },{
+            "path": "pages/template/index",
+            "style": {
+                "navigationBarTitleText": "模版"
+            }
+        }, {
+            "path": "pages/component/view/index",
+            "style": {
+                "navigationBarTitleText": "view"
+            }
+        }, {
+            "path": "pages/component/scroll-view/index",
+            "style": {
+                "navigationBarTitleText": "scroll-view"
+            }
+        }, {
+            "path": "pages/component/swiper/index",
+            "style": {
+                "navigationBarTitleText": "swiper"
+            }
+        }, {
+            "path": "pages/template/number-box/index",
+            "style": {
+                "navigationBarTitleText": "数字输入框"
+            }
+        }, {
+            "path": "pages/component/text/index",
+            "style": {
+                "navigationBarTitleText": "text"
+            }
+        },
+//         {
+//             "path": "pages/component/icon/index",
+//             "style": {
+//                 "navigationBarTitleText": "icon"
+//             }
+//         }, 
+        {
+            "path": "pages/component/progress/index",
+            "style": {
+                "navigationBarTitleText": "progress"
+            }
+        }, {
+            "path": "pages/component/button/index",
+            "style": {
+                "navigationBarTitleText": "button"
+            }
+        }, {
+            "path": "pages/component/checkbox/index",
+            "style": {
+                "navigationBarTitleText": "checkbox"
+            }
+        }, {
+            "path": "pages/component/form/index",
+            "style": {
+                "navigationBarTitleText": "form"
+            }
+        }, {
+            "path": "pages/component/input/index",
+            "style": {
+                "navigationBarTitleText": "input"
+            }
+        }, {
+            "path": "pages/component/label/index",
+            "style": {
+                "navigationBarTitleText": "label"
+            }
+        }, {
+            "path": "pages/component/picker/index",
+            "style": {
+                "navigationBarTitleText": "picker"
+            }
+        }, {
+            "path": "pages/component/radio/index",
+            "style": {
+                "navigationBarTitleText": "radio"
+            }
+        }, {
+            "path": "pages/component/slider/index",
+            "style": {
+                "navigationBarTitleText": "slider"
+            }
+        }, {
+            "path": "pages/component/switch/index",
+            "style": {
+                "navigationBarTitleText": "switch"
+            }
+        }, {
+            "path": "pages/component/textarea/index",
+            "style": {
+                "navigationBarTitleText": "textarea"
+            }
+        }, {
+            "path": "pages/component/navigator/index",
+            "style": {
+                "navigationBarTitleText": "navigator"
+            }
+        }, {
+            "path": "pages/component/navigator/navigate",
+            "style": {
+                "navigationBarTitleText": "navigatePage"
+            }
+        }, {
+            "path": "pages/component/navigator/redirect",
+            "style": {
+                "navigationBarTitleText": "redirectPage"
+            }
+        }, {
+            "path": "pages/component/image/index",
+            "style": {
+                "navigationBarTitleText": "image"
+            }
+        }, {
+            "path": "pages/component/audio/index",
+            "style": {
+                "navigationBarTitleText": "audio"
+            }
+        }, {
+            "path": "pages/component/video/index",
+            "style": {
+                "navigationBarTitleText": "video"
+            }
+        }, {
+            "path": "pages/component/map/index",
+            "style": {
+                "navigationBarTitleText": "map"
+            }
+        }, {
+            "path": "pages/component/canvas/index",
+            "style": {
+                "navigationBarTitleText": "canvas"
+            }
+        }, {
+            "path": "pages/API/login/index",
+            "style": {
+                "navigationBarTitleText": "微信登录"
+            }
+        }, {
+            "path": "pages/API/get-user-info/index",
+            "style": {
+                "navigationBarTitleText": "获取用户信息"
+            }
+        }, {
+            "path": "pages/API/request-payment/index",
+            "style": {
+                "navigationBarTitleText": "发起支付"
+            }
+        }, {
+            "path": "platforms/app-plus/share/index",
+            "style": {
+                "navigationBarTitleText": "分享"
+            }
+        }, {
+            "path": "platforms/mp-weixin/custom-message/index",
+            "style": {
+                "navigationBarTitleText": "客服消息"
+            }
+        }, {
+            "path": "platforms/mp-weixin/template-message/index",
+            "style": {
+                "navigationBarTitleText": "模板消息"
+            }
+        }, {
+            "path": "pages/API/set-navigation-bar-title/index",
+            "style": {
+                "navigationBarTitleText": "设置界面标题"
+            }
+        }, {
+            "path": "pages/API/navigation-bar-loading/index",
+            "style": {
+                "navigationBarTitleText": "标题栏加载动画"
+            }
+        }, {
+            "path": "pages/API/navigator/index",
+            "style": {
+                "navigationBarTitleText": "页面跳转"
+            }
+        }, {
+            "path": "pages/API/pull-down-refresh/index",
+            "style": {
+                "navigationBarTitleText": "下拉刷新",
+                "enablePullDownRefresh": true
+            }
+        }, {
+            "path": "pages/API/animation/index",
+            "style": {
+                "navigationBarTitleText": "创建动画"
+            }
+        }, {
+            "path": "pages/API/canvas/index",
+            "style": {
+                "navigationBarTitleText": "创建绘画"
+            }
+        }, {
+            "path": "pages/API/action-sheet/index",
+            "style": {
+                "navigationBarTitleText": "操作菜单"
+            }
+        }, {
+            "path": "pages/API/modal/index",
+            "style": {
+                "navigationBarTitleText": "模态弹窗"
+            }
+        }, {
+            "path": "pages/API/toast/index",
+            "style": {
+                "navigationBarTitleText": "消息提示框"
+            }
+        }, {
+            "path": "pages/API/get-network-type/index",
+            "style": {
+                "navigationBarTitleText": "获取手机网络状态"
+            }
+        }, {
+            "path": "pages/API/get-system-info/index",
+            "style": {
+                "navigationBarTitleText": "获取手机系统信息"
+            }
+        }, {
+            "path": "pages/API/on-accelerometer-change/index",
+            "style": {
+                "navigationBarTitleText": "监听加速度计数据"
+            }
+        },{
+            "path": "pages/API/on-accelerometer-change/shake",
+            "style": {
+                "navigationBarTitleText": "摇一摇"
+            }
+        }, {
+            "path": "pages/API/on-compass-change/index",
+            "style": {
+                "navigationBarTitleText": "监听罗盘数据"
+            }
+        }, {
+            "path": "pages/API/make-phone-call/index",
+            "style": {
+                "navigationBarTitleText": "打电话"
+            }
+        }, {
+            "path": "pages/API/scan-code/index",
+            "style": {
+                "navigationBarTitleText": "扫码"
+            }
+        }, {
+            "path": "pages/API/request/index",
+            "style": {
+                "navigationBarTitleText": "网络请求"
+            }
+        }, {
+            "path": "pages/API/upload-file/index",
+            "style": {
+                "navigationBarTitleText": "上传文件"
+            }
+        }, {
+            "path": "pages/API/download-file/index",
+            "style": {
+                "navigationBarTitleText": "下载文件"
+            }
+        }, {
+            "path": "pages/API/image/index",
+            "style": {
+                "navigationBarTitleText": "图片"
+            }
+        }, {
+            "path": "pages/API/voice/index",
+            "style": {
+                "navigationBarTitleText": "录音"
+            }
+        }, {
+            "path": "pages/API/background-audio/index",
+            "style": {
+                "navigationBarTitleText": "背景音频"
+            }
+        }, {
+            "path": "pages/API/file/index",
+            "style": {
+                "navigationBarTitleText": "文件"
+            }
+        }, {
+            "path": "pages/API/video/index",
+            "style": {
+                "navigationBarTitleText": "视频"
+            }
+        }, {
+            "path": "pages/API/get-location/index",
+            "style": {
+                "navigationBarTitleText": "获取位置"
+            }
+        }, {
+            "path": "pages/API/open-location/index",
+            "style": {
+                "navigationBarTitleText": "查看位置"
+            }
+        }, {
+            "path": "pages/API/choose-location/index",
+            "style": {
+                "navigationBarTitleText": "使用原生地图选择位置"
+            }
+        }, {
+            "path": "pages/API/storage/index",
+            "style": {
+                "navigationBarTitleText": "数据存储"
+            }
+        }, {
+            "path": "platforms/app-plus/speech/index",
+            "style": {
+                "navigationBarTitleText": "语音识别"
+            }
+        }, {
+            "path": "platforms/app-plus/orientation/index",
+            "style": {
+                "navigationBarTitleText": "方向传感器"
+            }
+        }, {
+            "path": "platforms/app-plus/proximity/index",
+            "style": {
+                "navigationBarTitleText": "距离传感器"
+            }
+        }, {
+            "path": "platforms/app-plus/push/index",
+            "style": {
+                "navigationBarTitleText": "推送"
+            }
+        }, {
+            "path": "pages/component/icon/index",
+            "style": {
+                "navigationBarTitleText": "icon"
+            }
+        }, {
+            "path": "pages/template/popup/index",
+            "style": {
+                "navigationBarTitleText": "popup"
+            }
+        }, {
+            "path": "pages/template/tabbar/index",
+            "style": {
+                "navigationBarTitleText": "tabbar"
+            }
+        }, {
+            "path": "pages/template/media-list/index",
+            "style": {
+                "navigationBarTitleText": "图文列表"
+            }
+        }, {
+            "path": "pages/template/grid/index",
+            "style": {
+                "navigationBarTitleText": "九宫格"
+            }
+        }, {
+            "path": "pages/template/drag-right/index",
+            "style": {
+                "navigationBarTitleText": "右滑菜单"
+            }
+        }, {
+            "path": "pages/template/drag-right-zoom/index",
+            "style": {
+                "navigationBarTitleText": "右滑菜单（缩放）"
+            }
+        }, {
+            "path": "pages/template/drag-left/index",
+            "style": {
+                "navigationBarTitleText": "左滑菜单"
+            }
+        }, {
+            "path": "pages/template/drag-left-zoom/index",
+            "style": {
+                "navigationBarTitleText": "左滑菜单（缩放）"
+            }
+        }, {
+            "path": "pages/template/badge/index",
+            "style": {
+                "navigationBarTitleText": "数字角标"
+            }
+        }, {
+            "path": "pages/template/accordion/index",
+            "style": {
+                "navigationBarTitleText": "折叠面板"
+            }
+        }, {
+            "path": "pages/template/cardview/index",
+            "style": {
+                "navigationBarTitleText": "卡片视图"
+            }
+        }, {
+            "path": "pages/template/list-with-badges/index",
+            "style": {
+                "navigationBarTitleText": "右侧带角标"
+            }
+        }, {
+            "path": "pages/template/list-with-collapses/index",
+            "style": {
+                "navigationBarTitleText": "二级列表"
+            }
+        }, {
+            "path": "pages/template/list-triplex-row/index",
+            "style": {
+                "navigationBarTitleText": "三行列表"
+            }
+        }, {
+            "path": "pages/template/list-to-detail/index",
+            "style": {
+                "navigationBarTitleText": "列表到详情的最佳实践",
+                "enablePullDownRefresh": true
+            }
+        }, {
+            "path": "pages/template/list-to-detail/detail",
+            "style": {
+                "navigationBarTitleText": "详情"
+            }
+        }
+    ],
+    "globalStyle": {
+        "navigationBarTextStyle": "black",
+        "navigationBarTitleText": "演示",
+        "navigationBarBackgroundColor": "#F8F8F8",
+        "backgroundColor": "#F8F8F8"
+    },
+    "tabBar": {
+        "color": "#7A7E83",
+        "selectedColor": "#007AFF",
+        "borderStyle": "black",
+        "backgroundColor": "#ffffff",
+        "list": [
+            {
+                "pagePath": "pages/component/index",
+                "iconPath": "static/component.png",
+                "selectedIconPath": "static/componentHL.png",
+                "text": "组件"
+            }, {
+                "pagePath": "pages/API/index",
+                "iconPath": "static/api.png",
+                "selectedIconPath": "static/apiHL.png",
+                "text": "接口"
+            }, {
+                "pagePath": "pages/template/index",
+                "iconPath": "static/template.png",
+                "selectedIconPath": "static/templateHL.png",
+                "text": "模版"
+            }
+        ]
+    }
+}
