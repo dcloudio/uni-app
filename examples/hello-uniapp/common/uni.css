@@ -350,14 +350,24 @@
 }
 
 .uni-list-cell-divider {
-    background: #fafafa;
     position: relative;
     display: flex;
     color: #999;
-    background-color: #fafafa;
-    padding: 15rpx 20rpx;
+    background-color: #f7f7f7;
+    padding: 10rpx 20rpx;
 }
 
+.uni-list-cell-divider:before {
+    position: absolute;
+    right: 0;
+    top: 0;
+    left: 0rpx;
+    height: 1px;
+    content: '';
+    -webkit-transform: scaleY(.5);
+    transform: scaleY(.5);
+    background-color: #c8c7cc;
+}
 .uni-list-cell-divider:after {
     position: absolute;
     right: 0;
@@ -372,6 +382,7 @@
 
 .uni-list-cell-navigate {
     padding: 22rpx 30rpx;
+    line-height: 48rpx;
     position: relative;
     display: flex;
     box-sizing: border-box;

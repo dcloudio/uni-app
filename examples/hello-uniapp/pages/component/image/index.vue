@@ -11,7 +11,7 @@
             <view class="page-section page-section-gap">
                 <view class="page-section-title">Internet Image</view>
                 <view class="page-section-ctn">
-                    <image class="image" src="http://img-cdn-qiniu.dcloud.net.cn/newpage/images/uni@2x.png" />
+                    <image class="image" src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/uni@2x.png" />
                 </view>
             </view>
         </view>
