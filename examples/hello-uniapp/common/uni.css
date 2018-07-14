@@ -2,11 +2,8 @@
     font-family: uniicons;
     font-weight: normal;
     font-style: normal;
-
     src: url('https://img-cdn-qiniu.dcloud.net.cn/fonts/uni.ttf') format('truetype');
 }
-
-
 
 
 
@@ -149,10 +146,6 @@
 
 
 
-
-
-
-
 /*折叠面板*/
 
 .uni-collapse-content {
@@ -164,11 +157,6 @@
 .uni-collapse-content.uni-active {
     height: auto;
 }
-
-
-
-
-
 
 
 
@@ -260,6 +248,11 @@
 .uni-card-link {
     color: #007AFF;
 }
+
+
+
+
+
 
 
 
@@ -368,6 +361,7 @@
     transform: scaleY(.5);
     background-color: #c8c7cc;
 }
+
 .uni-list-cell-divider:after {
     position: absolute;
     right: 0;
@@ -486,8 +480,6 @@
 
 
 
-
-
 /*图文列表*/
 
 .uni-media-list {
@@ -541,10 +533,6 @@
 }
 
 
-
-
-
-
 /*九宫格*/
 
 .uni-grid-9 {
@@ -589,9 +577,6 @@
 .uni-grid-9-item-hover {
     background: rgba(0, 0, 0, 0.1);
 }
-
-
-
 
 
 /*上传*/
@@ -676,4 +661,86 @@
     width: 100%;
     height: 100%;
     opacity: 0;
+}
+
+
+/*问题反馈*/
+
+.feedback-title {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20rpx;
+    color: #8f8f94;
+    font-size: 28rpx;
+}
+
+.feedback-star-view.feedback-title {
+    justify-content: flex-start;
+    margin: 0;
+}
+
+.feedback-quick {
+    position: relative;
+    padding-right: 40rpx;
+}
+
+.feedback-quick:after {
+    font-family: uniicons;
+    font-size: 40rpx;
+    content: '\e581';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    color: #bbb;
+    transform: translateY(-50%);
+}
+
+.feedback-body {
+    background: #fff;
+}
+
+.feedback-textare {
+    height: 200rpx;
+    font-size: 34rpx;
+    padding: 20rpx 30rpx 0;
+}
+
+.feedback-input {
+    height: 80rpx;
+    font-size: 34rpx;
+    padding-left: 20rpx;
+}
+
+.feedback-uploader {
+    padding: 22rpx 20rpx;
+}
+
+.feedback-star {
+    font-family: uniicons;
+    font-size: 40rpx;
+    margin-left: 6rpx;
+}
+
+.feedback-star-view {
+    margin-left: 20rpx;
+}
+
+.feedback-star:after {
+    content: '\e408';
+}
+
+.feedback-star.active {
+    color: #FFB400;
+}
+
+.feedback-star.active:after {
+    content: '\e438';
+}
+
+.feedback-submit {
+    background: #007AFF;
+    color: #FFFFFF;
+    margin: 20rpx;
 }

@@ -86,7 +86,7 @@
                 <view class="page-section-title">带清除按钮的输入框</view>
                 <view class="uni-list">
                     <view class="uni-list-cell">
-                        <input class="uni-input" placeholder="带清除按钮的输入框" :value="inputClearValue" @input="bindClearInput"/>
+                        <input class="uni-input" placeholder="带清除按钮的输入框" :value="inputClearValue" @input="bindClearInput" />
                         <view class="uni-icon uni-icon-clear" v-if="showClearIcon" @click="clearIcon"></view>
                     </view>
                 </view>
@@ -95,28 +95,27 @@
                 <view class="page-section-title">可查看密码的输入框</view>
                 <view class="uni-list">
                     <view class="uni-list-cell">
-                        <input class="uni-input" placeholder="请输入密码" :password="showPassword"/>
+                        <input class="uni-input" placeholder="请输入密码" :password="showPassword" />
                         <view class="uni-icon uni-icon-eye" :class="[!showPassword ? 'uni-active' : '']" @click="changePassword"></view>
                     </view>
                 </view>
             </view>
         </view>
-        
     </view>
 </template>
 <script>
     import pageHead from '../../../components/page-head.vue'
-    
+
     export default {
         data() {
             return {
                 title: 'input',
                 focus: false,
                 inputValue: '',
-                showClearIcon:false,
-                inputClearValue:"",
-                showPassword:true,
-                src:"../../../static/eye-1.png"
+                showClearIcon: false,
+                inputClearValue: "",
+                showPassword: true,
+                src: "../../../static/eye-1.png"
             }
         },
         methods: {
@@ -150,25 +149,25 @@
                     uni.hideKeyboard();
                 }
             },
-            bindClearInput:function (e) {
+            bindClearInput: function (e) {
                 this.inputClearValue = e.target.value;
-                if(e.target.value.length > 0){
+                if (e.target.value.length > 0) {
                     this.showClearIcon = true;
-                }else{
+                } else {
                     this.showClearIcon = false;
                 }
             },
-            clearIcon:function(){
+            clearIcon: function () {
                 this.inputClearValue = "";
                 this.showClearIcon = false;
             },
-            changePassword:function(){
+            changePassword: function () {
                 this.showPassword = !this.showPassword;
             }
         },
         components: {
             pageHead
-            
+
         }
     }
 </script>
@@ -179,13 +178,16 @@
     .page-section {
         margin-bottom: 20rpx;
     }
-    .uni-list-cell{
+
+    .uni-list-cell {
         padding: 0 30rpx;
     }
-    .uni-input{
+
+    .uni-input {
         flex: 1;
     }
-    .uni-icon{
+
+    .uni-icon {
         color: #999;
     }
 </style>

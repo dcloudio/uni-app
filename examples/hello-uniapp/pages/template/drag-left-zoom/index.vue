@@ -26,26 +26,26 @@
         data() {
             return {
                 openDrag: false,
-                openClick:false,
+                openClick: false,
                 markX: 0,
                 newmarkX: 0,
-                markY:0,
-                newmarkY:0,
+                markY: 0,
+                newmarkY: 0,
                 istoright: true
             }
         },
-        onReady:function(){
-        	//如果返回时侧滑仍是打开状态，则再次打开页面，侧滑依然显示。如果不想看到，可以进来的时候重置下状态
-        	this.openDrag = false; 
-        	this.openClick = false; 
+        onReady: function () {
+            //如果返回时侧滑仍是打开状态，则再次打开页面，侧滑依然显示。如果不想看到，可以进来的时候重置下状态
+            this.openDrag = false;
+            this.openClick = false;
         },
         methods: {
             tap_ch: function (e) {
                 if (this.openClick || this.openDrag) {
-                	this.openClick = false
-                	this.openDrag = false
+                    this.openClick = false
+                    this.openDrag = false
                 } else {
-                	this.openClick = true
+                    this.openClick = true
                 }
             },
             tap_start: function (e) {
@@ -59,14 +59,14 @@
                 console.log('this.newmarkX:' + e.touches[0].pageX);
                 if (this.markX > this.newmarkX) {
                     this.istoright = false;
-                }else{
+                } else {
                     this.istoright = true;
                 }
                 this.markX = this.newmarkX;
             },
             tap_end: function () {
-                if(this.newmarkY - this.markY > 25 || this.markY - this.newmarkY > 25){//防止上下拖动时触发侧滑
-                	return false;
+                if (this.newmarkY - this.markY > 25 || this.markY - this.newmarkY > 25) { //防止上下拖动时触发侧滑
+                    return false;
                 }
                 this.markX = 0;
                 this.newmarkX = 0;
@@ -74,7 +74,7 @@
                 this.newmarkY = 0;
                 if (!this.istoright) {
                     this.openDrag = true
-                }else{
+                } else {
                     this.openDrag = false
                 }
             }

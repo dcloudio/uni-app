@@ -16,12 +16,11 @@
                 <button formType="submit">设置</button>
             </view>
         </form>
-        
     </view>
 </template>
 <script>
     import pageHead from '../../../components/page-head.vue'
-    
+
     export default {
         data() {
             return {
@@ -46,16 +45,16 @@
         },
         components: {
             pageHead
-            
+
         }
     }
 </script>
 
 <style>
     @import "../../../common/uni.css";
-    
-    button{
-    	background-color:#007aff;
-    	color: #ffffff;
+
+    button {
+        background-color: #007aff;
+        color: #ffffff;
     }
 </style>

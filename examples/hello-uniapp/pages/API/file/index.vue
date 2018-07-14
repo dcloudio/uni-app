@@ -24,12 +24,12 @@
                 </view>
             </view>
         </view>
-        
+
     </view>
 </template>
 <script>
     import pageHead from '../../../components/page-head.vue'
-    
+
     export default {
         data() {
             return {
@@ -95,7 +95,7 @@
         },
         components: {
             pageHead
-            
+
         }
     }
 </script>
@@ -116,8 +116,9 @@
         align-items: center;
         justify-content: center;
     }
-    .btn-savefile{
-        background-color:#007aff;
+
+    .btn-savefile {
+        background-color: #007aff;
         color: #ffffff;
     }
 </style>

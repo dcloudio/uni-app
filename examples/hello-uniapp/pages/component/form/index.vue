@@ -48,12 +48,11 @@
                 </view>
             </form>
         </view>
-        
     </view>
 </template>
 <script>
     import pageHead from '../../../components/page-head.vue'
-    
+
     export default {
         data() {
             return {
@@ -83,7 +82,7 @@
         },
         components: {
             pageHead
-            
+
         }
     }
 </script>
@@ -96,8 +95,9 @@
         min-width: 270rpx;
         margin-right: 20rpx;
     }
-    .btn-submit{
-    	background-color:#007aff;
-    	color: #ffffff;
+
+    .btn-submit {
+        background-color: #007aff;
+        color: #ffffff;
     }
 </style>

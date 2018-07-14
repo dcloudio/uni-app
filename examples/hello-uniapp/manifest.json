@@ -1,19 +1,19 @@
 {
-    "name": "demo",
-    "appid": "__uni123213213",
+    "name": "hello uni-app",
+    "appid": "__UNI__123213213",
     "description": "应用描述",
-    "icons": [{
-        "sizes": "分辨率，192x192",
-        "src": "图片路径"
-    }],
-    "versionName": "版本名称",
-    "versionCode": "版本号",
+    "versionName": "1.0.0",
+    "versionCode": "100",
     "app-plus": { // 5+App特有相关
+        "modules": {},
+        "distribute": {
+            "android": {},
+            "ios": {},
+            "sdkConfigs": {}
+        }
     },
     "quickapp": { // 快应用特有相关
-
     },
     "mp-weixin": { // 小程序特有相关
-
     }
 }

@@ -3,8 +3,8 @@
         <page-head :title="title"></page-head>
         <view class="page-body">
             <view class="page-section">
-                <video id="myVideo" src="http://img.cdn.qiniu.dcloud.net.cn/wap2appvsnative.mp4"
-                    @error="videoErrorCallback" :danmu-list="danmuList" enable-danmu danmu-btn controls></video>
+                <video id="myVideo" src="http://img.cdn.qiniu.dcloud.net.cn/wap2appvsnative.mp4" @error="videoErrorCallback" :danmu-list="danmuList"
+                    enable-danmu danmu-btn controls></video>
 
                 <view class="uni-list">
                     <view class="uni-list-cell">
@@ -17,24 +17,22 @@
                     </view>
                 </view>
                 <view class="btn-area">
-                    <button @tap="bindSendDanmu" class="page-body-button"  formType="submit">发送弹幕</button>
+                    <button @tap="bindSendDanmu" class="page-body-button" formType="submit">发送弹幕</button>
                 </view>
             </view>
         </view>
-        
     </view>
 </template>
 <script>
     import pageHead from '../../../components/page-head.vue'
-    
+
     export default {
         data() {
             return {
                 title: 'video',
                 src: '',
                 inputValue: '',
-                danmuList: [
-                    {
+                danmuList: [{
                         text: '第 1s 出现的弹幕',
                         color: '#ff0000',
                         time: 1
@@ -87,25 +85,28 @@
         },
         components: {
             pageHead
-            
+
         }
     }
 </script>
 
 <style>
     @import "../../../common/uni.css";
-    
-    button{
-        background-color:#007aff;
+
+    button {
+        background-color: #007aff;
         color: #ffffff;
     }
-    .uni-list{
+
+    .uni-list {
         margin-top: 40rpx;
     }
-    .uni-input{
+
+    .uni-input {
         text-align: left;
     }
-    .page-section{
+
+    .page-section {
         text-align: center;
     }
 </style>

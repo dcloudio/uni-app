@@ -2,21 +2,23 @@
     <view class="index">
         <view class="index-hd">
             <image class="index-logo" src="../../static/apiIndex.png"></image>
-            <view class="page-section-title" >以下将演示uni-app接口能力，具体属性参数详见uni-app开发文档。</view>
+            <view class="page-section-title">以下将演示uni-app接口能力，具体属性参数详见uni-app开发文档。</view>
         </view>
         <view class="uni-card" v-for="(list,index) in lists" :key="index">
-        	<view class="uni-list"  >
-        		<view class="uni-list-cell uni-collapse">
-        			<view class="uni-list-cell-navigate uni-navigate-bottom" hover-class="uni-list-cell-hover" :class="list.open ? 'uni-active' : ''" @click="trigerCollapse(index)">
-        				{{list.name}}
-        			</view>
-        			<view class="uni-list uni-collapse"  :class="list.open ? 'uni-active' : ''">
-        				<view class="uni-list-cell" hover-class="uni-list-cell-hover"  v-for="(item,key) in list.pages" :key="key" :url="item.url" @click="goDetailPage(item.url)">
-        					<view class="uni-list-cell-navigate uni-navigate-right"> {{item.name}} </view>
-        				</view>
-        			</view>
-        		</view>
-        	</view>
+            <view class="uni-list">
+                <view class="uni-list-cell uni-collapse">
+                    <view class="uni-list-cell-navigate uni-navigate-bottom" hover-class="uni-list-cell-hover" :class="list.open ? 'uni-active' : ''"
+                        @click="trigerCollapse(index)">
+                        {{list.name}}
+                    </view>
+                    <view class="uni-list uni-collapse" :class="list.open ? 'uni-active' : ''">
+                        <view class="uni-list-cell" hover-class="uni-list-cell-hover" v-for="(item,key) in list.pages" :key="key" :url="item.url"
+                            @click="goDetailPage(item.url)">
+                            <view class="uni-list-cell-navigate uni-navigate-right"> {{item.name}} </view>
+                        </view>
+                    </view>
+                </view>
+            </view>
         </view>
     </view>
 </template>
@@ -97,16 +99,15 @@
                 name: '网络',
                 open: false,
                 pages: [{
-                        name: '发起一个请求',
-                        url: 'request/index'
-                    }, {
-                        name: '上传文件',
-                        url: 'upload-file/index'
-                    }, {
-                        name: '下载文件',
-                        url: 'download-file/index'
-                    }
-                ]
+                    name: '发起一个请求',
+                    url: 'request/index'
+                }, {
+                    name: '上传文件',
+                    url: 'upload-file/index'
+                }, {
+                    name: '下载文件',
+                    url: 'download-file/index'
+                }]
             }, {
                 id: 'media',
                 name: '媒体',
@@ -150,6 +151,7 @@
                     url: 'storage/index'
                 }]
             }]
+
             //#ifdef MP-WEIXIN
             let list0PushItem_WEIXIN = [{
                 name: '客服消息',
@@ -160,12 +162,21 @@
             }]
             list[0].pages.splice(list[0].pages.length, 0, ...list0PushItem_WEIXIN)
             //#endif
-            
+
             //#ifdef APP-PLUS
-            let list0PushItem = [{ name: '分享',url: '/platforms/app-plus/share/index'}]
+            let list0PushItem = [{
+                name: '分享',
+                url: '/platforms/app-plus/share/index'
+            }]
             list[0].pages.splice(list[0].pages.length, 0, ...list0PushItem)
-            let list2PushItem = [{name: '监听距离传感器',url: '/platforms/app-plus/proximity/index'},{name: '监听方向传感器',url: '/platforms/app-plus/orientation/index'}]
-            list[2].pages.splice(list[2].pages.length,0,...list2PushItem);
+            let list2PushItem = [{
+                name: '监听距离传感器',
+                url: '/platforms/app-plus/proximity/index'
+            }, {
+                name: '监听方向传感器',
+                url: '/platforms/app-plus/orientation/index'
+            }]
+            list[2].pages.splice(list[2].pages.length, 0, ...list2PushItem);
             let plusItem = [{
                 id: 'speech',
                 name: '语音',
@@ -177,20 +188,21 @@
             }, {
                 id: 'push',
                 name: '推送',
-                open:false,
-                pages:[{
+                open: false,
+                pages: [{
                     name: '推送',
                     url: '/platforms/app-plus/push/index'
                 }]
             }]
             list.splice(list.length, 0, ...plusItem)
             //#endif
+
             return {
                 lists: list
             }
         },
         methods: {
-            trigerCollapse(e){
+            trigerCollapse(e) {
                 for (let i = 0, len = this.lists.length; i < len; ++i) {
                     if (e === i) {
                         this.lists[i].open = !this.lists[i].open;
@@ -199,26 +211,29 @@
                     }
                 }
             },
-            goDetailPage(e){
-                let url = ~e.indexOf('platform') ? e :'/pages/API/' + e;
+            goDetailPage(e) {
+                let url = ~e.indexOf('platform') ? e : '/pages/API/' + e;
                 uni.navigateTo({
                     url: url
                 })
             }
-            
+
         }
     }
 </script>
 
 <style>
     @import "../../common/uni.css";
-    .uni-card{
-    	box-shadow: none;
+
+    .uni-card {
+        box-shadow: none;
     }
-    .uni-list:after{
-    	height: 0;
+
+    .uni-list:after {
+        height: 0;
     }
-    .uni-list:before{
-    	height: 0;
+
+    .uni-list:before {
+        height: 0;
     }
 </style>

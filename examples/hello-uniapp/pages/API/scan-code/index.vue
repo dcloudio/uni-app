@@ -12,12 +12,11 @@
                 <button @tap="scanCode">扫一扫</button>
             </view>
         </view>
-        
     </view>
 </template>
 <script>
     import pageHead from '../../../components/page-head.vue'
-    
+
     export default {
         data() {
             return {
@@ -38,20 +37,21 @@
         },
         components: {
             pageHead
-            
+
         }
     }
 </script>
 
 <style>
     @import "../../../common/uni.css";
-    
+
     .uni-input {
         padding: 0 30rpx;
         word-break: break-all;
     }
-    button{
-    	background-color:#007aff;
-    	color: #ffffff;
+
+    button {
+        background-color: #007aff;
+        color: #ffffff;
     }
 </style>

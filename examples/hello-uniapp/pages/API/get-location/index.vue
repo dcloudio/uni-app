@@ -21,20 +21,20 @@
                 </view>
             </view>
         </view>
-        
     </view>
 </template>
 <script>
-    import pageHead from '../../../components/page-head.vue'
-    
-    var util = require('../../../common/util.js')
-    var formatLocation = util.formatLocation
+    import pageHead from '../../../components/page-head.vue';
+
+    var util = require('../../../common/util.js');
+    var formatLocation = util.formatLocation;
+
     export default {
         data() {
             return {
                 title: 'getLocation',
                 hasLocation: false,
-                location:{}
+                location: {}
             }
         },
         methods: {
@@ -43,7 +43,7 @@
                 uni.getLocation({
                     success: function (res) {
                         that.hasLocation = true,
-                        that.location = formatLocation(res.longitude, res.latitude)
+                            that.location = formatLocation(res.longitude, res.latitude)
                     }
                 })
             },
@@ -53,7 +53,7 @@
         },
         components: {
             pageHead
-            
+
         }
     }
 </script>
@@ -77,9 +77,9 @@
     .page-body-text-location text {
         margin: 10rpx;
     }
-    
-    .btn-getlocation{
-        background-color:#007aff;
+
+    .btn-getlocation {
+        background-color: #007aff;
         color: #ffffff;
     }
 </style>

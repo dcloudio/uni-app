@@ -24,7 +24,7 @@
         data() {
             return {
                 title: 'orientation',
-                value:''
+                value: ''
             }
         },
         methods: {
@@ -69,7 +69,8 @@
         background-color: #007aff;
         color: #ffffff;
     }
-    textarea{
-    	border: 2rpx solid #7A7E83;
+
+    textarea {
+        border: 2rpx solid #7A7E83;
     }
 </style>

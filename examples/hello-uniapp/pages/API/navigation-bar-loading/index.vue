@@ -7,12 +7,11 @@
                 <button @tap="hideNavigationBarLoading">隐藏加载动画</button>
             </view>
         </view>
-        
     </view>
 </template>
 <script>
     import pageHead from '../../../components/page-head.vue'
-    
+
     export default {
         data() {
             return {
@@ -29,14 +28,14 @@
         },
         components: {
             pageHead
-            
+
         }
     }
 </script>
 
 <style>
-    .btn-load{
-    	background-color:#007aff;
-    	color: #ffffff;
+    .btn-load {
+        background-color: #007aff;
+        color: #ffffff;
     }
 </style>

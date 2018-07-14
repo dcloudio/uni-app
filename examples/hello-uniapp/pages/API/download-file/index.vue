@@ -14,12 +14,12 @@
                 </view>
             </block>
         </view>
-        
+
     </view>
 </template>
 <script>
-    import pageHead from '../../../components/page-head.vue'
-    
+    import pageHead from '../../../components/page-head.vue';
+
     export default {
         data() {
             return {
@@ -27,8 +27,8 @@
                 imageSrc: ''
             }
         },
-        onUnload(){
-          this.imageSrc = '';  
+        onUnload() {
+            this.imageSrc = '';
         },
         methods: {
             downloadImage: function () {
@@ -60,8 +60,9 @@
 
         margin: 0 75rpx;
     }
-    button{
-    	background-color:#007aff;
-    	color: #ffffff;
+
+    button {
+        background-color: #007aff;
+        color: #ffffff;
     }
 </style>

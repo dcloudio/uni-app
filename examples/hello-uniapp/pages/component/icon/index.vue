@@ -130,7 +130,7 @@
         justify-content: space-between;
         text-align: center;
     }
-    
+
     .flex-container .icon-item {
         display: inline-block;
         width: 100rpx;
@@ -140,7 +140,7 @@
         border-radius: 50rpx;
         margin: 6rpx;
     }
-    
+
     .uni-icon {
         margin-top: 24rpx;
         color: #8f8f94;

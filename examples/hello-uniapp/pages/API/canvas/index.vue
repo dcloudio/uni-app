@@ -12,13 +12,12 @@
                 </scroll-view>
             </view>
         </view>
-        
     </view>
 </template>
 <script>
-    import pageHead from '../../../components/page-head.vue'
-    
-    var context = null
+    import pageHead from '../../../components/page-head.vue';
+
+    var context = null;
     export default {
         data() {
             return {
@@ -34,8 +33,8 @@
             context = uni.createCanvasContext('canvas')
         },
         methods: {
-            handleCanvasButton:function(name){
-              this[name]()  
+            handleCanvasButton: function (name) {
+                this[name]()
             },
             rotate: function () {
                 context.beginPath()
@@ -323,7 +322,7 @@
         },
         components: {
             pageHead
-            
+
         }
     }
 </script>

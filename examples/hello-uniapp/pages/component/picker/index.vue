@@ -35,7 +35,7 @@
                 <view class="uni-list">
                     <view class="uni-list-cell">
                         <view class="list-left">
-                           当前选择
+                            当前选择
                         </view>
                         <view class="uni-list-cell-db">
                             <picker mode="date" :value="date" start="2015-09-01" end="2017-09-01" @change="bindDateChange">
@@ -46,12 +46,12 @@
                 </view>
             </view>
         </view>
-        
+
     </view>
 </template>
 <script>
     import pageHead from '../../../components/page-head.vue'
-    
+
     export default {
         data() {
             return {
@@ -76,17 +76,19 @@
         },
         components: {
             pageHead
-            
+
         }
     }
 </script>
 
 <style>
     @import "../../../common/uni.css";
-    .uni-list-cell{
+    .uni-list-cell {
         justify-content: flex-start;
     }
-    .uni-list-cell-db,.list-left{
+
+    .uni-list-cell-db,
+    .list-left {
         padding: 0 24rpx;
     }
 </style>

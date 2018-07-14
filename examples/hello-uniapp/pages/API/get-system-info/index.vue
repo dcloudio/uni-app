@@ -58,12 +58,11 @@
                 </view>
             </view>
         </view>
-        
     </view>
 </template>
 <script>
     import pageHead from '../../../components/page-head.vue'
-    
+
     export default {
         data() {
             return {
@@ -88,11 +87,12 @@
 
 <style>
     @import "../../../common/uni.css";
-    button{
-        background-color:#007aff;
+    button {
+        background-color: #007aff;
         color: #ffffff;
     }
+
     .uni-label {
-    	width: 105px;
+        width: 105px;
     }
 </style>

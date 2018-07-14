@@ -6,16 +6,15 @@
                 <view class="desc">请在下方输入电话号码</view>
                 <input class="input" type="number" name="input" @input="bindInput" />
                 <view class="btn-area">
-                    <button  @tap="makePhoneCall" :disabled="disabled">拨打</button>
+                    <button @tap="makePhoneCall" :disabled="disabled">拨打</button>
                 </view>
             </view>
         </view>
-        
     </view>
 </template>
 <script>
     import pageHead from '../../../components/page-head.vue'
-    
+
     export default {
         data() {
             return {
@@ -44,7 +43,7 @@
         },
         components: {
             pageHead
-            
+
         }
     }
 </script>
@@ -72,9 +71,9 @@
     .btn-area {
         padding: 0;
     }
-    
-    button{
-    	background-color:#007aff;
-    	color: #ffffff;
+
+    button {
+        background-color: #007aff;
+        color: #ffffff;
     }
 </style>

@@ -8,7 +8,6 @@
                     <textarea @blur="bindTextAreaBlur" auto-height />
                 </view>
             </view>
-
             <view class="page-section">
                 <view class="page-section-title">这是一个可以自动聚焦的textarea</view>
                 <view class="textarea-wrp">
@@ -16,12 +15,11 @@
                 </view>
             </view>
         </view>
-        
     </view>
 </template>
 <script>
     import pageHead from '../../../components/page-head.vue'
-    
+
     export default {
         data() {
             return {
@@ -36,7 +34,6 @@
         },
         components: {
             pageHead
-            
         }
     }
 </script>

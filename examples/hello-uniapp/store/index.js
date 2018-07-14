@@ -6,11 +6,11 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
     state: {
         hasLogin: false,
-        loginProvider:"",
+        loginProvider: "",
         openid: null
     },
     mutations: {
-        login(state,provider) {
+        login(state, provider) {
             state.hasLogin = true;
             state.loginProvider = provider;
         },
@@ -37,7 +37,7 @@ const store = new Vuex.Store({
                             commit('login')
                             setTimeout(function () { //模拟异步请求服务器获取 openid
                                 const openid = '123456789'
-                                console.log('uni.request mock openid[' + openid + ']')
+                                console.log('uni.request mock openid[' + openid + ']');
                                 commit('setOpenid', openid)
                                 resolve(openid)
                             }, 1000)

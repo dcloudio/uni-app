@@ -11,12 +11,11 @@
                 <button @tap="makeRequest" :loading="loading">request</button>
             </view>
         </view>
-        
     </view>
 </template>
 <script>
     import pageHead from '../../../components/page-head.vue'
-    
+
     const requestUrl = "https://service.dcloud.net.cn/ajax/echo/text?name=uni-app"
     const duration = 2000
     export default {
@@ -57,14 +56,14 @@
         },
         components: {
             pageHead
-            
+
         }
     }
 </script>
 
 <style>
-    button{
-    	background-color:#007aff;
-    	color: #ffffff;
+    button {
+        background-color: #007aff;
+        color: #ffffff;
     }
 </style>

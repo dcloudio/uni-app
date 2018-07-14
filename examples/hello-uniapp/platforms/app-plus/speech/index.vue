@@ -23,11 +23,11 @@
         data() {
             return {
                 title: 'speech',
-                value:''
+                value: ''
             }
         },
         methods: {
-            startRecognize: function() {
+            startRecognize: function () {
                 var options = {};
                 var that = this;
                 options.engine = 'iFly';
@@ -39,7 +39,7 @@
                     console.log("语音识别失败：" + e.message);
                 });
             },
-            startRecognizeEnglish: function() {
+            startRecognizeEnglish: function () {
                 var options = {};
                 var that = this;
                 options.engine = 'iFly';
@@ -64,8 +64,9 @@
         background-color: #007aff;
         color: #ffffff;
     }
-    textarea{
+
+    textarea {
         border: 2rpx solid #7A7E83;
-        height:76rpx;
+        height: 76rpx;
     }
 </style>

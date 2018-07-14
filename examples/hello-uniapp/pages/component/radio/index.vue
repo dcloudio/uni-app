@@ -11,8 +11,6 @@
                     <radio value="r2" />未选中
                 </label>
             </view>
-
-
             <view class="page-section">
                 <view class="page-section-title">推荐展示样式</view>
                 <view class="uni-list">
@@ -27,18 +25,16 @@
                 </view>
             </view>
         </view>
-        
     </view>
 </template>
 <script>
     import pageHead from '../../../components/page-head.vue'
-    
+
     export default {
         data() {
             return {
                 title: 'radio',
-                items: [
-                    {
+                items: [{
                         value: 'USA',
                         name: '美国'
                     },
@@ -79,15 +75,14 @@
         },
         components: {
             pageHead
-            
         }
     }
 </script>
 
 <style>
     @import "../../../common/uni.css";
-    
-    .uni-list-cell{
-    	justify-content:flex-start
+
+    .uni-list-cell {
+        justify-content: flex-start
     }
 </style>

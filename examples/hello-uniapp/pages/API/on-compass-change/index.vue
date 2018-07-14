@@ -14,12 +14,11 @@
                 </view>
             </view>
         </view>
-        
     </view>
 </template>
 <script>
     import pageHead from '../../../components/page-head.vue'
-    
+
     export default {
         data() {
             return {
@@ -33,9 +32,9 @@
                 that.direction = parseInt(res.direction)
             })
         },
-        onUnload(){
-           uni.startCompass();
-           this.direction = 0;
+        onUnload() {
+            uni.startCompass();
+            this.direction = 0;
         },
         components: {
             pageHead

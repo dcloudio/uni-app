@@ -41,7 +41,7 @@
                 <button size="40" formType="submit" :loading="loading">点我提交</button>
             </view>
         </form>
-        
+
     </view>
 </template>
 <script>
@@ -49,8 +49,8 @@
         mapActions
     } from 'vuex'
     import pageHead from '../../../components/page-head.vue'
-    
-    const templateMessageUrl = `https://www.example.com/templateMessage`;//开发者自己的接口地址
+
+    const templateMessageUrl = `https://www.example.com/templateMessage`; //开发者自己的接口地址
     export default {
         data() {
             return {
@@ -103,15 +103,14 @@
         },
         components: {
             pageHead
-            
         }
     }
 </script>
 
 <style>
     @import "../../../common/uni.css";
-    button{
-    	background-color:#007aff;
-    	color: #ffffff;
+    button {
+        background-color: #007aff;
+        color: #ffffff;
     }
 </style>

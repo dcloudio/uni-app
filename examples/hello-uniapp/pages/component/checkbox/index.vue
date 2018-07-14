@@ -26,18 +26,16 @@
                 </view>
             </view>
         </view>
-        
     </view>
 </template>
 <script>
     import pageHead from '../../../components/page-head.vue'
-    
+
     export default {
         data() {
             return {
                 title: 'checkbox',
-                items: [
-                    {
+                items: [{
                         value: 'USA',
                         name: '美国'
                     },
@@ -82,15 +80,15 @@
         },
         components: {
             pageHead
-            
+
         }
     }
 </script>
 
 <style>
     @import "../../../common/uni.css";
-    
-    .uni-list-cell{
-        justify-content:flex-start
+
+    .uni-list-cell {
+        justify-content: flex-start
     }
 </style>

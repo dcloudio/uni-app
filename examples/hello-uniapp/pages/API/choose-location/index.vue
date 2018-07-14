@@ -22,21 +22,21 @@
                 </view>
             </view>
         </view>
-        
     </view>
 </template>
 <script>
-    import pageHead from '../../../components/page-head.vue'
-    
-    var util = require('../../../common/util.js')
-    var formatLocation = util.formatLocation
+    import pageHead from '../../../components/page-head.vue';
+
+    var util = require('../../../common/util.js');
+    var formatLocation = util.formatLocation;
+
     export default {
         data() {
             return {
                 title: 'chooseLocation',
                 hasLocation: false,
-                location:{},
-                locationAddress:''
+                location: {},
+                locationAddress: ''
             }
         },
         methods: {
@@ -46,8 +46,8 @@
                     success: function (res) {
                         console.log('.......' + res)
                         that.hasLocation = true,
-                        that.location = formatLocation(res.longitude, res.latitude),
-                        that.locationAddress = res.address
+                            that.location = formatLocation(res.longitude, res.latitude),
+                            that.locationAddress = res.address
                     }
                 })
             },
@@ -57,7 +57,7 @@
         },
         components: {
             pageHead
-            
+
         }
     }
 </script>
@@ -67,8 +67,9 @@
         padding-bottom: 0;
         height: 440rpx;
     }
-    .btn-chooselocation{
-        background-color:#007aff;
+
+    .btn-chooselocation {
+        background-color: #007aff;
         color: #ffffff;
     }
 </style>

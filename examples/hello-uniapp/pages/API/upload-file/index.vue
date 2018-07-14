@@ -20,21 +20,20 @@
                 </view>
             </view>
         </view>
-        
     </view>
 </template>
 <script>
     import pageHead from '../../../components/page-head.vue'
-    
+
     export default {
         data() {
             return {
                 title: 'uploadFile',
-                imageSrc:''
+                imageSrc: ''
             }
         },
-        onUnload(){
-            this.imageSrc = '';  
+        onUnload() {
+            this.imageSrc = '';
         },
         methods: {
             chooseImage: function () {
@@ -82,7 +81,7 @@
         },
         components: {
             pageHead
-            
+
         }
     }
 </script>

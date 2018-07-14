@@ -67,21 +67,21 @@
         methods: {
             share(e) {
                 console.log("分享~", e);
-                
+
                 uni.share({
                     provider: e.id,
-                    scene:"WXSceneSession",//WXSceneSession”分享到聊天界面，“WXSenceTimeline”分享到朋友圈，“WXSceneFavorite”分享到微信收藏     
-                    type:0,
-                    title:this.shareText,
-                    imageUrl :this.image,
-                    href:"http://www.dcloud.io",
-                    success:(e) => {
-                        console.log("success",e)
+                    scene: "WXSceneSession", //WXSceneSession”分享到聊天界面，“WXSenceTimeline”分享到朋友圈，“WXSceneFavorite”分享到微信收藏     
+                    type: 0,
+                    title: this.shareText,
+                    imageUrl: this.image,
+                    href: "http://www.dcloud.io",
+                    success: (e) => {
+                        console.log("success", e)
                     },
-                    fail:(e) => {
-                        console.log("fail",e)
+                    fail: (e) => {
+                        console.log("fail", e)
                         uni.showToast({
-                        	title:e.errMsg
+                            title: e.errMsg
                         })
                     }
                 })
@@ -105,7 +105,7 @@
 
 <style>
     @import "../../../common/uni.css";
-    
+
     .textarea-wrp {
         padding: 0 20rpx;
     }

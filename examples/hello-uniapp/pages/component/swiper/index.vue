@@ -41,8 +41,6 @@
                 <slider @change="intervalChange" :value="interval" min="2000" max="10000" />
             </view>
         </view>
-
-
     </view>
 </template>
 <script>
@@ -102,5 +100,4 @@
         color: #353535;
         font-size: 30rpx;
     }
-
 </style>

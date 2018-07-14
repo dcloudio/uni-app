@@ -25,12 +25,11 @@
                 </view>
             </view>
         </view>
-        
     </view>
 </template>
 <script>
     import pageHead from '../../../components/page-head.vue'
-    
+
     export default {
         data() {
             return {
@@ -45,7 +44,7 @@
 
 <style>
     @import "../../../common/uni.css";
-    
+
     .uni-flex {
         margin-top: 60rpx;
     }

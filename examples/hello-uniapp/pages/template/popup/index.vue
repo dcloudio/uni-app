@@ -72,7 +72,7 @@
         left: 0;
         background-color: rgba(0, 0, 0, .3);
     }
-    
+
     .popup {
         position: absolute;
         z-index: 999;
@@ -80,7 +80,7 @@
         -webkit-box-shadow: 0 0 30rpx rgba(0, 0, 0, .1);
         box-shadow: 0 0 30rpx rgba(0, 0, 0, .1);
     }
-    
+
     .popup-middle {
         width: 400rpx;
         height: 400rpx;
@@ -91,43 +91,43 @@
         left: 0;
         margin: auto;
     }
-    
+
     .popup-top {
         top: 0;
         width: 100%;
         height: 100rpx;
         text-align: center;
     }
-    
+
     .popup-top text {
         line-height: 100rpx;
         margin-left: 20rpx;
         font-size: 32rpx;
     }
-    
+
     .popup-bottom {
         bottom: 0;
         width: 100%;
         height: 100rpx;
         text-align: center;
     }
-    
+
     .popup-bottom text {
         line-height: 100rpx;
         font-size: 32rpx;
     }
-    
+
     .popup .list-view {
         height: 600rpx;
     }
-    
+
     .list-view-item {
         position: relative;
         padding: 22rpx 30rpx;
         overflow: hidden;
         font-size: 28rpx;
     }
-    
+
     .list-view-item::after {
         position: absolute;
         right: 0;
@@ -139,11 +139,11 @@
         transform: scaleY(.5);
         background-color: #c8c7cc;
     }
-    
+
     .btn-row .btn {
         margin: 20rpx;
     }
-    
+
     .desc {
         padding: 10rpx 20rpx;
         font-size: 30rpx;

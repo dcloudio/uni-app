@@ -75,5 +75,4 @@
     page {
         background: #efeff4;
     }
-    
 </style>

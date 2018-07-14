@@ -20,7 +20,6 @@
                 </view>
             </view>
         </view>
-        
     </view>
 </template>
 <script>
@@ -29,7 +28,7 @@
         mapMutations
     } from 'vuex'
     import pageHead from '../../../components/page-head.vue'
-    
+
     export default {
         data() {
             return {
@@ -40,35 +39,35 @@
         },
         computed: {
             ...mapState({
-                loginProvider:state => state.loginProvider
+                loginProvider: state => state.loginProvider
             })
         },
         onLoad: function () {},
         methods: {
-            getUserInfo(){//获取用户信息api在微信小程序可直接使用，在5+app里面需要先登录才能调用
+            getUserInfo() { //获取用户信息api在微信小程序可直接使用，在5+app里面需要先登录才能调用
                 uni.getUserInfo({
-                    provider:this.loginProvider,
+                    provider: this.loginProvider,
                     success: (e) => {
-                    	console.log("得到用户信息",e);
+                        console.log("得到用户信息", e);
                         this.hasUserInfo = true;
                         this.userInfo = e.userInfo
                     },
-                    fail:(e) => {
-                    	console.log("fail",e);
+                    fail: (e) => {
+                        console.log("fail", e);
                         let content = e.errMsg;
-                        if(~e.errMsg.indexOf("uni.login")){
-                           content = "请在登录页面完成登录操作"
+                        if (~e.errMsg.indexOf("uni.login")) {
+                            content = "请在登录页面完成登录操作"
                         }
                         uni.showModal({
-                            content:content,
-                            showCancel:false
+                            content: content,
+                            showCancel: false
                         })
                     }
                 })
             },
             clear: function () {
                 this.hasUserInfo = false,
-                this.userInfo = {}
+                    this.userInfo = {}
             }
         },
         components: {
@@ -93,9 +92,9 @@
         margin-top: 20rpx;
         font-size: 38rpx;
     }
-    
-    .userinfo-btn{
-    	background-color:#007aff;
-    	color: #ffffff;
+
+    .userinfo-btn {
+        background-color: #007aff;
+        color: #ffffff;
     }
 </style>

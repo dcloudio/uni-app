@@ -19,12 +19,12 @@
                 </view>
             </view>
         </view>
-        
+
     </view>
 </template>
 <script>
     import pageHead from '../../../components/page-head.vue'
-    
+
     export default {
         data() {
             return {
@@ -38,18 +38,18 @@
                 uni.getNetworkType({
                     success: (res) => {
                         console.log(res)
-                        this.hasNetworkType = true,this.networkType = res.subtype || res.networkType
+                        this.hasNetworkType = true, this.networkType = res.subtype || res.networkType
                     }
                 })
             },
             clear: function () {
                 this.hasNetworkType = false,
-                this.networkType = ''
+                    this.networkType = ''
             }
         },
         components: {
             pageHead
-            
+
         }
     }
 </script>
@@ -63,8 +63,9 @@
         font-size: 80rpx;
         font-family: -apple-system-font, Helvetica Neue, Helvetica, sans-serif;
     }
-    .btn-load{
-    	background-color:#007aff;
-    	color: #ffffff;
+
+    .btn-load {
+        background-color: #007aff;
+        color: #ffffff;
     }
 </style>

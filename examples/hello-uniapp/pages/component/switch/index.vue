@@ -9,7 +9,6 @@
                     <switch @change="switch2Change" />
                 </view>
             </view>
-
             <view class="page-section">
                 <view class="page-section-title">推荐展示样式</view>
                 <view class="uni-list">
@@ -24,12 +23,11 @@
                 </view>
             </view>
         </view>
-        
     </view>
 </template>
 <script>
     import pageHead from '../../../components/page-head.vue'
-    
+
     export default {
         data() {
             return {

@@ -41,7 +41,7 @@
 
 <style>
     @import "../../../common/uni.css";
-    
+
     .page {
         padding-top: 60rpx;
     }
@@ -49,9 +49,9 @@
     page {
         background: #efeff4;
     }
-    
-    .uni-badge,.title{
+
+    .uni-badge,
+    .title {
         margin: 20rpx;
     }
-    
 </style>

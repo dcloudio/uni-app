@@ -29,19 +29,19 @@
                 <view class="page-body-button"></view>
             </view>
         </view>
-        
     </view>
 </template>
 <script>
-    import pageHead from '../../../components/page-head.vue'
-    
-    var util = require('../../../common/util.js')
+    import pageHead from '../../../components/page-head.vue';
+
+    var util = require('../../../common/util.js');
+
     export default {
         data() {
             return {
                 title: 'backgroundAudio',
-                bgAudioMannager:null,
-                dataUrl:'https://img-cdn-qiniu.dcloud.net.cn/uniapp/audio/friendship.mp3',
+                bgAudioMannager: null,
+                dataUrl: 'https://img-cdn-qiniu.dcloud.net.cn/uniapp/audio/friendship.mp3',
                 playing: false,
                 playTime: 0,
                 formatedPlayTime: '00:00:00'
@@ -50,38 +50,38 @@
         onLoad: function () {
             const bgAudioMannager = uni.getBackgroundAudioManager();
             bgAudioMannager.title = '友谊地久天长';
-            bgAudioMannager.singer  = '群星';
+            bgAudioMannager.singer = '群星';
             bgAudioMannager.coverImgUrl = 'https://img-cdn-qiniu.dcloud.net.cn/uniapp/audio/friendship.jpg';
-            
-            bgAudioMannager.onPlay(()=>{
+
+            bgAudioMannager.onPlay(() => {
                 console.log("开始播放");
                 this.playing = true;
             })
-            bgAudioMannager.onPause(()=>{
+            bgAudioMannager.onPause(() => {
                 console.log("暂停播放");
                 this.playing = false;
             })
-            bgAudioMannager.onEnded(()=>{
+            bgAudioMannager.onEnded(() => {
                 this.playing = false;
                 this.playTime = 0;
                 this.formatedPlayTime = util.formatTime(0);
             })
-            
-            bgAudioMannager.onTimeUpdate((e)=>{
-                if(Math.floor(this.bgAudioMannager.currentTime) > Math.floor(this.playTime)){
+
+            bgAudioMannager.onTimeUpdate((e) => {
+                if (Math.floor(this.bgAudioMannager.currentTime) > Math.floor(this.playTime)) {
                     this.formatedPlayTime = util.formatTime(Math.floor(this.bgAudioMannager.currentTime));
                 }
                 this.playTime = this.bgAudioMannager.currentTime;
             })
-            
+
             this.bgAudioMannager = bgAudioMannager;
         },
         methods: {
             play: function (res) {
-                if(!this.bgAudioMannager.src){
+                if (!this.bgAudioMannager.src) {
                     this.bgAudioMannager.startTime = this.playTime;
                     this.bgAudioMannager.src = this.dataUrl;
-                }else{
+                } else {
                     this.bgAudioMannager.seek(this.playTime);
                     this.bgAudioMannager.play();
                 }
@@ -110,9 +110,11 @@
         width: 150rpx;
         height: 150rpx;
     }
-    .page-body-text{
+
+    .page-body-text {
         padding: 0 30rpx;
     }
+
     .page-body-wrapper {
         margin-top: 0;
     }

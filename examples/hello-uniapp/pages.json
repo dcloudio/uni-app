@@ -1,5 +1,5 @@
 {
-    "pages": [
+    "pages": [ //pages数组中第一项表示应用启动页
         {
             "path": "pages/component/index",
             "style": {
@@ -10,7 +10,7 @@
             "style": {
                 "navigationBarTitleText": "接口"
             }
-        },{
+        }, {
             "path": "pages/template/index",
             "style": {
                 "navigationBarTitleText": "模版"
@@ -41,12 +41,6 @@
                 "navigationBarTitleText": "text"
             }
         },
-//         {
-//             "path": "pages/component/icon/index",
-//             "style": {
-//                 "navigationBarTitleText": "icon"
-//             }
-//         }, 
         {
             "path": "pages/component/progress/index",
             "style": {
@@ -233,7 +227,7 @@
             "style": {
                 "navigationBarTitleText": "监听加速度计数据"
             }
-        },{
+        }, {
             "path": "pages/API/on-accelerometer-change/shake",
             "style": {
                 "navigationBarTitleText": "摇一摇"
@@ -419,6 +413,11 @@
             "style": {
                 "navigationBarTitleText": "详情"
             }
+        }, {
+            "path": "platforms/app-plus/feedback/index",
+            "style": {
+                "navigationBarTitleText": "问题反馈"
+            }
         }
     ],
     "globalStyle": {
@@ -432,23 +431,21 @@
         "selectedColor": "#007AFF",
         "borderStyle": "black",
         "backgroundColor": "#ffffff",
-        "list": [
-            {
-                "pagePath": "pages/component/index",
-                "iconPath": "static/component.png",
-                "selectedIconPath": "static/componentHL.png",
-                "text": "组件"
-            }, {
-                "pagePath": "pages/API/index",
-                "iconPath": "static/api.png",
-                "selectedIconPath": "static/apiHL.png",
-                "text": "接口"
-            }, {
-                "pagePath": "pages/template/index",
-                "iconPath": "static/template.png",
-                "selectedIconPath": "static/templateHL.png",
-                "text": "模版"
-            }
-        ]
+        "list": [{
+            "pagePath": "pages/component/index",
+            "iconPath": "static/component.png",
+            "selectedIconPath": "static/componentHL.png",
+            "text": "组件"
+        }, {
+            "pagePath": "pages/API/index",
+            "iconPath": "static/api.png",
+            "selectedIconPath": "static/apiHL.png",
+            "text": "接口"
+        }, {
+            "pagePath": "pages/template/index",
+            "iconPath": "static/template.png",
+            "selectedIconPath": "static/templateHL.png",
+            "text": "模版"
+        }]
     }
 }

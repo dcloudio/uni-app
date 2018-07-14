@@ -29,7 +29,7 @@
             banner: {},
             listData: [],
             last_id: "",
-            reload:false
+            reload: false
         },
         onLoad() {
             this.getBanner();

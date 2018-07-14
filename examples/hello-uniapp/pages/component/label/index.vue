@@ -35,18 +35,16 @@
                 </label>
             </view>
         </view>
-        
     </view>
 </template>
 <script>
     import pageHead from '../../../components/page-head.vue'
-    
+
     export default {
         data() {
             return {
                 title: 'label',
-                checkboxItems: 
-                    [{
+                checkboxItems: [{
                         name: 'USA',
                         value: '美国'
                     },
@@ -56,8 +54,7 @@
                         checked: 'true'
                     }
                 ],
-                radioItems: [
-                    {
+                radioItems: [{
                         name: 'USA',
                         value: '美国'
                     },
@@ -81,7 +78,6 @@
                         changed['checkboxItems[' + i + '].checked'] = false
                     }
                 }
-                // this.setData(changed)
             },
             radioChange: function (e) {
                 var checked = e.target.value
@@ -93,7 +89,6 @@
                         changed['radioItems[' + i + '].checked'] = false
                     }
                 }
-                // this.setData(changed)
             },
             tapEvent: function (e) {
                 console.log('按钮被点击')
@@ -101,7 +96,6 @@
         },
         components: {
             pageHead
-            
         }
     }
 </script>

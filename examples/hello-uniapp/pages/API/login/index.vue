@@ -9,11 +9,10 @@
                 </block>
                 <block v-if="hasLogin === false">
                     <text class="page-body-text">每个帐号仅需登录一次</text>
-                    <button class="page-body-button" v-for="(value,key) in providerList"  @tap="bindLogin(value)" :key="key">{{value.name}}</button>
+                    <button class="page-body-button" v-for="(value,key) in providerList" @tap="bindLogin(value)" :key="key">{{value.name}}</button>
                 </block>
             </view>
         </view>
-        
     </view>
 </template>
 <script>
@@ -22,12 +21,12 @@
         mapMutations
     } from 'vuex'
     import pageHead from '../../../components/page-head.vue'
-    
+
     export default {
         data() {
             return {
                 title: 'login',
-                providerList:[]
+                providerList: []
             }
         },
         computed: {
@@ -35,23 +34,35 @@
         },
         onLoad() {
             uni.getProvider({
-                service:"oauth",
+                service: "oauth",
                 success: (e) => {
                     this.providerList = e.provider.map((value) => {
                         switch (value) {
                             case 'weixin':
-                                return {name:'微信登录',id:value}
+                                return {
+                                    name: '微信登录',
+                                    id: value
+                                }
                             case 'qq':
-                                return {name:'QQ登录',id:value}
+                                return {
+                                    name: 'QQ登录',
+                                    id: value
+                                }
                             case 'sinaweibo':
-                                return {name:'新浪微博登录',id:value}
+                                return {
+                                    name: '新浪微博登录',
+                                    id: value
+                                }
                             case 'xiaomi':
-                                return {name:'小米登录',id:value}
+                                return {
+                                    name: '小米登录',
+                                    id: value
+                                }
                         }
                     })
                 },
-                fail:(e) => {
-                    console.log("获取登录通道失败",e);
+                fail: (e) => {
+                    console.log("获取登录通道失败", e);
                 }
             });
         },
@@ -59,13 +70,13 @@
             ...mapMutations(['login']),
             bindLogin(e) {
                 uni.login({
-                    provider:e.id,
+                    provider: e.id,
                     success: (res) => {
-                        console.log("登录",res);
-                        this.login(e.id);//改变保存在store里的登录状态
+                        console.log("登录", res);
+                        this.login(e.id); //改变保存在store里的登录状态
                     },
-                    fail:(e) => {
-                    	console.log("fail",e);
+                    fail: (e) => {
+                        console.log("fail", e);
                     }
                 })
             }
@@ -104,9 +115,9 @@
     .page-body-button {
         width: 100%;
     }
-    
-    button{
-    	background-color:#007aff;
-    	color: #ffffff;
+
+    button {
+        background-color: #007aff;
+        color: #ffffff;
     }
 </style>

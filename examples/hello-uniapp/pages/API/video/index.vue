@@ -35,7 +35,6 @@
                         </view>
                     </view>
                 </view>
-
                 <view class="page-body-info">
                     <block v-if="src === ''">
                         <view class="image-plus image-plus-nb" @tap="chooseVideo">
@@ -54,7 +53,7 @@
 </template>
 <script>
     import pageHead from '../../../components/page-head.vue'
-    
+
     var sourceType = [
         ['camera'],
         ['album'],
@@ -109,7 +108,7 @@
         },
         components: {
             pageHead
-            
+
         }
     }
 </script>

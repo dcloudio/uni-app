@@ -6,12 +6,11 @@
                 <canvas canvas-id="canvas" class="canvas"></canvas>
             </view>
         </view>
-        
     </view>
 </template>
 <script>
     import pageHead from '../../../components/page-head.vue'
-    
+
     export default {
         data() {
             return {
@@ -76,7 +75,7 @@
         },
         components: {
             pageHead
-            
+
         }
     }
 </script>

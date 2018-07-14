@@ -28,7 +28,6 @@
                 </view>
             </view>
         </view>
-
     </view>
 </template>
 <script>
@@ -83,5 +82,4 @@
         text-align: center;
         font-size: 36rpx;
     }
-
 </style>

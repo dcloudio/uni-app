@@ -7,12 +7,11 @@
                 <button type="default" @tap="noTitlemodalTap">无标题的modal</button>
             </view>
         </view>
-        
     </view>
 </template>
 <script>
     import pageHead from '../../../components/page-head.vue'
-    
+
     export default {
         data() {
             return {
@@ -40,7 +39,7 @@
         },
         components: {
             pageHead
-            
+
         }
     }
 </script>

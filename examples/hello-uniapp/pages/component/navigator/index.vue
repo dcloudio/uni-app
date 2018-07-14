@@ -11,7 +11,6 @@
                 </navigator>
             </view>
         </view>
-        
     </view>
 </template>
 <script>
@@ -30,4 +29,3 @@
         }
     }
 </script>
-

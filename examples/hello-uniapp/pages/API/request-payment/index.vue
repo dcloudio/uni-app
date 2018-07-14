@@ -11,7 +11,6 @@
                 </view>
             </view>
         </view>
-
     </view>
 </template>
 <script>
@@ -52,12 +51,12 @@
             });
         },
         methods: {
-            async requestPayment(e,index) {
+            async requestPayment(e, index) {
                 this.providerList[index].loading = true;
                 let orderInfo = await this.getOrderInfo(e.id);
-                console.log("得到订单信息",orderInfo);
-                if(orderInfo.statusCode !== 200){
-                    console.log("获得订单信息失败",orderInfo);
+                console.log("得到订单信息", orderInfo);
+                if (orderInfo.statusCode !== 200) {
+                    console.log("获得订单信息失败", orderInfo);
                     return;
                 }
                 uni.requestPayment({
@@ -66,20 +65,20 @@
                     success: (e) => {
                         console.log("success", e);
                         uni.showToast({
-                            title:"感谢您的赞助!"
+                            title: "感谢您的赞助!"
                         })
                     },
                     fail: (e) => {
                         console.log("fail", e)
                     },
-                    complete:() => {
+                    complete: () => {
                         this.providerList[index].loading = false;
                     }
                 })
             },
-            getOrderInfo(e){
+            getOrderInfo(e) {
                 let appid = uni.os.plus ? plus.runtime.appid : "";
-                
+
                 let url = 'http://demo.dcloud.net.cn/payment/?payid=' + e + '&appid=' + appid + '&total=0.01';
                 return new Promise((res) => {
                     uni.request({
@@ -101,7 +100,6 @@
 </script>
 
 <style>
-    
     .page-section {
         width: auto;
         margin: 30rpx;

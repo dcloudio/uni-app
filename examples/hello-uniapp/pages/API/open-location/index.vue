@@ -44,12 +44,11 @@
                 </form>
             </view>
         </view>
-        
     </view>
 </template>
 <script>
     import pageHead from '../../../components/page-head.vue'
-    
+
     export default {
         data() {
             return {
@@ -71,7 +70,7 @@
         },
         components: {
             pageHead
-            
+
         }
     }
 </script>
@@ -96,11 +95,13 @@
     .page-body-text-location text {
         margin: 10rpx;
     }
-    .uni-list-cell-left{
+
+    .uni-list-cell-left {
         padding: 0 30rpx;
     }
-    button{
-    	background-color:#007aff;
-    	color: #ffffff;
+
+    button {
+        background-color: #007aff;
+        color: #ffffff;
     }
 </style>

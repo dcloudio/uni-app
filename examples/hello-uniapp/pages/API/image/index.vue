@@ -64,7 +64,6 @@
                 </view>
             </form>
         </view>
-
     </view>
 </template>
 <script>
@@ -141,5 +140,4 @@
     .cell-pd {
         padding: 22rpx 30rpx;
     }
-
 </style>

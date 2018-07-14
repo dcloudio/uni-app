@@ -10,12 +10,11 @@
                 <button :disabled="!canRemove" @tap="remove">remove line</button>
             </view>
         </view>
-        
     </view>
 </template>
 <script>
     import pageHead from '../../../components/page-head.vue'
-    
+
     export default {
         data() {
             return {
@@ -59,13 +58,11 @@
         },
         components: {
             pageHead
-            
         }
     }
 </script>
 
 <style>
-
     .text-box {
         margin-bottom: 70rpx;
         padding: 40rpx 0;

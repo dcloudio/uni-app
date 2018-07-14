@@ -4,35 +4,35 @@
         <view class="uni-card">
             <view class="uni-list">
                 <view class="uni-list-cell-divider">
-                	右侧带箭头
+                    右侧带箭头
                 </view>
                 <view class="uni-list-cell" hover-class="uni-list-cell-hover">
-                	<view class="uni-list-cell-navigate uni-navigate-right">
-                		Item1
-                	</view>
+                    <view class="uni-list-cell-navigate uni-navigate-right">
+                        Item1
+                    </view>
                 </view>
                 <view class="uni-list-cell uni-list-cell-last" hover-class="uni-list-cell-hover">
-                	<view class="uni-list-cell-navigate uni-navigate-right">
-                		Item2
-                	</view>
+                    <view class="uni-list-cell-navigate uni-navigate-right">
+                        Item2
+                    </view>
                 </view>
                 <view class="uni-list-cell-divider">
-                	右侧带数字角标
+                    右侧带数字角标
                 </view>
                 <view class="uni-list-cell" hover-class="uni-list-cell-hover">
                     <view class="uni-list-cell-navigate">
-                    	Item2
+                        Item2
                         <text class="uni-badge uni-badge-danger">23</text>
                     </view>
                 </view>
                 <view class="uni-list-cell uni-list-cell-last" hover-class="uni-list-cell-hover">
                     <view class="uni-list-cell-navigate">
-                    	Item1
-                    	<text class="uni-badge uni-badge-success">123</text>
+                        Item1
+                        <text class="uni-badge uni-badge-success">123</text>
                     </view>
                 </view>
                 <view class="uni-list-cell-divider">
-                	右侧带数字角标+箭头
+                    右侧带数字角标+箭头
                 </view>
                 <view class="uni-list-cell" hover-class="uni-list-cell-hover">
                     <view class="uni-list-cell-navigate uni-navigate-right">
@@ -42,8 +42,8 @@
                 </view>
                 <view class="uni-list-cell uni-list-cell-last" hover-class="uni-list-cell-hover">
                     <view class="uni-list-cell-navigate uni-navigate-right">
-                    	Item2
-                    	<text class="uni-badge uni-badge-primary uni-navigate-badge">12</text>
+                        Item2
+                        <text class="uni-badge uni-badge-primary uni-navigate-badge">12</text>
                     </view>
                 </view>
             </view>
@@ -66,7 +66,7 @@
 
 <style>
     @import "../../../common/uni.css";
-    
+
     .page {
         padding-top: 60rpx;
     }
@@ -74,6 +74,4 @@
     page {
         background: #efeff4;
     }
-    
-    
 </style>

@@ -63,12 +63,12 @@
                         name: '选项卡',
                         url: 'tabbar'
                     },
-                    //                 {
-                    //                     id: 'drags',
-                    //                     name: '侧滑导航',
-                    //                     open: false,
-                    //                     pages: ['drag-right', 'drag-right-zoom', 'drag-left', 'drag-left-zoom']
-                    //                 }, 
+                    //#ifdef APP-PLUS
+                    {
+                        name: '问题反馈',
+                        url: '/platforms/app-plus/feedback/index'
+                    },
+                    //#endif
                     {
                         name: '数字选择框',
                         url: 'number-box'
@@ -92,8 +92,9 @@
             },
             goDetailPage(e) {
                 let path = e.url ? e.url : e;
+                let url = ~path.indexOf('platform') ? e : '/pages/template/' + path + '/index';
                 uni.navigateTo({
-                    url: '/pages/template/' + path + '/index'
+                    url: url
                 })
             }
         }

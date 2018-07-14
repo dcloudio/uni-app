@@ -15,7 +15,6 @@
                         <view class="page-body-button"></view>
                     </view>
                 </block>
-
                 <block v-if="recording === true">
                     <view class="page-body-time">
                         <text class="time-big">{{formatedRecordTime}}</text>
@@ -28,7 +27,6 @@
                         <view class="page-body-button"></view>
                     </view>
                 </block>
-
                 <block v-if="hasRecord === true && playing === false">
                     <view class="page-body-time">
                         <text class="time-big">{{formatedPlayTime}}</text>
@@ -44,7 +42,6 @@
                         </view>
                     </view>
                 </block>
-
                 <block v-if="hasRecord === true && playing === true">
                     <view class="page-body-time">
                         <text class="time-big">{{formatedPlayTime}}</text>
@@ -61,12 +58,11 @@
                 </block>
             </view>
         </view>
-        
     </view>
 </template>
 <script>
     import pageHead from '../../../components/page-head.vue'
-    
+
     var util = require('../../../common/util.js')
     var playTimeInterval = null;
     var recordTimeInterval = null;
@@ -76,56 +72,56 @@
         data() {
             return {
                 title: 'start/stopRecord、play/stopVoice',
-                recording: false,//录音中
-                playing: false,//播放中
-                hasRecord: false,//是否有了一个
-                tempFilePath:'',
+                recording: false, //录音中
+                playing: false, //播放中
+                hasRecord: false, //是否有了一个
+                tempFilePath: '',
                 recordTime: 0,
                 playTime: 0,
-                formatedRecordTime: '00:00:00',//录音的总时间
-                formatedPlayTime: '00:00:00'//播放录音的当前时间
+                formatedRecordTime: '00:00:00', //录音的总时间
+                formatedPlayTime: '00:00:00' //播放录音的当前时间
             }
         },
         onUnload: function () {
-          this.end();  
+            this.end();
         },
-        onLoad:function(){
+        onLoad: function () {
             music = uni.createInnerAudioContext();
             music.onEnded(() => {
-              console.log('结束');
-              clearInterval(playTimeInterval)
-              var playTime = 0
-              console.log('play voice finished')
-              this.playing = false;
-              this.formatedPlayTime = util.formatTime(playTime);
-              this.playTime = playTime;
+                console.log('结束');
+                clearInterval(playTimeInterval)
+                var playTime = 0
+                console.log('play voice finished')
+                this.playing = false;
+                this.formatedPlayTime = util.formatTime(playTime);
+                this.playTime = playTime;
             });
             recorderManager = uni.getRecorderManager();
             recorderManager.onStart(() => {
-              console.log('recorder start');
+                console.log('recorder start');
             });
             recorderManager.onStop((res) => {
-              console.log('停止录音 stop', res);
-              
-              music.src = res.tempFilePath;
-              
-              this.hasRecord = true;
-              this.recording = false;
+                console.log('停止录音 stop', res);
+
+                music.src = res.tempFilePath;
+
+                this.hasRecord = true;
+                this.recording = false;
             });
         },
         methods: {
-            startRecord () {//开始录音
+            startRecord() { //开始录音
                 this.recording = true;
 
                 recordTimeInterval = setInterval(() => {
                     this.recordTime += 1;
                     this.formatedRecordTime = util.formatTime(this.recordTime);
                 }, 1000)
-                
-                recorderManager.start();  
+
+                recorderManager.start();
             },
-            stopRecord() {//停止录音
-                recorderManager.stop();  
+            stopRecord() { //停止录音
+                recorderManager.stop();
                 clearInterval(recordTimeInterval);
             },
             playVoice() {
@@ -143,22 +139,22 @@
                     this.playTime = 0;
                 music.stop();
             },
-            end(){
-              music.stop();
-              recorderManager.stop();
-              clearInterval(recordTimeInterval)
-              clearInterval(playTimeInterval);
-              this.recording = false,this.playing=false,this.hasRecord = false;
-              this.playTime = 0,this.recordTime = 0;
-              this.formatedRecordTime = "00:00:00",this.formatedRecordTime = "00:00:00";
+            end() {
+                music.stop();
+                recorderManager.stop();
+                clearInterval(recordTimeInterval)
+                clearInterval(playTimeInterval);
+                this.recording = false, this.playing = false, this.hasRecord = false;
+                this.playTime = 0, this.recordTime = 0;
+                this.formatedRecordTime = "00:00:00", this.formatedRecordTime = "00:00:00";
             },
             clear() {
-              this.end();
+                this.end();
             }
         },
         components: {
             pageHead
-            
+
         }
     }
 </script>
