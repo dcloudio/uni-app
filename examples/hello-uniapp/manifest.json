@@ -1,19 +1,62 @@
 {
-    "name": "hello uni-app",
-    "appid": "__UNI__123213213",
-    "description": "应用描述",
-    "versionName": "1.0.0",
-    "versionCode": "100",
-    "app-plus": { // 5+App特有相关
-        "modules": {},
-        "distribute": {
-            "android": {},
-            "ios": {},
-            "sdkConfigs": {}
-        }
-    },
-    "quickapp": { // 快应用特有相关
-    },
-    "mp-weixin": { // 小程序特有相关
-    }
+	"name": "hello uni-app",
+	"appid": "__UNI__123213213",
+	"description": "应用描述",
+	"versionName": "1.0.0",
+	"versionCode": "100",
+	"app-plus": {/* 5+App特有相关 */
+		"modules": {
+			"OAuth": {},
+			"Payment": {},
+			"Push": {},
+			"Share": {},
+			"Speech": {}
+		},
+		"distribute": {/* 应用发布信息 */
+			"android": {/* android打包配置 */
+				"permissions": [
+					"<uses-feature android:name=\"android.hardware.camera\"/>",
+					"<uses-feature android:name=\"android.hardware.camera.autofocus\"/>",
+					"<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\"/>",
+					"<uses-permission android:name=\"android.permission.VIBRATE\"/>",
+					"<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\"/>",
+					"<uses-permission android:name=\"android.permission.ACCESS_MOCK_LOCATION\"/>",
+					"<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\"/>",
+					"<uses-permission android:name=\"android.permission.ACCESS_WIFI_STATE\"/>",
+					"<uses-permission android:name=\"android.permission.CALL_PHONE\"/>",
+					"<uses-permission android:name=\"android.permission.CAMERA\"/>",
+					"<uses-permission android:name=\"android.permission.CHANGE_NETWORK_STATE\"/>",
+					"<uses-permission android:name=\"android.permission.CHANGE_WIFI_STATE\"/>",
+					"<uses-permission android:name=\"android.permission.FLASHLIGHT\"/>",
+					"<uses-permission android:name=\"android.permission.GET_ACCOUNTS\"/>",
+					"<uses-permission android:name=\"android.permission.GET_TASKS\"/>",
+					"<uses-permission android:name=\"android.permission.INTERNET\"/>",
+					"<uses-permission android:name=\"android.permission.MODIFY_AUDIO_SETTINGS\"/>",
+					"<uses-permission android:name=\"android.permission.MOUNT_UNMOUNT_FILESYSTEMS\"/>",
+					"<uses-permission android:name=\"android.permission.READ_CONTACTS\"/>",
+					"<uses-permission android:name=\"android.permission.READ_LOGS\"/>",
+					"<uses-permission android:name=\"android.permission.READ_PHONE_STATE\"/>",
+					"<uses-permission android:name=\"android.permission.READ_SMS\"/>",
+					"<uses-permission android:name=\"android.permission.RECEIVE_BOOT_COMPLETED\"/>",
+					"<uses-permission android:name=\"android.permission.RECORD_AUDIO\"/>",
+					"<uses-permission android:name=\"android.permission.SEND_SMS\"/>",
+					"<uses-permission android:name=\"android.permission.SYSTEM_ALERT_WINDOW\"/>",
+					"<uses-permission android:name=\"android.permission.VIBRATE\"/>",
+					"<uses-permission android:name=\"android.permission.WAKE_LOCK\"/>",
+					"<uses-permission android:name=\"android.permission.WRITE_CONTACTS\"/>",
+					"<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\"/>",
+					"<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>",
+					"<uses-permission android:name=\"android.permission.WRITE_SMS\"/>",
+					"<uses-permission android:name=\"android.permission.RECEIVE_USER_PRESENT\"/>"
+				]
+			},
+			"ios": {},/* ios打包配置 */
+			"sdkConfigs": {},/* SDK配置 */
+			"orientation": ["portrait-primary"]
+		}
+	},
+	
+	"quickapp": {},/* 快应用特有相关 */
+	"mp-weixin": {}/* 小程序特有相关 */
 }
+
