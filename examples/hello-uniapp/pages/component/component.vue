@@ -58,11 +58,6 @@
 					open: false,
 					pages: ['map']
 				}, {
-					id: 'canvas',
-					name: '画布',
-					open: false,
-					pages: ['canvas']
-				}, {
 					id: 'web-view',
 					name: '网页',
 					open: false,

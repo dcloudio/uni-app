@@ -104,7 +104,7 @@
 					url += ('&token=' + encodeURIComponent(inf.token));
 				}
 				url += ('&title=' + encodeURIComponent('Hello uniapp'));
-				url += ('&content=' + encodeURIComponent('带透传数据推送通知，可通过plus.push API获取数据并进行业务逻辑处理！'));
+				url += ('&content=' + encodeURIComponent('带透传数据推送通知！'));
 				url += ('&payload=' + encodeURIComponent('\'{"title":"Hello uniapp Test","content":"test content","payload":"1234567890"}\''));
 				url += ('&version=' + encodeURIComponent(plus.runtime.version));
 				plus.runtime.openURL(url);

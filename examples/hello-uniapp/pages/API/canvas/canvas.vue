@@ -8,7 +8,7 @@
 					<block v-for="(name, index) in names" :key="index">
 						<button class="canvas-button" @tap="handleCanvasButton(name)">{{name}}</button>
 					</block>
-					<button class="canvas-button" @tap="toTempFilePath" type="primary">toTempFilePath</button>
+					<!-- <button class="canvas-button" @tap="toTempFilePath" type="primary">toTempFilePath</button> -->
 				</scroll-view>
 			</view>
 		</view>

@@ -2,7 +2,7 @@
 	<view class="index">
 		<view class="index-hd">
 			<image class="index-logo" src="../../static/templateIndex.png"></image>
-			<view class="page-section-title">以下是uni-app的一些常用的模版示例，具体属性参数详见uni-app开发文档。</view>
+			<view class="page-section-title">以下是uni-app的部分模版示例，欢迎大家积极分享更多的模版，一起完善uni-app生态。</view>
 		</view>
 		<view class="uni-card" v-for="(list,index) in lists" :key="index">
 			<view class="uni-list">
@@ -62,12 +62,12 @@
 						name: '选项卡',
 						url: 'tabbar'
 					},
-					//#ifdef APP-PLUS
-					{
-						name: '问题反馈',
-						url: '/platforms/app-plus/feedback/feedback'
-					},
-					//#endif
+					//
+// 					{
+// 						name: '问题反馈',
+// 						url: '/platforms/app-plus/feedback/feedback'
+// 					},
+					//
 					{
 						name: '数字选择框',
 						url: 'number-box'
