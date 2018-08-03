@@ -8,12 +8,14 @@
 					<textarea class="textarea" v-model="shareText" />
 				</view>
 			</view>
+			<!-- #ifdef APP-PLUS -->
 			<view class="page-section-title">分享链接</view>
 			<view class="page-section">
 				<view class="textarea-wrp">
 					<input class="uni-input" type="text" v-model="href">
 				</view>
 			</view>
+			<!-- #endif -->
 			<view class="page-section-title">分享图片：</view>
 			<view class="page-section">
 				<view class="uni-uploader-body">
@@ -21,11 +23,18 @@
 					<image class="uni-uploader__img" v-if="image" :src="image"></image>
 				</view>
 			</view>
+			<!-- #ifdef APP-PLUS -->
 			<view class="btn-area" v-if="providerList.length > 0">
 				<block v-for="(value,index) in providerList" :key="index">
 					<button type="primary" v-if="value" @tap="share(value)">{{value.name}}</button>
 				</block>
 			</view>
+			<!-- #endif -->
+			<!-- #ifdef MP-WEIXIN -->
+			<view class="btn-area">
+				<button type="primary" open-type="share">分享</button>
+			</view>
+			<!-- #endif -->
 		</view>
 
 	</view>
@@ -43,11 +52,19 @@
 				providerList: []
 			}
 		},
+		onShareAppMessage() {
+			return {
+				title: this.shareText ? this.shareText : "欢迎体验uni-app",
+				path: '/pages/component/component',
+				imageUrl:this.image ? this.image : 'https://img-cdn-qiniu.dcloud.net.cn/uniapp/app/share-logo@3.png'
+			}
+		},
 		onUnload:function(){
 			this.shareText='uni-app可以同时发布成原生App、微信小程序，邀请你一起体验！',
 			this.href = "https://uniapp.dcloud.io",
 			this.image='';
 		},
+		// #ifdef APP-PLUS
 		onLoad: function () {
 			uni.getProvider({
 				service: "share",
@@ -100,6 +117,7 @@
 				}
 			});
 		},
+		// #endif
 		methods: {
 			async share(e) {
 				console.log("分享通道:", e.id);
@@ -211,7 +229,7 @@
 	.textarea {
 		border: 2px solid #D8D8D8;
 		padding: 10px;
-		height: 90px;
+		height: 100px;
 		width: 690px;
 	}
 	.uni-input{

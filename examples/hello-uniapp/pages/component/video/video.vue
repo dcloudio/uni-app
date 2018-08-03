@@ -17,7 +17,7 @@
 					</view>
 				</view>
 				<view class="btn-area">
-					<button @tap="bindSendDanmu" class="page-body-button" formType="submit">发送弹幕</button>
+					<button @tap="bindSendDanmu" class="page-body-button">发送弹幕</button>
 				</view>
 			</view>
 		</view>

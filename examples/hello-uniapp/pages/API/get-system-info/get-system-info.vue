@@ -70,6 +70,9 @@
 				systemInfo: {}
 			}
 		},
+		onUnload:function(){
+			this.systemInfo = {};
+		},
 		methods: {
 			getSystemInfo: function () {
 				uni.getSystemInfo({

@@ -62,12 +62,10 @@
 						name: '选项卡',
 						url: 'tabbar'
 					},
-					//
 // 					{
 // 						name: '问题反馈',
 // 						url: '/platforms/app-plus/feedback/feedback'
 // 					},
-					//
 					{
 						name: '数字选择框',
 						url: 'number-box'
@@ -80,7 +78,7 @@
 		},
 		onShareAppMessage() {
 			return {
-				title: '欢迎体验uniapp',
+				title: '欢迎体验uni-app',
 				path: '/pages/template/template'
 			}
 		},

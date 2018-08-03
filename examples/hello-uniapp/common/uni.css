@@ -62,9 +62,10 @@
 }
 
 .uni-input {
-	height: 80px;
-	min-height: 80px;
-	line-height: 80px;
+	height: 50px;
+	min-height: 50px;
+	padding: 15px 0;
+	line-height: 50px;
 }
 
 .uni-label {
@@ -78,7 +79,7 @@
 
 
 
-/*数字角标 */
+/*数字角标*/
 
 .uni-badge {
 	padding: 4px 14px;
@@ -724,13 +725,18 @@
 .feedback-textare {
 	height: 200px;
 	font-size: 34px;
+	line-height: 50px;
+	width: 100%;
+	box-sizing: border-box;
 	padding: 20px 30px 0;
 }
 
 .feedback-input {
-	height: 80px;
 	font-size: 34px;
-	padding-left: 20px;
+	height: 50px;
+	min-height: 50px;
+	padding: 15px 20px;
+	line-height: 50px;
 }
 
 .feedback-uploader {

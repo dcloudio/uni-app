@@ -24,6 +24,9 @@
 				result: ''
 			}
 		},
+		onUnload:function(){
+			this.result = '';
+		},
 		methods: {
 			scanCode: function () {
 				var that = this
@@ -46,7 +49,7 @@
 	@import "../../../common/uni.css";
 
 	.uni-input {
-		padding: 0 30px;
+		padding: 15px 30px;
 		word-break: break-all;
 	}
 </style>

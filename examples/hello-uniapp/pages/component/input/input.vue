@@ -22,7 +22,7 @@
 				<view class="page-section-title">控制输入的input</view>
 				<view class="uni-list">
 					<view class="uni-list-cell">
-						<input class="uni-input" @input="bindReplaceInput" placeholder="连续的两个1会变成2" />
+						<input class="uni-input" @input="bindReplaceInput" v-model="changeValue" placeholder="连续的两个1会变成2" />
 					</view>
 				</view>
 			</view>
@@ -106,6 +106,7 @@
 				inputValue: '',
 				showClearIcon: false,
 				inputClearValue: "",
+				changeValue:"",
 				showPassword: true,
 				src: "../../../static/eye-1.png"
 			}
@@ -115,24 +116,10 @@
 				this.inputValue = e.target.value
 			},
 			bindReplaceInput: function (e) {
-				var value = e.target.value
-				var pos = e.target.cursor
-				var left
-				if (pos !== -1) {
-					// 光标在中间
-					left = e.target.value.slice(0, pos)
-					// 计算光标的位置
-					pos = left.replace(/11/g, '2').length
+				var value = e.target.value;
+				if(value === '11'){
+					this.changeValue = "2";
 				}
-
-				// 直接返回对象，可以对输入进行过滤处理，同时可以控制光标的位置
-				return {
-					value: value.replace(/11/g, '2'),
-					cursor: pos
-				}
-
-				// 或者直接返回字符串,光标在最后边
-				// return value.replace(/11/g,'2'),
 			},
 			bindHideKeyboard: function (e) {
 				if (e.target.value === '123') {

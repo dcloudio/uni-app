@@ -169,17 +169,17 @@
 						name: '发起支付',
 						url: 'request-payment'
 					}]
-				}
-				//#ifdef APP-PLUS
-				, {
+				}, {
 					id: 'share',
 					name: '分享',
 					open: false,
 					pages: [{
 						name: '分享',
-						url: '/platforms/app-plus/share/share'
+						url: 'share'
 					}]
-				}, {
+				}
+				//#ifdef APP-PLUS
+				, {
 					id: 'speech',
 					name: '语音',
 					open: false,
@@ -204,7 +204,7 @@
 		},
 		onShareAppMessage() {
 			return {
-				title: '欢迎体验uniapp',
+				title: '欢迎体验uni-app',
 				path: '/pages/API/API'
 			}
 		},

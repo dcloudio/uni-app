@@ -32,6 +32,9 @@
 				networkType: ''
 			}
 		},
+		onUnload:function(){
+			this.networkType = '',this.hasNetworkType = false;
+		},
 		methods: {
 			getNetworkType: function () {
 				uni.getNetworkType({

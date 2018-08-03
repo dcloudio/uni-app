@@ -161,7 +161,7 @@
 				"navigationBarTitleText": "发起支付"
 			}
 		}, {
-			"path": "platforms/app-plus/share/share",
+			"path": "pages/API/share/share",
 			"style": {
 				"navigationBarTitleText": "分享"
 			}

@@ -5,8 +5,7 @@
 			<text class="feedback-quick" @tap="chooseMsg">快速键入</text>
 		</view>
 		<view class="feedback-body">
-			<textarea auto-focus="true" placeholder="请详细描述你的问题和意见..." v-model="sendDate.content" class="feedback-textare" placeholder-class="input-view"
-			/>
+			<textarea auto-focus="true" placeholder="请详细描述你的问题和意见..." v-model="sendDate.content" class="feedback-textare" />
 		</view>
 		<view class='feedback-title'>
 			<text>图片(选填,提供问题截图,总大小10M以下)</text>

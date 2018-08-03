@@ -2,7 +2,7 @@
 	<view>
 		<page-head :title="title"></page-head>
 		<view class="page-body">
-			<form catchsubmit="formSubmit" catchreset="formReset">
+			<form @submit="formSubmit" @reset="formReset">
 				<view class="page-section page-section-gap">
 					<view class="page-section-title">switch</view>
 					<switch name="switch" />
@@ -73,10 +73,10 @@
 				this.pickerHidden = false
 			},
 			formSubmit: function (e) {
-				console.log('form发生了submit事件，携带数据为：', e.target.value)
+				console.log('form发生了submit事件，携带数据为：' + JSON.stringify(e.detail.value))
 			},
 			formReset: function (e) {
-				console.log('form发生了reset事件，携带数据为：', e.target.value)
+				console.log("清空数据")
 				this.chosen = ''
 			}
 		},
