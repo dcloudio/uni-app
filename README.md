@@ -12,12 +12,18 @@ Hello uni-app：演示uni-app框架的组件、接口、模板，你可以使用
 
 <p align="center">
 	<img src="https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/app_download.png" width="120"/>
+  <br/>
 	<span style="float:left;margin-top:15px;">App码</span>
 </p>
 <p align="center">
 	<img src="https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/gh_33446d7f7a26_430.jpg" width="120"/>
+  <br/>
 	<span style="float:left;margin-top:15px;">小程序码</span>
 </p>
 
 
 [更多项目征集](https://github.com/dcloudio/uni-app/issues/6)
+
+## 赞助我们
+
+一个手艺人需要3万个粉丝养活，希望你能成为其中之一，[前往赞助](http://dev.dcloud.net.cn/sponsor/?channel=uniapp)
