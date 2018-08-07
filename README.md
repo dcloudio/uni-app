@@ -26,4 +26,4 @@ Hello uni-app：演示uni-app框架的组件、接口、模板，你可以使用
 
 ## 赞助我们
 
-一个手艺人需要3万个粉丝养活，希望你能成为其中之一，[前往赞助](http://dev.dcloud.net.cn/sponsor/?channel=uniapp)
+一个手艺人需要3万个粉丝养活，欢迎大家积极[赞助uni-app](http://dev.dcloud.net.cn/sponsor/?channel=uniapp)，保证`uni-app`稳定健康持续发展。
