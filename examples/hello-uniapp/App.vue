@@ -237,6 +237,7 @@
 		width: 4px;
 		height: 80px;
 		transform: translate(-50%, -50%);
+		-webkit-transform: translate(-50%, -50%);
 	}
 
 	.image-plus-vertical {
@@ -247,6 +248,7 @@
 		width: 80px;
 		height: 4px;
 		transform: translate(-50%, -50%);
+		-webkit-transform: translate(-50%, -50%);
 	}
 
 	.color1 {

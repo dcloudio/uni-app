@@ -16,16 +16,16 @@
 					</view>
 				</view>
 				<view class="page-body-info">
-					<block v-if="src === ''">
+					<template v-if="!src">
 						<view class="image-plus image-plus-nb" @tap="chooseVideo">
 							<view class="image-plus-horizontal"></view>
 							<view class="image-plus-vertical"></view>
 						</view>
 						<view class="image-plus-text">添加视频</view>
-					</block>
-					<block v-if="src != ''">
+					</template>
+					<template v-else>
 						<video :src="src" class="video"></video>
-					</block>
+					</template>
 				</view>
 			</view>
 		</view>

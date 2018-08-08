@@ -22,6 +22,12 @@
 			banner: {},
 			htmlString: ""
 		},
+		onShareAppMessage() {
+			return {
+				title: this.banner.title,
+				path: '/pages/template/list2detail-detail/list2detail-detail?detailDate=' + JSON.stringify(this.banner)
+			}
+		},
 		onLoad(e) {
 			this.banner = JSON.parse(e.detailDate);
 			this.getDetail();
