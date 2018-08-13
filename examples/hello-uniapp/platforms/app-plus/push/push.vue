@@ -80,7 +80,8 @@
 						uni.showToast({
 							title: "接收到透传数据"
 						});
-						this.tranMsg = e.data;
+						
+						this.tranMsg = JSON.stringify(e.data);
 					}
 				})
 			},
@@ -105,7 +106,11 @@
 				}
 				url += ('&title=' + encodeURIComponent('Hello uniapp'));
 				url += ('&content=' + encodeURIComponent('带透传数据推送通知！'));
-				url += ('&payload=' + encodeURIComponent('\'{"title":"Hello uniapp Test","content":"test content","payload":"1234567890"}\''));
+				if(plus.os.name === 'iOS'){
+					url += ('&payload=' + encodeURIComponent('{"title":"Hello uniapp Test","content":"test content"}'));
+				}else{
+					url += ('&payload=' + encodeURIComponent('\'{"title":"Hello uniapp Test","content":"test content"}\''));
+				}
 				url += ('&version=' + encodeURIComponent(plus.runtime.version));
 				plus.runtime.openURL(url);
 			}
