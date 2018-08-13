@@ -301,7 +301,7 @@
 			"style": {
 				"navigationBarTitleText": "文件"
 			}
-		},{
+		}, {
 			"path": "pages/API/get-location/get-location",
 			"style": {
 				"navigationBarTitleText": "获取位置"
@@ -431,6 +431,13 @@
 			"path": "platforms/app-plus/feedback/feedback",
 			"style": {
 				"navigationBarTitleText": "问题反馈"
+			}
+		}, {
+			"path": "pages/template/product-list/product-list",
+			"style": {
+				"navigationBarTitleText": "商品列表",
+				"enablePullDownRefresh": true,
+				"onReachBottomDistance": 20
 			}
 		}
 	],

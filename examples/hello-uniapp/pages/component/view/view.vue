@@ -50,11 +50,11 @@
 					<view class="text">横向布局-居右</view>
 					<view class="text">横向布局-居右</view>
 				</view>
-				<view class="uni-flex  uni-row">
+				<view class="uni-flex uni-row">
 					<view class="text" style="flex: 1;">横向布局-平均分布</view>
 					<view class="text" style="flex: 1;">横向布局-平均分布</view>
 				</view>
-				<view class="uni-row" style="justify-content: space-between;">
+				<view class="uni-flex uni-row" style="justify-content: space-between;">
 					<view class="text">横向布局-两端对齐</view>
 					<view class="text">横向布局-两端对齐</view>
 				</view>

@@ -52,7 +52,10 @@
 					}, {
 						name: '图文列表',
 						url: 'media-list'
-					}, {
+					},  {
+						name: '商品列表',
+						url: 'product-list'
+					},{
 						name: '九宫格',
 						url: 'grid'
 					}, {

@@ -36,8 +36,8 @@
 				<view class="page-section">
 					<view class="page-section-title">input</view>
 					<view class="uni-list">
-						<view class="uni-list-cell uni-list-cell-pd">
-							<input name="input" placeholder="这是一个输入框" />
+						<view class="uni-list-cell">
+							<input class="uni-input" name="input" placeholder="这是一个输入框" />
 						</view>
 					</view>
 				</view>
@@ -99,5 +99,9 @@
 	.btn-submit {
 		background-color: #007aff;
 		color: #ffffff;
+	}
+	.uni-input{
+		width: 100%;
+		padding-left: 30px;
 	}
 </style>
