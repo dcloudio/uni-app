@@ -7,6 +7,10 @@
 
 [uni-app 文档](https://uniapp.dcloud.io)
 
+## 需求墙
+
+`uni-app`计划支持的功能点，会在需求墙上进行展示，并允许开发者对需求进行投票，投票越多的需求，研发优先级越高，[前往投票](https://dev.dcloud.net.cn/wish/)。
+
 ## 项目案例
 
 Hello uni-app：演示 uni-app 框架的组件、接口、模板，你可以使用手机扫描下方`App码`下载 iOS、Android 原生安装包，也可以使用微信扫描`小程序码`，体验 Hello uni-app 的小程序版本：
