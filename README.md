@@ -22,6 +22,11 @@ Hello uni-app：演示 uni-app 框架的组件、接口、模板，你可以使�
 [更多项目征集](https://github.com/dcloudio/uni-app/issues/6)
 
 ## 分享交流
+
+- github：[uni-app](https://github.com/dcloudio/uni-app)
+- ask社区：[ask.dcloud.net.cn](http://ask.dcloud.net.cn/explore/category-12)
+- QQ群：531031261
+
 除了合理利用 `issues`，向我们反馈问题或建议外。更佳的渠道是前往 [DCloud 问答社区](https://ask.dcloud.net.cn/explore/)，详细描述问题及重现步骤，并且附上一定的示例代码或项目。
 
 ## 赞助我们
