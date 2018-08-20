@@ -3,17 +3,50 @@
 		{
 			"path": "pages/component/component",
 			"style": {
-				"navigationBarTitleText": "组件"
+				"navigationBarTitleText": "组件",
+				"app-plus":{
+					"titleNView":{
+						"titleText":"组件",
+						"buttons":[{
+							"text":"\ue534",
+							"fontSrc":"_www/static/uni.ttf",
+							"fontSize":"22px",
+							"color":"#999999"
+						}]
+					}
+				}
 			}
 		}, {
 			"path": "pages/API/API",
 			"style": {
-				"navigationBarTitleText": "接口"
+				"navigationBarTitleText": "接口",
+				"app-plus":{
+					"titleNView":{
+						"titleText":"接口",
+						"buttons":[{
+							"text":"\ue534",
+							"fontSrc":"_www/static/uni.ttf",
+							"fontSize":"22px",
+							"color":"#999999"
+						}]
+					}
+				}
 			}
 		}, {
 			"path": "pages/template/template",
 			"style": {
-				"navigationBarTitleText": "模版"
+				"navigationBarTitleText": "模版",
+				"app-plus":{
+					"titleNView":{
+						"titleText":"模版",
+						"buttons":[{
+							"text":"\ue534",
+							"fontSrc":"_www/static/uni.ttf",
+							"fontSize":"22px",
+							"color":"#999999"
+						}]
+					}
+				}
 			}
 		}, {
 			"path": "pages/component/view/view",
@@ -438,6 +471,16 @@
 				"navigationBarTitleText": "商品列表",
 				"enablePullDownRefresh": true,
 				"onReachBottomDistance": 20
+			}
+		}, {
+			"path": "pages/template/mdparse/mdparse",
+			"style": {
+				"navigationBarTitleText": "markdown富文本渲染"
+			}
+		}, {
+			"path": "platforms/app-plus/about/about",
+			"style": {
+				"navigationBarTitleText": "关于"
 			}
 		}
 	],

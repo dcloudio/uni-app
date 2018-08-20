@@ -5,7 +5,7 @@
 			<text class="feedback-quick" @tap="chooseMsg">快速键入</text>
 		</view>
 		<view class="feedback-body">
-			<textarea auto-focus="true" placeholder="请详细描述你的问题和意见..." v-model="sendDate.content" class="feedback-textare" />
+			<textarea placeholder="请详细描述你的问题和意见..." v-model="sendDate.content" class="feedback-textare" />
 		</view>
 		<view class='feedback-title'>
 			<text>图片(选填,提供问题截图,总大小10M以下)</text>
@@ -73,12 +73,12 @@
 			let deviceInfo = {
 				appid: plus.runtime.appid,
 				imei: plus.device.imei, //设备标识
-				p: plus.os.name === 'Android' ? 'a' : 'i', //平台类型，i表示iOS平台，a表示Android平台。
+				p: plus.os.name === "Android" ? "a" : "i", //平台类型，i表示iOS平台，a表示Android平台。
 				md: plus.device.model, //设备型号
 				app_version: plus.runtime.version,
 				plus_version: plus.runtime.innerVersion, //基座版本号
 				os: plus.os.version,
-				net: '' + plus.networkinfo.getCurrentType()
+				net: "" + plus.networkinfo.getCurrentType()
 			}
 			this.sendDate = Object.assign(deviceInfo, this.sendDate);
 		},
@@ -93,7 +93,7 @@
 			},
 			chooseImg() { //选择图片
 				uni.chooseImage({
-					sourceType: ['camera', 'album'],
+					sourceType: ["camera", "album"],
 					sizeType: "compressed",
 					count: 9,
 					success: (res) => {
@@ -119,7 +119,7 @@
 				})
 				console.log(imgs)
 				uni.uploadFile({
-					url: 'https://service.dcloud.net.cn/feedback',
+					url: "https://service.dcloud.net.cn/feedback",
 					files: imgs,
 					formData: this.sendDate,
 					success: (res) => {

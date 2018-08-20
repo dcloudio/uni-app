@@ -21,7 +21,7 @@
 						let openUrl = plus.os.name === 'iOS' ? res.data.iOS : res.data.Android;
 						uni.showModal({ //提醒用户更新
 							title: '更新提示',
-							content: '是否选择更新',
+							content: res.data.note ? res.data.note : '是否选择更新',
 							success: (res) => {
 								if (res.confirm) {
 									plus.runtime.openURL(openUrl);
@@ -265,4 +265,5 @@
 		background-color: #F1F1F1;
 		color: #353535;
 	}
+
 </style>

@@ -208,6 +208,11 @@
 				path: '/pages/API/API'
 			}
 		},
+		onNavigationBarButtonTap(e){
+			uni.navigateTo({
+				url: '/platforms/app-plus/about/about'
+			})
+		},
 		methods: {
 			trigerCollapse(e) {
 				for (let i = 0, len = this.lists.length; i < len; ++i) {

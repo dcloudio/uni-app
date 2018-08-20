@@ -65,13 +65,18 @@
 						name: '选项卡',
 						url: 'tabbar'
 					},
-// 					{
-// 						name: '问题反馈',
-// 						url: '/platforms/app-plus/feedback/feedback'
-// 					},
+					// #ifdef APP-PLUS
+					{
+						name: '问题反馈',
+						url: '/platforms/app-plus/feedback/feedback'
+					},
+					// #endif
 					{
 						name: '数字选择框',
 						url: 'number-box'
+					}, {
+						name: 'markdown富文本渲染',
+						url: 'mdparse'
 					}, {
 						name: '列表到详情示例',
 						url: 'list2detail-list'
@@ -84,6 +89,11 @@
 				title: '欢迎体验uni-app',
 				path: '/pages/template/template'
 			}
+		},
+		onNavigationBarButtonTap(e){
+			uni.navigateTo({
+				url: '/platforms/app-plus/about/about'
+			})
 		},
 		methods: {
 			trigerCollapse(e) {
