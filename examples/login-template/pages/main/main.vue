@@ -37,7 +37,7 @@
                      * 如果需要强制登录，不显示取消按钮
                      */
                     showCancel: !this.forcedLogin,
-                    success: function (res) {
+                    success: (res) => {
                         if (res.confirm) {
 							/**
 							 * 如果需要强制登录，使用reLaunch方式
