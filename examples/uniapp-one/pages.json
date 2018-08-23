@@ -1,0 +1,79 @@
+{
+    "pages": [
+        {
+            "path": "pages/home/main",
+            "style": {
+                "navigationBarTitleText": "首页"
+            }
+        },
+        {
+            "path": "pages/read/main",
+            "style": {
+                "navigationBarTitleText": "文章&问答"
+            }
+        },
+        {
+            "path": "pages/read/essay/main"
+        },
+        {
+            "path": "pages/read/question/main"
+        },
+        {
+            "path": "pages/movie/main",
+            "style": {
+                "navigationBarTitleText": "影评"
+            }
+        },
+        {
+            "path": "pages/movie/detail/main"
+        },
+        {
+            "path": "pages/daily/main",
+            "style": {
+                "navigationBarTitleText": "日报"
+            }
+        },
+        {
+            "path": "pages/daily/detail/main",
+            "style": {
+                "navigationBarTitleText": "日报"
+            }
+        }
+    ],
+    "globalStyle": {
+        "backgroundTextStyle": "light",
+        "navigationBarBackgroundColor": "fafafa",
+        "navigationBarTitleText": "一个",
+        "navigationBarTextStyle": "black"
+    },
+    "tabBar": {
+        "color": "#130f13",
+        "selectedColor": "#0f0f0f",
+        "list": [
+            {
+                "pagePath": "pages/home/main",
+                "text": "ONE",
+                "iconPath": "static/icon/home.png",
+                "selectedIconPath": "static/icon/home-active.png"
+            },
+            {
+                "pagePath": "pages/read/main",
+                "text": "READ",
+                "iconPath": "static/icon/read.png",
+                "selectedIconPath": "static/icon/read-active.png"
+            },
+            {
+                "pagePath": "pages/movie/main",
+                "text": "MOVIE",
+                "iconPath": "static/icon/movie.png",
+                "selectedIconPath": "static/icon/movie-active.png"
+            },
+            {
+                "pagePath": "pages/daily/main",
+                "text": "DAILY",
+                "iconPath": "static/icon/daily.png",
+                "selectedIconPath": "static/icon/daily-active.png"
+            }
+        ]
+    }
+}
