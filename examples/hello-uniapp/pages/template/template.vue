@@ -78,6 +78,9 @@
 						name: 'markdown富文本渲染',
 						url: 'mdparse'
 					}, {
+						name: '二维码生成',
+						url: 'qrcode'
+					}, {
 						name: '列表到详情示例',
 						url: 'list2detail-list'
 					}
