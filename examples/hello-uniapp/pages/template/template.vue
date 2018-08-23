@@ -80,6 +80,9 @@
 					}, {
 						name: '列表到详情示例',
 						url: 'list2detail-list'
+					}, {
+						name: '图片裁剪',
+						url: 'crop'
 					}
 				]
 			}
