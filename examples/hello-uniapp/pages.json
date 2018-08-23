@@ -478,6 +478,11 @@
 				"navigationBarTitleText": "markdown富文本渲染"
 			}
 		}, {
+			"path": "pages/template/qrcode/qrcode",
+			"style": {
+				"navigationBarTitleText": "二维码生成"
+			}
+		}, {
 			"path": "platforms/app-plus/about/about",
 			"style": {
 				"navigationBarTitleText": "关于"
