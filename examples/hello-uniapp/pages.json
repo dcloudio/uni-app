@@ -478,6 +478,11 @@
 				"navigationBarTitleText": "markdown富文本渲染"
 			}
 		}, {
+			"path": "pages/template/crop/crop",
+			"style": {
+				"navigationBarTitleText": "图片裁剪"
+			}
+		}, {
 			"path": "platforms/app-plus/about/about",
 			"style": {
 				"navigationBarTitleText": "关于"
