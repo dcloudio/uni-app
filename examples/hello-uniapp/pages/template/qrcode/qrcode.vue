@@ -1,5 +1,5 @@
 <template>
-	<view>
+	<view class="container">
 		<page-head :title="title"></page-head>
 		<view class="page-body">
 			<view class="page-section">
@@ -23,16 +23,19 @@
 				<button type="warn" @tap="clearQrcode">清除二维码</button>
 			</view>
 		</view>
+		<page-foot :name="name"></page-foot>
 	</view>
 </template>
 <script>
 	import pageHead from '../../../components/page-head.vue'
+	import pageFoot from '../../../components/page-foot.vue'
 	import qrcode from '../../../components/qrcode/qrcode.vue'
 
 	export default {
 		data() {
 			return {
 				title: '二维码生成',
+				name:'诗小柒',
 				showClearIcon: false,
 				qrval:'',
 				qrsize:100,
@@ -64,6 +67,7 @@
 		},
 		components: {
 			pageHead,
+			pageFoot,
 			qrcode
 		}
 	}

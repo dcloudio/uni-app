@@ -75,7 +75,6 @@
 		font-size: 32px;
 		font-family: -apple-system-font, Helvetica Neue, Helvetica, sans-serif;
 	}
-
 	.page-head {
 		padding: 60px 50px 80px;
 		text-align: center;
@@ -265,5 +264,4 @@
 		background-color: #F1F1F1;
 		color: #353535;
 	}
-
 </style>

@@ -23,7 +23,7 @@
                     <button @tap="clear">删除文件</button>
                 </view>
 				<view class="btn-area">
-					<button @tap="openDocument">打开文件</button>
+					<button @tap="openDocument">打开pdf文件</button>
 				</view>
             </view>
         </view>

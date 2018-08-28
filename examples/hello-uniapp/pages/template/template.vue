@@ -2,7 +2,7 @@
 	<view class="index">
 		<view class="index-hd">
 			<image class="index-logo" src="../../static/templateIndex.png"></image>
-			<view class="page-section-title">以下是uni-app的部分模版示例，欢迎大家积极分享更多的模版，一起完善uni-app生态。</view>
+			<view class="page-section-title">以下是uni-app的部分模板示例，欢迎大家积极分享更多的模板，一起完善uni-app生态。</view>
 		</view>
 		<view class="uni-card" v-for="(list,index) in lists" :key="index">
 			<view class="uni-list">
@@ -52,12 +52,20 @@
 					}, {
 						name: '图文列表',
 						url: 'media-list'
-					},  {
+					}, {
 						name: '商品列表',
 						url: 'product-list'
-					},{
+					}, {
+						id: 'grid',
 						name: '九宫格',
-						url: 'grid'
+						open: false,
+						pages: [{
+							name: '默认样式',
+							url: 'grid'
+						}, {
+							name: '可左右滑动的九宫导航',
+							url: 'grid-pagination'
+						}]
 					}, {
 						name: 'popup',
 						url: 'popup'
@@ -65,7 +73,7 @@
 						name: '选项卡',
 						url: 'tabbar'
 					},
-					// #ifdef APP-PLUS
+					// #ifdef APP-PLUS 
 					{
 						name: '问题反馈',
 						url: '/platforms/app-plus/feedback/feedback'
@@ -78,11 +86,17 @@
 						name: 'markdown富文本渲染',
 						url: 'mdparse'
 					}, {
-						name: '二维码生成',
-						url: 'qrcode'
+						name: 'echart图表',
+						url: 'echart'
 					}, {
 						name: '列表到详情示例',
 						url: 'list2detail-list'
+					}, {
+						name: '二维码生成',
+						url: 'qrcode'
+					}, {
+						name: '图片裁剪',
+						url: 'crop'
 					}
 				]
 			}
@@ -93,7 +107,7 @@
 				path: '/pages/template/template'
 			}
 		},
-		onNavigationBarButtonTap(e){
+		onNavigationBarButtonTap(e) {
 			uni.navigateTo({
 				url: '/platforms/app-plus/about/about'
 			})
@@ -122,10 +136,11 @@
 
 <style>
 	@import "../../common/uni.css";
-	
-	.index{
+
+	.index {
 		padding-bottom: 1px;
 	}
+
 	.uni-card {
 		box-shadow: none;
 	}

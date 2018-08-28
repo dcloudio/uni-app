@@ -110,14 +110,13 @@
 				});
 			},
 			send() { //发送反馈
-				console.log(this.sendDate);
+				console.log(JSON.stringify(this.sendDate));
 				let imgs = this.imageList.map((value) => {
 					return {
 						name: "uni-app.feedback",
 						uri: value
 					}
 				})
-				console.log(imgs)
 				uni.uploadFile({
 					url: "https://service.dcloud.net.cn/feedback",
 					files: imgs,

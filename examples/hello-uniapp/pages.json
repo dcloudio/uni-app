@@ -1,15 +1,14 @@
 {
-	"pages": [ //pages数组中第一项表示应用启动页
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
 			"path": "pages/component/component",
 			"style": {
 				"navigationBarTitleText": "组件",
 				"app-plus":{
 					"titleNView":{
-						"titleText":"组件",
 						"buttons":[{
 							"text":"\ue534",
-							"fontSrc":"_www/static/uni.ttf",
+							"fontSrc":"/static/uni.ttf",
 							"fontSize":"22px",
 							"color":"#999999"
 						}]
@@ -22,10 +21,9 @@
 				"navigationBarTitleText": "接口",
 				"app-plus":{
 					"titleNView":{
-						"titleText":"接口",
 						"buttons":[{
 							"text":"\ue534",
-							"fontSrc":"_www/static/uni.ttf",
+							"fontSrc":"/static/uni.ttf",
 							"fontSize":"22px",
 							"color":"#999999"
 						}]
@@ -38,10 +36,9 @@
 				"navigationBarTitleText": "模版",
 				"app-plus":{
 					"titleNView":{
-						"titleText":"模版",
 						"buttons":[{
 							"text":"\ue534",
-							"fontSrc":"_www/static/uni.ttf",
+							"fontSrc":"/static/uni.ttf",
 							"fontSize":"22px",
 							"color":"#999999"
 						}]
@@ -113,6 +110,11 @@
 			"style": {
 				"navigationBarTitleText": "picker"
 			}
+		}, {
+            "path": "pages/component/picker-view/picker-view",
+            "style": {
+                "navigationBarTitleText": "picker-view"
+            }
 		}, {
 			"path": "pages/component/radio/radio",
 			"style": {
@@ -214,14 +216,19 @@
 				"navigationBarTitleText": "设置界面标题"
 			}
 		}, {
-			"path": "pages/API/navigation-bar-loading/navigation-bar-loading",
+			"path": "pages/API/show-loading/show-loading",
 			"style": {
-				"navigationBarTitleText": "标题栏加载动画"
+				"navigationBarTitleText": "加载提示框"
 			}
 		}, {
 			"path": "pages/API/navigator/navigator",
 			"style": {
 				"navigationBarTitleText": "页面跳转"
+			}
+		}, {
+			"path": "pages/API/navigator/new-page/new-page",
+			"style": {
+				"navigationBarTitleText": "新页面"
 			}
 		}, {
 			"path": "pages/API/pull-down-refresh/pull-down-refresh",
@@ -400,6 +407,11 @@
 				"navigationBarTitleText": "九宫格"
 			}
 		}, {
+			"path": "pages/template/grid-pagination/grid-pagination",
+			"style": {
+				"navigationBarTitleText": "左右拖动分页9宫格"
+			}
+		}, {
 			"path": "pages/template/drag-right/drag-right",
 			"style": {
 				"navigationBarTitleText": "右滑菜单"
@@ -483,6 +495,16 @@
 				"navigationBarTitleText": "二维码生成"
 			}
 		}, {
+			"path": "pages/template/crop/crop",
+			"style": {
+				"navigationBarTitleText": "图片裁剪"
+			}
+		}, {
+			"path": "pages/template/echart/echart",
+			"style": {
+				"navigationBarTitleText": "echart图表"
+			}
+		}, {
 			"path": "platforms/app-plus/about/about",
 			"style": {
 				"navigationBarTitleText": "关于"
@@ -491,7 +513,7 @@
 	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "演示",
+		"navigationBarTitleText": "Hello uniapp",
 		"navigationBarBackgroundColor": "#F8F8F8",
 		"backgroundColor": "#F8F8F8"
 	},
@@ -514,7 +536,7 @@
 			"pagePath": "pages/template/template",
 			"iconPath": "static/template.png",
 			"selectedIconPath": "static/templateHL.png",
-			"text": "模版"
+			"text": "模板"
 		}]
 	}
 }

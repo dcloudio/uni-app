@@ -17,10 +17,12 @@
 
 <script>
 	export default {
-		data: {
-			title: 'list-triplex-row',
-			banner: {},
-			htmlString: ""
+		data() {
+			return {
+				title: 'list-triplex-row',
+				banner: {},
+				htmlString: ""
+			}
 		},
 		onShareAppMessage() {
 			return {
@@ -35,17 +37,13 @@
 				title: this.banner.title
 			})
 		},
-		onUnload() {
-			this.htmlString = "";
-			this.banner = {}
-		},
 		methods: {
 			getDetail() {
 				uni.request({
 					url: 'https://spider.dcloud.net.cn/api/news/36kr/' + this.banner.post_id,
 					success: (data) => {
 						if (data.statusCode == 200) {
-							this.htmlString = data.data.content.replace(/\\/g, "").replace(/<img/g,"<img width='100%'");
+							this.htmlString = data.data.content.replace(/\\/g, "").replace(/<img/g, "<img style=\"display:none;\"");
 						}
 					},
 					fail: () => {
