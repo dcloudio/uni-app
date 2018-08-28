@@ -500,9 +500,9 @@
 				"navigationBarTitleText": "图片裁剪"
 			}
 		}, {
-			"path": "pages/template/echart/echart",
+			"path": "pages/template/echarts/echarts",
 			"style": {
-				"navigationBarTitleText": "echart图表"
+				"navigationBarTitleText": "ECharts图表"
 			}
 		}, {
 			"path": "platforms/app-plus/about/about",

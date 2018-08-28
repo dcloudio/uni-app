@@ -83,11 +83,11 @@
 						name: '数字选择框',
 						url: 'number-box'
 					}, {
+						name: 'ECharts图表',
+						url: 'echarts'
+					}, {
 						name: 'markdown富文本渲染',
 						url: 'mdparse'
-					}, {
-						name: 'echart图表',
-						url: 'echart'
 					}, {
 						name: '列表到详情示例',
 						url: 'list2detail-list'
