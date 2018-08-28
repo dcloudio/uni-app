@@ -25,11 +25,13 @@
 	var dateUtils = require('../../../common/util.js').dateUtils;
 
 	export default {
-		data: {
-			banner: {},
-			listData: [],
-			last_id: "",
-			reload: false
+		data() {
+			return {
+				banner: {},
+				listData: [],
+				last_id: "",
+				reload: false
+			}
 		},
 		onLoad() {
 			this.getBanner();
@@ -40,11 +42,6 @@
 			this.last_id = "";
 			this.getBanner();
 			this.getList();
-		},
-		onUnload() {
-			this.banner = {},
-				this.listData = [],
-				this.last_id = "";
 		},
 		onReachBottom() {
 			this.getList();
@@ -64,7 +61,7 @@
 						}
 					},
 					fail: (data, code) => {
-						console.log('fail'+JSON.stringify(data));
+						console.log('fail' + JSON.stringify(data));
 					}
 				})
 			},
@@ -72,7 +69,6 @@
 				var data = {
 					column: "id,post_id,title,author_name,cover,published_at" //需要的字段名
 				};
-				console.log(this.last_id);
 				if (this.last_id) { //说明已有数据，目前处于上拉加载
 					data.minId = this.last_id;
 					data.time = new Date().getTime() + "";
@@ -90,12 +86,11 @@
 						}
 					},
 					fail: (data, code) => {
-						console.log('fail'+JSON.stringify(data));
+						console.log('fail' + JSON.stringify(data));
 					}
 				})
 			},
 			goDetail: function (e) {
-				console.log(e);
 				if (!/前|刚刚/.test(e.published_at)) {
 					e.published_at = dateUtils.format(e.published_at);
 				}

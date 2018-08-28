@@ -141,6 +141,7 @@
 		flex: 1;
 		padding: 30px;
 		flex-direction: column;
+		justify-content: center;
 	}
 	.desc{
 		margin-top: 30px;

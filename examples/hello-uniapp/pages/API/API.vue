@@ -34,9 +34,6 @@
 						name: '设置界面标题',
 						url: 'set-navigation-bar-title'
 					}, {
-						name: '标题栏加载动画',
-						url: 'navigation-bar-loading'
-					}, {
 						name: '页面跳转',
 						url: 'navigator'
 					}, {
@@ -54,6 +51,9 @@
 					}, {
 						name: '显示模态弹窗',
 						url: 'modal'
+					}, {
+						name: '显示加载提示框',
+						url: 'show-loading'
 					}, {
 						name: '显示消息提示框',
 						url: 'toast'

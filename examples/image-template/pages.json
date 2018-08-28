@@ -1,0 +1,84 @@
+{
+	"pages": [{
+		"path": "pages/new/new",
+		"style": {
+			"navigationBarTitleText": "最新",
+			"enablePullDownRefresh": true
+		}
+	}, {
+		"path": "pages/hot/hot",
+		"style": {
+			"navigationBarTitleText": "最热",
+			"enablePullDownRefresh": true
+		}
+	}, {
+		"path": "pages/detail/detail",
+		"style": {
+			"navigationBarTitleText": "详情",
+			"navigationBarBackgroundColor": "#000000",
+			"app-plus":{
+				"titleNView":{
+					"buttons":[{
+						"fontSrc":"/static/icon.ttf",
+						"fontSize":"24px",
+						"text":"\ue602"
+					}]
+				}
+			}
+		}
+	}, {
+		"path": "pages/tag/tag",
+		"style": {
+			"navigationBarTitleText": "分类"
+		}
+	}, {
+		"path": "pages/list/list",
+		"style": {
+			"navigationBarTitleText": "专题",
+			"enablePullDownRefresh": true
+		}
+	}, {
+		"path": "pages/center/center",
+		"style": {
+			"navigationBarTitleText": "个人中心"
+		}
+	}, {
+		"path": "pages/login/login",
+		"style": {
+			"navigationBarTitleText": "登录"
+		}
+	}],
+	"globalStyle": {
+		"navigationBarTextStyle": "white",
+		"navigationBarTitleText": "妹子图",
+		"navigationBarBackgroundColor": "#FF80AB",
+		"backgroundColor": "#fbf9fe"
+	},
+	"tabBar": {
+		"color": "#444444",
+		"selectedColor": "#FF80AB",
+		"borderStyle": "black",
+		"backgroundColor": "#ffffff",
+		"list": [{
+			"pagePath": "pages/new/new",
+			"iconPath": "static/index-0.png",
+			"selectedIconPath": "static/index-1.png",
+			"text": "最新"
+		}, {
+			"pagePath": "pages/hot/hot",
+			"iconPath": "static/hot-0.png",
+			"selectedIconPath": "static/hot-1.png",
+			"text": "推荐"
+		}, {
+			"pagePath": "pages/tag/tag",
+			"iconPath": "static/tag-0.png",
+			"selectedIconPath": "static/tag-1.png",
+			"text": "分类"
+		}, {
+			"pagePath": "pages/center/center",
+			"iconPath": "static/center-0.png",
+			"selectedIconPath": "static/center-1.png",
+			"text": "我的"
+		}]
+	}
+}
