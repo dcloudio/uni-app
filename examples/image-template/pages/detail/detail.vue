@@ -217,7 +217,7 @@
 					success: (res) => {
 						if (res.data.code !== 0) {
 							uni.showModal({
-								content: "请求失败，请重试!",
+								content: "请求失败，失败原因：" + res.data.msg,
 								showCancel: false
 							})
 							return;

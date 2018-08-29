@@ -373,6 +373,7 @@ button.register {
 }
 
 .detail-btn-view view {
+	opacity: 0.75;
 	height: 80px;
 	border-radius: 80px;
 	width: 80px;
