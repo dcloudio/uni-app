@@ -138,6 +138,10 @@
 		margin-left: 30px;
 		color: #8f8f94;
 	}
+	.container{
+		padding-bottom: 30px;
+		box-sizing: border-box;
+	}
 	.container,
 	.canvasView {
 		flex: 1;
