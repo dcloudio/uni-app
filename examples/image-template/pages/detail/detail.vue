@@ -25,7 +25,8 @@
 				screenHeight: 0,
 				imgLength: 0,
 				providerList: [],
-				data: []
+				data: [],
+				detailDec:""
 			}
 		},
 		onLoad(e) {
@@ -36,6 +37,7 @@
 			// #endif
 			this.screenHeight = uni.getSystemInfoSync().windowHeight;
 			console.log(e.data);
+			this.detailDec = e.data;
 			let data = JSON.parse(e.data);
 			this.imgLength = data.img_num;
 			this.data.push(data.img_src);
@@ -77,6 +79,13 @@
 					console.log("获取登录通道失败", e);
 				}
 			});
+		},
+		onShareAppMessage() {
+			return {
+				title: "欢迎使用uni-app看图模板",
+				path: '/pages/detail/detail?data=' + this.detailDec,
+				imageUrl:this.data[this.index]
+			}
 		},
 		onNavigationBarButtonTap(e) {
 			if (this.providerList.length === 0) {

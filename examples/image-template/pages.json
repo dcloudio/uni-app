@@ -17,6 +17,7 @@
 			"navigationBarTitleText": "详情",
 			"navigationBarBackgroundColor": "#000000",
 			"app-plus":{
+				"bounce":"none",
 				"titleNView":{
 					"buttons":[{
 						"fontSrc":"/static/icon.ttf",
