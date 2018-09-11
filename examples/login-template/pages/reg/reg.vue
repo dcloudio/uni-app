@@ -3,7 +3,7 @@
         <view class="input-group">
             <view class="input-row border">
                 <text class="title">账号：</text>
-                <input type="text" v-model="account" placeholder="请输入账号">
+                <input type="text" focus v-model="account" placeholder="请输入账号">
             </view>
             <view class="input-row border">
                 <text class="title">密码：</text>

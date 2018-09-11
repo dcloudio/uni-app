@@ -3,7 +3,7 @@
         <view class="input-group">
             <view class="input-row">
                 <text class="title">邮箱：</text>
-                <input type="text" v-model="email" placeholder="请输入邮箱">
+                <input type="text" focus v-model="email" placeholder="请输入邮箱">
             </view>
         </view>
 
