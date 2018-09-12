@@ -3,11 +3,11 @@
         <view class="input-group">
             <view class="input-row border">
                 <text class="title">账号：</text>
-                <input type="text" v-model="account" placeholder="请输入账号">
+                <uni-input class="uni-input" type="text" clearable focus v-model="account" placeholder="请输入账号"></uni-input>
             </view>
             <view class="input-row">
                 <text class="title">密码：</text>
-                <input type="text" password="true" v-model="password" placeholder="请输入密码">
+                <uni-input type="password" displayable v-model="password" placeholder="请输入密码"></uni-input>
             </view>
         </view>
         <view class="btn-row">
@@ -32,8 +32,12 @@
         mapState,
         mapMutations
     } from 'vuex'
+    import uniInput from '../../components/uni-input.vue'
 
     export default {
+        components: {
+            uniInput
+        },
         data() {
             return {
                 providerList: [],
@@ -139,7 +143,7 @@
                 this.login(userName);
                 /**
                  * 强制登录时使用reLaunch方式跳转过来
-				 * 返回首页也使用reLaunch方式
+                 * 返回首页也使用reLaunch方式
                  */
                 if (this.forcedLogin) {
                     uni.reLaunch({

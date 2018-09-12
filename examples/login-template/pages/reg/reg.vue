@@ -3,15 +3,15 @@
         <view class="input-group">
             <view class="input-row border">
                 <text class="title">账号：</text>
-                <input type="text" v-model="account" placeholder="请输入账号">
+                <uni-input type="text" focus clearable v-model="account" placeholder="请输入账号"></uni-input>
             </view>
             <view class="input-row border">
                 <text class="title">密码：</text>
-                <input type="text" password="true" v-model="password" placeholder="请输入密码">
+                <uni-input type="password" displayable v-model="password" placeholder="请输入密码"></uni-input>
             </view>
             <view class="input-row">
                 <text class="title">邮箱：</text>
-                <input type="text" v-model="email" placeholder="请输入邮箱">
+                <uni-input type="text" clearable v-model="email" placeholder="请输入邮箱"></uni-input>
             </view>
         </view>
         <view class="btn-row">
@@ -22,8 +22,12 @@
 
 <script>
     import service from '../../service.js';
+    import uniInput from '../../components/uni-input.vue';
 
     export default {
+        components: {
+            uniInput
+        },
         data() {
             return {
                 account: '',

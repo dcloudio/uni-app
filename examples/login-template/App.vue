@@ -74,15 +74,6 @@
         line-height: 50px;
     }
 
-    .input-row input {
-        width: 80%;
-        height: 50px;
-        min-height: 50px;
-        padding: 15px 0;
-        padding-right: 30px;
-        line-height: 50px;
-    }
-
     .input-row.border::after {
         position: absolute;
         right: 0;

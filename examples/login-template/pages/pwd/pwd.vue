@@ -3,7 +3,7 @@
         <view class="input-group">
             <view class="input-row">
                 <text class="title">邮箱：</text>
-                <input type="text" v-model="email" placeholder="请输入邮箱">
+                <uni-input type="text" focus clearable v-model="email" placeholder="请输入邮箱"></uni-input>
             </view>
         </view>
 
@@ -15,8 +15,12 @@
 
 <script>
     import service from '../../service.js';
+    import uniInput from '../../components/uni-input.vue';
 
     export default {
+        components: {
+            uniInput
+        },
         data() {
             return {
                 email: ''
