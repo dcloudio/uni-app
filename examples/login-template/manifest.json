@@ -24,6 +24,9 @@
 
     },
     "mp-weixin": { /* 小程序特有相关 */
-		"appid": ""
+		"appid": "",
+		"setting" : {
+			"urlCheck" : true
+		}
     }
 }
