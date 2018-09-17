@@ -75,7 +75,7 @@
 		methods: {
 			getData() {
 				uni.request({
-					url: 'http://uniapp.dcloud.io/tuku/posts.php?page=' + (this.refreshing ? 1 : this.fetchPageNum) + '&per_page=5',
+					url: 'https://uniapp.dcloud.io/tuku/posts.php?page=' + (this.refreshing ? 1 : this.fetchPageNum) + '&per_page=5',
 					success: (ret) => {
 						console.log("data",ret);
 						if (ret.statusCode !== 200) {
