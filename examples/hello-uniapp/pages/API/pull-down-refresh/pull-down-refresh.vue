@@ -15,8 +15,6 @@
 	</view>
 </template>
 <script>
-	import pageHead from '../../../components/page-head.vue'
-
 	export default {
 		data() {
 			return {
@@ -78,9 +76,6 @@
 				}
 				this.data = this.data.concat(data);
 			}
-		},
-		components: {
-			pageHead
 		}
 	}
 </script>
@@ -91,18 +86,18 @@
 	}
 
 	.page-body-content {
-		padding: 0 30px;
+		padding: 0 30upx;
 	}
 
 	.text {
-		margin: 16px 0;
-		width: 690px;
+		margin: 16upx 0;
+		width: 690upx;
 		background-color: #fff;
-		height: 90px;
-		line-height: 90px;
+		height: 90upx;
+		line-height: 90upx;
 		text-align: center;
 		color: #555;
-		border-radius: 8px;
+		border-radius: 8upx;
 	}
 
 	.loadMore {

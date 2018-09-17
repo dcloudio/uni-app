@@ -22,8 +22,6 @@
 	</view>
 </template>
 <script>
-	import pageHead from '../../../components/page-head.vue'
-
 	export default {
 		data() {
 			return {
@@ -48,21 +46,17 @@
 				this.hasNetworkType = false,
 					this.networkType = ''
 			}
-		},
-		components: {
-			pageHead
-
 		}
 	}
 </script>
 
 <style>
 	.page-body-info {
-		height: 200px;
+		height: 200upx;
 	}
 
 	.page-body-text-network-type {
-		font-size: 80px;
+		font-size: 80upx;
 		font-family: -apple-system-font, Helvetica Neue, Helvetica, sans-serif;
 	}
 </style>

@@ -24,8 +24,6 @@
 	</view>
 </template>
 <script>
-	import pageHead from '../../../components/page-head.vue';
-
 	var util = require('../../../common/util.js');
 	var formatLocation = util.formatLocation;
 
@@ -49,31 +47,27 @@
 			clear: function () {
 				this.hasLocation = false
 			}
-		},
-		components: {
-			pageHead
-
 		}
 	}
 </script>
 
 <style>
 	.page-body-info {
-		height: 250px;
+		height: 250upx;
 	}
 
 	.page-body-text-small {
-		font-size: 24px;
+		font-size: 24upx;
 		color: #000;
-		margin-bottom: 100px;
+		margin-bottom: 100upx;
 	}
 
 	.page-body-text-location {
 		display: flex;
-		font-size: 50px;
+		font-size: 50upx;
 	}
 
 	.page-body-text-location text {
-		margin: 10px;
+		margin: 10upx;
 	}
 </style>

@@ -13,8 +13,6 @@
 	</view>
 </template>
 <script>
-	import pageHead from '../../../components/page-head.vue'
-
 	export default {
 		data() {
 			return {
@@ -39,10 +37,6 @@
 					}
 				})
 			}
-		},
-		components: {
-			pageHead
-
 		}
 	}
 </script>
@@ -50,21 +44,21 @@
 <style>
 	.page-section {
 		width: auto;
-		margin: 30px;
-		padding: 44px 60px 60px;
+		margin: 30upx;
+		padding: 44upx 60upx 60upx;
 		background-color: #fff;
-		font-size: 28px;
+		font-size: 28upx;
 	}
 
 	.desc {
-		margin-bottom: 20px;
+		margin-bottom: 20upx;
 	}
 
 	.input {
-		height: 119px;
-		line-height: 119px;
-		font-size: 78px;
-		border-bottom: 1px solid #E2E2E2;
+		height: 119upx;
+		line-height: 119upx;
+		font-size: 78upx;
+		border-bottom: 1upx solid #E2E2E2;
 	}
 
 	.btn-area {

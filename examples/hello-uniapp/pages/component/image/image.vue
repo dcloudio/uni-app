@@ -18,18 +18,11 @@
 	</view>
 </template>
 <script>
-	import pageHead from '../../../components/page-head.vue'
-
 	export default {
 		data() {
 			return {
 				title: 'image'
 			}
-		},
-		methods: {},
-		components: {
-			pageHead
-
 		}
 	}
 </script>
@@ -40,8 +33,8 @@
 	}
 
 	.image {
-		margin-top: 30px;
-		width: 200px;
-		height: 200px;
+		margin-top: 30upx;
+		width: 200upx;
+		height: 200upx;
 	}
 </style>

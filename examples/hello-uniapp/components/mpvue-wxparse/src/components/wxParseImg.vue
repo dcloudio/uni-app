@@ -44,8 +44,8 @@ export default {
       const { imageheight, imageWidth } = recal;
       const { padding, mode } = this.node.attr;
       const { styleStr } = this.node;
-      const imageHeightStyle = mode === 'widthFix' ? '' : `height: ${imageheight}px;`;
-      this.newStyleStr = `${styleStr}; ${imageHeightStyle}; width: ${imageWidth}px; padding: 0 ${+padding}px;`;
+      const imageHeightStyle = mode === 'widthFix' ? '' : `height: ${imageheight}upx;`;
+      this.newStyleStr = `${styleStr}; ${imageHeightStyle}; width: ${imageWidth}upx; padding: 0 ${+padding}upx;`;
     },
     // 计算视觉优先的图片宽高
     wxAutoImageCal(originalWidth, originalHeight) {

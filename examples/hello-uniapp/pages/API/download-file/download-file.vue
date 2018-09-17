@@ -17,8 +17,6 @@
 	</view>
 </template>
 <script>
-	import pageHead from '../../../components/page-head.vue';
-
 	export default {
 		data() {
 			return {
@@ -43,18 +41,15 @@
 					}
 				})
 			}
-		},
-		components: {
-			pageHead
 		}
 	}
 </script>
 
 <style>
 	.page-body image {
-		width: 600px;
-		height: 600px;
+		width: 600upx;
+		height: 600upx;
 
-		margin: 0 75px;
+		margin: 0 75upx;
 	}
 </style>

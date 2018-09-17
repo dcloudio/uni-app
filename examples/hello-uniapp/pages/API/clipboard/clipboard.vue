@@ -18,8 +18,6 @@
 	</view>
 </template>
 <script>
-	import pageHead from '../../../components/page-head.vue'
-
 	export default {
 		data() {
 			return {
@@ -75,9 +73,6 @@
 					});
 				}
 			}
-		},
-		components: {
-			pageHead
 		}
 	}
 </script>
@@ -86,6 +81,6 @@
 	@import "../../../common/uni.css";
 
 	.uni-list-cell {
-		padding: 0px 30px;
+		padding: 0upx 30upx;
 	}
 </style>

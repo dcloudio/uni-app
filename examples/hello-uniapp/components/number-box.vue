@@ -1,7 +1,7 @@
 <template>
 	<view class="uni-numbox">
 		<view class="uni-numbox-minus" :class="{'uni-numbox-disabled': disableSubtract}" @click="subtract">-</view>
-		<input class="uni-numbox-value" type="number" v-model="value" @blur="handleBlur">
+		<input class="uni-numbox-value" type="number" :disabled="disabled" v-model="value" @blur="handleBlur">
 		<view class="uni-numbox-plus" :class="{'uni-numbox-disabled': disableAdd}" @click="add">+</view>
 	</view>
 </template>
@@ -24,6 +24,10 @@
 			step: {
 				type: Number,
 				default: 1
+			},
+			disabled: {
+				type: Boolean,
+				default: false
 			}
 		},
 		computed: {
@@ -34,11 +38,11 @@
 				return this.value >= this.max
 			}
 		},
-		onUnload(){
+		onUnload() {
 			this.value = 0,
-			this.step = 1,
-			this.max = Infinity,
-			this.min = -Infinity;
+				this.step = 1,
+				this.max = Infinity,
+				this.min = -Infinity;
 		},
 		methods: {
 			subtract(evt) {
@@ -73,6 +77,11 @@
 				}
 				this.value = value
 			}
+		},
+		watch: {
+			value(val) {
+				this.$emit('update', val);
+			}
 		}
 	}
 </script>
@@ -81,38 +90,38 @@
 		display: flex;
 		flex-direction: row;
 		justify-content: flex-start;
-		height: 70px;
+		height: 70upx;
 	}
 
 	.uni-numbox-minus,
 	.uni-numbox-plus {
 		margin: 0;
 		background-color: #f9f9f9;
-		width: 80px;
+		width: 80upx;
 		height: 100%;
-		line-height: 70px;
+		line-height: 70upx;
 		text-align: center;
 		color: #555555;
 	}
 
 	.uni-numbox-minus {
-		border: 2px solid #cccccc;
+		border: 2upx solid #cccccc;
 		border-right: none;
-		border-top-left-radius: 6px;
-		border-bottom-left-radius: 6px;
+		border-top-left-radius: 6upx;
+		border-bottom-left-radius: 6upx;
 	}
 
 	.uni-numbox-plus {
-		border: 2px solid #cccccc;
+		border: 2upx solid #cccccc;
 		border-left: none;
-		border-top-right-radius: 6px;
-		border-bottom-right-radius: 6px;
+		border-top-right-radius: 6upx;
+		border-bottom-right-radius: 6upx;
 	}
 
 	.uni-numbox-value {
-		border: 2px solid #cccccc;
+		border: 2upx solid #cccccc;
 		background-color: #ffffff;
-		width: 80px;
+		width: 80upx;
 		height: 100%;
 		text-align: center;
 	}

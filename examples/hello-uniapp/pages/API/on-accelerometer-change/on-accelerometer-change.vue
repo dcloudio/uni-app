@@ -22,7 +22,6 @@
 	</view>
 </template>
 <script>
-	import pageHead from '../../../components/page-head.vue'
 
 	export default {
 		data() {
@@ -51,9 +50,6 @@
 			stopAcce() {
 				uni.stopAccelerometer()
 			}
-		},
-		components: {
-			pageHead
 		}
 	}
 </script>
@@ -62,14 +58,14 @@
 	.shake {
 		background-color: #FFCC33;
 		color: #ffffff;
-		margin-bottom: 50px;
+		margin-bottom: 50upx;
 	}
 
 	textarea {
-		border: 2px solid #7A7E83;
+		border: 2upx solid #7A7E83;
 		box-sizing: border-box;
 		width: 100%;
-		height: 288px;
-		padding: 20px;
+		height: 288upx;
+		padding: 20upx;
 	}
 </style>

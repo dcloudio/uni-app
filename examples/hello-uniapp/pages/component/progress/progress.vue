@@ -21,16 +21,11 @@
 	</view>
 </template>
 <script>
-	import pageHead from '../../../components/page-head.vue'
-
 	export default {
 		data() {
 			return {
 				title: 'progress'
 			}
-		},
-		components: {
-			pageHead
 		}
 	}
 </script>
@@ -42,11 +37,11 @@
 
 	.progress-box {
 		display: flex;
-		height: 50px;
-		margin-bottom: 60px;
+		height: 50upx;
+		margin-bottom: 60upx;
 	}
 
 	.progress-cancel {
-		margin-left: 40px;
+		margin-left: 40upx;
 	}
 </style>

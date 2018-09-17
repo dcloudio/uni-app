@@ -1,5 +1,9 @@
 <template>
 	<div class="container">
+		<view class="page-section-title" style="display: block;">
+			<text>这是uni-app集成mpvue-echarts的图表示例，mpvue-echarts组件的用法参考：</text>
+			<text class="navigate" @tap="goBrowser" selectable>https://github.com/F-loat/mpvue-echarts</text>
+		</view>
 		<view class="canvasView">
 			<view class="title">饼图示例</view>
 			<mpvue-echarts :echarts="echarts" :onInit="pieInit" canvasId="pie" />
@@ -17,7 +21,7 @@
 
 	function getPieOption() {
 		return {
-			animation:false,
+			animation: false,
 			backgroundColor: '#F8F8F8',
 			color: ['#37A2DA', '#32C5E9', '#67E0E3', '#91F2DE', '#FFDB5C', '#FF9F7F'],
 			series: [{
@@ -118,6 +122,19 @@
 				}
 			}
 		},
+		methods: {
+			goBrowser() {
+				// #ifdef APP-PLUS
+				plus.runtime.openURL("https://github.com/F-loat/mpvue-echarts");
+				// #endif
+				// #ifdef MP-WEIXIN
+				uni.showModal({
+					content:"请复制链接在浏览器里打开",
+					showCancel:false
+				})
+				// #endif
+			}
+		},
 		components: {
 			mpvueEcharts
 		}
@@ -134,17 +151,24 @@
 	page {
 		min-height: 100%;
 	}
-	.title{
-		margin-left: 30px;
+
+	.title {
+		margin-left: 30upx;
 		color: #8f8f94;
 	}
-	.container{
-		padding-bottom: 30px;
+
+	.container {
+		padding-bottom: 30upx;
 		box-sizing: border-box;
 	}
+
 	.container,
 	.canvasView {
 		flex: 1;
 		flex-direction: column;
+	}
+
+	.navigate {
+		color: #007AFF;
 	}
 </style>

@@ -61,8 +61,6 @@
 	</view>
 </template>
 <script>
-	import pageHead from '../../../components/page-head.vue'
-
 	var util = require('../../../common/util.js')
 	var playTimeInterval = null;
 	var recordTimeInterval = null;
@@ -148,23 +146,20 @@
 			clear() {
 				this.end();
 			}
-		},
-		components: {
-			pageHead
 		}
 	}
 </script>
 
 <style>
 	image {
-		width: 150px;
-		height: 150px;
+		width: 150upx;
+		height: 150upx;
 	}
 
 	.page-body-wrapper {
 		justify-content: space-between;
 		flex-grow: 1;
-		margin-bottom: 300px;
+		margin-bottom: 300upx;
 	}
 
 	.page-body-time {
@@ -174,31 +169,31 @@
 	}
 
 	.time-big {
-		font-size: 60px;
-		margin: 20px;
+		font-size: 60upx;
+		margin: 20upx;
 	}
 
 	.time-small {
-		font-size: 30px;
+		font-size: 30upx;
 	}
 
 	.page-body-buttons {
-		margin-top: 60px;
+		margin-top: 60upx;
 		display: flex;
 		justify-content: space-around;
 	}
 
 	.page-body-button {
-		width: 250px;
+		width: 250upx;
 		text-align: center;
 	}
 
 	.button-stop-record {
-		width: 110px;
-		height: 110px;
-		border: 20px solid #fff;
+		width: 110upx;
+		height: 110upx;
+		border: 20upx solid #fff;
 		background-color: #f55c23;
-		border-radius: 130px;
+		border-radius: 130upx;
 		margin: 0 auto;
 	}
 </style>

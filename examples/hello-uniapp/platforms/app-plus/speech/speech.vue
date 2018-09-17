@@ -17,8 +17,6 @@
 	</view>
 </template>
 <script>
-	import pageHead from '../../../components/page-head.vue'
-
 	export default {
 		data() {
 			return {
@@ -55,17 +53,14 @@
 					console.log("语音识别失败：" + e.message);
 				});
 			}
-		},
-		components: {
-			pageHead
 		}
 	}
 </script>
 
 <style>
 	textarea {
-		border: 2px solid #7A7E83;
-		height: 76px;
+		border: 2upx solid #7A7E83;
+		height: 76upx;
 		width: 100%;
 	}
 </style>

@@ -2,12 +2,12 @@
 	font-family: uniicons;
 	font-weight: normal;
 	font-style: normal;
-	src: url('https://img-cdn-qiniu.dcloud.net.cn/fonts/uni.ttf') format('truetype');
+	src: url('https://img-cdn-qiniu.dcloud.net.cn/fonts/uni.ttf?t=1536565627510') format('truetype');
 }
 
 .uni-icon {
 	font-family: uniicons;
-	font-size: 48px;
+	font-size: 48upx;
 	font-weight: normal;
 	font-style: normal;
 	line-height: 1;
@@ -370,4 +370,8 @@
 
 .uni-icon-pulldown:before {
 	content: '\e588';
+}
+
+.uni-icon-scan:before {
+    content: "\e612";
 }

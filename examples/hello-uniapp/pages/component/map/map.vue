@@ -10,8 +10,6 @@
 	</view>
 </template>
 <script>
-	import pageHead from '../../../components/page-head.vue'
-
 	export default {
 		data() {
 			return {
@@ -31,15 +29,12 @@
 		},
 		methods: {
 
-		},
-		components: {
-			pageHead
 		}
 	}
 </script>
 <style>
 	map {
 		width: 100%;
-		height: 600px;
+		height: 600upx;
 	}
 </style>

@@ -30,8 +30,6 @@
     </view>
 </template>
 <script>
-    import pageHead from '../../../components/page-head.vue'
-
     export default {
         data() {
             return {
@@ -103,9 +101,6 @@
                     }
                 })
             }
-        },
-        components: {
-            pageHead
         }
     }
 </script>
@@ -113,16 +108,16 @@
 <style>
     .image {
         width: 100%;
-        height: 360px;
+        height: 360upx;
     }
 
     .page-body-info {
         display: flex;
         box-sizing: border-box;
-        padding: 30px;
-        height: 420px;
-        border-top: 1px solid #D9D9D9;
-        border-bottom: 1px solid #D9D9D9;
+        padding: 30upx;
+        height: 420upx;
+        border-top: 1upx solid #D9D9D9;
+        border-bottom: 1upx solid #D9D9D9;
         align-items: center;
         justify-content: center;
     }

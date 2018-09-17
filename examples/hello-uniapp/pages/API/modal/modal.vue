@@ -10,7 +10,6 @@
 	</view>
 </template>
 <script>
-	import pageHead from '../../../components/page-head.vue'
 
 	export default {
 		data() {
@@ -36,10 +35,6 @@
 					cancelText: "取消"
 				})
 			}
-		},
-		components: {
-			pageHead
-
 		}
 	}
 </script>

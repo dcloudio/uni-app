@@ -15,8 +15,6 @@
 	</view>
 </template>
 <script>
-	import pageHead from '../../../components/page-head.vue'
-
 	export default {
 		data() {
 			return {
@@ -37,10 +35,6 @@
 					fail: function (res) {}
 				})
 			}
-		},
-		components: {
-			pageHead
-
 		}
 	}
 </script>
@@ -49,7 +43,7 @@
 	@import "../../../common/uni.css";
 
 	.uni-input {
-		padding: 15px 30px;
+		padding: 15upx 30upx;
 		word-break: break-all;
 	}
 </style>

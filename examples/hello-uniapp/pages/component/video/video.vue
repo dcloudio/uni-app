@@ -24,8 +24,6 @@
 	</view>
 </template>
 <script>
-	import pageHead from '../../../components/page-head.vue'
-
 	export default {
 		data() {
 			return {
@@ -74,10 +72,6 @@
 				}
 				return '#' + rgb.join('')
 			}
-		},
-		components: {
-			pageHead
-
 		}
 	}
 </script>
@@ -91,7 +85,7 @@
 	}
 
 	.uni-list {
-		margin-top: 40px;
+		margin-top: 40upx;
 	}
 
 	.uni-input {

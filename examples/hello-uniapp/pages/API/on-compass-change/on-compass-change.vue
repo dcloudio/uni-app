@@ -17,8 +17,6 @@
 	</view>
 </template>
 <script>
-	import pageHead from '../../../components/page-head.vue'
-
 	export default {
 		data() {
 			return {
@@ -34,9 +32,6 @@
 		onUnload() {
 			uni.startCompass();
 			this.direction = 0;
-		},
-		components: {
-			pageHead
 		}
 	}
 </script>
@@ -44,17 +39,17 @@
 <style>
 	.direction {
 		position: relative;
-		margin-top: 70px;
+		margin-top: 70upx;
 		display: flex;
-		width: 540px;
-		height: 540px;
+		width: 540upx;
+		height: 540upx;
 		align-items: center;
 		justify-content: center;
 	}
 
 	.direction-value {
 		position: relative;
-		font-size: 200px;
+		font-size: 200upx;
 		color: #353535;
 		line-height: 1;
 		z-index: 1;
@@ -63,27 +58,27 @@
 	.direction-degree {
 		position: absolute;
 		top: 0;
-		right: -40px;
-		font-size: 60px;
+		right: -40upx;
+		font-size: 60upx;
 	}
 
 	.bg-compass {
 		position: absolute;
 		top: 0;
 		left: 0;
-		width: 540px;
-		height: 540px;
+		width: 540upx;
+		height: 540upx;
 		transition: .1s;
 	}
 
 	.bg-compass-line {
 		position: absolute;
-		left: 267px;
-		top: -10px;
-		width: 6px;
-		height: 56px;
+		left: 267upx;
+		top: -10upx;
+		width: 6upx;
+		height: 56upx;
 		background-color: #1AAD19;
-		border-radius: 999px;
+		border-radius: 999upx;
 		z-index: 1;
 	}
 </style>

@@ -9,8 +9,6 @@
 	</view>
 </template>
 <script>
-	import pageHead from '../../../components/page-head.vue'
-	
 	var context = null,interval = null;
 	
 	export default {
@@ -85,18 +83,14 @@
 
 				context.draw()
 			}
-		},
-		components: {
-			pageHead
-
 		}
 	}
 </script>
 
 <style>
 	.canvas {
-		width: 610px;
-		height: 610px;
+		width: 610upx;
+		height: 610upx;
 		background-color: #fff;
 	}
 </style>

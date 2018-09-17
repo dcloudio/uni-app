@@ -7,8 +7,7 @@
 					<text>Vertical Scroll\n纵向滚动</text>
 				</view>
 				<view class="page-section-spacing">
-					<scroll-view scroll-y="true" class="scroll-Y" @scrolltoupper="upper" @scrolltolower="lower" @scroll="scroll" :scroll-into-view="toView"
-					    :scroll-top="scrollTop">
+					<scroll-view scroll-y="true" class="scroll-Y" @scrolltoupper="upper" @scrolltolower="lower" @scroll="scroll">
 						<view id="demo1" class="scroll-view-item color1">A</view>
 						<view id="demo2" class="scroll-view-item color2">B</view>
 						<view id="demo3" class="scroll-view-item color3">C</view>
@@ -31,14 +30,10 @@
 	</view>
 </template>
 <script>
-	import pageHead from '../../../components/page-head.vue'
-
 	export default {
 		data() {
 			return {
-				title: 'scroll-view',
-				toView: 'green',
-				order: ['demo1', 'demo2', 'demo3']
+				title: 'scroll-view'
 			}
 		},
 		methods: {
@@ -51,20 +46,17 @@
 			scroll: function (e) {
 				console.log(e)
 			}
-		},
-		components: {
-			pageHead
 		}
 	}
 </script>
 
 <style>
 	.scroll-Y {
-		height: 300px;
+		height: 300upx;
 	}
 
 	.page-section-spacing {
-		margin-top: 60px;
+		margin-top: 60upx;
 	}
 
 	.scroll-view_H {
@@ -73,18 +65,18 @@
 	}
 
 	.scroll-view-item {
-		height: 300px;
-		line-height: 300px;
+		height: 300upx;
+		line-height: 300upx;
 		text-align: center;
-		font-size: 36px;
+		font-size: 36upx;
 	}
 
 	.scroll-view-item_H {
 		display: inline-block;
 		width: 100%;
-		height: 300px;
-		line-height: 300px;
+		height: 300upx;
+		line-height: 300upx;
 		text-align: center;
-		font-size: 36px;
+		font-size: 36upx;
 	}
 </style>

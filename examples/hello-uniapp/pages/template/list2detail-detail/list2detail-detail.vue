@@ -62,7 +62,7 @@
 	}
 
 	.banner {
-		height: 360px;
+		height: 360upx;
 		overflow: hidden;
 		position: relative;
 		background-color: #ccc;
@@ -73,21 +73,21 @@
 	}
 
 	.banner-title {
-		max-height: 84px;
+		max-height: 84upx;
 		overflow: hidden;
 		position: absolute;
-		left: 30px;
-		bottom: 30px;
+		left: 30upx;
+		bottom: 30upx;
 		width: 90%;
-		font-size: 32px;
+		font-size: 32upx;
 		font-weight: 400;
-		line-height: 42px;
+		line-height: 42upx;
 		color: white;
 		z-index: 11;
 	}
 
 	.article-meta {
-		padding: 20px 40px;
+		padding: 20upx 40upx;
 		display: flex;
 		flex-direction: row;
 		justify-content: flex-start;
@@ -95,19 +95,19 @@
 	}
 
 	.article-text {
-		font-size: 26px;
-		line-height: 50px;
-		margin: 0 20px;
+		font-size: 26upx;
+		line-height: 50upx;
+		margin: 0 20upx;
 	}
 
 	.article-author,
 	.article-time {
-		font-size: 30px;
+		font-size: 30upx;
 	}
 
 	.article-content {
-		padding: 0 30px;
+		padding: 0 30upx;
 		overflow: hidden;
-		font-size: 30px;
+		font-size: 30upx;
 	}
 </style>

@@ -21,8 +21,6 @@
 	</view>
 </template>
 <script>
-	import pageHead from '../../../components/page-head.vue'
-
 	export default {
 		data() {
 			return {
@@ -114,9 +112,6 @@
 				url += ('&version=' + encodeURIComponent(plus.runtime.version));
 				plus.runtime.openURL(url);
 			}
-		},
-		components: {
-			pageHead
 		}
 	}
 </script>
@@ -125,13 +120,13 @@
 	.textare-view{
 		box-sizing: border-box;
 		width: 100%;
-		padding: 0 30px;
+		padding: 0 30upx;
 	}
 	textarea{
 		background-color: #FFFFFF;
 		width: 100%;
-		height: 200px;
-		padding: 10px;
+		height: 200upx;
+		padding: 10upx;
 		box-sizing: border-box;
 	}
 </style>

@@ -47,8 +47,6 @@
 	</view>
 </template>
 <script>
-	import pageHead from '../../../components/page-head.vue'
-
 	export default {
 		data() {
 			return {
@@ -66,10 +64,6 @@
 					address: value.address
 				})
 			}
-		},
-		components: {
-			pageHead
-
 		}
 	}
 </script>
@@ -77,25 +71,25 @@
 <style>
 	@import "../../../common/uni.css";
 	.page-body-info {
-		height: 250px;
+		height: 250upx;
 	}
 
 	.page-body-text-small {
-		font-size: 24px;
+		font-size: 24upx;
 		color: #000;
-		margin-bottom: 100px;
+		margin-bottom: 100upx;
 	}
 
 	.page-body-text-location {
 		display: flex;
-		font-size: 50px;
+		font-size: 50upx;
 	}
 
 	.page-body-text-location text {
-		margin: 10px;
+		margin: 10upx;
 	}
 
 	.uni-list-cell-left {
-		padding: 0 30px;
+		padding: 0 30upx;
 	}
 </style>

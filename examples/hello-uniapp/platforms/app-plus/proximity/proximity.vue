@@ -21,7 +21,6 @@
 	</view>
 </template>
 <script>
-	import pageHead from '../../../components/page-head.vue'
 	var id = null
 	var bright = null
 	export default {
@@ -65,21 +64,18 @@
 					that.value = "没有监听设备距离传感器";
 				}
 			}
-		},
-		components: {
-			pageHead
 		}
 	}
 </script>
 
 <style>
 	textarea {
-		border: 2px solid #7A7E83;
-		height: 288px;
+		border: 2upx solid #7A7E83;
+		height: 288upx;
 	}
 	.page-body-desc{
-		font-size: 32px;
+		font-size: 32upx;
 		color: #BEBEBE;
-		padding: 30px;
+		padding: 30upx;
 	}
 </style>

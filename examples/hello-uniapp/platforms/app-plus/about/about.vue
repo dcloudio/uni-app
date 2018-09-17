@@ -130,8 +130,8 @@
 		background-color: #FFFFFF;
 	}
 	image{
-		max-width: 400px;
-		height: 400px;
+		width: 400upx;
+		height: 400upx;
 	}
 	.about{
 		flex-direction: column;
@@ -139,12 +139,12 @@
 	}
 	.content{
 		flex: 1;
-		padding: 30px;
+		padding: 30upx;
 		flex-direction: column;
 		justify-content: center;
 	}
 	.desc{
-		margin-top: 30px;
+		margin-top: 30upx;
 		display: block;
 	}
 	.code{
@@ -153,11 +153,11 @@
 	}
 	button{
 		width: 100%;
-		margin-top: 40px;
+		margin-top: 40upx;
 	}
 	.version{
-		height: 80px;
-		line-height: 80px;
+		height: 80upx;
+		line-height: 80upx;
 		justify-content: center;
 		color: #ccc;
 	}

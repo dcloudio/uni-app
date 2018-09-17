@@ -19,8 +19,6 @@
 	</view>
 </template>
 <script>
-	import pageHead from '../../../components/page-head.vue'
-
 	export default {
 		data() {
 			return {
@@ -97,8 +95,10 @@
 				})
 			},
 			getOrderInfo(e) {
-				let appid = uni.os.plus ? plus.runtime.appid : "";
-
+				let appid = "";
+				// #ifdef APP-PLUS
+				appid = plus.runtime.appid;
+				// #endif
 				let url = 'https://demo.dcloud.net.cn/payment/?payid=' + e + '&appid=' + appid + '&total=0.01';
 				return new Promise((res) => {
 					uni.request({
@@ -112,9 +112,6 @@
 					})
 				})
 			}
-		},
-		components: {
-			pageHead
 		}
 	}
 </script>
@@ -122,11 +119,11 @@
 <style>
 	.page-section {
 		width: auto;
-		margin: 30px;
-		padding: 64px 30px;
+		margin: 30upx;
+		padding: 64upx 30upx;
 		background-color: #fff;
 		text-align: center;
-		font-size: 28px;
+		font-size: 28upx;
 	}
 
 	.desc {
@@ -134,19 +131,19 @@
 	}
 
 	.price {
-		margin-top: 30px;
-		margin-bottom: 25px;
+		margin-top: 30upx;
+		margin-bottom: 25upx;
 		position: relative;
 		display: inline-block;
-		font-size: 78px;
+		font-size: 78upx;
 		line-height: 1;
 	}
 
 	.rmbLogo {
 		position: absolute;
-		font-size: 40px;
-		top: 8px;
-		left: -40px;
+		font-size: 40upx;
+		top: 8upx;
+		left: -40upx;
 	}
 
 	button {

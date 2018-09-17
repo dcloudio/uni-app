@@ -27,8 +27,6 @@
 	</view>
 </template>
 <script>
-	import pageHead from '../../../components/page-head.vue'
-	import pageFoot from '../../../components/page-foot.vue'
 	import qrcode from '../../../components/qrcode/qrcode.vue'
 
 	export default {
@@ -66,8 +64,6 @@
 			}
 		},
 		components: {
-			pageHead,
-			pageFoot,
 			qrcode
 		}
 	}
@@ -77,15 +73,15 @@
 	@import "../../../common/uni.css";
 	@import "../../../common/icon.css";
 	.page-section {
-		margin-bottom: 20px;
+		margin-bottom: 20upx;
 	}
 
 	.page-body {
-		padding-bottom: 40px;
+		padding-bottom: 40upx;
 	}
 
 	.uni-list-cell {
-		padding: 0 30px;
+		padding: 0 30upx;
 	}
 
 	.uni-input {

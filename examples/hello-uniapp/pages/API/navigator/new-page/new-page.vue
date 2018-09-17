@@ -7,7 +7,6 @@
 	</view>
 </template>
 <script>
-	import pageHead from '../../../../components/page-head.vue'
 	export default {
 		data() {
 			return {
@@ -19,9 +18,6 @@
 			if(e.data){
 				this.data = e.data;
 			}
-		},
-		components: {
-			pageHead
 		}
 	}
 </script>

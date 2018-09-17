@@ -28,8 +28,8 @@
 				</view>
 			</view>
 			<view class='cropper-config'>
-				<button type="primary reverse" @click="getImage" style='margin-top: 30px;'> 选择图片 </button>
-				<button type="warn" @click="getImageInfo" style='margin-top: 30px;'> 点击生成图片 </button>
+				<button type="primary reverse" @click="getImage" style='margin-top: 30upx;'> 选择图片 </button>
+				<button type="warn" @click="getImageInfo" style='margin-top: 30upx;'> 点击生成图片 </button>
 			</view>
 			<canvas canvas-id="myCanvas" :style="'position:absolute;border: 1px solid red; width:'+imageW+'px;height:'+imageH+'px;top:-9999px;left:-9999px;'"></canvas>
 		</view>
@@ -38,8 +38,6 @@
 </template>
 
 <script>
-	import pageFoot from '../../../components/page-foot.vue';
-	
 	let sysInfo = uni.getSystemInfoSync();
 	let SCREEN_WIDTH = sysInfo.screenWidth
 	let PAGE_X, // 手按下的x位置
@@ -67,7 +65,7 @@
 		data() {
 			return {
 				name:'杨大宝',
-				imageSrc: 'http://www.bing.com/az/hprichbg/rb/BulgariaPerseids_ZH-CN11638911564_1920x1080.jpg',
+				imageSrc: 'https://img-cdn-qiniu.dcloud.net.cn/demo_crop.jpg',
 				isShowImg: false,
 				// 初始化的宽高
 				cropperInitW: SCREEN_WIDTH,
@@ -95,9 +93,6 @@
 				qualityWidth: DRAW_IMAGE_W,
 				innerAspectRadio: DRAFG_MOVE_RATIO
 			}
-		},
-		components: {
-			pageFoot
 		},
 		/**
 		 * 生命周期函数--监听页面加载
@@ -360,11 +355,11 @@
 	}
 
 	.cropper-config {
-		padding: 20px 40px;
+		padding: 20upx 40upx;
 	}
 
 	.cropper-content {
-		min-height: 750px;
+		min-height: 750upx;
 		width: 100%;
 	}
 
@@ -421,7 +416,7 @@
 		width: 100%;
 		height: 100%;
 		overflow: visible;
-		outline: 1px solid #69f;
+		outline: 1upx solid #69f;
 		outline-color: rgba(102, 153, 255, .75)
 	}
 	/* 横向虚线 */
@@ -432,8 +427,8 @@
 		left: 0;
 		width: 100%;
 		height: 33.33333333%;
-		border-top: 1px dashed rgba(255, 255, 255, 0.5);
-		border-bottom: 1px dashed rgba(255, 255, 255, 0.5);
+		border-top: 1upx dashed rgba(255, 255, 255, 0.5);
+		border-bottom: 1upx dashed rgba(255, 255, 255, 0.5);
 	}
 	/* 纵向虚线 */
 
@@ -443,8 +438,8 @@
 		top: 0;
 		width: 33.33333333%;
 		height: 100%;
-		border-left: 1px dashed rgba(255, 255, 255, 0.5);
-		border-right: 1px dashed rgba(255, 255, 255, 0.5);
+		border-left: 1upx dashed rgba(255, 255, 255, 0.5);
+		border-right: 1upx dashed rgba(255, 255, 255, 0.5);
 	}
 	/* 四个方向的线  为了之后的拖动事件*/
 
@@ -455,7 +450,7 @@
 		background-color: #69f;
 		top: 0;
 		left: 0;
-		height: 1px;
+		height: 1upx;
 		opacity: 0.1;
 		cursor: n-resize;
 	}
@@ -464,12 +459,12 @@
 		content: '';
 		position: absolute;
 		top: 50%;
-		right: 0px;
+		right: 0upx;
 		width: 100%;
 		-webkit-transform: translate3d(0, -50%, 0);
 		transform: translate3d(0, -50%, 0);
 		bottom: 0;
-		height: 41px;
+		height: 41upx;
 		background: transparent;
 		z-index: 11;
 	}
@@ -479,8 +474,8 @@
 		display: block;
 		background-color: #69f;
 		top: 0;
-		right: 0px;
-		width: 1px;
+		right: 0upx;
+		width: 1upx;
 		opacity: 0.1;
 		height: 100%;
 		cursor: e-resize;
@@ -491,7 +486,7 @@
 		position: absolute;
 		top: 0;
 		left: 50%;
-		width: 41px;
+		width: 41upx;
 		-webkit-transform: translate3d(-50%, 0, 0);
 		transform: translate3d(-50%, 0, 0);
 		bottom: 0;
@@ -507,7 +502,7 @@
 		background-color: #69f;
 		bottom: 0;
 		left: 0;
-		height: 1px;
+		height: 1upx;
 		opacity: 0.1;
 		cursor: s-resize;
 	}
@@ -516,12 +511,12 @@
 		content: '';
 		position: absolute;
 		top: 50%;
-		right: 0px;
+		right: 0upx;
 		width: 100%;
 		-webkit-transform: translate3d(0, -50%, 0);
 		transform: translate3d(0, -50%, 0);
 		bottom: 0;
-		height: 41px;
+		height: 41upx;
 		background: transparent;
 		z-index: 11;
 	}
@@ -532,7 +527,7 @@
 		background-color: #69f;
 		top: 0;
 		left: 0;
-		width: 1px;
+		width: 1upx;
 		opacity: 0.1;
 		height: 100%;
 		cursor: w-resize;
@@ -543,7 +538,7 @@
 		position: absolute;
 		top: 0;
 		left: 50%;
-		width: 41px;
+		width: 41upx;
 		-webkit-transform: translate3d(-50%, 0, 0);
 		transform: translate3d(-50%, 0, 0);
 		bottom: 0;
@@ -553,8 +548,8 @@
 	}
 
 	.uni-cropper-point {
-		width: 5px;
-		height: 5px;
+		width: 5upx;
+		height: 5upx;
 		background-color: #69f;
 		opacity: .75;
 		position: absolute;
@@ -562,24 +557,24 @@
 	}
 
 	.point-t {
-		top: -3px;
+		top: -3upx;
 		left: 50%;
-		margin-left: -3px;
+		margin-left: -3upx;
 		cursor: n-resize;
 	}
 
 	.point-tr {
-		top: -3px;
+		top: -3upx;
 		left: 100%;
-		margin-left: -3px;
+		margin-left: -3upx;
 		cursor: n-resize;
 	}
 
 	.point-r {
 		top: 50%;
 		left: 100%;
-		margin-left: -3px;
-		margin-top: -3px;
+		margin-left: -3upx;
+		margin-top: -3upx;
 		cursor: n-resize;
 	}
 
@@ -589,8 +584,8 @@
 		-webkit-transform: translate3d(-50%, -50%, 0);
 		transform: translate3d(-50%, -50%, 0);
 		cursor: n-resize;
-		width: 36px;
-		height: 36px;
+		width: 36upx;
+		height: 36upx;
 		background-color: #69f;
 		position: absolute;
 		z-index: 1112;
@@ -600,32 +595,32 @@
 	.point-b {
 		left: 50%;
 		top: 100%;
-		margin-left: -3px;
-		margin-top: -3px;
+		margin-left: -3upx;
+		margin-top: -3upx;
 		cursor: n-resize;
 	}
 
 	.point-bl {
 		left: 0%;
 		top: 100%;
-		margin-left: -3px;
-		margin-top: -3px;
+		margin-left: -3upx;
+		margin-top: -3upx;
 		cursor: n-resize;
 	}
 
 	.point-l {
 		left: 0%;
 		top: 50%;
-		margin-left: -3px;
-		margin-top: -3px;
+		margin-left: -3upx;
+		margin-top: -3upx;
 		cursor: n-resize;
 	}
 
 	.point-lt {
 		left: 0%;
 		top: 0%;
-		margin-left: -3px;
-		margin-top: -3px;
+		margin-left: -3upx;
+		margin-top: -3upx;
 		cursor: n-resize;
 	}
 	/* 裁剪框预览内容 */

@@ -12,7 +12,7 @@
 			</view>
 			<view class="page-body-text">注意：离开当前页面后背景音乐将保持播放，但退出uni-app将停止</view>
 			<view class="page-body-buttons">
-				<block v-if="playing === true">
+				<block v-if="playing">
 					<view class="page-body-button" @tap="stop">
 						<image src="../../../static/stop.png"></image>
 					</view>
@@ -20,7 +20,7 @@
 						<image src="../../../static/pause.png"></image>
 					</view>
 				</block>
-				<block v-if="playing === false">
+				<block v-if="!playing">
 					<view class="page-body-button"></view>
 					<view class="page-body-button" @tap="play">
 						<image src="../../../static/play.png"></image>
@@ -32,7 +32,6 @@
 	</view>
 </template>
 <script>
-	import pageHead from '../../../components/page-head.vue';
 
 	var util = require('../../../common/util.js');
 
@@ -48,30 +47,41 @@
 			}
 		},
 		onLoad: function () {
-			const bgAudioMannager = uni.getBackgroundAudioManager();
-			bgAudioMannager.title = '致爱丽丝';
-			bgAudioMannager.singer = '暂无';
-			bgAudioMannager.coverImgUrl = 'https://img-cdn-qiniu.dcloud.net.cn/uniapp/audio/music.jpg';
+			this.playing = this.$backgroundAudioData.playing;
+			this.playTime = this.$backgroundAudioData.playTime;
+			this.formatedPlayTime = this.$backgroundAudioData.formatedPlayTime;
+			
+			let bgAudioMannager = uni.getBackgroundAudioManager();
+			if(!bgAudioMannager.title){
+				bgAudioMannager.title = '致爱丽丝';
+			}
+			if(!bgAudioMannager.singer) {
+				bgAudioMannager.singer = '暂无';
+			}
+			if(!bgAudioMannager.coverImgUrl){
+				bgAudioMannager.coverImgUrl = 'https://img-cdn-qiniu.dcloud.net.cn/uniapp/audio/music.jpg';
+			}
 
 			bgAudioMannager.onPlay(() => {
 				console.log("开始播放");
-				this.playing = true;
+				this.$backgroundAudioData.playing = this.playing = true;
 			})
 			bgAudioMannager.onPause(() => {
 				console.log("暂停播放");
-				this.playing = false;
+				this.$backgroundAudioData.playing = this.playing = false;
 			})
 			bgAudioMannager.onEnded(() => {
 				this.playing = false;
-				this.playTime = 0;
-				this.formatedPlayTime = util.formatTime(0);
+				this.$backgroundAudioData.playing = false;
+				this.$backgroundAudioData.playTime = this.playTime = 0;
+				this.$backgroundAudioData.formatedPlayTime = this.formatedPlayTime = util.formatTime(0);
 			})
 
 			bgAudioMannager.onTimeUpdate((e) => {
-				if (Math.floor(this.bgAudioMannager.currentTime) > Math.floor(this.playTime)) {
-					this.formatedPlayTime = util.formatTime(Math.floor(this.bgAudioMannager.currentTime));
+				if (Math.floor(bgAudioMannager.currentTime) > Math.floor(this.playTime)) {
+					this.$backgroundAudioData.formatedPlayTime = this.formatedPlayTime = util.formatTime(Math.floor(bgAudioMannager.currentTime));
 				}
-				this.playTime = this.bgAudioMannager.currentTime;
+				this.$backgroundAudioData.playTime = this.playTime = bgAudioMannager.currentTime;
 			})
 
 			this.bgAudioMannager = bgAudioMannager;
@@ -94,25 +104,22 @@
 			},
 			stop: function () {
 				this.bgAudioMannager.stop();
-				this.playing = false;
-				this.playTime = 0;
-				this.formatedPlayTime = util.formatTime(0);
+				this.$backgroundAudioData.playing = this.playing = false;
+				this.$backgroundAudioData.playTime = this.playTime = 0;
+				this.$backgroundAudioData.formatedPlayTime = this.formatedPlayTime = util.formatTime(0);
 			}
-		},
-		components: {
-			pageHead
 		}
 	}
 </script>
 
 <style>
 	image {
-		width: 150px;
-		height: 150px;
+		width: 150upx;
+		height: 150upx;
 	}
 
 	.page-body-text {
-		padding: 0 30px;
+		padding: 0 30upx;
 	}
 
 	.page-body-wrapper {
@@ -120,22 +127,22 @@
 	}
 
 	.page-body-info {
-		padding-bottom: 50px;
+		padding-bottom: 50upx;
 	}
 
 	.time-big {
-		font-size: 60px;
-		margin: 20px;
+		font-size: 60upx;
+		margin: 20upx;
 	}
 
 	.slider {
-		width: 650px;
+		width: 650upx;
 	}
 
 	.play-time {
-		font-size: 28px;
-		width: 700px;
-		padding: 20px 0;
+		font-size: 28upx;
+		width: 700upx;
+		padding: 20upx 0;
 		display: flex;
 		justify-content: space-between;
 		box-sizing: border-box;
@@ -144,11 +151,11 @@
 	.page-body-buttons {
 		display: flex;
 		justify-content: space-around;
-		margin-top: 100px;
+		margin-top: 100upx;
 	}
 
 	.page-body-button {
-		width: 250px;
+		width: 250upx;
 		text-align: center;
 	}
 </style>

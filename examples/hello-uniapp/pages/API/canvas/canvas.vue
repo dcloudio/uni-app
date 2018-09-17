@@ -15,8 +15,6 @@
 	</view>
 </template>
 <script>
-	import pageHead from '../../../components/page-head.vue';
-
 	var context = null;
 	export default {
 		data() {
@@ -329,9 +327,6 @@
 				})
 				context.draw()
 			}
-		},
-		components: {
-			pageHead
 		}
 	}
 </script>
@@ -339,26 +334,26 @@
 <style>
 	.canvas-element-wrapper {
 		display: block;
-		margin-bottom: 100px;
+		margin-bottom: 100upx;
 	}
 
 	.canvas-element {
 		width: 100%;
-		height: 500px;
+		height: 500upx;
 		background-color: #ffffff;
 	}
 
 	.canvas-buttons {
-		padding: 30px 50px 10px;
+		padding: 30upx 50upx 10upx;
 		width: 100%;
-		height: 360px;
+		height: 360upx;
 		box-sizing: border-box;
 	}
 
 	.canvas-button {
 		float: left;
 		line-height: 2;
-		width: 300px;
-		margin: 15px 12px;
+		width: 300upx;
+		margin: 15upx 12upx;
 	}
 </style>

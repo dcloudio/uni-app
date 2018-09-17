@@ -10,8 +10,6 @@
 	</view>
 </template>
 <script>
-	import pageHead from '../../../components/page-head.vue'
-
 	export default {
 		data() {
 			return {
@@ -25,10 +23,6 @@
 			hideLoading: function () {
 				uni.hideLoading()
 			}
-		},
-		components: {
-			pageHead
-
 		}
 	}
 </script>

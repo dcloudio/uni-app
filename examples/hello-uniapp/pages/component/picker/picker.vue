@@ -50,8 +50,6 @@
 	</view>
 </template>
 <script>
-	import pageHead from '../../../components/page-head.vue'
-
 	export default {
 		data() {
 			return {
@@ -73,10 +71,6 @@
 			bindTimeChange: function (e) {
 				this.time = e.target.value
 			}
-		},
-		components: {
-			pageHead
-
 		}
 	}
 </script>
@@ -89,6 +83,6 @@
 
 	.uni-list-cell-db,
 	.list-left {
-		padding: 0 24px;
+		padding: 0 24upx;
 	}
 </style>

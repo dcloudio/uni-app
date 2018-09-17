@@ -44,16 +44,13 @@
 	</view>
 </template>
 <script>
-	import pageHead from '../../../components/page-head.vue'
-
 	export default {
 		data() {
 			return {
 				title: 'swiper',
 				background: ['color1', 'color2', 'color3'],
 				indicatorDots: true,
-				vertical: false,
-				autoplay: false,
+				autoplay: true,
 				interval: 2000,
 				duration: 500
 			}
@@ -71,9 +68,6 @@
 			durationChange(e) {
 				this.duration = e.target.value
 			}
-		},
-		components: {
-			pageHead
 		}
 	}
 </script>
@@ -83,19 +77,19 @@
 
 	.swiper-item {
 		display: block;
-		height: 300px;
-		line-height: 300px;
+		height: 300upx;
+		line-height: 300upx;
 		text-align: center;
 	}
 
 	.swiper-list {
-		margin-top: 40px;
+		margin-top: 40upx;
 		margin-bottom: 0;
 	}
 
 	.page-section-title {
 		padding: 0;
-		margin-top: 60px;
+		margin-top: 60upx;
 		position: relative;
 	}
 
@@ -103,6 +97,6 @@
 		position: absolute;
 		right: 0;
 		color: #353535;
-		font-size: 30px;
+		font-size: 30upx;
 	}
 </style>

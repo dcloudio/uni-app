@@ -51,8 +51,6 @@
 	</view>
 </template>
 <script>
-	import pageHead from '../../../components/page-head.vue'
-
 	export default {
 		data() {
 			return {
@@ -79,10 +77,6 @@
 				console.log("清空数据")
 				this.chosen = ''
 			}
-		},
-		components: {
-			pageHead
-
 		}
 	}
 </script>
@@ -92,8 +86,8 @@
 	label {
 		display: flex;
 		flex-direction: row;
-		min-width: 270px;
-		margin-right: 20px;
+		min-width: 270upx;
+		margin-right: 20upx;
 	}
 
 	.btn-submit {
@@ -102,6 +96,6 @@
 	}
 	.uni-input{
 		width: 100%;
-		padding-left: 30px;
+		padding-left: 30upx;
 	}
 </style>

@@ -51,8 +51,6 @@
 	</view>
 </template>
 <script>
-	import pageHead from '../../../components/page-head.vue'
-
 	export default {
 		data() {
 			return {
@@ -260,9 +258,6 @@
 					});
 				})
 			}
-		},
-		components: {
-			pageHead
 		}
 	}
 </script>
@@ -271,21 +266,21 @@
 	@import "../../../common/uni.css";
 
 	.textarea-wrp {
-		padding: 0 20px;
+		padding: 0 20upx;
 	}
 	.page-section{
-		margin-bottom: 20px;
+		margin-bottom: 20upx;
 	}
 	.textarea {
-		border: 2px solid #D8D8D8;
-		padding: 10px;
-		height: 90px;
-		width: 690px;
+		border: 2upx solid #D8D8D8;
+		padding: 10upx;
+		height: 90upx;
+		width: 690upx;
 	}
 	.uni-input{
-		border: 2px solid #D8D8D8;
-		padding: 0 10px;
-		width: 690px;
+		border: 2upx solid #D8D8D8;
+		padding: 0 10upx;
+		width: 690upx;
 	}
 	.uni-uploader-body {
 		display: flex;
@@ -294,7 +289,7 @@
 	radio-group{
 		box-sizing: border-box;
 		width: 100%;
-		padding: 0 30px;
+		padding: 0 30upx;
 		display: flex;
 		justify-content: space-between;
 	}
