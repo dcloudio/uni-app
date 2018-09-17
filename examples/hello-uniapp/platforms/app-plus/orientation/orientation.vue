@@ -18,7 +18,6 @@
 	</view>
 </template>
 <script>
-	import pageHead from '../../../components/page-head.vue'
 	var id = null
 	export default {
 		data() {
@@ -57,9 +56,6 @@
 					console.log("没有监听设备方向变化");
 				}
 			}
-		},
-		components: {
-			pageHead
 		}
 	}
 </script>
@@ -67,7 +63,7 @@
 <style>
 
 	textarea {
-		border: 2px solid #7A7E83;
-		height: 288px;
+		border: 2upx solid #7A7E83;
+		height: 288upx;
 	}
 </style>

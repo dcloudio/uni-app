@@ -32,7 +32,6 @@
 		mapState,
 		mapMutations
 	} from 'vuex'
-	import pageHead from '../../../components/page-head.vue'
 
 	export default {
 		data() {
@@ -88,9 +87,6 @@
 				this.hasUserInfo = false,
 					this.userInfo = {}
 			}
-		},
-		components: {
-			pageHead
 		}
 	}
 </script>
@@ -98,17 +94,17 @@
 <style>
 	.page-body-info {
 		padding-bottom: 0;
-		height: 460px;
+		height: 460upx;
 	}
 
 	.userinfo-avatar {
-		border-radius: 128px;
-		width: 128px;
-		height: 128px;
+		border-radius: 128upx;
+		width: 128upx;
+		height: 128upx;
 	}
 
 	.userinfo-nickname {
-		margin-top: 20px;
-		font-size: 38px;
+		margin-top: 20upx;
+		font-size: 38upx;
 	}
 </style>

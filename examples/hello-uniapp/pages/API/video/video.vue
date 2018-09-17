@@ -32,8 +32,6 @@
 	</view>
 </template>
 <script>
-	import pageHead from '../../../components/page-head.vue'
-
 	var sourceType = [
 		['camera'],
 		['album'],
@@ -65,9 +63,6 @@
 					}
 				})
 			}
-		},
-		components: {
-			pageHead
 		}
 	}
 </script>
@@ -76,11 +71,11 @@
 	@import "../../../common/uni.css";
 	.page-body-info {
 		display: flex;
-		margin-top: 40px;
+		margin-top: 40upx;
 		padding: 0;
-		height: 360px;
-		border-top: 1px solid #D9D9D9;
-		border-bottom: 1px solid #D9D9D9;
+		height: 360upx;
+		border-top: 1upx solid #D9D9D9;
+		border-bottom: 1upx solid #D9D9D9;
 		align-items: center;
 		justify-content: center;
 	}

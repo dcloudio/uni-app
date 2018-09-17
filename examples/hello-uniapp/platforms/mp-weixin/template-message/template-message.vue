@@ -48,7 +48,6 @@
 	import {
 		mapActions
 	} from 'vuex'
-	import pageHead from '../../../components/page-head.vue'
 
 	const templateMessageUrl = `https://www.example.com/templateMessage`; //开发者自己的接口地址
 	export default {
@@ -99,9 +98,6 @@
 					console.log('submit form fail, errMsg is:', e)
 				}
 			}
-		},
-		components: {
-			pageHead
 		}
 	}
 </script>

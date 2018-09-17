@@ -69,8 +69,6 @@
 	</view>
 </template>
 <script>
-	import pageHead from '../../../components/page-head.vue'
-
 	var sourceType = [
 		['camera'],
 		['album'],
@@ -156,9 +154,6 @@
 					urls: this.imageList
 				})
 			}
-		},
-		components: {
-			pageHead
 		}
 	}
 </script>
@@ -167,10 +162,10 @@
 	@import "../../../common/uni.css";
 
 	.cell-pd {
-		padding: 22px 30px;
+		padding: 22upx 30upx;
 	}
 
 	.list-pd {
-		margin-top: 50px;
+		margin-top: 50upx;
 	}
 </style>

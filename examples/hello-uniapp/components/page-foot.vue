@@ -27,12 +27,12 @@
 <style>
 	.page-share-title {
 		text-align: center;
-		font-size: 30px;
+		font-size: 30upx;
 		color: #BEBEBE;
-		margin: 20px 0;
+		padding: 20upx 0;
 	}
 
 	.submit {
-		border-bottom: 1px solid #BEBEBE;
+		border-bottom: 1upx solid #BEBEBE;
 	}
 </style>

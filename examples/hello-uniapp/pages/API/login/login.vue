@@ -20,7 +20,6 @@
 		mapState,
 		mapMutations
 	} from 'vuex'
-	import pageHead from '../../../components/page-head.vue'
 
 	export default {
 		data() {
@@ -80,35 +79,32 @@
 					}
 				})
 			}
-		},
-		components: {
-			pageHead
 		}
 	}
 </script>
 
 <style>
 	.page-section {
-		margin-top: 200px;
+		margin-top: 200upx;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
 		width: 100%;
-		padding: 0 50px;
+		padding: 0 50upx;
 		box-sizing: border-box;
 	}
 
 	.page-body-title {
-		font-size: 60px;
-		line-height: 200px;
+		font-size: 60upx;
+		line-height: 200upx;
 	}
 
 	.page-body-text {
 		color: #bbb;
-		font-size: 28px;
-		line-height: 40px;
-		margin: 0 0 100px 0;
+		font-size: 28upx;
+		line-height: 40upx;
+		margin: 0 0 100upx 0;
 		text-align: center;
 	}
 

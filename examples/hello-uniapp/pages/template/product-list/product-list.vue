@@ -1,100 +1,162 @@
 <template>
-  <view class="page">
-    <page-head :title="title"></page-head>
-    <view class="product-list">
-      <view v-for="(product,index) in productList" :key="index">
-        <product :image="product.image" :title="product.title" :originalPrice="product.originalPrice" :favourPrice="product.favourPrice"
-          :tip="product.tip"></product>
-      </view>
-    </view>
-  </view>
+	<view class="page">
+		<page-head :title="title"></page-head>
+		<view class="product-list">
+			<view class="product" v-for="(product,index) in productList" :key="index">
+				<view class="image-view">
+					<image v-if="renderImage" class="product-image" :src="product.image"></image>
+				</view>
+				<view class="product-title">{{product.title}}</view>
+				<view class="product-price">
+					<text class="product-price-favour">￥{{product.originalPrice}}</text>
+					<text class="product-price-original">￥{{product.favourPrice}}</text>
+					<text class="product-tip">{{product.tip}}</text>
+				</view>
+			</view>
+		</view>
+	</view>
 </template>
 
 <script>
-  import product from '../../../components/product.vue';
-  import pageHead from '../../../components/page-head.vue';
-
-  export default {
+export default {
     data() {
-      return {
-        title: 'product-list',
-        productList: []
-      }
-    },
-    components: {
-      product,
-      pageHead
+        return {
+            title: 'product-list',
+            productList: [],
+            renderImage: false
+        };
     },
     methods: {
-      loadData(action = 'add') {
-        const data = [{
-          image: 'https://img-cdn-qiniu.dcloud.net.cn/uploads/example/product1.jpg',
-          title: 'Apple iPhone X 256GB 深空灰色 移动联通电信4G手机',
-          originalPrice: 9999,
-          favourPrice: 8888,
-          tip: '自营'
-        }, {
-          image: 'https://img-cdn-qiniu.dcloud.net.cn/uploads/example/product2.jpg',
-          title: 'Apple iPad 平板电脑 2018年新款9.7英寸',
-          originalPrice: 3499,
-          favourPrice: 3399,
-          tip: '优惠'
-        }, {
-          image: 'https://img-cdn-qiniu.dcloud.net.cn/uploads/example/product3.jpg',
-          title: 'Apple MacBook Pro 13.3英寸笔记本电脑（2017款Core i5处理器/8GB内存/256GB硬盘 MPXT2CH/A）',
-          originalPrice: 12999,
-          favourPrice: 10688,
-          tip: '秒杀'
-        }, {
-          image: 'https://img-cdn-qiniu.dcloud.net.cn/uploads/example/product4.jpg',
-          title: 'Kindle Paperwhite电纸书阅读器 电子书墨水屏 6英寸wifi 黑色',
-          originalPrice: 999,
-          favourPrice: 958,
-          tip: '秒杀'
-        }, {
-          image: 'https://img-cdn-qiniu.dcloud.net.cn/uploads/example/product5.jpg',
-          title: '微软（Microsoft）新Surface Pro 二合一平板电脑笔记本 12.3英寸（i5 8G内存 256G存储）',
-          originalPrice: 8888,
-          favourPrice: 8288,
-          tip: '优惠'
-        }, {
-          image: 'https://img-cdn-qiniu.dcloud.net.cn/uploads/example/product6.jpg',
-          title: 'Apple Watch Series 3智能手表（GPS款 42毫米 深空灰色铝金属表壳 黑色运动型表带 MQL12CH/A）',
-          originalPrice: 2899,
-          favourPrice: 2799,
-          tip: '自营'
-        }];
+        loadData(action = 'add') {
+            const data = [
+                {
+                    image: 'https://img-cdn-qiniu.dcloud.net.cn/uploads/example/product1.jpg',
+                    title: 'Apple iPhone X 256GB 深空灰色 移动联通电信4G手机',
+                    originalPrice: 9999,
+                    favourPrice: 8888,
+                    tip: '自营'
+                },
+                {
+                    image: 'https://img-cdn-qiniu.dcloud.net.cn/uploads/example/product2.jpg',
+                    title: 'Apple iPad 平板电脑 2018年新款9.7英寸',
+                    originalPrice: 3499,
+                    favourPrice: 3399,
+                    tip: '优惠'
+                },
+                {
+                    image: 'https://img-cdn-qiniu.dcloud.net.cn/uploads/example/product3.jpg',
+                    title: 'Apple MacBook Pro 13.3英寸笔记本电脑（2017款Core i5处理器/8GB内存/256GB硬盘 MupxT2CH/A）',
+                    originalPrice: 12999,
+                    favourPrice: 10688,
+                    tip: '秒杀'
+                },
+                {
+                    image: 'https://img-cdn-qiniu.dcloud.net.cn/uploads/example/product4.jpg',
+                    title: 'Kindle Paperwhite电纸书阅读器 电子书墨水屏 6英寸wifi 黑色',
+                    originalPrice: 999,
+                    favourPrice: 958,
+                    tip: '秒杀'
+                },
+                {
+                    image: 'https://img-cdn-qiniu.dcloud.net.cn/uploads/example/product5.jpg',
+                    title: '微软（Microsoft）新Surface Pro 二合一平板电脑笔记本 12.3英寸（i5 8G内存 256G存储）',
+                    originalPrice: 8888,
+                    favourPrice: 8288,
+                    tip: '优惠'
+                },
+                {
+                    image: 'https://img-cdn-qiniu.dcloud.net.cn/uploads/example/product6.jpg',
+                    title: 'Apple Watch Series 3智能手表（GPS款 42毫米 深空灰色铝金属表壳 黑色运动型表带 MQL12CH/A）',
+                    originalPrice: 2899,
+                    favourPrice: 2799,
+                    tip: '自营'
+                }
+            ];
 
-        if (action === 'refresh') {
-          this.productList = [];
+            if (action === 'refresh') {
+                this.productList = [];
+            }
+
+            data.forEach(item => {
+                this.productList.push(item);
+            });
         }
-
-        data.forEach(item => {
-          this.productList.push(item);
-        });
-      }
     },
     onLoad() {
-      this.loadData();
+        this.loadData();
+        setTimeout(()=> {
+            this.renderImage = true;
+        }, 300);
     },
     onPullDownRefresh() {
-      this.loadData('refresh');
-      // 实际开发中通常是网络请求，加载完数据后就停止。这里仅做演示，加延迟为了体现出效果。
-      setTimeout(() => {
-        uni.stopPullDownRefresh();
-      }, 2000);
+        this.loadData('refresh');
+        // 实际开发中通常是网络请求，加载完数据后就停止。这里仅做演示，加延迟为了体现出效果。
+        setTimeout(() => {
+            uni.stopPullDownRefresh();
+        }, 2000);
     },
     onReachBottom() {
-      this.loadData();
+        this.loadData();
     }
-  }
+};
 </script>
 
 <style>
-  .product-list {
+.product-list {
     display: flex;
     width: 100%;
     flex-wrap: wrap;
     flex-direction: row;
-  }
+}
+
+.product {
+    padding: 10upx 20upx;
+    display: flex;
+    flex-direction: column;
+}
+
+.image-view {
+    height: 330upx;
+    width: 330upx;
+}
+
+.product-image {
+    height: 330upx;
+    width: 330upx;
+}
+
+.product-title {
+    width: 300upx;
+    font-size: 32upx;
+    word-break: break-all;
+    display: -webkit-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+.product-price {
+    font-size: 28upx;
+    position: relative;
+}
+
+.product-price-original {
+    color: #e80080;
+}
+
+.product-price-favour {
+    color: #888888;
+    text-decoration: line-through;
+    margin-left: 10upx;
+}
+
+.product-tip {
+    position: absolute;
+    right: 10upx;
+    background-color: #ff3333;
+    color: #ffffff;
+    padding: 0 10upx;
+    border-radius: 5upx;
+}
 </style>

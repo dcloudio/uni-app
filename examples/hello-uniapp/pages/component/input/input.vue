@@ -3,6 +3,22 @@
 		<page-head :title="title"></page-head>
 		<view class="page-body">
 			<view class="page-section">
+				<view class="page-section-title">可自动聚焦的input</view>
+				<view class="uni-list">
+					<view class="uni-list-cell">
+						<input class="uni-input" focus placeholder="自动获得焦点" />
+					</view>
+				</view>
+			</view>
+			<view class="page-section">
+				<view class="page-section-title">键盘右下角按钮显示为搜索</view>
+				<view class="uni-list">
+					<view class="uni-list-cell">
+						<input class="uni-input" confirm-type="search" placeholder="键盘右下角按钮显示为搜索" />
+					</view>
+				</view>
+			</view>
+			<view class="page-section">
 				<view class="page-section-title">控制最大输入长度的input</view>
 				<view class="uni-list">
 					<view class="uni-list-cell">
@@ -14,7 +30,7 @@
 				<view class="page-section-title">实时获取输入值：{{inputValue}}</view>
 				<view class="uni-list">
 					<view class="uni-list-cell">
-						<input class="uni-input" maxlength="10" @input="bindKeyInput" placeholder="输入同步到view中" />
+						<input class="uni-input" @input="bindKeyInput" placeholder="输入同步到view中" />
 					</view>
 				</view>
 			</view>
@@ -96,8 +112,6 @@
 	</view>
 </template>
 <script>
-	import pageHead from '../../../components/page-head.vue'
-
 	export default {
 		data() {
 			return {
@@ -142,10 +156,6 @@
 			changePassword: function () {
 				this.showPassword = !this.showPassword;
 			}
-		},
-		components: {
-			pageHead
-
 		}
 	}
 </script>
@@ -154,15 +164,15 @@
 	@import "../../../common/uni.css";
 	@import "../../../common/icon.css";
 	.page-section {
-		margin-bottom: 20px;
+		margin-bottom: 20upx;
 	}
 
 	.page-body {
-		padding-bottom: 40px;
+		padding-bottom: 40upx;
 	}
 
 	.uni-list-cell {
-		padding: 0 30px;
+		padding: 0 30upx;
 	}
 
 	.uni-input {

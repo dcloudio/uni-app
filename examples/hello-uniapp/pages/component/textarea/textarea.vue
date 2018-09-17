@@ -18,8 +18,6 @@
 	</view>
 </template>
 <script>
-	import pageHead from '../../../components/page-head.vue'
-
 	export default {
 		data() {
 			return {
@@ -31,27 +29,24 @@
 			bindTextAreaBlur: function (e) {
 				console.log(e.detail.value)
 			}
-		},
-		components: {
-			pageHead
 		}
 	}
 </script>
 
 <style>
 	textarea {
-		width: 700px;
-		padding: 25px 0;
-		height: 34px;
-		line-height: 34px;
-		font-size: 32px;
+		width: 700upx;
+		padding: 25upx 0;
+		height: 34upx;
+		line-height: 34upx;
+		font-size: 32upx;
 	}
 	.textare {
-		height: 102px;
+		height: 102upx;
 	}
 
 	.textarea-wrp {
-		padding: 0 25px;
+		padding: 0 25upx;
 		background-color: #fff;
 	}
 </style>

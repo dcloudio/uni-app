@@ -162,21 +162,21 @@
 	}
 
 	.index-bd {
-		width: 750px;
+		width: 750upx;
 		height: 100%;
 	}
 
 	.swiper-tab {
 		width: 100%;
 		white-space: nowrap;
-		line-height: 64px;
-		height: 64px;
+		line-height: 64upx;
+		height: 64upx;
 	}
 
 
 	.swiper-tab-list {
-		font-size: 30px;
-		width: 150px;
+		font-size: 30upx;
+		width: 150upx;
 		display: inline-block;
 		text-align: center;
 		color: #777777;
@@ -184,7 +184,7 @@
 
 	.on {
 		color: #FF0000;
-		border-bottom: 5px solid #FF0000;
+		border-bottom: 5upx solid #FF0000;
 	}
 
 	.swiper-box {
@@ -199,9 +199,9 @@
 
 	.tab-list {
 		width: 100%;
-		height: 90px;
-		line-height: 90px;
+		height: 90upx;
+		line-height: 90upx;
 		text-align: left;
-		border-bottom: 2px solid #EFEFF4;
+		border-bottom: 2upx solid #EFEFF4;
 	}
 </style>

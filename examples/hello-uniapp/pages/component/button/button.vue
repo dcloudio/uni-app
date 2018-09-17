@@ -29,25 +29,20 @@
 	</view>
 </template>
 <script>
-	import pageHead from '../../../components/page-head.vue'
-
 	export default {
 		data() {
 			return {
 				title: 'button'
 			}
 		},
-		methods: {},
-		components: {
-			pageHead
-		}
+		methods: {}
 	}
 </script>
 
 <style>
 	button {
-		margin-top: 30px;
-		margin-bottom: 30px;
+		margin-top: 30upx;
+		margin-bottom: 30upx;
 	}
 
 	.button-sp-area {
@@ -56,6 +51,6 @@
 	}
 
 	.mini-btn {
-		margin-right: 10px;
+		margin-right: 10upx;
 	}
 </style>

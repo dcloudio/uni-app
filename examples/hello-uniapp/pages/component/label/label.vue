@@ -38,8 +38,6 @@
 	</view>
 </template>
 <script>
-	import pageHead from '../../../components/page-head.vue'
-
 	export default {
 		data() {
 			return {
@@ -93,9 +91,6 @@
 			tapEvent: function (e) {
 				console.log('按钮被点击')
 			}
-		},
-		components: {
-			pageHead
 		}
 	}
 </script>
@@ -103,16 +98,16 @@
 <style>
 	.label-1,
 	.label-2 {
-		margin: 30px 0;
+		margin: 30upx 0;
 	}
 
 	.label-3-text {
 		color: #576B95;
-		font-size: 28px;
+		font-size: 28upx;
 	}
 
 	.checkbox-3 {
 		display: block;
-		margin: 30px 0;
+		margin: 30upx 0;
 	}
 </style>

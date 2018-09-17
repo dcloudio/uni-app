@@ -91,9 +91,9 @@
 				})
 			},
 			goDetail: function (e) {
-				if (!/前|刚刚/.test(e.published_at)) {
-					e.published_at = dateUtils.format(e.published_at);
-				}
+// 				if (!/前|刚刚/.test(e.published_at)) {
+// 					e.published_at = dateUtils.format(e.published_at);
+// 				}
 				let detail = {
 					author_name: e.author_name,
 					cover: e.cover,
@@ -132,7 +132,7 @@
 	}
 
 	.banner {
-		height: 360px;
+		height: 360upx;
 		overflow: hidden;
 		position: relative;
 		background-color: #ccc;
@@ -143,22 +143,22 @@
 	}
 
 	.banner-title {
-		max-height: 84px;
+		max-height: 84upx;
 		overflow: hidden;
 		position: absolute;
-		left: 30px;
-		bottom: 30px;
+		left: 30upx;
+		bottom: 30upx;
 		width: 90%;
-		font-size: 32px;
+		font-size: 32upx;
 		font-weight: 400;
-		line-height: 42px;
+		line-height: 42upx;
 		color: white;
 		z-index: 11;
 	}
 
 	.uni-media-list-logo {
-		width: 180px;
-		height: 140px;
+		width: 180upx;
+		height: 140upx;
 	}
 
 	.uni-media-list-body {
@@ -167,8 +167,8 @@
 	}
 
 	.uni-media-list-text-top {
-		height: 74px;
-		font-size: 28px;
+		height: 74upx;
+		font-size: 28upx;
 		overflow: hidden;
 	}
 

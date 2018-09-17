@@ -13,8 +13,6 @@
 	</view>
 </template>
 <script>
-	import pageHead from '../../../components/page-head.vue'
-
 	export default {
 		data() {
 			return {
@@ -55,25 +53,22 @@
 						this.canRemove = this.extraLine.length > 0
 				}
 			}
-		},
-		components: {
-			pageHead
 		}
 	}
 </script>
 
 <style>
 	.text-box {
-		margin-bottom: 70px;
-		padding: 40px 0;
+		margin-bottom: 70upx;
+		padding: 40upx 0;
 		display: flex;
-		min-height: 300px;
+		min-height: 300upx;
 		background-color: #FFFFFF;
 		justify-content: center;
 		align-items: center;
 		text-align: center;
-		font-size: 30px;
+		font-size: 30upx;
 		color: #353535;
-		line-height: 46px;
+		line-height: 46upx;
 	}
 </style>

@@ -15,7 +15,7 @@
 			<view class="page-section">
 				<view class="page-section-title">推荐展示样式</view>
 				<view class="uni-list">
-					<checkbox-group bindchange="checkboxChange">
+					<checkbox-group @change="checkboxChange">
 						<label class="uni-list-cell uni-list-cell-pd" v-for="item in items" :key="item.value">
 							<view>
 								<checkbox :value="item.value" :checked="item.checked" />
@@ -29,8 +29,6 @@
 	</view>
 </template>
 <script>
-	import pageHead from '../../../components/page-head.vue'
-
 	export default {
 		data() {
 			return {
@@ -77,10 +75,6 @@
 					}
 				}
 			}
-		},
-		components: {
-			pageHead
-
 		}
 	}
 </script>

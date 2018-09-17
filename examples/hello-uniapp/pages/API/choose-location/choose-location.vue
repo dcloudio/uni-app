@@ -25,8 +25,6 @@
 	</view>
 </template>
 <script>
-	import pageHead from '../../../components/page-head.vue';
-
 	var util = require('../../../common/util.js');
 	var formatLocation = util.formatLocation;
 
@@ -52,10 +50,6 @@
 			clear: function () {
 				this.hasLocation = false
 			}
-		},
-		components: {
-			pageHead
-
 		}
 	}
 </script>
@@ -63,6 +57,6 @@
 <style>
 	.page-body-info {
 		padding-bottom: 0;
-		height: 440px;
+		height: 440upx;
 	}
 </style>

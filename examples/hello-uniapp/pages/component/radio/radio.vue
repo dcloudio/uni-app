@@ -14,7 +14,7 @@
 			<view class="page-section">
 				<view class="page-section-title">推荐展示样式</view>
 				<view class="uni-list">
-					<radio-group bindchange="radioChange">
+					<radio-group @change="radioChange">
 						<label class="uni-list-cell uni-list-cell-pd" v-for="item in items" :key="item.value">
 							<view>
 								<radio :value="item.value" checked="true" />
@@ -28,8 +28,6 @@
 	</view>
 </template>
 <script>
-	import pageHead from '../../../components/page-head.vue'
-
 	export default {
 		data() {
 			return {
@@ -72,9 +70,6 @@
 
 				this.items = items
 			}
-		},
-		components: {
-			pageHead
 		}
 	}
 </script>

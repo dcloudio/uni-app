@@ -48,18 +48,18 @@
 	page {
 		background-color: #F8F8F8;
 		height: 100%;
-		font-size: 32px;
+		font-size: 32upx;
 		line-height: 1.6;
 	}
 
 	checkbox,
 	radio {
-		margin-right: 10px;
+		margin-right: 10upx;
 	}
 
 	button {
-		margin-top: 20px;
-		margin-bottom: 20px;
+		margin-top: 20upx;
+		margin-bottom: 20upx;
 	}
 
 	form {
@@ -72,31 +72,31 @@
 		flex-direction: column;
 		min-height: 100%;
 		justify-content: space-between;
-		font-size: 32px;
+		font-size: 32upx;
 		font-family: -apple-system-font, Helvetica Neue, Helvetica, sans-serif;
 	}
 	.page-head {
-		padding: 60px 50px 80px;
+		padding: 60upx 50upx 80upx;
 		text-align: center;
 		line-height: initial;
-		height: 60px;
+		height: 60upx;
 	}
 
 	.page-head-title {
 		display: inline-block;
-		padding: 0 40px;
-		font-size: 30px;
-		height: 60px;
-		line-height: 60px;
+		padding: 0 40upx;
+		font-size: 30upx;
+		height: 60upx;
+		line-height: 60upx;
 		color: #BEBEBE;
 		box-sizing: border-box;
-		border-bottom: 2px solid #D8D8D8;
+		border-bottom: 2upx solid #D8D8D8;
 	}
 
 	.page-head-desc {
-		padding-top: 20px;
+		padding-top: 20upx;
 		color: #9B9B9B;
-		font-size: 32px;
+		font-size: 32upx;
 	}
 
 	.page-body {
@@ -114,7 +114,7 @@
 
 	.page-body-wording {
 		text-align: center;
-		padding: 200px 100px;
+		padding: 200upx 100upx;
 	}
 
 	.page-body-info {
@@ -123,41 +123,41 @@
 		align-items: center;
 		background-color: #fff;
 		width: 100%;
-		padding: 50px 0 150px 0;
+		padding: 50upx 0 150upx 0;
 	}
 
 	.page-body-title {
-		margin-bottom: 100px;
-		font-size: 32px;
+		margin-bottom: 100upx;
+		font-size: 32upx;
 	}
 
 	.page-body-text {
-		font-size: 30px;
-		line-height: 52px;
+		font-size: 30upx;
+		line-height: 52upx;
 		color: #ccc;
 	}
 
 	.page-body-text-small {
-		font-size: 24px;
+		font-size: 24upx;
 		color: #000;
-		margin-bottom: 100px;
+		margin-bottom: 100upx;
 	}
 
 	.page-foot {
-		margin: 100px 0 30px 0;
+		margin: 100upx 0 30upx 0;
 		text-align: center;
 		color: #1aad19;
 		font-size: 0;
 	}
 
 	.icon-foot {
-		width: 152px;
-		height: 23px;
+		width: 152upx;
+		height: 23upx;
 	}
 
 	.page-section {
 		width: 100%;
-		margin-bottom: 60px;
+		margin-bottom: 60upx;
 	}
 
 	.page-section_center {
@@ -172,21 +172,21 @@
 
 	.page-section-gap {
 		box-sizing: border-box;
-		padding: 0 30px;
+		padding: 0 30upx;
 	}
 
 	.page-section-spacing {
 		box-sizing: border-box;
-		padding: 0 80px;
+		padding: 0 80upx;
 	}
 
 	.page-section-title {
-		font-size: 28px;
+		font-size: 28upx;
 		color: #999999;
-		margin-top: 10px;
-		margin-bottom: 10px;
-		padding-left: 30px;
-		padding-right: 30px;
+		margin-top: 10upx;
+		margin-bottom: 10upx;
+		padding-left: 30upx;
+		padding-right: 30upx;
 	}
 
 	.page-section-gap .page-section-title {
@@ -196,26 +196,26 @@
 	/* example */
 
 	.index-hd {
-		padding: 90px;
+		padding: 90upx;
 		text-align: center;
 	}
 
 	.index-logo {
-		width: 140px;
-		height: 140px;
+		width: 140upx;
+		height: 140upx;
 	}
 
 	.btn-area {
-		margin-top: 60px;
+		margin-top: 60upx;
 		box-sizing: border-box;
 		width: 100%;
-		padding: 0 30px;
+		padding: 0 30upx;
 	}
 
 	.image-plus {
-		width: 150px;
-		height: 150px;
-		border: 2px solid #D9D9D9;
+		width: 150upx;
+		height: 150upx;
+		border: 2upx solid #D9D9D9;
 		position: relative;
 	}
 
@@ -225,7 +225,7 @@
 
 	.image-plus-text {
 		color: #888888;
-		font-size: 28px;
+		font-size: 28upx;
 	}
 
 	.image-plus-horizontal {
@@ -233,8 +233,8 @@
 		top: 50%;
 		left: 50%;
 		background-color: #d9d9d9;
-		width: 4px;
-		height: 80px;
+		width: 4upx;
+		height: 80upx;
 		transform: translate(-50%, -50%);
 		-webkit-transform: translate(-50%, -50%);
 	}
@@ -244,8 +244,8 @@
 		top: 50%;
 		left: 50%;
 		background-color: #d9d9d9;
-		width: 80px;
-		height: 4px;
+		width: 80upx;
+		height: 4upx;
 		transform: translate(-50%, -50%);
 		-webkit-transform: translate(-50%, -50%);
 	}

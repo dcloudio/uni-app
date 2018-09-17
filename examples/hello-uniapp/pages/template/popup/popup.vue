@@ -21,8 +21,6 @@
 	</view>
 </template>
 <script>
-	import pageHead from '../../../components/page-head.vue'
-
 	export default {
 		data() {
 			return {
@@ -35,9 +33,6 @@
 				showMask: false,
 				activePop: 'middle'
 			}
-		},
-		components: {
-			pageHead
 		},
 		methods: {
 			show(evt) {
@@ -77,14 +72,14 @@
 		position: absolute;
 		z-index: 999;
 		background-color: #ffffff;
-		-webkit-box-shadow: 0 0 30px rgba(0, 0, 0, .1);
-		box-shadow: 0 0 30px rgba(0, 0, 0, .1);
+		-webkit-box-shadow: 0 0 30upx rgba(0, 0, 0, .1);
+		box-shadow: 0 0 30upx rgba(0, 0, 0, .1);
 	}
 
 	.popup-middle {
-		width: 400px;
-		height: 400px;
-		border-radius: 10px;
+		width: 400upx;
+		height: 400upx;
+		border-radius: 10upx;
 		top: 0;
 		right: 0;
 		bottom: 0;
@@ -95,45 +90,45 @@
 	.popup-top {
 		top: 0;
 		width: 100%;
-		height: 100px;
+		height: 100upx;
 		text-align: center;
 	}
 
 	.popup-top text {
-		line-height: 100px;
-		margin-left: 20px;
-		font-size: 32px;
+		line-height: 100upx;
+		margin-left: 20upx;
+		font-size: 32upx;
 	}
 
 	.popup-bottom {
 		bottom: 0;
 		width: 100%;
-		height: 100px;
+		height: 100upx;
 		text-align: center;
 	}
 
 	.popup-bottom text {
-		line-height: 100px;
-		font-size: 32px;
+		line-height: 100upx;
+		font-size: 32upx;
 	}
 
 	.popup .list-view {
-		height: 600px;
+		height: 600upx;
 	}
 
 	.list-view-item {
 		position: relative;
-		padding: 22px 30px;
+		padding: 22upx 30upx;
 		overflow: hidden;
-		font-size: 28px;
+		font-size: 28upx;
 	}
 
 	.list-view-item::after {
 		position: absolute;
 		right: 0;
 		bottom: 0;
-		left: 30px;
-		height: 2px;
+		left: 30upx;
+		height: 2upx;
 		content: '';
 		-webkit-transform: scaleY(.5);
 		transform: scaleY(.5);
@@ -141,14 +136,14 @@
 	}
 
 	.btn-row .btn {
-		margin: 20px;
+		margin: 20upx;
 	}
 
 	.desc {
-		padding: 10px 20px;
-		font-size: 30px;
-		line-height: 30px;
-		margin-top: 150px;
+		padding: 10upx 20upx;
+		font-size: 30upx;
+		line-height: 30upx;
+		margin-top: 150upx;
 		text-align: center;
 	}
 </style>

@@ -61,8 +61,6 @@
 	</view>
 </template>
 <script>
-	import pageHead from '../../../components/page-head.vue'
-
 	export default {
 		data() {
 			return {
@@ -81,9 +79,6 @@
 					}
 				})
 			}
-		},
-		components: {
-			pageHead
 		}
 	}
 </script>
@@ -92,6 +87,6 @@
 	@import "../../../common/uni.css";
 
 	.uni-pd {
-		padding-left: 30px;
+		padding-left: 30upx;
 	}
 </style>
