@@ -604,7 +604,17 @@
             "style": {
                 "navigationBarTitleText": "手势图案锁屏"
             }
-        }]
+        }, {
+			"path": "swipe-back/swipe-back",
+			"style": {
+				"navigationBarTitleText": "手势返回"
+			}
+		}, {
+			"path": "swipe-back2/swipe-back2",
+			"style": {
+				"navigationBarTitleText": "手势返回"
+			}
+		}]
     }],
     "globalStyle": {
         "navigationBarTextStyle": "black",

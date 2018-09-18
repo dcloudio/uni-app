@@ -156,6 +156,17 @@
 						url: 'im-chat'
 					}
 					// #endif
+					, {
+						name: '手势返回',
+						open: true,
+						pages: [{
+							name: '有手势提示',
+							url: 'swipe-back'
+						}, {
+							name: '无手势提示',
+							url: 'swipe-back2'
+						}]
+					}
 				]
 			}
 		},
