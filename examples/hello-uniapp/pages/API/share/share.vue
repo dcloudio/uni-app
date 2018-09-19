@@ -65,7 +65,7 @@
 		onShareAppMessage() {
 			return {
 				title: this.shareText ? this.shareText : "欢迎体验uni-app",
-				path: '/pages/component/component',
+				path: '/pages/tabBar/component/component',
 				imageUrl:this.image ? this.image : 'https://img-cdn-qiniu.dcloud.net.cn/uniapp/app/share-logo@3.png'
 			}
 		},
@@ -187,7 +187,7 @@
 						shareOPtions.title = "欢迎体验uniapp";
 						shareOPtions.miniProgram = {
 							id:"gh_33446d7f7a26",
-							path:"/pages/component/component",
+							path:"/pages/tabBar/component/component",
 							webUrl:"http://uniapp.dcloud.io",
 							type:0
 						};
