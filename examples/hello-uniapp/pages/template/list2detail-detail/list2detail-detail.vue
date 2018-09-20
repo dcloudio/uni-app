@@ -40,7 +40,7 @@
 		methods: {
 			getDetail() {
 				uni.request({
-					url: 'https://spider.dcloud.net.cn/api/news/36kr/' + this.banner.post_id,
+					url: 'https://unidemo.dcloud.net.cn/api/news/36kr/' + this.banner.post_id,
 					success: (data) => {
 						if (data.statusCode == 200) {
 							this.htmlString = data.data.content.replace(/\\/g, "").replace(/<img/g, "<img style=\"display:none;\"");
