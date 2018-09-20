@@ -119,7 +119,6 @@
 </script>
 
 <style>
-	@import "../../../common/uni.css";
 	.btn-setstorage {
 		background-color: #007aff;
 		color: #ffffff;

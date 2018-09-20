@@ -263,8 +263,6 @@
 </script>
 
 <style>
-	@import "../../../common/uni.css";
-
 	.textarea-wrp {
 		padding: 0 20upx;
 	}

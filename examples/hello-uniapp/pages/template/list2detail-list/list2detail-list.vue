@@ -125,8 +125,6 @@
 </script>
 
 <style>
-	@import "../../../common/uni.css";
-
 	page {
 		background: #efeff4;
 	}

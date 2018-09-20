@@ -92,8 +92,6 @@
 </script>
 
 <style>
-	@import "../../../common/uni.css";
-
 	.head {
 		padding: 0 20upx;
 		margin-top: 20upx;

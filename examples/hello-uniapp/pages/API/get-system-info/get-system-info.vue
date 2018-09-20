@@ -84,8 +84,6 @@
 </script>
 
 <style>
-	@import "../../../common/uni.css";
-
 	.uni-pd {
 		padding-left: 30upx;
 	}

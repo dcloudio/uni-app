@@ -67,8 +67,6 @@
 </script>
 
 <style>
-	@import "../../../common/uni.css";
-
 	.list-view {
 		padding: 0 30upx;
 	}

@@ -44,7 +44,9 @@
 
 <style>
 	/* 这是页面的公用css */
-
+	
+	@import "./common/uni.css";
+		
 	page {
 		background-color: #F8F8F8;
 		height: 100%;

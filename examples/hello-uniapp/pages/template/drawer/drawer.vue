@@ -82,8 +82,6 @@
 </script>
 
 <style>
-    @import "../../../common/uni.css";
-
     .header {
         display: flex;
         flex-direction: row;

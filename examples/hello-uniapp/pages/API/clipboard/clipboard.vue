@@ -78,8 +78,6 @@
 </script>
 
 <style>
-	@import "../../../common/uni.css";
-
 	.uni-list-cell {
 		padding: 0upx 30upx;
 	}

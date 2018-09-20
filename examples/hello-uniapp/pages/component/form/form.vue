@@ -82,7 +82,6 @@
 </script>
 
 <style>
-	@import "../../../common/uni.css";
 	label {
 		display: flex;
 		flex-direction: row;

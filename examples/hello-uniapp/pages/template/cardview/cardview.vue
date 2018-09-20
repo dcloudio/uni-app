@@ -48,8 +48,6 @@
 </script>
 
 <style>
-    @import "../../../common/uni.css";
-
     .page {
         padding-top: 60upx;
     }
