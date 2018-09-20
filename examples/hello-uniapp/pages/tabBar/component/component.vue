@@ -70,7 +70,7 @@
 		onShareAppMessage() {
 			return {
 				title: '欢迎体验uni-app',
-				path: '/pages/component/component'
+				path: '/pages/tabBar/component/component'
 			}
 		},
 		onNavigationBarButtonTap(e){
