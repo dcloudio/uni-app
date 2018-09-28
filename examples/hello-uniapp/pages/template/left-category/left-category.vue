@@ -80,8 +80,8 @@
 
 	.nav-left-item {
 		height: 100upx;
-		border-right: solid 1upx #E0E0E0;
-		border-bottom: solid 1upx #E0E0E0;
+		border-right: solid 1px #E0E0E0;
+		border-bottom: solid 1px #E0E0E0;
 		font-size: 30upx;
 		display: flex;
 		align-items: center;

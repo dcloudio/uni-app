@@ -69,7 +69,6 @@
 </script>
 
 <style>
-	@import "../../../common/uni.css";
 	.page-body-info {
 		height: 250upx;
 	}

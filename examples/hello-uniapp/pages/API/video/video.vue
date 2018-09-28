@@ -68,7 +68,6 @@
 </script>
 
 <style>
-	@import "../../../common/uni.css";
 	.page-body-info {
 		display: flex;
 		margin-top: 40upx;

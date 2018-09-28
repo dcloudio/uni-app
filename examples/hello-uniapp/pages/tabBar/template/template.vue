@@ -193,8 +193,6 @@
 </script>
 
 <style>
-	@import "../../../common/uni.css";
-
 	.index {
 		padding-bottom: 1upx;
 	}
