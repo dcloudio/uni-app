@@ -1,0 +1,21 @@
+<view bindtap="onTap" class="wux-class wux-cell {{ isLast ? 'wux-cell--last' : '' }} {{ isLink ? 'wux-cell--access' : '' }}" hover-class="{{ hoverClass }}">
+    <view class="wux-cell__hd">
+        <block wx:if="{{ thumb }}">
+            <image class="wux-cell__thumb" src="{{ thumb }}" />
+        </block>
+        <block wx:else>
+            <slot name="header"></slot>
+        </block>
+    </view>
+    <view class="wux-cell__bd">
+        <view wx:if="{{ title }}" class="wux-cell__text">{{ title }}</view>
+        <view wx:if="{{ label }}" class="wux-cell__desc">{{ label }}</view>
+        <slot></slot>
+    </view>
+    <view class="wux-cell__ft">
+        <block wx:if="{{ extra }}">{{ extra }}</block>
+        <block wx:else>
+            <slot name="footer"></slot>
+        </block>
+    </view>
+</view>

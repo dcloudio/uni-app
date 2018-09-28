@@ -1,0 +1,77 @@
+.wux-cell {
+  padding: 20rpx 30rpx;
+  position: relative;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+          align-items: center;
+  background: #fff;
+}
+.wux-cell:after {
+  content: " ";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  height: 2rpx;
+  border-bottom: 2rpx solid #D9D9D9;
+  color: #D9D9D9;
+  -webkit-transform-origin: 0 100%;
+          transform-origin: 0 100%;
+  -webkit-transform: scaleY(0.5);
+          transform: scaleY(0.5);
+  left: 30rpx;
+}
+.wux-cell--last:after {
+  display: none;
+}
+.wux-cell--hover {
+  background-color: #ECECEC;
+}
+.wux-cell__thumb {
+  display: block;
+  width: 40rpx;
+  height: 40rpx;
+  margin-right: 10rpx;
+}
+.wux-cell__bd {
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+          flex: 1;
+}
+.wux-cell__text {
+  text-align: left;
+}
+.wux-cell__desc {
+  text-align: left;
+  line-height: 1.2;
+  font-size: 24rpx;
+  color: #808080;
+}
+.wux-cell__ft {
+  text-align: right;
+  color: #808080;
+}
+.wux-cell--access .wux-cell__ft {
+  padding-right: 26rpx;
+  position: relative;
+}
+.wux-cell--access .wux-cell__ft:after {
+  content: " ";
+  display: inline-block;
+  height: 12rpx;
+  width: 12rpx;
+  border-width: 4rpx 4rpx 0 0;
+  border-color: #C8C8CD;
+  border-style: solid;
+  -webkit-transform: matrix(0.71, 0.71, -0.71, 0.71, 0, 0);
+          transform: matrix(0.71, 0.71, -0.71, 0.71, 0, 0);
+  position: relative;
+  top: -4rpx;
+  position: absolute;
+  top: 50%;
+  margin-top: -8rpx;
+  right: 4rpx;
+}
