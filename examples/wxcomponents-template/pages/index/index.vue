@@ -1,26 +1,22 @@
 <template>
 	<view class="content">
-		<text class="title">{{title}}</text>
+		<navigator url="../vant/vant">
+			<button type="default">vant组件示例</button>
+		</navigator>
+		<navigator url="../wux/wux">
+			<button type="default">wux组件示例</button>
+		</navigator>
 	</view>
 </template>
 
 <script>
 	export default {
-		data: {
-			title: 'Hello'
-		}
+
 	}
 </script>
 
 <style>
-	.content {
-		flex: 1;
-		justify-content: center;
-		align-items: center;
-	}
-
-	.title {
-		font-size: 36upx;
-		color: #8f8f94;
+	button {
+		margin-top: 20px;
 	}
 </style>

@@ -1,0 +1,33 @@
+.wux-cell-group__hd {
+  padding: 30rpx 30rpx 18rpx;
+  font-size: 28rpx;
+  color: #888;
+  width: 100%;
+  box-sizing: border-box;
+}
+.wux-cell-group__bd {
+  position: relative;
+  background-color: #fff;
+}
+.wux-cell-group__bd:after {
+  content: " ";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200%;
+  height: 200%;
+  -webkit-transform: scale(0.5);
+          transform: scale(0.5);
+  -webkit-transform-origin: 0 0;
+          transform-origin: 0 0;
+  pointer-events: none;
+  box-sizing: border-box;
+  border: 0 solid #D9D9D9;
+  border-top-width: 2rpx;
+  border-bottom-width: 2rpx;
+}
+.wux-cell-group__ft {
+  padding: 18rpx 30rpx 30rpx;
+  font-size: 28rpx;
+  color: #888;
+}
