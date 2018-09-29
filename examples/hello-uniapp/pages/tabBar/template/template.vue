@@ -57,8 +57,21 @@
 							url: 'nav-bar'
 						}]
 					}, {
+						id: 'tabbar',
 						name: '顶部选项卡',
-						url: 'tabbar'
+						// #ifdef MP-WEIXIN 
+						url: 'tabbar',
+						// #endif
+						// #ifdef APP-PLUS 
+						open: false,
+						pages: [{
+							name: '非原生',
+							url: 'tabbar'
+						}, {
+							name: '原生',
+							url: '/platforms/app-plus/tabbar-nvue/tabbar-nvue'
+						}]
+						// #endif
 					}, {
 						name: '顶部分段器segment',
 						url: 'segmented-control'
@@ -149,6 +162,15 @@
 					}, {
 						name: '侧边分类导航',
 						url: 'left-category'
+					}, {
+						name: '步骤提示',
+						url: 'steps'
+					}, {
+						name: '评论列表',
+						url: 'comments'
+					}, {
+						name: '滚动公告',
+						url: 'scrollmsg'
 					}
 					// #ifdef APP-PLUS 
 					, {

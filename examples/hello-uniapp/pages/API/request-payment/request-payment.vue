@@ -8,7 +8,7 @@
 				<view class="desc">实际应用中可自定义金额</view>
 				<view class="btn-area">
 					<!-- #ifdef MP-WEIXIN -->
-					<button type="primary" disabled="true">微信支付</button>
+					<button type="primary" @tap="weixinPay" :loading="loading">微信支付</button>
 					<!-- #endif -->
 					<!-- #ifdef APP-PLUS -->
 					<button v-for="(item,index) in providerList" :key="index" @tap="requestPayment(item,index)" :loading="item.loading">{{item.name}}支付</button>
@@ -23,17 +23,12 @@
 		data() {
 			return {
 				title: 'request-payment',
+				loading: false,
 				providerList: []
 			}
 		},
-		onLoad: function () {
-			// #ifdef MP-WEIXIN
-			uni.showModal({
-				content:"小程序支付正在申请中...",
-				showCancel:false
-			})
-			return;
-			// #endif
+		onLoad: function() {
+			// #ifdef APP-PLUS
 			uni.getProvider({
 				service: "payment",
 				success: (e) => {
@@ -56,11 +51,80 @@
 					})
 				},
 				fail: (e) => {
-					console.log("获取登录通道失败", e);
+					console.log("获取登录通道失败：", e);
 				}
 			});
+			// #endif
 		},
 		methods: {
+			weixinPay() {
+				console.log("发起支付");
+				this.loading = true;
+				uni.login({
+					success: (e) => {
+						console.log("login success", e);
+						uni.request({
+							url: `https://unidemo.dcloud.net.cn/payment/wx/mp?code=${e.code}&amount=0.01`,
+							success: (res) => {
+								console.log("pay request success", res);
+								if (res.statusCode !== 200) {
+									uni.showModal({
+										content: "支付失败，请重试！",
+										showCancel: false
+									});
+									return;
+								}
+								if (res.data.ret === 0) {
+									console.log("得到接口prepay_id", res.data.payment);
+									let paymentData = res.data.payment;
+									uni.requestPayment({
+										timeStamp: paymentData.timeStamp,
+										nonceStr: paymentData.nonceStr,
+										package: paymentData.package,
+										signType: 'MD5',
+										paySign: paymentData.paySign,
+										success: (res) => {
+											uni.showToast({
+												title: "感谢您的赞助!"
+											})
+										},
+										fail: (res) => {
+											uni.showModal({
+												content: "支付失败,原因为: " + res.errMsg,
+												showCancel: false
+											})
+										},
+										complete: () => {
+											this.loading = false;
+										}
+									})
+								} else {
+									uni.showModal({
+										content: res.data.desc,
+										showCancel: false
+									})
+								}
+							},
+							fail: (e) => {
+								console.log("fail", e);
+								this.loading = false;
+								uni.showModal({
+									content: "支付失败,原因为: " + e.errMsg,
+									showCancel: false
+								})
+							}
+						})
+					},
+					fail: (e) => {
+						console.log("fail", e);
+						this.loading = false;
+						uni.showModal({
+							content: "支付失败,原因为: " + e.errMsg,
+							showCancel: false
+						})
+					}
+				})
+			},
 			async requestPayment(e, index) {
 				this.providerList[index].loading = true;
 				let orderInfo = await this.getOrderInfo(e.id);
@@ -68,8 +132,8 @@
 				if (orderInfo.statusCode !== 200) {
 					console.log("获得订单信息失败", orderInfo);
 					uni.showModal({
-						content:"获得订单信息失败",
-						showCancel:false
+						content: "获得订单信息失败",
+						showCancel: false
 					})
 					return;
 				}
@@ -85,8 +149,8 @@
 					fail: (e) => {
 						console.log("fail", e);
 						uni.showModal({
-							content:"支付失败,原因为: " + e.errMsg,
-							showCancel:false
+							content: "支付失败,原因为: " + e.errMsg,
+							showCancel: false
 						})
 					},
 					complete: () => {

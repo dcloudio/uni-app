@@ -17,8 +17,8 @@
 				latitude: 39.909,
 				longitude: 116.39742,
 				covers: [{
-					latitude: 39.909,
-					longitude: 116.39742,
+					latitude: 39.9085,
+					longitude: 116.39747,
 					iconPath: '../../../static/location.png'
 				}, {
 					latitude: 39.90,

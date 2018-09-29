@@ -1,0 +1,44 @@
+<script>
+    export default {
+        render(createElement) {
+            const vnodes = this.$slots.default;
+            if (vnodes && vnodes.length) {
+            	for (let i = 0; i < vnodes.length; i++) {
+                    let vnode = vnodes[i];
+                    if (!vnode.data) {
+                    	vnode.data = Object.create(null)
+                    }
+                    if (!vnode.data.on) {
+                    	vnode.data.on = Object.create(null)
+                    }
+                    vnode.data.on.click = this._change;
+                }
+            }
+            return createElement('scroller', {//如果需要左右滑动用scroller，不需要的话用div就行,添加个属性需要时将scroller添加 children
+				attrs: {
+					scrollDirection:'horizontal',
+					showScrollbar:'false'
+				},
+                style: {
+                    height:'100px',
+					width:'750px',
+                    flexDirection:'row'
+//                     justifyContent: 'space-around',
+//                     alignItems:'center'
+                }
+            }, this.$slots.default)
+        },
+        methods:{
+            _change(e){
+            	let ret = {
+            		index:e.index
+            	}
+            	if(e.type === 'click'){
+            		let target = e.target;
+            		ret.index = target.parentNode.children.findIndex(node=>node===target)
+            	}
+            	this.$emit('_tabBarClick', ret)
+            }
+        }
+    }
+</script>

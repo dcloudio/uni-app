@@ -31,7 +31,7 @@
 			startRecognize: function () {
 				var options = {};
 				var that = this;
-				options.engine = 'iFly';
+				options.engine = 'baidu';
 				that.value = "";
 				plus.speech.startRecognize(options, function (s) {
 					console.log(s);
@@ -43,7 +43,7 @@
 			startRecognizeEnglish: function () {
 				var options = {};
 				var that = this;
-				options.engine = 'iFly';
+				options.engine = 'baidu';
 				options.lang = 'en-us';
 				that.value = "";
 				plus.speech.startRecognize(options, function (s) {

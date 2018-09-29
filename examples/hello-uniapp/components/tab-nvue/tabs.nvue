@@ -1,0 +1,85 @@
+<script>
+    import tabContent from './tabContent.nvue'
+    export default {
+        props: {
+            index: {
+                type: Number,
+                default: 0
+            }
+        },
+        data() {
+            return {
+                tabIndex: this.index
+            }
+        },
+        components: {
+        	tabContent,
+        },
+        render(createElement) {
+            const vnodes = this.$slots.default;
+            const newVNodes = []
+            if (vnodes && vnodes.length) {
+                for (let i = 0; i < vnodes.length; i++) {
+                    let vnode = vnodes[i]
+                    if (!vnode || !vnode.componentOptions) {
+                        continue
+                    }
+                    if (vnode.componentOptions.tag === 'tab-content') {
+
+                        const newVNode = createElement('tab-content', {
+                            staticClass: vnode.data.staticClass,
+                            'class':vnode.data['class'],
+                            style:vnode.data.style
+                        }, vnode.componentOptions.children)
+
+                        if (!newVNode.data) {
+                            newVNode.data = Object.create(null)
+                        }
+                        if (!newVNode.data.attrs) {
+                            newVNode.data.attrs = Object.create(null)
+                        }
+                        if (!newVNode.data.props) {
+                            newVNode.data.props = Object.create(null)
+                        }
+                        if (!newVNode.data.on) {
+                            newVNode.data.on = Object.create(null)
+                        }
+                        newVNode.data.attrs.index = this.tabIndex
+                        newVNode.data.props.index = this.tabIndex
+                        newVNode.data.on.change = this._change
+                        newVNodes.push(newVNode)
+                    }
+                    if (vnode.componentOptions.tag === 'tab-bar') {
+                        if (!vnode.componentOptions.listeners) { //监听子元素传递过来的事件
+                            vnode.componentOptions.listeners = Object.create(null)
+                        }
+                        vnode.componentOptions.listeners._tabBarClick = this._tabBarClick;
+                        newVNodes.push(vnode)
+                    }
+                }
+            }
+            var newNode = createElement('div', {
+                style: {
+                    flex: 1,
+                    flexDirection: 'column'
+                },
+                on: {
+                    change2: this._change2
+                }
+            }, newVNodes);
+            return newNode;
+        },
+        methods: {
+            _tabBarClick(e) {
+                this.tabIndex = e.index;
+                this.$emit('change', e);
+            },
+            _change(e) {
+                this.tabIndex = e.index;
+                this.$emit('change', {
+                    index:e.index
+                })
+            }
+        }
+    }
+</script>

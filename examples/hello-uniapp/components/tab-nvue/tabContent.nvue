@@ -1,0 +1,31 @@
+<script>
+    export default {
+        props: {
+            index: {
+                type: Number,
+                default: 0
+            }
+        },
+        data() {
+        	return {
+        		tabIndex:this.index
+        	}
+        },
+        watch:{
+            index(oldV,newV){
+                console.log(oldV,newV);
+            }
+        },
+        render(createElement) {
+            return createElement('slider', {
+                style: {
+                    flex: 1
+                },
+                attrs: {
+                    index:this.tabIndex,
+                    infinite: false
+                }
+            }, this.$slots.default)
+        }
+    }
+</script>
