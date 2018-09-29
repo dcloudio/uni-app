@@ -1,0 +1,7 @@
+<view
+  class="custom-class {{ classPrefix }} {{ classPrefix }}-{{ name }}"
+  style="{{ color ? 'color: ' + color : '' }}; {{ size ? 'font-size: ' + size : '' }}"
+  bind:tap="onClick"
+>
+  <view wx:if="{{ info !== null }}" class="van-icon__info">{{ info }}</view>
+</view>

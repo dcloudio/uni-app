@@ -1,0 +1,7 @@
+<view class="wux-class wux-cell-group">
+    <view class="wux-cell-group__hd" wx:if="{{ title }}">{{ title }}</view>
+    <view class="wux-cell-group__bd">
+        <slot></slot>
+    </view>
+    <view class="wux-cell-group__ft" wx:if="{{ label }}">{{ label }}</view>
+</view>
