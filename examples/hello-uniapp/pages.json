@@ -585,7 +585,8 @@
                                         "fontSize" : "22px"
                                     }
                                 ]
-                            }
+                            },
+							"bounce" : "none"
                         }
                     }
                 },

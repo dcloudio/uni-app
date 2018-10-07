@@ -44,8 +44,8 @@
                         if (!newVNode.data.on) {
                             newVNode.data.on = Object.create(null)
                         }
-                        newVNode.data.attrs.index = this.tabIndex
-                        newVNode.data.props.index = this.tabIndex
+                        newVNode.data.attrs.index = this.index
+                        newVNode.data.props.index = this.index
                         newVNode.data.on.change = this._change
                         newVNodes.push(newVNode)
                     }

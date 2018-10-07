@@ -1,15 +1,14 @@
 <template>
-	<div class="root">
-		<tabs class="tabs" @change="changeTab" :index="tabIndex">
-			<tab-bar class="tab-bar" scroll="true">
+	<div>
+		<tabs @change="changeTab" :index="tabIndex">
+			<tab-bar>
 				<div class="tab-bar-item" v-for="(tabBar, t) in tabBars" :key="t" :ref="tabBar.id + t">
 					<text class="tab-bar-title" :class="[tabIndex === t ? 'active' : '']">{{tabBar.name}}</text>
 				</div>
 			</tab-bar>
-			<tab-content class="item-tabcnt">
+			<tab-content>
 				<list class="list" @loadmore="loadMore(index1)" loadmoreoffset="10" v-for="(tab,index1) in newsitems" :key="index1">
 					<refresh class="refresh" @refresh="onrefresh" @pullingdown="onpullingdown" :display="refreshing ? 'show' : 'hide'">
-						<!-- <loading-indicator class="indicator"></loading-indicator> -->
 						<text class="refresh-text">{{refreshText}}</text>
 					</refresh>
 					<cell v-for="(newsitem,index2) in tab.data" :key="index2">
@@ -174,17 +173,14 @@
 				}
 			},
 			close(index1,index2){
-				console.log(963)
 				uni.showModal({
 					content: '是否删除本条信息？',
 					success:(res) => {
-						console.log(123)
 						if (res.confirm) {
-							console.log("999")
 							this.newsitems[index1].data.splice(index2,1);
 						}
 					}
-				});
+				})
 			},
 			async changeTab(e) {
 				this.tabIndex = e.index;
@@ -226,33 +222,6 @@
 </script>
 
 <style>
-	.root {
-		flex-direction: column;
-	}
-
-	.title {
-		height: 88px;
-		background-color: #F8F8F8;
-		justify-content: center;
-	}
-
-	.title-text {
-		font-size: 34px;
-		text-align: center;
-	}
-
-	.tabs {
-		flex: 1;
-	}
-
-	.tab-bar {
-		border-bottom-width: 1px;
-		border-color: #c8c7cc;
-		border-bottom-style: solid;
-		background-color: #fff;
-		height: 100px;
-	}
-
 	.tab-bar-item {
 		width: 150px;
 		height: 100px;
@@ -271,30 +240,18 @@
 	.active {
 		color: #007AFF;
 	}
-
-	.tab-list {
-		width: 100%;
-		width: 600px;
-		height: 90px;
-		margin-left: 75px;
-		margin-top: 20px;
+	
+	.loadmore {
+		height: 70px;
+		width: 750px;
 		flex-direction: column;
 		justify-content: center;
-		border-width: 1px;
-		border-style: solid;
-		border-color: rgb(162, 217, 192);
-		background-color: rgba(162, 217, 192, 0.2);
 	}
+	
 	.loadmore-text {
 		font-size: 30px;
 		text-align: center;
 		color: #999999;
-	}
-
-	.loadmore {
-		height: 70px;
-		flex-direction: column;
-		justify-content: center;
 	}
 
 	.refresh {
