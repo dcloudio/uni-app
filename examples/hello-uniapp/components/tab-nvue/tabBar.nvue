@@ -14,19 +14,28 @@
                     vnode.data.on.click = this._change;
                 }
             }
-            return createElement('scroller', {//如果需要左右滑动用scroller，不需要的话用div就行,添加个属性需要时将scroller添加 children
-				attrs: {
-					scrollDirection:'horizontal',
-					showScrollbar:'false'
-				},
+            return createElement('div', {//如果需要左右滑动用scroller，不需要的话用div就行,添加个属性需要时将scroller添加 children
                 style: {
                     height:'100px',
 					width:'750px',
-                    flexDirection:'row'
-//                     justifyContent: 'space-around',
-//                     alignItems:'center'
+                    flexDirection:'row',
+					borderBottomWidth: "1px",
+					borderColor: "#c8c7cc",
+					borderBottomStyle: "solid"
                 }
-            }, this.$slots.default)
+            }, [
+				createElement('scroller', {
+					attrs: {
+						scrollDirection:'horizontal',
+						showScrollbar:'false'
+					},
+					style: {
+						height:'100px',
+						width:'750px',
+						flexDirection:'row'
+					}
+				}, this.$slots.default)
+			])
         },
         methods:{
             _change(e){
