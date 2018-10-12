@@ -12,6 +12,9 @@
 		<view class="article-content">
 			<rich-text :nodes="htmlString"></rich-text>
 		</view>
+		<!-- #ifdef MP-WEIXIN -->
+		<ad v-if="htmlString" unit-id="adunit-01b7a010bf53d74e"></ad>
+		<!-- #endif -->
 	</view>
 </template>
 
@@ -40,7 +43,7 @@
 		methods: {
 			getDetail() {
 				uni.request({
-					url: 'https://spider.dcloud.net.cn/api/news/36kr/' + this.banner.post_id,
+					url: 'https://unidemo.dcloud.net.cn/api/news/36kr/' + this.banner.post_id,
 					success: (data) => {
 						if (data.statusCode == 200) {
 							this.htmlString = data.data.content.replace(/\\/g, "").replace(/<img/g, "<img style=\"display:none;\"");
@@ -56,7 +59,6 @@
 </script>
 
 <style>
-	@import "../../../common/uni.css";
 	page {
 		background: #efeff4;
 	}
@@ -109,5 +111,6 @@
 		padding: 0 30upx;
 		overflow: hidden;
 		font-size: 30upx;
+		margin-bottom: 30upx;
 	}
 </style>

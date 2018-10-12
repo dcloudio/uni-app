@@ -1,0 +1,37 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "小程序组件示例"
+			}
+		},
+		{
+			"path": "pages/vant/vant",
+			"style": {
+				"navigationBarTitleText": "vant组件示例",
+				"usingComponents": {
+					"van-nav-bar": "/wxcomponents/vant-weapp/dist/nav-bar/index",
+					"van-icon": "/wxcomponents/vant-weapp/dist/icon/index"
+				}
+			}
+		},
+		{
+			"path": "pages/wux/wux",
+			"style": {
+				"navigationBarTitleText": "wux组件示例",
+				"usingComponents": {
+					"wux-calendar": "/wxcomponents/wux-weapp/dist/calendar/index",
+					"wux-cell-group": "/wxcomponents/wux-weapp/dist/cell-group/index",
+					"wux-cell": "/wxcomponents/wux-weapp/dist/cell/index"
+				}
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "小程序组件示例",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	}
+}

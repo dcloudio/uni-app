@@ -1,0 +1,53 @@
+<wux-backdrop id="wux-backdrop" bind:click="close" />
+<wux-animation-group wux-class="wux-calendar" in="{{ in }}" class-names="wux-animate--slideInUp">
+    <view class="wux-calendar__content {{ inline ? 'wux-calendar--inline' : '' }} {{ direction === 'vertical' ? 'wux-calendar--vertical' : 'wux-calendar--horizontal' }}">
+        <view class="wux-calendar__hd" wx:if="{{ toolbar }}">
+            <view class="wux-calendar__toolbar">
+                <view class="wux-calendar__picker">
+                    <view class="wux-calendar__link" bindtap="prevMonth">
+                        <view class="wux-calendar__icon wux-calendar__icon--prev"></view>
+                    </view>
+                    <view class="wux-calendar__value">{{ currentMonthName }}</view>
+                    <view class="wux-calendar__link" bindtap="nextMonth">
+                        <view class="wux-calendar__icon wux-calendar__icon--next"></view>
+                    </view>
+                </view>
+                <view class="wux-calendar__picker">
+                    <view class="wux-calendar__link" bindtap="prevYear">
+                        <view class="wux-calendar__icon wux-calendar__icon--prev"></view>
+                    </view>
+                    <text class="wux-calendar__value">{{ currentYear }}</text>
+                    <view class="wux-calendar__link" bindtap="nextYear">
+                        <view class="wux-calendar__icon wux-calendar__icon--next"></view>
+                    </view>
+                </view>
+            </view>
+        </view>
+        <view class="wux-calendar__bd">
+            <view class="wux-calendar__weekdays" wx:if="{{ weekHeader }}">
+                <block wx:for="{{ weeks }}" wx:key="">
+                    <view class="wux-calendar__weekday {{ item.weekend ? 'wux-calendar__weekday--weekend' : '' }}">
+                        {{ item.dayName }}
+                    </view>
+                </block>
+            </view>
+            <view class="wux-calendar__months">
+                <view class="wux-calendar__months-content" bindtouchstart="onTouchStart" bindtouchmove="onTouchMove" bindtouchend="onTouchEnd" style="{{ wrapperTranslate }}">
+                    <block wx:for="{{ months }}" wx:for-item="month" wx:key="">
+                        <view data-year="{{ month.year }}" data-month="{{ month.month }}" class="wux-calendar__month {{ index === 0 ? 'wux-calendar__month--prev' : index === 1 ? 'wux-calendar__month--current' : 'wux-calendar__month--next' }}" style="{{ monthsTranslate[index] }}">
+                            <block wx:for="{{ month.items }}" wx:for-item="row" wx:key="">
+                                <view class="wux-calendar__days">
+                                    <block wx:for="{{ row }}" wx:for-item="col" wx:key="">
+                                        <view data-year="{{ col.year }}" data-month="{{ col.month }}" data-day="{{ col.day }}" data-date="{{ col.date }}" data-type="{{ col.type }}" class="wux-calendar__day {{ col.type.prev ? 'wux-calendar__day--prev' : '' }} {{ col.type.next ? 'wux-calendar__day--next' : '' }} {{ col.type.today ? 'wux-calendar__day--today' : '' }} {{ col.type.selected ? 'wux-calendar__day--selected' : '' }} {{ col.type.weekend ? 'wux-calendar__day--weekend' : '' }} {{ col.type.disabled ? 'wux-calendar__day--disabled' : '' }}" bindtap="onDayClick">
+                                            <text class="wux-calendar__text">{{ col.day }}</text>
+                                        </view>
+                                    </block>
+                                </view>
+                            </block>
+                        </view>
+                    </block>
+                </view>
+            </view>
+        </view>
+    </view>
+</wux-animation-group>

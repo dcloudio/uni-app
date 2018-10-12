@@ -52,7 +52,7 @@
 					column: "id,post_id,title,author_name,cover,published_at" //需要的字段名
 				};
 				uni.request({
-					url: 'https://spider.dcloud.net.cn/api/banner/36kr',
+					url: 'https://unidemo.dcloud.net.cn/api/banner/36kr',
 					data: data,
 					success: (data) => {
 						uni.stopPullDownRefresh();
@@ -75,7 +75,7 @@
 					data.pageSize = 10;
 				}
 				uni.request({
-					url: 'https://spider.dcloud.net.cn/api/news',
+					url: 'https://unidemo.dcloud.net.cn/api/news',
 					data: data,
 					success: (data) => {
 						if (data.statusCode == 200) {
@@ -125,8 +125,6 @@
 </script>
 
 <style>
-	@import "../../../common/uni.css";
-
 	page {
 		background: #efeff4;
 	}

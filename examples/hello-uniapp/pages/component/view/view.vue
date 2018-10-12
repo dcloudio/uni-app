@@ -117,8 +117,6 @@
 </script>
 
 <style>
-	@import "../../../common/uni.css";
-
 	.flex-item {
 		width: 200upx;
 		height: 300upx;

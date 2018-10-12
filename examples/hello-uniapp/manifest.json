@@ -55,10 +55,12 @@
                     "<uses-permission android:name=\"android.permission.RECEIVE_USER_PRESENT\"/>"
                 ]
             },
-            "ios" : {},
-            /* ios打包配置 */
-            "sdkConfigs" : {},
-            /* SDK配置 */
+            "ios" : {/* ios打包配置 */
+				"UIBackgroundModes":["audio"]
+			},
+            "sdkConfigs" : {/* SDK配置 */
+				
+			},
             "orientation" : [ "portrait-primary" ]
         }
     },

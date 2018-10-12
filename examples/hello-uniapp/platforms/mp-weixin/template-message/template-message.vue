@@ -103,7 +103,6 @@
 </script>
 
 <style>
-	@import "../../../common/uni.css";
 	button {
 		background-color: #007aff;
 		color: #ffffff;

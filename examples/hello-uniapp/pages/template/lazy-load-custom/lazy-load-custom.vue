@@ -78,8 +78,6 @@
 </script>
 
 <style>
-    @import "../../../common/uni.css";
-
     .content {
         font-size: 30upx;
         line-height: 50upx;

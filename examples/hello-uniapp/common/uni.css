@@ -83,18 +83,19 @@
 
 /*数字角标*/
 
-.uni-badge {
-	padding: 4upx 14upx;
-	font-size: 24upx;
-	height: 24upx;
+.uni-badge,.uni-badge-default {
+	font-family: 'Helvetica Neue',Helvetica,sans-serif;
+	font-size: 12px;
 	line-height: 1;
+	display: inline-block;
+	padding: 3px 6px;
 	color: #333;
+	border-radius: 100px;
 	background-color: rgba(0, 0, 0, .15);
-	border-radius: 200upx;
 }
 
 .uni-badge.uni-badge-inverted {
-	padding: 0 10upx 0 0;
+	padding: 0 5px 0 0;
 	color: #929292;
 	background-color: transparent
 }
@@ -403,7 +404,7 @@
 }
 
 .uni-navigate-badge {
-	margin-right: 20upx;
+	padding-right: 50upx;
 }
 
 .uni-list-cell-navigate.uni-navigate-right:after {

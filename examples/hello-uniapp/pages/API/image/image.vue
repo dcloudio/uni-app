@@ -159,8 +159,6 @@
 </script>
 
 <style>
-	@import "../../../common/uni.css";
-
 	.cell-pd {
 		padding: 22upx 30upx;
 	}

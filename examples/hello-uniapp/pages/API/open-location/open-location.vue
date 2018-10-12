@@ -10,7 +10,7 @@
 								<view class="uni-label">经度</view>
 							</view>
 							<view class="uni-list-cell-db">
-								<input class="uni-input" type="text" :disabled="true" value="116.39742" name="longitude"></input>
+								<input class="uni-input" type="text" :disabled="true" value="116.39747" name="longitude"></input>
 							</view>
 						</view>
 						<view class="uni-list-cell">
@@ -18,7 +18,7 @@
 								<view class="uni-label">纬度</view>
 							</view>
 							<view class="uni-list-cell-db">
-								<input class="uni-input" type="text" :disabled="true" value="39.909" name="latitude"></input>
+								<input class="uni-input" type="text" :disabled="true" value="39.9085" name="latitude"></input>
 							</view>
 						</view>
 						<view class="uni-list-cell">
@@ -69,7 +69,6 @@
 </script>
 
 <style>
-	@import "../../../common/uni.css";
 	.page-body-info {
 		height: 250upx;
 	}

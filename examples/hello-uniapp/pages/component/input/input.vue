@@ -161,7 +161,6 @@
 </script>
 
 <style>
-	@import "../../../common/uni.css";
 	@import "../../../common/icon.css";
 	.page-section {
 		margin-bottom: 20upx;

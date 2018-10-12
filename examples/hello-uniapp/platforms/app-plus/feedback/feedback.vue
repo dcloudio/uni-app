@@ -146,7 +146,6 @@
 </script>
 
 <style>
-    @import "../../../common/uni.css";
     page {
         background-color: #EFEFF4;
     }
