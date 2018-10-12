@@ -14,16 +14,16 @@
         <uni-nav-bar left-icon="back" @click-left="back" @click-right="showMenu" left-text="返回" right-text="菜单" title="标题"></uni-nav-bar>
         <uni-nav-bar left-icon="back" @click-left="showMenu" @click-right="showMenu" left-text="菜单" right-text="菜单" title="标题"></uni-nav-bar> -->
         <view class="title">其他常见样式</view>
-        <uni-nav-bar color="#333333" background-color="#FFFFFF" fixed="false" right-icon="scan" @click-left="city" @click-right="scan">
+        <uni-nav-bar color="#333333" background-color="#FFFFFF" fixed="false" right-icon="scan" @click-left="showCity" @click-right="scan">
             <block slot="left">
                 <view class="city">
-                    <text>北京</text>
+                    <text>{{city}}</text>
                     <uni-icon type="arrowdown" color="#333333" size="22"></uni-icon>
                 </view>
             </block>
             <view class="input-view">
                 <uni-icon type="search" size="22" color="#666666"></uni-icon>
-                <input class="input" type="text" placeholder="输入搜索关键词" />
+                <input confirm-type="search" @confirm="confirm" class="input" type="text" placeholder="输入搜索关键词" />
             </view>
         </uni-nav-bar>
     </view>
@@ -38,6 +38,11 @@
             uniNavBar,
             uniIcon
         },
+		data(){
+			return{
+				city:'北京'
+			}
+		},
         methods: {
             back() {
                 uni.navigateBack({
@@ -59,7 +64,7 @@
                     title: '搜索'
                 })
             },
-            city() {
+            showCity() {
                 uni.showToast({
                     title: '选择城市'
                 })
@@ -68,7 +73,12 @@
                 uni.showToast({
                     title: '扫码'
                 })
-            }
+            },
+			confirm() {
+				uni.showToast({
+					title: '搜索'
+				})
+			}
         }
     }
 </script>

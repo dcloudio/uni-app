@@ -205,7 +205,7 @@
 		onShareAppMessage() {
 			return {
 				title: '欢迎体验uni-app',
-				path: '/pages/API/API'
+				path: '/pages/tabBar/API/API'
 			}
 		},
 		onNavigationBarButtonTap(e){
@@ -235,8 +235,6 @@
 </script>
 
 <style>
-	@import "../../../common/uni.css";
-	
 	.index{
 		padding-bottom: 1upx;
 	}

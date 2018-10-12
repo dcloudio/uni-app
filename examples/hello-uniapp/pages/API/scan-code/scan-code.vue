@@ -40,8 +40,6 @@
 </script>
 
 <style>
-	@import "../../../common/uni.css";
-
 	.uni-input {
 		padding: 15upx 30upx;
 		word-break: break-all;

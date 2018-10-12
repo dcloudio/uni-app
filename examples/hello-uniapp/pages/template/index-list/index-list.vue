@@ -71,7 +71,6 @@
 </script>
 
 <style>
-	@import "../../../common/uni.css";
 	.page {
 		display: flex;
 		flex-direction: row;

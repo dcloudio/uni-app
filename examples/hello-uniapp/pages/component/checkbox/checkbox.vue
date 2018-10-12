@@ -80,8 +80,6 @@
 </script>
 
 <style>
-	@import "../../../common/uni.css";
-
 	.uni-list-cell {
 		justify-content: flex-start
 	}

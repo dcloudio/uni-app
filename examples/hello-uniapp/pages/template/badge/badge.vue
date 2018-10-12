@@ -1,54 +1,56 @@
 <template>
-    <view class="page">
-        <page-head :title="title"></page-head>
-        <view class='title'>
-            <text>有底色</text>
-        </view>
-        <view>
-            <text class="uni-badge">1</text>
-            <text class="uni-badge uni-badge-primary">12</text>
-            <text class="uni-badge uni-badge-success">123</text>
-            <text class="uni-badge uni-badge-warning">3</text>
-            <text class="uni-badge uni-badge-danger">45</text>
-            <text class="uni-badge uni-badge-purple">456</text>
-        </view>
-        <view class='title'>
-            <text>无底色</text>
-        </view>
-        <view>
-            <text class="uni-badge uni-badge-inverted">1</text>
-            <text class="uni-badge uni-badge-primary uni-badge-inverted">12</text>
-            <text class="uni-badge uni-badge-success uni-badge-inverted">123</text>
-            <text class="uni-badge uni-badge-warning uni-badge-inverted">3</text>
-            <text class="uni-badge uni-badge-danger uni-badge-inverted">45</text>
-            <text class="uni-badge uni-badge-purple uni-badge-inverted">456</text>
-        </view>
-    </view>
+	<view class="page">
+		<page-head :title="title"></page-head>
+		<view class='title'>
+			<text>有底色</text>
+		</view>
+		<view>
+			<uni-badge text="1"></uni-badge>
+			<uni-badge text="12" type="primary"></uni-badge>
+			<uni-badge text="123" type="success"></uni-badge>
+			<uni-badge text="3" type="warning"></uni-badge>
+			<uni-badge text="45" type="danger"></uni-badge>
+			<uni-badge text="456" type="purple"></uni-badge>
+		</view>
+		<view class='title'>
+			<text>无底色</text>
+		</view>
+		<view>
+			<uni-badge text="1" :inverted="true"></uni-badge>
+			<uni-badge text="12" type="primary" :inverted="true"></uni-badge>
+			<uni-badge text="123" type="success" :inverted="true"></uni-badge>
+			<uni-badge text="3" type="warning" :inverted="true"></uni-badge>
+			<uni-badge text="45" type="danger" :inverted="true"></uni-badge>
+			<uni-badge text="456" type="purple" :inverted="true"></uni-badge>
+		</view>
+	</view>
 </template>
 
 <script>
-    export default {
-        data() {
-            return {
-                title: 'badge'
-            }
-        }
-    }
+	import uniBadge from "../../../components/uni-badge.vue";
+	export default {
+		data() {
+			return {
+				title: "badge"
+			}
+		},
+		components: {
+			uniBadge
+		}
+	}
 </script>
 
 <style>
-    @import "../../../common/uni.css";
+	.page {
+		padding-top: 60upx;
+	}
 
-    .page {
-        padding-top: 60upx;
-    }
+	page {
+		background: #efeff4;
+	}
 
-    page {
-        background: #efeff4;
-    }
-
-    .uni-badge,
-    .title {
-        margin: 20upx;
-    }
+	.uni-badge,
+	.title {
+		margin: 20upx;
+	}
 </style>

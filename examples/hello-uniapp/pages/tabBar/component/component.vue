@@ -31,7 +31,7 @@
 					id: 'view',
 					name: '视图容器',
 					open: false,
-					pages: ['view', 'scroll-view', 'swiper']
+					pages: ['view', 'scroll-view', 'swiper', 'movable-view']
 				}, {
 					id: 'content',
 					name: '基础内容',
@@ -70,7 +70,7 @@
 		onShareAppMessage() {
 			return {
 				title: '欢迎体验uni-app',
-				path: '/pages/component/component'
+				path: '/pages/tabBar/component/component'
 			}
 		},
 		onNavigationBarButtonTap(e){
@@ -98,8 +98,6 @@
 </script>
 
 <style>
-	@import "../../../common/uni.css";
-
 	.index {
 		padding-bottom: 1upx;
 	}

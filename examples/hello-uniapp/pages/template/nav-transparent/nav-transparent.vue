@@ -61,8 +61,6 @@
 </script>
 
 <style>
-	@import "../../../common/uni.css";
-
 	image,
 	swiper,
 	.img-view {

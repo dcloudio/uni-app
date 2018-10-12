@@ -73,8 +73,6 @@
 </script>
 
 <style>
-	@import "../../../common/uni.css";
-
 	.swiper-item {
 		display: block;
 		height: 300upx;

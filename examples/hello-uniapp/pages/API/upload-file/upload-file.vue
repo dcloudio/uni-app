@@ -77,7 +77,6 @@
 </script>
 
 <style>
-	@import "../../../common/uni.css";
 	.image {
 		width: 100%;
 		height: 360upx;
