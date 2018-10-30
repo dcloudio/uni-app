@@ -1,7 +1,7 @@
 <template>
 	<view class="about">
 		<view class="content">
-			<view style="display:flex;align-items: center;flex-direction: column;">
+			<view class="qrcode">
 				<image src="https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/app_download.png" @longtap="save"></image>
 				<text>扫码体验uni-app</text>
 			</view>
@@ -142,6 +142,11 @@
 		padding: 30upx;
 		flex-direction: column;
 		justify-content: center;
+	}
+	.qrcode{
+		display: flex;
+		align-items: center;
+		flex-direction: column;
 	}
 	.desc{
 		margin-top: 30upx;

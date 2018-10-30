@@ -1,7 +1,7 @@
 <template>
 	<view class="root">
 		<view class="page-body">
-			<view class="page-section-title">这是 nvue 页面跳转 vue 页面的演示，下面是页面跳转时传递过来的标题：</view>
+			<view class="page-section-title">这是选项卡页面跳转详情页面的演示，下面是页面跳转时传递过来的标题：</view>
 			<view class="page-section-title">{{data}}</view>
 		</view>
 	</view>

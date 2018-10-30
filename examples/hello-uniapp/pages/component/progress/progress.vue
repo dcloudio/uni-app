@@ -8,7 +8,7 @@
 				</view>
 				<view class="progress-box">
 					<progress percent="40" active stroke-width="3" />
-					<icon class="progress-cancel" type="cancel"></icon>
+					<uni-icon type="close" class="progress-cancel" color="#dd524d"></uni-icon>
 				</view>
 				<view class="progress-box">
 					<progress percent="60" active stroke-width="3" />
@@ -21,12 +21,16 @@
 	</view>
 </template>
 <script>
+    import uniIcon from '../../../components/uni-icon.vue'
 	export default {
 		data() {
 			return {
 				title: 'progress'
 			}
-		}
+		},
+        components: {
+        	uniIcon
+        },
 	}
 </script>
 

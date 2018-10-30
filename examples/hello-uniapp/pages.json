@@ -73,10 +73,10 @@
                 "navigationBarTitleText" : "swiper"
             }
         },
-		{
-            "path": "pages/component/movable-view/movable-view",
-            "style": {
-                "navigationBarTitleText": "movable-view"
+        {
+            "path" : "pages/component/movable-view/movable-view",
+            "style" : {
+                "navigationBarTitleText" : "movable-view"
             }
         },
         {
@@ -476,18 +476,16 @@
                 "navigationBarTitleText" : "关于"
             }
         },
-		{
-			"path" : "platforms/app-plus/tabbar-nvue/tabbar-nvue",
-			"style" : {
-				"navigationBarTitleText" : "顶部选项卡（原生）"
-			}
-		},
-		{
-			"path" : "platforms/app-plus/tabbar-nvue/detail",
-			"style" : {
-				"navigationBarTitleText" : "详情页面"
-			}
-		}
+        {
+            "path" : "platforms/app-plus/tabbar/tabbar",
+            "style" : {
+                "navigationBarTitleText" : "顶部选项卡（非原生）"
+            }
+        },
+        {
+            "path" : "platforms/app-plus/web-view-local/web-view-local",
+            "style" : {}
+        }
     ],
     "subPackages" : [
         {
@@ -586,7 +584,7 @@
                                     }
                                 ]
                             },
-							"bounce" : "none"
+                            "bounce" : "none"
                         }
                     }
                 },
@@ -653,7 +651,18 @@
                 {
                     "path" : "tabbar/tabbar",
                     "style" : {
-                        "navigationBarTitleText" : "顶部选项卡（非原生）"
+                        "navigationBarTitleText" : "顶部选项卡",
+                        "app-plus" : {
+                            "titleNView" : {
+                                "titleText" : "顶部选项卡（原生）"
+                            }
+                        }
+                    }
+                },
+                {
+                    "path" : "tabbar/detail/detail",
+                    "style" : {
+                        "navigationBarTitleText" : "详情页面"
                     }
                 },
                 {
@@ -732,10 +741,16 @@
                     "path" : "nav-bar/nav-bar",
                     "style" : {
                         "navigationBarTitleText" : "导航栏组件",
+                        "enablePullDownRefresh" : true,
                         "app-plus" : {
                             "titleNView" : false,
                             "bounce" : "none",
-                            "scrollIndicator" : "none"
+                            "scrollIndicator" : "none",
+                            "pullToRefresh" : {
+                                "style" : "circle",
+                                "offset" : "70px",
+                                "color" : "#007AFF"
+                            }
                         }
                     }
                 },
@@ -745,24 +760,54 @@
                         "navigationBarTitleText" : "手势图案锁屏"
                     }
                 },
-				{
-					"path":"scrollmsg/scrollmsg",
-					"style" : {
-						"navigationBarTitleText" : "滚动公告"
-					}
-				},
-				{
-					"path":"steps/steps",
-					"style" : {
-						"navigationBarTitleText" : "步骤展示"
-					}
-				},
-				{
-					"path":"comments/comments",
-					"style" : {
-						"navigationBarTitleText" : "评论界面"
-					}
-				}
+                {
+                    "path" : "scrollmsg/scrollmsg",
+                    "style" : {
+                        "navigationBarTitleText" : "滚动公告"
+                    }
+                },
+                {
+                    "path" : "steps/steps",
+                    "style" : {
+                        "navigationBarTitleText" : "步骤展示"
+                    }
+                },
+                {
+                    "path" : "comments/comments",
+                    "style" : {
+                        "navigationBarTitleText" : "评论界面"
+                    }
+                },
+                {
+                    "path" : "timeline/timeline",
+                    "style" : {
+                        "navigationBarTitleText" : "时间轴 timeline"
+                    }
+                },
+                {
+                    "path" : "tag/tag",
+                    "style" : {
+                        "navigationBarTitleText" : "标签tag"
+                    }
+                },
+                {
+                    "path" : "countdown/countdown",
+                    "style" : {
+                        "navigationBarTitleText" : "倒计时"
+                    }
+                },
+                {
+                    "path" : "datachecker/datachecker",
+                    "style" : {
+                        "navigationBarTitleText" : "表单校验"
+                    }
+                },
+                {
+                    "path" : "sbanner/sbanner",
+                    "style" : {
+                        "navigationBarTitleText" : "插屏弹窗"
+                    }
+                }
             ]
         }
     ],

@@ -1,13 +1,11 @@
 <template>
-	<view>
-		<web-view src="https://uniapp.dcloud.io"></web-view>
-	</view>
+    <view>
+        <web-view src="https://uniapp.dcloud.io"></web-view>
+    </view>
 </template>
 
 <script>
-	export default {
-		
-	}
+    export default {}
 </script>
 
 <style>
