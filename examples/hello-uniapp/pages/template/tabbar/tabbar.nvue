@@ -1,33 +1,46 @@
 <template>
-    <view class="index">
-        <scroll-view id="tab-bar" class="swiper-tab" scroll-x :scroll-left="scrollLeft">
-            <view v-for="(tab,index) in tabBars" :key="tab.id" :class="['swiper-tab-list',tabIndex==index ? 'active' : '']"
-                :id="tab.id" :data-current="index" @tap="tapTab">{{tab.name}}</view>
-        </scroll-view>
-        <swiper :current="tabIndex" class="swiper-box" duration="300" @change="changeTab">
-            <swiper-item v-for="(tab,index1) in newsitems" :key="index1">
-                <scroll-view class="list" scroll-y @scrolltolower="loadMore(index1)">
-                    <block v-for="(newsitem,index2) in tab.data" :key="index2">
+    <div>
+        <tabs @change="changeTab" :index="tabIndex">
+            <tab-bar>
+                <div class="tab-bar-item" v-for="(tabBar, t) in tabBars" :key="t" :ref="tabBar.id + t">
+                    <text class="tab-bar-title" :class="[tabIndex === t ? 'active' : '']">{{tabBar.name}}</text>
+                </div>
+            </tab-bar>
+            <tab-content>
+                <list class="list" @loadmore="loadMore(index1)" loadmoreoffset="10" v-for="(tab,index1) in newsitems"
+                    :key="index1">
+                    <refresh class="refresh" @refresh="onrefresh" @pullingdown="onpullingdown" :display="refreshing ? 'show' : 'hide'">
+                        <text class="refresh-text">{{refreshText}}</text>
+                    </refresh>
+                    <cell v-for="(newsitem,index2) in tab.data" :key="index2">
                         <media-list :data="newsitem" @close="close(index1,index2)" @click="goDetail(newsitem)"></media-list>
-                    </block>
-                    <view class="loadmore">
+                    </cell>
+                    <cell class="loadmore">
                         <text class="loadmore-text">{{tab.loadingText}}</text>
-                    </view>
-                </scroll-view>
-            </swiper-item>
-        </swiper>
-    </view>
+                    </cell>
+                </list>
+            </tab-content>
+        </tabs>
+    </div>
 </template>
+
 <script>
-    import mediaList from '@/components/tab-nvue/mediaList.vue'
+    import tabContent from '@/components/tab-nvue/tabContent.nvue'
+    import tabBar from '@/components/tab-nvue/tabBar.nvue'
+    import tabs from '@/components/tab-nvue/tabs.nvue'
+    import mediaList from '@/components/tab-nvue/mediaList.nvue'
+    const dom = weex.requireModule('dom')
     export default {
         components: {
+            tabContent,
+            tabBar,
+            tabs,
             mediaList
         },
         data() {
             return {
-                scrollLeft: 0,
-                isClickChange: false,
+                refreshing: false,
+                refreshText: "下拉可以刷新",
                 tabIndex: 0,
                 newsitems: [],
                 data0: {
@@ -111,8 +124,10 @@
                 }]
             }
         },
-        onLoad: function() {
-            this.newsitems = this.randomfn()
+        created() {
+            setTimeout(() => {
+                this.newsitems = this.randomfn();
+            }, 150)
         },
         methods: {
             goDetail(e) {
@@ -121,14 +136,14 @@
                 })
             },
             close(index1, index2) {
-                uni.showModal({
-                    content: '是否删除本条信息？',
-                    success: (res) => {
-                        if (res.confirm) {
-                            this.newsitems[index1].data.splice(index2, 1);
-                        }
-                    }
-                })
+            	uni.showModal({
+            		content: '是否删除本条信息？',
+            		success: (res) => {
+            			if (res.confirm) {
+            				this.newsitems[index1].data.splice(index2, 1);
+            			}
+            		}
+            	})
             },
             loadMore(e) {
             	setTimeout(() => {
@@ -146,52 +161,25 @@
             	}
             },
             async changeTab(e) {
-                let index = e.target.current;
-                if (this.isClickChange) {
-                    this.tabIndex = index;
-                    this.isClickChange = false;
+                this.tabIndex = e.index;
+                const el = this.$refs[this.tabBars[e.index].id + e.index][0]
+                let elSize = await this.getElSize(el);
+                if (elSize.left + elSize.width > 750) {
+                    let index = e.index - 4;
+                    let newEl = this.$refs[this.tabBars[index].id + index][0]
+                    dom.scrollToElement(newEl, {});
                     return;
                 }
-                let tabBar = await this.getElSize("tab-bar"),
-                    tabBarScrollLeft = tabBar.scrollLeft;
-                let width = 0;
-
-                for (let i = 0; i < index; i++) {
-                    let result = await this.getElSize(this.tabBars[i].id);
-                    width += result.width;
+                if (elSize.left < 0) {
+                    dom.scrollToElement(el, {});
                 }
-                let winWidth = uni.getSystemInfoSync().windowWidth,
-                    nowElement = await this.getElSize(this.tabBars[index].id),
-                    nowWidth = nowElement.width;
-                if (width + nowWidth - tabBarScrollLeft > winWidth) {
-                    this.scrollLeft = width + nowWidth - winWidth;
-                }
-                if (width < tabBarScrollLeft) {
-                    this.scrollLeft = width;
-                }
-                this.isClickChange = false;
-                this.tabIndex = index; //一旦访问data就会出问题
             },
-            getElSize(id) { //得到元素的size
+            getElSize(el) { //得到元素的size
                 return new Promise((res, rej) => {
-                    uni.createSelectorQuery().select("#" + id).fields({
-                        size: true,
-                        scrollOffset: true
-                    }, (data) => {
-                        res(data);
-                    }).exec();
+                    const result = dom.getComponentRect(el, option => {
+                        res(option.size);
+                    })
                 })
-            },
-            async tapTab(e) { //点击tab-bar
-                if (this.tabIndex === e.target.dataset.current) {
-                    return false;
-                } else {
-                    let tabBar = await this.getElSize("tab-bar"),
-                        tabBarScrollLeft = tabBar.scrollLeft; //点击的时候记录并设置scrollLeft
-                    this.scrollLeft = tabBarScrollLeft;
-                    this.isClickChange = true;
-                    this.tabIndex = e.target.dataset.current
-                }
             },
             randomfn() {
                 let ary = [];
@@ -206,43 +194,46 @@
                     ary.push(aryItem);
                 }
                 return ary;
+            },
+            onrefresh(event) {
+            	uni.showToast({
+            		title: "refresh",
+            		icon: "none"
+            	});
+            	this.refreshText = "正在刷新...";
+            	this.refreshing = true;
+            	setTimeout(() => {
+            		console.log("刷新结束")
+            		this.refreshing = false
+            	}, 2000)
+            },
+            onpullingdown(event) {
+            	if (this.refreshing) {
+            		return;
+            	}
+            	if (Math.abs(event.pullingDistance) > Math.abs(event.viewHeight)) {
+            		this.refreshText = "释放立即刷新";
+            	} else {
+            		this.refreshText = "下拉可以刷新";
+            	}
             }
         }
     }
 </script>
 
 <style>
-    page {
-        display: flex;
-    }
-
-    .index {
-        display: flex;
-        flex: 1;
+    .tab-bar-item {
+        width: 150px;
+        height: 100px;
         flex-direction: column;
-        overflow: hidden;
-        height: 100%;
+        align-items: center;
+        justify-content: center;
     }
 
-    .list {
-        width: 750upx;
-        height: 100%;
-    }
-
-    .swiper-tab {
-        width: 100%;
-        white-space: nowrap;
-        line-height: 100upx;
-        height: 100upx;
-        border-bottom: 1px solid #c8c7cc;
-    }
-
-
-    .swiper-tab-list {
-        font-size: 30upx;
-        width: 150upx;
-        display: inline-block;
-        text-align: center;
+    .tab-bar-title {
+        height: 100px;
+        line-height: 100px;
+        font-size: 30px;
         color: #555;
     }
 
@@ -250,22 +241,30 @@
         color: #007AFF;
     }
 
-    .swiper-box {
-        flex: 1;
-        width: 100%;
-        height: calc(100% - 100upx);
-    }
-
     .loadmore {
-        height: 70upx;
-        width: 750upx;
+        height: 70px;
+        width: 750px;
         flex-direction: column;
         justify-content: center;
     }
 
     .loadmore-text {
-        font-size: 30upx;
+        font-size: 30px;
         text-align: center;
+        color: #999999;
+    }
+
+    .refresh {
+        width: 750px;
+        height: 70px;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .refresh-text {
+        text-align: center;
+        font-size: 28px;
         color: #999999;
     }
 </style>
