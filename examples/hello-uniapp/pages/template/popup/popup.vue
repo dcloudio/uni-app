@@ -34,6 +34,13 @@
 				activePop: 'middle'
 			}
 		},
+    onBackPress() {
+      if(this.showMask) {
+        this.showMask = false;
+        this.hide();
+        return true;
+      }
+    },
 		methods: {
 			show(evt) {
 				var pos = evt.target.dataset.position
