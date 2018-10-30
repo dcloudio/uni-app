@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>local web-view</title>
+        <style type="text/css">
+            .btn {
+                display: block;
+                margin: 20px auto;
+                padding: 5px;
+                background-color: #007aff;
+                border: 0;
+                color: #ffffff;
+                height: 40px;
+                width: 200px;
+            }
+
+            .btn-red {
+                background-color: #dd524d;
+            }
+
+            .btn-yellow {
+                background-color: #f0ad4e;
+            }
+
+            .desc {
+                padding: 10px;
+                color: #999999;
+            }
+        </style>
+    </head>
+    <body>
+        <p class="desc">web-view 组件加载本地 html 示例，仅在 App 环境下生效。点击下列按钮，跳转至其它页面。</p>
+        <div class="btn-list">
+            <button class="btn" type="button" data-action="navigateTo">navigateTo</button>
+            <button class="btn" type="button" data-action="redirectTo">redirectTo</button>
+            <button class="btn" type="button" data-action="navigateBack">navigateBack</button>
+            <button class="btn" type="button" data-action="reLaunch">reLaunch</button>
+            <button class="btn btn-red" type="button" data-action="switchTab">switchTab</button>
+        </div>
+        <!-- uni 的 SDK -->
+        <script type="text/javascript" src="https://js.cdn.aliyun.dcloud.net.cn/dev/uni-app/uni.webview.0.1.52.js"></script>
+        <script type="text/javascript">
+            document.addEventListener('UniAppJSBridgeReady', function() {
+                document.querySelector('.btn-list').addEventListener('click', function(evt) {
+                    var target = evt.target;
+                    if (target.tagName === 'BUTTON') {
+                        var action = target.getAttribute('data-action');
+                        switch (action) {
+                            case 'switchTab':
+                                uni.switchTab({
+                                    url: '/pages/tabBar/API/API'
+                                });
+                                break;
+                            case 'navigateBack':
+                                uni.navigateBack({
+                                    delta: 1
+                                });
+                                break;
+                            default:
+                                uni[action]({
+                                    url: '/pages/component/button/button'
+                                });
+                                break;
+                        }
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>
