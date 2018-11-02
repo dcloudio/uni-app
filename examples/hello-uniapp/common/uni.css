@@ -83,8 +83,9 @@
 
 /*数字角标*/
 
-.uni-badge,.uni-badge-default {
-	font-family: 'Helvetica Neue',Helvetica,sans-serif;
+.uni-badge,
+.uni-badge-default {
+	font-family: 'Helvetica Neue', Helvetica, sans-serif;
 	font-size: 12px;
 	line-height: 1;
 	display: inline-block;
@@ -631,7 +632,12 @@
 
 .uni-uploader-body {
 	margin-top: 16upx;
-	overflow: hidden;
+}
+
+.uni-uploader__files {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
 }
 
 .uni-uploader__file {

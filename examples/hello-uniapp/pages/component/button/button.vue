@@ -24,6 +24,10 @@
 					<button class="mini-btn" type="default" size="mini">按钮</button>
 					<button class="mini-btn" type="warn" size="mini">按钮</button>
 				</view>
+				<!-- #ifdef MP-WEIXIN -->
+				<button open-type="launchApp" app-parameter="uni-app" binderror="launchAppError">打开APP</button>
+				<button open-type="feedback">意见反馈</button>
+				<!-- #endif -->
 			</view>
 		</view>
 	</view>

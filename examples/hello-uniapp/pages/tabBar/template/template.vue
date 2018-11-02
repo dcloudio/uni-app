@@ -66,10 +66,10 @@
 						open: false,
 						pages: [{
 							name: '非原生',
-							url: 'tabbar'
+							url: '/platforms/app-plus/tabbar/tabbar'
 						}, {
 							name: '原生',
-							url: '/platforms/app-plus/tabbar-nvue/tabbar-nvue'
+							url: 'tabbar'
 						}]
 						// #endif
 					}, {
@@ -131,6 +131,12 @@
 							name: '自定义',
 							url: 'lazy-load-custom'
 						}]
+					},{
+						name: '时间轴 timeline',
+						url: 'timeline'
+					}, {
+						name: '标签 tag',
+						url: 'tag'
 					}, {
 						name: 'ECharts图表',
 						url: 'echarts'
@@ -171,6 +177,15 @@
 					}, {
 						name: '滚动公告',
 						url: 'scrollmsg'
+					},{
+						name: '表单验证',
+						url: 'datachecker'
+					},{
+						name: '插屏弹窗',
+						url: 'sbanner'
+					},{
+						name: '倒计时',
+						url: 'countdown'
 					}
 					// #ifdef APP-PLUS 
 					, {

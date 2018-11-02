@@ -1,6 +1,6 @@
 <template>
     <view>
-        <web-view src="https://uniapp.dcloud.io"></web-view>
+        <web-view src="/hybrid/html/local.html"></web-view>
     </view>
 </template>
 

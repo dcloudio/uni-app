@@ -7,11 +7,15 @@
 					<text>Vertical Scroll\n纵向滚动</text>
 				</view>
 				<view class="page-section-spacing">
-					<scroll-view scroll-y="true" class="scroll-Y" @scrolltoupper="upper" @scrolltolower="lower" @scroll="scroll">
+					<scroll-view :scroll-top="scrollTop" scroll-y="true" class="scroll-Y" @scrolltoupper="upper" @scrolltolower="lower"
+					 @scroll="scroll">
 						<view id="demo1" class="scroll-view-item color1">A</view>
 						<view id="demo2" class="scroll-view-item color2">B</view>
 						<view id="demo3" class="scroll-view-item color3">C</view>
 					</scroll-view>
+				</view>
+				<view class="btn-area">
+					<button @tap="goTop" class="page-body-button" type="default">返回顶部</button>
 				</view>
 			</view>
 			<view class="page-section">
@@ -33,18 +37,30 @@
 	export default {
 		data() {
 			return {
-				title: 'scroll-view'
+				title: 'scroll-view',
+				scrollTop: 0,
+				old: {
+					scrollTop: 0
+				}
 			}
 		},
 		methods: {
-			upper: function (e) {
+			upper: function(e) {
 				console.log(e)
 			},
-			lower: function (e) {
+			lower: function(e) {
 				console.log(e)
 			},
-			scroll: function (e) {
+			scroll: function(e) {
 				console.log(e)
+				this.old.scrollTop = e.detail.scrollTop
+			},
+			goTop: function(e) {
+				// 解决view层不同步的问题
+				this.scrollTop = this.old.scrollTop
+				this.$nextTick(function() {
+					this.scrollTop = 0
+				})
 			}
 		}
 	}

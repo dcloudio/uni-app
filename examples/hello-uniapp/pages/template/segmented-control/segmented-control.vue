@@ -1,7 +1,7 @@
 <template>
 	<view class="page">
 		<view class="head">
-			<segmented-control :values="items" v-on:clickItem="onClickItem" :styleType="styleType" :activeColor="activeColor"></segmented-control>
+			<segmented-control :current="current" :values="items" v-on:clickItem="onClickItem" :styleType="styleType" :activeColor="activeColor"></segmented-control>
 		</view>
 		<view class="content">
 			<view v-show="current === 0">

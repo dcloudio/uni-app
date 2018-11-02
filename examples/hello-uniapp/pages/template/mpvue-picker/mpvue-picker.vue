@@ -86,6 +86,16 @@
 				this.pickerText = JSON.stringify(e)
 			}
 		},
+    onBackPress() {
+      if (this.$refs.mpvuePicker.showPicker) {
+      	this.$refs.mpvuePicker.pickerCancel();
+        return true;
+      }
+      if (this.$refs.mpvueCityPicker.showPicker) {
+      	this.$refs.mpvueCityPicker.pickerCancel();
+        return true;
+      }
+    },
 		onUnload() {
 			if (this.$refs.mpvuePicker.showPicker) {
 				this.$refs.mpvuePicker.pickerCancel()

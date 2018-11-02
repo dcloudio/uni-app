@@ -19,11 +19,11 @@
 				covers: [{
 					latitude: 39.9085,
 					longitude: 116.39747,
-					iconPath: '../../../static/location.png'
+					iconPath: '../../../static/location@3x.png'
 				}, {
 					latitude: 39.90,
 					longitude: 116.39,
-					iconPath: '../../../static/location.png'
+					iconPath: '../../../static/location@3x.png'
 				}]
 			}
 		},

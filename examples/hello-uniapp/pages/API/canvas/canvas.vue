@@ -8,7 +8,7 @@
 					<block v-for="(name, index) in names" :key="index">
 						<button class="canvas-button" @tap="handleCanvasButton(name)">{{name}}</button>
 					</block>
-					<!-- <button class="canvas-button" @tap="toTempFilePath" type="primary">toTempFilePath</button> -->
+					<button class="canvas-button" @tap="toTempFilePath" type="primary">toTempFilePath</button>
 				</scroll-view>
 			</view>
 		</view>
@@ -35,10 +35,10 @@
 				uni.canvasToTempFilePath({
 					canvasId: 'canvas',
 					success: function (res) {
-						console.log(res)
+						console.log(res.tempFilePath)
 					},
-					fail: function (res) {
-						console.log(res)
+					fail: function (err) {
+						console.error(JSON.stringify(err))
 					}
 				})
 			},

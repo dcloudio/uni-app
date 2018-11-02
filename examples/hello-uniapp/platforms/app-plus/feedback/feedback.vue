@@ -1,12 +1,12 @@
 <template>
-    <view class="page">
-        <view class='feedback-title'>
-            <text>问题和意见</text>
-            <text class="feedback-quick" @tap="chooseMsg">快速键入</text>
-        </view>
-        <view class="feedback-body">
-            <textarea placeholder="请详细描述你的问题和意见..." v-model="sendDate.content" class="feedback-textare" />
-        </view>
+	<view class="page">
+		<view class='feedback-title'>
+			<text>问题和意见</text>
+			<text class="feedback-quick" @tap="chooseMsg">快速键入</text>
+		</view>
+		<view class="feedback-body">
+			<textarea placeholder="请详细描述你的问题和意见..." v-model="sendDate.content" class="feedback-textare" />
+			</view>
         <view class='feedback-title'>
             <text>图片(选填,提供问题截图,总大小10M以下)</text>
         </view>
@@ -14,18 +14,19 @@
             <view class="uni-uploader">
                 <view class="uni-uploader-head">
                     <view class="uni-uploader-title">点击预览图片</view>
-                    <view class="uni-uploader-info">{{imageList.length}}/9</view>
+                    <view class="uni-uploader-info">{{imageList.length}}/8</view>
                 </view>
                 <view class="uni-uploader-body">
                     <view class="uni-uploader__files">
                         <block v-for="(image,index) in imageList" :key="index">
-                            <view class="uni-uploader__file">
+                            <view class="uni-uploader__file" style="position: relative;">
                                 <image class="uni-uploader__img" :src="image" @tap="previewImage"></image>
+                                <view class="close-view" @click="close(index)">x</view>
                             </view>
                         </block>
-                    </view>
-                    <view class="uni-uploader__input-box">
-                        <view class="uni-uploader__input" @tap="chooseImg"></view>
+                        <view class="uni-uploader__input-box" v-show="imageList.length < 8">
+                        	<view class="uni-uploader__input" @tap="chooseImg"></view>
+                        </view>
                     </view>
                 </view>
             </view>
@@ -63,14 +64,6 @@
                 }
             }
         },
-        onUnload() {
-            this.imageList = [];
-            this.sendDate = {
-                score: 0,
-                content: "",
-                contact: ""
-            }
-        },
         onLoad() {
             let deviceInfo = {
                 appid: plus.runtime.appid,
@@ -85,6 +78,9 @@
             this.sendDate = Object.assign(deviceInfo, this.sendDate);
         },
         methods: {
+            close(e){
+                this.imageList.splice(e,1);
+            },
             chooseMsg() { //快速输入
                 uni.showActionSheet({
                     itemList: this.msgContents,
@@ -97,9 +93,9 @@
                 uni.chooseImage({
                     sourceType: ["camera", "album"],
                     sizeType: "compressed",
-                    count: 9,
+                    count: 8 - this.imageList.length,
                     success: (res) => {
-                        this.imageList = res.tempFilePaths;
+                        this.imageList = this.imageList.concat(res.tempFilePaths);
                     }
                 })
             },
@@ -152,5 +148,8 @@
 
     .input-view {
         font-size: 28upx;
+    }
+    .close-view{
+        text-align: center;line-height:14px;height: 16px;width: 16px;border-radius: 50%;background: #FF5053;color: #FFFFFF;position: absolute;top: -6px;right: -4px;font-size: 12px;
     }
 </style>

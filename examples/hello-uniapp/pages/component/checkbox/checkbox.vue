@@ -64,7 +64,7 @@
 		methods: {
 			checkboxChange: function (e) {
 				var items = this.items,
-					values = e.target.value;
+					values = e.detail.value;
 				for (var i = 0, lenI = items.length; i < lenI; ++i) {
 					items[i].checked = false;
 					for (var j = 0, lenJ = values.length; j < lenJ; ++j) {

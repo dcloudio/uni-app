@@ -62,10 +62,10 @@
 		},
 		methods: {
 			radioChange: function (e) {
-				console.log('radio发生change事件，携带value值为：', e.target.value)
+				console.log('radio发生change事件，携带value值为：', e.detail.value)
 				var items = this.items;
 				for (var i = 0, len = items.length; i < len; ++i) {
-					items[i].checked = items[i].value == e.target.value
+					items[i].checked = items[i].value == e.detail.value
 				}
 
 				this.items = items
