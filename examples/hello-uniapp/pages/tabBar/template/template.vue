@@ -58,7 +58,7 @@
 						}]
 					}, {
 						id: 'tabbar',
-						name: '顶部选项卡',
+						name: '可拖动顶部选项卡',
 						// #ifdef MP-WEIXIN 
 						url: 'tabbar',
 						// #endif

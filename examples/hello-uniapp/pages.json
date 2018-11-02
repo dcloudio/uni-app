@@ -479,7 +479,7 @@
         {
             "path" : "platforms/app-plus/tabbar/tabbar",
             "style" : {
-                "navigationBarTitleText" : "顶部选项卡（非原生）"
+                "navigationBarTitleText" : "可拖动顶部选项卡（非原生）"
             }
         },
         {
@@ -651,10 +651,10 @@
                 {
                     "path" : "tabbar/tabbar",
                     "style" : {
-                        "navigationBarTitleText" : "顶部选项卡",
+                        "navigationBarTitleText" : "可拖动顶部选项卡",
                         "app-plus" : {
                             "titleNView" : {
-                                "titleText" : "顶部选项卡（原生）"
+                                "titleText" : "可拖动顶部选项卡（原生）"
                             }
                         }
                     }
