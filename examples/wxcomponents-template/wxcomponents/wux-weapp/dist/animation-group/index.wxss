@@ -1,0 +1,250 @@
+.wux-animate--fadeIn-enter {
+  -webkit-transition: opacity .3s;
+  transition: opacity .3s;
+  opacity: 0;
+}
+.wux-animate--fadeIn-enter-active,
+.wux-animate--fadeIn-enter-done {
+  opacity: 1;
+}
+.wux-animate--fadeIn-exit {
+  -webkit-transition: opacity .3s;
+  transition: opacity .3s;
+  opacity: 1;
+}
+.wux-animate--fadeIn-exit-active,
+.wux-animate--fadeIn-exit-done {
+  opacity: 0;
+}
+.wux-animate--fadeInDown-enter {
+  -webkit-transition: opacity .3s, -webkit-transform .3s;
+  transition: opacity .3s, -webkit-transform .3s;
+  transition: opacity .3s, transform .3s;
+  transition: opacity .3s, transform .3s, -webkit-transform .3s;
+  opacity: 0;
+  -webkit-transform: translate3d(0, -100%, 0);
+          transform: translate3d(0, -100%, 0);
+}
+.wux-animate--fadeInDown-enter-active,
+.wux-animate--fadeInDown-enter-done {
+  opacity: 1;
+  -webkit-transform: none;
+          transform: none;
+}
+.wux-animate--fadeInDown-exit {
+  -webkit-transition: opacity .3s, -webkit-transform .3s;
+  transition: opacity .3s, -webkit-transform .3s;
+  transition: opacity .3s, transform .3s;
+  transition: opacity .3s, transform .3s, -webkit-transform .3s;
+  opacity: 1;
+  -webkit-transform: none;
+          transform: none;
+}
+.wux-animate--fadeInDown-exit-active,
+.wux-animate--fadeInDown-exit-done {
+  opacity: 0;
+  -webkit-transform: translate3d(0, -100%, 0);
+          transform: translate3d(0, -100%, 0);
+}
+.wux-animate--fadeInLeft-enter {
+  -webkit-transition: opacity .3s, -webkit-transform .3s;
+  transition: opacity .3s, -webkit-transform .3s;
+  transition: opacity .3s, transform .3s;
+  transition: opacity .3s, transform .3s, -webkit-transform .3s;
+  opacity: 0;
+  -webkit-transform: translate3d(-100%, 0, 0);
+          transform: translate3d(-100%, 0, 0);
+}
+.wux-animate--fadeInLeft-enter-active,
+.wux-animate--fadeInLeft-enter-done {
+  opacity: 1;
+  -webkit-transform: none;
+          transform: none;
+}
+.wux-animate--fadeInLeft-exit {
+  -webkit-transition: opacity .3s, -webkit-transform .3s;
+  transition: opacity .3s, -webkit-transform .3s;
+  transition: opacity .3s, transform .3s;
+  transition: opacity .3s, transform .3s, -webkit-transform .3s;
+  opacity: 1;
+  -webkit-transform: none;
+          transform: none;
+}
+.wux-animate--fadeInLeft-exit-active,
+.wux-animate--fadeInLeft-exit-done {
+  opacity: 0;
+  -webkit-transform: translate3d(-100%, 0, 0);
+          transform: translate3d(-100%, 0, 0);
+}
+.wux-animate--fadeInRight-enter {
+  -webkit-transition: opacity .3s, -webkit-transform .3s;
+  transition: opacity .3s, -webkit-transform .3s;
+  transition: opacity .3s, transform .3s;
+  transition: opacity .3s, transform .3s, -webkit-transform .3s;
+  opacity: 0;
+  -webkit-transform: translate3d(100%, 0, 0);
+          transform: translate3d(100%, 0, 0);
+}
+.wux-animate--fadeInRight-enter-active,
+.wux-animate--fadeInRight-enter-done {
+  opacity: 1;
+  -webkit-transform: none;
+          transform: none;
+}
+.wux-animate--fadeInRight-exit {
+  -webkit-transition: opacity .3s, -webkit-transform .3s;
+  transition: opacity .3s, -webkit-transform .3s;
+  transition: opacity .3s, transform .3s;
+  transition: opacity .3s, transform .3s, -webkit-transform .3s;
+  opacity: 1;
+  -webkit-transform: none;
+          transform: none;
+}
+.wux-animate--fadeInRight-exit-active,
+.wux-animate--fadeInRight-exit-done {
+  opacity: 0;
+  -webkit-transform: translate3d(100%, 0, 0);
+          transform: translate3d(100%, 0, 0);
+}
+.wux-animate--fadeInUp-enter {
+  -webkit-transition: opacity .3s, -webkit-transform .3s;
+  transition: opacity .3s, -webkit-transform .3s;
+  transition: opacity .3s, transform .3s;
+  transition: opacity .3s, transform .3s, -webkit-transform .3s;
+  opacity: 0;
+  -webkit-transform: translate3d(0, 100%, 0);
+          transform: translate3d(0, 100%, 0);
+}
+.wux-animate--fadeInUp-enter-active,
+.wux-animate--fadeInUp-enter-done {
+  opacity: 1;
+  -webkit-transform: none;
+          transform: none;
+}
+.wux-animate--fadeInUp-exit {
+  -webkit-transition: opacity .3s, -webkit-transform .3s;
+  transition: opacity .3s, -webkit-transform .3s;
+  transition: opacity .3s, transform .3s;
+  transition: opacity .3s, transform .3s, -webkit-transform .3s;
+  opacity: 1;
+  -webkit-transform: none;
+          transform: none;
+}
+.wux-animate--fadeInUp-exit-active,
+.wux-animate--fadeInUp-exit-done {
+  opacity: 0;
+  -webkit-transform: translate3d(0, 100%, 0);
+          transform: translate3d(0, 100%, 0);
+}
+.wux-animate--slideInUp-enter {
+  -webkit-transition: -webkit-transform .3s;
+  transition: -webkit-transform .3s;
+  transition: transform .3s;
+  transition: transform .3s, -webkit-transform .3s;
+  -webkit-transform: translate3d(0, 100%, 0);
+          transform: translate3d(0, 100%, 0);
+  visibility: visible;
+}
+.wux-animate--slideInUp-enter-active,
+.wux-animate--slideInUp-enter-done {
+  -webkit-transform: translateZ(0);
+          transform: translateZ(0);
+}
+.wux-animate--slideInUp-exit {
+  -webkit-transition: -webkit-transform .3s;
+  transition: -webkit-transform .3s;
+  transition: transform .3s;
+  transition: transform .3s, -webkit-transform .3s;
+  -webkit-transform: translateZ(0);
+          transform: translateZ(0);
+}
+.wux-animate--slideInUp-exit-active,
+.wux-animate--slideInUp-exit-done {
+  -webkit-transform: translate3d(0, 100%, 0);
+          transform: translate3d(0, 100%, 0);
+  visibility: visible;
+}
+.wux-animate--slideInDown-enter {
+  -webkit-transition: -webkit-transform .3s;
+  transition: -webkit-transform .3s;
+  transition: transform .3s;
+  transition: transform .3s, -webkit-transform .3s;
+  -webkit-transform: translate3d(0, -100%, 0);
+          transform: translate3d(0, -100%, 0);
+  visibility: visible;
+}
+.wux-animate--slideInDown-enter-active,
+.wux-animate--slideInDown-enter-done {
+  -webkit-transform: translateZ(0);
+          transform: translateZ(0);
+}
+.wux-animate--slideInDown-exit {
+  -webkit-transition: -webkit-transform .3s;
+  transition: -webkit-transform .3s;
+  transition: transform .3s;
+  transition: transform .3s, -webkit-transform .3s;
+  -webkit-transform: translateZ(0);
+          transform: translateZ(0);
+}
+.wux-animate--slideInDown-exit-active,
+.wux-animate--slideInDown-exit-done {
+  -webkit-transform: translate3d(0, -100%, 0);
+          transform: translate3d(0, -100%, 0);
+  visibility: visible;
+}
+.wux-animate--slideInLeft-enter {
+  -webkit-transition: -webkit-transform .3s;
+  transition: -webkit-transform .3s;
+  transition: transform .3s;
+  transition: transform .3s, -webkit-transform .3s;
+  -webkit-transform: translate3d(-100%, 0, 0);
+          transform: translate3d(-100%, 0, 0);
+  visibility: visible;
+}
+.wux-animate--slideInLeft-enter-active,
+.wux-animate--slideInLeft-enter-done {
+  -webkit-transform: translateZ(0);
+          transform: translateZ(0);
+}
+.wux-animate--slideInLeft-exit {
+  -webkit-transition: -webkit-transform .3s;
+  transition: -webkit-transform .3s;
+  transition: transform .3s;
+  transition: transform .3s, -webkit-transform .3s;
+  -webkit-transform: translateZ(0);
+          transform: translateZ(0);
+}
+.wux-animate--slideInLeft-exit-active,
+.wux-animate--slideInLeft-exit-done {
+  -webkit-transform: translate3d(-100%, 0, 0);
+          transform: translate3d(-100%, 0, 0);
+  visibility: visible;
+}
+.wux-animate--slideInRight-enter {
+  -webkit-transition: -webkit-transform .3s;
+  transition: -webkit-transform .3s;
+  transition: transform .3s;
+  transition: transform .3s, -webkit-transform .3s;
+  -webkit-transform: translate3d(100%, 0, 0);
+          transform: translate3d(100%, 0, 0);
+  visibility: visible;
+}
+.wux-animate--slideInRight-enter-active,
+.wux-animate--slideInRight-enter-done {
+  -webkit-transform: translateZ(0);
+          transform: translateZ(0);
+}
+.wux-animate--slideInRight-exit {
+  -webkit-transition: -webkit-transform .3s;
+  transition: -webkit-transform .3s;
+  transition: transform .3s;
+  transition: transform .3s, -webkit-transform .3s;
+  -webkit-transform: translateZ(0);
+          transform: translateZ(0);
+}
+.wux-animate--slideInRight-exit-active,
+.wux-animate--slideInRight-exit-done {
+  -webkit-transform: translate3d(100%, 0, 0);
+          transform: translate3d(100%, 0, 0);
+  visibility: visible;
+}

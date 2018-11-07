@@ -1,0 +1,1 @@
+<wux-animation-group wux-class="{{ transparent ? 'wux-backdrop--transparent' : 'wux-backdrop' }}" in="{{ in }}" class-names="wux-animate--fadeIn" bind:click="onClick"></wux-animation-group>

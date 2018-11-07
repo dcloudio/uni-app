@@ -1,0 +1,6 @@
+{
+    "component": true,
+    "usingComponents": {
+        "wux-animation-group": "../animation-group/index"
+    }
+}
