@@ -1,8 +1,8 @@
 <template>
 	<view class="uni-numbox">
-		<view class="uni-numbox-minus" :class="{'uni-numbox-disabled': disableSubtract}" @click="subtract">-</view>
-		<input class="uni-numbox-value" type="number" :disabled="disabled" v-model="value" @blur="handleBlur">
-		<view class="uni-numbox-plus" :class="{'uni-numbox-disabled': disableAdd}" @click="add">+</view>
+		<view class="uni-numbox-minus" :class="{'uni-numbox-disabled': disableSubtract}" @click="_subtract">-</view>
+		<input class="uni-numbox-value" type="number" :disabled="disabled" v-model="value" @blur="_handleBlur">
+		<view class="uni-numbox-plus" :class="{'uni-numbox-disabled': disableAdd}" @click="_add">+</view>
 	</view>
 </template>
 <script>
@@ -39,31 +39,44 @@
 			}
 		},
 		onUnload() {
-			this.value = 0,
-				this.step = 1,
-				this.max = Infinity,
-				this.min = -Infinity;
+			// 目前为解决页面重新进入组件不更新的问题，这里主动重置下数据。
+			this.value = 0;
+			this.step = 1;
+			this.max = Infinity;
+			this.min = -Infinity;
 		},
 		methods: {
-			subtract(evt) {
-				this._handleStep('subtract');
+			_subtract(evt) {
+				this._calcValue('subtract');
 			},
-			add(evt) {
-				this._handleStep('add');
+			_add(evt) {
+				this._calcValue('add');
 			},
-			_handleStep(type) {
-				let value = this.value;
+			_calcValue(type) {
+				const scale = this._getDecimalScale();
+				let value = this.value * scale;
+				let step = this.step * scale;
+
 				if (type === 'subtract') {
-					value -= this.step
+					value -= step
 				} else if (type === 'add') {
-					value += this.step
+					value += step
 				}
 				if (value < this.min || value > this.max) {
 					return
 				}
-				this.value = value
+				console.log('value:' + value);
+				this.value = value / scale;
 			},
-			handleBlur(evt) {
+			_getDecimalScale() {
+				let scale = 1;
+				// 浮点型
+				if (~~this.step !== this.step) {
+					scale = Math.pow(10, (this.step + '').split('.')[1].length);
+				}
+				return scale;
+			},
+			_handleBlur(evt) {
 				let value = evt.detail.value;
 				if (!value) {
 					this.value = 0;
