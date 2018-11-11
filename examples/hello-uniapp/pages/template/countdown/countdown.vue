@@ -20,9 +20,9 @@
 	//模拟3个时间
 	var dateObj = new Date();
 	var currentTime = dateObj.getTime();
-	var timer1 = formatDateTime((currentTime + 1000 * 200));
-	var timer2 = formatDateTime((currentTime + 1000 * 300));
-	var timer3 = formatDateTime((currentTime + 1000 * 500));
+	var timer1 = formatDateTime((currentTime + 1000 * 2000));
+	var timer2 = formatDateTime((currentTime + 1000 * 3000));
+	var timer3 = formatDateTime((currentTime + 1000 * 5000));
 	//时间戳 转 YY-mm-dd HH:ii:ss 
 	function formatDateTime(inputTime){
 		  var date = new Date(inputTime);
