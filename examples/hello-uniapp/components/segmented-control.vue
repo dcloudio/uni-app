@@ -1,7 +1,7 @@
 <template>
 	<view class="segmented-control" :class="styleType" :style="wrapStyle">
-		<view v-for="(item, index) in values" class="segmented-control-item" :class="styleType" :key="index" :style="index === current ? activeStyle : itemStyle"
-		    @click="onClick(index)">
+		<view v-for="(item, index) in values" class="segmented-control-item" :class="styleType" :key="index" :style="index === currentIndex ? activeStyle : itemStyle"
+		 @click="onClick(index)">
 			{{item}}
 		</view>
 	</view>
@@ -28,6 +28,18 @@
 			styleType: {
 				type: String,
 				default: 'button'
+			}
+		},
+		data() {
+			return {
+				currentIndex: this.current
+			}
+		},
+		watch: {
+			current(val) {
+				if (val !== this.currentIndex) {
+					this.currentIndex = val;
+				}
 			}
 		},
 		computed: {
@@ -70,8 +82,8 @@
 		},
 		methods: {
 			onClick(index) {
-				if (this.current !== index) {
-					this.current = index;
+				if (this.currentIndex !== index) {
+					this.currentIndex = index;
 					this.$emit('clickItem', index);
 				}
 			}
@@ -98,7 +110,7 @@
 
 	.segmented-control.text {
 		border: 0;
-        border-radius: 0upx;
+		border-radius: 0upx;
 	}
 
 

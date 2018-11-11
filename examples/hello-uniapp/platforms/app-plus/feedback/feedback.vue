@@ -111,7 +111,7 @@
                 console.log(JSON.stringify(this.sendDate));
                 let imgs = this.imageList.map((value,index) => {
                     return {
-                        name: name: "images" + index,
+                        name: "images" + index,
                         uri: value
                     }
                 })

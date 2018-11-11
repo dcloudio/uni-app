@@ -1,8 +1,8 @@
 <template>
 	<view class="uni-numbox">
-		<view class="uni-numbox-minus" :class="{'uni-numbox-disabled': disableSubtract}" @click="_subtract">-</view>
-		<input class="uni-numbox-value" type="number" :disabled="disabled" v-model="value" @blur="_handleBlur">
-		<view class="uni-numbox-plus" :class="{'uni-numbox-disabled': disableAdd}" @click="_add">+</view>
+		<view class="uni-numbox-minus" :class="{'uni-numbox-disabled': disableSubtract}" @click="_calcValue('subtract')">-</view>
+		<input class="uni-numbox-value" type="number" :disabled="disabled" :value="inputValue" @blur="_onBlur">
+		<view class="uni-numbox-plus" :class="{'uni-numbox-disabled': disableAdd}" @click="_calcValue('add')">+</view>
 	</view>
 </template>
 <script>
@@ -30,6 +30,11 @@
 				default: false
 			}
 		},
+		data() {
+			return {
+				inputValue: this.value
+			}
+		},
 		computed: {
 			disableSubtract() {
 				return this.value <= this.min
@@ -38,23 +43,18 @@
 				return this.value >= this.max
 			}
 		},
-		onUnload() {
-			// 目前为解决页面重新进入组件不更新的问题，这里主动重置下数据。
-			this.value = 0;
-			this.step = 1;
-			this.max = Infinity;
-			this.min = -Infinity;
+		watch: {
+			value(val) {
+				this.inputValue = val;
+			},
+			inputValue(val) {
+				this.$emit('change', val);
+			}
 		},
 		methods: {
-			_subtract(evt) {
-				this._calcValue('subtract');
-			},
-			_add(evt) {
-				this._calcValue('add');
-			},
 			_calcValue(type) {
 				const scale = this._getDecimalScale();
-				let value = this.value * scale;
+				let value = this.inputValue * scale;
 				let step = this.step * scale;
 
 				if (type === 'subtract') {
@@ -65,8 +65,7 @@
 				if (value < this.min || value > this.max) {
 					return
 				}
-				console.log('value:' + value);
-				this.value = value / scale;
+				this.inputValue = value / scale;
 			},
 			_getDecimalScale() {
 				let scale = 1;
@@ -76,10 +75,10 @@
 				}
 				return scale;
 			},
-			_handleBlur(evt) {
-				let value = evt.detail.value;
+			_onBlur(event) {
+				let value = event.detail.value;
 				if (!value) {
-					this.value = 0;
+					this.inputValue = 0;
 					return
 				}
 				value = +value;
@@ -88,12 +87,7 @@
 				} else if (value < this.min) {
 					value = this.min
 				}
-				this.value = value
-			}
-		},
-		watch: {
-			value(val) {
-				this.$emit('update', val);
+				this.inputValue = value
 			}
 		}
 	}
