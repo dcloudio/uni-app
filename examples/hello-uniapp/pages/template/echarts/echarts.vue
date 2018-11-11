@@ -1,7 +1,9 @@
 <template>
-	<div class="container">
+	<view class="container">
 		<view class="page-section-title" style="display: block;">
-			<text>这是uni-app集成mpvue-echarts的图表示例，mpvue-echarts组件的用法参考：</text>
+			<view class="uni-hello-text uni-common-pb">
+				这是uni-app集成mpvue-echarts的图表示例，mpvue-echarts组件的用法参考：
+			</view>
 			<text class="navigate" @click="goBrowser" selectable>https://github.com/F-loat/mpvue-echarts</text>
 		</view>
 		<view class="canvasView">
@@ -15,7 +17,7 @@
 			<view class="title">折线图示例</view>
 			<mpvue-echarts :echarts="echarts" :onInit="lineInit" canvasId="line" ref="lineChart" />
 		</view>
-	</div>
+	</view>
 </template>
 
 <script>
@@ -160,11 +162,13 @@
 	page {
 		min-height: 100%;
 	}
+	.page-section-title {
+		padding: 0 30upx;
+	}
 
 	.title {
 		margin-left: 30upx;
 		color: #8f8f94;
-		line-height: 3;
 	}
 
 	.container {
@@ -189,7 +193,6 @@
 	}
 
 	.update-btn {
-		line-height: 3;
 		margin-right: 30upx;
 	}
 </style>
