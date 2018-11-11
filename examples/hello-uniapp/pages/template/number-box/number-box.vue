@@ -16,7 +16,7 @@
 		<view class="item">
 			<text class="item-title">获取输入框的值</text>
 			<view class="inline-item">
-				<number-box v-on:update="numberUpdate"></number-box>
+				<number-box v-on:change="onNumberChange"></number-box>
 				<text class="item-label-right">当前的值为：{{numberValue}}</text>
 			</view>
 		</view>
@@ -60,7 +60,7 @@
 			numberBox
 		},
 		methods: {
-			numberUpdate(value) {
+			onNumberChange(value) {
 				this.numberValue = value;
 			}
 		}
