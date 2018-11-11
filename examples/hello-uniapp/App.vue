@@ -42,10 +42,10 @@
 	}
 </script>
 <style>
-	/* uni.css - 通用组件、模板样式库，可以在创建项目后应用，当作一套ui库 */
+	/* uni.css - 通用组件、模板样式库，可以当作一套ui库应用 */
 	@import "./common/uni.css";
 	
-	/* 以下样式用于 hello uni-app 演示所需，新版本已经简化 */
+	/* 以下样式用于 hello uni-app 演示所需 */
 	page {
 		background-color:#F4F5F6;
 		height: 100%;
