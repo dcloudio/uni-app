@@ -71,6 +71,7 @@
 		justify-content: flex-start
 	}
 	swiper{
-		height: 600upx;
+		height: 680upx;
+		background:#f2f2f2;
 	}
 </style>
