@@ -20,7 +20,7 @@
 			<view class="uni-hello-text uni-common-mt">获取输入框的值</view>
 			<view class="uni-hello-items">
 				<view class="uni-inline-item">
-					<number-box v-on:update="numberUpdate"></number-box>
+					<number-box v-on:change="onNumberChange"></number-box>
 					<text class="item-label-right">当前的值为：{{numberValue}}</text>
 				</view>
 			</view>
@@ -67,7 +67,7 @@
 			numberBox
 		},
 		methods: {
-			numberUpdate(value) {
+			onNumberChange(value) {
 				this.numberValue = value;
 			}
 		}
