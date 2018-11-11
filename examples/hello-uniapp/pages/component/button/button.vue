@@ -26,8 +26,8 @@
 				</view>
 				<!-- #ifdef MP-WEIXIN -->
 				<button open-type="launchApp" app-parameter="uni-app" binderror="launchAppError">打开APP</button>
-				<button open-type="feedback">意见反馈</button>
 				<!-- #endif -->
+				<button open-type="feedback">意见反馈</button>
 			</view>
 		</view>
 	</view>
