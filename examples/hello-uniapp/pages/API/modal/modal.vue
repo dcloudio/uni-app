@@ -1,8 +1,8 @@
 <template>
 	<view>
 		<page-head :title="title"></page-head>
-		<view class="page-body">
-			<view class="btn-area">
+		<view class="uni-padding-wrap uni-common-mt">
+			<view class="uni-btn-v">
 				<button type="default" @tap="modalTap">有标题的modal</button>
 				<button type="default" @tap="noTitlemodalTap">无标题的modal</button>
 			</view>

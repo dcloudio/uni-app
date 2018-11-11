@@ -1,21 +1,19 @@
 <template>
 	<view>
 		<page-head :title="title"></page-head>
-		<view class="page-body" v-if="provider[0]">
-			<view class="btn-area">
+		<view class="uni-padding-wrap" v-if="provider[0]">
+			<view class="uni-btn-v uni-common-mt">
 				<button type="primary" @tap="openPush">开启push</button>
 				<button type="primary" @tap="closePush">关闭push</button>
 				<button type="primary" @tap="listenTranMsg">监听透传数据</button>
 				<button type="primary" @tap="removeTranMsg">移除监听透传数据</button>
 			</view>
-			<view class="btn-area">
+			<view class="uni-btn-v uni-common-mt">
 				<button type="primary" @tap="requireTranMsg">发送"透传数据"消息</button>
 			</view>
-			<view class="page-section-title">透传内容：</view>
-			<view class="page-section">
-				<view class="textare-view">
-					<textarea class="textarea" v-model="tranMsg" />
-				</view>
+			<view class="uni-title uni-common-mt">透传内容：</view>
+			<view class="uni-textarea">
+				<textarea v-model="tranMsg" />
 			</view>
 		</view>
 	</view>
@@ -117,17 +115,6 @@
 </script>
 
 <style>
-	.textare-view{
-		box-sizing: border-box;
-		width: 100%;
-		padding: 0 30upx;
-	}
-	textarea{
-		background-color: #FFFFFF;
-		width: 100%;
-		height: 200upx;
-		padding: 10upx;
-		box-sizing: border-box;
-	}
+
 </style>
 

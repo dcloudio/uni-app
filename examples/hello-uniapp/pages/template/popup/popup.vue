@@ -13,10 +13,12 @@
 		<view class="popup popup-bottom" v-show="showState.bottom">
 			<text>底部 popup</text>
 		</view>
-		<view class="btn-row">
-			<button class="btn" type="button" @click="show">弹出 popup</button>
-			<button class="btn" type="button" @click="show" data-position="top">顶部弹出 popup</button>
-			<button class="btn" type="button" @click="show" data-position="bottom">底部弹出 popup</button>
+		<view class="uni-padding-wrap">
+			<view class="uni-btn-v">
+				<button type="button" @click="show">弹出 popup</button>
+				<button type="button" @click="show" data-position="top">顶部弹出 popup</button>
+				<button type="button" @click="show" data-position="bottom">底部弹出 popup</button>
+			</view>
 		</view>
 	</view>
 </template>
@@ -140,10 +142,6 @@
 		-webkit-transform: scaleY(.5);
 		transform: scaleY(.5);
 		background-color: #c8c7cc;
-	}
-
-	.btn-row .btn {
-		margin: 20upx;
 	}
 
 	.desc {

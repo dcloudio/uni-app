@@ -1,14 +1,14 @@
 <template>
 	<view>
 		<page-head :title="title"></page-head>
-		<view class="page-body">
-			<view class="page-section-title">扫码结果</view>
+		<view class="uni-padding-wrap uni-common-mt">
+			<view class="uni-title">扫码结果</view>
 			<view class="uni-list">
 				<view class="uni-cell">
 					<view class="uni-input">{{result}}</view>
 				</view>
 			</view>
-			<view class="btn-area">
+			<view class="uni-btn-v">
 				<button type="primary" @tap="scanCode">扫一扫</button>
 			</view>
 		</view>
@@ -40,8 +40,5 @@
 </script>
 
 <style>
-	.uni-input {
-		padding: 15upx 30upx;
-		word-break: break-all;
-	}
+
 </style>

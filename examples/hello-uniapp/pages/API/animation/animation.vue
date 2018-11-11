@@ -1,25 +1,22 @@
 <template>
 	<view>
 		<page-head :title="title"></page-head>
-		<view class="page-body">
-			<view class="page-section">
-				<view class="animation-element-wrapper">
-					<view class="animation-element" :animation="animationData"></view>
-				</view>
-				<scroll-view class="animation-buttons" scroll-y="true">
-					<button class="animation-button" @tap="rotate">旋转</button>
-					<button class="animation-button" @tap="scale">缩放</button>
-					<button class="animation-button" @tap="translate">移动</button>
-					<button class="animation-button" @tap="skew">倾斜</button>
-					<button class="animation-button" @tap="rotateAndScale">旋转并缩放</button>
-					<button class="animation-button" @tap="rotateThenScale">旋转后缩放</button>
-					<button class="animation-button" @tap="all">同时展示全部</button>
-					<button class="animation-button" @tap="allInQueue">顺序展示全部</button>
-					<button class="animation-button animation-button-reset" @tap="reset">还原</button>
-				</scroll-view>
+		<view class="uni-padding-wrap uni-common-mt">
+			<view class="animation-element-wrapper">
+				<view class="animation-element" :animation="animationData"></view>
 			</view>
+			<scroll-view class="animation-buttons" scroll-y="true">
+				<button class="animation-button" @tap="rotate">旋转</button>
+				<button class="animation-button" @tap="scale">缩放</button>
+				<button class="animation-button" @tap="translate">移动</button>
+				<button class="animation-button" @tap="skew">倾斜</button>
+				<button class="animation-button" @tap="rotateAndScale">旋转并缩放</button>
+				<button class="animation-button" @tap="rotateThenScale">旋转后缩放</button>
+				<button class="animation-button" @tap="all">同时展示全部</button>
+				<button class="animation-button" @tap="allInQueue">顺序展示全部</button>
+				<button class="animation-button animation-button-reset" @tap="reset">还原</button>
+			</scroll-view>
 		</view>
-
 	</view>
 </template>
 <script>
@@ -111,20 +108,19 @@
 	}
 
 	.animation-buttons {
-		padding: 30upx 50upx 10upx;
+		padding:30upx 0;
 		width: 100%;
 		height: 360upx;
-		box-sizing: border-box;
 	}
 
 	.animation-button {
 		float: left;
 		line-height: 2;
-		width: 300upx;
-		margin: 15upx 12upx;
+		width: 44%;
+		margin: 15upx 3%;
 	}
 
 	.animation-button-reset {
-		width: 620upx;
+		width: 94%;
 	}
 </style>

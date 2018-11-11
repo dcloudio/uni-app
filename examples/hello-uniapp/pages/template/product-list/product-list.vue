@@ -118,6 +118,7 @@ export default {
 .image-view {
     height: 330upx;
     width: 330upx;
+	margin:12upx 0;
 }
 
 .product-image {
@@ -127,17 +128,19 @@ export default {
 
 .product-title {
     width: 300upx;
-    font-size: 32upx;
     word-break: break-all;
     display: -webkit-box;
     overflow: hidden;
+	line-height:1.5;
     text-overflow: ellipsis;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
 }
 
 .product-price {
+	margin-top:10upx;
     font-size: 28upx;
+	line-height:1.5;
     position: relative;
 }
 

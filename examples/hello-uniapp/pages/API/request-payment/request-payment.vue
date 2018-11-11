@@ -1,12 +1,13 @@
 <template>
 	<view>
 		<page-head :title="title"></page-head>
-		<view class="page-body">
-			<view class="page-section">
-				<view>支付金额</view>
-				<view class="price"><text class="rmbLogo">￥</text>0.01</view>
-				<view class="desc">实际应用中可自定义金额</view>
-				<view class="btn-area">
+			<view class="uni-padding-wrap">
+				<view style="background:#FFF; padding:50upx 0;">
+					<view class="uni-hello-text uni-center">支付金额</text></view>
+					<view class="uni-h1 uni-center uni-common-mt"><text class="rmbLogo">￥</text>0.01</view>
+					<view class="uni-hello-text uni-center uni-common-mt">实际应用中可自定义金额</text></view>
+				</view>
+				<view class="uni-btn-v uni-common-mt">
 					<!-- #ifdef MP-WEIXIN -->
 					<button type="primary" @tap="weixinPay" :loading="loading">微信支付</button>
 					<!-- #endif -->
@@ -181,33 +182,8 @@
 </script>
 
 <style>
-	.page-section {
-		width: auto;
-		margin: 30upx;
-		padding: 64upx 30upx;
-		background-color: #fff;
-		text-align: center;
-		font-size: 28upx;
-	}
-
-	.desc {
-		color: #B2B2B2;
-	}
-
-	.price {
-		margin-top: 30upx;
-		margin-bottom: 25upx;
-		position: relative;
-		display: inline-block;
-		font-size: 78upx;
-		line-height: 1;
-	}
-
 	.rmbLogo {
-		position: absolute;
 		font-size: 40upx;
-		top: 8upx;
-		left: -40upx;
 	}
 
 	button {

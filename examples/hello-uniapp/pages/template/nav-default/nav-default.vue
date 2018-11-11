@@ -1,13 +1,13 @@
 <template>
 	<view class="page">
 		<page-head :title="title"></page-head>
-		<view class="page-body">
-			<view class="page-section-title">
+		<view class="uni-padding-wrap">
+			<view class="uni-helllo-text">
 				本页标题栏是uni-app的默认配置，开发者可在pages.json里配置文字内容及标题颜色，也可通过api接口将其改变。
 			</view>
-			<view class="page-body-buttons">
+			<view class="uni-btn-v">
 				<button type="default" @click="setText">改变标题栏文字</button>
-				<button type="default" @click="setBg">改变标题栏颜色</button>
+				<button type="primary" @click="setBg">改变标题栏颜色</button>
 			</view>
 		</view>
 	</view>
@@ -41,11 +41,4 @@
 </script>
 
 <style>
-	.page {
-		padding-top: 60upx;
-	}
-	.page-body-buttons{
-		margin-top: 50upx;
-		padding: 0 30upx;
-	}
 </style>

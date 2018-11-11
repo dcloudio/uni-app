@@ -46,7 +46,7 @@
 					url: 'https://unidemo.dcloud.net.cn/api/news/36kr/' + this.banner.post_id,
 					success: (data) => {
 						if (data.statusCode == 200) {
-							this.htmlString = data.data.content.replace(/\\/g, "").replace(/<img/g,"<img width='100%'");
+							this.htmlString = data.data.content.replace(/\\/g, "").replace(/<img/g, "<img style=\"display:none;\"");
 						}
 					},
 					fail: () => {

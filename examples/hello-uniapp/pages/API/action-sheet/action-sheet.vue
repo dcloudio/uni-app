@@ -1,8 +1,8 @@
 <template>
 	<view>
 		<page-head :title="title"></page-head>
-		<view class="page-body">
-			<view class="btn-area">
+		<view class="uni-padding-wrap">
+			<view class="uni-btn-v">
 				<button type="default" @tap="actionSheetTap">弹出action sheet</button>
 			</view>
 		</view>

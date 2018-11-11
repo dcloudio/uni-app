@@ -1,14 +1,15 @@
 <template>
 	<view>
 		<page-head :title="title"></page-head>
-		<view class="page-body">
-			<view class="page-body-wording">
-				<text class="page-body-text">
-					点击向服务器发起请求
-				</text>
+		<view class="uni-padding-wrap uni-common-mt">
+			<view class="uni-hello-text">
+				请点击按钮向服务器发起请求
 			</view>
-			<view class="btn-area">
-				<button type="primary" @tap="makeRequest" :loading="loading">request</button>
+			<view class="uni-textarea uni-common-mt">
+				<textarea :value="res"></textarea>
+			</view>
+			<view class="uni-btn-v uni-common-mt">
+				<button type="primary" @tap="makeRequest" :loading="loading">发起请求</button>
 			</view>
 		</view>
 	</view>
@@ -20,7 +21,8 @@
 		data() {
 			return {
 				title: 'request',
-				loading: false
+				loading: false,
+				res:""
 			}
 		},
 		methods: {
@@ -38,6 +40,7 @@
 							mask: true,
 							duration: duration
 						})
+						this.res = '请求结果 : ' + JSON.stringify(res);
 						console.log('request success', res)
 					},
 					fail: (err) => {

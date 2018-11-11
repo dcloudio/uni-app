@@ -1,11 +1,11 @@
 <template>
-    <view class="index">
-        <view class="index-hd">
-            <image class="index-logo" src="../../../static/componentIndex.png"></image>
-            <view class="page-section-title">
-                以下将展示uni-app官方组件能力，组件样式仅供参考，开发者可根据自身需求自定义组件样式，具体属性参数详见uni-app开发文档。
-            </view>
-        </view>
+    <view class="uni-padding-wrap uni-common-pb">
+        <view class="uni-header-logo">
+            <image src="../../../static/componentIndex.png"></image>
+		</view>
+		<view class="uni-hello-text uni-common-pb">
+			以下将展示uni-app官方组件能力，组件样式仅供参考，开发者可根据自身需求自定义组件样式，具体属性参数详见uni-app开发文档。
+		</view>
         <view class="uni-card" v-for="(list,index) in lists" :key="index">
             <view class="uni-list">
                 <view class="uni-list-cell uni-collapse">
@@ -125,19 +125,13 @@
 </script>
 
 <style>
-    .index {
-        padding-bottom: 1upx;
-    }
-
-    .uni-card {
-        box-shadow: none;
-    }
-
-    .uni-list:after {
-        height: 0;
-    }
-
-    .uni-list:before {
-        height: 0;
-    }
+.uni-card {
+	box-shadow: none;
+}
+.uni-list:after {
+	height: 0;
+}
+.uni-list:before {
+	height: 0;
+}
 </style>

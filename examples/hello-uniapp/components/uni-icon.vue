@@ -16,7 +16,7 @@
             /**
              * 图标大小
              */
-            size: [Number, String]
+            size: Number
         },
         computed: {
             fontSize() {

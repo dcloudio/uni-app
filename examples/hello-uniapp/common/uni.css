@@ -5,84 +5,172 @@
 	src: url('https://img-cdn-qiniu.dcloud.net.cn/fonts/uni.ttf') format('truetype');
 }
 
-
-
-
 /*通用 */
-
+view{
+	font-size:28upx; 
+	line-height:1.8;
+}
+progress, checkbox-group{
+	width: 100%;
+}
+form {
+	width: 100%;
+}
 .uni-flex {
 	display: flex;
 	flex-direction: row;
 }
-
 .uni-flex-item {
 	flex: 1;
 }
-
 .uni-row {
 	flex-direction: row;
 }
-
 .uni-column {
 	flex-direction: column;
 }
-
-.uni-h6 {
-	font-size: 24upx;
-	color: #8f8f94;
+.uni-link{
+	color:#576B95;
+	font-size:26upx;
+}
+.uni-center{
+	text-align:center;
+}
+.uni-inline-item{
+	display: flex;
+	flex-direction: row;
 }
 
-.uni-h5 {
-	font-size: 28upx;
-	color: #8f8f94;
+/* page */
+.uni-page-head{
+	padding:35upx; 
+	text-align: center;
 }
-
-.uni-h4 {
-	font-size: 36upx;
+.uni-page-head-title {
+	display: inline-block;
+	padding: 0 40upx;
+	font-size: 30upx;
+	height: 88upx;
+	line-height: 88upx;
+	color: #BEBEBE;
+	box-sizing: border-box;
+	border-bottom: 2upx solid #D8D8D8;
 }
-
-.uni-h3 {
-	font-size: 48upx;
-	font-weight: 600;
+.uni-page-body {
+	width: 100%;
+	flex-grow: 1;
+	overflow-x: hidden;
 }
-
-.uni-h2 {
-	font-size: 60upx;
-	font-weight: 600;
+.uni-padding-wrap{
+	width:690upx;
+	padding:0 30upx;
 }
-
-.uni-h1 {
-	font-size: 72upx;
-	font-weight: 600;
+.uni-word {
+	text-align: center;
+	padding:200upx 100upx;
 }
-
-.uni-ellipsis {
-	overflow: hidden;
-	white-space: nowrap;
-	text-overflow: ellipsis;
+.uni-title {
+	font-size:30upx;
+	font-weight:500;
+	padding:20upx 0;
+	line-height:1.5;
 }
-
-.uni-input {
-	height: 50upx;
-	min-height: 50upx;
-	padding: 15upx 0;
-	line-height: 50upx;
+.uni-title text{font-size:24upx; color:#888;}
+.uni-text-gray{
+	color: #ccc;
 }
+.uni-text-small {
+	font-size:24upx;
+}
+.uni-common-mb{
+	margin-bottom:30upx;
+}
+.uni-common-pb{
+	padding-bottom:30upx;
+}
+.uni-common-pl{
+	padding-left:30upx;
+}
+.uni-common-mt{
+	margin-top:30upx;
+}
+/* 背景色 */
+.uni-bg-red{
+	background:#F76260; color:#FFF;
+}
+.uni-bg-green{
+	background:#09BB07; color:#FFF;
+}
+.uni-bg-blue{
+	background:#007AFF; color:#FFF;
+}
+/* 标题 */
+.uni-h1 {font-size: 80upx; font-weight:700;}
+.uni-h2 {font-size: 60upx; font-weight:700;}
+.uni-h3 {font-size: 48upx; font-weight:700;}
+.uni-h4 {font-size: 36upx; font-weight:700;}
+.uni-h5 {font-size: 28upx; color: #8f8f94;}
+.uni-h6 {font-size: 24upx; color: #8f8f94;}
+.uni-bold{font-weight:bold;}
 
+/* 文本溢出隐藏 */
+.uni-ellipsis {overflow: hidden; white-space: nowrap; text-overflow: ellipsis;}
+
+/* 竖向百分百按钮 */
+.uni-btn-v{
+	padding:10upx 0;
+}
+.uni-btn-v button{margin:20upx 0;}
+
+/* 表单 */
+.uni-form-item{
+	display:flex;
+	width:100%;
+	padding:10upx 0;
+}
+.uni-form-item .title{
+	padding:10upx 25upx;
+}
 .uni-label {
 	width: 210upx;
 	word-wrap: break-word;
 	word-break: break-all;
+	text-indent:20upx;
+}
+.uni-input {
+	height: 50upx;
+	padding: 15upx 25upx;
+	line-height:50upx;
+	font-size:28upx;
+	background:#FFF;
+	flex: 1;
+}
+radio-group, checkbox-group{
+	width:100%;
+}
+radio-group label, checkbox-group label{
+	padding-right:20upx;
+}
+.uni-form-item .with-fun{
+	display:flex; 
+	flex-wrap:nowrap; 
+	background:#FFFFFF;
+}
+.uni-form-item .with-fun .uni-icon{
+	width:40px; 
+	height:80upx; 
+	line-height:80upx; 
+	flex-shrink:0;
 }
 
-
-
-
-
-
-
+/* loadmore */
+.uni-loadmore{
+	height:80upx;
+	line-height:80upx;
+	text-align:center;
+	padding-bottom:30upx;
+}
 /*数字角标*/
-
 .uni-badge,
 .uni-badge-default {
 	font-family: 'Helvetica Neue', Helvetica, sans-serif;
@@ -94,115 +182,86 @@
 	border-radius: 100px;
 	background-color: rgba(0, 0, 0, .15);
 }
-
 .uni-badge.uni-badge-inverted {
 	padding: 0 5px 0 0;
 	color: #929292;
 	background-color: transparent
 }
-
 .uni-badge-primary {
 	color: #fff;
 	background-color: #007aff
 }
-
 .uni-badge-blue.uni-badge-inverted,
 .uni-badge-primary.uni-badge-inverted {
 	color: #007aff;
 	background-color: transparent
 }
-
 .uni-badge-green,
 .uni-badge-success {
 	color: #fff;
 	background-color: #4cd964;
 }
-
 .uni-badge-green.uni-badge-inverted,
 .uni-badge-success.uni-badge-inverted {
 	color: #4cd964;
 	background-color: transparent
 }
-
 .uni-badge-warning,
 .uni-badge-yellow {
 	color: #fff;
 	background-color: #f0ad4e
 }
-
 .uni-badge-warning.uni-badge-inverted,
 .uni-badge-yellow.uni-badge-inverted {
 	color: #f0ad4e;
 	background-color: transparent
 }
-
 .uni-badge-danger,
 .uni-badge-red {
 	color: #fff;
 	background-color: #dd524d
 }
-
 .uni-badge-danger.uni-badge-inverted,
 .uni-badge-red.uni-badge-inverted {
 	color: #dd524d;
 	background-color: transparent
 }
-
 .uni-badge-purple,
 .uni-badge-royal {
 	color: #fff;
 	background-color: #8a6de9
 }
-
 .uni-badge-purple.uni-badge-inverted,
 .uni-badge-royal.uni-badge-inverted {
 	color: #8a6de9;
 	background-color: transparent
 }
 
-
-
-
-
-
-
 /*折叠面板 */
-
 .uni-collapse-content {
 	height: 0;
 	width: 100%;
 	overflow: hidden;
 }
-
 .uni-collapse-content.uni-active {
 	height: auto;
 }
 
-
-
-
-
-
-
 /*卡片视图 */
-
 .uni-card {
 	background: #fff;
 	border-radius: 8upx;
-	margin: 20upx;
+	margin:20upx 0;
 	position: relative;
 	box-shadow: 0 2upx 4upx rgba(0, 0, 0, .3);
 }
-
 .uni-card-content {
 	font-size: 30upx;
 }
-
 .uni-card-content-inner {
 	position: relative;
 	padding: 30upx;
 }
-
 .uni-card-footer,
 .uni-card-header {
 	position: relative;
@@ -212,15 +271,12 @@
 	justify-content: space-between;
 	align-items: center;
 }
-
 .uni-card-header {
 	font-size: 36upx;
 }
-
 .uni-card-footer {
 	color: #6d6d72;
 }
-
 .uni-card-footer:before,
 .uni-card-header:after {
 	position: absolute;
@@ -233,22 +289,18 @@
 	transform: scaleY(.5);
 	background-color: #c8c7cc;
 }
-
 .uni-card-header:after {
 	top: auto;
 	bottom: 0;
 }
-
 .uni-card-media {
 	justify-content: flex-start;
 }
-
 .uni-card-media-logo {
 	height: 84upx;
 	width: 84upx;
 	margin-right: 20upx;
 }
-
 .uni-card-media-body {
 	height: 84upx;
 	display: flex;
@@ -256,27 +308,20 @@
 	justify-content: space-between;
 	align-items: flex-start;
 }
-
 .uni-card-media-text-top {
 	line-height: 36upx;
 	font-size: 34upx;
 }
-
 .uni-card-media-text-bottom {
 	line-height: 30upx;
 	font-size: 28upx;
 	color: #8f8f94;
 }
-
 .uni-card-link {
 	color: #007AFF;
 }
 
-
-
-
 /* 列表 */
-
 .uni-list {
 	background-color: #FFFFFF;
 	position: relative;
@@ -284,7 +329,6 @@
 	display: flex;
 	flex-direction: column;
 }
-
 .uni-list:after {
 	position: absolute;
 	z-index: 10;
@@ -297,7 +341,6 @@
 	transform: scaleY(.5);
 	background-color: #c8c7cc;
 }
-
 .uni-list:before {
 	position: absolute;
 	z-index: 10;
@@ -310,7 +353,6 @@
 	transform: scaleY(.5);
 	background-color: #c8c7cc;
 }
-
 .uni-list-cell {
 	position: relative;
 	display: flex;
@@ -318,24 +360,20 @@
 	justify-content: space-between;
 	align-items: center;
 }
-
 .uni-list-cell-hover {
 	background-color: #eee;
 }
-
 .uni-list-cell-pd {
 	padding: 22upx 30upx;
 }
-
 .uni-list-cell-left {
+	font-size:28upx;
 	padding: 0 30upx;
 }
-
 .uni-list-cell-db,
 .uni-list-cell-right {
 	flex: 1;
 }
-
 .uni-list-cell:after {
 	position: absolute;
 	right: 0;
@@ -347,23 +385,19 @@
 	transform: scaleY(.5);
 	background-color: #c8c7cc;
 }
-
 .uni-list .uni-list-cell:last-child:after {
 	height: 0upx;
 }
-
 .uni-list-cell-last.uni-list-cell:after {
 	height: 0upx;
 }
-
 .uni-list-cell-divider {
 	position: relative;
 	display: flex;
 	color: #999;
 	background-color: #f7f7f7;
-	padding: 10upx 20upx;
+	padding:15upx 20upx;
 }
-
 .uni-list-cell-divider:before {
 	position: absolute;
 	right: 0;
@@ -375,7 +409,6 @@
 	transform: scaleY(.5);
 	background-color: #c8c7cc;
 }
-
 .uni-list-cell-divider:after {
 	position: absolute;
 	right: 0;
@@ -387,8 +420,8 @@
 	transform: scaleY(.5);
 	background-color: #c8c7cc;
 }
-
 .uni-list-cell-navigate {
+	font-size:30upx;
 	padding: 22upx 30upx;
 	line-height: 48upx;
 	position: relative;
@@ -399,15 +432,12 @@
 	justify-content: space-between;
 	align-items: center;
 }
-
 .uni-list-cell-navigate {
 	padding-right: 36upx;
 }
-
 .uni-navigate-badge {
 	padding-right: 50upx;
 }
-
 .uni-list-cell-navigate.uni-navigate-right:after {
 	font-family: uniicons;
 	content: '\e583';
@@ -418,7 +448,6 @@
 	-webkit-transform: translateY(-50%);
 	transform: translateY(-50%);
 }
-
 .uni-list-cell-navigate.uni-navigate-bottom:after {
 	font-family: uniicons;
 	content: '\e581';
@@ -429,7 +458,6 @@
 	-webkit-transform: translateY(-50%);
 	transform: translateY(-50%);
 }
-
 .uni-list-cell-navigate.uni-navigate-bottom.uni-active:after {
 	font-family: uniicons;
 	content: '\e580';
@@ -440,40 +468,28 @@
 	-webkit-transform: translateY(-50%);
 	transform: translateY(-50%);
 }
-
 .uni-collapse.uni-list-cell {
 	flex-direction: column;
 }
-
 .uni-list-cell-navigate.uni-active {
 	background: #eee;
 }
-
 .uni-list.uni-collapse {
 	box-sizing: border-box;
 	height: 0;
 	overflow: hidden;
 }
-
 .uni-collapse .uni-list-cell {
-	padding-left: 36upx;
+	padding-left: 20upx;
 }
-
 .uni-collapse .uni-list-cell:after {
 	left: 52upx;
 }
-
 .uni-list.uni-active {
 	height: auto;
 }
 
-
-
-
-
-
 /* 三行列表 */
-
 .uni-triplex-row {
 	display: flex;
 	flex: 1;
@@ -482,29 +498,20 @@
 	flex-direction: row;
 	padding: 22upx 30upx;
 }
-
 .uni-triplex-right,
 .uni-triplex-left {
 	display: flex;
 	flex-direction: column;
 }
-
 .uni-triplex-left {
 	width: 84%;
 }
-
 .uni-triplex-right {
 	width: 16%;
 	text-align: right;
 }
 
-
-
-
-
-
 /* 图文列表 */
-
 .uni-media-list {
 	padding: 22upx 30upx;
 	box-sizing: border-box;
@@ -512,31 +519,25 @@
 	width: 100%;
 	flex-direction: row;
 }
-
 .uni-navigate-right.uni-media-list {
 	padding-right: 74upx;
 }
-
 .uni-pull-right {
 	flex-direction: row-reverse;
 }
-
 .uni-pull-right>.uni-media-list-logo {
 	margin-right: 0upx;
 	margin-left: 20upx;
 }
-
 .uni-media-list-logo {
 	height: 84upx;
 	width: 84upx;
 	margin-right: 20upx;
 }
-
 .uni-media-list-logo image {
 	height: 100%;
 	width: 100%;
 }
-
 .uni-media-list-body {
 	height: 84upx;
 	display: flex;
@@ -546,13 +547,11 @@
 	align-items: flex-start;
 	overflow: hidden;
 }
-
 .uni-media-list-text-top {
 	width: 100%;
 	line-height: 36upx;
 	font-size: 34upx;
 }
-
 .uni-media-list-text-bottom {
 	width: 100%;
 	line-height: 30upx;
@@ -560,12 +559,7 @@
 	color: #8f8f94;
 }
 
-
-
-
-
 /* 九宫格 */
-
 .uni-grid-9 {
 	background: #f2f2f2;
 	width: 750upx;
@@ -574,7 +568,6 @@
 	flex-wrap: wrap;
 	border-top: 2upx solid #eee;
 }
-
 .uni-grid-9-item {
 	width: 250upx;
 	height: 200upx;
@@ -587,16 +580,13 @@
 	border-color: #eee;
 	box-sizing: border-box;
 }
-
 .no-border-right {
 	border-right: none;
 }
-
 .uni-grid-9-image {
 	width: 100upx;
 	height: 100upx;
 }
-
 .uni-grid-9-text {
 	width: 250upx;
 	line-height: 4upx;
@@ -604,64 +594,48 @@
 	text-align: center;
 	font-size: 30upx;
 }
-
 .uni-grid-9-item-hover {
 	background: rgba(0, 0, 0, 0.1);
 }
 
-
-
-
-
 /* 上传 */
-
 .uni-uploader {
 	flex: 1;
 	flex-direction: column;
 }
-
 .uni-uploader-head {
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
 }
-
 .uni-uploader-info {
 	color: #B2B2B2;
 }
-
 .uni-uploader-body {
 	margin-top: 16upx;
 }
-
 .uni-uploader__files {
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
 }
-
 .uni-uploader__file {
-	float: left;
-	margin-right: 18upx;
-	margin-bottom: 18upx;
+	margin: 10upx;
+	width: 210upx;
+	height: 210upx;
 }
-
 .uni-uploader__img {
 	display: block;
-	width: 158upx;
-	height: 158upx;
+	width: 210upx;
+	height: 210upx;
 }
-
 .uni-uploader__input-box {
-	float: left;
 	position: relative;
-	margin-right: 18upx;
-	margin-bottom: 18upx;
-	width: 154upx;
-	height: 154upx;
+	margin:10upx;
+	width: 208upx;
+	height: 208upx;
 	border: 2upx solid #D9D9D9;
 }
-
 .uni-uploader__input-box:before,
 .uni-uploader__input-box:after {
 	content: " ";
@@ -672,26 +646,21 @@
 	transform: translate(-50%, -50%);
 	background-color: #D9D9D9;
 }
-
 .uni-uploader__input-box:before {
 	width: 4upx;
 	height: 79upx;
 }
-
 .uni-uploader__input-box:after {
 	width: 79upx;
 	height: 4upx;
 }
-
 .uni-uploader__input-box:active {
 	border-color: #999999;
 }
-
 .uni-uploader__input-box:active:before,
 .uni-uploader__input-box:active:after {
 	background-color: #999999;
 }
-
 .uni-uploader__input {
 	position: absolute;
 	z-index: 1;
@@ -702,12 +671,7 @@
 	opacity: 0;
 }
 
-
-
-
-
 /*问题反馈*/
-
 .feedback-title {
 	display: flex;
 	flex-direction: row;
@@ -717,17 +681,14 @@
 	color: #8f8f94;
 	font-size: 28upx;
 }
-
 .feedback-star-view.feedback-title {
 	justify-content: flex-start;
 	margin: 0;
 }
-
 .feedback-quick {
 	position: relative;
 	padding-right: 40upx;
 }
-
 .feedback-quick:after {
 	font-family: uniicons;
 	font-size: 40upx;
@@ -739,11 +700,9 @@
 	-webkit-transform: translateY(-50%);
 	transform: translateY(-50%);
 }
-
 .feedback-body {
 	background: #fff;
 }
-
 .feedback-textare {
 	height: 200upx;
 	font-size: 34upx;
@@ -752,7 +711,6 @@
 	box-sizing: border-box;
 	padding: 20upx 30upx 0;
 }
-
 .feedback-input {
 	font-size: 34upx;
 	height: 50upx;
@@ -760,35 +718,98 @@
 	padding: 15upx 20upx;
 	line-height: 50upx;
 }
-
 .feedback-uploader {
 	padding: 22upx 20upx;
 }
-
 .feedback-star {
 	font-family: uniicons;
 	font-size: 40upx;
 	margin-left: 6upx;
 }
-
 .feedback-star-view {
 	margin-left: 20upx;
 }
-
 .feedback-star:after {
 	content: '\e408';
 }
-
 .feedback-star.active {
 	color: #FFB400;
 }
-
 .feedback-star.active:after {
 	content: '\e438';
 }
-
 .feedback-submit {
 	background: #007AFF;
 	color: #FFFFFF;
 	margin: 20upx;
+}
+
+/* input group */
+.uni-input-group {
+	position: relative;
+	padding: 0;
+	border: 0;
+	background-color: #fff;
+}
+
+.uni-input-group:before {
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 0;
+	height: 2upx;
+	content: '';
+	transform: scaleY(.5);
+	background-color: #c8c7cc;
+}
+
+.uni-input-group:after {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	height: 2upx;
+	content: '';
+	transform: scaleY(.5);
+	background-color: #c8c7cc;
+}
+
+.uni-input-row {
+	position: relative;
+	display: flex;
+	flex-direction: row;
+	font-size:28upx;
+}
+
+.uni-input-group .uni-input-row:after {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	left: 30upx;
+	height: 2upx;
+	content: '';
+	transform: scaleY(.5);
+	background-color: #c8c7cc;
+}
+
+.uni-input-row {
+	padding: 22upx 30upx;
+	justify-content: space-between;
+}
+
+.uni-input-row label {
+	line-height: 70upx;
+}
+
+/* textarea */
+.uni-textarea{
+	width:100%;
+	background:#FFF;
+}
+.uni-textarea textarea{
+	width:96%;
+	padding:18upx 2%;
+	line-height:1.6;
+	font-size:28upx;
+	height:150upx;
 }

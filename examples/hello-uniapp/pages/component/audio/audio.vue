@@ -1,8 +1,8 @@
 <template>
 	<view>
 		<page-head :title="title"></page-head>
-		<view class="page-body">
-			<view class="page-section page-section-gap" style="text-align: center;">
+		<view class="uni-padding-wrap uni-common-mt">
+			<view class="uni-center">
 				<audio style="text-align: left" :src="current.src" :poster="current.poster" :name="current.name" :author="current.author"
 				    :action="audioAction" controls></audio>
 			</view>

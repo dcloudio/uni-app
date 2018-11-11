@@ -5,7 +5,7 @@
             <button type="primary" @tap="showBanner">打开弹窗</button>
         </view>
         <!-- 弹出层 -->
-        <view class="grace-banner" style="background:#FFFFFF;" v-if="bannerShow">
+        <view class="uni-banner" style="background:#FFFFFF;" v-if="bannerShow">
             <view style="justify-content:flex-end;" @tap="closeBanner">
                 <view style="justify-content:flex-end; text-align:right; padding:20upx;">
                     <text class="uni-icon uni-icon-close"></text>
@@ -18,7 +18,7 @@
                 <button type='warn' class="mini-btn" style="background:#F6644D; margin:0 80upx;">一个按钮</button>
             </view>
         </view>
-        <view class="grace-mask" v-if="bannerShow"></view>
+        <view class="uni-mask" v-if="bannerShow"></view>
         <!-- 弹出层 -->
     </view>
 </template>
@@ -49,7 +49,7 @@
 
 <style>
     /* 遮罩层 */
-    .grace-mask {
+    .uni-mask {
         background: rgba(0, 0, 0, 0.6);
         position: fixed;
         width: 100%;
@@ -60,7 +60,7 @@
     }
 
     /* 弹出层形式的广告 */
-    .grace-banner {
+    .uni-banner {
         width: 70%;
         position: fixed;
         left: 50%;

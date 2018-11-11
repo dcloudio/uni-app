@@ -1,16 +1,18 @@
 <template>
 	<view>
 		<page-head :title="title"></page-head>
-		<view class="page-section">
-			<view class="page-body-info">
+		<view class="uni-padding-wrap">
+			<view class="uni-center">
 				<text class="time-big">{{formatedPlayTime}}</text>
-				<slider class="slider" min="0" max="21" step="1" :value="playTime" @change="seek"></slider>
-				<view class="play-time">
-					<text>00:00</text>
-					<text>00:21</text>
-				</view>
 			</view>
-			<view class="page-body-text">注意：离开当前页面后背景音乐将保持播放，但退出uni-app将停止</view>
+			<view class="uni-common-mt">
+				<slider class="slider" min="0" max="21" step="1" :value="playTime" @change="seek"></slider>
+			</view>
+			<view class="play-time">
+				<text>00:00</text>
+				<text>00:21</text>
+			</view>
+			<view class="uni-hello-text">注意：离开当前页面后背景音乐将保持播放，但退出uni-app将停止</view>
 			<view class="page-body-buttons">
 				<block v-if="playing">
 					<view class="page-body-button" @tap="stop">
@@ -136,12 +138,12 @@
 	}
 
 	.slider {
-		width: 650upx;
+		width:630upx;
 	}
 
 	.play-time {
 		font-size: 28upx;
-		width: 700upx;
+		width:100%;
 		padding: 20upx 0;
 		display: flex;
 		justify-content: space-between;

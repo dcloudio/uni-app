@@ -1,53 +1,46 @@
 <template>
 	<view>
 		<page-head :title="title"></page-head>
-		<view class="page-body">
-			<view class="page-section-title">分享内容</view>
-			<view class="page-section">
-				<view class="textarea-wrp">
-					<textarea class="textarea" v-model="shareText" />
-				</view>
+		<view class="uni-padding-wrap">
+			<view class="uni-title">分享内容</view>
+			<view class="uni-textarea">
+				<textarea class="textarea" v-model="shareText" />
 			</view>
-			<view class="page-section-title">分享图片：</view>
-			<view class="page-section">
-				<view class="uni-uploader-body">
-					<view class="uni-uploader__input-box" v-if="!image" @tap="chooseImage"></view>
-					<image class="uni-uploader__img" v-if="image" :src="image"></image>
-				</view>
+			<view class="uni-title">分享图片：</view>
+			<view class="uni-uploader" style="padding:15upx; background:#FFF;">
+				<view class="uni-uploader__input-box" v-if="!image" @tap="chooseImage"></view>
+				<image class="uni-uploader__img" v-if="image" :src="image"></image>
 			</view>
 			<!-- #ifdef APP-PLUS -->
-			<view class="page-section-title">分享类型：</view>
-			<view class="page-section">
-				<view class="uni-uploader-body">
-					<radio-group @change="radioChange">
-						<label class="radio">
-							<radio value="1" checked="true"/>文字
-						</label>
-						<label class="radio">
-							<radio value="2" />图片
-						</label>
-						<label class="radio">
-							<radio value="0" />图文
-						</label>
-						<label class="radio">
-							<radio value="5" />小程序
-						</label>
-					</radio-group>
-				</view>
+			<view class="uni-title">分享类型：</view>
+			<view>
+				<radio-group @change="radioChange">
+					<label class="radio">
+						<radio value="1" checked="true"/>文字
+					</label>
+					<label class="radio">
+						<radio value="2" />图片
+					</label>
+					<label class="radio">
+						<radio value="0" />图文
+					</label>
+					<label class="radio">
+						<radio value="5" />小程序
+					</label>
+				</radio-group>
 			</view>
-			<view class="btn-area" v-if="providerList.length > 0">
+			<view class="uni-btn-v uni-common-mt" v-if="providerList.length > 0">
 				<block v-for="(value,index) in providerList" :key="index">
 					<button type="primary" v-if="value" :disabled="shareType === 5 && value.name !== '分享到微信好友'" @tap="share(value)">{{value.name}}</button>
 				</block>
 			</view>
 			<!-- #endif -->
 			<!-- #ifdef MP-WEIXIN -->
-			<view class="btn-area">
+			<view class="uni-btn-v uni-common-mt">
 				<button type="primary" open-type="share">分享</button>
 			</view>
 			<!-- #endif -->
 		</view>
-
 	</view>
 </template>
 <script>
@@ -263,32 +256,5 @@
 </script>
 
 <style>
-	.textarea-wrp {
-		padding: 0 20upx;
-	}
-	.page-section{
-		margin-bottom: 20upx;
-	}
-	.textarea {
-		border: 2upx solid #D8D8D8;
-		padding: 10upx;
-		height: 90upx;
-		width: 690upx;
-	}
-	.uni-input{
-		border: 2upx solid #D8D8D8;
-		padding: 0 10upx;
-		width: 690upx;
-	}
-	.uni-uploader-body {
-		display: flex;
-		justify-content: center;
-	}
-	radio-group{
-		box-sizing: border-box;
-		width: 100%;
-		padding: 0 30upx;
-		display: flex;
-		justify-content: space-between;
-	}
+
 </style>

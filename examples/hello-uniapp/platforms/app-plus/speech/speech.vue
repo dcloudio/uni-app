@@ -1,17 +1,13 @@
 <template>
 	<view>
 		<page-head :title="title"></page-head>
-		<view class="page-body">
-			<view class="page-section">
-				<view class="page-section-spacing">
-					<button type="primary" @tap="startRecognize">开始语音识别</button>
-					<button type="primary" @tap="startRecognizeEnglish">开始语音识别（英语）</button>
-				</view>
+		<view class="uni-padding-wrap uni-common-mt">
+			<view class="uni-textarea">
+				<textarea :value="value" placeholder="语音识别内容展示区域" disabled />
 			</view>
-			<view class="page-section">
-				<view class="page-section-spacing">
-					<textarea :value="value" />
-				</view>
+			<view class="uni-common-mt uni-btn-v">
+				<button type="primary" @tap="startRecognize">开始语音识别</button>
+				<button type="primary" @tap="startRecognizeEnglish">开始语音识别（英语）</button>
 			</view>
 		</view>
 	</view>
@@ -58,9 +54,5 @@
 </script>
 
 <style>
-	textarea {
-		border: 2upx solid #7A7E83;
-		height: 76upx;
-		width: 100%;
-	}
+	
 </style>

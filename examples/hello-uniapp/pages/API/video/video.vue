@@ -1,34 +1,26 @@
 <template>
 	<view>
 		<page-head :title="title"></page-head>
-		<view class="page-body">
-			<view class="page-section">
-				<view class="uni-list">
-					<view class="uni-list-cell">
-						<view class="uni-list-cell-left">
-							<view class="uni-label">视频来源</view>
-						</view>
-						<view class="uni-list-cell-right">
-							<picker :range="sourceType" @change="sourceTypeChange" :value="sourceTypeIndex">
-								<view class="uni-input">{{sourceType[sourceTypeIndex]}}</view>
-							</picker>
-						</view>
+		<view class="uni-common-mt">
+			<view class="uni-list">
+				<view class="uni-list-cell">
+					<view class="uni-list-cell-left">
+						<view class="uni-label">视频来源</view>
 					</view>
-				</view>
-				<view class="page-body-info">
-					<template v-if="!src">
-						<view class="image-plus image-plus-nb" @tap="chooseVideo">
-							<view class="image-plus-horizontal"></view>
-							<view class="image-plus-vertical"></view>
-						</view>
-						<view class="image-plus-text">添加视频</view>
-					</template>
-					<template v-else>
-						<video :src="src" class="video"></video>
-					</template>
+					<view class="uni-list-cell-right">
+						<picker :range="sourceType" @change="sourceTypeChange" :value="sourceTypeIndex">
+							<view class="uni-input">{{sourceType[sourceTypeIndex]}}</view>
+						</picker>
+					</view>
 				</view>
 			</view>
 		</view>
+		<template v-if="!src">
+			<view class="uni-hello-addfile" @tap="chooseVideo">+ 添加视频</view>
+		</template>
+		<template v-else>
+			<video :src="src" class="video"></video>
+		</template>
 	</view>
 </template>
 <script>
@@ -68,14 +60,5 @@
 </script>
 
 <style>
-	.page-body-info {
-		display: flex;
-		margin-top: 40upx;
-		padding: 0;
-		height: 360upx;
-		border-top: 1upx solid #D9D9D9;
-		border-bottom: 1upx solid #D9D9D9;
-		align-items: center;
-		justify-content: center;
-	}
+	.video{width:100%;}
 </style>

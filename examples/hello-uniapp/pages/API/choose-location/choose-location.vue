@@ -1,25 +1,25 @@
 <template>
 	<view>
 		<page-head :title="title"></page-head>
-		<view class="page-body">
-			<view class="page-section">
-				<view class="page-body-info">
-					<text class="page-body-text-small">当前位置信息</text>
-					<block v-if="hasLocation === false">
-						<text class="page-body-text">未选择位置</text>
-					</block>
-					<block v-if="hasLocation === true">
-						<text class="page-body-text">{{locationAddress}}</text>
-						<view class="page-body-text-location">
-							<text>E: {{location.longitude[0]}}°{{location.longitude[1]}}′</text>
-							<text>N: {{location.latitude[0]}}°{{location.latitude[1]}}′</text>
-						</view>
-					</block>
-				</view>
-				<view class="btn-area">
-					<button type="primary" @tap="chooseLocation">选择位置</button>
-					<button @tap="clear">清空</button>
-				</view>
+		<view class="uni-padding-wrap">
+			<view style="background:#FFFFFF; padding:40upx;">
+				<view class="uni-hello-text uni-center">当前位置信息</view>
+				<block v-if="hasLocation === false">
+					<view class="uni-h2 uni-center uni-common-mt">未选择位置</view>
+				</block>
+				<block v-if="hasLocation === true">
+					<view class="uni-hello-text uni-center" style="margin-top:10px;">
+						{{locationAddress}}
+					</view>
+					<view class="uni-h2 uni-center uni-common-mt">
+						<text>E: {{location.longitude[0]}}°{{location.longitude[1]}}′</text>
+						<text>\nN: {{location.latitude[0]}}°{{location.latitude[1]}}′</text>
+					</view>
+				</block>
+			</view>
+			<view class="uni-btn-v">
+				<button type="primary" @tap="chooseLocation">选择位置</button>
+				<button @tap="clear">清空</button>
 			</view>
 		</view>
 	</view>

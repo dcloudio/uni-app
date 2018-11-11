@@ -1,8 +1,8 @@
 <template>
 	<view class="uni-numbox">
-		<view class="uni-numbox-minus" :class="{'uni-numbox-disabled': disableSubtract}" @click="_calcValue('subtract')">-</view>
-		<input class="uni-numbox-value" type="number" :disabled="disabled" :value="inputValue" @blur="_onBlur">
-		<view class="uni-numbox-plus" :class="{'uni-numbox-disabled': disableAdd}" @click="_calcValue('add')">+</view>
+		<view class="uni-numbox-minus" :class="{'uni-numbox-disabled': disableSubtract}" @click="subtract">-</view>
+		<input class="uni-numbox-value" type="number" :disabled="disabled" v-model="value" @blur="handleBlur">
+		<view class="uni-numbox-plus" :class="{'uni-numbox-disabled': disableAdd}" @click="add">+</view>
 	</view>
 </template>
 <script>
@@ -30,11 +30,6 @@
 				default: false
 			}
 		},
-		data() {
-			return {
-				inputValue: this.value
-			}
-		},
 		computed: {
 			disableSubtract() {
 				return this.value <= this.min
@@ -43,42 +38,35 @@
 				return this.value >= this.max
 			}
 		},
-		watch: {
-			value(val) {
-				this.inputValue = val;
-			},
-			inputValue(val) {
-				this.$emit('change', val);
-			}
+		onUnload() {
+			this.value = 0,
+				this.step = 1,
+				this.max = Infinity,
+				this.min = -Infinity;
 		},
 		methods: {
-			_calcValue(type) {
-				const scale = this._getDecimalScale();
-				let value = this.inputValue * scale;
-				let step = this.step * scale;
-
+			subtract(evt) {
+				this._handleStep('subtract');
+			},
+			add(evt) {
+				this._handleStep('add');
+			},
+			_handleStep(type) {
+				let value = this.value;
 				if (type === 'subtract') {
-					value -= step
+					value -= this.step
 				} else if (type === 'add') {
-					value += step
+					value += this.step
 				}
 				if (value < this.min || value > this.max) {
 					return
 				}
-				this.inputValue = value / scale;
+				this.value = value
 			},
-			_getDecimalScale() {
-				let scale = 1;
-				// 浮点型
-				if (~~this.step !== this.step) {
-					scale = Math.pow(10, (this.step + '').split('.')[1].length);
-				}
-				return scale;
-			},
-			_onBlur(event) {
-				let value = event.detail.value;
+			handleBlur(evt) {
+				let value = evt.detail.value;
 				if (!value) {
-					this.inputValue = 0;
+					this.value = 0;
 					return
 				}
 				value = +value;
@@ -87,7 +75,12 @@
 				} else if (value < this.min) {
 					value = this.min
 				}
-				this.inputValue = value
+				this.value = value
+			}
+		},
+		watch: {
+			value(val) {
+				this.$emit('update', val);
 			}
 		}
 	}
@@ -97,16 +90,16 @@
 		display: flex;
 		flex-direction: row;
 		justify-content: flex-start;
-		height: 70upx;
+		height: 60upx;
 	}
 
 	.uni-numbox-minus,
 	.uni-numbox-plus {
 		margin: 0;
 		background-color: #f9f9f9;
-		width: 80upx;
+		width: 60upx;
 		height: 100%;
-		line-height: 70upx;
+		line-height: 60upx;
 		text-align: center;
 		color: #555555;
 	}
@@ -128,7 +121,7 @@
 	.uni-numbox-value {
 		border: 2upx solid #cccccc;
 		background-color: #ffffff;
-		width: 80upx;
+		width: 60upx;
 		height: 100%;
 		text-align: center;
 	}

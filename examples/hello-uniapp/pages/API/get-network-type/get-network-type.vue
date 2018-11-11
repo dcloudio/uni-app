@@ -1,22 +1,20 @@
 <template>
 	<view>
 		<page-head :title="title"></page-head>
-		<view class="page-body">
-			<view class="page-section">
-				<view class="page-body-info">
-					<view class="page-body-title">网络状态</view>
-					<block v-if="hasNetworkType === false">
-						<text class="page-body-text">未获取</text>
-						<text class="page-body-text">点击绿色按钮可获取网络状态</text>
-					</block>
-					<block v-if="hasNetworkType === true">
-						<text class="page-body-text-network-type">{{networkType}}</text>
-					</block>
-				</view>
-				<view class="btn-area">
-					<button type="primary" @tap="getNetworkType">获取手机网络状态</button>
-					<button @tap="clear">清空</button>
-				</view>
+		<view class="uni-padding-wrap uni-common-mt">
+			<view style="background:#FFFFFF; padding:40upx;">
+				<view class="uni-hello-text uni-center">网络状态</view>
+				<block v-if="hasNetworkType === false">
+					<view class="uni-h2 uni-center uni-common-mt">未获取</view>
+					<view class="uni-hello-text uni-center uni-common-mt">请点击下面按钮获取网络状态</view>
+				</block>
+				<block v-if="hasNetworkType === true">
+					<view class="uni-h2 uni-center uni-common-mt">{{networkType}}</view>
+				</block>
+			</view>
+			<view class="uni-btn-v uni-common-mt">
+				<button type="primary" @tap="getNetworkType">获取手机网络状态</button>
+				<button @tap="clear">清空</button>
 			</view>
 		</view>
 	</view>
@@ -51,12 +49,5 @@
 </script>
 
 <style>
-	.page-body-info {
-		height: 200upx;
-	}
 
-	.page-body-text-network-type {
-		font-size: 80upx;
-		font-family: -apple-system-font, Helvetica Neue, Helvetica, sans-serif;
-	}
 </style>

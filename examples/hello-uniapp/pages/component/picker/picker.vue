@@ -1,52 +1,47 @@
 <template>
 	<view>
 		<page-head :title="title"></page-head>
-		<view class="page-body">
-			<view class="page-section">
-				<view class="page-section-title">地区选择器</view>
-				<view class="uni-list">
-					<view class="uni-list-cell">
-						<view class="list-left">
-							当前选择
-						</view>
-						<view class="uni-list-cell-db">
-							<picker @change="bindPickerChange" :value="index" :range="array">
-								<view class="uni-input">{{array[index]}}</view>
-							</picker>
-						</view>
-					</view>
+		<view class="uni-title uni-common-pl">地区选择器</view>
+		<view class="uni-list">
+			<view class="uni-list-cell">
+				<view class="uni-list-cell-left">
+					当前选择
 				</view>
-
-				<view class="page-section-title">时间选择器</view>
-				<view class="uni-list">
-					<view class="uni-list-cell">
-						<view class="list-left">
-							当前选择
-						</view>
-						<view class="uni-list-cell-db">
-							<picker mode="time" :value="time" start="09:01" end="21:01" @change="bindTimeChange">
-								<view class="uni-input">{{time}}</view>
-							</picker>
-						</view>
-					</view>
-				</view>
-
-				<view class="page-section-title">日期选择器</view>
-				<view class="uni-list">
-					<view class="uni-list-cell">
-						<view class="list-left">
-							当前选择
-						</view>
-						<view class="uni-list-cell-db">
-							<picker mode="date" :value="date" :start="startDate" :end="endDate" @change="bindDateChange">
-								<view class="uni-input">{{date}}</view>
-							</picker>
-						</view>
-					</view>
+				<view class="uni-list-cell-db">
+					<picker @change="bindPickerChange" :value="index" :range="array">
+						<view class="uni-input">{{array[index]}}</view>
+					</picker>
 				</view>
 			</view>
 		</view>
 
+		<view class="uni-title uni-common-pl">时间选择器</view>
+		<view class="uni-list">
+			<view class="uni-list-cell">
+				<view class="uni-list-cell-left">
+					当前选择
+				</view>
+				<view class="uni-list-cell-db">
+					<picker mode="time" :value="time" start="09:01" end="21:01" @change="bindTimeChange">
+						<view class="uni-input">{{time}}</view>
+					</picker>
+				</view>
+			</view>
+		</view>
+
+		<view class="uni-title uni-common-pl">日期选择器</view>
+		<view class="uni-list">
+			<view class="uni-list-cell">
+				<view class="uni-list-cell-left">
+					当前选择
+				</view>
+				<view class="uni-list-cell-db">
+					<picker mode="date" :value="date" :start="startDate" :end="endDate" @change="bindDateChange">
+						<view class="uni-input">{{date}}</view>
+					</picker>
+				</view>
+			</view>
+		</view>
 	</view>
 </template>
 <script>
@@ -104,12 +99,5 @@
 </script>
 
 <style>
-	.uni-list-cell {
-		justify-content: flex-start;
-	}
-
-	.uni-list-cell-db,
-	.list-left {
-		padding: 0 24upx;
-	}
+	
 </style>

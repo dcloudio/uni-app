@@ -1,16 +1,16 @@
 <template>
 	<view>
 		<page-head :title="title"></page-head>
-		<view class="page-body">
-			<view class="page-section page-section_center">
-				<text class="page-body-text">旋转手机即可获取方位信息</text>
-				<view class="direction">
-					<view class="bg-compass-line"></view>
-					<image class="bg-compass" src="../../../static/compass.png" :style="'transform: rotate('+direction+'deg)'"></image>
-					<view class="direction-value">
-						<text>{{direction}}</text>
-						<text class="direction-degree">o</text>
-					</view>
+		<view class="uni-padding-wrap">
+			<view class="uni-hello-text uni-center" style="padding-bottom:50upx;">
+				旋转手机即可获取方位信息
+			</view>
+			<view class="direction">
+				<view class="bg-compass-line"></view>
+				<image class="bg-compass" src="../../../static/compass.png" :style="'transform: rotate('+direction+'deg)'"></image>
+				<view class="direction-value">
+					<text>{{direction}}</text>
+					<text class="direction-degree">o</text>
 				</view>
 			</view>
 		</view>
@@ -45,6 +45,7 @@
 		height: 540upx;
 		align-items: center;
 		justify-content: center;
+		margin:0 auto;
 	}
 
 	.direction-value {

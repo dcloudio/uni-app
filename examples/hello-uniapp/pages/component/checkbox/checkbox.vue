@@ -1,30 +1,35 @@
 <template>
 	<view>
 		<page-head :title="title"></page-head>
-		<view class="page-body">
-			<view class="page-section page-section-gap">
-				<view class="page-section-title">默认样式</view>
-				<label class="checkbox">
-					<checkbox value="cb" checked="true" />选中
-				</label>
-				<label class="checkbox">
-					<checkbox value="cb" />未选中
-				</label>
+		<view class="uni-padding-wrap uni-common-mt">
+			<view class="uni-title uni-common-mt">默认样式</view>
+			<view>
+				<checkbox-group>
+					<label>
+						<checkbox value="cb" checked="true" />选中
+					</label>
+					<label>
+						<checkbox value="cb" />未选中
+					</label>
+				</checkbox-group>
 			</view>
-
-			<view class="page-section">
-				<view class="page-section-title">推荐展示样式</view>
-				<view class="uni-list">
-					<checkbox-group @change="checkboxChange">
-						<label class="uni-list-cell uni-list-cell-pd" v-for="item in items" :key="item.value">
-							<view>
-								<checkbox :value="item.value" :checked="item.checked" />
-							</view>
-							<view>{{item.name}}</view>
-						</label>
-					</checkbox-group>
-				</view>
+		</view>
+		
+		<view class="uni-padding-wrap">
+			<view class="uni-title uni-common-mt">
+				推荐展示样式
+				<text>\n使用 uni-list 布局</text>
 			</view>
+		</view>
+		<view class="uni-list">
+			<checkbox-group @change="checkboxChange">
+				<label class="uni-list-cell uni-list-cell-pd" v-for="item in items" :key="item.value">
+					<view>
+						<checkbox :value="item.value" :checked="item.checked" />
+					</view>
+					<view>{{item.name}}</view>
+				</label>
+			</checkbox-group>
 		</view>
 	</view>
 </template>
@@ -80,7 +85,7 @@
 </script>
 
 <style>
-	.uni-list-cell {
-		justify-content: flex-start
-	}
+.uni-list-cell {
+	justify-content: flex-start
+}
 </style>

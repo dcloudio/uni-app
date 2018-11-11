@@ -1,18 +1,18 @@
 <template>
 	<view>
 		<page-head :title="title"></page-head>
-		<view class="page-body">
+		<view class="uni-padding-wrap">
 			<form @submit="formSubmit" @reset="formReset">
-				<view class="page-section">
-					<view class="page-section-title">姓名</view>
+				<view>
+					<view class="uni-title">姓名</view>
 					<view class="uni-list">
 						<view class="uni-list-cell">
 							<input class="uni-input" name="nickname" placeholder="请填写您的昵称" />
 						</view>
 					</view>
 				</view>
-				<view class="page-section page-section-gap">
-					<view class="page-section-title">性别</view>
+				<view>
+					<view class="uni-title">性别</view>
 					<radio-group class="uni-flex" name="gender">
 						<label>
 							<radio value="男" />男</label>
@@ -20,8 +20,8 @@
 							<radio value="女" />女</label>
 					</radio-group>
 				</view>
-				<view class="page-section page-section-gap">
-					<view class="page-section-title">爱好</view>
+				<view>
+					<view class="uni-title">爱好</view>
 					<checkbox-group class="uni-flex" name="loves">
 						<label>
 							<checkbox value="读书" />读书</label>
@@ -29,8 +29,8 @@
 							<checkbox value="写字" />写字</label>
 					</checkbox-group>
 				</view>
-				<view class="btn-area">
-					<button class="btn-submit" formType="submit">Submit</button>
+				<view class="uni-btn-v uni-common-mt">
+					<button class="btn-submit" formType="submit" type="primary">Submit</button>
 					<button type="default" formType="reset">Reset</button>
 				</view>
 			</form>
@@ -73,19 +73,4 @@
 </script>
 
 <style>
-	label {
-		display: flex;
-		flex-direction: row;
-		min-width: 270upx;
-		margin-right: 20upx;
-	}
-
-	.btn-submit {
-		background-color: #007aff;
-		color: #ffffff;
-	}
-	.uni-input{
-		width: 100%;
-		padding-left: 30upx;
-	}
 </style>

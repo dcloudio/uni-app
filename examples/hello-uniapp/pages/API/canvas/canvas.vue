@@ -1,16 +1,14 @@
 <template>
 	<view>
 		<page-head :title="title"></page-head>
-		<view class="page-body">
-			<view class="page-section">
-				<canvas class="canvas-element" canvas-id="canvas"></canvas>
-				<scroll-view class="canvas-buttons" scroll-y="true">
-					<block v-for="(name, index) in names" :key="index">
-						<button class="canvas-button" @tap="handleCanvasButton(name)">{{name}}</button>
-					</block>
-					<button class="canvas-button" @tap="toTempFilePath" type="primary">toTempFilePath</button>
-				</scroll-view>
-			</view>
+		<view class="uni-common-mt">
+			<canvas class="canvas-element" canvas-id="canvas"></canvas>
+			<scroll-view class="canvas-buttons" scroll-y="true">
+				<block v-for="(name, index) in names" :key="index">
+					<button class="canvas-button" @tap="handleCanvasButton(name)">{{name}}</button>
+				</block>
+				<button class="canvas-button" @tap="toTempFilePath" type="primary">toTempFilePath</button>
+			</scroll-view>
 		</view>
 	</view>
 </template>

@@ -1,8 +1,10 @@
 <template>
-	<view class="index">
-		<view class="index-hd">
-			<image class="index-logo" src="../../../static/apiIndex.png"></image>
-			<view class="page-section-title">以下将演示uni-app接口能力，具体属性参数详见uni-app开发文档。</view>
+	<view class="uni-padding-wrap uni-common-pb">
+		<view class="uni-header-logo">
+			<image src="../../../static/apiIndex.png"></image>
+		</view>
+		<view class="uni-hello-text uni-common-pb">
+			以下将演示uni-app接口能力，具体属性参数详见uni-app开发文档。
 		</view>
 		<view class="uni-card" v-for="(list,index) in lists" :key="index">
 			<view class="uni-list">
@@ -235,18 +237,13 @@
 </script>
 
 <style>
-	.index{
-		padding-bottom: 1upx;
-	}
-	.uni-card {
-		box-shadow: none;
-	}
-
-	.uni-list:after {
-		height: 0;
-	}
-
-	.uni-list:before {
-		height: 0;
-	}
+.uni-card {
+	box-shadow: none;
+}
+.uni-list:after {
+	height: 0;
+}
+.uni-list:before {
+	height: 0;
+}
 </style>

@@ -1,8 +1,13 @@
 <template>
-    <view class="index-page">
-        <mpvue-gesture-lock :containerWidth="600" :cycleRadius="70" @end="onEnd" :password="password"></mpvue-gesture-lock>
-        <view class="result">{{text}}</view>
-    </view>
+	<view>
+		<page-head :title="title"></page-head>
+		<view class="uni-padding-wrap uni-common-mt">
+			<view>
+				<mpvue-gesture-lock :containerWidth="590" :cycleRadius="70" @end="onEnd" :password="password"></mpvue-gesture-lock>
+			</view>
+			<view class="uni-helllo-text uni-common-mt uni-center">{{text}}</view>
+		</view>
+	</view>
 </template>
 
 <script>
@@ -14,6 +19,7 @@
         },
         data() {
             return {
+				title : "手势图案",
                 password: [],
                 text: '请设定手势'
             }
@@ -38,15 +44,4 @@
 </script>
 
 <style>
-    .index-page {
-        box-sizing: border-box;
-        padding-top: 30px;
-        height: 100vh;
-        width: 100vw;
-    }
-
-    .index-page .result {
-        text-align: center;
-        margin-top: 30px;
-    }
 </style>

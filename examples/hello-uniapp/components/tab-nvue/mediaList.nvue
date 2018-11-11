@@ -145,7 +145,7 @@
     .info-text {
         margin-right: 20px;
         color: #999999;
-        font-size: 28px;
+        font-size: 24px;
     }
 
     .media-foot {

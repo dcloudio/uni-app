@@ -1,8 +1,10 @@
 <template>
-	<view class="index">
-		<view class="index-hd">
-			<image class="index-logo" src="../../../static/templateIndex.png"></image>
-			<view class="page-section-title">以下是uni-app的部分模板示例，欢迎大家积极分享更多的模板，一起完善uni-app生态。</view>
+	<view class="uni-padding-wrap uni-common-pb">
+		<view class="uni-header-logo">
+			<image src="../../../static/templateIndex.png"></image>
+		</view>
+		<view class="uni-hello-text uni-common-pb">
+			以下是uni-app的部分模板示例，欢迎大家积极分享更多的模板，一起完善uni-app生态。
 		</view>
 		<view class="uni-card" v-for="(list,index) in lists" :key="index">
 			<view class="uni-list">
@@ -21,23 +23,22 @@
 		</view>
 	</view>
 </template>
-
 <script>
 	export default {
 		data() {
 			return {
 				lists: [
 					{
-						name: '数字角标badge',
+						name: '数字角标 badge',
 						url: 'badge'
 					}, {
-						name: '数字选择框number-box',
+						name: '数字选择框 number-box',
 						url: 'number-box'
 					}, {
-						name: '弹出层popup',
+						name: '弹出层 popup',
 						url: 'popup'
 					}, {
-						name: '多列选择picker',
+						name: '多列选择 picker',
 						url: 'mpvue-picker'
 					}, {
 						id: 'navbar',
@@ -58,7 +59,7 @@
 						}]
 					}, {
 						id: 'tabbar',
-						name: '可拖动顶部选项卡',
+						name: '顶部选项卡',
 						// #ifdef MP-WEIXIN 
 						url: 'tabbar',
 						// #endif
@@ -73,10 +74,10 @@
 						}]
 						// #endif
 					}, {
-						name: '顶部分段器segment',
+						name: '顶部分段器 segment',
 						url: 'segmented-control'
 					}, {
-						name: '抽屉侧滑菜单drawer',
+						name: '抽屉侧滑菜单 drawer',
 						url: 'drawer'
 					}, {
 						name: '折叠面板',
@@ -110,7 +111,7 @@
 							url: 'list-triplex-row'
 						}]
 					}, {
-						name: '右侧索引列表indexList',
+						name: '右侧索引列表 indexList',
 						url: 'index-list'
 					}, {
 						name: '图文列表',
@@ -119,10 +120,10 @@
 						name: '商品列表',
 						url: 'product-list'
 					}, {
-						name: '加载更多load-more',
+						name: '加载更多 load-more',
 						url: 'load-more'
 					}, {
-						name: '懒加载lazy-load',
+						name: '懒加载 lazy-load',
 						open: false,
 						pages: [{
 							name: '默认',
@@ -138,10 +139,10 @@
 						name: '标签 tag',
 						url: 'tag'
 					}, {
-						name: 'ECharts图表',
+						name: 'ECharts 图表',
 						url: 'echarts'
 					}, {
-						name: 'markdown富文本渲染',
+						name: 'markdown 富文本渲染',
 						url: 'mdparse'
 					}, {
 						name: '手势图案锁屏',
@@ -163,7 +164,7 @@
 						name: '图片裁剪',
 						url: 'crop'
 					}, {
-						name: 'markdown富文本编辑器',
+						name: 'markdown 富文本编辑器',
 						url: 'md-editor'
 					}, {
 						name: '侧边分类导航',
@@ -189,7 +190,7 @@
 					}
 					// #ifdef APP-PLUS 
 					, {
-						name: '聊天窗口chat',
+						name: '聊天窗口 chat',
 						url: 'im-chat'
 					}
 					// #endif
@@ -230,19 +231,13 @@
 </script>
 
 <style>
-	.index {
-		padding-bottom: 1upx;
-	}
-
-	.uni-card {
-		box-shadow: none;
-	}
-
-	.uni-list:after {
-		height: 0;
-	}
-
-	.uni-list:before {
-		height: 0;
-	}
+.uni-card {
+	box-shadow: none;
+}
+.uni-list:after {
+	height: 0;
+}
+.uni-list:before {
+	height: 0;
+}
 </style>

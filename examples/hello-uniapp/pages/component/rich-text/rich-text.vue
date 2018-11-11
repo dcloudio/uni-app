@@ -1,23 +1,24 @@
 <template>
     <view class="content">
         <page-head :title="title"></page-head>
-        <view class="page-body">
-            <view class="page-section page-section-gap">
-                <view class="page-section-title">nodes属性为Aarry</view>
-                <view class="page-section-ctn">
-                    <rich-text class="richText" :nodes="nodes" @tap="tap"></rich-text>
-                </view>
+        <view class="uni-padding-wrap">
+			<view class="uni-title uni-common-mt">
+				数组类型
+				<text>\nnodes属性为Aarry</text>
+			</view>
+            <view class="uni-common-mt" style="background:#FFF; padding:20upx;">
+            	<rich-text :nodes="nodes" @tap="tap"></rich-text>
             </view>
-            <view class="page-section page-section-gap">
-                <view class="page-section-title">nodes属性为String</view>
-                <view class="page-section-ctn">
-                    <rich-text class="richText" :nodes="strings" @tap="tap"></rich-text>
-                </view>
+			<view class="uni-title uni-common-mt">
+				字符串类型
+				<text>\nnodes属性为String</text>
+			</view>
+            <view class="uni-common-mt" style="background:#FFF; padding:20upx;">
+            	<rich-text :nodes="strings" @tap="tap"></rich-text>
             </view>
         </view>
     </view>
 </template>
-
 <script>
     export default {
         data() {
@@ -27,7 +28,7 @@
                     name: 'div',
                     attrs: {
                         class: 'div_class',
-                        style: 'line-height: 60px; color: red;text-align:center;'
+                        style: 'line-height: 60px; color: red; text-align:center;'
                     },
                     children: [{
                         type: 'text',

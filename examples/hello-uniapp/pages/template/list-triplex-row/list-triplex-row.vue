@@ -39,11 +39,4 @@
 </script>
 
 <style>
-    .page {
-        padding-top: 60upx;
-    }
-
-    page {
-        background: #efeff4;
-    }
 </style>

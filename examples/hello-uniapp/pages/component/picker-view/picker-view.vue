@@ -1,7 +1,11 @@
 <template>
     <view>
         <page-head :title="title"></page-head>
-        <view class="title">日期：{{year}}年{{month}}月{{day}}日</view>
+        <view class="uni-padding-wrap">
+			<view class="uni-title">
+				日期：{{year}}年{{month}}月{{day}}日
+			</view>
+		</view>
         <picker-view v-if="visible" :indicator-style="indicatorStyle" :value="value" @change="bindChange">
             <picker-view-column>
                 <view class="item" v-for="(item,index) in years" :key="index">{{item}}年</view>
@@ -66,14 +70,11 @@
 </script>
 
 <style>
-    .title {
-        padding: 0 50upx;
-    }
-
+	
     picker-view {
         width: 100%;
         height: 600upx;
-        margin-top: 50upx;
+        margin-top:20upx;
     }
 
     .item {

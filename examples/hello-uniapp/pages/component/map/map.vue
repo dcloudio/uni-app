@@ -1,8 +1,8 @@
 <template>
 	<view>
 		<page-head :title="title"></page-head>
-		<view class="page-body">
-			<view class="page-section page-section-gap">
+		<view class="uni-common-mt">
+			<view>
 				<map :latitude="latitude" :longitude="longitude" :markers="covers">
 				</map>
 			</view>

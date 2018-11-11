@@ -1,62 +1,60 @@
 <template>
 	<view>
 		<page-head :title="title"></page-head>
-		<view class="page-body">
-			<view class="page-section">
-				<block v-if="recording === false && playing === false && hasRecord === false">
-					<view class="page-body-time">
-						<text class="time-big">{{formatedRecordTime}}</text>
+		<view class="uni-padding-wrap">
+			<block v-if="recording === false && playing === false && hasRecord === false">
+				<view class="page-body-time">
+					<text class="time-big">{{formatedRecordTime}}</text>
+				</view>
+				<view class="page-body-buttons">
+					<view class="page-body-button"></view>
+					<view class="page-body-button" @tap="startRecord">
+						<image src="../../../static/record.png"></image>
 					</view>
-					<view class="page-body-buttons">
-						<view class="page-body-button"></view>
-						<view class="page-body-button" @tap="startRecord">
-							<image src="../../../static/record.png"></image>
-						</view>
-						<view class="page-body-button"></view>
+					<view class="page-body-button"></view>
+				</view>
+			</block>
+			<block v-if="recording === true">
+				<view class="page-body-time">
+					<text class="time-big">{{formatedRecordTime}}</text>
+				</view>
+				<view class="page-body-buttons">
+					<view class="page-body-button"></view>
+					<view class="page-body-button" @tap="stopRecord">
+						<view class="button-stop-record"></view>
 					</view>
-				</block>
-				<block v-if="recording === true">
-					<view class="page-body-time">
-						<text class="time-big">{{formatedRecordTime}}</text>
+					<view class="page-body-button"></view>
+				</view>
+			</block>
+			<block v-if="hasRecord === true && playing === false">
+				<view class="page-body-time">
+					<text class="time-big">{{formatedPlayTime}}</text>
+					<text class="time-small">{{formatedRecordTime}}</text>
+				</view>
+				<view class="page-body-buttons">
+					<view class="page-body-button"></view>
+					<view class="page-body-button" @tap="playVoice">
+						<image src="../../../static/play.png"></image>
 					</view>
-					<view class="page-body-buttons">
-						<view class="page-body-button"></view>
-						<view class="page-body-button" @tap="stopRecord">
-							<view class="button-stop-record"></view>
-						</view>
-						<view class="page-body-button"></view>
+					<view class="page-body-button" @tap="clear">
+						<image src="../../../static/trash.png"></image>
 					</view>
-				</block>
-				<block v-if="hasRecord === true && playing === false">
-					<view class="page-body-time">
-						<text class="time-big">{{formatedPlayTime}}</text>
-						<text class="time-small">{{formatedRecordTime}}</text>
+				</view>
+			</block>
+			<block v-if="hasRecord === true && playing === true">
+				<view class="page-body-time">
+					<text class="time-big">{{formatedPlayTime}}</text>
+					<text class="time-small">{{formatedRecordTime}}</text>
+				</view>
+				<view class="page-body-buttons">
+					<view class="page-body-button" @tap="stopVoice">
+						<image src="../../../static/stop.png"></image>
 					</view>
-					<view class="page-body-buttons">
-						<view class="page-body-button"></view>
-						<view class="page-body-button" @tap="playVoice">
-							<image src="../../../static/play.png"></image>
-						</view>
-						<view class="page-body-button" @tap="clear">
-							<image src="../../../static/trash.png"></image>
-						</view>
+					<view class="page-body-button" @tap="clear">
+						<image src="../../../static/trash.png"></image>
 					</view>
-				</block>
-				<block v-if="hasRecord === true && playing === true">
-					<view class="page-body-time">
-						<text class="time-big">{{formatedPlayTime}}</text>
-						<text class="time-small">{{formatedRecordTime}}</text>
-					</view>
-					<view class="page-body-buttons">
-						<view class="page-body-button" @tap="stopVoice">
-							<image src="../../../static/stop.png"></image>
-						</view>
-						<view class="page-body-button" @tap="clear">
-							<image src="../../../static/trash.png"></image>
-						</view>
-					</view>
-				</block>
-			</view>
+				</view>
+			</block>
 		</view>
 	</view>
 </template>
