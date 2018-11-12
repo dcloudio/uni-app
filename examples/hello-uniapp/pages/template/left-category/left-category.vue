@@ -8,7 +8,7 @@
 				</view>
 			</scroll-view>
 			<scroll-view class="nav-right" scroll-y :scroll-top="scrollTop" @scroll="scroll" :style="'height:'+height+'px'" scroll-with-animation>
-				<view :id="index==0?'first':''" class="nav-right-item" v-for="item in subCategoryList" :key="item">
+				<view :id="index===0?'first':''" class="nav-right-item" v-for="(item,index) in subCategoryList" :key="index">
 					<image :src="item.LOGO" />
 					<view>{{item.NAME}}</view>
 				</view>

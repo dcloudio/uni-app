@@ -99,7 +99,7 @@
         position: relative;
     }
 
-    .uni-media-list-logo wx-image {
+    .uni-media-list-logo image {
         position: absolute;
         left: 0;
         top: 0;
