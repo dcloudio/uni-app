@@ -31,7 +31,7 @@
 		},
 		methods: {
 			setNaivgationBarTitle: function (e) {
-				var title = e.target.value.title
+				let title = e.detail.value.title
 				uni.setNavigationBarTitle({
 					title: title,
 					success: () => {
