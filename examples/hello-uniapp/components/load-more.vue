@@ -74,7 +74,7 @@
 	}
 
 	.loading-text {
-		font-size: 15px;
+		font-size: 28upx;
 		color: #777777;
 	}
 
