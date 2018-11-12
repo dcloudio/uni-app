@@ -30,22 +30,14 @@ export default {
 		timer:{
 			type:String,
 			default:""
-		},
-		h:{
-			type:String,
-			default:"00"
-		},
-		i: {
-			type: String,
-			default: "00"
-		},
-		s: {
-			type: String,
-			default: "00"
-		},
-		leftTime: {
-			type: Number,
-			default:0
+		}
+	},
+	data() {
+		return {
+			h: '00',
+			i: '00',
+			s: '00',
+			leftTime: 0
 		}
 	},
 	created:function(e){
