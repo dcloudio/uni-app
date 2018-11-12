@@ -39,6 +39,10 @@ form {
 .uni-inline-item{
 	display: flex;
 	flex-direction: row;
+	align-items:center;
+}
+.uni-inline-item text{
+	margin-right: 20upx;
 }
 
 /* page */
