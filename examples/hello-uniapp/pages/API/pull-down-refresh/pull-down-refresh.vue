@@ -1,16 +1,9 @@
 <template>
 	<view>
 		<page-head :title="title"></page-head>
-		<view class="page-body">
-			<view class="page-section">
-				<view class="page-body-info">
-					<text class="page-body-text">下拉页面加载数据</text>
-				</view>
-				<view class="page-body-content">
-					<view class="text" v-for="(num,index) in data" :key="index">list - {{num}}</view>
-					<view class="loadMore" v-if="showLoadMore">{{loadMoreText}}</view>
-				</view>
-			</view>
+		<view class="uni-padding-wrap uni-common-mt">
+			<view class="text" v-for="(num,index) in data" :key="index">list - {{num}}</view>
+			<view class="uni-loadmore" v-if="showLoadMore">{{loadMoreText}}</view>
 		</view>
 	</view>
 </template>
@@ -18,17 +11,20 @@
 	export default {
 		data() {
 			return {
-				title: 'on/stopPullDownRefresh',
+				title: '下拉刷新 + 加载更多',
 				data: [],
-				loadMoreText: "加载更多...",
+				loadMoreText: "加载中...",
 				showLoadMore: false,
 				max: 0
 			}
 		},
+		onLoad() {
+			this.initData();
+		},
 		onUnload() {
 			this.max = 0,
 			this.data = [],
-			this.loadMoreText = "加载更多...",
+			this.loadMoreText = "加载更多",
 			this.showLoadMore = false;
 		},
 		onReachBottom() {
@@ -44,30 +40,22 @@
 		},
 		onPullDownRefresh() {
 			console.log('onPullDownRefresh');
-			if(this.max > 40){
-				this.loadMoreText = "没有更多数据了!";
-				uni.showToast({
-					title:"没有新内容了",
-					icon:"none",
-				})
-				uni.stopPullDownRefresh();
-				return;
-			}
-			setTimeout(() => {
-				if(this.max === 0){
-					this.setDate()
-				}else{
-					let data = []
-					this.max += 3;
-					for (var i = this.max + 1 ; i > this.max - 2; i--) {
-						data.push(i)
-					}
-					this.data.splice(0, 0, ...data);
-				}
-				uni.stopPullDownRefresh();
-			}, 300);
+			this.initData();
 		},
 		methods: {
+			initData(){
+				setTimeout(() => {
+					this.max = 0;
+					this.data = [];
+					let data = [];
+					this.max += 10;
+					for (var i = this.max - 9; i < this.max + 1; i++) {
+						data.push(i)
+					}
+					this.data = this.data.concat(data);
+					uni.stopPullDownRefresh();
+				}, 300);
+			},
 			setDate() {
 				let data = [];
 				this.max += 10;
@@ -81,26 +69,14 @@
 </script>
 
 <style>
-	.page-body-info {
-		background-color: transparent;
-	}
-
-	.page-body-content {
-		padding: 0 30upx;
-	}
-
 	.text {
 		margin: 16upx 0;
-		width: 690upx;
+		width:100%;
 		background-color: #fff;
-		height: 90upx;
-		line-height: 90upx;
+		height: 120upx;
+		line-height: 120upx;
 		text-align: center;
 		color: #555;
 		border-radius: 8upx;
-	}
-
-	.loadMore {
-		text-align: center;
 	}
 </style>

@@ -1,6 +1,6 @@
 <template>
 	<view class="page">
-		<view class="head">
+		<view class="uni-padding-wrap uni-common-mt">
 			<segmented-control :current="current" :values="items" v-on:clickItem="onClickItem" :styleType="styleType" :activeColor="activeColor"></segmented-control>
 		</view>
 		<view class="content">
@@ -14,27 +14,29 @@
 				选项卡3的内容
 			</view>
 		</view>
-		<view class="page-section">
-			<view class="page-section-title">Style</view>
-			<view class="uni-list">
-				<radio-group @change="styleChange">
-					<label class="uni-list-cell uni-list-cell-pd" v-for="item in styles" :key="item.value">
-						{{item.text}}
-						<radio :value="item.value" :checked="item.checked" />
-					</label>
-				</radio-group>
-			</view>
+		
+		<view class="uni-padding-wrap uni-common-mt">
+			<view class="uni-title">Style</view>
 		</view>
-		<view class="page-section">
-			<view class="page-section-title">Color</view>
-			<view class="uni-list">
-				<radio-group @change="colorChange">
-					<label class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in colors" :key="index">
-						<view class="color-tag" :style="{backgroundColor: item}"></view>
-						<radio :value="item" :checked="index === 0" />
-					</label>
-				</radio-group>
-			</view>
+		<view class="uni-list">
+			<radio-group @change="styleChange">
+				<label class="uni-list-cell uni-list-cell-pd" v-for="item in styles" :key="item.value">
+					{{item.text}}
+					<radio :value="item.value" :checked="item.checked" />
+				</label>
+			</radio-group>
+		</view>
+		
+		<view class="uni-padding-wrap uni-common-mt">
+			<view class="uni-title">Color</view>
+		</view>
+		<view class="uni-list">
+			<radio-group @change="colorChange">
+				<label class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in colors" :key="index">
+					<view class="color-tag" :style="{backgroundColor: item}"></view>
+					<radio :value="item" :checked="index === 0" />
+				</label>
+			</radio-group>
 		</view>
 	</view>
 </template>

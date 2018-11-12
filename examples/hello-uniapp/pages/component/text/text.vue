@@ -1,13 +1,13 @@
 <template>
 	<view>
 		<page-head :title="title"></page-head>
-		<view class="page-body">
-			<view class="page-section page-section-spacing">
-				<view class="text-box" scroll-y="true">
-					<text>{{text}}</text>
-				</view>
-				<button :disabled="!canAdd" @tap="add">add line</button>
-				<button :disabled="!canRemove" @tap="remove">remove line</button>
+		<view class="uni-padding-wrap uni-common-mt">
+			<view class="text-box" scroll-y="true">
+				<text>{{text}}</text>
+			</view>
+			<view class="uni-btn-v">
+				<button type="primary" :disabled="!canAdd" @tap="add">add line</button>
+				<button type="warn" :disabled="!canRemove" @tap="remove">remove line</button>
 			</view>
 		</view>
 	</view>
@@ -59,7 +59,7 @@
 
 <style>
 	.text-box {
-		margin-bottom: 70upx;
+		margin-bottom:40upx;
 		padding: 40upx 0;
 		display: flex;
 		min-height: 300upx;
@@ -69,6 +69,6 @@
 		text-align: center;
 		font-size: 30upx;
 		color: #353535;
-		line-height: 46upx;
+		line-height:1.8;
 	}
 </style>

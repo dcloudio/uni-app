@@ -1,8 +1,8 @@
 <template>
 	<view>
 		<page-head :title="title"></page-head>
-		<view class="page-body">
-			<view class="btn-area">
+		<view class="uni-padding-wrap uni-common-mt">
+			<view class="uni-btn-v">
 				<button @tap="navigateTo">跳转新页面，并传递数据</button>
 				<button @tap="navigateBack">返回上一页</button>
 				<button @tap="redirectTo">在当前页面打开</button>

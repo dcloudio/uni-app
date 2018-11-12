@@ -1,8 +1,8 @@
 <template>
 	<view class="root">
-		<view class="page-body">
-			<view class="page-section-title">这是选项卡页面跳转详情页面的演示，下面是页面跳转时传递过来的标题：</view>
-			<view class="page-section-title">{{data}}</view>
+		<view class="uni-padding-wrap">
+			<view class="uni-title">这是选项卡页面跳转详情页面的演示，下面是页面跳转时传递过来的标题：</view>
+			<view class="uni-title">{{data}}</view>
 		</view>
 	</view>
 </template>
@@ -21,20 +21,4 @@
 	}
 </script>
 <style>
-	page{
-		display: flex;
-		min-height: 100%;
-	}
-	.root{
-		display: flex;
-		flex: 1;
-		flex-direction: column;
-	}
-	.page-body{
-		flex: 1;
-		display: flex;
-		box-sizing: border-box;
-		flex-direction: column;
-		padding-top: 30px;
-	}
 </style>

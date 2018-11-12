@@ -1,11 +1,12 @@
 <template>
-	<view class="page">
-		<view style="justify-content:center; line-height:60upx; margin-top:30upx;">
+	<view>
+		<page-head :title="title"></page-head>
+		<view class="uni-padding-wrap">
+			<view class="uni-title uni-common-mt">
 			竖向滚动
-		</view>
-		<view class="grace-padding">
-			<view class="grace-swiper-msg">
-				<view class="grace-swiper-msg-icon">
+			</view>
+			<view class="uni-swiper-msg">
+				<view class="uni-swiper-msg-icon">
 					<image src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/uni@2x.png" mode="widthFix"></image>
 				</view>
 				<swiper vertical="true" autoplay="true" circular="true" interval="3000">
@@ -20,11 +21,12 @@
 					</swiper-item>
 				</swiper>
 			</view>
-			<view style="justify-content:center; line-height:60upx; text-align:center; width:100%;">
+			
+			<view class="uni-title uni-common-mt">
 				横向滚动
 			</view>
-			<view class="grace-swiper-msg">
-				<view class="grace-swiper-msg-icon">
+			<view class="uni-swiper-msg">
+				<view class="uni-swiper-msg-icon">
 					<image src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/uni@2x.png" mode="widthFix"></image>
 				</view>
 				<swiper autoplay="true" circular="true" interval="5000">
@@ -50,11 +52,9 @@ export default {
 }
 </script>
 <style>
-.grace-padding{padding:2%; width:96%;}
-view{display:flex; flex-wrap:wrap; font-size:28upx; height:auto; width:100%;}
-.grace-swiper-msg{width:100%; padding:12rpx 0; flex-wrap:nowrap;}
-.grace-swiper-msg-icon{width:50upx; margin-right:20upx;}
-.grace-swiper-msg-icon image{width:100%; flex-shrink:0;}
-.grace-swiper-msg swiper{width:100%; height:50upx;}
-.grace-swiper-msg swiper-item{line-height:50upx;}
+.uni-swiper-msg{width:100%; padding:12rpx 0; flex-wrap:nowrap; display:flex;}
+.uni-swiper-msg-icon{width:50upx; margin-right:20upx;}
+.uni-swiper-msg-icon image{width:100%; flex-shrink:0;}
+.uni-swiper-msg swiper{width:100%; height:50upx;}
+.uni-swiper-msg swiper-item{line-height:50upx;}
 </style>

@@ -1,24 +1,25 @@
 <template>
 	<view>
 		<page-head :title="title"></page-head>
-		<view class="page-body">
-			<view class="page-section">
+		<view class="uni-padding-wrap uni-common-mt">
+			<view>
 				<video id="myVideo" src="https://www.dcloud.io/uniapp/wap2appvsnative.mp4" @error="videoErrorCallback" :danmu-list="danmuList"
 				    enable-danmu danmu-btn controls></video>
+			</view>
 
-				<view class="uni-list">
-					<view class="uni-list-cell">
-						<view>
-							<view class="uni-label">弹幕内容</view>
-						</view>
-						<view class="uni-list-cell-db">
-							<input @blur="bindInputBlur" class="uni-input" type="text" placeholder="在此处输入弹幕内容" />
-						</view>
+			<view class="uni-list uni-common-mt">
+				<view class="uni-list-cell">
+					<view>
+						<view class="uni-label">弹幕内容</view>
+					</view>
+					<view class="uni-list-cell-db">
+						<input @blur="bindInputBlur" class="uni-input" type="text" placeholder="在此处输入弹幕内容" />
 					</view>
 				</view>
-				<view class="btn-area">
-					<button @tap="bindSendDanmu" class="page-body-button">发送弹幕</button>
-				</view>
+			</view>
+			<view class="uni-btn-v">
+				<button @tap="bindSendDanmu" class="page-body-button">发送弹幕</button>
+			</view>
 			</view>
 		</view>
 	</view>
@@ -77,20 +78,5 @@
 </script>
 
 <style>
-	button {
-		background-color: #007aff;
-		color: #ffffff;
-	}
-
-	.uni-list {
-		margin-top: 40upx;
-	}
-
-	.uni-input {
-		text-align: left;
-	}
-
-	.page-section {
-		text-align: center;
-	}
+	video{width:690upx;}
 </style>

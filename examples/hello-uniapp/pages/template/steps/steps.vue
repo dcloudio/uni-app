@@ -1,7 +1,7 @@
 <template>
     <view class="page">
         <page-head :title="title"></page-head>
-		<view class="grace-steps">
+		<view class="uni-steps">
 			<view class="step">
 				<view class="step-circle">1</view>
 				<view class="step-content">
@@ -22,7 +22,7 @@
 			</view>
 		</view>
 		<view style="padding:30upx 0; text-align:center;">
-			您也可以把数字步骤改成icon图标哦 ^_^
+			您也可以把数字步骤改成icon图标
 		</view>
 	</view>
 </template>
@@ -35,13 +35,13 @@ export default {
 </script>
 <style>
 page{background:#FFFFFF;}
-.grace-steps{padding:20rpx 0; display:flex; width:100%; flex-wrap:wrap;}
-.grace-steps view{display:flex; width:100%; flex-wrap:wrap; float:none;}
-.grace-steps .step{width:31.3%; margin:0 1%; flex-wrap:nowrap;}
-.grace-steps .step-circle{width:50upx; height:50upx; border-radius:50upx; background:#F1F1F3; justify-content:center; line-height:50upx; flex-shrink:0; margin-right:15upx; color:#666; font-size:28upx;}
-.grace-steps .step-content{width:100%; height:22upx; border-bottom:1px solid #F1F1F3;}
-.grace-steps .step-title{line-height:50upx; height:50upx; background:#FFFFFF; width:auto; overflow:hidden; padding-right:8upx;}
-.grace-steps .current .step-circle{background:#00B26A; color:#FFFFFF;}
-.grace-steps .current .step-content{border-color:#00B26A;}
-.grace-steps .current .step-title{color:#00B26A;}
+.uni-steps{padding:20upx 30upx; flex-grow: 1; display:flex; flex-wrap:wrap;}
+.uni-steps view{display:flex; flex-wrap:wrap; float:none;}
+.uni-steps .step{width:31.3%; margin:0 1%; flex-wrap:nowrap;}
+.uni-steps .step-circle{width:50upx; height:50upx; border-radius:50upx; background:#F1F1F3; justify-content:center; line-height:50upx; flex-shrink:0; margin-right:15upx; color:#666; font-size:28upx;}
+.uni-steps .step-content{width:100%; height:22upx; border-bottom:1px solid #F1F2F3;}
+.uni-steps .step-title{line-height:50upx; height:50upx; background:#FFFFFF; width:auto; overflow:hidden; padding-right:8upx;}
+.uni-steps .current .step-circle{background:#00B26A; color:#FFFFFF;}
+.uni-steps .current .step-content{border-color:#00B26A;}
+.uni-steps .current .step-title{color:#00B26A;}
 </style>

@@ -1,16 +1,23 @@
 <template>
 	<view>
 		<page-head :title="title"></page-head>
-		<view class="page-body">
-			<view class="page-section">
+		<view class="uni-padding-wrap">
+			<view style="background:#FFF; padding:40upx;">
 				<block v-if="hasLogin === true">
-					<text class="page-body-title">已登录</text>
-					<text class="page-body-text">每个帐号仅需登录 1 次，后续每次进入页面即可自动拉取用户信息</text>
+					<view class="uni-h3 uni-center uni-common-mt">已登录</view>
+					<view class="uni-hello-text uni-center">
+						<text>每个帐号仅需登录 1 次，\n后续每次进入页面即可自动拉取用户信息。</text>
+					</view>
 				</block>
 				<block v-if="hasLogin === false">
-					<text class="page-body-text">每个帐号仅需登录一次</text>
-					<button type="primary" class="page-body-button" v-for="(value,key) in providerList" @tap="bindLogin(value)" :key="key">{{value.name}}</button>
+					<view class="uni-h3 uni-center uni-common-mt">未登录</view>
+					<view class="uni-hello-text uni-center">
+						请点击按钮登录
+					</view>
 				</block>
+			</view>
+			<view class="uni-btn-v uni- uni-common-mt">
+				<button type="primary" class="page-body-button" v-for="(value,key) in providerList" @tap="bindLogin(value)" :key="key">{{value.name}}</button>
 			</view>
 		</view>
 	</view>
@@ -84,34 +91,6 @@
 </script>
 
 <style>
-	.page-section {
-		margin-top: 200upx;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		width: 100%;
-		padding: 0 50upx;
-		box-sizing: border-box;
-	}
-
-	.page-body-title {
-		font-size: 60upx;
-		line-height: 200upx;
-	}
-
-	.page-body-text {
-		color: #bbb;
-		font-size: 28upx;
-		line-height: 40upx;
-		margin: 0 0 100upx 0;
-		text-align: center;
-	}
-
-	.page-body-button {
-		width: 100%;
-	}
-
 	button {
 		background-color: #007aff;
 		color: #ffffff;

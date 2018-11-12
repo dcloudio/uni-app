@@ -1,9 +1,9 @@
 <template>
     <view class="page">
         <page-head :title="title"></page-head>
-        <view class="flex-container">
+        <view class="uni-padding-wrap">
             <view class="icon-item" v-for="(item,index) in iconClassList" :key="index">
-                <uni-icon :type="item" :color="activeIndex === index?'#007aff':'#8f8f94'" @click="switchActive(index)"></uni-icon>
+                <uni-icon size="40" :type="item" :color="activeIndex === index?'#007aff':'#8f8f94'" @click="switchActive(index)"></uni-icon>
             </view>
         </view>
     </view>
@@ -11,7 +11,6 @@
 
 <script>
     import uniIcon from '../../../components/uni-icon.vue'
-
     export default {
         data() {
             return {
@@ -122,22 +121,12 @@
 
 <style>
     @import "../../../common/icon.css";
-    .flex-container {
-        padding: 20upx;
-        display: flex;
-        flex-flow: row wrap;
-        justify-content: space-between;
-        text-align: center;
-    }
-
-    .flex-container .icon-item {
+    .icon-item {
         display: inline-flex;
-        width: 100upx;
-        height: 100upx;
-        border: 2upx solid #dddddd;
-        border-radius: 50upx;
-        margin: 6upx;
-        flex-direction: column;
+        width: 105upx;
+        height: 105upx;
+        margin: 5upx;
         justify-content: center;
     }
+	
 </style>

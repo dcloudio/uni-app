@@ -1,13 +1,11 @@
 <template>
 	<view>
 		<page-head :title="title"></page-head>
-		<view class="page-body">
-			<view class="page-section">
-				<view class="desc">请在下方输入电话号码</view>
-				<input class="input" type="number" name="input" @input="bindInput" />
-				<view class="btn-area">
-					<button @tap="makePhoneCall" type="primary" :disabled="disabled">拨打</button>
-				</view>
+		<view class="uni-padding-wrap uni-common-mt">
+			<view class="uni-hello-text uni-center">请在下方输入电话号码</view>
+			<input class="input uni-common-mt" type="number" name="input" @input="bindInput" />
+			<view class="uni-btn-v uni-common-mt">
+				<button @tap="makePhoneCall" type="primary" :disabled="disabled">拨打</button>
 			</view>
 		</view>
 	</view>
@@ -42,27 +40,11 @@
 </script>
 
 <style>
-	.page-section {
-		width: auto;
-		margin: 30upx;
-		padding: 44upx 60upx 60upx;
-		background-color: #fff;
-		font-size: 28upx;
-	}
-
-	.desc {
-		margin-bottom: 20upx;
-	}
-
 	.input {
 		height: 119upx;
 		line-height: 119upx;
 		font-size: 78upx;
 		border-bottom: 1upx solid #E2E2E2;
+		text-align:center;
 	}
-
-	.btn-area {
-		padding: 0;
-	}
-
 </style>

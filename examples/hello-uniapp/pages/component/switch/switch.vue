@@ -1,26 +1,23 @@
 <template>
 	<view>
 		<page-head :title="title"></page-head>
-		<view class="page-body">
-			<view class="page-section page-section-gap">
-				<view class="page-section-title">默认样式</view>
-				<view class="body-view">
-					<switch checked @change="switch1Change" />
-					<switch @change="switch2Change" />
-				</view>
+		<view class="uni-padding-wrap uni-common-mt">
+			<view class="uni-title">默认样式</view>
+			<view>
+				<switch checked @change="switch1Change" />
+				<switch @change="switch2Change" />
 			</view>
-			<view class="page-section">
-				<view class="page-section-title">推荐展示样式</view>
-				<view class="uni-list">
-					<view class="uni-list-cell uni-list-cell-pd">
-						<view class="uni-list-cell-db">开启中</view>
-						<switch checked />
-					</view>
-					<view class="uni-list-cell uni-list-cell-pd">
-						<view class="uni-list-cell-db">关闭</view>
-						<switch />
-					</view>
-				</view>
+
+			<view class="uni-title">推荐展示样式</view>
+		</view>
+		<view class="uni-list">
+			<view class="uni-list-cell uni-list-cell-pd">
+				<view class="uni-list-cell-db">开启中</view>
+				<switch checked />
+			</view>
+			<view class="uni-list-cell uni-list-cell-pd">
+				<view class="uni-list-cell-db">关闭</view>
+				<switch />
 			</view>
 		</view>
 	</view>

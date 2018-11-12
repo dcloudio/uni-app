@@ -1,28 +1,28 @@
 <template>
 	<view>
 		<page-head :title="title"></page-head>
-		<view class="page-body">
-			<view class="page-section">
-				<view class="page-body-info">
-					<view class="page-body-title">用户信息</view>
-					<block v-if="hasUserInfo === false">
-						<text class="page-body-text">未获取</text>
-						<text class="page-body-text">点击蓝色按钮可获取用户头像及昵称</text>
-					</block>
-					<block v-if="hasUserInfo === true">
+		<view class="uni-padding-wrap">
+			<view style="background:#FFF; padding:40upx;">
+				<block v-if="hasUserInfo === false">
+					<view class="uni-hello-text uni-center">
+						<text>请点击蓝色按钮获取用户头像及昵称</text>
+					</view>
+				</block>
+				<block v-if="hasUserInfo === true">
+					<view class="uni-h4 uni-center uni-common-mt">{{userInfo.nickName}}</view>
+					<view style="padding:30upx 0; text-align:center;">
 						<image class="userinfo-avatar" :src="userInfo.avatarUrl"></image>
-						<text class="userinfo-nickname">{{userInfo.nickName}}</text>
-					</block>
-				</view>
-				<view class="btn-area">
-					<!-- #ifdef APP-PLUS -->
-					<button type="primary" @tap="getUserInfo">获取用户信息</button>
-					<!-- #endif -->
-					<!-- #ifdef MP-WEIXIN -->
-					<button type="primary" open-type="getUserInfo" @getuserinfo="wxGetUserInfo">获取用户信息</button>
-					<!-- #endif -->
-					<button @tap="clear">清空</button>
-				</view>
+					</view>
+				</block>
+			</view>
+			<view class="uni-btn-v">
+				<!-- #ifdef APP-PLUS -->
+				<button type="primary" @tap="getUserInfo">获取用户信息</button>
+				<!-- #endif -->
+				<!-- #ifdef MP-WEIXIN -->
+				<button type="primary" open-type="getUserInfo" @getuserinfo="wxGetUserInfo">获取用户信息</button>
+				<!-- #endif -->
+				<button @tap="clear">清空</button>
 			</view>
 		</view>
 	</view>
@@ -92,19 +92,9 @@
 </script>
 
 <style>
-	.page-body-info {
-		padding-bottom: 0;
-		height: 460upx;
-	}
-
 	.userinfo-avatar {
 		border-radius: 128upx;
 		width: 128upx;
 		height: 128upx;
-	}
-
-	.userinfo-nickname {
-		margin-top: 20upx;
-		font-size: 38upx;
 	}
 </style>

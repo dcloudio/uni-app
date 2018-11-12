@@ -1,49 +1,36 @@
 <template>
 	<view>
 		<page-head :title="title"></page-head>
-		<view class="page-body">
+		<view class="uni-padding-wrap uni-common-mt">
 			<form @submit="formSubmit" @reset="formReset">
-				<view class="page-section page-section-gap">
-					<view class="page-section-title">switch</view>
+				<view class="uni-form-item uni-column">
+					<view class="title">switch</view>
 					<switch name="switch" />
 				</view>
-
-				<view class="page-section page-section-gap">
-					<view class="page-section-title">radio</view>
-					<radio-group class="uni-flex" name="radio">
-						<label>
-							<radio value="radio1" />选项一</label>
-						<label>
-							<radio value="radio2" />选项二</label>
+				<view class="uni-form-item uni-column">
+					<view class="title">radio</view>
+					<radio-group name="radio">
+						<label><radio value="radio1" />选项一</label>
+						<label><radio value="radio2" />选项二</label>
 					</radio-group>
 				</view>
-
-				<view class="page-section page-section-gap">
-					<view class="page-section-title">checkbox</view>
-					<checkbox-group class="uni-flex" name="checkbox">
-						<label>
-							<checkbox value="checkbox1" />选项一</label>
-						<label>
-							<checkbox value="checkbox2" />选项二</label>
+				<view class="uni-form-item uni-column">
+					<view class="title">checkbox</view>
+					<checkbox-group name="checkbox">
+						<label><checkbox value="checkbox1" />选项一</label>
+						<label><checkbox value="checkbox2" />选项二</label>
 					</checkbox-group>
 				</view>
-
-				<view class="page-section page-section-gap">
-					<view class="page-section-title">slider</view>
+				<view class="uni-form-item uni-column">
+					<view class="title">slider</view>
 					<slider value="50" name="slider" show-value></slider>
 				</view>
-
-				<view class="page-section">
-					<view class="page-section-title">input</view>
-					<view class="uni-list">
-						<view class="uni-list-cell">
-							<input class="uni-input" name="input" placeholder="这是一个输入框" />
-						</view>
-					</view>
+				<view class="uni-form-item uni-column">
+					<view class="title">input</view>
+					<input class="uni-input" name="input" placeholder="这是一个输入框" />
 				</view>
-
-				<view class="btn-area">
-					<button class="btn-submit" formType="submit">Submit</button>
+				<view class="uni-btn-v">
+					<button formType="submit">Submit</button>
 					<button type="default" formType="reset">Reset</button>
 				</view>
 			</form>
@@ -82,19 +69,5 @@
 </script>
 
 <style>
-	label {
-		display: flex;
-		flex-direction: row;
-		min-width: 270upx;
-		margin-right: 20upx;
-	}
-
-	.btn-submit {
-		background-color: #007aff;
-		color: #ffffff;
-	}
-	.uni-input{
-		width: 100%;
-		padding-left: 30upx;
-	}
+	.title{padding:10px 0 !important;}
 </style>

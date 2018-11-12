@@ -151,7 +151,7 @@
     .info-text {
         margin-right: 20upx;
         color: #999999;
-        font-size: 28upx;
+        font-size: 24upx;
     }
 
     .media-foot {

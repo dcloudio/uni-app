@@ -1,8 +1,8 @@
 <template>
 	<view>
 		<page-head :title="title"></page-head>
-		<view class="page-body">
-			<view class="btn-area">
+		<view class="uni-padding-wrap uni-common-mt">
+			<view class="uni-btn-v">
 				<navigator url="navigate/navigate?title=navigate" hover-class="navigator-hover">
 					<button type="default">跳转到新页面</button>
 				</navigator>

@@ -1,22 +1,14 @@
 <template>
 	<view>
 		<page-head :title="title"></page-head>
-		<view class="page-body">
-			<view class="page-section">
-				<view class="page-body-info">
-
-					<block v-if="imageSrc">
-						<image :src="imageSrc" class="image" mode="aspectFit"></image>
-					</block>
-
-					<block v-else>
-						<view class="image-plus image-plus-nb" @tap="chooseImage">
-							<view class="image-plus-horizontal"></view>
-							<view class="image-plus-vertical"></view>
-						</view>
-						<view class="image-plus-text">选择图片</view>
-					</block>
-				</view>
+		<view class="uni-padding-wrap uni-common-mt">
+			<view class="demo">
+				<block v-if="imageSrc">
+					<image :src="imageSrc" class="image" mode="widthFix"></image>
+				</block>
+				<block v-else>
+					<view class="uni-hello-addfile" @tap="chooseImage">+ 选择图片</view>
+				</block>
 			</view>
 		</view>
 	</view>
@@ -34,6 +26,7 @@
 		},
 		methods: {
 			chooseImage: function () {
+				uni.showLoading({});
 				uni.chooseImage({
 					count: 1,
 					sizeType: ['compressed'],
@@ -59,7 +52,8 @@
 								uni.showModal({
 									content:err.errMsg,
 									showCancel:false
-								})
+								});
+								uni.hideLoading();
 							},
 							complete: () => {
 								console.log("complate")
@@ -69,6 +63,7 @@
 					},
 					fail: (err) => {
 						console.log('chooseImage fail', err)
+						uni.hideLoading();
 					}
 				})
 			}
@@ -79,17 +74,10 @@
 <style>
 	.image {
 		width: 100%;
-		height: 360upx;
 	}
 
-	.page-body-info {
-		display: flex;
-		box-sizing: border-box;
-		padding: 30upx;
-		height: 420upx;
-		border-top: 1upx solid #D9D9D9;
-		border-bottom: 1upx solid #D9D9D9;
-		align-items: center;
-		justify-content: center;
+	.demo{
+		background:#FFF;
+		padding:50upx;
 	}
 </style>

@@ -109,9 +109,9 @@
             },
             send() { //发送反馈
                 console.log(JSON.stringify(this.sendDate));
-                let imgs = this.imageList.map((value,index) => {
+                let imgs = this.imageList.map((value) => {
                     return {
-                        name: "images" + index,
+                        name: "uni-app.feedback",
                         uri: value
                     }
                 })

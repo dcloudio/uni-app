@@ -1,22 +1,18 @@
 <template>
 	<view>
 		<page-head :title="title"></page-head>
-		<view class="page-body">
-			<view class="page-section">
-				<!-- #ifdef APP-PLUS -->
-				<view class="page-section-spacing">
-					<button class="shake" @tap="shake">摇一摇</button>
-				</view>
-				<!-- #endif -->
-				<view class="page-section-spacing">
-					<button type="primary" @tap="watchAcce">监听设备的加速度变化</button>
-					<button type="primary" @tap="stopAcce">停止监听设备的加速度变化</button>
-				</view>
+		<view class="uni-padding-wrap uni-common-mt">
+			<!-- #ifdef APP-PLUS -->
+			<view class="uni-btn-v">
+				<button class="shake" @tap="shake">摇一摇</button>
 			</view>
-			<view class="page-section">
-				<view class="page-section-spacing">
-					<textarea :value="value" />
-				</view>
+			<!-- #endif -->
+			<view class="uni-btn-v">
+				<button type="primary" @tap="watchAcce">监听设备的加速度变化</button>
+				<button type="primary" @tap="stopAcce">停止监听设备的加速度变化</button>
+			</view>
+			<view class="uni-textarea uni-common-mt">
+				<textarea :value="value" />
 			</view>
 		</view>
 	</view>
@@ -59,13 +55,5 @@
 		background-color: #FFCC33;
 		color: #ffffff;
 		margin-bottom: 50upx;
-	}
-
-	textarea {
-		border: 2upx solid #7A7E83;
-		box-sizing: border-box;
-		width: 100%;
-		height: 288upx;
-		padding: 20upx;
 	}
 </style>

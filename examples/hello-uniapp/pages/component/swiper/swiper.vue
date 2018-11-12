@@ -1,45 +1,46 @@
 <template>
 	<view>
 		<page-head :title="title"></page-head>
-		<view class="page-body">
-			<view class="page-section page-section-spacing swiper">
-				<swiper :indicator-dots="indicatorDots" :autoplay="autoplay" :interval="interval" :duration="duration">
-					<swiper-item>
-						<view class="swiper-item color1">A</view>
-					</swiper-item>
-					<swiper-item>
-						<view class="swiper-item color2">B</view>
-					</swiper-item>
-					<swiper-item>
-						<view class="swiper-item color3">C</view>
-					</swiper-item>
-				</swiper>
-			</view>
-			<view class="page-section swiper-list">
-				<view class="uni-list">
-					<view class="uni-list-cell uni-list-cell-pd">
-						<view class="uni-list-cell-db">指示点</view>
-						<switch :checked="indicatorDots" @change="changeIndicatorDots" />
-					</view>
-					<view class="uni-list-cell uni-list-cell-pd">
-						<view class="uni-list-cell-db">自动播放</view>
-						<switch :checked="autoplay" @change="changeAutoplay" />
-					</view>
+		<view class="uni-padding-wrap">
+			<view class="page-section swiper">
+				<view class="page-section-spacing">
+					<swiper :indicator-dots="indicatorDots" :autoplay="autoplay" :interval="interval" :duration="duration">
+						<swiper-item>
+							<view class="swiper-item uni-bg-red">A</view>
+						</swiper-item>
+						<swiper-item>
+							<view class="swiper-item uni-bg-green">B</view>
+						</swiper-item>
+						<swiper-item>
+							<view class="swiper-item uni-bg-blue">C</view>
+						</swiper-item>
+					</swiper>
 				</view>
 			</view>
+		</view>
+		
+		<view class="swiper-list">
+			<view class="uni-list-cell uni-list-cell-pd">
+				<view class="uni-list-cell-db">指示点</view>
+				<switch :checked="indicatorDots" @change="changeIndicatorDots" />
+			</view>
+			<view class="uni-list-cell uni-list-cell-pd">
+				<view class="uni-list-cell-db">自动播放</view>
+				<switch :checked="autoplay" @change="changeAutoplay" />
+			</view>
+		</view>
 
-			<view class="page-section page-section-spacing">
-				<view class="page-section-title">
-					<text>幻灯片切换时长(ms)</text>
-					<text class="info">{{duration}}</text>
-				</view>
-				<slider @change="durationChange" :value="duration" min="500" max="2000" />
-				<view class="page-section-title">
-					<text>自动播放间隔时长(ms)</text>
-					<text class="info">{{interval}}</text>
-				</view>
-				<slider @change="intervalChange" :value="interval" min="2000" max="10000" />
+		<view class="uni-padding-wrap">
+			<view class="uni-common-mt">
+				<text>幻灯片切换时长(ms)</text>
+				<text class="info">{{duration}}</text>
 			</view>
+			<slider @change="durationChange" :value="duration" min="500" max="2000" />
+			<view class="uni-common-mt">
+				<text>自动播放间隔时长(ms)</text>
+				<text class="info">{{interval}}</text>
+			</view>
+			<slider @change="intervalChange" :value="interval" min="2000" max="10000" />
 		</view>
 	</view>
 </template>
@@ -84,17 +85,14 @@
 		margin-top: 40upx;
 		margin-bottom: 0;
 	}
-
-	.page-section-title {
-		padding: 0;
-		margin-top: 60upx;
-		position: relative;
+	
+	.uni-common-mt{
+		margin-top:60upx;
+		position:relative;
 	}
-
+	
 	.info {
 		position: absolute;
-		right: 0;
-		color: #353535;
-		font-size: 30upx;
+		right:20upx;
 	}
 </style>

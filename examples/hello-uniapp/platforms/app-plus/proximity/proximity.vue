@@ -1,21 +1,17 @@
 <template>
 	<view>
 		<page-head :title="title"></page-head>
-		<view class="page-body">
-			<view class="page-section">
-				<view class="page-body-desc">
-					手机顶部听筒处有传感器监听距离手机屏幕的障碍物，覆盖该传感器会触发本事件变化
-				</view>
-				<view class="page-section-spacing">
-					<button type="primary" @tap="getProximity">获取距离传感器信息</button>
-					<button type="primary" @tap="watchProximity">监听距离传感器变化</button>
-					<button type="primary" @tap="watchStop">停止监听</button>
-				</view>
+		<view class="uni-padding-wrap uni-common-mt">
+			<view class="uni-hello-text">
+				手机顶部听筒处有传感器监听距离手机屏幕的障碍物，覆盖该传感器会触发本事件变化
 			</view>
-			<view class="page-section">
-				<view class="page-section-spacing">
-					<textarea :value="value" />
-				</view>
+			<view class="uni-btn-v uni-common-mt">
+				<button type="primary" @tap="getProximity">获取距离传感器信息</button>
+				<button type="primary" @tap="watchProximity">监听距离传感器变化</button>
+				<button type="primary" @tap="watchStop">停止监听</button>
+			</view>
+			<view class="uni-textarea uni-common-mt">
+				<textarea :value="value" />
 			</view>
 		</view>
 	</view>
@@ -26,7 +22,7 @@
 	export default {
 		data() {
 			return {
-				title: 'orientation',
+				title: 'proximity',
 				value: ''
 			}
 		},
@@ -69,13 +65,5 @@
 </script>
 
 <style>
-	textarea {
-		border: 2upx solid #7A7E83;
-		height: 288upx;
-	}
-	.page-body-desc{
-		font-size: 32upx;
-		color: #BEBEBE;
-		padding: 30upx;
-	}
+	
 </style>

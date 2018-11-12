@@ -1,15 +1,13 @@
 <template>
 	<view>
 		<page-head :title="title"></page-head>
-		<view class="page-body">
-			<image v-if="imageSrc" :src="imageSrc" mode="center" />
+		<view class="uni-padding-wrap uni-common-mt">
+			<image class="img" v-if="imageSrc" :src="imageSrc" mode="center" />
 			<block v-else>
-				<view class="page-body-wording">
-					<text class="page-body-text">
-						点击按钮下载服务端示例图片
-					</text>
+				<view class="uni-hello-text">
+					点击按钮下载服务端示例图片
 				</view>
-				<view class="btn-area">
+				<view class="uni-btn-v">
 					<button type="primary" @tap="downloadImage">下载</button>
 				</view>
 			</block>
@@ -29,12 +27,16 @@
 		},
 		methods: {
 			downloadImage: function () {
+				uni.showLoading({
+					title:'下载中'
+				})
 				var self = this
 				uni.downloadFile({
 					url: "https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/uni@2x.png",
 					success: (res) => {
 						console.log('downloadFile success, res is', res)
-						self.imageSrc = res.tempFilePath
+						self.imageSrc = res.tempFilePath;
+						uni.hideLoading();
 					},
 					fail: (err) => {
 						console.log('downloadFile fail, err is:', err)
@@ -46,10 +48,9 @@
 </script>
 
 <style>
-	.page-body image {
-		width: 600upx;
-		height: 600upx;
-
-		margin: 0 75upx;
-	}
+.img {
+	width: 500upx;
+	height: 500upx;
+	margin: 0 95upx;
+}
 </style>

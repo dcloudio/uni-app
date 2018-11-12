@@ -1,5 +1,5 @@
 <template>
-	<view style="margin-left: 15upx;margin-right: 15upx;">
+	<view class="uni-padding-wrap">
 		<wxParse :content="article" @preview="preview" @navigate="navigate" />
 	</view>
 </template>

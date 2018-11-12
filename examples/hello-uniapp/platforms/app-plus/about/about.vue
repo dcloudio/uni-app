@@ -3,7 +3,7 @@
 		<view class="content">
 			<view class="qrcode">
 				<image src="https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/app_download.png" @longtap="save"></image>
-				<text>扫码体验uni-app</text>
+				<text style="margin-top:20px;">扫码体验uni-app</text>
 			</view>
 			<view class="desc">
 				<text class="code">uni-app</text>

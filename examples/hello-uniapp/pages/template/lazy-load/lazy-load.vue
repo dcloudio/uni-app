@@ -52,7 +52,7 @@
     }
 
     .content>.title {
-        font-size: 32upx;
+        font-size:28upx;
         text-indent: 2em;
     }
 

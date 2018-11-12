@@ -1,9 +1,9 @@
 <template>
 	<view>
 		<page-head :title="title"></page-head>
-		<view class="page-body">
-			<view class="btn-area">
-				<button class="btn-load" @tap="showLoading">显示 loading 提示框</button>
+		<view class="uni-padding-wrap">
+			<view class="uni-btn-v">
+				<button class="btn-load" type="primary" @tap="showLoading">显示 loading 提示框</button>
 				<button @tap="hideLoading">隐藏 loading 提示框</button>
 			</view>
 		</view>
@@ -28,8 +28,5 @@
 </script>
 
 <style>
-	.btn-load {
-		background-color: #007aff;
-		color: #ffffff;
-	}
+	
 </style>

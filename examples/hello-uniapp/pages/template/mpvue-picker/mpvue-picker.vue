@@ -1,14 +1,16 @@
 <template>
 	<view class="mvpue-picker">
-		<view class="page-hd">
-			<view class="page-title">mvpue-picker 使用示例</view>
-			<view class="page__desc">选中的值:</view>
-			<view class="picker-text">{{pickerText}}</view>
-		</view>
-		<view class="page-bd">
-			<button type="default" @click="showSinglePicker">单列选择</button>
-			<button type="default" @click="showMulLinkageTwoPicker">二级联动</button>
-			<button type="default" @click="showMulLinkageThreePicker">三级城市联动</button>
+		<page-head :title="title"></page-head>
+		<view class="uni-padding-wrap uni-common-mt">
+			<view style="uni-title">选中的值 : </view>
+			<view class="uni-textarea uni-common-mt">
+				<textarea :value="pickerText" disabled placeholder="请点击下面的按钮进行选择"></textarea>
+			</view>
+			<view class="uni-btn-v">
+				<button type="default" @click="showSinglePicker">单列选择</button>
+				<button type="default" @click="showMulLinkageTwoPicker">二级联动</button>
+				<button type="default" @click="showMulLinkageThreePicker">三级城市联动</button>
+			</view>
 		</view>
 		<mpvue-picker :themeColor="themeColor" ref="mpvuePicker" :mode="mode" :deepLength="deepLength" :pickerValueDefault="pickerValueDefault"
 		 @onConfirm="onConfirm" @onCancel="onCancel" :pickerValueArray="pickerValueArray"></mpvue-picker>
@@ -31,6 +33,7 @@
 		},
 		data() {
 			return {
+				title : "mvpue-picker 使用示例",
 				pickerValueDefault: [0, 0],
 				pickerSingleArray: [{
 						label: '中国',
@@ -108,28 +111,5 @@
 </script>
 
 <style>
-	.page-hd {
-		padding: 80upx;
-	}
-
-	.page-title {
-		font-size: 40upx;
-		font-weight: 800upx;
-	}
-
-	.page-bd {
-		padding: 30upx;
-	}
-
-	.page__desc {
-		margin-top: 20upx;
-	}
-
-	.picker-text {
-		color: #6D6D6D;
-	}
-
-	button {
-		margin-top: 30upx;
-	}
+	
 </style>

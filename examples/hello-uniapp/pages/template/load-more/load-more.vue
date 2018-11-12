@@ -1,14 +1,12 @@
 <template>
 	<view>
 		<page-head :title="title"></page-head>
-		<view class="page-body">
-			<view class="page-section">
-				<view class="page-section-title">
-					这是load-more组件使用示例，配置loadingType改变组件状态，配置contentText改变文字内容，配置showImage改变loading时是否显示loading图标，配置color改变文字和loading图标颜色。
-				</view>
+		<view class="uni-padding-wrap">
+			<view class="uni-helllo-text">
+				这是load-more组件使用示例，配置loadingType改变组件状态，配置contentText改变文字内容，配置showImage改变loading时是否显示loading图标，配置color改变文字和loading图标颜色。
 			</view>
-			<view class="page-section">
-				<view class="page-section-title">在列表中使用</view>
+			<view class="uni-title">在列表中使用</view>
+			<view>
 				<view class="list-view">
 					<view class="list-item" v-for="(value,index) in list" :key="index">list - {{value}}</view>
 				</view>
@@ -68,16 +66,17 @@
 
 <style>
 	.list-view {
-		padding: 0 30upx;
+		padding:10upx 0;
 	}
 
 	.list-item {
-		margin: 10upx 0;
+		margin: 20upx 0;
 		height: 100upx;
 		line-height: 100upx;
 		width: 100%;
 		border-radius: 10upx;
 		border: 1upx solid #eee;
 		text-align: center;
+		background:#FFF;
 	}
 </style>

@@ -94,11 +94,7 @@
 </script>
 
 <style>
-	.page {
-		background: #efeff4;
-	}
-
-	.title {
-		padding: 20upx;
-	}
+.title {
+	padding: 20upx;
+}
 </style>

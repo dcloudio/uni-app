@@ -1,9 +1,9 @@
 <template>
 	<view>
 		<page-head :title="title"></page-head>
-		<view class="page-body">
-			<view class="page-section page-section-gap">
-				<view class="page-section-title">默认样式</view>
+		<view class="uni-padding-wrap">
+			<view class="uni-title">默认样式</view>
+			<view>
 				<label class="radio">
 					<radio value="r1" checked="true" />选中
 				</label>
@@ -11,19 +11,18 @@
 					<radio value="r2" />未选中
 				</label>
 			</view>
-			<view class="page-section">
-				<view class="page-section-title">推荐展示样式</view>
-				<view class="uni-list">
-					<radio-group @change="radioChange">
-						<label class="uni-list-cell uni-list-cell-pd" v-for="item in items" :key="item.value">
-							<view>
-								<radio :value="item.value" checked="true" />
-							</view>
-							<view>{{item.name}}</view>
-						</label>
-					</radio-group>
-				</view>
-			</view>
+		</view>
+			
+		<view class="uni-title uni-common-mt uni-common-pl">推荐展示样式</view>
+		<view class="uni-list">
+			<radio-group @change="radioChange">
+				<label class="uni-list-cell uni-list-cell-pd" v-for="item in items" :key="item.value">
+					<view>
+						<radio :value="item.value" checked="true" />
+					</view>
+					<view>{{item.name}}</view>
+				</label>
+			</radio-group>
 		</view>
 	</view>
 </template>

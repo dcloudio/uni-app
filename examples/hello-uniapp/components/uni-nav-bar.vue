@@ -160,6 +160,10 @@
         background-color: #FFFFFF;
         overflow: hidden;
     }
+	
+	.uni-navbar view{
+		line-height:2.75em;
+	}
 
     .uni-navbar-shadow {
         box-shadow: 0 1px 6px #ccc;

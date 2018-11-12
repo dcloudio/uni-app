@@ -1,18 +1,16 @@
 <template>
 	<view>
 		<page-head :title="title"></page-head>
-		<view class="page-body">
-			<view class="page-section">
-				<view class="page-section-title">请输入剪贴板内容</view>
-				<view class="uni-list">
-					<view class="uni-list-cell">
-						<input class="uni-input" type="text" placeholder="请输入剪贴板内容" :value="data" @input="dataChange"></input>
-					</view>
+		<view class="uni-padding-wrap">
+			<view class="uni-title">请输入剪贴板内容</view>
+			<view class="uni-list">
+				<view class="uni-list-cell">
+					<input class="uni-input" type="text" placeholder="请输入剪贴板内容" :value="data" @input="dataChange"></input>
 				</view>
-				<view class="btn-area">
-					<button type="primary" @click="setClipboard">存储数据</button>
-					<button @tap="getClipboard">读取数据</button>
-				</view>
+			</view>
+			<view class="uni-btn-v">
+				<button type="primary" @click="setClipboard">存储数据</button>
+				<button @tap="getClipboard">读取数据</button>
 			</view>
 		</view>
 	</view>
@@ -78,7 +76,5 @@
 </script>
 
 <style>
-	.uni-list-cell {
-		padding: 0upx 30upx;
-	}
+	
 </style>
