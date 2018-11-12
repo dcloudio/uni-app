@@ -779,6 +779,8 @@ radio-group label, checkbox-group label{
 	display: flex;
 	flex-direction: row;
 	font-size:28upx;
+	padding: 22upx 30upx;
+	justify-content: space-between;
 }
 
 .uni-input-group .uni-input-row:after {
@@ -790,11 +792,6 @@ radio-group label, checkbox-group label{
 	content: '';
 	transform: scaleY(.5);
 	background-color: #c8c7cc;
-}
-
-.uni-input-row {
-	padding: 22upx 30upx;
-	justify-content: space-between;
 }
 
 .uni-input-row label {
