@@ -60,14 +60,7 @@
 					name: '地图',
 					open: false,
 					pages: ['map']
-				// #ifdef APP-PLUS
-				}, {
-					id: 'web-view',
-					name: '网页',
-					open: false,
-					pages: ['web-view'],
-				// #endif
-				// #ifdef MP-WEIXIN
+				// #ifndef H5
 				}, {
 					id: 'web-view',
 					name: '网页',

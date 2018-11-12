@@ -10,7 +10,7 @@
 			<view class="uni-list">
 				<view class="uni-list-cell uni-collapse">
 					<view class="uni-list-cell-navigate" hover-class="uni-list-cell-hover" :class="[list.open ? 'uni-active' : '',list.pages ? 'uni-navigate-bottom' : 'uni-navigate-right']"
-					    @click="trigerCollapse(index)">
+					 @click="trigerCollapse(index)">
 						{{list.name}}
 					</view>
 					<view class="uni-list uni-collapse" v-if="list.pages" :class="list.open ? 'uni-active' : ''">
@@ -27,8 +27,7 @@
 	export default {
 		data() {
 			return {
-				lists: [
-					{
+				lists: [{
 						name: '数字角标 badge',
 						url: 'badge'
 					}, {
@@ -60,9 +59,7 @@
 					}, {
 						id: 'tabbar',
 						name: '顶部选项卡',
-						// #ifdef MP-WEIXIN 
 						url: 'tabbar',
-						// #endif
 						// #ifdef APP-PLUS 
 						open: false,
 						pages: [{
@@ -132,21 +129,25 @@
 							name: '自定义',
 							url: 'lazy-load-custom'
 						}]
-					},{
+					}, {
 						name: '时间轴 timeline',
 						url: 'timeline'
 					}, {
 						name: '标签 tag',
 						url: 'tag'
-					}, {
-						name: 'ECharts 图表',
+					},
+					// #ifndef H5
+					{
+						name: 'ECharts图表',
 						url: 'echarts'
-					}, {
-						name: 'markdown 富文本渲染',
-						url: 'mdparse'
 					}, {
 						name: '手势图案锁屏',
 						url: 'gesture-lock'
+					},
+					// #endif
+					{
+						name: 'markdown 富文本渲染',
+						url: 'mdparse'
 					}, {
 						name: '列表到详情示例',
 						url: 'list2detail-list'
@@ -157,14 +158,17 @@
 						url: '/platforms/app-plus/feedback/feedback'
 					},
 					// #endif
+					// #ifndef H5
 					{
 						name: '二维码生成',
 						url: 'qrcode'
 					}, {
 						name: '图片裁剪',
 						url: 'crop'
-					}, {
-						name: 'markdown 富文本编辑器',
+					},
+					// #endif
+					{
+						name: 'markdown富文本编辑器',
 						url: 'md-editor'
 					}, {
 						name: '侧边分类导航',
@@ -178,13 +182,13 @@
 					}, {
 						name: '滚动公告',
 						url: 'scrollmsg'
-					},{
+					}, {
 						name: '表单验证',
 						url: 'datachecker'
-					},{
+					}, {
 						name: '插屏弹窗',
 						url: 'sbanner'
-					},{
+					}, {
 						name: '倒计时',
 						url: 'countdown'
 					}
@@ -231,13 +235,15 @@
 </script>
 
 <style>
-.uni-card {
-	box-shadow: none;
-}
-.uni-list:after {
-	height: 0;
-}
-.uni-list:before {
-	height: 0;
-}
+	.uni-card {
+		box-shadow: none;
+	}
+
+	.uni-list:after {
+		height: 0;
+	}
+
+	.uni-list:before {
+		height: 0;
+	}
 </style>
