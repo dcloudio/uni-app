@@ -1,16 +1,16 @@
 <template>
-    <div class="mpvue-picker">
-        <div :class="{'pickerMask':showPicker}" @click="maskClick" catchtouchmove="true"></div>
-        <div class="mpvue-picker-content " :class="{'mpvue-picker-view-show':showPicker}">
-            <div class="mpvue-picker__hd" catchtouchmove="true">
-                <div class="mpvue-picker__action" @click="pickerCancel">取消</div>
-                <div class="mpvue-picker__action" :style="{color:themeColor}" @click="pickerConfirm">确定</div>
-            </div>
+    <view class="mpvue-picker">
+        <view :class="{'pickerMask':showPicker}" @click="maskClick" catchtouchmove="true"></view>
+        <view class="mpvue-picker-content " :class="{'mpvue-picker-view-show':showPicker}">
+            <view class="mpvue-picker__hd" catchtouchmove="true">
+                <view class="mpvue-picker__action" @click="pickerCancel">取消</view>
+                <view class="mpvue-picker__action" :style="{color:themeColor}" @click="pickerConfirm">确定</view>
+            </view>
             <!-- 单列 -->
             <picker-view indicator-style="height: 40px;" class="mpvue-picker-view" :value="pickerValue" @change="pickerChange" v-if="mode==='selector' && pickerValueSingleArray.length > 0">
                 <block>
                     <picker-view-column>
-                        <div class="picker-item" v-for="(item,index) in pickerValueSingleArray" :key="index">{{item.label}}</div>
+                        <view class="picker-item" v-for="(item,index) in pickerValueSingleArray" :key="index">{{item.label}}</view>
                     </picker-view-column>
                 </block>
             </picker-view>
@@ -18,10 +18,10 @@
             <picker-view indicator-style="height: 40px;" class="mpvue-picker-view" :value="pickerValue" @change="pickerChange" v-if="mode==='timeSelector'">
                 <block>
                     <picker-view-column>
-                        <div class="picker-item" v-for="(item,index) in pickerValueHour" :key="index">{{item.label}}</div>
+                        <view class="picker-item" v-for="(item,index) in pickerValueHour" :key="index">{{item.label}}</view>
                     </picker-view-column>
                     <picker-view-column>
-                        <div class="picker-item" v-for="(item,index) in pickerValueMinute" :key="index">{{item.label}}</div>
+                        <view class="picker-item" v-for="(item,index) in pickerValueMinute" :key="index">{{item.label}}</view>
                     </picker-view-column>
                 </block>
             </picker-view>
@@ -29,7 +29,7 @@
             <picker-view indicator-style="height: 40px;" class="mpvue-picker-view" :value="pickerValue" @change="pickerChange" v-if="mode==='multiSelector'">
                 <block v-for="(n,index) in pickerValueMulArray.length" :key="index">
                     <picker-view-column>
-                        <div class="picker-item" v-for="(item,index1) in pickerValueMulArray[n]" :key="index1">{{item.label}}</div>
+                        <view class="picker-item" v-for="(item,index1) in pickerValueMulArray[n]" :key="index1">{{item.label}}</view>
                     </picker-view-column>
                 </block>
             </picker-view>
@@ -37,10 +37,10 @@
             <picker-view indicator-style="height: 40px;" class="mpvue-picker-view" :value="pickerValue" @change="pickerChangeMul" v-if="mode==='multiLinkageSelector' && deepLength===2">
                 <block>
                     <picker-view-column>
-                        <div class="picker-item" v-for="(item,index) in pickerValueMulTwoOne" :key="index">{{item.label}}</div>
+                        <view class="picker-item" v-for="(item,index) in pickerValueMulTwoOne" :key="index">{{item.label}}</view>
                     </picker-view-column>
                     <picker-view-column>
-                        <div class="picker-item" v-for="(item,index) in pickerValueMulTwoTwo" :key="index">{{item.label}}</div>
+                        <view class="picker-item" v-for="(item,index) in pickerValueMulTwoTwo" :key="index">{{item.label}}</view>
                     </picker-view-column>
                 </block>
             </picker-view>
@@ -48,18 +48,18 @@
             <picker-view indicator-style="height: 40px;" class="mpvue-picker-view" :value="pickerValue" @change="pickerChangeMul" v-if="mode==='multiLinkageSelector' && deepLength===3">
                 <block>
                     <picker-view-column>
-                        <div class="picker-item" v-for="(item,index) in pickerValueMulThreeOne" :key="index">{{item.label}}</div>
+                        <view class="picker-item" v-for="(item,index) in pickerValueMulThreeOne" :key="index">{{item.label}}</view>
                     </picker-view-column>
                     <picker-view-column>
-                        <div class="picker-item" v-for="(item,index) in pickerValueMulThreeTwo" :key="index">{{item.label}}</div>
+                        <view class="picker-item" v-for="(item,index) in pickerValueMulThreeTwo" :key="index">{{item.label}}</view>
                     </picker-view-column>
                     <picker-view-column>
-                        <div class="picker-item" v-for="(item,index) in pickerValueMulThreeThree" :key="index">{{item.label}}</div>
+                        <view class="picker-item" v-for="(item,index) in pickerValueMulThreeThree" :key="index">{{item.label}}</view>
                     </picker-view-column>
                 </block>
             </picker-view>
-        </div>
-    </div>
+        </view>
+    </view>
 </template>
 
 <script>
