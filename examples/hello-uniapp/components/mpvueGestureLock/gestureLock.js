@@ -43,8 +43,8 @@ class GestureLock {
     onTouchStart(e) {
         this.setOffset(e);
         this.checkTouch({
-            x: e.pageX - this.offsetX,
-            y: e.pageY - this.offsetY
+            x: e.touches[0].pageX - this.offsetX,
+            y: e.touches[0].pageY - this.offsetY
         });
     }
 
@@ -125,8 +125,8 @@ class GestureLock {
     // 移动 绘制
     moveDraw(e) {
         // 画经过的圆
-        const x = e.pageX - this.offsetX;
-        const y = e.pageY - this.offsetY;
+        const x = e.touches[0].pageX - this.offsetX;
+        const y = e.touches[0].pageY - this.offsetY;
         this.checkTouch({
             x,
             y
