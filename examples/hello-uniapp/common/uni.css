@@ -44,6 +44,10 @@ form {
 .uni-inline-item text{
 	margin-right: 20upx;
 }
+.uni-inline-item text:last-child{
+	margin-right: 0upx;
+	margin-left: 20upx;
+}
 
 /* page */
 .uni-page-head{
