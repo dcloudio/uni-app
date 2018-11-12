@@ -51,7 +51,7 @@
 		height: 100%;
 		font-size:28upx;
 		line-height: 1.8;
-	},
+	}
 	.uni-header-logo{
 		padding:30upx;
 		text-align:center;
