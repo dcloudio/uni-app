@@ -1,6 +1,6 @@
 <template>
-    <view class="index">
-        <scroll-view id="tab-bar" class="swiper-tab" scroll-x :scroll-left="scrollLeft">
+    <view class="uni-tab-bar">
+        <scroll-view id="tab-bar" class="uni-swiper-tab" scroll-x :scroll-left="scrollLeft">
             <view v-for="(tab,index) in tabBars" :key="tab.id" :class="['swiper-tab-list',tabIndex==index ? 'active' : '']"
                 :id="tab.id" :data-current="index" @tap="tapTab">{{tab.name}}</view>
         </scroll-view>
@@ -10,22 +10,29 @@
                     <block v-for="(newsitem,index2) in tab.data" :key="index2">
                         <media-list :data="newsitem" @close="close(index1,index2)" @click="goDetail(newsitem)"></media-list>
                     </block>
-                    <view class="loadmore">
-                        <text class="loadmore-text">{{tab.loadingText}}</text>
-                    </view>
+					<view class="uni-tab-bar-loading">
+						<load-more :loadingType="tab.loadingType" :contentText="loadingText"></load-more>
+					</view>
                 </scroll-view>
             </swiper-item>
         </swiper>
     </view>
 </template>
 <script>
-    import mediaList from '@/components/tab-nvue/mediaList.vue'
+    import mediaList from '@/components/tab-nvue/mediaList.vue';
+	import loadMore from '@/components/load-more.vue';
     export default {
         components: {
-            mediaList
+            mediaList,
+			loadMore
         },
         data() {
             return {
+				loadingText: {
+					contentdown: "上拉显示更多",
+					contentrefresh: "正在加载...",
+					contentnomore: "没有更多数据了"
+				},
                 scrollLeft: 0,
                 isClickChange: false,
                 tabIndex: 0,
@@ -131,19 +138,20 @@
                 })
             },
             loadMore(e) {
+				this.newsitems[e].loadingType = 1;
             	setTimeout(() => {
             		this.addData(e);
-            	}, 1000);
+            	}, 1200);
             },
             addData(e) {
-            	console.log("加载更多...");
             	if (this.newsitems[e].data.length > 30) {
-            		this.newsitems[e].loadingText = '没有更多了';
+					this.newsitems[e].loadingType = 2;
             		return;
             	}
             	for (let i = 1; i <= 10; i++) {
             		this.newsitems[e].data.push(this['data' + Math.floor(Math.random() * 5)]);
             	}
+				this.newsitems[e].loadingType = 1;
             },
             async changeTab(e) {
                 let index = e.target.current;
@@ -197,7 +205,7 @@
                 let ary = [];
                 for (let i = 0, length = this.tabBars.length; i < length; i++) {
                     let aryItem = {
-                        loadingText: "加载更多...",
+						loadingType : 0,
                         data: []
                     };
                     for (let j = 1; j <= 10; j++) {
@@ -212,60 +220,5 @@
 </script>
 
 <style>
-    page {
-        display: flex;
-    }
 
-    .index {
-        display: flex;
-        flex: 1;
-        flex-direction: column;
-        overflow: hidden;
-        height: 100%;
-    }
-
-    .list {
-        width: 750upx;
-        height: 100%;
-    }
-
-    .swiper-tab {
-        width: 100%;
-        white-space: nowrap;
-        line-height: 100upx;
-        height: 100upx;
-        border-bottom: 1px solid #c8c7cc;
-    }
-
-
-    .swiper-tab-list {
-        font-size: 30upx;
-        width: 150upx;
-        display: inline-block;
-        text-align: center;
-        color: #555;
-    }
-
-    .active {
-        color: #007AFF;
-    }
-
-    .swiper-box {
-        flex: 1;
-        width: 100%;
-        height: calc(100% - 100upx);
-    }
-
-    .loadmore {
-        height: 70upx;
-        width: 750upx;
-        flex-direction: column;
-        justify-content: center;
-    }
-
-    .loadmore-text {
-        font-size: 30upx;
-        text-align: center;
-        color: #999999;
-    }
 </style>
