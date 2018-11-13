@@ -19,12 +19,12 @@
 				<view class="iconfont icon-qingkong" @click="toolBarClick('clear')"></view>
 			</view>
 			<view class="input-content">
-				<textarea auto-height maxlength="-1" v-model="textareaData" @blur="getCursor"></textarea>
+				<textarea auto-height maxlength="-1" v-model="textareaDataSync" @blur="getCursor"></textarea>
 			</view>
 		</view>
-		<view class="preview" v-if="showPreview && textareaHtml">
+		<view class="preview" v-if="showPreview && textareaHtmlSync">
 			<scroll-view scroll-y :style="'height:'+screenHeight/2.5+'px;padding:10px;box-sizing: border-box;'">
-				<wxParse :content="textareaHtml" @preview="preview" @navigate="navigate" />
+				<wxParse :content="textareaHtmlSync" @preview="preview" @navigate="navigate" />
 			</scroll-view>
 		</view>
 	</view>
@@ -41,7 +41,9 @@
 		data: function () {
 			return {
 				screenHeight: 0,
-				cursor: 0
+				cursor: 0,
+                textareaDataSync:this.textareaData,
+                textareaHtmlSync:this.textareaHtml
 			}
 		},
 		props: {
@@ -83,64 +85,64 @@
 			},
 			toolBarClick(type) {
 				if (type == 'bold') {
-					this.textareaData += "**粗体文字** "
+					this.textareaDataSync += "**粗体文字** "
 				} else if (type == "italic") {
-					this.textareaData += "*斜体* "
+					this.textareaDataSync += "*斜体* "
 				} else if (type == "header") {
 					uni.showActionSheet({
 						itemList: ["标题1", "标题2", "标题3", "标题4", "标题5", "标题6"],
 						success: res => {
 							switch (res.tapIndex) {
 								case 0:
-									this.textareaData += "# 标题1\r";
+									this.textareaDataSync += "# 标题1\r";
 									return;
 								case 1:
-									this.textareaData += "## 标题2\r";
+									this.textareaDataSync += "## 标题2\r";
 									return;
 								case 2:
-									this.textareaData += "### 标题3\r";
+									this.textareaDataSync += "### 标题3\r";
 									return;
 								case 3:
-									this.textareaData += "#### 标题4\r";
+									this.textareaDataSync += "#### 标题4\r";
 									return;
 								case 4:
-									this.textareaData += "##### 标题5\r";
+									this.textareaDataSync += "##### 标题5\r";
 									return;
 								case 5:
-									this.textareaData += "###### 标题6\r";
+									this.textareaDataSync += "###### 标题6\r";
 									return;
 							}
 						}
 					})
 				} else if (type == "underline") {
-					this.textareaData += "++下划线++ "
+					this.textareaDataSync += "++下划线++ "
 				} else if (type == "strike") {
-					this.textareaData += "~~中划线~~ "
+					this.textareaDataSync += "~~中划线~~ "
 				} else if (type == "sup") {
-					this.textareaData += "^上角标^ "
+					this.textareaDataSync += "^上角标^ "
 				} else if (type == "sub") {
-					this.textareaData += "~下角标~ "
+					this.textareaDataSync += "~下角标~ "
 				} else if (type == "alignleft") {
-					this.textareaData += "\n::: hljs-left\n\n左对齐\n\n:::\n"
+					this.textareaDataSync += "\n::: hljs-left\n\n左对齐\n\n:::\n"
 				} else if (type == "aligncenter") {
-					this.textareaData += "\n::: hljs-center\n\n居中对齐\n\n:::\n"
+					this.textareaDataSync += "\n::: hljs-center\n\n居中对齐\n\n:::\n"
 				} else if (type == "alignright") {
-					this.textareaData += "\n::: hljs-right\n\n\n\n右对齐\n\n:::\n"
+					this.textareaDataSync += "\n::: hljs-right\n\n\n\n右对齐\n\n:::\n"
 				} else if (type == "link") {
-					this.textareaData += "[在此输入网址描述](在此输入网址) "
+					this.textareaDataSync += "[在此输入网址描述](在此输入网址) "
 				} else if (type == "imgage") {
-					this.textareaData += "![](在此输入图片地址) "
+					this.textareaDataSync += "![](在此输入图片地址) "
 				} else if (type == "code") {
-					this.textareaData += "\n``` 代码块 \n\n```\n"
+					this.textareaDataSync += "\n``` 代码块 \n\n```\n"
 				} else if (type == "table") {
-					this.textareaData += "\n|列1|列2|列3|\n|-|-|-|\n|单元格1|单元格2|单元格3|\n"
+					this.textareaDataSync += "\n|列1|列2|列3|\n|-|-|-|\n|单元格1|单元格2|单元格3|\n"
 				} else if (type == "clear") {
 					uni.showModal({
 						title: "提示",
 						content: "确定清空?",
 						success: res => {
 							if (res.confirm) {
-								this.textareaData = "";
+								this.textareaDataSync = "";
 							}
 						}
 					})
@@ -152,10 +154,10 @@
 			}
 		},
 		watch: {
-			"textareaData": function (newValue, oldValue) {
-				this.textareaHtml = marked(newValue)
+			"textareaDataSync": function (newValue, oldValue) {
+				this.textareaHtmlSync = marked(newValue)
 				this.$emit('update:textareaData', newValue)
-				this.$emit('update:textareaHtml', this.textareaHtml)
+				this.$emit('update:textareaHtml', this.textareaHtmlSync)
 			}
 		},
 		mounted: function () {
