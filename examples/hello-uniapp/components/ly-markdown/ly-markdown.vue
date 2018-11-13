@@ -158,7 +158,7 @@
 				this.$emit('update:textareaHtml', this.textareaHtml)
 			}
 		},
-		onLoad: function () {
+		mounted: function () {
 			uni.getSystemInfo({
 				success: res => {
 					this.screenHeight = res.screenHeight
