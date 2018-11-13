@@ -1,7 +1,7 @@
 <template>
 	<view class="page">
 		<page-head :title="title"></page-head>
-		<view class="mask" v-show="showMask" @click="hide"></view>
+		<view class="mask" v-show="showMask" :style="{top:titleHeight}" @click="hide"></view>
 		<view class="popup popup-middle" v-show="showState.middle">
 			<view class="desc">
 				<text>Hello</text>
@@ -33,16 +33,22 @@
 					bottom: false
 				},
 				showMask: false,
-				activePop: 'middle'
+				activePop: 'middle',
+				titleHeight: 0
 			}
 		},
-    onBackPress() {
-      if(this.showMask) {
-        this.showMask = false;
-        this.hide();
-        return true;
-      }
-    },
+		onBackPress() {
+			if (this.showMask) {
+				this.showMask = false;
+				this.hide();
+				return true;
+			}
+		},
+		created() {
+			//#ifdef H5
+			this.titleHeight = '44px'
+			//#endif
+		},
 		methods: {
 			show(evt) {
 				var pos = evt.target.dataset.position
