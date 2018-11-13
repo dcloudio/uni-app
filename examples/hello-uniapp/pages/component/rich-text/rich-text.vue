@@ -7,14 +7,14 @@
 				<text>\nnodes属性为Array</text>
 			</view>
             <view class="uni-common-mt" style="background:#FFF; padding:20upx;">
-            	<rich-text :nodes="nodes" @tap="tap"></rich-text>
+            	<rich-text :nodes="nodes"></rich-text>
             </view>
 			<view class="uni-title uni-common-mt">
 				字符串类型
 				<text>\nnodes属性为String</text>
 			</view>
             <view class="uni-common-mt" style="background:#FFF; padding:20upx;">
-            	<rich-text :nodes="strings" @tap="tap"></rich-text>
+            	<rich-text :nodes="strings"></rich-text>
             </view>
         </view>
     </view>
