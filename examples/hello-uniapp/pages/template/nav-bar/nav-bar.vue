@@ -19,7 +19,7 @@
 		<uni-nav-bar left-icon="back" left-text="返回" @click-left="back" title="标题"></uni-nav-bar>
 		<view class="uni-title uni-center uni-common-mt">
 			其他常见样式
-			<text>\n返回图标 + 搜索 + 右侧按钮</text>
+			<text>\n城市选择 + 搜索 + 右侧按钮</text>
 		</view>
 		<uni-nav-bar color="#333333" background-color="#FFFFFF" fixed="false" right-icon="scan" @click-left="showCity"
 		 @click-right="scan">
