@@ -1,4 +1,4 @@
-s<template>
+<template>
 	<view>
 		<!--判断是否是标签节点-->
 		<block v-if="node.node == 'element'">
