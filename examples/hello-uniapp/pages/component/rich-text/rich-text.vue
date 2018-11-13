@@ -4,7 +4,7 @@
         <view class="uni-padding-wrap">
 			<view class="uni-title uni-common-mt">
 				数组类型
-				<text>\nnodes属性为Aarry</text>
+				<text>\nnodes属性为Array</text>
 			</view>
             <view class="uni-common-mt" style="background:#FFF; padding:20upx;">
             	<rich-text :nodes="nodes" @tap="tap"></rich-text>
