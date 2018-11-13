@@ -32,36 +32,36 @@
   padding: 0;
 }
 
-.wxParse .h1 {
+.wxParse .h1>view {
   font-size: 2em;
   margin: 0.67em 0;
 }
-.wxParse .h2 {
+.wxParse .h2>view {
   font-size: 1.5em;
   margin: 0.83em 0;
 }
-.wxParse .h3 {
+.wxParse .h3>view {
   font-size: 1.17em;
   margin: 1em 0;
 }
-.wxParse .h4 {
+.wxParse .h4>view {
   margin: 1.33em 0;
 }
-.wxParse .h5 {
+.wxParse .h5>view {
   font-size: 0.83em;
   margin: 1.67em 0;
 }
-.wxParse .h6 {
+.wxParse .h6>view {
   font-size: 0.67em;
   margin: 2.33em 0;
 }
 
-.wxParse .h1,
-.wxParse .h2,
-.wxParse .h3,
-.wxParse .h4,
-.wxParse .h5,
-.wxParse .h6,
+.wxParse .h1>view,
+.wxParse .h2>view,
+.wxParse .h3>view,
+.wxParse .h4>view,
+.wxParse .h5>view,
+.wxParse .h6>view,
 .wxParse .b,
 .wxParse .strong {
   font-weight: bolder;
