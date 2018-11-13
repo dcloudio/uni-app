@@ -1,29 +1,29 @@
 <template>
-    <view class="uni-navbar" :class="{'uni-navbar-fixed':isFixed,'uni-navbar-shadow':hasShadow}" :style="{'background-color':backgroundColor}">
-        <uni-status-bar v-if="insertStatusBar"></uni-status-bar>
-        <view class="uni-navbar-header" :style="{color:color}">
-            <view class="uni-navbar-btn uni-navbar-btn-left" @tap="onClickLeft">
-                <view v-if="leftIcon.length" class="uni-navbar-btn-icon" :class="{'uni-navbar-btn-icon-left':!leftText.length}">
-                    <uni-icon :type="leftIcon" :color="color" size="24"></uni-icon>
-                </view>
-                <view v-if="leftText.length" class="uni-navbar-btn-text" :class="{'uni-navbar-btn-icon-left':!leftIcon.length}">{{leftText}}</view>
-                <slot name="left"></slot>
-            </view>
-            <view class="uni-navbar-container">
-                <view v-if="title.length" class="uni-navbar-container-title">{{title}}</view>
-                <!-- 标题插槽 -->
-                <slot></slot>
-            </view>
-            <view class="uni-navbar-btn uni-navbar-btn-right" @tap="onClickRight">
-                <view v-if="rightIcon.length" class="uni-navbar-btn-icon uni-navbar-btn-icon-right">
+	<view class="uni-navbar" :class="{'uni-navbar-fixed':isFixed,'uni-navbar-shadow':hasShadow}" :style="{'background-color':backgroundColor}">
+		<uni-status-bar v-if="insertStatusBar"></uni-status-bar>
+		<view class="uni-navbar-header" :style="{color:color}">
+			<view class="uni-navbar-header-btns" @tap="onClickLeft">
+				<view v-if="leftIcon.length">
+					<uni-icon :type="leftIcon" :color="color" size="24"></uni-icon>
+				</view>
+				<view v-if="leftText.length" class="uni-navbar-btn-text" :class="{'uni-navbar-btn-icon-left':!leftIcon.length}">{{leftText}}</view>
+				<slot name="left"></slot>
+			</view>
+			<view class="uni-navbar-container">
+				<view v-if="title.length" class="uni-navbar-container-title">{{title}}</view>
+				<!-- 标题插槽 -->
+				<slot></slot>
+			</view>
+			<view class="uni-navbar-header-btns" @tap="onClickRight">
+                <view v-if="rightIcon.length">
                     <uni-icon :type="rightIcon" :color="color" size="24"></uni-icon>
                 </view>
                 <!-- 优先显示图标 -->
                 <view v-if="rightText.length&&!rightIcon.length" class="uni-navbar-btn-text">{{rightText}}</view>
                 <slot name="right"></slot>
             </view>
-        </view>
-    </view>
+		</view>
+	</view>
 </template>
 
 <script>
@@ -162,7 +162,7 @@
     }
 	
 	.uni-navbar view{
-		line-height:2.75em;
+		line-height:44px;
 	}
 
     .uni-navbar-shadow {
@@ -178,57 +178,28 @@
         display: flex;
         flex-direction: row;
         width: 100%;
-        height: 2.75em;
-        line-height: 2.75em;
+        height:44px;
+        line-height:44px;
         font-size: 16px;
     }
-
-    .uni-navbar-btn {
-        position: relative;
-        width: 4.125em;
-        text-align: center;
-        display: flex;
-        flex-direction: row;
-        padding: 0 0.125em;
-    }
-
-    .uni-navbar-btn-icon {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
-
-    .uni-navbar-btn-icon-left {
-        margin-left: 0.625em;
-    }
-
-    .uni-navbar-btn-icon-right {
-        margin-right: 0.625em;
-    }
-
-    .uni-navbar-btn-text {
-        padding: 0 0.25em;
-        overflow: hidden;
-    }
-
-    .uni-navbar-btn-left {
-        padding: 0 0 0 0.125em;
-    }
-
-    .uni-navbar-btn-right {
-        padding: 0 0.125em 0 0;
-        flex-direction: row-reverse;
-    }
-
-    .uni-navbar-container {
-        position: relative;
-        flex: 1;
-    }
-
-    .uni-navbar-container-title {
-        text-align: center;
-        color: #000000;
-        padding: 0 0.3125em;
-        overflow: hidden;
-    }
+	
+	.uni-navbar-header .uni-navbar-header-btns{
+		display:inline-flex;
+		flex-wrap:nowrap;
+		flex-shrink:0;
+		padding:0 12upx;
+	}
+	
+	.uni-navbar-header .uni-navbar-header-btns:first-child{
+		padding-left:0;
+	}
+	
+	.uni-navbar-container{
+		width:100%;
+		margin:0 10upx;
+	}
+	.uni-navbar-container-title{
+		font-size:30upx;
+		text-align:center;
+	}
 </style>
