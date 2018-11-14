@@ -103,32 +103,31 @@
 		margin: 0 auto;
 		overflow: hidden;
 	}
-
+	
 	.segmented-control.button {
 		border: 1upx solid;
 	}
-
+	
 	.segmented-control.text {
 		border: 0;
 		border-radius: 0upx;
 	}
-
-
+	
 	.segmented-control-item {
 		flex: 1;
 		text-align: center;
 		line-height: 70upx;
 		box-sizing: border-box;
 	}
-
+	
 	.segmented-control-item.button {
 		border-left: 1upx solid;
 	}
-
+	
 	.segmented-control-item.text {
 		border-left: 0;
 	}
-
+	
 	.segmented-control-item:first-child {
 		border-left-width: 0;
 	}

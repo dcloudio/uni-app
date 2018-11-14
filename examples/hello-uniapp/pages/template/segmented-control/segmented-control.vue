@@ -1,7 +1,7 @@
 <template>
-	<view class="page">
+	<view>
 		<view class="uni-padding-wrap uni-common-mt">
-			<segmented-control :current="current" :values="items" v-on:clickItem="onClickItem" :styleType="styleType" :activeColor="activeColor"></segmented-control>
+			<uni-segmented-control :current="current" :values="items" v-on:clickItem="onClickItem" :styleType="styleType" :activeColor="activeColor"></uni-segmented-control>
 		</view>
 		<view class="content">
 			<view v-show="current === 0">
@@ -42,7 +42,7 @@
 </template>
 
 <script>
-	import segmentedControl from '../../../components/segmented-control.vue';
+	import uniSegmentedControl from '../../../components/uni-segmented-control.vue';
 
 	export default {
 		data() {
@@ -71,7 +71,7 @@
 			}
 		},
 		components: {
-			segmentedControl
+			uniSegmentedControl
 		},
 		methods: {
 			onClickItem(index) {
@@ -94,12 +94,6 @@
 </script>
 
 <style>
-	.head {
-		padding: 0 20upx;
-		margin-top: 20upx;
-		height: 100upx;
-	}
-
 	.content {
 		display: flex;
 		justify-content: center;
@@ -107,7 +101,6 @@
 		height: 300upx;
 		text-align: center;
 	}
-
 	.color-tag {
 		width: 50upx;
 		height: 50upx;
