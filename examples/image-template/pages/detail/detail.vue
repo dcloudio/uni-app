@@ -253,7 +253,7 @@
 
 	swiper {
 		flex: 1;
-		width: 750px;
+		width: 750upx;
 		background-color: #000;
 		display: flex;
 		flex-direction: column;
@@ -265,7 +265,7 @@
 	}
 
 	image {
-		width: 750px;
-		height: 1125px;
+		width: 750upx;
+		height: 1125upx;
 	}
 </style>

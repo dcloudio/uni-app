@@ -22,35 +22,35 @@
 
 .card {
 	position: relative;
-	width: 710px;
-	margin: 20px 20px 20px 20px;
-	border-radius: 10px;
+	width: 710upx;
+	margin: 20upx 20upx 20upx 20upx;
+	border-radius: 10upx;
 	overflow: hidden;
 	flex-direction: column;
 	background-color: #FFFFFF;
 }
 
 .card-img {
-	width: 710px;
-	height: 1065px;
+	width: 710upx;
+	height: 1065upx;
 }
 
 .card-num {
 	color: #FFFFFF;
-	font-size: 26px;
+	font-size: 26upx;
 	text-align: center;
 }
 
 .card-num-view {
 	background-color: #FF80AB;
-	height: 30px;
-	line-height: 30px;
-	padding: 0 10px;
+	height: 30upx;
+	line-height: 30upx;
+	padding: 0 10upx;
 	justify-content: center;
-	border-radius: 30px;
+	border-radius: 30upx;
 	position: absolute;
-	top: 20px;
-	right: 20px;
+	top: 20upx;
+	right: 20upx;
 }
 
 .card-bottm {
@@ -61,10 +61,10 @@
 .card-share-view {
 	justify-content: center;
 	align-items: center;
-	padding: 14px 0;
+	padding: 14upx 0;
 	color: #FF80AB;
-	margin: 20px 20px 20px;
-	font-size: 30px;
+	margin: 20upx 20upx 20upx;
+	font-size: 30upx;
 	font-family: texticons;
 }
 
@@ -74,12 +74,12 @@
 
 .car-title-view {
 	flex: 1;
-	padding: 14px 0px 14px 20px;
+	padding: 14upx 0upx 14upx 20upx;
 }
 
 .card-title {
 	flex: 1;
-	font-size: 30px;
+	font-size: 30upx;
 	text-align: left;
 	color: #555555;
 	text-overflow: ellipsis;
@@ -103,33 +103,33 @@
 /*双列表*/
 
 .card-list2 {
-	width: 345px;
-	margin: 20px 0 20px 20px;
+	width: 345upx;
+	margin: 20upx 0 20upx 20upx;
 }
 
 .card-list2-img {
-	width: 345px;
-	height: 517px;
+	width: 345upx;
+	height: 517upx;
 }
 
 .card-list2-num-view {
-	height: 27px;
-	border-radius: 27px;
+	height: 27upx;
+	border-radius: 27upx;
 }
 
 .card-list2-num {
-	font-size: 22px;
+	font-size: 22upx;
 }
 
 .card-list2-title {
-	font-size: 26px;
+	font-size: 26upx;
 }
 
 
 .loadMore {
-	font-size: 30px;
+	font-size: 30upx;
 	color: #555;
-	margin-bottom: 20px;
+	margin-bottom: 20upx;
 }
 
 
@@ -142,8 +142,8 @@
 .tags {
 	background: #fff;
 	flex: 1;
-	width: 710px;
-	margin: 20px;
+	width: 710upx;
+	margin: 20upx;
 	flex-direction: row;
 	flex-wrap: wrap;
 	justify-content: flex-start;
@@ -152,21 +152,21 @@
 
 .tag {
 	display: block;
-	width: 177.5px;
-	height: 180px;
-	padding: 24px;
+	width: 177.5upx;
+	height: 180upx;
+	padding: 24upx;
 	box-sizing: border-box;
 	text-align: center;
 }
 
 .tag-img {
-	border-radius: 60px;
-	width: 120px;
-	height: 120px;
+	border-radius: 60upx;
+	width: 120upx;
+	height: 120upx;
 }
 
 .tag-text {
-	font-size: 28px;
+	font-size: 28upx;
 	color: #555555;
 }
 
@@ -181,9 +181,9 @@
 }
 
 .logo {
-	width: 750px;
-	height: 240px;
-	padding: 20px;
+	width: 750upx;
+	height: 240upx;
+	padding: 20upx;
 	box-sizing: border-box;
 	background-color: #FF80AB;
 	flex-direction: row;
@@ -195,86 +195,86 @@
 }
 
 .logo-img {
-	width: 150px;
-	height: 150px;
-	border-radius: 150px;
+	width: 150upx;
+	height: 150upx;
+	border-radius: 150upx;
 }
 
 .logo-title {
-	height: 150px;
+	height: 150upx;
 	flex: 1;
 	align-items: center;
 	justify-content: space-between;
 	flex-direction: row;
-	margin-left: 20px;
+	margin-left: 20upx;
 }
 
 .uer-name {
-	height: 60px;
-	line-height: 60px;
-	font-size: 38px;
+	height: 60upx;
+	line-height: 60upx;
+	font-size: 38upx;
 	color: #FFFFFF;
 }
 
 .go-login.navigat-arrow {
-	font-size: 38px;
+	font-size: 38upx;
 	color: #FFFFFF;
 }
 
 .login-title {
-	height: 150px;
+	height: 150upx;
 	align-items: self-start;
 	justify-content: center;
 	flex-direction: column;
-	margin-left: 20px;
+	margin-left: 20upx;
 }
 
 .center-list {
 	background-color: #FFFFFF;
-	margin-top: 20px;
-	width: 750px;
+	margin-top: 20upx;
+	width: 750upx;
 	flex-direction: column;
 }
 
 .center-list-item {
-	height: 90px;
-	width: 750px;
+	height: 90upx;
+	width: 750upx;
 	box-sizing: border-box;
 	flex-direction: row;
-	padding: 0px 20px;
+	padding: 0upx 20upx;
 }
 
 .border-bottom {
-	border-bottom-width: 1px;
+	border-bottom-width: 1upx;
 	border-color: #c8c7cc;
 	border-bottom-style: solid;
 }
 
 .list-icon {
-	width: 40px;
-	height: 90px;
-	line-height: 90px;
-	font-size: 34px;
+	width: 40upx;
+	height: 90upx;
+	line-height: 90upx;
+	font-size: 34upx;
 	color: #FF80AB;
 	text-align: center;
 	font-family: texticons;
-	margin-right: 20px;
+	margin-right: 20upx;
 }
 
 .list-text {
-	height: 90px;
-	line-height: 90px;
-	font-size: 34px;
+	height: 90upx;
+	line-height: 90upx;
+	font-size: 34upx;
 	color: #555;
 	flex: 1;
 	text-align: left;
 }
 
 .navigat-arrow {
-	height: 90px;
-	width: 40px;
-	line-height: 90px;
-	font-size: 34px;
+	height: 90upx;
+	width: 40upx;
+	line-height: 90upx;
+	font-size: 34upx;
 	color: #555;
 	text-align: right;
 	font-family: texticons;
@@ -289,57 +289,57 @@
 	display: flex;
 	flex: 1;
 	flex-direction: column;
-	width: 750px;
-	padding-top: 30px;
+	width: 750upx;
+	padding-top: 30upx;
 }
 
 .input-view {
 	border-bottom-style: solid;
-	border-bottom-width: 3px;
+	border-bottom-width: 3upx;
 	border-bottom-color: #ddd;
 	background-color: #fff;
 	flex-direction: row;
-	width: 750px;
-	padding: 20px 20px;
+	width: 750upx;
+	padding: 20upx 20upx;
 	box-sizing: border-box;
 }
 
 .label-view {
-	width: 100px;
-	height: 60px;
+	width: 100upx;
+	height: 60upx;
 	align-items: center;
-	margin-right: 30px;
+	margin-right: 30upx;
 }
 
 .label {
 	flex: 1;
-	line-height: 60px;
-	font-size: 38px;
+	line-height: 60upx;
+	font-size: 38upx;
 	color: #555;
 	text-align: left;
 }
 
 .input {
 	flex: 1;
-	height: 60px;
-	font-size: 38px;
+	height: 60upx;
+	font-size: 38upx;
 	align-items: center;
 }
 
 .button-view {
-	width: 750px;
-	margin-top: 50px;
-	padding: 0 20px;
+	width: 750upx;
+	margin-top: 50upx;
+	padding: 0 20upx;
 	box-sizing: border-box;
 	flex-direction: column;
 }
 
 button {
-	width: 710px;
-	height: 80px;
-	line-height: 80px;
+	width: 710upx;
+	height: 80upx;
+	line-height: 80upx;
 	text-align: center;
-	font-size: 38px;
+	font-size: 38upx;
 }
 
 button.login {
@@ -348,11 +348,11 @@ button.login {
 }
 
 button.register {
-	margin-top: 30px;
+	margin-top: 30upx;
 	color: #FF80AB;
 	background-color: #fff;
 	border-color: #FF80AB;
-	border-width: 2px;
+	border-width: 2upx;
 }
 
 .register.hover,
@@ -365,28 +365,28 @@ button.register {
 /* 详情页面 */
 
 .detail-btn-view {
-	width: 750px;
+	width: 750upx;
 	position: fixed;
-	bottom: 75px;
-	font-size: 28px;
+	bottom: 75upx;
+	font-size: 28upx;
 	justify-content: space-between;
 }
 
 .detail-btn-view view {
 	opacity: 0.75;
-	height: 80px;
-	border-radius: 80px;
-	width: 80px;
+	height: 80upx;
+	border-radius: 80upx;
+	width: 80upx;
 	justify-content: center;
 	align-items: center;
-	line-height: 80px;
-	margin: 0 30px;
+	line-height: 80upx;
+	margin: 0 30upx;
 	font-family: texticons;
 	background: #eee;
 	color: #555;
 }
 .detail-btn-view view text{
-	margin-left: 10px;
+	margin-left: 10upx;
 }
 .detail-btn-view .download:before { 
 	content: '\e617';

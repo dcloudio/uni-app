@@ -1,20 +1,20 @@
 <template>
 	<view class="index">
 		<block v-for="(list, index) in lists" :key="index">
-			<div class="row">
-				<div class="card card-list2" v-for="(item,key) in list" @click="goDetail(item)" :key="key">
+			<view class="row">
+				<view class="card card-list2" v-for="(item,key) in list" @click="goDetail(item)" :key="key">
 					<image class="card-img card-list2-img" :src="item.img_src"></image>
-					<div class="card-num-view card-list2-num-view">
+					<view class="card-num-view card-list2-num-view">
 						<text class="card-num card-list2-num">{{item.img_num}}P</text>
-					</div>
-					<div class="card-bottm row">
-						<div class="car-title-view row">
+					</view>
+					<view class="card-bottm row">
+						<view class="car-title-view row">
 							<text class="card-title card-list2-title">{{item.title}}</text>
-						</div>
+						</view>
 						<view @click.stop="share(item)" class="card-share-view"></view>
-					</div>
-				</div>
-			</div>
+					</view>
+				</view>
+			</view>
 		</block>
 		<text class="loadMore">加载中...</text>
 	</view>

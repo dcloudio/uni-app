@@ -2,6 +2,7 @@
    "name" : "image",
    "appid" : "__UNI__D5C0215",
    "description" : "图片App模版",
+	 "transformPx" : false,
    "icons" : [
       {
          "sizes" : "分辨率，192x192",
