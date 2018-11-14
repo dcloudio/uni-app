@@ -27,51 +27,51 @@
 	</view>
 </template>
 <script>
-	import uniPopup from "../../../components/uni-popup.vue";
+	import uniPopup from '../../../components/uni-popup.vue';
 	export default {
 		data() {
 			return {
-				popType : 'middle',
-				title : "popup",
-				showPopupMiddle : false,
-				showPopupTop : false,
-				showPopupBottom : false,
-				msg : ""
+				popType: 'middle',
+				title: 'popup',
+				showPopupMiddle: false,
+				showPopupTop: false,
+				showPopupBottom: false,
+				msg: ''
 			}
 		},
 		methods: {
 			//统一的关闭popup方法
-			hidePopup : function(){
+			hidePopup: function() {
 				this.showPopupMiddle = false;
-				this.showPopupTop    = false;
+				this.showPopupTop = false;
 				this.showPopupBottom = false;
 			},
 			//展示居中 popup
-			showMiddlePopup : function(){
+			showMiddlePopup: function() {
 				this.hidePopup();
-				this.popType   = "middle";
+				this.popType = 'middle';
 				this.showPopupMiddle = true;
 			},
 			//展示顶部 popup
-			showTopPopup: function(){
+			showTopPopup: function() {
 				this.hidePopup();
 				this.popType = 'top';
-				this.msg = "顶部 popup 信息内容";
+				this.msg = '顶部 popup 信息内容';
 				this.showPopupTop = true;
 			},
 			//展示底部 popup
-			showBottomPopup: function(){
+			showBottomPopup: function() {
 				this.hidePopup();
-				this.popType = 'top';
-				this.msg = "底部 popup 信息内容";
+				this.popType = 'bottom';
+				this.msg = '底部 popup 信息内容';
 				this.showPopupBottom = true;
 			}
 		},
-		components:{
+		components: {
 			uniPopup
 		}
 	}
 </script>
 <style>
-	
+
 </style>
