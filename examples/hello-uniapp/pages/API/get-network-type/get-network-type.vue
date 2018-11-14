@@ -37,7 +37,13 @@
 					success: (res) => {
 						console.log(res)
 						this.hasNetworkType = true, this.networkType = res.subtype || res.networkType
-					}
+					},
+                    fail: () => {
+                        uni.showModal({
+                        	content:'获取失败！',
+                            showCancel:false
+                        })
+                    }
 				})
 			},
 			clear: function () {
