@@ -33,32 +33,38 @@ export default {
       pickerValue: [0, 0, 0],
       provinceDataList: [],
       cityDataList: [],
-      areaDataList: []
+      areaDataList: [],
+			/* 是否显示控件 */
+			showPicker: false,
     };
   },
   created() {
-    this.handPickValueDefault(); // 对 pickerValueDefault 做兼容处理
-    this.provinceDataList = provinceData;
-    this.cityDataList = cityData[this.pickerValueDefault[0]];
-    this.areaDataList =
-      areaData[this.pickerValueDefault[0]][this.pickerValueDefault[1]];
-    this.pickerValue = this.pickerValueDefault;
+    this.init()
   },
   props: {
-    /* 是否显示控件 */
-    showPicker: {
-      type: Boolean,
-      default: false
-    },
     /* 默认值 */
     pickerValueDefault: {
       type: Array,
-      default: [0, 0, 0]
+      default(){
+				return [0, 0, 0]
+			}
     },
     /* 主题色 */
     themeColor: String
   },
+	watch:{
+		pickerValueDefault(){
+			this.init();
+		}
+	},
   methods: {
+		init() {
+			this.handPickValueDefault(); // 对 pickerValueDefault 做兼容处理
+			this.provinceDataList = provinceData;
+			this.cityDataList = cityData[this.pickerValueDefault[0]];
+			this.areaDataList = areaData[this.pickerValueDefault[0]][this.pickerValueDefault[1]];
+			this.pickerValue = this.pickerValueDefault;
+		},
     show() {
       setTimeout(() => {
         this.showPicker = true;
