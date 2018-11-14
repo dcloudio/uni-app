@@ -95,16 +95,16 @@
 		display: flex;
 		flex-direction: row;
 		justify-content: center;
-		width: 100%;
-		font-size: 30upx;
-		border-radius: 12upx;
+		width: 75%;
+		font-size: 28upx;
+		border-radius: 10upx;
 		box-sizing: border-box;
 		margin: 0 auto;
 		overflow: hidden;
 	}
 
 	.segmented-control.button {
-		border: 1upx solid;
+		border: 2upx solid;
 	}
 
 	.segmented-control.text {
@@ -116,7 +116,7 @@
 	.segmented-control-item {
 		flex: 1;
 		text-align: center;
-		line-height: 70upx;
+		line-height: 60upx;
 		box-sizing: border-box;
 	}
 
