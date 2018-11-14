@@ -874,7 +874,7 @@ radio-group label, checkbox-group label{
 .uni-steps .current .step-content{border-color:#00B26A;}
 .uni-steps .current .step-title{color:#00B26A;}
 
-/* uni-comment */
+/* comment */
 .uni-comment{padding:5rpx 0; display: flex; flex-grow:1; flex-direction: column;}
 .uni-comment-list{flex-wrap:nowrap; padding:10rpx 0; margin:10rpx 0; width:100%; display: flex;}
 .uni-comment-face{width:70upx; height:70upx; border-radius:100%; margin-right:20upx; flex-shrink:0; overflow:hidden;}
@@ -887,3 +887,10 @@ radio-group label, checkbox-group label{
 .uni-comment-date view{color:#666666; font-size:24upx; line-height:38upx;}
 .uni-comment-content{line-height:1.6em; font-size:28upx; padding:8rpx 0;}
 .uni-comment-replay-btn{background:#FFF; font-size:24upx; line-height:28upx; padding:5rpx 20upx; border-radius:30upx; color:#333 !important; margin:0 10upx;}
+
+/* swiper msg */
+.uni-swiper-msg{width:100%; padding:12rpx 0; flex-wrap:nowrap; display:flex;}
+.uni-swiper-msg-icon{width:50upx; margin-right:20upx;}
+.uni-swiper-msg-icon image{width:100%; flex-shrink:0;}
+.uni-swiper-msg swiper{width:100%; height:50upx;}
+.uni-swiper-msg swiper-item{line-height:50upx;}
