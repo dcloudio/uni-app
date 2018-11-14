@@ -34,7 +34,6 @@
 		data() {
 			return {
 				title : "mvpue-picker 使用示例",
-				pickerValueDefault: [0, 0],
 				pickerSingleArray: [{
 						label: '中国',
 						value: 1
@@ -58,7 +57,8 @@
 				pickerText: '',
 				mode: '',
 				deepLength: 1,
-				pickerValueDefault: [0]
+				pickerValueDefault: [0],
+				pickerValueArray:[]
 			};
 		},
 		methods: {
