@@ -31,7 +31,14 @@
 					id: 'view',
 					name: '视图容器',
 					open: false,
-					pages: ['view', 'scroll-view', 'swiper', 'movable-view']
+					pages: [
+						'view',
+						'scroll-view',
+						'swiper',
+						//#ifndef H5
+						'movable-view',
+						//#endif
+					]
 				}, {
 					id: 'content',
 					name: '基础内容',
@@ -60,13 +67,13 @@
 					name: '地图',
 					open: false,
 					pages: ['map']
-				// #ifndef H5
+					// #ifndef H5
 				}, {
 					id: 'web-view',
 					name: '网页',
 					open: false,
 					pages: ['web-view'],
-				// #endif
+					// #endif
 				}]
 			}
 		},
