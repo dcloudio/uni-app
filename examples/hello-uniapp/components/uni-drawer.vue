@@ -65,6 +65,7 @@
 		overflow: hidden;
 		visibility: hidden;
 		z-index: 998;
+		height:100%;
 	}
 
 	.uni-drawer>.uni-drawer-mask {
