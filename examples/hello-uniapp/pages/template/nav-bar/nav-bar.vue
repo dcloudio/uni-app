@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<!-- #ifdef APP-PLUS -->
+		<!-- #ifndef MP-WEIXIN -->
 		<!-- 固定在顶部的导航栏 -->
 		<uni-nav-bar fixed="true" left-icon="back" @click-left="back" @click-right="showMenu" left-text="返回" right-text="菜单"
 		 title="导航栏组件"></uni-nav-bar>
