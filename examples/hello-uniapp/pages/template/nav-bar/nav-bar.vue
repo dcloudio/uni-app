@@ -132,9 +132,9 @@
 	}
 
 	.input-view .input {
-		height:20px;
-		line-height:20px;
+		height:30px;
+		line-height:30px;
 		width:94%;
-		padding: 5px 3%;
+		padding: 0 3%;
 	}
 </style>

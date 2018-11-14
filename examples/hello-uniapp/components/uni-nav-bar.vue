@@ -187,13 +187,16 @@
 		display:inline-flex;
 		flex-wrap:nowrap;
 		flex-shrink:0;
+		width: 120upx;
 		padding:0 12upx;
 	}
 	
 	.uni-navbar-header .uni-navbar-header-btns:first-child{
 		padding-left:0;
 	}
-	
+	.uni-navbar-header .uni-navbar-header-btns:last-child{
+		width: 60upx;
+	}
 	.uni-navbar-container{
 		width:100%;
 		margin:0 10upx;
@@ -201,5 +204,6 @@
 	.uni-navbar-container-title{
 		font-size:30upx;
 		text-align:center;
+		padding-right: 60upx;
 	}
 </style>
