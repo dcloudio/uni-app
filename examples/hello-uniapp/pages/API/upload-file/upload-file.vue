@@ -35,7 +35,7 @@
 						console.log('chooseImage success, temp path is', res.tempFilePaths[0])
 						var imageSrc = res.tempFilePaths[0]
 						uni.uploadFile({
-							url: "https://demo.dcloud.net.cn/helloh5/uploader/upload.php",
+							url: "https://unidemo.dcloud.net.cn/upload",
 							filePath: imageSrc,
 							name: 'data',
 							success: (res) => {

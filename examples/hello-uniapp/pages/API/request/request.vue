@@ -15,7 +15,7 @@
 	</view>
 </template>
 <script>
-	const requestUrl = "https://service.dcloud.net.cn/ajax/echo/text?name=uni-app"
+	const requestUrl = "https://unidemo.dcloud.net.cn/ajax/echo/text?name=uni-app"
 	const duration = 2000
 	export default {
 		data() {
