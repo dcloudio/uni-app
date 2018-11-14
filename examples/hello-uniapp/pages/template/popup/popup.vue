@@ -8,7 +8,7 @@
 			<!-- 居中 -->
 			<uni-popup :show="showPopupMiddle" :type="popType" v-on:hidePopup="hidePopup">
 				<view class="uni-center" style="font-size:0;">
-					<image class="image" style="width:150upx;" mode="widthFix" src="../../../static/uni@2x.png" />
+					<image class="image" style="width:150upx;height:150upx;" mode="widthFix" src="../../../static/uni@2x.png" />
 				</view>
 				<view class="uni-common-mt uni-helllo-text uni-center">
 					消息内容使用 slot 形式定义
