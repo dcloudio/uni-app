@@ -50,7 +50,6 @@
         methods: {
             close(e) {
                 this.$emit('close');
-                e.stopPropagation();
             },
             bindClick() {
                 this.$emit('click');
