@@ -38,19 +38,23 @@
 				touchmoveIndex: -1,
 				itemHeight: 0,
 				winHeight: 0,
-				scrollViewId: "A"
+				scrollViewId: "A",
+				titleHeight: 0
 			}
 		},
 		onLoad() {
 			let winHeight = uni.getSystemInfoSync().windowHeight;
 			this.itemHeight = winHeight / 26;
 			this.winHeight = winHeight;
+			//#ifdef H5
+			this.titleHeight = 44
+			//#endif
 		},
 		methods: {
 			touchStart(e) {
 				this.touchmove = true;
 				let pageY = e.touches[0].pageY;
-				let index = Math.floor(pageY / this.itemHeight);
+				let index = Math.floor((pageY - this.titleHeight) / this.itemHeight);
 				let item = this.lists[index];
 				if (item) {
 					this.scrollViewId = item.letter;
@@ -59,7 +63,7 @@
 			},
 			touchMove(e) {
 				let pageY = e.touches[0].pageY;
-				let index = Math.floor(pageY / this.itemHeight);
+				let index = Math.floor((pageY - this.titleHeight) / this.itemHeight);
 				let item = this.lists[index];
 				if (item) {
 					this.scrollViewId = item.letter;
