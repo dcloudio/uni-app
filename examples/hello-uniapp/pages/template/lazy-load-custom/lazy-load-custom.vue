@@ -1,11 +1,11 @@
 <template>
     <view>
-        <view class="content">
-            <view class="title">延迟加载的理念：页面初始化时，暂不加载处于屏幕可见区域之外的图片。该方案会有如下几大好处：</view>
-            <view class="ul">
-                <view>加快页面渲染速度</view>
-                <view>提升页面滚动性能</view>
-                <view>默认不下载屏幕外的图片，减少网络流量</view>
+        <view class="uni-padding-wrap">
+            <view class="uni-helllo-text" style="padding:30upx 0;">
+            	延迟加载的理念：页面初始化时，暂不加载处于屏幕可见区域之外的图片。该方案会有如下几大好处：
+            	<text>\n加快页面渲染速度</text>
+            	<text>\n提升页面滚动性能</text>
+            	<text>\n默认不下载屏幕外的图片，减少网络流量</text>
             </view>
         </view>
         <view class="uni-list">
