@@ -570,12 +570,12 @@ radio-group label, checkbox-group label{
 .uni-media-list-text-top {
 	width: 100%;
 	line-height: 36upx;
-	font-size: 34upx;
+	font-size: 30upx;
 }
 .uni-media-list-text-bottom {
 	width: 100%;
 	line-height: 30upx;
-	font-size: 28upx;
+	font-size: 26upx;
 	color: #8f8f94;
 }
 
