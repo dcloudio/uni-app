@@ -1,16 +1,16 @@
 <template>
 	<view class="page">
 		<page-head :title="title"></page-head>
-		<view class="product-list">
-			<view class="product" v-for="(product,index) in productList" :key="index">
+		<view class="uni-product-list">
+			<view class="uni-product" v-for="(product,index) in productList" :key="index">
 				<view class="image-view">
-					<image v-if="renderImage" class="product-image" :src="product.image"></image>
+					<image v-if="renderImage" class="uni-product-image" :src="product.image"></image>
 				</view>
-				<view class="product-title">{{product.title}}</view>
-				<view class="product-price">
-					<text class="product-price-favour">￥{{product.originalPrice}}</text>
-					<text class="product-price-original">￥{{product.favourPrice}}</text>
-					<text class="product-tip">{{product.tip}}</text>
+				<view class="uni-product-title">{{product.title}}</view>
+				<view class="uni-product-price">
+					<text class="uni-product-price-favour">￥{{product.originalPrice}}</text>
+					<text class="uni-product-price-original">￥{{product.favourPrice}}</text>
+					<text class="uni-product-tip">{{product.tip}}</text>
 				</view>
 			</view>
 		</view>
@@ -22,7 +22,7 @@ export default {
     data() {
         return {
             title: 'product-list',
-            productList: [],
+			productList: [],
             renderImage: false
         };
     },
@@ -102,64 +102,5 @@ export default {
 </script>
 
 <style>
-.product-list {
-    display: flex;
-    width: 100%;
-    flex-wrap: wrap;
-    flex-direction: row;
-}
-
-.product {
-    padding: 10upx 20upx;
-    display: flex;
-    flex-direction: column;
-}
-
-.image-view {
-    height: 330upx;
-    width: 330upx;
-	margin:12upx 0;
-}
-
-.product-image {
-    height: 330upx;
-    width: 330upx;
-}
-
-.product-title {
-    width: 300upx;
-    word-break: break-all;
-    display: -webkit-box;
-    overflow: hidden;
-	line-height:1.5;
-    text-overflow: ellipsis;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-}
-
-.product-price {
-	margin-top:10upx;
-    font-size: 28upx;
-	line-height:1.5;
-    position: relative;
-}
-
-.product-price-original {
-    color: #e80080;
-}
-
-.product-price-favour {
-    color: #888888;
-    text-decoration: line-through;
-    margin-left: 10upx;
-}
-
-.product-tip {
-    position: absolute;
-    right: 10upx;
-    background-color: #ff3333;
-    color: #ffffff;
-    padding: 0 10upx;
-    border-radius: 5upx;
-}
+	
 </style>

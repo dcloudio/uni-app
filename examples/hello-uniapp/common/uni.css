@@ -906,3 +906,65 @@ radio-group label, checkbox-group label{
 .uni-swiper-msg-icon image{width:100%; flex-shrink:0;}
 .uni-swiper-msg swiper{width:100%; height:50upx;}
 .uni-swiper-msg swiper-item{line-height:50upx;}
+
+/* product */
+.uni-product-list {
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+
+.uni-product {
+    padding: 20upx;
+    display: flex;
+    flex-direction: column;
+}
+
+.image-view {
+    height: 330upx;
+    width: 330upx;
+	margin:12upx 0;
+}
+
+.uni-product-image {
+    height: 330upx;
+    width: 330upx;
+}
+
+.uni-product-title {
+    width: 300upx;
+    word-break: break-all;
+    display: -webkit-box;
+    overflow: hidden;
+	line-height:1.5;
+    text-overflow: ellipsis;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+.uni-product-price {
+	margin-top:10upx;
+    font-size: 28upx;
+	line-height:1.5;
+    position: relative;
+}
+
+.uni-product-price-original {
+    color: #e80080;
+}
+
+.uni-product-price-favour {
+    color: #888888;
+    text-decoration: line-through;
+    margin-left: 10upx;
+}
+
+.uni-product-tip {
+    position: absolute;
+    right: 10upx;
+    background-color: #ff3333;
+    color: #ffffff;
+    padding: 0 10upx;
+    border-radius: 5upx;
+}
