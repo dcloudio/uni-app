@@ -34,6 +34,7 @@ export default {
 	},
 	data() {
 		return {
+            setTime:null,
 			h: '00',
 			i: '00',
 			s: '00',
@@ -62,9 +63,12 @@ export default {
 			this.setInterValFunc(this);
 		}
 	},
+    beforeDestroy(){
+        clearInterval(this.setTime)
+    },
 	methods: {
 		setInterValFunc:function(obj){
-			setInterval(function(){ obj.countDown(obj);}, 1000);
+			this.setTime = setInterval(function(){ obj.countDown(obj);}, 1000);
 		},
 		countDown: function (self){
 			var leftTime = self.leftTime - new Date();
