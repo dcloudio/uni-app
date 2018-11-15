@@ -14,11 +14,6 @@
 							"color": "#999999"
 						}]
 					}
-				},
-				"h5": {
-					"titleNView": {
-						"buttons": []
-					}
 				}
 			}
 		},
@@ -35,11 +30,6 @@
 							"color": "#999999"
 						}]
 					}
-				},
-				"h5": {
-					"titleNView": {
-						"buttons": []
-					}
 				}
 			}
 		},
@@ -55,11 +45,6 @@
 							"fontSize": "22px",
 							"color": "#999999"
 						}]
-					}
-				},
-				"h5": {
-					"titleNView": {
-						"buttons": []
 					}
 				}
 			}
@@ -481,6 +466,12 @@
 		},
 		{
 			"path": "platforms/app-plus/about/about",
+			"style": {
+				"navigationBarTitleText": "关于"
+			}
+		},
+		{
+			"path": "platforms/h5/about/about",
 			"style": {
 				"navigationBarTitleText": "关于"
 			}

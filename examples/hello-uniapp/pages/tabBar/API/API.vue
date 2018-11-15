@@ -234,7 +234,12 @@
 		},
 		onNavigationBarButtonTap(e) {
 			uni.navigateTo({
-				url: '/platforms/app-plus/about/about'
+				// #ifdef APP-PLUS
+				url: '/platforms/app-plus/about/about',
+				// #endif
+				// #ifdef H5
+				url: '/platforms/h5/about/about',
+				// #endif
 			})
 		},
 		methods: {

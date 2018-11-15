@@ -44,17 +44,15 @@
 			</view>
 		</view>
 		<view class="title">卡片列表</view>
-		<view class="uni-card">
-			<view class="uni-list">
-				<view class="uni-list-cell" hover-class="uni-list-cell-hover" v-for="(value,key) in list" :key="key">
-					<view class="uni-media-list uni-pull-right">
-						<view class="uni-media-list-logo">
-							<image v-if="showImg" :src="value.img"></image>
-						</view>
-						<view class="uni-media-list-body">
-							<view class="uni-media-list-text-top">{{value.title}}</view>
-							<view class="uni-media-list-text-bottom uni-ellipsis">{{value.content}}</view>
-						</view>
+		<view class="uni-list">
+			<view class="uni-list-cell" hover-class="uni-list-cell-hover" v-for="(value,key) in list" :key="key">
+				<view class="uni-media-list uni-pull-right">
+					<view class="uni-media-list-logo">
+						<image v-if="showImg" :src="value.img"></image>
+					</view>
+					<view class="uni-media-list-body">
+						<view class="uni-media-list-text-top">{{value.title}}</view>
+						<view class="uni-media-list-text-bottom uni-ellipsis">{{value.content}}</view>
 					</view>
 				</view>
 			</view>
