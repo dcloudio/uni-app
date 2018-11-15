@@ -78,39 +78,4 @@
 </script>
 
 <style>
-    .content {
-        font-size: 30upx;
-        line-height: 50upx;
-        color: #666666;
-        padding: 30upx;
-    }
-
-    .content>.title {
-        font-size: 32upx;
-        text-indent: 2em;
-    }
-
-    .content>.ul {
-        padding-left: 40upx;
-        color: #999999;
-    }
-
-    .uni-media-list-logo {
-        position: relative;
-    }
-
-    .uni-media-list-logo image {
-        position: absolute;
-        left: 0;
-        top: 0;
-    }
-
-    .defaul {
-        opacity: 1;
-        transition: opacity 0.4s linear;
-    }
-
-    .defaul.loaded {
-        opacity: 0;
-    }
 </style>
