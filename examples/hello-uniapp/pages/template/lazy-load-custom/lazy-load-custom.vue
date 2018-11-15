@@ -78,4 +78,12 @@
 </script>
 
 <style>
+    .defaul {
+        opacity: 1;
+        transition: opacity 0.4s linear;
+    }
+
+    .defaul.loaded {
+        opacity: 0;
+    }
 </style>
