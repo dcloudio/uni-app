@@ -57,13 +57,9 @@
 	}
 	
     .page {
-        padding-top: 60upx;
+        padding-top: 60upx; background: #efeff4;
     }
-
-    page {
-        background: #efeff4;
-    }
-
+	
     .image-view {
         height: 480upx;
         overflow: hidden;
