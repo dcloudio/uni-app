@@ -15,11 +15,11 @@
                                 </swiper-item>
                             </swiper>
                             <view v-if="list.type === 'font'" class="page-pd">
-                                <view class="size-5">hello uni-app</view>
-                                <view class="size-4">hello uni-app</view>
-                                <view class="size-3">hello uni-app</view>
-                                <view class="size-2">hello uni-app</view>
-                                <view class="size-1">hello uni-app</view>
+                                <view class="uni-h1">hello uni-app</view>
+                                <view class="uni-h2">hello uni-app</view>
+                                <view class="uni-h3">hello uni-app</view>
+                                <view class="uni-h4">hello uni-app</view>
+                                <view class="uni-h5">hello uni-app</view>
                             </view>
                             <view v-if="list.type === 'list'">
                                 <view class="uni-list">
@@ -89,10 +89,6 @@
         padding-top: 60upx;
     }
 
-    page {
-        background: #efeff4;
-    }
-
     .list-collapse {
         padding-left: 36upx;
         box-sizing: border-box;
@@ -104,25 +100,5 @@
 
     .page-pd {
         padding: 36upx;
-    }
-
-    .size-5 {
-        font-size: 50upx;
-    }
-
-    .size-4 {
-        font-size: 40upx;
-    }
-
-    .size-3 {
-        font-size: 30upx;
-    }
-
-    .size-2 {
-        font-size: 20upx;
-    }
-
-    .size-1 {
-        font-size: 10upx;
     }
 </style>
