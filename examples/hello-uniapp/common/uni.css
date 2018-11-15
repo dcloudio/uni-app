@@ -83,7 +83,14 @@ form {
 	padding:20upx 0;
 	line-height:1.5;
 }
-.uni-title text{font-size:24upx; color:#888;}
+.uni-text{
+	font-size:28upx;
+}
+.uni-title text{
+	font-size:24upx; 
+	color:#888;
+}
+
 .uni-text-gray{
 	color: #ccc;
 }
@@ -515,6 +522,10 @@ radio-group label, checkbox-group label{
 .uni-triplex-left {
 	width: 84%;
 }
+.uni-triplex-left .uni-title{
+	padding:8upx 0;
+}
+.uni-triplex-left .uni-text, .uni-triplex-left .uni-text-small{color:#999999;}
 .uni-triplex-right {
 	width: 16%;
 	text-align: right;

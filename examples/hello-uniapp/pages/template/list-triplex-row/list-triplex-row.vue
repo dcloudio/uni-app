@@ -6,9 +6,9 @@
                 <view class="uni-list-cell" hover-class="uni-list-cell-hover">
                     <view class="uni-triplex-row">
                         <view class="uni-triplex-left">
-                            <text class="uni-h4 uni-ellipsis">列表主标题</text>
-                            <text class="uni-h5">列表副标题</text>
-                            <text class="uni-h6 uni-ellipsis">列表内容文字,列表内容文字,列表内容文字,列表内容文字,列表内容文字,列表内容文字</text>
+                            <text class="uni-title uni-ellipsis">列表主标题</text>
+                            <text class="uni-text">列表副标题</text>
+                            <text class="uni-text-small uni-ellipsis">列表内容文字,列表内容文字,列表内容文字,列表内容文字,列表内容文字,列表内容文字</text>
                         </view>
                         <view class="uni-triplex-right">
                             <text class="uni-h5">12:15</text>
