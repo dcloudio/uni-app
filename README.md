@@ -16,13 +16,17 @@
 Hello uni-app：演示 uni-app 框架的组件、接口、模板，你可以使用手机扫描下方`App码`下载 iOS、Android 原生安装包，也可以使用微信扫描`小程序码`，体验 Hello uni-app 的小程序版本：
 
 <p align="center">
-	<img src="https://img-cdn-qiniu.dcloud.net.cn/img/ipe.png" width="450"/>
+    <a href="https://m3w.cn/uniapp" target="blank">
+	    <img src="https://img-cdn-qiniu.dcloud.net.cn/img/ipe.png" width="450"/>
+    </a>
 </p>
 
 图片App模版：使用uni-app开发的图片App模版，包含单列图、双列图，图片分类，图片轮播、预览、下载，图片分享、收藏，设置桌面背景图等功能。
 
 <p align="center">
-	<img src="https://img.cdn.aliyun.dcloud.net.cn/stream/qr/__UNI__FAD3FD9.png/256?v=12" width="180"/>
+    <a href="https://m3w.cn/__uni__fad3fd9" target="blank">
+	    <img src="https://img.cdn.aliyun.dcloud.net.cn/stream/qr/__UNI__FAD3FD9.png/256?v=12" width="180"/>
+    </a>
 </p>
 
 
