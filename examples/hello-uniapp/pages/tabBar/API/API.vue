@@ -244,9 +244,13 @@
 		},
 		methods: {
 			trigerCollapse(e) {
-				for (let i = 0, len = this.lists.length; i < len; ++i) {
+				if(!this.lists[e].pages){
+					this.goDetailPage(this.lists[e].url);
+					return ;
+				}
+				for (var i = 0; i < this.lists.length; ++i) {
 					if (e === i) {
-						this.lists[i].open = !this.lists[i].open;
+						this.lists[i].open = !this.lists[e].open;
 					} else {
 						this.lists[i].open = false;
 					}

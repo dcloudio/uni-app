@@ -9,8 +9,7 @@
 		<view class="uni-card" v-for="(list,index) in lists" :key="index">
 			<view class="uni-list">
 				<view class="uni-list-cell uni-collapse">
-					<view class="uni-list-cell-navigate" hover-class="uni-list-cell-hover" :class="[list.open ? 'uni-active' : '',list.pages ? 'uni-navigate-bottom' : 'uni-navigate-right']"
-					 @click="trigerCollapse(index)">
+					<view class="uni-list-cell-navigate" hover-class="uni-list-cell-hover" :class="[list.open ? 'uni-active' : '',list.pages ? 'uni-navigate-bottom' : 'uni-navigate-right']" @click="trigerCollapse(index)">
 						{{list.name}}
 					</view>
 					<view class="uni-list uni-collapse" v-if="list.pages" :class="list.open ? 'uni-active' : ''">
@@ -219,12 +218,15 @@
 		},
 		methods: {
 			trigerCollapse(e) {
-				for (var i = 0, len = this.lists.length; i < len; ++i) {
+				if(!this.lists[e].pages){
+					this.goDetailPage(this.lists[e].url);
+					return ;
+				}
+				for (var i = 0; i < this.lists.length; ++i) {
 					if (e === i) {
-						this.lists[i].pages ? this.lists[i].open = !this.lists[e].open : this.goDetailPage(this.lists[i]
-							.url);
+						this.lists[i].open = !this.lists[e].open;
 					} else {
-						this.lists[i].pages ? this.lists[i].open = false : "";
+						this.lists[i].open = false;
 					}
 				}
 			},
@@ -233,7 +235,8 @@
 				let url = ~path.indexOf('platform') ? path : '/pages/template/' + path + '/' + path;
 				uni.navigateTo({
 					url: url
-				})
+				});
+				return false;
 			}
 		}
 	}
