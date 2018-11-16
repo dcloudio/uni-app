@@ -13,17 +13,25 @@
 
 ## 项目案例
 
-Hello uni-app：演示 uni-app 框架的组件、接口、模板，你可以使用手机扫描下方`App码`下载 iOS、Android 原生安装包，也可以使用微信扫描`小程序码`，体验 Hello uni-app 的小程序版本：
+**Hello uni-app：**演示 uni-app 框架的组件、接口、模板，你可以使用手机扫描下方`App码`下载 iOS、Android 原生安装包，也可以使用微信扫描`小程序码`，体验 Hello uni-app 的小程序版本：
 
 <p align="center">
 	<img src="https://img-cdn-qiniu.dcloud.net.cn/img/ipe.png" width="450"/>
 </p>
 
-[更多项目征集](https://github.com/dcloudio/uni-app/issues/6)
+**图片App模版：**使用uni-app开发的图片App模版，包含单列图、双列图，图片分类，图片轮播、预览、下载，图片分享、收藏，设置桌面背景图等功能。
+
+<p align="center">
+	<img src="https://img.cdn.aliyun.dcloud.net.cn/stream/qr/__UNI__FAD3FD9.png/256?v=12" width="450"/>
+</p>
+
+
+更多项目案例，参考：[uniapp.dcloud.io/case](https://uniapp.dcloud.io/case)
+
+欢迎广大开发者踊跃提交自己的应用案例，[uni-app案例征集](https://github.com/dcloudio/uni-app/issues/6)
 
 ## 分享交流
 
-- github：[uni-app](https://github.com/dcloudio/uni-app)
 - ask社区：[ask.dcloud.net.cn](http://ask.dcloud.net.cn/explore/category-12)
 - QQ交流群：
   - 群1：531031261（已满）
@@ -34,7 +42,7 @@ Hello uni-app：演示 uni-app 框架的组件、接口、模板，你可以使�
   - 群6：697264024
   
 
-除了合理利用 `issues`，向我们反馈问题或建议外。更佳的渠道是前往 [DCloud 问答社区](https://ask.dcloud.net.cn/explore/)，详细描述问题及重现步骤，并且附上一定的示例代码或项目。
+除了合理利用 `issues`，向我们反馈问题或建议外，更佳的渠道是前往 [DCloud 问答社区](https://ask.dcloud.net.cn/explore/)，详细描述问题及重现步骤，并且附上一定的示例代码或项目。
 
 ## 赞助我们
 
