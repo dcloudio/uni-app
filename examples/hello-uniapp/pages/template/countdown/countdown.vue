@@ -3,20 +3,20 @@
 		<page-head :title="title"></page-head>
 		<view class="uni-text-small uni-center" style="margin:80upx 0 20upx 0;">示例1</view>
 		<view style="justify-content:center;">
-			<graceCountd :timer="timer1"></graceCountd>
+			<uni-countdown :timer="timer1"></uni-countdown>
 		</view>
 		<view class="uni-text-small uni-center" style="margin:80rpx 0 20rpx 0;">示例2</view>
 		<view style="justify-content:center; background:#00B26A; padding:50rpx 0;">
-			<graceCountd :timer="timer2" borderColor="#FFFFFF" splitorColor="#FFF" fontColor="#FFFFFF" bgrColor="none"></graceCountd>
+			<uni-countdown :timer="timer2" borderColor="#FFFFFF" splitorColor="#FFF" fontColor="#FFFFFF" bgrColor="none"></uni-countdown>
 		</view>
 		<view class="uni-text-small uni-center" style="margin:80rpx 0 20rpx 0;">示例3</view>
 		<view style="justify-content:center;">
-			<graceCountd fontColor="#FFFFFF" bgrColor="#000000" :timer="timer3"></graceCountd>
+			<uni-countdown fontColor="#FFFFFF" bgrColor="#000000" :timer="timer3"></uni-countdown>
 		</view>
 	</view>
 </template>
 <script>
-	import graceCountd from "../../../components/graceCountd.vue";
+	import uniCountdown from "../../../components/uni-countdown.vue";
 	export default {
 		data() {
 			var dateObj = new Date();
@@ -32,7 +32,7 @@
 			}
 		},
 		components: {
-			graceCountd
+			uniCountdown
 		},
 		methods: {
 			formatDateTime(inputTime) { //时间戳 转 YY-mm-dd HH:ii:ss 
@@ -61,7 +61,6 @@
 		flex-wrap: wrap;
 		justify-content: center;
 	}
-
 	.uni-countdown {
 		padding: 2rpx 0;
 		flex-wrap: nowrap;
