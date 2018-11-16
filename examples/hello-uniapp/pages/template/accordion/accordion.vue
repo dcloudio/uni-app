@@ -1,7 +1,7 @@
 <template>
     <view class="page">
         <page-head :title="title"></page-head>
-        <view class="uni-card">
+        <view class="uni-card" style="margin-top:50px;">
             <view class="uni-list">
                 <block v-for="(list,index) in lists" :key="index">
                     <view class="uni-list-cell uni-collapse">
@@ -85,10 +85,6 @@
 </script>
 
 <style>
-    .page {
-        padding-top: 60upx;
-    }
-
     .list-collapse {
         padding-left: 36upx;
         box-sizing: border-box;

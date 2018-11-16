@@ -1,7 +1,7 @@
 <template>
-	<view class="page">
+	<view>
 		<page-head :title="title"></page-head>
-		<view class="uni-list">
+		<view class="uni-list" style="margin-top:30px;">
 			<view class="uni-list-cell uni-list-cell-pd">
 				<view class="uni-list-cell-db">循环</view>
 				<switch @change="switchChange"/>
@@ -57,13 +57,6 @@
 </script>
 
 <style>
-	.page {
-		padding-top: 60upx;
-	}
-
-	page {
-		background: #efeff4;
-	}
 	.uni-list{
 		margin-bottom: 30upx;
 	}

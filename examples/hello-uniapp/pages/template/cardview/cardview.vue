@@ -1,7 +1,7 @@
 <template>
     <view class="page">
         <page-head :title="title"></page-head>
-		<view class="uni-padding-wrap">
+		<view class="uni-padding-wrap uni-common-mt">
 			<view class="uni-card">
 				<view class="uni-card-content">
 					<view class="uni-card-content-inner">

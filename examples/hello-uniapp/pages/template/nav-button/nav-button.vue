@@ -1,5 +1,5 @@
 <template>
-	<view class="page">
+	<view>
 		<page-head :title="title"></page-head>
 		<view class="uni-padding-wrap uni-common-mt">
 			<view class="uni-title">
@@ -32,7 +32,5 @@
 </script>
 
 <style>
-	.page {
-		padding-top: 60upx;
-	}
+	
 </style>

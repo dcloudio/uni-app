@@ -1,5 +1,5 @@
 <template>
-    <view class="page">
+    <view>
         <page-head :title="title"></page-head>
         <view class="uni-grid-9 uni-common-mt">
             <view class="uni-grid-9-item" hover-class="uni-grid-9-item-hover" v-for="(item,index) in grids" :key="index" :class="index % 3 === 2 ? 'no-border-right' : ''">
@@ -25,7 +25,4 @@
 </script>
 
 <style>
-    .page {
-        padding-top: 60upx;
-    }
 </style>
