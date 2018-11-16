@@ -1,57 +1,107 @@
-<template>
-	<view class="qrcode">
-		<image class="image" v-if="img != ''" :src="img" :style="{ width: size+'px', height: size + 'px' }"/>
+<template xlang="wxml" minapp="mpvue">
+	<view class="_qrCode">
+		<canvas class="_qrCodeCanvas" id="_myQrCodeCanvas" canvas-id="_myQrCodeCanvas" :style="{width:cSize+'px',height:cSize+'px'}" />
+		<image v-if="show" :src="result" :style="{width:cSize+'px',height:cSize+'px'}" />
 	</view>
 </template>
+
 <script>
-	import QR from "./qrcode.js";
-	export default {
-		name: 'number-box',
-		props: {
-			val: {
-				type: String,
-				default: ''
-			},
-			size:{
-				type:Number,
-				default:100
-			}
+import QRCode from "./qrcode.js"
+let qrcode
+export default {
+	name: "qrCode",
+	props: {
+		size: {
+			type: Number,
+			default: 100
 		},
-		data(){
-			return{
-				img:''
-			}
+		show: {
+			type: Boolean,
+			default: true
 		},
-		onUnload(){
+		val: {
+			type: String,
+			default: ''
 		},
-		methods: {
-			creatQrcode(){
-				let val = String(this.val)
-				if(val == ''){
-					return false
+		colorDark: {
+			type: String,
+			default: '#000000'
+		},
+		colorLight: {
+			type: String,
+			default: '#ffffff'
+		},
+	},
+	data() {
+		return {
+			cSize: this.size,
+			result: '',
+		}
+	},
+	methods: {
+		_makeCode() {
+			let that = this
+			qrcode = new QRCode({
+				text: that.val,
+				width: that.cSize,
+				height: that.cSize,
+				colorDark: that.colorDark,
+				colorLight: that.colorLight,
+				correctLevel: QRCode.CorrectLevel.H,
+				cbResult: function (res) {
+					that._result(res)
 				}
-				let img = QR.createQrCodeImg(val, {
-					size: parseInt(this.size)
-				})
-				this.img = img;
-			},
-			clearQrcode(){
-				this.img = '';
+			});
+		},
+		_clearCode(){
+			this._result('')
+			qrcode.clear()
+		},
+		_saveCode() {
+			let that = this;
+			if (this.result != "") {
+				uni.saveImageToPhotosAlbum({
+					filePath: that.result,
+					success: function () {
+						uni.showToast({
+							title: '二维码保存成功',
+							icon: 'success',
+							duration: 2000
+						});
+					}
+				});
 			}
 		},
-		watch:{
-			size(newVal, oldVal){
-				if(newVal != oldVal){
-					this.size = newVal;
-					this.creatQrcode()
-				}
+		_result(res) {
+			this.result = res;
+			this.$emit('result', res)
+		}
+	},
+	computed: {
+	},
+	watch: {
+		size: function (n, o) {
+			if (n != o) {
+				this.cSize = n
+				setTimeout(() => {
+					this._makeCode()
+				}, 100);
 			}
 		}
+	},
+	onLoad: function () {
+		// console.log(this.val)
 	}
+}
 </script>
 <style>
-	.qrcode{
-		display: flex;
-		justify-content: center;
-	}
+._qrCode {
+  position: relative;
+}
+._qrCodeCanvas {
+  position: fixed;
+  top: -99999upx;
+  left: -99999upx;
+  z-index: -99999;
+}
 </style>
