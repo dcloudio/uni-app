@@ -25,7 +25,7 @@ Hello uni-app：演示 uni-app 框架的组件、接口、模板，你可以使�
 
 <p align="center">
     <a href="https://m3w.cn/__uni__fad3fd9" target="blank">
-	    <img src="https://img.cdn.aliyun.dcloud.net.cn/stream/qr/__UNI__FAD3FD9.png/256?v=12" width="180"/>
+	    <img src="https://img.cdn.aliyun.dcloud.net.cn/stream/qr/__UNI__FAD3FD9.png/256?v=12" width="170"/>
     </a>
 </p>
 
