@@ -1,5 +1,5 @@
 <template>
-	<view class="page">
+	<view>
 		<view class="banner" @click="goDetail(banner)">
 			<image class="banner-img" :src="banner.cover"></image>
 			<view class="banner-title">{{banner.title}}</view>
@@ -125,10 +125,6 @@
 </script>
 
 <style>
-	page {
-		background: #efeff4;
-	}
-
 	.banner {
 		height: 360upx;
 		overflow: hidden;
