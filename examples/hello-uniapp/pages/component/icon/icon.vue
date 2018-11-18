@@ -120,7 +120,6 @@
 </script>
 
 <style>
-    @import "../../../common/icon.css";
     .icon-item {
         display: inline-flex;
         width: 105upx;
@@ -128,5 +127,4 @@
         margin: 5upx;
         justify-content: center;
     }
-	
 </style>

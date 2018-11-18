@@ -53,8 +53,6 @@
 </script>
 
 <style>
-	@import "../../common/icon.css";
-
 	.footer {
 		display: flex;
 		flex-direction: row;

@@ -113,6 +113,5 @@
 </script>
 
 <style>
-	@import "../../../common/icon.css";
 	.title{padding:10upx 25upx;}
 </style>

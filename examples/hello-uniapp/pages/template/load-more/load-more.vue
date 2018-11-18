@@ -3,25 +3,25 @@
 		<page-head :title="title"></page-head>
 		<view class="uni-padding-wrap">
 			<view class="uni-helllo-text">
-				这是load-more组件使用示例，配置loadingType改变组件状态，配置contentText改变文字内容，配置showImage改变loading时是否显示loading图标，配置color改变文字和loading图标颜色。
+				这是uni-load-more组件使用示例，配置loadingType改变组件状态，配置contentText改变文字内容，配置showImage改变loading时是否显示loading图标，配置color改变文字和loading图标颜色。
 			</view>
 			<view class="uni-title">在列表中使用</view>
 			<view>
 				<view class="list-view">
 					<view class="list-item" v-for="(value,index) in list" :key="index">list - {{value}}</view>
 				</view>
-				<load-more :loadingType="loadingType" :contentText="contentText"></load-more>
+				<uni-load-more :loadingType="loadingType" :contentText="contentText"></uni-load-more>
 			</view>
 		</view>
 	</view>
 </template>
 <script>
-	import loadMore from '../../../components/load-more.vue'
+	import uniLoadMore from '../../../components/uni-load-more.vue'
 
 	export default {
 		data() {
 			return {
-				title: 'load-more',
+				title: 'uni-load-more',
 				list: [],
 				loadingType: 0,
 				contentText: {
@@ -59,7 +59,7 @@
 			}, 800);
 		},
 		components: {
-			loadMore
+			uniLoadMore
 		}
 	}
 </script>

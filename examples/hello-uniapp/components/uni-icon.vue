@@ -31,6 +31,3 @@
     }
 </script>
 
-<style>
-    @import "../common/icon.css";
-</style>

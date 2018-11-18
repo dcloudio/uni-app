@@ -11,7 +11,7 @@
                         <media-list :data="newsitem" @close="close(index1,index2)" @click="goDetail(newsitem)"></media-list>
                     </block>
 					<view class="uni-tab-bar-loading">
-						<load-more :loadingType="tab.loadingType" :contentText="loadingText"></load-more>
+						<uni-load-more :loadingType="tab.loadingType" :contentText="loadingText"></uni-load-more>
 					</view>
                 </scroll-view>
             </swiper-item>
@@ -20,11 +20,11 @@
 </template>
 <script>
     import mediaList from '@/components/tab-nvue/mediaList.vue';
-	import loadMore from '@/components/load-more.vue';
+	import uniLoadMore from '@/components/uni-load-more.vue';
     export default {
         components: {
             mediaList,
-			loadMore
+			uniLoadMore
         },
         data() {
             return {

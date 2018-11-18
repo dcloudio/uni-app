@@ -48,7 +48,6 @@
 </script>
 
 <style>
-	@import "../../../common/icon.css";
     /* 遮罩层 */
     .uni-mask {
         background: rgba(0, 0, 0, 0.6);
