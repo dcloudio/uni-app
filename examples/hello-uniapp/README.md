@@ -1,4 +1,1 @@
-# hello-uniapp
-
-## 注意事项
-* 运行本示例需要HBuilderX 1.1.0.20181030版本（或以上版本）
+代码已迁移，请移步[https://github.com/dcloudio/hello-uniapp](https://github.com/dcloudio/hello-uniapp)查看最新代码
