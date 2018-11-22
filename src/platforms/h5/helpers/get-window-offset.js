@@ -1,0 +1,25 @@
+import {
+  NAVBAR_HEIGHT,
+  TABBAR_HEIGHT
+} from 'uni-helpers/constants'
+
+export default function getWindowOffset () {
+  if (uni.canIUse('css.var')) {
+    const style = document.documentElement.style
+    return {
+      top: parseInt(style.getPropertyValue('--window-top')),
+      bottom: parseInt(style.getPropertyValue('--window-bottom'))
+    }
+  }
+
+  let top = 0
+  const pages = getCurrentPages()
+  if (pages.length) {
+    const pageVm = pages[pages.length - 1].$parent.$parent
+    top = pageVm.showNavigationBar && pageVm.navigationBar.type !== 'transparent' ? NAVBAR_HEIGHT : 0
+  }
+  return {
+    top,
+    bottom: getApp().$children[0].showTabBar ? TABBAR_HEIGHT : 0
+  }
+}
