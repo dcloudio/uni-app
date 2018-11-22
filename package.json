@@ -72,7 +72,7 @@
 		"Android >= 4.1",
 		"ios >= 8"
 	],
-	"license": "ISC",
+	"license": "MIT",
 	"main": "index.js",
 	"description": "",
 	"author": ""
