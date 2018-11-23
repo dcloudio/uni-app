@@ -2,6 +2,12 @@
   <uni-audio
     :id="id"
     :class="{controls:controls}"
+    :src="src"
+    :loop="loop"
+    :controls="controls"
+    :poster="poster"
+    :name="name"
+    :author="author"
     class="uni-audio"
     v-on="$listeners">
     <audio
@@ -27,7 +33,7 @@
             v-text="name"/>
           <div
             class="uni-audio-author"
-            v-text="author">许巍</div>
+            v-text="author"/>
         </div>
       </div>
     </div>
