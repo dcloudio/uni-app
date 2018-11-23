@@ -552,21 +552,23 @@ export default {
     var slidesDots = []
     var index = 0
     var swiperItems = []
-    this.$slots.default.forEach(vnode => {
-      if (vnode.componentOptions && vnode.componentOptions.tag === 'v-uni-swiper-item') {
-        swiperItems.push(vnode)
-        slidesDots.push(createElement('div', {
-          class: {
-            'uni-swiper-dot': true,
-            'uni-swiper-dot-active': index === this.currentSync
-          },
-          style: {
-            'background': index === this.currentSync ? this.indicatorActiveColor : this.indicatorColor
-          }
-        }))
-        index++
-      }
-    })
+    if (this.$slots.default) {
+      this.$slots.default.forEach(vnode => {
+        if (vnode.componentOptions && vnode.componentOptions.tag === 'v-uni-swiper-item') {
+          swiperItems.push(vnode)
+          slidesDots.push(createElement('div', {
+            class: {
+              'uni-swiper-dot': true,
+              'uni-swiper-dot-active': index === this.currentSync
+            },
+            style: {
+              'background': index === this.currentSync ? this.indicatorActiveColor : this.indicatorColor
+            }
+          }))
+          index++
+        }
+      })
+    }
     this.items = swiperItems
     var slidesWrapperChild = [createElement('div', {
       ref: 'slides',
