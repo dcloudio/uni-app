@@ -15,7 +15,8 @@
         @input.stop="_onInput"
         @compositionstart="_onComposition"
         @compositionend="_onComposition"
-        @keyup.stop="_onKeyup">
+        @keyup.stop="_onKeyup"
+      >
       <div
         v-show="!(composing || inputValue.length)"
         ref="placeholder"
@@ -31,6 +32,7 @@ import {
   emitter
 } from 'uni-mixins'
 const TYPES = ['text', 'number', 'idcard', 'digit', 'password']
+const NUMBER_TYPES = ['number', 'digit']
 export default {
   name: 'Input',
   mixins: [emitter],
@@ -88,7 +90,8 @@ export default {
     return {
       inputValue: this.value + '',
       composing: false,
-      wrapperHeight: 0
+      wrapperHeight: 0,
+      cachedValue: ''
     }
   },
   computed: {
@@ -124,13 +127,7 @@ export default {
       this.inputValue = value + ''
     },
     inputValue (value) {
-      //       if (value !== this.value) {
-      //         this.$trigger('input', {}, {
-      //           value: value,
-      //           cursor: this.$refs.input.selectionEnd
-      //         })
       this.$emit('update:value', value)
-      // }
     },
     maxlength (value) {
       const realValue = this.realValue.slice(0, value)
@@ -194,11 +191,19 @@ export default {
       if (this.composing) {
         return
       }
-      const value = $event.target.value
-      this.inputValue = value
+
+      // 处理部分输入法可以输入其它字符的情况
+      if (~NUMBER_TYPES.indexOf(this.type)) {
+        if (this.$refs.input.validity && !this.$refs.input.validity.valid) {
+          this.inputValue = this.cachedValue
+          $event.target.value = this.cachedValue
+        } else {
+          this.cachedValue = this.inputValue
+        }
+      }
 
       this.$trigger('input', $event, {
-        value: value
+        value: this.inputValue
       })
     },
     _onFocus ($event) {
@@ -226,7 +231,6 @@ export default {
         this.composing = true
       } else {
         this.composing = false
-        // TODO
       }
     },
     _resetFormData () {
@@ -274,6 +278,7 @@ export default {
 		text-overflow: inherit;
 		-webkit-tap-highlight-color: transparent;
 		z-index: 2;
+		opacity: inherit;
 	}
 
 	uni-input[hidden] {
