@@ -8,22 +8,27 @@
         allow="geolocation"
         sandbox="allow-scripts allow-same-origin allow-forms"
         frameborder="0"
-        @load="_load"/>
+        @load="_load" />
       <!-- 去这里 -->
       <div
         v-if="isPoimarkerSrc"
         class="actTonav"
-        @click="_nav"/>
+        @click="_nav" />
     </div>
   </div>
 </template>
 <script>
+import SystemHeader from '../system-header'
+
 const key = 'WXTBZ-6WERU-ECCVS-BZJCK-LW5OJ-SIBOS'
 const referer = 'uniapp'
 const poimarkerSrc = 'https://apis.map.qq.com/tools/poimarker'
 
 export default {
   name: 'SystemOpenLocation',
+  components: {
+    SystemHeader
+  },
   data () {
     const {
       latitude,
@@ -44,7 +49,8 @@ export default {
   },
   mounted () {
     if (this.latitude && this.longitude) {
-      this.src = `${poimarkerSrc}?type=0&marker=coord:${this.latitude},${this.longitude};title:${this.name};addr:${this.address};&key=${key}&referer=${referer}`
+      this.src =
+					`${poimarkerSrc}?type=0&marker=coord:${this.latitude},${this.longitude};title:${this.name};addr:${this.address};&key=${key}&referer=${referer}`
     }
   },
   methods: {
@@ -63,43 +69,45 @@ export default {
       }
     },
     _nav () {
-      var url = `https://apis.map.qq.com/uri/v1/routeplan?type=drive&to=${encodeURIComponent(this.name)}&tocoord=${this.latitude},${this.longitude}&referer=${referer}`
+      var url =
+					`https://apis.map.qq.com/uri/v1/routeplan?type=drive&to=${encodeURIComponent(this.name)}&tocoord=${this.latitude},${this.longitude}&referer=${referer}`
       this.$refs.map.src = url
     }
   }
 }
 </script>
 <style>
-.uni-system-open-location {
-  display: block;
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background: #f8f8f8;
-}
+	.uni-system-open-location {
+		display: block;
+		position: fixed;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		background: #f8f8f8;
+	}
 
-.map-content {
-  position: absolute;
-  left: 0;
-  top: 44px;
-  width: 100%;
-  bottom: 0;
-  overflow: hidden;
-}
+	.map-content {
+		position: absolute;
+		left: 0;
+		top: 44px;
+		width: 100%;
+		bottom: 0;
+		overflow: hidden;
+	}
 
-.map-content > iframe {
-  width: 100%;
-  height: 100%;
-  border: none;
-}
-.actTonav {
-  position: absolute;
-  right: 16px;
-  bottom: 56px;
-  width: 60px;
-  height: 60px;
-  border-radius: 60px;
-}
+	.map-content>iframe {
+		width: 100%;
+		height: 100%;
+		border: none;
+	}
+
+	.actTonav {
+		position: absolute;
+		right: 16px;
+		bottom: 56px;
+		width: 60px;
+		height: 60px;
+		border-radius: 60px;
+	}
 </style>

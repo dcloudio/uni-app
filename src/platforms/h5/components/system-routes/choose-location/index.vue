@@ -10,13 +10,18 @@
         allow="geolocation"
         seamless
         sandbox="allow-scripts allow-same-origin allow-forms"
-        frameborder="0"/>
+        frameborder="0" />
     </div>
   </div>
 </template>
 <script>
+import SystemHeader from '../system-header'
+
 export default {
   name: 'SystemChooseLocation',
+  components: {
+    SystemHeader
+  },
   data () {
     return {
       src: '',
@@ -53,27 +58,27 @@ export default {
 }
 </script>
 <style>
-.uni-system-choose-location {
-  display: block;
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background: #f8f8f8;
-}
+	.uni-system-choose-location {
+		display: block;
+		position: fixed;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		background: #f8f8f8;
+	}
 
-.map-content {
-  position: absolute;
-  left: 0;
-  top: 44px;
-  width: 100%;
-  bottom: 0;
-  overflow: hidden;
-}
+	.map-content {
+		position: absolute;
+		left: 0;
+		top: 44px;
+		width: 100%;
+		bottom: 0;
+		overflow: hidden;
+	}
 
-.map-content > iframe {
-  width: 100%;
-  height: 100%;
-}
+	.map-content>iframe {
+		width: 100%;
+		height: 100%;
+	}
 </style>

@@ -28,7 +28,8 @@ module.exports = {
       'uni-shared': resolve('src/shared'),
       'uni-mixins': resolve('src/core/view/mixins'),
       'uni-helpers': resolve('src/core/helpers'),
-      'uni-platform': resolve('src/platforms/' + process.env.UNI_PLATFORM)
+      'uni-platform': resolve('src/platforms/' + process.env.UNI_PLATFORM),
+      'uni-components': resolve('src/core/view/components')
     }
   },
   module: {
