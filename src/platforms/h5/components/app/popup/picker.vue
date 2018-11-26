@@ -190,6 +190,16 @@ export default {
         let valueArray = this.valueArray
         let startArray = this.startArray
         let endArray = this.endArray
+        if (this.mode === mode.DATE) {
+          const dateArray = this.dateArray
+          let max = dateArray[2].length
+          let day = dateArray[2][valueArray[2]]
+          let realDay = new Date(`${dateArray[0][valueArray[0]]}/${dateArray[1][valueArray[1]]}/${day}`).getDate()
+          day = Number(day)
+          if (realDay < day) {
+            valueArray[2] -= realDay + max - day
+          }
+        }
         if (getValue(valueArray) < getValue(startArray)) {
           this._cloneArray(valueArray, startArray)
         } else if (getValue(valueArray) > getValue(endArray)) {
