@@ -33,7 +33,7 @@ function setUrl (url, data) {
       if (query.match(reg)) {
         query.replace(reg, '$1' + valEncode)
       } else {
-        query += '&' + keyEncode + '=' + valEncode
+        query += (query.length ? '&' : '') + keyEncode + '=' + valEncode
       }
     }
   }
