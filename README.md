@@ -41,7 +41,3 @@
   
 
 除了合理利用 `issues`，向我们反馈问题或建议外，更佳的渠道是前往 [DCloud 问答社区](https://ask.dcloud.net.cn/explore/)，详细描述问题及重现步骤，并且附上一定的示例代码或项目。
-
-## 赞助我们
-
-一个手艺人需要3万个粉丝养活，欢迎大家积极[赞助uni-app](http://dev.dcloud.net.cn/sponsor/?channel=uniapp)，保证 `uni-app` 稳定健康持续发展。
