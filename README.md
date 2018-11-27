@@ -32,6 +32,6 @@
 
 扫码加入微信交流群：
 
-<p align="center">
-    <img src="http://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/wx-barcode.png" width="200"/>
+<p>
+    <img src="http://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/wx-barcode.png" width="250"/>
 </p>
