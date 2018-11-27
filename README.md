@@ -30,14 +30,6 @@
 
 ## 分享交流
 
-- ask社区：[ask.dcloud.net.cn](http://ask.dcloud.net.cn/explore/category-12)
-- QQ交流群：
-  - 群1：531031261（已满）
-  - 群2：901474938（已满）
-  - 群3：773794803（已满）
-  - 群4：942702595（已满）
-  - 群5：731951419（已满）
-  - 群6：697264024
-  
+扫码加入微信交流群：
 
-除了合理利用 `issues`，向我们反馈问题或建议外，更佳的渠道是前往 [DCloud 问答社区](https://ask.dcloud.net.cn/explore/)，详细描述问题及重现步骤，并且附上一定的示例代码或项目。
+<img src="http://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/wx-barcode.png" />
