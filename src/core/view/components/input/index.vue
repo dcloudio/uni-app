@@ -31,7 +31,7 @@
 import {
   emitter
 } from 'uni-mixins'
-const TYPES = ['text', 'number', 'idcard', 'digit', 'password']
+const INPUT_TYPES = ['text', 'number', 'idcard', 'digit', 'password']
 const NUMBER_TYPES = ['number', 'digit']
 export default {
   name: 'Input',
@@ -109,14 +109,14 @@ export default {
           type = 'number'
           break
         default:
-          type = ~TYPES.indexOf(this.type) ? this.type : 'text'
+          type = ~INPUT_TYPES.indexOf(this.type) ? this.type : 'text'
           break
       }
       return this.password ? 'password' : type
     },
     step () {
       // 处理部分设备中无法输入小数点的问题
-      return ~['digit', 'number'].indexOf(this.type) ? '0.000000000000000001' : ''
+      return ~NUMBER_TYPES.indexOf(this.type) ? '0.000000000000000001' : ''
     }
   },
   watch: {
@@ -130,7 +130,7 @@ export default {
       this.$emit('update:value', value)
     },
     maxlength (value) {
-      const realValue = this.realValue.slice(0, value)
+      const realValue = this.realValue.slice(0, parseInt(value, 10))
       realValue !== this.inputValue && (this.inputValue = realValue)
     }
   },
@@ -195,10 +195,19 @@ export default {
       // 处理部分输入法可以输入其它字符的情况
       if (~NUMBER_TYPES.indexOf(this.type)) {
         if (this.$refs.input.validity && !this.$refs.input.validity.valid) {
-          this.inputValue = this.cachedValue
           $event.target.value = this.cachedValue
+          this.inputValue = $event.target.value
         } else {
           this.cachedValue = this.inputValue
+        }
+      }
+
+      // type="number" 不支持 maxlength 属性，因此需要主动限制长度。
+      if (this.inputType === 'number') {
+        const maxlength = parseInt(this.maxlength, 10)
+        if (maxlength > 0 && $event.target.value.length > maxlength) {
+          $event.target.value = $event.target.value.slice(0, maxlength)
+          this.inputValue = $event.target.value
         }
       }
 
