@@ -197,6 +197,8 @@ export default {
         if (this.$refs.input.validity && !this.$refs.input.validity.valid) {
           $event.target.value = this.cachedValue
           this.inputValue = $event.target.value
+          // 输入非法字符不触发 input 事件
+          return
         } else {
           this.cachedValue = this.inputValue
         }
@@ -208,6 +210,8 @@ export default {
         if (maxlength > 0 && $event.target.value.length > maxlength) {
           $event.target.value = $event.target.value.slice(0, maxlength)
           this.inputValue = $event.target.value
+          // 字符长度超出范围不触发 input 事件
+          return
         }
       }
 
