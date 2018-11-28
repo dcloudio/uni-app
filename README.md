@@ -4,7 +4,9 @@
 
 开发者通过编写 `Vue.js` 代码，`uni-app` 将其编译到 iOS、Android、微信小程序、H5等多个平台，保证其正确运行并达到优秀体验。
 
-## 快速体验
+`uni-app`官网文档详见[https://uniapp.dcloud.io](https://uniapp.dcloud.io)
+
+## 扫码体验
 
 一套代码编译到4个平台，难以置信吗？依次扫描4个二维码，亲自体验最全面的跨平台效果！
 
@@ -13,9 +15,9 @@
 *注：Appstore不能提交简单demo，所以iOS版补充了一些其他功能。*
 
 
-## 文档
+## 快速开始
 
-[uni-app 文档](https://uniapp.dcloud.io)
+`uni-app`支持通过 `HBuilderX`可视化界面、`vue-cli`命令行两种方式快速创建项目，详见[官网教程](https://uniapp.dcloud.io/quickstart)
 
 ## 项目案例
 
