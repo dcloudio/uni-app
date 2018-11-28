@@ -311,6 +311,7 @@ uni-textarea {
   padding: 0;
   resize: none;
   background-color: transparent;
+	opacity: inherit;
 }
 .uni-textarea-textarea::-webkit-input-placeholder {
   color: transparent;
