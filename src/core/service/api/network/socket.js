@@ -180,12 +180,16 @@ export function closeSocket (options, callbackId) {
 /**
  * 监听事件
  * @param {string} method
- * @param {Function} callback
  */
 function on (method) {
-  return function (callback) {
+  const {
+    invokeCallbackHandler: invoke
+  } = UniServiceJSBridge
+  return function (callbackId) {
     if (socketTask) {
-      socketTask[method](callback)
+      socketTask[method](function (res) {
+        invoke(callbackId, res)
+      })
     }
   }
 }
