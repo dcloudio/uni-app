@@ -1,10 +1,10 @@
 <template>
   <uni-web-view>
     <iframe
-      :src="realSrc"
+      :src="realPath"
       frameborder="0"
       width="100%"
-      height="100%"/>
+      height="100%" />
   </uni-web-view>
 </template>
 <script>
@@ -17,9 +17,9 @@ export default {
     }
   },
   data () {
-	  return {
-		  realSrc: this.$getRealPath(this.src)
-	  }
+    return {
+      realPath: this.$getRealPath(this.src)
+    }
   }
 }
 </script>
