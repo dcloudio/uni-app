@@ -26,6 +26,10 @@
 </template>
 <script>
 import {
+  isPlainObject
+} from 'uni-shared'
+
+import {
   TABBAR_HEIGHT
 } from 'uni-helpers/constants'
 
@@ -68,24 +72,25 @@ export default {
       UniServiceJSBridge.emit('onHidePopup')
     },
     hideTabBar (newVal, oldVal) {
-      if (__PLATFORM__ === 'h5') {
-        // TODO 不支持 css 变量时
-        if (uni.canIUse('css.var')) {
-          const windowBottom = !newVal ? (TABBAR_HEIGHT + 'px') : '0px'
-          document.documentElement.style.setProperty('--window-bottom', windowBottom)
-          console.debug(`uni.${windowBottom ? 'showTabBar' : 'hideTabBar'}：--window-bottom=${windowBottom}`)
-        }
+      // TODO 不支持 css 变量时
+      if (uni.canIUse('css.var')) {
+        const windowBottom = !newVal ? (TABBAR_HEIGHT + 'px') : '0px'
+        document.documentElement.style.setProperty('--window-bottom', windowBottom)
+        console.debug(`uni.${windowBottom ? 'showTabBar' : 'hideTabBar'}：--window-bottom=${windowBottom}`)
       }
     }
   },
   created () {
-    if (__PLATFORM__ === 'h5') {
-      if (uni.canIUse('css.var')) {
-        document.documentElement.style.setProperty('--status-bar-height', '0px')
-      }
+    if (uni.canIUse('css.var')) {
+      document.documentElement.style.setProperty('--status-bar-height', '0px')
     }
   },
   mounted () {
+    window.addEventListener('message', function (evt) {
+      if (isPlainObject(evt.data) && evt.data.type === 'WEB_INVOKE_APPSERVICE') {
+        UniServiceJSBridge.emit('onWebInvokeAppService', evt.data.data, evt.data.pageId)
+      }
+    })
     document.addEventListener('visibilitychange', function () {
       if (document.visibilityState === 'visible') {
         UniServiceJSBridge.emit('onAppEnterForeground')
