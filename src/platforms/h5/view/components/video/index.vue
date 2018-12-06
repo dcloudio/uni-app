@@ -19,7 +19,7 @@
         :style="{opacity:!start?0.8:1,objectFit:objectFit}"
         :muted="muted"
         :loop="loop"
-        :src="src"
+        :src="srcSync"
         :poster="poster"
         class="uni-video-video"
         webkit-playsinline
@@ -405,6 +405,9 @@ export default {
 		 */
     autoHideContorls () {
       return this.controlsShow && this.playing && !this.controlsTouching
+    },
+    srcSync () {
+      return this.$getRealPath(this.src)
     }
   },
   watch: {
@@ -446,7 +449,7 @@ export default {
     direction (val) {
       this.directionSync = Number(val)
     },
-    src (val) {
+    srcSync (val) {
       this.playing = false
       this.currentTime = 0
       if (val && this.autoplay) {
@@ -624,7 +627,7 @@ export default {
     ball.addEventListener('touchend', touchend)
     ball.addEventListener('touchcancel', touchend)
 
-    if (String(this.src).length && this.autoplay) {
+    if (String(this.srcSync).length && this.autoplay) {
       video.play()
     }
   },
