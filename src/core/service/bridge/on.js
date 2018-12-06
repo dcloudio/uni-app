@@ -46,6 +46,17 @@ function onAppEnterForeground () {
   callCurrentPageHook('onShow')
 }
 
+function onWebInvokeAppService ({
+  name,
+  arg
+}, pageId) {
+  if (name === 'postMessage') {
+    // TODO 小程序后退、组件销毁、分享时通知
+  } else {
+    uni[name](arg)
+  }
+}
+
 export default function initOn (on) {
   on('onError', onError)
   on('onPageNotFound', onPageNotFound)
@@ -57,4 +68,6 @@ export default function initOn (on) {
 
   on('onTabItemTap', createCallCurrentPageHook('onTabItemTap'))
   on('onNavigationBarButtonTap', createCallCurrentPageHook('onNavigationBarButtonTap'))
+
+  on('onWebInvokeAppService', onWebInvokeAppService)
 }
