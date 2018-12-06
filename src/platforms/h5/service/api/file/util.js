@@ -1,18 +1,30 @@
 /**
- * 从url读取Blob
- * @param {string} url
- * @param {Function} success
- * @param {Function} error
+ * 暂存的文件对象
  */
-export function urlToBlob (url, success, error) {
-  var xhr = new XMLHttpRequest()
-  xhr.open('GET', url, true)
-  xhr.responseType = 'blob'
-  xhr.onload = function () {
-    success(this.response)
+const files = {}
+/**
+ * 从url读取File
+ * @param {string} url
+ * @param {Promise}
+ */
+export function urlToFile (url) {
+  var file = files[url]
+  if (file) {
+    return Promise.resolve(file)
   }
-  xhr.onerror = error
-  xhr.send()
+  if (/^data:[a-z-]+\/[a-z-]+;base64,/.test(url)) {
+    return Promise.resolve(base64ToBlob(url))
+  }
+  return new Promise((resolve, reject) => {
+    var xhr = new XMLHttpRequest()
+    xhr.open('GET', url, true)
+    xhr.responseType = 'blob'
+    xhr.onload = function () {
+      resolve(this.response)
+    }
+    xhr.onerror = reject
+    xhr.send()
+  })
 }
 /**
  * base64转Blob
@@ -32,9 +44,19 @@ export function base64ToBlob (base64) {
 }
 /**
  * 从本地file或者blob对象创建url
- * @param {Blob|File} blob
+ * @param {Blob|File} file
  * @return {string}
  */
-export function blobToUrl (blob) {
-  return (window.URL || window.webkitURL).createObjectURL(blob)
+export function fileToUrl (file) {
+  for (const key in files) {
+    if (files.hasOwnProperty(key)) {
+      const oldFile = files[key]
+      if (oldFile === file) {
+        return key
+      }
+    }
+  }
+  var url = (window.URL || window.webkitURL).createObjectURL(file)
+  files[url] = file
+  return url
 }

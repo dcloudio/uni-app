@@ -1,3 +1,5 @@
+import { fileToUrl } from '../file/util'
+
 const {
   invokeCallbackHandler: invoke
 } = UniServiceJSBridge
@@ -44,7 +46,7 @@ export function chooseImage ({
     const fileCount = event.target.files.length
     for (let i = 0; i < fileCount; i++) {
       const file = event.target.files[i]
-      const filePath = window.URL.createObjectURL(file)
+      const filePath = fileToUrl(file)
 
       tempFilePaths.push(filePath)
       tempFiles.push({

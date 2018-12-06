@@ -1,3 +1,5 @@
+import { fileToUrl } from '../file/util'
+
 const {
   invokeCallbackHandler: invoke
 } = UniServiceJSBridge
@@ -31,7 +33,7 @@ export function chooseVideo ({
 
   videoInput.addEventListener('change', function (event) {
     const file = event.target.files[0]
-    const filePath = window.URL.createObjectURL(file)
+    const filePath = fileToUrl(file)
 
     invoke(callbackId, {
       errMsg: 'chooseVideo:ok',

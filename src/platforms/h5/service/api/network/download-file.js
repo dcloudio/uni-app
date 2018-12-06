@@ -1,4 +1,4 @@
-import { blobToUrl } from '../file/util'
+import { fileToUrl } from '../file/util'
 /**
  * 下载任务
  */
@@ -57,7 +57,7 @@ export function downloadFile ({
     invoke(callbackId, {
       errMsg: 'downloadFile:ok',
       statusCode,
-      tempFilePath: blobToUrl(blob)
+      tempFilePath: fileToUrl(blob)
     })
   }
   xhr.onabort = function () {

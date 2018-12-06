@@ -1,7 +1,4 @@
-import {
-  urlToBlob,
-  base64ToBlob
-} from '../file/util'
+import { urlToFile } from '../file/util'
 /**
  * 上传任务
  */
@@ -52,32 +49,15 @@ export function uploadFile ({
     invokeCallbackHandler: invoke
   } = UniServiceJSBridge
   var uploadTask = new UploadTask(null, callbackId)
-  // 暂时只支持blob和base64
-  if (filePath.indexOf('blob:http') === 0) {
-    urlToBlob(filePath, upload, () => {
-      setTimeout(() => {
-        invoke(callbackId, {
-          errMsg: 'uploadFile:fail file error'
-        })
-      }, 0)
-    })
-  } else if (/^data:[a-z-]+\/[a-z-]+;base64,/.test(filePath)) {
-    upload(base64ToBlob(filePath))
-  } else {
-    setTimeout(() => {
-      invoke(callbackId, {
-        errMsg: 'uploadFile:fail filePath error'
-      })
-    }, 0)
-  }
-  function upload (blob) {
+
+  function upload (file) {
     var xhr = new XMLHttpRequest()
     var form = new FormData()
     var timer
     Object.keys(formData).forEach(key => {
       form.append(key, formData[key])
     })
-    form.append(name, blob, `file-${Date.now()}`)
+    form.append(name, file, file.name || `file-${Date.now()}`)
     xhr.open('POST', url)
     Object.keys(header).forEach(key => {
       xhr.setRequestHeader(key, header[key])
@@ -131,5 +111,14 @@ export function uploadFile ({
       })
     }
   }
+
+  urlToFile(filePath).then(upload).catch(() => {
+    setTimeout(() => {
+      invoke(callbackId, {
+        errMsg: 'uploadFile:fail file error'
+      })
+    }, 0)
+  })
+
   return uploadTask
 }
