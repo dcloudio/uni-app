@@ -1,7 +1,7 @@
 import getRealRoute from 'uni-helpers/get-real-route'
 
 const HTTP_RE = /^(http|https|file):\/\//
-const BASE64_IMAGE_RE = /^\s*data:image\//
+const BASE64_IMAGE_RE = /^data:[a-z-]+\/[a-z-]+;base64,/
 
 function addBase (filePath) {
   if (__uniConfig.router.base) {
