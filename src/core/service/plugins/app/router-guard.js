@@ -123,7 +123,10 @@ function afterEach (to, from) {
     // 直接获取所有 pages,getCurrentPages 正常情况下仅返回页面栈内，传 true 则返回所有已存在（主要是 tabBar 页面）
     const toVm = getCurrentPages(true).find(pageVm => pageVm.$page.id === toId)
     if (toVm) { // 目标页面若已存在，则触发 onShow
-      callPageHook(toVm, 'onShow')
+      // 延迟执行 onShow，防止与 UniServiceJSBridge.emit('onHidePopup') 冲突。
+      setTimeout(function () {
+        callPageHook(toVm, 'onShow')
+      }, 0)
     }
   }
 }
