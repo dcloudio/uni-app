@@ -4,7 +4,9 @@
 
 开发者通过编写 `Vue.js` 代码，`uni-app` 将其编译到 iOS、Android、微信小程序、H5等多个平台，保证其正确运行并达到优秀体验。
 
-## 快速体验
+`uni-app`官网文档详见[https://uniapp.dcloud.io](https://uniapp.dcloud.io)
+
+## 扫码体验
 
 一套代码编译到4个平台，难以置信吗？依次扫描4个二维码，亲自体验最全面的跨平台效果！
 
@@ -13,9 +15,9 @@
 *注：Appstore不能提交简单demo，所以iOS版补充了一些其他功能。*
 
 
-## 文档
+## 快速开始
 
-[uni-app 文档](https://uniapp.dcloud.io)
+`uni-app`支持通过 `HBuilderX`可视化界面、`vue-cli`命令行两种方式快速创建项目，详见[官网教程](https://uniapp.dcloud.io/quickstart)
 
 ## 项目案例
 
@@ -30,18 +32,8 @@
 
 ## 分享交流
 
-- ask社区：[ask.dcloud.net.cn](http://ask.dcloud.net.cn/explore/category-12)
-- QQ交流群：
-  - 群1：531031261（已满）
-  - 群2：901474938（已满）
-  - 群3：773794803（已满）
-  - 群4：942702595（已满）
-  - 群5：731951419（已满）
-  - 群6：697264024
-  
+扫码加入微信交流群：
 
-除了合理利用 `issues`，向我们反馈问题或建议外，更佳的渠道是前往 [DCloud 问答社区](https://ask.dcloud.net.cn/explore/)，详细描述问题及重现步骤，并且附上一定的示例代码或项目。
-
-## 赞助我们
-
-一个手艺人需要3万个粉丝养活，欢迎大家积极[赞助uni-app](http://dev.dcloud.net.cn/sponsor/?channel=uniapp)，保证 `uni-app` 稳定健康持续发展。
+<p>
+    <img src="http://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/wx-barcode.png" width="250"/>
+</p>
