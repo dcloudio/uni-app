@@ -4,16 +4,18 @@ export default [
   'getScreenBrightness',
   'setKeepScreenOn',
   'addPhoneContact',
-  'subscribePush',
-  'unsubscribePush',
-  'onPush',
-  'offPush',
   'saveImageToPhotosAlbum',
   'saveVideoToPhotosAlbum',
   'setClipboardData',
   'getClipboardData',
   'getRecorderManager',
+  'getProvider',
   'login',
+  'getUserInfo',
   'share',
-  'requestPayment'
+  'requestPayment',
+  'subscribePush',
+  'unsubscribePush',
+  'onPush',
+  'offPush'
 ]
