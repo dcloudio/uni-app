@@ -8,7 +8,7 @@ const GLOBAL = {
   'mp-baidu': 'swan'
 }
 module.exports = {
-  input: 'src/core/uni.js',
+  input: 'src/core/runtime/index.js',
   output: {
     file: `packages/uni-${process.env.UNI_PLATFORM}/dist/index.js`,
     format: 'es'

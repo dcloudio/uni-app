@@ -97,6 +97,67 @@ function upx2px (number, newDeviceWidth) {
   return number
 }
 
+const todoApis = Object.create(null);
+
+const TODOS = [
+  'subscribePush',
+  'unsubscribePush',
+  'onPush',
+  'offPush',
+  'share'
+];
+
+function createTodoApi (name) {
+  return function todoApi ({
+    fail,
+    complete
+  }) {
+    const res = {
+      errMsg: `${name}:fail:暂不支持 ${name} 方法`
+    };
+    isFn(fail) && fail(res);
+    isFn(complete) && complete(res);
+  }
+}
+
+TODOS.forEach(function (name) {
+  todoApis[name] = createTodoApi(name);
+});
+
+var providers = {
+  oauth: ['baidu'],
+  share: ['baidu'],
+  payment: ['baidu'],
+  push: ['baidu']
+};
+
+function getProvider ({
+  service,
+  success,
+  fail,
+  complete
+}) {
+  let res = false;
+  if (providers[service]) {
+    res = {
+      errMsg: 'getProvider:ok',
+      service,
+      provider: providers[service]
+    };
+    isFn(success) && success(res);
+  } else {
+    res = {
+      errMsg: 'getProvider:fail:服务[' + service + ']不存在'
+    };
+    isFn(fail) && fail(res);
+  }
+  isFn(complete) && complete(res);
+}
+
+var baseApi = /*#__PURE__*/Object.freeze({
+  getProvider: getProvider
+});
+
 
 
 var api = /*#__PURE__*/Object.freeze({
@@ -114,6 +175,12 @@ if (typeof Proxy !== 'undefined') {
       if (api[name]) {
         return promisify(name, api[name])
       }
+      if (baseApi[name]) {
+        return promisify(name, baseApi[name])
+      }
+      if (todoApis[name]) {
+        return promisify(name, todoApis[name])
+      }
       if (!swan.hasOwnProperty(name)) {
         return
       }
@@ -122,6 +189,14 @@ if (typeof Proxy !== 'undefined') {
   });
 } else {
   uni$1.upx2px = upx2px;
+
+  Object.keys(todoApis).forEach(name => {
+    uni$1[name] = promisify(name, todoApis[name]);
+  });
+
+  Object.keys(baseApi).forEach(name => {
+    uni$1[name] = promisify(name, todoApis[name]);
+  });
 
   Object.keys(api).forEach(name => {
     uni$1[name] = promisify(name, api[name]);

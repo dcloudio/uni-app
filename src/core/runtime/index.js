@@ -1,10 +1,14 @@
 import {
   promisify
-} from './helpers/promise'
+} from '../helpers/promise'
 
 import {
   upx2px
-} from './service/api/upx2px'
+} from '../service/api/upx2px'
+
+import todoApi from './todo'
+
+import * as baseApi from './base'
 
 import * as api from 'uni-platform/service/api/index.js'
 
@@ -19,6 +23,12 @@ if (typeof Proxy !== 'undefined') {
       if (api[name]) {
         return promisify(name, api[name])
       }
+      if (baseApi[name]) {
+        return promisify(name, baseApi[name])
+      }
+      if (todoApi[name]) {
+        return promisify(name, todoApi[name])
+      }
       if (!__GLOBAL__.hasOwnProperty(name)) {
         return
       }
@@ -27,6 +37,14 @@ if (typeof Proxy !== 'undefined') {
   })
 } else {
   uni.upx2px = upx2px
+
+  Object.keys(todoApi).forEach(name => {
+    uni[name] = promisify(name, todoApi[name])
+  })
+
+  Object.keys(baseApi).forEach(name => {
+    uni[name] = promisify(name, todoApi[name])
+  })
 
   Object.keys(api).forEach(name => {
     uni[name] = promisify(name, api[name])
