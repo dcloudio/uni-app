@@ -10,6 +10,18 @@
         <div @click="_back"><i
           :style="{color:color,fontSize:'27px'}"
           class="uni-btn-icon">&#xe601;</i></div>
+        <template v-for="(btn,index) in btns">
+          <div
+            v-if="btn.float === 'left'"
+            :key="index"
+            :style="{marginRight:index>0?'5px':'0px'}">
+            <i
+              :style="_formatBtnStyle(btn)"
+              class="uni-btn-icon"
+              @click="_onBtnClick(index)"
+              v-html="_formatBtnFontText(btn)" />
+          </div>
+        </template>
       </div>
       <div class="uni-page-head-bd">
         <div
@@ -24,6 +36,7 @@
       <div class="uni-page-head-ft">
         <template v-for="(btn,index) in btns">
           <div
+            v-if="btn.float !== 'left'"
             :key="index"
             :style="{marginRight:index>0?'5px':'0px'}">
             <i
