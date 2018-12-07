@@ -1,8 +1,11 @@
 import {
   wrapper,
-  wrapperUnimplemented,
-  promisify
+  wrapperUnimplemented
 } from 'uni-helpers/api'
+
+import {
+  promisify
+} from 'uni-helpers/promise'
 
 import todoApis from 'uni-platform/helpers/todo-api'
 

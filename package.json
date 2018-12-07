@@ -5,6 +5,9 @@
 		"lint": "eslint --fix --config package.json --ext .js --ext .vue --ignore-path .eslintignore build src",
 		"dev:h5": "npm run lint && cross-env NODE_ENV=production UNI_WATCH=true UNI_PLATFORM=h5 node build/build.js",
 		"build:h5": "npm run lint && cross-env NODE_ENV=production UNI_WATCH=false UNI_PLATFORM=h5 node build/build.js",
+		"build:mp-weixin": "npm run lint && cross-env UNI_PLATFORM=mp-weixin rollup -c build/rollup.config.js",
+        "build:mp-baidu": "npm run lint && cross-env UNI_PLATFORM=mp-baidu rollup -c build/rollup.config.js",
+        "build:mp-alipay": "npm run lint && cross-env UNI_PLATFORM=mp-alipay rollup -c build/rollup.config.js",
 		"test:unit": "cross-env NODE_ENV=test UNI_PLATFORM=h5 mocha-webpack --require tests/unit/setup.js --webpack-config build/webpack.config.test.js tests/unit/**/*.spec.js"
 	},
 	"dependencies": {},
@@ -28,6 +31,9 @@
 		"eslint-plugin-vue": "^4.7.1",
 		"jsdom": "^13.0.0",
 		"jsdom-global": "^3.0.2",
+		"rollup": "^0.67.4",
+		"rollup-plugin-alias": "^1.4.0",
+		"rollup-plugin-replace": "^2.1.0",
 		"strip-json-comments": "^2.0.1",
 		"vue": "^2.5.17",
 		"vue-router": "^3.0.1",
@@ -57,7 +63,8 @@
 			"UniViewJSBridge": true,
 			"UniServiceJSBridge": true,
 			"__PLATFORM__": true,
-			"__VERSION__": true
+			"__VERSION__": true,
+			"__GLOBAL__": true
 		},
 		"rules": {
 			"no-tabs": 0,
