@@ -1,7 +1,6 @@
 <template>
   <uni-picker @touchmove.prevent>
-    <transition
-      name="uni-fade">
+    <transition name="uni-fade">
       <div
         v-show="visible"
         class="uni-mask"
@@ -40,6 +39,10 @@
   </uni-picker>
 </template>
 <script>
+import {
+  formatDateTime
+} from 'uni-shared'
+
 const mode = {
   SELECTOR: 'selector',
   MULTISELECTOR: 'multiSelector',
@@ -151,7 +154,8 @@ export default {
           return val
         case mode.TIME:
           return this.timeArray
-        case mode.DATE: {
+        case mode.DATE:
+        {
           let dateArray = this.dateArray
           switch (this.fields) {
             case fields.YEAR:
@@ -166,11 +170,13 @@ export default {
     },
     startArray () {
       var splitStr = this.mode === mode.DATE ? '-' : ':'
-      return this.start.split(splitStr).map((val, i) => (this.mode === mode.DATE ? this.dateArray : this.timeArray)[i].indexOf(val))
+      return this.start.split(splitStr).map((val, i) => (this.mode === mode.DATE ? this.dateArray : this.timeArray)[i].indexOf(
+        val))
     },
     endArray () {
       var splitStr = this.mode === mode.DATE ? '-' : ':'
-      return this.end.split(splitStr).map((val, i) => (this.mode === mode.DATE ? this.dateArray : this.timeArray)[i].indexOf(val))
+      return this.end.split(splitStr).map((val, i) => (this.mode === mode.DATE ? this.dateArray : this.timeArray)[i].indexOf(
+        val))
     },
     units () {
       switch (this.mode) {
@@ -211,7 +217,7 @@ export default {
   created () {
     this._createTime()
     this._createDate()
-    this._setValue(this.value)
+    this._setValue()
     this.$watch('value', this._setValue)
     this.$watch('mode', this._setValue)
   },
@@ -252,8 +258,8 @@ export default {
       return val[0] * 366 + (val[1] || 0 * 31) + (val[2] || 0)
     },
     /**
-     * 将右侧数组值同步到左侧（交集部分）
-     */
+			 * 将右侧数组值同步到左侧（交集部分）
+			 */
     _cloneArray (val1, val2) {
       for (let i = 0; i < val1.length && i < val2.length; i++) {
         val1[i] = val2[i]
@@ -270,9 +276,21 @@ export default {
           valueArray = [...val]
           break
         case mode.TIME:
+          // 处理默认值为当前时间
+          if (this.value === 0) {
+            val = formatDateTime({
+              mode: mode.TIME
+            })
+          }
           valueArray = val.split(':').map((val, i) => this.timeArray[i].indexOf(val))
           break
         case mode.DATE:
+          // 处理默认值为当前日期
+          if (this.value === 0) {
+            val = formatDateTime({
+              mode: mode.DATE
+            })
+          }
           valueArray = val.split('-').map((val, i) => this.dateArray[i].indexOf(val))
           break
       }
@@ -316,102 +334,109 @@ export default {
 }
 </script>
 <style>
-uni-picker {
-  display: block;
-  box-sizing: border-box;
-}
+	uni-picker {
+		display: block;
+		box-sizing: border-box;
+	}
 
-uni-picker .uni-picker {
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  transform: translate(0, 100%);
-  backface-visibility: hidden;
-  z-index: 999;
-  width: 100%;
-  background-color: #efeff4;
-  transition: transform 0.3s;
-}
+	uni-picker .uni-picker {
+		position: fixed;
+		left: 0;
+		bottom: 0;
+		transform: translate(0, 100%);
+		backface-visibility: hidden;
+		z-index: 999;
+		width: 100%;
+		background-color: #efeff4;
+		transition: transform 0.3s;
+	}
 
-uni-picker .uni-picker.uni-picker_toggle {
-  transform: translate(0, 0);
-}
+	uni-picker .uni-picker.uni-picker_toggle {
+		transform: translate(0, 0);
+	}
 
-uni-picker .uni-picker * {
-  box-sizing: border-box;
-}
+	uni-picker .uni-picker * {
+		box-sizing: border-box;
+	}
 
-uni-picker .uni-picker {
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  transform: translate(0, 100%);
-  backface-visibility: hidden;
-  z-index: 999;
-  width: 100%;
-  background-color: #efeff4;
-  transition: transform 0.3s;
-  transition: transform 0.3s;
-}
+	uni-picker .uni-picker {
+		position: fixed;
+		left: 0;
+		bottom: 0;
+		transform: translate(0, 100%);
+		backface-visibility: hidden;
+		z-index: 999;
+		width: 100%;
+		background-color: #efeff4;
+		transition: transform 0.3s;
+		transition: transform 0.3s;
+	}
 
-uni-picker .uni-picker-content {
-  position: relative;
-  display: block;
-  width: 100%;
-  height: 238px;
-  background-color: white;
-}
-uni-picker .uni-picker-item {
-  padding: 0;
-  height: 34px;
-  line-height: 34px;
-  text-align: center;
-  color: #000;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-}
-uni-picker .uni-picker-header {
-  display: block;
-  position: relative;
-  text-align: center;
-  width: 100%;
-  height: 45px;
-  background-color: #fff;
-}
-uni-picker .uni-picker-header:after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  height: 1px;
-  clear: both;
-  border-bottom: 1px solid #e5e5e5;
-  color: #e5e5e5;
-  transform-origin: 0 100%;
-  transform: scaleY(0.5);
-}
-uni-picker .uni-picker-action {
-  display: block;
-  max-width: 50%;
-  top: 0;
-  height: 100%;
-  box-sizing: border-box;
-  padding: 0 14px;
-  font-size: 17px;
-  line-height: 45px;
-  overflow: hidden;
-}
-uni-picker .uni-picker-action.uni-picker-action-cancel {
-  float: left;
-  color: #888;
-}
-uni-picker .uni-picker-action.uni-picker-action-confirm {
-  float: right;
-  color: #007aff;
-}
-/* .uni-picker {
+	uni-picker .uni-picker-content {
+		position: relative;
+		display: block;
+		width: 100%;
+		height: 238px;
+		background-color: white;
+	}
+
+	uni-picker .uni-picker-item {
+		padding: 0;
+		height: 34px;
+		line-height: 34px;
+		text-align: center;
+		color: #000;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		overflow: hidden;
+	}
+
+	uni-picker .uni-picker-header {
+		display: block;
+		position: relative;
+		text-align: center;
+		width: 100%;
+		height: 45px;
+		background-color: #fff;
+	}
+
+	uni-picker .uni-picker-header:after {
+		content: "";
+		position: absolute;
+		left: 0;
+		bottom: 0;
+		right: 0;
+		height: 1px;
+		clear: both;
+		border-bottom: 1px solid #e5e5e5;
+		color: #e5e5e5;
+		transform-origin: 0 100%;
+		transform: scaleY(0.5);
+	}
+
+	uni-picker .uni-picker-action {
+		display: block;
+		max-width: 50%;
+		top: 0;
+		height: 100%;
+		box-sizing: border-box;
+		padding: 0 14px;
+		font-size: 17px;
+		line-height: 45px;
+		overflow: hidden;
+	}
+
+	uni-picker .uni-picker-action.uni-picker-action-cancel {
+		float: left;
+		color: #888;
+	}
+
+	uni-picker .uni-picker-action.uni-picker-action-confirm {
+		float: right;
+		color: #007aff;
+	}
+
+	/* .uni-picker {
   position: relative;
 }
 .uni-picker-units {
