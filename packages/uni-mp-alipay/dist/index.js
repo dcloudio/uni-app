@@ -132,6 +132,34 @@ const protocols = {
     }
     return res
   },
+  request: {
+    name: 'httpRequest',
+    args (fromArgs) {
+      if (!fromArgs.header) { // 默认增加 header 参数，方便格式化 content-type
+        fromArgs.header = {};
+      }
+      return {
+        header (header = {}, toArgs) {
+          const headers = {
+            'content-type': 'application/json'
+          };
+          Object.keys(header).forEach(key => {
+            headers[key.toLocaleLowerCase()] = header[key];
+          });
+          return {
+            name: 'headers',
+            value: headers
+          }
+        },
+        method: 'method', // TODO 支付宝小程序仅支持 get,post
+        responseType: false
+      }
+    },
+    returnValue: {
+      status: 'statusCode',
+      headers: 'header'
+    }
+  },
   setNavigationBarColor: {
     name: 'setNavigationBar',
     args: {
@@ -227,7 +255,7 @@ function processArgs (methodName, fromArgs, argsOption = {}, returnValue = {}) {
       if (hasOwn(argsOption, key)) {
         let keyOption = argsOption[key];
         if (isFn(keyOption)) {
-          keyOption = keyOption(fromArgs[key], fromArgs);
+          keyOption = keyOption(fromArgs[key], fromArgs, toArgs);
         }
         if (!keyOption) { // 不支持的参数
           console.warn(`支付宝小程序 ${methodName}暂不支持${key}`);

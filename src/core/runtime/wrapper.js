@@ -29,7 +29,7 @@ function processArgs (methodName, fromArgs, argsOption = {}, returnValue = {}) {
       if (hasOwn(argsOption, key)) {
         let keyOption = argsOption[key]
         if (isFn(keyOption)) {
-          keyOption = keyOption(fromArgs[key], fromArgs)
+          keyOption = keyOption(fromArgs[key], fromArgs, toArgs)
         }
         if (!keyOption) { // 不支持的参数
           console.warn(`__PLATFORM_TITLE__ ${methodName}暂不支持${key}`)
