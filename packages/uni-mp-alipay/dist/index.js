@@ -289,7 +289,7 @@ function wrapper (methodName, method) {
     const protocol = protocols[methodName];
     if (!protocol) { // 暂不支持的 api
       return function () {
-        throw new Error(`支付宝小程序 暂不支持${methodName}`)
+        console.error(`支付宝小程序 暂不支持${methodName}`);
       }
     }
     return function (arg1, arg2) { // 目前 api 最多两个参数

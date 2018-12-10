@@ -63,7 +63,7 @@ export default function wrapper (methodName, method) {
     const protocol = protocols[methodName]
     if (!protocol) { // 暂不支持的 api
       return function () {
-        throw new Error(`__PLATFORM_TITLE__ 暂不支持${methodName}`)
+        console.error(`__PLATFORM_TITLE__ 暂不支持${methodName}`)
       }
     }
     return function (arg1, arg2) { // 目前 api 最多两个参数
