@@ -4,6 +4,11 @@ const hasOwnProperty = Object.prototype.hasOwnProperty
 export function isFn (fn) {
   return typeof fn === 'function'
 }
+
+export function isStr (str) {
+  return typeof str === 'string'
+}
+
 export function isPlainObject (obj) {
   return _toString.call(obj) === '[object Object]'
 }

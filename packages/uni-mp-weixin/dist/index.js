@@ -1,5 +1,20 @@
+const _toString = Object.prototype.toString;
+const hasOwnProperty = Object.prototype.hasOwnProperty;
+
 function isFn (fn) {
   return typeof fn === 'function'
+}
+
+function isStr (str) {
+  return typeof str === 'string'
+}
+
+function isPlainObject (obj) {
+  return _toString.call(obj) === '[object Object]'
+}
+
+function hasOwn (obj, key) {
+  return hasOwnProperty.call(obj, key)
 }
 
 const SYNC_API_RE = /hideKeyboard|upx2px|canIUse|^create|Sync$|Manager$/;
@@ -97,6 +112,75 @@ function upx2px (number, newDeviceWidth) {
   return number
 }
 
+var protocols = {};
+
+const CALLBACKS = ['success', 'fail', 'cancel', 'complete'];
+
+function processCallback (method, returnValue) {
+  return function (res) {
+    return method(processReturnValue(res, returnValue))
+  }
+}
+
+function processArgs (fromArgs, argsOption = {}, returnValue = {}) {
+  if (isPlainObject(fromArgs)) { // 一般 api 的参数解析
+    const toArgs = {};
+    Object.keys(fromArgs).forEach(key => {
+      if (hasOwn(argsOption, key)) {
+        let keyOption = argsOption[key];
+        if (isFn(keyOption)) {
+          keyOption = keyOption(fromArgs[key], fromArgs);
+        }
+        if (!keyOption) { // 不支持的参数
+          console.warn(`${微信小程序} ${name}暂不支持${key}`);
+        } else if (isStr(keyOption)) { // 重写参数 key
+          toArgs[keyOption] = fromArgs[key];
+        } else if (isPlainObject(keyOption)) { // {name:newName,value:value}可重新指定参数 key:value
+          toArgs[keyOption.name ? keyOption.name : key] = keyOption.value;
+        }
+      } else if (CALLBACKS.includes(key)) {
+        toArgs[key] = processCallback(fromArgs[key], returnValue);
+      } else {
+        toArgs[key] = fromArgs[key];
+      }
+    });
+    return toArgs
+  } else if (isFn(fromArgs)) {
+    fromArgs = processCallback(fromArgs, returnValue);
+  }
+  return fromArgs
+}
+
+function processReturnValue (res, returnValue) {
+  return processArgs(res, returnValue)
+}
+
+function wrapper (name, method) {
+  if (hasOwn(protocols, name)) {
+    const protocol = protocols[name];
+    if (!protocol) { // 暂不支持的 api
+      return function () {
+        throw new Error(`${微信小程序}暂不支持${name}`)
+      }
+    }
+    return function (arg1, arg2) { // 目前 api 最多两个参数
+      let options = protocol;
+      if (isFn(protocol)) {
+        options = protocol(arg1);
+      }
+
+      arg1 = processArgs(arg1, options.args, options.returnValue);
+
+      const returnValue = wx[options.name || name](arg1, arg2);
+      if (isSyncApi(name)) { // 同步 api
+        return processReturnValue(returnValue, options.returnValue)
+      }
+      return returnValue
+    }
+  }
+  return method
+}
+
 const todoApis = Object.create(null);
 
 const TODOS = [
@@ -154,7 +238,7 @@ function getProvider ({
   isFn(complete) && complete(res);
 }
 
-var baseApi = /*#__PURE__*/Object.freeze({
+var extraApi = /*#__PURE__*/Object.freeze({
   getProvider: getProvider
 });
 
@@ -175,8 +259,8 @@ if (typeof Proxy !== 'undefined') {
       if (api[name]) {
         return promisify(name, api[name])
       }
-      if (baseApi[name]) {
-        return promisify(name, baseApi[name])
+      if (extraApi[name]) {
+        return promisify(name, extraApi[name])
       }
       if (todoApis[name]) {
         return promisify(name, todoApis[name])
@@ -184,7 +268,7 @@ if (typeof Proxy !== 'undefined') {
       if (!wx.hasOwnProperty(name)) {
         return
       }
-      return promisify(name, wx[name])
+      return promisify(name, wrapper(name, wx[name]))
     }
   });
 } else {
@@ -194,7 +278,7 @@ if (typeof Proxy !== 'undefined') {
     uni$1[name] = promisify(name, todoApis[name]);
   });
 
-  Object.keys(baseApi).forEach(name => {
+  Object.keys(extraApi).forEach(name => {
     uni$1[name] = promisify(name, todoApis[name]);
   });
 
@@ -204,7 +288,7 @@ if (typeof Proxy !== 'undefined') {
 
   Object.keys(wx).forEach(name => {
     if (wx.hasOwnProperty(name)) {
-      uni$1[name] = promisify(name, wx[name]);
+      uni$1[name] = promisify(name, wrapper(name, wx[name]));
     }
   });
 }

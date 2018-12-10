@@ -27,7 +27,7 @@ function handlePromise (promise) {
     .catch(err => [err])
 }
 
-function shouldPromise (name) {
+export function shouldPromise (name) {
   if (isSyncApi(name)) {
     return false
   }

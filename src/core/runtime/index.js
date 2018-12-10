@@ -1,4 +1,8 @@
 import {
+  hasOwn
+} from 'uni-shared'
+
+import {
   promisify
 } from '../helpers/promise'
 
@@ -6,11 +10,15 @@ import {
   upx2px
 } from '../service/api/upx2px'
 
+import wrapper from './wrapper'
+
 import todoApi from './todo'
 
-import * as baseApi from './base'
+import * as extraApi from './extra'
 
 import * as api from 'uni-platform/service/api/index.js'
+
+import protocols from 'uni-platform/service/api/protocols'
 
 let uni = {}
 
@@ -23,16 +31,16 @@ if (typeof Proxy !== 'undefined') {
       if (api[name]) {
         return promisify(name, api[name])
       }
-      if (baseApi[name]) {
-        return promisify(name, baseApi[name])
+      if (extraApi[name]) {
+        return promisify(name, extraApi[name])
       }
       if (todoApi[name]) {
         return promisify(name, todoApi[name])
       }
-      if (!__GLOBAL__.hasOwnProperty(name)) {
+      if (!hasOwn(__GLOBAL__, name) && !hasOwn(protocols, name)) {
         return
       }
-      return promisify(name, __GLOBAL__[name])
+      return promisify(name, wrapper(name, __GLOBAL__[name]))
     }
   })
 } else {
@@ -42,7 +50,7 @@ if (typeof Proxy !== 'undefined') {
     uni[name] = promisify(name, todoApi[name])
   })
 
-  Object.keys(baseApi).forEach(name => {
+  Object.keys(extraApi).forEach(name => {
     uni[name] = promisify(name, todoApi[name])
   })
 
@@ -51,8 +59,8 @@ if (typeof Proxy !== 'undefined') {
   })
 
   Object.keys(__GLOBAL__).forEach(name => {
-    if (__GLOBAL__.hasOwnProperty(name)) {
-      uni[name] = promisify(name, __GLOBAL__[name])
+    if (hasOwn(__GLOBAL__, name) || hasOwn(protocols, name)) {
+      uni[name] = promisify(name, wrapper(name, __GLOBAL__[name]))
     }
   })
 }

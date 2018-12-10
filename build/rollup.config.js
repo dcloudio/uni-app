@@ -2,11 +2,22 @@ const path = require('path')
 const alias = require('rollup-plugin-alias')
 const replace = require('rollup-plugin-replace')
 
-const GLOBAL = {
-  'mp-weixin': 'wx',
-  'mp-alipay': 'my',
-  'mp-baidu': 'swan'
+const PLATFORMS = {
+  'mp-weixin': {
+    prefix: 'wx',
+    title: '微信小程序'
+  },
+  'mp-alipay': {
+    prefix: 'my',
+    title: '支付宝小程序'
+  },
+  'mp-baidu': {
+    prefix: 'swan',
+    title: '百度小程序'
+  }
 }
+
+const platform = PLATFORMS[process.env.UNI_PLATFORM]
 module.exports = {
   input: 'src/core/runtime/index.js',
   output: {
@@ -19,7 +30,8 @@ module.exports = {
       'uni-platform': path.resolve(__dirname, '../src/platforms/' + process.env.UNI_PLATFORM)
     }),
     replace({
-      __GLOBAL__: GLOBAL[process.env.UNI_PLATFORM]
+      __GLOBAL__: platform.prefix,
+      __PLATFORM_TITLE__: platform.title
     })
   ]
 }

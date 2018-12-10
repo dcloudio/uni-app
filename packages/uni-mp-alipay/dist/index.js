@@ -1,5 +1,20 @@
+const _toString = Object.prototype.toString;
+const hasOwnProperty = Object.prototype.hasOwnProperty;
+
 function isFn (fn) {
   return typeof fn === 'function'
+}
+
+function isStr (str) {
+  return typeof str === 'string'
+}
+
+function isPlainObject (obj) {
+  return _toString.call(obj) === '[object Object]'
+}
+
+function hasOwn (obj, key) {
+  return hasOwnProperty.call(obj, key)
 }
 
 const SYNC_API_RE = /hideKeyboard|upx2px|canIUse|^create|Sync$|Manager$/;
@@ -97,9 +112,179 @@ function upx2px (number, newDeviceWidth) {
   return number
 }
 
+const TODOS = [
+  'hideTabBar',
+  'hideTabBarRedDot',
+  'removeTabBarBadge',
+  'setTabBarBadge',
+  'setTabBarItem',
+  'setTabBarStyle',
+  'showTabBar',
+  'showTabBarRedDot'
+];
+
+const protocols = {
+  returnValue (methodName, res) { // 通用 returnValue 解析
+    if (res.error || res.errorMessage) {
+      res.errMsg = `${methodName}:fail ${res.errorMessage || res.error}`;
+      delete res.error;
+      delete res.errorMessage;
+    }
+    return res
+  },
+  setNavigationBarColor: {
+    name: 'setNavigationBar',
+    args: {
+      frontColor: false,
+      animation: false
+    }
+  },
+  setNavigationBarTitle: {
+    name: 'setNavigationBar'
+  },
+  showModal ({
+    showCancel = true
+  } = {}) {
+    if (showCancel) {
+      return {
+        name: 'confirm',
+        args: {
+          cancelColor: false,
+          confirmColor: false,
+          cancelText: 'cancelButtonText',
+          confirmText: 'confirmButtonText'
+        },
+        returnValue (fromRes, toRes) {
+          toRes.confirm = fromRes.confirm;
+          toRes.cancel = !fromRes.confirm;
+        }
+      }
+    }
+    return {
+      name: 'alert',
+      args: {
+        confirmColor: false,
+        confirmText: 'buttonText'
+      },
+      returnValue (fromRes, toRes) {
+        toRes.confirm = true;
+        toRes.cancel = false;
+      }
+    }
+  },
+  showToast ({
+    icon = 'success'
+  } = {}) {
+    const args = {
+      title: 'content',
+      icon: 'type',
+      duration: false,
+      image: false,
+      mask: false
+    };
+    if (icon === 'loading') {
+      return {
+        name: 'showLoading',
+        args
+      }
+    }
+    return {
+      name: 'showToast',
+      args
+    }
+  },
+  showActionSheet: {
+    name: 'showActionSheet',
+    args: {
+      itemList: 'items',
+      itemColor: false
+    },
+    returnValue: {
+      index: 'tapIndex'
+    }
+  }
+};
+
+TODOS.forEach(todoApi => {
+  protocols[todoApi] = false;
+});
+
+const CALLBACKS = ['success', 'fail', 'cancel', 'complete'];
+
+function processCallback (methodName, method, returnValue) {
+  return function (res) {
+    return method(processReturnValue(methodName, res, returnValue))
+  }
+}
+
+function processArgs (methodName, fromArgs, argsOption = {}, returnValue = {}) {
+  if (isPlainObject(fromArgs)) { // 一般 api 的参数解析
+    const toArgs = {};
+    if (isFn(argsOption)) {
+      argsOption = argsOption(fromArgs, toArgs) || {};
+    }
+    Object.keys(fromArgs).forEach(key => {
+      if (hasOwn(argsOption, key)) {
+        let keyOption = argsOption[key];
+        if (isFn(keyOption)) {
+          keyOption = keyOption(fromArgs[key], fromArgs);
+        }
+        if (!keyOption) { // 不支持的参数
+          console.warn(`支付宝小程序 ${methodName}暂不支持${key}`);
+        } else if (isStr(keyOption)) { // 重写参数 key
+          toArgs[keyOption] = fromArgs[key];
+        } else if (isPlainObject(keyOption)) { // {name:newName,value:value}可重新指定参数 key:value
+          toArgs[keyOption.name ? keyOption.name : key] = keyOption.value;
+        }
+      } else if (CALLBACKS.includes(key)) {
+        toArgs[key] = processCallback(methodName, fromArgs[key], returnValue);
+      } else {
+        toArgs[key] = fromArgs[key];
+      }
+    });
+    return toArgs
+  } else if (isFn(fromArgs)) {
+    fromArgs = processCallback(methodName, fromArgs, returnValue);
+  }
+  return fromArgs
+}
+
+function processReturnValue (methodName, res, returnValue) {
+  if (isFn(protocols.returnValue)) { // 处理通用 returnValue
+    res = protocols.returnValue(methodName, res);
+  }
+  return processArgs(methodName, res, returnValue)
+}
+
+function wrapper (methodName, method) {
+  if (hasOwn(protocols, methodName)) {
+    const protocol = protocols[methodName];
+    if (!protocol) { // 暂不支持的 api
+      return function () {
+        throw new Error(`支付宝小程序 暂不支持${methodName}`)
+      }
+    }
+    return function (arg1, arg2) { // 目前 api 最多两个参数
+      let options = protocol;
+      if (isFn(protocol)) {
+        options = protocol(arg1);
+      }
+
+      arg1 = processArgs(methodName, arg1, options.args, options.returnValue);
+
+      const returnValue = my[options.name || methodName](arg1, arg2);
+      if (isSyncApi(methodName)) { // 同步 api
+        return processReturnValue(methodName, returnValue, options.returnValue)
+      }
+      return returnValue
+    }
+  }
+  return method
+}
+
 const todoApis = Object.create(null);
 
-const TODOS = [
+const TODOS$1 = [
   'subscribePush',
   'unsubscribePush',
   'onPush',
@@ -120,7 +305,7 @@ function createTodoApi (name) {
   }
 }
 
-TODOS.forEach(function (name) {
+TODOS$1.forEach(function (name) {
   todoApis[name] = createTodoApi(name);
 });
 
@@ -154,7 +339,7 @@ function getProvider ({
   isFn(complete) && complete(res);
 }
 
-var baseApi = /*#__PURE__*/Object.freeze({
+var extraApi = /*#__PURE__*/Object.freeze({
   getProvider: getProvider
 });
 
@@ -175,16 +360,16 @@ if (typeof Proxy !== 'undefined') {
       if (api[name]) {
         return promisify(name, api[name])
       }
-      if (baseApi[name]) {
-        return promisify(name, baseApi[name])
+      if (extraApi[name]) {
+        return promisify(name, extraApi[name])
       }
       if (todoApis[name]) {
         return promisify(name, todoApis[name])
       }
-      if (!my.hasOwnProperty(name)) {
+      if (!hasOwn(my, name) && !hasOwn(protocols, name)) {
         return
       }
-      return promisify(name, my[name])
+      return promisify(name, wrapper(name, my[name]))
     }
   });
 } else {
@@ -194,7 +379,7 @@ if (typeof Proxy !== 'undefined') {
     uni$1[name] = promisify(name, todoApis[name]);
   });
 
-  Object.keys(baseApi).forEach(name => {
+  Object.keys(extraApi).forEach(name => {
     uni$1[name] = promisify(name, todoApis[name]);
   });
 
@@ -203,8 +388,8 @@ if (typeof Proxy !== 'undefined') {
   });
 
   Object.keys(my).forEach(name => {
-    if (my.hasOwnProperty(name)) {
-      uni$1[name] = promisify(name, my[name]);
+    if (hasOwn(my, name) || hasOwn(protocols, name)) {
+      uni$1[name] = promisify(name, wrapper(name, my[name]));
     }
   });
 }
