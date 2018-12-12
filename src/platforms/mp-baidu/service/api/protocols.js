@@ -3,6 +3,11 @@ const TODOS = [
   'hideKeyboard'
 ]
 
+function createTodoMethod (contextName, methodName) {
+  return function unsupported () {
+    console.error(`__PLATFORM_TITLE__ ${contextName}暂不支持${methodName}`)
+  }
+}
 // 需要做转换的 API 列表
 const protocols = {
   request: {
@@ -26,18 +31,14 @@ const protocols = {
     }
   },
   getRecorderManager: {
-    returnValue: {
-      onFrameRecorded: false
-      // TODO start 方法的参数有差异，暂时没有提供配置处理。
+    returnValue (fromRet) {
+      fromRet.onFrameRecorded = createTodoMethod('RecorderManager', 'onFrameRecorded')
     }
   },
   getBackgroundAudioManager: {
-    returnValue: {
-      buffered: false,
-      webUrl: false,
-      protocol: false,
-      onPrev: false,
-      onNext: false
+    returnValue (fromRet) {
+      fromRet.onPrev = createTodoMethod('BackgroundAudioManager', 'onPrev')
+      fromRet.onNext = createTodoMethod('BackgroundAudioManager', 'onNext')
     }
   },
   createInnerAudioContext: {

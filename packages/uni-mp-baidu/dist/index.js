@@ -19,8 +19,13 @@ function hasOwn (obj, key) {
 
 const SYNC_API_RE = /hideKeyboard|upx2px|canIUse|^create|Sync$|Manager$/;
 
+const CONTEXT_API_RE = /^create|Manager$/;
+
 const CALLBACK_API_RE = /^on/;
 
+function isContextApi (name) {
+  return CONTEXT_API_RE.test(name)
+}
 function isSyncApi (name) {
   return SYNC_API_RE.test(name)
 }
@@ -117,6 +122,11 @@ const TODOS = [
   'hideKeyboard'
 ];
 
+function createTodoMethod (contextName, methodName) {
+  return function unsupported () {
+    console.error(`百度小程序 ${contextName}暂不支持${methodName}`);
+  }
+}
 // 需要做转换的 API 列表
 const protocols = {
   request: {
@@ -140,18 +150,14 @@ const protocols = {
     }
   },
   getRecorderManager: {
-    returnValue: {
-      onFrameRecorded: false
-      // TODO start 方法的参数有差异，暂时没有提供配置处理。
+    returnValue (fromRet) {
+      fromRet.onFrameRecorded = createTodoMethod('RecorderManager', 'onFrameRecorded');
     }
   },
   getBackgroundAudioManager: {
-    returnValue: {
-      buffered: false,
-      webUrl: false,
-      protocol: false,
-      onPrev: false,
-      onNext: false
+    returnValue (fromRet) {
+      fromRet.onPrev = createTodoMethod('BackgroundAudioManager', 'onPrev');
+      fromRet.onNext = createTodoMethod('BackgroundAudioManager', 'onNext');
     }
   },
   createInnerAudioContext: {
@@ -182,13 +188,13 @@ function processCallback (methodName, method, returnValue) {
   }
 }
 
-function processArgs (methodName, fromArgs, argsOption = {}, returnValue = {}) {
+function processArgs (methodName, fromArgs, argsOption = {}, returnValue = {}, keepFromArgs = false) {
   if (isPlainObject(fromArgs)) { // 一般 api 的参数解析
-    const toArgs = {};
+    const toArgs = keepFromArgs === true ? fromArgs : {}; // returnValue 为 false 时，说明是格式化返回值，直接在返回值对象上修改赋值
     if (isFn(argsOption)) {
       argsOption = argsOption(fromArgs, toArgs) || {};
     }
-    Object.keys(fromArgs).forEach(key => {
+    for (let key in fromArgs) {
       if (hasOwn(argsOption, key)) {
         let keyOption = argsOption[key];
         if (isFn(keyOption)) {
@@ -204,9 +210,11 @@ function processArgs (methodName, fromArgs, argsOption = {}, returnValue = {}) {
       } else if (CALLBACKS.includes(key)) {
         toArgs[key] = processCallback(methodName, fromArgs[key], returnValue);
       } else {
-        toArgs[key] = fromArgs[key];
+        if (!keepFromArgs) {
+          toArgs[key] = fromArgs[key];
+        }
       }
-    });
+    }
     return toArgs
   } else if (isFn(fromArgs)) {
     fromArgs = processCallback(methodName, fromArgs, returnValue);
@@ -214,11 +222,11 @@ function processArgs (methodName, fromArgs, argsOption = {}, returnValue = {}) {
   return fromArgs
 }
 
-function processReturnValue (methodName, res, returnValue) {
+function processReturnValue (methodName, res, returnValue, keepReturnValue = false) {
   if (isFn(protocols.returnValue)) { // 处理通用 returnValue
     res = protocols.returnValue(methodName, res);
   }
-  return processArgs(methodName, res, returnValue)
+  return processArgs(methodName, res, returnValue, {}, keepReturnValue)
 }
 
 function wrapper (methodName, method) {
@@ -239,7 +247,7 @@ function wrapper (methodName, method) {
 
       const returnValue = swan[options.name || methodName](arg1, arg2);
       if (isSyncApi(methodName)) { // 同步 api
-        return processReturnValue(methodName, returnValue, options.returnValue)
+        return processReturnValue(methodName, returnValue, options.returnValue, isContextApi(methodName))
       }
       return returnValue
     }

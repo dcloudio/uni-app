@@ -4,10 +4,15 @@ import {
 
 const SYNC_API_RE = /hideKeyboard|upx2px|canIUse|^create|Sync$|Manager$/
 
+const CONTEXT_API_RE = /^create|Manager$/
+
 const TASK_APIS = ['request', 'downloadFile', 'uploadFile', 'connectSocket']
 
 const CALLBACK_API_RE = /^on/
 
+export function isContextApi (name) {
+  return CONTEXT_API_RE.test(name)
+}
 export function isSyncApi (name) {
   return SYNC_API_RE.test(name)
 }
