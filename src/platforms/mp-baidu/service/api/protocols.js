@@ -1,6 +1,6 @@
 // 不支持的 API 列表
 const TODOS = [
-	'hideKeyboard'
+  'hideKeyboard'
 ]
 
 // 需要做转换的 API 列表

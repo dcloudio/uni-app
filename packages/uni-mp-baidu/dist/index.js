@@ -112,55 +112,121 @@ function upx2px (number, newDeviceWidth) {
   return number
 }
 
-var protocols = {};
+// 不支持的 API 列表
+const TODOS = [
+  'hideKeyboard'
+];
+
+// 需要做转换的 API 列表
+const protocols = {
+  request: {
+    args (fromArgs) {
+      // TODO
+      // data 不支持 ArrayBuffer
+      // method 不支持 TRACE, CONNECT
+      // dataType 可取值为 string/json
+      return fromArgs
+    }
+  },
+  connectSocket: {
+    args: {
+      method: false
+    }
+  },
+  previewImage: {
+    args: {
+      indicator: false,
+      loop: false
+    }
+  },
+  getRecorderManager: {
+    returnValue: {
+      onFrameRecorded: false
+      // TODO start 方法的参数有差异，暂时没有提供配置处理。
+    }
+  },
+  getBackgroundAudioManager: {
+    returnValue: {
+      buffered: false,
+      webUrl: false,
+      protocol: false,
+      onPrev: false,
+      onNext: false
+    }
+  },
+  createInnerAudioContext: {
+    returnValue: {
+      buffered: false
+    }
+  },
+  createVideoContext: {
+    returnValue: {
+      playbackRate: false
+    }
+  },
+  scanCode: {
+    onlyFromCamera: false,
+    scanType: false
+  }
+};
+
+TODOS.forEach(todoApi => {
+  protocols[todoApi] = false;
+});
 
 const CALLBACKS = ['success', 'fail', 'cancel', 'complete'];
 
-function processCallback (method, returnValue) {
+function processCallback (methodName, method, returnValue) {
   return function (res) {
-    return method(processReturnValue(res, returnValue))
+    return method(processReturnValue(methodName, res, returnValue))
   }
 }
 
-function processArgs (fromArgs, argsOption = {}, returnValue = {}) {
+function processArgs (methodName, fromArgs, argsOption = {}, returnValue = {}) {
   if (isPlainObject(fromArgs)) { // 一般 api 的参数解析
     const toArgs = {};
+    if (isFn(argsOption)) {
+      argsOption = argsOption(fromArgs, toArgs) || {};
+    }
     Object.keys(fromArgs).forEach(key => {
       if (hasOwn(argsOption, key)) {
         let keyOption = argsOption[key];
         if (isFn(keyOption)) {
-          keyOption = keyOption(fromArgs[key], fromArgs);
+          keyOption = keyOption(fromArgs[key], fromArgs, toArgs);
         }
         if (!keyOption) { // 不支持的参数
-          console.warn(`${百度小程序} ${name}暂不支持${key}`);
+          console.warn(`百度小程序 ${methodName}暂不支持${key}`);
         } else if (isStr(keyOption)) { // 重写参数 key
           toArgs[keyOption] = fromArgs[key];
         } else if (isPlainObject(keyOption)) { // {name:newName,value:value}可重新指定参数 key:value
           toArgs[keyOption.name ? keyOption.name : key] = keyOption.value;
         }
       } else if (CALLBACKS.includes(key)) {
-        toArgs[key] = processCallback(fromArgs[key], returnValue);
+        toArgs[key] = processCallback(methodName, fromArgs[key], returnValue);
       } else {
         toArgs[key] = fromArgs[key];
       }
     });
     return toArgs
   } else if (isFn(fromArgs)) {
-    fromArgs = processCallback(fromArgs, returnValue);
+    fromArgs = processCallback(methodName, fromArgs, returnValue);
   }
   return fromArgs
 }
 
-function processReturnValue (res, returnValue) {
-  return processArgs(res, returnValue)
+function processReturnValue (methodName, res, returnValue) {
+  if (isFn(protocols.returnValue)) { // 处理通用 returnValue
+    res = protocols.returnValue(methodName, res);
+  }
+  return processArgs(methodName, res, returnValue)
 }
 
-function wrapper (name, method) {
-  if (hasOwn(protocols, name)) {
-    const protocol = protocols[name];
+function wrapper (methodName, method) {
+  if (hasOwn(protocols, methodName)) {
+    const protocol = protocols[methodName];
     if (!protocol) { // 暂不支持的 api
       return function () {
-        throw new Error(`${百度小程序}暂不支持${name}`)
+        console.error(`百度小程序 暂不支持${methodName}`);
       }
     }
     return function (arg1, arg2) { // 目前 api 最多两个参数
@@ -169,11 +235,11 @@ function wrapper (name, method) {
         options = protocol(arg1);
       }
 
-      arg1 = processArgs(arg1, options.args, options.returnValue);
+      arg1 = processArgs(methodName, arg1, options.args, options.returnValue);
 
-      const returnValue = swan[options.name || name](arg1, arg2);
-      if (isSyncApi(name)) { // 同步 api
-        return processReturnValue(returnValue, options.returnValue)
+      const returnValue = swan[options.name || methodName](arg1, arg2);
+      if (isSyncApi(methodName)) { // 同步 api
+        return processReturnValue(methodName, returnValue, options.returnValue)
       }
       return returnValue
     }
@@ -183,7 +249,7 @@ function wrapper (name, method) {
 
 const todoApis = Object.create(null);
 
-const TODOS = [
+const TODOS$1 = [
   'subscribePush',
   'unsubscribePush',
   'onPush',
@@ -204,7 +270,7 @@ function createTodoApi (name) {
   }
 }
 
-TODOS.forEach(function (name) {
+TODOS$1.forEach(function (name) {
   todoApis[name] = createTodoApi(name);
 });
 
@@ -265,7 +331,7 @@ if (typeof Proxy !== 'undefined') {
       if (todoApis[name]) {
         return promisify(name, todoApis[name])
       }
-      if (!swan.hasOwnProperty(name)) {
+      if (!hasOwn(swan, name) && !hasOwn(protocols, name)) {
         return
       }
       return promisify(name, wrapper(name, swan[name]))
@@ -287,7 +353,7 @@ if (typeof Proxy !== 'undefined') {
   });
 
   Object.keys(swan).forEach(name => {
-    if (swan.hasOwnProperty(name)) {
+    if (hasOwn(swan, name) || hasOwn(protocols, name)) {
       uni$1[name] = promisify(name, wrapper(name, swan[name]));
     }
   });
