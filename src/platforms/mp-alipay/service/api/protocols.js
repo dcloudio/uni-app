@@ -35,7 +35,7 @@ function _handleNetworkInfo (result) {
       result.networkType = result.networkType.toLowerCase()
       break
   }
-  return result
+  return {}
 }
 
 const protocols = { // 需要做转换的 API 列表
@@ -171,16 +171,15 @@ const protocols = { // 需要做转换的 API 列表
   },
   previewImage: {
     args (fromArgs) {
-      let current = 0
-      if (fromArgs.current) {
+      // 支付宝小程序的 current 是索引值，而非图片地址。
+      if (fromArgs.current && Array.isArray(fromArgs.urls)) {
         const index = fromArgs.urls.indexOf(fromArgs.current)
-        current = ~index ? index : 0
+        fromArgs.current = ~index ? index : 0
       }
-      return Object.assign(fromArgs, {
-        current: current,
+      return {
         indicator: false,
         loop: false
-      })
+      }
     }
   },
   saveFile: {
@@ -202,7 +201,7 @@ const protocols = { // 需要做转换的 API 列表
           delete file.apFilePath
         })
       }
-      return result
+      return {}
     }
   },
   removeSavedFile: {
@@ -224,15 +223,6 @@ const protocols = { // 需要做转换的 API 列表
   openLocation: {
     args: {
       // TODO address 参数在阿里上是必传的
-    }
-  },
-  createMapContext: {
-    // TODO
-    returns: {
-      translateMarker: false,
-      includePoints: false,
-      getRegion: false,
-      getScale: false
     }
   },
   getSystemInfo: {

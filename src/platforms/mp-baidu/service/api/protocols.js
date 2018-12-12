@@ -16,7 +16,9 @@ const protocols = {
       // data 不支持 ArrayBuffer
       // method 不支持 TRACE, CONNECT
       // dataType 可取值为 string/json
-      return fromArgs
+      return {
+        method: 'method'
+      }
     }
   },
   connectSocket: {
@@ -39,16 +41,6 @@ const protocols = {
     returnValue (fromRet) {
       fromRet.onPrev = createTodoMethod('BackgroundAudioManager', 'onPrev')
       fromRet.onNext = createTodoMethod('BackgroundAudioManager', 'onNext')
-    }
-  },
-  createInnerAudioContext: {
-    returnValue: {
-      buffered: false
-    }
-  },
-  createVideoContext: {
-    returnValue: {
-      playbackRate: false
     }
   },
   scanCode: {
