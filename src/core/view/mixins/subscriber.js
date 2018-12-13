@@ -3,12 +3,13 @@ import {
 } from 'uni-shared'
 
 export default {
-  props: {
-    id: {
-      type: String,
-      default: ''
-    }
-  },
+  // 取消id的定义，某些组件（canvas）内不在props内定义id
+  // props: {
+  //   id: {
+  //     type: String,
+  //     default: ''
+  //   }
+  // },
   mounted () {
     this._toggleListeners('subscribe', this.id) // 初始化监听
     this.$watch('id', (newId, oldId) => { // watch id
