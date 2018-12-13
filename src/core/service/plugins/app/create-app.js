@@ -9,6 +9,10 @@ export function getApp () {
 export function getCurrentPages (isAll = false) {
   const pages = []
   const app = getApp()
+  if (!app) {
+    console.error('app is not ready')
+    return []
+  }
   const childrenVm = app.$children[0]
   if (childrenVm && childrenVm.$children.length) {
     const tabBarVm = childrenVm.$children.find(vm => vm.$options.name === 'TabBar')
