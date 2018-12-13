@@ -44,6 +44,8 @@ const protocols = { // 需要做转换的 API 列表
       res.errMsg = `${methodName}:fail ${res.errorMessage || res.error}`
       delete res.error
       delete res.errorMessage
+    } else {
+      res.errMsg = `${methodName}:ok`
     }
     return res
   },
