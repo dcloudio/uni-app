@@ -146,6 +146,12 @@ const protocols = { // 需要做转换的 API 列表
       index: 'tapIndex'
     }
   },
+  showLoading: {
+    args: {
+      title: 'content',
+      mask: false
+    }
+  },
   uploadFile: {
     args: {
       name: 'fileName'
@@ -154,7 +160,7 @@ const protocols = { // 需要做转换的 API 列表
   },
   downloadFile: {
     returnValue: {
-      tempFilePath: 'apFilePath'
+      apFilePath: 'tempFilePath'
     }
   },
   connectSocket: {
@@ -166,7 +172,7 @@ const protocols = { // 需要做转换的 API 列表
   },
   chooseImage: {
     returnValue: {
-      tempFilePaths: 'apFilePaths'
+      apFilePaths: 'tempFilePaths'
     }
   },
   previewImage: {
@@ -187,7 +193,7 @@ const protocols = { // 需要做转换的 API 列表
       tempFilePath: 'apFilePath'
     },
     returnValue: {
-      savedFilePath: 'apFilePath'
+      apFilePath: 'savedFilePath'
     }
   },
   getSavedFileInfo: {
@@ -213,12 +219,12 @@ const protocols = { // 需要做转换的 API 列表
     args: {
       type: false,
       altitude: false
-    },
-    returnValue: {
-      speed: false,
-      altitude: false,
-      verticalAccuracy: false
     }
+    //     returnValue: {
+    //       speed: false,
+    //       altitude: false,
+    //       verticalAccuracy: false
+    //     }
   },
   openLocation: {
     args: {
@@ -226,18 +232,18 @@ const protocols = { // 需要做转换的 API 列表
     }
   },
   getSystemInfo: {
-    returnValue: {
-      brand: false,
-      statusBarHeight: false,
-      SDKVersion: false
-    }
+    //     returnValue: {
+    //       brand: false,
+    //       statusBarHeight: false,
+    //       SDKVersion: false
+    //     }
   },
   getSystemInfoSync: {
-    returnValue: {
-      brand: false,
-      statusBarHeight: false,
-      SDKVersion: false
-    }
+    //     returnValue: {
+    //       brand: false,
+    //       statusBarHeight: false,
+    //       SDKVersion: false
+    //     }
   },
   getNetworkType: {
     returnValue: _handleNetworkInfo
@@ -267,7 +273,7 @@ const protocols = { // 需要做转换的 API 列表
   getClipboardData: {
     name: 'getClipboard',
     returnValue: {
-      data: 'text'
+      text: 'data'
     }
   },
   pageScrollTo: {
