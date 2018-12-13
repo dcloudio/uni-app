@@ -44,8 +44,10 @@ const protocols = {
     }
   },
   scanCode: {
-    onlyFromCamera: false,
-    scanType: false
+    args: {
+      onlyFromCamera: false,
+      scanType: false
+    }
   }
 }
 
