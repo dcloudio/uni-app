@@ -97,7 +97,7 @@ function afterEach (to, from) {
   const fromId = from.params.__id__
   const toId = to.params.__id__
 
-  const fromVm = getCurrentPages().find(pageVm => pageVm.$page.id === fromId)
+  const fromVm = getCurrentPages(true).find(pageVm => pageVm.$page.id === fromId)
 
   switch (to.type) {
     case 'navigateTo': // 前一个页面触发 onHide

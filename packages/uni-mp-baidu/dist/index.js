@@ -19,8 +19,13 @@ function hasOwn (obj, key) {
 
 const SYNC_API_RE = /hideKeyboard|upx2px|canIUse|^create|Sync$|Manager$/;
 
+const CONTEXT_API_RE = /^create|Manager$/;
+
 const CALLBACK_API_RE = /^on/;
 
+function isContextApi (name) {
+  return CONTEXT_API_RE.test(name)
+}
 function isSyncApi (name) {
   return SYNC_API_RE.test(name)
 }
@@ -112,55 +117,124 @@ function upx2px (number, newDeviceWidth) {
   return number
 }
 
-var protocols = {};
+// 不支持的 API 列表
+const TODOS = [
+  'hideKeyboard'
+];
+
+function createTodoMethod (contextName, methodName) {
+  return function unsupported () {
+    console.error(`百度小程序 ${contextName}暂不支持${methodName}`);
+  }
+}
+// 需要做转换的 API 列表
+const protocols = {
+  request: {
+    args (fromArgs) {
+      // TODO
+      // data 不支持 ArrayBuffer
+      // method 不支持 TRACE, CONNECT
+      // dataType 可取值为 string/json
+      return fromArgs
+    }
+  },
+  connectSocket: {
+    args: {
+      method: false
+    }
+  },
+  previewImage: {
+    args: {
+      indicator: false,
+      loop: false
+    }
+  },
+  getRecorderManager: {
+    returnValue (fromRet) {
+      fromRet.onFrameRecorded = createTodoMethod('RecorderManager', 'onFrameRecorded');
+    }
+  },
+  getBackgroundAudioManager: {
+    returnValue (fromRet) {
+      fromRet.onPrev = createTodoMethod('BackgroundAudioManager', 'onPrev');
+      fromRet.onNext = createTodoMethod('BackgroundAudioManager', 'onNext');
+    }
+  },
+  createInnerAudioContext: {
+    returnValue: {
+      buffered: false
+    }
+  },
+  createVideoContext: {
+    returnValue: {
+      playbackRate: false
+    }
+  },
+  scanCode: {
+    onlyFromCamera: false,
+    scanType: false
+  }
+};
+
+TODOS.forEach(todoApi => {
+  protocols[todoApi] = false;
+});
 
 const CALLBACKS = ['success', 'fail', 'cancel', 'complete'];
 
-function processCallback (method, returnValue) {
+function processCallback (methodName, method, returnValue) {
   return function (res) {
-    return method(processReturnValue(res, returnValue))
+    return method(processReturnValue(methodName, res, returnValue))
   }
 }
 
-function processArgs (fromArgs, argsOption = {}, returnValue = {}) {
+function processArgs (methodName, fromArgs, argsOption = {}, returnValue = {}, keepFromArgs = false) {
   if (isPlainObject(fromArgs)) { // 一般 api 的参数解析
-    const toArgs = {};
-    Object.keys(fromArgs).forEach(key => {
+    const toArgs = keepFromArgs === true ? fromArgs : {}; // returnValue 为 false 时，说明是格式化返回值，直接在返回值对象上修改赋值
+    if (isFn(argsOption)) {
+      argsOption = argsOption(fromArgs, toArgs) || {};
+    }
+    for (let key in fromArgs) {
       if (hasOwn(argsOption, key)) {
         let keyOption = argsOption[key];
         if (isFn(keyOption)) {
-          keyOption = keyOption(fromArgs[key], fromArgs);
+          keyOption = keyOption(fromArgs[key], fromArgs, toArgs);
         }
         if (!keyOption) { // 不支持的参数
-          console.warn(`${百度小程序} ${name}暂不支持${key}`);
+          console.warn(`百度小程序 ${methodName}暂不支持${key}`);
         } else if (isStr(keyOption)) { // 重写参数 key
           toArgs[keyOption] = fromArgs[key];
         } else if (isPlainObject(keyOption)) { // {name:newName,value:value}可重新指定参数 key:value
           toArgs[keyOption.name ? keyOption.name : key] = keyOption.value;
         }
       } else if (CALLBACKS.includes(key)) {
-        toArgs[key] = processCallback(fromArgs[key], returnValue);
+        toArgs[key] = processCallback(methodName, fromArgs[key], returnValue);
       } else {
-        toArgs[key] = fromArgs[key];
+        if (!keepFromArgs) {
+          toArgs[key] = fromArgs[key];
+        }
       }
-    });
+    }
     return toArgs
   } else if (isFn(fromArgs)) {
-    fromArgs = processCallback(fromArgs, returnValue);
+    fromArgs = processCallback(methodName, fromArgs, returnValue);
   }
   return fromArgs
 }
 
-function processReturnValue (res, returnValue) {
-  return processArgs(res, returnValue)
+function processReturnValue (methodName, res, returnValue, keepReturnValue = false) {
+  if (isFn(protocols.returnValue)) { // 处理通用 returnValue
+    res = protocols.returnValue(methodName, res);
+  }
+  return processArgs(methodName, res, returnValue, {}, keepReturnValue)
 }
 
-function wrapper (name, method) {
-  if (hasOwn(protocols, name)) {
-    const protocol = protocols[name];
+function wrapper (methodName, method) {
+  if (hasOwn(protocols, methodName)) {
+    const protocol = protocols[methodName];
     if (!protocol) { // 暂不支持的 api
       return function () {
-        throw new Error(`${百度小程序}暂不支持${name}`)
+        console.error(`百度小程序 暂不支持${methodName}`);
       }
     }
     return function (arg1, arg2) { // 目前 api 最多两个参数
@@ -169,11 +243,11 @@ function wrapper (name, method) {
         options = protocol(arg1);
       }
 
-      arg1 = processArgs(arg1, options.args, options.returnValue);
+      arg1 = processArgs(methodName, arg1, options.args, options.returnValue);
 
-      const returnValue = swan[options.name || name](arg1, arg2);
-      if (isSyncApi(name)) { // 同步 api
-        return processReturnValue(returnValue, options.returnValue)
+      const returnValue = swan[options.name || methodName](arg1, arg2);
+      if (isSyncApi(methodName)) { // 同步 api
+        return processReturnValue(methodName, returnValue, options.returnValue, isContextApi(methodName))
       }
       return returnValue
     }
@@ -183,7 +257,7 @@ function wrapper (name, method) {
 
 const todoApis = Object.create(null);
 
-const TODOS = [
+const TODOS$1 = [
   'subscribePush',
   'unsubscribePush',
   'onPush',
@@ -204,7 +278,7 @@ function createTodoApi (name) {
   }
 }
 
-TODOS.forEach(function (name) {
+TODOS$1.forEach(function (name) {
   todoApis[name] = createTodoApi(name);
 });
 
@@ -265,7 +339,7 @@ if (typeof Proxy !== 'undefined') {
       if (todoApis[name]) {
         return promisify(name, todoApis[name])
       }
-      if (!swan.hasOwnProperty(name)) {
+      if (!hasOwn(swan, name) && !hasOwn(protocols, name)) {
         return
       }
       return promisify(name, wrapper(name, swan[name]))
@@ -287,7 +361,7 @@ if (typeof Proxy !== 'undefined') {
   });
 
   Object.keys(swan).forEach(name => {
-    if (swan.hasOwnProperty(name)) {
+    if (hasOwn(swan, name) || hasOwn(protocols, name)) {
       uni$1[name] = promisify(name, wrapper(name, swan[name]));
     }
   });

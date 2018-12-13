@@ -6,7 +6,8 @@ import {
 } from 'uni-shared'
 
 import {
-  isSyncApi
+  isSyncApi,
+  isContextApi
 } from '../helpers/promise'
 
 import protocols from 'uni-platform/service/api/protocols'
@@ -19,13 +20,13 @@ function processCallback (methodName, method, returnValue) {
   }
 }
 
-function processArgs (methodName, fromArgs, argsOption = {}, returnValue = {}) {
+function processArgs (methodName, fromArgs, argsOption = {}, returnValue = {}, keepFromArgs = false) {
   if (isPlainObject(fromArgs)) { // 一般 api 的参数解析
-    const toArgs = {}
+    const toArgs = keepFromArgs === true ? fromArgs : {} // returnValue 为 false 时，说明是格式化返回值，直接在返回值对象上修改赋值
     if (isFn(argsOption)) {
       argsOption = argsOption(fromArgs, toArgs) || {}
     }
-    Object.keys(fromArgs).forEach(key => {
+    for (let key in fromArgs) {
       if (hasOwn(argsOption, key)) {
         let keyOption = argsOption[key]
         if (isFn(keyOption)) {
@@ -41,9 +42,11 @@ function processArgs (methodName, fromArgs, argsOption = {}, returnValue = {}) {
       } else if (CALLBACKS.includes(key)) {
         toArgs[key] = processCallback(methodName, fromArgs[key], returnValue)
       } else {
-        toArgs[key] = fromArgs[key]
+        if (!keepFromArgs) {
+          toArgs[key] = fromArgs[key]
+        }
       }
-    })
+    }
     return toArgs
   } else if (isFn(fromArgs)) {
     fromArgs = processCallback(methodName, fromArgs, returnValue)
@@ -51,11 +54,11 @@ function processArgs (methodName, fromArgs, argsOption = {}, returnValue = {}) {
   return fromArgs
 }
 
-function processReturnValue (methodName, res, returnValue) {
+function processReturnValue (methodName, res, returnValue, keepReturnValue = false) {
   if (isFn(protocols.returnValue)) { // 处理通用 returnValue
     res = protocols.returnValue(methodName, res)
   }
-  return processArgs(methodName, res, returnValue)
+  return processArgs(methodName, res, returnValue, {}, keepReturnValue)
 }
 
 export default function wrapper (methodName, method) {
@@ -76,7 +79,7 @@ export default function wrapper (methodName, method) {
 
       const returnValue = __GLOBAL__[options.name || methodName](arg1, arg2)
       if (isSyncApi(methodName)) { // 同步 api
-        return processReturnValue(methodName, returnValue, options.returnValue)
+        return processReturnValue(methodName, returnValue, options.returnValue, isContextApi(methodName))
       }
       return returnValue
     }

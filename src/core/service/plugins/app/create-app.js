@@ -8,10 +8,15 @@ export function getApp () {
 
 export function getCurrentPages (isAll = false) {
   const pages = []
-  const childrenVm = appVm.$children[0]
+  const app = getApp()
+  if (!app) {
+    console.error('app is not ready')
+    return []
+  }
+  const childrenVm = app.$children[0]
   if (childrenVm && childrenVm.$children.length) {
     const tabBarVm = childrenVm.$children.find(vm => vm.$options.name === 'TabBar')
-    const app = getApp()
+
     childrenVm.$children.forEach(vm => {
       if (tabBarVm !== vm && vm.$children.length && vm.$children[0].$options.name === 'Page' && vm.$children[0].$slots.page) {
         // vm.$children[0]=Page->PageBody->RealPage
@@ -39,6 +44,15 @@ export function getCurrentPages (isAll = false) {
       }
     })
   }
+  // 当页面返回过程中，请求 getCurrentPages 时，可能会获取到前一个已经准备销毁的 page
+  const length = pages.length
+  if (length > 1) {
+    const currentPage = pages[length - 1]
+    if (currentPage.$page.path !== app.$route.path) { // 删除已经准备销毁的上个页面
+      pages.splice(length - 1, 1)
+    }
+  }
+
   return pages
 }
 

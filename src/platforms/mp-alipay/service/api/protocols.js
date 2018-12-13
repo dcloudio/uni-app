@@ -6,8 +6,37 @@ const TODOS = [ // 不支持的 API 列表
   'setTabBarItem',
   'setTabBarStyle',
   'showTabBar',
-  'showTabBarRedDot'
+  'showTabBarRedDot',
+  'startPullDownRefresh',
+  'saveImageToPhotosAlbum',
+  'getRecorderManager',
+  'getBackgroundAudioManager',
+  'createInnerAudioContext',
+  'chooseVideo',
+  'saveVideoToPhotosAlbum',
+  'createVideoContext',
+  'openDocument',
+  'startAccelerometer',
+  'startCompass',
+  'addPhoneContact',
+  'createIntersectionObserver'
 ]
+
+function _handleNetworkInfo (result) {
+  switch (result.networkType) {
+    case 'NOTREACHABLE':
+      result.networkType = 'none'
+      break
+    case 'WWAN':
+      // TODO ?
+      result.networkType = '3g'
+      break
+    default:
+      result.networkType = result.networkType.toLowerCase()
+      break
+  }
+  return {}
+}
 
 const protocols = { // 需要做转换的 API 列表
   returnValue (methodName, res) { // 通用 returnValue 解析
@@ -15,6 +44,8 @@ const protocols = { // 需要做转换的 API 列表
       res.errMsg = `${methodName}:fail ${res.errorMessage || res.error}`
       delete res.error
       delete res.errorMessage
+    } else {
+      res.errMsg = `${methodName}:ok`
     }
     return res
   },
@@ -115,6 +146,141 @@ const protocols = { // 需要做转换的 API 列表
     },
     returnValue: {
       index: 'tapIndex'
+    }
+  },
+  showLoading: {
+    args: {
+      title: 'content',
+      mask: false
+    }
+  },
+  uploadFile: {
+    args: {
+      name: 'fileName'
+    }
+    // 从测试结果看，是有返回对象的，文档上没有说明。
+  },
+  downloadFile: {
+    returnValue: {
+      apFilePath: 'tempFilePath'
+    }
+  },
+  connectSocket: {
+    args: {
+      method: false,
+      protocols: false
+    }
+    // TODO 有没有返回值还需要测试下
+  },
+  chooseImage: {
+    returnValue: {
+      apFilePaths: 'tempFilePaths'
+    }
+  },
+  previewImage: {
+    args (fromArgs) {
+      // 支付宝小程序的 current 是索引值，而非图片地址。
+      if (fromArgs.current && Array.isArray(fromArgs.urls)) {
+        const index = fromArgs.urls.indexOf(fromArgs.current)
+        fromArgs.current = ~index ? index : 0
+      }
+      return {
+        indicator: false,
+        loop: false
+      }
+    }
+  },
+  saveFile: {
+    args: {
+      tempFilePath: 'apFilePath'
+    },
+    returnValue: {
+      apFilePath: 'savedFilePath'
+    }
+  },
+  getSavedFileInfo: {
+    args: {
+      filePath: 'apFilePath'
+    },
+    returnValue (result) {
+      if (result.fileList && result.fileList.length) {
+        result.fileList.forEach(file => {
+          file.filePath = file.apFilePath
+          delete file.apFilePath
+        })
+      }
+      return {}
+    }
+  },
+  removeSavedFile: {
+    args: {
+      filePath: 'apFilePath'
+    }
+  },
+  getLocation: {
+    args: {
+      type: false,
+      altitude: false
+    }
+    //     returnValue: {
+    //       speed: false,
+    //       altitude: false,
+    //       verticalAccuracy: false
+    //     }
+  },
+  openLocation: {
+    args: {
+      // TODO address 参数在阿里上是必传的
+    }
+  },
+  getSystemInfo: {
+    //     returnValue: {
+    //       brand: false,
+    //       statusBarHeight: false,
+    //       SDKVersion: false
+    //     }
+  },
+  getSystemInfoSync: {
+    //     returnValue: {
+    //       brand: false,
+    //       statusBarHeight: false,
+    //       SDKVersion: false
+    //     }
+  },
+  getNetworkType: {
+    returnValue: _handleNetworkInfo
+  },
+  onNetworkStatusChange: {
+    returnValue: _handleNetworkInfo
+  },
+  stopAccelerometer: {
+    name: 'offAccelerometerChange'
+  },
+  stopCompass: {
+    name: 'offCompassChange'
+  },
+  scanCode: {
+    name: 'scan',
+    args: {
+      onlyFromCamera: 'hideAlbum',
+      scanType: false
+    }
+  },
+  setClipboardData: {
+    name: 'setClipboard',
+    args: {
+      data: 'text'
+    }
+  },
+  getClipboardData: {
+    name: 'getClipboard',
+    returnValue: {
+      text: 'data'
+    }
+  },
+  pageScrollTo: {
+    args: {
+      duration: false
     }
   }
 }
