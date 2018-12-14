@@ -198,8 +198,10 @@ export default {
       }
       if (!this.actionsWaiting && callbackId) {
         UniViewJSBridge.publishHandler('onDrawCanvas', {
-          errMsg: 'drawCanvas:ok',
-          callbackId
+          callbackId,
+          data: {
+            errMsg: 'drawCanvas:ok'
+          }
         }, this.$page.id)
       }
     },
@@ -316,6 +318,64 @@ export default {
         }
         return false
       }
+    },
+    getImageData ({
+      x,
+      y,
+      width,
+      height,
+      callbackId
+    }) {
+      var imgData
+      try {
+        imgData = this.$refs.canvas.getContext('2d').getImageData(x, y, width, height)
+      } catch (error) {
+        UniViewJSBridge.publishHandler('onCanvasMethodCallback', {
+          callbackId,
+          data: {
+            errMsg: 'canvasGetImageData:fail'
+          }
+        }, this.$page.id)
+        return
+      }
+      UniViewJSBridge.publishHandler('onCanvasMethodCallback', {
+        callbackId,
+        data: {
+          errMsg: 'canvasGetImageData:ok',
+          data: [...imgData.data],
+          width,
+          height
+        }
+      }, this.$page.id)
+    },
+    putImageData ({
+      data,
+      x,
+      y,
+      width,
+      height,
+      callbackId
+    }) {
+      try {
+        if (!height) {
+          height = data.length / 4 / width
+        }
+        this.$refs.canvas.getContext('2d').putImageData(new ImageData(new Uint8ClampedArray(data), width, height), x, y)
+      } catch (error) {
+        UniViewJSBridge.publishHandler('onCanvasMethodCallback', {
+          callbackId,
+          data: {
+            errMsg: 'canvasPutImageData:fail'
+          }
+        }, this.$page.id)
+        return
+      }
+      UniViewJSBridge.publishHandler('onCanvasMethodCallback', {
+        callbackId,
+        data: {
+          errMsg: 'canvasPutImageData:ok'
+        }
+      }, this.$page.id)
     }
   }
 }

@@ -3,12 +3,22 @@ import createCallbacks from 'uni-helpers/callbacks'
 const canvasEventCallbacks = createCallbacks('canvasEvent')
 
 UniServiceJSBridge.subscribe('onDrawCanvas', ({
-  reqId,
-  res
+  callbackId,
+  data
 }) => {
-  const callback = canvasEventCallbacks.pop(reqId)
+  const callback = canvasEventCallbacks.pop(callbackId)
   if (callback) {
-    callback(res)
+    callback(data)
+  }
+})
+
+UniServiceJSBridge.subscribe('onCanvasMethodCallback', ({
+  callbackId,
+  data
+}) => {
+  const callback = canvasEventCallbacks.pop(callbackId)
+  if (callback) {
+    callback(data)
   }
 })
 
@@ -558,4 +568,72 @@ export function createCanvasContext (id, context) {
   } else {
     UniServiceJSBridge.emit('onError', 'createCanvasContext:fail')
   }
+}
+
+const {
+  invokeCallbackHandler: invoke
+} = UniServiceJSBridge
+
+export function canvasGetImageData ({
+  canvasId,
+  x,
+  y,
+  width,
+  height
+}, callbackId) {
+  var pageId
+  const app = getApp()
+  if (app.$route && app.$route.params.__id__) {
+    pageId = app.$route.params.__id__
+  } else {
+    invoke(callbackId, {
+      errMsg: 'canvasGetImageData:fail'
+    })
+    return
+  }
+  var cId = canvasEventCallbacks.push(function (data) {
+    var imgData = data.data
+    if (imgData && imgData.length) {
+      data.data = new Uint8ClampedArray(imgData)
+    }
+    invoke(callbackId, data)
+  })
+  operateCanvas(canvasId, pageId, 'getImageData', {
+    x,
+    y,
+    width,
+    height,
+    callbackId: cId
+  })
+}
+
+export function canvasPutImageData ({
+  canvasId,
+  data,
+  x,
+  y,
+  width,
+  height
+}, callbackId) {
+  var pageId
+  const app = getApp()
+  if (app.$route && app.$route.params.__id__) {
+    pageId = app.$route.params.__id__
+  } else {
+    invoke(callbackId, {
+      errMsg: 'canvasPutImageData:fail'
+    })
+    return
+  }
+  var cId = canvasEventCallbacks.push(function (data) {
+    invoke(callbackId, data)
+  })
+  operateCanvas(canvasId, pageId, 'putImageData', {
+    data: [...data],
+    x,
+    y,
+    width,
+    height,
+    callbackId: cId
+  })
 }
