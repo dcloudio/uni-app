@@ -422,6 +422,16 @@ class CanvasContext {
       this.subpath = [this.subpath.shift()]
     }
   }
+  clearActions () {
+    this.actions = []
+    this.path = []
+    this.subpath = []
+  }
+  getActions () {
+    var actions = [...this.actions]
+    this.clearActions()
+    return actions
+  }
 }
 
 [...methods1, ...methods2].forEach(function (method) {
@@ -699,4 +709,24 @@ export function canvasToTempFilePath ({
     height,
     callbackId: cId
   })
+}
+
+export function createContext () {
+  return new CanvasContext()
+}
+
+export function drawCanvas ({
+  canvasId,
+  actions,
+  reserve
+}) {
+  const app = getApp()
+  if (app.$route && app.$route.params.__id__) {
+    operateCanvas(canvasId, app.$route.params.__id__, 'actionsChanged', {
+      actions,
+      reserve
+    })
+  } else {
+    UniServiceJSBridge.emit('onError', 'drawCanvas:fail')
+  }
 }

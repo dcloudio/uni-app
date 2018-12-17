@@ -92,3 +92,18 @@ export const canvasToTempFilePath = {
     }
   }
 }
+
+export const drawCanvas = {
+  canvasId: {
+    type: String,
+    require: true
+  },
+  actions: {
+    type: Array,
+    require: true
+  },
+  reserve: {
+    type: Boolean,
+    default: false
+  }
+}
