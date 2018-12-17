@@ -129,11 +129,6 @@ export default {
 		position: relative;
 	}
 
-	/* uni-radio .uni-radio-input.uni-radio-input-checked {
-		background-color: #007aff;
-		border-color: #007aff;
-	} */
-
 	uni-radio .uni-radio-input.uni-radio-input-checked:before {
 		font: normal normal normal 14px/1 "uni";
 		content: "\EA08";
