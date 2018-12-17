@@ -1,4 +1,4 @@
-import { urlToFile } from '../file/util'
+import { urlToFile } from 'uni-platform/helpers/file'
 /**
  * 上传任务
  */

@@ -1,4 +1,4 @@
-import { fileToUrl } from '../file/util'
+import { fileToUrl } from 'uni-platform/helpers/file'
 /**
  * 下载任务
  */
