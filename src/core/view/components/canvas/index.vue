@@ -327,8 +327,15 @@ export default {
       callbackId
     }) {
       var imgData
+      var canvas = this.$refs.canvas
+      if (!width) {
+        width = canvas.width
+      }
+      if (!height) {
+        height = canvas.height
+      }
       try {
-        imgData = this.$refs.canvas.getContext('2d').getImageData(x, y, width, height)
+        imgData = canvas.getContext('2d').getImageData(x, y, width, height)
       } catch (error) {
         UniViewJSBridge.publishHandler('onCanvasMethodCallback', {
           callbackId,

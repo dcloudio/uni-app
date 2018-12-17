@@ -252,7 +252,15 @@ var methods3 = ['setFillStyle', 'setTextAlign', 'setStrokeStyle', 'setGlobalAlph
   'setFontSize', 'setLineCap', 'setLineJoin', 'setLineWidth', 'setMiterLimit',
   'setTextBaseline', 'setLineDash'
 ]
-var c2d
+
+var tempCanvas
+function getTempCanvas () {
+  if (!tempCanvas) {
+    tempCanvas = document.createElement('canvas')
+  }
+  return tempCanvas
+}
+
 class CanvasContext {
   constructor (id, pageId) {
     this.id = id
@@ -306,10 +314,7 @@ class CanvasContext {
     }
   }
   measureText (text) {
-    if (!c2d) {
-      let canvas = document.createElement('canvas')
-      c2d = canvas.getContext('2d')
-    }
+    var c2d = getTempCanvas().getContext('2d')
     c2d.font = this.state.font
     return new TextMetrics(c2d.measureText(text).width || 0)
   }
@@ -630,6 +635,64 @@ export function canvasPutImageData ({
   })
   operateCanvas(canvasId, pageId, 'putImageData', {
     data: [...data],
+    x,
+    y,
+    width,
+    height,
+    callbackId: cId
+  })
+}
+
+export function canvasToTempFilePath ({
+  x,
+  y,
+  width,
+  height,
+  destWidth,
+  destHeight,
+  canvasId,
+  fileType,
+  qualit
+}, callbackId) {
+  var pageId
+  const app = getApp()
+  if (app.$route && app.$route.params.__id__) {
+    pageId = app.$route.params.__id__
+  } else {
+    invoke(callbackId, {
+      errMsg: 'canvasPutImageData:fail'
+    })
+    return
+  }
+  var cId = canvasEventCallbacks.push(function (data) {
+    var imgData = data.data
+    if (!imgData || !imgData.length) {
+      invoke(callbackId, {
+        errMsg: 'canvasToTempFilePath:fail'
+      })
+      return
+    }
+    imgData = new ImageData(new Uint8ClampedArray(imgData), data.width, data.height)
+    var canvas = getTempCanvas()
+    canvas.width = data.width
+    canvas.height = data.height
+    var c2d = canvas.getContext('2d')
+    c2d.putImageData(imgData, 0, 0)
+    var base64 = canvas.toDataURL('image/png')
+    var img = new Image()
+    img.onload = function () {
+      canvas.width = destWidth || imgData.width
+      canvas.height = destHeight || imgData.height
+      c2d.drawImage(img, 0, 0)
+      base64 = canvas.toDataURL(`image/${fileType.toLowerCase()}`, qualit)
+      invoke(callbackId, {
+        errMsg: 'canvasToTempFilePath:ok',
+        tempFilePath: base64
+      })
+    }
+    img.src = base64
+  })
+  operateCanvas(canvasId, pageId, 'getImageData', {
     x,
     y,
     width,
