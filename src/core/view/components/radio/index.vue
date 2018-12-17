@@ -4,8 +4,8 @@
     @click="_onClick">
     <div class="uni-radio-wrapper">
       <div
-        :class="[radioChecked ? 'uni-radio-input-checked' : '']"
-        :style="{color:color}"
+        :class="radioChecked ? 'uni-radio-input-checked' : ''"
+        :style="radioChecked ? checkedStyle : ''"
         class="uni-radio-input" />
       <slot />
     </div>
@@ -34,7 +34,7 @@ export default {
     },
     color: {
       type: String,
-      default: '#007aff'
+      default: '#007AFF'
     },
     value: {
       type: String,
@@ -45,6 +45,11 @@ export default {
     return {
       radioChecked: this.checked,
       radioValue: this.value
+    }
+  },
+  computed: {
+    checkedStyle () {
+      return `background-color: ${this.color};border-color: ${this.color};`
     }
   },
   watch: {
@@ -124,10 +129,10 @@ export default {
 		position: relative;
 	}
 
-	uni-radio .uni-radio-input.uni-radio-input-checked {
+	/* uni-radio .uni-radio-input.uni-radio-input-checked {
 		background-color: #007aff;
 		border-color: #007aff;
-	}
+	} */
 
 	uni-radio .uni-radio-input.uni-radio-input-checked:before {
 		font: normal normal normal 14px/1 "uni";
