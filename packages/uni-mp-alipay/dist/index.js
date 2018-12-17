@@ -19,8 +19,13 @@ function hasOwn (obj, key) {
 
 const SYNC_API_RE = /hideKeyboard|upx2px|canIUse|^create|Sync$|Manager$/;
 
+const CONTEXT_API_RE = /^create|Manager$/;
+
 const CALLBACK_API_RE = /^on/;
 
+function isContextApi (name) {
+  return CONTEXT_API_RE.test(name)
+}
 function isSyncApi (name) {
   return SYNC_API_RE.test(name)
 }
@@ -112,7 +117,7 @@ function upx2px (number, newDeviceWidth) {
   return number
 }
 
-const TODOS = [
+const TODOS = [ // 不支持的 API 列表
   'hideTabBar',
   'hideTabBarRedDot',
   'removeTabBarBadge',
@@ -120,15 +125,46 @@ const TODOS = [
   'setTabBarItem',
   'setTabBarStyle',
   'showTabBar',
-  'showTabBarRedDot'
+  'showTabBarRedDot',
+  'startPullDownRefresh',
+  'saveImageToPhotosAlbum',
+  'getRecorderManager',
+  'getBackgroundAudioManager',
+  'createInnerAudioContext',
+  'chooseVideo',
+  'saveVideoToPhotosAlbum',
+  'createVideoContext',
+  'openDocument',
+  'startAccelerometer',
+  'startCompass',
+  'addPhoneContact',
+  'createIntersectionObserver'
 ];
 
-const protocols = {
+function _handleNetworkInfo (result) {
+  switch (result.networkType) {
+    case 'NOTREACHABLE':
+      result.networkType = 'none';
+      break
+    case 'WWAN':
+      // TODO ?
+      result.networkType = '3g';
+      break
+    default:
+      result.networkType = result.networkType.toLowerCase();
+      break
+  }
+  return {}
+}
+
+const protocols = { // 需要做转换的 API 列表
   returnValue (methodName, res) { // 通用 returnValue 解析
     if (res.error || res.errorMessage) {
       res.errMsg = `${methodName}:fail ${res.errorMessage || res.error}`;
       delete res.error;
       delete res.errorMessage;
+    } else {
+      res.errMsg = `${methodName}:ok`;
     }
     return res
   },
@@ -230,6 +266,141 @@ const protocols = {
     returnValue: {
       index: 'tapIndex'
     }
+  },
+  showLoading: {
+    args: {
+      title: 'content',
+      mask: false
+    }
+  },
+  uploadFile: {
+    args: {
+      name: 'fileName'
+    }
+    // 从测试结果看，是有返回对象的，文档上没有说明。
+  },
+  downloadFile: {
+    returnValue: {
+      apFilePath: 'tempFilePath'
+    }
+  },
+  connectSocket: {
+    args: {
+      method: false,
+      protocols: false
+    }
+    // TODO 有没有返回值还需要测试下
+  },
+  chooseImage: {
+    returnValue: {
+      apFilePaths: 'tempFilePaths'
+    }
+  },
+  previewImage: {
+    args (fromArgs) {
+      // 支付宝小程序的 current 是索引值，而非图片地址。
+      if (fromArgs.current && Array.isArray(fromArgs.urls)) {
+        const index = fromArgs.urls.indexOf(fromArgs.current);
+        fromArgs.current = ~index ? index : 0;
+      }
+      return {
+        indicator: false,
+        loop: false
+      }
+    }
+  },
+  saveFile: {
+    args: {
+      tempFilePath: 'apFilePath'
+    },
+    returnValue: {
+      apFilePath: 'savedFilePath'
+    }
+  },
+  getSavedFileInfo: {
+    args: {
+      filePath: 'apFilePath'
+    },
+    returnValue (result) {
+      if (result.fileList && result.fileList.length) {
+        result.fileList.forEach(file => {
+          file.filePath = file.apFilePath;
+          delete file.apFilePath;
+        });
+      }
+      return {}
+    }
+  },
+  removeSavedFile: {
+    args: {
+      filePath: 'apFilePath'
+    }
+  },
+  getLocation: {
+    args: {
+      type: false,
+      altitude: false
+    }
+    //     returnValue: {
+    //       speed: false,
+    //       altitude: false,
+    //       verticalAccuracy: false
+    //     }
+  },
+  openLocation: {
+    args: {
+      // TODO address 参数在阿里上是必传的
+    }
+  },
+  getSystemInfo: {
+    //     returnValue: {
+    //       brand: false,
+    //       statusBarHeight: false,
+    //       SDKVersion: false
+    //     }
+  },
+  getSystemInfoSync: {
+    //     returnValue: {
+    //       brand: false,
+    //       statusBarHeight: false,
+    //       SDKVersion: false
+    //     }
+  },
+  getNetworkType: {
+    returnValue: _handleNetworkInfo
+  },
+  onNetworkStatusChange: {
+    returnValue: _handleNetworkInfo
+  },
+  stopAccelerometer: {
+    name: 'offAccelerometerChange'
+  },
+  stopCompass: {
+    name: 'offCompassChange'
+  },
+  scanCode: {
+    name: 'scan',
+    args: {
+      onlyFromCamera: 'hideAlbum',
+      scanType: false
+    }
+  },
+  setClipboardData: {
+    name: 'setClipboard',
+    args: {
+      data: 'text'
+    }
+  },
+  getClipboardData: {
+    name: 'getClipboard',
+    returnValue: {
+      text: 'data'
+    }
+  },
+  pageScrollTo: {
+    args: {
+      duration: false
+    }
   }
 };
 
@@ -245,13 +416,13 @@ function processCallback (methodName, method, returnValue) {
   }
 }
 
-function processArgs (methodName, fromArgs, argsOption = {}, returnValue = {}) {
+function processArgs (methodName, fromArgs, argsOption = {}, returnValue = {}, keepFromArgs = false) {
   if (isPlainObject(fromArgs)) { // 一般 api 的参数解析
-    const toArgs = {};
+    const toArgs = keepFromArgs === true ? fromArgs : {}; // returnValue 为 false 时，说明是格式化返回值，直接在返回值对象上修改赋值
     if (isFn(argsOption)) {
       argsOption = argsOption(fromArgs, toArgs) || {};
     }
-    Object.keys(fromArgs).forEach(key => {
+    for (let key in fromArgs) {
       if (hasOwn(argsOption, key)) {
         let keyOption = argsOption[key];
         if (isFn(keyOption)) {
@@ -267,9 +438,11 @@ function processArgs (methodName, fromArgs, argsOption = {}, returnValue = {}) {
       } else if (CALLBACKS.includes(key)) {
         toArgs[key] = processCallback(methodName, fromArgs[key], returnValue);
       } else {
-        toArgs[key] = fromArgs[key];
+        if (!keepFromArgs) {
+          toArgs[key] = fromArgs[key];
+        }
       }
-    });
+    }
     return toArgs
   } else if (isFn(fromArgs)) {
     fromArgs = processCallback(methodName, fromArgs, returnValue);
@@ -277,11 +450,11 @@ function processArgs (methodName, fromArgs, argsOption = {}, returnValue = {}) {
   return fromArgs
 }
 
-function processReturnValue (methodName, res, returnValue) {
+function processReturnValue (methodName, res, returnValue, keepReturnValue = false) {
   if (isFn(protocols.returnValue)) { // 处理通用 returnValue
     res = protocols.returnValue(methodName, res);
   }
-  return processArgs(methodName, res, returnValue)
+  return processArgs(methodName, res, returnValue, {}, keepReturnValue)
 }
 
 function wrapper (methodName, method) {
@@ -302,7 +475,7 @@ function wrapper (methodName, method) {
 
       const returnValue = my[options.name || methodName](arg1, arg2);
       if (isSyncApi(methodName)) { // 同步 api
-        return processReturnValue(methodName, returnValue, options.returnValue)
+        return processReturnValue(methodName, returnValue, options.returnValue, isContextApi(methodName))
       }
       return returnValue
     }
