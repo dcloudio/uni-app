@@ -133,7 +133,7 @@ class InnerAudioContext {
 innerAudioContextEventNames.forEach((eventName) => {
   InnerAudioContext.prototype[eventName] = function (callback) {
     if (typeof callback === 'function') {
-      this.event[eventName].push(callback)
+      this._events[eventName].push(callback)
     }
   }
 })
