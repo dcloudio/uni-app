@@ -10,8 +10,8 @@ export default {
   data: function () {
     return {
       size: {
-        width: 0,
-        height: 0
+        width: -1,
+        height: -1
       }
     }
   },
@@ -19,14 +19,9 @@ export default {
     size: {
       deep: true,
       handler: function (size) {
-        this.reset()
         this.$emit('resize', Object.assign({}, size))
       }
     }
-  },
-  beforeDestroy: function () {
-    this.$emit('resize', { width: 0, height: 0 })
-    this.$emit('resizeSensorBeforeDestroy')
   },
   mounted: function () {
     if (this.initial === true) {
@@ -65,6 +60,7 @@ export default {
     update: function () {
       this.size.width = this.$el.offsetWidth
       this.size.height = this.$el.offsetHeight
+      this.reset()
     }
   },
   render: function (create) {
@@ -94,7 +90,7 @@ export default {
 </script>
 
 <style>
-@keyframes resizeSensorVisibility {
+@keyframes once-show {
   from {
     top: 0;
   }
@@ -112,7 +108,7 @@ uni-resize-sensor {
   display: block;
   z-index: -1;
   visibility: hidden;
-  animation-name: resizeSensorVisibility;
+  animation-name: once-show;
 }
 uni-resize-sensor > div > div {
   position: absolute;
