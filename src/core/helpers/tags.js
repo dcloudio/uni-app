@@ -10,6 +10,7 @@ module.exports = [
   'uni-modal',
   'uni-picker',
   'uni-toast',
+  'uni-resize-sensor',
 
   'uni-ad',
   'uni-audio',

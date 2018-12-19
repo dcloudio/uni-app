@@ -8,6 +8,9 @@
       :height="height"
       @touchmove="_touchmove"
     />
+    <v-uni-resize-sensor
+      initial
+      @resize="_resize"/>
   </uni-canvas>
 </template>
 <script>
@@ -50,11 +53,6 @@ export default {
     this._actionsDefer = []
     this._images = {}
   },
-  mounted () {
-    var canvas = this.$refs.canvas
-    this.width = canvas.offsetWidth
-    this.height = canvas.offsetHeight
-  },
   methods: {
     _handleSubscribe ({
       type,
@@ -64,6 +62,10 @@ export default {
       if (type.indexOf('_') !== 0 && typeof method === 'function') {
         method(data)
       }
+    },
+    _resize ({ width, height }) {
+      this.width = width
+      this.height = height
     },
     _touchmove (event) {
       if (this.disableScroll) {
@@ -236,7 +238,7 @@ export default {
            * @param {Blob} blob
            */
           function loadBlob (blob) {
-            sefl._images[src].src = window.URL.createObjectURL(blob)
+            sefl._images[src].src = (window.URL || window.webkitURL).createObjectURL(blob)
           }
           /**
            * 从本地文件加载
@@ -263,6 +265,8 @@ export default {
               }, function (d, status) {
                 if (status === 200) {
                   loadFile(d.filename)
+                } else {
+                  sefl._images[src].src = src
                 }
               }).start()
             }
@@ -274,20 +278,23 @@ export default {
                 loadBlob(this.response)
               }
             }
-            xhr.onerror = plusDownload
+            xhr.onerror = window.plus ? plusDownload : function () {
+              sefl._images[src].src = src
+            }
             xhr.send()
           }
-          // 解决 plus-app wkwebview 图像跨域问题
-          if (window.plus && window.webkit && window.webkit.messageHandlers) {
-            if (src.indexOf('http://') === 0 || src.indexOf('https://') === 0) {
-              loadUrl(src)
+
+          if (window.plus && (!window.webkit || !window.webkit.messageHandlers)) {
+            sefl._images[src].src = src
+          } else {
+            // 解决 PLUS-APP（wkwebview）以及 H5 图像跨域问题（H5图像响应头需包含access-control-allow-origin）
+            if (window.plus && src.indexOf('http://') !== 0 && src.indexOf('https://') !== 0) {
+              loadFile(src)
             } else if (/^data:[a-z-]+\/[a-z-]+;base64,/.test(src)) {
               sefl._images[src].src = src
             } else {
-              loadFile(src)
+              loadUrl(src)
             }
-          } else {
-            sefl._images[src].src = src
           }
         }
       })
