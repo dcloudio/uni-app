@@ -88,7 +88,7 @@ export default {
     },
     slidesStyle () {
       var style = {}
-      if (this.nextMargin || this.nextMargin) {
+      if (this.nextMargin || this.previousMargin) {
         style = this.vertical ? {
           left: 0,
           right: 0,
@@ -101,9 +101,14 @@ export default {
             right: this._upx2px(this.nextMargin)
           }
       }
-      style.width = this.vertical ? '100%' : Math.abs(100 / this.displayMultipleItemsNumber) + '%'
-      style.height = !this.vertical ? '100%' : Math.abs(100 / this.displayMultipleItemsNumber) + '%'
       return style
+    },
+    slideFrameStyle () {
+      var value = Math.abs(100 / this.displayMultipleItemsNumber) + '%'
+      return {
+        width: this.vertical ? '100%' : value,
+        height: !this.vertical ? '100%' : value
+      }
     },
     circularEnabled () {
       return this.circular && this.items.length > this.displayMultipleItemsNumber
@@ -580,7 +585,8 @@ export default {
     }, [
         createElement('div', {
           ref: 'slideFrame',
-          class: 'uni-swiper-slide-frame'
+          class: 'uni-swiper-slide-frame',
+          style: this.slideFrameStyle
         }, swiperItems)
       ])]
     if (this.indicatorDots) {
