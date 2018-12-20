@@ -95,11 +95,11 @@ export default {
           top: this._upx2px(this.previousMargin),
           bottom: this._upx2px(this.nextMargin)
         } : {
-          top: 0,
-          bottom: 0,
-          left: this._upx2px(this.previousMargin),
-          right: this._upx2px(this.nextMargin)
-        }
+            top: 0,
+            bottom: 0,
+            left: this._upx2px(this.previousMargin),
+            right: this._upx2px(this.nextMargin)
+          }
       }
       style.width = this.vertical ? '100%' : Math.abs(100 / this.displayMultipleItemsNumber) + '%'
       style.height = !this.vertical ? '100%' : Math.abs(100 / this.displayMultipleItemsNumber) + '%'
@@ -191,7 +191,10 @@ export default {
         current = Math.round(this.current) || 0
       }
       current = current < 0 ? 0 : current
-      this.currentSync = current
+      if (this.currentSync !== current) {
+        this.currentChangeSource = ''
+        this.currentSync = current
+      }
     },
     _itemReady (vnode, callback) {
       if (vnode.componentInstance && vnode.componentInstance._isMounted) {
@@ -336,9 +339,9 @@ export default {
       }
     },
     _updateItemPos (current, position) {
-      var n = this.vertical ? '0' : 100 * position + '%'
-      var i = this.vertical ? 100 * position + '%' : '0'
-      var transform = 'translate(' + n + ', ' + i + ') translateZ(0)'
+      var x = this.vertical ? '0' : 100 * position + '%'
+      var y = this.vertical ? 100 * position + '%' : '0'
+      var transform = 'translate(' + x + ', ' + y + ') translateZ(0)'
       var item = this.items[current]
       this._itemReady(item, () => {
         var el = item.componentInstance.$el
@@ -357,13 +360,13 @@ export default {
         }
       }
 
-      var t = this.vertical ? '0' : 100 * -index * this._viewportMoveRatio + '%'
-      var n = this.vertical ? 100 * -index * this._viewportMoveRatio + '%' : '0'
-      var i = 'translate(' + t + ', ' + n + ') translateZ(0)'
+      var x = this.vertical ? '0' : 100 * -index * this._viewportMoveRatio + '%'
+      var y = this.vertical ? 100 * -index * this._viewportMoveRatio + '%' : '0'
+      var transform = 'translate(' + x + ', ' + y + ') translateZ(0)'
       var slideFrame = this.$refs.slideFrame
       if (slideFrame) {
-        slideFrame.style['-webkit-transform'] = i
-        slideFrame.style.transform = i
+        slideFrame.style['-webkit-transform'] = transform
+        slideFrame.style.transform = transform
       }
       this._viewportPosition = index
     },
@@ -575,11 +578,11 @@ export default {
       style: this.slidesStyle,
       'class': 'uni-swiper-slides'
     }, [
-      createElement('div', {
-        ref: 'slideFrame',
-        class: 'uni-swiper-slide-frame'
-      }, swiperItems)
-    ])]
+        createElement('div', {
+          ref: 'slideFrame',
+          class: 'uni-swiper-slide-frame'
+        }, swiperItems)
+      ])]
     if (this.indicatorDots) {
       slidesWrapperChild.push(createElement('div', {
         ref: 'slidesDots',
