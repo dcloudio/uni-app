@@ -69,21 +69,21 @@ export default {
         '~animationstart': this.update
       }
     }, [
-        create('div', {
-          on: {
-            scroll: this.update
-          }
-        }, [
-            create('div')
-          ]),
-        create('div', {
-          on: {
-            scroll: this.update
-          }
-        }, [
-            create('div')
-          ])
+      create('div', {
+        on: {
+          scroll: this.update
+        }
+      }, [
+        create('div')
+      ]),
+      create('div', {
+        on: {
+          scroll: this.update
+        }
+      }, [
+        create('div')
       ])
+    ])
   }
 }
 

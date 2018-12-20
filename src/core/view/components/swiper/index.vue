@@ -95,11 +95,11 @@ export default {
           top: this._upx2px(this.previousMargin),
           bottom: this._upx2px(this.nextMargin)
         } : {
-            top: 0,
-            bottom: 0,
-            left: this._upx2px(this.previousMargin),
-            right: this._upx2px(this.nextMargin)
-          }
+          top: 0,
+          bottom: 0,
+          left: this._upx2px(this.previousMargin),
+          right: this._upx2px(this.nextMargin)
+        }
       }
       return style
     },
@@ -583,12 +583,12 @@ export default {
       style: this.slidesStyle,
       'class': 'uni-swiper-slides'
     }, [
-        createElement('div', {
-          ref: 'slideFrame',
-          class: 'uni-swiper-slide-frame',
-          style: this.slideFrameStyle
-        }, swiperItems)
-      ])]
+      createElement('div', {
+        ref: 'slideFrame',
+        class: 'uni-swiper-slide-frame',
+        style: this.slideFrameStyle
+      }, swiperItems)
+    ])]
     if (this.indicatorDots) {
       slidesWrapperChild.push(createElement('div', {
         ref: 'slidesDots',
