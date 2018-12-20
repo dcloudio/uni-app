@@ -58,6 +58,8 @@
 			"uni": true,
 			"Vue": true,
 			"wx": true,
+			"my": true,
+			"swan": true,
 			"__uniConfig": true,
 			"__uniRoutes": true,
 			"UniViewJSBridge": true,
