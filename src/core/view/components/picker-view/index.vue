@@ -43,8 +43,8 @@ export default {
           this.$set(this.valueSync, index, val)
         }
       })
-      if (val.length !== this.valueSync.length) {
-        this.valueSync.splice(val.length - 1, this.valueSync.length - val.length)
+      if (val.length > this.valueSync.length) {
+        this.valueSync.splice(this.valueSync.length - 1, this.valueSync.length - val.length)
       }
     },
     valueSync: {
