@@ -222,30 +222,11 @@ const protocols = { // 需要做转换的 API 列表
       type: false,
       altitude: false
     }
-    //     returnValue: {
-    //       speed: false,
-    //       altitude: false,
-    //       verticalAccuracy: false
-    //     }
   },
   openLocation: {
     args: {
       // TODO address 参数在阿里上是必传的
     }
-  },
-  getSystemInfo: {
-    //     returnValue: {
-    //       brand: false,
-    //       statusBarHeight: false,
-    //       SDKVersion: false
-    //     }
-  },
-  getSystemInfoSync: {
-    //     returnValue: {
-    //       brand: false,
-    //       statusBarHeight: false,
-    //       SDKVersion: false
-    //     }
   },
   getNetworkType: {
     returnValue: _handleNetworkInfo
