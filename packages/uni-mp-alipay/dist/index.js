@@ -341,30 +341,11 @@ const protocols = { // 需要做转换的 API 列表
       type: false,
       altitude: false
     }
-    //     returnValue: {
-    //       speed: false,
-    //       altitude: false,
-    //       verticalAccuracy: false
-    //     }
   },
   openLocation: {
     args: {
       // TODO address 参数在阿里上是必传的
     }
-  },
-  getSystemInfo: {
-    //     returnValue: {
-    //       brand: false,
-    //       statusBarHeight: false,
-    //       SDKVersion: false
-    //     }
-  },
-  getSystemInfoSync: {
-    //     returnValue: {
-    //       brand: false,
-    //       statusBarHeight: false,
-    //       SDKVersion: false
-    //     }
   },
   getNetworkType: {
     returnValue: _handleNetworkInfo
@@ -383,6 +364,9 @@ const protocols = { // 需要做转换的 API 列表
     args: {
       onlyFromCamera: 'hideAlbum',
       scanType: false
+    },
+    returnValue: {
+      code: 'result'
     }
   },
   setClipboardData: {
@@ -544,10 +528,33 @@ var extraApi = /*#__PURE__*/Object.freeze({
   getProvider: getProvider
 });
 
-
+function setStorageSync (key, data) {
+  return my.setStorageSync({
+    key,
+    data
+  })
+}
+function getStorageSync (key) {
+  const result = my.getStorageSync({
+    key
+  });
+  // 不知道会不会出现 success 为 false 情况，暂时这样处理下。
+  if (result.success) {
+    return result.data || ''
+  } else {
+    return ''
+  }
+}
+function removeStorageSync (key) {
+  return my.removeStorageSync({
+    key
+  })
+}
 
 var api = /*#__PURE__*/Object.freeze({
-
+  setStorageSync: setStorageSync,
+  getStorageSync: getStorageSync,
+  removeStorageSync: removeStorageSync
 });
 
 let uni$1 = {};
