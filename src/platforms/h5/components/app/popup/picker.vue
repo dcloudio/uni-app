@@ -7,7 +7,7 @@
         @click="_cancel" />
     </transition>
     <div
-      :class="{'uni-picker_toggle':visible}"
+      :class="{'uni-picker-toggle':visible}"
       class="uni-picker">
       <div
         class="uni-picker-header"
@@ -20,6 +20,7 @@
           @click="_change">确定</div>
       </div>
       <v-uni-picker-view
+        v-if="visible"
         :value.sync="valueArray"
         class="uni-picker-content">
         <v-uni-picker-view-column
@@ -351,7 +352,7 @@ export default {
 		transition: transform 0.3s;
 	}
 
-	uni-picker .uni-picker.uni-picker_toggle {
+	uni-picker .uni-picker.uni-picker-toggle {
 		transform: translate(0, 0);
 	}
 

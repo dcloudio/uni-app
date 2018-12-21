@@ -40,8 +40,11 @@ export default {
   methods: {
     // 处理 Picker close 回调
     _onPickerClose () {
-      // 隐藏 picker
+      // 隐藏 picker 重置数据
       this.showPicker.visible = false
+      this.showPicker.mode = 'selector'
+      this.showPicker.range = []
+      this.showPicker.value = 0
     }
   }
 }
