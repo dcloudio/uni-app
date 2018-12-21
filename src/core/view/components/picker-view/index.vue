@@ -31,7 +31,7 @@ export default {
   data () {
     return {
       valueSync: [...this.value],
-      height: 0,
+      height: 34,
       items: [],
       changeSource: ''
     }
@@ -62,22 +62,7 @@ export default {
           })
         }
       }
-    },
-    indicatorStyle () {
-
-    },
-    indicatorClass () {
-
-    },
-    maskStyle () {
-
-    },
-    maskClass () {
-
     }
-  },
-  mounted: function () {
-    this.height = this.$el.offsetHeight
   },
   methods: {
     getItemIndex (vnode) {
@@ -94,10 +79,15 @@ export default {
         this.$set(this.valueSync, index, val)
       }
     },
-    _valueChanged: function (val) {
+    _valueChanged (val) {
       this.items.forEach(function (item, index) {
         item.componentInstance.setCurrent(val[index] || 0)
       })
+    },
+    _resize ({
+      height
+    }) {
+      this.height = height
     }
   },
   render (createElement) {
@@ -114,11 +104,19 @@ export default {
       'uni-picker-view',
       {
         on: this.$listeners
-      },
-      [createElement('div', {
+      }, [createElement('v-uni-resize-sensor', {
+        attrs: {
+          initial: true
+        },
+        on: {
+          resize: this._resize
+        }
+      }),
+      createElement('div', {
         ref: 'wrapper',
         'class': 'uni-picker-view-wrapper'
-      }, items)])
+      }, items)
+      ])
   }
 }
 </script>

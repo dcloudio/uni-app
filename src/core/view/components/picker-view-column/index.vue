@@ -9,7 +9,6 @@ export default {
     return {
       scope: `picker-view-column-${Date.now()}`,
       inited: false,
-      height: 34,
       indicatorStyle: '',
       indicatorClass: '',
       indicatorHeight: 34,
@@ -20,6 +19,9 @@ export default {
     }
   },
   computed: {
+    height () {
+      return this.$parent.height
+    },
     maskSize () {
       return (this.height - this.indicatorHeight) / 2
     }
@@ -49,8 +51,6 @@ export default {
     // this.__pageRerender = this._pageRerender.bind(this)
   },
   mounted: function () {
-    this.height = this.$el.offsetHeight
-    this.indicatorHeight = this.$refs.indicator.offsetHeight
     this.touchtrack(this.$refs.main, '_handleTrack', true)
     this.setCurrent(this.current)
     this.$nextTick(() => {
@@ -61,7 +61,7 @@ export default {
   methods: {
     _setItemHeight (height) {
       var style = document.createElement('style')
-      style.innerText = `.uni-picker__content.${this.scope}>*{height: ${height}px;overflow: hidden;}`
+      style.innerText = `.uni-picker-content.${this.scope}>*{height: ${height}px;overflow: hidden;}`
       document.head.appendChild(style)
     },
     _handleTrack: function (e) {
@@ -122,6 +122,11 @@ export default {
         var current = Math.min(this.current, index)
         this._scroller.update(current * this.indicatorHeight, undefined, this.indicatorHeight)
       })
+    },
+    _resize ({
+      height
+    }) {
+      this.indicatorHeight = height
     }
   },
   render (createElement) {
@@ -135,24 +140,31 @@ export default {
     [
       createElement('div', {
         ref: 'main',
-        staticClass: 'uni-picker__group'
+        staticClass: 'uni-picker-group'
       },
       [
         createElement('div', {
           ref: 'mask',
-          staticClass: 'uni-picker__mask',
+          staticClass: 'uni-picker-mask',
           class: this.maskClass,
           style: `background-size: 100% ${this.maskSize}px;${this.maskStyle}`
         }),
         createElement('div', {
           ref: 'indicator',
-          staticClass: 'uni-picker__indicator',
+          staticClass: 'uni-picker-indicator',
           class: this.indicatorClass,
           style: this.indicatorStyle
-        }),
+        }, [createElement('v-uni-resize-sensor', {
+          attrs: {
+            initial: true
+          },
+          on: {
+            resize: this._resize
+          }
+        })]),
         createElement('div', {
           ref: 'content',
-          staticClass: 'uni-picker__content',
+          staticClass: 'uni-picker-content',
           class: this.scope,
           style: `padding: ${this.maskSize}px 0;`
         },
@@ -173,24 +185,28 @@ uni-picker-view-column {
   overflow: hidden;
 }
 
-.uni-picker__group {
+uni-picker-view-column[hidden] {
+  display: none;
+}
+
+.uni-picker-group {
   height: 100%;
 }
 
-.uni-picker__mask {
+.uni-picker-mask {
   transform: translateZ(0);
   -webkit-transform: translateZ(0);
 }
 
-.uni-picker__indicator,
-.uni-picker__mask {
+.uni-picker-indicator,
+.uni-picker-mask {
   position: absolute;
   left: 0;
   width: 100%;
   z-index: 3;
 }
 
-.uni-picker__mask {
+.uni-picker-mask {
   top: 0;
   height: 100%;
   margin: 0 auto;
@@ -205,15 +221,15 @@ uni-picker-view-column {
   background-repeat: no-repeat;
 }
 
-.uni-picker__indicator {
+.uni-picker-indicator {
   height: 34px;
   /* top: 102px; */
   top: 50%;
   transform: translateY(-50%);
 }
 
-.uni-picker__indicator,
-.uni-picker__mask {
+.uni-picker-indicator,
+.uni-picker-mask {
   position: absolute;
   left: 0;
   width: 100%;
@@ -221,7 +237,7 @@ uni-picker-view-column {
   pointer-events: none;
 }
 
-.uni-picker__content {
+.uni-picker-content {
   position: absolute;
   top: 0;
   left: 0;
@@ -230,13 +246,13 @@ uni-picker-view-column {
   padding: 102px 0;
 }
 
-.uni-picker__content > * {
+.uni-picker-content > * {
   height: 34px;
   overflow: hidden;
 }
 
-.uni-picker__indicator:after,
-.uni-picker__indicator:before {
+.uni-picker-indicator:after,
+.uni-picker-indicator:before {
   content: " ";
   position: absolute;
   left: 0;
@@ -245,7 +261,7 @@ uni-picker-view-column {
   color: #e5e5e5;
 }
 
-.uni-picker__indicator:before {
+.uni-picker-indicator:before {
   top: 0;
   border-top: 1px solid #e5e5e5;
   -webkit-transform-origin: 0 0;
@@ -254,7 +270,7 @@ uni-picker-view-column {
   transform: scaleY(0.5);
 }
 
-.uni-picker__indicator:after {
+.uni-picker-indicator:after {
   bottom: 0;
   border-bottom: 1px solid #e5e5e5;
   -webkit-transform-origin: 0 100%;
@@ -263,8 +279,8 @@ uni-picker-view-column {
   transform: scaleY(0.5);
 }
 
-.uni-picker__indicator:after,
-.uni-picker__indicator:before {
+.uni-picker-indicator:after,
+.uni-picker-indicator:before {
   content: " ";
   position: absolute;
   left: 0;
