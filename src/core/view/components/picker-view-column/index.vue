@@ -61,7 +61,7 @@ export default {
   methods: {
     _setItemHeight (height) {
       var style = document.createElement('style')
-      style.innerText = `.uni-picker-content.${this.scope}>*{height: ${height}px;overflow: hidden;}`
+      style.innerText = `.uni-picker-view-content.${this.scope}>*{height: ${height}px;overflow: hidden;}`
       document.head.appendChild(style)
     },
     _handleTrack: function (e) {
@@ -140,18 +140,18 @@ export default {
     [
       createElement('div', {
         ref: 'main',
-        staticClass: 'uni-picker-group'
+        staticClass: 'uni-picker-view-group'
       },
       [
         createElement('div', {
           ref: 'mask',
-          staticClass: 'uni-picker-mask',
+          staticClass: 'uni-picker-view-mask',
           class: this.maskClass,
           style: `background-size: 100% ${this.maskSize}px;${this.maskStyle}`
         }),
         createElement('div', {
           ref: 'indicator',
-          staticClass: 'uni-picker-indicator',
+          staticClass: 'uni-picker-view-indicator',
           class: this.indicatorClass,
           style: this.indicatorStyle
         }, [createElement('v-uni-resize-sensor', {
@@ -164,7 +164,7 @@ export default {
         })]),
         createElement('div', {
           ref: 'content',
-          staticClass: 'uni-picker-content',
+          staticClass: 'uni-picker-view-content',
           class: this.scope,
           style: `padding: ${this.maskSize}px 0;`
         },
@@ -189,24 +189,24 @@ uni-picker-view-column[hidden] {
   display: none;
 }
 
-.uni-picker-group {
+.uni-picker-view-group {
   height: 100%;
 }
 
-.uni-picker-mask {
+.uni-picker-view-mask {
   transform: translateZ(0);
   -webkit-transform: translateZ(0);
 }
 
-.uni-picker-indicator,
-.uni-picker-mask {
+.uni-picker-view-indicator,
+.uni-picker-view-mask {
   position: absolute;
   left: 0;
   width: 100%;
   z-index: 3;
 }
 
-.uni-picker-mask {
+.uni-picker-view-mask {
   top: 0;
   height: 100%;
   margin: 0 auto;
@@ -221,15 +221,15 @@ uni-picker-view-column[hidden] {
   background-repeat: no-repeat;
 }
 
-.uni-picker-indicator {
+.uni-picker-view-indicator {
   height: 34px;
   /* top: 102px; */
   top: 50%;
   transform: translateY(-50%);
 }
 
-.uni-picker-indicator,
-.uni-picker-mask {
+.uni-picker-view-indicator,
+.uni-picker-view-mask {
   position: absolute;
   left: 0;
   width: 100%;
@@ -237,7 +237,7 @@ uni-picker-view-column[hidden] {
   pointer-events: none;
 }
 
-.uni-picker-content {
+.uni-picker-view-content {
   position: absolute;
   top: 0;
   left: 0;
@@ -246,13 +246,13 @@ uni-picker-view-column[hidden] {
   padding: 102px 0;
 }
 
-.uni-picker-content > * {
+.uni-picker-view-content > * {
   height: 34px;
   overflow: hidden;
 }
 
-.uni-picker-indicator:after,
-.uni-picker-indicator:before {
+.uni-picker-view-indicator:after,
+.uni-picker-view-indicator:before {
   content: " ";
   position: absolute;
   left: 0;
@@ -261,7 +261,7 @@ uni-picker-view-column[hidden] {
   color: #e5e5e5;
 }
 
-.uni-picker-indicator:before {
+.uni-picker-view-indicator:before {
   top: 0;
   border-top: 1px solid #e5e5e5;
   -webkit-transform-origin: 0 0;
@@ -270,7 +270,7 @@ uni-picker-view-column[hidden] {
   transform: scaleY(0.5);
 }
 
-.uni-picker-indicator:after {
+.uni-picker-view-indicator:after {
   bottom: 0;
   border-bottom: 1px solid #e5e5e5;
   -webkit-transform-origin: 0 100%;
@@ -279,8 +279,8 @@ uni-picker-view-column[hidden] {
   transform: scaleY(0.5);
 }
 
-.uni-picker-indicator:after,
-.uni-picker-indicator:before {
+.uni-picker-view-indicator:after,
+.uni-picker-view-indicator:before {
   content: " ";
   position: absolute;
   left: 0;
