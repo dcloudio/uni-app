@@ -68,8 +68,11 @@ export default {
       }
     },
     _resize ({ width, height }) {
-      this.$refs.canvas.width = width
-      this.$refs.canvas.height = height
+      var canvas = this.$refs.canvas
+      if (canvas.width !== width || canvas.height !== height) {
+        canvas.width = width
+        canvas.height = height
+      }
     },
     _touchmove (event) {
       if (this.disableScroll) {
