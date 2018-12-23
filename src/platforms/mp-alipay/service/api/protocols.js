@@ -266,6 +266,27 @@ const protocols = { // 需要做转换的 API 列表
     args: {
       duration: false
     }
+  },
+  login: {
+    name: 'getAuthCode',
+    returnValue (result) {
+      result.code = result.authCode
+    }
+  },
+  getUserInfo: {
+    name: 'getAuthUserInfo',
+    returnValue (result) {
+      result.userInfo = {
+        nickName: result.nickName,
+        avatarUrl: result.avatar
+      }
+    }
+  },
+  requestPayment: {
+    name: 'tradePay',
+    args: {
+      orderInfo: 'orderStr'
+    }
   }
 }
 
