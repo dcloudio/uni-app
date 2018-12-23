@@ -4,12 +4,12 @@
       ref="canvas"
       :canvas-id="canvasId"
       :disable-scroll="disableScroll"
-      :width="width"
-      :height="height"
+      width="300"
+      height="150"
       @touchmove="_touchmove"
     />
     <v-uni-resize-sensor
-      initial
+      ref="sensor"
       @resize="_resize"/>
   </uni-canvas>
 </template>
@@ -39,8 +39,6 @@ export default {
   },
   data () {
     return {
-      width: 300,
-      height: 150,
       actionsWaiting: false
     }
   },
@@ -53,6 +51,12 @@ export default {
     this._actionsDefer = []
     this._images = {}
   },
+  mounted () {
+    this._resize({
+      width: this.$refs.sensor.$el.offsetWidth,
+      height: this.$refs.sensor.$el.offsetHeight
+    })
+  },
   methods: {
     _handleSubscribe ({
       type,
@@ -64,8 +68,8 @@ export default {
       }
     },
     _resize ({ width, height }) {
-      this.width = width
-      this.height = height
+      this.$refs.canvas.width = width
+      this.$refs.canvas.height = height
     },
     _touchmove (event) {
       if (this.disableScroll) {
