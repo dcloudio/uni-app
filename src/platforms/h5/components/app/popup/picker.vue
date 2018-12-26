@@ -4,7 +4,7 @@
       <div
         v-show="visible"
         class="uni-mask"
-        @click="_cancel" />
+        @click="_cancel"/>
     </transition>
     <div
       :class="{'uni-picker-toggle':visible}"
@@ -29,13 +29,14 @@
           <div
             v-for="(item,index) in range"
             :key="index"
-            class="uni-picker-item">{{ typeof item==='object'?item[rangeKey]||'':item }}{{ units[index0]||'' }}</div>
+            class="uni-picker-item"
+          >{{ typeof item==='object'?item[rangeKey]||'':item }}{{ units[index0]||'' }}</div>
         </v-uni-picker-view-column>
       </v-uni-picker-view>
       <!-- 第二种时间单位展示方式-暂时不用这种 -->
       <!-- <div v-if="units.length" class="uni-picker-units">
         <div v-for="(item,index) in units" :key="index">{{item}}</div>
-      </div> -->
+      </div>-->
     </div>
   </uni-picker>
 </template>
@@ -142,7 +143,8 @@ export default {
     return {
       timeArray: [],
       dateArray: [],
-      valueArray: []
+      valueArray: [],
+      oldValueArray: []
     }
   },
   computed: {
@@ -213,6 +215,18 @@ export default {
           this._cloneArray(valueArray, endArray)
         }
       }
+      val.forEach((value, column) => {
+        if (value !== this.oldValueArray[column]) {
+          this.oldValueArray[column] = value
+          if (this.mode === mode.MULTISELECTOR) {
+            // 触发 View 层 columnchange 事件
+            UniServiceJSBridge.publishHandler(this.pageId + '-picker-columnchange', {
+              column,
+              value
+            }, this.pageId)
+          }
+        }
+      })
     }
   },
   created () {
@@ -295,7 +309,8 @@ export default {
           valueArray = val.split('-').map((val, i) => this.dateArray[i].indexOf(val))
           break
       }
-      this.valueArray = valueArray
+      this.oldValueArray = [...valueArray]
+      this.valueArray = [...valueArray]
     },
     _getValue () {
       var val = this.valueArray
@@ -317,14 +332,6 @@ export default {
         value: this._getValue()
       }, this.pageId)
     },
-    // 暂时取消 columnchange 事件
-    // _columnchange (event) {
-    //   // 触发 View 层 columnchange 事件
-    //   UniServiceJSBridge.publishHandler(this.pageId + '-picker-columnchange', {
-    //     column: 0,
-    //     value: this._getValue()
-    //   }, this.pageId)
-    // },
     _cancel () {
       // 通知父组件修改 visible
       this.$emit('close')
@@ -335,109 +342,109 @@ export default {
 }
 </script>
 <style>
-	uni-picker {
-		display: block;
-		box-sizing: border-box;
-	}
+uni-picker {
+  display: block;
+  box-sizing: border-box;
+}
 
-	uni-picker .uni-picker {
-		position: fixed;
-		left: 0;
-		bottom: 0;
-		transform: translate(0, 100%);
-		backface-visibility: hidden;
-		z-index: 999;
-		width: 100%;
-		background-color: #efeff4;
-		transition: transform 0.3s;
-	}
+uni-picker .uni-picker {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  transform: translate(0, 100%);
+  backface-visibility: hidden;
+  z-index: 999;
+  width: 100%;
+  background-color: #efeff4;
+  transition: transform 0.3s;
+}
 
-	uni-picker .uni-picker.uni-picker-toggle {
-		transform: translate(0, 0);
-	}
+uni-picker .uni-picker.uni-picker-toggle {
+  transform: translate(0, 0);
+}
 
-	uni-picker .uni-picker * {
-		box-sizing: border-box;
-	}
+uni-picker .uni-picker * {
+  box-sizing: border-box;
+}
 
-	uni-picker .uni-picker {
-		position: fixed;
-		left: 0;
-		bottom: 0;
-		transform: translate(0, 100%);
-		backface-visibility: hidden;
-		z-index: 999;
-		width: 100%;
-		background-color: #efeff4;
-		transition: transform 0.3s;
-		transition: transform 0.3s;
-	}
+uni-picker .uni-picker {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  transform: translate(0, 100%);
+  backface-visibility: hidden;
+  z-index: 999;
+  width: 100%;
+  background-color: #efeff4;
+  transition: transform 0.3s;
+  transition: transform 0.3s;
+}
 
-	uni-picker .uni-picker-content {
-		position: relative;
-		display: block;
-		width: 100%;
-		height: 238px;
-		background-color: white;
-	}
+uni-picker .uni-picker-content {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 238px;
+  background-color: white;
+}
 
-	uni-picker .uni-picker-item {
-		padding: 0;
-		height: 34px;
-		line-height: 34px;
-		text-align: center;
-		color: #000;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-		overflow: hidden;
-	}
+uni-picker .uni-picker-item {
+  padding: 0;
+  height: 34px;
+  line-height: 34px;
+  text-align: center;
+  color: #000;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
 
-	uni-picker .uni-picker-header {
-		display: block;
-		position: relative;
-		text-align: center;
-		width: 100%;
-		height: 45px;
-		background-color: #fff;
-	}
+uni-picker .uni-picker-header {
+  display: block;
+  position: relative;
+  text-align: center;
+  width: 100%;
+  height: 45px;
+  background-color: #fff;
+}
 
-	uni-picker .uni-picker-header:after {
-		content: "";
-		position: absolute;
-		left: 0;
-		bottom: 0;
-		right: 0;
-		height: 1px;
-		clear: both;
-		border-bottom: 1px solid #e5e5e5;
-		color: #e5e5e5;
-		transform-origin: 0 100%;
-		transform: scaleY(0.5);
-	}
+uni-picker .uni-picker-header:after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  height: 1px;
+  clear: both;
+  border-bottom: 1px solid #e5e5e5;
+  color: #e5e5e5;
+  transform-origin: 0 100%;
+  transform: scaleY(0.5);
+}
 
-	uni-picker .uni-picker-action {
-		display: block;
-		max-width: 50%;
-		top: 0;
-		height: 100%;
-		box-sizing: border-box;
-		padding: 0 14px;
-		font-size: 17px;
-		line-height: 45px;
-		overflow: hidden;
-	}
+uni-picker .uni-picker-action {
+  display: block;
+  max-width: 50%;
+  top: 0;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 0 14px;
+  font-size: 17px;
+  line-height: 45px;
+  overflow: hidden;
+}
 
-	uni-picker .uni-picker-action.uni-picker-action-cancel {
-		float: left;
-		color: #888;
-	}
+uni-picker .uni-picker-action.uni-picker-action-cancel {
+  float: left;
+  color: #888;
+}
 
-	uni-picker .uni-picker-action.uni-picker-action-confirm {
-		float: right;
-		color: #007aff;
-	}
+uni-picker .uni-picker-action.uni-picker-action-confirm {
+  float: right;
+  color: #007aff;
+}
 
-	/* .uni-picker {
+/* .uni-picker {
   position: relative;
 }
 .uni-picker-units {

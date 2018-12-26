@@ -1,7 +1,7 @@
 <template>
   <uni-picker @click.stop="_click">
     <div>
-      <slot />
+      <slot/>
     </div>
   </uni-picker>
 </template>
@@ -176,7 +176,7 @@ export default {
       }
       const id = this.$page.id
       subscribe(`${id}-picker-change`, this.change)
-      // subscribe(`${id}-picker-columnchange`, this.columnchange)
+      subscribe(`${id}-picker-columnchange`, this.columnchange)
       subscribe(`${id}-picker-cancel`, this.cancel)
       this.visible = true
       this._show()
@@ -193,7 +193,7 @@ export default {
       this.visible = false
       const id = this.$page.id
       unsubscribe(`${id}-picker-change`)
-      // unsubscribe(`${id}-picker-columnchange`)
+      unsubscribe(`${id}-picker-columnchange`)
       unsubscribe(`${id}-picker-cancel`)
       if (!this.disabled) {
         this.valueChangeSource = 'click'
@@ -204,13 +204,14 @@ export default {
         })
       }
     },
-    // columnchange (args) {
-    // },
+    columnchange (args) {
+      this.$trigger('change', {}, args)
+    },
     cancel (args) {
       this.visible = false
       const id = this.$page.id
       unsubscribe(`${id}-picker-change`)
-      // unsubscribe(`${id}-picker-columnchange`)
+      unsubscribe(`${id}-picker-columnchange`)
       unsubscribe(`${id}-picker-cancel`)
       this.$trigger('cancel', {}, {})
     },
