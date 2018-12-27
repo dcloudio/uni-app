@@ -1,5 +1,24 @@
 import getRealRoute from '../get-real-route'
 
+function encodeQueryString (url) {
+  if (typeof url === 'string') {
+    const urls = url.split('?')
+
+    url = urls[0]
+
+    const params = [];
+    (urls[1] || '').split('&').forEach(function (pair) {
+      if (pair) {
+        const pairs = pair.split('=')
+        params.push(pairs[0] + '=' + encodeURIComponent(pairs[1]))
+      }
+    })
+
+    return params.length ? url + '?' + params.join('&') : url
+  }
+  return url
+}
+
 function createValidator (type) {
   return function validator (url, params) {
     // 格式化为绝对路径路由
@@ -36,6 +55,9 @@ function createValidator (type) {
     if (routeOptions.meta.isEntry) {
       url = url.replace(routeOptions.alias, '/')
     }
+
+    // 参数格式化
+    params.url = encodeQueryString(url)
   }
 }
 
