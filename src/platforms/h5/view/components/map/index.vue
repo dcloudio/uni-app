@@ -1,7 +1,16 @@
 <template>
   <uni-map
     :id="id"
-    class="uni-map" />
+    class="uni-map">
+    <div
+      ref="map"
+      style="width: 100%; height: 100%; position: relative; overflow: hidden;"/>
+    <div
+      style="position: absolute; top: 0; width: 100%; height: 100%; overflow: hidden; pointer-events: none;"
+    >
+      <slot/>
+    </div>
+  </uni-map>
 </template>
 
 <script>
@@ -393,7 +402,7 @@ export default {
     },
     init () {
       var center = new maps.LatLng(this.center.latitude, this.center.longitude)
-      var map = this.map = new maps.Map(this.$el, {
+      var map = this.map = new maps.Map(this.$refs.map, {
         center,
         zoom: Number(this.scale),
         scrollwheel: false,
@@ -963,6 +972,9 @@ export default {
 
 <style>
 uni-map {
-  display: block;
+	position: relative;
+	width: 300px;
+	height: 150px;
+	display: block;
 }
 </style>
