@@ -8,12 +8,15 @@
 
 ## 扫码体验
 
-一套代码编译到4个平台，难以置信吗？依次扫描4个二维码，亲自体验最全面的跨平台效果！
+一套代码编译到5个平台，难以置信吗？依次扫描5个二维码，亲自体验最全面的跨平台效果！
 
-<img src="http://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/hello-uniapp-barcode.png"/>
+<img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/all.png"/>
 
-*注：Appstore不能提交简单demo，所以iOS版补充了一些其他功能。*
+*注：*
 
+*1. Appstore不能提交简单demo，所以iOS版补充了一些其他功能。*
+
+*2. 百度小程序尚在审核中，建议通过HBuilderX新建hello uni-app，运行到百度小程序抢先体验。*
 
 ## 快速开始
 
