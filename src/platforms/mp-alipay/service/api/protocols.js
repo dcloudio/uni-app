@@ -294,6 +294,11 @@ const protocols = { // 需要做转换的 API 列表
         item.uuid = item.serviceId
       })
     }
+  },
+  makePhoneCall: {
+    args: {
+      phoneNumber: 'number'
+    }
   }
 }
 
