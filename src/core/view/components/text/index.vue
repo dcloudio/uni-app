@@ -40,6 +40,7 @@ export default {
     const nodeList = []
     this.$slots.default && this.$slots.default.forEach(vnode => {
       if (vnode.text) {
+        // 处理可能出现的多余的转义字符
         const nodeText = vnode.text.replace(/\\n/g, '\n')
         const texts = nodeText.split('\n')
 
@@ -53,9 +54,11 @@ export default {
         nodeList.push(vnode)
       }
     })
-
     return createElement('uni-text', {
-      on: this.$listeners
+      on: this.$listeners,
+      attrs: {
+        selectable: !!this.selectable
+      }
     }, [
       createElement('span', {}, nodeList)
     ])
@@ -64,6 +67,7 @@ export default {
 </script>
 <style>
 	uni-text[selectable] {
+    cursor: auto;
 		user-select: text;
 		-webkit-user-select: text;
 	}
