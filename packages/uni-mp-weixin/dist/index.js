@@ -89,7 +89,7 @@ function checkDeviceWidth () {
     platform,
     pixelRatio,
     windowWidth
-  } = uni.getSystemInfoSync();
+  } = wx.getSystemInfoSync(); // uni=>wx runtime 编译目标是 uni 对象，内部不允许直接使用 uni
 
   deviceWidth = windowWidth;
   deviceDPR = pixelRatio;
@@ -261,10 +261,10 @@ var api = /*#__PURE__*/Object.freeze({
 
 });
 
-let uni$1 = {};
+let uni = {};
 
 if (typeof Proxy !== 'undefined') {
-  uni$1 = new Proxy({}, {
+  uni = new Proxy({}, {
     get (target, name) {
       if (name === 'upx2px') {
         return upx2px
@@ -285,27 +285,27 @@ if (typeof Proxy !== 'undefined') {
     }
   });
 } else {
-  uni$1.upx2px = upx2px;
+  uni.upx2px = upx2px;
 
   Object.keys(todoApis).forEach(name => {
-    uni$1[name] = promisify(name, todoApis[name]);
+    uni[name] = promisify(name, todoApis[name]);
   });
 
   Object.keys(extraApi).forEach(name => {
-    uni$1[name] = promisify(name, todoApis[name]);
+    uni[name] = promisify(name, todoApis[name]);
   });
 
   Object.keys(api).forEach(name => {
-    uni$1[name] = promisify(name, api[name]);
+    uni[name] = promisify(name, api[name]);
   });
 
   Object.keys(wx).forEach(name => {
     if (hasOwn(wx, name) || hasOwn(protocols, name)) {
-      uni$1[name] = promisify(name, wrapper(name, wx[name]));
+      uni[name] = promisify(name, wrapper(name, wx[name]));
     }
   });
 }
 
-var uni$2 = uni$1;
+var uni$1 = uni;
 
-export default uni$2;
+export default uni$1;

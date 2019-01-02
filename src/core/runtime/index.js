@@ -8,7 +8,7 @@ import {
 
 import {
   upx2px
-} from '../service/api/upx2px'
+} from './upx2px'
 
 import wrapper from './wrapper'
 
