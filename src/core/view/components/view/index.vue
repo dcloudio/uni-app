@@ -5,20 +5,24 @@
     @touchstart="_hoverTouchStart"
     @touchend="_hoverTouchEnd"
     @touchcancel="_hoverTouchCancel"
-    v-on="$listeners">
-    <slot />
+    v-on="$listeners"
+  >
+    <slot/>
   </uni-view>
   <uni-view
     v-else
     v-on="$listeners">
-    <slot />
+    <slot/>
   </uni-view>
 </template>
 
 <style>
-	uni-view {
-		display: block;
-	}
+uni-view {
+  display: block;
+}
+uni-view[hidden] {
+  display: none;
+}
 </style>
 
 <script>
