@@ -317,6 +317,9 @@ export default {
             this._contentTrackViewport = current
           } else {
             this._updateViewport(current)
+            if (this.autoplay) {
+              this._scheduleAutoplay()
+            }
           }
         } else {
           this._invalid = true
