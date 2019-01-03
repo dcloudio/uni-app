@@ -1,9 +1,7 @@
 <template>
   <uni-video
     :id="id"
-    class="uni-video"
     v-on="$listeners">
-    <!-- 视频容器 -->
     <div
       ref="container"
       :class="{'uni-video-type-fullscreen':fullscreen,'uni-video-type-rotate-left':rotateType==='left','uni-video-type-rotate-right':rotateType==='right'}"
@@ -13,7 +11,6 @@
       @touchstart="touchstart($event)"
       @touchend="touchend($event)"
       @touchmove="touchmove($event)">
-      <!-- 视频 -->
       <video
         ref="video"
         :style="{opacity:!start?0.8:1,objectFit:objectFit}"
@@ -27,7 +24,6 @@
         x5-video-player-type="h5"
         x5-video-player-fullscreen="false"
         x5-video-orientation="landscape|portrait" />
-      <!-- 控制条 -->
       <div
         v-show="controlsShow"
         class="uni-video-bar uni-video-bar-full"
@@ -68,13 +64,11 @@
           class="uni-video-fullscreen"
           @click.stop="triggerFullscreen" />
       </div>
-      <!-- 弹幕 -->
       <div
         v-show="start&&enableDanmuSync"
         ref="danmu"
         style="z-index: 0;"
         class="uni-video-danmu" />
-      <!-- 封面 -->
       <div
         v-if="!start"
         class="uni-video-cover"
@@ -84,7 +78,6 @@
           @click.stop="play" />
         <p class="uni-video-cover-duration">{{ (duration||durationTime)|getTime }}</p>
       </div>
-      <!-- 提示-音量调整 -->
       <div
         :class="{'uni-video-toast-volume':gestureType==='volume'}"
         class="uni-video-toast">
@@ -111,7 +104,6 @@
           </div>
         </div>
       </div>
-      <!-- 提示-进度调整 -->
       <div
         :class="{'uni-video-toast-progress':gestureType=='progress'}"
         class="uni-video-toast">
@@ -136,21 +128,9 @@ const passiveOptions = supportsPassive ? {
 } : false
 
 const GestureType = {
-  /**
-   * 未开始
-   */
   NONE: 'none',
-  /**
-   * 停止
-   */
   STOP: 'stop',
-  /**
-   * 音量
-   */
   VOLUME: 'volume',
-  /**
-   * 进度
-   */
   PROGRESS: 'progress'
 }
 
@@ -181,116 +161,68 @@ export default {
       type: String,
       default: ''
     },
-    /**
-     * 指定视频时长
-     */
     duration: {
       type: [Number, String],
       default: ''
     },
-    /**
-     * 是否显示默认播放控件
-     */
     controls: {
       type: [Boolean, String],
       default: true
     },
-    /**
-     * 弹幕列表
-     */
     danmuList: {
       type: Array,
       default () {
         return []
       }
     },
-    /**
-     * 是否显示弹幕按钮
-     */
     danmuBtn: {
       type: [Boolean, String],
       default: false
     },
-    /**
-     * 是否展示弹幕
-     */
     enableDanmu: {
       type: [Boolean, String],
       default: false
     },
-    /**
-     * 是否自动播放
-     */
     autoplay: {
       type: [Boolean, String],
       default: false
     },
-    /**
-     * 是否循环播放
-     */
     loop: {
       type: [Boolean, String],
       default: false
     },
-    /**
-     * 是否静音播放
-     */
     muted: {
       type: [Boolean, String],
       default: false
     },
-    /**
-     * 视频的表现形式
-     */
     objectFit: {
       type: String,
       default: 'contain'
     },
-    /**
-     * 视频封面
-     */
     poster: {
       type: String,
       default: ''
     },
-    /**
-     * 设置全屏时视频的方向,0为竖向，90和-90为横向，默认360为自动
-     */
     direction: {
       type: [String, Number],
       default: 360
     },
-    /**
-     * 视频初始播放位置
-     */
     initialTime: {
       type: [String, Number],
       default: 0
     },
-    /**
-     * 是否显示全屏按钮
-     */
     showFullscreenBtn: {
       type: [Boolean, String],
       default: true
     },
-    /**
-     * 在非全屏模式下，是否开启亮度与音量调节手势
-     */
     pageGesture: {
       type: [Boolean, String],
       default: false
     },
-    /**
-     * 是否开启控制进度的手势
-     */
     enableProgressGesture: {
       type: [Boolean, String],
       default: true
     },
-    /**
-     * 是否显示视频底部控制栏的播放按钮
-     */
     showPlayBtn: {
       type: [Boolean, String],
       default: true
@@ -298,113 +230,38 @@ export default {
   },
   data () {
     return {
-      /**
-       * 是否播放开始
-       */
       start: false,
-      /**
-       * 是否正在播放
-       */
       playing: false,
-      /**
-       * 当前播放时长
-       */
       currentTime: 0,
-      /**
-       * 播放总时长
-       */
       durationTime: 0,
-      /**
-       * 进度（0-100）
-       */
       progress: 0,
-      /**
-       * 触摸中
-       */
       touching: false,
-      /**
-       * 是否展示弹幕
-       */
       enableDanmuSync: Boolean(this.enableDanmu),
-      /**
-       * 默认播放控件显示状态
-       */
       controlsVisible: true,
-      /**
-       * 全屏状态
-       */
       fullscreen: false,
-      /**
-       * 播放器宽度
-       */
       width: '0',
-      /**
-       * 播放器高度
-       */
       height: '0',
-      /**
-       * 全屏状态切换中
-       */
       fullscreenTriggering: false,
-      /**
-       * 控制条触摸中
-       */
       controlsTouching: false,
-      /**
-       * 全屏时视频的方向
-       */
       directionSync: Number(this.direction),
-      /**
-       * 触摸起点
-       */
       touchStartOrigin: {
         x: 0,
         y: 0
       },
-      /**
-       * 手势状态（未开始：none、停止：stop、音量：volume、进度：progress）
-       */
       gestureType: GestureType.NONE,
-      /**
-       * 播放进度旧值
-       */
       currentTimeOld: 0,
-      /**
-       * 播放进度新值
-       */
       currentTimeNew: 0,
-      /**
-			 * 系统音量旧值
-			 */
       volumeOld: null,
-      /**
-			 * 系统音量新值
-			 */
       volumeNew: null,
-      /**
-			 * isIOS: uni.isIOS
-			 */
       isIOS: false,
-      /**
-			 * 缓冲进度（0-1）
-			 */
       buffered: 0,
-      /**
-			 * 旋转方向 left:逆时针旋转90度 right:顺时针旋转90度
-			 */
       rotateType: ''
     }
   },
   computed: {
-    /**
-		 * 显示控制条
-		 */
     controlsShow () {
       return this.start && this.controls && this.controlsVisible
     },
-    /**
-		 * 自动隐藏的计时器状态
-		 */
     autoHideContorls () {
       return this.controlsShow && this.playing && !this.controlsTouching
     },
@@ -430,12 +287,8 @@ export default {
       container.remove()
       if (val) {
         this.resize()
-        // uni.enterFullscreen(() => {
-        //   this.resize()
-        // })
         document.body.appendChild(container)
       } else {
-        // uni.leaveFullscreen()
         this.$el.appendChild(container)
       }
       this.$trigger('fullscreenchange', {}, {
@@ -469,20 +322,11 @@ export default {
   },
   created () {
     this.otherData = {
-      /**
-       * 弹幕列表
-       */
       danmuList: [],
-      /**
-       * 弹幕指针
-       */
       danmuIndex: {
         time: 0,
         index: -1
       },
-      /**
-       * 操作栏隐藏倒计时
-       */
       hideTiming: null
     }
     var danmuList = this.otherData.danmuList = JSON.parse(JSON.stringify(this.danmuList || []))
@@ -542,7 +386,6 @@ export default {
     video.addEventListener('timeupdate', function ($event) {
       var currentTime = self.currentTime = video.currentTime
       var duration = video.duration
-      // 移动弹幕指针
       var oldDanmuIndex = otherData.danmuIndex
       var danmuIndex = {
         time: currentTime,
@@ -635,7 +478,6 @@ export default {
   },
   beforeDestroy () {
     this.$refs.container.remove()
-    // uni.leaveFullscreen()
     clearTimeout(this.otherData.hideTiming)
   },
   methods: {
@@ -673,33 +515,24 @@ export default {
       var direction = Math.abs(this.directionSync)
 
       if (direction === 0) {
-        // 强制竖屏
         if (w > h) {
-          // 设备横屏-逆时针旋转90度
           this.rotateType = 'left'
         } else {
-          // 设备竖屏-不旋转
           this.rotateType = ''
         }
       } else if (direction === 90) {
-        // 强制横屏
         if (w > h) {
-          // 设备横屏-不旋转
           this.rotateType = ''
         } else {
-          // 设备竖屏-顺时针旋转90度
           this.rotateType = 'right'
         }
       } else {
-        // 自动适应
         this.rotateType = ''
       }
       if (!this.rotateType) {
-        // 无旋转
         this.width = w + 'px'
         this.height = h + 'px'
       } else {
-        // 旋转90度
         this.width = h + 'px'
         this.height = w + 'px'
       }
@@ -810,15 +643,12 @@ export default {
       if (gestureType === GestureType.PROGRESS) {
         this.changeProgress(pageX - origin.x)
       } else if (gestureType === GestureType.VOLUME) {
-        // 横屏时调节，需颠倒方向
         this.changeVolume(pageY - origin.y)
       }
       if (gestureType !== GestureType.NONE) {
         return
       }
-      // 横向
       if (Math.abs(pageX - origin.x) > Math.abs(pageY - origin.y)) {
-        // 未开启进度手势
         if (!this.enableProgressGesture) {
           this.gestureType = GestureType.STOP
           return
@@ -828,13 +658,11 @@ export default {
         if (!this.fullscreen) {
           stop()
         }
-      } else { // 纵向
-        // 未开启亮度和音量手势
+      } else {
         if (!this.pageGesture) {
           this.gestureType = GestureType.STOP
           return
         }
-        // 调节音量
         this.gestureType = GestureType.VOLUME
         this.volumeOld = this.$refs.video.volume
         if (!this.fullscreen) {
@@ -876,7 +704,6 @@ export default {
         this.volumeNew = value
       }
     },
-    // 自动隐藏操作栏
     autoHideStart () {
       this.otherData.hideTiming = setTimeout(() => {
         this.controlsVisible = false
@@ -889,9 +716,7 @@ export default {
         otherData.hideTiming = null
       }
     },
-    // 获取转换后的屏幕坐标
     getScreenXY (dataOrigin) {
-      // 未全屏或者未旋转返回原始数据
       var rotateType = this.rotateType
       if (!this.fullscreen || !rotateType) {
         return dataOrigin
@@ -903,11 +728,9 @@ export default {
       var pageX
       var pageY
       if (rotateType === 'left') {
-        // 向左旋转-逆时针90度
         pageX = h - y
         pageY = x
       } else {
-        // 向右旋转-顺时针90度
         pageX = y
         pageY = w - x
       }
@@ -926,13 +749,17 @@ export default {
 </script>
 
 <style>
-.uni-video {
+uni-video {
   width: 300px;
   height: 225px;
   display: inline-block;
   line-height: 0;
   overflow: hidden;
   position: relative;
+}
+
+uni-video[hidden] {
+	display: none;
 }
 
 .uni-video-container {
@@ -973,13 +800,9 @@ export default {
   left: 0;
   bottom: 0;
   width: 100%;
-  display: -webkit-flex;
   display: flex;
-  -webkit-flex-direction: column;
   flex-direction: column;
-  -webkit-justify-content: center;
   justify-content: center;
-  -webkit-align-items: center;
   align-items: center;
   background-color: rgba(1, 1, 1, 0.5);
   z-index: 1;
@@ -1104,15 +927,6 @@ export default {
   background-color: #ffffff;
   border-radius: 50%;
 }
-
-/* .uni-video-controls > .uni-video-duration {
-  height: 14.5px;
-  line-height: 14.5px;
-  margin-top: 15px;
-  margin-bottom: 14.5px;
-  font-size: 12px;
-  color: #cbcbcb;
-} */
 
 .uni-video-danmu-button {
   white-space: nowrap;
