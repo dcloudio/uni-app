@@ -1,7 +1,5 @@
 <template>
-  <uni-map
-    :id="id"
-    class="uni-map">
+  <uni-map :id="id">
     <div
       ref="map"
       style="width: 100%; height: 100%; position: relative; overflow: hidden;"/>
@@ -17,46 +15,8 @@
 import {
   subscriber
 } from 'uni-mixins'
-import {
-  supportsPassive
-} from 'uni-shared'
+
 var maps
-/**
- * 自定义气泡类
- */
-var Callout = function (option) {
-  this.option = option = option || {}
-  var map = option.map
-  this.position = option.position
-  this.index = 1
-  this.visible = this.alwaysVisible = option.display === 'ALWAYS'
-  this.init()
-  if (map) {
-    this.setMap(map)
-  }
-}
-/**
- * 自定义tap事件监听
- */
-function onTap (dom, callback) {
-  var startTime = 0
-  var delayTime = 200
-  var x
-  var y
-  dom.addEventListener('touchstart', function ($event) {
-    startTime = Date.now()
-    var touch = $event.targetTouches[0]
-    x = touch.screenX
-    y = touch.screenY
-  }, supportsPassive ? { passive: true } : false)
-  dom.addEventListener('touchend', function ($event) {
-    var touch = $event.changedTouches[0]
-    if (Math.abs(touch.screenX - x) > 20 || Math.abs(touch.screenY - y) > 20 || Date.now() - startTime > delayTime) {
-      return
-    }
-    callback($event)
-  }, supportsPassive ? { passive: true } : false)
-}
 export default {
   name: 'Map',
   mixins: [subscriber],
@@ -65,13 +25,13 @@ export default {
       type: String,
       default: ''
     },
-    longitude: {
-      type: [String, Number],
-      default: 116.397720
-    },
     latitude: {
       type: [String, Number],
-      default: 39.903230
+      default: 39.92
+    },
+    longitude: {
+      type: [String, Number],
+      default: 116.46
     },
     scale: {
       type: [String, Number],
@@ -84,6 +44,12 @@ export default {
       }
     },
     covers: {
+      type: Array,
+      default () {
+        return []
+      }
+    },
+    includePoints: {
       type: Array,
       default () {
         return []
@@ -107,12 +73,6 @@ export default {
         return []
       }
     },
-    includePoints: {
-      type: Array,
-      default () {
-        return []
-      }
-    },
     showLocation: {
       type: [Boolean, String],
       default: false
@@ -120,57 +80,28 @@ export default {
   },
   data () {
     return {
-      /**
-       * 地图中心点
-       */
       center: {
-        latitude: 39.903230,
-        longitude: 116.397720
+        latitude: 116.46,
+        longitude: 116.46
       },
-      /**
-       * 地图初始化完毕
-       */
       isMapReady: false,
-      /**
-       * 视野初始化完毕
-       */
       isBoundsReady: false,
       markersSync: [],
       polylineSync: [],
       circlesSync: [],
-      controlsSync: [],
-      /**
-       * 地图原始对象
-       */
-      map: null,
-      mapLocation: null,
-      mapLocationPosition: null
+      controlsSync: []
     }
   },
   watch: {
-    latitude (val) {
-      if (val && this.longitude) {
-        this.center.latitude = Number(val)
-      }
+    latitude () {
+      this.centerChange()
     },
-    longitude (val) {
-      if (val && this.latitude) {
-        this.center.longitude = Number(val)
-      }
-    },
-    center: {
-      handler (val) {
-        if (this.map) {
-          this.mapReady(() => {
-            this.map.setCenter(new maps.LatLng(val.latitude, val.longitude))
-          })
-        }
-      },
-      deep: true
+    longitude () {
+      this.centerChange()
     },
     scale (val) {
       this.mapReady(() => {
-        this.map.setZoom(Number(val))
+        this._map.setZoom(Number(val) || 16)
       })
     },
     markers (val, old) {
@@ -259,7 +190,6 @@ export default {
   },
   mounted () {
     this.loadMap(() => {
-      this.createClass()
       this.init()
     })
   },
@@ -269,7 +199,6 @@ export default {
     this.removeCircles()
     this.removeControls()
     this.removeLocation()
-    this.map = null
   },
   methods: {
     _handleSubscribe ({
@@ -293,7 +222,7 @@ export default {
           this.mapReady(() => {
             var latitude
             var longitude
-            var center = this.map.getCenter()
+            var center = this._map.getCenter()
             latitude = center.getLat()
             longitude = center.getLng()
 
@@ -304,13 +233,12 @@ export default {
           })
           break
         case 'moveToLocation':
-          var locationPosition = this.mapLocationPosition
+          var locationPosition = this._locationPosition
           if (locationPosition) {
-            this.map.setCenter(locationPosition)
+            this._map.setCenter(locationPosition)
           }
           break
         case 'translateMarker':
-          // 此处和小程序一致，不会同步数据到当前子组件
           this.mapReady(() => {
             try {
               var marker = this.getMarker(data.markerId)
@@ -321,11 +249,8 @@ export default {
               var rotation = marker.getRotation()
               var a = marker.getPosition()
               var b = new maps.LatLng(destination.latitude, destination.longitude)
-              // 距离-千米
               var distance = maps.geometry.spherical.computeDistanceBetween(a, b) / 1000
-              // 时间-小时
               var time = ((typeof duration === 'number') ? duration : 1000) / (1000 * 60 * 60)
-              // 速度-千米/小时
               var speed = distance / time
               var movingEvent = maps.event.addListener(marker, 'moving', e => {
                 var latLng = e.latLng
@@ -371,12 +296,11 @@ export default {
           })
           break
         case 'includePoints':
-          // 此处和小程序一致，不会同步数据到当前子组件
           this.fitBounds(data.points)
           break
         case 'getRegion':
           this.boundsReady(() => {
-            var latLngBounds = this.map.getBounds()
+            var latLngBounds = this._map.getBounds()
             var southwest = latLngBounds.getSouthWest()
             var northeast = latLngBounds.getNorthEast()
             callback({
@@ -402,7 +326,7 @@ export default {
     },
     init () {
       var center = new maps.LatLng(this.center.latitude, this.center.longitude)
-      var map = this.map = new maps.Map(this.$refs.map, {
+      var map = this._map = new maps.Map(this.$refs.map, {
         center,
         zoom: Number(this.scale),
         scrollwheel: false,
@@ -461,19 +385,28 @@ export default {
       }
       if (this.includePoints && Array.isArray(this.includePoints) && this.includePoints.length) {
         this.fitBounds(this.includePoints, () => {
-          // 为和小程序一致，重置中心点
           map.setCenter(center)
         })
       }
-      // 创建mapContext对象
-      // 更改mapReady状态
       this.isMapReady = true
       this.$emit('mapready')
     },
+    centerChange () {
+      var latitude = Number(this.latitude)
+      var longitude = Number(this.longitude)
+      if (latitude !== this.center.latitude || longitude !== this.center.longitude) {
+        this.center.latitude = latitude
+        this.center.longitude = longitude
+        if (this._map) {
+          this.mapReady(() => {
+            this._map.setCenter(new maps.LatLng(latitude, longitude))
+          })
+        }
+      }
+    },
     createMarkers (markerOptions) {
-      var map = this.map
+      var map = this._map
       var markers = this.markersSync
-      // 创建新标注
       markerOptions.forEach(option => {
         var marker = new maps.Marker({
           map,
@@ -482,13 +415,11 @@ export default {
         })
         marker.id = option.id
         this.changeMarker(marker, option)
-        // 监听标注事件
         var mouseup
         maps.event.addListener(marker, 'mouseup', e => {
           mouseup = Date.now()
         })
         maps.event.addListener(marker, 'click', e => {
-          // 通过过滤暂时解决click事件重复触发的bug
           if (Date.now() - mouseup < 20) {
             return
           }
@@ -512,7 +443,7 @@ export default {
       })
     },
     changeMarker (marker, option) {
-      var map = this.map
+      var map = this._map
       var title = option.title || option.name
       var position = new maps.LatLng(option.latitude, option.longitude)
       var img = new Image()
@@ -535,11 +466,9 @@ export default {
         y = (typeof y === 'number' ? y : 1) * h
         top = h - (h - y)
         icon = new maps.MarkerImage(img.src, null, null, new maps.Point(x, y), new maps.Size(w, h))
-        // 修改标注-暂不支持透明度
         marker.setPosition(position)
         marker.setIcon(icon)
         marker.setRotation(option.rotate || 0)
-        // 创建标注文本
         var labelOpt = option.label || {}
         if (marker.label) {
           marker.label.setMap(null)
@@ -565,7 +494,6 @@ export default {
           })
           marker.label = label
         }
-        // 创建标注气泡
         var calloutOpt = option.callout || {}
         var callout = marker.callout
         var calloutStyle
@@ -598,7 +526,14 @@ export default {
           if (callout) {
             callout.setOption(calloutStyle)
           } else {
-            callout = marker.callout = new Callout(calloutStyle)
+            callout = marker.callout = new maps.Callout(calloutStyle)
+            callout.onclick = function ($event) {
+              self.$trigger('callouttap', $event, {
+                markerId: option.id || 1
+              })
+              $event.stopPropagation()
+              $event.preventDefault()
+            }
           }
         } else {
           if (callout) {
@@ -607,13 +542,9 @@ export default {
           }
         }
       }
-      console.log(option.iconPath)
-      console.log(this.$getRealPath(option.iconPath))
-      img.src = this.$getRealPath(option.iconPath) ||
-        'data:image/png;base64,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'
+      img.src = option.iconPath ? this.$getRealPath(option.iconPath) : 'data:image/png;base64,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'
     },
     removeMarkers (markers) {
-      // 销毁全部标注
       for (var index = 0; index < markers.length; index++) {
         var marker = markers[index]
         if (marker.label) {
@@ -627,10 +558,9 @@ export default {
       }
     },
     createPolyline () {
-      var map = this.map
+      var map = this._map
       var polyline = this.polylineSync
       this.removePolyline()
-      // 创建新路线
       this.polyline.forEach(option => {
         var path = []
         option.points.forEach(point => {
@@ -661,17 +591,15 @@ export default {
     },
     removePolyline () {
       var polyline = this.polylineSync
-      // 销毁全部路线
       polyline.forEach(line => {
         line.setMap(null)
       })
       polyline.splice(0, polyline.length)
     },
     createCircles () {
-      var map = this.map
+      var map = this._map
       var circles = this.circlesSync
       this.removeCircles()
-      // 创建新圆形
       this.circles.forEach(option => {
         var center = new maps.LatLng(option.latitude, option.longitude)
 
@@ -698,17 +626,15 @@ export default {
     },
     removeCircles () {
       var circles = this.circlesSync
-      // 销毁全部圆形
       circles.forEach(circle => {
         circle.setMap(null)
       })
       circles.splice(0, circles.length)
     },
     createControls () {
-      var map = this.map
+      var map = this._map
       var controls = this.controlsSync
       this.removeControls()
-      // 创建新控件
       this.controls.forEach(option => {
         var position = option.position || {}
         var control = document.createElement('div')
@@ -732,37 +658,34 @@ export default {
           style.maxWidth = 'initial'
         }
         img.src = this.$getRealPath(option.iconPath)
-        onTap(img, $event => {
+        img.onclick = function ($event) {
           if (option.clickable) {
             this.$trigger('controltap', $event, {
               controlId: option.id
             })
           }
-        })
+        }
         map.controls[maps.ControlPosition.TOP_LEFT].push(control)
         controls.push(control)
       })
     },
     removeControls () {
       var controls = this.controlsSync
-      // 销毁全部控件
       controls.forEach(control => {
         control.remove()
       })
       controls.splice(0, controls.length)
     },
     createLocation () {
-      var map = this.map
-      var location = this.mapLocation
-      // 移除地点标注
+      var map = this._map
+      var location = this._location
       if (location) {
         this.removeLocation()
       }
-      // 创建新地点标注
       uni.getLocation({
         type: 'gcj02',
         success: (res) => {
-          if (location !== this.mapLocation) {
+          if (location !== this._location) {
             return
           }
           var position = new maps.LatLng(res.latitude, res.longitude)
@@ -775,7 +698,7 @@ export default {
             flat: true,
             rotation: 0
           })
-          this.mapLocation = location
+          this._location = location
           refreshLocation()
           uni.onCompassChange(function (res) {
             location.setRotation(res.direction)
@@ -788,14 +711,14 @@ export default {
       var self = this
 
       function refreshLocation () {
-        if (location !== self.mapLocation) {
+        if (location !== self._location) {
           return
         }
         setTimeout(() => {
           uni.getLocation({
             type: 'gcj02',
             success: (res) => {
-              var locationPosition = self.mapLocationPosition = new maps.LatLng(res.latitude, res.longitude)
+              var locationPosition = self._locationPosition = new maps.LatLng(res.latitude, res.longitude)
               location.setPosition(locationPosition)
             },
             fail: e => {
@@ -809,18 +732,17 @@ export default {
       }
     },
     removeLocation () {
-      var location = this.mapLocation
+      var location = this._location
       if (location) {
         location.setMap(null)
-        this.mapLocation = null
-        this.mapLocationPosition = null
+        this._location = null
+        this._locationPosition = null
         uni.stopCompass()
       }
     },
     fitBounds (points, cb) {
-      // 设置地图范围
       this.boundsReady(() => {
-        var map = this.map
+        var map = this._map
         var bounds = new maps.LatLngBounds()
 
         points.forEach(point => {
@@ -862,94 +784,10 @@ export default {
         }
       }
     },
-    createClass () {
-      var self = this
-
-      Callout.prototype = new maps.Overlay()
-      Callout.prototype.init = function () {
-        var option = this.option
-        var div = this.div = document.createElement('div')
-        var divStyle = div.style
-        divStyle.position = 'absolute'
-        divStyle.whiteSpace = 'nowrap'
-        divStyle.transform = 'translateX(-50%) translateY(-100%)'
-        divStyle.zIndex = 1
-        divStyle.boxShadow = option.boxShadow || 'none'
-        divStyle.display = this.visible ? 'block' : 'none'
-        var triangle = this.triangle = document.createElement('div')
-        triangle.setAttribute('style',
-          'position: absolute;white-space: nowrap;border-width: 4px;border-style: solid;border-color: #fff transparent transparent;border-image: initial;font-size: 12px;padding: 0px;background-color: transparent;width: 0px;height: 0px;transform: translate(-50%, 100%);left: 50%;bottom: 0;'
-        )
-        this.setStyle(option)
-        this.changed = function (key) {
-          divStyle.display = this.visible ? 'block' : 'none'
-        }
-        div.appendChild(triangle)
-        onTap(div, $event => {
-          self.$trigger('callouttap', $event, {
-            markerId: option.id || 1
-          })
-          $event.stopPropagation()
-          $event.preventDefault()
-        })
-      }
-      // 定义construct,实现这个接口来初始化自定义的Dom元素
-      Callout.prototype.construct = function () {
-        var div = this.div
-        // 将dom添加到覆盖物层
-        var panes = this.getPanes()
-        // 设置panes的层级，overlayMouseTarget可接收点击事件
-        panes.floatPane.appendChild(div)
-      }
-      // 实现draw接口来绘制和更新自定义的dom元素
-      Callout.prototype.draw = function () {
-        var overlayProjection = this.getProjection()
-        if (!this.position || !this.div || !overlayProjection) {
-          return
-        }
-        // 返回覆盖物容器的相对像素坐标
-        var pixel = overlayProjection.fromLatLngToDivPixel(this.position)
-        var divStyle = this.div.style
-        divStyle.left = pixel.x + 'px'
-        divStyle.top = pixel.y + 'px'
-      }
-      // 实现destroy接口来删除自定义的Dom元素，此方法会在setMap(null)后被调用
-      Callout.prototype.destroy = function () {
-        this.div.parentNode.removeChild(this.div)
-        this.div = null
-        this.triangle = null
-      }
-      Callout.prototype.setOption = function (option) {
-        this.option = option
-        this.setPosition(option.position)
-        if (option.display === 'ALWAYS') {
-          this.alwaysVisible = this.visible = true
-        } else {
-          this.alwaysVisible = false
-        }
-        this.setStyle(option)
-      }
-      Callout.prototype.setStyle = function (option) {
-        var div = this.div
-        var divStyle = div.style
-        div.innerHTML = option.content
-        divStyle.lineHeight = (option.fontSize || 14) + 'px'
-        divStyle.fontSize = (option.fontSize || 14) + 'px'
-        divStyle.padding = (option.padding || 8) + 'px'
-        divStyle.color = option.color || '#000'
-        divStyle.borderRadius = (option.borderRadius || 0) + 'px'
-        divStyle.backgroundColor = option.bgColor || '#fff'
-        divStyle.marginTop = '-' + (option.top + 5) + 'px'
-        this.triangle.style.borderColor = `${option.bgColor || '#fff'} transparent transparent`
-      }
-      Callout.prototype.setPosition = function (position) {
-        this.position = position
-        this.draw()
-      }
-    },
     loadMap (callback) {
-      // 加载腾讯地图js
-      if ('qq' in window && typeof window.qq === 'object' && 'maps' in window.qq) {
+      if (maps) {
+        callback()
+      } else if (window.qq && window.qq.maps) {
         maps = window.qq.maps
         callback()
       } else {
@@ -958,10 +796,96 @@ export default {
         window[callbackName] = function () {
           delete window[callbackName]
           maps = window.qq.maps
+          var Callout = maps.Callout = function (option = {}) {
+            this.option = option
+            var map = option.map
+            this.position = option.position
+            this.index = 1
+            this.visible = this.alwaysVisible = option.display === 'ALWAYS'
+            this.init()
+            Object.defineProperty(this, 'onclick', {
+              setter (callback) {
+                this.div.onclick = callback
+              },
+              getter () {
+                return this.div.onclick
+              }
+            })
+            if (map) {
+              this.setMap(map)
+            }
+          }
+          Callout.prototype = new maps.Overlay()
+          Callout.prototype.init = function () {
+            var option = this.option
+            var div = this.div = document.createElement('div')
+            var divStyle = div.style
+            divStyle.position = 'absolute'
+            divStyle.whiteSpace = 'nowrap'
+            divStyle.transform = 'translateX(-50%) translateY(-100%)'
+            divStyle.zIndex = 1
+            divStyle.boxShadow = option.boxShadow || 'none'
+            divStyle.display = this.visible ? 'block' : 'none'
+            var triangle = this.triangle = document.createElement('div')
+            triangle.setAttribute('style',
+              'position: absolute;white-space: nowrap;border-width: 4px;border-style: solid;border-color: #fff transparent transparent;border-image: initial;font-size: 12px;padding: 0px;background-color: transparent;width: 0px;height: 0px;transform: translate(-50%, 100%);left: 50%;bottom: 0;'
+            )
+            this.setStyle(option)
+            this.changed = function (key) {
+              divStyle.display = this.visible ? 'block' : 'none'
+            }
+            div.appendChild(triangle)
+          }
+          Callout.prototype.construct = function () {
+            var div = this.div
+            var panes = this.getPanes()
+            panes.floatPane.appendChild(div)
+          }
+          Callout.prototype.draw = function () {
+            var overlayProjection = this.getProjection()
+            if (!this.position || !this.div || !overlayProjection) {
+              return
+            }
+            var pixel = overlayProjection.fromLatLngToDivPixel(this.position)
+            var divStyle = this.div.style
+            divStyle.left = pixel.x + 'px'
+            divStyle.top = pixel.y + 'px'
+          }
+          Callout.prototype.destroy = function () {
+            this.div.parentNode.removeChild(this.div)
+            this.div = null
+            this.triangle = null
+          }
+          Callout.prototype.setOption = function (option) {
+            this.option = option
+            this.setPosition(option.position)
+            if (option.display === 'ALWAYS') {
+              this.alwaysVisible = this.visible = true
+            } else {
+              this.alwaysVisible = false
+            }
+            this.setStyle(option)
+          }
+          Callout.prototype.setStyle = function (option) {
+            var div = this.div
+            var divStyle = div.style
+            div.innerText = option.content
+            divStyle.lineHeight = (option.fontSize || 14) + 'px'
+            divStyle.fontSize = (option.fontSize || 14) + 'px'
+            divStyle.padding = (option.padding || 8) + 'px'
+            divStyle.color = option.color || '#000'
+            divStyle.borderRadius = (option.borderRadius || 0) + 'px'
+            divStyle.backgroundColor = option.bgColor || '#fff'
+            divStyle.marginTop = '-' + (option.top + 5) + 'px'
+            this.triangle.style.borderColor = `${option.bgColor || '#fff'} transparent transparent`
+          }
+          Callout.prototype.setPosition = function (position) {
+            this.position = position
+            this.draw()
+          }
           callback()
         }
         let script = document.createElement('script')
-        script.type = 'text/javascript'
         script.src = `https://map.qq.com/api/js?v=2.exp&key=${key}&callback=${callbackName}&libraries=geometry`
         document.body.appendChild(script)
       }
@@ -972,9 +896,12 @@ export default {
 
 <style>
 uni-map {
-	position: relative;
-	width: 300px;
-	height: 150px;
-	display: block;
+  position: relative;
+  width: 300px;
+  height: 150px;
+  display: block;
+}
+uni-map[hidden] {
+  display: none;
 }
 </style>
