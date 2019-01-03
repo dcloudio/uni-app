@@ -61,12 +61,26 @@ function beforeEach (to, from, next, routes) {
       case 'redirectTo':
         // 关闭前一个页面
         removeKeepAliveInclude.call(this, fromName)
+        if (from.meta) {
+          if (from.meta.isQuit) { // 如果 redirectTo 的前一个页面是 quit 类型，则新打开的页面也是 quit
+            to.meta.isQuit = true
+            to.meta.isEntry = !!from.meta.isEntry
+          }
+          if (from.meta.isTabBar) { // 如果是 tabBar，需要更新系统组件 tabBar 内的 list 数据
+            to.meta.isTabBar = true
+            to.meta.tabBarIndex = from.meta.tabBarIndex
+            const appVm = getApp().$children[0]
+            appVm.$set(appVm.tabBar.list[to.meta.tabBarIndex], 'pagePath', to.meta.pagePath)
+          }
+        }
+
         break
       case 'switchTab':
         switchTab.call(this, routes)
         break
       case 'reLaunch':
         reLaunch.call(this, toName)
+        to.meta.isQuit = true // reLaunch后，该页面为 quit 类型
         break
       default:
         // 后退或非 API 访问
