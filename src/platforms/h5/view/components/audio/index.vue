@@ -1,15 +1,14 @@
 <template>
   <uni-audio
     :id="id"
-    :class="{controls:controls}"
     :src="src"
     :loop="loop"
     :controls="controls"
     :poster="poster"
     :name="name"
     :author="author"
-    class="uni-audio"
-    v-on="$listeners">
+    v-on="$listeners"
+  >
     <audio
       ref="audio"
       :loop="loop"
@@ -24,16 +23,10 @@
           @click="trigger"/>
       </div>
       <div class="uni-audio-right">
-        <div
-          class="uni-audio-time"
-          v-text="currentTime"/>
+        <div class="uni-audio-time">{{ currentTime }}</div>
         <div class="uni-audio-info">
-          <div
-            class="uni-audio-name"
-            v-text="name"/>
-          <div
-            class="uni-audio-author"
-            v-text="author"/>
+          <div class="uni-audio-name">{{ name }}</div>
+          <div class="uni-audio-author">{{ author }}</div>
         </div>
       </div>
     </div>
@@ -167,12 +160,16 @@ export default {
 </script>
 
 <style>
-.uni-audio {
+uni-audio {
   display: none;
 }
 
-.uni-audio.controls {
+uni-audio[controls] {
   display: inline-block;
+}
+
+uni-audio[hidden] {
+  display: none;
 }
 
 .uni-audio-default {
