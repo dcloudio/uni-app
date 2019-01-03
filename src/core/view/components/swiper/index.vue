@@ -360,9 +360,6 @@ export default {
         if (this.circularEnabled) {
           this._checkCircularLayout(index)
         }
-        if (this.skipHiddenItemLayout) {
-          this._updateHiddenItemDisplay(index)
-        }
       }
 
       var x = this.vertical ? '0' : 100 * -index * this._viewportMoveRatio + '%'
