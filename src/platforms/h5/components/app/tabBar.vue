@@ -116,7 +116,7 @@ uni-tabbar .uni-tabbar-border {
 uni-tabbar .uni-tabbar__reddot {
   position: absolute;
   top: 6px;
-  left: 100%;
+  left: 16px;
   width: 12px;
   height: 12px;
   display: inline-block;
