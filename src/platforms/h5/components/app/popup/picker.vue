@@ -173,13 +173,23 @@ export default {
     },
     startArray () {
       var splitStr = this.mode === mode.DATE ? '-' : ':'
-      return this.start.split(splitStr).map((val, i) => (this.mode === mode.DATE ? this.dateArray : this.timeArray)[i].indexOf(
+      var array = this.mode === mode.DATE ? this.dateArray : this.timeArray
+      var val = this.start.split(splitStr).map((val, i) => array[i].indexOf(
         val))
+      if (val.indexOf(-1) >= 0) {
+        val = array.map(() => 0)
+      }
+      return val
     },
     endArray () {
       var splitStr = this.mode === mode.DATE ? '-' : ':'
-      return this.end.split(splitStr).map((val, i) => (this.mode === mode.DATE ? this.dateArray : this.timeArray)[i].indexOf(
+      var array = this.mode === mode.DATE ? this.dateArray : this.timeArray
+      var val = this.end.split(splitStr).map((val, i) => array[i].indexOf(
         val))
+      if (val.indexOf(-1) >= 0) {
+        val = array.map((val) => val.length - 1)
+      }
+      return val
     },
     units () {
       switch (this.mode) {
