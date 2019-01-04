@@ -567,7 +567,7 @@ export default {
           slidesDots.push(createElement('div', {
             class: {
               'uni-swiper-dot': true,
-              'uni-swiper-dot-active': index === this.currentSync
+              'uni-swiper-dot-active': (index < this.currentSync + this.displayMultipleItemsNumber && index >= this.currentSync) || (index < this.currentSync + this.displayMultipleItemsNumber - this.items.length)
             },
             style: {
               'background': index === this.currentSync ? this.indicatorActiveColor : this.indicatorColor
