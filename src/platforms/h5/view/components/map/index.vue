@@ -415,14 +415,7 @@ export default {
         })
         marker.id = option.id
         this.changeMarker(marker, option)
-        var mouseup
-        maps.event.addListener(marker, 'mouseup', e => {
-          mouseup = Date.now()
-        })
         maps.event.addListener(marker, 'click', e => {
-          if (Date.now() - mouseup < 20) {
-            return
-          }
           var callout = marker.callout
           if (callout) {
             var div = callout.div
