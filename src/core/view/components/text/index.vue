@@ -50,7 +50,7 @@ export default {
             nodeList.push(createElement('br'))
           }
         })
-      } else {
+      } else if (vnode.componentOptions && vnode.componentOptions.tag === 'v-uni-text') {
         nodeList.push(vnode)
       }
     })
