@@ -71,11 +71,13 @@ function getNodeInfo (el, fields) {
 function getNodesInfo (pageVm, component, selector, single, fields) {
   const $el = pageVm.$el
   if (single) {
-    const node = $el.matches(selector) ? $el : $el.querySelector(selector)
+    const node = $el && ($el.matches(selector) ? $el : $el.querySelector(selector))
     if (node) {
       return getNodeInfo(node, fields)
     }
     return null
+  } else if (!$el) {
+    return []
   } else {
     let infos = []
     const nodeList = $el.querySelectorAll(selector)
