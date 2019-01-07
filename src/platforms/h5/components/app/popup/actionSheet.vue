@@ -67,28 +67,18 @@ export default {
 		z-index: 999;
 		width: 100%;
 		background-color: #efeff4;
-		transition: transform .3s;
+    visibility: hidden;
+    transition-property: transform, visibility;
+		transition-duration: 0.3s, 0.3s;
 	}
 
 	uni-actionsheet .uni-actionsheet.uni-actionsheet_toggle {
+    visibility: visible;
 		transform: translate(0, 0);
 	}
 
 	uni-actionsheet .uni-actionsheet * {
 		box-sizing: border-box;
-	}
-
-	uni-actionsheet .uni-actionsheet {
-		position: fixed;
-		left: 0;
-		bottom: 0;
-		transform: translate(0, 100%);
-		backface-visibility: hidden;
-		z-index: 999;
-		width: 100%;
-		background-color: #efeff4;
-		transition: transform .3s;
-		transition: transform 0.3s;
 	}
 
 	uni-actionsheet .uni-actionsheet__menu {

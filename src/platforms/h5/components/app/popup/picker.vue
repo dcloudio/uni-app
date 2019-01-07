@@ -357,22 +357,6 @@ uni-picker {
   box-sizing: border-box;
 }
 
-uni-picker .uni-picker {
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  transform: translate(0, 100%);
-  backface-visibility: hidden;
-  z-index: 999;
-  width: 100%;
-  background-color: #efeff4;
-  transition: transform 0.3s;
-}
-
-uni-picker .uni-picker.uni-picker-toggle {
-  transform: translate(0, 0);
-}
-
 uni-picker .uni-picker * {
   box-sizing: border-box;
 }
@@ -386,8 +370,14 @@ uni-picker .uni-picker {
   z-index: 999;
   width: 100%;
   background-color: #efeff4;
-  transition: transform 0.3s;
-  transition: transform 0.3s;
+  visibility: hidden;
+  transition-property: transform,visibility;
+  transition-duration: 0.3s, 0.3s;
+}
+
+uni-picker .uni-picker.uni-picker-toggle {
+  visibility: visible;
+  transform: translate(0, 0);
 }
 
 uni-picker .uni-picker-content {
