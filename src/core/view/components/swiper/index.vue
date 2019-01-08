@@ -558,24 +558,25 @@ export default {
   },
   render (createElement) {
     var slidesDots = []
-    var index = 0
     var swiperItems = []
     if (this.$slots.default) {
       this.$slots.default.forEach(vnode => {
         if (vnode.componentOptions && vnode.componentOptions.tag === 'v-uni-swiper-item') {
           swiperItems.push(vnode)
-          slidesDots.push(createElement('div', {
-            class: {
-              'uni-swiper-dot': true,
-              'uni-swiper-dot-active': (index < this.currentSync + this.displayMultipleItemsNumber && index >= this.currentSync) || (index < this.currentSync + this.displayMultipleItemsNumber - this.items.length)
-            },
-            style: {
-              'background': index === this.currentSync ? this.indicatorActiveColor : this.indicatorColor
-            }
-          }))
-          index++
         }
       })
+    }
+    for (let index = 0, length = swiperItems.length; index < length; index++) {
+      let currentSync = this.currentSync
+      slidesDots.push(createElement('div', {
+        class: {
+          'uni-swiper-dot': true,
+          'uni-swiper-dot-active': (index < currentSync + this.displayMultipleItemsNumber && index >= currentSync) || (index < currentSync + this.displayMultipleItemsNumber - length)
+        },
+        style: {
+          'background': index === currentSync ? this.indicatorActiveColor : this.indicatorColor
+        }
+      }))
     }
     this.items = swiperItems
     var slidesWrapperChild = [createElement('div', {
