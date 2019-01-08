@@ -20,7 +20,8 @@ export function pageScrollTo ({
   scrollTop = Math.min(scrollTop, scrollHeight - clientHeight)
 
   if (duration === 0) {
-    documentElement.scrollTop = scrollTop
+    // 部分浏览器（比如微信）中 scrollTop 的值需要通过 document.body 来控制
+    documentElement.scrollTop = document.body.scrollTop = scrollTop
     return
   }
 

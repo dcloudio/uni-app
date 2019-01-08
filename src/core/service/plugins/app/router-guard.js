@@ -38,7 +38,10 @@ function reLaunch (toName) {
   this.keepAliveInclude = []
 }
 
+let currentPages = []
+
 function beforeEach (to, from, next, routes) {
+  currentPages = getCurrentPages(true) // 每次 beforeEach 时获取当前currentPages，因为 afterEach 之后，获取不到上一个 page 了，导致无法调用 onUnload
   const fromId = from.params.__id__
   const toId = to.params.__id__
   if (toId === fromId) { // 相同页面阻止
@@ -58,12 +61,26 @@ function beforeEach (to, from, next, routes) {
       case 'redirectTo':
         // 关闭前一个页面
         removeKeepAliveInclude.call(this, fromName)
+        if (from.meta) {
+          if (from.meta.isQuit) { // 如果 redirectTo 的前一个页面是 quit 类型，则新打开的页面也是 quit
+            to.meta.isQuit = true
+            to.meta.isEntry = !!from.meta.isEntry
+          }
+          if (from.meta.isTabBar) { // 如果是 tabBar，需要更新系统组件 tabBar 内的 list 数据
+            to.meta.isTabBar = true
+            to.meta.tabBarIndex = from.meta.tabBarIndex
+            const appVm = getApp().$children[0]
+            appVm.$set(appVm.tabBar.list[to.meta.tabBarIndex], 'pagePath', to.meta.pagePath)
+          }
+        }
+
         break
       case 'switchTab':
         switchTab.call(this, routes)
         break
       case 'reLaunch':
         reLaunch.call(this, toName)
+        to.meta.isQuit = true // reLaunch后，该页面为 quit 类型
         break
       default:
         // 后退或非 API 访问
@@ -97,7 +114,7 @@ function afterEach (to, from) {
   const fromId = from.params.__id__
   const toId = to.params.__id__
 
-  const fromVm = getCurrentPages(true).find(pageVm => pageVm.$page.id === fromId)
+  const fromVm = currentPages.find(pageVm => pageVm.$page.id === fromId) // 使用 beforeEach 时的 pages
 
   switch (to.type) {
     case 'navigateTo': // 前一个页面触发 onHide
@@ -121,7 +138,7 @@ function afterEach (to, from) {
   }
   if (to.type !== 'reLaunch') { // 因为 reLaunch 会重置 id，故不触发 onShow,switchTab 在 beforeRouteEnter 中触发
     // 直接获取所有 pages,getCurrentPages 正常情况下仅返回页面栈内，传 true 则返回所有已存在（主要是 tabBar 页面）
-    const toVm = getCurrentPages(true).find(pageVm => pageVm.$page.id === toId)
+    const toVm = getCurrentPages(true).find(pageVm => pageVm.$page.id === toId) // 使用最新的 pages
     if (toVm) { // 目标页面若已存在，则触发 onShow
       // 延迟执行 onShow，防止与 UniServiceJSBridge.emit('onHidePopup') 冲突。
       setTimeout(function () {

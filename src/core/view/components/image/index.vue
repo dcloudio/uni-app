@@ -1,6 +1,7 @@
 <template>
   <uni-image v-on="$listeners">
     <div :style="modeStyle" />
+    <img :src="realImagePath">
   </uni-image>
 </template>
 <script>
@@ -31,6 +32,9 @@ export default {
   computed: {
     ratio () {
       return this.originalWidth && this.originalHeight ? this.originalWidth / this.originalHeight : 0
+    },
+    realImagePath () {
+      return this.$getRealPath(this.src)
     },
     modeStyle () {
       let size = 'auto'
@@ -149,6 +153,7 @@ export default {
 		height: 240px;
 		display: inline-block;
 		overflow: hidden;
+		position: relative;
 	}
 
 	uni-image[hidden] {
@@ -165,6 +170,12 @@ export default {
 		-webkit-user-select: none;
 		-moz-user-select: none;
 		display: block;
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		opacity: 0;
 	}
 
 	uni-image>.uni-image-will-change {

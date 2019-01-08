@@ -317,6 +317,9 @@ export default {
             this._contentTrackViewport = current
           } else {
             this._updateViewport(current)
+            if (this.autoplay) {
+              this._scheduleAutoplay()
+            }
           }
         } else {
           this._invalid = true
@@ -359,9 +362,6 @@ export default {
       if (!(Math.floor(2 * this._viewportPosition) === Math.floor(2 * index) && Math.ceil(2 * this._viewportPosition) === Math.ceil(2 * index))) {
         if (this.circularEnabled) {
           this._checkCircularLayout(index)
-        }
-        if (this.skipHiddenItemLayout) {
-          this._updateHiddenItemDisplay(index)
         }
       }
 
@@ -567,7 +567,7 @@ export default {
           slidesDots.push(createElement('div', {
             class: {
               'uni-swiper-dot': true,
-              'uni-swiper-dot-active': index === this.currentSync
+              'uni-swiper-dot-active': (index < this.currentSync + this.displayMultipleItemsNumber && index >= this.currentSync) || (index < this.currentSync + this.displayMultipleItemsNumber - this.items.length)
             },
             style: {
               'background': index === this.currentSync ? this.indicatorActiveColor : this.indicatorColor

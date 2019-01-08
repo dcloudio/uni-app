@@ -1,13 +1,17 @@
 <template>
-  <uni-canvas>
+  <uni-canvas
+    :canvas-id="canvasId"
+    :disable-scroll="disableScroll"
+    v-on="$listeners"
+    @touchmove="_touchmove"
+  >
     <canvas
       ref="canvas"
-      :canvas-id="canvasId"
-      :disable-scroll="disableScroll"
       width="300"
-      height="150"
-      @touchmove="_touchmove"
-    />
+      height="150"/>
+    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden;">
+      <slot/>
+    </div>
     <v-uni-resize-sensor
       ref="sensor"
       @resize="_resize"/>

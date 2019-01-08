@@ -173,13 +173,23 @@ export default {
     },
     startArray () {
       var splitStr = this.mode === mode.DATE ? '-' : ':'
-      return this.start.split(splitStr).map((val, i) => (this.mode === mode.DATE ? this.dateArray : this.timeArray)[i].indexOf(
+      var array = this.mode === mode.DATE ? this.dateArray : this.timeArray
+      var val = this.start.split(splitStr).map((val, i) => array[i].indexOf(
         val))
+      if (val.indexOf(-1) >= 0) {
+        val = array.map(() => 0)
+      }
+      return val
     },
     endArray () {
       var splitStr = this.mode === mode.DATE ? '-' : ':'
-      return this.end.split(splitStr).map((val, i) => (this.mode === mode.DATE ? this.dateArray : this.timeArray)[i].indexOf(
+      var array = this.mode === mode.DATE ? this.dateArray : this.timeArray
+      var val = this.end.split(splitStr).map((val, i) => array[i].indexOf(
         val))
+      if (val.indexOf(-1) >= 0) {
+        val = array.map((val) => val.length - 1)
+      }
+      return val
     },
     units () {
       switch (this.mode) {
@@ -347,22 +357,6 @@ uni-picker {
   box-sizing: border-box;
 }
 
-uni-picker .uni-picker {
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  transform: translate(0, 100%);
-  backface-visibility: hidden;
-  z-index: 999;
-  width: 100%;
-  background-color: #efeff4;
-  transition: transform 0.3s;
-}
-
-uni-picker .uni-picker.uni-picker-toggle {
-  transform: translate(0, 0);
-}
-
 uni-picker .uni-picker * {
   box-sizing: border-box;
 }
@@ -376,8 +370,14 @@ uni-picker .uni-picker {
   z-index: 999;
   width: 100%;
   background-color: #efeff4;
-  transition: transform 0.3s;
-  transition: transform 0.3s;
+  visibility: hidden;
+  transition-property: transform,visibility;
+  transition-duration: 0.3s, 0.3s;
+}
+
+uni-picker .uni-picker.uni-picker-toggle {
+  visibility: visible;
+  transform: translate(0, 0);
 }
 
 uni-picker .uni-picker-content {

@@ -287,6 +287,18 @@ const protocols = { // 需要做转换的 API 列表
     args: {
       orderInfo: 'orderStr'
     }
+  },
+  getBLEDeviceServices: {
+    returnValue (result) {
+      result.services.forEach((item) => {
+        item.uuid = item.serviceId
+      })
+    }
+  },
+  makePhoneCall: {
+    args: {
+      phoneNumber: 'number'
+    }
   }
 }
 

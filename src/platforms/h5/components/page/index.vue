@@ -22,11 +22,11 @@
   </uni-page>
 </template>
 <style>
-	uni-page {
-		display: block;
-		width: 100%;
-		height: 100%;
-	}
+    uni-page {
+        display: block;
+        width: 100%;
+        height: 100%;
+    }
 </style>
 <script>
 import {
@@ -137,7 +137,7 @@ export default {
   data () {
     const navigationBar = mergeTitleNView({
       loading: false,
-      backButton: !this.isQuit,
+      backButton: !this.isQuit && !this.$route.meta.isQuit, // redirectTo,reLaunch时可能动态修改 meta.isQuit
       backgroundColor: this.navigationBarBackgroundColor,
       textColor: this.navigationBarTextStyle === 'black' ? '#000' : '#fff',
       titleText: this.navigationBarTitleText,

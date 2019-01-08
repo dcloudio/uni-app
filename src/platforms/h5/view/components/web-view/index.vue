@@ -1,7 +1,7 @@
 <template>
   <uni-web-view>
     <iframe
-      :src="realPath"
+      :src="$getRealPath(src)"
       frameborder="0"
       width="100%"
       height="100%" />
@@ -14,11 +14,6 @@ export default {
     src: {
       type: String,
       default: ''
-    }
-  },
-  data () {
-    return {
-      realPath: this.$getRealPath(this.src)
     }
   }
 }
