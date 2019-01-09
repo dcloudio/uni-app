@@ -55,6 +55,26 @@ export function processEvent (name, $event = {}, detail = {}, target = {}, curre
     return $event
   }
 
+  // fixed 针对小程序 click（tap）事件，补充事件详情
+  if (name === 'click') {
+    const {
+      top
+    } = getWindowOffset()
+
+    detail = {
+      x: $event.x - top,
+      y: $event.y - top
+    }
+    $event.touches = $event.changedTouches = [{
+      force: 1,
+      identifier: 0,
+      clientX: $event.clientX,
+      clientY: $event.clientY,
+      pageX: $event.pageX,
+      pageY: $event.pageY
+    }]
+  }
+
   // fixed mp-vue
   return wrapperMPEvent({
     type: detail.type || name,
@@ -64,8 +84,8 @@ export function processEvent (name, $event = {}, detail = {}, target = {}, curre
     currentTarget: processTarget(currentTarget),
     touches: processTouches($event.touches),
     changedTouches: processTouches($event.changedTouches),
-    preventDefault () {},
-    stopPropagation () {}
+    preventDefault () { },
+    stopPropagation () { }
   })
 }
 
