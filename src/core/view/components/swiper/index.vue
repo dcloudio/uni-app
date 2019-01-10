@@ -524,7 +524,7 @@ export default {
       if (!this._invalid) {
         if (e.detail.state === 'start') {
           this.userTracking = true
-          this._userDirectionChecked = !1
+          this._userDirectionChecked = false
           return this._handleTrackStart()
         }
         // fixed by xxxxxx
@@ -547,6 +547,9 @@ export default {
               }
             }
             if (!this.userTracking) {
+              if (this.autoplay) {
+                this._scheduleAutoplay()
+              }
               return
             }
           }

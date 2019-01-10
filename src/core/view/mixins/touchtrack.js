@@ -1,6 +1,13 @@
 var addListenerToElement = function (element, type, callback, r) {
   // 暂时忽略capture
-  element.addEventListener(type, callback, {
+  element.addEventListener(type, $event => {
+    if (typeof callback === 'function') {
+      if (callback($event) === false) {
+        $event.preventDefault()
+        $event.stopPropagation()
+      }
+    }
+  }, {
     passive: false
   })
 }
@@ -50,7 +57,6 @@ export default {
           var res = fn($event, 'move', $event.touches[0].pageX, $event.touches[0].pageY)
           x1 = $event.touches[0].pageX
           y1 = $event.touches[0].pageY
-          $event.preventDefault()
           return res
         }
       })
