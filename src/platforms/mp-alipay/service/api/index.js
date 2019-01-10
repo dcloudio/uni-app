@@ -1,3 +1,7 @@
+import {
+  hasOwn
+} from 'uni-shared'
+
 export function setStorageSync (key, data) {
   return my.setStorageSync({
     key,
@@ -18,5 +22,17 @@ export function getStorageSync (key) {
 export function removeStorageSync (key) {
   return my.removeStorageSync({
     key
+  })
+}
+
+export function startGyroscope (params) {
+  if (hasOwn(params, 'interval')) {
+    console.warn('支付宝小程序 startGyroscope暂不支持interval')
+  }
+  params.success && params.success({
+    errMsg: 'startGyroscope:ok'
+  })
+  params.complete && params.complete({
+    errMsg: 'startGyroscope:ok'
   })
 }

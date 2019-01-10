@@ -8,7 +8,7 @@ export function requestPayment (params) {
     }
   }
   if (parseError) {
-    params.fail({
+    params.fail && params.fail({
       errMsg: 'requestPayment:fail: 参数 orderInfo 数据结构不正确，参考：https://uniapp.dcloud.io/api/plugins/payment?id=orderinfo'
     })
   } else {

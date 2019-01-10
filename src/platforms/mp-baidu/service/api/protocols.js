@@ -48,6 +48,16 @@ const protocols = {
       onlyFromCamera: false,
       scanType: false
     }
+  },
+  navigateToMiniProgram: {
+    name: 'navigateToSmartProgram',
+    args: {
+      appId: 'appKey',
+      envVersion: false
+    }
+  },
+  navigateBackMiniProgram: {
+    name: 'navigateBackSmartProgram'
   }
 }
 

@@ -299,6 +299,9 @@ const protocols = { // 需要做转换的 API 列表
     args: {
       phoneNumber: 'number'
     }
+  },
+  stopGyroscope: {
+    name: 'offGyroscopeChange'
   }
 }
 
