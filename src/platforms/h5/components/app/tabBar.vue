@@ -14,6 +14,7 @@
         <div class="uni-tabbar__bd">
           <div
             v-if="item.iconPath"
+            :class="{'uni-tabbar__icon__diff':!item.text}"
             class="uni-tabbar__icon">
             <img :src="_getRealPath($route.meta.pagePath===item.pagePath?item.selectedIconPath:item.iconPath)">
           </div>
@@ -90,6 +91,12 @@ uni-tabbar .uni-tabbar__icon {
   margin-top: 5px;
   width: 27px;
   height: 27px;
+}
+
+uni-tabbar .uni-tabbar__icon.uni-tabbar__icon__diff{
+  margin-top: 0px;
+  width: 34px;
+  height: 34px;
 }
 
 uni-tabbar .uni-tabbar__icon img {
