@@ -9,6 +9,8 @@ function beforeValidate (params) {
     if (pages[pages.length - 1].$page.meta.isTabBar) {
       isTabBar = true
     }
+  } else if (getApp().$children[0].hasTabBar) {
+    isTabBar = true
   }
   if (!isTabBar) {
     return 'not TabBar page'
