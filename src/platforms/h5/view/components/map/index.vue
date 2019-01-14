@@ -14,6 +14,10 @@ import {
   subscriber
 } from 'uni-mixins'
 
+import {
+  hasOwn
+} from 'uni-shared'
+
 var maps
 export default {
   name: 'Map',
@@ -426,7 +430,7 @@ export default {
               parent.appendChild(div)
             }
           }
-          option.id && this.$trigger('markertap', {}, {
+          hasOwn(option, 'id') && this.$trigger('markertap', {}, {
             markerId: option.id
           })
         })
@@ -521,7 +525,7 @@ export default {
             callout = marker.callout = new maps.Callout(calloutStyle)
 
             callout.div.onclick = function ($event) {
-              option.id && self.$trigger('callouttap', $event, {
+              hasOwn(option, 'id') && self.$trigger('callouttap', $event, {
                 markerId: option.id
               })
               $event.stopPropagation()
