@@ -467,9 +467,19 @@ export default {
       }
       otherData.danmuIndex = danmuIndex
 
-      self.$trigger('timeupdate', {}, {
+      self.$trigger('timeupdate', $event, {
         currentTime,
         duration
+      })
+    })
+    video.addEventListener('x5videoenterfullscreen', function ($event) {
+      self.$trigger('fullscreenchange', $event, {
+        fullScreen: true
+      })
+    })
+    video.addEventListener('x5videoexitfullscreen', function ($event) {
+      self.$trigger('fullscreenchange', $event, {
+        fullScreen: false
       })
     })
     var originX
@@ -822,6 +832,7 @@ uni-video[hidden] {
   top: 0;
   left: 0;
   overflow: hidden;
+  object-position: inherit;
 }
 
 .uni-video-container.uni-video-type-fullscreen {
@@ -843,6 +854,7 @@ uni-video[hidden] {
 .uni-video-video {
   width: 100%;
   height: 100%;
+  object-position: inherit;
 }
 
 .uni-video-cover {
