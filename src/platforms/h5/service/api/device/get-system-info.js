@@ -41,8 +41,26 @@ export function getSystemInfoSync () {
     if (osversionFind) {
       osversion = osversionFind[1]
     }
-    model = ua.split(')')[0].split(';')
-    model = model[model.length - 1].split('Build')[0].replace(/^\s(.+)\s$/, '$1')
+    let infos = ua.match(/\((.+?)\)/)[1].split(';')
+    const otherInfo = [/^\s?Android/i, /^\s?Linux/i, /^\s?U/i, /^\s?[a-z][a-z]$/i, /^\s?[a-z][a-z]-[a-z][a-z]$/i, /^\s?wv/i]
+    for (let i = 0; i < infos.length; i++) {
+      const info = infos[i]
+      if (info.indexOf('Build') > 0) {
+        model = info.split('Build')[0].trim()
+        break
+      }
+      let other
+      for (let o = 0; o < otherInfo.length; o++) {
+        if (otherInfo[o].test(info)) {
+          other = true
+          break
+        }
+      }
+      if (!other) {
+        model = info.trim()
+        break
+      }
+    }
   } else {
     osname = 'Other'
     osversion = '0'
