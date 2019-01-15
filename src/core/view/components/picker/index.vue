@@ -153,7 +153,7 @@ export default {
     })
     Object.keys(this.$props).forEach(key => {
       if (key !== 'value' && key !== 'name') {
-        this.$watch(key, this._show())
+        this.$watch(key, this._show)
       }
     })
   },
