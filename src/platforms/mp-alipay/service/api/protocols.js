@@ -38,6 +38,14 @@ function _handleNetworkInfo (result) {
   return {}
 }
 
+function _handleSystemInfo (result) {
+  let platform = result.platform ? result.platform.toLowerCase() : 'devtools'
+  if (!~['android', 'ios'].indexOf(platform)) {
+    platform = 'devtools'
+  }
+  result.platform = platform
+}
+
 const protocols = { // 需要做转换的 API 列表
   returnValue (methodName, res) { // 通用 returnValue 解析
     if (res.error || res.errorMessage) {
@@ -302,6 +310,12 @@ const protocols = { // 需要做转换的 API 列表
   },
   stopGyroscope: {
     name: 'offGyroscopeChange'
+  },
+  getSystemInfo: {
+    returnValue: _handleSystemInfo
+  },
+  getSystemInfoSync: {
+    returnValue: _handleSystemInfo
   }
 }
 
