@@ -1,7 +1,30 @@
 <template>
   <uni-video
     :id="id"
-    v-on="$listeners">
+    :src="src"
+    :initial-time="initialTime"
+    :duration="duration"
+    :controls="controls"
+    :danmu-list="danmuList"
+    :danmu-btn="danmuBtn"
+    :enable-danmu="enableDanmu"
+    :autoplay="autoplay"
+    :loop="loop"
+    :muted="muted"
+    :page-gesture="pageGesture"
+    :direction="direction"
+    :show-progress="showProgress"
+    :show-fullscreen-btn="showFullscreenBtn"
+    :show-play-btn="showPlayBtn"
+    :show-center-play-btn="showCenterPlayBtn"
+    :enable-progress-gesture="enableProgressGesture"
+    :object-fit="objectFit"
+    :poster="poster"
+    :x5-video-player-type="x5VideoPlayerType"
+    :x5-video-player-fullscreen="x5VideoPlayerFullscren"
+    :x5-video-orientation="x5VideoOrientation"
+    v-on="$listeners"
+  >
     <div
       ref="container"
       :class="{'uni-video-type-fullscreen':fullscreen,'uni-video-type-rotate-left':rotateType==='left','uni-video-type-rotate-right':rotateType==='right'}"
@@ -10,7 +33,8 @@
       @click="triggerControls"
       @touchstart="touchstart($event)"
       @touchend="touchend($event)"
-      @touchmove="touchmove($event)">
+      @touchmove="touchmove($event)"
+    >
       <video
         ref="video"
         :style="{opacity:!start?0.8:1,objectFit:objectFit}"
@@ -18,12 +42,13 @@
         :loop="loop"
         :src="srcSync"
         :poster="poster"
+        :x5-video-player-type="x5VideoPlayerType"
+        :x5-video-player-fullscreen="x5VideoPlayerFullscren"
+        :x5-video-orientation="x5VideoOrientation"
         class="uni-video-video"
         webkit-playsinline
         playsinline
-        x5-video-player-type="h5"
-        x5-video-player-fullscreen="false"
-        x5-video-orientation="landscape|portrait" />
+      />
       <div
         v-show="controlsShow"
         class="uni-video-bar uni-video-bar-full"
@@ -33,21 +58,23 @@
             v-show="showPlayBtn"
             :class="{'uni-video-control-button-play':!playing,'uni-video-control-button-pause':playing}"
             class="uni-video-control-button"
-            @click.stop="trigger" />
+            @click.stop="trigger"
+          />
           <div class="uni-video-current-time">{{ currentTime|getTime }}</div>
           <div
             ref="progress"
             class="uni-video-progress-container"
-            @click.stop="clickProgress($event)">
+            @click.stop="clickProgress($event)"
+          >
             <div class="uni-video-progress">
               <div
                 :style="{width:buffered*100+'%'}"
-                class="uni-video-progress-buffered" />
+                class="uni-video-progress-buffered"/>
               <div
                 ref="ball"
                 :style="{left:progress+'%'}"
                 class="uni-video-ball">
-                <div class="uni-video-inner" />
+                <div class="uni-video-inner"/>
               </div>
             </div>
           </div>
@@ -57,25 +84,27 @@
           v-if="danmuBtn"
           :class="{'uni-video-danmu-button-active':enableDanmuSync}"
           class="uni-video-danmu-button"
-          @click.stop="triggerDanmu">弹幕</div>
+          @click.stop="triggerDanmu"
+        >弹幕</div>
         <div
           v-show="showFullscreenBtn"
           :class="{'uni-video-type-fullscreen':fullscreen}"
           class="uni-video-fullscreen"
-          @click.stop="triggerFullscreen" />
+          @click.stop="triggerFullscreen"
+        />
       </div>
       <div
         v-show="start&&enableDanmuSync"
         ref="danmu"
         style="z-index: 0;"
-        class="uni-video-danmu" />
+        class="uni-video-danmu"/>
       <div
         v-if="!start"
         class="uni-video-cover"
         @click.stop>
         <div
           class="uni-video-cover-play-button"
-          @click.stop="play" />
+          @click.stop="play"/>
         <p class="uni-video-cover-duration">{{ (duration||durationTime)|getTime }}</p>
       </div>
       <div
@@ -88,8 +117,11 @@
           height="200px"
           viewBox="0 0 1024 1024"
           version="1.1"
-          xmlns="http://www.w3.org/2000/svg">
-          <path d="M475.400704 201.19552l0 621.674496q0 14.856192-10.856448 25.71264t-25.71264 10.856448-25.71264-10.856448l-190.273536-190.273536-149.704704 0q-14.856192 0-25.71264-10.856448t-10.856448-25.71264l0-219.414528q0-14.856192 10.856448-25.71264t25.71264-10.856448l149.704704 0 190.273536-190.273536q10.856448-10.856448 25.71264-10.856448t25.71264 10.856448 10.856448 25.71264zm219.414528 310.837248q0 43.425792-24.28416 80.851968t-64.2816 53.425152q-5.71392 2.85696-14.2848 2.85696-14.856192 0-25.71264-10.570752t-10.856448-25.998336q0-11.999232 6.856704-20.284416t16.570368-14.2848 19.427328-13.142016 16.570368-20.284416 6.856704-32.569344-6.856704-32.569344-16.570368-20.284416-19.427328-13.142016-16.570368-14.2848-6.856704-20.284416q0-15.427584 10.856448-25.998336t25.71264-10.570752q8.57088 0 14.2848 2.85696 39.99744 15.427584 64.2816 53.139456t24.28416 81.137664zm146.276352 0q0 87.422976-48.56832 161.41824t-128.5632 107.707392q-7.428096 2.85696-14.2848 2.85696-15.427584 0-26.284032-10.856448t-10.856448-25.71264q0-22.284288 22.284288-33.712128 31.997952-16.570368 43.425792-25.141248 42.283008-30.855168 65.995776-77.423616t23.712768-99.136512-23.712768-99.136512-65.995776-77.423616q-11.42784-8.57088-43.425792-25.141248-22.284288-11.42784-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 79.99488 33.712128 128.5632 107.707392t48.56832 161.41824zm146.276352 0q0 131.42016-72.566784 241.41312t-193.130496 161.989632q-7.428096 2.85696-14.856192 2.85696-14.856192 0-25.71264-10.856448t-10.856448-25.71264q0-20.570112 22.284288-33.712128 3.999744-2.285568 12.85632-5.999616t12.85632-5.999616q26.284032-14.2848 46.854144-29.140992 70.281216-51.996672 109.707264-129.705984t39.426048-165.132288-39.426048-165.132288-109.707264-129.705984q-20.570112-14.856192-46.854144-29.140992-3.999744-2.285568-12.85632-5.999616t-12.85632-5.999616q-22.284288-13.142016-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 120.563712 51.996672 193.130496 161.989632t72.566784 241.41312z" />
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M475.400704 201.19552l0 621.674496q0 14.856192-10.856448 25.71264t-25.71264 10.856448-25.71264-10.856448l-190.273536-190.273536-149.704704 0q-14.856192 0-25.71264-10.856448t-10.856448-25.71264l0-219.414528q0-14.856192 10.856448-25.71264t25.71264-10.856448l149.704704 0 190.273536-190.273536q10.856448-10.856448 25.71264-10.856448t25.71264 10.856448 10.856448 25.71264zm219.414528 310.837248q0 43.425792-24.28416 80.851968t-64.2816 53.425152q-5.71392 2.85696-14.2848 2.85696-14.856192 0-25.71264-10.570752t-10.856448-25.998336q0-11.999232 6.856704-20.284416t16.570368-14.2848 19.427328-13.142016 16.570368-20.284416 6.856704-32.569344-6.856704-32.569344-16.570368-20.284416-19.427328-13.142016-16.570368-14.2848-6.856704-20.284416q0-15.427584 10.856448-25.998336t25.71264-10.570752q8.57088 0 14.2848 2.85696 39.99744 15.427584 64.2816 53.139456t24.28416 81.137664zm146.276352 0q0 87.422976-48.56832 161.41824t-128.5632 107.707392q-7.428096 2.85696-14.2848 2.85696-15.427584 0-26.284032-10.856448t-10.856448-25.71264q0-22.284288 22.284288-33.712128 31.997952-16.570368 43.425792-25.141248 42.283008-30.855168 65.995776-77.423616t23.712768-99.136512-23.712768-99.136512-65.995776-77.423616q-11.42784-8.57088-43.425792-25.141248-22.284288-11.42784-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 79.99488 33.712128 128.5632 107.707392t48.56832 161.41824zm146.276352 0q0 131.42016-72.566784 241.41312t-193.130496 161.989632q-7.428096 2.85696-14.856192 2.85696-14.856192 0-25.71264-10.856448t-10.856448-25.71264q0-20.570112 22.284288-33.712128 3.999744-2.285568 12.85632-5.999616t12.85632-5.999616q26.284032-14.2848 46.854144-29.140992 70.281216-51.996672 109.707264-129.705984t39.426048-165.132288-39.426048-165.132288-109.707264-129.705984q-20.570112-14.856192-46.854144-29.140992-3.999744-2.285568-12.85632-5.999616t-12.85632-5.999616q-22.284288-13.142016-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 120.563712 51.996672 193.130496 161.989632t72.566784 241.41312z"
+          />
         </svg>
         <div class="uni-video-toast-value">
           <div
@@ -99,7 +131,8 @@
               <div
                 v-for="(item,index) in 10"
                 :key="index"
-                class="uni-video-toast-volume-grids-item" />
+                class="uni-video-toast-volume-grids-item"
+              />
             </div>
           </div>
         </div>
@@ -110,7 +143,9 @@
         <div class="uni-video-toast-title">{{ currentTimeNew|getTime }} / {{ durationTime|getTime }}</div>
       </div>
     </div>
-    <div style="position: absolute; top: 0; width: 100%; height: 100%; overflow: hidden; pointer-events: none;">
+    <div
+      style="position: absolute; top: 0; width: 100%; height: 100%; overflow: hidden; pointer-events: none;"
+    >
       <slot/>
     </div>
   </uni-video>
@@ -207,6 +242,10 @@ export default {
       type: [String, Number],
       default: 360
     },
+    showProgress: {
+      type: Boolean,
+      default: true
+    },
     initialTime: {
       type: [String, Number],
       default: 0
@@ -226,6 +265,18 @@ export default {
     showPlayBtn: {
       type: [Boolean, String],
       default: true
+    },
+    x5VideoPlayerType: {
+      type: [Boolean, String],
+      default: false
+    },
+    x5VideoPlayerFullscren: {
+      type: [Boolean, String],
+      default: false
+    },
+    x5VideoOrientation: {
+      type: [Boolean, String],
+      default: false
     }
   },
   data () {
@@ -416,9 +467,19 @@ export default {
       }
       otherData.danmuIndex = danmuIndex
 
-      self.$trigger('timeupdate', {}, {
+      self.$trigger('timeupdate', $event, {
         currentTime,
         duration
+      })
+    })
+    video.addEventListener('x5videoenterfullscreen', function ($event) {
+      self.$trigger('fullscreenchange', $event, {
+        fullScreen: true
+      })
+    })
+    video.addEventListener('x5videoexitfullscreen', function ($event) {
+      self.$trigger('fullscreenchange', $event, {
+        fullScreen: false
       })
     })
     var originX
@@ -759,7 +820,7 @@ uni-video {
 }
 
 uni-video[hidden] {
-	display: none;
+  display: none;
 }
 
 .uni-video-container {
@@ -771,6 +832,7 @@ uni-video[hidden] {
   top: 0;
   left: 0;
   overflow: hidden;
+  object-position: inherit;
 }
 
 .uni-video-container.uni-video-type-fullscreen {
@@ -792,6 +854,7 @@ uni-video[hidden] {
 .uni-video-video {
   width: 100%;
   height: 100%;
+  object-position: inherit;
 }
 
 .uni-video-cover {
