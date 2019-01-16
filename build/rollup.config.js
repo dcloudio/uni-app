@@ -14,6 +14,10 @@ const PLATFORMS = {
   'mp-baidu': {
     prefix: 'swan',
     title: '百度小程序'
+  },
+  'mp-toutiao': {
+    prefix: 'tt',
+    title: '头条小程序'
   }
 }
 
