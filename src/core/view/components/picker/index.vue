@@ -107,10 +107,6 @@ export default {
     disabled: {
       type: [Boolean, String],
       default: false
-    },
-    customItem: {
-      type: String,
-      default: ''
     }
   },
   data () {
@@ -205,7 +201,7 @@ export default {
       }
     },
     columnchange (args) {
-      this.$trigger('change', {}, args)
+      this.$trigger('columnchange', {}, args)
     },
     cancel (args) {
       this.visible = false

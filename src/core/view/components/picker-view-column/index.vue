@@ -132,7 +132,6 @@ export default {
   render (createElement) {
     this.length = (this.$slots.default && this.$slots.default.length) || 0
     return createElement('uni-picker-view-column', {
-      staticClass: '_picker-view-column',
       on: {
         tap: this._handleTap
       }

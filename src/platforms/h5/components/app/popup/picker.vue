@@ -130,10 +130,6 @@ export default {
       type: [Boolean, String],
       default: false
     },
-    customItem: {
-      type: String,
-      default: ''
-    },
     visible: {
       type: Boolean,
       default: false
