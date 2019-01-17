@@ -64,7 +64,19 @@ const TODOS = [
   'hideTabBarRedDot',
   'setBackgroundColor',
   'setBackgroundTextStyle',
-  'createIntersectionObserver'
+  'createIntersectionObserver',
+  'chooseInvoiceTitle',
+  'navigateToMiniProgram',
+  'navigateBackMiniProgram',
+  'addTemplate',
+  'deleteTemplate',
+  'getTemplateLibraryById',
+  'getTemplateLibraryList',
+  'getTemplateList',
+  'sendTemplateMessage',
+  'setEnableDebug',
+  'getExtConfig',
+  'getExtConfigSync'
 ]
 
 // 需要做转换的 API 列表
