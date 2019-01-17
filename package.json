@@ -8,6 +8,7 @@
 		"build:mp-weixin": "npm run lint && cross-env UNI_PLATFORM=mp-weixin rollup -c build/rollup.config.js",
 		"build:mp-baidu": "npm run lint && cross-env UNI_PLATFORM=mp-baidu rollup -c build/rollup.config.js",
 		"build:mp-alipay": "npm run lint && cross-env UNI_PLATFORM=mp-alipay rollup -c build/rollup.config.js",
+        "build:mp-toutiao": "npm run lint && cross-env UNI_PLATFORM=mp-toutiao rollup -c build/rollup.config.js",
 		"test:unit": "cross-env NODE_ENV=test UNI_PLATFORM=h5 mocha-webpack --require tests/unit/setup.js --webpack-config build/webpack.config.test.js tests/unit/**/*.spec.js"
 	},
 	"dependencies": {},

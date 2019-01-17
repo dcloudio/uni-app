@@ -141,7 +141,7 @@ export default {
     })
   },
   mounted () {
-    this._initInputStyle()
+    // this._initInputStyle()
 
     if (this.confirmType === 'search') {
       var formElem = document.createElement('form')
@@ -388,6 +388,8 @@ export default {
 
 	.input-placeholder {
 		color: gray;
+		height: inherit;
+		line-height: inherit;
 	}
 
 	input[type="search"]::-webkit-search-cancel-button {
