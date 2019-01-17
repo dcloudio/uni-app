@@ -10,7 +10,7 @@
 
 一套代码编译到5个平台，难以置信吗？依次扫描5个二维码，亲自体验最全面的跨平台效果！
 
-<img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/all.png"/>
+<img src="https://img-cdn-qiniu.dcloud.net.cn/img/qq.png"/>
 
 *注：*
 
