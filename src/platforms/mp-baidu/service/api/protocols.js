@@ -1,6 +1,33 @@
 // 不支持的 API 列表
 const TODOS = [
-  'hideKeyboard'
+  'hideKeyboard',
+  'onGyroscopeChange',
+  'startGyroscope',
+  'stopGyroscope',
+  'openBluetoothAdapter',
+  'startBluetoothDevicesDiscovery',
+  'onBluetoothDeviceFound',
+  'stopBluetoothDevicesDiscovery',
+  'onBluetoothAdapterStateChange',
+  'getConnectedBluetoothDevices',
+  'getBluetoothDevices',
+  'getBluetoothAdapterState',
+  'closeBluetoothAdapter',
+  'writeBLECharacteristicValue',
+  'readBLECharacteristicValue',
+  'onBLEConnectionStateChange',
+  'onBLECharacteristicValueChange',
+  'notifyBLECharacteristicValueChange',
+  'getBLEDeviceServices',
+  'getBLEDeviceCharacteristics',
+  'createBLEConnection',
+  'closeBLEConnection',
+  'onBeaconServiceChange',
+  'onBeaconUpdate',
+  'getBeacons',
+  'startBeaconDiscovery',
+  'stopBeaconDiscovery',
+  'hideShareMenu'
 ]
 
 function createTodoMethod (contextName, methodName) {
