@@ -43,16 +43,19 @@ export default {
         // 处理可能出现的多余的转义字符
         const nodeText = vnode.text.replace(/\\n/g, '\n')
         const texts = nodeText.split('\n')
-
         texts.forEach((text, index) => {
           nodeList.push(this._decodeHtml(text))
           if (index !== (texts.length - 1)) {
             nodeList.push(createElement('br'))
           }
         })
-      } else if (vnode.componentOptions && vnode.componentOptions.tag === 'v-uni-text') {
+      } else {
         nodeList.push(vnode)
       }
+      // TODO 这个方案有漏洞，需要完善组件嵌套的情况。
+      // 			else if (vnode.componentOptions && vnode.componentOptions.tag === 'v-uni-text') {
+      //         nodeList.push(vnode)
+      //       }
     })
     return createElement('uni-text', {
       on: this.$listeners,
