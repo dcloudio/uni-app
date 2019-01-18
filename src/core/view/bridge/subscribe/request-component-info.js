@@ -2,6 +2,8 @@ import {
   normalizeDataset
 } from 'uni-helpers'
 
+import getWindowOffset from 'uni-platform/helpers/get-window-offset'
+
 function getRootInfo (fields) {
   const info = {}
   if (fields.id) {
@@ -29,6 +31,9 @@ function getRootInfo (fields) {
 
 function getNodeInfo (el, fields) {
   const info = {}
+  const {
+    top
+  } = getWindowOffset()
   if (fields.id) {
     info.id = el.id
   }
@@ -40,7 +45,7 @@ function getNodeInfo (el, fields) {
     if (fields.rect) {
       info.left = rect.left
       info.right = rect.right
-      info.top = rect.top
+      info.top = rect.top - top
       info.bottom = rect.bottom
     }
     if (fields.size) {
