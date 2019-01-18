@@ -50,9 +50,13 @@ export default {
             nodeList.push(createElement('br'))
           }
         })
-      } else if (vnode.componentOptions && vnode.componentOptions.tag === 'v-uni-text') {
+      } else {
         nodeList.push(vnode)
       }
+      // TODO 这个方案有漏洞，需要完善组件嵌套的情况。
+      // 			else if (vnode.componentOptions && vnode.componentOptions.tag === 'v-uni-text') {
+      //         nodeList.push(vnode)
+      //       }
     })
     return createElement('uni-text', {
       on: this.$listeners,
