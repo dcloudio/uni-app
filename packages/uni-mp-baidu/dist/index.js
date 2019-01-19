@@ -119,7 +119,34 @@ function upx2px (number, newDeviceWidth) {
 
 // 不支持的 API 列表
 const TODOS = [
-  'hideKeyboard'
+  'hideKeyboard',
+  'onGyroscopeChange',
+  'startGyroscope',
+  'stopGyroscope',
+  'openBluetoothAdapter',
+  'startBluetoothDevicesDiscovery',
+  'onBluetoothDeviceFound',
+  'stopBluetoothDevicesDiscovery',
+  'onBluetoothAdapterStateChange',
+  'getConnectedBluetoothDevices',
+  'getBluetoothDevices',
+  'getBluetoothAdapterState',
+  'closeBluetoothAdapter',
+  'writeBLECharacteristicValue',
+  'readBLECharacteristicValue',
+  'onBLEConnectionStateChange',
+  'onBLECharacteristicValueChange',
+  'notifyBLECharacteristicValueChange',
+  'getBLEDeviceServices',
+  'getBLEDeviceCharacteristics',
+  'createBLEConnection',
+  'closeBLEConnection',
+  'onBeaconServiceChange',
+  'onBeaconUpdate',
+  'getBeacons',
+  'startBeaconDiscovery',
+  'stopBeaconDiscovery',
+  'hideShareMenu'
 ];
 
 function createTodoMethod (contextName, methodName) {
@@ -167,6 +194,16 @@ const protocols = {
       onlyFromCamera: false,
       scanType: false
     }
+  },
+  navigateToMiniProgram: {
+    name: 'navigateToSmartProgram',
+    args: {
+      appId: 'appKey',
+      envVersion: false
+    }
+  },
+  navigateBackMiniProgram: {
+    name: 'navigateBackSmartProgram'
   }
 };
 
@@ -320,7 +357,7 @@ function requestPayment (params) {
     }
   }
   if (parseError) {
-    params.fail({
+    params.fail && params.fail({
       errMsg: 'requestPayment:fail: 参数 orderInfo 数据结构不正确，参考：https://uniapp.dcloud.io/api/plugins/payment?id=orderinfo'
     });
   } else {

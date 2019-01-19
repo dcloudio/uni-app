@@ -89,7 +89,7 @@ function checkDeviceWidth () {
     platform,
     pixelRatio,
     windowWidth
-  } = my.getSystemInfoSync(); // runtime 编译目标是 uni 对象，内部不允许直接使用 uni
+  } = my.getSystemInfoSync(); // uni=>my runtime 编译目标是 uni 对象，内部不允许直接使用 uni
 
   deviceWidth = windowWidth;
   deviceDPR = pixelRatio;
@@ -117,16 +117,8 @@ function upx2px (number, newDeviceWidth) {
   return number
 }
 
-const TODOS = [ // 不支持的 API 列表
-  'hideTabBar',
-  'hideTabBarRedDot',
-  'removeTabBarBadge',
-  'setTabBarBadge',
-  'setTabBarItem',
-  'setTabBarStyle',
-  'showTabBar',
-  'showTabBarRedDot',
-  'startPullDownRefresh',
+// 不支持的 API 列表
+const TODOS = [
   'saveImageToPhotosAlbum',
   'getRecorderManager',
   'getBackgroundAudioManager',
@@ -134,11 +126,40 @@ const TODOS = [ // 不支持的 API 列表
   'chooseVideo',
   'saveVideoToPhotosAlbum',
   'createVideoContext',
+  'createCameraContext',
+  'createLivePlayerContext',
   'openDocument',
+  'onMemoryWarning',
   'startAccelerometer',
   'startCompass',
   'addPhoneContact',
-  'createIntersectionObserver'
+  'setTabBarItem',
+  'setTabBarStyle',
+  'hideTabBar',
+  'showTabBar',
+  'setTabBarBadge',
+  'removeTabBarBadge',
+  'showTabBarRedDot',
+  'hideTabBarRedDot',
+  'setBackgroundColor',
+  'setBackgroundTextStyle',
+  'startPullDownRefresh',
+  'createIntersectionObserver',
+  'authorize',
+  'openSetting',
+  'getSetting',
+  'chooseAddress',
+  'chooseInvoiceTitle',
+  'addTemplate',
+  'deleteTemplate',
+  'getTemplateLibraryById',
+  'getTemplateLibraryList',
+  'getTemplateList',
+  'sendTemplateMessage',
+  'getUpdateManager',
+  'setEnableDebug',
+  'getExtConfig',
+  'getExtConfigSync'
 ];
 
 function _handleNetworkInfo (result) {
@@ -155,6 +176,14 @@ function _handleNetworkInfo (result) {
       break
   }
   return {}
+}
+
+function _handleSystemInfo (result) {
+  let platform = result.platform ? result.platform.toLowerCase() : 'devtools';
+  if (!~['android', 'ios'].indexOf(platform)) {
+    platform = 'devtools';
+  }
+  result.platform = platform;
 }
 
 const protocols = { // 需要做转换的 API 列表
@@ -418,6 +447,15 @@ const protocols = { // 需要做转换的 API 列表
     args: {
       phoneNumber: 'number'
     }
+  },
+  stopGyroscope: {
+    name: 'offGyroscopeChange'
+  },
+  getSystemInfo: {
+    returnValue: _handleSystemInfo
+  },
+  getSystemInfoSync: {
+    returnValue: _handleSystemInfo
   }
 };
 
@@ -584,10 +622,23 @@ function removeStorageSync (key) {
   })
 }
 
+function startGyroscope (params) {
+  if (hasOwn(params, 'interval')) {
+    console.warn('支付宝小程序 startGyroscope暂不支持interval');
+  }
+  params.success && params.success({
+    errMsg: 'startGyroscope:ok'
+  });
+  params.complete && params.complete({
+    errMsg: 'startGyroscope:ok'
+  });
+}
+
 var api = /*#__PURE__*/Object.freeze({
   setStorageSync: setStorageSync,
   getStorageSync: getStorageSync,
-  removeStorageSync: removeStorageSync
+  removeStorageSync: removeStorageSync,
+  startGyroscope: startGyroscope
 });
 
 let uni = {};
