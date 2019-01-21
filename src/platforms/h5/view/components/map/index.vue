@@ -630,6 +630,7 @@ export default {
       circles.splice(0, circles.length)
     },
     createControls () {
+      var _self = this
       var map = this._map
       var controls = this.controlsSync
       this.removeControls()
@@ -658,7 +659,7 @@ export default {
         img.src = this.$getRealPath(option.iconPath)
         img.onclick = function ($event) {
           if (option.clickable) {
-            this.$trigger('controltap', $event, {
+            _self.$trigger('controltap', $event, {
               controlId: option.id
             })
           }
