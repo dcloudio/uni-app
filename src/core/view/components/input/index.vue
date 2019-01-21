@@ -190,7 +190,7 @@ export default {
         inputElem.style.lineHeight = `${realHeight}px`
         this.wrapperHeight = realHeight
       }
-      inputElem.style.color = computedStyle.color
+      // inputElem.style.color = computedStyle.color
 
       placeholderElem.style.height = `${realHeight}px`
       placeholderElem.style.lineHeight = `${realHeight}px`
