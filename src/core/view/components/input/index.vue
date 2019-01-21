@@ -15,16 +15,17 @@
         @input.stop="_onInput"
         @compositionstart="_onComposition"
         @compositionend="_onComposition"
-        @keyup.stop="_onKeyup"
-      >
+        @keyup.stop="_onKeyup">
       <div
         v-show="!(composing || inputValue.length)"
         ref="placeholder"
         :style="placeholderStyle"
         :class="placeholderClass"
-        class="input-placeholder"
-      >{{ placeholder }}</div>
+        class="input-placeholder">{{ placeholder }}</div>
     </div>
+    <v-uni-resize-sensor
+      ref="sensor"
+      @resize="_resize" />
   </uni-input>
 </template>
 <script>
@@ -33,6 +34,7 @@ import {
 } from 'uni-mixins'
 const INPUT_TYPES = ['text', 'number', 'idcard', 'digit', 'password']
 const NUMBER_TYPES = ['number', 'digit']
+let isRendered = false
 export default {
   name: 'Input',
   mixins: [emitter],
@@ -141,7 +143,7 @@ export default {
     })
   },
   mounted () {
-    // this._initInputStyle()
+    this._initInputStyle()
 
     if (this.confirmType === 'search') {
       var formElem = document.createElement('form')
@@ -162,6 +164,11 @@ export default {
     })
   },
   methods: {
+    _resize () {
+      if (!isRendered) {
+        this._initInputStyle()
+      }
+    },
     _initInputStyle () {
       const wrapper = this.$refs.wrapper
       const computedStyle = window.getComputedStyle(wrapper)
@@ -169,7 +176,15 @@ export default {
       const inputElem = this.$refs.input
       const placeholderElem = this.$refs.placeholder
 
-      const realHeight = rectStyle.height - (parseFloat(computedStyle.borderTopWidth, 10) + parseFloat(computedStyle.borderBottomWidth, 10))
+      // 获取到的高度为 0 则认为组件未渲染，通常是使用 v-show 时会出现此情况。
+      if (!rectStyle.height) {
+        return
+      } else {
+        isRendered = true
+      }
+      // 渲染之后进行计算，设置实际的高度等样式。
+      const realHeight = rectStyle.height - (parseFloat(computedStyle.borderTopWidth, 10) + parseFloat(computedStyle.borderBottomWidth,
+        10))
       if (realHeight !== this.wrapperHeight) {
         inputElem.style.height = `${realHeight}px`
         inputElem.style.lineHeight = `${realHeight}px`
@@ -397,12 +412,12 @@ export default {
 	}
 
 	input::-webkit-outer-spin-button,
-	input::-webkit-inner-spin-button{
+	input::-webkit-inner-spin-button {
 		-webkit-appearance: none;
 		margin: 0;
 	}
 
-	input[type="number"]{
-		-moz-appearance:textfield;
+	input[type="number"] {
+		-moz-appearance: textfield;
 	}
 </style>
