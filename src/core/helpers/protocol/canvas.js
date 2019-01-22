@@ -1,3 +1,11 @@
+function getInt (method) {
+  return function (value, params) {
+    if (value) {
+      params[method] = Math.round(value)
+    }
+  }
+}
+
 export const canvasGetImageData = {
   canvasId: {
     type: String,
@@ -5,19 +13,23 @@ export const canvasGetImageData = {
   },
   x: {
     type: Number,
-    required: true
+    required: true,
+    validator: getInt('x')
   },
   y: {
     type: Number,
-    required: true
+    required: true,
+    validator: getInt('y')
   },
   width: {
     type: Number,
-    required: true
+    required: true,
+    validator: getInt('width')
   },
   height: {
     type: Number,
-    required: true
+    required: true,
+    validator: getInt('height')
   }
 }
 
@@ -32,18 +44,22 @@ export const canvasPutImageData = {
   },
   x: {
     type: Number,
-    required: true
+    required: true,
+    validator: getInt('x')
   },
   y: {
     type: Number,
-    required: true
+    required: true,
+    validator: getInt('y')
   },
   width: {
     type: Number,
-    required: true
+    required: true,
+    validator: getInt('width')
   },
   height: {
-    type: Number
+    type: Number,
+    validator: getInt('height')
   }
 }
 
@@ -55,23 +71,29 @@ const fileType = {
 export const canvasToTempFilePath = {
   x: {
     type: Number,
-    default: 0
+    default: 0,
+    validator: getInt('x')
   },
   y: {
     type: Number,
-    default: 0
+    default: 0,
+    validator: getInt('y')
   },
   width: {
-    type: Number
+    type: Number,
+    validator: getInt('width')
   },
   height: {
-    type: Number
+    type: Number,
+    validator: getInt('height')
   },
   destWidth: {
-    type: Number
+    type: Number,
+    validator: getInt('destWidth')
   },
   destHeight: {
-    type: Number
+    type: Number,
+    validator: getInt('destHeight')
   },
   canvasId: {
     type: String,

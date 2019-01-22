@@ -682,7 +682,14 @@ export function canvasToTempFilePath ({
       })
       return
     }
-    imgData = new ImageData(new Uint8ClampedArray(imgData), data.width, data.height)
+    try {
+      imgData = new ImageData(new Uint8ClampedArray(imgData), data.width, data.height)
+    } catch (error) {
+      invoke(callbackId, {
+        errMsg: 'canvasToTempFilePath:fail'
+      })
+      return
+    }
     var canvas = getTempCanvas()
     canvas.width = data.width
     canvas.height = data.height

@@ -383,7 +383,7 @@ export default {
     }) {
       try {
         if (!height) {
-          height = data.length / 4 / width
+          height = Math.round(data.length / 4 / width)
         }
         this.$refs.canvas.getContext('2d').putImageData(new ImageData(new Uint8ClampedArray(data), width, height), x, y)
       } catch (error) {
