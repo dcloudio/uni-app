@@ -34,7 +34,6 @@ import {
 } from 'uni-mixins'
 const INPUT_TYPES = ['text', 'number', 'idcard', 'digit', 'password']
 const NUMBER_TYPES = ['number', 'digit']
-let isRendered = false
 export default {
   name: 'Input',
   mixins: [emitter],
@@ -93,7 +92,8 @@ export default {
       inputValue: this.value + '',
       composing: false,
       wrapperHeight: 0,
-      cachedValue: ''
+      cachedValue: '',
+      isRendered: false
     }
   },
   computed: {
@@ -165,7 +165,7 @@ export default {
   },
   methods: {
     _resize () {
-      if (!isRendered) {
+      if (!this.isRendered) {
         this._initInputStyle()
       }
     },
@@ -180,7 +180,7 @@ export default {
       if (!rectStyle.height) {
         return
       } else {
-        isRendered = true
+        this.isRendered = true
       }
       // 渲染之后进行计算，设置实际的高度等样式。
       const realHeight = rectStyle.height - (parseFloat(computedStyle.borderTopWidth, 10) + parseFloat(computedStyle.borderBottomWidth,
