@@ -13,7 +13,7 @@ export function urlToFile (url) {
     return Promise.resolve(file)
   }
   if (/^data:[a-z-]+\/[a-z-]+;base64,/.test(url)) {
-    return Promise.resolve(base64ToBlob(url))
+    return Promise.resolve(base64ToFile(url))
   }
   return new Promise((resolve, reject) => {
     var xhr = new XMLHttpRequest()
@@ -27,11 +27,11 @@ export function urlToFile (url) {
   })
 }
 /**
- * base64转Blob
+ * base64转File
  * @param {string} base64
- * @return {Blob}
+ * @return {File}
  */
-export function base64ToBlob (base64) {
+export function base64ToFile (base64) {
   base64 = base64.split(',')
   var type = base64[0].match(/:(.*?);/)[1]
   var str = atob(base64[1])
@@ -40,7 +40,8 @@ export function base64ToBlob (base64) {
   while (n--) {
     array[n] = str.charCodeAt(n)
   }
-  return new Blob([array], { type: type })
+  var filename = `${Date.now()}.${type.split('/')[1]}`
+  return new File([array], filename, { type: type })
 }
 /**
  * 从本地file或者blob对象创建url
