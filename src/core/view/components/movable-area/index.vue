@@ -26,12 +26,15 @@ export default {
     this.pinchStartLen = null
   },
   mounted: function () {
-    this._getWH()
-    this.items.forEach(function (item, index) {
-      item.componentInstance.setParent()
-    })
+    this._resize()
   },
   methods: {
+    _resize () {
+      this._getWH()
+      this.items.forEach(function (item, index) {
+        item.componentInstance.setParent()
+      })
+    },
     _find (target, items = this.items) {
       var root = this.$el
       function get (node) {
@@ -143,11 +146,13 @@ export default {
       var ours = this[`_${event}`]
       $listeners[event] = existing ? [].concat(existing, ours) : ours
     })
-    return createElement(
-      'uni-movable-area',
-      {
-        on: $listeners
-      }, items)
+    return createElement('uni-movable-area', {
+      on: $listeners
+    }, [createElement('v-uni-resize-sensor', {
+      on: {
+        resize: this._resize
+      }
+    }), ...items])
   }
 }
 </script>

@@ -1,5 +1,6 @@
 <template>
   <uni-movable-view v-on="$listeners">
+    <v-uni-resize-sensor @resize="setParent"/>
     <slot/>
   </uni-movable-view>
 </template>
@@ -216,9 +217,7 @@ export default {
   },
   mounted: function () {
     this.touchtrack(this.$el, '_onTrack')
-    if (this.$parent._isMounted) {
-      this.setParent()
-    }
+    this.setParent()
     this._friction.reconfigure(1, this.frictionNumber)
     this._STD.reconfigure(1, 9 * Math.pow(this.dampingNumber, 2) / 40, this.dampingNumber)
     this.$el.style.transformOrigin = 'center'
@@ -460,6 +459,9 @@ export default {
       }
     },
     setParent: function () {
+      if (!this.$parent._isMounted) {
+        return
+      }
       if (this._FA) {
         this._FA.cancel()
       }
