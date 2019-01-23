@@ -2,9 +2,10 @@
   <uni-image v-on="$listeners">
     <div :style="modeStyle" />
     <img :src="realImagePath">
-		<v-uni-resize-sensor
-		  ref="sensor"
-		  @resize="_resize" />
+    <v-uni-resize-sensor
+      v-if="mode === 'widthFix'"
+      ref="sensor"
+      @resize="_resize" />
   </uni-image>
 </template>
 <script>
@@ -29,7 +30,8 @@ export default {
     return {
       originalWidth: 0,
       originalHeight: 0,
-      availHeight: ''
+      availHeight: '',
+      sizeFixed: false
     }
   },
   computed: {
@@ -99,12 +101,10 @@ export default {
     mode (newValue, oldValue) {
       if (oldValue === 'widthFix') {
         this.$el.style.height = this.availHeight
+        this.sizeFixed = false
       }
       if (newValue === 'widthFix' && this.ratio) {
-        // TODO 处于不可见状态则不调整高度，暂时这样处理。
-        if (this._getWidth()) {
-          this.$el.style.height = this._getWidth() / this.ratio + 'px'
-        }
+        this._fixSize()
       }
     }
   },
@@ -113,6 +113,18 @@ export default {
     this._loadImage()
   },
   methods: {
+    _resize () {
+      if (this.mode === 'widthFix' && !this.sizeFixed) {
+        this._fixSize()
+      }
+    },
+    _fixSize () {
+      const elWidth = this._getWidth()
+      if (elWidth) {
+        this.$el.style.height = elWidth / this.ratio + 'px'
+        this.sizeFixed = true
+      }
+    },
     _loadImage () {
       const _self = this
       const img = new Image()
@@ -121,10 +133,7 @@ export default {
         _self.originalHeight = this.height
 
         if (_self.mode === 'widthFix') {
-          // TODO 处于不可见状态则不调整高度，暂时这样处理。
-          if (_self._getWidth()) {
-            _self.$el.style.height = _self._getWidth() / _self.ratio + 'px'
-          }
+          _self._fixSize()
         }
 
         _self.$trigger('load', $event, {
