@@ -50,6 +50,9 @@ export default {
           }
         })
       } else {
+        if (vnode.componentOptions && vnode.componentOptions.tag !== 'v-uni-text') {
+          console.warn('text 组件中只允许嵌套 text 组件，不支持其它组件或自定义组件。')
+        }
         nodeList.push(vnode)
       }
       // TODO 这个方案有漏洞，需要完善组件嵌套的情况。
