@@ -2,6 +2,9 @@
   <uni-image v-on="$listeners">
     <div :style="modeStyle" />
     <img :src="realImagePath">
+		<v-uni-resize-sensor
+		  ref="sensor"
+		  @resize="_resize" />
   </uni-image>
 </template>
 <script>

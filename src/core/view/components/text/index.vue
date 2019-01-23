@@ -51,14 +51,10 @@ export default {
         })
       } else {
         if (vnode.componentOptions && vnode.componentOptions.tag !== 'v-uni-text') {
-          console.warn('text 组件中只允许嵌套 text 组件，不支持其它组件或自定义组件。')
+          console.warn('<text> 组件内只支持嵌套 <text>，不支持其它组件或自定义组件，否则会引发在不同平台的渲染差异。')
         }
         nodeList.push(vnode)
       }
-      // TODO 这个方案有漏洞，需要完善组件嵌套的情况。
-      // 			else if (vnode.componentOptions && vnode.componentOptions.tag === 'v-uni-text') {
-      //         nodeList.push(vnode)
-      //       }
     })
     return createElement('uni-text', {
       on: this.$listeners,
