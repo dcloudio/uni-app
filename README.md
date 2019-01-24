@@ -8,9 +8,9 @@
 
 ## 扫码体验
 
-一套代码编译到5个平台，难以置信吗？依次扫描5个二维码，亲自体验最全面的跨平台效果！
+一套代码编译到6个平台，难以置信吗？依次扫描6个二维码，亲自体验最全面的跨平台效果！
 
-<img src="https://img-cdn-qiniu.dcloud.net.cn/img/qq.png"/>
+<img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/uni01240.png"/>
 
 *注：*
 
