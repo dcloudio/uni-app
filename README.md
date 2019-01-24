@@ -2,21 +2,17 @@
 
 `uni-app` 是一个使用 `Vue.js` 开发**跨平台**应用的前端框架。
 
-开发者通过编写 `Vue.js` 代码，`uni-app` 将其编译到 iOS、Android、微信小程序、H5等多个平台，保证其正确运行并达到优秀体验。
+开发者通过编写 `Vue.js` 代码，`uni-app` 将其编译到 iOS、Android、小程序、H5等多个平台，保证其正确运行并达到优秀体验。
 
 `uni-app`官网文档详见[https://uniapp.dcloud.io](https://uniapp.dcloud.io)
 
 ## 扫码体验
 
-一套代码编译到5个平台，难以置信吗？依次扫描5个二维码，亲自体验最全面的跨平台效果！
+一套代码编译到6个平台，难以置信吗？依次扫描6个二维码，亲自体验最全面的跨平台效果！
 
-<img src="https://img-cdn-qiniu.dcloud.net.cn/img/qq.png"/>
+<img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/uni01240.png"/>
 
-*注：*
-
-*1. Appstore不能提交简单demo，所以iOS版补充了一些其他功能。*
-
-*2. 百度小程序尚在审核中，建议通过HBuilderX新建hello uni-app，运行到百度小程序抢先体验。*
+*注： Appstore不能提交简单demo，所以iOS版补充了一些其他功能。*
 
 ## 快速开始
 
