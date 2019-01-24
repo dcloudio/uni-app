@@ -78,6 +78,8 @@ export default {
         document.documentElement.style.setProperty('--window-bottom', windowBottom)
         console.debug(`uni.${windowBottom ? 'showTabBar' : 'hideTabBar'}：--window-bottom=${windowBottom}`)
       }
+      // 触发 resize 事件
+      window.dispatchEvent(new CustomEvent('resize'))
     }
   },
   created () {
