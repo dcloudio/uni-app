@@ -12,11 +12,7 @@
 
 <img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/uni01240.png"/>
 
-*注：*
-
-*1. Appstore不能提交简单demo，所以iOS版补充了一些其他功能。*
-
-*2. 百度小程序尚在审核中，建议通过HBuilderX新建hello uni-app，运行到百度小程序抢先体验。*
+*注： Appstore不能提交简单demo，所以iOS版补充了一些其他功能。*
 
 ## 快速开始
 
