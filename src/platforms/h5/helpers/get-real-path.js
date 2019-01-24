@@ -1,7 +1,7 @@
 import getRealRoute from 'uni-helpers/get-real-route'
 
-const HTTP_RE = /^(http|https|file):\/\//
-const BASE64_IMAGE_RE = /^data:[a-z-]+\/[a-z-]+;base64,/
+const SCHEME_RE = /^([a-z-]+:)?\/\//i
+const BASE64_RE = /^data:[a-z-]+\/[a-z-]+;base64,/
 
 function addBase (filePath) {
   if (__uniConfig.router.base) {
@@ -15,7 +15,7 @@ export default function getRealPath (filePath) {
     return addBase(filePath.substr(1))
   }
   // 网络资源或base64
-  if (HTTP_RE.test(filePath) || BASE64_IMAGE_RE.test(filePath) || filePath.indexOf('blob:') === 0) {
+  if (SCHEME_RE.test(filePath) || BASE64_RE.test(filePath) || filePath.indexOf('blob:') === 0) {
     return filePath
   }
 
