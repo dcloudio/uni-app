@@ -76,7 +76,9 @@ const TODOS = [
   'sendTemplateMessage',
   'setEnableDebug',
   'getExtConfig',
-  'getExtConfigSync'
+  'getExtConfigSync',
+  'onWindowResize',
+  'offWindowResize'
 ]
 
 // 需要做转换的 API 列表

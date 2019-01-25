@@ -27,7 +27,9 @@ const TODOS = [
   'getBeacons',
   'startBeaconDiscovery',
   'stopBeaconDiscovery',
-  'hideShareMenu'
+  'hideShareMenu',
+  'onWindowResize',
+  'offWindowResize'
 ]
 
 function createTodoMethod (contextName, methodName) {
