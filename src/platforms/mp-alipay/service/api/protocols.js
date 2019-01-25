@@ -40,7 +40,9 @@ const TODOS = [
   'getUpdateManager',
   'setEnableDebug',
   'getExtConfig',
-  'getExtConfigSync'
+  'getExtConfigSync',
+  'onWindowResize',
+  'offWindowResize'
 ]
 
 function _handleNetworkInfo (result) {
