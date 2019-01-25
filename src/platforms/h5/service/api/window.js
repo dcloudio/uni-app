@@ -1,29 +1,35 @@
 const callbacks = []
 
+var tasks = []
+
 function onResize () {
-  const {
-    invokeCallbackHandler: invoke
-  } = UniServiceJSBridge
-  callbacks.forEach(callbackId => {
+  tasks.push(setTimeout(() => {
+    tasks.forEach(task => clearTimeout(task))
+
+    const {
+      invokeCallbackHandler: invoke
+    } = UniServiceJSBridge
     const {
       windowWidth,
       windowHeight,
       screenWidth,
       screenHeight
     } = uni.getSystemInfoSync()
-    var landscape = typeof window.orientation === 'number' ? Math.abs(window.orientation) === 90 : screenWidth / screenHeight > 1
+    var landscape = Math.abs(window.orientation) === 90
     var deviceOrientation = landscape ? 'landscape' : 'portrait'
 
-    invoke(callbackId, {
-      deviceOrientation,
-      size: {
-        windowWidth,
-        windowHeight,
-        screenWidth,
-        screenHeight
-      }
+    callbacks.forEach(callbackId => {
+      invoke(callbackId, {
+        deviceOrientation,
+        size: {
+          windowWidth,
+          windowHeight,
+          screenWidth,
+          screenHeight
+        }
+      })
     })
-  })
+  }, 10))
 }
 /**
  * 监听窗口大小变化
@@ -40,13 +46,8 @@ export function onWindowResize (callbackId) {
  * @param {*} callbackId
  */
 export function offWindowResize (callbackId) {
-  var index = callbacks.indexOf(callbackId)
   // 此处和微信平台一致查询不到去掉最后一个
-  if (index >= 0) {
-    callbacks.splice(index, 1)
-  } else {
-    callbacks.pop()
-  }
+  callbacks.splice(callbacks.indexOf(callbackId), 1)
   if (!callbacks.length) {
     window.removeEventListener('resize', onResize)
   }
