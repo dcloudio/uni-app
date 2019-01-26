@@ -108,7 +108,7 @@ uni-resize-sensor {
   display: block;
   z-index: -1;
   visibility: hidden;
-  animation-name: once-show;
+  animation: once-show 1ms;
 }
 uni-resize-sensor > div > div {
   position: absolute;
