@@ -5,6 +5,7 @@ var tasks = []
 function onResize () {
   tasks.push(setTimeout(() => {
     tasks.forEach(task => clearTimeout(task))
+    tasks.length = 0
 
     const {
       invokeCallbackHandler: invoke
@@ -29,7 +30,7 @@ function onResize () {
         }
       })
     })
-  }, 10))
+  }, 20))
 }
 /**
  * 监听窗口大小变化
