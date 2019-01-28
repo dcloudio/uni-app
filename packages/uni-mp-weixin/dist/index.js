@@ -105,16 +105,19 @@ function upx2px (number, newDeviceWidth) {
   if (number === 0) {
     return 0
   }
-  number = (number / BASE_DEVICE_WIDTH) * (newDeviceWidth || deviceWidth);
-  number = Math.floor(number + EPS);
-  if (number === 0) {
+  let result = (number / BASE_DEVICE_WIDTH) * (newDeviceWidth || deviceWidth);
+  if (result < 0) {
+    result = -result;
+  }
+  result = Math.floor(result + EPS);
+  if (result === 0) {
     if (deviceDPR === 1 || !isIOS) {
       return 1
     } else {
       return 0.5
     }
   }
-  return number
+  return number < 0 ? -result : result
 }
 
 var protocols = {};
