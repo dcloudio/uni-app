@@ -8,11 +8,11 @@
 
 ## 扫码体验
 
-一套代码编译到6个平台，难以置信吗？依次扫描6个二维码，亲自体验最全面的跨平台效果！
+一套代码编译到7个平台，难以置信吗？依次扫描7个二维码，亲自体验最全面的跨平台效果！
 
-<img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/uni01240.png"/>
+<img src="http://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/barcode-20190131.png"/>
 
-*注： Appstore不能提交简单demo，所以iOS版补充了一些其他功能。*
+*注： Appstore、百度、头条平台不能提交简单demo，故iOS、百度小程序、头条小程序版补充了一些其他功能。*
 
 ## 快速开始
 
