@@ -4,12 +4,12 @@
       :style="{transitionDuration:duration,transitionTimingFunction:timingFunc,backgroundColor:bgColor,color:textColor}"
       :class="{'uni-page-head-transparent':type==='transparent'}"
       class="uni-page-head">
-      <div
-        :style="{visibility:backButton?'visible':'hidden'}"
-        class="uni-page-head-hd">
-        <div @click="_back"><i
-          :style="{color:color,fontSize:'27px'}"
-          class="uni-btn-icon">&#xe601;</i></div>
+      <div class="uni-page-head-hd">
+        <div
+          v-show="backButton"
+          @click="_back"><i
+            :style="{color:color,fontSize:'27px'}"
+            class="uni-btn-icon">&#xe601;</i></div>
         <template v-for="(btn,index) in btns">
           <div
             v-if="btn.float === 'left'"
