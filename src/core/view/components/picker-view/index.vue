@@ -38,14 +38,12 @@ export default {
   },
   watch: {
     value (val) {
+      this.valueSync.length = val.length
       val.forEach((val, index) => {
         if (val !== this.valueSync[index]) {
           this.$set(this.valueSync, index, val)
         }
       })
-      if (val.length > this.valueSync.length) {
-        this.valueSync.splice(this.valueSync.length - 1, this.valueSync.length - val.length)
-      }
     },
     valueSync: {
       deep: true,

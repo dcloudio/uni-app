@@ -122,14 +122,12 @@ export default {
         if (!Array.isArray(this.valueSync)) {
           this.valueSync = []
         }
+        this.valueSync.length = val.length
         val.forEach((val, index) => {
           if (val !== this.valueSync[index]) {
             this.$set(this.valueSync, index, val)
           }
         })
-        if (val.length !== this.valueSync.length) {
-          this.valueSync.splice(val.length, val.length - this.valueSync.length)
-        }
       } else if (typeof val !== 'object') {
         this.valueSync = val
       }
