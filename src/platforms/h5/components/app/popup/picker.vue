@@ -233,6 +233,11 @@ export default {
           }
         }
       })
+    },
+    visible (val) {
+      if (!val) {
+        this.$nextTick(() => this._setValue())
+      }
     }
   },
   created () {
