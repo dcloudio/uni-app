@@ -58,7 +58,7 @@ export default {
 
   methods: {
     _onClick ($event) {
-      if (!this.url) {
+      if (this.openType !== 'navigateBack' && !this.url) {
         console.error(`<navigator/> should have url attribute when using navigateTo, redirectTo, reLaunch or switchTab`)
         return
       }
