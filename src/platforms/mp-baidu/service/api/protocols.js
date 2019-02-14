@@ -87,6 +87,9 @@ const protocols = {
   },
   navigateBackMiniProgram: {
     name: 'navigateBackSmartProgram'
+  },
+  showShareMenu: {
+    name: 'openShare'
   }
 }
 
