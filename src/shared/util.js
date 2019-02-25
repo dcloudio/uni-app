@@ -50,3 +50,9 @@ export function formatDateTime ({
     return date.getFullYear() + '-' + _completeValue(date.getMonth() + 1) + '-' + _completeValue(date.getDate())
   }
 }
+
+export function updateElementStyle (element, styles) {
+  for (let attrName in styles) {
+    element.style[attrName] = styles[attrName]
+  }
+}

@@ -1,4 +1,5 @@
 import { fileToUrl } from 'uni-platform/helpers/file'
+import { updateElementStyle } from 'uni-shared'
 
 const {
   invokeCallbackHandler: invoke
@@ -9,7 +10,14 @@ let imageInput = null
 const _createInput = function (options) {
   let inputEl = document.createElement('input')
   inputEl.type = 'file'
-  inputEl.style = 'position: absolute;visibility: hidden;z-index: -999;width: 0;height: 0;'
+  updateElementStyle(inputEl, {
+    'position': 'absolute',
+    'visibility': 'hidden',
+    'z-index': -999,
+    'width': 0,
+    'height': 0
+  })
+  // inputEl.style = 'position: absolute;visibility: hidden;z-index: -999;width: 0;height: 0;'
   inputEl.accept = 'image/*'
   if (options.count > 1) {
     inputEl.multiple = 'multiple'
