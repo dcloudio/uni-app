@@ -405,6 +405,7 @@ export default {
 		color: gray;
 		height: inherit;
 		line-height: inherit;
+    background: none;
 	}
 
 	input[type="search"]::-webkit-search-cancel-button {
