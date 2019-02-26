@@ -6,7 +6,7 @@ export default {
   mounted () {
     if (this.type === 'transparent') {
       const transparentElemStyle = this.$el.querySelector('.uni-page-head-transparent').style
-      const titleElemStyle = this.$el.querySelector('.uni-page-head__title').style
+      const titleElem = this.$el.querySelector('.uni-page-head__title')
       const iconElems = this.$el.querySelectorAll('.uni-btn-icon')
       const iconElemsStyles = []
       for (let i = 0; i < iconElems.length; i++) {
@@ -36,7 +36,9 @@ export default {
         }
         this._A = alpha
         // TODO 暂时仅处理背景色
-        titleElemStyle.opacity = alpha
+        if (titleElem) {
+          titleElem.style.opacity = alpha
+        }
         transparentElemStyle.backgroundColor = `rgba(${this._R},${this._G},${this._B},${alpha})`
         borderRadiusElemsStyles.forEach(function (borderRadiusElemStyle) {
           borderRadiusElemStyle.backgroundColor = `rgba(153,153,153,${1 - alpha})`
