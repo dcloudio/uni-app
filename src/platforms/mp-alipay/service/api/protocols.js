@@ -339,6 +339,13 @@ const protocols = { // 需要做转换的 API 列表
   },
   getSystemInfoSync: {
     returnValue: _handleSystemInfo
+  },
+  // 文档没提到，但是实测可用。
+  canvasToTempFilePath: {
+    returnValue (result) {
+      // 真机的情况下会有 tempFilePath 这个值，因此需要主动修改。
+      result.tempFilePath = result.apFilePath
+    }
   }
 }
 
