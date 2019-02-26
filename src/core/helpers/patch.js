@@ -34,6 +34,18 @@ export function mergeTitleNView (navigationBar, titleNView) {
     if (hasOwn(titleNView, 'type')) {
       navigationBar.type = titleNView.type
     }
+    if (hasOwn(titleNView, 'searchInput') && typeof titleNView.searchInput === 'object') {
+      navigationBar.searchInput = Object.assign({
+        autoFocus: false,
+        align: 'center',
+        color: '#000000',
+        backgroundColor: 'rgba(255,255,255,0.5)',
+        borderRadius: '0px',
+        placeholder: '',
+        placeholderColor: '#CCCCCC',
+        disabled: false
+      }, titleNView.searchInput)
+    }
   }
   return navigationBar
 }

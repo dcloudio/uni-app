@@ -69,5 +69,9 @@ export default function initOn (on) {
   on('onTabItemTap', createCallCurrentPageHook('onTabItemTap'))
   on('onNavigationBarButtonTap', createCallCurrentPageHook('onNavigationBarButtonTap'))
 
+  on('onNavigationBarSearchInputChanged', createCallCurrentPageHook('onNavigationBarSearchInputChanged'))
+  on('onNavigationBarSearchInputConfirmed', createCallCurrentPageHook('onNavigationBarSearchInputConfirmed'))
+  on('onNavigationBarSearchInputClicked', createCallCurrentPageHook('onNavigationBarSearchInputClicked'))
+
   on('onWebInvokeAppService', onWebInvokeAppService)
 }

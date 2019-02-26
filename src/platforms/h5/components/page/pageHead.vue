@@ -3,13 +3,16 @@
     <div
       :style="{transitionDuration:duration,transitionTimingFunction:timingFunc,backgroundColor:bgColor,color:textColor}"
       :class="{'uni-page-head-transparent':type==='transparent'}"
-      class="uni-page-head">
+      class="uni-page-head"
+    >
       <div class="uni-page-head-hd">
         <div
           v-show="backButton"
-          @click="_back"><i
+          @click="_back">
+          <i
             :style="{color:color,fontSize:'27px'}"
-            class="uni-btn-icon">&#xe601;</i></div>
+            class="uni-btn-icon">&#xe601;</i>
+        </div>
         <template v-for="(btn,index) in btns">
           <div
             v-if="btn.float === 'left'"
@@ -19,38 +22,66 @@
               :style="_formatBtnStyle(btn)"
               class="uni-btn-icon"
               @click="_onBtnClick(index)"
-              v-html="_formatBtnFontText(btn)" />
+              v-html="_formatBtnFontText(btn)"
+            />
           </div>
         </template>
       </div>
-      <div class="uni-page-head-bd">
+      <div
+        v-if="!searchInput"
+        class="uni-page-head-bd">
         <div
           :style="{fontSize:titleSize,opacity:type==='transparent'?0:1}"
-          class="uni-page-head__title">
+          class="uni-page-head__title"
+        >
           <i
             v-if="loading"
-            class="uni-loading" />
+            class="uni-loading"/>
           {{ titleText }}
         </div>
+      </div>
+      <div
+        v-if="searchInput"
+        :style="{'background-color':searchInput.backgroundColor}"
+        class="uni-page-head-search"
+      >
+        <div
+          :style="{color:searchInput.placeholderColor}"
+          :class="[`uni-page-head-search-placeholder-${focus?'left':searchInput.align}`]"
+          class="uni-page-head-search-placeholder"
+        >{{ text || composing ? '' : searchInput.placeholder }}</div>
+        <v-uni-input
+          ref="input"
+          v-model="text"
+          :focus="searchInput.autoFocus"
+          :disabled="searchInput.disabled"
+          :style="{'border-radius':searchInput.borderRadius,color:searchInput.color}"
+          :placeholder-style="`color:${searchInput.placeholderColor}`"
+          class="uni-page-head-search-input"
+          confirm-type="search"
+          @focus="__focus"
+          @blur="__blur"
+          @input="__input"
+        />
       </div>
       <div class="uni-page-head-ft">
         <template v-for="(btn,index) in btns">
           <div
             v-if="btn.float !== 'left'"
-            :key="index"
-            :style="{marginRight:index>0?'5px':'0px'}">
+            :key="index">
             <i
               :style="_formatBtnStyle(btn)"
               class="uni-btn-icon"
               @click="_onBtnClick(index)"
-              v-html="_formatBtnFontText(btn)" />
+              v-html="_formatBtnFontText(btn)"
+            />
           </div>
         </template>
       </div>
     </div>
     <div
       v-if="type!=='transparent'"
-      class="uni-placeholder" />
+      class="uni-placeholder"/>
   </uni-page-head>
 </template>
 <style>
@@ -64,7 +95,7 @@ uni-page-head .uni-page-head {
   left: 0;
   width: 100%;
   height: 44px;
-  padding: 12px 5px;
+  padding: 7px 3px;
   display: flex;
   overflow: hidden;
   justify-content: space-between;
@@ -112,6 +143,59 @@ uni-page-head .uni-page-head-bd {
   user-select: auto;
 }
 
+.uni-btn-icon {
+  max-width: 48px;
+  word-break: keep-all;
+  margin: 0 2px;
+  overflow: hidden;
+  word-break: keep-all;
+}
+
+.uni-page-head-search {
+  position: relative;
+  display: flex;
+  flex: 1;
+  margin: 0 2px;
+  line-height: 30px;
+  font-size: 16px;
+}
+
+.uni-page-head-search-input {
+  width: 100%;
+  height: 100%;
+  padding-left: 34px;
+}
+
+.uni-page-head-search-placeholder {
+  position: absolute;
+  max-width: 100%;
+  height: 100%;
+  padding-left: 34px;
+  overflow: hidden;
+  word-break: keep-all;
+}
+
+.uni-page-head-search-placeholder-right {
+  right: 0;
+}
+
+.uni-page-head-search-placeholder-center {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.uni-page-head-search-placeholder::before {
+  position: absolute;
+  top: 0;
+  left: 2px;
+  width: 30px;
+  content: "\ea0e";
+  display: block;
+  font-size: 20px;
+  font-family: "uni";
+  text-align: center;
+}
+
 uni-page-head .uni-page-head-ft {
   display: flex;
   align-items: center;
@@ -122,6 +206,7 @@ uni-page-head .uni-page-head-ft {
 uni-page-head .uni-page-head__title {
   font-weight: bold;
   font-size: 16px;
+  line-height: 30px;
   text-align: center;
   overflow: hidden;
   white-space: nowrap;
@@ -200,6 +285,19 @@ export default {
       default () {
         return []
       }
+    },
+    searchInput: {
+      type: [Object, Boolean],
+      default () {
+        return false
+      }
+    }
+  },
+  data () {
+    return {
+      focus: false,
+      text: '',
+      composing: false
     }
   },
   computed: {
@@ -220,6 +318,27 @@ export default {
         })
       }
       return btns
+    }
+  },
+  mounted () {
+    if (this.searchInput) {
+      const input = this.$refs.input
+      input.$watch('composing', val => {
+        this.composing = val
+      })
+      if (this.searchInput.disabled) {
+        input.$on('click', () => {
+          UniServiceJSBridge.emit('onNavigationBarSearchInputClicked', '')
+        })
+      } else {
+        input.$refs.input.addEventListener('keyup', event => {
+          if (event.key.toUpperCase() === 'ENTER') {
+            UniServiceJSBridge.emit('onNavigationBarSearchInputConfirmed', {
+              text: this.text
+            })
+          }
+        })
+      }
     }
   },
   methods: {
@@ -263,6 +382,17 @@ export default {
         style.fontFamily = btn.fontFamily
       }
       return style
+    },
+    __focus () {
+      this.focus = true
+    },
+    __blur () {
+      this.focus = false
+    },
+    __input () {
+      UniServiceJSBridge.emit('onNavigationBarSearchInputChanged', {
+        text: this.text
+      })
     }
   }
 }
