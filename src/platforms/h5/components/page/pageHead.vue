@@ -8,6 +8,7 @@
       <div class="uni-page-head-hd">
         <div
           v-show="backButton"
+          class="uni-page-head-btn"
           @click="_back">
           <i
             :style="{color:color,fontSize:'27px'}"
@@ -17,7 +18,8 @@
           <div
             v-if="btn.float === 'left'"
             :key="index"
-            :style="{marginRight:index>0?'5px':'0px'}">
+            :style="{marginRight:index>0?'5px':'0px',backgroundColor: btn.background}"
+            class="uni-page-head-btn">
             <i
               :style="_formatBtnStyle(btn)"
               class="uni-btn-icon"
@@ -59,16 +61,18 @@
           :placeholder-style="`color:${searchInput.placeholderColor}`"
           class="uni-page-head-search-input"
           confirm-type="search"
-          @focus="__focus"
-          @blur="__blur"
-          @input="__input"
+          @focus="_focus"
+          @blur="_blur"
+          @input="_input"
         />
       </div>
       <div class="uni-page-head-ft">
         <template v-for="(btn,index) in btns">
           <div
             v-if="btn.float !== 'left'"
-            :key="index">
+            :key="index"
+            :style="{backgroundColor: btn.background}"
+            class="uni-page-head-btn">
             <i
               :style="_formatBtnStyle(btn)"
               class="uni-btn-icon"
@@ -143,12 +147,13 @@ uni-page-head .uni-page-head-bd {
   user-select: auto;
 }
 
-.uni-btn-icon {
+.uni-page-head-btn {
   max-width: 48px;
   word-break: keep-all;
   margin: 0 2px;
   overflow: hidden;
   word-break: keep-all;
+  background-color: rgba(153,153,153,1);
 }
 
 .uni-page-head-search {
@@ -383,13 +388,13 @@ export default {
       }
       return style
     },
-    __focus () {
+    _focus () {
       this.focus = true
     },
-    __blur () {
+    _blur () {
       this.focus = false
     },
-    __input () {
+    _input () {
       UniServiceJSBridge.emit('onNavigationBarSearchInputChanged', {
         text: this.text
       })

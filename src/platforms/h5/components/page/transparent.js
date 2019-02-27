@@ -9,13 +9,17 @@ export default {
       const titleElem = this.$el.querySelector('.uni-page-head__title')
       const iconElems = this.$el.querySelectorAll('.uni-btn-icon')
       const iconElemsStyles = []
+      const textColor = this.textColor
       for (let i = 0; i < iconElems.length; i++) {
         iconElemsStyles.push(iconElems[i].style)
       }
-      const borderRadiusElems = this.$el.querySelectorAll('.uni-page-head-hd>div,.uni-page-head-ft>div')
+      const borderRadiusElems = this.$el.querySelectorAll('.uni-page-head-btn')
+      const oldColors = []
       const borderRadiusElemsStyles = []
       for (let i = 0; i < borderRadiusElems.length; i++) {
-        borderRadiusElemsStyles.push(borderRadiusElems[i].style)
+        let borderRadiusElem = borderRadiusElems[i]
+        oldColors.push(getComputedStyle(borderRadiusElem).backgroundColor)
+        borderRadiusElemsStyles.push(borderRadiusElem.style)
       }
       this._A = 0
       UniViewJSBridge.on('onPageScroll', ({
@@ -27,7 +31,7 @@ export default {
         }
         if (alpha > 0.5 && this._A <= 0.5) {
           iconElemsStyles.forEach(function (iconElemStyle) {
-            iconElemStyle.color = '#000'
+            iconElemStyle.color = textColor
           })
         } else if (alpha <= 0.5 && this._A > 0.5) {
           iconElemsStyles.forEach(function (iconElemStyle) {
@@ -40,8 +44,11 @@ export default {
           titleElem.style.opacity = alpha
         }
         transparentElemStyle.backgroundColor = `rgba(${this._R},${this._G},${this._B},${alpha})`
-        borderRadiusElemsStyles.forEach(function (borderRadiusElemStyle) {
-          borderRadiusElemStyle.backgroundColor = `rgba(153,153,153,${1 - alpha})`
+        borderRadiusElemsStyles.forEach(function (borderRadiusElemStyle, index) {
+          let oldColor = oldColors[index]
+          let rgba = oldColor.match(/\d+/g)
+          rgba[3] = (1 - alpha) * (rgba.length === 4 ? rgba[3] : 1)
+          borderRadiusElemStyle.backgroundColor = `rgba(${rgba})`
         })
       })
     }
