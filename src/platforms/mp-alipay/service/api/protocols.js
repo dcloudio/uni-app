@@ -346,6 +346,16 @@ const protocols = { // 需要做转换的 API 列表
       // 真机的情况下会有 tempFilePath 这个值，因此需要主动修改。
       result.tempFilePath = result.apFilePath
     }
+  },
+  setScreenBrightness: {
+    args: {
+      value: 'brightness'
+    }
+  },
+  getScreenBrightness: {
+    returnValue: {
+      brightness: 'value'
+    }
   }
 }
 
