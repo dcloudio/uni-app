@@ -379,7 +379,7 @@ export default {
         this.composing = val
       })
       if (this.searchInput.disabled) {
-        input.$on('click', () => {
+        input.$el.addEventListener('click', () => {
           UniServiceJSBridge.emit('onNavigationBarSearchInputClicked', '')
         })
       } else {
