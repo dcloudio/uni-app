@@ -181,7 +181,7 @@ uni-page-head .uni-btn-icon {
   line-height: 18px;
   border-radius: 18px;
   overflow: hidden;
-  transform: scale(0.6);
+  transform: scale(0.5) translate(40%,-40%);
   transform-origin: 100% 0;
 }
 
@@ -192,7 +192,7 @@ uni-page-head .uni-btn-icon {
   max-width: 42px;
   text-align: center;
   padding: 0 3px;
-  transform: scale(0.7);
+  transform: scale(0.7) translate(40%,-40%);
 }
 
 .uni-page-head-btn-select>.uni-btn-icon::after{
