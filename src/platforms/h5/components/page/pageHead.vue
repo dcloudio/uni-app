@@ -18,9 +18,9 @@
           <div
             v-if="btn.float === 'left'"
             :key="index"
-            :style="{backgroundColor: type==='transparent'?btn.background:'transparent'}"
+            :style="{backgroundColor: type==='transparent'?btn.background:'transparent',width:btn.width}"
             :badge-text="btn.badgeText"
-            :class="{'uni-page-head-btn-red-dot':btn.redDot||btn.badgeText}"
+            :class="{'uni-page-head-btn-red-dot':btn.redDot||btn.badgeText,'uni-page-head-btn-select':btn.select}"
             class="uni-page-head-btn"
           >
             <i
@@ -74,9 +74,9 @@
           <div
             v-if="btn.float !== 'left'"
             :key="index"
-            :style="{backgroundColor: type==='transparent'?btn.background:'transparent'}"
+            :style="{backgroundColor: type==='transparent'?btn.background:'transparent',width:btn.width}"
             :badge-text="btn.badgeText"
-            :class="{'uni-page-head-btn-red-dot':btn.redDot||btn.badgeText}"
+            :class="{'uni-page-head-btn-red-dot':btn.redDot||btn.badgeText,'uni-page-head-btn-select':btn.select}"
             class="uni-page-head-btn"
           >
             <i
@@ -155,7 +155,7 @@ uni-page-head .uni-page-head-bd {
 
 .uni-page-head-btn {
   position: relative;
-  max-width: 48px;
+  width: auto;
   word-break: keep-all;
   margin: 0 2px;
   word-break: keep-all;
@@ -193,6 +193,14 @@ uni-page-head .uni-btn-icon {
   text-align: center;
   padding: 0 3px;
   transform: scale(0.7);
+}
+
+.uni-page-head-btn-select>.uni-btn-icon::after{
+  display: inline-block;
+  font-family: "unibtn";
+  content: "\e601";
+  margin-left: 2px;
+  transform: rotate(-90deg) scale(0.8);
 }
 
 .uni-page-head-search {
