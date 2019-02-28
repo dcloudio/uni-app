@@ -25,19 +25,19 @@ function setUrl (url, data) {
   str = str[0].split('?')
   var query = str[1] || ''
   url = str[0]
+  var search = query.split('&').filter(item => item)
+  query = {}
+  search.forEach(item => {
+    item = item.split('=')
+    query[item[0]] = item[1]
+  })
   for (var key in data) {
     if (data.hasOwnProperty(key)) {
-      var keyEncode = encodeURIComponent(key)
-      var valEncode = encodeURIComponent(data[key])
-      var reg = new RegExp('((^|&)' + keyEncode + '=)[^&]*(&|$)', 'i')
-      if (query.match(reg)) {
-        query.replace(reg, '$1' + valEncode)
-      } else {
-        query += (query.length ? '&' : '') + keyEncode + '=' + valEncode
-      }
+      query[encodeURIComponent(key)] = encodeURIComponent(data[key])
     }
   }
-  return url + '?' + query + (hash ? '#' + hash : '')
+  query = Object.keys(query).map(item => `${item}=${query[item]}`).join('$')
+  return url + (query ? '?' + query : '') + (hash ? '#' + hash : '')
 }
 /**
  * 解析响应头
