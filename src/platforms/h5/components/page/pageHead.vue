@@ -18,8 +18,11 @@
           <div
             v-if="btn.float === 'left'"
             :key="index"
-            :style="{marginRight:index>0?'5px':'0px',backgroundColor: btn.background}"
-            class="uni-page-head-btn">
+            :style="{backgroundColor: type==='transparent'?btn.background:'transparent'}"
+            :badge-text="btn.badgeText"
+            :class="{'uni-page-head-btn-red-dot':btn.redDot||btn.badgeText}"
+            class="uni-page-head-btn"
+          >
             <i
               :style="_formatBtnStyle(btn)"
               class="uni-btn-icon"
@@ -71,8 +74,11 @@
           <div
             v-if="btn.float !== 'left'"
             :key="index"
-            :style="{backgroundColor: btn.background}"
-            class="uni-page-head-btn">
+            :style="{backgroundColor: type==='transparent'?btn.background:'transparent'}"
+            :badge-text="btn.badgeText"
+            :class="{'uni-page-head-btn-red-dot':btn.redDot||btn.badgeText}"
+            class="uni-page-head-btn"
+          >
             <i
               :style="_formatBtnStyle(btn)"
               class="uni-btn-icon"
@@ -148,12 +154,45 @@ uni-page-head .uni-page-head-bd {
 }
 
 .uni-page-head-btn {
+  position: relative;
   max-width: 48px;
   word-break: keep-all;
   margin: 0 2px;
-  overflow: hidden;
   word-break: keep-all;
-  background-color: rgba(153,153,153,1);
+}
+
+.uni-page-head-transparent .uni-page-head-btn{
+  background-color: rgba(153, 153, 153, 1);
+}
+
+uni-page-head .uni-btn-icon {
+  overflow: hidden;
+}
+
+.uni-page-head-btn-red-dot::after {
+  content: attr(badge-text);
+  position: absolute;
+  right: 0;
+  top: 0;
+  background-color: red;
+  color: white;
+  width: 18px;
+  height: 18px;
+  line-height: 18px;
+  border-radius: 18px;
+  overflow: hidden;
+  transform: scale(0.6);
+  transform-origin: 100% 0;
+}
+
+.uni-page-head-btn-red-dot[badge-text]::after {
+  font-size: 12px;
+  width: auto;
+  min-width: 18px;
+  max-width: 42px;
+  text-align: center;
+  padding: 0 3px;
+  transform: scale(0.7);
 }
 
 .uni-page-head-search {
