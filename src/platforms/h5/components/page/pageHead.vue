@@ -1,5 +1,5 @@
 <template>
-  <uni-page-head>
+  <uni-page-head :uni-page-head-type="type">
     <div
       :style="{transitionDuration:duration,transitionTimingFunction:timingFunc,backgroundColor:bgColor,color:textColor}"
       :class="{'uni-page-head-transparent':type==='transparent'}"

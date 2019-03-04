@@ -12,7 +12,7 @@ uni-page-wrapper {
   position: relative;
 }
 
-uni-page-head ~ uni-page-wrapper {
+uni-page-head[uni-page-head-type="default"] ~ uni-page-wrapper {
   height: calc(100% - 44px);
 }
 
@@ -28,7 +28,7 @@ uni-page-head ~ uni-page-wrapper {
   height: 50px;
 }
 
-.uni-app--showtabbar uni-page-head ~ uni-page-wrapper {
+.uni-app--showtabbar uni-page-head[uni-page-head-type="default"] ~ uni-page-wrapper {
   height: calc(100% - 44px - 50px);
 }
 
