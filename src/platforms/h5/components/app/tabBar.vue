@@ -54,11 +54,17 @@ uni-tabbar .uni-tabbar {
   width: 100%;
   z-index: 998;
   box-sizing: border-box;
+  padding-bottom: 0;
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 uni-tabbar .uni-tabbar ~ .uni-placeholder {
   width: 100%;
   height: 50px;
+  margin-bottom: 0;
+  margin-bottom: constant(safe-area-inset-bottom);
+  margin-bottom: env(safe-area-inset-bottom);
 }
 
 uni-tabbar .uni-tabbar * {

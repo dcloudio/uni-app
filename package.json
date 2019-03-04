@@ -12,7 +12,7 @@
 		"test:unit": "cross-env NODE_ENV=test UNI_PLATFORM=h5 mocha-webpack --require tests/unit/setup.js --webpack-config build/webpack.config.test.js tests/unit/**/*.spec.js"
 	},
 	"dependencies": {},
-  "private": true,
+	"private": true,
 	"devDependencies": {
 		"@vue/cli-plugin-babel": "^3.1.1",
 		"@vue/cli-plugin-eslint": "^3.1.4",

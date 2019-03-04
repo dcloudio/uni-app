@@ -19,6 +19,8 @@ uni-page-head[uni-page-head-type="default"] ~ uni-page-wrapper {
 .uni-app--showtabbar uni-page-wrapper {
   display: block;
   height: calc(100% - 50px);
+  height: calc(100% - 50px - constant(safe-area-inset-bottom));
+  height: calc(100% - 50px - env(safe-area-inset-bottom));
 }
 
 .uni-app--showtabbar uni-page-wrapper::after {
@@ -26,10 +28,14 @@ uni-page-head[uni-page-head-type="default"] ~ uni-page-wrapper {
   display: block;
   width: 100%;
   height: 50px;
+  height: calc(50px + constant(safe-area-inset-bottom));
+  height: calc(50px + env(safe-area-inset-bottom));
 }
 
 .uni-app--showtabbar uni-page-head[uni-page-head-type="default"] ~ uni-page-wrapper {
   height: calc(100% - 44px - 50px);
+  height: calc(100% - 44px - 50px - constant(safe-area-inset-bottom));
+  height: calc(100% - 44px - 50px - env(safe-area-inset-bottom));
 }
 
 uni-page-body {
