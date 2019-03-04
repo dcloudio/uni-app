@@ -65,4 +65,8 @@ if (typeof Proxy !== 'undefined') {
   })
 }
 
+export * from './wrapper/create-app'
+export * from './wrapper/create-page'
+export * from './wrapper/create-component'
+
 export default uni

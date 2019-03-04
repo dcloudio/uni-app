@@ -22,6 +22,7 @@ const PLATFORMS = {
 }
 
 const platform = PLATFORMS[process.env.UNI_PLATFORM]
+
 module.exports = {
   input: 'src/core/runtime/index.js',
   output: {
@@ -37,5 +38,6 @@ module.exports = {
       __GLOBAL__: platform.prefix,
       __PLATFORM_TITLE__: platform.title
     })
-  ]
+  ],
+  external: ['vue']
 }

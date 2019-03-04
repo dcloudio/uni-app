@@ -1,91 +1,96 @@
 {
-	"name": "uniapp-js-framework",
-	"version": "0.0.1",
-	"scripts": {
-		"lint": "eslint --fix --config package.json --ext .js --ext .vue --ignore-path .eslintignore build src",
-		"dev:h5": "npm run lint && cross-env NODE_ENV=production UNI_WATCH=true UNI_PLATFORM=h5 node build/build.js",
-		"build:h5": "npm run lint && cross-env NODE_ENV=production UNI_WATCH=false UNI_PLATFORM=h5 node build/build.js",
-		"build:mp-weixin": "npm run lint && cross-env UNI_PLATFORM=mp-weixin rollup -c build/rollup.config.js",
-		"build:mp-baidu": "npm run lint && cross-env UNI_PLATFORM=mp-baidu rollup -c build/rollup.config.js",
-		"build:mp-alipay": "npm run lint && cross-env UNI_PLATFORM=mp-alipay rollup -c build/rollup.config.js",
-		"build:mp-toutiao": "npm run lint && cross-env UNI_PLATFORM=mp-toutiao rollup -c build/rollup.config.js",
-		"test:unit": "cross-env NODE_ENV=test UNI_PLATFORM=h5 mocha-webpack --require tests/unit/setup.js --webpack-config build/webpack.config.test.js tests/unit/**/*.spec.js"
-	},
-	"dependencies": {},
-  "private": true,
-	"devDependencies": {
-		"@vue/cli-plugin-babel": "^3.1.1",
-		"@vue/cli-plugin-eslint": "^3.1.4",
-		"@vue/cli-plugin-unit-mocha": "^3.1.1",
-		"@vue/cli-service": "^3.1.2",
-		"@vue/test-utils": "^1.0.0-beta.25",
-		"babel-eslint": "^10.0.1",
-		"babylon": "^6.18.0",
-		"chai": "^4.1.2",
-		"cross-env": "^5.2.0",
-		"eslint": "^5.5.0",
-		"eslint-config-standard": "^12.0.0",
-		"eslint-loader": "^2.1.0",
-		"eslint-plugin-import": "^2.14.0",
-		"eslint-plugin-node": "^7.0.1",
-		"eslint-plugin-promise": "^4.0.0",
-		"eslint-plugin-standard": "^4.0.0",
-		"eslint-plugin-vue": "^4.7.1",
-		"jsdom": "^13.0.0",
-		"jsdom-global": "^3.0.2",
-		"rollup": "^0.67.4",
-		"rollup-plugin-alias": "^1.4.0",
-		"rollup-plugin-replace": "^2.1.0",
-		"strip-json-comments": "^2.0.1",
-		"vue": "^2.5.17",
-		"vue-router": "^3.0.1",
-		"vue-template-compiler": "^2.5.17",
-		"webpack": "^4.18.0",
-		"webpack-bundle-analyzer": "^3.0.3",
-		"webpack-virtual-modules": "^0.1.10"
-	},
-	"eslintConfig": {
-		"root": true,
-		"env": {
-			"node": true
-		},
-		"extends": [
-			"plugin:vue/recommended",
-			"standard"
-		],
-		"globals": {
-			"getApp": true,
-			"getCurrentPages": true,
-			"plus": true,
-			"uni": true,
-			"Vue": true,
-			"wx": true,
-			"my": true,
-			"swan": true,
-			"__uniConfig": true,
-			"__uniRoutes": true,
-			"UniViewJSBridge": true,
-			"UniServiceJSBridge": true,
-			"__PLATFORM__": true,
-			"__VERSION__": true,
-			"__GLOBAL__": true,
-			"__PLATFORM_TITLE__": true
-		},
-		"rules": {
-			"no-tabs": 0,
-			"standard/no-callback-literal": 0
-		},
-		"parserOptions": {
-			"parser": "babel-eslint"
-		}
-	},
-	"browserslist": [
-		"last 3 versions",
-		"Android >= 4.1",
-		"ios >= 8"
-	],
-	"license": "Apache-2.0",
-	"main": "index.js",
-	"description": "",
-	"author": ""
+    "name": "uniapp-js-framework",
+    "version": "0.0.1",
+    "scripts": {
+        "lint": "eslint --fix --config package.json --ext .js --ext .vue --ignore-path .eslintignore build src",
+        "dev:h5": "npm run lint && cross-env NODE_ENV=production UNI_WATCH=true UNI_PLATFORM=h5 node build/build.js",
+        "build:h5": "npm run lint && cross-env NODE_ENV=production UNI_WATCH=false UNI_PLATFORM=h5 node build/build.js",
+        "build:mp-weixin": "npm run lint && cross-env UNI_PLATFORM=mp-weixin rollup -c build/rollup.config.js",
+        "build:mp-baidu": "npm run lint && cross-env UNI_PLATFORM=mp-baidu rollup -c build/rollup.config.js",
+        "build:mp-alipay": "npm run lint && cross-env UNI_PLATFORM=mp-alipay rollup -c build/rollup.config.js",
+        "build:mp-toutiao": "npm run lint && cross-env UNI_PLATFORM=mp-toutiao rollup -c build/rollup.config.js",
+        "test:unit": "cross-env NODE_ENV=test UNI_PLATFORM=h5 mocha-webpack --require tests/unit/setup.js --webpack-config build/webpack.config.test.js tests/unit/**/*.spec.js"
+    },
+    "dependencies": {},
+    "private": true,
+    "devDependencies": {
+        "@vue/cli-plugin-babel": "^3.4.1",
+        "@vue/cli-plugin-eslint": "^3.4.1",
+        "@vue/cli-plugin-unit-mocha": "^3.4.1",
+        "@vue/cli-service": "^3.4.1",
+        "@vue/test-utils": "^1.0.0-beta.25",
+        "babel-eslint": "^10.0.1",
+        "babylon": "^6.18.0",
+        "browserslist": "^4.4.2",
+        "caniuse-lite": "^1.0.30000940",
+        "chai": "^4.1.2",
+        "cross-env": "^5.2.0",
+        "eslint": "^5.5.0",
+        "eslint-config-standard": "^12.0.0",
+        "eslint-loader": "^2.1.0",
+        "eslint-plugin-import": "^2.14.0",
+        "eslint-plugin-node": "^7.0.1",
+        "eslint-plugin-promise": "^4.0.0",
+        "eslint-plugin-standard": "^4.0.0",
+        "eslint-plugin-vue": "^4.7.1",
+        "jsdom": "^13.0.0",
+        "jsdom-global": "^3.0.2",
+        "rollup": "^0.67.4",
+        "rollup-plugin-alias": "^1.4.0",
+        "rollup-plugin-replace": "^2.1.0",
+        "strip-json-comments": "^2.0.1",
+        "vue": "^2.6.8",
+        "vue-router": "^3.0.1",
+        "vue-template-compiler": "^2.6.8",
+        "webpack": "^4.18.0",
+        "webpack-bundle-analyzer": "^3.0.3",
+        "webpack-virtual-modules": "^0.1.10"
+    },
+    "eslintConfig": {
+        "root": true,
+        "env": {
+            "node": true
+        },
+        "extends": [
+            "plugin:vue/recommended",
+            "standard"
+        ],
+        "globals": {
+            "App": true,
+            "Page": true,
+            "Component": true,
+            "getApp": true,
+            "getCurrentPages": true,
+            "plus": true,
+            "uni": true,
+            "Vue": true,
+            "wx": true,
+            "my": true,
+            "swan": true,
+            "__uniConfig": true,
+            "__uniRoutes": true,
+            "UniViewJSBridge": true,
+            "UniServiceJSBridge": true,
+            "__PLATFORM__": true,
+            "__VERSION__": true,
+            "__GLOBAL__": true,
+            "__PLATFORM_TITLE__": true
+        },
+        "rules": {
+            "no-tabs": 0,
+            "standard/no-callback-literal": 0
+        },
+        "parserOptions": {
+            "parser": "babel-eslint"
+        }
+    },
+    "browserslist": [
+        "last 3 versions",
+        "Android >= 4.1",
+        "ios >= 8"
+    ],
+    "license": "Apache-2.0",
+    "main": "index.js",
+    "description": "",
+    "author": ""
 }
