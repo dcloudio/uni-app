@@ -724,7 +724,7 @@
   version "3.4.1"
   resolved "https://registry.yarnpkg.com/@vue/cli-overlay/-/cli-overlay-3.4.1.tgz#f850c2f8d7cd42b475d03ec6658ccf2ec9830511"
 
-"@vue/cli-plugin-babel@^3.1.1":
+"@vue/cli-plugin-babel@^3.4.1":
   version "3.4.1"
   resolved "https://registry.yarnpkg.com/@vue/cli-plugin-babel/-/cli-plugin-babel-3.4.1.tgz#f84fe329966ab5c82c80da1bd62da4db4089090b"
   dependencies:
@@ -734,7 +734,7 @@
     babel-loader "^8.0.5"
     webpack ">=4 < 4.29"
 
-"@vue/cli-plugin-eslint@^3.1.4":
+"@vue/cli-plugin-eslint@^3.4.1":
   version "3.4.1"
   resolved "https://registry.yarnpkg.com/@vue/cli-plugin-eslint/-/cli-plugin-eslint-3.4.1.tgz#59896379e12d68aefcdccac28c691cb6e23e5720"
   dependencies:
@@ -747,7 +747,7 @@
     eslint "^4.19.1"
     eslint-plugin-vue "^4.7.1"
 
-"@vue/cli-plugin-unit-mocha@^3.1.1":
+"@vue/cli-plugin-unit-mocha@^3.4.1":
   version "3.4.1"
   resolved "https://registry.yarnpkg.com/@vue/cli-plugin-unit-mocha/-/cli-plugin-unit-mocha-3.4.1.tgz#e15f790e97af22c4b41638fbcd30e34a743af9d2"
   dependencies:
@@ -757,7 +757,7 @@
     mocha "^5.2.0"
     mocha-webpack "^2.0.0-beta.0"
 
-"@vue/cli-service@^3.1.2":
+"@vue/cli-service@^3.4.1":
   version "3.4.1"
   resolved "https://registry.yarnpkg.com/@vue/cli-service/-/cli-service-3.4.1.tgz#65ef3ed00b8e6eeeca736308a703c264cfa280cc"
   dependencies:
@@ -1784,7 +1784,7 @@ caniuse-api@^3.0.0:
     lodash.memoize "^4.1.2"
     lodash.uniq "^4.5.0"
 
-caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000939:
+caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000939, caniuse-lite@^1.0.30000940:
   version "1.0.30000940"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000940.tgz#19f2b1497fbfa5b96b615963097c3757f27989ce"
 
@@ -7198,7 +7198,7 @@ vue-style-loader@^4.1.0:
     hash-sum "^1.0.2"
     loader-utils "^1.0.2"
 
-vue-template-compiler@^2.5.17:
+vue-template-compiler@^2.6.8:
   version "2.6.8"
   resolved "https://registry.yarnpkg.com/vue-template-compiler/-/vue-template-compiler-2.6.8.tgz#750802604595134775b9c53141b9850b35255e1c"
   dependencies:
@@ -7209,7 +7209,7 @@ vue-template-es2015-compiler@^1.9.0:
   version "1.9.1"
   resolved "https://registry.yarnpkg.com/vue-template-es2015-compiler/-/vue-template-es2015-compiler-1.9.1.tgz#1ee3bc9a16ecbf5118be334bb15f9c46f82f5825"
 
-vue@^2.5.17:
+vue@^2.6.8:
   version "2.6.8"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.8.tgz#f21cbc536bfc14f7d1d792a137bb12f69e60ea91"
 

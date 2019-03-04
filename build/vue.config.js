@@ -7,7 +7,7 @@ const pkgPath = resolve('package.json')
 const webpackConfig = require('./webpack.config.js')
 
 module.exports = {
-  baseUrl: '/',
+  publicPath: '/',
   outputDir: resolve('./packages/uni-' + process.env.UNI_PLATFORM + '/dist'),
   lintOnSave: true, // or error
   runtimeCompiler: false,
