@@ -39,6 +39,7 @@ uni-cover-image {
   overflow: hidden;
   height: 100%;
   width: 100%;
+  pointer-events: auto;
 }
 
 uni-cover-image img {

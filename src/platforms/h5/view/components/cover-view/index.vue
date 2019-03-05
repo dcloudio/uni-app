@@ -50,6 +50,7 @@ uni-cover-view {
   line-height: 1.2;
   overflow: hidden;
   white-space: nowrap;
+  pointer-events: auto;
 }
 
 uni-cover-view[hidden] {
