@@ -132,7 +132,7 @@ export default {
       this.$emit('update:value', value)
     },
     maxlength (value) {
-      const realValue = this.realValue.slice(0, parseInt(value, 10))
+      const realValue = this.inputValue.slice(0, parseInt(value, 10))
       realValue !== this.inputValue && (this.inputValue = realValue)
     }
   },
