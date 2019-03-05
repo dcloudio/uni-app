@@ -1,8 +1,20 @@
 import {
   isFn,
   noop,
+  hasOwn,
   isPlainObject
 } from 'uni-shared'
+
+const MOCKS = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__']
+
+export function initMocks (vm) {
+  const mpInstance = vm.$mp[vm.mpType]
+  MOCKS.forEach(mock => {
+    if (hasOwn(mpInstance, mock)) {
+      vm[mock] = mpInstance[mock]
+    }
+  })
+}
 
 export function initHooks (mpOptions, hooks) {
   hooks.forEach(hook => {
@@ -13,9 +25,9 @@ export function initHooks (mpOptions, hooks) {
 }
 
 export function initMethods (mpOptions, vueOptions) {
-//   if (vueOptions.methods) {
-//     Object.assign(mpOptions, vueOptions.methods)
-//   }
+  //   if (vueOptions.methods) {
+  //     Object.assign(mpOptions, vueOptions.methods)
+  //   }
 }
 
 export function getData (data) {

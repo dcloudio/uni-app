@@ -4,6 +4,7 @@ import {
   getData,
   initRefs,
   initHooks,
+  initMocks,
   initMethods,
   handleLink,
   handleEvent
@@ -38,6 +39,7 @@ export function createPage (vueOptions) {
       }
 
       initRefs(this.$vm)
+      initMocks(this.$vm)
 
       this.$vm.$mount()
       this.$vm.__call_hook('onLoad', args)

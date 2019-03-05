@@ -18,6 +18,10 @@ const PLATFORMS = {
   'mp-toutiao': {
     prefix: 'tt',
     title: '头条小程序'
+  },
+  'app-plus': {
+    prefix: 'wx',
+    title: 'app-plus'
   }
 }
 

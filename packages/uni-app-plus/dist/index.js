@@ -147,7 +147,7 @@ function processArgs (methodName, fromArgs, argsOption = {}, returnValue = {}, k
           keyOption = keyOption(fromArgs[key], fromArgs, toArgs);
         }
         if (!keyOption) { // 不支持的参数
-          console.warn(`微信小程序 ${methodName}暂不支持${key}`);
+          console.warn(`app-plus ${methodName}暂不支持${key}`);
         } else if (isStr(keyOption)) { // 重写参数 key
           toArgs[keyOption] = fromArgs[key];
         } else if (isPlainObject(keyOption)) { // {name:newName,value:value}可重新指定参数 key:value
@@ -180,7 +180,7 @@ function wrapper (methodName, method) {
     const protocol = protocols[methodName];
     if (!protocol) { // 暂不支持的 api
       return function () {
-        console.error(`微信小程序 暂不支持${methodName}`);
+        console.error(`app-plus 暂不支持${methodName}`);
       }
     }
     return function (arg1, arg2) { // 目前 api 最多两个参数
@@ -228,12 +228,7 @@ TODOS.forEach(function (name) {
   todoApis[name] = createTodoApi(name);
 });
 
-var providers = {
-  oauth: ['weixin'],
-  share: ['weixin'],
-  payment: ['wxpay'],
-  push: ['weixin']
-};
+var providers = {};
 
 function getProvider ({
   service,
@@ -262,10 +257,13 @@ var extraApi = /*#__PURE__*/Object.freeze({
   getProvider: getProvider
 });
 
-
+function requireNativePlugin (pluginName) {
+  /* eslint-disable no-undef */
+  return __requireNativePlugin__(pluginName)
+}
 
 var api = /*#__PURE__*/Object.freeze({
-
+  requireNativePlugin: requireNativePlugin
 });
 
 const MOCKS = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__'];

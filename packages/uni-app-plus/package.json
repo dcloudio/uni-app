@@ -1,7 +1,7 @@
 {
-	"name": "@dcloudio/uni-mp-weixin",
-	"version": "0.0.7",
-	"description": "uni-app mp-weixin",
+	"name": "@dcloudio/uni-app-plus",
+	"version": "0.0.1",
+	"description": "uni-app app-plus",
 	"main": "dist/index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
