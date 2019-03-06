@@ -404,16 +404,16 @@ function initRefs (vm) {
       const $refs = Object.create(null);
       const components = mpInstance.selectAllComponents('.__ref__');
       components.forEach(component => {
-        const id = component.id;
-        $refs[id] = component.$vm;
+        const ref = component.dataset.ref;
+        $refs[ref] = component.$vm;
       });
       const forComponents = mpInstance.selectAllComponents('.__ref-in-for__');
       forComponents.forEach(component => {
-        const id = component.id;
-        if (!$refs[id]) {
-          $refs[id] = [];
+        const ref = component.dataset.ref;
+        if (!$refs[ref]) {
+          $refs[ref] = [];
         }
-        $refs[id].push(component.$vm);
+        $refs[ref].push(component.$vm);
       });
       return $refs
     }
