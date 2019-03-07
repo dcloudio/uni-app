@@ -12,14 +12,6 @@ export default {
       default: ''
     }
   },
-  watch: {
-    itemId (val, oldVal) {
-      this._itemIdUpdated(val, oldVal)
-    }
-  },
-  created () {
-    this._itemIdUpdated(this.itemId, this.itemId)
-  },
   mounted: function () {
     var $el = this.$el
     $el.style.position = 'absolute'
@@ -30,14 +22,6 @@ export default {
       callbacks.forEach(callback => {
         callback()
       })
-    }
-  },
-  methods: {
-    _itemIdUpdated (val, oldVal) {
-      var $parent = this.$parent
-      if ($parent && typeof $parent._itemIdUpdated === 'function') {
-        $parent._itemIdUpdated(this, val, oldVal)
-      }
     }
   }
 }

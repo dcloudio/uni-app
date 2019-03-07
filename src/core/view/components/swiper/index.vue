@@ -69,8 +69,7 @@ export default {
       currentItemIdSync: this.currentItemId || '',
       userTracking: false,
       currentChangeSource: '',
-      items: [],
-      itemIdItemMap: {}
+      items: []
     }
   },
   computed: {
@@ -143,9 +142,6 @@ export default {
     displayMultipleItemsNumber () {
       this._resetLayout()
     }
-    // itemIdItemMap () {
-    //   this._resetLayout()
-    // }
   },
   created () {
     this._invalid = true
@@ -172,14 +168,6 @@ export default {
     this._cancelSchedule()
   },
   methods: {
-    _itemIdUpdated (item, val, oldVal) {
-      if (oldVal) {
-        this.$set(this.itemIdItemMap, oldVal, null)
-      }
-      if (val) {
-        this.$set(this.itemIdItemMap, val, item.$vnode)
-      }
-    },
     _inintAutoplay (enable) {
       if (enable) {
         this._scheduleAutoplay()
@@ -191,7 +179,16 @@ export default {
      * 页面变更检查和同步
      */
     _currentCheck () {
-      var current = this.items.indexOf(this.itemIdItemMap[this.currentItemId])
+      var current = -1
+      if (this.currentItemId) {
+        for (let i = 0, items = this.items; i < items.length; i++) {
+          let componentInstance = items[i].componentInstance
+          if (componentInstance && componentInstance.itemId === this.currentItemId) {
+            current = i
+            break
+          }
+        }
+      }
       if (current < 0) {
         current = Math.round(this.current) || 0
       }
