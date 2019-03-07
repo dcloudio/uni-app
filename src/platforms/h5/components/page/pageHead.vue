@@ -47,7 +47,7 @@
       </div>
       <div
         v-if="searchInput"
-        :style="{'background-color':searchInput.backgroundColor}"
+        :style="{'border-radius':searchInput.borderRadius,'background-color':searchInput.backgroundColor}"
         class="uni-page-head-search"
       >
         <div
@@ -60,7 +60,7 @@
           v-model="text"
           :focus="searchInput.autoFocus"
           :disabled="searchInput.disabled"
-          :style="{'border-radius':searchInput.borderRadius,color:searchInput.color}"
+          :style="{color:searchInput.color}"
           :placeholder-style="`color:${searchInput.placeholderColor}`"
           class="uni-page-head-search-input"
           confirm-type="search"
@@ -116,16 +116,6 @@ uni-page-head .uni-page-head {
   transition-property: all;
 }
 
-uni-page-head .uni-page-head.uni-page-head-transparent .uni-page-head-hd > div,
-uni-page-head .uni-page-head.uni-page-head-transparent .uni-page-head-ft > div {
-  display: flex;
-  align-items: center;
-  width: 32px;
-  height: 32px;
-  background: #999;
-  border-radius: 50%;
-}
-
 uni-page-head .uni-page-head.uni-page-head-transparent .uni-page-head-ft > div {
   justify-content: center;
 }
@@ -156,17 +146,23 @@ uni-page-head .uni-page-head-bd {
 .uni-page-head-btn {
   position: relative;
   width: auto;
-  word-break: keep-all;
   margin: 0 2px;
   word-break: keep-all;
+  white-space: pre;
 }
 
-.uni-page-head-transparent .uni-page-head-btn{
-  background-color: rgba(153, 153, 153, 1);
+.uni-page-head-transparent .uni-page-head-btn {
+  display: flex;
+  align-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 uni-page-head .uni-btn-icon {
   overflow: hidden;
+  min-width: 1em;
 }
 
 .uni-page-head-btn-red-dot::after {
@@ -181,7 +177,7 @@ uni-page-head .uni-btn-icon {
   line-height: 18px;
   border-radius: 18px;
   overflow: hidden;
-  transform: scale(0.5) translate(40%,-40%);
+  transform: scale(0.5) translate(40%, -40%);
   transform-origin: 100% 0;
 }
 
@@ -192,10 +188,10 @@ uni-page-head .uni-btn-icon {
   max-width: 42px;
   text-align: center;
   padding: 0 3px;
-  transform: scale(0.7) translate(40%,-40%);
+  transform: scale(0.7) translate(40%, -40%);
 }
 
-.uni-page-head-btn-select>.uni-btn-icon::after{
+.uni-page-head-btn-select > .uni-btn-icon::after {
   display: inline-block;
   font-family: "unibtn";
   content: "\e601";
@@ -209,13 +205,14 @@ uni-page-head .uni-btn-icon {
   flex: 1;
   margin: 0 2px;
   line-height: 30px;
-  font-size: 16px;
+  font-size: 15px;
 }
 
 .uni-page-head-search-input {
   width: 100%;
   height: 100%;
   padding-left: 34px;
+  text-align: left;
 }
 
 .uni-page-head-search-placeholder {
@@ -225,6 +222,7 @@ uni-page-head .uni-btn-icon {
   padding-left: 34px;
   overflow: hidden;
   word-break: keep-all;
+  white-space: pre;
 }
 
 .uni-page-head-search-placeholder-right {
@@ -355,16 +353,29 @@ export default {
   computed: {
     btns () {
       const btns = []
+      const fonts = {}
       if (this.buttons.length) {
         this.buttons.forEach(button => {
           let btn = Object.assign({}, button)
           if (btn.fontSrc && !btn.fontFamily) {
-            btn.fontSrc = getRealPath(btn.fontSrc)
-            const fontFamily = btn.fontSrc.substr(btn.fontSrc.lastIndexOf('/') + 1).replace(/\./g, '-')
+            let fontSrc = btn.fontSrc = getRealPath(btn.fontSrc)
+            let fontFamily
+            if (fontSrc in fonts) {
+              fontFamily = fonts[fontSrc]
+            } else {
+              fontFamily = `font${Date.now()}`
+              fonts[fontSrc] = fontFamily
+              const cssText = `@font-face{font-family: "${fontFamily}";src: url("${fontSrc}") format("truetype")}`
+              appendCss(cssText, 'uni-btn-font-' + fontFamily)
+            }
             btn.fontFamily = fontFamily
           }
           btn.color = this.type === 'transparent' ? '#fff' : (btn.color || this.textColor)
-          btn.fontSize = btn.fontSize || (this.type === 'default' ? '27px' : '22px')
+          let fontSize = btn.fontSize || (this.type === 'transparent' || btn.text.indexOf('\\u') >= 0 ? '22px' : '27px')
+          if (/\d$/.test(fontSize)) {
+            fontSize += 'px'
+          }
+          btn.fontSize = fontSize
           btn.fontWeight = btn.fontWeight || 'normal'
           btns.push(btn)
         })
@@ -412,12 +423,6 @@ export default {
     },
     _formatBtnFontText (btn) {
       if (btn.fontSrc && btn.fontFamily) {
-        const cssText =
-          `@font-face{
-              font-family: "${btn.fontFamily}";
-              src: url("${btn.fontSrc}") format("truetype")
-            }`
-        appendCss(cssText, 'uni-btn-font-' + btn.fontFamily)
         return btn.text.replace('\\u', '&#x')
       } else if (FONTS[btn.type]) {
         return FONTS[btn.type]
