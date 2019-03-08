@@ -371,7 +371,7 @@ export default {
             btn.fontFamily = fontFamily
           }
           btn.color = this.type === 'transparent' ? '#fff' : (btn.color || this.textColor)
-          let fontSize = btn.fontSize || (this.type === 'transparent' || btn.text.indexOf('\\u') >= 0 ? '22px' : '27px')
+          let fontSize = btn.fontSize || (this.type === 'transparent' || /\\u/.test(btn.text) ? '22px' : '27px')
           if (/\d$/.test(fontSize)) {
             fontSize += 'px'
           }
