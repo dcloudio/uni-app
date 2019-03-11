@@ -36,7 +36,7 @@ function setUrl (url, data) {
       query[encodeURIComponent(key)] = encodeURIComponent(data[key])
     }
   }
-  query = Object.keys(query).map(item => `${item}=${query[item]}`).join('$')
+  query = Object.keys(query).map(item => `${item}=${query[item]}`).join('&')
   return url + (query ? '?' + query : '') + (hash ? '#' + hash : '')
 }
 /**
