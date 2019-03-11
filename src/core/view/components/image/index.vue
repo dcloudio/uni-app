@@ -1,6 +1,6 @@
 <template>
   <uni-image v-on="$listeners">
-    <div :style="modeStyle" />
+    <div ref="content" />
     <img :src="realImagePath">
     <v-uni-resize-sensor
       v-if="mode === 'widthFix'"
@@ -40,8 +40,42 @@ export default {
     },
     realImagePath () {
       return this.$getRealPath(this.src)
+    }
+  },
+  watch: {
+    src (newValue, oldValue) {
+      this._loadImage()
     },
-    modeStyle () {
+    mode (newValue, oldValue) {
+      if (oldValue === 'widthFix') {
+        this.$el.style.height = this.availHeight
+        this.sizeFixed = false
+      }
+      if (newValue === 'widthFix' && this.ratio) {
+        this._fixSize()
+      }
+      this._computeModeStyle()
+    }
+  },
+  mounted () {
+    this._computeModeStyle()
+    this.availHeight = this.$el.style.height || ''
+    this._loadImage()
+  },
+  methods: {
+    _resize () {
+      if (this.mode === 'widthFix' && !this.sizeFixed) {
+        this._fixSize()
+      }
+    },
+    _fixSize () {
+      const elWidth = this._getWidth()
+      if (elWidth) {
+        this.$el.style.height = elWidth / this.ratio + 'px'
+        this.sizeFixed = true
+      }
+    },
+    _computeModeStyle () {
       let size = 'auto'
       let position = ''
       let repeat = 'no-repeat'
@@ -56,7 +90,7 @@ export default {
           position = 'center center'
           break
         case 'widthFix':
-          size = '100% 100%;'
+          size = '100% 100%'
           break
         case 'top':
           position = 'center top'
@@ -90,40 +124,10 @@ export default {
           position = '0% 0%'
           break
       }
-
-      return `background-image: url("${this.$getRealPath(this.src)}"); background-size:${size};background-position:${position};background-repeat:${repeat};`
-    }
-  },
-  watch: {
-    src (newValue, oldValue) {
-      this._loadImage()
-    },
-    mode (newValue, oldValue) {
-      if (oldValue === 'widthFix') {
-        this.$el.style.height = this.availHeight
-        this.sizeFixed = false
-      }
-      if (newValue === 'widthFix' && this.ratio) {
-        this._fixSize()
-      }
-    }
-  },
-  mounted () {
-    this.availHeight = this.$el.style.height || ''
-    this._loadImage()
-  },
-  methods: {
-    _resize () {
-      if (this.mode === 'widthFix' && !this.sizeFixed) {
-        this._fixSize()
-      }
-    },
-    _fixSize () {
-      const elWidth = this._getWidth()
-      if (elWidth) {
-        this.$el.style.height = elWidth / this.ratio + 'px'
-        this.sizeFixed = true
-      }
+      this.$refs.content.style.backgroundImage = `url(${this.realImagePath})`
+      this.$refs.content.style.backgroundPosition = position
+      this.$refs.content.style.backgroundSize = size
+      this.$refs.content.style.backgroundRepeat = repeat
     },
     _loadImage () {
       const _self = this
