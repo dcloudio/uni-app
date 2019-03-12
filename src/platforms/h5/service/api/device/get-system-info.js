@@ -20,7 +20,7 @@ export function getSystemInfoSync () {
   var screenWidth = screen.width
   var screenHeight = screen.height
   var language = navigator.language
-  var statusbarHeight = 0
+  var statusBarHeight = 0
   var osname
   var osversion
   var model
@@ -86,7 +86,7 @@ export function getSystemInfoSync () {
     screenWidth,
     screenHeight,
     language,
-    statusbarHeight,
+    statusBarHeight,
     system,
     platform,
     model
