@@ -43,6 +43,7 @@ export function createPage (vueOptions) {
     },
     onReady () {
       this.$vm._isMounted = true
+      this.$vm.__call_hook('mounted')
       this.$vm.__call_hook('onReady')
     },
     onUnload () {

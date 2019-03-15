@@ -74,7 +74,8 @@ function getNodeInfo (el, fields) {
 }
 
 function getNodesInfo (pageVm, component, selector, single, fields) {
-  const $el = pageVm.$el
+  /* eslint-disable no-mixed-operators */
+  const $el = component && component.$el || pageVm.$el
   if (single) {
     const node = $el && ($el.matches(selector) ? $el : $el.querySelector(selector))
     if (node) {

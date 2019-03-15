@@ -84,7 +84,7 @@ class SelectorQuery {
   }
 
   ['in'] (component) {
-    console.error('Unsupported method：SelectorQuery.in')
+    this._component = component
     return this
   }
 
