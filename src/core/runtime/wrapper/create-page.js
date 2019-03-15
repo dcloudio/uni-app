@@ -2,12 +2,10 @@ import Vue from 'vue'
 
 import {
   getData,
-  initRefs,
   initHooks,
-  initMocks,
-  initMethods,
   handleLink,
-  handleEvent
+  handleEvent,
+  baiduPageDestroy
 } from './util'
 
 const hooks = [
@@ -29,17 +27,16 @@ const hooks = [
 export function createPage (vueOptions) {
   vueOptions = vueOptions.default || vueOptions
   const pageOptions = {
-    data: getData(vueOptions.data),
+    data: getData(vueOptions),
     onLoad (args) {
-      this.$vm = new Vue(vueOptions)
-      this.$vm.mpType = 'page'
-      this.$vm.$mp = {
-        data: {},
-        page: this
+      if (__PLATFORM__ === 'mp-baidu') {
+        this.$baiduComponentInstances = Object.create(null)
       }
 
-      initRefs(this.$vm)
-      initMocks(this.$vm)
+      this.$vm = new Vue(Object.assign(vueOptions, {
+        mpType: 'page',
+        mpInstance: this
+      }))
 
       this.$vm.$mount()
       this.$vm.__call_hook('onLoad', args)
@@ -50,15 +47,17 @@ export function createPage (vueOptions) {
     },
     onUnload () {
       this.$vm.__call_hook('onUnload')
-      this.$vm.$destroy()
+      if (__PLATFORM__ === 'mp-baidu') { // 百度组件不会在页面 unload 时触发 detached
+        baiduPageDestroy(this.$vm)
+      } else {
+        this.$vm.$destroy()
+      }
     },
     __e: handleEvent,
     __l: handleLink
   }
 
   initHooks(pageOptions, hooks)
-
-  initMethods(pageOptions, vueOptions)
 
   return Page(pageOptions)
 }

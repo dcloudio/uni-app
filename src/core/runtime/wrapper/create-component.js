@@ -2,13 +2,27 @@ import Vue from 'vue'
 
 import {
   getData,
-  initRefs,
-  initMocks,
-  initMethods,
   handleLink,
   handleEvent,
   getProperties
 } from './util'
+
+function initVueComponent (mpInstace, VueComponent) {
+  if (mpInstace.$vm) {
+    return
+  }
+
+  const options = {
+    mpType: 'component',
+    mpInstance: mpInstace,
+    propsData: mpInstace.properties
+  }
+  // 初始化 vue 实例
+  mpInstace.$vm = new VueComponent(options)
+
+  // 初始化渲染数据
+  mpInstace.$vm.$mount()
+}
 
 export function createComponent (vueOptions) {
   vueOptions = vueOptions.default || vueOptions
@@ -22,50 +36,56 @@ export function createComponent (vueOptions) {
       multipleSlots: true,
       addGlobalClass: true
     },
-    data: getData(vueOptions.data),
+    data: getData(vueOptions),
     properties,
-    attached () {
-      // props的处理，一个是直接 与 mp 的 properties 对接，另一个是要做成 reactive，且排除掉 render watch
-      const options = {
-        propsData: this.properties,
-        $component: this
-      }
-      // 初始化 vue 实例
-      this.$vm = new VueComponent(options)
-      this.$vm.mpType = 'component'
-      this.$vm.$mp = {
-        data: {},
-        component: this
-      }
+    lifetimes: {
+      attached () {
+        initVueComponent(this, VueComponent)
+      },
+      ready () {
+        initVueComponent(this, VueComponent) // 目前发现部分情况小程序 attached 不触发
 
-      initRefs(this.$vm)
-      initMocks(this.$vm)
+        if (__PLATFORM__ === 'mp-baidu') {
+          const baiduComponentInstances = this.pageinstance.$baiduComponentInstances
 
-      // 初始化渲染数据
-      this.$vm.$mount()
-    },
-    ready () {
-      this.triggerEvent('__l', this.$vm)
-
-      const eventId = this.dataset.eventId
-      if (eventId) {
-        const listeners = this.$vm.$parent.$mp.listeners
-        if (listeners) {
-          const listenerOpts = listeners[eventId]
-          Object.keys(listenerOpts).forEach(eventType => {
-            listenerOpts[eventType].forEach(handler => {
-              this.$vm[handler.once ? '$once' : '$on'](eventType, handler)
-            })
-          })
+          baiduComponentInstances[this.id] = this
+          if (this.ownerId) { // 组件嵌组件
+            const parentBaiduComponentInstance = baiduComponentInstances[this.ownerId]
+            if (parentBaiduComponentInstance) {
+              this.$vm.$parent = parentBaiduComponentInstance.$vm
+            } else {
+              console.error(`查找父组件失败${this.ownerId}`)
+            }
+          } else { // 页面直属组件
+            this.$vm.$parent = this.pageinstance.$vm
+          }
+        } else {
+          this.triggerEvent('__l', this.$vm) // TODO 百度仅能传递 json 对象
         }
-      }
 
-      this.$vm._isMounted = true
-      this.$vm.__call_hook('mounted')
-      this.$vm.__call_hook('onReady')
-    },
-    detached () {
-      this.$vm.$destroy()
+        const eventId = this.dataset.eventId
+        if (eventId) {
+          const listeners = this.$vm.$parent.$mp.listeners
+          if (listeners) {
+            const listenerOpts = listeners[eventId]
+            Object.keys(listenerOpts).forEach(eventType => {
+              listenerOpts[eventType].forEach(handler => {
+                this.$vm[handler.once ? '$once' : '$on'](eventType, handler)
+              })
+            })
+          }
+        }
+
+        this.$vm._isMounted = true
+        this.$vm.__call_hook('mounted')
+        this.$vm.__call_hook('onReady')
+      },
+      detached () {
+        if (__PLATFORM__ === 'mp-baidu') {
+          delete this.pageinstance.$baiduComponentInstances[this.id]
+        }
+        this.$vm.$destroy()
+      }
     },
     pageLifetimes: {
       show (args) {
@@ -83,8 +103,6 @@ export function createComponent (vueOptions) {
       __l: handleLink
     }
   }
-
-  initMethods(componentOptions.methods, vueOptions)
 
   return Component(componentOptions)
 }
