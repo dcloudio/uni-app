@@ -319,7 +319,21 @@ function createObserver (name) {
 }
 
 function getProperties (props) {
-  const properties = {};
+  const properties = {
+    vueSlots: { // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
+      type: null,
+      value: [],
+      observer: function (newVal, oldVal) {
+        const $slots = Object.create(null);
+        newVal.forEach(slotName => {
+          $slots[slotName] = true;
+        });
+        this.setData({
+          $slots
+        });
+      }
+    }
+  };
   if (Array.isArray(props)) { // ['title']
     props.forEach(key => {
       properties[key] = {
@@ -421,10 +435,6 @@ function handleEvent (event) {
   });
 }
 
-function handleLink (event) {
-  event.detail.$parent = this.$vm;
-}
-
 function initRefs (vm) {
   const mpInstance = vm.$mp[vm.mpType];
   Object.defineProperty(vm, '$refs', {
@@ -444,20 +454,6 @@ function initRefs (vm) {
         $refs[ref].push(component.$vm);
       });
       return $refs
-    }
-  });
-}
-
-function initChildren (vm) {
-  const mpInstance = vm.$mp[vm.mpType];
-  Object.defineProperty(vm, '$children', {
-    get () {
-      const $children = [];
-      const components = mpInstance.selectAllComponents('.vue-com');
-      components.forEach(component => {
-        $children.push(component.$vm);
-      });
-      return $children
     }
   });
 }
@@ -488,7 +484,6 @@ function createApp (vueOptions) {
       if (this.mpType !== 'app') {
         initRefs(this);
         initMocks(this);
-        initChildren(this);
       }
     }
   });
@@ -510,6 +505,22 @@ function createApp (vueOptions) {
   App(appOptions);
 
   return vueOptions
+}
+
+function triggerLink (mpInstance) {
+  mpInstance.triggerEvent('__l', mpInstance.$vm, {
+    bubbles: true,
+    composed: true
+  });
+}
+
+function handleLink (event) {
+  if (!event.detail.$parent) {
+    event.detail.$parent = this.$vm;
+    event.detail.$parent.$children.push(event.detail);
+
+    event.detail.$root = this.$vm.$root;
+  }
 }
 
 const hooks$1 = [
@@ -575,6 +586,16 @@ function initVueComponent (mpInstace, VueComponent) {
   // 初始化 vue 实例
   mpInstace.$vm = new VueComponent(options);
 
+  // 处理$slots,$scopedSlots（暂不支持动态变化$slots）
+  const vueSlots = mpInstace.properties.vueSlots;
+  if (Array.isArray(vueSlots) && vueSlots.length) {
+    const $slots = Object.create(null);
+    vueSlots.forEach(slotName => {
+      $slots[slotName] = true;
+    });
+    mpInstace.$vm.$scopedSlots = mpInstace.$vm.$slots = $slots;
+  }
+
   // 初始化渲染数据
   mpInstace.$vm.$mount();
 }
@@ -600,9 +621,7 @@ function createComponent (vueOptions) {
       ready () {
         initVueComponent(this, VueComponent); // 目前发现部分情况小程序 attached 不触发
 
-        {
-          this.triggerEvent('__l', this.$vm); // TODO 百度仅能传递 json 对象
-        }
+        triggerLink(this);
 
         const eventId = this.dataset.eventId;
         if (eventId) {

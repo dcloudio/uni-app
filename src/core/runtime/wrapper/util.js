@@ -56,7 +56,21 @@ function createObserver (name) {
 }
 
 export function getProperties (props) {
-  const properties = {}
+  const properties = {
+    vueSlots: { // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
+      type: null,
+      value: [],
+      observer: function (newVal, oldVal) {
+        const $slots = Object.create(null)
+        newVal.forEach(slotName => {
+          $slots[slotName] = true
+        })
+        this.setData({
+          $slots
+        })
+      }
+    }
+  }
   if (Array.isArray(props)) { // ['title']
     props.forEach(key => {
       properties[key] = {
@@ -164,10 +178,6 @@ export function handleEvent (event) {
   })
 }
 
-export function handleLink (event) {
-  event.detail.$parent = this.$vm
-}
-
 export function initRefs (vm) {
   const mpInstance = vm.$mp[vm.mpType]
   Object.defineProperty(vm, '$refs', {
@@ -187,20 +197,6 @@ export function initRefs (vm) {
         $refs[ref].push(component.$vm)
       })
       return $refs
-    }
-  })
-}
-
-export function initChildren (vm) {
-  const mpInstance = vm.$mp[vm.mpType]
-  Object.defineProperty(vm, '$children', {
-    get () {
-      const $children = []
-      const components = mpInstance.selectAllComponents('.vue-com')
-      components.forEach(component => {
-        $children.push(component.$vm)
-      })
-      return $children
     }
   })
 }

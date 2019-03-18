@@ -1,9 +1,12 @@
 import Vue from 'vue'
 
 import {
+  handleLink
+} from 'uni-platform/runtime/wrapper/index'
+
+import {
   getData,
   initHooks,
-  handleLink,
   handleEvent,
   baiduPageDestroy
 } from './util'

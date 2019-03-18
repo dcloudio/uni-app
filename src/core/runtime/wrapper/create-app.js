@@ -3,8 +3,7 @@ import Vue from 'vue'
 import {
   initRefs,
   initHooks,
-  initMocks,
-  initChildren
+  initMocks
 } from './util'
 
 const hooks = [
@@ -33,7 +32,6 @@ export function createApp (vueOptions) {
       if (this.mpType !== 'app') {
         initRefs(this)
         initMocks(this)
-        initChildren(this)
       }
     }
   })

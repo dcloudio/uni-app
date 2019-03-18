@@ -1,8 +1,12 @@
 import Vue from 'vue'
 
 import {
-  getData,
   handleLink,
+  triggerLink
+} from 'uni-platform/runtime/wrapper/index'
+
+import {
+  getData,
   handleEvent,
   getProperties
 } from './util'
@@ -19,6 +23,16 @@ function initVueComponent (mpInstace, VueComponent) {
   }
   // 初始化 vue 实例
   mpInstace.$vm = new VueComponent(options)
+
+  // 处理$slots,$scopedSlots（暂不支持动态变化$slots）
+  const vueSlots = mpInstace.properties.vueSlots
+  if (Array.isArray(vueSlots) && vueSlots.length) {
+    const $slots = Object.create(null)
+    vueSlots.forEach(slotName => {
+      $slots[slotName] = true
+    })
+    mpInstace.$vm.$scopedSlots = mpInstace.$vm.$slots = $slots
+  }
 
   // 初始化渲染数据
   mpInstace.$vm.$mount()
@@ -45,23 +59,7 @@ export function createComponent (vueOptions) {
       ready () {
         initVueComponent(this, VueComponent) // 目前发现部分情况小程序 attached 不触发
 
-        if (__PLATFORM__ === 'mp-baidu') {
-          const baiduComponentInstances = this.pageinstance.$baiduComponentInstances
-
-          baiduComponentInstances[this.id] = this
-          if (this.ownerId) { // 组件嵌组件
-            const parentBaiduComponentInstance = baiduComponentInstances[this.ownerId]
-            if (parentBaiduComponentInstance) {
-              this.$vm.$parent = parentBaiduComponentInstance.$vm
-            } else {
-              console.error(`查找父组件失败${this.ownerId}`)
-            }
-          } else { // 页面直属组件
-            this.$vm.$parent = this.pageinstance.$vm
-          }
-        } else {
-          this.triggerEvent('__l', this.$vm) // TODO 百度仅能传递 json 对象
-        }
+        triggerLink(this)
 
         const eventId = this.dataset.eventId
         if (eventId) {
