@@ -461,9 +461,20 @@ function getData (vueOptions) {
         console.warn('根据 Vue 的 data 函数初始化小程序 data 失败，请尽量确保 data 函数中不访问 vm 对象，否则可能影响首次数据渲染速度。', data);
       }
     }
+  } else {
+    try {
+      // 对 data 格式化
+      data = JSON.parse(JSON.stringify(data));
+    } catch (e) {}
   }
 
-  return Object.assign(data, methods)
+  Object.keys(methods).forEach(methodName => {
+    if (!hasOwn(data, methodName)) {
+      data[methodName] = methods[methodName];
+    }
+  });
+
+  return data
 }
 
 const PROP_TYPES = [String, Number, Boolean, Object, Array, null];
