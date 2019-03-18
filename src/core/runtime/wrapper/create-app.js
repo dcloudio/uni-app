@@ -33,6 +33,10 @@ export function createApp (vueOptions) {
         initRefs(this)
         initMocks(this)
       }
+    },
+    created () { // 处理 injections
+      this.__init_injections(this)
+      this.__init_provide(this)
     }
   })
 

@@ -11,16 +11,16 @@ import {
   getProperties
 } from './util'
 
-function initVueComponent (mpInstace, VueComponent) {
+function initVueComponent (mpInstace, VueComponent, extraOptions = {}) {
   if (mpInstace.$vm) {
     return
   }
 
-  const options = {
+  const options = Object.assign({
     mpType: 'component',
     mpInstance: mpInstace,
     propsData: mpInstace.properties
-  }
+  }, extraOptions)
   // 初始化 vue 实例
   mpInstace.$vm = new VueComponent(options)
 
@@ -33,9 +33,6 @@ function initVueComponent (mpInstace, VueComponent) {
     })
     mpInstace.$vm.$scopedSlots = mpInstace.$vm.$slots = $slots
   }
-
-  // 初始化渲染数据
-  mpInstace.$vm.$mount()
 }
 
 export function createComponent (vueOptions) {
@@ -58,22 +55,11 @@ export function createComponent (vueOptions) {
       },
       ready () {
         initVueComponent(this, VueComponent) // 目前发现部分情况小程序 attached 不触发
+        triggerLink(this) // 处理 parent,children
 
-        triggerLink(this)
-
-        const eventId = this.dataset.eventId
-        if (eventId) {
-          const listeners = this.$vm.$parent.$mp.listeners
-          if (listeners) {
-            const listenerOpts = listeners[eventId]
-            Object.keys(listenerOpts).forEach(eventType => {
-              listenerOpts[eventType].forEach(handler => {
-                this.$vm[handler.once ? '$once' : '$on'](eventType, handler)
-              })
-            })
-          }
-        }
-
+        // 初始化渲染数据(需要等 parent，inject 都初始化完成，否则可以放到 attached 里边初始化渲染)
+        this.$vm.__call_hook('created')
+        this.$vm.$mount()
         this.$vm._isMounted = true
         this.$vm.__call_hook('mounted')
         this.$vm.__call_hook('onReady')
@@ -90,10 +76,10 @@ export function createComponent (vueOptions) {
         this.$vm.__call_hook('onPageShow', args)
       },
       hide () {
-        this.$vm.__call_hook('onPageHide')
+        this.$vm && this.$vm.__call_hook('onPageHide')
       },
       resize (size) {
-        this.$vm.__call_hook('onPageResize', size)
+        this.$vm && this.$vm.__call_hook('onPageResize', size)
       }
     },
     methods: {

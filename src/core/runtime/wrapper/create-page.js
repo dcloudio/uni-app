@@ -41,7 +41,10 @@ export function createPage (vueOptions) {
         mpInstance: this
       }))
 
+      this.$vm.__call_hook('created')
+
       this.$vm.$mount()
+
       this.$vm.__call_hook('onLoad', args)
     },
     onReady () {
