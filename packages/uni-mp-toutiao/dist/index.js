@@ -739,10 +739,8 @@ function createPage (vueOptions) {
       }));
 
       this.$vm.__call_hook('created');
-
+      this.$vm.__call_hook('onLoad', args); // 开发者一般可能会在 onLoad 时赋值，所以提前到 mount 之前
       this.$vm.$mount();
-
-      this.$vm.__call_hook('onLoad', args);
     },
     onReady () {
       this.$vm._isMounted = true;
