@@ -301,9 +301,20 @@ function getData (vueOptions) {
         console.warn('根据 Vue 的 data 函数初始化小程序 data 失败，请尽量确保 data 函数中不访问 vm 对象，否则可能影响首次数据渲染速度。', data);
       }
     }
+  } else {
+    try {
+      // 对 data 格式化
+      data = JSON.parse(JSON.stringify(data));
+    } catch (e) {}
   }
 
-  return Object.assign(data, methods)
+  Object.keys(methods).forEach(methodName => {
+    if (!hasOwn(data, methodName)) {
+      data[methodName] = methods[methodName];
+    }
+  });
+
+  return data
 }
 
 const PROP_TYPES = [String, Number, Boolean, Object, Array, null];
@@ -317,7 +328,21 @@ function createObserver (name) {
 }
 
 function getProperties (props) {
-  const properties = {};
+  const properties = {
+    vueSlots: { // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
+      type: null,
+      value: [],
+      observer: function (newVal, oldVal) {
+        const $slots = Object.create(null);
+        newVal.forEach(slotName => {
+          $slots[slotName] = true;
+        });
+        this.setData({
+          $slots
+        });
+      }
+    }
+  };
   if (Array.isArray(props)) { // ['title']
     props.forEach(key => {
       properties[key] = {
@@ -419,10 +444,6 @@ function handleEvent (event) {
   });
 }
 
-function handleLink (event) {
-  event.detail.$parent = this.$vm;
-}
-
 function initRefs (vm) {
   const mpInstance = vm.$mp[vm.mpType];
   Object.defineProperty(vm, '$refs', {
@@ -442,20 +463,6 @@ function initRefs (vm) {
         $refs[ref].push(component.$vm);
       });
       return $refs
-    }
-  });
-}
-
-function initChildren (vm) {
-  const mpInstance = vm.$mp[vm.mpType];
-  Object.defineProperty(vm, '$children', {
-    get () {
-      const $children = [];
-      const components = mpInstance.selectAllComponents('.vue-com');
-      components.forEach(component => {
-        $children.push(component.$vm);
-      });
-      return $children
     }
   });
 }
@@ -486,8 +493,11 @@ function createApp (vueOptions) {
       if (this.mpType !== 'app') {
         initRefs(this);
         initMocks(this);
-        initChildren(this);
       }
+    },
+    created () { // 处理 injections
+      this.__init_injections(this);
+      this.__init_provide(this);
     }
   });
 
@@ -508,6 +518,28 @@ function createApp (vueOptions) {
   App(appOptions);
 
   return vueOptions
+}
+
+function triggerLink (mpInstance, vueOptions) {
+  mpInstance.triggerEvent('__l', mpInstance.$vm || vueOptions, {
+    bubbles: true,
+    composed: true
+  });
+}
+
+function handleLink (event) {
+  if (event.detail.$mp) { // vm
+    if (!event.detail.$parent) {
+      event.detail.$parent = this.$vm;
+      event.detail.$parent.$children.push(event.detail);
+
+      event.detail.$root = this.$vm.$root;
+    }
+  } else { // vueOptions
+    if (!event.detail.parent) {
+      event.detail.parent = this.$vm;
+    }
+  }
 }
 
 const hooks$1 = [
@@ -537,8 +569,9 @@ function createPage (vueOptions) {
         mpInstance: this
       }));
 
+      this.$vm.__call_hook('created');
+      this.$vm.__call_hook('onLoad', args); // 开发者一般可能会在 onLoad 时赋值，所以提前到 mount 之前
       this.$vm.$mount();
-      this.$vm.__call_hook('onLoad', args);
     },
     onReady () {
       this.$vm._isMounted = true;
@@ -560,21 +593,28 @@ function createPage (vueOptions) {
   return Page(pageOptions)
 }
 
-function initVueComponent (mpInstace, VueComponent) {
+function initVueComponent (mpInstace, VueComponent, extraOptions = {}) {
   if (mpInstace.$vm) {
     return
   }
 
-  const options = {
+  const options = Object.assign({
     mpType: 'component',
     mpInstance: mpInstace,
     propsData: mpInstace.properties
-  };
+  }, extraOptions);
   // 初始化 vue 实例
   mpInstace.$vm = new VueComponent(options);
 
-  // 初始化渲染数据
-  mpInstace.$vm.$mount();
+  // 处理$slots,$scopedSlots（暂不支持动态变化$slots）
+  const vueSlots = mpInstace.properties.vueSlots;
+  if (Array.isArray(vueSlots) && vueSlots.length) {
+    const $slots = Object.create(null);
+    vueSlots.forEach(slotName => {
+      $slots[slotName] = true;
+    });
+    mpInstace.$vm.$scopedSlots = mpInstace.$vm.$slots = $slots;
+  }
 }
 
 function createComponent (vueOptions) {
@@ -597,24 +637,11 @@ function createComponent (vueOptions) {
       },
       ready () {
         initVueComponent(this, VueComponent); // 目前发现部分情况小程序 attached 不触发
+        triggerLink(this); // 处理 parent,children
 
-        {
-          this.triggerEvent('__l', this.$vm); // TODO 百度仅能传递 json 对象
-        }
-
-        const eventId = this.dataset.eventId;
-        if (eventId) {
-          const listeners = this.$vm.$parent.$mp.listeners;
-          if (listeners) {
-            const listenerOpts = listeners[eventId];
-            Object.keys(listenerOpts).forEach(eventType => {
-              listenerOpts[eventType].forEach(handler => {
-                this.$vm[handler.once ? '$once' : '$on'](eventType, handler);
-              });
-            });
-          }
-        }
-
+        // 初始化渲染数据(需要等 parent，inject 都初始化完成，否则可以放到 attached 里边初始化渲染)
+        this.$vm.__call_hook('created');
+        this.$vm.$mount();
         this.$vm._isMounted = true;
         this.$vm.__call_hook('mounted');
         this.$vm.__call_hook('onReady');
@@ -628,10 +655,10 @@ function createComponent (vueOptions) {
         this.$vm.__call_hook('onPageShow', args);
       },
       hide () {
-        this.$vm.__call_hook('onPageHide');
+        this.$vm && this.$vm.__call_hook('onPageHide');
       },
       resize (size) {
-        this.$vm.__call_hook('onPageResize', size);
+        this.$vm && this.$vm.__call_hook('onPageResize', size);
       }
     },
     methods: {
