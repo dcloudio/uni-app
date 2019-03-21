@@ -33,6 +33,9 @@ function initVueComponent (mpInstace, VueComponent, extraOptions = {}) {
     })
     mpInstace.$vm.$scopedSlots = mpInstace.$vm.$slots = $slots
   }
+  // 性能优先，mount 提前到 attached 中，保证组件首次渲染数据被合并
+  // 导致与标准 Vue 的差异，data 和 computed 中不能使用$parent，provide等组件属性
+  mpInstace.$vm.$mount()
 }
 
 export function createComponent (vueOptions) {
@@ -57,9 +60,9 @@ export function createComponent (vueOptions) {
         initVueComponent(this, VueComponent) // 目前发现部分情况小程序 attached 不触发
         triggerLink(this) // 处理 parent,children
 
-        // 初始化渲染数据(需要等 parent，inject 都初始化完成，否则可以放到 attached 里边初始化渲染)
+        // 补充生命周期
         this.$vm.__call_hook('created')
-        this.$vm.$mount()
+        this.$vm.__call_hook('beforeMount')
         this.$vm._isMounted = true
         this.$vm.__call_hook('mounted')
         this.$vm.__call_hook('onReady')
