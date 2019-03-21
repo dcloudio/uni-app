@@ -66,7 +66,7 @@
           confirm-type="search"
           @focus="_focus"
           @blur="_blur"
-          @input="_input"
+          @update:value="_input"
         />
       </div>
       <div class="uni-page-head-ft">
@@ -446,9 +446,9 @@ export default {
     _blur () {
       this.focus = false
     },
-    _input () {
+    _input (text) {
       UniServiceJSBridge.emit('onNavigationBarSearchInputChanged', {
-        text: this.text
+        text
       })
     }
   }
