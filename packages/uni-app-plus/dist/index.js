@@ -21,7 +21,7 @@ function hasOwn (obj, key) {
 
 function noop () {}
 
-const SYNC_API_RE = /hideKeyboard|upx2px|canIUse|^create|Sync$|Manager$/;
+const SYNC_API_RE = /requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -228,35 +228,6 @@ TODOS.forEach(function (name) {
   todoApis[name] = createTodoApi(name);
 });
 
-var providers = {};
-
-function getProvider ({
-  service,
-  success,
-  fail,
-  complete
-}) {
-  let res = false;
-  if (providers[service]) {
-    res = {
-      errMsg: 'getProvider:ok',
-      service,
-      provider: providers[service]
-    };
-    isFn(success) && success(res);
-  } else {
-    res = {
-      errMsg: 'getProvider:fail:服务[' + service + ']不存在'
-    };
-    isFn(fail) && fail(res);
-  }
-  isFn(complete) && complete(res);
-}
-
-var extraApi = /*#__PURE__*/Object.freeze({
-  getProvider: getProvider
-});
-
 function requireNativePlugin (pluginName) {
   /* eslint-disable no-undef */
   return __requireNativePlugin__(pluginName)
@@ -289,13 +260,13 @@ function initHooks (mpOptions, hooks, delay = false) {
   });
 }
 
-function getData (vueOptions) {
+function getData (vueOptions, context) {
   let data = vueOptions.data || {};
   const methods = vueOptions.methods || {};
 
   if (typeof data === 'function') {
     try {
-      data = data();
+      data = data.call(context); // 支持 Vue.prototype 上挂的数据
     } catch (e) {
       if (process.env.VUE_APP_DEBUG) {
         console.warn('根据 Vue 的 data 函数初始化小程序 data 失败，请尽量确保 data 函数中不访问 vm 对象，否则可能影响首次数据渲染速度。', data);
@@ -561,7 +532,7 @@ const hooks$1 = [
 function createPage (vueOptions) {
   vueOptions = vueOptions.default || vueOptions;
   const pageOptions = {
-    data: getData(vueOptions),
+    data: getData(vueOptions, Vue.prototype),
     onLoad (args) {
 
       this.$vm = new Vue(Object.assign(vueOptions, {
@@ -570,7 +541,7 @@ function createPage (vueOptions) {
       }));
 
       this.$vm.__call_hook('created');
-      this.$vm.__call_hook('onLoad', args); // 开发者一般可能会在 onLoad 时赋值，所以提前到 mount 之前
+      this.$vm.__call_hook('onLoad', args); // 开发者可能会在 onLoad 时赋值，提前到 mount 之前
       this.$vm.$mount();
     },
     onReady () {
@@ -615,6 +586,9 @@ function initVueComponent (mpInstace, VueComponent, extraOptions = {}) {
     });
     mpInstace.$vm.$scopedSlots = mpInstace.$vm.$slots = $slots;
   }
+  // 性能优先，mount 提前到 attached 中，保证组件首次渲染数据被合并
+  // 导致与标准 Vue 的差异，data 和 computed 中不能使用$parent，provide等组件属性
+  mpInstace.$vm.$mount();
 }
 
 function createComponent (vueOptions) {
@@ -629,7 +603,7 @@ function createComponent (vueOptions) {
       multipleSlots: true,
       addGlobalClass: true
     },
-    data: getData(vueOptions),
+    data: getData(vueOptions, Vue.prototype),
     properties,
     lifetimes: {
       attached () {
@@ -639,9 +613,9 @@ function createComponent (vueOptions) {
         initVueComponent(this, VueComponent); // 目前发现部分情况小程序 attached 不触发
         triggerLink(this); // 处理 parent,children
 
-        // 初始化渲染数据(需要等 parent，inject 都初始化完成，否则可以放到 attached 里边初始化渲染)
+        // 补充生命周期
         this.$vm.__call_hook('created');
-        this.$vm.$mount();
+        this.$vm.__call_hook('beforeMount');
         this.$vm._isMounted = true;
         this.$vm.__call_hook('mounted');
         this.$vm.__call_hook('onReady');
@@ -681,12 +655,6 @@ if (typeof Proxy !== 'undefined') {
       if (api[name]) {
         return promisify(name, api[name])
       }
-      if (extraApi[name]) {
-        return promisify(name, extraApi[name])
-      }
-      if (todoApis[name]) {
-        return promisify(name, todoApis[name])
-      }
       if (!hasOwn(wx, name) && !hasOwn(protocols, name)) {
         return
       }
@@ -695,14 +663,6 @@ if (typeof Proxy !== 'undefined') {
   });
 } else {
   uni.upx2px = upx2px;
-
-  Object.keys(todoApis).forEach(name => {
-    uni[name] = promisify(name, todoApis[name]);
-  });
-
-  Object.keys(extraApi).forEach(name => {
-    uni[name] = promisify(name, todoApis[name]);
-  });
 
   Object.keys(api).forEach(name => {
     uni[name] = promisify(name, api[name]);

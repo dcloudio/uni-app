@@ -50,7 +50,7 @@ export function createComponent (vueOptions) {
       multipleSlots: true,
       addGlobalClass: true
     },
-    data: getData(vueOptions),
+    data: getData(vueOptions, Vue.prototype),
     properties,
     lifetimes: {
       attached () {
