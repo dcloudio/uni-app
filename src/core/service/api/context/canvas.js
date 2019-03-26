@@ -266,6 +266,8 @@ class CanvasContext {
     this.id = id
     this.pageId = pageId
     this.actions = []
+    this.path = []
+    this.subpath = []
     this.currentTransform = []
     this.currentStepAnimates = []
     this.drawingState = []
