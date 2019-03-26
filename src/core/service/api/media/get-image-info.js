@@ -26,5 +26,4 @@ export function getImageInfo ({
     })
   }
   img.src = src
-  console.log(img)
 }
