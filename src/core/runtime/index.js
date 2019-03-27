@@ -31,11 +31,13 @@ if (typeof Proxy !== 'undefined') {
       if (api[name]) {
         return promisify(name, api[name])
       }
-      if (extraApi[name]) {
-        return promisify(name, extraApi[name])
-      }
-      if (todoApi[name]) {
-        return promisify(name, todoApi[name])
+      if (__PLATFORM__ !== 'app-plus') {
+        if (extraApi[name]) {
+          return promisify(name, extraApi[name])
+        }
+        if (todoApi[name]) {
+          return promisify(name, todoApi[name])
+        }
       }
       if (!hasOwn(__GLOBAL__, name) && !hasOwn(protocols, name)) {
         return
@@ -46,13 +48,14 @@ if (typeof Proxy !== 'undefined') {
 } else {
   uni.upx2px = upx2px
 
-  Object.keys(todoApi).forEach(name => {
-    uni[name] = promisify(name, todoApi[name])
-  })
-
-  Object.keys(extraApi).forEach(name => {
-    uni[name] = promisify(name, todoApi[name])
-  })
+  if (__PLATFORM__ !== 'app-plus') {
+    Object.keys(todoApi).forEach(name => {
+      uni[name] = promisify(name, todoApi[name])
+    })
+    Object.keys(extraApi).forEach(name => {
+      uni[name] = promisify(name, todoApi[name])
+    })
+  }
 
   Object.keys(api).forEach(name => {
     uni[name] = promisify(name, api[name])

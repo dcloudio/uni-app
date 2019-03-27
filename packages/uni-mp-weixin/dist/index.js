@@ -21,7 +21,7 @@ function hasOwn (obj, key) {
 
 function noop () {}
 
-const SYNC_API_RE = /hideKeyboard|upx2px|canIUse|^create|Sync$|Manager$/;
+const SYNC_API_RE = /requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -291,13 +291,13 @@ function initHooks (mpOptions, hooks, delay = false) {
   });
 }
 
-function getData (vueOptions) {
+function getData (vueOptions, context) {
   let data = vueOptions.data || {};
   const methods = vueOptions.methods || {};
 
   if (typeof data === 'function') {
     try {
-      data = data();
+      data = data.call(context); // 支持 Vue.prototype 上挂的数据
     } catch (e) {
       if (process.env.VUE_APP_DEBUG) {
         console.warn('根据 Vue 的 data 函数初始化小程序 data 失败，请尽量确保 data 函数中不访问 vm 对象，否则可能影响首次数据渲染速度。', data);
@@ -563,7 +563,7 @@ const hooks$1 = [
 function createPage (vueOptions) {
   vueOptions = vueOptions.default || vueOptions;
   const pageOptions = {
-    data: getData(vueOptions),
+    data: getData(vueOptions, Vue.prototype),
     onLoad (args) {
 
       this.$vm = new Vue(Object.assign(vueOptions, {
@@ -572,7 +572,7 @@ function createPage (vueOptions) {
       }));
 
       this.$vm.__call_hook('created');
-      this.$vm.__call_hook('onLoad', args); // 开发者一般可能会在 onLoad 时赋值，所以提前到 mount 之前
+      this.$vm.__call_hook('onLoad', args); // 开发者可能会在 onLoad 时赋值，提前到 mount 之前
       this.$vm.$mount();
     },
     onReady () {
@@ -634,7 +634,7 @@ function createComponent (vueOptions) {
       multipleSlots: true,
       addGlobalClass: true
     },
-    data: getData(vueOptions),
+    data: getData(vueOptions, Vue.prototype),
     properties,
     lifetimes: {
       attached () {
@@ -686,8 +686,10 @@ if (typeof Proxy !== 'undefined') {
       if (api[name]) {
         return promisify(name, api[name])
       }
-      if (extraApi[name]) {
-        return promisify(name, extraApi[name])
+      {
+        if (extraApi[name]) {
+          return promisify(name, extraApi[name])
+        }
       }
       if (todoApis[name]) {
         return promisify(name, todoApis[name])
@@ -705,9 +707,11 @@ if (typeof Proxy !== 'undefined') {
     uni[name] = promisify(name, todoApis[name]);
   });
 
-  Object.keys(extraApi).forEach(name => {
-    uni[name] = promisify(name, todoApis[name]);
-  });
+  {
+    Object.keys(extraApi).forEach(name => {
+      uni[name] = promisify(name, todoApis[name]);
+    });
+  }
 
   Object.keys(api).forEach(name => {
     uni[name] = promisify(name, api[name]);

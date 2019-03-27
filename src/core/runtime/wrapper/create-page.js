@@ -30,7 +30,7 @@ const hooks = [
 export function createPage (vueOptions) {
   vueOptions = vueOptions.default || vueOptions
   const pageOptions = {
-    data: getData(vueOptions),
+    data: getData(vueOptions, Vue.prototype),
     onLoad (args) {
       if (__PLATFORM__ === 'mp-baidu') {
         this.$baiduComponentInstances = Object.create(null)
@@ -42,7 +42,7 @@ export function createPage (vueOptions) {
       }))
 
       this.$vm.__call_hook('created')
-      this.$vm.__call_hook('onLoad', args) // 开发者一般可能会在 onLoad 时赋值，所以提前到 mount 之前
+      this.$vm.__call_hook('onLoad', args) // 开发者可能会在 onLoad 时赋值，提前到 mount 之前
       this.$vm.$mount()
     },
     onReady () {
