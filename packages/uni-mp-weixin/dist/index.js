@@ -690,9 +690,9 @@ if (typeof Proxy !== 'undefined') {
         if (extraApi[name]) {
           return promisify(name, extraApi[name])
         }
-      }
-      if (todoApis[name]) {
-        return promisify(name, todoApis[name])
+        if (todoApis[name]) {
+          return promisify(name, todoApis[name])
+        }
       }
       if (!hasOwn(wx, name) && !hasOwn(protocols, name)) {
         return
@@ -703,11 +703,10 @@ if (typeof Proxy !== 'undefined') {
 } else {
   uni.upx2px = upx2px;
 
-  Object.keys(todoApis).forEach(name => {
-    uni[name] = promisify(name, todoApis[name]);
-  });
-
   {
+    Object.keys(todoApis).forEach(name => {
+      uni[name] = promisify(name, todoApis[name]);
+    });
     Object.keys(extraApi).forEach(name => {
       uni[name] = promisify(name, todoApis[name]);
     });
