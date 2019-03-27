@@ -46,7 +46,7 @@ export default {
         transparentElemStyle.backgroundColor = `rgba(${this._R},${this._G},${this._B},${alpha})`
         borderRadiusElemsStyles.forEach(function (borderRadiusElemStyle, index) {
           let oldColor = oldColors[index]
-          /* eslint-disable */
+          // eslint-disable-next-line
           let rgba = oldColor.match(/[\d+\.]+/g)
           rgba[3] = (1 - alpha) * (rgba.length === 4 ? rgba[3] : 1)
           borderRadiusElemStyle.backgroundColor = `rgba(${rgba})`
