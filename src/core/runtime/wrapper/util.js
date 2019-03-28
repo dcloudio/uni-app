@@ -19,7 +19,7 @@ export function initMocks (vm) {
 export function initHooks (mpOptions, hooks) {
   hooks.forEach(hook => {
     mpOptions[hook] = function (args) {
-      this.$vm.__call_hook(hook, args)
+      return this.$vm.__call_hook(hook, args)
     }
   })
 }
@@ -147,6 +147,14 @@ function processEventArgs (event, args = [], isCustom) {
 const ONCE = '~'
 const CUSTOM = '^'
 
+function getTarget (obj, path) {
+  const parts = path.split('.')
+  if (parts.length === 1) {
+    return obj[parts[0]]
+  }
+  return getTarget(obj[parts[0]], parts.slice(1).join('.'))
+}
+
 export function handleEvent (event) {
   event = wrapper(event)
 
@@ -169,17 +177,27 @@ export function handleEvent (event) {
 
     if (eventsArray && eventType === type) {
       eventsArray.forEach(eventArray => {
-        const handler = this.$vm[eventArray[0]]
-        if (!isFn(handler)) {
-          throw new Error(` _vm.${eventArray[0]} is not a function`)
-        }
-        if (isOnce) {
-          if (handler.once) {
-            return
+        const methodName = eventArray[0]
+        if (methodName === '$set') { // prop.sync
+          const args = eventArray[1]
+          if (args.length === 2) { // :title.sync="title"
+            this.$vm[args[0]] = event.detail[0]
+          } else if (args.length === 3) {
+            this.$vm.$set(getTarget(this.$vm, args[0]), args[1], event.detail[0])
           }
-          handler.once = true
+        } else {
+          const handler = this.$vm[methodName]
+          if (!isFn(handler)) {
+            throw new Error(` _vm.${methodName} is not a function`)
+          }
+          if (isOnce) {
+            if (handler.once) {
+              return
+            }
+            handler.once = true
+          }
+          handler.apply(this.$vm, processEventArgs(event, eventArray[1], isCustom))
         }
-        handler.apply(this.$vm, processEventArgs(event, eventArray[1], isCustom))
       })
     }
   })
