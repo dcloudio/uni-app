@@ -1,7 +1,5 @@
 <template>
-  <uni-textarea
-    style="height:height+'px'"
-    v-on="$listeners">
+  <uni-textarea v-on="$listeners">
     <div
       ref="wrapped"
       class="uni-textarea-wrapped">
@@ -10,7 +8,16 @@
         ref="placeholder"
         :style="placeholderStyle"
         :class="placeholderClass"
-        class="uni-textarea-placeholder">{{ placeholder }}</div>
+        class="uni-textarea-placeholder"
+      >{{ placeholder }}</div>
+      <div class="uni-textarea-compute">
+        <div
+          v-for="(item,index) in valueCompute"
+          :key="index">{{ item||'.' }}</div>
+        <v-uni-resize-sensor
+          ref="sensor"
+          @resize="_resize"/>
+      </div>
       <textarea
         ref="textarea"
         v-model="valueSync"
@@ -21,11 +28,11 @@
         class="uni-textarea-textarea"
         @compositionstart="_compositionstart"
         @compositionend="_compositionend"
-        @input.stop
+        @input.stop="_input"
         @focus="_focus"
         @blur="_blur"
         @touchstart.passive="_touchstart"
-        @scroll.passive="_scroll"/>
+      />
     </div>
   </uni-textarea>
 </template>
@@ -101,6 +108,7 @@ export default {
   data () {
     return {
       valueSync: String(this.value),
+      valueComposition: '',
       composition: false,
       focusSync: this.focus,
       height: 0,
@@ -123,6 +131,9 @@ export default {
     selectionEndNumber () {
       var selectionEnd = Number(this.selectionEnd)
       return isNaN(selectionEnd) ? -1 : selectionEnd
+    },
+    valueCompute () {
+      return (this.composition ? this.valueComposition : this.valueSync).split('\n')
     }
   },
   watch: {
@@ -185,7 +196,9 @@ export default {
   },
   mounted () {
     this.$refs.textarea.value = this.valueSync
-    this._computeHeight()
+    this._resize({
+      height: this.$refs.sensor.$el.offsetHeight
+    })
   },
   beforeDestroy () {
     this.$dispatch('Form', 'uni-form-group-update', {
@@ -194,11 +207,6 @@ export default {
     })
   },
   methods: {
-    _computeHeight () {
-      this.$nextTick(() => {
-        this.height = this.$refs.textarea.scrollHeight
-      })
-    },
     _focus: function ($event) {
       this.focusSync = true
       this.$trigger('focus', $event, {
@@ -243,8 +251,13 @@ export default {
     _touchstart () {
       this.focusChangeSource = 'touch'
     },
-    _scroll () {
-      this._computeHeight()
+    _resize ({ height }) {
+      this.height = height
+    },
+    _input ($event) {
+      if (this.composition) {
+        this.valueComposition = $event.target.value
+      }
     },
     _getFormData () {
       return {
@@ -284,6 +297,7 @@ uni-textarea {
   color: inherit;
 }
 .uni-textarea-placeholder,
+.uni-textarea-compute,
 .uni-textarea-textarea {
   box-sizing: border-box;
   position: absolute;
@@ -305,13 +319,17 @@ uni-textarea {
 .uni-textarea-placeholder {
   color: grey;
 }
+.uni-textarea-compute {
+  visibility: hidden;
+  height: auto;
+}
 .uni-textarea-textarea {
   outline: none;
   border: none;
   padding: 0;
   resize: none;
   background-color: transparent;
-	opacity: inherit;
+  opacity: inherit;
 }
 .uni-textarea-textarea::-webkit-input-placeholder {
   color: transparent;
