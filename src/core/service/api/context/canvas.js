@@ -434,6 +434,150 @@ class CanvasContext {
     this.clearActions()
     return actions
   }
+  set lineDashOffset (value) {
+    this.actions.push({
+      method: 'setLineDashOffset',
+      data: [value]
+    })
+  }
+  set globalCompositeOperation (type) {
+    this.actions.push({
+      method: 'setGlobalCompositeOperation',
+      data: [type]
+    })
+  }
+  set shadowBlur (level) {
+    this.actions.push({
+      method: 'setShadowBlur',
+      data: [level]
+    })
+  }
+  set shadowColor (color) {
+    this.actions.push({
+      method: 'setShadowColor',
+      data: [color]
+    })
+  }
+  set shadowOffsetX (x) {
+    this.actions.push({
+      method: 'setShadowOffsetX',
+      data: [x]
+    })
+  }
+  set shadowOffsetY (y) {
+    this.actions.push({
+      method: 'setShadowOffsetY',
+      data: [y]
+    })
+  }
+  set font (value) {
+    var self = this
+    this.state.font = value
+    // eslint-disable-next-line
+    var fontFormat = value.match(/^(([\w\-]+\s)*)(\d+r?px)(\/(\d+\.?\d*(r?px)?))?\s+(.*)/)
+    if (fontFormat) {
+      var style = fontFormat[1].trim().split(/\s/)
+      var fontSize = parseFloat(fontFormat[3])
+      var fontFamily = fontFormat[7]
+      var actions = []
+      style.forEach(function (value, index) {
+        if (['italic', 'oblique', 'normal'].indexOf(value) > -1) {
+          actions.push({
+            method: 'setFontStyle',
+            data: [value]
+          })
+          self.state.fontStyle = value
+        } else if (['bold', 'normal'].indexOf(value) > -1) {
+          actions.push({
+            method: 'setFontWeight',
+            data: [value]
+          })
+          self.state.fontWeight = value
+        } else if (index === 0) {
+          actions.push({
+            method: 'setFontStyle',
+            data: ['normal']
+          })
+          self.state.fontStyle = 'normal'
+        } else if (index === 1) {
+          pushAction()
+        }
+      })
+      if (style.length === 1) {
+        pushAction()
+      }
+      style = actions.map(function (action) {
+        return action.data[0]
+      }).join(' ')
+      this.state.fontSize = fontSize
+      this.state.fontFamily = fontFamily
+      this.actions.push({
+        method: 'setFont',
+        data: [`${style} ${fontSize}px ${fontFamily}`]
+      })
+    } else {
+      console.warn("Failed to set 'font' on 'CanvasContext': invalid format.")
+    }
+    function pushAction () {
+      actions.push({
+        method: 'setFontWeight',
+        data: ['normal']
+      })
+      self.state.fontWeight = 'normal'
+    }
+  }
+  get font () {
+    return this.state.font
+  }
+  set fillStyle (color) {
+    this.setFillStyle(color)
+  }
+  set strokeStyle (color) {
+    this.setStrokeStyle(color)
+  }
+  set globalAlpha (value) {
+    value = Math.floor(255 * parseFloat(value))
+    this.actions.push({
+      method: 'setGlobalAlpha',
+      data: [value]
+    })
+  }
+  set textAlign (align) {
+    this.actions.push({
+      method: 'setTextAlign',
+      data: [align]
+    })
+  }
+  set lineCap (type) {
+    this.actions.push({
+      method: 'setLineCap',
+      data: [type]
+    })
+  }
+  set lineJoin (type) {
+    this.actions.push({
+      method: 'setLineJoin',
+      data: [type]
+    })
+  }
+  set lineWidth (value) {
+    this.actions.push({
+      method: 'setLineWidth',
+      data: [value]
+    })
+  }
+  set miterLimit (value) {
+    this.actions.push({
+      method: 'setMiterLimit',
+      data: [value]
+    })
+  }
+  set textBaseline (type) {
+    this.actions.push({
+      method: 'setTextBaseline',
+      data: [type]
+    })
+  }
 }
 
 [...methods1, ...methods2].forEach(function (method) {
