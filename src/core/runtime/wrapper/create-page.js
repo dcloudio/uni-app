@@ -1,6 +1,10 @@
 import Vue from 'vue'
 
 import {
+  isFn
+} from 'uni-shared'
+
+import {
   handleLink
 } from 'uni-platform/runtime/wrapper/index'
 
@@ -29,6 +33,13 @@ const hooks = [
 
 export function createPage (vueOptions) {
   vueOptions = vueOptions.default || vueOptions
+  let VueComponent
+  if (isFn(vueOptions)) {
+    VueComponent = vueOptions
+    vueOptions = VueComponent.extendOptions
+  } else {
+    VueComponent = Vue.extend(vueOptions)
+  }
   const pageOptions = {
     data: getData(vueOptions, Vue.prototype),
     onLoad (args) {
@@ -36,10 +47,10 @@ export function createPage (vueOptions) {
         this.$baiduComponentInstances = Object.create(null)
       }
 
-      this.$vm = new Vue(Object.assign(vueOptions, {
+      this.$vm = new VueComponent({
         mpType: 'page',
         mpInstance: this
-      }))
+      })
 
       this.$vm.__call_hook('created')
       this.$vm.__call_hook('onLoad', args) // 开发者可能会在 onLoad 时赋值，提前到 mount 之前

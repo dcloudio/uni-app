@@ -16,14 +16,10 @@ export function initMocks (vm) {
   })
 }
 
-export function initHooks (mpOptions, hooks, delay = false) {
+export function initHooks (mpOptions, hooks) {
   hooks.forEach(hook => {
     mpOptions[hook] = function (args) {
-      if (delay) {
-        setTimeout(() => this.$vm.__call_hook(hook, args))
-      } else {
-        this.$vm.__call_hook(hook, args)
-      }
+      this.$vm.__call_hook(hook, args)
     }
   })
 }

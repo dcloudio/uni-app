@@ -13,8 +13,7 @@ const hooks = [
   'onPageNotFound'
 ]
 
-export function createApp (vueOptions) {
-  vueOptions = vueOptions.default || vueOptions
+export function createApp (vm) {
   // 外部初始化时 Vue 还未初始化，放到 createApp 内部初始化 mixin
   Vue.mixin({
     beforeCreate () {
@@ -42,19 +41,18 @@ export function createApp (vueOptions) {
 
   const appOptions = {
     onLaunch (args) {
-      this.$vm = new Vue(Object.assign(vueOptions, {
-        mpType: 'app',
-        mpInstance: this
-      }))
+      this.$vm = vm
 
-      this.$vm.$mount()
-      setTimeout(() => this.$vm.__call_hook('onLaunch', args))
+      this.$vm._isMounted = true
+      this.$vm.__call_hook('mounted')
+
+      this.$vm.__call_hook('onLaunch', args)
     }
   }
 
-  initHooks(appOptions, hooks, true) // 延迟执行，因为 App 的注册在 main.js 之前，可能导致生命周期内 Vue 原型上开发者注册的属性无法访问
+  initHooks(appOptions, hooks) // 延迟执行，因为 App 的注册在 main.js 之前，可能导致生命周期内 Vue 原型上开发者注册的属性无法访问
 
   App(appOptions)
 
-  return vueOptions
+  return vm
 }

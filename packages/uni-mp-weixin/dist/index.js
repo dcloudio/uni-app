@@ -279,14 +279,10 @@ function initMocks (vm) {
   });
 }
 
-function initHooks (mpOptions, hooks, delay = false) {
+function initHooks (mpOptions, hooks) {
   hooks.forEach(hook => {
     mpOptions[hook] = function (args) {
-      if (delay) {
-        setTimeout(() => this.$vm.__call_hook(hook, args));
-      } else {
-        this.$vm.__call_hook(hook, args);
-      }
+      this.$vm.__call_hook(hook, args);
     };
   });
 }
@@ -476,8 +472,7 @@ const hooks = [
   'onPageNotFound'
 ];
 
-function createApp (vueOptions) {
-  vueOptions = vueOptions.default || vueOptions;
+function createApp (vm) {
   // 外部初始化时 Vue 还未初始化，放到 createApp 内部初始化 mixin
   Vue.mixin({
     beforeCreate () {
@@ -505,21 +500,20 @@ function createApp (vueOptions) {
 
   const appOptions = {
     onLaunch (args) {
-      this.$vm = new Vue(Object.assign(vueOptions, {
-        mpType: 'app',
-        mpInstance: this
-      }));
+      this.$vm = vm;
 
-      this.$vm.$mount();
-      setTimeout(() => this.$vm.__call_hook('onLaunch', args));
+      this.$vm._isMounted = true;
+      this.$vm.__call_hook('mounted');
+
+      this.$vm.__call_hook('onLaunch', args);
     }
   };
 
-  initHooks(appOptions, hooks, true); // 延迟执行，因为 App 的注册在 main.js 之前，可能导致生命周期内 Vue 原型上开发者注册的属性无法访问
+  initHooks(appOptions, hooks); // 延迟执行，因为 App 的注册在 main.js 之前，可能导致生命周期内 Vue 原型上开发者注册的属性无法访问
 
   App(appOptions);
 
-  return vueOptions
+  return vm
 }
 
 function triggerLink (mpInstance, vueOptions) {
@@ -562,14 +556,21 @@ const hooks$1 = [
 
 function createPage (vueOptions) {
   vueOptions = vueOptions.default || vueOptions;
+  let VueComponent;
+  if (isFn(vueOptions)) {
+    VueComponent = vueOptions;
+    vueOptions = VueComponent.extendOptions;
+  } else {
+    VueComponent = Vue.extend(vueOptions);
+  }
   const pageOptions = {
     data: getData(vueOptions, Vue.prototype),
     onLoad (args) {
 
-      this.$vm = new Vue(Object.assign(vueOptions, {
+      this.$vm = new VueComponent({
         mpType: 'page',
         mpInstance: this
-      }));
+      });
 
       this.$vm.__call_hook('created');
       this.$vm.__call_hook('onLoad', args); // 开发者可能会在 onLoad 时赋值，提前到 mount 之前
