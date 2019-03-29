@@ -562,30 +562,6 @@ const hooks$1 = [
   'onNavigationBarSearchInputClicked'
 ];
 
-function attached (VueComponent) {
-
-  this.$vm = new VueComponent({
-    mpType: 'page',
-    mpInstance: this
-  });
-
-  this.$vm.__call_hook('created');
-  this.$vm.$mount();
-}
-
-function ready () {
-  this.$vm.__call_hook('beforeMount');
-  this.$vm._isMounted = true;
-  this.$vm.__call_hook('mounted');
-  this.$vm.__call_hook('onReady');
-}
-
-function detached () {
-  this.$vm.__call_hook('onUnload');
-  {
-    this.$vm.$destroy();
-  }
-}
 function createPage (vueOptions) {
   vueOptions = vueOptions.default || vueOptions;
   let VueComponent;
@@ -603,19 +579,32 @@ function createPage (vueOptions) {
     data: getData(vueOptions, Vue.prototype),
     lifetimes: { // 当页面作为组件时
       attached () {
-        attached.call(this, VueComponent);
+
+        this.$vm = new VueComponent({
+          mpType: 'page',
+          mpInstance: this
+        });
+
+        this.$vm.__call_hook('created');
+        this.$vm.$mount();
       },
       ready () {
-        ready.call(this);
+        this.$vm.__call_hook('beforeMount');
+        this.$vm._isMounted = true;
+        this.$vm.__call_hook('mounted');
+        this.$vm.__call_hook('onReady');
       },
       detached () {
-        detached.call(this);
+        this.$vm.$destroy();
       }
     },
     methods: { // 作为页面时
       onLoad (args) {
         this.$vm.$mp.query = args; // 又要兼容 mpvue
         this.$vm.__call_hook('onLoad', args); // 开发者可能会在 onLoad 时赋值，提前到 mount 之前
+      },
+      onUnload () {
+        this.$vm.__call_hook('onUnload');
       },
       __e: handleEvent,
       __l: handleLink
