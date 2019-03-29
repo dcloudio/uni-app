@@ -562,7 +562,7 @@ const hooks$1 = [
   'onNavigationBarSearchInputClicked'
 ];
 
-function attached (VueComponent, args) {
+function attached (VueComponent) {
 
   this.$vm = new VueComponent({
     mpType: 'page',
@@ -570,10 +570,6 @@ function attached (VueComponent, args) {
   });
 
   this.$vm.__call_hook('created');
-  if (args) {
-    this.$vm.$mp.query = args; // 又要兼容 mpvue
-    this.$vm.__call_hook('onLoad', args); // 开发者可能会在 onLoad 时赋值，提前到 mount 之前
-  }
   this.$vm.$mount();
 }
 
@@ -618,7 +614,8 @@ function createPage (vueOptions) {
     },
     methods: { // 作为页面时
       onLoad (args) {
-        attached.call(this, VueComponent, args);
+        this.$vm.$mp.query = args; // 又要兼容 mpvue
+        this.$vm.__call_hook('onLoad', args); // 开发者可能会在 onLoad 时赋值，提前到 mount 之前
       },
       __e: handleEvent,
       __l: handleLink
