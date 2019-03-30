@@ -2,9 +2,7 @@
   <uni-canvas
     :canvas-id="canvasId"
     :disable-scroll="disableScroll"
-    v-on="$listeners"
-    @touchmove="_touchmove"
-  >
+    v-on="_listeners">
     <canvas
       ref="canvas"
       width="300"
@@ -28,6 +26,17 @@ function resolveColor (color) {
   return 'rgba(' + color.join(',') + ')'
 }
 
+function processTouches (target, touches) {
+  return ([]).map.call(touches, (touche) => {
+    var boundingClientRect = target.getBoundingClientRect()
+    return {
+      identifier: touche.identifier,
+      x: touche.clientX - boundingClientRect.x,
+      y: touche.clientY - boundingClientRect.y
+    }
+  })
+}
+
 export default {
   name: 'Canvas',
   mixins: [subscriber],
@@ -49,6 +58,27 @@ export default {
   computed: {
     id () {
       return this.canvasId
+    },
+    _listeners () {
+      var $listeners = Object.assign({}, this.$listeners)
+      var events = ['touchstart', 'touchmove', 'touchend']
+      events.forEach(event => {
+        var existing = $listeners[event]
+        var eventHandler = []
+        if (existing) {
+          eventHandler.push(($event) => {
+            this.$trigger(event, Object.assign({}, $event, {
+              touches: processTouches($event.currentTarget, $event.touches),
+              changedTouches: processTouches($event.currentTarget, $event.changedTouches)
+            }))
+          })
+        }
+        if (this.disableScroll && event === 'touchmove') {
+          eventHandler.push(this._touchmove)
+        }
+        $listeners[event] = eventHandler
+      })
+      return $listeners
     }
   },
   created () {
@@ -79,9 +109,7 @@ export default {
       }
     },
     _touchmove (event) {
-      if (this.disableScroll) {
-        event.preventDefault()
-      }
+      event.preventDefault()
     },
     actionsChanged ({
       actions,

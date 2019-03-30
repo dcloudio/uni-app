@@ -82,8 +82,9 @@ export function processEvent (name, $event = {}, detail = {}, target = {}, curre
     detail: detail,
     target: processTarget(target, detail),
     currentTarget: processTarget(currentTarget),
-    touches: processTouches($event.touches),
-    changedTouches: processTouches($event.changedTouches),
+    // 只处理系统事件
+    touches: $event instanceof Event ? processTouches($event.touches) : $event.touches,
+    changedTouches: $event instanceof Event ? processTouches($event.changedTouches) : $event.changedTouches,
     preventDefault () { },
     stopPropagation () { }
   })
