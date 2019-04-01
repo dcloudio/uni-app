@@ -252,14 +252,10 @@ function initMocks (vm) {
   });
 }
 
-function initHooks (mpOptions, hooks, delay = false) {
+function initHooks (mpOptions, hooks) {
   hooks.forEach(hook => {
     mpOptions[hook] = function (args) {
-      if (delay) {
-        setTimeout(() => this.$vm.__call_hook(hook, args));
-      } else {
-        this.$vm.__call_hook(hook, args);
-      }
+      return this.$vm.__call_hook(hook, args)
     };
   });
 }
@@ -362,14 +358,21 @@ function wrapper$1 (event) {
   return event
 }
 
-function processEventArgs (event, args = [], isCustom) {
+function processEventArgs (event, args = [], isCustom, methodName) {
   if (isCustom && !args.length) { // 无参数，直接传入 detail 数组
+    if (!Array.isArray(event.detail)) { // 应该是使用了 wxcomponent 原生组件，为了向前兼容，传递原始 event 对象
+      return [event]
+    }
     return event.detail
   }
   const ret = [];
   args.forEach(arg => {
     if (arg === '$event') {
-      ret.push(isCustom ? event.detail[0] : event);
+      if (methodName === '__set_model' && !isCustom) { // input v-model value
+        ret.push(event.target.value);
+      } else {
+        ret.push(isCustom ? event.detail[0] : event);
+      }
     } else {
       ret.push(arg);
     }
@@ -403,9 +406,10 @@ function handleEvent (event) {
 
     if (eventsArray && eventType === type) {
       eventsArray.forEach(eventArray => {
-        const handler = this.$vm[eventArray[0]];
+        const methodName = eventArray[0];
+        const handler = this.$vm[methodName];
         if (!isFn(handler)) {
-          throw new Error(` _vm.${eventArray[0]} is not a function`)
+          throw new Error(` _vm.${methodName} is not a function`)
         }
         if (isOnce) {
           if (handler.once) {
@@ -413,7 +417,7 @@ function handleEvent (event) {
           }
           handler.once = true;
         }
-        handler.apply(this.$vm, processEventArgs(event, eventArray[1], isCustom));
+        handler.apply(this.$vm, processEventArgs(event, eventArray[1], isCustom, methodName));
       });
     }
   });
@@ -449,8 +453,7 @@ const hooks = [
   'onPageNotFound'
 ];
 
-function createApp (vueOptions) {
-  vueOptions = vueOptions.default || vueOptions;
+function createApp (vm) {
   // 外部初始化时 Vue 还未初始化，放到 createApp 内部初始化 mixin
   Vue.mixin({
     beforeCreate () {
@@ -478,21 +481,20 @@ function createApp (vueOptions) {
 
   const appOptions = {
     onLaunch (args) {
-      this.$vm = new Vue(Object.assign(vueOptions, {
-        mpType: 'app',
-        mpInstance: this
-      }));
+      this.$vm = vm;
 
-      this.$vm.$mount();
-      setTimeout(() => this.$vm.__call_hook('onLaunch', args));
+      this.$vm._isMounted = true;
+      this.$vm.__call_hook('mounted');
+
+      this.$vm.__call_hook('onLaunch', args);
     }
   };
 
-  initHooks(appOptions, hooks, true); // 延迟执行，因为 App 的注册在 main.js 之前，可能导致生命周期内 Vue 原型上开发者注册的属性无法访问
+  initHooks(appOptions, hooks); // 延迟执行，因为 App 的注册在 main.js 之前，可能导致生命周期内 Vue 原型上开发者注册的属性无法访问
 
   App(appOptions);
 
-  return vueOptions
+  return vm
 }
 
 function triggerLink (mpInstance, vueOptions) {
@@ -535,37 +537,62 @@ const hooks$1 = [
 
 function createPage (vueOptions) {
   vueOptions = vueOptions.default || vueOptions;
+  let VueComponent;
+  if (isFn(vueOptions)) {
+    VueComponent = vueOptions;
+    vueOptions = VueComponent.extendOptions;
+  } else {
+    VueComponent = Vue.extend(vueOptions);
+  }
   const pageOptions = {
+    options: {
+      multipleSlots: true,
+      addGlobalClass: true
+    },
     data: getData(vueOptions, Vue.prototype),
-    onLoad (args) {
+    lifetimes: { // 当页面作为组件时
+      attached () {
 
-      this.$vm = new Vue(Object.assign(vueOptions, {
-        mpType: 'page',
-        mpInstance: this
-      }));
+        this.$vm = new VueComponent({
+          mpType: 'page',
+          mpInstance: this
+        });
 
-      this.$vm.__call_hook('created');
-      this.$vm.__call_hook('onLoad', args); // 开发者可能会在 onLoad 时赋值，提前到 mount 之前
-      this.$vm.$mount();
-    },
-    onReady () {
-      this.$vm._isMounted = true;
-      this.$vm.__call_hook('mounted');
-      this.$vm.__call_hook('onReady');
-    },
-    onUnload () {
-      this.$vm.__call_hook('onUnload');
-      {
+        this.$vm.__call_hook('created');
+        this.$vm.$mount();
+      },
+      ready () {
+        this.$vm.__call_hook('beforeMount');
+        this.$vm._isMounted = true;
+        this.$vm.__call_hook('mounted');
+        this.$vm.__call_hook('onReady');
+      },
+      detached () {
         this.$vm.$destroy();
       }
     },
-    __e: handleEvent,
-    __l: handleLink
+    methods: { // 作为页面时
+      onLoad (args) {
+        this.$vm.$mp.query = args; // 又要兼容 mpvue
+        this.$vm.__call_hook('onLoad', args); // 开发者可能会在 onLoad 时赋值，提前到 mount 之前
+      },
+      onUnload () {
+        this.$vm.__call_hook('onUnload');
+      },
+      __e: handleEvent,
+      __l: handleLink
+    }
   };
 
-  initHooks(pageOptions, hooks$1);
+  initHooks(pageOptions.methods, hooks$1);
 
-  return Page(pageOptions)
+  {
+    pageOptions.methods.$getAppWebview = function () {
+      return plus.webview.getWebviewById(`${this.__wxWebviewId__}`)
+    };
+  }
+
+  return Component(pageOptions)
 }
 
 function initVueComponent (mpInstace, VueComponent, extraOptions = {}) {

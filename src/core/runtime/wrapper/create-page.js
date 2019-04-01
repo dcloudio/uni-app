@@ -88,5 +88,11 @@ export function createPage (vueOptions) {
 
   initHooks(pageOptions.methods, hooks)
 
+  if (__PLATFORM__ === 'app-plus') {
+    pageOptions.methods.$getAppWebview = function () {
+      return plus.webview.getWebviewById(`${this.__wxWebviewId__}`)
+    }
+  }
+
   return Component(pageOptions)
 }
