@@ -10,6 +10,7 @@
         :type="inputType"
         :maxlength="maxlength"
         :step="step"
+        autocomplete="off"
         @focus="_onFocus"
         @blur="_onBlur"
         @input.stop="_onInput"
