@@ -9,7 +9,12 @@
     <div
       :class="{'uni-actionsheet_toggle':visible}"
       class="uni-actionsheet">
+
       <div class="uni-actionsheet__menu">
+        <div
+          v-if="title"
+          class="uni-actionsheet__title"
+        >{{ title }}</div>
         <div
           v-for="(title,index) in itemList"
           :key="index"
@@ -30,6 +35,10 @@
 export default {
   name: 'ActionSheet',
   props: {
+    title: {
+      type: String,
+      default: ''
+    },
     itemList: {
       type: Array,
       default () {
@@ -90,13 +99,13 @@ export default {
 		background-color: #fcfcfd;
 	}
 
-	uni-actionsheet .uni-actionsheet__cell {
+	uni-actionsheet .uni-actionsheet__cell ,
+	uni-actionsheet .uni-actionsheet__title {
 		position: relative;
 		padding: 10px 0;
 		text-align: center;
 		font-size: 18px;
 	}
-
 	uni-actionsheet .uni-actionsheet__cell:before {
 		content: " ";
 		position: absolute;
