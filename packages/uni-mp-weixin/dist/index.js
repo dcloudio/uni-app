@@ -509,24 +509,26 @@ function handleEvent (event) {
     if (eventsArray && eventType === type) {
       eventsArray.forEach(eventArray => {
         const methodName = eventArray[0];
-        const handler = this.$vm[methodName];
-        if (!isFn(handler)) {
-          throw new Error(` _vm.${methodName} is not a function`)
-        }
-        if (isOnce) {
-          if (handler.once) {
-            return
+        if (methodName) {
+          const handler = this.$vm[methodName];
+          if (!isFn(handler)) {
+            throw new Error(` _vm.${methodName} is not a function`)
           }
-          handler.once = true;
+          if (isOnce) {
+            if (handler.once) {
+              return
+            }
+            handler.once = true;
+          }
+          handler.apply(this.$vm, processEventArgs(
+            this.$vm,
+            event,
+            eventArray[1],
+            eventArray[2],
+            isCustom,
+            methodName
+          ));
         }
-        handler.apply(this.$vm, processEventArgs(
-          this.$vm,
-          event,
-          eventArray[1],
-          eventArray[2],
-          isCustom,
-          methodName
-        ));
       });
     }
   });
