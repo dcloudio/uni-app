@@ -358,13 +358,84 @@ function wrapper$1 (event) {
   return event
 }
 
-function processEventArgs (event, args = [], isCustom, methodName) {
+function getExtraValue (vm, dataPathsArray) {
+  let context = vm;
+  dataPathsArray.forEach(dataPathArray => {
+    const dataPath = dataPathArray[0];
+    const value = dataPathArray[2];
+    if (dataPath || typeof value !== 'undefined') { // ['','',index,'disable']
+      const propPath = dataPathArray[1];
+      const valuePath = dataPathArray[3];
+
+      const vFor = dataPath ? vm.__get_value(dataPath, context) : context;
+
+      if (Number.isInteger(vFor)) {
+        context = value;
+      } else if (!propPath) {
+        context = vFor[value];
+      } else {
+        if (Array.isArray(vFor)) {
+          context = vFor.find(vForItem => {
+            return vm.__get_value(propPath, vForItem) === value
+          });
+        } else if (isPlainObject(vFor)) {
+          context = Object.keys(vFor).find(vForKey => {
+            return vm.__get_value(propPath, vFor[vForKey]) === value
+          });
+        } else {
+          console.error('v-for 暂不支持循环数据：', vFor);
+        }
+      }
+
+      if (valuePath) {
+        context = vm.__get_value(valuePath, context);
+      }
+    }
+  });
+  return context
+}
+
+function processEventExtra (vm, extra) {
+  const extraObj = {};
+
+  if (Array.isArray(extra) && extra.length) {
+    /**
+         *[
+         *    ['data.items', 'data.id', item.data.id],
+         *    ['metas', 'id', meta.id]
+         *],
+         *[
+         *    ['data.items', 'data.id', item.data.id],
+         *    ['metas', 'id', meta.id]
+         *],
+         *'test'
+         */
+    extra.forEach((dataPath, index) => {
+      if (typeof dataPath === 'string') {
+        if (!dataPath) { // model,prop.sync
+          extraObj['$' + index] = vm;
+        } else {
+          extraObj['$' + index] = vm.__get_value(dataPath);
+        }
+      } else {
+        extraObj['$' + index] = getExtraValue(vm, dataPath);
+      }
+    });
+  }
+
+  return extraObj
+}
+
+function processEventArgs (vm, event, args = [], extra = [], isCustom, methodName) {
   if (isCustom && !args.length) { // 无参数，直接传入 detail 数组
     if (!Array.isArray(event.detail)) { // 应该是使用了 wxcomponent 原生组件，为了向前兼容，传递原始 event 对象
       return [event]
     }
     return event.detail
   }
+
+  const extraObj = processEventExtra(vm, extra);
+
   const ret = [];
   args.forEach(arg => {
     if (arg === '$event') {
@@ -374,7 +445,11 @@ function processEventArgs (event, args = [], isCustom, methodName) {
         ret.push(isCustom ? event.detail[0] : event);
       }
     } else {
-      ret.push(arg);
+      if (typeof arg === 'string' && hasOwn(extraObj, arg)) {
+        ret.push(extraObj[arg]);
+      } else {
+        ret.push(arg);
+      }
     }
   });
 
@@ -407,17 +482,26 @@ function handleEvent (event) {
     if (eventsArray && eventType === type) {
       eventsArray.forEach(eventArray => {
         const methodName = eventArray[0];
-        const handler = this.$vm[methodName];
-        if (!isFn(handler)) {
-          throw new Error(` _vm.${methodName} is not a function`)
-        }
-        if (isOnce) {
-          if (handler.once) {
-            return
+        if (methodName) {
+          const handler = this.$vm[methodName];
+          if (!isFn(handler)) {
+            throw new Error(` _vm.${methodName} is not a function`)
           }
-          handler.once = true;
+          if (isOnce) {
+            if (handler.once) {
+              return
+            }
+            handler.once = true;
+          }
+          handler.apply(this.$vm, processEventArgs(
+            this.$vm,
+            event,
+            eventArray[1],
+            eventArray[2],
+            isCustom,
+            methodName
+          ));
         }
-        handler.apply(this.$vm, processEventArgs(event, eventArray[1], isCustom, methodName));
       });
     }
   });
@@ -481,6 +565,7 @@ function createApp (vm) {
 
   const appOptions = {
     onLaunch (args) {
+
       this.$vm = vm;
 
       this.$vm._isMounted = true;
