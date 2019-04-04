@@ -590,6 +590,12 @@ function createApp (vm) {
 
   const appOptions = {
     onLaunch (args) {
+      {
+        if (!wx.canIUse('nextTick')) { // 事实 上2.2.3 即可，简单使用 2.3.0 的 nextTick 判断
+          console.error('当前微信基础库版本过低，请将 微信开发者工具-详情-项目设置-调试基础库版本 更换为`2.3.0`以上');
+        }
+      }
+
       this.$vm = vm;
 
       this.$vm._isMounted = true;
