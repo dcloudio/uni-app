@@ -197,14 +197,17 @@ function processEventExtra (vm, extra) {
 }
 
 function processEventArgs (vm, event, args = [], extra = [], isCustom, methodName) {
-  if (isCustom && !args.length) { // 无参数，直接传入 detail 数组
-    if (event.currentTarget &&
+  if (isCustom) { // 自定义事件
+    if (
+      event.currentTarget &&
             event.currentTarget.dataset &&
-            event.currentTarget.dataset.comType === 'wx') {
-      // 使用了 wxcomponent 原生组件，传递原始 event 对象
+            event.currentTarget.dataset.comType === 'wx'
+    ) { // wxcomponent 原生组件，传递原始 event 对象
       return [event]
     }
-    return event.detail
+    if (!args.length) { // 无参数，直接传入 detail 数组
+      return event.detail
+    }
   }
 
   const extraObj = processEventExtra(vm, extra)
