@@ -198,7 +198,10 @@ function processEventExtra (vm, extra) {
 
 function processEventArgs (vm, event, args = [], extra = [], isCustom, methodName) {
   if (isCustom && !args.length) { // 无参数，直接传入 detail 数组
-    if (!Array.isArray(event.detail)) { // 应该是使用了 wxcomponent 原生组件，为了向前兼容，传递原始 event 对象
+    if (event.currentTarget &&
+            event.currentTarget.dataset &&
+            event.currentTarget.dataset.comType === 'wx') {
+      // 使用了 wxcomponent 原生组件，传递原始 event 对象
       return [event]
     }
     return event.detail
