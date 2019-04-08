@@ -60,6 +60,7 @@
             "App": true,
             "Page": true,
             "Component": true,
+            "Behavior":true,
             "getApp": true,
             "getCurrentPages": true,
             "plus": true,

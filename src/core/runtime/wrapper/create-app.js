@@ -1,3 +1,5 @@
+import 'uni-platform/runtime/index'
+
 import Vue from 'vue'
 
 import {
@@ -10,7 +12,8 @@ const hooks = [
   'onShow',
   'onHide',
   'onError',
-  'onPageNotFound'
+  'onPageNotFound',
+  'onUniNViewMessage'
 ]
 
 export function createApp (vm) {

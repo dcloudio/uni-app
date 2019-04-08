@@ -21,6 +21,25 @@ function hasOwn (obj, key) {
 
 function noop () {}
 
+/**
+ * Create a cached version of a pure function.
+ */
+function cached (fn) {
+  const cache = Object.create(null);
+  return function cachedFn (str) {
+    const hit = cache[str];
+    return hit || (cache[str] = fn(str))
+  }
+}
+
+/**
+ * Camelize a hyphen-delimited string.
+ */
+const camelizeRE = /-(\w)/g;
+const camelize = cached((str) => {
+  return str.replace(camelizeRE, (_, c) => c ? c.toUpperCase() : '')
+});
+
 const SYNC_API_RE = /requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
@@ -241,6 +260,49 @@ var api = /*#__PURE__*/Object.freeze({
   requireNativePlugin: requireNativePlugin
 });
 
+const WXPage = Page;
+const WXComponent = Component;
+
+const customizeRE = /:/g;
+
+const customize = cached((str) => {
+  return camelize(str.replace(customizeRE, '-'))
+});
+
+function initTriggerEvent (mpInstance) {
+  const oldTriggerEvent = mpInstance.triggerEvent;
+  mpInstance.triggerEvent = function (event, ...args) {
+    return oldTriggerEvent.apply(mpInstance, [customize(event), ...args])
+  };
+}
+
+Page = function (options = {}) {
+  const name = 'onLoad';
+  const oldHook = options[name];
+  if (!oldHook) {
+    options[name] = function () {
+      initTriggerEvent(this);
+    };
+  } else {
+    options[name] = function (...args) {
+      initTriggerEvent(this);
+      return oldHook.apply(this, args)
+    };
+  }
+  return WXPage(options)
+};
+
+const behavior = Behavior({
+  created () {
+    initTriggerEvent(this);
+  }
+});
+
+Component = function (options = {}) {
+  (options.behaviors || (options.behaviors = [])).unshift(behavior);
+  return WXComponent(options)
+};
+
 const MOCKS = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__'];
 
 function initMocks (vm) {
@@ -280,7 +342,7 @@ function getData (vueOptions, context) {
   }
 
   Object.keys(methods).forEach(methodName => {
-    if (!hasOwn(data, methodName)) {
+    if (context.__lifecycle_hooks__.indexOf(methodName) === -1 && !hasOwn(data, methodName)) {
       data[methodName] = methods[methodName];
     }
   });
@@ -534,7 +596,8 @@ const hooks = [
   'onShow',
   'onHide',
   'onError',
-  'onPageNotFound'
+  'onPageNotFound',
+  'onUniNViewMessage'
 ];
 
 function createApp (vm) {
