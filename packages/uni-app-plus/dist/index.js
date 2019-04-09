@@ -658,6 +658,10 @@ function createApp (vm) {
 
       this.$vm = vm;
 
+      this.$vm.$mp = {
+        app: this
+      };
+
       this.$vm._isMounted = true;
       this.$vm.__call_hook('mounted');
 
@@ -665,9 +669,8 @@ function createApp (vm) {
     }
   };
 
-  if (vm.$options.globalData) { // 兼容旧版本 globalData
-    appOptions.globalData = vm.$options.globalData;
-  }
+  // 兼容旧版本 globalData
+  appOptions.globalData = vm.$options.globalData || {};
 
   initHooks(appOptions, hooks); // 延迟执行，因为 App 的注册在 main.js 之前，可能导致生命周期内 Vue 原型上开发者注册的属性无法访问
 
