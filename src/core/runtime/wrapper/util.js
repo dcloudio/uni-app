@@ -114,17 +114,28 @@ function wrapper (event) {
   event.preventDefault = noop
 
   event.target = event.target || {}
-  event.detail = event.detail || {}
+
+  if (!hasOwn(event, 'detail')) {
+    event.detail = {}
+  }
 
   if (__PLATFORM__ === 'mp-baidu') { // mp-baidu，checked=>value
-    if (hasOwn(event.detail, 'checked') && !hasOwn(event.detail, 'value')) {
+    if (
+      isPlainObject(event.detail) &&
+            hasOwn(event.detail, 'checked') &&
+            !hasOwn(event.detail, 'value')
+    ) {
       event.detail.value = event.detail.checked
     }
   }
 
   // TODO 又得兼容 mpvue 的 mp 对象
   event.mp = event
-  event.target = Object.assign({}, event.target, event.detail)
+
+  if (isPlainObject(event.detail)) {
+    event.target = Object.assign({}, event.target, event.detail)
+  }
+
   return event
 }
 
@@ -197,11 +208,17 @@ function processEventExtra (vm, extra) {
 }
 
 function processEventArgs (vm, event, args = [], extra = [], isCustom, methodName) {
-  if (isCustom && !args.length) { // 无参数，直接传入 detail 数组
-    if (!Array.isArray(event.detail)) { // 应该是使用了 wxcomponent 原生组件，为了向前兼容，传递原始 event 对象
-      return [event]
+  let isCustomMPEvent = false // wxcomponent 组件，传递原始 event 对象
+  if (isCustom) { // 自定义事件
+    isCustomMPEvent = event.currentTarget &&
+            event.currentTarget.dataset &&
+            event.currentTarget.dataset.comType === 'wx'
+    if (!args.length) { // 无参数，直接传入 event 或 detail 数组
+      if (isCustomMPEvent) {
+        return [event]
+      }
+      return event.detail
     }
-    return event.detail
   }
 
   const extraObj = processEventExtra(vm, extra)
@@ -212,7 +229,11 @@ function processEventArgs (vm, event, args = [], extra = [], isCustom, methodNam
       if (methodName === '__set_model' && !isCustom) { // input v-model value
         ret.push(event.target.value)
       } else {
-        ret.push(isCustom ? event.detail[0] : event)
+        if (isCustom && !isCustomMPEvent) {
+          ret.push(event.detail[0])
+        } else { // wxcomponent 组件或内置组件
+          ret.push(event)
+        }
       }
     } else {
       if (typeof arg === 'string' && hasOwn(extraObj, arg)) {
