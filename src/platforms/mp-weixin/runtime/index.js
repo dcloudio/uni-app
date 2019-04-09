@@ -13,9 +13,11 @@ const customize = cached((str) => {
 })
 
 function initTriggerEvent (mpInstance) {
-  const oldTriggerEvent = mpInstance.triggerEvent
-  mpInstance.triggerEvent = function (event, ...args) {
-    return oldTriggerEvent.apply(mpInstance, [customize(event), ...args])
+  if (wx.canIUse('nextTick')) { // 微信旧版本基础库不支持重写triggerEvent
+    const oldTriggerEvent = mpInstance.triggerEvent
+    mpInstance.triggerEvent = function (event, ...args) {
+      return oldTriggerEvent.apply(mpInstance, [customize(event), ...args])
+    }
   }
 }
 
