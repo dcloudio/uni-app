@@ -33,10 +33,12 @@ function handlePromise (promise) {
 }
 
 export function shouldPromise (name) {
-  if (isSyncApi(name)) {
-    return false
-  }
-  if (isCallbackApi(name)) {
+  if (
+    isContextApi(name) ||
+        isSyncApi(name) ||
+        isCallbackApi(name) ||
+        isTaskApi(name)
+  ) {
     return false
   }
   return true

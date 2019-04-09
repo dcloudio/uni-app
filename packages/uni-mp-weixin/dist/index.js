@@ -44,6 +44,8 @@ const SYNC_API_RE = /requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Syn
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
+const TASK_APIS = ['request', 'downloadFile', 'uploadFile', 'connectSocket'];
+
 const CALLBACK_API_RE = /^on/;
 
 function isContextApi (name) {
@@ -57,6 +59,10 @@ function isCallbackApi (name) {
   return CALLBACK_API_RE.test(name)
 }
 
+function isTaskApi (name) {
+  return TASK_APIS.indexOf(name) !== -1
+}
+
 function handlePromise (promise) {
   return promise.then(data => {
     return [null, data]
@@ -65,10 +71,12 @@ function handlePromise (promise) {
 }
 
 function shouldPromise (name) {
-  if (isSyncApi(name)) {
-    return false
-  }
-  if (isCallbackApi(name)) {
+  if (
+    isContextApi(name) ||
+        isSyncApi(name) ||
+        isCallbackApi(name) ||
+        isTaskApi(name)
+  ) {
     return false
   }
   return true
