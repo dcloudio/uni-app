@@ -34,6 +34,8 @@ function reLaunch (toName) {
   const pages = getCurrentPages()
   for (let i = pages.length - 1; i >= 0; i--) {
     callPageHook(pages[i], 'onUnload')
+    // 重新reLaunch至首页可能会被keepAlive，先手动强制destroy
+    pages[i].$destroy()
   }
   this.keepAliveInclude = []
 }
