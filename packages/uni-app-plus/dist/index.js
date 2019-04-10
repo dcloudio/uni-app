@@ -604,7 +604,7 @@ function initRefs (vm) {
       const components = mpInstance.selectAllComponents('.vue-ref');
       components.forEach(component => {
         const ref = component.dataset.ref;
-        $refs[ref] = component.$vm;
+        $refs[ref] = component.$vm || component;
       });
       const forComponents = mpInstance.selectAllComponents('.vue-ref-in-for');
       forComponents.forEach(component => {
@@ -612,7 +612,7 @@ function initRefs (vm) {
         if (!$refs[ref]) {
           $refs[ref] = [];
         }
-        $refs[ref].push(component.$vm);
+        $refs[ref].push(component.$vm || component);
       });
       return $refs
     }
