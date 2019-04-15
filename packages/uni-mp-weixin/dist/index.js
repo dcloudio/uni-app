@@ -298,6 +298,11 @@ const customize = cached((str) => {
 });
 
 function initTriggerEvent (mpInstance) {
+  {
+    if (!wx.canIUse('nextTick')) {
+      return
+    }
+  }
   const oldTriggerEvent = mpInstance.triggerEvent;
   mpInstance.triggerEvent = function (event, ...args) {
     return oldTriggerEvent.apply(mpInstance, [customize(event), ...args])
