@@ -31,7 +31,7 @@ function switchTab (routes) {
 function reLaunch (toName) {
   __uniConfig.reLaunch = (__uniConfig.reLaunch || 1) + 1
   // 关闭所有页面
-  const pages = getCurrentPages()
+  const pages = getCurrentPages(true)
   for (let i = pages.length - 1; i >= 0; i--) {
     callPageHook(pages[i], 'onUnload')
     // 重新reLaunch至首页可能会被keepAlive，先手动强制destroy
