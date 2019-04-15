@@ -36,8 +36,7 @@ export function shouldPromise (name) {
   if (
     isContextApi(name) ||
         isSyncApi(name) ||
-        isCallbackApi(name) ||
-        isTaskApi(name)
+        isCallbackApi(name)
   ) {
     return false
   }

@@ -3,8 +3,8 @@ import {
   camelize
 } from 'uni-shared'
 
-const WXPage = Page
-const WXComponent = Component
+const MPPage = Page
+const MPComponent = Component
 
 const customizeRE = /:/g
 
@@ -13,11 +13,9 @@ const customize = cached((str) => {
 })
 
 function initTriggerEvent (mpInstance) {
-  if (wx.canIUse('nextTick')) { // 微信旧版本基础库不支持重写triggerEvent
-    const oldTriggerEvent = mpInstance.triggerEvent
-    mpInstance.triggerEvent = function (event, ...args) {
-      return oldTriggerEvent.apply(mpInstance, [customize(event), ...args])
-    }
+  const oldTriggerEvent = mpInstance.triggerEvent
+  mpInstance.triggerEvent = function (event, ...args) {
+    return oldTriggerEvent.apply(mpInstance, [customize(event), ...args])
   }
 }
 
@@ -34,7 +32,7 @@ Page = function (options = {}) {
       return oldHook.apply(this, args)
     }
   }
-  return WXPage(options)
+  return MPPage(options)
 }
 
 const behavior = Behavior({
@@ -45,5 +43,5 @@ const behavior = Behavior({
 
 Component = function (options = {}) {
   (options.behaviors || (options.behaviors = [])).unshift(behavior)
-  return WXComponent(options)
+  return MPComponent(options)
 }

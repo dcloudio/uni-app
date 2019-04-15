@@ -1,3 +1,11 @@
+export function initPage () {
+
+}
+
+export function initComponent () {
+
+}
+
 export function triggerLink (mpInstance, vueOptions) {
   mpInstance.triggerEvent('__l', mpInstance.$vm || vueOptions, {
     bubbles: true,

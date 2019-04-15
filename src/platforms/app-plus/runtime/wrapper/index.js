@@ -1,21 +1,15 @@
-export function triggerLink (mpInstance, vueOptions) {
-  mpInstance.triggerEvent('__l', mpInstance.$vm || vueOptions, {
-    bubbles: true,
-    composed: true
-  })
+export {
+  handleLink,
+  triggerLink
+}
+  from '../../../mp-weixin/runtime/wrapper/index'
+
+export function initPage (pageOptions) {
+  initComponent(pageOptions)
 }
 
-export function handleLink (event) {
-  if (event.detail.$mp) { // vm
-    if (!event.detail.$parent) {
-      event.detail.$parent = this.$vm
-      event.detail.$parent.$children.push(event.detail)
-
-      event.detail.$root = this.$vm.$root
-    }
-  } else { // vueOptions
-    if (!event.detail.parent) {
-      event.detail.parent = this.$vm
-    }
+export function initComponent (componentOptions) {
+  componentOptions.methods.$getAppWebview = function () {
+    return plus.webview.getWebviewById(`${this.__wxWebviewId__}`)
   }
 }

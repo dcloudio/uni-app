@@ -5,6 +5,7 @@ import {
 } from 'uni-shared'
 
 import {
+  initPage,
   handleLink
 } from 'uni-platform/runtime/wrapper/index'
 
@@ -31,6 +32,24 @@ const hooks = [
   'onNavigationBarSearchInputClicked'
 ]
 
+function initVm (VueComponent) { // 百度的 onLoad 触发在 attached 之前
+  if (this.$vm) {
+    return
+  }
+
+  this.$vm = new VueComponent({
+    mpType: 'page',
+    mpInstance: this
+  })
+
+  if (__PLATFORM__ === 'mp-baidu') {
+    this.$vm.$baiduComponentInstances = Object.create(null)
+  }
+
+  this.$vm.__call_hook('created')
+  this.$vm.$mount()
+}
+
 export function createPage (vueOptions) {
   vueOptions = vueOptions.default || vueOptions
   let VueComponent
@@ -48,17 +67,7 @@ export function createPage (vueOptions) {
     data: getData(vueOptions, Vue.prototype),
     lifetimes: { // 当页面作为组件时
       attached () {
-        if (__PLATFORM__ === 'mp-baidu') {
-          this.$baiduComponentInstances = Object.create(null)
-        }
-
-        this.$vm = new VueComponent({
-          mpType: 'page',
-          mpInstance: this
-        })
-
-        this.$vm.__call_hook('created')
-        this.$vm.$mount()
+        initVm.call(this, VueComponent)
       },
       ready () {
         this.$vm.__call_hook('beforeMount')
@@ -72,6 +81,10 @@ export function createPage (vueOptions) {
     },
     methods: { // 作为页面时
       onLoad (args) {
+        initVm.call(this, VueComponent)
+        if (__PLATFORM__ === 'mp-baidu') { // 百度当组件作为页面时 pageinstancce 不是原来组件的 instance
+          this.pageinstance.$vm = this.$vm
+        }
         this.$vm.$mp.query = args // 又要兼容 mpvue
         this.$vm.__call_hook('onLoad', args) // 开发者可能会在 onLoad 时赋值，提前到 mount 之前
       },
@@ -88,11 +101,7 @@ export function createPage (vueOptions) {
 
   initHooks(pageOptions.methods, hooks)
 
-  if (__PLATFORM__ === 'app-plus') {
-    pageOptions.methods.$getAppWebview = function () {
-      return plus.webview.getWebviewById(`${this.__wxWebviewId__}`)
-    }
-  }
+  initPage(pageOptions)
 
   return Component(pageOptions)
 }

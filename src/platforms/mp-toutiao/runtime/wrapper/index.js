@@ -1,4 +1,42 @@
 const instances = Object.create(null)
+
+export function initPage (pageOptions) {
+  initComponent(pageOptions)
+}
+
+export function initComponent (componentOptions) {
+  if (componentOptions.properties) { // ref
+    componentOptions.properties.vueRef = {
+      type: String,
+      value: ''
+    }
+  }
+  const oldAttached = componentOptions.lifetimes.attached
+  componentOptions.lifetimes.attached = function () {
+    oldAttached.call(this)
+    // TODO 需要处理动态变化后的 refs
+    initRefs.call(this)
+  }
+}
+
+function initRefs () {
+  this.selectAllComponents('.vue-ref', (components) => {
+    components.forEach(component => {
+      const ref = component.data.vueRef // 头条的组件 dataset 竟然是空的
+      this.$vm.$refs[ref] = component.$vm || component
+    })
+  })
+  this.selectAllComponents('.vue-ref-in-for', (forComponents) => {
+    forComponents.forEach(component => {
+      const ref = component.data.vueRef
+      if (!this.$vm.$refs[ref]) {
+        this.$vm.$refs[ref] = []
+      }
+      this.$vm.$refs[ref].push(component.$vm || component)
+    })
+  })
+}
+
 export function triggerLink (mpInstance) {
   const nodeId = mpInstance.__nodeid__ + ''
   const webviewId = mpInstance.__webviewId__ + ''

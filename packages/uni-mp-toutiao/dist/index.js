@@ -21,7 +21,26 @@ function hasOwn (obj, key) {
 
 function noop () {}
 
-const SYNC_API_RE = /hideKeyboard|upx2px|canIUse|^create|Sync$|Manager$/;
+/**
+ * Create a cached version of a pure function.
+ */
+function cached (fn) {
+  const cache = Object.create(null);
+  return function cachedFn (str) {
+    const hit = cache[str];
+    return hit || (cache[str] = fn(str))
+  }
+}
+
+/**
+ * Camelize a hyphen-delimited string.
+ */
+const camelizeRE = /-(\w)/g;
+const camelize = cached((str) => {
+  return str.replace(camelizeRE, (_, c) => c ? c.toUpperCase() : '')
+});
+
+const SYNC_API_RE = /requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -46,10 +65,11 @@ function handlePromise (promise) {
 }
 
 function shouldPromise (name) {
-  if (isSyncApi(name)) {
-    return false
-  }
-  if (isCallbackApi(name)) {
+  if (
+    isContextApi(name) ||
+        isSyncApi(name) ||
+        isCallbackApi(name)
+  ) {
     return false
   }
   return true
@@ -426,7 +446,50 @@ var api = /*#__PURE__*/Object.freeze({
 
 });
 
-const MOCKS = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__'];
+const MPPage = Page;
+const MPComponent = Component;
+
+const customizeRE = /:/g;
+
+const customize = cached((str) => {
+  return camelize(str.replace(customizeRE, '-'))
+});
+
+function initTriggerEvent (mpInstance) {
+  const oldTriggerEvent = mpInstance.triggerEvent;
+  mpInstance.triggerEvent = function (event, ...args) {
+    return oldTriggerEvent.apply(mpInstance, [customize(event), ...args])
+  };
+}
+
+Page = function (options = {}) {
+  const name = 'onLoad';
+  const oldHook = options[name];
+  if (!oldHook) {
+    options[name] = function () {
+      initTriggerEvent(this);
+    };
+  } else {
+    options[name] = function (...args) {
+      initTriggerEvent(this);
+      return oldHook.apply(this, args)
+    };
+  }
+  return MPPage(options)
+};
+
+const behavior = Behavior({
+  created () {
+    initTriggerEvent(this);
+  }
+});
+
+Component = function (options = {}) {
+  (options.behaviors || (options.behaviors = [])).unshift(behavior);
+  return MPComponent(options)
+};
+
+const MOCKS = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__', '__webviewId__'];
 
 function initMocks (vm) {
   const mpInstance = vm.$mp[vm.mpType];
@@ -437,25 +500,21 @@ function initMocks (vm) {
   });
 }
 
-function initHooks (mpOptions, hooks, delay = false) {
+function initHooks (mpOptions, hooks) {
   hooks.forEach(hook => {
     mpOptions[hook] = function (args) {
-      if (delay) {
-        setTimeout(() => this.$vm.__call_hook(hook, args));
-      } else {
-        this.$vm.__call_hook(hook, args);
-      }
+      return this.$vm.__call_hook(hook, args)
     };
   });
 }
 
-function getData (vueOptions) {
+function getData (vueOptions, context) {
   let data = vueOptions.data || {};
   const methods = vueOptions.methods || {};
 
   if (typeof data === 'function') {
     try {
-      data = data();
+      data = data.call(context); // 支持 Vue.prototype 上挂的数据
     } catch (e) {
       if (process.env.VUE_APP_DEBUG) {
         console.warn('根据 Vue 的 data 函数初始化小程序 data 失败，请尽量确保 data 函数中不访问 vm 对象，否则可能影响首次数据渲染速度。', data);
@@ -469,7 +528,7 @@ function getData (vueOptions) {
   }
 
   Object.keys(methods).forEach(methodName => {
-    if (!hasOwn(data, methodName)) {
+    if (context.__lifecycle_hooks__.indexOf(methodName) === -1 && !hasOwn(data, methodName)) {
       data[methodName] = methods[methodName];
     }
   });
@@ -539,24 +598,123 @@ function wrapper$1 (event) {
   event.preventDefault = noop;
 
   event.target = event.target || {};
-  event.detail = event.detail || {};
+
+  if (!hasOwn(event, 'detail')) {
+    event.detail = {};
+  }
 
   // TODO 又得兼容 mpvue 的 mp 对象
   event.mp = event;
-  event.target = Object.assign({}, event.target, event.detail);
+
+  if (isPlainObject(event.detail)) {
+    event.target = Object.assign({}, event.target, event.detail);
+  }
+
   return event
 }
 
-function processEventArgs (event, args = [], isCustom) {
-  if (isCustom && !args.length) { // 无参数，直接传入 detail 数组
-    return event.detail
+function getExtraValue (vm, dataPathsArray) {
+  let context = vm;
+  dataPathsArray.forEach(dataPathArray => {
+    const dataPath = dataPathArray[0];
+    const value = dataPathArray[2];
+    if (dataPath || typeof value !== 'undefined') { // ['','',index,'disable']
+      const propPath = dataPathArray[1];
+      const valuePath = dataPathArray[3];
+
+      const vFor = dataPath ? vm.__get_value(dataPath, context) : context;
+
+      if (Number.isInteger(vFor)) {
+        context = value;
+      } else if (!propPath) {
+        context = vFor[value];
+      } else {
+        if (Array.isArray(vFor)) {
+          context = vFor.find(vForItem => {
+            return vm.__get_value(propPath, vForItem) === value
+          });
+        } else if (isPlainObject(vFor)) {
+          context = Object.keys(vFor).find(vForKey => {
+            return vm.__get_value(propPath, vFor[vForKey]) === value
+          });
+        } else {
+          console.error('v-for 暂不支持循环数据：', vFor);
+        }
+      }
+
+      if (valuePath) {
+        context = vm.__get_value(valuePath, context);
+      }
+    }
+  });
+  return context
+}
+
+function processEventExtra (vm, extra) {
+  const extraObj = {};
+
+  if (Array.isArray(extra) && extra.length) {
+    /**
+         *[
+         *    ['data.items', 'data.id', item.data.id],
+         *    ['metas', 'id', meta.id]
+         *],
+         *[
+         *    ['data.items', 'data.id', item.data.id],
+         *    ['metas', 'id', meta.id]
+         *],
+         *'test'
+         */
+    extra.forEach((dataPath, index) => {
+      if (typeof dataPath === 'string') {
+        if (!dataPath) { // model,prop.sync
+          extraObj['$' + index] = vm;
+        } else {
+          extraObj['$' + index] = vm.__get_value(dataPath);
+        }
+      } else {
+        extraObj['$' + index] = getExtraValue(vm, dataPath);
+      }
+    });
   }
+
+  return extraObj
+}
+
+function processEventArgs (vm, event, args = [], extra = [], isCustom, methodName) {
+  let isCustomMPEvent = false; // wxcomponent 组件，传递原始 event 对象
+  if (isCustom) { // 自定义事件
+    isCustomMPEvent = event.currentTarget &&
+            event.currentTarget.dataset &&
+            event.currentTarget.dataset.comType === 'wx';
+    if (!args.length) { // 无参数，直接传入 event 或 detail 数组
+      if (isCustomMPEvent) {
+        return [event]
+      }
+      return event.detail.__args__ || event.detail
+    }
+  }
+
+  const extraObj = processEventExtra(vm, extra);
+
   const ret = [];
   args.forEach(arg => {
     if (arg === '$event') {
-      ret.push(isCustom ? event.detail[0] : event);
+      if (methodName === '__set_model' && !isCustom) { // input v-model value
+        ret.push(event.target.value);
+      } else {
+        if (isCustom && !isCustomMPEvent) {
+          ret.push(event.detail.__args__[0]);
+        } else { // wxcomponent 组件或内置组件
+          ret.push(event);
+        }
+      }
     } else {
-      ret.push(arg);
+      if (typeof arg === 'string' && hasOwn(extraObj, arg)) {
+        ret.push(extraObj[arg]);
+      } else {
+        ret.push(arg);
+      }
     }
   });
 
@@ -588,54 +746,52 @@ function handleEvent (event) {
 
     if (eventsArray && eventType === type) {
       eventsArray.forEach(eventArray => {
-        const handler = this.$vm[eventArray[0]];
-        if (!isFn(handler)) {
-          throw new Error(` _vm.${eventArray[0]} is not a function`)
-        }
-        if (isOnce) {
-          if (handler.once) {
-            return
+        const methodName = eventArray[0];
+        if (methodName) {
+          const handler = this.$vm[methodName];
+          if (!isFn(handler)) {
+            throw new Error(` _vm.${methodName} is not a function`)
           }
-          handler.once = true;
+          if (isOnce) {
+            if (handler.once) {
+              return
+            }
+            handler.once = true;
+          }
+          handler.apply(this.$vm, processEventArgs(
+            this.$vm,
+            event,
+            eventArray[1],
+            eventArray[2],
+            isCustom,
+            methodName
+          ));
         }
-        handler.apply(this.$vm, processEventArgs(event, eventArray[1], isCustom));
       });
-    }
-  });
-}
-
-function initRefs (vm) {
-  const mpInstance = vm.$mp[vm.mpType];
-  Object.defineProperty(vm, '$refs', {
-    get () {
-      const $refs = Object.create(null);
-      const components = mpInstance.selectAllComponents('.vue-ref');
-      components.forEach(component => {
-        const ref = component.dataset.ref;
-        $refs[ref] = component.$vm;
-      });
-      const forComponents = mpInstance.selectAllComponents('.vue-ref-in-for');
-      forComponents.forEach(component => {
-        const ref = component.dataset.ref;
-        if (!$refs[ref]) {
-          $refs[ref] = [];
-        }
-        $refs[ref].push(component.$vm);
-      });
-      return $refs
     }
   });
 }
 
 const hooks = [
-  'onShow',
   'onHide',
   'onError',
-  'onPageNotFound'
+  'onPageNotFound',
+  'onUniNViewMessage'
 ];
 
-function createApp (vueOptions) {
-  vueOptions = vueOptions.default || vueOptions;
+function initVm (vm) {
+  if (this.$vm) { // 百度竟然 onShow 在 onLaunch 之前？
+    return
+  }
+
+  this.$vm = vm;
+
+  this.$vm.$mp = {
+    app: this
+  };
+}
+
+function createApp (vm) {
   // 外部初始化时 Vue 还未初始化，放到 createApp 内部初始化 mixin
   Vue.mixin({
     beforeCreate () {
@@ -651,7 +807,6 @@ function createApp (vueOptions) {
       delete this.$options.mpInstance;
 
       if (this.mpType !== 'app') {
-        initRefs(this);
         initMocks(this);
       }
     },
@@ -663,24 +818,69 @@ function createApp (vueOptions) {
 
   const appOptions = {
     onLaunch (args) {
-      this.$vm = new Vue(Object.assign(vueOptions, {
-        mpType: 'app',
-        mpInstance: this
-      }));
+      initVm.call(this, vm);
 
-      this.$vm.$mount();
-      setTimeout(() => this.$vm.__call_hook('onLaunch', args));
+      this.$vm._isMounted = true;
+      this.$vm.__call_hook('mounted');
+
+      this.$vm.__call_hook('onLaunch', args);
+    },
+    onShow (args) {
+      initVm.call(this, vm);
+
+      this.$vm.__call_hook('onShow', args);
     }
   };
 
-  initHooks(appOptions, hooks, true); // 延迟执行，因为 App 的注册在 main.js 之前，可能导致生命周期内 Vue 原型上开发者注册的属性无法访问
+  // 兼容旧版本 globalData
+  appOptions.globalData = vm.$options.globalData || {};
+
+  initHooks(appOptions, hooks); // 延迟执行，因为 App 的注册在 main.js 之前，可能导致生命周期内 Vue 原型上开发者注册的属性无法访问
 
   App(appOptions);
 
-  return vueOptions
+  return vm
 }
 
 const instances = Object.create(null);
+
+function initPage (pageOptions) {
+  initComponent(pageOptions);
+}
+
+function initComponent (componentOptions) {
+  if (componentOptions.properties) { // ref
+    componentOptions.properties.vueRef = {
+      type: String,
+      value: ''
+    };
+  }
+  const oldAttached = componentOptions.lifetimes.attached;
+  componentOptions.lifetimes.attached = function () {
+    oldAttached.call(this);
+    // TODO 需要处理动态变化后的 refs
+    initRefs$1.call(this);
+  };
+}
+
+function initRefs$1 () {
+  this.selectAllComponents('.vue-ref', (components) => {
+    components.forEach(component => {
+      const ref = component.data.vueRef; // 头条的组件 dataset 竟然是空的
+      this.$vm.$refs[ref] = component.$vm || component;
+    });
+  });
+  this.selectAllComponents('.vue-ref-in-for', (forComponents) => {
+    forComponents.forEach(component => {
+      const ref = component.data.vueRef;
+      if (!this.$vm.$refs[ref]) {
+        this.$vm.$refs[ref] = [];
+      }
+      this.$vm.$refs[ref].push(component.$vm || component);
+    });
+  });
+}
+
 function triggerLink (mpInstance) {
   const nodeId = mpInstance.__nodeid__ + '';
   const webviewId = mpInstance.__webviewId__ + '';
@@ -727,63 +927,95 @@ const hooks$1 = [
   'onNavigationBarSearchInputClicked'
 ];
 
-function createPage (vueOptions) {
-  vueOptions = vueOptions.default || vueOptions;
-  const pageOptions = {
-    data: getData(vueOptions),
-    onLoad (args) {
-
-      this.$vm = new Vue(Object.assign(vueOptions, {
-        mpType: 'page',
-        mpInstance: this
-      }));
-
-      this.$vm.__call_hook('created');
-      this.$vm.__call_hook('onLoad', args); // 开发者一般可能会在 onLoad 时赋值，所以提前到 mount 之前
-      this.$vm.$mount();
-    },
-    onReady () {
-      this.$vm._isMounted = true;
-      this.$vm.__call_hook('mounted');
-      this.$vm.__call_hook('onReady');
-    },
-    onUnload () {
-      this.$vm.__call_hook('onUnload');
-      {
-        this.$vm.$destroy();
-      }
-    },
-    __e: handleEvent,
-    __l: handleLink
-  };
-
-  initHooks(pageOptions, hooks$1);
-
-  return Page(pageOptions)
-}
-
-function initVueComponent (mpInstace, VueComponent, extraOptions = {}) {
-  if (mpInstace.$vm) {
+function initVm$1 (VueComponent) { // 百度的 onLoad 触发在 attached 之前
+  if (this.$vm) {
     return
   }
 
-  const options = Object.assign({
+  this.$vm = new VueComponent({
+    mpType: 'page',
+    mpInstance: this
+  });
+
+  this.$vm.__call_hook('created');
+  this.$vm.$mount();
+}
+
+function createPage (vueOptions) {
+  vueOptions = vueOptions.default || vueOptions;
+  let VueComponent;
+  if (isFn(vueOptions)) {
+    VueComponent = vueOptions;
+    vueOptions = VueComponent.extendOptions;
+  } else {
+    VueComponent = Vue.extend(vueOptions);
+  }
+  const pageOptions = {
+    options: {
+      multipleSlots: true,
+      addGlobalClass: true
+    },
+    data: getData(vueOptions, Vue.prototype),
+    lifetimes: { // 当页面作为组件时
+      attached () {
+        initVm$1.call(this, VueComponent);
+      },
+      ready () {
+        this.$vm.__call_hook('beforeMount');
+        this.$vm._isMounted = true;
+        this.$vm.__call_hook('mounted');
+        this.$vm.__call_hook('onReady');
+      },
+      detached () {
+        this.$vm.$destroy();
+      }
+    },
+    methods: { // 作为页面时
+      onLoad (args) {
+        initVm$1.call(this, VueComponent);
+        this.$vm.$mp.query = args; // 又要兼容 mpvue
+        this.$vm.__call_hook('onLoad', args); // 开发者可能会在 onLoad 时赋值，提前到 mount 之前
+      },
+      onUnload () {
+        this.$vm.__call_hook('onUnload');
+      },
+      __e: handleEvent,
+      __l: handleLink
+    }
+  };
+
+  initHooks(pageOptions.methods, hooks$1);
+
+  initPage(pageOptions);
+
+  return Component(pageOptions)
+}
+
+function initVm$2 (VueComponent) {
+  if (this.$vm) {
+    return
+  }
+
+  const options = {
     mpType: 'component',
-    mpInstance: mpInstace,
-    propsData: mpInstace.properties
-  }, extraOptions);
+    mpInstance: this,
+    propsData: this.properties
+  };
   // 初始化 vue 实例
-  mpInstace.$vm = new VueComponent(options);
+  this.$vm = new VueComponent(options);
 
   // 处理$slots,$scopedSlots（暂不支持动态变化$slots）
-  const vueSlots = mpInstace.properties.vueSlots;
+  const vueSlots = this.properties.vueSlots;
   if (Array.isArray(vueSlots) && vueSlots.length) {
     const $slots = Object.create(null);
     vueSlots.forEach(slotName => {
       $slots[slotName] = true;
     });
-    mpInstace.$vm.$scopedSlots = mpInstace.$vm.$slots = $slots;
+    this.$vm.$scopedSlots = this.$vm.$slots = $slots;
   }
+  // 性能优先，mount 提前到 attached 中，保证组件首次渲染数据被合并
+  // 导致与标准 Vue 的差异，data 和 computed 中不能使用$parent，provide等组件属性
+  this.$vm.$mount();
 }
 
 function createComponent (vueOptions) {
@@ -798,19 +1030,19 @@ function createComponent (vueOptions) {
       multipleSlots: true,
       addGlobalClass: true
     },
-    data: getData(vueOptions),
+    data: getData(vueOptions, Vue.prototype),
     properties,
     lifetimes: {
       attached () {
-        initVueComponent(this, VueComponent);
+        initVm$2.call(this, VueComponent);
       },
       ready () {
-        initVueComponent(this, VueComponent); // 目前发现部分情况小程序 attached 不触发
+        initVm$2.call(this, VueComponent); // 目前发现部分情况小程序 attached 不触发
         triggerLink(this); // 处理 parent,children
 
-        // 初始化渲染数据(需要等 parent，inject 都初始化完成，否则可以放到 attached 里边初始化渲染)
+        // 补充生命周期
         this.$vm.__call_hook('created');
-        this.$vm.$mount();
+        this.$vm.__call_hook('beforeMount');
         this.$vm._isMounted = true;
         this.$vm.__call_hook('mounted');
         this.$vm.__call_hook('onReady');
@@ -836,6 +1068,8 @@ function createComponent (vueOptions) {
     }
   };
 
+  initComponent(componentOptions);
+
   return Component(componentOptions)
 }
 
@@ -850,11 +1084,13 @@ if (typeof Proxy !== 'undefined') {
       if (api[name]) {
         return promisify(name, api[name])
       }
-      if (extraApi[name]) {
-        return promisify(name, extraApi[name])
-      }
-      if (todoApis[name]) {
-        return promisify(name, todoApis[name])
+      {
+        if (extraApi[name]) {
+          return promisify(name, extraApi[name])
+        }
+        if (todoApis[name]) {
+          return promisify(name, todoApis[name])
+        }
       }
       if (!hasOwn(tt, name) && !hasOwn(protocols, name)) {
         return
@@ -865,13 +1101,14 @@ if (typeof Proxy !== 'undefined') {
 } else {
   uni.upx2px = upx2px;
 
-  Object.keys(todoApis).forEach(name => {
-    uni[name] = promisify(name, todoApis[name]);
-  });
-
-  Object.keys(extraApi).forEach(name => {
-    uni[name] = promisify(name, todoApis[name]);
-  });
+  {
+    Object.keys(todoApis).forEach(name => {
+      uni[name] = promisify(name, todoApis[name]);
+    });
+    Object.keys(extraApi).forEach(name => {
+      uni[name] = promisify(name, todoApis[name]);
+    });
+  }
 
   Object.keys(api).forEach(name => {
     uni[name] = promisify(name, api[name]);

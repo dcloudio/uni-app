@@ -1,28 +1,29 @@
-export function triggerLink (mpInstance) {
-  const baiduComponentInstances = mpInstance.pageinstance.$baiduComponentInstances
+export function initPage (pageOptions) {
+  initComponent(pageOptions)
+}
 
-  baiduComponentInstances[mpInstance.id] = mpInstance
-  if (mpInstance.ownerId) { // 组件嵌组件
-    const parentBaiduComponentInstance = baiduComponentInstances[mpInstance.ownerId]
-    if (parentBaiduComponentInstance) {
-      handleLink.call(parentBaiduComponentInstance, {
-        detail: mpInstance
-      })
-    } else {
-      console.error(`查找父组件失败${mpInstance.ownerId}`)
-    }
-  } else { // 页面直属组件
-    handleLink.call(mpInstance.pageinstance, {
-      detail: mpInstance
-    })
+export function initComponent (componentOptions) {
+  componentOptions.messages = {
+    '__l': handleLink
   }
 }
 
-export function handleLink (event) {
-  if (!event.detail.$parent) {
-    event.detail.$parent = this.$vm
-    event.detail.$parent.$children.push(event.detail)
+export function triggerLink (mpInstance, vueOptions) {
+  mpInstance.dispatch('__l', mpInstance.$vm || vueOptions)
+}
 
-    event.detail.$root = this.$vm.$root
+export function handleLink (event) {
+  const target = event.value
+  if (target.$mp) {
+    if (!target.$parent) {
+      target.$parent = this.$vm
+      target.$parent.$children.push(target)
+
+      target.$root = this.$vm.$root
+    }
+  } else {
+    if (!target.parent) {
+      target.parent = this.$vm
+    }
   }
 }

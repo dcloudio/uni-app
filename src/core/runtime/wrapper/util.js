@@ -5,7 +5,7 @@ import {
   isPlainObject
 } from 'uni-shared'
 
-const MOCKS = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__']
+const MOCKS = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__', '__webviewId__']
 
 export function initMocks (vm) {
   const mpInstance = vm.$mp[vm.mpType]
@@ -217,7 +217,7 @@ function processEventArgs (vm, event, args = [], extra = [], isCustom, methodNam
       if (isCustomMPEvent) {
         return [event]
       }
-      return event.detail
+      return event.detail.__args__ || event.detail
     }
   }
 
@@ -230,7 +230,7 @@ function processEventArgs (vm, event, args = [], extra = [], isCustom, methodNam
         ret.push(event.target.value)
       } else {
         if (isCustom && !isCustomMPEvent) {
-          ret.push(event.detail[0])
+          ret.push(event.detail.__args__[0])
         } else { // wxcomponent 组件或内置组件
           ret.push(event)
         }
@@ -302,7 +302,7 @@ export function initRefs (vm) {
   const mpInstance = vm.$mp[vm.mpType]
   Object.defineProperty(vm, '$refs', {
     get () {
-      const $refs = Object.create(null)
+      const $refs = {}
       const components = mpInstance.selectAllComponents('.vue-ref')
       components.forEach(component => {
         const ref = component.dataset.ref

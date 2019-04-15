@@ -9,12 +9,28 @@ import {
 } from './util'
 
 const hooks = [
-  'onShow',
   'onHide',
   'onError',
   'onPageNotFound',
   'onUniNViewMessage'
 ]
+
+function initVm (vm) {
+  if (this.$vm) { // 百度竟然 onShow 在 onLaunch 之前？
+    return
+  }
+  if (__PLATFORM__ === 'mp-weixin') {
+    if (!wx.canIUse('nextTick')) { // 事实 上2.2.3 即可，简单使用 2.3.0 的 nextTick 判断
+      console.error('当前微信基础库版本过低，请将 微信开发者工具-详情-项目设置-调试基础库版本 更换为`2.3.0`以上')
+    }
+  }
+
+  this.$vm = vm
+
+  this.$vm.$mp = {
+    app: this
+  }
+}
 
 export function createApp (vm) {
   // 外部初始化时 Vue 还未初始化，放到 createApp 内部初始化 mixin
@@ -32,7 +48,9 @@ export function createApp (vm) {
       delete this.$options.mpInstance
 
       if (this.mpType !== 'app') {
-        initRefs(this)
+        if (__PLATFORM__ !== 'mp-toutiao') { // 头条的 selectComponent 竟然是异步的
+          initRefs(this)
+        }
         initMocks(this)
       }
     },
@@ -44,22 +62,17 @@ export function createApp (vm) {
 
   const appOptions = {
     onLaunch (args) {
-      if (__PLATFORM__ === 'mp-weixin') {
-        if (!wx.canIUse('nextTick')) { // 事实 上2.2.3 即可，简单使用 2.3.0 的 nextTick 判断
-          console.error('当前微信基础库版本过低，请将 微信开发者工具-详情-项目设置-调试基础库版本 更换为`2.3.0`以上')
-        }
-      }
-
-      this.$vm = vm
-
-      this.$vm.$mp = {
-        app: this
-      }
+      initVm.call(this, vm)
 
       this.$vm._isMounted = true
       this.$vm.__call_hook('mounted')
 
       this.$vm.__call_hook('onLaunch', args)
+    },
+    onShow (args) {
+      initVm.call(this, vm)
+
+      this.$vm.__call_hook('onShow', args)
     }
   }
 

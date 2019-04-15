@@ -2,7 +2,8 @@ import Vue from 'vue'
 
 import {
   handleLink,
-  triggerLink
+  triggerLink,
+  initComponent
 } from 'uni-platform/runtime/wrapper/index'
 
 import {
@@ -11,31 +12,31 @@ import {
   getProperties
 } from './util'
 
-function initVueComponent (mpInstace, VueComponent, extraOptions = {}) {
-  if (mpInstace.$vm) {
+function initVm (VueComponent) {
+  if (this.$vm) {
     return
   }
 
-  const options = Object.assign({
+  const options = {
     mpType: 'component',
-    mpInstance: mpInstace,
-    propsData: mpInstace.properties
-  }, extraOptions)
+    mpInstance: this,
+    propsData: this.properties
+  }
   // 初始化 vue 实例
-  mpInstace.$vm = new VueComponent(options)
+  this.$vm = new VueComponent(options)
 
   // 处理$slots,$scopedSlots（暂不支持动态变化$slots）
-  const vueSlots = mpInstace.properties.vueSlots
+  const vueSlots = this.properties.vueSlots
   if (Array.isArray(vueSlots) && vueSlots.length) {
     const $slots = Object.create(null)
     vueSlots.forEach(slotName => {
       $slots[slotName] = true
     })
-    mpInstace.$vm.$scopedSlots = mpInstace.$vm.$slots = $slots
+    this.$vm.$scopedSlots = this.$vm.$slots = $slots
   }
   // 性能优先，mount 提前到 attached 中，保证组件首次渲染数据被合并
   // 导致与标准 Vue 的差异，data 和 computed 中不能使用$parent，provide等组件属性
-  mpInstace.$vm.$mount()
+  this.$vm.$mount()
 }
 
 export function createComponent (vueOptions) {
@@ -54,10 +55,10 @@ export function createComponent (vueOptions) {
     properties,
     lifetimes: {
       attached () {
-        initVueComponent(this, VueComponent)
+        initVm.call(this, VueComponent)
       },
       ready () {
-        initVueComponent(this, VueComponent) // 目前发现部分情况小程序 attached 不触发
+        initVm.call(this, VueComponent) // 目前发现部分情况小程序 attached 不触发
         triggerLink(this) // 处理 parent,children
 
         // 补充生命周期
@@ -68,9 +69,6 @@ export function createComponent (vueOptions) {
         this.$vm.__call_hook('onReady')
       },
       detached () {
-        if (__PLATFORM__ === 'mp-baidu') {
-          delete this.pageinstance.$baiduComponentInstances[this.id]
-        }
         this.$vm.$destroy()
       }
     },
@@ -90,6 +88,8 @@ export function createComponent (vueOptions) {
       __l: handleLink
     }
   }
+
+  initComponent(componentOptions)
 
   return Component(componentOptions)
 }

@@ -44,8 +44,6 @@ const SYNC_API_RE = /requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Syn
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
-const TASK_APIS = ['request', 'downloadFile', 'uploadFile', 'connectSocket'];
-
 const CALLBACK_API_RE = /^on/;
 
 function isContextApi (name) {
@@ -59,10 +57,6 @@ function isCallbackApi (name) {
   return CALLBACK_API_RE.test(name)
 }
 
-function isTaskApi (name) {
-  return TASK_APIS.indexOf(name) !== -1
-}
-
 function handlePromise (promise) {
   return promise.then(data => {
     return [null, data]
@@ -74,8 +68,7 @@ function shouldPromise (name) {
   if (
     isContextApi(name) ||
         isSyncApi(name) ||
-        isCallbackApi(name) ||
-        isTaskApi(name)
+        isCallbackApi(name)
   ) {
     return false
   }
@@ -268,8 +261,8 @@ var api = /*#__PURE__*/Object.freeze({
   requireNativePlugin: requireNativePlugin
 });
 
-const WXPage = Page;
-const WXComponent = Component;
+const MPPage = Page;
+const MPComponent = Component;
 
 const customizeRE = /:/g;
 
@@ -278,12 +271,10 @@ const customize = cached((str) => {
 });
 
 function initTriggerEvent (mpInstance) {
-  if (wx.canIUse('nextTick')) { // 微信旧版本基础库不支持重写triggerEvent
-    const oldTriggerEvent = mpInstance.triggerEvent;
-    mpInstance.triggerEvent = function (event, ...args) {
-      return oldTriggerEvent.apply(mpInstance, [customize(event), ...args])
-    };
-  }
+  const oldTriggerEvent = mpInstance.triggerEvent;
+  mpInstance.triggerEvent = function (event, ...args) {
+    return oldTriggerEvent.apply(mpInstance, [customize(event), ...args])
+  };
 }
 
 Page = function (options = {}) {
@@ -299,7 +290,7 @@ Page = function (options = {}) {
       return oldHook.apply(this, args)
     };
   }
-  return WXPage(options)
+  return MPPage(options)
 };
 
 const behavior = Behavior({
@@ -310,10 +301,10 @@ const behavior = Behavior({
 
 Component = function (options = {}) {
   (options.behaviors || (options.behaviors = [])).unshift(behavior);
-  return WXComponent(options)
+  return MPComponent(options)
 };
 
-const MOCKS = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__'];
+const MOCKS = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__', '__webviewId__'];
 
 function initMocks (vm) {
   const mpInstance = vm.$mp[vm.mpType];
@@ -515,7 +506,7 @@ function processEventArgs (vm, event, args = [], extra = [], isCustom, methodNam
       if (isCustomMPEvent) {
         return [event]
       }
-      return event.detail
+      return event.detail.__args__ || event.detail
     }
   }
 
@@ -528,7 +519,7 @@ function processEventArgs (vm, event, args = [], extra = [], isCustom, methodNam
         ret.push(event.target.value);
       } else {
         if (isCustom && !isCustomMPEvent) {
-          ret.push(event.detail[0]);
+          ret.push(event.detail.__args__[0]);
         } else { // wxcomponent 组件或内置组件
           ret.push(event);
         }
@@ -600,7 +591,7 @@ function initRefs (vm) {
   const mpInstance = vm.$mp[vm.mpType];
   Object.defineProperty(vm, '$refs', {
     get () {
-      const $refs = Object.create(null);
+      const $refs = {};
       const components = mpInstance.selectAllComponents('.vue-ref');
       components.forEach(component => {
         const ref = component.dataset.ref;
@@ -620,12 +611,23 @@ function initRefs (vm) {
 }
 
 const hooks = [
-  'onShow',
   'onHide',
   'onError',
   'onPageNotFound',
   'onUniNViewMessage'
 ];
+
+function initVm (vm) {
+  if (this.$vm) { // 百度竟然 onShow 在 onLaunch 之前？
+    return
+  }
+
+  this.$vm = vm;
+
+  this.$vm.$mp = {
+    app: this
+  };
+}
 
 function createApp (vm) {
   // 外部初始化时 Vue 还未初始化，放到 createApp 内部初始化 mixin
@@ -643,7 +645,9 @@ function createApp (vm) {
       delete this.$options.mpInstance;
 
       if (this.mpType !== 'app') {
-        initRefs(this);
+        { // 头条的 selectComponent 竟然是异步的
+          initRefs(this);
+        }
         initMocks(this);
       }
     },
@@ -655,17 +659,17 @@ function createApp (vm) {
 
   const appOptions = {
     onLaunch (args) {
-
-      this.$vm = vm;
-
-      this.$vm.$mp = {
-        app: this
-      };
+      initVm.call(this, vm);
 
       this.$vm._isMounted = true;
       this.$vm.__call_hook('mounted');
 
       this.$vm.__call_hook('onLaunch', args);
+    },
+    onShow (args) {
+      initVm.call(this, vm);
+
+      this.$vm.__call_hook('onShow', args);
     }
   };
 
@@ -701,6 +705,16 @@ function handleLink (event) {
   }
 }
 
+function initPage$1 (pageOptions) {
+  initComponent$1(pageOptions);
+}
+
+function initComponent$1 (componentOptions) {
+  componentOptions.methods.$getAppWebview = function () {
+    return plus.webview.getWebviewById(`${this.__wxWebviewId__}`)
+  };
+}
+
 const hooks$1 = [
   'onShow',
   'onHide',
@@ -716,6 +730,20 @@ const hooks$1 = [
   'onNavigationBarSearchInputConfirmed',
   'onNavigationBarSearchInputClicked'
 ];
+
+function initVm$1 (VueComponent) { // 百度的 onLoad 触发在 attached 之前
+  if (this.$vm) {
+    return
+  }
+
+  this.$vm = new VueComponent({
+    mpType: 'page',
+    mpInstance: this
+  });
+
+  this.$vm.__call_hook('created');
+  this.$vm.$mount();
+}
 
 function createPage (vueOptions) {
   vueOptions = vueOptions.default || vueOptions;
@@ -734,14 +762,7 @@ function createPage (vueOptions) {
     data: getData(vueOptions, Vue.prototype),
     lifetimes: { // 当页面作为组件时
       attached () {
-
-        this.$vm = new VueComponent({
-          mpType: 'page',
-          mpInstance: this
-        });
-
-        this.$vm.__call_hook('created');
-        this.$vm.$mount();
+        initVm$1.call(this, VueComponent);
       },
       ready () {
         this.$vm.__call_hook('beforeMount');
@@ -755,6 +776,7 @@ function createPage (vueOptions) {
     },
     methods: { // 作为页面时
       onLoad (args) {
+        initVm$1.call(this, VueComponent);
         this.$vm.$mp.query = args; // 又要兼容 mpvue
         this.$vm.__call_hook('onLoad', args); // 开发者可能会在 onLoad 时赋值，提前到 mount 之前
       },
@@ -768,40 +790,36 @@ function createPage (vueOptions) {
 
   initHooks(pageOptions.methods, hooks$1);
 
-  {
-    pageOptions.methods.$getAppWebview = function () {
-      return plus.webview.getWebviewById(`${this.__wxWebviewId__}`)
-    };
-  }
+  initPage$1(pageOptions);
 
   return Component(pageOptions)
 }
 
-function initVueComponent (mpInstace, VueComponent, extraOptions = {}) {
-  if (mpInstace.$vm) {
+function initVm$2 (VueComponent) {
+  if (this.$vm) {
     return
   }
 
-  const options = Object.assign({
+  const options = {
     mpType: 'component',
-    mpInstance: mpInstace,
-    propsData: mpInstace.properties
-  }, extraOptions);
+    mpInstance: this,
+    propsData: this.properties
+  };
   // 初始化 vue 实例
-  mpInstace.$vm = new VueComponent(options);
+  this.$vm = new VueComponent(options);
 
   // 处理$slots,$scopedSlots（暂不支持动态变化$slots）
-  const vueSlots = mpInstace.properties.vueSlots;
+  const vueSlots = this.properties.vueSlots;
   if (Array.isArray(vueSlots) && vueSlots.length) {
     const $slots = Object.create(null);
     vueSlots.forEach(slotName => {
       $slots[slotName] = true;
     });
-    mpInstace.$vm.$scopedSlots = mpInstace.$vm.$slots = $slots;
+    this.$vm.$scopedSlots = this.$vm.$slots = $slots;
   }
   // 性能优先，mount 提前到 attached 中，保证组件首次渲染数据被合并
   // 导致与标准 Vue 的差异，data 和 computed 中不能使用$parent，provide等组件属性
-  mpInstace.$vm.$mount();
+  this.$vm.$mount();
 }
 
 function createComponent (vueOptions) {
@@ -820,10 +838,10 @@ function createComponent (vueOptions) {
     properties,
     lifetimes: {
       attached () {
-        initVueComponent(this, VueComponent);
+        initVm$2.call(this, VueComponent);
       },
       ready () {
-        initVueComponent(this, VueComponent); // 目前发现部分情况小程序 attached 不触发
+        initVm$2.call(this, VueComponent); // 目前发现部分情况小程序 attached 不触发
         triggerLink(this); // 处理 parent,children
 
         // 补充生命周期
@@ -853,6 +871,8 @@ function createComponent (vueOptions) {
       __l: handleLink
     }
   };
+
+  initComponent$1(componentOptions);
 
   return Component(componentOptions)
 }

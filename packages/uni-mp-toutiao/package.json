@@ -1,6 +1,6 @@
 {
 	"name": "@dcloudio/uni-mp-toutiao",
-	"version": "0.0.312",
+	"version": "0.0.313",
 	"description": "uni-app mp-toutiao",
 	"main": "dist/index.js",
 	"scripts": {
