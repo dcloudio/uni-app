@@ -646,6 +646,15 @@ function processEventExtra (vm, extra) {
   return extraObj
 }
 
+function getObjByArray (arr) {
+  const obj = {};
+  for (let i = 1; i < arr.length; i++) {
+    const element = arr[i];
+    obj[element[0]] = element[1];
+  }
+  return obj
+}
+
 function processEventArgs (vm, event, args = [], extra = [], isCustom, methodName) {
   let isCustomMPEvent = false; // wxcomponent 组件，传递原始 event 对象
   if (isCustom) { // 自定义事件
@@ -675,7 +684,9 @@ function processEventArgs (vm, event, args = [], extra = [], isCustom, methodNam
         }
       }
     } else {
-      if (typeof arg === 'string' && hasOwn(extraObj, arg)) {
+      if (Array.isArray(arg) && arg[0] === 'o') {
+        ret.push(getObjByArray(arg));
+      } else if (typeof arg === 'string' && hasOwn(extraObj, arg)) {
         ret.push(extraObj[arg]);
       } else {
         ret.push(arg);
