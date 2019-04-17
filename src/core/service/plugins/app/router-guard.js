@@ -15,7 +15,28 @@ function removeKeepAliveInclude (componentName) {
   }
 }
 
-function switchTab (routes) {
+let positionStore = Object.create(null)
+
+export function getTabBarScrollPosition (id) {
+  return positionStore[id]
+}
+
+function saveTabBarScrollPosition (id) {
+  positionStore[id] = {
+    x: window.pageXOffset,
+    y: window.pageYOffset
+  }
+}
+
+function switchTab (routes, to, from) {
+  if (
+    to &&
+        from &&
+        to.meta.isTabBar &&
+        from.meta.isTabBar
+  ) { // tabbar 跳 tabbar
+    saveTabBarScrollPosition(from.params.__id__)
+  }
   // 关闭非 tabBar 页面
   const pages = getCurrentPages()
   for (let i = pages.length - 1; i >= 0; i--) {
@@ -38,6 +59,8 @@ function reLaunch (toName) {
     pages[i].$destroy()
   }
   this.keepAliveInclude = []
+  // 清空 positionStore
+  positionStore = Object.create(null)
 }
 
 let currentPages = []
@@ -78,7 +101,7 @@ function beforeEach (to, from, next, routes) {
 
         break
       case 'switchTab':
-        switchTab.call(this, routes)
+        switchTab.call(this, routes, to, from)
         break
       case 'reLaunch':
         reLaunch.call(this, toName)
