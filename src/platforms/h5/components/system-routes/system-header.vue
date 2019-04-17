@@ -43,9 +43,6 @@ export default {
 </script>
 
 <style>
-div {
-  box-sizing: border-box;
-}
 
 .system-header {
   position: relative;
@@ -57,6 +54,11 @@ div {
   text-align: center;
   line-height: 44px;
   font-size: 16px;
+  box-sizing: border-box;
+}
+
+.system-header * {
+  box-sizing: border-box;
 }
 
 .header-text {
