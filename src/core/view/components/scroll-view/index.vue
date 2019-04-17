@@ -166,6 +166,11 @@ export default {
       passive: false
     } : false)
   },
+  activated () {
+    // 还原 scroll-view 滚动位置
+    this.scrollY && (this.$refs.main.scrollTop = this.lastScrollTop)
+    this.scrollX && (this.$refs.main.scrollLeft = this.lastScrollLeft)
+  },
   beforeDestroy () {
     this.$refs.main.removeEventListener('touchstart', this.__handleTouchStart, passiveOptions)
     this.$refs.main.removeEventListener('touchmove', this.__handleTouchMove, passiveOptions)
