@@ -176,7 +176,7 @@ function getExtraValue (vm, dataPathsArray) {
   return context
 }
 
-function processEventExtra (vm, extra) {
+function processEventExtra (vm, extra, event) {
   const extraObj = {}
 
   if (Array.isArray(extra) && extra.length) {
@@ -196,7 +196,13 @@ function processEventExtra (vm, extra) {
         if (!dataPath) { // model,prop.sync
           extraObj['$' + index] = vm
         } else {
-          extraObj['$' + index] = vm.__get_value(dataPath)
+          if (dataPath === '$event') { // $event
+            extraObj['$' + index] = event
+          } else if (dataPath.indexOf('$event.') === 0) { // $event.target.value
+            extraObj['$' + index] = vm.__get_value(dataPath.replace('$event.', ''), event)
+          } else {
+            extraObj['$' + index] = vm.__get_value(dataPath)
+          }
         }
       } else {
         extraObj['$' + index] = getExtraValue(vm, dataPath)
@@ -230,7 +236,7 @@ function processEventArgs (vm, event, args = [], extra = [], isCustom, methodNam
     }
   }
 
-  const extraObj = processEventExtra(vm, extra)
+  const extraObj = processEventExtra(vm, extra, event)
 
   const ret = []
   args.forEach(arg => {

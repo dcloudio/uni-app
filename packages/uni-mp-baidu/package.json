@@ -1,6 +1,6 @@
 {
 	"name": "@dcloudio/uni-mp-baidu",
-	"version": "0.0.814",
+	"version": "0.0.815",
 	"description": "uni-app mp-baidu",
 	"main": "dist/index.js",
 	"scripts": {
