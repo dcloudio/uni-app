@@ -9,6 +9,7 @@ import {
 import {
   getData,
   handleEvent,
+  getBehaviors,
   getProperties
 } from './util'
 
@@ -44,6 +45,8 @@ export function createComponent (vueOptions) {
 
   const properties = getProperties(vueOptions.props)
 
+  const behaviors = getBehaviors(vueOptions['extends'], vueOptions['mixins'])
+
   const VueComponent = Vue.extend(vueOptions)
 
   const componentOptions = {
@@ -52,6 +55,7 @@ export function createComponent (vueOptions) {
       addGlobalClass: true
     },
     data: getData(vueOptions, Vue.prototype),
+    behaviors,
     properties,
     lifetimes: {
       attached () {

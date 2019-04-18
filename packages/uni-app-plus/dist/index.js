@@ -366,9 +366,33 @@ function createObserver (name) {
   }
 }
 
-function getProperties (props) {
-  const properties = {
-    vueSlots: { // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
+function getBehaviors (vueExtends, vueMixins) {
+  const behaviors = [];
+  if (isPlainObject(vueExtends) && vueExtends.props) {
+    behaviors.push(
+      Behavior({
+        properties: getProperties(vueExtends.props, true)
+      })
+    );
+  }
+  if (Array.isArray(vueMixins)) {
+    vueMixins.forEach(vueMixin => {
+      if (isPlainObject(vueMixin) && vueMixin.props) {
+        behaviors.push(
+          Behavior({
+            properties: getProperties(vueMixin.props, true)
+          })
+        );
+      }
+    });
+  }
+  return behaviors
+}
+
+function getProperties (props, isBehavior = false) {
+  const properties = {};
+  if (!isBehavior) {
+    properties.vueSlots = { // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
       type: null,
       value: [],
       observer: function (newVal, oldVal) {
@@ -380,8 +404,8 @@ function getProperties (props) {
           $slots
         });
       }
-    }
-  };
+    };
+  }
   if (Array.isArray(props)) { // ['title']
     props.forEach(key => {
       properties[key] = {
@@ -849,6 +873,8 @@ function createComponent (vueOptions) {
 
   const properties = getProperties(vueOptions.props);
 
+  const behaviors = getBehaviors(vueOptions['extends'], vueOptions['mixins']);
+
   const VueComponent = Vue.extend(vueOptions);
 
   const componentOptions = {
@@ -857,6 +883,7 @@ function createComponent (vueOptions) {
       addGlobalClass: true
     },
     data: getData(vueOptions, Vue.prototype),
+    behaviors,
     properties,
     lifetimes: {
       attached () {

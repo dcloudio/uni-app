@@ -62,9 +62,33 @@ function createObserver (name) {
   }
 }
 
-export function getProperties (props) {
-  const properties = {
-    vueSlots: { // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
+export function getBehaviors (vueExtends, vueMixins) {
+  const behaviors = []
+  if (isPlainObject(vueExtends) && vueExtends.props) {
+    behaviors.push(
+      Behavior({
+        properties: getProperties(vueExtends.props, true)
+      })
+    )
+  }
+  if (Array.isArray(vueMixins)) {
+    vueMixins.forEach(vueMixin => {
+      if (isPlainObject(vueMixin) && vueMixin.props) {
+        behaviors.push(
+          Behavior({
+            properties: getProperties(vueMixin.props, true)
+          })
+        )
+      }
+    })
+  }
+  return behaviors
+}
+
+export function getProperties (props, isBehavior = false) {
+  const properties = {}
+  if (!isBehavior) {
+    properties.vueSlots = { // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
       type: null,
       value: [],
       observer: function (newVal, oldVal) {
