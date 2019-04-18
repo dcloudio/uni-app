@@ -6,19 +6,20 @@
     <canvas
       ref="canvas"
       width="300"
-      height="150"/>
+      height="150" />
     <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden;">
-      <slot/>
+      <slot />
     </div>
-    <v-uni-resize-sensor
-      ref="sensor"
-      @resize="_resize"/>
   </uni-canvas>
 </template>
 <script>
 import {
   subscriber
 } from 'uni-mixins'
+
+import {
+  wrapper
+} from './hidpi'
 
 function resolveColor (color) {
   color = color.slice(0)
@@ -69,7 +70,8 @@ export default {
           eventHandler.push(($event) => {
             this.$trigger(event, Object.assign({}, $event, {
               touches: processTouches($event.currentTarget, $event.touches),
-              changedTouches: processTouches($event.currentTarget, $event.changedTouches)
+              changedTouches: processTouches($event.currentTarget, $event
+                .changedTouches)
             }))
           })
         }
@@ -87,8 +89,8 @@ export default {
   },
   mounted () {
     this._resize({
-      width: this.$refs.sensor.$el.offsetWidth,
-      height: this.$refs.sensor.$el.offsetHeight
+      width: this.$el.offsetWidth,
+      height: this.$el.offsetHeight
     })
   },
   methods: {
@@ -101,12 +103,16 @@ export default {
         method(data)
       }
     },
-    _resize ({ width, height }) {
+    _resize ({
+      width,
+      height
+    }) {
       var canvas = this.$refs.canvas
       if (canvas.width !== width || canvas.height !== height) {
         canvas.width = width
         canvas.height = height
       }
+      wrapper(canvas)
     },
     _touchmove (event) {
       event.preventDefault()
@@ -165,11 +171,12 @@ export default {
                 LinearGradient.addColorStop(offset, color)
               })
             } else if (data[0] === 'pattern') {
-              let loaded = this.checkImageLoaded(data[1], actions.slice(index + 1), callbackId, function (image) {
-                if (image) {
-                  c2d[method1] = c2d.createPattern(image, data[2])
-                }
-              })
+              let loaded = this.checkImageLoaded(data[1], actions.slice(index + 1), callbackId,
+                function (image) {
+                  if (image) {
+                    c2d[method1] = c2d.createPattern(image, data[2])
+                  }
+                })
               if (!loaded) {
                 break
               }
@@ -217,9 +224,11 @@ export default {
             var url = dataArray[0]
             var otherData = dataArray.slice(1)
             self._images = self._images || {}
-            if (!self.checkImageLoaded(url, actions.slice(index + 1), callbackId, function (image) {
+            if (!self.checkImageLoaded(url, actions.slice(index + 1), callbackId, function (
+              image) {
               if (image) {
-                c2d.drawImage.apply(c2d, [image].concat([...otherData.slice(4, 8)], [...otherData.slice(0, 4)]))
+                c2d.drawImage.apply(c2d, [image].concat([...otherData.slice(4, 8)],
+                  [...otherData.slice(0, 4)]))
               }
             })) return 'break'
           }())
@@ -265,24 +274,24 @@ export default {
           loadImage()
         }
         /**
-         * 加载图像
-         */
+                     * 加载图像
+                     */
         function loadImage () {
           sefl._images[src] = new Image()
           sefl._images[src].onload = function () {
             sefl._images[src].ready = true
           }
           /**
-           * 从Blob加载
-           * @param {Blob} blob
-           */
+                         * 从Blob加载
+                         * @param {Blob} blob
+                         */
           function loadBlob (blob) {
             sefl._images[src].src = (window.URL || window.webkitURL).createObjectURL(blob)
           }
           /**
-           * 从本地文件加载
-           * @param {string} path 文件路径
-           */
+                         * 从本地文件加载
+                         * @param {string} path 文件路径
+                         */
           function loadFile (path) {
             var bitmap = new plus.nativeObj.Bitmap('bitmap' + Date.now())
             bitmap.load(path, function () {
@@ -294,9 +303,9 @@ export default {
             })
           }
           /**
-           * 从网络加载
-           * @param {string} url 文件地址
-           */
+                         * 从网络加载
+                         * @param {string} url 文件地址
+                         */
           function loadUrl (url) {
             function plusDownload () {
               plus.downloader.createDownload(url, {
@@ -327,7 +336,8 @@ export default {
             sefl._images[src].src = src
           } else {
             // 解决 PLUS-APP（wkwebview）以及 H5 图像跨域问题（H5图像响应头需包含access-control-allow-origin）
-            if (window.plus && src.indexOf('http://') !== 0 && src.indexOf('https://') !== 0) {
+            if (window.plus && src.indexOf('http://') !== 0 && src.indexOf('https://') !==
+                                0) {
               loadFile(src)
             } else if (/^data:[a-z-]+\/[a-z-]+;base64,/.test(src)) {
               sefl._images[src].src = src
@@ -413,7 +423,8 @@ export default {
         if (!height) {
           height = Math.round(data.length / 4 / width)
         }
-        this.$refs.canvas.getContext('2d').putImageData(new ImageData(new Uint8ClampedArray(data), width, height), x, y)
+        this.$refs.canvas.getContext('2d').putImageData(new ImageData(new Uint8ClampedArray(data), width,
+          height), x, y)
       } catch (error) {
         UniViewJSBridge.publishHandler('onCanvasMethodCallback', {
           callbackId,
@@ -434,17 +445,18 @@ export default {
 }
 </script>
 <style>
-uni-canvas {
-  width: 300px;
-  height: 150px;
-  display: block;
-  position: relative;
-}
-uni-canvas > canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
+    uni-canvas {
+        width: 300px;
+        height: 150px;
+        display: block;
+        position: relative;
+    }
+
+    uni-canvas>canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
 </style>
