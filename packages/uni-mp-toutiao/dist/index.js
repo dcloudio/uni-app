@@ -331,7 +331,7 @@ function processArgs (methodName, fromArgs, argsOption = {}, returnValue = {}, k
         } else if (isPlainObject(keyOption)) { // {name:newName,value:value}可重新指定参数 key:value
           toArgs[keyOption.name ? keyOption.name : key] = keyOption.value;
         }
-      } else if (CALLBACKS.includes(key)) {
+      } else if (CALLBACKS.indexOf(key) !== -1) {
         toArgs[key] = processCallback(methodName, fromArgs[key], returnValue);
       } else {
         if (!keepFromArgs) {
@@ -606,13 +606,13 @@ function getProperties (props, isBehavior = false) {
           value = value();
         }
         properties[key] = {
-          type: PROP_TYPES.includes(opts.type) ? opts.type : null,
+          type: PROP_TYPES.indexOf(opts.type) !== -1 ? opts.type : null,
           value,
           observer: createObserver(key)
         };
       } else { // content:String
         properties[key] = {
-          type: PROP_TYPES.includes(opts) ? opts : null,
+          type: PROP_TYPES.indexOf(opts) !== -1 ? opts : null,
           observer: createObserver(key)
         };
       }

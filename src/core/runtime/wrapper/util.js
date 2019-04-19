@@ -122,13 +122,13 @@ export function getProperties (props, isBehavior = false) {
           value = value()
         }
         properties[key] = {
-          type: PROP_TYPES.includes(opts.type) ? opts.type : null,
+          type: PROP_TYPES.indexOf(opts.type) !== -1 ? opts.type : null,
           value,
           observer: createObserver(key)
         }
       } else { // content:String
         properties[key] = {
-          type: PROP_TYPES.includes(opts) ? opts : null,
+          type: PROP_TYPES.indexOf(opts) !== -1 ? opts : null,
           observer: createObserver(key)
         }
       }
