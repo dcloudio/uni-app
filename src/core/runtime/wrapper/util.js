@@ -43,6 +43,10 @@ export function getData (vueOptions, context) {
     } catch (e) {}
   }
 
+  if (!isPlainObject(data)) {
+    data = {}
+  }
+
   Object.keys(methods).forEach(methodName => {
     if (context.__lifecycle_hooks__.indexOf(methodName) === -1 && !hasOwn(data, methodName)) {
       data[methodName] = methods[methodName]
