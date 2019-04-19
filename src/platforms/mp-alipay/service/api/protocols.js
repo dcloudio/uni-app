@@ -81,7 +81,7 @@ const protocols = { // 需要做转换的 API 列表
     return res
   },
   request: {
-    name: 'httpRequest',
+    name: my.canIUse('request') ? 'request' : 'httpRequest',
     args (fromArgs) {
       if (!fromArgs.header) { // 默认增加 header 参数，方便格式化 content-type
         fromArgs.header = {}
