@@ -68,6 +68,6 @@ const TODOS = [
   'offPush'
 ]
 
-const protocols = {}
+const protocols = { TODOS }
 
 export default protocols
