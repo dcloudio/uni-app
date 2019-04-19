@@ -5,6 +5,7 @@
 </template>
 <style>
 	.uni-async-loading {
+    box-sizing: border-box;
 		width: 100%;
 		padding: 50px;
 		text-align: center;
