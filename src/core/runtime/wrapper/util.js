@@ -5,7 +5,9 @@ import {
   isPlainObject
 } from 'uni-shared'
 
-const MOCKS = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__', '__webviewId__']
+/* mp-toutiao __webviewId__ */
+/* mp-baidu nodeId */
+const MOCKS = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__', '__webviewId__', 'nodeId']
 
 export function initMocks (vm) {
   const mpInstance = vm.$mp[vm.mpType]

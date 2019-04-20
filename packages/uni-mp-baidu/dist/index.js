@@ -444,7 +444,9 @@ Component = function (options = {}) {
   return MPComponent(options)
 };
 
-const MOCKS = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__', '__webviewId__'];
+/* mp-toutiao __webviewId__ */
+/* mp-baidu nodeId */
+const MOCKS = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__', '__webviewId__', 'nodeId'];
 
 function initMocks (vm) {
   const mpInstance = vm.$mp[vm.mpType];
