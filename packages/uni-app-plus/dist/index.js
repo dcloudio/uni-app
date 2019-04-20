@@ -393,7 +393,7 @@ function getBehaviors (vueExtends, vueMixins) {
   return behaviors
 }
 
-function parsePropType (key, type, file) {
+function parsePropType (key, type, defaultValue, file) {
   // [String]=>String
   if (Array.isArray(type) && type.length === 1) {
     return type[0]
@@ -434,7 +434,7 @@ function getProperties (props, isBehavior = false, file = '') {
           value = value();
         }
 
-        opts.type = parsePropType(key, opts.type, file);
+        opts.type = parsePropType(key, opts.type, value, file);
 
         properties[key] = {
           type: PROP_TYPES.indexOf(opts.type) !== -1 ? opts.type : null,
@@ -442,7 +442,7 @@ function getProperties (props, isBehavior = false, file = '') {
           observer: createObserver(key)
         };
       } else { // content:String
-        const type = parsePropType(key, opts, file);
+        const type = parsePropType(key, opts, null, file);
         properties[key] = {
           type: PROP_TYPES.indexOf(type) !== -1 ? type : null,
           observer: createObserver(key)

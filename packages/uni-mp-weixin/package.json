@@ -1,6 +1,6 @@
 {
 	"name": "@dcloudio/uni-mp-weixin",
-	"version": "0.0.943",
+	"version": "0.0.944",
 	"description": "uni-app mp-weixin",
 	"main": "dist/index.js",
 	"scripts": {

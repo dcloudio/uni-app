@@ -528,32 +528,25 @@ function getBehaviors (vueExtends, vueMixins) {
   return behaviors
 }
 
-function parsePropType (key, type, file) {
+function parsePropType (key, type, defaultValue, file) {
   // [String]=>String
   if (Array.isArray(type) && type.length === 1) {
     return type[0]
   }
   {
     if (
-      Array.isArray(type) &&
+      defaultValue === false &&
+            Array.isArray(type) &&
             type.length === 2 &&
-            type.indexOf(String) !== -1
+            type.indexOf(String) !== -1 &&
+            type.indexOf(Boolean) !== -1
     ) { // [String,Boolean]=>Boolean
-      if (type.indexOf(Boolean) !== -1) {
-        if (file) {
-          console.warn(
-            `props.${key}.type should use Boolean instead of [String,Boolean] . at ${file}`
-          );
-        }
-        return Boolean
-      } else if (type.indexOf(Number) !== -1) {
-        if (file) {
-          console.warn(
-            `props.${key}.type should use String or Number instead of [String,Number]. at ${file}`
-          );
-        }
-        return String
+      if (file) {
+        console.warn(
+          `props.${key}.type should use Boolean instead of [String,Boolean] at ${file}`
+        );
       }
+      return Boolean
     }
   }
   return type
@@ -592,7 +585,7 @@ function getProperties (props, isBehavior = false, file = '') {
           value = value();
         }
 
-        opts.type = parsePropType(key, opts.type, file);
+        opts.type = parsePropType(key, opts.type, value, file);
 
         properties[key] = {
           type: PROP_TYPES.indexOf(opts.type) !== -1 ? opts.type : null,
@@ -600,7 +593,7 @@ function getProperties (props, isBehavior = false, file = '') {
           observer: createObserver(key)
         };
       } else { // content:String
-        const type = parsePropType(key, opts, file);
+        const type = parsePropType(key, opts, null, file);
         properties[key] = {
           type: PROP_TYPES.indexOf(type) !== -1 ? type : null,
           observer: createObserver(key)
