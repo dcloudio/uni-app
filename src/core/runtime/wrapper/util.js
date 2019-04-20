@@ -89,7 +89,38 @@ export function getBehaviors (vueExtends, vueMixins) {
   return behaviors
 }
 
-export function getProperties (props, isBehavior = false) {
+function parsePropType (key, type, file) {
+  // [String]=>String
+  if (Array.isArray(type) && type.length === 1) {
+    return type[0]
+  }
+  if (__PLATFORM__ === 'mp-baidu') {
+    if (
+      Array.isArray(type) &&
+            type.length === 2 &&
+            type.indexOf(String) !== -1
+    ) { // [String,Boolean]=>Boolean
+      if (type.indexOf(Boolean) !== -1) {
+        if (file) {
+          console.warn(
+            `props.${key}.type should use Boolean instead of [String,Boolean] . at ${file}`
+          )
+        }
+        return Boolean
+      } else if (type.indexOf(Number) !== -1) {
+        if (file) {
+          console.warn(
+            `props.${key}.type should use String or Number instead of [String,Number]. at ${file}`
+          )
+        }
+        return String
+      }
+    }
+  }
+  return type
+}
+
+export function getProperties (props, isBehavior = false, file = '') {
   const properties = {}
   if (!isBehavior) {
     properties.vueSlots = { // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
@@ -121,14 +152,18 @@ export function getProperties (props, isBehavior = false) {
         if (isFn(value)) {
           value = value()
         }
+
+        opts.type = parsePropType(key, opts.type, file)
+
         properties[key] = {
           type: PROP_TYPES.indexOf(opts.type) !== -1 ? opts.type : null,
           value,
           observer: createObserver(key)
         }
       } else { // content:String
+        const type = parsePropType(key, opts, file)
         properties[key] = {
-          type: PROP_TYPES.indexOf(opts) !== -1 ? opts : null,
+          type: PROP_TYPES.indexOf(type) !== -1 ? type : null,
           observer: createObserver(key)
         }
       }

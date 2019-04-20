@@ -1,6 +1,6 @@
 {
 	"name": "@dcloudio/uni-app-plus",
-	"version": "0.0.223",
+	"version": "0.0.224",
 	"description": "uni-app app-plus",
 	"main": "dist/index.js",
 	"scripts": {
