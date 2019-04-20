@@ -309,13 +309,43 @@ Component = function (options = {}) {
   return MPComponent(options)
 };
 
-/* mp-toutiao __webviewId__ */
-/* mp-baidu nodeId */
-const MOCKS = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__', '__webviewId__', 'nodeId'];
+const mocks = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__'];
 
-function initMocks (vm) {
+function triggerLink (mpInstance, vueOptions) {
+  mpInstance.triggerEvent('__l', mpInstance.$vm || vueOptions, {
+    bubbles: true,
+    composed: true
+  });
+}
+
+function handleLink (event) {
+  if (event.detail.$mp) { // vm
+    if (!event.detail.$parent) {
+      event.detail.$parent = this.$vm;
+      event.detail.$parent.$children.push(event.detail);
+
+      event.detail.$root = this.$vm.$root;
+    }
+  } else { // vueOptions
+    if (!event.detail.parent) {
+      event.detail.parent = this.$vm;
+    }
+  }
+}
+
+function initPage$1 (pageOptions) {
+  initComponent$1(pageOptions);
+}
+
+function initComponent$1 (componentOptions) {
+  componentOptions.methods.$getAppWebview = function () {
+    return plus.webview.getWebviewById(`${this.__wxWebviewId__}`)
+  };
+}
+
+function initMocks (vm, mocks) {
   const mpInstance = vm.$mp[vm.mpType];
-  MOCKS.forEach(mock => {
+  mocks.forEach(mock => {
     if (hasOwn(mpInstance, mock)) {
       vm[mock] = mpInstance[mock];
     }
@@ -712,7 +742,7 @@ function createApp (vm) {
         { // 头条的 selectComponent 竟然是异步的
           initRefs(this);
         }
-        initMocks(this);
+        initMocks(this, mocks);
       }
     },
     created () { // 处理 injections
@@ -745,38 +775,6 @@ function createApp (vm) {
   App(appOptions);
 
   return vm
-}
-
-function triggerLink (mpInstance, vueOptions) {
-  mpInstance.triggerEvent('__l', mpInstance.$vm || vueOptions, {
-    bubbles: true,
-    composed: true
-  });
-}
-
-function handleLink (event) {
-  if (event.detail.$mp) { // vm
-    if (!event.detail.$parent) {
-      event.detail.$parent = this.$vm;
-      event.detail.$parent.$children.push(event.detail);
-
-      event.detail.$root = this.$vm.$root;
-    }
-  } else { // vueOptions
-    if (!event.detail.parent) {
-      event.detail.parent = this.$vm;
-    }
-  }
-}
-
-function initPage$1 (pageOptions) {
-  initComponent$1(pageOptions);
-}
-
-function initComponent$1 (componentOptions) {
-  componentOptions.methods.$getAppWebview = function () {
-    return plus.webview.getWebviewById(`${this.__wxWebviewId__}`)
-  };
 }
 
 const hooks$1 = [

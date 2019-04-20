@@ -5,13 +5,9 @@ import {
   isPlainObject
 } from 'uni-shared'
 
-/* mp-toutiao __webviewId__ */
-/* mp-baidu nodeId */
-const MOCKS = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__', '__webviewId__', 'nodeId']
-
-export function initMocks (vm) {
+export function initMocks (vm, mocks) {
   const mpInstance = vm.$mp[vm.mpType]
-  MOCKS.forEach(mock => {
+  mocks.forEach(mock => {
     if (hasOwn(mpInstance, mock)) {
       vm[mock] = mpInstance[mock]
     }

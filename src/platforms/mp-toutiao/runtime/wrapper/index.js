@@ -1,5 +1,7 @@
 const instances = Object.create(null)
 
+export const mocks = ['__route__', '__webviewId__', '__nodeid__']
+
 export function initPage (pageOptions) {
   initComponent(pageOptions)
 }

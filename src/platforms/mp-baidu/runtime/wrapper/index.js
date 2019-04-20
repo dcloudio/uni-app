@@ -1,3 +1,5 @@
+export const mocks = ['nodeId']
+
 export function initPage (pageOptions) {
   initComponent(pageOptions)
 }

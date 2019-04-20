@@ -444,13 +444,41 @@ Component = function (options = {}) {
   return MPComponent(options)
 };
 
-/* mp-toutiao __webviewId__ */
-/* mp-baidu nodeId */
-const MOCKS = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__', '__webviewId__', 'nodeId'];
+const mocks = ['nodeId'];
 
-function initMocks (vm) {
+function initPage (pageOptions) {
+  initComponent(pageOptions);
+}
+
+function initComponent (componentOptions) {
+  componentOptions.messages = {
+    '__l': handleLink
+  };
+}
+
+function triggerLink (mpInstance, vueOptions) {
+  mpInstance.dispatch('__l', mpInstance.$vm || vueOptions);
+}
+
+function handleLink (event) {
+  const target = event.value;
+  if (target.$mp) {
+    if (!target.$parent) {
+      target.$parent = this.$vm;
+      target.$parent.$children.push(target);
+
+      target.$root = this.$vm.$root;
+    }
+  } else {
+    if (!target.parent) {
+      target.parent = this.$vm;
+    }
+  }
+}
+
+function initMocks (vm, mocks) {
   const mpInstance = vm.$mp[vm.mpType];
-  MOCKS.forEach(mock => {
+  mocks.forEach(mock => {
     if (hasOwn(mpInstance, mock)) {
       vm[mock] = mpInstance[mock];
     }
@@ -887,7 +915,7 @@ function createApp (vm) {
         { // 头条的 selectComponent 竟然是异步的
           initRefs(this);
         }
-        initMocks(this);
+        initMocks(this, mocks);
       }
     },
     created () { // 处理 injections
@@ -920,36 +948,6 @@ function createApp (vm) {
   App(appOptions);
 
   return vm
-}
-
-function initPage (pageOptions) {
-  initComponent(pageOptions);
-}
-
-function initComponent (componentOptions) {
-  componentOptions.messages = {
-    '__l': handleLink
-  };
-}
-
-function triggerLink (mpInstance, vueOptions) {
-  mpInstance.dispatch('__l', mpInstance.$vm || vueOptions);
-}
-
-function handleLink (event) {
-  const target = event.value;
-  if (target.$mp) {
-    if (!target.$parent) {
-      target.$parent = this.$vm;
-      target.$parent.$children.push(target);
-
-      target.$root = this.$vm.$root;
-    }
-  } else {
-    if (!target.parent) {
-      target.parent = this.$vm;
-    }
-  }
 }
 
 const hooks$1 = [

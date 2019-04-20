@@ -3,6 +3,10 @@ import 'uni-platform/runtime/index'
 import Vue from 'vue'
 
 import {
+  mocks
+} from 'uni-platform/runtime/wrapper/index'
+
+import {
   initRefs,
   initHooks,
   initMocks
@@ -51,7 +55,7 @@ export function createApp (vm) {
         if (__PLATFORM__ !== 'mp-toutiao') { // 头条的 selectComponent 竟然是异步的
           initRefs(this)
         }
-        initMocks(this)
+        initMocks(this, mocks)
       }
     },
     created () { // 处理 injections

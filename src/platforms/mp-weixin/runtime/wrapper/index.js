@@ -1,3 +1,5 @@
+export const mocks = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__']
+
 export function initPage () {
 
 }

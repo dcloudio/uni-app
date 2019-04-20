@@ -489,13 +489,80 @@ Component = function (options = {}) {
   return MPComponent(options)
 };
 
-/* mp-toutiao __webviewId__ */
-/* mp-baidu nodeId */
-const MOCKS = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__', '__webviewId__', 'nodeId'];
+const instances = Object.create(null);
 
-function initMocks (vm) {
+const mocks = ['__route__', '__webviewId__', '__nodeid__'];
+
+function initPage (pageOptions) {
+  initComponent(pageOptions);
+}
+
+function initComponent (componentOptions) {
+  if (componentOptions.properties) { // ref
+    componentOptions.properties.vueRef = {
+      type: String,
+      value: ''
+    };
+  }
+  const oldAttached = componentOptions.lifetimes.attached;
+  componentOptions.lifetimes.attached = function () {
+    oldAttached.call(this);
+    // TODO 需要处理动态变化后的 refs
+    initRefs.call(this);
+  };
+}
+
+function initRefs () {
+  this.selectAllComponents('.vue-ref', (components) => {
+    components.forEach(component => {
+      const ref = component.data.vueRef; // 头条的组件 dataset 竟然是空的
+      this.$vm.$refs[ref] = component.$vm || component;
+    });
+  });
+  this.selectAllComponents('.vue-ref-in-for', (forComponents) => {
+    forComponents.forEach(component => {
+      const ref = component.data.vueRef;
+      if (!this.$vm.$refs[ref]) {
+        this.$vm.$refs[ref] = [];
+      }
+      this.$vm.$refs[ref].push(component.$vm || component);
+    });
+  });
+}
+
+function triggerLink (mpInstance) {
+  const nodeId = mpInstance.__nodeid__ + '';
+  const webviewId = mpInstance.__webviewId__ + '';
+
+  instances[webviewId + '_' + nodeId] = mpInstance.$vm;
+
+  mpInstance.triggerEvent('__l', {
+    nodeId,
+    webviewId
+  }, {
+    bubbles: true,
+    composed: true
+  });
+}
+// TODO 目前有 bug，composed 不生效
+function handleLink (event) {
+  const nodeId = event.detail.nodeId;
+  const webviewId = event.detail.webviewId;
+
+  const childVm = instances[webviewId + '_' + nodeId];
+
+  if (childVm) {
+    childVm.$parent = this.$vm;
+    childVm.$parent.$children.push(event.detail);
+
+    childVm.$root = this.$vm.$root;
+    delete instances[webviewId + '_' + nodeId];
+  }
+}
+
+function initMocks (vm, mocks) {
   const mpInstance = vm.$mp[vm.mpType];
-  MOCKS.forEach(mock => {
+  mocks.forEach(mock => {
     if (hasOwn(mpInstance, mock)) {
       vm[mock] = mpInstance[mock];
     }
@@ -866,7 +933,7 @@ function createApp (vm) {
       delete this.$options.mpInstance;
 
       if (this.mpType !== 'app') {
-        initMocks(this);
+        initMocks(this, mocks);
       }
     },
     created () { // 处理 injections
@@ -899,75 +966,6 @@ function createApp (vm) {
   App(appOptions);
 
   return vm
-}
-
-const instances = Object.create(null);
-
-function initPage (pageOptions) {
-  initComponent(pageOptions);
-}
-
-function initComponent (componentOptions) {
-  if (componentOptions.properties) { // ref
-    componentOptions.properties.vueRef = {
-      type: String,
-      value: ''
-    };
-  }
-  const oldAttached = componentOptions.lifetimes.attached;
-  componentOptions.lifetimes.attached = function () {
-    oldAttached.call(this);
-    // TODO 需要处理动态变化后的 refs
-    initRefs$1.call(this);
-  };
-}
-
-function initRefs$1 () {
-  this.selectAllComponents('.vue-ref', (components) => {
-    components.forEach(component => {
-      const ref = component.data.vueRef; // 头条的组件 dataset 竟然是空的
-      this.$vm.$refs[ref] = component.$vm || component;
-    });
-  });
-  this.selectAllComponents('.vue-ref-in-for', (forComponents) => {
-    forComponents.forEach(component => {
-      const ref = component.data.vueRef;
-      if (!this.$vm.$refs[ref]) {
-        this.$vm.$refs[ref] = [];
-      }
-      this.$vm.$refs[ref].push(component.$vm || component);
-    });
-  });
-}
-
-function triggerLink (mpInstance) {
-  const nodeId = mpInstance.__nodeid__ + '';
-  const webviewId = mpInstance.__webviewId__ + '';
-
-  instances[webviewId + '_' + nodeId] = mpInstance.$vm;
-
-  mpInstance.triggerEvent('__l', {
-    nodeId,
-    webviewId
-  }, {
-    bubbles: true,
-    composed: true
-  });
-}
-// TODO 目前有 bug，composed 不生效
-function handleLink (event) {
-  const nodeId = event.detail.nodeId;
-  const webviewId = event.detail.webviewId;
-
-  const childVm = instances[webviewId + '_' + nodeId];
-
-  if (childVm) {
-    childVm.$parent = this.$vm;
-    childVm.$parent.$children.push(event.detail);
-
-    childVm.$root = this.$vm.$root;
-    delete instances[webviewId + '_' + nodeId];
-  }
 }
 
 const hooks$1 = [
