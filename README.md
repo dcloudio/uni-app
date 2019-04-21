@@ -1,6 +1,6 @@
 # uni-app
 
-`uni-app` 学习资源/开发资源汇总： [awesome-uni-app](https://github.com/aben1188/awesome-uni-app/blob/master/README.md)
+`uni-app` 开发资源汇总： [awesome-uni-app](https://github.com/aben1188/awesome-uni-app/blob/master/README.md)
 
 `uni-app` 是一个使用 `Vue.js` 开发**跨平台**应用的前端框架。
 
