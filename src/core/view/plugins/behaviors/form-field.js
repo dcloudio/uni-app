@@ -27,9 +27,13 @@ export default {
   name: 'uni://form-field',
   init (options, vm) {
     if (
-      !vm.constructor.options.props.name ||
+      !vm.constructor.options.props ||
+            !vm.constructor.options.props.name ||
             !vm.constructor.options.props.value
     ) { // 未初始化 props
+      if (!vm.constructor.options.props) {
+        vm.constructor.options.props = {}
+      }
       if (!vm.constructor.options.props.name) {
         vm.constructor.options.props.name = options.props.name = {
           type: String
