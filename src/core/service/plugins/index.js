@@ -16,6 +16,10 @@ import {
   createPageMixin
 } from './page'
 
+import {
+  getTabBarScrollPosition
+} from './app/router-guard'
+
 function getMinId (routes) {
   let minId = 0
   routes.forEach(route => {
@@ -62,6 +66,17 @@ export default {
         if (savedPosition) {
           return savedPosition
         } else {
+          if (
+            to &&
+                        from &&
+                        to.meta.isTabBar &&
+                        from.meta.isTabBar
+          ) { // tabbar 跳 tabbar
+            const position = getTabBarScrollPosition(to.params.__id__)
+            if (position) {
+              return position
+            }
+          }
           return {
             x: 0,
             y: 0
@@ -101,7 +116,9 @@ export default {
           const appMixin = createAppMixin(routes, entryRoute)
           // mixin app hooks
           Object.keys(appMixin).forEach(hook => {
-            options[hook] = options[hook] ? [].concat(appMixin[hook], options[hook]) : [appMixin[hook]]
+            options[hook] = options[hook] ? [].concat(appMixin[hook], options[hook]) : [
+              appMixin[hook]
+            ]
           })
 
           // router
@@ -117,7 +134,9 @@ export default {
           const pageMixin = createPageMixin()
           // mixin page hooks
           Object.keys(pageMixin).forEach(hook => {
-            options[hook] = options[hook] ? [].concat(pageMixin[hook], options[hook]) : [pageMixin[hook]]
+            options[hook] = options[hook] ? [].concat(pageMixin[hook], options[hook]) : [
+              pageMixin[hook]
+            ]
           })
         } else {
           if (this.$parent && this.$parent.__page__) {

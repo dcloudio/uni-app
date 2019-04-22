@@ -9,6 +9,7 @@ import {
 import {
   getData,
   handleEvent,
+  getBehaviors,
   getProperties
 } from './util'
 
@@ -42,7 +43,9 @@ function initVm (VueComponent) {
 export function createComponent (vueOptions) {
   vueOptions = vueOptions.default || vueOptions
 
-  const properties = getProperties(vueOptions.props)
+  const behaviors = getBehaviors(vueOptions)
+
+  const properties = getProperties(vueOptions.props, false, vueOptions.__file)
 
   const VueComponent = Vue.extend(vueOptions)
 
@@ -52,6 +55,7 @@ export function createComponent (vueOptions) {
       addGlobalClass: true
     },
     data: getData(vueOptions, Vue.prototype),
+    behaviors,
     properties,
     lifetimes: {
       attached () {

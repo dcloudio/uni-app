@@ -270,7 +270,7 @@ function processArgs (methodName, fromArgs, argsOption = {}, returnValue = {}, k
         } else if (isPlainObject(keyOption)) { // {name:newName,value:value}可重新指定参数 key:value
           toArgs[keyOption.name ? keyOption.name : key] = keyOption.value;
         }
-      } else if (CALLBACKS.includes(key)) {
+      } else if (CALLBACKS.indexOf(key) !== -1) {
         toArgs[key] = processCallback(methodName, fromArgs[key], returnValue);
       } else {
         if (!keepFromArgs) {
@@ -444,11 +444,41 @@ Component = function (options = {}) {
   return MPComponent(options)
 };
 
-const MOCKS = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__', '__webviewId__'];
+const mocks = ['nodeId'];
 
-function initMocks (vm) {
+function initPage (pageOptions) {
+  initComponent(pageOptions);
+}
+
+function initComponent (componentOptions) {
+  componentOptions.messages = {
+    '__l': handleLink
+  };
+}
+
+function triggerLink (mpInstance, vueOptions) {
+  mpInstance.dispatch('__l', mpInstance.$vm || vueOptions);
+}
+
+function handleLink (event) {
+  const target = event.value;
+  if (target.$mp) {
+    if (!target.$parent) {
+      target.$parent = this.$vm;
+      target.$parent.$children.push(target);
+
+      target.$root = this.$vm.$root;
+    }
+  } else {
+    if (!target.parent) {
+      target.parent = this.$vm;
+    }
+  }
+}
+
+function initMocks (vm, mocks) {
   const mpInstance = vm.$mp[vm.mpType];
-  MOCKS.forEach(mock => {
+  mocks.forEach(mock => {
     if (hasOwn(mpInstance, mock)) {
       vm[mock] = mpInstance[mock];
     }
@@ -482,6 +512,10 @@ function getData (vueOptions, context) {
     } catch (e) {}
   }
 
+  if (!isPlainObject(data)) {
+    data = {};
+  }
+
   Object.keys(methods).forEach(methodName => {
     if (context.__lifecycle_hooks__.indexOf(methodName) === -1 && !hasOwn(data, methodName)) {
       data[methodName] = methods[methodName];
@@ -501,9 +535,81 @@ function createObserver (name) {
   }
 }
 
-function getProperties (props) {
-  const properties = {
-    vueSlots: { // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
+function getBehaviors (vueOptions) {
+  const vueBehaviors = vueOptions['behaviors'];
+  const vueExtends = vueOptions['extends'];
+  const vueMixins = vueOptions['mixins'];
+
+  let vueProps = vueOptions['props'];
+
+  if (!vueProps) {
+    vueOptions['props'] = vueProps = [];
+  }
+
+  const behaviors = [];
+  if (Array.isArray(vueBehaviors)) {
+    vueBehaviors.forEach(behavior => {
+      behaviors.push(behavior.replace('uni://', `${"swan"}://`));
+      if (behavior === 'uni://form-field') {
+        if (Array.isArray(vueProps)) {
+          vueProps.push('name');
+          vueProps.push('value');
+        } else {
+          vueProps['name'] = String;
+          vueProps['value'] = null;
+        }
+      }
+    });
+  }
+  if (isPlainObject(vueExtends) && vueExtends.props) {
+    behaviors.push(
+      Behavior({
+        properties: getProperties(vueExtends.props, true)
+      })
+    );
+  }
+  if (Array.isArray(vueMixins)) {
+    vueMixins.forEach(vueMixin => {
+      if (isPlainObject(vueMixin) && vueMixin.props) {
+        behaviors.push(
+          Behavior({
+            properties: getProperties(vueMixin.props, true)
+          })
+        );
+      }
+    });
+  }
+  return behaviors
+}
+
+function parsePropType (key, type, defaultValue, file) {
+  // [String]=>String
+  if (Array.isArray(type) && type.length === 1) {
+    return type[0]
+  }
+  {
+    if (
+      defaultValue === false &&
+            Array.isArray(type) &&
+            type.length === 2 &&
+            type.indexOf(String) !== -1 &&
+            type.indexOf(Boolean) !== -1
+    ) { // [String,Boolean]=>Boolean
+      if (file) {
+        console.warn(
+          `props.${key}.type should use Boolean instead of [String,Boolean] at ${file}`
+        );
+      }
+      return Boolean
+    }
+  }
+  return type
+}
+
+function getProperties (props, isBehavior = false, file = '') {
+  const properties = {};
+  if (!isBehavior) {
+    properties.vueSlots = { // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
       type: null,
       value: [],
       observer: function (newVal, oldVal) {
@@ -515,8 +621,8 @@ function getProperties (props) {
           $slots
         });
       }
-    }
-  };
+    };
+  }
   if (Array.isArray(props)) { // ['title']
     props.forEach(key => {
       properties[key] = {
@@ -532,14 +638,18 @@ function getProperties (props) {
         if (isFn(value)) {
           value = value();
         }
+
+        opts.type = parsePropType(key, opts.type, value, file);
+
         properties[key] = {
-          type: PROP_TYPES.includes(opts.type) ? opts.type : null,
+          type: PROP_TYPES.indexOf(opts.type) !== -1 ? opts.type : null,
           value,
           observer: createObserver(key)
         };
       } else { // content:String
+        const type = parsePropType(key, opts, null, file);
         properties[key] = {
-          type: PROP_TYPES.includes(opts) ? opts : null,
+          type: PROP_TYPES.indexOf(type) !== -1 ? type : null,
           observer: createObserver(key)
         };
       }
@@ -549,6 +659,11 @@ function getProperties (props) {
 }
 
 function wrapper$1 (event) {
+  // TODO 又得兼容 mpvue 的 mp 对象
+  try {
+    event.mp = JSON.parse(JSON.stringify(event));
+  } catch (e) {}
+
   event.stopPropagation = noop;
   event.preventDefault = noop;
 
@@ -567,9 +682,6 @@ function wrapper$1 (event) {
       event.detail.value = event.detail.checked;
     }
   }
-
-  // TODO 又得兼容 mpvue 的 mp 对象
-  event.mp = event;
 
   if (isPlainObject(event.detail)) {
     event.target = Object.assign({}, event.target, event.detail);
@@ -615,7 +727,7 @@ function getExtraValue (vm, dataPathsArray) {
   return context
 }
 
-function processEventExtra (vm, extra) {
+function processEventExtra (vm, extra, event) {
   const extraObj = {};
 
   if (Array.isArray(extra) && extra.length) {
@@ -635,7 +747,13 @@ function processEventExtra (vm, extra) {
         if (!dataPath) { // model,prop.sync
           extraObj['$' + index] = vm;
         } else {
-          extraObj['$' + index] = vm.__get_value(dataPath);
+          if (dataPath === '$event') { // $event
+            extraObj['$' + index] = event;
+          } else if (dataPath.indexOf('$event.') === 0) { // $event.target.value
+            extraObj['$' + index] = vm.__get_value(dataPath.replace('$event.', ''), event);
+          } else {
+            extraObj['$' + index] = vm.__get_value(dataPath);
+          }
         }
       } else {
         extraObj['$' + index] = getExtraValue(vm, dataPath);
@@ -644,6 +762,15 @@ function processEventExtra (vm, extra) {
   }
 
   return extraObj
+}
+
+function getObjByArray (arr) {
+  const obj = {};
+  for (let i = 1; i < arr.length; i++) {
+    const element = arr[i];
+    obj[element[0]] = element[1];
+  }
+  return obj
 }
 
 function processEventArgs (vm, event, args = [], extra = [], isCustom, methodName) {
@@ -660,7 +787,7 @@ function processEventArgs (vm, event, args = [], extra = [], isCustom, methodNam
     }
   }
 
-  const extraObj = processEventExtra(vm, extra);
+  const extraObj = processEventExtra(vm, extra, event);
 
   const ret = [];
   args.forEach(arg => {
@@ -675,7 +802,9 @@ function processEventArgs (vm, event, args = [], extra = [], isCustom, methodNam
         }
       }
     } else {
-      if (typeof arg === 'string' && hasOwn(extraObj, arg)) {
+      if (Array.isArray(arg) && arg[0] === 'o') {
+        ret.push(getObjByArray(arg));
+      } else if (typeof arg === 'string' && hasOwn(extraObj, arg)) {
         ret.push(extraObj[arg]);
       } else {
         ret.push(arg);
@@ -812,7 +941,7 @@ function createApp (vm) {
         { // 头条的 selectComponent 竟然是异步的
           initRefs(this);
         }
-        initMocks(this);
+        initMocks(this, mocks);
       }
     },
     created () { // 处理 injections
@@ -845,36 +974,6 @@ function createApp (vm) {
   App(appOptions);
 
   return vm
-}
-
-function initPage (pageOptions) {
-  initComponent(pageOptions);
-}
-
-function initComponent (componentOptions) {
-  componentOptions.messages = {
-    '__l': handleLink
-  };
-}
-
-function triggerLink (mpInstance, vueOptions) {
-  mpInstance.dispatch('__l', mpInstance.$vm || vueOptions);
-}
-
-function handleLink (event) {
-  const target = event.value;
-  if (target.$mp) {
-    if (!target.$parent) {
-      target.$parent = this.$vm;
-      target.$parent.$children.push(target);
-
-      target.$root = this.$vm.$root;
-    }
-  } else {
-    if (!target.parent) {
-      target.parent = this.$vm;
-    }
-  }
 }
 
 const hooks$1 = [
@@ -997,7 +1096,9 @@ function initVm$2 (VueComponent) {
 function createComponent (vueOptions) {
   vueOptions = vueOptions.default || vueOptions;
 
-  const properties = getProperties(vueOptions.props);
+  const behaviors = getBehaviors(vueOptions);
+
+  const properties = getProperties(vueOptions.props, false, vueOptions.__file);
 
   const VueComponent = Vue.extend(vueOptions);
 
@@ -1007,6 +1108,7 @@ function createComponent (vueOptions) {
       addGlobalClass: true
     },
     data: getData(vueOptions, Vue.prototype),
+    behaviors,
     properties,
     lifetimes: {
       attached () {

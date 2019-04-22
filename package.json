@@ -76,7 +76,8 @@
             "__PLATFORM__": true,
             "__VERSION__": true,
             "__GLOBAL__": true,
-            "__PLATFORM_TITLE__": true
+            "__PLATFORM_TITLE__": true,
+            "__PLATFORM_PREFIX__":true
         },
         "rules": {
             "no-tabs": 0,

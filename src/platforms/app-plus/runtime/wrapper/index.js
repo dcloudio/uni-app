@@ -1,4 +1,5 @@
 export {
+  mocks,
   handleLink,
   triggerLink
 }

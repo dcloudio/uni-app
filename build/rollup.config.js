@@ -41,6 +41,7 @@ module.exports = {
     replace({
       __GLOBAL__: platform.prefix,
       __PLATFORM_TITLE__: platform.title,
+      __PLATFORM_PREFIX__: JSON.stringify(platform.prefix),
       __PLATFORM__: JSON.stringify(process.env.UNI_PLATFORM)
     })
   ],

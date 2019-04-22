@@ -3,9 +3,7 @@
     <uni-modal
       v-show="visible"
       @touchmove.prevent>
-      <div
-        class="uni-mask"
-        @click="_close('mask')" />
+      <div class="uni-mask"/>
       <div class="uni-modal">
         <div
           v-if="title"

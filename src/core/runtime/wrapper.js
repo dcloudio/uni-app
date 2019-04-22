@@ -39,7 +39,7 @@ function processArgs (methodName, fromArgs, argsOption = {}, returnValue = {}, k
         } else if (isPlainObject(keyOption)) { // {name:newName,value:value}可重新指定参数 key:value
           toArgs[keyOption.name ? keyOption.name : key] = keyOption.value
         }
-      } else if (CALLBACKS.includes(key)) {
+      } else if (CALLBACKS.indexOf(key) !== -1) {
         toArgs[key] = processCallback(methodName, fromArgs[key], returnValue)
       } else {
         if (!keepFromArgs) {
