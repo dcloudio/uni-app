@@ -2,7 +2,7 @@
 
 `uni-app` 是一个使用 `Vue.js` 开发**跨平台**应用的前端框架。
 
-开发者通过编写 `Vue.js` 代码，`uni-app` 将其编译到 iOS、Android、小程序、H5等多个平台，保证其正确运行并达到优秀体验。
+开发者通过编写 `Vue.js` 代码，`uni-app` 将其编译到 App（iOS/Android）、小程序（微信/支付宝/百度/字节跳动）、H5等多个平台，保证其正确运行并达到优秀体验。
 
 `uni-app`官网文档详见[https://uniapp.dcloud.io](https://uniapp.dcloud.io)
 
@@ -36,3 +36,8 @@
 <p>
     <img src="http://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/wx-barcode.png" width="250"/>
 </p>
+
+## 更多资料
+
+- 开发资源汇总： [awesome-uni-app](https://github.com/aben1188/awesome-uni-app/blob/master/README.md)
+- 评测：[深入测试一周，主流多端框架大比武](https://mp.weixin.qq.com/s/jIDEHfuMnED6HTfNgjsW4w)
