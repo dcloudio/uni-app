@@ -1,5 +1,7 @@
 # uni-app
 
+`uni-app` 开发资源汇总： [awesome-uni-app](https://github.com/aben1188/awesome-uni-app/blob/master/README.md)
+
 `uni-app` 是一个使用 `Vue.js` 开发**跨平台**应用的前端框架。
 
 开发者通过编写 `Vue.js` 代码，`uni-app` 将其编译到 iOS、Android、小程序、H5等多个平台，保证其正确运行并达到优秀体验。
