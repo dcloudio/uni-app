@@ -40,4 +40,4 @@
 ## 更多资料
 
 - 开发资源汇总： [awesome-uni-app](https://github.com/aben1188/awesome-uni-app/blob/master/README.md)
-- [深入测试一周，主流多端框架大比武](https://mp.weixin.qq.com/s/jIDEHfuMnED6HTfNgjsW4w)
+- 评测：[深入测试一周，主流多端框架大比武](https://mp.weixin.qq.com/s/jIDEHfuMnED6HTfNgjsW4w)
