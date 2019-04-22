@@ -64,8 +64,32 @@ function createObserver (name) {
   }
 }
 
-export function getBehaviors (vueExtends, vueMixins) {
+export function getBehaviors (vueOptions) {
+  const vueBehaviors = vueOptions['behaviors']
+  const vueExtends = vueOptions['extends']
+  const vueMixins = vueOptions['mixins']
+
+  let vueProps = vueOptions['props']
+
+  if (!vueProps) {
+    vueOptions['props'] = vueProps = []
+  }
+
   const behaviors = []
+  if (Array.isArray(vueBehaviors)) {
+    vueBehaviors.forEach(behavior => {
+      behaviors.push(behavior.replace('uni://', `${__PLATFORM_PREFIX__}://`))
+      if (behavior === 'uni://form-field') {
+        if (Array.isArray(vueProps)) {
+          vueProps.push('name')
+          vueProps.push('value')
+        } else {
+          vueProps['name'] = String
+          vueProps['value'] = null
+        }
+      }
+    })
+  }
   if (isPlainObject(vueExtends) && vueExtends.props) {
     behaviors.push(
       Behavior({
@@ -164,6 +188,11 @@ export function getProperties (props, isBehavior = false, file = '') {
 }
 
 function wrapper (event) {
+  // TODO 又得兼容 mpvue 的 mp 对象
+  try {
+    event.mp = JSON.parse(JSON.stringify(event))
+  } catch (e) {}
+
   event.stopPropagation = noop
   event.preventDefault = noop
 
@@ -182,9 +211,6 @@ function wrapper (event) {
       event.detail.value = event.detail.checked
     }
   }
-
-  // TODO 又得兼容 mpvue 的 mp 对象
-  event.mp = event
 
   if (isPlainObject(event.detail)) {
     event.target = Object.assign({}, event.target, event.detail)

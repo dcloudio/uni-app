@@ -43,9 +43,9 @@ function initVm (VueComponent) {
 export function createComponent (vueOptions) {
   vueOptions = vueOptions.default || vueOptions
 
-  const properties = getProperties(vueOptions.props, false, vueOptions.__file)
+  const behaviors = getBehaviors(vueOptions)
 
-  const behaviors = getBehaviors(vueOptions['extends'], vueOptions['mixins'])
+  const properties = getProperties(vueOptions.props, false, vueOptions.__file)
 
   const VueComponent = Vue.extend(vueOptions)
 

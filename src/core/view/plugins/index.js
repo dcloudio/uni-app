@@ -7,6 +7,8 @@ import {
   processEvent
 } from './events'
 
+import initBehaviors from './behaviors'
+
 function pageMounted () {
   // 通知 Service，View 层已 ready
   UniViewJSBridge.publishHandler('onPageReady', {}, this.$page.id)
@@ -41,6 +43,11 @@ export default {
     Vue.mixin({
       beforeCreate () {
         const options = this.$options
+
+        if (options.behaviors && options.behaviors.length) {
+          initBehaviors(options, this)
+        }
+
         if (isPage(this)) {
           options.mounted = options.mounted ? [].concat(pageMounted, options.mounted) : [pageMounted]
         }
