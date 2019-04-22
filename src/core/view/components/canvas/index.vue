@@ -19,7 +19,7 @@ import {
 
 import {
   wrapper
-} from './hidpi'
+} from 'uni-helpers/hidpi'
 
 function resolveColor (color) {
   color = color.slice(0)

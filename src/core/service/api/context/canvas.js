@@ -1,4 +1,5 @@
 import createCallbacks from 'uni-helpers/callbacks'
+import { wrapper } from 'uni-helpers/hidpi'
 
 const canvasEventCallbacks = createCallbacks('canvasEvent')
 
@@ -257,6 +258,7 @@ var tempCanvas
 function getTempCanvas () {
   if (!tempCanvas) {
     tempCanvas = document.createElement('canvas')
+    wrapper(tempCanvas)
   }
   return tempCanvas
 }
@@ -816,7 +818,7 @@ export function canvasToTempFilePath ({
     pageId = app.$route.params.__id__
   } else {
     invoke(callbackId, {
-      errMsg: 'canvasPutImageData:fail'
+      errMsg: 'canvasToTempFilePath:fail'
     })
     return
   }
@@ -840,20 +842,24 @@ export function canvasToTempFilePath ({
     canvas.width = data.width
     canvas.height = data.height
     var c2d = canvas.getContext('2d')
-    c2d.putImageData(imgData, 0, 0)
-    var base64 = canvas.toDataURL('image/png')
-    var img = new Image()
-    img.onload = function () {
-      canvas.width = destWidth || imgData.width
-      canvas.height = destHeight || imgData.height
-      c2d.drawImage(img, 0, 0)
-      base64 = canvas.toDataURL(`image/${fileType.toLowerCase()}`, qualit)
-      invoke(callbackId, {
-        errMsg: 'canvasToTempFilePath:ok',
-        tempFilePath: base64
-      })
-    }
-    img.src = base64
+    c2d.putImageData(imgData, 0, 0, 0, 0, destWidth || imgData.width, destHeight || imgData.height)
+    var base64 = canvas.toDataURL(`image/${fileType.toLowerCase()}`, qualit)
+    invoke(callbackId, {
+      errMsg: 'canvasToTempFilePath:ok',
+      tempFilePath: base64
+    })
+    // var img = new Image()
+    // img.onload = function () {
+    //   canvas.width = destWidth || imgData.width
+    //   canvas.height = destHeight || imgData.height
+    //   c2d.drawImage(img, 0, 0)
+    //   base64 = canvas.toDataURL(`image/${fileType.toLowerCase()}`, qualit)
+    //   invoke(callbackId, {
+    //     errMsg: 'canvasToTempFilePath:ok',
+    //     tempFilePath: base64
+    //   })
+    // }
+    // img.src = base64
   })
   operateCanvas(canvasId, pageId, 'getImageData', {
     x,
