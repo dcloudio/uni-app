@@ -41,7 +41,7 @@ if (pixelRatio !== 1) {
   forEach(ratioArgs, function (value, key) {
     proto[key] = (function (_super) {
       return function () {
-        if (this.__ignore__) {
+        if (!this.__hidpi__) {
           return _super.apply(this, arguments)
         }
 
@@ -63,7 +63,7 @@ if (pixelRatio !== 1) {
 
   proto.stroke = (function (_super) {
     return function () {
-      if (this.__ignore__) {
+      if (!this.__hidpi__) {
         return _super.apply(this, arguments)
       }
       this.lineWidth *= pixelRatio
@@ -74,7 +74,7 @@ if (pixelRatio !== 1) {
 
   proto.fillText = (function (_super) {
     return function () {
-      if (this.__ignore__) {
+      if (!this.__hidpi__) {
         return _super.apply(this, arguments)
       }
       const args = Array.prototype.slice.call(arguments)
@@ -102,7 +102,7 @@ if (pixelRatio !== 1) {
 
   proto.strokeText = (function (_super) {
     return function () {
-      if (this.__ignore__) {
+      if (!this.__hidpi__) {
         return _super.apply(this, arguments)
       }
       var args = Array.prototype.slice.call(arguments)
@@ -130,7 +130,7 @@ if (pixelRatio !== 1) {
 
   proto.drawImageByCanvas = (function (_super) {
     return function (canvas, srcx, srcy, srcw, srch, desx, desy, desw, desh, isScale) {
-      if (this.__ignore__) {
+      if (!this.__hidpi__) {
         return _super.apply(this, arguments)
       }
       srcx *= pixelRatio
@@ -147,7 +147,7 @@ if (pixelRatio !== 1) {
 
   proto.drawImage = (function (_super) {
     return function () {
-      if (this.__ignore__) {
+      if (!this.__hidpi__) {
         return _super.apply(this, arguments)
       }
       this.scale(pixelRatio, pixelRatio)
@@ -162,6 +162,7 @@ export function wrapper (canvas) {
   canvas.style.width = canvas.width + 'px'
   canvas.width *= pixelRatio
   canvas.height *= pixelRatio
+  canvas.getContext('2d').__hidpi__ = true
 
   console.log(canvas.width)
   console.log(canvas.height)
