@@ -2,13 +2,13 @@ const defaultProps = {
   visible: false,
   mode: '',
   range: [],
-  'range-key': '',
+  rangeKey: '',
   value: '',
   disabled: false,
   start: '',
   end: '',
   fields: 'day',
-  'custom-item': ''
+  customItem: ''
 }
 
 export default {
