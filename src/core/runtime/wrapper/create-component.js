@@ -1,6 +1,10 @@
 import Vue from 'vue'
 
 import {
+  isFn
+} from 'uni-shared'
+
+import {
   handleLink,
   triggerLink,
   initComponent
@@ -18,16 +22,20 @@ function initVm (VueComponent) {
     return
   }
 
+  const properties = __PLATFORM__ === 'mp-alipay'
+    ? this.props
+    : this.properties
+
   const options = {
     mpType: 'component',
     mpInstance: this,
-    propsData: this.properties
+    propsData: properties
   }
   // 初始化 vue 实例
   this.$vm = new VueComponent(options)
 
   // 处理$slots,$scopedSlots（暂不支持动态变化$slots）
-  const vueSlots = this.properties.vueSlots
+  const vueSlots = properties.vueSlots
   if (Array.isArray(vueSlots) && vueSlots.length) {
     const $slots = Object.create(null)
     vueSlots.forEach(slotName => {
@@ -43,11 +51,17 @@ function initVm (VueComponent) {
 export function createComponent (vueOptions) {
   vueOptions = vueOptions.default || vueOptions
 
+  let VueComponent
+  if (isFn(vueOptions)) {
+    VueComponent = vueOptions // TODO form-field props.name,props.value
+    vueOptions = VueComponent.extendOptions
+  } else {
+    VueComponent = Vue.extend(vueOptions)
+  }
+
   const behaviors = getBehaviors(vueOptions)
 
   const properties = getProperties(vueOptions.props, false, vueOptions.__file)
-
-  const VueComponent = Vue.extend(vueOptions)
 
   const componentOptions = {
     options: {
@@ -93,7 +107,5 @@ export function createComponent (vueOptions) {
     }
   }
 
-  initComponent(componentOptions)
-
-  return Component(componentOptions)
+  return initComponent(componentOptions, vueOptions)
 }

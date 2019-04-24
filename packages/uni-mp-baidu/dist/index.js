@@ -417,8 +417,7 @@ function initTriggerEvent (mpInstance) {
   };
 }
 
-Page = function (options = {}) {
-  const name = 'onLoad';
+function initHook (name, options) {
   const oldHook = options[name];
   if (!oldHook) {
     options[name] = function () {
@@ -430,37 +429,62 @@ Page = function (options = {}) {
       return oldHook.apply(this, args)
     };
   }
+}
+
+Page = function (options = {}) {
+  initHook('onLoad', options);
   return MPPage(options)
 };
 
-const behavior = Behavior({
-  created () {
-    initTriggerEvent(this);
-  }
-});
-
 Component = function (options = {}) {
-  (options.behaviors || (options.behaviors = [])).unshift(behavior);
+  initHook('created', options);
   return MPComponent(options)
 };
 
-const mocks = ['nodeId'];
-
-function initPage (pageOptions) {
-  initComponent(pageOptions);
+function initBehavior (options) {
+  return Behavior(options)
+}
+function initRefs (vm) {
+  const mpInstance = vm.$scope;
+  Object.defineProperty(vm, '$refs', {
+    get () {
+      const $refs = {};
+      const components = mpInstance.selectAllComponents('.vue-ref');
+      components.forEach(component => {
+        const ref = component.dataset.ref;
+        $refs[ref] = component.$vm || component;
+      });
+      const forComponents = mpInstance.selectAllComponents('.vue-ref-in-for');
+      forComponents.forEach(component => {
+        const ref = component.dataset.ref;
+        if (!$refs[ref]) {
+          $refs[ref] = [];
+        }
+        $refs[ref].push(component.$vm || component);
+      });
+      return $refs
+    }
+  });
 }
 
-function initComponent (componentOptions) {
+const mocks$1 = ['nodeId'];
+
+function initPage$1 (pageOptions) {
+  return initComponent$1(pageOptions)
+}
+
+function initComponent$1 (componentOptions) {
   componentOptions.messages = {
-    '__l': handleLink
+    '__l': handleLink$1
   };
+  return Component(componentOptions)
 }
 
-function triggerLink (mpInstance, vueOptions) {
+function triggerLink$1 (mpInstance, vueOptions) {
   mpInstance.dispatch('__l', mpInstance.$vm || vueOptions);
 }
 
-function handleLink (event) {
+function handleLink$1 (event) {
   const target = event.value;
   if (target.$mp) {
     if (!target.$parent) {
@@ -563,7 +587,7 @@ function getBehaviors (vueOptions) {
   }
   if (isPlainObject(vueExtends) && vueExtends.props) {
     behaviors.push(
-      Behavior({
+      initBehavior({
         properties: getProperties(vueExtends.props, true)
       })
     );
@@ -572,7 +596,7 @@ function getBehaviors (vueOptions) {
     vueMixins.forEach(vueMixin => {
       if (isPlainObject(vueMixin) && vueMixin.props) {
         behaviors.push(
-          Behavior({
+          initBehavior({
             properties: getProperties(vueMixin.props, true)
           })
         );
@@ -866,29 +890,6 @@ function handleEvent (event) {
   });
 }
 
-function initRefs (vm) {
-  const mpInstance = vm.$mp[vm.mpType];
-  Object.defineProperty(vm, '$refs', {
-    get () {
-      const $refs = {};
-      const components = mpInstance.selectAllComponents('.vue-ref');
-      components.forEach(component => {
-        const ref = component.dataset.ref;
-        $refs[ref] = component.$vm || component;
-      });
-      const forComponents = mpInstance.selectAllComponents('.vue-ref-in-for');
-      forComponents.forEach(component => {
-        const ref = component.dataset.ref;
-        if (!$refs[ref]) {
-          $refs[ref] = [];
-        }
-        $refs[ref].push(component.$vm || component);
-      });
-      return $refs
-    }
-  });
-}
-
 function baiduComponentDestroy ($vm) {
   $vm.$children.forEach(childVm => {
     childVm.$mp.component.detached();
@@ -923,25 +924,28 @@ function initVm (vm) {
 }
 
 function createApp (vm) {
-  // 外部初始化时 Vue 还未初始化，放到 createApp 内部初始化 mixin
+
   Vue.mixin({
     beforeCreate () {
       if (!this.$options.mpType) {
         return
       }
+
       this.mpType = this.$options.mpType;
+
       this.$mp = {
         data: {},
         [this.mpType]: this.$options.mpInstance
       };
+
+      this.$scope = this.$options.mpInstance;
+
       delete this.$options.mpType;
       delete this.$options.mpInstance;
 
       if (this.mpType !== 'app') {
-        { // 头条的 selectComponent 竟然是异步的
-          initRefs(this);
-        }
-        initMocks(this, mocks);
+        initRefs(this);
+        initMocks(this, mocks$1);
       }
     },
     created () { // 处理 injections
@@ -1055,15 +1059,13 @@ function createPage (vueOptions) {
         }
       },
       __e: handleEvent,
-      __l: handleLink
+      __l: handleLink$1
     }
   };
 
   initHooks(pageOptions.methods, hooks$1);
 
-  initPage(pageOptions);
-
-  return Component(pageOptions)
+  return initPage$1(pageOptions, vueOptions)
 }
 
 function initVm$2 (VueComponent) {
@@ -1071,16 +1073,18 @@ function initVm$2 (VueComponent) {
     return
   }
 
+  const properties = this.properties;
+
   const options = {
     mpType: 'component',
     mpInstance: this,
-    propsData: this.properties
+    propsData: properties
   };
   // 初始化 vue 实例
   this.$vm = new VueComponent(options);
 
   // 处理$slots,$scopedSlots（暂不支持动态变化$slots）
-  const vueSlots = this.properties.vueSlots;
+  const vueSlots = properties.vueSlots;
   if (Array.isArray(vueSlots) && vueSlots.length) {
     const $slots = Object.create(null);
     vueSlots.forEach(slotName => {
@@ -1096,11 +1100,17 @@ function initVm$2 (VueComponent) {
 function createComponent (vueOptions) {
   vueOptions = vueOptions.default || vueOptions;
 
+  let VueComponent;
+  if (isFn(vueOptions)) {
+    VueComponent = vueOptions; // TODO form-field props.name,props.value
+    vueOptions = VueComponent.extendOptions;
+  } else {
+    VueComponent = Vue.extend(vueOptions);
+  }
+
   const behaviors = getBehaviors(vueOptions);
 
   const properties = getProperties(vueOptions.props, false, vueOptions.__file);
-
-  const VueComponent = Vue.extend(vueOptions);
 
   const componentOptions = {
     options: {
@@ -1116,7 +1126,7 @@ function createComponent (vueOptions) {
       },
       ready () {
         initVm$2.call(this, VueComponent); // 目前发现部分情况小程序 attached 不触发
-        triggerLink(this); // 处理 parent,children
+        triggerLink$1(this); // 处理 parent,children
 
         // 补充生命周期
         this.$vm.__call_hook('created');
@@ -1142,13 +1152,11 @@ function createComponent (vueOptions) {
     },
     methods: {
       __e: handleEvent,
-      __l: handleLink
+      __l: handleLink$1
     }
   };
 
-  initComponent(componentOptions);
-
-  return Component(componentOptions)
+  return initComponent$1(componentOptions, vueOptions)
 }
 
 let uni = {};

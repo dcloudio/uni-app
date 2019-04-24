@@ -5,6 +5,10 @@ import {
   isPlainObject
 } from 'uni-shared'
 
+import {
+  initBehavior
+} from 'uni-platform/runtime/wrapper/index'
+
 export function initMocks (vm, mocks) {
   const mpInstance = vm.$mp[vm.mpType]
   mocks.forEach(mock => {
@@ -92,7 +96,7 @@ export function getBehaviors (vueOptions) {
   }
   if (isPlainObject(vueExtends) && vueExtends.props) {
     behaviors.push(
-      Behavior({
+      initBehavior({
         properties: getProperties(vueExtends.props, true)
       })
     )
@@ -101,7 +105,7 @@ export function getBehaviors (vueOptions) {
     vueMixins.forEach(vueMixin => {
       if (isPlainObject(vueMixin) && vueMixin.props) {
         behaviors.push(
-          Behavior({
+          initBehavior({
             properties: getProperties(vueMixin.props, true)
           })
         )
@@ -391,29 +395,6 @@ export function handleEvent (event) {
           ))
         }
       })
-    }
-  })
-}
-
-export function initRefs (vm) {
-  const mpInstance = vm.$mp[vm.mpType]
-  Object.defineProperty(vm, '$refs', {
-    get () {
-      const $refs = {}
-      const components = mpInstance.selectAllComponents('.vue-ref')
-      components.forEach(component => {
-        const ref = component.dataset.ref
-        $refs[ref] = component.$vm || component
-      })
-      const forComponents = mpInstance.selectAllComponents('.vue-ref-in-for')
-      forComponents.forEach(component => {
-        const ref = component.dataset.ref
-        if (!$refs[ref]) {
-          $refs[ref] = []
-        }
-        $refs[ref].push(component.$vm || component)
-      })
-      return $refs
     }
   })
 }

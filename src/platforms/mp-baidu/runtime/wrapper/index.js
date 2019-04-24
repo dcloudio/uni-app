@@ -1,13 +1,20 @@
+export {
+  initRefs,
+  initBehavior
+}
+  from '../../../mp-weixin/runtime/wrapper/index'
+
 export const mocks = ['nodeId']
 
 export function initPage (pageOptions) {
-  initComponent(pageOptions)
+  return initComponent(pageOptions)
 }
 
 export function initComponent (componentOptions) {
   componentOptions.messages = {
     '__l': handleLink
   }
+  return Component(componentOptions)
 }
 
 export function triggerLink (mpInstance, vueOptions) {

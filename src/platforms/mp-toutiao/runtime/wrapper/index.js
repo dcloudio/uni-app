@@ -1,9 +1,14 @@
+export {
+  initBehavior
+}
+  from '../../../mp-weixin/runtime/wrapper/index'
+
 const instances = Object.create(null)
 
 export const mocks = ['__route__', '__webviewId__', '__nodeid__']
 
 export function initPage (pageOptions) {
-  initComponent(pageOptions)
+  return initComponent(pageOptions)
 }
 
 export function initComponent (componentOptions) {
@@ -13,28 +18,24 @@ export function initComponent (componentOptions) {
       value: ''
     }
   }
-  const oldAttached = componentOptions.lifetimes.attached
-  componentOptions.lifetimes.attached = function () {
-    oldAttached.call(this)
-    // TODO 需要处理动态变化后的 refs
-    initRefs.call(this)
-  }
+  return Component(componentOptions)
 }
 
-function initRefs () {
-  this.selectAllComponents('.vue-ref', (components) => {
+export function initRefs (vm) {
+  const mpInstance = vm.$scope
+  mpInstance.selectAllComponents('.vue-ref', (components) => {
     components.forEach(component => {
       const ref = component.data.vueRef // 头条的组件 dataset 竟然是空的
-      this.$vm.$refs[ref] = component.$vm || component
+      vm.$refs[ref] = component.$vm || component
     })
   })
-  this.selectAllComponents('.vue-ref-in-for', (forComponents) => {
+  mpInstance.selectAllComponents('.vue-ref-in-for', (forComponents) => {
     forComponents.forEach(component => {
       const ref = component.data.vueRef
-      if (!this.$vm.$refs[ref]) {
-        this.$vm.$refs[ref] = []
+      if (!vm.$refs[ref]) {
+        vm.$refs[ref] = []
       }
-      this.$vm.$refs[ref].push(component.$vm || component)
+      vm.$refs[ref].push(component.$vm || component)
     })
   })
 }

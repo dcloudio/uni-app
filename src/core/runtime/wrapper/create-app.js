@@ -3,11 +3,11 @@ import 'uni-platform/runtime/index'
 import Vue from 'vue'
 
 import {
-  mocks
+  mocks,
+  initRefs
 } from 'uni-platform/runtime/wrapper/index'
 
 import {
-  initRefs,
   initHooks,
   initMocks
 } from './util'
@@ -38,23 +38,45 @@ function initVm (vm) {
 
 export function createApp (vm) {
   // 外部初始化时 Vue 还未初始化，放到 createApp 内部初始化 mixin
+  if (__PLATFORM__ === 'mp-alipay') {
+    Object.defineProperty(Vue.prototype, '$slots', {
+      get () {
+        return this.$scope && this.$scope.props.$slots
+      },
+      set () {
+
+      }
+    })
+    Object.defineProperty(Vue.prototype, '$scopedSlots', {
+      get () {
+        return this.$scope && this.$scope.props.$scopedSlots
+      },
+      set () {
+
+      }
+    })
+  }
+
   Vue.mixin({
     beforeCreate () {
       if (!this.$options.mpType) {
         return
       }
+
       this.mpType = this.$options.mpType
+
       this.$mp = {
         data: {},
         [this.mpType]: this.$options.mpInstance
       }
+
+      this.$scope = this.$options.mpInstance
+
       delete this.$options.mpType
       delete this.$options.mpInstance
 
       if (this.mpType !== 'app') {
-        if (__PLATFORM__ !== 'mp-toutiao') { // 头条的 selectComponent 竟然是异步的
-          initRefs(this)
-        }
+        initRefs(this)
         initMocks(this, mocks)
       }
     },

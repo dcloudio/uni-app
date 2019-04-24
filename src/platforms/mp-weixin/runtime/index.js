@@ -24,8 +24,7 @@ function initTriggerEvent (mpInstance) {
   }
 }
 
-Page = function (options = {}) {
-  const name = 'onLoad'
+function initHook (name, options) {
   const oldHook = options[name]
   if (!oldHook) {
     options[name] = function () {
@@ -37,16 +36,14 @@ Page = function (options = {}) {
       return oldHook.apply(this, args)
     }
   }
+}
+
+Page = function (options = {}) {
+  initHook('onLoad', options)
   return MPPage(options)
 }
 
-const behavior = Behavior({
-  created () {
-    initTriggerEvent(this)
-  }
-})
-
 Component = function (options = {}) {
-  (options.behaviors || (options.behaviors = [])).unshift(behavior)
+  initHook('created', options)
   return MPComponent(options)
 }

@@ -101,7 +101,5 @@ export function createPage (vueOptions) {
 
   initHooks(pageOptions.methods, hooks)
 
-  initPage(pageOptions)
-
-  return Component(pageOptions)
+  return initPage(pageOptions, vueOptions)
 }

@@ -282,8 +282,7 @@ function initTriggerEvent (mpInstance) {
   };
 }
 
-Page = function (options = {}) {
-  const name = 'onLoad';
+function initHook (name, options) {
   const oldHook = options[name];
   if (!oldHook) {
     options[name] = function () {
@@ -295,22 +294,45 @@ Page = function (options = {}) {
       return oldHook.apply(this, args)
     };
   }
+}
+
+Page = function (options = {}) {
+  initHook('onLoad', options);
   return MPPage(options)
 };
 
-const behavior = Behavior({
-  created () {
-    initTriggerEvent(this);
-  }
-});
-
 Component = function (options = {}) {
-  (options.behaviors || (options.behaviors = [])).unshift(behavior);
+  initHook('created', options);
   return MPComponent(options)
 };
 
 const mocks = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__'];
 
+function initBehavior (options) {
+  return Behavior(options)
+}
+function initRefs (vm) {
+  const mpInstance = vm.$scope;
+  Object.defineProperty(vm, '$refs', {
+    get () {
+      const $refs = {};
+      const components = mpInstance.selectAllComponents('.vue-ref');
+      components.forEach(component => {
+        const ref = component.dataset.ref;
+        $refs[ref] = component.$vm || component;
+      });
+      const forComponents = mpInstance.selectAllComponents('.vue-ref-in-for');
+      forComponents.forEach(component => {
+        const ref = component.dataset.ref;
+        if (!$refs[ref]) {
+          $refs[ref] = [];
+        }
+        $refs[ref].push(component.$vm || component);
+      });
+      return $refs
+    }
+  });
+}
 function triggerLink (mpInstance, vueOptions) {
   mpInstance.triggerEvent('__l', mpInstance.$vm || vueOptions, {
     bubbles: true,
@@ -334,18 +356,19 @@ function handleLink (event) {
 }
 
 function initPage$1 (pageOptions) {
-  initComponent$1(pageOptions);
+  return initComponent$1(pageOptions)
 }
 
 function initComponent$1 (componentOptions) {
   componentOptions.methods.$getAppWebview = function () {
     return plus.webview.getWebviewById(`${this.__wxWebviewId__}`)
   };
+  return Component(componentOptions)
 }
 
-function initMocks (vm, mocks) {
+function initMocks (vm, mocks$$1) {
   const mpInstance = vm.$mp[vm.mpType];
-  mocks.forEach(mock => {
+  mocks$$1.forEach(mock => {
     if (hasOwn(mpInstance, mock)) {
       vm[mock] = mpInstance[mock];
     }
@@ -430,7 +453,7 @@ function getBehaviors (vueOptions) {
   }
   if (isPlainObject(vueExtends) && vueExtends.props) {
     behaviors.push(
-      Behavior({
+      initBehavior({
         properties: getProperties(vueExtends.props, true)
       })
     );
@@ -439,7 +462,7 @@ function getBehaviors (vueOptions) {
     vueMixins.forEach(vueMixin => {
       if (isPlainObject(vueMixin) && vueMixin.props) {
         behaviors.push(
-          Behavior({
+          initBehavior({
             properties: getProperties(vueMixin.props, true)
           })
         );
@@ -707,29 +730,6 @@ function handleEvent (event) {
   });
 }
 
-function initRefs (vm) {
-  const mpInstance = vm.$mp[vm.mpType];
-  Object.defineProperty(vm, '$refs', {
-    get () {
-      const $refs = {};
-      const components = mpInstance.selectAllComponents('.vue-ref');
-      components.forEach(component => {
-        const ref = component.dataset.ref;
-        $refs[ref] = component.$vm || component;
-      });
-      const forComponents = mpInstance.selectAllComponents('.vue-ref-in-for');
-      forComponents.forEach(component => {
-        const ref = component.dataset.ref;
-        if (!$refs[ref]) {
-          $refs[ref] = [];
-        }
-        $refs[ref].push(component.$vm || component);
-      });
-      return $refs
-    }
-  });
-}
-
 const hooks = [
   'onHide',
   'onError',
@@ -750,24 +750,27 @@ function initVm (vm) {
 }
 
 function createApp (vm) {
-  // 外部初始化时 Vue 还未初始化，放到 createApp 内部初始化 mixin
+
   Vue.mixin({
     beforeCreate () {
       if (!this.$options.mpType) {
         return
       }
+
       this.mpType = this.$options.mpType;
+
       this.$mp = {
         data: {},
         [this.mpType]: this.$options.mpInstance
       };
+
+      this.$scope = this.$options.mpInstance;
+
       delete this.$options.mpType;
       delete this.$options.mpInstance;
 
       if (this.mpType !== 'app') {
-        { // 头条的 selectComponent 竟然是异步的
-          initRefs(this);
-        }
+        initRefs(this);
         initMocks(this, mocks);
       }
     },
@@ -878,9 +881,7 @@ function createPage (vueOptions) {
 
   initHooks(pageOptions.methods, hooks$1);
 
-  initPage$1(pageOptions);
-
-  return Component(pageOptions)
+  return initPage$1(pageOptions, vueOptions)
 }
 
 function initVm$2 (VueComponent) {
@@ -888,16 +889,18 @@ function initVm$2 (VueComponent) {
     return
   }
 
+  const properties = this.properties;
+
   const options = {
     mpType: 'component',
     mpInstance: this,
-    propsData: this.properties
+    propsData: properties
   };
   // 初始化 vue 实例
   this.$vm = new VueComponent(options);
 
   // 处理$slots,$scopedSlots（暂不支持动态变化$slots）
-  const vueSlots = this.properties.vueSlots;
+  const vueSlots = properties.vueSlots;
   if (Array.isArray(vueSlots) && vueSlots.length) {
     const $slots = Object.create(null);
     vueSlots.forEach(slotName => {
@@ -913,11 +916,17 @@ function initVm$2 (VueComponent) {
 function createComponent (vueOptions) {
   vueOptions = vueOptions.default || vueOptions;
 
+  let VueComponent;
+  if (isFn(vueOptions)) {
+    VueComponent = vueOptions; // TODO form-field props.name,props.value
+    vueOptions = VueComponent.extendOptions;
+  } else {
+    VueComponent = Vue.extend(vueOptions);
+  }
+
   const behaviors = getBehaviors(vueOptions);
 
   const properties = getProperties(vueOptions.props, false, vueOptions.__file);
-
-  const VueComponent = Vue.extend(vueOptions);
 
   const componentOptions = {
     options: {
@@ -963,9 +972,7 @@ function createComponent (vueOptions) {
     }
   };
 
-  initComponent$1(componentOptions);
-
-  return Component(componentOptions)
+  return initComponent$1(componentOptions, vueOptions)
 }
 
 let uni = {};
