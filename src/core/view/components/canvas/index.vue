@@ -89,8 +89,8 @@ export default {
   },
   mounted () {
     this._resize({
-      width: this.$el.offsetWidth,
-      height: this.$el.offsetHeight
+      width: this.$attrs.width ? parseInt(this.$attrs.width) : this.$el.offsetWidth,
+      height: this.$attrs.height ? parseInt(this.$attrs.height) : this.$el.offsetHeight
     })
   },
   methods: {
