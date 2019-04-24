@@ -1,5 +1,5 @@
 // 不支持的 API 列表
-const TODOS = [
+const todos = [
   'hideKeyboard',
   'onGyroscopeChange',
   'startGyroscope',
@@ -31,6 +31,9 @@ const TODOS = [
   'onWindowResize',
   'offWindowResize'
 ]
+
+// 存在兼容性的 API 列表
+const canIUses = []
 
 function createTodoMethod (contextName, methodName) {
   return function unsupported () {
@@ -93,8 +96,8 @@ const protocols = {
   }
 }
 
-TODOS.forEach(todoApi => {
-  protocols[todoApi] = false
-})
-
-export default protocols
+export {
+  protocols,
+  todos,
+  canIUses
+}

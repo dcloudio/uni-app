@@ -1,5 +1,5 @@
 // 不支持的 API 列表
-const TODOS = [
+const todos = [
   'saveImageToPhotosAlbum',
   'getRecorderManager',
   'getBackgroundAudioManager',
@@ -24,7 +24,6 @@ const TODOS = [
   'hideTabBarRedDot',
   'setBackgroundColor',
   'setBackgroundTextStyle',
-  'startPullDownRefresh',
   'createIntersectionObserver',
   'authorize',
   'openSetting',
@@ -43,6 +42,11 @@ const TODOS = [
   'getExtConfigSync',
   'onWindowResize',
   'offWindowResize'
+]
+
+// 存在兼容性的 API 列表
+const canIUses = [
+  'startPullDownRefresh'
 ]
 
 function _handleNetworkInfo (result) {
@@ -359,8 +363,8 @@ const protocols = { // 需要做转换的 API 列表
   }
 }
 
-TODOS.forEach(todoApi => {
-  protocols[todoApi] = false
-})
-
-export default protocols
+export {
+  protocols,
+  todos,
+  canIUses
+}

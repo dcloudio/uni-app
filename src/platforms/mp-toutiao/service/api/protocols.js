@@ -1,5 +1,5 @@
 // 不支持的 API 列表
-const TODOS = [
+const todos = [
   'hideKeyboard',
   'onSocketOpen',
   'onSocketError',
@@ -81,6 +81,9 @@ const TODOS = [
   'offWindowResize'
 ]
 
+// 存在兼容性的 API 列表
+const canIUses = []
+
 // 需要做转换的 API 列表
 const protocols = {
   chooseImage: {
@@ -154,8 +157,8 @@ const protocols = {
   }
 }
 
-TODOS.forEach(todoApi => {
-  protocols[todoApi] = false
-})
-
-export default protocols
+export {
+  protocols,
+  todos,
+  canIUses
+}

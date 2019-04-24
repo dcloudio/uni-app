@@ -1,1 +1,3 @@
-export default {}
+export const protocols = {}
+export const todos = []
+export const canIUses = []

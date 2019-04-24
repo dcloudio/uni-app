@@ -10,7 +10,7 @@ import {
   isContextApi
 } from '../helpers/promise'
 
-import protocols from 'uni-platform/service/api/protocols'
+import { protocols } from 'uni-platform/service/api/protocols'
 
 const CALLBACKS = ['success', 'fail', 'cancel', 'complete']
 

@@ -18,7 +18,18 @@ import * as extraApi from './extra'
 
 import * as api from 'uni-platform/service/api/index.js'
 
-import protocols from 'uni-platform/service/api/protocols'
+import { protocols, todos, canIUses } from 'uni-platform/service/api/protocols'
+
+todos.forEach(todoApi => {
+  protocols[todoApi] = false
+})
+
+canIUses.forEach(canIUseApi => {
+  const apiName = protocols[canIUseApi] && protocols[canIUseApi].name ? protocols[canIUseApi].name : canIUseApi
+  if (!__GLOBAL__.canIUse(apiName)) {
+    protocols[canIUseApi] = false
+  }
+})
 
 let uni = {}
 
