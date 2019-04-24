@@ -111,7 +111,7 @@ export default {
   },
   data () {
     return {
-      valueSync: this.value,
+      valueSync: this.value || 0,
       visible: false,
       valueChangeSource: ''
     }
