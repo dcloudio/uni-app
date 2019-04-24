@@ -153,7 +153,7 @@ export function initComponent (componentOptions, vueOptions) {
   delete componentOptions.lifetimes
   delete componentOptions.pageLifetimes
 
-  return Component(componentOptions)
+  return my.createComponent(componentOptions)
 }
 
 export function initBehavior ({
@@ -181,6 +181,10 @@ export function handleLink (detail) {
       if (detail.$parent) {
         detail.$parent.$children.push(detail)
         detail.$root = this.$vm.$root
+
+        if (!my.canIUse('component2')) {
+          handleRef.call(this, detail.$scope)
+        }
       }
     }
   } else { // vueOptions
