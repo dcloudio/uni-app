@@ -843,17 +843,33 @@ export function canvasToTempFilePath ({
     canvas.height = data.height
     var c2d = canvas.getContext('2d')
     c2d.putImageData(imgData, 0, 0, 0, 0, destWidth || imgData.width, destHeight || imgData.height)
-    var base64 = canvas.toDataURL(`image/${fileType.toLowerCase()}`, qualit)
+    var imageType = fileType ? fileType.toLowerCase() : 'png'
+    var base64
+    if (imageType === 'jpg' || imageType === 'jpeg') {
+      var tmpCanvas = canvas.cloneNode(true)
+      var tmpCtx = tmpCanvas.getContext('2d')
+      tmpCtx.fillStyle = '#fff'
+      tmpCtx.fillRect(0, 0, tmpCanvas.width, tmpCanvas.height)
+      tmpCtx.drawImage(canvas, 0, 0)
+      base64 = tmpCanvas.toDataURL(`image/jpeg`, qualit)
+    } else {
+      base64 = canvas.toDataURL(`image/${imageType}`, qualit)
+    }
+
     invoke(callbackId, {
       errMsg: 'canvasToTempFilePath:ok',
       tempFilePath: base64
     })
+
+    // TODO base64返回的是高清图，如果将img通过drawImage画到等宽高的canvas会出现显示不全问题, drawImage在次做了高清处理
     // var img = new Image()
     // img.onload = function () {
     //   canvas.width = destWidth || imgData.width
     //   canvas.height = destHeight || imgData.height
+    //   c2d.fillStyle = '#fff'
+    //   c2d.fillRect(0, 0, canvas.width, canvas.height)
     //   c2d.drawImage(img, 0, 0)
-    //   base64 = canvas.toDataURL(`image/${fileType.toLowerCase()}`, qualit)
+    //   base64 = canvas.toDataURL(`image/jpeg`, qualit)
     //   invoke(callbackId, {
     //     errMsg: 'canvasToTempFilePath:ok',
     //     tempFilePath: base64
