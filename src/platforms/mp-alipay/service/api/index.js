@@ -12,12 +12,8 @@ export function getStorageSync (key) {
   const result = my.getStorageSync({
     key
   })
-  // 不知道会不会出现 success 为 false 情况，暂时这样处理下。
-  if (result.success) {
-    return result.data || ''
-  } else {
-    return ''
-  }
+  // 支付宝平台会返回一个 success 值，但是目前测试的结果这个始终是 true。当没有存储数据的时候，其它平台会返回空字符串。
+  return result.data !== null ? result.data : ''
 }
 export function removeStorageSync (key) {
   return my.removeStorageSync({
