@@ -1,4 +1,4 @@
-const pixelRatio = (function () {
+export const pixelRatio = (function () {
   const canvas = document.createElement('canvas')
   const context = canvas.getContext('2d')
   const backingStore = context.backingStorePixelRatio ||
@@ -163,7 +163,4 @@ export function wrapper (canvas) {
   canvas.width *= pixelRatio
   canvas.height *= pixelRatio
   canvas.getContext('2d').__hidpi__ = true
-
-  console.log(canvas.width)
-  console.log(canvas.height)
 }

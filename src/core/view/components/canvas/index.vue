@@ -10,6 +10,9 @@
     <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden;">
       <slot />
     </div>
+    <v-uni-resize-sensor
+      ref="sensor"
+      @resize="_resize"/>
   </uni-canvas>
 </template>
 <script>
@@ -89,8 +92,8 @@ export default {
   },
   mounted () {
     this._resize({
-      width: this.$attrs.width ? parseInt(this.$attrs.width) : this.$el.offsetWidth,
-      height: this.$attrs.height ? parseInt(this.$attrs.height) : this.$el.offsetHeight
+      width: this.$refs.sensor.$el.offsetWidth,
+      height: this.$refs.sensor.$el.offsetHeight
     })
   },
   methods: {
@@ -108,11 +111,11 @@ export default {
       height
     }) {
       var canvas = this.$refs.canvas
-      if (canvas.width !== width || canvas.height !== height) {
+      if (canvas.style.width !== (width + 'px') || canvas.style.height !== (height + 'px')) {
         canvas.width = width
         canvas.height = height
+        wrapper(canvas)
       }
-      wrapper(canvas)
     },
     _touchmove (event) {
       event.preventDefault()
