@@ -320,7 +320,7 @@ const protocols = { // 需要做转换的 API 列表
   requestPayment: {
     name: 'tradePay',
     args: {
-      orderInfo: 'orderStr'
+      orderInfo: 'tradeNO'
     }
   },
   getBLEDeviceServices: {
