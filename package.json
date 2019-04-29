@@ -60,7 +60,7 @@
             "App": true,
             "Page": true,
             "Component": true,
-            "Behavior":true,
+            "Behavior": true,
             "getApp": true,
             "getCurrentPages": true,
             "plus": true,
@@ -77,7 +77,7 @@
             "__VERSION__": true,
             "__GLOBAL__": true,
             "__PLATFORM_TITLE__": true,
-            "__PLATFORM_PREFIX__":true
+            "__PLATFORM_PREFIX__": true
         },
         "rules": {
             "no-tabs": 0,
