@@ -40,7 +40,7 @@ const camelize = cached((str) => {
   return str.replace(camelizeRE, (_, c) => c ? c.toUpperCase() : '')
 });
 
-const SYNC_API_RE = /requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$/;
+const SYNC_API_RE = /subNVue|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -144,7 +144,9 @@ function upx2px (number, newDeviceWidth) {
   return number < 0 ? -result : result
 }
 
-var protocols = {};
+const protocols = {};
+const todos = [];
+const canIUses = [];
 
 const CALLBACKS = ['success', 'fail', 'cancel', 'complete'];
 
@@ -1003,6 +1005,17 @@ function createComponent (vueOptions) {
 
   return initComponent(componentOptions, vueOptions)
 }
+
+todos.forEach(todoApi => {
+  protocols[todoApi] = false;
+});
+
+canIUses.forEach(canIUseApi => {
+  const apiName = protocols[canIUseApi] && protocols[canIUseApi].name ? protocols[canIUseApi].name : canIUseApi;
+  if (!wx.canIUse(apiName)) {
+    protocols[canIUseApi] = false;
+  }
+});
 
 let uni = {};
 

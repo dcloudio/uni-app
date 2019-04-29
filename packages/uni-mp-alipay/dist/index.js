@@ -40,7 +40,7 @@ const camelize = cached((str) => {
   return str.replace(camelizeRE, (_, c) => c ? c.toUpperCase() : '')
 });
 
-const SYNC_API_RE = /requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$/;
+const SYNC_API_RE = /subNVue|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -145,7 +145,7 @@ function upx2px (number, newDeviceWidth) {
 }
 
 // 不支持的 API 列表
-const TODOS = [
+const todos = [
   'saveImageToPhotosAlbum',
   'getRecorderManager',
   'getBackgroundAudioManager',
@@ -170,7 +170,6 @@ const TODOS = [
   'hideTabBarRedDot',
   'setBackgroundColor',
   'setBackgroundTextStyle',
-  'startPullDownRefresh',
   'createIntersectionObserver',
   'authorize',
   'openSetting',
@@ -189,6 +188,11 @@ const TODOS = [
   'getExtConfigSync',
   'onWindowResize',
   'offWindowResize'
+];
+
+// 存在兼容性的 API 列表
+const canIUses = [
+  'startPullDownRefresh'
 ];
 
 function _handleNetworkInfo (result) {
@@ -462,7 +466,7 @@ const protocols = { // 需要做转换的 API 列表
   requestPayment: {
     name: 'tradePay',
     args: {
-      orderInfo: 'orderStr'
+      orderInfo: 'tradeNO'
     }
   },
   getBLEDeviceServices: {
@@ -504,10 +508,6 @@ const protocols = { // 需要做转换的 API 列表
     }
   }
 };
-
-TODOS.forEach(todoApi => {
-  protocols[todoApi] = false;
-});
 
 const CALLBACKS = ['success', 'fail', 'cancel', 'complete'];
 
@@ -586,7 +586,7 @@ function wrapper (methodName, method) {
 
 const todoApis = Object.create(null);
 
-const TODOS$1 = [
+const TODOS = [
   'subscribePush',
   'unsubscribePush',
   'onPush',
@@ -607,7 +607,7 @@ function createTodoApi (name) {
   }
 }
 
-TODOS$1.forEach(function (name) {
+TODOS.forEach(function (name) {
   todoApis[name] = createTodoApi(name);
 });
 
@@ -655,12 +655,8 @@ function getStorageSync (key) {
   const result = my.getStorageSync({
     key
   });
-  // 不知道会不会出现 success 为 false 情况，暂时这样处理下。
-  if (result.success) {
-    return result.data || ''
-  } else {
-    return ''
-  }
+  // 支付宝平台会返回一个 success 值，但是目前测试的结果这个始终是 true。当没有存储数据的时候，其它平台会返回空字符串。
+  return result.data !== null ? result.data : ''
 }
 function removeStorageSync (key) {
   return my.removeStorageSync({
@@ -1546,6 +1542,17 @@ function createComponent (vueOptions) {
 
   return initComponent(componentOptions, vueOptions)
 }
+
+todos.forEach(todoApi => {
+  protocols[todoApi] = false;
+});
+
+canIUses.forEach(canIUseApi => {
+  const apiName = protocols[canIUseApi] && protocols[canIUseApi].name ? protocols[canIUseApi].name : canIUseApi;
+  if (!my.canIUse(apiName)) {
+    protocols[canIUseApi] = false;
+  }
+});
 
 let uni = {};
 

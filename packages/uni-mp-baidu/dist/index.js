@@ -40,7 +40,7 @@ const camelize = cached((str) => {
   return str.replace(camelizeRE, (_, c) => c ? c.toUpperCase() : '')
 });
 
-const SYNC_API_RE = /requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$/;
+const SYNC_API_RE = /subNVue|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -145,7 +145,7 @@ function upx2px (number, newDeviceWidth) {
 }
 
 // 不支持的 API 列表
-const TODOS = [
+const todos = [
   'hideKeyboard',
   'onGyroscopeChange',
   'startGyroscope',
@@ -177,6 +177,9 @@ const TODOS = [
   'onWindowResize',
   'offWindowResize'
 ];
+
+// 存在兼容性的 API 列表
+const canIUses = [];
 
 function createTodoMethod (contextName, methodName) {
   return function unsupported () {
@@ -238,10 +241,6 @@ const protocols = {
     name: 'openShare'
   }
 };
-
-TODOS.forEach(todoApi => {
-  protocols[todoApi] = false;
-});
 
 const CALLBACKS = ['success', 'fail', 'cancel', 'complete'];
 
@@ -320,7 +319,7 @@ function wrapper (methodName, method) {
 
 const todoApis = Object.create(null);
 
-const TODOS$1 = [
+const TODOS = [
   'subscribePush',
   'unsubscribePush',
   'onPush',
@@ -341,7 +340,7 @@ function createTodoApi (name) {
   }
 }
 
-TODOS$1.forEach(function (name) {
+TODOS.forEach(function (name) {
   todoApis[name] = createTodoApi(name);
 });
 
@@ -1158,6 +1157,17 @@ function createComponent (vueOptions) {
 
   return initComponent$1(componentOptions, vueOptions)
 }
+
+todos.forEach(todoApi => {
+  protocols[todoApi] = false;
+});
+
+canIUses.forEach(canIUseApi => {
+  const apiName = protocols[canIUseApi] && protocols[canIUseApi].name ? protocols[canIUseApi].name : canIUseApi;
+  if (!swan.canIUse(apiName)) {
+    protocols[canIUseApi] = false;
+  }
+});
 
 let uni = {};
 
