@@ -40,7 +40,7 @@ const camelize = cached((str) => {
   return str.replace(camelizeRE, (_, c) => c ? c.toUpperCase() : '')
 });
 
-const SYNC_API_RE = /requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$/;
+const SYNC_API_RE = /subNVue|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -144,7 +144,9 @@ function upx2px (number, newDeviceWidth) {
   return number < 0 ? -result : result
 }
 
-var protocols = {};
+const protocols = {};
+const todos = [];
+const canIUses = [];
 
 const CALLBACKS = ['success', 'fail', 'cancel', 'complete'];
 
@@ -248,6 +250,51 @@ TODOS.forEach(function (name) {
   todoApis[name] = createTodoApi(name);
 });
 
+function wrapper$1 (webview) {
+  webview.$processed = true;
+  if (!webview.__uniapp_mask_id) {
+    return
+  }
+  const maskColor = webview.__uniapp_mask;
+  const maskWebview = plus.webview.getWebviewById(webview.__uniapp_mask_id);
+  const oldShow = webview.show;
+  const oldHide = webview.hide;
+  const oldClose = webview.close;
+
+  const showMask = function () {
+    maskWebview.setStyle({
+      mask: maskColor
+    });
+  };
+  const closeMask = function () {
+    maskWebview.setStyle({
+      mask: 'none'
+    });
+  };
+  webview.show = function (...args) {
+    showMask();
+    return oldShow.apply(webview, args)
+  };
+  webview.hide = function (...args) {
+    closeMask();
+    return oldHide.apply(webview, args)
+  };
+  webview.close = function (...args) {
+    closeMask();
+    return oldClose.apply(webview, args)
+  };
+}
+
+const subNVue = {
+  getSubNVueById (id) {
+    const webview = plus.webview.getWebviewById(id);
+    if (webview && !webview.$processed) {
+      wrapper$1(webview);
+    }
+    return webview
+  }
+};
+
 function requireNativePlugin (pluginName) {
   /* eslint-disable no-undef */
   if (typeof weex !== 'undefined') {
@@ -258,7 +305,8 @@ function requireNativePlugin (pluginName) {
 }
 
 var api = /*#__PURE__*/Object.freeze({
-  requireNativePlugin: requireNativePlugin
+  requireNativePlugin: requireNativePlugin,
+  subNVue: subNVue
 });
 
 const MPPage = Page;
@@ -532,7 +580,7 @@ function getProperties (props, isBehavior = false, file = '') {
   return properties
 }
 
-function wrapper$1 (event) {
+function wrapper$2 (event) {
   // TODO 又得兼容 mpvue 的 mp 对象
   try {
     event.mp = JSON.parse(JSON.stringify(event));
@@ -683,7 +731,7 @@ const ONCE = '~';
 const CUSTOM = '^';
 
 function handleEvent (event) {
-  event = wrapper$1(event);
+  event = wrapper$2(event);
 
   // [['tap',[['handle',[1,2,a]],['handle1',[1,2,a]]]]]
   const eventOpts = (event.currentTarget || event.target).dataset.eventOpts;
@@ -974,6 +1022,17 @@ function createComponent (vueOptions) {
 
   return initComponent$1(componentOptions, vueOptions)
 }
+
+todos.forEach(todoApi => {
+  protocols[todoApi] = false;
+});
+
+canIUses.forEach(canIUseApi => {
+  const apiName = protocols[canIUseApi] && protocols[canIUseApi].name ? protocols[canIUseApi].name : canIUseApi;
+  if (!wx.canIUse(apiName)) {
+    protocols[canIUseApi] = false;
+  }
+});
 
 let uni = {};
 

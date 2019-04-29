@@ -2,7 +2,7 @@ import {
   isFn
 } from 'uni-shared'
 
-const SYNC_API_RE = /requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$/
+const SYNC_API_RE = /subNVue|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$/
 
 const CONTEXT_API_RE = /^create|Manager$/
 
