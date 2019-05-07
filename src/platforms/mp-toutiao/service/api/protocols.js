@@ -92,9 +92,19 @@ const protocols = {
     }
   },
   previewImage: {
-    args: {
-      indicator: false,
-      loop: false
+    args (fromArgs) {
+      // 处理传入索引值的情况
+      const currentIndex = Number(fromArgs.current)
+      if (!isNaN(currentIndex)) {
+        const urls = fromArgs.urls && Array.isArray(fromArgs.urls) ? fromArgs.urls.concat() : []
+        fromArgs.urls = urls.filter((item, index) => {
+          return index < currentIndex ? item !== urls[currentIndex] : true
+        })
+      }
+      return {
+        indicator: false,
+        loop: false
+      }
     }
   },
   connectSocket: {
