@@ -671,10 +671,17 @@ methods3.forEach(function (method) {
       case 'setFillStyle':
       case 'setStrokeStyle':
         return function (color) {
-          this.actions.push({
-            method,
-            data: ['normal', checkColor(color)]
-          })
+          if (typeof color !== 'object') {
+            this.actions.push({
+              method,
+              data: ['normal', checkColor(color)]
+            })
+          } else {
+            this.actions.push({
+              method,
+              data: [color.type, color.data, color.colorStop]
+            })
+          }
         }
       case 'setGlobalAlpha':
         return function (alpha) {

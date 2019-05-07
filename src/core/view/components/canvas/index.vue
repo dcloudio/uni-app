@@ -163,6 +163,7 @@ export default {
                 let color = resolveColor(data2[1])
                 LinearGradient.addColorStop(offset, color)
               })
+              color = LinearGradient
             } else if (data[0] === 'radial') {
               let x = data[1][0]
               let y = data[1][1]
@@ -173,6 +174,7 @@ export default {
                 let color = resolveColor(data2[1])
                 LinearGradient.addColorStop(offset, color)
               })
+              color = LinearGradient
             } else if (data[0] === 'pattern') {
               let loaded = this.checkImageLoaded(data[1], actions.slice(index + 1), callbackId,
                 function (image) {
