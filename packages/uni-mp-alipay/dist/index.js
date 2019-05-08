@@ -361,9 +361,14 @@ const protocols = { // 需要做转换的 API 列表
   previewImage: {
     args (fromArgs) {
       // 支付宝小程序的 current 是索引值，而非图片地址。
-      if (fromArgs.current && Array.isArray(fromArgs.urls)) {
-        const index = fromArgs.urls.indexOf(fromArgs.current);
-        fromArgs.current = ~index ? index : 0;
+      const currentIndex = Number(fromArgs.current);
+      if (isNaN(currentIndex)) {
+        if (fromArgs.current && Array.isArray(fromArgs.urls)) {
+          const index = fromArgs.urls.indexOf(fromArgs.current);
+          fromArgs.current = ~index ? index : 0;
+        }
+      } else {
+        fromArgs.current = currentIndex;
       }
       return {
         indicator: false,
