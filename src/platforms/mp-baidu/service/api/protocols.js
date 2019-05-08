@@ -1,3 +1,4 @@
+import normalizePreviewImageArgs from '../../../mp-weixin/helpers/normalize-preview-image-args'
 // 不支持的 API 列表
 const todos = [
   'hideKeyboard',
@@ -59,9 +60,12 @@ const protocols = {
     }
   },
   previewImage: {
-    args: {
-      indicator: false,
-      loop: false
+    args (fromArgs) {
+      normalizePreviewImageArgs(fromArgs)
+      return {
+        indicator: false,
+        loop: false
+      }
     }
   },
   getRecorderManager: {

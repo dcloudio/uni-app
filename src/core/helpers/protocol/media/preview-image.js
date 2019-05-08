@@ -19,9 +19,11 @@ export const previewImage = {
     }
   },
   current: {
-    type: String,
+    type: [String, Number],
     validator (value, params) {
-      params.type = value ? getRealPath(value) : ''
+      // 假值都会被转换为数字 0 无需再做判定
+      const index = Number(value)
+      params.current = isNaN(index) ? getRealPath(value) : index
     }
   }
 }

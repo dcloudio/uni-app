@@ -33,7 +33,7 @@ export default {
     }
   },
   created () {
-    var index = this.urls.indexOf(this.current)
+    const index = typeof this.current === 'number' ? this.current : this.urls.indexOf(this.current)
     this.index = index < 0 ? 0 : index
   },
   methods: {
