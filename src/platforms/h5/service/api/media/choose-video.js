@@ -54,13 +54,18 @@ export function chooseVideo ({
     }
 
     const video = document.createElement('video')
-    video.addEventListener('loadedmetadata', function () {
-      callbackResult.duration = video.duration || 0
-      callbackResult.width = video.videoWidth || 0
-      callbackResult.height = video.videoHeight || 0
+    if (video.onloadedmetadata) {
+      // 尝试获取视频的宽高信息
+      video.onloadedmetadata = function () {
+        callbackResult.duration = video.duration || 0
+        callbackResult.width = video.videoWidth || 0
+        callbackResult.height = video.videoHeight || 0
+        invoke(callbackId, callbackResult)
+      }
+      video.src = filePath
+    } else {
       invoke(callbackId, callbackResult)
-    })
-    video.src = filePath
+    }
     // TODO 用户取消选择时，触发 fail，目前尚未找到合适的方法。
   })
 

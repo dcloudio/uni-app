@@ -1,8 +1,6 @@
-import normalizePreviewImageArgs from '../../helpers/normalize-preview-image-args'
+import previewImage from '../../helpers/normalize-preview-image'
 export const protocols = {
-  previewImage: {
-    args: normalizePreviewImageArgs
-  }
+  previewImage
 }
 export const todos = []
 export const canIUses = []

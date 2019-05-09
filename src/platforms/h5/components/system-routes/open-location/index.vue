@@ -20,7 +20,7 @@
 <script>
 import SystemHeader from '../system-header'
 
-const key = 'WXTBZ-6WERU-ECCVS-BZJCK-LW5OJ-SIBOS'
+const key = __uniConfig.qqMapKey
 const referer = 'uniapp'
 const poimarkerSrc = 'https://apis.map.qq.com/tools/poimarker'
 

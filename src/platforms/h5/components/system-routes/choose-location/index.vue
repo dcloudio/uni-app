@@ -29,7 +29,7 @@ export default {
     }
   },
   mounted () {
-    var key = 'WXTBZ-6WERU-ECCVS-BZJCK-LW5OJ-SIBOS'
+    var key = __uniConfig.qqMapKey
     this.src = `https://apis.map.qq.com/tools/locpicker?search=1&type=1&key=${key}&referer=uniapp`
     window.addEventListener('message', (event) => {
       var loc = event.data

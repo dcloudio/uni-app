@@ -1,4 +1,4 @@
-import normalizePreviewImageArgs from '../../../mp-weixin/helpers/normalize-preview-image-args'
+import previewImage from '../../../mp-weixin/helpers/normalize-preview-image'
 
 // 不支持的 API 列表
 const todos = [
@@ -93,15 +93,7 @@ const protocols = {
       sizeType: false
     }
   },
-  previewImage: {
-    args (fromArgs) {
-      normalizePreviewImageArgs(fromArgs)
-      return {
-        indicator: false,
-        loop: false
-      }
-    }
-  },
+  previewImage,
   connectSocket: {
     args: {
       method: false

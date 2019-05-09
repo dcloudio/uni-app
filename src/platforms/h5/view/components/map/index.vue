@@ -791,7 +791,7 @@ export default {
         maps = window.qq.maps
         callback()
       } else {
-        let key = 'XVXBZ-NDMC4-JOGUS-XGIEE-QVHDZ-AMFV2'
+        let key = __uniConfig.qqMapKey
         let callbackName = '_callback' + Date.now()
         window[callbackName] = function () {
           delete window[callbackName]

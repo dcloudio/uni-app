@@ -10,7 +10,9 @@ export function isPage (vm) {
 }
 
 export function normalizeDataset (dataset = {}) {
-  const result = Object.assign({}, dataset)
+  // ios8.x,9.x Object.assign({},dataset) 始终返回 {}
+  // http://ask.dcloud.net.cn/question/70246
+  const result = JSON.parse(JSON.stringify(dataset))
   if (__PLATFORM__ === 'h5') {
     const keys = Object.keys(result)
     const len = keys.length

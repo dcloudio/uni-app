@@ -9,7 +9,7 @@ function wgs84ToGcj02 (coords, success, error) {
   /**
    * uniapp 内置key
    */
-  var key = 'WXTBZ-6WERU-ECCVS-BZJCK-LW5OJ-SIBOS'
+  var key = __uniConfig.qqMapKey
   var url = `https://apis.map.qq.com/ws/coord/v1/translate?locations=${coords.latitude},${coords.longitude}&type=1&key=${key}&output=jsonp`
   getJSONP(url, {}, (res) => {
     if ('locations' in res && res.locations.length) {
@@ -18,7 +18,7 @@ function wgs84ToGcj02 (coords, success, error) {
         latitude: res.locations[0].lat
       })
     } else {
-      error()
+      error(res)
     }
   }, error)
 }
@@ -48,9 +48,9 @@ export function getLocation ({
       if (type === 'WGS84') {
         callback(coords)
       } else {
-        wgs84ToGcj02(coords, callback, () => {
+        wgs84ToGcj02(coords, callback, (err) => {
           invoke(callbackId, {
-            errMsg: 'getLocation:fail'
+            errMsg: 'getLocation:fail ' + JSON.stringify(err)
           })
         })
       }
