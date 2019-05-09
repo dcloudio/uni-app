@@ -1,7 +1,13 @@
 import normalizePreviewImageArgs from '../../helpers/normalize-preview-image-args'
 export const protocols = {
   previewImage: {
-    args: normalizePreviewImageArgs
+    args (fromArgs) {
+      normalizePreviewImageArgs(fromArgs)
+      return {
+        indicator: false,
+        loop: false
+      }
+    }
   }
 }
 export const todos = []
