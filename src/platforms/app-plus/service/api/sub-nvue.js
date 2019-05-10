@@ -29,7 +29,24 @@ function wrapper (webview) {
   }
   webview.close = function (...args) {
     closeMask()
+    callbacks = []
     return oldClose.apply(webview, args)
+  }
+  webview.postMessage = function (data) {
+    plus.webview.postMessageToUniNView({
+      type: 'UniAppSubNVue',
+      data,
+      options: {
+        id: webview.id
+      }
+    }, webview.id)
+  }
+  let callbacks = []
+  webview.onMessage = function (callback) {
+    callbacks.push(callback)
+  }
+  webview.$consumeMessage = function (e) {
+    callbacks.forEach(callback => callback(e))
   }
 }
 
