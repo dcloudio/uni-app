@@ -57,7 +57,7 @@ export function promisify (name, api) {
         fail: reject
       }), ...params)
       /* eslint-disable no-extend-native */
-      try {
+      if (!Promise.prototype.finally) {
         Promise.prototype.finally = function (callback) {
           const promise = this.constructor
           return this.then(
@@ -67,7 +67,7 @@ export function promisify (name, api) {
             })
           )
         }
-      } catch (e) {}
+      }
     }))
   }
 }
