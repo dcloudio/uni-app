@@ -57,15 +57,17 @@ export function promisify (name, api) {
         fail: reject
       }), ...params)
       /* eslint-disable no-extend-native */
-      Promise.prototype.finally = function (callback) {
-        const promise = this.constructor
-        return this.then(
-          value => promise.resolve(callback()).then(() => value),
-          reason => promise.resolve(callback()).then(() => {
-            throw reason
-          })
-        )
-      }
+      try {
+        Promise.prototype.finally = function (callback) {
+          const promise = this.constructor
+          return this.then(
+            value => promise.resolve(callback()).then(() => value),
+            reason => promise.resolve(callback()).then(() => {
+              throw reason
+            })
+          )
+        }
+      } catch (e) {}
     }))
   }
 }
