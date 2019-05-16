@@ -7,9 +7,9 @@
 <script>
 import touchtrack from 'uni-mixins/touchtrack'
 import {
-  N,
-  I,
-  O
+  Decline,
+  Friction,
+  STD
 } from './utils'
 
 var requesting = false
@@ -205,10 +205,10 @@ export default {
     this._scale = 1
     this._oldScale = 1
 
-    this._STD = new O(1, 9 * Math.pow(this.dampingNumber, 2) / 40, this.dampingNumber)
-    this._friction = new I(1, this.frictionNumber)
-    this._declineX = new N()
-    this._declineY = new N()
+    this._STD = new STD(1, 9 * Math.pow(this.dampingNumber, 2) / 40, this.dampingNumber)
+    this._friction = new Friction(1, this.frictionNumber)
+    this._declineX = new Decline()
+    this._declineY = new Decline()
     this.__touchInfo = {
       historyX: [0, 0],
       historyY: [0, 0],

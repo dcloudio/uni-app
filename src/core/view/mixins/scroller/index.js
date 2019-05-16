@@ -1,4 +1,4 @@
-import { Scroller } from './C'
+import { Scroller } from './Scroller'
 
 export default {
   methods: {

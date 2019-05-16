@@ -6,18 +6,18 @@ function t (t, n) {
   return e(t, 0, n)
 }
 
-export function N () { }
-N.prototype.x = function (e) {
+export function Decline () { }
+Decline.prototype.x = function (e) {
   return Math.sqrt(e)
 }
 
-export function I (e, t) {
+export function Friction (e, t) {
   this._m = e
   this._f = 1e3 * t
   this._startTime = 0
   this._v = 0
 }
-I.prototype.setV = function (x, y) {
+Friction.prototype.setV = function (x, y) {
   var n = Math.pow(Math.pow(x, 2) + Math.pow(y, 2), 0.5)
   this._x_v = x
   this._y_v = y
@@ -27,11 +27,11 @@ I.prototype.setV = function (x, y) {
   this._lastDt = null
   this._startTime = (new Date()).getTime()
 }
-I.prototype.setS = function (x, y) {
+Friction.prototype.setS = function (x, y) {
   this._x_s = x
   this._y_s = y
 }
-I.prototype.s = function (t) {
+Friction.prototype.s = function (t) {
   if (undefined === t) {
     t = ((new Date()).getTime() - this._startTime) / 1e3
   }
@@ -52,7 +52,7 @@ I.prototype.s = function (t) {
     y
   }
 }
-I.prototype.ds = function (t) {
+Friction.prototype.ds = function (t) {
   if (undefined === t) {
     t = ((new Date()).getTime() - this._startTime) / 1e3
   }
@@ -64,30 +64,30 @@ I.prototype.ds = function (t) {
     dy: this._y_v + this._y_a * t
   }
 }
-I.prototype.delta = function () {
+Friction.prototype.delta = function () {
   return {
     x: -1.5 * Math.pow(this._x_v, 2) / this._x_a || 0,
     y: -1.5 * Math.pow(this._y_v, 2) / this._y_a || 0
   }
 }
-I.prototype.dt = function () {
+Friction.prototype.dt = function () {
   return -this._x_v / this._x_a
 }
-I.prototype.done = function () {
+Friction.prototype.done = function () {
   var t = e(this.s().x, this._endPositionX) || e(this.s().y, this._endPositionY) || this._lastDt === this._t
   this._lastDt = null
   return t
 }
-I.prototype.setEnd = function (x, y) {
+Friction.prototype.setEnd = function (x, y) {
   this._endPositionX = x
   this._endPositionY = y
 }
-I.prototype.reconfigure = function (m, f) {
+Friction.prototype.reconfigure = function (m, f) {
   this._m = m
   this._f = 1e3 * f
 }
 
-export function R (m, k, c) {
+export function Spring (m, k, c) {
   this._m = m
   this._k = k
   this._c = c
@@ -95,7 +95,7 @@ export function R (m, k, c) {
   this._endPosition = 0
   this._startTime = 0
 }
-R.prototype._solve = function (e, t) {
+Spring.prototype._solve = function (e, t) {
   var n = this._c
   var i = this._m
   var r = this._k
@@ -170,19 +170,19 @@ R.prototype._solve = function (e, t) {
     }
   }
 }
-R.prototype.x = function (e) {
+Spring.prototype.x = function (e) {
   if (undefined === e) {
     e = ((new Date()).getTime() - this._startTime) / 1e3
   }
   return this._solution ? this._endPosition + this._solution.x(e) : 0
 }
-R.prototype.dx = function (e) {
+Spring.prototype.dx = function (e) {
   if (undefined === e) {
     e = ((new Date()).getTime() - this._startTime) / 1e3
   }
   return this._solution ? this._solution.dx(e) : 0
 }
-R.prototype.setEnd = function (e, n, i) {
+Spring.prototype.setEnd = function (e, n, i) {
   if (!i) {
     i = (new Date()).getTime()
   }
@@ -209,7 +209,7 @@ R.prototype.setEnd = function (e, n, i) {
     }
   }
 }
-R.prototype.snap = function (e) {
+Spring.prototype.snap = function (e) {
   this._startTime = (new Date()).getTime()
   this._endPosition = e
   this._solution = {
@@ -221,13 +221,13 @@ R.prototype.snap = function (e) {
     }
   }
 }
-R.prototype.done = function (n) {
+Spring.prototype.done = function (n) {
   if (!n) {
     n = (new Date()).getTime()
   }
   return e(this.x(), this._endPosition, 0.1) && t(this.dx(), 0.1)
 }
-R.prototype.reconfigure = function (m, t, c) {
+Spring.prototype.reconfigure = function (m, t, c) {
   this._m = m
   this._k = t
   this._c = c
@@ -236,13 +236,13 @@ R.prototype.reconfigure = function (m, t, c) {
     this._startTime = (new Date()).getTime()
   }
 }
-R.prototype.springConstant = function () {
+Spring.prototype.springConstant = function () {
   return this._k
 }
-R.prototype.damping = function () {
+Spring.prototype.damping = function () {
   return this._c
 }
-R.prototype.configuration = function () {
+Spring.prototype.configuration = function () {
   function e (e, t) {
     e.reconfigure(1, t, e.damping())
   }
@@ -265,20 +265,20 @@ R.prototype.configuration = function () {
   }]
 }
 
-export function O (e, t, n) {
-  this._springX = new R(e, t, n)
-  this._springY = new R(e, t, n)
-  this._springScale = new R(e, t, n)
+export function STD (e, t, n) {
+  this._springX = new Spring(e, t, n)
+  this._springY = new Spring(e, t, n)
+  this._springScale = new Spring(e, t, n)
   this._startTime = 0
 }
-O.prototype.setEnd = function (e, t, n, i) {
+STD.prototype.setEnd = function (e, t, n, i) {
   var r = (new Date()).getTime()
   this._springX.setEnd(e, i, r)
   this._springY.setEnd(t, i, r)
   this._springScale.setEnd(n, i, r)
   this._startTime = r
 }
-O.prototype.x = function () {
+STD.prototype.x = function () {
   var e = ((new Date()).getTime() - this._startTime) / 1e3
   return {
     x: this._springX.x(e),
@@ -286,11 +286,11 @@ O.prototype.x = function () {
     scale: this._springScale.x(e)
   }
 }
-O.prototype.done = function () {
+STD.prototype.done = function () {
   var e = (new Date()).getTime()
   return this._springX.done(e) && this._springY.done(e) && this._springScale.done(e)
 }
-O.prototype.reconfigure = function (e, t, n) {
+STD.prototype.reconfigure = function (e, t, n) {
   this._springX.reconfigure(e, t, n)
   this._springY.reconfigure(e, t, n)
   this._springScale.reconfigure(e, t, n)

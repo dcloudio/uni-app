@@ -1,4 +1,4 @@
-import { L } from './L'
+import { Scroll } from './Scroll'
 
 function i (scroll, t, n) {
   function i (t, scroll, r, o) {
@@ -53,7 +53,7 @@ export function Scroller (element, options) {
   }
 
   this._position = 0
-  this._scroll = new L(this._extent)
+  this._scroll = new Scroll(this._extent)
   this._onTransitionEnd = this.onTransitionEnd.bind(this)
   this.updatePosition()
 }

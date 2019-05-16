@@ -6,7 +6,7 @@ function a (e, t) {
   return o(e, 0, t)
 }
 
-export function S (e, t, n) {
+export function Spring (e, t, n) {
   this._m = e
   this._k = t
   this._c = n
@@ -15,7 +15,7 @@ export function S (e, t, n) {
   this._startTime = 0
 }
 
-S.prototype._solve = function (e, t) {
+Spring.prototype._solve = function (e, t) {
   var n = this._c
   var i = this._m
   var r = this._k
@@ -95,19 +95,19 @@ S.prototype._solve = function (e, t) {
     }
   }
 }
-S.prototype.x = function (e) {
+Spring.prototype.x = function (e) {
   if (e === undefined) {
     e = ((new Date()).getTime() - this._startTime) / 1e3
   }
   return this._solution ? this._endPosition + this._solution.x(e) : 0
 }
-S.prototype.dx = function (e) {
+Spring.prototype.dx = function (e) {
   if (e === undefined) {
     e = ((new Date()).getTime() - this._startTime) / 1e3
   }
   return this._solution ? this._solution.dx(e) : 0
 }
-S.prototype.setEnd = function (e, t, n) {
+Spring.prototype.setEnd = function (e, t, n) {
   if (!n) {
     n = (new Date()).getTime()
   }
@@ -134,7 +134,7 @@ S.prototype.setEnd = function (e, t, n) {
     }
   }
 }
-S.prototype.snap = function (e) {
+Spring.prototype.snap = function (e) {
   this._startTime = (new Date()).getTime()
   this._endPosition = e
   this._solution = {
@@ -146,13 +146,13 @@ S.prototype.snap = function (e) {
     }
   }
 }
-S.prototype.done = function (e) {
+Spring.prototype.done = function (e) {
   if (!e) {
     e = (new Date()).getTime()
   }
   return o(this.x(), this._endPosition, 0.4) && a(this.dx(), 0.4)
 }
-S.prototype.reconfigure = function (e, t, n) {
+Spring.prototype.reconfigure = function (e, t, n) {
   this._m = e
   this._k = t
   this._c = n
@@ -161,13 +161,13 @@ S.prototype.reconfigure = function (e, t, n) {
     this._startTime = (new Date()).getTime()
   }
 }
-S.prototype.springConstant = function () {
+Spring.prototype.springConstant = function () {
   return this._k
 }
-S.prototype.damping = function () {
+Spring.prototype.damping = function () {
   return this._c
 }
-S.prototype.configuration = function () {
+Spring.prototype.configuration = function () {
   function e (e, t) {
     e.reconfigure(1, t, e.damping())
   }

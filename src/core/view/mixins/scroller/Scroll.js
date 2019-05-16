@@ -1,22 +1,22 @@
-import { R } from './R'
-import { S } from './S'
+import { Friction } from './Friction'
+import { Spring } from './Spring'
 
-export function L (extent) {
+export function Scroll (extent) {
   this._extent = extent
-  this._friction = new R(0.01)
-  this._spring = new S(1, 90, 20)
+  this._friction = new Friction(0.01)
+  this._spring = new Spring(1, 90, 20)
   this._startTime = 0
   this._springing = false
   this._springOffset = 0
 }
 
-L.prototype.snap = function (e, t) {
+Scroll.prototype.snap = function (e, t) {
   this._springOffset = 0
   this._springing = true
   this._spring.snap(e)
   this._spring.setEnd(t)
 }
-L.prototype.set = function (e, t) {
+Scroll.prototype.set = function (e, t) {
   this._friction.set(e, t)
   if (e > 0 && t >= 0) {
     this._springOffset = 0
@@ -35,7 +35,7 @@ L.prototype.set = function (e, t) {
   }
   this._startTime = (new Date()).getTime()
 }
-L.prototype.x = function (e) {
+Scroll.prototype.x = function (e) {
   if (!this._startTime) {
     return 0
   }
@@ -59,20 +59,20 @@ L.prototype.x = function (e) {
   }
   return t
 }
-L.prototype.dx = function (e) {
+Scroll.prototype.dx = function (e) {
   var t = 0
   t = this._lastTime === e ? this._lastDx : this._springing ? this._spring.dx(e) : this._friction.dx(e)
   this._lastTime = e
   this._lastDx = t
   return t
 }
-L.prototype.done = function () {
+Scroll.prototype.done = function () {
   return this._springing ? this._spring.done() : this._friction.done()
 }
-L.prototype.setVelocityByEnd = function (e) {
+Scroll.prototype.setVelocityByEnd = function (e) {
   this._friction.setVelocityByEnd(e)
 }
-L.prototype.configuration = function () {
+Scroll.prototype.configuration = function () {
   var e = this._friction.configuration()
   e.push.apply(e, this._spring.configuration())
   return e

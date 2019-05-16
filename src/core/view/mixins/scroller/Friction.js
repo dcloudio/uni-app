@@ -1,4 +1,4 @@
-export function R (e) {
+export function Friction (e) {
   this._drag = e
   this._dragLog = Math.log(e)
   this._x = 0
@@ -6,15 +6,15 @@ export function R (e) {
   this._startTime = 0
 }
 
-R.prototype.set = function (e, t) {
+Friction.prototype.set = function (e, t) {
   this._x = e
   this._v = t
   this._startTime = (new Date()).getTime()
 }
-R.prototype.setVelocityByEnd = function (e) {
+Friction.prototype.setVelocityByEnd = function (e) {
   this._v = (e - this._x) * this._dragLog / (Math.pow(this._drag, 100) - 1)
 }
-R.prototype.x = function (e) {
+Friction.prototype.x = function (e) {
   if (e === undefined) {
     e = ((new Date()).getTime() - this._startTime) / 1e3
   }
@@ -23,7 +23,7 @@ R.prototype.x = function (e) {
   this._dt = e
   return this._x + this._v * t / this._dragLog - this._v / this._dragLog
 }
-R.prototype.dx = function (e) {
+Friction.prototype.dx = function (e) {
   if (e === undefined) {
     e = ((new Date()).getTime() - this._startTime) / 1e3
   }
@@ -32,17 +32,17 @@ R.prototype.dx = function (e) {
   this._dt = e
   return this._v * t
 }
-R.prototype.done = function () {
+Friction.prototype.done = function () {
   return Math.abs(this.dx()) < 3
 }
-R.prototype.reconfigure = function (e) {
+Friction.prototype.reconfigure = function (e) {
   var t = this.x()
   var n = this.dx()
   this._drag = e
   this._dragLog = Math.log(e)
   this.set(t, n)
 }
-R.prototype.configuration = function () {
+Friction.prototype.configuration = function () {
   var e = this
   return [{
     label: 'Friction',
