@@ -284,8 +284,8 @@ export default {
       return val[0] * 366 + (val[1] || 0 * 31) + (val[2] || 0)
     },
     /**
-			 * 将右侧数组值同步到左侧（交集部分）
-			 */
+     * 将右侧数组值同步到左侧（交集部分）
+     */
     _cloneArray (val1, val2) {
       for (let i = 0; i < val1.length && i < val2.length; i++) {
         val1[i] = val2[i]
