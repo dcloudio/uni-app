@@ -1,10 +1,10 @@
 import { Friction } from './Friction'
 import { Spring } from './Spring'
 
-export function Scroll (extent) {
+export function Scroll (extent, friction, spring) {
   this._extent = extent
-  this._friction = new Friction(0.01)
-  this._spring = new Spring(1, 90, 20)
+  this._friction = friction || new Friction(0.01)
+  this._spring = spring || new Spring(1, 90, 20)
   this._startTime = 0
   this._springing = false
   this._springOffset = 0

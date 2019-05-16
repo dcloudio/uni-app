@@ -1,6 +1,8 @@
 <script>
 import touchtrack from 'uni-mixins/touchtrack'
 import scroller from 'uni-mixins/scroller/index'
+import { Friction } from 'uni-mixins/scroller/Friction'
+import { Spring } from 'uni-mixins/scroller/Spring'
 
 export default {
   name: 'PickerViewColumn',
@@ -108,6 +110,8 @@ export default {
         enableX: false,
         enableSnap: true,
         itemSize: this.indicatorHeight,
+        friction: new Friction(0.0001),
+        spring: new Spring(2, 90, 20),
         onSnap: (index) => {
           if ((!isNaN(index)) && index !== this.current) {
             this.current = index

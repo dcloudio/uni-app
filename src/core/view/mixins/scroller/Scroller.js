@@ -53,7 +53,7 @@ export function Scroller (element, options) {
   }
 
   this._position = 0
-  this._scroll = new Scroll(this._extent)
+  this._scroll = new Scroll(this._extent, options.friction, options.spring)
   this._onTransitionEnd = this.onTransitionEnd.bind(this)
   this.updatePosition()
 }
