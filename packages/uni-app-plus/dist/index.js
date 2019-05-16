@@ -40,7 +40,7 @@ const camelize = cached((str) => {
   return str.replace(camelizeRE, (_, c) => c ? c.toUpperCase() : '')
 });
 
-const SYNC_API_RE = /subNVue|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$/;
+const SYNC_API_RE = /subNVue|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -89,15 +89,17 @@ function promisify (name, api) {
         fail: reject
       }), ...params);
       /* eslint-disable no-extend-native */
-      Promise.prototype.finally = function (callback) {
-        const promise = this.constructor;
-        return this.then(
-          value => promise.resolve(callback()).then(() => value),
-          reason => promise.resolve(callback()).then(() => {
-            throw reason
-          })
-        )
-      };
+      if (!Promise.prototype.finally) {
+        Promise.prototype.finally = function (callback) {
+          const promise = this.constructor;
+          return this.then(
+            value => promise.resolve(callback()).then(() => value),
+            reason => promise.resolve(callback()).then(() => {
+              throw reason
+            })
+          )
+        };
+      }
     }))
   }
 }
@@ -371,69 +373,18 @@ Component = function (options = {}) {
   return MPComponent(options)
 };
 
-const mocks = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__'];
+const PAGE_EVENT_HOOKS = [
+  'onPullDownRefresh',
+  'onReachBottom',
+  'onShareAppMessage',
+  'onPageScroll',
+  'onResize',
+  'onTabItemTap'
+];
 
-function initBehavior (options) {
-  return Behavior(options)
-}
-function initRefs (vm) {
-  const mpInstance = vm.$scope;
-  Object.defineProperty(vm, '$refs', {
-    get () {
-      const $refs = {};
-      const components = mpInstance.selectAllComponents('.vue-ref');
-      components.forEach(component => {
-        const ref = component.dataset.ref;
-        $refs[ref] = component.$vm || component;
-      });
-      const forComponents = mpInstance.selectAllComponents('.vue-ref-in-for');
-      forComponents.forEach(component => {
-        const ref = component.dataset.ref;
-        if (!$refs[ref]) {
-          $refs[ref] = [];
-        }
-        $refs[ref].push(component.$vm || component);
-      });
-      return $refs
-    }
-  });
-}
-function triggerLink (mpInstance, vueOptions) {
-  mpInstance.triggerEvent('__l', mpInstance.$vm || vueOptions, {
-    bubbles: true,
-    composed: true
-  });
-}
-
-function handleLink (event) {
-  if (event.detail.$mp) { // vm
-    if (!event.detail.$parent) {
-      event.detail.$parent = this.$vm;
-      event.detail.$parent.$children.push(event.detail);
-
-      event.detail.$root = this.$vm.$root;
-    }
-  } else { // vueOptions
-    if (!event.detail.parent) {
-      event.detail.parent = this.$vm;
-    }
-  }
-}
-
-function initPage$1 (pageOptions) {
-  return initComponent$1(pageOptions)
-}
-
-function initComponent$1 (componentOptions) {
-  componentOptions.methods.$getAppWebview = function () {
-    return plus.webview.getWebviewById(`${this.__wxWebviewId__}`)
-  };
-  return Component(componentOptions)
-}
-
-function initMocks (vm, mocks$$1) {
+function initMocks (vm, mocks) {
   const mpInstance = vm.$mp[vm.mpType];
-  mocks$$1.forEach(mock => {
+  mocks.forEach(mock => {
     if (hasOwn(mpInstance, mock)) {
       vm[mock] = mpInstance[mock];
     }
@@ -443,12 +394,46 @@ function initMocks (vm, mocks$$1) {
 function initHooks (mpOptions, hooks) {
   hooks.forEach(hook => {
     mpOptions[hook] = function (args) {
-      return this.$vm.__call_hook(hook, args)
+      return this.$vm && this.$vm.__call_hook(hook, args)
     };
   });
 }
 
-function getData (vueOptions, context) {
+function initVueComponent (Vue$$1, vueOptions) {
+  vueOptions = vueOptions.default || vueOptions;
+  let VueComponent;
+  if (isFn(vueOptions)) {
+    VueComponent = vueOptions;
+    vueOptions = VueComponent.extendOptions;
+  } else {
+    VueComponent = Vue$$1.extend(vueOptions);
+  }
+  return [VueComponent, vueOptions]
+}
+
+function initSlots (vm, vueSlots) {
+  if (Array.isArray(vueSlots) && vueSlots.length) {
+    const $slots = Object.create(null);
+    vueSlots.forEach(slotName => {
+      $slots[slotName] = true;
+    });
+    vm.$scopedSlots = vm.$slots = $slots;
+  }
+}
+
+function initVueIds (vueIds, mpInstance) {
+  vueIds = (vueIds || '').split(',');
+  const len = vueIds.length;
+
+  if (len === 1) {
+    mpInstance._$vueId = vueIds[0];
+  } else if (len === 2) {
+    mpInstance._$vueId = vueIds[0];
+    mpInstance._$vuePid = vueIds[1];
+  }
+}
+
+function initData (vueOptions, context) {
   let data = vueOptions.data || {};
   const methods = vueOptions.methods || {};
 
@@ -490,7 +475,7 @@ function createObserver (name) {
   }
 }
 
-function getBehaviors (vueOptions) {
+function initBehaviors (vueOptions, initBehavior) {
   const vueBehaviors = vueOptions['behaviors'];
   const vueExtends = vueOptions['extends'];
   const vueMixins = vueOptions['mixins'];
@@ -519,7 +504,7 @@ function getBehaviors (vueOptions) {
   if (isPlainObject(vueExtends) && vueExtends.props) {
     behaviors.push(
       initBehavior({
-        properties: getProperties(vueExtends.props, true)
+        properties: initProperties(vueExtends.props, true)
       })
     );
   }
@@ -528,7 +513,7 @@ function getBehaviors (vueOptions) {
       if (isPlainObject(vueMixin) && vueMixin.props) {
         behaviors.push(
           initBehavior({
-            properties: getProperties(vueMixin.props, true)
+            properties: initProperties(vueMixin.props, true)
           })
         );
       }
@@ -545,9 +530,13 @@ function parsePropType (key, type, defaultValue, file) {
   return type
 }
 
-function getProperties (props, isBehavior = false, file = '') {
+function initProperties (props, isBehavior = false, file = '') {
   const properties = {};
   if (!isBehavior) {
+    properties.vueId = {
+      type: String,
+      value: ''
+    };
     properties.vueSlots = { // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
       type: null,
       value: [],
@@ -798,23 +787,14 @@ function handleEvent (event) {
 const hooks = [
   'onHide',
   'onError',
-  'onPageNotFound',
-  'onUniNViewMessage'
+  'onPageNotFound'
 ];
 
-function initVm (vm) {
-  if (this.$vm) { // 百度竟然 onShow 在 onLaunch 之前？
-    return
-  }
-
-  this.$vm = vm;
-
-  this.$vm.$mp = {
-    app: this
-  };
-}
-
-function createApp (vm) {
+function parseBaseApp (vm, {
+  mocks,
+  initRefs
+}) {
+  Vue.prototype.mpHost = "app-plus";
 
   Vue.mixin({
     beforeCreate () {
@@ -838,183 +818,182 @@ function createApp (vm) {
         initRefs(this);
         initMocks(this, mocks);
       }
-    },
-    created () { // 处理 injections
-      this.__init_injections(this);
-      this.__init_provide(this);
     }
   });
 
   const appOptions = {
     onLaunch (args) {
-      initVm.call(this, vm);
+
+      this.$vm = vm;
+
+      this.$vm.$mp = {
+        app: this
+      };
+
+      this.$vm.$scope = this;
 
       this.$vm._isMounted = true;
-      this.$vm.__call_hook('mounted');
+      this.$vm.__call_hook('mounted', args);
 
       this.$vm.__call_hook('onLaunch', args);
-    },
-    onShow (args) {
-      initVm.call(this, vm);
-
-      this.$vm.__call_hook('onShow', args);
     }
   };
 
   // 兼容旧版本 globalData
   appOptions.globalData = vm.$options.globalData || {};
 
-  initHooks(appOptions, hooks); // 延迟执行，因为 App 的注册在 main.js 之前，可能导致生命周期内 Vue 原型上开发者注册的属性无法访问
+  initHooks(appOptions, hooks);
 
-  App(appOptions);
+  return appOptions
+}
 
-  return vm
+const mocks = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__'];
+
+function findVmByVueId (vm, vuePid) {
+  const $children = vm.$children;
+  // 优先查找直属
+  let parentVm = $children.find(childVm => childVm.$scope._$vueId === vuePid);
+  if (parentVm) {
+    return parentVm
+  }
+  // 反向递归查找
+  for (let i = $children.length - 1; i >= 0; i--) {
+    parentVm = findVmByVueId($children[i], vuePid);
+    if (parentVm) {
+      return parentVm
+    }
+  }
+}
+
+function initBehavior (options) {
+  return Behavior(options)
+}
+
+function isPage () {
+  return !!this.route
+}
+
+function initRelation (detail) {
+  this.triggerEvent('__l', detail);
+}
+
+function initRefs (vm) {
+  const mpInstance = vm.$scope;
+  Object.defineProperty(vm, '$refs', {
+    get () {
+      const $refs = {};
+      const components = mpInstance.selectAllComponents('.vue-ref');
+      components.forEach(component => {
+        const ref = component.dataset.ref;
+        $refs[ref] = component.$vm || component;
+      });
+      const forComponents = mpInstance.selectAllComponents('.vue-ref-in-for');
+      forComponents.forEach(component => {
+        const ref = component.dataset.ref;
+        if (!$refs[ref]) {
+          $refs[ref] = [];
+        }
+        $refs[ref].push(component.$vm || component);
+      });
+      return $refs
+    }
+  });
+}
+
+function handleLink (event) {
+  const {
+    vuePid,
+    vueOptions
+  } = event.detail || event.value; // detail 是微信,value 是百度(dipatch)
+
+  let parentVm;
+
+  if (vuePid) {
+    parentVm = findVmByVueId(this.$vm, vuePid);
+  }
+
+  if (!parentVm) {
+    parentVm = this.$vm;
+  }
+
+  vueOptions.parent = parentVm;
+}
+
+function parseApp (vm) {
+  return parseBaseApp(vm, {
+    mocks,
+    initRefs
+  })
 }
 
 const hooks$1 = [
-  'onShow',
-  'onHide',
-  'onPullDownRefresh',
-  'onReachBottom',
-  'onShareAppMessage',
-  'onPageScroll',
-  'onResize',
-  'onTabItemTap',
-  'onBackPress',
-  'onNavigationBarButtonTap',
-  'onNavigationBarSearchInputChanged',
-  'onNavigationBarSearchInputConfirmed',
-  'onNavigationBarSearchInputClicked'
+  'onUniNViewMessage'
 ];
 
-function initVm$1 (VueComponent) { // 百度的 onLoad 触发在 attached 之前
-  if (this.$vm) {
-    return
-  }
+function parseApp$1 (vm) {
+  const appOptions = parseApp(vm);
 
-  this.$vm = new VueComponent({
-    mpType: 'page',
-    mpInstance: this
-  });
+  initHooks(appOptions, hooks$1);
 
-  this.$vm.__call_hook('created');
-  this.$vm.$mount();
+  return appOptions
 }
 
-function createPage (vueOptions) {
-  vueOptions = vueOptions.default || vueOptions;
-  let VueComponent;
-  if (isFn(vueOptions)) {
-    VueComponent = vueOptions;
-    vueOptions = VueComponent.extendOptions;
-  } else {
-    VueComponent = Vue.extend(vueOptions);
-  }
-  const pageOptions = {
-    options: {
-      multipleSlots: true,
-      addGlobalClass: true
-    },
-    data: getData(vueOptions, Vue.prototype),
-    lifetimes: { // 当页面作为组件时
-      attached () {
-        initVm$1.call(this, VueComponent);
-      },
-      ready () {
-        this.$vm.__call_hook('beforeMount');
-        this.$vm._isMounted = true;
-        this.$vm.__call_hook('mounted');
-        this.$vm.__call_hook('onReady');
-      },
-      detached () {
-        this.$vm.$destroy();
-      }
-    },
-    methods: { // 作为页面时
-      onLoad (args) {
-        initVm$1.call(this, VueComponent);
-        this.$vm.$mp.query = args; // 又要兼容 mpvue
-        this.$vm.__call_hook('onLoad', args); // 开发者可能会在 onLoad 时赋值，提前到 mount 之前
-      },
-      onUnload () {
-        this.$vm.__call_hook('onUnload');
-      },
-      __e: handleEvent,
-      __l: handleLink
-    }
-  };
-
-  initHooks(pageOptions.methods, hooks$1);
-
-  return initPage$1(pageOptions, vueOptions)
+function createApp (vm) {
+  App(parseApp$1(vm));
+  return vm
 }
 
-function initVm$2 (VueComponent) {
-  if (this.$vm) {
-    return
-  }
-
-  const properties = this.properties;
-
-  const options = {
-    mpType: 'component',
-    mpInstance: this,
-    propsData: properties
-  };
-  // 初始化 vue 实例
-  this.$vm = new VueComponent(options);
-
-  // 处理$slots,$scopedSlots（暂不支持动态变化$slots）
-  const vueSlots = properties.vueSlots;
-  if (Array.isArray(vueSlots) && vueSlots.length) {
-    const $slots = Object.create(null);
-    vueSlots.forEach(slotName => {
-      $slots[slotName] = true;
-    });
-    this.$vm.$scopedSlots = this.$vm.$slots = $slots;
-  }
-  // 性能优先，mount 提前到 attached 中，保证组件首次渲染数据被合并
-  // 导致与标准 Vue 的差异，data 和 computed 中不能使用$parent，provide等组件属性
-  this.$vm.$mount();
-}
-
-function createComponent (vueOptions) {
-  vueOptions = vueOptions.default || vueOptions;
-
-  let VueComponent;
-  if (isFn(vueOptions)) {
-    VueComponent = vueOptions; // TODO form-field props.name,props.value
-    vueOptions = VueComponent.extendOptions;
-  } else {
-    VueComponent = Vue.extend(vueOptions);
-  }
-
-  const behaviors = getBehaviors(vueOptions);
-
-  const properties = getProperties(vueOptions.props, false, vueOptions.__file);
+function parseBaseComponent (vueComponentOptions, {
+  isPage: isPage$$1,
+  initRelation: initRelation$$1
+} = {}) {
+  let [VueComponent, vueOptions] = initVueComponent(Vue, vueComponentOptions);
 
   const componentOptions = {
     options: {
       multipleSlots: true,
       addGlobalClass: true
     },
-    data: getData(vueOptions, Vue.prototype),
-    behaviors,
-    properties,
+    data: initData(vueOptions, Vue.prototype),
+    behaviors: initBehaviors(vueOptions, initBehavior),
+    properties: initProperties(vueOptions.props, false, vueOptions.__file),
     lifetimes: {
       attached () {
-        initVm$2.call(this, VueComponent);
+        const properties = this.properties;
+
+        const options = {
+          mpType: isPage$$1.call(this) ? 'page' : 'component',
+          mpInstance: this,
+          propsData: properties
+        };
+
+        initVueIds(properties.vueId, this);
+
+        // 处理父子关系
+        initRelation$$1.call(this, {
+          vuePid: this._$vuePid,
+          vueOptions: options
+        });
+
+        // 初始化 vue 实例
+        this.$vm = new VueComponent(options);
+
+        // 处理$slots,$scopedSlots（暂不支持动态变化$slots）
+        initSlots(this.$vm, properties.vueSlots);
+
+        // 触发首次 setData
+        this.$vm.$mount();
       },
       ready () {
-        initVm$2.call(this, VueComponent); // 目前发现部分情况小程序 attached 不触发
-        triggerLink(this); // 处理 parent,children
-
-        // 补充生命周期
-        this.$vm.__call_hook('created');
-        this.$vm.__call_hook('beforeMount');
-        this.$vm._isMounted = true;
-        this.$vm.__call_hook('mounted');
-        this.$vm.__call_hook('onReady');
+        // 当组件 props 默认值为 true，初始化时传入 false 会导致 created,ready 触发, 但 attached 不触发
+        // https://developers.weixin.qq.com/community/develop/doc/00066ae2844cc0f8eb883e2a557800
+        if (this.$vm) {
+          this.$vm._isMounted = true;
+          this.$vm.__call_hook('mounted');
+          this.$vm.__call_hook('onReady');
+        } else {
+          this.is && console.warn(this.is + ' is not attached');
+        }
       },
       detached () {
         this.$vm.$destroy();
@@ -1022,7 +1001,7 @@ function createComponent (vueOptions) {
     },
     pageLifetimes: {
       show (args) {
-        this.$vm.__call_hook('onPageShow', args);
+        this.$vm && this.$vm.__call_hook('onPageShow', args);
       },
       hide () {
         this.$vm && this.$vm.__call_hook('onPageHide');
@@ -1032,12 +1011,93 @@ function createComponent (vueOptions) {
       }
     },
     methods: {
-      __e: handleEvent,
-      __l: handleLink
+      __l: handleLink,
+      __e: handleEvent
     }
   };
 
-  return initComponent$1(componentOptions, vueOptions)
+  if (isPage$$1) {
+    return componentOptions
+  }
+  return [componentOptions, VueComponent]
+}
+
+function parseComponent (vueComponentOptions) {
+  return parseBaseComponent(vueComponentOptions, {
+    isPage,
+    initRelation
+  })
+}
+
+function parseComponent$1 (vueComponentOptions) {
+  const componentOptions = parseComponent(vueComponentOptions);
+
+  componentOptions.methods.$getAppWebview = function () {
+    return plus.webview.getWebviewById(`${this.__wxWebviewId__}`)
+  };
+  return componentOptions
+}
+
+const hooks$2 = [
+  'onShow',
+  'onHide',
+  'onUnload'
+];
+
+hooks$2.push(...PAGE_EVENT_HOOKS);
+
+function parseBasePage (vuePageOptions, {
+  isPage,
+  initRelation
+}) {
+  const pageOptions = parseComponent$1(vuePageOptions, {
+    isPage,
+    initRelation
+  });
+
+  initHooks(pageOptions.methods, hooks$2);
+
+  pageOptions.methods.onLoad = function (args) {
+    this.$vm.$mp.query = args; // 兼容 mpvue
+    this.$vm.__call_hook('onLoad', args);
+  };
+
+  return pageOptions
+}
+
+function parsePage (vuePageOptions) {
+  return parseBasePage(vuePageOptions, {
+    isPage,
+    initRelation
+  })
+}
+
+const hooks$3 = [
+  'onBackPress',
+  'onNavigationBarButtonTap',
+  'onNavigationBarSearchInputChanged',
+  'onNavigationBarSearchInputConfirmed',
+  'onNavigationBarSearchInputClicked'
+];
+
+function parsePage$1 (vuePageOptions) {
+  const pageOptions = parsePage(vuePageOptions);
+
+  initHooks(pageOptions.methods, hooks$3);
+
+  return pageOptions
+}
+
+function createPage (vuePageOptions) {
+  {
+    return Component(parsePage$1(vuePageOptions))
+  }
+}
+
+function createComponent (vueOptions) {
+  {
+    return Component(parseComponent$1(vueOptions))
+  }
 }
 
 todos.forEach(todoApi => {

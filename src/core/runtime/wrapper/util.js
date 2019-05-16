@@ -5,9 +5,14 @@ import {
   isPlainObject
 } from 'uni-shared'
 
-import {
-  initBehavior
-} from 'uni-platform/runtime/wrapper/index'
+export const PAGE_EVENT_HOOKS = [
+  'onPullDownRefresh',
+  'onReachBottom',
+  'onShareAppMessage',
+  'onPageScroll',
+  'onResize',
+  'onTabItemTap'
+]
 
 export function initMocks (vm, mocks) {
   const mpInstance = vm.$mp[vm.mpType]
@@ -21,12 +26,46 @@ export function initMocks (vm, mocks) {
 export function initHooks (mpOptions, hooks) {
   hooks.forEach(hook => {
     mpOptions[hook] = function (args) {
-      return this.$vm.__call_hook(hook, args)
+      return this.$vm && this.$vm.__call_hook(hook, args)
     }
   })
 }
 
-export function getData (vueOptions, context) {
+export function initVueComponent (Vue, vueOptions) {
+  vueOptions = vueOptions.default || vueOptions
+  let VueComponent
+  if (isFn(vueOptions)) {
+    VueComponent = vueOptions
+    vueOptions = VueComponent.extendOptions
+  } else {
+    VueComponent = Vue.extend(vueOptions)
+  }
+  return [VueComponent, vueOptions]
+}
+
+export function initSlots (vm, vueSlots) {
+  if (Array.isArray(vueSlots) && vueSlots.length) {
+    const $slots = Object.create(null)
+    vueSlots.forEach(slotName => {
+      $slots[slotName] = true
+    })
+    vm.$scopedSlots = vm.$slots = $slots
+  }
+}
+
+export function initVueIds (vueIds, mpInstance) {
+  vueIds = (vueIds || '').split(',')
+  const len = vueIds.length
+
+  if (len === 1) {
+    mpInstance._$vueId = vueIds[0]
+  } else if (len === 2) {
+    mpInstance._$vueId = vueIds[0]
+    mpInstance._$vuePid = vueIds[1]
+  }
+}
+
+export function initData (vueOptions, context) {
   let data = vueOptions.data || {}
   const methods = vueOptions.methods || {}
 
@@ -68,7 +107,7 @@ function createObserver (name) {
   }
 }
 
-export function getBehaviors (vueOptions) {
+export function initBehaviors (vueOptions, initBehavior) {
   const vueBehaviors = vueOptions['behaviors']
   const vueExtends = vueOptions['extends']
   const vueMixins = vueOptions['mixins']
@@ -97,7 +136,7 @@ export function getBehaviors (vueOptions) {
   if (isPlainObject(vueExtends) && vueExtends.props) {
     behaviors.push(
       initBehavior({
-        properties: getProperties(vueExtends.props, true)
+        properties: initProperties(vueExtends.props, true)
       })
     )
   }
@@ -106,7 +145,7 @@ export function getBehaviors (vueOptions) {
       if (isPlainObject(vueMixin) && vueMixin.props) {
         behaviors.push(
           initBehavior({
-            properties: getProperties(vueMixin.props, true)
+            properties: initProperties(vueMixin.props, true)
           })
         )
       }
@@ -139,9 +178,13 @@ function parsePropType (key, type, defaultValue, file) {
   return type
 }
 
-export function getProperties (props, isBehavior = false, file = '') {
+export function initProperties (props, isBehavior = false, file = '') {
   const properties = {}
   if (!isBehavior) {
+    properties.vueId = {
+      type: String,
+      value: ''
+    }
     properties.vueSlots = { // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
       type: null,
       value: [],
@@ -396,19 +439,5 @@ export function handleEvent (event) {
         }
       })
     }
-  })
-}
-
-function baiduComponentDestroy ($vm) {
-  $vm.$children.forEach(childVm => {
-    childVm.$mp.component.detached()
-  })
-  $vm.$mp.component.detached()
-}
-
-export function baiduPageDestroy ($vm) {
-  $vm.$destroy()
-  $vm.$children.forEach(childVm => {
-    baiduComponentDestroy(childVm)
   })
 }
