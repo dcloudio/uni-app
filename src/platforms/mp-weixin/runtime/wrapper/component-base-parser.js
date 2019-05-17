@@ -64,7 +64,7 @@ export default function parseBaseComponent (vueComponentOptions, {
           this.$vm.__call_hook('mounted')
           this.$vm.__call_hook('onReady')
         } else {
-          this.is && console.warn(this.is + ' is not attached')
+          // this.is && console.warn(this.is + ' is not attached')
         }
       },
       detached () {

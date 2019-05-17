@@ -985,8 +985,6 @@ function parseBaseComponent (vueComponentOptions, {
           this.$vm._isMounted = true;
           this.$vm.__call_hook('mounted');
           this.$vm.__call_hook('onReady');
-        } else {
-          this.is && console.warn(this.is + ' is not attached');
         }
       },
       detached () {
