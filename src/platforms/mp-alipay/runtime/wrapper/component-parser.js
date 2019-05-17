@@ -64,7 +64,6 @@ function initVm (VueComponent) {
 
       initChildVues(this)
 
-      console.log(this.is, 'mounted')
       this.$vm._isMounted = true
       this.$vm.__call_hook('mounted')
       this.$vm.__call_hook('onReady')

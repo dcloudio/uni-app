@@ -1092,6 +1092,7 @@ function handleEvent (event) {
 }
 
 const hooks = [
+  'onShow',
   'onHide',
   'onError',
   'onPageNotFound'
@@ -1297,7 +1298,6 @@ function initChildVues (mpInstance) {
 
     initChildVues(childMPInstance);
 
-    console.log(childMPInstance.is, 'mounted');
     childMPInstance.$vm._isMounted = true;
     childMPInstance.$vm.__call_hook('mounted');
     childMPInstance.$vm.__call_hook('onReady');
@@ -1451,7 +1451,6 @@ function parsePage (vuePageOptions) {
     },
     onReady () {
       initChildVues(this);
-      console.log(this.route, 'mounted');
       this.$vm._isMounted = true;
       this.$vm.__call_hook('mounted');
       this.$vm.__call_hook('onReady');
@@ -1520,7 +1519,6 @@ function initVm (VueComponent) {
 
       initChildVues(this);
 
-      console.log(this.is, 'mounted');
       this.$vm._isMounted = true;
       this.$vm.__call_hook('mounted');
       this.$vm.__call_hook('onReady');

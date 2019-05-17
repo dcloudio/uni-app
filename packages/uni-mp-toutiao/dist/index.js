@@ -928,6 +928,7 @@ function handleEvent (event) {
 }
 
 const hooks = [
+  'onShow',
   'onHide',
   'onError',
   'onPageNotFound'

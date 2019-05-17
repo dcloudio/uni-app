@@ -69,7 +69,6 @@ export function initChildVues (mpInstance) {
 
     initChildVues(childMPInstance)
 
-    console.log(childMPInstance.is, 'mounted')
     childMPInstance.$vm._isMounted = true
     childMPInstance.$vm.__call_hook('mounted')
     childMPInstance.$vm.__call_hook('onReady')

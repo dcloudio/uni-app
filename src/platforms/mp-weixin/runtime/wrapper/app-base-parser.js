@@ -6,6 +6,7 @@ import {
 } from 'uni-wrapper/util'
 
 const hooks = [
+  'onShow',
   'onHide',
   'onError',
   'onPageNotFound'
