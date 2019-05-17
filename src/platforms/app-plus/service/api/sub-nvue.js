@@ -4,10 +4,7 @@ function wrapper (webview) {
   webview.postMessage = function (data) {
     plus.webview.postMessageToUniNView({
       type: 'UniAppSubNVue',
-      data,
-      options: {
-        id: webview.id
-      }
+      data
     }, webview.id)
   }
   let callbacks = []
@@ -52,12 +49,10 @@ function wrapper (webview) {
   }
 }
 
-export const subNVue = {
-  getSubNVueById (id) {
-    const webview = plus.webview.getWebviewById(id)
-    if (webview && !webview.$processed) {
-      wrapper(webview)
-    }
-    return webview
+export function getSubNVueById (id) {
+  const webview = plus.webview.getWebviewById(id)
+  if (webview && !webview.$processed) {
+    wrapper(webview)
   }
+  return webview
 }
