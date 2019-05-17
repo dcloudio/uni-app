@@ -54,6 +54,7 @@ export default function parsePage (vuePageOptions) {
     },
     onReady () {
       initChildVues(this)
+      console.log(this.route, 'mounted')
       this.$vm._isMounted = true
       this.$vm.__call_hook('mounted')
       this.$vm.__call_hook('onReady')

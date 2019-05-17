@@ -43,6 +43,10 @@ export function initRelation (detail) {
 }
 
 export function initChildVues (mpInstance) {
+  // 此时需保证当前 mpInstance 已经存在 $vm
+  if (!mpInstance.$vm) {
+    return
+  }
   mpInstance._$childVues && mpInstance._$childVues.forEach(({
     vuePid,
     vueOptions,
@@ -63,6 +67,9 @@ export function initChildVues (mpInstance) {
 
     childMPInstance.$vm.$mount()
 
+    initChildVues(childMPInstance)
+
+    console.log(childMPInstance.is, 'mounted')
     childMPInstance.$vm._isMounted = true
     childMPInstance.$vm.__call_hook('mounted')
     childMPInstance.$vm.__call_hook('onReady')
@@ -136,7 +143,7 @@ export const handleLink = (function () {
     }
   }
   return function handleLink (detail) {
-    if (this.$vm) { // 父已初始化
+    if (this.$vm && this.$vm._isMounted) { // 父已初始化
       return handleBaseLink.call(this, {
         detail: {
           vuePid: detail.vuePid,

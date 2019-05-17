@@ -40,7 +40,7 @@ const camelize = cached((str) => {
   return str.replace(camelizeRE, (_, c) => c ? c.toUpperCase() : '')
 });
 
-const SYNC_API_RE = /subNVue|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$/;
+const SYNC_API_RE = /subNVue|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -1271,6 +1271,10 @@ function initRelation$1 (detail) {
 }
 
 function initChildVues (mpInstance) {
+  // 此时需保证当前 mpInstance 已经存在 $vm
+  if (!mpInstance.$vm) {
+    return
+  }
   mpInstance._$childVues && mpInstance._$childVues.forEach(({
     vuePid,
     vueOptions,
@@ -1291,6 +1295,9 @@ function initChildVues (mpInstance) {
 
     childMPInstance.$vm.$mount();
 
+    initChildVues(childMPInstance);
+
+    console.log(childMPInstance.is, 'mounted');
     childMPInstance.$vm._isMounted = true;
     childMPInstance.$vm.__call_hook('mounted');
     childMPInstance.$vm.__call_hook('onReady');
@@ -1364,7 +1371,7 @@ const handleLink$1 = (function () {
     }
   }
   return function handleLink$$1 (detail) {
-    if (this.$vm) { // 父已初始化
+    if (this.$vm && this.$vm._isMounted) { // 父已初始化
       return handleLink.call(this, {
         detail: {
           vuePid: detail.vuePid,
@@ -1444,6 +1451,7 @@ function parsePage (vuePageOptions) {
     },
     onReady () {
       initChildVues(this);
+      console.log(this.route, 'mounted');
       this.$vm._isMounted = true;
       this.$vm.__call_hook('mounted');
       this.$vm.__call_hook('onReady');
@@ -1495,7 +1503,6 @@ function initVm (VueComponent) {
     // 触发首次 setData
     this.$vm.$mount();
   } else {
-    initChildVues(this);
     // 处理父子关系
     initRelation$1.call(this, {
       vuePid: this._$vuePid,
@@ -1503,6 +1510,7 @@ function initVm (VueComponent) {
       VueComponent,
       mpInstance: this
     });
+
     if (options.parent) { // 父组件已经初始化，直接初始化子，否则放到父组件的 didMount 中处理
       // 初始化 vue 实例
       this.$vm = new VueComponent(options);
@@ -1510,6 +1518,9 @@ function initVm (VueComponent) {
       // 触发首次 setData
       this.$vm.$mount();
 
+      initChildVues(this);
+
+      console.log(this.is, 'mounted');
       this.$vm._isMounted = true;
       this.$vm.__call_hook('mounted');
       this.$vm.__call_hook('onReady');

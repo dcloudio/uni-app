@@ -47,7 +47,6 @@ function initVm (VueComponent) {
     // 触发首次 setData
     this.$vm.$mount()
   } else {
-    initChildVues(this)
     // 处理父子关系
     initRelation.call(this, {
       vuePid: this._$vuePid,
@@ -55,6 +54,7 @@ function initVm (VueComponent) {
       VueComponent,
       mpInstance: this
     })
+
     if (options.parent) { // 父组件已经初始化，直接初始化子，否则放到父组件的 didMount 中处理
       // 初始化 vue 实例
       this.$vm = new VueComponent(options)
@@ -62,6 +62,9 @@ function initVm (VueComponent) {
       // 触发首次 setData
       this.$vm.$mount()
 
+      initChildVues(this)
+
+      console.log(this.is, 'mounted')
       this.$vm._isMounted = true
       this.$vm.__call_hook('mounted')
       this.$vm.__call_hook('onReady')
