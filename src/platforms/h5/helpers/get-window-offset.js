@@ -21,7 +21,7 @@ export default function getWindowOffset () {
   }
   const app = getApp()
   if (app) {
-    bottom = app.$children[0].showTabBar ? TABBAR_HEIGHT : 0
+    bottom = app.$children[0] && app.$children[0].showTabBar ? TABBAR_HEIGHT : 0
   }
   return {
     top,
