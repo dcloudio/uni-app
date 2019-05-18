@@ -220,16 +220,20 @@ export default {
       if (url === __uniRoutes[0].alias) {
         url = '/'
       }
-      UniServiceJSBridge.emit('onTabItemTap', {
+      const detail = {
         index,
         text,
         pagePath
-      })
+      }
       if (this.$route.path !== url) {
         this.__path__ = this.$route.path
         uni.switchTab({
-          url
+          from: 'tabBar',
+          url,
+          detail
         })
+      } else {
+        UniServiceJSBridge.emit('onTabItemTap', detail)
       }
     }
   }
