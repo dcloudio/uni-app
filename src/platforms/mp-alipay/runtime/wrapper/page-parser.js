@@ -13,7 +13,8 @@ import {
   handleRef,
   handleLink,
   initBehavior,
-  initChildVues
+  initChildVues,
+  initSpecialEvents
 } from './util'
 
 const hooks = [
@@ -69,9 +70,7 @@ export default function parsePage (vuePageOptions) {
 
   initHooks(pageOptions, hooks)
 
-  if (vueOptions.methods && vueOptions.methods.formReset) {
-    pageOptions.formReset = vueOptions.methods.formReset
-  }
+  initSpecialEvents(pageOptions.methods, vueOptions.methods)
 
   return pageOptions
 }

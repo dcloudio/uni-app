@@ -17,7 +17,8 @@ import {
   triggerEvent,
   createObserver,
   isComponent2,
-  initChildVues
+  initChildVues,
+  initSpecialEvents
 } from './util'
 
 function initVm (VueComponent) {
@@ -118,8 +119,7 @@ export default function parseComponent (vueComponentOptions) {
     componentOptions.didUpdate = createObserver(true)
   }
 
-  if (vueOptions.methods && vueOptions.methods.formReset) {
-    componentOptions.methods.formReset = vueOptions.methods.formReset
-  }
+  initSpecialEvents(componentOptions.methods, vueOptions.methods)
+
   return componentOptions
 }

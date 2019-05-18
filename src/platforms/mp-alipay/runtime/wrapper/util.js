@@ -42,6 +42,25 @@ export function initRelation (detail) {
   this.props.onVueInit(detail)
 }
 
+const SPECIAL_EVENTS = [
+  'formReset',
+  'markerTap',
+  'calloutTap',
+  'controlTap',
+  'regionChange'
+]
+
+export function initSpecialEvents (mpMethods, vueMethods) {
+  if (!vueMethods) {
+    return
+  }
+  SPECIAL_EVENTS.forEach((name) => {
+    if (vueMethods[name]) {
+      mpMethods[name] = vueMethods[name]
+    }
+  })
+}
+
 export function initChildVues (mpInstance) {
   // 此时需保证当前 mpInstance 已经存在 $vm
   if (!mpInstance.$vm) {
