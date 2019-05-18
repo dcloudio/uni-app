@@ -418,7 +418,15 @@ export function handleEvent (event) {
       eventsArray.forEach(eventArray => {
         const methodName = eventArray[0]
         if (methodName) {
-          const handler = this.$vm[methodName]
+          let handlerCtx = this.$vm
+          if (
+            handlerCtx.$options.generic &&
+                        handlerCtx.$parent &&
+                        handlerCtx.$parent.$parent
+          ) { // mp-weixin,mp-toutiao 抽象节点模拟 scoped slots
+            handlerCtx = handlerCtx.$parent.$parent
+          }
+          const handler = handlerCtx[methodName]
           if (!isFn(handler)) {
             throw new Error(` _vm.${methodName} is not a function`)
           }
@@ -428,7 +436,7 @@ export function handleEvent (event) {
             }
             handler.once = true
           }
-          handler.apply(this.$vm, processEventArgs(
+          handler.apply(handlerCtx, processEventArgs(
             this.$vm,
             event,
             eventArray[1],

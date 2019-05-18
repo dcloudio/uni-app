@@ -1,6 +1,6 @@
 import parsePage from 'uni-platform/runtime/wrapper/page-parser'
 
-export function createPage (vuePageOptions) {
+export default function createPage (vuePageOptions) {
   if (__PLATFORM__ === 'mp-alipay') {
     return Page(parsePage(vuePageOptions))
   } else {

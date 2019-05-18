@@ -215,7 +215,11 @@ function wrapper (methodName, method) {
 
       arg1 = processArgs(methodName, arg1, options.args, options.returnValue);
 
-      const returnValue = wx[options.name || methodName](arg1, arg2);
+      const args = [arg1];
+      if (typeof arg2 !== 'undefined') {
+        args.push(arg2);
+      }
+      const returnValue = wx[options.name || methodName].apply(wx, args);
       if (isSyncApi(methodName)) { // 同步 api
         return processReturnValue(methodName, returnValue, options.returnValue, isContextApi(methodName))
       }
@@ -757,7 +761,15 @@ function handleEvent (event) {
       eventsArray.forEach(eventArray => {
         const methodName = eventArray[0];
         if (methodName) {
-          const handler = this.$vm[methodName];
+          let handlerCtx = this.$vm;
+          if (
+            handlerCtx.$options.generic &&
+                        handlerCtx.$parent &&
+                        handlerCtx.$parent.$parent
+          ) { // mp-weixin,mp-toutiao 抽象节点模拟 scoped slots
+            handlerCtx = handlerCtx.$parent.$parent;
+          }
+          const handler = handlerCtx[methodName];
           if (!isFn(handler)) {
             throw new Error(` _vm.${methodName} is not a function`)
           }
@@ -767,7 +779,7 @@ function handleEvent (event) {
             }
             handler.once = true;
           }
-          handler.apply(this.$vm, processEventArgs(
+          handler.apply(handlerCtx, processEventArgs(
             this.$vm,
             event,
             eventArray[1],
@@ -1101,7 +1113,8 @@ todos.forEach(todoApi => {
 });
 
 canIUses.forEach(canIUseApi => {
-  const apiName = protocols[canIUseApi] && protocols[canIUseApi].name ? protocols[canIUseApi].name : canIUseApi;
+  const apiName = protocols[canIUseApi] && protocols[canIUseApi].name ? protocols[canIUseApi].name
+    : canIUseApi;
   if (!wx.canIUse(apiName)) {
     protocols[canIUseApi] = false;
   }
@@ -1137,6 +1150,10 @@ if (typeof Proxy !== 'undefined') {
     }
   });
 }
+
+wx.createApp = createApp;
+wx.createPage = createPage;
+wx.createComponent = createComponent;
 
 var uni$1 = uni;
 

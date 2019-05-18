@@ -77,7 +77,11 @@ export default function wrapper (methodName, method) {
 
       arg1 = processArgs(methodName, arg1, options.args, options.returnValue)
 
-      const returnValue = __GLOBAL__[options.name || methodName](arg1, arg2)
+      const args = [arg1]
+      if (typeof arg2 !== 'undefined') {
+        args.push(arg2)
+      }
+      const returnValue = __GLOBAL__[options.name || methodName].apply(__GLOBAL__, args)
       if (isSyncApi(methodName)) { // 同步 api
         return processReturnValue(methodName, returnValue, options.returnValue, isContextApi(methodName))
       }

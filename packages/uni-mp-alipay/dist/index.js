@@ -581,7 +581,11 @@ function wrapper (methodName, method) {
 
       arg1 = processArgs(methodName, arg1, options.args, options.returnValue);
 
-      const returnValue = my[options.name || methodName](arg1, arg2);
+      const args = [arg1];
+      if (typeof arg2 !== 'undefined') {
+        args.push(arg2);
+      }
+      const returnValue = my[options.name || methodName].apply(my, args);
       if (isSyncApi(methodName)) { // 同步 api
         return processReturnValue(methodName, returnValue, options.returnValue, isContextApi(methodName))
       }
@@ -1067,7 +1071,15 @@ function handleEvent (event) {
       eventsArray.forEach(eventArray => {
         const methodName = eventArray[0];
         if (methodName) {
-          const handler = this.$vm[methodName];
+          let handlerCtx = this.$vm;
+          if (
+            handlerCtx.$options.generic &&
+                        handlerCtx.$parent &&
+                        handlerCtx.$parent.$parent
+          ) { // mp-weixin,mp-toutiao 抽象节点模拟 scoped slots
+            handlerCtx = handlerCtx.$parent.$parent;
+          }
+          const handler = handlerCtx[methodName];
           if (!isFn(handler)) {
             throw new Error(` _vm.${methodName} is not a function`)
           }
@@ -1077,7 +1089,7 @@ function handleEvent (event) {
             }
             handler.once = true;
           }
-          handler.apply(this.$vm, processEventArgs(
+          handler.apply(handlerCtx, processEventArgs(
             this.$vm,
             event,
             eventArray[1],
@@ -1466,6 +1478,10 @@ function parsePage (vuePageOptions) {
 
   initHooks(pageOptions, hooks$1);
 
+  if (vueOptions.methods && vueOptions.methods.formReset) {
+    pageOptions.formReset = vueOptions.methods.formReset;
+  }
+
   return pageOptions
 }
 
@@ -1590,7 +1606,8 @@ todos.forEach(todoApi => {
 });
 
 canIUses.forEach(canIUseApi => {
-  const apiName = protocols[canIUseApi] && protocols[canIUseApi].name ? protocols[canIUseApi].name : canIUseApi;
+  const apiName = protocols[canIUseApi] && protocols[canIUseApi].name ? protocols[canIUseApi].name
+    : canIUseApi;
   if (!my.canIUse(apiName)) {
     protocols[canIUseApi] = false;
   }
@@ -1643,6 +1660,10 @@ if (typeof Proxy !== 'undefined') {
     }
   });
 }
+
+my.createApp = createApp;
+my.createPage = createPage;
+my.createComponent = createComponent;
 
 var uni$1 = uni;
 

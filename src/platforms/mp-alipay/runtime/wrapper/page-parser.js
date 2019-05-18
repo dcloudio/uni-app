@@ -69,5 +69,9 @@ export default function parsePage (vuePageOptions) {
 
   initHooks(pageOptions, hooks)
 
+  if (vueOptions.methods && vueOptions.methods.formReset) {
+    pageOptions.formReset = vueOptions.methods.formReset
+  }
+
   return pageOptions
 }
