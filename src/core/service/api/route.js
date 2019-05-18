@@ -5,7 +5,8 @@ import {
 function onAppRoute (type, {
   url,
   delta,
-  from = 'navigateBack'
+  from = 'navigateBack',
+  detail
 } = {}) {
   const router = getApp().$router
   switch (type) {
@@ -45,7 +46,10 @@ function onAppRoute (type, {
     case 'switchTab':
       router.replace({
         type,
-        path: url
+        path: url,
+        params: {
+          detail
+        }
       })
       break
   }

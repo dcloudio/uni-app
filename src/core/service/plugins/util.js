@@ -21,6 +21,12 @@ export function callPageHook (vm, hook, ...params) {
       UniServiceJSBridge.publishHandler('onPageLoad', vm, vm.$page.id)
     }
     if (hook === 'onShow') {
+      if (
+        vm.$route.meta.isTabBar &&
+                vm.$route.params.detail
+      ) {
+        UniServiceJSBridge.emit('onTabItemTap', vm.$route.params.detail)
+      }
       UniServiceJSBridge.publishHandler('onPageShow', vm, vm.$page.id)
     }
   }
