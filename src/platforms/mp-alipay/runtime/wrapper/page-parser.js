@@ -70,7 +70,7 @@ export default function parsePage (vuePageOptions) {
 
   initHooks(pageOptions, hooks)
 
-  initSpecialEvents(pageOptions.methods, vueOptions.methods)
+  initSpecialEvents(pageOptions, vueOptions.methods)
 
   return pageOptions
 }

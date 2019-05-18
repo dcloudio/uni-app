@@ -1283,6 +1283,25 @@ function initRelation$1 (detail) {
   this.props.onVueInit(detail);
 }
 
+const SPECIAL_EVENTS = [
+  'formReset',
+  'markerTap',
+  'calloutTap',
+  'controlTap',
+  'regionChange'
+];
+
+function initSpecialEvents (mpMethods, vueMethods) {
+  if (!vueMethods) {
+    return
+  }
+  SPECIAL_EVENTS.forEach((name) => {
+    if (vueMethods[name]) {
+      mpMethods[name] = vueMethods[name];
+    }
+  });
+}
+
 function initChildVues (mpInstance) {
   // 此时需保证当前 mpInstance 已经存在 $vm
   if (!mpInstance.$vm) {
@@ -1478,9 +1497,7 @@ function parsePage (vuePageOptions) {
 
   initHooks(pageOptions, hooks$1);
 
-  if (vueOptions.methods && vueOptions.methods.formReset) {
-    pageOptions.formReset = vueOptions.methods.formReset;
-  }
+  initSpecialEvents(pageOptions, vueOptions.methods);
 
   return pageOptions
 }
@@ -1589,15 +1606,14 @@ function parseComponent (vueComponentOptions) {
     componentOptions.didUpdate = createObserver$1(true);
   }
 
-  if (vueOptions.methods && vueOptions.methods.formReset) {
-    componentOptions.methods.formReset = vueOptions.methods.formReset;
-  }
+  initSpecialEvents(componentOptions.methods, vueOptions.methods);
+
   return componentOptions
 }
 
 function createComponent (vueOptions) {
   {
-    return my.createComponent(parseComponent(vueOptions))
+    return my.defineComponent(parseComponent(vueOptions))
   }
 }
 
