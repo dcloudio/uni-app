@@ -1,7 +1,10 @@
 /**
  * 可以批量设置的监听事件
  */
-var innerAudioContextEventNames = ['onCanplay', 'onPlay', 'onPause', 'onStop', 'onEnded', 'onTimeUpdate', 'onError', 'onWaiting', 'onSeeking', 'onSeeked']
+const innerAudioContextEventNames = ['onCanplay', 'onPlay', 'onPause', 'onStop', 'onEnded', 'onTimeUpdate', 'onError', 'onWaiting', 'onSeeking', 'onSeeked']
+
+const innerAudioContextOffEventNames = ['offCanplay', 'offPlay', 'offPause', 'offStop', 'offEnded', 'offTimeUpdate', 'offError', 'offWaiting', 'offSeeking', 'offSeeke']
+
 /**
  * 音频上下文对象
  */
@@ -134,6 +137,17 @@ innerAudioContextEventNames.forEach((eventName) => {
   InnerAudioContext.prototype[eventName] = function (callback) {
     if (typeof callback === 'function') {
       this._events[eventName].push(callback)
+    }
+  }
+})
+
+// 批量设置音频上下文事件取消监听方法
+innerAudioContextOffEventNames.forEach((eventName) => {
+  InnerAudioContext.prototype[eventName] = function (callback) {
+    var handle = this._events[eventName.replace('off', 'on')]
+    var index = handle.indexOf(callback)
+    if (index >= 0) {
+      handle.splice(index, 1)
     }
   }
 })
