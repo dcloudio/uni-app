@@ -14,7 +14,7 @@ import {
   handleLink,
   initBehavior,
   initChildVues,
-  initSpecialEvents
+  initSpecialMethods
 } from './util'
 
 const hooks = [
@@ -47,6 +47,8 @@ export default function parsePage (vuePageOptions) {
       // 初始化 vue 实例
       this.$vm = new VueComponent(options)
 
+      initSpecialMethods(this)
+
       // 触发首次 setData
       this.$vm.$mount()
 
@@ -69,8 +71,6 @@ export default function parsePage (vuePageOptions) {
   }
 
   initHooks(pageOptions, hooks)
-
-  initSpecialEvents(pageOptions, vueOptions.methods)
 
   return pageOptions
 }

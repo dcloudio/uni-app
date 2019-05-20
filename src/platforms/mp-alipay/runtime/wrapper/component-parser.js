@@ -18,7 +18,7 @@ import {
   createObserver,
   isComponent2,
   initChildVues,
-  initSpecialEvents
+  initSpecialMethods
 } from './util'
 
 function initVm (VueComponent) {
@@ -93,6 +93,9 @@ export default function parseComponent (vueComponentOptions) {
     props,
     didMount () {
       initVm.call(this, VueComponent)
+
+      initSpecialMethods(this)
+
       if (isComponent2) {
         this.$vm._isMounted = true
         this.$vm.__call_hook('mounted')
@@ -118,8 +121,6 @@ export default function parseComponent (vueComponentOptions) {
   } else {
     componentOptions.didUpdate = createObserver(true)
   }
-
-  initSpecialEvents(componentOptions.methods, vueOptions.methods)
 
   return componentOptions
 }

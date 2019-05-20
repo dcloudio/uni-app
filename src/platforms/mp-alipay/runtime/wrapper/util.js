@@ -42,23 +42,28 @@ export function initRelation (detail) {
   this.props.onVueInit(detail)
 }
 
-const SPECIAL_EVENTS = [
-  'formReset',
-  'markerTap',
-  'calloutTap',
-  'controlTap',
-  'regionChange'
-]
-
-export function initSpecialEvents (mpMethods, vueMethods) {
-  if (!vueMethods) {
+export function initSpecialMethods (mpInstance) {
+  if (!mpInstance.$vm) {
     return
   }
-  SPECIAL_EVENTS.forEach((name) => {
-    if (vueMethods[name]) {
-      mpMethods[name] = vueMethods[name]
-    }
-  })
+  let path = mpInstance.is || mpInstance.route
+  if (!path) {
+    return
+  }
+  if (path.indexOf('/') === 0) {
+    path = path.substr(1)
+  }
+  const specialMethods = my.specialMethods && my.specialMethods[path]
+  if (specialMethods) {
+    specialMethods.forEach(method => {
+      if (isFn(mpInstance.$vm[method])) {
+        mpInstance[method] = function (event) {
+          // TODO normalizeEvent
+          mpInstance.$vm[method](event)
+        }
+      }
+    })
+  }
 }
 
 export function initChildVues (mpInstance) {
@@ -81,6 +86,8 @@ export function initChildVues (mpInstance) {
     })
 
     childMPInstance.$vm = new VueComponent(vueOptions)
+
+    initSpecialMethods(childMPInstance)
 
     handleRef.call(vueOptions.parent.$scope, childMPInstance)
 

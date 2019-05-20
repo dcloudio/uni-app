@@ -1283,23 +1283,28 @@ function initRelation$1 (detail) {
   this.props.onVueInit(detail);
 }
 
-const SPECIAL_EVENTS = [
-  'formReset',
-  'markerTap',
-  'calloutTap',
-  'controlTap',
-  'regionChange'
-];
-
-function initSpecialEvents (mpMethods, vueMethods) {
-  if (!vueMethods) {
+function initSpecialMethods (mpInstance) {
+  if (!mpInstance.$vm) {
     return
   }
-  SPECIAL_EVENTS.forEach((name) => {
-    if (vueMethods[name]) {
-      mpMethods[name] = vueMethods[name];
-    }
-  });
+  let path = mpInstance.is || mpInstance.route;
+  if (!path) {
+    return
+  }
+  if (path.indexOf('/') === 0) {
+    path = path.substr(1);
+  }
+  const specialMethods = my.specialMethods && my.specialMethods[path];
+  if (specialMethods) {
+    specialMethods.forEach(method => {
+      if (isFn(mpInstance.$vm[method])) {
+        mpInstance[method] = function (event) {
+          // TODO normalizeEvent
+          mpInstance.$vm[method](event);
+        };
+      }
+    });
+  }
 }
 
 function initChildVues (mpInstance) {
@@ -1322,6 +1327,8 @@ function initChildVues (mpInstance) {
     });
 
     childMPInstance.$vm = new VueComponent(vueOptions);
+
+    initSpecialMethods(childMPInstance);
 
     handleRef.call(vueOptions.parent.$scope, childMPInstance);
 
@@ -1474,6 +1481,8 @@ function parsePage (vuePageOptions) {
       // 初始化 vue 实例
       this.$vm = new VueComponent(options);
 
+      initSpecialMethods(this);
+
       // 触发首次 setData
       this.$vm.$mount();
 
@@ -1496,8 +1505,6 @@ function parsePage (vuePageOptions) {
   };
 
   initHooks(pageOptions, hooks$1);
-
-  initSpecialEvents(pageOptions, vueOptions.methods);
 
   return pageOptions
 }
@@ -1580,6 +1587,9 @@ function parseComponent (vueComponentOptions) {
     props,
     didMount () {
       initVm.call(this, VueComponent);
+
+      initSpecialMethods(this);
+
       if (isComponent2) {
         this.$vm._isMounted = true;
         this.$vm.__call_hook('mounted');
@@ -1605,8 +1615,6 @@ function parseComponent (vueComponentOptions) {
   } else {
     componentOptions.didUpdate = createObserver$1(true);
   }
-
-  initSpecialEvents(componentOptions.methods, vueOptions.methods);
 
   return componentOptions
 }
