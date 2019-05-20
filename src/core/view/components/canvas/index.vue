@@ -31,12 +31,12 @@ function resolveColor (color) {
 }
 
 function processTouches (target, touches) {
-  return ([]).map.call(touches, (touche) => {
+  return ([]).map.call(touches, (touch) => {
     var boundingClientRect = target.getBoundingClientRect()
     return {
-      identifier: touche.identifier,
-      x: touche.clientX - boundingClientRect.x,
-      y: touche.clientY - boundingClientRect.y
+      identifier: touch.identifier,
+      x: touch.clientX - boundingClientRect.left,
+      y: touch.clientY - boundingClientRect.top
     }
   })
 }
