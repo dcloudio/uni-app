@@ -69,8 +69,15 @@ function beforeEach (to, from, next, routes) {
   currentPages = getCurrentPages(true) // 每次 beforeEach 时获取当前currentPages，因为 afterEach 之后，获取不到上一个 page 了，导致无法调用 onUnload
   const fromId = from.params.__id__
   const toId = to.params.__id__
+  const toName = to.meta.name + '-' + toId
   if (toId === fromId) { // 相同页面阻止
-    next(false)
+    // 处理外部修改 history 导致卡在当前页面的问题
+    if (to.fullPath !== from.fullPath) {
+      removeKeepAliveInclude.call(this, toName)
+      next()
+    } else {
+      next(false)
+    }
   } else if (to.meta.id && to.meta.id !== toId) { // id 不妥，replace跳转
     next({
       path: to.path,
@@ -78,7 +85,6 @@ function beforeEach (to, from, next, routes) {
     })
   } else {
     const fromName = from.meta.name + '-' + fromId
-    const toName = to.meta.name + '-' + toId
 
     switch (to.type) {
       case 'navigateTo':
