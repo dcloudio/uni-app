@@ -883,6 +883,17 @@ function processEventArgs (vm, event, args = [], extra = [], isCustom, methodNam
 const ONCE = '~';
 const CUSTOM = '^';
 
+function isMatchEventType (eventType, optType) {
+  return (eventType === optType) ||
+        (
+          optType === 'regionchange' &&
+            (
+              eventType === 'begin' ||
+                eventType === 'end'
+            )
+        )
+}
+
 function handleEvent (event) {
   event = wrapper$1(event);
 
@@ -903,7 +914,7 @@ function handleEvent (event) {
     const isOnce = type.charAt(0) === ONCE;
     type = isOnce ? type.slice(1) : type;
 
-    if (eventsArray && eventType === type) {
+    if (eventsArray && isMatchEventType(eventType, type)) {
       eventsArray.forEach(eventArray => {
         const methodName = eventArray[0];
         if (methodName) {
