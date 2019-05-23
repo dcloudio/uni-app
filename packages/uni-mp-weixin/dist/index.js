@@ -40,7 +40,7 @@ const camelize = cached((str) => {
   return str.replace(camelizeRE, (_, c) => c ? c.toUpperCase() : '')
 });
 
-const SYNC_API_RE = /getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
+const SYNC_API_RE = /^\$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -324,6 +324,22 @@ function getProvider ({
 
 var extraApi = /*#__PURE__*/Object.freeze({
   getProvider: getProvider
+});
+
+const Emitter = new Vue();
+
+const $on = Emitter.$on.bind(Emitter);
+const $off = Emitter.$off.bind(Emitter);
+const $once = Emitter.$once.bind(Emitter);
+const $emit = Emitter.$emit.bind(Emitter);
+
+
+
+var eventApi = /*#__PURE__*/Object.freeze({
+  $on: $on,
+  $off: $off,
+  $once: $once,
+  $emit: $emit
 });
 
 
@@ -1121,6 +1137,9 @@ if (typeof Proxy !== 'undefined') {
           return promisify(name, todoApis[name])
         }
       }
+      if (eventApi[name]) {
+        return eventApi[name]
+      }
       if (!hasOwn(wx, name) && !hasOwn(protocols, name)) {
         return
       }
@@ -1138,6 +1157,10 @@ if (typeof Proxy !== 'undefined') {
       uni[name] = promisify(name, todoApis[name]);
     });
   }
+
+  Object.keys(eventApi).forEach(name => {
+    uni[name] = eventApi[name];
+  });
 
   Object.keys(api).forEach(name => {
     uni[name] = promisify(name, api[name]);

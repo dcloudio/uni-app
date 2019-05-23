@@ -16,6 +16,8 @@ import todoApi from './todo'
 
 import * as extraApi from './extra'
 
+import * as eventApi from './event'
+
 import * as api from 'uni-platform/service/api/index.js'
 
 import {
@@ -59,6 +61,9 @@ if (typeof Proxy !== 'undefined') {
           return promisify(name, todoApi[name])
         }
       }
+      if (eventApi[name]) {
+        return eventApi[name]
+      }
       if (!hasOwn(__GLOBAL__, name) && !hasOwn(protocols, name)) {
         return
       }
@@ -77,6 +82,10 @@ if (typeof Proxy !== 'undefined') {
     })
   }
 
+  Object.keys(eventApi).forEach(name => {
+    uni[name] = eventApi[name]
+  })
+
   Object.keys(api).forEach(name => {
     uni[name] = promisify(name, api[name])
   })
@@ -86,6 +95,12 @@ if (typeof Proxy !== 'undefined') {
       uni[name] = promisify(name, wrapper(name, __GLOBAL__[name]))
     }
   })
+}
+
+if (__PLATFORM__ === 'app-plus') {
+  if (typeof global !== 'undefined') {
+    global.UniEmitter = eventApi
+  }
 }
 
 __GLOBAL__.createApp = createApp

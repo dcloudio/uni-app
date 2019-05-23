@@ -40,7 +40,7 @@ const camelize = cached((str) => {
   return str.replace(camelizeRE, (_, c) => c ? c.toUpperCase() : '')
 });
 
-const SYNC_API_RE = /getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
+const SYNC_API_RE = /^\$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -254,6 +254,22 @@ function createTodoApi (name) {
 
 TODOS.forEach(function (name) {
   todoApis[name] = createTodoApi(name);
+});
+
+const Emitter = new Vue();
+
+const $on = Emitter.$on.bind(Emitter);
+const $off = Emitter.$off.bind(Emitter);
+const $once = Emitter.$once.bind(Emitter);
+const $emit = Emitter.$emit.bind(Emitter);
+
+
+
+var eventApi = /*#__PURE__*/Object.freeze({
+  $on: $on,
+  $off: $off,
+  $once: $once,
+  $emit: $emit
 });
 
 function wrapper$1 (webview) {
@@ -1142,6 +1158,9 @@ if (typeof Proxy !== 'undefined') {
       if (api[name]) {
         return promisify(name, api[name])
       }
+      if (eventApi[name]) {
+        return eventApi[name]
+      }
       if (!hasOwn(wx, name) && !hasOwn(protocols, name)) {
         return
       }
@@ -1150,6 +1169,10 @@ if (typeof Proxy !== 'undefined') {
   });
 } else {
   uni.upx2px = upx2px;
+
+  Object.keys(eventApi).forEach(name => {
+    uni[name] = eventApi[name];
+  });
 
   Object.keys(api).forEach(name => {
     uni[name] = promisify(name, api[name]);
@@ -1160,6 +1183,12 @@ if (typeof Proxy !== 'undefined') {
       uni[name] = promisify(name, wrapper(name, wx[name]));
     }
   });
+}
+
+{
+  if (typeof global !== 'undefined') {
+    global.UniEmitter = eventApi;
+  }
 }
 
 wx.createApp = createApp;
