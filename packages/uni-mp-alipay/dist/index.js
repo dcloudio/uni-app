@@ -656,12 +656,33 @@ var extraApi = /*#__PURE__*/Object.freeze({
   getProvider: getProvider
 });
 
-const Emitter = new Vue();
+const getEmitter = (function () {
+  if (typeof getUniEmitter === 'function') {
+    /* eslint-disable no-undef */
+    return getUniEmitter
+  }
+  const Emitter = new Vue();
+  return function getUniEmitter () {
+    return Emitter
+  }
+})();
 
-const $on = Emitter.$on.bind(Emitter);
-const $off = Emitter.$off.bind(Emitter);
-const $once = Emitter.$once.bind(Emitter);
-const $emit = Emitter.$emit.bind(Emitter);
+function apply (ctx, method, args) {
+  return ctx[method].apply(ctx, args)
+}
+
+function $on () {
+  return apply(getEmitter(), '$on', [...arguments])
+}
+function $off () {
+  return apply(getEmitter(), '$off', [...arguments])
+}
+function $once () {
+  return apply(getEmitter(), '$once', [...arguments])
+}
+function $emit () {
+  return apply(getEmitter(), '$emit', [...arguments])
+}
 
 
 
