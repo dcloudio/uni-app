@@ -1107,6 +1107,8 @@ function initRelation$1 (detail) {
   this.dispatch('__l', detail);
 }
 
+const isIOS$1 = swan.getSystemInfoSync().platform === 'ios';
+
 function parseApp (vm) {
   return parseBaseApp(vm, {
     mocks: mocks$1,
@@ -1210,8 +1212,10 @@ function parseComponent (vueOptions) {
       // 百度 当组件作为页面时 pageinstancce 不是原来组件的 instance
       this.pageinstance.$vm = this.$vm;
 
-      this.$vm.$mp.query = this.pageinstance._$args; // 兼容 mpvue
-      this.$vm.__call_hook('onLoad', this.pageinstance._$args);
+      if (!isIOS$1) {
+        this.$vm.$mp.query = this.pageinstance._$args; // 兼容 mpvue
+        this.$vm.__call_hook('onLoad', this.pageinstance._$args);
+      }
       // TODO  目前版本 百度 Component 作为页面时，methods 中的 onShow 不触发
       this.$vm.__call_hook('onShow');
     }
@@ -1275,6 +1279,11 @@ function parsePage (vuePageOptions) {
   pageOptions.methods.onLoad = function onLoad (args) {
     // 百度 onLoad 在 attached 之前触发，先存储 args, 在 attached 里边触发 onLoad
     this.pageinstance._$args = args;
+
+    if (isIOS$1) {
+      this.$vm.$mp.query = this.pageinstance._$args; // 兼容 mpvue
+      this.$vm.__call_hook('onLoad', this.pageinstance._$args);
+    }
   };
   // TODO  目前版本 百度 Component 作为页面时，methods 中的 onShow 不触发
   delete pageOptions.methods.onShow;

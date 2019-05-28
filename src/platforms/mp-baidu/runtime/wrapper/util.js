@@ -7,3 +7,5 @@ export function isPage () {
 export function initRelation (detail) {
   this.dispatch('__l', detail)
 }
+
+export const isIOS = swan.getSystemInfoSync().platform === 'ios'
