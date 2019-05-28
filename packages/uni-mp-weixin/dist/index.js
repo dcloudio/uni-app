@@ -331,8 +331,11 @@ const getEmitter = (function () {
     /* eslint-disable no-undef */
     return getUniEmitter
   }
-  const Emitter = new Vue();
+  let Emitter;
   return function getUniEmitter () {
+    if (!Emitter) {
+      Emitter = new Vue();
+    }
     return Emitter
   }
 })();
