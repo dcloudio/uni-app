@@ -1,8 +1,7 @@
 <template>
   <transition name="uni-fade">
     <uni-toast
-      v-show="visible"
-      :class="{'uni-toast-fixed':mask}"
+      v-if="visible"
       :data-duration="duration">
       <div
         v-if="mask"
@@ -87,17 +86,14 @@ export default {
 </script>
 <style>
 	uni-toast {
-		display: block;
-		box-sizing: border-box;
-	}
-
-	uni-toast .uni-toast-fixed {
-		position: fixed;
+    position: fixed;
 		top: 0;
 		right: 0;
 		bottom: 0;
 		left: 0;
 		z-index: 999;
+		display: block;
+		box-sizing: border-box;
 	}
 
 	uni-toast .uni-sample-toast {
