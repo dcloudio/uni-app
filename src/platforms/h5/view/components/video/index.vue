@@ -899,6 +899,8 @@ uni-video[hidden] {
   align-items: center;
   padding: 0 10px;
   z-index: 0;
+  /* 解决全屏后被 video 遮挡的问题 */
+  transform: translate3d(0, 0, 0);
 }
 
 .uni-video-bar.uni-video-bar-full {
