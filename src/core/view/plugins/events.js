@@ -62,7 +62,7 @@ export function processEvent (name, $event = {}, detail = {}, target = {}, curre
     } = getWindowOffset()
 
     detail = {
-      x: $event.x - top,
+      x: $event.x,
       y: $event.y - top
     }
     $event.touches = $event.changedTouches = [{
