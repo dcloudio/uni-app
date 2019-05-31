@@ -16,7 +16,7 @@ import todoApi from './todo'
 
 import * as extraApi from './extra'
 
-import * as eventApi from './event'
+import * as eventApi from './event-bus'
 
 import * as api from 'uni-platform/service/api/index.js'
 
