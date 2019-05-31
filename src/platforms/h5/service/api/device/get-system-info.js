@@ -37,12 +37,15 @@ export function getSystemInfoSync () {
     }
   } else if (isAndroid) {
     osname = 'Android'
-    let osversionFind = ua.match(/Android\s([\w.]+);/)
+    // eslint-disable-next-line no-useless-escape
+    let osversionFind = ua.match(/Android[\s/]([\w\.]+)[;\s]/)
     if (osversionFind) {
       osversion = osversionFind[1]
     }
-    let infos = ua.match(/\((.+?)\)/)[1].split(';')
-    const otherInfo = [/^\s?Android/i, /^\s?Linux/i, /^\s?U/i, /^\s?[a-z][a-z]$/i, /^\s?[a-z][a-z]-[a-z][a-z]$/i, /^\s?wv/i]
+    let infoFind = ua.match(/\((.+?)\)/)
+    let infos = infoFind ? infoFind[1].split(';') : ua.split(' ')
+    // eslint-disable-next-line no-useless-escape
+    const otherInfo = [/\bAndroid\b/i, /\bLinux\b/i, /\bU\b/i, /^\s?[a-z][a-z]$/i, /^\s?[a-z][a-z]-[a-z][a-z]$/i, /\bwv\b/i, /\/[\d\.,]+$/, /^\s?[\d\.,]+$/, /\bBrowser\b/i, /\bMobile\b/i]
     for (let i = 0; i < infos.length; i++) {
       const info = infos[i]
       if (info.indexOf('Build') > 0) {
