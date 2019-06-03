@@ -8,7 +8,7 @@ export function initSubNVue (nvue, plus, BroadcastChannel) {
   const onMessageCallbacks = []
 
   const postMessage = nvue.requireModule('plus').postMessage
-  
+
   const onSubNVueMessage = function onSubNVueMessage (data) {
     onMessageCallbacks.forEach(callback => callback({
       origin,
