@@ -26,8 +26,8 @@ export default {
         initEventBus(getUniEmitter)
       },
       instance: {
-        getUni (nvue) {
-          return initUni(getGlobalUni(), nvue)
+        getUni (nvue, plus, BroadcastChannel) {
+          return initUni(getGlobalUni(), nvue, plus, BroadcastChannel)
         },
         getApp () {
           return getGlobalApp()

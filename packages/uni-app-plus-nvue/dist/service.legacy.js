@@ -72,67 +72,16 @@ function promisify (name, api) {
   }
 }
 
-const EPS = 1e-4;
-const BASE_DEVICE_WIDTH = 750;
-let isIOS = false;
-let deviceWidth = 0;
-let deviceDPR = 0;
-
-function upx2px (number, newDeviceWidth) {
-  number = Number(number);
-  if (number === 0) {
-    return 0
-  }
-  let result = (number / BASE_DEVICE_WIDTH) * (newDeviceWidth || deviceWidth);
-  if (result < 0) {
-    result = -result;
-  }
-  result = Math.floor(result + EPS);
-  if (result === 0) {
-    if (deviceDPR === 1 || !isIOS) {
-      return 1
-    } else {
-      return 0.5
-    }
-  }
-  return number < 0 ? -result : result
-}
-
-function initUpx2px (nvue) {
-  const env = nvue.config.env;
-
-  deviceDPR = env.scale;
-  deviceWidth = Math.ceil(env.deviceWidth / deviceDPR);
-  isIOS = env.platform === 'iOS';
-}
-
-let getEmitter;
-
-function apply (ctx, method, args) {
-  return ctx[method].apply(ctx, args)
-}
-
-function $on () {
-  return apply(getEmitter(), '$on', [...arguments])
-}
-function $off () {
-  return apply(getEmitter(), '$off', [...arguments])
-}
-function $once () {
-  return apply(getEmitter(), '$once', [...arguments])
-}
-function $emit () {
-  return apply(getEmitter(), '$emit', [...arguments])
-}
-
-function initEventBus (getGlobalEmitter) {
-  getEmitter = getGlobalEmitter;
-}
-
 const SUCCESS = 'success';
 const FAIL = 'fail';
 const COMPLETE = 'complete';
 const CALLBACKS = [SUCCESS, FAIL, COMPLETE];
+
+const UNIAPP_SERVICE_NVUE_ID = '__uniapp__service';
+
+function noop$1 () {
+
+}
 /**
  * 调用无参数，或仅一个参数且为 callback 的 API
  * @param {Object} vm
@@ -239,6 +188,198 @@ function normalizeCallback (method, callbacks) {
   }
 }
 
+function initSubNVue (nvue, plus, BroadcastChannel) {
+  let origin;
+
+  const onMessageCallbacks = [];
+
+  const onSubNVueMessage = function onSubNVueMessage (data) {
+    onMessageCallbacks.forEach(callback => callback({
+      origin,
+      data
+    }));
+  };
+
+  nvue.requireModule('globalEvent').addEventListener('plusMessage', e => {
+    if (e.data.type === 'UniAppSubNVue') {
+      onSubNVueMessage(e.data.data, e.data.options);
+    }
+  });
+
+  const webviewId = plus.webview.currentWebview().id;
+
+  const channel = new BroadcastChannel('UNI-APP-SUBNVUE');
+  channel.onmessage = function (event) {
+    if (event.data.to === webviewId) {
+      onSubNVueMessage(event.data.data);
+    }
+  };
+
+  const wrapper = function wrapper (webview) {
+    webview.$processed = true;
+
+    const currentWebviewId = plus.webview.currentWebview().id;
+    const isPopupNVue = currentWebviewId === webview.id;
+
+    const hostNVueId = webview.__uniapp_origin_type === 'uniNView' && webview.__uniapp_origin_id;
+    const popupNVueId = webview.id;
+
+    webview.postMessage = function (data) {
+      if (hostNVueId) {
+        channel.postMessage({
+          data,
+          to: isPopupNVue ? hostNVueId : popupNVueId
+        });
+      } else {
+        plus.postMessage({
+          type: 'UniAppSubNVue',
+          data: data
+        }, UNIAPP_SERVICE_NVUE_ID);
+      }
+    };
+    webview.onMessage = function (callback) {
+      onMessageCallbacks.push(callback);
+    };
+
+    if (!webview.__uniapp_mask_id) {
+      return
+    }
+    origin = webview.__uniapp_host;
+
+    const maskColor = webview.__uniapp_mask;
+
+    let maskWebview = plus.webview.getWebviewById(webview.__uniapp_mask_id);
+    maskWebview = maskWebview.parent() || maskWebview; // 再次检测父
+    const oldShow = webview.show;
+    const oldHide = webview.hide;
+    const oldClose = webview.close;
+
+    const showMask = function () {
+      maskWebview.setStyle({
+        mask: maskColor
+      });
+    };
+    const closeMask = function () {
+      maskWebview.setStyle({
+        mask: 'none'
+      });
+    };
+    webview.show = function (...args) {
+      showMask();
+      return oldShow.apply(webview, args)
+    };
+    webview.hide = function (...args) {
+      closeMask();
+      return oldHide.apply(webview, args)
+    };
+    webview.close = function (...args) {
+      closeMask();
+      return oldClose.apply(webview, args)
+    };
+  };
+
+  const getSubNVueById = function getSubNVueById (id) {
+    const webview = plus.webview.getWebviewById(id);
+    if (webview && !webview.$processed) {
+      wrapper(webview);
+    }
+    return webview
+  };
+
+  return {
+    getSubNVueById,
+    getCurrentSubNVue () {
+      return getSubNVueById(plus.webview.currentWebview().id)
+    }
+  }
+}
+
+function initPostMessage (plus) {
+  return {
+    postMessage (data) {
+      plus.postMessage(data, UNIAPP_SERVICE_NVUE_ID);
+    }
+  }
+}
+
+function initTitleNView (nvue) {
+  const eventMaps = {
+    onNavigationBarButtonTap: noop$1,
+    onNavigationBarSearchInputChanged: noop$1,
+    onNavigationBarSearchInputConfirmed: noop$1,
+    onNavigationBarSearchInputClicked: noop$1
+  };
+  nvue.requireModule('globalEvent').addEventListener('plusMessage', e => {
+    if (eventMaps[e.data.type]) {
+      eventMaps[e.data.type](e.data.data);
+    }
+  });
+  const ret = Object.create(null);
+  Object.keys(eventMaps).forEach(eventType => {
+    ret[eventType] = function (callback) {
+      eventMaps[eventType] = callback;
+    };
+  });
+  return ret
+}
+
+const EPS = 1e-4;
+const BASE_DEVICE_WIDTH = 750;
+let isIOS = false;
+let deviceWidth = 0;
+let deviceDPR = 0;
+
+function upx2px (number, newDeviceWidth) {
+  number = Number(number);
+  if (number === 0) {
+    return 0
+  }
+  let result = (number / BASE_DEVICE_WIDTH) * (newDeviceWidth || deviceWidth);
+  if (result < 0) {
+    result = -result;
+  }
+  result = Math.floor(result + EPS);
+  if (result === 0) {
+    if (deviceDPR === 1 || !isIOS) {
+      return 1
+    } else {
+      return 0.5
+    }
+  }
+  return number < 0 ? -result : result
+}
+
+function initUpx2px (nvue) {
+  const env = nvue.config.env;
+
+  deviceDPR = env.scale;
+  deviceWidth = Math.ceil(env.deviceWidth / deviceDPR);
+  isIOS = env.platform === 'iOS';
+}
+
+let getEmitter;
+
+function apply (ctx, method, args) {
+  return ctx[method].apply(ctx, args)
+}
+
+function $on () {
+  return apply(getEmitter(), '$on', [...arguments])
+}
+function $off () {
+  return apply(getEmitter(), '$off', [...arguments])
+}
+function $once () {
+  return apply(getEmitter(), '$once', [...arguments])
+}
+function $emit () {
+  return apply(getEmitter(), '$emit', [...arguments])
+}
+
+function initEventBus (getGlobalEmitter) {
+  getEmitter = getGlobalEmitter;
+}
+
 class MapContext {
   constructor (id, ctx) {
     this.id = id;
@@ -278,6 +419,132 @@ function createMapContext (id, vm) {
   return new MapContext(id, vm.$refs[ref])
 }
 
+class VideoContext {
+  constructor (id, ctx) {
+    this.id = id;
+    this.ctx = ctx;
+  }
+
+  play () {
+    return invokeVmMethodWithoutArgs(this.ctx, 'play')
+  }
+
+  pause () {
+    return invokeVmMethodWithoutArgs(this.ctx, 'pause')
+  }
+
+  seek (args) {
+    return invokeVmMethod(this.ctx, 'seek', args)
+  }
+
+  stop () {
+    return invokeVmMethodWithoutArgs(this.ctx, 'stop')
+  }
+
+  sendDanmu (args) {
+    return invokeVmMethod(this.ctx, 'sendDanmu', args)
+  }
+
+  playbackRate (args) {
+    return invokeVmMethod(this.ctx, 'playbackRate', args)
+  }
+
+  requestFullScreen (args) {
+    return invokeVmMethod(this.ctx, 'requestFullScreen', args)
+  }
+
+  exitFullScreen () {
+    return invokeVmMethodWithoutArgs(this.ctx, 'exitFullScreen')
+  }
+
+  showStatusBar () {
+    return invokeVmMethodWithoutArgs(this.ctx, 'showStatusBar')
+  }
+
+  hideStatusBar () {
+    return invokeVmMethodWithoutArgs(this.ctx, 'hideStatusBar')
+  }
+}
+
+function createVideoContext (id, vm) {
+  const ref = findRefById(id, vm);
+  if (!ref) {
+    global.nativeLog('Can not find `' + id + '`', '__WARN');
+  }
+  return new VideoContext(id, vm.$refs[ref])
+}
+
+class LivePusherContext {
+  constructor (id, ctx) {
+    this.id = id;
+    this.ctx = ctx;
+  }
+
+  start (cbs) {
+    return invokeVmMethodWithoutArgs(this.ctx, 'start', cbs)
+  }
+
+  stop (cbs) {
+    return invokeVmMethodWithoutArgs(this.ctx, 'stop', cbs)
+  }
+
+  pause (cbs) {
+    return invokeVmMethodWithoutArgs(this.ctx, 'pause', cbs)
+  }
+
+  resume (cbs) {
+    return invokeVmMethodWithoutArgs(this.ctx, 'resume', cbs)
+  }
+
+  switchCamera (cbs) {
+    return invokeVmMethodWithoutArgs(this.ctx, 'switchCamera', cbs)
+  }
+
+  snapshot (cbs) {
+    return invokeVmMethodWithoutArgs(this.ctx, 'snapshot', cbs)
+  }
+
+  toggleTorch (cbs) {
+    return invokeVmMethodWithoutArgs(this.ctx, 'toggleTorch', cbs)
+  }
+
+  playBGM (args) {
+    return invokeVmMethod(this.ctx, 'playBGM', args)
+  }
+
+  stopBGM (cbs) {
+    return invokeVmMethodWithoutArgs(this.ctx, 'stopBGM', cbs)
+  }
+
+  pauseBGM (cbs) {
+    return invokeVmMethodWithoutArgs(this.ctx, 'pauseBGM', cbs)
+  }
+
+  resumeBGM (cbs) {
+    return invokeVmMethodWithoutArgs(this.ctx, 'resumeBGM', cbs)
+  }
+
+  setBGMVolume (cbs) {
+    return invokeVmMethod(this.ctx, 'setBGMVolume', cbs)
+  }
+
+  startPreview (cbs) {
+    return invokeVmMethodWithoutArgs(this.ctx, 'startPreview', cbs)
+  }
+
+  stopPreview (args) {
+    return invokeVmMethodWithoutArgs(this.ctx, 'stopPreview', args)
+  }
+}
+
+function createLivePusherContext (id, vm) {
+  const ref = findRefById(id, vm);
+  if (!ref) {
+    global.nativeLog('Can not find `' + id + '`', '__WARN');
+  }
+  return new LivePusherContext(id, vm.$refs[ref])
+}
+
 
 
 var apis = /*#__PURE__*/Object.freeze({
@@ -286,18 +553,31 @@ var apis = /*#__PURE__*/Object.freeze({
   $once: $once,
   $off: $off,
   $emit: $emit,
-  createMapContext: createMapContext
+  createMapContext: createMapContext,
+  createVideoContext: createVideoContext,
+  createLivePusherContext: createLivePusherContext
 });
 
-function initUni (uni, nvue) {
+function initUni (uni, nvue, plus, BroadcastChannel) {
+  const {
+    getSubNVueById,
+    getCurrentSubNVue
+  } = initSubNVue(nvue, plus, BroadcastChannel);
+
+  const scopedApis = Object.assign({
+    getSubNVueById,
+    getCurrentSubNVue,
+    requireNativePlugin: nvue.requireModule
+  }, initTitleNView(nvue), initPostMessage(plus));
+
   if (typeof Proxy !== 'undefined') {
     return new Proxy({}, {
       get (target, name) {
         if (apis[name]) {
           return apis[name]
         }
-        if (name === 'requireNativePlugin') {
-          return nvue.requireModule
+        if (scopedApis[name]) {
+          return scopedApis[name]
         }
         if (!hasOwn(uni, name)) {
           return
@@ -311,6 +591,9 @@ function initUni (uni, nvue) {
   };
   Object.keys(apis).forEach(name => {
     ret[name] = apis[name];
+  });
+  Object.keys(scopedApis).forEach(name => {
+    ret[name] = scopedApis[name];
   });
   Object.keys(uni).forEach(name => {
     ret[name] = promisify(name, uni[name]);
@@ -342,8 +625,8 @@ var index_legacy = {
         initEventBus(getUniEmitter);
       },
       instance: {
-        getUni (nvue) {
-          return initUni(getGlobalUni(), nvue)
+        getUni (nvue, plus, BroadcastChannel) {
+          return initUni(getGlobalUni(), nvue, plus, BroadcastChannel)
         },
         getApp () {
           return getGlobalApp()
