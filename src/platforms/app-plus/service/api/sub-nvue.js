@@ -19,7 +19,8 @@ function wrapper (webview) {
     return
   }
   const maskColor = webview.__uniapp_mask
-  const maskWebview = plus.webview.getWebviewById(webview.__uniapp_mask_id)
+  let maskWebview = plus.webview.getWebviewById(webview.__uniapp_mask_id)
+  maskWebview = maskWebview.parent() || maskWebview// 再次检测父
   const oldShow = webview.show
   const oldHide = webview.hide
   const oldClose = webview.close
