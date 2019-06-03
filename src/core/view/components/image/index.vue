@@ -41,7 +41,7 @@ export default {
       return this.originalWidth && this.originalHeight ? this.originalWidth / this.originalHeight : 0
     },
     realImagePath () {
-      return this.$getRealPath(this.src)
+      return this.src && this.$getRealPath(this.src)
     },
     modeStyle () {
       let size = 'auto'
@@ -128,7 +128,7 @@ export default {
       }
     },
     _loadImage () {
-      this.$refs.content.style.backgroundImage = `url(${this.realImagePath})`
+      this.$refs.content.style.backgroundImage = this.src ? `url(${this.realImagePath})` : 'none'
 
       const _self = this
       const img = new Image()
