@@ -152,6 +152,14 @@ export default {
       }
     })
 
+    Vue.prototype.createSelectorQuery = function createSelectorQuery () {
+      return uni.createSelectorQuery().in(this)
+    }
+
+    Vue.prototype.createIntersectionObserver = function createIntersectionObserver (args) {
+      return uni.createIntersectionObserver(this, args)
+    }
+
     Vue.use(VueRouter)
   }
 
