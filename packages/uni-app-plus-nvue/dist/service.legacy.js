@@ -294,7 +294,8 @@ function initSubNVue (nvue, plus, BroadcastChannel) {
   }
 }
 
-function initPostMessage (plus) {
+function initPostMessage (nvue) {
+  const plus = nvue.requireModule('plus');
   return {
     postMessage (data) {
       plus.postMessage(data, UNIAPP_SERVICE_NVUE_ID);
@@ -568,7 +569,7 @@ function initUni (uni, nvue, plus, BroadcastChannel) {
     getSubNVueById,
     getCurrentSubNVue,
     requireNativePlugin: nvue.requireModule
-  }, initTitleNView(nvue), initPostMessage(plus));
+  }, initTitleNView(nvue), initPostMessage(nvue));
 
   if (typeof Proxy !== 'undefined') {
     return new Proxy({}, {

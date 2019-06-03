@@ -30,7 +30,7 @@ export default function initUni (uni, nvue, plus, BroadcastChannel) {
     getSubNVueById,
     getCurrentSubNVue,
     requireNativePlugin: nvue.requireModule
-  }, initTitleNView(nvue), initPostMessage(plus))
+  }, initTitleNView(nvue), initPostMessage(nvue))
 
   if (typeof Proxy !== 'undefined') {
     return new Proxy({}, {

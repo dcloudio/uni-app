@@ -7,6 +7,8 @@ export function initSubNVue (nvue, plus, BroadcastChannel) {
 
   const onMessageCallbacks = []
 
+  const postMessage = nvue.requireModule('plus').postMessage
+  
   const onSubNVueMessage = function onSubNVueMessage (data) {
     onMessageCallbacks.forEach(callback => callback({
       origin,
@@ -45,7 +47,7 @@ export function initSubNVue (nvue, plus, BroadcastChannel) {
           to: isPopupNVue ? hostNVueId : popupNVueId
         })
       } else {
-        plus.postMessage({
+        postMessage({
           type: 'UniAppSubNVue',
           data: data
         }, UNIAPP_SERVICE_NVUE_ID)
