@@ -126,6 +126,10 @@ export default {
     scaleValue: {
       type: [Number, String],
       default: 1
+    },
+    animation: {
+      type: [Boolean, String],
+      default: true
     }
   },
   data () {
@@ -566,6 +570,10 @@ export default {
       var limitXY = this._getLimitXY(x, y)
       x = limitXY.x
       y = limitXY.y
+      if (!this.animation) {
+        this._setTransform(x, y, scale, source, r, o)
+        return
+      }
       this._STD._springX._solution = null
       this._STD._springY._solution = null
       this._STD._springScale._solution = null
