@@ -6,6 +6,12 @@ const SUCCESS = 'success'
 const FAIL = 'fail'
 const COMPLETE = 'complete'
 const CALLBACKS = [SUCCESS, FAIL, COMPLETE]
+
+export const UNIAPP_SERVICE_NVUE_ID = '__uniapp__service'
+
+export function noop () {
+
+}
 /**
  * 调用无参数，或仅一个参数且为 callback 的 API
  * @param {Object} vm
