@@ -1,6 +1,9 @@
 import {
+  hasOwn
+} from 'uni-shared'
+
+import {
   isPage,
-  isIOS,
   initRelation
 } from './util'
 
@@ -20,9 +23,10 @@ export default function parseComponent (vueOptions) {
       // 百度 当组件作为页面时 pageinstancce 不是原来组件的 instance
       this.pageinstance.$vm = this.$vm
 
-      if (!isIOS) {
-        this.$vm.$mp.query = this.pageinstance._$args // 兼容 mpvue
+      if (hasOwn(this.pageinstance, '_$args')) {
+        this.$vm.$mp.query = this.pageinstance._$args
         this.$vm.__call_hook('onLoad', this.pageinstance._$args)
+        delete this.pageinstance._$args
       }
       // TODO  目前版本 百度 Component 作为页面时，methods 中的 onShow 不触发
       this.$vm.__call_hook('onShow')
