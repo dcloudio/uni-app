@@ -22,7 +22,7 @@ export default function parseBasePage (vuePageOptions, {
     initRelation
   })
 
-  initHooks(pageOptions.methods, hooks)
+  initHooks(pageOptions.methods, hooks, vuePageOptions)
 
   pageOptions.methods.onLoad = function (args) {
     this.$vm.$mp.query = args // 兼容 mpvue
