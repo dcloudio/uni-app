@@ -383,7 +383,14 @@ export default {
       return btns
     }
   },
+  watch: {
+    titleText (newVal, oldVal) {
+      document.title = newVal
+    }
+  },
   mounted () {
+    document.title = this.titleText
+
     if (this.searchInput) {
       const input = this.$refs.input
       input.$watch('composing', val => {
