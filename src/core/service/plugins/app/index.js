@@ -31,10 +31,13 @@ export function createAppMixin (routes, entryRoute) {
     },
     mounted: function appMounted () {
       // 稍微靠后点，让 App 有机会在 mounted 事件前注册一些全局事件监听，如 UI 显示(showModal)
-      callAppHook(this, 'onLaunch', {
+      const args = {
+        path: this.$route.meta && this.$route.meta.pagePath,
+        query: this.$route.query,
         scene: 1001
-      })
-      callAppHook(this, 'onShow', {})
+      }
+      callAppHook(this, 'onLaunch', args)
+      callAppHook(this, 'onShow', args)
     }
   }
 }
