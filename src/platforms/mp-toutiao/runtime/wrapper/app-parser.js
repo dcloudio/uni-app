@@ -13,6 +13,14 @@ export default function parseApp (vm) {
   Vue.mixin({
     created () { // 处理 injections,头条 triggerEvent 是异步，且触发时机很慢，故延迟 relation 设置
       if (this.mpType !== 'app') {
+        if (
+          this.mpType === 'page' &&
+                    !this.$scope.route &&
+                    this.$scope.__route__
+        ) {
+          this.$scope.route = this.$scope.__route__
+        }
+
         initRefs(this)
 
         this.__init_injections(this)
