@@ -287,7 +287,7 @@ export default {
 
 	uni-input input {
 		position: relative;
-		min-height: 1.4rem;
+		min-height: inherit;
 		border: none;
 		height: inherit;
 		width: 100%;
@@ -316,7 +316,7 @@ export default {
 
 	uni-input div {
 		position: relative;
-		min-height: 1.4rem;
+		min-height: inherit;
 		text-overflow: inherit;
 		border: none;
 		height: inherit;
@@ -344,7 +344,7 @@ export default {
 		width: 100%;
 		height: inherit;
 		line-height: 100%;
-		min-height: 1.4rem;
+		min-height: inherit;
 		white-space: pre;
 		text-align: inherit;
 		overflow: hidden;
