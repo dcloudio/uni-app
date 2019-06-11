@@ -86,7 +86,7 @@ export default {
           break
         case 'navigateBack':
           uni.navigateBack({
-            url: this.delta
+            delta: this.delta
           })
           break
         default:
