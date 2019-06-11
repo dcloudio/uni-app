@@ -34,6 +34,9 @@ function onAppRoute (type, {
         }
       }
       if (canBack) {
+        if (delta > 1) {
+          router._$delta = delta
+        }
         router.go(-delta)
       }
       break
