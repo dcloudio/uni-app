@@ -627,6 +627,8 @@ export default {
       scale = +scale.toFixed(3)
       if (o && scale !== this._scale) {
         this.$trigger('scale', {}, {
+          x: x,
+          y: y,
           scale: scale
         })
       }
