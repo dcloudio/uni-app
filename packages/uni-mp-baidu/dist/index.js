@@ -541,7 +541,15 @@ function hasHook (hook, vueOptions) {
   vueOptions = vueOptions.default || vueOptions;
 
   if (isFn(vueOptions)) {
-    vueOptions = vueOptions.extendOptions;
+    if (isFn(vueOptions.extendOptions[hook])) {
+      return true
+    }
+    if (vueOptions.super &&
+            vueOptions.super.options &&
+            Array.isArray(vueOptions.super.options[hook])) {
+      return true
+    }
+    return false
   }
 
   if (isFn(vueOptions[hook])) {

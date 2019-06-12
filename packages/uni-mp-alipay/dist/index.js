@@ -760,7 +760,15 @@ function hasHook (hook, vueOptions) {
   vueOptions = vueOptions.default || vueOptions;
 
   if (isFn(vueOptions)) {
-    vueOptions = vueOptions.extendOptions;
+    if (isFn(vueOptions.extendOptions[hook])) {
+      return true
+    }
+    if (vueOptions.super &&
+            vueOptions.super.options &&
+            Array.isArray(vueOptions.super.options[hook])) {
+      return true
+    }
+    return false
   }
 
   if (isFn(vueOptions[hook])) {
@@ -1216,6 +1224,9 @@ function parseBaseApp (vm, {
 
   const appOptions = {
     onLaunch (args) {
+      if (this.$vm) { // 已经初始化过了，主要是为了百度，百度 onShow 在 onLaunch 之前
+        return
+      }
 
       this.$vm = vm;
 

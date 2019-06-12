@@ -443,7 +443,15 @@ function hasHook (hook, vueOptions) {
   vueOptions = vueOptions.default || vueOptions;
 
   if (isFn(vueOptions)) {
-    vueOptions = vueOptions.extendOptions;
+    if (isFn(vueOptions.extendOptions[hook])) {
+      return true
+    }
+    if (vueOptions.super &&
+            vueOptions.super.options &&
+            Array.isArray(vueOptions.super.options[hook])) {
+      return true
+    }
+    return false
   }
 
   if (isFn(vueOptions[hook])) {
@@ -909,6 +917,9 @@ function parseBaseApp (vm, {
 
   const appOptions = {
     onLaunch (args) {
+      if (this.$vm) { // 已经初始化过了，主要是为了百度，百度 onShow 在 onLaunch 之前
+        return
+      }
       {
         if (!wx.canIUse('nextTick')) { // 事实 上2.2.3 即可，简单使用 2.3.0 的 nextTick 判断
           console.error('当前微信基础库版本过低，请将 微信开发者工具-详情-项目设置-调试基础库版本 更换为`2.3.0`以上');
