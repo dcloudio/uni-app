@@ -1577,7 +1577,7 @@ function parsePage (vuePageOptions) {
     __l: handleLink$1
   };
 
-  initHooks(pageOptions, hooks$1);
+  initHooks(pageOptions, hooks$1, vuePageOptions);
 
   return pageOptions
 }
