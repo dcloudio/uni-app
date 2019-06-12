@@ -70,7 +70,7 @@ export default function parsePage (vuePageOptions) {
     __l: handleLink
   }
 
-  initHooks(pageOptions, hooks)
+  initHooks(pageOptions, hooks, vuePageOptions)
 
   return pageOptions
 }

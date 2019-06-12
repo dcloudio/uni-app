@@ -1,7 +1,7 @@
 {
-	"name": "@dcloudio/uni-mp-alipay",
-	"version": "0.0.816",
-	"description": "uni-app mp-alipay",
+	"name": "@dcloudio/uni-mp-qq",
+	"version": "0.0.100",
+	"description": "uni-app mp-qq",
 	"main": "dist/index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"

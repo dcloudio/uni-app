@@ -115,7 +115,7 @@ function checkDeviceWidth () {
     platform,
     pixelRatio,
     windowWidth
-  } = my.getSystemInfoSync(); // uni=>my runtime 编译目标是 uni 对象，内部不允许直接使用 uni
+  } = wx.getSystemInfoSync(); // uni=>wx runtime 编译目标是 uni 对象，内部不允许直接使用 uni
 
   deviceWidth = windowWidth;
   deviceDPR = pixelRatio;
@@ -146,375 +146,112 @@ function upx2px (number, newDeviceWidth) {
   return number < 0 ? -result : result
 }
 
-// 不支持的 API 列表
-const todos = [
-  'saveImageToPhotosAlbum',
-  'getRecorderManager',
-  'getBackgroundAudioManager',
-  'createInnerAudioContext',
-  'chooseVideo',
-  'saveVideoToPhotosAlbum',
-  'createVideoContext',
-  'createCameraContext',
-  'createLivePlayerContext',
-  'openDocument',
-  'onMemoryWarning',
-  'startAccelerometer',
-  'startCompass',
-  'addPhoneContact',
-  'setBackgroundColor',
-  'setBackgroundTextStyle',
-  'createIntersectionObserver',
-  'authorize',
-  'openSetting',
-  'getSetting',
-  'chooseAddress',
-  'chooseInvoiceTitle',
-  'addTemplate',
-  'deleteTemplate',
-  'getTemplateLibraryById',
-  'getTemplateLibraryList',
-  'getTemplateList',
-  'sendTemplateMessage',
-  'getUpdateManager',
-  'setEnableDebug',
-  'getExtConfig',
-  'getExtConfigSync',
-  'onWindowResize',
-  'offWindowResize'
-];
-
-// 存在兼容性的 API 列表
-const canIUses = [
-  'startPullDownRefresh',
-  'setTabBarItem',
-  'setTabBarStyle',
-  'hideTabBar',
-  'showTabBar',
-  'setTabBarBadge',
-  'removeTabBarBadge',
-  'showTabBarRedDot',
-  'hideTabBarRedDot'
-];
-
-function _handleNetworkInfo (result) {
-  switch (result.networkType) {
-    case 'NOTREACHABLE':
-      result.networkType = 'none';
-      break
-    case 'WWAN':
-      // TODO ?
-      result.networkType = '3g';
-      break
-    default:
-      result.networkType = result.networkType.toLowerCase();
-      break
-  }
-  return {}
-}
-
-function _handleSystemInfo (result) {
-  let platform = result.platform ? result.platform.toLowerCase() : 'devtools';
-  if (!~['android', 'ios'].indexOf(platform)) {
-    platform = 'devtools';
-  }
-  result.platform = platform;
-}
-
-const protocols = { // 需要做转换的 API 列表
-  returnValue (methodName, res = {}) { // 通用 returnValue 解析
-    if (res.error || res.errorMessage) {
-      res.errMsg = `${methodName}:fail ${res.errorMessage || res.error}`;
-      delete res.error;
-      delete res.errorMessage;
+var previewImage = {
+  args (fromArgs) {
+    let currentIndex = parseInt(fromArgs.current);
+    if (isNaN(currentIndex)) {
+      return
+    }
+    const urls = fromArgs.urls;
+    if (!Array.isArray(urls)) {
+      return
+    }
+    const len = urls.length;
+    if (!len) {
+      return
+    }
+    if (currentIndex < 0) {
+      currentIndex = 0;
+    } else if (currentIndex >= len) {
+      currentIndex = len - 1;
+    }
+    if (currentIndex > 0) {
+      fromArgs.current = urls[currentIndex];
+      fromArgs.urls = urls.filter(
+        (item, index) => index < currentIndex ? item !== urls[currentIndex] : true
+      );
     } else {
-      res.errMsg = `${methodName}:ok`;
-    }
-    return res
-  },
-  request: {
-    name: my.canIUse('request') ? 'request' : 'httpRequest',
-    args (fromArgs) {
-      if (!fromArgs.header) { // 默认增加 header 参数，方便格式化 content-type
-        fromArgs.header = {};
-      }
-      return {
-        header (header = {}, toArgs) {
-          const headers = {
-            'content-type': 'application/json'
-          };
-          Object.keys(header).forEach(key => {
-            headers[key.toLocaleLowerCase()] = header[key];
-          });
-          return {
-            name: 'headers',
-            value: headers
-          }
-        },
-        method: 'method', // TODO 支付宝小程序仅支持 get,post
-        responseType: false
-      }
-    },
-    returnValue: {
-      status: 'statusCode',
-      headers: 'header'
-    }
-  },
-  setNavigationBarColor: {
-    name: 'setNavigationBar',
-    args: {
-      frontColor: false,
-      animation: false
-    }
-  },
-  setNavigationBarTitle: {
-    name: 'setNavigationBar'
-  },
-  showModal ({
-    showCancel = true
-  } = {}) {
-    if (showCancel) {
-      return {
-        name: 'confirm',
-        args: {
-          cancelColor: false,
-          confirmColor: false,
-          cancelText: 'cancelButtonText',
-          confirmText: 'confirmButtonText'
-        },
-        returnValue (fromRes, toRes) {
-          toRes.confirm = fromRes.confirm;
-          toRes.cancel = !fromRes.confirm;
-        }
-      }
+      fromArgs.current = urls[0];
     }
     return {
-      name: 'alert',
-      args: {
-        confirmColor: false,
-        confirmText: 'buttonText'
-      },
-      returnValue (fromRes, toRes) {
-        toRes.confirm = true;
-        toRes.cancel = false;
-      }
-    }
-  },
-  showToast ({
-    icon = 'success'
-  } = {}) {
-    const args = {
-      title: 'content',
-      icon: 'type',
-      duration: false,
-      image: false,
-      mask: false
-    };
-    if (icon === 'loading') {
-      return {
-        name: 'showLoading',
-        args
-      }
-    }
-    return {
-      name: 'showToast',
-      args
-    }
-  },
-  showActionSheet: {
-    name: 'showActionSheet',
-    args: {
-      itemList: 'items',
-      itemColor: false
-    },
-    returnValue: {
-      index: 'tapIndex'
-    }
-  },
-  showLoading: {
-    args: {
-      title: 'content',
-      mask: false
-    }
-  },
-  uploadFile: {
-    args: {
-      name: 'fileName'
-    }
-    // 从测试结果看，是有返回对象的，文档上没有说明。
-  },
-  downloadFile: {
-    returnValue: {
-      apFilePath: 'tempFilePath'
-    }
-  },
-  connectSocket: {
-    args: {
-      method: false,
-      protocols: false
-    }
-    // TODO 有没有返回值还需要测试下
-  },
-  chooseImage: {
-    returnValue: {
-      apFilePaths: 'tempFilePaths'
-    }
-  },
-  previewImage: {
-    args (fromArgs) {
-      // 支付宝小程序的 current 是索引值，而非图片地址。
-      const currentIndex = Number(fromArgs.current);
-      if (isNaN(currentIndex)) {
-        if (fromArgs.current && Array.isArray(fromArgs.urls)) {
-          const index = fromArgs.urls.indexOf(fromArgs.current);
-          fromArgs.current = ~index ? index : 0;
-        }
-      } else {
-        fromArgs.current = currentIndex;
-      }
-      return {
-        indicator: false,
-        loop: false
-      }
-    }
-  },
-  saveFile: {
-    args: {
-      tempFilePath: 'apFilePath'
-    },
-    returnValue: {
-      apFilePath: 'savedFilePath'
-    }
-  },
-  getSavedFileInfo: {
-    args: {
-      filePath: 'apFilePath'
-    },
-    returnValue (result) {
-      if (result.fileList && result.fileList.length) {
-        result.fileList.forEach(file => {
-          file.filePath = file.apFilePath;
-          delete file.apFilePath;
-        });
-      }
-      return {}
-    }
-  },
-  removeSavedFile: {
-    args: {
-      filePath: 'apFilePath'
-    }
-  },
-  getLocation: {
-    args: {
-      type: false,
-      altitude: false
-    }
-  },
-  openLocation: {
-    args: {
-      // TODO address 参数在阿里上是必传的
-    }
-  },
-  getNetworkType: {
-    returnValue: _handleNetworkInfo
-  },
-  onNetworkStatusChange: {
-    returnValue: _handleNetworkInfo
-  },
-  stopAccelerometer: {
-    name: 'offAccelerometerChange'
-  },
-  stopCompass: {
-    name: 'offCompassChange'
-  },
-  scanCode: {
-    name: 'scan',
-    args: {
-      onlyFromCamera: 'hideAlbum',
-      scanType: false
-    },
-    returnValue: {
-      code: 'result'
-    }
-  },
-  setClipboardData: {
-    name: 'setClipboard',
-    args: {
-      data: 'text'
-    }
-  },
-  getClipboardData: {
-    name: 'getClipboard',
-    returnValue: {
-      text: 'data'
-    }
-  },
-  pageScrollTo: {
-    args: {
-      duration: false
-    }
-  },
-  login: {
-    name: 'getAuthCode',
-    returnValue (result) {
-      result.code = result.authCode;
-    }
-  },
-  getUserInfo: {
-    name: 'getAuthUserInfo',
-    returnValue (result) {
-      result.userInfo = {
-        nickName: result.nickName,
-        avatarUrl: result.avatar
-      };
-    }
-  },
-  requestPayment: {
-    name: 'tradePay',
-    args: {
-      orderInfo: 'tradeNO'
-    }
-  },
-  getBLEDeviceServices: {
-    returnValue (result) {
-      result.services.forEach((item) => {
-        item.uuid = item.serviceId;
-      });
-    }
-  },
-  makePhoneCall: {
-    args: {
-      phoneNumber: 'number'
-    }
-  },
-  stopGyroscope: {
-    name: 'offGyroscopeChange'
-  },
-  getSystemInfo: {
-    returnValue: _handleSystemInfo
-  },
-  getSystemInfoSync: {
-    returnValue: _handleSystemInfo
-  },
-  // 文档没提到，但是实测可用。
-  canvasToTempFilePath: {
-    returnValue (result) {
-      // 真机的情况下会有 tempFilePath 这个值，因此需要主动修改。
-      result.tempFilePath = result.apFilePath;
-    }
-  },
-  setScreenBrightness: {
-    args: {
-      value: 'brightness'
-    }
-  },
-  getScreenBrightness: {
-    returnValue: {
-      brightness: 'value'
+      indicator: false,
+      loop: false
     }
   }
 };
+
+const protocols = {
+  previewImage
+};
+const todos = [
+  'connectSocket',
+  'onSocketOpen',
+  'onSocketError',
+  'sendSocketMessage',
+  'onSocketMessage',
+  'closeSocket',
+  'onSocketClose',
+  'createLivePlayerContext',
+  'createLivePusherContext',
+  'loadFontFace',
+  'openDocument',
+  'canIUse',
+  'onMemoryWarning',
+  'onNetworkStatusChange',
+  'onAccelerometerChange',
+  'startAccelerometer',
+  'stopAccelerometer',
+  'onCompassChange',
+  'startCompass',
+  'scanCode',
+  'startBeaconDiscovery',
+  'stopBeaconDiscovery',
+  'getBeacons',
+  'onBeaconUpdate',
+  'onBeaconServiceChange',
+  'setScreenBrightness',
+  'getScreenBrightness',
+  'setKeepScreenOn',
+  'onUserCaptureScreen',
+  'vibrateLong',
+  'vibrateShort',
+  'addPhoneContact',
+  'getHCEState',
+  'startHCE',
+  'stopHCE',
+  'onHCEMessage',
+  'sendHCEMessage',
+  'startWifi',
+  'stopWifi',
+  'connectWifi',
+  'getWifiList',
+  'onGetWifiList',
+  'setWifiList',
+  'onWifiConnected',
+  'getConnectedWifi',
+  'setNavigationBarColor',
+  'setTopBarText',
+  'getExtConfig',
+  'getExtConfigSync',
+  'getPhoneNumber',
+  'updateShareMenu',
+  'getShareInfo',
+  'chooseAddress',
+  'addCard',
+  'openCard',
+  'getWeRunData',
+  'launchApp',
+  'chooseInvoiceTitle',
+  'checkIsSupportSoterAuthentication',
+  'startSoterAuthentication',
+  'checkIsSoterEnrolledInDevice',
+  'createWorker',
+  'reportMonitor',
+  'getLogManager',
+  'onUserCaptureScreen',
+  'reportAnalytics'
+];
+const canIUses = [];
 
 const CALLBACKS = ['success', 'fail', 'cancel', 'complete'];
 
@@ -537,7 +274,7 @@ function processArgs (methodName, fromArgs, argsOption = {}, returnValue = {}, k
           keyOption = keyOption(fromArgs[key], fromArgs, toArgs);
         }
         if (!keyOption) { // 不支持的参数
-          console.warn(`支付宝小程序 ${methodName}暂不支持${key}`);
+          console.warn(`QQ小程序 ${methodName}暂不支持${key}`);
         } else if (isStr(keyOption)) { // 重写参数 key
           toArgs[keyOption] = fromArgs[key];
         } else if (isPlainObject(keyOption)) { // {name:newName,value:value}可重新指定参数 key:value
@@ -570,7 +307,7 @@ function wrapper (methodName, method) {
     const protocol = protocols[methodName];
     if (!protocol) { // 暂不支持的 api
       return function () {
-        console.error(`支付宝小程序 暂不支持${methodName}`);
+        console.error(`QQ小程序 暂不支持${methodName}`);
       }
     }
     return function (arg1, arg2) { // 目前 api 最多两个参数
@@ -585,7 +322,7 @@ function wrapper (methodName, method) {
       if (typeof arg2 !== 'undefined') {
         args.push(arg2);
       }
-      const returnValue = my[options.name || methodName].apply(my, args);
+      const returnValue = wx[options.name || methodName].apply(wx, args);
       if (isSyncApi(methodName)) { // 同步 api
         return processReturnValue(methodName, returnValue, options.returnValue, isContextApi(methodName))
       }
@@ -623,10 +360,10 @@ TODOS.forEach(function (name) {
 });
 
 var providers = {
-  oauth: ['alipay'],
-  share: ['alipay'],
-  payment: ['alipay'],
-  push: ['alipay']
+  oauth: ['qq'],
+  share: ['qq'],
+  payment: ['qqpay'],
+  push: ['qq']
 };
 
 function getProvider ({
@@ -696,43 +433,51 @@ var eventApi = /*#__PURE__*/Object.freeze({
   $emit: $emit
 });
 
-function setStorageSync (key, data) {
-  return my.setStorageSync({
-    key,
-    data
-  })
-}
-function getStorageSync (key) {
-  const result = my.getStorageSync({
-    key
-  });
-  // 支付宝平台会返回一个 success 值，但是目前测试的结果这个始终是 true。当没有存储数据的时候，其它平台会返回空字符串。
-  return result.data !== null ? result.data : ''
-}
-function removeStorageSync (key) {
-  return my.removeStorageSync({
-    key
-  })
-}
 
-function startGyroscope (params) {
-  if (hasOwn(params, 'interval')) {
-    console.warn('支付宝小程序 startGyroscope暂不支持interval');
-  }
-  params.success && params.success({
-    errMsg: 'startGyroscope:ok'
-  });
-  params.complete && params.complete({
-    errMsg: 'startGyroscope:ok'
-  });
-}
 
 var api = /*#__PURE__*/Object.freeze({
-  setStorageSync: setStorageSync,
-  getStorageSync: getStorageSync,
-  removeStorageSync: removeStorageSync,
-  startGyroscope: startGyroscope
+
 });
+
+const MPPage = Page;
+const MPComponent = Component;
+
+const customizeRE = /:/g;
+
+const customize = cached((str) => {
+  return camelize(str.replace(customizeRE, '-'))
+});
+
+function initTriggerEvent (mpInstance) {
+  const oldTriggerEvent = mpInstance.triggerEvent;
+  mpInstance.triggerEvent = function (event, ...args) {
+    return oldTriggerEvent.apply(mpInstance, [customize(event), ...args])
+  };
+}
+
+function initHook (name, options) {
+  const oldHook = options[name];
+  if (!oldHook) {
+    options[name] = function () {
+      initTriggerEvent(this);
+    };
+  } else {
+    options[name] = function (...args) {
+      initTriggerEvent(this);
+      return oldHook.apply(this, args)
+    };
+  }
+}
+
+Page = function (options = {}) {
+  initHook('onLoad', options);
+  return MPPage(options)
+};
+
+Component = function (options = {}) {
+  initHook('created', options);
+  return MPComponent(options)
+};
 
 const PAGE_EVENT_HOOKS = [
   'onPullDownRefresh',
@@ -792,6 +537,16 @@ function initVueComponent (Vue$$1, vueOptions) {
     VueComponent = Vue$$1.extend(vueOptions);
   }
   return [VueComponent, vueOptions]
+}
+
+function initSlots (vm, vueSlots) {
+  if (Array.isArray(vueSlots) && vueSlots.length) {
+    const $slots = Object.create(null);
+    vueSlots.forEach(slotName => {
+      $slots[slotName] = true;
+    });
+    vm.$scopedSlots = vm.$slots = $slots;
+  }
 }
 
 function initVueIds (vueIds, mpInstance) {
@@ -862,7 +617,7 @@ function initBehaviors (vueOptions, initBehavior) {
   const behaviors = [];
   if (Array.isArray(vueBehaviors)) {
     vueBehaviors.forEach(behavior => {
-      behaviors.push(behavior.replace('uni://', `${"my"}://`));
+      behaviors.push(behavior.replace('uni://', `${"wx"}://`));
       if (behavior === 'uni://form-field') {
         if (Array.isArray(vueProps)) {
           vueProps.push('name');
@@ -1187,7 +942,7 @@ function parseBaseApp (vm, {
   mocks,
   initRefs
 }) {
-  Vue.prototype.mpHost = "mp-alipay";
+  Vue.prototype.mpHost = "mp-qq";
 
   Vue.mixin({
     beforeCreate () {
@@ -1240,6 +995,8 @@ function parseBaseApp (vm, {
   return appOptions
 }
 
+const mocks = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__'];
+
 function findVmByVueId (vm, vuePid) {
   const $children = vm.$children;
   // 优先查找直属
@@ -1254,6 +1011,41 @@ function findVmByVueId (vm, vuePid) {
       return parentVm
     }
   }
+}
+
+function initBehavior (options) {
+  return Behavior(options)
+}
+
+function isPage () {
+  return !!this.route
+}
+
+function initRelation (detail) {
+  this.triggerEvent('__l', detail);
+}
+
+function initRefs (vm) {
+  const mpInstance = vm.$scope;
+  Object.defineProperty(vm, '$refs', {
+    get () {
+      const $refs = {};
+      const components = mpInstance.selectAllComponents('.vue-ref');
+      components.forEach(component => {
+        const ref = component.dataset.ref;
+        $refs[ref] = component.$vm || component;
+      });
+      const forComponents = mpInstance.selectAllComponents('.vue-ref-in-for');
+      forComponents.forEach(component => {
+        const ref = component.dataset.ref;
+        if (!$refs[ref]) {
+          $refs[ref] = [];
+        }
+        $refs[ref].push(component.$vm || component);
+      });
+      return $refs
+    }
+  });
 }
 
 function handleLink (event) {
@@ -1275,426 +1067,157 @@ function handleLink (event) {
   vueOptions.parent = parentVm;
 }
 
-const isArray = Array.isArray;
-const keyList = Object.keys;
-
-function equal (a, b) {
-  if (a === b) return true
-
-  if (a && b && typeof a === 'object' && typeof b === 'object') {
-    const arrA = isArray(a);
-    const arrB = isArray(b);
-    let i, length, key;
-    if (arrA && arrB) {
-      length = a.length;
-      if (length !== b.length) return false
-      for (i = length; i-- !== 0;) {
-        if (!equal(a[i], b[i])) return false
-      }
-      return true
-    }
-    if (arrA !== arrB) return false
-
-    const dateA = a instanceof Date;
-    const dateB = b instanceof Date;
-    if (dateA !== dateB) return false
-    if (dateA && dateB) return a.getTime() === b.getTime()
-
-    const regexpA = a instanceof RegExp;
-    const regexpB = b instanceof RegExp;
-    if (regexpA !== regexpB) return false
-    if (regexpA && regexpB) return a.toString() === b.toString()
-
-    const keys = keyList(a);
-    length = keys.length;
-    if (length !== keyList(b).length) {
-      return false
-    }
-    for (i = length; i-- !== 0;) {
-      if (!hasOwn.call(b, keys[i])) return false
-    }
-    for (i = length; i-- !== 0;) {
-      key = keys[i];
-      if (!equal(a[key], b[key])) return false
-    }
-
-    return true
-  }
-
-  return false
-}
-
-const customizeRE = /:/g;
-
-const customize = cached((str) => {
-  return camelize(str.replace(customizeRE, '-'))
-});
-
-const isComponent2 = my.canIUse('component2');
-
-const mocks$1 = ['$id'];
-
-function initRefs$1 () {
-
-}
-
-function initBehavior$1 ({
-  properties
-}) {
-  const props = {};
-
-  Object.keys(properties).forEach(key => {
-    props[key] = properties[key].value;
-  });
-
-  return {
-    props
-  }
-}
-
-function initRelation$1 (detail) {
-  this.props.onVueInit(detail);
-}
-
-function initSpecialMethods (mpInstance) {
-  if (!mpInstance.$vm) {
-    return
-  }
-  let path = mpInstance.is || mpInstance.route;
-  if (!path) {
-    return
-  }
-  if (path.indexOf('/') === 0) {
-    path = path.substr(1);
-  }
-  const specialMethods = my.specialMethods && my.specialMethods[path];
-  if (specialMethods) {
-    specialMethods.forEach(method => {
-      if (isFn(mpInstance.$vm[method])) {
-        mpInstance[method] = function (event) {
-          // TODO normalizeEvent
-          mpInstance.$vm[method](event);
-        };
-      }
-    });
-  }
-}
-
-function initChildVues (mpInstance) {
-  // 此时需保证当前 mpInstance 已经存在 $vm
-  if (!mpInstance.$vm) {
-    return
-  }
-  mpInstance._$childVues && mpInstance._$childVues.forEach(({
-    vuePid,
-    vueOptions,
-    VueComponent,
-    mpInstance: childMPInstance
-  }) => {
-    // 父子关系
-    handleLink.call(mpInstance, {
-      detail: {
-        vuePid,
-        vueOptions
-      }
-    });
-
-    childMPInstance.$vm = new VueComponent(vueOptions);
-
-    initSpecialMethods(childMPInstance);
-
-    handleRef.call(vueOptions.parent.$scope, childMPInstance);
-
-    childMPInstance.$vm.$mount();
-
-    initChildVues(childMPInstance);
-
-    childMPInstance.$vm._isMounted = true;
-    childMPInstance.$vm.__call_hook('mounted');
-    childMPInstance.$vm.__call_hook('onReady');
-  });
-
-  delete mpInstance._$childVues;
-}
-
-function handleRef (ref) {
-  if (!ref) {
-    return
-  }
-  const refName = ref.props['data-ref'];
-  const refInForName = ref.props['data-ref-in-for'];
-  if (refName) {
-    this.$vm.$refs[refName] = ref.$vm || ref;
-  } else if (refInForName) {
-    this.$vm.$refs[refInForName] = [ref.$vm || ref];
-  }
-}
-
-function triggerEvent (type, detail, options) {
-  const handler = this.props[customize('on-' + type)];
-  if (!handler) {
-    return
-  }
-
-  const eventOpts = this.props['data-event-opts'];
-
-  const target = {
-    dataset: {
-      eventOpts
-    }
-  };
-
-  handler({
-    type: customize(type),
-    target,
-    currentTarget: target,
-    detail
-  });
-}
-
-const IGNORES = ['$slots', '$scopedSlots'];
-
-function createObserver$1 (isDidUpdate) {
-  return function observe (props) {
-    const prevProps = isDidUpdate ? props : this.props;
-    const nextProps = isDidUpdate ? this.props : props;
-    if (equal(prevProps, nextProps)) {
-      return
-    }
-    Object.keys(prevProps).forEach(name => {
-      if (IGNORES.indexOf(name) === -1) {
-        const prevValue = prevProps[name];
-        const nextValue = nextProps[name];
-        if (!isFn(prevValue) && !isFn(nextValue) && !equal(prevValue, nextValue)) {
-          this.$vm[name] = nextProps[name];
-        }
-      }
-    });
-  }
-}
-
-const handleLink$1 = (function () {
-  if (isComponent2) {
-    return function handleLink$$1 (detail) {
-      return handleLink.call(this, {
-        detail
-      })
-    }
-  }
-  return function handleLink$$1 (detail) {
-    if (this.$vm && this.$vm._isMounted) { // 父已初始化
-      return handleLink.call(this, {
-        detail: {
-          vuePid: detail.vuePid,
-          vueOptions: detail.vueOptions
-        }
-      })
-    }
-    // 支付宝通过 didMount 来实现，先子后父，故等父 ready 之后，统一初始化
-    (this._$childVues || (this._$childVues = [])).unshift(detail);
-  }
-})();
-
 function parseApp (vm) {
-  Object.defineProperty(Vue.prototype, '$slots', {
-    get () {
-      return this.$scope && this.$scope.props.$slots
-    },
-    set () {
-
-    }
-  });
-  Object.defineProperty(Vue.prototype, '$scopedSlots', {
-    get () {
-      return this.$scope && this.$scope.props.$scopedSlots
-    },
-    set () {
-
-    }
-  });
-
   return parseBaseApp(vm, {
-    mocks: mocks$1,
-    initRefs: initRefs$1
+    mocks,
+    initRefs
   })
 }
 
+function parseApp$1 (vm) {
+  return parseApp(vm)
+}
+
 function createApp (vm) {
-  App(parseApp(vm));
+  App(parseApp$1(vm));
   return vm
+}
+
+function parseBaseComponent (vueComponentOptions, {
+  isPage: isPage$$1,
+  initRelation: initRelation$$1
+} = {}) {
+  let [VueComponent, vueOptions] = initVueComponent(Vue, vueComponentOptions);
+
+  const componentOptions = {
+    options: {
+      multipleSlots: true,
+      addGlobalClass: true
+    },
+    data: initData(vueOptions, Vue.prototype),
+    behaviors: initBehaviors(vueOptions, initBehavior),
+    properties: initProperties(vueOptions.props, false, vueOptions.__file),
+    lifetimes: {
+      attached () {
+        const properties = this.properties;
+
+        const options = {
+          mpType: isPage$$1.call(this) ? 'page' : 'component',
+          mpInstance: this,
+          propsData: properties
+        };
+
+        initVueIds(properties.vueId, this);
+
+        // 处理父子关系
+        initRelation$$1.call(this, {
+          vuePid: this._$vuePid,
+          vueOptions: options
+        });
+
+        // 初始化 vue 实例
+        this.$vm = new VueComponent(options);
+
+        // 处理$slots,$scopedSlots（暂不支持动态变化$slots）
+        initSlots(this.$vm, properties.vueSlots);
+
+        // 触发首次 setData
+        this.$vm.$mount();
+      },
+      ready () {
+        // 当组件 props 默认值为 true，初始化时传入 false 会导致 created,ready 触发, 但 attached 不触发
+        // https://developers.weixin.qq.com/community/develop/doc/00066ae2844cc0f8eb883e2a557800
+        if (this.$vm) {
+          this.$vm._isMounted = true;
+          this.$vm.__call_hook('mounted');
+          this.$vm.__call_hook('onReady');
+        }
+      },
+      detached () {
+        this.$vm.$destroy();
+      }
+    },
+    pageLifetimes: {
+      show (args) {
+        this.$vm && this.$vm.__call_hook('onPageShow', args);
+      },
+      hide () {
+        this.$vm && this.$vm.__call_hook('onPageHide');
+      },
+      resize (size) {
+        this.$vm && this.$vm.__call_hook('onPageResize', size);
+      }
+    },
+    methods: {
+      __l: handleLink,
+      __e: handleEvent
+    }
+  };
+
+  if (isPage$$1) {
+    return componentOptions
+  }
+  return [componentOptions, VueComponent]
+}
+
+function parseComponent (vueComponentOptions) {
+  return parseBaseComponent(vueComponentOptions, {
+    isPage,
+    initRelation
+  })
+}
+
+function parseComponent$1 (vueComponentOptions) {
+  return parseComponent(vueComponentOptions)
 }
 
 const hooks$1 = [
   'onShow',
   'onHide',
-  // mp-alipay 特有
-  'onTitleClick',
-  'onOptionMenuClick',
-  'onPopMenuClick',
-  'onPullIntercept'
+  'onUnload'
 ];
 
 hooks$1.push(...PAGE_EVENT_HOOKS);
 
-function parsePage (vuePageOptions) {
-  let [VueComponent, vueOptions] = initVueComponent(Vue, vuePageOptions);
+function parseBasePage (vuePageOptions, {
+  isPage,
+  initRelation
+}) {
+  const pageOptions = parseComponent$1(vuePageOptions, {
+    isPage,
+    initRelation
+  });
 
-  const pageOptions = {
-    mixins: initBehaviors(vueOptions, initBehavior$1),
-    data: initData(vueOptions, Vue.prototype),
-    onLoad (args) {
-      const properties = this.props;
+  initHooks(pageOptions.methods, hooks$1, vuePageOptions);
 
-      const options = {
-        mpType: 'page',
-        mpInstance: this,
-        propsData: properties
-      };
-
-      // 初始化 vue 实例
-      this.$vm = new VueComponent(options);
-
-      initSpecialMethods(this);
-
-      // 触发首次 setData
-      this.$vm.$mount();
-
-      this.$vm.$mp.query = args; // 兼容 mpvue
-      this.$vm.__call_hook('onLoad', args);
-    },
-    onReady () {
-      initChildVues(this);
-      this.$vm._isMounted = true;
-      this.$vm.__call_hook('mounted');
-      this.$vm.__call_hook('onReady');
-    },
-    onUnload () {
-      this.$vm.__call_hook('onUnload');
-      this.$vm.$destroy();
-    },
-    __r: handleRef,
-    __e: handleEvent,
-    __l: handleLink$1
+  pageOptions.methods.onLoad = function (args) {
+    this.$vm.$mp.query = args; // 兼容 mpvue
+    this.$vm.__call_hook('onLoad', args);
   };
-
-  initHooks(pageOptions, hooks$1, vuePageOptions);
 
   return pageOptions
 }
 
+function parsePage (vuePageOptions) {
+  return parseBasePage(vuePageOptions, {
+    isPage,
+    initRelation
+  })
+}
+
+function parsePage$1 (vuePageOptions) {
+  return parsePage(vuePageOptions)
+}
+
 function createPage (vuePageOptions) {
   {
-    return Page(parsePage(vuePageOptions))
+    return Component(parsePage$1(vuePageOptions))
   }
-}
-
-function initVm (VueComponent) {
-  if (this.$vm) {
-    return
-  }
-  const properties = this.props;
-
-  const options = {
-    mpType: 'component',
-    mpInstance: this,
-    propsData: properties
-  };
-
-  initVueIds(properties.vueId, this);
-
-  if (isComponent2) {
-    // 处理父子关系
-    initRelation$1.call(this, {
-      vuePid: this._$vuePid,
-      vueOptions: options
-    });
-
-    // 初始化 vue 实例
-    this.$vm = new VueComponent(options);
-
-    // 触发首次 setData
-    this.$vm.$mount();
-  } else {
-    // 处理父子关系
-    initRelation$1.call(this, {
-      vuePid: this._$vuePid,
-      vueOptions: options,
-      VueComponent,
-      mpInstance: this
-    });
-
-    if (options.parent) { // 父组件已经初始化，直接初始化子，否则放到父组件的 didMount 中处理
-      // 初始化 vue 实例
-      this.$vm = new VueComponent(options);
-      handleRef.call(options.parent.$scope, this);
-      // 触发首次 setData
-      this.$vm.$mount();
-
-      initChildVues(this);
-
-      this.$vm._isMounted = true;
-      this.$vm.__call_hook('mounted');
-      this.$vm.__call_hook('onReady');
-    }
-  }
-}
-
-function parseComponent (vueComponentOptions) {
-  let [VueComponent, vueOptions] = initVueComponent(Vue, vueComponentOptions);
-
-  const properties = initProperties(vueOptions.props, false, vueOptions.__file);
-
-  const props = {
-    onVueInit: function () {}
-  };
-
-  Object.keys(properties).forEach(key => {
-    if (key !== 'vueSlots') {
-      props[key] = properties[key].value;
-    }
-  });
-
-  const componentOptions = {
-    mixins: initBehaviors(vueOptions, initBehavior$1),
-    data: initData(vueOptions, Vue.prototype),
-    props,
-    didMount () {
-      initVm.call(this, VueComponent);
-
-      initSpecialMethods(this);
-
-      if (isComponent2) {
-        this.$vm._isMounted = true;
-        this.$vm.__call_hook('mounted');
-        this.$vm.__call_hook('onReady');
-      }
-    },
-    didUnmount () {
-      this.$vm.$destroy();
-    },
-    methods: {
-      __r: handleRef,
-      __e: handleEvent,
-      __l: handleLink$1,
-      triggerEvent
-    }
-  };
-
-  if (isComponent2) {
-    componentOptions.onInit = function onInit () {
-      initVm.call(this, VueComponent);
-    };
-    componentOptions.deriveDataFromProps = createObserver$1();
-  } else {
-    componentOptions.didUpdate = createObserver$1(true);
-  }
-
-  return componentOptions
 }
 
 function createComponent (vueOptions) {
   {
-    return my.defineComponent(parseComponent(vueOptions))
+    return Component(parseComponent$1(vueOptions))
   }
 }
 
@@ -1705,7 +1228,7 @@ todos.forEach(todoApi => {
 canIUses.forEach(canIUseApi => {
   const apiName = protocols[canIUseApi] && protocols[canIUseApi].name ? protocols[canIUseApi].name
     : canIUseApi;
-  if (!my.canIUse(apiName)) {
+  if (!wx.canIUse(apiName)) {
     protocols[canIUseApi] = false;
   }
 });
@@ -1732,10 +1255,10 @@ if (typeof Proxy !== 'undefined') {
       if (eventApi[name]) {
         return eventApi[name]
       }
-      if (!hasOwn(my, name) && !hasOwn(protocols, name)) {
+      if (!hasOwn(wx, name) && !hasOwn(protocols, name)) {
         return
       }
-      return promisify(name, wrapper(name, my[name]))
+      return promisify(name, wrapper(name, wx[name]))
     }
   });
 } else {
@@ -1758,16 +1281,16 @@ if (typeof Proxy !== 'undefined') {
     uni[name] = promisify(name, api[name]);
   });
 
-  Object.keys(my).forEach(name => {
-    if (hasOwn(my, name) || hasOwn(protocols, name)) {
-      uni[name] = promisify(name, wrapper(name, my[name]));
+  Object.keys(wx).forEach(name => {
+    if (hasOwn(wx, name) || hasOwn(protocols, name)) {
+      uni[name] = promisify(name, wrapper(name, wx[name]));
     }
   });
 }
 
-my.createApp = createApp;
-my.createPage = createPage;
-my.createComponent = createComponent;
+wx.createApp = createApp;
+wx.createPage = createPage;
+wx.createComponent = createComponent;
 
 var uni$1 = uni;
 
