@@ -1,0 +1,11 @@
+{
+	"name": "@dcloudio/uni-mp-qq",
+	"version": "0.0.100",
+	"description": "uni-app mp-qq",
+	"main": "dist/index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "fxy060608",
+	"license": "Apache-2.0"
+}

@@ -7,6 +7,10 @@ const PLATFORMS = {
     prefix: 'wx',
     title: '微信小程序'
   },
+  'mp-qq': {
+    prefix: 'wx',
+    title: 'QQ小程序'
+  },
   'mp-alipay': {
     prefix: 'my',
     title: '支付宝小程序'
