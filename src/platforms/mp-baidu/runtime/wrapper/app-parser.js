@@ -9,8 +9,16 @@ import {
 } from './util'
 
 export default function parseApp (vm) {
-  return parseBaseApp(vm, {
+  // 百度 onShow 竟然会在 onLaunch 之前
+  const appOptions = parseBaseApp(vm, {
     mocks,
     initRefs
   })
+  appOptions.onShow = function onShow (args) {
+    if (!this.$vm) {
+      this.onLaunch(args)
+    }
+    this.$vm.__call_hook('onShow', args)
+  }
+  return appOptions
 }

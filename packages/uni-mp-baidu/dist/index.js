@@ -1033,6 +1033,9 @@ function parseBaseApp (vm, {
 
   const appOptions = {
     onLaunch (args) {
+      if (this.$vm) { // 已经初始化过了，主要是为了百度，百度 onShow 在 onLaunch 之前
+        return
+      }
 
       this.$vm = vm;
 
@@ -1130,10 +1133,18 @@ function initRelation$1 (detail) {
 }
 
 function parseApp (vm) {
-  return parseBaseApp(vm, {
+  // 百度 onShow 竟然会在 onLaunch 之前
+  const appOptions = parseBaseApp(vm, {
     mocks: mocks$1,
     initRefs
-  })
+  });
+  appOptions.onShow = function onShow (args) {
+    if (!this.$vm) {
+      this.onLaunch(args);
+    }
+    this.$vm.__call_hook('onShow', args);
+  };
+  return appOptions
 }
 
 function createApp (vm) {
