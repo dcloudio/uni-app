@@ -1,5 +1,19 @@
 <template>
-  <uni-textarea v-on="$listeners">
+  <uni-textarea
+    :value="_checkEmpty(value)"
+    :maxlength="maxlengthNumber"
+    :placeholder="_checkEmpty(placeholder)"
+    :disabled="disabled"
+    :focus="focus"
+    :auto-focus="autoFocus"
+    :placeholder-class="_checkEmpty(placeholderClass)"
+    :placeholder-style="_checkEmpty(placeholderStyle)"
+    :auto-height="autoHeight"
+    :cursor="cursorNumber"
+    :selection-start="selectionStartNumber"
+    :selection-end="selectionEndNumber"
+    v-on="$listeners"
+  >
     <div
       ref="wrapped"
       class="uni-textarea-wrapped">
@@ -13,7 +27,7 @@
       <div class="uni-textarea-compute">
         <div
           v-for="(item,index) in valueCompute"
-          :key="index">{{ item||'.' }}</div>
+          :key="index">{{ item.trim() ? item : '.' }}</div>
         <v-uni-resize-sensor
           ref="sensor"
           @resize="_resize"/>
@@ -23,7 +37,6 @@
         v-model="valueSync"
         :disabled="disabled"
         :maxlength="maxlengthNumber"
-        :placeholder="placeholder"
         :autofocus="autoFocus"
         class="uni-textarea-textarea"
         @compositionstart="_compositionstart"
@@ -87,10 +100,6 @@ export default {
     autoHeight: {
       type: [Boolean, String],
       default: false
-    },
-    bindinput: {
-      type: String,
-      default: ''
     },
     cursor: {
       type: [Number, String],
@@ -267,6 +276,9 @@ export default {
     },
     _resetFormData () {
       this.valueSync = ''
+    },
+    _checkEmpty (str) {
+      return str || false
     }
   }
 }
@@ -279,7 +291,13 @@ uni-textarea {
   display: block;
   position: relative;
   font-size: 16px;
-  line-height: 1.2;
+  line-height: normal;
+}
+uni-textarea[hidden] {
+  display: none;
+}
+uni-textarea[auto-height] .uni-textarea-textarea {
+  overflow-y: hidden;
 }
 .uni-textarea-wrapped {
   position: relative;
@@ -295,6 +313,7 @@ uni-textarea {
   letter-spacing: inherit;
   text-indent: inherit;
   color: inherit;
+  text-align: inherit;
 }
 .uni-textarea-placeholder,
 .uni-textarea-compute,
@@ -315,6 +334,7 @@ uni-textarea {
   letter-spacing: inherit;
   text-indent: inherit;
   color: inherit;
+  text-align: inherit;
 }
 .uni-textarea-placeholder {
   color: grey;
@@ -330,17 +350,5 @@ uni-textarea {
   resize: none;
   background-color: transparent;
   opacity: inherit;
-}
-.uni-textarea-textarea::-webkit-input-placeholder {
-  color: transparent;
-}
-.uni-textarea-textarea:-moz-placeholder {
-  color: transparent;
-}
-.uni-textarea-textarea::-moz-placeholder {
-  color: transparent;
-}
-.uni-textarea-textarea:-ms-input-placeholder {
-  color: transparent;
 }
 </style>
