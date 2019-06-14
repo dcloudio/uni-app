@@ -14,9 +14,7 @@
     :selection-end="selectionEndNumber"
     v-on="$listeners"
   >
-    <div
-      ref="wrapped"
-      class="uni-textarea-wrapped">
+    <div class="uni-textarea-wrapper">
       <div
         v-show="!(composition||valueSync.length)"
         ref="placeholder"
@@ -38,6 +36,7 @@
         :disabled="disabled"
         :maxlength="maxlengthNumber"
         :autofocus="autoFocus"
+        :class="{'uni-textarea-textarea-ios': isIOS}"
         class="uni-textarea-textarea"
         @compositionstart="_compositionstart"
         @compositionend="_compositionend"
@@ -121,7 +120,8 @@ export default {
       composition: false,
       focusSync: this.focus,
       height: 0,
-      focusChangeSource: ''
+      focusChangeSource: '',
+      isIOS: String(navigator.platform).indexOf('iP') === 0 && String(navigator.vendor).indexOf('Apple') === 0
     }
   },
   computed: {
@@ -299,7 +299,7 @@ uni-textarea[hidden] {
 uni-textarea[auto-height] .uni-textarea-textarea {
   overflow-y: hidden;
 }
-.uni-textarea-wrapped {
+.uni-textarea-wrapper {
   position: relative;
   width: 100%;
   height: 100%;
@@ -350,5 +350,11 @@ uni-textarea[auto-height] .uni-textarea-textarea {
   resize: none;
   background-color: transparent;
   opacity: inherit;
+}
+/* 用于解决 iOS textarea 内部默认边距 */
+.uni-textarea-textarea-ios {
+  width: auto;
+  right: 0;
+  margin: 0 -3px;
 }
 </style>

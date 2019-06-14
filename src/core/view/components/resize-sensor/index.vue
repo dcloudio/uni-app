@@ -32,19 +32,7 @@ export default {
       this.$el.parentNode.style.position = 'relative'
     }
 
-    if ('attachEvent' in this.$el && !('AnimationEvent' in window)) {
-      var onresizeHandler = function () {
-        this.update()
-        removeOnresizeEvent()
-      }.bind(this)
-
-      var removeOnresizeEvent = function () {
-        this.$el.detachEvent('onresize', onresizeHandler)
-        this.$off('resizeSensorBeforeDestroy', removeOnresizeEvent)
-      }.bind(this)
-
-      this.$el.attachEvent('onresize', onresizeHandler)
-      this.$on('resizeSensorBeforeDestroy', removeOnresizeEvent)
+    if (!('AnimationEvent' in window)) {
       this.reset()
     }
   },
