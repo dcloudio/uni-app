@@ -1,4 +1,4 @@
-export const mocks = ['nodeId']
+export const mocks = ['nodeId', 'componentName']
 
 export function isPage () {
   return !this.ownerId
