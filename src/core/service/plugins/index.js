@@ -17,6 +17,10 @@ import {
 } from './page'
 
 import {
+  lifecycleMixin
+} from './lifecycle'
+
+import {
   getTabBarScrollPosition
 } from './app/router-guard'
 
@@ -56,6 +60,8 @@ export default {
   install (Vue, {
     routes
   } = {}) {
+    lifecycleMixin(Vue)
+
     const minId = getMinId(routes)
     const router = new VueRouter({
       id: minId,

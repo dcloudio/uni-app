@@ -1,9 +1,5 @@
-import {
-  isFn
-} from 'uni-shared'
-
 function callHook (vm, hook, params) {
-  return isFn(vm.$options[hook]) && vm.$options[hook].apply(vm, params)
+  return vm.__call_hook(hook, params)
 }
 
 export function callAppHook (vm, hook, ...params) {
