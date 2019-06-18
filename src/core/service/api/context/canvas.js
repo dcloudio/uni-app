@@ -1,5 +1,5 @@
 import createCallbacks from 'uni-helpers/callbacks'
-import { wrapper, pixelRatio } from 'uni-helpers/hidpi'
+import { pixelRatio } from 'uni-helpers/hidpi'
 
 const canvasEventCallbacks = createCallbacks('canvasEvent')
 
@@ -255,16 +255,9 @@ var methods3 = ['setFillStyle', 'setTextAlign', 'setStrokeStyle', 'setGlobalAlph
 ]
 
 var tempCanvas
-function getTempCanvas (width, height) {
+function getTempCanvas () {
   if (!tempCanvas) {
     tempCanvas = document.createElement('canvas')
-  }
-  if (typeof width !== 'undefined' && typeof height !== 'undefined') {
-    if (tempCanvas.width !== width || tempCanvas.height !== height) {
-      tempCanvas.width = width / pixelRatio
-      tempCanvas.height = height / pixelRatio
-      wrapper(tempCanvas)
-    }
   }
   return tempCanvas
 }
@@ -857,56 +850,28 @@ export function canvasToTempFilePath ({
       })
       return
     }
-    var cWidth = (typeof destWidth !== 'undefined') ? (destWidth * pixelRatio) : data.width
-    var cHeight = (typeof destHeight !== 'undefined') ? (destHeight * pixelRatio) : data.height
-    var canvas = getTempCanvas(cWidth, cHeight)
+    var canvas = getTempCanvas()
+    canvas.width = data.width
+    canvas.height = data.height
     var c2d = canvas.getContext('2d')
-    c2d.putImageData(imgData, 0, 0, 0, 0, imgData.width, imgData.height)
-    var imageType = (fileType ? fileType.toLowerCase() : 'png')
-    if (imageType === 'jpg') {
-      imageType = 'jpeg'
+    c2d.putImageData(imgData, 0, 0)
+    var base64 = canvas.toDataURL('image/png')
+    var img = new Image()
+    img.onload = function () {
+      var width = canvas.width = typeof destWidth === 'number' ? destWidth : imgData.width * pixelRatio
+      var height = canvas.height = typeof destHeight === 'number' ? destHeight : imgData.height * pixelRatio
+      if (fileType === 'jpeg') {
+        c2d.fillStyle = '#fff'
+        c2d.fillRect(0, 0, width, height)
+      }
+      c2d.drawImage(img, 0, 0, img.width, img.height, 0, 0, width, height)
+      base64 = canvas.toDataURL(`image/${fileType}`, qualit)
+      invoke(callbackId, {
+        errMsg: 'canvasToTempFilePath:ok',
+        tempFilePath: base64
+      })
     }
-
-    var dCanvas
-    var isDest = (typeof destWidth !== 'undefined' && typeof destHeight !== 'undefined')
-    if (isDest) {
-      dCanvas = document.createElement('canvas')
-      dCanvas.width = destWidth
-      dCanvas.height = destHeight
-    } else {
-      dCanvas = canvas.cloneNode(true)
-    }
-    var dCtx = dCanvas.getContext('2d')
-    if (imageType === 'jpeg') {
-      dCtx.fillStyle = '#fff'
-      dCtx.fillRect(0, 0, dCanvas.width, dCanvas.height)
-    }
-
-    if (isDest) {
-      dCtx.drawImageByCanvas(canvas, 0, 0, canvas.width, canvas.height, 0, 0, destWidth, destHeight, true)
-    } else {
-      dCtx.drawImage(canvas, 0, 0)
-    }
-    var base64 = dCanvas.toDataURL(`image/${imageType}`, qualit)
-
-    invoke(callbackId, {
-      errMsg: 'canvasToTempFilePath:ok',
-      tempFilePath: base64
-    })
-
-    // TODO base64返回的是高清图，如果将img通过drawImage画到等宽高的canvas会出现显示不全问题, drawImage在次做了高清处理
-    // var img = new Image()
-    // img.onload = function () {
-    //   canvas.width = destWidth || imgData.width
-    //   canvas.height = destHeight || imgData.height
-    //   c2d.drawImage(img, 0, 0)
-    //   base64 = canvas.toDataURL(`image/jpeg`, qualit)
-    //   invoke(callbackId, {
-    //     errMsg: 'canvasToTempFilePath:ok',
-    //     tempFilePath: base64
-    //   })
-    // }
-    // img.src = base64
+    img.src = base64
   })
   operateCanvas(canvasId, pageId, 'getImageData', {
     x,
