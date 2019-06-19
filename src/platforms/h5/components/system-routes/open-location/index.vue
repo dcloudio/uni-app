@@ -6,7 +6,7 @@
         ref="map"
         :src="src"
         allow="geolocation"
-        sandbox="allow-scripts allow-same-origin allow-forms"
+        sandbox="allow-scripts allow-same-origin allow-forms allow-top-navigation allow-modals allow-popups"
         frameborder="0"
         @load="_load" />
       <!-- 去这里 -->
@@ -36,7 +36,7 @@ export default {
       scale,
       name,
       address
-    } = this.$route.params
+    } = this.$route.query
     return {
       latitude,
       longitude,

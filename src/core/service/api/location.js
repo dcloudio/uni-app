@@ -17,7 +17,7 @@ export function openLocation ({
   getApp().$router.push({
     type: 'navigateTo',
     path: '/open-location',
-    params: {
+    query: {
       latitude,
       longitude,
       scale,
