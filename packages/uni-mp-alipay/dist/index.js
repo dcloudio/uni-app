@@ -727,11 +727,67 @@ function startGyroscope (params) {
   });
 }
 
+function createExecCallback (execCallback) {
+  return function wrapperExecCallback (res) {
+    this.actions.forEach((action, index) => {
+      (action._$callbacks || []).forEach(callback => {
+        callback(res[index]);
+      });
+    });
+    execCallback(res);
+  }
+}
+
+function addCallback (callback) {
+  if (isFn(callback)) {
+    const action = this.actions[this.actions.length - 1];
+    if (action) {
+      (action._$callbacks || (action._$callbacks = [])).push(callback);
+    }
+  }
+}
+
+function createSelectorQuery () {
+  const query = my.createSelectorQuery();
+
+  const oldExec = query.exec;
+  const oldScrollOffset = query.scrollOffset;
+  const oldBoundingClientRect = query.boundingClientRect;
+  query.exec = function exec (callback) {
+    return oldExec.call(this, createExecCallback(callback).bind(this))
+  };
+  query.scrollOffset = function scrollOffset (callback) {
+    const ret = oldScrollOffset.call(this);
+    addCallback.call(this, callback);
+    return ret
+  };
+  query.boundingClientRect = function boundingClientRect (callback) {
+    const ret = oldBoundingClientRect.call(this);
+    addCallback.call(this, callback);
+    return ret
+  };
+
+  if (!query.fields) {
+    query.fields = function ({ rect, size, scrollOffset } = {}, callback) {
+      if (rect || size) {
+        this.boundingClientRect();
+      }
+      if (scrollOffset) {
+        this.scrollOffset();
+      }
+      addCallback.call(this, callback);
+      return this
+    };
+  }
+  return query
+}
+
 var api = /*#__PURE__*/Object.freeze({
   setStorageSync: setStorageSync,
   getStorageSync: getStorageSync,
   removeStorageSync: removeStorageSync,
-  startGyroscope: startGyroscope
+  startGyroscope: startGyroscope,
+  createSelectorQuery: createSelectorQuery
 });
 
 const PAGE_EVENT_HOOKS = [
@@ -876,8 +932,14 @@ function initBehaviors (vueOptions, initBehavior) {
           vueProps.push('name');
           vueProps.push('value');
         } else {
-          vueProps['name'] = String;
-          vueProps['value'] = null;
+          vueProps['name'] = {
+            type: String,
+            default: ''
+          };
+          vueProps['value'] = {
+            type: [String, Number, Boolean, Array, Object, Date],
+            default: ''
+          };
         }
       }
     });
