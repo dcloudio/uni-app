@@ -502,6 +502,10 @@ function hasHook (hook, vueOptions) {
     return true
   }
 
+  if (Vue.options && Array.isArray(Vue.options[hook])) {
+    return true
+  }
+
   vueOptions = vueOptions.default || vueOptions;
 
   if (isFn(vueOptions)) {
