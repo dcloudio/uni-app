@@ -1,3 +1,5 @@
+import Vue from 'vue'
+
 import {
   isFn,
   noop,
@@ -25,6 +27,10 @@ export function initMocks (vm, mocks) {
 
 function hasHook (hook, vueOptions) {
   if (!vueOptions) {
+    return true
+  }
+
+  if (Vue.options && Array.isArray(Vue.options[hook])) {
     return true
   }
 
