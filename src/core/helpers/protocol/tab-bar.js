@@ -2,33 +2,12 @@ import {
   getLen
 } from 'uni-shared'
 
-function beforeValidate (params) {
-  let isTabBar = false
-  const pages = getCurrentPages()
-  if (pages.length) {
-    if (pages[pages.length - 1].$page.meta.isTabBar) {
-      isTabBar = true
-    }
-  } else if (getApp().$children[0].hasTabBar) {
-    isTabBar = true
-  }
-  if (!isTabBar) {
-    return 'not TabBar page'
-  }
-}
-
 const indexValidator = {
   type: Number,
-  required: true,
-  validator (index, params) {
-    if (index >= __uniConfig.tabBar.list.length) {
-      return 'tabbar item not found'
-    }
-  }
+  required: true
 }
 
 export const setTabBarItem = {
-  beforeValidate,
   index: indexValidator,
   text: {
     type: String
@@ -42,7 +21,6 @@ export const setTabBarItem = {
 }
 
 export const setTabBarStyle = {
-  beforeValidate,
   color: {
     type: String
   },
@@ -63,7 +41,6 @@ export const setTabBarStyle = {
 }
 
 export const hideTabBar = {
-  beforeValidate,
   animation: {
     type: Boolean,
     default: false
@@ -71,7 +48,6 @@ export const hideTabBar = {
 }
 
 export const showTabBar = {
-  beforeValidate,
   animation: {
     type: Boolean,
     default: false
@@ -79,22 +55,18 @@ export const showTabBar = {
 }
 
 export const hideTabBarRedDot = {
-  beforeValidate,
   index: indexValidator
 }
 
 export const showTabBarRedDot = {
-  beforeValidate,
   index: indexValidator
 }
 
 export const removeTabBarBadge = {
-  beforeValidate,
   index: indexValidator
 }
 
 export const setTabBarBadge = {
-  beforeValidate,
   index: indexValidator,
   text: {
     type: String,

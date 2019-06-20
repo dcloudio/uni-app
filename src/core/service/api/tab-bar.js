@@ -10,11 +10,32 @@ const setTabBarBadgeProps = ['badge', 'redDot']
 
 function setTabBar (type, args = {}) {
   const app = getApp()
+
   if (app) {
+    let isTabBar = false
+    const pages = getCurrentPages()
+    if (pages.length) {
+      if (pages[pages.length - 1].$page.meta.isTabBar) {
+        isTabBar = true
+      }
+    } else if (app.$children[0].hasTabBar) {
+      isTabBar = true
+    }
+    if (!isTabBar) {
+      return {
+        errMsg: `${type}:fail not TabBar page`
+      }
+    }
+
     const {
       index
     } = args
     const tabBar = app.$children[0].tabBar
+    if (index >= __uniConfig.tabBar.list.length) {
+      return {
+        errMsg: `${type}:fail tabbar item not found`
+      }
+    }
     switch (type) {
       case 'showTabBar':
         app.$children[0].hideTabBar = false
