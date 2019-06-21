@@ -299,57 +299,53 @@ uni-textarea[hidden] {
 uni-textarea[auto-height] .uni-textarea-textarea {
   overflow-y: hidden;
 }
+.uni-textarea-wrapper,
+.uni-textarea-placeholder,
+.uni-textarea-compute,
+.uni-textarea-textarea {
+  outline: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  text-decoration: inherit;
+}
 .uni-textarea-wrapper {
+  display: block;
   position: relative;
   width: 100%;
   height: 100%;
-  overflow: hidden;
-  font: inherit;
-  font-size: inherit;
-  font-family: inherit;
-  font-style: inherit;
-  font-weight: inherit;
-  line-height: inherit;
-  letter-spacing: inherit;
-  text-indent: inherit;
-  color: inherit;
-  text-align: inherit;
 }
 .uni-textarea-placeholder,
 .uni-textarea-compute,
 .uni-textarea-textarea {
-  box-sizing: border-box;
   position: absolute;
   width: 100%;
   height: 100%;
   left: 0;
   top: 0;
+  white-space: pre-wrap;
   word-break: break-all;
-  font: inherit;
-  font-size: inherit;
-  font-family: inherit;
-  font-style: inherit;
-  font-weight: inherit;
-  line-height: inherit;
-  letter-spacing: inherit;
-  text-indent: inherit;
-  color: inherit;
-  text-align: inherit;
 }
 .uni-textarea-placeholder {
   color: grey;
+  overflow: hidden;
 }
 .uni-textarea-compute {
   visibility: hidden;
   height: auto;
 }
 .uni-textarea-textarea {
-  outline: none;
-  border: none;
-  padding: 0;
   resize: none;
-  background-color: transparent;
+  background: none;
+  color: inherit;
   opacity: inherit;
+  font: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  text-align: inherit;
+  text-indent: inherit;
+  text-transform: inherit;
+  text-shadow: inherit;
 }
 /* 用于解决 iOS textarea 内部默认边距 */
 .uni-textarea-textarea-ios {
