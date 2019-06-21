@@ -2,7 +2,14 @@
   <uni-input v-on="$listeners">
     <div
       ref="wrapper"
-      :disabled="disabled">
+      class="uni-input-wrapper">
+      <div
+        v-show="!(composing || inputValue.length)"
+        ref="placeholder"
+        :style="placeholderStyle"
+        :class="placeholderClass"
+        class="uni-input-placeholder"
+      >{{ placeholder }}</div>
       <input
         ref="input"
         v-model="inputValue"
@@ -10,23 +17,16 @@
         :type="inputType"
         :maxlength="maxlength"
         :step="step"
+        class="uni-input-input"
         autocomplete="off"
         @focus="_onFocus"
         @blur="_onBlur"
         @input.stop="_onInput"
         @compositionstart="_onComposition"
         @compositionend="_onComposition"
-        @keyup.stop="_onKeyup">
-      <div
-        v-show="!(composing || inputValue.length)"
-        ref="placeholder"
-        :style="placeholderStyle"
-        :class="placeholderClass"
-        class="input-placeholder">{{ placeholder }}</div>
+        @keyup.stop="_onKeyup"
+      >
     </div>
-    <v-uni-resize-sensor
-      ref="sensor"
-      @resize="_resize" />
   </uni-input>
 </template>
 <script>
@@ -93,8 +93,7 @@ export default {
       inputValue: this.value + '',
       composing: false,
       wrapperHeight: 0,
-      cachedValue: '',
-      isRendered: false
+      cachedValue: ''
     }
   },
   computed: {
@@ -144,14 +143,13 @@ export default {
     })
   },
   mounted () {
-    this._initInputStyle()
-
     if (this.confirmType === 'search') {
       var formElem = document.createElement('form')
       formElem.action = ''
       formElem.onsubmit = function () {
         return false
       }
+      formElem.className = 'uni-input-form'
       formElem.appendChild(this.$refs.input)
       this.$refs.wrapper.appendChild(formElem)
     }
@@ -165,37 +163,6 @@ export default {
     })
   },
   methods: {
-    _resize () {
-      if (!this.isRendered) {
-        this._initInputStyle()
-      }
-    },
-    _initInputStyle () {
-      const wrapper = this.$refs.wrapper
-      const computedStyle = window.getComputedStyle(wrapper)
-      const rectStyle = wrapper.getBoundingClientRect()
-      const inputElem = this.$refs.input
-      const placeholderElem = this.$refs.placeholder
-
-      // 获取到的高度为 0 则认为组件未渲染，通常是使用 v-show 时会出现此情况。
-      if (!rectStyle.height) {
-        return
-      } else {
-        this.isRendered = true
-      }
-      // 渲染之后进行计算，设置实际的高度等样式。
-      const realHeight = rectStyle.height - (parseFloat(computedStyle.borderTopWidth, 10) + parseFloat(computedStyle.borderBottomWidth,
-        10))
-      if (realHeight !== this.wrapperHeight) {
-        inputElem.style.height = `${realHeight}px`
-        inputElem.style.lineHeight = `${realHeight}px`
-        this.wrapperHeight = realHeight
-      }
-      // inputElem.style.color = computedStyle.color
-
-      placeholderElem.style.height = `${realHeight}px`
-      placeholderElem.style.lineHeight = `${realHeight}px`
-    },
     _onKeyup ($event) {
       if ($event.keyCode === 13) {
         this.$trigger('confirm', $event, {
@@ -275,101 +242,77 @@ export default {
 }
 </script>
 <style>
-	uni-input {
-		display: block;
-		height: 1.4rem;
-		text-overflow: clip;
-		overflow: hidden;
-		white-space: nowrap;
-		font-family: UICTFontTextStyleBody;
-		min-height: 1.4rem;
-	}
+uni-input {
+  display: block;
+  font-size: 16px;
+  line-height: 1.4em;
+  height: 1.4em;
+  min-height: 1.4em;
+}
 
-	uni-input input {
-		position: relative;
-		min-height: inherit;
-		border: none;
-		height: inherit;
-		width: 100%;
-		font-size: inherit;
-		font-weight: inherit;
-		font-family: UICTFontTextStyleBody;
-		color: inherit;
-		background: transparent;
-		display: inherit;
-		padding: 0;
-		margin: 0;
-		outline: none;
-		vertical-align: middle;
-		text-align: inherit;
-		overflow: inherit;
-		white-space: inherit;
-		text-overflow: inherit;
-		-webkit-tap-highlight-color: transparent;
-		z-index: 2;
-		opacity: inherit;
-	}
+uni-input[hidden] {
+  display: none;
+}
 
-	uni-input[hidden] {
-		display: none;
-	}
+.uni-input-wrapper,
+.uni-input-placeholder,
+.uni-input-form,
+.uni-input-input {
+  outline: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  text-decoration: inherit;
+}
 
-	uni-input div {
-		position: relative;
-		min-height: inherit;
-		text-overflow: inherit;
-		border: none;
-		height: inherit;
-		width: inherit;
-		font-size: inherit;
-		font-weight: inherit;
-		font-family: UICTFontTextStyleBody;
-		color: inherit;
-		background: inherit;
-		padding: 0;
-		margin: 0;
-		outline: none;
-		text-align: inherit;
-		-webkit-tap-highlight-color: transparent;
-	}
+.uni-input-wrapper {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
 
-	uni-input div[type=password] div {
-		color: black;
-	}
+.uni-input-placeholder,
+.uni-input-input {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+}
 
-	uni-input div div {
-		position: absolute;
-		left: 0;
-		top: 0;
-		width: 100%;
-		height: inherit;
-		line-height: 100%;
-		min-height: inherit;
-		white-space: pre;
-		text-align: inherit;
-		overflow: hidden;
-		vertical-align: middle;
-		z-index: 1;
-	}
+.uni-input-placeholder {
+  color: gray;
+  overflow: hidden;
+  text-overflow: clip;
+  white-space: pre;
+  word-break: keep-all;
+}
 
-	.input-placeholder {
-		color: gray;
-		height: inherit;
-		line-height: inherit;
-    background: none;
-	}
+.uni-input-input {
+  background: none;
+  color: inherit;
+  opacity: inherit;
+  font: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  text-align: inherit;
+  text-indent: inherit;
+  text-transform: inherit;
+  text-shadow: inherit;
+}
 
-	input[type="search"]::-webkit-search-cancel-button {
-		display: none;
-	}
+.uni-input-input[type="search"]::-webkit-search-cancel-button {
+  display: none;
+}
 
-	input::-webkit-outer-spin-button,
-	input::-webkit-inner-spin-button {
-		-webkit-appearance: none;
-		margin: 0;
-	}
+.uni-input-input::-webkit-outer-spin-button,
+.uni-input-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
 
-	input[type="number"] {
-		-moz-appearance: textfield;
-	}
+.uni-input-input[type="number"] {
+  -moz-appearance: textfield;
+}
 </style>
