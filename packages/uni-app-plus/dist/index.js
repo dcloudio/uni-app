@@ -1221,7 +1221,7 @@ canIUses.forEach(canIUseApi => {
 
 let uni = {};
 
-if (typeof Proxy !== 'undefined') {
+if (typeof Proxy !== 'undefined' && "app-plus" !== 'app-plus') {
   uni = new Proxy({}, {
     get (target, name) {
       if (name === 'upx2px') {
@@ -1259,6 +1259,7 @@ if (typeof Proxy !== 'undefined') {
 
 {
   if (typeof global !== 'undefined') {
+    global.uni = uni;
     global.UniEmitter = eventApi;
   }
 }
