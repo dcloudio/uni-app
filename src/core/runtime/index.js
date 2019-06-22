@@ -44,7 +44,7 @@ canIUses.forEach(canIUseApi => {
 
 let uni = {}
 
-if (typeof Proxy !== 'undefined') {
+if (typeof Proxy !== 'undefined' && __PLATFORM__ !== 'app-plus') {
   uni = new Proxy({}, {
     get (target, name) {
       if (name === 'upx2px') {
@@ -99,6 +99,7 @@ if (typeof Proxy !== 'undefined') {
 
 if (__PLATFORM__ === 'app-plus') {
   if (typeof global !== 'undefined') {
+    global.uni = uni
     global.UniEmitter = eventApi
   }
 }
