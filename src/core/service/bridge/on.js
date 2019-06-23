@@ -23,16 +23,16 @@ function onPullDownRefresh (args, pageId) {
   }
 }
 
-function callCurrentPageHook (hook, ...args) {
+function callCurrentPageHook (hook, args) {
   const pages = getCurrentPages()
   if (pages.length) {
-    callPageHook(pages[pages.length - 1], hook, ...args)
+    callPageHook(pages[pages.length - 1], hook, args)
   }
 }
 
 function createCallCurrentPageHook (hook) {
-  return function (...args) {
-    callCurrentPageHook(hook, ...args)
+  return function (args) {
+    callCurrentPageHook(hook, args)
   }
 }
 
