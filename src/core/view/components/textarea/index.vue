@@ -150,7 +150,8 @@ export default {
       this.valueSync = String(val)
     },
     valueSync (val) {
-      if (val !== this.value) {
+      if (val !== this._oldValue) {
+        this._oldValue = val
         this.$trigger('input', {}, {
           value: val,
           cursor: this.$refs.textarea.selectionEnd
@@ -204,7 +205,7 @@ export default {
     })
   },
   mounted () {
-    this.$refs.textarea.value = this.valueSync
+    this._oldValue = this.$refs.textarea.value = this.valueSync
     this._resize({
       height: this.$refs.sensor.$el.offsetHeight
     })
