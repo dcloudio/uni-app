@@ -21,9 +21,12 @@ export const previewImage = {
   current: {
     type: [String, Number],
     validator (value, params) {
-      // 假值都会被转换为数字 0 无需再做判定
-      const index = Number(value)
-      params.current = isNaN(index) ? getRealPath(value) : index
-    }
+      if (typeof value === 'number') {
+        params.current = value > 0 && value < params.urls.length ? value : 0
+      } else if (typeof value === 'string' && value) {
+        params.current = getRealPath(value)
+      }
+    },
+    default: 0
   }
 }
