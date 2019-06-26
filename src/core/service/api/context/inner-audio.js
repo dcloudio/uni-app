@@ -1,3 +1,5 @@
+import getRealPath from 'uni-platform/helpers/get-real-path'
+
 /**
  * 可以批量设置的监听事件
  */
@@ -26,21 +28,29 @@ class InnerAudioContext {
    */
   _events
   /**
+   * 音频地址
+   */
+  _src
+  /**
    * 音频上下文初始化
    */
   constructor () {
     var audio = this._audio = new Audio()
     this._stoping = false
     // 和audio对象同名同效果的属性
-    var watchers = ['src', 'autoplay', 'loop', 'duration', 'currentTime', 'paused', 'volume']
-    watchers.forEach((watcher) => {
-      Object.defineProperty(this, watcher, {
-        set (val) {
-          audio[watcher] = val
-          return audio[watcher]
+    var propertys = ['src', 'autoplay', 'loop', 'duration', 'currentTime', 'paused', 'volume']
+    propertys.forEach((property) => {
+      Object.defineProperty(this, property, {
+        set: property === 'src' ? (src) => {
+          audio.src = getRealPath(src)
+          return this._src = src
+        } : (val) => {
+          return audio[property] = val
         },
-        get () {
-          return audio[watcher]
+        get: property === 'src' ? () => {
+          return this._src
+        } : () => {
+          return audio[property]
         }
       })
     })
