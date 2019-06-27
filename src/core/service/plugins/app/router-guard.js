@@ -39,9 +39,9 @@ function saveTabBarScrollPosition (id) {
 function switchTab (routes, to, from) {
   if (
     to &&
-        from &&
-        to.meta.isTabBar &&
-        from.meta.isTabBar
+    from &&
+    to.meta.isTabBar &&
+    from.meta.isTabBar
   ) { // tabbar 跳 tabbar
     saveTabBarScrollPosition(from.params.__id__)
   }
@@ -196,6 +196,9 @@ function afterEach (to, from) {
       setTimeout(function () {
         callPageHook(toVm, 'onShow')
       }, 0)
+      if (__PLATFORM__ === 'h5') {
+        document.title = toVm.$parent.$parent.navigationBar.titleText
+      }
     }
   }
 }

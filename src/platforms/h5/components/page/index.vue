@@ -173,6 +173,11 @@ export default {
       navigationBar,
       refreshOptions
     }
+  },
+  created () {
+    if (__PLATFORM__ === 'h5') {
+      document.title = this.navigationBar.titleText
+    }
   }
 }
 </script>

@@ -31,6 +31,11 @@ export default {
       default: false
     }
   },
+  created () {
+    if (__PLATFORM__ === 'h5') {
+      document.title = this.$slots.default[0].text
+    }
+  },
   methods: {
     _back () {
       this.$emit('back')
