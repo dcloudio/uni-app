@@ -43,9 +43,11 @@ class InnerAudioContext {
       Object.defineProperty(this, property, {
         set: property === 'src' ? (src) => {
           audio.src = getRealPath(src)
-          return this._src = src
+          this._src = src
+          return src
         } : (val) => {
-          return audio[property] = val
+          audio[property] = val
+          return val
         },
         get: property === 'src' ? () => {
           return this._src
