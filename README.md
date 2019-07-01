@@ -29,14 +29,6 @@
 `uni-app`计划支持的功能点，会在需求墙上进行展示，并允许开发者对需求进行投票，投票越多的需求，研发优先级越高，[前往投票](https://dev.dcloud.net.cn/wish/)。
 
 
-## 分享交流
-
-扫码加入微信交流群：
-
-<p>
-    <img src="http://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/wx-barcode.png" width="250"/>
-</p>
-
 ## 更多资料
 
 - 开发资源汇总： [awesome-uni-app](https://github.com/aben1188/awesome-uni-app/blob/master/README.md)
