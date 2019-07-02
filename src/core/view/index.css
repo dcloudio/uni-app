@@ -126,3 +126,23 @@ uni-page {
     flex-direction: column;
     box-sizing: border-box;
 }
+
+[nvue] uni-view,
+[nvue] uni-swiper-item {
+    display: flex;
+    flex-direction: column;
+}
+
+[nvue] uni-view,
+[nvue] uni-image,
+[nvue] uni-input,
+[nvue] uni-scroll-view,
+[nvue] uni-swiper,
+[nvue] uni-swiper-item,
+[nvue] uni-text,
+[nvue] uni-textarea,
+[nvue] uni-video {
+    position: relative;
+    border: 0px solid #000000;
+    box-sizing: border-box;
+}
