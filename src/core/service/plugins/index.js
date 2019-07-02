@@ -107,6 +107,9 @@ export default {
     if (__PLATFORM__ === 'h5') {
       if (entryRoute.meta && entryRoute.meta.name) {
         document.body.className = 'uni-body ' + entryRoute.meta.name
+        if (entryRoute.meta.isNVue) {
+          document.body.setAttribute('nvue', '')
+        }
       }
     }
 

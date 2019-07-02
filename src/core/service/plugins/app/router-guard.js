@@ -145,6 +145,11 @@ function beforeEach (to, from, next, routes) {
     if (__PLATFORM__ === 'h5') {
       if (to.meta && to.meta.name) {
         document.body.className = 'uni-body ' + to.meta.name
+        if (to.meta.isNVue) {
+          document.body.setAttribute('nvue', '')
+        } else {
+          document.body.removeAttribute('nvue')
+        }
       }
     }
 
