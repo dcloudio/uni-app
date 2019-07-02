@@ -17,6 +17,8 @@ import {
 
 import requestComponentInfo from './request-component-info'
 
+import { requestComponentObserver, destroyComponentObserver } from './request-component-observer'
+
 const passiveOptions = supportsPassive ? {
   passive: false
 } : false
@@ -39,6 +41,9 @@ export default function initSubscribe (subscribe) {
   subscribe('requestComponentInfo', requestComponentInfo)
 
   subscribe('pageScrollTo', pageScrollTo)
+
+  subscribe('requestComponentObserver', requestComponentObserver)
+  subscribe('destroyComponentObserver', destroyComponentObserver)
 
   if (__PLATFORM__ === 'h5') {
     let scrollListener = false

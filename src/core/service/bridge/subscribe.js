@@ -39,6 +39,7 @@ function onRequestComponentObserver ({
   if (callback) {
     if (reqEnd) {
       requestComponentObserverCallbacks.pop(reqId)
+      return
     }
     callback(res)
   }

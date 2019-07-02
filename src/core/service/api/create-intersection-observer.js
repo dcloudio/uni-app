@@ -1,5 +1,7 @@
 import Vue from 'vue'
-import 'intersection-observer'
+import createCallbacks from 'uni-helpers/callbacks'
+
+const createIntersectionObserverCallbacks = createCallbacks('requestComponentObserver')
 
 const defaultOptions = {
   thresholds: [0],
@@ -8,60 +10,38 @@ const defaultOptions = {
 }
 
 class MPIntersectionObserver {
-  _intersectionObserver
-  _el
-  _options
-  _root = null
-  _rootMargin = '0'
-  constructor (context, options) {
-    this._el = context.$el
-    this._options = Object.assign({}, defaultOptions, options)
+  constructor (pageId, options) {
+    this.pageId = pageId
+    this.options = Object.assign({}, defaultOptions, options)
   }
   _makeRootMargin (margins = {}) {
-    this._rootMargin = ['top', 'right', 'bottom', 'left'].map(name => `${Number(margins[name]) || 0}px`).join(' ')
+    this.options.rootMargin = ['top', 'right', 'bottom', 'left'].map(name => `${Number(margins[name]) || 0}px`).join(' ')
   }
   relativeTo (selector, margins) {
-    this._root = this._el.querySelector(selector)
+    this.options.relativeToSelector = selector
     this._makeRootMargin(margins)
   }
   relativeToViewport (margins) {
-    this._root = null
+    this.options.relativeToSelector = null
     this._makeRootMargin(margins)
   }
   observe (selector, callback) {
     if (typeof callback !== 'function') {
       return
     }
-    let options = {
-      root: this._root,
-      rootMargin: this._rootMargin,
-      threshold: this._options.thresholds
-    }
-    let intersectionObserver = this._intersectionObserver = new IntersectionObserver((entries, observer) => {
-      entries.forEach(entrie => {
-        callback({
-          intersectionRatio: entrie.intersectionRatio,
-          intersectionRect: entrie.intersectionRect,
-          boundingClientRect: entrie.boundingClientRect,
-          relativeRect: entrie.rootBounds,
-          time: entrie.time,
-          dataset: entrie.target.dataset,
-          id: entrie.target.id
-        })
-      })
-    }, options)
-    if (this._options.observeAll) {
-      intersectionObserver.USE_MUTATION_OBSERVER = true
-      Array.prototype.map.call(this._el.querySelectorAll(selector), el => {
-        intersectionObserver.observe(el)
-      })
-    } else {
-      intersectionObserver.USE_MUTATION_OBSERVER = false
-      intersectionObserver.observe(this._el.querySelector(selector))
-    }
+    this.options.selector = selector
+
+    this.reqId = createIntersectionObserverCallbacks.push(callback)
+
+    UniServiceJSBridge.publishHandler('requestComponentObserver', {
+      reqId: this.reqId,
+      options: this.options
+    }, this.pageId)
   }
   disconnect () {
-    this._intersectionObserver && this._intersectionObserver.disconnect()
+    UniServiceJSBridge.publishHandler('destroyComponentObserver', {
+      reqId: this.reqId
+    }, this.pageId)
   }
 }
 
@@ -71,12 +51,11 @@ export function createIntersectionObserver (context, options) {
     context = null
   }
   if (context) {
-    return new MPIntersectionObserver(context, options)
+    return new MPIntersectionObserver(context.$page.id, options)
   }
-  const pages = getCurrentPages()
-  if (pages.length) {
-    context = pages[pages.length - 1]
-    return new MPIntersectionObserver(context, options)
+  const app = getApp()
+  if (app.$route && app.$route.params.__id__) {
+    return new MPIntersectionObserver(app.$route.params.__id__, options)
   } else {
     UniServiceJSBridge.emit('onError', 'createIntersectionObserver:fail')
   }
