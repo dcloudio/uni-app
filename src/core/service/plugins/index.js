@@ -108,7 +108,9 @@ export default {
       if (entryRoute.meta && entryRoute.meta.name) {
         document.body.className = 'uni-body ' + entryRoute.meta.name
         if (entryRoute.meta.isNVue) {
+          const nvueDirKey = 'nvue-dir-' + __uniConfig.nvue['flex-direction']
           document.body.setAttribute('nvue', '')
+          document.body.setAttribute(nvueDirKey, '')
         }
       }
     }

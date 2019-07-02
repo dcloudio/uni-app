@@ -130,7 +130,26 @@ uni-page {
 [nvue] uni-view,
 [nvue] uni-swiper-item {
     display: flex;
+}
+
+[nvue-dir-row] uni-view,
+[nvue-dir-row] uni-swiper-item {
+    flex-direction: row;
+}
+
+[nvue-dir-column] uni-view,
+[nvue-dir-column] uni-swiper-item {
     flex-direction: column;
+}
+
+[nvue-dir-row-reverse] uni-view,
+[nvue-dir-row-reverse] uni-swiper-item {
+    flex-direction: row-reverse;
+}
+
+[nvue-dir-column-reverse] uni-view,
+[nvue-dir-column-reverse] uni-swiper-item {
+    flex-direction: column-reverse;
 }
 
 [nvue] uni-view,

@@ -145,10 +145,13 @@ function beforeEach (to, from, next, routes) {
     if (__PLATFORM__ === 'h5') {
       if (to.meta && to.meta.name) {
         document.body.className = 'uni-body ' + to.meta.name
+        const nvueDirKey = 'nvue-dir-' + __uniConfig.nvue['flex-direction']
         if (to.meta.isNVue) {
           document.body.setAttribute('nvue', '')
+          document.body.setAttribute(nvueDirKey, '')
         } else {
           document.body.removeAttribute('nvue')
+          document.body.removeAttribute(nvueDirKey)
         }
       }
     }
