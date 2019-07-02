@@ -38,6 +38,7 @@
         "eslint-plugin-promise": "^4.0.0",
         "eslint-plugin-standard": "^4.0.0",
         "eslint-plugin-vue": "^4.7.1",
+        "intersection-observer": "^0.7.0",
         "jsdom": "^13.0.0",
         "jsdom-global": "^3.0.2",
         "rollup": "^0.67.4",

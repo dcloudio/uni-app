@@ -49,7 +49,6 @@ export default [
   'setBackgroundTextStyle',
   'createAnimation',
   'loadFontFace',
-  'createIntersectionObserver',
   'getProvider',
   'login',
   'checkSession',
