@@ -121,15 +121,15 @@ uni-page {
     opacity: 0
 }
 
-[nvue] uni-view {
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
-}
-
 [nvue] uni-view,
-[nvue] uni-swiper-item {
+[nvue] uni-swiper-item,
+[nvue] uni-scroll-view {
     display: flex;
+    flex-shrink: 0;
+    flex-grow: 0;
+    flex-basis: auto;
+    align-items: stretch;
+    align-content: flex-start;
 }
 
 [nvue-dir-row] uni-view,
