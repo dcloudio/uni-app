@@ -165,3 +165,7 @@ uni-page {
     border: 0px solid #000000;
     box-sizing: border-box;
 }
+
+[nvue] uni-swiper-item {
+    position: absolute;
+}
