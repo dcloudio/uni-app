@@ -69,7 +69,7 @@ class InnerAudioContext {
       get () {
         var buffered = audio.buffered
         if (buffered.length) {
-          return buffered[buffered.length - 1].end()
+          return buffered.end(buffered.length - 1)
         } else {
           return 0
         }
