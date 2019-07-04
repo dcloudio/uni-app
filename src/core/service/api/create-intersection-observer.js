@@ -20,10 +20,12 @@ class MPIntersectionObserver {
   relativeTo (selector, margins) {
     this.options.relativeToSelector = selector
     this._makeRootMargin(margins)
+    return this
   }
   relativeToViewport (margins) {
     this.options.relativeToSelector = null
     this._makeRootMargin(margins)
+    return this
   }
   observe (selector, callback) {
     if (typeof callback !== 'function') {
