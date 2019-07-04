@@ -1339,8 +1339,6 @@ function parsePage (vuePageOptions) {
       this.pageinstance._$args = args;
     }
   };
-  // TODO  目前版本 百度 Component 作为页面时，methods 中的 onShow 不触发
-  delete pageOptions.methods.onShow;
 
   pageOptions.methods.onUnload = function onUnload () {
     this.$vm.__call_hook('onUnload');
