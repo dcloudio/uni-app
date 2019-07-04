@@ -144,7 +144,7 @@ export default {
   },
   mounted () {
     if (this.confirmType === 'search') {
-      var formElem = document.createElement('form')
+      const formElem = document.createElement('form')
       formElem.action = ''
       formElem.onsubmit = function () {
         return false
@@ -152,6 +152,15 @@ export default {
       formElem.className = 'uni-input-form'
       formElem.appendChild(this.$refs.input)
       this.$refs.wrapper.appendChild(formElem)
+    }
+
+    let $vm = this
+    while ($vm) {
+      const scopeId = $vm.$options._scopeId
+      if (scopeId) {
+        this.$refs.placeholder.setAttribute(scopeId, '')
+      }
+      $vm = $vm.$parent
     }
 
     this.focus && this._focusInput()
