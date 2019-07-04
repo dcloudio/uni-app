@@ -1,6 +1,7 @@
 import Vue from 'vue'
 
 import baseMixin from 'uni-mixins/base'
+import animation from 'uni-mixins/animation'
 
 const requireComponents = [
   // baseComponents
@@ -16,6 +17,8 @@ requireComponents.forEach((components, index) => {
     const componentConfig = componentModule.default || componentModule
 
     componentConfig.mixins = componentConfig.mixins ? [].concat(baseMixin, componentConfig.mixins) : [baseMixin]
+
+    componentConfig.mixins.push(animation)
 
     componentConfig.name = 'VUni' + componentConfig.name
 
