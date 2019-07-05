@@ -9,6 +9,10 @@ export function isPage (vm) {
   return false
 }
 
+export function hasLifecycleHook (vueOptions = {}, hook) {
+  return Array.isArray(vueOptions[hook]) && vueOptions[hook].length
+}
+
 export function normalizeDataset (dataset = {}) {
   // ios8.x,9.x Object.assign({},dataset) 始终返回 {}
   // http://ask.dcloud.net.cn/question/70246
