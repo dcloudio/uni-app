@@ -1,6 +1,6 @@
 import {
-  isFn
-} from 'uni-shared'
+  hasLifecycleHook
+} from 'uni-helpers/index'
 
 function onAppRoute (type, {
   url,
@@ -27,7 +27,7 @@ function onAppRoute (type, {
       const pages = getCurrentPages()
       if (pages.length) {
         const page = pages[pages.length - 1]
-        if (isFn(page.$options.onBackPress) && page.$options.onBackPress.call(page, {
+        if (hasLifecycleHook(page.$options.onBackPress) && page.__call_hook('onBackPress', {
           from
         }) === true) {
           canBack = false
