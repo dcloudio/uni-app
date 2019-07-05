@@ -27,7 +27,7 @@ function onAppRoute (type, {
       const pages = getCurrentPages()
       if (pages.length) {
         const page = pages[pages.length - 1]
-        if (hasLifecycleHook(page.$options.onBackPress) && page.__call_hook('onBackPress', {
+        if (hasLifecycleHook(page.$options, 'onBackPress') && page.__call_hook('onBackPress', {
           from
         }) === true) {
           canBack = false
