@@ -113,6 +113,7 @@ export default {
 		font-size: 18px;
 		word-wrap:break-word;
 		word-break:break-all;
+		white-space: pre;
 		overflow : hidden;
 		text-overflow: ellipsis;
 		display: -webkit-box;
@@ -127,6 +128,7 @@ export default {
 		line-height: 1.4;
 		word-wrap: break-word;
 		word-break: break-all;
+		white-space: pre;
 		color: #999999;
 		max-height: 400px;
 		overflow-y: auto;
