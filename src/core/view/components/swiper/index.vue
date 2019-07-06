@@ -495,10 +495,11 @@ export default {
         }
         self._updateViewport(val)
       }
+      var time = (this._contentTrackT - contentTrackT) || 1
       if (this.vertical) {
-        move(-data.dy / this.$refs.slideFrame.offsetHeight, -data.ddy / (this._contentTrackT - contentTrackT))
+        move(-data.dy / this.$refs.slideFrame.offsetHeight, -data.ddy / time)
       } else {
-        move(-data.dx / this.$refs.slideFrame.offsetWidth, -data.ddx / (this._contentTrackT - contentTrackT))
+        move(-data.dx / this.$refs.slideFrame.offsetWidth, -data.ddx / time)
       }
     },
     _handleTrackEnd (isCancel) {
