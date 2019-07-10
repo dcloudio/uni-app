@@ -6,7 +6,7 @@ export function callAppHook (vm, hook, params) {
   if (hook !== 'onError') {
     console.debug(`App：${hook} have been invoked` + (params ? ` ${JSON.stringify(params)}` : ''))
   }
-  return callHook(vm, hook, params)
+  return vm.__call_hook(hook, params)
 }
 
 export function callPageHook (vm, hook, params) {
