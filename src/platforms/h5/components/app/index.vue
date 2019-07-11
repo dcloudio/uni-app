@@ -11,8 +11,7 @@
       v-show="showTabBar"
       v-bind="tabBar" />
     <toast
-      v-bind="showToast"
-      @close="_onModalClose" />
+      v-bind="showToast"/>
     <action-sheet
       v-bind="showActionSheet"
       @close="_onActionSheetClose" />
