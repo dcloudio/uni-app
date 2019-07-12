@@ -27,7 +27,7 @@ export function showLoading (args) {
 }
 
 export function hideLoading () {
-  emit('onHideToast')
+  emit('onHideLoading')
   return {}
 }
 
