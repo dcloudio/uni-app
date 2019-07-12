@@ -15,7 +15,10 @@
         "build:runtime": "npm run lint && npm run build:mp-weixin && npm run build:mp-qq && npm run build:mp-alipay && npm run build:mp-baidu && npm run build:mp-toutiao && npm run build:app-plus",
         "test:unit": "cross-env NODE_ENV=test UNI_PLATFORM=h5 mocha-webpack --require tests/unit/setup.js --webpack-config build/webpack.config.test.js tests/unit/**/*.spec.js"
     },
-    "dependencies": {},
+    "dependencies": {
+        "base64-arraybuffer": "^0.2.0",
+        "intersection-observer": "^0.7.0"
+    },
     "private": true,
     "devDependencies": {
         "@vue/cli-plugin-babel": "^3.4.1",
@@ -25,11 +28,12 @@
         "@vue/test-utils": "^1.0.0-beta.25",
         "babel-eslint": "^10.0.1",
         "babylon": "^6.18.0",
-        "base64-arraybuffer": "^0.2.0",
         "browserslist": "^4.4.2",
         "caniuse-lite": "^1.0.30000940",
         "chai": "^4.1.2",
+        "copy": "^0.3.2",
         "cross-env": "^5.2.0",
+        "del": "^5.0.0",
         "eslint": "^5.5.0",
         "eslint-config-standard": "^12.0.0",
         "eslint-loader": "^2.1.0",
@@ -38,9 +42,9 @@
         "eslint-plugin-promise": "^4.0.0",
         "eslint-plugin-standard": "^4.0.0",
         "eslint-plugin-vue": "^4.7.1",
-        "intersection-observer": "^0.7.0",
         "jsdom": "^13.0.0",
         "jsdom-global": "^3.0.2",
+        "jsonfile": "^5.0.0",
         "rollup": "^0.67.4",
         "rollup-plugin-alias": "^1.4.0",
         "rollup-plugin-replace": "^2.1.0",
