@@ -372,8 +372,7 @@ uni-picker .uni-picker {
   width: 100%;
   background-color: #efeff4;
   visibility: hidden;
-  transition-property: transform,visibility;
-  transition-duration: 0.3s, 0.3s;
+  transition: transform 0.3s, visibility 0.3s;
 }
 
 uni-picker .uni-picker.uni-picker-toggle {

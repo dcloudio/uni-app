@@ -77,8 +77,7 @@ export default {
 		width: 100%;
 		background-color: #efeff4;
     visibility: hidden;
-    transition-property: transform, visibility;
-		transition-duration: 0.3s, 0.3s;
+		transition: transform 0.3s, visibility 0.3s;
 	}
 
 	uni-actionsheet .uni-actionsheet.uni-actionsheet_toggle {
