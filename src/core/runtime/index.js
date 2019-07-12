@@ -6,9 +6,7 @@ import {
   promisify
 } from '../helpers/promise'
 
-import {
-  upx2px
-} from './upx2px'
+import * as baseApi from './base'
 
 import wrapper from './wrapper'
 
@@ -47,8 +45,8 @@ let uni = {}
 if (typeof Proxy !== 'undefined' && __PLATFORM__ !== 'app-plus') {
   uni = new Proxy({}, {
     get (target, name) {
-      if (name === 'upx2px') {
-        return upx2px
+      if (baseApi[name]) {
+        return baseApi[name]
       }
       if (api[name]) {
         return promisify(name, api[name])
@@ -71,7 +69,9 @@ if (typeof Proxy !== 'undefined' && __PLATFORM__ !== 'app-plus') {
     }
   })
 } else {
-  uni.upx2px = upx2px
+  Object.keys(baseApi).forEach(name => {
+    uni[name] = baseApi[name]
+  })
 
   if (__PLATFORM__ !== 'app-plus') {
     Object.keys(todoApi).forEach(name => {

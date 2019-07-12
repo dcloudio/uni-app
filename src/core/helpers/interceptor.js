@@ -3,10 +3,6 @@ import {
   isPlainObject
 } from 'uni-shared'
 
-import {
-  shouldPromise
-} from './promise'
-
 const HOOKS = [
   'invoke',
   'success',
@@ -68,9 +64,6 @@ function removeInterceptorHook (interceptor, option) {
 
 export function addInterceptor (method, option) {
   if (typeof method === 'string' && isPlainObject(option)) {
-    if (!shouldPromise(method)) {
-      return console.warn(`${method} 不支持设置拦截器`)
-    }
     mergeInterceptorHook(scopedInterceptors[method] || (scopedInterceptors[method] = {}), option)
   } else if (isPlainObject(method)) {
     mergeInterceptorHook(globalInterceptors, method)
@@ -174,7 +167,7 @@ function getApiInterceptorHooks (method) {
 
 export function invokeApi (method, api, options, ...params) {
   const interceptor = getApiInterceptorHooks(method)
-  if (interceptor) {
+  if (interceptor && Object.keys(interceptor).length) {
     if (Array.isArray(interceptor.invoke)) {
       const res = queue(interceptor.invoke, options)
       return res.then((options) => {

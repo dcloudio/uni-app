@@ -41,7 +41,8 @@ module.exports = {
     alias({
       'uni-shared': path.resolve(__dirname, '../src/shared/util.js'),
       'uni-platform': path.resolve(__dirname, '../src/platforms/' + process.env.UNI_PLATFORM),
-      'uni-wrapper': path.resolve(__dirname, '../src/core/runtime/wrapper')
+      'uni-wrapper': path.resolve(__dirname, '../src/core/runtime/wrapper'),
+      'uni-helpers': path.resolve(__dirname, '../src/core/helpers')
     }),
     replace({
       __GLOBAL__: platform.prefix,
