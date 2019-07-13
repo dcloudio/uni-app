@@ -23,5 +23,5 @@ Vue.config.getTagNamespace = function (tag) {
 }
 
 Vue.config.errorHandler = function (err, vm, info) {
-  console.error('errorHandler', err, vm, info)
+  UniServiceJSBridge.emit('onError', err)
 }

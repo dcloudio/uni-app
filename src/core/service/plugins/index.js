@@ -1,10 +1,6 @@
 import VueRouter from 'vue-router'
 
 import {
-  isFn
-} from 'uni-shared'
-
-import {
   isPage
 } from 'uni-helpers'
 
@@ -136,10 +132,10 @@ export default {
           options.router = router
 
           // onError
-          if (!isFn(options.onError)) {
-            options.onError = function (err) {
+          if (!Array.isArray(options.onError) || options.onError.length === 0) {
+            options.onError = [function (err) {
               console.error(err)
-            }
+            }]
           }
         } else if (isPage(this)) {
           const pageMixin = createPageMixin()
