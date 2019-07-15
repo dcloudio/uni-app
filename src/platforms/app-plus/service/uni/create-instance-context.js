@@ -1,11 +1,11 @@
 import {
   getApp,
   registerApp
-} from './app'
+} from 'uni-platform/service/app'
 
 import {
   getCurrentPages
-} from './page'
+} from 'uni-platform/service/page'
 
 import {
   createUniInstance

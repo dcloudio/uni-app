@@ -9,7 +9,7 @@ import {
 
 import todoApis from 'uni-platform/helpers/todo-api'
 
-import baseApi from './api'
+import baseApi from './api/index'
 
 import platformApi from 'uni-platform/service/api'
 

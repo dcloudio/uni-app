@@ -1823,9 +1823,6 @@ var api = /*#__PURE__*/Object.freeze({
 
 const uni$1 = Object.create(null);
 
-/* eslint-disable no-undef */
-uni$1.version = __VERSION__;
-
 Object.keys(api).forEach(name => {
   uni$1[name] = promisify(name, wrapper(name, api[name]));
 });
