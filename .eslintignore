@@ -1,1 +1,2 @@
 src/core/helpers/html-parser.js
+build/rollup-plugin-require-context

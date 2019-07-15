@@ -8,7 +8,109 @@ function hasOwn (obj, key) {
   return hasOwnProperty.call(obj, key)
 }
 
-const SYNC_API_RE = /^\$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
+const globalInterceptors = {};
+const scopedInterceptors = {};
+
+function wrapperHook (hook) {
+  return function (data) {
+    return hook(data) || data
+  }
+}
+
+function isPromise (obj) {
+  return !!obj && (typeof obj === 'object' || typeof obj === 'function') && typeof obj.then === 'function'
+}
+
+function queue (hooks, data) {
+  let promise = false;
+  for (let i = 0; i < hooks.length; i++) {
+    const hook = hooks[i];
+    if (promise) {
+      promise = Promise.then(wrapperHook(hook));
+    } else {
+      const res = hook(data);
+      if (isPromise(res)) {
+        promise = Promise.resolve(res);
+      }
+      if (res === false) {
+        return {
+          then () {}
+        }
+      }
+    }
+  }
+  return promise || {
+    then (callback) {
+      return callback(data)
+    }
+  }
+}
+
+function wrapperOptions (interceptor, options = {}) {
+  ['success', 'fail', 'complete'].forEach(name => {
+    if (Array.isArray(interceptor[name])) {
+      const oldCallback = options[name];
+      options[name] = function callbackInterceptor (res) {
+        queue(interceptor[name], res).then((res) => {
+          /* eslint-disable no-mixed-operators */
+          return isFn(oldCallback) && oldCallback(res) || res
+        });
+      };
+    }
+  });
+  return options
+}
+
+function wrapperReturnValue (method, returnValue) {
+  const returnValueHooks = [];
+  if (Array.isArray(globalInterceptors.returnValue)) {
+    returnValueHooks.push(...globalInterceptors.returnValue);
+  }
+  const interceptor = scopedInterceptors[method];
+  if (interceptor && Array.isArray(interceptor.returnValue)) {
+    returnValueHooks.push(...interceptor.returnValue);
+  }
+  returnValueHooks.forEach(hook => {
+    returnValue = hook(returnValue) || returnValue;
+  });
+  return returnValue
+}
+
+function getApiInterceptorHooks (method) {
+  const interceptor = Object.create(null);
+  Object.keys(globalInterceptors).forEach(hook => {
+    if (hook !== 'returnValue') {
+      interceptor[hook] = globalInterceptors[hook].slice();
+    }
+  });
+  const scopedInterceptor = scopedInterceptors[method];
+  if (scopedInterceptor) {
+    Object.keys(scopedInterceptor).forEach(hook => {
+      if (hook !== 'returnValue') {
+        interceptor[hook] = (interceptor[hook] || []).concat(scopedInterceptor[hook]);
+      }
+    });
+  }
+  return interceptor
+}
+
+function invokeApi (method, api, options, ...params) {
+  const interceptor = getApiInterceptorHooks(method);
+  if (interceptor && Object.keys(interceptor).length) {
+    if (Array.isArray(interceptor.invoke)) {
+      const res = queue(interceptor.invoke, options);
+      return res.then((options) => {
+        return api(wrapperOptions(interceptor, options), ...params)
+      })
+    } else {
+      return api(wrapperOptions(interceptor, options), ...params)
+    }
+  }
+  return api(options, ...params)
+}
+
+const SYNC_API_RE =
+    /^\$|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -49,10 +151,10 @@ function promisify (name, api) {
   }
   return function promiseApi (options = {}, ...params) {
     if (isFn(options.success) || isFn(options.fail) || isFn(options.complete)) {
-      return api(options, ...params)
+      return wrapperReturnValue(name, invokeApi(name, api, options, ...params))
     }
-    return handlePromise(new Promise((resolve, reject) => {
-      api(Object.assign({}, options, {
+    return wrapperReturnValue(name, handlePromise(new Promise((resolve, reject) => {
+      invokeApi(name, api, Object.assign({}, options, {
         success: resolve,
         fail: reject
       }), ...params);
@@ -68,7 +170,7 @@ function promisify (name, api) {
           )
         };
       }
-    }))
+    })))
   }
 }
 
@@ -609,48 +711,36 @@ let getGlobalApp;
 let getGlobalUniEmitter;
 let getGlobalCurrentPages;
 
-var index_legacy = {
-  create (id, env, config) {
-    return {
-      initUniApp ({
-        nvue,
-        getUni,
-        getApp,
-        getUniEmitter,
-        getCurrentPages
-      }) {
-        getGlobalUni = getUni;
-        getGlobalApp = getApp;
-        getGlobalUniEmitter = getUniEmitter;
-        getGlobalCurrentPages = getCurrentPages;
+function createInstanceContext () {
+  return {
+    initUniApp ({
+      nvue,
+      getUni,
+      getApp,
+      getUniEmitter,
+      getCurrentPages
+    }) {
+      getGlobalUni = getUni;
+      getGlobalApp = getApp;
+      getGlobalUniEmitter = getUniEmitter;
+      getGlobalCurrentPages = getCurrentPages;
 
-        initUpx2px(nvue);
-        initEventBus(getUniEmitter);
-      },
-      instance: {
-        getUni (nvue, plus, BroadcastChannel) {
-          return initUni(getGlobalUni(), nvue, plus, BroadcastChannel)
-        },
-        getApp () {
-          return getGlobalApp()
-        },
-        getUniEmitter () {
-          return getGlobalUniEmitter()
-        },
-        getCurrentPages () {
-          return getGlobalCurrentPages()
-        }
-      }
+      initUpx2px(nvue);
+      initEventBus(getUniEmitter);
+    },
+    getUni (nvue, plus, BroadcastChannel) {
+      return initUni(getGlobalUni(), nvue, plus, BroadcastChannel)
+    },
+    getApp () {
+      return getGlobalApp()
+    },
+    getUniEmitter () {
+      return getGlobalUniEmitter()
+    },
+    getCurrentPages () {
+      return getGlobalCurrentPages()
     }
-  },
-
-  refresh: function (id, env, config) {
-
-  },
-
-  destroy: function (id, env) {
-
   }
-};
+}
 
-export default index_legacy;
+export { createInstanceContext };
