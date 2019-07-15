@@ -257,6 +257,7 @@ uni-input {
   line-height: 1.4em;
   height: 1.4em;
   min-height: 1.4em;
+  overflow: hidden;
 }
 
 uni-input[hidden] {
@@ -282,23 +283,26 @@ uni-input[hidden] {
 }
 
 .uni-input-placeholder,
-.uni-input-input {
-  position: absolute;
+.uni-input-input{
   width: 100%;
-  height: 100%;
-  left: 0;
-  top: 0;
 }
 
 .uni-input-placeholder {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
   color: gray;
   overflow: hidden;
   text-overflow: clip;
   white-space: pre;
   word-break: keep-all;
+  pointer-events: none;
 }
 
 .uni-input-input {
+  display: block;
+  height: 100%;
   background: none;
   color: inherit;
   opacity: inherit;
