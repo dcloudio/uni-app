@@ -1,4 +1,4 @@
-export function createUniInstance(plus){
+export function createUniInstance(weex, plus, __uniConfig, __uniRoutes, getApp, getCurrentPages){
 
 const _toString = Object.prototype.toString;
 const hasOwnProperty = Object.prototype.hasOwnProperty;

@@ -62,9 +62,50 @@ const pageVms = [];
 function getCurrentPages () {
   return pageVms
 }
+/**
+ * @param {Object} pageVm
+ *
+ * page.beforeCreate 时添加 page
+ * page.beforeDestroy 时移出 page
+ *
+ * page.viewappear  onShow
+ * page.viewdisappear onHide
+ *
+ * navigateTo
+ * redirectTo
+ *
+ *
+ *
+ *
+ *
+ *
+ */
+function registerPage (pageVm) {
+  pageVms.push(pageVm);
+}
 
-const __uniConfig = Object.create(null);
-const __uniRoutes = [];
+const uniConfig = Object.create(null);
+const uniRoutes = [];
+
+function parseRoutes (config) {
+  uniRoutes.length = 0;
+  /* eslint-disable no-mixed-operators */
+  const tabBarList = (config.tabBar && config.tabBar.list || []).map(item => item.pagePath);
+
+  Object.keys(config.page).forEach(function (pagePath) {
+    uniRoutes.push({
+      path: '/' + pagePath,
+      meta: {
+        isTabBar: tabBarList.indexOf(pagePath) !== -1
+      }
+    });
+  });
+}
+
+function registerConfig (config) {
+  Object.assign(uniConfig, config);
+  parseRoutes(uniConfig);
+}
 
 function createInstanceContext ({
   weex,
@@ -72,17 +113,25 @@ function createInstanceContext ({
 }) {
   const plus = new WeexPlus(weex);
   return {
-    __uniConfig,
-    __uniRoutes,
-    __registerApp (appVm, {
-      uniConfig,
-      uniRoutes
-    }) {
-      Object.assign(__uniConfig, uniConfig);
-      uniRoutes.forEach(route => __uniRoutes.push(route));
-      registerApp(appVm, __uniRoutes, plus);
+    __uniConfig: uniConfig,
+    __uniRoutes: uniRoutes,
+    __registerConfig (config) {
+      registerConfig(config);
     },
-    uni: createUniInstance(plus),
+    __registerApp (appVm) {
+      registerApp(appVm, uniRoutes, plus);
+    },
+    __registerPage (pageVm) {
+      registerPage(pageVm);
+    },
+    uni: createUniInstance(
+      weex,
+      plus,
+      __uniConfig,
+      __uniRoutes,
+      getApp,
+      getCurrentPages
+    ),
     getApp,
     getCurrentPages
   }

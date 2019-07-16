@@ -1,4 +1,4 @@
-import Router from './router'
+import Router from 'uni-platform/service/uni/router'
 
 let appCtx
 

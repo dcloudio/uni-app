@@ -22,5 +22,5 @@ export function getCurrentPages () {
  *
  */
 export function registerPage (pageVm) {
-
+  pageVms.push(pageVm)
 }

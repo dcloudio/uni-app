@@ -1,18 +1,22 @@
 import {
   getApp,
   registerApp
-} from 'uni-platform/service/app'
+} from './app'
 
 import {
+  registerPage,
   getCurrentPages
-} from 'uni-platform/service/page'
+} from './page'
+
+import {
+  uniConfig,
+  uniRoutes,
+  registerConfig
+} from './config'
 
 import {
   createUniInstance
 } from './uni'
-
-const __uniConfig = Object.create(null)
-const __uniRoutes = []
 
 export function createInstanceContext ({
   weex,
@@ -20,17 +24,25 @@ export function createInstanceContext ({
 }) {
   const plus = new WeexPlus(weex)
   return {
-    __uniConfig,
-    __uniRoutes,
-    __registerApp (appVm, {
-      uniConfig,
-      uniRoutes
-    }) {
-      Object.assign(__uniConfig, uniConfig)
-      uniRoutes.forEach(route => __uniRoutes.push(route))
-      registerApp(appVm, __uniRoutes, plus)
+    __uniConfig: uniConfig,
+    __uniRoutes: uniRoutes,
+    __registerConfig (config) {
+      registerConfig(config)
     },
-    uni: createUniInstance(plus),
+    __registerApp (appVm) {
+      registerApp(appVm, uniRoutes, plus)
+    },
+    __registerPage (pageVm) {
+      registerPage(pageVm)
+    },
+    uni: createUniInstance(
+      weex,
+      plus,
+      __uniConfig,
+      __uniRoutes,
+      getApp,
+      getCurrentPages
+    ),
     getApp,
     getCurrentPages
   }

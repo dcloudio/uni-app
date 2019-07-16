@@ -16,7 +16,8 @@ if (process.env.UNI_SERVICE === 'legacy') {
 } else if (process.env.UNI_SERVICE === 'uni') {
   input = 'src/platforms/app-plus/service/uni/index.js'
   output.file = 'packages/uni-app-plus-nvue/dist/uni.js'
-  output.banner = 'export function createUniInstance(plus){\n'
+  output.banner =
+        'export function createUniInstance(weex, plus, __uniConfig, __uniRoutes, getApp, getCurrentPages){\n'
   output.footer = '\n  return uni$1 \n}'
 }
 
