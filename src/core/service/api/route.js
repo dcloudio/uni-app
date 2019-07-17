@@ -5,6 +5,8 @@ import {
 function onAppRoute (type, {
   url,
   delta,
+  animationType,
+  animationDuration,
   from = 'navigateBack',
   detail
 } = {}) {
@@ -19,7 +21,9 @@ function onAppRoute (type, {
     case 'navigateTo':
       router.push({
         type,
-        path: url
+        path: url,
+        animationType,
+        animationDuration
       })
       break
     case 'navigateBack':
@@ -37,7 +41,10 @@ function onAppRoute (type, {
         if (delta > 1) {
           router._$delta = delta
         }
-        router.go(-delta)
+        router.go(-delta, {
+          animationType,
+          animationDuration
+        })
       }
       break
     case 'reLaunch':

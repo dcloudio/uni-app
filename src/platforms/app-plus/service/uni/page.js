@@ -1,7 +1,7 @@
-const pageVms = []
+const pages = []
 
 export function getCurrentPages () {
-  return pageVms
+  return pages
 }
 /**
  * @param {Object} pageVm
@@ -21,6 +21,21 @@ export function getCurrentPages () {
  *
  *
  */
-export function registerPage (pageVm) {
-  pageVms.push(pageVm)
+
+export function registerPage ({
+  vm,
+  path,
+  webview
+}, instanceContext) {
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(`[uni-app] registerPage`, path, webview.id)
+  }
+  pages.push({
+    route: path.slice(1),
+    $getAppWebview () {
+      return webview
+    },
+    $meta: instanceContext.__uniRoutes.find(route => route.path === path).meta,
+    $vm: vm
+  })
 }

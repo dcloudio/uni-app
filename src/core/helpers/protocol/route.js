@@ -75,24 +75,54 @@ function createValidator (type) {
   }
 }
 
-function createProtocol (type) {
-  return {
+function createProtocol (type, extras = {}) {
+  return Object.assign({
     url: {
       type: String,
       required: true,
       validator: createValidator(type)
     }
+  }, extras)
+}
+
+function createAnimationProtocol (animationTypes) {
+  return {
+    animationType: {
+      type: String,
+      validator (type) {
+        if (type && animationTypes.indexOf(type) === -1) {
+          return '`' + type + '` is not supported for `animationType` (supported values are: `' + animationTypes.join(
+            '`|`') + '`)'
+        }
+      }
+    },
+    animationDuration: {
+      type: Number
+    }
   }
 }
+
 export const redirectTo = createProtocol('redirectTo')
 
 export const reLaunch = createProtocol('reLaunch')
 
-export const navigateTo = createProtocol('navigateTo')
+export const navigateTo = createProtocol('navigateTo', createAnimationProtocol(
+  [
+    'slide-in-right',
+    'slide-in-left',
+    'slide-in-top',
+    'slide-in-bottom',
+    'fade-in',
+    'zoom-out',
+    'zoom-fade-out',
+    'pop-in',
+    'none'
+  ]
+))
 
 export const switchTab = createProtocol('switchTab')
 
-export const navigateBack = {
+export const navigateBack = Object.assign({
   delta: {
     type: Number,
     validator (delta, params) {
@@ -100,4 +130,16 @@ export const navigateBack = {
       params.delta = Math.min(getCurrentPages().length - 1, delta)
     }
   }
-}
+}, createAnimationProtocol(
+  [
+    'slide-out-right',
+    'slide-out-left',
+    'slide-out-top',
+    'slide-out-bottom',
+    'fade-out',
+    'zoom-in',
+    'zoom-fade-in',
+    'pop-out',
+    'none'
+  ]
+))

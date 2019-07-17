@@ -18,28 +18,30 @@ import {
   createUniInstance
 } from './uni'
 
-export function createInstanceContext ({
-  weex,
-  WeexPlus
-}) {
+export function createInstanceContext (instanceContext) {
+  const {
+    weex,
+    WeexPlus
+  } = instanceContext
   const plus = new WeexPlus(weex)
   return {
     __uniConfig: uniConfig,
     __uniRoutes: uniRoutes,
     __registerConfig (config) {
-      registerConfig(config)
+      registerConfig(config, instanceContext)
     },
     __registerApp (appVm) {
-      registerApp(appVm, uniRoutes, plus)
+      registerApp(appVm, instanceContext)
     },
-    __registerPage (pageVm) {
-      registerPage(pageVm)
+    __registerPage (page) {
+      registerPage(page, instanceContext)
     },
+    plus,
     uni: createUniInstance(
       weex,
       plus,
-      __uniConfig,
-      __uniRoutes,
+      uniConfig,
+      uniRoutes,
       getApp,
       getCurrentPages
     ),

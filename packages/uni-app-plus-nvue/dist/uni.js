@@ -1136,24 +1136,54 @@ function createValidator (type) {
   }
 }
 
-function createProtocol (type) {
-  return {
+function createProtocol (type, extras = {}) {
+  return Object.assign({
     url: {
       type: String,
       required: true,
       validator: createValidator(type)
     }
+  }, extras)
+}
+
+function createAnimationProtocol (animationTypes) {
+  return {
+    animationType: {
+      type: String,
+      validator (type) {
+        if (type && animationTypes.indexOf(type) === -1) {
+          return '`' + type + '` is not supported for `animationType` (supported values are: `' + animationTypes.join(
+            '`|`') + '`)'
+        }
+      }
+    },
+    animationDuration: {
+      type: Number
+    }
   }
 }
+
 const redirectTo = createProtocol('redirectTo');
 
 const reLaunch = createProtocol('reLaunch');
 
-const navigateTo = createProtocol('navigateTo');
+const navigateTo = createProtocol('navigateTo', createAnimationProtocol(
+  [
+    'slide-in-right',
+    'slide-in-left',
+    'slide-in-top',
+    'slide-in-bottom',
+    'fade-in',
+    'zoom-out',
+    'zoom-fade-out',
+    'pop-in',
+    'none'
+  ]
+));
 
 const switchTab = createProtocol('switchTab');
 
-const navigateBack = {
+const navigateBack = Object.assign({
   delta: {
     type: Number,
     validator (delta, params) {
@@ -1161,7 +1191,19 @@ const navigateBack = {
       params.delta = Math.min(getCurrentPages().length - 1, delta);
     }
   }
-};
+}, createAnimationProtocol(
+  [
+    'slide-out-right',
+    'slide-out-left',
+    'slide-out-top',
+    'slide-out-bottom',
+    'fade-out',
+    'zoom-in',
+    'zoom-fade-in',
+    'pop-out',
+    'none'
+  ]
+));
 
 var require_context_module_0_19 = /*#__PURE__*/Object.freeze({
   redirectTo: redirectTo,
@@ -1735,6 +1777,8 @@ function hasLifecycleHook (vueOptions = {}, hook) {
 function onAppRoute (type, {
   url,
   delta,
+  animationType,
+  animationDuration,
   from = 'navigateBack',
   detail
 } = {}) {
@@ -1749,7 +1793,9 @@ function onAppRoute (type, {
     case 'navigateTo':
       router.push({
         type,
-        path: url
+        path: url,
+        animationType,
+        animationDuration
       });
       break
     case 'navigateBack':
@@ -1767,7 +1813,10 @@ function onAppRoute (type, {
         if (delta > 1) {
           router._$delta = delta;
         }
-        router.go(-delta);
+        router.go(-delta, {
+          animationType,
+          animationDuration
+        });
       }
       break
     case 'reLaunch':

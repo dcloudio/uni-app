@@ -7,16 +7,22 @@ function parseRoutes (config) {
   const tabBarList = (config.tabBar && config.tabBar.list || []).map(item => item.pagePath)
 
   Object.keys(config.page).forEach(function (pagePath) {
+    const isTabBar = tabBarList.indexOf(pagePath) !== -1
+    const isQuit = isTabBar || (config.pages[0] === pagePath)
     uniRoutes.push({
       path: '/' + pagePath,
       meta: {
-        isTabBar: tabBarList.indexOf(pagePath) !== -1
+        isQuit,
+        isTabBar
       }
     })
   })
 }
 
 export function registerConfig (config) {
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(`[uni-app] registerConfig`)
+  }
   Object.assign(uniConfig, config)
   parseRoutes(uniConfig)
 }
