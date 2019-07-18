@@ -1,3 +1,8 @@
+import {
+  initWebview,
+  createWebview
+} from './webview'
+
 const pages = []
 
 export function getCurrentPages () {
@@ -21,21 +26,32 @@ export function getCurrentPages () {
  *
  *
  */
-
+/**
+ * 首页需要主动registerPage，二级页面路由跳转时registerPage
+ */
 export function registerPage ({
-  vm,
   path,
   webview
 }, instanceContext) {
+  const routeOptions = instanceContext.__uniRoutes.find(route => route.path === path)
+
+  if (!webview) {
+    webview = createWebview(path, instanceContext, routeOptions.window)
+  }
+
   if (process.env.NODE_ENV !== 'production') {
     console.log(`[uni-app] registerPage`, path, webview.id)
   }
+
+  initWebview(webview, instanceContext, webview.id === '1' && routeOptions.window)
+
   pages.push({
     route: path.slice(1),
     $getAppWebview () {
       return webview
     },
-    $meta: instanceContext.__uniRoutes.find(route => route.path === path).meta,
-    $vm: vm
+    $meta: routeOptions.meta
   })
+
+  return webview
 }

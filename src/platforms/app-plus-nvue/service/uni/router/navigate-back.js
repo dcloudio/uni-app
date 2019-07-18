@@ -1,6 +1,6 @@
 import {
   ANI_DURATION
-} from './util'
+} from './webview'
 
 let firstBackTime = 0
 

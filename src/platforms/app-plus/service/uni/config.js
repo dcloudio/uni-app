@@ -14,7 +14,8 @@ function parseRoutes (config) {
       meta: {
         isQuit,
         isTabBar
-      }
+      },
+      window: config.page[pagePath] || {}
     })
   })
 }

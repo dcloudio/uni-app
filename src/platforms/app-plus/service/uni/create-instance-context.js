@@ -18,23 +18,29 @@ import {
   createUniInstance
 } from './uni'
 
+import {
+  initServiceJSBridge
+} from './bridge'
+
 export function createInstanceContext (instanceContext) {
   const {
     weex,
+    Vue,
     WeexPlus
   } = instanceContext
   const plus = new WeexPlus(weex)
+  const UniJSServiceBridge = initServiceJSBridge(Vue)
   return {
     __uniConfig: uniConfig,
     __uniRoutes: uniRoutes,
     __registerConfig (config) {
-      registerConfig(config, instanceContext)
+      return registerConfig(config, instanceContext)
     },
     __registerApp (appVm) {
-      registerApp(appVm, instanceContext)
+      return registerApp(appVm, instanceContext)
     },
     __registerPage (page) {
-      registerPage(page, instanceContext)
+      return registerPage(page, instanceContext)
     },
     plus,
     uni: createUniInstance(
@@ -46,6 +52,7 @@ export function createInstanceContext (instanceContext) {
       getCurrentPages
     ),
     getApp,
-    getCurrentPages
+    getCurrentPages,
+    UniJSServiceBridge
   }
 }
