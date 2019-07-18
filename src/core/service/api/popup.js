@@ -22,7 +22,7 @@ export function hideToast () {
 }
 
 export function showLoading (args) {
-  emit('onShowToast', args)
+  emit('onShowLoading', args)
   return {}
 }
 

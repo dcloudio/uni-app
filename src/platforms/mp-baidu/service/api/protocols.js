@@ -48,9 +48,14 @@ const protocols = {
       // TODO
       // data 不支持 ArrayBuffer
       // method 不支持 TRACE, CONNECT
-      // dataType 可取值为 string/json
       return {
-        method: 'method'
+        method: 'method',
+        dataType (type) {
+          return {
+            name: 'dataType',
+            value: type === 'json' ? type : 'string'
+          }
+        }
       }
     }
   },

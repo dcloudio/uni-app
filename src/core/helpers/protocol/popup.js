@@ -90,10 +90,6 @@ export const showLoading = {
   visible: {
     type: Boolean,
     default: true
-  },
-  isShowLoading: {
-    type: Boolean,
-    default: true
   }
 }
 
