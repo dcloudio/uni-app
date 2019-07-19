@@ -1,7 +1,11 @@
 import {
   initWebview,
   createWebview
-} from './webview'
+} from './webview/index'
+
+import {
+  createHolder
+} from './holder'
 
 const pages = []
 
@@ -33,24 +37,33 @@ export function registerPage ({
   path,
   webview
 }, instanceContext) {
-  const routeOptions = instanceContext.__uniRoutes.find(route => route.path === path)
+  const routeOptions = JSON.parse(JSON.stringify(instanceContext.__uniRoutes.find(route => route.path === path)))
 
   if (!webview) {
-    webview = createWebview(path, instanceContext, routeOptions.window)
+    webview = createWebview(path, instanceContext, routeOptions)
   }
 
   if (process.env.NODE_ENV !== 'production') {
     console.log(`[uni-app] registerPage`, path, webview.id)
   }
 
-  initWebview(webview, instanceContext, webview.id === '1' && routeOptions.window)
+  initWebview(webview, instanceContext, webview.id === '1' && routeOptions)
 
+  const route = path.slice(1)
   pages.push({
-    route: path.slice(1),
+    route,
     $getAppWebview () {
       return webview
     },
-    $meta: routeOptions.meta
+    $page: {
+      id: parseInt(webview.id),
+      meta: routeOptions.meta,
+      path,
+      route
+    },
+    $holder: createHolder(webview, {
+      navigationBar: webview.$navigationBar
+    }, instanceContext)
   })
 
   return webview

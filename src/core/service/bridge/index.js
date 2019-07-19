@@ -32,5 +32,9 @@ export {
 }
   from 'uni-platform/service/bridge'
 
-initOn(on)
+initOn(on, {
+  getApp,
+  getCurrentPages
+})
+
 initSubscribe(subscribe)

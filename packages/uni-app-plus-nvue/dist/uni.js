@@ -1,4 +1,4 @@
-export function createUniInstance(weex, plus, __uniConfig, __uniRoutes, getApp, getCurrentPages){
+export function createUniInstance(weex, plus, __uniConfig, __uniRoutes, UniServiceJSBridge, getApp, getCurrentPages){
 
 const _toString = Object.prototype.toString;
 const hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -1027,10 +1027,6 @@ const showLoading = {
   visible: {
     type: Boolean,
     default: true
-  },
-  isShowLoading: {
-    type: Boolean,
-    default: true
   }
 };
 
@@ -1860,14 +1856,117 @@ function switchTab$1 (args) {
   return onAppRoute('switchTab', args)
 }
 
+function pageScrollTo$1 (args) {
+  const pages = getCurrentPages();
+  if (pages.length) {
+    UniServiceJSBridge.publishHandler('pageScrollTo', args, pages[pages.length - 1].$page.id);
+  }
+  return {}
+}
+
+let pageId;
+
+function startPullDownRefresh () {
+  if (pageId) {
+    UniServiceJSBridge.emit(pageId + '.stopPullDownRefresh', {}, pageId);
+  }
+  const pages = getCurrentPages();
+  if (pages.length) {
+    pageId = pages[pages.length - 1].$page.id;
+    UniServiceJSBridge.emit(pageId + '.startPullDownRefresh', {}, pageId);
+  }
+  return {}
+}
+
+function stopPullDownRefresh () {
+  if (pageId) {
+    UniServiceJSBridge.emit(pageId + '.stopPullDownRefresh', {}, pageId);
+    pageId = null;
+  } else {
+    const pages = getCurrentPages();
+    if (pages.length) {
+      pageId = pages[pages.length - 1].$page.id;
+      UniServiceJSBridge.emit(pageId + '.stopPullDownRefresh', {}, pageId);
+    }
+  }
+  return {}
+}
+
+function setNavigationBar (type, args) {
+  const pages = getCurrentPages();
+  if (pages.length) {
+    const page = pages[pages.length - 1].$holder;
+
+    switch (type) {
+      case 'setNavigationBarColor':
+        const {
+          frontColor,
+          backgroundColor,
+          animation
+        } = args;
+
+        const {
+          duration,
+          timingFunc
+        } = animation;
+
+        if (frontColor) {
+          page.navigationBar.textColor = frontColor === '#000000' ? 'black' : 'white';
+        }
+        if (backgroundColor) {
+          page.navigationBar.backgroundColor = backgroundColor;
+        }
+        page.navigationBar.duration = duration + 'ms';
+        page.navigationBar.timingFunc = timingFunc;
+        break
+      case 'showNavigationBarLoading':
+        page.navigationBar.loading = true;
+        break
+      case 'hideNavigationBarLoading':
+        page.navigationBar.loading = false;
+        break
+      case 'setNavigationBarTitle':
+        const {
+          title
+        } = args;
+        page.navigationBar.titleText = title;
+        break
+    }
+  }
+  return {}
+}
+
+function setNavigationBarColor$1 (args) {
+  return setNavigationBar('setNavigationBarColor', args)
+}
+
+function showNavigationBarLoading () {
+  return setNavigationBar('showNavigationBarLoading')
+}
+
+function hideNavigationBarLoading () {
+  return setNavigationBar('hideNavigationBarLoading')
+}
+
+function setNavigationBarTitle$1 (args) {
+  return setNavigationBar('setNavigationBarTitle', args)
+}
+
 
 
 var api = /*#__PURE__*/Object.freeze({
+  pageScrollTo: pageScrollTo$1,
+  startPullDownRefresh: startPullDownRefresh,
+  stopPullDownRefresh: stopPullDownRefresh,
   redirectTo: redirectTo$1,
   navigateTo: navigateTo$1,
   navigateBack: navigateBack$1,
   reLaunch: reLaunch$1,
-  switchTab: switchTab$1
+  switchTab: switchTab$1,
+  setNavigationBarColor: setNavigationBarColor$1,
+  showNavigationBarLoading: showNavigationBarLoading,
+  hideNavigationBarLoading: hideNavigationBarLoading,
+  setNavigationBarTitle: setNavigationBarTitle$1
 });
 
 const uni$1 = Object.create(null);

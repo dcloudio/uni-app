@@ -28,6 +28,12 @@ export function stopPullDownRefresh () {
   if (pageId) {
     UniServiceJSBridge.emit(pageId + '.stopPullDownRefresh', {}, pageId)
     pageId = null
+  } else {
+    const pages = getCurrentPages()
+    if (pages.length) {
+      pageId = pages[pages.length - 1].$page.id
+      UniServiceJSBridge.emit(pageId + '.stopPullDownRefresh', {}, pageId)
+    }
   }
   return {}
 }

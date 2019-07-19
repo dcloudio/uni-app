@@ -1,0 +1,77 @@
+import {
+  parseTitleNView
+} from './title-nview-parser'
+
+import {
+  parsePullToRefresh
+} from './pull-to-refresh-parser'
+
+const WEBVIEW_STYLE_BLACKLIST = [
+  'navigationBarBackgroundColor',
+  'navigationBarTextStyle',
+  'navigationBarTitleText',
+  'navigationBarShadow',
+  'navigationStyle',
+  'disableScroll',
+  'backgroundColor',
+  'backgroundTextStyle',
+  'enablePullDownRefresh',
+  'onReachBottomDistance',
+  'usingComponents',
+  // 需要解析的
+  'titleNView',
+  'pullToRefresh'
+]
+
+export function parseWebviewStyle (id, path, routeOptions = {}, instanceContext) {
+  const {
+    __uniConfig
+  } = instanceContext
+
+  const webviewStyle = Object.create(null)
+
+  // 合并
+  const windowOptions = Object.assign(
+    JSON.parse(JSON.stringify(__uniConfig.window || {})),
+    routeOptions.window || {}
+  )
+
+  Object.keys(windowOptions).forEach(name => {
+    if (WEBVIEW_STYLE_BLACKLIST.indexOf(name) === -1) {
+      webviewStyle[name] = windowOptions[name]
+    }
+  })
+
+  const titleNView = parseTitleNView(routeOptions)
+  if (titleNView) {
+    if (id === 1 && __uniConfig.realEntryPagePath === path) {
+      titleNView.autoBackButton = true
+    }
+    webviewStyle.titleNView = titleNView
+  }
+
+  const pullToRefresh = parsePullToRefresh(routeOptions, instanceContext)
+  if (pullToRefresh) {
+    if (pullToRefresh.style === 'circle') {
+      webviewStyle.bounce = 'none'
+    }
+    webviewStyle.pullToRefresh = pullToRefresh
+  }
+
+  // 不支持 hide
+  if (webviewStyle.popGesture === 'hide') {
+    delete webviewStyle.popGesture
+  }
+
+  // TODO 下拉刷新
+
+  if (path && routeOptions.meta.isNVue) {
+    webviewStyle.uniNView = {
+      path,
+      defaultFontSize: __uniConfig.defaultFontSize,
+      viewport: __uniConfig.viewport
+    }
+  }
+
+  return webviewStyle
+}

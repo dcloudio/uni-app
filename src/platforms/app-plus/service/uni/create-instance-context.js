@@ -29,7 +29,10 @@ export function createInstanceContext (instanceContext) {
     WeexPlus
   } = instanceContext
   const plus = new WeexPlus(weex)
-  const UniJSServiceBridge = initServiceJSBridge(Vue)
+  const UniServiceJSBridge = initServiceJSBridge(Vue, {
+    getApp,
+    getCurrentPages
+  })
   return {
     __uniConfig: uniConfig,
     __uniRoutes: uniRoutes,
@@ -48,11 +51,12 @@ export function createInstanceContext (instanceContext) {
       plus,
       uniConfig,
       uniRoutes,
+      UniServiceJSBridge,
       getApp,
       getCurrentPages
     ),
     getApp,
     getCurrentPages,
-    UniJSServiceBridge
+    UniServiceJSBridge
   }
 }

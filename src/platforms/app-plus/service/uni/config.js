@@ -9,21 +9,35 @@ function parseRoutes (config) {
   Object.keys(config.page).forEach(function (pagePath) {
     const isTabBar = tabBarList.indexOf(pagePath) !== -1
     const isQuit = isTabBar || (config.pages[0] === pagePath)
+    const isNVue = !!config.page[pagePath].nvue
     uniRoutes.push({
       path: '/' + pagePath,
       meta: {
         isQuit,
-        isTabBar
+        isTabBar,
+        isNVue
       },
-      window: config.page[pagePath] || {}
+      window: config.page[pagePath].window || {}
     })
   })
 }
 
-export function registerConfig (config) {
-  if (process.env.NODE_ENV !== 'production') {
-    console.log(`[uni-app] registerConfig`)
-  }
+export function registerConfig (config, {
+  plus
+}) {
   Object.assign(uniConfig, config)
+
+  uniConfig.viewport = ''
+  uniConfig.defaultFontSize = ''
+
+  if (uniConfig.nvueCompiler === 'uni-app') {
+    uniConfig.viewport = plus.screen.resolutionWidth
+    uniConfig.defaultFontSize = uniConfig.viewport / 20
+  }
+
   parseRoutes(uniConfig)
+
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(`[uni-app] registerConfig`, uniConfig)
+  }
 }

@@ -1,5 +1,23 @@
 import { createUniInstance } from './uni';
 
+function callHook (vm, hook, params) {
+  return (vm.$vm || vm).__call_hook(hook, params)
+}
+
+function callAppHook (vm, hook, params) {
+  if (hook !== 'onError') {
+    console.debug(`App：${hook} have been invoked` + (params ? ` ${JSON.stringify(params)}` : ''));
+  }
+  return (vm.$vm || vm).__call_hook(hook, params)
+}
+
+function callPageHook (vm, hook, params) {
+  if (hook !== 'onPageScroll') {
+    console.debug(`${vm.$page.route}[${vm.$page.id}]：${hook} have been invoked`);
+  }
+  return callHook(vm, hook, params)
+}
+
 const ANI_DURATION = 300;
 const ANI_SHOW = 'pop-in';
 
@@ -15,88 +33,80 @@ function showWebview (webview, animationType, animationDuration) {
   }, 50);
 }
 
-function initNavigateTo ({
-  __registerPage
-}) {
-  return function navigateTo (path, {
-    animationType,
-    animationDuration
-  }) {
-    showWebview(
-      __registerPage({
-        path
-      }),
-      animationType,
-      animationDuration
-    );
-  }
-}
-
-function initRedirectTo () {
-  return function redirectTo (path) {
-
-  }
-}
-
 let firstBackTime = 0;
 
-function initNavigateBack ({
+function navigateBack ({
+  delta,
+  animationType,
+  animationDuration
+}, {
   plus,
   getCurrentPages
+}, callback) {
+  const pages = getCurrentPages();
+  const len = pages.length - 1;
+  const page = pages[len];
+  if (page.$page.meta.isQuit) {
+    if (!firstBackTime) {
+      firstBackTime = Date.now();
+      plus.nativeUI.toast('再按一次退出应用');
+      setTimeout(() => {
+        firstBackTime = null;
+      }, 2000);
+    } else if (Date.now() - firstBackTime < 2000) {
+      plus.runtime.quit();
+    }
+  } else {
+    pages.splice(len, 1);
+    if (animationType) {
+      page.$getAppWebview().close(animationType, animationDuration || ANI_DURATION);
+    } else {
+      page.$getAppWebview().close('auto');
+    }
+    callback && callback();
+  }
+}
+
+function navigateTo ({
+  path,
+  animationType,
+  animationDuration
+}, {
+  __registerPage
 }) {
-  return function navigateBack (delta, {
+  showWebview(
+    __registerPage({
+      path
+    }),
     animationType,
     animationDuration
-  }) {
-    const pages = getCurrentPages();
-    const len = pages.length - 1;
-    const page = pages[len];
-    if (page.$meta.isQuit) {
-      if (!firstBackTime) {
-        firstBackTime = Date.now();
-        plus.nativeUI.toast('再按一次退出应用');
-        setTimeout(() => {
-          firstBackTime = null;
-        }, 2000);
-      } else if (Date.now() - firstBackTime < 2000) {
-        plus.runtime.quit();
-      }
-    } else {
-      pages.splice(len, 1);
-      if (animationType) {
-        page.$getAppWebview().close(animationType, animationDuration || ANI_DURATION);
-      } else {
-        page.$getAppWebview().close('auto');
-      }
-    }
-  }
+  );
 }
 
-function initSwitchTab (path) {
-  return function switchTab () {
+function reLaunch ({
+  path
+}, instanceContext) {}
 
-  }
-}
+function redirectTo ({
+  path
+}, instanceContext) {}
 
-function initReLaunch () {
-  return function reLaunch (path) {
+function switchTab ({
+  path
+}, instanceContext) {}
 
-  }
-}
-
-function initRouter (instanceContext) {
-  return {
-    navigateTo: initNavigateTo(instanceContext),
-    redirectTo: initRedirectTo(instanceContext),
-    navigateBack: initNavigateBack(instanceContext),
-    switchTab: initSwitchTab(instanceContext),
-    reLaunch: initReLaunch(instanceContext)
-  }
-}
+const route = {
+  navigateBack,
+  navigateTo,
+  reLaunch,
+  redirectTo,
+  switchTab
+};
 
 class Router {
   constructor (instanceContext) {
-    this.router = initRouter(instanceContext);
+    this.instanceContext = instanceContext;
+    this.$emit = instanceContext.UniServiceJSBridge.emit;
   }
 
   push ({
@@ -105,10 +115,16 @@ class Router {
     animationType,
     animationDuration
   } = {}) {
-    this.router[type](path, {
+    this.$emit('onAppRoute', {
+      type,
+      path
+    });
+
+    route[type]({
+      path,
       animationType,
       animationDuration
-    });
+    }, this.instanceContext);
   }
 
   go (delta, {
@@ -116,87 +132,339 @@ class Router {
     animationDuration
   } = {}) {
     delta = Math.abs(parseInt(delta) || 1);
-    this.router.navigateBack(delta, {
+    route.navigateBack({
+      delta,
       animationType,
       animationDuration
+    }, this.instanceContext, () => {
+      this.$emit('onAppRoute', {
+        type: 'navigateBack'
+      });
     });
   }
 }
 
 let appCtx;
 
-function getApp$1 () {
+const NETWORK_TYPES = [
+  'unknown',
+  'none',
+  'ethernet',
+  'wifi',
+  '2g',
+  '3g',
+  '4g'
+];
+
+function getApp () {
   return appCtx
 }
 
-function initListeners ({
-  plus
+function initGlobalListeners ({
+  plus,
+  UniServiceJSBridge
 }) {
+  const emit = UniServiceJSBridge.emit;
+
   plus.key.addEventListener('backbutton', () => {
     appCtx.$router.go(-1);
   });
+
+  plus.globalEvent.addEventListener('pause', () => {
+    emit('onAppEnterBackground');
+  });
+
+  plus.globalEvent.addEventListener('resume', () => {
+    emit('onAppEnterForeground');
+  });
+
+  plus.globalEvent.addEventListener('netchange', () => {
+    const networkType = NETWORK_TYPES[plus.networkinfo.getCurrentType()];
+    emit('onNetworkStatusChange', {
+      isConnected: networkType !== 'none',
+      networkType
+    });
+  });
+}
+
+function initAppLaunch (appVm, {
+  __uniConfig
+}) {
+  const args = {
+    path: __uniConfig.entryPagePath,
+    query: {},
+    scene: 1001
+  };
+
+  callAppHook(appVm, 'onLaunch', args);
+  callAppHook(appVm, 'onShow', args);
 }
 
 function registerApp (appVm, instanceContext) {
   if (process.env.NODE_ENV !== 'production') {
     console.log(`[uni-app] registerApp`);
   }
+
   appCtx = appVm;
+
   appCtx.$router = new Router(instanceContext);
-  initListeners(instanceContext);
+
+  initAppLaunch(appVm, instanceContext);
+
+  initGlobalListeners(instanceContext);
 }
 
-const WEBVIEW_LISTENERS = [
-  'close',
-  'resize',
-  'popGesture',
-  'pullToRefresh',
-  'titleNViewSearchInputChanged',
-  'titleNViewSearchInputConfirmed',
-  'titleNViewSearchInputClicked'
-];
+const _toString = Object.prototype.toString;
 
-let id = 1;
+function isPlainObject (obj) {
+  return _toString.call(obj) === '[object Object]'
+}
 
-function parseWebviewStyle (path, windowOptions = {}) {
-  return {
-    titleNView: {
-      autoBackButton: true,
-      titleText: 'titleText'
-    },
-    uniNView: {
-      path
+function parseTitleNView (routeOptions) {
+  const windowOptions = routeOptions.window;
+  const titleNView = windowOptions.titleNView;
+  if ( // 无头
+    titleNView === false ||
+    titleNView === 'false' ||
+    (
+      windowOptions.navigationStyle === 'custom' &&
+      !isPlainObject(titleNView)
+    )
+  ) {
+    return false
+  }
+
+  const ret = {
+    autoBackButton: !routeOptions.meta.isQuit,
+    backgroundColor: windowOptions.navigationBarBackgroundColor || '#000000',
+    titleText: windowOptions.navigationBarTitleText || '',
+    titleColor: windowOptions.navigationBarTextStyle === 'black' ? '#000000' : '#ffffff'
+  };
+
+  if (isPlainObject(titleNView)) {
+    return Object.assign(ret, titleNView)
+  }
+
+  return ret
+}
+
+function parsePullToRefresh (routeOptions, {
+  plus
+}) {
+  const windowOptions = routeOptions.window;
+
+  if (windowOptions.enablePullDownRefresh) {
+    const pullToRefreshStyles = Object.create(null);
+    // 初始化默认值
+    if (plus.os.name === 'Android') {
+      Object.assign(pullToRefreshStyles, {
+        support: true,
+        style: 'circle'
+      });
+    } else {
+      Object.assign(pullToRefreshStyles, {
+        support: true,
+        style: 'default',
+        height: '50px',
+        range: '200px',
+        contentdown: {
+          caption: ''
+        },
+        contentover: {
+          caption: ''
+        },
+        contentrefresh: {
+          caption: ''
+        }
+      });
     }
+
+    if (windowOptions.backgroundTextStyle) {
+      pullToRefreshStyles.color = windowOptions.backgroundTextStyle;
+      pullToRefreshStyles.snowColor = windowOptions.backgroundTextStyle;
+    }
+
+    Object.assign(pullToRefreshStyles, windowOptions.pullToRefresh || {});
+
+    return pullToRefreshStyles
   }
 }
 
-function parseWindowOptions (windowOptions = {}, globalWindowOptions = {}) {
-  // TODO
-  return windowOptions
-}
+const WEBVIEW_STYLE_BLACKLIST = [
+  'navigationBarBackgroundColor',
+  'navigationBarTextStyle',
+  'navigationBarTitleText',
+  'navigationBarShadow',
+  'navigationStyle',
+  'disableScroll',
+  'backgroundColor',
+  'backgroundTextStyle',
+  'enablePullDownRefresh',
+  'onReachBottomDistance',
+  'usingComponents',
+  // 需要解析的
+  'titleNView',
+  'pullToRefresh'
+];
 
-function createWebview (path, {
-  plus,
-  __uniConfig
-}, windowOptions) {
-  return plus.webview.create(
-    '',
-    String(id++),
-    parseWebviewStyle(
+function parseWebviewStyle (id, path, routeOptions = {}, instanceContext) {
+  const {
+    __uniConfig
+  } = instanceContext;
+
+  const webviewStyle = Object.create(null);
+
+  // 合并
+  const windowOptions = Object.assign(
+    JSON.parse(JSON.stringify(__uniConfig.window || {})),
+    routeOptions.window || {}
+  );
+
+  Object.keys(windowOptions).forEach(name => {
+    if (WEBVIEW_STYLE_BLACKLIST.indexOf(name) === -1) {
+      webviewStyle[name] = windowOptions[name];
+    }
+  });
+
+  const titleNView = parseTitleNView(routeOptions);
+  if (titleNView) {
+    if (id === 1 && __uniConfig.realEntryPagePath === path) {
+      titleNView.autoBackButton = true;
+    }
+    webviewStyle.titleNView = titleNView;
+  }
+
+  const pullToRefresh = parsePullToRefresh(routeOptions, instanceContext);
+  if (pullToRefresh) {
+    if (pullToRefresh.style === 'circle') {
+      webviewStyle.bounce = 'none';
+    }
+    webviewStyle.pullToRefresh = pullToRefresh;
+  }
+
+  // 不支持 hide
+  if (webviewStyle.popGesture === 'hide') {
+    delete webviewStyle.popGesture;
+  }
+
+  // TODO 下拉刷新
+
+  if (path && routeOptions.meta.isNVue) {
+    webviewStyle.uniNView = {
       path,
-      parseWindowOptions(windowOptions, __uniConfig.window)
-    ))
+      defaultFontSize: __uniConfig.defaultFontSize,
+      viewport: __uniConfig.viewport
+    };
+  }
+
+  return webviewStyle
 }
 
-function initWebview (webview, {
-  UniJSServiceBridge
-}) {
+function parseNavigationBar (webviewStyle) {
+  let titleText = '';
+  let textColor = '';
+  let backgroundColor = '';
+  const titleNView = webviewStyle.titleNView;
+  if (titleNView) {
+    titleText = titleNView.titleText || '';
+    textColor = titleNView.textColor || '';
+    backgroundColor = titleNView.backgroundColor || '';
+  }
+  return {
+    titleText,
+    textColor,
+    backgroundColor
+  }
+}
+
+let id = 2;
+
+const WEBVIEW_LISTENERS = {
+  'pullToRefresh': 'onPullDownRefresh',
+  'titleNViewSearchInputChanged': 'onNavigationBarSearchInputChanged',
+  'titleNViewSearchInputConfirmed': 'onNavigationBarSearchInputConfirmed',
+  'titleNViewSearchInputClicked': 'onNavigationBarSearchInputClicked'
+};
+
+function createWebview (path, instanceContext, routeOptions) {
+  const webviewId = id++;
+  const webviewStyle = parseWebviewStyle(
+    webviewId,
+    path,
+    routeOptions,
+    instanceContext
+  );
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(`[uni-app] createWebview`, webviewId, path, webviewStyle);
+  }
+  const webview = instanceContext.plus.webview.create('', String(webviewId), webviewStyle);
+
+  webview.$navigationBar = parseNavigationBar(webviewStyle);
+
+  return webview
+}
+
+function initWebview (webview, instanceContext, routeOptions) {
+  if (isPlainObject(routeOptions)) {
+    const webviewStyle = parseWebviewStyle(
+      parseInt(webview.id),
+      '',
+      routeOptions,
+      instanceContext
+    );
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`[uni-app] updateWebview`, webviewStyle);
+    }
+
+    webview.$navigationBar = parseNavigationBar(webviewStyle);
+
+    webview.setStyle(webviewStyle);
+  }
   // TODO subNVues
-  WEBVIEW_LISTENERS.forEach(listener => {
-    webview.addEventListener(listener, (e) => {
-      UniJSServiceBridge.emit(listener, e);
+  Object.keys(WEBVIEW_LISTENERS).forEach(name => {
+    webview.addEventListener(name, (e) => {
+      instanceContext.UniServiceJSBridge.emit(WEBVIEW_LISTENERS[name], e, parseInt(webview.id));
     });
   });
+
+  instanceContext.UniServiceJSBridge.on(webview.id + '.stopPullDownRefresh', () => {
+    webview.endPullToRefresh();
+  });
+
+  return webview
+}
+
+function createHolder (webview, {
+  navigationBar
+}, {
+  Vue
+}) {
+  const navigationBarState = Vue.observable(navigationBar);
+
+  /* eslint-disable no-new */
+  new Vue({
+    created () {
+      this.$watch(() => navigationBarState.titleText, (val, oldVal) => {
+        webview.setStyle({
+          titleNView: {
+            titleText: val || ''
+          }
+        });
+      });
+      this.$watch(() => [navigationBarState.textColor, navigationBarState.backgroundColor], (val) => {
+        webview.setStyle({
+          titleNView: {
+            titleColor: val[0],
+            backgroundColor: val[1]
+          }
+        });
+      });
+    }
+  });
+
+  return {
+    navigationBar: navigationBarState
+  }
 }
 
 const pages = [];
@@ -229,24 +497,33 @@ function registerPage ({
   path,
   webview
 }, instanceContext) {
-  const routeOptions = instanceContext.__uniRoutes.find(route => route.path === path);
+  const routeOptions = JSON.parse(JSON.stringify(instanceContext.__uniRoutes.find(route => route.path === path)));
 
   if (!webview) {
-    webview = createWebview(path, instanceContext, routeOptions.window);
+    webview = createWebview(path, instanceContext, routeOptions);
   }
 
   if (process.env.NODE_ENV !== 'production') {
     console.log(`[uni-app] registerPage`, path, webview.id);
   }
 
-  initWebview(webview, instanceContext, webview.id === '1' && routeOptions.window);
+  initWebview(webview, instanceContext, webview.id === '1' && routeOptions);
 
+  const route = path.slice(1);
   pages.push({
-    route: path.slice(1),
+    route,
     $getAppWebview () {
       return webview
     },
-    $meta: routeOptions.meta
+    $page: {
+      id: parseInt(webview.id),
+      meta: routeOptions.meta,
+      path,
+      route
+    },
+    $holder: createHolder(webview, {
+      navigationBar: webview.$navigationBar
+    }, instanceContext)
   });
 
   return webview
@@ -263,108 +540,112 @@ function parseRoutes (config) {
   Object.keys(config.page).forEach(function (pagePath) {
     const isTabBar = tabBarList.indexOf(pagePath) !== -1;
     const isQuit = isTabBar || (config.pages[0] === pagePath);
+    const isNVue = !!config.page[pagePath].nvue;
     uniRoutes.push({
       path: '/' + pagePath,
       meta: {
         isQuit,
-        isTabBar
-      }
+        isTabBar,
+        isNVue
+      },
+      window: config.page[pagePath].window || {}
     });
   });
 }
 
-function registerConfig (config) {
-  if (process.env.NODE_ENV !== 'production') {
-    console.log(`[uni-app] registerConfig`);
-  }
+function registerConfig (config, {
+  plus
+}) {
   Object.assign(uniConfig, config);
+
+  uniConfig.viewport = '';
+  uniConfig.defaultFontSize = '';
+
+  if (uniConfig.nvueCompiler === 'uni-app') {
+    uniConfig.viewport = plus.screen.resolutionWidth;
+    uniConfig.defaultFontSize = uniConfig.viewport / 20;
+  }
+
   parseRoutes(uniConfig);
-}
 
-function callHook (vm, hook, params) {
-  return (vm.$vm || vm).__call_hook(hook, params)
-}
-
-function callAppHook (vm, hook, params) {
-  if (hook !== 'onError') {
-    console.debug(`App：${hook} have been invoked` + (params ? ` ${JSON.stringify(params)}` : ''));
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(`[uni-app] registerConfig`, uniConfig);
   }
-  return (vm.$vm || vm).__call_hook(hook, params)
 }
 
-function callPageHook (vm, hook, params) {
-  // hack 一下，H5 平台通知 View 层onShow，方便 View 层来切换 scroll 事件监听
-  if (__PLATFORM__ === 'h5') {
-    if (hook === 'onLoad') {
-      vm.$mp.query = params;
-      UniServiceJSBridge.publishHandler('onPageLoad', vm, vm.$page.id);
-    }
-    if (hook === 'onShow') {
-      if (
-        vm.$route.meta.isTabBar &&
-        vm.$route.params.detail
-      ) {
-        UniServiceJSBridge.emit('onTabItemTap', vm.$route.params.detail);
-      }
-      UniServiceJSBridge.publishHandler('onPageShow', vm, vm.$page.id);
+function initOn (on, {
+  getApp,
+  getCurrentPages
+}) {
+  function onError (err) {
+    callAppHook(getApp(), 'onError', err);
+  }
+
+  function onPageNotFound (page) {
+    callAppHook(getApp(), 'onPageNotFound', page);
+  }
+
+  function onPullDownRefresh (args, pageId) {
+    const page = getCurrentPages().find(page => page.$page.id === pageId);
+    if (page) {
+      callPageHook(page, 'onPullDownRefresh');
     }
   }
-  if (hook !== 'onPageScroll') {
-    console.debug(`${vm.$page.route}[${vm.$page.id}]：${hook} have been invoked`);
+
+  function callCurrentPageHook (hook, args) {
+    const pages = getCurrentPages();
+    if (pages.length) {
+      callPageHook(pages[pages.length - 1], hook, args);
+    }
   }
-  return callHook(vm, hook, params)
-}
 
-function onError (err) {
-  callAppHook(getApp(), 'onError', err);
-}
-
-function onPageNotFound (page) {
-  callAppHook(getApp(), 'onPageNotFound', page);
-}
-
-function onPullDownRefresh (args, pageId) {
-  const page = getCurrentPages().find(page => page.$page.id === pageId);
-  if (page) {
-    callPageHook(page, 'onPullDownRefresh');
+  function createCallCurrentPageHook (hook) {
+    return function (args) {
+      callCurrentPageHook(hook, args);
+    }
   }
-}
 
-function callCurrentPageHook (hook, args) {
-  const pages = getCurrentPages();
-  if (pages.length) {
-    callPageHook(pages[pages.length - 1], hook, args);
+  function onAppEnterBackground () {
+    callAppHook(getApp(), 'onHide');
+    callCurrentPageHook('onHide');
   }
-}
 
-function createCallCurrentPageHook (hook) {
-  return function (args) {
-    callCurrentPageHook(hook, args);
+  function onAppEnterForeground () {
+    callAppHook(getApp(), 'onShow');
+    callCurrentPageHook('onShow');
   }
-}
 
-function onAppEnterBackground () {
-  callAppHook(getApp(), 'onHide');
-  callCurrentPageHook('onHide');
-}
-
-function onAppEnterForeground () {
-  callAppHook(getApp(), 'onShow');
-  callCurrentPageHook('onShow');
-}
-
-function onWebInvokeAppService ({
-  name,
-  arg
-}, pageId) {
-  if (name === 'postMessage') ; else {
-    uni[name](arg);
+  function onWebInvokeAppService ({
+    name,
+    arg
+  }, pageId) {
+    if (name === 'postMessage') ; else {
+      uni[name](arg);
+    }
   }
-}
 
-function initOn (on) {
+  const routeHooks = {
+    navigateTo () {
+      callCurrentPageHook('onHide');
+    },
+    navigateBack () {
+      callCurrentPageHook('onShow');
+    }
+  };
+
+  function onAppRoute ({
+    type
+  }) {
+    const routeHook = routeHooks[type];
+    routeHook && routeHook();
+  }
+
   on('onError', onError);
   on('onPageNotFound', onPageNotFound);
+
+  { // 后续有时间，h5 平台也要迁移到 onAppRoute
+    on('onAppRoute', onAppRoute);
+  }
 
   on('onAppEnterBackground', onAppEnterBackground);
   on('onAppEnterForeground', onAppEnterForeground);
@@ -381,17 +662,22 @@ function initOn (on) {
   on('onWebInvokeAppService', onWebInvokeAppService);
 }
 
-function initServiceJSBridge (Vue) {
+let bridge;
+
+function initServiceJSBridge (Vue, instanceContext) {
+  if (bridge) {
+    return bridge
+  }
   const Emitter = new Vue();
 
-  const bridge = {
+  bridge = {
     on: Emitter.$on.bind(Emitter),
     off: Emitter.$off.bind(Emitter),
     once: Emitter.$once.bind(Emitter),
     emit: Emitter.$emit.bind(Emitter)
   };
 
-  initOn(bridge.on);
+  initOn(bridge.on, instanceContext);
 
   return bridge
 }
@@ -403,7 +689,10 @@ function createInstanceContext (instanceContext) {
     WeexPlus
   } = instanceContext;
   const plus = new WeexPlus(weex);
-  const UniJSServiceBridge = initServiceJSBridge(Vue);
+  const UniServiceJSBridge = initServiceJSBridge(Vue, {
+    getApp,
+    getCurrentPages: getCurrentPages$1
+  });
   return {
     __uniConfig: uniConfig,
     __uniRoutes: uniRoutes,
@@ -422,12 +711,13 @@ function createInstanceContext (instanceContext) {
       plus,
       uniConfig,
       uniRoutes,
-      getApp$1,
+      UniServiceJSBridge,
+      getApp,
       getCurrentPages$1
     ),
-    getApp: getApp$1,
+    getApp,
     getCurrentPages: getCurrentPages$1,
-    UniJSServiceBridge
+    UniServiceJSBridge
   }
 }
 

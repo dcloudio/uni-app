@@ -1,18 +1,20 @@
 function setNavigationBar (type, args) {
   const pages = getCurrentPages()
   if (pages.length) {
-    const page = pages[pages.length - 1].$parent.$parent
+    const page = pages[pages.length - 1].$holder
 
     switch (type) {
       case 'setNavigationBarColor':
         const {
           frontColor,
           backgroundColor,
-          animation: {
-            duration,
-            timingFunc
-          }
+          animation
         } = args
+
+        const {
+          duration,
+          timingFunc
+        } = animation
 
         if (frontColor) {
           page.navigationBar.textColor = frontColor === '#000000' ? 'black' : 'white'
@@ -42,6 +44,7 @@ function setNavigationBar (type, args) {
   }
   return {}
 }
+
 export function setNavigationBarColor (args) {
   return setNavigationBar('setNavigationBarColor', args)
 }
