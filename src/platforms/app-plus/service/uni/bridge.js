@@ -1,4 +1,5 @@
 import initOn from 'uni-core/service/bridge/on'
+import initPopup from './popup'
 
 let bridge
 
@@ -6,6 +7,7 @@ export function initServiceJSBridge (Vue, instanceContext) {
   if (bridge) {
     return bridge
   }
+
   const Emitter = new Vue()
 
   bridge = {
@@ -16,6 +18,7 @@ export function initServiceJSBridge (Vue, instanceContext) {
   }
 
   initOn(bridge.on, instanceContext)
+  initPopup(bridge.on, instanceContext)
 
   return bridge
 }

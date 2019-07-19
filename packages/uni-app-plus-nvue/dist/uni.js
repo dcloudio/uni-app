@@ -51,8 +51,84 @@ function tryCatch (fn) {
   }
 }
 
+const HOOKS = [
+  'invoke',
+  'success',
+  'fail',
+  'complete',
+  'returnValue'
+];
+
 const globalInterceptors = {};
 const scopedInterceptors = {};
+
+function mergeHook (parentVal, childVal) {
+  const res = childVal
+    ? parentVal
+      ? parentVal.concat(childVal)
+      : Array.isArray(childVal)
+        ? childVal : [childVal]
+    : parentVal;
+  return res
+    ? dedupeHooks(res)
+    : res
+}
+
+function dedupeHooks (hooks) {
+  const res = [];
+  for (let i = 0; i < hooks.length; i++) {
+    if (res.indexOf(hooks[i]) === -1) {
+      res.push(hooks[i]);
+    }
+  }
+  return res
+}
+
+function removeHook (hooks, hook) {
+  const index = hooks.indexOf(hook);
+  if (index !== -1) {
+    hooks.splice(index, 1);
+  }
+}
+
+function mergeInterceptorHook (interceptor, option) {
+  Object.keys(option).forEach(hook => {
+    if (HOOKS.indexOf(hook) !== -1 && isFn(option[hook])) {
+      interceptor[hook] = mergeHook(interceptor[hook], option[hook]);
+    }
+  });
+}
+
+function removeInterceptorHook (interceptor, option) {
+  if (!interceptor || !option) {
+    return
+  }
+  Object.keys(option).forEach(hook => {
+    if (HOOKS.indexOf(hook) !== -1 && isFn(option[hook])) {
+      removeHook(interceptor[hook], option[hook]);
+    }
+  });
+}
+
+function addInterceptor (method, option) {
+  if (typeof method === 'string' && isPlainObject(option)) {
+    mergeInterceptorHook(scopedInterceptors[method] || (scopedInterceptors[method] = {}), option);
+  } else if (isPlainObject(method)) {
+    mergeInterceptorHook(globalInterceptors, method);
+  }
+}
+
+function removeInterceptor (method, option) {
+  if (typeof method === 'string') {
+    if (isPlainObject(option)) {
+      removeInterceptorHook(scopedInterceptors[method], option);
+    } else {
+      delete scopedInterceptors[method];
+    }
+  } else if (isPlainObject(method)) {
+    removeInterceptorHook(globalInterceptors, method);
+  }
+}
 
 function wrapperHook (hook) {
   return function (data) {
@@ -151,6 +227,19 @@ function invokeApi (method, api, options, ...params) {
   }
   return api(options, ...params)
 }
+
+const promiseInterceptor = {
+  returnValue (res) {
+    if (!isPromise(res)) {
+      return res
+    }
+    return res.then(res => {
+      return res[1]
+    }).catch(res => {
+      return res[0]
+    })
+  }
+};
 
 const SYNC_API_RE =
     /^\$|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
@@ -1766,6 +1855,313 @@ function wrapper (name, invokeMethod, extras) {
   }
 }
 
+// 尽早将 invokeCallbackHandler 挂在 UniServiceJSBridge 中
+UniServiceJSBridge.invokeCallbackHandler = invokeCallbackHandler;
+
+function createCommonjsModule(fn, module) {
+	return module = { exports: {} }, fn(module, module.exports), module.exports;
+}
+
+var base64Arraybuffer = createCommonjsModule(function (module, exports) {
+/*
+ * base64-arraybuffer
+ * https://github.com/niklasvh/base64-arraybuffer
+ *
+ * Copyright (c) 2012 Niklas von Hertzen
+ * Licensed under the MIT license.
+ */
+(function(){
+
+  var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
+  // Use a lookup table to find the index.
+  var lookup = new Uint8Array(256);
+  for (var i = 0; i < chars.length; i++) {
+    lookup[chars.charCodeAt(i)] = i;
+  }
+
+  exports.encode = function(arraybuffer) {
+    var bytes = new Uint8Array(arraybuffer),
+    i, len = bytes.length, base64 = "";
+
+    for (i = 0; i < len; i+=3) {
+      base64 += chars[bytes[i] >> 2];
+      base64 += chars[((bytes[i] & 3) << 4) | (bytes[i + 1] >> 4)];
+      base64 += chars[((bytes[i + 1] & 15) << 2) | (bytes[i + 2] >> 6)];
+      base64 += chars[bytes[i + 2] & 63];
+    }
+
+    if ((len % 3) === 2) {
+      base64 = base64.substring(0, base64.length - 1) + "=";
+    } else if (len % 3 === 1) {
+      base64 = base64.substring(0, base64.length - 2) + "==";
+    }
+
+    return base64;
+  };
+
+  exports.decode =  function(base64) {
+    var bufferLength = base64.length * 0.75,
+    len = base64.length, i, p = 0,
+    encoded1, encoded2, encoded3, encoded4;
+
+    if (base64[base64.length - 1] === "=") {
+      bufferLength--;
+      if (base64[base64.length - 2] === "=") {
+        bufferLength--;
+      }
+    }
+
+    var arraybuffer = new ArrayBuffer(bufferLength),
+    bytes = new Uint8Array(arraybuffer);
+
+    for (i = 0; i < len; i+=4) {
+      encoded1 = lookup[base64.charCodeAt(i)];
+      encoded2 = lookup[base64.charCodeAt(i+1)];
+      encoded3 = lookup[base64.charCodeAt(i+2)];
+      encoded4 = lookup[base64.charCodeAt(i+3)];
+
+      bytes[p++] = (encoded1 << 2) | (encoded2 >> 4);
+      bytes[p++] = ((encoded2 & 15) << 4) | (encoded3 >> 2);
+      bytes[p++] = ((encoded3 & 3) << 6) | (encoded4 & 63);
+    }
+
+    return arraybuffer;
+  };
+})();
+});
+var base64Arraybuffer_1 = base64Arraybuffer.encode;
+var base64Arraybuffer_2 = base64Arraybuffer.decode;
+
+const base64ToArrayBuffer$1 = base64Arraybuffer_2;
+const arrayBufferToBase64$1 = base64Arraybuffer_1;
+
+var platformSchema = {};
+
+// TODO 待处理其他 API 的检测
+
+function canIUse$1 (schema) {
+  if (hasOwn(platformSchema, schema)) {
+    return platformSchema[schema]
+  }
+  return true
+}
+
+const interceptors = {
+  promiseInterceptor
+};
+
+/**
+ * 查看位置
+ * @param {*} param0
+ * @param {*} callbackId
+ */
+function openLocation$1 ({
+  latitude,
+  longitude,
+  scale,
+  name,
+  address
+}, callbackId) {
+  const {
+    invokeCallbackHandler: invoke
+  } = UniServiceJSBridge;
+
+  getApp().$router.push({
+    type: 'navigateTo',
+    path: '/open-location',
+    query: {
+      latitude,
+      longitude,
+      scale,
+      name,
+      address
+    }
+  }, function () {
+    invoke(callbackId, {
+      errMsg: 'openLocation:ok'
+    });
+  }, function () {
+    invoke(callbackId, {
+      errMsg: 'openLocation:fail'
+    });
+  });
+}
+/**
+ * 选择位置
+ * @param {*} callbackId
+ */
+function chooseLocation (options, callbackId) {
+  const {
+    invokeCallbackHandler: invoke
+  } = UniServiceJSBridge;
+  getApp().$router.push({
+    type: 'navigateTo',
+    path: '/choose-location'
+  }, function () {
+    var fn = data => {
+      UniServiceJSBridge.unsubscribe('onChooseLocation', fn);
+      if (data) {
+        invoke(callbackId, Object.assign(data, {
+          errMsg: 'chooseLocation:ok'
+        }));
+      } else {
+        invoke(callbackId, {
+          errMsg: 'chooseLocation:fail'
+        });
+      }
+    };
+    UniServiceJSBridge.subscribe('onChooseLocation', fn);
+  }, function () {
+    invoke(callbackId, {
+      errMsg: 'chooseLocation:fail'
+    });
+  });
+}
+
+function setNavigationBar (type, args) {
+  const pages = getCurrentPages();
+  if (pages.length) {
+    const page = pages[pages.length - 1].$holder;
+
+    switch (type) {
+      case 'setNavigationBarColor':
+        const {
+          frontColor,
+          backgroundColor,
+          animation
+        } = args;
+
+        const {
+          duration,
+          timingFunc
+        } = animation;
+
+        if (frontColor) {
+          page.navigationBar.textColor = frontColor === '#000000' ? 'black' : 'white';
+        }
+        if (backgroundColor) {
+          page.navigationBar.backgroundColor = backgroundColor;
+        }
+        page.navigationBar.duration = duration + 'ms';
+        page.navigationBar.timingFunc = timingFunc;
+        break
+      case 'showNavigationBarLoading':
+        page.navigationBar.loading = true;
+        break
+      case 'hideNavigationBarLoading':
+        page.navigationBar.loading = false;
+        break
+      case 'setNavigationBarTitle':
+        const {
+          title
+        } = args;
+        page.navigationBar.titleText = title;
+        break
+    }
+  }
+  return {}
+}
+
+function setNavigationBarColor$1 (args) {
+  return setNavigationBar('setNavigationBarColor', args)
+}
+
+function showNavigationBarLoading () {
+  return setNavigationBar('showNavigationBarLoading')
+}
+
+function hideNavigationBarLoading () {
+  return setNavigationBar('hideNavigationBarLoading')
+}
+
+function setNavigationBarTitle$1 (args) {
+  return setNavigationBar('setNavigationBarTitle', args)
+}
+
+function pageScrollTo$1 (args) {
+  const pages = getCurrentPages();
+  if (pages.length) {
+    UniServiceJSBridge.publishHandler('pageScrollTo', args, pages[pages.length - 1].$page.id);
+  }
+  return {}
+}
+
+let pageId;
+
+function startPullDownRefresh () {
+  if (pageId) {
+    UniServiceJSBridge.emit(pageId + '.stopPullDownRefresh', {}, pageId);
+  }
+  const pages = getCurrentPages();
+  if (pages.length) {
+    pageId = pages[pages.length - 1].$page.id;
+    UniServiceJSBridge.emit(pageId + '.startPullDownRefresh', {}, pageId);
+  }
+  return {}
+}
+
+function stopPullDownRefresh () {
+  if (pageId) {
+    UniServiceJSBridge.emit(pageId + '.stopPullDownRefresh', {}, pageId);
+    pageId = null;
+  } else {
+    const pages = getCurrentPages();
+    if (pages.length) {
+      pageId = pages[pages.length - 1].$page.id;
+      UniServiceJSBridge.emit(pageId + '.stopPullDownRefresh', {}, pageId);
+    }
+  }
+  return {}
+}
+
+const {
+  emit,
+  invokeCallbackHandler: invoke
+} = UniServiceJSBridge;
+
+function showModal$1 (args, callbackId) {
+  emit('onShowModal', args, function (type) {
+    invoke(callbackId, {
+      [type]: true
+    });
+  });
+}
+
+function showToast$1 (args) {
+  emit('onShowToast', args);
+  return {}
+}
+
+function hideToast () {
+  emit('onHideToast');
+  return {}
+}
+
+function showLoading$1 (args) {
+  emit('onShowLoading', args);
+  return {}
+}
+
+function hideLoading () {
+  emit('onHideLoading');
+  return {}
+}
+
+function showActionSheet$1 (args, callbackId) {
+  emit('onShowActionSheet', args, function (tapIndex) {
+    if (tapIndex === -1) {
+      invoke(callbackId, {
+        errMsg: 'showActionSheet:fail cancel'
+      });
+    } else {
+      invoke(callbackId, {
+        tapIndex
+      });
+    }
+  });
+}
+
 function hasLifecycleHook (vueOptions = {}, hook) {
   return Array.isArray(vueOptions[hook]) && vueOptions[hook].length
 }
@@ -1856,100 +2252,157 @@ function switchTab$1 (args) {
   return onAppRoute('switchTab', args)
 }
 
-function pageScrollTo$1 (args) {
-  const pages = getCurrentPages();
-  if (pages.length) {
-    UniServiceJSBridge.publishHandler('pageScrollTo', args, pages[pages.length - 1].$page.id);
-  }
-  return {}
+function getStorageHolder () {
+  return plus.storage
 }
 
-let pageId;
-
-function startPullDownRefresh () {
-  if (pageId) {
-    UniServiceJSBridge.emit(pageId + '.stopPullDownRefresh', {}, pageId);
-  }
-  const pages = getCurrentPages();
-  if (pages.length) {
-    pageId = pages[pages.length - 1].$page.id;
-    UniServiceJSBridge.emit(pageId + '.startPullDownRefresh', {}, pageId);
-  }
-  return {}
-}
-
-function stopPullDownRefresh () {
-  if (pageId) {
-    UniServiceJSBridge.emit(pageId + '.stopPullDownRefresh', {}, pageId);
-    pageId = null;
+function setStorage$1 ({
+  key,
+  data
+} = {}) {
+  const storageHolder = getStorageHolder();
+  const value = {
+    type: typeof data === 'object' ? 'object' : 'string',
+    data: data
+  };
+  storageHolder.setItem(key, JSON.stringify(value));
+  const keyList = storageHolder.getItem('uni-storage-keys');
+  if (!keyList) {
+    storageHolder.setItem('uni-storage-keys', JSON.stringify([key]));
   } else {
-    const pages = getCurrentPages();
-    if (pages.length) {
-      pageId = pages[pages.length - 1].$page.id;
-      UniServiceJSBridge.emit(pageId + '.stopPullDownRefresh', {}, pageId);
+    const keys = JSON.parse(keyList);
+    if (keys.indexOf(key) < 0) {
+      keys.push(key);
+      storageHolder.setItem('uni-storage-keys', JSON.stringify(keys));
     }
   }
-  return {}
+  return {
+    errMsg: 'setStorage:ok'
+  }
 }
 
-function setNavigationBar (type, args) {
-  const pages = getCurrentPages();
-  if (pages.length) {
-    const page = pages[pages.length - 1].$holder;
+function setStorageSync$1 (key, data) {
+  setStorage$1({
+    key,
+    data
+  });
+}
 
-    switch (type) {
-      case 'setNavigationBarColor':
-        const {
-          frontColor,
-          backgroundColor,
-          animation
-        } = args;
+function getStorage ({
+  key
+} = {}) {
+  const data = getStorageHolder().getItem(key);
+  return data ? {
+    data: JSON.parse(data).data,
+    errMsg: 'getStorage:ok'
+  } : {
+    data: '',
+    errMsg: 'getStorage:fail'
+  }
+}
 
-        const {
-          duration,
-          timingFunc
-        } = animation;
+function getStorageSync (key) {
+  const res = getStorage({
+    key
+  });
+  return res.data
+}
 
-        if (frontColor) {
-          page.navigationBar.textColor = frontColor === '#000000' ? 'black' : 'white';
-        }
-        if (backgroundColor) {
-          page.navigationBar.backgroundColor = backgroundColor;
-        }
-        page.navigationBar.duration = duration + 'ms';
-        page.navigationBar.timingFunc = timingFunc;
-        break
-      case 'showNavigationBarLoading':
-        page.navigationBar.loading = true;
-        break
-      case 'hideNavigationBarLoading':
-        page.navigationBar.loading = false;
-        break
-      case 'setNavigationBarTitle':
-        const {
-          title
-        } = args;
-        page.navigationBar.titleText = title;
-        break
+function removeStorage ({
+  key
+} = {}) {
+  const storageHolder = getStorageHolder();
+  const keyList = storageHolder.getItem('uni-storage-keys');
+  if (keyList) {
+    const keys = JSON.parse(keyList);
+    const index = keys.indexOf(key);
+    keys.splice(index, 1);
+    storageHolder.setItem('uni-storage-keys', JSON.stringify(keys));
+  }
+  storageHolder.removeItem(key);
+  return {
+    errMsg: 'removeStorage:ok'
+  }
+}
+
+function removeStorageSync (key) {
+  removeStorage({
+    key
+  });
+}
+
+function clearStorage () {
+  getStorageHolder().clear();
+  return {
+    errMsg: 'clearStorage:ok'
+  }
+}
+
+function clearStorageSync () {
+  clearStorage();
+}
+
+function getStorageInfo () { // TODO 暂时先不做大小的转换
+  const keyList = getStorageHolder().getItem('uni-storage-keys');
+  return keyList ? {
+    keys: JSON.parse(keyList),
+    currentSize: 0,
+    limitSize: 0,
+    errMsg: 'getStorageInfo:ok'
+  } : {
+    keys: '',
+    currentSize: 0,
+    limitSize: 0,
+    errMsg: 'getStorageInfo:fail'
+  }
+}
+
+function getStorageInfoSync () {
+  const res = getStorageInfo();
+  delete res.errMsg;
+  return res
+}
+
+const EPS = 1e-4;
+const BASE_DEVICE_WIDTH = 750;
+let isIOS = false;
+let deviceWidth = 0;
+let deviceDPR = 0;
+
+function checkDeviceWidth () {
+  const {
+    platform,
+    pixelRatio,
+    windowWidth
+  } = uni.getSystemInfoSync();
+
+  deviceWidth = windowWidth;
+  deviceDPR = pixelRatio;
+  isIOS = platform === 'ios';
+}
+
+function upx2px (number, newDeviceWidth) {
+  if (deviceWidth === 0) {
+    checkDeviceWidth();
+  }
+
+  number = Number(number);
+  if (number === 0) {
+    return 0
+  }
+  let result = (number / BASE_DEVICE_WIDTH) * (newDeviceWidth || deviceWidth);
+  if (result < 0) {
+    result = -result;
+  }
+  result = Math.floor(result + EPS);
+  if (result === 0) {
+    if (deviceDPR === 1 || !isIOS) {
+      return 1
+    } else {
+      return 0.5
     }
   }
-  return {}
-}
-
-function setNavigationBarColor$1 (args) {
-  return setNavigationBar('setNavigationBarColor', args)
-}
-
-function showNavigationBarLoading () {
-  return setNavigationBar('showNavigationBarLoading')
-}
-
-function hideNavigationBarLoading () {
-  return setNavigationBar('hideNavigationBarLoading')
-}
-
-function setNavigationBarTitle$1 (args) {
-  return setNavigationBar('setNavigationBarTitle', args)
+  return number < 0 ? -result : result
 }
 
 
@@ -1958,15 +2411,41 @@ var api = /*#__PURE__*/Object.freeze({
   pageScrollTo: pageScrollTo$1,
   startPullDownRefresh: startPullDownRefresh,
   stopPullDownRefresh: stopPullDownRefresh,
+  base64ToArrayBuffer: base64ToArrayBuffer$1,
+  arrayBufferToBase64: arrayBufferToBase64$1,
+  canIUse: canIUse$1,
+  interceptors: interceptors,
+  addInterceptor: addInterceptor,
+  removeInterceptor: removeInterceptor,
+  openLocation: openLocation$1,
+  chooseLocation: chooseLocation,
+  setNavigationBarColor: setNavigationBarColor$1,
+  showNavigationBarLoading: showNavigationBarLoading,
+  hideNavigationBarLoading: hideNavigationBarLoading,
+  setNavigationBarTitle: setNavigationBarTitle$1,
+  showModal: showModal$1,
+  showToast: showToast$1,
+  hideToast: hideToast,
+  showLoading: showLoading$1,
+  hideLoading: hideLoading,
+  showActionSheet: showActionSheet$1,
   redirectTo: redirectTo$1,
   navigateTo: navigateTo$1,
   navigateBack: navigateBack$1,
   reLaunch: reLaunch$1,
   switchTab: switchTab$1,
-  setNavigationBarColor: setNavigationBarColor$1,
-  showNavigationBarLoading: showNavigationBarLoading,
-  hideNavigationBarLoading: hideNavigationBarLoading,
-  setNavigationBarTitle: setNavigationBarTitle$1
+  setStorage: setStorage$1,
+  setStorageSync: setStorageSync$1,
+  getStorage: getStorage,
+  getStorageSync: getStorageSync,
+  removeStorage: removeStorage,
+  removeStorageSync: removeStorageSync,
+  clearStorage: clearStorage,
+  clearStorageSync: clearStorageSync,
+  getStorageInfo: getStorageInfo,
+  getStorageInfoSync: getStorageInfoSync,
+  checkDeviceWidth: checkDeviceWidth,
+  upx2px: upx2px
 });
 
 const uni$1 = Object.create(null);

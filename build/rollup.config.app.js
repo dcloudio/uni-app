@@ -1,6 +1,8 @@
 const path = require('path')
 const alias = require('rollup-plugin-alias')
 const replace = require('rollup-plugin-replace')
+const resolve = require('rollup-plugin-node-resolve')
+const commonjs = require('rollup-plugin-commonjs')
 const requireContext = require('./rollup-plugin-require-context')
 
 let input = 'src/platforms/app-plus/service/uni/create-instance-context.js'
@@ -25,6 +27,8 @@ module.exports = {
   input,
   output,
   plugins: [
+    resolve(),
+    commonjs(),
     requireContext(),
     alias({
       'uni-core': path.resolve(__dirname, '../src/core'),

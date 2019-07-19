@@ -54,14 +54,25 @@ export function initWebview (webview, instanceContext, routeOptions) {
 
     webview.setStyle(webviewStyle)
   }
+
+  const {
+    on,
+    emit
+  } = instanceContext.UniServiceJSBridge
+
   // TODO subNVues
   Object.keys(WEBVIEW_LISTENERS).forEach(name => {
     webview.addEventListener(name, (e) => {
-      instanceContext.UniServiceJSBridge.emit(WEBVIEW_LISTENERS[name], e, parseInt(webview.id))
+      emit(WEBVIEW_LISTENERS[name], e, parseInt(webview.id))
     })
   })
 
-  instanceContext.UniServiceJSBridge.on(webview.id + '.stopPullDownRefresh', () => {
+  // TODO 应该结束之前未完成的下拉刷新
+  on(webview.id + '.startPullDownRefresh', () => {
+    webview.beginPullToRefresh()
+  })
+
+  on(webview.id + '.stopPullDownRefresh', () => {
     webview.endPullToRefresh()
   })
 

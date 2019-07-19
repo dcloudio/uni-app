@@ -181,7 +181,7 @@ const CALLBACKS = [SUCCESS, FAIL, COMPLETE];
 
 const UNIAPP_SERVICE_NVUE_ID = '__uniapp__service';
 
-function noop$1 () {
+function noop () {
 
 }
 /**
@@ -409,10 +409,10 @@ function initPostMessage (nvue) {
 
 function initTitleNView (nvue) {
   const eventMaps = {
-    onNavigationBarButtonTap: noop$1,
-    onNavigationBarSearchInputChanged: noop$1,
-    onNavigationBarSearchInputConfirmed: noop$1,
-    onNavigationBarSearchInputClicked: noop$1
+    onNavigationBarButtonTap: noop,
+    onNavigationBarSearchInputChanged: noop,
+    onNavigationBarSearchInputConfirmed: noop,
+    onNavigationBarSearchInputClicked: noop
   };
   nvue.requireModule('globalEvent').addEventListener('plusMessage', e => {
     if (eventMaps[e.data.type]) {

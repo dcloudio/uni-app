@@ -1,20 +1,28 @@
+function getStorageHolder () {
+  if (__PLATFORM__ === 'h5') {
+    return localStorage
+  }
+  return plus.storage
+}
+
 export function setStorage ({
   key,
   data
 } = {}) {
-  let value = {
+  const storageHolder = getStorageHolder()
+  const value = {
     type: typeof data === 'object' ? 'object' : 'string',
     data: data
   }
-  localStorage.setItem(key, JSON.stringify(value))
-  let keyList = localStorage.getItem('uni-storage-keys')
+  storageHolder.setItem(key, JSON.stringify(value))
+  const keyList = storageHolder.getItem('uni-storage-keys')
   if (!keyList) {
-    localStorage.setItem('uni-storage-keys', JSON.stringify([key]))
+    storageHolder.setItem('uni-storage-keys', JSON.stringify([key]))
   } else {
-    let keys = JSON.parse(keyList)
+    const keys = JSON.parse(keyList)
     if (keys.indexOf(key) < 0) {
       keys.push(key)
-      localStorage.setItem('uni-storage-keys', JSON.stringify(keys))
+      storageHolder.setItem('uni-storage-keys', JSON.stringify(keys))
     }
   }
   return {
@@ -23,13 +31,16 @@ export function setStorage ({
 }
 
 export function setStorageSync (key, data) {
-  setStorage({ key, data })
+  setStorage({
+    key,
+    data
+  })
 }
 
 export function getStorage ({
   key
 } = {}) {
-  let data = localStorage.getItem(key)
+  const data = getStorageHolder().getItem(key)
   return data ? {
     data: JSON.parse(data).data,
     errMsg: 'getStorage:ok'
@@ -40,42 +51,48 @@ export function getStorage ({
 }
 
 export function getStorageSync (key) {
-  const res = getStorage({ key })
+  const res = getStorage({
+    key
+  })
   return res.data
 }
 
 export function removeStorage ({
   key
 } = {}) {
-  let keyList = localStorage.getItem('uni-storage-keys')
+  const storageHolder = getStorageHolder()
+  const keyList = storageHolder.getItem('uni-storage-keys')
   if (keyList) {
-    let keys = JSON.parse(keyList)
-    let index = keys.indexOf(key)
+    const keys = JSON.parse(keyList)
+    const index = keys.indexOf(key)
     keys.splice(index, 1)
-    localStorage.setItem('uni-storage-keys', JSON.stringify(keys))
+    storageHolder.setItem('uni-storage-keys', JSON.stringify(keys))
   }
-  localStorage.removeItem(key)
+  storageHolder.removeItem(key)
   return {
     errMsg: 'removeStorage:ok'
   }
 }
 
 export function removeStorageSync (key) {
-  removeStorage({ key })
+  removeStorage({
+    key
+  })
 }
 
 export function clearStorage () {
-  localStorage.clear()
+  getStorageHolder().clear()
   return {
     errMsg: 'clearStorage:ok'
   }
 }
+
 export function clearStorageSync () {
   clearStorage()
 }
 
 export function getStorageInfo () { // TODO 暂时先不做大小的转换
-  let keyList = localStorage.getItem('uni-storage-keys')
+  const keyList = getStorageHolder().getItem('uni-storage-keys')
   return keyList ? {
     keys: JSON.parse(keyList),
     currentSize: 0,

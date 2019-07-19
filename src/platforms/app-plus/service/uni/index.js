@@ -1,3 +1,5 @@
+import './polyfill'
+
 import {
   wrapper
 } from 'uni-helpers/api'
