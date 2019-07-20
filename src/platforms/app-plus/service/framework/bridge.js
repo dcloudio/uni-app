@@ -1,5 +1,4 @@
 import initOn from 'uni-core/service/bridge/on'
-import initPopup from './popup'
 
 let bridge
 
@@ -18,7 +17,6 @@ export function initServiceJSBridge (Vue, instanceContext) {
   }
 
   initOn(bridge.on, instanceContext)
-  initPopup(bridge.on, instanceContext)
 
   return bridge
 }

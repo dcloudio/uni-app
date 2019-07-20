@@ -2,13 +2,18 @@ import {
   showWebview
 } from './util'
 
-export default function navigateTo ({
-  path,
+export function navigateTo ({
+  url,
   animationType,
   animationDuration
-}, {
-  __registerPage
 }) {
+  const path = url.split('?')[0]
+
+  UniServiceJSBridge.emit('onAppRoute', {
+    type: 'navigateTo',
+    path
+  })
+
   showWebview(
     __registerPage({
       path

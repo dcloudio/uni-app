@@ -1,6 +1,6 @@
 import {
   normalizeDataset
-} from 'uni-helpers'
+} from 'uni-helpers/index'
 
 import getWindowOffset from 'uni-platform/helpers/get-window-offset'
 

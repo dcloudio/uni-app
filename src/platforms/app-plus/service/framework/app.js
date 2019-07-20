@@ -2,8 +2,6 @@ import {
   callAppHook
 } from 'uni-core/service/plugins/util'
 
-import Router from './router/index'
-
 let appCtx
 
 const NETWORK_TYPES = [
@@ -21,13 +19,14 @@ export function getApp () {
 }
 
 function initGlobalListeners ({
+  uni,
   plus,
   UniServiceJSBridge
 }) {
   const emit = UniServiceJSBridge.emit
 
   plus.key.addEventListener('backbutton', () => {
-    appCtx.$router.go(-1)
+    uni.navigateBack()
   })
 
   plus.globalEvent.addEventListener('pause', () => {
@@ -66,8 +65,6 @@ export function registerApp (appVm, instanceContext) {
   }
 
   appCtx = appVm
-
-  appCtx.$router = new Router(instanceContext)
 
   initAppLaunch(appVm, instanceContext)
 

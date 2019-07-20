@@ -1,113 +1,114 @@
 {
-    "name": "uniapp-js-framework",
-    "version": "0.0.1",
-    "scripts": {
-        "lint": "eslint --fix --config package.json --ext .js --ext .vue --ignore-path .eslintignore build src",
-        "dev:h5": "npm run lint && cross-env NODE_ENV=production UNI_WATCH=true UNI_PLATFORM=h5 node build/build.js",
-        "build:h5": "npm run lint && cross-env NODE_ENV=production UNI_WATCH=false UNI_PLATFORM=h5 node build/build.js",
-        "build:app-plus": "cross-env UNI_PLATFORM=app-plus rollup -c build/rollup.config.mp.js",
-        "build:app:all": "npm run lint && npm run build:app && npm run build:app:nvue && npm run build:app:legacy",
-        "build:app": "UNI_PLATFORM=app-plus-nvue UNI_SERVICE=uni rollup -c build/rollup.config.app.js",
-        "build:app:nvue": "cross-env UNI_PLATFORM=app-plus-nvue rollup -c build/rollup.config.app.js",
-        "build:app:legacy": "cross-env UNI_PLATFORM=app-plus-nvue UNI_SERVICE=legacy rollup -c build/rollup.config.app.js",
-        "build:mp-qq": "cross-env UNI_PLATFORM=mp-qq rollup -c build/rollup.config.mp.js",
-        "build:mp-weixin": "cross-env UNI_PLATFORM=mp-weixin rollup -c build/rollup.config.mp.js",
-        "build:mp-baidu": "cross-env UNI_PLATFORM=mp-baidu rollup -c build/rollup.config.mp.js",
-        "build:mp-alipay": "cross-env UNI_PLATFORM=mp-alipay rollup -c build/rollup.config.mp.js",
-        "build:mp-toutiao": "cross-env UNI_PLATFORM=mp-toutiao rollup -c build/rollup.config.mp.js",
-        "build:runtime": "npm run lint && npm run build:mp-weixin && npm run build:mp-qq && npm run build:mp-alipay && npm run build:mp-baidu && npm run build:mp-toutiao && npm run build:app-plus",
-        "test:unit": "cross-env NODE_ENV=test UNI_PLATFORM=h5 mocha-webpack --require tests/unit/setup.js --webpack-config build/webpack.config.test.js tests/unit/**/*.spec.js"
+  "name": "uniapp-js-framework",
+  "version": "0.0.1",
+  "scripts": {
+    "lint": "eslint --fix --config package.json --ext .js --ext .vue --ignore-path .eslintignore build src",
+    "dev:h5": "npm run lint && cross-env NODE_ENV=production UNI_WATCH=true UNI_PLATFORM=h5 node build/build.js",
+    "build:h5": "npm run lint && cross-env NODE_ENV=production UNI_WATCH=false UNI_PLATFORM=h5 node build/build.js",
+    "build:app-plus": "cross-env UNI_PLATFORM=app-plus rollup -c build/rollup.config.mp.js",
+    "build:app:all": "npm run lint && npm run build:app:uni && npm run build:app:nvue && npm run build:app:legacy",
+    "build:app:uni": "UNI_PLATFORM=app-plus-nvue UNI_SERVICE=uni rollup -c build/rollup.config.app.js",
+    "build:app:nvue": "cross-env UNI_PLATFORM=app-plus-nvue rollup -c build/rollup.config.app.js",
+    "build:app:legacy": "cross-env UNI_PLATFORM=app-plus-nvue UNI_SERVICE=legacy rollup -c build/rollup.config.app.js",
+    "build:mp-qq": "cross-env UNI_PLATFORM=mp-qq rollup -c build/rollup.config.mp.js",
+    "build:mp-weixin": "cross-env UNI_PLATFORM=mp-weixin rollup -c build/rollup.config.mp.js",
+    "build:mp-baidu": "cross-env UNI_PLATFORM=mp-baidu rollup -c build/rollup.config.mp.js",
+    "build:mp-alipay": "cross-env UNI_PLATFORM=mp-alipay rollup -c build/rollup.config.mp.js",
+    "build:mp-toutiao": "cross-env UNI_PLATFORM=mp-toutiao rollup -c build/rollup.config.mp.js",
+    "build:runtime": "npm run lint && npm run build:mp-weixin && npm run build:mp-qq && npm run build:mp-alipay && npm run build:mp-baidu && npm run build:mp-toutiao && npm run build:app-plus",
+    "test:unit": "cross-env NODE_ENV=test UNI_PLATFORM=h5 mocha-webpack --require tests/unit/setup.js --webpack-config build/webpack.config.test.js tests/unit/**/*.spec.js"
+  },
+  "dependencies": {
+    "base64-arraybuffer": "^0.2.0",
+    "intersection-observer": "^0.7.0"
+  },
+  "private": true,
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^3.4.1",
+    "@vue/cli-plugin-eslint": "^3.4.1",
+    "@vue/cli-plugin-unit-mocha": "^3.4.1",
+    "@vue/cli-service": "^3.4.1",
+    "@vue/test-utils": "^1.0.0-beta.25",
+    "babel-eslint": "^10.0.1",
+    "babylon": "^6.18.0",
+    "browserslist": "^4.4.2",
+    "caniuse-lite": "^1.0.30000940",
+    "chai": "^4.1.2",
+    "copy": "^0.3.2",
+    "cross-env": "^5.2.0",
+    "del": "^5.0.0",
+    "eslint": "^5.5.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-loader": "^2.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-node": "^7.0.1",
+    "eslint-plugin-promise": "^4.0.0",
+    "eslint-plugin-standard": "^4.0.0",
+    "eslint-plugin-vue": "^4.7.1",
+    "jsdom": "^13.0.0",
+    "jsdom-global": "^3.0.2",
+    "jsonfile": "^5.0.0",
+    "rollup": "^1.17.0",
+    "rollup-plugin-alias": "^1.4.0",
+    "rollup-plugin-commonjs": "^10.0.1",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-replace": "^2.1.0",
+    "strip-json-comments": "^2.0.1",
+    "vue": "^2.6.8",
+    "vue-router": "^3.0.1",
+    "vue-template-compiler": "^2.6.8",
+    "webpack": "^4.18.0",
+    "webpack-bundle-analyzer": "^3.0.3",
+    "webpack-virtual-modules": "^0.1.10"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
     },
-    "dependencies": {
-        "base64-arraybuffer": "^0.2.0",
-        "intersection-observer": "^0.7.0"
-    },
-    "private": true,
-    "devDependencies": {
-        "@vue/cli-plugin-babel": "^3.4.1",
-        "@vue/cli-plugin-eslint": "^3.4.1",
-        "@vue/cli-plugin-unit-mocha": "^3.4.1",
-        "@vue/cli-service": "^3.4.1",
-        "@vue/test-utils": "^1.0.0-beta.25",
-        "babel-eslint": "^10.0.1",
-        "babylon": "^6.18.0",
-        "browserslist": "^4.4.2",
-        "caniuse-lite": "^1.0.30000940",
-        "chai": "^4.1.2",
-        "copy": "^0.3.2",
-        "cross-env": "^5.2.0",
-        "del": "^5.0.0",
-        "eslint": "^5.5.0",
-        "eslint-config-standard": "^12.0.0",
-        "eslint-loader": "^2.1.0",
-        "eslint-plugin-import": "^2.14.0",
-        "eslint-plugin-node": "^7.0.1",
-        "eslint-plugin-promise": "^4.0.0",
-        "eslint-plugin-standard": "^4.0.0",
-        "eslint-plugin-vue": "^4.7.1",
-        "jsdom": "^13.0.0",
-        "jsdom-global": "^3.0.2",
-        "jsonfile": "^5.0.0",
-        "rollup": "^1.17.0",
-        "rollup-plugin-alias": "^1.4.0",
-        "rollup-plugin-commonjs": "^10.0.1",
-        "rollup-plugin-node-resolve": "^5.2.0",
-        "rollup-plugin-replace": "^2.1.0",
-        "strip-json-comments": "^2.0.1",
-        "vue": "^2.6.8",
-        "vue-router": "^3.0.1",
-        "vue-template-compiler": "^2.6.8",
-        "webpack": "^4.18.0",
-        "webpack-bundle-analyzer": "^3.0.3",
-        "webpack-virtual-modules": "^0.1.10"
-    },
-    "eslintConfig": {
-        "root": true,
-        "env": {
-            "node": true
-        },
-        "extends": [
-            "plugin:vue/recommended",
-            "standard"
-        ],
-        "globals": {
-            "App": true,
-            "Page": true,
-            "Component": true,
-            "Behavior": true,
-            "getApp": true,
-            "getCurrentPages": true,
-            "plus": true,
-            "uni": true,
-            "Vue": true,
-            "wx": true,
-            "my": true,
-            "swan": true,
-            "__uniConfig": true,
-            "__uniRoutes": true,
-            "UniViewJSBridge": true,
-            "UniServiceJSBridge": true,
-            "__PLATFORM__": true,
-            "__VERSION__": true,
-            "__GLOBAL__": true,
-            "__PLATFORM_TITLE__": true,
-            "__PLATFORM_PREFIX__": true
-        },
-        "rules": {
-            "no-tabs": 0,
-            "standard/no-callback-literal": 0
-        },
-        "parserOptions": {
-            "parser": "babel-eslint"
-        }
-    },
-    "browserslist": [
-        "last 3 versions",
-        "Android >= 4.1",
-        "ios >= 8"
+    "extends": [
+      "plugin:vue/recommended",
+      "standard"
     ],
-    "license": "Apache-2.0",
-    "main": "index.js",
-    "description": "",
-    "author": ""
+    "globals": {
+      "App": true,
+      "Page": true,
+      "Component": true,
+      "Behavior": true,
+      "getApp": true,
+      "getCurrentPages": true,
+      "plus": true,
+      "uni": true,
+      "Vue": true,
+      "wx": true,
+      "my": true,
+      "swan": true,
+      "__uniConfig": true,
+      "__uniRoutes": true,
+      "__registerPage": true,
+      "UniViewJSBridge": true,
+      "UniServiceJSBridge": true,
+      "__PLATFORM__": true,
+      "__VERSION__": true,
+      "__GLOBAL__": true,
+      "__PLATFORM_TITLE__": true,
+      "__PLATFORM_PREFIX__": true
+    },
+    "rules": {
+      "no-tabs": 0,
+      "standard/no-callback-literal": 0
+    },
+    "parserOptions": {
+      "parser": "babel-eslint"
+    }
+  },
+  "browserslist": [
+    "last 3 versions",
+    "Android >= 4.1",
+    "ios >= 8"
+  ],
+  "license": "Apache-2.0",
+  "main": "index.js",
+  "description": "",
+  "author": ""
 }

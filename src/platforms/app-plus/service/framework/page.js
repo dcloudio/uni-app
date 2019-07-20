@@ -3,10 +3,6 @@ import {
   createWebview
 } from './webview/index'
 
-import {
-  createHolder
-} from './holder'
-
 const pages = []
 
 export function getCurrentPages () {
@@ -60,10 +56,7 @@ export function registerPage ({
       meta: routeOptions.meta,
       path,
       route
-    },
-    $holder: createHolder(webview, {
-      navigationBar: webview.$navigationBar
-    }, instanceContext)
+    }
   })
 
   return webview

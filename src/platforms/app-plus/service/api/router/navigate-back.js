@@ -4,14 +4,11 @@ import {
 
 let firstBackTime = 0
 
-export default function navigateBack ({
+export function navigateBack ({
   delta,
   animationType,
   animationDuration
-}, {
-  plus,
-  getCurrentPages
-}, callback) {
+}) {
   const pages = getCurrentPages()
   const len = pages.length - 1
   const page = pages[len]
@@ -32,6 +29,8 @@ export default function navigateBack ({
     } else {
       page.$getAppWebview().close('auto')
     }
-    callback && callback()
+    UniServiceJSBridge.emit('onAppRoute', {
+      type: 'navigateBack'
+    })
   }
 }

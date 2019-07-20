@@ -2,7 +2,7 @@ import 'intersection-observer'
 
 import {
   normalizeDataset
-} from 'uni-helpers'
+} from 'uni-helpers/index'
 
 function getRect (rect) {
   return {

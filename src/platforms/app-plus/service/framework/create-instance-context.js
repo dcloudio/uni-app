@@ -38,12 +38,17 @@ export function createInstanceContext (instanceContext) {
     getCurrentPages
   })
 
+  function __registerPage (page) {
+    return registerPage(page, instanceContext)
+  }
+
   if (!uni) {
     uni = createUniInstance(
       weex,
       plus,
       uniConfig,
       uniRoutes,
+      __registerPage,
       UniServiceJSBridge,
       getApp,
       getCurrentPages
@@ -59,9 +64,7 @@ export function createInstanceContext (instanceContext) {
     __registerApp (appVm) {
       return registerApp(appVm, instanceContext)
     },
-    __registerPage (page) {
-      return registerPage(page, instanceContext)
-    },
+    __registerPage,
     plus,
     uni,
     getApp,
