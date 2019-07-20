@@ -628,8 +628,6 @@ function $emit () {
   return apply(getEmitter(), '$emit', [...arguments])
 }
 
-
-
 var eventApi = /*#__PURE__*/Object.freeze({
   $on: $on,
   $off: $off,
@@ -743,14 +741,14 @@ function initHooks (mpOptions, hooks, vueOptions) {
   });
 }
 
-function initVueComponent (Vue$$1, vueOptions) {
+function initVueComponent (Vue, vueOptions) {
   vueOptions = vueOptions.default || vueOptions;
   let VueComponent;
   if (isFn(vueOptions)) {
     VueComponent = vueOptions;
     vueOptions = VueComponent.extendOptions;
   } else {
-    VueComponent = Vue$$1.extend(vueOptions);
+    VueComponent = Vue.extend(vueOptions);
   }
   return [VueComponent, vueOptions]
 }
@@ -917,7 +915,7 @@ function initProperties (props, isBehavior = false, file = '') {
           value = value();
         }
 
-        opts.type = parsePropType(key, opts.type, value, file);
+        opts.type = parsePropType(key, opts.type);
 
         properties[key] = {
           type: PROP_TYPES.indexOf(opts.type) !== -1 ? opts.type : null,
@@ -925,7 +923,7 @@ function initProperties (props, isBehavior = false, file = '') {
           observer: createObserver(key)
         };
       } else { // content:String
-        const type = parsePropType(key, opts, null, file);
+        const type = parsePropType(key, opts);
         properties[key] = {
           type: PROP_TYPES.indexOf(type) !== -1 ? type : null,
           observer: createObserver(key)
@@ -1313,8 +1311,8 @@ function createApp (vm) {
 }
 
 function parseBaseComponent (vueComponentOptions, {
-  isPage: isPage$$1,
-  initRelation: initRelation$$1
+  isPage,
+  initRelation
 } = {}) {
   let [VueComponent, vueOptions] = initVueComponent(Vue, vueComponentOptions);
 
@@ -1331,7 +1329,7 @@ function parseBaseComponent (vueComponentOptions, {
         const properties = this.properties;
 
         const options = {
-          mpType: isPage$$1.call(this) ? 'page' : 'component',
+          mpType: isPage.call(this) ? 'page' : 'component',
           mpInstance: this,
           propsData: properties
         };
@@ -1339,7 +1337,7 @@ function parseBaseComponent (vueComponentOptions, {
         initVueIds(properties.vueId, this);
 
         // 处理父子关系
-        initRelation$$1.call(this, {
+        initRelation.call(this, {
           vuePid: this._$vuePid,
           vueOptions: options
         });
@@ -1383,7 +1381,7 @@ function parseBaseComponent (vueComponentOptions, {
     }
   };
 
-  if (isPage$$1) {
+  if (isPage) {
     return componentOptions
   }
   return [componentOptions, VueComponent]
@@ -1412,10 +1410,7 @@ function parseBasePage (vuePageOptions, {
   isPage,
   initRelation
 }) {
-  const pageOptions = parseComponent$1(vuePageOptions, {
-    isPage,
-    initRelation
-  });
+  const pageOptions = parseComponent$1(vuePageOptions);
 
   initHooks(pageOptions.methods, hooks$1, vuePageOptions);
 
@@ -1526,4 +1521,4 @@ wx.createComponent = createComponent;
 var uni$1 = uni;
 
 export default uni$1;
-export { createApp, createPage, createComponent };
+export { createApp, createComponent, createPage };

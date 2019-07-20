@@ -653,8 +653,6 @@ function $emit () {
   return apply(getEmitter(), '$emit', [...arguments])
 }
 
-
-
 var eventApi = /*#__PURE__*/Object.freeze({
   $on: $on,
   $off: $off,
@@ -784,14 +782,14 @@ function initHooks (mpOptions, hooks, vueOptions) {
   });
 }
 
-function initVueComponent (Vue$$1, vueOptions) {
+function initVueComponent (Vue, vueOptions) {
   vueOptions = vueOptions.default || vueOptions;
   let VueComponent;
   if (isFn(vueOptions)) {
     VueComponent = vueOptions;
     vueOptions = VueComponent.extendOptions;
   } else {
-    VueComponent = Vue$$1.extend(vueOptions);
+    VueComponent = Vue.extend(vueOptions);
   }
   return [VueComponent, vueOptions]
 }
@@ -1353,20 +1351,20 @@ function handleLink (event) {
   vueOptions.parent = parentVm;
 }
 
-const mocks$1 = ['nodeId', 'componentName'];
+const mocks = ['nodeId', 'componentName'];
 
-function isPage$1 () {
+function isPage () {
   return !this.ownerId
 }
 
-function initRelation$1 (detail) {
+function initRelation (detail) {
   this.dispatch('__l', detail);
 }
 
 function parseApp (vm) {
   // 百度 onShow 竟然会在 onLaunch 之前
   const appOptions = parseBaseApp(vm, {
-    mocks: mocks$1,
+    mocks,
     initRefs
   });
   appOptions.onShow = function onShow (args) {
@@ -1384,8 +1382,8 @@ function createApp (vm) {
 }
 
 function parseBaseComponent (vueComponentOptions, {
-  isPage: isPage$$1,
-  initRelation: initRelation$$1
+  isPage,
+  initRelation
 } = {}) {
   let [VueComponent, vueOptions] = initVueComponent(Vue, vueComponentOptions);
 
@@ -1402,7 +1400,7 @@ function parseBaseComponent (vueComponentOptions, {
         const properties = this.properties;
 
         const options = {
-          mpType: isPage$$1.call(this) ? 'page' : 'component',
+          mpType: isPage.call(this) ? 'page' : 'component',
           mpInstance: this,
           propsData: properties
         };
@@ -1410,7 +1408,7 @@ function parseBaseComponent (vueComponentOptions, {
         initVueIds(properties.vueId, this);
 
         // 处理父子关系
-        initRelation$$1.call(this, {
+        initRelation.call(this, {
           vuePid: this._$vuePid,
           vueOptions: options
         });
@@ -1454,7 +1452,7 @@ function parseBaseComponent (vueComponentOptions, {
     }
   };
 
-  if (isPage$$1) {
+  if (isPage) {
     return componentOptions
   }
   return [componentOptions, VueComponent]
@@ -1462,15 +1460,15 @@ function parseBaseComponent (vueComponentOptions, {
 
 function parseComponent (vueOptions) {
   const componentOptions = parseBaseComponent(vueOptions, {
-    isPage: isPage$1,
-    initRelation: initRelation$1
+    isPage,
+    initRelation
   });
 
   const oldAttached = componentOptions.lifetimes.attached;
 
   componentOptions.lifetimes.attached = function attached () {
     oldAttached.call(this);
-    if (isPage$1.call(this)) { // 百度 onLoad 在 attached 之前触发
+    if (isPage.call(this)) { // 百度 onLoad 在 attached 之前触发
       // 百度 当组件作为页面时 pageinstancce 不是原来组件的 instance
       this.pageinstance.$vm = this.$vm;
 
@@ -1504,10 +1502,7 @@ function parseBasePage (vuePageOptions, {
   isPage,
   initRelation
 }) {
-  const pageOptions = parseComponent(vuePageOptions, {
-    isPage,
-    initRelation
-  });
+  const pageOptions = parseComponent(vuePageOptions);
 
   initHooks(pageOptions.methods, hooks$1, vuePageOptions);
 
@@ -1535,8 +1530,8 @@ function onPageUnload ($vm) {
 
 function parsePage (vuePageOptions) {
   const pageOptions = parseBasePage(vuePageOptions, {
-    isPage: isPage$1,
-    initRelation: initRelation$1
+    isPage,
+    initRelation
   });
 
   pageOptions.methods.onLoad = function onLoad (args) {
@@ -1645,4 +1640,4 @@ swan.createComponent = createComponent;
 var uni$1 = uni;
 
 export default uni$1;
-export { createApp, createPage, createComponent };
+export { createApp, createComponent, createPage };

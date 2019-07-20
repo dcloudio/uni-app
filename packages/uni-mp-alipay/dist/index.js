@@ -891,8 +891,6 @@ function $emit () {
   return apply(getEmitter(), '$emit', [...arguments])
 }
 
-
-
 var eventApi = /*#__PURE__*/Object.freeze({
   $on: $on,
   $off: $off,
@@ -1054,14 +1052,14 @@ function initHooks (mpOptions, hooks, vueOptions) {
   });
 }
 
-function initVueComponent (Vue$$1, vueOptions) {
+function initVueComponent (Vue, vueOptions) {
   vueOptions = vueOptions.default || vueOptions;
   let VueComponent;
   if (isFn(vueOptions)) {
     VueComponent = vueOptions;
     vueOptions = VueComponent.extendOptions;
   } else {
-    VueComponent = Vue$$1.extend(vueOptions);
+    VueComponent = Vue.extend(vueOptions);
   }
   return [VueComponent, vueOptions]
 }
@@ -1218,7 +1216,7 @@ function initProperties (props, isBehavior = false, file = '') {
           value = value();
         }
 
-        opts.type = parsePropType(key, opts.type, value, file);
+        opts.type = parsePropType(key, opts.type);
 
         properties[key] = {
           type: PROP_TYPES.indexOf(opts.type) !== -1 ? opts.type : null,
@@ -1226,7 +1224,7 @@ function initProperties (props, isBehavior = false, file = '') {
           observer: createObserver(key)
         };
       } else { // content:String
-        const type = parsePropType(key, opts, null, file);
+        const type = parsePropType(key, opts);
         properties[key] = {
           type: PROP_TYPES.indexOf(type) !== -1 ? type : null,
           observer: createObserver(key)
@@ -1617,13 +1615,13 @@ const customize = cached((str) => {
 
 const isComponent2 = my.canIUse('component2');
 
-const mocks$1 = ['$id'];
+const mocks = ['$id'];
 
-function initRefs$1 () {
+function initRefs () {
 
 }
 
-function initBehavior$1 ({
+function initBehavior ({
   properties
 }) {
   const props = {};
@@ -1637,7 +1635,7 @@ function initBehavior$1 ({
   }
 }
 
-function initRelation$1 (detail) {
+function initRelation (detail) {
   this.props.onVueInit(detail);
 }
 
@@ -1760,13 +1758,13 @@ function createObserver$1 (isDidUpdate) {
 
 const handleLink$1 = (function () {
   if (isComponent2) {
-    return function handleLink$$1 (detail) {
+    return function handleLink$1 (detail) {
       return handleLink.call(this, {
         detail
       })
     }
   }
-  return function handleLink$$1 (detail) {
+  return function handleLink$1 (detail) {
     if (this.$vm && this.$vm._isMounted) { // 父已初始化
       return handleLink.call(this, {
         detail: {
@@ -1799,8 +1797,8 @@ function parseApp (vm) {
   });
 
   return parseBaseApp(vm, {
-    mocks: mocks$1,
-    initRefs: initRefs$1
+    mocks,
+    initRefs
   })
 }
 
@@ -1825,7 +1823,7 @@ function parsePage (vuePageOptions) {
   let [VueComponent, vueOptions] = initVueComponent(Vue, vuePageOptions);
 
   const pageOptions = {
-    mixins: initBehaviors(vueOptions, initBehavior$1),
+    mixins: initBehaviors(vueOptions, initBehavior),
     data: initData(vueOptions, Vue.prototype),
     onLoad (args) {
       const properties = this.props;
@@ -1889,7 +1887,7 @@ function initVm (VueComponent) {
 
   if (isComponent2) {
     // 处理父子关系
-    initRelation$1.call(this, {
+    initRelation.call(this, {
       vuePid: this._$vuePid,
       vueOptions: options
     });
@@ -1901,7 +1899,7 @@ function initVm (VueComponent) {
     this.$vm.$mount();
   } else {
     // 处理父子关系
-    initRelation$1.call(this, {
+    initRelation.call(this, {
       vuePid: this._$vuePid,
       vueOptions: options,
       VueComponent,
@@ -1940,7 +1938,7 @@ function parseComponent (vueComponentOptions) {
   });
 
   const componentOptions = {
-    mixins: initBehaviors(vueOptions, initBehavior$1),
+    mixins: initBehaviors(vueOptions, initBehavior),
     data: initData(vueOptions, Vue.prototype),
     props,
     didMount () {
@@ -2059,4 +2057,4 @@ my.createComponent = createComponent;
 var uni$1 = uni;
 
 export default uni$1;
-export { createApp, createPage, createComponent };
+export { createApp, createComponent, createPage };

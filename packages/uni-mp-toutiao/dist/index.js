@@ -709,8 +709,6 @@ function $emit () {
   return apply(getEmitter(), '$emit', [...arguments])
 }
 
-
-
 var eventApi = /*#__PURE__*/Object.freeze({
   $on: $on,
   $off: $off,
@@ -824,14 +822,14 @@ function initHooks (mpOptions, hooks, vueOptions) {
   });
 }
 
-function initVueComponent (Vue$$1, vueOptions) {
+function initVueComponent (Vue, vueOptions) {
   vueOptions = vueOptions.default || vueOptions;
   let VueComponent;
   if (isFn(vueOptions)) {
     VueComponent = vueOptions;
     vueOptions = VueComponent.extendOptions;
   } else {
-    VueComponent = Vue$$1.extend(vueOptions);
+    VueComponent = Vue.extend(vueOptions);
   }
   return [VueComponent, vueOptions]
 }
@@ -998,7 +996,7 @@ function initProperties (props, isBehavior = false, file = '') {
           value = value();
         }
 
-        opts.type = parsePropType(key, opts.type, value, file);
+        opts.type = parsePropType(key, opts.type);
 
         properties[key] = {
           type: PROP_TYPES.indexOf(opts.type) !== -1 ? opts.type : null,
@@ -1006,7 +1004,7 @@ function initProperties (props, isBehavior = false, file = '') {
           observer: createObserver(key)
         };
       } else { // content:String
-        const type = parsePropType(key, opts, null, file);
+        const type = parsePropType(key, opts);
         properties[key] = {
           type: PROP_TYPES.indexOf(type) !== -1 ? type : null,
           observer: createObserver(key)
@@ -1344,13 +1342,13 @@ function handleLink (event) {
   vueOptions.parent = parentVm;
 }
 
-const mocks$1 = ['__route__', '__webviewId__', '__nodeid__', '__nodeId__'];
+const mocks = ['__route__', '__webviewId__', '__nodeid__', '__nodeId__'];
 
-function isPage$1 () {
+function isPage () {
   return this.__nodeid__ === 0 || this.__nodeId__ === 0
 }
 
-function initRefs$1 (vm) {
+function initRefs (vm) {
   const mpInstance = vm.$scope;
   mpInstance.selectAllComponents('.vue-ref', (components) => {
     components.forEach(component => {
@@ -1371,7 +1369,7 @@ function initRefs$1 (vm) {
 
 const instances = Object.create(null);
 
-function initRelation$1 ({
+function initRelation ({
   vuePid,
   mpInstance
 }) {
@@ -1435,7 +1433,7 @@ function parseApp (vm) {
           this.$scope.route = this.$scope.__route__;
         }
 
-        initRefs$1(this);
+        initRefs(this);
 
         this.__init_injections(this);
         this.__init_provide(this);
@@ -1444,7 +1442,7 @@ function parseApp (vm) {
   });
 
   return parseBaseApp(vm, {
-    mocks: mocks$1,
+    mocks,
     initRefs: function () {} // attached 时，可能查询不到
   })
 }
@@ -1455,8 +1453,8 @@ function createApp (vm) {
 }
 
 function parseBaseComponent (vueComponentOptions, {
-  isPage: isPage$$1,
-  initRelation: initRelation$$1
+  isPage,
+  initRelation
 } = {}) {
   let [VueComponent, vueOptions] = initVueComponent(Vue, vueComponentOptions);
 
@@ -1473,7 +1471,7 @@ function parseBaseComponent (vueComponentOptions, {
         const properties = this.properties;
 
         const options = {
-          mpType: isPage$$1.call(this) ? 'page' : 'component',
+          mpType: isPage.call(this) ? 'page' : 'component',
           mpInstance: this,
           propsData: properties
         };
@@ -1481,7 +1479,7 @@ function parseBaseComponent (vueComponentOptions, {
         initVueIds(properties.vueId, this);
 
         // 处理父子关系
-        initRelation$$1.call(this, {
+        initRelation.call(this, {
           vuePid: this._$vuePid,
           vueOptions: options
         });
@@ -1525,7 +1523,7 @@ function parseBaseComponent (vueComponentOptions, {
     }
   };
 
-  if (isPage$$1) {
+  if (isPage) {
     return componentOptions
   }
   return [componentOptions, VueComponent]
@@ -1538,7 +1536,7 @@ function parseComponent (vueOptions) {
     const properties = this.properties;
 
     const options = {
-      mpType: isPage$1.call(this) ? 'page' : 'component',
+      mpType: isPage.call(this) ? 'page' : 'component',
       mpInstance: this,
       propsData: properties
     };
@@ -1552,7 +1550,7 @@ function parseComponent (vueOptions) {
     initSlots(this.$vm, properties.vueSlots);
 
     // 处理父子关系
-    initRelation$1.call(this, {
+    initRelation.call(this, {
       vuePid: this._$vuePid,
       mpInstance: this
     });
@@ -1581,10 +1579,7 @@ function parseBasePage (vuePageOptions, {
   isPage,
   initRelation
 }) {
-  const pageOptions = parseComponent(vuePageOptions, {
-    isPage,
-    initRelation
-  });
+  const pageOptions = parseComponent(vuePageOptions);
 
   initHooks(pageOptions.methods, hooks$1, vuePageOptions);
 
@@ -1598,8 +1593,8 @@ function parseBasePage (vuePageOptions, {
 
 function parsePage (vuePageOptions) {
   const pageOptions = parseBasePage(vuePageOptions, {
-    isPage: isPage$1,
-    initRelation: initRelation$1
+    isPage,
+    initRelation
   });
   // 页面需要在 ready 中触发，其他组件是在 handleLink 中触发
   pageOptions.lifetimes.ready = function ready () {
@@ -1705,4 +1700,4 @@ tt.createComponent = createComponent;
 var uni$1 = uni;
 
 export default uni$1;
-export { createApp, createPage, createComponent };
+export { createApp, createComponent, createPage };
