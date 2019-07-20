@@ -1,195 +1,6 @@
 export function createUniInstance(weex, plus, __uniConfig, __uniRoutes, __registerPage, UniServiceJSBridge, getApp, getCurrentPages){
 var localStorage = plus.storage
 
-const ANI_DURATION = 300;
-const ANI_SHOW = 'pop-in';
-
-function showWebview (webview, animationType, animationDuration) {
-  setTimeout(() => {
-    webview.show(
-      animationType || ANI_SHOW,
-      animationDuration || ANI_DURATION,
-      () => {
-        console.log('show.callback');
-      }
-    );
-  }, 50);
-}
-
-var require_context_module_0_5 = /*#__PURE__*/Object.freeze({
-  ANI_DURATION: ANI_DURATION,
-  showWebview: showWebview
-});
-
-let firstBackTime = 0;
-
-function navigateBack ({
-  delta,
-  animationType,
-  animationDuration
-}) {
-  const pages = getCurrentPages();
-  const len = pages.length - 1;
-  const page = pages[len];
-  if (page.$page.meta.isQuit) {
-    if (!firstBackTime) {
-      firstBackTime = Date.now();
-      plus.nativeUI.toast('再按一次退出应用');
-      setTimeout(() => {
-        firstBackTime = null;
-      }, 2000);
-    } else if (Date.now() - firstBackTime < 2000) {
-      plus.runtime.quit();
-    }
-  } else {
-    pages.splice(len, 1);
-    if (animationType) {
-      page.$getAppWebview().close(animationType, animationDuration || ANI_DURATION);
-    } else {
-      page.$getAppWebview().close('auto');
-    }
-    UniServiceJSBridge.emit('onAppRoute', {
-      type: 'navigateBack'
-    });
-  }
-}
-
-var require_context_module_0_0 = /*#__PURE__*/Object.freeze({
-  navigateBack: navigateBack
-});
-
-function navigateTo ({
-  url,
-  animationType,
-  animationDuration
-}) {
-  const path = url.split('?')[0];
-
-  UniServiceJSBridge.emit('onAppRoute', {
-    type: 'navigateTo',
-    path
-  });
-
-  showWebview(
-    __registerPage({
-      path
-    }),
-    animationType,
-    animationDuration
-  );
-}
-
-var require_context_module_0_1 = /*#__PURE__*/Object.freeze({
-  navigateTo: navigateTo
-});
-
-function reLaunch ({
-  path
-}) {}
-
-var require_context_module_0_2 = /*#__PURE__*/Object.freeze({
-  reLaunch: reLaunch
-});
-
-function redirectTo ({
-  path
-}) {}
-
-var require_context_module_0_3 = /*#__PURE__*/Object.freeze({
-  redirectTo: redirectTo
-});
-
-function switchTab ({
-  path
-}) {}
-
-var require_context_module_0_4 = /*#__PURE__*/Object.freeze({
-  switchTab: switchTab
-});
-
-function createCommonjsModule(fn, module) {
-	return module = { exports: {} }, fn(module, module.exports), module.exports;
-}
-
-var base64Arraybuffer = createCommonjsModule(function (module, exports) {
-/*
- * base64-arraybuffer
- * https://github.com/niklasvh/base64-arraybuffer
- *
- * Copyright (c) 2012 Niklas von Hertzen
- * Licensed under the MIT license.
- */
-(function(){
-
-  var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-
-  // Use a lookup table to find the index.
-  var lookup = new Uint8Array(256);
-  for (var i = 0; i < chars.length; i++) {
-    lookup[chars.charCodeAt(i)] = i;
-  }
-
-  exports.encode = function(arraybuffer) {
-    var bytes = new Uint8Array(arraybuffer),
-    i, len = bytes.length, base64 = "";
-
-    for (i = 0; i < len; i+=3) {
-      base64 += chars[bytes[i] >> 2];
-      base64 += chars[((bytes[i] & 3) << 4) | (bytes[i + 1] >> 4)];
-      base64 += chars[((bytes[i + 1] & 15) << 2) | (bytes[i + 2] >> 6)];
-      base64 += chars[bytes[i + 2] & 63];
-    }
-
-    if ((len % 3) === 2) {
-      base64 = base64.substring(0, base64.length - 1) + "=";
-    } else if (len % 3 === 1) {
-      base64 = base64.substring(0, base64.length - 2) + "==";
-    }
-
-    return base64;
-  };
-
-  exports.decode =  function(base64) {
-    var bufferLength = base64.length * 0.75,
-    len = base64.length, i, p = 0,
-    encoded1, encoded2, encoded3, encoded4;
-
-    if (base64[base64.length - 1] === "=") {
-      bufferLength--;
-      if (base64[base64.length - 2] === "=") {
-        bufferLength--;
-      }
-    }
-
-    var arraybuffer = new ArrayBuffer(bufferLength),
-    bytes = new Uint8Array(arraybuffer);
-
-    for (i = 0; i < len; i+=4) {
-      encoded1 = lookup[base64.charCodeAt(i)];
-      encoded2 = lookup[base64.charCodeAt(i+1)];
-      encoded3 = lookup[base64.charCodeAt(i+2)];
-      encoded4 = lookup[base64.charCodeAt(i+3)];
-
-      bytes[p++] = (encoded1 << 2) | (encoded2 >> 4);
-      bytes[p++] = ((encoded2 & 15) << 4) | (encoded3 >> 2);
-      bytes[p++] = ((encoded3 & 3) << 6) | (encoded4 & 63);
-    }
-
-    return arraybuffer;
-  };
-})();
-});
-var base64Arraybuffer_1 = base64Arraybuffer.encode;
-var base64Arraybuffer_2 = base64Arraybuffer.decode;
-
-const base64ToArrayBuffer = base64Arraybuffer_2;
-const arrayBufferToBase64 = base64Arraybuffer_1;
-
-var require_context_module_1_0 = /*#__PURE__*/Object.freeze({
-  base64ToArrayBuffer: base64ToArrayBuffer,
-  arrayBufferToBase64: arrayBufferToBase64
-});
-
 const _toString = Object.prototype.toString;
 const hasOwnProperty = Object.prototype.hasOwnProperty;
 
@@ -214,20 +25,32 @@ function getLen (str = '') {
   return ('' + str).replace(/[^\x00-\xff]/g, '**').length
 }
 
-var platformSchema = {};
-
-// TODO 待处理其他 API 的检测
-
-function canIUse (schema) {
-  if (hasOwn(platformSchema, schema)) {
-    return platformSchema[schema]
+/**
+ * 框架内 try-catch
+ */
+function tryCatchFramework (fn) {
+  return function () {
+    try {
+      return fn.apply(fn, arguments)
+    } catch (e) {
+      // TODO
+      console.error(e);
+    }
   }
-  return true
 }
-
-var require_context_module_1_1 = /*#__PURE__*/Object.freeze({
-  canIUse: canIUse
-});
+/**
+ * 开发者 try-catch
+ */
+function tryCatch (fn) {
+  return function () {
+    try {
+      return fn.apply(fn, arguments)
+    } catch (e) {
+      // TODO
+      console.error(e);
+    }
+  }
+}
 
 const HOOKS = [
   'invoke',
@@ -419,463 +242,6 @@ const promiseInterceptor = {
   }
 };
 
-const interceptors = {
-  promiseInterceptor
-};
-
-var require_context_module_1_2 = /*#__PURE__*/Object.freeze({
-  interceptors: interceptors,
-  addInterceptor: addInterceptor,
-  removeInterceptor: removeInterceptor
-});
-
-function pageScrollTo (args) {
-  const pages = getCurrentPages();
-  if (pages.length) {
-    UniServiceJSBridge.publishHandler('pageScrollTo', args, pages[pages.length - 1].$page.id);
-  }
-  return {}
-}
-
-let pageId;
-
-function setPullDownRefreshPageId (pullDownRefreshPageId) {
-  pageId = pullDownRefreshPageId;
-}
-
-function startPullDownRefresh () {
-  if (pageId) {
-    UniServiceJSBridge.emit(pageId + '.stopPullDownRefresh', {}, pageId);
-  }
-  const pages = getCurrentPages();
-  if (pages.length) {
-    pageId = pages[pages.length - 1].$page.id;
-    UniServiceJSBridge.emit(pageId + '.startPullDownRefresh', {}, pageId);
-  }
-  return {}
-}
-
-function stopPullDownRefresh () {
-  if (pageId) {
-    UniServiceJSBridge.emit(pageId + '.stopPullDownRefresh', {}, pageId);
-    pageId = null;
-  } else {
-    const pages = getCurrentPages();
-    if (pages.length) {
-      pageId = pages[pages.length - 1].$page.id;
-      UniServiceJSBridge.emit(pageId + '.stopPullDownRefresh', {}, pageId);
-    }
-  }
-  return {}
-}
-
-var require_context_module_1_3 = /*#__PURE__*/Object.freeze({
-  pageScrollTo: pageScrollTo,
-  setPullDownRefreshPageId: setPullDownRefreshPageId,
-  startPullDownRefresh: startPullDownRefresh,
-  stopPullDownRefresh: stopPullDownRefresh
-});
-
-function setStorage ({
-  key,
-  data
-} = {}) {
-  const value = {
-    type: typeof data === 'object' ? 'object' : 'string',
-    data: data
-  };
-  localStorage.setItem(key, JSON.stringify(value));
-  const keyList = localStorage.getItem('uni-storage-keys');
-  if (!keyList) {
-    localStorage.setItem('uni-storage-keys', JSON.stringify([key]));
-  } else {
-    const keys = JSON.parse(keyList);
-    if (keys.indexOf(key) < 0) {
-      keys.push(key);
-      localStorage.setItem('uni-storage-keys', JSON.stringify(keys));
-    }
-  }
-  return {
-    errMsg: 'setStorage:ok'
-  }
-}
-
-function setStorageSync (key, data) {
-  setStorage({
-    key,
-    data
-  });
-}
-
-function getStorage ({
-  key
-} = {}) {
-  const data = localStorage.getItem(key);
-  return data ? {
-    data: JSON.parse(data).data,
-    errMsg: 'getStorage:ok'
-  } : {
-    data: '',
-    errMsg: 'getStorage:fail'
-  }
-}
-
-function getStorageSync (key) {
-  const res = getStorage({
-    key
-  });
-  return res.data
-}
-
-function removeStorage ({
-  key
-} = {}) {
-  const keyList = localStorage.getItem('uni-storage-keys');
-  if (keyList) {
-    const keys = JSON.parse(keyList);
-    const index = keys.indexOf(key);
-    keys.splice(index, 1);
-    localStorage.setItem('uni-storage-keys', JSON.stringify(keys));
-  }
-  localStorage.removeItem(key);
-  return {
-    errMsg: 'removeStorage:ok'
-  }
-}
-
-function removeStorageSync (key) {
-  removeStorage({
-    key
-  });
-}
-
-function clearStorage () {
-  localStorage.clear();
-  return {
-    errMsg: 'clearStorage:ok'
-  }
-}
-
-function clearStorageSync () {
-  clearStorage();
-}
-
-function getStorageInfo () { // TODO 暂时先不做大小的转换
-  const keyList = localStorage.getItem('uni-storage-keys');
-  return keyList ? {
-    keys: JSON.parse(keyList),
-    currentSize: 0,
-    limitSize: 0,
-    errMsg: 'getStorageInfo:ok'
-  } : {
-    keys: '',
-    currentSize: 0,
-    limitSize: 0,
-    errMsg: 'getStorageInfo:fail'
-  }
-}
-
-function getStorageInfoSync () {
-  const res = getStorageInfo();
-  delete res.errMsg;
-  return res
-}
-
-var require_context_module_1_4 = /*#__PURE__*/Object.freeze({
-  setStorage: setStorage,
-  setStorageSync: setStorageSync,
-  getStorage: getStorage,
-  getStorageSync: getStorageSync,
-  removeStorage: removeStorage,
-  removeStorageSync: removeStorageSync,
-  clearStorage: clearStorage,
-  clearStorageSync: clearStorageSync,
-  getStorageInfo: getStorageInfo,
-  getStorageInfoSync: getStorageInfoSync
-});
-
-const EPS = 1e-4;
-const BASE_DEVICE_WIDTH = 750;
-let isIOS = false;
-let deviceWidth = 0;
-let deviceDPR = 0;
-
-function checkDeviceWidth () {
-  const {
-    platform,
-    pixelRatio,
-    windowWidth
-  } = uni.getSystemInfoSync();
-
-  deviceWidth = windowWidth;
-  deviceDPR = pixelRatio;
-  isIOS = platform === 'ios';
-}
-
-function upx2px (number, newDeviceWidth) {
-  if (deviceWidth === 0) {
-    checkDeviceWidth();
-  }
-
-  number = Number(number);
-  if (number === 0) {
-    return 0
-  }
-  let result = (number / BASE_DEVICE_WIDTH) * (newDeviceWidth || deviceWidth);
-  if (result < 0) {
-    result = -result;
-  }
-  result = Math.floor(result + EPS);
-  if (result === 0) {
-    if (deviceDPR === 1 || !isIOS) {
-      return 1
-    } else {
-      return 0.5
-    }
-  }
-  return number < 0 ? -result : result
-}
-
-var require_context_module_1_5 = /*#__PURE__*/Object.freeze({
-  upx2px: upx2px
-});
-
-const base = [
-  'base64ToArrayBuffer',
-  'arrayBufferToBase64'
-];
-
-const network = [
-  'request',
-  'uploadFile',
-  'downloadFile',
-  'connectSocket',
-  'onSocketOpen',
-  'onSocketError',
-  'sendSocketMessage',
-  'onSocketMessage',
-  'closeSocket',
-  'onSocketClose'
-];
-
-const route = [
-  'navigateTo',
-  'redirectTo',
-  'reLaunch',
-  'switchTab',
-  'navigateBack'
-];
-
-const storage = [
-  'setStorage',
-  'setStorageSync',
-  'getStorage',
-  'getStorageSync',
-  'getStorageInfo',
-  'getStorageInfoSync',
-  'removeStorage',
-  'removeStorageSync',
-  'clearStorage',
-  'clearStorageSync'
-];
-
-const location = [
-  'getLocation',
-  'chooseLocation',
-  'openLocation',
-  'createMapContext'
-];
-
-const media = [
-  'chooseImage',
-  'previewImage',
-  'getImageInfo',
-  'saveImageToPhotosAlbum',
-  'compressImage',
-  'chooseMessageFile',
-  'getRecorderManager',
-  'getBackgroundAudioManager',
-  'createInnerAudioContext',
-  'chooseVideo',
-  'saveVideoToPhotosAlbum',
-  'createVideoContext',
-  'createCameraContext',
-  'createLivePlayerContext'
-];
-
-const device = [
-  'getSystemInfo',
-  'getSystemInfoSync',
-  'canIUse',
-  'onMemoryWarning',
-  'getNetworkType',
-  'onNetworkStatusChange',
-  'onAccelerometerChange',
-  'startAccelerometer',
-  'stopAccelerometer',
-  'onCompassChange',
-  'startCompass',
-  'stopCompass',
-  'onGyroscopeChange',
-  'startGyroscope',
-  'stopGyroscope',
-  'makePhoneCall',
-  'scanCode',
-  'setClipboardData',
-  'getClipboardData',
-  'setScreenBrightness',
-  'getScreenBrightness',
-  'setKeepScreenOn',
-  'onUserCaptureScreen',
-  'vibrateLong',
-  'vibrateShort',
-  'addPhoneContact',
-  'openBluetoothAdapter',
-  'startBluetoothDevicesDiscovery',
-  'onBluetoothDeviceFound',
-  'stopBluetoothDevicesDiscovery',
-  'onBluetoothAdapterStateChange',
-  'getConnectedBluetoothDevices',
-  'getBluetoothDevices',
-  'getBluetoothAdapterState',
-  'closeBluetoothAdapter',
-  'writeBLECharacteristicValue',
-  'readBLECharacteristicValue',
-  'onBLEConnectionStateChange',
-  'onBLECharacteristicValueChange',
-  'notifyBLECharacteristicValueChange',
-  'getBLEDeviceServices',
-  'getBLEDeviceCharacteristics',
-  'createBLEConnection',
-  'closeBLEConnection',
-  'onBeaconServiceChange',
-  'onBeaconUpdate',
-  'getBeacons',
-  'startBeaconDiscovery',
-  'stopBeaconDiscovery'
-];
-
-const keyboard = [
-  'hideKeyboard'
-];
-
-const ui = [
-  'showToast',
-  'hideToast',
-  'showLoading',
-  'hideLoading',
-  'showModal',
-  'showActionSheet',
-  'setNavigationBarTitle',
-  'setNavigationBarColor',
-  'showNavigationBarLoading',
-  'hideNavigationBarLoading',
-  'setTabBarItem',
-  'setTabBarStyle',
-  'hideTabBar',
-  'showTabBar',
-  'setTabBarBadge',
-  'removeTabBarBadge',
-  'showTabBarRedDot',
-  'hideTabBarRedDot',
-  'setBackgroundColor',
-  'setBackgroundTextStyle',
-  'createAnimation',
-  'pageScrollTo',
-  'onWindowResize',
-  'offWindowResize',
-  'loadFontFace',
-  'startPullDownRefresh',
-  'stopPullDownRefresh',
-  'createSelectorQuery',
-  'createIntersectionObserver'
-];
-
-const event = [
-  '$emit',
-  '$on',
-  '$once',
-  '$off'
-];
-
-const file = [
-  'saveFile',
-  'getSavedFileList',
-  'getSavedFileInfo',
-  'removeSavedFile',
-  'getFileInfo',
-  'openDocument',
-  'getFileSystemManager'
-];
-
-const canvas = [
-  'createOffscreenCanvas',
-  'createCanvasContext',
-  'canvasToTempFilePath',
-  'canvasPutImageData',
-  'canvasGetImageData'
-];
-
-const third = [
-  'getProvider',
-  'login',
-  'checkSession',
-  'getUserInfo',
-  'share',
-  'showShareMenu',
-  'hideShareMenu',
-  'requestPayment',
-  'subscribePush',
-  'unsubscribePush',
-  'onPush',
-  'offPush',
-  'requireNativePlugin',
-  'upx2px'
-];
-
-const apis = [
-  ...base,
-  ...network,
-  ...route,
-  ...storage,
-  ...location,
-  ...media,
-  ...device,
-  ...keyboard,
-  ...ui,
-  ...event,
-  ...file,
-  ...canvas,
-  ...third
-];
-
-/**
- * 框架内 try-catch
- */
-function tryCatchFramework (fn) {
-  return function () {
-    try {
-      return fn.apply(fn, arguments)
-    } catch (e) {
-      // TODO
-      console.error(e);
-    }
-  }
-}
-/**
- * 开发者 try-catch
- */
-function tryCatch (fn) {
-  return function () {
-    try {
-      return fn.apply(fn, arguments)
-    } catch (e) {
-      // TODO
-      console.error(e);
-    }
-  }
-}
-
 const SYNC_API_RE =
     /^\$|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
 
@@ -947,31 +313,31 @@ function promisify (name, api) {
   }
 }
 
-const canIUse$1 = [{
+const canIUse = [{
   name: 'schema',
   type: String,
   required: true
 }];
 
 var require_context_module_2_0 = /*#__PURE__*/Object.freeze({
-  canIUse: canIUse$1
+  canIUse: canIUse
 });
 
-const base64ToArrayBuffer$1 = [{
+const base64ToArrayBuffer = [{
   name: 'base64',
   type: String,
   required: true
 }];
 
-const arrayBufferToBase64$1 = [{
+const arrayBufferToBase64 = [{
   name: 'arrayBuffer',
   type: [ArrayBuffer, Uint8Array],
   required: true
 }];
 
 var require_context_module_2_1 = /*#__PURE__*/Object.freeze({
-  base64ToArrayBuffer: base64ToArrayBuffer$1,
-  arrayBufferToBase64: arrayBufferToBase64$1
+  base64ToArrayBuffer: base64ToArrayBuffer,
+  arrayBufferToBase64: arrayBufferToBase64
 });
 
 function getInt (method) {
@@ -1619,7 +985,7 @@ var require_context_module_2_15 = /*#__PURE__*/Object.freeze({
   uploadFile: uploadFile
 });
 
-const pageScrollTo$1 = {
+const pageScrollTo = {
   scrollTop: {
     type: Number,
     required: true
@@ -1634,7 +1000,7 @@ const pageScrollTo$1 = {
 };
 
 var require_context_module_2_16 = /*#__PURE__*/Object.freeze({
-  pageScrollTo: pageScrollTo$1
+  pageScrollTo: pageScrollTo
 });
 
 const service = {
@@ -1883,11 +1249,11 @@ function createAnimationProtocol (animationTypes) {
   }
 }
 
-const redirectTo$1 = createProtocol('redirectTo');
+const redirectTo = createProtocol('redirectTo');
 
-const reLaunch$1 = createProtocol('reLaunch');
+const reLaunch = createProtocol('reLaunch');
 
-const navigateTo$1 = createProtocol('navigateTo', createAnimationProtocol(
+const navigateTo = createProtocol('navigateTo', createAnimationProtocol(
   [
     'slide-in-right',
     'slide-in-left',
@@ -1901,9 +1267,9 @@ const navigateTo$1 = createProtocol('navigateTo', createAnimationProtocol(
   ]
 ));
 
-const switchTab$1 = createProtocol('switchTab');
+const switchTab = createProtocol('switchTab');
 
-const navigateBack$1 = Object.assign({
+const navigateBack = Object.assign({
   delta: {
     type: Number,
     validator (delta, params) {
@@ -1926,14 +1292,14 @@ const navigateBack$1 = Object.assign({
 ));
 
 var require_context_module_2_19 = /*#__PURE__*/Object.freeze({
-  redirectTo: redirectTo$1,
-  reLaunch: reLaunch$1,
-  navigateTo: navigateTo$1,
-  switchTab: switchTab$1,
-  navigateBack: navigateBack$1
+  redirectTo: redirectTo,
+  reLaunch: reLaunch,
+  navigateTo: navigateTo,
+  switchTab: switchTab,
+  navigateBack: navigateBack
 });
 
-const setStorage$1 = {
+const setStorage = {
   'key': {
     type: String,
     required: true
@@ -1943,7 +1309,7 @@ const setStorage$1 = {
   }
 };
 
-const setStorageSync$1 = [{
+const setStorageSync = [{
   name: 'key',
   type: String,
   required: true
@@ -1953,8 +1319,8 @@ const setStorageSync$1 = [{
 }];
 
 var require_context_module_2_20 = /*#__PURE__*/Object.freeze({
-  setStorage: setStorage$1,
-  setStorageSync: setStorageSync$1
+  setStorage: setStorage,
+  setStorageSync: setStorageSync
 });
 
 const indexValidator = {
@@ -2496,11 +1862,540 @@ function wrapper (name, invokeMethod, extras) {
   }
 }
 
+UniServiceJSBridge.publishHandler = UniServiceJSBridge.emit;
+UniServiceJSBridge.invokeCallbackHandler = invokeCallbackHandler;
+
+const base = [
+  'base64ToArrayBuffer',
+  'arrayBufferToBase64'
+];
+
+const network = [
+  'request',
+  'uploadFile',
+  'downloadFile',
+  'connectSocket',
+  'onSocketOpen',
+  'onSocketError',
+  'sendSocketMessage',
+  'onSocketMessage',
+  'closeSocket',
+  'onSocketClose'
+];
+
+const route = [
+  'navigateTo',
+  'redirectTo',
+  'reLaunch',
+  'switchTab',
+  'navigateBack'
+];
+
+const storage = [
+  'setStorage',
+  'setStorageSync',
+  'getStorage',
+  'getStorageSync',
+  'getStorageInfo',
+  'getStorageInfoSync',
+  'removeStorage',
+  'removeStorageSync',
+  'clearStorage',
+  'clearStorageSync'
+];
+
+const location = [
+  'getLocation',
+  'chooseLocation',
+  'openLocation',
+  'createMapContext'
+];
+
+const media = [
+  'chooseImage',
+  'previewImage',
+  'getImageInfo',
+  'saveImageToPhotosAlbum',
+  'compressImage',
+  'chooseMessageFile',
+  'getRecorderManager',
+  'getBackgroundAudioManager',
+  'createInnerAudioContext',
+  'chooseVideo',
+  'saveVideoToPhotosAlbum',
+  'createVideoContext',
+  'createCameraContext',
+  'createLivePlayerContext'
+];
+
+const device = [
+  'getSystemInfo',
+  'getSystemInfoSync',
+  'canIUse',
+  'onMemoryWarning',
+  'getNetworkType',
+  'onNetworkStatusChange',
+  'onAccelerometerChange',
+  'startAccelerometer',
+  'stopAccelerometer',
+  'onCompassChange',
+  'startCompass',
+  'stopCompass',
+  'onGyroscopeChange',
+  'startGyroscope',
+  'stopGyroscope',
+  'makePhoneCall',
+  'scanCode',
+  'setClipboardData',
+  'getClipboardData',
+  'setScreenBrightness',
+  'getScreenBrightness',
+  'setKeepScreenOn',
+  'onUserCaptureScreen',
+  'vibrateLong',
+  'vibrateShort',
+  'addPhoneContact',
+  'openBluetoothAdapter',
+  'startBluetoothDevicesDiscovery',
+  'onBluetoothDeviceFound',
+  'stopBluetoothDevicesDiscovery',
+  'onBluetoothAdapterStateChange',
+  'getConnectedBluetoothDevices',
+  'getBluetoothDevices',
+  'getBluetoothAdapterState',
+  'closeBluetoothAdapter',
+  'writeBLECharacteristicValue',
+  'readBLECharacteristicValue',
+  'onBLEConnectionStateChange',
+  'onBLECharacteristicValueChange',
+  'notifyBLECharacteristicValueChange',
+  'getBLEDeviceServices',
+  'getBLEDeviceCharacteristics',
+  'createBLEConnection',
+  'closeBLEConnection',
+  'onBeaconServiceChange',
+  'onBeaconUpdate',
+  'getBeacons',
+  'startBeaconDiscovery',
+  'stopBeaconDiscovery'
+];
+
+const keyboard = [
+  'hideKeyboard'
+];
+
+const ui = [
+  'showToast',
+  'hideToast',
+  'showLoading',
+  'hideLoading',
+  'showModal',
+  'showActionSheet',
+  'setNavigationBarTitle',
+  'setNavigationBarColor',
+  'showNavigationBarLoading',
+  'hideNavigationBarLoading',
+  'setTabBarItem',
+  'setTabBarStyle',
+  'hideTabBar',
+  'showTabBar',
+  'setTabBarBadge',
+  'removeTabBarBadge',
+  'showTabBarRedDot',
+  'hideTabBarRedDot',
+  'setBackgroundColor',
+  'setBackgroundTextStyle',
+  'createAnimation',
+  'pageScrollTo',
+  'onWindowResize',
+  'offWindowResize',
+  'loadFontFace',
+  'startPullDownRefresh',
+  'stopPullDownRefresh',
+  'createSelectorQuery',
+  'createIntersectionObserver'
+];
+
+const event = [
+  '$emit',
+  '$on',
+  '$once',
+  '$off'
+];
+
+const file = [
+  'saveFile',
+  'getSavedFileList',
+  'getSavedFileInfo',
+  'removeSavedFile',
+  'getFileInfo',
+  'openDocument',
+  'getFileSystemManager'
+];
+
+const canvas = [
+  'createOffscreenCanvas',
+  'createCanvasContext',
+  'canvasToTempFilePath',
+  'canvasPutImageData',
+  'canvasGetImageData'
+];
+
+const third = [
+  'getProvider',
+  'login',
+  'checkSession',
+  'getUserInfo',
+  'share',
+  'showShareMenu',
+  'hideShareMenu',
+  'requestPayment',
+  'subscribePush',
+  'unsubscribePush',
+  'onPush',
+  'offPush',
+  'requireNativePlugin',
+  'upx2px'
+];
+
+const apis = [
+  ...base,
+  ...network,
+  ...route,
+  ...storage,
+  ...location,
+  ...media,
+  ...device,
+  ...keyboard,
+  ...ui,
+  ...event,
+  ...file,
+  ...canvas,
+  ...third
+];
+
+function createCommonjsModule(fn, module) {
+	return module = { exports: {} }, fn(module, module.exports), module.exports;
+}
+
+var base64Arraybuffer = createCommonjsModule(function (module, exports) {
+/*
+ * base64-arraybuffer
+ * https://github.com/niklasvh/base64-arraybuffer
+ *
+ * Copyright (c) 2012 Niklas von Hertzen
+ * Licensed under the MIT license.
+ */
+(function(){
+
+  var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
+  // Use a lookup table to find the index.
+  var lookup = new Uint8Array(256);
+  for (var i = 0; i < chars.length; i++) {
+    lookup[chars.charCodeAt(i)] = i;
+  }
+
+  exports.encode = function(arraybuffer) {
+    var bytes = new Uint8Array(arraybuffer),
+    i, len = bytes.length, base64 = "";
+
+    for (i = 0; i < len; i+=3) {
+      base64 += chars[bytes[i] >> 2];
+      base64 += chars[((bytes[i] & 3) << 4) | (bytes[i + 1] >> 4)];
+      base64 += chars[((bytes[i + 1] & 15) << 2) | (bytes[i + 2] >> 6)];
+      base64 += chars[bytes[i + 2] & 63];
+    }
+
+    if ((len % 3) === 2) {
+      base64 = base64.substring(0, base64.length - 1) + "=";
+    } else if (len % 3 === 1) {
+      base64 = base64.substring(0, base64.length - 2) + "==";
+    }
+
+    return base64;
+  };
+
+  exports.decode =  function(base64) {
+    var bufferLength = base64.length * 0.75,
+    len = base64.length, i, p = 0,
+    encoded1, encoded2, encoded3, encoded4;
+
+    if (base64[base64.length - 1] === "=") {
+      bufferLength--;
+      if (base64[base64.length - 2] === "=") {
+        bufferLength--;
+      }
+    }
+
+    var arraybuffer = new ArrayBuffer(bufferLength),
+    bytes = new Uint8Array(arraybuffer);
+
+    for (i = 0; i < len; i+=4) {
+      encoded1 = lookup[base64.charCodeAt(i)];
+      encoded2 = lookup[base64.charCodeAt(i+1)];
+      encoded3 = lookup[base64.charCodeAt(i+2)];
+      encoded4 = lookup[base64.charCodeAt(i+3)];
+
+      bytes[p++] = (encoded1 << 2) | (encoded2 >> 4);
+      bytes[p++] = ((encoded2 & 15) << 4) | (encoded3 >> 2);
+      bytes[p++] = ((encoded3 & 3) << 6) | (encoded4 & 63);
+    }
+
+    return arraybuffer;
+  };
+})();
+});
+var base64Arraybuffer_1 = base64Arraybuffer.encode;
+var base64Arraybuffer_2 = base64Arraybuffer.decode;
+
+const base64ToArrayBuffer$1 = base64Arraybuffer_2;
+const arrayBufferToBase64$1 = base64Arraybuffer_1;
+
+var require_context_module_1_0 = /*#__PURE__*/Object.freeze({
+  base64ToArrayBuffer: base64ToArrayBuffer$1,
+  arrayBufferToBase64: arrayBufferToBase64$1
+});
+
+var platformSchema = {};
+
+// TODO 待处理其他 API 的检测
+
+function canIUse$1 (schema) {
+  if (hasOwn(platformSchema, schema)) {
+    return platformSchema[schema]
+  }
+  return true
+}
+
+var require_context_module_1_1 = /*#__PURE__*/Object.freeze({
+  canIUse: canIUse$1
+});
+
+const interceptors = {
+  promiseInterceptor
+};
+
+var require_context_module_1_2 = /*#__PURE__*/Object.freeze({
+  interceptors: interceptors,
+  addInterceptor: addInterceptor,
+  removeInterceptor: removeInterceptor
+});
+
+function pageScrollTo$1 (args) {
+  const pages = getCurrentPages();
+  if (pages.length) {
+    UniServiceJSBridge.publishHandler('pageScrollTo', args, pages[pages.length - 1].$page.id);
+  }
+  return {}
+}
+
+let pageId;
+
+function setPullDownRefreshPageId (pullDownRefreshPageId) {
+  pageId = pullDownRefreshPageId;
+}
+
+function startPullDownRefresh () {
+  if (pageId) {
+    UniServiceJSBridge.emit(pageId + '.stopPullDownRefresh', {}, pageId);
+  }
+  const pages = getCurrentPages();
+  if (pages.length) {
+    pageId = pages[pages.length - 1].$page.id;
+    UniServiceJSBridge.emit(pageId + '.startPullDownRefresh', {}, pageId);
+  }
+  return {}
+}
+
+function stopPullDownRefresh () {
+  if (pageId) {
+    UniServiceJSBridge.emit(pageId + '.stopPullDownRefresh', {}, pageId);
+    pageId = null;
+  } else {
+    const pages = getCurrentPages();
+    if (pages.length) {
+      pageId = pages[pages.length - 1].$page.id;
+      UniServiceJSBridge.emit(pageId + '.stopPullDownRefresh', {}, pageId);
+    }
+  }
+  return {}
+}
+
+var require_context_module_1_3 = /*#__PURE__*/Object.freeze({
+  pageScrollTo: pageScrollTo$1,
+  setPullDownRefreshPageId: setPullDownRefreshPageId,
+  startPullDownRefresh: startPullDownRefresh,
+  stopPullDownRefresh: stopPullDownRefresh
+});
+
+function setStorage$1 ({
+  key,
+  data
+} = {}) {
+  const value = {
+    type: typeof data === 'object' ? 'object' : 'string',
+    data: data
+  };
+  localStorage.setItem(key, JSON.stringify(value));
+  const keyList = localStorage.getItem('uni-storage-keys');
+  if (!keyList) {
+    localStorage.setItem('uni-storage-keys', JSON.stringify([key]));
+  } else {
+    const keys = JSON.parse(keyList);
+    if (keys.indexOf(key) < 0) {
+      keys.push(key);
+      localStorage.setItem('uni-storage-keys', JSON.stringify(keys));
+    }
+  }
+  return {
+    errMsg: 'setStorage:ok'
+  }
+}
+
+function setStorageSync$1 (key, data) {
+  setStorage$1({
+    key,
+    data
+  });
+}
+
+function getStorage ({
+  key
+} = {}) {
+  const data = localStorage.getItem(key);
+  return data ? {
+    data: JSON.parse(data).data,
+    errMsg: 'getStorage:ok'
+  } : {
+    data: '',
+    errMsg: 'getStorage:fail'
+  }
+}
+
+function getStorageSync (key) {
+  const res = getStorage({
+    key
+  });
+  return res.data
+}
+
+function removeStorage ({
+  key
+} = {}) {
+  const keyList = localStorage.getItem('uni-storage-keys');
+  if (keyList) {
+    const keys = JSON.parse(keyList);
+    const index = keys.indexOf(key);
+    keys.splice(index, 1);
+    localStorage.setItem('uni-storage-keys', JSON.stringify(keys));
+  }
+  localStorage.removeItem(key);
+  return {
+    errMsg: 'removeStorage:ok'
+  }
+}
+
+function removeStorageSync (key) {
+  removeStorage({
+    key
+  });
+}
+
+function clearStorage () {
+  localStorage.clear();
+  return {
+    errMsg: 'clearStorage:ok'
+  }
+}
+
+function clearStorageSync () {
+  clearStorage();
+}
+
+function getStorageInfo () { // TODO 暂时先不做大小的转换
+  const keyList = localStorage.getItem('uni-storage-keys');
+  return keyList ? {
+    keys: JSON.parse(keyList),
+    currentSize: 0,
+    limitSize: 0,
+    errMsg: 'getStorageInfo:ok'
+  } : {
+    keys: '',
+    currentSize: 0,
+    limitSize: 0,
+    errMsg: 'getStorageInfo:fail'
+  }
+}
+
+function getStorageInfoSync () {
+  const res = getStorageInfo();
+  delete res.errMsg;
+  return res
+}
+
+var require_context_module_1_4 = /*#__PURE__*/Object.freeze({
+  setStorage: setStorage$1,
+  setStorageSync: setStorageSync$1,
+  getStorage: getStorage,
+  getStorageSync: getStorageSync,
+  removeStorage: removeStorage,
+  removeStorageSync: removeStorageSync,
+  clearStorage: clearStorage,
+  clearStorageSync: clearStorageSync,
+  getStorageInfo: getStorageInfo,
+  getStorageInfoSync: getStorageInfoSync
+});
+
+const EPS = 1e-4;
+const BASE_DEVICE_WIDTH = 750;
+let isIOS = false;
+let deviceWidth = 0;
+let deviceDPR = 0;
+
+function checkDeviceWidth () {
+  const {
+    platform,
+    pixelRatio,
+    windowWidth
+  } = uni.getSystemInfoSync();
+
+  deviceWidth = windowWidth;
+  deviceDPR = pixelRatio;
+  isIOS = platform === 'ios';
+}
+
+function upx2px (number, newDeviceWidth) {
+  if (deviceWidth === 0) {
+    checkDeviceWidth();
+  }
+
+  number = Number(number);
+  if (number === 0) {
+    return 0
+  }
+  let result = (number / BASE_DEVICE_WIDTH) * (newDeviceWidth || deviceWidth);
+  if (result < 0) {
+    result = -result;
+  }
+  result = Math.floor(result + EPS);
+  if (result === 0) {
+    if (deviceDPR === 1 || !isIOS) {
+      return 1
+    } else {
+      return 0.5
+    }
+  }
+  return number < 0 ? -result : result
+}
+
+var require_context_module_1_5 = /*#__PURE__*/Object.freeze({
+  upx2px: upx2px
+});
+
 const api = Object.create(null);
 
-const uni$1 = Object.create(null);
-
-const baseApis = 
+const modules$1 = 
   (function() {
     var map = {
       './base64.js': require_context_module_1_0,
@@ -2521,19 +2416,308 @@ const baseApis =
   })();
 
 
-baseApis.keys().forEach(function (key) {
-  Object.assign(api, baseApis(key));
+modules$1.keys().forEach(function (key) {
+  Object.assign(api, modules$1(key));
 });
 
-const platformApis = 
+const {
+  invokeCallbackHandler: invoke
+} = UniServiceJSBridge;
+
+let waiting;
+let waitingTimeout;
+let toast = false;
+let toastTimeout;
+
+function showToast$1 ({
+  title = '',
+  icon = 'success',
+  image = '',
+  duration = 1500,
+  mask = false,
+  position = ''
+} = {}) {
+  if (position) {
+    if (toast) {
+      toastTimeout && clearTimeout(toastTimeout);
+      plus.nativeUI.closeToast();
+    }
+    if (waiting) {
+      waitingTimeout && clearTimeout(waitingTimeout);
+      waiting.close();
+    }
+    if (~['top', 'center', 'bottom'].indexOf(position)) {
+      let richText = `<span>${title}</span>`;
+      plus.nativeUI.toast(richText, {
+        verticalAlign: position,
+        type: 'richtext'
+      });
+      toast = true;
+      toastTimeout = setTimeout(() => {
+        hideToast();
+      }, 2000);
+      return
+    }
+    console.warn('uni.showToast 传入的 "position" 值 "' + position + '" 无效');
+  }
+
+  if (duration) {
+    if (waiting) {
+      waitingTimeout && clearTimeout(waitingTimeout);
+      waiting.close();
+    }
+    if (toast) {
+      toastTimeout && clearTimeout(toastTimeout);
+      plus.nativeUI.closeToast();
+    }
+    if (icon && !~['success', 'loading', 'none'].indexOf(icon)) {
+      icon = 'success';
+    }
+    const waitingOptions = {
+      modal: mask,
+      back: 'transmit',
+      padding: '10px',
+      size: '16px' // 固定字体大小
+    };
+    if (!image && (!icon || icon === 'none')) { // 无图
+      //       waitingOptions.width = '120px'
+      //       waitingOptions.height = '40px'
+      waitingOptions.loading = {
+        display: 'none'
+      };
+    } else { // 有图
+      waitingOptions.width = '140px';
+      waitingOptions.height = '112px';
+    }
+    if (image) {
+      waitingOptions.loading = {
+        display: 'block',
+        height: '55px',
+        icon: image,
+        interval: duration
+      };
+    } else {
+      if (icon === 'success') {
+        waitingOptions.loading = {
+          display: 'block',
+          height: '55px',
+          icon: '__uniappsuccess.png',
+          interval: duration
+
+        };
+      }
+    }
+
+    waiting = plus.nativeUI.showWaiting(title, waitingOptions);
+    waitingTimeout = setTimeout(() => {
+      hideToast();
+    }, duration);
+  }
+  return {
+    errMsg: 'showToast:ok'
+  }
+}
+
+function hideToast () {
+  if (toast) {
+    toastTimeout && clearTimeout(toastTimeout);
+    plus.nativeUI.closeToast();
+    toast = false;
+  }
+  if (waiting) {
+    waitingTimeout && clearTimeout(waitingTimeout);
+    waiting.close();
+    waiting = null;
+    waitingTimeout = null;
+  }
+  return {
+    errMsg: 'hideToast:ok'
+  }
+}
+
+function showModal$1 ({
+  title = '',
+  content = '',
+  showCancel = true,
+  cancelText = '取消',
+  cancelColor = '#000000',
+  confirmText = '确定',
+  confirmColor = '#3CC51F'
+} = {}, callbackId) {
+  plus.nativeUI.confirm(content, (e) => {
+    if (showCancel) {
+      invoke(callbackId, {
+        errMsg: 'showModal:ok',
+        confirm: e.index === 1,
+        cancel: e.index === 0 || e.index === -1
+      });
+    } else {
+      invoke(callbackId, {
+        errMsg: 'showModal:ok',
+        confirm: e.index === 0,
+        cancel: false
+      });
+    }
+  }, title, showCancel ? [cancelText, confirmText] : [confirmText]);
+}
+
+function showActionSheet$1 ({
+  itemList = [],
+  itemColor = '#000000',
+  title = ''
+}, callbackId) {
+  const options = {
+    buttons: itemList.map(item => ({
+      title: item
+    }))
+  };
+  if (title) {
+    options.title = title;
+  }
+
+  if (plus.os.name === 'iOS') {
+    options.cancel = '取消';
+  }
+
+  plus.nativeUI.actionSheet(options, (e) => {
+    if (e.index > 0) {
+      invoke(callbackId, {
+        errMsg: 'showActionSheet:ok',
+        tapIndex: e.index - 1
+      });
+    } else {
+      invoke(callbackId, {
+        errMsg: 'showActionSheet:fail cancel'
+      });
+    }
+  });
+}
+
+var require_context_module_0_0 = /*#__PURE__*/Object.freeze({
+  showToast: showToast$1,
+  hideToast: hideToast,
+  showModal: showModal$1,
+  showActionSheet: showActionSheet$1
+});
+
+const ANI_DURATION = 300;
+const ANI_SHOW = 'pop-in';
+
+function showWebview (webview, animationType, animationDuration) {
+  setTimeout(() => {
+    webview.show(
+      animationType || ANI_SHOW,
+      animationDuration || ANI_DURATION,
+      () => {
+        console.log('show.callback');
+      }
+    );
+  }, 50);
+}
+
+var require_context_module_0_6 = /*#__PURE__*/Object.freeze({
+  ANI_DURATION: ANI_DURATION,
+  showWebview: showWebview
+});
+
+let firstBackTime = 0;
+
+function navigateBack$1 ({
+  delta,
+  animationType,
+  animationDuration
+}) {
+  const pages = getCurrentPages();
+  const len = pages.length - 1;
+  const page = pages[len];
+  if (page.$page.meta.isQuit) {
+    if (!firstBackTime) {
+      firstBackTime = Date.now();
+      plus.nativeUI.toast('再按一次退出应用');
+      setTimeout(() => {
+        firstBackTime = null;
+      }, 2000);
+    } else if (Date.now() - firstBackTime < 2000) {
+      plus.runtime.quit();
+    }
+  } else {
+    pages.splice(len, 1);
+    if (animationType) {
+      page.$getAppWebview().close(animationType, animationDuration || ANI_DURATION);
+    } else {
+      page.$getAppWebview().close('auto');
+    }
+    UniServiceJSBridge.emit('onAppRoute', {
+      type: 'navigateBack'
+    });
+  }
+}
+
+var require_context_module_0_1 = /*#__PURE__*/Object.freeze({
+  navigateBack: navigateBack$1
+});
+
+function navigateTo$1 ({
+  url,
+  animationType,
+  animationDuration
+}) {
+  const path = url.split('?')[0];
+
+  UniServiceJSBridge.emit('onAppRoute', {
+    type: 'navigateTo',
+    path
+  });
+
+  showWebview(
+    __registerPage({
+      path
+    }),
+    animationType,
+    animationDuration
+  );
+}
+
+var require_context_module_0_2 = /*#__PURE__*/Object.freeze({
+  navigateTo: navigateTo$1
+});
+
+function reLaunch$1 ({
+  path
+}) {}
+
+var require_context_module_0_3 = /*#__PURE__*/Object.freeze({
+  reLaunch: reLaunch$1
+});
+
+function redirectTo$1 ({
+  path
+}) {}
+
+var require_context_module_0_4 = /*#__PURE__*/Object.freeze({
+  redirectTo: redirectTo$1
+});
+
+function switchTab$1 ({
+  path
+}) {}
+
+var require_context_module_0_5 = /*#__PURE__*/Object.freeze({
+  switchTab: switchTab$1
+});
+
+const api$1 = Object.create(null);
+
+const modules$2 = 
   (function() {
     var map = {
-      './router/navigate-back.js': require_context_module_0_0,
-'./router/navigate-to.js': require_context_module_0_1,
-'./router/re-launch.js': require_context_module_0_2,
-'./router/redirect-to.js': require_context_module_0_3,
-'./router/switch-tab.js': require_context_module_0_4,
-'./router/util.js': require_context_module_0_5,
+      './popup.js': require_context_module_0_0,
+'./router/navigate-back.js': require_context_module_0_1,
+'./router/navigate-to.js': require_context_module_0_2,
+'./router/re-launch.js': require_context_module_0_3,
+'./router/redirect-to.js': require_context_module_0_4,
+'./router/switch-tab.js': require_context_module_0_5,
+'./router/util.js': require_context_module_0_6,
 
     };
     var req = function req(key) {
@@ -2545,13 +2729,21 @@ const platformApis =
     return req;
   })();
 
-platformApis.keys().forEach(function (key) {
-  Object.assign(api, platformApis(key));
+
+modules$2.keys().forEach(function (key) {
+  Object.assign(api$1, modules$2(key));
 });
 
+const api$2 = Object.create(null);
+
+Object.assign(api$2, api);
+Object.assign(api$2, api$1);
+
+const uni$1 = Object.create(null);
+
 apis.forEach(name => {
-  if (api[name]) {
-    uni$1[name] = promisify(name, wrapper(name, api[name]));
+  if (api$2[name]) {
+    uni$1[name] = promisify(name, wrapper(name, api$2[name]));
   } else {
     uni$1[name] = wrapperUnimplemented(name);
   }
