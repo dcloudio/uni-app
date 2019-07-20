@@ -1,4 +1,5 @@
 export function createUniInstance(weex, plus, __uniConfig, __uniRoutes, UniServiceJSBridge, getApp, getCurrentPages){
+var localStorage = plus.storage
 
 const _toString = Object.prototype.toString;
 const hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -1855,7 +1856,7 @@ function wrapper (name, invokeMethod, extras) {
   }
 }
 
-// 尽早将 invokeCallbackHandler 挂在 UniServiceJSBridge 中
+UniServiceJSBridge.publishHandler = UniServiceJSBridge.emit;
 UniServiceJSBridge.invokeCallbackHandler = invokeCallbackHandler;
 
 function createCommonjsModule(fn, module) {
@@ -2252,28 +2253,23 @@ function switchTab$1 (args) {
   return onAppRoute('switchTab', args)
 }
 
-function getStorageHolder () {
-  return plus.storage
-}
-
 function setStorage$1 ({
   key,
   data
 } = {}) {
-  const storageHolder = getStorageHolder();
   const value = {
     type: typeof data === 'object' ? 'object' : 'string',
     data: data
   };
-  storageHolder.setItem(key, JSON.stringify(value));
-  const keyList = storageHolder.getItem('uni-storage-keys');
+  localStorage.setItem(key, JSON.stringify(value));
+  const keyList = localStorage.getItem('uni-storage-keys');
   if (!keyList) {
-    storageHolder.setItem('uni-storage-keys', JSON.stringify([key]));
+    localStorage.setItem('uni-storage-keys', JSON.stringify([key]));
   } else {
     const keys = JSON.parse(keyList);
     if (keys.indexOf(key) < 0) {
       keys.push(key);
-      storageHolder.setItem('uni-storage-keys', JSON.stringify(keys));
+      localStorage.setItem('uni-storage-keys', JSON.stringify(keys));
     }
   }
   return {
@@ -2291,7 +2287,7 @@ function setStorageSync$1 (key, data) {
 function getStorage ({
   key
 } = {}) {
-  const data = getStorageHolder().getItem(key);
+  const data = localStorage.getItem(key);
   return data ? {
     data: JSON.parse(data).data,
     errMsg: 'getStorage:ok'
@@ -2311,15 +2307,14 @@ function getStorageSync (key) {
 function removeStorage ({
   key
 } = {}) {
-  const storageHolder = getStorageHolder();
-  const keyList = storageHolder.getItem('uni-storage-keys');
+  const keyList = localStorage.getItem('uni-storage-keys');
   if (keyList) {
     const keys = JSON.parse(keyList);
     const index = keys.indexOf(key);
     keys.splice(index, 1);
-    storageHolder.setItem('uni-storage-keys', JSON.stringify(keys));
+    localStorage.setItem('uni-storage-keys', JSON.stringify(keys));
   }
-  storageHolder.removeItem(key);
+  localStorage.removeItem(key);
   return {
     errMsg: 'removeStorage:ok'
   }
@@ -2332,7 +2327,7 @@ function removeStorageSync (key) {
 }
 
 function clearStorage () {
-  getStorageHolder().clear();
+  localStorage.clear();
   return {
     errMsg: 'clearStorage:ok'
   }
@@ -2343,7 +2338,7 @@ function clearStorageSync () {
 }
 
 function getStorageInfo () { // TODO 暂时先不做大小的转换
-  const keyList = getStorageHolder().getItem('uni-storage-keys');
+  const keyList = localStorage.getItem('uni-storage-keys');
   return keyList ? {
     keys: JSON.parse(keyList),
     currentSize: 0,

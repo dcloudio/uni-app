@@ -19,7 +19,9 @@ if (process.env.UNI_SERVICE === 'legacy') {
   input = 'src/platforms/app-plus/service/uni/index.js'
   output.file = 'packages/uni-app-plus-nvue/dist/uni.js'
   output.banner =
-    'export function createUniInstance(weex, plus, __uniConfig, __uniRoutes, UniServiceJSBridge, getApp, getCurrentPages){\n'
+`export function createUniInstance(weex, plus, __uniConfig, __uniRoutes, UniServiceJSBridge, getApp, getCurrentPages){
+var localStorage = plus.storage
+`
   output.footer = '\n  return uni$1 \n}'
 }
 

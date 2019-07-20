@@ -2,7 +2,7 @@ let waiting
 let waitingTimeout
 let toast = false
 let toastTimeout
-
+// 此处设计不对
 export default function initPopup (on, {
   plus
 }) {
