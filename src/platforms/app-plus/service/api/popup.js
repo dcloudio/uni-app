@@ -7,6 +7,14 @@ let waitingTimeout
 let toast = false
 let toastTimeout
 
+export function showLoading (args) {
+  return showToast(args).replace('showToast', 'showLoading')
+}
+
+export function hideLoading () {
+  return hideToast().replace('hideToast', 'hideLoading')
+}
+
 export function showToast ({
   title = '',
   icon = 'success',

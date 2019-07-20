@@ -2429,6 +2429,14 @@ let waitingTimeout;
 let toast = false;
 let toastTimeout;
 
+function showLoading$1 (args) {
+  return showToast$1(args).replace('showToast', 'showLoading')
+}
+
+function hideLoading () {
+  return hideToast().replace('hideToast', 'hideLoading')
+}
+
 function showToast$1 ({
   title = '',
   icon = 'success',
@@ -2594,6 +2602,8 @@ function showActionSheet$1 ({
 }
 
 var require_context_module_0_0 = /*#__PURE__*/Object.freeze({
+  showLoading: showLoading$1,
+  hideLoading: hideLoading,
   showToast: showToast$1,
   hideToast: hideToast,
   showModal: showModal$1,
