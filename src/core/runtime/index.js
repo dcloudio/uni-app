@@ -16,13 +16,13 @@ import * as extraApi from './extra'
 
 import * as eventApi from './event-bus'
 
-import * as api from 'uni-platform/service/api/index.js'
+import * as api from 'uni-platform/runtime/api/index.js'
 
 import {
   protocols,
   todos,
   canIUses
-} from 'uni-platform/service/api/protocols'
+} from 'uni-platform/runtime/api/protocols'
 
 import createApp from './wrapper/create-app'
 import createPage from './wrapper/create-page'

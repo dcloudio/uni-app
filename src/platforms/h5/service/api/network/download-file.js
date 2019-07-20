@@ -2,7 +2,7 @@ import { fileToUrl } from 'uni-platform/helpers/file'
 /**
  * 下载任务
  */
-export class DownloadTask {
+class DownloadTask {
   _xhr
   _callbacks = []
   constructor (xhr) {

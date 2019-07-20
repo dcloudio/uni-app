@@ -319,7 +319,7 @@ const canIUse = [{
   required: true
 }];
 
-var require_context_module_0_0 = /*#__PURE__*/Object.freeze({
+var require_context_module_1_0 = /*#__PURE__*/Object.freeze({
   canIUse: canIUse
 });
 
@@ -335,7 +335,7 @@ const arrayBufferToBase64 = [{
   required: true
 }];
 
-var require_context_module_0_1 = /*#__PURE__*/Object.freeze({
+var require_context_module_1_1 = /*#__PURE__*/Object.freeze({
   base64ToArrayBuffer: base64ToArrayBuffer,
   arrayBufferToBase64: arrayBufferToBase64
 });
@@ -472,7 +472,7 @@ const drawCanvas = {
   }
 };
 
-var require_context_module_0_2 = /*#__PURE__*/Object.freeze({
+var require_context_module_1_2 = /*#__PURE__*/Object.freeze({
   canvasGetImageData: canvasGetImageData,
   canvasPutImageData: canvasPutImageData,
   canvasToTempFilePath: canvasToTempFilePath,
@@ -497,7 +497,7 @@ const createCanvasContext = [{
   type: Object
 }];
 
-var require_context_module_0_3 = /*#__PURE__*/Object.freeze({
+var require_context_module_1_3 = /*#__PURE__*/Object.freeze({
   createAudioContext: createAudioContext,
   createVideoContext: createVideoContext,
   createMapContext: createMapContext,
@@ -516,7 +516,7 @@ const makePhoneCall = {
   }
 };
 
-var require_context_module_0_4 = /*#__PURE__*/Object.freeze({
+var require_context_module_1_4 = /*#__PURE__*/Object.freeze({
   makePhoneCall: makePhoneCall
 });
 
@@ -530,7 +530,7 @@ const openDocument = {
   }
 };
 
-var require_context_module_0_5 = /*#__PURE__*/Object.freeze({
+var require_context_module_1_5 = /*#__PURE__*/Object.freeze({
   openDocument: openDocument
 });
 
@@ -577,7 +577,7 @@ const openLocation = {
   }
 };
 
-var require_context_module_0_6 = /*#__PURE__*/Object.freeze({
+var require_context_module_1_6 = /*#__PURE__*/Object.freeze({
   getLocation: getLocation,
   openLocation: openLocation
 });
@@ -635,7 +635,7 @@ const chooseImage = {
   }
 };
 
-var require_context_module_0_7 = /*#__PURE__*/Object.freeze({
+var require_context_module_1_7 = /*#__PURE__*/Object.freeze({
   chooseImage: chooseImage
 });
 
@@ -662,7 +662,7 @@ const chooseVideo = {
   }
 };
 
-var require_context_module_0_8 = /*#__PURE__*/Object.freeze({
+var require_context_module_1_8 = /*#__PURE__*/Object.freeze({
   chooseVideo: chooseVideo
 });
 
@@ -737,7 +737,7 @@ const getImageInfo = {
   }
 };
 
-var require_context_module_0_9 = /*#__PURE__*/Object.freeze({
+var require_context_module_1_9 = /*#__PURE__*/Object.freeze({
   getImageInfo: getImageInfo
 });
 
@@ -772,7 +772,7 @@ const previewImage = {
   }
 };
 
-var require_context_module_0_10 = /*#__PURE__*/Object.freeze({
+var require_context_module_1_10 = /*#__PURE__*/Object.freeze({
   previewImage: previewImage
 });
 
@@ -814,7 +814,7 @@ const setNavigationBarTitle = {
   }
 };
 
-var require_context_module_0_11 = /*#__PURE__*/Object.freeze({
+var require_context_module_1_11 = /*#__PURE__*/Object.freeze({
   setNavigationBarColor: setNavigationBarColor,
   setNavigationBarTitle: setNavigationBarTitle
 });
@@ -832,7 +832,7 @@ const downloadFile = {
   }
 };
 
-var require_context_module_0_12 = /*#__PURE__*/Object.freeze({
+var require_context_module_1_12 = /*#__PURE__*/Object.freeze({
   downloadFile: downloadFile
 });
 
@@ -892,7 +892,7 @@ const request = {
   }
 };
 
-var require_context_module_0_13 = /*#__PURE__*/Object.freeze({
+var require_context_module_1_13 = /*#__PURE__*/Object.freeze({
   request: request
 });
 
@@ -945,7 +945,7 @@ const closeSocket = {
   }
 };
 
-var require_context_module_0_14 = /*#__PURE__*/Object.freeze({
+var require_context_module_1_14 = /*#__PURE__*/Object.freeze({
   connectSocket: connectSocket,
   sendSocketMessage: sendSocketMessage,
   closeSocket: closeSocket
@@ -981,7 +981,7 @@ const uploadFile = {
   }
 };
 
-var require_context_module_0_15 = /*#__PURE__*/Object.freeze({
+var require_context_module_1_15 = /*#__PURE__*/Object.freeze({
   uploadFile: uploadFile
 });
 
@@ -999,7 +999,7 @@ const pageScrollTo = {
   }
 };
 
-var require_context_module_0_16 = /*#__PURE__*/Object.freeze({
+var require_context_module_1_16 = /*#__PURE__*/Object.freeze({
   pageScrollTo: pageScrollTo
 });
 
@@ -1023,7 +1023,7 @@ const getProvider = {
   }
 };
 
-var require_context_module_0_17 = /*#__PURE__*/Object.freeze({
+var require_context_module_1_17 = /*#__PURE__*/Object.freeze({
   getProvider: getProvider
 });
 
@@ -1140,7 +1140,7 @@ const showActionSheet = {
   }
 };
 
-var require_context_module_0_18 = /*#__PURE__*/Object.freeze({
+var require_context_module_1_18 = /*#__PURE__*/Object.freeze({
   showModal: showModal,
   showToast: showToast,
   showLoading: showLoading,
@@ -1291,7 +1291,7 @@ const navigateBack = Object.assign({
   ]
 ));
 
-var require_context_module_0_19 = /*#__PURE__*/Object.freeze({
+var require_context_module_1_19 = /*#__PURE__*/Object.freeze({
   redirectTo: redirectTo,
   reLaunch: reLaunch,
   navigateTo: navigateTo,
@@ -1318,7 +1318,7 @@ const setStorageSync = [{
   required: true
 }];
 
-var require_context_module_0_20 = /*#__PURE__*/Object.freeze({
+var require_context_module_1_20 = /*#__PURE__*/Object.freeze({
   setStorage: setStorage,
   setStorageSync: setStorageSync
 });
@@ -1400,7 +1400,7 @@ const setTabBarBadge = {
   }
 };
 
-var require_context_module_0_21 = /*#__PURE__*/Object.freeze({
+var require_context_module_1_21 = /*#__PURE__*/Object.freeze({
   setTabBarItem: setTabBarItem,
   setTabBarStyle: setTabBarStyle,
   hideTabBar: hideTabBar,
@@ -1415,28 +1415,28 @@ const protocol = Object.create(null);
 const modules = 
   (function() {
     var map = {
-      '/Users/fxy/Documents/GitHub/uni-app-dev/src/core/helpers/protocol/base.js': require_context_module_0_0,
-'/Users/fxy/Documents/GitHub/uni-app-dev/src/core/helpers/protocol/base64.js': require_context_module_0_1,
-'/Users/fxy/Documents/GitHub/uni-app-dev/src/core/helpers/protocol/canvas.js': require_context_module_0_2,
-'/Users/fxy/Documents/GitHub/uni-app-dev/src/core/helpers/protocol/context.js': require_context_module_0_3,
-'/Users/fxy/Documents/GitHub/uni-app-dev/src/core/helpers/protocol/device/make-phone-call.js': require_context_module_0_4,
-'/Users/fxy/Documents/GitHub/uni-app-dev/src/core/helpers/protocol/file/open-document.js': require_context_module_0_5,
-'/Users/fxy/Documents/GitHub/uni-app-dev/src/core/helpers/protocol/location.js': require_context_module_0_6,
-'/Users/fxy/Documents/GitHub/uni-app-dev/src/core/helpers/protocol/media/choose-image.js': require_context_module_0_7,
-'/Users/fxy/Documents/GitHub/uni-app-dev/src/core/helpers/protocol/media/choose-video.js': require_context_module_0_8,
-'/Users/fxy/Documents/GitHub/uni-app-dev/src/core/helpers/protocol/media/get-image-info.js': require_context_module_0_9,
-'/Users/fxy/Documents/GitHub/uni-app-dev/src/core/helpers/protocol/media/preview-image.js': require_context_module_0_10,
-'/Users/fxy/Documents/GitHub/uni-app-dev/src/core/helpers/protocol/navigation-bar.js': require_context_module_0_11,
-'/Users/fxy/Documents/GitHub/uni-app-dev/src/core/helpers/protocol/network/download-file.js': require_context_module_0_12,
-'/Users/fxy/Documents/GitHub/uni-app-dev/src/core/helpers/protocol/network/request.js': require_context_module_0_13,
-'/Users/fxy/Documents/GitHub/uni-app-dev/src/core/helpers/protocol/network/socket.js': require_context_module_0_14,
-'/Users/fxy/Documents/GitHub/uni-app-dev/src/core/helpers/protocol/network/upload-file.js': require_context_module_0_15,
-'/Users/fxy/Documents/GitHub/uni-app-dev/src/core/helpers/protocol/page-scroll-to.js': require_context_module_0_16,
-'/Users/fxy/Documents/GitHub/uni-app-dev/src/core/helpers/protocol/plugins.js': require_context_module_0_17,
-'/Users/fxy/Documents/GitHub/uni-app-dev/src/core/helpers/protocol/popup.js': require_context_module_0_18,
-'/Users/fxy/Documents/GitHub/uni-app-dev/src/core/helpers/protocol/route.js': require_context_module_0_19,
-'/Users/fxy/Documents/GitHub/uni-app-dev/src/core/helpers/protocol/storage.js': require_context_module_0_20,
-'/Users/fxy/Documents/GitHub/uni-app-dev/src/core/helpers/protocol/tab-bar.js': require_context_module_0_21,
+      './base.js': require_context_module_1_0,
+'./base64.js': require_context_module_1_1,
+'./canvas.js': require_context_module_1_2,
+'./context.js': require_context_module_1_3,
+'./device/make-phone-call.js': require_context_module_1_4,
+'./file/open-document.js': require_context_module_1_5,
+'./location.js': require_context_module_1_6,
+'./media/choose-image.js': require_context_module_1_7,
+'./media/choose-video.js': require_context_module_1_8,
+'./media/get-image-info.js': require_context_module_1_9,
+'./media/preview-image.js': require_context_module_1_10,
+'./navigation-bar.js': require_context_module_1_11,
+'./network/download-file.js': require_context_module_1_12,
+'./network/request.js': require_context_module_1_13,
+'./network/socket.js': require_context_module_1_14,
+'./network/upload-file.js': require_context_module_1_15,
+'./page-scroll-to.js': require_context_module_1_16,
+'./plugins.js': require_context_module_1_17,
+'./popup.js': require_context_module_1_18,
+'./route.js': require_context_module_1_19,
+'./storage.js': require_context_module_1_20,
+'./tab-bar.js': require_context_module_1_21,
 
     };
     var req = function req(key) {
@@ -1937,6 +1937,11 @@ var base64Arraybuffer_2 = base64Arraybuffer.decode;
 const base64ToArrayBuffer$1 = base64Arraybuffer_2;
 const arrayBufferToBase64$1 = base64Arraybuffer_1;
 
+var require_context_module_0_0 = /*#__PURE__*/Object.freeze({
+  base64ToArrayBuffer: base64ToArrayBuffer$1,
+  arrayBufferToBase64: arrayBufferToBase64$1
+});
+
 var platformSchema = {};
 
 // TODO 待处理其他 API 的检测
@@ -1948,137 +1953,19 @@ function canIUse$1 (schema) {
   return true
 }
 
+var require_context_module_0_1 = /*#__PURE__*/Object.freeze({
+  canIUse: canIUse$1
+});
+
 const interceptors = {
   promiseInterceptor
 };
 
-/**
- * 查看位置
- * @param {*} param0
- * @param {*} callbackId
- */
-function openLocation$1 ({
-  latitude,
-  longitude,
-  scale,
-  name,
-  address
-}, callbackId) {
-  const {
-    invokeCallbackHandler: invoke
-  } = UniServiceJSBridge;
-
-  getApp().$router.push({
-    type: 'navigateTo',
-    path: '/open-location',
-    query: {
-      latitude,
-      longitude,
-      scale,
-      name,
-      address
-    }
-  }, function () {
-    invoke(callbackId, {
-      errMsg: 'openLocation:ok'
-    });
-  }, function () {
-    invoke(callbackId, {
-      errMsg: 'openLocation:fail'
-    });
-  });
-}
-/**
- * 选择位置
- * @param {*} callbackId
- */
-function chooseLocation (options, callbackId) {
-  const {
-    invokeCallbackHandler: invoke
-  } = UniServiceJSBridge;
-  getApp().$router.push({
-    type: 'navigateTo',
-    path: '/choose-location'
-  }, function () {
-    var fn = data => {
-      UniServiceJSBridge.unsubscribe('onChooseLocation', fn);
-      if (data) {
-        invoke(callbackId, Object.assign(data, {
-          errMsg: 'chooseLocation:ok'
-        }));
-      } else {
-        invoke(callbackId, {
-          errMsg: 'chooseLocation:fail'
-        });
-      }
-    };
-    UniServiceJSBridge.subscribe('onChooseLocation', fn);
-  }, function () {
-    invoke(callbackId, {
-      errMsg: 'chooseLocation:fail'
-    });
-  });
-}
-
-function setNavigationBar (type, args) {
-  const pages = getCurrentPages();
-  if (pages.length) {
-    const page = pages[pages.length - 1].$holder;
-
-    switch (type) {
-      case 'setNavigationBarColor':
-        const {
-          frontColor,
-          backgroundColor,
-          animation
-        } = args;
-
-        const {
-          duration,
-          timingFunc
-        } = animation;
-
-        if (frontColor) {
-          page.navigationBar.textColor = frontColor === '#000000' ? 'black' : 'white';
-        }
-        if (backgroundColor) {
-          page.navigationBar.backgroundColor = backgroundColor;
-        }
-        page.navigationBar.duration = duration + 'ms';
-        page.navigationBar.timingFunc = timingFunc;
-        break
-      case 'showNavigationBarLoading':
-        page.navigationBar.loading = true;
-        break
-      case 'hideNavigationBarLoading':
-        page.navigationBar.loading = false;
-        break
-      case 'setNavigationBarTitle':
-        const {
-          title
-        } = args;
-        page.navigationBar.titleText = title;
-        break
-    }
-  }
-  return {}
-}
-
-function setNavigationBarColor$1 (args) {
-  return setNavigationBar('setNavigationBarColor', args)
-}
-
-function showNavigationBarLoading () {
-  return setNavigationBar('showNavigationBarLoading')
-}
-
-function hideNavigationBarLoading () {
-  return setNavigationBar('hideNavigationBarLoading')
-}
-
-function setNavigationBarTitle$1 (args) {
-  return setNavigationBar('setNavigationBarTitle', args)
-}
+var require_context_module_0_2 = /*#__PURE__*/Object.freeze({
+  interceptors: interceptors,
+  addInterceptor: addInterceptor,
+  removeInterceptor: removeInterceptor
+});
 
 function pageScrollTo$1 (args) {
   const pages = getCurrentPages();
@@ -2089,6 +1976,10 @@ function pageScrollTo$1 (args) {
 }
 
 let pageId;
+
+function setPullDownRefreshPageId (pullDownRefreshPageId) {
+  pageId = pullDownRefreshPageId;
+}
 
 function startPullDownRefresh () {
   if (pageId) {
@@ -2116,142 +2007,12 @@ function stopPullDownRefresh () {
   return {}
 }
 
-const {
-  emit,
-  invokeCallbackHandler: invoke
-} = UniServiceJSBridge;
-
-function showModal$1 (args, callbackId) {
-  emit('onShowModal', args, function (type) {
-    invoke(callbackId, {
-      [type]: true
-    });
-  });
-}
-
-function showToast$1 (args) {
-  emit('onShowToast', args);
-  return {}
-}
-
-function hideToast () {
-  emit('onHideToast');
-  return {}
-}
-
-function showLoading$1 (args) {
-  emit('onShowLoading', args);
-  return {}
-}
-
-function hideLoading () {
-  emit('onHideLoading');
-  return {}
-}
-
-function showActionSheet$1 (args, callbackId) {
-  emit('onShowActionSheet', args, function (tapIndex) {
-    if (tapIndex === -1) {
-      invoke(callbackId, {
-        errMsg: 'showActionSheet:fail cancel'
-      });
-    } else {
-      invoke(callbackId, {
-        tapIndex
-      });
-    }
-  });
-}
-
-function hasLifecycleHook (vueOptions = {}, hook) {
-  return Array.isArray(vueOptions[hook]) && vueOptions[hook].length
-}
-
-function onAppRoute (type, {
-  url,
-  delta,
-  animationType,
-  animationDuration,
-  from = 'navigateBack',
-  detail
-} = {}) {
-  const router = getApp().$router;
-  switch (type) {
-    case 'redirectTo':
-      router.replace({
-        type,
-        path: url
-      });
-      break
-    case 'navigateTo':
-      router.push({
-        type,
-        path: url,
-        animationType,
-        animationDuration
-      });
-      break
-    case 'navigateBack':
-      let canBack = true;
-      const pages = getCurrentPages();
-      if (pages.length) {
-        const page = pages[pages.length - 1];
-        if (hasLifecycleHook(page.$options, 'onBackPress') && page.__call_hook('onBackPress', {
-          from
-        }) === true) {
-          canBack = false;
-        }
-      }
-      if (canBack) {
-        if (delta > 1) {
-          router._$delta = delta;
-        }
-        router.go(-delta, {
-          animationType,
-          animationDuration
-        });
-      }
-      break
-    case 'reLaunch':
-      router.replace({
-        type,
-        path: url
-      });
-      break
-    case 'switchTab':
-      router.replace({
-        type,
-        path: url,
-        params: {
-          detail
-        }
-      });
-      break
-  }
-  return {
-    errMsg: type + ':ok'
-  }
-}
-
-function redirectTo$1 (args) {
-  return onAppRoute('redirectTo', args)
-}
-
-function navigateTo$1 (args) {
-  return onAppRoute('navigateTo', args)
-}
-
-function navigateBack$1 (args) {
-  return onAppRoute('navigateBack', args)
-}
-
-function reLaunch$1 (args) {
-  return onAppRoute('reLaunch', args)
-}
-
-function switchTab$1 (args) {
-  return onAppRoute('switchTab', args)
-}
+var require_context_module_0_3 = /*#__PURE__*/Object.freeze({
+  pageScrollTo: pageScrollTo$1,
+  setPullDownRefreshPageId: setPullDownRefreshPageId,
+  startPullDownRefresh: startPullDownRefresh,
+  stopPullDownRefresh: stopPullDownRefresh
+});
 
 function setStorage$1 ({
   key,
@@ -2358,6 +2119,19 @@ function getStorageInfoSync () {
   return res
 }
 
+var require_context_module_0_4 = /*#__PURE__*/Object.freeze({
+  setStorage: setStorage$1,
+  setStorageSync: setStorageSync$1,
+  getStorage: getStorage,
+  getStorageSync: getStorageSync,
+  removeStorage: removeStorage,
+  removeStorageSync: removeStorageSync,
+  clearStorage: clearStorage,
+  clearStorageSync: clearStorageSync,
+  getStorageInfo: getStorageInfo,
+  getStorageInfoSync: getStorageInfoSync
+});
+
 const EPS = 1e-4;
 const BASE_DEVICE_WIDTH = 750;
 let isIOS = false;
@@ -2400,47 +2174,34 @@ function upx2px (number, newDeviceWidth) {
   return number < 0 ? -result : result
 }
 
-
-
-var api = /*#__PURE__*/Object.freeze({
-  pageScrollTo: pageScrollTo$1,
-  startPullDownRefresh: startPullDownRefresh,
-  stopPullDownRefresh: stopPullDownRefresh,
-  base64ToArrayBuffer: base64ToArrayBuffer$1,
-  arrayBufferToBase64: arrayBufferToBase64$1,
-  canIUse: canIUse$1,
-  interceptors: interceptors,
-  addInterceptor: addInterceptor,
-  removeInterceptor: removeInterceptor,
-  openLocation: openLocation$1,
-  chooseLocation: chooseLocation,
-  setNavigationBarColor: setNavigationBarColor$1,
-  showNavigationBarLoading: showNavigationBarLoading,
-  hideNavigationBarLoading: hideNavigationBarLoading,
-  setNavigationBarTitle: setNavigationBarTitle$1,
-  showModal: showModal$1,
-  showToast: showToast$1,
-  hideToast: hideToast,
-  showLoading: showLoading$1,
-  hideLoading: hideLoading,
-  showActionSheet: showActionSheet$1,
-  redirectTo: redirectTo$1,
-  navigateTo: navigateTo$1,
-  navigateBack: navigateBack$1,
-  reLaunch: reLaunch$1,
-  switchTab: switchTab$1,
-  setStorage: setStorage$1,
-  setStorageSync: setStorageSync$1,
-  getStorage: getStorage,
-  getStorageSync: getStorageSync,
-  removeStorage: removeStorage,
-  removeStorageSync: removeStorageSync,
-  clearStorage: clearStorage,
-  clearStorageSync: clearStorageSync,
-  getStorageInfo: getStorageInfo,
-  getStorageInfoSync: getStorageInfoSync,
+var require_context_module_0_5 = /*#__PURE__*/Object.freeze({
   checkDeviceWidth: checkDeviceWidth,
   upx2px: upx2px
+});
+
+const api = Object.create(null);
+const modules$1 = 
+  (function() {
+    var map = {
+      './base64.js': require_context_module_0_0,
+'./can-i-use.js': require_context_module_0_1,
+'./interceptor.js': require_context_module_0_2,
+'./page-event.js': require_context_module_0_3,
+'./storage.js': require_context_module_0_4,
+'./upx2px.js': require_context_module_0_5,
+
+    };
+    var req = function req(key) {
+      return map[key] || (function() { throw new Error("Cannot find module '" + key + "'.") }());
+    };
+    req.keys = function() {
+      return Object.keys(map);
+    };
+    return req;
+  })();
+
+modules$1.keys().forEach(function (key) {
+  Object.assign(api, modules$1(key));
 });
 
 const uni$1 = Object.create(null);

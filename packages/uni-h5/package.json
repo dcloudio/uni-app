@@ -10,7 +10,6 @@
   "license": "Apache-2.0",
   "dependencies": {
     "base64-arraybuffer": "^0.2.0",
-    "intersection-observer": "^0.7.0",
-    "rollup-plugin-require-context": "^1.0.0"
+    "intersection-observer": "^0.7.0"
   }
 }

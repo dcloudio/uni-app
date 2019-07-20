@@ -881,23 +881,3 @@ export function canvasToTempFilePath ({
     callbackId: cId
   })
 }
-
-export function createContext () {
-  return new CanvasContext()
-}
-
-export function drawCanvas ({
-  canvasId,
-  actions,
-  reserve
-}) {
-  const app = getApp()
-  if (app.$route && app.$route.params.__id__) {
-    operateCanvas(canvasId, app.$route.params.__id__, 'actionsChanged', {
-      actions,
-      reserve
-    })
-  } else {
-    UniServiceJSBridge.emit('onError', 'drawCanvas:fail')
-  }
-}

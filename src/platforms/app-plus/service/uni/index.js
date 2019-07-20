@@ -8,7 +8,7 @@ import {
   promisify
 } from 'uni-helpers/promise'
 
-import * as api from './api'
+import api from 'uni-core/service/api'
 
 const uni = Object.create(null)
 

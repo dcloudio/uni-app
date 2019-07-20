@@ -4,7 +4,7 @@ let isIOS = false
 let deviceWidth = 0
 let deviceDPR = 0
 
-export function checkDeviceWidth () {
+function checkDeviceWidth () {
   const {
     platform,
     pixelRatio,

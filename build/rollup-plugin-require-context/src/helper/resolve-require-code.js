@@ -24,7 +24,7 @@ module.exports = function genRequireCode (baseDirname, modules) {
 
     const moduleAbsolutePath = Path.resolve(baseDirname, file).replace(/\\/g, '/')
     importCode += genImportCode(moduleName, moduleAbsolutePath)
-    moduleProps += genPropsCode(moduleAbsolutePath, moduleName)
+    moduleProps += genPropsCode(file, moduleName)
   })
   const requireFnCode = (`
   (function() {

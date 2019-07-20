@@ -1,3 +1,5 @@
+import apis from 'uni-helpers/apis'
+
 import {
   wrapper,
   wrapperUnimplemented
@@ -7,27 +9,21 @@ import {
   promisify
 } from 'uni-helpers/promise'
 
-import todoApis from 'uni-platform/helpers/todo-api'
-
-import baseApi from './api/index'
-
-import platformApi from 'uni-platform/service/api'
+import {
+  api
+} from './api'
 
 const uni = Object.create(null)
 
 /* eslint-disable no-undef */
 uni.version = __VERSION__
 
-todoApis.forEach(name => {
-  uni[name] = wrapperUnimplemented(name)
-})
-
-Object.keys(baseApi).forEach(name => {
-  uni[name] = promisify(name, wrapper(name, baseApi[name]))
-})
-
-Object.keys(platformApi).forEach(name => {
-  uni[name] = promisify(name, wrapper(name, platformApi[name]))
+apis.forEach(name => {
+  if (api[name]) {
+    uni[name] = promisify(name, wrapper(name, api[name]))
+  } else {
+    uni[name] = wrapperUnimplemented(name)
+  }
 })
 
 export {

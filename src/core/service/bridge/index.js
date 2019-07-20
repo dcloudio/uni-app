@@ -33,8 +33,8 @@ export {
   from 'uni-platform/service/bridge'
 
 initOn(on, {
-  getApp,
-  getCurrentPages
+  getApp: global.getApp,
+  getCurrentPages: global.getCurrentPages
 })
 
 initSubscribe(subscribe)
