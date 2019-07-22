@@ -26,7 +26,9 @@ function initGlobalListeners ({
   const emit = UniServiceJSBridge.emit
 
   plus.key.addEventListener('backbutton', () => {
-    uni.navigateBack()
+    uni.navigateBack({
+      from: 'backbutton'
+    })
   })
 
   plus.globalEvent.addEventListener('pause', () => {

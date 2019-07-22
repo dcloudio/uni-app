@@ -319,7 +319,7 @@ const canIUse = [{
   required: true
 }];
 
-var require_context_module_2_0 = /*#__PURE__*/Object.freeze({
+var require_context_module_1_0 = /*#__PURE__*/Object.freeze({
   canIUse: canIUse
 });
 
@@ -335,7 +335,7 @@ const arrayBufferToBase64 = [{
   required: true
 }];
 
-var require_context_module_2_1 = /*#__PURE__*/Object.freeze({
+var require_context_module_1_1 = /*#__PURE__*/Object.freeze({
   base64ToArrayBuffer: base64ToArrayBuffer,
   arrayBufferToBase64: arrayBufferToBase64
 });
@@ -472,7 +472,7 @@ const drawCanvas = {
   }
 };
 
-var require_context_module_2_2 = /*#__PURE__*/Object.freeze({
+var require_context_module_1_2 = /*#__PURE__*/Object.freeze({
   canvasGetImageData: canvasGetImageData,
   canvasPutImageData: canvasPutImageData,
   canvasToTempFilePath: canvasToTempFilePath,
@@ -497,7 +497,7 @@ const createCanvasContext = [{
   type: Object
 }];
 
-var require_context_module_2_3 = /*#__PURE__*/Object.freeze({
+var require_context_module_1_3 = /*#__PURE__*/Object.freeze({
   createAudioContext: createAudioContext,
   createVideoContext: createVideoContext,
   createMapContext: createMapContext,
@@ -516,7 +516,7 @@ const makePhoneCall = {
   }
 };
 
-var require_context_module_2_4 = /*#__PURE__*/Object.freeze({
+var require_context_module_1_4 = /*#__PURE__*/Object.freeze({
   makePhoneCall: makePhoneCall
 });
 
@@ -530,7 +530,7 @@ const openDocument = {
   }
 };
 
-var require_context_module_2_5 = /*#__PURE__*/Object.freeze({
+var require_context_module_1_5 = /*#__PURE__*/Object.freeze({
   openDocument: openDocument
 });
 
@@ -577,7 +577,7 @@ const openLocation = {
   }
 };
 
-var require_context_module_2_6 = /*#__PURE__*/Object.freeze({
+var require_context_module_1_6 = /*#__PURE__*/Object.freeze({
   getLocation: getLocation,
   openLocation: openLocation
 });
@@ -635,7 +635,7 @@ const chooseImage = {
   }
 };
 
-var require_context_module_2_7 = /*#__PURE__*/Object.freeze({
+var require_context_module_1_7 = /*#__PURE__*/Object.freeze({
   chooseImage: chooseImage
 });
 
@@ -662,7 +662,7 @@ const chooseVideo = {
   }
 };
 
-var require_context_module_2_8 = /*#__PURE__*/Object.freeze({
+var require_context_module_1_8 = /*#__PURE__*/Object.freeze({
   chooseVideo: chooseVideo
 });
 
@@ -737,7 +737,7 @@ const getImageInfo = {
   }
 };
 
-var require_context_module_2_9 = /*#__PURE__*/Object.freeze({
+var require_context_module_1_9 = /*#__PURE__*/Object.freeze({
   getImageInfo: getImageInfo
 });
 
@@ -772,7 +772,7 @@ const previewImage = {
   }
 };
 
-var require_context_module_2_10 = /*#__PURE__*/Object.freeze({
+var require_context_module_1_10 = /*#__PURE__*/Object.freeze({
   previewImage: previewImage
 });
 
@@ -814,7 +814,7 @@ const setNavigationBarTitle = {
   }
 };
 
-var require_context_module_2_11 = /*#__PURE__*/Object.freeze({
+var require_context_module_1_11 = /*#__PURE__*/Object.freeze({
   setNavigationBarColor: setNavigationBarColor,
   setNavigationBarTitle: setNavigationBarTitle
 });
@@ -832,7 +832,7 @@ const downloadFile = {
   }
 };
 
-var require_context_module_2_12 = /*#__PURE__*/Object.freeze({
+var require_context_module_1_12 = /*#__PURE__*/Object.freeze({
   downloadFile: downloadFile
 });
 
@@ -892,7 +892,7 @@ const request = {
   }
 };
 
-var require_context_module_2_13 = /*#__PURE__*/Object.freeze({
+var require_context_module_1_13 = /*#__PURE__*/Object.freeze({
   request: request
 });
 
@@ -945,7 +945,7 @@ const closeSocket = {
   }
 };
 
-var require_context_module_2_14 = /*#__PURE__*/Object.freeze({
+var require_context_module_1_14 = /*#__PURE__*/Object.freeze({
   connectSocket: connectSocket,
   sendSocketMessage: sendSocketMessage,
   closeSocket: closeSocket
@@ -981,7 +981,7 @@ const uploadFile = {
   }
 };
 
-var require_context_module_2_15 = /*#__PURE__*/Object.freeze({
+var require_context_module_1_15 = /*#__PURE__*/Object.freeze({
   uploadFile: uploadFile
 });
 
@@ -999,7 +999,7 @@ const pageScrollTo = {
   }
 };
 
-var require_context_module_2_16 = /*#__PURE__*/Object.freeze({
+var require_context_module_1_16 = /*#__PURE__*/Object.freeze({
   pageScrollTo: pageScrollTo
 });
 
@@ -1023,7 +1023,7 @@ const getProvider = {
   }
 };
 
-var require_context_module_2_17 = /*#__PURE__*/Object.freeze({
+var require_context_module_1_17 = /*#__PURE__*/Object.freeze({
   getProvider: getProvider
 });
 
@@ -1140,7 +1140,7 @@ const showActionSheet = {
   }
 };
 
-var require_context_module_2_18 = /*#__PURE__*/Object.freeze({
+var require_context_module_1_18 = /*#__PURE__*/Object.freeze({
   showModal: showModal,
   showToast: showToast,
   showLoading: showLoading,
@@ -1291,7 +1291,7 @@ const navigateBack = Object.assign({
   ]
 ));
 
-var require_context_module_2_19 = /*#__PURE__*/Object.freeze({
+var require_context_module_1_19 = /*#__PURE__*/Object.freeze({
   redirectTo: redirectTo,
   reLaunch: reLaunch,
   navigateTo: navigateTo,
@@ -1318,7 +1318,7 @@ const setStorageSync = [{
   required: true
 }];
 
-var require_context_module_2_20 = /*#__PURE__*/Object.freeze({
+var require_context_module_1_20 = /*#__PURE__*/Object.freeze({
   setStorage: setStorage,
   setStorageSync: setStorageSync
 });
@@ -1400,7 +1400,7 @@ const setTabBarBadge = {
   }
 };
 
-var require_context_module_2_21 = /*#__PURE__*/Object.freeze({
+var require_context_module_1_21 = /*#__PURE__*/Object.freeze({
   setTabBarItem: setTabBarItem,
   setTabBarStyle: setTabBarStyle,
   hideTabBar: hideTabBar,
@@ -1415,28 +1415,28 @@ const protocol = Object.create(null);
 const modules = 
   (function() {
     var map = {
-      './base.js': require_context_module_2_0,
-'./base64.js': require_context_module_2_1,
-'./canvas.js': require_context_module_2_2,
-'./context.js': require_context_module_2_3,
-'./device/make-phone-call.js': require_context_module_2_4,
-'./file/open-document.js': require_context_module_2_5,
-'./location.js': require_context_module_2_6,
-'./media/choose-image.js': require_context_module_2_7,
-'./media/choose-video.js': require_context_module_2_8,
-'./media/get-image-info.js': require_context_module_2_9,
-'./media/preview-image.js': require_context_module_2_10,
-'./navigation-bar.js': require_context_module_2_11,
-'./network/download-file.js': require_context_module_2_12,
-'./network/request.js': require_context_module_2_13,
-'./network/socket.js': require_context_module_2_14,
-'./network/upload-file.js': require_context_module_2_15,
-'./page-scroll-to.js': require_context_module_2_16,
-'./plugins.js': require_context_module_2_17,
-'./popup.js': require_context_module_2_18,
-'./route.js': require_context_module_2_19,
-'./storage.js': require_context_module_2_20,
-'./tab-bar.js': require_context_module_2_21,
+      './base.js': require_context_module_1_0,
+'./base64.js': require_context_module_1_1,
+'./canvas.js': require_context_module_1_2,
+'./context.js': require_context_module_1_3,
+'./device/make-phone-call.js': require_context_module_1_4,
+'./file/open-document.js': require_context_module_1_5,
+'./location.js': require_context_module_1_6,
+'./media/choose-image.js': require_context_module_1_7,
+'./media/choose-video.js': require_context_module_1_8,
+'./media/get-image-info.js': require_context_module_1_9,
+'./media/preview-image.js': require_context_module_1_10,
+'./navigation-bar.js': require_context_module_1_11,
+'./network/download-file.js': require_context_module_1_12,
+'./network/request.js': require_context_module_1_13,
+'./network/socket.js': require_context_module_1_14,
+'./network/upload-file.js': require_context_module_1_15,
+'./page-scroll-to.js': require_context_module_1_16,
+'./plugins.js': require_context_module_1_17,
+'./popup.js': require_context_module_1_18,
+'./route.js': require_context_module_1_19,
+'./storage.js': require_context_module_1_20,
+'./tab-bar.js': require_context_module_1_21,
 
     };
     var req = function req(key) {
@@ -2152,7 +2152,7 @@ var base64Arraybuffer_2 = base64Arraybuffer.decode;
 const base64ToArrayBuffer$1 = base64Arraybuffer_2;
 const arrayBufferToBase64$1 = base64Arraybuffer_1;
 
-var require_context_module_1_0 = /*#__PURE__*/Object.freeze({
+var require_context_module_0_0 = /*#__PURE__*/Object.freeze({
   base64ToArrayBuffer: base64ToArrayBuffer$1,
   arrayBufferToBase64: arrayBufferToBase64$1
 });
@@ -2168,7 +2168,7 @@ function canIUse$1 (schema) {
   return true
 }
 
-var require_context_module_1_1 = /*#__PURE__*/Object.freeze({
+var require_context_module_0_1 = /*#__PURE__*/Object.freeze({
   canIUse: canIUse$1
 });
 
@@ -2176,7 +2176,7 @@ const interceptors = {
   promiseInterceptor
 };
 
-var require_context_module_1_2 = /*#__PURE__*/Object.freeze({
+var require_context_module_0_2 = /*#__PURE__*/Object.freeze({
   interceptors: interceptors,
   addInterceptor: addInterceptor,
   removeInterceptor: removeInterceptor
@@ -2222,7 +2222,7 @@ function stopPullDownRefresh () {
   return {}
 }
 
-var require_context_module_1_3 = /*#__PURE__*/Object.freeze({
+var require_context_module_0_3 = /*#__PURE__*/Object.freeze({
   pageScrollTo: pageScrollTo$1,
   setPullDownRefreshPageId: setPullDownRefreshPageId,
   startPullDownRefresh: startPullDownRefresh,
@@ -2334,7 +2334,7 @@ function getStorageInfoSync () {
   return res
 }
 
-var require_context_module_1_4 = /*#__PURE__*/Object.freeze({
+var require_context_module_0_4 = /*#__PURE__*/Object.freeze({
   setStorage: setStorage$1,
   setStorageSync: setStorageSync$1,
   getStorage: getStorage,
@@ -2389,7 +2389,7 @@ function upx2px (number, newDeviceWidth) {
   return number < 0 ? -result : result
 }
 
-var require_context_module_1_5 = /*#__PURE__*/Object.freeze({
+var require_context_module_0_5 = /*#__PURE__*/Object.freeze({
   upx2px: upx2px
 });
 
@@ -2398,12 +2398,12 @@ const api = Object.create(null);
 const modules$1 = 
   (function() {
     var map = {
-      './base64.js': require_context_module_1_0,
-'./can-i-use.js': require_context_module_1_1,
-'./interceptor.js': require_context_module_1_2,
-'./page-event.js': require_context_module_1_3,
-'./storage.js': require_context_module_1_4,
-'./upx2px.js': require_context_module_1_5,
+      './base64.js': require_context_module_0_0,
+'./can-i-use.js': require_context_module_0_1,
+'./interceptor.js': require_context_module_0_2,
+'./page-event.js': require_context_module_0_3,
+'./storage.js': require_context_module_0_4,
+'./upx2px.js': require_context_module_0_5,
 
     };
     var req = function req(key) {
@@ -2420,22 +2420,3846 @@ modules$1.keys().forEach(function (key) {
   Object.assign(api, modules$1(key));
 });
 
-const {
-  invokeCallbackHandler: invoke
-} = UniServiceJSBridge;
+function getLastWebview () {
+  try {
+    const pages = getCurrentPages();
+    if (pages.length) {
+      return pages[pages.length - 1].$getAppWebview()
+    }
+  } catch (e) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('getCurrentPages is not ready');
+    }
+  }
+}
+
+function isTabBarPage () {
+  if (!(__uniConfig.tabBar && Array.isArray(__uniConfig.tabBar.list))) {
+    return false
+  }
+  try {
+    const pages = getCurrentPages();
+    if (!pages.length) {
+      return false
+    }
+    const page = pages[pages.length - 1];
+    if (!page) {
+      return false
+    }
+    const route = page.route;
+    return !!__uniConfig.tabBar.list.find(tabBarPage => {
+      const pagePath = tabBarPage.path;
+      return pagePath === route || pagePath === (route + '.html')
+    })
+  } catch (e) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('getCurrentPages is not ready');
+    }
+  }
+  return false
+}
+
+const getRealRoute$1 = (e, t) => {
+  if (t.indexOf('./') === 0) return getRealRoute$1(e, t.substr(2))
+  let n;
+  let i;
+  let o = t.split('/');
+  for (n = 0, i = o.length; n < i && o[n] === '..'; n++);
+  o.splice(0, n);
+  t = o.join('/');
+  let r = e.length > 0 ? e.split('/') : [];
+  r.splice(r.length - n - 1, n + 1);
+  return r.concat(o).join('/')
+};
+
+// 处理 Android 平台解压与非解压模式下获取的路径不一致的情况
+const _handleLocalPath = filePath => {
+  let localUrl = plus.io.convertLocalFileSystemURL(filePath);
+  return localUrl.replace(/^\/?apps\//, '/android_asset/apps/').replace(/\/$/, '')
+};
+
+function getRealPath$1 (filePath) {
+  const SCHEME_RE = /^([a-z-]+:)?\/\//i;
+  const BASE64_RE = /^data:[a-z-]+\/[a-z-]+;base64,/;
+
+  // 无协议的情况补全 https
+  if (filePath.indexOf('//') === 0) {
+    filePath = 'https:' + filePath;
+  }
+
+  // 网络资源或base64
+  if (SCHEME_RE.test(filePath) || BASE64_RE.test(filePath)) {
+    return filePath
+  }
+
+  if (filePath.indexOf('_www') === 0 || filePath.indexOf('_doc') === 0 || filePath.indexOf('_documents') === 0 ||
+    filePath.indexOf('_downloads') === 0) {
+    return 'file://' + _handleLocalPath(filePath)
+  }
+  const wwwPath = 'file://' + _handleLocalPath('_www');
+  // 绝对路径转换为本地文件系统路径
+  if (filePath.indexOf('/') === 0) {
+    return wwwPath + filePath
+  }
+  // 相对资源
+  if (filePath.indexOf('../') === 0 || filePath.indexOf('./') === 0) {
+    if (typeof __id__ === 'string') {
+      return wwwPath + getRealRoute$1('/' + __id__, filePath)
+    } else {
+      const pages = getCurrentPages();
+      if (pages.length) {
+        return wwwPath + getRealRoute$1('/' + pages[pages.length - 1].route, filePath)
+      }
+    }
+  }
+  return filePath
+}
+
+function getStatusBarStyle () {
+  let style = plus.navigator.getStatusBarStyle();
+  if (style === 'UIStatusBarStyleBlackTranslucent' || style === 'UIStatusBarStyleBlackOpaque' || style === 'null') {
+    style = 'light';
+  } else if (style === 'UIStatusBarStyleDefault') {
+    style = 'dark';
+  }
+  return style
+}
+
+const PI = 3.1415926535897932384626;
+const a = 6378245.0;
+const ee = 0.00669342162296594323;
+
+function wgs84togcj02 (lng, lat) {
+  lat = +lat;
+  lng = +lng;
+  if (outOfChina(lng, lat)) {
+    return [lng, lat]
+  }
+  let dlat = _transformlat(lng - 105.0, lat - 35.0);
+  let dlng = _transformlng(lng - 105.0, lat - 35.0);
+  const radlat = lat / 180.0 * PI;
+  let magic = Math.sin(radlat);
+  magic = 1 - ee * magic * magic;
+  const sqrtmagic = Math.sqrt(magic);
+  dlat = (dlat * 180.0) / ((a * (1 - ee)) / (magic * sqrtmagic) * PI);
+  dlng = (dlng * 180.0) / (a / sqrtmagic * Math.cos(radlat) * PI);
+  const mglat = lat + dlat;
+  const mglng = lng + dlng;
+  return [mglng, mglat]
+}
+
+function gcj02towgs84 (lng, lat) {
+  lat = +lat;
+  lng = +lng;
+  if (outOfChina(lng, lat)) {
+    return [lng, lat]
+  }
+  let dlat = _transformlat(lng - 105.0, lat - 35.0);
+  let dlng = _transformlng(lng - 105.0, lat - 35.0);
+  const radlat = lat / 180.0 * PI;
+  let magic = Math.sin(radlat);
+  magic = 1 - ee * magic * magic;
+  const sqrtmagic = Math.sqrt(magic);
+  dlat = (dlat * 180.0) / ((a * (1 - ee)) / (magic * sqrtmagic) * PI);
+  dlng = (dlng * 180.0) / (a / sqrtmagic * Math.cos(radlat) * PI);
+  const mglat = lat + dlat;
+  const mglng = lng + dlng;
+  return [lng * 2 - mglng, lat * 2 - mglat]
+}
+
+const _transformlat = function (lng, lat) {
+  let ret = -100.0 + 2.0 * lng + 3.0 * lat + 0.2 * lat * lat + 0.1 * lng * lat + 0.2 * Math.sqrt(Math.abs(lng));
+  ret += (20.0 * Math.sin(6.0 * lng * PI) + 20.0 * Math.sin(2.0 * lng * PI)) * 2.0 / 3.0;
+  ret += (20.0 * Math.sin(lat * PI) + 40.0 * Math.sin(lat / 3.0 * PI)) * 2.0 / 3.0;
+  ret += (160.0 * Math.sin(lat / 12.0 * PI) + 320 * Math.sin(lat * PI / 30.0)) * 2.0 / 3.0;
+  return ret
+};
+const _transformlng = function (lng, lat) {
+  let ret = 300.0 + lng + 2.0 * lat + 0.1 * lng * lng + 0.1 * lng * lat + 0.1 * Math.sqrt(Math.abs(lng));
+  ret += (20.0 * Math.sin(6.0 * lng * PI) + 20.0 * Math.sin(2.0 * lng * PI)) * 2.0 / 3.0;
+  ret += (20.0 * Math.sin(lng * PI) + 40.0 * Math.sin(lng / 3.0 * PI)) * 2.0 / 3.0;
+  ret += (150.0 * Math.sin(lng / 12.0 * PI) + 300.0 * Math.sin(lng / 30.0 * PI)) * 2.0 / 3.0;
+  return ret
+};
+
+const outOfChina = function (lng, lat) {
+  return (lng < 72.004 || lng > 137.8347) || ((lat < 0.8293 || lat > 55.8271) || false)
+};
+
+function invoke(...args) {
+  return UniServiceJSBridge.invoke(...args)
+}
+
+function publish(...args) {
+  return UniServiceJSBridge.publish(...args)
+}
+
+let audios = {};
+
+const evts = ['play', 'canplay', 'ended', 'stop', 'waiting', 'seeking', 'seeked', 'pause'];
+
+const publishAudioStateChange = (state, res = {}) => publish('onAudioStateChange', Object.assign({
+  state
+}, res));
+
+const initStateChage = audioId => {
+  const audio = audios[audioId];
+  if (!audio) {
+    return
+  }
+  if (!audio.initStateChage) {
+    audio.initStateChage = true;
+
+    audio.addEventListener('error', error => {
+      publishAudioStateChange('error', {
+        audioId,
+        errMsg: 'MediaError',
+        errCode: error.code
+      });
+    });
+
+    evts.forEach(event => {
+      audio.addEventListener(event, () => {
+        // 添加 isStopped 属性是为了解决 安卓设备停止播放后获取播放进度不正确的问题
+        if (event === 'play') {
+          audio.isStopped = false;
+        } else if (event === 'stop') {
+          audio.isStopped = true;
+        }
+        publishAudioStateChange(event, {
+          audioId
+        });
+      });
+    });
+  }
+};
+
+function createAudioInstance () {
+  const audioId = `${Date.now()}${Math.random()}`;
+  const audio = audios[audioId] = plus.audio.createPlayer('');
+  audio.src = '';
+  audio.volume = 1;
+  audio.startTime = 0;
+  return {
+    errMsg: 'createAudioInstance:ok',
+    audioId
+  }
+}
+
+function destroyAudioInstance ({
+  audioId
+}) {
+  if (audios[audioId]) {
+    audios[audioId].close();
+    delete audios[audioId];
+  }
+  return {
+    errMsg: 'destroyAudioInstance:ok',
+    audioId
+  }
+}
+
+function setAudioState ({
+  audioId,
+  src,
+  startTime,
+  autoplay = false,
+  loop = false,
+  obeyMuteSwitch,
+  volume
+}) {
+  const audio = audios[audioId];
+  if (audio) {
+    let style = {
+      loop,
+      autoplay
+    };
+    if (src) {
+      audio.src = style.src = getRealPath$1(src);
+    }
+    if (startTime) {
+      audio.startTime = style.startTime = startTime;
+    }
+    if (typeof volume === 'number') {
+      audio.volume = style.volume = volume;
+    }
+    audio.setStyles(style);
+    initStateChage(audioId);
+  }
+  return {
+    errMsg: 'setAudioState:ok'
+  }
+}
+
+function getAudioState ({
+  audioId
+}) {
+  const audio = audios[audioId];
+  if (!audio) {
+    return {
+      errMsg: 'getAudioState:fail'
+    }
+  }
+  let {
+    src,
+    startTime,
+    volume
+  } = audio;
+
+  return {
+    errMsg: 'getAudioState:ok',
+    duration: 1e3 * (audio.getDuration() || 0),
+    currentTime: audio.isStopped ? 0 : 1e3 * audio.getPosition(),
+    paused: audio.isPaused,
+    src,
+    volume,
+    startTime: 1e3 * startTime,
+    buffered: 1e3 * audio.getBuffered()
+  }
+}
+
+function operateAudio ({
+  operationType,
+  audioId,
+  currentTime
+}) {
+  const audio = audios[audioId];
+  const operationTypes = ['play', 'pause', 'stop'];
+  if (operationTypes.indexOf(operationType) >= 0) {
+    audio[operationType === operationTypes[0] && audio.isPaused ? 'resume' : operationType]();
+  } else if (operationType === 'seek') {
+    audio.seekTo(currentTime / 1e3);
+  }
+  return {
+    errMsg: 'operateAudio:ok'
+  }
+}
+
+let audio;
+
+const publishBackgroundAudioStateChange = (state, res = {}) => publish('onBackgroundAudioStateChange', Object.assign({
+  state
+}, res));
+
+const events = ['play', 'pause', 'ended', 'stop'];
+
+function initMusic () {
+  if (audio) {
+    return
+  }
+  audio = plus.audio.createPlayer({
+    autoplay: true,
+    backgroundControl: true
+  });
+  audio.src = audio.title = audio.epname = audio.singer = audio.coverImgUrl = audio.webUrl = '';
+  audio.startTime = 0;
+  events.forEach(event => {
+    audio.addEventListener(event, () => {
+      // 添加 isStopped 属性是为了解决 安卓设备停止播放后获取播放进度不正确的问题
+      if (event === 'play') {
+        audio.isStopped = false;
+      } else if (event === 'stop') {
+        audio.isStopped = true;
+      }
+      const eventName = `onMusic${event[0].toUpperCase() + event.substr(1)}`;
+      publish(eventName, {
+        dataUrl: audio.src,
+        errMsg: `${eventName}:ok`
+      });
+      publishBackgroundAudioStateChange(event, {
+        dataUrl: audio.src
+      });
+    });
+  });
+  audio.addEventListener('waiting', () => {
+    publishBackgroundAudioStateChange('waiting', {
+      dataUrl: audio.src
+    });
+  });
+  audio.addEventListener('error', err => {
+    publish('onMusicError', {
+      dataUrl: audio.src,
+      errMsg: 'Error:' + err.message
+    });
+    publishBackgroundAudioStateChange('error', {
+      dataUrl: audio.src,
+      errMsg: err.message,
+      errCode: err.code
+    });
+  });
+  audio.addEventListener('prev', () => publish('onBackgroundAudioPrev'));
+  audio.addEventListener('next', () => publish('onBackgroundAudioNext'));
+}
+
+function setMusicState (args) {
+  initMusic();
+  const props = ['src', 'startTime', 'coverImgUrl', 'webUrl', 'singer', 'epname', 'title'];
+  const style = {};
+  Object.keys(args).forEach(key => {
+    if (props.indexOf(key) >= 0) {
+      let val = args[key];
+      if (key === props[0] && val) {
+        val = getRealPath$1(val);
+      }
+      audio[key] = style[key] = val;
+    }
+  });
+  audio.setStyles(style);
+}
+
+function getAudio () {
+  return audio
+}
+
+function getMusicPlayerState () {
+  const audio = getAudio();
+  if (audio) {
+    return {
+      dataUrl: audio.src,
+      duration: audio.getDuration() || 0,
+      currentPosition: audio.getPosition(),
+      status: audio.isPaused ? 0 : 1,
+      downloadPercent: Math.round(100 * audio.getBuffered() / audio.getDuration()),
+      errMsg: `getMusicPlayerState:ok`
+    }
+  }
+  return {
+    status: 2,
+    errMsg: `getMusicPlayerState:ok`
+  }
+}
+function operateMusicPlayer ({
+  operationType,
+  dataUrl,
+  position,
+  api = 'operateMusicPlayer',
+  title,
+  coverImgUrl
+}) {
+  const audio = getAudio();
+  var operationTypes = ['resume', 'pause', 'stop'];
+  if (operationTypes.indexOf(operationType) > 0) {
+    audio && audio[operationType]();
+  } else if (operationType === 'play') {
+    setMusicState({
+      src: dataUrl,
+      startTime: position,
+      title,
+      coverImgUrl
+    });
+    audio.play();
+  } else if (operationType === 'seek') {
+    audio && audio.seekTo(position);
+  }
+  return {
+    errMsg: `${api}:ok`
+  }
+}
+function setBackgroundAudioState (args) {
+  setMusicState(args);
+  return {
+    errMsg: `setBackgroundAudioState:ok`
+  }
+}
+function operateBackgroundAudio ({
+  operationType,
+  src,
+  startTime,
+  currentTime
+}) {
+  return operateMusicPlayer({
+    operationType,
+    dataUrl: src,
+    position: startTime || currentTime || 0,
+    api: 'operateBackgroundAudio'
+  })
+}
+function getBackgroundAudioState () {
+  let data = {
+    duration: 0,
+    currentTime: 0,
+    paused: false,
+    src: '',
+    buffered: 0,
+    title: '',
+    epname: '',
+    singer: '',
+    coverImgUrl: '',
+    webUrl: '',
+    startTime: 0,
+    errMsg: `getBackgroundAudioState:ok`
+  };
+  const audio = getAudio();
+  if (audio) {
+    let newData = {
+      duration: audio.getDuration() || 0,
+      currentTime: audio.isStopped ? 0 : audio.getPosition(),
+      paused: audio.isPaused,
+      src: audio.src,
+      buffered: audio.getBuffered(),
+      title: audio.title,
+      epname: audio.epname,
+      singer: audio.singer,
+      coverImgUrl: audio.coverImgUrl,
+      webUrl: audio.webUrl,
+      startTime: audio.startTime
+    };
+    data = Object.assign(data, newData);
+  }
+  return data
+}
+
+function getMapCenterLocation ({
+  mapId
+} = {}, callbackId) {
+  const nativeMap = plus.maps.getMapById(mapId + '');
+  if (nativeMap) {
+    nativeMap.getCurrentCenter((state, {
+      latitude,
+      longitude
+    } = {}) => {
+      if (state === 0) {
+        invoke(callbackId, {
+          latitude,
+          longitude,
+          errMsg: 'getMapCenterLocation:ok'
+        });
+      } else {
+        invoke(callbackId, {
+          errMsg: 'getMapCenterLocation:fail:state[' + state + ']'
+        });
+      }
+    });
+  } else {
+    return {
+      errMsg: 'getMapCenterLocation:fail:地图[' + mapId + ']不存在'
+    }
+  }
+}
+
+function moveToMapLocation ({
+  mapId
+} = {}) {
+  const nativeMap = plus.maps.getMapById(mapId + '');
+  if (nativeMap) {
+    nativeMap.getUserLocation((state, {
+      latitude,
+      longitude
+    } = {}) => {
+      if (state === 0) {
+        nativeMap.setCenter(new plus.maps.Point(longitude, latitude));
+      }
+    });
+  }
+  return {
+    errMsg: 'moveToMapLocation:ok'
+  }
+}
+
+function getMapScale ({
+  mapId
+} = {}) {
+  const nativeMap = plus.maps.getMapById(mapId + '');
+  if (nativeMap) {
+    return {
+      scale: nativeMap.getZoom(),
+      errMsg: 'getMapScale:ok'
+    }
+  }
+  return {
+    errMsg: 'getMapScale:fail:地图[' + mapId + ']不存在'
+  }
+}
+
+function getMapRegion ({
+  mapId
+} = {}) {
+  const nativeMap = plus.maps.getMapById(mapId + '');
+  if (nativeMap) {
+    const bounds = nativeMap.getBounds();
+    const northeast = bounds.getNorthEase();
+    const southwest = bounds.getSouthWest();
+    return {
+      northeast: {
+        latitude: northeast.getLat(),
+        longitude: northeast.getLng()
+      },
+      southwest: {
+        latitude: southwest.getLat(),
+        longitude: southwest.getLng()
+      },
+      errMsg: 'getMapRegion:ok'
+    }
+  }
+  return {
+    errMsg: 'getMapRegion:fail:地图[' + mapId + ']不存在'
+  }
+}
+
+function operateVideoPlayer ({
+  data,
+  videoPlayerId,
+  type
+}) {
+  const nativeVideo = plus.video.getVideoPlayerById(videoPlayerId + '');
+  if (nativeVideo) {
+    switch (type) {
+      case 'play':
+      case 'pause':
+      case 'stop':
+      case 'requestFullScreen':
+      case 'exitFullScreen':
+      case 'seek':
+      case 'playbackRate':
+      case 'showStatusBar':
+        nativeVideo[type].apply(nativeVideo, data);
+        return {
+          errMsg: 'operateVideoPlayer:ok'
+        }
+      case 'sendDanmu':
+        nativeVideo.sendDanmu({
+          text: data[0],
+          color: data[1]
+        });
+        return {
+          errMsg: 'operateVideoPlayer:ok'
+        }
+      default:
+        return {
+          errMsg: 'operateVideoPlayer:fail:暂不支持[' + type + ']'
+        }
+    }
+  } else {
+    return {
+      errMsg: 'operateVideoPlayer:fail:视频组件[' + videoPlayerId + ']不存在'
+    }
+  }
+}
+
+const DEVICE_FREQUENCY = 200;
+const NETWORK_TYPES = ['unknown', 'none', 'ethernet', 'wifi', '2g', '3g', '4g'];
+
+const MAP_ID = '__UNIAPP_MAP';
+
+const TEMP_PATH_BASE = '_doc/uniapp_temp';
+const TEMP_PATH = `${TEMP_PATH_BASE}_${Date.now()}`;
+
+let watchAccelerationId = false;
+let isWatchAcceleration = false;
+
+const clearWatchAcceleration = () => {
+  if (watchAccelerationId) {
+    plus.accelerometer.clearWatch(watchAccelerationId);
+    watchAccelerationId = false;
+  }
+};
+
+function enableAccelerometer ({
+  enable
+}) {
+  if (enable) { // 启用监听
+    clearWatchAcceleration();
+    watchAccelerationId = plus.accelerometer.watchAcceleration((res) => {
+      publish('onAccelerometerChange', {
+        x: res.xAxis,
+        y: res.yAxis,
+        z: res.zAxis,
+        errMsg: 'enableAccelerometer:ok'
+      });
+    }, (e) => {
+      publish('onAccelerometerChange', {
+        errMsg: 'enableAccelerometer:fail'
+      });
+    }, {
+      frequency: DEVICE_FREQUENCY
+    });
+    if (!isWatchAcceleration) {
+      isWatchAcceleration = true;
+      const webview = getLastWebview();
+      if (webview) {
+        webview.addEventListener('close', clearWatchAcceleration);
+      }
+    }
+  } else {
+    clearWatchAcceleration();
+  }
+  return {
+    errMsg: 'enableAccelerometer:ok'
+  }
+}
+
+function addPhoneContact ({
+  photoFilePath = '',
+  nickName,
+  lastName,
+  middleName,
+  firstName,
+  remark,
+  mobilePhoneNumber,
+  weChatNumber,
+  addressCountry,
+  addressState,
+  addressCity,
+  addressStreet,
+  addressPostalCode,
+  organization,
+  title,
+  workFaxNumber,
+  workPhoneNumber,
+  hostNumber,
+  email,
+  url,
+  workAddressCountry,
+  workAddressState,
+  workAddressCity,
+  workAddressStreet,
+  workAddressPostalCode,
+  homeFaxNumber,
+  homePhoneNumber,
+  homeAddressCountry,
+  homeAddressState,
+  homeAddressCity,
+  homeAddressStreet,
+  homeAddressPostalCode
+} = {}, callbackId) {
+  plus.contacts.getAddressBook(plus.contacts.ADDRESSBOOK_PHONE, (addressbook) => {
+    const contact = addressbook.create();
+    const name = {};
+    if (lastName) {
+      name.familyName = lastName;
+    }
+    if (firstName) {
+      name.givenName = firstName;
+    }
+    if (middleName) {
+      name.middleName = middleName;
+    }
+    contact.name = name;
+
+    if (nickName) {
+      contact.nickname = nickName;
+    }
+
+    if (photoFilePath) {
+      contact.photos = [{
+        type: 'url',
+        value: photoFilePath
+      }];
+    }
+
+    if (remark) {
+      contact.note = remark;
+    }
+
+    const mobilePhone = {
+      type: 'mobile'
+    };
+
+    const workPhone = {
+      type: 'work'
+    };
+
+    const companyPhone = {
+      type: 'company'
+    };
+
+    const homeFax = {
+      type: 'home fax'
+    };
+
+    const workFax = {
+      type: 'work fax'
+    };
+
+    if (mobilePhoneNumber) {
+      mobilePhone.value = mobilePhoneNumber;
+    }
+
+    if (workPhoneNumber) {
+      workPhone.value = workPhoneNumber;
+    }
+
+    if (hostNumber) {
+      companyPhone.value = hostNumber;
+    }
+
+    if (homeFaxNumber) {
+      homeFax.value = homeFaxNumber;
+    }
+
+    if (workFaxNumber) {
+      workFax.value = workFaxNumber;
+    }
+
+    contact.phoneNumbers = [mobilePhone, workPhone, companyPhone, homeFax, workFax];
+
+    if (email) {
+      contact.emails = [{
+        type: 'home',
+        value: email
+      }];
+    }
+
+    if (url) {
+      contact.urls = [{
+        type: 'other',
+        value: url
+      }];
+    }
+
+    if (weChatNumber) {
+      contact.ims = [{
+        type: 'other',
+        value: weChatNumber
+      }];
+    }
+
+    const defaultAddress = {
+      type: 'other',
+      preferred: true
+    };
+
+    const homeAddress = {
+      type: 'home'
+    };
+    const companyAddress = {
+      type: 'company'
+    };
+
+    if (addressCountry) {
+      defaultAddress.country = addressCountry;
+    }
+
+    if (addressState) {
+      defaultAddress.region = addressState;
+    }
+
+    if (addressCity) {
+      defaultAddress.locality = addressCity;
+    }
+
+    if (addressStreet) {
+      defaultAddress.streetAddress = addressStreet;
+    }
+
+    if (addressPostalCode) {
+      defaultAddress.postalCode = addressPostalCode;
+    }
+
+    if (homeAddressCountry) {
+      homeAddress.country = homeAddressCountry;
+    }
+
+    if (homeAddressState) {
+      homeAddress.region = homeAddressState;
+    }
+
+    if (homeAddressCity) {
+      homeAddress.locality = homeAddressCity;
+    }
+
+    if (homeAddressStreet) {
+      homeAddress.streetAddress = homeAddressStreet;
+    }
+
+    if (homeAddressPostalCode) {
+      homeAddress.postalCode = homeAddressPostalCode;
+    }
+
+    if (workAddressCountry) {
+      companyAddress.country = workAddressCountry;
+    }
+
+    if (workAddressState) {
+      companyAddress.region = workAddressState;
+    }
+
+    if (workAddressCity) {
+      companyAddress.locality = workAddressCity;
+    }
+
+    if (workAddressStreet) {
+      companyAddress.streetAddress = workAddressStreet;
+    }
+
+    if (workAddressPostalCode) {
+      companyAddress.postalCode = workAddressPostalCode;
+    }
+
+    contact.addresses = [defaultAddress, homeAddress, companyAddress];
+
+    contact.save(() => {
+      invoke(callbackId, {
+        errMsg: 'addPhoneContact:ok'
+      });
+    }, (e) => {
+      invoke(callbackId, {
+        errMsg: 'addPhoneContact:fail'
+      });
+    });
+  }, (e) => {
+    invoke(callbackId, {
+      errMsg: 'addPhoneContact:fail'
+    });
+  });
+}
+
+/**
+ * 执行蓝牙相关方法
+ */
+function bluetoothExec (method, callbackId, data = {}, beforeSuccess) {
+  var deviceId = data.deviceId;
+  if (deviceId) {
+    data.deviceId = deviceId.toUpperCase();
+  }
+  var serviceId = data.serviceId;
+  if (serviceId) {
+    data.serviceId = serviceId.toUpperCase();
+  }
+
+  plus.bluetooth[method.replace('Changed', 'Change')](Object.assign(data, {
+    success (data) {
+      if (typeof beforeSuccess === 'function') {
+        beforeSuccess(data);
+      }
+      invoke(callbackId, Object.assign({}, data, {
+        errMsg: `${method}:ok`,
+        code: undefined,
+        message: undefined
+      }));
+    },
+    fail (error = {}) {
+      invoke(callbackId, {
+        errMsg: `${method}:fail ${error.message || ''}`,
+        errCode: error.code || 0
+      });
+    }
+  }));
+}
+/**
+ * 监听蓝牙相关事件
+ */
+function bluetoothOn (method, beforeSuccess) {
+  plus.bluetooth[method.replace('Changed', 'Change')](function (data) {
+    if (typeof beforeSuccess === 'function') {
+      beforeSuccess(data);
+    }
+    publish(method, Object.assign({}, data, {
+      code: undefined,
+      message: undefined
+    }));
+  });
+  return true
+}
+
+function checkDevices (data) {
+  data.devices = data.devices.map(device => {
+    var advertisData = device.advertisData;
+    if (advertisData && typeof advertisData !== 'string') {
+      device.advertisData = wx.arrayBufferToBase64(advertisData);
+    }
+    return device
+  });
+}
+
+var onBluetoothAdapterStateChange;
+var onBluetoothDeviceFound;
+var onBLEConnectionStateChange;
+var onBLEConnectionStateChanged;
+var onBLECharacteristicValueChange;
+
+function openBluetoothAdapter (data, callbackId) {
+  onBluetoothAdapterStateChange = onBluetoothAdapterStateChange || bluetoothOn('onBluetoothAdapterStateChange');
+  bluetoothExec('openBluetoothAdapter', callbackId);
+}
+
+function closeBluetoothAdapter (data, callbackId) {
+  bluetoothExec('closeBluetoothAdapter', callbackId);
+}
+
+function getBluetoothAdapterState (data, callbackId) {
+  bluetoothExec('getBluetoothAdapterState', callbackId);
+}
+
+function startBluetoothDevicesDiscovery (data, callbackId) {
+  onBluetoothDeviceFound = onBluetoothDeviceFound || bluetoothOn('onBluetoothDeviceFound', checkDevices);
+  bluetoothExec('startBluetoothDevicesDiscovery', callbackId, data);
+}
+
+function stopBluetoothDevicesDiscovery (data, callbackId) {
+  bluetoothExec('stopBluetoothDevicesDiscovery', callbackId);
+}
+
+function getBluetoothDevices (data, callbackId) {
+  bluetoothExec('getBluetoothDevices', callbackId, {}, checkDevices);
+}
+
+function getConnectedBluetoothDevices (data, callbackId) {
+  bluetoothExec('getConnectedBluetoothDevices', callbackId, data);
+}
+
+function createBLEConnection (data, callbackId) {
+  onBLEConnectionStateChange = onBLEConnectionStateChange || bluetoothOn('onBLEConnectionStateChange');
+  onBLEConnectionStateChanged = onBLEConnectionStateChanged || bluetoothOn('onBLEConnectionStateChanged');
+  bluetoothExec('createBLEConnection', callbackId, data);
+}
+
+function closeBLEConnection (data, callbackId) {
+  bluetoothExec('closeBLEConnection', callbackId, data);
+}
+
+function getBLEDeviceServices (data, callbackId) {
+  bluetoothExec('getBLEDeviceServices', callbackId, data);
+}
+
+function getBLEDeviceCharacteristics (data, callbackId) {
+  bluetoothExec('getBLEDeviceCharacteristics', callbackId, data);
+}
+
+function notifyBLECharacteristicValueChange (data, callbackId) {
+  onBLECharacteristicValueChange = onBLECharacteristicValueChange || bluetoothOn('onBLECharacteristicValueChange',
+    data => {
+      data.value = wx.arrayBufferToBase64(data.value);
+    });
+  bluetoothExec('notifyBLECharacteristicValueChange', callbackId, data);
+}
+
+function notifyBLECharacteristicValueChanged (data, callbackId) {
+  onBLECharacteristicValueChange = onBLECharacteristicValueChange || bluetoothOn('onBLECharacteristicValueChange',
+    data => {
+      data.value = wx.arrayBufferToBase64(data.value);
+    });
+  bluetoothExec('notifyBLECharacteristicValueChanged', callbackId, data);
+}
+
+function readBLECharacteristicValue (data, callbackId) {
+  bluetoothExec('readBLECharacteristicValue', callbackId, data);
+}
+
+function writeBLECharacteristicValue (data, callbackId) {
+  data.value = wx.base64ToArrayBuffer(data.value);
+  bluetoothExec('writeBLECharacteristicValue', callbackId, data);
+}
+
+function getScreenBrightness () {
+  return {
+    errMsg: 'getScreenBrightness:ok',
+    value: plus.screen.getBrightness()
+  }
+}
+
+function setScreenBrightness ({
+  value
+} = {}) {
+  plus.screen.setBrightness(value);
+  return {
+    errMsg: 'setScreenBrightness:ok'
+  }
+}
+
+function setKeepScreenOn ({
+  keepScreenOn
+} = {}) {
+  plus.device.setWakelock(!!keepScreenOn);
+  return {
+    errMsg: 'setKeepScreenOn:ok'
+  }
+}
+
+function getClipboardData (options, callbackId) {
+  const clipboard = weex.requireModule('clipboard');
+  clipboard.getString(ret => {
+    if (ret.result === 'success') {
+      invoke(callbackId, {
+        data: ret.data,
+        errMsg: 'getClipboardData:ok'
+      });
+    } else {
+      invoke(callbackId, {
+        data: ret.result,
+        errMsg: 'getClipboardData:fail'
+      });
+    }
+  });
+}
+
+function setClipboardData ({
+  data
+}) {
+  const clipboard = weex.requireModule('clipboard');
+  clipboard.setString(data);
+  return {
+    errMsg: 'setClipboardData:ok'
+  }
+}
+
+let watchOrientationId = false;
+let isWatchOrientation = false;
+
+const clearWatchOrientation = () => {
+  if (watchOrientationId) {
+    plus.orientation.clearWatch(watchOrientationId);
+    watchOrientationId = false;
+  }
+};
+
+function enableCompass ({
+  enable
+}) {
+  if (enable) {
+    clearWatchOrientation();
+    watchOrientationId = plus.orientation.watchOrientation((o) => {
+      publish('onCompassChange', {
+        direction: o.magneticHeading,
+        errMsg: 'enableCompass:ok'
+      });
+    }, (e) => {
+      publish('onCompassChange', {
+        errMsg: 'enableCompass:fail'
+      });
+    }, {
+      frequency: DEVICE_FREQUENCY
+    });
+    if (!isWatchOrientation) {
+      isWatchOrientation = true;
+      const webview = getLastWebview();
+      if (webview) {
+        webview.addEventListener('close', () => {
+          plus.orientation.clearWatch(watchOrientationId);
+        });
+      }
+    }
+  } else {
+    clearWatchOrientation();
+  }
+  return {
+    errMsg: 'enableCompass:ok'
+  }
+}
+
+function getNetworkType () {
+  return {
+    errMsg: 'getNetworkType:ok',
+    networkType: NETWORK_TYPES[plus.networkinfo.getCurrentType()]
+  }
+}
+
+let beaconUpdateState = false;
+
+function onBeaconUpdate () {
+  if (!beaconUpdateState) {
+    plus.ibeacon.onBeaconUpdate(function (data) {
+      publish('onBeaconUpdated', data);
+    });
+    beaconUpdateState = true;
+  }
+}
+
+let beaconServiceChangeState = false;
+
+function onBeaconServiceChange () {
+  if (!beaconServiceChangeState) {
+    plus.ibeacon.onBeaconServiceChange(function (data) {
+      publish('onBeaconServiceChange', data);
+      publish('onBeaconServiceChanged', data);
+    });
+    beaconServiceChangeState = true;
+  }
+}
+
+function getBeacons (params, callbackId) {
+  plus.ibeacon.getBeacons({
+    success: (result) => {
+      invoke(callbackId, {
+        errMsg: 'getBeacons:ok',
+        beacons: result.beacons
+      });
+    },
+    fail: (error) => {
+      invoke(callbackId, {
+        errMsg: 'getBeacons:fail:' + error.message
+      });
+    }
+  });
+}
+
+function startBeaconDiscovery ({
+  uuids,
+  ignoreBluetoothAvailable = false
+}, callbackId) {
+  plus.ibeacon.startBeaconDiscovery({
+    uuids,
+    ignoreBluetoothAvailable,
+    success: (result) => {
+      invoke(callbackId, {
+        errMsg: 'startBeaconDiscovery:ok',
+        beacons: result.beacons
+      });
+    },
+    fail: (error) => {
+      invoke(callbackId, {
+        errMsg: 'startBeaconDiscovery:fail:' + error.message
+      });
+    }
+  });
+}
+
+function stopBeaconDiscovery (params, callbackId) {
+  plus.ibeacon.stopBeaconDiscovery({
+    success: (result) => {
+      invoke(callbackId, Object.assign(result, {
+        errMsg: 'stopBeaconDiscovery:ok'
+      }));
+    },
+    fail: (error) => {
+      invoke(callbackId, {
+        errMsg: 'stopBeaconDiscovery:fail:' + error.message
+      });
+    }
+  });
+}
+
+function makePhoneCall$1 ({
+  phoneNumber
+} = {}) {
+  plus.device.dial(phoneNumber);
+  return {
+    errMsg: 'makePhoneCall:ok'
+  }
+}
+
+const ANI_SHOW = 'pop-in';
+const ANI_DURATION = 300;
+
+const TABBAR_HEIGHT = 56;
+const TITLEBAR_HEIGHT = 44;
+
+const callbacks = {};
+/**
+ * 注册 view 层通知 service 层事件处理
+ */
+function registerPlusMessage (type, callback, keepAlive = true) {
+  if (callbacks[type]) {
+    throw new Error(`${type} 已注册:` + (callbacks[type].toString()))
+  }
+  callback.keepAlive = !!keepAlive;
+  callbacks[type] = callback;
+}
+
+const SCAN_ID = '__UNIAPP_SCAN';
+const SCAN_PATH = '_www/__uniappscan.html';
+
+const MESSAGE_TYPE = 'scanCode';
+
+function scanCode ({
+  onlyFromCamera = false,
+  scanType
+}, callbackId) {
+  const barcode = plus.barcode;
+  const SCAN_TYPES = {
+    'qrCode': [
+      barcode.QR,
+      barcode.AZTEC,
+      barcode.MAXICODE
+    ],
+    'barCode': [
+      barcode.EAN13,
+      barcode.EAN8,
+      barcode.UPCA,
+      barcode.UPCE,
+      barcode.CODABAR,
+      barcode.CODE128,
+      barcode.CODE39,
+      barcode.CODE93,
+      barcode.ITF,
+      barcode.RSS14,
+      barcode.RSSEXPANDED
+    ],
+    'datamatrix': [barcode.DATAMATRIX],
+    'pdf417': [barcode.PDF417]
+  };
+
+  const SCAN_MAPS = {
+    [barcode.QR]: 'QR_CODE',
+    [barcode.EAN13]: 'EAN_13',
+    [barcode.EAN8]: 'EAN_8',
+    [barcode.DATAMATRIX]: 'DATA_MATRIX',
+    [barcode.UPCA]: 'UPC_A',
+    [barcode.UPCE]: 'UPC_E',
+    [barcode.CODABAR]: 'CODABAR',
+    [barcode.CODE39]: 'CODE_39',
+    [barcode.CODE93]: 'CODE_93',
+    [barcode.CODE128]: 'CODE_128',
+    [barcode.ITF]: 'CODE_25',
+    [barcode.PDF417]: 'PDF_417',
+    [barcode.AZTEC]: 'AZTEC',
+    [barcode.RSS14]: 'RSS_14',
+    [barcode.RSSEXPANDED]: 'RSSEXPANDED'
+  };
+
+  const statusBarStyle = getStatusBarStyle();
+  const isDark = statusBarStyle !== 'light';
+
+  let result;
+
+  let filters = [];
+  if (Array.isArray(scanType) && scanType.length) {
+    scanType.forEach(type => { // 暂不考虑去重
+      const types = SCAN_TYPES[type];
+      if (types) {
+        filters = filters.concat(types);
+      }
+    });
+  }
+  if (!filters.length) {
+    filters = filters.concat(SCAN_TYPES['qrCode']).concat(SCAN_TYPES['barCode']).concat(SCAN_TYPES['datamatrix']).concat(
+      SCAN_TYPES['pdf417']);
+  }
+
+  const buttons = [];
+  if (!onlyFromCamera) {
+    buttons.push({
+      'float': 'right',
+      'text': '相册',
+      'fontSize': '17px',
+      'width': '60px',
+      'onclick': function () {
+        plus.gallery.pick(file => {
+          barcode.scan(file, (type, code) => {
+            if (isDark) {
+              plus.navigator.setStatusBarStyle('isDark');
+            }
+            webview.close('auto');
+            result = {
+              type,
+              code
+            };
+          }, () => {
+            plus.nativeUI.toast('识别失败');
+          }, filters);
+        }, err => {
+          if (err.code !== 12) {
+            plus.nativeUI.toast('选择失败');
+          }
+        }, {
+          multiple: false,
+          system: false
+        });
+      }
+    });
+  }
+
+  const webview = plus.webview.create(SCAN_PATH, SCAN_ID, {
+    titleNView: {
+      autoBackButton: true,
+      type: 'float',
+      backgroundColor: 'rgba(0,0,0,0)',
+      titleColor: '#ffffff',
+      titleText: '扫码',
+      titleSize: '17px',
+      buttons
+    },
+    popGesture: 'close',
+    backButtonAutoControl: 'close'
+  }, {
+    __uniapp_type: 'scan',
+    __uniapp_dark: isDark,
+    __uniapp_scan_type: filters,
+    'uni-app': 'none'
+  });
+  const waiting = plus.nativeUI.showWaiting();
+  webview.addEventListener('titleUpdate', () => {
+    webview.show(ANI_SHOW, ANI_DURATION, () => {
+      waiting.close();
+    });
+  });
+  webview.addEventListener('close', () => {
+    if (result && 'code' in result) {
+      invoke(callbackId, {
+        result: result.code,
+        scanType: SCAN_MAPS[result.type] || '',
+        charSet: 'utf8',
+        path: '',
+        errMsg: 'scanCode:ok'
+      });
+    } else {
+      invoke(callbackId, {
+        errMsg: 'scanCode:fail cancel'
+      });
+    }
+  });
+  if (isDark) { // 状态栏前景色
+    plus.navigator.setStatusBarStyle('light');
+    webview.addEventListener('popGesture', ({
+      type,
+      result
+    }) => {
+      if (type === 'start') {
+        plus.navigator.setStatusBarStyle('dark');
+      } else if (type === 'end' && !result) {
+        plus.navigator.setStatusBarStyle('light');
+      }
+    });
+  }
+  // fixed by hxy 注册扫码事件
+  registerPlusMessage(MESSAGE_TYPE, function (res) {
+    if (res && !res.errMsg) {
+      result = res;
+    } else {
+      const errMsg = res && res.errMsg ? ' ' + res.errMsg : '';
+      result = {
+        errMsg: 'scanCode:fail' + errMsg
+      };
+    }
+  }, false);
+}
+
+var safeArea = {
+  get bottom () {
+    if (plus.os.name === 'iOS') {
+      const safeArea = plus.navigator.getSafeAreaInsets();
+      return safeArea ? safeArea.bottom : 0
+    }
+    return 0
+  }
+};
+
+const IMAGE_TOP = 7;
+const IMAGE_WIDTH = 24;
+const IMAGE_HEIGHT = 24;
+const TEXT_TOP = 36;
+const TEXT_SIZE = 12;
+const TEXT_NOICON_SIZE = 17;
+const TEXT_HEIGHT = 12;
+const IMAGE_ID = 'TABITEM_IMAGE_';
+const TABBAR_VIEW_ID = 'TABBAR_VIEW_';
+
+let view;
+let config;
+let winWidth;
+let itemWidth;
+let itemLength;
+let itemImageLeft;
+let itemRects = [];
+const itemIcons = [];
+const itemLayouts = [];
+const itemDot = [];
+const itemBadge = [];
+let itemClickCallback;
+
+let selected = 0;
+/**
+ * tabbar显示状态
+ */
+let visible = true;
+
+const init = function () {
+  const list = config.list;
+  itemLength = config.list.length;
+
+  calcItemLayout(); // 计算选项卡布局
+
+  initBitmaps(list); // 初始化选项卡图标
+
+  initView();
+};
+
+let initView = function () {
+  const viewStyles = {
+    height: TABBAR_HEIGHT
+  };
+  if (config.position === 'top') {
+    viewStyles.top = 0;
+  } else {
+    viewStyles.bottom = 0;
+    viewStyles.height += safeArea.bottom;
+  }
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(`UNIAPP[tabbar]:${JSON.stringify(viewStyles)}`);
+  }
+  view = new plus.nativeObj.View(TABBAR_VIEW_ID, viewStyles, getDraws());
+
+  view.interceptTouchEvent(true);
+
+  view.addEventListener('click', (e) => {
+    if (!__wxConfig.__ready__) { // 未 ready，不允许点击
+      if (process.env.NODE_ENV !== 'production') {
+        console.log(`UNIAPP[tabbar].prevent`);
+      }
+      return
+    }
+    const x = e.clientX;
+    const y = e.clientY;
+    for (let i = 0; i < itemRects.length; i++) {
+      if (isCross(x, y, itemRects[i])) {
+        const draws = getSelectedDraws(i);
+        const drawTab = !!draws.length;
+        itemClickCallback && itemClickCallback(config.list[i], i, drawTab);
+        if (drawTab) {
+          setTimeout(() => view.draw(draws));
+        }
+        break
+      }
+    }
+  });
+  plus.globalEvent.addEventListener('orientationchange', () => {
+    calcItemLayout(config.list);
+    if (config.position !== 'top') {
+      let height = TABBAR_HEIGHT + safeArea.bottom;
+      view.setStyle({
+        height: height
+      });
+      if (visible) {
+        setWebviewPosition(height);
+      }
+    }
+    view.draw(getDraws());
+  });
+  if (!visible) {
+    view.hide();
+  }
+};
+
+let isCross = function (x, y, rect) {
+  if (x > rect.left && x < (rect.left + rect.width) && y > rect.top && y < (rect.top + rect.height)) {
+    return true
+  }
+  return false
+};
+
+let initBitmaps = function (list) {
+  for (let i = 0; i < list.length; i++) {
+    const item = list[i];
+    if (item.iconData) {
+      const bitmap = new plus.nativeObj.Bitmap(IMAGE_ID + i);
+      bitmap.loadBase64Data(item.iconData);
+      const selectedBitmap = new plus.nativeObj.Bitmap(`${IMAGE_ID}SELECTED_${i}`);
+      selectedBitmap.loadBase64Data(item.selectedIconData);
+      itemIcons[i] = {
+        icon: bitmap,
+        selectedIcon: selectedBitmap
+      };
+    } else if (item.iconPath) {
+      itemIcons[i] = {
+        icon: item.iconPath,
+        selectedIcon: item.selectedIconPath
+      };
+    } else {
+      itemIcons[i] = {
+        icon: false,
+        selectedIcon: false
+      };
+    }
+  }
+};
+
+let getDraws = function () {
+  const backgroundColor = config.backgroundColor;
+  const borderHeight = Math.max(0.5, 1 / plus.screen.scale); // 高分屏最少0.5
+  const borderTop = config.position === 'top' ? (TABBAR_HEIGHT - borderHeight) : 0;
+  const borderStyle = config.borderStyle === 'white' ? 'rgba(255,255,255,0.33)' : 'rgba(0,0,0,0.33)';
+
+  const draws = [{
+    id: `${TABBAR_VIEW_ID}BG`, // 背景色
+    tag: 'rect',
+    color: backgroundColor,
+    position: {
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: TABBAR_HEIGHT + safeArea.bottom
+    }
+  }, {
+    id: `${TABBAR_VIEW_ID}BORDER`,
+    tag: 'rect',
+    color: borderStyle,
+    position: {
+      top: borderTop,
+      left: 0,
+      width: '100%',
+      height: `${borderHeight}px`
+    }
+  }];
+
+  for (let i = 0; i < itemLength; i++) {
+    const item = config.list[i];
+    if (i === selected) {
+      drawTabItem(draws, i, item.text, config.selectedColor, itemIcons[i].selectedIcon);
+    } else {
+      drawTabItem(draws, i, item.text, config.color, itemIcons[i].icon);
+    }
+  }
+  return draws
+};
+
+let getSelectedDraws = function (newSelected) {
+  if (selected === newSelected) {
+    return false
+  }
+  const draws = [];
+  const lastSelected = selected;
+  selected = newSelected;
+  drawTabItem(draws, lastSelected);
+  drawTabItem(draws, selected);
+  return draws
+};
+/**
+ * 获取文字宽度（全角为1）
+ * @param {*} text
+ */
+function getFontWidth (text) {
+  // eslint-disable-next-line
+  return text.length - (text.match(/[\u0000-\u00ff]/g) || []).length / 2
+}
+let calcItemLayout = function () {
+  winWidth = plus.screen.resolutionWidth;
+  itemWidth = winWidth / itemLength;
+  itemImageLeft = (itemWidth - IMAGE_WIDTH) / 2;
+  itemRects = [];
+  let dotTop = 0;
+  let dotLeft = 0;
+  for (let i = 0; i < itemLength; i++) {
+    itemRects.push({
+      top: 0,
+      left: i * itemWidth,
+      width: itemWidth,
+      height: TABBAR_HEIGHT
+    });
+  }
+
+  for (let i = 0; i < itemLength; i++) {
+    const item = config.list[i];
+    let imgLeft = itemWidth * i + itemImageLeft;
+    if ((item.iconData || item.iconPath) && item.text) { // 图文
+      itemLayouts[i] = {
+        text: {
+          top: TEXT_TOP,
+          left: `${i * itemWidth}px`,
+          width: `${itemWidth}px`,
+          height: TEXT_HEIGHT
+        },
+        img: {
+          top: IMAGE_TOP,
+          left: `${imgLeft}px`,
+          width: IMAGE_WIDTH,
+          height: IMAGE_HEIGHT
+        }
+      };
+      dotTop = IMAGE_TOP;
+      dotLeft = imgLeft + IMAGE_WIDTH;
+    } else if (!(item.iconData || item.iconPath) && item.text) { // 仅文字
+      let textLeft = i * itemWidth;
+      itemLayouts[i] = {
+        text: {
+          top: 0,
+          left: `${textLeft}px`,
+          width: `${itemWidth}px`,
+          height: TABBAR_HEIGHT
+        }
+      };
+      dotTop = (44 - TEXT_NOICON_SIZE) / 2;
+      dotLeft = textLeft + itemWidth * 0.5 + getFontWidth(item.text) * TEXT_NOICON_SIZE * 0.5;
+    } else if ((item.iconData || item.iconPath) && !item.text) { // 仅图片
+      const diff = 10;
+      let imgTop = (TABBAR_HEIGHT - IMAGE_HEIGHT - diff) / 2;
+      let imgLeft = itemWidth * i + itemImageLeft - diff / 2;
+      itemLayouts[i] = {
+        img: {
+          top: `${imgTop}px`,
+          left: `${imgLeft}px`,
+          width: IMAGE_WIDTH + diff,
+          height: IMAGE_HEIGHT + diff
+        }
+      };
+      dotTop = imgTop;
+      dotLeft = imgLeft + IMAGE_WIDTH + diff;
+    }
+    let height = itemBadge[i] ? 14 : 10;
+    let badge = itemBadge[i] || '0';
+    let font = getFontWidth(badge) - 0.5;
+    font = font > 1 ? 1 : font;
+    let width = height + font * 12;
+    width = width < height ? height : width;
+    let itemLayout = itemLayouts[i];
+    if (itemLayout) {
+      itemLayout.doc = {
+        top: dotTop,
+        left: `${dotLeft - width * 0.382}px`,
+        width: `${width}px`,
+        height: `${height}px`
+      };
+      itemLayout.badge = {
+        top: dotTop,
+        left: `${dotLeft - width * 0.382}px`,
+        width: `${width}px`,
+        height: `${height}px`
+      };
+    }
+  }
+};
+
+let drawTabItem = function (draws, index) {
+  const layout = itemLayouts[index];
+
+  const item = config.list[index];
+
+  let color = config.color;
+  let icon = itemIcons[index].icon;
+  let dot = itemDot[index];
+  let badge = itemBadge[index] || '';
+
+  if (index === selected) {
+    color = config.selectedColor;
+    icon = itemIcons[index].selectedIcon;
+  }
+
+  if (icon) {
+    draws.push({
+      id: `${TABBAR_VIEW_ID}ITEM_${index}_ICON`,
+      tag: 'img',
+      position: layout.img,
+      src: icon
+    });
+  }
+  if (item.text) {
+    draws.push({
+      id: `${TABBAR_VIEW_ID}ITEM_${index}_TEXT`,
+      tag: 'font',
+      position: layout.text,
+      text: item.text,
+      textStyles: {
+        size: icon ? TEXT_SIZE : `${TEXT_NOICON_SIZE}px`,
+        color
+      }
+    });
+  }
+  const hiddenPosition = {
+    letf: 0,
+    top: 0,
+    width: 0,
+    height: 0
+  };
+  // 绘制小红点（角标背景）
+  draws.push({
+    id: `${TABBAR_VIEW_ID}ITEM_${index}_DOT`,
+    tag: 'rect',
+    position: (dot || badge) ? layout.doc : hiddenPosition,
+    rectStyles: {
+      color: '#ff0000',
+      radius: badge ? '7px' : '5px'
+    }
+  });
+  // 绘制角标文本
+  draws.push({
+    id: `${TABBAR_VIEW_ID}ITEM_${index}_BADGE`,
+    tag: 'font',
+    position: badge ? layout.badge : hiddenPosition,
+    text: badge || ' ',
+    textStyles: {
+      align: 'center',
+      verticalAlign: 'middle',
+      color: badge ? '#ffffff' : 'rgba(0,0,0,0)',
+      overflow: 'ellipsis',
+      size: '10px'
+    }
+  });
+};
+/**
+ * {
+    "color": "#7A7E83",
+    "selectedColor": "#3cc51f",
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
+    "list": [{
+      "pagePath": "page/component/index.html",
+      "iconData": "",
+      "selectedIconData": "",
+      "text": "组件"
+    }, {
+      "pagePath": "page/API/index.html",
+      "iconData": "",
+      "selectedIconData": "",
+      "text": "接口"
+    }],
+    "position":"bottom"//bottom|top
+  }
+ */
+
+/**
+ * 设置角标
+ * @param {string} type
+ * @param {number} index
+ * @param {string} text
+ */
+function setTabBarBadge$1 (type, index, text) {
+  if (type === 'none') {
+    itemDot[index] = false;
+    itemBadge[index] = '';
+  } else if (type === 'text') {
+    itemBadge[index] = text;
+  } else if (type === 'redDot') {
+    itemDot[index] = true;
+  }
+  if (view) {
+    calcItemLayout(config.list);
+    view.draw(getDraws());
+  }
+}
+/**
+ * 动态设置 tabBar 某一项的内容
+ */
+function setTabBarItem$1 (index, text, iconPath, selectedIconPath) {
+  if (iconPath || selectedIconPath) {
+    let itemIcon = itemIcons[index] = itemIcons[index] || {};
+    if (iconPath) {
+      itemIcon.icon = getRealPath$1(iconPath);
+    }
+    if (selectedIconPath) {
+      itemIcon.selectedIcon = getRealPath$1(selectedIconPath);
+    }
+  }
+  if (text) {
+    config.list[index].text = text;
+  }
+  view.draw(getDraws());
+}
+/**
+ * 动态设置 tabBar 的整体样式
+ * @param {Object} style 样式
+ */
+function setTabBarStyle$1 (style) {
+  for (const key in style) {
+    config[key] = style[key];
+  }
+  view.draw(getDraws());
+}
+/**
+ * 设置tab页底部或顶部距离
+ * @param {*} value 距离
+ */
+function setWebviewPosition (value) {
+  const position = config.position === 'top' ? 'top' : 'bottom';
+  plus.webview.all().forEach(webview => {
+    if (isTabBarPage(String(webview.__uniapp_route))) {
+      webview.setStyle({
+        [position]: value
+      });
+    }
+  });
+}
+/**
+ * 隐藏 tabBar
+ * @param {boolean} animation 是否需要动画效果 暂未支持
+ */
+function hideTabBar$1 (animation) {
+  if (visible === false) {
+    return
+  }
+  visible = false;
+  if (view) {
+    view.hide();
+    setWebviewPosition(0);
+  }
+}
+/**
+ * 显示 tabBar
+ * @param {boolean} animation 是否需要动画效果 暂未支持
+ */
+function showTabBar$1 (animation) {
+  if (visible === true) {
+    return
+  }
+  visible = true;
+  if (view) {
+    view.show();
+    setWebviewPosition(TABBAR_HEIGHT + safeArea.bottom);
+  }
+}
+
+var tabbar = {
+  init (options, clickCallback) {
+    if (options && options.list.length) {
+      selected = options.selected || 0;
+      config = options;
+      config.position = 'bottom'; // 暂时强制使用bottom
+      itemClickCallback = clickCallback;
+      init();
+      return view
+    }
+  },
+  switchTab (page) {
+    if (itemLength) {
+      for (let i = 0; i < itemLength; i++) {
+        if (config.list[i].pagePath === (`${page}.html`)) {
+          const draws = getSelectedDraws(i);
+          if (draws.length) {
+            view.draw(draws);
+          }
+          return true
+        }
+      }
+    }
+    return false
+  },
+  setTabBarBadge: setTabBarBadge$1,
+  setTabBarItem: setTabBarItem$1,
+  setTabBarStyle: setTabBarStyle$1,
+  hideTabBar: hideTabBar$1,
+  showTabBar: showTabBar$1,
+  get visible () {
+    return visible
+  }
+};
+
+function getSystemInfo (args) {
+  const platform = plus.os.name.toLowerCase();
+  const ios = platform === 'ios';
+  // 安卓 plus 接口获取的屏幕大小值不为整数，iOS js 获取的屏幕大小横屏时颠倒
+  const screenWidth = plus.screen.resolutionWidth;
+  const screenHeight = plus.screen.resolutionHeight;
+  // 横屏时 iOS 获取的状态栏高度错误，进行纠正
+  var landscape = Math.abs(plus.navigator.getOrientation()) === 90;
+  var statusBarHeight = plus.navigator.getStatusbarHeight();
+  if (ios && landscape) {
+    statusBarHeight = Math.min(20, statusBarHeight);
+  }
+  // 判断是否存在 titleNView
+  var titleNView;
+  var webview = getLastWebview();
+  if (webview) {
+    let style = webview.getStyle();
+    if (style) {
+      titleNView = style && style.titleNView;
+      titleNView = titleNView && titleNView.type === 'default';
+    }
+  }
+  return {
+    errMsg: 'getSystemInfo:ok',
+    brand: '',
+    model: plus.device.model,
+    pixelRatio: plus.screen.scale,
+    screenWidth,
+    screenHeight,
+    // 安卓端 webview 宽度有时比屏幕多 1px，相比取最小值
+    // TODO screenWidth,screenHeight
+    windowWidth: screenWidth,
+    windowHeight: Math.min(screenHeight - (titleNView ? (statusBarHeight + TITLEBAR_HEIGHT)
+      : 0) - (isTabBarPage() && tabbar.visible ? TABBAR_HEIGHT : 0), screenHeight),
+    statusBarHeight,
+    language: plus.os.language,
+    system: plus.os.version,
+    version: plus.runtime.innerVersion,
+    fontSizeSetting: '',
+    platform,
+    SDKVersion: '',
+    windowTop: 0,
+    windowBottom: 0
+  }
+}
+
+function vibrateLong () {
+  plus.device.vibrate(400);
+  return {
+    errMsg: 'vibrateLong:ok'
+  }
+}
+function vibrateShort () {
+  plus.device.vibrate(15);
+  return {
+    errMsg: 'vibrateShort:ok'
+  }
+}
+
+const SAVED_DIR = 'uniapp_save';
+const SAVE_PATH = `_doc/${SAVED_DIR}`;
+const REGEX_FILENAME = /^.*[/]/;
+
+function getSavedFileDir (success, fail) {
+  fail = fail || function () {};
+  plus.io.requestFileSystem(plus.io.PRIVATE_DOC, fs => { // 请求_doc fs
+    fs.root.getDirectory(SAVED_DIR, { // 获取文件保存目录对象
+      create: true
+    }, dir => {
+      success(dir);
+    }, err => {
+      fail('目录[' + SAVED_DIR + ']创建失败' + err.message);
+    });
+  }, err => {
+    fail('目录[_doc]读取失败' + err.message);
+  });
+}
+
+function saveFile ({
+  tempFilePath
+} = {}, callbackId) {
+  let fileName = tempFilePath.replace(REGEX_FILENAME, '');
+  if (fileName) {
+    let extName = '';
+    if (~fileName.indexOf('.')) {
+      extName = '.' + fileName.split('.').pop();
+    }
+
+    fileName = (+new Date()) + '' + extName;
+
+    plus.io.resolveLocalFileSystemURL(getRealPath$1(tempFilePath), entry => { // 读取临时文件 FileEntry
+      getSavedFileDir(dir => {
+        entry.copyTo(dir, fileName, () => { // 复制临时文件 FileEntry，为了避免把相册里的文件删除，使用 copy，微信中是要删除临时文件的
+          const savedFilePath = SAVE_PATH + '/' + fileName;
+          invoke(callbackId, {
+            errMsg: 'saveFile:ok',
+            savedFilePath
+          });
+        }, err => {
+          invoke(callbackId, {
+            errMsg: 'saveFile:fail 保存文件[' + tempFilePath +
+              '] copyTo 失败:' + err.message
+          });
+        });
+      }, message => {
+        invoke(callbackId, {
+          errMsg: 'saveFile:fail ' + message
+        });
+      });
+    }, err => {
+      invoke(callbackId, {
+        errMsg: 'saveFile:fail 文件[' + tempFilePath + ']读取失败' + err.message
+      });
+    });
+  } else {
+    return {
+      errMsg: 'saveFile:fail 文件名[' + tempFilePath + ']不存在'
+    }
+  }
+}
+
+function getSavedFileList (options, callbackId) {
+  getSavedFileDir(entry => {
+    var reader = entry.createReader();
+
+    var fileList = [];
+    reader.readEntries(entries => {
+      if (entries && entries.length) {
+        entries.forEach(entry => {
+          entry.getMetadata(meta => {
+            fileList.push({
+              filePath: plus.io.convertAbsoluteFileSystem(entry.fullPath),
+              createTime: meta.modificationTime.getTime(),
+              size: meta.size
+            });
+            if (fileList.length === entries.length) {
+              invoke(callbackId, {
+                errMsg: 'getSavedFileList:ok',
+                fileList
+              });
+            }
+          }, error => {
+            invoke(callbackId, {
+              errMsg: 'getSavedFileList:fail ' + error.message
+            });
+          }, false);
+        });
+      } else {
+        invoke(callbackId, {
+          errMsg: 'getSavedFileList:ok',
+          fileList
+        });
+      }
+    }, error => {
+      invoke(callbackId, {
+        errMsg: 'getSavedFileList:fail ' + error.message
+      });
+    });
+  }, message => {
+    invoke(callbackId, {
+      errMsg: 'getSavedFileList:fail ' + message
+    });
+  });
+}
+
+function getFileInfo ({
+  filePath,
+  digestAlgorithm = 'md5'
+} = {}, callbackId) {
+  // TODO 计算文件摘要
+  plus.io.resolveLocalFileSystemURL(getRealPath$1(filePath), entry => {
+    entry.getMetadata(meta => {
+      invoke(callbackId, {
+        errMsg: 'getFileInfo:ok',
+        size: meta.size,
+        digestAlgorithm: ''
+      });
+    }, err => {
+      invoke(callbackId, {
+        errMsg: 'getFileInfo:fail 文件[' +
+          filePath +
+          '] getMetadata 失败:' + err.message
+      });
+    });
+  }, err => {
+    invoke(callbackId, {
+      errMsg: 'getFileInfo:fail 文件[' + filePath + ']读取失败:' + err.message
+    });
+  });
+}
+
+function getSavedFileInfo ({
+  filePath
+} = {}, callbackId) {
+  plus.io.resolveLocalFileSystemURL(getRealPath$1(filePath), entry => {
+    entry.getMetadata(meta => {
+      invoke(callbackId, {
+        createTime: meta.modificationTime.getTime(),
+        size: meta.size,
+        errMsg: 'getSavedFileInfo:ok'
+      });
+    }, error => {
+      invoke(callbackId, {
+        errMsg: 'getSavedFileInfo:fail ' + error.message
+      });
+    }, false);
+  }, () => {
+    invoke(callbackId, {
+      errMsg: 'getSavedFileInfo:fail file not find'
+    });
+  });
+}
+
+function removeSavedFile ({
+  filePath
+} = {}, callbackId) {
+  plus.io.resolveLocalFileSystemURL(getRealPath$1(filePath), entry => {
+    entry.remove(() => {
+      invoke(callbackId, {
+        errMsg: 'removeSavedFile:ok'
+      });
+    }, err => {
+      invoke(callbackId, {
+        errMsg: 'removeSavedFile:fail 文件[' + filePath + ']删除失败:' + err.message
+      });
+    });
+  }, () => {
+    invoke(callbackId, {
+      errMsg: 'removeSavedFile:fail file not find'
+    });
+  });
+}
+
+function openDocument$1 ({
+  filePath,
+  fileType
+} = {}, callbackId) {
+  plus.io.resolveLocalFileSystemURL(getRealPath$1(filePath), entry => {
+    plus.runtime.openFile(getRealPath$1(filePath));
+    invoke(callbackId, {
+      errMsg: 'openDocument:ok'
+    });
+  }, err => {
+    invoke(callbackId, {
+      errMsg: 'openDocument:fail 文件[' + filePath + ']读取失败:' + err.message
+    });
+  });
+}
+
+const CHOOSE_LOCATION_PATH = '_www/__uniappchooselocation.html';
+
+function chooseLocation (params, callbackId) {
+  const statusBarStyle = plus.navigator.getStatusBarStyle();
+  const webview = plus.webview.create(
+    CHOOSE_LOCATION_PATH,
+    MAP_ID, {
+      titleNView: {
+        autoBackButton: true,
+        backgroundColor: '#000000',
+        titleColor: '#ffffff',
+        titleText: '选择位置',
+        titleSize: '17px',
+        buttons: [{
+          float: 'right',
+          text: '完成',
+          fontSize: '17px',
+          onclick: function () {
+            webview.evalJS('__chooseLocationConfirm__()');
+          }
+        }]
+      },
+      popGesture: 'close',
+      scrollIndicator: 'none'
+    }, {
+      __uniapp_type: 'map',
+      __uniapp_statusbar_style: statusBarStyle,
+      'uni-app': 'none'
+    }
+  );
+  if (statusBarStyle === 'dark') {
+    plus.navigator.setStatusBarStyle('light');
+    webview.addEventListener('popGesture', ({
+      type,
+      result
+    }) => {
+      if (type === 'start') {
+        plus.navigator.setStatusBarStyle('dark');
+      } else if (type === 'end' && !result) {
+        plus.navigator.setStatusBarStyle('light');
+      }
+    });
+  }
+
+  webview.show('slide-in-bottom', ANI_DURATION, () => {
+    webview.evalJS(`__chooseLocation__(${JSON.stringify(params)})`);
+  });
+
+  // fixed by hxy
+  registerPlusMessage('chooseLocation', function (res) {
+    if (res && !res.errMsg) {
+      invoke(callbackId, {
+        name: res.poiname,
+        address: res.poiaddress,
+        latitude: res.latlng.lat,
+        longitude: res.latlng.lng,
+        errMsg: 'chooseLocation:ok'
+      });
+    } else {
+      const errMsg = res && res.errMsg ? ' ' + res.errMsg : '';
+      invoke(callbackId, {
+        errMsg: 'chooseLocation:fail' + errMsg
+      });
+    }
+  }, false);
+}
+
+function getLocationSuccess (type, position, callbackId) {
+  const coords = position.coords;
+  if (type !== position.coordsType) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(
+        `UNIAPP[location]:before[${position.coordsType}][lng:${
+          coords.longitude
+        },lat:${coords.latitude}]`
+      );
+    }
+    let coordArray;
+    if (type === 'wgs84') {
+      coordArray = gcj02towgs84(coords.longitude, coords.latitude);
+    } else if (type === 'gcj02') {
+      coordArray = wgs84togcj02(coords.longitude, coords.latitude);
+    }
+    if (coordArray) {
+      coords.longitude = coordArray[0];
+      coords.latitude = coordArray[1];
+      if (process.env.NODE_ENV !== 'production') {
+        console.log(
+          `UNIAPP[location]:after[${type}][lng:${coords.longitude},lat:${
+            coords.latitude
+          }]`
+        );
+      }
+    }
+  }
+
+  invoke(callbackId, {
+    type,
+    altitude: coords.altitude || 0,
+    latitude: coords.latitude,
+    longitude: coords.longitude,
+    speed: coords.speed,
+    accuracy: coords.accuracy,
+    address: position.address,
+    errMsg: 'getLocation:ok'
+  });
+}
+
+function getLocation$1 ({
+  type = 'wgs84',
+  geocode = false,
+  altitude = false
+} = {}, callbackId) {
+  plus.geolocation.getCurrentPosition(
+    position => {
+      getLocationSuccess(type, position, callbackId);
+    },
+    e => {
+      // 坐标地址解析失败
+      if (e.code === 1501) {
+        getLocationSuccess(type, e, callbackId);
+        return
+      }
+
+      invoke(callbackId, {
+        errMsg: 'getLocation:fail ' + e.message
+      });
+    }, {
+      geocode: geocode,
+      enableHighAccuracy: altitude
+    }
+  );
+}
+
+const OPEN_LOCATION_PATH = '_www/__uniappopenlocation.html';
+
+function openLocation$1 (params) {
+  const statusBarStyle = plus.navigator.getStatusBarStyle();
+  const webview = plus.webview.create(
+    OPEN_LOCATION_PATH,
+    MAP_ID, {
+      titleNView: {
+        autoBackButton: true,
+        titleColor: '#ffffff',
+        titleText: '',
+        titleSize: '17px',
+        type: 'transparent'
+      },
+      popGesture: 'close',
+      scrollIndicator: 'none'
+    }, {
+      __uniapp_type: 'map',
+      __uniapp_statusbar_style: statusBarStyle,
+      'uni-app': 'none'
+    }
+  );
+  if (statusBarStyle === 'light') {
+    plus.navigator.setStatusBarStyle('dark');
+    webview.addEventListener('popGesture', ({
+      type,
+      result
+    }) => {
+      if (type === 'start') {
+        plus.navigator.setStatusBarStyle('light');
+      } else if (type === 'end' && !result) {
+        plus.navigator.setStatusBarStyle('dark');
+      }
+    });
+  }
+  webview.show(ANI_SHOW, ANI_DURATION, () => {
+    webview.evalJS(`__openLocation__(${JSON.stringify(params)})`);
+  });
+
+  return {
+    errMsg: 'openLocation:ok'
+  }
+}
+
+const RECORD_TIME = 60 * 60 * 1000;
+
+let recorder;
+let recordTimeout;
+
+function startRecord (args, callbackId) {
+  recorder && recorder.stop();
+  recorder = plus.audio.getRecorder();
+  recorder.record({
+    filename: '_doc/audio/',
+    format: 'aac'
+  }, (res) => {
+    invoke(callbackId, {
+      errMsg: 'startRecord:ok',
+      tempFilePath: res
+    });
+  }, (res) => {
+    invoke(callbackId, {
+      errMsg: 'startRecord:fail'
+    });
+  });
+  recordTimeout = setTimeout(() => {
+    recorder.stop();
+    recorder = false;
+  }, RECORD_TIME);
+}
+
+function stopRecord () {
+  if (recorder) {
+    recordTimeout && clearTimeout(recordTimeout);
+    recorder.stop();
+    return {
+      errMsg: 'stopRecord:ok'
+    }
+  }
+  return {
+    errMsg: 'stopRecord:fail'
+  }
+}
+
+let player;
+let playerFilePath;
+let playerStatus;
+
+function playVoice ({
+  filePath
+} = {}, callbackId) {
+  if (player && playerFilePath === filePath && playerStatus === 'pause') { // 如果是当前音频被暂停，则继续播放
+    playerStatus = 'play';
+    player.play((res) => {
+      player = false;
+      playerFilePath = false;
+      playerStatus = false;
+      invoke(callbackId, {
+        errMsg: 'playVoice:ok'
+      });
+    });
+    return {
+      errMsg: 'playVoice:ok'
+    }
+  }
+  if (player) { // 如果存在音频播放，则停止
+    player.stop();
+  }
+  playerFilePath = filePath;
+  playerStatus = 'play';
+  player = plus.audio.createPlayer(getRealPath$1(filePath));
+  // 播放操作成功回调
+  player.play((res) => {
+    player = false;
+    playerFilePath = false;
+    playerStatus = false;
+    invoke(callbackId, {
+      errMsg: 'playVoice:ok'
+    });
+  });
+}
+
+function pauseVoice () {
+  if (player && playerStatus === 'play') {
+    player.pause();
+    playerStatus = 'pause';
+  }
+  return {
+    errMsg: 'pauseVoice:ok'
+  }
+}
+
+function stopVoice () {
+  if (player) {
+    player.stop();
+    player = false;
+    playerFilePath = false;
+    playerStatus = false;
+  }
+  return {
+    errMsg: 'stopVoice:ok'
+  }
+}
+
+/**
+ * 获取文件信息
+ * @param {string} filePath 文件路径
+ * @returns {Promise} 文件信息Promise
+ */
+function getFileInfo$1 (filePath) {
+  return new Promise((resolve, reject) => {
+    plus.io.resolveLocalFileSystemURL(filePath, function (entry) {
+      entry.getMetadata(function (meta) {
+        resolve({
+          size: meta.size
+        });
+      }, reject, false);
+    }, reject);
+  })
+}
+
+const invokeChooseImage = function (callbackId, type, sizeType, tempFilePaths = []) {
+  if (!tempFilePaths.length) {
+    invoke(callbackId, {
+      code: sizeType,
+      errMsg: `chooseImage:${type}`
+    });
+    return
+  }
+  var tempFiles = [];
+  // plus.zip.compressImage 压缩文件并发调用在iOS端容易出现问题（图像错误、闪退），改为队列执行
+  tempFilePaths.reduce((promise, tempFilePath, index, array) => {
+    return promise
+      .then(() => {
+        return getFileInfo$1(tempFilePath)
+      })
+      .then(fileInfo => {
+        var size = fileInfo.size;
+        // 压缩阈值 0.5 兆
+        var threshold = 1024 * 1024 * 0.5;
+        // 判断是否需要压缩
+        if ((sizeType.indexOf('compressed') >= 0 && sizeType.indexOf('original') < 0) || (((
+          sizeType.indexOf(
+            'compressed') < 0 && sizeType.indexOf('original') < 0) || (sizeType
+          .indexOf('compressed') >= 0 && sizeType.indexOf(
+          'original') >= 0)) && size > threshold)) {
+          return new Promise((resolve, reject) => {
+            var dstPath = TEMP_PATH + '/compressed/' + Date.now() + (
+              tempFilePath.match(/\.\S+$/) || [''])[0];
+            plus.nativeUI.showWaiting();
+            plus.zip.compressImage({
+              src: tempFilePath,
+              dst: dstPath,
+              overwrite: true
+            }, () => {
+              resolve(dstPath);
+            }, (error) => {
+              reject(error);
+            });
+          })
+            .then(dstPath => {
+              array[index] = tempFilePath = dstPath;
+              return getFileInfo$1(tempFilePath)
+            })
+            .then(fileInfo => {
+              return tempFiles.push({
+                path: tempFilePath,
+                size: fileInfo.size
+              })
+            })
+        }
+        return tempFiles.push({
+          path: tempFilePath,
+          size: size
+        })
+      })
+  }, Promise.resolve())
+    .then(() => {
+      plus.nativeUI.closeWaiting();
+      invoke(callbackId, {
+        errMsg: `chooseImage:${type}`,
+        tempFilePaths,
+        tempFiles
+      });
+    }).catch(() => {
+      plus.nativeUI.closeWaiting();
+      invoke(callbackId, {
+        errMsg: `chooseImage:${type}`
+      });
+    });
+};
+const openCamera = function (callbackId, sizeType) {
+  const camera = plus.camera.getCamera();
+  camera.captureImage(e => invokeChooseImage(callbackId, 'ok', sizeType, [e]),
+    e => invokeChooseImage(callbackId, 'fail', 1), {
+      filename: TEMP_PATH + '/camera/'
+    });
+};
+const openAlbum = function (callbackId, sizeType, count) {
+  // TODO Android 需要拷贝到 temp 目录
+  plus.gallery.pick(e => invokeChooseImage(callbackId, 'ok', sizeType, e.files.map(file => {
+    return file
+  })), e => {
+    invokeChooseImage(callbackId, 'fail', 2);
+  }, {
+    maximum: count,
+    multiple: true,
+    system: false,
+    filename: TEMP_PATH + '/gallery/'
+  });
+};
+
+function chooseImage$1 ({
+  count = 9,
+  sizeType = ['original', 'compressed'],
+  sourceType = ['album', 'camera']
+} = {}, callbackId) {
+  let fallback = true;
+  if (sourceType.length === 1) {
+    if (sourceType[0] === 'album') {
+      fallback = false;
+      openAlbum(callbackId, sizeType, count);
+    } else if (sourceType[0] === 'camera') {
+      fallback = false;
+      openCamera(callbackId, sizeType);
+    }
+  }
+  if (fallback) {
+    plus.nativeUI.actionSheet({
+      cancel: '取消',
+      buttons: [{
+        title: '拍摄'
+      }, {
+        title: '从手机相册选择'
+      }]
+    }, (e) => {
+      switch (e.index) {
+        case 0:
+          invokeChooseImage(callbackId, 'fail', 0);
+          break
+        case 1:
+          openCamera(callbackId, sizeType);
+          break
+        case 2:
+          openAlbum(callbackId, sizeType, count);
+          break
+      }
+    });
+  }
+}
+
+const invokeChooseVideo = function (callbackId, type, tempFilePath = '') {
+  let callbackResult = {
+    errMsg: `chooseVideo:${type}`,
+    tempFilePath: tempFilePath,
+    duration: 0,
+    size: 0,
+    height: 0,
+    width: 0
+  };
+
+  if (type !== 'ok') {
+    invoke(callbackId, callbackResult);
+    return
+  }
+
+  plus.io.getVideoInfo({
+    filePath: tempFilePath,
+    success (videoInfo) {
+      callbackResult.size = videoInfo.size;
+      callbackResult.duration = videoInfo.duration;
+      callbackResult.width = videoInfo.width;
+      callbackResult.height = videoInfo.height;
+      invoke(callbackId, callbackResult);
+    },
+    fail () {
+      invoke(callbackId, callbackResult);
+    },
+    complete () {
+      invoke(callbackId, callbackResult);
+    }
+  });
+};
+const openCamera$1 = function (callbackId, maxDuration, cameraIndex) {
+  const camera = plus.camera.getCamera();
+  camera.startVideoCapture(e => invokeChooseVideo(callbackId, 'ok', e), e => invokeChooseVideo(
+    callbackId, 'fail'), {
+    index: cameraIndex,
+    videoMaximumDuration: maxDuration,
+    filename: TEMP_PATH + '/camera/'
+  });
+};
+const openAlbum$1 = function (callbackId) {
+  plus.gallery.pick(e => {
+    invokeChooseVideo(callbackId, 'ok', e);
+  }, e => invokeChooseVideo(callbackId, 'fail'), {
+    filter: 'video',
+    system: false,
+    filename: TEMP_PATH + '/gallery/'
+  });
+};
+function chooseVideo$1 ({
+  sourceType = ['album', 'camera'],
+  maxDuration = 60,
+  camera = 'back'
+} = {}, callbackId) {
+  let fallback = true;
+  let cameraIndex = (camera === 'front') ? 2 : 1;
+  if (sourceType.length === 1) {
+    if (sourceType[0] === 'album') {
+      fallback = false;
+      openAlbum$1(callbackId);
+    } else if (sourceType[0] === 'camera') {
+      fallback = false;
+      openCamera$1(callbackId, maxDuration, cameraIndex);
+    }
+  }
+  if (fallback) {
+    plus.nativeUI.actionSheet({
+      cancel: '取消',
+      buttons: [{
+        title: '拍摄'
+      }, {
+        title: '从手机相册选择'
+      }]
+    }, e => {
+      switch (e.index) {
+        case 0:
+          invokeChooseVideo(callbackId, 'fail');
+          break
+        case 1:
+          openCamera$1(callbackId, maxDuration, cameraIndex);
+          break
+        case 2:
+          openAlbum$1(callbackId);
+          break
+      }
+    });
+  }
+}
+
+function compressImage ({
+  src,
+  quality
+}, callbackId) {
+  var dst = TEMP_PATH + '/compressed/' + Date.now() + (src.match(/\.\S+$/) || [''])[0];
+  plus.zip.compressImage({
+    src,
+    dst,
+    quality
+  }, () => {
+    invoke(callbackId, {
+      errMsg: `compressImage:ok`,
+      tempFilePath: dst
+    });
+  }, () => {
+    invoke(callbackId, {
+      errMsg: `compressImage:fail`
+    });
+  });
+}
+
+function getImageInfo$1 ({
+  src
+} = {}, callbackId) {
+  // fixed by hxy
+  plus.io.getImageInfo({
+    src,
+    success (imageInfo) {
+      invoke(callbackId, {
+        errMsg: 'getImageInfo:ok',
+        ...imageInfo
+      });
+    },
+    fail () {
+      invoke(callbackId, {
+        errMsg: 'getImageInfo:fail'
+      });
+    }
+  });
+}
+
+function previewImage$1 ({
+  current = 0,
+  background = '#000000',
+  indicator = 'number',
+  loop = false,
+  urls,
+  longPressActions
+} = {}) {
+  urls = urls.map(url => getRealPath$1(url));
+
+  const index = Number(current);
+  if (isNaN(index)) {
+    current = urls.indexOf(getRealPath$1(current));
+    current = current < 0 ? 0 : current;
+  } else {
+    current = index;
+  }
+
+  plus.nativeUI.previewImage(urls, {
+    current,
+    background,
+    indicator,
+    loop,
+    onLongPress: function (res) {
+      let itemList = [];
+      let itemColor = '';
+      let title = '';
+      let hasLongPressActions = longPressActions && longPressActions.callbackId;
+      if (!hasLongPressActions) {
+        itemList = ['保存相册'];
+        itemColor = '#000000';
+        title = '';
+      } else {
+        itemList = longPressActions.itemList ? longPressActions.itemList : [];
+        itemColor = longPressActions.itemColor ? longPressActions.itemColor : '#000000';
+        title = longPressActions.title ? longPressActions.title : '';
+      }
+
+      const options = {
+        buttons: itemList.map(item => ({
+          title: item,
+          color: itemColor
+        })),
+        cancel: '取消'
+      };
+      if (title) {
+        options.title = title;
+      }
+      // if (plus.os.name === 'iOS') {
+      //   options.cancel = '取消'
+      // }
+      plus.nativeUI.actionSheet(options, (e) => {
+        if (e.index > 0) {
+          if (hasLongPressActions) {
+            publish(longPressActions.callbackId, {
+              errMsg: 'showActionSheet:ok',
+              tapIndex: e.index - 1,
+              index: res.index
+            });
+            return
+          }
+          plus.gallery.save(res.url, function (GallerySaveEvent) {
+            plus.nativeUI.toast('保存图片到相册成功');
+          });
+        } else if (hasLongPressActions) {
+          publish(longPressActions.callbackId, {
+            errMsg: 'showActionSheet:fail cancel'
+          });
+        }
+      });
+    }
+  });
+  return {
+    errMsg: 'previewImage:ok'
+  }
+}
+
+let recorder$1;
+let recordTimeout$1;
+
+const publishRecorderStateChange = (state, res = {}) => {
+  publish('onRecorderStateChange', Object.assign({
+    state
+  }, res));
+};
+
+const Recorder = {
+  start ({
+    duration = 60000,
+    sampleRate,
+    numberOfChannels,
+    encodeBitRate,
+    format = 'mp3',
+    frameSize,
+    audioSource = 'auto'
+  }, callbackId) {
+    if (recorder$1) {
+      return publishRecorderStateChange('start')
+    }
+    recorder$1 = plus.audio.getRecorder();
+    recorder$1.record({
+      format,
+      samplerate: sampleRate,
+      filename: TEMP_PATH + '/recorder/'
+    }, res => publishRecorderStateChange('stop', {
+      tempFilePath: res
+    }), err => publishRecorderStateChange('error', {
+      errMsg: err.message
+    }));
+    recordTimeout$1 = setTimeout(() => {
+      Recorder.stop();
+    }, duration);
+    publishRecorderStateChange('start');
+  },
+  stop () {
+    if (recorder$1) {
+      recorder$1.stop();
+      recorder$1 = false;
+      recordTimeout$1 && clearTimeout(recordTimeout$1);
+    }
+  },
+  pause () {
+    if (recorder$1) {
+      publishRecorderStateChange('error', {
+        errMsg: '暂不支持录音pause操作'
+      });
+    }
+  },
+  resume () {
+    if (recorder$1) {
+      publishRecorderStateChange('error', {
+        errMsg: '暂不支持录音resume操作'
+      });
+    }
+  }
+};
+
+function operateRecorder ({
+  operationType,
+  ...args
+}, callbackId) {
+  Recorder[operationType](args);
+  return {
+    errMsg: 'operateRecorder:ok'
+  }
+}
+
+function saveImageToPhotosAlbum ({
+  filePath
+} = {}, callbackId) {
+  plus.gallery.save(getRealPath$1(filePath), e => {
+    invoke(callbackId, {
+      errMsg: 'saveImageToPhotosAlbum:ok'
+    });
+  }, e => {
+    invoke(callbackId, {
+      errMsg: 'saveImageToPhotosAlbum:fail'
+    });
+  });
+}
+
+function saveVideoToPhotosAlbum ({
+  filePath
+} = {}, callbackId) {
+  plus.gallery.save(getRealPath$1(filePath), e => {
+    invoke(callbackId, {
+      errMsg: 'saveVideoToPhotosAlbum:ok'
+    });
+  }, e => {
+    invoke(callbackId, {
+      errMsg: 'saveVideoToPhotosAlbum:fail'
+    });
+  });
+}
+
+let downloadTaskId = 0;
+const downloadTasks = {};
+
+const publishStateChange = (res) => {
+  publish('onDownloadTaskStateChange', res);
+};
+
+const createDownloadTaskById = function (downloadTaskId, {
+  url,
+  header
+} = {}) {
+  const downloader = plus.downloader.createDownload(url, {
+    time: __wxConfig.networkTimeout.downloadFile ? __wxConfig.networkTimeout.downloadFile / 1000 : 120,
+    filename: TEMP_PATH + '/download/',
+    // 需要与其它平台上的表现保持一致，不走重试的逻辑。
+    retry: 0,
+    retryInterval: 0
+  }, (download, statusCode) => {
+    if (statusCode) {
+      publishStateChange({
+        downloadTaskId,
+        state: 'success',
+        tempFilePath: download.filename,
+        statusCode
+      });
+    } else {
+      publishStateChange({
+        downloadTaskId,
+        state: 'fail',
+        statusCode
+      });
+    }
+  });
+  for (const name in header) {
+    if (header.hasOwnProperty(name)) {
+      downloader.setRequestHeader(name, header[name]);
+    }
+  }
+  downloader.addEventListener('statechanged', (download, status) => {
+    if (download.downloadedSize && download.totalSize) {
+      publishStateChange({
+        downloadTaskId,
+        state: 'progressUpdate',
+        progress: parseInt(download.downloadedSize / download.totalSize * 100),
+        totalBytesWritten: download.downloadedSize,
+        totalBytesExpectedToWrite: download.totalSize
+      });
+    }
+  });
+  downloadTasks[downloadTaskId] = downloader;
+  downloader.start();
+  return {
+    downloadTaskId,
+    errMsg: 'createDownloadTask:ok'
+  }
+};
+
+function operateDownloadTask ({
+  downloadTaskId,
+  operationType
+} = {}) {
+  const downloadTask = downloadTasks[downloadTaskId];
+  if (downloadTask && operationType === 'abort') {
+    delete downloadTasks[downloadTaskId];
+    downloadTask.abort();
+    publishStateChange({
+      downloadTaskId,
+      state: 'fail',
+      errMsg: 'abort'
+    });
+    return {
+      errMsg: 'operateDownloadTask:ok'
+    }
+  }
+  return {
+    errMsg: 'operateDownloadTask:fail'
+  }
+}
+
+function createDownloadTask (args) {
+  return createDownloadTaskById(++downloadTaskId, args)
+}
+
+const USER_AGENT =
+    'Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_5 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13G36  MicroMessenger/6.5.1 NetType/WIFI Language/zh_CN';
+
+let requestTaskId = 0;
+const requestTasks = {};
+
+const publishStateChange$1 = res => {
+  publish('onRequestTaskStateChange', res);
+  delete requestTasks[requestTaskId];
+};
+
+const parseResponseHeaders = headerStr => {
+  const headers = {};
+  if (!headerStr) {
+    return headers
+  }
+  const headerPairs = headerStr.split('\u000d\u000a');
+  for (let i = 0; i < headerPairs.length; i++) {
+    const headerPair = headerPairs[i];
+    const index = headerPair.indexOf('\u003a\u0020');
+    if (index > 0) {
+      const key = headerPair.substring(0, index);
+      const val = headerPair.substring(index + 2);
+      headers[key] = val;
+    }
+  }
+  return headers
+};
+
+function createRequestTaskById (requestTaskId, {
+  url,
+  data,
+  header,
+  method = 'GET'
+} = {}) {
+  let abortTimeout;
+  let xhr;
+  // fixed by hxy 始终使用 plus 的 XHR
+  xhr = new plus.net.XMLHttpRequest();
+  xhr.open(method, url, true);
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4) {
+      if (abortTimeout) {
+        clearTimeout(abortTimeout);
+      }
+      xhr.onreadystatechange = null;
+      const statusCode = xhr.status;
+      if (statusCode) {
+        publishStateChange$1({
+          requestTaskId,
+          state: 'success',
+          data: xhr.responseText,
+          statusCode,
+          header: parseResponseHeaders(xhr.getAllResponseHeaders())
+        });
+      } else {
+        publishStateChange$1({
+          requestTaskId,
+          state: 'fail',
+          statusCode,
+          errMsg: 'abort'
+        });
+      }
+    }
+  };
+  let hasContentType = false;
+  for (const name in header) {
+    if (header.hasOwnProperty(name)) {
+      if (!hasContentType && name.toLowerCase() === 'content-type') {
+        hasContentType = true;
+        xhr.setRequestHeader('Content-Type', header[name]); // 大小写必须一致,否则部分服务器会返回invalid header name
+      } else {
+        xhr.setRequestHeader(name, header[name]);
+      }
+    }
+  }
+  if (!hasContentType && method === 'POST') {
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+  }
+  if (__wxConfig.crossDomain === true) {
+    xhr.setRequestHeader('User-Agent', USER_AGENT);
+  }
+  if (__wxConfig.appid && __wxConfig.crossDomain === true) {
+    xhr.setRequestHeader('Referer', `https://servicewechat.com/${__wxConfig.appid}/1/`);
+  }
+  if (__wxConfig.networkTimeout.request) {
+    abortTimeout = setTimeout(() => {
+      xhr.onreadystatechange = null;
+      xhr.abort();
+      publishStateChange$1({
+        requestTaskId,
+        state: 'fail',
+        data: xhr.responseText,
+        statusCode: 0,
+        errMsg: 'timeout'
+      });
+    }, __wxConfig.networkTimeout.request);
+  }
+
+  if (typeof data !== 'string' && method === 'GET') {
+    data = null;
+  }
+  try {
+    xhr.send(data);
+    requestTasks[requestTaskId] = xhr;
+  } catch (e) {
+    return {
+      requestTaskId,
+      errMsg: 'createRequestTask:fail'
+    }
+  }
+  return {
+    requestTaskId,
+    errMsg: 'createRequestTask:ok'
+  }
+}
+
+function createRequestTask (args) {
+  return createRequestTaskById(++requestTaskId, args)
+}
+
+function operateRequestTask ({
+  requestTaskId,
+  operationType
+} = {}) {
+  const requestTask = requestTasks[requestTaskId];
+  if (requestTask && operationType === 'abort') {
+    requestTask.abort();
+    return {
+      errMsg: 'operateRequestTask:ok'
+    }
+  }
+  return {
+    errMsg: 'operateRequestTask:fail'
+  }
+}
+
+let socketTaskId = 0;
+const socketTasks = {};
+
+const publishStateChange$2 = (res) => {
+  publish('onSocketTaskStateChange', res);
+};
+
+const createSocketTaskById = function (socketTaskId, {
+  url,
+  data,
+  header,
+  method,
+  protocols
+} = {}) {
+  // fixed by hxy 需要测试是否支持 arraybuffer
+  const socket = weex.requireModule('webSocket');
+  socket.WebSocket(url, Array.isArray(protocols) ? protocols.join(',') : protocols);
+  // socket.binaryType = 'arraybuffer'
+  socketTasks[socketTaskId] = socket;
+
+  socket.onopen(function (e) {
+    publishStateChange$2({
+      socketTaskId,
+      state: 'open'
+    });
+  });
+  socket.onmessage(function (e) {
+    publishStateChange$2({
+      socketTaskId,
+      state: 'message',
+      data: e.data
+    });
+  });
+  socket.onerror(function (e) {
+    publishStateChange$2({
+      socketTaskId,
+      state: 'error',
+      errMsg: e.message
+    });
+  });
+  socket.onclose(function (e) {
+    delete socketTasks[socketTaskId];
+    publishStateChange$2({
+      socketTaskId,
+      state: 'close'
+    });
+  });
+  return {
+    socketTaskId,
+    errMsg: 'createSocketTask:ok'
+  }
+};
+
+function createSocketTask (args) {
+  return createSocketTaskById(++socketTaskId, args)
+}
+
+function operateSocketTask (args) {
+  const {
+    operationType,
+    code,
+    data,
+    socketTaskId
+  } = PlusNativeBuffer.unpack(args);
+  const socket = socketTasks[socketTaskId];
+  if (!socket) {
+    return {
+      errMsg: 'operateSocketTask:fail'
+    }
+  }
+  switch (operationType) {
+    case 'send':
+      if (data) {
+        socket.send(data);
+      }
+      return {
+        errMsg: 'operateSocketTask:ok'
+      }
+    case 'close':
+      socket.close(code);
+      delete socketTasks[socketTaskId];
+      return {
+        errMsg: 'operateSocketTask:ok'
+      }
+  }
+  return {
+    errMsg: 'operateSocketTask:fail'
+  }
+}
+
+let uploadTaskId = 0;
+const uploadTasks = {};
+
+const publishStateChange$3 = (res) => {
+  publish('onUploadTaskStateChange', res);
+};
+
+const createUploadTaskById = function (uploadTaskId, {
+  url,
+  filePath,
+  name,
+  files,
+  header,
+  formData
+} = {}) {
+  const uploader = plus.uploader.createUpload(url, {
+    timeout: __wxConfig.networkTimeout.uploadFile ? __wxConfig.networkTimeout.uploadFile / 1000 : 120,
+    // 需要与其它平台上的表现保持一致，不走重试的逻辑。
+    retry: 0,
+    retryInterval: 0
+  }, (upload, statusCode) => {
+    if (statusCode) {
+      publishStateChange$3({
+        uploadTaskId,
+        state: 'success',
+        data: upload.responseText,
+        statusCode
+      });
+    } else {
+      publishStateChange$3({
+        uploadTaskId,
+        state: 'fail',
+        data: '',
+        statusCode
+      });
+    }
+    delete uploadTasks[uploadTaskId];
+  });
+
+  for (const name in header) {
+    if (header.hasOwnProperty(name)) {
+      uploader.setRequestHeader(name, header[name]);
+    }
+  }
+  for (const name in formData) {
+    if (formData.hasOwnProperty(name)) {
+      uploader.addData(name, formData[name]);
+    }
+  }
+  if (files && files.length) {
+    files.forEach(file => {
+      uploader.addFile(getRealPath$1(file.uri), {
+        key: file.name || 'file'
+      });
+    });
+  } else {
+    uploader.addFile(getRealPath$1(filePath), {
+      key: name
+    });
+  }
+  uploader.addEventListener('statechanged', (upload, status) => {
+    if (upload.uploadedSize && upload.totalSize) {
+      publishStateChange$3({
+        uploadTaskId,
+        state: 'progressUpdate',
+        progress: parseInt(upload.uploadedSize / upload.totalSize * 100),
+        totalBytesSent: upload.uploadedSize,
+        totalBytesExpectedToSend: upload.totalSize
+      });
+    }
+  });
+  uploadTasks[uploadTaskId] = uploader;
+  uploader.start();
+  return {
+    uploadTaskId,
+    errMsg: 'createUploadTask:ok'
+  }
+};
+
+function operateUploadTask ({
+  uploadTaskId,
+  operationType
+} = {}) {
+  const uploadTask = uploadTasks[uploadTaskId];
+  if (uploadTask && operationType === 'abort') {
+    delete uploadTasks[uploadTaskId];
+    uploadTask.abort();
+    publishStateChange$3({
+      uploadTaskId,
+      state: 'fail',
+      errMsg: 'abort'
+    });
+    return {
+      errMsg: 'operateUploadTask:ok'
+    }
+  }
+  return {
+    errMsg: 'operateUploadTask:fail'
+  }
+}
+
+function createUploadTask (args) {
+  return createUploadTaskById(++uploadTaskId, args)
+}
+
+const providers = {
+  oauth (callback) {
+    plus.oauth.getServices(services => {
+      const provider = [];
+      services.forEach(({
+        id
+      }) => {
+        provider.push(id);
+      });
+      callback(null, provider);
+    }, err => {
+      callback(err);
+    });
+  },
+  share (callback) {
+    plus.share.getServices(services => {
+      const provider = [];
+      services.forEach(({
+        id
+      }) => {
+        provider.push(id);
+      });
+      callback(null, provider);
+    }, err => {
+      callback(err);
+    });
+  },
+  payment (callback) {
+    plus.payment.getChannels(services => {
+      const provider = [];
+      services.forEach(({
+        id
+      }) => {
+        provider.push(id);
+      });
+      callback(null, provider);
+    }, err => {
+      callback(err);
+    });
+  },
+  push (callback) {
+    if (typeof weex !== 'undefined' || typeof plus !== 'undefined') {
+      callback(null, [plus.push.getClientInfo().id]);
+    } else {
+      callback(null, []);
+    }
+  }
+};
+
+function getProvider$1 ({
+  service
+}, callbackId) {
+  if (providers[service]) {
+    providers[service]((err, provider) => {
+      if (err) {
+        invoke(callbackId, {
+          errMsg: 'getProvider:fail:' + err.message
+        });
+      } else {
+        invoke(callbackId, {
+          errMsg: 'getProvider:ok',
+          service,
+          provider
+        });
+      }
+    });
+  } else {
+    invoke(callbackId, {
+      errMsg: 'getProvider:fail:服务[' + service + ']不支持'
+    });
+  }
+}
+
+const loginServices = {};
+
+const loginByService = (provider, callbackId) => {
+  function login () {
+    loginServices[provider].login(res => {
+      const authResult = res.target.authResult;
+      invoke(callbackId, {
+        code: authResult.code,
+        authResult: authResult,
+        errMsg: 'login:ok'
+      });
+    }, err => {
+      invoke(callbackId, {
+        code: err.code,
+        errMsg: 'login:fail:' + err.message
+      });
+    });
+  }
+  // 先注销再登录
+  loginServices[provider].logout(login, login);
+};
+/**
+ * 微信登录
+ */
+function login (params, callbackId) {
+  const provider = params.provider || 'weixin';
+  if (loginServices[provider]) {
+    loginByService(provider, callbackId);
+  } else {
+    plus.oauth.getServices(services => {
+      loginServices[provider] = services.find(({
+        id
+      }) => id === provider);
+      if (!loginServices[provider]) {
+        invoke(callbackId, {
+          code: '',
+          errMsg: 'login:fail:登录服务[' + provider + ']不存在'
+        });
+      } else {
+        loginByService(provider, callbackId);
+      }
+    }, err => {
+      invoke(callbackId, {
+        code: err.code,
+        errMsg: 'login:fail:' + err.message
+      });
+    });
+  }
+}
+
+const getUserInfo = function (params, callbackId) {
+  const provider = params.provider || 'weixin';
+  const loginService = loginServices[provider];
+  if (!loginService || !loginService.authResult) {
+    return invoke(callbackId, {
+      errMsg: 'operateWXData:fail:请先调用 uni.login'
+    })
+  }
+  loginService.getUserInfo(res => {
+    if (provider === 'weixin') {
+      const wechatUserInfo = loginService.userInfo;
+      const userInfo = {
+        openId: wechatUserInfo.openid,
+        nickName: wechatUserInfo.nickname,
+        gender: wechatUserInfo.sex,
+        city: wechatUserInfo.city,
+        province: wechatUserInfo.province,
+        country: wechatUserInfo.country,
+        avatarUrl: wechatUserInfo.headimgurl,
+        unionId: wechatUserInfo.unionid
+      };
+      invoke(callbackId, {
+        errMsg: 'operateWXData:ok',
+        data: {
+          data: JSON.stringify(userInfo),
+          rawData: '',
+          signature: '',
+          encryptedData: '',
+          iv: ''
+        }
+      });
+    } else {
+      loginService.userInfo.openId = loginService.userInfo.openId || loginService.userInfo.openid ||
+                loginService.authResult.openid;
+      loginService.userInfo.nickName = loginService.userInfo.nickName || loginService.userInfo.nickname;
+      loginService.userInfo.avatarUrl = loginService.userInfo.avatarUrl || loginService.userInfo.avatarUrl ||
+                loginService.userInfo.headimgurl;
+      invoke(callbackId, {
+        errMsg: 'operateWXData:ok',
+        data: {
+          data: JSON.stringify(loginService.userInfo),
+          rawData: '',
+          signature: '',
+          encryptedData: '',
+          iv: ''
+        }
+      });
+    }
+  }, err => {
+    invoke(callbackId, {
+      errMsg: 'operateWXData:fail:' + err.message
+    });
+  });
+};
+
+/**
+ * 获取用户信息
+ */
+function operateWXData (params, callbackId) {
+  switch (params.data.api_name) {
+    case 'webapi_getuserinfo':
+      getUserInfo(params, callbackId);
+      break
+    default:
+      return {
+        errMsg: 'operateWXData:fail'
+      }
+  }
+}
+
+function requestPayment (params, callbackId) {
+  const provider = params.provider;
+  plus.payment.getChannels(services => {
+    const service = services.find(({
+      id
+    }) => id === provider);
+    if (!service) {
+      invoke(callbackId, {
+        errMsg: 'requestPayment:fail:支付服务[' + provider + ']不存在'
+      });
+    } else {
+      plus.payment.request(service, params.orderInfo, res => {
+        invoke(callbackId, {
+          errMsg: 'requestPayment:ok'
+        });
+      }, err => {
+        invoke(callbackId, {
+          errMsg: 'requestPayment:fail:' + err.message
+        });
+      });
+    }
+  }, err => {
+    invoke(callbackId, {
+      errMsg: 'requestPayment:fail:' + err.message
+    });
+  });
+}
+
+let onPushing;
+
+let isListening = false;
+
+let unsubscribe = false;
+
+function subscribePush (params, callbackId) {
+  const clientInfo = plus.push.getClientInfo();
+  if (clientInfo) {
+    if (!isListening) {
+      isListening = true;
+      plus.push.addEventListener('receive', msg => {
+        if (onPushing && !unsubscribe) {
+          publish('onPushMessage', {
+            messageId: msg.__UUID__,
+            data: msg.payload,
+            errMsg: 'onPush:ok'
+          });
+        }
+      });
+    }
+    unsubscribe = false;
+    clientInfo.errMsg = 'subscribePush:ok';
+    return clientInfo
+  } else {
+    return {
+      errMsg: 'subscribePush:fail:请确保当前运行环境已包含 push 模块'
+    }
+  }
+}
+
+function unsubscribePush (params) {
+  unsubscribe = true;
+  return {
+    errMsg: 'unsubscribePush:ok'
+  }
+}
+
+function onPush () {
+  if (!isListening) {
+    return {
+      errMsg: 'onPush:fail:请先调用 uni.subscribePush'
+    }
+  }
+  if (plus.push.getClientInfo()) {
+    onPushing = true;
+    return {
+      errMsg: 'onPush:ok'
+    }
+  }
+  return {
+    errMsg: 'onPush:fail:请确保当前运行环境已包含 push 模块'
+  }
+}
+
+function offPush (params) {
+  onPushing = false;
+  return {
+    errMsg: 'offPush:ok'
+  }
+}
+
+// 0:图文，1:纯文字，2:纯图片，3:音乐，4:视频，5:小程序
+const TYPES = {
+  '0': {
+    name: 'web',
+    title: '图文'
+  },
+  '1': {
+    name: 'text',
+    title: '纯文字'
+  },
+  '2': {
+    name: 'image',
+    title: '纯图片'
+  },
+  '3': {
+    name: 'music',
+    title: '音乐'
+  },
+  '4': {
+    name: 'video',
+    title: '视频'
+  },
+  '5': {
+    name: 'miniProgram',
+    title: '小程序'
+  }
+};
+
+const parseParams = (args, callbackId, method) => {
+  args.type = args.type || 0;
+
+  let {
+    provider,
+    type,
+    title,
+    summary: content,
+    href,
+    imageUrl,
+    mediaUrl: media,
+    scene,
+    miniProgram
+  } = args;
+
+  if (typeof imageUrl === 'string' && imageUrl) {
+    imageUrl = getRealPath$1(imageUrl);
+  }
+
+  const shareType = TYPES[type + ''];
+  if (shareType) {
+    let sendMsg = {
+      provider,
+      type: shareType.name,
+      title,
+      content,
+      href,
+      pictures: [imageUrl],
+      thumbs: [imageUrl],
+      media,
+      miniProgram,
+      extra: {
+        scene
+      }
+    };
+    if (provider === 'weixin' && (type === 1 || type === 2)) {
+      delete sendMsg.thumbs;
+    }
+    return sendMsg
+  }
+  return '分享参数 type 不正确'
+};
+
+const sendShareMsg = function (service, params, callbackId, method = 'share') {
+  service.send(
+    params,
+    () => {
+      invoke(callbackId, {
+        errMsg: method + ':ok'
+      });
+    },
+    err => {
+      invoke(callbackId, {
+        errMsg: method + ':fail:' + err.message
+      });
+    }
+  );
+};
+
+function shareAppMessageDirectly ({
+  title,
+  path,
+  imageUrl,
+  useDefaultSnapshot
+}, callbackId) {
+  title = title || __wxConfig.appname;
+  const goShare = () => {
+    share({
+      provider: 'weixin',
+      type: 0,
+      title,
+      imageUrl,
+      href: path,
+      scene: 'WXSceneSession'
+    },
+    callbackId,
+    'shareAppMessageDirectly'
+    );
+  };
+  if (useDefaultSnapshot) {
+    const pages = getCurrentPages();
+    const webview = plus.webview.getWebviewById(pages[pages.length - 1].__wxWebviewId__ + '');
+    if (webview) {
+      const bitmap = new plus.nativeObj.Bitmap();
+      webview.draw(
+        bitmap,
+        () => {
+          const fileName = TEMP_PATH + '/share/snapshot.jpg';
+          bitmap.save(
+            fileName, {
+              overwrite: true,
+              format: 'jpg'
+            },
+            () => {
+              imageUrl = fileName;
+              goShare();
+            },
+            err => {
+              invoke(callbackId, {
+                errMsg: 'shareAppMessageDirectly:fail:' + err.message
+              });
+            }
+          );
+        },
+        err => {
+          invoke(callbackId, {
+            errMsg: 'shareAppMessageDirectly:fail:' + err.message
+          });
+        }
+      );
+    } else {
+      goShare();
+    }
+  } else {
+    goShare();
+  }
+}
+
+function share (params, callbackId, method = 'share') {
+  params = parseParams(params);
+  if (typeof params === 'string') {
+    return invoke(callbackId, {
+      errMsg: method + ':fail:' + params
+    })
+  }
+  const provider = params.provider;
+  plus.share.getServices(
+    services => {
+      const service = services.find(({
+        id
+      }) => id === provider);
+      if (!service) {
+        invoke(callbackId, {
+          errMsg: method + ':fail:分享服务[' + provider + ']不存在'
+        });
+      } else {
+        if (service.authenticated) {
+          sendShareMsg(service, params, callbackId);
+        } else {
+          service.authorize(
+            () => sendShareMsg(service, params, callbackId),
+            err => {
+              invoke(callbackId, {
+                errMsg: method + ':fail:' + err.message
+              });
+            }
+          );
+        }
+      }
+    },
+    err => {
+      invoke(callbackId, {
+        errMsg: method + ':fail:' + err.message
+      });
+    }
+  );
+}
+
+function showKeyboard () {
+  plus.key.showSoftKeybord();
+  return {
+    errMsg: 'showKeyboard:ok'
+  }
+}
+
+function hideKeyboard () {
+  plus.key.hideSoftKeybord();
+  return {
+    errMsg: 'hideKeyboard:ok'
+  }
+}
+
+function setNavigationBarTitle$1 ({
+  title = ''
+} = {}) {
+  const webview = getLastWebview();
+  if (webview) {
+    const style = webview.getStyle();
+    if (style && style.titleNView) {
+      webview.setStyle({
+        titleNView: {
+          titleText: title
+        }
+      });
+    }
+    return {
+      errMsg: 'setNavigationBarTitle:ok'
+    }
+  }
+  return {
+    errMsg: 'setNavigationBarTitle:fail'
+  }
+}
+
+function showNavigationBarLoading () {
+  plus.nativeUI.showWaiting('', {
+    modal: false
+  });
+  return {
+    errMsg: 'showNavigationBarLoading:ok'
+  }
+}
+
+function hideNavigationBarLoading () {
+  plus.nativeUI.closeWaiting();
+  return {
+    errMsg: 'hideNavigationBarLoading:ok'
+  }
+}
+
+function setNavigationBarColor$1 ({
+  frontColor,
+  backgroundColor
+} = {}) {
+  const webview = getLastWebview();
+  if (webview) {
+    const styles = {};
+    if (frontColor) {
+      styles.titleColor = frontColor;
+    }
+    if (backgroundColor) {
+      styles.backgroundColor = backgroundColor;
+    }
+    plus.navigator.setStatusBarStyle(frontColor === '#000000' ? 'dark' : 'light');
+    const style = webview.getStyle();
+    if (style && style.titleNView) {
+      webview.setStyle({
+        titleNView: styles
+      });
+    }
+    return {
+      errMsg: 'setNavigationBarColor:ok'
+    }
+  }
+  return {
+    errMsg: 'setNavigationBarColor:fail'
+  }
+}
 
 let waiting;
 let waitingTimeout;
 let toast = false;
 let toastTimeout;
-
-function showLoading$1 (args) {
-  return showToast$1(args).replace('showToast', 'showLoading')
-}
-
-function hideLoading () {
-  return hideToast().replace('hideToast', 'hideLoading')
-}
 
 function showToast$1 ({
   title = '',
@@ -2542,7 +6366,6 @@ function hideToast () {
     errMsg: 'hideToast:ok'
   }
 }
-
 function showModal$1 ({
   title = '',
   content = '',
@@ -2568,7 +6391,6 @@ function showModal$1 ({
     }
   }, title, showCancel ? [cancelText, confirmText] : [confirmText]);
 }
-
 function showActionSheet$1 ({
   itemList = [],
   itemColor = '#000000',
@@ -2601,147 +6423,227 @@ function showActionSheet$1 ({
   });
 }
 
-var require_context_module_0_0 = /*#__PURE__*/Object.freeze({
-  showLoading: showLoading$1,
-  hideLoading: hideLoading,
-  showToast: showToast$1,
-  hideToast: hideToast,
-  showModal: showModal$1,
-  showActionSheet: showActionSheet$1
-});
+let webview;
 
-const ANI_DURATION = 300;
-const ANI_SHOW = 'pop-in';
-
-function showWebview (webview, animationType, animationDuration) {
-  setTimeout(() => {
-    webview.show(
-      animationType || ANI_SHOW,
-      animationDuration || ANI_DURATION,
-      () => {
-        console.log('show.callback');
-      }
-    );
-  }, 50);
-}
-
-var require_context_module_0_6 = /*#__PURE__*/Object.freeze({
-  ANI_DURATION: ANI_DURATION,
-  showWebview: showWebview
-});
-
-let firstBackTime = 0;
-
-function navigateBack$1 ({
-  delta,
-  animationType,
-  animationDuration
-}) {
-  const pages = getCurrentPages();
-  const len = pages.length - 1;
-  const page = pages[len];
-  if (page.$page.meta.isQuit) {
-    if (!firstBackTime) {
-      firstBackTime = Date.now();
-      plus.nativeUI.toast('再按一次退出应用');
-      setTimeout(() => {
-        firstBackTime = null;
-      }, 2000);
-    } else if (Date.now() - firstBackTime < 2000) {
-      plus.runtime.quit();
+function startPullDownRefresh$1 () {
+  if (webview) {
+    webview.endPullToRefresh();
+  }
+  webview = getLastWebview();
+  if (webview) {
+    webview.beginPullToRefresh();
+    return {
+      errMsg: 'startPullDownRefresh:ok'
     }
-  } else {
-    pages.splice(len, 1);
-    if (animationType) {
-      page.$getAppWebview().close(animationType, animationDuration || ANI_DURATION);
-    } else {
-      page.$getAppWebview().close('auto');
-    }
-    UniServiceJSBridge.emit('onAppRoute', {
-      type: 'navigateBack'
-    });
+  }
+  return {
+    errMsg: 'startPullDownRefresh:fail'
   }
 }
 
-var require_context_module_0_1 = /*#__PURE__*/Object.freeze({
-  navigateBack: navigateBack$1
-});
-
-function navigateTo$1 ({
-  url,
-  animationType,
-  animationDuration
-}) {
-  const path = url.split('?')[0];
-
-  UniServiceJSBridge.emit('onAppRoute', {
-    type: 'navigateTo',
-    path
-  });
-
-  showWebview(
-    __registerPage({
-      path
-    }),
-    animationType,
-    animationDuration
-  );
+function stopPullDownRefresh$1 () {
+  if (webview) {
+    webview.endPullToRefresh();
+    webview = null;
+    return {
+      errMsg: 'stopPullDownRefresh:ok'
+    }
+  }
+  return {
+    errMsg: 'stopPullDownRefresh:fail'
+  }
 }
 
-var require_context_module_0_2 = /*#__PURE__*/Object.freeze({
-  navigateTo: navigateTo$1
-});
+function setTabBarBadge$2 ({
+  index,
+  text,
+  type
+}) {
+  tabbar.setTabBarBadge(type, index, text);
+  return {
+    errMsg: 'setTabBarBadge:ok'
+  }
+}
 
-function reLaunch$1 ({
-  path
-}) {}
+function setTabBarItem$2 ({
+  index,
+  text,
+  iconPath,
+  selectedIconPath
+}) {
+  if (!isTabBarPage()) {
+    return {
+      errMsg: 'setTabBarItem:fail not TabBar page'
+    }
+  }
+  tabbar.setTabBarItem(index, text, iconPath, selectedIconPath);
+  return {
+    errMsg: 'setTabBarItem:ok'
+  }
+}
 
-var require_context_module_0_3 = /*#__PURE__*/Object.freeze({
-  reLaunch: reLaunch$1
-});
+function setTabBarStyle$2 ({
+  color,
+  selectedColor,
+  backgroundColor,
+  borderStyle
+}) {
+  if (!isTabBarPage()) {
+    return {
+      errMsg: 'setTabBarStyle:fail not TabBar page'
+    }
+  }
+  tabbar.setTabBarStyle({
+    color,
+    selectedColor,
+    backgroundColor,
+    borderStyle
+  });
+  return {
+    errMsg: 'setTabBarStyle:ok'
+  }
+}
 
-function redirectTo$1 ({
-  path
-}) {}
+function hideTabBar$2 ({
+  animation
+}) {
+  if (!isTabBarPage()) {
+    return {
+      errMsg: 'hideTabBar:fail not TabBar page'
+    }
+  }
+  tabbar.hideTabBar(animation);
+  return {
+    errMsg: 'hideTabBar:ok'
+  }
+}
 
-var require_context_module_0_4 = /*#__PURE__*/Object.freeze({
-  redirectTo: redirectTo$1
-});
-
-function switchTab$1 ({
-  path
-}) {}
-
-var require_context_module_0_5 = /*#__PURE__*/Object.freeze({
-  switchTab: switchTab$1
-});
-
-const api$1 = Object.create(null);
-
-const modules$2 = 
-  (function() {
-    var map = {
-      './popup.js': require_context_module_0_0,
-'./router/navigate-back.js': require_context_module_0_1,
-'./router/navigate-to.js': require_context_module_0_2,
-'./router/re-launch.js': require_context_module_0_3,
-'./router/redirect-to.js': require_context_module_0_4,
-'./router/switch-tab.js': require_context_module_0_5,
-'./router/util.js': require_context_module_0_6,
-
-    };
-    var req = function req(key) {
-      return map[key] || (function() { throw new Error("Cannot find module '" + key + "'.") }());
-    };
-    req.keys = function() {
-      return Object.keys(map);
-    };
-    return req;
-  })();
+function showTabBar$2 ({
+  animation
+}) {
+  if (!isTabBarPage()) {
+    return {
+      errMsg: 'showTabBar:fail not TabBar page'
+    }
+  }
+  tabbar.showTabBar(animation);
+  return {
+    errMsg: 'showTabBar:ok'
+  }
+}
 
 
-modules$2.keys().forEach(function (key) {
-  Object.assign(api$1, modules$2(key));
+
+var api$1 = /*#__PURE__*/Object.freeze({
+  startPullDownRefresh: startPullDownRefresh$1,
+  stopPullDownRefresh: stopPullDownRefresh$1,
+  startRecord: startRecord,
+  stopRecord: stopRecord,
+  playVoice: playVoice,
+  pauseVoice: pauseVoice,
+  stopVoice: stopVoice,
+  createAudioInstance: createAudioInstance,
+  destroyAudioInstance: destroyAudioInstance,
+  setAudioState: setAudioState,
+  getAudioState: getAudioState,
+  operateAudio: operateAudio,
+  getMapCenterLocation: getMapCenterLocation,
+  moveToMapLocation: moveToMapLocation,
+  getMapScale: getMapScale,
+  getMapRegion: getMapRegion,
+  operateVideoPlayer: operateVideoPlayer,
+  enableAccelerometer: enableAccelerometer,
+  addPhoneContact: addPhoneContact,
+  openBluetoothAdapter: openBluetoothAdapter,
+  closeBluetoothAdapter: closeBluetoothAdapter,
+  getBluetoothAdapterState: getBluetoothAdapterState,
+  startBluetoothDevicesDiscovery: startBluetoothDevicesDiscovery,
+  stopBluetoothDevicesDiscovery: stopBluetoothDevicesDiscovery,
+  getBluetoothDevices: getBluetoothDevices,
+  getConnectedBluetoothDevices: getConnectedBluetoothDevices,
+  createBLEConnection: createBLEConnection,
+  closeBLEConnection: closeBLEConnection,
+  getBLEDeviceServices: getBLEDeviceServices,
+  getBLEDeviceCharacteristics: getBLEDeviceCharacteristics,
+  notifyBLECharacteristicValueChange: notifyBLECharacteristicValueChange,
+  notifyBLECharacteristicValueChanged: notifyBLECharacteristicValueChanged,
+  readBLECharacteristicValue: readBLECharacteristicValue,
+  writeBLECharacteristicValue: writeBLECharacteristicValue,
+  getScreenBrightness: getScreenBrightness,
+  setScreenBrightness: setScreenBrightness,
+  setKeepScreenOn: setKeepScreenOn,
+  getClipboardData: getClipboardData,
+  setClipboardData: setClipboardData,
+  enableCompass: enableCompass,
+  getNetworkType: getNetworkType,
+  onBeaconUpdate: onBeaconUpdate,
+  onBeaconServiceChange: onBeaconServiceChange,
+  getBeacons: getBeacons,
+  startBeaconDiscovery: startBeaconDiscovery,
+  stopBeaconDiscovery: stopBeaconDiscovery,
+  makePhoneCall: makePhoneCall$1,
+  SCAN_ID: SCAN_ID,
+  SCAN_PATH: SCAN_PATH,
+  scanCode: scanCode,
+  getSystemInfo: getSystemInfo,
+  vibrateLong: vibrateLong,
+  vibrateShort: vibrateShort,
+  saveFile: saveFile,
+  getSavedFileList: getSavedFileList,
+  getFileInfo: getFileInfo,
+  getSavedFileInfo: getSavedFileInfo,
+  removeSavedFile: removeSavedFile,
+  openDocument: openDocument$1,
+  chooseLocation: chooseLocation,
+  getLocation: getLocation$1,
+  openLocation: openLocation$1,
+  getMusicPlayerState: getMusicPlayerState,
+  operateMusicPlayer: operateMusicPlayer,
+  setBackgroundAudioState: setBackgroundAudioState,
+  operateBackgroundAudio: operateBackgroundAudio,
+  getBackgroundAudioState: getBackgroundAudioState,
+  chooseImage: chooseImage$1,
+  chooseVideo: chooseVideo$1,
+  compressImage: compressImage,
+  getImageInfo: getImageInfo$1,
+  previewImage: previewImage$1,
+  operateRecorder: operateRecorder,
+  saveImageToPhotosAlbum: saveImageToPhotosAlbum,
+  saveVideoToPhotosAlbum: saveVideoToPhotosAlbum,
+  operateDownloadTask: operateDownloadTask,
+  createDownloadTask: createDownloadTask,
+  createRequestTaskById: createRequestTaskById,
+  createRequestTask: createRequestTask,
+  operateRequestTask: operateRequestTask,
+  createSocketTask: createSocketTask,
+  operateSocketTask: operateSocketTask,
+  operateUploadTask: operateUploadTask,
+  createUploadTask: createUploadTask,
+  getProvider: getProvider$1,
+  login: login,
+  operateWXData: operateWXData,
+  requestPayment: requestPayment,
+  subscribePush: subscribePush,
+  unsubscribePush: unsubscribePush,
+  onPush: onPush,
+  offPush: offPush,
+  shareAppMessageDirectly: shareAppMessageDirectly,
+  share: share,
+  showKeyboard: showKeyboard,
+  hideKeyboard: hideKeyboard,
+  setNavigationBarTitle: setNavigationBarTitle$1,
+  showNavigationBarLoading: showNavigationBarLoading,
+  hideNavigationBarLoading: hideNavigationBarLoading,
+  setNavigationBarColor: setNavigationBarColor$1,
+  showToast: showToast$1,
+  hideToast: hideToast,
+  showModal: showModal$1,
+  showActionSheet: showActionSheet$1,
+  setTabBarBadge: setTabBarBadge$2,
+  setTabBarItem: setTabBarItem$2,
+  setTabBarStyle: setTabBarStyle$2,
+  hideTabBar: hideTabBar$2,
+  showTabBar: showTabBar$2
 });
 
 const api$2 = Object.create(null);

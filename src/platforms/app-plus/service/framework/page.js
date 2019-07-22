@@ -26,6 +26,7 @@ export function getCurrentPages () {
  *
  *
  */
+
 /**
  * 首页需要主动registerPage，二级页面路由跳转时registerPage
  */
@@ -46,6 +47,9 @@ export function registerPage ({
   initWebview(webview, instanceContext, webview.id === '1' && routeOptions)
 
   const route = path.slice(1)
+
+  webview.__uniapp_route = route
+
   pages.push({
     route,
     $getAppWebview () {
