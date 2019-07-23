@@ -15,8 +15,8 @@ import {
   registerPlusMessage
 } from '../../framework/plus-message'
 
-export const SCAN_ID = '__UNIAPP_SCAN'
-export const SCAN_PATH = '_www/__uniappscan.html'
+const SCAN_ID = '__UNIAPP_SCAN'
+const SCAN_PATH = '_www/__uniappscan.html'
 
 const MESSAGE_TYPE = 'scanCode'
 

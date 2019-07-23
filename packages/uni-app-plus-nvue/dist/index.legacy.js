@@ -518,11 +518,11 @@ class MapContext {
 
 function createMapContext (id, vm) {
   if (!vm) {
-    return global.nativeLog('uni.createMapContext 必须传入第二个参数，即当前 vm 对象(this)', '__WARN')
+    return console.warn('uni.createMapContext 必须传入第二个参数，即当前 vm 对象(this)')
   }
   const elm = findElmById(id, vm);
   if (!elm) {
-    return global.nativeLog('Can not find `' + id + '`', '__WARN')
+    return console.warn('Can not find `' + id + '`')
   }
   return new MapContext(id, elm)
 }
@@ -576,11 +576,11 @@ class VideoContext {
 
 function createVideoContext (id, vm) {
   if (!vm) {
-    return global.nativeLog('uni.createVideoContext 必须传入第二个参数，即当前 vm 对象(this)', '__WARN')
+    return console.warn('uni.createVideoContext 必须传入第二个参数，即当前 vm 对象(this)')
   }
   const elm = findElmById(id, vm);
   if (!elm) {
-    return global.nativeLog('Can not find `' + id + '`', '__WARN')
+    return console.warn('Can not find `' + id + '`')
   }
   return new VideoContext(id, elm)
 }
@@ -650,11 +650,11 @@ class LivePusherContext {
 
 function createLivePusherContext (id, vm) {
   if (!vm) {
-    return global.nativeLog('uni.createLivePusherContext 必须传入第二个参数，即当前 vm 对象(this)', '__WARN')
+    return console.warn('uni.createLivePusherContext 必须传入第二个参数，即当前 vm 对象(this)')
   }
   const elm = findElmById(id, vm);
   if (!elm) {
-    return global.nativeLog('Can not find `' + id + '`', '__WARN')
+    return console.warn('Can not find `' + id + '`')
   }
   return new LivePusherContext(id, elm)
 }

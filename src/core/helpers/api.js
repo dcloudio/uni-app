@@ -234,7 +234,7 @@ export function invokeCallbackHandler (invokeCallbackId, res) {
 }
 
 export function wrapperUnimplemented (name) {
-  return function (args) {
+  return function unimplemented (args) {
     console.error('API `' + name + '` is not yet implemented')
   }
 }

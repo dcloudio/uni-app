@@ -69,11 +69,11 @@ class LivePusherContext {
 
 export function createLivePusherContext (id, vm) {
   if (!vm) {
-    return global.nativeLog('uni.createLivePusherContext 必须传入第二个参数，即当前 vm 对象(this)', '__WARN')
+    return console.warn('uni.createLivePusherContext 必须传入第二个参数，即当前 vm 对象(this)')
   }
   const elm = findElmById(id, vm)
   if (!elm) {
-    return global.nativeLog('Can not find `' + id + '`', '__WARN')
+    return console.warn('Can not find `' + id + '`')
   }
   return new LivePusherContext(id, elm)
 }

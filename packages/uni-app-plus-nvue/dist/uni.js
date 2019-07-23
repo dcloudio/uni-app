@@ -1816,7 +1816,7 @@ function invokeCallbackHandler (invokeCallbackId, res) {
 }
 
 function wrapperUnimplemented (name) {
-  return function (args) {
+  return function unimplemented (args) {
     console.error('API `' + name + '` is not yet implemented');
   }
 }
@@ -6415,7 +6415,7 @@ function showTabBar$2 ({
 
 
 
-var api$1 = /*#__PURE__*/Object.freeze({
+var appApi = /*#__PURE__*/Object.freeze({
   startPullDownRefresh: startPullDownRefresh$1,
   stopPullDownRefresh: stopPullDownRefresh$1,
   chooseImage: chooseImage$1,
@@ -6454,8 +6454,6 @@ var api$1 = /*#__PURE__*/Object.freeze({
   startBeaconDiscovery: startBeaconDiscovery,
   stopBeaconDiscovery: stopBeaconDiscovery,
   makePhoneCall: makePhoneCall$1,
-  SCAN_ID: SCAN_ID,
-  SCAN_PATH: SCAN_PATH,
   scanCode: scanCode,
   getSystemInfo: getSystemInfo,
   vibrateLong: vibrateLong,
@@ -6522,16 +6520,312 @@ var api$1 = /*#__PURE__*/Object.freeze({
   showTabBar: showTabBar$2
 });
 
-const api$2 = Object.create(null);
+const SUCCESS = 'success';
+const FAIL = 'fail';
+const COMPLETE = 'complete';
+const CALLBACKS = [SUCCESS, FAIL, COMPLETE];
 
-Object.assign(api$2, api);
-Object.assign(api$2, api$1);
+/**
+ * 调用无参数，或仅一个参数且为 callback 的 API
+ * @param {Object} vm
+ * @param {Object} method
+ * @param {Object} args
+ * @param {Object} extras
+ */
+function invokeVmMethodWithoutArgs (vm, method, args, extras) {
+  if (!vm) {
+    return
+  }
+  if (typeof args === 'undefined') {
+    return vm[method]()
+  }
+  const [, callbacks] = normalizeArgs(args, extras);
+  if (!Object.keys(callbacks).length) {
+    return vm[method]()
+  }
+  return vm[method](normalizeCallback(method, callbacks))
+}
+/**
+ * 调用两个参数（第一个入参为普通参数，第二个入参为 callback） API
+ * @param {Object} vm
+ * @param {Object} method
+ * @param {Object} args
+ * @param {Object} extras
+ */
+function invokeVmMethod (vm, method, args, extras) {
+  if (!vm) {
+    return
+  }
+  const [pureArgs, callbacks] = normalizeArgs(args, extras);
+  if (!Object.keys(callbacks).length) {
+    return vm[method](pureArgs)
+  }
+  return vm[method](pureArgs, normalizeCallback(method, callbacks))
+}
+
+function findElmById (id, vm) {
+  return findElmByVNode(id, vm._vnode)
+}
+
+function findElmByVNode (id, vnode) {
+  if (!id || !vnode) {
+    return
+  }
+  if (
+    vnode.data &&
+    vnode.data.attrs &&
+    vnode.data.attrs.id === id
+  ) {
+    return vnode.elm
+  }
+  const children = vnode.children;
+  if (!children) {
+    return
+  }
+  for (let i = 0, len = children.length; i < len; i++) {
+    const elm = findElmByVNode(id, children[i]);
+    if (elm) {
+      return elm
+    }
+  }
+}
+
+function normalizeArgs (args = {}, extras) {
+  const callbacks = Object.create(null);
+
+  const iterator = function iterator (name) {
+    const callback = args[name];
+    if (isFn(callback)) {
+      callbacks[name] = callback;
+      delete args[name];
+    }
+  };
+
+  CALLBACKS.forEach(iterator);
+
+  extras && extras.forEach(iterator);
+
+  return [args, callbacks]
+}
+
+function normalizeCallback (method, callbacks) {
+  return function weexCallback (ret) {
+    const type = ret.type;
+    delete ret.type;
+    const callback = callbacks[type];
+
+    if (type === SUCCESS) {
+      ret.errMsg = `${method}:ok`;
+    } else if (type === FAIL) {
+      ret.errMsg = method + ':fail' + (ret.msg ? (' ' + ret.msg) : '');
+    }
+
+    delete ret.code;
+    delete ret.msg;
+
+    isFn(callback) && callback(ret);
+
+    if (type === SUCCESS || type === FAIL) {
+      const complete = callbacks['complete'];
+      isFn(complete) && complete(ret);
+    }
+  }
+}
+
+class LivePusherContext {
+  constructor (id, ctx) {
+    this.id = id;
+    this.ctx = ctx;
+  }
+
+  start (cbs) {
+    return invokeVmMethodWithoutArgs(this.ctx, 'start', cbs)
+  }
+
+  stop (cbs) {
+    return invokeVmMethodWithoutArgs(this.ctx, 'stop', cbs)
+  }
+
+  pause (cbs) {
+    return invokeVmMethodWithoutArgs(this.ctx, 'pause', cbs)
+  }
+
+  resume (cbs) {
+    return invokeVmMethodWithoutArgs(this.ctx, 'resume', cbs)
+  }
+
+  switchCamera (cbs) {
+    return invokeVmMethodWithoutArgs(this.ctx, 'switchCamera', cbs)
+  }
+
+  snapshot (cbs) {
+    return invokeVmMethodWithoutArgs(this.ctx, 'snapshot', cbs)
+  }
+
+  toggleTorch (cbs) {
+    return invokeVmMethodWithoutArgs(this.ctx, 'toggleTorch', cbs)
+  }
+
+  playBGM (args) {
+    return invokeVmMethod(this.ctx, 'playBGM', args)
+  }
+
+  stopBGM (cbs) {
+    return invokeVmMethodWithoutArgs(this.ctx, 'stopBGM', cbs)
+  }
+
+  pauseBGM (cbs) {
+    return invokeVmMethodWithoutArgs(this.ctx, 'pauseBGM', cbs)
+  }
+
+  resumeBGM (cbs) {
+    return invokeVmMethodWithoutArgs(this.ctx, 'resumeBGM', cbs)
+  }
+
+  setBGMVolume (cbs) {
+    return invokeVmMethod(this.ctx, 'setBGMVolume', cbs)
+  }
+
+  startPreview (cbs) {
+    return invokeVmMethodWithoutArgs(this.ctx, 'startPreview', cbs)
+  }
+
+  stopPreview (args) {
+    return invokeVmMethodWithoutArgs(this.ctx, 'stopPreview', args)
+  }
+}
+
+function createLivePusherContext (id, vm) {
+  if (!vm) {
+    return console.warn('uni.createLivePusherContext 必须传入第二个参数，即当前 vm 对象(this)')
+  }
+  const elm = findElmById(id, vm);
+  if (!elm) {
+    return console.warn('Can not find `' + id + '`')
+  }
+  return new LivePusherContext(id, elm)
+}
+
+class MapContext {
+  constructor (id, ctx) {
+    this.id = id;
+    this.ctx = ctx;
+  }
+
+  getCenterLocation (cbs) {
+    return invokeVmMethodWithoutArgs(this.ctx, 'getCenterLocation', cbs)
+  }
+
+  moveToLocation () {
+    return invokeVmMethodWithoutArgs(this.ctx, 'moveToLocation')
+  }
+
+  translateMarker (args) {
+    return invokeVmMethod(this.ctx, 'translateMarker', args, ['animationEnd'])
+  }
+
+  includePoints (args) {
+    return invokeVmMethod(this.ctx, 'includePoints', args)
+  }
+
+  getRegion (cbs) {
+    return invokeVmMethodWithoutArgs(this.ctx, 'getRegion', cbs)
+  }
+
+  getScale (cbs) {
+    return invokeVmMethodWithoutArgs(this.ctx, 'getScale', cbs)
+  }
+}
+
+function createMapContext$1 (id, vm) {
+  if (!vm) {
+    return console.warn('uni.createMapContext 必须传入第二个参数，即当前 vm 对象(this)')
+  }
+  const elm = findElmById(id, vm);
+  if (!elm) {
+    return console.warn('Can not find `' + id + '`')
+  }
+  return new MapContext(id, elm)
+}
+
+class VideoContext {
+  constructor (id, ctx) {
+    this.id = id;
+    this.ctx = ctx;
+  }
+
+  play () {
+    return invokeVmMethodWithoutArgs(this.ctx, 'play')
+  }
+
+  pause () {
+    return invokeVmMethodWithoutArgs(this.ctx, 'pause')
+  }
+
+  seek (args) {
+    return invokeVmMethod(this.ctx, 'seek', args)
+  }
+
+  stop () {
+    return invokeVmMethodWithoutArgs(this.ctx, 'stop')
+  }
+
+  sendDanmu (args) {
+    return invokeVmMethod(this.ctx, 'sendDanmu', args)
+  }
+
+  playbackRate (args) {
+    return invokeVmMethod(this.ctx, 'playbackRate', args)
+  }
+
+  requestFullScreen (args) {
+    return invokeVmMethod(this.ctx, 'requestFullScreen', args)
+  }
+
+  exitFullScreen () {
+    return invokeVmMethodWithoutArgs(this.ctx, 'exitFullScreen')
+  }
+
+  showStatusBar () {
+    return invokeVmMethodWithoutArgs(this.ctx, 'showStatusBar')
+  }
+
+  hideStatusBar () {
+    return invokeVmMethodWithoutArgs(this.ctx, 'hideStatusBar')
+  }
+}
+
+function createVideoContext$1 (id, vm) {
+  if (!vm) {
+    return console.warn('uni.createVideoContext 必须传入第二个参数，即当前 vm 对象(this)')
+  }
+  const elm = findElmById(id, vm);
+  if (!elm) {
+    return console.warn('Can not find `' + id + '`')
+  }
+  return new VideoContext(id, elm)
+}
+
+
+
+var nvueApi = /*#__PURE__*/Object.freeze({
+  createLivePusherContext: createLivePusherContext,
+  createMapContext: createMapContext$1,
+  createVideoContext: createVideoContext$1
+});
+
+var platformApi = Object.assign({}, appApi, nvueApi);
+
+const api$1 = Object.create(null);
+
+Object.assign(api$1, api);
+Object.assign(api$1, platformApi);
 
 const uni$1 = Object.create(null);
 
 apis.forEach(name => {
-  if (api$2[name]) {
-    uni$1[name] = promisify(name, wrapper(name, api$2[name]));
+  if (api$1[name]) {
+    uni$1[name] = promisify(name, wrapper(name, api$1[name]));
   } else {
     uni$1[name] = wrapperUnimplemented(name);
   }

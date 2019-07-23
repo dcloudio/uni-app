@@ -38,7 +38,7 @@ module.exports = {
     requireContext(),
     alias({
       'uni-core': path.resolve(__dirname, '../src/core'),
-      'uni-platform': path.resolve(__dirname, '../src/platforms/app-plus'),
+      'uni-platform': path.resolve(__dirname, '../src/platforms/' + process.env.UNI_PLATFORM),
       'uni-platforms': path.resolve(__dirname, '../src/platforms'),
       'uni-shared': path.resolve(__dirname, '../src/shared/util.js'),
       'uni-helpers': path.resolve(__dirname, '../src/core/helpers')

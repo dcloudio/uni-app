@@ -37,11 +37,11 @@ class MapContext {
 
 export function createMapContext (id, vm) {
   if (!vm) {
-    return global.nativeLog('uni.createMapContext 必须传入第二个参数，即当前 vm 对象(this)', '__WARN')
+    return console.warn('uni.createMapContext 必须传入第二个参数，即当前 vm 对象(this)')
   }
   const elm = findElmById(id, vm)
   if (!elm) {
-    return global.nativeLog('Can not find `' + id + '`', '__WARN')
+    return console.warn('Can not find `' + id + '`')
   }
   return new MapContext(id, elm)
 }
