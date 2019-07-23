@@ -9,7 +9,7 @@ const CALLBACKS = [SUCCESS, FAIL, COMPLETE]
 
 export const UNIAPP_SERVICE_NVUE_ID = '__uniapp__service'
 
-export function noop () {
+export function noop() {
 
 }
 /**
@@ -19,7 +19,7 @@ export function noop () {
  * @param {Object} args
  * @param {Object} extras
  */
-export function invokeVmMethodWithoutArgs (vm, method, args, extras) {
+export function invokeVmMethodWithoutArgs(vm, method, args, extras) {
   if (!vm) {
     return
   }
@@ -39,7 +39,7 @@ export function invokeVmMethodWithoutArgs (vm, method, args, extras) {
  * @param {Object} args
  * @param {Object} extras
  */
-export function invokeVmMethod (vm, method, args, extras) {
+export function invokeVmMethod(vm, method, args, extras) {
   if (!vm) {
     return
   }
@@ -50,36 +50,37 @@ export function invokeVmMethod (vm, method, args, extras) {
   return vm[method](pureArgs, normalizeCallback(method, callbacks))
 }
 
-export function findRefById (id, vm) {
-  return findRefByVNode(id, vm._vnode)
+export function findElmById(id, vm) {
+  return findElmByVNode(id, vm._vnode)
 }
 
-function findRefByVNode (id, vnode) {
+function findElmByVNode(id, vnode) {
   if (!id || !vnode) {
     return
   }
-  if (vnode.data &&
-        vnode.data.ref &&
-        vnode.data.attrs &&
-        vnode.data.attrs.id === id) {
-    return vnode.data.ref
+  if (
+    vnode.data &&
+    vnode.data.attrs &&
+    vnode.data.attrs.id === id
+  ) {
+    return vnode.elm
   }
   const children = vnode.children
   if (!children) {
     return
   }
   for (let i = 0, len = children.length; i < len; i++) {
-    const ref = findRefByVNode(id, children[i])
-    if (ref) {
-      return ref
+    const elm = findElmByVNode(id, children[i])
+    if (elm) {
+      return elm
     }
   }
 }
 
-function normalizeArgs (args = {}, extras) {
+function normalizeArgs(args = {}, extras) {
   const callbacks = Object.create(null)
 
-  const iterator = function iterator (name) {
+  const iterator = function iterator(name) {
     const callback = args[name]
     if (isFn(callback)) {
       callbacks[name] = callback
@@ -94,8 +95,8 @@ function normalizeArgs (args = {}, extras) {
   return [args, callbacks]
 }
 
-function normalizeCallback (method, callbacks) {
-  return function weexCallback (ret) {
+function normalizeCallback(method, callbacks) {
+  return function weexCallback(ret) {
     const type = ret.type
     delete ret.type
     const callback = callbacks[type]

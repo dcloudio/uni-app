@@ -2433,22 +2433,24 @@ function getLastWebview () {
   }
 }
 
-function isTabBarPage () {
+function isTabBarPage (route = '') {
   if (!(__uniConfig.tabBar && Array.isArray(__uniConfig.tabBar.list))) {
     return false
   }
   try {
-    const pages = getCurrentPages();
-    if (!pages.length) {
-      return false
+    if (!route) {
+      const pages = getCurrentPages();
+      if (!pages.length) {
+        return false
+      }
+      const page = pages[pages.length - 1];
+      if (!page) {
+        return false
+      }
+      route = page.route;
     }
-    const page = pages[pages.length - 1];
-    if (!page) {
-      return false
-    }
-    const route = page.route;
     return !!__uniConfig.tabBar.list.find(tabBarPage => {
-      const pagePath = tabBarPage.path;
+      const pagePath = tabBarPage.pagePath;
       return pagePath === route || pagePath === (route + '.html')
     })
   } catch (e) {
@@ -2586,11 +2588,11 @@ const outOfChina = function (lng, lat) {
   return (lng < 72.004 || lng > 137.8347) || ((lat < 0.8293 || lat > 55.8271) || false)
 };
 
-function invoke(...args) {
+function invoke (...args) {
   return UniServiceJSBridge.invoke(...args)
 }
 
-function publish(...args) {
+function publish (...args) {
   return UniServiceJSBridge.publish(...args)
 }
 
