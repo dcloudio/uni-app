@@ -13,7 +13,7 @@ import {
 
 import baseApi from 'uni-core/service/api'
 
-import platformApi from './api'
+import platformApi from 'uni-platform/service/api'
 
 const api = Object.create(null)
 

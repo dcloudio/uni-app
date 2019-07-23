@@ -53,11 +53,11 @@ class VideoContext {
 
 export function createVideoContext (id, vm) {
   if (!vm) {
-    global.nativeLog('uni.createVideoContext 必须传入第二个参数，即当前 vm 对象(this)', '__WARN')
+    return global.nativeLog('uni.createVideoContext 必须传入第二个参数，即当前 vm 对象(this)', '__WARN')
   }
   const elm = findElmById(id, vm)
   if (!elm) {
-    global.nativeLog('Can not find `' + id + '`', '__WARN')
+    return global.nativeLog('Can not find `' + id + '`', '__WARN')
   }
   return new VideoContext(id, elm)
 }

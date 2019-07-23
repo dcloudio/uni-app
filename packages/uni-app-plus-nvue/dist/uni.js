@@ -2588,6 +2588,14 @@ const outOfChina = function (lng, lat) {
   return (lng < 72.004 || lng > 137.8347) || ((lat < 0.8293 || lat > 55.8271) || false)
 };
 
+function requireNativePlugin (name) {
+  return uni.requireNativePlugin(name)
+}
+
+function unpack (args) {
+  return args
+}
+
 function invoke (...args) {
   return UniServiceJSBridge.invoke(...args)
 }
@@ -2909,133 +2917,6 @@ function getBackgroundAudioState () {
     data = Object.assign(data, newData);
   }
   return data
-}
-
-function getMapCenterLocation ({
-  mapId
-} = {}, callbackId) {
-  const nativeMap = plus.maps.getMapById(mapId + '');
-  if (nativeMap) {
-    nativeMap.getCurrentCenter((state, {
-      latitude,
-      longitude
-    } = {}) => {
-      if (state === 0) {
-        invoke(callbackId, {
-          latitude,
-          longitude,
-          errMsg: 'getMapCenterLocation:ok'
-        });
-      } else {
-        invoke(callbackId, {
-          errMsg: 'getMapCenterLocation:fail:state[' + state + ']'
-        });
-      }
-    });
-  } else {
-    return {
-      errMsg: 'getMapCenterLocation:fail:地图[' + mapId + ']不存在'
-    }
-  }
-}
-
-function moveToMapLocation ({
-  mapId
-} = {}) {
-  const nativeMap = plus.maps.getMapById(mapId + '');
-  if (nativeMap) {
-    nativeMap.getUserLocation((state, {
-      latitude,
-      longitude
-    } = {}) => {
-      if (state === 0) {
-        nativeMap.setCenter(new plus.maps.Point(longitude, latitude));
-      }
-    });
-  }
-  return {
-    errMsg: 'moveToMapLocation:ok'
-  }
-}
-
-function getMapScale ({
-  mapId
-} = {}) {
-  const nativeMap = plus.maps.getMapById(mapId + '');
-  if (nativeMap) {
-    return {
-      scale: nativeMap.getZoom(),
-      errMsg: 'getMapScale:ok'
-    }
-  }
-  return {
-    errMsg: 'getMapScale:fail:地图[' + mapId + ']不存在'
-  }
-}
-
-function getMapRegion ({
-  mapId
-} = {}) {
-  const nativeMap = plus.maps.getMapById(mapId + '');
-  if (nativeMap) {
-    const bounds = nativeMap.getBounds();
-    const northeast = bounds.getNorthEase();
-    const southwest = bounds.getSouthWest();
-    return {
-      northeast: {
-        latitude: northeast.getLat(),
-        longitude: northeast.getLng()
-      },
-      southwest: {
-        latitude: southwest.getLat(),
-        longitude: southwest.getLng()
-      },
-      errMsg: 'getMapRegion:ok'
-    }
-  }
-  return {
-    errMsg: 'getMapRegion:fail:地图[' + mapId + ']不存在'
-  }
-}
-
-function operateVideoPlayer ({
-  data,
-  videoPlayerId,
-  type
-}) {
-  const nativeVideo = plus.video.getVideoPlayerById(videoPlayerId + '');
-  if (nativeVideo) {
-    switch (type) {
-      case 'play':
-      case 'pause':
-      case 'stop':
-      case 'requestFullScreen':
-      case 'exitFullScreen':
-      case 'seek':
-      case 'playbackRate':
-      case 'showStatusBar':
-        nativeVideo[type].apply(nativeVideo, data);
-        return {
-          errMsg: 'operateVideoPlayer:ok'
-        }
-      case 'sendDanmu':
-        nativeVideo.sendDanmu({
-          text: data[0],
-          color: data[1]
-        });
-        return {
-          errMsg: 'operateVideoPlayer:ok'
-        }
-      default:
-        return {
-          errMsg: 'operateVideoPlayer:fail:暂不支持[' + type + ']'
-        }
-    }
-  } else {
-    return {
-      errMsg: 'operateVideoPlayer:fail:视频组件[' + videoPlayerId + ']不存在'
-    }
-  }
 }
 
 const DEVICE_FREQUENCY = 200;
@@ -3469,7 +3350,7 @@ function setKeepScreenOn ({
 }
 
 function getClipboardData (options, callbackId) {
-  const clipboard = weex.requireModule('clipboard');
+  const clipboard = requireNativePlugin('clipboard');
   clipboard.getString(ret => {
     if (ret.result === 'success') {
       invoke(callbackId, {
@@ -3488,7 +3369,7 @@ function getClipboardData (options, callbackId) {
 function setClipboardData ({
   data
 }) {
-  const clipboard = weex.requireModule('clipboard');
+  const clipboard = requireNativePlugin('clipboard');
   clipboard.setString(data);
   return {
     errMsg: 'setClipboardData:ok'
@@ -3884,7 +3765,7 @@ let initView = function () {
   view.interceptTouchEvent(true);
 
   view.addEventListener('click', (e) => {
-    if (!__wxConfig.__ready__) { // 未 ready，不允许点击
+    if (!__uniConfig.__ready__) { // 未 ready，不允许点击
       if (process.env.NODE_ENV !== 'production') {
         console.log(`UNIAPP[tabbar].prevent`);
       }
@@ -5305,7 +5186,7 @@ const createDownloadTaskById = function (downloadTaskId, {
   header
 } = {}) {
   const downloader = plus.downloader.createDownload(url, {
-    time: __wxConfig.networkTimeout.downloadFile ? __wxConfig.networkTimeout.downloadFile / 1000 : 120,
+    time: __uniConfig.networkTimeout.downloadFile ? __uniConfig.networkTimeout.downloadFile / 1000 : 120,
     filename: TEMP_PATH + '/download/',
     // 需要与其它平台上的表现保持一致，不走重试的逻辑。
     retry: 0,
@@ -5377,7 +5258,7 @@ function createDownloadTask (args) {
 }
 
 const USER_AGENT =
-    'Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_5 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13G36  MicroMessenger/6.5.1 NetType/WIFI Language/zh_CN';
+  'Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_5 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13G36  MicroMessenger/6.5.1 NetType/WIFI Language/zh_CN';
 
 let requestTaskId = 0;
 const requestTasks = {};
@@ -5455,13 +5336,11 @@ function createRequestTaskById (requestTaskId, {
   if (!hasContentType && method === 'POST') {
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
   }
-  if (__wxConfig.crossDomain === true) {
+  if (__uniConfig.crossDomain === true) {
     xhr.setRequestHeader('User-Agent', USER_AGENT);
   }
-  if (__wxConfig.appid && __wxConfig.crossDomain === true) {
-    xhr.setRequestHeader('Referer', `https://servicewechat.com/${__wxConfig.appid}/1/`);
-  }
-  if (__wxConfig.networkTimeout.request) {
+
+  if (__uniConfig.networkTimeout.request) {
     abortTimeout = setTimeout(() => {
       xhr.onreadystatechange = null;
       xhr.abort();
@@ -5472,7 +5351,7 @@ function createRequestTaskById (requestTaskId, {
         statusCode: 0,
         errMsg: 'timeout'
       });
-    }, __wxConfig.networkTimeout.request);
+    }, __uniConfig.networkTimeout.request);
   }
 
   if (typeof data !== 'string' && method === 'GET') {
@@ -5528,7 +5407,7 @@ const createSocketTaskById = function (socketTaskId, {
   protocols
 } = {}) {
   // fixed by hxy 需要测试是否支持 arraybuffer
-  const socket = weex.requireModule('webSocket');
+  const socket = requireNativePlugin('webSocket');
   socket.WebSocket(url, Array.isArray(protocols) ? protocols.join(',') : protocols);
   // socket.binaryType = 'arraybuffer'
   socketTasks[socketTaskId] = socket;
@@ -5576,7 +5455,7 @@ function operateSocketTask (args) {
     code,
     data,
     socketTaskId
-  } = PlusNativeBuffer.unpack(args);
+  } = unpack(args);
   const socket = socketTasks[socketTaskId];
   if (!socket) {
     return {
@@ -5619,7 +5498,7 @@ const createUploadTaskById = function (uploadTaskId, {
   formData
 } = {}) {
   const uploader = plus.uploader.createUpload(url, {
-    timeout: __wxConfig.networkTimeout.uploadFile ? __wxConfig.networkTimeout.uploadFile / 1000 : 120,
+    timeout: __uniConfig.networkTimeout.uploadFile ? __uniConfig.networkTimeout.uploadFile / 1000 : 120,
     // 需要与其它平台上的表现保持一致，不走重试的逻辑。
     retry: 0,
     retryInterval: 0
@@ -6084,7 +5963,7 @@ function shareAppMessageDirectly ({
   imageUrl,
   useDefaultSnapshot
 }, callbackId) {
-  title = title || __wxConfig.appname;
+  title = title || __uniConfig.appname;
   const goShare = () => {
     share({
       provider: 'weixin',
@@ -6539,21 +6418,12 @@ function showTabBar$2 ({
 var api$1 = /*#__PURE__*/Object.freeze({
   startPullDownRefresh: startPullDownRefresh$1,
   stopPullDownRefresh: stopPullDownRefresh$1,
-  startRecord: startRecord,
-  stopRecord: stopRecord,
-  playVoice: playVoice,
-  pauseVoice: pauseVoice,
-  stopVoice: stopVoice,
+  chooseImage: chooseImage$1,
   createAudioInstance: createAudioInstance,
   destroyAudioInstance: destroyAudioInstance,
   setAudioState: setAudioState,
   getAudioState: getAudioState,
   operateAudio: operateAudio,
-  getMapCenterLocation: getMapCenterLocation,
-  moveToMapLocation: moveToMapLocation,
-  getMapScale: getMapScale,
-  getMapRegion: getMapRegion,
-  operateVideoPlayer: operateVideoPlayer,
   enableAccelerometer: enableAccelerometer,
   addPhoneContact: addPhoneContact,
   openBluetoothAdapter: openBluetoothAdapter,
@@ -6599,12 +6469,16 @@ var api$1 = /*#__PURE__*/Object.freeze({
   chooseLocation: chooseLocation,
   getLocation: getLocation$1,
   openLocation: openLocation$1,
+  startRecord: startRecord,
+  stopRecord: stopRecord,
+  playVoice: playVoice,
+  pauseVoice: pauseVoice,
+  stopVoice: stopVoice,
   getMusicPlayerState: getMusicPlayerState,
   operateMusicPlayer: operateMusicPlayer,
   setBackgroundAudioState: setBackgroundAudioState,
   operateBackgroundAudio: operateBackgroundAudio,
   getBackgroundAudioState: getBackgroundAudioState,
-  chooseImage: chooseImage$1,
   chooseVideo: chooseVideo$1,
   compressImage: compressImage,
   getImageInfo: getImageInfo$1,

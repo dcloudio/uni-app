@@ -174,118 +174,13 @@ function promisify (name, api) {
   }
 }
 
-const SUCCESS = 'success';
-const FAIL = 'fail';
-const COMPLETE = 'complete';
-const CALLBACKS = [SUCCESS, FAIL, COMPLETE];
-
 const UNIAPP_SERVICE_NVUE_ID = '__uniapp__service';
 
-function noop () {
-
-}
-/**
- * 调用无参数，或仅一个参数且为 callback 的 API
- * @param {Object} vm
- * @param {Object} method
- * @param {Object} args
- * @param {Object} extras
- */
-function invokeVmMethodWithoutArgs (vm, method, args, extras) {
-  if (!vm) {
-    return
-  }
-  if (typeof args === 'undefined') {
-    return vm[method]()
-  }
-  const [, callbacks] = normalizeArgs(args, extras);
-  if (!Object.keys(callbacks).length) {
-    return vm[method]()
-  }
-  return vm[method](normalizeCallback(method, callbacks))
-}
-/**
- * 调用两个参数（第一个入参为普通参数，第二个入参为 callback） API
- * @param {Object} vm
- * @param {Object} method
- * @param {Object} args
- * @param {Object} extras
- */
-function invokeVmMethod (vm, method, args, extras) {
-  if (!vm) {
-    return
-  }
-  const [pureArgs, callbacks] = normalizeArgs(args, extras);
-  if (!Object.keys(callbacks).length) {
-    return vm[method](pureArgs)
-  }
-  return vm[method](pureArgs, normalizeCallback(method, callbacks))
-}
-
-function findRefById (id, vm) {
-  return findRefByVNode(id, vm._vnode)
-}
-
-function findRefByVNode (id, vnode) {
-  if (!id || !vnode) {
-    return
-  }
-  if (vnode.data &&
-        vnode.data.ref &&
-        vnode.data.attrs &&
-        vnode.data.attrs.id === id) {
-    return vnode.data.ref
-  }
-  const children = vnode.children;
-  if (!children) {
-    return
-  }
-  for (let i = 0, len = children.length; i < len; i++) {
-    const ref = findRefByVNode(id, children[i]);
-    if (ref) {
-      return ref
-    }
-  }
-}
-
-function normalizeArgs (args = {}, extras) {
-  const callbacks = Object.create(null);
-
-  const iterator = function iterator (name) {
-    const callback = args[name];
-    if (isFn(callback)) {
-      callbacks[name] = callback;
-      delete args[name];
-    }
-  };
-
-  CALLBACKS.forEach(iterator);
-
-  extras && extras.forEach(iterator);
-
-  return [args, callbacks]
-}
-
-function normalizeCallback (method, callbacks) {
-  return function weexCallback (ret) {
-    const type = ret.type;
-    delete ret.type;
-    const callback = callbacks[type];
-
-    if (type === SUCCESS) {
-      ret.errMsg = `${method}:ok`;
-    } else if (type === FAIL) {
-      ret.errMsg = method + ':fail' + (ret.msg ? (' ' + ret.msg) : '');
-    }
-
-    delete ret.code;
-    delete ret.msg;
-
-    isFn(callback) && callback(ret);
-
-    if (type === SUCCESS || type === FAIL) {
-      const complete = callbacks['complete'];
-      isFn(complete) && complete(ret);
+function initPostMessage (nvue) {
+  const plus = nvue.requireModule('plus');
+  return {
+    postMessage (data) {
+      plus.postMessage(data, UNIAPP_SERVICE_NVUE_ID);
     }
   }
 }
@@ -398,14 +293,7 @@ function initSubNVue (nvue, plus, BroadcastChannel) {
   }
 }
 
-function initPostMessage (nvue) {
-  const plus = nvue.requireModule('plus');
-  return {
-    postMessage (data) {
-      plus.postMessage(data, UNIAPP_SERVICE_NVUE_ID);
-    }
-  }
-}
+function noop () {}
 
 function initTitleNView (nvue) {
   const eventMaps = {
@@ -485,6 +373,118 @@ function initEventBus (getGlobalEmitter) {
   getEmitter = getGlobalEmitter;
 }
 
+const SUCCESS = 'success';
+const FAIL = 'fail';
+const COMPLETE = 'complete';
+const CALLBACKS = [SUCCESS, FAIL, COMPLETE];
+
+/**
+ * 调用无参数，或仅一个参数且为 callback 的 API
+ * @param {Object} vm
+ * @param {Object} method
+ * @param {Object} args
+ * @param {Object} extras
+ */
+function invokeVmMethodWithoutArgs (vm, method, args, extras) {
+  if (!vm) {
+    return
+  }
+  if (typeof args === 'undefined') {
+    return vm[method]()
+  }
+  const [, callbacks] = normalizeArgs(args, extras);
+  if (!Object.keys(callbacks).length) {
+    return vm[method]()
+  }
+  return vm[method](normalizeCallback(method, callbacks))
+}
+/**
+ * 调用两个参数（第一个入参为普通参数，第二个入参为 callback） API
+ * @param {Object} vm
+ * @param {Object} method
+ * @param {Object} args
+ * @param {Object} extras
+ */
+function invokeVmMethod (vm, method, args, extras) {
+  if (!vm) {
+    return
+  }
+  const [pureArgs, callbacks] = normalizeArgs(args, extras);
+  if (!Object.keys(callbacks).length) {
+    return vm[method](pureArgs)
+  }
+  return vm[method](pureArgs, normalizeCallback(method, callbacks))
+}
+
+function findElmById (id, vm) {
+  return findElmByVNode(id, vm._vnode)
+}
+
+function findElmByVNode (id, vnode) {
+  if (!id || !vnode) {
+    return
+  }
+  if (
+    vnode.data &&
+    vnode.data.attrs &&
+    vnode.data.attrs.id === id
+  ) {
+    return vnode.elm
+  }
+  const children = vnode.children;
+  if (!children) {
+    return
+  }
+  for (let i = 0, len = children.length; i < len; i++) {
+    const elm = findElmByVNode(id, children[i]);
+    if (elm) {
+      return elm
+    }
+  }
+}
+
+function normalizeArgs (args = {}, extras) {
+  const callbacks = Object.create(null);
+
+  const iterator = function iterator (name) {
+    const callback = args[name];
+    if (isFn(callback)) {
+      callbacks[name] = callback;
+      delete args[name];
+    }
+  };
+
+  CALLBACKS.forEach(iterator);
+
+  extras && extras.forEach(iterator);
+
+  return [args, callbacks]
+}
+
+function normalizeCallback (method, callbacks) {
+  return function weexCallback (ret) {
+    const type = ret.type;
+    delete ret.type;
+    const callback = callbacks[type];
+
+    if (type === SUCCESS) {
+      ret.errMsg = `${method}:ok`;
+    } else if (type === FAIL) {
+      ret.errMsg = method + ':fail' + (ret.msg ? (' ' + ret.msg) : '');
+    }
+
+    delete ret.code;
+    delete ret.msg;
+
+    isFn(callback) && callback(ret);
+
+    if (type === SUCCESS || type === FAIL) {
+      const complete = callbacks['complete'];
+      isFn(complete) && complete(ret);
+    }
+  }
+}
+
 class MapContext {
   constructor (id, ctx) {
     this.id = id;
@@ -517,11 +517,14 @@ class MapContext {
 }
 
 function createMapContext (id, vm) {
-  const ref = findRefById(id, vm);
-  if (!ref) {
-    global.nativeLog('Can not find `' + id + '`', '__WARN');
+  if (!vm) {
+    return global.nativeLog('uni.createMapContext 必须传入第二个参数，即当前 vm 对象(this)', '__WARN')
   }
-  return new MapContext(id, vm.$refs[ref])
+  const elm = findElmById(id, vm);
+  if (!elm) {
+    return global.nativeLog('Can not find `' + id + '`', '__WARN')
+  }
+  return new MapContext(id, elm)
 }
 
 class VideoContext {
@@ -572,11 +575,14 @@ class VideoContext {
 }
 
 function createVideoContext (id, vm) {
-  const ref = findRefById(id, vm);
-  if (!ref) {
-    global.nativeLog('Can not find `' + id + '`', '__WARN');
+  if (!vm) {
+    return global.nativeLog('uni.createVideoContext 必须传入第二个参数，即当前 vm 对象(this)', '__WARN')
   }
-  return new VideoContext(id, vm.$refs[ref])
+  const elm = findElmById(id, vm);
+  if (!elm) {
+    return global.nativeLog('Can not find `' + id + '`', '__WARN')
+  }
+  return new VideoContext(id, elm)
 }
 
 class LivePusherContext {
@@ -643,11 +649,14 @@ class LivePusherContext {
 }
 
 function createLivePusherContext (id, vm) {
-  const ref = findRefById(id, vm);
-  if (!ref) {
-    global.nativeLog('Can not find `' + id + '`', '__WARN');
+  if (!vm) {
+    return global.nativeLog('uni.createLivePusherContext 必须传入第二个参数，即当前 vm 对象(this)', '__WARN')
   }
-  return new LivePusherContext(id, vm.$refs[ref])
+  const elm = findElmById(id, vm);
+  if (!elm) {
+    return global.nativeLog('Can not find `' + id + '`', '__WARN')
+  }
+  return new LivePusherContext(id, elm)
 }
 
 

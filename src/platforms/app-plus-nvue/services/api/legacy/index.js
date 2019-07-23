@@ -7,12 +7,9 @@ import {
 } from 'uni-core/helpers/promise'
 
 import {
-  initSubNVue
-} from '../sub-nvue'
-
-import {
+  initSubNVue,
   initPostMessage
-} from '../post-message'
+} from '../sub-nvue'
 
 import {
   initTitleNView

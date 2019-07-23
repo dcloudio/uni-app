@@ -11,6 +11,6 @@ export {
 }
   from '../event-bus'
 
-export * from '../context/map'
-export * from '../context/video'
-export * from '../context/live-pusher'
+export * from '../../../service/api/context/map'
+export * from '../../../service/api/context/video'
+export * from '../../../service/api/context/live-pusher'

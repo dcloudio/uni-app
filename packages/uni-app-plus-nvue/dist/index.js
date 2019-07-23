@@ -42,7 +42,9 @@ function initGlobalListeners ({
   const emit = UniServiceJSBridge.emit;
 
   plus.key.addEventListener('backbutton', () => {
-    uni.navigateBack();
+    uni.navigateBack({
+      from: 'backbutton'
+    });
   });
 
   plus.globalEvent.addEventListener('pause', () => {
@@ -341,6 +343,7 @@ function getCurrentPages () {
  *
  *
  */
+
 /**
  * 首页需要主动registerPage，二级页面路由跳转时registerPage
  */
@@ -361,6 +364,9 @@ function registerPage ({
   initWebview(webview, instanceContext, webview.id === '1' && routeOptions);
 
   const route = path.slice(1);
+
+  webview.__uniapp_route = route;
+
   pages.push({
     route,
     $getAppWebview () {
