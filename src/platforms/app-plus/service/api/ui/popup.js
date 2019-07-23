@@ -8,11 +8,19 @@ let toast = false
 let toastTimeout
 
 export function showLoading (args) {
-  return showToast(args).replace('showToast', 'showLoading')
+  const ret = showToast(args)
+  if (ret && ret.errMsg) {
+    ret.errMsg = ret.errMsg.replace('showToast', 'showLoading')
+  }
+  return ret
 }
 
 export function hideLoading () {
-  return hideToast().replace('hideToast', 'hideLoading')
+  const ret = hideToast()
+  if (ret && ret.errMsg) {
+    ret.errMsg = ret.errMsg.replace('hideToast', 'hideLoading')
+  }
+  return ret
 }
 
 export function showToast ({
