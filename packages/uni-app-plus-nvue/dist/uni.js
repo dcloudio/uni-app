@@ -1816,7 +1816,7 @@ function invokeCallbackHandler (invokeCallbackId, res) {
 }
 
 function wrapperUnimplemented (name) {
-  return function unimplemented (args) {
+  return function todo (args) {
     console.error('API `' + name + '` is not yet implemented');
   }
 }
@@ -6806,12 +6806,98 @@ function createVideoContext$1 (id, vm) {
   return new VideoContext(id, elm)
 }
 
+const ANI_DURATION$1 = 300;
+const ANI_SHOW$1 = 'pop-in';
+
+function showWebview (webview, animationType, animationDuration) {
+  setTimeout(() => {
+    webview.show(
+      animationType || ANI_SHOW$1,
+      animationDuration || ANI_DURATION$1,
+      () => {
+        console.log('show.callback');
+      }
+    );
+  }, 50);
+}
+
+let firstBackTime = 0;
+
+function navigateBack$1 ({
+  delta,
+  animationType,
+  animationDuration
+}) {
+  const pages = getCurrentPages();
+  const len = pages.length - 1;
+  const page = pages[len];
+  if (page.$page.meta.isQuit) {
+    if (!firstBackTime) {
+      firstBackTime = Date.now();
+      plus.nativeUI.toast('再按一次退出应用');
+      setTimeout(() => {
+        firstBackTime = null;
+      }, 2000);
+    } else if (Date.now() - firstBackTime < 2000) {
+      plus.runtime.quit();
+    }
+  } else {
+    pages.splice(len, 1);
+    if (animationType) {
+      page.$getAppWebview().close(animationType, animationDuration || ANI_DURATION$1);
+    } else {
+      page.$getAppWebview().close('auto');
+    }
+    UniServiceJSBridge.emit('onAppRoute', {
+      type: 'navigateBack'
+    });
+  }
+}
+
+function navigateTo$1 ({
+  url,
+  animationType,
+  animationDuration
+}) {
+  const path = url.split('?')[0];
+
+  UniServiceJSBridge.emit('onAppRoute', {
+    type: 'navigateTo',
+    path
+  });
+
+  showWebview(
+    __registerPage({
+      path
+    }),
+    animationType,
+    animationDuration
+  );
+}
+
+function reLaunch$1 ({
+  path
+}) {}
+
+function redirectTo$1 ({
+  path
+}) {}
+
+function switchTab$1 ({
+  path
+}) {}
+
 
 
 var nvueApi = /*#__PURE__*/Object.freeze({
   createLivePusherContext: createLivePusherContext,
   createMapContext: createMapContext$1,
-  createVideoContext: createVideoContext$1
+  createVideoContext: createVideoContext$1,
+  navigateBack: navigateBack$1,
+  navigateTo: navigateTo$1,
+  reLaunch: reLaunch$1,
+  redirectTo: redirectTo$1,
+  switchTab: switchTab$1
 });
 
 var platformApi = Object.assign({}, appApi, nvueApi);
