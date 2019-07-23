@@ -7,7 +7,7 @@ export function unpack (args) {
 }
 
 export function invoke (...args) {
-  return UniServiceJSBridge.invoke(...args)
+  return UniServiceJSBridge.invokeCallbackHandler(...args)
 }
 
 export function publish (...args) {

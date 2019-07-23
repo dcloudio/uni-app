@@ -2597,7 +2597,7 @@ function unpack (args) {
 }
 
 function invoke (...args) {
-  return UniServiceJSBridge.invoke(...args)
+  return UniServiceJSBridge.invokeCallbackHandler(...args)
 }
 
 function publish (...args) {
@@ -6142,6 +6142,14 @@ let waitingTimeout;
 let toast = false;
 let toastTimeout;
 
+function showLoading$1 (args) {
+  return showToast$1(args).replace('showToast', 'showLoading')
+}
+
+function hideLoading () {
+  return hideToast().replace('hideToast', 'hideLoading')
+}
+
 function showToast$1 ({
   title = '',
   icon = 'success',
@@ -6169,7 +6177,9 @@ function showToast$1 ({
       toastTimeout = setTimeout(() => {
         hideToast();
       }, 2000);
-      return
+      return {
+        errMsg: 'showToast:ok'
+      }
     }
     console.warn('uni.showToast 传入的 "position" 值 "' + position + '" 无效');
   }
@@ -6454,6 +6464,8 @@ var appApi = /*#__PURE__*/Object.freeze({
   startBeaconDiscovery: startBeaconDiscovery,
   stopBeaconDiscovery: stopBeaconDiscovery,
   makePhoneCall: makePhoneCall$1,
+  SCAN_ID: SCAN_ID,
+  SCAN_PATH: SCAN_PATH,
   scanCode: scanCode,
   getSystemInfo: getSystemInfo,
   vibrateLong: vibrateLong,
@@ -6509,6 +6521,8 @@ var appApi = /*#__PURE__*/Object.freeze({
   showNavigationBarLoading: showNavigationBarLoading,
   hideNavigationBarLoading: hideNavigationBarLoading,
   setNavigationBarColor: setNavigationBarColor$1,
+  showLoading: showLoading$1,
+  hideLoading: hideLoading,
   showToast: showToast$1,
   hideToast: hideToast,
   showModal: showModal$1,

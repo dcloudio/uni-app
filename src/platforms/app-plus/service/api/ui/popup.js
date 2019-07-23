@@ -7,15 +7,15 @@ let waitingTimeout
 let toast = false
 let toastTimeout
 
-export function showLoading(args) {
+export function showLoading (args) {
   return showToast(args).replace('showToast', 'showLoading')
 }
 
-export function hideLoading() {
+export function hideLoading () {
   return hideToast().replace('hideToast', 'hideLoading')
 }
 
-export function showToast({
+export function showToast ({
   title = '',
   icon = 'success',
   image = '',
@@ -42,7 +42,9 @@ export function showToast({
       toastTimeout = setTimeout(() => {
         hideToast()
       }, 2000)
-      return
+      return {
+        errMsg: 'showToast:ok'
+      }
     }
     console.warn('uni.showToast 传入的 "position" 值 "' + position + '" 无效')
   }
@@ -104,7 +106,7 @@ export function showToast({
   }
 }
 
-export function hideToast() {
+export function hideToast () {
   if (toast) {
     toastTimeout && clearTimeout(toastTimeout)
     plus.nativeUI.closeToast()
@@ -120,7 +122,7 @@ export function hideToast() {
     errMsg: 'hideToast:ok'
   }
 }
-export function showModal({
+export function showModal ({
   title = '',
   content = '',
   showCancel = true,
@@ -145,7 +147,7 @@ export function showModal({
     }
   }, title, showCancel ? [cancelText, confirmText] : [confirmText])
 }
-export function showActionSheet({
+export function showActionSheet ({
   itemList = [],
   itemColor = '#000000',
   title = ''
