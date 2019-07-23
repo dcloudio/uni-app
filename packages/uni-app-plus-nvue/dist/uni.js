@@ -6143,11 +6143,19 @@ let toast = false;
 let toastTimeout;
 
 function showLoading$1 (args) {
-  return showToast$1(args).replace('showToast', 'showLoading')
+  const ret = showToast$1(args);
+  if (ret && ret.errMsg) {
+    ret.errMsg = ret.errMsg.replace('showToast', 'showLoading');
+  }
+  return ret
 }
 
 function hideLoading () {
-  return hideToast().replace('hideToast', 'hideLoading')
+  const ret = hideToast();
+  if (ret && ret.errMsg) {
+    ret.errMsg = ret.errMsg.replace('hideToast', 'hideLoading');
+  }
+  return ret
 }
 
 function showToast$1 ({

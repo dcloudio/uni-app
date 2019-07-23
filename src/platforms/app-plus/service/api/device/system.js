@@ -10,7 +10,11 @@ import {
 
 import tabbar from '../../framework/tabbar'
 
-export function getSystemInfo (args) {
+export function getSystemInfoSync () {
+  return getSystemInfo()
+}
+
+export function getSystemInfo () {
   const platform = plus.os.name.toLowerCase()
   const ios = platform === 'ios'
   // 安卓 plus 接口获取的屏幕大小值不为整数，iOS js 获取的屏幕大小横屏时颠倒
