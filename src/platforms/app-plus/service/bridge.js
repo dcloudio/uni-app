@@ -1,3 +1,11 @@
+export function requireNativePlugin (name) {
+  return uni.requireNativePlugin(name)
+}
+
+export function unpack (args) {
+  return args
+}
+
 export function invoke (...args) {
   return UniServiceJSBridge.invoke(...args)
 }

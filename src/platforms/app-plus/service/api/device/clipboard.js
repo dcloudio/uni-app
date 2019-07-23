@@ -1,9 +1,10 @@
 import {
-  invoke
+  invoke,
+  requireNativePlugin
 } from '../../bridge'
 
 export function getClipboardData (options, callbackId) {
-  const clipboard = weex.requireModule('clipboard')
+  const clipboard = requireNativePlugin('clipboard')
   clipboard.getString(ret => {
     if (ret.result === 'success') {
       invoke(callbackId, {
@@ -22,7 +23,7 @@ export function getClipboardData (options, callbackId) {
 export function setClipboardData ({
   data
 }) {
-  const clipboard = weex.requireModule('clipboard')
+  const clipboard = requireNativePlugin('clipboard')
   clipboard.setString(data)
   return {
     errMsg: 'setClipboardData:ok'

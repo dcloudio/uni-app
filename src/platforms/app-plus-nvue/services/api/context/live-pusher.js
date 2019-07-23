@@ -5,69 +5,69 @@ import {
 } from '../util'
 
 class LivePusherContext {
-  constructor(id, ctx) {
+  constructor (id, ctx) {
     this.id = id
     this.ctx = ctx
   }
 
-  start(cbs) {
+  start (cbs) {
     return invokeVmMethodWithoutArgs(this.ctx, 'start', cbs)
   }
 
-  stop(cbs) {
+  stop (cbs) {
     return invokeVmMethodWithoutArgs(this.ctx, 'stop', cbs)
   }
 
-  pause(cbs) {
+  pause (cbs) {
     return invokeVmMethodWithoutArgs(this.ctx, 'pause', cbs)
   }
 
-  resume(cbs) {
+  resume (cbs) {
     return invokeVmMethodWithoutArgs(this.ctx, 'resume', cbs)
   }
 
-  switchCamera(cbs) {
+  switchCamera (cbs) {
     return invokeVmMethodWithoutArgs(this.ctx, 'switchCamera', cbs)
   }
 
-  snapshot(cbs) {
+  snapshot (cbs) {
     return invokeVmMethodWithoutArgs(this.ctx, 'snapshot', cbs)
   }
 
-  toggleTorch(cbs) {
+  toggleTorch (cbs) {
     return invokeVmMethodWithoutArgs(this.ctx, 'toggleTorch', cbs)
   }
 
-  playBGM(args) {
+  playBGM (args) {
     return invokeVmMethod(this.ctx, 'playBGM', args)
   }
 
-  stopBGM(cbs) {
+  stopBGM (cbs) {
     return invokeVmMethodWithoutArgs(this.ctx, 'stopBGM', cbs)
   }
 
-  pauseBGM(cbs) {
+  pauseBGM (cbs) {
     return invokeVmMethodWithoutArgs(this.ctx, 'pauseBGM', cbs)
   }
 
-  resumeBGM(cbs) {
+  resumeBGM (cbs) {
     return invokeVmMethodWithoutArgs(this.ctx, 'resumeBGM', cbs)
   }
 
-  setBGMVolume(cbs) {
+  setBGMVolume (cbs) {
     return invokeVmMethod(this.ctx, 'setBGMVolume', cbs)
   }
 
-  startPreview(cbs) {
+  startPreview (cbs) {
     return invokeVmMethodWithoutArgs(this.ctx, 'startPreview', cbs)
   }
 
-  stopPreview(args) {
+  stopPreview (args) {
     return invokeVmMethodWithoutArgs(this.ctx, 'stopPreview', args)
   }
 }
 
-export function createLivePusherContext(id, vm) {
+export function createLivePusherContext (id, vm) {
   if (!vm) {
     global.nativeLog('uni.createLivePusherContext 必须传入第二个参数，即当前 vm 对象(this)', '__WARN')
   }

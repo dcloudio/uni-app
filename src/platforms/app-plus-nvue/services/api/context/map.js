@@ -5,37 +5,37 @@ import {
 } from '../util'
 
 class MapContext {
-  constructor(id, ctx) {
+  constructor (id, ctx) {
     this.id = id
     this.ctx = ctx
   }
 
-  getCenterLocation(cbs) {
+  getCenterLocation (cbs) {
     return invokeVmMethodWithoutArgs(this.ctx, 'getCenterLocation', cbs)
   }
 
-  moveToLocation() {
+  moveToLocation () {
     return invokeVmMethodWithoutArgs(this.ctx, 'moveToLocation')
   }
 
-  translateMarker(args) {
+  translateMarker (args) {
     return invokeVmMethod(this.ctx, 'translateMarker', args, ['animationEnd'])
   }
 
-  includePoints(args) {
+  includePoints (args) {
     return invokeVmMethod(this.ctx, 'includePoints', args)
   }
 
-  getRegion(cbs) {
+  getRegion (cbs) {
     return invokeVmMethodWithoutArgs(this.ctx, 'getRegion', cbs)
   }
 
-  getScale(cbs) {
+  getScale (cbs) {
     return invokeVmMethodWithoutArgs(this.ctx, 'getScale', cbs)
   }
 }
 
-export function createMapContext(id, vm) {
+export function createMapContext (id, vm) {
   if (!vm) {
     global.nativeLog('uni.createMapContext 必须传入第二个参数，即当前 vm 对象(this)', '__WARN')
   }

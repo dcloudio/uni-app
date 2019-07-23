@@ -1,5 +1,7 @@
 import {
-  publish
+  unpack,
+  publish,
+  requireNativePlugin
 } from '../../bridge'
 
 let socketTaskId = 0
@@ -17,7 +19,7 @@ const createSocketTaskById = function (socketTaskId, {
   protocols
 } = {}) {
   // fixed by hxy 需要测试是否支持 arraybuffer
-  const socket = weex.requireModule('webSocket')
+  const socket = requireNativePlugin('webSocket')
   socket.WebSocket(url, Array.isArray(protocols) ? protocols.join(',') : protocols)
   // socket.binaryType = 'arraybuffer'
   socketTasks[socketTaskId] = socket
@@ -65,7 +67,7 @@ export function operateSocketTask (args) {
     code,
     data,
     socketTaskId
-  } = PlusNativeBuffer.unpack(args)
+  } = unpack(args)
   const socket = socketTasks[socketTaskId]
   if (!socket) {
     return {

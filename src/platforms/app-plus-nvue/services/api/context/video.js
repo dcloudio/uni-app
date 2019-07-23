@@ -5,53 +5,53 @@ import {
 } from '../util'
 
 class VideoContext {
-  constructor(id, ctx) {
+  constructor (id, ctx) {
     this.id = id
     this.ctx = ctx
   }
 
-  play() {
+  play () {
     return invokeVmMethodWithoutArgs(this.ctx, 'play')
   }
 
-  pause() {
+  pause () {
     return invokeVmMethodWithoutArgs(this.ctx, 'pause')
   }
 
-  seek(args) {
+  seek (args) {
     return invokeVmMethod(this.ctx, 'seek', args)
   }
 
-  stop() {
+  stop () {
     return invokeVmMethodWithoutArgs(this.ctx, 'stop')
   }
 
-  sendDanmu(args) {
+  sendDanmu (args) {
     return invokeVmMethod(this.ctx, 'sendDanmu', args)
   }
 
-  playbackRate(args) {
+  playbackRate (args) {
     return invokeVmMethod(this.ctx, 'playbackRate', args)
   }
 
-  requestFullScreen(args) {
+  requestFullScreen (args) {
     return invokeVmMethod(this.ctx, 'requestFullScreen', args)
   }
 
-  exitFullScreen() {
+  exitFullScreen () {
     return invokeVmMethodWithoutArgs(this.ctx, 'exitFullScreen')
   }
 
-  showStatusBar() {
+  showStatusBar () {
     return invokeVmMethodWithoutArgs(this.ctx, 'showStatusBar')
   }
 
-  hideStatusBar() {
+  hideStatusBar () {
     return invokeVmMethodWithoutArgs(this.ctx, 'hideStatusBar')
   }
 }
 
-export function createVideoContext(id, vm) {
+export function createVideoContext (id, vm) {
   if (!vm) {
     global.nativeLog('uni.createVideoContext 必须传入第二个参数，即当前 vm 对象(this)', '__WARN')
   }

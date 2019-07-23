@@ -9,7 +9,7 @@ const CALLBACKS = [SUCCESS, FAIL, COMPLETE]
 
 export const UNIAPP_SERVICE_NVUE_ID = '__uniapp__service'
 
-export function noop() {
+export function noop () {
 
 }
 /**
@@ -19,7 +19,7 @@ export function noop() {
  * @param {Object} args
  * @param {Object} extras
  */
-export function invokeVmMethodWithoutArgs(vm, method, args, extras) {
+export function invokeVmMethodWithoutArgs (vm, method, args, extras) {
   if (!vm) {
     return
   }
@@ -39,7 +39,7 @@ export function invokeVmMethodWithoutArgs(vm, method, args, extras) {
  * @param {Object} args
  * @param {Object} extras
  */
-export function invokeVmMethod(vm, method, args, extras) {
+export function invokeVmMethod (vm, method, args, extras) {
   if (!vm) {
     return
   }
@@ -50,11 +50,11 @@ export function invokeVmMethod(vm, method, args, extras) {
   return vm[method](pureArgs, normalizeCallback(method, callbacks))
 }
 
-export function findElmById(id, vm) {
+export function findElmById (id, vm) {
   return findElmByVNode(id, vm._vnode)
 }
 
-function findElmByVNode(id, vnode) {
+function findElmByVNode (id, vnode) {
   if (!id || !vnode) {
     return
   }
@@ -77,10 +77,10 @@ function findElmByVNode(id, vnode) {
   }
 }
 
-function normalizeArgs(args = {}, extras) {
+function normalizeArgs (args = {}, extras) {
   const callbacks = Object.create(null)
 
-  const iterator = function iterator(name) {
+  const iterator = function iterator (name) {
     const callback = args[name]
     if (isFn(callback)) {
       callbacks[name] = callback
@@ -95,8 +95,8 @@ function normalizeArgs(args = {}, extras) {
   return [args, callbacks]
 }
 
-function normalizeCallback(method, callbacks) {
-  return function weexCallback(ret) {
+function normalizeCallback (method, callbacks) {
+  return function weexCallback (ret) {
     const type = ret.type
     delete ret.type
     const callback = callbacks[type]
