@@ -1,12 +1,8 @@
-import './polyfill'
-
 import apis from 'uni-helpers/apis'
-
 import {
   wrapper,
   wrapperUnimplemented
 } from 'uni-helpers/api'
-
 import {
   promisify
 } from 'uni-helpers/promise'
@@ -16,7 +12,7 @@ import platformApi from 'uni-platform/service/api'
 
 const api = Object.assign(Object.create(null), baseApi, platformApi)
 
-const uni = Object.create(null)
+export const uni = Object.create(null)
 
 apis.forEach(name => {
   if (api[name]) {

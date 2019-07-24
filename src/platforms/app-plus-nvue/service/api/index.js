@@ -2,6 +2,8 @@ export * from './context/live-pusher'
 export * from './context/map'
 export * from './context/video'
 
+export * from './plugin/require-native-plugin'
+
 export * from './route/navigate-back'
 export * from './route/navigate-to'
 export * from './route/re-launch'

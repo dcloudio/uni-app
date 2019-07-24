@@ -1,5 +1,5 @@
-import initOn from './bridge/on'
-import initSubscribe from './bridge/subscribe'
+import initOn from 'uni-core/service/bridge/on'
+import initSubscribe from 'uni-core/service/bridge/subscribe'
 
 import {
   uni
@@ -9,7 +9,7 @@ import {
   getApp,
   getCurrentPages
 }
-  from './plugins/app'
+  from 'uni-core/service/plugins/app'
 
 initOn(UniServiceJSBridge.on, {
   getApp,
@@ -26,4 +26,4 @@ export {
   getApp,
   getCurrentPages
 }
-  from './plugins/app'
+  from 'uni-core/service/plugins/app'

@@ -1,3 +1,1 @@
-export function publishHandler (event, args, pageId) {
-  // TODO
-}
+export * from '../../app-plus/service/bridge'

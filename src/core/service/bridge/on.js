@@ -5,7 +5,7 @@ import {
 
 import {
   setPullDownRefreshPageId
-} from '../api/page-event'
+} from 'uni-platform/service/api/ui/pull-down-refresh'
 
 export default function initOn (on, {
   getApp,

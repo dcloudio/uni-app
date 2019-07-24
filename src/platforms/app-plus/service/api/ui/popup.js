@@ -1,4 +1,8 @@
 import {
+  callApiSync
+} from '../util'
+
+import {
   invoke
 } from '../../bridge'
 
@@ -8,19 +12,11 @@ let toast = false
 let toastTimeout
 
 export function showLoading (args) {
-  const ret = showToast(args)
-  if (ret && ret.errMsg) {
-    ret.errMsg = ret.errMsg.replace('showToast', 'showLoading')
-  }
-  return ret
+  return callApiSync(showToast, args, 'showToast', 'showLoading')
 }
 
 export function hideLoading () {
-  const ret = hideToast()
-  if (ret && ret.errMsg) {
-    ret.errMsg = ret.errMsg.replace('hideToast', 'hideLoading')
-  }
-  return ret
+  return callApiSync(hideToast, Object.create(null), 'hideToast', 'hideLoading')
 }
 
 export function showToast ({

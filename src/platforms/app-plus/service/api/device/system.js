@@ -1,4 +1,5 @@
 import {
+  callApiSync,
   isTabBarPage,
   getLastWebview
 } from '../util'
@@ -11,7 +12,7 @@ import {
 import tabbar from '../../framework/tabbar'
 
 export function getSystemInfoSync () {
-  return getSystemInfo()
+  return callApiSync(getSystemInfo, Object.create(null), 'getSystemInfo', 'getSystemInfoSync')
 }
 
 export function getSystemInfo () {

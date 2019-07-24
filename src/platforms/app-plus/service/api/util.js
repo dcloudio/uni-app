@@ -1,3 +1,11 @@
+export function callApiSync (api, args, name, alias) {
+  const ret = api(args)
+  if (ret && ret.errMsg) {
+    ret.errMsg = ret.errMsg.replace(name, alias)
+  }
+  return ret
+}
+
 export function getLastWebview () {
   try {
     const pages = getCurrentPages()

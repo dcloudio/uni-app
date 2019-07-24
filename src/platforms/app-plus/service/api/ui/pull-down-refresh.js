@@ -4,7 +4,7 @@ import {
 
 let webview
 
-export function setPullDownRefreshWebview (pullDownRefreshWebview) {
+export function setPullDownRefreshPageId (pullDownRefreshWebview) {
   webview = pullDownRefreshWebview
 }
 
@@ -25,6 +25,9 @@ export function startPullDownRefresh () {
 }
 
 export function stopPullDownRefresh () {
+  if (!webview) {
+    webview = getLastWebview()
+  }
   if (webview) {
     webview.endPullToRefresh()
     webview = null
