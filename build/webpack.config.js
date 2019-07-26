@@ -29,7 +29,8 @@ module.exports = {
       'uni-mixins': resolve('src/core/view/mixins'),
       'uni-helpers': resolve('src/core/helpers'),
       'uni-platform': resolve('src/platforms/' + process.env.UNI_PLATFORM),
-      'uni-components': resolve('src/core/view/components')
+      'uni-components': resolve('src/core/view/components'),
+      'uni-service-api': resolve('src/core/service/uni')
     }
   },
   module: {
