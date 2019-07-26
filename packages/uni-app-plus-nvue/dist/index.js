@@ -45,12 +45,12 @@ var serviceContext = (function () {
     }
   }
 
-  function isTabBarPage (route = '') {
+  function isTabBarPage (path = '') {
     if (!(__uniConfig.tabBar && Array.isArray(__uniConfig.tabBar.list))) {
       return false
     }
     try {
-      if (!route) {
+      if (!path) {
         const pages = getCurrentPages();
         if (!pages.length) {
           return false
@@ -59,12 +59,9 @@ var serviceContext = (function () {
         if (!page) {
           return false
         }
-        route = page.route;
+        return page.$page.meta.isTabBar
       }
-      return !!__uniConfig.tabBar.list.find(tabBarPage => {
-        const pagePath = tabBarPage.pagePath;
-        return pagePath === route || pagePath === (route + '.html')
-      })
+      return __uniRoutes.find(route => route.path === path).meta.isTabBar
     } catch (e) {
       if (process.env.NODE_ENV !== 'production') {
         console.log('getCurrentPages is not ready');
@@ -464,6 +461,12 @@ var serviceContext = (function () {
     }
   }
 
+  const ANI_SHOW = 'pop-in';
+  const ANI_DURATION = 300;
+
+  const TABBAR_HEIGHT = 56;
+  const TITLEBAR_HEIGHT = 44;
+
   const WEBVIEW_STYLE_BLACKLIST = [
     'navigationBarBackgroundColor',
     'navigationBarTextStyle',
@@ -525,6 +528,11 @@ var serviceContext = (function () {
         defaultFontSize: __uniConfig.defaultFontSize,
         viewport: __uniConfig.viewport
       };
+    }
+
+    if (routeOptions.meta.isTabBar) {
+      webviewStyle.top = 0;
+      webviewStyle.bottom = TABBAR_HEIGHT;
     }
 
     return webviewStyle
@@ -594,27 +602,11 @@ var serviceContext = (function () {
 
   const pages = [];
 
-  function getCurrentPages$1 () {
-    return pages
+  function getCurrentPages$1 (returnAll) {
+    return returnAll ? pages.slice(0) : pages.filter(page => {
+      return !page.$page.meta.isTabBar || page.$page.meta.visible
+    })
   }
-  /**
-   * @param {Object} pageVm
-   *
-   * page.beforeCreate 时添加 page
-   * page.beforeDestroy 时移出 page
-   *
-   * page.viewappear  onShow
-   * page.viewdisappear onHide
-   *
-   * navigateTo
-   * redirectTo
-   *
-   *
-   *
-   *
-   *
-   *
-   */
 
   /**
    * 首页需要主动registerPage，二级页面路由跳转时registerPage
@@ -622,12 +614,27 @@ var serviceContext = (function () {
   function registerPage ({
     path,
     query,
+    openType,
     webview
   }) {
     const routeOptions = JSON.parse(JSON.stringify(__uniRoutes.find(route => route.path === path)));
 
+    if (openType === 'reLaunch' || pages.length === 0) {
+      // pages.length===0 表示首页触发 redirectTo
+      routeOptions.meta.isQuit = true;
+    }
+
     if (!webview) {
       webview = createWebview(path, routeOptions);
+    }
+
+    if (routeOptions.meta.isTabBar) {
+      routeOptions.meta.visible = true;
+    }
+
+    if (routeOptions.meta.isTabBar && webview.id !== '1') {
+      const launchWebview = plus.webview.getLaunchWebview();
+      launchWebview && launchWebview.append(webview);
     }
 
     if (process.env.NODE_ENV !== 'production') {
@@ -650,7 +657,17 @@ var serviceContext = (function () {
         id: parseInt(webview.id),
         meta: routeOptions.meta,
         path,
-        route
+        route,
+        openType
+      },
+      $remove () {
+        const index = pages.findIndex(page => page === this);
+        if (index !== -1) {
+          pages.splice(index, 1);
+          if (process.env.NODE_ENV !== 'production') {
+            console.log(`[uni-app] removePage`, path, webview.id);
+          }
+        }
       }
     });
 
@@ -709,12 +726,6 @@ var serviceContext = (function () {
     callback.keepAlive = !!keepAlive;
     callbacks[type] = callback;
   }
-
-  const ANI_SHOW = 'pop-in';
-  const ANI_DURATION = 300;
-
-  const TABBAR_HEIGHT = 56;
-  const TITLEBAR_HEIGHT = 44;
 
   var safeArea = {
     get bottom () {
@@ -1186,7 +1197,10 @@ var serviceContext = (function () {
     switchTab (page) {
       if (itemLength) {
         for (let i = 0; i < itemLength; i++) {
-          if (config.list[i].pagePath === (`${page}.html`)) {
+          if (
+            config.list[i].pagePath === page ||
+            config.list[i].pagePath === `${page}.html`
+          ) {
             const draws = getSelectedDraws(i);
             if (draws.length) {
               view.draw(draws);
@@ -7297,14 +7311,15 @@ var serviceContext = (function () {
 
   const ANI_DURATION$1 = 300;
   const ANI_SHOW$1 = 'pop-in';
+  const ANI_CLOSE = 'pop-out';
 
-  function showWebview (webview, animationType, animationDuration) {
+  function showWebview (webview, animationType, animationDuration, callback) {
     setTimeout(() => {
       webview.show(
         animationType || ANI_SHOW$1,
-        animationDuration || ANI_DURATION$1,
+        parseInt(animationDuration) || ANI_DURATION$1,
         () => {
-          console.log('show.callback');
+          callback && callback();
         }
       );
     }, 50);
@@ -7360,10 +7375,13 @@ var serviceContext = (function () {
       if (animationType) {
         currentPage.$getAppWebview().close(animationType, animationDuration || ANI_DURATION$1);
       } else {
+        if (currentPage.$page.openType === 'redirect') { // 如果是 redirectTo 跳转的，需要制定 back 动画
+          currentPage.$getAppWebview().close(ANI_CLOSE, ANI_DURATION$1);
+        }
         currentPage.$getAppWebview().close('auto');
       }
-      // 移除所有 page
-      pages.splice(len - delta, len);
+
+      pages.slice(len - delta, len).forEach(page => page.$remove());
 
       setStatusBarStyle();
 
@@ -7385,7 +7403,7 @@ var serviceContext = (function () {
 
     pages[len - 1].$page.meta.isQuit
       ? quit()
-      : back(Math.min(len - 1, delta), animationType, animationDuration);
+      : back(delta, animationType, animationDuration);
   }
 
   function navigateTo$1 ({
@@ -7406,7 +7424,8 @@ var serviceContext = (function () {
     showWebview(
       __registerPage({
         path,
-        query
+        query,
+        openType: 'navigate'
       }),
       animationType,
       animationDuration
@@ -7416,16 +7435,130 @@ var serviceContext = (function () {
   }
 
   function reLaunch$1 ({
-    path
-  }) {}
+    url
+  }) {
+    const urls = url.split('?');
+    const path = urls[0];
+
+    const query = parseQuery(urls[1] || '');
+
+    const pages = getCurrentPages(true).slice(0);
+
+    const routeOptions = __uniRoutes.find(route => route.path === path);
+
+    if (routeOptions.meta.isTabBar) {
+      tabBar.switchTab(url);
+    }
+
+    showWebview(
+      __registerPage({
+        path,
+        query,
+        openType: 'reLaunch'
+      }),
+      'none',
+      0
+    );
+
+    pages.forEach(page => {
+      page.$remove();
+      page.$getAppWebview().close('none');
+    });
+
+    setStatusBarStyle();
+  }
 
   function redirectTo$1 ({
-    path
-  }) {}
+    url
+  }) {
+    const urls = url.split('?');
+    const path = urls[0];
+
+    const query = parseQuery(urls[1] || '');
+
+    const pages = getCurrentPages();
+    const lastPage = pages[pages.length - 1];
+
+    lastPage && lastPage.$remove();
+
+    showWebview(
+      __registerPage({
+        path,
+        query,
+        openType: 'redirect'
+      }),
+      'none',
+      0,
+      () => {
+        lastPage && lastPage.$getAppWebview().close('none');
+      }
+    );
+
+    setStatusBarStyle();
+  }
 
   function switchTab$1 ({
-    path
-  }) {}
+    url,
+    from
+  }) {
+    const path = url.split('?')[0];
+
+    tabBar.switchTab(path.slice(1));
+
+    const pages = getCurrentPages();
+    const len = pages.length;
+
+    if (len >= 1) { // 前一个页面是非 tabBar 页面
+      const currentPage = pages[len - 1];
+      if (!currentPage.$page.meta.isTabBar) {
+        pages.reverse().forEach(page => {
+          if (!page.$page.meta.isTabBar && page !== currentPage) {
+            page.$remove();
+            page.$getAppWebview().close('none');
+          }
+        });
+        currentPage.$remove();
+        if (currentPage.$page.openType === 'redirect') {
+          currentPage.$getAppWebview().close(ANI_CLOSE, ANI_DURATION$1);
+        } else {
+          currentPage.$getAppWebview().close('auto');
+        }
+      } else {
+        // TODO 客户端 Bug
+        currentPage.$getAppWebview().hide('none');
+        // 前一个 tabBar 触发 onHide
+        currentPage.$vm.__call_hook('onHide');
+      }
+    }
+
+    let tabBarPage;
+    // 查找当前 tabBarPage，且设置 visible
+    getCurrentPages(true).forEach(page => {
+      if (('/' + page.route) === path) {
+        page.$page.meta.visible = true;
+        tabBarPage = page;
+      } else {
+        if (page.$page.meta.isTabBar) {
+          page.$page.meta.visible = false;
+        }
+      }
+    });
+
+    if (tabBarPage) {
+      tabBarPage.$vm.__call_hook('onShow');
+      tabBarPage.$getAppWebview().show('none');
+    } else {
+      showWebview(
+        __registerPage({
+          path,
+          query: {},
+          openType: 'switchTab'
+        })
+      );
+    }
+
+    setStatusBarStyle();
+  }
 
 
 

@@ -28,7 +28,8 @@ export function navigateTo ({
   showWebview(
     __registerPage({
       path,
-      query
+      query,
+      openType: 'navigate'
     }),
     animationType,
     animationDuration

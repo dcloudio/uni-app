@@ -1,4 +1,5 @@
 import {
+  ANI_CLOSE,
   ANI_DURATION
 } from './util'
 
@@ -8,7 +9,7 @@ import {
 
 let firstBackTime = 0
 
-function quit() {
+function quit () {
   if (!firstBackTime) {
     firstBackTime = Date.now()
     plus.nativeUI.toast('再按一次退出应用')
@@ -20,7 +21,7 @@ function quit() {
   }
 }
 
-function backWebview(webview, callback) {
+function backWebview (webview, callback) {
   if (!webview.__uniapp_webview) {
     return callback()
   }
@@ -40,7 +41,7 @@ function backWebview(webview, callback) {
   })
 }
 
-function back(delta, animationType, animationDuration) {
+function back (delta, animationType, animationDuration) {
   const pages = getCurrentPages()
   const len = pages.length
   const currentPage = pages[len - 1]
@@ -56,10 +57,13 @@ function back(delta, animationType, animationDuration) {
     if (animationType) {
       currentPage.$getAppWebview().close(animationType, animationDuration || ANI_DURATION)
     } else {
+      if (currentPage.$page.openType === 'redirect') { // 如果是 redirectTo 跳转的，需要制定 back 动画
+        currentPage.$getAppWebview().close(ANI_CLOSE, ANI_DURATION)
+      }
       currentPage.$getAppWebview().close('auto')
     }
-    // 移除所有 page
-    pages.splice(len - delta, len)
+
+    pages.slice(len - delta, len).forEach(page => page.$remove())
 
     setStatusBarStyle()
 
@@ -69,7 +73,7 @@ function back(delta, animationType, animationDuration) {
   })
 }
 
-export function navigateBack({
+export function navigateBack ({
   delta,
   animationType,
   animationDuration
@@ -79,7 +83,7 @@ export function navigateBack({
 
   uni.hideToast() // 后退时，关闭 toast,loading
 
-  pages[len - 1].$page.meta.isQuit ?
-    quit() :
-    back(delta, animationType, animationDuration)
+  pages[len - 1].$page.meta.isQuit
+    ? quit()
+    : back(delta, animationType, animationDuration)
 }

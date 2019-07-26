@@ -469,7 +469,10 @@ export default {
   switchTab (page) {
     if (itemLength) {
       for (let i = 0; i < itemLength; i++) {
-        if (config.list[i].pagePath === (`${page}.html`)) {
+        if (
+          config.list[i].pagePath === page ||
+          config.list[i].pagePath === `${page}.html`
+        ) {
           const draws = getSelectedDraws(i)
           if (draws.length) {
             view.draw(draws)

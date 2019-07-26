@@ -19,12 +19,12 @@ export function getLastWebview () {
   }
 }
 
-export function isTabBarPage (route = '') {
+export function isTabBarPage (path = '') {
   if (!(__uniConfig.tabBar && Array.isArray(__uniConfig.tabBar.list))) {
     return false
   }
   try {
-    if (!route) {
+    if (!path) {
       const pages = getCurrentPages()
       if (!pages.length) {
         return false
@@ -33,12 +33,9 @@ export function isTabBarPage (route = '') {
       if (!page) {
         return false
       }
-      route = page.route
+      return page.$page.meta.isTabBar
     }
-    return !!__uniConfig.tabBar.list.find(tabBarPage => {
-      const pagePath = tabBarPage.pagePath
-      return pagePath === route || pagePath === (route + '.html')
-    })
+    return __uniRoutes.find(route => route.path === path).meta.isTabBar
   } catch (e) {
     if (process.env.NODE_ENV !== 'production') {
       console.log('getCurrentPages is not ready')

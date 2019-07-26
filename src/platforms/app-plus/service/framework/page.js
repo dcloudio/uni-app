@@ -5,27 +5,11 @@ import {
 
 const pages = []
 
-export function getCurrentPages () {
-  return pages
+export function getCurrentPages (returnAll) {
+  return returnAll ? pages.slice(0) : pages.filter(page => {
+    return !page.$page.meta.isTabBar || page.$page.meta.visible
+  })
 }
-/**
- * @param {Object} pageVm
- *
- * page.beforeCreate 时添加 page
- * page.beforeDestroy 时移出 page
- *
- * page.viewappear  onShow
- * page.viewdisappear onHide
- *
- * navigateTo
- * redirectTo
- *
- *
- *
- *
- *
- *
- */
 
 /**
  * 首页需要主动registerPage，二级页面路由跳转时registerPage
@@ -33,12 +17,27 @@ export function getCurrentPages () {
 export function registerPage ({
   path,
   query,
+  openType,
   webview
 }) {
   const routeOptions = JSON.parse(JSON.stringify(__uniRoutes.find(route => route.path === path)))
 
+  if (openType === 'reLaunch' || pages.length === 0) {
+    // pages.length===0 表示首页触发 redirectTo
+    routeOptions.meta.isQuit = true
+  }
+
   if (!webview) {
     webview = createWebview(path, routeOptions)
+  }
+
+  if (routeOptions.meta.isTabBar) {
+    routeOptions.meta.visible = true
+  }
+
+  if (routeOptions.meta.isTabBar && webview.id !== '1') {
+    const launchWebview = plus.webview.getLaunchWebview()
+    launchWebview && launchWebview.append(webview)
   }
 
   if (process.env.NODE_ENV !== 'production') {
@@ -61,7 +60,17 @@ export function registerPage ({
       id: parseInt(webview.id),
       meta: routeOptions.meta,
       path,
-      route
+      route,
+      openType
+    },
+    $remove () {
+      const index = pages.findIndex(page => page === this)
+      if (index !== -1) {
+        pages.splice(index, 1)
+        if (process.env.NODE_ENV !== 'production') {
+          console.log(`[uni-app] removePage`, path, webview.id)
+        }
+      }
     }
   })
 

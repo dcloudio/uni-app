@@ -1,13 +1,14 @@
 export const ANI_DURATION = 300
 const ANI_SHOW = 'pop-in'
+export const ANI_CLOSE = 'pop-out'
 
-export function showWebview (webview, animationType, animationDuration) {
+export function showWebview (webview, animationType, animationDuration, callback) {
   setTimeout(() => {
     webview.show(
       animationType || ANI_SHOW,
-      animationDuration || ANI_DURATION,
+      parseInt(animationDuration) || ANI_DURATION,
       () => {
-        console.log('show.callback')
+        callback && callback()
       }
     )
   }, 50)
