@@ -23,22 +23,18 @@ const WEBVIEW_STYLE_BLACKLIST = [
   'pullToRefresh'
 ]
 
-export function parseWebviewStyle (id, path, routeOptions = {}, instanceContext) {
-  const {
-    __uniConfig
-  } = instanceContext
-
+export function parseWebviewStyle (id, path, routeOptions = {}) {
   const webviewStyle = Object.create(null)
 
   // 合并
-  const windowOptions = Object.assign(
+  routeOptions.window = Object.assign(
     JSON.parse(JSON.stringify(__uniConfig.window || {})),
     routeOptions.window || {}
   )
 
-  Object.keys(windowOptions).forEach(name => {
+  Object.keys(routeOptions.window).forEach(name => {
     if (WEBVIEW_STYLE_BLACKLIST.indexOf(name) === -1) {
-      webviewStyle[name] = windowOptions[name]
+      webviewStyle[name] = routeOptions.window[name]
     }
   })
 
@@ -50,7 +46,7 @@ export function parseWebviewStyle (id, path, routeOptions = {}, instanceContext)
     webviewStyle.titleNView = titleNView
   }
 
-  const pullToRefresh = parsePullToRefresh(routeOptions, instanceContext)
+  const pullToRefresh = parsePullToRefresh(routeOptions)
   if (pullToRefresh) {
     if (pullToRefresh.style === 'circle') {
       webviewStyle.bounce = 'none'

@@ -1,6 +1,4 @@
-export function parsePullToRefresh (routeOptions, {
-  plus
-}) {
+export function parsePullToRefresh (routeOptions) {
   const windowOptions = routeOptions.window
 
   if (windowOptions.enablePullDownRefresh) {

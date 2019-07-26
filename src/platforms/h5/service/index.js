@@ -3,7 +3,7 @@ import initSubscribe from 'uni-core/service/bridge/subscribe'
 
 import {
   uni
-} from './uni'
+} from 'uni-core/service/uni'
 
 import {
   getApp,

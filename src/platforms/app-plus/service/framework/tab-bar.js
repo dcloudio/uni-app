@@ -59,18 +59,12 @@ let initView = function () {
     viewStyles.bottom = 0
     viewStyles.height += safeArea.bottom
   }
-  if (process.env.NODE_ENV !== 'production') {
-    console.log(`UNIAPP[tabbar]:${JSON.stringify(viewStyles)}`)
-  }
   view = new plus.nativeObj.View(TABBAR_VIEW_ID, viewStyles, getDraws())
 
   view.interceptTouchEvent(true)
 
   view.addEventListener('click', (e) => {
     if (!__uniConfig.__ready__) { // 未 ready，不允许点击
-      if (process.env.NODE_ENV !== 'production') {
-        console.log(`UNIAPP[tabbar].prevent`)
-      }
       return
     }
     const x = e.clientX

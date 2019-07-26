@@ -1,13 +1,24 @@
 import {
+  parseQuery
+} from 'uni-shared'
+
+import {
   showWebview
 } from './util'
+
+import {
+  setStatusBarStyle
+} from '../../bridge'
 
 export function navigateTo ({
   url,
   animationType,
   animationDuration
 }) {
-  const path = url.split('?')[0]
+  const urls = url.split('?')
+  const path = urls[0]
+
+  const query = parseQuery(urls[1] || '')
 
   UniServiceJSBridge.emit('onAppRoute', {
     type: 'navigateTo',
@@ -16,9 +27,12 @@ export function navigateTo ({
 
   showWebview(
     __registerPage({
-      path
+      path,
+      query
     }),
     animationType,
     animationDuration
   )
+
+  setStatusBarStyle()
 }

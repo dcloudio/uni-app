@@ -7,10 +7,6 @@ import {
   parseWebviewStyle
 } from './parser/webview-style-parser'
 
-import {
-  parseNavigationBar
-} from './parser/navigation-bar-parser'
-
 let id = 2
 
 const WEBVIEW_LISTENERS = {
@@ -20,37 +16,31 @@ const WEBVIEW_LISTENERS = {
   'titleNViewSearchInputClicked': 'onNavigationBarSearchInputClicked'
 }
 
-export function createWebview (path, instanceContext, routeOptions) {
+export function createWebview (path, routeOptions) {
   const webviewId = id++
   const webviewStyle = parseWebviewStyle(
     webviewId,
     path,
-    routeOptions,
-    instanceContext
+    routeOptions
   )
   if (process.env.NODE_ENV !== 'production') {
     console.log(`[uni-app] createWebview`, webviewId, path, webviewStyle)
   }
-  const webview = instanceContext.plus.webview.create('', String(webviewId), webviewStyle)
-
-  webview.$navigationBar = parseNavigationBar(webviewStyle)
+  const webview = plus.webview.create('', String(webviewId), webviewStyle)
 
   return webview
 }
 
-export function initWebview (webview, instanceContext, routeOptions) {
+export function initWebview (webview, routeOptions) {
   if (isPlainObject(routeOptions)) {
     const webviewStyle = parseWebviewStyle(
       parseInt(webview.id),
       '',
-      routeOptions,
-      instanceContext
+      routeOptions
     )
     if (process.env.NODE_ENV !== 'production') {
       console.log(`[uni-app] updateWebview`, webviewStyle)
     }
-
-    webview.$navigationBar = parseNavigationBar(webviewStyle)
 
     webview.setStyle(webviewStyle)
   }
@@ -58,7 +48,7 @@ export function initWebview (webview, instanceContext, routeOptions) {
   const {
     on,
     emit
-  } = instanceContext.UniServiceJSBridge
+  } = UniServiceJSBridge
 
   // TODO subNVues
   Object.keys(WEBVIEW_LISTENERS).forEach(name => {

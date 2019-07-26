@@ -14,3 +14,25 @@ export function requireNativePlugin (name) {
 export function publish (name, res) {
   return UniServiceJSBridge.emit('api.' + name, res)
 }
+
+let lastStatusBarStyle
+
+export function setStatusBarStyle (statusBarStyle) {
+  if (!statusBarStyle) {
+    const pages = getCurrentPages()
+    if (!pages.length) {
+      return
+    }
+    statusBarStyle = pages[pages.length - 1].$page.meta.statusBarStyle
+    if (!statusBarStyle || statusBarStyle === lastStatusBarStyle) {
+      return
+    }
+  }
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(`[uni-app] setStatusBarStyle`, statusBarStyle)
+  }
+
+  lastStatusBarStyle = statusBarStyle
+
+  plus.navigator.setStatusBarStyle(statusBarStyle)
+}

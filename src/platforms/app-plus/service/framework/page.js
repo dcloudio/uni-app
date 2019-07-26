@@ -32,19 +32,20 @@ export function getCurrentPages () {
  */
 export function registerPage ({
   path,
+  query,
   webview
-}, instanceContext) {
-  const routeOptions = JSON.parse(JSON.stringify(instanceContext.__uniRoutes.find(route => route.path === path)))
+}) {
+  const routeOptions = JSON.parse(JSON.stringify(__uniRoutes.find(route => route.path === path)))
 
   if (!webview) {
-    webview = createWebview(path, instanceContext, routeOptions)
+    webview = createWebview(path, routeOptions)
   }
 
   if (process.env.NODE_ENV !== 'production') {
     console.log(`[uni-app] registerPage`, path, webview.id)
   }
 
-  initWebview(webview, instanceContext, webview.id === '1' && routeOptions)
+  initWebview(webview, webview.id === '1' && routeOptions)
 
   const route = path.slice(1)
 
@@ -52,6 +53,7 @@ export function registerPage ({
 
   pages.push({
     route,
+    options: Object.assign({}, query || {}),
     $getAppWebview () {
       return webview
     },

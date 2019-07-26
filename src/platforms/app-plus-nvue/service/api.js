@@ -1,3 +1,4 @@
-import * as api from './api/index'
+import * as appApi from '../../app-plus/service/api/index'
+import * as nvueApi from './api/index'
 
-export default api
+export default Object.assign(Object.create(null), appApi, nvueApi)

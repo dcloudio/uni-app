@@ -24,6 +24,8 @@ export function parseTitleNView (routeOptions) {
     titleColor: windowOptions.navigationBarTextStyle === 'black' ? '#000000' : '#ffffff'
   }
 
+  routeOptions.meta.statusBarStyle = windowOptions.navigationBarTextStyle === 'black' ? 'dark' : 'light'
+
   if (isPlainObject(titleNView)) {
     return Object.assign(ret, titleNView)
   }

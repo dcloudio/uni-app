@@ -13,32 +13,7 @@ class RequestTask {
     }
   }
 }
-/**
- * 拼接网址和参数
- * @param {string} url 网址
- * @param {any} data 参数
- * @return {string}
- */
-function setUrl (url, data) {
-  var str = url.split('#')
-  var hash = str[1] || ''
-  str = str[0].split('?')
-  var query = str[1] || ''
-  url = str[0]
-  var search = query.split('&').filter(item => item)
-  query = {}
-  search.forEach(item => {
-    item = item.split('=')
-    query[item[0]] = item[1]
-  })
-  for (var key in data) {
-    if (data.hasOwnProperty(key)) {
-      query[encodeURIComponent(key)] = encodeURIComponent(data[key])
-    }
-  }
-  query = Object.keys(query).map(item => `${item}=${query[item]}`).join('&')
-  return url + (query ? '?' + query : '') + (hash ? '#' + hash : '')
-}
+
 /**
  * 解析响应头
  * @param {string} headers
@@ -94,9 +69,7 @@ export function request ({
       }
     }
   }
-  if (method === 'GET') {
-    url = setUrl(url, data)
-  } else {
+  if (method !== 'GET') {
     if (!contentType) {
       /**
        * 跨域时部分服务器OPTION响应头Access-Control-Allow-Headers未包含Content-Type会请求失败

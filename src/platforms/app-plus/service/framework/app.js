@@ -2,6 +2,22 @@ import {
   callAppHook
 } from 'uni-core/service/plugins/util'
 
+import initOn from 'uni-core/service/bridge/on'
+
+import {
+  getCurrentPages
+} from './page'
+
+import {
+  registerPlusMessage
+} from './plus-message'
+
+import {
+  isTabBarPage
+} from '../api/util'
+
+import tabBar from './tab-bar'
+
 let appCtx
 
 const NETWORK_TYPES = [
@@ -18,14 +34,11 @@ export function getApp () {
   return appCtx
 }
 
-function initGlobalListeners ({
-  uni,
-  plus,
-  UniServiceJSBridge
-}) {
+function initGlobalListeners () {
   const emit = UniServiceJSBridge.emit
 
   plus.key.addEventListener('backbutton', () => {
+    // TODO uni?
     uni.navigateBack({
       from: 'backbutton'
     })
@@ -48,9 +61,7 @@ function initGlobalListeners ({
   })
 }
 
-function initAppLaunch (appVm, {
-  __uniConfig
-}) {
+function initAppLaunch (appVm) {
   const args = {
     path: __uniConfig.entryPagePath,
     query: {},
@@ -61,14 +72,55 @@ function initAppLaunch (appVm, {
   callAppHook(appVm, 'onShow', args)
 }
 
-export function registerApp (appVm, instanceContext) {
+function initTabBar () {
+  if (!__uniConfig.tabBar || !__uniConfig.tabBar.list.length) {
+    return
+  }
+
+  const currentTab = isTabBarPage(__uniConfig.entryPagePath)
+  if (currentTab) {
+    // 取当前 tab 索引值
+    __uniConfig.tabBar.selected = __uniConfig.tabBar.list.indexOf(currentTab)
+    // 如果真实的首页与 condition 都是 tabbar，无需启用 realEntryPagePath 机制
+    if (__uniConfig.realEntryPagePath && isTabBarPage(__uniConfig.realEntryPagePath)) {
+      delete __uniConfig.realEntryPagePath
+    }
+  }
+
+  __uniConfig.__ready__ = true
+
+  const onLaunchWebviewReady = function onLaunchWebviewReady () {
+    const tabBarView = tabBar.init(__uniConfig.tabBar, (item) => {
+      uni.switchTab({
+        url: '/' + item.pagePath,
+        openType: 'switchTab',
+        from: 'tabbar'
+      })
+    })
+    tabBarView && plus.webview.getLaunchWebview().append(tabBarView)
+  }
+  if (plus.webview.getLaunchWebview()) {
+    onLaunchWebviewReady()
+  } else {
+    registerPlusMessage('UniWebviewReady-' + plus.runtime.appid, onLaunchWebviewReady, false)
+  }
+}
+
+export function registerApp (appVm) {
   if (process.env.NODE_ENV !== 'production') {
     console.log(`[uni-app] registerApp`)
   }
 
   appCtx = appVm
 
-  initAppLaunch(appVm, instanceContext)
+  initOn(UniServiceJSBridge.on, {
+    getApp,
+    getCurrentPages
+  })
 
-  initGlobalListeners(instanceContext)
+  initAppLaunch(appVm)
+
+  initGlobalListeners()
+
+  initTabBar()
 }

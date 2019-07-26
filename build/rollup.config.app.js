@@ -17,16 +17,27 @@ const external = []
 if (process.env.UNI_SERVICE === 'legacy') {
   input = 'src/platforms/app-plus-nvue/services/index.legacy.js'
   output.file = 'packages/uni-app-plus-nvue/dist/index.legacy.js'
-} else if (process.env.UNI_SERVICE === 'uni') {
-  input = 'src/platforms/app-plus/service/uni.js'
-  output.file = 'packages/uni-app-plus-nvue/dist/uni.js'
-  output.banner =
-    `export function createUniInstance(weex, plus, __uniConfig, __uniRoutes, __registerPage, UniServiceJSBridge, getApp, getCurrentPages){
-var localStorage = plus.storage
-`
-  output.footer = '\n  return uni$1 \n}'
 } else {
-  external.push('./uni')
+  input = 'src/platforms/app-plus/service/index.js'
+  output.file = 'packages/uni-app-plus-nvue/dist/index.js'
+  output.format = 'iife'
+  output.name = 'serviceContext'
+  output.banner =
+    `export function createServiceContext(Vue, weex, plus, __uniConfig, __uniRoutes, UniServiceJSBridge){
+var localStorage = plus.storage
+var setTimeout = global.setTimeout
+var clearTimeout = global.clearTimeout
+`
+  output.footer =
+    `
+var uni = serviceContext.uni
+var getApp = serviceContext.getApp
+var getCurrentPages = serviceContext.getCurrentPages
+
+var __registerPage = serviceContext.__registerPage
+
+return serviceContext \n}
+`
 }
 
 module.exports = {
@@ -40,7 +51,7 @@ module.exports = {
       'uni-core': path.resolve(__dirname, '../src/core'),
       'uni-platform': path.resolve(__dirname, '../src/platforms/' + process.env.UNI_PLATFORM),
       'uni-platforms': path.resolve(__dirname, '../src/platforms'),
-      'uni-shared': path.resolve(__dirname, '../src/shared/util.js'),
+      'uni-shared': path.resolve(__dirname, '../src/shared/index.js'),
       'uni-helpers': path.resolve(__dirname, '../src/core/helpers')
     }),
     replace({

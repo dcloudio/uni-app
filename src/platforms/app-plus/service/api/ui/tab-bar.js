@@ -2,14 +2,14 @@ import {
   isTabBarPage
 } from '../util'
 
-import tabbar from '../../framework/tabbar'
+import tabBar from '../../framework/tab-bar'
 
 export function setTabBarBadge ({
   index,
   text,
   type
 }) {
-  tabbar.setTabBarBadge(type, index, text)
+  tabBar.setTabBarBadge(type, index, text)
   return {
     errMsg: 'setTabBarBadge:ok'
   }
@@ -26,7 +26,7 @@ export function setTabBarItem ({
       errMsg: 'setTabBarItem:fail not TabBar page'
     }
   }
-  tabbar.setTabBarItem(index, text, iconPath, selectedIconPath)
+  tabBar.setTabBarItem(index, text, iconPath, selectedIconPath)
   return {
     errMsg: 'setTabBarItem:ok'
   }
@@ -43,7 +43,7 @@ export function setTabBarStyle ({
       errMsg: 'setTabBarStyle:fail not TabBar page'
     }
   }
-  tabbar.setTabBarStyle({
+  tabBar.setTabBarStyle({
     color,
     selectedColor,
     backgroundColor,
@@ -62,7 +62,7 @@ export function hideTabBar ({
       errMsg: 'hideTabBar:fail not TabBar page'
     }
   }
-  tabbar.hideTabBar(animation)
+  tabBar.hideTabBar(animation)
   return {
     errMsg: 'hideTabBar:ok'
   }
@@ -76,7 +76,7 @@ export function showTabBar ({
       errMsg: 'showTabBar:fail not TabBar page'
     }
   }
-  tabbar.showTabBar(animation)
+  tabBar.showTabBar(animation)
   return {
     errMsg: 'showTabBar:ok'
   }

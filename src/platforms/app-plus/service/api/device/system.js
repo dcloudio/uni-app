@@ -9,7 +9,7 @@ import {
   TITLEBAR_HEIGHT
 } from '../../constants'
 
-import tabbar from '../../framework/tabbar'
+import tabBar from '../../framework/tab-bar'
 
 export function getSystemInfoSync () {
   return callApiSync(getSystemInfo, Object.create(null), 'getSystemInfo', 'getSystemInfoSync')
@@ -48,7 +48,7 @@ export function getSystemInfo () {
     // TODO screenWidth,screenHeight
     windowWidth: screenWidth,
     windowHeight: Math.min(screenHeight - (titleNView ? (statusBarHeight + TITLEBAR_HEIGHT)
-      : 0) - (isTabBarPage() && tabbar.visible ? TABBAR_HEIGHT : 0), screenHeight),
+      : 0) - (isTabBarPage() && tabBar.visible ? TABBAR_HEIGHT : 0), screenHeight),
     statusBarHeight,
     language: plus.os.language,
     system: plus.os.version,

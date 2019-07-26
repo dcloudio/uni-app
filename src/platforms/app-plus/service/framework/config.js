@@ -1,8 +1,5 @@
-export const uniConfig = Object.create(null)
-export const uniRoutes = []
-
 function parseRoutes (config) {
-  uniRoutes.length = 0
+  __uniRoutes.length = 0
   /* eslint-disable no-mixed-operators */
   const tabBarList = (config.tabBar && config.tabBar.list || []).map(item => item.pagePath)
 
@@ -10,7 +7,7 @@ function parseRoutes (config) {
     const isTabBar = tabBarList.indexOf(pagePath) !== -1
     const isQuit = isTabBar || (config.pages[0] === pagePath)
     const isNVue = !!config.page[pagePath].nvue
-    uniRoutes.push({
+    __uniRoutes.push({
       path: '/' + pagePath,
       meta: {
         isQuit,
@@ -22,22 +19,20 @@ function parseRoutes (config) {
   })
 }
 
-export function registerConfig (config, {
-  plus
-}) {
-  Object.assign(uniConfig, config)
+export function registerConfig (config) {
+  Object.assign(__uniConfig, config)
 
-  uniConfig.viewport = ''
-  uniConfig.defaultFontSize = ''
+  __uniConfig.viewport = ''
+  __uniConfig.defaultFontSize = ''
 
-  if (uniConfig.nvueCompiler === 'uni-app') {
-    uniConfig.viewport = plus.screen.resolutionWidth
-    uniConfig.defaultFontSize = uniConfig.viewport / 20
+  if (__uniConfig.nvueCompiler === 'uni-app') {
+    __uniConfig.viewport = plus.screen.resolutionWidth
+    __uniConfig.defaultFontSize = __uniConfig.viewport / 20
   }
 
-  parseRoutes(uniConfig)
+  parseRoutes(__uniConfig)
 
   if (process.env.NODE_ENV !== 'production') {
-    console.log(`[uni-app] registerConfig`, uniConfig)
+    console.log(`[uni-app] registerConfig`, __uniConfig)
   }
 }
