@@ -1576,6 +1576,8 @@ var serviceContext = (function () {
     ...third
   ];
 
+  var apis_1 = apis;
+
   /**
    * 框架内 try-catch
    */
@@ -1938,7 +1940,7 @@ var serviceContext = (function () {
 
   const upx2px = [{
     name: 'upx',
-    type: Number,
+    type: [Number, String],
     required: true
   }];
 
@@ -3422,6 +3424,15 @@ var serviceContext = (function () {
 
     const invokeCallback = function (res) {
       res.errMsg = res.errMsg || apiName + ':ok';
+
+      // 部分 api 可能返回的 errMsg 的 api 名称部分不一致，格式化为正确的
+      if (res.errMsg.indexOf(':ok') !== -1) {
+        res.errMsg = apiName + ':ok';
+      } else if (res.errMsg.indexOf(':cancel') !== -1) {
+        res.errMsg = apiName + ':cancel';
+      } else if (res.errMsg.indexOf(':fail') !== -1) {
+        res.errMsg = apiName + ':fail';
+      }
 
       const errMsg = res.errMsg;
 
@@ -7685,6 +7696,52 @@ var serviceContext = (function () {
     return UniServiceJSBridge.on('api.' + name, callback)
   }
 
+  const callbacks$1 = [];
+
+  onMethod('onAccelerometerChange', function (res) {
+    callbacks$1.forEach(callbackId => {
+      invoke(callbackId, res);
+    });
+  });
+
+  let isEnable = false;
+  /**
+   * 监听加速度
+   * @param {*} callbackId
+   */
+  function onAccelerometerChange (callbackId) {
+    // TODO 当没有 start 时，添加 on 需要主动 start?
+    callbacks$1.push(callbackId);
+    if (!isEnable) {
+      startAccelerometer();
+    }
+  }
+
+  function startAccelerometer ({
+    interval // TODO
+  } = {}) {
+    if (isEnable) {
+      return
+    }
+    isEnable = true;
+    return invokeMethod('enableAccelerometer', {
+      enable: true
+    })
+  }
+
+  function stopAccelerometer () {
+    isEnable = false;
+    return invokeMethod('enableAccelerometer', {
+      enable: false
+    })
+  }
+
+  var require_context_module_1_4 = /*#__PURE__*/Object.freeze({
+    onAccelerometerChange: onAccelerometerChange,
+    startAccelerometer: startAccelerometer,
+    stopAccelerometer: stopAccelerometer
+  });
+
   const requestTasks$1 = Object.create(null);
 
   function formatResponse (res, args) {
@@ -7786,7 +7843,7 @@ var serviceContext = (function () {
     return new RequestTask(requestTaskId)
   }
 
-  var require_context_module_1_4 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_5 = /*#__PURE__*/Object.freeze({
     request: request$1
   });
 
@@ -7895,7 +7952,7 @@ var serviceContext = (function () {
     return res
   }
 
-  var require_context_module_1_5 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_6 = /*#__PURE__*/Object.freeze({
     setStorage: setStorage$1,
     setStorageSync: setStorageSync$1,
     getStorage: getStorage$1,
@@ -7916,7 +7973,7 @@ var serviceContext = (function () {
     return {}
   }
 
-  var require_context_module_1_6 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_7 = /*#__PURE__*/Object.freeze({
     pageScrollTo: pageScrollTo$1
   });
 
@@ -7929,9 +7986,10 @@ var serviceContext = (function () {
   './base/can-i-use.js': require_context_module_1_1,
   './base/interceptor.js': require_context_module_1_2,
   './base/upx2px.js': require_context_module_1_3,
-  './network/request.js': require_context_module_1_4,
-  './storage/storage.js': require_context_module_1_5,
-  './ui/page-scroll-to.js': require_context_module_1_6,
+  './device/accelerometer.js': require_context_module_1_4,
+  './network/request.js': require_context_module_1_5,
+  './storage/storage.js': require_context_module_1_6,
+  './ui/page-scroll-to.js': require_context_module_1_7,
 
       };
       var req = function req(key) {
@@ -7952,7 +8010,7 @@ var serviceContext = (function () {
 
   const uni$1 = Object.create(null);
 
-  apis.forEach(name => {
+  apis_1.forEach(name => {
     if (api$1[name]) {
       uni$1[name] = promisify(name, wrapper(name, api$1[name]));
     } else {

@@ -1,4 +1,12 @@
-import { encode, decode } from 'base64-arraybuffer'
+import {
+  encode,
+  decode
+} from 'base64-arraybuffer'
 
-export const base64ToArrayBuffer = decode
-export const arrayBufferToBase64 = encode
+export function base64ToArrayBuffer (str) {
+  return decode(str)
+}
+
+export function arrayBufferToBase64 (buffer) {
+  return encode(buffer)
+}
