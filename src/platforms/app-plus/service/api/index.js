@@ -1,3 +1,4 @@
+export * from './base/event-bus'
 export * from './context/audio'
 export * from './context/background-audio'
 
@@ -41,7 +42,6 @@ export * from './plugin/oauth'
 export * from './plugin/payment'
 export * from './plugin/push'
 export * from './plugin/share'
-export * from './plugin/event-bus'
 
 export * from './ui/keyboard'
 export * from './ui/navigation-bar'

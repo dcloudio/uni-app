@@ -1,4 +1,4 @@
-import getRealRoute from '../get-real-route'
+import getRealRoute from '../../get-real-route'
 
 function encodeQueryString (url) {
   if (typeof url !== 'string') {

@@ -1864,16 +1864,6 @@ var serviceContext = (function () {
     }
   }
 
-  const canIUse = [{
-    name: 'schema',
-    type: String,
-    required: true
-  }];
-
-  var require_context_module_0_0 = /*#__PURE__*/Object.freeze({
-    canIUse: canIUse
-  });
-
   const base64ToArrayBuffer = [{
     name: 'base64',
     type: String,
@@ -1886,9 +1876,74 @@ var serviceContext = (function () {
     required: true
   }];
 
-  var require_context_module_0_1 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_0 = /*#__PURE__*/Object.freeze({
     base64ToArrayBuffer: base64ToArrayBuffer,
     arrayBufferToBase64: arrayBufferToBase64
+  });
+
+  const canIUse = [{
+    name: 'schema',
+    type: String,
+    required: true
+  }];
+
+  var require_context_module_0_1 = /*#__PURE__*/Object.freeze({
+    canIUse: canIUse
+  });
+
+  const $on = [{
+    name: 'event',
+    type: [String, Array],
+    required: true
+  }, {
+    name: 'callback',
+    type: Function,
+    required: true
+  }];
+
+  const $once = $on;
+
+  const $off = [{
+    name: 'event',
+    type: [String, Array]
+  }, {
+    name: 'callback',
+    type: Function
+  }];
+
+  const $emit = [{
+    name: 'event',
+    type: String,
+    required: true
+  }];
+
+  var require_context_module_0_2 = /*#__PURE__*/Object.freeze({
+    $on: $on,
+    $once: $once,
+    $off: $off,
+    $emit: $emit
+  });
+
+  const addInterceptor$1 = [{
+    name: 'method',
+    type: [String, Object],
+    required: true
+  }];
+  const removeInterceptor$1 = addInterceptor$1;
+
+  var require_context_module_0_3 = /*#__PURE__*/Object.freeze({
+    addInterceptor: addInterceptor$1,
+    removeInterceptor: removeInterceptor$1
+  });
+
+  const upx2px = [{
+    name: 'upx',
+    type: Number,
+    required: true
+  }];
+
+  var require_context_module_0_4 = /*#__PURE__*/Object.freeze({
+    upx2px: upx2px
   });
 
   function getInt (method) {
@@ -2023,7 +2078,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_2 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_5 = /*#__PURE__*/Object.freeze({
     canvasGetImageData: canvasGetImageData,
     canvasPutImageData: canvasPutImageData,
     canvasToTempFilePath: canvasToTempFilePath,
@@ -2048,7 +2103,7 @@ var serviceContext = (function () {
     type: Object
   }];
 
-  var require_context_module_0_3 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_6 = /*#__PURE__*/Object.freeze({
     createAudioContext: createAudioContext,
     createVideoContext: createVideoContext,
     createMapContext: createMapContext,
@@ -2067,7 +2122,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_4 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_7 = /*#__PURE__*/Object.freeze({
     makePhoneCall: makePhoneCall
   });
 
@@ -2081,8 +2136,18 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_5 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_8 = /*#__PURE__*/Object.freeze({
     openDocument: openDocument
+  });
+
+  const chooseLocation = {
+    keyword: {
+      type: String
+    }
+  };
+
+  var require_context_module_0_9 = /*#__PURE__*/Object.freeze({
+    chooseLocation: chooseLocation
   });
 
   const type = {
@@ -2103,6 +2168,11 @@ var serviceContext = (function () {
       default: false
     }
   };
+
+  var require_context_module_0_10 = /*#__PURE__*/Object.freeze({
+    getLocation: getLocation
+  });
+
   const openLocation = {
     latitude: {
       type: Number,
@@ -2128,8 +2198,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_6 = /*#__PURE__*/Object.freeze({
-    getLocation: getLocation,
+  var require_context_module_0_11 = /*#__PURE__*/Object.freeze({
     openLocation: openLocation
   });
 
@@ -2186,7 +2255,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_7 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_12 = /*#__PURE__*/Object.freeze({
     chooseImage: chooseImage
   });
 
@@ -2213,7 +2282,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_8 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_13 = /*#__PURE__*/Object.freeze({
     chooseVideo: chooseVideo
   });
 
@@ -2288,7 +2357,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_9 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_14 = /*#__PURE__*/Object.freeze({
     getImageInfo: getImageInfo
   });
 
@@ -2323,51 +2392,8 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_10 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_15 = /*#__PURE__*/Object.freeze({
     previewImage: previewImage
-  });
-
-  const FRONT_COLORS = ['#ffffff', '#000000'];
-  const setNavigationBarColor = {
-    'frontColor': {
-      type: String,
-      required: true,
-      validator (frontColor, params) {
-        if (FRONT_COLORS.indexOf(frontColor) === -1) {
-          return `invalid frontColor "${frontColor}"`
-        }
-      }
-    },
-    'backgroundColor': {
-      type: String,
-      required: true
-    },
-    'animation': {
-      type: Object,
-      default () {
-        return {
-          duration: 0,
-          timingFunc: 'linear'
-        }
-      },
-      validator (animation = {}, params) {
-        params.animation = {
-          duration: animation.duration || 0,
-          timingFunc: animation.timingFunc || 'linear'
-        };
-      }
-    }
-  };
-  const setNavigationBarTitle = {
-    'title': {
-      type: String,
-      required: true
-    }
-  };
-
-  var require_context_module_0_11 = /*#__PURE__*/Object.freeze({
-    setNavigationBarColor: setNavigationBarColor,
-    setNavigationBarTitle: setNavigationBarTitle
   });
 
   const downloadFile = {
@@ -2383,7 +2409,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_12 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_16 = /*#__PURE__*/Object.freeze({
     downloadFile: downloadFile
   });
 
@@ -2480,7 +2506,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_13 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_17 = /*#__PURE__*/Object.freeze({
     request: request
   });
 
@@ -2533,7 +2559,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_14 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_18 = /*#__PURE__*/Object.freeze({
     connectSocket: connectSocket,
     sendSocketMessage: sendSocketMessage,
     closeSocket: closeSocket
@@ -2569,26 +2595,8 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_15 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_19 = /*#__PURE__*/Object.freeze({
     uploadFile: uploadFile
-  });
-
-  const pageScrollTo = {
-    scrollTop: {
-      type: Number,
-      required: true
-    },
-    duration: {
-      type: Number,
-      default: 300,
-      validator (duration, params) {
-        params.duration = Math.max(0, duration);
-      }
-    }
-  };
-
-  var require_context_module_0_16 = /*#__PURE__*/Object.freeze({
-    pageScrollTo: pageScrollTo
   });
 
   const service = {
@@ -2611,128 +2619,8 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_17 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_20 = /*#__PURE__*/Object.freeze({
     getProvider: getProvider
-  });
-
-  const showModal = {
-    title: {
-      type: String,
-      default: ''
-    },
-    content: {
-      type: String,
-      default: ''
-    },
-    showCancel: {
-      type: Boolean,
-      default: true
-    },
-    cancelText: {
-      type: String,
-      default: '取消'
-    },
-    cancelColor: {
-      type: String,
-      default: '#000000'
-    },
-    confirmText: {
-      type: String,
-      default: '确定'
-    },
-    confirmColor: {
-      type: String,
-      default: '#007aff'
-    },
-    visible: {
-      type: Boolean,
-      default: true
-    }
-  };
-
-  const showToast = {
-    title: {
-      type: String,
-      default: ''
-    },
-    icon: {
-      default: 'success',
-      validator (icon, params) {
-        if (['success', 'loading', 'none'].indexOf(icon) === -1) {
-          params.icon = 'success';
-        }
-      }
-    },
-    image: {
-      type: String,
-      default: '',
-      validator (image, params) {
-        if (image) {
-          params.image = getRealPath$1(image);
-        }
-      }
-    },
-    duration: {
-      type: Number,
-      default: 1500
-    },
-    mask: {
-      type: Boolean,
-      default: false
-    },
-    visible: {
-      type: Boolean,
-      default: true
-    }
-  };
-  const showLoading = {
-    title: {
-      type: String,
-      default: ''
-    },
-    icon: {
-      type: String,
-      default: 'loading'
-    },
-    duration: {
-      type: Number,
-      default: 100000000 // 简单处理 showLoading，直接设置个大值
-    },
-    mask: {
-      type: Boolean,
-      default: false
-    },
-    visible: {
-      type: Boolean,
-      default: true
-    }
-  };
-
-  const showActionSheet = {
-    itemList: {
-      type: Array,
-      required: true,
-      validator (itemList, params) {
-        if (!itemList.length) {
-          return 'parameter.itemList should have at least 1 item'
-        }
-      }
-    },
-    itemColor: {
-      type: String,
-      default: '#000000'
-    },
-    visible: {
-      type: Boolean,
-      default: true
-    }
-  };
-
-  var require_context_module_0_18 = /*#__PURE__*/Object.freeze({
-    showModal: showModal,
-    showToast: showToast,
-    showLoading: showLoading,
-    showActionSheet: showActionSheet
   });
 
   function encodeQueryString (url) {
@@ -2879,13 +2767,26 @@ var serviceContext = (function () {
     ]
   ));
 
-  var require_context_module_0_19 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_21 = /*#__PURE__*/Object.freeze({
     redirectTo: redirectTo,
     reLaunch: reLaunch,
     navigateTo: navigateTo,
     switchTab: switchTab,
     navigateBack: navigateBack
   });
+
+  const getStorage = {
+    'key': {
+      type: String,
+      required: true
+    }
+  };
+
+  const getStorageSync = [{
+    name: 'key',
+    type: String,
+    required: true
+  }];
 
   const setStorage = {
     'key': {
@@ -2906,9 +2807,197 @@ var serviceContext = (function () {
     required: true
   }];
 
-  var require_context_module_0_20 = /*#__PURE__*/Object.freeze({
+  const removeStorage = getStorage;
+  const removeStorageSync = getStorageSync;
+
+  var require_context_module_0_22 = /*#__PURE__*/Object.freeze({
+    getStorage: getStorage,
+    getStorageSync: getStorageSync,
     setStorage: setStorage,
-    setStorageSync: setStorageSync
+    setStorageSync: setStorageSync,
+    removeStorage: removeStorage,
+    removeStorageSync: removeStorageSync
+  });
+
+  const FRONT_COLORS = ['#ffffff', '#000000'];
+  const setNavigationBarColor = {
+    'frontColor': {
+      type: String,
+      required: true,
+      validator (frontColor, params) {
+        if (FRONT_COLORS.indexOf(frontColor) === -1) {
+          return `invalid frontColor "${frontColor}"`
+        }
+      }
+    },
+    'backgroundColor': {
+      type: String,
+      required: true
+    },
+    'animation': {
+      type: Object,
+      default () {
+        return {
+          duration: 0,
+          timingFunc: 'linear'
+        }
+      },
+      validator (animation = {}, params) {
+        params.animation = {
+          duration: animation.duration || 0,
+          timingFunc: animation.timingFunc || 'linear'
+        };
+      }
+    }
+  };
+  const setNavigationBarTitle = {
+    'title': {
+      type: String,
+      required: true
+    }
+  };
+
+  var require_context_module_0_23 = /*#__PURE__*/Object.freeze({
+    setNavigationBarColor: setNavigationBarColor,
+    setNavigationBarTitle: setNavigationBarTitle
+  });
+
+  const pageScrollTo = {
+    scrollTop: {
+      type: Number,
+      required: true
+    },
+    duration: {
+      type: Number,
+      default: 300,
+      validator (duration, params) {
+        params.duration = Math.max(0, duration);
+      }
+    }
+  };
+
+  var require_context_module_0_24 = /*#__PURE__*/Object.freeze({
+    pageScrollTo: pageScrollTo
+  });
+
+  const showModal = {
+    title: {
+      type: String,
+      default: ''
+    },
+    content: {
+      type: String,
+      default: ''
+    },
+    showCancel: {
+      type: Boolean,
+      default: true
+    },
+    cancelText: {
+      type: String,
+      default: '取消'
+    },
+    cancelColor: {
+      type: String,
+      default: '#000000'
+    },
+    confirmText: {
+      type: String,
+      default: '确定'
+    },
+    confirmColor: {
+      type: String,
+      default: '#007aff'
+    },
+    visible: {
+      type: Boolean,
+      default: true
+    }
+  };
+
+  const showToast = {
+    title: {
+      type: String,
+      default: ''
+    },
+    icon: {
+      default: 'success',
+      validator (icon, params) {
+        if (['success', 'loading', 'none'].indexOf(icon) === -1) {
+          params.icon = 'success';
+        }
+      }
+    },
+    image: {
+      type: String,
+      default: '',
+      validator (image, params) {
+        if (image) {
+          params.image = getRealPath$1(image);
+        }
+      }
+    },
+    duration: {
+      type: Number,
+      default: 1500
+    },
+    mask: {
+      type: Boolean,
+      default: false
+    },
+    visible: {
+      type: Boolean,
+      default: true
+    }
+  };
+  const showLoading = {
+    title: {
+      type: String,
+      default: ''
+    },
+    icon: {
+      type: String,
+      default: 'loading'
+    },
+    duration: {
+      type: Number,
+      default: 100000000 // 简单处理 showLoading，直接设置个大值
+    },
+    mask: {
+      type: Boolean,
+      default: false
+    },
+    visible: {
+      type: Boolean,
+      default: true
+    }
+  };
+
+  const showActionSheet = {
+    itemList: {
+      type: Array,
+      required: true,
+      validator (itemList, params) {
+        if (!itemList.length) {
+          return 'parameter.itemList should have at least 1 item'
+        }
+      }
+    },
+    itemColor: {
+      type: String,
+      default: '#000000'
+    },
+    visible: {
+      type: Boolean,
+      default: true
+    }
+  };
+
+  var require_context_module_0_25 = /*#__PURE__*/Object.freeze({
+    showModal: showModal,
+    showToast: showToast,
+    showLoading: showLoading,
+    showActionSheet: showActionSheet
   });
 
   const indexValidator = {
@@ -2988,7 +3077,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_21 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_26 = /*#__PURE__*/Object.freeze({
     setTabBarItem: setTabBarItem$1,
     setTabBarStyle: setTabBarStyle$1,
     hideTabBar: hideTabBar$1,
@@ -3003,28 +3092,33 @@ var serviceContext = (function () {
   const modules = 
     (function() {
       var map = {
-        './base.js': require_context_module_0_0,
-  './base64.js': require_context_module_0_1,
-  './canvas.js': require_context_module_0_2,
-  './context.js': require_context_module_0_3,
-  './device/make-phone-call.js': require_context_module_0_4,
-  './file/open-document.js': require_context_module_0_5,
-  './location.js': require_context_module_0_6,
-  './media/choose-image.js': require_context_module_0_7,
-  './media/choose-video.js': require_context_module_0_8,
-  './media/get-image-info.js': require_context_module_0_9,
-  './media/preview-image.js': require_context_module_0_10,
-  './navigation-bar.js': require_context_module_0_11,
-  './network/download-file.js': require_context_module_0_12,
-  './network/request.js': require_context_module_0_13,
-  './network/socket.js': require_context_module_0_14,
-  './network/upload-file.js': require_context_module_0_15,
-  './page-scroll-to.js': require_context_module_0_16,
-  './plugins.js': require_context_module_0_17,
-  './popup.js': require_context_module_0_18,
-  './route.js': require_context_module_0_19,
-  './storage.js': require_context_module_0_20,
-  './tab-bar.js': require_context_module_0_21,
+        './base/base64.js': require_context_module_0_0,
+  './base/can-i-use.js': require_context_module_0_1,
+  './base/event-bus.js': require_context_module_0_2,
+  './base/interceptor.js': require_context_module_0_3,
+  './base/upx2px.js': require_context_module_0_4,
+  './context/canvas.js': require_context_module_0_5,
+  './context/context.js': require_context_module_0_6,
+  './device/make-phone-call.js': require_context_module_0_7,
+  './file/open-document.js': require_context_module_0_8,
+  './location/choose-location.js': require_context_module_0_9,
+  './location/get-location.js': require_context_module_0_10,
+  './location/open-location.js': require_context_module_0_11,
+  './media/choose-image.js': require_context_module_0_12,
+  './media/choose-video.js': require_context_module_0_13,
+  './media/get-image-info.js': require_context_module_0_14,
+  './media/preview-image.js': require_context_module_0_15,
+  './network/download-file.js': require_context_module_0_16,
+  './network/request.js': require_context_module_0_17,
+  './network/socket.js': require_context_module_0_18,
+  './network/upload-file.js': require_context_module_0_19,
+  './plugin/get-provider.js': require_context_module_0_20,
+  './route/route.js': require_context_module_0_21,
+  './storage/storage.js': require_context_module_0_22,
+  './ui/navigation-bar.js': require_context_module_0_23,
+  './ui/page-scroll-to.js': require_context_module_0_24,
+  './ui/popup.js': require_context_module_0_25,
+  './ui/tab-bar.js': require_context_module_0_26,
 
       };
       var req = function req(key) {
@@ -3576,7 +3670,7 @@ var serviceContext = (function () {
     isIOS = platform === 'ios';
   }
 
-  function upx2px (number, newDeviceWidth) {
+  function upx2px$1 (number, newDeviceWidth) {
     if (deviceWidth === 0) {
       checkDeviceWidth();
     }
@@ -3601,8 +3695,30 @@ var serviceContext = (function () {
   }
 
   var require_context_module_1_3 = /*#__PURE__*/Object.freeze({
-    upx2px: upx2px
+    upx2px: upx2px$1
   });
+
+  const Emitter = new Vue();
+
+  function apply (ctx, method, args) {
+    return ctx[method].apply(ctx, args)
+  }
+
+  function $on$1 () {
+    return apply(Emitter, '$on', [...arguments])
+  }
+
+  function $off$1 () {
+    return apply(Emitter, '$off', [...arguments])
+  }
+
+  function $once$1 () {
+    return apply(Emitter, '$once', [...arguments])
+  }
+
+  function $emit$1 () {
+    return apply(Emitter, '$emit', [...arguments])
+  }
 
   let audios = {};
 
@@ -4934,7 +5050,7 @@ var serviceContext = (function () {
 
   const CHOOSE_LOCATION_PATH = '_www/__uniappchooselocation.html';
 
-  function chooseLocation (params, callbackId) {
+  function chooseLocation$1 (params, callbackId) {
     const statusBarStyle = plus.navigator.getStatusBarStyle();
     const webview = plus.webview.create(
       CHOOSE_LOCATION_PATH,
@@ -6545,28 +6661,6 @@ var serviceContext = (function () {
     );
   }
 
-  const Emitter = new Vue();
-
-  function apply (ctx, method, args) {
-    return ctx[method].apply(ctx, args)
-  }
-
-  function $on () {
-    return apply(Emitter, '$on', [...arguments])
-  }
-
-  function $off () {
-    return apply(Emitter, '$off', [...arguments])
-  }
-
-  function $once () {
-    return apply(Emitter, '$once', [...arguments])
-  }
-
-  function $emit () {
-    return apply(Emitter, '$emit', [...arguments])
-  }
-
   function showKeyboard () {
     plus.key.showSoftKeybord();
     return {
@@ -6908,12 +7002,16 @@ var serviceContext = (function () {
   var appApi = /*#__PURE__*/Object.freeze({
     startPullDownRefresh: startPullDownRefresh,
     stopPullDownRefresh: stopPullDownRefresh,
-    chooseVideo: chooseVideo$1,
-    createAudioInstance: createAudioInstance,
-    destroyAudioInstance: destroyAudioInstance,
-    setAudioState: setAudioState,
-    getAudioState: getAudioState,
-    operateAudio: operateAudio,
+    chooseImage: chooseImage$1,
+    $on: $on$1,
+    $off: $off$1,
+    $once: $once$1,
+    $emit: $emit$1,
+    getMusicPlayerState: getMusicPlayerState,
+    operateMusicPlayer: operateMusicPlayer,
+    setBackgroundAudioState: setBackgroundAudioState,
+    operateBackgroundAudio: operateBackgroundAudio,
+    getBackgroundAudioState: getBackgroundAudioState,
     enableAccelerometer: enableAccelerometer,
     addPhoneContact: addPhoneContact,
     openBluetoothAdapter: openBluetoothAdapter,
@@ -6957,7 +7055,7 @@ var serviceContext = (function () {
     getSavedFileInfo: getSavedFileInfo,
     removeSavedFile: removeSavedFile,
     openDocument: openDocument$1,
-    chooseLocation: chooseLocation,
+    chooseLocation: chooseLocation$1,
     getLocation: getLocation$1,
     openLocation: openLocation$1,
     startRecord: startRecord,
@@ -6965,12 +7063,12 @@ var serviceContext = (function () {
     playVoice: playVoice,
     pauseVoice: pauseVoice,
     stopVoice: stopVoice,
-    chooseImage: chooseImage$1,
-    getMusicPlayerState: getMusicPlayerState,
-    operateMusicPlayer: operateMusicPlayer,
-    setBackgroundAudioState: setBackgroundAudioState,
-    operateBackgroundAudio: operateBackgroundAudio,
-    getBackgroundAudioState: getBackgroundAudioState,
+    createAudioInstance: createAudioInstance,
+    destroyAudioInstance: destroyAudioInstance,
+    setAudioState: setAudioState,
+    getAudioState: getAudioState,
+    operateAudio: operateAudio,
+    chooseVideo: chooseVideo$1,
     compressImage: compressImage,
     getImageInfo: getImageInfo$1,
     previewImage: previewImage$1,
@@ -6996,10 +7094,6 @@ var serviceContext = (function () {
     offPush: offPush,
     shareAppMessageDirectly: shareAppMessageDirectly,
     share: share,
-    $on: $on,
-    $off: $off,
-    $once: $once,
-    $emit: $emit,
     showKeyboard: showKeyboard,
     hideKeyboard: hideKeyboard,
     setNavigationBarTitle: setNavigationBarTitle$1,
@@ -7727,7 +7821,7 @@ var serviceContext = (function () {
     });
   }
 
-  function getStorage ({
+  function getStorage$1 ({
     key
   } = {}) {
     const data = localStorage.getItem(key);
@@ -7740,14 +7834,14 @@ var serviceContext = (function () {
     }
   }
 
-  function getStorageSync (key) {
-    const res = getStorage({
+  function getStorageSync$1 (key) {
+    const res = getStorage$1({
       key
     });
     return res.data
   }
 
-  function removeStorage ({
+  function removeStorage$1 ({
     key
   } = {}) {
     const keyList = localStorage.getItem('uni-storage-keys');
@@ -7763,8 +7857,8 @@ var serviceContext = (function () {
     }
   }
 
-  function removeStorageSync (key) {
-    removeStorage({
+  function removeStorageSync$1 (key) {
+    removeStorage$1({
       key
     });
   }
@@ -7804,10 +7898,10 @@ var serviceContext = (function () {
   var require_context_module_1_5 = /*#__PURE__*/Object.freeze({
     setStorage: setStorage$1,
     setStorageSync: setStorageSync$1,
-    getStorage: getStorage,
-    getStorageSync: getStorageSync,
-    removeStorage: removeStorage,
-    removeStorageSync: removeStorageSync,
+    getStorage: getStorage$1,
+    getStorageSync: getStorageSync$1,
+    removeStorage: removeStorage$1,
+    removeStorageSync: removeStorageSync$1,
     clearStorage: clearStorage,
     clearStorageSync: clearStorageSync,
     getStorageInfo: getStorageInfo,

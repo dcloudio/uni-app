@@ -3,7 +3,7 @@ const alias = require('rollup-plugin-alias')
 const replace = require('rollup-plugin-replace')
 const resolve = require('rollup-plugin-node-resolve')
 const commonjs = require('rollup-plugin-commonjs')
-const requireContext = require('./rollup-plugin-require-context')
+const requireContext = require('../lib/rollup-plugin-require-context')
 
 let input = 'src/platforms/app-plus/service/framework/create-instance-context.js'
 
