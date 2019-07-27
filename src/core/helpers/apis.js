@@ -207,4 +207,4 @@ const apis = [
   ...third
 ]
 
-export default apis
+module.exports = apis

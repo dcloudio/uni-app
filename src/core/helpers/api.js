@@ -159,6 +159,15 @@ function createApiCallback (apiName, params = {}, extras = {}) {
   const invokeCallback = function (res) {
     res.errMsg = res.errMsg || apiName + ':ok'
 
+    // 部分 api 可能返回的 errMsg 的 api 名称部分不一致，格式化为正确的
+    if (res.errMsg.indexOf(':ok') !== -1) {
+      res.errMsg = apiName + ':ok'
+    } else if (res.errMsg.indexOf(':cancel') !== -1) {
+      res.errMsg = apiName + ':cancel'
+    } else if (res.errMsg.indexOf(':fail') !== -1) {
+      res.errMsg = apiName + ':fail'
+    }
+
     const errMsg = res.errMsg
 
     if (errMsg.indexOf(apiName + ':ok') === 0) {
