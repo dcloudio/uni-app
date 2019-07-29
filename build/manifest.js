@@ -42,7 +42,7 @@ const DEPS = {
     ['/platforms/h5/components/app/popup/mixins/modal.js', 'ModalMixin']
   ],
   'showActionSheet': [
-    ['/platforms/h5/components/app/popup/actionSheet.vue', 'Modal'],
+    ['/platforms/h5/components/app/popup/actionSheet.vue', 'ActionSheet'],
     ['/platforms/h5/components/app/popup/mixins/action-sheet.js', 'ActionSheetMixin']
   ],
   'createSelectorQuery': [

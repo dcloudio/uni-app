@@ -496,7 +496,7 @@
             ],
             [
                 "/platforms/h5/components/app/popup/actionSheet.vue",
-                "Modal"
+                "ActionSheet"
             ],
             [
                 "/platforms/h5/components/app/popup/mixins/action-sheet.js",

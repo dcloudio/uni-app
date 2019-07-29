@@ -11,14 +11,18 @@
       v-show="showTabBar"
       v-bind="tabBar" />
     <toast
+      v-if="$options.components.Toast"
       v-bind="showToast"/>
     <action-sheet
+      v-if="$options.components.ActionSheet"
       v-bind="showActionSheet"
       @close="_onActionSheetClose" />
     <modal
+      v-if="$options.components.Modal"
       v-bind="showModal"
       @close="_onModalClose" />
     <picker
+      v-if="$options.components.Picker"
       v-bind="showPicker"
       @close="_onPickerClose" />
   </uni-app>
