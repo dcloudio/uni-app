@@ -645,7 +645,10 @@
         [
             [
                 "/core/view/bridge/subscribe/api/request-component-observer.js",
-                "requestComponentObserver",
+                "requestComponentObserver"
+            ],
+            [
+                "/core/view/bridge/subscribe/api/request-component-observer.js",
                 "destroyComponentObserver"
             ]
         ]

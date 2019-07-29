@@ -1,4 +1,4 @@
-import apis from 'uni-helpers/apis'
+import apis from '../../../lib/apis'
 import {
   wrapper,
   wrapperUnimplemented

@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 
-const apis = require('../src/core/helpers/apis')
+const apis = require('../lib/apis')
 
 const AUTO_LOADS = [
   'upx2px',
@@ -49,11 +49,8 @@ const DEPS = {
     ['/core/view/bridge/subscribe/api/request-component-info.js', 'requestComponentInfo']
   ],
   'createIntersectionObserver': [
-    [
-      '/core/view/bridge/subscribe/api/request-component-observer.js',
-      'requestComponentObserver',
-      'destroyComponentObserver'
-    ]
+    ['/core/view/bridge/subscribe/api/request-component-observer.js', 'requestComponentObserver'],
+    ['/core/view/bridge/subscribe/api/request-component-observer.js', 'destroyComponentObserver']
   ]
 }
 
@@ -113,6 +110,9 @@ function parseApiManifestDeps (manifest, protocol) {
 
 module.exports = {
   generateApiManifest (manifest, protocol) {
+    if (!Object.keys(manifest).length) {
+      throw new Error('api manifest.json 生成失败')
+    }
     parseApiManifestDeps(manifest, protocol)
 
     const manifestJson = Object.create(null)
