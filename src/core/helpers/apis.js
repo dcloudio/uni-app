@@ -1,6 +1,8 @@
 const base = [
   'base64ToArrayBuffer',
-  'arrayBufferToBase64'
+  'arrayBufferToBase64',
+  'addInterceptor',
+  'removeInterceptor'
 ]
 
 const network = [

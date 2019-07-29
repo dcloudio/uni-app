@@ -26,7 +26,10 @@ service.run('build', {
   formats: process.env.UNI_WATCH === 'true' ? 'umd' : 'umd-min',
   entry: './lib/' + process.env.UNI_PLATFORM + '/main.js'
 }).then(function () {
-  generateApiManifest(process.UNI_SERVICE_API_MANIFEST)
+  generateApiManifest(
+    JSON.parse(JSON.stringify(process.UNI_SERVICE_API_MANIFEST)),
+    JSON.parse(JSON.stringify(process.UNI_SERVICE_API_PROTOCOL))
+  )
 }).catch(err => {
   error(err)
   process.exit(1)
