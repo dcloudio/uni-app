@@ -1369,7 +1369,9 @@ var serviceContext = (function () {
 
   const base = [
     'base64ToArrayBuffer',
-    'arrayBufferToBase64'
+    'arrayBufferToBase64',
+    'addInterceptor',
+    'removeInterceptor'
   ];
 
   const network = [
@@ -3630,8 +3632,13 @@ var serviceContext = (function () {
   var base64Arraybuffer_1 = base64Arraybuffer.encode;
   var base64Arraybuffer_2 = base64Arraybuffer.decode;
 
-  const base64ToArrayBuffer$1 = base64Arraybuffer_2;
-  const arrayBufferToBase64$1 = base64Arraybuffer_1;
+  function base64ToArrayBuffer$1 (str) {
+    return base64Arraybuffer_2(str)
+  }
+
+  function arrayBufferToBase64$1 (buffer) {
+    return base64Arraybuffer_1(buffer)
+  }
 
   var require_context_module_1_0 = /*#__PURE__*/Object.freeze({
     base64ToArrayBuffer: base64ToArrayBuffer$1,
@@ -8006,7 +8013,7 @@ var serviceContext = (function () {
     Object.assign(api, modules$1(key));
   });
 
-  const api$1 = Object.assign(Object.create(null), api, platformApi);
+  var api$1 = Object.assign(Object.create(null), api, platformApi);
 
   const uni$1 = Object.create(null);
 

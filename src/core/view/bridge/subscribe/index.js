@@ -18,12 +18,7 @@ import {
   createScrollListener
 } from './scroll'
 
-import requestComponentInfo from './request-component-info'
-
-import {
-  requestComponentObserver,
-  destroyComponentObserver
-} from './request-component-observer'
+import subscribeApis from 'uni-api-subscribe'
 
 const passiveOptions = supportsPassive ? {
   passive: false
@@ -33,7 +28,7 @@ function updateCssVar (vm) {
   if (uni.canIUse('css.var')) {
     const pageVm = vm.$parent.$parent
     const windowTop = pageVm.showNavigationBar && pageVm.navigationBar.type !== 'transparent' ? (NAVBAR_HEIGHT +
-                'px')
+        'px')
       : '0px'
     const windowBottom = getApp().$children[0].showTabBar ? (TABBAR_HEIGHT + 'px') : '0px'
     const style = document.documentElement.style
@@ -45,12 +40,11 @@ function updateCssVar (vm) {
 }
 
 export default function initSubscribe (subscribe) {
-  subscribe('requestComponentInfo', requestComponentInfo)
+  Object.keys(subscribeApis).forEach(name => {
+    subscribe(name, subscribeApis[name])
+  })
 
   subscribe('pageScrollTo', pageScrollTo)
-
-  subscribe('requestComponentObserver', requestComponentObserver)
-  subscribe('destroyComponentObserver', destroyComponentObserver)
 
   if (__PLATFORM__ === 'h5') {
     let scrollListener = false
@@ -81,7 +75,7 @@ export default function initSubscribe (subscribe) {
       const onReachBottomDistance = pageVm.onReachBottomDistance
 
       const enableTransparentTitleNView = isPlainObject(pageVm.titleNView) && pageVm.titleNView.type ===
-                'transparent'
+        'transparent'
 
       if (scrollListener) {
         document.removeEventListener('scroll', scrollListener)

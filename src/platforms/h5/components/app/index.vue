@@ -34,7 +34,7 @@ import {
 
 import components from './components'
 
-import mixins from './popup/mixins'
+import mixins from 'uni-h5-app-mixins'
 
 export default {
   name: 'App',

@@ -7,10 +7,7 @@ import {
   promisify
 } from 'uni-helpers/promise'
 
-import baseApi from 'uni-core/service/api'
-import platformApi from 'uni-platform/service/api'
-
-const api = Object.assign(Object.create(null), baseApi, platformApi)
+import api from 'uni-service-api'
 
 export const uni = Object.create(null)
 

@@ -44,6 +44,16 @@ const DEPS = {
   'showActionSheet': [
     ['/platforms/h5/components/app/popup/actionSheet.vue', 'Modal'],
     ['/platforms/h5/components/app/popup/mixins/action-sheet.js', 'ActionSheetMixin']
+  ],
+  'createSelectorQuery': [
+    ['/core/view/bridge/subscribe/api/request-component-info.js', 'requestComponentInfo']
+  ],
+  'createIntersectionObserver': [
+    [
+      '/core/view/bridge/subscribe/api/request-component-observer.js',
+      'requestComponentObserver',
+      'destroyComponentObserver'
+    ]
   ]
 }
 
@@ -55,7 +65,7 @@ Object.keys(DEPS).reduce(function (depFiles, name) {
   return depFiles
 }, new Set()).forEach(file => {
   if (!fs.existsSync(path.join(__dirname, '../src', file))) {
-    console.warn(file + ' 不存在')
+    console.error(file + ' 不存在')
     process.exit(0)
   }
 })
@@ -69,7 +79,7 @@ function parseApiManifestDeps (manifest, protocol) {
         if (manifest[dep[1]]) {
           dep[0] = manifest[dep[1]][0]
         } else {
-          console.warn(`依赖模块[${dep[1]}]不存在`)
+          console.error(`依赖模块[${dep[1]}]不存在`)
         }
       })
     }
@@ -88,7 +98,7 @@ function parseApiManifestDeps (manifest, protocol) {
     if (manifest[name]) {
       manifest[name][1].push(...DEPS[name])
     } else {
-      console.warn(`缺少 ${name}`)
+      console.error(`缺少 ${name}`)
     }
   })
   // 设置自动加载标记
@@ -96,7 +106,7 @@ function parseApiManifestDeps (manifest, protocol) {
     if (manifest[name]) {
       manifest[name][2] = true
     } else {
-      console.warn(`缺少 ${name}`)
+      console.error(`缺少 ${name}`)
     }
   })
 }
@@ -117,7 +127,7 @@ module.exports = {
 
     if (todoApis.length) {
       console.log('\n')
-      console.warn(`${process.env.UNI_PLATFORM} 平台缺少以下 API  实现`)
+      console.warn(`${process.env.UNI_PLATFORM} 平台缺少以下 API  实现(共 ${todoApis.length} 个)`)
       todoApis.forEach(name => {
         console.warn(name)
       })

@@ -1,7 +1,7 @@
 const path = require('path')
 const alias = require('rollup-plugin-alias')
 const replace = require('rollup-plugin-replace')
-const resolve = require('rollup-plugin-node-resolve')
+const nodeResolve = require('rollup-plugin-node-resolve')
 const commonjs = require('rollup-plugin-commonjs')
 const requireContext = require('../lib/rollup-plugin-require-context')
 
@@ -40,19 +40,23 @@ return serviceContext \n}
 `
 }
 
+const resolve = dir => path.resolve(__dirname, '../', dir)
+
 module.exports = {
   input,
   output,
   plugins: [
-    resolve(),
+    nodeResolve(),
     commonjs(),
     requireContext(),
     alias({
-      'uni-core': path.resolve(__dirname, '../src/core'),
-      'uni-platform': path.resolve(__dirname, '../src/platforms/' + process.env.UNI_PLATFORM),
-      'uni-platforms': path.resolve(__dirname, '../src/platforms'),
-      'uni-shared': path.resolve(__dirname, '../src/shared/index.js'),
-      'uni-helpers': path.resolve(__dirname, '../src/core/helpers')
+      'uni-core': resolve('src/core'),
+      'uni-platform': resolve('src/platforms/' + process.env.UNI_PLATFORM),
+      'uni-platforms': resolve('src/platforms'),
+      'uni-shared': resolve('src/shared/index.js'),
+      'uni-helpers': resolve('src/core/helpers'),
+      'uni-service-api': resolve('src/core/service/platform-api'),
+      'uni-api-protocol': resolve('src/core/helpers/protocol')
     }),
     replace({
       __GLOBAL__: 'getGlobalUni()',
