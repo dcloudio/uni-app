@@ -1,16 +1,14 @@
 # uni-app
 
-`uni-app` 是一个使用 `Vue.js` 开发小程序、H5、App的统一前端框架。
+`uni-app` 是一个使用 `Vue.js` 开发小程序、H5、App的统一前端框架。官网地址：[https://uniapp.dcloud.io](https://uniapp.dcloud.io)
 
-开发者通过编写 `Vue.js` 代码，`uni-app` 将其编译到 小程序（微信/支付宝/百度/字节跳动）、App（iOS/Android）、H5等多个平台，保证其正确运行并达到优秀体验。
+开发者使用 `Vue` 语法编写代码，`uni-app` 框架将其编译到 小程序（微信/支付宝/百度/字节跳动）、App（iOS/Android）、H5等多个平台，保证其正确运行并达到优秀体验。
 
 同时，`uni-app` 也是更优秀的小程序开发框架，拥有更高的性能（见[评测](https://juejin.im/post/5ca1736af265da30ae314248#comment)）、更丰富的周边生态（见[插件市场](https://ext.dcloud.net.cn/)）。
 
-`uni-app`官网文档详见[https://uniapp.dcloud.io](https://uniapp.dcloud.io)
-
 ## 扫码体验
 
-一套代码编译到7个平台，开发一次多处良好运行，到底是梦想还是现实？依次扫描7个二维码，亲自体验最全面的跨平台效果！
+一套代码编译到7个平台，开发一次、多处运行，到底是梦想还是现实？依次扫描7个二维码，亲自体验最全面的跨平台效果！
 
 <img src="http://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/barcode-20190131.png"/>
 
