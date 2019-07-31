@@ -55,6 +55,7 @@ module.exports = {
       'uni-platforms': resolve('src/platforms'),
       'uni-shared': resolve('src/shared/index.js'),
       'uni-helpers': resolve('src/core/helpers'),
+      'uni-invoke-api': resolve('src/platforms/app-plus/service/api'),
       'uni-service-api': resolve('src/core/service/platform-api'),
       'uni-api-protocol': resolve('src/core/helpers/protocol')
     }),
