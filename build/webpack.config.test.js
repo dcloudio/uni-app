@@ -25,6 +25,7 @@ config.resolve.alias = {
   'uni-platform': resolve('src/platforms/' + process.env.UNI_PLATFORM),
   // tree shaking
   'uni-components': resolve('src/core/view/components'),
+  'uni-invoke-api': resolve('src/platforms/' + process.env.UNI_PLATFORM + '/service/api'),
   'uni-service-api': resolve('src/core/service/platform-api'),
   'uni-api-protocol': resolve('src/core/helpers/protocol'),
   'uni-api-subscribe': resolve('src/core/view/bridge/subscribe/api/index'),

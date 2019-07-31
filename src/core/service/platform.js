@@ -1,4 +1,4 @@
-import api from 'uni-platform/service/api'
+import api from 'uni-invoke-api'
 
 /**
  * 执行内部平台方法
