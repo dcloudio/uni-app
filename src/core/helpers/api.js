@@ -14,7 +14,7 @@ import {
   isCallbackApi
 } from './promise'
 
-import protocol from './protocol'
+import protocol from 'uni-api-protocol'
 
 import validateParam from './params'
 

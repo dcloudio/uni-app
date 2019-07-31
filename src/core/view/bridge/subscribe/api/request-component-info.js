@@ -99,7 +99,7 @@ function getNodesInfo (pageVm, component, selector, single, fields) {
   }
 }
 
-export default function requestComponentInfo ({
+export function requestComponentInfo ({
   reqId,
   reqs
 }, pageId) {
