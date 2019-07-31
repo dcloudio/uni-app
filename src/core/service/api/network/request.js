@@ -55,7 +55,7 @@ onMethod('onRequestTaskStateChange', function ({
   const {
     args,
     callbackId
-  } = requestTasks[requestTaskId]
+  } = requestTasks[requestTaskId] || {}
 
   if (!callbackId) {
     return
