@@ -406,6 +406,22 @@
         "/platforms/h5/service/api/device/vibrate.js",
         []
     ],
+    "onBluetoothDeviceFound": [
+        "/core/service/api/device/bluetooth.js",
+        []
+    ],
+    "onBluetoothAdapterStateChange": [
+        "/core/service/api/device/bluetooth.js",
+        []
+    ],
+    "onBLEConnectionStateChange": [
+        "/core/service/api/device/bluetooth.js",
+        []
+    ],
+    "onBLECharacteristicValueChange": [
+        "/core/service/api/device/bluetooth.js",
+        []
+    ],
     "hideKeyboard": [
         "/platforms/h5/service/api/device/hide-keyboard.js",
         []
