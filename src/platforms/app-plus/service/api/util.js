@@ -1,3 +1,7 @@
+export {
+  isTabBarPage
+} from '../bridge'
+
 export function callApiSync (api, args, name, alias) {
   const ret = api(args)
   if (ret && ret.errMsg) {
@@ -17,31 +21,6 @@ export function getLastWebview () {
       console.log('getCurrentPages is not ready')
     }
   }
-}
-
-export function isTabBarPage (path = '') {
-  if (!(__uniConfig.tabBar && Array.isArray(__uniConfig.tabBar.list))) {
-    return false
-  }
-  try {
-    if (!path) {
-      const pages = getCurrentPages()
-      if (!pages.length) {
-        return false
-      }
-      const page = pages[pages.length - 1]
-      if (!page) {
-        return false
-      }
-      return page.$page.meta.isTabBar
-    }
-    return __uniRoutes.find(route => route.path === path).meta.isTabBar
-  } catch (e) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.log('getCurrentPages is not ready')
-    }
-  }
-  return false
 }
 
 const getRealRoute = (e, t) => {
