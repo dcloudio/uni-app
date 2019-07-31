@@ -1,12 +1,14 @@
 import {
   invoke,
-  publish
+  publish,
+  pack,
+  unpack
 } from '../../bridge'
 
 /**
  * 执行蓝牙相关方法
  */
-function bluetoothExec (method, callbackId, data = {}, beforeSuccess) {
+function bluetoothExec (method, callbackId, data = {}) {
   var deviceId = data.deviceId
   if (deviceId) {
     data.deviceId = deviceId.toUpperCase()
@@ -18,10 +20,7 @@ function bluetoothExec (method, callbackId, data = {}, beforeSuccess) {
 
   plus.bluetooth[method.replace('Changed', 'Change')](Object.assign(data, {
     success (data) {
-      if (typeof beforeSuccess === 'function') {
-        beforeSuccess(data)
-      }
-      invoke(callbackId, Object.assign({}, data, {
+      invoke(callbackId, Object.assign({}, pack(data), {
         errMsg: `${method}:ok`,
         code: undefined,
         message: undefined
@@ -38,27 +37,14 @@ function bluetoothExec (method, callbackId, data = {}, beforeSuccess) {
 /**
  * 监听蓝牙相关事件
  */
-function bluetoothOn (method, beforeSuccess) {
+function bluetoothOn (method) {
   plus.bluetooth[method.replace('Changed', 'Change')](function (data) {
-    if (typeof beforeSuccess === 'function') {
-      beforeSuccess(data)
-    }
-    publish(method, Object.assign({}, data, {
+    publish(method, Object.assign({}, pack(data), {
       code: undefined,
       message: undefined
     }))
   })
   return true
-}
-
-function checkDevices (data) {
-  data.devices = data.devices.map(device => {
-    var advertisData = device.advertisData
-    if (advertisData && typeof advertisData !== 'string') {
-      device.advertisData = wx.arrayBufferToBase64(advertisData)
-    }
-    return device
-  })
 }
 
 var onBluetoothAdapterStateChange
@@ -81,7 +67,7 @@ export function getBluetoothAdapterState (data, callbackId) {
 }
 
 export function startBluetoothDevicesDiscovery (data, callbackId) {
-  onBluetoothDeviceFound = onBluetoothDeviceFound || bluetoothOn('onBluetoothDeviceFound', checkDevices)
+  onBluetoothDeviceFound = onBluetoothDeviceFound || bluetoothOn('onBluetoothDeviceFound')
   bluetoothExec('startBluetoothDevicesDiscovery', callbackId, data)
 }
 
@@ -90,7 +76,7 @@ export function stopBluetoothDevicesDiscovery (data, callbackId) {
 }
 
 export function getBluetoothDevices (data, callbackId) {
-  bluetoothExec('getBluetoothDevices', callbackId, {}, checkDevices)
+  bluetoothExec('getBluetoothDevices', callbackId, {})
 }
 
 export function getConnectedBluetoothDevices (data, callbackId) {
@@ -116,18 +102,12 @@ export function getBLEDeviceCharacteristics (data, callbackId) {
 }
 
 export function notifyBLECharacteristicValueChange (data, callbackId) {
-  onBLECharacteristicValueChange = onBLECharacteristicValueChange || bluetoothOn('onBLECharacteristicValueChange',
-    data => {
-      data.value = wx.arrayBufferToBase64(data.value)
-    })
+  onBLECharacteristicValueChange = onBLECharacteristicValueChange || bluetoothOn('onBLECharacteristicValueChange')
   bluetoothExec('notifyBLECharacteristicValueChange', callbackId, data)
 }
 
 export function notifyBLECharacteristicValueChanged (data, callbackId) {
-  onBLECharacteristicValueChange = onBLECharacteristicValueChange || bluetoothOn('onBLECharacteristicValueChange',
-    data => {
-      data.value = wx.arrayBufferToBase64(data.value)
-    })
+  onBLECharacteristicValueChange = onBLECharacteristicValueChange || bluetoothOn('onBLECharacteristicValueChange')
   bluetoothExec('notifyBLECharacteristicValueChanged', callbackId, data)
 }
 
@@ -136,6 +116,5 @@ export function readBLECharacteristicValue (data, callbackId) {
 }
 
 export function writeBLECharacteristicValue (data, callbackId) {
-  data.value = wx.base64ToArrayBuffer(data.value)
-  bluetoothExec('writeBLECharacteristicValue', callbackId, data)
+  bluetoothExec('writeBLECharacteristicValue', callbackId, unpack(data))
 }
