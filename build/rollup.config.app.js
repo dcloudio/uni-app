@@ -23,10 +23,12 @@ if (process.env.UNI_SERVICE === 'legacy') {
   output.format = 'iife'
   output.name = 'serviceContext'
   output.banner =
-    `export function createServiceContext(Vue, weex, plus, __uniConfig, __uniRoutes, UniServiceJSBridge){
+    `export function createServiceContext(Vue, weex, plus, __uniConfig, __uniRoutes, UniServiceJSBridge,instanceContext){
 var localStorage = plus.storage
-var setTimeout = global.setTimeout
-var clearTimeout = global.clearTimeout
+var setTimeout = instanceContext.setTimeout
+var clearTimeout = instanceContext.clearTimeout
+var setInterval = instanceContext.setInterval
+var clearInterval = instanceContext.clearInterval
 `
   output.footer =
     `
