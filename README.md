@@ -29,11 +29,11 @@
 
 ## 需求墙
 
-`uni-app`计划支持的功能点，会在需求墙上进行展示，并允许开发者对需求进行投票，投票越多的需求，研发优先级越高，[前往投票](https://dev.dcloud.net.cn/wish/)。
+`uni-app`计划支持的功能点，会在需求墙上进行展示，并允许开发者对需求进行投票，[前往投票](https://dev.dcloud.net.cn/wish/)。
 
 ## 论坛
 
-由于`uni-app`已经有几十万开发者，50多个QQ、微信群，官方已无法维护更多交流群。请开发者到官方论坛交流：[https://ask.dcloud.net.cn/explore/](https://ask.dcloud.net.cn/explore/) 。论坛提供了比issus更专业的工具服务。
+由于`uni-app`有几十万开发者，50多个QQ、微信群，官方已无法维护更多交流群。请开发者到官方论坛交流：[https://ask.dcloud.net.cn/explore/](https://ask.dcloud.net.cn/explore/) 。论坛提供了比issus更专业的工具服务。
 
 ## 插件市场
 
