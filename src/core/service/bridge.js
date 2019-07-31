@@ -1,3 +1,7 @@
+export function pack (args) {
+  return args
+}
+
 export function unpack (args) {
   return args
 }
