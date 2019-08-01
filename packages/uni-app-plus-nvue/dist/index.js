@@ -7249,6 +7249,82 @@ var serviceContext = (function () {
     stopCompass: stopCompass
   });
 
+  const callbacks$3 = {
+    pause: [],
+    resume: [],
+    start: [],
+    stop: []
+  };
+
+  class RecorderManager {
+    constructor () {
+      onMethod('onRecorderStateChange', res => {
+        const state = res.state;
+        delete res.state;
+        delete res.errMsg;
+        callbacks$3[state].forEach(callback => {
+          if (typeof callback === 'function') {
+            callback(res);
+          }
+        });
+      });
+    }
+    onError (callback) {
+      callbacks$3.error.push(callback);
+    }
+    onFrameRecorded (callback) {
+
+    }
+    onInterruptionBegin (callback) {
+
+    }
+    onInterruptionEnd (callback) {
+
+    }
+    onPause (callback) {
+      callbacks$3.pause.push(callback);
+    }
+    onResume (callback) {
+      callbacks$3.resume.push(callback);
+    }
+    onStart (callback) {
+      callbacks$3.start.push(callback);
+    }
+    onStop (callback) {
+      callbacks$3.stop.push(callback);
+    }
+    pause () {
+      invokeMethod('operateRecorder', {
+        operationType: 'pause'
+      });
+    }
+    resume () {
+      invokeMethod('operateRecorder', {
+        operationType: 'resume'
+      });
+    }
+    start (options) {
+      invokeMethod('operateRecorder', Object.assign({}, options, {
+        operationType: 'start'
+      }));
+    }
+    stop () {
+      invokeMethod('operateRecorder', {
+        operationType: 'stop'
+      });
+    }
+  }
+
+  let recorderManager;
+
+  function getRecorderManager () {
+    return recorderManager || (recorderManager = new RecorderManager())
+  }
+
+  var require_context_module_1_7 = /*#__PURE__*/Object.freeze({
+    getRecorderManager: getRecorderManager
+  });
+
   class DownloadTask {
     constructor (downloadTaskId, callbackId) {
       this.id = downloadTaskId;
@@ -7333,7 +7409,7 @@ var serviceContext = (function () {
     return task
   }
 
-  var require_context_module_1_7 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_8 = /*#__PURE__*/Object.freeze({
     downloadFile: downloadFile$1
   });
 
@@ -7438,7 +7514,7 @@ var serviceContext = (function () {
     return new RequestTask(requestTaskId)
   }
 
-  var require_context_module_1_8 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_9 = /*#__PURE__*/Object.freeze({
     request: request$1
   });
 
@@ -7516,7 +7592,7 @@ var serviceContext = (function () {
 
   const socketTasks$1 = Object.create(null);
   const socketTasksArray = [];
-  const callbacks$3 = Object.create(null);
+  const callbacks$4 = Object.create(null);
   onMethod('onSocketTaskStateChange', ({
     socketTaskId,
     state,
@@ -7537,8 +7613,8 @@ var serviceContext = (function () {
     if (state === 'open') {
       socketTask.readyState = socketTask.OPEN;
     }
-    if (socketTask === socketTasksArray[0] && callbacks$3[state]) {
-      invoke(callbacks$3[state], state === 'message' ? {
+    if (socketTask === socketTasksArray[0] && callbacks$4[state]) {
+      invoke(callbacks$4[state], state === 'message' ? {
         data
       } : {});
     }
@@ -7597,22 +7673,22 @@ var serviceContext = (function () {
   }
 
   function onSocketOpen (callbackId) {
-    callbacks$3.open = callbackId;
+    callbacks$4.open = callbackId;
   }
 
   function onSocketError (callbackId) {
-    callbacks$3.error = callbackId;
+    callbacks$4.error = callbackId;
   }
 
   function onSocketMessage (callbackId) {
-    callbacks$3.message = callbackId;
+    callbacks$4.message = callbackId;
   }
 
   function onSocketClose (callbackId) {
-    callbacks$3.close = callbackId;
+    callbacks$4.close = callbackId;
   }
 
-  var require_context_module_1_9 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_10 = /*#__PURE__*/Object.freeze({
     connectSocket: connectSocket$1,
     sendSocketMessage: sendSocketMessage$1,
     closeSocket: closeSocket$1,
@@ -7706,7 +7782,7 @@ var serviceContext = (function () {
     return task
   }
 
-  var require_context_module_1_10 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_11 = /*#__PURE__*/Object.freeze({
     uploadFile: uploadFile$1
   });
 
@@ -7815,7 +7891,7 @@ var serviceContext = (function () {
     return res
   }
 
-  var require_context_module_1_11 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_12 = /*#__PURE__*/Object.freeze({
     setStorage: setStorage$1,
     setStorageSync: setStorageSync$1,
     getStorage: getStorage$1,
@@ -7836,7 +7912,7 @@ var serviceContext = (function () {
     return {}
   }
 
-  var require_context_module_1_12 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_13 = /*#__PURE__*/Object.freeze({
     pageScrollTo: pageScrollTo$1
   });
 
@@ -7852,12 +7928,13 @@ var serviceContext = (function () {
   './device/accelerometer.js': require_context_module_1_4,
   './device/bluetooth.js': require_context_module_1_5,
   './device/compass.js': require_context_module_1_6,
-  './network/download-file.js': require_context_module_1_7,
-  './network/request.js': require_context_module_1_8,
-  './network/socket.js': require_context_module_1_9,
-  './network/upload-file.js': require_context_module_1_10,
-  './storage/storage.js': require_context_module_1_11,
-  './ui/page-scroll-to.js': require_context_module_1_12,
+  './media/recorder.js': require_context_module_1_7,
+  './network/download-file.js': require_context_module_1_8,
+  './network/request.js': require_context_module_1_9,
+  './network/socket.js': require_context_module_1_10,
+  './network/upload-file.js': require_context_module_1_11,
+  './storage/storage.js': require_context_module_1_12,
+  './ui/page-scroll-to.js': require_context_module_1_13,
 
       };
       var req = function req(key) {
@@ -7918,26 +7995,22 @@ var serviceContext = (function () {
   }
 
   function findElmById (id, vm) {
-    return findElmByVNode(id, vm._vnode)
+    return findRefByElm(id, vm.$el)
   }
 
-  function findElmByVNode (id, vnode) {
-    if (!id || !vnode) {
+  function findRefByElm (id, elm) {
+    if (!id || !elm) {
       return
     }
-    if (
-      vnode.data &&
-      vnode.data.attrs &&
-      vnode.data.attrs.id === id
-    ) {
-      return vnode.elm
+    if (elm.attr.id === id) {
+      return elm
     }
-    const children = vnode.children;
+    const children = elm.children;
     if (!children) {
       return
     }
     for (let i = 0, len = children.length; i < len; i++) {
-      const elm = findElmByVNode(id, children[i]);
+      const elm = findRefByElm(id, children[i]);
       if (elm) {
         return elm
       }

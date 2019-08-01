@@ -429,26 +429,22 @@ function invokeVmMethod (vm, method, args, extras) {
 }
 
 function findElmById (id, vm) {
-  return findElmByVNode(id, vm._vnode)
+  return findRefByElm(id, vm.$el)
 }
 
-function findElmByVNode (id, vnode) {
-  if (!id || !vnode) {
+function findRefByElm (id, elm) {
+  if (!id || !elm) {
     return
   }
-  if (
-    vnode.data &&
-    vnode.data.attrs &&
-    vnode.data.attrs.id === id
-  ) {
-    return vnode.elm
+  if (elm.attr.id === id) {
+    return elm
   }
-  const children = vnode.children;
+  const children = elm.children;
   if (!children) {
     return
   }
   for (let i = 0, len = children.length; i < len; i++) {
-    const elm = findElmByVNode(id, children[i]);
+    const elm = findRefByElm(id, children[i]);
     if (elm) {
       return elm
     }
