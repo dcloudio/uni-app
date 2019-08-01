@@ -7,7 +7,7 @@ import tabBar from '../../framework/tab-bar'
 export function setTabBarBadge ({
   index,
   text,
-  type
+  type = 'text'
 }) {
   tabBar.setTabBarBadge(type, index, text)
   return {
