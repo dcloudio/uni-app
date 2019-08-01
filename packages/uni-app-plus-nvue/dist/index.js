@@ -1322,6 +1322,8 @@ var serviceContext = (function () {
 
     appCtx = appVm;
 
+    appCtx.globalData = appVm.$options.globalData || {};
+
     initOn(UniServiceJSBridge.on, {
       getApp,
       getCurrentPages: getCurrentPages$1

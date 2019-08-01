@@ -113,6 +113,8 @@ export function registerApp (appVm) {
 
   appCtx = appVm
 
+  appCtx.globalData = appVm.$options.globalData || {}
+
   initOn(UniServiceJSBridge.on, {
     getApp,
     getCurrentPages
