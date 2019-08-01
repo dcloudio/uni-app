@@ -52,7 +52,7 @@ export function login (params, callbackId) {
   }
 }
 
-const getUserInfo = function (params, callbackId) {
+export function getUserInfo (params, callbackId) {
   const provider = params.provider || 'weixin'
   const loginService = loginServices[provider]
   if (!loginService || !loginService.authResult) {
@@ -61,9 +61,10 @@ const getUserInfo = function (params, callbackId) {
     })
   }
   loginService.getUserInfo(res => {
+    let userInfo
     if (provider === 'weixin') {
       const wechatUserInfo = loginService.userInfo
-      const userInfo = {
+      userInfo = {
         openId: wechatUserInfo.openid,
         nickName: wechatUserInfo.nickname,
         gender: wechatUserInfo.sex,
@@ -73,33 +74,29 @@ const getUserInfo = function (params, callbackId) {
         avatarUrl: wechatUserInfo.headimgurl,
         unionId: wechatUserInfo.unionid
       }
-      invoke(callbackId, {
-        errMsg: 'operateWXData:ok',
-        data: {
-          data: JSON.stringify(userInfo),
-          rawData: '',
-          signature: '',
-          encryptedData: '',
-          iv: ''
-        }
-      })
     } else {
       loginService.userInfo.openId = loginService.userInfo.openId || loginService.userInfo.openid ||
                 loginService.authResult.openid
       loginService.userInfo.nickName = loginService.userInfo.nickName || loginService.userInfo.nickname
       loginService.userInfo.avatarUrl = loginService.userInfo.avatarUrl || loginService.userInfo.avatarUrl ||
                 loginService.userInfo.headimgurl
-      invoke(callbackId, {
-        errMsg: 'operateWXData:ok',
-        data: {
-          data: JSON.stringify(loginService.userInfo),
-          rawData: '',
-          signature: '',
-          encryptedData: '',
-          iv: ''
-        }
-      })
+      userInfo = loginService.userInfo
     }
+    const result = {
+      errMsg: 'operateWXData:ok'
+    }
+    if (params.data && params.data.api_name === 'webapi_getuserinfo') {
+      result.data = {
+        data: JSON.stringify(userInfo),
+        rawData: '',
+        signature: '',
+        encryptedData: '',
+        iv: ''
+      }
+    } else {
+      result.userInfo = userInfo
+    }
+    invoke(callbackId, result)
   }, err => {
     invoke(callbackId, {
       errMsg: 'operateWXData:fail:' + err.message
