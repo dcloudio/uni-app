@@ -57,6 +57,10 @@ uni-app已经有几十万开发者，创建了几十万个项目，是开发者�
 		<img src="//img-cdn-qiniu.dcloud.net.cn/uniapp/doc/kuntie.jpg" width="200"/>
 		<span style="margin-top:15px;">App码</span>
 	</a>
+    <a href="javascript:;" target="_blank" class="clear-style barcode-view">
+      <img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/wxkt.jpg" width="200"/>
+      <span style="margin-top:15px;">微信小程序码</span>
+    </a>
 </div>
 
 <a href="http://ext.dcloud.net.cn/plugin?id=239" target="_blank" class="clear-style"><b>ColorUI：</b></a>ColorUI官方组件库for uni-app，高颜值示例。本项目插件市场地址：[https://ext.dcloud.net.cn/plugin?id=239](https://ext.dcloud.net.cn/plugin?id=239)
