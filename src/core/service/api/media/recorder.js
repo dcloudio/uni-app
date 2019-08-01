@@ -12,17 +12,16 @@ const callbacks = {
 
 class RecorderManager {
   constructor () {
-    callbacks =
-      onMethod('onRecorderStateChange', res => {
-        const state = res.state
-        delete res.state
-        delete res.errMsg
-        callbacks[state].forEach(callback => {
-          if (typeof callback === 'function') {
-            callback(res)
-          }
-        })
+    onMethod('onRecorderStateChange', res => {
+      const state = res.state
+      delete res.state
+      delete res.errMsg
+      callbacks[state].forEach(callback => {
+        if (typeof callback === 'function') {
+          callback(res)
+        }
       })
+    })
   }
   onError (callback) {
     callbacks.error.push(callback)
