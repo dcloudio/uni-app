@@ -11,7 +11,7 @@ const callbacks = {
 }
 
 class RecorderManager {
-  constructor() {
+  constructor () {
     callbacks =
       onMethod('onRecorderStateChange', res => {
         const state = res.state
@@ -24,46 +24,46 @@ class RecorderManager {
         })
       })
   }
-  onError(callback) {
+  onError (callback) {
     callbacks.error.push(callback)
   }
-  onFrameRecorded(callback) {
+  onFrameRecorded (callback) {
 
   }
-  onInterruptionBegin(callback) {
+  onInterruptionBegin (callback) {
 
   }
-  onInterruptionEnd(callback) {
+  onInterruptionEnd (callback) {
 
   }
-  onPause(callback) {
+  onPause (callback) {
     callbacks.pause.push(callback)
   }
-  onResume(callback) {
+  onResume (callback) {
     callbacks.resume.push(callback)
   }
-  onStart(callback) {
+  onStart (callback) {
     callbacks.start.push(callback)
   }
-  onStop(callback) {
+  onStop (callback) {
     callbacks.stop.push(callback)
   }
-  pause() {
+  pause () {
     invokeMethod('operateRecorder', {
       operationType: 'pause'
     })
   }
-  resume() {
+  resume () {
     invokeMethod('operateRecorder', {
       operationType: 'resume'
     })
   }
-  start(options) {
+  start (options) {
     invokeMethod('operateRecorder', Object.assign({}, options, {
       operationType: 'start'
     }))
   }
-  stop() {
+  stop () {
     invokeMethod('operateRecorder', {
       operationType: 'stop'
     })
@@ -72,6 +72,6 @@ class RecorderManager {
 
 let recorderManager
 
-export function getRecorderManager() {
+export function getRecorderManager () {
   return recorderManager || (recorderManager = new RecorderManager())
 }
