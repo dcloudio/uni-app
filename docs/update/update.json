@@ -1,0 +1,16 @@
+{
+	"name": "Hello uniapp",
+	"appid":"__UNI__HelloUniApp",
+	"iOS":{
+		"version": "1.3.3",
+		"title": "Hello uni-app更新",
+		"note": "修复 使用地图选择位置无法定位问题\n修复 内置组件 网页 无法跳转问题\n新增 示例 原生子窗体",
+		"url": "https://itunes.apple.com/cn/app/hello-uni-app/id1417078253?mt=8"
+	},
+	"Android":{
+		"version": "1.9.6",
+		"title": "Hello uni-app更新",
+		"note": "新增 新增 SQLite 示例\n 新增 指纹示例\n 优化性能体验",
+		"url": "http://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/HelloUniApp@v1.9.6.apk"
+	}
+}

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>网络网页</title>
+		<style type="text/css">
+			.btn {
+				display: block;
+				margin: 20px auto;
+				padding: 5px;
+				background-color: #007aff;
+				border: 0;
+				color: #ffffff;
+				height: 40px;
+				width: 200px;
+			}
+
+			.btn-red {
+				background-color: #dd524d;
+			}
+
+			.btn-yellow {
+				background-color: #f0ad4e;
+			}
+
+			.desc {
+				padding: 10px;
+				color: #999999;
+			}
+
+			.post-message-section {
+				visibility: hidden;
+			}
+		</style>
+	</head>
+	<body>
+		<p class="desc">web-view 组件加载网络 html 示例。点击下列按钮，跳转至其它页面。</p>
+		<div class="btn-list">
+			<button class="btn" type="button" data-action="navigateTo">navigateTo</button>
+			<button class="btn" type="button" data-action="redirectTo">redirectTo</button>
+			<button class="btn" type="button" data-action="navigateBack">navigateBack</button>
+			<button class="btn" type="button" data-action="reLaunch">reLaunch</button>
+			<button class="btn" type="button" data-action="switchTab">switchTab</button>
+		</div>
+		<div class="post-message-section">
+			<p class="desc">网页向应用发送消息，应用会在此页面后退时接收到消息。</p>
+			<div class="btn-list">
+				<button class="btn btn-red" type="button" id="postMessage">postMessage</button>
+			</div>
+		</div>
+		<!-- 微信小程序 JS-SDK 如果不需要兼容微信小程序，则无需引用此 JS 文件。 -->
+		<script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
+		<!-- 支付宝小程序的 JS-SDK 防止 404 需要动态加载，如果不需要兼容支付宝小程序，则无需引用此 JS 文件。 -->
+		<script type="text/javascript">
+			if (navigator.userAgent.indexOf('AlipayClient') > -1) {
+				document.writeln('<script src="https://appx/web-view.min.js"' + '>' + '<' + '/' + 'script>');
+			}
+		</script>
+		<!-- 百度小程序 JS-SDK 如果不需要兼容百度小程序，则无需引用此 JS 文件。 -->
+		<script type="text/javascript" src="https://b.bdstatic.com/searchbox/icms/searchbox/js/swan-1.7.0.js"></script>
+		<script type="text/javascript">
+			if (!/toutiaomicroapp/i.test(navigator.userAgent)) {
+				document.querySelector('.post-message-section').style.visibility = 'visible';
+			} else {
+				//头条小程序 JS-SDK 如果不需要兼容头条小程序，则无需引用此 JS 文件。
+				document.write('<script type="text/javascript" src="https://s3.pstatp.com/toutiao/tmajssdk/jssdk-1.0.0.js"><\/script>');
+			}
+		</script>
+		<!-- uni 的 SDK -->
+		<script type="text/javascript" src="https://js.cdn.aliyun.dcloud.net.cn/dev/uni-app/uni.webview.1.5.1.js"></script>
+		<script type="text/javascript">
+			document.addEventListener('UniAppJSBridgeReady', function() {
+				document.querySelector('.btn-list').addEventListener('click', function(evt) {
+					var target = evt.target;
+					if (target.tagName === 'BUTTON') {
+						var action = target.getAttribute('data-action');
+						switch (action) {
+							case 'switchTab':
+								uni.switchTab({
+									url: '/pages/tabBar/API/API'
+								});
+								break;
+							case 'reLaunch':
+								uni.reLaunch({
+									url: '/pages/tabBar/component/component'
+								});
+								break;
+							case 'navigateBack':
+								uni.navigateBack({
+									delta: 1
+								});
+								break;
+							default:
+								uni[action]({
+									url: '/pages/component/button/button'
+								});
+								break;
+						}
+					}
+				});
+				document.getElementById('postMessage').addEventListener('click', function() {
+					uni.postMessage({
+						data: {
+							action: 'message'
+						}
+					});
+				});
+			});
+		</script>
+	</body>
+</html>

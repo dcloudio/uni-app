@@ -1,0 +1,307 @@
+{
+	"id": "必选，应用的标识",
+	"name": "必选，应用名称",
+	"version": {
+		"name": "必选，版本名称",
+		"code": "必选，版本代号，对应原来的versionCode值"
+	},
+	"description": "可选，应用描述信息",
+	"icons": {
+		"48": "可选，应用图标的路径，可以放多种分辨率"
+	},
+	"launch_path": "必选，应用的入口页面，默认为根目录下的index.html；也可以是网络地址，网络地址必须以http://或https://开头",
+	"developer": {
+		"name": "可选，开发者名称",
+		"email": "可选，开发者邮箱地址",
+		"url": "可选，开发者网站地址"
+	},
+	"permissions": {
+		"Accelerometer": "必选，访问设备感应器",
+		"Camera": "必选，访问设备感应器",
+		"Contacts": "必选，访问设备感应器",
+		"UI": "必选，访问设备感应器",
+		"push": {
+			"cover": "true"
+		},
+		"runtime": "必选，访问设备感应器"
+	},
+	"orientation": [
+		"portrait",
+		"landscape",
+		"可选，"
+	],
+	"default_locale": "可选，保留作为默认使用的本地化资源，暂不使用",
+	"locales": "可选，保留作为本地化使用，暂不使用",
+	"plus": {
+		"arguments": "启动应用的参数，应用中可通过plus.runtime.arguments获取",
+		"splashscreen": {
+			"autoclose": "可选，是否自动关闭启动界面，默认值为true",
+			"event": "titleUpdate|rendering|loaded，触发自动关闭splash界面的事件",
+			"target": "default|second，event事件的目标Webview窗口",
+			"waiting": "true|false，是否显示等待雪花",
+			"delay": "可选，启动界面在应用的首界面加载完毕后延迟关闭的时间，单位为ms",
+			"ads": {
+				"background": "开屏广告背景颜色，#RRGGBB格式字符串，默认值为白色（#FFFFFF）",
+				"image": "开屏广告底部图片地址，如logo.png，相对应用资源目录路径，不支持网络地址"
+			}
+		},
+		"statusbar": {
+			"immersed": "none|suggestedDevice|supportedDevice，沉浸式状态栏情况",
+			"style": "dark|light, 系统状态栏样式",
+			"background": "#RRGGBB格式字符串，系统状态栏背景颜色"
+		},
+		"popGesture": "none，新建webview窗口无侧滑返回功能；close：新建webview窗口默认侧滑返回关闭；hide：新建webview窗口默认侧滑返回隐藏。",
+		"error": {
+			"url": "页面加载错误时打开的页面地址，可以是网络地址，也可以是本地地址"
+		},
+		"useragent": {
+			"value": "要设置的默认userAgent值",
+			"concatenate": true
+		},
+		"cache": {
+			"mode": "Webview窗口的默认缓存模式，可取值default、cacheElseNetwork、noCache、cacheOnly"
+		},
+		"cers": {
+			"description": "控制是否开启应用异常崩溃与错误报告系统",
+			"crash": true
+		},
+		"kernel": {
+			"ios": "Webview窗口默认使用的内核，可取值：WKWebview - 在iOS8.0及以上系统默认使用WKWebview内核，UIWebview - 使用UIWebview内核，默认值为UIWebview"
+		},
+		"ssl": "accept|refuse|warning，访问https网络时对非受信证书的处理逻辑",
+		"launchwebview": {
+			"overrideresource": [{
+				"match": "区配拦截的资源url地址",
+				"redirect": "拦截资源的重现向地址",
+				"mime": "拦截资源的数据类型",
+				"encoding": "拦截资源的数据编码",
+				"header": "拦截资源的http头数据"
+			}],
+			"overrideurl": {
+				"mode": "allow|reject，拦截模式",
+				"match": "匹配拦截规则",
+				"exclude": "none|redirect，排除拦截理规则"
+			},
+			"titleNView": {
+				"backgroundcolor": "#F7F7F7, 标题栏背景颜色",
+				"titletext": "标题栏标题文字内容",
+				"titlecolor": "#000000, 标题栏标题文字颜色"
+			}
+		},
+		"secondwebview": {
+			"launch_path": "加载页面地址",
+			"id": "Webview窗口标识",
+			"mode": "front|child|behind，Webview显示模式",
+			"height": "0px|10%，Webview窗口高度",
+			"overrideresource": [{
+				"match": "区配拦截的资源url地址",
+				"redirect": "拦截资源的重现向地址",
+				"mime": "拦截资源的数据类型",
+				"encoding": "拦截资源的数据编码",
+				"header": "拦截资源的http头数据"
+			}],
+			"overrideurl": {
+				"mode": "allow|reject，拦截模式",
+				"match": "匹配拦截规则",
+				"exclude": "none|redirect，排除拦截理规则"
+			}
+		},
+		"runmode": "normal",
+		"signature": "可选，保留给应用签名，暂不使用",
+		"distribute": {
+			"debug": "可选，是否为debug模式，可取值：true表示debug模式运行，false表示release模式运行，默认值为false",
+			"apple": {
+				"appid": "iOS必选，苹果开发网站申请的appid，如io.dcloud.hbuilder",
+				"mobileprovision": "iOS必选，打包配置文件",
+				"password": "iOS必选，导入配置文件密码",
+				"p12": "iOS必选，打包配置文件关联的个人证书",
+				"devices": "iphone，可取值iphone/ipad/universal",
+				"UIReserveStatusbarOffset": "应用的区域是否预留系统状态栏位置（应用区域通顶到系统状态栏区域），仅iOS7及以上平台有效，Boolean类型，true表示预留系统状态栏位置（不通顶），false表示不预留系统状态栏位置（通顶），默认值为true。",
+				"UIStatusBarStyle": "设置状态栏的样式，可取值UIStatusBarStyleBlackTranslucent/UIStatusBarStyleDefault/UIStatusBarStyleBlackOpaque",
+				"StatusBarBackground": "设置状态栏的背景颜色，iOS7以上系统有效，支持#RRGGBB格式",
+				"UIBackgroundModes": ["设置应用是否支持后台模式，可取值“audio”表示支持后台播放音乐"],
+				"urltypes": [{
+						"urlschemes": [
+							"hbuilder",
+							"必选，程序所支持的自定义协议名称"
+						],
+						"id": "可选，自定义协议的标识",
+						"icon": "可选，打开程序时显示的图标"
+					},
+					{
+						"urlschemes": [
+							"http",
+							"https",
+							"必选，程序所支持的自定义协议名称，大小写无关，推荐使用小写"
+						],
+						"id": "可选，自定义协议的标识",
+						"icon": "可选，打开程序时显示的图标"
+					}
+				],
+				"frameworks": ["使用native.js调用API要引用的库文件名称，如CoreLocation.framework", "QuartzCore.framework"],
+				"plistcmds": [
+					"Set :权限 调用权限的原因",
+					"Set :NSCameraUsageDescription 说明使用用户相机的原因"
+				]
+			},
+			"google": {
+				"packagename": "Android必选，程序包名，如com.dheaven.hbuilder",
+				"keystore": "Android必选，打包证书文件",
+				"password": "Android必选，打包证书密码",
+				"aliasname": "Android必选，打包证书别名",
+				"hardwareAccelerated": "Boolean类型，是否开启硬件加速，true表示开启，false表示关闭",
+				"schemes": [
+					"应用支持的scheme，大小写相关，推荐使用小写"
+				],
+				"theme": "程序使用的主题",
+				"android:name": "自定义程序入口类名",
+				"custompermissions": "Boolean类型，是否自定义android权限，true表示自定义权限，只使用permissions下指定的android权限，不根据用户使用的5+模块自动添加android权限，false表示自动根据用户使用的5+模块自动添加android权限",
+				"permissions": [
+					"要添加的额外的android权限，如<uses-permission android:name=\"com.android.launcher.permission.INSTALL_SHORTCUT\" />",
+					"<uses-permission android:name=\"com.android.launcher.permission.UNINSTALL_SHORTCUT\" />"
+				],
+				"minSdkVersion": "apk支持的最低版本，默认值为14",
+				"targetSdkVersion": "apk的目标版本，默认值为21"
+			},
+			"orientation": [
+				"portrait-primary",
+				"landscape-primary",
+				"portrait-secondary",
+				"landscape-secondary"
+			],
+			"icons": {
+				"ios": {
+					"appstore": "必选, 1024x1024, 提交app sotre使用的图标",
+					"iphone": {
+						"app@2x": "可选，120x120，iOS7-11程序图标（iPhone4S/5/6/7/8）",
+						"app@3x": "可选，180x180，iOS7-11程序图标（iPhone6plus/7plus/8plus/X）",
+						"spotlight@2x": "可选，80x80，iOS7-11 Spotlight搜索图标（iPhone5/6/7/8）",
+						"spotlight@3x": "可选，120x120，iOS7-11 Spotlight搜索图标（iPhone6plus/7plus/8plus/X）",
+						"settings@2x": "可选，58x58，iOS5-11 Settings设置图标（iPhone5/6/7/8）",
+						"settings@3x": "可选，87x87，iOS5-11 Settings设置图标（iPhone6plus/7plus/8plus/X）",
+						"notification@2x": "可选，40x40，iOS7-11 通知栏图标（iPhone5/6/7/8）",
+						"notification@3x": "可选，60x60，iOS7-11 通知栏图标（iPhone6plus/7plus/8plus/X）"
+					},
+					"ipad": {
+						"app[normal7]": "可选，76x76，iOS7-11程序图标",
+						"app@2x[retina7]": "可选，152x152，iOS7-11程序图标（高分屏）",
+						"proapp@2x": "可选，167x167，iOS9-11程序图标（iPad Pro）",
+						"spotlight": "可选，40x40，iOS7-11 Spotlight搜索图标",
+						"spotlight@2x": "可选，80x80，iOS7-11 Spotlight搜索图标（高分屏）",
+						"settings": "可选，29x29，iOS5-11 设置图标",
+						"settings@2x": "可选，58x58，iOS5-11 设置图标（高分屏）",
+						"notification": "可选，20x20，iOS7-11 通知栏图标",
+						"notification@2x": "可选，40x40，iOS7-11 通知栏图标（高分屏）"
+					}
+				},
+				"android": {
+					"mdpi": "必选，48x48，普通屏程序图标",
+					"ldpi": "必选，48x48，大屏程序图标",
+					"hdpi": "必选，72x72，高分屏程序图标",
+					"xhdpi": "必选，96x96，720P高分屏程序图标",
+					"xxhdpi": "必选，144x144，1080P高分屏程序图标",
+					"xxxhdpi": "可选，192x192"
+				}
+			},
+			"splashscreen": {
+				"ios": {
+					"iphone": {
+						"default": "可选，320x480，iPhone3启动图片",
+						"retina35": "可选，640x960，3.5英寸设备(iPhone4)启动图片",
+						"retina40": "可选，640x1136，4.0英寸设备(iPhone5)启动图片",
+						"retina40l": "可选，1136x640，4.0英寸设备(iPhone5)横屏启动图片",
+						"retina47": "可选，750x1334，4.7英寸设备（iPhone6）启动图片",
+						"retina47l": "可选，1334x750，4.7英寸设备（iPhone6）横屏启动图片",
+						"retina55": "可选，1242x2208，5.5英寸设备（iPhone6Plus）启动图片",
+						"retina55l": "可选，2208x1242，5.5英寸设备（iPhone6Plus）横屏启动图片",
+						"iphonex": "可选，1125x2436，iPhoneX启动图片",
+						"iphonexl": "可选，2436x1125，iPhoneX横屏启动图片"
+					},
+					"ipad": {
+						"portrait": "可选，768x1004，需支持iPad时必选，iPad竖屏启动图片",
+						"portrait-retina": "可选，1536x2008，需支持iPad时必选，iPad高分屏竖屏图片",
+						"landscape": "可选，1024x748，需支持iPad时必选，iPad横屏启动图片",
+						"landscape-retina": "可选，2048x1496，需支持iPad时必选，iPad高分屏横屏启动图片",
+						"portrait7": "可选，768x1024，需支持iPad iOS7时必选，iPad竖屏启动图片",
+						"portrait-retina7": "可选，1536x2048，需支持iPad iOS7时必选，iPad高分屏竖屏图片",
+						"landscape7": "可选，1024x768，需支持iPad iOS7时必选，iPad横屏启动图片",
+						"landscape-retina7": "可选，2048x1536，需支持iPad iOS7时必选，iPad高分屏横屏启动图片"
+					}
+				},
+				"android": {
+					"mdpi": "必选，240x282，普通屏启动图片",
+					"ldpi": "必选，320x442，大屏启动图片",
+					"hdpi": "必选，480x762，高分屏启动图片",
+					"xhdpi": "必选，720x1242，720P高分屏启动图片",
+					"xxhdpi": "必选，1080x1882，1080P高分屏启动图片"
+				}
+			},
+			"plugins": {
+				"statics": {
+					"umeng": {
+						"appkey_ios": "必选，iOS平台友盟统计应用密钥，如5379d57656240b5493130a40",
+						"channelid_ios": "可选，iOS平台应用发布通道标识，如appstore",
+						"appkey_android": "必选，Android平台友盟统计应用密钥，如5379d5c456240b9c8b045211",
+						"channelid_android": "必选，Android平台应用发布通道标识，如googleplay",
+						"appkey": "废弃，友盟统计应用密钥",
+						"channelid": "废弃，友盟统计应用发布通道标识"
+					}
+				},
+				"maps": {
+					"baidu": {
+						"appkey_ios": "必选，iOS平台百度地图应用密钥，如mRFUA0lOYyCGXOcFkZ4cP44K",
+						"appkey_android": "必选，Android平台百度地图应用密钥，如mRFUA0lOYyCGXOcFkZ4cP44K",
+						"appkey": "废弃，老版本使用的应用密钥，如mRFUA0lOYyCGXOcFkZ4cP44K",
+						"description": "百度地图"
+					}
+				},
+				"speech": {
+					"ifly": {
+						"appid": "必选，讯飞语音识别应用标识"
+					}
+				},
+				"push": {
+					"mkeypush": {
+						"appid": "必选，MKey推送应用标识",
+						"appkey": "必选，MKey推送应用appkey",
+						"server": "必选，MKey推送服务器地址"
+					},
+					"igexin": {
+						"appid": "必选，个推应用标识",
+						"appkey": "必选，个推应用appkey",
+						"appsecret": "必选，个推应用安全标识"
+					}
+				},
+				"share": {
+					"sina": {
+						"appkey": "必选，新浪网站申请",
+						"appsecret": "必选，新浪网站申请",
+						"redirect_uri": "必选，新浪网站申请应用时填写",
+						"description": "可选，新浪微博分享"
+					},
+					"tencent": {
+						"appkey": "必选，腾讯网站申请",
+						"appsecret": "必选，腾讯网站申请",
+						"redirect_uri": "必选，腾讯网站申请应用时填写",
+						"description": "可选，腾讯微博分享"
+					},
+					"weixin": {
+						"appid": "必选，微信网站申请",
+						"appsecret": "必选，微信网站申请",
+						"description": "可选，微信分享"
+					}
+				},
+				"payment": {
+					"alipay": {
+						"scheme": "必选，iOS平台调用支付宝的“快捷支付”应用返回时用到的标识",
+						"description": "可选，阿里支付"
+					},
+					"weixn": {
+						"description": "可选，微信支付"
+					}
+				}
+			}
+		},
+		"adid": "广告联盟会员ID"
+	}
+}

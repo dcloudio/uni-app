@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<title>uni-app官网</title>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<meta name="description" content="uni-app：一个使用 Vue.js 开发跨平台应用的前端框架">
+		<meta name="keywords" content="uni-app,uniapp,小程序,微信小程序,小程序解决方案,微信小程序解决方案,快应用,DCloud,混合app,app开发,hbuilder,hybrid,native,webview">
+		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+		<link rel="shortcut icon" type="image/x-icon" href="//img-cdn-qiniu.dcloud.net.cn/uniapp/doc/icon.png?v=1556263038786">
+		<link rel="stylesheet" href="/static/vue.css">
+		<link rel="stylesheet" href="/static/index.min.css?v=1559299190792">
+		<script src="//js.cdn.aliyun.dcloud.net.cn/dev/js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+
+	<body>
+		<div id="app"></div>
+		<script>
+			console.log("%c诚邀优秀前端加盟，一起打造uni-app框架：https://ask.dcloud.net.cn/article/35098", "color:red")
+			// docsify config start
+			window.$docsify = {
+				alias: {
+					'/.*/_navbar.md': '/_navbar.md',
+					'/(.*)/.*/_sidebar.md': '/$1/_sidebar.md',
+				},
+				name: 'uni-app',
+				// TODO 如需提交,必须改为 history 模式 
+				routerMode: 'history',
+				// routerMode: 'hash',
+				repo: false,
+				coverpage: false,
+				loadSidebar: true,
+				loadNavbar: true,
+				auto2top: true,
+				mdCache: 7200000,
+				search: {
+					maxAge: 7200000,
+					paths: ['/', '/api/README', '/api/arrayBufferToBase64', '/api/base64ToArrayBuffer', '/api/canvas/CanvasContext',
+						'/api/canvas/CanvasGradient', '/api/canvas/canvasGetImageData', '/api/canvas/canvasPutImageData',
+						'/api/canvas/canvasToTempFilePath', '/api/canvas/createCanvasContext', '/api/canvas/createOffscreenCanvas',
+						'/api/extend/native-plugin', '/api/file/file', '/api/file/getFileSystemManager', '/api/key',
+						'/api/location/location', '/api/location/map', '/api/location/open-location', '/api/log',
+						'/api/media/audio-context', '/api/media/background-audio-manager', '/api/media/camera-context',
+						'/api/media/editor-context', '/api/media/image', '/api/media/live-player-context', '/api/media/record-manager',
+						'/api/media/video-context', '/api/media/video', '/api/other/advertisement', '/api/other/authentication',
+						'/api/other/authorize', '/api/other/card', '/api/other/choose-address', '/api/other/get-extconfig',
+						'/api/other/getAccountInfoSync', '/api/other/invoice-title', '/api/other/open-miniprogram',
+						'/api/other/reportAnalytics', '/api/other/reportMonitor', '/api/other/set-enable-debug', '/api/other/setting',
+						'/api/other/template', '/api/other/update', '/api/plugins/login', '/api/plugins/payment',
+						'/api/plugins/provider', '/api/plugins/push', '/api/plugins/share', '/api/request/UDP', '/api/request/mDNS',
+						'/api/request/network-file', '/api/request/request', '/api/request/socket-task', '/api/request/websocket',
+						'/api/router', '/api/storage/storage', '/api/system/accelerometer', '/api/system/barcode',
+						'/api/system/batteryInfo', '/api/system/ble', '/api/system/bluetooth', '/api/system/brightness',
+						'/api/system/capture-screen', '/api/system/clipboard', '/api/system/compass', '/api/system/contact',
+						'/api/system/deviceMotion', '/api/system/gyroscope', '/api/system/ibeacon', '/api/system/info',
+						'/api/system/memory', '/api/system/network', '/api/system/nfc', '/api/system/phone', '/api/system/vibrate',
+						'/api/system/wifi', '/api/timer', '/api/ui/animation', '/api/ui/bgcolor', '/api/ui/font',
+						'/api/ui/intersection-observer', '/api/ui/menuButton', '/api/ui/navigationbar', '/api/ui/nextTick',
+						'/api/ui/nodes-info', '/api/ui/prompt', '/api/ui/pulldown', '/api/ui/scroll', '/api/ui/tabbar',
+						'/api/ui/window', '/api/window/subNVues', '/api/window/window', '/api/worder', '/case', '/casecode', '/cloud',
+						'/collocation/manifest', '/collocation/pages', '/collocation/uni-scss', '/component/README', '/component/audio',
+						'/component/button', '/component/camera', '/component/canvas', '/component/checkbox', '/component/cover-view',
+						'/component/editor', '/component/form', '/component/icon', '/component/image', '/component/input',
+						'/component/label', '/component/live-player', '/component/map', '/component/movable-view',
+						'/component/native-component', '/component/navigator', '/component/open-data', '/component/open',
+						'/component/picker-view', '/component/picker', '/component/progress', '/component/radio',
+						'/component/rich-text', '/component/scroll-view', '/component/slider', '/component/swiper', '/component/switch',
+						'/component/text', '/component/textarea', '/component/video', '/component/view', '/component/web-view',
+						'/ecosystem', '/extendUI', '/faq', '/frame', '/matter', '/performance', '/platform', '/quickstart', '/resource',
+						'/select', '/snippet', '/template', '/use-html5plus', '/use-weex', '/use'
+					],
+					placeholder: '搜索',
+					noData: '没有结果',
+					depth: 4
+				},
+				maxLevel: 4,
+				subMaxLevel: 3,
+				banner: ['/case'],
+				plugins: [
+					function(hook, vm) {
+						hook.ready(function() {
+							// 初始化并第一次加完成数据后调用，没有参数。
+							// console.log(document.getElementById('update-hock').getAttribute('href'));
+							// getAjax()
+						})
+					}
+				]
+				// adHref: '//ask.dcloud.net.cn/article/35700',
+				// adImg: '//img-cdn-qiniu.dcloud.net.cn/uniapp/doc/img/ad.png'
+			}
+			// docsify config end
+
+			function getAjax() {
+				$.ajax({
+					url: '//www.dcloud.io/docs/HBuilder.json' + '?timestamp=' + $.now(),
+					dataType: 'json',
+					success: function(res) {
+						var path = '//update.dcloud.net.cn/hbuilderx/changelog/'
+						var winConfig = res['win'][1];
+						path += winConfig.version + '.html';
+						$('#update-hock').attr('href',path);
+					},
+					error: function(err) {
+						console.error(err)
+					}
+				});
+			}
+		</script>
+		<script src="/static/docsify.min.js?v=1556263038786"></script>
+		<script src="/static/search.min.js?v=1559299190620"></script>
+		<script src="/static/preview.min.js?v=1556263038786"></script>
+		<script>
+			var _hmt = _hmt || [];
+			(function() {
+				var hm = document.createElement("script");
+				hm.src = "https://hm.baidu.com/hm.js?fe3b7a223fc08c795f0f4b6350703e6f";
+				var s = document.getElementsByTagName("script")[0];
+				s.parentNode.insertBefore(hm, s);
+				//加入广告
+				function creatPop() {
+					var popTime = localStorage.getItem("popTime"),
+						hasClose = localStorage.getItem("hasClose");
+					var nowTime = new Date().getTime();
+					if (popTime && Number(popTime) + 24 * 60 * 60 * 1000 > nowTime && hasClose === "true") {
+						return;
+					} else {
+						localStorage.removeItem("hasClose");
+						localStorage.setItem("popTime", nowTime);
+					}
+					var pop = document.createElement("div");
+					pop.setAttribute("style",
+						"width: 180px;height: 120px;position: fixed;bottom: 30px;right: 30px;z-index: 99;");
+					pop.innerHTML =
+						'<div id="close-pop" style="line-height: 13px;color: #000000;font-size: 28px;position: absolute;right: 0px;top: 6px;cursor:pointer;">×</div><a href="//ask.dcloud.net.cn/question/60729" target="_blank"><img width="100%" src="https://img-cdn-qiniu.dcloud.net.cn/static/images/uniapp_share_promotion.png"></a>';
+					document.body.appendChild(pop);
+					var closePop = document.querySelector("#close-pop");
+					closePop.addEventListener("click", function() {
+						localStorage.setItem("hasClose", "true");
+						document.body.removeChild(pop);
+					});
+				}
+				// creatPop();
+
+				window.addEventListener("click", function(e) {
+					var target = e.target;
+					if (target.id === "zhizhang") { //点击开发者的感谢信--弹窗多的话，可以封成一个组件
+						var preview = new $docsify.Preview('https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/gnaxie.png');
+						preview.show();
+						return
+					}
+					if (target.className === "chapter") { //左侧导航的折叠
+						var chapterParent = target.parentElement;
+						var summary = localStorage.getItem("summary") ? JSON.parse(localStorage.getItem(
+							"summary")) : {};
+						var level = chapterParent.dataset.level;
+						if (chapterParent.classList.contains("close")) {
+							summary[level] = false;
+							chapterParent.classList.remove("close");
+						} else {
+							summary[level] = true;
+							chapterParent.classList.add("close");
+						}
+						localStorage.setItem("summary", JSON.stringify(summary))
+						return;
+					}
+
+					if (target.tagName === "IMG" && target.className !== "preview-img") {
+						var src = target.src,
+							showImg = true;
+						while (target && target !== document) {
+							if (target.tagName == 'A') {
+								showImg = false;
+								break;
+							}
+							target = target.parentNode
+						}
+						if (showImg && src) {
+							var preview = new $docsify.Preview(src);
+							preview.show();
+							return
+						}
+					}
+				}, true)
+
+			})();
+
+			function videoPlay() {
+				var img = new Image();
+				img.src = "http://uniapp.dcloud.io/video/log/play.png";
+			}
+		</script>
+
+	</body>
+
+</html>

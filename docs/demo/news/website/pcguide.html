@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang=zh-CN>
+	<head>
+		<meta charset=utf-8>
+		<meta http-equiv=X-UA-Compatible content="IE=edge">
+		<meta name=viewport content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1">
+		<title>pcguide</title>
+		<script type="text/javascript">
+			var ua = window.navigator.userAgent.toLowerCase();
+			var isAndroid = ua.indexOf('android') > 0;
+			var isIOS = /iphone|ipad|ipod|ios/.test(ua);
+			if (isAndroid || isIOS) {
+				window.location.href = 'https://unidemo.dcloud.net.cn/h5/news';
+			}
+		</script>
+		<style type="text/css">
+			.wrapper {
+				width: 500px;
+				height: 500px;
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				margin-top: -200px;
+				margin-left: -200px;
+				text-align: center;
+			}
+
+			.barcode-image {
+				display: inline-block;
+				vertical-align: middle;
+				width: 200px;
+				height: 200px;
+			}
+
+			.list {
+				width: 500px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="wrapper">
+			<img class="barcode-image" src="data:image/png;base64,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" alt="二维码">
+			<div class="list">
+				<p class="list-cell">请使用手机浏览器，扫描上方二维码预览。</p>
+				<p class="list-cell">PC浏览器，请打开控制台并切换至手机模式后并再次刷新浏览。</p>
+			</div>
+		</div>
+	</body>
+</html>

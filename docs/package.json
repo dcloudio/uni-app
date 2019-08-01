@@ -1,0 +1,24 @@
+{
+  "name": "docs-uniapp",
+  "version": "1.0.0",
+  "description": "```uni-app``` 是一个使用 [Vue.js](https://vuejs.org/) 开发**跨平台**应用的前端框架。",
+  "main": "index.js",
+  "scripts": {
+    "serve": "docsify serve --open",
+    "dev": "node scripts/service.js",
+    "start": "pm2 start scripts/service.js --name docs-uniapp",
+    "mini": "node scripts/compress.js",
+    "contact": "node scripts/contact.js",
+    "search:init": "node scripts/init-search.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "docsify-cli": "^4.3.0",
+    "docsify-server-renderer": "^4.7.1",
+    "marked": "^0.5.0",
+    "prismjs": "^1.15.0",
+    "uglify-js": "^3.4.9",
+    "uglifycss": "^0.0.29"
+  }
+}
