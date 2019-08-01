@@ -37,8 +37,6 @@ export function switchTab ({
         currentPage.$getAppWebview().close('auto')
       }
     } else {
-      // TODO 客户端 Bug
-      currentPage.$getAppWebview().hide('none')
       // 前一个 tabBar 触发 onHide
       currentPage.$vm.__call_hook('onHide')
     }
