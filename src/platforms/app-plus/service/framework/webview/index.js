@@ -7,6 +7,10 @@ import {
   parseWebviewStyle
 } from './parser/webview-style-parser'
 
+import {
+  publish
+} from '../../bridge'
+
 let id = 2
 
 const WEBVIEW_LISTENERS = {
@@ -55,6 +59,20 @@ export function initWebview (webview, routeOptions) {
     webview.addEventListener(name, (e) => {
       emit(WEBVIEW_LISTENERS[name], e, parseInt(webview.id))
     })
+  })
+
+  webview.addEventListener('resize', ({
+    width,
+    height
+  }) => {
+    const res = {
+      size: {
+        windowWidth: Math.ceil(width),
+        windowHeight: Math.ceil(height)
+      }
+    }
+    publish('onViewDidResize', res)
+    emit('onResize', res, parseInt(webview.id))
   })
 
   // TODO 应该结束之前未完成的下拉刷新
