@@ -18,6 +18,10 @@ import {
 
 import tabBar from './tab-bar'
 
+import {
+  publish
+} from '../bridge'
+
 let appCtx
 
 const NETWORK_TYPES = [
@@ -54,7 +58,7 @@ function initGlobalListeners () {
 
   plus.globalEvent.addEventListener('netchange', () => {
     const networkType = NETWORK_TYPES[plus.networkinfo.getCurrentType()]
-    emit('onNetworkStatusChange', {
+    publish('onNetworkStatusChange', {
       isConnected: networkType !== 'none',
       networkType
     })
