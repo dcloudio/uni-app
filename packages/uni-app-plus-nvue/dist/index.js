@@ -1,7 +1,9 @@
-export function createServiceContext(Vue, weex, plus, __uniConfig, __uniRoutes, UniServiceJSBridge){
+export function createServiceContext(Vue, weex, plus, __uniConfig, __uniRoutes, UniServiceJSBridge,instanceContext){
 var localStorage = plus.storage
-var setTimeout = global.setTimeout
-var clearTimeout = global.clearTimeout
+var setTimeout = instanceContext.setTimeout
+var clearTimeout = instanceContext.clearTimeout
+var setInterval = instanceContext.setInterval
+var clearInterval = instanceContext.clearInterval
 
 var serviceContext = (function () {
   'use strict';
@@ -24,25 +26,49 @@ var serviceContext = (function () {
     return callHook(vm, hook, params)
   }
 
-  function callApiSync (api, args, name, alias) {
-    const ret = api(args);
-    if (ret && ret.errMsg) {
-      ret.errMsg = ret.errMsg.replace(name, alias);
-    }
-    return ret
+  function pack (args) {
+    return args
   }
 
-  function getLastWebview () {
-    try {
+  function unpack (args) {
+    return args
+  }
+
+  function invoke (...args) {
+    return UniServiceJSBridge.invokeCallbackHandler(...args)
+  }
+
+  function requireNativePlugin (name) {
+    return uni.requireNativePlugin(name)
+  }
+
+  /**
+   * 触发 service 层，与 onMethod 对应
+   */
+  function publish (name, res) {
+    return UniServiceJSBridge.emit('api.' + name, res)
+  }
+
+  let lastStatusBarStyle;
+
+  function setStatusBarStyle (statusBarStyle) {
+    if (!statusBarStyle) {
       const pages = getCurrentPages();
-      if (pages.length) {
-        return pages[pages.length - 1].$getAppWebview()
+      if (!pages.length) {
+        return
       }
-    } catch (e) {
-      if (process.env.NODE_ENV !== 'production') {
-        console.log('getCurrentPages is not ready');
+      statusBarStyle = pages[pages.length - 1].$page.meta.statusBarStyle;
+      if (!statusBarStyle || statusBarStyle === lastStatusBarStyle) {
+        return
       }
     }
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`[uni-app] setStatusBarStyle`, statusBarStyle);
+    }
+
+    lastStatusBarStyle = statusBarStyle;
+
+    plus.navigator.setStatusBarStyle(statusBarStyle);
   }
 
   function isTabBarPage (path = '') {
@@ -68,6 +94,27 @@ var serviceContext = (function () {
       }
     }
     return false
+  }
+
+  function callApiSync (api, args, name, alias) {
+    const ret = api(args);
+    if (ret && ret.errMsg) {
+      ret.errMsg = ret.errMsg.replace(name, alias);
+    }
+    return ret
+  }
+
+  function getLastWebview () {
+    try {
+      const pages = getCurrentPages();
+      if (pages.length) {
+        return pages[pages.length - 1].$getAppWebview()
+      }
+    } catch (e) {
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('getCurrentPages is not ready');
+      }
+    }
   }
 
   const getRealRoute = (e, t) => {
@@ -674,54 +721,13 @@ var serviceContext = (function () {
     return webview
   }
 
-  function unpack (args) {
-    return args
-  }
-
-  function invoke (...args) {
-    return UniServiceJSBridge.invokeCallbackHandler(...args)
-  }
-
-  function requireNativePlugin (name) {
-    return uni.requireNativePlugin(name)
-  }
-
-  /**
-   * 触发 service 层，与 onMethod 对应
-   */
-  function publish (name, res) {
-    return UniServiceJSBridge.emit('api.' + name, res)
-  }
-
-  let lastStatusBarStyle;
-
-  function setStatusBarStyle (statusBarStyle) {
-    if (!statusBarStyle) {
-      const pages = getCurrentPages();
-      if (!pages.length) {
-        return
-      }
-      statusBarStyle = pages[pages.length - 1].$page.meta.statusBarStyle;
-      if (!statusBarStyle || statusBarStyle === lastStatusBarStyle) {
-        return
-      }
-    }
-    if (process.env.NODE_ENV !== 'production') {
-      console.log(`[uni-app] setStatusBarStyle`, statusBarStyle);
-    }
-
-    lastStatusBarStyle = statusBarStyle;
-
-    plus.navigator.setStatusBarStyle(statusBarStyle);
-  }
-
   const callbacks = {};
   /**
    * 注册 view 层通知 service 层事件处理
    */
   function registerPlusMessage (type, callback, keepAlive = true) {
     if (callbacks[type]) {
-      throw new Error(`${type} 已注册:` + (callbacks[type].toString()))
+      return console.warn(`${type} 已注册:` + (callbacks[type].toString()))
     }
     callback.keepAlive = !!keepAlive;
     callbacks[type] = callback;
@@ -1316,6 +1322,8 @@ var serviceContext = (function () {
 
     appCtx = appVm;
 
+    appCtx.globalData = appVm.$options.globalData || {};
+
     initOn(UniServiceJSBridge.on, {
       getApp,
       getCurrentPages: getCurrentPages$1
@@ -1421,7 +1429,6 @@ var serviceContext = (function () {
     'getImageInfo',
     'saveImageToPhotosAlbum',
     'compressImage',
-    'chooseMessageFile',
     'getRecorderManager',
     'getBackgroundAudioManager',
     'createInnerAudioContext',
@@ -3716,28 +3723,6 @@ var serviceContext = (function () {
     upx2px: upx2px$1
   });
 
-  const Emitter = new Vue();
-
-  function apply (ctx, method, args) {
-    return ctx[method].apply(ctx, args)
-  }
-
-  function $on$1 () {
-    return apply(Emitter, '$on', [...arguments])
-  }
-
-  function $off$1 () {
-    return apply(Emitter, '$off', [...arguments])
-  }
-
-  function $once$1 () {
-    return apply(Emitter, '$once', [...arguments])
-  }
-
-  function $emit$1 () {
-    return apply(Emitter, '$emit', [...arguments])
-  }
-
   let audios = {};
 
   const evts = ['play', 'canplay', 'ended', 'stop', 'waiting', 'seeking', 'seeked', 'pause'];
@@ -4324,7 +4309,7 @@ var serviceContext = (function () {
   /**
    * 执行蓝牙相关方法
    */
-  function bluetoothExec (method, callbackId, data = {}, beforeSuccess) {
+  function bluetoothExec (method, callbackId, data = {}) {
     var deviceId = data.deviceId;
     if (deviceId) {
       data.deviceId = deviceId.toUpperCase();
@@ -4336,10 +4321,7 @@ var serviceContext = (function () {
 
     plus.bluetooth[method.replace('Changed', 'Change')](Object.assign(data, {
       success (data) {
-        if (typeof beforeSuccess === 'function') {
-          beforeSuccess(data);
-        }
-        invoke(callbackId, Object.assign({}, data, {
+        invoke(callbackId, Object.assign({}, pack(data), {
           errMsg: `${method}:ok`,
           code: undefined,
           message: undefined
@@ -4356,27 +4338,14 @@ var serviceContext = (function () {
   /**
    * 监听蓝牙相关事件
    */
-  function bluetoothOn (method, beforeSuccess) {
+  function bluetoothOn (method) {
     plus.bluetooth[method.replace('Changed', 'Change')](function (data) {
-      if (typeof beforeSuccess === 'function') {
-        beforeSuccess(data);
-      }
-      publish(method, Object.assign({}, data, {
+      publish(method, Object.assign({}, pack(data), {
         code: undefined,
         message: undefined
       }));
     });
     return true
-  }
-
-  function checkDevices (data) {
-    data.devices = data.devices.map(device => {
-      var advertisData = device.advertisData;
-      if (advertisData && typeof advertisData !== 'string') {
-        device.advertisData = wx.arrayBufferToBase64(advertisData);
-      }
-      return device
-    });
   }
 
   var onBluetoothAdapterStateChange;
@@ -4399,7 +4368,7 @@ var serviceContext = (function () {
   }
 
   function startBluetoothDevicesDiscovery (data, callbackId) {
-    onBluetoothDeviceFound = onBluetoothDeviceFound || bluetoothOn('onBluetoothDeviceFound', checkDevices);
+    onBluetoothDeviceFound = onBluetoothDeviceFound || bluetoothOn('onBluetoothDeviceFound');
     bluetoothExec('startBluetoothDevicesDiscovery', callbackId, data);
   }
 
@@ -4408,7 +4377,7 @@ var serviceContext = (function () {
   }
 
   function getBluetoothDevices (data, callbackId) {
-    bluetoothExec('getBluetoothDevices', callbackId, {}, checkDevices);
+    bluetoothExec('getBluetoothDevices', callbackId, {});
   }
 
   function getConnectedBluetoothDevices (data, callbackId) {
@@ -4434,18 +4403,12 @@ var serviceContext = (function () {
   }
 
   function notifyBLECharacteristicValueChange (data, callbackId) {
-    onBLECharacteristicValueChange = onBLECharacteristicValueChange || bluetoothOn('onBLECharacteristicValueChange',
-      data => {
-        data.value = wx.arrayBufferToBase64(data.value);
-      });
+    onBLECharacteristicValueChange = onBLECharacteristicValueChange || bluetoothOn('onBLECharacteristicValueChange');
     bluetoothExec('notifyBLECharacteristicValueChange', callbackId, data);
   }
 
   function notifyBLECharacteristicValueChanged (data, callbackId) {
-    onBLECharacteristicValueChange = onBLECharacteristicValueChange || bluetoothOn('onBLECharacteristicValueChange',
-      data => {
-        data.value = wx.arrayBufferToBase64(data.value);
-      });
+    onBLECharacteristicValueChange = onBLECharacteristicValueChange || bluetoothOn('onBLECharacteristicValueChange');
     bluetoothExec('notifyBLECharacteristicValueChanged', callbackId, data);
   }
 
@@ -4454,8 +4417,7 @@ var serviceContext = (function () {
   }
 
   function writeBLECharacteristicValue (data, callbackId) {
-    data.value = wx.base64ToArrayBuffer(data.value);
-    bluetoothExec('writeBLECharacteristicValue', callbackId, data);
+    bluetoothExec('writeBLECharacteristicValue', callbackId, unpack(data));
   }
 
   function getScreenBrightness () {
@@ -7021,15 +6983,11 @@ var serviceContext = (function () {
     startPullDownRefresh: startPullDownRefresh,
     stopPullDownRefresh: stopPullDownRefresh,
     chooseImage: chooseImage$1,
-    $on: $on$1,
-    $off: $off$1,
-    $once: $once$1,
-    $emit: $emit$1,
-    getMusicPlayerState: getMusicPlayerState,
-    operateMusicPlayer: operateMusicPlayer,
-    setBackgroundAudioState: setBackgroundAudioState,
-    operateBackgroundAudio: operateBackgroundAudio,
-    getBackgroundAudioState: getBackgroundAudioState,
+    createAudioInstance: createAudioInstance,
+    destroyAudioInstance: destroyAudioInstance,
+    setAudioState: setAudioState,
+    getAudioState: getAudioState,
+    operateAudio: operateAudio,
     enableAccelerometer: enableAccelerometer,
     addPhoneContact: addPhoneContact,
     openBluetoothAdapter: openBluetoothAdapter,
@@ -7081,11 +7039,11 @@ var serviceContext = (function () {
     playVoice: playVoice,
     pauseVoice: pauseVoice,
     stopVoice: stopVoice,
-    createAudioInstance: createAudioInstance,
-    destroyAudioInstance: destroyAudioInstance,
-    setAudioState: setAudioState,
-    getAudioState: getAudioState,
-    operateAudio: operateAudio,
+    getMusicPlayerState: getMusicPlayerState,
+    operateMusicPlayer: operateMusicPlayer,
+    setBackgroundAudioState: setBackgroundAudioState,
+    operateBackgroundAudio: operateBackgroundAudio,
+    getBackgroundAudioState: getBackgroundAudioState,
     chooseVideo: chooseVideo$1,
     compressImage: compressImage,
     getImageInfo: getImageInfo$1,
@@ -7129,6 +7087,870 @@ var serviceContext = (function () {
     setTabBarStyle: setTabBarStyle$2,
     hideTabBar: hideTabBar$2,
     showTabBar: showTabBar$2
+  });
+
+  const Emitter = new Vue();
+
+  function apply (ctx, method, args) {
+    return ctx[method].apply(ctx, args)
+  }
+
+  function $on$1 () {
+    return apply(Emitter, '$on', [...arguments])
+  }
+
+  function $off$1 () {
+    return apply(Emitter, '$off', [...arguments])
+  }
+
+  function $once$1 () {
+    return apply(Emitter, '$once', [...arguments])
+  }
+
+  function $emit$1 () {
+    return apply(Emitter, '$emit', [...arguments])
+  }
+
+  var eventApis = /*#__PURE__*/Object.freeze({
+    $on: $on$1,
+    $off: $off$1,
+    $once: $once$1,
+    $emit: $emit$1
+  });
+
+  var api = Object.assign(Object.create(null), appApi, eventApis);
+
+  /**
+   * 执行内部平台方法
+   */
+  function invokeMethod (name, ...args) {
+    return api[name].apply(null, args)
+  }
+  /**
+   * 监听 service 层内部平台方法回调，与 publish 对应
+   * @param {Object} name
+   * @param {Object} callback
+   */
+  function onMethod (name, callback) {
+    return UniServiceJSBridge.on('api.' + name, callback)
+  }
+
+  const callbacks$1 = [];
+
+  onMethod('onAccelerometerChange', function (res) {
+    callbacks$1.forEach(callbackId => {
+      invoke(callbackId, res);
+    });
+  });
+
+  let isEnable = false;
+  /**
+   * 监听加速度
+   * @param {*} callbackId
+   */
+  function onAccelerometerChange (callbackId) {
+    // TODO 当没有 start 时，添加 on 需要主动 start?
+    callbacks$1.push(callbackId);
+    if (!isEnable) {
+      startAccelerometer();
+    }
+  }
+
+  function startAccelerometer ({
+    interval // TODO
+  } = {}) {
+    if (isEnable) {
+      return
+    }
+    isEnable = true;
+    return invokeMethod('enableAccelerometer', {
+      enable: true
+    })
+  }
+
+  function stopAccelerometer () {
+    isEnable = false;
+    return invokeMethod('enableAccelerometer', {
+      enable: false
+    })
+  }
+
+  var require_context_module_1_4 = /*#__PURE__*/Object.freeze({
+    onAccelerometerChange: onAccelerometerChange,
+    startAccelerometer: startAccelerometer,
+    stopAccelerometer: stopAccelerometer
+  });
+
+  function on (method) {
+    const callbacks = [];
+    onMethod(method, data => {
+      callbacks.forEach(callbackId => {
+        invoke(callbackId, data);
+      });
+    });
+    return function (callbackId) {
+      callbacks.push(callbackId);
+    }
+  }
+
+  const onBluetoothDeviceFound$1 = on('onBluetoothDeviceFound');
+  const onBluetoothAdapterStateChange$1 = on('onBluetoothAdapterStateChange');
+  const onBLEConnectionStateChange$1 = on('onBLEConnectionStateChange');
+  const onBLECharacteristicValueChange$1 = on('onBLECharacteristicValueChange');
+
+  var require_context_module_1_5 = /*#__PURE__*/Object.freeze({
+    onBluetoothDeviceFound: onBluetoothDeviceFound$1,
+    onBluetoothAdapterStateChange: onBluetoothAdapterStateChange$1,
+    onBLEConnectionStateChange: onBLEConnectionStateChange$1,
+    onBLECharacteristicValueChange: onBLECharacteristicValueChange$1
+  });
+
+  const callbacks$2 = [];
+
+  onMethod('onCompassChange', function (res) {
+    callbacks$2.forEach(callbackId => {
+      invoke(callbackId, res);
+    });
+  });
+
+  let isEnable$1 = false;
+  /**
+   * 监听加速度
+   * @param {*} callbackId
+   */
+  function onCompassChange (callbackId) {
+    // TODO 当没有 start 时，添加 on 需要主动 start?
+    callbacks$2.push(callbackId);
+    if (!isEnable$1) {
+      startCompass();
+    }
+  }
+
+  function startCompass ({
+    interval // TODO
+  } = {}) {
+    if (isEnable$1) {
+      return
+    }
+    isEnable$1 = true;
+    return invokeMethod('enableCompass', {
+      enable: true
+    })
+  }
+
+  function stopCompass () {
+    isEnable$1 = false;
+    return invokeMethod('enableCompass', {
+      enable: false
+    })
+  }
+
+  var require_context_module_1_6 = /*#__PURE__*/Object.freeze({
+    onCompassChange: onCompassChange,
+    startCompass: startCompass,
+    stopCompass: stopCompass
+  });
+
+  const callbacks$3 = {
+    pause: [],
+    resume: [],
+    start: [],
+    stop: []
+  };
+
+  class RecorderManager {
+    constructor () {
+      onMethod('onRecorderStateChange', res => {
+        const state = res.state;
+        delete res.state;
+        delete res.errMsg;
+        callbacks$3[state].forEach(callback => {
+          if (typeof callback === 'function') {
+            callback(res);
+          }
+        });
+      });
+    }
+    onError (callback) {
+      callbacks$3.error.push(callback);
+    }
+    onFrameRecorded (callback) {
+
+    }
+    onInterruptionBegin (callback) {
+
+    }
+    onInterruptionEnd (callback) {
+
+    }
+    onPause (callback) {
+      callbacks$3.pause.push(callback);
+    }
+    onResume (callback) {
+      callbacks$3.resume.push(callback);
+    }
+    onStart (callback) {
+      callbacks$3.start.push(callback);
+    }
+    onStop (callback) {
+      callbacks$3.stop.push(callback);
+    }
+    pause () {
+      invokeMethod('operateRecorder', {
+        operationType: 'pause'
+      });
+    }
+    resume () {
+      invokeMethod('operateRecorder', {
+        operationType: 'resume'
+      });
+    }
+    start (options) {
+      invokeMethod('operateRecorder', Object.assign({}, options, {
+        operationType: 'start'
+      }));
+    }
+    stop () {
+      invokeMethod('operateRecorder', {
+        operationType: 'stop'
+      });
+    }
+  }
+
+  let recorderManager;
+
+  function getRecorderManager () {
+    return recorderManager || (recorderManager = new RecorderManager())
+  }
+
+  var require_context_module_1_7 = /*#__PURE__*/Object.freeze({
+    getRecorderManager: getRecorderManager
+  });
+
+  class DownloadTask {
+    constructor (downloadTaskId, callbackId) {
+      this.id = downloadTaskId;
+      this._callbackId = callbackId;
+      this._callbacks = [];
+    }
+    abort () {
+      invokeMethod('operateRequestTask', {
+        downloadTaskId: this.id,
+        operationType: 'abort'
+      });
+    }
+    onProgressUpdate (callback) {
+      if (typeof callback !== 'function') {
+        return
+      }
+      this._callbacks.push(callback);
+    }
+    onHeadersReceived () {
+
+    }
+    offProgressUpdate (callback) {
+      const index = this._callbacks.indexOf(callback);
+      if (index >= 0) {
+        this._callbacks.splice(index, 1);
+      }
+    }
+    offHeadersReceived () {
+
+    }
+  }
+  const downloadTasks$1 = Object.create(null);
+  onMethod('onDownloadTaskStateChange', ({
+    downloadTaskId,
+    state,
+    tempFilePath,
+    statusCode,
+    progress,
+    totalBytesWritten,
+    totalBytesExpectedToWrite,
+    errMsg
+  }) => {
+    const downloadTask = downloadTasks$1[downloadTaskId];
+    const callbackId = downloadTask._callbackId;
+
+    switch (state) {
+      case 'progressUpdate':
+        downloadTask._callbacks.forEach(callback => {
+          callback({
+            progress,
+            totalBytesWritten,
+            totalBytesExpectedToWrite
+          });
+        });
+        break
+      case 'success':
+        invoke(callbackId, {
+          tempFilePath,
+          statusCode,
+          errMsg: 'request:ok'
+        });
+        // eslint-disable-next-line no-fallthrough
+      case 'fail':
+        invoke(callbackId, {
+          errMsg: 'request:fail ' + errMsg
+        });
+        // eslint-disable-next-line no-fallthrough
+      default:
+        // progressUpdate 可能晚于 success
+        setTimeout(() => {
+          delete downloadTasks$1[downloadTaskId];
+        }, 100);
+        break
+    }
+  });
+  function downloadFile$1 (args, callbackId) {
+    const {
+      downloadTaskId
+    } = invokeMethod('createDownloadTask', args);
+    const task = new DownloadTask(downloadTaskId, callbackId);
+    downloadTasks$1[downloadTaskId] = task;
+    return task
+  }
+
+  var require_context_module_1_8 = /*#__PURE__*/Object.freeze({
+    downloadFile: downloadFile$1
+  });
+
+  const requestTasks$1 = Object.create(null);
+
+  function formatResponse (res, args) {
+    if (
+      typeof res.data === 'string' &&
+      res.data.charCodeAt(0) === 65279
+    ) {
+      res.data = res.data.substr(1);
+    }
+
+    res.statusCode = parseInt(res.statusCode, 10);
+
+    if (isPlainObject(res.header)) {
+      res.header = Object.keys(res.header).reduce(function (ret, key) {
+        const value = res.header[key];
+        if (Array.isArray(value)) {
+          ret[key] = value.join(',');
+        } else if (typeof value === 'string') {
+          ret[key] = value;
+        }
+        return ret
+      }, {});
+    }
+
+    if (args.dataType && args.dataType.toLowerCase() === 'json') {
+      try {
+        res.data = JSON.parse(res.data);
+      } catch (e) {}
+    }
+
+    return res
+  }
+
+  onMethod('onRequestTaskStateChange', function ({
+    requestTaskId,
+    state,
+    data,
+    statusCode,
+    header,
+    errMsg
+  }) {
+    const {
+      args,
+      callbackId
+    } = requestTasks$1[requestTaskId] || {};
+
+    if (!callbackId) {
+      return
+    }
+    delete requestTasks$1[requestTaskId];
+    switch (state) {
+      case 'success':
+        invoke(callbackId, formatResponse({
+          data,
+          statusCode,
+          header,
+          errMsg: 'request:ok'
+        }, args));
+        break
+      case 'fail':
+        invoke(callbackId, {
+          errMsg: 'request:fail ' + errMsg
+        });
+        break
+    }
+  });
+
+  class RequestTask {
+    constructor (id) {
+      this.id = id;
+    }
+
+    abort () {
+      invokeMethod('operateRequestTask', {
+        requestTaskId: this.id,
+        operationType: 'abort'
+      });
+    }
+
+    offHeadersReceived () {
+
+    }
+
+    onHeadersReceived () {
+
+    }
+  }
+
+  function request$1 (args, callbackId) {
+    const {
+      requestTaskId
+    } = invokeMethod('createRequestTask', args);
+
+    requestTasks$1[requestTaskId] = {
+      args,
+      callbackId
+    };
+
+    return new RequestTask(requestTaskId)
+  }
+
+  var require_context_module_1_9 = /*#__PURE__*/Object.freeze({
+    request: request$1
+  });
+
+  class SocketTask {
+    constructor (socketTaskId) {
+      this.id = socketTaskId;
+      this._callbacks = {
+        open: [],
+        close: [],
+        error: [],
+        message: []
+      };
+      this.CLOSED = 3;
+      this.CLOSING = 2;
+      this.CONNECTING = 0;
+      this.OPEN = 1;
+      this.readyState = this.CLOSED;
+    }
+    send (args) {
+      if (this.readyState !== this.OPEN) {
+        this._callback(args, 'sendSocketMessage:fail WebSocket is not connected');
+      }
+      const {
+        errMsg
+      } = invokeMethod('operateSocketTask', Object.assign({}, args, {
+        operationType: 'send',
+        socketTaskId: this.id
+      }));
+      this._callback(args, errMsg.replace('operateSocketTask', 'sendSocketMessage'));
+    }
+    close (args) {
+      this.readyState = this.CLOSING;
+      const {
+        errMsg
+      } = invokeMethod('operateSocketTask', Object.assign({}, args, {
+        operationType: 'close',
+        socketTaskId: this.id
+      }));
+      this._callback(args, errMsg.replace('operateSocketTask', 'closeSocket'));
+    }
+    onOpen (callback) {
+      this._callbacks.open.push(callback);
+    }
+    onClose (callback) {
+      this._callbacks.close.push(callback);
+    }
+    onError (callback) {
+      this._callbacks.error.push(callback);
+    }
+    onMessage (callback) {
+      this._callbacks.message.push(callback);
+    }
+    _callback ({
+      success,
+      fail,
+      complete
+    }, errMsg) {
+      var data = {
+        errMsg
+      };
+      if (/:ok$/.test(errMsg)) {
+        if (typeof success === 'function') {
+          success(data);
+        }
+      } else {
+        if (typeof fail === 'function') {
+          fail(data);
+        }
+      }
+      if (typeof complete === 'function') {
+        complete(data);
+      }
+    }
+  }
+
+  const socketTasks$1 = Object.create(null);
+  const socketTasksArray = [];
+  const callbacks$4 = Object.create(null);
+  onMethod('onSocketTaskStateChange', ({
+    socketTaskId,
+    state,
+    data,
+    errMsg
+  }) => {
+    const socketTask = socketTasks$1[socketTaskId];
+    if (!socketTask) {
+      return
+    }
+    socketTask._callbacks[state].forEach(callback => {
+      if (typeof callback === 'function') {
+        callback(state === 'message' ? {
+          data
+        } : {});
+      }
+    });
+    if (state === 'open') {
+      socketTask.readyState = socketTask.OPEN;
+    }
+    if (socketTask === socketTasksArray[0] && callbacks$4[state]) {
+      invoke(callbacks$4[state], state === 'message' ? {
+        data
+      } : {});
+    }
+    if (state === 'error' || state === 'close') {
+      socketTask.readyState = socketTask.CLOSED;
+      delete socketTasks$1[socketTaskId];
+      const index = socketTasksArray.indexOf(socketTask);
+      if (index >= 0) {
+        socketTasksArray.splice(index, 1);
+      }
+    }
+  });
+
+  function connectSocket$1 (args, callbackId) {
+    const {
+      socketTaskId
+    } = invokeMethod('createSocketTask', args);
+    const task = new SocketTask(socketTaskId);
+    socketTasks$1[socketTaskId] = task;
+    socketTasksArray.push(task);
+    setTimeout(() => {
+      invoke(callbackId, {
+        errMsg: 'connectSocket:ok'
+      });
+    }, 0);
+    return task
+  }
+
+  function sendSocketMessage$1 (args, callbackId) {
+    const socketTask = socketTasksArray[0];
+    if (!socketTask || socketTask.readyState !== socketTask.OPEN) {
+      invoke(callbackId, {
+        errMsg: 'sendSocketMessage:fail WebSocket is not connected'
+      });
+      return
+    }
+    return invokeMethod('operateSocketTask', Object.assign({}, args, {
+      operationType: 'send',
+      socketTaskId: socketTask.id
+    }))
+  }
+
+  function closeSocket$1 (args, callbackId) {
+    const socketTask = socketTasksArray[0];
+    if (!socketTask) {
+      invoke(callbackId, {
+        errMsg: 'closeSocket:fail WebSocket is not connected'
+      });
+      return
+    }
+    socketTask.readyState = socketTask.CLOSING;
+    return invokeMethod('operateSocketTask', Object.assign({}, args, {
+      operationType: 'close',
+      socketTaskId: socketTask.id
+    }))
+  }
+
+  function onSocketOpen (callbackId) {
+    callbacks$4.open = callbackId;
+  }
+
+  function onSocketError (callbackId) {
+    callbacks$4.error = callbackId;
+  }
+
+  function onSocketMessage (callbackId) {
+    callbacks$4.message = callbackId;
+  }
+
+  function onSocketClose (callbackId) {
+    callbacks$4.close = callbackId;
+  }
+
+  var require_context_module_1_10 = /*#__PURE__*/Object.freeze({
+    connectSocket: connectSocket$1,
+    sendSocketMessage: sendSocketMessage$1,
+    closeSocket: closeSocket$1,
+    onSocketOpen: onSocketOpen,
+    onSocketError: onSocketError,
+    onSocketMessage: onSocketMessage,
+    onSocketClose: onSocketClose
+  });
+
+  class UploadTask {
+    constructor (uploadTaskId, callbackId) {
+      this.id = uploadTaskId;
+      this._callbackId = callbackId;
+      this._callbacks = [];
+    }
+    abort () {
+      invokeMethod('operateRequestTask', {
+        uploadTaskId: this.id,
+        operationType: 'abort'
+      });
+    }
+    onProgressUpdate (callback) {
+      if (typeof callback !== 'function') {
+        return
+      }
+      this._callbacks.push(callback);
+    }
+    onHeadersReceived () {
+
+    }
+    offProgressUpdate (callback) {
+      const index = this._callbacks.indexOf(callback);
+      if (index >= 0) {
+        this._callbacks.splice(index, 1);
+      }
+    }
+    offHeadersReceived () {
+
+    }
+  }
+  const uploadTasks$1 = Object.create(null);
+  onMethod('onUploadTaskStateChange', ({
+    uploadTaskId,
+    state,
+    data,
+    statusCode,
+    progress,
+    totalBytesSent,
+    totalBytesExpectedToSend,
+    errMsg
+  }) => {
+    const uploadTask = uploadTasks$1[uploadTaskId];
+    const callbackId = uploadTask._callbackId;
+
+    switch (state) {
+      case 'progressUpdate':
+        uploadTask._callbacks.forEach(callback => {
+          callback({
+            progress,
+            totalBytesSent,
+            totalBytesExpectedToSend
+          });
+        });
+        break
+      case 'success':
+        invoke(callbackId, {
+          data,
+          statusCode,
+          errMsg: 'request:ok'
+        });
+        // eslint-disable-next-line no-fallthrough
+      case 'fail':
+        invoke(callbackId, {
+          errMsg: 'request:fail ' + errMsg
+        });
+        // eslint-disable-next-line no-fallthrough
+      default:
+        // progressUpdate 可能晚于 success
+        setTimeout(() => {
+          delete uploadTasks$1[uploadTaskId];
+        }, 100);
+        break
+    }
+  });
+  function uploadFile$1 (args, callbackId) {
+    const {
+      uploadTaskId
+    } = invokeMethod('createUploadTask', args);
+    const task = new UploadTask(uploadTaskId, callbackId);
+    uploadTasks$1[uploadTaskId] = task;
+    return task
+  }
+
+  var require_context_module_1_11 = /*#__PURE__*/Object.freeze({
+    uploadFile: uploadFile$1
+  });
+
+  function setStorage$1 ({
+    key,
+    data
+  } = {}) {
+    const value = {
+      type: typeof data === 'object' ? 'object' : 'string',
+      data: data
+    };
+    localStorage.setItem(key, JSON.stringify(value));
+    const keyList = localStorage.getItem('uni-storage-keys');
+    if (!keyList) {
+      localStorage.setItem('uni-storage-keys', JSON.stringify([key]));
+    } else {
+      const keys = JSON.parse(keyList);
+      if (keys.indexOf(key) < 0) {
+        keys.push(key);
+        localStorage.setItem('uni-storage-keys', JSON.stringify(keys));
+      }
+    }
+    return {
+      errMsg: 'setStorage:ok'
+    }
+  }
+
+  function setStorageSync$1 (key, data) {
+    setStorage$1({
+      key,
+      data
+    });
+  }
+
+  function getStorage$1 ({
+    key
+  } = {}) {
+    const data = localStorage.getItem(key);
+    return data ? {
+      data: JSON.parse(data).data,
+      errMsg: 'getStorage:ok'
+    } : {
+      data: '',
+      errMsg: 'getStorage:fail'
+    }
+  }
+
+  function getStorageSync$1 (key) {
+    const res = getStorage$1({
+      key
+    });
+    return res.data
+  }
+
+  function removeStorage$1 ({
+    key
+  } = {}) {
+    const keyList = localStorage.getItem('uni-storage-keys');
+    if (keyList) {
+      const keys = JSON.parse(keyList);
+      const index = keys.indexOf(key);
+      keys.splice(index, 1);
+      localStorage.setItem('uni-storage-keys', JSON.stringify(keys));
+    }
+    localStorage.removeItem(key);
+    return {
+      errMsg: 'removeStorage:ok'
+    }
+  }
+
+  function removeStorageSync$1 (key) {
+    removeStorage$1({
+      key
+    });
+  }
+
+  function clearStorage () {
+    localStorage.clear();
+    return {
+      errMsg: 'clearStorage:ok'
+    }
+  }
+
+  function clearStorageSync () {
+    clearStorage();
+  }
+
+  function getStorageInfo () { // TODO 暂时先不做大小的转换
+    const keyList = localStorage.getItem('uni-storage-keys');
+    return keyList ? {
+      keys: JSON.parse(keyList),
+      currentSize: 0,
+      limitSize: 0,
+      errMsg: 'getStorageInfo:ok'
+    } : {
+      keys: '',
+      currentSize: 0,
+      limitSize: 0,
+      errMsg: 'getStorageInfo:fail'
+    }
+  }
+
+  function getStorageInfoSync () {
+    const res = getStorageInfo();
+    delete res.errMsg;
+    return res
+  }
+
+  var require_context_module_1_12 = /*#__PURE__*/Object.freeze({
+    setStorage: setStorage$1,
+    setStorageSync: setStorageSync$1,
+    getStorage: getStorage$1,
+    getStorageSync: getStorageSync$1,
+    removeStorage: removeStorage$1,
+    removeStorageSync: removeStorageSync$1,
+    clearStorage: clearStorage,
+    clearStorageSync: clearStorageSync,
+    getStorageInfo: getStorageInfo,
+    getStorageInfoSync: getStorageInfoSync
+  });
+
+  function pageScrollTo$1 (args) {
+    const pages = getCurrentPages();
+    if (pages.length) {
+      UniServiceJSBridge.publishHandler('pageScrollTo', args, pages[pages.length - 1].$page.id);
+    }
+    return {}
+  }
+
+  var require_context_module_1_13 = /*#__PURE__*/Object.freeze({
+    pageScrollTo: pageScrollTo$1
+  });
+
+  const api$1 = Object.create(null);
+
+  const modules$1 = 
+    (function() {
+      var map = {
+        './base/base64.js': require_context_module_1_0,
+  './base/can-i-use.js': require_context_module_1_1,
+  './base/interceptor.js': require_context_module_1_2,
+  './base/upx2px.js': require_context_module_1_3,
+  './device/accelerometer.js': require_context_module_1_4,
+  './device/bluetooth.js': require_context_module_1_5,
+  './device/compass.js': require_context_module_1_6,
+  './media/recorder.js': require_context_module_1_7,
+  './network/download-file.js': require_context_module_1_8,
+  './network/request.js': require_context_module_1_9,
+  './network/socket.js': require_context_module_1_10,
+  './network/upload-file.js': require_context_module_1_11,
+  './storage/storage.js': require_context_module_1_12,
+  './ui/page-scroll-to.js': require_context_module_1_13,
+
+      };
+      var req = function req(key) {
+        return map[key] || (function() { throw new Error("Cannot find module '" + key + "'.") }());
+      };
+      req.keys = function() {
+        return Object.keys(map);
+      };
+      return req;
+    })();
+
+
+  modules$1.keys().forEach(function (key) {
+    Object.assign(api$1, modules$1(key));
   });
 
   const SUCCESS = 'success';
@@ -7175,26 +7997,22 @@ var serviceContext = (function () {
   }
 
   function findElmById (id, vm) {
-    return findElmByVNode(id, vm._vnode)
+    return findRefByElm(id, vm.$el)
   }
 
-  function findElmByVNode (id, vnode) {
-    if (!id || !vnode) {
+  function findRefByElm (id, elm) {
+    if (!id || !elm) {
       return
     }
-    if (
-      vnode.data &&
-      vnode.data.attrs &&
-      vnode.data.attrs.id === id
-    ) {
-      return vnode.elm
+    if (elm.attr.id === id) {
+      return elm
     }
-    const children = vnode.children;
+    const children = elm.children;
     if (!children) {
       return
     }
     for (let i = 0, len = children.length; i < len; i++) {
-      const elm = findElmByVNode(id, children[i]);
+      const elm = findRefByElm(id, children[i]);
       if (elm) {
         return elm
       }
@@ -7636,8 +8454,6 @@ var serviceContext = (function () {
           currentPage.$getAppWebview().close('auto');
         }
       } else {
-        // TODO 客户端 Bug
-        currentPage.$getAppWebview().hide('none');
         // 前一个 tabBar 触发 onHide
         currentPage.$vm.__call_hook('onHide');
       }
@@ -7688,338 +8504,13 @@ var serviceContext = (function () {
 
   var platformApi = Object.assign(Object.create(null), appApi, nvueApi);
 
-  /**
-   * 执行内部平台方法
-   */
-  function invokeMethod (name, ...args) {
-    return platformApi[name].apply(null, args)
-  }
-  /**
-   * 监听 service 层内部平台方法回调，与 publish 对应
-   * @param {Object} name
-   * @param {Object} callback
-   */
-  function onMethod (name, callback) {
-    return UniServiceJSBridge.on('api.' + name, callback)
-  }
-
-  const callbacks$1 = [];
-
-  onMethod('onAccelerometerChange', function (res) {
-    callbacks$1.forEach(callbackId => {
-      invoke(callbackId, res);
-    });
-  });
-
-  let isEnable = false;
-  /**
-   * 监听加速度
-   * @param {*} callbackId
-   */
-  function onAccelerometerChange (callbackId) {
-    // TODO 当没有 start 时，添加 on 需要主动 start?
-    callbacks$1.push(callbackId);
-    if (!isEnable) {
-      startAccelerometer();
-    }
-  }
-
-  function startAccelerometer ({
-    interval // TODO
-  } = {}) {
-    if (isEnable) {
-      return
-    }
-    isEnable = true;
-    return invokeMethod('enableAccelerometer', {
-      enable: true
-    })
-  }
-
-  function stopAccelerometer () {
-    isEnable = false;
-    return invokeMethod('enableAccelerometer', {
-      enable: false
-    })
-  }
-
-  var require_context_module_1_4 = /*#__PURE__*/Object.freeze({
-    onAccelerometerChange: onAccelerometerChange,
-    startAccelerometer: startAccelerometer,
-    stopAccelerometer: stopAccelerometer
-  });
-
-  const requestTasks$1 = Object.create(null);
-
-  function formatResponse (res, args) {
-    if (
-      typeof res.data === 'string' &&
-      res.data.charCodeAt(0) === 65279
-    ) {
-      res.data = res.data.substr(1);
-    }
-
-    res.statusCode = parseInt(res.statusCode, 10);
-
-    if (isPlainObject(res.header)) {
-      res.header = Object.keys(res.header).reduce(function (ret, key) {
-        const value = res.header[key];
-        if (Array.isArray(value)) {
-          ret[key] = value.join(',');
-        } else if (typeof value === 'string') {
-          ret[key] = value;
-        }
-        return ret
-      }, {});
-    }
-
-    if (args.dataType && args.dataType.toLowerCase() === 'json') {
-      try {
-        res.data = JSON.parse(res.data);
-      } catch (e) {}
-    }
-
-    return res
-  }
-
-  onMethod('onRequestTaskStateChange', function ({
-    requestTaskId,
-    state,
-    data,
-    statusCode,
-    header,
-    errMsg
-  }) {
-    const {
-      args,
-      callbackId
-    } = requestTasks$1[requestTaskId];
-
-    if (!callbackId) {
-      return
-    }
-    delete requestTasks$1[requestTaskId];
-    switch (state) {
-      case 'success':
-        invoke(callbackId, formatResponse({
-          data,
-          statusCode,
-          header,
-          errMsg: 'request:ok'
-        }, args));
-        break
-      case 'fail':
-        invoke(callbackId, {
-          errMsg: 'request:fail ' + errMsg
-        });
-        break
-    }
-  });
-
-  class RequestTask {
-    constructor (id) {
-      this.id = id;
-    }
-
-    abort () {
-      invokeMethod('operateRequestTask', {
-        requestTaskId: this.id,
-        operationType: 'abort'
-      });
-    }
-
-    offHeadersReceived () {
-
-    }
-
-    onHeadersReceived () {
-
-    }
-  }
-
-  function request$1 (args, callbackId) {
-    const {
-      requestTaskId
-    } = invokeMethod('createRequestTask', args);
-
-    requestTasks$1[requestTaskId] = {
-      args,
-      callbackId
-    };
-
-    return new RequestTask(requestTaskId)
-  }
-
-  var require_context_module_1_5 = /*#__PURE__*/Object.freeze({
-    request: request$1
-  });
-
-  function setStorage$1 ({
-    key,
-    data
-  } = {}) {
-    const value = {
-      type: typeof data === 'object' ? 'object' : 'string',
-      data: data
-    };
-    localStorage.setItem(key, JSON.stringify(value));
-    const keyList = localStorage.getItem('uni-storage-keys');
-    if (!keyList) {
-      localStorage.setItem('uni-storage-keys', JSON.stringify([key]));
-    } else {
-      const keys = JSON.parse(keyList);
-      if (keys.indexOf(key) < 0) {
-        keys.push(key);
-        localStorage.setItem('uni-storage-keys', JSON.stringify(keys));
-      }
-    }
-    return {
-      errMsg: 'setStorage:ok'
-    }
-  }
-
-  function setStorageSync$1 (key, data) {
-    setStorage$1({
-      key,
-      data
-    });
-  }
-
-  function getStorage$1 ({
-    key
-  } = {}) {
-    const data = localStorage.getItem(key);
-    return data ? {
-      data: JSON.parse(data).data,
-      errMsg: 'getStorage:ok'
-    } : {
-      data: '',
-      errMsg: 'getStorage:fail'
-    }
-  }
-
-  function getStorageSync$1 (key) {
-    const res = getStorage$1({
-      key
-    });
-    return res.data
-  }
-
-  function removeStorage$1 ({
-    key
-  } = {}) {
-    const keyList = localStorage.getItem('uni-storage-keys');
-    if (keyList) {
-      const keys = JSON.parse(keyList);
-      const index = keys.indexOf(key);
-      keys.splice(index, 1);
-      localStorage.setItem('uni-storage-keys', JSON.stringify(keys));
-    }
-    localStorage.removeItem(key);
-    return {
-      errMsg: 'removeStorage:ok'
-    }
-  }
-
-  function removeStorageSync$1 (key) {
-    removeStorage$1({
-      key
-    });
-  }
-
-  function clearStorage () {
-    localStorage.clear();
-    return {
-      errMsg: 'clearStorage:ok'
-    }
-  }
-
-  function clearStorageSync () {
-    clearStorage();
-  }
-
-  function getStorageInfo () { // TODO 暂时先不做大小的转换
-    const keyList = localStorage.getItem('uni-storage-keys');
-    return keyList ? {
-      keys: JSON.parse(keyList),
-      currentSize: 0,
-      limitSize: 0,
-      errMsg: 'getStorageInfo:ok'
-    } : {
-      keys: '',
-      currentSize: 0,
-      limitSize: 0,
-      errMsg: 'getStorageInfo:fail'
-    }
-  }
-
-  function getStorageInfoSync () {
-    const res = getStorageInfo();
-    delete res.errMsg;
-    return res
-  }
-
-  var require_context_module_1_6 = /*#__PURE__*/Object.freeze({
-    setStorage: setStorage$1,
-    setStorageSync: setStorageSync$1,
-    getStorage: getStorage$1,
-    getStorageSync: getStorageSync$1,
-    removeStorage: removeStorage$1,
-    removeStorageSync: removeStorageSync$1,
-    clearStorage: clearStorage,
-    clearStorageSync: clearStorageSync,
-    getStorageInfo: getStorageInfo,
-    getStorageInfoSync: getStorageInfoSync
-  });
-
-  function pageScrollTo$1 (args) {
-    const pages = getCurrentPages();
-    if (pages.length) {
-      UniServiceJSBridge.publishHandler('pageScrollTo', args, pages[pages.length - 1].$page.id);
-    }
-    return {}
-  }
-
-  var require_context_module_1_7 = /*#__PURE__*/Object.freeze({
-    pageScrollTo: pageScrollTo$1
-  });
-
-  const api = Object.create(null);
-
-  const modules$1 = 
-    (function() {
-      var map = {
-        './base/base64.js': require_context_module_1_0,
-  './base/can-i-use.js': require_context_module_1_1,
-  './base/interceptor.js': require_context_module_1_2,
-  './base/upx2px.js': require_context_module_1_3,
-  './device/accelerometer.js': require_context_module_1_4,
-  './network/request.js': require_context_module_1_5,
-  './storage/storage.js': require_context_module_1_6,
-  './ui/page-scroll-to.js': require_context_module_1_7,
-
-      };
-      var req = function req(key) {
-        return map[key] || (function() { throw new Error("Cannot find module '" + key + "'.") }());
-      };
-      req.keys = function() {
-        return Object.keys(map);
-      };
-      return req;
-    })();
-
-
-  modules$1.keys().forEach(function (key) {
-    Object.assign(api, modules$1(key));
-  });
-
-  var api$1 = Object.assign(Object.create(null), api, platformApi);
+  var api$2 = Object.assign(Object.create(null), api$1, platformApi);
 
   const uni$1 = Object.create(null);
 
   apis_1.forEach(name => {
-    if (api$1[name]) {
-      uni$1[name] = promisify(name, wrapper(name, api$1[name]));
+    if (api$2[name]) {
+      uni$1[name] = promisify(name, wrapper(name, api$2[name]));
     } else {
       uni$1[name] = wrapperUnimplemented(name);
     }

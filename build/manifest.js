@@ -76,7 +76,8 @@ function parseApiManifestDeps (manifest, protocol) {
         if (manifest[dep[1]]) {
           dep[0] = manifest[dep[1]][0]
         } else {
-          console.error(`依赖模块[${dep[1]}]不存在`)
+          console.error(`依赖模块[${dep[1]}]不存在,删除 ${name} 接口\n`)
+          delete manifest[name]
         }
       })
     }
