@@ -635,6 +635,20 @@ var serviceContext = (function () {
       });
     });
 
+    webview.addEventListener('resize', ({
+      width,
+      height
+    }) => {
+      const res = {
+        size: {
+          windowWidth: Math.ceil(width),
+          windowHeight: Math.ceil(height)
+        }
+      };
+      publish('onViewDidResize', res);
+      emit('onResize', res, parseInt(webview.id));
+    });
+
     // TODO 应该结束之前未完成的下拉刷新
     on(webview.id + '.startPullDownRefresh', () => {
       webview.beginPullToRefresh();
@@ -1263,7 +1277,7 @@ var serviceContext = (function () {
 
     plus.globalEvent.addEventListener('netchange', () => {
       const networkType = NETWORK_TYPES[plus.networkinfo.getCurrentType()];
-      emit('onNetworkStatusChange', {
+      publish('onNetworkStatusChange', {
         isConnected: networkType !== 'none',
         networkType
       });
@@ -6295,7 +6309,7 @@ var serviceContext = (function () {
     }
   }
 
-  const getUserInfo = function (params, callbackId) {
+  function getUserInfo (params, callbackId) {
     const provider = params.provider || 'weixin';
     const loginService = loginServices[provider];
     if (!loginService || !loginService.authResult) {
@@ -6304,9 +6318,10 @@ var serviceContext = (function () {
       })
     }
     loginService.getUserInfo(res => {
+      let userInfo;
       if (provider === 'weixin') {
         const wechatUserInfo = loginService.userInfo;
-        const userInfo = {
+        userInfo = {
           openId: wechatUserInfo.openid,
           nickName: wechatUserInfo.nickname,
           gender: wechatUserInfo.sex,
@@ -6316,39 +6331,35 @@ var serviceContext = (function () {
           avatarUrl: wechatUserInfo.headimgurl,
           unionId: wechatUserInfo.unionid
         };
-        invoke(callbackId, {
-          errMsg: 'operateWXData:ok',
-          data: {
-            data: JSON.stringify(userInfo),
-            rawData: '',
-            signature: '',
-            encryptedData: '',
-            iv: ''
-          }
-        });
       } else {
         loginService.userInfo.openId = loginService.userInfo.openId || loginService.userInfo.openid ||
                   loginService.authResult.openid;
         loginService.userInfo.nickName = loginService.userInfo.nickName || loginService.userInfo.nickname;
         loginService.userInfo.avatarUrl = loginService.userInfo.avatarUrl || loginService.userInfo.avatarUrl ||
                   loginService.userInfo.headimgurl;
-        invoke(callbackId, {
-          errMsg: 'operateWXData:ok',
-          data: {
-            data: JSON.stringify(loginService.userInfo),
-            rawData: '',
-            signature: '',
-            encryptedData: '',
-            iv: ''
-          }
-        });
+        userInfo = loginService.userInfo;
       }
+      const result = {
+        errMsg: 'operateWXData:ok'
+      };
+      if (params.data && params.data.api_name === 'webapi_getuserinfo') {
+        result.data = {
+          data: JSON.stringify(userInfo),
+          rawData: '',
+          signature: '',
+          encryptedData: '',
+          iv: ''
+        };
+      } else {
+        result.userInfo = userInfo;
+      }
+      invoke(callbackId, result);
     }, err => {
       invoke(callbackId, {
         errMsg: 'operateWXData:fail:' + err.message
       });
     });
-  };
+  }
 
   /**
    * 获取用户信息
@@ -6902,7 +6913,7 @@ var serviceContext = (function () {
   function setTabBarBadge$2 ({
     index,
     text,
-    type
+    type = 'text'
   }) {
     tabBar.setTabBarBadge(type, index, text);
     return {
@@ -7062,6 +7073,7 @@ var serviceContext = (function () {
     createUploadTask: createUploadTask,
     getProvider: getProvider$1,
     login: login,
+    getUserInfo: getUserInfo,
     operateWXData: operateWXData,
     requestPayment: requestPayment,
     subscribePush: subscribePush,
@@ -7135,10 +7147,318 @@ var serviceContext = (function () {
     return UniServiceJSBridge.on('api.' + name, callback)
   }
 
-  const callbacks$1 = [];
+  const eventNames = [
+    'canplay',
+    'play',
+    'pause',
+    'stop',
+    'ended',
+    'timeupdate',
+    'error',
+    'waiting',
+    'seeking',
+    'seeked'
+  ];
+
+  const props = [
+    {
+      name: 'src',
+      cache: true
+    },
+    {
+      name: 'startTime',
+      default: 0,
+      cache: true
+    },
+    {
+      name: 'autoplay',
+      default: false,
+      cache: true
+    },
+    {
+      name: 'loop',
+      default: false,
+      cache: true
+    },
+    {
+      name: 'obeyMuteSwitch',
+      default: true,
+      readonly: true,
+      cache: true
+    },
+    {
+      name: 'duration',
+      readonly: true
+    },
+    {
+      name: 'currentTime',
+      readonly: true
+    },
+    {
+      name: 'paused',
+      readonly: true
+    },
+    {
+      name: 'buffered',
+      readonly: true
+    },
+    {
+      name: 'volume'
+    }
+  ];
+
+  class InnerAudioContext {
+    constructor (id) {
+      this.id = id;
+      this._callbacks = {};
+      this._options = {};
+      eventNames.forEach(name => {
+        this._callbacks[name] = [];
+      });
+      props.forEach(item => {
+        const name = item.name;
+        const data = {
+          get () {
+            const result = item.cache ? this._options : invokeMethod('getAudioState', {
+              audioId: this.id
+            });
+            const value = name in result ? result[name] : item.default;
+            return typeof value === 'number' && name !== 'volume' ? value / 1e3 : value
+          }
+        };
+        if (!item.readonly) {
+          data.set = function (value) {
+            this._options[name] = value;
+            invokeMethod('setAudioState', Object.assign({}, this._options, {
+              audioId: this.id
+            }));
+          };
+        }
+        Object.defineProperty(this, name, data);
+      });
+    }
+    play () {
+      this._operate('play');
+    }
+    pause () {
+      this._operate('pause');
+    }
+    stop () {
+      this._operate('stop');
+    }
+    seek (position) {
+      this._operate('play', {
+        currentTime: position
+      });
+    }
+    destroy () {
+      invokeMethod('destroyAudioInstance', {
+        audioId: this.id
+      });
+      delete innerAudioContexts[this.id];
+    }
+    _operate (type, options) {
+      invokeMethod('operateAudio', Object.assign({}, options, {
+        audioId: this.id,
+        operationType: type
+      }));
+    }
+  }
+
+  eventNames.forEach(item => {
+    const name = item[0].toUpperCase() + item.substr(1);
+    InnerAudioContext.prototype[`on${name}`] = function (callback) {
+      this._callbacks[item].push(callback);
+    };
+    InnerAudioContext.prototype[`off${name}`] = function (callback) {
+      const callbacks = this._callbacks[item];
+      const index = callbacks.indexOf(callback);
+      if (index >= 0) {
+        callbacks.splice(index, 1);
+      }
+    };
+  });
+
+  onMethod('onAudioStateChange', ({
+    state,
+    audioId,
+    errMsg,
+    errCode
+  }) => {
+    const audio = innerAudioContexts[audioId];
+    audio && audio._callbacks[state].forEach(callback => {
+      if (typeof callback === 'function') {
+        callback(state === 'error' ? {
+          errMsg,
+          errCode
+        } : {});
+      }
+    });
+  });
+
+  const innerAudioContexts = Object.create(null);
+
+  function createInnerAudioContext () {
+    const {
+      audioId
+    } = invokeMethod('createAudioInstance');
+    const innerAudioContext = new InnerAudioContext(audioId);
+    innerAudioContexts[audioId] = innerAudioContext;
+    return innerAudioContext
+  }
+
+  var require_context_module_1_4 = /*#__PURE__*/Object.freeze({
+    createInnerAudioContext: createInnerAudioContext
+  });
+
+  const eventNames$1 = [
+    'canplay',
+    'play',
+    'pause',
+    'stop',
+    'ended',
+    'timeupdate',
+    'prev',
+    'next',
+    'error',
+    'waiting'
+  ];
+  const callbacks$1 = {};
+  eventNames$1.forEach(name => {
+    callbacks$1[name] = [];
+  });
+
+  const props$1 = [
+    {
+      name: 'duration',
+      readonly: true
+    },
+    {
+      name: 'currentTime',
+      readonly: true
+    },
+    {
+      name: 'paused',
+      readonly: true
+    },
+    {
+      name: 'src',
+      cache: true
+    },
+    {
+      name: 'startTime',
+      default: 0,
+      cache: true
+    },
+    {
+      name: 'buffered',
+      readonly: true
+    },
+    {
+      name: 'title',
+      cache: true
+    },
+    {
+      name: 'epname',
+      cache: true
+    },
+    {
+      name: 'singer',
+      cache: true
+    },
+    {
+      name: 'coverImgUrl',
+      cache: true
+    },
+    {
+      name: 'webUrl',
+      cache: true
+    },
+    {
+      name: 'protocol',
+      readonly: true,
+      default: 'http'
+    }
+  ];
+
+  class BackgroundAudioManager {
+    constructor () {
+      this._options = {};
+      onMethod('onBackgroundAudioStateChange', ({
+        state,
+        errMsg,
+        errCode
+      }) => {
+        callbacks$1[state].forEach(callback => {
+          if (typeof callback === 'function') {
+            callback(state === 'error' ? {
+              errMsg,
+              errCode
+            } : {});
+          }
+        });
+      });
+      props$1.forEach(item => {
+        const name = item.name;
+        const data = {
+          get () {
+            const result = item.cache ? this._options : invokeMethod('getBackgroundAudioState');
+            return name in result ? result[name] : item.default
+          }
+        };
+        if (!item.readonly) {
+          data.set = function (value) {
+            this._options[name] = value;
+            invokeMethod('setBackgroundAudioState', Object.assign({}, this._options, {
+              audioId: this.id
+            }));
+          };
+        }
+        Object.defineProperty(this, name, data);
+      });
+    }
+    play () {
+      this._operate('play');
+    }
+    pause () {
+      this._operate('pause');
+    }
+    stop () {
+      this._operate('stop');
+    }
+    seek (position) {
+      this._operate('play', {
+        currentTime: position
+      });
+    }
+    _operate (type, options) {
+      invokeMethod('operateBackgroundAudio', Object.assign({}, options, {
+        operationType: type
+      }));
+    }
+  }
+
+  eventNames$1.forEach(item => {
+    const name = item[0].toUpperCase() + item.substr(1);
+    BackgroundAudioManager.prototype[`on${name}`] = function (callback) {
+      callbacks$1[item].push(callback);
+    };
+  });
+
+  let backgroundAudioManager;
+
+  function getBackgroundAudioManager () {
+    return backgroundAudioManager || (backgroundAudioManager = new BackgroundAudioManager())
+  }
+
+  var require_context_module_1_5 = /*#__PURE__*/Object.freeze({
+    getBackgroundAudioManager: getBackgroundAudioManager
+  });
+
+  const callbacks$2 = [];
 
   onMethod('onAccelerometerChange', function (res) {
-    callbacks$1.forEach(callbackId => {
+    callbacks$2.forEach(callbackId => {
       invoke(callbackId, res);
     });
   });
@@ -7150,7 +7470,7 @@ var serviceContext = (function () {
    */
   function onAccelerometerChange (callbackId) {
     // TODO 当没有 start 时，添加 on 需要主动 start?
-    callbacks$1.push(callbackId);
+    callbacks$2.push(callbackId);
     if (!isEnable) {
       startAccelerometer();
     }
@@ -7175,7 +7495,7 @@ var serviceContext = (function () {
     })
   }
 
-  var require_context_module_1_4 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_6 = /*#__PURE__*/Object.freeze({
     onAccelerometerChange: onAccelerometerChange,
     startAccelerometer: startAccelerometer,
     stopAccelerometer: stopAccelerometer
@@ -7198,17 +7518,17 @@ var serviceContext = (function () {
   const onBLEConnectionStateChange$1 = on('onBLEConnectionStateChange');
   const onBLECharacteristicValueChange$1 = on('onBLECharacteristicValueChange');
 
-  var require_context_module_1_5 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_7 = /*#__PURE__*/Object.freeze({
     onBluetoothDeviceFound: onBluetoothDeviceFound$1,
     onBluetoothAdapterStateChange: onBluetoothAdapterStateChange$1,
     onBLEConnectionStateChange: onBLEConnectionStateChange$1,
     onBLECharacteristicValueChange: onBLECharacteristicValueChange$1
   });
 
-  const callbacks$2 = [];
+  const callbacks$3 = [];
 
   onMethod('onCompassChange', function (res) {
-    callbacks$2.forEach(callbackId => {
+    callbacks$3.forEach(callbackId => {
       invoke(callbackId, res);
     });
   });
@@ -7220,7 +7540,7 @@ var serviceContext = (function () {
    */
   function onCompassChange (callbackId) {
     // TODO 当没有 start 时，添加 on 需要主动 start?
-    callbacks$2.push(callbackId);
+    callbacks$3.push(callbackId);
     if (!isEnable$1) {
       startCompass();
     }
@@ -7245,13 +7565,29 @@ var serviceContext = (function () {
     })
   }
 
-  var require_context_module_1_6 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_8 = /*#__PURE__*/Object.freeze({
     onCompassChange: onCompassChange,
     startCompass: startCompass,
     stopCompass: stopCompass
   });
 
-  const callbacks$3 = {
+  const callbacks$4 = [];
+
+  onMethod('onNetworkStatusChange', res => {
+    callbacks$4.forEach(callbackId => {
+      invoke(callbackId, res);
+    });
+  });
+
+  function onNetworkStatusChange (callbackId) {
+    callbacks$4.push(callbackId);
+  }
+
+  var require_context_module_1_9 = /*#__PURE__*/Object.freeze({
+    onNetworkStatusChange: onNetworkStatusChange
+  });
+
+  const callbacks$5 = {
     pause: [],
     resume: [],
     start: [],
@@ -7264,7 +7600,7 @@ var serviceContext = (function () {
         const state = res.state;
         delete res.state;
         delete res.errMsg;
-        callbacks$3[state].forEach(callback => {
+        callbacks$5[state].forEach(callback => {
           if (typeof callback === 'function') {
             callback(res);
           }
@@ -7272,7 +7608,7 @@ var serviceContext = (function () {
       });
     }
     onError (callback) {
-      callbacks$3.error.push(callback);
+      callbacks$5.error.push(callback);
     }
     onFrameRecorded (callback) {
 
@@ -7284,16 +7620,16 @@ var serviceContext = (function () {
 
     }
     onPause (callback) {
-      callbacks$3.pause.push(callback);
+      callbacks$5.pause.push(callback);
     }
     onResume (callback) {
-      callbacks$3.resume.push(callback);
+      callbacks$5.resume.push(callback);
     }
     onStart (callback) {
-      callbacks$3.start.push(callback);
+      callbacks$5.start.push(callback);
     }
     onStop (callback) {
-      callbacks$3.stop.push(callback);
+      callbacks$5.stop.push(callback);
     }
     pause () {
       invokeMethod('operateRecorder', {
@@ -7323,7 +7659,7 @@ var serviceContext = (function () {
     return recorderManager || (recorderManager = new RecorderManager())
   }
 
-  var require_context_module_1_7 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_10 = /*#__PURE__*/Object.freeze({
     getRecorderManager: getRecorderManager
   });
 
@@ -7411,7 +7747,7 @@ var serviceContext = (function () {
     return task
   }
 
-  var require_context_module_1_8 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_11 = /*#__PURE__*/Object.freeze({
     downloadFile: downloadFile$1
   });
 
@@ -7516,7 +7852,7 @@ var serviceContext = (function () {
     return new RequestTask(requestTaskId)
   }
 
-  var require_context_module_1_9 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_12 = /*#__PURE__*/Object.freeze({
     request: request$1
   });
 
@@ -7594,7 +7930,7 @@ var serviceContext = (function () {
 
   const socketTasks$1 = Object.create(null);
   const socketTasksArray = [];
-  const callbacks$4 = Object.create(null);
+  const callbacks$6 = Object.create(null);
   onMethod('onSocketTaskStateChange', ({
     socketTaskId,
     state,
@@ -7615,8 +7951,8 @@ var serviceContext = (function () {
     if (state === 'open') {
       socketTask.readyState = socketTask.OPEN;
     }
-    if (socketTask === socketTasksArray[0] && callbacks$4[state]) {
-      invoke(callbacks$4[state], state === 'message' ? {
+    if (socketTask === socketTasksArray[0] && callbacks$6[state]) {
+      invoke(callbacks$6[state], state === 'message' ? {
         data
       } : {});
     }
@@ -7675,22 +8011,22 @@ var serviceContext = (function () {
   }
 
   function onSocketOpen (callbackId) {
-    callbacks$4.open = callbackId;
+    callbacks$6.open = callbackId;
   }
 
   function onSocketError (callbackId) {
-    callbacks$4.error = callbackId;
+    callbacks$6.error = callbackId;
   }
 
   function onSocketMessage (callbackId) {
-    callbacks$4.message = callbackId;
+    callbacks$6.message = callbackId;
   }
 
   function onSocketClose (callbackId) {
-    callbacks$4.close = callbackId;
+    callbacks$6.close = callbackId;
   }
 
-  var require_context_module_1_10 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_13 = /*#__PURE__*/Object.freeze({
     connectSocket: connectSocket$1,
     sendSocketMessage: sendSocketMessage$1,
     closeSocket: closeSocket$1,
@@ -7784,7 +8120,7 @@ var serviceContext = (function () {
     return task
   }
 
-  var require_context_module_1_11 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_14 = /*#__PURE__*/Object.freeze({
     uploadFile: uploadFile$1
   });
 
@@ -7893,7 +8229,7 @@ var serviceContext = (function () {
     return res
   }
 
-  var require_context_module_1_12 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_15 = /*#__PURE__*/Object.freeze({
     setStorage: setStorage$1,
     setStorageSync: setStorageSync$1,
     getStorage: getStorage$1,
@@ -7906,6 +8242,88 @@ var serviceContext = (function () {
     getStorageInfoSync: getStorageInfoSync
   });
 
+  const defaultOption = {
+    duration: 400,
+    timingFunction: 'linear',
+    delay: 0,
+    transformOrigin: '50% 50% 0'
+  };
+
+  class MPAnimation {
+    constructor (option) {
+      this.actions = [];
+      this.currentTransform = {};
+      this.currentStepAnimates = [];
+      this.option = Object.assign({}, defaultOption, option);
+    }
+    _getOption (option) {
+      let _option = {
+        transition: Object.assign({}, this.option, option)
+      };
+      _option.transformOrigin = _option.transition.transformOrigin;
+      delete _option.transition.transformOrigin;
+      return _option
+    }
+    _pushAnimates (type, args) {
+      this.currentStepAnimates.push({
+        type: type,
+        args: args
+      });
+    }
+    _converType (type) {
+      return type.replace(/[A-Z]/g, text => {
+        return `-${text.toLowerCase()}`
+      })
+    }
+    _getValue (value) {
+      return typeof value === 'number' ? `${value}px` : value
+    }
+    export () {
+      const actions = this.actions;
+      this.actions = [];
+      return {
+        actions
+      }
+    }
+    step (option) {
+      this.currentStepAnimates.forEach(animate => {
+        if (animate.type !== 'style') {
+          this.currentTransform[animate.type] = animate;
+        } else {
+          this.currentTransform[`${animate.type}.${animate.args[0]}`] = animate;
+        }
+      });
+      this.actions.push({
+        animates: Object.values(this.currentTransform),
+        option: this._getOption(option)
+      });
+      this.currentStepAnimates = [];
+      return this
+    }
+  }
+
+  const animateTypes1 = ['matrix', 'matrix3d', 'rotate', 'rotate3d', 'rotateX', 'rotateY', 'rotateZ', 'scale', 'scale3d', 'scaleX', 'scaleY', 'scaleZ', 'skew', 'skewX', 'skewY', 'translate', 'translate3d', 'translateX', 'translateY', 'translateZ'];
+  const animateTypes2 = ['opacity', 'backgroundColor'];
+  const animateTypes3 = ['width', 'height', 'left', 'right', 'top', 'bottom'];
+  animateTypes1.concat(animateTypes2, animateTypes3).forEach(type => {
+    MPAnimation.prototype[type] = function (...args) {
+      if (animateTypes2.concat(animateTypes3).includes(type)) {
+        this._pushAnimates('style', [this._converType(type), animateTypes3.includes(type) ? this._getValue(args[0]) : args[0]]);
+      } else {
+        this._pushAnimates(type, args);
+      }
+      return this
+    };
+  });
+
+  function createAnimation (option) {
+    return new MPAnimation(option)
+  }
+
+  var require_context_module_1_16 = /*#__PURE__*/Object.freeze({
+    createAnimation: createAnimation
+  });
+
   function pageScrollTo$1 (args) {
     const pages = getCurrentPages();
     if (pages.length) {
@@ -7914,8 +8332,55 @@ var serviceContext = (function () {
     return {}
   }
 
-  var require_context_module_1_13 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_17 = /*#__PURE__*/Object.freeze({
     pageScrollTo: pageScrollTo$1
+  });
+
+  function removeTabBarBadge$1 ({
+    index
+  }) {
+    return invokeMethod('setTabBarBadge', {
+      index,
+      type: 'none'
+    })
+  }
+
+  function showTabBarRedDot$1 ({
+    index
+  }) {
+    return invokeMethod('setTabBarBadge', {
+      index,
+      type: 'redDot'
+    })
+  }
+
+  const hideTabBarRedDot$1 = removeTabBarBadge$1;
+
+  var require_context_module_1_18 = /*#__PURE__*/Object.freeze({
+    removeTabBarBadge: removeTabBarBadge$1,
+    showTabBarRedDot: showTabBarRedDot$1,
+    hideTabBarRedDot: hideTabBarRedDot$1
+  });
+
+  const callbacks$7 = [];
+  onMethod('onViewDidResize', res => {
+    callbacks$7.forEach(callbackId => {
+      invoke(callbackId, res);
+    });
+  });
+
+  function onWindowResize (callbackId) {
+    callbacks$7.push(callbackId);
+  }
+
+  function offWindowResize (callbackId) {
+    // 此处和微信平台一致查询不到去掉最后一个
+    callbacks$7.splice(callbacks$7.indexOf(callbackId), 1);
+  }
+
+  var require_context_module_1_19 = /*#__PURE__*/Object.freeze({
+    onWindowResize: onWindowResize,
+    offWindowResize: offWindowResize
   });
 
   const api$1 = Object.create(null);
@@ -7927,16 +8392,22 @@ var serviceContext = (function () {
   './base/can-i-use.js': require_context_module_1_1,
   './base/interceptor.js': require_context_module_1_2,
   './base/upx2px.js': require_context_module_1_3,
-  './device/accelerometer.js': require_context_module_1_4,
-  './device/bluetooth.js': require_context_module_1_5,
-  './device/compass.js': require_context_module_1_6,
-  './media/recorder.js': require_context_module_1_7,
-  './network/download-file.js': require_context_module_1_8,
-  './network/request.js': require_context_module_1_9,
-  './network/socket.js': require_context_module_1_10,
-  './network/upload-file.js': require_context_module_1_11,
-  './storage/storage.js': require_context_module_1_12,
-  './ui/page-scroll-to.js': require_context_module_1_13,
+  './context/audio.js': require_context_module_1_4,
+  './context/background-audio.js': require_context_module_1_5,
+  './device/accelerometer.js': require_context_module_1_6,
+  './device/bluetooth.js': require_context_module_1_7,
+  './device/compass.js': require_context_module_1_8,
+  './device/network.js': require_context_module_1_9,
+  './media/recorder.js': require_context_module_1_10,
+  './network/download-file.js': require_context_module_1_11,
+  './network/request.js': require_context_module_1_12,
+  './network/socket.js': require_context_module_1_13,
+  './network/upload-file.js': require_context_module_1_14,
+  './storage/storage.js': require_context_module_1_15,
+  './ui/create-animation.js': require_context_module_1_16,
+  './ui/page-scroll-to.js': require_context_module_1_17,
+  './ui/tab-bar.js': require_context_module_1_18,
+  './ui/window.js': require_context_module_1_19,
 
       };
       var req = function req(key) {
