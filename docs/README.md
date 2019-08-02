@@ -96,7 +96,7 @@
       </div>
       <div class="uniapp-home-content-item-header">
         <h5 class="uniapp-home-content-item-title">周边生态丰富</h5>
-        <p class="uniapp-home-content-item-text">更丰富的<a href="https://ext.dcloud.net.cn/">插件市场</a>，各种轮子拿来即用。</p>
+        <p class="uniapp-home-content-item-text">丰富的<a href="https://ext.dcloud.net.cn/?orderBy=WeekDownload">插件市场</a>，各种轮子拿来即用。</p>
         <p class="uniapp-home-content-item-text">支持NPM、支持小程序组件和SDK、兼容mpvue组件和项目、兼容weex组件。</p>
         <p class="uniapp-home-content-item-text">微信生态的各种sdk可直接用于跨平台App。</p>
       </div>
