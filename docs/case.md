@@ -51,7 +51,7 @@ uni-app已经有几十万开发者，创建了几十万个项目，是开发者�
 	</a>
 </div>
 
-<a href="https://media.kunming-railway.cn/" target="_blank" class="clear-style"><b>昆铁+：</b></a>中国铁路昆明局官方应用。同时支持iOS、Android和微信小程序。微信中搜索“昆铁+”体验小程序。
+<a href="https://media.kunming-railway.cn/" target="_blank" class="clear-style"><b>昆铁+：</b></a>中国铁路昆明局官方应用。同时支持iOS、Android和微信小程序。
 <div style="display:flex;justify-content: space-around;">
 	<a href="https://media.kunming-railway.cn/" target="_blank" class="clear-style barcode-view">
 		<img src="//img-cdn-qiniu.dcloud.net.cn/uniapp/doc/kuntie.jpg" width="200"/>
@@ -268,8 +268,6 @@ uni-app已经有几十万开发者，创建了几十万个项目，是开发者�
 
 **云省购：**导购App，集淘宝、天猫、京东等电商购物平台的优惠信息，让用户花更少的钱买同样的商品。[Android及H5](http://m3w.cn/yunshenggou)
 
-<!-- **兜省：**帮助用户省钱，各种优惠，[Android](https://android.myapp.com/myapp/detail.htm?apkName=com.kz.code)。 -->
-
 **乖保保：**保险代理人力荐的必备工具，[Android](https://android.myapp.com/myapp/detail.htm?apkName=io.dcloud.UNI31345E7&tdsourcetag=s_pctim_aiomsg)、[iOS](https://itunes.apple.com/cn/app/%E4%B9%96%E4%BF%9D%E4%BF%9D/id1440943331?mt=8)、微信小程序搜索“乖保保”。
 
 **莱丰网：**安全食品配送专家，[Android](https://android.myapp.com/myapp/detail.htm?apkName=com.laifengwang.webview)、[iOS](https://itunes.apple.com/cn/app/id1448228689)。
@@ -319,8 +317,6 @@ uni-app已经有几十万开发者，创建了几十万个项目，是开发者�
 **解忧杂货店：**寻找青春路上的你内心丢失的东西，专治各种不开心，[H5](https://www.bashiweixiao.com)。
 
 **清华跆协：**清华大学跆拳道协会App，[H5](http://sign.taekwondo.dicertri.top/#/)。
-
-<!-- **一起游：**旅游攻略指南App，[H5](https://m.17you.com/)。 -->
 
 **点伙：**致力于打造一个创业合伙招募与经验分享社区，[Android](https://android.myapp.com/myapp/detail.htm?apkName=com.whyouzhe.team)。
 
@@ -393,6 +389,8 @@ uni-app已经有几十万开发者，创建了几十万个项目，是开发者�
 **青峰财经：**财经媒体，[App、H5通用链接](http://m3w.cn/qfcj)
 
 **家巴啦教育：**在家巴啦,一切以孩子为中心。[App和小程序通用链接](http://m3w.cn/__uni__de12861)
+
+**摸鱼：**职场生活圈。[微信小程序](http://m3w.cn/moyu)
 
 **超英预告：**超级英雄预告，腾讯课堂Next学院的uni-app课程示例，[H5](http://www.imovietrailer.com)、微信小程序搜索“NEXT超英预告”。
 
