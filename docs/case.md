@@ -43,7 +43,7 @@ uni-app已经有几十万开发者，创建了几十万个项目，是开发者�
 	</a>
 </div>
 
-<a href="https://media.kunming-railway.cn/" target="_blank" class="clear-style"><b>开源中国：</b></a> 开源中国社区百度小程序，提供最新的开源软件咨询。
+<a href="https://media.kunming-railway.cn/" target="_blank" class="clear-style"><b>开源中国：</b></a> 开源中国（oschina）百度小程序，提供最新的开源软件资讯。
 <div style="display:flex;justify-content: space-around;">
 	<a href="javascript:;" target="_blank" class="clear-style barcode-view">
 		<img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/onchina.png" width="200"/>
