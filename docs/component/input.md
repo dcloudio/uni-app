@@ -17,7 +17,7 @@
 |cursor-spacing|Number|0|指定光标与键盘的距离，单位 px 。取 input 距离底部的距离和 cursor-spacing 指定的距离的最小值作为光标与键盘的距离|微信小程序、百度小程序|
 |focus|Boolean|false|获取焦点。在 H5 平台聚焦后软键盘是否跟随弹出，取决于当前浏览器本身的规范（策略）。||
 |confirm-type|String|done|设置键盘右下角按钮的文字，仅在 type="text" 时生效。||
-|confirm-hold|Boolean|false|点击键盘右下角按钮时是否保持键盘不收起|5+App、微信小程序、支付宝小程序、百度小程序|
+|confirm-hold|Boolean|false|点击键盘右下角按钮时是否保持键盘不收起|App、微信小程序、支付宝小程序、百度小程序|
 |cursor|Number||指定focus时的光标位置||
 |selection-start|Number|-1|光标起始位置，自动聚集时有效，需与selection-end搭配使用||
 |selection-end|Number|-1|光标结束位置，自动聚集时有效，需与selection-start搭配使用||
@@ -35,20 +35,20 @@
 
 **type 有效值**
 
-|值|说明|
-|:-|:-|
-|text|文本输入键盘|
-|number|数字输入键盘|
-|idcard|身份证输入键盘|
-|digit|带小数点的数字键盘|
+|值|说明|平台差异说明|
+|:-|:-|:-|
+|text|文本输入键盘||
+|number|数字输入键盘|注意iOS的vue页面弹出的数字键盘并非9宫格方式|
+|idcard|身份证输入键盘|微信、支付宝、百度、QQ小程序|
+|digit|带小数点的数字键盘|App的nvue页面、微信、支付宝、百度、头条、QQ小程序|
 
 **注意事项**
 
 - 小程序平台，`number` 类型只支持输入整型数字。微信开发者工具上体现不出效果，请使用真机预览。
 - 如果需要在小程序平台输入浮点型数字，请使用 `digit` 类型。
 - input组件若不想弹出软键盘，可设置为disable
-- App 平台的弹出键盘使用的是系统默认键盘，效果不一定和小程序一致。
-- [uni-app插件市场](https://ext.dcloud.net.cn/)有各种类型的模拟键盘，比如车牌键盘，以及封装好的搜索框ui组件，可去插件市场搜索 [键盘](https://ext.dcloud.net.cn/search?q=%E9%94%AE%E7%9B%98)。
+- App平台的vue页面及 H5平台 的弹出键盘使用的是浏览器控制的键盘，丰富程度略低。可通过插件市场补足。
+- [uni-app插件市场](https://ext.dcloud.net.cn/)有各种类型的模拟键盘，比如车牌键盘、身份证键盘，以及封装好的搜索框ui组件，可去插件市场搜索 [键盘](https://ext.dcloud.net.cn/search?q=%E9%94%AE%E7%9B%98)。
 - [uni-app插件市场](https://ext.dcloud.net.cn/)有输入文字后自动提示候选的组件，可搜索 [autocomplete](https://ext.dcloud.net.cn/search?q=autocomplete) 查看。
 
 **confirm-type 有效值**
@@ -56,13 +56,13 @@
 
 |值|说明|平台差异说明|
 |:-|:-|-|
-|send|右下角按钮为“发送”|微信、支付宝、百度小程序|
+|send|右下角按钮为“发送”|微信、支付宝、百度小程序、App的nvue|
 |search|右下角按钮为“搜索”||
-|next|右下角按钮为“下一个”|微信、支付宝、百度小程序|
+|next|右下角按钮为“下一个”|微信、支付宝、百度小程序、App的nvue|
 |go|右下角按钮为“前往”||
-|done|右下角按钮为“完成”|微信、支付宝、百度小程序|
+|done|右下角按钮为“完成”|微信、支付宝、百度小程序、App的nvue|
 
-App平台，在nvue页面，通过weex的api，可以设置键盘右下角按钮为 发送、下一个、前往、完成。[详见](https://weex.apache.org/zh/docs/components/input.html#%E5%B1%9E%E6%80%A7)
+App平台的nvue页面，如果是uni-app编译模式，直接使用此属性设置即可生效。如果是weex编译模式，需通过weex的api设置，[weex相关文档参考](https://weex.apache.org/zh/docs/components/input.html#%E5%B1%9E%E6%80%A7)
 
 #### App平台iOS端软键盘上方横条去除方案
 
@@ -95,6 +95,7 @@ this.$mp.page.$getAppWebview().setStyle({
 })
 ```
 
+如果是nvue页面，默认就没有键盘上方的横条，无需任何设置。
 
 #### 关于软键盘弹出的逻辑说明
 
