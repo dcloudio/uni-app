@@ -1224,7 +1224,11 @@ function handleEvent (event) {
     }
   });
 
-  if (ret.length === 1) {
+  if (
+    eventType === 'input' &&
+    ret.length === 1 &&
+    typeof ret[0] !== 'undefined'
+  ) {
     return ret[0]
   }
 }
