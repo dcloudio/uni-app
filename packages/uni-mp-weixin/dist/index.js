@@ -653,8 +653,8 @@ function hasHook (hook, vueOptions) {
       return true
     }
     if (vueOptions.super &&
-            vueOptions.super.options &&
-            Array.isArray(vueOptions.super.options[hook])) {
+      vueOptions.super.options &&
+      Array.isArray(vueOptions.super.options[hook])) {
       return true
     }
     return false
@@ -936,16 +936,16 @@ function processEventExtra (vm, extra, event) {
 
   if (Array.isArray(extra) && extra.length) {
     /**
-         *[
-         *    ['data.items', 'data.id', item.data.id],
-         *    ['metas', 'id', meta.id]
-         *],
-         *[
-         *    ['data.items', 'data.id', item.data.id],
-         *    ['metas', 'id', meta.id]
-         *],
-         *'test'
-         */
+     *[
+     *    ['data.items', 'data.id', item.data.id],
+     *    ['metas', 'id', meta.id]
+     *],
+     *[
+     *    ['data.items', 'data.id', item.data.id],
+     *    ['metas', 'id', meta.id]
+     *],
+     *'test'
+     */
     extra.forEach((dataPath, index) => {
       if (typeof dataPath === 'string') {
         if (!dataPath) { // model,prop.sync
@@ -981,8 +981,8 @@ function processEventArgs (vm, event, args = [], extra = [], isCustom, methodNam
   let isCustomMPEvent = false; // wxcomponent 组件，传递原始 event 对象
   if (isCustom) { // 自定义事件
     isCustomMPEvent = event.currentTarget &&
-            event.currentTarget.dataset &&
-            event.currentTarget.dataset.comType === 'wx';
+      event.currentTarget.dataset &&
+      event.currentTarget.dataset.comType === 'wx';
     if (!args.length) { // 无参数，直接传入 event 或 detail 数组
       if (isCustomMPEvent) {
         return [event]
@@ -1024,13 +1024,13 @@ const CUSTOM = '^';
 
 function isMatchEventType (eventType, optType) {
   return (eventType === optType) ||
-        (
-          optType === 'regionchange' &&
-            (
-              eventType === 'begin' ||
-                eventType === 'end'
-            )
-        )
+    (
+      optType === 'regionchange' &&
+      (
+        eventType === 'begin' ||
+        eventType === 'end'
+      )
+    )
 }
 
 function handleEvent (event) {
@@ -1041,13 +1041,16 @@ function handleEvent (event) {
   if (!dataset) {
     return console.warn(`事件信息不存在`)
   }
-  const eventOpts = dataset.eventOpts || dataset['event-opts'];// 支付宝 web-view 组件 dataset 非驼峰
+  const eventOpts = dataset.eventOpts || dataset['event-opts']; // 支付宝 web-view 组件 dataset 非驼峰
   if (!eventOpts) {
     return console.warn(`事件信息不存在`)
   }
 
   // [['handle',[1,2,a]],['handle1',[1,2,a]]]
   const eventType = event.type;
+
+  const ret = [];
+
   eventOpts.forEach(eventOpt => {
     let type = eventOpt[0];
     const eventsArray = eventOpt[1];
@@ -1064,8 +1067,8 @@ function handleEvent (event) {
           let handlerCtx = this.$vm;
           if (
             handlerCtx.$options.generic &&
-                        handlerCtx.$parent &&
-                        handlerCtx.$parent.$parent
+            handlerCtx.$parent &&
+            handlerCtx.$parent.$parent
           ) { // mp-weixin,mp-toutiao 抽象节点模拟 scoped slots
             handlerCtx = handlerCtx.$parent.$parent;
           }
@@ -1079,18 +1082,22 @@ function handleEvent (event) {
             }
             handler.once = true;
           }
-          handler.apply(handlerCtx, processEventArgs(
+          ret.push(handler.apply(handlerCtx, processEventArgs(
             this.$vm,
             event,
             eventArray[1],
             eventArray[2],
             isCustom,
             methodName
-          ));
+          )));
         }
       });
     }
   });
+
+  if (ret.length === 1) {
+    return ret[0]
+  }
 }
 
 const hooks = [
