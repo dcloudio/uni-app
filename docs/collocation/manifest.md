@@ -269,7 +269,7 @@ Tips：`uni-app` 中 `manifest.json->h5->devServer` 实际上对应 `webpack` �
 |属性|类型|默认值|说明|
 |:-|:-|:-|:-|
 |enable|Boolean|false|是否启用摇树优化|
-|modules|Object||需要优化的API模块列表|
+|modules|Object||使用到的API模块列表|
 
 **示例：**
 ```json
@@ -281,7 +281,7 @@ Tips：`uni-app` 中 `manifest.json->h5->devServer` 实际上对应 `webpack` �
                 "name": "network",
                 "title": "网络",
                 "apiList": [
-                    "uni.request": true,//配置为true，表示将会使用此API，不会被优化
+                    "uni.request": true,//配置为true，表示将会使用此API，不会被优化（未配置的API默认值为true）
                     "uni.downloadFile": false,//配置为false，经过扫描项目中未使用此API的话，打包的后将不包含此API
                     ...
                 ]
