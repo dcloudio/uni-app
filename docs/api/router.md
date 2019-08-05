@@ -167,7 +167,7 @@ Tips：
 * 不能在 ```App.vue``` 里面进行页面跳转。
 
 #### 窗口动画@animation
-> 1.6.5 新增
+> 本API仅App端支持。小程序自身不支持自定义动画。H5的窗体动画可使用常规单页动画处理方案，见[H5下单页动画示例](https://ext.dcloud.net.cn/plugin?id=659&tdsourcetag=s_pctim_aiomsg)
 
 窗口的显示/关闭动画效果，支持在 API、组件、pages.json 中配置，优先级为：`API = 组件 > pages.json`。
 
