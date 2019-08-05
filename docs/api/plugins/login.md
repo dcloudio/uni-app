@@ -153,7 +153,7 @@ uni.login({
 });
 ```
 
-#### App端集成其他登陆SDK如支付宝、facebook登陆的说明
+#### App端集成其他登陆SDK如支付宝、淘宝、facebook登陆的说明
 1. 使用原生插件方式，可以集成三方sdk，原生插件开发文档见[https://ask.dcloud.net.cn/article/35428](https://ask.dcloud.net.cn/article/35428)。开发之前可以先去[插件市场](https://ext.dcloud.net.cn/)看下有没有做好的。
-2. 淘宝登陆在插件市场的[阿里百川插件](https://ext.dcloud.net.cn/search?q=%E7%99%BE%E5%B7%9D)中包含，淘宝客可使用这个插件
+2. 支付宝登陆、淘宝登陆在插件市场均有插件，[支付宝登陆](https://ext.dcloud.net.cn/search?q=%E6%94%AF%E4%BB%98%E5%AE%9D%E7%99%BB%E9%99%86)、[淘宝登陆](https://ext.dcloud.net.cn/search?q=%E7%99%BE%E5%B7%9D)。
 3. 也可以内嵌web-view组件，使用web登陆模式集成这些三方登陆
