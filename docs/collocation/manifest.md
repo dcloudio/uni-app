@@ -275,18 +275,20 @@ Tips：`uni-app` 中 `manifest.json->h5->devServer` 实际上对应 `webpack` �
 ```json
 "h5": {
     "optimization": {
-        "enable": true,
-        "modules": [
-            {
-                "name": "network",
-                "title": "网络",
-                "apiList": [
-                    "uni.request": true,//配置为true，表示将会使用此API，不会被优化（未配置的API默认值为true）
-                    "uni.downloadFile": false,//配置为false，经过扫描项目中未使用此API的话，打包的后将不包含此API
-                    ...
-                ]
-            }
-        ]
+        "treeShaking": {
+            "enable": true,
+            "modules": [
+                {
+                    "name": "network",
+                    "title": "网络",
+                    "apiList": [
+                        "uni.request": true,//配置为true，表示将会使用此API，不会被优化（未配置的API默认值为true）
+                        "uni.downloadFile": false,//配置为false，经过扫描项目中未使用此API的话，打包的后将不包含此API
+                        ...
+                    ]
+                }
+            ]
+        }
     }
 }
 ```
