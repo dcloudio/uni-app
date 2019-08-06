@@ -3,7 +3,7 @@
 
 **平台差异说明**
 
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|
 |√|√|√|x|√|√|
 
@@ -132,14 +132,17 @@ export default {
 	* 小程序平台：各小程序平台支持程度不同，详见各家文档：[微信小程序视频组件文档](https://developers.weixin.qq.com/miniprogram/dev/component/video.html)、支付宝不支持video组件、[百度小程序视频组件文档](https://smartprogram.baidu.com/docs/develop/component/media/#video/)、[头条小程序视频组件文档](https://developer.toutiao.com/docs/comp/video.html)
 	* App平台： 支持本地视频(mp4/flv)、网络视频地址（mp4/flv/m3u8）及流媒体（rtmp/hls/rtsp）。
 
-- video全屏后，如何自行绘制界面？
+- video全屏后，如何自行绘制界面？比如加个标题、加个分享按钮
 	* 微信基础库 2.4.0 以上可通过cover-view来绘制界面覆盖元素
+	* app端 2.1.5 以上nvue页面的video也可以通过cover-view来绘制界面覆盖元素
 	* H5端可通过通用h5做法实现
-	* app端video正在开发相应方案
 	* 其他端无法全屏后自行绘制内容
 
+- 如何实现抖音、映客等全屏视频垂直滑动切换效果？
+	* 微信基础库 2.4.0 和app端nvue 2.1.5 以上，可通过在垂直的swiper中内嵌video来实现。原生导航栏设置为custom，视频长宽设为手机屏幕大小，通过cover-view覆盖视频内容。
+
 - `<video/>` 组件在非H5端是原生组件，层级高于普通前端组件，覆盖其需要使用[cover-view](https://uniapp.dcloud.io/component/cover-view?id=cover-view)组件或plus.nativeObj.view、subNVue。微信基础库 2.4.0 起已支持 video 组件的同层渲染，也就是video在非全屏时，可以被前端元素通过调节zindex来遮挡，但video全屏时，仍需要cover-view覆盖。
-- 除微信基础库 2.4.0 以上，其他情况下非H5的video不能放入scroll-view和swiper。注意参考 [原生组件使用限制](/component/native-component)。
+- 除微信基础库 2.4.0 和app端nvue页面 2.1.5 以上，其他情况下非H5的video不能放入scroll-view和swiper。注意参考 [原生组件使用限制](/component/native-component)。
 
 - App平台：使用 `<video/>` 组件，打包 App 时必须勾选 manifest.json->App 模块权限配置->VideoPlayer 模块。
 - App平台：如果想使用非原生的video，即原来普通的html5自带video，可使用web-view组件load html页面，在其中使用普通h5 video。
