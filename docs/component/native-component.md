@@ -1,8 +1,10 @@
 #### 原生组件说明
 
-为了提升性能，小程序和App架构下部分ui元素，比如导航栏、tabbar、video、map使用了原生控件。
+小程序和App的vue页面，主体是webview渲染的。为了提升性能，小程序和App的vue页面下部分ui元素，比如导航栏、tabbar、video、map使用了原生控件。这种方式被称为混合渲染。
 
 虽然提升了性能，但原生组件带来了其他问题：1) 前端组件无法覆盖原生控件的层级问题、2) 原生组件不能嵌入特殊前端组件(如scroll-view)、3) 原生控件无法灵活自定义。
+
+H5、App的nvue页面，不存在混合渲染的情况，它们或者全部是前端渲染、或者全部是原生渲染，不涉及层级问题。
 
 ``uni-app`` 中原生组件清单如下：
 * [map](/component/map)
@@ -16,12 +18,13 @@
 * [cover-view](/component/cover-view)
 * [cover-image](/component/cover-view?id=cover-image)
 
-#### 原生组件的使用限制
+
+#### 混合渲染模式下原生组件的使用限制
 
 由于原生组件脱离在 WebView 渲染流程外，因此在使用时有以下限制：
 
 * 原生组件的层级是**最高**的，所以页面中的其他组件无论设置 z-index 为多少，都无法盖在原生组件上。后插入的原生组件可以覆盖之前的原生组件。
-* 原生组件无法在 scroll-view、swiper、picker-view、movable-view 中使用（微信基础库2.4.4起支持了原生组件在 scroll-view、swiper、movable-view 中的使用）
+* 原生组件无法在 scroll-view、swiper、picker-view、movable-view 中使用（微信基础库2.4.4起支持了原生组件在 scroll-view、swiper、movable-view 中的使用，即原生组件的同层渲染；App-nvue 2.1.5也实现了同层渲染了）
 * 部分CSS样式无法应用于原生组件，例如：
     * 无法对原生组件设置 CSS 动画；
     * 无法定义原生组件为 position: fixed；
@@ -30,24 +33,26 @@
 
 #### 其他原生界面元素
 除了原生组件外，uni-app在非H5端还有其他原生界面元素，清单如下：
-* 原生导航栏和tabbar（pages.json里配置的）
+* 原生导航栏和tabbar（pages.json里配置的）。
 * web-view组件虽然不是原生的，但这个组件相当于一个原生webview覆盖在页面上，并且小程序上web-view组件是强制全屏的，无法在上面覆盖前端元素
 * 弹出框：picker、showModal、showToast、showLoading、showActionSheet、previewImage、chooseImage、chooseVideo等弹出元素也无法被前端组件覆盖
 * plus下的plus.nativeObj.view、plus.video.LivePusher、plus.nativeUI、plus.webview，层级均高于前端元素
 
+注意：app的nvue页面里的组件虽然不涉及map、video等原生组件的层级遮挡问题，但上述“其他原生界面元素”，一样是nvue里的组件也无法遮挡的。
+
 #### vue页面层级覆盖解决方案
 
-为了解决原生组件层级最高的限制，uni-app提供了 [cover-view](/component/cover-view) 和 [cover-image](/component/cover-view?id=cover-image) 组件，让其覆盖在原生组件上。
+为了解决webview渲染中原生组件层级最高的限制，uni-app提供了 [cover-view](/component/cover-view) 和 [cover-image](/component/cover-view?id=cover-image) 组件，让其覆盖在原生组件上。
 
 除了跨端的cover-view，App端还提供了2种方案：plus.nativeObj.view、subNVue。详述如下
 
 - [cover-view](https://uniapp.dcloud.io/component/cover-view?id=cover-view)
 
-cover-view只能覆盖原生组件，不能覆盖其他原生界面元素。比如cover-view可以覆盖video、map，但无法覆盖原生导航栏、tabbar、web-view。
+`cover-view`只能覆盖原生组件，不能覆盖其他原生界面元素。比如cover-view可以覆盖video、map，但无法覆盖原生导航栏、tabbar、web-view。
 
 微信小程序在基础库 2.4.0 起已支持 video 组件的同层渲染。也就是video在非全屏时，可以被前端元素通过调节zindex来遮挡。但video全屏时，仍需要cover-view覆盖。
 
-cover-view在App端相比小程序端还有一些限制，1) 无法嵌套、 2) 无法内部滚动，即cover-view无法内部出现滚动条
+vue页面的`cover-view`在App端相比小程序端还有一些限制，1) 无法嵌套、 2) 无法内部滚动，即cover-view无法内部出现滚动条、 3) 无法覆盖到视频的全屏界面。nvue页面的`cover-view`无这些限制。
 
 另外cover-view无论如何都无法解决原生导航栏、tabbar、web-view组件的覆盖，为此App端补充了2个层级覆盖方案plus.nativeObj.view和subNVue
 
