@@ -6,7 +6,7 @@
 
 # uni-app的特点
 
-- 开发者和案例更多：20万+开发者，50+QQ、微信群，数万案例应用。[uniapp.dcloud.io/case](https://uniapp.dcloud.io/case)
+- 开发者和案例更多：20万+开发者，50+QQ、微信群，数万案例应用。[案例](https://uniapp.dcloud.io/case)
 - 性能更高（见[评测](https://juejin.im/post/5ca1736af265da30ae314248)）
 - 更丰富的周边生态（见[插件市场](https://ext.dcloud.net.cn/)）。
 - 提供比小程序原生开发更好的开发体验和更高的工程化效率
