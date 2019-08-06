@@ -14,13 +14,13 @@
 
 **平台差异说明**
 
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|
-|2.0.0+ [自定义组件编译模式](https://ask.dcloud.net.cn/article/35843)|x|基础库 2.7.0+|x|x|x|
+|2.0.0+ [自定义组件编译模式](https://ask.dcloud.net.cn/article/35843)，不含nvue|x|基础库 2.7.0+|x|x|x|
 
 本功能自HBuilderX2.0起支持。运行到微信小程序工具时，注意在微信工具里选择最新的基础库。
 
-editor组件目前只有App和微信支持，其他端的富文本编辑解决方案，可搜索[插件市场](https://ext.dcloud.net.cn/search?q=%E5%AF%8C%E6%96%87%E6%9C%AC%E7%BC%96%E8%BE%91)
+editor组件目前只有App的vue页面和微信支持，其他端的富文本编辑解决方案，可使用web-view加载web页面，也可搜索[插件市场](https://ext.dcloud.net.cn/search?q=%E5%AF%8C%E6%96%87%E6%9C%AC%E7%BC%96%E8%BE%91) 获取简单的markdown富文本编辑器
 
 | 属性 | 类型 | 默认值 | 必填 | 说明 |
 | --- | --- | --- | --- | --- |
