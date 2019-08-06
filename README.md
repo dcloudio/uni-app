@@ -4,11 +4,17 @@
 
 开发者使用 `Vue` 语法编写代码，`uni-app` 框架将其编译到 小程序（微信/支付宝/百度/字节跳动/QQ）、App（iOS/Android）、H5等多个平台，保证其正确运行并达到优秀体验。
 
-同时，`uni-app` 也是更优秀的小程序开发框架，拥有更高的性能（见[评测](https://juejin.im/post/5ca1736af265da30ae314248)）、更丰富的周边生态（见[插件市场](https://ext.dcloud.net.cn/)）。
+# uni-app的特点
+
+- 开发者和案例更多：20万+开发者，50+QQ、微信群，数万案例应用。[uniapp.dcloud.io/case](https://uniapp.dcloud.io/case)
+- 性能更高（见[评测](https://juejin.im/post/5ca1736af265da30ae314248)）
+- 更丰富的周边生态（见[插件市场](https://ext.dcloud.net.cn/)）。
+- 提供比小程序原生开发更好的开发体验和更高的工程化效率
+- 跨端抹平度更完善，且各端特色发挥更灵活，可真正实现一套代码多端覆盖，无需各端多头维护升级。
 
 ## 扫码体验
 
-一套代码编译到7个平台，开发一次、多处运行，到底是梦想还是现实？依次扫描7个二维码，亲自体验最全面的跨平台效果！
+一套代码编译到7个平台，开发一次、多处运行，这不是梦想，而是现实。依次扫描7个二维码，亲自体验最全面的跨平台效果！
 
 <img src="http://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/barcode-20190131.png"/>
 
