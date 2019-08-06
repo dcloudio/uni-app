@@ -269,45 +269,17 @@ Tips：`uni-app` 中 `manifest.json->h5->devServer` 实际上对应 `webpack` �
 |属性|类型|默认值|说明|
 |:-|:-|:-|:-|
 |enable|Boolean|false|是否启用摇树优化|
-|modules|Object||使用到的API模块列表|
 
 **示例：**
 ```json
 "h5": {
     "optimization": {
         "treeShaking": {
-            "enable": true,
-            "modules": [
-                {
-                    "name": "network",
-                    "title": "网络",
-                    "apiList": [
-                        "uni.request": true,//配置为true，表示将会使用此API，不会被优化（未配置的API默认值为true）
-                        "uni.downloadFile": false,//配置为false，经过扫描项目中未使用此API的话，打包的后将不包含此API
-                        ...
-                    ]
-                }
-            ]
+            "enable": true
         }
     }
 }
 ```
-
-**API模块列表：**
-
-|模块（name）|说明（title）|包含的API（apiList）|
-|:-|:-|:-|
-|base|基础|uni.getSystemInfo、uni.getSystemInfoSync、uni.canIUse、uni.upx2px、uni.navigateTo、uni.redirectTo、uni.switchTab、uni.reLaunch、uni.navigateBack|
-|network|网络|uni.request、uni.connectSocket、uni.sendSocketMessage、uni.closeSocket、uni.onSocketOpen、uni.onSocketError、uni.onSocketMessage、uni.onSocketClose、uni.downloadFile、uni.uploadFile|
-|storage|数据缓存|uni.setStorage、uni.setStorageSync、uni.getStorage、uni.getStorageSync、uni.removeStorage、uni.removeStorageSync、uni.clearStorage、uni.clearStorageSync、uni.getStorageInfo、uni.getStorageInfoSync|
-|location|位置|uni.getLocation、uni.openLocation、uni.chooseLocation|
-|media|媒体|uni.chooseImage、uni.previewImage、uni.getImageInfo、uni.saveImageToPhotosAlbum、uni.compressImage、uni.getRecorderManager、uni.getBackgroundAudioManager、uni.createInnerAudioContext、uni.chooseVideo、uni.saveVideoToPhotosAlbum、uni.createVideoContext、uni.createCameraContext、uni.createLivePlayerContext|
-|device|设备|uni.onMemoryWarning、uni.getNetworkType、uni.onNetworkStatusChange、uni.onAccelerometerChange、uni.startAccelerometer、uni.stopAccelerometer、uni.onCompassChange、uni.startCompass、uni.stopCompass、uni.onGyroscopeChange、uni.startGyroscope、uni.stopGyroscope、uni.makePhoneCall、uni.scanCode、uni.setClipboardData、uni.getClipboardData、uni.setScreenBrightness、uni.getScreenBrightness、uni.setKeepScreenOn、uni.onUserCaptureScreen、uni.vibrateLong、uni.vibrateShort、uni.addPhoneContact、uni.openBluetoothAdapter、uni.startBluetoothDevicesDiscovery、uni.onBluetoothDeviceFound、uni.stopBluetoothDevicesDiscovery、uni.onBluetoothAdapterStateChange、uni.getConnectedBluetoothDevices、uni.getBluetoothDevices、uni.getBluetoothAdapterState、uni.closeBluetoothAdapter、uni.writeBLECharacteristicValue、uni.readBLECharacteristicValue、uni.onBLEConnectionStateChange、uni.onBLECharacteristicValueChange、uni.notifyBLECharacteristicValueChange、uni.getBLEDeviceServices、uni.getBLEDeviceCharacteristics、uni.createBLEConnection、uni.closeBLEConnection、uni.onBeaconServiceChange、uni.onBeaconUpdate、uni.getBeacons、uni.startBeaconDiscovery、uni.stopBeaconDiscovery|
-|ui|界面|uni.showToast、uni.hideToast、uni.showLoading、uni.hideLoading、uni.showModal、uni.showActionSheet、uni.setNavigationBarTitle、uni.setNavigationBarColor、uni.showNavigationBarLoading、uni.hideNavigationBarLoading、uni.setTabBarItem、uni.setTabBarStyle、uni.hideTabBar、uni.showTabBar、uni.setTabBarBadge、uni.removeTabBarBadge、uni.showTabBarRedDot、uni.hideTabBarRedDot、uni.setBackgroundColor、uni.setBackgroundTextStyle、uni.createAnimation、uni.pageScrollTo、uni.onWindowResize、uni.offWindowResize、uni.loadFontFace、uni.startPullDownRefresh、uni.stopPullDownRefresh、uni.createSelectorQuery、uni.createIntersectionObserver、uni.hideKeyboard|
-|event|页面通讯|uni.$emit、uni.$on、uni.$once、uni.$off|
-|file|文件|uni.saveFile、uni.getSavedFileList、uni.getSavedFileInfo、uni.removeSavedFile、uni.getFileInfo、uni.openDocument、uni.getFileSystemManager|
-|canvas|绘画|uni.createOffscreenCanvas、uni.createCanvasContext、uni.canvasToTempFilePath、uni.canvasPutImageData、uni.canvasGetImageData|
-|third|第三方服务|uni.getProvider、uni.login、uni.checkSession、uni.getUserInfo、uni.share、uni.showShareMenu、uni.hideShareMenu、uni.requestPayment、uni.subscribePush、uni.unsubscribePush、uni.onPush、uni.offPush、uni.requireNativePlugin、uni.base64ToArrayBuffer、uni.arrayBufferToBase64|
 
 ### mp-weixin
 
