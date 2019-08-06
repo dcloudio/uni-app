@@ -43,13 +43,11 @@
 
 **Tips**
 
-- App端 `cover-view`、`cover-image` 中不支持嵌套其它组件。
-- App端暂不支持 `cover-view`、`cover-image` 组件之间的嵌套。
-- App端cover-view可覆盖的原生组件有限制，目前仅包括：`video`、`map`
-- App端还可以使用更强大的plus.nativeObj.view绘制原生内容，参考:[uni-app中使用5+界面控件](https://ask.dcloud.net.cn/article/35036)、[plus.nativeObj.view规范](https://www.html5plus.org/doc/zh_cn/nativeobj.html#plus.nativeObj.View)
-- App端还提供了更灵活和强大的`subNvue`，比cover-view和plus.nativeObj.view都更强大，参考[原生子窗体subNvue](/api/window/subNVues)
-- 其他小程序平台下，可以使用条件编译，完全按照其规范开发。
-- 在 video 组件中使用时，不支持在全屏模式下使用`cover-view`。
+- App端vue页面 `cover-view`、`cover-image` 中不支持嵌套其它组件，包括再次嵌套`cover-view`，仅可覆盖`video`、`map`。App端nvue页面自2.1.5起没有这些受限制。
+- App端还可以使用强大的plus.nativeObj.view绘制原生内容，参考:[uni-app中使用5+界面控件](https://ask.dcloud.net.cn/article/35036)、[plus.nativeObj.view规范](https://www.html5plus.org/doc/zh_cn/nativeobj.html#plus.nativeObj.View)
+- App端还提供了更灵活和强大的`subNvue`，参考[原生子窗体subNvue](/api/window/subNVues)
+- 在 video 组件中使用时，若想在全屏模式下使用`cover-view`，只有在微信小程序、App端的nvue页面可实现。
+- 百度小程序iOS端暂不支持一个页面有多个video时嵌套cover-view。
 - 支付宝小程序中 `cover-view` 不支持嵌套。
 
 
