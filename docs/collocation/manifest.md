@@ -145,6 +145,8 @@ splash（启动封面）是App必然存在的、不可取消的。
 |devServer|Object|开发环境 server 配置，参考：[devServer](collocation/manifest?id=devserver)|
 |publicPath|String|引用资源的地址前缀，仅发布时生效。参考：[publicPath](collocation/manifest?id=publicPath)|
 |sdkConfigs|String|SDK配置，例如地图...  参考：[sdkConfigs](collocation/manifest?id=h5sdkconfig)|
+|optimization|Object|打包优化配置（HBuilderX 2.1.5 以上支持），参考[optimization](collocation/manifest?id=optimization)|
+
 
 #### 自定义模板@h5-template
 需要使用自定义模板的场景，通常有以下几种情况：
@@ -254,7 +256,30 @@ Tips：`uni-app` 中 `manifest.json->h5->devServer` 实际上对应 `webpack` �
 }
 ```
 
+#### optimization
 
+|属性|类型|默认值|说明|
+|:-|:-|:-|:-|
+|prefetch|Boolean|false|资源预取|
+|preload|Boolean|false|资源预加载|
+|treeShaking|Object||摇树优化，根据项目需求，动态打包框架所需的组件及API，保持框架代码最精简化，参考[treeShaking](collocation/manifest?id=treeshaking)|
+
+##### treeShaking
+
+|属性|类型|默认值|说明|
+|:-|:-|:-|:-|
+|enable|Boolean|false|是否启用摇树优化|
+
+**示例：**
+```json
+"h5": {
+    "optimization": {
+        "treeShaking": {
+            "enable": true
+        }
+    }
+}
+```
 
 ### mp-weixin
 

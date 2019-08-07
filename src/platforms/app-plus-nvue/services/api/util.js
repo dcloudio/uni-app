@@ -51,27 +51,24 @@ export function invokeVmMethod (vm, method, args, extras) {
 }
 
 export function findRefById (id, vm) {
-  return findRefByVNode(id, vm._vnode)
+  return findRefByElm(id, vm.$el)
 }
 
-function findRefByVNode (id, vnode) {
-  if (!id || !vnode) {
+function findRefByElm (id, elm) {
+  if (!id || !elm) {
     return
   }
-  if (vnode.data &&
-        vnode.data.ref &&
-        vnode.data.attrs &&
-        vnode.data.attrs.id === id) {
-    return vnode.data.ref
+  if (elm.attr.id === id) {
+    return elm
   }
-  const children = vnode.children
+  const children = elm.children
   if (!children) {
     return
   }
   for (let i = 0, len = children.length; i < len; i++) {
-    const ref = findRefByVNode(id, children[i])
-    if (ref) {
-      return ref
+    const elm = findRefByElm(id, children[i])
+    if (elm) {
+      return elm
     }
   }
 }
