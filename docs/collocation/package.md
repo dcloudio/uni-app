@@ -12,6 +12,7 @@ package.json扩展配置用法：
             "custom-platform": { //自定义编译平台配置，可通过cli方式调用
                 "env": {//环境变量
                     "UNI_PLATFORM": ""  //基准平台 
+                    "BROWSER":""  //运行到的目标浏览器，仅当UNI_PLATFORM为h5时有效
                  },
                 "define": { //自定义条件编译
                     "CUSTOM-CONST": true //自定义常量，建议为大写
@@ -27,11 +28,13 @@ package.json扩展配置用法：
 Tips：
 
 - `UNI_PLATFORM`仅支持填写`uni-app`默认支持的基准平台，目前仅限如下枚举值：`app-plus`、`h5`、`mp-weixin`、`mp-alipay`、`mp-baidu`、`mp-toutiao`、`mp-qq`
+- `BROWSER` 仅在`UNI_PLATFORM`为`h5`时有效,目前仅限如下枚举值：`Chrome`、`Firefox`、`IE`、`Edge`、`Safari`、`HBuilderX`
 - 目前仅`vue-cli`版本支持package.json扩展配置，HBuilderX将于下版支持
 
 #### 示例：钉钉小程序
 
 如下是一个自定义钉钉小程序（MP-DINGTALK）的package.json示例配置（拷贝代码记得去掉注释）：
+
 ```json
 "uni-app": {
 	"scripts": {
