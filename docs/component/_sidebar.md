@@ -37,10 +37,11 @@
   * [map](component/map.md)
 * 画布
   * [canvas](component/canvas.md)
-* [开放能力](component/open.md)
 * webview
   * [web-view](component/web-view.md)
-* 小程序专用开放组件
+* 小程序开放能力组件
+  * [ad](component/ad.md)
+  * [official-account](component/official-account.md)
   * [open-data](component/open-data.md)
 * App nvue专用组件
   * [barcode](component/barcode.md)
