@@ -1,4 +1,10 @@
-### Barcode
+#### Barcode
+
+app端nvue专用的扫码组件。
+
+注意：此组件用于app端nvue页面实现内嵌到界面上的扫码。其他场景、其他平台，请使用全屏扫码API：[uni.scanCode](https://uniapp.dcloud.io/api/system/barcode) 
+
+此组件自HBuilderX 2.1.5+起支持。
 
 **属性说明**
 设置Barcode扫码控件的属性，如扫码框、扫码条的颜色等。
@@ -28,10 +34,10 @@ filters|Array[Number] |[0,1,2]|否|条码类型过滤器，条码类型常量数
 - RSS14: RSS 14条形组合码，数值为14
 - RSSEXPANDED: 扩展式RSS条形组合码，数值为15
 
-#### start(object)
+##### start(object)
 > 开始扫码识别
 
-##### Object object
+###### Object object
 属性|说明|类型|必填|备注
 :--|:--|:--|:--|:--|
 conserve|是否保存扫码成功时的截图|Boolean|否|如果设置为true则在扫码成功时将图片保存，并通过onmarked回调函数的file参数返回保存文件的路径。 默认值为false，不保存截图。
@@ -40,28 +46,28 @@ vibrate|扫码成功时是否需要震动提醒|Boolean|否|如果设置为true�
 sound|扫码成功时播放的提示音|String|否|可取值： "none" - 不播放提示音； "default" - 播放默认提示音（5+引擎内置）。 默认值为"default"。
 
 
-#### cancel()
+##### cancel()
 > 取消扫码识别
 
 参数|类型 |必填|说明
 :--|:--|:--|:--|
 无|无| 无| 结束对摄像头获取图片数据进行条码识别操作，同时关闭摄像头的视频捕获。 结束后可调用start方法重新开始识别。
 
-#### setFlash(object)
+##### setFlash(object)
 > 操作闪光灯
 
-##### Object object
+###### Object object
 类型 |必填|说明|备注
 :--|:--|:--|:--|
 Boolean| 是| 是否开启闪光灯|可取值true或false，true表示打开闪光灯，false表示关闭闪光灯。
 
 
-#### 事件
+##### 事件
 
-#### marked
+##### marked
 > 条码识别成功事件
 
-#####  返回参数说明
+######  返回参数说明
 参数|类型 |说明
 :--|:--|:--|
 type|string|"success" 表示成功
@@ -70,10 +76,10 @@ code|Number|识别到的条码类型，与Barcode组件的条码类型常量一�
 file|string|扫码成功的截图文件路径，扫码识别到的截图，png格式文件，如果设置为不保存截图，则返回undefined。
 
 
-#### error
+##### error
 > 条码识别错误事件
 
-#####  返回参数说明
+######  返回参数说明
 参数|类型 |说明
 :--|:--|:--|
 type|string|"fail" 表示失败
@@ -83,13 +89,13 @@ message|string|失败描述
 **示例：**
 ```html
 <template>
-	<div>
+	<view>
 		<barcode id='1' class="barcode" autostart="true" ref="barcode" background="rgb(0,0,0)" frameColor="#1C86EE" scanbarColor="#1C86EE" :filters="fil" @marked="success1" @error="fail1"></barcode>
 		<button class="btn" @click="toStart">开始扫码识别</button>
 		<button class="btn" @click="tocancel">取消扫码识别</button>
 		<button class="btn" @click="toFlash">开启闪光灯</button>
 		<button class="btn" @click="toscan">预览</button>
-	</div>
+	</view>
 </template>
 
 <script>
