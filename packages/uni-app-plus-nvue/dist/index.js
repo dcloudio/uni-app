@@ -5894,7 +5894,8 @@ var serviceContext = (function () {
     if (__uniConfig.crossDomain === true) {
       headers['User-Agent'] = USER_AGENT;
     }
-    if (__uniConfig.networkTimeout.request) {
+    const timeout = __uniConfig.networkTimeout.request;
+    if (timeout) {
       abortTimeout = setTimeout(() => {
         aborted = true;
         publishStateChange$1({
@@ -5903,14 +5904,16 @@ var serviceContext = (function () {
           statusCode: 0,
           errMsg: 'timeout'
         });
-      }, __uniConfig.networkTimeout.request);
+      }, timeout);
     }
     const options = {
       method,
       url,
       // weex 官方文档有误，headers 类型实际 object，用 string 类型会无响应
       headers,
-      type: 'text'
+      type: 'text',
+      // weex 官方文档未说明实际支持 timeout，单位：ms
+      timeout: timeout || 6e5
     };
     if (method !== 'GET') {
       options.body = data;
