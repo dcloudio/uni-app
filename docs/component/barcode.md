@@ -1,6 +1,6 @@
-## Barcode 组件（component）
+### Barcode
 
-### 属性说明
+**属性说明**
 设置Barcode扫码控件的属性，如扫码框、扫码条的颜色等。
 
 属性|类型 |默认值|必填|说明
@@ -10,7 +10,7 @@ frameColor |string| |否|扫码框颜色,颜色值支持(参考CSS颜色规范)�
 scanbarColor|string||否|扫码条颜色,颜色值支持(参考CSS颜色规范)：颜色名称(参考CSS Color Names)/十六进制值/rgb值/rgba值，默认值为红色。
 filters|Array[Number] |[0,1,2]|否|条码类型过滤器，条码类型常量数组，默认情况支持QR、EAN13、EAN8类型。 通过此参数可设置扫码识别支持的条码类型（注意：设置支持的条码类型越多，扫描识别速度可能将会降低）。
 
-#### 常量：
+**码类型常量**
 - QR: QR二维码，数值为0
 - EAN13: EAN条形码标准版，数值为1
 - EAN8: ENA条形码简版，数值为2
@@ -28,7 +28,6 @@ filters|Array[Number] |[0,1,2]|否|条码类型过滤器，条码类型常量数
 - RSS14: RSS 14条形组合码，数值为14
 - RSSEXPANDED: 扩展式RSS条形组合码，数值为15
 
-### API
 #### start(object)
 > 开始扫码识别
 
@@ -56,34 +55,8 @@ sound|扫码成功时播放的提示音|String|否|可取值： "none" - 不播�
 :--|:--|:--|:--|
 Boolean| 是| 是否开启闪光灯|可取值true或false，true表示打开闪光灯，false表示关闭闪光灯。
 
-<br>
-## barcodeScan 模块 (module)
 
-#### scan(object,callback,object)
-> 扫码识别图片中的条码
-
-##### object
-类型 |默认值|必填|说明
-:--|:--|:--|:--|
-String| |是|要扫码的图片路径,必须是本地文件路径，如URLType类型（如以"_www"、"_doc"、"_documents"、"_downloads"开头的相对URL路径）或者系统绝对路径。
-Array| |否|条码类型过滤器，条码类型常量数组，默认情况支持QR、EAN13、EAN8类型。 通过此参数可设置扫码识别支持的条码类型（注意：设置支持的条码类型越多，扫描识别速度可能将会降低）。
-
-##### callback 返回 Object 参数说明
-##### 成功时
-属性|类型 |说明
-:--|:--|:--|
-type|string|"success" 表示成功
-message|string|识别到的条码数据，扫码识别出的数据内容，字符串类型，采用UTF8编码格式。
-code|Number|识别到的条码类型，与Barcode组件的条码类型常量一致。
-file|string|扫码成功的截图文件路径，扫码识别到的截图，png格式文件，如果设置为不保存截图，则返回undefined。
-##### 失败时
-属性|类型 |说明
-:--|:--|:--|
-type|string|"fail" 表示失败
-code|number| 相应 code 码
-message|string|失败描述
-
-### 事件
+#### 事件
 
 #### marked
 > 条码识别成功事件
@@ -107,3 +80,73 @@ type|string|"fail" 表示失败
 code|number| 相应 code 码
 message|string|失败描述
 
+**示例：**
+```html
+<template>
+	<div>
+		<barcode id='1' class="barcode" autostart="true" ref="barcode" background="rgb(0,0,0)" frameColor="#1C86EE" scanbarColor="#1C86EE" :filters="fil" @marked="success1" @error="fail1"></barcode>
+		<button class="btn" @click="toStart">开始扫码识别</button>
+		<button class="btn" @click="tocancel">取消扫码识别</button>
+		<button class="btn" @click="toFlash">开启闪光灯</button>
+		<button class="btn" @click="toscan">预览</button>
+	</div>
+</template>
+
+<script>
+	export default {
+		onLoad() {
+			
+		},
+		data: {
+			fil: [0, 2, 1]
+		},
+
+		methods: {
+			success1(e) {
+				console.log("success1:" + JSON.stringify(e));
+			},
+			fail1(e) {
+				console.log("fail1:" + JSON.stringify(e));
+			},
+			toStart: function() {
+				this.$refs.barcode.start({
+					conserve: true,
+					filename: '_doc/barcode/'
+				});
+			},
+			tocancel:function(){
+				this.$refs.barcode.cancel();
+			},
+			toFlash: function() {
+				this.$refs.barcode.setFlash(true);
+			},
+
+			toscan: function() {
+				console.log("scan:");				
+				const barcodeModule = uni.requireNativePlugin('barcodeScan');
+				barcodeModule.scan("/static/barcode1.png"
+				,(e)=>{
+					console.log("scan_error:"+JSON.stringify(e));
+				});
+			}
+		}
+	}
+</script>
+
+<style>
+	.barcode {
+		width: 750rpx;
+		height: 700rpx;
+		background-color: #808080;
+	}
+
+	.btn {
+		top: 20rpx;
+		width: 730upx;
+		margin-left: 10upx;
+		margin-top: 10upx;
+		background-color: #458B00;
+		border-radius: 10upx;
+	}
+</style>
+```
