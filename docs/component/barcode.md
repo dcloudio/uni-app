@@ -142,11 +142,11 @@ message|string|失败描述
 
 	.btn {
 		top: 20rpx;
-		width: 730upx;
-		margin-left: 10upx;
-		margin-top: 10upx;
+		width: 730rpx;
+		margin-left: 10rpx;
+		margin-top: 10rpx;
 		background-color: #458B00;
-		border-radius: 10upx;
+		border-radius: 10rpx;
 	}
 </style>
 ```
