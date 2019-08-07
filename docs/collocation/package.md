@@ -29,7 +29,7 @@ Tips：
 - `UNI_PLATFORM`仅支持填写`uni-app`默认支持的基准平台，目前仅限如下枚举值：`app-plus`、`h5`、`mp-weixin`、`mp-alipay`、`mp-baidu`、`mp-toutiao`、`mp-qq`
 - 目前仅`vue-cli`版本支持package.json扩展配置，HBuilderX将于下版支持
 
-### 示例：钉钉小程序
+#### 示例：钉钉小程序
 
 如下是一个自定义钉钉小程序（MP-DINGTALK）的package.json示例配置（拷贝代码记得去掉注释）：
 ```json
@@ -47,16 +47,16 @@ Tips：
 }
 ```
 
-###在代码中使用自定义平台
+**在代码中使用自定义平台**
 
-开发者可在代码块中使用钉钉小程序变量，如下：
+开发者可在代码中使用`MP-DINGTALK`进行条件编译，如下：
 ```javascript
 // #ifdef MP-DINGTALK
 钉钉平台特有代码
 // #endif
 ```
 
-###运行及发布项目
+**运行及发布项目**
 
 开发者可通过如下命令，启动钉钉小程序平台的编译：
 ```
@@ -66,7 +66,7 @@ npm run build:custom mp-dingtalk
 
 Tips：钉钉小程序编译目录依然是`mp-alipay`，需通过支付宝开发者工具，选择“钉钉小程序”，然后打开该目录进行预览及发布。
 
-### 示例：微信服务号
+#### 示例：微信服务号
 
 如下是一个自定义微信服务号平台（H5-WEIXIN）的示例配置：
  
