@@ -237,7 +237,8 @@ npm run build:%PLATFORM%
 * ``cli``版如果想安装less、scss、ts等编译器，需自己手动npm安装。在HBuilderX的插件管理界面安装无效，那个只作用于HBuilderX创建的项目。
  
 #### 开发工具的区别
-* ``cli``创建的项目，内置了d.ts，同其他常规npm库一样，可在vscode、webstorm等支持d.ts的开发工具里正常开发并有语法提示。注意使用HBuilderX创建的项目不带d.ts，拖到其他工具里不会有代码提示。
+* ``cli``创建的项目，内置了d.ts，同其他常规npm库一样，可在vscode、webstorm等支持d.ts的开发工具里正常开发并有语法提示。
+* 使用HBuilderX创建的项目不带d.ts，拖到其他工具里不会有代码提示。此时可以在项目下执行 ``npm i @types/uni-app -D``，来补充d.ts
 * 但vscode等其他开发工具，在vue或uni-app领域，开发效率比不过HBuilderX。详见：[https://ask.dcloud.net.cn/article/35451](https://ask.dcloud.net.cn/article/35451)
 * 发布App时，仍然需要使用HBuilderX。其他开发工具无法发布App，但可以发布H5、各种小程序。
 * 如果使用``cli``创建项目，那下载HBuilderX时只需下载10M的标准版即可。因为编译器已经安装到项目下了。
