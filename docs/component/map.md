@@ -21,7 +21,7 @@
 |controls|Array||控件||
 |include-points|Array||缩放视野以包含所有给定的坐标点|微信小程序、H5、百度小程序、支付宝小程序|
 |show-location|Boolean||显示带有方向的当前定位点|微信小程序、H5、百度小程序、支付宝小程序|
-|@markertap|EventHandle||点击标记点时触发||
+|@markertap|EventHandle||点击标记点时触发|App平台需要指定属性 id|
 |@callouttap|EventHandle||点击标记点对应的气泡时触发||
 |@controltap|EventHandle||点击控件时触发||
 |@regionchange|EventHandle||视野发生变化时触发|微信小程序、H5、百度小程序、支付宝小程序|
