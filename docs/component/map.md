@@ -65,7 +65,7 @@
 |display|'BYCLICK':点击显示; 'ALWAYS':常显|String|微信小程序、H5、百度小程序|
 |textAlign|文本对齐方式。有效值: left, right, center|String|微信小程序、百度小程序|
 
-**marker 上的气泡 label**
+**marker 上的标签 label**
 
 |属性|说明|类型|平台差异说明|
 |:-|:-|:-|:-|
