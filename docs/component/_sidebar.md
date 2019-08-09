@@ -45,6 +45,7 @@
   * [open-data](component/open-data.md)
 * App nvue专用组件
   * [barcode](component/barcode.md)
+  * [recycle-list](component/recycle-list.md)
 * 扩展组件（uni ui）
   * [uni-ui整体介绍](component/README?id=uniui)
   * [Badge 数字角标](https://ext.dcloud.net.cn/plugin?id=21)
