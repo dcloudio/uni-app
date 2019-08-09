@@ -16,7 +16,7 @@ package.json扩展配置用法：
                     "UNI_PLATFORM": ""  //基准平台 
                  },
                 "define": { //自定义条件编译
-                    "CUSTOM-CONST": true //自定义常量，建议为大写
+                    "CUSTOM-CONST": true //自定义条件编译常量，建议为大写
                 }
             }
         }    
@@ -30,7 +30,8 @@ Tips：
 
 - `UNI_PLATFORM`仅支持填写`uni-app`默认支持的基准平台，目前仅限如下枚举值：`app-plus`、`h5`、`mp-weixin`、`mp-alipay`、`mp-baidu`、`mp-toutiao`、`mp-qq`
 - `BROWSER` 仅在`UNI_PLATFORM`为`h5`时有效,目前仅限如下枚举值：`Chrome`、`Firefox`、`IE`、`Edge`、`Safari`、`HBuilderX`
-- 目前仅`vue-cli`版本支持package.json扩展配置，HBuilderX将于下版支持
+- `package.json`文件中不允许出现注释，否则扩展配置无效
+- `vue-cli`需更新到最新版，HBuilderX需升级到Alpha 2.1.6+ 版本
 
 #### 示例：钉钉小程序
 
@@ -39,13 +40,13 @@ Tips：
 ```json
 "uni-app": {
 	"scripts": {
-		"mp-dingtalk": { //自定义编译平台配置，可通过cli方式调用
-            "title":"钉钉小程序", // 在HBuilderX中会显示在 运行/发行 菜单中，vue-cli方式下无效
-			"env": { //环境变量
-				"UNI_PLATFORM": "mp-alipay" //基准平台 
+		"mp-dingtalk": { 
+            "title":"钉钉小程序", 
+			"env": { 
+				"UNI_PLATFORM": "mp-alipay" 
 			},
-			"define": { //自定义条件编译
-				"MP-DINGTALK": true //自定义常量，建议为大写
+			"define": { 
+				"MP-DINGTALK": true 
 			}
 		}
 	}
@@ -63,11 +64,15 @@ Tips：
 
 **运行及发布项目**
 
-开发者可通过如下命令，启动钉钉小程序平台的编译：
+`vue-cli`开发者可通过如下命令，启动钉钉小程序平台的编译：
 ```
 npm run dev:custom mp-dingtalk 
 npm run build:custom mp-dingtalk
 ```
+
+`HBuilderX`会根据`package.json`的扩展配置，在`运行`、`发行`菜单下，生成自定义菜单（钉钉小程序），开发者点击对应菜单编译运行即可，如下图：
+
+![](https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/package-dingding.png)
 
 Tips：钉钉小程序编译目录依然是`mp-alipay`，需通过支付宝开发者工具，选择“钉钉小程序”，然后打开该目录进行预览及发布。
 
@@ -78,14 +83,14 @@ Tips：钉钉小程序编译目录依然是`mp-alipay`，需通过支付宝开�
 ```json
 "uni-app": {
     "scripts": {
-        "h5-weixin": { //自定义编译平台配置，可通过cli方式调用
+        "h5-weixin": { 
             "title":"微信服务号",
-            "BROWSER":"Chrome",  //运行到chrome浏览器
-            "env": {//环境变量
-                "UNI_PLATFORM": "h5"  //基准平台 
+            "BROWSER":"Chrome",  
+            "env": {
+                "UNI_PLATFORM": "h5"  
              },
-            "define": { //自定义条件编译
-                "H5-WEIXIN": true //自定义常量，建议为大写
+            "define": { 
+                "H5-WEIXIN": true 
             }
         }
     }    
@@ -100,8 +105,12 @@ Tips：钉钉小程序编译目录依然是`mp-alipay`，需通过支付宝开�
 // #endif
 ```
 
-开发者可通过如下命令，启动微信服务号平台（H5-WEIXIN）平台的编译：
+`vue-cli`开发者可通过如下命令，启动微信服务号平台（H5-WEIXIN）平台的编译：
 ```
 npm run dev:custom h5-weixin 
 npm run build:custom h5-weixin
 ```
+
+`HBuilderX`会根据`package.json`的扩展配置，在`运行`、`发行`菜单下，生成自定义菜单（微信服务号），开发者点击对应菜单编译运行即可，如下图：
+
+![](https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/package-h5-weixin.png)
