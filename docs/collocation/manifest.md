@@ -47,7 +47,7 @@
 |distribute|Object|5+App 发布信息，[详见](/collocation/manifest?id=distribute)||
 |usingComponents|Boolean|是否启用自定义组件模式，默认为false，[编译模式区别详情](https://ask.dcloud.net.cn/article/35843)|1.9.0|
 |nvueCompiler|String|切换 nvue 编译模式，可选值，`weex` ：老编译模式，`uni-app`： 新编译模式，默认为 `weex` 。[编译模式区别详情](http://ask.dcloud.net.cn/article/36074)|2.0.3 Alpha|
-|renderer|Boolean|可不加载基于 webview 的运行框架，减少包体积、提升启动速度。可选值 `native`| App-nvue 2.2.0+|
+|renderer|String|可不加载基于 webview 的运行框架，减少包体积、提升启动速度。可选值 `native`| App-nvue 2.2.0+|
 |nvue|Object|nvue 页面布局初始配置，[详见](/collocation/manifest?id=nvue)|2.0.3 Alpha|
 PS：这里只列出了核心部分，更多内容请参考 [完整的 manifest.json](/collocation/manifest?id=完整-manifestjson)。
 
