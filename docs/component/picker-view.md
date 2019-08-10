@@ -88,4 +88,5 @@ export default {
 ![uniapp](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/img/picker-view.png)
 
 **Tips**
-微信小程序端，滚动时在iOS自带振动反馈，可在系统设置 -> 声音与触感 -> 系统触感反馈中关闭
+- 微信小程序端，滚动时在iOS自带振动反馈，可在系统设置 -> 声音与触感 -> 系统触感反馈中关闭
+- app-nvue 暂不支持 ``<picker-view>``
