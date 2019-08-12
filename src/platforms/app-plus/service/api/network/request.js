@@ -3,9 +3,6 @@ import {
   requireNativePlugin
 } from '../../bridge'
 
-const USER_AGENT =
-  'Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_5 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13G36  MicroMessenger/6.5.1 NetType/WIFI Language/zh_CN'
-
 let requestTaskId = 0
 const requestTasks = {}
 
@@ -38,9 +35,7 @@ export function createRequestTaskById (requestTaskId, {
   if (!hasContentType && method === 'POST') {
     headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8'
   }
-  if (__uniConfig.crossDomain === true) {
-    headers['User-Agent'] = USER_AGENT
-  }
+
   const timeout = __uniConfig.networkTimeout.request
   if (timeout) {
     abortTimeout = setTimeout(() => {
