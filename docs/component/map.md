@@ -21,7 +21,7 @@
 |controls|Array||控件||
 |include-points|Array||缩放视野以包含所有给定的坐标点|App-nvue 2.1.5+、微信小程序、H5、百度小程序、支付宝小程序|
 |show-location|Boolean||显示带有方向的当前定位点|微信小程序、H5、百度小程序、支付宝小程序|
-|@markertap|EventHandle||点击标记点时触发|App平台需要指定属性 id|
+|@markertap|EventHandle||点击标记点时触发|App平台需要指定 marker 对象属性 id|
 |@callouttap|EventHandle||点击标记点对应的气泡时触发||
 |@controltap|EventHandle||点击控件时触发||
 |@regionchange|EventHandle||视野发生变化时触发|微信小程序、H5、百度小程序、支付宝小程序|
@@ -42,44 +42,44 @@
 |id|标记点id|Number|是|marker点击事件回调会返回此id。建议为每个marker设置上Number类型id，保证更新marker时有更好的性能。||
 |latitude|纬度|Number|是|浮点数，范围 -90 ~ 90||
 |longitude|经度|Number|是|浮点数，范围 -180 ~ 180||
-|title|标注点名|String|否||微信小程序、H5、支付宝小程序、百度小程序|
+|title|标注点名|String|否|点击时显示，callout存在时将被忽略|App-nvue 2.1.5+、微信小程序、H5、支付宝小程序、百度小程序|
 |iconPath|显示的图标|String|是|项目目录下的图片路径，支持相对路径写法，以'/'开头则表示相对小程序根目录；也支持临时路径||
-|rotate|旋转角度|Number|否|顺时针旋转的角度，范围 0 ~ 360，默认为 0|微信小程序、支付宝小程序、百度小程序|
-|alpha|标注的透明度|Number|否|默认1，无透明，范围 0 ~ 1|微信小程序、支付宝小程序、百度小程序|
-|width|标注图标宽度|Number|否|默认为图片实际宽度|微信小程序、H5、支付宝小程序、百度小程序|
-|height|标注图标高度|Number|否|默认为图片实际高度|微信小程序、H5、支付宝小程序、百度小程序|
-|callout|自定义标记点上方的气泡窗口|Object|否|支持的属性见下表，可识别换行符。||
-|label|为标记点旁边增加标签|Object|否|支持的属性见下表，可识别换行符。|微信小程序、H5、5+APP、百度小程序|
-|anchor|经纬度在标注图标的锚点，默认底边中点|Object|否|{x, y}，x表示横向(0-1)，y表示竖向(0-1)。{x: .5, y: 1} 表示底边中点|微信小程序、H5、百度小程序|
+|rotate|旋转角度|Number|否|顺时针旋转的角度，范围 0 ~ 360，默认为 0|App-nvue 2.1.5+、微信小程序、支付宝小程序、百度小程序|
+|alpha|标注的透明度|Number|否|默认1，无透明，范围 0 ~ 1|App-nvue 2.1.5+、微信小程序、支付宝小程序、百度小程序|
+|width|标注图标宽度|Number|否|默认为图片实际宽度|App-nvue 2.1.5+、微信小程序、H5、支付宝小程序、百度小程序|
+|height|标注图标高度|Number|否|默认为图片实际高度|App-nvue 2.1.5+、微信小程序、H5、支付宝小程序、百度小程序|
+|callout|自定义标记点上方的气泡窗口|Object|否|支持的属性见下表，可识别换行符。|App-nvue 2.1.5+|
+|label|为标记点旁边增加标签|Object|否|支持的属性见下表，可识别换行符。|App-nvue 2.1.5+、微信小程序、H5、5+APP、百度小程序|
+|anchor|经纬度在标注图标的锚点，默认底边中点|Object|否|{x, y}，x表示横向(0-1)，y表示竖向(0-1)。{x: .5, y: 1} 表示底边中点|App-nvue 2.1.5+、微信小程序、H5、百度小程序|
 
 **marker 上的气泡 callout**
 
 |属性|说明|类型|平台差异说明|
 |:-|:-|:-|:-|
 |content|文本|String||
-|color|文本颜色|String|微信小程序、H5、百度小程序|
-|fontSize|文字大小|Number|微信小程序、H5、百度小程序|
-|borderRadius|callout边框圆角|Number|微信小程序、H5、百度小程序|
-|bgColor|背景色|String|微信小程序、H5、百度小程序|
-|padding|文本边缘留白|Number|微信小程序、H5、百度小程序|
+|color|文本颜色|String|App-nvue 2.1.5+、微信小程序、H5、百度小程序|
+|fontSize|文字大小|Number|App-nvue 2.1.5+、微信小程序、H5、百度小程序|
+|borderRadius|callout边框圆角|Number|App-nvue 2.1.5+、微信小程序、H5、百度小程序|
+|bgColor|背景色|String|App-nvue 2.1.5+、微信小程序、H5、百度小程序|
+|padding|文本边缘留白|Number|App-nvue 2.1.5+、微信小程序、H5、百度小程序|
 |display|'BYCLICK':点击显示; 'ALWAYS':常显|String|微信小程序、H5、百度小程序|
-|textAlign|文本对齐方式。有效值: left, right, center|String|微信小程序、百度小程序|
+|textAlign|文本对齐方式。有效值: left, right, center|String|App-nvue 2.1.5+、微信小程序、百度小程序|
 
 **marker 上的标签 label**
 
 |属性|说明|类型|平台差异说明|
 |:-|:-|:-|:-|
 |content|文本|String||
-|color|文本颜色|String|微信小程序、H5、百度小程序|
-|fontSize|文字大小|Number|微信小程序、H5、百度小程序|
-|x|label的坐标，原点是 marker 对应的经纬度|Number|微信小程序、H5、百度小程序|
-|y|label的坐标，原点是 marker 对应的经纬度|Number|微信小程序、H5、百度小程序|
-|borderWidth|边框宽度|Number|微信小程序、百度小程序|
-|borderColor|边框颜色|String|微信小程序、百度小程序|
-|borderRadius|边框圆角|Number|微信小程序、百度小程序|
-|bgColor|背景色|String|微信小程序、百度小程序|
-|padding|文本边缘留白|Number|微信小程序、百度小程序|
-|textAlign|文本对齐方式。有效值: left, right, center|String|微信小程序、百度小程序|
+|color|文本颜色|String|App-nvue 2.1.5+、微信小程序、H5、百度小程序|
+|fontSize|文字大小|Number|App-nvue 2.1.5+、微信小程序、H5、百度小程序|
+|x|label的坐标，原点是 marker 对应的经纬度|Number|App-nvue 2.1.5+、微信小程序、H5、百度小程序|
+|y|label的坐标，原点是 marker 对应的经纬度|Number|App-nvue 2.1.5+、微信小程序、H5、百度小程序|
+|borderWidth|边框宽度|Number|App-nvue 2.1.5+、微信小程序、百度小程序|
+|borderColor|边框颜色|String|App-nvue 2.1.5+、微信小程序、百度小程序|
+|borderRadius|边框圆角|Number|App-nvue 2.1.5+、微信小程序、百度小程序|
+|bgColor|背景色|String|App-nvue 2.1.5+、微信小程序、百度小程序|
+|padding|文本边缘留白|Number|App-nvue 2.1.5+、微信小程序、百度小程序|
+|textAlign|文本对齐方式。有效值: left, right, center|String|App-nvue 2.1.5+、微信小程序、百度小程序|
 
 **polyline**
 
@@ -90,11 +90,11 @@
 |points|经纬度数组|Array|是|[{latitude: 0, longitude: 0}]||
 |color|线的颜色|String|否|8位十六进制表示，后两位表示alpha值，如：#0000AA||
 |width|线的宽度|Number|否|||
-|dottedLine|是否虚线|Boolean|否|默认false|微信小程序、H5、百度小程序、支付宝小程序|
-|arrowLine|带箭头的线|Boolean|否|默认false，微信小程序开发者工具暂不支持该属性|微信小程序、百度小程序|
-|arrowIconPath|更换箭头图标|String|否|在arrowLine为true时生效|微信小程序、百度小程序|
-|borderColor|线的边框颜色|String|否||微信小程序、H5、百度小程序|
-|borderWidth|线的厚度|Number|否||微信小程序、H5、百度小程序|
+|dottedLine|是否虚线|Boolean|否|默认false|App-nvue 2.1.5+、微信小程序、H5、百度小程序、支付宝小程序|
+|arrowLine|带箭头的线|Boolean|否|默认false，微信小程序开发者工具暂不支持该属性|App-nvue 2.1.5+、微信小程序、百度小程序|
+|arrowIconPath|更换箭头图标|String|否|在arrowLine为true时生效|App-nvue 2.1.5+、微信小程序、百度小程序|
+|borderColor|线的边框颜色|String|否||App-nvue 2.1.5+、微信小程序、H5、百度小程序|
+|borderWidth|线的厚度|Number|否||App-nvue 2.1.5+、微信小程序、H5、百度小程序|
 
 **circles**
 
