@@ -17,8 +17,8 @@ mapContext
 |:-|:-|:-|:-|:-|
 |getCenterLocation|OBJECT|获取当前地图中心的经纬度，返回的是 gcj02 坐标系，可以用于 [uni.openLocation](api/location/location?id=getlocation)|||
 |moveToLocation||将地图中心移动到当前定位点，需要配合map组件的show-location使用|||
-|translateMarker|OBJECT|平移marker，带动画|||
-|includePoints|OBJECT|缩放视野展示所有经纬度|||
+|translateMarker|OBJECT|平移marker，带动画|App-nvue 2.1.5+、微信小程序带动画||
+|includePoints|OBJECT|缩放视野展示所有经纬度|App-nvue 2.1.5+||
 |getRegion|OBJECT|获取当前地图的视野范围|||
 |getScale|OBJECT|获取当前地图的缩放级别|||
 |$getAppMap||获取原生地图对象 [plus.maps.Map](https://www.html5plus.org/doc/zh_cn/maps.html#plus.maps.Map)|5+App自定义组件模式|1.9.3|
