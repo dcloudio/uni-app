@@ -50,7 +50,7 @@ export function createRequestTaskById (requestTaskId, {
   }
   const options = {
     method,
-    url,
+    url: url.trim(),
     // weex 官方文档有误，headers 类型实际 object，用 string 类型会无响应
     headers,
     type: 'text',
