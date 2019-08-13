@@ -45,9 +45,27 @@
 
 `uni-app`有丰富的插件生态，众多开发者提交了各种组件、sdk、项目模板，详见：[https://ext.dcloud.net.cn/](https://ext.dcloud.net.cn/)
 
-## 更多资料
+## 现有项目如何迁移到uni-app体系
 
-- 评测：[深入测试一周，主流多端框架大比武](https://mp.weixin.qq.com/s/jIDEHfuMnED6HTfNgjsW4w)
 - 微信小程序转换uni-app指南及转换器：[https://ask.dcloud.net.cn/article/35786](https://ask.dcloud.net.cn/article/35786)
 - vue h5项目转换uni-app指南：[https://ask.dcloud.net.cn/article/36174](https://ask.dcloud.net.cn/article/36174)
 - mpvue 项目（组件）迁移指南、示例及资源汇总： [https://ask.dcloud.net.cn/article/34945](https://ask.dcloud.net.cn/article/34945)
+
+## 常见疑问
+
+- 问：不同端有不同的需求、不同的特色，登陆支付也不一样，如何统一？
+- 答：差异部分使用条件编译。uni-app提供了灵活强大的[条件编译](https://uniapp.dcloud.io/platform)。可以完美处理复用部分和差异部分。真正一套工程源码。当业务升级时，不再需要多端维护。如果多端维护，经常会因为某些端的流量不大，就一直拖延无法让那些用户享受到最新服务。另外登陆支付在客户端部分，已经被uni-app统一成一样的api了。
+
+- 问：多端是不是一种妥协，是否会造成性能下降？
+- 答：这个问题很常见。多端且不影响性能，确实很难，但uni-app做到了。
+在h5端，它的性能、包体积与直接使用vue.js开发一致；
+在小程序端，它的性能比大多数开发框架更好，uni-app底层自动处理的setdata差量同步机制，比开发者手动写setdata更好，就像使用vue.js更新界面比手动写js修改dom更高效一样；
+在App，uni-app支持webview渲染和原生渲染双引擎，启用原生渲染时，css写法受限，但性能是很接近原生开发的效果的，在当前的手机环境下，千万日活以下的应用整体使用uni-app也不会遇到任何压力。当然也可以在已经做好的原生App中将部分页面改为uni-app实现。
+另外我们会把很多跨端处理放在编译期完成的，避免影响运行期的效率。
+
+- 问：不做多端，是不是不需要uni-app。答：不是。大量开发者用uni-app只做一个端，详见[案例](https://uniapp.dcloud.io/case)。对于开发者而言，一个优秀工具在手，做什么都不愁。
+
+## 更多资料
+
+- 评测：[深入测试一周，主流多端框架大比武](https://mp.weixin.qq.com/s/jIDEHfuMnED6HTfNgjsW4w)
+- [uni-app在App端和flutter、react native的比较](https://ask.dcloud.net.cn/article/36083)
