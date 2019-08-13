@@ -152,7 +152,8 @@
     "uni.stopPullDownRefresh": true,
     "uni.createSelectorQuery": true,
     "uni.createIntersectionObserver": true,
-    "uni.hideKeyboard": true
+    "uni.hideKeyboard": true,
+	"uni.onKeyboardHeightChange": true
   }
 }, {
   "name": "event",

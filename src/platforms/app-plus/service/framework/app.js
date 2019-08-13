@@ -63,6 +63,12 @@ function initGlobalListeners () {
       networkType
     })
   })
+
+  plus.globalEvent.addEventListener('KeyboardHeightChange', function (event) {
+    publish('onKeyboardHeightChange', {
+      height: event.height
+    })
+  })
 }
 
 function initAppLaunch (appVm) {
