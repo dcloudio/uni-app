@@ -1453,6 +1453,7 @@ if (typeof Proxy !== 'undefined' && "app-plus" !== 'app-plus') {
     },
     set (target, name, value) {
       target[name] = value;
+      return true
     }
   });
 } else {

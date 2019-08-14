@@ -72,6 +72,7 @@ if (typeof Proxy !== 'undefined' && __PLATFORM__ !== 'app-plus') {
     },
     set (target, name, value) {
       target[name] = value
+      return true
     }
   })
 } else {

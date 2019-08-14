@@ -1619,6 +1619,7 @@ if (typeof Proxy !== 'undefined' && "mp-baidu" !== 'app-plus') {
     },
     set (target, name, value) {
       target[name] = value;
+      return true
     }
   });
 } else {

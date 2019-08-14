@@ -1500,6 +1500,7 @@ if (typeof Proxy !== 'undefined' && "mp-qq" !== 'app-plus') {
     },
     set (target, name, value) {
       target[name] = value;
+      return true
     }
   });
 } else {

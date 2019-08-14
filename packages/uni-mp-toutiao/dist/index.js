@@ -1679,6 +1679,7 @@ if (typeof Proxy !== 'undefined' && "mp-toutiao" !== 'app-plus') {
     },
     set (target, name, value) {
       target[name] = value;
+      return true
     }
   });
 } else {

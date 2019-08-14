@@ -2036,6 +2036,7 @@ if (typeof Proxy !== 'undefined' && "mp-alipay" !== 'app-plus') {
     },
     set (target, name, value) {
       target[name] = value;
+      return true
     }
   });
 } else {

@@ -1431,6 +1431,7 @@ if (typeof Proxy !== 'undefined' && "mp-weixin" !== 'app-plus') {
     },
     set (target, name, value) {
       target[name] = value;
+      return true
     }
   });
 } else {
