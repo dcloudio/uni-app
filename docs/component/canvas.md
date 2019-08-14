@@ -64,7 +64,7 @@ export default {
 }
 ```
  
-相关 api：[uni.createCanvasContext](api/ui/canvas?id=createcanvascontext)
+相关 api：[uni.createCanvasContext](api/canvas/createCanvasContext)
 
 **扩展阅读**
 
