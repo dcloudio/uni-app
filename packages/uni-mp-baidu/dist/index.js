@@ -1592,6 +1592,9 @@ let uni = {};
 if (typeof Proxy !== 'undefined' && "mp-baidu" !== 'app-plus') {
   uni = new Proxy({}, {
     get (target, name) {
+      if (target[name]) {
+        return target[name]
+      }
       if (baseApi[name]) {
         return baseApi[name]
       }
@@ -1613,6 +1616,9 @@ if (typeof Proxy !== 'undefined' && "mp-baidu" !== 'app-plus') {
         return
       }
       return promisify(name, wrapper(name, swan[name]))
+    },
+    set (target, name, value) {
+      target[name] = value;
     }
   });
 } else {

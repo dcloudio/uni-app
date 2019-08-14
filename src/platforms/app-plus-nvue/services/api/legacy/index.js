@@ -32,6 +32,9 @@ export default function initUni (uni, nvue, plus, BroadcastChannel) {
   if (typeof Proxy !== 'undefined') {
     return new Proxy({}, {
       get (target, name) {
+        if (target[name]) {
+          return target[name]
+        }
         if (apis[name]) {
           return apis[name]
         }
@@ -42,6 +45,9 @@ export default function initUni (uni, nvue, plus, BroadcastChannel) {
           return
         }
         return promisify(name, uni[name])
+      },
+      set (target, name, value) {
+        target[name] = value
       }
     })
   }
