@@ -27,7 +27,7 @@ function getStyle (action) {
   const style = {}
   let transform = []
   animates.forEach(animate => {
-    type type = animate.type
+    let type = animate.type
     let args = [...animate.args]
     if (animateTypes1.concat(animateTypes2).includes(type)) {
       if (type.startsWith('rotate') || type.startsWith('skew')) {
