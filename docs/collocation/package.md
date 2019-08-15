@@ -1,6 +1,6 @@
 通过在`package.json`文件中增加`uni-app`扩展节点，可实现自定义条件编译平台（如钉钉小程序、微信服务号等平台）。
 
-package.json扩展配置用法：
+package.json扩展配置用法（拷贝代码记得去掉注释！）：
 
 ```json
 {
