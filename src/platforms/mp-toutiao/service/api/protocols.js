@@ -2,22 +2,10 @@ import previewImage from '../../../mp-weixin/helpers/normalize-preview-image'
 
 // 不支持的 API 列表
 const todos = [
-  'hideKeyboard',
-  'onSocketOpen',
-  'onSocketError',
-  'sendSocketMessage',
-  'onSocketMessage',
-  'closeSocket',
-  'onSocketClose',
-  'getImageInfo',
   'getBackgroundAudioManager',
-  'createVideoContext',
   'createCameraContext',
   'createLivePlayerContext',
-  'getSavedFileList',
   'getSavedFileInfo',
-  'removeSavedFile',
-  'getFileInfo',
   'openDocument',
   'chooseLocation',
   'createMapContext',
@@ -66,7 +54,6 @@ const todos = [
   'hideTabBarRedDot',
   'setBackgroundColor',
   'setBackgroundTextStyle',
-  'createIntersectionObserver',
   'chooseInvoiceTitle',
   'navigateToMiniProgram',
   'navigateBackMiniProgram',
@@ -77,14 +64,30 @@ const todos = [
   'getTemplateList',
   'sendTemplateMessage',
   'setEnableDebug',
-  'getExtConfig',
-  'getExtConfigSync',
   'onWindowResize',
-  'offWindowResize'
+  'offWindowResize',
+  'compressImage',
+  'createOffscreenCanvas'
 ]
 
 // 存在兼容性的 API 列表
-const canIUses = []
+// 头条小程序不支持canIUses
+const canIUses = [
+    // 'createIntersectionObserver',
+    // 'getSavedFileList',
+    // 'removeSavedFile',
+    // 'hideKeyboard',
+    // 'getImageInfo',
+    // 'createVideoContext',
+    // 'onSocketOpen',
+    // 'onSocketError',
+    // 'sendSocketMessage',
+    // 'onSocketMessage',
+    // 'closeSocket',
+    // 'onSocketClose',
+    // 'getExtConfig',
+    // 'getExtConfigSync',
+]
 
 // 需要做转换的 API 列表
 const protocols = {
@@ -101,7 +104,7 @@ const protocols = {
   },
   chooseVideo: {
     args: {
-      maxDuration: false
+      camera: false
     }
   },
   scanCode: {
@@ -150,7 +153,14 @@ const protocols = {
     }
   },
   requestPayment: {
-    orderInfo: 'data'
+    args: {
+      orderInfo: 'data'
+    }
+  },
+  getFileInfo: {
+    args: {
+      digestAlgorithm: false
+    }
   }
 }
 
