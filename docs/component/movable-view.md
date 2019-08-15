@@ -15,6 +15,7 @@
 |scale-area|Boolean|false|当里面的 movable-view 设置为支持双指缩放时，设置此值可将缩放手势生效区域修改为整个 movable-area|
 
 **注意：movable-area 必须设置 width 和 height 属性，不设置默认为 10px**
+- movable-area app-nvue平台 暂不支持手势缩放
 
 #### movable-view
 

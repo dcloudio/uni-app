@@ -37,11 +37,15 @@
   * [map](component/map.md)
 * 画布
   * [canvas](component/canvas.md)
-* [开放能力](component/open.md)
 * webview
   * [web-view](component/web-view.md)
-* 平台开放数据
+* 小程序开放能力组件
+  * [ad](component/ad.md)
+  * [official-account](component/official-account.md)
   * [open-data](component/open-data.md)
+* App nvue专用组件
+  * [barcode](component/barcode.md)
+  * [recycle-list](component/recycle-list.md)
 * 扩展组件（uni ui）
   * [uni-ui整体介绍](component/README?id=uniui)
   * [Badge 数字角标](https://ext.dcloud.net.cn/plugin?id=21)
@@ -68,6 +72,7 @@
   * [SwiperDot 轮播图指示点](https://ext.dcloud.net.cn/plugin?id=284)
   * [Tag 标签](https://ext.dcloud.net.cn/plugin?id=35)
   * [更多插件市场的组件](https://ext.dcloud.net.cn/?cat1=2)
+* [配置微信小程序插件](component/mp-weixin-plugin.md)
 * [原生组件说明](component/native-component.md)
 <div class="contact-box">
   <a href="//ask.dcloud.net.cn/explore/" target="_blank" class="contact-item">

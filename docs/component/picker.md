@@ -227,3 +227,4 @@ export default {
 
 **注意**
 - 在picker内容还在滚动时或滚动回弹动画还未结束时，点确定关闭弹出的picker，数据无法及时更新。需等待一下，或手动触停滚动再点确定。所有平台均如此
+- app-nvue 平台，mode 目前仅支持 ``selector`` ``time`` ``date``

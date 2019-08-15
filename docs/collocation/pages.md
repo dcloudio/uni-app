@@ -223,7 +223,7 @@
 |:-|:-|:-|:-|:-|
 |titleNView|Object||导航栏 ，详见:[导航栏](/collocation/pages?id=app-titleNView)|App、H5|
 |subNVues|Object||原生子窗体，详见:[原生子窗体](/collocation/pages?id=app-subNVues)|App 1.9.10+|
-|bounce|String||页面回弹效果，设置为 "none" 时关闭效果。|App|
+|bounce|String||页面回弹效果，设置为 "none" 时关闭效果。|App（nvue Android暂无bounce效果）|
 |softinputNavBar|String||iOS软键盘上完成工具栏的显示模式，设置为 "none" 时关闭工具栏。|仅ios生效|
 |pullToRefresh|Object||下拉刷新|App|
 |scrollIndicator|String||滚动条显示策略，设置为 "none" 时不显示滚动条。|App|

@@ -10,7 +10,7 @@
 |type|String|default|按钮的样式类型|||
 |plain|Boolean|false|按钮是否镂空，背景色透明|||
 |disabled|Boolean|false|是否禁用|||
-|loading|Boolean|false|名称前是否带 loading 图标|||
+|loading|Boolean|false|名称前是否带 loading 图标||app-nvue 平台，在 ios 上为雪花，Android上为圆圈|
 |form-type|String||用于 ``<form>`` 组件，点击分别会触发 ``<form>`` 组件的 submit/reset 事件|||
 |open-type|String||开放能力|||
 |hover-class|String|button-hover|指定按钮按下去的样式类。当 hover-class="none" 时，没有点击态效果|||

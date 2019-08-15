@@ -3,7 +3,7 @@
 
 - [uni-app插件市场](https://ext.dcloud.net.cn)，支持前端组件、js sdk、页面模板、项目模板、原生插件等多种类型，并为插件作者提供了荣誉+经济回报的双激励模式，打造最强大的开放生态。
 
-- 兼容微信小程序 JS SDK，丰富的小程序生态内容可直接引入```uni-app```，并且在App侧通用。以前的跨平台开发框架普遍缺少三方SDK，由于大量SDK厂商均原厂维护小程序SDK，使得```uni-app```成为跨平台开发框架里生态最丰富的平台[参考](httsp://ask.dcloud.net.cn/article/35070)
+- 兼容微信小程序 JS SDK，丰富的小程序生态内容可直接引入```uni-app```，并且在App侧通用。以前的跨平台开发框架普遍缺少三方SDK，由于大量SDK厂商均原厂维护小程序SDK，使得```uni-app```成为跨平台开发框架里生态最丰富的平台[参考](https://ask.dcloud.net.cn/article/35070)
 
 - 兼容微信小程序自定义组件，并且App侧通用，[参考](https://uniapp.dcloud.io/frame?id=小程序组件支持)
 

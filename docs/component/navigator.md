@@ -26,7 +26,9 @@
 |reLaunch|对应 uni.reLaunch 的功能|头条小程序不支持|
 |navigateBack|对应 uni.navigateBack 的功能|&nbsp;|
 
-**注：navigator-hover 默认为 {background-color: rgba(0, 0, 0, 0.1); opacity: 0.7;}, ``<navigator>`` 的子节点背景色应为透明色。**
+**注意**
+- navigator-hover 默认为 {background-color: rgba(0, 0, 0, 0.1); opacity: 0.7;}, ``<navigator>`` 的子节点背景色应为透明色。**
+- app-nvue 平台暂不支持 `<navigator>`
 
 **示例**
  
