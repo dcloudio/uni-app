@@ -275,7 +275,8 @@ uni-input[hidden] {
   text-decoration: inherit;
 }
 
-.uni-input-wrapper {
+.uni-input-wrapper,
+.uni-input-form {
   display: block;
   position: relative;
   width: 100%;
