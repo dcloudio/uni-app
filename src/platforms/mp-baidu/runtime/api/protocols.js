@@ -41,6 +41,16 @@ function createTodoMethod (contextName, methodName) {
     console.error(`__PLATFORM_TITLE__ ${contextName}暂不支持${methodName}`)
   }
 }
+
+function _handleEnvInfo (result) {
+  result.miniProgram = {
+    appId: result.appKey
+  }
+  result.plugin = {
+    version: result.sdkVersion
+  }
+}
+
 // 需要做转换的 API 列表
 const protocols = {
   request: {
@@ -94,6 +104,10 @@ const protocols = {
   },
   showShareMenu: {
     name: 'openShare'
+  },
+  getAccountInfoSync: {
+    name: "getEnvInfoSync",
+    returnValue: _handleEnvInfo
   }
 }
 
