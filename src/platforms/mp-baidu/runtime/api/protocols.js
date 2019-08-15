@@ -106,7 +106,7 @@ const protocols = {
     name: 'openShare'
   },
   getAccountInfoSync: {
-    name: "getEnvInfoSync",
+    name: 'getEnvInfoSync',
     returnValue: _handleEnvInfo
   }
 }

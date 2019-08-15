@@ -1282,6 +1282,12 @@ var serviceContext = (function () {
         networkType
       });
     });
+
+    plus.globalEvent.addEventListener('KeyboardHeightChange', function (event) {
+      publish('onKeyboardHeightChange', {
+        height: event.height
+      });
+    });
   }
 
   function initAppLaunch (appVm) {
@@ -1506,7 +1512,8 @@ var serviceContext = (function () {
   ];
 
   const keyboard = [
-    'hideKeyboard'
+    'hideKeyboard',
+    'onKeyboardHeightChange'
   ];
 
   const ui = [
@@ -1819,7 +1826,7 @@ var serviceContext = (function () {
   };
 
   const SYNC_API_RE =
-      /^\$|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
+    /^\$|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
 
   const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -1852,8 +1859,8 @@ var serviceContext = (function () {
   function shouldPromise (name) {
     if (
       isContextApi(name) ||
-          isSyncApi(name) ||
-          isCallbackApi(name)
+      isSyncApi(name) ||
+      isCallbackApi(name)
     ) {
       return false
     }
@@ -5856,9 +5863,6 @@ var serviceContext = (function () {
     return createDownloadTaskById(++downloadTaskId, args)
   }
 
-  const USER_AGENT =
-    'Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_5 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13G36  MicroMessenger/6.5.1 NetType/WIFI Language/zh_CN';
-
   let requestTaskId = 0;
   const requestTasks = {};
 
@@ -5891,9 +5895,7 @@ var serviceContext = (function () {
     if (!hasContentType && method === 'POST') {
       headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
     }
-    if (__uniConfig.crossDomain === true) {
-      headers['User-Agent'] = USER_AGENT;
-    }
+
     const timeout = __uniConfig.networkTimeout.request;
     if (timeout) {
       abortTimeout = setTimeout(() => {
@@ -5908,7 +5910,7 @@ var serviceContext = (function () {
     }
     const options = {
       method,
-      url,
+      url: url.trim(),
       // weex 官方文档有误，headers 类型实际 object，用 string 类型会无响应
       headers,
       type: 'text',
@@ -8327,6 +8329,22 @@ var serviceContext = (function () {
     createAnimation: createAnimation
   });
 
+  const callbacks$7 = [];
+
+  onMethod('onKeyboardHeightChange', res => {
+    callbacks$7.forEach(callbackId => {
+      invoke(callbackId, res);
+    });
+  });
+
+  function onKeyboardHeightChange (callbackId) {
+    callbacks$7.push(callbackId);
+  }
+
+  var require_context_module_1_17 = /*#__PURE__*/Object.freeze({
+    onKeyboardHeightChange: onKeyboardHeightChange
+  });
+
   function pageScrollTo$1 (args) {
     const pages = getCurrentPages();
     if (pages.length) {
@@ -8335,7 +8353,7 @@ var serviceContext = (function () {
     return {}
   }
 
-  var require_context_module_1_17 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_18 = /*#__PURE__*/Object.freeze({
     pageScrollTo: pageScrollTo$1
   });
 
@@ -8359,29 +8377,29 @@ var serviceContext = (function () {
 
   const hideTabBarRedDot$1 = removeTabBarBadge$1;
 
-  var require_context_module_1_18 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_19 = /*#__PURE__*/Object.freeze({
     removeTabBarBadge: removeTabBarBadge$1,
     showTabBarRedDot: showTabBarRedDot$1,
     hideTabBarRedDot: hideTabBarRedDot$1
   });
 
-  const callbacks$7 = [];
+  const callbacks$8 = [];
   onMethod('onViewDidResize', res => {
-    callbacks$7.forEach(callbackId => {
+    callbacks$8.forEach(callbackId => {
       invoke(callbackId, res);
     });
   });
 
   function onWindowResize (callbackId) {
-    callbacks$7.push(callbackId);
+    callbacks$8.push(callbackId);
   }
 
   function offWindowResize (callbackId) {
     // 此处和微信平台一致查询不到去掉最后一个
-    callbacks$7.splice(callbacks$7.indexOf(callbackId), 1);
+    callbacks$8.splice(callbacks$8.indexOf(callbackId), 1);
   }
 
-  var require_context_module_1_19 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_20 = /*#__PURE__*/Object.freeze({
     onWindowResize: onWindowResize,
     offWindowResize: offWindowResize
   });
@@ -8408,9 +8426,10 @@ var serviceContext = (function () {
   './network/upload-file.js': require_context_module_1_14,
   './storage/storage.js': require_context_module_1_15,
   './ui/create-animation.js': require_context_module_1_16,
-  './ui/page-scroll-to.js': require_context_module_1_17,
-  './ui/tab-bar.js': require_context_module_1_18,
-  './ui/window.js': require_context_module_1_19,
+  './ui/keyboard.js': require_context_module_1_17,
+  './ui/page-scroll-to.js': require_context_module_1_18,
+  './ui/tab-bar.js': require_context_module_1_19,
+  './ui/window.js': require_context_module_1_20,
 
       };
       var req = function req(key) {

@@ -231,7 +231,7 @@ const promiseInterceptor = {
 };
 
 const SYNC_API_RE =
-    /^\$|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
+  /^\$|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -258,8 +258,8 @@ function handlePromise (promise) {
 function shouldPromise (name) {
   if (
     isContextApi(name) ||
-        isSyncApi(name) ||
-        isCallbackApi(name)
+    isSyncApi(name) ||
+    isCallbackApi(name)
   ) {
     return false
   }
@@ -402,23 +402,11 @@ const todos = [
   'canIUse',
   'onMemoryWarning',
   'onNetworkStatusChange',
-  'onAccelerometerChange',
-  'startAccelerometer',
-  'stopAccelerometer',
-  'onCompassChange',
-  'startCompass',
-  'scanCode',
   'startBeaconDiscovery',
   'stopBeaconDiscovery',
   'getBeacons',
   'onBeaconUpdate',
   'onBeaconServiceChange',
-  'setScreenBrightness',
-  'getScreenBrightness',
-  'setKeepScreenOn',
-  'onUserCaptureScreen',
-  'vibrateLong',
-  'vibrateShort',
   'addPhoneContact',
   'getHCEState',
   'startHCE',
@@ -449,13 +437,25 @@ const todos = [
   'checkIsSupportSoterAuthentication',
   'startSoterAuthentication',
   'checkIsSoterEnrolledInDevice',
-  'createWorker',
   'reportMonitor',
   'getLogManager',
-  'onUserCaptureScreen',
   'reportAnalytics'
 ];
-const canIUses = [];
+const canIUses = [
+  'scanCode',
+  'startAccelerometer',
+  'stopAccelerometer',
+  'onAccelerometerChange',
+  'startCompass',
+  'onCompassChange',
+  'setScreenBrightness',
+  'getScreenBrightness',
+  'setKeepScreenOn',
+  'onUserCaptureScreen',
+  'vibrateLong',
+  'vibrateShort',
+  'createWorker'
+];
 
 const CALLBACKS = ['success', 'fail', 'cancel', 'complete'];
 

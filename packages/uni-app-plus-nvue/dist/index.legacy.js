@@ -122,7 +122,7 @@ function invokeApi (method, api, options, ...params) {
 }
 
 const SYNC_API_RE =
-    /^\$|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
+  /^\$|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -149,8 +149,8 @@ function handlePromise (promise) {
 function shouldPromise (name) {
   if (
     isContextApi(name) ||
-        isSyncApi(name) ||
-        isCallbackApi(name)
+    isSyncApi(name) ||
+    isCallbackApi(name)
   ) {
     return false
   }
@@ -695,6 +695,9 @@ function initUni (uni, nvue, plus, BroadcastChannel) {
   if (typeof Proxy !== 'undefined') {
     return new Proxy({}, {
       get (target, name) {
+        if (target[name]) {
+          return target[name]
+        }
         if (apis[name]) {
           return apis[name]
         }
@@ -705,6 +708,9 @@ function initUni (uni, nvue, plus, BroadcastChannel) {
           return
         }
         return promisify(name, uni[name])
+      },
+      set (target, name, value) {
+        target[name] = value;
       }
     })
   }
