@@ -1,0 +1,38 @@
+{
+  "name": "rollup-plugin-require-context",
+  "version": "1.0.0",
+  "description": "rollup-plugin for webpack requrie-context",
+  "main": "src/index.js",
+  "scripts": {
+    "brk": "node --inspect-brk example/run.js",
+    "example": "rollup -c example/rollup.config.js",
+    "test:dev": "jest --watchAll"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elcarim5efil/rollup-plugin-require-context.git"
+  },
+  "keywords": [
+    "rollup",
+    "plugin",
+    "require-context",
+    "webpack-context"
+  ],
+  "author": "elcarim5efil",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/elcarim5efil/rollup-plugin-require-context/issues"
+  },
+  "homepage": "https://github.com/elcarim5efil/rollup-plugin-require-context#readme",
+  "dependencies": {
+    "acorn": "^6.1.1",
+    "acorn-dynamic-import": "^4.0.0",
+    "acorn-walk": "^6.1.1",
+    "rollup-pluginutils": "^2.5.0"
+  },
+  "devDependencies": {
+    "jest": "^24.5.0",
+    "rollup": "^1.7.4",
+    "rollup-plugin-virtual": "^1.0.1"
+  }
+}

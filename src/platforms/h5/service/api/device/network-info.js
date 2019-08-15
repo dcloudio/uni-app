@@ -4,57 +4,45 @@ const {
 
 const callbackIds = []
 
-function _getEffectiveNetworkType () {
-  const connectionType = navigator.connection.type
-  let networkType = ''
-
-  if (~['none', 'wifi', 'unknown'].indexOf(connectionType)) {
-    networkType = connectionType
-  } else {
-    let effectiveType = navigator.connection.effectiveType
-    if (effectiveType === 'slow-2g') {
-      effectiveType = '2g'
-    }
-    networkType = effectiveType
-  }
-  return networkType
-}
-
 function changeHandler () {
-  let isConnected = true
-  const networkType = _getEffectiveNetworkType()
-  if (networkType === 'none') {
-    isConnected = false
-  }
+  const {
+    networkType
+  } = getNetworkType()
   callbackIds.forEach(callbackId => {
-    callbackId && invoke(callbackId, {
+    invoke(callbackId, {
       errMsg: 'onNetworkStatusChange:ok',
-      isConnected: isConnected,
-      networkType: networkType
+      isConnected: networkType !== 'none',
+      networkType
     })
   })
 }
 
 export function onNetworkStatusChange (callbackId) {
-  if (window.NetworkInformation) {
-    callbackIds.push(callbackId)
-    navigator.connection.onchange = changeHandler
+  const connection = navigator.connection || navigator.webkitConnection
+  callbackIds.push(callbackId)
+  if (connection) {
+    connection.addEventListener('change', changeHandler)
   } else {
-    callbackId && invoke(callbackId, {
-      errMsg: 'onNetworkStatusChange:fail'
-    })
+    window.addEventListener('offline', changeHandler)
+    window.addEventListener('online', changeHandler)
   }
 }
 
 export function getNetworkType () {
-  if (window.NetworkInformation) {
-    return {
-      errMsg: 'getNetworkType:ok',
-      networkType: _getEffectiveNetworkType()
+  const connection = navigator.connection || navigator.webkitConnection
+  let networkType = 'unknown'
+  if (connection) {
+    networkType = connection.type
+    if (networkType === 'cellular') {
+      networkType = connection.effectiveType.replace('slow-', '')
+    } else if (!['none', 'wifi'].includes(networkType)) {
+      networkType = 'unknown'
     }
-  } else {
-    return {
-      errMsg: 'getNetworkType:fail'
-    }
+  } else if (navigator.onLine === false) {
+    networkType = 'none'
+  }
+  return {
+    errMsg: 'getNetworkType:ok',
+    networkType
   }
 }

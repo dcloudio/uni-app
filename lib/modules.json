@@ -1,0 +1,209 @@
+[{
+  "name": "base",
+  "title": "基础",
+  "apiList": {
+    "uni.getSystemInfo": true,
+    "uni.getSystemInfoSync": true,
+    "uni.canIUse": true,
+    "uni.upx2px": true,
+    "uni.navigateTo": true,
+    "uni.redirectTo": true,
+    "uni.switchTab": true,
+    "uni.reLaunch": true,
+    "uni.navigateBack": true
+  }
+}, {
+  "name": "network",
+  "title": "网络",
+  "apiList": {
+    "uni.request": true,
+    "uni.connectSocket": true,
+    "uni.sendSocketMessage": true,
+    "uni.closeSocket": true,
+    "uni.onSocketOpen": true,
+    "uni.onSocketError": true,
+    "uni.onSocketMessage": true,
+    "uni.onSocketClose": true,
+    "uni.downloadFile": true,
+    "uni.uploadFile": true
+  }
+}, {
+  "name": "storage",
+  "title": "数据缓存",
+  "apiList": {
+    "uni.setStorage": true,
+    "uni.setStorageSync": true,
+    "uni.getStorage": true,
+    "uni.getStorageSync": true,
+    "uni.removeStorage": true,
+    "uni.removeStorageSync": true,
+    "uni.clearStorage": true,
+    "uni.clearStorageSync": true,
+    "uni.getStorageInfo": true,
+    "uni.getStorageInfoSync": true
+  }
+}, {
+  "name": "location",
+  "title": "位置",
+  "apiList": {
+    "uni.getLocation": true,
+    "uni.openLocation": true,
+    "uni.chooseLocation": true
+  }
+}, {
+  "name": "media",
+  "title": "媒体",
+  "apiList": {
+    "uni.chooseImage": true,
+    "uni.previewImage": true,
+    "uni.getImageInfo": true,
+    "uni.saveImageToPhotosAlbum": true,
+    "uni.compressImage": true,
+    "uni.getRecorderManager": true,
+    "uni.getBackgroundAudioManager": true,
+    "uni.createInnerAudioContext": true,
+    "uni.chooseVideo": true,
+    "uni.saveVideoToPhotosAlbum": true,
+    "uni.createVideoContext": true,
+    "uni.createCameraContext": true,
+    "uni.createLivePlayerContext": true
+  }
+}, {
+  "name": "device",
+  "title": "设备",
+  "apiList": {
+    "uni.onMemoryWarning": true,
+    "uni.getNetworkType": true,
+    "uni.onNetworkStatusChange": true,
+    "uni.onAccelerometerChange": true,
+    "uni.startAccelerometer": true,
+    "uni.stopAccelerometer": true,
+    "uni.onCompassChange": true,
+    "uni.startCompass": true,
+    "uni.stopCompass": true,
+    "uni.onGyroscopeChange": true,
+    "uni.startGyroscope": true,
+    "uni.stopGyroscope": true,
+    "uni.makePhoneCall": true,
+    "uni.scanCode": true,
+    "uni.setClipboardData": true,
+    "uni.getClipboardData": true,
+    "uni.setScreenBrightness": true,
+    "uni.getScreenBrightness": true,
+    "uni.setKeepScreenOn": true,
+    "uni.onUserCaptureScreen": true,
+    "uni.vibrateLong": true,
+    "uni.vibrateShort": true,
+    "uni.addPhoneContact": true,
+    "uni.openBluetoothAdapter": true,
+    "uni.startBluetoothDevicesDiscovery": true,
+    "uni.onBluetoothDeviceFound": true,
+    "uni.stopBluetoothDevicesDiscovery": true,
+    "uni.onBluetoothAdapterStateChange": true,
+    "uni.getConnectedBluetoothDevices": true,
+    "uni.getBluetoothDevices": true,
+    "uni.getBluetoothAdapterState": true,
+    "uni.closeBluetoothAdapter": true,
+    "uni.writeBLECharacteristicValue": true,
+    "uni.readBLECharacteristicValue": true,
+    "uni.onBLEConnectionStateChange": true,
+    "uni.onBLECharacteristicValueChange": true,
+    "uni.notifyBLECharacteristicValueChange": true,
+    "uni.getBLEDeviceServices": true,
+    "uni.getBLEDeviceCharacteristics": true,
+    "uni.createBLEConnection": true,
+    "uni.closeBLEConnection": true,
+    "uni.onBeaconServiceChange": true,
+    "uni.onBeaconUpdate": true,
+    "uni.getBeacons": true,
+    "uni.startBeaconDiscovery": true,
+    "uni.stopBeaconDiscovery": true
+  }
+}, {
+  "name": "ui",
+  "title": "界面",
+  "apiList": {
+    "uni.showToast": true,
+    "uni.hideToast": true,
+    "uni.showLoading": true,
+    "uni.hideLoading": true,
+    "uni.showModal": true,
+    "uni.showActionSheet": true,
+    "uni.setNavigationBarTitle": true,
+    "uni.setNavigationBarColor": true,
+    "uni.showNavigationBarLoading": true,
+    "uni.hideNavigationBarLoading": true,
+    "uni.setTabBarItem": true,
+    "uni.setTabBarStyle": true,
+    "uni.hideTabBar": true,
+    "uni.showTabBar": true,
+    "uni.setTabBarBadge": true,
+    "uni.removeTabBarBadge": true,
+    "uni.showTabBarRedDot": true,
+    "uni.hideTabBarRedDot": true,
+    "uni.setBackgroundColor": true,
+    "uni.setBackgroundTextStyle": true,
+    "uni.createAnimation": true,
+    "uni.pageScrollTo": true,
+    "uni.onWindowResize": true,
+    "uni.offWindowResize": true,
+    "uni.loadFontFace": true,
+    "uni.startPullDownRefresh": true,
+    "uni.stopPullDownRefresh": true,
+    "uni.createSelectorQuery": true,
+    "uni.createIntersectionObserver": true,
+    "uni.hideKeyboard": true,
+	"uni.onKeyboardHeightChange": true
+  }
+}, {
+  "name": "event",
+  "title": "页面通讯",
+  "apiList": {
+    "uni.$emit": true,
+    "uni.$on": true,
+    "uni.$once": true,
+    "uni.$off": true
+  }
+}, {
+  "name": "file",
+  "title": "文件",
+  "apiList": {
+    "uni.saveFile": true,
+    "uni.getSavedFileList": true,
+    "uni.getSavedFileInfo": true,
+    "uni.removeSavedFile": true,
+    "uni.getFileInfo": true,
+    "uni.openDocument": true,
+    "uni.getFileSystemManager": true
+  }
+}, {
+  "name": "canvas",
+  "title": "绘画",
+  "apiList": {
+    "uni.createOffscreenCanvas": true,
+    "uni.createCanvasContext": true,
+    "uni.canvasToTempFilePath": true,
+    "uni.canvasPutImageData": true,
+    "uni.canvasGetImageData": true
+  }
+}, {
+  "name": "third",
+  "title": "第三方服务",
+  "apiList": {
+    "uni.getProvider": true,
+    "uni.login": true,
+    "uni.checkSession": true,
+    "uni.getUserInfo": true,
+    "uni.share": true,
+    "uni.showShareMenu": true,
+    "uni.hideShareMenu": true,
+    "uni.requestPayment": true,
+    "uni.subscribePush": true,
+    "uni.unsubscribePush": true,
+    "uni.onPush": true,
+    "uni.offPush": true,
+    "uni.requireNativePlugin": true,
+    "uni.base64ToArrayBuffer": true,
+    "uni.arrayBufferToBase64": true
+  }
+}]

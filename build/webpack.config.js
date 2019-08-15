@@ -29,7 +29,16 @@ module.exports = {
       'uni-mixins': resolve('src/core/view/mixins'),
       'uni-helpers': resolve('src/core/helpers'),
       'uni-platform': resolve('src/platforms/' + process.env.UNI_PLATFORM),
-      'uni-components': resolve('src/core/view/components')
+      // tree shaking
+      'uni-components': resolve('src/core/view/components'),
+      'uni-invoke-api': resolve('src/platforms/' + process.env.UNI_PLATFORM + '/service/api'),
+      'uni-service-api': resolve('src/core/service/platform-api'),
+      'uni-api-protocol': resolve('src/core/helpers/protocol'),
+      'uni-api-subscribe': resolve('src/core/view/bridge/subscribe/api/index'),
+      // h5 components
+      'uni-h5-app-components': resolve('src/platforms/h5/components/app/popup/index'),
+      'uni-h5-app-mixins': resolve('src/platforms/h5/components/app/popup/mixins/index'),
+      'uni-h5-system-routes': resolve('src/platforms/h5/components/system-routes/index')
     }
   },
   module: {
@@ -42,8 +51,8 @@ module.exports = {
     }),
     new webpack.ProvidePlugin({
       'console': [resolve('src/core/helpers/console'), 'default'],
-      'UniViewJSBridge': [resolve('src/core/view/bridge')],
-      'UniServiceJSBridge': [resolve('src/core/service/bridge')]
+      'UniViewJSBridge': [resolve('src/core/view/bridge/index')],
+      'UniServiceJSBridge': [resolve('src/core/service/bridge/index')]
     })
   ]
 }

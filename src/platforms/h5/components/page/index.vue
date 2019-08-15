@@ -31,7 +31,7 @@
 <script>
 import {
   upx2px
-} from 'uni-helpers'
+} from 'uni-helpers/index'
 
 import {
   NAVBAR_HEIGHT

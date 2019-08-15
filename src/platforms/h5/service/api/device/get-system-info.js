@@ -4,11 +4,11 @@ const ua = navigator.userAgent
 /**
  * 是否安卓设备
  */
-export const isAndroid = /android/i.test(ua)
+const isAndroid = /android/i.test(ua)
 /**
  * 是否iOS设备
  */
-export const isIOS = /iphone|ipad|ipod/i.test(ua)
+const isIOS = /iphone|ipad|ipod/i.test(ua)
 /**
  * 获取系统信息-同步
  */
