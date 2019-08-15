@@ -392,6 +392,8 @@ uni-app已经有几十万开发者，创建了几十万个项目，是开发者�
 
 **摸鱼：**职场生活圈。[微信小程序](http://m3w.cn/moyu)
 
+**千家找房：**专业的二手房、新房买卖租赁平台。[App、小程序、H5通用链接](http://m3w.cn/qjzf)
+
 **超英预告：**超级英雄预告，腾讯课堂Next学院的uni-app课程示例，[H5](http://www.imovietrailer.com)、微信小程序搜索“NEXT超英预告”。
 
 **垃圾分类帮帮团：** [微信小程序码地址](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/ljfl.png)
