@@ -27,7 +27,8 @@ const todos = [
   'getExtConfig',
   'getExtConfigSync',
   'onWindowResize',
-  'offWindowResize'
+  'offWindowResize',
+  'saveVideoToPhotosAlbum'
 ]
 
 // 存在兼容性的 API 列表
@@ -41,8 +42,6 @@ const canIUses = [
   'removeTabBarBadge',
   'showTabBarRedDot',
   'hideTabBarRedDot',
-  'chooseVideo',//支付宝小程序文档中未找到（仅在getSetting处提及），但实际可用
-  'saveVideoToPhotosAlbum',
   'openSetting',
   'getSetting',
   'createIntersectionObserver',
@@ -196,6 +195,12 @@ const protocols = { // 需要做转换的 API 列表
     // 从测试结果看，是有返回对象的，文档上没有说明。
   },
   downloadFile: {
+    returnValue: {
+      apFilePath: 'tempFilePath'
+    }
+  },
+  chooseVideo: {
+    //支付宝小程序文档中未找到（仅在getSetting处提及），但实际可用
     returnValue: {
       apFilePath: 'tempFilePath'
     }
