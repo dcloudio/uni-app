@@ -41,7 +41,9 @@ function createExecCallback (execCallback) {
         callback(res[index])
       })
     })
-    execCallback(res)
+    if (isFn(execCallback)) {
+      execCallback(res)
+    }
   }
 }
 
