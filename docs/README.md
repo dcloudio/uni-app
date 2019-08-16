@@ -150,8 +150,8 @@
 
 ```uni-app```实现了一套代码，同时运行到多个平台；如下图所示，一套代码，同时运行到iOS模拟器、Android模拟器、H5、微信开发者工具、支付宝小程序Studio、百度开发者工具、字节跳动开发者工具（底部7个终端选项卡代表7个终端模拟器）：
 
-![](http://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/dev1x7.png)
+![](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/dev1x8.jpg)
 
 实际运行效果如下（点击图片可放大）：
 
-![](http://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/run1x7.png)
+![](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/run1x8.jpg)
