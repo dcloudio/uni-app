@@ -91,14 +91,6 @@ uni-app已经有几十万开发者，创建了几十万个项目，是开发者�
 	</a>
 </div>
 
-<a href="#" target="_blank" class="clear-style"><b>拾趣：</b></a>专注于个人规划及成长的生活类应用。
-<div style="display:flex;justify-content: space-around;">
-	<a href="https://www.cyb520.com/" target="_blank" class="clear-style barcode-view">
-		<img src="http://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/case-toutiao-shiqu.png" width="200"/>
-		<span style="margin-top:15px;">头条小程序码</span>
-	</a>
-</div>
-
 <a href="#" target="_blank" class="clear-style"><b>分秒律师：</b></a>律师咨询类应用。
 <div style="display:flex;justify-content: space-around;">
 	<a href="https://www.cyb520.com/" target="_blank" class="clear-style barcode-view">
