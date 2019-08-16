@@ -340,6 +340,18 @@ const protocols = { // 需要做转换的 API 列表
       })
     }
   },
+  createBLEConnection: {
+    name: 'connectBLEDevice',
+    args: {
+      timeout: false
+    }
+  },
+  closeBLEConnection: {
+    name: 'disconnectBLEDevice'
+  },
+  onBLEConnectionStateChange: {
+    name: 'onBLEConnectionStateChanged'
+  },
   makePhoneCall: {
     args: {
       phoneNumber: 'number'
