@@ -16,3 +16,43 @@ vue.config.js 是一个可选的配置文件，如果项目的根目录中存在
 * productionSourceMap 固定 false
 * css.extract  H5 平台固定 false，其他平台固定 true
 * parallel 固定 false
+
+**使用示例**
+
+**自定义静态资源目录**
+
+```js
+const path = require('path')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
+
+module.exports = {
+	configureWebpack: {
+		plugins: [
+			new CopyWebpackPlugin([
+				{
+					from: path.join(__dirname, 'src/images'),
+					to: path.join(__dirname, 'dist', process.env.NODE_ENV === 'production' ? 'build' : 'dev', process.env.UNI_PLATFORM, 'images')
+				}
+			])
+		]
+	}
+}
+```
+
+**注入全局依赖**
+
+```js
+const webpack = require('webpack')
+
+module.exports = {
+	configureWebpack: {
+		plugins: [
+			new webpack.ProvidePlugin({
+				'localStorage': ['mp-storage', 'localStorage'],
+				'window.localStorage': ['mp-storage', 'localStorage']
+			})
+		]
+	}
+}
+```
+

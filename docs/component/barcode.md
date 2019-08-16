@@ -54,10 +54,10 @@ sound|扫码成功时播放的提示音|String|否|可取值： "none" - 不播�
 :--|:--|:--|:--|
 无|无| 无| 结束对摄像头获取图片数据进行条码识别操作，同时关闭摄像头的视频捕获。 结束后可调用start方法重新开始识别。
 
-##### setFlash(object)
+##### setFlash(boolean)
 > 操作闪光灯
 
-###### Object object
+###### Boolean boolean
 类型 |必填|说明|备注
 :--|:--|:--|:--|
 Boolean| 是| 是否开启闪光灯|可取值true或false，true表示打开闪光灯，false表示关闭闪光灯。

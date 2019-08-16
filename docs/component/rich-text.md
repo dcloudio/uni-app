@@ -9,7 +9,11 @@
 
 **注意**
 
-支付宝小程序 nodes 属性只支持使用 Array 类型。如果需要支持 HTML String，则需要自己将 HTML String转化为 nodes 数组，可使用 [html-parser](https://github.com/dcloudio/hello-uniapp/blob/master/common/html-parser.js) 转换。
+- app-nvue 平台 nodes 属性只支持使用 Array 类型
+
+- 支付宝小程序 nodes 属性只支持使用 Array 类型。
+
+如果需要支持 HTML String，则需要自己将 HTML String转化为 nodes 数组，可使用 [html-parser](https://github.com/dcloudio/hello-uniapp/blob/master/common/html-parser.js) 转换。
 
 支持默认事件，包括：click、touchstart、touchmove、touchcancel、touchend、longpress。
 
