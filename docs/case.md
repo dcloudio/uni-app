@@ -35,7 +35,7 @@ uni-app已经有几十万开发者，创建了几十万个项目，是开发者�
 
 ### 第三方开发者案例
 
-<a href="https://media.kunming-railway.cn/" target="_blank" class="clear-style"><b>CSDN：</b></a> 专业 IT 技术社区，致力于为中国软件开发者提供知识传播、在线学习、职业发展等全生命周期服务。
+<a href="https://www.csdn.net/" target="_blank" class="clear-style"><b>CSDN：</b></a> 专业 IT 技术社区，致力于为中国软件开发者提供知识传播、在线学习、职业发展等全生命周期服务。
 <div style="display:flex;justify-content: space-around;">
 	<a href="javascript:;" target="_blank" class="clear-style barcode-view">
 		<img src="https://img-cdn-qiniu.dcloud.net.cn/doc/csdn/csdn.png" width="200"/>
@@ -43,7 +43,7 @@ uni-app已经有几十万开发者，创建了几十万个项目，是开发者�
 	</a>
 </div>
 
-<a href="https://media.kunming-railway.cn/" target="_blank" class="clear-style"><b>开源中国：</b></a> 开源中国（oschina）百度小程序，提供最新的开源软件资讯。
+<a href="https://www.oschina.net/" target="_blank" class="clear-style"><b>开源中国：</b></a> 开源中国（oschina）百度小程序，提供最新的开源软件资讯。
 <div style="display:flex;justify-content: space-around;">
 	<a href="javascript:;" target="_blank" class="clear-style barcode-view">
 		<img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/onchina.png" width="200"/>
@@ -88,6 +88,22 @@ uni-app已经有几十万开发者，创建了几十万个项目，是开发者�
 	<a href="https://www.cyb520.com/" target="_blank" class="clear-style barcode-view">
 		<img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/cyb-baidu.png" width="200"/>
 		<span style="margin-top:15px;">百度小程序码</span>
+	</a>
+</div>
+
+<a href="#" target="_blank" class="clear-style"><b>拾趣：</b></a>专注于个人规划及成长的生活类应用。
+<div style="display:flex;justify-content: space-around;">
+	<a href="https://www.cyb520.com/" target="_blank" class="clear-style barcode-view">
+		<img src="http://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/case-toutiao-shiqu.png" width="200"/>
+		<span style="margin-top:15px;">头条小程序码</span>
+	</a>
+</div>
+
+<a href="#" target="_blank" class="clear-style"><b>分秒律师：</b></a>律师咨询类应用。
+<div style="display:flex;justify-content: space-around;">
+	<a href="https://www.cyb520.com/" target="_blank" class="clear-style barcode-view">
+		<img src="http://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/case-toutiao-fenmiaolvshi.png" width="200"/>
+		<span style="margin-top:15px;">头条小程序码</span>
 	</a>
 </div>
 	
