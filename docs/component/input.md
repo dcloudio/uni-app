@@ -17,13 +17,13 @@
 |cursor-spacing|Number|0|指定光标与键盘的距离，单位 px 。取 input 距离底部的距离和 cursor-spacing 指定的距离的最小值作为光标与键盘的距离|5+App、微信小程序、百度小程序、QQ小程序|
 |focus|Boolean|false|获取焦点。在 H5 平台聚焦后软键盘是否跟随弹出，取决于当前浏览器本身的规范（策略）。||
 |confirm-type|String|done|设置键盘右下角按钮的文字，仅在 type="text" 时生效。||
-|confirm-hold|Boolean|false|点击键盘右下角按钮时是否保持键盘不收起|App、微信小程序、支付宝小程序、百度小程序、QQ小程序|
+|confirm-hold|Boolean|false|点击键盘右下角按钮时是否保持键盘不收起|5+App、微信小程序、支付宝小程序、百度小程序、QQ小程序|
 |cursor|Number||指定focus时的光标位置||
 |selection-start|Number|-1|光标起始位置，自动聚集时有效，需与selection-end搭配使用||
 |selection-end|Number|-1|光标结束位置，自动聚集时有效，需与selection-start搭配使用||
 |adjust-position|Boolean|true|键盘弹起时，是否自动上推页面|5+App、微信小程序、百度小程序、QQ小程序|
 |@input|EventHandle||当键盘输入时，触发input事件，event.detail = {value}|差异见下方 Tips|
-|@focus|EventHandle||输入框聚焦时触发，event.detail = { value, height }，height 为键盘高度|仅微信小程序、5+App、QQ小程序支持 height|
+|@focus|EventHandle||输入框聚焦时触发，event.detail = { value, height }，height 为键盘高度|仅微信小程序、5+App（HBuilderX 2.0+ [nvue uni-app模式](http://ask.dcloud.net.cn/article/36074)） 、QQ小程序支持 height|
 |@blur|EventHandle||输入框失去焦点时触发，event.detail = {value: value}||
 |@confirm|EventHandle||点击完成按钮时触发，event.detail = {value: value}|&nbsp;|
 
