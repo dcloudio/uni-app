@@ -39,7 +39,7 @@
 
 ## 更新日志
 
-`uni-app`一直保持极高的开发活跃度，详见[Release Notes](doc/release.md)
+`uni-app`一直保持极高的开发活跃度，详见[Release Notes](docs/release.md)
 
 ## 论坛
 
