@@ -70,4 +70,4 @@ export default {
 
 canvas的常用用途有图表和图片处理，在uni-app插件市场有大量基于canvas的插件，可搜索 [图表](https://ext.dcloud.net.cn/search?q=图表) 、 [头像裁剪](https://ext.dcloud.net.cn/search?q=头像裁剪) 、 [海报](https://ext.dcloud.net.cn/search?q=海报) 、 [二维码](https://ext.dcloud.net.cn/search?q=%E4%BA%8C%E7%BB%B4%E7%A0%81) 。
 
-关于图表，H5端流行的echart报表因为涉及大量dom操作，无法跨端使用，而wx-chart在跨端和更新方面都不足，推荐使用[uChart组件](https://ext.dcloud.net.cn/plugin?id=271)。如仍然坚持使用原版echart，可在web-view组件中内嵌html来使用。
+关于图表，H5端流行的echart报表因为涉及大量dom操作，无法跨端使用，而wx-chart在跨端和更新方面都不足，推荐使用[uChart组件](https://ext.dcloud.net.cn/plugin?id=271)。但由于小程序和App在跟手操作和js操作帧动画方面性能不如web，如果这方面的需求，建议在web-view组件中使用html内嵌原版echart。
