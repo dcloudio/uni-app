@@ -4,8 +4,6 @@ const todos = [
   'getRecorderManager',
   'getBackgroundAudioManager',
   'createInnerAudioContext',
-  'chooseVideo',
-  'saveVideoToPhotosAlbum',
   'createVideoContext',
   'createCameraContext',
   'createLivePlayerContext',
@@ -16,10 +14,7 @@ const todos = [
   'addPhoneContact',
   'setBackgroundColor',
   'setBackgroundTextStyle',
-  'createIntersectionObserver',
   'authorize',
-  'openSetting',
-  'getSetting',
   'chooseAddress',
   'chooseInvoiceTitle',
   'addTemplate',
@@ -28,7 +23,6 @@ const todos = [
   'getTemplateLibraryList',
   'getTemplateList',
   'sendTemplateMessage',
-  'getUpdateManager',
   'setEnableDebug',
   'getExtConfig',
   'getExtConfigSync',
@@ -46,7 +40,13 @@ const canIUses = [
   'setTabBarBadge',
   'removeTabBarBadge',
   'showTabBarRedDot',
-  'hideTabBarRedDot'
+  'hideTabBarRedDot',
+  'chooseVideo',//支付宝小程序文档中未找到（仅在getSetting处提及），但实际可用
+  'saveVideoToPhotosAlbum',
+  'openSetting',
+  'getSetting',
+  'createIntersectionObserver',
+  'getUpdateManager'
 ]
 
 function _handleNetworkInfo (result) {
