@@ -1,9 +1,12 @@
+import {
+  decode
+} from 'base64-arraybuffer'
+
 export {
   pack,
   unpack,
   invoke
-}
-  from 'uni-core/service/bridge'
+} from 'uni-core/service/bridge'
 
 export function requireNativePlugin (name) {
   return uni.requireNativePlugin(name)
@@ -61,4 +64,8 @@ export function isTabBarPage (path = '') {
     }
   }
   return false
+}
+
+export function base64ToArrayBuffer (data) {
+  return decode(data)
 }

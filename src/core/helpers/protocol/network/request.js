@@ -13,11 +13,11 @@ const method = {
   CONNECT: 'CONNECT'
 }
 const dataType = {
-  JSON: 'JSON'
+  JSON: 'json'
 }
 const responseType = {
-  TEXT: 'TEXT',
-  ARRAYBUFFER: 'ARRAYBUFFER'
+  TEXT: 'text',
+  ARRAYBUFFER: 'arraybuffer'
 }
 
 const encode = encodeURIComponent
@@ -83,13 +83,13 @@ export const request = {
   dataType: {
     type: String,
     validator (value, params) {
-      params.dataType = (value || dataType.JSON).toUpperCase()
+      params.dataType = (value || dataType.JSON).toLowerCase()
     }
   },
   responseType: {
     type: String,
     validator (value, params) {
-      value = (value || '').toUpperCase()
+      value = (value || '').toLowerCase()
       params.responseType = Object.values(responseType).indexOf(value) < 0 ? responseType.TEXT : value
     }
   }

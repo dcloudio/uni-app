@@ -1,6 +1,7 @@
 import {
   publish,
-  requireNativePlugin
+  requireNativePlugin,
+  base64ToArrayBuffer
 } from '../../bridge'
 
 let requestTaskId = 0
@@ -15,7 +16,8 @@ export function createRequestTaskById (requestTaskId, {
   url,
   data,
   header,
-  method = 'GET'
+  method = 'GET',
+  responseType
 } = {}) {
   const stream = requireNativePlugin('stream')
   const headers = {}
@@ -53,7 +55,7 @@ export function createRequestTaskById (requestTaskId, {
     url: url.trim(),
     // weex 官方文档有误，headers 类型实际 object，用 string 类型会无响应
     headers,
-    type: 'text',
+    type: responseType === 'arraybuffer' ? 'base64' : 'text',
     // weex 官方文档未说明实际支持 timeout，单位：ms
     timeout: timeout || 6e5
   }
@@ -62,6 +64,7 @@ export function createRequestTaskById (requestTaskId, {
   }
   try {
     stream.fetch(options, ({
+      ok,
       status,
       data,
       headers
@@ -77,7 +80,7 @@ export function createRequestTaskById (requestTaskId, {
         publishStateChange({
           requestTaskId,
           state: 'success',
-          data,
+          data: ok && responseType === 'arraybuffer' ? base64ToArrayBuffer(data) : data,
           statusCode,
           header: headers
         })

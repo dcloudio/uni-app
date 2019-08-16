@@ -115,12 +115,12 @@ export function request ({
       errMsg: 'request:fail timeout'
     })
   }, timeout)
-  xhr.responseType = responseType.toLowerCase()
+  xhr.responseType = responseType
   xhr.onload = function () {
     clearTimeout(timer)
     let statusCode = xhr.status
-    let res = responseType === 'TEXT' ? xhr.responseText : xhr.response
-    if (responseType === 'TEXT' && dataType === 'JSON') {
+    let res = responseType === 'text' ? xhr.responseText : xhr.response
+    if (responseType === 'text' && dataType === 'json') {
       try {
         res = JSON.parse(res)
       } catch (error) {
