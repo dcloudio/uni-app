@@ -12,8 +12,6 @@ const todos = [
   'startAccelerometer',
   'startCompass',
   'addPhoneContact',
-  'setBackgroundColor',
-  'setBackgroundTextStyle',
   'authorize',
   'chooseAddress',
   'chooseInvoiceTitle',
@@ -45,7 +43,9 @@ const canIUses = [
   'openSetting',
   'getSetting',
   'createIntersectionObserver',
-  'getUpdateManager'
+  'getUpdateManager',
+  'setBackgroundColor',
+  'setBackgroundTextStyle'
 ]
 
 function _handleNetworkInfo (result) {
@@ -382,6 +382,9 @@ const protocols = { // 需要做转换的 API 列表
     returnValue: {
       brightness: 'value'
     }
+  },
+  showShareMenu: {
+    name: 'showSharePanel'
   }
 }
 
