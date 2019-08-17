@@ -3,18 +3,9 @@ export const protocols = {
   previewImage
 }
 export const todos = [
-  'connectSocket',
-  'onSocketOpen',
-  'onSocketError',
-  'sendSocketMessage',
-  'onSocketMessage',
-  'closeSocket',
-  'onSocketClose',
   'createLivePlayerContext',
   'createLivePusherContext',
   'loadFontFace',
-  'openDocument',
-  'canIUse',
   'onMemoryWarning',
   'onNetworkStatusChange',
   'startBeaconDiscovery',
@@ -41,8 +32,6 @@ export const todos = [
   'getExtConfig',
   'getExtConfigSync',
   'getPhoneNumber',
-  'updateShareMenu',
-  'getShareInfo',
   'chooseAddress',
   'addCard',
   'openCard',
@@ -69,5 +58,15 @@ export const canIUses = [
   'onUserCaptureScreen',
   'vibrateLong',
   'vibrateShort',
-  'createWorker'
+  'createWorker',
+  'connectSocket',
+  'onSocketOpen',
+  'onSocketError',
+  'sendSocketMessage',
+  'onSocketMessage',
+  'closeSocket',
+  'onSocketClose',
+  'openDocument',
+  'updateShareMenu',
+  'getShareInfo'
 ]
