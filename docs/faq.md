@@ -24,7 +24,7 @@
 
 **uni-app App资源热更新：** [https://ask.dcloud.net.cn/article/35667](https://ask.dcloud.net.cn/article/35667)
 
-**App初期启动的引导轮播：**因为是App专用，为了更好的性能，推荐使用nvue制作。也可以参考插件市场已经封装的插件[https://ext.dcloud.net.cn/plugin?id=192](https://ext.dcloud.net.cn/plugin?id=192)
+**App初期启动的引导轮播：** 因为是App专用，为了更好的性能，推荐使用nvue制作。参考插件市场已经封装的插件[https://ext.dcloud.net.cn/plugin?id=676](https://ext.dcloud.net.cn/plugin?id=676)
 
 **App全面屏底部安全区适配：**[https://ask.dcloud.net.cn/article/35564](https://ask.dcloud.net.cn/article/35564)
 

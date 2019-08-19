@@ -65,7 +65,9 @@ const todos = [
   'sendTemplateMessage',
   'setEnableDebug',
   'onWindowResize',
-  'offWindowResize'
+  'offWindowResize',
+  'compressImage',
+  'createOffscreenCanvas'
 ]
 
 // 存在兼容性的 API 列表

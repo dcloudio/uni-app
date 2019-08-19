@@ -24,7 +24,7 @@
 
 `uni-app`支持通过`vue-cli`命令行、`HBuilderX`可视化界面两种方式快速创建项目：
 
-- [vue-cli命令行方式](https://uniapp.dcloud.io/quickstart?id=_2-通过vue-cli命令行)：不限IDE，适合对node熟悉的开发者。
+- [vue-cli命令行方式](https://uniapp.dcloud.io/quickstart?id=_2-通过vue-cli命令行)：不限IDE，适合对node熟悉的开发者，扩展阅读：[在vscode中开发uni-app](https://ask.dcloud.net.cn/article/36286)
 - [HBuilderX可视化界面](https://uniapp.dcloud.io/quickstart?id=_1-通过-hbuilderx-可视化界面)：专用IDE，内置相关环境，开箱即用，开发效率更高。
 
 ## 项目案例
@@ -36,6 +36,10 @@
 ## 需求墙
 
 `uni-app`计划支持的功能点，会在需求墙上进行展示，并允许开发者对需求进行投票，[前往投票](https://dev.dcloud.net.cn/wish/)。
+
+## 更新日志
+
+`uni-app`一直保持极高的开发活跃度，详见[uni-app 更新日志](docs/release.md)。
 
 ## 论坛
 
