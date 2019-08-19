@@ -11,12 +11,6 @@
 
 详见Vue官方文档：[生命周期钩子](https://cn.vuejs.org/v2/api/#%E9%80%89%E9%A1%B9-%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E9%92%A9%E5%AD%90)。
 
-**注意**
-
-* 不要在选项属性或回调上使用箭头函数，比如 ``created: () => console.log(this.a)`` 或 ``vm.$watch('a', newValue => this.myMethod())``。因为箭头函数是和父级上下文绑定在一起的，``this`` 不会是如你做预期的 ``Vue`` 实例，且 ``this.a`` 或 ``this.myMethod`` 也会是未定义的。
-* 建议使用 `uni-app` 的 `onReady`代替 `vue` 的 `mounted`。
-* 建议使用 `uni-app` 的 `onLoad` 代替 `vue` 的 `created`。
-
 
 ## 模板语法
 
