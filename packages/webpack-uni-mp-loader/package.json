@@ -1,0 +1,14 @@
+{
+	"name": "@dcloudio/webpack-uni-mp-loader",
+	"version": "0.3.643",
+	"description": "webpack-uni-mp-loader",
+	"main": "index.js",
+    "files": [
+        "lib"
+    ],
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "fxy060608",
+	"license": "Apache-2.0"
+}

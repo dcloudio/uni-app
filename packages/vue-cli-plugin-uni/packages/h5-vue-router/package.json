@@ -1,0 +1,22 @@
+{
+  "name": "vue-router",
+  "version": "3.0.1",
+  "description": "Official router for Vue.js 2",
+  "author": "Evan You",
+  "license": "MIT",
+  "main": "dist/vue-router.common.js",
+  "module": "dist/vue-router.esm.js",
+  "unpkg": "dist/vue-router.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vuejs/vue-router.git"
+  },
+  "typings": "types/index.d.ts",
+  "keywords": [
+    "vue",
+    "router",
+    "routing"
+  ],
+  "scripts": {},
+  "devDependencies": {}
+}

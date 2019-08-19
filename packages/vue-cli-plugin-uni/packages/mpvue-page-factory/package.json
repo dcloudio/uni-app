@@ -1,0 +1,45 @@
+{
+  "_from": "mpvue-page-factory",
+  "_id": "mpvue-page-factory@1.0.1",
+  "_inBundle": false,
+  "_integrity": "sha512-jHK5UVqPYMAl09MZmAq6Wq1Ki6s0/XRPvo0CkaP9LakUoVh1j8x7r4gU5dln9YTWzBqjXbdm0U3oghSa6Ql5hQ==",
+  "_location": "/mpvue-page-factory",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "mpvue-page-factory",
+    "name": "mpvue-page-factory",
+    "escapedName": "mpvue-page-factory",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/mpvue-page-factory/-/mpvue-page-factory-1.0.1.tgz",
+  "_shasum": "3276cfe128751be30a2ee246b7c457652115f7d0",
+  "_spec": "mpvue-page-factory",
+  "_where": "/Users/fxy/Documents/DCloud/frontend/plugins/uniapp",
+  "author": {
+    "name": "zhangjianwei"
+  },
+  "bugs": {
+    "url": "https://github.com/HelloZJW/mpvue-page-factory/issues"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "README =========================== 解决mpvue多个页面公用一个vm对象的问题 [mpvue issue 140](https://github.com/Meituan-Dianping/mpvue/issues/140)",
+  "homepage": "https://github.com/HelloZJW/mpvue-page-factory#readme",
+  "license": "MIT",
+  "main": "index.js",
+  "name": "mpvue-page-factory",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HelloZJW/mpvue-page-factory.git"
+  },
+  "typings": "types/index.d.ts",
+  "version": "1.0.1"
+}

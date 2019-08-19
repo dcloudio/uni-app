@@ -1,0 +1,16 @@
+{
+    "name": "@dcloudio/vue-cli-plugin-hbuilderx",
+    "version": "1.0.134",
+    "description": "HBuilderX plugin for vue-cli 3",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "fxy060608",
+    "license": "Apache-2.0",
+    "dependencies": {
+        "acorn": "^5.2.1",
+        "escodegen": "^1.8.1",
+        "css": "~2.2.1"
+    }
+}

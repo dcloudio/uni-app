@@ -73,20 +73,20 @@ const todos = [
 // 存在兼容性的 API 列表
 // 头条小程序不支持canIUses
 const canIUses = [
-    // 'createIntersectionObserver',
-    // 'getSavedFileList',
-    // 'removeSavedFile',
-    // 'hideKeyboard',
-    // 'getImageInfo',
-    // 'createVideoContext',
-    // 'onSocketOpen',
-    // 'onSocketError',
-    // 'sendSocketMessage',
-    // 'onSocketMessage',
-    // 'closeSocket',
-    // 'onSocketClose',
-    // 'getExtConfig',
-    // 'getExtConfigSync',
+  // 'createIntersectionObserver',
+  // 'getSavedFileList',
+  // 'removeSavedFile',
+  // 'hideKeyboard',
+  // 'getImageInfo',
+  // 'createVideoContext',
+  // 'onSocketOpen',
+  // 'onSocketError',
+  // 'sendSocketMessage',
+  // 'onSocketMessage',
+  // 'closeSocket',
+  // 'onSocketClose',
+  // 'getExtConfig',
+  // 'getExtConfigSync',
 ]
 
 // 需要做转换的 API 列表

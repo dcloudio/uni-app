@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "scripts": {
     "lint": "eslint --fix --config package.json --ext .js --ext .vue --ignore-path .eslintignore build src",
+    "lint:cli": "eslint  --fix --config package.json --ignore-path .eslintignore packages/uni-cli-shared packages/uni-template-compiler \"packages/vue-cli-*/**/*.js\" \"packages/webpack-uni-*/**/*.js\"",
     "dev:h5": "npm run lint && cross-env NODE_ENV=production UNI_WATCH=true UNI_PLATFORM=h5 node build/build.js",
     "build:h5": "npm run lint && cross-env NODE_ENV=production UNI_WATCH=false UNI_PLATFORM=h5 node build/build.js",
     "build:app-plus": "cross-env UNI_PLATFORM=app-plus rollup -c build/rollup.config.mp.js",
@@ -93,7 +94,10 @@
       "__VERSION__": true,
       "__GLOBAL__": true,
       "__PLATFORM_TITLE__": true,
-      "__PLATFORM_PREFIX__": true
+      "__PLATFORM_PREFIX__": true,
+      "it": true,
+      "describe": true,
+      "expect": true
     },
     "rules": {
       "no-tabs": 0,
