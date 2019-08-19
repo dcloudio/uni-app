@@ -1,4 +1,8 @@
 module.exports = (api, options, rootOptions) => {
+  let version = '^1.0.0-22220190816001'
+  if (require('./package.json').version.indexOf('alpha') !== -1) {
+    version = '^1.0.0-alpha-22120190814001'
+  }
   api.extendPackage(pkg => {
     delete pkg.postcss
     delete pkg.browserslist
@@ -26,22 +30,22 @@ module.exports = (api, options, rootOptions) => {
         'scripts': {}
       },
       dependencies: {
-        '@dcloudio/uni-app-plus': '*',
-        '@dcloudio/uni-h5': '*',
-        '@dcloudio/uni-mp-qq': '*',
-        '@dcloudio/uni-mp-weixin': '*',
-        '@dcloudio/uni-mp-baidu': '*',
-        '@dcloudio/uni-mp-alipay': '*',
-        '@dcloudio/uni-mp-toutiao': '*',
-        '@dcloudio/uni-stat': '*',
+        '@dcloudio/uni-app-plus': version,
+        '@dcloudio/uni-h5': version,
+        '@dcloudio/uni-mp-qq': version,
+        '@dcloudio/uni-mp-weixin': version,
+        '@dcloudio/uni-mp-baidu': version,
+        '@dcloudio/uni-mp-alipay': version,
+        '@dcloudio/uni-mp-toutiao': version,
+        '@dcloudio/uni-stat': version,
         'flyio': '^0.6.2',
         'vuex': '^3.0.1'
       },
       devDependencies: {
-        '@dcloudio/uni-cli-shared': '*',
-        '@dcloudio/uni-template-compiler': '*',
-        '@dcloudio/webpack-uni-mp-loader': '*',
-        '@dcloudio/webpack-uni-pages-loader': '*',
+        '@dcloudio/uni-cli-shared': version,
+        '@dcloudio/uni-template-compiler': version,
+        '@dcloudio/webpack-uni-mp-loader': version,
+        '@dcloudio/webpack-uni-pages-loader': version,
         'babel-plugin-import': '^1.11.0'
       },
       browserslist: [

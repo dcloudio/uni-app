@@ -16,7 +16,9 @@
     "build:mp-alipay": "cross-env UNI_PLATFORM=mp-alipay rollup -c build/rollup.config.mp.js",
     "build:mp-toutiao": "cross-env UNI_PLATFORM=mp-toutiao rollup -c build/rollup.config.mp.js",
     "build:runtime": "npm run lint && npm run build:mp-weixin && npm run build:mp-qq && npm run build:mp-alipay && npm run build:mp-baidu && npm run build:mp-toutiao && npm run build:app-plus",
-    "test:unit": "cross-env NODE_ENV=test UNI_PLATFORM=h5 mocha-webpack --require tests/unit/setup.js --webpack-config build/webpack.config.test.js tests/unit/**/*.spec.js"
+    "test:unit": "cross-env NODE_ENV=test UNI_PLATFORM=h5 mocha-webpack --require tests/unit/setup.js --webpack-config build/webpack.config.test.js tests/unit/**/*.spec.js",
+    "release": "npm run lint:cli && lerna publish --force-publish=*",
+    "release:alpha": "npm run lint:cli && lerna publish --force-publish=* --npm-tag=alpha"
   },
   "dependencies": {
     "base64-arraybuffer": "^0.2.0",
