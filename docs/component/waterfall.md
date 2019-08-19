@@ -48,6 +48,7 @@ app端nvue专用组件。
 - left-gap: [可选]左边cell和列表的间隙. 如果未指定 ，则对应 `0`
 - right-gap: [可选]右边cell和列表的间隙. 如果未指定，则对应 `0`
   <img src="https://img-cdn-qiniu.dcloud.net.cn/app-nvue-component-waterfall-02.png" />
+
 其他支持的属性参见 `<list>` 组件属性部分
 
 #### 事件
