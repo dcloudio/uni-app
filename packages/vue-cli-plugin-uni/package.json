@@ -28,5 +28,6 @@
     "webpack-merge": "^4.1.4",
     "wrap-loader": "^0.2.0",
     "xregexp": "4.0.0"
-  }
+  },
+  "gitHead": "08ea04b669e93f0db3acb2dfa38138298edd5789"
 }

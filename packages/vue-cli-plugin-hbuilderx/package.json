@@ -12,5 +12,6 @@
         "acorn": "^5.2.1",
         "css": "~2.2.1",
         "escodegen": "^1.8.1"
-    }
+    },
+    "gitHead": "08ea04b669e93f0db3acb2dfa38138298edd5789"
 }

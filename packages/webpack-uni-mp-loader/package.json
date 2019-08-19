@@ -10,5 +10,6 @@
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"author": "fxy060608",
-	"license": "Apache-2.0"
+	"license": "Apache-2.0",
+	"gitHead": "08ea04b669e93f0db3acb2dfa38138298edd5789"
 }
