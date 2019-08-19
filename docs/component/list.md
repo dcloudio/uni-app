@@ -50,6 +50,8 @@ app端nvue专用组件。
 
 `loadmoreoffset` 示意图：
 
+<img src="https://img-cdn-qiniu.dcloud.net.cn/app-nvue-component-list.png" />
+
 #### 事件
 
 
