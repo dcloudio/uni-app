@@ -48,7 +48,7 @@
   * [list](component/list.md)
   * [cell](component/cell.md)
   * [recycle-list](component/recycle-list.md)
-  * [barcode](waterfall/waterfall.md)
+  * [waterfall](component/waterfall.md)
 * 扩展组件（uni ui）
   * [uni-ui整体介绍](component/README?id=uniui)
   * [Badge 数字角标](https://ext.dcloud.net.cn/plugin?id=21)
