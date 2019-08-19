@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/vue-cli-plugin-uni",
-  "version": "0.9.520",
+  "version": "1.0.0-alpha-22120190814001",
   "description": "uni-app plugin for vue-cli 3",
   "main": "index.js",
   "scripts": {

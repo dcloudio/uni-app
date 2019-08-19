@@ -1,11 +1,11 @@
 {
 	"name": "@dcloudio/webpack-uni-mp-loader",
-	"version": "0.3.643",
+	"version": "1.0.0-alpha-22120190814001",
 	"description": "webpack-uni-mp-loader",
 	"main": "index.js",
-    "files": [
-        "lib"
-    ],
+	"files": [
+		"lib"
+	],
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},

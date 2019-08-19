@@ -1,6 +1,6 @@
 {
 	"name": "@dcloudio/vue-cli-plugin-uni-optimize",
-	"version": "0.1.8",
+	"version": "1.0.0-alpha-22120190814001",
 	"description": "uni-app optimize plugin for vue-cli 3",
 	"main": "index.js",
 	"scripts": {
@@ -9,6 +9,6 @@
 	"author": "fxy060608",
 	"license": "Apache-2.0",
 	"dependencies": {
-        "@dcloudio/uni-h5": ">=0.7.0"
+		"@dcloudio/uni-h5": "^1.0.0-alpha-22120190814001"
 	}
 }
