@@ -426,6 +426,10 @@
         "/platforms/h5/service/api/device/hide-keyboard.js",
         []
     ],
+    "onKeyboardHeightChange": [
+        "/core/service/api/ui/keyboard.js",
+        []
+    ],
     "showToast": [
         "/platforms/h5/service/api/ui/popup.js",
         [
@@ -619,7 +623,7 @@
         ]
     ],
     "createAnimation": [
-        "/platforms/h5/service/api/ui/create-animation.js",
+        "/core/service/api/ui/create-animation.js",
         []
     ],
     "pageScrollTo": [
