@@ -388,18 +388,9 @@ const protocols = {
   previewImage
 };
 const todos = [
-  'connectSocket',
-  'onSocketOpen',
-  'onSocketError',
-  'sendSocketMessage',
-  'onSocketMessage',
-  'closeSocket',
-  'onSocketClose',
   'createLivePlayerContext',
   'createLivePusherContext',
   'loadFontFace',
-  'openDocument',
-  'canIUse',
   'onMemoryWarning',
   'onNetworkStatusChange',
   'startBeaconDiscovery',
@@ -426,8 +417,6 @@ const todos = [
   'getExtConfig',
   'getExtConfigSync',
   'getPhoneNumber',
-  'updateShareMenu',
-  'getShareInfo',
   'chooseAddress',
   'addCard',
   'openCard',
@@ -454,7 +443,17 @@ const canIUses = [
   'onUserCaptureScreen',
   'vibrateLong',
   'vibrateShort',
-  'createWorker'
+  'createWorker',
+  'connectSocket',
+  'onSocketOpen',
+  'onSocketError',
+  'sendSocketMessage',
+  'onSocketMessage',
+  'closeSocket',
+  'onSocketClose',
+  'openDocument',
+  'updateShareMenu',
+  'getShareInfo'
 ];
 
 const CALLBACKS = ['success', 'fail', 'cancel', 'complete'];
