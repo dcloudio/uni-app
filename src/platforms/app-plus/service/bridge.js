@@ -57,7 +57,7 @@ export function isTabBarPage (path = '') {
       }
       return page.$page.meta.isTabBar
     }
-    return __uniRoutes.find(route => route.path === path).meta.isTabBar
+    return !!__uniRoutes.find(route => route.path.slice(1) === path)
   } catch (e) {
     if (process.env.NODE_ENV !== 'production') {
       console.log('getCurrentPages is not ready')

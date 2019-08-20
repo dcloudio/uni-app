@@ -29,6 +29,8 @@ export function registerPage ({
 
   if (!webview) {
     webview = createWebview(path, routeOptions)
+  } else {
+    webview = plus.webview.getWebviewById(webview.id)
   }
 
   if (routeOptions.meta.isTabBar) {

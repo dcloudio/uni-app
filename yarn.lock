@@ -687,6 +687,10 @@
     "@types/minimatch" "*"
     "@types/node" "*"
 
+"@types/html5plus@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@types/html5plus/-/html5plus-1.0.0.tgz#a88600fc9de85b785959754aea403c0a8d0714ba"
+
 "@types/minimatch@*":
   version "3.0.3"
   resolved "https://registry.npm.taobao.org/@types/minimatch/download/@types/minimatch-3.0.3.tgz#3dca0e3f33b200fc7d1139c0cd96c1268cadfd9d"
