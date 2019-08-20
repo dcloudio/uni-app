@@ -63,7 +63,7 @@
 - 在小程序中，开发者可以登录 [小程序管理后台](https://mp.weixin.qq.com/) 后进入左侧菜单“客服反馈”页面获取反馈内容。
 - 在 App 中，开发者登录 [DCloud开发者中心](https://dev.dcloud.net.cn/) 后点击应用名称，进入左侧菜单“用户反馈”页面获取反馈内容。
 - 点击 share 分享按钮时会触发 [onShareAppMessage](/api/plugins/share)
-- 支付宝小程序平台，获取用户手机号时，建议先通过条件编译的方式，调用支付宝原生API，[参考[(https://docs.alipay.com/mini/api/getphonenumber)
+- 支付宝小程序平台，获取用户手机号时，建议先通过条件编译的方式，调用支付宝原生API，[参考](https://docs.alipay.com/mini/api/getphonenumber)
 
 
 **示例**
