@@ -162,7 +162,7 @@ var serviceContext = (function () {
         }
         return page.$page.meta.isTabBar
       }
-      return __uniRoutes.find(route => route.path === path).meta.isTabBar
+      return !!__uniRoutes.find(route => route.path.slice(1) === path)
     } catch (e) {
       if (process.env.NODE_ENV !== 'production') {
         console.log('getCurrentPages is not ready');
@@ -766,6 +766,8 @@ var serviceContext = (function () {
 
     if (!webview) {
       webview = createWebview(path, routeOptions);
+    } else {
+      webview = plus.webview.getWebviewById(webview.id);
     }
 
     if (routeOptions.meta.isTabBar) {
