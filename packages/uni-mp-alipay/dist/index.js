@@ -356,8 +356,6 @@ const todos = [
   'getRecorderManager',
   'getBackgroundAudioManager',
   'createInnerAudioContext',
-  'chooseVideo',
-  'saveVideoToPhotosAlbum',
   'createVideoContext',
   'createCameraContext',
   'createLivePlayerContext',
@@ -366,12 +364,7 @@ const todos = [
   'startAccelerometer',
   'startCompass',
   'addPhoneContact',
-  'setBackgroundColor',
-  'setBackgroundTextStyle',
-  'createIntersectionObserver',
   'authorize',
-  'openSetting',
-  'getSetting',
   'chooseAddress',
   'chooseInvoiceTitle',
   'addTemplate',
@@ -380,12 +373,12 @@ const todos = [
   'getTemplateLibraryList',
   'getTemplateList',
   'sendTemplateMessage',
-  'getUpdateManager',
   'setEnableDebug',
   'getExtConfig',
   'getExtConfigSync',
   'onWindowResize',
-  'offWindowResize'
+  'offWindowResize',
+  'saveVideoToPhotosAlbum'
 ];
 
 // 存在兼容性的 API 列表
@@ -398,7 +391,13 @@ const canIUses = [
   'setTabBarBadge',
   'removeTabBarBadge',
   'showTabBarRedDot',
-  'hideTabBarRedDot'
+  'hideTabBarRedDot',
+  'openSetting',
+  'getSetting',
+  'createIntersectionObserver',
+  'getUpdateManager',
+  'setBackgroundColor',
+  'setBackgroundTextStyle'
 ];
 
 function _handleNetworkInfo (result) {
@@ -552,6 +551,12 @@ const protocols = { // 需要做转换的 API 列表
       apFilePath: 'tempFilePath'
     }
   },
+  chooseVideo: {
+    // 支付宝小程序文档中未找到（仅在getSetting处提及），但实际可用
+    returnValue: {
+      apFilePath: 'tempFilePath'
+    }
+  },
   connectSocket: {
     args: {
       method: false,
@@ -687,6 +692,18 @@ const protocols = { // 需要做转换的 API 列表
       });
     }
   },
+  createBLEConnection: {
+    name: 'connectBLEDevice',
+    args: {
+      timeout: false
+    }
+  },
+  closeBLEConnection: {
+    name: 'disconnectBLEDevice'
+  },
+  onBLEConnectionStateChange: {
+    name: 'onBLEConnectionStateChanged'
+  },
   makePhoneCall: {
     args: {
       phoneNumber: 'number'
@@ -717,6 +734,9 @@ const protocols = { // 需要做转换的 API 列表
     returnValue: {
       brightness: 'value'
     }
+  },
+  showShareMenu: {
+    name: 'showSharePanel'
   }
 };
 
@@ -936,7 +956,9 @@ function createExecCallback (execCallback) {
         callback(res[index]);
       });
     });
-    execCallback(res);
+    if (isFn(execCallback)) {
+      execCallback(res);
+    }
   }
 }
 

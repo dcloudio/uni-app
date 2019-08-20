@@ -1,5 +1,5 @@
 module.exports = (api, options, rootOptions) => {
-  let version = '^1.0.0-22220190816001'
+  let version = '*'
   if (require('./package.json').version.indexOf('alpha') !== -1) {
     version = '^1.0.0-alpha-22120190814001'
   }

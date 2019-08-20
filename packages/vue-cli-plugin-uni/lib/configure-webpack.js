@@ -261,6 +261,7 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
           '@': path.resolve(process.env.UNI_INPUT_DIR),
           'vue$': getPlatformVue(),
           'uni-pages': path.resolve(process.env.UNI_INPUT_DIR, 'pages.json'),
+          '@dcloudio/uni-stat': require.resolve('@dcloudio/uni-stat'),
           'uni-stat-config': path.resolve(process.env.UNI_INPUT_DIR, 'pages.json') +
             '?' +
             JSON.stringify({

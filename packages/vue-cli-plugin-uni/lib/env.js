@@ -70,13 +70,13 @@ const uniStatistics = Object.assign(
   platformOptions.uniStatistics || {}
 )
 
-if (uniStatistics.enable === true) {
+if (uniStatistics.enable !== false) {
   if (process.UNI_STAT_CONFIG.appid) {
     process.env.UNI_USING_STAT = true
   } else {
-    // console.log()
-    // console.warn(``)
-    // console.log()
+    console.log()
+    console.warn(`当前应用未配置Appid，无法使用uni统计，详情参考：https://ask.dcloud.net.cn/article/36303`)
+    console.log()
   }
 }
 
@@ -154,13 +154,15 @@ if (platformOptions.usingComponents === true) {
   }
 }
 
-if (process.env.UNI_USING_COMPONENTS && isSupportSubPackages()) { // 是否启用分包优化
-  if (
-    platformOptions.optimization &&
-    platformOptions.optimization.subPackages &&
-    Object.keys(process.UNI_SUBPACKAGES).length
-  ) {
-    process.env.UNI_OPT_SUBPACKAGES = true
+if (process.env.UNI_USING_COMPONENTS) { // 是否启用分包优化
+  if (platformOptions.optimization) {
+    if (
+      isSupportSubPackages() &&
+      platformOptions.optimization.subPackages &&
+      Object.keys(process.UNI_SUBPACKAGES).length
+    ) {
+      process.env.UNI_OPT_SUBPACKAGES = true
+    }
   }
 }
 

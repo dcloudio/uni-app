@@ -1,6 +1,6 @@
 import {
   version
-} from '../package.json'
+} from '@dcloudio/uni-stat/package.json'
 export const STAT_VERSION = version 
 export const STAT_URL = 'https://tongji.dcloud.net.cn/uni/stat' 
 export const STAT_H5_URL = 'https://tongji.dcloud.net.cn/uni/stat.gif' 
