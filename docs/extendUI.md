@@ -384,21 +384,48 @@ export default {
 
 **Popup 属性说明：**
 
-|属性名		|类型|默认值	|说明|
-|---|----|---|---|
-|show	|Boolean|false|是否显示弹出层|
-|type|String|middle|弹出层内容出现在页面的位置，可选值：top（顶部）， middle（居中）, bottom（底部）|
-|msg	|String	||弹出层文字内容|
-|@hidePopup|EventHandle||点击遮罩时触发事件	|
+|  属性名	|    类型	| 默认值| 说明															|
+| ---		| ---		| ---	| ---															|
+| animation	| Boolean	|true	| 是否开启动画													|
+| type		| String	|center	| 弹出方式，可选值：top（顶部），center（居中），bottom（底部）	|
+| show		| Boolean	|false	| 显示弹窗	|
+| custom	| Boolean	|false	| 是否自定义内容												|
+| maskClick	| Boolean	|true	| 蒙版点击是否关闭弹窗											|
+| change	| function	|true	| 打开关闭弹窗触发											|
 
-**Popup 插槽**
+**方法说明：**
+通过 `ref` 获取组件方法
 
-开发者使用 Popup 时，支持向 Popup 里插入不同内容，以达到自定义的目的。
+|方法称名	|说明		|
+|---		|----		|
+|open		|打开弹出层	|
+|close		|关闭弹出层	|
 
 ```html
-<uni-popup :show="true" type="middle">
-    <view>使用插槽</view>
-</uni-popup>
+<view>
+	<button @click="openPopup">打开弹出层</button>
+	<uni-popup ref="popup" type="center">
+		弹出层示例
+		<button @click="closePopup">关闭弹出层</button>
+	</uni-popup>
+</view>
+```
+
+```javascript
+export default {
+	methods:{
+		openPopup(){
+			this.$refs.popup.open()
+		},
+		closePopup(){
+			this.$refs.popup.close()
+		}
+	}
+}
+```
+
+Tips 
+- show 的作用与 open() 效果一致 ，在使用中显示弹窗二者只能选择其一。如果使用 show 显示弹窗，那么关闭弹窗时，应将 show 置为 false
 ```
 
 ### SegmentedControl 分段器
