@@ -65,21 +65,6 @@ process.UNI_STAT_CONFIG = {
   appid: manifestJsonObj.appid
 }
 
-const uniStatistics = Object.assign(
-  manifestJsonObj.uniStatistics || {},
-  platformOptions.uniStatistics || {}
-)
-
-if (uniStatistics.enable !== false) {
-  if (process.UNI_STAT_CONFIG.appid) {
-    process.env.UNI_USING_STAT = true
-  } else {
-    console.log()
-    console.warn(`当前应用未配置Appid，无法使用uni统计，详情参考：https://ask.dcloud.net.cn/article/36303`)
-    console.log()
-  }
-}
-
 // fixed by hxy alpha 版默认启用新的框架
 if (isInHBuilderXAlpha) {
   if (!platformOptions.hasOwnProperty('usingComponents')) {
@@ -151,6 +136,23 @@ if (platformOptions.usingComponents === true) {
   }
   if (process.env.UNI_PLATFORM === 'app-plus') {
     process.env.UNI_USING_V8 = true
+  }
+}
+
+if (process.env.UNI_USING_COMPONENTS || process.env.UNI_PLATFORM === 'h5') { // 自定义组件模式或 h5 平台
+  const uniStatistics = Object.assign(
+    manifestJsonObj.uniStatistics || {},
+    platformOptions.uniStatistics || {}
+  )
+
+  if (uniStatistics.enable !== false) {
+    if (process.UNI_STAT_CONFIG.appid) {
+      process.env.UNI_USING_STAT = true
+    } else {
+      console.log()
+      console.warn(`当前应用未配置Appid，无法使用uni统计，详情参考：https://ask.dcloud.net.cn/article/36303`)
+      console.log()
+    }
   }
 }
 
