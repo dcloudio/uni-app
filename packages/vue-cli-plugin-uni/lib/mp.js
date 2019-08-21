@@ -142,6 +142,12 @@ module.exports = {
         cacheIdentifier: false
       }))
       .end()
+      .use('uniapp-custom-block-loader')
+      .loader(require.resolve('@dcloudio/vue-cli-plugin-uni/packages/webpack-custom-block-loader'))
+      .options({
+        compiler: getPlatformCompiler()
+      })
+      .end()
       .use('uniapp-nvue-loader')
       .loader(require.resolve('@dcloudio/webpack-uni-mp-loader/lib/style.js'))
       .end()

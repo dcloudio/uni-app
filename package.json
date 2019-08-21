@@ -17,6 +17,7 @@
     "build:mp-toutiao": "cross-env UNI_PLATFORM=mp-toutiao rollup -c build/rollup.config.mp.js",
     "build:runtime": "npm run lint && npm run build:mp-weixin && npm run build:mp-qq && npm run build:mp-alipay && npm run build:mp-baidu && npm run build:mp-toutiao && npm run build:app-plus",
     "build:stat": "npm run lint && rollup -c build/rollup.config.stat.js",
+    "test:cli": "cross-env NODE_ENV=test jest",
     "test:unit": "cross-env NODE_ENV=test UNI_PLATFORM=h5 mocha-webpack --require tests/unit/setup.js --webpack-config build/webpack.config.test.js tests/unit/**/*.spec.js",
     "release": "npm run lint:cli && lerna publish --force-publish=*",
     "release:alpha": "npm run lint:cli && lerna publish --force-publish=* --npm-tag=alpha"
@@ -49,6 +50,7 @@
     "eslint-plugin-promise": "^4.0.0",
     "eslint-plugin-standard": "^4.0.0",
     "eslint-plugin-vue": "^4.7.1",
+    "jest": "^24.9.0",
     "jsdom": "^13.0.0",
     "jsdom-global": "^3.0.2",
     "jsonfile": "^5.0.0",

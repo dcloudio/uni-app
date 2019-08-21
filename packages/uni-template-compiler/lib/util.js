@@ -53,6 +53,34 @@ function traverseKey (ast, state) {
   return forKey
 }
 
+function traverseFilter (ast, state) {
+  const filterModules = state.options.filterModules
+  if (!filterModules.length) {
+    return false
+  }
+  let isFilter = false
+  babelTraverse(ast, {
+    noScope: true,
+    Identifier (path) {
+      if (filterModules.includes(path.node.name)) {
+        const parentNode = path.parent
+        if ( // t.msg || t['msg']
+          t.isMemberExpression(parentNode) &&
+          parentNode.object === path.node &&
+          (
+            t.isIdentifier(parentNode.property) ||
+            t.isLiteral(parentNode.property)
+          )
+        ) {
+          isFilter = true
+          path.stop()
+        }
+      }
+    }
+  })
+  return isFilter
+}
+
 function wrapper (code, reverse = false) {
   return reverse ? `{{!(${code})}}` : `{{${code}}}`
 }
@@ -159,6 +187,7 @@ module.exports = {
   }),
   getForKey,
   traverseKey,
+  traverseFilter,
   getComponentName: cached((str) => {
     if (str.indexOf('wx-') === 0) {
       return str.replace('wx-', 'weixin-')

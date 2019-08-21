@@ -40,6 +40,8 @@ module.exports = {
 
     options.mp.globalUsingComponents = options.globalUsingComponents || Object.create(null)
 
+    options.mp.filterModules = options.filterModules || []
+
     // (可用的原生微信小程序组件，global+scoped)
     options.mp.wxComponents = options.wxComponents || Object.create(null)
 

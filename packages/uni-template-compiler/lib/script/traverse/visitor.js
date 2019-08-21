@@ -17,6 +17,7 @@ const {
 
 const {
   hyphenate,
+  traverseFilter,
   getComponentName
 } = require('../../util')
 
@@ -130,9 +131,19 @@ function checkUsingGlobalComponents (name, globalUsingComponents, state) {
 
 module.exports = {
   noScope: true,
+  MemberExpression (path) {
+    if ( // t.m(123)
+      t.isIdentifier(path.node.object) &&
+      this.options.filterModules.includes(path.node.object.name)
+    ) {
+      path.skip()
+    }
+  },
   CallExpression (path) {
     const callee = path.node.callee
-    if (t.isIdentifier(callee)) {
+    if (traverseFilter(callee, this)) {
+      return path.skip()
+    } else if (t.isIdentifier(callee)) {
       const methodName = callee.name
       switch (methodName) {
         case METHOD_CREATE_ELEMENT:
@@ -174,6 +185,7 @@ module.exports = {
           path.skip()
           break
         default:
+          // TODO 检测是否是 filterModules
           if (!METHOD_BUILT_IN.includes(methodName)) {
             if (
               path.findParent(
@@ -200,8 +212,8 @@ module.exports = {
       }
     } else if (
       t.isCallExpression(callee) &&
-            t.isIdentifier(callee.callee) &&
-            callee.callee.name === METHOD_RESOLVE_FILTER
+      t.isIdentifier(callee.callee) &&
+      callee.callee.name === METHOD_RESOLVE_FILTER
     ) {
       // multi filter
       path.replaceWith(getMemberExpr(path, IDENTIFIER_FILTER, path.node, this))

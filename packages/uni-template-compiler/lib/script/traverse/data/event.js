@@ -138,8 +138,8 @@ function parseMethod (method, state) {
         return t.stringLiteral('$' + (extraArrayElements.length - 1))
       } else if ( // +1=>1
         t.isUnaryExpression(element) &&
-                element.operator === '+' &&
-                t.isNumericLiteral(element.argument)
+        element.operator === '+' &&
+        t.isNumericLiteral(element.argument)
       ) {
         element = t.numericLiteral(element.argument.value)
       } else if (t.isObjectExpression(element)) {
@@ -199,7 +199,22 @@ function parseEvent (keyPath, valuePath, state, isComponent, isNativeOn = false,
   }
 
   valuePath.forEach(funcPath => {
-    if (funcPath.isIdentifier()) { // on:{click:handle}
+    if ( // wxs event
+      funcPath.isMemberExpression() &&
+      t.isIdentifier(funcPath.node.object) &&
+      state.options.filterModules.includes(funcPath.node.object.name)
+    ) {
+      const {
+        getEventType,
+        formatEventType
+      } = state.options.platform
+      const wxsEventType = formatEventType(getEventType(type))
+      if (key.value) {
+        key.value = wxsEventType
+      } else {
+        key.name = wxsEventType
+      }
+    } else if (funcPath.isIdentifier()) { // on:{click:handle}
       if (!isSpecialEvent) {
         const arrayExpression = [t.stringLiteral(getMethodName(funcPath.node.name))]
         if (!isCustom) { // native events
@@ -224,7 +239,7 @@ function parseEvent (keyPath, valuePath, state, isComponent, isNativeOn = false,
         noScope: true,
         MemberExpression (path) {
           if (path.node.object.name === '$event' && path.node.property.name ===
-                        'stopPropagation') {
+            'stopPropagation') {
             isCatch = true
             path.stop()
           }
@@ -234,9 +249,9 @@ function parseEvent (keyPath, valuePath, state, isComponent, isNativeOn = false,
           const right = path.node.right
           // v-bind:title.sync="title"
           if (t.isIdentifier(left) &&
-                        t.isIdentifier(right) &&
-                        right.name === '$event' &&
-                        type.indexOf('update:') === 0) {
+            t.isIdentifier(right) &&
+            right.name === '$event' &&
+            type.indexOf('update:') === 0) {
             methods.push(t.arrayExpression( // ['$set',['title','$event']]
               [
                 t.stringLiteral(INTERNAL_SET_SYNC),

@@ -80,7 +80,6 @@ const PLATFORMS = {
     vue: '@dcloudio/vue-cli-plugin-uni/packages/h5-vue',
     compiler: false,
     megalo: false,
-    filters: true,
     subPackages: false,
     cssVars: {
       '--status-bar-height': '0px'
@@ -114,7 +113,7 @@ const PLATFORMS = {
     vue: mpvueRuntime,
     compiler: mpvueCompiler,
     megalo: false,
-    filters: true,
+    filterTag: 'wxs',
     subPackages: false,
     cssVars: {
       '--window-top': '0px',
@@ -143,7 +142,7 @@ const PLATFORMS = {
     vue: mpvueRuntime,
     compiler: mpvueCompiler,
     megalo: false,
-    filters: true,
+    filterTag: 'wxs',
     subPackages: true,
     cssVars: {
       '--status-bar-height': '25px',
@@ -170,7 +169,7 @@ const PLATFORMS = {
     vue: mpvueRuntime,
     compiler: mpvueCompiler,
     megalo: false,
-    filters: true,
+    filterTag: 'wxs',
     subPackages: true,
     cssVars: {
       '--status-bar-height': '25px',
@@ -207,7 +206,7 @@ const PLATFORMS = {
     vue: megaloRuntime,
     compiler: megaloCompiler,
     megalo: 'swan',
-    filters: true,
+    filterTag: 'filter',
     subPackages: true,
     cssVars: {
       '--status-bar-height': '25px',
@@ -234,7 +233,7 @@ const PLATFORMS = {
     vue: megaloRuntime,
     compiler: megaloCompiler,
     megalo: 'alipay',
-    filters: true,
+    filterTag: 'import-sjs',
     subPackages: false,
     cssVars: {
       '--status-bar-height': '25px',
@@ -440,9 +439,6 @@ module.exports = {
     type: 'html',
     context: nvuePreprocessContext
   },
-  isSupportFilters () {
-    return platform.filters
-  },
   isSupportSubPackages () {
     return platform.subPackages
   },
@@ -463,6 +459,9 @@ module.exports = {
   },
   getPlatformProject () {
     return platform.project
+  },
+  getPlatformFilterTag () {
+    return platform.filterTag
   },
   getPlatformVue () {
     if (process.env.UNI_USING_COMPONENTS) {

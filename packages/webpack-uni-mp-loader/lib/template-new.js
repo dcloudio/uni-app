@@ -1,5 +1,7 @@
 const path = require('path')
 
+const loaderUtils = require('loader-utils')
+
 const {
   removeExt,
   getPlatformExts,
@@ -31,10 +33,16 @@ module.exports = function (content) {
     const realResourcePath = path.relative(process.env.UNI_INPUT_DIR, this.resourcePath)
     const resourcePath = normalizeNodeModules(removeExt(realResourcePath) + templateExt)
     const wxComponents = getWXComponents(resourcePath.replace(path.extname(resourcePath), ''))
+
+    const params = loaderUtils.parseQuery(this.resourceQuery)
+
+    const filterModules = (params && params['filter-modules'] || '').split(',')
+
     Object.assign(vueLoaderOptions.options.compilerOptions, {
       mp: {
         platform: process.env.UNI_PLATFORM
       },
+      filterModules,
       resourcePath,
       emitFile: this.emitFile,
       wxComponents,

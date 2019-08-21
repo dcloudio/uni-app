@@ -1,4 +1,4 @@
-module.exports = {
+const config = {
   ignore: [
     "./packages",
   ],
@@ -9,3 +9,9 @@ module.exports = {
   ],
   plugins: [require('./lib/babel-plugin-uni-api/index.js')]
 }
+
+if (process.env.NODE_ENV === 'test') {
+  delete config.ignore
+}
+
+module.exports = config
