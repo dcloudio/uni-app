@@ -23,7 +23,8 @@
   },
   "dependencies": {
     "base64-arraybuffer": "^0.2.0",
-    "intersection-observer": "^0.7.0"
+    "intersection-observer": "^0.7.0",
+    "safe-area-insets": "^1.4.1"
   },
   "private": true,
   "devDependencies": {
