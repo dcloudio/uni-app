@@ -29,17 +29,17 @@
 
 ## 项目案例
 
-案例：[uniapp.dcloud.io/case](https://uniapp.dcloud.io/case)
+案例展示：[uniapp.dcloud.io/case](https://uniapp.dcloud.io/case)
 
-欢迎广大开发者踊跃提交自己的应用案例，[uni-app案例征集](https://github.com/dcloudio/uni-app/issues/6)
+欢迎提交你的应用，[uni-app案例征集](https://github.com/dcloudio/uni-app/issues/6)
 
 ## 需求墙
 
-`uni-app`计划支持的功能点，会在需求墙上进行展示，并允许开发者对需求进行投票，[前往投票](https://dev.dcloud.net.cn/wish/)。
+`uni-app`计划支持的功能点，会在需求墙上进行展示，征集开发者的投票意见，[前往投票](https://dev.dcloud.net.cn/wish/)。
 
 ## 更新日志
 
-`uni-app`一直保持极高的开发活跃度，详见[uni-app 更新日志](docs/release.md)。
+`uni-app`一直保持高频的更新迭代，详见[uni-app 更新日志](docs/release.md)。
 
 ## 论坛
 
