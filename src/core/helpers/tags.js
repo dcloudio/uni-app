@@ -23,7 +23,7 @@ module.exports = [
   'uni-cover-view',
   'uni-form',
   'uni-functional-page-navigator',
-  // 'uni-icon',
+  'uni-icon',
   'uni-image',
   'uni-input',
   'uni-label',
