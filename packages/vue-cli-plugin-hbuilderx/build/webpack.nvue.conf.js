@@ -4,16 +4,13 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 const {
-  done
-} = require('@vue/cli-shared-utils')
-
-const {
   getNVueMainEntry,
   nvueJsPreprocessOptions,
   nvueHtmlPreprocessOptions,
   devtoolModuleFilenameTemplate
 } = require('@dcloudio/uni-cli-shared')
 
+const WebpackAppPlusNVuePlugin = require('../packages/webpack-app-plus-nvue-plugin')
 const WebpackErrorsPlugin = require('@dcloudio/vue-cli-plugin-uni/packages/webpack-errors-plugin')
 
 const onErrors = require('@dcloudio/vue-cli-plugin-uni/util/on-errors')
@@ -69,27 +66,10 @@ const plugins = [
   new WebpackErrorsPlugin({
     onErrors
   }),
-  function (compiler) {
-    compiler.hooks.done.tapPromise('WebpackAppPlusNVuePlugin', compilation => {
-      return new Promise((resolve, reject) => {
-        if (isFirst) {
-          isFirst = false
-        } else {
-          if (process.env.NODE_ENV === 'development') {
-            done(`Build complete. Watching for changes...`)
-          } else {
-            done(`Build complete. `)
-          }
-        }
-        resolve()
-      })
-    })
-  }
+  new WebpackAppPlusNVuePlugin()
 ]
 
 const excludeModuleReg = /node_modules(?!(\/|\\).*(weex).*)/
-
-let isFirst = !process.env.UNI_USING_NATIVE
 
 const rules = [{
   test: path.resolve(process.env.UNI_INPUT_DIR, 'pages.json'),
