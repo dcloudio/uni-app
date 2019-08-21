@@ -79,6 +79,7 @@ module.exports = function (source) {
     sourceRoot,
     needMap: sourceMap
   })
+  // fixed by xxxxxx
   if(!modules && options.compilerOptions && options.compilerOptions.modules){
       modules = options.compilerOptions.modules
   }
