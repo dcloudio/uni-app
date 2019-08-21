@@ -236,7 +236,7 @@ export const getRoute = () => {
   if (getPlatformName() === 'bd') {
     return _self.$mp && _self.$mp.page.is;
   } else {
-    return _self.$scope && _self.$scope.route || _self.$mp && _self.$mp.page.route;
+    return (_self.$scope && _self.$scope.route) || (_self.$mp && _self.$mp.page.route);
   }
 };
 
@@ -251,12 +251,12 @@ export const getPageRoute = (self) => {
   if (getPlatformName() === 'bd') {
     return _self.$mp && _self.$mp.page.is + str;
   } else {
-    return _self.$scope && _self.$scope.route + str || _self.$mp && _self.$mp.page.route + str;
+    return (_self.$scope && _self.$scope.route + str )|| (_self.$mp && _self.$mp.page.route + str);
   }
 };
 
 export const getPageTypes = (self) => {
-  if (self.mpType === 'page' || self.$mp && self.$mp.mpType === 'page') {
+  if (self.mpType === 'page' || (self.$mp && self.$mp.mpType === 'page') || self.$options.mpType === 'page') {
     return true;
   }
   return false;

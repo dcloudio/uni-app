@@ -237,7 +237,7 @@ const getRoute = () => {
   if (getPlatformName() === 'bd') {
     return _self.$mp && _self.$mp.page.is;
   } else {
-    return _self.$scope && _self.$scope.route || _self.$mp && _self.$mp.page.route;
+    return (_self.$scope && _self.$scope.route) || (_self.$mp && _self.$mp.page.route);
   }
 };
 
@@ -252,12 +252,12 @@ const getPageRoute = (self) => {
   if (getPlatformName() === 'bd') {
     return _self.$mp && _self.$mp.page.is + str;
   } else {
-    return _self.$scope && _self.$scope.route + str || _self.$mp && _self.$mp.page.route + str;
+    return (_self.$scope && _self.$scope.route + str )|| (_self.$mp && _self.$mp.page.route + str);
   }
 };
 
 const getPageTypes = (self) => {
-  if (self.mpType === 'page' || self.$mp && self.$mp.mpType === 'page') {
+  if (self.mpType === 'page' || (self.$mp && self.$mp.mpType === 'page') || self.$options.mpType === 'page') {
     return true;
   }
   return false;
@@ -371,8 +371,9 @@ class Util {
     getLastTime();
     const time = getResidenceTime();
     getFirstTime();
+    const route = getPageRoute(this);
     this._sendHideRequest({
-      urlref: this._lastPageRoute,
+      urlref: route,
       urlref_ts: time.residenceTime
     }, type);
   }
@@ -562,20 +563,32 @@ class Util {
     data.ttc = title.report;
 
     let requestData = this._reportingRequestData;
-    if (!requestData[data.lt]) {
-      this._reportingRequestData[data.lt] = [];
+    if (getPlatformName() === 'n') {
+      requestData = uni.getStorageSync('__UNI__STAT__DATA') || {};
     }
-    this._reportingRequestData[data.lt].push(data);
+    if (!requestData[data.lt]) {
+      requestData[data.lt] = [];
+    }
+    requestData[data.lt].push(data);
+
+    if (getPlatformName() === 'n') {
+      uni.setStorageSync('__UNI__STAT__DATA', requestData);
+    }
     if (getPageResidenceTime() < OPERATING_TIME && !type) {
       return
+    }
+    let uniStatData = this._reportingRequestData;
+    if (getPlatformName() === 'n') {
+      uniStatData = uni.getStorageSync('__UNI__STAT__DATA');
     }
     // 时间超过，重新获取时间戳
     setPageResidenceTime();
     let firstArr = [];
     let contentArr = [];
     let lastArr = [];
-    for (let i in this._reportingRequestData) {
-      const rd = this._reportingRequestData[i];
+
+    for (let i in uniStatData) {
+      const rd = uniStatData[i];
       rd.forEach((elm) => {
         const newData = getSplicing(elm);
         if (i === 0) {
@@ -594,32 +607,40 @@ class Util {
       t: time, //发送请求时的时间戮
       requests: JSON.stringify(firstArr),
     };
+
     this._reportingRequestData = {};
+    if (getPlatformName() === 'n') {
+      uni.removeStorageSync('__UNI__STAT__DATA');
+    }
 
     if (data.ut === 'h5') {
       this.imageRequest(optionsData);
       return
     }
-    uni.request({
-      url: STAT_URL,
-      method: 'POST',
-      data: optionsData,
-      success: () => {
-        if (process.env.NODE_ENV === 'development') {
-          console.log('stat request success');
+
+    setTimeout(() => {
+      uni.request({
+        url: STAT_URL,
+        method: 'POST',
+        data: optionsData,
+        success: () => {
+          if (process.env.NODE_ENV === 'development') {
+            console.log('stat request success');
+          }
+        },
+        fail: (e) => {
+          if (process.env.NODE_ENV === 'development') {
+            console.log('stat request fail', e);
+          }
+          if (++this._retry < 3) {
+            setTimeout(() => {
+              this.request(data);
+            }, 1000);
+          }
         }
-      },
-      fail: (e) => {
-        if (process.env.NODE_ENV === 'development') {
-          console.log('stat request fail', e);
-        }
-        if (++this._retry < 3) {
-          setTimeout(() => {
-            this.request(data);
-          }, 1000);
-        }
-      }
-    });
+      });
+    }, 200);
+
   }
   /**
    * h5 请求
@@ -722,6 +743,10 @@ class Stat extends Util {
   }
 
   load(options, self) {
+    if (!self.$scope && !self.$mp) {
+      const page = getCurrentPages();
+      self.$scope = page[page.length - 1];
+    }
     this.self = self;
     this._query = options;
   }
