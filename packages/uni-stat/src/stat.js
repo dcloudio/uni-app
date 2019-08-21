@@ -239,7 +239,7 @@ class Util {
     key = '',
     value = ""
   } = {}) {
-    const route = getPageRoute(this);
+    const route = this._lastPageRoute;
     let options = {
       ak: this.statData.ak,
       uuid: this.statData.uuid,

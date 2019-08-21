@@ -80,6 +80,7 @@ const PLATFORMS = {
     vue: '@dcloudio/vue-cli-plugin-uni/packages/h5-vue',
     compiler: false,
     megalo: false,
+    filters: true,
     subPackages: false,
     cssVars: {
       '--status-bar-height': '0px'
@@ -107,11 +108,13 @@ const PLATFORMS = {
     global: 'wx',
     exts: {
       style: '.wxss',
-      template: '.wxml'
+      template: '.wxml',
+      filter: '.wxs'
     },
     vue: mpvueRuntime,
     compiler: mpvueCompiler,
     megalo: false,
+    filters: true,
     subPackages: false,
     cssVars: {
       '--window-top': '0px',
@@ -134,11 +137,13 @@ const PLATFORMS = {
     global: 'wx',
     exts: {
       style: '.qss',
-      template: '.qml'
+      template: '.qml',
+      filter: '.wxs'
     },
     vue: mpvueRuntime,
     compiler: mpvueCompiler,
     megalo: false,
+    filters: true,
     subPackages: true,
     cssVars: {
       '--status-bar-height': '25px',
@@ -159,11 +164,13 @@ const PLATFORMS = {
     global: 'wx',
     exts: {
       style: '.wxss',
-      template: '.wxml'
+      template: '.wxml',
+      filter: '.wxs'
     },
     vue: mpvueRuntime,
     compiler: mpvueCompiler,
     megalo: false,
+    filters: true,
     subPackages: true,
     cssVars: {
       '--status-bar-height': '25px',
@@ -194,11 +201,13 @@ const PLATFORMS = {
     global: 'swan',
     exts: {
       style: '.css',
-      template: '.swan'
+      template: '.swan',
+      filter: '.filter.js'
     },
     vue: megaloRuntime,
     compiler: megaloCompiler,
     megalo: 'swan',
+    filters: true,
     subPackages: true,
     cssVars: {
       '--status-bar-height': '25px',
@@ -219,11 +228,13 @@ const PLATFORMS = {
     global: 'my',
     exts: {
       style: '.acss',
-      template: '.axml'
+      template: '.axml',
+      filter: '.sjs'
     },
     vue: megaloRuntime,
     compiler: megaloCompiler,
     megalo: 'alipay',
+    filters: true,
     subPackages: false,
     cssVars: {
       '--status-bar-height': '25px',
@@ -428,6 +439,9 @@ module.exports = {
   nvueHtmlPreprocessOptions: {
     type: 'html',
     context: nvuePreprocessContext
+  },
+  isSupportFilters () {
+    return platform.filters
   },
   isSupportSubPackages () {
     return platform.subPackages

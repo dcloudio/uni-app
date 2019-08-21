@@ -36,6 +36,7 @@ const {
 const {
   getFlexDirection,
   getPlatformProject,
+  isSupportFilters,
   isSupportSubPackages,
   getPlatforms,
   getPlatformGlobal,
@@ -83,6 +84,7 @@ module.exports = {
   runByHBuilderX,
   isInHBuilderX,
   isInHBuilderXAlpha,
+  isSupportFilters,
   isSupportSubPackages,
   getPlatforms,
   getFlexDirection,
