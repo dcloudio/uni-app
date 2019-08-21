@@ -16,7 +16,7 @@
 
 一套代码编译到7个平台，开发一次、多处运行，这不是梦想，而是现实。依次扫描7个二维码，亲自体验最全面的跨平台效果！
 
-<img src="http://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/barcode-20190131.png"/>
+<img src="https://img-cdn-qiniu.dcloud.net.cn/uni-app-qr-all.jpg"/>
 
 *注： Appstore、百度、头条平台不能提交简单demo，故iOS、百度小程序、头条小程序版补充了一些其他功能。*
 
