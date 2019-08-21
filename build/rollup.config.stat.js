@@ -4,6 +4,6 @@ module.exports = {
     file: 'packages/uni-stat/dist/index.js',
     format: 'es'
   },
-  external: ['vue', '@dcloudio/uni-stat/package.json'],
+  external: ['vue', '../package.json'],
   plugins: []
 }

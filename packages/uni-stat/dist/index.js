@@ -1,4 +1,4 @@
-import { version } from '@dcloudio/uni-stat/package.json';
+import { version } from '../package.json';
 
 const STAT_VERSION = version; 
 const STAT_URL = 'https://tongji.dcloud.net.cn/uni/stat'; 
@@ -18,7 +18,6 @@ function getUuid() {
     } catch (e) {
       uuid = '';
     }
-    uni.setStorageSync(UUID_KEY, uuid);
     return uuid
   }
 
@@ -505,7 +504,7 @@ class Util {
     key = '',
     value = ""
   } = {}) {
-    const route = getPageRoute(this);
+    const route = this._lastPageRoute;
     let options = {
       ak: this.statData.ak,
       uuid: this.statData.uuid,

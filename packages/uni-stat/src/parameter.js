@@ -14,7 +14,6 @@ export function getUuid() {
     } catch (e) {
       uuid = '';
     }
-    uni.setStorageSync(UUID_KEY, uuid);
     return uuid
   }
 
