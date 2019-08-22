@@ -32,7 +32,7 @@ app端nvue专用组件。
 `<list>` 的子组件只能包括以下四种组件或是 fix 定位的组件，其他形式的组件将不能被正确渲染。
 
 - `<cell>`<br>
- 用于定义列表中的子列表项，类似于 HTML 中的 ul 之于 li。Weex 会对 `<cell>` 进行高效的内存回收以达到更好的性能。
+ 用于定义列表中的子列表项，类似于 HTML 中的 ul 之于 li。`<list>` 会对 `<cell>` 进行高效的内存回收以达到更好的性能。
 - `<header>`<br>当 `<header>` 到达屏幕顶部时，吸附在屏幕顶部。
 - `<refresh>`<br>用于给列表添加下拉刷新的功能。
 - `<loading>`<br>
@@ -49,6 +49,8 @@ app端nvue专用组件。
 |scrollable|是否运行List关系|boolean|true/false|
 
 `loadmoreoffset` 示意图：
+
+<img src="https://img-cdn-qiniu.dcloud.net.cn/app-nvue-component-list.png" />
 
 #### 事件
 

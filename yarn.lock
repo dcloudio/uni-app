@@ -7760,6 +7760,10 @@ rxjs@^6.4.0:
   dependencies:
     tslib "^1.9.0"
 
+safe-area-insets@^1.4.1:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/safe-area-insets/-/safe-area-insets-1.4.1.tgz#89309e01a516dcd7d2fe012a9c4115182957bd8b"
+
 safe-buffer@5.1.2, safe-buffer@~5.1.0, safe-buffer@~5.1.1:
   version "5.1.2"
   resolved "https://registry.npm.taobao.org/safe-buffer/download/safe-buffer-5.1.2.tgz?cache=0&sync_timestamp=1562349888578&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fsafe-buffer%2Fdownload%2Fsafe-buffer-5.1.2.tgz#991ec69d296e0313747d59bdfd2b745c35f8828d"
