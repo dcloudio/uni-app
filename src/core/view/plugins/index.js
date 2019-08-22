@@ -44,6 +44,13 @@ export default {
       beforeCreate () {
         const options = this.$options
 
+        const wxs = options.wxs
+        if (wxs) {
+          Object.keys(wxs).forEach(module => {
+            this[module] = wxs[module]
+          })
+        }
+
         if (options.behaviors && options.behaviors.length) {
           initBehaviors(options, this)
         }
