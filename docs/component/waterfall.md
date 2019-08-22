@@ -29,10 +29,11 @@ app端nvue专用组件。
 
 和 `<list>` 组件一样, `<waterfall>` 组件的子组件只能包括以下四种组件或是 fix 定位的组件，其他形式的组件将不能被正确渲染。
 
-- `<cell>`：用于定义列表中的子列表项，类似于 HTML 中的 ul 之于 li。Weex 会对 `<cell>` 进行高效的内存回收以达到更好的性能。
+- `<cell>`：用于定义列表中的子列表项，类似于 HTML 中的 ul 之于 li。`<waterfall>` 会对 `<cell>` 进行高效的内存回收以达到更好的性能。
 - `<header>`：当 `<header>` 到达屏幕顶部时，吸附在屏幕顶部。
 - `<refresh>`：用于给列表添加下拉刷新的功能。
 - `<loading>`：`<loading>` 用法与特性和 `<refresh>` 类似，用于给列表添加上拉加载更多的功能。
+  <img src="https://img-cdn-qiniu.dcloud.net.cn/app-nvue-component-waterfall-01.png" />
 
 #### 属性
 
@@ -46,6 +47,7 @@ app端nvue专用组件。
 - column-gap: [可选]列与列的间隙. 如果指定了 `normal` ，则对应 32.
 - left-gap: [可选]左边cell和列表的间隙. 如果未指定 ，则对应 `0`
 - right-gap: [可选]右边cell和列表的间隙. 如果未指定，则对应 `0`
+  <img src="https://img-cdn-qiniu.dcloud.net.cn/app-nvue-component-waterfall-02.png" />
 
 其他支持的属性参见 `<list>` 组件属性部分
 

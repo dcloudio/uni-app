@@ -47,15 +47,17 @@ var socketTask = uni.connectSocket({
 
 如果没有传入 success / fail / complete 参数，则会返回封装后的 Promise 对象：[Promise 封装](/api/README?id=promise-%E5%B0%81%E8%A3%85)
 
-**注意**
-- 网络请求的 ``超时时间`` 可以统一在 ``manifest.json`` 中配置 [networkTimeout](/collocation/manifest?id=networktimeout)。
+**注意事项**
 
-自定义组件模式下是基于 `weex` 的 `v8` 引擎运行，所有 `vue` 页面的 `js` 都是在同一个 `weex` 的 `js` 环境中运行。目前 `weex` 限制一个 `js` 环境中只支持一个 `websocket` 连接，所以导致所有 `vue` 页面只能使用一个 `websocket` 连接。
+- 网络请求的 ``超时时间`` 可以统一在 ``manifest.json`` 中配置 [networkTimeout](/collocation/manifest?id=networktimeout)。
+- 目前不支持 ``ArrayBuffer`` 类型的数据收发，可以使用 [plus-websocket](http://ext.dcloud.net.cn/plugin?id=647) 插件替代。
+- 自定义组件模式下是基于 `weex` 的 `v8` 引擎运行，所有 `vue` 页面的 `js` 都是在同一个 `weex` 的 `js` 环境中运行。目前 `weex` 限制一个 `js` 环境中只支持一个 `websocket` 连接，所以导致所有 `vue` 页面只能使用一个 `websocket` 连接。
 
 **临时解决方案：**
 
 	- 回退使用非自定义组件模式（不推荐）
-	- 多个websocket在独立的nvue页面中使用
+	- 多个 websocket 在独立的 nvue 页面中使用
+    - 使用 [plus-websocket](http://ext.dcloud.net.cn/plugin?id=647) 插件替代
 	
 后续我们会修改 `weex` 的限制，以支持多个 `websocket` 连接
 

@@ -16,12 +16,13 @@
 **示例**
 
 ```javascript
+//在起始页面跳转到test.vue页面并传递参数
 uni.navigateTo({
 	url: 'test?id=1&name=uniapp'
 });
 ```
 ```javascript
-// test.vue
+// 在test.vue页面接受参数
 export default {
 	onLoad: function (option) { //option为object类型，会序列化上个页面传递的参数
 		console.log(option.id); //打印出上个页面传递的参数。
@@ -30,11 +31,20 @@ export default {
 }
 ```
 
+url有长度限制，太长的字符串会传递失败，可使用[窗体通信](https://uniapp.dcloud.io/collocation/frame/communication)、[全局变量](https://ask.dcloud.net.cn/article/35021)，或`encodeURIComponent`等多种方式解决，如下为`encodeURIComponent`示例。
+```html
+<navigator :url="'/pages/test/test?item='+ encodeURIComponent(JSON.stringify(item))"></navigator>
+```
+```javascript
+// 在test.vue页面接受参数
+onLoad: function (option) {
+	const item = JSON.parse(decodeURIComponent(option.item));
+}
+```
 **注意：**
 
 * 页面跳转路径有层级限制，不能无限制跳转新页面
 * 跳转到 tabBar 页面只能使用 switchTab 跳转
-* ```App.vue``` 的onlaunch里进行页面跳转，如遇白屏报错，请参考[https://ask.dcloud.net.cn/article/35942](https://ask.dcloud.net.cn/article/35942)
 * 路由API的目标页面必须是在pages.json里注册的vue页面。如果想打开web url，在App平台可以使用 [plus.runtime.openURL](http://www.html5plus.org/doc/zh_cn/runtime.html#plus.runtime.openURL)或web-view组件；H5平台使用 window.open；小程序平台使用web-view组件（url需在小程序的联网白名单中）。在hello uni-app中有个组件ulink.vue已对多端进行封装，可参考。
 
 #### uni.redirectTo(OBJECT)
