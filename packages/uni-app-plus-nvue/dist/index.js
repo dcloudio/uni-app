@@ -2602,6 +2602,7 @@ var serviceContext = (function () {
       type: Object,
       validator (value, params) {
         params.header = value || {};
+        params.header['content-type'] = params.header['content-type'] || 'application/json';
       }
     },
     dataType: {
