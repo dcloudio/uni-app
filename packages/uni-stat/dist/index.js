@@ -446,16 +446,21 @@ class Util {
     }, 0);
   }
   _sendReportRequest(options) {
+
     this._navigationBarTitle.lt = '1';
     let query = options.query && JSON.stringify(options.query) !== '{}' ? '?' + JSON.stringify(options.query) : '';
     this.statData.lt = '1';
-    this.statData.url = options.path + query;
+    this.statData.url = (options.path + query) || '';
     this.statData.t = getTime();
     this.statData.sc = getScene(options.scene);
     this.statData.fvts = getFirstVisitTime();
     this.statData.lvts = getLastVisitTime();
     this.statData.tvc = getTotalVisitCount();
-    this.getNetworkInfo();
+    if (getPlatformName() === 'n') {
+      this.getProperty();
+    } else {
+      this.getNetworkInfo();
+    }
   }
 
   _sendPageRequest(opt) {
@@ -479,6 +484,13 @@ class Util {
       t: getTime(),
       p: this.statData.p
     };
+    if (getPlatformName() === 'n' && this.statData.p === 'a') {
+      setTimeout(() => {
+        this.request(options);
+      }, 200);
+      return
+    }
+
     this.request(options);
   }
 
@@ -499,6 +511,12 @@ class Util {
       t: getTime(),
       p: this.statData.p
     };
+    if (getPlatformName() === 'n' && this.statData.p === 'a') {
+      setTimeout(() => {
+        this.request(options, type);
+      }, 200);
+      return
+    }
     this.request(options, type);
   }
   _sendEventRequest({
@@ -528,6 +546,13 @@ class Util {
         this.statData.net = result.networkType;
         this.getLocation();
       }
+    });
+  }
+
+  getProperty() {
+    plus.runtime.getProperty(plus.runtime.appid, (wgtinfo) => {
+      this.statData.v = wgtinfo.version || '';
+      this.getNetworkInfo();
     });
   }
 
@@ -618,28 +643,29 @@ class Util {
       return
     }
 
-    setTimeout(() => {
-      uni.request({
-        url: STAT_URL,
-        method: 'POST',
-        data: optionsData,
-        success: () => {
-          if (process.env.NODE_ENV === 'development') {
-            console.log('stat request success');
-          }
-        },
-        fail: (e) => {
-          if (process.env.NODE_ENV === 'development') {
-            console.log('stat request fail', e);
-          }
-          if (++this._retry < 3) {
-            setTimeout(() => {
-              this.request(data);
-            }, 1000);
-          }
+    uni.request({
+      url: STAT_URL,
+      method: 'POST',
+      // header: {
+      //   'content-type': 'application/json' // 默认值
+      // },
+      data: optionsData,
+      success: () => {
+        if (process.env.NODE_ENV === 'development') {
+          console.log('stat request success');
         }
-      });
-    }, 200);
+      },
+      fail: (e) => {
+        if (process.env.NODE_ENV === 'development') {
+          console.log('stat request fail', e);
+        }
+        if (++this._retry < 3) {
+          setTimeout(() => {
+            this.request(data);
+          }, 1000);
+        }
+      }
+    });
 
   }
   /**
