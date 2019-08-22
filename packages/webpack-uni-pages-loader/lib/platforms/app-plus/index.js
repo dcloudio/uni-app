@@ -315,6 +315,7 @@ module.exports = function (pagesJson, userManifestJson) {
       isNVueEntryPage = appJson.nvue.entryPagePath === conditionPagePath
     }
     if (process.env.UNI_USING_NATIVE) {
+      appJson.entryPagePath = appJson.nvue.entryPagePath
       // networkTimeout
       normalizeNetworkTimeout(appJson)
       appJson.page = Object.create(null)
