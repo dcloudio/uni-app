@@ -119,6 +119,12 @@ module.exports = {
           use: [{
             loader: '@dcloudio/webpack-uni-mp-loader/lib/template'
           }]
+        }, {
+          resourceQuery: [/blockType=wxs/, /blockType=filter/, /blockType=import-sjs/],
+          use: [{
+            loader: require.resolve(
+              '@dcloudio/vue-cli-plugin-uni/packages/webpack-uni-filter-loader')
+          }]
         }]
       },
       plugins: [
@@ -128,6 +134,13 @@ module.exports = {
     }
   },
   chainWebpack (webpackConfig) {
+    if (process.env.UNI_PLATFORM === 'mp-baidu') {
+      webpackConfig.module
+        .rule('js')
+        .exclude
+        .add(/\.filter\.js$/)
+    }
+
     // disable vue cache-loader
     webpackConfig.module
       .rule('vue')

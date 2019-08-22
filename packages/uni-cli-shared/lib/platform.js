@@ -80,6 +80,7 @@ const PLATFORMS = {
     vue: '@dcloudio/vue-cli-plugin-uni/packages/h5-vue',
     compiler: false,
     megalo: false,
+    filterTag: 'wxs',
     subPackages: false,
     cssVars: {
       '--status-bar-height': '0px'
@@ -399,7 +400,19 @@ function devtoolModuleFilenameTemplate (info) {
     return `uni-app:///${filePath}`
   }
 }
+
+const NODE_MODULES_REGEX = /(\.\.\/)?node_modules/g
+
+function normalizeNodeModules (str) {
+  str = str.replace(NODE_MODULES_REGEX, 'node-modules')
+  if (process.env.UNI_PLATFORM === 'mp-alipay') {
+    str = str.replace('node-modules/@', 'node-modules/npm-scope-')
+  }
+  return str
+}
+
 module.exports = {
+  normalizeNodeModules,
   isInHBuilderX,
   isInHBuilderXAlpha,
   runByHBuilderX: isInHBuilderX || !!process.env.UNI_HBUILDERX_PLUGINS,

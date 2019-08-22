@@ -4,7 +4,9 @@ const {
   getPlatformTarget
 } = require('@dcloudio/uni-cli-shared')
 
-const NODE_MODULES_REGEX = /(\.\.\/)?node_modules/g
+const {
+  normalizeNodeModules
+} = require('@dcloudio/uni-cli-shared/lib/platform')
 
 const templates = {}
 const compilerOptions = {}
@@ -27,14 +29,6 @@ function resolve (source) {
       resolve(filepath)
     })
   })
-}
-
-function normalizeNodeModules (str) {
-  str = str.replace(NODE_MODULES_REGEX, 'node-modules')
-  if (process.env.UNI_PLATFORM === 'mp-alipay') {
-    str = str.replace('node-modules/@', 'node-modules/npm-scope-')
-  }
-  return str
 }
 
 function restoreNodeModules (str) {

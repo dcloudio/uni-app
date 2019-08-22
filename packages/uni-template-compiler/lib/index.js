@@ -100,14 +100,17 @@ at ${resourcePath}.vue:1`)
       }
       const filterTemplate = []
       options.mp.filterModules.forEach(name => {
-        const filterTag = options.filterTagName
-        const filterModule = options.filterModules[name]
-        if (filterModule.content) {
-          filterTemplate.push(`<${filterTag} module="${name}">
-${filterModule.content}
-</${filterTag}>`)
-        }
+        filterTemplate.push(
+          options.mp.platform.createFilterTag(
+            options.filterTagName,
+            options.filterModules[name]
+          )
+        )
       })
+
+      if (filterTemplate.length) {
+        template = filterTemplate.join('\n') + '\n' + template
+      }
 
       if (
         process.UNI_ENTRY[resourcePath] &&

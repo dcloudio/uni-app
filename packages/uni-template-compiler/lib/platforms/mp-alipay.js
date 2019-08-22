@@ -42,6 +42,11 @@ module.exports = {
       'regionchange': 'onRegionChange'
     }
   },
+  createFilterTag (filterTag, {
+    attrs
+  }) {
+    return `<${filterTag} name="${attrs.module}" from="${attrs.src}"></${filterTag}>`
+  },
   getEventType (eventType) {
     return EVENTS[eventType] || eventType
   },

@@ -8,15 +8,13 @@ const {
 })) // 确保使用的与 vue-loader 一致
 
 const {
-  getPlatformFilterTag
+  getPlatformFilterTag,
+  normalizeNodeModules
 } = require('@dcloudio/uni-cli-shared/lib/platform')
 
 const FILTER_TAG = getPlatformFilterTag()
 
 module.exports = function(source) {
-  if (!FILTER_TAG) {
-    return source
-  }
 
   const loaderContext = this
 
@@ -40,23 +38,31 @@ module.exports = function(source) {
     needMap: sourceMap
   })
 
-  if (!descriptor.template) {
+  if (!descriptor.template || !FILTER_TAG) {
+    // delete customBlocks
+    descriptor.customBlocks.length = 0
     return source
   }
 
   const modules = Object.create(null)
 
-  descriptor.customBlocks.filter(block => {
+  descriptor.customBlocks = descriptor.customBlocks.filter(block => {
     if (block.type === FILTER_TAG && block.attrs.module) {
       modules[block.attrs.module] = block
+      return true
     }
   })
 
   if (Object.keys(modules)) {
-    descriptor.template.attrs['filter-modules'] = JSON.stringify(modules)
+    const filterModules = JSON.parse(JSON.stringify(modules))
+    Object.keys(filterModules).forEach(name => {
+      const filterModule = filterModules[name]
+      if (filterModule.attrs.src) {
+        filterModule.attrs.src = normalizeNodeModules(filterModule.attrs.src)
+      }
+    })
+    descriptor.template.attrs['filter-modules'] = JSON.stringify(filterModules)
   }
-  // delete customBlocks
-  descriptor.customBlocks.length = 0
 
   return source
 }
