@@ -1,4 +1,5 @@
 import getWindowOffset from 'uni-platform/helpers/get-window-offset'
+import safeAreaInsets from 'safe-area-insets'
 
 const ua = navigator.userAgent
 /**
@@ -71,6 +72,14 @@ export function getSystemInfoSync () {
 
   var system = `${osname} ${osversion}`
   var platform = osname.toLocaleLowerCase()
+  var safeArea = {
+    left: safeAreaInsets.left,
+    right: windowWidth - safeAreaInsets.right,
+    top: safeAreaInsets.top,
+    bottom: windowHeight - safeAreaInsets.bottom,
+    width: windowWidth - safeAreaInsets.left - safeAreaInsets.right,
+    height: windowHeight - safeAreaInsets.top - safeAreaInsets.bottom
+  }
 
   const {
     top: windowTop,
@@ -92,7 +101,8 @@ export function getSystemInfoSync () {
     statusBarHeight,
     system,
     platform,
-    model
+    model,
+    safeArea
   }
 }
 /**
