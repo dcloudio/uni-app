@@ -1,0 +1,22 @@
+{
+    "name": "@dcloudio/webpack-uni-pages-loader",
+    "version": "0.2.873",
+    "description": "uni-app pages.json loader",
+    "main": "lib/index.js",
+    "files": [
+        "lib"
+    ],
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "fxy060608",
+    "license": "Apache-2.0",
+    "dependencies": {
+        "merge": "^1.2.1",
+        "strip-json-comments": "^2.0.1"
+    },
+    "uni-app": {
+        "compilerVersion": "2.2.1"
+    },
+    "gitHead": "08ea04b669e93f0db3acb2dfa38138298edd5789"
+}

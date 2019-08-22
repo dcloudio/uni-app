@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-h5",
-  "version": "0.7.3",
+  "version": "0.9.0",
   "description": "uni-app h5",
   "main": "dist/index.umd.min.js",
   "scripts": {
@@ -11,5 +11,6 @@
   "dependencies": {
     "base64-arraybuffer": "^0.2.0",
     "intersection-observer": "^0.7.0"
-  }
+  },
+  "gitHead": "08ea04b669e93f0db3acb2dfa38138298edd5789"
 }

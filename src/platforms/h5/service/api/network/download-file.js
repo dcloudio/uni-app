@@ -2,7 +2,7 @@ import { fileToUrl } from 'uni-platform/helpers/file'
 /**
  * 下载任务
  */
-export class DownloadTask {
+class DownloadTask {
   _xhr
   _callbacks = []
   constructor (xhr) {
@@ -17,6 +17,12 @@ export class DownloadTask {
       return
     }
     this._callbacks.push(callback)
+  }
+  offProgressUpdate (callback) {
+    const index = this._callbacks.indexOf(callback)
+    if (index >= 0) {
+      this._callbacks.splice(index, 1)
+    }
   }
   /**
    * 停止任务

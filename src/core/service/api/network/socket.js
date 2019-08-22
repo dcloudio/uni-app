@@ -1,97 +1,61 @@
-var socketTask
-/**
- * SocketTask
- */
+import {
+  invoke
+} from 'uni-core/service/bridge'
+
+import {
+  onMethod,
+  invokeMethod
+} from '../../platform'
+
 class SocketTask {
-  /**
-   * WebSocket实例
-   */
-  _webSocket
-  /**
-   * 构造函数
-   * @param {string} url
-   * @param {Array} protocols
-   */
-  constructor (url, protocols) {
-    this._webSocket = new WebSocket(url, protocols)
-  }
-  /**
-   * 发送
-   * @param {any} data
-   */
-  send (options = {}) {
-    var data = options.data
-    const ws = this._webSocket
-    try {
-      ws.send(data)
-      this._callback(options, 'sendSocketMessage:ok')
-    } catch (error) {
-      this._callback(options, `sendSocketMessage:fail ${error}`)
+  constructor (socketTaskId) {
+    this.id = socketTaskId
+    this._callbacks = {
+      open: [],
+      close: [],
+      error: [],
+      message: []
     }
+    this.CLOSED = 3
+    this.CLOSING = 2
+    this.CONNECTING = 0
+    this.OPEN = 1
+    this.readyState = this.CLOSED
   }
-  /**
-   * 关闭
-   * @param {number} code
-   * @param {string} reason
-   */
-  close (options = {}) {
-    var code = options.data
-    var reason = options.data
-    const ws = this._webSocket
-    try {
-      ws.close(code, reason)
-      this._callback(options, 'sendSocketMessage:ok')
-    } catch (error) {
-      this._callback(options, `sendSocketMessage:fail ${error}`)
+  send (args) {
+    if (this.readyState !== this.OPEN) {
+      this._callback(args, 'sendSocketMessage:fail WebSocket is not connected')
     }
+    const {
+      errMsg
+    } = invokeMethod('operateSocketTask', Object.assign({}, args, {
+      operationType: 'send',
+      socketTaskId: this.id
+    }))
+    this._callback(args, errMsg.replace('operateSocketTask', 'sendSocketMessage'))
   }
-  /**
-   * 监听开启
-   * @param {Function} callback
-   */
+  close (args) {
+    this.readyState = this.CLOSING
+    const {
+      errMsg
+    } = invokeMethod('operateSocketTask', Object.assign({}, args, {
+      operationType: 'close',
+      socketTaskId: this.id
+    }))
+    this._callback(args, errMsg.replace('operateSocketTask', 'closeSocket'))
+  }
   onOpen (callback) {
-    this._on('open', callback)
+    this._callbacks.open.push(callback)
   }
-  /**
-   * 监听关闭
-   * @param {Function} callback
-   */
   onClose (callback) {
-    this._on('close', callback)
+    this._callbacks.close.push(callback)
   }
-  /**
-   * 监听错误
-   * @param {Function} callback
-   */
   onError (callback) {
-    this._on('error', callback)
+    this._callbacks.error.push(callback)
   }
-  /**
-   * 监听消息
-   * @param {Function} callback
-   */
   onMessage (callback) {
-    this._on('message', callback)
+    this._callbacks.message.push(callback)
   }
-  /**
-   * 监听事件
-   * @param {string} eventName
-   * @param {Function} callback
-   */
-  _on (eventName, callback) {
-    this._webSocket.addEventListener(eventName, event => {
-      if (eventName === 'message') {
-        callback({
-          data: event.data
-        })
-      } else {
-        callback()
-      }
-    }, false)
-  }
-  /**
-   * 通用回调处理
-   */
   _callback ({
     success,
     fail,
@@ -115,101 +79,100 @@ class SocketTask {
   }
 }
 
-/**
- * 创建一个 WebSocket 连接
- * @param {any} data 数据
- * @return {SocketTask}
- */
-export function connectSocket ({
-  url,
-  protocols
-}, callbackId) {
+const socketTasks = Object.create(null)
+const socketTasksArray = []
+const callbacks = Object.create(null)
+onMethod('onSocketTaskStateChange', ({
+  socketTaskId,
+  state,
+  data,
+  errMsg
+}) => {
+  const socketTask = socketTasks[socketTaskId]
+  if (!socketTask) {
+    return
+  }
+  socketTask._callbacks[state].forEach(callback => {
+    if (typeof callback === 'function') {
+      callback(state === 'message' ? {
+        data
+      } : {})
+    }
+  })
+  if (state === 'open') {
+    socketTask.readyState = socketTask.OPEN
+  }
+  if (socketTask === socketTasksArray[0] && callbacks[state]) {
+    invoke(callbacks[state], state === 'message' ? {
+      data
+    } : {})
+  }
+  if (state === 'error' || state === 'close') {
+    socketTask.readyState = socketTask.CLOSED
+    delete socketTasks[socketTaskId]
+    const index = socketTasksArray.indexOf(socketTask)
+    if (index >= 0) {
+      socketTasksArray.splice(index, 1)
+    }
+  }
+})
+
+export function connectSocket (args, callbackId) {
   const {
-    invokeCallbackHandler: invoke
-  } = UniServiceJSBridge
-  socketTask = new SocketTask(url, protocols)
+    socketTaskId
+  } = invokeMethod('createSocketTask', args)
+  const task = new SocketTask(socketTaskId)
+  socketTasks[socketTaskId] = task
+  socketTasksArray.push(task)
   setTimeout(() => {
     invoke(callbackId, {
       errMsg: 'connectSocket:ok'
     })
   }, 0)
-  return socketTask
+  return task
 }
-/**
- * 通过 WebSocket 连接发送数据
- * @param {any} options
- * @param {string} callbackId
- */
-export function sendSocketMessage (options, callbackId) {
-  const {
-    invokeCallbackHandler: invoke
-  } = UniServiceJSBridge
-  if (socketTask && socketTask._webSocket.readyState === WebSocket.OPEN) {
-    socketTask.send(Object.assign(options, {
-      complete (res) {
-        invoke(callbackId, res)
-      }
-    }))
-  } else {
+
+export function sendSocketMessage (args, callbackId) {
+  const socketTask = socketTasksArray[0]
+  if (!socketTask || socketTask.readyState !== socketTask.OPEN) {
     invoke(callbackId, {
-      errMsg: 'sendSocketMessage:fail WebSocket is not connected '
+      errMsg: 'sendSocketMessage:fail WebSocket is not connected'
     })
+    return
   }
+  return invokeMethod('operateSocketTask', Object.assign({}, args, {
+    operationType: 'send',
+    socketTaskId: socketTask.id
+  }))
 }
-/**
- * 关闭WebSocket连接
- * @param {any} options
- * @param {string} callbackId
- */
-export function closeSocket (options, callbackId) {
-  const {
-    invokeCallbackHandler: invoke
-  } = UniServiceJSBridge
-  if (socketTask && socketTask._webSocket.readyState !== WebSocket.CLOSED) {
-    socketTask.close(Object.assign(options, {
-      complete (res) {
-        invoke(callbackId, res)
-      }
-    }))
-  } else {
+
+export function closeSocket (args, callbackId) {
+  const socketTask = socketTasksArray[0]
+  if (!socketTask) {
     invoke(callbackId, {
       errMsg: 'closeSocket:fail WebSocket is not connected'
     })
+    return
   }
+  socketTask.readyState = socketTask.CLOSING
+  return invokeMethod('operateSocketTask', Object.assign({}, args, {
+    operationType: 'close',
+    socketTaskId: socketTask.id
+  }))
 }
-/**
- * 监听事件
- * @param {string} method
- */
-function on (method) {
-  const {
-    invokeCallbackHandler: invoke
-  } = UniServiceJSBridge
-  return function (callbackId) {
-    if (socketTask) {
-      socketTask[method](function (res) {
-        invoke(callbackId, res)
-      })
-    }
-  }
+
+export function onSocketOpen (callbackId) {
+  callbacks.open = callbackId
 }
-/**
- * 监听WebSocket连接打开事件
- * @param {Function} cb
- */
-export const onSocketOpen = on('onOpen')
-/**
- * 监听WebSocket错误
- * @param {Function} cb
- */
-export const onSocketError = on('onError')
-/**
- * 监听WebSocket接受到服务器的消息事件
- * @param {Function} cb
- */
-export const onSocketMessage = on('onMessage')
-/**
- * 监听WebSocket关闭
- * @param {Function} callback
- */
-export const onSocketClose = on('onClose')
+
+export function onSocketError (callbackId) {
+  callbacks.error = callbackId
+}
+
+export function onSocketMessage (callbackId) {
+  callbacks.message = callbackId
+}
+
+export function onSocketClose (callbackId) {
+  callbacks.close = callbackId
+}

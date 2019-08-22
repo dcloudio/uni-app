@@ -1,6 +1,5 @@
-import {
-  noop
-} from './util'
+function noop () {}
+
 export function initTitleNView (nvue) {
   const eventMaps = {
     onNavigationBarButtonTap: noop,

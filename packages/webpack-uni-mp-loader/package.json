@@ -1,0 +1,15 @@
+{
+	"name": "@dcloudio/webpack-uni-mp-loader",
+	"version": "1.0.0-alpha-22120190814002",
+	"description": "webpack-uni-mp-loader",
+	"main": "index.js",
+	"files": [
+		"lib"
+	],
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "fxy060608",
+	"license": "Apache-2.0",
+	"gitHead": "08ea04b669e93f0db3acb2dfa38138298edd5789"
+}

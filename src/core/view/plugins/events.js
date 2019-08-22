@@ -4,7 +4,7 @@ import {
 
 import {
   normalizeDataset
-} from 'uni-helpers'
+} from 'uni-helpers/index'
 
 import {
   wrapperMPEvent

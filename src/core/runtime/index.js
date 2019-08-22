@@ -16,13 +16,13 @@ import * as extraApi from './extra'
 
 import * as eventApi from './event-bus'
 
-import * as api from 'uni-platform/service/api/index.js'
+import * as api from 'uni-platform/runtime/api/index.js'
 
 import {
   protocols,
   todos,
   canIUses
-} from 'uni-platform/service/api/protocols'
+} from 'uni-platform/runtime/api/protocols'
 
 import createApp from './wrapper/create-app'
 import createPage from './wrapper/create-page'
@@ -45,6 +45,9 @@ let uni = {}
 if (typeof Proxy !== 'undefined' && __PLATFORM__ !== 'app-plus') {
   uni = new Proxy({}, {
     get (target, name) {
+      if (target[name]) {
+        return target[name]
+      }
       if (baseApi[name]) {
         return baseApi[name]
       }
@@ -66,6 +69,10 @@ if (typeof Proxy !== 'undefined' && __PLATFORM__ !== 'app-plus') {
         return
       }
       return promisify(name, wrapper(name, __GLOBAL__[name]))
+    },
+    set (target, name, value) {
+      target[name] = value
+      return true
     }
   })
 } else {

@@ -231,7 +231,7 @@ const promiseInterceptor = {
 };
 
 const SYNC_API_RE =
-    /^\$|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
+  /^\$|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -258,8 +258,8 @@ function handlePromise (promise) {
 function shouldPromise (name) {
   if (
     isContextApi(name) ||
-        isSyncApi(name) ||
-        isCallbackApi(name)
+    isSyncApi(name) ||
+    isCallbackApi(name)
   ) {
     return false
   }
@@ -491,8 +491,6 @@ function $emit () {
   return apply(getEmitter(), '$emit', [...arguments])
 }
 
-
-
 var eventApi = /*#__PURE__*/Object.freeze({
   $on: $on,
   $off: $off,
@@ -653,8 +651,8 @@ function hasHook (hook, vueOptions) {
       return true
     }
     if (vueOptions.super &&
-            vueOptions.super.options &&
-            Array.isArray(vueOptions.super.options[hook])) {
+      vueOptions.super.options &&
+      Array.isArray(vueOptions.super.options[hook])) {
       return true
     }
     return false
@@ -679,14 +677,14 @@ function initHooks (mpOptions, hooks, vueOptions) {
   });
 }
 
-function initVueComponent (Vue$$1, vueOptions) {
+function initVueComponent (Vue, vueOptions) {
   vueOptions = vueOptions.default || vueOptions;
   let VueComponent;
   if (isFn(vueOptions)) {
     VueComponent = vueOptions;
     vueOptions = VueComponent.extendOptions;
   } else {
-    VueComponent = Vue$$1.extend(vueOptions);
+    VueComponent = Vue.extend(vueOptions);
   }
   return [VueComponent, vueOptions]
 }
@@ -853,7 +851,7 @@ function initProperties (props, isBehavior = false, file = '') {
           value = value();
         }
 
-        opts.type = parsePropType(key, opts.type, value, file);
+        opts.type = parsePropType(key, opts.type);
 
         properties[key] = {
           type: PROP_TYPES.indexOf(opts.type) !== -1 ? opts.type : null,
@@ -861,7 +859,7 @@ function initProperties (props, isBehavior = false, file = '') {
           observer: createObserver(key)
         };
       } else { // content:String
-        const type = parsePropType(key, opts, null, file);
+        const type = parsePropType(key, opts);
         properties[key] = {
           type: PROP_TYPES.indexOf(type) !== -1 ? type : null,
           observer: createObserver(key)
@@ -936,16 +934,16 @@ function processEventExtra (vm, extra, event) {
 
   if (Array.isArray(extra) && extra.length) {
     /**
-         *[
-         *    ['data.items', 'data.id', item.data.id],
-         *    ['metas', 'id', meta.id]
-         *],
-         *[
-         *    ['data.items', 'data.id', item.data.id],
-         *    ['metas', 'id', meta.id]
-         *],
-         *'test'
-         */
+     *[
+     *    ['data.items', 'data.id', item.data.id],
+     *    ['metas', 'id', meta.id]
+     *],
+     *[
+     *    ['data.items', 'data.id', item.data.id],
+     *    ['metas', 'id', meta.id]
+     *],
+     *'test'
+     */
     extra.forEach((dataPath, index) => {
       if (typeof dataPath === 'string') {
         if (!dataPath) { // model,prop.sync
@@ -981,8 +979,8 @@ function processEventArgs (vm, event, args = [], extra = [], isCustom, methodNam
   let isCustomMPEvent = false; // wxcomponent 组件，传递原始 event 对象
   if (isCustom) { // 自定义事件
     isCustomMPEvent = event.currentTarget &&
-            event.currentTarget.dataset &&
-            event.currentTarget.dataset.comType === 'wx';
+      event.currentTarget.dataset &&
+      event.currentTarget.dataset.comType === 'wx';
     if (!args.length) { // 无参数，直接传入 event 或 detail 数组
       if (isCustomMPEvent) {
         return [event]
@@ -1024,13 +1022,13 @@ const CUSTOM = '^';
 
 function isMatchEventType (eventType, optType) {
   return (eventType === optType) ||
-        (
-          optType === 'regionchange' &&
-            (
-              eventType === 'begin' ||
-                eventType === 'end'
-            )
-        )
+    (
+      optType === 'regionchange' &&
+      (
+        eventType === 'begin' ||
+        eventType === 'end'
+      )
+    )
 }
 
 function handleEvent (event) {
@@ -1041,13 +1039,16 @@ function handleEvent (event) {
   if (!dataset) {
     return console.warn(`事件信息不存在`)
   }
-  const eventOpts = dataset.eventOpts || dataset['event-opts'];// 支付宝 web-view 组件 dataset 非驼峰
+  const eventOpts = dataset.eventOpts || dataset['event-opts']; // 支付宝 web-view 组件 dataset 非驼峰
   if (!eventOpts) {
     return console.warn(`事件信息不存在`)
   }
 
   // [['handle',[1,2,a]],['handle1',[1,2,a]]]
   const eventType = event.type;
+
+  const ret = [];
+
   eventOpts.forEach(eventOpt => {
     let type = eventOpt[0];
     const eventsArray = eventOpt[1];
@@ -1064,8 +1065,8 @@ function handleEvent (event) {
           let handlerCtx = this.$vm;
           if (
             handlerCtx.$options.generic &&
-                        handlerCtx.$parent &&
-                        handlerCtx.$parent.$parent
+            handlerCtx.$parent &&
+            handlerCtx.$parent.$parent
           ) { // mp-weixin,mp-toutiao 抽象节点模拟 scoped slots
             handlerCtx = handlerCtx.$parent.$parent;
           }
@@ -1079,18 +1080,26 @@ function handleEvent (event) {
             }
             handler.once = true;
           }
-          handler.apply(handlerCtx, processEventArgs(
+          ret.push(handler.apply(handlerCtx, processEventArgs(
             this.$vm,
             event,
             eventArray[1],
             eventArray[2],
             isCustom,
             methodName
-          ));
+          )));
         }
       });
     }
   });
+
+  if (
+    eventType === 'input' &&
+    ret.length === 1 &&
+    typeof ret[0] !== 'undefined'
+  ) {
+    return ret[0]
+  }
 }
 
 const hooks = [
@@ -1257,8 +1266,8 @@ function createApp (vm) {
 }
 
 function parseBaseComponent (vueComponentOptions, {
-  isPage: isPage$$1,
-  initRelation: initRelation$$1
+  isPage,
+  initRelation
 } = {}) {
   let [VueComponent, vueOptions] = initVueComponent(Vue, vueComponentOptions);
 
@@ -1275,7 +1284,7 @@ function parseBaseComponent (vueComponentOptions, {
         const properties = this.properties;
 
         const options = {
-          mpType: isPage$$1.call(this) ? 'page' : 'component',
+          mpType: isPage.call(this) ? 'page' : 'component',
           mpInstance: this,
           propsData: properties
         };
@@ -1283,7 +1292,7 @@ function parseBaseComponent (vueComponentOptions, {
         initVueIds(properties.vueId, this);
 
         // 处理父子关系
-        initRelation$$1.call(this, {
+        initRelation.call(this, {
           vuePid: this._$vuePid,
           vueOptions: options
         });
@@ -1327,7 +1336,7 @@ function parseBaseComponent (vueComponentOptions, {
     }
   };
 
-  if (isPage$$1) {
+  if (isPage) {
     return componentOptions
   }
   return [componentOptions, VueComponent]
@@ -1361,10 +1370,7 @@ function parseBasePage (vuePageOptions, {
   isPage,
   initRelation
 }) {
-  const pageOptions = parseComponent$1(vuePageOptions, {
-    isPage,
-    initRelation
-  });
+  const pageOptions = parseComponent$1(vuePageOptions);
 
   initHooks(pageOptions.methods, hooks$2, vuePageOptions);
 
@@ -1428,6 +1434,9 @@ let uni = {};
 if (typeof Proxy !== 'undefined' && "app-plus" !== 'app-plus') {
   uni = new Proxy({}, {
     get (target, name) {
+      if (target[name]) {
+        return target[name]
+      }
       if (baseApi[name]) {
         return baseApi[name]
       }
@@ -1441,6 +1450,10 @@ if (typeof Proxy !== 'undefined' && "app-plus" !== 'app-plus') {
         return
       }
       return promisify(name, wrapper(name, wx[name]))
+    },
+    set (target, name, value) {
+      target[name] = value;
+      return true
     }
   });
 } else {
@@ -1477,4 +1490,4 @@ wx.createComponent = createComponent;
 var uni$1 = uni;
 
 export default uni$1;
-export { createApp, createPage, createComponent };
+export { createApp, createComponent, createPage };

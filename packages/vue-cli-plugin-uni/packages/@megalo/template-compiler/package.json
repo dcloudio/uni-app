@@ -1,0 +1,55 @@
+{
+  "_from": "@megalo/template-compiler@^0.5.4",
+  "_id": "@megalo/template-compiler@0.5.4",
+  "_inBundle": false,
+  "_integrity": "sha512-kwZfT+A/OaNdBlKay0QI8XoLk11J0xdOTYppRrVR+rGZ2tboYN8DPF604iU0zLbL/YdwJde49mO5w+FbceZpcg==",
+  "_location": "/@megalo/template-compiler",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "range",
+    "registry": true,
+    "raw": "@megalo/template-compiler@^0.5.4",
+    "name": "@megalo/template-compiler",
+    "escapedName": "@megalo%2ftemplate-compiler",
+    "scope": "@megalo",
+    "rawSpec": "^0.5.4",
+    "saveSpec": null,
+    "fetchSpec": "^0.5.4"
+  },
+  "_requiredBy": [
+    "/@dcloudio/webpack-uni-mp-loader"
+  ],
+  "_resolved": "https://registry.npmjs.org/@megalo/template-compiler/-/template-compiler-0.5.4.tgz",
+  "_shasum": "4ae94608f64c2441adc9553fe092338e5c3bd927",
+  "_spec": "@megalo/template-compiler@^0.5.4",
+  "_where": "/Users/fxy/Documents/demo/my-project/node_modules/@dcloudio/webpack-uni-mp-loader",
+  "author": {
+    "name": "kaola-fed"
+  },
+  "bugs": {
+    "url": "https://github.com/kaola-fed/megalo/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "de-indent": "^1.0.2",
+    "he": "^1.1.0"
+  },
+  "deprecated": false,
+  "description": "megalo template compiler for Vue",
+  "homepage": "https://github.com/kaola-fed/megalo/",
+  "keywords": [
+    "vue",
+    "compiler",
+    "mp",
+    "mp",
+    "antmp"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "name": "@megalo/template-compiler",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kaola-fed/megalo.git"
+  },
+  "version": "0.5.4"
+}

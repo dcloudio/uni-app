@@ -1,12 +1,12 @@
 function callHook (vm, hook, params) {
-  return vm.__call_hook(hook, params)
+  return (vm.$vm || vm).__call_hook(hook, params)
 }
 
 export function callAppHook (vm, hook, params) {
   if (hook !== 'onError') {
     console.debug(`App：${hook} have been invoked` + (params ? ` ${JSON.stringify(params)}` : ''))
   }
-  return vm.__call_hook(hook, params)
+  return (vm.$vm || vm).__call_hook(hook, params)
 }
 
 export function callPageHook (vm, hook, params) {
@@ -19,7 +19,7 @@ export function callPageHook (vm, hook, params) {
     if (hook === 'onShow') {
       if (
         vm.$route.meta.isTabBar &&
-                vm.$route.params.detail
+        vm.$route.params.detail
       ) {
         UniServiceJSBridge.emit('onTabItemTap', vm.$route.params.detail)
       }
