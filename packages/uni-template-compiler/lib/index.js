@@ -40,7 +40,7 @@ module.exports = {
 
     options.mp.globalUsingComponents = options.globalUsingComponents || Object.create(null)
 
-    options.mp.filterModules = options.filterModules || []
+    options.mp.filterModules = Object.keys(options.filterModules || {})
 
     // (可用的原生微信小程序组件，global+scoped)
     options.mp.wxComponents = options.wxComponents || Object.create(null)
@@ -88,21 +88,31 @@ at ${resourcePath}.vue:1`)
     })
 
     /**
-         * TODO
-         * 方案0.最佳方案是在 loader 中直接 emitFile，但目前 vue template-loader 不好介入,自定义的 compiler 结果又无法顺利返回给 loader
-         * 方案1.通过 loader 传递 emitFile 来提交生成 wxml,需要一个 template loader 来给自定义 compier 增加 emitFile
-         * 方案2.缓存 wxml 内容，由 plugin 生成 assets 来提交生成 wxml
-         * ...暂时使用方案1
-         */
+     * TODO
+     * 方案0.最佳方案是在 loader 中直接 emitFile，但目前 vue template-loader 不好介入,自定义的 compiler 结果又无法顺利返回给 loader
+     * 方案1.通过 loader 传递 emitFile 来提交生成 wxml,需要一个 template loader 来给自定义 compier 增加 emitFile
+     * 方案2.缓存 wxml 内容，由 plugin 生成 assets 来提交生成 wxml
+     * ...暂时使用方案1
+     */
     if (options.emitFile) {
       if (options.updateSpecialMethods) {
         options.updateSpecialMethods(resourcePath, [...res.specialMethods])
       }
+      const filterTemplate = []
+      options.mp.filterModules.forEach(name => {
+        const filterTag = options.filterTagName
+        const filterModule = options.filterModules[name]
+        if (filterModule.content) {
+          filterTemplate.push(`<${filterTag} module="${name}">
+${filterModule.content}
+</${filterTag}>`)
+        }
+      })
 
       if (
         process.UNI_ENTRY[resourcePath] &&
-                process.env.UNI_PLATFORM !== 'app-plus' &&
-                process.env.UNI_PLATFORM !== 'h5'
+        process.env.UNI_PLATFORM !== 'app-plus' &&
+        process.env.UNI_PLATFORM !== 'h5'
       ) {
         // 检查是否启用 shadow
         let colorType = false
@@ -112,12 +122,12 @@ at ${resourcePath}.vue:1`)
             const windowJson = JSON.parse(pageJsonStr)
             if (process.env.UNI_PLATFORM === 'mp-alipay') {
               colorType = windowJson.allowsBounceVertical === 'NO' &&
-                                windowJson.navigationBarShadow &&
-                                windowJson.navigationBarShadow.colorType
+                windowJson.navigationBarShadow &&
+                windowJson.navigationBarShadow.colorType
             } else {
               colorType = windowJson.disableScroll &&
-                                windowJson.navigationBarShadow &&
-                                windowJson.navigationBarShadow.colorType
+                windowJson.navigationBarShadow &&
+                windowJson.navigationBarShadow.colorType
             }
           } catch (e) {}
         }
@@ -142,8 +152,8 @@ at ${resourcePath}.vue:1`)
 
       if (
         res.generic &&
-                res.generic.length &&
-                options.updateGenericComponents
+        res.generic.length &&
+        options.updateGenericComponents
       ) {
         options.updateGenericComponents(
           resourcePath,
@@ -152,8 +162,8 @@ at ${resourcePath}.vue:1`)
       }
       if (
         res.componentGenerics &&
-                Object.keys(res.componentGenerics).length &&
-                options.updateComponentGenerics
+        Object.keys(res.componentGenerics).length &&
+        options.updateComponentGenerics
       ) {
         options.updateComponentGenerics(
           resourcePath,

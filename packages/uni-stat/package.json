@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-stat",
-  "version": "0.0.111",
+  "version": "0.0.113",
   "description": "",
   "main": "dist/index.js",
   "scripts": {

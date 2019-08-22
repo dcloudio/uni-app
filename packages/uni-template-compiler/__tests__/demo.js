@@ -10,7 +10,10 @@ const res = compiler.compile(
       isTest: true,
       platform: 'mp-weixin'
     },
-    filterModules: ['t', 'a']
+    filterModules: {
+      t: {},
+      a: {}
+    }
   })
 // ---BEGIN:JSON---{"n":"v"}---END:JSON---
 console.log(res)

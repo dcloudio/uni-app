@@ -19,10 +19,15 @@ const {
 } = require('@dcloudio/uni-cli-shared/lib/cache')
 
 const {
+  getPlatformFilterTag
+} = require('@dcloudio/uni-cli-shared/lib/platform')
+
+const {
   normalizeNodeModules
 } = require('./shared')
 
 const templateExt = getPlatformExts().template
+const filterTagName = getPlatformFilterTag() || ''
 
 module.exports = function (content) {
   this.cacheable && this.cacheable()
@@ -35,14 +40,14 @@ module.exports = function (content) {
     const wxComponents = getWXComponents(resourcePath.replace(path.extname(resourcePath), ''))
 
     const params = loaderUtils.parseQuery(this.resourceQuery)
-
-    const filterModules = (params && params['filter-modules'] || '').split(',')
-
+    /* eslint-disable no-mixed-operators */
+    const filterModules = JSON.parse(params && params['filter-modules'] || '{}')
     Object.assign(vueLoaderOptions.options.compilerOptions, {
       mp: {
         platform: process.env.UNI_PLATFORM
       },
       filterModules,
+      filterTagName,
       resourcePath,
       emitFile: this.emitFile,
       wxComponents,

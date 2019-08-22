@@ -19,9 +19,12 @@ describe('mp:compiler-extra', () => {
     assertCodegen(
       /* eslint-disable no-template-curly-in-string */
       `<view @touchmove="a.touchmove">{{t.a}}{{t['a']}}{{t.a(b)}}{{t['a'](b)}}{{u.t.a(b)}}{{u.t.a}}</view>`,
-      `<view bindtouchmove="{{a.touchmove}}">{{t.a+t[\'a\']+t.a(b)+t[\'a\'](b)+$root.g0+u.t.a}}</view>`,
+      `<view bindtouchmove="{{a.touchmove}}">{{t.a+t['a']+t.a(b)+t['a'](b)+$root.g0+u.t.a}}</view>`,
       'with(this){var g0=u.t.a(b);$mp.data=Object.assign({},{$root:{g0:g0}})}', {
-        filterModules: ['t', 'a']
+        filterModules: {
+          t: {},
+          a: {}
+        }
       }
     )
   })
