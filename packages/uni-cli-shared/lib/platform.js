@@ -234,7 +234,7 @@ const PLATFORMS = {
     compiler: megaloCompiler,
     megalo: 'alipay',
     filterTag: 'import-sjs',
-    subPackages: false,
+    subPackages: true,
     cssVars: {
       '--status-bar-height': '25px',
       '--window-top': '0px',
