@@ -1,8 +1,5 @@
-const path = require('path')
-
 const {
-  parsePages,
-  normalizePath
+  parsePages
 } = require('@dcloudio/uni-cli-shared')
 
 const {
@@ -34,13 +31,31 @@ function copyToJson (json, fromJson, options) {
 
 module.exports = function (pagesJson, manifestJson) {
   const app = {
-    pages: []
+    pages: [],
+    subPackages: []
   }
+
+  const subPackages = {}
 
   parsePages(pagesJson, function (page) {
     app.pages.push(page.path)
-  }, function (root, page) {
-    app.pages.push(normalizePath(path.join(root, page.path)))
+  }, function (root, page, subPackage) {
+    if (!subPackages[root]) {
+      subPackages[root] = {
+        root,
+        pages: []
+      }
+      Object.keys(subPackage).forEach(name => {
+        if (['root', 'pages'].indexOf(name) === -1) {
+          subPackages[root][name] = subPackage[name]
+        }
+      })
+    }
+    subPackages[root].pages.push(page.path)
+  })
+
+  Object.keys(subPackages).forEach(root => {
+    app.subPackages.push(subPackages[root])
   })
 
   copyToJson(app, pagesJson, pagesJson2AppJson)
