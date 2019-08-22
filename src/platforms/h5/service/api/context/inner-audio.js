@@ -5,7 +5,7 @@ import getRealPath from 'uni-platform/helpers/get-real-path'
  */
 const innerAudioContextEventNames = ['onCanplay', 'onPlay', 'onPause', 'onStop', 'onEnded', 'onTimeUpdate', 'onError', 'onWaiting', 'onSeeking', 'onSeeked']
 
-const innerAudioContextOffEventNames = ['offCanplay', 'offPlay', 'offPause', 'offStop', 'offEnded', 'offTimeUpdate', 'offError', 'offWaiting', 'offSeeking', 'offSeeke']
+const innerAudioContextOffEventNames = ['offCanplay', 'offPlay', 'offPause', 'offStop', 'offEnded', 'offTimeUpdate', 'offError', 'offWaiting', 'offSeeking', 'offSeeked']
 
 /**
  * 音频上下文对象
