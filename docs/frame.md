@@ -913,6 +913,12 @@ slide-view.vue
 
 详细的小程序转uni-app语法差异可参考文档[https://ask.dcloud.net.cn/article/35786](https://ask.dcloud.net.cn/article/35786)。
 
+## WXS
+
+WXS是微信小程序的一套脚本语言，[详见](https://developers.weixin.qq.com/miniprogram/dev/framework/view/wxs/)
+
+经过我们的适配，uni-app可以使用wxs规范支持5+APP、微信小程序、QQ小程序以及部分支持H5平台。
+
 ## 致谢
 
 ```uni-app```的设计使用了 ```vue + 自定义组件``` 的模式；开发者使用```Vue```语法，了解```uni-app```的组件，就可以开发跨端App；感谢```Vue```团队！
