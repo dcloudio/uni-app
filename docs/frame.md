@@ -916,8 +916,77 @@ slide-view.vue
 ## WXS
 
 WXS是微信小程序的一套脚本语言，[详见](https://developers.weixin.qq.com/miniprogram/dev/framework/view/wxs/)
+经过我们的适配，uni-app可以使用wxs规范支持5+APP、微信小程序、QQ小程序
 
-经过我们的适配，uni-app可以使用wxs规范支持5+APP、微信小程序、QQ小程序以及部分支持H5平台。
+### wxs示例
+
+以下是一些使用 WXS 的简单示例，要完整了解 WXS 语法，请参考[WXS 语法参考](https://developers.weixin.qq.com/miniprogram/dev/reference/wxs/)。
+
+```
+<template>
+	<view >
+		<view class="touchBox" @touchmove="test.touchmove"></view>
+		<view class="textArea">{{test.msg}}</view>
+		<view class="clickBox" :change:prop="test.propObserver" :prop="propValue" @click="setProp"></view>
+	</view>
+</template>
+
+<wxs module="test">
+	module.exports = {
+		msg:'Hello',
+		touchmove: function(event, instance) {
+			console.log('log event', JSON.stringify(event))
+		},
+		propObserver: function(newValue, oldValue, ownerInstance, instance) {
+			console.log('prop observer', newValue, oldValue)
+		}
+	}
+</wxs>
+
+<script>
+	export default {
+		data() {
+			return {
+				propValue: 0
+			}
+		},
+		methods: {
+			setProp() {
+				this.propValue = parseInt(Math.random()*1000);
+			}
+		}
+	}
+</script>
+
+<style>
+	.touchBox,.clickBox {
+		height: 200rpx;
+		width: 750rpx;
+	}
+	.touchBox {
+		background-color: #10AEFF;
+	}
+	.clickBox {
+		background-color: #3CC51F;
+	},
+	.textArea {
+		height: 200rpx;
+		text-align: center;
+		line-height: 200rpx;
+	}
+</style>
+
+```
+
+
+### 注意
+
+- 支付宝小程序请使用sjs规范，[详见](https://docs.alipay.com/mini/framework/sjs)
+- sjs 只能定义在 .sjs 文件中。然后使用 <import-sjs> 标签引入
+- 支付宝小程序import-sjs的标签属性```name```、```from```被统一为了```module```、```src```以便后续实现多平台统一写法
+- 百度小程序中请使用Filter过滤器，[详见](https://smartprogram.baidu.com/docs/develop/framework/view_filter/)
+- 暂不支持在 wxs，sjs，filter.js 中调用其他同类型文件
+- 编写wxs，sjs，filter.js 内容时必须遵循相应语法规范
 
 ## 致谢
 
