@@ -124,11 +124,15 @@ const PLATFORMS = {
       assetsDir
     }) {
       const files = ['hybrid/html']
+      let wxcomponents = []
       if (!process.env.UNI_USING_NATIVE) {
-        files.push('wxcomponents')
+        wxcomponents = getCopyOptions(['wxcomponents'], {
+          to: path.resolve(process.env.UNI_OUTPUT_TMP_DIR, 'wxcomponents')
+        })
       }
       return [
         ...getStaticCopyOptions(assetsDir),
+        ...wxcomponents,
         ...getCopyOptions(files)
       ]
     }
