@@ -925,12 +925,21 @@ WXS是微信小程序的一套脚本语言，[详见](https://developers.weixin.
 ```
 <template>
 	<view >
+		<!-- #ifdef APP-PLUS || MP-WEIXIN || MP-QQ -->
 		<view class="touchBox" @touchmove="test.touchmove"></view>
-		<view class="textArea">{{test.msg}}</view>
 		<view class="clickBox" :change:prop="test.propObserver" :prop="propValue" @click="setProp"></view>
+		<!-- #endif -->
+		<!-- #ifdef APP-PLUS || MP-WEIXIN || MP-QQ || MP-ALIPAY -->
+		<view class="textArea">{{test.msg}}</view>
+		<!-- #endif -->
+		<!-- #ifdef MP-BAIDU -->
+		<view class="textArea">{{test.msg()}}</view>
+		<!-- #endif -->
+		<!-- #ifdef APP-PLUS || MP-WEIXIN || MP-QQ || MP-ALIPAY || MP-BAIDU -->
+		<view class="textArea">{{test.getMax(array)}}</view>
+		<!-- #endif -->
 	</view>
 </template>
-
 <wxs module="test">
 	module.exports = {
 		msg:'Hello',
@@ -939,15 +948,42 @@ WXS是微信小程序的一套脚本语言，[详见](https://developers.weixin.
 		},
 		propObserver: function(newValue, oldValue, ownerInstance, instance) {
 			console.log('prop observer', newValue, oldValue)
+		},
+		getMax: function(array){
+			var max = undefined;
+			for (var i = 0; i < array.length; ++i) {
+				max = max === undefined ?
+					array[i] :
+					(max >= array[i] ? max : array[i]);
+			}
+			return max;
 		}
 	}
 </wxs>
+<filter module="test">
+	export default {
+		msg: function(){
+			return 'Hello';
+		},
+		getMax: function(array){
+			var max = undefined;
+			for (var i = 0; i < array.length; ++i) {
+				max = max === undefined ?
+					array[i] :
+					(max >= array[i] ? max : array[i]);
+			}
+			return max;
+		}
+	};
+</filter>
+<import-sjs module="test" src="./index.sjs"/>
 
 <script>
 	export default {
 		data() {
 			return {
-				propValue: 0
+				propValue: 0,
+				array: [1, 2, 3, 4, 5, 1, 2, 3, 4]
 			}
 		},
 		methods: {
@@ -975,18 +1011,19 @@ WXS是微信小程序的一套脚本语言，[详见](https://developers.weixin.
 		line-height: 200rpx;
 	}
 </style>
-
 ```
 
 
 **注意**
 
 - 支付宝小程序请使用sjs规范，[详见](https://docs.alipay.com/mini/framework/sjs)
-- sjs 只能定义在 .sjs 文件中。然后使用 <import-sjs> 标签引入
+- 支付宝小程序sjs只能定义在.sjs 文件中。然后使用```<import-sjs>```标签引入
 - 支付宝小程序import-sjs的标签属性```name```、```from```被统一为了```module```、```src```以便后续实现多平台统一写法
 - 百度小程序中请使用Filter过滤器，[详见](https://smartprogram.baidu.com/docs/develop/framework/view_filter/)
-- 暂不支持在 wxs，sjs，filter.js 中调用其他同类型文件
-- 编写wxs，sjs，filter.js 内容时必须遵循相应语法规范
+- 百度小程序Filter只能导出function函数
+- 暂不支持在 wxs、sjs、filter.js 中调用其他同类型文件
+- 编写wxs、sjs、filter.js 内容时必须遵循相应语法规范
+- wxs、filter.js既能内联使用又可以外部引入，sjs只能外部引入
 
 ## 致谢
 
