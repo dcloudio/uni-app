@@ -9,6 +9,10 @@ import {
 
 import initBehaviors from './behaviors'
 
+import {
+  createComponentDescriptor
+} from './wxs/component-descriptor'
+
 function pageMounted () {
   // 通知 Service，View 层已 ready
   UniViewJSBridge.publishHandler('onPageReady', {}, this.$page.id)
@@ -25,17 +29,36 @@ export default {
   } = {}) {
     initEvents()
 
+    const findUniTarget = function ($event, $el) {
+      let target = $event.target
+      for (; target && target !== $el; target = target.parentNode) {
+        if (target.tagName && target.tagName.indexOf('UNI-') === 0) {
+          break
+        }
+      }
+      return target
+    }
+
     Vue.prototype.$handleEvent = function ($event) {
       if ($event instanceof Event) { // 未处理的 event 对象 需要对 target 校正及包装
         // 查找 uniTarget
-        let target = $event.target
-        const $el = this.$el
-        for (; target && target !== $el; target = target.parentNode) {
-          if (target.tagName && target.tagName.indexOf('UNI-') === 0) {
-            break
-          }
-        }
+        const target = findUniTarget($event, this.$el)
         $event = processEvent.call(this, $event.type, $event, {}, target || $event.target, $event.currentTarget)
+      }
+      return $event
+    }
+
+    Vue.prototype.$getComponentDescriptor = function (vm) {
+      return createComponentDescriptor(vm || this)
+    }
+
+    Vue.prototype.$handleWxsEvent = function ($event) {
+      if ($event instanceof Event) { // 未处理的 event 对象 需要对 target 校正及包装
+        // 查找 uniTarget
+        const target = findUniTarget($event, this.$el)
+        const instance = target && target.__vue__ && target.__vue__.$getComponentDescriptor()
+        $event = processEvent.call(this, $event.type, $event, {}, target || $event.target, $event.currentTarget)
+        $event.instance = instance
       }
       return $event
     }

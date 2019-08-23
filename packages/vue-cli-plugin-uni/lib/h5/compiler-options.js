@@ -4,18 +4,25 @@ const {
 
 const simplePathRE = /^[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*|\['[^']*?']|\["[^"]*?"]|\[\d+]|\[[A-Za-z_$][\w$]*])*$/
 
-function processEvent (expr) {
+function processEvent(expr, filterModules) {
   const isMethodPath = simplePathRE.test(expr)
   if (isMethodPath) {
-    expr = expr + '($event)'
+    if (filterModules.find(name => expr.indexOf(name + '.') === 0)) {
+      return `
+$event = $handleWxsEvent($event);
+${expr}($event, $getComponentDescriptor())
+`
+    } else {
+      expr = expr + '($event)'
+    }
   }
   return `
-$event = $handleEvent($event);    
+$event = $handleEvent($event);
 ${expr}
 `
 }
 
-function hasOwn (obj, key) {
+function hasOwn(obj, key) {
   return hasOwnProperty.call(obj, key)
 }
 
@@ -26,7 +33,7 @@ const deprecated = {
   }
 }
 
-function addTag (tag) {
+function addTag(tag) {
   if (!process.UNI_TAGS) {
     process.UNI_TAGS = new Set()
   }
@@ -36,7 +43,7 @@ function addTag (tag) {
 module.exports = {
   preserveWhitespace: false,
   modules: [require('../format-text'), {
-    preTransformNode (el, {
+    preTransformNode(el, {
       warn
     }) {
       if (el.tag.indexOf('v-uni-') === 0) {
@@ -46,8 +53,9 @@ module.exports = {
         el.tag = 'v-uni-' + el.tag
       }
     },
-    postTransformNode (el, {
-      warn
+    postTransformNode(el, {
+      warn,
+      filterModules
     }) {
       if (el.tag === 'block') {
         el.tag = 'template'
@@ -65,6 +73,7 @@ module.exports = {
         }
       }
       if (el.events) {
+        filterModules = filterModules || []
         const {
           events: eventsMap
         } = deprecated
@@ -81,11 +90,10 @@ module.exports = {
           const handlers = el.events[name]
           if (Array.isArray(handlers)) {
             handlers.forEach(handler => {
-              handler.value = processEvent(
-                handler.value)
+              handler.value = processEvent(handler.value, filterModules)
             })
           } else {
-            handlers.value = processEvent(handlers.value)
+            handlers.value = processEvent(handlers.value, filterModules)
           }
         })
       }

@@ -10,7 +10,7 @@ const {
 
 const WebpackHtmlAppendPlugin = require('../../packages/webpack-html-append-plugin')
 
-function resolve (dir) {
+function resolve(dir) {
   return path.resolve(__dirname, '../../', dir)
 }
 
@@ -61,7 +61,7 @@ if (devServer && Object.keys(devServer).length) {
 
 module.exports = {
   vueConfig,
-  webpackConfig (webpackConfig) {
+  webpackConfig(webpackConfig) {
     return {
       devtool: process.env.NODE_ENV === 'production' ? false : 'source-map',
       resolve: {
@@ -81,6 +81,11 @@ module.exports = {
             }
           }
         }, {
+          resourceQuery: /vue&type=template/,
+          use: [{
+            loader: resolve('packages/h5-vue-template-loader')
+          }]
+        }, {
           resourceQuery: /blockType=wxs/,
           use: [{
             loader: resolve('packages/webpack-uni-filter-loader')
@@ -95,7 +100,7 @@ module.exports = {
       plugins
     }
   },
-  chainWebpack (webpackConfig) {
+  chainWebpack(webpackConfig) {
     webpackConfig.plugins.delete('copy')
 
     if (!process.env.UNI_OPT_PREFETCH) {
