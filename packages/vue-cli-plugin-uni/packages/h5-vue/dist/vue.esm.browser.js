@@ -955,7 +955,9 @@ class Observer {
     def(value, '__ob__', this);
     if (Array.isArray(value)) {
       if (hasProto) {
-        protoAugment(value, arrayMethods);
+        {
+          protoAugment(value, arrayMethods);
+        }
       } else {
         copyAugment(value, arrayMethods, arrayKeys);
       }
@@ -6820,7 +6822,8 @@ function updateClass (oldVnode, vnode) {
         isUndef(oldData.staticClass) &&
         isUndef(oldData.class)
       )
-    )
+    ) &&
+    isUndef(el.__wxsClass) // fixed by xxxxxx __wxsClass
   ) {
     return
   }
@@ -6831,6 +6834,11 @@ function updateClass (oldVnode, vnode) {
   const transitionClass = el._transitionClasses;
   if (isDef(transitionClass)) {
     cls = concat(cls, stringifyClass(transitionClass));
+  }
+
+  // fixed by xxxxxx __wxsClass
+  if(el.__wxsClass){
+    cls = concat(cls, el.__wxsClass);
   }
 
   // set the class
@@ -7849,15 +7857,16 @@ const normalize = cached(function (prop) {
 function updateStyle (oldVnode, vnode) {
   const data = vnode.data;
   const oldData = oldVnode.data;
-
+  const el = vnode.elm;
   if (isUndef(data.staticStyle) && isUndef(data.style) &&
-    isUndef(oldData.staticStyle) && isUndef(oldData.style)
+    isUndef(oldData.staticStyle) && isUndef(oldData.style) &&
+    isUndef(el.__wxsStyle) // fixed by xxxxxx __wxsStyle
   ) {
     return
   }
 
   let cur, name;
-  const el = vnode.elm;
+  
   const oldStaticStyle = oldData.staticStyle;
   const oldStyleBinding = oldData.normalizedStyle || oldData.style || {};
 
@@ -7874,6 +7883,12 @@ function updateStyle (oldVnode, vnode) {
     : style;
 
   const newStyle = getStyle(vnode, true);
+
+  // fixed by xxxxxx __wxsStyle
+  if(el.__wxsStyle){
+    Object.assign(vnode.data.normalizedStyle, el.__wxsStyle);
+    Object.assign(newStyle, el.__wxsStyle);
+  }
 
   for (name in oldStyle) {
     if (isUndef(newStyle[name])) {
@@ -9770,6 +9785,7 @@ function parse (
     shouldKeepComment: options.comments,
     outputSourceRange: options.outputSourceRange,
     start (tag, attrs, unary, start, end) {
+
       // check namespace.
       // inherit parent ns if there is one
       const ns = (currentParent && currentParent.ns) || platformGetTagNamespace(tag);

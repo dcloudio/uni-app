@@ -926,7 +926,9 @@
     def(value, '__ob__', this);
     if (Array.isArray(value)) {
       if (hasProto) {
-        protoAugment(value, arrayMethods);
+        {
+          protoAugment(value, arrayMethods);
+        }
       } else {
         copyAugment(value, arrayMethods, arrayKeys);
       }
@@ -6796,7 +6798,8 @@
           isUndef(oldData.staticClass) &&
           isUndef(oldData.class)
         )
-      )
+      ) &&
+      isUndef(el.__wxsClass) // fixed by xxxxxx __wxsClass
     ) {
       return
     }
@@ -6807,6 +6810,11 @@
     var transitionClass = el._transitionClasses;
     if (isDef(transitionClass)) {
       cls = concat(cls, stringifyClass(transitionClass));
+    }
+
+    // fixed by xxxxxx __wxsClass
+    if(el.__wxsClass){
+      cls = concat(cls, el.__wxsClass);
     }
 
     // set the class
@@ -7830,15 +7838,16 @@
   function updateStyle (oldVnode, vnode) {
     var data = vnode.data;
     var oldData = oldVnode.data;
-
+    var el = vnode.elm;
     if (isUndef(data.staticStyle) && isUndef(data.style) &&
-      isUndef(oldData.staticStyle) && isUndef(oldData.style)
+      isUndef(oldData.staticStyle) && isUndef(oldData.style) &&
+      isUndef(el.__wxsStyle) // fixed by xxxxxx __wxsStyle
     ) {
       return
     }
 
     var cur, name;
-    var el = vnode.elm;
+    
     var oldStaticStyle = oldData.staticStyle;
     var oldStyleBinding = oldData.normalizedStyle || oldData.style || {};
 
@@ -7855,6 +7864,12 @@
       : style;
 
     var newStyle = getStyle(vnode, true);
+
+    // fixed by xxxxxx __wxsStyle
+    if(el.__wxsStyle){
+      Object.assign(vnode.data.normalizedStyle, el.__wxsStyle);
+      Object.assign(newStyle, el.__wxsStyle);
+    }
 
     for (name in oldStyle) {
       if (isUndef(newStyle[name])) {
@@ -9757,6 +9772,7 @@
       shouldKeepComment: options.comments,
       outputSourceRange: options.outputSourceRange,
       start: function start (tag, attrs, unary, start$1, end) {
+
         // check namespace.
         // inherit parent ns if there is one
         var ns = (currentParent && currentParent.ns) || platformGetTagNamespace(tag);
