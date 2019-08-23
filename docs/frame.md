@@ -1013,6 +1013,22 @@ WXS是微信小程序的一套脚本语言，[详见](https://developers.weixin.
 </style>
 ```
 
+index.sjs内容
+
+```
+export default {
+	msg:'Hello',
+	getMax: function(array){
+		var max = undefined;
+		for (var i = 0; i < array.length; ++i) {
+			max = max === undefined ?
+				array[i] :
+				(max >= array[i] ? max : array[i]);
+		}
+		return max;
+	}
+};
+```
 
 **注意**
 
