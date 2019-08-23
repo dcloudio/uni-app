@@ -114,7 +114,19 @@ uni-app已经有几十万开发者，创建了几十万个项目，是开发者�
 		<span style="margin-top:15px;">头条小程序码</span>
 	</a>
 </div>
-	
+
+<a href="https://www.cyb520.com/" target="_blank" class="clear-style"><b>锦衣盒：</b></a>专注男士形象打造 全新的智能化购物模式 解决男士购衣困扰。
+<div style="display:flex;justify-content: space-around;">
+	<a href="https://www.cyb520.com/" target="_blank" class="clear-style barcode-view">
+		<img src="http://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/case-jinyihe-weixin.jpg" width="200"/>
+		<span style="margin-top:15px;">微信小程序码</span>
+	</a>
+	<a href="https://www.cyb520.com/" target="_blank" class="clear-style barcode-view">
+		<img src="http://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/case-jinyihe-toutiao.png" width="200"/>
+		<span style="margin-top:15px;">头条小程序码</span>
+	</a>
+</div>
+  
 <!-- <a href="//m3w.cn/__uni__4c6db6e" target="_blank" class="clear-style"><b>UniApp视频教程：</b></a>视频教育App，帮助开发者学习了解uni-app、h5+、mui等DCloud产品。开发者枫桥。
 <div style="display:flex;justify-content: space-around;">
 	<a href="//m3w.cn/__uni__4c6db6e" target="_blank" class="clear-style barcode-view">
