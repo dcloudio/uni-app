@@ -918,7 +918,7 @@ slide-view.vue
 WXS是微信小程序的一套脚本语言，[详见](https://developers.weixin.qq.com/miniprogram/dev/framework/view/wxs/)
 经过我们的适配，uni-app可以使用wxs规范支持5+APP、微信小程序、QQ小程序
 
-### wxs示例
+**wxs示例**
 
 以下是一些使用 WXS 的简单示例，要完整了解 WXS 语法，请参考[WXS 语法参考](https://developers.weixin.qq.com/miniprogram/dev/reference/wxs/)。
 
@@ -979,7 +979,7 @@ WXS是微信小程序的一套脚本语言，[详见](https://developers.weixin.
 ```
 
 
-### 注意
+**注意**
 
 - 支付宝小程序请使用sjs规范，[详见](https://docs.alipay.com/mini/framework/sjs)
 - sjs 只能定义在 .sjs 文件中。然后使用 <import-sjs> 标签引入
