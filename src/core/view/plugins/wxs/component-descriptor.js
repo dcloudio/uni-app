@@ -75,6 +75,7 @@ class ComponentDescriptor {
     }
     if (isPlainObject(style)) {
       this.$el.__wxsStyle = style
+      this.$vm.$forceUpdate()
     }
     return this
   }
