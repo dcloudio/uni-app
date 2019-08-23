@@ -915,7 +915,7 @@ slide-view.vue
 
 ## WXS
 
-WXS是微信小程序的一套脚本语言，[详见](https://developers.weixin.qq.com/miniprogram/dev/framework/view/wxs/)
+WXS是微信小程序的一套脚本语言，[详见](https://developers.weixin.qq.com/miniprogram/dev/framework/view/wxs/)。
 经过我们的适配，uni-app可以使用wxs规范支持5+APP、微信小程序、QQ小程序
 
 **wxs示例**
