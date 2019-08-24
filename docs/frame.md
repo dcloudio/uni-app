@@ -918,6 +918,8 @@ slide-view.vue
 WXS是微信小程序的一套脚本语言，[详见](https://developers.weixin.qq.com/miniprogram/dev/framework/view/wxs/)。
 经过我们的适配，uni-app可以使用wxs规范支持5+APP、微信小程序、QQ小程序。请使用```HBuilderX 2.2.4-alpha```及以上版本体验。
 
+对应的，百度小程序提供了Filter、阿里小程序提供了SJS，但它们的功能还不如wxs强大。另外头条系小程序不支持类似功能。
+
 **wxs示例**
 
 以下是一些使用 WXS 的简单示例，要完整了解 WXS 语法，请参考[WXS 语法参考](https://developers.weixin.qq.com/miniprogram/dev/reference/wxs/)。本示例使用wxs响应touchmove事件，减少视图层与逻辑层通信，使滑动更加丝滑。
@@ -994,7 +996,7 @@ WXS是微信小程序的一套脚本语言，[详见](https://developers.weixin.
 </style>
 ```
 
-支付宝小程序，百度小程序官方暂未支持事件响应，不过也可以使用对应的SJS、Filter过滤器实现一些方便的操作，以下代码展示了一个时间格式化的小功能
+支付宝小程序，百度小程序官方暂未支持事件响应，不过也可以使用对应的SJS、Filter过滤器实现一些数据处理的操作，以下代码展示了一个时间格式化的小功能
 
 index.vue  
 
@@ -1031,7 +1033,7 @@ index.vue
 
 utils.sjs 与 utils.filter.js 
 
-```
+```js
 export default {
 	friendlyDate: (timestamp) => {
 		var formats = {
@@ -1086,14 +1088,14 @@ export default {
 
 **注意**
 
+- **重要**编写wxs、sjs、filter.js 内容时必须遵循相应语法规范
 - 目前各个小程序正在完善相关规范，可能会有较大改动，请务必仔细阅读相应平台的文档
 - 支付宝小程序请使用sjs规范，[详见](https://docs.alipay.com/mini/framework/sjs)
 - 支付宝小程序sjs只能定义在.sjs 文件中。然后使用```<import-sjs>```标签引入
 - 支付宝小程序import-sjs的标签属性```name```、```from```被统一为了```module```、```src```以便后续实现多平台统一写法
-- 百度小程序中请使用Filter过滤器，[详见](https://smartprogram.baidu.com/docs/develop/framework/view_filter/)
+- 百度小程序中请使用Filter规范，[详见](https://smartprogram.baidu.com/docs/develop/framework/view_filter/)
 - 百度小程序Filter只能导出function函数
 - 暂不支持在 wxs、sjs、filter.js 中调用其他同类型文件
-- 编写wxs、sjs、filter.js 内容时必须遵循相应语法规范**重要**
 - wxs、filter.js既能内联使用又可以外部引入，sjs只能外部引入
 - mp-qq 目前对内联的 wxs 支持不好，部分写法会导致编译出错
 
@@ -1104,4 +1106,4 @@ export default {
 
 为了照顾开发者的已有学习积累，```uni-app```的组件和api设计，基本参考了微信小程序，学过微信小程序开发，了解```vue```，就能直接上手```uni-app```；感谢微信小程序团队！
 
-```uni-app``` 在小程序端，学习参考了[mpvue](http://mpvue.com/)及[Megalo](https://megalojs.org/)，感谢美团点评技术团队、网易考拉团队!
+```uni-app``` 在小程序端，学习参考了[mpvue](https://mpvue.com/)及[Megalo](https://megalojs.org/)，感谢美团点评技术团队、网易考拉团队!
