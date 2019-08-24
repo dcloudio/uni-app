@@ -4,7 +4,7 @@ const {
 
 const simplePathRE = /^[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*|\['[^']*?']|\["[^"]*?"]|\[\d+]|\[[A-Za-z_$][\w$]*])*$/
 
-function processEvent(expr, filterModules) {
+function processEvent (expr, filterModules) {
   const isMethodPath = simplePathRE.test(expr)
   if (isMethodPath) {
     if (filterModules.find(name => expr.indexOf(name + '.') === 0)) {
@@ -22,7 +22,7 @@ ${expr}
 `
 }
 
-function hasOwn(obj, key) {
+function hasOwn (obj, key) {
   return hasOwnProperty.call(obj, key)
 }
 
@@ -33,7 +33,7 @@ const deprecated = {
   }
 }
 
-function addTag(tag) {
+function addTag (tag) {
   if (!process.UNI_TAGS) {
     process.UNI_TAGS = new Set()
   }
@@ -43,7 +43,7 @@ function addTag(tag) {
 module.exports = {
   preserveWhitespace: false,
   modules: [require('../format-text'), {
-    preTransformNode(el, {
+    preTransformNode (el, {
       warn
     }) {
       if (el.tag.indexOf('v-uni-') === 0) {
@@ -53,7 +53,7 @@ module.exports = {
         el.tag = 'v-uni-' + el.tag
       }
     },
-    postTransformNode(el, {
+    postTransformNode (el, {
       warn,
       filterModules
     }) {
