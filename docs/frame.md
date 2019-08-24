@@ -994,6 +994,95 @@ WXS是微信小程序的一套脚本语言，[详见](https://developers.weixin.
 </style>
 ```
 
+支付宝小程序，百度小程序官方暂未支持事件响应，不过也可以使用对应的SJS、Filter过滤器实现一些方便的操作，以下代码展示了一个时间格式化的小功能
+
+```index.vue```
+
+```
+<template>
+	<view>
+		<view>
+			{{timestr}} 是
+		</view>
+		<view>
+			{{utils.friendlyDate(timestamp)}}
+		</view>
+	</view>
+</template>
+<filter module="utils" src="./utils.filter.js"></filter>
+<import-sjs module="utils" src="./utils.sjs" />
+
+<script>
+	export default {
+		data() {
+			return {
+				timestr: '2019/08/22 10:10:10',
+				timestamp: 0
+			}
+		},
+		created() {
+			this.timestamp = new Date(this.timestr).getTime()
+		},
+		methods: {
+		}
+	}
+</script>
+```
+
+```utils.sjs```与```utils.filter.js```
+
+```
+export default {
+	friendlyDate: (timestamp) => {
+		var formats = {
+			'year': '%n% 年前',
+			'month': '%n% 月前',
+			'day': '%n% 天前',
+			'hour': '%n% 小时前',
+			'minute': '%n% 分钟前',
+			'second': '%n% 秒前',
+		};
+		var now = Date.now();
+		var seconds = Math.floor((now - parseInt(timestamp)) / 1000);
+		var minutes = Math.floor(seconds / 60);
+		var hours = Math.floor(minutes / 60);
+		var days = Math.floor(hours / 24);
+		var months = Math.floor(days / 30);
+		var years = Math.floor(months / 12);
+
+		var diffType = '';
+		var diffValue = 0;
+		if (years > 0) {
+			diffType = 'year';
+			diffValue = years;
+		} else {
+			if (months > 0) {
+				diffType = 'month';
+				diffValue = months;
+			} else {
+				if (days > 0) {
+					diffType = 'day';
+					diffValue = days;
+				} else {
+					if (hours > 0) {
+						diffType = 'hour';
+						diffValue = hours;
+					} else {
+						if (minutes > 0) {
+							diffType = 'minute';
+							diffValue = minutes;
+						} else {
+							diffType = 'second';
+							diffValue = seconds === 0 ? (seconds = 1) : seconds;
+						}
+					}
+				}
+			}
+		}
+		return formats[diffType].replace('%n%', diffValue);
+	}
+}
+```
 
 **注意**
 
@@ -1004,7 +1093,7 @@ WXS是微信小程序的一套脚本语言，[详见](https://developers.weixin.
 - 百度小程序中请使用Filter过滤器，[详见](https://smartprogram.baidu.com/docs/develop/framework/view_filter/)
 - 百度小程序Filter只能导出function函数
 - 暂不支持在 wxs、sjs、filter.js 中调用其他同类型文件
-- 编写wxs、sjs、filter.js 内容时必须遵循相应语法规范
+- 编写wxs、sjs、filter.js 内容时必须遵循相应语法规范**重要**
 - wxs、filter.js既能内联使用又可以外部引入，sjs只能外部引入
 
 
