@@ -916,122 +916,88 @@ slide-view.vue
 ## WXS
 
 WXS是微信小程序的一套脚本语言，[详见](https://developers.weixin.qq.com/miniprogram/dev/framework/view/wxs/)。
-经过我们的适配，uni-app可以使用wxs规范支持5+APP、微信小程序、QQ小程序
+经过我们的适配，uni-app可以使用wxs规范支持5+APP、微信小程序、QQ小程序。请使用```HBuilderX 2.2.4-alpha```及以上版本体验。
 
 **wxs示例**
 
-以下是一些使用 WXS 的简单示例，要完整了解 WXS 语法，请参考[WXS 语法参考](https://developers.weixin.qq.com/miniprogram/dev/reference/wxs/)。
+以下是一些使用 WXS 的简单示例，要完整了解 WXS 语法，请参考[WXS 语法参考](https://developers.weixin.qq.com/miniprogram/dev/reference/wxs/)。本示例使用wxs响应touchmove事件，减少视图层与逻辑层通信，使滑动更加丝滑。
 
 ```
 <template>
-	<view >
-		<!-- #ifdef APP-PLUS || MP-WEIXIN || MP-QQ -->
-		<view class="touchBox" @touchmove="test.touchmove"></view>
-		<view class="clickBox" :change:prop="test.propObserver" :prop="propValue" @click="setProp"></view>
-		<!-- #endif -->
-		<!-- #ifdef APP-PLUS || MP-WEIXIN || MP-QQ || MP-ALIPAY -->
-		<view class="textArea">{{test.msg}}</view>
-		<!-- #endif -->
-		<!-- #ifdef MP-BAIDU -->
-		<view class="textArea">{{test.msg()}}</view>
-		<!-- #endif -->
-		<!-- #ifdef APP-PLUS || MP-WEIXIN || MP-QQ || MP-ALIPAY || MP-BAIDU -->
-		<view class="textArea">{{test.getMax(array)}}</view>
-		<!-- #endif -->
+	<view>
+		<view class="area">
+			<view @touchstart="test.touchstart" @touchmove="test.touchmove" class="movable">{{test.msg}}</view>
+		</view>
 	</view>
 </template>
 <wxs module="test">
+	var startX = 0
+	var startY = 0
+	var lastLeft = 50; var lastTop = 50
+	function touchstart(event, ins) {
+		console.log("touchstart")
+	  var touch = event.touches[0] || event.changedTouches[0]
+	  startX = touch.pageX
+	  startY = touch.pageY
+	}
+	function touchmove(event, ins) {
+	  var touch = event.touches[0] || event.changedTouches[0]
+	  var pageX = touch.pageX
+	  var pageY = touch.pageY
+	  var left = pageX - startX + lastLeft
+	  var top = pageY - startY + lastTop
+	  startX = pageX
+	  startY = pageY
+	  lastLeft = left
+	  lastTop = top
+	  ins.selectComponent('.movable').setStyle({
+	    left: left + 'px',
+	    top: top + 'px'
+	  })
+		return false
+	}
 	module.exports = {
-		msg:'Hello',
-		touchmove: function(event, instance) {
-			console.log('log event', JSON.stringify(event))
-		},
-		propObserver: function(newValue, oldValue, ownerInstance, instance) {
-			console.log('prop observer', newValue, oldValue)
-		},
-		getMax: function(array){
-			var max = undefined;
-			for (var i = 0; i < array.length; ++i) {
-				max = max === undefined ?
-					array[i] :
-					(max >= array[i] ? max : array[i]);
-			}
-			return max;
-		}
+		msg: 'Hello',
+	  touchstart: touchstart,
+	  touchmove: touchmove
 	}
 </wxs>
-<filter module="test">
-	export default {
-		msg: function(){
-			return 'Hello';
-		},
-		getMax: function(array){
-			var max = undefined;
-			for (var i = 0; i < array.length; ++i) {
-				max = max === undefined ?
-					array[i] :
-					(max >= array[i] ? max : array[i]);
-			}
-			return max;
-		}
-	};
-</filter>
-<import-sjs module="test" src="./index.sjs"/>
 
 <script>
 	export default {
 		data() {
 			return {
-				propValue: 0,
-				array: [1, 2, 3, 4, 5, 1, 2, 3, 4]
 			}
 		},
 		methods: {
-			setProp() {
-				this.propValue = parseInt(Math.random()*1000);
-			}
 		}
 	}
 </script>
 
 <style>
-	.touchBox,.clickBox {
-		height: 200rpx;
-		width: 750rpx;
-	}
-	.touchBox {
-		background-color: #10AEFF;
-	}
-	.clickBox {
-		background-color: #3CC51F;
-	},
-	.textArea {
-		height: 200rpx;
-		text-align: center;
-		line-height: 200rpx;
-	}
+.area{
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+.movable{
+	position: absolute;
+	width: 100px;
+	height: 100px;
+	left: 50px;
+	top: 50px;
+	color: white;
+	text-align: center;
+	line-height: 100px;
+	background-color: red;
+}
 </style>
 ```
 
-index.sjs内容
-
-```
-export default {
-	msg:'Hello',
-	getMax: function(array){
-		var max = undefined;
-		for (var i = 0; i < array.length; ++i) {
-			max = max === undefined ?
-				array[i] :
-				(max >= array[i] ? max : array[i]);
-		}
-		return max;
-	}
-};
-```
 
 **注意**
 
+- 目前各个小程序正在完善相关规范，可能会有较大改动，请务必仔细阅读相应平台的文档
 - 支付宝小程序请使用sjs规范，[详见](https://docs.alipay.com/mini/framework/sjs)
 - 支付宝小程序sjs只能定义在.sjs 文件中。然后使用```<import-sjs>```标签引入
 - 支付宝小程序import-sjs的标签属性```name```、```from```被统一为了```module```、```src```以便后续实现多平台统一写法
@@ -1040,6 +1006,7 @@ export default {
 - 暂不支持在 wxs、sjs、filter.js 中调用其他同类型文件
 - 编写wxs、sjs、filter.js 内容时必须遵循相应语法规范
 - wxs、filter.js既能内联使用又可以外部引入，sjs只能外部引入
+
 
 ## 致谢
 
