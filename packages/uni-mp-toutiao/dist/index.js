@@ -1544,6 +1544,14 @@ function parseBaseComponent (vueComponentOptions, {
     }
   };
 
+  if (Array.isArray(vueOptions.wxsCallMethods)) {
+    vueOptions.wxsCallMethods.forEach(callMethod => {
+      componentOptions.methods[callMethod] = function (args) {
+        return this.$vm[callMethod](args)
+      };
+    });
+  }
+
   if (isPage) {
     return componentOptions
   }
