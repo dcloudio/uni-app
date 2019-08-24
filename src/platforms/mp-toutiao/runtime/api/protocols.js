@@ -67,7 +67,8 @@ const todos = [
   'onWindowResize',
   'offWindowResize',
   'compressImage',
-  'createOffscreenCanvas'
+  'createOffscreenCanvas',
+  'vibrate'
 ]
 
 // 存在兼容性的 API 列表
