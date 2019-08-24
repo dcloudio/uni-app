@@ -1,7 +1,7 @@
 module.exports = (api, options, rootOptions) => {
   let version = '*'
   if (require('./package.json').version.indexOf('alpha') !== -1) {
-    version = '^1.0.0-alpha-22120190814001'
+    version = '^2.0.0-alpha-22420190823001'
   }
   api.extendPackage(pkg => {
     delete pkg.postcss
