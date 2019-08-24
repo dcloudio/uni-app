@@ -33,6 +33,7 @@ uni-app已经有几十万开发者，创建了几十万个项目，是开发者�
 	</a>
 </div>
 -->
+
 ### 第三方开发者案例
 
 <a href="https://www.csdn.net/" target="_blank" class="clear-style"><b>CSDN：</b></a> 专业 IT 技术社区，致力于为中国软件开发者提供知识传播、在线学习、职业发展等全生命周期服务。
@@ -190,6 +191,8 @@ uni-app已经有几十万开发者，创建了几十万个项目，是开发者�
 **内蒙古体育局：**[H5](http://tyj.nmg.gov.cn/h5/#/)
 
 **江苏公安网上政工慰问：**[H5](https://jxt.jsga.gov.cn:10006/app/njqxgzzs/zgww/#/)
+
+**杭州智安通：*[H5](https://hzjjzat.citydo.com.cn/vehicle-test)
 
 **深圳福田区爱福田：**[H5](https://ifutian.szft.gov.cn/masterSecond/)
 
