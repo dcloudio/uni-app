@@ -996,7 +996,7 @@ WXS是微信小程序的一套脚本语言，[详见](https://developers.weixin.
 
 支付宝小程序，百度小程序官方暂未支持事件响应，不过也可以使用对应的SJS、Filter过滤器实现一些方便的操作，以下代码展示了一个时间格式化的小功能
 
-```index.vue```
+index.vue  
 
 ```
 <template>
@@ -1029,7 +1029,7 @@ WXS是微信小程序的一套脚本语言，[详见](https://developers.weixin.
 </script>
 ```
 
-```utils.sjs```与```utils.filter.js```
+utils.sjs 与 utils.filter.js 
 
 ```
 export default {
