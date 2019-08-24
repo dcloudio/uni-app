@@ -419,7 +419,7 @@ module.exports = {
   normalizeNodeModules,
   isInHBuilderX,
   isInHBuilderXAlpha,
-  runByHBuilderX: isInHBuilderX || !!process.env.UNI_HBUILDERX_PLUGINS,
+  runByHBuilderX: isInHBuilderX || fs.existsSync(path.resolve(process.env.UNI_HBUILDERX_PLUGINS || '', 'weapp-tools')),
   devtoolModuleFilenameTemplate,
   getFlexDirection (json) {
     let flexDir = 'column'

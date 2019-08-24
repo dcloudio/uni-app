@@ -191,7 +191,8 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
       const WebpackErrorsPlugin = require('../packages/webpack-errors-plugin')
       const onErrors = require('../util/on-errors')
       plugins.push(new WebpackErrorsPlugin({
-        onErrors
+        onErrors,
+        onWarnings: onErrors
       }))
     }
 
