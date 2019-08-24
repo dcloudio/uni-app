@@ -6850,8 +6850,14 @@ function updateClass (oldVnode, vnode) {
     el.__wxsRemoveClass.length = 0;
   }
 
-  if(el.__wxsAddClass){
-    cls = concat(cls, el.__wxsAddClass);
+  if (el.__wxsAddClass) {
+    // 去重
+    const clsArr = cls.split(/\s+/).concat(el.__wxsAddClass.split(/\s+/));
+    const clsObj = Object.create(null);
+    clsArr.forEach(cls => {
+      cls && (clsObj[cls] = 1);
+    });
+    cls = Object.keys(clsObj).join(' ');
   }
 
   // set the class

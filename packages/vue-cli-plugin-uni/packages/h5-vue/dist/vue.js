@@ -6826,8 +6826,14 @@
       el.__wxsRemoveClass.length = 0;
     }
 
-    if(el.__wxsAddClass){
-      cls = concat(cls, el.__wxsAddClass);
+    if (el.__wxsAddClass) {
+      // 去重
+      var clsArr$1 = cls.split(/\s+/).concat(el.__wxsAddClass.split(/\s+/));
+      var clsObj = Object.create(null);
+      clsArr$1.forEach(function (cls) {
+        cls && (clsObj[cls] = 1);
+      });
+      cls = Object.keys(clsObj).join(' ');
     }
 
     // set the class

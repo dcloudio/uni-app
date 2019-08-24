@@ -108,9 +108,8 @@ class ComponentDescriptor {
         const clsIndex = addWxsClsArr.findIndex(oldCls => oldCls === cls)
         if (clsIndex !== -1) { // 在 addWxsClass 中
           addWxsClsArr.splice(clsIndex, 1)
-        } else { // 在 classList 中
-          removeWxsClsArr.push(cls)
         }
+        removeWxsClsArr.push(cls)
       })
       this.$el.__wxsRemoveClass = removeWxsClsArr
       this.$el.__wxsAddClass = addWxsClsArr.join(' ')
