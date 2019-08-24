@@ -123,18 +123,7 @@ uni-app已经有几十万开发者，创建了几十万个项目，是开发者�
 	</a>
 </div>
 
-<a href="https://www.cyb520.com/" target="_blank" class="clear-style"><b>锦衣盒：</b></a>专注男士形象打造 全新的智能化购物模式 解决男士购衣困扰。
-<div style="display:flex;justify-content: space-around;">
-	<a href="https://www.cyb520.com/" target="_blank" class="clear-style barcode-view">
-		<img src="http://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/case-jinyihe-weixin.jpg" width="200"/>
-		<span style="margin-top:15px;">微信小程序码</span>
-	</a>
-	<a href="https://www.cyb520.com/" target="_blank" class="clear-style barcode-view">
-		<img src="http://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/case-jinyihe-toutiao.png" width="200"/>
-		<span style="margin-top:15px;">头条小程序码</span>
-	</a>
-</div>
-  
+
 <!-- <a href="//m3w.cn/__uni__4c6db6e" target="_blank" class="clear-style"><b>UniApp视频教程：</b></a>视频教育App，帮助开发者学习了解uni-app、h5+、mui等DCloud产品。开发者枫桥。
 <div style="display:flex;justify-content: space-around;">
 	<a href="//m3w.cn/__uni__4c6db6e" target="_blank" class="clear-style barcode-view">
@@ -183,6 +172,8 @@ uni-app已经有几十万开发者，创建了几十万个项目，是开发者�
 **财金宝：** 多端理财记账工具，[iOS](https://itunes.apple.com/cn/app/%E8%B4%A2%E9%87%91%E5%AE%9D-%E8%AE%B0%E8%B4%A6%E7%90%86%E8%B4%A2%E8%B5%84%E4%BA%A7%E7%AE%A1%E5%AE%B6/id1275489865?mt=8)、[Android](https://android.myapp.com/myapp/detail.htm?apkName=me.caijinbao.jlm)、微信小程序、支付宝小程序搜索“财金宝”
 
 **蓝鲸鱼旧物回收：** 微信、支付宝搜索“蓝鲸鱼旧物回收”
+
+**锦衣盒：** 专注男士形象打造，全新的智能化购物模式，解决男士购衣困扰。微信小程序中搜索“锦衣盒”，头条/抖音小程序二维码[点此](http://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/case-jinyihe-toutiao.png)
 
 **ADR之声：** 航空工业信息中心App。[Android](https://m3w.cn/__uni__937cb89)
 
