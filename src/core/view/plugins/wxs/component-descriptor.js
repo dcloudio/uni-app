@@ -87,8 +87,8 @@ class ComponentDescriptor {
 
     const wxsClsArr = getWxsClsArr(clsArr, this.$el.classList, true)
     if (wxsClsArr.length) {
-      const wxsClass = this.$el.__wxsClass || ''
-      this.$el.__wxsClass = wxsClass + (wxsClass ? ' ' : '') + wxsClsArr.join(' ')
+      const wxsClass = this.$el.__wxsAddClass || ''
+      this.$el.__wxsAddClass = wxsClass + (wxsClass ? ' ' : '') + wxsClsArr.join(' ')
       this.$vm.$forceUpdate()
     }
 
@@ -99,16 +99,21 @@ class ComponentDescriptor {
     if (!this.$el || !clsArr.length) {
       return this
     }
-    const oldWxsClsArr = (this.$el.__wxsClass || '').split(WXS_CLASS_RE)
-    const wxsClsArr = getWxsClsArr(clsArr, this.$el.classList, false)
+    const classList = this.$el.classList
+    const addWxsClsArr = this.$el.__wxsAddClass ? this.$el.__wxsAddClass.split(WXS_CLASS_RE) : []
+    const wxsClsArr = getWxsClsArr(clsArr, classList, false)
     if (wxsClsArr.length) {
-      oldWxsClsArr.length && wxsClsArr.forEach(cls => {
-        const clsIndex = oldWxsClsArr.findIndex(oldCls => oldCls === cls)
-        if (clsIndex !== -1) {
-          oldWxsClsArr.splice(clsIndex, 1)
+      const removeWxsClsArr = []
+      addWxsClsArr.length && wxsClsArr.forEach(cls => {
+        const clsIndex = addWxsClsArr.findIndex(oldCls => oldCls === cls)
+        if (clsIndex !== -1) { // 在 addWxsClass 中
+          addWxsClsArr.splice(clsIndex, 1)
+        } else { // 在 classList 中
+          removeWxsClsArr.push(cls)
         }
       })
-      this.$el.__wxsClass = oldWxsClsArr.join(' ')
+      this.$el.__wxsRemoveClsArr = removeWxsClsArr
+      this.$el.__wxsAddClass = addWxsClsArr.join(' ')
       this.$vm.$forceUpdate()
     }
 
