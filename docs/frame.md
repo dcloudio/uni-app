@@ -915,16 +915,16 @@ slide-view.vue
 
 ## WXS
 
-WXS是微信小程序的一套脚本语言，[详见](https://developers.weixin.qq.com/miniprogram/dev/framework/view/wxs/)。
-经过我们的适配，uni-app可以使用wxs规范支持5+APP、微信小程序、QQ小程序。请使用```HBuilderX 2.2.4-alpha```及以上版本体验。
+WXS是微信小程序的一套脚本语言，[规范详见](https://developers.weixin.qq.com/miniprogram/dev/framework/view/wxs/)。
+uni-app可以将wxs代码编译到微信小程序、QQ小程序、5+APP上（`HBuilderX 2.2.4-alpha`及以上版本）
 
-对应的，百度小程序提供了Filter、阿里小程序提供了SJS，但它们的功能还不如wxs强大。另外头条系小程序不支持类似功能。
+与wxs类似，百度小程序提供了Filter、阿里小程序提供了SJS，uni-app也支持使用这些功能，并将它们编译到百度和阿里的小程序端。不过它们的功能还不如wxs强大。此外头条系小程序自身不支持类似功能。
 
 **wxs示例**
 
 以下是一些使用 WXS 的简单示例，要完整了解 WXS 语法，请参考[WXS 语法参考](https://developers.weixin.qq.com/miniprogram/dev/reference/wxs/)。本示例使用wxs响应touchmove事件，减少视图层与逻辑层通信，使滑动更加丝滑。
 
-```
+```html
 <template>
 	<view>
 		<view class="area">
@@ -1000,7 +1000,7 @@ WXS是微信小程序的一套脚本语言，[详见](https://developers.weixin.
 
 index.vue  
 
-```
+```html
 <template>
 	<view>
 		<view>
