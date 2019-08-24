@@ -95,11 +95,11 @@ uni-app已经有几十万开发者，创建了几十万个项目，是开发者�
 	</a>
 	<a href="https://www.cyb520.com/" target="_blank" class="clear-style barcode-view">
 		<img src="https://img.cyb520.com/faceImg/2019/08/17/130C1F3F-2E93-A55D-D6B2-074BEBE1902F.png/a120" width="200"/>
-		<span style="margin-top:15px;">百度小程序码</span>
+		<span style="margin-top:15px;">QQ小程序码</span>
 	</a>
 	<a href="https://www.cyb520.com/" target="_blank" class="clear-style barcode-view">
 		<img src="https://img.cyb520.com/faceImg/2019/08/17/404C2595-2B08-D471-1317-6D5375F195C5.png/a120" width="200"/>
-		<span style="margin-top:15px;">百度小程序码</span>
+		<span style="margin-top:15px;">头条/抖音小程序码</span>
 	</a>
 </div>
 
