@@ -1095,6 +1095,7 @@ export default {
 - 暂不支持在 wxs、sjs、filter.js 中调用其他同类型文件
 - 编写wxs、sjs、filter.js 内容时必须遵循相应语法规范**重要**
 - wxs、filter.js既能内联使用又可以外部引入，sjs只能外部引入
+- mp-qq 目前对内联的 wxs 支持不好，部分写法会导致编译出错
 
 
 ## 致谢
