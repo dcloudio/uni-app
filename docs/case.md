@@ -24,7 +24,7 @@ uni-app已经有几十万开发者，创建了几十万个项目，是开发者�
 		<span style="margin-top:15px;">App及H5的通用快码</span>
 	</a>
 </div>
-
+<!--
 <a href="//m3w.cn/__uni__fad3fd9" target="_blank" class="clear-style"><b>图片App模版：</b></a>使用uni-app开发的图片App模版，包含单列图、双列图，图片分类，图片轮播、预览、下载，图片分享、收藏，设置桌面背景图等功能。本项目源码在HBuilderX中新建项目可获得。
 <div style="display:flex;justify-content: space-around;">
 	<a href="//m3w.cn/__uni__fad3fd9" target="_blank" class="clear-style barcode-view">
@@ -32,7 +32,7 @@ uni-app已经有几十万开发者，创建了几十万个项目，是开发者�
 		<span style="margin-top:15px;">App及H5的通用快码</span>
 	</a>
 </div>
-
+-->
 ### 第三方开发者案例
 
 <a href="https://www.csdn.net/" target="_blank" class="clear-style"><b>CSDN：</b></a> 专业 IT 技术社区，致力于为中国软件开发者提供知识传播、在线学习、职业发展等全生命周期服务。
