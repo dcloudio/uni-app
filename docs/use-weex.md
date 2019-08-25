@@ -10,14 +10,43 @@
 
 如果你已经是 weex 的开发者，具有 weex 的填坑能力，那么 nvue 是你的更优选择，能切实提升你的开发效率，降低成本。
 
+如果你不开发App，那么你不太需要nvue。
+
 如果你是web前端，不熟悉 weex，那么建议你仍然以使用 vue 为主，在App端某些 vue 表现不佳的场景下使用 nvue 作为强化补充：
 - 左右拖动的长列表。在webview里，通过swiper+scroll-view实现左右拖动的长列表，前端模拟下拉刷新，这套方案的性能不好。此时推荐使用nvue，比如新建uni-app项目时的新闻示例模板，就是首页采用了nvue
-- 为了解决 vue 页面的原生控件层级问题和原生导航栏的灵活自定义问题，uni-app 还提供了 subnvue 方案，将一个非全屏的 nvue 页面覆盖到 vue 页面上，[详见](https://ask.dcloud.net.cn/article/35948)
+- 如需要将软键盘右下角按钮文字改为“发送”，则需要使用nvue
+- 前端控件无法覆盖原生控件的问题。在nvue下，都是原生控件，覆盖map、video等不需要cover-view（如需要发布到小程序，仍然推荐写cover-view）
+- 同样因为层级问题得到解决，nvue可以实现video内嵌到swiper中，以实现抖音式视频滑动切换，例子见[插件市场](https://ext.dcloud.net.cn/plugin?id=664)；nvue的视频全屏后，仍然可以通过cover-view实现内容覆盖，比如增加文字标题、分享按钮。
+- nvue下有live-pusher组件，和小程序对齐。而vue页面下使用直播，需在条件编译里单独调用plus.video的API。
+- nvue下的map组件，小程序对齐。而vue页面的map组件有一些差异。
+- App端实现粘性布局，比如滚动吸顶，则nvue才能保证高性能，例子见[插件市场](https://ext.dcloud.net.cn/plugin?id=715)
 
+此外，App端，vue页面上也可以覆盖subnvue（一种非全屏的nvue页面覆盖在webview上），以解决App上的原生控件层级问题。[详见](https://ask.dcloud.net.cn/article/35948)
 
-## 编译模式差异
+## 项目渲染模式
+uni-app在App端，支持vue页面和nvue页面混搭、互相跳转。也支持纯nvue项目。
 
-uni-app 深度改进了 weex，提供了2种编译模式，一种是常规的 weex 组件模式，即编写`<div>`。另一种是 uni-app 组件模式，即编写`<view>`。后者更提供了编译为小程序和H5的能力。
+在manifest.json源码视图的`"app-plus"`下配置`"renderer":"native"`，即代表App端启用纯原生渲染模式。此时pages.json注册的vue页面将被忽略，vue组件中的代码也需覆盖nvue规范，并会被原生渲染。
+
+启动纯原生渲染，可以减少App端的包体积、加快App启动速度。因为webview渲染模式的相关模块将被移除。
+
+如果不指定该值，默认是不启动纯原生渲染的。
+
+```json
+// manifest.json    
+{    
+    // ...    
+     /* App平台特有配置 */    
+    "app-plus": {    
+        "renderer": "native", //App端纯原生渲染模式
+    }    
+}   
+
+```
+
+## nvue页面编译模式差异
+
+uni-app 深度改进了 weex，提供了2种编译模式，一种是常规的 weex 组件模式，即编写`<div>`。另一种是 uni-app 组件模式，即编写`<view>`。后者更提供了编译为小程序和H5的能力，实现了全端输出。
 
 也可以理解为uni-app做了一个原生渲染的小程序引擎。
 
@@ -31,7 +60,7 @@ uni-app 深度改进了 weex，提供了2种编译模式，一种是常规的 we
 |全局样式	|手动引入							|app.vue的样式即为全局样式			|
 |页面滚动	|必须给页面套<list>或<scroller>组件	|默认支持页面滚动					|
 
-修改2种编译模式的在 manifest.json 中，`manifest.json` -> `app-plus` -> `nvueCompiler` 切换编译模式。
+在 manifest.json 中修改2种编译模式，`manifest.json` -> `app-plus` -> `nvueCompiler` 切换编译模式。
 
 `nvueCompiler` 有两个值：
 - weex
@@ -50,21 +79,19 @@ uni-app 深度改进了 weex，提供了2种编译模式，一种是常规的 we
 ```
 
 * 如果没有在manifest里明确配置，默认是weex模式。这是为了向下兼容。
-* 当前uni-app编译模式组件还不够完整，详细列表见 [https://ask.dcloud.net.cn/article/36074](https://ask.dcloud.net.cn/article/36074)，但已经可满足常用场景。比如左右拖动的长列表场景推荐使用uni-app编译模式的nvue，其他页面仍然可使用 vue 页面。新建uni-app项目选模板`新闻/资讯模板`，这是一个nvue页面可编译到全平台的示例。
 
 ## 快速上手
 
 ### 1. 新建 nvue 页面
 
-在 ``uni-app`` 项目中，选中文件或文件夹，鼠标右击选择新建 ``nvue`` 文件输入文件名创建。
+在HBuilderX的 ``uni-app`` 项目中，新建页面，弹出界面右上角可以选择是建立vue页面还是nvue页面，或者2个同时建。
 
-不管是vue页面还是nvue页面，都需要在pages.json中注册。
+不管是vue页面还是nvue页面，都需要在pages.json中注册。如果在HBuilderX中新建页面是会自动注册的，如果使用其他编辑器，则需要自行在pages.json里注册。
 
-如果一个页面路由下同时有vue页面和nvue页面，那么在App端，会优先使用nvue页面。
+如果一个页面路由下同时有vue页面和nvue页面，即出现同名的vue和nvue文件。那么在App端，会优先使用nvue页面，同名的vue文件将不会被编译到App端。而在非App端，会优先使用vue页面。
 
-在非app端，只有uni-app编译模式的nvue才会编译。
+如果不同名，只有nvue页面，则在非app端，只有uni-app编译模式的nvue文件才会编译。
 
-![](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/created-nvue.png)
 
 ### 2. 开发 nvue 页面
 
@@ -118,7 +145,7 @@ uni-app 深度改进了 weex，提供了2种编译模式，一种是常规的 we
 
 ### 3. 调试 nvue 页面
 
-HBuilderX内置了更好用的weex/uni-app调试工具，[详见](https://uniapp.dcloud.io/snippet?id=%e5%85%b3%e4%ba%8e-app-%e7%9a%84%e8%b0%83%e8%af%95)
+HBuilderX内置了更好用的weex/uni-app调试工具，包括审查界面元素、看log、debug打断点，[详见](https://uniapp.dcloud.io/snippet?id=%e5%85%b3%e4%ba%8e-app-%e7%9a%84%e8%b0%83%e8%af%95)
 
 
 ## 生命周期
@@ -343,6 +370,7 @@ Tis:
 
 * 使用方式可参考 [BindingX 快速开始](https://alibaba.github.io/bindingx/guide/cn_guide_start)，demo示例可参考 [BindingX 示例](https://alibaba.github.io/bindingx/demos) 里 ``vue`` 的相关示例，将实验田里的 ``vue`` 代码拷贝到 ``nvue`` 文件里即可。
 * 若引入 weex-bindingx 时发现不生效，检查项目路径，路径不能含有中文。
+* 使用npm时如果命令行报错，需要注意看命令行的提示
 
 **代码示例**
 
@@ -710,11 +738,11 @@ export default {
 
 但仍然还有一些区别需要注意：
 
-- nvue 页面只能使用 flex 布局，不支持其他布局方式。需要注意的是 weex 的 flex 默认为竖向排列，即 ``flex-direction: column``，这与 html 的 flex 默认为横向排列不同。在 nvue 编译为 uni-app模式时，纠正了这个问题，flex 方向默认改为横向排列。
+- nvue 页面只能使用 flex 布局，不支持其他布局方式。
 - weex 下，页面内容高过屏幕高度并不会自动滚动，它没有页面滚动的概念，只有区域滚动，要滚得内容需要套在<scroller>组件下。在 nvue 编译为 uni-app模式时，纠正了这个问题，页面内容过高会自动滚动。
 - weex 下，px是与屏幕宽度相关的动态单位，750px代表成屏幕宽度100%，它的静态单位是wx。在 nvue 编译为 uni-app模式时，纠正了这个问题，rpx是与屏幕宽度相关的动态单位，px是静态单位。
 - 页面开发前，首先想清楚这个页面的纵向内容有什么，哪些是要滚动的，然后每个纵向内容的横轴排布有什么，按 flex 布局设计好界面。
-- 文字内容，必须、只能在<text>组件下。不能在<div>的text里写文字。
+- 文字内容，必须、只能在<text>组件下。不能在<div>、<view>的text区域里直接写文字。
 - 支持的css有限，不过并不影响布局出你需要的界面，flex还是非常强大的。[详见](https://weex.apache.org/zh/docs/styles/common-styles.html#%E7%9B%92%E6%A8%A1%E5%9E%8B)
 - class 进行绑定时只支持数组语法。
 
@@ -732,5 +760,4 @@ export default {
 - nvue 切换横竖屏时可能导致样式出现问题，建议有 nvue 的页面锁定手机方向。
 - 不能在 style 中引入字体文件，nvue 中字体图标的使用参考：[weex 加载自定义字体](https://weex.apache.org/zh/docs/modules/dom.html#addrule)。
 - 目前不支持在 nvue 页面使用 typescript/ts。
-- HBuilderX 1.9.8以前，nvue 不支持运行在Android三方模拟器上。HBuilderX 2.1以前，nvue不支持less等css预编译器。
 - nvue 页面 ``titleNview`` 设为 ``false``时，想要模拟状态栏，可以参考：[https://ask.dcloud.net.cn/article/35111](https://ask.dcloud.net.cn/article/35111)。
