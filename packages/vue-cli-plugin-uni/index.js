@@ -30,6 +30,6 @@ module.exports = (api, options) => {
 }
 
 module.exports.defaultModes = {
-  serve: 'development',
-  build: 'production'
+  'uni-serve': 'development',
+  'uni-build': process.env.NODE_ENV
 }

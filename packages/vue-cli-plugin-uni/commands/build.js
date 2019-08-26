@@ -141,5 +141,5 @@ async function build (args, api, options) {
 }
 
 module.exports.defaultModes = {
-  'uni-build': 'production'
+  'uni-build': process.env.NODE_ENV
 }
