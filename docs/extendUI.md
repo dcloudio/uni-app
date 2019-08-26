@@ -256,17 +256,17 @@ export default {
 在 ``template`` 中使用组件
 
 ```html
-<uni-load-more :loadingType="1"></uni-load-more>
+<uni-load-more :status="more"></uni-load-more>
 ```
 
 **LoadMore 属性说明：**
 
 |属性名		|类型|默认值	|说明|
 |---|----|---|---|
-|loadingType	|Number	|0|loading 的状态，可选值：0（loading前），1（loading中），2（没有更多了）|
-|showImage	|Boolean	|true|是否显示 loading 图|
+|status	|String	|more|loading 的状态，可选值：more（loading前）、loading（loading中）、noMore（没有更多了）|
+|show-icon	|Boolean	|true|是否显示 loading 图标|
 |color	|String	|#777777|图标和文字颜色	|
-|contentText	|Object	|```{contentdown: "上拉显示更多",contentrefresh: "正在加载...",contentnomore: "没有更多数据了"}```|各状态文字说明|
+|content-text	|Object	|```{contentdown: "上拉显示更多",contentrefresh: "正在加载...",contentnomore: "没有更多数据了"}```|各状态文字说明|
 
 
 ### NavBar 导航栏
