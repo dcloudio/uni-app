@@ -167,6 +167,39 @@ function getMethodName (methodName) {
   return methodName === '__HOLDER__' ? '' : methodName
 }
 
+function parseEventByCallExpression (callExpr, methods) {
+  let methodName = callExpr.callee.name
+  if (methodName === '$set') {
+    methodName = INTERNAL_SET_SYNC
+  }
+  const arrayExpression = [t.stringLiteral(getMethodName(methodName))]
+  const args = callExpr.arguments
+  if (methodName === INTERNAL_SET_SYNC) {
+    // v-bind:title.sync="doc.title"
+    // ['$set',['doc.a','title','$event']]
+    const argsExpression = []
+    argsExpression.push(
+      t.memberExpression(args[0], t.identifier(args[1].value))
+    )
+    argsExpression.push(t.stringLiteral(args[1].value))
+    argsExpression.push(t.stringLiteral('$event'))
+    arrayExpression.push(t.arrayExpression(argsExpression))
+  } else {
+    if (args.length) {
+      const argsExpression = []
+      args.forEach(arg => {
+        if (t.isIdentifier(arg) && arg.name === '$event') {
+          argsExpression.push(t.stringLiteral('$event'))
+        } else {
+          argsExpression.push(arg)
+        }
+      })
+      arrayExpression.push(t.arrayExpression(argsExpression))
+    }
+  }
+  methods.push(t.arrayExpression(arrayExpression))
+}
+
 function parseEvent (keyPath, valuePath, state, isComponent, isNativeOn = false, tagName, ret) {
   const key = keyPath.node
   let type = key.value || key.name
@@ -235,7 +268,22 @@ function parseEvent (keyPath, valuePath, state, isComponent, isNativeOn = false,
       methods.push(addEventExpressionStatement(funcPath, state, isCustom))
     } else {
       let anonymous = true
-      funcPath.traverse({
+
+      // "click":function($event) {click1(item);click2(item);}
+      const body = funcPath.node.body.body
+      if (body.length) {
+        const exprStatements = body.filter(node => {
+          return t.isExpressionStatement(node) && t.isCallExpression(node.expression)
+        })
+        if (exprStatements.length === body.length) {
+          anonymous = false
+          exprStatements.forEach(exprStatement => {
+            parseEventByCallExpression(exprStatement.expression, methods)
+          })
+        }
+      }
+
+      anonymous && funcPath.traverse({
         noScope: true,
         MemberExpression (path) {
           if (path.node.object.name === '$event' && path.node.property.name ===
@@ -271,36 +319,7 @@ function parseEvent (keyPath, valuePath, state, isComponent, isNativeOn = false,
           if (t.isCallExpression(argument)) {
             if (t.isIdentifier(argument.callee)) {
               anonymous = false
-              let methodName = argument.callee.name
-              if (methodName === '$set') {
-                methodName = INTERNAL_SET_SYNC
-              }
-              const arrayExpression = [t.stringLiteral(getMethodName(methodName))]
-              const args = argument.arguments
-              if (methodName === INTERNAL_SET_SYNC) {
-                // v-bind:title.sync="doc.title"
-                // ['$set',['doc.a','title','$event']]
-                const argsExpression = []
-                argsExpression.push(
-                  t.memberExpression(args[0], t.identifier(args[1].value))
-                )
-                argsExpression.push(t.stringLiteral(args[1].value))
-                argsExpression.push(t.stringLiteral('$event'))
-                arrayExpression.push(t.arrayExpression(argsExpression))
-              } else {
-                if (args.length) {
-                  const argsExpression = []
-                  args.forEach(arg => {
-                    if (t.isIdentifier(arg) && arg.name === '$event') {
-                      argsExpression.push(t.stringLiteral('$event'))
-                    } else {
-                      argsExpression.push(arg)
-                    }
-                  })
-                  arrayExpression.push(t.arrayExpression(argsExpression))
-                }
-              }
-              methods.push(t.arrayExpression(arrayExpression))
+              parseEventByCallExpression(argument, methods)
             }
           }
         }

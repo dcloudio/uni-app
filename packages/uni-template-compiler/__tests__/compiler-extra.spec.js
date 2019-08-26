@@ -252,6 +252,10 @@ describe('mp:compiler-extra', () => {
   })
 
   it('generate events inside v-for', () => {
+    assertCodegen(
+      `<view v-for="item in dataList" :key="item.id" @click="click1(item, 1);click2(item, 2);"/>`,
+      `<block wx:for="{{dataList}}" wx:for-item="item" wx:for-index="__i0__" wx:key="id"><view data-event-opts="{{[['tap',[['click1',['$0',1],[[['dataList','id',item.id]]]],['click2',['$0',2],[[['dataList','id',item.id]]]]]]]}}" bindtap="__e"></view></block>`
+    )
     // TODO vue的数字 item 是从1，小程序是从0，后续考虑抹平差异
     assertCodegen(
       `<view>1<view  v-for="item in items" :key="item"><input v-for="item1 in item" :key="item1" @input="handle" @click="e=>count++"></view></view>`,

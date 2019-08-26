@@ -2,7 +2,7 @@ const compiler = require('../lib')
 
 const res = compiler.compile(
   `
-<view @touchmove="a.touchmove">{{t.a}}{{t['a']}}{{t.a(b)}}{{t['a'](b)}}{{u.t.a(b)}}{{u.t.a}}</view>
+<view v-for="item in dataList" :key="item.id" @click="click1(item, 1);click2(item, 2);"/>
     `, {
     resourcePath: '/User/fxy/Documents/test.wxml',
     mp: {
