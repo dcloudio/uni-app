@@ -2,7 +2,7 @@ import VueRouter from 'vue-router'
 
 import {
   isPage
-} from 'uni-helpers'
+} from 'uni-helpers/index'
 
 import {
   createAppMixin

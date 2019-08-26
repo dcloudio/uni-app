@@ -4,9 +4,11 @@
 
 **平台差异说明**
 
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|
-|:-:|:-:|:-:|:-:|:-:|
-|√|x|√|√|√|
+|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|√|√|√|√|√|√|√|
+
+**Tips**
 
 * 由于 icon 组件各端表现存在差异，可以通过使用 [字体图标](/frame?id=字体图标) 的方式来弥补各端差异。
 
@@ -22,8 +24,7 @@
 
 |平台|type 有效值|
 |:-:|:-:|
-|5+App|success, success_no_circle, info, warn, waiting, cancel, download, search, clear|
-|微信小程序|success, success_no_circle, info, warn, waiting, cancel, download, search, clear|
+|5+App、H5、微信小程序、QQ小程序|success, success_no_circle, info, warn, waiting, cancel, download, search, clear|
 |支付宝小程序|info, warn, waiting, cancel, download, search, clear, success, success_no_circle,loading|
 |百度小程序|success, info, warn, waiting, success_no_circle, clear, search, personal, setting, top, close, cancel, download, checkboxSelected, radioSelected, radioUnselect|
 

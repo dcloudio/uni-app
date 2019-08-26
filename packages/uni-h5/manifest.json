@@ -1,0 +1,776 @@
+{
+    "base64ToArrayBuffer": [
+        "/core/service/api/base/base64.js",
+        [
+            [
+                "/core/helpers/protocol/base/base64.js",
+                "base64ToArrayBuffer"
+            ]
+        ]
+    ],
+    "arrayBufferToBase64": [
+        "/core/service/api/base/base64.js",
+        [
+            [
+                "/core/helpers/protocol/base/base64.js",
+                "arrayBufferToBase64"
+            ]
+        ]
+    ],
+    "addInterceptor": [
+        "/core/service/api/base/interceptor.js",
+        [
+            [
+                "/core/helpers/protocol/base/interceptor.js",
+                "addInterceptor"
+            ]
+        ]
+    ],
+    "removeInterceptor": [
+        "/core/service/api/base/interceptor.js",
+        [
+            [
+                "/core/helpers/protocol/base/interceptor.js",
+                "removeInterceptor"
+            ]
+        ]
+    ],
+    "request": [
+        "/platforms/h5/service/api/network/request.js",
+        [
+            [
+                "/core/helpers/protocol/network/request.js",
+                "request"
+            ]
+        ]
+    ],
+    "uploadFile": [
+        "/platforms/h5/service/api/network/upload-file.js",
+        [
+            [
+                "/core/helpers/protocol/network/upload-file.js",
+                "uploadFile"
+            ]
+        ]
+    ],
+    "downloadFile": [
+        "/platforms/h5/service/api/network/download-file.js",
+        [
+            [
+                "/core/helpers/protocol/network/download-file.js",
+                "downloadFile"
+            ]
+        ]
+    ],
+    "connectSocket": [
+        "/platforms/h5/service/api/network/socket.js",
+        [
+            [
+                "/core/helpers/protocol/network/socket.js",
+                "connectSocket"
+            ]
+        ]
+    ],
+    "onSocketOpen": [
+        "/platforms/h5/service/api/network/socket.js",
+        []
+    ],
+    "onSocketError": [
+        "/platforms/h5/service/api/network/socket.js",
+        []
+    ],
+    "sendSocketMessage": [
+        "/platforms/h5/service/api/network/socket.js",
+        [
+            [
+                "/core/helpers/protocol/network/socket.js",
+                "sendSocketMessage"
+            ]
+        ]
+    ],
+    "onSocketMessage": [
+        "/platforms/h5/service/api/network/socket.js",
+        []
+    ],
+    "closeSocket": [
+        "/platforms/h5/service/api/network/socket.js",
+        [
+            [
+                "/core/helpers/protocol/network/socket.js",
+                "closeSocket"
+            ]
+        ]
+    ],
+    "onSocketClose": [
+        "/platforms/h5/service/api/network/socket.js",
+        []
+    ],
+    "navigateTo": [
+        "/platforms/h5/service/api/route/route.js",
+        [
+            [
+                "/core/helpers/protocol/route/route.js",
+                "navigateTo"
+            ]
+        ],
+        true
+    ],
+    "redirectTo": [
+        "/platforms/h5/service/api/route/route.js",
+        [
+            [
+                "/core/helpers/protocol/route/route.js",
+                "redirectTo"
+            ]
+        ],
+        true
+    ],
+    "reLaunch": [
+        "/platforms/h5/service/api/route/route.js",
+        [
+            [
+                "/core/helpers/protocol/route/route.js",
+                "reLaunch"
+            ]
+        ],
+        true
+    ],
+    "switchTab": [
+        "/platforms/h5/service/api/route/route.js",
+        [
+            [
+                "/core/helpers/protocol/route/route.js",
+                "switchTab"
+            ]
+        ],
+        true
+    ],
+    "navigateBack": [
+        "/platforms/h5/service/api/route/route.js",
+        [
+            [
+                "/core/helpers/protocol/route/route.js",
+                "navigateBack"
+            ]
+        ],
+        true
+    ],
+    "setStorage": [
+        "/core/service/api/storage/storage.js",
+        [
+            [
+                "/core/helpers/protocol/storage/storage.js",
+                "setStorage"
+            ]
+        ]
+    ],
+    "setStorageSync": [
+        "/core/service/api/storage/storage.js",
+        [
+            [
+                "/core/helpers/protocol/storage/storage.js",
+                "setStorageSync"
+            ]
+        ]
+    ],
+    "getStorage": [
+        "/core/service/api/storage/storage.js",
+        [
+            [
+                "/core/helpers/protocol/storage/storage.js",
+                "getStorage"
+            ]
+        ]
+    ],
+    "getStorageSync": [
+        "/core/service/api/storage/storage.js",
+        [
+            [
+                "/core/helpers/protocol/storage/storage.js",
+                "getStorageSync"
+            ]
+        ]
+    ],
+    "getStorageInfo": [
+        "/core/service/api/storage/storage.js",
+        []
+    ],
+    "getStorageInfoSync": [
+        "/core/service/api/storage/storage.js",
+        []
+    ],
+    "removeStorage": [
+        "/core/service/api/storage/storage.js",
+        [
+            [
+                "/core/helpers/protocol/storage/storage.js",
+                "removeStorage"
+            ]
+        ]
+    ],
+    "removeStorageSync": [
+        "/core/service/api/storage/storage.js",
+        [
+            [
+                "/core/helpers/protocol/storage/storage.js",
+                "removeStorageSync"
+            ]
+        ]
+    ],
+    "clearStorage": [
+        "/core/service/api/storage/storage.js",
+        []
+    ],
+    "clearStorageSync": [
+        "/core/service/api/storage/storage.js",
+        []
+    ],
+    "getLocation": [
+        "/platforms/h5/service/api/location/get-location.js",
+        [
+            [
+                "/core/helpers/protocol/location/get-location.js",
+                "getLocation"
+            ]
+        ]
+    ],
+    "chooseLocation": [
+        "/platforms/h5/service/api/location/choose-location.js",
+        [
+            [
+                "/core/helpers/protocol/location/choose-location.js",
+                "chooseLocation"
+            ],
+            [
+                "/platforms/h5/components/system-routes/choose-location/index.vue",
+                "ChooseLocation"
+            ]
+        ]
+    ],
+    "openLocation": [
+        "/platforms/h5/service/api/location/open-location.js",
+        [
+            [
+                "/core/helpers/protocol/location/open-location.js",
+                "openLocation"
+            ],
+            [
+                "/platforms/h5/components/system-routes/open-location/index.vue",
+                "OpenLocation"
+            ]
+        ]
+    ],
+    "createMapContext": [
+        "/platforms/h5/service/api/context/map.js",
+        [
+            [
+                "/core/helpers/protocol/context/context.js",
+                "createMapContext"
+            ]
+        ]
+    ],
+    "chooseImage": [
+        "/platforms/h5/service/api/media/choose-image.js",
+        [
+            [
+                "/core/helpers/protocol/media/choose-image.js",
+                "chooseImage"
+            ]
+        ]
+    ],
+    "previewImage": [
+        "/platforms/h5/service/api/media/preview-image.js",
+        [
+            [
+                "/core/helpers/protocol/media/preview-image.js",
+                "previewImage"
+            ],
+            [
+                "/platforms/h5/components/system-routes/preview-image/index.vue",
+                "PreviewImage"
+            ]
+        ]
+    ],
+    "getImageInfo": [
+        "/platforms/h5/service/api/media/get-image-info.js",
+        [
+            [
+                "/core/helpers/protocol/media/get-image-info.js",
+                "getImageInfo"
+            ]
+        ]
+    ],
+    "createInnerAudioContext": [
+        "/platforms/h5/service/api/context/inner-audio.js",
+        []
+    ],
+    "chooseVideo": [
+        "/platforms/h5/service/api/media/choose-video.js",
+        [
+            [
+                "/core/helpers/protocol/media/choose-video.js",
+                "chooseVideo"
+            ]
+        ]
+    ],
+    "createVideoContext": [
+        "/platforms/h5/service/api/context/video.js",
+        [
+            [
+                "/core/helpers/protocol/context/context.js",
+                "createVideoContext"
+            ]
+        ]
+    ],
+    "getSystemInfo": [
+        "/platforms/h5/service/api/device/get-system-info.js",
+        [],
+        true
+    ],
+    "getSystemInfoSync": [
+        "/platforms/h5/service/api/device/get-system-info.js",
+        [],
+        true
+    ],
+    "canIUse": [
+        "/core/service/api/base/can-i-use.js",
+        [
+            [
+                "/core/helpers/protocol/base/can-i-use.js",
+                "canIUse"
+            ]
+        ],
+        true
+    ],
+    "getNetworkType": [
+        "/platforms/h5/service/api/device/network-info.js",
+        []
+    ],
+    "onNetworkStatusChange": [
+        "/platforms/h5/service/api/device/network-info.js",
+        []
+    ],
+    "onAccelerometerChange": [
+        "/core/service/api/device/accelerometer.js",
+        [
+            [
+                "/platforms/h5/service/api/device/accelerometer.js",
+                "enableAccelerometer"
+            ]
+        ]
+    ],
+    "startAccelerometer": [
+        "/core/service/api/device/accelerometer.js",
+        [
+            [
+                "/platforms/h5/service/api/device/accelerometer.js",
+                "enableAccelerometer"
+            ]
+        ]
+    ],
+    "stopAccelerometer": [
+        "/core/service/api/device/accelerometer.js",
+        [
+            [
+                "/platforms/h5/service/api/device/accelerometer.js",
+                "enableAccelerometer"
+            ]
+        ]
+    ],
+    "onCompassChange": [
+        "/platforms/h5/service/api/device/compass.js",
+        []
+    ],
+    "startCompass": [
+        "/platforms/h5/service/api/device/compass.js",
+        []
+    ],
+    "stopCompass": [
+        "/platforms/h5/service/api/device/compass.js",
+        []
+    ],
+    "makePhoneCall": [
+        "/platforms/h5/service/api/device/make-phone-call.js",
+        [
+            [
+                "/core/helpers/protocol/device/make-phone-call.js",
+                "makePhoneCall"
+            ]
+        ]
+    ],
+    "vibrateLong": [
+        "/platforms/h5/service/api/device/vibrate.js",
+        []
+    ],
+    "vibrateShort": [
+        "/platforms/h5/service/api/device/vibrate.js",
+        []
+    ],
+    "onBluetoothDeviceFound": [
+        "/core/service/api/device/bluetooth.js",
+        []
+    ],
+    "onBluetoothAdapterStateChange": [
+        "/core/service/api/device/bluetooth.js",
+        []
+    ],
+    "onBLEConnectionStateChange": [
+        "/core/service/api/device/bluetooth.js",
+        []
+    ],
+    "onBLECharacteristicValueChange": [
+        "/core/service/api/device/bluetooth.js",
+        []
+    ],
+    "hideKeyboard": [
+        "/platforms/h5/service/api/device/hide-keyboard.js",
+        []
+    ],
+    "onKeyboardHeightChange": [
+        "/core/service/api/ui/keyboard.js",
+        []
+    ],
+    "showToast": [
+        "/platforms/h5/service/api/ui/popup.js",
+        [
+            [
+                "/core/helpers/protocol/ui/popup.js",
+                "showToast"
+            ],
+            [
+                "/platforms/h5/components/app/popup/toast.vue",
+                "Toast"
+            ],
+            [
+                "/platforms/h5/components/app/popup/mixins/toast.js",
+                "ToastMixin"
+            ]
+        ]
+    ],
+    "hideToast": [
+        "/platforms/h5/service/api/ui/popup.js",
+        [
+            [
+                "/platforms/h5/components/app/popup/toast.vue",
+                "Toast"
+            ],
+            [
+                "/platforms/h5/components/app/popup/mixins/toast.js",
+                "ToastMixin"
+            ]
+        ]
+    ],
+    "showLoading": [
+        "/platforms/h5/service/api/ui/popup.js",
+        [
+            [
+                "/core/helpers/protocol/ui/popup.js",
+                "showLoading"
+            ],
+            [
+                "/platforms/h5/components/app/popup/toast.vue",
+                "Toast"
+            ],
+            [
+                "/platforms/h5/components/app/popup/mixins/toast.js",
+                "ToastMixin"
+            ]
+        ]
+    ],
+    "hideLoading": [
+        "/platforms/h5/service/api/ui/popup.js",
+        [
+            [
+                "/platforms/h5/components/app/popup/toast.vue",
+                "Toast"
+            ],
+            [
+                "/platforms/h5/components/app/popup/mixins/toast.js",
+                "ToastMixin"
+            ]
+        ]
+    ],
+    "showModal": [
+        "/platforms/h5/service/api/ui/popup.js",
+        [
+            [
+                "/core/helpers/protocol/ui/popup.js",
+                "showModal"
+            ],
+            [
+                "/platforms/h5/components/app/popup/modal.vue",
+                "Modal"
+            ],
+            [
+                "/platforms/h5/components/app/popup/mixins/modal.js",
+                "ModalMixin"
+            ]
+        ]
+    ],
+    "showActionSheet": [
+        "/platforms/h5/service/api/ui/popup.js",
+        [
+            [
+                "/core/helpers/protocol/ui/popup.js",
+                "showActionSheet"
+            ],
+            [
+                "/platforms/h5/components/app/popup/actionSheet.vue",
+                "ActionSheet"
+            ],
+            [
+                "/platforms/h5/components/app/popup/mixins/action-sheet.js",
+                "ActionSheetMixin"
+            ]
+        ]
+    ],
+    "setNavigationBarTitle": [
+        "/platforms/h5/service/api/ui/navigation-bar.js",
+        [
+            [
+                "/core/helpers/protocol/ui/navigation-bar.js",
+                "setNavigationBarTitle"
+            ]
+        ]
+    ],
+    "setNavigationBarColor": [
+        "/platforms/h5/service/api/ui/navigation-bar.js",
+        [
+            [
+                "/core/helpers/protocol/ui/navigation-bar.js",
+                "setNavigationBarColor"
+            ]
+        ]
+    ],
+    "showNavigationBarLoading": [
+        "/platforms/h5/service/api/ui/navigation-bar.js",
+        []
+    ],
+    "hideNavigationBarLoading": [
+        "/platforms/h5/service/api/ui/navigation-bar.js",
+        []
+    ],
+    "setTabBarItem": [
+        "/platforms/h5/service/api/ui/tab-bar.js",
+        [
+            [
+                "/core/helpers/protocol/ui/tab-bar.js",
+                "setTabBarItem"
+            ]
+        ]
+    ],
+    "setTabBarStyle": [
+        "/platforms/h5/service/api/ui/tab-bar.js",
+        [
+            [
+                "/core/helpers/protocol/ui/tab-bar.js",
+                "setTabBarStyle"
+            ]
+        ]
+    ],
+    "hideTabBar": [
+        "/platforms/h5/service/api/ui/tab-bar.js",
+        [
+            [
+                "/core/helpers/protocol/ui/tab-bar.js",
+                "hideTabBar"
+            ]
+        ]
+    ],
+    "showTabBar": [
+        "/platforms/h5/service/api/ui/tab-bar.js",
+        [
+            [
+                "/core/helpers/protocol/ui/tab-bar.js",
+                "showTabBar"
+            ]
+        ]
+    ],
+    "setTabBarBadge": [
+        "/platforms/h5/service/api/ui/tab-bar.js",
+        [
+            [
+                "/core/helpers/protocol/ui/tab-bar.js",
+                "setTabBarBadge"
+            ]
+        ]
+    ],
+    "removeTabBarBadge": [
+        "/platforms/h5/service/api/ui/tab-bar.js",
+        [
+            [
+                "/core/helpers/protocol/ui/tab-bar.js",
+                "removeTabBarBadge"
+            ]
+        ]
+    ],
+    "showTabBarRedDot": [
+        "/platforms/h5/service/api/ui/tab-bar.js",
+        [
+            [
+                "/core/helpers/protocol/ui/tab-bar.js",
+                "showTabBarRedDot"
+            ]
+        ]
+    ],
+    "hideTabBarRedDot": [
+        "/platforms/h5/service/api/ui/tab-bar.js",
+        [
+            [
+                "/core/helpers/protocol/ui/tab-bar.js",
+                "hideTabBarRedDot"
+            ]
+        ]
+    ],
+    "createAnimation": [
+        "/core/service/api/ui/create-animation.js",
+        []
+    ],
+    "pageScrollTo": [
+        "/core/service/api/ui/page-scroll-to.js",
+        [
+            [
+                "/core/helpers/protocol/ui/page-scroll-to.js",
+                "pageScrollTo"
+            ]
+        ]
+    ],
+    "onWindowResize": [
+        "/platforms/h5/service/api/ui/window.js",
+        []
+    ],
+    "offWindowResize": [
+        "/platforms/h5/service/api/ui/window.js",
+        []
+    ],
+    "startPullDownRefresh": [
+        "/platforms/h5/service/api/ui/pull-down-refresh.js",
+        []
+    ],
+    "stopPullDownRefresh": [
+        "/platforms/h5/service/api/ui/pull-down-refresh.js",
+        []
+    ],
+    "createSelectorQuery": [
+        "/platforms/h5/service/api/ui/create-selector-query.js",
+        [
+            [
+                "/core/view/bridge/subscribe/api/request-component-info.js",
+                "requestComponentInfo"
+            ]
+        ]
+    ],
+    "createIntersectionObserver": [
+        "/platforms/h5/service/api/ui/create-intersection-observer.js",
+        [
+            [
+                "/core/view/bridge/subscribe/api/request-component-observer.js",
+                "requestComponentObserver"
+            ],
+            [
+                "/core/view/bridge/subscribe/api/request-component-observer.js",
+                "destroyComponentObserver"
+            ]
+        ]
+    ],
+    "$emit": [
+        "/platforms/h5/service/api/base/event-bus.js",
+        [
+            [
+                "/core/helpers/protocol/base/event-bus.js",
+                "$emit"
+            ]
+        ]
+    ],
+    "$on": [
+        "/platforms/h5/service/api/base/event-bus.js",
+        [
+            [
+                "/core/helpers/protocol/base/event-bus.js",
+                "$on"
+            ]
+        ]
+    ],
+    "$once": [
+        "/platforms/h5/service/api/base/event-bus.js",
+        [
+            [
+                "/core/helpers/protocol/base/event-bus.js",
+                "$once"
+            ]
+        ]
+    ],
+    "$off": [
+        "/platforms/h5/service/api/base/event-bus.js",
+        [
+            [
+                "/core/helpers/protocol/base/event-bus.js",
+                "$off"
+            ]
+        ]
+    ],
+    "openDocument": [
+        "/platforms/h5/service/api/file/open-document.js",
+        [
+            [
+                "/core/helpers/protocol/file/open-document.js",
+                "openDocument"
+            ]
+        ]
+    ],
+    "createCanvasContext": [
+        "/platforms/h5/service/api/context/canvas.js",
+        [
+            [
+                "/core/helpers/protocol/context/context.js",
+                "createCanvasContext"
+            ]
+        ]
+    ],
+    "canvasToTempFilePath": [
+        "/platforms/h5/service/api/context/canvas.js",
+        [
+            [
+                "/core/helpers/protocol/context/canvas.js",
+                "canvasToTempFilePath"
+            ]
+        ]
+    ],
+    "canvasPutImageData": [
+        "/platforms/h5/service/api/context/canvas.js",
+        [
+            [
+                "/core/helpers/protocol/context/canvas.js",
+                "canvasPutImageData"
+            ]
+        ]
+    ],
+    "canvasGetImageData": [
+        "/platforms/h5/service/api/context/canvas.js",
+        [
+            [
+                "/core/helpers/protocol/context/canvas.js",
+                "canvasGetImageData"
+            ]
+        ]
+    ],
+    "getProvider": [
+        "/platforms/h5/service/api/plugin/get-provider.js",
+        [
+            [
+                "/core/helpers/protocol/plugin/get-provider.js",
+                "getProvider"
+            ]
+        ]
+    ],
+    "upx2px": [
+        "/core/service/api/base/upx2px.js",
+        [
+            [
+                "/core/helpers/protocol/base/upx2px.js",
+                "upx2px"
+            ]
+        ],
+        true
+    ]
+}

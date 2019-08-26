@@ -1,0 +1,39 @@
+{
+  "author": {
+    "name": "kaola-fed"
+  },
+  "bugs": {
+    "url": "https://github.com/vuejs/vue/issues"
+  },
+  "bundleDependencies": false,
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "deprecated": false,
+  "description": "Reactive, component-oriented view layer for modern web interfaces.",
+  "devDependencies": {},
+  "homepage": "https://github.com/vuejs/vue#readme",
+  "jsdelivr": "dist/megalo.mp.esm.js",
+  "keywords": [
+    "vue"
+  ],
+  "license": "MIT",
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "git add"
+    ]
+  },
+  "main": "dist/megalo.mp.esm.js",
+  "module": "dist/megalo.mp.esm.js",
+  "name": "megalo",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vuejs/vue.git"
+  },
+  "typings": "types/index.d.ts",
+  "unpkg": "dist/megalo.mp.esm.js",
+  "version": "0.5.4"
+}

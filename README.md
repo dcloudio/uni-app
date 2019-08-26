@@ -14,9 +14,9 @@
 
 ## 扫码体验
 
-一套代码编译到7个平台，开发一次、多处运行，这不是梦想，而是现实。依次扫描7个二维码，亲自体验最全面的跨平台效果！
+一套代码编译到8个平台，开发一次、多处运行，这不是梦想，而是现实。依次扫描8个二维码，亲自体验最全面的跨平台效果！
 
-<img src="http://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/barcode-20190131.png"/>
+<img src="https://img-cdn-qiniu.dcloud.net.cn/uni-app-qr-all.jpg"/>
 
 *注： Appstore、百度、头条平台不能提交简单demo，故iOS、百度小程序、头条小程序版补充了一些其他功能。*
 
@@ -29,13 +29,17 @@
 
 ## 项目案例
 
-案例：[uniapp.dcloud.io/case](https://uniapp.dcloud.io/case)
+案例展示：[uniapp.dcloud.io/case](https://uniapp.dcloud.io/case)
 
-欢迎广大开发者踊跃提交自己的应用案例，[uni-app案例征集](https://github.com/dcloudio/uni-app/issues/6)
+欢迎提交你的应用，[uni-app案例征集](https://github.com/dcloudio/uni-app/issues/6)
 
 ## 需求墙
 
-`uni-app`计划支持的功能点，会在需求墙上进行展示，并允许开发者对需求进行投票，[前往投票](https://dev.dcloud.net.cn/wish/)。
+`uni-app`计划支持的功能点，会在需求墙上进行展示，征集开发者的投票意见，[前往投票](https://dev.dcloud.net.cn/wish/)。
+
+## 更新日志
+
+`uni-app`一直保持高频的更新迭代，详见[uni-app 更新日志](docs/release.md)。
 
 ## 论坛
 

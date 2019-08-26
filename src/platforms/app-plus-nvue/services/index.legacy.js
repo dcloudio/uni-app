@@ -7,46 +7,34 @@ let getGlobalApp
 let getGlobalUniEmitter
 let getGlobalCurrentPages
 
-export default {
-  create (id, env, config) {
-    return {
-      initUniApp ({
-        nvue,
-        getUni,
-        getApp,
-        getUniEmitter,
-        getCurrentPages
-      }) {
-        getGlobalUni = getUni
-        getGlobalApp = getApp
-        getGlobalUniEmitter = getUniEmitter
-        getGlobalCurrentPages = getCurrentPages
+export function createInstanceContext () {
+  return {
+    initUniApp ({
+      nvue,
+      getUni,
+      getApp,
+      getUniEmitter,
+      getCurrentPages
+    }) {
+      getGlobalUni = getUni
+      getGlobalApp = getApp
+      getGlobalUniEmitter = getUniEmitter
+      getGlobalCurrentPages = getCurrentPages
 
-        initUpx2px(nvue)
-        initEventBus(getUniEmitter)
-      },
-      instance: {
-        getUni (nvue, plus, BroadcastChannel) {
-          return initUni(getGlobalUni(), nvue, plus, BroadcastChannel)
-        },
-        getApp () {
-          return getGlobalApp()
-        },
-        getUniEmitter () {
-          return getGlobalUniEmitter()
-        },
-        getCurrentPages () {
-          return getGlobalCurrentPages()
-        }
-      }
+      initUpx2px(nvue)
+      initEventBus(getUniEmitter)
+    },
+    getUni (nvue, plus, BroadcastChannel) {
+      return initUni(getGlobalUni(), nvue, plus, BroadcastChannel)
+    },
+    getApp () {
+      return getGlobalApp()
+    },
+    getUniEmitter () {
+      return getGlobalUniEmitter()
+    },
+    getCurrentPages () {
+      return getGlobalCurrentPages()
     }
-  },
-
-  refresh: function (id, env, config) {
-
-  },
-
-  destroy: function (id, env) {
-
   }
 }

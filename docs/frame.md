@@ -172,6 +172,10 @@ if(process.env.NODE_ENV === 'development'){
 }
 ```
 
+如果你需要自定义更多环境，比如测试环境：
+- 假设只需要对单一平台配置，可以 package.json 中配置，在HBuilderX的运行和发行菜单里会多一个出来。[https://uniapp.dcloud.io/collocation/package](https://uniapp.dcloud.io/collocation/package)
+- 如果是针对所有平台配置，可以在 vue-config.js 中配置。[https://uniapp.dcloud.io/collocation/vue-config](https://uniapp.dcloud.io/collocation/vue-config)
+
 **快捷代码块**
 
 HBuilderX 中敲入代码块 `uEnvDev`、`uEnvProd` 可以快速生成对应 `development`、`production` 的运行环境判定代码。
@@ -909,10 +913,197 @@ slide-view.vue
 
 详细的小程序转uni-app语法差异可参考文档[https://ask.dcloud.net.cn/article/35786](https://ask.dcloud.net.cn/article/35786)。
 
+## WXS
+
+WXS是微信小程序的一套脚本语言，[规范详见](https://developers.weixin.qq.com/miniprogram/dev/framework/view/wxs/)。
+uni-app可以将wxs代码编译到微信小程序、QQ小程序、5+APP上（`HBuilderX 2.2.4-alpha`及以上版本）
+
+与wxs类似，百度小程序提供了Filter、阿里小程序提供了SJS，uni-app也支持使用这些功能，并将它们编译到百度和阿里的小程序端。不过它们的功能还不如wxs强大。此外头条系小程序自身不支持类似功能。
+
+**wxs示例**
+
+以下是一些使用 WXS 的简单示例，要完整了解 WXS 语法，请参考[WXS 语法参考](https://developers.weixin.qq.com/miniprogram/dev/reference/wxs/)。本示例使用wxs响应touchmove事件，减少视图层与逻辑层通信，使滑动更加丝滑。
+
+```html
+<template>
+	<view>
+		<view class="area">
+			<view @touchstart="test.touchstart" @touchmove="test.touchmove" class="movable">{{test.msg}}</view>
+		</view>
+	</view>
+</template>
+<wxs module="test">
+	var startX = 0
+	var startY = 0
+	var lastLeft = 50; var lastTop = 50
+	function touchstart(event, ins) {
+		console.log("touchstart")
+	  var touch = event.touches[0] || event.changedTouches[0]
+	  startX = touch.pageX
+	  startY = touch.pageY
+	}
+	function touchmove(event, ins) {
+	  var touch = event.touches[0] || event.changedTouches[0]
+	  var pageX = touch.pageX
+	  var pageY = touch.pageY
+	  var left = pageX - startX + lastLeft
+	  var top = pageY - startY + lastTop
+	  startX = pageX
+	  startY = pageY
+	  lastLeft = left
+	  lastTop = top
+	  ins.selectComponent('.movable').setStyle({
+	    left: left + 'px',
+	    top: top + 'px'
+	  })
+		return false
+	}
+	module.exports = {
+		msg: 'Hello',
+	  touchstart: touchstart,
+	  touchmove: touchmove
+	}
+</wxs>
+
+<script>
+	export default {
+		data() {
+			return {
+			}
+		},
+		methods: {
+		}
+	}
+</script>
+
+<style>
+.area{
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+.movable{
+	position: absolute;
+	width: 100px;
+	height: 100px;
+	left: 50px;
+	top: 50px;
+	color: white;
+	text-align: center;
+	line-height: 100px;
+	background-color: red;
+}
+</style>
+```
+
+支付宝小程序，百度小程序官方暂未支持事件响应，不过也可以使用对应的SJS、Filter过滤器实现一些数据处理的操作，以下代码展示了一个时间格式化的小功能
+
+index.vue  
+
+```html
+<template>
+	<view>
+		<view>
+			{{timestr}} 是
+		</view>
+		<view>
+			{{utils.friendlyDate(timestamp)}}
+		</view>
+	</view>
+</template>
+<filter module="utils" src="./utils.filter.js"></filter>
+<import-sjs module="utils" src="./utils.sjs" />
+
+<script>
+	export default {
+		data() {
+			return {
+				timestr: '2019/08/22 10:10:10',
+				timestamp: 0
+			}
+		},
+		created() {
+			this.timestamp = new Date(this.timestr).getTime()
+		},
+		methods: {
+		}
+	}
+</script>
+```
+
+utils.sjs 与 utils.filter.js 
+
+```js
+export default {
+	friendlyDate: (timestamp) => {
+		var formats = {
+			'year': '%n% 年前',
+			'month': '%n% 月前',
+			'day': '%n% 天前',
+			'hour': '%n% 小时前',
+			'minute': '%n% 分钟前',
+			'second': '%n% 秒前',
+		};
+		var now = Date.now();
+		var seconds = Math.floor((now - parseInt(timestamp)) / 1000);
+		var minutes = Math.floor(seconds / 60);
+		var hours = Math.floor(minutes / 60);
+		var days = Math.floor(hours / 24);
+		var months = Math.floor(days / 30);
+		var years = Math.floor(months / 12);
+
+		var diffType = '';
+		var diffValue = 0;
+		if (years > 0) {
+			diffType = 'year';
+			diffValue = years;
+		} else {
+			if (months > 0) {
+				diffType = 'month';
+				diffValue = months;
+			} else {
+				if (days > 0) {
+					diffType = 'day';
+					diffValue = days;
+				} else {
+					if (hours > 0) {
+						diffType = 'hour';
+						diffValue = hours;
+					} else {
+						if (minutes > 0) {
+							diffType = 'minute';
+							diffValue = minutes;
+						} else {
+							diffType = 'second';
+							diffValue = seconds === 0 ? (seconds = 1) : seconds;
+						}
+					}
+				}
+			}
+		}
+		return formats[diffType].replace('%n%', diffValue);
+	}
+}
+```
+
+**注意**
+
+- **重要**编写wxs、sjs、filter.js 内容时必须遵循相应语法规范
+- 目前各个小程序正在完善相关规范，可能会有较大改动，请务必仔细阅读相应平台的文档
+- 支付宝小程序请使用sjs规范，[详见](https://docs.alipay.com/mini/framework/sjs)
+- 支付宝小程序sjs只能定义在.sjs 文件中。然后使用```<import-sjs>```标签引入
+- 支付宝小程序import-sjs的标签属性```name```、```from```被统一为了```module```、```src```以便后续实现多平台统一写法
+- 百度小程序中请使用Filter规范，[详见](https://smartprogram.baidu.com/docs/develop/framework/view_filter/)
+- 百度小程序Filter只能导出function函数
+- 暂不支持在 wxs、sjs、filter.js 中调用其他同类型文件
+- wxs、filter.js既能内联使用又可以外部引入，sjs只能外部引入
+- mp-qq 目前对内联的 wxs 支持不好，部分写法会导致编译出错
+
+
 ## 致谢
 
 ```uni-app```的设计使用了 ```vue + 自定义组件``` 的模式；开发者使用```Vue```语法，了解```uni-app```的组件，就可以开发跨端App；感谢```Vue```团队！
 
 为了照顾开发者的已有学习积累，```uni-app```的组件和api设计，基本参考了微信小程序，学过微信小程序开发，了解```vue```，就能直接上手```uni-app```；感谢微信小程序团队！
 
-```uni-app``` 在小程序端，曾引用[mpvue](http://mpvue.com/)及[Megalo](https://megalojs.org/)，感谢美团点评技术团队、网易考拉团队的贡献!
+```uni-app``` 在小程序端，学习参考了[mpvue](https://mpvue.com/)及[Megalo](https://megalojs.org/)，感谢美团点评技术团队、网易考拉团队!

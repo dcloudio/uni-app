@@ -1,0 +1,32 @@
+{
+  "name": "@dcloudio/uni-stat",
+  "version": "0.0.113",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "NODE_ENV=development rollup -w -c rollup.config.js",
+    "build": "NODE_ENV=production rollup -c rollup.config.js"
+  },
+  "files": [
+    "dist",
+    "package.json",
+    "LICENSE"
+  ],
+  "author": "",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "eslint": "^6.1.0",
+    "rollup": "^1.19.3",
+    "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-clear": "^2.0.7",
+    "rollup-plugin-commonjs": "^10.0.2",
+    "rollup-plugin-copy": "^3.1.0",
+    "rollup-plugin-eslint": "^7.0.0",
+    "rollup-plugin-json": "^4.0.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-replace": "^2.2.0",
+    "rollup-plugin-uglify": "^6.0.2"
+  }
+}

@@ -17,18 +17,18 @@ const iconChars = {
 }
 // 测试中发现通过动态绑定 class 来设置样式没生效，暂时这样列出来通过 style 来处理。
 const iconColors = {
-  'success': '#09bb07',
+  'success': '#007aff',
   'info': '#10aeff',
   'warn': '#f76260',
   'waiting': '#10aeff',
-  'safe_success': '#09bb07',
+  'safe_success': '#007aff',
   'safe_warn': '#ffbe00',
-  'success_circle': '#09bb07',
-  'success_no_circle': '#09bb07',
+  'success_circle': '#007aff',
+  'success_no_circle': '#007aff',
   'waiting_circle': '#10aeff',
   'circle': '#c9c9c9',
-  'download': '#09bb07',
-  'info_circle': '#09bb07',
+  'download': '#007aff',
+  'info_circle': '#007aff',
   'cancel': '#f43530',
   'search': '#b2b2b2',
   'clear': '#b2b2b2'

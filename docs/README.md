@@ -7,7 +7,7 @@
 
 <div class="quick">
     <h3 id="快速体验"><a href="/README?id=%e5%bf%ab%e9%80%9f%e4%bd%93%e9%aa%8c" data-id="快速体验" class="anchor"><span>快速体验</span></a></h3>
-    <p>一套代码编到7个平台，这不是梦想。眼见为实，扫描7个二维码，亲自体验最全面的跨平台效果！</p>
+    <p>一套代码编到8个平台，这不是梦想。眼见为实，扫描8个二维码，亲自体验最全面的跨平台效果！</p>
     <div class="flex-img-group-view">
         <a href="//m3w.cn/uniapp" target="_blank" class="clear-style barcode-view">
 			<div class="barcode-img-box">
@@ -44,6 +44,12 @@
 				<img src="http://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/mp-toutiao.png" width="160"/>
 			</div>
         	<b>头条小程序版</b>
+        </a>
+        <a href="//m3w.cn/uniapp" target="_blank" class="clear-style barcode-view">
+			<div class="barcode-img-box">
+				<img src="http://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/hello-uni-qq.png" width="160"/>
+			</div>
+        	<b>QQ小程序版</b>
         </a>
     </div>
     <p>
@@ -148,10 +154,10 @@
 
 ### 一套代码，运行到多个平台
 
-```uni-app```实现了一套代码，同时运行到多个平台；如下图所示，一套代码，同时运行到iOS模拟器、Android模拟器、H5、微信开发者工具、支付宝小程序Studio、百度开发者工具、字节跳动开发者工具（底部7个终端选项卡代表7个终端模拟器）：
+```uni-app```实现了一套代码，同时运行到多个平台；如下图所示，一套代码，同时运行到iOS模拟器、Android模拟器、H5、微信开发者工具、支付宝小程序Studio、百度开发者工具、字节跳动开发者工具、QQ开发者工具（底部8个终端选项卡代表8个终端模拟器）：
 
-![](http://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/dev1x7.png)
+![](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/dev1x8.jpg)
 
 实际运行效果如下（点击图片可放大）：
 
-![](http://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/run1x7.png)
+![](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/run1x8.jpg)

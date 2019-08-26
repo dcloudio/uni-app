@@ -1,0 +1,11 @@
+{
+	"name": "@dcloudio/uni-app-plus-nvue",
+	"version": "0.0.1",
+	"description": "uni-app app-plus-nvue",
+	"main": "dist/index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "fxy060608",
+	"license": "Apache-2.0"
+}

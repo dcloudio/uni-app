@@ -1,13 +1,7 @@
 import TabBar from './tabBar'
-import Toast from './popup/toast'
-import Modal from './popup/modal'
-import Picker from './popup/picker'
-import ActionSheet from './popup/actionSheet'
+import Components from 'uni-h5-app-components'
 
 export default {
   TabBar,
-  Toast,
-  Modal,
-  Picker,
-  ActionSheet
+  ...Components
 }

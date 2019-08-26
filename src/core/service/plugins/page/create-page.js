@@ -10,6 +10,7 @@ export default function createPage (pageVm) {
   // 兼容 mpvue
   pageVm.$vm = pageVm
   pageVm.$root = pageVm
+  pageVm.$holder = pageVm.$parent.$parent
   // 补充 mp 相关属性
   pageVm.$mp = {
     mpType: 'page',

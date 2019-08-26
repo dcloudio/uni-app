@@ -1,0 +1,96 @@
+const path = require('path')
+
+const {
+  md5,
+  parseEntry,
+  normalizePath
+} = require('@dcloudio/uni-cli-shared')
+
+const generateApp = require('./generate-app')
+const generateJson = require('./generate-json')
+const generateComponent = require('./generate-component')
+
+const emitFileCaches = {}
+
+function emitFile (filePath, source, compilation) {
+  const emitFileMD5 = md5(filePath + source)
+  if (emitFileCaches[filePath] !== emitFileMD5) {
+    emitFileCaches[filePath] = emitFileMD5
+    compilation.assets[filePath] = {
+      size () {
+        return Buffer.byteLength(source, 'utf8')
+      },
+      source () {
+        return source
+      }
+    }
+  }
+}
+
+function addSubPackagesRequire (compilation) {
+  if (!process.env.UNI_OPT_SUBPACKAGES) {
+    return
+  }
+  const assetsKeys = Object.keys(compilation.assets)
+  Object.keys(process.UNI_SUBPACKAGES).forEach(root => {
+    const subPackageVendorPath = normalizePath(path.join(root, 'common/vendor.js'))
+    if (assetsKeys.indexOf(subPackageVendorPath) !== -1) {
+      // TODO 理论上仅需在分包第一个 js 中添加 require common vendor，但目前不同平台可能顺序不一致，
+      // 故 每个分包里的 js 里均添加一次 require
+      assetsKeys.forEach(name => {
+        if (
+          path.extname(name) === '.js' &&
+          name.indexOf(root) === 0 &&
+          name !== subPackageVendorPath
+        ) {
+          const source = `require('${normalizePath(path.relative(path.dirname(name), subPackageVendorPath))}');` +
+            compilation.assets[name].source()
+
+          compilation.assets[name] = {
+            size () {
+              return Buffer.byteLength(source, 'utf8')
+            },
+            source () {
+              return source
+            }
+          }
+        }
+      })
+    }
+  })
+}
+
+class WebpackUniMPPlugin {
+  apply (compiler) {
+    compiler.hooks.emit.tapPromise('webpack-uni-mp-emit', compilation => {
+      return new Promise((resolve, reject) => {
+        addSubPackagesRequire(compilation)
+
+        generateJson(compilation)
+
+        // app.js,app.wxss
+        generateApp(compilation)
+          .forEach(({
+            file,
+            source
+          }) => emitFile(file, source, compilation))
+
+        generateComponent(compilation)
+
+        resolve()
+      })
+    })
+
+    compiler.hooks.invalid.tap('webpack-uni-mp-invalid', (fileName, changeTime) => {
+      if (fileName && typeof fileName === 'string' && path.basename(fileName) === 'pages.json') { // 重新解析 entry
+        try {
+          parseEntry()
+        } catch (e) {
+          console.error(e)
+        }
+      }
+    })
+  }
+}
+
+module.exports = WebpackUniMPPlugin

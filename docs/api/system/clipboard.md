@@ -55,5 +55,5 @@ uni.getClipboardData({
 
 #### **注意**
 
-- 设置剪贴板内容后，小程序平台会自动弹出轻提示。App平台默认与小程序保持一致策略。如不希望在App平台弹出提示，可使用Native.js自行操作剪贴板，[http://ask.dcloud.net.cn/question/2034](http://ask.dcloud.net.cn/question/2034)
+- 设置剪贴板内容后，小程序平台会自动弹出轻提示。App平台默认与小程序保持一致策略。如不希望在App平台弹出提示，可使用Native.js自行操作剪贴板，插件市场有封装好的示例[https://ext.dcloud.net.cn/plugin?id=712](https://ext.dcloud.net.cn/plugin?id=712)
 - H5的复制粘贴，可去插件市场搜索[剪贴板](https://ext.dcloud.net.cn/search?q=%E5%89%AA%E8%B4%B4%E6%9D%BF)

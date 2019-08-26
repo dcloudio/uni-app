@@ -2,3 +2,4 @@ node_modules/
 .project
 unpackage/
 .vscode/
+.DS_Store

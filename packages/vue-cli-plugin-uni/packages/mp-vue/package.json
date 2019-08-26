@@ -1,0 +1,16 @@
+{
+  "name": "uni-mp-vue",
+  "version": "2.6.10",
+  "description": "Reactive, component-oriented view layer for modern web interfaces.",
+  "module": "dist/mp.runtime.esm.js",
+  "typings": "types/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vuejs/vue.git"
+  },
+  "keywords": [
+    "vue"
+  ],
+  "author": "Evan You",
+  "license": "MIT"
+}

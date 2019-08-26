@@ -2,7 +2,7 @@ import {
   isFn
 } from 'uni-shared'
 
-import providers from 'uni-platform/service/api/providers'
+import providers from 'uni-platform/runtime/api/providers'
 
 export function getProvider ({
   service,
