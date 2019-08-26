@@ -18,7 +18,7 @@ module.exports = async function checkUpdate () {
     }
     update = await checkForUpdate(pkg, options)
   } catch (err) {
-    console.error(`检查更新失败: ${err}`)
+    // console.error(`检查更新失败: ${err}`)
   }
 
   if (update) {
