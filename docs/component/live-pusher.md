@@ -10,3 +10,4 @@
 **注意**
 
 * live-pusher 是原生组件，在小程序端层级高于前端组件，请勿在 scroll-view、swiper、picker-view、movable-view 中使用，需使用cover-view覆盖。在App端的nvue文件中，live-pusher没有这类限制。
+* App平台：使用 `<live-pusher/>` 组件，打包 App 时必须勾选 manifest.json->App 模块权限配置->VideoPlayer 模块。
