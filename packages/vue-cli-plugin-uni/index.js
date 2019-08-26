@@ -18,7 +18,7 @@ module.exports = (api, options) => {
 
   const platformOptions = require('./lib/' + process.env.UNI_PLATFORM)
 
-  Object.assign(options, {
+  Object.assign(options, { // TODO 考虑非 HBuilderX 运行时，可以支持自定义输出目录
     outputDir: process.env.UNI_OUTPUT_TMP_DIR || process.env.UNI_OUTPUT_DIR,
     assetsDir
   }, platformOptions.vueConfig)
