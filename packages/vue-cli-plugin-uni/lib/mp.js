@@ -79,6 +79,11 @@ module.exports = {
         } else {
           devtool = 'eval'
         }
+      } else if (
+        process.env.UNI_PLATFORM === 'mp-baidu' ||
+        process.env.UNI_PLATFORM === 'mp-toutiao'
+      ) {
+        devtool = 'inline-source-map'
       } else {
         devtool = 'sourcemap'
       }
