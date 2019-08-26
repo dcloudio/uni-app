@@ -348,7 +348,7 @@ uni-app 提供内置 CSS 变量
 
 |CSS变量|描述|5+App|小程序|H5|
 |:-|:-|:-|:-|:-|
-|--status-bar-height|系统状态栏高度|[系统状态栏高度](http://www.html5plus.org/doc/zh_cn/navigator.html#plus.navigator.getStatusbarHeight)|25px|0|
+|--status-bar-height|系统状态栏高度|[系统状态栏高度](http://www.html5plus.org/doc/zh_cn/navigator.html#plus.navigator.getStatusbarHeight)、nvue注意见下|25px|0|
 |--window-top|内容区域距离顶部的距离|0|0|NavigationBar 的高度|
 |--window-bottom|内容区域距离底部的距离|0|0|TabBar 的高度|
 
@@ -357,14 +357,14 @@ uni-app 提供内置 CSS 变量
 - ``var(--status-bar-height)`` 此变量在微信小程序环境为固定 ``25px``，在 5+App 里为手机实际状态栏高度。
 - 当设置 ``"navigationStyle":"custom"`` 取消原生导航栏后，由于窗体为沉浸式，占据了状态栏位置。此时可以使用一个高度为 ``var(--status-bar-height)`` 的 view 放在页面顶部，避免页面内容出现在状态栏。
 - 由于在H5端，不存在原生导航栏和tabbar，也是前端div模拟。如果设置了一个固定位置的居底view，在小程序和App端是在tabbar上方，但在H5端会与tabbar重叠。此时可使用`--window-bottom`，不管在哪个端，都是固定在tabbar上方。
-- 目前 nvue 还不支持css变量
+- 目前 nvue 在App端，还不支持 `--status-bar-height`变量，替代方案是在页面onLoad时通过uni.getSystemInfoSync().statusBarHeight获取状态栏高度，然后通过style绑定方式给占位view设定高度。下方提供了示例代码
 
 **代码块**
 
 快速书写css变量的方法是：在css中敲hei，在候选助手中即可看到3个css变量。（HBuilderX 1.9.6以上支持）
 
 
-示例：
+示例1 - 普通页面使用css变量：
 
 ```html
 <template>
@@ -396,6 +396,28 @@ uni-app 提供内置 CSS 变量
 		bottom: calc(var(--window-bottom) + 10px)
 	}
 </style>
+```
+
+示例2 - nvue页面获取状态栏高度
+```html
+<template>
+	<view class="content">
+		<view :style="{ height: iStatusBarHeight + 'px'}"></view>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				iStatusBarHeight:0
+			}
+		},
+		onLoad() {
+			this.iStatusBarHeight = uni.getSystemInfoSync().statusBarHeight
+		}
+	}
+</script>
 ```
 
 ### 固定值
