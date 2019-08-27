@@ -87,6 +87,15 @@
 |backgroundColorTop|HexColor|#ffffff|顶部窗口的背景色。|仅 iOS 平台|
 |backgroundColorBottom|HexColor|#ffffff|底部窗口的背景色。|仅 iOS 平台|
 |pageOrientation|String|portrait|屏幕旋转设置，仅支持 auto / portrait 详见 [响应显示区域变化](https://developers.weixin.qq.com/miniprogram/dev/framework/view/resizable.html)|微信小程序|
+|allowsBounceVertical|String|YES|是否允许向下拉拽。支持 YES / NO|支付宝小程序|
+|transparentTitle|String|none|导航栏透明设置。支持 always 一直透明 / auto 滑动自适应 / none 不透明|支付宝小程序|
+|titlePenetrate|String|NO|导航栏点击穿透|支付宝小程序|
+|showTitleLoading|String|NO|是否进入时显示导航栏的 loading。支持 YES / NO|支付宝小程序|
+|titleImage|String||导航栏图片地址（替换当前标题），必须为https的图片链接地址|支付宝小程序|
+|backgroundImageUrl|String||下拉露出显示的背景图链接|支付宝小程序|
+|backgroundImageColor|HexColor||下拉露出显示的背景图底色|支付宝小程序|
+|gestureBack|String|NO|iOS 用，是否支持手势返回。支持 YES / NO|支付宝小程序|
+|enableScrollBar|String|YES|Android 用，是否显示 WebView 滚动条。支持 YES / NO|支付宝小程序|
 |animationType|String|pop-in|窗口显示的动画效果，详见：[窗口动画](api/router?id=animation)|App|
 |animationDuration|Number|300|窗口显示动画的持续时间，单位为 ms|App|
 |usingComponents|Object| |引用小程序组件，参考 [小程序组件](/frame?id=小程序组件支持)|微信小程序、App|
@@ -158,6 +167,15 @@
 |backgroundTextStyle|String|dark|下拉 loading 的样式，仅支持 dark/light||
 |enablePullDownRefresh|Boolean|false|是否开启下拉刷新，详见[页面生命周期](/use?id=页面生命周期)。||
 |onReachBottomDistance|Number|50|页面上拉触底事件触发时距页面底部距离，单位只支持px，详见[页面生命周期](/use?id=页面生命周期)||
+|allowsBounceVertical|String|YES|是否允许向下拉拽。支持 YES / NO|支付宝小程序|
+|transparentTitle|String|none|导航栏透明设置。支持 always 一直透明 / auto 滑动自适应 / none 不透明|支付宝小程序|
+|titlePenetrate|String|NO|导航栏点击穿透|支付宝小程序|
+|showTitleLoading|String|NO|是否进入时显示导航栏的 loading。支持 YES / NO|支付宝小程序|
+|titleImage|String||导航栏图片地址（替换当前标题），必须为https的图片链接地址|支付宝小程序|
+|backgroundImageUrl|String||下拉露出显示的背景图链接|支付宝小程序|
+|backgroundImageColor|HexColor||下拉露出显示的背景图底色|支付宝小程序|
+|gestureBack|String|NO|iOS 用，是否支持手势返回。支持 YES / NO|支付宝小程序|
+|enableScrollBar|String|YES|Android 用，是否显示 WebView 滚动条。支持 YES / NO|支付宝小程序|
 |backgroundColorTop|HexColor|#ffffff|顶部窗口的背景色。|仅 iOS 平台|
 |backgroundColorBottom|HexColor|#ffffff|底部窗口的背景色。|仅 iOS 平台|
 |app-plus|Object||设置编译到 App 平台的特定样式，配置项参考下方 [app-plus](/collocation/pages?id=app-plus)|App|
