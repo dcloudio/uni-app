@@ -86,7 +86,7 @@ module.exports = {
             loader: resolve('packages/h5-vue-template-loader')
           }]
         }, {
-          resourceQuery: /blockType=wxs/,
+          resourceQuery: [/lang=wxs/, /blockType=wxs/],
           use: [{
             loader: resolve('packages/webpack-uni-filter-loader')
           }]

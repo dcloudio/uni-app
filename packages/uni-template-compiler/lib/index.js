@@ -55,10 +55,18 @@ module.exports = {
     }
     // console.log(`function render(){${res.render}}`)
     const ast = parser.parse(`function render(){${res.render}}`)
+    let template = ''
 
-    res.render = generateScript(traverseScript(ast, state), state)
-
-    let template = generateTemplate(traverseTemplate(ast, state), state)
+    try {
+      res.render = generateScript(traverseScript(ast, state), state)
+      template = generateTemplate(traverseTemplate(ast, state), state)
+    } catch (e) {
+      console.error(e)
+      throw new Error('Compile failed at ' + options.resourcePath.replace(
+        path.extname(options.resourcePath),
+        '.vue'
+      ))
+    }
 
     res.specialMethods = state.options.specialMethods || new Set()
     delete state.options.specialMethods

@@ -386,13 +386,13 @@ class Util {
       // },
       data: optionsData,
       success: () => {
-        if (process.env.NODE_ENV === 'development') {
-          console.log('stat request success');
-        }
+        // if (process.env.NODE_ENV === 'development') {
+        //   console.log('stat request success');
+        // }
       },
       fail: (e) => {
         if (process.env.NODE_ENV === 'development') {
-          console.log('stat request fail', e);
+          // console.log('stat request fail', e);
         }
         if (++this._retry < 3) {
           setTimeout(() => {
@@ -495,9 +495,9 @@ class Stat extends Util {
 
   report(options, self) {
     this.self = self;
-    if (process.env.NODE_ENV === 'development') {
-      console.log('report init');
-    }
+    // if (process.env.NODE_ENV === 'development') {
+    //   console.log('report init');
+    // }
     setPageResidenceTime()
     this.__licationShow = true;
     this._sendReportRequest(options, true);

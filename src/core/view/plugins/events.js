@@ -125,7 +125,7 @@ function touchstart (evt) {
   startPageY = pageY
 
   longPressTimer = setTimeout(function () {
-    evt.target.dispatchEvent(new TouchEvent('longpress', {
+    evt.target.dispatchEvent(new CustomEvent('longpress', {
       bubbles: true,
       cancelable: true,
       target: evt.target,

@@ -2,6 +2,10 @@ const {
   tags
 } = require('@dcloudio/uni-cli-shared')
 
+const {
+  isUnaryTag
+} = require('../util')
+
 const simplePathRE = /^[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*|\['[^']*?']|\["[^"]*?"]|\[\d+]|\[[A-Za-z_$][\w$]*])*$/
 
 function processEvent (expr, filterModules) {
@@ -41,6 +45,7 @@ function addTag (tag) {
 }
 
 module.exports = {
+  isUnaryTag,
   preserveWhitespace: false,
   modules: [require('../format-text'), {
     preTransformNode (el, {
