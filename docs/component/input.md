@@ -114,7 +114,7 @@ App平台软键盘弹出有 adjustResize|adjustPan 两种模式，默认为 adju
 App端开发聊天类应用时，目前推荐改为adjustResize模式。在hello uni-app的模板-聊天中有详细示例。
 
 **注意**
-- adjustResize模式在Android App上，弹起键盘和收回键盘时，因为要重设webview高度，可能会临时性出现灰屏或漏出下层页面内容。后续会优化
+- adjustResize模式在Android App上，弹起键盘和收回键盘时，因为要重设webview窗体高度，可能会临时性出现灰屏或漏出下层页面内容。
 - 小程序端在 input 聚焦期间，避免使用 css 动画。
 - H5平台只能在用户交互时修改 focus 生效。
 - 如果遇到 focus 属性设置不生效的问题参考：[组件属性设置不生效解决办法](/use?id=%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98)
