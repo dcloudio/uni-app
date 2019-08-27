@@ -600,17 +600,17 @@ h5 平台下拉刷新动画，只有 circle 类型。
 ### mp-alipay
 配置编译到 MP-ALIPAY 平台时的特定样式
 
-|属性|类型|默认值|描述|平台差异说明|
-|:-|:-|:-|:-|:-|
-|allowsBounceVertical|String|YES|是否允许向下拉拽。支持 YES / NO|支付宝小程序|
-|transparentTitle|String|none|导航栏透明设置。支持 always 一直透明 / auto 滑动自适应 / none 不透明|支付宝小程序|
-|titlePenetrate|String|NO|导航栏点击穿透|支付宝小程序|
-|showTitleLoading|String|NO|是否进入时显示导航栏的 loading。支持 YES / NO|支付宝小程序|
-|titleImage|String||导航栏图片地址（替换当前标题），必须为https的图片链接地址|支付宝小程序|
-|backgroundImageUrl|String||下拉露出显示的背景图链接|支付宝小程序|
-|backgroundImageColor|HexColor||下拉露出显示的背景图底色|支付宝小程序|
-|gestureBack|String|NO|iOS 用，是否支持手势返回。支持 YES / NO|支付宝小程序|
-|enableScrollBar|String|YES|Android 用，是否显示 WebView 滚动条。支持 YES / NO|支付宝小程序|
+|属性|类型|默认值|描述|
+|:-|:-|:-|:-|
+|allowsBounceVertical|String|YES|是否允许向下拉拽。支持 YES / NO|
+|transparentTitle|String|none|导航栏透明设置。支持 always 一直透明 / auto 滑动自适应 / none 不透明|
+|titlePenetrate|String|NO|导航栏点击穿透|
+|showTitleLoading|String|NO|是否进入时显示导航栏的 loading。支持 YES / NO|
+|titleImage|String||导航栏图片地址（替换当前标题），必须为https的图片链接地址|
+|backgroundImageUrl|String||下拉露出显示的背景图链接|
+|backgroundImageColor|HexColor||下拉露出显示的背景图底色|
+|gestureBack|String|NO|iOS 用，是否支持手势返回。支持 YES / NO|
+|enableScrollBar|String|YES|Android 用，是否显示 WebView 滚动条。支持 YES / NO|
 
 **注意事项**
 
