@@ -586,6 +586,11 @@ describe('mp:compiler-extra', () => {
   })
   it('generate event ', () => {
     assertCodegen(
+      `<view @/>`,
+      `<view></view>`
+    )
+
+    assertCodegen(
       `<text v-for="item in items['metas']" :key="item['id']" class="title" @tap="handle(item['id'],item['title'])">{{item.title}}</text>`,
       `<block wx:for="{{items['metas']}}" wx:for-item="item" wx:for-index="__i0__" wx:key="id"><text data-event-opts="{{[['tap',[['handle',['$0','$1'],[[['items.metas','id',item['id'],'id']],[['items.metas','id',item['id'],'title']]]]]]]}}" class="title" bindtap="__e">{{item.title}}</text></block>`
     )

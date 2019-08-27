@@ -2,7 +2,7 @@ const compiler = require('../lib')
 
 const res = compiler.compile(
   `
-<view v-for="item in dataList" :key="item.id" @click="click1(item, 1);click2(item, 2);"/>
+<view @/>
     `, {
     resourcePath: '/User/fxy/Documents/test.wxml',
     mp: {
