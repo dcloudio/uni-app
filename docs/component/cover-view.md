@@ -40,6 +40,7 @@
 - linebreak
 - white-space
 
+注意：nvue的cover-view不在上述限制中，它仅支持且全部支持nvue的所有css。
 
 **Tips**
 
