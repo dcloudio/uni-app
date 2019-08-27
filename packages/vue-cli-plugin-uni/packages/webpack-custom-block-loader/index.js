@@ -47,13 +47,19 @@ module.exports = function(source) {
   const modules = Object.create(null)
 
   descriptor.customBlocks = descriptor.customBlocks.filter(block => {
-    if (block.type === FILTER_TAG && block.attrs.module) {
+    if (
+      block.attrs.module ||
+      (
+        block.type === FILTER_TAG ||
+        block.attrs.lang === FILTER_TAG
+      )
+    ) {
       modules[block.attrs.module] = block
       return true
     }
   })
 
-  if (Object.keys(modules)) {
+  if (Object.keys(modules).length) {
     const filterModules = JSON.parse(JSON.stringify(modules))
     Object.keys(filterModules).forEach(name => {
       const filterModule = filterModules[name]

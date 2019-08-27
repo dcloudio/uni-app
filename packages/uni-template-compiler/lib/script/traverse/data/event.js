@@ -271,8 +271,8 @@ function parseEvent (keyPath, valuePath, state, isComponent, isNativeOn = false,
         let anonymous = true
 
         // "click":function($event) {click1(item);click2(item);}
-        const body = funcPath.node.body.body
-        if (body.length) {
+        const body = funcPath.node.body && funcPath.node.body.body
+        if (body && body.length) {
           const exprStatements = body.filter(node => {
             return t.isExpressionStatement(node) && t.isCallExpression(node.expression)
           })

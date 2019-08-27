@@ -129,7 +129,14 @@ module.exports = {
             loader: '@dcloudio/webpack-uni-mp-loader/lib/template'
           }]
         }, {
-          resourceQuery: [/blockType=wxs/, /blockType=filter/, /blockType=import-sjs/],
+          resourceQuery: [
+            /lang=wxs/,
+            /lang=filter/,
+            /lang=import-sjs/,
+            /blockType=wxs/,
+            /blockType=filter/,
+            /blockType=import-sjs/
+          ],
           use: [{
             loader: require.resolve(
               '@dcloudio/vue-cli-plugin-uni/packages/webpack-uni-filter-loader')
