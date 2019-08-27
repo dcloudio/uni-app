@@ -4,9 +4,9 @@
 
 **平台差异说明**
 
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|
-|√|√|√|√|√|x|
+|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|√|√|√|√|√|x|x|
 
 **属性说明**
 
@@ -175,7 +175,7 @@ map 组件相关操作的 JS API：[uni.createMapContext](api/location/map?id=cr
 **注意事项**
 
 - 小程序和 App的vue文件 中，`<map>` 组件是由引擎创建的原生组件，它的层级是最高的，不能通过 z-index 控制层级。在`<map>`上绘制内容，可使用组件自带的marker、controls等属性，也可以使用`<cover-view>`组件。App端还可以使用plus.nativeObj.view 或 subNVue 绘制原生内容，[参考](/component/native-component)。另外App端nvue文件不存在层级问题。
-- App端nvue文件的map和小程序拉齐度更高。vue里的map则与plus.map一致，和小程序的地图略有差异。
+- App端nvue文件的map和小程序拉齐度更高。vue里的map则与plus.map功能一致，和小程序的地图略有差异。
 - 小程序和 App 中，请勿在 scroll-view、swiper、picker-view、movable-view 中使用 `<map>` 组件。
 - 小程序和 App 中，css 动画对 `<map>` 组件无效。
 - map 组件使用的经纬度是国测局坐标，调用 uni.getLocation 接口需要指定 type 为 gcj02。
