@@ -13,6 +13,10 @@ const {
   getPlatformCssnano
 } = require('@dcloudio/uni-cli-shared')
 
+const {
+  isUnaryTag
+} = require('./util')
+
 function createUniMPPlugin () {
   if (process.env.UNI_USING_COMPONENTS) {
     const WebpackUniMPPlugin = require('@dcloudio/webpack-uni-mp-loader/lib/plugin/index-new')
@@ -154,6 +158,7 @@ module.exports = {
       .tap(options => Object.assign(options, {
         compiler: getPlatformCompiler(),
         compilerOptions: process.env.UNI_USING_COMPONENTS ? {
+          isUnaryTag,
           preserveWhitespace: false
         } : require('./mp-compiler-options'),
         cacheDirectory: false,
