@@ -7,7 +7,9 @@
 |:-:|:-:|:-:|:-:|:-:|:-:|
 |√|√|√|x|√|x|
 
-**注意：** 微信小程序平台自基础库 1.6.0 版本开始，不再维护 audio 组件，建议在微信小程序平台使用 [uni.createInnerAudioContext](/api/media/audio-context?id=createinneraudiocontext) 替代。
+**注意：** 微信小程序平台自基础库 1.6.0 版本开始，不再维护 audio 组件，推荐使用API方式而不是组件方式来播放音频。API见 [uni.createInnerAudioContext](/api/media/audio-context?id=createinneraudiocontext) 替代。
+
+app-nvue也不支持此组件。
 
 **属性说明**
 
