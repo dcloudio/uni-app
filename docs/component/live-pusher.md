@@ -2,10 +2,11 @@
 
 实时音视频录制，也称直播推流。
 
-各平台开发方式暂未统一，使用时需注意用[条件编译](https://uniapp.dcloud.io/platform)调用不同平台的代码。
+目前只有App和微信小程序支持。
 
 - 微信小程序：[规范文档](https://developers.weixin.qq.com/miniprogram/dev/component/live-pusher.html)
-- App平台：nvue文件下也支持live-pusher组件，功能API与微信相同。如果是vue文件，则需要单独编写条件编译代码，使用plus.video.LivePusher，[业务指南](https://ask.dcloud.net.cn/article/13416)、[规范文档](http://www.html5plus.org/doc/zh_cn/video.html#plus.video.LivePusher)
+- App平台：nvue文件下也支持live-pusher组件，API与微信相同。如果是vue文件，则需要单独编写条件编译代码，使用plus.video.LivePusher，[业务指南](https://ask.dcloud.net.cn/article/13416)、[规范文档](http://www.html5plus.org/doc/zh_cn/video.html#plus.video.LivePusher)
+
 
 **注意**
 
