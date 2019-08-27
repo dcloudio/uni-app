@@ -92,10 +92,10 @@
 |app-plus|Object||设置编译到 App 平台的特定样式，配置项参考下方 [app-plus](/collocation/pages?id=app-plus)|App|
 |h5|Object||设置编译到 H5 平台的特定样式，配置项参考下方 [H5](/collocation/pages?id=h5)|H5|
 |mp-alipay|Object||设置编译到 mp-alipay 平台的特定样式，配置项参考下方 [MP-ALIPAY](/collocation/pages?id=mp-alipay)|支付宝小程序|
-|mp-weixin|Object||设置编译到 mp-weixin 平台的特定样式，配置项参考下方|微信小程序|
-|mp-baidu|Object||设置编译到 mp-baidu 平台的特定样式，配置项参考下方|百度小程序|
-|mp-toutiao|Object||设置编译到 mp-toutiao 平台的特定样式，配置项参考下方|字节跳动小程序|
-|mp-qq|Object||设置编译到 mp-qq 平台的特定样式，配置项参考下方|QQ小程序|
+|mp-weixin|Object||设置编译到 mp-weixin 平台的特定样式|微信小程序|
+|mp-baidu|Object||设置编译到 mp-baidu 平台的特定样式|百度小程序|
+|mp-toutiao|Object||设置编译到 mp-toutiao 平台的特定样式|字节跳动小程序|
+|mp-qq|Object||设置编译到 mp-qq 平台的特定样式|QQ小程序|
 |usingComponents|Object| |引用小程序组件，参考 [小程序组件](/frame?id=小程序组件支持)|微信小程序、App|
 
 # pages
@@ -170,10 +170,10 @@
 |app-plus|Object||设置编译到 App 平台的特定样式，配置项参考下方 [app-plus](/collocation/pages?id=app-plus)|App|
 |h5|Object||设置编译到 H5 平台的特定样式，配置项参考下方 [H5](/collocation/pages?id=h5)|H5|
 |mp-alipay|Object||设置编译到 mp-alipay 平台的特定样式，配置项参考下方 [MP-ALIPAY](/collocation/pages?id=mp-alipay)|支付宝小程序|
-|mp-weixin|Object||设置编译到 mp-weixin 平台的特定样式，配置项参考下方|微信小程序|
-|mp-baidu|Object||设置编译到 mp-baidu 平台的特定样式，配置项参考下方|百度小程序|
-|mp-toutiao|Object||设置编译到 mp-toutiao 平台的特定样式，配置项参考下方|字节跳动小程序|
-|mp-qq|Object||设置编译到 mp-qq 平台的特定样式，配置项参考下方|QQ小程序|
+|mp-weixin|Object||设置编译到 mp-weixin 平台的特定样式|微信小程序|
+|mp-baidu|Object||设置编译到 mp-baidu 平台的特定样式|百度小程序|
+|mp-toutiao|Object||设置编译到 mp-toutiao 平台的特定样式|字节跳动小程序|
+|mp-qq|Object||设置编译到 mp-qq 平台的特定样式|QQ小程序|
 |usingComponents|Object||引用小程序组件，参考 [小程序组件](/frame?id=小程序组件支持)|App、微信小程序、支付宝小程序、百度小程序|
 
 **代码示例：**
