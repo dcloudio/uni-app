@@ -205,7 +205,9 @@ module.exports = {
           cssnanoOptions: {
             preset: [
               'default',
-              getPlatformCssnano()
+              Object.assign({}, getPlatformCssnano(), {
+                discardComments: true
+              })
             ]
           }
 
