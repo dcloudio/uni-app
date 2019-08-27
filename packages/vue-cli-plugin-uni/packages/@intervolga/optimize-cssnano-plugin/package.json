@@ -1,0 +1,58 @@
+{
+  "name": "@intervolga/optimize-cssnano-plugin",
+  "version": "1.0.6",
+  "description": "WebPack 2+ plugin for CSS minification after ExtractTextPluging",
+  "main": "index.js",
+  "scripts": {
+    "mocha": "mocha --ui tdd test/",
+    "lint": "eslint index.js lib test/index.js test/helpers",
+    "test": "npm run lint && npm run mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/intervolga/optimize-cssnano-plugin"
+  },
+  "keywords": [
+    "html",
+    "index",
+    "webpack",
+    "loader"
+  ],
+  "author": "Shkarupa Alex",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/intervolga/optimize-cssnano-plugin/issues"
+  },
+  "homepage": "https://github.com/intervolga/optimize-cssnano-plugin#readme",
+  "peerDependencies": {
+    "webpack": "^4.0.0"
+  },
+  "dependencies": {
+    "cssnano": "^4.0.0",
+    "cssnano-preset-default": "^4.0.0",
+    "postcss": "^7.0.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "^8.6.5",
+    "css-loader": "^0.28.11",
+    "eslint": "^4.19.1",
+    "eslint-config-google": "^0.8.0",
+    "eslint-plugin-promise": "^3.8.0",
+    "eslint-plugin-standard": "^3.1.0",
+    "expect.js": "^0.3.1",
+    "extract-text-webpack-plugin": "^4.0.0-beta.0",
+    "fs-extra": "^5.0.0",
+    "mocha": "^5.2.0",
+    "node-sass": "^4.9.2",
+    "postcss-loader": "^2.1.6",
+    "sass-loader": "^6.0.7",
+    "style-loader": "^0.20.3",
+    "webpack": "^4.16.1"
+  },
+  "files": [
+    "lib",
+    "index.js",
+    "README",
+    "LICENSE"
+  ]
+}

@@ -172,15 +172,24 @@ module.exports = {
       .uses
       .delete('cache-loader')
 
+    const styleExt = getPlatformExts().style
+
     webpackConfig.plugin('extract-css')
       .init((Plugin, args) => new Plugin({
-        filename: '[name]' + getPlatformExts().style
+        filename: '[name]' + styleExt
       }))
 
-    if (process.env.NODE_ENV === 'production') {
+    if (
+      process.env.NODE_ENV === 'production' &&
+      process.env.UNI_PLATFORM !== 'app-plus'
+    ) {
+      const OptimizeCssnanoPlugin = require('../packages/@intervolga/optimize-cssnano-plugin/index.js')
       webpackConfig.plugin('optimize-css')
-        .init((Plugin, args) => new Plugin({
+        .init((Plugin, args) => new OptimizeCssnanoPlugin({
           sourceMap: false,
+          filter (assetName) {
+            return path.extname(assetName) === styleExt
+          },
           cssnanoOptions: {
             preset: [
               'default',
