@@ -123,7 +123,12 @@ export default {
     _fixSize () {
       const elWidth = this._getWidth()
       if (elWidth) {
-        this.$el.style.height = elWidth / this.ratio + 'px'
+        let height = elWidth / this.ratio
+        // fix: 解决 Chrome 浏览器上某些情况下导致 1px 缝隙的问题
+        if (typeof navigator && navigator.vendor === 'Google Inc.' && height > 10) {
+          height = Math.round(height / 2) * 2
+        }
+        this.$el.style.height = height + 'px'
         this.sizeFixed = true
       }
     },
