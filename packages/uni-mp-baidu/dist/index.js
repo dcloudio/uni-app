@@ -415,7 +415,8 @@ const todos = [
   'stopBeaconDiscovery',
   'hideShareMenu',
   'onWindowResize',
-  'offWindowResize'
+  'offWindowResize',
+  'vibrate'
 ];
 
 // 存在兼容性的 API 列表

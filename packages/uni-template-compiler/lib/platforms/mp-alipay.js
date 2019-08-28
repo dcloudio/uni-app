@@ -45,7 +45,7 @@ module.exports = {
   createFilterTag (filterTag, {
     attrs
   }) {
-    return `<${filterTag} name="${attrs.module}" from="${attrs.src}"></${filterTag}>`
+    return `<import-sjs name="${attrs.module}" from="${attrs.src}"></import-sjs>`
   },
   getEventType (eventType) {
     return EVENTS[eventType] || eventType

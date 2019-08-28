@@ -6,6 +6,10 @@ const {
   normalizePath
 } = require('@dcloudio/uni-cli-shared')
 
+const {
+  pagesJsonJsFileName
+} = require('@dcloudio/uni-cli-shared/lib/pages')
+
 const generateApp = require('./generate-app')
 const generateJson = require('./generate-json')
 const generateComponent = require('./generate-component')
@@ -43,7 +47,8 @@ function addSubPackagesRequire (compilation) {
           name.indexOf(root) === 0 &&
           name !== subPackageVendorPath
         ) {
-          const source = `require('${normalizePath(path.relative(path.dirname(name), subPackageVendorPath))}');` +
+          const source =
+            `require('${normalizePath(path.relative(path.dirname(name), subPackageVendorPath))}');` +
             compilation.assets[name].source()
 
           compilation.assets[name] = {
@@ -82,11 +87,22 @@ class WebpackUniMPPlugin {
     })
 
     compiler.hooks.invalid.tap('webpack-uni-mp-invalid', (fileName, changeTime) => {
-      if (fileName && typeof fileName === 'string' && path.basename(fileName) === 'pages.json') { // 重新解析 entry
-        try {
-          parseEntry()
-        } catch (e) {
-          console.error(e)
+      if (
+        fileName &&
+        typeof fileName === 'string'
+      ) { // 重新解析 entry
+        const basename = path.basename(fileName)
+        const deps = process.UNI_PAGES_DEPS || new Set()
+        if (
+          basename === 'pages.json' ||
+          basename === pagesJsonJsFileName ||
+          deps.has(normalizePath(fileName))
+        ) {
+          try {
+            parseEntry()
+          } catch (e) {
+            console.error(e)
+          }
         }
       }
     })

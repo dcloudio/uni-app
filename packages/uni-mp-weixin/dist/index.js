@@ -387,7 +387,9 @@ var previewImage = {
 const protocols = {
   previewImage
 };
-const todos = [];
+const todos = [
+  'vibrate'
+];
 const canIUses = [];
 
 const CALLBACKS = ['success', 'fail', 'cancel', 'complete'];

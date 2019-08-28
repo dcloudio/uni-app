@@ -132,10 +132,10 @@ module.exports = {
           resourceQuery: [
             /lang=wxs/,
             /lang=filter/,
-            /lang=import-sjs/,
+            /lang=sjs/,
             /blockType=wxs/,
             /blockType=filter/,
-            /blockType=import-sjs/
+            /blockType=sjs/
           ],
           use: [{
             loader: require.resolve(

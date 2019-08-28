@@ -92,7 +92,9 @@ const rules = [{
   },
   jsPreprocessorLoader
   ],
-  exclude: excludeModuleReg
+  exclude (modulePath) {
+    return excludeModuleReg.test(modulePath) && modulePath.indexOf('@dcloudio') === -1
+  }
 },
 {
   test: /\.nvue(\?[^?]+)?$/,
@@ -171,7 +173,7 @@ if (process.env.UNI_USING_NATIVE) {
 module.exports = function (entry) {
   return {
     target: 'node', // 激活 vue-loader 的 isServer 逻辑
-    mode: 'development', // process.env.NODE_ENV,
+    mode: process.env.NODE_ENV,
     devtool: process.env.NODE_ENV === 'development' ? 'inline-source-map' : false,
     watch: process.env.NODE_ENV === 'development',
     entry,

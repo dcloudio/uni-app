@@ -48,7 +48,7 @@ module.exports = function(source) {
 
   descriptor.customBlocks = descriptor.customBlocks.filter(block => {
     if (
-      block.attrs.module ||
+      block.attrs.module &&
       (
         block.type === FILTER_TAG ||
         block.attrs.lang === FILTER_TAG

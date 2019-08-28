@@ -13,6 +13,10 @@ const {
   getPagesJson
 } = require('@dcloudio/uni-cli-shared/lib/cache')
 
+const {
+  pagesJsonJsFileName
+} = require('@dcloudio/uni-cli-shared/lib/pages')
+
 const parseStyle = require('./util').parseStyle
 
 const emitFileCaches = {}
@@ -44,11 +48,18 @@ module.exports = function (content) {
   this.cacheable && this.cacheable()
 
   const manifestJsonPath = path.resolve(process.env.UNI_INPUT_DIR, 'manifest.json')
+  const pagesJsonJsPath = path.resolve(process.env.UNI_INPUT_DIR, pagesJsonJsFileName)
   const manifestJson = parseManifestJson(fs.readFileSync(manifestJsonPath, 'utf8'))
 
   this.addDependency(manifestJsonPath)
+  this.addDependency(pagesJsonJsPath)
 
-  const pagesJson = parsePagesJson(content)
+  const pagesJson = parsePagesJson(content, {
+    addDependency: (file) => {
+      (process.UNI_PAGES_DEPS || (process.UNI_PAGES_DEPS = new Set())).add(normalizePath(file))
+      this.addDependency(file)
+    }
+  })
 
   if (manifestJson.transformPx === false) {
     process.UNI_TRANSFORM_PX = false

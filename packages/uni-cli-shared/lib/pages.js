@@ -35,8 +35,8 @@ function getPagesJson () {
   return processPagesJson(getJson('pages.json', true))
 }
 
-function parsePagesJson (content) {
-  return processPagesJson(parseJson(content, true))
+function parsePagesJson (content, loader) {
+  return processPagesJson(parseJson(content, true), loader)
 }
 
 function filterPages (pages = [], root) {
@@ -48,7 +48,25 @@ function filterPages (pages = [], root) {
   }
 }
 
-function processPagesJson (pagesJson) {
+const pagesJsonJsFileName = 'pages.js'
+
+function processPagesJson (pagesJson, loader = {
+  addDependency: function () {}
+}) {
+  const pagesJsonJsPath = path.resolve(process.env.UNI_INPUT_DIR, pagesJsonJsFileName)
+  if (fs.existsSync(pagesJsonJsPath)) {
+    delete require.cache[pagesJsonJsPath]
+    const pagesJsonJsFn = require(pagesJsonJsPath)
+    if (typeof pagesJsonJsFn === 'function') {
+      pagesJson = pagesJsonJsFn(pagesJson, loader)
+      if (!pagesJson) {
+        console.error(`${pagesJsonJsFileName}  必须返回一个 json 对象`)
+      }
+    } else {
+      console.error(`${pagesJsonJsFileName} 必须导出 function`)
+    }
+  }
+
   let uniNVueEntryPagePath
   if (pagesJson.pages && pagesJson.pages.length) { // 如果首页是 nvue
     if (isNVuePage(pagesJson.pages[0])) {
@@ -193,7 +211,6 @@ function parseEntry (pagesJson) {
   process.UNI_NVUE_ENTRY = {}
 
   if (process.env.UNI_USING_NATIVE) {
-    // TODO 考虑 pages.json.js
     process.UNI_NVUE_ENTRY['app-config'] = path.resolve(process.env.UNI_INPUT_DIR, 'pages.json')
     process.UNI_NVUE_ENTRY['app-service'] = path.resolve(process.env.UNI_INPUT_DIR, getMainEntry())
   }
@@ -231,5 +248,6 @@ module.exports = {
   parsePages,
   parseEntry,
   getPagesJson,
-  parsePagesJson
+  parsePagesJson,
+  pagesJsonJsFileName
 }
