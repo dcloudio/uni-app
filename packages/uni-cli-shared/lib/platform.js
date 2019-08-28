@@ -238,7 +238,7 @@ const PLATFORMS = {
     vue: megaloRuntime,
     compiler: megaloCompiler,
     megalo: 'alipay',
-    filterTag: 'import-sjs',
+    filterTag: 'sjs',
     subPackages: true,
     cssVars: {
       '--status-bar-height': '25px',
