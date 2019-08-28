@@ -11,10 +11,13 @@ import {
 } from '../../constants'
 
 import {
-  registerPlusMessage
+  registerPlusMessage,
+  consumePlusMessage
 } from '../../framework/plus-message'
 
 const CHOOSE_LOCATION_PATH = '_www/__uniappchooselocation.html'
+
+const MESSAGE_TYPE = 'chooseLocation'
 
 export function chooseLocation (params, callbackId) {
   const statusBarStyle = plus.navigator.getStatusBarStyle()
@@ -57,26 +60,38 @@ export function chooseLocation (params, callbackId) {
       }
     })
   }
+  let index = 0
+  let onShow = function () {
+    index++
+    if (index === 2) {
+      webview.evalJS(`__chooseLocation__(${JSON.stringify(params)})`)
+    }
+  }
+  webview.addEventListener('loaded', onShow)
+  webview.show('slide-in-bottom', ANI_DURATION, onShow)
 
-  webview.show('slide-in-bottom', ANI_DURATION, () => {
-    webview.evalJS(`__chooseLocation__(${JSON.stringify(params)})`)
-  })
+  let result
 
-  // fixed by hxy
-  registerPlusMessage('chooseLocation', function (res) {
-    if (res && !res.errMsg) {
+  webview.addEventListener('close', () => {
+    if (result) {
       invoke(callbackId, {
-        name: res.poiname,
-        address: res.poiaddress,
-        latitude: res.latlng.lat,
-        longitude: res.latlng.lng,
+        name: result.poiname,
+        address: result.poiaddress,
+        latitude: result.latlng.lat,
+        longitude: result.latlng.lng,
         errMsg: 'chooseLocation:ok'
       })
     } else {
-      const errMsg = res && res.errMsg ? ' ' + res.errMsg : ''
+      consumePlusMessage(MESSAGE_TYPE)
       invoke(callbackId, {
-        errMsg: 'chooseLocation:fail' + errMsg
+        errMsg: 'chooseLocation:fail cancel'
       })
+    }
+  })
+
+  registerPlusMessage(MESSAGE_TYPE, function (res) {
+    if (res && 'latlng' in res) {
+      result = res
     }
   }, false)
 }

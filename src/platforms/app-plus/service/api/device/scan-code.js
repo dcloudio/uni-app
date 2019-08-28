@@ -12,7 +12,8 @@ import {
 } from '../../constants'
 
 import {
-  registerPlusMessage
+  registerPlusMessage,
+  consumePlusMessage
 } from '../../framework/plus-message'
 
 export const SCAN_ID = '__UNIAPP_SCAN'
@@ -98,11 +99,11 @@ export function scanCode ({
             if (isDark) {
               plus.navigator.setStatusBarStyle('isDark')
             }
-            webview.close('auto')
             result = {
               type,
               code
             }
+            webview.close('auto')
           }, () => {
             plus.nativeUI.toast('识别失败')
           }, filters)
@@ -143,7 +144,7 @@ export function scanCode ({
     })
   })
   webview.addEventListener('close', () => {
-    if (result && 'code' in result) {
+    if (result) {
       invoke(callbackId, {
         result: result.code,
         scanType: SCAN_MAPS[result.type] || '',
@@ -156,6 +157,7 @@ export function scanCode ({
         errMsg: 'scanCode:fail cancel'
       })
     }
+    consumePlusMessage(MESSAGE_TYPE)
   })
   if (isDark) { // 状态栏前景色
     plus.navigator.setStatusBarStyle('light')
@@ -170,15 +172,10 @@ export function scanCode ({
       }
     })
   }
-  // fixed by hxy 注册扫码事件
+
   registerPlusMessage(MESSAGE_TYPE, function (res) {
-    if (res && !res.errMsg) {
+    if (res && 'code' in res) {
       result = res
-    } else {
-      const errMsg = res && res.errMsg ? ' ' + res.errMsg : ''
-      result = {
-        errMsg: 'scanCode:fail' + errMsg
-      }
     }
   }, false)
 }

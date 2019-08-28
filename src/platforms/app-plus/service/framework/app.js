@@ -9,7 +9,8 @@ import {
 } from './page'
 
 import {
-  registerPlusMessage
+  registerPlusMessage,
+  consumePlusMessage
 } from './plus-message'
 
 import {
@@ -68,6 +69,16 @@ function initGlobalListeners () {
     publish('onKeyboardHeightChange', {
       height: event.height
     })
+  })
+
+  plus.globalEvent.addEventListener('plusMessage', function (e) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('UNIAPP[plusMessage]:[' + Date.now() + ']' + JSON.stringify(e.data))
+    }
+    if (e.data && e.data.type) {
+      const type = e.data.type
+      consumePlusMessage(type, e.data.args || {})
+    }
   })
 }
 
