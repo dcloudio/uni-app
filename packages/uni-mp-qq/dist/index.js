@@ -428,7 +428,8 @@ const todos = [
   'checkIsSoterEnrolledInDevice',
   'reportMonitor',
   'getLogManager',
-  'reportAnalytics'
+  'reportAnalytics',
+  'vibrate'
 ];
 const canIUses = [
   'scanCode',
