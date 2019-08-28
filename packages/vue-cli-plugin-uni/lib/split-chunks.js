@@ -35,7 +35,7 @@ module.exports = function getSplitChunks () {
             if (module.resource && (
               module.resource.indexOf('.vue') !== -1 ||
                 module.resource.indexOf('.nvue') !== -1 ||
-                module.resource.indexOf(mainPath) === 0 // main.js
+                normalizePath(module.resource).indexOf(mainPath) === 0 // main.js
             )) {
               return false
             }
