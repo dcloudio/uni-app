@@ -2,9 +2,9 @@
 
 app端nvue专用的扫码组件。
 
-注意：此组件用于app端nvue页面实现内嵌到界面上的扫码。其他场景、其他平台，请使用全屏扫码API：[uni.scanCode](https://uniapp.dcloud.io/api/system/barcode) 
-
-此组件自HBuilderX 2.1.5+起支持。
+- 此组件用于app端nvue页面实现内嵌到界面上的扫码。其他场景、其他平台，请使用全屏扫码API：[uni.scanCode](https://uniapp.dcloud.io/api/system/barcode) 
+- App下纯nvue项目（manifest中renderer为native），暂不支持uni.scanCode API，此时只能使用barcode组件来替代。
+- 此组件自HBuilderX 2.1.5+起支持。
 
 **属性说明**
 设置Barcode扫码控件的属性，如扫码框、扫码条的颜色等。
