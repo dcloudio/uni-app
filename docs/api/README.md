@@ -250,6 +250,7 @@ function async request () {
 
 |API|说明|
 |:-|:-|
+|[uni.vibrate](api/system/vibrate?id=vibrate)|使手机发生振动|
 |[uni.vibrateLong](api/system/vibrate?id=vibratelong)|使手机发生较长时间的振动|
 |[uni.vibrateShort](api/system/vibrate?id=vibrateshort)|使手机发生较短时间的振动|
 ##### 手机联系人
