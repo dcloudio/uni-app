@@ -45,6 +45,15 @@ uni.scanCode({
 		console.log('条码内容：' + res.result);
 	}
 });
+
+// 调起条码扫描
+uni.scanCode({
+	scanType: 'barCode',
+	success: function (res) {
+		console.log('条码类型：' + res.scanType);
+		console.log('条码内容：' + res.result);
+	}
+});
 ```
 
 **Tip**
@@ -55,3 +64,4 @@ uni.scanCode({
 - App下纯nvue项目（manifest中renderer为native），不支持此API，请使用barcode组件来替代。
 - 微信内嵌浏览器运行H5版时，可通过js sdk实现扫码，需要引入一个单独的js，[详见](https://ask.dcloud.net.cn/article/35380)
 - 在扫码界面点击返回也会进入 `fail` 回调中
+- 支付宝小程序不支持 `success` 回调中的 `scanType`，`charSet`，`path`
