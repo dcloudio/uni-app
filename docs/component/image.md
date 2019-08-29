@@ -16,6 +16,7 @@
 - `src` 仅支持相对路径、绝对路径，支持 base64 码；
 - 页面结构复杂，css样式太多的情况，使用 image 可能导致样式生效较慢，出现 “闪一下” 的情况，此时设置 `image{will-change: transform}` ,可优化此问题。
 - 自定义组件里面使用 `<image>`时，若 `src` 使用相对路径可能出现路径查找失败的情况，故建议使用绝对路径。
+- webp格式的图片，app-vue下，iOS不支持，Android支持；app-nvue下，iOS和Android均支持。app-vue下也支持gif。
 
 **mode 有效值：**
 
