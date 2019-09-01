@@ -50,7 +50,9 @@
 |scrollTop|Number|页面在垂直方向已滚动的距离（单位px）|
 
 **注意**
-- `onPageScroll`里不要写交互复杂的js，比如频繁修改页面。因为这个生命周期是在渲染层触发的，js是在逻辑层执行的，两层之间通信是有损耗的。如果在滚动过程中，频发触发两层之间的数据交换，可能会造成卡顿。
+- `onPageScroll`里不要写交互复杂的js，比如频繁修改页面。因为这个生命周期是在渲染层触发的，在非h5端，js是在逻辑层执行的，两层之间通信是有损耗的。如果在滚动过程中，频发触发两层之间的数据交换，可能会造成卡顿。
+- 如果需要滚动吸顶固定某些元素，可以参考使用css的粘性布局，参考[插件市场](https://ext.dcloud.net.cn/plugin?id=715)。插件市场也有其他js吸顶的插件，但性能不佳，需要时可自行搜索。
+- 在App、微信小程序、H5中，也可以使用wxs监听滚动，[参考](https://uniapp.dcloud.io/frame?id=wxs)；在app-nvue中，可以使用bindingx监听滚动，[参考](https://uniapp.dcloud.io/use-weex?id=nvue-%e9%87%8c%e4%bd%bf%e7%94%a8-bindingx)。
 
 ``onTabItemTap`` 参数说明：
 
