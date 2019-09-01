@@ -51,7 +51,8 @@
 
 **注意**
 - `onPageScroll`里不要写交互复杂的js，比如频繁修改页面。因为这个生命周期是在渲染层触发的，在非h5端，js是在逻辑层执行的，两层之间通信是有损耗的。如果在滚动过程中，频发触发两层之间的数据交换，可能会造成卡顿。
-- 如果需要滚动吸顶固定某些元素，可以参考使用css的粘性布局，参考[插件市场](https://ext.dcloud.net.cn/plugin?id=715)。插件市场也有其他js吸顶的插件，但性能不佳，需要时可自行搜索。
+- 如果想实现滚动时标题栏透明渐变，在App和H5下，可在pages.json中配置titleNView下的type为transparent，[参考](https://uniapp.dcloud.io/collocation/pages?id=app-titlenview)。
+- 如果需要滚动吸顶固定某些元素，推荐使用css的粘性布局，参考[插件市场](https://ext.dcloud.net.cn/plugin?id=715)。插件市场也有其他js实现的吸顶插件，但性能不佳，需要时可自行搜索。
 - 在App、微信小程序、H5中，也可以使用wxs监听滚动，[参考](https://uniapp.dcloud.io/frame?id=wxs)；在app-nvue中，可以使用bindingx监听滚动，[参考](https://uniapp.dcloud.io/use-weex?id=nvue-%e9%87%8c%e4%bd%bf%e7%94%a8-bindingx)。
 
 ``onTabItemTap`` 参数说明：
@@ -65,7 +66,6 @@
 **注意**
 - onTabItemTap常用于点击当前tabitem，滚动或刷新当前页面。如果是点击不同的tabitem，一定会触发页面切换。
 - 如果想在App端实现点击某个tabitem不跳转页面，不能使用onTabItemTap，可以使用[plus.nativeObj.view](http://www.html5plus.org/doc/zh_cn/nativeobj.html)放一个区块盖住原先的tabitem，并拦截点击事件。
-- onTabItemTap在App端，从HBuilderX 1.9 的自定义组件编译模式开始支持。
 
 ``onNavigationBarButtonTap`` 参数说明：
 
@@ -89,9 +89,13 @@ export default {
 }
 ```
 
+**注意**
+
+- nvue 页面支持的生命周期参考：[nvue 生命周期介绍](/use-weex?id=生命周期)。
+
 ### 组件生命周期
 
-``uni-app`` 组件支持如下页面生命周期函数：
+``uni-app`` 组件支持的生命周期，与vue标准组件的生命周期相同。这里没有页面级的onLoad等生命周期：
 
 |函数名|说明|平台差异说明|最低版本|
 |:-|:-|:-|:-|
@@ -104,6 +108,3 @@ export default {
 |beforeDestroy|实例销毁之前调用。在这一步，实例仍然完全可用。[详见](https://cn.vuejs.org/v2/api/#beforeDestroy)|||
 |destroyed|Vue 实例销毁后调用。调用后，Vue 实例指示的所有东西都会解绑定，所有的事件监听器会被移除，所有的子实例也会被销毁。[详见](https://cn.vuejs.org/v2/api/#destroyed)|||
 
-**注意**
-
-- nvue 页面支持的生命周期参考：[nvue 生命周期介绍](/use-weex?id=生命周期)。
