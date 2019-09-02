@@ -63,7 +63,7 @@ export function getSystemInfo () {
 
   return {
     errMsg: 'getSystemInfo:ok',
-    brand: '',
+    brand: plus.device.vendor,
     model: plus.device.model,
     pixelRatio: plus.screen.scale,
     screenWidth,
