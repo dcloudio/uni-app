@@ -231,7 +231,7 @@ const promiseInterceptor = {
 };
 
 const SYNC_API_RE =
-  /^\$|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
+  /^\$|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -1292,6 +1292,10 @@ function parseBaseApp (vm, {
       if (this.mpType !== 'app') {
         initRefs(this);
         initMocks(this, mocks);
+      } else {
+        if (this.$options.store) { // vuex store
+          Vue.prototype.$store = this.$options.store;
+        }
       }
     }
   });

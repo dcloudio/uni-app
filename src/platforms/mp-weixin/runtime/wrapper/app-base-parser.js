@@ -39,6 +39,10 @@ export default function parseBaseApp (vm, {
       if (this.mpType !== 'app') {
         initRefs(this)
         initMocks(this, mocks)
+      } else {
+        if (this.$options.store) { // vuex store
+          Vue.prototype.$store = this.$options.store
+        }
       }
     }
   })
