@@ -16,6 +16,10 @@ export default function parseBaseApp (vm, {
   mocks,
   initRefs
 }) {
+  if (vm.$options.store) {
+    Vue.prototype.$store = vm.$options.store
+  }
+
   Vue.prototype.mpHost = __PLATFORM__
 
   Vue.mixin({
@@ -39,10 +43,6 @@ export default function parseBaseApp (vm, {
       if (this.mpType !== 'app') {
         initRefs(this)
         initMocks(this, mocks)
-      } else {
-        if (this.$options.store) { // vuex store
-          Vue.prototype.$store = this.$options.store
-        }
       }
     }
   })
