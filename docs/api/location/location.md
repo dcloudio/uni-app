@@ -67,9 +67,9 @@ uni.getLocation({
 
 **平台差异说明**
 
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|
-|√|√|√|√|√|x|
+|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|√|√|√|√|√|x|x|
 
 **OBJECT 参数说明**
 
@@ -81,8 +81,9 @@ uni.getLocation({
 |complete|Function|否|接口调用结束的回调函数（调用成功、失败都会执行）|
 
 **注意**
-- keyword参数，HBuilderX 2.1.4 以后版本支持
 - 因平台差异，如果SDK配置百度地图，需要设置keyword，才能显示相关地点
+- nvue下只支持高德地图，不支持百度地图
+- 纯nvue项目（manifest中renderer为native），暂不支持此API。可自行基于map组件封装。
 
 
 **success 返回参数说明**
@@ -111,4 +112,3 @@ uni.chooseLocation({
 - 不同端，使用地图选择时基于的底层地图引擎不一样，如微信小程序和H5是腾讯地图，App是高德地图，详见地图map组件的使用注意事项
 - 微信内置浏览器中可使用微信js sdk，[详见](https://ask.dcloud.net.cn/article/35380)
 - chooseLocation属于封装型API，开发者若觉得不够灵活，可自行基于原始的map组件进行封装
-- HBuilderX 1.9.2的Android平台chooseLocation失效，请更新到更高版本。

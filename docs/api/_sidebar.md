@@ -67,6 +67,7 @@
 * [Worker](api/worder.md)
 * 键盘
   * [uni.hideKeyboard](/api/key?id=hidekeyboard)
+  * [uni.onKeyboardHeightChange](/api/key?id=onkeyboardheightchange)
 * 界面
   * [交互反馈](api/ui/prompt.md)
   * [设置导航条](api/ui/navigationbar.md)
@@ -146,7 +147,8 @@
     <img src="//img-cdn-qiniu.dcloud.net.cn/uniapp/doc/qq@2x.png" width="20" height="20"/>
     <div class="contact-smg">
        <div>官方QQ交流群</div>
-    <div>群26：147867597 &nbsp;<a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=28a1a9a3e8f1866ee6a5f2b1caba05039e30d3ae1461e64b2ec31c095fcab951">点此加入</a></div>
+    <div>群26：147867597 &nbsp;<a target="_blank" href="//shang.qq.com/wpa/qunwpa?id
+      =28a1a9a3e8f1866ee6a5f2b1caba05039e30d3ae1461e64b2ec31c095fcab951">点此加入</a></div>
 		<div>群35：713420817（2000人已满）</div>
 		<div>群34：530305531（2000人已满）</div>
 		<div>群33：498071674（2000人已满）</div>

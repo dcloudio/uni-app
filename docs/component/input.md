@@ -23,7 +23,7 @@
 |selection-end|Number|-1|光标结束位置，自动聚集时有效，需与selection-start搭配使用||
 |adjust-position|Boolean|true|键盘弹起时，是否自动上推页面|5+App（softinputMode 为 adjustResize 时无效）、微信小程序、百度小程序、QQ小程序|
 |@input|EventHandle||当键盘输入时，触发input事件，event.detail = {value}|差异见下方 Tips|
-|@focus|EventHandle||输入框聚焦时触发，event.detail = { value, height }，height 为键盘高度|仅微信小程序、5+App（HBuilderX 2.0+ [nvue uni-app模式](http://ask.dcloud.net.cn/article/36074)） 、QQ小程序支持 height|
+|@focus|EventHandle||输入框聚焦时触发，event.detail = { value, height }，height 为键盘高度|仅微信小程序、5+App（HBuilderX 2.2.3） 、QQ小程序支持 height|
 |@blur|EventHandle||输入框失去焦点时触发，event.detail = {value: value}||
 |@confirm|EventHandle||点击完成按钮时触发，event.detail = {value: value}|&nbsp;|
 
@@ -114,7 +114,7 @@ App平台软键盘弹出有 adjustResize|adjustPan 两种模式，默认为 adju
 App端开发聊天类应用时，目前推荐改为adjustResize模式。在hello uni-app的模板-聊天中有详细示例。
 
 **注意**
-- adjustResize模式在Android App上，弹起键盘和收回键盘时，因为要重设webview高度，可能会临时性出现灰屏或漏出下层页面内容。后续会优化
+- adjustResize模式在Android App上，弹起键盘和收回键盘时，因为要重设webview窗体高度，可能会临时性出现灰屏或漏出下层页面内容。
 - 小程序端在 input 聚焦期间，避免使用 css 动画。
 - H5平台只能在用户交互时修改 focus 生效。
 - 如果遇到 focus 属性设置不生效的问题参考：[组件属性设置不生效解决办法](/use?id=%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98)

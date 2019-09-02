@@ -187,3 +187,6 @@ H5没有原生组件概念问题，非H5端有原生组件并引发了原生组�
 * ``getSystemInfo`` 获取到的 ``windowHeight`` 在模拟器中值不正确，真机预览是正确的。
 * ``v-if`` 和 ``v-for`` 不可在同一标签下同时使用。
 * 页面中引入自定义组件时，渲染的结果中外层会有一个 ``template`` 标签，这会导致部分选择器对应的样式匹配不上。
+
+### 各家小程序的浏览器内核不同，会造成css兼容性问题
+查阅细节参考：[https://ask.dcloud.net.cn/article/1318](https://ask.dcloud.net.cn/article/1318)

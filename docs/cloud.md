@@ -5,19 +5,19 @@ UniPush是DCloud推出的集成型统一推送服务，内建了苹果、华为�
 
 UniPush即降低了开发成本、又提高了push送达率，并且免费，是当前推送的最佳解决方案。
 
-详见[http://ask.dcloud.net.cn/article/35622](http://ask.dcloud.net.cn/article/35622)
+详见[https://ask.dcloud.net.cn/article/35622](https://ask.dcloud.net.cn/article/35622)
+
+### uni统计
+
+uni-app，自带免费统计平台。无需到处对接统计sdk，可以在一张报表里看到所有端（iOS、Android、H5及各家小程序）的运营数据。
+
+uni统计官网地址：[https://tongji.dcloud.net.cn/](https://tongji.dcloud.net.cn/) 
 
 ### 广告变现
 
 ```uni-app``` 支持DCloud的广告联盟，开发者在打包界面简单打几个勾，就可开通开屏、悬浮红包、推送等广告形式，快速实现App变现。
 
 更多广告联盟的介绍，参考 [广告联盟DAD](http://www.dcloud.io/dad.html)
-
-### 运营统计
-
-DCloud开发的App，自带免费统计平台。
-
-登录[https://dev.dcloud.net.cn](https://dev.dcloud.net.cn) 可查看 ```uni-app``` 在微信小程序、原生App不同平台的统计数据，比如新增用户、日活用户、留存等。
 
 ### 制作统一发行页面
 

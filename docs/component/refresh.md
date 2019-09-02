@@ -2,7 +2,7 @@
 
 app端nvue专用组件。
 
-`<refresh>` 为容器提供下拉刷新功能。
+`<refresh>` 为容器提供下拉刷新功能。在nvue上，可通过此组件实现灵活的、自定义的、高性能的下拉刷新。
 
 
 > 注意
@@ -14,9 +14,9 @@ app端nvue专用组件。
   <refresh>
     <text>Refreshing...</text>
   </refresh>
-  <div v-for="num in lists">
+  <view v-for="num in lists">
     <text>{{num}}</text>
-  </div>
+  </view>
 </scroll-view>
 ```
 

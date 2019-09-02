@@ -3,12 +3,6 @@
 ### uni.createIntersectionObserver([this], [options])
 创建并返回一个 ``IntersectionObserver`` 对象实例。
 
-**平台差异说明**
-
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|
-|√|HBuilderX 2.0.4+|√|√|√|√|
-
 **options 的可选参数为：**
 
 |字段名|类型|说明|
