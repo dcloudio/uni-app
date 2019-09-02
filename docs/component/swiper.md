@@ -23,12 +23,12 @@
 |acceleration|Boolean|false|当开启时，会根据滑动速度，连续滑动多屏|支付宝小程序|
 |disable-programmatic-animation|Boolean|false|是否禁用代码变动触发 swiper 切换时使用动画。|支付宝小程序|
 |display-multiple-items|Number|1|同时显示的滑块数量|支付宝小程序不支持|
-|skip-hidden-item-layout|Boolean|false|是否跳过未显示的滑块布局，设为 true 可优化复杂情况下的滑动性能，但会丢失隐藏状态滑块的布局信息|微信小程序、5+App|
+|skip-hidden-item-layout|Boolean|false|是否跳过未显示的滑块布局，设为 true 可优化复杂情况下的滑动性能，但会丢失隐藏状态滑块的布局信息|5+App、微信小程序|
 |disable-touch|Boolean|false|是否禁止用户 touch 操作|支付宝小程序|
 |touchable|Boolean|true|是否监听用户的触摸事件|头条小程序|
 |easing-function|String|default|指定 swiper 切换缓动动画类型，有效值：default、linear、easeInCubic、easeOutCubic、easeInOutCubic|微信小程序|
 |@change|EventHandle||current 改变时会触发 change 事件，event.detail = {current: current, source: source}||
-|@transition|EventHandle||swiper-item 的位置发生改变时会触发 transition 事件，event.detail = {dx: dx, dy: dy}|微信小程序、5+App、支付宝小程序、头条小程序、QQ小程序|
+|@transition|EventHandle||swiper-item 的位置发生改变时会触发 transition 事件，event.detail = {dx: dx, dy: dy}|5+App、H5、微信小程序、支付宝小程序、头条小程序、QQ小程序|
 |@animationfinish|EventHandle||动画结束时会触发 animationfinish 事件，event.detail = {current: current, source: source}|头条小程序不支持|
 
 change 事件返回 detail 中包含一个 source 字段，表示导致变更的原因，可能值如下：
