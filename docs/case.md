@@ -25,6 +25,7 @@ uni-app已经有几十万开发者，创建了几十万个项目，是开发者�
 	</a>
 </div>
 
+<!--
 <a href="//m3w.cn/__uni__fad3fd9" target="_blank" class="clear-style"><b>图片App模版：</b></a>使用uni-app开发的图片App模版，包含单列图、双列图，图片分类，图片轮播、预览、下载，图片分享、收藏，设置桌面背景图等功能。本项目源码在HBuilderX中新建项目可获得。
 <div style="display:flex;justify-content: space-around;">
 	<a href="//m3w.cn/__uni__fad3fd9" target="_blank" class="clear-style barcode-view">
@@ -32,8 +33,11 @@ uni-app已经有几十万开发者，创建了几十万个项目，是开发者�
 		<span style="margin-top:15px;">App及H5的通用快码</span>
 	</a>
 </div>
+-->
+
 
 ### 第三方开发者案例
+
 
 <a href="https://www.csdn.net/" target="_blank" class="clear-style"><b>CSDN：</b></a> 专业 IT 技术社区，致力于为中国软件开发者提供知识传播、在线学习、职业发展等全生命周期服务。
 <div style="display:flex;justify-content: space-around;">
@@ -93,6 +97,14 @@ uni-app已经有几十万开发者，创建了几十万个项目，是开发者�
 		<img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/cyb-baidu.png" width="200"/>
 		<span style="margin-top:15px;">百度小程序码</span>
 	</a>
+	<a href="https://www.cyb520.com/" target="_blank" class="clear-style barcode-view">
+		<img src="https://img.cyb520.com/faceImg/2019/08/17/130C1F3F-2E93-A55D-D6B2-074BEBE1902F.png/a120" width="200"/>
+		<span style="margin-top:15px;">QQ小程序码</span>
+	</a>
+	<a href="https://www.cyb520.com/" target="_blank" class="clear-style barcode-view">
+		<img src="https://img.cyb520.com/faceImg/2019/08/17/404C2595-2B08-D471-1317-6D5375F195C5.png/a120" width="200"/>
+		<span style="margin-top:15px;">头条/抖音小程序码</span>
+	</a>
 </div>
 
 <b>垃圾分类：</b>垃圾分一分，环境美十分。参与垃圾分类，保护地球家园，共创美好世界。（作者：怎么会这样）
@@ -114,7 +126,8 @@ uni-app已经有几十万开发者，创建了几十万个项目，是开发者�
 		<span style="margin-top:15px;">头条小程序码</span>
 	</a>
 </div>
-	
+
+
 <!-- <a href="//m3w.cn/__uni__4c6db6e" target="_blank" class="clear-style"><b>UniApp视频教程：</b></a>视频教育App，帮助开发者学习了解uni-app、h5+、mui等DCloud产品。开发者枫桥。
 <div style="display:flex;justify-content: space-around;">
 	<a href="//m3w.cn/__uni__4c6db6e" target="_blank" class="clear-style barcode-view">
@@ -164,6 +177,8 @@ uni-app已经有几十万开发者，创建了几十万个项目，是开发者�
 
 **蓝鲸鱼旧物回收：** 微信、支付宝搜索“蓝鲸鱼旧物回收”
 
+**锦衣盒：** 专注男士形象打造，全新的智能化购物模式，解决男士购衣困扰。微信小程序中搜索“锦衣盒”，头条/抖音小程序二维码[点此](http://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/case-jinyihe-toutiao.png)
+
 **ADR之声：** 航空工业信息中心App。[Android](https://m3w.cn/__uni__937cb89)
 
 **机场行：** 中国航信以机场为核心为旅客提供智能全行程服务应用。微信小程序搜索“机场行”，[H5](http://airporttravel.travelsky.com/weixin/)
@@ -179,6 +194,8 @@ uni-app已经有几十万开发者，创建了几十万个项目，是开发者�
 **内蒙古体育局：**[H5](http://tyj.nmg.gov.cn/h5/#/)
 
 **江苏公安网上政工慰问：**[H5](https://jxt.jsga.gov.cn:10006/app/njqxgzzs/zgww/#/)
+
+**杭州智安通：*[H5](https://hzjjzat.citydo.com.cn/vehicle-test)
 
 **深圳福田区爱福田：**[H5](https://ifutian.szft.gov.cn/masterSecond/)
 

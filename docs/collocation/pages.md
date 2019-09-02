@@ -76,10 +76,10 @@
 
 |属性|类型|默认值|描述|平台差异说明|
 |:-|:-|:-|:-||
-|navigationBarBackgroundColor|HexColor|#000000|导航栏背景颜色（同状态栏背景色）||
+|navigationBarBackgroundColor|HexColor|#F7F7F7|导航栏背景颜色（同状态栏背景色）|APP与H5为#F7F7F7，小程序平台请参考相应小程序文档||
 |navigationBarTextStyle|String|white|导航栏标题颜色及状态栏前景颜色，仅支持 black/white||
 |navigationBarTitleText|String||导航栏标题文字内容||
-|navigationStyle|String|default|导航栏样式，仅支持 default/custom。custom即取消默认的原生导航栏，需看[使用注意](/collocation/pages?id=/customnav)|微信小程序 7.0+、百度小程序、H5、App（2.0.3+）|
+|navigationStyle|String|default|导航栏样式，仅支持 default/custom。custom即取消默认的原生导航栏，需看[使用注意](/collocation/pages?id=customnav)|微信小程序 7.0+、百度小程序、H5、App（2.0.3+）|
 |backgroundColor|HexColor|#ffffff|窗口的背景色|微信小程序|
 |backgroundTextStyle|String|dark|下拉 loading 的样式，仅支持 dark / light|微信小程序|
 |enablePullDownRefresh|Boolean|false|是否开启下拉刷新，详见[页面生命周期](/use?id=页面生命周期)。||
@@ -89,6 +89,13 @@
 |pageOrientation|String|portrait|屏幕旋转设置，仅支持 auto / portrait 详见 [响应显示区域变化](https://developers.weixin.qq.com/miniprogram/dev/framework/view/resizable.html)|微信小程序|
 |animationType|String|pop-in|窗口显示的动画效果，详见：[窗口动画](api/router?id=animation)|App|
 |animationDuration|Number|300|窗口显示动画的持续时间，单位为 ms|App|
+|app-plus|Object||设置编译到 App 平台的特定样式，配置项参考下方 [app-plus](/collocation/pages?id=app-plus)|App|
+|h5|Object||设置编译到 H5 平台的特定样式，配置项参考下方 [H5](/collocation/pages?id=h5)|H5|
+|mp-alipay|Object||设置编译到 mp-alipay 平台的特定样式，配置项参考下方 [MP-ALIPAY](/collocation/pages?id=mp-alipay)|支付宝小程序|
+|mp-weixin|Object||设置编译到 mp-weixin 平台的特定样式|微信小程序|
+|mp-baidu|Object||设置编译到 mp-baidu 平台的特定样式|百度小程序|
+|mp-toutiao|Object||设置编译到 mp-toutiao 平台的特定样式|字节跳动小程序|
+|mp-qq|Object||设置编译到 mp-qq 平台的特定样式|QQ小程序|
 |usingComponents|Object| |引用小程序组件，参考 [小程序组件](/frame?id=小程序组件支持)|微信小程序、App|
 
 # pages
@@ -152,7 +159,7 @@
 |navigationBarTextStyle|String|white|导航栏标题颜色及状态栏前景颜色，仅支持 black/white||
 |navigationBarTitleText|String||导航栏标题文字内容||
 |navigationBarShadow|Object||导航栏阴影，配置参考下方 [导航栏阴影](/collocation/pages?id=navigationBarShadow)||
-|navigationStyle|String|default|导航栏样式，仅支持 default/custom。custom即取消默认的原生导航栏，需看[使用注意](/collocation/pages?id=/customnav)|微信小程序 7.0+、百度小程序、H5、App（2.0.3+）|
+|navigationStyle|String|default|导航栏样式，仅支持 default/custom。custom即取消默认的原生导航栏，需看[使用注意](/collocation/pages?id=customnav)|微信小程序 7.0+、百度小程序、H5、App（2.0.3+）|
 |disableScroll|Boolean|false|设置为 true 则页面整体不能上下滚动（bounce效果），只在页面配置中有效，在globalStyle中设置无效|微信小程序（iOS）、百度小程序（iOS）|
 |backgroundColor|HexColor|#ffffff|窗口的背景色|微信小程序、百度小程序、头条小程序|
 |backgroundTextStyle|String|dark|下拉 loading 的样式，仅支持 dark/light||
@@ -162,6 +169,11 @@
 |backgroundColorBottom|HexColor|#ffffff|底部窗口的背景色。|仅 iOS 平台|
 |app-plus|Object||设置编译到 App 平台的特定样式，配置项参考下方 [app-plus](/collocation/pages?id=app-plus)|App|
 |h5|Object||设置编译到 H5 平台的特定样式，配置项参考下方 [H5](/collocation/pages?id=h5)|H5|
+|mp-alipay|Object||设置编译到 mp-alipay 平台的特定样式，配置项参考下方 [MP-ALIPAY](/collocation/pages?id=mp-alipay)|支付宝小程序|
+|mp-weixin|Object||设置编译到 mp-weixin 平台的特定样式|微信小程序|
+|mp-baidu|Object||设置编译到 mp-baidu 平台的特定样式|百度小程序|
+|mp-toutiao|Object||设置编译到 mp-toutiao 平台的特定样式|字节跳动小程序|
+|mp-qq|Object||设置编译到 mp-qq 平台的特定样式|QQ小程序|
 |usingComponents|Object||引用小程序组件，参考 [小程序组件](/frame?id=小程序组件支持)|App、微信小程序、支付宝小程序、百度小程序|
 
 **代码示例：**
@@ -210,7 +222,7 @@
 - 前端组件在渲染速度上不如原生导航栏，原生导航可以在动画期间渲染，保证动画期间不白屏，但使用前端导航栏，在新窗体进入的动画期间可能会整页白屏，越低端的手机越明显。
 - 以上讨论的是前端自定义导航栏，但在App侧，原生导航栏也提供了比小程序导航更丰富的自定义性
 	* titleNView：给原生导航栏提供更多配置，包括自定义按钮、滚动渐变效果、搜索框等，详见[titleNView](/collocation/pages?id=app-titleNView)
-	* sunNView：使用nvue原生渲染，所有布局自己开发，具备一切自定义灵活度。详见[subNVue](/collocation/pages?id=app-subNVues)
+	* subNView：使用nvue原生渲染，所有布局自己开发，具备一切自定义灵活度。详见[subNVue](/collocation/pages?id=app-subNVues)
 - 页面禁用原生导航栏后，想要改变状态栏的前景字体样式，仍可设置页面的 navigationBarTextStyle 属性（只能设置为 black或white）。如果想单独设置状态栏颜色，App端可使用[plus.navigator.setStatusBarStyle](http://www.html5plus.org/doc/zh_cn/navigator.html#plus.navigator.setStatusBarStyle)设置。注意部分低端Android手机（4.4）自身不支持设置状态栏前景色。
  
 鉴于以上问题，在原生导航能解决业务需求的情况下，尽量使用原生导航。甚至有时需要牺牲一些不是很重要的需求。在App和H5下，uni-app提供了灵活的处理方案：[titleNView](/collocation/pages?id=app-titleNView)、[subNVue](/collocation/pages?id=app-subNVues)、或整页使用nvue。但在小程序下，因为其自身的限制，没有太好的方案。有必要的话，也可以用条件编译分端处理。
@@ -247,7 +259,7 @@
 
 **Tips**
 
-- 每个页面均支持通过配置 `titleNView:false` 来禁用原生导航栏。一旦禁用原生导航，请注意阅读[自定义导航注意事项](/collocation/pages?id=/customnav)。
+- 每个页面均支持通过配置 `titleNView:false` 来禁用原生导航栏。一旦禁用原生导航，请注意阅读[自定义导航注意事项](/collocation/pages?id=customnav)。
 - `titleNView` 不能设置 `autoBackButton`、`homeButton`等属性
 - `titleNView` 的 `type` 值为 `transparent` 时，导航栏为透明渐变导航栏
 - 在 `titleNView` 配置 `buttons` 后，监听按钮的点击事件，vue 页面参考：[onNavigationBarButtonTap](/frame?id=页面生命周期)、nvue 页面参考：[uni.onNavigationBarButtonTap](/use-weex?id=onnavigationbarbuttontap)
@@ -584,6 +596,27 @@ h5 平台下拉刷新动画，只有 circle 类型。
 |属性|类型|描述|
 |:-|:-|:-|
 |colorType|String|阴影的颜色，支持：grey、blue、green、orange、red、yellow|
+
+### mp-alipay
+配置编译到 MP-ALIPAY 平台时的特定样式
+
+|属性|类型|默认值|描述|
+|:-|:-|:-|:-|
+|allowsBounceVertical|String|YES|是否允许向下拉拽。支持 YES / NO|
+|transparentTitle|String|none|导航栏透明设置。支持 always 一直透明 / auto 滑动自适应 / none 不透明|
+|titlePenetrate|String|NO|导航栏点击穿透|
+|showTitleLoading|String|NO|是否进入时显示导航栏的 loading。支持 YES / NO|
+|titleImage|String||导航栏图片地址（替换当前标题），必须为https的图片链接地址|
+|backgroundImageUrl|String||下拉露出显示的背景图链接|
+|backgroundImageColor|HexColor||下拉露出显示的背景图底色|
+|gestureBack|String|NO|iOS 用，是否支持手势返回。支持 YES / NO|
+|enableScrollBar|String|YES|Android 用，是否显示 WebView 滚动条。支持 YES / NO|
+
+**注意事项**
+
+- ```titleImage```仅支持https地址，设置了```titleImage```会是页面```title```失效
+- ```backgroundImageUrl```支持网络地址和本地地址，尽量使用绝对地址
+- 部分配置可能会只在真机运行的时候生效，支付宝未来应该会改善
 
 # FAQ
 - Q：如何取消原生导航栏？或自定义导航

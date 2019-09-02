@@ -281,6 +281,8 @@ Tips：`uni-app` 中 `manifest.json->h5->devServer` 实际上对应 `webpack` �
 }
 ```
 
+Tips：关于摇树优化（treeShaking）原理及优化结果，参考：[https://ask.dcloud.net.cn/article/36279](https://ask.dcloud.net.cn/article/36279)
+
 ### mp-weixin
 
 |属性|类型|说明|
@@ -326,6 +328,7 @@ Tips：`uni-app` 中 `manifest.json->h5->devServer` 实际上对应 `webpack` �
 |:-|:-|:-|
 |appid|String|头条小程序的 AppID，登录 [https://developer.toutiao.com/](https://developer.toutiao.com/) 申请|
 |setting|Object|头条小程序项目设置，参考[头条小程序项目设置](/collocation/manifest?id=mp-toutiao-setting)|
+|usingComponents|Boolean| 是否启用自定义组件模式，`v2.0+`，默认为false，[编译模式区别详情](https://ask.dcloud.net.cn/article/35843)|
 
 #### 头条小程序项目设置@mp-toutiao-setting
 
@@ -341,6 +344,7 @@ Tips：`uni-app` 中 `manifest.json->h5->devServer` 实际上对应 `webpack` �
 |属性|类型|说明|
 |:-|:-|:-|
 |appid|String|qq 小程序的 AppID，登录 [https://q.qq.com](https://q.qq.com) 申请|
+|usingComponents|Boolean| 是否启用自定义组件模式，`v2.0+`，默认为false，[编译模式区别详情](https://ask.dcloud.net.cn/article/35843)。mp-qq只支持自定义组件模式|
 
 
 ### 完整 manifest.json
