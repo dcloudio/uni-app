@@ -9,19 +9,27 @@
 |indicator-dots|Boolean|false|是否显示面板指示点||
 |indicator-color|Color|rgba(0, 0, 0, .3)|指示点颜色||
 |indicator-active-color|Color|#000000|当前选中的指示点颜色||
+|active-class|String||swiper-item 可见时的 class|支付宝小程序|
+|changing-class|String||acceleration 设置为 {{true}} 时且处于滑动过程中，中间若干屏处于可见时的class|支付宝小程序|
 |autoplay|Boolean|false|是否自动切换||
 |current|Number|0|当前所在滑块的 index||
-|current-item-id|String||当前所在滑块的 item-id ，不能与 current 被同时指定|微信小程序、5+App、H5、百度小程序、头条小程序|
+|current-item-id|String||当前所在滑块的 item-id ，不能与 current 被同时指定|支付宝小程序不支持|
 |interval|Number|5000|自动切换时间间隔||
 |duration|Number|500|滑动动画时长||
 |circular|Boolean|false|是否采用衔接滑动||
 |vertical|Boolean|false|滑动方向是否为纵向||
 |previous-margin|String|0px|前边距，可用于露出前一项的一小部分，接受 px 和 rpx 值|头条小程序不支持|
 |next-margin|String|0px|后边距，可用于露出后一项的一小部分，接受 px 和 rpx 值|头条小程序不支持|
-|display-multiple-items|Number|1|同时显示的滑块数量|微信小程序、5+App、H5、百度小程序、头条小程序|
-|skip-hidden-item-layout|Boolean|false|是否跳过未显示的滑块布局，设为 true 可优化复杂情况下的滑动性能，但会丢失隐藏状态滑块的布局信息|微信小程序、5+App|
+|acceleration|Boolean|false|当开启时，会根据滑动速度，连续滑动多屏|支付宝小程序|
+|disable-programmatic-animation|Boolean|false|是否禁用代码变动触发 swiper 切换时使用动画。|支付宝小程序|
+|display-multiple-items|Number|1|同时显示的滑块数量|支付宝小程序不支持|
+|skip-hidden-item-layout|Boolean|false|是否跳过未显示的滑块布局，设为 true 可优化复杂情况下的滑动性能，但会丢失隐藏状态滑块的布局信息|5+App、微信小程序|
+|disable-touch|Boolean|false|是否禁止用户 touch 操作|支付宝小程序|
+|touchable|Boolean|true|是否监听用户的触摸事件|头条小程序|
+|easing-function|String|default|指定 swiper 切换缓动动画类型，有效值：default、linear、easeInCubic、easeOutCubic、easeInOutCubic|微信小程序|
 |@change|EventHandle||current 改变时会触发 change 事件，event.detail = {current: current, source: source}||
-|@animationfinish|EventHandle||动画结束时会触发 animationfinish 事件，event.detail 同上|头条小程序不支持|
+|@transition|EventHandle||swiper-item 的位置发生改变时会触发 transition 事件，event.detail = {dx: dx, dy: dy}|5+App、H5、微信小程序、支付宝小程序、头条小程序、QQ小程序|
+|@animationfinish|EventHandle||动画结束时会触发 animationfinish 事件，event.detail = {current: current, source: source}|头条小程序不支持|
 
 change 事件返回 detail 中包含一个 source 字段，表示导致变更的原因，可能值如下：
 

@@ -817,6 +817,27 @@ var serviceContext = (function () {
   }
 
   const callbacks = {};
+  const WEB_INVOKE_APPSERVICE = 'WEB_INVOKE_APPSERVICE';
+  // 简单处理 view 层与 service 层的通知系统
+  /**
+   * 消费 view 层通知
+   */
+  function consumePlusMessage (type, args) {
+    // 处理 web-view 组件发送的通知
+    if (type === WEB_INVOKE_APPSERVICE) {
+      publish(WEB_INVOKE_APPSERVICE, args.data, args.webviewIds);
+      return true
+    }
+    const callback = callbacks[type];
+    if (callback) {
+      callback(args);
+      if (!callback.keepAlive) {
+        delete callbacks[type];
+      }
+      return true
+    }
+    return false
+  }
   /**
    * 注册 view 层通知 service 层事件处理
    */
@@ -1368,6 +1389,16 @@ var serviceContext = (function () {
       publish('onKeyboardHeightChange', {
         height: event.height
       });
+    });
+
+    plus.globalEvent.addEventListener('plusMessage', function (e) {
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('UNIAPP[plusMessage]:[' + Date.now() + ']' + JSON.stringify(e.data));
+      }
+      if (e.data && e.data.type) {
+        const type = e.data.type;
+        consumePlusMessage(type, e.data.args || {});
+      }
     });
   }
 
@@ -4718,11 +4749,11 @@ var serviceContext = (function () {
               if (isDark) {
                 plus.navigator.setStatusBarStyle('isDark');
               }
-              webview.close('auto');
               result = {
                 type,
                 code
               };
+              webview.close('auto');
             }, () => {
               plus.nativeUI.toast('识别失败');
             }, filters);
@@ -4763,7 +4794,7 @@ var serviceContext = (function () {
       });
     });
     webview.addEventListener('close', () => {
-      if (result && 'code' in result) {
+      if (result) {
         invoke(callbackId, {
           result: result.code,
           scanType: SCAN_MAPS[result.type] || '',
@@ -4776,6 +4807,7 @@ var serviceContext = (function () {
           errMsg: 'scanCode:fail cancel'
         });
       }
+      consumePlusMessage(MESSAGE_TYPE);
     });
     if (isDark) { // 状态栏前景色
       plus.navigator.setStatusBarStyle('light');
@@ -4790,15 +4822,10 @@ var serviceContext = (function () {
         }
       });
     }
-    // fixed by hxy 注册扫码事件
+
     registerPlusMessage(MESSAGE_TYPE, function (res) {
-      if (res && !res.errMsg) {
+      if (res && 'code' in res) {
         result = res;
-      } else {
-        const errMsg = res && res.errMsg ? ' ' + res.errMsg : '';
-        result = {
-          errMsg: 'scanCode:fail' + errMsg
-        };
       }
     }, false);
   }
@@ -4815,9 +4842,18 @@ var serviceContext = (function () {
     const screenHeight = plus.screen.resolutionHeight;
     // 横屏时 iOS 获取的状态栏高度错误，进行纠正
     var landscape = Math.abs(plus.navigator.getOrientation()) === 90;
-    var statusBarHeight = plus.navigator.getStatusbarHeight();
+    var statusBarHeight = Math.round(plus.navigator.getStatusbarHeight());
     if (ios && landscape) {
       statusBarHeight = Math.min(20, statusBarHeight);
+    }
+    var safeAreaInsets;
+    function getSafeAreaInsets () {
+      return {
+        left: 0,
+        right: 0,
+        top: titleNView ? 0 : statusBarHeight,
+        bottom: 0
+      }
     }
     // 判断是否存在 titleNView
     var titleNView;
@@ -4828,7 +4864,22 @@ var serviceContext = (function () {
         titleNView = style && style.titleNView;
         titleNView = titleNView && titleNView.type === 'default';
       }
+      safeAreaInsets = ios ? webview.getSafeAreaInsets() : getSafeAreaInsets();
+    } else {
+      safeAreaInsets = ios ? plus.navigator.getSafeAreaInsets() : getSafeAreaInsets();
     }
+    var windowHeight = Math.min(screenHeight - (titleNView ? (statusBarHeight + TITLEBAR_HEIGHT)
+      : 0) - (isTabBarPage() && tabBar.visible ? TABBAR_HEIGHT : 0), screenHeight);
+    var windowWidth = screenWidth;
+    var safeArea = {
+      left: safeAreaInsets.left,
+      right: windowWidth - safeAreaInsets.right,
+      top: safeAreaInsets.top,
+      bottom: windowHeight - safeAreaInsets.bottom,
+      width: windowWidth - safeAreaInsets.left - safeAreaInsets.right,
+      height: windowHeight - safeAreaInsets.top - safeAreaInsets.bottom
+    };
+
     return {
       errMsg: 'getSystemInfo:ok',
       brand: '',
@@ -4836,11 +4887,8 @@ var serviceContext = (function () {
       pixelRatio: plus.screen.scale,
       screenWidth,
       screenHeight,
-      // 安卓端 webview 宽度有时比屏幕多 1px，相比取最小值
-      // TODO screenWidth,screenHeight
-      windowWidth: screenWidth,
-      windowHeight: Math.min(screenHeight - (titleNView ? (statusBarHeight + TITLEBAR_HEIGHT)
-        : 0) - (isTabBarPage() && tabBar.visible ? TABBAR_HEIGHT : 0), screenHeight),
+      windowWidth,
+      windowHeight,
       statusBarHeight,
       language: plus.os.language,
       system: plus.os.version,
@@ -4849,7 +4897,8 @@ var serviceContext = (function () {
       platform,
       SDKVersion: '',
       windowTop: 0,
-      windowBottom: 0
+      windowBottom: 0,
+      safeArea
     }
   }
 
@@ -5058,6 +5107,8 @@ var serviceContext = (function () {
 
   const CHOOSE_LOCATION_PATH = '_www/__uniappchooselocation.html';
 
+  const MESSAGE_TYPE$1 = 'chooseLocation';
+
   function chooseLocation$1 (params, callbackId) {
     const statusBarStyle = plus.navigator.getStatusBarStyle();
     const webview = plus.webview.create(
@@ -5099,26 +5150,38 @@ var serviceContext = (function () {
         }
       });
     }
+    let index = 0;
+    let onShow = function () {
+      index++;
+      if (index === 2) {
+        webview.evalJS(`__chooseLocation__(${JSON.stringify(params)})`);
+      }
+    };
+    webview.addEventListener('loaded', onShow);
+    webview.show('slide-in-bottom', ANI_DURATION, onShow);
 
-    webview.show('slide-in-bottom', ANI_DURATION, () => {
-      webview.evalJS(`__chooseLocation__(${JSON.stringify(params)})`);
-    });
+    let result;
 
-    // fixed by hxy
-    registerPlusMessage('chooseLocation', function (res) {
-      if (res && !res.errMsg) {
+    webview.addEventListener('close', () => {
+      if (result) {
         invoke(callbackId, {
-          name: res.poiname,
-          address: res.poiaddress,
-          latitude: res.latlng.lat,
-          longitude: res.latlng.lng,
+          name: result.poiname,
+          address: result.poiaddress,
+          latitude: result.latlng.lat,
+          longitude: result.latlng.lng,
           errMsg: 'chooseLocation:ok'
         });
       } else {
-        const errMsg = res && res.errMsg ? ' ' + res.errMsg : '';
+        consumePlusMessage(MESSAGE_TYPE$1);
         invoke(callbackId, {
-          errMsg: 'chooseLocation:fail' + errMsg
+          errMsg: 'chooseLocation:fail cancel'
         });
+      }
+    });
+
+    registerPlusMessage(MESSAGE_TYPE$1, function (res) {
+      if (res && 'latlng' in res) {
+        result = res;
       }
     }, false);
   }
