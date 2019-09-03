@@ -54,10 +54,9 @@ export default {
 
     Vue.prototype.$handleWxsEvent = function ($event) {
       if ($event instanceof Event) { // 未处理的 event 对象 需要对 target 校正及包装
-        // 查找 uniTarget
-        const target = findUniTarget($event, this.$el)
-        const instance = target && target.__vue__ && target.__vue__.$getComponentDescriptor()
-        $event = processEvent.call(this, $event.type, $event, {}, target || $event.target, $event.currentTarget)
+        const currentTarget = $event.currentTarget
+        const instance = currentTarget && currentTarget.__vue__ && currentTarget.__vue__.$getComponentDescriptor()
+        $event = processEvent.call(this, $event.type, $event, {}, findUniTarget($event, this.$el) || $event.target, $event.currentTarget)
         $event.instance = instance
       }
       return $event
