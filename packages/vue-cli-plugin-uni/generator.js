@@ -45,6 +45,9 @@ module.exports = (api, options, rootOptions) => {
       devDependencies: {
         '@dcloudio/uni-cli-shared': version,
         '@dcloudio/uni-template-compiler': version,
+        '@dcloudio/vue-cli-plugin-hbuilderx': version,
+        '@dcloudio/vue-cli-plugin-uni': version,
+        '@dcloudio/vue-cli-plugin-uni-optimize': version,
         '@dcloudio/webpack-uni-mp-loader': version,
         '@dcloudio/webpack-uni-pages-loader': version,
         'babel-plugin-import': '^1.11.0'
