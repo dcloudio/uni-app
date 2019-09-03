@@ -86,7 +86,6 @@
 |onReachBottomDistance|Number|50|页面上拉触底事件触发时距页面底部距离，单位只支持px，详见[页面生命周期](/use?id=页面生命周期)||
 |backgroundColorTop|HexColor|#ffffff|顶部窗口的背景色。|仅 iOS 平台|
 |backgroundColorBottom|HexColor|#ffffff|底部窗口的背景色。|仅 iOS 平台|
-|titleImage|String||导航栏图片地址（替换当前标题），必须为https的图片链接地址|支付宝小程序、H5|
 |pageOrientation|String|portrait|屏幕旋转设置，仅支持 auto / portrait 详见 [响应显示区域变化](https://developers.weixin.qq.com/miniprogram/dev/framework/view/resizable.html)|微信小程序|
 |animationType|String|pop-in|窗口显示的动画效果，详见：[窗口动画](api/router?id=animation)|App|
 |animationDuration|Number|300|窗口显示动画的持续时间，单位为 ms|App|
@@ -168,7 +167,6 @@
 |onReachBottomDistance|Number|50|页面上拉触底事件触发时距页面底部距离，单位只支持px，详见[页面生命周期](/use?id=页面生命周期)||
 |backgroundColorTop|HexColor|#ffffff|顶部窗口的背景色。|仅 iOS 平台|
 |backgroundColorBottom|HexColor|#ffffff|底部窗口的背景色。|仅 iOS 平台|
-|titleImage|String||导航栏图片地址（替换当前标题），必须为https的图片链接地址|支付宝小程序、H5|
 |app-plus|Object||设置编译到 App 平台的特定样式，配置项参考下方 [app-plus](/collocation/pages?id=app-plus)|App|
 |h5|Object||设置编译到 H5 平台的特定样式，配置项参考下方 [H5](/collocation/pages?id=h5)|H5|
 |mp-alipay|Object||设置编译到 mp-alipay 平台的特定样式，配置项参考下方 [MP-ALIPAY](/collocation/pages?id=mp-alipay)|支付宝小程序|
@@ -608,6 +606,7 @@ h5 平台下拉刷新动画，只有 circle 类型。
 |transparentTitle|String|none|导航栏透明设置。支持 always 一直透明 / auto 滑动自适应 / none 不透明|
 |titlePenetrate|String|NO|导航栏点击穿透|
 |showTitleLoading|String|NO|是否进入时显示导航栏的 loading。支持 YES / NO|
+|titleImage|String||导航栏图片地址（替换当前标题），必须为https的图片链接地址|
 |backgroundImageUrl|String||下拉露出显示的背景图链接|
 |backgroundImageColor|HexColor||下拉露出显示的背景图底色|
 |gestureBack|String|NO|iOS 用，是否支持手势返回。支持 YES / NO|
