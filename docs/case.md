@@ -50,7 +50,7 @@ uni-app已经有几十万开发者，创建了几十万个项目，是开发者�
 <a href="https://www.oschina.net/" target="_blank" class="clear-style"><b>开源中国：</b></a> 中文开源技术交流社区，提供最新的开源软件资讯。
 <div style="display:flex;justify-content: space-around;">
 	<a href="javascript:;" target="_blank" class="clear-style barcode-view">
-		<img src="http://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/oschina_weixin.jpg" width="200"/>
+		<img src="https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/oschina_weixin.jpg" width="200"/>
 		<span style="margin-top:15px;">微信小程序码</span>
 	</a>
     <a href="javascript:;" target="_blank" class="clear-style barcode-view">

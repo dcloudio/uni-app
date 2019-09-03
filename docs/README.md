@@ -41,13 +41,13 @@
         </a>
         <a href="//m3w.cn/uniapp" target="_blank" class="clear-style barcode-view">
 			<div class="barcode-img-box">
-				<img src="http://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/mp-toutiao.png" width="160"/>
+				<img src="https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/mp-toutiao.png" width="160"/>
 			</div>
         	<b>头条小程序版</b>
         </a>
         <a href="//m3w.cn/uniapp" target="_blank" class="clear-style barcode-view">
 			<div class="barcode-img-box">
-				<img src="http://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/hello-uni-qq.png" width="160"/>
+				<img src="https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/hello-uni-qq.png" width="160"/>
 			</div>
         	<b>QQ小程序版</b>
         </a>

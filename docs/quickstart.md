@@ -192,7 +192,7 @@ vue create -p dcloudio/uni-preset-vue my-project
 此时，会提示选择项目模板，初次体验建议选择 `hello uni-app` 项目模板，如下所示：
 
 <div>
-<img src="http://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/h5-cli-01.png" width="300">
+<img src="https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/h5-cli-01.png" width="300">
 </div>
 
 #### 自定义模板
@@ -245,4 +245,4 @@ npm run build:%PLATFORM%
 * 发布App时，仍然需要使用HBuilderX。其他开发工具无法发布App，但可以发布H5、各种小程序。如需开发App，可以先在HBuilderX里运行起来，然后在其他编辑器里修改保存代码，代码修改后会自动同步到手机基座。
 * 如果使用``cli``创建项目，那下载HBuilderX时只需下载10M的标准版即可。因为编译器已经安装到项目下了。
 * 对 `cli` 使用有疑问，欢迎扫码加入 uni-app 微信交流群讨论：
-    <br/><img src="http://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/wx-barcode.png" width="250"/>
+    <br/><img src="https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/wx-barcode.png" width="250"/>
