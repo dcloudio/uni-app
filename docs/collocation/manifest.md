@@ -482,8 +482,7 @@ Tips：关于摇树优化（treeShaking）原理及优化结果，参考：[http
 				"share": {
 					// 微信分享
 					"weixin": {
-						"appid": "",
-						"appsecret": ""
+						"appid": ""
 					},
 					// 新浪微博分享
 					"sina": {
@@ -491,15 +490,9 @@ Tips：关于摇树优化（treeShaking）原理及优化结果，参考：[http
 						"appsecret": "",
 						"redirect_uri": ""
 					},
-					// 分享到QQ好友
+					// 分享到QQ
 					"qq": {
 						"appid": ""
-					},
-					// 腾讯微博分享
-					"tencent": {
-						"appkey": "",
-						"appsecret": "",
-						"redirect_uri": ""
 					}
 				},
 				"statics": {
@@ -634,7 +627,8 @@ Tips：关于摇树优化（treeShaking）原理及优化结果，参考：[http
 		"softinput": {
 			"navBar": "auto", //是否显示iOS软键盘上的“完成”导航条
 			"mode": "adjustResize|adjustPan" //软键盘弹出模式，
-		}
+		},
+    "popGesture": "none" //iOS上是否支持屏幕左边滑动关闭当前页面。默认是可关闭。设为none则不响应左滑动画。
 	},
 	// 快应用特有配置
 	"quickapp": {},
