@@ -219,13 +219,6 @@ class Util {
       t: getTime(),
       p: this.statData.p
     }
-    if (getPlatformName() === 'n' && this.statData.p === 'a') {
-      setTimeout(() => {
-        this.request(options);
-      }, 200)
-      return
-    }
-
     this.request(options);
   }
 
@@ -245,12 +238,6 @@ class Util {
       usv: this.statData.usv,
       t: getTime(),
       p: this.statData.p
-    }
-    if (getPlatformName() === 'n' && this.statData.p === 'a') {
-      setTimeout(() => {
-        this.request(options, type)
-      }, 200)
-      return
     }
     this.request(options, type)
   }
@@ -378,6 +365,15 @@ class Util {
       return
     }
 
+    if (getPlatformName() === 'n' && this.statData.p === 'a') {
+      setTimeout(() => {
+        this._sendRequest(optionsData);
+      }, 200)
+      return
+    }
+    this._sendRequest(optionsData)
+  }
+  _sendRequest(optionsData){
     uni.request({
       url: STAT_URL,
       method: 'POST',
@@ -401,7 +397,6 @@ class Util {
         }
       }
     });
-
   }
   /**
    * h5 请求

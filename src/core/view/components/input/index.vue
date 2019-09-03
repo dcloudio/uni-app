@@ -1,5 +1,7 @@
 <template>
-  <uni-input v-on="$listeners">
+  <uni-input
+    @change.stop
+    v-on="$listeners">
     <div
       ref="wrapper"
       class="uni-input-wrapper">
