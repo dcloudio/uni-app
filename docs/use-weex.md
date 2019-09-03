@@ -148,9 +148,9 @@ uni-app 深度改进了 weex，提供了2种编译模式，一种是常规的 we
 HBuilderX内置了更好用的weex/uni-app调试工具，包括审查界面元素、看log、debug打断点，[详见](https://uniapp.dcloud.io/snippet?id=%e5%85%b3%e4%ba%8e-app-%e7%9a%84%e8%b0%83%e8%af%95)
 
 
-## 生命周期
+## weex 生命周期
 
-``nvue `` 的 uni-app 编译模式的生命周期同普通vue页面。而 weex 编译模式，即普通 weex 生命周期函数如下：
+``nvue `` 的 uni-app 编译模式的生命周期同普通vue页面，[参考](https://uniapp.dcloud.io/collocation/frame/lifetime)。而 weex 编译模式，生命周期函数同weex，具体如下：
 
 |Vue 生命周期钩子|说明|
 |---|---|
