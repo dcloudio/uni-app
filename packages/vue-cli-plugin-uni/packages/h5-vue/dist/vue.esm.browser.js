@@ -729,8 +729,8 @@ class Dep {
   }
 
   depend () {
-    if (Dep.target) {
-      Dep.target.addDep(this);
+    if (Dep.SharedObject.target) {
+      Dep.SharedObject.target.addDep(this);
     }
   }
 
@@ -752,17 +752,20 @@ class Dep {
 // The current target watcher being evaluated.
 // This is globally unique because only one watcher
 // can be evaluated at a time.
-Dep.target = null;
-const targetStack = [];
+// fixed by xxxxxx (nvue shared vuex)
+/* eslint-disable no-undef */
+Dep.SharedObject = typeof SharedObject !== 'undefined' ? SharedObject : {};
+Dep.SharedObject.target = null;
+Dep.SharedObject.targetStack = [];
 
 function pushTarget (target) {
-  targetStack.push(target);
-  Dep.target = target;
+  Dep.SharedObject.targetStack.push(target);
+  Dep.SharedObject.target = target;
 }
 
 function popTarget () {
-  targetStack.pop();
-  Dep.target = targetStack[targetStack.length - 1];
+  Dep.SharedObject.targetStack.pop();
+  Dep.SharedObject.target = Dep.SharedObject.targetStack[Dep.SharedObject.targetStack.length - 1];
 }
 
 /*  */
@@ -1070,7 +1073,7 @@ function defineReactive$$1 (
     configurable: true,
     get: function reactiveGetter () {
       const value = getter ? getter.call(obj) : val;
-      if (Dep.target) {
+      if (Dep.SharedObject.target) { // fixed by xxxxxx
         dep.depend();
         if (childOb) {
           childOb.dep.depend();
@@ -4867,7 +4870,7 @@ function createComputedGetter (key) {
       if (watcher.dirty) {
         watcher.evaluate();
       }
-      if (Dep.target) {
+      if (Dep.SharedObject.target) {// fixed by xxxxxx
         watcher.depend();
       }
       return watcher.value
@@ -6709,6 +6712,66 @@ var baseModules = [
 
 /*  */
 
+function findWxsProps(wxsProps, attrs) {
+  const ret = {};
+  Object.keys(wxsProps).forEach(name => {
+    if (attrs[name]) {
+      ret[wxsProps[name]] = attrs[name];
+      delete attrs[name];
+    }
+  });
+  return ret
+}
+
+function updateWxsProps(oldVnode, vnode) {
+  if (
+    isUndef(oldVnode.data.wxsProps) &&
+    isUndef(vnode.data.wxsProps)
+  ) {
+    return
+  }
+
+  let oldWxsWatches = oldVnode.$wxsWatches;
+  const wxsPropsKey = Object.keys(vnode.data.wxsProps);
+  if (!oldWxsWatches && !wxsPropsKey.length) {
+    return
+  }
+
+  if (!oldWxsWatches) {
+    oldWxsWatches = {};
+  }
+
+  const wxsProps = findWxsProps(vnode.data.wxsProps, vnode.data.attrs);
+  const context = vnode.context;
+
+  vnode.$wxsWatches = {};
+
+  Object.keys(wxsProps).forEach(prop => {
+    vnode.$wxsWatches[prop] = oldWxsWatches[prop] || vnode.context.$watch(prop, function(newVal, oldVal) {
+      wxsProps[prop](
+        newVal,
+        oldVal,
+        context.$getComponentDescriptor(),
+        vnode.elm.__vue__.$getComponentDescriptor()
+      );
+    });
+  });
+
+  Object.keys(oldWxsWatches).forEach(oldName => {
+    if (!vnode.$wxsWatches[oldName]) {
+      oldWxsWatches[oldName]();
+      delete oldWxsWatches[oldName];
+    }
+  });
+}
+
+var wxs = {
+  create: updateWxsProps,
+  update: updateWxsProps
+};
+
+/*  */
+
 function updateAttrs (oldVnode, vnode) {
   const opts = vnode.componentOptions;
   if (isDef(opts) && opts.Ctor.options.inheritAttrs === false) {
@@ -8499,6 +8562,7 @@ var transition = inBrowser ? {
 } : {};
 
 var platformModules = [
+  wxs,// fixed by xxxxxx wxs props
   attrs,
   klass,
   events,
@@ -9151,6 +9215,36 @@ if (inBrowser) {
 
 /*  */
 
+function transformNode(el) {
+  const list = el.attrsList;
+  for (let i = list.length - 1; i >= 0; i--) {
+    const name = list[i].name;
+    if (name.indexOf(':change:') === 0 || name.indexOf('v-bind:change:') === 0) {
+      const nameArr = name.split(':');
+      const wxsProp = nameArr[nameArr.length - 1];
+      const wxsPropBinding = getBindingAttr(el, wxsProp, false);
+      if (wxsPropBinding) {
+        (el.wxsPropBindings || (el.wxsPropBindings = {}))['change:' + wxsProp] = wxsPropBinding;
+      }
+    }
+  }
+}
+
+function genData(el) {
+  let data = '';
+  if (el.wxsPropBindings) {
+    data += `wxsProps:${JSON.stringify(el.wxsPropBindings)},`;
+  }
+  return data
+}
+
+var wxs$1 = {
+  transformNode,
+  genData
+};
+
+/*  */
+
 const defaultTagRE = /\{\{((?:.|\r?\n)+?)\}\}/g;
 const regexEscapeRE = /[-.*+?^${}()|[\]\/\\]/g;
 
@@ -9199,7 +9293,7 @@ function parseText (
 
 /*  */
 
-function transformNode (el, options) {
+function transformNode$1 (el, options) {
   const warn = options.warn || baseWarn;
   const staticClass = getAndRemoveAttr(el, 'class');
   if (staticClass) {
@@ -9223,7 +9317,7 @@ function transformNode (el, options) {
   }
 }
 
-function genData (el) {
+function genData$1 (el) {
   let data = '';
   if (el.staticClass) {
     data += `staticClass:${el.staticClass},`;
@@ -9236,13 +9330,13 @@ function genData (el) {
 
 var klass$1 = {
   staticKeys: ['staticClass'],
-  transformNode,
-  genData
+  transformNode: transformNode$1,
+  genData: genData$1
 };
 
 /*  */
 
-function transformNode$1 (el, options) {
+function transformNode$2 (el, options) {
   const warn = options.warn || baseWarn;
   const staticStyle = getAndRemoveAttr(el, 'style');
   if (staticStyle) {
@@ -9268,7 +9362,7 @@ function transformNode$1 (el, options) {
   }
 }
 
-function genData$1 (el) {
+function genData$2 (el) {
   let data = '';
   if (el.staticStyle) {
     data += `staticStyle:${el.staticStyle},`;
@@ -9281,8 +9375,8 @@ function genData$1 (el) {
 
 var style$1 = {
   staticKeys: ['staticStyle'],
-  transformNode: transformNode$1,
-  genData: genData$1
+  transformNode: transformNode$2,
+  genData: genData$2
 };
 
 /*  */
@@ -10631,6 +10725,7 @@ var model$1 = {
 };
 
 var modules$1 = [
+  wxs$1,
   klass$1,
   style$1,
   model$1
@@ -11064,7 +11159,7 @@ function genElement (el, state) {
     } else {
       let data;
       if (!el.plain || (el.pre && state.maybeComponent(el))) {
-        data = genData$2(el, state);
+        data = genData$3(el, state);
       }
 
       const children = el.inlineTemplate ? null : genChildren(el, state, true);
@@ -11202,7 +11297,7 @@ function genFor (
     '})'
 }
 
-function genData$2 (el, state) {
+function genData$3 (el, state) {
   let data = '{';
 
   // directives first.
@@ -11559,7 +11654,7 @@ function genComponent (
   state
 ) {
   const children = el.inlineTemplate ? null : genChildren(el, state, true);
-  return `_c(${componentName},${genData$2(el, state)}${
+  return `_c(${componentName},${genData$3(el, state)}${
     children ? `,${children}` : ''
   })`
 }

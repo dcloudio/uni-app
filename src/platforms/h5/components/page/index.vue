@@ -132,6 +132,10 @@ export default {
       default () {
         return {}
       }
+    },
+    titleImage: {
+      type: String,
+      default: ''
     }
   },
   data () {
@@ -141,6 +145,7 @@ export default {
       backgroundColor: this.navigationBarBackgroundColor,
       textColor: this.navigationBarTextStyle === 'black' ? '#000' : '#fff',
       titleText: this.navigationBarTitleText,
+      titleImage: this.titleImage,
       duration: '0',
       timingFunc: ''
     }, this.titleNView)

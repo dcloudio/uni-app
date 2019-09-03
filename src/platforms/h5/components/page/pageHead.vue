@@ -42,7 +42,13 @@
           <i
             v-if="loading"
             class="uni-loading"/>
-          {{ titleText }}
+          <img
+            v-if="titleImage!==''"
+            :src="titleImage"
+            class="uni-page-head__title_image" >
+          <template v-else>
+            {{ titleText }}
+          </template>
         </div>
       </div>
       <div
@@ -268,6 +274,12 @@ uni-page-head .uni-page-head__title .uni-loading {
   height: 16px;
   margin-top: -3px;
 }
+
+uni-page-head .uni-page-head__title .uni-page-head__title_image {
+  width: auto;
+  height: 20px;
+  vertical-align: middle;
+}
 </style>
 <script>
 import appendCss from 'uni-platform/helpers/append-css'
@@ -341,6 +353,10 @@ export default {
       default () {
         return false
       }
+    },
+    titleImage: {
+      type: String,
+      default: ''
     }
   },
   data () {
