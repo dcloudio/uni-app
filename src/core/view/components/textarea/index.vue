@@ -12,6 +12,7 @@
     :cursor="cursorNumber"
     :selection-start="selectionStartNumber"
     :selection-end="selectionEndNumber"
+    @change.stop
     v-on="$listeners"
   >
     <div class="uni-textarea-wrapper">
