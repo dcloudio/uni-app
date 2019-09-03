@@ -84,8 +84,8 @@
 |backgroundTextStyle|String|dark|下拉 loading 的样式，仅支持 dark / light|微信小程序|
 |enablePullDownRefresh|Boolean|false|是否开启下拉刷新，详见[页面生命周期](/use?id=页面生命周期)。||
 |onReachBottomDistance|Number|50|页面上拉触底事件触发时距页面底部距离，单位只支持px，详见[页面生命周期](/use?id=页面生命周期)||
-|backgroundColorTop|HexColor|#ffffff|顶部窗口的背景色。|仅 iOS 平台|
-|backgroundColorBottom|HexColor|#ffffff|底部窗口的背景色。|仅 iOS 平台|
+|backgroundColorTop|HexColor|#ffffff|顶部窗口的背景色（bounce回弹区域）|仅 iOS 平台|
+|backgroundColorBottom|HexColor|#ffffff|底部窗口的背景色（bounce回弹区域）|仅 iOS 平台|
 |titleImage|String||导航栏图片地址（替换当前标题），必须为https的图片链接地址|支付宝小程序、H5|
 |pageOrientation|String|portrait|屏幕旋转设置，仅支持 auto / portrait 详见 [响应显示区域变化](https://developers.weixin.qq.com/miniprogram/dev/framework/view/resizable.html)|微信小程序|
 |animationType|String|pop-in|窗口显示的动画效果，详见：[窗口动画](api/router?id=animation)|App|
@@ -166,8 +166,8 @@
 |backgroundTextStyle|String|dark|下拉 loading 的样式，仅支持 dark/light||
 |enablePullDownRefresh|Boolean|false|是否开启下拉刷新，详见[页面生命周期](/use?id=页面生命周期)。||
 |onReachBottomDistance|Number|50|页面上拉触底事件触发时距页面底部距离，单位只支持px，详见[页面生命周期](/use?id=页面生命周期)||
-|backgroundColorTop|HexColor|#ffffff|顶部窗口的背景色。|仅 iOS 平台|
-|backgroundColorBottom|HexColor|#ffffff|底部窗口的背景色。|仅 iOS 平台|
+|backgroundColorTop|HexColor|#ffffff|顶部窗口的背景色（bounce回弹区域）|仅 iOS 平台|
+|backgroundColorBottom|HexColor|#ffffff|底部窗口的背景色（bounce回弹区域）|仅 iOS 平台|
 |titleImage|String||导航栏图片地址（替换当前标题），必须为https的图片链接地址|支付宝小程序、H5|
 |app-plus|Object||设置编译到 App 平台的特定样式，配置项参考下方 [app-plus](/collocation/pages?id=app-plus)|App|
 |h5|Object||设置编译到 H5 平台的特定样式，配置项参考下方 [H5](/collocation/pages?id=h5)|H5|
