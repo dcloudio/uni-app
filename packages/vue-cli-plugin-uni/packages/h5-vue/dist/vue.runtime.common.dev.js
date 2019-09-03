@@ -714,8 +714,8 @@ Dep.prototype.removeSub = function removeSub (sub) {
 };
 
 Dep.prototype.depend = function depend () {
-  if (Dep.target) {
-    Dep.target.addDep(this);
+  if (Dep.SharedObject.target) {
+    Dep.SharedObject.target.addDep(this);
   }
 };
 
@@ -736,17 +736,20 @@ Dep.prototype.notify = function notify () {
 // The current target watcher being evaluated.
 // This is globally unique because only one watcher
 // can be evaluated at a time.
-Dep.target = null;
-var targetStack = [];
+// fixed by xxxxxx (nvue shared vuex)
+/* eslint-disable no-undef */
+Dep.SharedObject = typeof SharedObject !== 'undefined' ? SharedObject : {};
+Dep.SharedObject.target = null;
+Dep.SharedObject.targetStack = [];
 
 function pushTarget (target) {
-  targetStack.push(target);
-  Dep.target = target;
+  Dep.SharedObject.targetStack.push(target);
+  Dep.SharedObject.target = target;
 }
 
 function popTarget () {
-  targetStack.pop();
-  Dep.target = targetStack[targetStack.length - 1];
+  Dep.SharedObject.targetStack.pop();
+  Dep.SharedObject.target = Dep.SharedObject.targetStack[Dep.SharedObject.targetStack.length - 1];
 }
 
 /*  */
@@ -1027,7 +1030,7 @@ function defineReactive$$1 (
     configurable: true,
     get: function reactiveGetter () {
       var value = getter ? getter.call(obj) : val;
-      if (Dep.target) {
+      if (Dep.SharedObject.target) { // fixed by xxxxxx
         dep.depend();
         if (childOb) {
           childOb.dep.depend();
@@ -4819,7 +4822,7 @@ function createComputedGetter (key) {
       if (watcher.dirty) {
         watcher.evaluate();
       }
-      if (Dep.target) {
+      if (Dep.SharedObject.target) {// fixed by xxxxxx
         watcher.depend();
       }
       return watcher.value
@@ -6670,6 +6673,66 @@ var baseModules = [
 
 /*  */
 
+function findWxsProps(wxsProps, attrs) {
+  var ret = {};
+  Object.keys(wxsProps).forEach(function (name) {
+    if (attrs[name]) {
+      ret[wxsProps[name]] = attrs[name];
+      delete attrs[name];
+    }
+  });
+  return ret
+}
+
+function updateWxsProps(oldVnode, vnode) {
+  if (
+    isUndef(oldVnode.data.wxsProps) &&
+    isUndef(vnode.data.wxsProps)
+  ) {
+    return
+  }
+
+  var oldWxsWatches = oldVnode.$wxsWatches;
+  var wxsPropsKey = Object.keys(vnode.data.wxsProps);
+  if (!oldWxsWatches && !wxsPropsKey.length) {
+    return
+  }
+
+  if (!oldWxsWatches) {
+    oldWxsWatches = {};
+  }
+
+  var wxsProps = findWxsProps(vnode.data.wxsProps, vnode.data.attrs);
+  var context = vnode.context;
+
+  vnode.$wxsWatches = {};
+
+  Object.keys(wxsProps).forEach(function (prop) {
+    vnode.$wxsWatches[prop] = oldWxsWatches[prop] || vnode.context.$watch(prop, function(newVal, oldVal) {
+      wxsProps[prop](
+        newVal,
+        oldVal,
+        context.$getComponentDescriptor(),
+        vnode.elm.__vue__.$getComponentDescriptor()
+      );
+    });
+  });
+
+  Object.keys(oldWxsWatches).forEach(function (oldName) {
+    if (!vnode.$wxsWatches[oldName]) {
+      oldWxsWatches[oldName]();
+      delete oldWxsWatches[oldName];
+    }
+  });
+}
+
+var wxs = {
+  create: updateWxsProps,
+  update: updateWxsProps
+};
+
+/*  */
+
 function updateAttrs (oldVnode, vnode) {
   var opts = vnode.componentOptions;
   if (isDef(opts) && opts.Ctor.options.inheritAttrs === false) {
@@ -7827,6 +7890,7 @@ var transition = inBrowser ? {
 } : {};
 
 var platformModules = [
+  wxs,// fixed by xxxxxx wxs props
   attrs,
   klass,
   events,

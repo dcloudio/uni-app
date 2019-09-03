@@ -1049,8 +1049,8 @@
   };
 
   Dep.prototype.depend = function depend () {
-    if (Dep.target) {
-      Dep.target.addDep(this);
+    if (Dep.SharedObject.target) {
+      Dep.SharedObject.target.addDep(this);
     }
   };
 
@@ -1065,7 +1065,11 @@
   // The current target watcher being evaluated.
   // This is globally unique because only one watcher
   // can be evaluated at a time.
-  Dep.target = null;
+  // fixed by xxxxxx (nvue shared vuex)
+  /* eslint-disable no-undef */
+  Dep.SharedObject = typeof SharedObject !== 'undefined' ? SharedObject : {};
+  Dep.SharedObject.target = null;
+  Dep.SharedObject.targetStack = [];
 
   /*  */
 
@@ -1298,7 +1302,7 @@
       configurable: true,
       get: function reactiveGetter () {
         var value = getter ? getter.call(obj) : val;
-        if (Dep.target) {
+        if (Dep.SharedObject.target) { // fixed by xxxxxx
           dep.depend();
           if (childOb) {
             childOb.dep.depend();
@@ -1859,54 +1863,6 @@
 
   /*  */
 
-  var defaultTagRE = /\{\{((?:.|\r?\n)+?)\}\}/g;
-  var regexEscapeRE = /[-.*+?^${}()|[\]\/\\]/g;
-
-  var buildRegex = cached(function (delimiters) {
-    var open = delimiters[0].replace(regexEscapeRE, '\\$&');
-    var close = delimiters[1].replace(regexEscapeRE, '\\$&');
-    return new RegExp(open + '((?:.|\\n)+?)' + close, 'g')
-  });
-
-
-
-  function parseText (
-    text,
-    delimiters
-  ) {
-    var tagRE = delimiters ? buildRegex(delimiters) : defaultTagRE;
-    if (!tagRE.test(text)) {
-      return
-    }
-    var tokens = [];
-    var rawTokens = [];
-    var lastIndex = tagRE.lastIndex = 0;
-    var match, index, tokenValue;
-    while ((match = tagRE.exec(text))) {
-      index = match.index;
-      // push text token
-      if (index > lastIndex) {
-        rawTokens.push(tokenValue = text.slice(lastIndex, index));
-        tokens.push(JSON.stringify(tokenValue));
-      }
-      // tag token
-      var exp = parseFilters(match[1].trim());
-      tokens.push(("_s(" + exp + ")"));
-      rawTokens.push({ '@binding': exp });
-      lastIndex = index + match[0].length;
-    }
-    if (lastIndex < text.length) {
-      rawTokens.push(tokenValue = text.slice(lastIndex));
-      tokens.push(JSON.stringify(tokenValue));
-    }
-    return {
-      expression: tokens.join('+'),
-      tokens: rawTokens
-    }
-  }
-
-  /*  */
-
 
 
   /* eslint-disable no-unused-vars */
@@ -2136,7 +2092,85 @@
 
   /*  */
 
-  function transformNode (el, options) {
+  function transformNode(el) {
+    var list = el.attrsList;
+    for (var i = list.length - 1; i >= 0; i--) {
+      var name = list[i].name;
+      if (name.indexOf(':change:') === 0 || name.indexOf('v-bind:change:') === 0) {
+        var nameArr = name.split(':');
+        var wxsProp = nameArr[nameArr.length - 1];
+        var wxsPropBinding = getBindingAttr(el, wxsProp, false);
+        if (wxsPropBinding) {
+          (el.wxsPropBindings || (el.wxsPropBindings = {}))['change:' + wxsProp] = wxsPropBinding;
+        }
+      }
+    }
+  }
+
+  function genData(el) {
+    var data = '';
+    if (el.wxsPropBindings) {
+      data += "wxsProps:" + (JSON.stringify(el.wxsPropBindings)) + ",";
+    }
+    return data
+  }
+
+  var wxs = {
+    transformNode: transformNode,
+    genData: genData
+  };
+
+  /*  */
+
+  var defaultTagRE = /\{\{((?:.|\r?\n)+?)\}\}/g;
+  var regexEscapeRE = /[-.*+?^${}()|[\]\/\\]/g;
+
+  var buildRegex = cached(function (delimiters) {
+    var open = delimiters[0].replace(regexEscapeRE, '\\$&');
+    var close = delimiters[1].replace(regexEscapeRE, '\\$&');
+    return new RegExp(open + '((?:.|\\n)+?)' + close, 'g')
+  });
+
+
+
+  function parseText (
+    text,
+    delimiters
+  ) {
+    var tagRE = delimiters ? buildRegex(delimiters) : defaultTagRE;
+    if (!tagRE.test(text)) {
+      return
+    }
+    var tokens = [];
+    var rawTokens = [];
+    var lastIndex = tagRE.lastIndex = 0;
+    var match, index, tokenValue;
+    while ((match = tagRE.exec(text))) {
+      index = match.index;
+      // push text token
+      if (index > lastIndex) {
+        rawTokens.push(tokenValue = text.slice(lastIndex, index));
+        tokens.push(JSON.stringify(tokenValue));
+      }
+      // tag token
+      var exp = parseFilters(match[1].trim());
+      tokens.push(("_s(" + exp + ")"));
+      rawTokens.push({ '@binding': exp });
+      lastIndex = index + match[0].length;
+    }
+    if (lastIndex < text.length) {
+      rawTokens.push(tokenValue = text.slice(lastIndex));
+      tokens.push(JSON.stringify(tokenValue));
+    }
+    return {
+      expression: tokens.join('+'),
+      tokens: rawTokens
+    }
+  }
+
+  /*  */
+
+  function transformNode$1 (el, options) {
     var warn = options.warn || baseWarn;
     var staticClass = getAndRemoveAttr(el, 'class');
     if (staticClass) {
@@ -2160,7 +2194,7 @@
     }
   }
 
-  function genData (el) {
+  function genData$1 (el) {
     var data = '';
     if (el.staticClass) {
       data += "staticClass:" + (el.staticClass) + ",";
@@ -2173,8 +2207,8 @@
 
   var klass = {
     staticKeys: ['staticClass'],
-    transformNode: transformNode,
-    genData: genData
+    transformNode: transformNode$1,
+    genData: genData$1
   };
 
   /*  */
@@ -2194,7 +2228,7 @@
 
   /*  */
 
-  function transformNode$1 (el, options) {
+  function transformNode$2 (el, options) {
     var warn = options.warn || baseWarn;
     var staticStyle = getAndRemoveAttr(el, 'style');
     if (staticStyle) {
@@ -2220,7 +2254,7 @@
     }
   }
 
-  function genData$1 (el) {
+  function genData$2 (el) {
     var data = '';
     if (el.staticStyle) {
       data += "staticStyle:" + (el.staticStyle) + ",";
@@ -2233,8 +2267,8 @@
 
   var style = {
     staticKeys: ['staticStyle'],
-    transformNode: transformNode$1,
-    genData: genData$1
+    transformNode: transformNode$2,
+    genData: genData$2
   };
 
   var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
@@ -3750,6 +3784,7 @@
   };
 
   var modules = [
+    wxs,// fixed by xxxxxx
     klass,
     style,
     model
@@ -4331,7 +4366,7 @@
       } else {
         var data;
         if (!el.plain || (el.pre && state.maybeComponent(el))) {
-          data = genData$2(el, state);
+          data = genData$3(el, state);
         }
 
         var children = el.inlineTemplate ? null : genChildren(el, state, true);
@@ -4457,7 +4492,7 @@
       '})'
   }
 
-  function genData$2 (el, state) {
+  function genData$3 (el, state) {
     var data = '{';
 
     // directives first.
@@ -4790,7 +4825,7 @@
     state
   ) {
     var children = el.inlineTemplate ? null : genChildren(el, state, true);
-    return ("_c(" + componentName + "," + (genData$2(el, state)) + (children ? ("," + children) : '') + ")")
+    return ("_c(" + componentName + "," + (genData$3(el, state)) + (children ? ("," + children) : '') + ")")
   }
 
   function genProps (props) {
@@ -5541,7 +5576,7 @@
   }
 
   function genNormalElement (el, state, stringifyChildren) {
-    var data = el.plain ? undefined : genData$2(el, state);
+    var data = el.plain ? undefined : genData$3(el, state);
     var children = stringifyChildren
       ? ("[" + (genChildrenAsStringNode(el, state)) + "]")
       : genSSRChildren(el, state, true);
