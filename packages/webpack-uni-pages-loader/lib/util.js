@@ -15,7 +15,8 @@ const alipayWindowMap = {
   'optionMenu': 'optionMenu',
   'backgroundColor': 'backgroundColor',
   'usingComponents': 'usingComponents',
-  'navigationBarShadow': 'navigationBarShadow'
+  'navigationBarShadow': 'navigationBarShadow',
+  'titleImage': 'titleImage'
 }
 
 const alipayTabBarMap = {
