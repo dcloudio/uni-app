@@ -12,7 +12,24 @@
 **注意**
 
 - 应用生命周期仅可在``App.vue``中监听，在其它页面监听无效。
-- onlaunch里进行页面跳转，如遇白屏报错，请参考[https://ask.dcloud.net.cn/article/35942](https://ask.dcloud.net.cn/article/35942)
+
+**示例代码**
+```html
+<script>
+	// 只能在App.vue里监听应用的生命周期
+	export default {
+		onLaunch: function() {
+			console.log('App Launch')
+		},
+		onShow: function() {
+			console.log('App Show')
+		},
+		onHide: function() {
+			console.log('App Hide')
+		}
+	}
+</script>
+```
 
 ### 页面生命周期
 
@@ -22,20 +39,20 @@
 |:-|:-|:-|:-|
 |onLoad|监听页面加载，其参数为上个页面传递的数据，参数类型为Object（用于页面传参），参考[示例](/api/router?id=navigateto)|||
 |onShow|监听页面显示。页面每次出现在屏幕上都触发，包括从下级页面点返回露出当前页面|||
-|onReady|监听页面初次渲染完成。注意如果渲染速度快，会在页面进入动画完成前触发|||
+|onReady|监听页面初次渲染完成。注意如果渲染速度快，会在页面进入动画完成前触发|nvue暂不支持||
 |onHide|监听页面隐藏|||
 |onUnload|监听页面卸载|||
-|onResize|监听窗口尺寸变化|5+App、微信小程序||
+|onResize|监听窗口尺寸变化|App、微信小程序||
 |onPullDownRefresh|监听用户下拉动作，一般用于下拉刷新，参考[示例](api/ui/pulldown)|||
 |onReachBottom|页面滚动到底部的事件（不是scroll-view滚到底），常用于下拉下一页数据。具体见下方注意事项|||
-|onTabItemTap|点击 tab 时触发，参数为Object，具体见下方注意事项|微信小程序、百度小程序、H5、5+App（自定义组件模式）||
+|onTabItemTap|点击 tab 时触发，参数为Object，具体见下方注意事项|微信小程序、百度小程序、H5、App（自定义组件模式）||
 |onShareAppMessage|用户点击右上角分享|微信小程序、百度小程序、头条小程序、支付宝小程序||
-|onPageScroll|监听页面滚动，参数为Object|||
-|onNavigationBarButtonTap|监听原生标题栏按钮点击事件，参数为Object|5+ App、H5||
-|onBackPress|监听页面返回，返回 event = {from:backbutton、 navigateBack} ，backbutton 表示来源是左上角返回按钮或 android 返回键；navigateBack表示来源是 uni.navigateBack ；详细说明及使用：[onBackPress 详解](http://ask.dcloud.net.cn/article/35120)|5+App、H5||
-|onNavigationBarSearchInputChanged|监听原生标题栏搜索输入框输入内容变化事件|5+App、H5|1.6.0|
-|onNavigationBarSearchInputConfirmed|监听原生标题栏搜索输入框搜索事件，用户点击软键盘上的“搜索”按钮时触发。|5+App、H5|1.6.0|
-|onNavigationBarSearchInputClicked|监听原生标题栏搜索输入框点击事件|5+App、H5|1.6.0|
+|onPageScroll|监听页面滚动，参数为Object|nvue暂不支持||
+|onNavigationBarButtonTap|监听原生标题栏按钮点击事件，参数为Object|App、H5||
+|onBackPress|监听页面返回，返回 event = {from:backbutton、 navigateBack} ，backbutton 表示来源是左上角返回按钮或 android 返回键；navigateBack表示来源是 uni.navigateBack ；详细说明及使用：[onBackPress 详解](http://ask.dcloud.net.cn/article/35120)|app-vue、H5||
+|onNavigationBarSearchInputChanged|监听原生标题栏搜索输入框输入内容变化事件|App、H5|1.6.0|
+|onNavigationBarSearchInputConfirmed|监听原生标题栏搜索输入框搜索事件，用户点击软键盘上的“搜索”按钮时触发。|App、H5|1.6.0|
+|onNavigationBarSearchInputClicked|监听原生标题栏搜索输入框点击事件|App、H5|1.6.0|
 
 ``onReachBottom``使用注意
 可在pages.json里定义具体页面底部的触发距离[onReachBottomDistance](/collocation/pages)，比如设为50，那么滚动页面到距离底部50px时，就会触发onReachBottom事件。
@@ -55,7 +72,13 @@
 - 如果需要滚动吸顶固定某些元素，推荐使用css的粘性布局，参考[插件市场](https://ext.dcloud.net.cn/plugin?id=715)。插件市场也有其他js实现的吸顶插件，但性能不佳，需要时可自行搜索。
 - 在App、微信小程序、H5中，也可以使用wxs监听滚动，[参考](https://uniapp.dcloud.io/frame?id=wxs)；在app-nvue中，可以使用bindingx监听滚动，[参考](https://uniapp.dcloud.io/use-weex?id=nvue-%e9%87%8c%e4%bd%bf%e7%94%a8-bindingx)。
 
-``onTabItemTap`` 参数说明：
+```js
+onPageScroll : function(e) { //nvue暂不支持滚动监听，推荐用bindingx代替
+	console.log("滚动距离为：" + e.scrollTop);
+},
+```
+
+``onTabItemTap`` 返回的json对象说明：
 
 |属性|类型|说明|
 |---|---|---|
@@ -67,11 +90,25 @@
 - onTabItemTap常用于点击当前tabitem，滚动或刷新当前页面。如果是点击不同的tabitem，一定会触发页面切换。
 - 如果想在App端实现点击某个tabitem不跳转页面，不能使用onTabItemTap，可以使用[plus.nativeObj.view](http://www.html5plus.org/doc/zh_cn/nativeobj.html)放一个区块盖住原先的tabitem，并拦截点击事件。
 
+```js
+onTabItemTap : function(e) {
+	console.log(e);
+	// e的返回格式为json对象： {"index":0,"text":"首页","pagePath":"pages/index/index.html"}
+},
+```
+
 ``onNavigationBarButtonTap`` 参数说明：
 
 |属性|类型|说明|
 |---|---|---|
 |index|Number|原生标题栏按钮数组的下标|
+
+```js
+onNavigationBarButtonTap : function (e) {
+	console.log(e);
+	// e的返回格式为json对象：{"text":"测试","index":0}
+}
+```
 
 `onBackPress` 回调参数对象说明：
 
@@ -91,7 +128,7 @@ export default {
 
 **注意**
 
-- nvue 页面支持的生命周期参考：[nvue 生命周期介绍](/use-weex?id=生命周期)。
+- nvue 页面weex编译模式支持的生命周期同weex，具体参考：[weex生命周期介绍](/use-weex?id=生命周期)。
 
 ### 组件生命周期
 
