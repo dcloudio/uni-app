@@ -1,9 +1,6 @@
 module.exports = (api, options, rootOptions) => {
-  let version = '*'
   const mainVersion = require('./package.json').version
-  if (mainVersion.indexOf('alpha') !== -1) {
-    version = '^' + mainVersion
-  }
+  const version = '^' + mainVersion
   api.extendPackage(pkg => {
     delete pkg.postcss
     delete pkg.browserslist
