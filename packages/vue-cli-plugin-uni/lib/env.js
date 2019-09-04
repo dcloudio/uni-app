@@ -140,15 +140,21 @@ if (platformOptions.usingComponents === true) {
 }
 
 if (
-  process.env.NODE_ENV === 'production' &&
-  (process.env.UNI_USING_COMPONENTS || process.env.UNI_PLATFORM === 'h5')
+  process.env.UNI_USING_COMPONENTS ||
+  process.env.UNI_PLATFORM === 'h5'
 ) { // 自定义组件模式或 h5 平台
   const uniStatistics = Object.assign(
     manifestJsonObj.uniStatistics || {},
     platformOptions.uniStatistics || {}
   )
 
-  if (uniStatistics.enable !== false) {
+  if (
+    uniStatistics.enable !== false &&
+    (
+      process.env.NODE_ENV === 'production' ||
+      uniStatistics.enable === 'development'
+    )
+  ) {
     if (process.UNI_STAT_CONFIG.appid) {
       process.env.UNI_USING_STAT = true
     } else {
