@@ -615,7 +615,7 @@ h5 平台下拉刷新动画，只有 circle 类型。
 
 **注意事项**
 
-- ```titleImage```仅支持https地址，设置了```titleImage```会是页面```title```失效
+- ```titleImage```仅支持https地址，设置了```titleImage```会替换页面文字标题
 - ```backgroundImageUrl```支持网络地址和本地地址，尽量使用绝对地址
 - 部分配置可能会只在真机运行的时候生效，支付宝未来应该会改善
 
