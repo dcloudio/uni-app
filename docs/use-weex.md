@@ -150,7 +150,7 @@ HBuilderX内置了更好用的weex/uni-app调试工具，包括审查界面元�
 
 ## weex 生命周期
 
-``nvue `` 的 uni-app 编译模式的生命周期同普通vue页面，[参考](https://uniapp.dcloud.io/collocation/frame/lifetime)。而 weex 编译模式，生命周期函数同weex，具体如下：
+``nvue `` 的 uni-app 编译模式的生命周期同普通vue页面，[参考](https://uniapp.dcloud.io/collocation/frame/lifecycle)。而 weex 编译模式，生命周期函数同weex，具体如下：
 
 |Vue 生命周期钩子|说明|
 |---|---|
