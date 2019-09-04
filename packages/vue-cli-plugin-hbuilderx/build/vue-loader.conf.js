@@ -20,7 +20,7 @@ const deprecated = {
 if (process.env.UNI_USING_NVUE_COMPILER) {
   const wrapperTextTag = function (el, options) {
     const tag = el.tag
-    if (tag === 'text' || tag === 'button') {
+    if (tag === 'text' || tag === 'u-text' || tag === 'button') {
       return
     }
     const children = el.children
