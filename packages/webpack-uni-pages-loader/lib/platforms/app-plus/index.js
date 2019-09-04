@@ -128,7 +128,7 @@ module.exports = function (pagesJson, userManifestJson) {
 
   const nvuePages = pagesJson.nvue && pagesJson.nvue.pages
 
-  if (nvuePages.length) {
+  if (nvuePages && nvuePages.length) {
     const pages = {}
     nvuePages.forEach(({
       path,
