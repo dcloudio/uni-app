@@ -373,7 +373,7 @@ class Util {
     }
     this._sendRequest(optionsData)
   }
-  _sendRequest(optionsData){
+  _sendRequest(optionsData) {
     uni.request({
       url: STAT_URL,
       method: 'POST',
@@ -509,16 +509,18 @@ class Stat extends Util {
 
   show(self) {
     this.self = self;
-    if (!getPageTypes(self)) {
+    if (getPageTypes(self)) {
+      this._pageShow(self);
+    } else {
       this._applicationShow(self);
     }
   }
 
   ready(self) {
-    this.self = self;
-    if (getPageTypes(self)) {
-      this._pageShow(self);
-    }
+    // this.self = self;
+    // if (getPageTypes(self)) {
+    //   this._pageShow(self);
+    // }
   }
   hide(self) {
     this.self = self;
