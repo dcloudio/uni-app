@@ -12,6 +12,7 @@ const {
 
 const WebpackAppPlusNVuePlugin = require('../packages/webpack-app-plus-nvue-plugin')
 const WebpackErrorsPlugin = require('@dcloudio/vue-cli-plugin-uni/packages/webpack-errors-plugin')
+const WebpackUniMPPlugin = require('@dcloudio/webpack-uni-mp-loader/lib/plugin/index-new')
 
 const onErrors = require('@dcloudio/vue-cli-plugin-uni/util/on-errors')
 
@@ -146,6 +147,7 @@ if (process.env.UNI_USING_NVUE_COMPILER) {
   })
 }
 if (process.env.UNI_USING_NATIVE) {
+  plugins.push(new WebpackUniMPPlugin())
   plugins.push(new CopyWebpackPlugin([{
     from: path.resolve(process.env.UNI_INPUT_DIR, 'static'),
     to: 'static'
@@ -170,13 +172,15 @@ if (process.env.UNI_USING_NATIVE) {
   }]))
 }
 
-module.exports = function (entry) {
+module.exports = function () {
   return {
     target: 'node', // 激活 vue-loader 的 isServer 逻辑
     mode: process.env.NODE_ENV,
     devtool: process.env.NODE_ENV === 'development' ? 'inline-source-map' : false,
     watch: process.env.NODE_ENV === 'development',
-    entry,
+    entry () {
+      return process.UNI_NVUE_ENTRY
+    },
     externals: {
       'vue': 'Vue'
     },
