@@ -18,8 +18,32 @@ const deprecated = {
 }
 
 if (process.env.UNI_USING_NVUE_COMPILER) {
+  const wrapperTextTag = function (el, options) {
+    const tag = el.tag
+    if (tag === 'text' || tag === 'button') {
+      return
+    }
+    const children = el.children
+    children.forEach((child, index) => {
+      if (child.text) {
+        children.splice(index, 1, {
+          type: 1,
+          tag: 'u-text',
+          attrsList: [],
+          attrsMap: {},
+          rawAttrsMap: {},
+          parent: el,
+          children: [child],
+          plain: true
+        })
+      }
+    })
+  }
+
   modules.push({
-    postTransformNode (el) {
+    postTransformNode (el, options) {
+      wrapperTextTag(el, options)
+
       if (TAGS.includes(el.tag)) {
         el.tag = 'u-' + el.tag
       }
