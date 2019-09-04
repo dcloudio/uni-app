@@ -18,7 +18,7 @@
 - 前端控件无法覆盖原生控件的问题。在nvue下，都是原生控件，覆盖map、video等不需要cover-view（如需要发布到小程序，仍然推荐写cover-view）
 - 同样因为层级问题得到解决，nvue可以实现video内嵌到swiper中，以实现抖音式视频滑动切换，例子见[插件市场](https://ext.dcloud.net.cn/plugin?id=664)；nvue的视频全屏后，仍然可以通过cover-view实现内容覆盖，比如增加文字标题、分享按钮。
 - nvue下有live-pusher组件，和小程序对齐。而vue页面下使用直播，需在条件编译里单独调用plus.video的API。
-- nvue下的map组件，小程序对齐。而vue页面的map组件有一些差异。
+- App端nvue文件的map和小程序拉齐度更高。vue里的map则与plus.map功能一致，和小程序的地图略有差异。
 - App端实现粘性布局，比如滚动吸顶，则nvue才能保证高性能，例子见[插件市场](https://ext.dcloud.net.cn/plugin?id=715)
 
 此外，App端，vue页面上也可以覆盖subnvue（一种非全屏的nvue页面覆盖在webview上），以解决App上的原生控件层级问题。[详见](https://ask.dcloud.net.cn/article/35948)
