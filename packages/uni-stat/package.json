@@ -28,5 +28,6 @@
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-replace": "^2.2.0",
     "rollup-plugin-uglify": "^6.0.2"
-  }
+  },
+  "gitHead": "386f0899b2eb0687719d0e6c82c5465e676f8c4f"
 }
