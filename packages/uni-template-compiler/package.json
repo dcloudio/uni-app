@@ -17,5 +17,5 @@
         "@babel/types": "^7.3.3",
         "vue-template-compiler": "^2.6.10"
     },
-    "gitHead": "386f0899b2eb0687719d0e6c82c5465e676f8c4f"
+    "gitHead": "248d77f0fdba27a4472feb7abbb17874bd0dc748"
 }
