@@ -944,6 +944,12 @@ uni-app可以将wxs代码编译到微信小程序、QQ小程序、5+APP、H5上�
 
 与wxs类似，百度小程序提供了Filter、阿里小程序提供了SJS，uni-app也支持使用这些功能，并将它们编译到百度和阿里的小程序端。不过它们的功能还不如wxs强大。此外头条系小程序自身不支持类似功能。
 
+**平台差异说明**
+
+|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|√|√|√|SJS|Filter|x|√|
+
 **wxs示例**
 
 以下是一些使用 WXS 的简单示例，要完整了解 WXS 语法，请参考[WXS 语法参考](https://developers.weixin.qq.com/miniprogram/dev/reference/wxs/)。本示例使用wxs响应touchmove事件，减少视图层与逻辑层通信，使滑动更加丝滑。
