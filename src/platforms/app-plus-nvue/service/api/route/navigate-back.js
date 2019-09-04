@@ -74,16 +74,28 @@ function back (delta, animationType, animationDuration) {
 }
 
 export function navigateBack ({
+  from = 'navigateBack',
   delta,
   animationType,
   animationDuration
 }) {
   const pages = getCurrentPages()
-  const len = pages.length
+
+  const currentPage = pages[pages.length - 1]
+  if (
+    currentPage.$vm &&
+    currentPage.$vm.$options.onBackPress &&
+    currentPage.$vm.__call_hook &&
+    currentPage.$vm.__call_hook('onBackPress', {
+      from
+    })
+  ) {
+    return
+  }
 
   uni.hideToast() // 后退时，关闭 toast,loading
 
-  pages[len - 1].$page.meta.isQuit
+  currentPage.$page.meta.isQuit
     ? quit()
     : back(delta, animationType, animationDuration)
 }

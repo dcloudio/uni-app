@@ -162,7 +162,8 @@ var serviceContext = (function () {
         }
         return page.$page.meta.isTabBar
       }
-      return !!__uniRoutes.find(route => route.path.slice(1) === path)
+      const route = __uniRoutes.find(route => route.path.slice(1) === path);
+      return route && route.meta.isTabBar
     } catch (e) {
       if (process.env.NODE_ENV !== 'production') {
         console.log('getCurrentPages is not ready');
@@ -1363,7 +1364,6 @@ var serviceContext = (function () {
     const emit = UniServiceJSBridge.emit;
 
     plus.key.addEventListener('backbutton', () => {
-      // TODO uni?
       uni.navigateBack({
         from: 'backbutton'
       });
@@ -1418,10 +1418,12 @@ var serviceContext = (function () {
       return
     }
 
-    const currentTab = isTabBarPage(__uniConfig.entryPagePath);
-    if (currentTab) {
+    __uniConfig.tabBar.selected = 0;
+
+    const selected = __uniConfig.tabBar.list.findIndex(page => page.pagePath === __uniConfig.entryPagePath);
+    if (selected !== -1) {
       // 取当前 tab 索引值
-      __uniConfig.tabBar.selected = __uniConfig.tabBar.list.indexOf(currentTab);
+      __uniConfig.tabBar.selected = selected;
       // 如果真实的首页与 condition 都是 tabbar，无需启用 realEntryPagePath 机制
       if (__uniConfig.realEntryPagePath && isTabBarPage(__uniConfig.realEntryPagePath)) {
         delete __uniConfig.realEntryPagePath;
@@ -1431,7 +1433,12 @@ var serviceContext = (function () {
     __uniConfig.__ready__ = true;
 
     const onLaunchWebviewReady = function onLaunchWebviewReady () {
-      const tabBarView = tabBar.init(__uniConfig.tabBar, (item) => {
+      const tabBarView = tabBar.init(__uniConfig.tabBar, (item, index) => {
+        UniServiceJSBridge.emit('onTabItemTap', {
+          index,
+          text: item.text,
+          pagePath: item.pagePath
+        });
         uni.switchTab({
           url: '/' + item.pagePath,
           openType: 'switchTab',
@@ -1938,7 +1945,7 @@ var serviceContext = (function () {
   };
 
   const SYNC_API_RE =
-    /^\$|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
+    /^\$|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
 
   const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -4882,7 +4889,7 @@ var serviceContext = (function () {
 
     return {
       errMsg: 'getSystemInfo:ok',
-      brand: '',
+      brand: plus.device.vendor,
       model: plus.device.model,
       pixelRatio: plus.screen.scale,
       screenWidth,
@@ -8887,16 +8894,28 @@ var serviceContext = (function () {
   }
 
   function navigateBack$1 ({
+    from = 'navigateBack',
     delta,
     animationType,
     animationDuration
   }) {
     const pages = getCurrentPages();
-    const len = pages.length;
+
+    const currentPage = pages[pages.length - 1];
+    if (
+      currentPage.$vm &&
+      currentPage.$vm.$options.onBackPress &&
+      currentPage.$vm.__call_hook &&
+      currentPage.$vm.__call_hook('onBackPress', {
+        from
+      })
+    ) {
+      return
+    }
 
     uni.hideToast(); // 后退时，关闭 toast,loading
 
-    pages[len - 1].$page.meta.isQuit
+    currentPage.$page.meta.isQuit
       ? quit()
       : back(delta, animationType, animationDuration);
   }
