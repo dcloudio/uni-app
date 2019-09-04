@@ -67,25 +67,26 @@ function addSubPackagesRequire (compilation) {
 
 class WebpackUniMPPlugin {
   apply (compiler) {
-    compiler.hooks.emit.tapPromise('webpack-uni-mp-emit', compilation => {
-      return new Promise((resolve, reject) => {
-        addSubPackagesRequire(compilation)
+    if (!process.env.UNI_USING_NATIVE) {
+      compiler.hooks.emit.tapPromise('webpack-uni-mp-emit', compilation => {
+        return new Promise((resolve, reject) => {
+          addSubPackagesRequire(compilation)
 
-        generateJson(compilation)
+          generateJson(compilation)
 
-        // app.js,app.wxss
-        generateApp(compilation)
-          .forEach(({
-            file,
-            source
-          }) => emitFile(file, source, compilation))
+          // app.js,app.wxss
+          generateApp(compilation)
+            .forEach(({
+              file,
+              source
+            }) => emitFile(file, source, compilation))
 
-        generateComponent(compilation)
+          generateComponent(compilation)
 
-        resolve()
+          resolve()
+        })
       })
-    })
-
+    }
     compiler.hooks.invalid.tap('webpack-uni-mp-invalid', (fileName, changeTime) => {
       if (
         fileName &&
