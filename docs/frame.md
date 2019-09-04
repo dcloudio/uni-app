@@ -940,7 +940,7 @@ slide-view.vue
 ## WXS
 
 WXS是微信小程序的一套脚本语言，[规范详见](https://developers.weixin.qq.com/miniprogram/dev/framework/view/wxs/)。
-uni-app可以将wxs代码编译到微信小程序、QQ小程序、5+APP上（`HBuilderX 2.2.4-alpha`及以上版本）
+uni-app可以将wxs代码编译到微信小程序、QQ小程序、5+APP、H5上（`HBuilderX 2.2.4-alpha`及以上版本）
 
 与wxs类似，百度小程序提供了Filter、阿里小程序提供了SJS，uni-app也支持使用这些功能，并将它们编译到百度和阿里的小程序端。不过它们的功能还不如wxs强大。此外头条系小程序自身不支持类似功能。
 
@@ -1123,6 +1123,7 @@ export default {
 - wxs、filter.js既能内联使用又可以外部引入，sjs只能外部引入
 - mp-qq 目前对内联的 wxs 支持不好，部分写法会导致编译出错
 - 在微信自定义组件中（wxcomponents）也可以使用wxs
+- ```nvue```页面暂不支持wxs、sjs、filter.js
 
 
 ## 致谢
