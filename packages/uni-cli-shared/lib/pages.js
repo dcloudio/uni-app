@@ -82,9 +82,9 @@ function processPagesJson (pagesJson, loader = {
     })
   }
 
-  if (Object.keys(uniNVuePages).length) { // 直接挂在 pagesJson 上
+  if (uniNVuePages.length) { // 直接挂在 pagesJson 上
     pagesJson.nvue = {
-      pages: uniNVuePages
+      pages: uniNVuePages.reverse()
     }
     if (uniNVueEntryPagePath) {
       pagesJson.nvue.entryPagePath = uniNVueEntryPagePath
@@ -152,9 +152,10 @@ function isValidPage (page, root = '') {
     //   process.UNI_NVUE_ENTRY[pagePath] = path.resolve(process.env.UNI_INPUT_DIR, pagePath + '.nvue') + '?entry'
     // }
 
-    uniNVuePages[pagePath + '.html'] = {
-      'window': page.style || {}
-    }
+    uniNVuePages.push({
+      'path': pagePath + '.html',
+      'style': page.style || {}
+    })
     return false
   }
 
@@ -176,7 +177,7 @@ function getNVueMainJsPath (page) {
 process.UNI_ENTRY = {}
 process.UNI_NVUE_ENTRY = {}
 
-let uniNVuePages = {}
+const uniNVuePages = []
 
 function parsePages (pagesJson, pageCallback, subPageCallback) {
   if (!pagesJson) {
@@ -215,7 +216,7 @@ function parseEntry (pagesJson) {
     process.UNI_NVUE_ENTRY['app-service'] = path.resolve(process.env.UNI_INPUT_DIR, getMainEntry())
   }
 
-  uniNVuePages = {}
+  uniNVuePages.length = 0
 
   if (!pagesJson) {
     pagesJson = getPagesJson() // 会检测修改 nvue entry
