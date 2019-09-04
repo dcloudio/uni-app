@@ -16,9 +16,14 @@
 |hover-class|String|button-hover|指定按钮按下去的样式类。当 hover-class="none" 时，没有点击态效果|||
 |hover-start-time|Number|20|按住后多久出现点击态，单位毫秒|||
 |hover-stay-time|Number|70|手指松开后点击态保留时间，单位毫秒|||
+|@getphonenumber|Handler||获取用户手机号回调|open-type="getPhoneNumber"|微信小程序|
 |@getuserinfo|Handler||用户点击该按钮时，会返回获取到的用户信息，从返回参数的detail中获取到的值同uni.getUserInfo|open-type="getUserInfo"|微信小程序|
+|@error|Handler||当使用开放能力时，发生错误的回调|open-type="launchApp"|微信小程序|
+|@opensetting|Handler||在打开授权设置页并关闭后回调|open-type="openSetting"|微信小程序|
+|@launchapp|Handler||打开 APP 成功的回调|open-type="launchApp"|微信小程序|
 
 - **注1：``button-hover`` 默认为 ``{background-color: rgba(0, 0, 0, 0.1); opacity: 0.7;}``**
+- ```open-type="launchApp"```时需要调起的APP接入微信OpenSDK[详见](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/launchApp.html)
  
 **size 有效值**
 
