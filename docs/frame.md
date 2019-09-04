@@ -934,6 +934,7 @@ slide-view.vue
 	- wx:if 改为 v-if
 	- wx:for="{{ list }}" wx:key="{{ index }}" 改为`v-for="(item,index) in list"
 	- 原事件命名以短横线分隔的需要手动修改小程序组件源码为驼峰命名，比如：*this.$emit('left-click')* 修改为 *this.$emit('leftClick')*（HBuilderX 1.9.0+ 不再需要修改此项）
+* ```nvue```页面暂不支持小程序组件
 
 详细的小程序转uni-app语法差异可参考文档[https://ask.dcloud.net.cn/article/35786](https://ask.dcloud.net.cn/article/35786)。
 
