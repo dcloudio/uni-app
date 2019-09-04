@@ -73,7 +73,7 @@
 - 在App、微信小程序、H5中，也可以使用wxs监听滚动，[参考](https://uniapp.dcloud.io/frame?id=wxs)；在app-nvue中，可以使用bindingx监听滚动，[参考](https://uniapp.dcloud.io/use-weex?id=nvue-%e9%87%8c%e4%bd%bf%e7%94%a8-bindingx)。
 
 ```js
-onPageScroll : function(e) { //nvue暂不支持滚动监听，推荐用wxs或bindingx代替
+onPageScroll : function(e) { //nvue暂不支持滚动监听，可用bindingx代替
 	console.log("滚动距离为：" + e.scrollTop);
 },
 ```
