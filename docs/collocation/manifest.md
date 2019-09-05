@@ -505,7 +505,7 @@ Tips：关于摇树优化（treeShaking）原理及优化结果，参考：[http
 					}
 				}
 			},
-      // 屏幕方向
+			// 屏幕方向
 			"orientation": [
 				"portrait-primary",
 				"landscape-primary",
