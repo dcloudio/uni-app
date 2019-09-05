@@ -206,6 +206,7 @@ module.exports = function () {
       },
       modules: [
         'node_modules',
+        path.resolve(process.env.UNI_CLI_CONTEXT, 'node_modules'),
         path.resolve(process.env.UNI_INPUT_DIR, 'node_modules')
       ]
     },

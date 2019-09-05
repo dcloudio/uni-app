@@ -218,7 +218,7 @@ var serviceContext = (function () {
 
   function getRealPath (filePath) {
     const SCHEME_RE = /^([a-z-]+:)?\/\//i;
-    const BASE64_RE = /^data:[a-z-]+\/[a-z-]+;base64,/;
+    const DATA_RE = /^data:.*,.*/;
 
     // 无协议的情况补全 https
     if (filePath.indexOf('//') === 0) {
@@ -226,7 +226,7 @@ var serviceContext = (function () {
     }
 
     // 网络资源或base64
-    if (SCHEME_RE.test(filePath) || BASE64_RE.test(filePath)) {
+    if (SCHEME_RE.test(filePath) || DATA_RE.test(filePath)) {
       return filePath
     }
 
@@ -2471,7 +2471,7 @@ var serviceContext = (function () {
   }
 
   const SCHEME_RE = /^([a-z-]+:)?\/\//i;
-  const BASE64_RE = /^data:[a-z-]+\/[a-z-]+;base64,/;
+  const DATA_RE = /^data:.*,.*/;
 
   function addBase (filePath) {
     return filePath
@@ -2486,7 +2486,7 @@ var serviceContext = (function () {
       }
     }
     // 网络资源或base64
-    if (SCHEME_RE.test(filePath) || BASE64_RE.test(filePath) || filePath.indexOf('blob:') === 0) {
+    if (SCHEME_RE.test(filePath) || DATA_RE.test(filePath) || filePath.indexOf('blob:') === 0) {
       return filePath
     }
 
