@@ -44,7 +44,7 @@ const _handleLocalPath = filePath => {
 
 export function getRealPath (filePath) {
   const SCHEME_RE = /^([a-z-]+:)?\/\//i
-  const BASE64_RE = /^data:[a-z-]+\/[a-z-]+;base64,/
+  const DATA_RE = /^data:.*,.*/
 
   // 无协议的情况补全 https
   if (filePath.indexOf('//') === 0) {
@@ -52,7 +52,7 @@ export function getRealPath (filePath) {
   }
 
   // 网络资源或base64
-  if (SCHEME_RE.test(filePath) || BASE64_RE.test(filePath)) {
+  if (SCHEME_RE.test(filePath) || DATA_RE.test(filePath)) {
     return filePath
   }
 

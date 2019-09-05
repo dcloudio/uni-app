@@ -344,7 +344,7 @@ export default {
             if (window.plus && src.indexOf('http://') !== 0 && src.indexOf('https://') !==
                                 0) {
               loadFile(src)
-            } else if (/^data:[a-z-]+\/[a-z-]+;base64,/.test(src)) {
+            } else if (/^data:.*,.*/.test(src)) {
               sefl._images[src].src = src
             } else {
               loadUrl(src)
