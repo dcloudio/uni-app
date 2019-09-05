@@ -774,7 +774,7 @@ class Stat extends Util {
 
   show(self) {
     this.self = self;
-    if (!getPageTypes(self)) {
+    if (getPageTypes(self)) {
       this._pageShow(self);
     } else {
       this._applicationShow(self);
