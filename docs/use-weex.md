@@ -298,7 +298,7 @@ uni-app提供的共享变量和数据的方案如下：
 1. vuex
 自```HBuilderX 2.2.5-alpha```起，nvue支持vuex
 
-**注意**，不支持直接引入`store`使用，可以使用`mapState`、`mapGetters`、`mapMutations`等辅助方法或者使用`this.$store`
+**注意：**不支持直接引入`store`使用，可以使用`mapState`、`mapGetters`、`mapMutations`等辅助方法或者使用`this.$store`
 
 2. uni.storage
 vue和nvue页面可以使用相同的`uni.storage`存储。这个存储是持久化的。
