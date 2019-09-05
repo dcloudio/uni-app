@@ -1765,6 +1765,36 @@
 
   /*  */
 
+  function transformNode(el) {
+    var list = el.attrsList;
+    for (var i = list.length - 1; i >= 0; i--) {
+      var name = list[i].name;
+      if (name.indexOf(':change:') === 0 || name.indexOf('v-bind:change:') === 0) {
+        var nameArr = name.split(':');
+        var wxsProp = nameArr[nameArr.length - 1];
+        var wxsPropBinding = el.attrsMap[':' + wxsProp] || el.attrsMap['v-bind:' + wxsProp];
+        if (wxsPropBinding) {
+          (el.wxsPropBindings || (el.wxsPropBindings = {}))['change:' + wxsProp] = wxsPropBinding;
+        }
+      }
+    }
+  }
+
+  function genData(el) {
+    var data = '';
+    if (el.wxsPropBindings) {
+      data += "wxsProps:" + (JSON.stringify(el.wxsPropBindings)) + ",";
+    }
+    return data
+  }
+
+  var wxs = {
+    transformNode: transformNode,
+    genData: genData
+  };
+
+  /*  */
+
   var validDivisionCharRE = /[\w).+\-_$\]]/;
 
   function parseFilters (exp) {
@@ -1858,6 +1888,54 @@
       var name = filter.slice(0, i);
       var args = filter.slice(i + 1);
       return ("_f(\"" + name + "\")(" + exp + (args !== ')' ? ',' + args : args))
+    }
+  }
+
+  /*  */
+
+  var defaultTagRE = /\{\{((?:.|\r?\n)+?)\}\}/g;
+  var regexEscapeRE = /[-.*+?^${}()|[\]\/\\]/g;
+
+  var buildRegex = cached(function (delimiters) {
+    var open = delimiters[0].replace(regexEscapeRE, '\\$&');
+    var close = delimiters[1].replace(regexEscapeRE, '\\$&');
+    return new RegExp(open + '((?:.|\\n)+?)' + close, 'g')
+  });
+
+
+
+  function parseText (
+    text,
+    delimiters
+  ) {
+    var tagRE = delimiters ? buildRegex(delimiters) : defaultTagRE;
+    if (!tagRE.test(text)) {
+      return
+    }
+    var tokens = [];
+    var rawTokens = [];
+    var lastIndex = tagRE.lastIndex = 0;
+    var match, index, tokenValue;
+    while ((match = tagRE.exec(text))) {
+      index = match.index;
+      // push text token
+      if (index > lastIndex) {
+        rawTokens.push(tokenValue = text.slice(lastIndex, index));
+        tokens.push(JSON.stringify(tokenValue));
+      }
+      // tag token
+      var exp = parseFilters(match[1].trim());
+      tokens.push(("_s(" + exp + ")"));
+      rawTokens.push({ '@binding': exp });
+      lastIndex = index + match[0].length;
+    }
+    if (lastIndex < text.length) {
+      rawTokens.push(tokenValue = text.slice(lastIndex));
+      tokens.push(JSON.stringify(tokenValue));
+    }
+    return {
+      expression: tokens.join('+'),
+      tokens: rawTokens
     }
   }
 
@@ -2088,84 +2166,6 @@
       }
     }
     return item
-  }
-
-  /*  */
-
-  function transformNode(el) {
-    var list = el.attrsList;
-    for (var i = list.length - 1; i >= 0; i--) {
-      var name = list[i].name;
-      if (name.indexOf(':change:') === 0 || name.indexOf('v-bind:change:') === 0) {
-        var nameArr = name.split(':');
-        var wxsProp = nameArr[nameArr.length - 1];
-        var wxsPropBinding = getBindingAttr(el, wxsProp, false);
-        if (wxsPropBinding) {
-          (el.wxsPropBindings || (el.wxsPropBindings = {}))['change:' + wxsProp] = wxsPropBinding;
-        }
-      }
-    }
-  }
-
-  function genData(el) {
-    var data = '';
-    if (el.wxsPropBindings) {
-      data += "wxsProps:" + (JSON.stringify(el.wxsPropBindings)) + ",";
-    }
-    return data
-  }
-
-  var wxs = {
-    transformNode: transformNode,
-    genData: genData
-  };
-
-  /*  */
-
-  var defaultTagRE = /\{\{((?:.|\r?\n)+?)\}\}/g;
-  var regexEscapeRE = /[-.*+?^${}()|[\]\/\\]/g;
-
-  var buildRegex = cached(function (delimiters) {
-    var open = delimiters[0].replace(regexEscapeRE, '\\$&');
-    var close = delimiters[1].replace(regexEscapeRE, '\\$&');
-    return new RegExp(open + '((?:.|\\n)+?)' + close, 'g')
-  });
-
-
-
-  function parseText (
-    text,
-    delimiters
-  ) {
-    var tagRE = delimiters ? buildRegex(delimiters) : defaultTagRE;
-    if (!tagRE.test(text)) {
-      return
-    }
-    var tokens = [];
-    var rawTokens = [];
-    var lastIndex = tagRE.lastIndex = 0;
-    var match, index, tokenValue;
-    while ((match = tagRE.exec(text))) {
-      index = match.index;
-      // push text token
-      if (index > lastIndex) {
-        rawTokens.push(tokenValue = text.slice(lastIndex, index));
-        tokens.push(JSON.stringify(tokenValue));
-      }
-      // tag token
-      var exp = parseFilters(match[1].trim());
-      tokens.push(("_s(" + exp + ")"));
-      rawTokens.push({ '@binding': exp });
-      lastIndex = index + match[0].length;
-    }
-    if (lastIndex < text.length) {
-      rawTokens.push(tokenValue = text.slice(lastIndex));
-      tokens.push(JSON.stringify(tokenValue));
-    }
-    return {
-      expression: tokens.join('+'),
-      tokens: rawTokens
-    }
   }
 
   /*  */
