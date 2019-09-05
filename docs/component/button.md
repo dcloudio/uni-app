@@ -71,7 +71,7 @@
 - 支付宝小程序平台，获取用户手机号时，建议先通过条件编译的方式，调用支付宝原生API，[参考](https://docs.alipay.com/mini/api/getphonenumber)
 
 
-**示例**
+**示例** [查看演示](https://uniapp.dcloud.io/h5/pages/component/button/button)
 
 ```html
 <template>

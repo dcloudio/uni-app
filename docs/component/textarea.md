@@ -27,7 +27,7 @@
 |@input|EventHandle||当键盘输入时，触发 input 事件，event.detail = {value, cursor}， @input 处理函数的返回值并不会反映到 textarea 上||
 |@confirm|EventHandle||点击完成时， 触发 confirm 事件，event.detail = {value: value}|微信小程序、百度小程序、QQ小程序|
 
-**示例**
+**示例** [查看示例](https://uniapp.dcloud.io/h5/pages/component/textarea/textarea)
  
 ```html
 <template>

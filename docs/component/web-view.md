@@ -86,7 +86,7 @@
 	</code>
 </pre>
 
-**示例**
+**示例** [查看示例](https://uniapp.dcloud.io/h5/pages/component/web-view/web-view)
 ```html
 <template>
 	<view>

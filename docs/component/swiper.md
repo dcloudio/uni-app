@@ -57,7 +57,7 @@ change 事件返回 detail 中包含一个 source 字段，表示导致变更的
 |:-|:-|:-|:-|:-|
 |item-id|String||该 swiper-item 的标识符|
 
-**示例**
+**示例** [查看演示](https://uniapp.dcloud.io/h5/pages/component/swiper/swiper)
 ```html
 <template>
 	<view>

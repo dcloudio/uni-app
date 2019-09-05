@@ -38,7 +38,7 @@ mode 有 13 种模式，其中 4 种是缩放模式，9 种是裁剪模式。
 |裁剪|bottom left|不缩放图片，只显示图片的左下边区域|
 |裁剪|bottom right|不缩放图片，只显示图片的右下边区域|
 
-**示例：**
+**示例：** [查看示例](https://uniapp.dcloud.io/h5/pages/component/image/image)
  
 ```html
 <template>

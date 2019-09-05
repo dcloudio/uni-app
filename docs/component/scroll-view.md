@@ -22,7 +22,7 @@
 
 使用竖向滚动时，需要给 ``<scroll-view>`` 一个固定高度，通过 css 设置 height。
  
-**示例**
+**示例** [查看演示](https://uniapp.dcloud.io/h5/pages/component/scroll-view/scroll-view)
 ```html
 <template>
 	<view>

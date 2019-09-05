@@ -11,7 +11,7 @@
 |@submit|EventHandle|携带 form 中的数据触发 submit 事件，event.detail = {value : {'name': 'value'} , formId: ''}，report-submit 为 true 时才会返回 formId||
 |@reset|EventHandle|表单重置时会触发 reset 事件|&nbsp;|
 
-**示例**
+**示例** [查看演示](https://uniapp.dcloud.io/h5/pages/component/form/form)
  
 ```html
 <template>

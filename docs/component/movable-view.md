@@ -65,7 +65,7 @@
 - 如果遇到x、y、scale属性设置不生效的问题参考：[组件属性设置不生效解决办法](/use?id=%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98)
 - swiper在非H5端，不支持内嵌video、map等原生组件。更新：微信基础库2.4.4起支持了原生组件在 scroll-view、swiper、movable-view 中的使用
 
-**示例**
+**示例** [查看演示](https://uniapp.dcloud.io/h5/pages/component/movable-view/movable-view)
 ```html
 <template>
 	<view class="page-body">

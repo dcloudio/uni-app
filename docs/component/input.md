@@ -131,7 +131,7 @@ App端开发聊天类应用时，目前推荐改为adjustResize模式。在hello
 - 原生输入框在iOS上不会有软键盘上方的横条
 - 原生输入框一样受配置的`adjustPan|adjustResize`模式影响
 
-**input示例**
+**input示例** [查看演示](https://uniapp.dcloud.io/h5/pages/component/input/input)
  
 ```html
 <template>

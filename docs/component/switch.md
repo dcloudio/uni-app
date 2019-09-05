@@ -12,7 +12,7 @@
 |@change|EventHandle||checked 改变时触发 change 事件，event.detail={ value:checked}||
 |color|Color||switch 的颜色，同 css 的 color|&nbsp;|
 
-**示例**
+**示例** [查看演示](https://uniapp.dcloud.io/h5/pages/component/switch/switch)
  
 ```html
 <template>

@@ -131,7 +131,7 @@
 
 地图组件的经纬度必填，如果不填经纬度则默认值是北京的经纬度。
 
-**示例**
+**示例** [查看示例](https://uniapp.dcloud.io/h5/pages/component/map/map)
 
 ```html
 <template>

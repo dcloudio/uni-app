@@ -52,7 +52,7 @@
 - 支付宝小程序中 `cover-view` 不支持嵌套。
 
 
-**示例**
+**示例** [查看演示](https://uniapp.dcloud.io/h5/pages/component/cover-view/cover-view)
 
 ```html
 <template>

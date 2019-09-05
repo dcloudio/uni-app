@@ -118,7 +118,7 @@
 |@cancel|EventHandle||取消选择时触发|
 |disabled|Boolean|false|是否禁用|
 
-**示例**
+**示例** [查看演示](https://uniapp.dcloud.io/h5/pages/component/picker/picker)
  
 ```html
 <template>

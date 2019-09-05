@@ -30,7 +30,7 @@
 - navigator-hover 默认为 {background-color: rgba(0, 0, 0, 0.1); opacity: 0.7;}, ``<navigator>`` 的子节点背景色应为透明色。**
 - app-nvue 平台暂不支持 `<navigator>`
 
-**示例**
+**示例** [查看示例](https://uniapp.dcloud.io/h5/pages/component/navigator/navigator)
  
 ```html
 <template>
