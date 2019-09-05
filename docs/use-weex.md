@@ -292,13 +292,19 @@ globalEvent.addEventListener("plusMessage", e => {
 
 ## vue 和 nvue 共享的变量和数据
 除了通信事件，vue 和 nvue 页面之间还可以共享变量和存储。
-但注意nvue不支持vuex，uni-app提供的共享变量和数据的方案如下：
+uni-app提供的共享变量和数据的方案如下：
 
-1. uni.storage
+
+1. vuex
+自```HBuilderX 2.2.5-alpha```起，nvue支持vuex
+
+**注意**，不支持直接引入`store`使用，可以使用`mapState`、`mapGetters`、`mapMutations`等辅助方法或者使用`this.$store`
+
+2. uni.storage
 vue和nvue页面可以使用相同的`uni.storage`存储。这个存储是持久化的。
 比如登陆状态可以保存在这里。
 
-2. globalData
+3. globalData
 小程序有globalData机制，这套机制在uni-app里也可以使用，全端通用。
 在`App.vue`文件里定义globalData，如下：
 ```html
