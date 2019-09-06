@@ -96,11 +96,11 @@ uni-app 深度改进了 weex，提供了2种编译模式，一种是常规的 we
 ### 2. 开发 nvue 页面
 
 ``nvue`` 页面结构同 ``vue``, 由 template、style、script 构成。
-* template： 模板写法、数据绑定同 ``vue``。组件支持2种模式，1、 ``weex`` 组件，参考：[weex 内置组件](https://weex.apache.org/zh/docs/components/a.html)；2、``uni-app``组件，参考：[nvue中支持的uni-app组件](https://ask.dcloud.net.cn/article/36074)
+* template： 模板写法、数据绑定同 ``vue``。组件支持2种模式，1、 ``weex`` 组件，同weex写法，参考：[weex 内置组件](https://weex.apache.org/zh/docs/components/a.html)；2、``uni-app``组件，同uni-app写法。部分组件还未在nvue下实现，具体见：[nvue中还未支持的uni-app组件](https://ask.dcloud.net.cn/article/36074)
 * style：由于采用原生渲染，**并非所有浏览器的 css 均支持，布局模型只支持 flex 布局**，虽然不会造成某些界面布局无法实现，但写法要注意。详见：[weex 样式](https://weex.apache.org/cn/wiki/common-styles.html)
-* script：写法同 ``vue``，并支持3种API
-	- weex API ：使用前需先引入对应模块，参考：[weex 内置模块](http://weex-project.io/cn/references/modules/index.html)
-	- uni API：nvue可以使用部分 uni API，详细支持列表请参照：[nvue 里可使用的 uni-app API](/use-weex?id=nvue-里可使用的-uni-app-api)
+* script：写法同 ``vue``，并支持3种API：
+	- weex API ：使用前需先引入对应模块，参考：[weex 模块引入](https://weex.apache.org/zh/docs/api/weex-variable.html#requiremodule)
+	- uni API：nvue可以使用大部分 uni API，个别API不支持，不支持列表请参照：[nvue 里还未支持的 uni-app API](/use-weex?id=nvue-里可使用的-uni-app-api)
 	- plus API：在自定义组件编译模式下，nvue里可直接使用plus API
 
 
@@ -592,7 +592,7 @@ App.vue
 </script>
 ```
 
-## nvue 里可使用的 uni-app API
+## nvue 里不支持的 uni-app API
 `nvue` 支持大部分 uni-app API ，下面只列举目前还不支持的 API 。
 
 **地图**
