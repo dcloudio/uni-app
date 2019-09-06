@@ -1140,6 +1140,7 @@ export default {
 ```
 
 - **【重要】** 编写wxs、sjs、filter.js 内容时必须遵循相应语法规范
+- **【重要】** `module`所指定的模块名不可与`data`、`methods`、`computed`内的属性重名
 - 目前各个小程序正在完善相关规范，可能会有较大改动，请务必仔细阅读相应平台的文档
 - 支付宝小程序请使用sjs规范，[详见](https://docs.alipay.com/mini/framework/sjs)
 - 支付宝小程序sjs只能定义在.sjs 文件中，然后使用```<script>```标签引入
