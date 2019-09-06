@@ -595,17 +595,6 @@ App.vue
 ## nvue 里不支持的 uni-app API
 `nvue` 支持大部分 uni-app API ，下面只列举目前还不支持的 API 。
 
-**地图**
-
-|API|说明|
-|:-|:-|
-|uni.createMapContext()|创建并返回 map 上下文|
-
-**视频**
-
-|API|说明|
-|:-|:-|
-|uni.createVideoContext()|创建并返回 video 上下文|
 
 **直播推流**
 
@@ -634,13 +623,6 @@ App.vue
 |uni.canvasGetImageData()|返回一个数组，用来描述 canvas 区域隐含的像素数据|
 |uni.canvasPutImageData()|将像素数据绘制到画布的方法|
 
-**下拉刷新**
-
-|API|说明|
-|:-|:-|
-|uni.onPullDownRefresh()|监听该页面用户下拉刷新事件|
-|uni.startPullDownRefresh()|开始下拉刷新|
-|uni.stopPullDownRefresh()|停止当前页面下拉刷新|
 
 **节点信息**
 
