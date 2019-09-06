@@ -295,18 +295,18 @@ globalEvent.addEventListener("plusMessage", e => {
 uni-app提供的共享变量和数据的方案如下：
 
 
-1. vuex:
+**1. vuex:**
 
 自```HBuilderX 2.2.5-alpha```起，nvue支持vuex
 
 **注意：**不支持直接引入`store`使用，可以使用`mapState`、`mapGetters`、`mapMutations`等辅助方法或者使用`this.$store`
 
-2. uni.storage:
+**2. uni.storage:**
 
 vue和nvue页面可以使用相同的`uni.storage`存储。这个存储是持久化的。
 比如登陆状态可以保存在这里。
 
-3. globalData:
+**3. globalData:**
 
 小程序有globalData机制，这套机制在uni-app里也可以使用，全端通用。
 在`App.vue`文件里定义globalData，如下：
