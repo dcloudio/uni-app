@@ -943,7 +943,7 @@ slide-view.vue
 ## WXS
 
 WXS是微信小程序的一套脚本语言，[规范详见](https://developers.weixin.qq.com/miniprogram/dev/framework/view/wxs/)。
-uni-app可以将wxs代码编译到微信小程序、QQ小程序、5+APP、H5上（`HBuilderX 2.2.4-alpha`及以上版本）
+uni-app可以将wxs代码编译到微信小程序、QQ小程序、5+APP、H5上（`HBuilderX 2.2.5-alpha`及以上版本）
 
 与wxs类似，百度小程序提供了Filter、阿里小程序提供了SJS，uni-app也支持使用这些功能，并将它们编译到百度和阿里的小程序端。不过它们的功能还不如wxs强大。此外头条系小程序自身不支持类似功能。
 
@@ -955,7 +955,7 @@ uni-app可以将wxs代码编译到微信小程序、QQ小程序、5+APP、H5上�
 
 **wxs示例**
 
-以下是一些使用 WXS 的简单示例，要完整了解 WXS 语法，请参考[WXS 语法参考](https://developers.weixin.qq.com/miniprogram/dev/reference/wxs/)。本示例使用wxs响应touchmove事件，减少视图层与逻辑层通信，使滑动更加丝滑。
+以下是一些使用 WXS 的简单示例，要完整了解 WXS 语法，请参考[WXS 语法参考](https://developers.weixin.qq.com/miniprogram/dev/reference/wxs/)。本示例使用wxs响应`touchmove`事件，减少视图层与逻辑层通信，使滑动更加丝滑。
 
 ```html
 <template>
@@ -965,7 +965,7 @@ uni-app可以将wxs代码编译到微信小程序、QQ小程序、5+APP、H5上�
 		</view>
 	</view>
 </template>
-<wxs module="test">
+<script module="test" lang="wxs">
 	var startX = 0
 	var startY = 0
 	var lastLeft = 50; var lastTop = 50
@@ -996,7 +996,7 @@ uni-app可以将wxs代码编译到微信小程序、QQ小程序、5+APP、H5上�
 	  touchstart: touchstart,
 	  touchmove: touchmove
 	}
-</wxs>
+</script>
 
 <script>
 	export default {
@@ -1031,7 +1031,7 @@ uni-app可以将wxs代码编译到微信小程序、QQ小程序、5+APP、H5上�
 
 支付宝小程序，百度小程序官方暂未支持事件响应，不过也可以使用对应的SJS、Filter过滤器实现一些数据处理的操作，以下代码展示了一个时间格式化的小功能
 
-index.vue  
+`index.vue`
 
 ```html
 <template>
@@ -1044,8 +1044,8 @@ index.vue
 		</view>
 	</view>
 </template>
-<filter module="utils" src="./utils.filter.js"></filter>
-<import-sjs module="utils" src="./utils.sjs" />
+<script module="utils" lang="filter" src="./utils.filter.js"></script>
+<script module="utils" lang="sjs" src="./utils.sjs"></script>
 
 <script>
 	export default {
@@ -1064,7 +1064,7 @@ index.vue
 </script>
 ```
 
-utils.sjs 与 utils.filter.js 
+`utils.sjs` 与 `utils.filter.js` 内容一致
 
 ```js
 export default {
@@ -1121,18 +1121,38 @@ export default {
 
 **注意**
 
-- **重要**编写wxs、sjs、filter.js 内容时必须遵循相应语法规范
+引入方式
+
+```html
+<!-- 内联 -->
+<script module="test" lang="wxs">
+  //...code
+</script>
+<script module="utils" lang="filter">
+  //...code
+</script>
+
+
+<!-- 外部引入 -->
+<script module="utils" lang="wxs" src="./utils.wxs"></script>
+<script module="utils" lang="filter" src="./utils.filter.js"></script>
+<script module="utils" lang="sjs" src="./utils.sjs"></script>
+```
+
+- **【重要】** 编写wxs、sjs、filter.js 内容时必须遵循相应语法规范
 - 目前各个小程序正在完善相关规范，可能会有较大改动，请务必仔细阅读相应平台的文档
 - 支付宝小程序请使用sjs规范，[详见](https://docs.alipay.com/mini/framework/sjs)
-- 支付宝小程序sjs只能定义在.sjs 文件中。然后使用```<import-sjs>```标签引入
-- 支付宝小程序import-sjs的标签属性```name```、```from```被统一为了```module```、```src```以便后续实现多平台统一写法
+- 支付宝小程序sjs只能定义在.sjs 文件中，然后使用```<script>```标签引入
+- 支付宝小程序`script`的标签属性`name`、`from`被统一为了`module`、`src`以便后续实现多平台统一写法
 - 百度小程序中请使用Filter规范，[详见](https://smartprogram.baidu.com/docs/develop/framework/view_filter/)
-- 百度小程序Filter只能导出function函数
+- 百度小程序Filter只能导出`function`函数
 - 暂不支持在 wxs、sjs、filter.js 中调用其他同类型文件
 - wxs、filter.js既能内联使用又可以外部引入，sjs只能外部引入
-- mp-qq 目前对内联的 wxs 支持不好，部分写法会导致编译出错
-- 在微信自定义组件中（wxcomponents）也可以使用wxs
-- ```nvue```页面暂不支持wxs、sjs、filter.js
+- QQ小程序目前对内联的 wxs 支持不好，部分写法可能会导致编译出错，尽量使用外部引入的方式
+- 在微信自定义组件中`wxcomponents`也可以使用wxs
+- `nvue`页面暂不支持wxs、sjs、filter.js
+- 各个`script`标签会分别被打包至对应支持平台，不需要额外写条件编译
+- 自`HBuilderX 2.2.5-alpha`开始，不推荐使用各个小程序自有的引入方式，推荐使用`script`标签引入
 
 
 ## 致谢
