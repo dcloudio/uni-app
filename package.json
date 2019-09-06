@@ -2,6 +2,7 @@
   "name": "uniapp-js-framework",
   "version": "0.0.1",
   "scripts": {
+    "build:service:legacy": "npm run lint && rollup -c build/rollup.config.service.js",
     "lint": "eslint --fix --config package.json --ext .js --ext .vue --ignore-path .eslintignore build src",
     "lint:cli": "eslint  --fix --config package.json --ignore-path .eslintignore packages/uni-cli-shared packages/uni-template-compiler \"packages/vue-cli-*/**/*.js\" \"packages/webpack-uni-*/**/*.js\"",
     "dev:h5": "npm run lint && cross-env NODE_ENV=production UNI_WATCH=true UNI_PLATFORM=h5 node build/build.js",
