@@ -11,7 +11,8 @@ module.exports = {
   plugins: [
     alias({
       'uni-core': path.resolve(__dirname, '../src/core'),
-      'uni-shared': path.resolve(__dirname, '../src/shared/util.js')
+      'uni-shared': path.resolve(__dirname, '../src/shared/util.js'),
+      'uni-helpers': path.resolve(__dirname, '../src/core/helpers')
     }),
     replace({
       __GLOBAL__: 'getGlobalUni()',

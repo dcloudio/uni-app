@@ -14,3 +14,4 @@ export {
 export * from '../../../service/api/context/map'
 export * from '../../../service/api/context/video'
 export * from '../../../service/api/context/live-pusher'
+export * from 'uni-core/service/api/base/interceptor'
