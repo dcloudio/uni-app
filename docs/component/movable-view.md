@@ -4,7 +4,7 @@
 
 **平台差异说明**
 
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |√|√|√|√|√|x|√|
 
@@ -15,7 +15,8 @@
 |scale-area|Boolean|false|当里面的 movable-view 设置为支持双指缩放时，设置此值可将缩放手势生效区域修改为整个 movable-area|
 
 **注意：movable-area 必须设置 width 和 height 属性，不设置默认为 10px**
-- movable-area app-nvue平台 暂不支持手势缩放
+- movable-area app-nvue平台 暂不支持手势缩放，并且和滚动冲突。
+- PC平台不支持 movable-area。
 
 #### movable-view
 
@@ -23,7 +24,7 @@
 
 **平台差异说明**
 
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |√|√|√|√|√|x|√|
 
@@ -32,7 +33,7 @@
 |属性名|类型|默认值|说明|平台差异说明|
 |:-|:-|:-|:-|:-|
 |direction|String|none|movable-view的移动方向，属性值有all、vertical、horizontal、none||
-|inertia|Boolean|false|movable-view是否带有惯性|微信小程序、5+App、H5、百度小程序|
+|inertia|Boolean|false|movable-view是否带有惯性|微信小程序、App、H5、百度小程序|
 |out-of-bounds|Boolean|false|超过可移动区域后，movable-view是否还可以移动|微信小程序、5+App、H5、百度小程序|
 |x|Number / String||定义x轴方向的偏移，如果x的值不在可移动范围内，会自动移动到可移动范围；改变x的值会触发动画||
 |y|Number / String||定义y轴方向的偏移，如果y的值不在可移动范围内，会自动移动到可移动范围；改变y的值会触发动画||
@@ -63,9 +64,9 @@
 **Tips**
 - movable-view必须在`<movable-area/>`组件中，并且必须是直接子节点，否则不能移动。
 - 如果遇到x、y、scale属性设置不生效的问题参考：[组件属性设置不生效解决办法](/use?id=%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98)
-- swiper在非H5端，不支持内嵌video、map等原生组件。更新：微信基础库2.4.4起支持了原生组件在 scroll-view、swiper、movable-view 中的使用
+- 除了H5端和app-nvue端，其他平台不支持内嵌video、map等原生组件。更新：微信基础库2.4.4起支持了原生组件在 scroll-view、swiper、movable-view 中的使用
 
-**示例** [查看演示](https://uniapp.dcloud.io/h5/pages/component/movable-view/movable-view)
+**示例** 
 ```html
 <template>
 	<view class="page-body">
