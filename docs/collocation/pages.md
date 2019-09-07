@@ -398,9 +398,11 @@ searchInput的点击输入框onNavigationBarSearchInputClicked、文本变化onN
 
 #### 原生子窗体@app-subNVues
 
-`subNVues` 是 vue 页面的原生子窗体。用于解决 vue 页面中的层级覆盖和原生界面灵活自定义用的。
+`subNVues` 是 vue 页面的原生子窗体。用于解决App中 vue 页面中的层级覆盖和原生界面灵活自定义用的。
 
 它不是全屏页面，也不是组件，就是一个原生子窗体。它是一个 nvue 页面，使用 weex 引擎渲染，提供了比 cover-view、plus.nativeObj.view 更强大的原生排版能力，方便自定义原生导航或覆盖原生地图、视频等。请详读[subNVues 开发指南](http://ask.dcloud.net.cn/article/35948)
+
+`subNVue` 也可以在 nvue 页面中使用。但目前在纯nvue下（render为native）还不支持。
 
 |属性|类型|描述|
 |:- |:-  |:-|
