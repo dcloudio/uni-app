@@ -714,14 +714,14 @@ const package = require('packageName')
 ```
 ## 小程序组件支持
 
-``uni-app`` 支持在 5+App 和小程序中使用**小程序组件**。
+``uni-app`` 支持在 App 和小程序中使用**小程序自定义组件**。
 
 **平台差异说明**
 
 |平台|支持情况|小程序组件存放目录|
 |---|---|---|
 |H5|不支持||
-|5+App|支持微信小程序组件|wxcomponents|
+|App（不含nvue）|支持微信小程序组件|wxcomponents|
 |微信小程序|支持微信小程序组件|wxcomponents|
 |支付宝小程序|支持支付宝小程序组件|mycomponents|
 |百度小程序|支持百度小程序组件|swancomponents|
@@ -926,9 +926,8 @@ slide-view.vue
 
 **注意事项**
 
-* 小程序组件需要放在项目特殊文件夹 ``wxcomponents``（或 mycomponents、swancomponents）。
-* HBuilderX 建立的工程 ``wxcomponents`` 文件夹在 项目根目录下。
-* vue-cli 建立的工程 ``wxcomponents`` 文件夹在 ``src`` 目录下。
+* 小程序组件需要放在项目特殊文件夹 ``wxcomponents``（或 mycomponents、swancomponents）。HBuilderX 建立的工程 ``wxcomponents`` 文件夹在 项目根目录下。vue-cli 建立的工程 ``wxcomponents`` 文件夹在 ``src`` 目录下。可以在 vue.config.js 中自定义其他目录。
+* 当需要在 vue 组件中使用小程序组件时，注意在 pages.json 的 globalStyle 中配置 usingComponents，而不是页面级配置。
 * 注意数据和事件绑定的差异，使用时应按照 vue 的数据和事件绑定方式
 	- 属性绑定从 attr="{{ a }}"，改为 :attr="a"；从 title="复选框{{ item }}" 改为 :title="'复选框' + item"
 	- 事件绑定从 bind:click="toggleActionSheet1" 改为 @click="toggleActionSheet1"
@@ -936,22 +935,24 @@ slide-view.vue
 	- wx:if 改为 v-if
 	- wx:for="{{ list }}" wx:key="{{ index }}" 改为`v-for="(item,index) in list"
 	- 原事件命名以短横线分隔的需要手动修改小程序组件源码为驼峰命名，比如：*this.$emit('left-click')* 修改为 *this.$emit('leftClick')*（HBuilderX 1.9.0+ 不再需要修改此项）
-* ```nvue```页面暂不支持小程序组件
 
 详细的小程序转uni-app语法差异可参考文档[https://ask.dcloud.net.cn/article/35786](https://ask.dcloud.net.cn/article/35786)。
 
 ## WXS
 
 WXS是微信小程序的一套脚本语言，[规范详见](https://developers.weixin.qq.com/miniprogram/dev/framework/view/wxs/)。
-uni-app可以将wxs代码编译到微信小程序、QQ小程序、5+APP、H5上（`HBuilderX 2.2.5-alpha`及以上版本）
+
+它的特点是运行在渲染层。当需要避免逻辑层和渲染层交互通信折损时，可采用wxs。
+
+uni-app可以将wxs代码编译到微信小程序、QQ小程序、APP、H5上（`HBuilderX 2.2.5-alpha`及以上版本）
 
 与wxs类似，百度小程序提供了Filter、阿里小程序提供了SJS，uni-app也支持使用这些功能，并将它们编译到百度和阿里的小程序端。不过它们的功能还不如wxs强大。此外头条系小程序自身不支持类似功能。
 
 **平台差异说明**
 
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|√|√|√|SJS|Filter|x|√|
+|√(不支持nvue)|√|√|SJS|Filter|x|√|
 
 **wxs示例**
 
