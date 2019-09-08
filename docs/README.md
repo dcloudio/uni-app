@@ -53,7 +53,7 @@
         </a>
     </div>
     <p>
-        <em>注：某些平台不能提交简单demo，故补充了一些其他功能。</em></br>
+        <em>注：某些平台不能提交简单demo，故补充了一些其他功能；hello uni-app示例代码可从[github](https://github.com/dcloudio/hello-uniapp)获取</em></br>
     </p>
 </div>
 
