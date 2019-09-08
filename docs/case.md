@@ -5,7 +5,7 @@ uni-app已经有几十万开发者，创建了几十万个项目，是开发者�
 
 ### 官方示例
 
-<a href="//m3w.cn/uniapp" target="_blank" class="clear-style"><b>Hello uni-app：</b></a>演示uni-app框架的组件、接口、模板，可以使用手机扫描下方App码下载iOS、Android原生安装包，也可以使用微信扫描小程序码，体验uni-app的小程序版本。本项目源码在HBuilderX中新建项目可获得。
+<a href="//m3w.cn/uniapp" target="_blank" class="clear-style"><b>Hello uni-app：</b></a>演示uni-app框架的组件、接口、模板，可以使用手机扫描下方App码下载iOS、Android原生安装包，也可以使用微信扫描小程序码，体验uni-app的小程序版本。本项目源码可在HBuilderX中新建项目获得，也可从[github](https://github.com/dcloudio/hello-uniapp)上获取。
 <div style="display:flex;justify-content: space-around;">
 	<a href="//m3w.cn/uniapp" target="_blank" class="clear-style barcode-view">
 		<img src="//img.cdn.aliyun.dcloud.net.cn/guide/uniapp/app_download.png" width="200"/>
