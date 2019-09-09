@@ -1,6 +1,51 @@
 # uni-app 更新日志
 ======================================
 
+## 2.2.5.20190907-alpha
+* 【重要】新增 nvue 页面支持 vuex 的使用 [详情](https://uniapp.dcloud.io/use-weex?id=vue-%e5%92%8c-nvue-%e5%85%b1%e4%ba%ab%e7%9a%84%e5%8f%98%e9%87%8f%e5%92%8c%e6%95%b0%e6%8d%ae)
+* 【重要】调整 App平台 iOS下，vue及nvue页面的uni-app编译模式下，web-view组件从UIWebview改为WKWebview。[详情](https://ask.dcloud.net.cn/article/36348)
+* 优化 wxs 支持script方式写法，方便着色、格式化、语法校验 [详情](https://uniapp.dcloud.io/frame?id=wxs)
+* 优化 image 组件支持自闭合写法 [#625](https://github.com/dcloudio/uni-app/issues/625)
+* 优化 autoprefixer 目标浏览器兼容，减少生成的 css 代码
+* 修复 部分模板写法导致编译器报错的Bug [#604](https://github.com/dcloudio/uni-app/issues/604)
+* 修复 mode 不正确导致 cli 下读取 .env 错误的Bug [#710](https://github.com/dcloudio/uni-app/issues/710)
+* 修复 for 循环中绑定多个事件方法，参数获取不正确的Bug [#720](https://github.com/dcloudio/uni-app/issues/720)
+* App/H5平台 新增 uni.getSystemInfo 支持返回安全区信息（safeArea）
+* App/H5平台 新增 swiper 组件支持 transition 事件
+* App平台 优化 tab切换减少白屏概率
+* App平台 优化 页面背景样式生效时机，解决深色背景等特定场景下，页面切换时闪白的问题
+* App平台 修复 iOS13 页面无法滚动的Bug [详情](https://ask.dcloud.net.cn/question/77877)
+* App平台 新增 uni.getSystemInfo 支持返回手机品牌信息（brand） [详情](https://ask.dcloud.net.cn/question/77313)
+* App平台 修复 纯nvue项目中 uni.scanCode、uni.chooseLocation 接口不触发回调的Bug
+* App平台 修复 纯nvue项目中 uni.stopPullDownRefresh 不生效的Bug
+* App平台 修复 纯nvue项目中 开发运行期间新增 nvue 页面，热更新白屏的Bug
+* App平台 优化 nvue Android版switch的样式与性能
+* App平台 优化 nvue button 组件内部支持嵌套 text 组件
+* H5平台/支付宝平台 新增 导航栏配置项titleImage（导航栏标题图） [详情](https://uniapp.dcloud.io/collocation/pages?id=style)
+* H5平台 修复 input 组件的 change 事件会冒泡到父组件的Bug [详情](https://ask.dcloud.net.cn/question/77962)
+* H5平台 修复 svg 或非base64格式的 Data URI 无法使用的Bug [#668](https://github.com/dcloudio/uni-app/issues/668)
+* 小程序平台 新增 uni.getMenuButtonBoundingClientRect 接口，可获取导航栏右上角胶囊按钮的布局位置信息 [详情](https://uniapp.dcloud.io/api/ui/menuButton?id=getmenubuttonboundingclientrect)
+* 小程序平台 优化 发行时压缩 css 代码
+* 百度/头条小程序平台 修复 开发工具 sourcemap 无效的Bug [#724](https://github.com/dcloudio/uni-app/issues/724)
+* 支付宝小程序 新增 button 组件 open-type 属性支持 getPhoneNumber
+* hello uni-app 新增 nvue地图 组件及API示例
+* hello uni-app 新增 全屏视频上下滑动 示例模板
+* uni-ui 新增 SearchBar 搜索输入框
+* uni-ui 新增 GoodsNav 商品详情页底部购物车、购买导航条
+* uni-ui 新增 Fav 收藏按钮
+* uni-ui 优化 SwipeAction 滑动操作组件，App平台、H5 平台、微信小程序平台使用 wxs 实现跟手式流畅拖动
+* uni-ui 优化 Collapse 折叠面板在低配设备中动画卡顿的问题
+* uni-ui 优化 LoadMore 加载图标可按平台配置或由用户指定，Android平台默认circle，iOS平台默认雪花
+* uni-ui 优化 SwipeDot 优化指示器样式
+* uni-ui 修复 Icons 组件在 H5 平台不显示的BUG
+* 新闻模板 优化 拖动标签卡时更快的渲染页面、无网络时引导用户设置
+* uni统计 修复 页面标题和页面 url 不匹配的Bug
+* uni统计 修复 选项卡页面 url 上报不正确的Bug
+
+## 2.2.4.20190823-alpha
+* 【重要】App/微信小程序平台 新增 支持wxs，支付宝小程序平台支持SJS，百度小程序平台支持Filter [详情](https://uniapp.dcloud.io/frame?id=wxs)
+* App平台 修复 微信自定义组件运行时报错的Bug [详情](https://ask.dcloud.net.cn/question/77358)
+
 ## 2.2.3.20190822-alpha
 * 【重要】uni统计平台上线，一份报表，掌握业务全景 [详情](https://tongji.dcloud.net.cn)
 * App平台 新增 uni.onKeyboardHeightChange 支持监听键盘高度变化
