@@ -22,6 +22,9 @@
 |showStatusBar|无|显示状态栏，仅在iOS全屏下有效|
 |hideStatusBar|无|隐藏状态栏，仅在iOS全屏下有效|
 
+**注意：**
+-- app-nvue 平台 2.2.5(alpha)+ 支持 uni.createVideoContext(videoId, this)
+-- app-nvue 平台 2.2.5(alpha)- 需要同时设置组件属性id和ref ``<video id="video1" ref="video1"></video>``，或者直接使用 ref，例如 ``this.$refs.video1``
 
 **示例**
 
