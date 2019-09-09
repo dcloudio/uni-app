@@ -103,6 +103,7 @@
 **注意**
 
 - 支付宝小程序使用`titleImage`时必须使用`https`的图片链接地址，需要真机调试才能看到效果，支付宝开发者工具内无效果
+- `globalStyle`中设置的`titleImage`也会覆盖掉`pages`->`style`内的设置文字标题
 
 # pages
 
