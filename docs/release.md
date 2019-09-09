@@ -1,6 +1,23 @@
 # uni-app 更新日志
 ======================================
 
+## 2.2.3.20190822-alpha
+* 【重要】uni统计平台上线，一份报表，掌握业务全景 [详情](https://tongji.dcloud.net.cn)
+* App平台 新增 uni.onKeyboardHeightChange 支持监听键盘高度变化
+* App平台 优化 renderer配置为native的纯nvue项目，uni.request 发起网络请求时，Content-Type 默认设置为 application/json
+* App平台 优化 input 组件 @focus 事件支持获取键盘高度
+* App平台 优化 uni.request 自动去除 url 首尾空白字符
+* App平台 修复 解决 scroll-view、movable-view 组件触摸滑动时会触发下拉刷新的 Bug
+* H5平台 新增 支持 icon 组件
+* H5平台 优化 uni.getNetworkType 支持 Safari 浏览器
+* H5平台 修复 input 组件 confirm-type 值为 search 时文字垂直不居中的 Bug
+* H5平台 修复 animation 属性中部分动画不生效的 Bug
+* 微信小程序平台 修复 当使用小程序插件后，调用数组方法修改数组未触发界面渲染的 Bug [#694](https://github.com/dcloudio/uni-app/issues/694)
+* 支付宝小程序平台 新增 支持分包加载功能
+
+## 2.2.2.20190816
+* App平台 修复 uni.chooseLocation 界面搜索地点导致地图高度异常的Bug [详情](https://ask.dcloud.net.cn/question/76645)
+
 ## 2.2.1.20190813
 * App平台 修复 uni.request 接口中 responseType 参数设置为 arraybuffer 时,请求无效的 Bug [详情](https://ask.dcloud.net.cn/question/66153)
 * H5平台 修复 开启摇树优化（treeShaking）后，多构建出一份无效文件的Bug [#638](https://github.com/dcloudio/uni-app/issues/638)
