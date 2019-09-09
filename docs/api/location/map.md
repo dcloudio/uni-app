@@ -1,6 +1,11 @@
 ### uni.createMapContext(mapId,this)
 创建并返回 map 上下文 ``mapContext`` 对象。在自定义组件下，第二个参数传入组件实例this，以操作组件内 ``<map>`` 组件。
 
+**注意：uni.createMapContext(mapId, this)**
+- app-nvue 平台 2.2.5(alpha)+ 支持 uni.createMapContext(mapId, this)
+- app-nvue 平台 2.2.5(alpha)- 需要同时设置组件属性id和ref ``<map id="map1" ref="map1"></map>``，或者直接使用 ref，例如 ``this.$refs.map1``
+
+
 **平台差异说明**
 
 |5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
