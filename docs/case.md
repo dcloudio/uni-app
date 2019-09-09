@@ -145,6 +145,8 @@ uni-app已经有几十万开发者，创建了几十万个项目，是开发者�
 
 **极志愿：**专业高考志愿填报。**<span style="color:#42b983">多端获客典型案例，1个月获得400万用户</span>**，[详见报道](https://mp.weixin.qq.com/s?__biz=MzU3NTU5NDc0NA==&mid=2247491214&idx=1&sn=7e334d079146d9e31cea407f45bd8624&chksm=fd219719ca561e0f9a85b30017618eaf9551b46cdd6ecdf856bc4e47aee4ca93767fcf23147f&mpshare=1&scene=1&srcid=0713VwAOIuRllzMB6syoQssb&key=15a2b72b2464b4fe73325967f733ac332583d5db37f1812c63613c083a8f5921bca2ada2140d45e07657b062dc451f27cc48fe4fd298f6456f300895a90bd471480afdc2c8dc5a45254fb1dc48d3b79a&ascene=1&uin=MTkzNjMxMzU%3D&devicetype=Windows+10&version=62060833&lang=zh_CN&pass_ticket=xW6dPp%2F565g5S8hl1lz%2F8FLQBEzW6KUHyyqyHPdT2nk%3D)。体验方式：[App、微信小程序、百度小程序、H5 官网地址](https://www.jizhy.com/home/)
 
+**中华英才网：** 百度小程序搜索“中华英才网”
+
 **联想集团官方小程序：** 微信小程序搜索 “联想集团”
 
 **张亮麻辣烫：** 百度小程序搜索 “张亮麻辣烫”
