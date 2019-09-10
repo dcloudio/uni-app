@@ -37,7 +37,7 @@ function getAppStyleCode(stringifyRequest) {
   } catch (e) {}
   styles.forEach((style, index) => {
     code = code +
-      `Vue.prototype.__merge_style(require(${genStyleRequest(style,index,stringifyRequest)}).default,Vue.prototype.__$appStyle__)\n`
+      `Vue.prototype.__merge_style && Vue.prototype.__merge_style(require(${genStyleRequest(style,index,stringifyRequest)}).default,Vue.prototype.__$appStyle__)\n`
   })
   return code
 }
