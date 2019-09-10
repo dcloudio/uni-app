@@ -96,7 +96,7 @@
       </div>
     </div>
     <div
-      v-if="type!=='transparent'&&type!=='alwaysTransparent'"
+      v-if="type!=='transparent'&&type!=='float'"
       class="uni-placeholder"/>
   </uni-page-head>
 </template>
@@ -335,7 +335,7 @@ export default {
     type: {
       default: 'default',
       validator (value) {
-        return ['default', 'transparent', 'alwaysTransparent'].indexOf(value) !== -1
+        return ['default', 'transparent', 'float'].indexOf(value) !== -1
       }
     },
     coverage: {
@@ -357,6 +357,12 @@ export default {
     titleImage: {
       type: String,
       default: ''
+    },
+    transparentTitle: {
+      default: 'none',
+      validator (value) {
+        return ['none', 'auto', 'always'].indexOf(value) !== -1
+      }
     }
   },
   data () {

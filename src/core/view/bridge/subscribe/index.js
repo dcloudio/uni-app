@@ -27,7 +27,7 @@ const passiveOptions = supportsPassive ? {
 function updateCssVar (vm) {
   if (uni.canIUse('css.var')) {
     const pageVm = vm.$parent.$parent
-    const windowTop = pageVm.showNavigationBar && pageVm.navigationBar.type !== 'transparent' && pageVm.navigationBar.type !== 'alwaysTransparent' ? (NAVBAR_HEIGHT +
+    const windowTop = pageVm.showNavigationBar && pageVm.navigationBar.type !== 'transparent' && pageVm.navigationBar.type !== 'float' ? (NAVBAR_HEIGHT +
         'px')
       : '0px'
     const windowBottom = getApp().$children[0].showTabBar ? (TABBAR_HEIGHT + 'px') : '0px'

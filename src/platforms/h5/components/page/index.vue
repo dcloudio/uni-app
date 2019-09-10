@@ -146,7 +146,7 @@ export default {
     const titleNViewTypeList = {
       'none': 'default',
       'auto': 'transparent',
-      'always': 'alwaysTransparent'
+      'always': 'float'
     }
 
     const navigationBar = mergeTitleNView({
@@ -158,7 +158,8 @@ export default {
       titleImage: this.titleImage,
       duration: '0',
       timingFunc: '',
-      type: titleNViewTypeList[this.transparentTitle]
+      type: titleNViewTypeList[this.transparentTitle],
+      transparentTitle: this.transparentTitle
     }, this.titleNView)
 
     const showNavigationBar = this.navigationStyle === 'default' && this.titleNView
