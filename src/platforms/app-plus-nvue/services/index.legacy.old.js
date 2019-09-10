@@ -35,8 +35,8 @@ export default {
         getUniEmitter () {
           return getGlobalUniEmitter()
         },
-        getCurrentPages () {
-          return getGlobalCurrentPages()
+        getCurrentPages (returnAll) {
+          return getGlobalCurrentPages(returnAll)
         }
       }
     }

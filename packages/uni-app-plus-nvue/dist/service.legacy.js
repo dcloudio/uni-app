@@ -852,8 +852,8 @@ var index_legacy_old = {
         getUniEmitter () {
           return getGlobalUniEmitter()
         },
-        getCurrentPages () {
-          return getGlobalCurrentPages()
+        getCurrentPages (returnAll) {
+          return getGlobalCurrentPages(returnAll)
         }
       }
     }

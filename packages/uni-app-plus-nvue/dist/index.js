@@ -327,7 +327,11 @@ var serviceContext = (function () {
   let webview;
 
   function setPullDownRefreshPageId (pullDownRefreshWebview) {
-    webview = pullDownRefreshWebview;
+    if (typeof pullDownRefreshWebview === 'number') {
+      webview = plus.webview.getWebviewById(String(pullDownRefreshWebview));
+    } else {
+      webview = pullDownRefreshWebview;
+    }
   }
 
   function startPullDownRefresh () {

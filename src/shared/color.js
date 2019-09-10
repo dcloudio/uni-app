@@ -7,6 +7,10 @@ export function hexToRgba (hex) {
     r = hex.substring(0, 2)
     g = hex.substring(2, 4)
     b = hex.substring(4, 6)
+  } else if (hex.length === 3) {
+    r = hex.substring(0, 1)
+    g = hex.substring(1, 2)
+    b = hex.substring(2, 3)
   } else {
     return false
   }
