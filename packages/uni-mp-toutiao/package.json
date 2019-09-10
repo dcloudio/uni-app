@@ -1,6 +1,6 @@
 {
 	"name": "@dcloudio/uni-mp-toutiao",
-	"version": "0.0.351",
+	"version": "2.0.0-alpha-22420190823022",
 	"description": "uni-app mp-toutiao",
 	"main": "dist/index.js",
 	"scripts": {
@@ -8,5 +8,5 @@
 	},
 	"author": "fxy060608",
 	"license": "Apache-2.0",
-	"gitHead": "08ea04b669e93f0db3acb2dfa38138298edd5789"
+	"gitHead": "32373adfb15ee0be1abb5b84ee6f0e3908d502fc"
 }

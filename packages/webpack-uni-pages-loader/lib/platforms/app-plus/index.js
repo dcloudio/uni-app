@@ -128,12 +128,14 @@ module.exports = function (pagesJson, userManifestJson) {
 
   const nvuePages = pagesJson.nvue && pagesJson.nvue.pages
 
-  const nvuePagePaths = Object.keys(nvuePages || {})
-  if (nvuePagePaths.length) {
+  if (nvuePages && nvuePages.length) {
     const pages = {}
-    nvuePagePaths.forEach(nvuePagePath => {
-      pages[nvuePagePath] = {
-        'window': parseStyle(pagesJson.nvue.pages[nvuePagePath]['window'] || {}),
+    nvuePages.forEach(({
+      path,
+      style
+    }) => {
+      pages[path] = {
+        'window': parseStyle(style),
         'nvue': true
       }
     })
@@ -319,7 +321,7 @@ module.exports = function (pagesJson, userManifestJson) {
       // networkTimeout
       normalizeNetworkTimeout(appJson)
       appJson.page = Object.create(null)
-      appJson.pages = Object.keys(appJson.nvue.pages).reverse().map(pagePath => {
+      appJson.pages = Object.keys(appJson.nvue.pages).map(pagePath => {
         const newPagePath = pagePath.replace('.html', '')
         appJson.page[newPagePath] = {
           window: appJson.nvue.pages[pagePath].window,

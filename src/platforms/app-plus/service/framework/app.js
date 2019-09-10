@@ -9,7 +9,8 @@ import {
 } from './page'
 
 import {
-  registerPlusMessage
+  registerPlusMessage,
+  consumePlusMessage
 } from './plus-message'
 
 import {
@@ -42,7 +43,6 @@ function initGlobalListeners () {
   const emit = UniServiceJSBridge.emit
 
   plus.key.addEventListener('backbutton', () => {
-    // TODO uni?
     uni.navigateBack({
       from: 'backbutton'
     })
@@ -69,6 +69,16 @@ function initGlobalListeners () {
       height: event.height
     })
   })
+
+  plus.globalEvent.addEventListener('plusMessage', function (e) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('UNIAPP[plusMessage]:[' + Date.now() + ']' + JSON.stringify(e.data))
+    }
+    if (e.data && e.data.type) {
+      const type = e.data.type
+      consumePlusMessage(type, e.data.args || {})
+    }
+  })
 }
 
 function initAppLaunch (appVm) {
@@ -87,10 +97,12 @@ function initTabBar () {
     return
   }
 
-  const currentTab = isTabBarPage(__uniConfig.entryPagePath)
-  if (currentTab) {
+  __uniConfig.tabBar.selected = 0
+
+  const selected = __uniConfig.tabBar.list.findIndex(page => page.pagePath === __uniConfig.entryPagePath)
+  if (selected !== -1) {
     // 取当前 tab 索引值
-    __uniConfig.tabBar.selected = __uniConfig.tabBar.list.indexOf(currentTab)
+    __uniConfig.tabBar.selected = selected
     // 如果真实的首页与 condition 都是 tabbar，无需启用 realEntryPagePath 机制
     if (__uniConfig.realEntryPagePath && isTabBarPage(__uniConfig.realEntryPagePath)) {
       delete __uniConfig.realEntryPagePath
@@ -100,7 +112,12 @@ function initTabBar () {
   __uniConfig.__ready__ = true
 
   const onLaunchWebviewReady = function onLaunchWebviewReady () {
-    const tabBarView = tabBar.init(__uniConfig.tabBar, (item) => {
+    const tabBarView = tabBar.init(__uniConfig.tabBar, (item, index) => {
+      UniServiceJSBridge.emit('onTabItemTap', {
+        index,
+        text: item.text,
+        pagePath: item.pagePath
+      })
       uni.switchTab({
         url: '/' + item.pagePath,
         openType: 'switchTab',

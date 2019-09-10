@@ -14,6 +14,10 @@ const {
   updateProjectJson
 } = require('@dcloudio/uni-cli-shared/lib/cache')
 
+const {
+  pagesJsonJsFileName
+} = require('@dcloudio/uni-cli-shared/lib/pages')
+
 const parseStyle = require('./util').parseStyle
 
 // 将开发者手动设置的 usingComponents 调整名称，方便与自动解析到的 usingComponents 做最后合并
@@ -28,12 +32,19 @@ function renameUsingComponents (jsonObj) {
 module.exports = function (content) {
   this.cacheable && this.cacheable()
 
+  const pagesJsonJsPath = path.resolve(process.env.UNI_INPUT_DIR, pagesJsonJsFileName)
   const manifestJsonPath = path.resolve(process.env.UNI_INPUT_DIR, 'manifest.json')
   const manifestJson = parseManifestJson(fs.readFileSync(manifestJsonPath, 'utf8'))
 
+  this.addDependency(pagesJsonJsPath)
   this.addDependency(manifestJsonPath)
 
-  const pagesJson = parsePagesJson(content)
+  const pagesJson = parsePagesJson(content, {
+    addDependency: (file) => {
+      (process.UNI_PAGES_DEPS || (process.UNI_PAGES_DEPS = new Set())).add(normalizePath(file))
+      this.addDependency(file)
+    }
+  })
   // TODO 与 usingComponents 放在一块读取设置
   if (manifestJson.transformPx === false) {
     process.UNI_TRANSFORM_PX = false

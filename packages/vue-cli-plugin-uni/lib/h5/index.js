@@ -80,6 +80,16 @@ module.exports = {
               before: [`<template><App :keepAliveInclude="keepAliveInclude"/></template>`]
             }
           }
+        }, {
+          resourceQuery: /vue&type=template/,
+          use: [{
+            loader: resolve('packages/h5-vue-template-loader')
+          }]
+        }, {
+          resourceQuery: [/lang=wxs/, /blockType=wxs/],
+          use: [{
+            loader: resolve('packages/webpack-uni-filter-loader')
+          }]
         }]
       },
       resolveLoader: {
@@ -110,6 +120,12 @@ module.exports = {
         cacheDirectory: false,
         cacheIdentifier: false
       }))
+      .end()
+      .use('uniapp-custom-block-loader')
+      .loader(require.resolve('@dcloudio/vue-cli-plugin-uni/packages/webpack-custom-block-loader'))
+      .options({
+        compiler: getPlatformCompiler()
+      })
       .end()
       .use('uniapp-scoped')
       .loader(resolve('packages/webpack-scoped-loader'))

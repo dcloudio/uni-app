@@ -555,6 +555,7 @@ function parseHTML (html, options) {
 var splitRE = /\r?\n/g;
 var replaceRE = /./g;
 var isSpecialTag = makeMap('script,style,template', true);
+var isCustomBlock = makeMap('wxs,filter,sjs', true);// fixed by xxxxxx
 
 /**
  * Parse a single-file component (*.vue) file into an SFC Descriptor Object.
@@ -611,8 +612,8 @@ function parseComponent (
           cumulated[name] = value || true;
           return cumulated
         }, {})
-      };
-      if (isSpecialTag(tag)) {
+      };// fixed by xxxxxx
+      if (isSpecialTag(tag) && !isCustomBlock(currentBlock.attrs.lang || '')) {
         checkAttrs(currentBlock, attrs);
         if (tag === 'style') {
           sfc.styles.push(currentBlock);
@@ -669,7 +670,8 @@ function parseComponent (
       return content.slice(0, block.start).replace(replaceRE, ' ')
     } else {
       var offset = content.slice(0, block.start).split(splitRE).length;
-      var padChar = block.type === 'script' && !block.lang
+      var lang = block.attrs && block.attrs.lang; // fixed by xxxxxx
+      var padChar = block.type === 'script' && !block.lang && !isCustomBlock(lang || '')
         ? '//\n'
         : '\n';
       return Array(offset).join(padChar)
@@ -2804,8 +2806,8 @@ Dep.prototype.removeSub = function removeSub (sub) {
 };
 
 Dep.prototype.depend = function depend () {
-  if (Dep.target) {
-    Dep.target.addDep(this);
+  if (Dep.SharedObject.target) {
+    Dep.SharedObject.target.addDep(this);
   }
 };
 
@@ -2826,7 +2828,11 @@ Dep.prototype.notify = function notify () {
 // The current target watcher being evaluated.
 // This is globally unique because only one watcher
 // can be evaluated at a time.
-Dep.target = null;
+// fixed by xxxxxx (nvue shared vuex)
+/* eslint-disable no-undef */
+Dep.SharedObject = typeof SharedObject !== 'undefined' ? SharedObject : {};
+Dep.SharedObject.target = null;
+Dep.SharedObject.targetStack = [];
 
 /*  */
 
@@ -2945,7 +2951,9 @@ var Observer = function Observer (value) {
   def(value, '__ob__', this);
   if (Array.isArray(value)) {
     if (hasProto) {
-      protoAugment(value, arrayMethods);
+      {
+        protoAugment(value, arrayMethods);
+      }
     } else {
       copyAugment(value, arrayMethods, arrayKeys);
     }
@@ -3057,7 +3065,7 @@ function defineReactive$$1 (
     configurable: true,
     get: function reactiveGetter () {
       var value = getter ? getter.call(obj) : val;
-      if (Dep.target) {
+      if (Dep.SharedObject.target) { // fixed by xxxxxx
         dep.depend();
         if (childOb) {
           childOb.dep.depend();

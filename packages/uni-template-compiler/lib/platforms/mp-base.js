@@ -55,12 +55,25 @@ module.exports = {
   refInFor: 'data-ref-in-for',
   specialEvents: {},
   /**
-     * TODO 暂时先简单判断是不是自定义组件，
-     * 如果要依赖真实导入的组件识别，需要 template-loader 与 script-loader 结合，
-     * 目前 template 在前，script 在后，要做的话，就需要把 wxml 的生成机制放到 plugin 中才可以拿到真实的组件列表
-     */
+   * TODO 暂时先简单判断是不是自定义组件，
+   * 如果要依赖真实导入的组件识别，需要 template-loader 与 script-loader 结合，
+   * 目前 template 在前，script 在后，要做的话，就需要把 wxml 的生成机制放到 plugin 中才可以拿到真实的组件列表
+   */
   isComponent (tagName) {
     return !tags.includes(tagName)
+  },
+  createFilterTag (filterTag, {
+    content,
+    attrs
+  }) {
+    content = content.trim()
+    if (content) {
+      return `<${filterTag} module="${attrs.module}">
+${content}
+</${filterTag}>`
+    } else if (attrs.src) {
+      return `<${filterTag} src="${attrs.src}" module="${attrs.module}"></${filterTag}>`
+    }
   },
   getEventType (eventType) {
     return EVENTS[eventType] || eventType

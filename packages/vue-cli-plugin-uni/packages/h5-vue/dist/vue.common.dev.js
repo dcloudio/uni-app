@@ -723,8 +723,8 @@ Dep.prototype.removeSub = function removeSub (sub) {
 };
 
 Dep.prototype.depend = function depend () {
-  if (Dep.target) {
-    Dep.target.addDep(this);
+  if (Dep.SharedObject.target) {
+    Dep.SharedObject.target.addDep(this);
   }
 };
 
@@ -745,17 +745,20 @@ Dep.prototype.notify = function notify () {
 // The current target watcher being evaluated.
 // This is globally unique because only one watcher
 // can be evaluated at a time.
-Dep.target = null;
-var targetStack = [];
+// fixed by xxxxxx (nvue shared vuex)
+/* eslint-disable no-undef */
+Dep.SharedObject = typeof SharedObject !== 'undefined' ? SharedObject : {};
+Dep.SharedObject.target = null;
+Dep.SharedObject.targetStack = [];
 
 function pushTarget (target) {
-  targetStack.push(target);
-  Dep.target = target;
+  Dep.SharedObject.targetStack.push(target);
+  Dep.SharedObject.target = target;
 }
 
 function popTarget () {
-  targetStack.pop();
-  Dep.target = targetStack[targetStack.length - 1];
+  Dep.SharedObject.targetStack.pop();
+  Dep.SharedObject.target = Dep.SharedObject.targetStack[Dep.SharedObject.targetStack.length - 1];
 }
 
 /*  */
@@ -922,7 +925,9 @@ var Observer = function Observer (value) {
   def(value, '__ob__', this);
   if (Array.isArray(value)) {
     if (hasProto) {
-      protoAugment(value, arrayMethods);
+      {
+        protoAugment(value, arrayMethods);
+      }
     } else {
       copyAugment(value, arrayMethods, arrayKeys);
     }
@@ -1034,7 +1039,7 @@ function defineReactive$$1 (
     configurable: true,
     get: function reactiveGetter () {
       var value = getter ? getter.call(obj) : val;
-      if (Dep.target) {
+      if (Dep.SharedObject.target) { // fixed by xxxxxx
         dep.depend();
         if (childOb) {
           childOb.dep.depend();
@@ -4826,7 +4831,7 @@ function createComputedGetter (key) {
       if (watcher.dirty) {
         watcher.evaluate();
       }
-      if (Dep.target) {
+      if (Dep.SharedObject.target) {// fixed by xxxxxx
         watcher.depend();
       }
       return watcher.value
@@ -6679,6 +6684,66 @@ var baseModules = [
 
 /*  */
 
+function findWxsProps(wxsProps, attrs) {
+  var ret = {};
+  Object.keys(wxsProps).forEach(function (name) {
+    if (attrs[name]) {
+      ret[wxsProps[name]] = attrs[name];
+      delete attrs[name];
+    }
+  });
+  return ret
+}
+
+function updateWxsProps(oldVnode, vnode) {
+  if (
+    isUndef(oldVnode.data.wxsProps) &&
+    isUndef(vnode.data.wxsProps)
+  ) {
+    return
+  }
+
+  var oldWxsWatches = oldVnode.$wxsWatches;
+  var wxsPropsKey = Object.keys(vnode.data.wxsProps);
+  if (!oldWxsWatches && !wxsPropsKey.length) {
+    return
+  }
+
+  if (!oldWxsWatches) {
+    oldWxsWatches = {};
+  }
+
+  var wxsProps = findWxsProps(vnode.data.wxsProps, vnode.data.attrs);
+  var context = vnode.context;
+
+  vnode.$wxsWatches = {};
+
+  Object.keys(wxsProps).forEach(function (prop) {
+    vnode.$wxsWatches[prop] = oldWxsWatches[prop] || vnode.context.$watch(prop, function(newVal, oldVal) {
+      wxsProps[prop](
+        newVal,
+        oldVal,
+        context.$getComponentDescriptor(),
+        vnode.elm.__vue__.$getComponentDescriptor()
+      );
+    });
+  });
+
+  Object.keys(oldWxsWatches).forEach(function (oldName) {
+    if (!vnode.$wxsWatches[oldName]) {
+      oldWxsWatches[oldName]();
+      delete oldWxsWatches[oldName];
+    }
+  });
+}
+
+var wxs = {
+  create: updateWxsProps,
+  update: updateWxsProps
+};
+
+/*  */
+
 function updateAttrs (oldVnode, vnode) {
   var opts = vnode.componentOptions;
   if (isDef(opts) && opts.Ctor.options.inheritAttrs === false) {
@@ -6792,7 +6857,9 @@ function updateClass (oldVnode, vnode) {
         isUndef(oldData.staticClass) &&
         isUndef(oldData.class)
       )
-    )
+    ) &&
+    isUndef(el.__wxsAddClass) &&
+    isUndef(el.__wxsRemoveClass) // fixed by xxxxxx __wxsClass
   ) {
     return
   }
@@ -6803,6 +6870,29 @@ function updateClass (oldVnode, vnode) {
   var transitionClass = el._transitionClasses;
   if (isDef(transitionClass)) {
     cls = concat(cls, stringifyClass(transitionClass));
+  }
+
+  // fixed by xxxxxx __wxsClass
+  if(Array.isArray(el.__wxsRemoveClass) && el.__wxsRemoveClass.length){
+    var clsArr = cls.split(/\s+/);
+    el.__wxsRemoveClass.forEach(function (removeCls){
+      var clsIndex = clsArr.findIndex(function (cls) { return cls === removeCls; });
+      if (clsIndex !== -1) {
+        clsArr.splice(clsIndex, 1);
+      }
+    });
+    cls = clsArr.join(' ');
+    el.__wxsRemoveClass.length = 0;
+  }
+
+  if (el.__wxsAddClass) {
+    // 去重
+    var clsArr$1 = cls.split(/\s+/).concat(el.__wxsAddClass.split(/\s+/));
+    var clsObj = Object.create(null);
+    clsArr$1.forEach(function (cls) {
+      cls && (clsObj[cls] = 1);
+    });
+    cls = Object.keys(clsObj).join(' ');
   }
 
   // set the class
@@ -7826,15 +7916,16 @@ var normalize = cached(function (prop) {
 function updateStyle (oldVnode, vnode) {
   var data = vnode.data;
   var oldData = oldVnode.data;
-
+  var el = vnode.elm;
   if (isUndef(data.staticStyle) && isUndef(data.style) &&
-    isUndef(oldData.staticStyle) && isUndef(oldData.style)
+    isUndef(oldData.staticStyle) && isUndef(oldData.style) &&
+    isUndef(el.__wxsStyle) // fixed by xxxxxx __wxsStyle
   ) {
     return
   }
 
   var cur, name;
-  var el = vnode.elm;
+  
   var oldStaticStyle = oldData.staticStyle;
   var oldStyleBinding = oldData.normalizedStyle || oldData.style || {};
 
@@ -7851,6 +7942,12 @@ function updateStyle (oldVnode, vnode) {
     : style;
 
   var newStyle = getStyle(vnode, true);
+
+  // fixed by xxxxxx __wxsStyle
+  if(el.__wxsStyle){
+    Object.assign(vnode.data.normalizedStyle, el.__wxsStyle);
+    Object.assign(newStyle, el.__wxsStyle);
+  }
 
   for (name in oldStyle) {
     if (isUndef(newStyle[name])) {
@@ -8441,6 +8538,7 @@ var transition = inBrowser ? {
 } : {};
 
 var platformModules = [
+  wxs,// fixed by xxxxxx wxs props
   attrs,
   klass,
   events,
@@ -9100,6 +9198,36 @@ if (inBrowser) {
 
 /*  */
 
+function transformNode(el) {
+  var list = el.attrsList;
+  for (var i = list.length - 1; i >= 0; i--) {
+    var name = list[i].name;
+    if (name.indexOf(':change:') === 0 || name.indexOf('v-bind:change:') === 0) {
+      var nameArr = name.split(':');
+      var wxsProp = nameArr[nameArr.length - 1];
+      var wxsPropBinding = getBindingAttr(el, wxsProp, false);
+      if (wxsPropBinding) {
+        (el.wxsPropBindings || (el.wxsPropBindings = {}))['change:' + wxsProp] = wxsPropBinding;
+      }
+    }
+  }
+}
+
+function genData(el) {
+  var data = '';
+  if (el.wxsPropBindings) {
+    data += "wxsProps:" + (JSON.stringify(el.wxsPropBindings)) + ",";
+  }
+  return data
+}
+
+var wxs$1 = {
+  transformNode: transformNode,
+  genData: genData
+};
+
+/*  */
+
 var defaultTagRE = /\{\{((?:.|\r?\n)+?)\}\}/g;
 var regexEscapeRE = /[-.*+?^${}()|[\]\/\\]/g;
 
@@ -9148,7 +9276,7 @@ function parseText (
 
 /*  */
 
-function transformNode (el, options) {
+function transformNode$1 (el, options) {
   var warn = options.warn || baseWarn;
   var staticClass = getAndRemoveAttr(el, 'class');
   if (staticClass) {
@@ -9172,7 +9300,7 @@ function transformNode (el, options) {
   }
 }
 
-function genData (el) {
+function genData$1 (el) {
   var data = '';
   if (el.staticClass) {
     data += "staticClass:" + (el.staticClass) + ",";
@@ -9185,13 +9313,13 @@ function genData (el) {
 
 var klass$1 = {
   staticKeys: ['staticClass'],
-  transformNode: transformNode,
-  genData: genData
+  transformNode: transformNode$1,
+  genData: genData$1
 };
 
 /*  */
 
-function transformNode$1 (el, options) {
+function transformNode$2 (el, options) {
   var warn = options.warn || baseWarn;
   var staticStyle = getAndRemoveAttr(el, 'style');
   if (staticStyle) {
@@ -9217,7 +9345,7 @@ function transformNode$1 (el, options) {
   }
 }
 
-function genData$1 (el) {
+function genData$2 (el) {
   var data = '';
   if (el.staticStyle) {
     data += "staticStyle:" + (el.staticStyle) + ",";
@@ -9230,8 +9358,8 @@ function genData$1 (el) {
 
 var style$1 = {
   staticKeys: ['staticStyle'],
-  transformNode: transformNode$1,
-  genData: genData$1
+  transformNode: transformNode$2,
+  genData: genData$2
 };
 
 /*  */
@@ -9753,6 +9881,7 @@ function parse (
     shouldKeepComment: options.comments,
     outputSourceRange: options.outputSourceRange,
     start: function start (tag, attrs, unary, start$1, end) {
+
       // check namespace.
       // inherit parent ns if there is one
       var ns = (currentParent && currentParent.ns) || platformGetTagNamespace(tag);
@@ -10583,6 +10712,7 @@ var model$1 = {
 };
 
 var modules$1 = [
+  wxs$1,
   klass$1,
   style$1,
   model$1
@@ -10998,7 +11128,7 @@ function genElement (el, state) {
     } else {
       var data;
       if (!el.plain || (el.pre && state.maybeComponent(el))) {
-        data = genData$2(el, state);
+        data = genData$3(el, state);
       }
 
       var children = el.inlineTemplate ? null : genChildren(el, state, true);
@@ -11124,7 +11254,7 @@ function genFor (
     '})'
 }
 
-function genData$2 (el, state) {
+function genData$3 (el, state) {
   var data = '{';
 
   // directives first.
@@ -11457,7 +11587,7 @@ function genComponent (
   state
 ) {
   var children = el.inlineTemplate ? null : genChildren(el, state, true);
-  return ("_c(" + componentName + "," + (genData$2(el, state)) + (children ? ("," + children) : '') + ")")
+  return ("_c(" + componentName + "," + (genData$3(el, state)) + (children ? ("," + children) : '') + ")")
 }
 
 function genProps (props) {

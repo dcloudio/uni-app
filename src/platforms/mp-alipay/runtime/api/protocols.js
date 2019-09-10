@@ -287,9 +287,23 @@ const protocols = { // 需要做转换的 API 列表
   },
   scanCode: {
     name: 'scan',
-    args: {
-      onlyFromCamera: 'hideAlbum',
-      scanType: false
+    args (fromArgs) {
+      if (fromArgs.scanType === 'qrCode') {
+        fromArgs.type = 'qr'
+        return {
+          onlyFromCamera: 'hideAlbum'
+        }
+      } else if (fromArgs.scanType === 'barCode') {
+        fromArgs.type = 'bar'
+        return {
+          onlyFromCamera: 'hideAlbum'
+        }
+      } else {
+        return {
+          scanType: false,
+          onlyFromCamera: 'hideAlbum'
+        }
+      }
     },
     returnValue: {
       code: 'result'

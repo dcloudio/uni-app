@@ -16,6 +16,10 @@ export default function parseBaseApp (vm, {
   mocks,
   initRefs
 }) {
+  if (vm.$options.store) {
+    Vue.prototype.$store = vm.$options.store
+  }
+
   Vue.prototype.mpHost = __PLATFORM__
 
   Vue.mixin({

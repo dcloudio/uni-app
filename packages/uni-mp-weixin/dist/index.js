@@ -231,7 +231,7 @@ const promiseInterceptor = {
 };
 
 const SYNC_API_RE =
-  /^\$|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
+  /^\$|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -387,7 +387,9 @@ var previewImage = {
 const protocols = {
   previewImage
 };
-const todos = [];
+const todos = [
+  'vibrate'
+];
 const canIUses = [];
 
 const CALLBACKS = ['success', 'fail', 'cancel', 'complete'];
@@ -1115,6 +1117,10 @@ function parseBaseApp (vm, {
   mocks,
   initRefs
 }) {
+  if (vm.$options.store) {
+    Vue.prototype.$store = vm.$options.store;
+  }
+
   Vue.prototype.mpHost = "mp-weixin";
 
   Vue.mixin({
@@ -1330,6 +1336,14 @@ function parseBaseComponent (vueComponentOptions, {
       __e: handleEvent
     }
   };
+
+  if (Array.isArray(vueOptions.wxsCallMethods)) {
+    vueOptions.wxsCallMethods.forEach(callMethod => {
+      componentOptions.methods[callMethod] = function (args) {
+        return this.$vm[callMethod](args)
+      };
+    });
+  }
 
   if (isPage) {
     return componentOptions

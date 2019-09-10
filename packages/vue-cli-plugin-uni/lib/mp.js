@@ -13,6 +13,10 @@ const {
   getPlatformCssnano
 } = require('@dcloudio/uni-cli-shared')
 
+const {
+  isUnaryTag
+} = require('./util')
+
 function createUniMPPlugin () {
   if (process.env.UNI_USING_COMPONENTS) {
     const WebpackUniMPPlugin = require('@dcloudio/webpack-uni-mp-loader/lib/plugin/index-new')
@@ -79,6 +83,11 @@ module.exports = {
         } else {
           devtool = 'eval'
         }
+      } else if (
+        process.env.UNI_PLATFORM === 'mp-baidu' ||
+        process.env.UNI_PLATFORM === 'mp-toutiao'
+      ) {
+        devtool = 'inline-source-map'
       } else {
         devtool = 'sourcemap'
       }
@@ -119,6 +128,19 @@ module.exports = {
           use: [{
             loader: '@dcloudio/webpack-uni-mp-loader/lib/template'
           }]
+        }, {
+          resourceQuery: [
+            /lang=wxs/,
+            /lang=filter/,
+            /lang=sjs/,
+            /blockType=wxs/,
+            /blockType=filter/,
+            /blockType=sjs/
+          ],
+          use: [{
+            loader: require.resolve(
+              '@dcloudio/vue-cli-plugin-uni/packages/webpack-uni-filter-loader')
+          }]
         }]
       },
       plugins: [
@@ -128,6 +150,13 @@ module.exports = {
     }
   },
   chainWebpack (webpackConfig) {
+    if (process.env.UNI_PLATFORM === 'mp-baidu') {
+      webpackConfig.module
+        .rule('js')
+        .exclude
+        .add(/\.filter\.js$/)
+    }
+
     // disable vue cache-loader
     webpackConfig.module
       .rule('vue')
@@ -136,6 +165,7 @@ module.exports = {
       .tap(options => Object.assign(options, {
         compiler: getPlatformCompiler(),
         compilerOptions: process.env.UNI_USING_COMPONENTS ? {
+          isUnaryTag,
           preserveWhitespace: false
         } : require('./mp-compiler-options'),
         cacheDirectory: false,
@@ -154,19 +184,30 @@ module.exports = {
       .uses
       .delete('cache-loader')
 
+    const styleExt = getPlatformExts().style
+
     webpackConfig.plugin('extract-css')
       .init((Plugin, args) => new Plugin({
-        filename: '[name]' + getPlatformExts().style
+        filename: '[name]' + styleExt
       }))
 
-    if (process.env.NODE_ENV === 'production') {
+    if (
+      process.env.NODE_ENV === 'production' &&
+      process.env.UNI_PLATFORM !== 'app-plus'
+    ) {
+      const OptimizeCssnanoPlugin = require('../packages/@intervolga/optimize-cssnano-plugin/index.js')
       webpackConfig.plugin('optimize-css')
-        .init((Plugin, args) => new Plugin({
+        .init((Plugin, args) => new OptimizeCssnanoPlugin({
           sourceMap: false,
+          filter (assetName) {
+            return path.extname(assetName) === styleExt
+          },
           cssnanoOptions: {
             preset: [
               'default',
-              getPlatformCssnano()
+              Object.assign({}, getPlatformCssnano(), {
+                discardComments: true
+              })
             ]
           }
 

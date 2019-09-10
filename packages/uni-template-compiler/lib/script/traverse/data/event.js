@@ -167,9 +167,42 @@ function getMethodName (methodName) {
   return methodName === '__HOLDER__' ? '' : methodName
 }
 
+function parseEventByCallExpression (callExpr, methods) {
+  let methodName = callExpr.callee.name
+  if (methodName === '$set') {
+    methodName = INTERNAL_SET_SYNC
+  }
+  const arrayExpression = [t.stringLiteral(getMethodName(methodName))]
+  const args = callExpr.arguments
+  if (methodName === INTERNAL_SET_SYNC) {
+    // v-bind:title.sync="doc.title"
+    // ['$set',['doc.a','title','$event']]
+    const argsExpression = []
+    argsExpression.push(
+      t.memberExpression(args[0], t.identifier(args[1].value))
+    )
+    argsExpression.push(t.stringLiteral(args[1].value))
+    argsExpression.push(t.stringLiteral('$event'))
+    arrayExpression.push(t.arrayExpression(argsExpression))
+  } else {
+    if (args.length) {
+      const argsExpression = []
+      args.forEach(arg => {
+        if (t.isIdentifier(arg) && arg.name === '$event') {
+          argsExpression.push(t.stringLiteral('$event'))
+        } else {
+          argsExpression.push(arg)
+        }
+      })
+      arrayExpression.push(t.arrayExpression(argsExpression))
+    }
+  }
+  methods.push(t.arrayExpression(arrayExpression))
+}
+
 function parseEvent (keyPath, valuePath, state, isComponent, isNativeOn = false, tagName, ret) {
   const key = keyPath.node
-  let type = key.value || key.name
+  let type = key.value || key.name || ''
 
   const isCustom = isComponent && !isNativeOn
 
@@ -178,138 +211,126 @@ function parseEvent (keyPath, valuePath, state, isComponent, isNativeOn = false,
   let isPassive = false
   let isOnce = false
 
-  isPassive = type.charAt(0) === VUE_EVENT_MODIFIERS.passive
-  type = isPassive ? type.slice(1) : type
-
-  isOnce = type.charAt(0) === VUE_EVENT_MODIFIERS.once // Prefixed last, checked first
-  type = isOnce ? type.slice(1) : type
-
-  isCapture = type.charAt(0) === VUE_EVENT_MODIFIERS.capture
-  type = isCapture ? type.slice(1) : type
-
-  const specialEvents = state.options.platform.specialEvents
-  const isSpecialEvent = specialEvents[tagName] && Object.keys(specialEvents[tagName]).includes(type)
-
   let methods = []
 
-  if (!valuePath.isArrayExpression()) {
-    valuePath = [valuePath]
-  } else {
-    valuePath = valuePath.get('elements')
-  }
+  if (type) {
+    isPassive = type.charAt(0) === VUE_EVENT_MODIFIERS.passive
+    type = isPassive ? type.slice(1) : type
 
-  valuePath.forEach(funcPath => {
-    if ( // wxs event
-      funcPath.isMemberExpression() &&
-      t.isIdentifier(funcPath.node.object) &&
-      state.options.filterModules.includes(funcPath.node.object.name)
-    ) {
-      const {
-        getEventType,
-        formatEventType
-      } = state.options.platform
-      const wxsEventType = formatEventType(getEventType(type))
-      if (key.value) {
-        key.value = wxsEventType
-      } else {
-        key.name = wxsEventType
-      }
-    } else if (funcPath.isIdentifier()) { // on:{click:handle}
-      if (!isSpecialEvent) {
-        const arrayExpression = [t.stringLiteral(getMethodName(funcPath.node.name))]
-        if (!isCustom) { // native events
-          arrayExpression.push(defaultArgs)
-        }
-        methods.push(t.arrayExpression(arrayExpression))
-      } else {
-        if (!state.options.specialMethods) {
-          state.options.specialMethods = new Set()
-        }
-        state.options.specialMethods.add(funcPath.node.name)
-      }
-    } else if (isSpecialEvent) {
-      state.errors.add(
-        `${tagName} 组件 ${type} 事件仅支持 @${type}="methodName" 方式绑定`
-      )
-    } else if (funcPath.isArrowFunctionExpression()) { // e=>count++
-      methods.push(addEventExpressionStatement(funcPath, state, isCustom))
+    isOnce = type.charAt(0) === VUE_EVENT_MODIFIERS.once // Prefixed last, checked first
+    type = isOnce ? type.slice(1) : type
+
+    isCapture = type.charAt(0) === VUE_EVENT_MODIFIERS.capture
+    type = isCapture ? type.slice(1) : type
+
+    const specialEvents = state.options.platform.specialEvents
+    const isSpecialEvent = specialEvents[tagName] && Object.keys(specialEvents[tagName]).includes(type)
+
+    if (!valuePath.isArrayExpression()) {
+      valuePath = [valuePath]
     } else {
-      let anonymous = true
-      funcPath.traverse({
-        noScope: true,
-        MemberExpression (path) {
-          if (path.node.object.name === '$event' && path.node.property.name ===
-            'stopPropagation') {
-            isCatch = true
-            path.stop()
+      valuePath = valuePath.get('elements')
+    }
+
+    valuePath.forEach(funcPath => {
+      if ( // wxs event
+        funcPath.isMemberExpression() &&
+        t.isIdentifier(funcPath.node.object) &&
+        state.options.filterModules.includes(funcPath.node.object.name)
+      ) {
+        const {
+          getEventType,
+          formatEventType
+        } = state.options.platform
+        const wxsEventType = formatEventType(getEventType(type))
+        if (key.value) {
+          key.value = wxsEventType
+        } else {
+          key.name = wxsEventType
+        }
+      } else if (funcPath.isIdentifier()) { // on:{click:handle}
+        if (!isSpecialEvent) {
+          const arrayExpression = [t.stringLiteral(getMethodName(funcPath.node.name))]
+          if (!isCustom) { // native events
+            arrayExpression.push(defaultArgs)
           }
-        },
-        AssignmentExpression (path) { // "update:title": function($event) {title = $event}
-          const left = path.node.left
-          const right = path.node.right
-          // v-bind:title.sync="title"
-          if (t.isIdentifier(left) &&
-            t.isIdentifier(right) &&
-            right.name === '$event' &&
-            type.indexOf('update:') === 0) {
-            methods.push(t.arrayExpression( // ['$set',['title','$event']]
-              [
-                t.stringLiteral(INTERNAL_SET_SYNC),
-                t.arrayExpression([
-                  t.identifier(left.name),
-                  t.stringLiteral(left.name),
-                  t.stringLiteral('$event')
-                ])
-              ]
-            ))
+          methods.push(t.arrayExpression(arrayExpression))
+        } else {
+          if (!state.options.specialMethods) {
+            state.options.specialMethods = new Set()
+          }
+          state.options.specialMethods.add(funcPath.node.name)
+        }
+      } else if (isSpecialEvent) {
+        state.errors.add(
+          `${tagName} 组件 ${type} 事件仅支持 @${type}="methodName" 方式绑定`
+        )
+      } else if (funcPath.isArrowFunctionExpression()) { // e=>count++
+        methods.push(addEventExpressionStatement(funcPath, state, isCustom))
+      } else {
+        let anonymous = true
+
+        // "click":function($event) {click1(item);click2(item);}
+        const body = funcPath.node.body && funcPath.node.body.body
+        if (body && body.length) {
+          const exprStatements = body.filter(node => {
+            return t.isExpressionStatement(node) && t.isCallExpression(node.expression)
+          })
+          if (exprStatements.length === body.length) {
             anonymous = false
-            path.stop()
+            exprStatements.forEach(exprStatement => {
+              parseEventByCallExpression(exprStatement.expression, methods)
+            })
           }
-        },
-        ReturnStatement (path) {
-          const argument = path.node.argument
-          if (t.isCallExpression(argument)) {
-            if (t.isIdentifier(argument.callee)) {
+        }
+
+        anonymous && funcPath.traverse({
+          noScope: true,
+          MemberExpression (path) {
+            if (path.node.object.name === '$event' && path.node.property.name ===
+              'stopPropagation') {
+              isCatch = true
+              path.stop()
+            }
+          },
+          AssignmentExpression (path) { // "update:title": function($event) {title = $event}
+            const left = path.node.left
+            const right = path.node.right
+            // v-bind:title.sync="title"
+            if (t.isIdentifier(left) &&
+              t.isIdentifier(right) &&
+              right.name === '$event' &&
+              type.indexOf('update:') === 0) {
+              methods.push(t.arrayExpression( // ['$set',['title','$event']]
+                [
+                  t.stringLiteral(INTERNAL_SET_SYNC),
+                  t.arrayExpression([
+                    t.identifier(left.name),
+                    t.stringLiteral(left.name),
+                    t.stringLiteral('$event')
+                  ])
+                ]
+              ))
               anonymous = false
-              let methodName = argument.callee.name
-              if (methodName === '$set') {
-                methodName = INTERNAL_SET_SYNC
+              path.stop()
+            }
+          },
+          ReturnStatement (path) {
+            const argument = path.node.argument
+            if (t.isCallExpression(argument)) {
+              if (t.isIdentifier(argument.callee)) {
+                anonymous = false
+                parseEventByCallExpression(argument, methods)
               }
-              const arrayExpression = [t.stringLiteral(getMethodName(methodName))]
-              const args = argument.arguments
-              if (methodName === INTERNAL_SET_SYNC) {
-                // v-bind:title.sync="doc.title"
-                // ['$set',['doc.a','title','$event']]
-                const argsExpression = []
-                argsExpression.push(
-                  t.memberExpression(args[0], t.identifier(args[1].value))
-                )
-                argsExpression.push(t.stringLiteral(args[1].value))
-                argsExpression.push(t.stringLiteral('$event'))
-                arrayExpression.push(t.arrayExpression(argsExpression))
-              } else {
-                if (args.length) {
-                  const argsExpression = []
-                  args.forEach(arg => {
-                    if (t.isIdentifier(arg) && arg.name === '$event') {
-                      argsExpression.push(t.stringLiteral('$event'))
-                    } else {
-                      argsExpression.push(arg)
-                    }
-                  })
-                  arrayExpression.push(t.arrayExpression(argsExpression))
-                }
-              }
-              methods.push(t.arrayExpression(arrayExpression))
             }
           }
+        })
+        if (anonymous) {
+          methods.push(addEventExpressionStatement(funcPath, state, isComponent, isNativeOn))
         }
-      })
-      if (anonymous) {
-        methods.push(addEventExpressionStatement(funcPath, state, isComponent, isNativeOn))
       }
-    }
-  })
+    })
+  }
 
   return {
     type,
@@ -326,6 +347,10 @@ function parseEvent (keyPath, valuePath, state, isComponent, isNativeOn = false,
 
 function _processEvent (path, state, isComponent, isNativeOn = false, tagName, ret) {
   const opts = []
+  // remove invalid event
+  path.node.value.properties = path.node.value.properties.filter(property => {
+    return property.key.value || property.key.name
+  })
   const len = path.node.value.properties.length
   for (let i = 0; i < len; i++) {
     const propertyPath = path.get(`value.properties.${i}`)

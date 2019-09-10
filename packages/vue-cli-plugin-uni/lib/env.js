@@ -139,13 +139,22 @@ if (platformOptions.usingComponents === true) {
   }
 }
 
-if (process.env.UNI_USING_COMPONENTS || process.env.UNI_PLATFORM === 'h5') { // 自定义组件模式或 h5 平台
+if (
+  process.env.UNI_USING_COMPONENTS ||
+  process.env.UNI_PLATFORM === 'h5'
+) { // 自定义组件模式或 h5 平台
   const uniStatistics = Object.assign(
     manifestJsonObj.uniStatistics || {},
     platformOptions.uniStatistics || {}
   )
 
-  if (uniStatistics.enable !== false) {
+  if (
+    uniStatistics.enable !== false &&
+    (
+      process.env.NODE_ENV === 'production' ||
+      uniStatistics.enable === 'development'
+    )
+  ) {
     if (process.UNI_STAT_CONFIG.appid) {
       process.env.UNI_USING_STAT = true
     } else {
@@ -202,6 +211,7 @@ if (process.env.UNI_PLATFORM !== 'h5') {
 const moduleAlias = require('module-alias')
 
 // 将 template-compiler 指向修订后的版本
+moduleAlias.addAlias('vue-template-compiler', '@dcloudio/vue-cli-plugin-uni/packages/vue-template-compiler')
 moduleAlias.addAlias('@megalo/template-compiler', '@dcloudio/vue-cli-plugin-uni/packages/@megalo/template-compiler')
 moduleAlias.addAlias('mpvue-template-compiler', '@dcloudio/vue-cli-plugin-uni/packages/mpvue-template-compiler')
 

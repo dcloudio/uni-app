@@ -91,8 +91,3 @@ module.exports = (api, options) => {
       .delete('cache-loader')
   })
 }
-
-module.exports.defaultModes = {
-  'build': 'production',
-  'uni-build': 'production'
-}

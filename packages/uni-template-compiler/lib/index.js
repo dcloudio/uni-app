@@ -18,6 +18,8 @@ const generateTemplate = require('./template/generate')
 
 const compilerModule = require('./module')
 
+const compilerAlipayModule = require('./module-alipay')
+
 const generateCodeFrame = require('./codeframe')
 
 module.exports = {
@@ -27,6 +29,10 @@ module.exports = {
     }
 
     (options.modules || (options.modules = [])).push(compilerModule)
+
+    if (options.mp.platform === 'mp-alipay') {
+      options.modules.push(compilerAlipayModule)
+    }
 
     const res = compile(source, Object.assign(options, {
       optimize: false
@@ -55,10 +61,18 @@ module.exports = {
     }
     // console.log(`function render(){${res.render}}`)
     const ast = parser.parse(`function render(){${res.render}}`)
+    let template = ''
 
-    res.render = generateScript(traverseScript(ast, state), state)
-
-    let template = generateTemplate(traverseTemplate(ast, state), state)
+    try {
+      res.render = generateScript(traverseScript(ast, state), state)
+      template = generateTemplate(traverseTemplate(ast, state), state)
+    } catch (e) {
+      console.error(e)
+      throw new Error('Compile failed at ' + options.resourcePath.replace(
+        path.extname(options.resourcePath),
+        '.vue'
+      ))
+    }
 
     res.specialMethods = state.options.specialMethods || new Set()
     delete state.options.specialMethods
@@ -100,14 +114,17 @@ at ${resourcePath}.vue:1`)
       }
       const filterTemplate = []
       options.mp.filterModules.forEach(name => {
-        const filterTag = options.filterTagName
-        const filterModule = options.filterModules[name]
-        if (filterModule.content) {
-          filterTemplate.push(`<${filterTag} module="${name}">
-${filterModule.content}
-</${filterTag}>`)
-        }
+        filterTemplate.push(
+          options.mp.platform.createFilterTag(
+            options.filterTagName,
+            options.filterModules[name]
+          )
+        )
       })
+
+      if (filterTemplate.length) {
+        template = filterTemplate.join('\n') + '\n' + template
+      }
 
       if (
         process.UNI_ENTRY[resourcePath] &&

@@ -43,7 +43,8 @@ export const todos = [
   'checkIsSoterEnrolledInDevice',
   'reportMonitor',
   'getLogManager',
-  'reportAnalytics'
+  'reportAnalytics',
+  'vibrate'
 ]
 export const canIUses = [
   'scanCode',

@@ -1,8 +1,7 @@
 const compiler = require('../lib')
-
 const res = compiler.compile(
   `
-<view @touchmove="a.touchmove">{{t.a}}{{t['a']}}{{t.a(b)}}{{t['a'](b)}}{{u.t.a(b)}}{{u.t.a}}</view>
+<button open-type="getPhoneNumber" @getphonenumber="getPhoneNumber">获取手机号</button>
     `, {
     resourcePath: '/User/fxy/Documents/test.wxml',
     mp: {

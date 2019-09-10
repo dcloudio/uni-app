@@ -44,7 +44,9 @@ const pagesJson2AppJson = {
               fromJson &&
               fromJson.nvue &&
               fromJson.nvue.pages &&
-              fromJson.nvue.pages[page.pagePath + '.html']
+              fromJson.nvue.pages.find(({
+                path
+              }) => path === (page.pagePath + '.html'))
             )
           ) {
             console.error(

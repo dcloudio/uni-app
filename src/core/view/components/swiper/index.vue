@@ -371,6 +371,23 @@ export default {
         slideFrame.style.transform = transform
       }
       this._viewportPosition = index
+      if (!this._transitionStart) {
+        if (index % 1 === 0) {
+          return
+        }
+        this._transitionStart = index
+      }
+      index -= Math.floor(this._transitionStart)
+      if (index <= -(this.items.length - 1)) {
+        index += this.items.length
+      } else if (index >= this.items.length) {
+        index -= this.items.length
+      }
+      index = this._transitionStart % 1 > 0.5 || this._transitionStart < 0 ? index - 1 : index
+      this.$trigger('transition', {}, {
+        dx: this.vertical ? 0 : index * slideFrame.offsetWidth,
+        dy: this.vertical ? index * slideFrame.offsetHeight : 0
+      })
     },
     _animateFrameFuncProto () {
       if (!this._animating) {
@@ -387,6 +404,7 @@ export default {
         this._updateViewport(toPos)
         this._animating = null
         this._requestedAnimation = false
+        this._transitionStart = null
         var item = this.items[this.currentSync]
         if (item) {
           this._itemReady(item, () => {

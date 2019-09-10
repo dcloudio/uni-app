@@ -231,7 +231,7 @@ const promiseInterceptor = {
 };
 
 const SYNC_API_RE =
-  /^\$|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
+  /^\$|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -639,9 +639,23 @@ const protocols = { // 需要做转换的 API 列表
   },
   scanCode: {
     name: 'scan',
-    args: {
-      onlyFromCamera: 'hideAlbum',
-      scanType: false
+    args (fromArgs) {
+      if (fromArgs.scanType === 'qrCode') {
+        fromArgs.type = 'qr';
+        return {
+          onlyFromCamera: 'hideAlbum'
+        }
+      } else if (fromArgs.scanType === 'barCode') {
+        fromArgs.type = 'bar';
+        return {
+          onlyFromCamera: 'hideAlbum'
+        }
+      } else {
+        return {
+          scanType: false,
+          onlyFromCamera: 'hideAlbum'
+        }
+      }
     },
     returnValue: {
       code: 'result'
@@ -1500,6 +1514,10 @@ function parseBaseApp (vm, {
   mocks,
   initRefs
 }) {
+  if (vm.$options.store) {
+    Vue.prototype.$store = vm.$options.store;
+  }
+
   Vue.prototype.mpHost = "mp-alipay";
 
   Vue.mixin({
@@ -1828,6 +1846,33 @@ function parseApp (vm) {
 
     }
   });
+
+  Vue.prototype.$onAliGetAuthorize = function onAliGetAuthorize (method, $event) {
+    my.getPhoneNumber({
+      success: (res) => {
+        $event.type = 'getphonenumber';
+        const response = JSON.parse(res.response).response;
+        if (response.code === '10000') { // success
+          $event.detail.errMsg = 'getPhoneNumber:ok';
+          $event.detail.encryptedData = res.response;
+        } else {
+          $event.detail.errMsg = 'getPhoneNumber:fail Error: ' + res.response;
+        }
+        this[method]($event);
+      },
+      fail: (res) => {
+        $event.type = 'getphonenumber';
+        $event.detail.errMsg = 'getPhoneNumber:fail';
+        this[method]($event);
+      }
+    });
+  };
+
+  Vue.prototype.$onAliAuthError = function $onAliAuthError (method, $event) {
+    $event.type = 'getphonenumber';
+    $event.detail.errMsg = 'getPhoneNumber:fail Error: ' + $event.detail.errorMessage;
+    this[method]($event);
+  };
 
   return parseBaseApp(vm, {
     mocks,

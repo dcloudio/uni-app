@@ -80,6 +80,7 @@ const PLATFORMS = {
     vue: '@dcloudio/vue-cli-plugin-uni/packages/h5-vue',
     compiler: false,
     megalo: false,
+    filterTag: 'wxs',
     subPackages: false,
     cssVars: {
       '--status-bar-height': '0px'
@@ -123,11 +124,15 @@ const PLATFORMS = {
       assetsDir
     }) {
       const files = ['hybrid/html']
+      let wxcomponents = []
       if (!process.env.UNI_USING_NATIVE) {
-        files.push('wxcomponents')
+        wxcomponents = getCopyOptions(['wxcomponents'], {
+          to: path.resolve(process.env.UNI_OUTPUT_TMP_DIR, 'wxcomponents')
+        })
       }
       return [
         ...getStaticCopyOptions(assetsDir),
+        ...wxcomponents,
         ...getCopyOptions(files)
       ]
     }
@@ -233,7 +238,7 @@ const PLATFORMS = {
     vue: megaloRuntime,
     compiler: megaloCompiler,
     megalo: 'alipay',
-    filterTag: 'import-sjs',
+    filterTag: 'sjs',
     subPackages: true,
     cssVars: {
       '--status-bar-height': '25px',
@@ -399,10 +404,22 @@ function devtoolModuleFilenameTemplate (info) {
     return `uni-app:///${filePath}`
   }
 }
+
+const NODE_MODULES_REGEX = /(\.\.\/)?node_modules/g
+
+function normalizeNodeModules (str) {
+  str = str.replace(NODE_MODULES_REGEX, 'node-modules')
+  if (process.env.UNI_PLATFORM === 'mp-alipay') {
+    str = str.replace('node-modules/@', 'node-modules/npm-scope-')
+  }
+  return str
+}
+
 module.exports = {
+  normalizeNodeModules,
   isInHBuilderX,
   isInHBuilderXAlpha,
-  runByHBuilderX: isInHBuilderX || !!process.env.UNI_HBUILDERX_PLUGINS,
+  runByHBuilderX: isInHBuilderX || fs.existsSync(path.resolve(process.env.UNI_HBUILDERX_PLUGINS || '', 'weapp-tools')),
   devtoolModuleFilenameTemplate,
   getFlexDirection (json) {
     let flexDir = 'column'
