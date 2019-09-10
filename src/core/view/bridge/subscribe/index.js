@@ -27,7 +27,7 @@ const passiveOptions = supportsPassive ? {
 function updateCssVar (vm) {
   if (uni.canIUse('css.var')) {
     const pageVm = vm.$parent.$parent
-    const windowTop = pageVm.showNavigationBar && pageVm.navigationBar.type !== 'transparent' ? (NAVBAR_HEIGHT +
+    const windowTop = pageVm.showNavigationBar && pageVm.navigationBar.type !== 'transparent' && pageVm.navigationBar.type !== 'alwaysTransparent' ? (NAVBAR_HEIGHT +
         'px')
       : '0px'
     const windowBottom = getApp().$children[0].showTabBar ? (TABBAR_HEIGHT + 'px') : '0px'
@@ -74,8 +74,8 @@ export default function initSubscribe (subscribe) {
       const enablePageReachBottom = hasLifecycleHook(vm.$options, 'onReachBottom')
       const onReachBottomDistance = pageVm.onReachBottomDistance
 
-      const enableTransparentTitleNView = isPlainObject(pageVm.titleNView) && pageVm.titleNView.type ===
-        'transparent'
+      const enableTransparentTitleNView = (isPlainObject(pageVm.titleNView) && pageVm.titleNView.type ===
+        'transparent') || (isPlainObject(pageVm.navigationBar) && pageVm.navigationBar.type === 'transparent')
 
       if (scrollListener) {
         document.removeEventListener('scroll', scrollListener)

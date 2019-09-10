@@ -17,7 +17,7 @@ export default function getWindowOffset () {
   const pages = getCurrentPages()
   if (pages.length) {
     const pageVm = pages[pages.length - 1].$parent.$parent
-    top = pageVm.showNavigationBar && pageVm.navigationBar.type !== 'transparent' ? NAVBAR_HEIGHT : 0
+    top = pageVm.showNavigationBar && (pageVm.navigationBar.type !== 'transparent' || pageVm.navigationBar.type !== 'alwaysTransparent') ? NAVBAR_HEIGHT : 0
   }
   const app = getApp()
   if (app) {

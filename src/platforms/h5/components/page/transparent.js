@@ -6,7 +6,7 @@ export default {
   mounted () {
     if (this.type === 'transparent') {
       const transparentElemStyle = this.$el.querySelector('.uni-page-head-transparent').style
-      const titleElem = this.$el.querySelector('.uni-page-head__title')
+      // const titleElem = this.$el.querySelector('.uni-page-head__title')
       const iconElems = this.$el.querySelectorAll('.uni-btn-icon')
       const iconElemsStyles = []
       const textColor = this.textColor
@@ -40,9 +40,10 @@ export default {
         }
         this._A = alpha
         // TODO 暂时仅处理背景色
-        if (titleElem) {
-          titleElem.style.opacity = alpha
-        }
+        // 对齐支付宝小程序，标题不透明渐变
+        // if (titleElem) {
+        //   titleElem.style.opacity = alpha
+        // }
         transparentElemStyle.backgroundColor = `rgba(${this._R},${this._G},${this._B},${alpha})`
         borderRadiusElemsStyles.forEach(function (borderRadiusElemStyle, index) {
           let oldColor = oldColors[index]
@@ -52,17 +53,31 @@ export default {
           borderRadiusElemStyle.backgroundColor = `rgba(${rgba})`
         })
       })
+    } else if (this.type === 'alwaysTransparent') {
+      const iconElems = this.$el.querySelectorAll('.uni-btn-icon')
+      const iconElemsStyles = []
+      for (let i = 0; i < iconElems.length; i++) {
+        iconElemsStyles.push(iconElems[i].style)
+      }
+      const borderRadiusElems = this.$el.querySelectorAll('.uni-page-head-btn')
+      const oldColors = []
+      const borderRadiusElemsStyles = []
+      for (let i = 0; i < borderRadiusElems.length; i++) {
+        let borderRadiusElem = borderRadiusElems[i]
+        oldColors.push(getComputedStyle(borderRadiusElem).backgroundColor)
+        borderRadiusElemsStyles.push(borderRadiusElem.style)
+      }
     }
   },
   computed: {
     color () {
-      return this.type === 'transparent' ? '#fff' : this.textColor
+      return this.type === 'transparent' || this.type === 'alwaysTransparent' ? '#fff' : this.textColor
     },
     offset () {
       return parseInt(this.coverage)
     },
     bgColor () {
-      if (this.type === 'transparent') {
+      if (this.type === 'transparent' || this.type === 'alwaysTransparent') {
         const {
           r,
           g,

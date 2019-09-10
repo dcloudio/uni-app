@@ -136,9 +136,19 @@ export default {
     titleImage: {
       type: String,
       default: ''
+    },
+    transparentTitle: {
+      type: String,
+      default: 'none'
     }
   },
   data () {
+    const titleNViewTypeList = {
+      'none': 'default',
+      'auto': 'transparent',
+      'always': 'alwaysTransparent'
+    }
+
     const navigationBar = mergeTitleNView({
       loading: false,
       backButton: !this.isQuit && !this.$route.meta.isQuit, // redirectTo,reLaunch时可能动态修改 meta.isQuit
@@ -147,7 +157,8 @@ export default {
       titleText: this.navigationBarTitleText,
       titleImage: this.titleImage,
       duration: '0',
-      timingFunc: ''
+      timingFunc: '',
+      type: titleNViewTypeList[this.transparentTitle]
     }, this.titleNView)
 
     const showNavigationBar = this.navigationStyle === 'default' && this.titleNView

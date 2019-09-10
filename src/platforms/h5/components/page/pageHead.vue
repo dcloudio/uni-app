@@ -36,7 +36,7 @@
         v-if="!searchInput"
         class="uni-page-head-bd">
         <div
-          :style="{fontSize:titleSize,opacity:type==='transparent'?0:1}"
+          :style="{fontSize:titleSize}"
           class="uni-page-head__title"
         >
           <i
@@ -96,7 +96,7 @@
       </div>
     </div>
     <div
-      v-if="type!=='transparent'"
+      v-if="type!=='transparent'&&type!=='alwaysTransparent'"
       class="uni-placeholder"/>
   </uni-page-head>
 </template>
@@ -277,7 +277,7 @@ uni-page-head .uni-page-head__title .uni-loading {
 
 uni-page-head .uni-page-head__title .uni-page-head__title_image {
   width: auto;
-  height: 20px;
+  height: 26px;
   vertical-align: middle;
 }
 </style>
@@ -335,7 +335,7 @@ export default {
     type: {
       default: 'default',
       validator (value) {
-        return ['default', 'transparent'].indexOf(value) !== -1
+        return ['default', 'transparent', 'alwaysTransparent'].indexOf(value) !== -1
       }
     },
     coverage: {
