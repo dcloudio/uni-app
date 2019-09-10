@@ -4683,7 +4683,7 @@ function postTransformComponentRoot (el) {
 
 /*  */
 
-function postTransformRef (el, options) {
+function postTransformRef (el) {
   if (el.ref) {
     addAttr(el, 'ref', el.ref);
     delete el.ref;

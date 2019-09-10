@@ -28,7 +28,7 @@ function getAppStyleCode(stringifyRequest) {
   if (!process.env.UNI_USING_NVUE_COMPILER) {
     return ''
   }
-  let code = 'App.appStyle = {}\n'
+  let code = 'Vue.prototype.__$appStyle__ = {}\n'
   let styles = []
   try {
     if (fs.existsSync(appVuePath)) {
@@ -37,7 +37,7 @@ function getAppStyleCode(stringifyRequest) {
   } catch (e) {}
   styles.forEach((style, index) => {
     code = code +
-      `Vue.prototype.__merge_style(require(${genStyleRequest(style,index,stringifyRequest)}).default,App.appStyle)\n`
+      `Vue.prototype.__merge_style(require(${genStyleRequest(style,index,stringifyRequest)}).default,Vue.prototype.__$appStyle__)\n`
   })
   return code
 }
@@ -51,22 +51,25 @@ module.exports = function(content) {
 
   if (this.resourceQuery) {
     const params = loaderUtils.parseQuery(this.resourceQuery)
-    if (params && params.page) {
-
-      const stringifyRequest = r => loaderUtils.stringifyRequest(loaderContext, r)
-
-      params.page = decodeURIComponent(params.page)
-      // import Vue from 'vue'是为了触发 vendor 合并
-      return `
-${statCode}
-import App from './${normalizePath(params.page)}.nvue?mpType=page'
-App.mpType = 'page'
-App.route = '${params.page}'
-App.el = '#root'
-${getAppStyleCode(stringifyRequest)}
-new Vue(App)
-`
+    if (params) {
+      if (params.page) {
+        params.page = decodeURIComponent(params.page)
+        // import Vue from 'vue'是为了触发 vendor 合并
+        return `
+        ${statCode}
+        import 'uni-app-style'
+        import App from './${normalizePath(params.page)}.nvue?mpType=page'
+        App.mpType = 'page'
+        App.route = '${params.page}'
+        App.el = '#root'
+        new Vue(App)
+        `
+      } else if (params.type === 'appStyle') {
+        const stringifyRequest = r => loaderUtils.stringifyRequest(loaderContext, r)
+        return `${getAppStyleCode(stringifyRequest)}`
+      }
     }
+
   }
   return statCode + content
 }
