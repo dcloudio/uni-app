@@ -86,7 +86,7 @@ editor 组件对应的 editorContext 实例，可通过 [uni.createSelectorQuery
 | fail | Function |  | 否 | 接口调用失败的回调函数 |
 | complete | Function |  | 否 | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
-# editorContext.setContents(OBJECT)
+## editorContext.setContents(OBJECT)
 
 初始化编辑器内容，hmlt和delta同时存在时仅delta生效
 
