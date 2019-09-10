@@ -2,7 +2,7 @@
   <uni-page-head :uni-page-head-type="type">
     <div
       :style="{transitionDuration:duration,transitionTimingFunction:timingFunc,backgroundColor:bgColor,color:textColor}"
-      :class="{'uni-page-head-transparent':type==='transparent'}"
+      :class="{'uni-page-head-transparent':type==='transparent','uni-page-head-titlePenetrate': titlePenetrate}"
       class="uni-page-head"
     >
       <div class="uni-page-head-hd">
@@ -97,6 +97,7 @@
     </div>
     <div
       v-if="type!=='transparent'&&type!=='float'"
+      :class="{'uni-placeholder-titlePenetrate': titlePenetrate}"
       class="uni-placeholder"/>
   </uni-page-head>
 </template>
@@ -122,6 +123,16 @@ uni-page-head .uni-page-head {
   transition-property: all;
 }
 
+uni-page-head .uni-page-head-titlePenetrate,
+uni-page-head .uni-page-head-titlePenetrate .uni-page-head-bd,
+uni-page-head .uni-page-head-titlePenetrate .uni-page-head-bd * {
+  pointer-events: none;
+}
+
+uni-page-head .uni-page-head-titlePenetrate *{
+  pointer-events: auto;
+}
+
 uni-page-head .uni-page-head.uni-page-head-transparent .uni-page-head-ft > div {
   justify-content: center;
 }
@@ -129,6 +140,10 @@ uni-page-head .uni-page-head.uni-page-head-transparent .uni-page-head-ft > div {
 uni-page-head .uni-page-head ~ .uni-placeholder {
   width: 100%;
   height: 44px;
+}
+
+uni-page-head .uni-placeholder-titlePenetrate{
+  pointer-events: none;
 }
 
 uni-page-head .uni-page-head * {
@@ -363,6 +378,10 @@ export default {
       validator (value) {
         return ['none', 'auto', 'always'].indexOf(value) !== -1
       }
+    },
+    titlePenetrate: {
+      type: Boolean,
+      default: false
     }
   },
   data () {

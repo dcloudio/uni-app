@@ -140,6 +140,10 @@ export default {
     transparentTitle: {
       type: String,
       default: 'none'
+    },
+    titlePenetrate: {
+      type: String,
+      default: 'NO'
     }
   },
   data () {
@@ -147,6 +151,11 @@ export default {
       'none': 'default',
       'auto': 'transparent',
       'always': 'float'
+    }
+
+    const yesNoParseList = {
+      'YES': true,
+      'NO': false
     }
 
     const navigationBar = mergeTitleNView({
@@ -159,7 +168,8 @@ export default {
       duration: '0',
       timingFunc: '',
       type: titleNViewTypeList[this.transparentTitle],
-      transparentTitle: this.transparentTitle
+      transparentTitle: this.transparentTitle,
+      titlePenetrate: yesNoParseList[this.titlePenetrate]
     }, this.titleNView)
 
     const showNavigationBar = this.navigationStyle === 'default' && this.titleNView
