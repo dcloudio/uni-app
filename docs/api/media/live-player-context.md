@@ -1,13 +1,13 @@
 ### uni.createLivePlayerContext(livePlayerId, this)
-创建 live-player 上下文 livePlayerContext 对象。
+创建 live-player 上下文 livePlayerContext 对象。注意是直播的播放而不是推流。
 
 **平台差异说明**
 
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|
-|见下|x|√|x|√|x|
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|见下|x|√|x|√|x|√|
 
-App平台的直播，不使用此API，而使用`plus.video.createLivePusher`，[详见](https://ask.dcloud.net.cn/article/13416)
+App平台的直播播放，不使用此API，而直接使用video的API。
 
 **参数说明**
 
