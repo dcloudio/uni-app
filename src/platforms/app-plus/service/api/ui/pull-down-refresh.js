@@ -5,7 +5,11 @@ import {
 let webview
 
 export function setPullDownRefreshPageId (pullDownRefreshWebview) {
-  webview = pullDownRefreshWebview
+  if (typeof pullDownRefreshWebview === 'number') {
+    webview = plus.webview.getWebviewById(String(pullDownRefreshWebview))
+  } else {
+    webview = pullDownRefreshWebview
+  }
 }
 
 export function startPullDownRefresh () {
