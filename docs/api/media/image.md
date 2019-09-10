@@ -19,6 +19,7 @@ App端如需要更丰富的相机拍照API（如直接调用前置摄像头）�
 **Tips**
 
 - count 值在 H5 平台的表现，基于浏览器本身的规范。目前测试的结果来看，只能限制单选/多选，并不能限制数量。并且，在实际的手机浏览器很少有能够支持多选的。
+- 可以通过用户授权API来判断用户是否给应用授予相册或摄像头的访问权限[https://uniapp.dcloud.io/api/other/authorize](https://uniapp.dcloud.io/api/other/authorize)
 
 **注：文件的临时路径，在应用本次启动期间可以正常使用，如需持久保存，需在主动调用 [uni.saveFile](api/file/file?id=savefile)，在应用下次启动时才能访问得到。**
 
@@ -210,6 +211,10 @@ uni.chooseImage({
 |:-|:-|:-|
 |errMsg|String|调用结果|
 
+**注意**
+
+- 可以通过用户授权API来判断用户是否给应用授予相册的访问权限[https://uniapp.dcloud.io/api/other/authorize](https://uniapp.dcloud.io/api/other/authorize)
+
 **示例代码：**
 
 ```javascript
@@ -268,11 +273,11 @@ uni.compressImage({
 
 # wx.chooseMessageFile(OBJECT)
 
-从客户端会话选择文件。
+从微信聊天会话中选择文件。
 
 **平台差异说明**
 
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|
 |x|x|√|x|x|x|
 
