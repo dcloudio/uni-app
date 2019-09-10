@@ -2,15 +2,20 @@
 
 实时音视频录制，也称直播推流。
 
-- 微信小程序：[规范文档](https://developers.weixin.qq.com/miniprogram/dev/component/live-pusher.html)
-- App平台：nvue文件下也支持live-pusher组件，API与微信相同。如果是vue文件，则需要单独编写条件编译代码，使用plus.video.LivePusher，[业务指南](https://ask.dcloud.net.cn/article/13416)、[规范文档](http://www.html5plus.org/doc/zh_cn/video.html#plus.video.LivePusher)
-
-
 **平台差异说明**
 
 |App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|√|x|√|x|x|x|x|
+|√(仅nvue)|x|√|x|x|x|x|
+
+如app平台的vue页面需要支持直播推流，需编写条件编译代码，使用 `plus.video.LivePusher`，[业务指南](https://ask.dcloud.net.cn/article/13416)、[规范文档](http://www.html5plus.org/doc/zh_cn/video.html#plus.video.LivePusher)
+
+使用nvue做直播，比使用vue的优势有：
+1. nvue可一套代码直接编译到App和微信
+2. nvue的cover-view比vue的cover-view更强大，在视频上绘制元素更容易。如果只考虑App端的话，不用cover-view，任意组件都可以覆盖live-pusher组件，因为nvue没有层级问题。
+3. 若需要视频内嵌在swiper里上下滑动（类抖音、映客首页模式），App端只有nvue才能实现
+当然nvue相比vue的坏处是css写法受限，如果只开发微信小程序，不考虑App，那么使用vue页面也是一样的。
+
 
 **参数说明**
 
@@ -118,5 +123,5 @@ whiteness|Number|0|否|美白，取值范围 0-9（iOS取值范围为1） ，0 �
 
 **注意**
 
-* live-pusher 是原生组件，在小程序端层级高于前端组件，请勿在 scroll-view、swiper、picker-view、movable-view 中使用，需使用cover-view覆盖。在App端的nvue文件中，live-pusher没有这类限制。
+* live-pusher 是原生组件，在小程序端层级高于前端组件，需使用cover-view覆盖。在低版本微信中，live-pusher无法内嵌于 scroll-view、swiper、picker-view、movable-view 中。在App端的nvue文件中，live-pusher没有这类限制。
 * App平台：使用 `<live-pusher/>` 组件，打包 App 时必须勾选 manifest.json->App 模块权限配置->LivePusher(直播推流) 模块。

@@ -52,10 +52,19 @@ App平台的直播播放，不使用此API，而直接使用video的API。
 
 **平台差异说明**
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|
-|见下|x|√|x|x|x|
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|见下|x|√|x|x|x|x|
 
+- app-nvue 平台 2.2.5(alpha)+ 支持 uni.createLivePusherContext(livePusherId, this)
+- app-nvue 平台 2.2.5(alpha)- 需要同时设置组件属性id和ref ``<live-pusher id="livepusher1" ref="livepusher1"></live-pusher>``，或者直接使用 ref，例如 ``this.$refs.livepusher1``
+- app-vue 平台，需要编写条件编译代码，使用 `plus.video.LivePusher`，[业务指南](https://ask.dcloud.net.cn/article/13416)、[规范文档](http://www.html5plus.org/doc/zh_cn/video.html#plus.video.LivePusher)
+
+使用nvue做直播，比使用vue的优势有：
+1. nvue可一套代码直接编译到App和微信
+2. nvue的cover-view比vue的cover-view更强大，在视频上绘制元素更容易。如果只考虑App端的话，不用cover-view，任意组件都可以覆盖live-pusher组件
+3. 若需要视频内嵌在swiper里上下滑动（类抖音、映客首页模式），App端只有nvue才能实现
+当然nvue相比vue的坏处是css写法受限，如果只开发微信小程序，不考虑App，那么使用vue页面也是一样的。
 
 **参数说明**
 
@@ -69,10 +78,6 @@ enable-camera|Boolean|true|否|开启摄像头。
 auto-focus|Boolean|true|否|自动聚集。
 beauty|Number|0|否|美颜，取值范围 0-9（iOS取值范围为1） ，0 表示关闭。
 whiteness|Number|0|否|美白，取值范围 0-9（iOS取值范围为1） ，0 表示关闭。
-
-**注意：**
-- app-nvue 平台 2.2.5(alpha)+ 支持 uni.createLivePusherContext(livePusherId, this)
-- app-nvue 平台 2.2.5(alpha)- 需要同时设置组件属性id和ref ``<live-pusher id="livepusher1" ref="livepusher1"></live-pusher>``，或者直接使用 ref，例如 ``this.$refs.livepusher1``
 
 #### API#### start(callback)
 > 开始推流

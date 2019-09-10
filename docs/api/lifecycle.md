@@ -25,17 +25,17 @@
 |onReady|监听页面初次渲染完成。注意如果渲染速度快，会在页面进入动画完成前触发|||
 |onHide|监听页面隐藏|||
 |onUnload|监听页面卸载|||
-|onResize|监听窗口尺寸变化|5+App、微信小程序||
+|onResize|监听窗口尺寸变化|App、微信小程序||
 |onPullDownRefresh|监听用户下拉动作，一般用于下拉刷新，参考[示例](api/ui/pulldown)|||
 |onReachBottom|页面滚动到底部的事件（不是scroll-view滚到底），常用于上拉加载下一页数据。如使用scroll-view导致页面级没有滚动，则触底事件不会被触发|||
-|onTabItemTap|点击 tab 时触发，参数为Object，具体见下方注意事项|微信小程序、百度小程序、H5、5+App（自定义组件模式）||
+|onTabItemTap|点击 tab 时触发，参数为Object，具体见下方注意事项|微信小程序、百度小程序、H5、App（自定义组件模式）||
 |onShareAppMessage|用户点击右上角分享|微信小程序、百度小程序、头条小程序、支付宝小程序||
 |onPageScroll|监听页面滚动，参数为Object|||
-|onNavigationBarButtonTap|监听原生标题栏按钮点击事件，参数为Object|5+ App、H5||
-|onBackPress|监听页面返回，返回 event = {from:backbutton、 navigateBack} ，backbutton 表示来源是左上角返回按钮或 android 返回键；navigateBack表示来源是 uni.navigateBack ；详细说明及使用：[onBackPress 详解](http://ask.dcloud.net.cn/article/35120)|5+App、H5||
-|onNavigationBarSearchInputChanged|监听原生标题栏搜索输入框输入内容变化事件|5+App、H5|1.6.0|
-|onNavigationBarSearchInputConfirmed|监听原生标题栏搜索输入框搜索事件，用户点击软键盘上的“搜索”按钮时触发。|5+App、H5|1.6.0|
-|onNavigationBarSearchInputClicked|监听原生标题栏搜索输入框点击事件|5+App、H5|1.6.0|
+|onNavigationBarButtonTap|监听原生标题栏按钮点击事件，参数为Object|App、H5||
+|onBackPress|监听页面返回，返回 event = {from:backbutton、 navigateBack} ，backbutton 表示来源是左上角返回按钮或 android 返回键；navigateBack表示来源是 uni.navigateBack ；详细说明及使用：[onBackPress 详解](https://ask.dcloud.net.cn/article/35120)|App、H5||
+|onNavigationBarSearchInputChanged|监听原生标题栏搜索输入框输入内容变化事件|App、H5|1.6.0|
+|onNavigationBarSearchInputConfirmed|监听原生标题栏搜索输入框搜索事件，用户点击软键盘上的“搜索”按钮时触发。|App、H5|1.6.0|
+|onNavigationBarSearchInputClicked|监听原生标题栏搜索输入框点击事件|App、H5|1.6.0|
 
 ``onPageScroll`` 参数说明：
 
@@ -80,4 +80,4 @@ export default {
 
 **注意**
 
-- nvue 页面支持的生命周期参考：[nvue 生命周期介绍](/use-weex?id=生命周期)。
+- nvue 页面的weex编译模式支持的生命周期，[参考](/use-weex?id=生命周期)。

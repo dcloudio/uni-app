@@ -64,7 +64,7 @@
   * [电量](api/system/batteryInfo.md)
   * [NFC](api/system/nfc.md)
   * [设备方向](api/system/deviceMotion.md)
-* [Worker](api/worder.md)
+* [Worker](api/worker.md)
 * 键盘
   * [uni.hideKeyboard](/api/key?id=hidekeyboard)
   * [uni.onKeyboardHeightChange](/api/key?id=onkeyboardheightchange)
