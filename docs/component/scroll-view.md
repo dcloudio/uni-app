@@ -97,7 +97,7 @@ export default {
  
 **Tips**
 
-- 5+APP和小程序中，请勿在 scroll-view 中使用 map、video 等原生组件。小程序中 scroll-view 中也不要使用 canvas、textarea 原生组件。更新：微信基础库2.4.4起支持了原生组件在 scroll-view、swiper、movable-view 中的使用
+- APP-vue和小程序中，请勿在 scroll-view 中使用 map、video 等原生组件。小程序中 scroll-view 中也不要使用 canvas、textarea 原生组件。更新：微信基础库2.4.4起支持了原生组件在 scroll-view、swiper、movable-view 中的使用。app-nvue无此限制。
 - scroll-view 不适合放长列表，有性能问题。长列表滚动和下拉刷新，应该使用原生导航栏搭配页面级的滚动和下拉刷新实现。
 - scroll-into-view 的优先级高于 scroll-top。
 - 使用 scroll-view 会和原生下拉刷新造成冲突，所以在使用 scroll-view 的地方不建议使用下拉刷新，也不建议监听 onPullDownRefresh 事件。
