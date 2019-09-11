@@ -193,6 +193,9 @@ module.exports = function () {
     externals: {
       'vue': 'Vue'
     },
+    performance: {
+      hints: false
+    },
     optimization: {
       namedModules: false
     },

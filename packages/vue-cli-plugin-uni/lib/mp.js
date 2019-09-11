@@ -105,6 +105,9 @@ module.exports = {
         globalObject: process.env.UNI_PLATFORM === 'mp-alipay' ? 'my' : 'global',
         sourceMapFilename: '../.sourcemap/' + process.env.UNI_PLATFORM + '/[name].js.map'
       },
+      performance: {
+        hints: false
+      },
       resolve: {
         extensions: ['.nvue'],
         alias: { // 仅 mp-weixin
