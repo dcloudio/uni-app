@@ -95,9 +95,11 @@ export default function parseNodes (nodes, parentNode) {
       if (isPlainObject(attrs)) {
         const tagAttrs = TAGS[tagName] || []
         Object.keys(attrs).forEach(function (name) {
-          const value = attrs[name]
+          let value = attrs[name]
           switch (name) {
             case 'class':
+              /* eslint-disable no-fallthrough */
+              Array.isArray(value) && (value = value.join(' '))
             case 'style':
               elem.setAttribute(name, value)
               break
