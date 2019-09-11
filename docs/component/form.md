@@ -16,7 +16,7 @@
 ```html
 <template>
 	<view>
-		<view class="uni-padding-wrap uni-common-mt">
+		<view>
 			<form @submit="formSubmit" @reset="formReset">
 				<view class="uni-form-item uni-column">
 					<view class="title">switch</view>
@@ -28,10 +28,10 @@
 					<view class="title">radio</view>
 					<radio-group name="radio">
 						<label>
-							<radio value="radio1" />选项一
+							<radio value="radio1" /><text>选项一</text>
 						</label>
 						<label>
-							<radio value="radio2" />选项二
+							<radio value="radio2" /><text>选项二</text>
 						</label>
 					</radio-group>
 				</view>
@@ -39,10 +39,10 @@
 					<view class="title">checkbox</view>
 					<checkbox-group name="checkbox">
 						<label>
-							<checkbox value="checkbox1" />选项一
+							<checkbox value="checkbox1" /><text>选项一</text>
 						</label>
 						<label>
-							<checkbox value="checkbox2" />选项二
+							<checkbox value="checkbox2" /><text>选项二</text>
 						</label>
 					</checkbox-group>
 				</view>
@@ -55,45 +55,43 @@
 					<input class="uni-input" name="input" placeholder="这是一个输入框" />
 				</view>
 				<view class="uni-btn-v">
-					<button formType="submit">Submit</button>
-					<button type="default" formType="reset">Reset</button>
+					<button form-type="submit">Submit</button>
+					<button type="default" form-type="reset">Reset</button>
 				</view>
 			</form>
 		</view>
 	</view>
 </template>
+<script>
+	export default {
+		data() {
+			return {
+			}
+		},
+		methods: {
+			formSubmit: function(e) {
+				console.log('form发生了submit事件，携带数据为：' + JSON.stringify(e.detail.value))
+				var formdata = e.detail.value
+				uni.showModal({
+					content: '表单数据内容：' + JSON.stringify(formdata),
+					showCancel: false
+				});
+			},
+			formReset: function(e) {
+				console.log('清空数据')
+			}
+		}
+	}
+</script>
+
+<style>
+	.uni-form-item .title {
+		padding: 20rpx 0;
+	}
+</style>
+
 ```
  
-```javascript
-export default {
-    data() {
-        return {
-            pickerHidden: true,
-            chosen: ''
-        }
-    },
-    methods: {
-        pickerConfirm: function(e) {
-            this.pickerHidden = true
-            this.chosen = e.target.value
-        },
-        pickerCancel: function(e) {
-            this.pickerHidden = true
-        },
-        pickerShow: function(e) {
-            this.pickerHidden = false
-        },
-        formSubmit: function(e) {
-            console.log('form发生了submit事件，携带数据为：' + JSON.stringify(e.detail.value))
-        },
-        formReset: function(e) {
-            console.log('清空数据')
-            this.chosen = ''
-        }
-    }
-}
-```
-
 ![uniapp](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/img/form.png?t=201857)
 
 **tips**
