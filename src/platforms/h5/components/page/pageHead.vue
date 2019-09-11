@@ -2,7 +2,7 @@
   <uni-page-head :uni-page-head-type="type">
     <div
       :style="{transitionDuration:duration,transitionTimingFunction:timingFunc,backgroundColor:bgColor,color:textColor}"
-      :class="{'uni-page-head-transparent':type==='transparent'}"
+      :class="{'uni-page-head-transparent':type==='transparent','uni-page-head-titlePenetrate': titlePenetrate}"
       class="uni-page-head"
     >
       <div class="uni-page-head-hd">
@@ -36,7 +36,7 @@
         v-if="!searchInput"
         class="uni-page-head-bd">
         <div
-          :style="{fontSize:titleSize,opacity:type==='transparent'?0:1}"
+          :style="{fontSize:titleSize}"
           class="uni-page-head__title"
         >
           <i
@@ -96,7 +96,8 @@
       </div>
     </div>
     <div
-      v-if="type!=='transparent'"
+      v-if="type!=='transparent'&&type!=='float'"
+      :class="{'uni-placeholder-titlePenetrate': titlePenetrate}"
       class="uni-placeholder"/>
   </uni-page-head>
 </template>
@@ -122,6 +123,16 @@ uni-page-head .uni-page-head {
   transition-property: all;
 }
 
+uni-page-head .uni-page-head-titlePenetrate,
+uni-page-head .uni-page-head-titlePenetrate .uni-page-head-bd,
+uni-page-head .uni-page-head-titlePenetrate .uni-page-head-bd * {
+  pointer-events: none;
+}
+
+uni-page-head .uni-page-head-titlePenetrate *{
+  pointer-events: auto;
+}
+
 uni-page-head .uni-page-head.uni-page-head-transparent .uni-page-head-ft > div {
   justify-content: center;
 }
@@ -129,6 +140,10 @@ uni-page-head .uni-page-head.uni-page-head-transparent .uni-page-head-ft > div {
 uni-page-head .uni-page-head ~ .uni-placeholder {
   width: 100%;
   height: 44px;
+}
+
+uni-page-head .uni-placeholder-titlePenetrate{
+  pointer-events: none;
 }
 
 uni-page-head .uni-page-head * {
@@ -277,7 +292,7 @@ uni-page-head .uni-page-head__title .uni-loading {
 
 uni-page-head .uni-page-head__title .uni-page-head__title_image {
   width: auto;
-  height: 20px;
+  height: 26px;
   vertical-align: middle;
 }
 </style>
@@ -335,7 +350,7 @@ export default {
     type: {
       default: 'default',
       validator (value) {
-        return ['default', 'transparent'].indexOf(value) !== -1
+        return ['default', 'transparent', 'float'].indexOf(value) !== -1
       }
     },
     coverage: {
@@ -357,6 +372,16 @@ export default {
     titleImage: {
       type: String,
       default: ''
+    },
+    transparentTitle: {
+      default: 'none',
+      validator (value) {
+        return ['none', 'auto', 'always'].indexOf(value) !== -1
+      }
+    },
+    titlePenetrate: {
+      type: Boolean,
+      default: false
     }
   },
   data () {

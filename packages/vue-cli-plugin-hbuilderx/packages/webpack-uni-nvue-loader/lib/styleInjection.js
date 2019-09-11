@@ -86,21 +86,21 @@ module.exports = function genStyleInjectionCode (
       }
     })
   } else {
-    styleInjectionCode = `if(!this.$options.style){
-    this.$options.style = {}
+    styleInjectionCode = `if(!this.options.style){
+    this.options.style = {}
 }
-if(this.__merge_style && this.$root && this.$root.$options.appStyle){
-  this.__merge_style(this.$root.$options.appStyle)
+if(Vue.prototype.__merge_style && Vue.prototype.__$appStyle__){
+  Vue.prototype.__merge_style(Vue.prototype.__$appStyle__, this.options.style)
 }
 `
     styles.forEach((style, i) => {
       if (isNotEmptyStyle(style)) {
         const request = genStyleRequest(style, i)
         styleInjectionCode += (
-          `if(this.__merge_style){
-              this.__merge_style(require(${request}).default)
+          `if(Vue.prototype.__merge_style){
+              Vue.prototype.__merge_style(require(${request}).default, this.options.style)
           }else{
-              Object.assign(this.$options.style,require(${request}).default)
+              Object.assign(this.options.style,require(${request}).default)
           }\n`//fixed by xxxxxx 简单处理，与 weex-vue-loader 保持一致
           //`var style${i} = require(${request})\n` +
           //`if (style${i}.__inject__) style${i}.__inject__(context)\n`
@@ -119,8 +119,7 @@ ${styleImportsCode}
 ${hasCSSModules && needsHotReload ? `var cssModules = {}` : ``}
 ${needsHotReload ? `var disposed = false` : ``}
 
-function injectStyles (context) {
-  ${needsHotReload ? `if (disposed) return` : ``}
+function injectStyles () {
   ${styleInjectionCode}
 }
 
