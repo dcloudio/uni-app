@@ -190,9 +190,10 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
     if (runByHBuilderX) { // 使用 HBuilderX 中运行时，调整错误日志输出
       const WebpackErrorsPlugin = require('../packages/webpack-errors-plugin')
       const onErrors = require('../util/on-errors')
+      const onWarnings = require('../util/on-warnings')
       plugins.push(new WebpackErrorsPlugin({
         onErrors,
-        onWarnings: onErrors
+        onWarnings
       }))
     }
 

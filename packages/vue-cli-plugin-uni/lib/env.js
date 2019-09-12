@@ -148,16 +148,9 @@ if (
     platformOptions.uniStatistics || {}
   )
 
-  if (
-    uniStatistics.enable !== false &&
-    (
-      process.env.NODE_ENV === 'production' ||
-      uniStatistics.enable === 'development'
-    )
-  ) {
-    if (process.UNI_STAT_CONFIG.appid) {
-      process.env.UNI_USING_STAT = true
-    } else {
+  if (uniStatistics.enable !== false) {
+    process.env.UNI_USING_STAT = true
+    if (!process.UNI_STAT_CONFIG.appid && process.env.NODE_ENV === 'production') {
       console.log()
       console.warn(`当前应用未配置Appid，无法使用uni统计，详情参考：https://ask.dcloud.net.cn/article/36303`)
       console.log()
