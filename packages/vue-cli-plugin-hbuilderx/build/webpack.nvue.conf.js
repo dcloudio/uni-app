@@ -15,6 +15,7 @@ const WebpackErrorsPlugin = require('@dcloudio/vue-cli-plugin-uni/packages/webpa
 const WebpackUniMPPlugin = require('@dcloudio/webpack-uni-mp-loader/lib/plugin/index-new')
 
 const onErrors = require('@dcloudio/vue-cli-plugin-uni/util/on-errors')
+const onWarnings = require('@dcloudio/vue-cli-plugin-uni/util/on-warnings')
 
 const cssLoaders = require('./css-loader.conf')
 const vueLoaderOptions = require('./vue-loader.conf')
@@ -65,7 +66,8 @@ const plugins = [
   }),
   new webpack.ProvidePlugin(provide),
   new WebpackErrorsPlugin({
-    onErrors
+    onErrors,
+    onWarnings
   }),
   new WebpackAppPlusNVuePlugin()
 ]
