@@ -30,8 +30,6 @@
             "alwaysShowBeforeRender":true
         },
         "popGesture": "close",
-        "launchwebview": {
-            "render": "always"
-        }
+        "launchwebview": {}
     }
 }
