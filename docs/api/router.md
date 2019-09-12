@@ -176,8 +176,13 @@ Tips：
 * 页面底部的 ``tabBar`` 由页面决定，即只要是定义为 ``tabBar`` 的页面，底部都有 ``tabBar``。
 * 不能在 ```App.vue``` 里面进行页面跳转。
 
+
+**参考事项**
+- 页面路由拦截和管理，插件市场有很多封装好的工具类，搜索[路由](https://ext.dcloud.net.cn/search?q=%E8%B7%AF%E7%94%B1)
+
+
 #### 窗口动画@animation
-> 本API仅App端vue页面支持。小程序自身不支持自定义动画。app下纯nvue项目也暂不支持（固定为pop-in动画）。H5的窗体动画可使用常规单页动画处理方案，见[H5下单页动画示例](https://ext.dcloud.net.cn/plugin?id=659&tdsourcetag=s_pctim_aiomsg)
+> 本API仅App支持。小程序自身不支持自定义动画。H5的窗体动画可使用常规单页动画处理方案，见[H5下单页动画示例](https://ext.dcloud.net.cn/plugin?id=659&tdsourcetag=s_pctim_aiomsg)
 
 窗口的显示/关闭动画效果，支持在 API、组件、pages.json 中配置，优先级为：`API = 组件 > pages.json`。
 
@@ -228,10 +233,10 @@ pages.json 中配置的是窗口显示的动画
 |slide-in-left|slide-out-left|新窗体从左侧进入|
 |slide-in-top|slide-out-top|新窗体从顶部进入|
 |slide-in-bottom|slide-out-bottom|新窗体从底部进入|
+|pop-in|pop-out|新窗体从左侧进入，且老窗体被挤压而出|
 |fade-in|fade-out|新窗体从透明到不透明逐渐显示|
 |zoom-out|zoom-in|新窗体从小到大缩放显示|
 |zoom-fade-out|zoom-fade-in|新窗体从小到大逐渐放大并且从透明到不透明逐渐显示|
-|pop-in|pop-out|新窗体从左侧进入，且老窗体被挤压而出|
 |none|none|无动画|
 
 详细的窗口动画说明，请参考：
@@ -239,5 +244,7 @@ pages.json 中配置的是窗口显示的动画
 - 窗口显示的动画：[AnimationTypeShow](http://www.html5plus.org/doc/zh_cn/webview.html#plus.webview.AnimationTypeShow)
 - 窗口关闭的动画：[AnimationTypeClose](http://www.html5plus.org/doc/zh_cn/webview.html#plus.webview.AnimationTypeClose)
 
-**参考事项**
-- 页面路由拦截和管理，插件市场有很多封装好的工具类，搜索[路由](https://ext.dcloud.net.cn/search?q=%E8%B7%AF%E7%94%B1)
+**注意**
+- 纯nvue项目（render为native），窗体动画默认进入动画为popin，返回为pop-out。如果想修改动画类型，只能通过uni.navigateTo API修改，在组件或pages.json里配置动画类型无效
+- 非纯nvue项目，App端窗体动画，默认进入动画为slider-in-right，默认返回动画为pop-out
+
