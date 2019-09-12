@@ -38,6 +38,9 @@ function hasOwn (obj, key) {
 }
 
 function parseStyle (style = {}, root = '') {
+  // TODO pages.json 触发了两次，需要排查
+  style = JSON.parse(JSON.stringify(style))
+
   let platformStyle = {}
 
   Object.keys(style).forEach(name => {
