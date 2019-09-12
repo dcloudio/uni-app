@@ -7,6 +7,7 @@
     "lint:cli": "eslint  --fix --config package.json --ignore-path .eslintignore packages/uni-cli-shared packages/uni-template-compiler \"packages/vue-cli-*/**/*.js\" \"packages/webpack-uni-*/**/*.js\"",
     "dev:h5": "npm run lint && cross-env NODE_ENV=production UNI_WATCH=true UNI_PLATFORM=h5 node build/build.js",
     "build:h5": "npm run lint && cross-env NODE_ENV=production UNI_WATCH=false UNI_PLATFORM=h5 node build/build.js",
+    "build:h5:ui": "cross-env NODE_ENV=production UNI_WATCH=false UNI_PLATFORM=h5 UNI_UI=true node build/build.js",
     "build:app-plus": "cross-env UNI_PLATFORM=app-plus rollup -c build/rollup.config.mp.js",
     "build:app:all": "npm run lint && npm run build:app:nvue && npm run build:app:legacy",
     "build:app:nvue": "cross-env UNI_PLATFORM=app-plus-nvue rollup -c build/rollup.config.app.js",

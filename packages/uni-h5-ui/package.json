@@ -1,0 +1,11 @@
+{
+  "name": "@dcloudio/uni-h5-ui",
+  "version": "0.0.1",
+  "description": "uni-app h5 ui",
+  "main": "dist/index.umd.min.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "fxy060608",
+  "license": "Apache-2.0"
+}

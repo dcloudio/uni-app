@@ -6,9 +6,15 @@ const pkgPath = resolve('package.json')
 
 const webpackConfig = require('./webpack.config.js')
 
+let outputDir = resolve('./packages/uni-' + process.env.UNI_PLATFORM + '/dist')
+
+if (process.env.UNI_PLATFORM === 'h5' && process.env.UNI_UI === 'true') {
+  outputDir = resolve('./packages/uni-' + process.env.UNI_PLATFORM + '-ui/dist')
+}
+
 module.exports = {
   publicPath: '/',
-  outputDir: resolve('./packages/uni-' + process.env.UNI_PLATFORM + '/dist'),
+  outputDir,
   lintOnSave: true, // or error
   runtimeCompiler: false,
   transpileDependencies: [],
