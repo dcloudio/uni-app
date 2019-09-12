@@ -595,13 +595,6 @@ App.vue
 ## nvue 里不支持的 uni-app API
 `nvue` 支持大部分 uni-app API ，下面只列举目前还不支持的 API 。
 
-
-**直播推流**
-
-|API|说明|
-|:-|:-|
-|uni.createLivePusherContext()|创建并返回 livePusher 上下文|
-
 **动画**
 
 |API|说明|
@@ -616,13 +609,7 @@ App.vue
 
 **绘画**
 
-|API|说明|
-|:-|:-|
-|uni.createCanvasContext()|创建 canvas 绘图上下文|
-|uni.canvasToTempFilePath()|把当前画布指定区域的内容导出生成指定大小的图片，并返回文件路径|
-|uni.canvasGetImageData()|返回一个数组，用来描述 canvas 区域隐含的像素数据|
-|uni.canvasPutImageData()|将像素数据绘制到画布的方法|
-
+canvas API使用，详见canvas文档。
 
 **节点信息**
 
