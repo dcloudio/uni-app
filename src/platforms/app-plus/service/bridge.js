@@ -1,5 +1,6 @@
 import {
-  decode
+  decode,
+  encode
 } from 'base64-arraybuffer'
 
 export {
@@ -69,4 +70,8 @@ export function isTabBarPage (path = '') {
 
 export function base64ToArrayBuffer (data) {
   return decode(data)
+}
+
+export function arrayBufferToBase64 (data) {
+  return encode(data)
 }
