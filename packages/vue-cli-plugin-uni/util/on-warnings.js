@@ -4,7 +4,7 @@ module.exports = function (errors) {
     runByHBuilderX
   } = require('@dcloudio/uni-cli-shared')
   if (runByHBuilderX) {
-    console.log(stringify(errors))
+    console.log('WARNING: ' + stringify(errors))
   } else {
     console.warn(stringify(errors))
   }
