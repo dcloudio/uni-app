@@ -1,8 +1,8 @@
 import { version } from '../package.json';
 
 const STAT_VERSION = version; 
-const STAT_URL = 'https://tongji.dcloud.net.cn/uni/stat'; 
-const STAT_H5_URL = 'https://tongji.dcloud.net.cn/uni/stat.gif'; 
+const STAT_URL = 'https://uniapp.dcloud.io/uni/stat'; 
+const STAT_H5_URL = 'https://uniapp.dcloud.io/uni/stat.gif'; 
 const PAGE_PVER_TIME = 1800; 
 const APP_PVER_TIME = 300; 
 const OPERATING_TIME = 10;
@@ -863,10 +863,14 @@ const lifecycle = {
 
 function main() {
   const Vue = require('vue');
-  (Vue.default || Vue).mixin(lifecycle);
-  uni.report = function(type, options) {
-    stat.sendEvent(type, options);
-  };
+  if (process.env.NODE_ENV === 'development') {
+    uni.report = function(type, options) {};
+  }else{
+    (Vue.default || Vue).mixin(lifecycle);
+    uni.report = function(type, options) {
+      stat.sendEvent(type, options);
+    };
+  }
 }
 
 main();
