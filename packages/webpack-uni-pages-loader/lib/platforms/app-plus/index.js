@@ -177,6 +177,17 @@ module.exports = function (pagesJson, userManifestJson) {
   // 允许内联播放视频
   manifestJson.plus.allowsInlineMediaPlayback = true
 
+  const addRenderAlways = function () {
+    // "render": "always"
+    if (!manifestJson.plus.launchwebview) {
+      manifestJson.plus.launchwebview = {
+        'render': 'always'
+      }
+    } else if (!manifestJson.plus.launchwebview.render) {
+      manifestJson.plus.launchwebview.render = 'always'
+    }
+  }
+
   if (appJson.tabBar && appJson.tabBar.list && appJson.tabBar.list.length) {
     // 安全区配置 仅包含 tabBar 的时候才配置
     if (!manifestJson.plus.safearea) {
@@ -187,15 +198,11 @@ module.exports = function (pagesJson, userManifestJson) {
         }
       }
     }
-  } else {
-    // "render": "always"
-    if (!manifestJson.plus.launchwebview) {
-      manifestJson.plus.launchwebview = {
-        'render': 'always'
-      }
-    } else if (!manifestJson.plus.launchwebview.render) {
-      manifestJson.plus.launchwebview.render = 'always'
+    if (!process.env.UNI_USING_COMPONENTS) { // 非自定义组件模式下，仍旧添加 render always
+      addRenderAlways()
     }
+  } else {
+    addRenderAlways()
   }
 
   let flexDir = false
