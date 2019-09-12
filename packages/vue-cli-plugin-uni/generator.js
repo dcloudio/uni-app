@@ -50,7 +50,7 @@ module.exports = (api, options, rootOptions) => {
         'babel-plugin-import': '^1.11.0'
       },
       browserslist: [
-        'Android >= 4.4',
+        'Android >= 4',
         'ios >= 8'
       ]
     }
