@@ -1,6 +1,10 @@
 const fs = require('fs')
 const path = require('path')
 
+const {
+  sassLoaderVersion
+} = require('@dcloudio/uni-cli-shared/lib/scss')
+
 module.exports = function initOptions (options) {
   const {
     getPlatformScss,
@@ -55,14 +59,17 @@ module.exports = function initOptions (options) {
   let sassData = isSass ? getPlatformSass() : getPlatformScss()
 
   if (isSass) {
-    sassData = `${sassData}
-  @import "@/uni.sass"`
+    sassData = `@import "@/uni.sass"`
   } else if (isScss) {
     sassData = `${sassData}
   @import "@/uni.scss";`
   }
 
-  options.css.loaderOptions.sass.data = sassData
+  if (sassLoaderVersion < 8) {
+    options.css.loaderOptions.sass.data = sassData
+  } else {
+    options.css.loaderOptions.sass.prependData = sassData
+  }
 
   let userPostcssConfigPath = path.resolve(process.env.UNI_INPUT_DIR, 'postcss.config.js')
   if (fs.existsSync(userPostcssConfigPath)) {

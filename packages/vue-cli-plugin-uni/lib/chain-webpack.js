@@ -1,5 +1,9 @@
 const path = require('path')
 
+const {
+  sassLoaderVersion
+} = require('@dcloudio/uni-cli-shared/lib/scss')
+
 function resolve (dir) {
   return path.resolve(__dirname, '..', dir)
 }
@@ -58,6 +62,22 @@ module.exports = function chainWebpack (platformOptions) {
         }
       })
     })
+
+    if (sassLoaderVersion >= 8) { // check indentedSyntax
+      // vue cli 3 and sass-loader 8
+      cssTypes.forEach(type => {
+        webpackConfig.module.rule('sass').oneOf(type).use('sass-loader').tap(options => {
+          if (options.indentedSyntax) {
+            if (!options.sassOptions) {
+              options.sassOptions = {}
+            }
+            options.sassOptions.indentedSyntax = true
+            delete options.indentedSyntax
+          }
+          return options
+        })
+      })
+    }
 
     platformOptions.chainWebpack(webpackConfig)
     // define

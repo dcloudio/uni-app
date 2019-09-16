@@ -1,8 +1,15 @@
+const fs = require('fs')
+const path = require('path')
+
 const {
-  // jsPreprocessOptions,
+  getPlatformScss,
+  getPlatformSass,
   nvueCssPreprocessOptions
-  // htmlPreprocessOptions
 } = require('@dcloudio/uni-cli-shared')
+
+const {
+  sassLoaderVersion
+} = require('@dcloudio/uni-cli-shared/lib/scss')
 
 const nvueStyleLoader = {
   loader: '@dcloudio/vue-cli-plugin-hbuilderx/packages/webpack-uni-nvue-loader/lib/style'
@@ -25,11 +32,41 @@ const postcssLoader = {
   }
 }
 
+// sass 全局变量
+const isSass = fs.existsSync(path.resolve(process.env.UNI_INPUT_DIR, 'uni.sass'))
+const isScss = fs.existsSync(path.resolve(process.env.UNI_INPUT_DIR, 'uni.scss'))
+let sassData = isSass ? getPlatformSass() : getPlatformScss()
+
+if (isSass) {
+  sassData = `@import "@/uni.sass"`
+} else if (isScss) {
+  sassData = `${sassData}
+  @import "@/uni.scss";`
+}
+
+const scssLoader = {
+  loader: 'sass-loader',
+  options: {
+    sourceMap: false
+  }
+}
+
 const sassLoader = {
   loader: 'sass-loader',
   options: {
-    sourceMap: false,
-    data: ''
+    sourceMap: false
+  }
+}
+
+if (sassLoaderVersion < 8) {
+  scssLoader.options.data = sassData
+  sassLoader.options.data = sassData
+  sassLoader.options.indentedSyntax = true
+} else {
+  scssLoader.options.prependData = sassData
+  sassLoader.options.prependData = sassData
+  sassLoader.options.sassOptions = {
+    indentedSyntax: true
   }
 }
 
@@ -74,7 +111,7 @@ module.exports = [{
   oneOf: createOneOf()
 }, {
   test: /\.scss$/,
-  oneOf: createOneOf(sassLoader)
+  oneOf: createOneOf(scssLoader)
 }, {
   test: /\.sass$/,
   oneOf: createOneOf(sassLoader)
