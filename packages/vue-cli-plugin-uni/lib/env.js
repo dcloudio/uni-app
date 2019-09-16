@@ -170,6 +170,7 @@ if (process.env.UNI_USING_COMPONENTS) { // 是否启用分包优化
   }
 }
 
+const warningMsg = `uni-app将于2019年11月1日起停止支持非自定义组件模式 [详情](https://ask.dcloud.net.cn/article/36385)`
 // 输出编译器版本等信息
 if (process.env.UNI_PLATFORM !== 'h5') {
   try {
@@ -189,14 +190,22 @@ if (process.env.UNI_PLATFORM !== 'h5') {
       }).length) {
         console.log(info)
         console.log(modeText)
-
+        if (!platformOptions.usingComponents) {
+          console.log(warningMsg)
+        }
         console.log('当前nvue编译模式：' + (isNVueCompiler ? 'uni-app' : 'weex') +
           ' 。编译模式差异见：https://ask.dcloud.net.cn/article/36074')
       } else {
         console.log(info + '，' + modeText)
+        if (!platformOptions.usingComponents) {
+          console.log(warningMsg)
+        }
       }
     } else {
       console.log(modeText)
+      if (!platformOptions.usingComponents) {
+        console.log(warningMsg)
+      }
     }
   } catch (e) {}
 }
