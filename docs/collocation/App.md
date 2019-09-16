@@ -33,15 +33,13 @@
 ```
 
 **注意**
-- 应用生命周期仅可在`App.vue`中监听，在其它页面监听无效。
+- **应用生命周期仅可在`App.vue`中监听，在其它页面监听无效**。
 - onlaunch里进行页面跳转，如遇白屏报错，请参考[https://ask.dcloud.net.cn/article/35942](https://ask.dcloud.net.cn/article/35942)
 
 ### globalData
 小程序有globalData机制，这套机制在uni-app里也可以使用，全端通用。
 
-**以下是 App.vue 的相关配置：**
-
-在`App.vue`文件里定义globalData，如下：
+**以下是 App.vue 中定义globalData的相关配置：**
 
 ```html
 <script>  
@@ -56,11 +54,15 @@
 js中操作globalData的方式如下：
 `getApp().globalData.text = 'test'`
 
-如果需要把globalData的数据绑定到页面上，可在页面的onShow声明周期里进行变量重赋值。HBuilderX 2.0.3起，nvue页面在`uni-app`编译模式下，也支持onShow。
+如果需要把globalData的数据绑定到页面上，可在页面的onShow页面生命周期里进行变量重赋值。HBuilderX 2.0.3起，nvue页面在`uni-app`编译模式下，也支持onShow。
 
-weex编译模式不支持onShow，但熟悉5+的话，可利用监听webview的addEventListener show事件实现onShow效果。
+weex编译模式中使用globalData的话，由于weex生命周期不支持onShow，但熟悉5+的话，可利用监听webview的addEventListener show事件实现onShow效果，或者直接使用weex生命周期中的beforeCreate。
 
-**优化样式渲染速度**
+### 全局样式
+在`App.vue`中，可以一些定义全局通用样式，例如需要加一个通用的背景色，首屏页面渲染的动画等都可以写在App.vue中。
 
-如果页面背景是深色，在vue页面中可能会发生新窗体刚开始动画时是灰白色背景，动画结束时才变为深色背景，造成闪屏。这是因为webview的背景生效太慢的问题。此时需将样式写在 `App.vue` 里，可以加速页面样式渲染速度。`App.vue` 里面的样式是全局样式，每次新开页面会优先加载 `App.vue` 里面的样式，然后加载普通 vue 页面的样式。另外nvue页面不存在此问题，也可以更改为nvue页面。
+**例如：**
 
+现在有个页面背景是深色在vue页面中，可能会发生新窗体刚开始动画时是灰白色背景，动画结束时才变为深色背景，造成闪屏。这种情况就可以使用全局样式来解决。
+- 造成这种现象的原因是因为webview的背景生效太慢。此时可将样式写在 `App.vue` 里，来加速页面样式的渲染速度。因为`App.vue` 里面的样式是全局样式，每次新开页面会优先加载 `App.vue` 里面的样式，然后加载普通 vue 页面的样式去覆盖`App.vue` 里面的样式。
+- 另外nvue页面不存在此问题，也可以更改为nvue页面。
