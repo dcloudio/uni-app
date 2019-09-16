@@ -1,10 +1,10 @@
 import { version } from '../package.json';
 
-const STAT_VERSION = version; 
-const STAT_URL = 'https://uniapp.dcloud.io/uni/stat'; 
-const STAT_H5_URL = 'https://uniapp.dcloud.io/uni/stat.gif'; 
-const PAGE_PVER_TIME = 1800; 
-const APP_PVER_TIME = 300; 
+const STAT_VERSION = version;
+const STAT_URL = 'https://tongji.dcloud.io/uni/stat';
+const STAT_H5_URL = 'https://tongji.dcloud.io/uni/stat.gif'; 
+const PAGE_PVER_TIME = 1800;
+const APP_PVER_TIME = 300;
 const OPERATING_TIME = 10;
 
 const UUID_KEY = '__DC_STAT_UUID';
