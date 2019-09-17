@@ -8,6 +8,8 @@
 ##### 微信小程序
 支持指纹和人脸识别两部分，[规范详情](https://developers.weixin.qq.com/miniprogram/dev/api/wx.startSoterAuthentication.html)
 
+如果使用腾讯云的SDK，可参考[网友分享](https://segmentfault.com/a/1190000020102601)
+
 ##### App平台
 - 指纹：html5plus已经内置指纹API，[规范详情](http://www.html5plus.org/doc/zh_cn/fingerprint.html)。在插件市场有一个封装好的微信和App的指纹识别插件：[https://ext.dcloud.net.cn/plugin?id=358](https://ext.dcloud.net.cn/plugin?id=358)
 - 人脸识别：app引擎未内置，需要安装原生插件，详见[插件市场人脸识别插件](https://ext.dcloud.net.cn/search?q=%E4%BA%BA%E8%84%B8%E8%AF%86%E5%88%AB)
