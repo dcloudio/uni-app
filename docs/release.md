@@ -2,10 +2,13 @@
 ======================================
 #### 2.2.7.20190916-alpha
 
+* 【重要】App平台 优化 不显示的Tab页面，释放渲染内存占用，提升窗体动画和页面滚动的平滑度
+* 【重要】uni统计 优化 统计接口上报性能，已启用uni统计的历史项目，请在小程序后台request安全域名中新增（不是替换）：tongji.dcloud.io
 * 修复 兼容sass-loader 8.0.0版本 [#776](https://github.com/dcloudio/uni-app/issues/776)
 * App平台 新增 nvue 中支持 uni.scss
-* App平台 修复 setNavigationBarTitle不生效的BUG
-* 【重要】uni统计 优化 统计接口上报性能，已启用uni统计的历史项目，尽早在小程序后台request安全域名中新增 tongji.dcloud.io 
+* App平台 修复 setNavigationBarTitle不生效的Bug
+* hello uni-app 优化 cover-view 组件示例(App端使用nvue实现)，支持在视频全屏界面覆盖遮罩物
+* hello uni-app 优化 video 组件示例，新增播放、暂停、设置倍速等能力演示
 
 #### 2.2.6.20190914-alpha
 
