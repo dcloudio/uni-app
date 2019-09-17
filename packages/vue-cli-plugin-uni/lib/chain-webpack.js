@@ -91,5 +91,8 @@ module.exports = function chainWebpack (platformOptions) {
       webpackConfig.plugins.delete('progress')
       webpackConfig.plugins.delete('friendly-errors')
     }
+    if (process.env.BUILD_ENV === 'ali-ide') {
+      webpackConfig.plugins.delete('progress')
+    }
   }
 }
