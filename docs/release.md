@@ -1,5 +1,54 @@
 # uni-app 更新日志
 ======================================
+#### 2.2.7.20190916-alpha
+* 修复 Mac ios13真机运行 提示mdb缺少某些依赖库的Bug
+* 【uni-app插件】
+  + 修复 兼容sass-loader 8.0.0版本 [#776](https://github.com/dcloudio/uni-app/issues/776)
+  + App平台 新增 nvue 中支持 uni.scss
+  + App平台 修复 setNavigationBarTitle不生效的BUG
+  + 【重要】uni统计 优化 统计接口上报性能，已启用uni统计的历史项目，尽早在小程序后台request安全域名中新增 tongji.dcloud.io 
+* 【5+App插件】
+  + Android平台 修复 uni-app自定义组件模式下websocket连接报some error occur错误的Bug [详情](https://ask.dcloud.net.cn/question/78789)
+  + Android平台 修复 nvue页面中input标签设置adjust-position属性不生效，及KeyboardHeightChange事件不触发的Bug [详情](https://ask.dcloud.net.cn/question/78796)
+  + iOS平台 新增 创建本地消息（plus.push.createMessage）支持设置标题（title）和副标题（subtitle） [详情](https://ask.dcloud.net.cn/question/78475)
+  + iOS平台 修复 蓝牙（Bluetooth）开始搜索后不停止直接关闭页面可能会引起应用崩溃的Bug
+
+#### 2.2.6.20190914-alpha
+* 新增 Windows 程序关闭前，提示是否创建桌面快捷方式
+* 新增 代码提示 支持支付宝小程序数据、更新微信小程序最新数据。在uni-app项目中自动加载，在其他项目中，手动在状态栏的代码提示库中选择
+* 修复 HTML文件中javascript字符串多行显示时着色不对的Bug
+* 修复 javascript模板字符串在酷黑主题下着色不对的Bug
+* 新增 真机运行 支持iOS13
+* 新增 真机运行 nvue文件支持差量同步，提升修改后界面刷新速度
+* 修复 真机运行 iOS模拟器 nvue文件同步后界面不刷新的Bug
+* 【uni-app插件】
+  + 【重要】 App平台 优化使用Tab时应用的内存占用，提升窗体动画和页面滚动的平滑度（自定义组件模式）
+  + 【重要】 公告：非自定义组件模式，将于11月1日起，停止支持。请开发者尽快升级
+  + 新增 编译时增加警告信息（不影响运行）
+  + 修复 静态资源过大时编译报错的 Bug
+  + 修复 部分样式编译时未自动增加 webkit 前缀的 Bug [#769](https://github.com/dcloudio/uni-app/issues/769)
+  + App平台/H5平台 新增 支持导航栏透明配置（transparentTitle） [详情](https://uniapp.dcloud.io/collocation/pages?id=style)
+  + App平台/H5平台 修复 input、textarea 组件禁用状态黑色文字在 iOS 颜色变浅的 Bug
+  + App平台 新增 导航栏支持配置图片（titleImage） [详情](https://uniapp.dcloud.io/collocation/pages?id=style)
+  + App平台 新增 nvue 环境支持 recycle-list 组件 [详情](https://uniapp.dcloud.io/component/recycle-list)
+  + App平台 新增 nvue 环境支持 picker-view 组件
+  + App平台 修复 nvue 环境 movable-area 组件手势和滚动冲突的 Bug
+  + App平台 优化 websocket 支持创建多个连接，支持收发 ArrayBuffer 类型数据
+  + App平台 修复 键盘高度变化事件不生效的 Bug
+  + App平台 修复 页面中 web-view 组件的页面加载完成之前标题栏会显示 null 的 Bug
+  + H5平台 新增 支持导航栏点击穿透配置（titlePenetrate） [详情](https://uniapp.dcloud.io/collocation/pages?id=style)
+  + H5平台 修复 rich-text 内部节点包含多个 class 时渲染不正确的 Bug [#756](https://github.com/dcloudio/uni-app/issues/756)
+  + uni统计 运行测试时不再上报数据，仅发行后才报数
+  + uni统计 修复预览模式自定义统计（uni.report）报错的问题
+* 【5+App插件】
+  + 【重要】Android平台 优化 窗体动画popin/popout的效率，Android6+加入老窗体透明alpha效果（同时注意此时动画时长设置不再生效）
+  + Android平台 修复 nvue页面中video标签设置control属性为false时，未播放状态下仍然显示控制栏的Bug
+  + iOS平台 更新 个推&UniPush推送SDK（2.4.1.0）适配iOS13
+  + iOS平台 修复 Webview窗口使用WKWebview内核时overrideUrlLoading方法无效的Bug [详情](https://ask.dcloud.net.cn/question/78173)
+  + iOS平台 修复 直播推流（LivePusher）控件设置视频模式（mode）属性和宽高比（aspect）属性可能不生效的Bug
+  + iOS平台 修复 nvue页面中input组件设置adjust-position属性值为false无效的Bug [详情](https://ask.dcloud.net.cn/question/78472)
+  + iOS平台 修复 nvue页面中webSocket模块设置多个协议（protocol）导致连接服务器失败的Bug
+  + iOS平台 修复 nvue页面中bindingx在uni-app编译模式下拖拽组件时偏移系数不正确的Bug
 
 #### 2.2.5.20190907-alpha
 * 【重要】新增 nvue 页面支持 vuex 的使用 [详情](https://uniapp.dcloud.io/use-weex?id=vue-%e5%92%8c-nvue-%e5%85%b1%e4%ba%ab%e7%9a%84%e5%8f%98%e9%87%8f%e5%92%8c%e6%95%b0%e6%8d%ae)
