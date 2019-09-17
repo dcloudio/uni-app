@@ -3,6 +3,11 @@
   "version": "0.0.1",
   "description": "uni-app h5 ui",
   "main": "dist/index.umd.min.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/uni-h5-ui"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

@@ -3,6 +3,11 @@
   "version": "0.9.538",
   "description": "uni-app plugin for vue-cli 3",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/vue-cli-plugin-uni"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

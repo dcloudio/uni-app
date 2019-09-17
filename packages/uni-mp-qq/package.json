@@ -1,12 +1,17 @@
 {
-	"name": "@dcloudio/uni-mp-qq",
-	"version": "0.0.112",
-	"description": "uni-app mp-qq",
-	"main": "dist/index.js",
-	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
-	},
-	"author": "fxy060608",
-	"license": "Apache-2.0",
-	"gitHead": "08ea04b669e93f0db3acb2dfa38138298edd5789"
+  "name": "@dcloudio/uni-mp-qq",
+  "version": "0.0.112",
+  "description": "uni-app mp-qq",
+  "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/uni-mp-qq"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "fxy060608",
+  "license": "Apache-2.0",
+  "gitHead": "08ea04b669e93f0db3acb2dfa38138298edd5789"
 }

@@ -3,6 +3,11 @@
   "version": "0.0.113",
   "description": "",
   "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/uni-stat"
+  },
   "scripts": {
     "dev": "NODE_ENV=development rollup -w -c rollup.config.js",
     "build": "NODE_ENV=production rollup -c rollup.config.js"
