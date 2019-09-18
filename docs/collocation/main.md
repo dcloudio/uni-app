@@ -18,3 +18,7 @@ app.$mount() //挂载Vue实例
 也可以引用`vuex`，使用`Vue.use`引用插件，使用`Vue.prototype`添加全局变量，使用`Vue.component`注册全局组件。
 
 不过无法使用`vue-router`，路由须在`pages.json`中进行配置。
+
+
+**注意**
+- nvue 暂不支持在 main.js 注册全局组件
