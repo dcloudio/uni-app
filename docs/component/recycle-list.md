@@ -14,6 +14,7 @@ app端nvue专用组件。
 
 **注意**
 - `<cell-slot>` 包含自定义组件时，在 Android 上有性能问题
+- recycle-list 是区域滚动，不会触发页面滚动，无法触发pages.json配置的下拉刷新、页面触底onReachBottomDistance、titleNView的transparent透明渐变。
 
 
 属性|说明
