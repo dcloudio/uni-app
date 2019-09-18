@@ -29,7 +29,7 @@ process.UNI_LIBRARIES = process.UNI_LIBRARIES || ['@dcloudio/uni-ui']
 const {
   isSupportSubPackages,
   runByHBuilderX,
-  isInHBuilderXAlpha,
+  // isInHBuilderXAlpha,
   getPagesJson,
   getManifestJson
 } = require('@dcloudio/uni-cli-shared')
@@ -65,12 +65,12 @@ process.UNI_STAT_CONFIG = {
   appid: manifestJsonObj.appid
 }
 
-// fixed by hxy alpha 版默认启用新的框架
-if (isInHBuilderXAlpha) {
-  if (!platformOptions.hasOwnProperty('usingComponents')) {
-    platformOptions.usingComponents = true
-  }
+// 默认启用 自定义组件模式
+// if (isInHBuilderXAlpha) {
+if (!platformOptions.hasOwnProperty('usingComponents')) {
+  platformOptions.usingComponents = true
 }
+// }
 
 if (process.env.UNI_PLATFORM === 'h5') {
   const optimization = platformOptions.optimization
