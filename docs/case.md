@@ -1,6 +1,6 @@
-uni-app编译到App时，使用了DCloud的5+App引擎，该引擎跨iOS和Android，拥有众多案例，上线5年来产生几十万个App，有2亿手机用户在使用基于5+引擎开发的应用。详见[https://dcloud.io/case/](https://dcloud.io/case/)
+uni-app编译到App时，使用了DCloud的5+App引擎，该引擎跨iOS和Android，拥有众多案例，包括中国邮政、中国工商、湖北银行、360等，上线5年来产生几十万个App，有2亿手机用户在使用基于5+引擎开发的应用。详见[https://dcloud.io/case/](https://dcloud.io/case/)
 
-uni-app已经有几十万开发者，创建了几十万个项目，是开发者数量和案例最丰富的多端开发框架。
+uni-app已经有几十万开发者，是开发者数量和案例最丰富的多端开发框架。
 我们相信还有更多优秀案例，没有被我们采集到，欢迎大家到[项目案例征集](//github.com/dcloudio/uni-app/issues/6)提交。
 
 ### 官方示例
