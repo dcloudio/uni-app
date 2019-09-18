@@ -1,4 +1,4 @@
-uni-app编译到App时，使用了DCloud的5+App引擎，该引擎跨iOS和Android，拥有众多案例，上线4年来产生几十万个App，有2亿手机用户在使用基于5+引擎开发的应用。详见[https://dcloud.io/case/](https://dcloud.io/case/)
+uni-app编译到App时，使用了DCloud的5+App引擎，该引擎跨iOS和Android，拥有众多案例，上线5年来产生几十万个App，有2亿手机用户在使用基于5+引擎开发的应用。详见[https://dcloud.io/case/](https://dcloud.io/case/)
 
 uni-app已经有几十万开发者，创建了几十万个项目，是开发者数量和案例最丰富的多端开发框架。
 我们相信还有更多优秀案例，没有被我们采集到，欢迎大家到[项目案例征集](//github.com/dcloudio/uni-app/issues/6)提交。
@@ -163,13 +163,15 @@ uni-app已经有几十万开发者，创建了几十万个项目，是开发者�
 
 **浙江ETC：**微信小程序搜索 “浙江ETC”、支付宝小程序搜索 “浙江ETC”、[H5](https://issue.zjetc.cn/)
 
+**中国银联云闪付：** App部分页面使用uni-app制作
+
 **拉卡拉收款宝：** App部分页面使用uni-app制作
 
 **香橙：** 餐馆SaaS服务，手机点餐、下单、排队叫号、营销推广。[官网](http://ivcvc.com)
 
-**波比英语课堂：**幼儿英语启蒙神器培养国际宝宝。[App、小程序通用链接](//m3w.cn/bbyykt)
+**波比英语课堂：**幼儿英语启蒙神器培养国际宝宝。[App、小程序通用链接](http://m3w.cn/bbyykt)
 
-**课呱呱：**在线学习好工作。[App、小程序、H5通用链接](//m3w.cn/__uni__b19209a)
+**课呱呱：**在线学习好工作。[App、小程序、H5通用链接](http://m3w.cn/__uni__b19209a)
 
 **桂聘：** 广西区域招聘，随时随地找工作，[Android和iOS](http://www.guipin.com/jihui/)
 
