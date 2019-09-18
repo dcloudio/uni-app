@@ -100,7 +100,7 @@ export default {
 - APP-vue和小程序中，请勿在 scroll-view 中使用 map、video 等原生组件。小程序中 scroll-view 中也不要使用 canvas、textarea 原生组件。更新：微信基础库2.4.4起支持了原生组件在 scroll-view、swiper、movable-view 中的使用。app-nvue无此限制。
 - scroll-view 不适合放长列表，有性能问题。长列表滚动和下拉刷新，应该使用原生导航栏搭配页面级的滚动和下拉刷新实现。包括在app-nvue页面，长列表应该使用list而不是scroll-view
 - scroll-into-view 的优先级高于 scroll-top。
-- 使用 scroll-view 会和原生下拉刷新造成冲突，所以在使用 scroll-view 的地方不建议使用下拉刷新，也不建议监听 onPullDownRefresh 事件。
-- 若要使用下拉刷新，请使用页面的滚动，而不是 scroll-view 。插件市场有前端模拟的下拉刷新，但性能不佳。
+- scroll-view是区域滚动，不会触发页面滚动，无法触发pages.json配置的下拉刷新、页面触底onReachBottomDistance、titleNView的transparent透明渐变。
+- 若要使用下拉刷新，建议使用页面的滚动，而不是 scroll-view 。插件市场有前端模拟的下拉刷新，但性能不佳。
 - 如果遇到scroll-top、scroll-left属性设置不生效的问题参考：[组件属性设置不生效解决办法](/use?id=%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98)
 - scroll-view的滚动条设置，可通过css的-webkit-scrollbar自定义，包括隐藏滚动条。（nvue无此css）
