@@ -737,7 +737,6 @@ export default {
 - 现阶段 nvue 的定位是 vue 的补充。在 App 平台实现一些 vue 上无法实现或性能有问题的场景。
 - nvue 的各组件在安卓端默认是透明的，如果不设置background-color，可能会导致出现重影的问题。
 - 在 App.vue 中定义的全局js变量不会在 nvue 页面生效。globalData是生效的。
-- nvue 不支持 vue 里的 vuex
 - nvue 切换横竖屏时可能导致样式出现问题，建议有 nvue 的页面锁定手机方向。
 - 不能在 style 中引入字体文件，nvue 中字体图标的使用参考：[weex 加载自定义字体](https://weex.apache.org/zh/docs/modules/dom.html#addrule)。
 - 目前不支持在 nvue 页面使用 typescript/ts。
