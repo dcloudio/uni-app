@@ -1,12 +1,17 @@
 {
-	"name": "@dcloudio/vue-cli-plugin-uni-optimize",
-	"version": "2.0.0-22420190823021",
-	"description": "uni-app optimize plugin for vue-cli 3",
-	"main": "index.js",
-	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
-	},
-	"author": "fxy060608",
-	"license": "Apache-2.0",
-	"gitHead": "921f9aa0175c6fbd7d7d0b896bfb3d90bc0320ab"
+  "name": "@dcloudio/vue-cli-plugin-uni-optimize",
+  "version": "0.1.9",
+  "description": "uni-app optimize plugin for vue-cli 3",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/vue-cli-plugin-uni-optimize"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "fxy060608",
+  "license": "Apache-2.0",
+  "gitHead": "08ea04b669e93f0db3acb2dfa38138298edd5789"
 }

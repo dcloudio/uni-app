@@ -1,12 +1,17 @@
 {
-	"name": "@dcloudio/uni-app-plus",
-	"version": "2.0.0-22420190823021",
-	"description": "uni-app app-plus",
-	"main": "dist/index.js",
-	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
-	},
-	"author": "fxy060608",
-	"license": "Apache-2.0",
-	"gitHead": "921f9aa0175c6fbd7d7d0b896bfb3d90bc0320ab"
+  "name": "@dcloudio/uni-app-plus",
+  "version": "0.0.253",
+  "description": "uni-app app-plus",
+  "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/uni-app-plus"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "fxy060608",
+  "license": "Apache-2.0",
+  "gitHead": "08ea04b669e93f0db3acb2dfa38138298edd5789"
 }
