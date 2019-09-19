@@ -1,3 +1,10 @@
+const semver = require('semver')
+
+let sassLoaderVersion
+try {
+  sassLoaderVersion = semver.major(require('sass-loader/package.json').version)
+} catch (e) {}
+
 const SCSS =
   `
 $uni-color-primary: #007aff;
@@ -100,7 +107,9 @@ $uni-font-size-subtitle: 36rpx
 $uni-color-paragraph: #3F536E // 文章段落颜色
 $uni-font-size-paragraph: 30rpx
 `
+
 module.exports = {
   SCSS,
-  SASS
+  SASS,
+  sassLoaderVersion
 }

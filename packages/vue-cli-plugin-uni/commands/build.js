@@ -54,9 +54,11 @@ async function build (args, api, options) {
     stopSpinner
   } = require('@vue/cli-shared-utils')
 
+  const runByAliIde = process.env.BUILD_ENV === 'ali-ide'
+
   log()
 
-  if (!runByHBuilderX) {
+  if (!runByHBuilderX && !runByAliIde) {
     logWithSpinner(`开始编译当前项目至 ${process.env.UNI_PLATFORM} 平台...`)
   }
 
@@ -107,7 +109,7 @@ async function build (args, api, options) {
 
   return new Promise((resolve, reject) => {
     webpack(webpackConfigs, (err, stats) => {
-      if (!runByHBuilderX) {
+      if (!runByHBuilderX && !runByAliIde) {
         stopSpinner(false)
       }
       if (err) {

@@ -340,7 +340,8 @@ uni-textarea[auto-height] .uni-textarea-textarea {
   resize: none;
   background: none;
   color: inherit;
-  opacity: inherit;
+  opacity: 1;
+  -webkit-text-fill-color: currentcolor;
   font: inherit;
   line-height: inherit;
   letter-spacing: inherit;

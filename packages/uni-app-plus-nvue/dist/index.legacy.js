@@ -10,18 +10,99 @@ try {
   window.addEventListener('test-passive', null, opts);
 } catch (e) {}
 
+const _toString = Object.prototype.toString;
 const hasOwnProperty = Object.prototype.hasOwnProperty;
 
 function isFn (fn) {
   return typeof fn === 'function'
 }
 
+function isPlainObject (obj) {
+  return _toString.call(obj) === '[object Object]'
+}
+
 function hasOwn (obj, key) {
   return hasOwnProperty.call(obj, key)
 }
 
+const HOOKS = [
+  'invoke',
+  'success',
+  'fail',
+  'complete',
+  'returnValue'
+];
+
 const globalInterceptors = {};
 const scopedInterceptors = {};
+
+function mergeHook (parentVal, childVal) {
+  const res = childVal
+    ? parentVal
+      ? parentVal.concat(childVal)
+      : Array.isArray(childVal)
+        ? childVal : [childVal]
+    : parentVal;
+  return res
+    ? dedupeHooks(res)
+    : res
+}
+
+function dedupeHooks (hooks) {
+  const res = [];
+  for (let i = 0; i < hooks.length; i++) {
+    if (res.indexOf(hooks[i]) === -1) {
+      res.push(hooks[i]);
+    }
+  }
+  return res
+}
+
+function removeHook (hooks, hook) {
+  const index = hooks.indexOf(hook);
+  if (index !== -1) {
+    hooks.splice(index, 1);
+  }
+}
+
+function mergeInterceptorHook (interceptor, option) {
+  Object.keys(option).forEach(hook => {
+    if (HOOKS.indexOf(hook) !== -1 && isFn(option[hook])) {
+      interceptor[hook] = mergeHook(interceptor[hook], option[hook]);
+    }
+  });
+}
+
+function removeInterceptorHook (interceptor, option) {
+  if (!interceptor || !option) {
+    return
+  }
+  Object.keys(option).forEach(hook => {
+    if (HOOKS.indexOf(hook) !== -1 && isFn(option[hook])) {
+      removeHook(interceptor[hook], option[hook]);
+    }
+  });
+}
+
+function addInterceptor (method, option) {
+  if (typeof method === 'string' && isPlainObject(option)) {
+    mergeInterceptorHook(scopedInterceptors[method] || (scopedInterceptors[method] = {}), option);
+  } else if (isPlainObject(method)) {
+    mergeInterceptorHook(globalInterceptors, method);
+  }
+}
+
+function removeInterceptor (method, option) {
+  if (typeof method === 'string') {
+    if (isPlainObject(option)) {
+      removeInterceptorHook(scopedInterceptors[method], option);
+    } else {
+      delete scopedInterceptors[method];
+    }
+  } else if (isPlainObject(method)) {
+    removeInterceptorHook(globalInterceptors, method);
+  }
+}
 
 function wrapperHook (hook) {
   return function (data) {
@@ -120,6 +201,19 @@ function invokeApi (method, api, options, ...params) {
   }
   return api(options, ...params)
 }
+
+const promiseInterceptor = {
+  returnValue (res) {
+    if (!isPromise(res)) {
+      return res
+    }
+    return res.then(res => {
+      return res[1]
+    }).catch(res => {
+      return res[0]
+    })
+  }
+};
 
 const SYNC_API_RE =
   /^\$|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
@@ -667,6 +761,10 @@ function createLivePusherContext (id, vm) {
   return new LivePusherContext(id, elm)
 }
 
+const interceptors = {
+  promiseInterceptor
+};
+
 
 
 var apis = /*#__PURE__*/Object.freeze({
@@ -677,7 +775,10 @@ var apis = /*#__PURE__*/Object.freeze({
   $emit: $emit,
   createMapContext: createMapContext,
   createVideoContext: createVideoContext,
-  createLivePusherContext: createLivePusherContext
+  createLivePusherContext: createLivePusherContext,
+  interceptors: interceptors,
+  addInterceptor: addInterceptor,
+  removeInterceptor: removeInterceptor
 });
 
 function initUni (uni, nvue, plus, BroadcastChannel) {
@@ -711,6 +812,7 @@ function initUni (uni, nvue, plus, BroadcastChannel) {
       },
       set (target, name, value) {
         target[name] = value;
+        return true
       }
     })
   }
@@ -760,8 +862,8 @@ function createInstanceContext () {
     getUniEmitter () {
       return getGlobalUniEmitter()
     },
-    getCurrentPages () {
-      return getGlobalCurrentPages()
+    getCurrentPages (returnAll) {
+      return getGlobalCurrentPages(returnAll)
     }
   }
 }

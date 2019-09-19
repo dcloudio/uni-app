@@ -1,12 +1,17 @@
 {
-	"name": "@dcloudio/uni-mp-weixin",
-	"version": "2.0.0-alpha-22420190823022",
-	"description": "uni-app mp-weixin",
-	"main": "dist/index.js",
-	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
-	},
-	"author": "fxy060608",
-	"license": "Apache-2.0",
-	"gitHead": "32373adfb15ee0be1abb5b84ee6f0e3908d502fc"
+  "name": "@dcloudio/uni-mp-weixin",
+  "version": "2.0.0-23020190919001",
+  "description": "uni-app mp-weixin",
+  "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/uni-mp-weixin"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "fxy060608",
+  "license": "Apache-2.0",
+  "gitHead": "0fac47b62d100213ce48c29dd9d0a335f8a00264"
 }

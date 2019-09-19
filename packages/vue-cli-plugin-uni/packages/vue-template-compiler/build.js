@@ -613,7 +613,7 @@ function parseComponent (
           return cumulated
         }, {})
       };// fixed by xxxxxx
-      if (isSpecialTag(tag) && !isCustomBlock(currentBlock.attrs.lang || '')) {
+      if (isSpecialTag(tag) && !isCustomBlock(String(currentBlock.attrs.lang || ''))) {
         checkAttrs(currentBlock, attrs);
         if (tag === 'style') {
           sfc.styles.push(currentBlock);
@@ -671,7 +671,7 @@ function parseComponent (
     } else {
       var offset = content.slice(0, block.start).split(splitRE).length;
       var lang = block.attrs && block.attrs.lang; // fixed by xxxxxx
-      var padChar = block.type === 'script' && !block.lang && !isCustomBlock(lang || '')
+      var padChar = block.type === 'script' && !block.lang && !isCustomBlock(String(lang || ''))
         ? '//\n'
         : '\n';
       return Array(offset).join(padChar)

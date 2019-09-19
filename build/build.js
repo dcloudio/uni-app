@@ -19,17 +19,25 @@ const service = new Service(process.env.VUE_CLI_CONTEXT || process.cwd(), {
 // 删除 cache 目录
 del.sync(['node_modules/.cache'])
 
+let entry = './lib/' + process.env.UNI_PLATFORM + '/main.js'
+
+if (process.env.UNI_PLATFORM === 'h5' && process.env.UNI_UI === 'true') {
+  entry = './lib/' + process.env.UNI_PLATFORM + '/ui.js'
+}
+
 service.run('build', {
   name: 'index',
   watch: process.env.UNI_WATCH === 'true',
   target: 'lib',
   formats: process.env.UNI_WATCH === 'true' ? 'umd' : 'umd-min',
-  entry: './lib/' + process.env.UNI_PLATFORM + '/main.js'
+  entry
 }).then(function () {
-  generateApiManifest(
-    JSON.parse(JSON.stringify(process.UNI_SERVICE_API_MANIFEST)),
-    JSON.parse(JSON.stringify(process.UNI_SERVICE_API_PROTOCOL))
-  )
+  if (process.env.UNI_UI !== 'true') {
+    generateApiManifest(
+      JSON.parse(JSON.stringify(process.UNI_SERVICE_API_MANIFEST)),
+      JSON.parse(JSON.stringify(process.UNI_SERVICE_API_PROTOCOL))
+    )
+  }
 }).catch(err => {
   error(err)
   process.exit(1)

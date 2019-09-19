@@ -36,10 +36,14 @@ const lifecycle = {
 
 function main() {
   const Vue = require('vue');
-  (Vue.default || Vue).mixin(lifecycle);
-  uni.report = function(type, options) {
-    stat.sendEvent(type, options);
-  };
+  if (process.env.NODE_ENV === 'development') {
+    uni.report = function(type, options) {};
+  }else{
+    (Vue.default || Vue).mixin(lifecycle);
+    uni.report = function(type, options) {
+      stat.sendEvent(type, options);
+    };
+  }
 }
 
 main();

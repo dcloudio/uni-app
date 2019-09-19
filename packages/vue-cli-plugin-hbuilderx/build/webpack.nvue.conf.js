@@ -15,6 +15,7 @@ const WebpackErrorsPlugin = require('@dcloudio/vue-cli-plugin-uni/packages/webpa
 const WebpackUniMPPlugin = require('@dcloudio/webpack-uni-mp-loader/lib/plugin/index-new')
 
 const onErrors = require('@dcloudio/vue-cli-plugin-uni/util/on-errors')
+const onWarnings = require('@dcloudio/vue-cli-plugin-uni/util/on-warnings')
 
 const cssLoaders = require('./css-loader.conf')
 const vueLoaderOptions = require('./vue-loader.conf')
@@ -65,7 +66,8 @@ const plugins = [
   }),
   new webpack.ProvidePlugin(provide),
   new WebpackErrorsPlugin({
-    onErrors
+    onErrors,
+    onWarnings
   }),
   new WebpackAppPlusNVuePlugin()
 ]
@@ -100,7 +102,7 @@ const rules = [{
 {
   test: /\.nvue(\?[^?]+)?$/,
   use: [{
-    loader: 'vue-loader',
+    loader: path.resolve(__dirname, '../packages/vue-loader'),
     options: vueLoaderOptions
   }],
   exclude: excludeModuleReg
@@ -108,7 +110,7 @@ const rules = [{
 {
   test: /\.vue(\?[^?]+)?$/,
   use: [{
-    loader: 'vue-loader',
+    loader: path.resolve(__dirname, '../packages/vue-loader'),
     options: vueLoaderOptions
   }],
   exclude: excludeModuleReg
@@ -146,6 +148,15 @@ if (process.env.UNI_USING_NVUE_COMPILER) {
     }]
   })
 }
+rules.unshift({
+  resourceQuery: function (query) {
+    return query.indexOf('vue&type=template') !== -1 && query.indexOf('mpType=page') === -1
+  },
+  use: [{
+    loader: '@dcloudio/vue-cli-plugin-hbuilderx/packages/webpack-uni-nvue-loader/lib/template.recycle'
+  }]
+})
+
 if (process.env.UNI_USING_NATIVE) {
   plugins.push(new WebpackUniMPPlugin())
   plugins.push(new CopyWebpackPlugin([{
@@ -184,6 +195,9 @@ module.exports = function () {
     externals: {
       'vue': 'Vue'
     },
+    performance: {
+      hints: false
+    },
     optimization: {
       namedModules: false
     },
@@ -198,6 +212,9 @@ module.exports = function () {
         '@': process.env.UNI_INPUT_DIR,
         'uni-pages': path.resolve(process.env.UNI_INPUT_DIR, 'pages.json'),
         '@dcloudio/uni-stat': require.resolve('@dcloudio/uni-stat'),
+        'uni-app-style': path.resolve(process.env.UNI_INPUT_DIR, getNVueMainEntry()) + '?' + JSON.stringify({
+          type: 'appStyle'
+        }),
         'uni-stat-config': path.resolve(process.env.UNI_INPUT_DIR, 'pages.json') +
           '?' +
           JSON.stringify({

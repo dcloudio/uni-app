@@ -29,7 +29,7 @@ process.UNI_LIBRARIES = process.UNI_LIBRARIES || ['@dcloudio/uni-ui']
 const {
   isSupportSubPackages,
   runByHBuilderX,
-  isInHBuilderXAlpha,
+  // isInHBuilderXAlpha,
   getPagesJson,
   getManifestJson
 } = require('@dcloudio/uni-cli-shared')
@@ -65,12 +65,12 @@ process.UNI_STAT_CONFIG = {
   appid: manifestJsonObj.appid
 }
 
-// fixed by hxy alpha 版默认启用新的框架
-if (isInHBuilderXAlpha) {
-  if (!platformOptions.hasOwnProperty('usingComponents')) {
-    platformOptions.usingComponents = true
-  }
+// 默认启用 自定义组件模式
+// if (isInHBuilderXAlpha) {
+if (!platformOptions.hasOwnProperty('usingComponents')) {
+  platformOptions.usingComponents = true
 }
+// }
 
 if (process.env.UNI_PLATFORM === 'h5') {
   const optimization = platformOptions.optimization
@@ -148,16 +148,9 @@ if (
     platformOptions.uniStatistics || {}
   )
 
-  if (
-    uniStatistics.enable !== false &&
-    (
-      process.env.NODE_ENV === 'production' ||
-      uniStatistics.enable === 'development'
-    )
-  ) {
-    if (process.UNI_STAT_CONFIG.appid) {
-      process.env.UNI_USING_STAT = true
-    } else {
+  if (uniStatistics.enable !== false) {
+    process.env.UNI_USING_STAT = true
+    if (!process.UNI_STAT_CONFIG.appid && process.env.NODE_ENV === 'production') {
       console.log()
       console.warn(`当前应用未配置Appid，无法使用uni统计，详情参考：https://ask.dcloud.net.cn/article/36303`)
       console.log()
@@ -177,6 +170,7 @@ if (process.env.UNI_USING_COMPONENTS) { // 是否启用分包优化
   }
 }
 
+const warningMsg = `uni-app将于2019年11月1日起停止支持非自定义组件模式 [详情](https://ask.dcloud.net.cn/article/36385)`
 // 输出编译器版本等信息
 if (process.env.UNI_PLATFORM !== 'h5') {
   try {
@@ -196,14 +190,22 @@ if (process.env.UNI_PLATFORM !== 'h5') {
       }).length) {
         console.log(info)
         console.log(modeText)
-
+        if (!platformOptions.usingComponents) {
+          console.log(warningMsg)
+        }
         console.log('当前nvue编译模式：' + (isNVueCompiler ? 'uni-app' : 'weex') +
           ' 。编译模式差异见：https://ask.dcloud.net.cn/article/36074')
       } else {
         console.log(info + '，' + modeText)
+        if (!platformOptions.usingComponents) {
+          console.log(warningMsg)
+        }
       }
     } else {
       console.log(modeText)
+      if (!platformOptions.usingComponents) {
+        console.log(warningMsg)
+      }
     }
   } catch (e) {}
 }

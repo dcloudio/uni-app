@@ -33,9 +33,9 @@ export default {
     const {
       latitude,
       longitude,
-      scale,
-      name,
-      address
+      scale = 18,
+      name = '',
+      address = ''
     } = this.$route.query
     return {
       latitude,

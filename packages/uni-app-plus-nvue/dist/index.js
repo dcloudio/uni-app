@@ -176,6 +176,10 @@ var serviceContext = (function () {
     return base64Arraybuffer_2(data)
   }
 
+  function arrayBufferToBase64 (data) {
+    return base64Arraybuffer_1(data)
+  }
+
   function callApiSync (api, args, name, alias) {
     const ret = api(args);
     if (ret && ret.errMsg) {
@@ -327,7 +331,11 @@ var serviceContext = (function () {
   let webview;
 
   function setPullDownRefreshPageId (pullDownRefreshWebview) {
-    webview = pullDownRefreshWebview;
+    if (typeof pullDownRefreshWebview === 'number') {
+      webview = plus.webview.getWebviewById(String(pullDownRefreshWebview));
+    } else {
+      webview = pullDownRefreshWebview;
+    }
   }
 
   function startPullDownRefresh () {
@@ -2021,7 +2029,7 @@ var serviceContext = (function () {
     required: true
   }];
 
-  const arrayBufferToBase64 = [{
+  const arrayBufferToBase64$1 = [{
     name: 'arrayBuffer',
     type: [ArrayBuffer, Uint8Array],
     required: true
@@ -2029,7 +2037,7 @@ var serviceContext = (function () {
 
   var require_context_module_0_0 = /*#__PURE__*/Object.freeze({
     base64ToArrayBuffer: base64ToArrayBuffer$1,
-    arrayBufferToBase64: arrayBufferToBase64
+    arrayBufferToBase64: arrayBufferToBase64$1
   });
 
   const canIUse = [{
@@ -3709,13 +3717,13 @@ var serviceContext = (function () {
     return base64Arraybuffer_2(str)
   }
 
-  function arrayBufferToBase64$1 (buffer) {
+  function arrayBufferToBase64$2 (buffer) {
     return base64Arraybuffer_1(buffer)
   }
 
   var require_context_module_1_0 = /*#__PURE__*/Object.freeze({
     base64ToArrayBuffer: base64ToArrayBuffer$2,
-    arrayBufferToBase64: arrayBufferToBase64$1
+    arrayBufferToBase64: arrayBufferToBase64$2
   });
 
   var platformSchema = {};
@@ -6075,12 +6083,49 @@ var serviceContext = (function () {
     }
   }
 
-  let socketTaskId = 0;
   const socketTasks = {};
 
   const publishStateChange$2 = (res) => {
     publish('onSocketTaskStateChange', res);
   };
+
+  let socket;
+  function getSocket () {
+    if (socket) {
+      return socket
+    }
+    socket = requireNativePlugin('uni-webSocket');
+    socket.onopen(function (e) {
+      publishStateChange$2({
+        socketTaskId: e.id,
+        state: 'open'
+      });
+    });
+    socket.onmessage(function (e) {
+      const data = e.data;
+      publishStateChange$2({
+        socketTaskId: e.id,
+        state: 'message',
+        data: typeof data === 'object' ? base64ToArrayBuffer(data.base64) : data
+      });
+    });
+    socket.onerror(function (e) {
+      publishStateChange$2({
+        socketTaskId: e.id,
+        state: 'error',
+        errMsg: e.data
+      });
+    });
+    socket.onclose(function (e) {
+      const socketTaskId = e.id;
+      delete socketTasks[socketTaskId];
+      publishStateChange$2({
+        socketTaskId,
+        state: 'close'
+      });
+    });
+    return socket
+  }
 
   const createSocketTaskById = function (socketTaskId, {
     url,
@@ -6089,39 +6134,13 @@ var serviceContext = (function () {
     method,
     protocols
   } = {}) {
-    // fixed by hxy 需要测试是否支持 arraybuffer
-    const socket = requireNativePlugin('webSocket');
-    socket.WebSocket(url, Array.isArray(protocols) ? protocols.join(',') : protocols);
-    // socket.binaryType = 'arraybuffer'
+    const socket = getSocket();
+    socket.WebSocket({
+      id: socketTaskId,
+      url,
+      protocol: Array.isArray(protocols) ? protocols.join(',') : protocols
+    });
     socketTasks[socketTaskId] = socket;
-
-    socket.onopen(function (e) {
-      publishStateChange$2({
-        socketTaskId,
-        state: 'open'
-      });
-    });
-    socket.onmessage(function (e) {
-      publishStateChange$2({
-        socketTaskId,
-        state: 'message',
-        data: e.data
-      });
-    });
-    socket.onerror(function (e) {
-      publishStateChange$2({
-        socketTaskId,
-        state: 'error',
-        errMsg: e.message
-      });
-    });
-    socket.onclose(function (e) {
-      delete socketTasks[socketTaskId];
-      publishStateChange$2({
-        socketTaskId,
-        state: 'close'
-      });
-    });
     return {
       socketTaskId,
       errMsg: 'createSocketTask:ok'
@@ -6129,13 +6148,14 @@ var serviceContext = (function () {
   };
 
   function createSocketTask (args) {
-    return createSocketTaskById(++socketTaskId, args)
+    return createSocketTaskById(String(Date.now()), args)
   }
 
   function operateSocketTask (args) {
     const {
       operationType,
       code,
+      reason,
       data,
       socketTaskId
     } = unpack(args);
@@ -6148,13 +6168,23 @@ var serviceContext = (function () {
     switch (operationType) {
       case 'send':
         if (data) {
-          socket.send(data);
+          socket.send({
+            id: socketTaskId,
+            data: typeof data === 'object' ? {
+              '@type': 'binary',
+              base64: arrayBufferToBase64(data)
+            } : data
+          });
         }
         return {
           errMsg: 'operateSocketTask:ok'
         }
       case 'close':
-        socket.close(code);
+        socket.close({
+          id: socketTaskId,
+          code,
+          reason
+        });
         delete socketTasks[socketTaskId];
         return {
           errMsg: 'operateSocketTask:ok'

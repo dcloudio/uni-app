@@ -308,7 +308,8 @@ uni-input[hidden] {
   height: 100%;
   background: none;
   color: inherit;
-  opacity: inherit;
+  opacity: 1;
+  -webkit-text-fill-color: currentcolor;
   font: inherit;
   line-height: inherit;
   letter-spacing: inherit;

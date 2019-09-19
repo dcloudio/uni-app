@@ -2,10 +2,12 @@
   "name": "uniapp-js-framework",
   "version": "0.0.1",
   "scripts": {
+    "build:service:legacy": "npm run lint && rollup -c build/rollup.config.service.js",
     "lint": "eslint --fix --config package.json --ext .js --ext .vue --ignore-path .eslintignore build src",
     "lint:cli": "eslint  --fix --config package.json --ignore-path .eslintignore packages/uni-cli-shared packages/uni-template-compiler \"packages/vue-cli-*/**/*.js\" \"packages/webpack-uni-*/**/*.js\"",
     "dev:h5": "npm run lint && cross-env NODE_ENV=production UNI_WATCH=true UNI_PLATFORM=h5 node build/build.js",
     "build:h5": "npm run lint && cross-env NODE_ENV=production UNI_WATCH=false UNI_PLATFORM=h5 node build/build.js",
+    "build:h5:ui": "cross-env NODE_ENV=production UNI_WATCH=false UNI_PLATFORM=h5 UNI_UI=true node build/build.js",
     "build:app-plus": "cross-env UNI_PLATFORM=app-plus rollup -c build/rollup.config.mp.js",
     "build:app:all": "npm run lint && npm run build:app:nvue && npm run build:app:legacy",
     "build:app:nvue": "cross-env UNI_PLATFORM=app-plus-nvue rollup -c build/rollup.config.app.js",
@@ -20,7 +22,8 @@
     "test:cli": "cross-env NODE_ENV=test jest",
     "test:unit": "cross-env NODE_ENV=test UNI_PLATFORM=h5 mocha-webpack --require tests/unit/setup.js --webpack-config build/webpack.config.test.js tests/unit/**/*.spec.js",
     "release": "npm run lint:cli && lerna publish --force-publish=*",
-    "release:alpha": "npm run lint:cli && lerna publish --force-publish=* --npm-tag=alpha"
+    "release:alpha": "npm run lint:cli && lerna publish --force-publish=* --npm-tag=alpha",
+    "release:next": "npm run lint:cli && lerna publish --force-publish=* --npm-tag=next"
   },
   "dependencies": {
     "base64-arraybuffer": "^0.2.0",

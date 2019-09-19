@@ -613,7 +613,7 @@ function parseComponent (
           return cumulated
         }, {})
       };// fixed by xxxxxx
-      if (isSpecialTag(tag) && !isCustomBlock(currentBlock.attrs.lang || '')) {
+      if (isSpecialTag(tag) && !isCustomBlock(String(currentBlock.attrs.lang || ''))) {
         checkAttrs(currentBlock, attrs);
         if (tag === 'style') {
           sfc.styles.push(currentBlock);
@@ -671,7 +671,7 @@ function parseComponent (
     } else {
       var offset = content.slice(0, block.start).split(splitRE).length;
       var lang = block.attrs && block.attrs.lang; // fixed by xxxxxx
-      var padChar = block.type === 'script' && !block.lang && !isCustomBlock(lang || '')
+      var padChar = block.type === 'script' && !block.lang && !isCustomBlock(String(lang || ''))
         ? '//\n'
         : '\n';
       return Array(offset).join(padChar)
@@ -2386,67 +2386,146 @@ function isDirectChildOfTemplateFor (node) {
 
 /*  */
 
+// import { warn } from 'core/util/index'
+
+// this will be preserved during build
+// $flow-disable-line
+var acorn = require('acorn'); // $flow-disable-line
+var walk = require('acorn/dist/walk'); // $flow-disable-line
+var escodegen = require('escodegen');
+
+var functionCallRE = /^\s*([A-Za-z_$0-9\['\."\]]+)*\s*\(\s*(([A-Za-z_$0-9\['\."\]]+)?(\s*,\s*([A-Za-z_$0-9\['\."\]]+))*)\s*\)$/;
+
+function nodeToBinding (node) {
+  switch (node.type) {
+    case 'Literal': return node.value
+    case 'Identifier':
+    case 'UnaryExpression':
+    case 'BinaryExpression':
+    case 'LogicalExpression':
+    case 'ConditionalExpression':
+    case 'MemberExpression': return { '@binding': escodegen.generate(node) }
+    case 'ArrayExpression': return node.elements.map(function (_) { return nodeToBinding(_); })
+    case 'ObjectExpression': {
+      var object = {};
+      node.properties.forEach(function (prop) {
+        if (!prop.key || prop.key.type !== 'Identifier') {
+          return
+        }
+        var key = escodegen.generate(prop.key);
+        var value = nodeToBinding(prop.value);
+        if (key && value) {
+          object[key] = value;
+        }
+      });
+      return object
+    }
+    default: {
+      // warn(`Not support ${node.type}: "${escodegen.generate(node)}"`)
+      return ''
+    }
+  }
+}
+
+function generateBinding (exp) {
+  if (exp && typeof exp === 'string') {
+    var ast = null;
+    try {
+      ast = acorn.parse(("(" + exp + ")"));
+    } catch (e) {
+      // warn(`Failed to parse the expression: "${exp}"`)
+      return ''
+    }
+
+    var output = '';
+    walk.simple(ast, {
+      Expression: function Expression (node) {
+        output = nodeToBinding(node);
+      }
+    });
+    return output
+  }
+}
+
+/*  */
+
+// this will be preserved during build
+// $flow-disable-line
+var transpile = require('vue-template-es2015-compiler');
+
+// Generate handler code with binding params for Weex platform
+/* istanbul ignore next */
+function genWeexHandlerWithParams (handlerCode) {
+  var match = functionCallRE.exec(handlerCode);
+  if (!match) {
+    return ''
+  }
+  var handlerExp = match[1];
+  var params = match[2].split(/\s*,\s*/);
+  var exps = params.filter(function (exp) { return simplePathRE.test(exp) && exp !== '$event'; });
+  var bindings = exps.map(function (exp) { return generateBinding(exp); });
+  var args = exps.map(function (exp, index) {
+    var key = "$$_" + (index + 1);
+    for (var i = 0; i < params.length; ++i) {
+      if (params[i] === exp) {
+        params[i] = key;
+      }
+    }
+    return key
+  });
+  args.push('$event');
+  return ("{\n    handler: function (" + (args.join(',')) + ") {\n      " + handlerExp + "(" + (params.join(',')) + ");\n    },\n    params:" + (JSON.stringify(bindings)) + "\n  }")
+}
+
+function genWeexHandler (handler, options) {
+  var code = handler.value;
+  var isMethodPath = simplePathRE.test(code);
+  var isFunctionExpression = fnExpRE.test(code);
+  var isFunctionCall = functionCallRE.test(code);
+
+  // TODO: binding this to recyclable event handlers
+  if (options.recyclable) {
+    if (isMethodPath) {
+      return ("function($event){this." + code + "()}")
+    }
+    if (isFunctionExpression && options.warn) {
+      options.warn(("Function expression is not supported in recyclable components: " + code + "."));
+    }
+    if (isFunctionCall) {
+      return ("function($event){this." + code + "}")
+    }
+    // inline statement
+    code = transpile(("with(this){" + code + "}"), {
+      transforms: { stripWith: true }
+    });
+  }
+
+  if (isMethodPath || isFunctionExpression) {
+    return code
+  }
+  /* istanbul ignore if */
+  if (handler.params) {
+    return genWeexHandlerWithParams(handler.value)
+  }
+  // inline statement
+  return ("function($event){" + code + "}")
+}
+
+/*  */
 var fnExpRE = /^([\w$_]+|\([^)]*?\))\s*=>|^function\s*(?:[\w$]+)?\s*\(/;
 var fnInvokeRE = /\([^)]*?\);*$/;
 var simplePathRE = /^[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*|\['[^']*?']|\["[^"]*?"]|\[\d+]|\[[A-Za-z_$][\w$]*])*$/;
 
-// KeyboardEvent.keyCode aliases
-var keyCodes = {
-  esc: 27,
-  tab: 9,
-  enter: 13,
-  space: 32,
-  up: 38,
-  left: 37,
-  right: 39,
-  down: 40,
-  'delete': [8, 46]
-};
-
-// KeyboardEvent.key aliases
-var keyNames = {
-  // #7880: IE11 and Edge use `Esc` for Escape key name.
-  esc: ['Esc', 'Escape'],
-  tab: 'Tab',
-  enter: 'Enter',
-  // #9112: IE11 uses `Spacebar` for Space key name.
-  space: [' ', 'Spacebar'],
-  // #7806: IE11 uses key names without `Arrow` prefix for arrow keys.
-  up: ['Up', 'ArrowUp'],
-  left: ['Left', 'ArrowLeft'],
-  right: ['Right', 'ArrowRight'],
-  down: ['Down', 'ArrowDown'],
-  // #9112: IE11 uses `Del` for Delete key name.
-  'delete': ['Backspace', 'Delete', 'Del']
-};
-
-// #4868: modifiers that prevent the execution of the listener
-// need to explicitly return null so that we can determine whether to remove
-// the listener for .once
-var genGuard = function (condition) { return ("if(" + condition + ")return null;"); };
-
-var modifierCode = {
-  stop: '$event.stopPropagation();',
-  prevent: '$event.preventDefault();',
-  self: genGuard("$event.target !== $event.currentTarget"),
-  ctrl: genGuard("!$event.ctrlKey"),
-  shift: genGuard("!$event.shiftKey"),
-  alt: genGuard("!$event.altKey"),
-  meta: genGuard("!$event.metaKey"),
-  left: genGuard("'button' in $event && $event.button !== 0"),
-  middle: genGuard("'button' in $event && $event.button !== 1"),
-  right: genGuard("'button' in $event && $event.button !== 2")
-};
-
 function genHandlers (
   events,
-  isNative
+  isNative,
+  options
 ) {
   var prefix = isNative ? 'nativeOn:' : 'on:';
   var staticHandlers = "";
   var dynamicHandlers = "";
   for (var name in events) {
-    var handlerCode = genHandler(events[name]);
+    var handlerCode = genHandler(events[name], options);
     if (events[name] && events[name].dynamic) {
       dynamicHandlers += name + "," + handlerCode + ",";
     } else {
@@ -2461,116 +2540,23 @@ function genHandlers (
   }
 }
 
-// Generate handler code with binding params on Weex
-/* istanbul ignore next */
-function genWeexHandler (params, handlerCode) {
-  var innerHandlerCode = handlerCode;
-  var exps = params.filter(function (exp) { return simplePathRE.test(exp) && exp !== '$event'; });
-  var bindings = exps.map(function (exp) { return ({ '@binding': exp }); });
-  var args = exps.map(function (exp, i) {
-    var key = "$_" + (i + 1);
-    innerHandlerCode = innerHandlerCode.replace(exp, key);
-    return key
-  });
-  args.push('$event');
-  return '{\n' +
-    "handler:function(" + (args.join(',')) + "){" + innerHandlerCode + "},\n" +
-    "params:" + (JSON.stringify(bindings)) + "\n" +
-    '}'
-}
-
-function genHandler (handler) {
+function genHandler (handler, options) {
   if (!handler) {
     return 'function(){}'
   }
 
   if (Array.isArray(handler)) {
-    return ("[" + (handler.map(function (handler) { return genHandler(handler); }).join(',')) + "]")
+    return ("[" + (handler.map(function (handler) { return genHandler(handler, options); }).join(',')) + "]")
   }
 
   var isMethodPath = simplePathRE.test(handler.value);
   var isFunctionExpression = fnExpRE.test(handler.value);
   var isFunctionInvocation = simplePathRE.test(handler.value.replace(fnInvokeRE, ''));
 
-  if (!handler.modifiers) {
-    if (isMethodPath || isFunctionExpression) {
-      return handler.value
+  // Weex does not support modifiers
+    {
+      return genWeexHandler(handler, options)
     }
-    /* istanbul ignore if */
-    if (handler.params) {
-      return genWeexHandler(handler.params, handler.value)
-    }
-    return ("function($event){" + (isFunctionInvocation ? ("return " + (handler.value)) : handler.value) + "}") // inline statement
-  } else {
-    var code = '';
-    var genModifierCode = '';
-    var keys = [];
-    for (var key in handler.modifiers) {
-      if (modifierCode[key]) {
-        genModifierCode += modifierCode[key];
-        // left/right
-        if (keyCodes[key]) {
-          keys.push(key);
-        }
-      } else if (key === 'exact') {
-        var modifiers = (handler.modifiers);
-        genModifierCode += genGuard(
-          ['ctrl', 'shift', 'alt', 'meta']
-            .filter(function (keyModifier) { return !modifiers[keyModifier]; })
-            .map(function (keyModifier) { return ("$event." + keyModifier + "Key"); })
-            .join('||')
-        );
-      } else {
-        keys.push(key);
-      }
-    }
-    if (keys.length) {
-      code += genKeyFilter(keys);
-    }
-    // Make sure modifiers like prevent and stop get executed after key filtering
-    if (genModifierCode) {
-      code += genModifierCode;
-    }
-    var handlerCode = isMethodPath
-      ? ("return " + (handler.value) + "($event)")
-      : isFunctionExpression
-        ? ("return (" + (handler.value) + ")($event)")
-        : isFunctionInvocation
-          ? ("return " + (handler.value))
-          : handler.value;
-    /* istanbul ignore if */
-    if (handler.params) {
-      return genWeexHandler(handler.params, code + handlerCode)
-    }
-    return ("function($event){" + code + handlerCode + "}")
-  }
-}
-
-function genKeyFilter (keys) {
-  return (
-    // make sure the key filters only apply to KeyboardEvents
-    // #9441: can't use 'keyCode' in $event because Chrome autofill fires fake
-    // key events that do not have keyCode property...
-    "if(!$event.type.indexOf('key')&&" +
-    (keys.map(genFilterCode).join('&&')) + ")return null;"
-  )
-}
-
-function genFilterCode (key) {
-  var keyVal = parseInt(key, 10);
-  if (keyVal) {
-    return ("$event.keyCode!==" + keyVal)
-  }
-  var keyCode = keyCodes[key];
-  var keyName = keyNames[key];
-  return (
-    "_k($event.keyCode," +
-    (JSON.stringify(key)) + "," +
-    (JSON.stringify(keyCode)) + "," +
-    "$event.key," +
-    "" + (JSON.stringify(keyName)) +
-    ")"
-  )
 }
 
 var ASSET_TYPES = [
@@ -2846,6 +2832,11 @@ var VNode = function VNode (
   componentOptions,
   asyncFactory
 ) {
+  {// fixed by xxxxxx 后续优化
+    if(data && Array.isArray(data.class)){
+      data.class = data.class.slice(0);
+    }
+  }
   this.tag = tag;
   this.data = data;
   this.children = children;
@@ -3700,10 +3691,10 @@ function genData (el, state) {
   }
   // event handlers
   if (el.events) {
-    data += (genHandlers(el.events, false)) + ",";
+    data += (genHandlers(el.events, false, state.options)) + ",";
   }
   if (el.nativeEvents) {
-    data += (genHandlers(el.nativeEvents, true)) + ",";
+    data += (genHandlers(el.nativeEvents, true, state.options)) + ",";
   }
   // slot target
   // only for non-scoped slots
@@ -4692,6 +4683,15 @@ function postTransformComponentRoot (el) {
 
 /*  */
 
+function postTransformRef (el) {
+  if (el.ref) {
+    addAttr(el, 'ref', el.ref);
+    delete el.ref;
+  }
+}
+
+/*  */
+
 function genText$1 (node) {
   var value = node.type === 3
     ? node.text
@@ -4709,67 +4709,6 @@ function postTransformText (el) {
   if (el.children.length) {
     addAttr(el, 'value', genText$1(el.children[0]));
     el.children = [];
-  }
-}
-
-/*  */
-
-// import { warn } from 'core/util/index'
-
-// this will be preserved during build
-// $flow-disable-line
-var acorn = require('acorn'); // $flow-disable-line
-var walk = require('acorn/dist/walk'); // $flow-disable-line
-var escodegen = require('escodegen');
-
-function nodeToBinding (node) {
-  switch (node.type) {
-    case 'Literal': return node.value
-    case 'Identifier':
-    case 'UnaryExpression':
-    case 'BinaryExpression':
-    case 'LogicalExpression':
-    case 'ConditionalExpression':
-    case 'MemberExpression': return { '@binding': escodegen.generate(node) }
-    case 'ArrayExpression': return node.elements.map(function (_) { return nodeToBinding(_); })
-    case 'ObjectExpression': {
-      var object = {};
-      node.properties.forEach(function (prop) {
-        if (!prop.key || prop.key.type !== 'Identifier') {
-          return
-        }
-        var key = escodegen.generate(prop.key);
-        var value = nodeToBinding(prop.value);
-        if (key && value) {
-          object[key] = value;
-        }
-      });
-      return object
-    }
-    default: {
-      // warn(`Not support ${node.type}: "${escodegen.generate(node)}"`)
-      return ''
-    }
-  }
-}
-
-function generateBinding (exp) {
-  if (exp && typeof exp === 'string') {
-    var ast = null;
-    try {
-      ast = acorn.parse(("(" + exp + ")"));
-    } catch (e) {
-      // warn(`Failed to parse the expression: "${exp}"`)
-      return ''
-    }
-
-    var output = '';
-    walk.simple(ast, {
-      Expression: function Expression (node) {
-        output = nodeToBinding(node);
-      }
-    });
-    return output
   }
 }
 
@@ -4884,10 +4823,8 @@ function preTransformVFor (el, options) {
 
 /*  */
 
-var inlineStatementRE = /^\s*([A-Za-z_$0-9\['\."\]]+)*\s*\(\s*(([A-Za-z_$0-9\['\."\]]+)?(\s*,\s*([A-Za-z_$0-9\['\."\]]+))*)\s*\)$/;
-
 function parseHandlerParams (handler) {
-  var res = inlineStatementRE.exec(handler.value);
+  var res = functionCallRE.exec(handler.value);
   if (res && res[2]) {
     handler.params = res[2].split(/\s*,\s*/);
   }
@@ -4941,10 +4878,10 @@ function preTransformNode$1 (el, options) {
     currentRecycleList = el;
   }
   if (shouldCompile(el, options)) {
-    preTransformVBind(el);
+    preTransformVBind(el, options);
     preTransformVIf(el, options); // also v-else-if and v-else
     preTransformVFor(el, options);
-    preTransformVOnce(el);
+    preTransformVOnce(el, options);
   }
 }
 
@@ -4957,12 +4894,13 @@ function postTransformNode (el, options) {
     // mark child component in parent template
     postTransformComponent(el, options);
     // mark root in child component template
-    postTransformComponentRoot(el);
+    postTransformComponentRoot(el, options);
     // <text>: transform children text into value attr
-    if (el.tag === 'text') {
-      postTransformText(el);
+    if (el.tag === 'text' || el.tag === 'u-text') {
+      postTransformText(el, options);
     }
-    postTransformVOn(el);
+    postTransformVOn(el, options);
+    postTransformRef(el, options);
   }
   if (el === currentRecycleList) {
     currentRecycleList = null;
@@ -5033,7 +4971,7 @@ var directives = {
 
 var isReservedTag = makeMap(
   'template,script,style,element,content,slot,link,meta,svg,view,' +
-  'a,div,img,image,text,span,input,textarea,spinner,select,' +
+  'a,div,img,image,text,u-text,span,input,textarea,spinner,select,' +
   'slider,slider-neighbor,indicator,canvas,' +
   'list,cell,header,loading,loading-indicator,refresh,scrollable,scroller,' +
   'video,web,embed,tabbar,tabheader,datepicker,timepicker,marquee,countdown',
@@ -5049,7 +4987,7 @@ var canBeLeftOpenTag$1 = makeMap(
 );
 
 var isRuntimeComponent = makeMap(
-  'richtext,transition,transition-group',
+  'richtext,transition,transition-group,recycle-list',
   true
 );
 
