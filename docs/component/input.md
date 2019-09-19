@@ -67,25 +67,13 @@ App平台的nvue页面，如果是uni-app编译模式，直接使用此属性设
 #### App平台iOS端软键盘上方横条去除方案
 
 App平台在iOS上，webview中的软键盘弹出时，默认在软键盘上方有一个横条，显示着：上一项、下一项和完成等按钮。如不想显示这个横条，可以配置softinputNavBar: 'none'
-- 如需要整个App配置，则在manifest中配置
-```json
-	"app-plus": {
-		"softinput": {  
-			"navBar": "none"    // 是否显示软键盘上的导航条  
-        }
-	}
-```
 
-- 如需要单个页面配置，则在pages.json中配置
+配置方式，在 pages.json 中配置 style
+
 ```json
-	{
-		"path": "pages/component/input/input",
-		"style": {
-			"app-plus":{
-				"softinputNavBar":"none"
-			}
-		}
-	}
+"app-plus": {
+	"softinputNavBar": "none"
+}
 ```
 
 - 如需使用js动态设置softinputNavBar
