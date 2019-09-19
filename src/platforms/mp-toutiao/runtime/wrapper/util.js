@@ -10,21 +10,44 @@ export function isPage () {
 
 export function initRefs (vm) {
   const mpInstance = vm.$scope
-  mpInstance.selectAllComponents('.vue-ref', (components) => {
-    components.forEach(component => {
-      const ref = component.dataset.ref
-      vm.$refs[ref] = component.$vm || component
-    })
-  })
-  mpInstance.selectAllComponents('.vue-ref-in-for', (forComponents) => {
-    forComponents.forEach(component => {
-      const ref = component.dataset.ref
-      if (!vm.$refs[ref]) {
-        vm.$refs[ref] = []
+  const minorVersion = parseInt(tt.getSystemInfoSync().SDKVersion.split('.')[1])
+  if (minorVersion > 16) {
+    Object.defineProperty(vm, '$refs', {
+      get () {
+        const $refs = {}
+        const components = mpInstance.selectAllComponents('.vue-ref')
+        components.forEach(component => {
+          const ref = component.dataset.ref
+          $refs[ref] = component.$vm || component
+        })
+        const forComponents = mpInstance.selectAllComponents('.vue-ref-in-for')
+        forComponents.forEach(component => {
+          const ref = component.dataset.ref
+          if (!$refs[ref]) {
+            $refs[ref] = []
+          }
+          $refs[ref].push(component.$vm || component)
+        })
+        return $refs
       }
-      vm.$refs[ref].push(component.$vm || component)
     })
-  })
+  } else {
+    mpInstance.selectAllComponents('.vue-ref', (components) => {
+      components.forEach(component => {
+        const ref = component.dataset.ref
+        vm.$refs[ref] = component.$vm || component
+      })
+    })
+    mpInstance.selectAllComponents('.vue-ref-in-for', (forComponents) => {
+      forComponents.forEach(component => {
+        const ref = component.dataset.ref
+        if (!vm.$refs[ref]) {
+          vm.$refs[ref] = []
+        }
+        vm.$refs[ref].push(component.$vm || component)
+      })
+    })
+  }
 }
 
 const instances = Object.create(null)
