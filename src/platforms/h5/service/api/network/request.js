@@ -70,13 +70,6 @@ export function request ({
     }
   }
   if (method !== 'GET') {
-    if (!contentType) {
-      /**
-       * 跨域时部分服务器OPTION响应头Access-Control-Allow-Headers未包含Content-Type会请求失败
-       */
-      header['Content-Type'] = 'application/json'
-      contentType = 'json'
-    }
     if (typeof data === 'string' || data instanceof ArrayBuffer) {
       body = data
     } else {
