@@ -23,12 +23,12 @@ module.exports = async function checkUpdate () {
 
   if (update) {
     if (pkg.version.split('.')[0] !== update.latest.split('.')[0]) {
-      console.log(`发现 uni-app 新版本 ${update.latest}`)
+      console.log(`发现 uni-app cli 新版本 ${update.latest}`)
       console.log(`1.修改 package.json 中 @dcloudio 相关包版本为 ^${update.latest}`)
       console.log('2.删除 package-lock.json 或 yarn.lock')
       console.log('3.执行 npm install 或 yarn')
     } else {
-      console.log(`发现 uni-app 新版本 ${update.latest}. 请执行 npm update 升级`)
+      console.log(`发现 uni-app cli 新版本 ${update.latest}. 请执行 npm update 升级`)
     }
   }
 }
