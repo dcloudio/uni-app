@@ -2647,8 +2647,12 @@ var serviceContext = (function () {
     header: {
       type: Object,
       validator (value, params) {
-        params.header = value || {};
-        params.header['content-type'] = params.header['content-type'] || 'application/json';
+        const header = params.header = value || {};
+        if (params.method !== method.GET) {
+          if (!Object.keys(header).find(key => key.toLowerCase() === 'content-type')) {
+            header['Content-Type'] = 'application/json';
+          }
+        }
       }
     },
     dataType: {
