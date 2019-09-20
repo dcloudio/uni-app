@@ -10,6 +10,14 @@ const lifecycle = {
   },
   onLoad(options) {
     stat.load(options, this);
+    // 重写分享，获取分享上报事件
+    if (this.$scope && this.$scope.onShareAppMessage) {
+      let oldShareAppMessage = this.$scope.onShareAppMessage;
+      this.$scope.onShareAppMessage = function(options) {
+        stat.interceptShare(false);
+        return oldShareAppMessage.call(this, options)
+      }
+    }
   },
   onShow() {
     isHide = false
@@ -28,9 +36,6 @@ const lifecycle = {
   },
   onError(e) {
     stat.error(e)
-  },
-  onShareAppMessage() {
-    stat.interceptShare(false)
   }
 }
 
