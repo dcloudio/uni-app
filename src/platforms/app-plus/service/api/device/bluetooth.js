@@ -1,14 +1,14 @@
 import {
   invoke,
   publish,
-  pack,
-  unpack
+  arrayBufferToBase64,
+  base64ToArrayBuffer
 } from '../../bridge'
 
 /**
  * 执行蓝牙相关方法
  */
-function bluetoothExec (method, callbackId, data = {}) {
+function bluetoothExec (method, callbackId, data = {}, beforeSuccess) {
   var deviceId = data.deviceId
   if (deviceId) {
     data.deviceId = deviceId.toUpperCase()
@@ -20,7 +20,10 @@ function bluetoothExec (method, callbackId, data = {}) {
 
   plus.bluetooth[method.replace('Changed', 'Change')](Object.assign(data, {
     success (data) {
-      invoke(callbackId, Object.assign({}, pack(data), {
+      if (typeof beforeSuccess === 'function') {
+        beforeSuccess(data)
+      }
+      invoke(callbackId, Object.assign({}, data, {
         errMsg: `${method}:ok`,
         code: undefined,
         message: undefined
@@ -37,14 +40,27 @@ function bluetoothExec (method, callbackId, data = {}) {
 /**
  * 监听蓝牙相关事件
  */
-function bluetoothOn (method) {
+function bluetoothOn (method, beforeSuccess) {
   plus.bluetooth[method.replace('Changed', 'Change')](function (data) {
-    publish(method, Object.assign({}, pack(data), {
+    if (typeof beforeSuccess === 'function') {
+      beforeSuccess(data)
+    }
+    publish(method, Object.assign({}, data, {
       code: undefined,
       message: undefined
     }))
   })
   return true
+}
+
+function checkDevices (data) {
+  data.devices = data.devices.map(device => {
+    var advertisData = device.advertisData
+    if (advertisData && typeof advertisData !== 'string') {
+      device.advertisData = arrayBufferToBase64(advertisData)
+    }
+    return device
+  })
 }
 
 var onBluetoothAdapterStateChange
@@ -67,7 +83,7 @@ export function getBluetoothAdapterState (data, callbackId) {
 }
 
 export function startBluetoothDevicesDiscovery (data, callbackId) {
-  onBluetoothDeviceFound = onBluetoothDeviceFound || bluetoothOn('onBluetoothDeviceFound')
+  onBluetoothDeviceFound = onBluetoothDeviceFound || bluetoothOn('onBluetoothDeviceFound', checkDevices)
   bluetoothExec('startBluetoothDevicesDiscovery', callbackId, data)
 }
 
@@ -76,7 +92,7 @@ export function stopBluetoothDevicesDiscovery (data, callbackId) {
 }
 
 export function getBluetoothDevices (data, callbackId) {
-  bluetoothExec('getBluetoothDevices', callbackId, {})
+  bluetoothExec('getBluetoothDevices', callbackId, {}, checkDevices)
 }
 
 export function getConnectedBluetoothDevices (data, callbackId) {
@@ -102,12 +118,18 @@ export function getBLEDeviceCharacteristics (data, callbackId) {
 }
 
 export function notifyBLECharacteristicValueChange (data, callbackId) {
-  onBLECharacteristicValueChange = onBLECharacteristicValueChange || bluetoothOn('onBLECharacteristicValueChange')
+  onBLECharacteristicValueChange = onBLECharacteristicValueChange || bluetoothOn('onBLECharacteristicValueChange',
+    data => {
+      data.value = arrayBufferToBase64(data.value)
+    })
   bluetoothExec('notifyBLECharacteristicValueChange', callbackId, data)
 }
 
 export function notifyBLECharacteristicValueChanged (data, callbackId) {
-  onBLECharacteristicValueChange = onBLECharacteristicValueChange || bluetoothOn('onBLECharacteristicValueChange')
+  onBLECharacteristicValueChange = onBLECharacteristicValueChange || bluetoothOn('onBLECharacteristicValueChange',
+    data => {
+      data.value = arrayBufferToBase64(data.value)
+    })
   bluetoothExec('notifyBLECharacteristicValueChanged', callbackId, data)
 }
 
@@ -116,5 +138,6 @@ export function readBLECharacteristicValue (data, callbackId) {
 }
 
 export function writeBLECharacteristicValue (data, callbackId) {
-  bluetoothExec('writeBLECharacteristicValue', callbackId, unpack(data))
+  data.value = base64ToArrayBuffer(data.value)
+  bluetoothExec('writeBLECharacteristicValue', callbackId, data)
 }
