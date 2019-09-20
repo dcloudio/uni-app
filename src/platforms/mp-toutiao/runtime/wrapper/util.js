@@ -10,7 +10,7 @@ export function isPage () {
 
 export function initRefs (vm) {
   const mpInstance = vm.$scope
-  /* global tt */
+  /* eslint-disable no-undef */
   const minorVersion = parseInt(tt.getSystemInfoSync().SDKVersion.split('.')[1])
   if (minorVersion > 16) {
     Object.defineProperty(vm, '$refs', {
