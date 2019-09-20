@@ -79,7 +79,7 @@ export const request = {
     validator (value, params) {
       const header = params.header = value || {}
       if (params.method !== method.GET) {
-        if (Object.keys(header).filter(key => key.toLowerCase() === 'content-type')) {
+        if (!Object.keys(header).find(key => key.toLowerCase() === 'content-type')) {
           header['Content-Type'] = 'application/json'
         }
       }
