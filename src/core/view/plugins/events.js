@@ -83,8 +83,8 @@ export function processEvent (name, $event = {}, detail = {}, target = {}, curre
     target: processTarget(target, detail),
     currentTarget: processTarget(currentTarget),
     // 只处理系统事件
-    touches: $event instanceof Event ? processTouches($event.touches) : $event.touches,
-    changedTouches: $event instanceof Event ? processTouches($event.changedTouches) : $event.changedTouches,
+    touches: ($event instanceof Event || $event instanceof CustomEvent) ? processTouches($event.touches) : $event.touches,
+    changedTouches: ($event instanceof Event || $event instanceof CustomEvent) ? processTouches($event.changedTouches) : $event.changedTouches,
     preventDefault () { },
     stopPropagation () { }
   })
@@ -125,14 +125,15 @@ function touchstart (evt) {
   startPageY = pageY
 
   longPressTimer = setTimeout(function () {
-    evt.target.dispatchEvent(new CustomEvent('longpress', {
+    let customEvent = new CustomEvent('longpress', {
       bubbles: true,
       cancelable: true,
       target: evt.target,
-      currentTarget: evt.currentTarget,
-      touches: evt.touches,
-      changedTouches: evt.changedTouches
-    }))
+      currentTarget: evt.currentTarget
+    })
+    customEvent.touches = evt.touches
+    customEvent.changedTouches = evt.changedTouches
+    evt.target.dispatchEvent(customEvent)
   }, LONGPRESS_TIMEOUT)
 }
 
