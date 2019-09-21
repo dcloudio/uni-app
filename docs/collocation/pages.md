@@ -651,7 +651,7 @@ h5 平台下拉刷新动画，只有 circle 类型。
 - tabBar 中的 list 是一个数组，只能配置最少2个、最多5个 tab，tab 按数组的顺序排序。
 - tabbar 切换第一次加载时可能渲染不及时，可以在每个tabbar页面的onLoad生命周期里先弹出一个等待雪花（hello uni-app使用了此方式）
 - tabbar 的页面展现过一次后就保留在内存中，再次切换 tabbar 页面，只会触发每个页面的onShow，不会再触发onLoad。
-- 顶部的 tabbar 目前仅微信小程序上支持，需要用到顶部选项卡的话，参考 hello uni-app->模板->顶部选项卡。
+- 顶部的 tabbar 目前仅微信小程序上支持。需要用到顶部选项卡的话，建议不使用 tabbar 的顶部设置，而是自己做顶部选项卡，可参考 hello uni-app->模板->顶部选项卡。
 
 **属性说明：**
 
@@ -678,12 +678,13 @@ h5 平台下拉刷新动画，只有 circle 类型。
 - tabbar 的 item 点击事件见[页面生命周期的onTabItemTap](https://uniapp.dcloud.io/frame?id=%E9%A1%B5%E9%9D%A2%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F)。
 - 代码跳转到tabbar页面，api只能使用[uni.switchTab](https://uniapp.dcloud.io/api/router?id=switchtab)，不能使用uni.navigateTo、uni.redirectTo；使用navigator组件跳转时必须设置[open-type="switchTab"](https://uniapp.dcloud.io/component/navigator)
 - tabbar 在H5端是div模拟的，属于前端屏幕窗口的一部分，如果要使用bottom居底定位方式，应该使用css变量`--window-bottom`，比如悬浮在tabbar上方10px的按钮，样式如下`bottom: calc(var(--window-bottom) + 10px)`
+- tabbar 的默认高度，在不同平台不一样。[详见](https://uniapp.dcloud.io/frame?id=%e5%9b%ba%e5%ae%9a%e5%80%bc)
 - 中间带+号的tabbar模板例子，[参考](https://ext.dcloud.net.cn/plugin?id=98)。可跨端，但+号不凸起。
 - 如需 tabbar 中间凸起，可自定义tabbar，插件市场有例子，如colorUI等。但注意前端tabbar的性能不如原生tabbar，如果是多页方式，底部tabbar会在切换时闪执行转场动画，如果是单页方式，承载复杂页面内容会有性能问题。[插件市场](https://ext.dcloud.net.cn/search?q=tabbar)搜索tabbar有不少类似例子。
 - App端若使用nvue，自定义tabbar，没有性能体验问题。
 - 纯nvue项目（manifest里renderer为native），目前使用pages.json里的tabbar反而影响性能，建议使用前端自己实现单页面的tabbar。后续会解决这个bug。
-- Android App上弹出键盘顶起tabbar的问题。如果是搜索框，建议点击后新开页面搜索（hello uni-app有例子）；也可以配置 manifest.json 中 app-plus->softinput->mode 设置为 adjustPan，注意从HBuilderX 2.2开始，默认就是adjustPan，请不要手动改为adresize。另外修改输入法弹出模式需打包后生效。[详见manifest配置](https://uniapp.dcloud.io/collocation/manifest?id=%E5%AE%8C%E6%95%B4-manifestjson)；也可以动态隐藏tabbar。
-- 原生的tabbar只有一个且在首页。二级页的tab，前端自己实现。
+- Android App上弹出键盘顶起tabbar的问题。升级到HBuilderX 2.2后不再存在。
+- 原生的tabbar只有一个且在首页。二级页如需的tab，前端自己实现。
 - 如果是需要先登录、后进入tab页面，不需要把登陆页设为首页，首页仍然是tabbar页，可参考HBuilderX新建uni-app项目时的登陆模板
 - 前端弹出遮罩层挡不住tabbar的问题，跨端处理方式时动态隐藏tabbar。App端可以使用plus.nativeObj.view或subNVue做弹出和遮罩，可参考这个[底部原生图标分享菜单例子](https://ext.dcloud.net.cn/plugin?id=69)
 - 微信小程序模拟器1.02.1904090版有bug，在缩放模拟器页面百分比后，tabbar点击多次后就会卡死。真机无碍，使用时注意。[详见](https://developers.weixin.qq.com/community/develop/doc/0002e6e6bf0d602d8c783e10756400)
