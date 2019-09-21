@@ -114,7 +114,7 @@ uni.showToast({
 
 ![uni-app](//img-cdn-qiniu.dcloud.net.cn/uniapp/doc/debug2.png)
 
-### 关于 App 的调试
+### 关于 App 的调试debug
 
 自 `HBuilderX 2.0.3+` 版本起开始支持 `App` 端的调试。
 
@@ -141,18 +141,13 @@ Tip
 - debug仅支持自定义组件模式。如果是非自定义组件模式，请在manifest里配置选为自定义组件模式。非自定义组件模式即将停止支持，[详见](https://ask.dcloud.net.cn/article/36385)
 - `vue` 和 `nvue` 页面都能打断点调试
 - 目前仅支持 `nvue` 页面审查元素，`vue` 页面暂不支持，`Android` 暂不支持查看 `style`
+- App端提供真机运行的console.log日志输出，运行到真机或模拟器时，不用点debug按钮，操作手机，会在HBuilderX的控制台直接输出日志。
+- 如果是调试App的界面和常规API，推荐编译到H5端，点HBuilderX右上角的预览，在内置浏览器里调Dom，保存后立即看到结果，调试更方便。并且H5端也支持titleNView的各种复杂设置。唯一要注意的就是css兼容性，使用太新的css在pc上预览可能正常，但低端Android上异常，具体可查询caniuse等网站。
+- 常用的开发模式就是pc上使用内置浏览器预览调dom，运行到真机上看console.log。如果是很复杂的问题才使用debug。
+- vue页面也可以在微信开发者工具里调试，除了plus API，其他是一样的，微信开发者工具的查看Dom和网络和存储等调试工具相对而言更完善些。
+注意：即使不发布微信小程序、只发布App，也需要安装微信开发者工具。
+- uni-app的App端没有5+App那种webkit remote debug
 
-<!-- uni-app的App端没有webview调试（即webkit remote debug）。
-
-- App端提供真机运行的console.log日志输出，运行到真机或模拟器时，会在HBuilderX的控制台输出日志。（如果使用老版的非自定义组件编译模式，无法输出对象，需要把对象转字符串后输出）
-- 如果是调App的界面和常规API，推荐编译到H5端，用Chrome调Dom，保存后立即看到结果，调试更方便。并且H5端也支持titleNView的各种复杂设置。
-- 如果是调与手机能力有关的JS API，那么 uni 部分的js api可以使用微信开发者工具调试，因为uni-app 的 App端引擎实际上是一个强化的小程序引擎，所以可以使用微信开发者工具进行debug调试、查看Dom和网络和存储。
-- 如果是调plus专用的API，目前只能在控制台打log
-- 如果是调nvue，可以使用weex的调试工具，[详见](https://weex.apache.org/zh/tools/toolkit.html)
-
-一般推荐的做法是在PC的Chrome下开发测试，基本完成后运行到微信工具测试，最后再上真机运行看兼容性问题。但此时务必注意css兼容性问题，不要使用太新的css，否则在低版本Android上会不兼容。
-
-注意：即使不发布微信小程序、只发布App，也需要安装微信开发者工具。 -->
 
 ### 持续集成
 
