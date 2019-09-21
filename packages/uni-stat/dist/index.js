@@ -652,12 +652,9 @@ class Util {
         // }
       },
       fail: (e) => {
-        // if (process.env.NODE_ENV === 'development') {
-        //   console.log('stat request fail', e);
-        // }
         if (++this._retry < 3) {
           setTimeout(() => {
-            this.request(data);
+            this._sendRequest(optionsData);
           }, 1000);
         }
       }
@@ -867,10 +864,10 @@ const lifecycle = {
 };
 
 function main() {
-  const Vue = require('vue');
   if (process.env.NODE_ENV === 'development') {
     uni.report = function(type, options) {};
   }else{
+    const Vue = require('vue');
     (Vue.default || Vue).mixin(lifecycle);
     uni.report = function(type, options) {
       stat.sendEvent(type, options);
