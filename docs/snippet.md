@@ -116,7 +116,7 @@ uni.showToast({
 
 ### 关于 App 的调试
 
-自 `HBuilderX 2.0.3+ Alpha` 版本起开始支持 `App` 端的调试 
+自 `HBuilderX 2.0.3+` 版本起开始支持 `App` 端的调试。
 
 #### 打开调试窗口
 在 `HBuilderX` 中，正确运行项目： `运行 --> 运行到手机或模拟器 --> 选择设备`，项目启动后，在下方的控制台选择 `debug` 图标。
@@ -138,9 +138,9 @@ uni.showToast({
 ![debug](//img-cdn-qiniu.dcloud.net.cn/uniapp/doc/csdndebug-breakpoint.png)
 
 Tip 
-- 不支持非自定义组件模式
+- debug仅支持自定义组件模式。如果是非自定义组件模式，请在manifest里配置选为自定义组件模式。非自定义组件模式即将停止支持，[详见](https://ask.dcloud.net.cn/article/36385)
 - `vue` 和 `nvue` 页面都能打断点调试
-- 目前仅支持 `nvue` 页面查看元素，`vue` 页面暂不支持，`Android` 暂不支持查看 `style`
+- 目前仅支持 `nvue` 页面审查元素，`vue` 页面暂不支持，`Android` 暂不支持查看 `style`
 
 <!-- uni-app的App端没有webview调试（即webkit remote debug）。
 
