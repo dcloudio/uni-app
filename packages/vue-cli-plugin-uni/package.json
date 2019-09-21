@@ -17,7 +17,7 @@
   "author": "fxy060608",
   "license": "Apache-2.0",
   "dependencies": {
-    "@dcloudio/uni-stat": "^2.0.0-23220190921001",
+    "@dcloudio/uni-stat": "^2.0.0-alpha-23220190921001",
     "copy-webpack-plugin": "^4.6.0",
     "cross-env": "^5.2.0",
     "envinfo": "^6.0.1",
