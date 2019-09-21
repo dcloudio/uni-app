@@ -430,6 +430,8 @@ uni-app 提供内置 CSS 变量
 |NavigationBar|导航栏|44px|44px|
 |TabBar|底部选项卡|56px|50px|
 
+各小程序平台，包括同小程序平台的iOS和Android的高度也不一样。TabBar在App端默认高度，与微信iOS版主界面的tabbar高度保持一致。
+
 ### Flex布局
 
 为支持跨平台，框架建议使用Flex布局，关于Flex布局可以参考外部文档[A Complete Guide to Flexbox](https://css-tricks.com/snippets/css/a-guide-to-flexbox/)、[阮一峰的flex教程](http://www.ruanyifeng.com/blog/2015/07/flex-grammar.html)等。
