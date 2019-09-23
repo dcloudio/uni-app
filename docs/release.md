@@ -1,5 +1,18 @@
 # uni-app 更新日志
 ======================================
+#### 2.3.2.20190921
+  * App平台 修复 uni.writeBLECharacteristicValue 无法写入数据的 Bug [详情](https://ask.dcloud.net.cn/question/79204)
+  * App平台 修复 调用 uni.pageScrollTo 时页面内元素 fixed 定位失效的 Bug [详情](https://ask.dcloud.net.cn/question/73179)
+  * App平台 修复 调用 uni.setNavigationBarColor 导致其他页面状态栏颜色一起改变的 Bug
+  * App平台 修复 调用 uni.setNavigationBarColor 导致隐藏状态的导航栏显示的 Bug
+  * App平台 修复 调用 uni.switchTab 某些情况下白屏的 Bug
+  * App平台 修复 map组件的点击标记点事件（@markertap）参数中markerId属性不正确的Bug
+  * App-iOS平台 修复 slider组件中的内容可能出现重叠的Bug 
+  * App-iOS平台 修复 iOS13上input组件设置自动聚焦无效的Bug
+  * App-iOS平台 修复 nvue 组件 refresh 某些情况下闪退的 Bug
+  * H5平台 修复 longpress 事件消息对象的 touches/changedTouches 属性不正确的 Bug [详情](https://ask.dcloud.net.cn/question/79149)
+  * uni统计 修复 统计数据上报失败 request 报错的 Bug
+
 #### 2.3.1.20190920
   * App平台 修复 vue页面 scroll-view 组件在 iOS13 无法滚动的 Bug [详情](https://ask.dcloud.net.cn/question/78627)
   * H5平台 修复 uni.request 方法发起 GET 请求之前出现 OPTIONS 预检请求的 Bug
