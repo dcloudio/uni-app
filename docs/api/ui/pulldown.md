@@ -77,7 +77,7 @@ export default {
 
 ### FAQ
 Q：如何暂时禁用掉下拉刷新，待需要的时候再重新开启？
-A：`5+App` 平台下可以处理此类场景，详细参考：[uni-app 中实现动态禁用/开启下拉刷新](https://ask.dcloud.net.cn/article/35134)
+A：`App` 平台下可以处理此类场景，详细参考：[uni-app 中实现动态禁用/开启下拉刷新](https://ask.dcloud.net.cn/article/35134)
 
 Q：自定义title如何让下拉刷新在title之下
 A：App和H5端使用circle方式的下拉刷新，设offset在title高度之下。hello uni-app的模板-导航栏中有示例。小程序端无法实现，除非放弃原生下拉刷新，自己模拟下拉刷新，插件市场有类似插件，但性能不如原生下拉刷新。

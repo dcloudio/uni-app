@@ -21,7 +21,7 @@
 |controls|Array||控件||
 |include-points|Array||缩放视野以包含所有给定的坐标点|App-nvue 2.1.5+、微信小程序、H5、百度小程序、支付宝小程序|
 |show-location|Boolean||显示带有方向的当前定位点|微信小程序、H5、百度小程序、支付宝小程序|
-|@markertap|EventHandle||点击标记点时触发|App平台需要指定 marker 对象属性 id|
+|@markertap|EventHandle||点击标记点时触发|App-nvue暂不支持, App平台需要指定 marker 对象属性 id|
 |@callouttap|EventHandle||点击标记点对应的气泡时触发||
 |@controltap|EventHandle||点击控件时触发||
 |@regionchange|EventHandle||视野发生变化时触发|微信小程序、H5、百度小程序、支付宝小程序|
@@ -62,7 +62,7 @@
 |borderRadius|callout边框圆角|Number|App-nvue 2.1.5+、微信小程序、H5、百度小程序|
 |bgColor|背景色|String|App-nvue 2.1.5+、微信小程序、H5、百度小程序|
 |padding|文本边缘留白|Number|App-nvue 2.1.5+、微信小程序、H5、百度小程序|
-|display|'BYCLICK':点击显示; 'ALWAYS':常显|String|微信小程序、H5、百度小程序|
+|display|'BYCLICK':点击显示; 'ALWAYS':常显|String|App-nvue 2.1.5+、微信小程序、H5、百度小程序|
 |textAlign|文本对齐方式。有效值: left, right, center|String|App-nvue 2.1.5+、微信小程序、百度小程序|
 
 **marker 上的标签 label**
@@ -131,7 +131,7 @@
 
 地图组件的经纬度必填，如果不填经纬度则默认值是北京的经纬度。
 
-**示例**
+**示例** [查看示例](https://uniapp.dcloud.io/h5/pages/component/map/map)
 
 ```html
 <template>
@@ -174,16 +174,16 @@ map 组件相关操作的 JS API：[uni.createMapContext](api/location/map?id=cr
 
 **注意事项**
 
-- 小程序和 App的vue文件 中，`<map>` 组件是由引擎创建的原生组件，它的层级是最高的，不能通过 z-index 控制层级。在`<map>`上绘制内容，可使用组件自带的marker、controls等属性，也可以使用`<cover-view>`组件。App端还可以使用plus.nativeObj.view 或 subNVue 绘制原生内容，[参考](/component/native-component)。另外App端nvue文件不存在层级问题。
-- App端nvue文件的map和小程序拉齐度更高。vue里的map则与plus.map功能一致，和小程序的地图略有差异。
-- 小程序和 App 中，请勿在 scroll-view、swiper、picker-view、movable-view 中使用 `<map>` 组件。
-- 小程序和 App 中，css 动画对 `<map>` 组件无效。
+- 小程序和app-vue中，`<map>` 组件是由引擎创建的原生组件，它的层级是最高的，不能通过 z-index 控制层级。在`<map>`上绘制内容，可使用组件自带的marker、controls等属性，也可以使用`<cover-view>`组件。App端还可以使用plus.nativeObj.view 或 subNVue 绘制原生内容，[参考](/component/native-component)。另外App端nvue文件不存在层级问题。从微信基础库2.8.3开始，支持map组件的同层渲染，不再有层级问题。
+- App端nvue文件的map和小程序拉齐度更高。vue里的map则与plus.map功能一致，和小程序的地图略有差异。App端使用map推荐用nvue。
+- 在涉及层级问题的小程序中和app-vue中，请勿在 scroll-view、swiper、picker-view、movable-view 中使用 `<map>` 组件。
+- 小程序和 app-vue 中，css 动画对 `<map>` 组件无效。
 - map 组件使用的经纬度是国测局坐标，调用 uni.getLocation 接口需要指定 type 为 gcj02。
-- `<map>` 组件在不同平台的底层引擎是不同的：H5、微信小程序为腾讯地图；App、支付宝小程序为高德地图；百度小程序端为百度地图。App端vue页面也可以使用百度地图，在manifest中配置，但nvue页面只支持高德地图。
-- map 组件默认的api是参考微信小程序的，如果觉得不够用，可以用plus.map，可以通过`$getAppMap`获取原生地图对象，[详见](https://uniapp.dcloud.io/api/location/map)
+- `<map>` 组件在不同平台的底层引擎是不同的：H5、微信小程序为腾讯地图；App、支付宝小程序为高德地图；百度小程序端为百度地图。app-vue也可以使用百度地图，在manifest中配置，但app-nvue只支持高德地图。
+- map 组件默认的api是参考微信小程序的，如需要使用plus.map，可以通过`$getAppMap`获取原生地图对象，[详见](https://uniapp.dcloud.io/api/location/map)
 - H5 端获取定位信息，需要部署在 **https** 服务上，本地预览（localhost）仍然可以使用 http 协议。
 - 无 GPS 模块的 PC 设备使用 Chrome 浏览器的时候，位置信息是连接谷歌服务器获取的，国内用户可能获取位置信息失败。
-- App 端使用地图组件需要向高德或百度等三方服务商申请SDK资质，获取AppKey，打包时需要在manifest文件中勾选相应模块，在SDK配置中填写Appkey。在manifest可视化界面有详细申请指南。
+- App 端使用地图组件需要向高德或百度等三方服务商申请SDK资质，获取AppKey，打包时需要在manifest文件中勾选相应模块，在SDK配置中填写Appkey。注意申请包名和打包时的包名需匹配一致。在manifest可视化界面有详细申请指南。
 
 
 ##### FAQ

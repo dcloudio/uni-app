@@ -4,10 +4,12 @@
   * [package.json](collocation/package.md)
   * [vue-config.js](collocation/vue-config.md)
   * [uni.scss](collocation/uni-scss.md)
+  * [App.vue](collocation/App.md)
+  * [main.js](collocation/main.md)
 * 框架接口
   * [日志打印](collocation/frame/log.md)
   * [定时器](collocation/frame/timer.md)
-  * [生命周期](collocation/frame/lifetime.md)
+  * [生命周期](collocation/frame/lifecycle.md)
   * [页面](collocation/frame/window.md)
   * [页面通讯](collocation/frame/communication.md)
 <li></li>

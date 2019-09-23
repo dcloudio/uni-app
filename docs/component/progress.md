@@ -14,7 +14,7 @@
 |active-mode	|String		|backwards	|backwards: 动画从头播；forwards：动画从上次结束点接着播|微信小程序、5+APP、H5	|
 |@activeend		|EventHandle|			|动画完成事件											|微信小程序				|
 
-**示例**
+**示例** [查看演示](https://uniapp.dcloud.io/h5/pages/component/progress/progress)
 ```html
 <template>
 	<view>

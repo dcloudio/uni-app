@@ -50,8 +50,12 @@ var socketTask = uni.connectSocket({
 **注意事项**
 
 - 网络请求的 ``超时时间`` 可以统一在 ``manifest.json`` 中配置 [networkTimeout](/collocation/manifest?id=networktimeout)。
-- App目前不支持 ``ArrayBuffer`` 类型的数据收发。可以使用 [plus-websocket](https://ext.dcloud.net.cn/plugin?id=647) 插件替代。
-- 自定义组件模式下所有 `vue` 页面只能使用一个 `websocket` 连接。可以使用 [plus-websocket](https://ext.dcloud.net.cn/plugin?id=647) 插件替代。
+- App平台，2.2.6以下的版本，不支持 ``ArrayBuffer`` 类型的数据收发。老版本不愿升级也可以使用 [plus-websocket插件](https://ext.dcloud.net.cn/plugin?id=647) 插件替代。
+- App平台自定义组件模式下，以及支付宝小程序下，所有 `vue` 页面只能使用一个 `websocket` 连接。App下可以使用 [plus-websocket](https://ext.dcloud.net.cn/plugin?id=647) 插件替代实现多链接。App平台，2.2.6+起支持多个socket链接，数量没有限制。
+- 微信小程序平台1.7.0 及以上版本，最多可以同时存在5个WebSocket 连接。老版本只支持一个socket连接
+- 百度小程序平台自基础库版本 1.9.4 及以后支持多个socket连接。老版本只支持一个socket连接
+- QQ小程序平台最多支持同时存在5个socket链接
+
 
 ### uni.onSocketOpen(CALLBACK)
 监听WebSocket连接打开事件。

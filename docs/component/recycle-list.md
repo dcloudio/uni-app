@@ -4,13 +4,17 @@ app端nvue专用组件。
 
 `<recycle-list>` 是一个新的列表容器，具有回收和复用的能力，可以大幅优化内存占用和渲染性能。它的性能比list组件更高，但写法受限制。它除了会释放不可见区域的渲染资源，在非渲染的数据结构上也有更多优化。
 
-此组件自HBuilderX 2.1.5+起支持。
+此组件自HBuilderX 2.2.6+起支持。
 
 #### 子组件
 `<recycle-list>` 只能使用 `<cell-slot>` 作为其直接子节点，使用其他节点无效。
 
 #### <cell-slot>
 <cell-slot> 代表的是列表每一项的模板，它只用来描述模板的结构，并不对应实际的节点。`<cell-slot>` 的个数只表示模板的种类数，真实列表项的个数是由数据决定的。
+
+**注意**
+- `<cell-slot>` 包含自定义组件时，在 Android 上有性能问题
+- recycle-list 是区域滚动，不会触发页面滚动，无法触发pages.json配置的下拉刷新、页面触底onReachBottomDistance、titleNView的transparent透明渐变。
 
 
 属性|说明

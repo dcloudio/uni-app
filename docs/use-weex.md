@@ -18,7 +18,7 @@
 - 前端控件无法覆盖原生控件的问题。在nvue下，都是原生控件，覆盖map、video等不需要cover-view（如需要发布到小程序，仍然推荐写cover-view）
 - 同样因为层级问题得到解决，nvue可以实现video内嵌到swiper中，以实现抖音式视频滑动切换，例子见[插件市场](https://ext.dcloud.net.cn/plugin?id=664)；nvue的视频全屏后，仍然可以通过cover-view实现内容覆盖，比如增加文字标题、分享按钮。
 - nvue下有live-pusher组件，和小程序对齐。而vue页面下使用直播，需在条件编译里单独调用plus.video的API。
-- nvue下的map组件，小程序对齐。而vue页面的map组件有一些差异。
+- App端nvue文件的map和小程序拉齐度更高。vue里的map则与plus.map功能一致，和小程序的地图略有差异。
 - App端实现粘性布局，比如滚动吸顶，则nvue才能保证高性能，例子见[插件市场](https://ext.dcloud.net.cn/plugin?id=715)
 
 此外，App端，vue页面上也可以覆盖subnvue（一种非全屏的nvue页面覆盖在webview上），以解决App上的原生控件层级问题。[详见](https://ask.dcloud.net.cn/article/35948)
@@ -96,11 +96,11 @@ uni-app 深度改进了 weex，提供了2种编译模式，一种是常规的 we
 ### 2. 开发 nvue 页面
 
 ``nvue`` 页面结构同 ``vue``, 由 template、style、script 构成。
-* template： 模板写法、数据绑定同 ``vue``。组件支持2种模式，1、 ``weex`` 组件，参考：[weex 内置组件](https://weex.apache.org/zh/docs/components/a.html)；2、``uni-app``组件，参考：[nvue中支持的uni-app组件](https://ask.dcloud.net.cn/article/36074)
+* template： 模板写法、数据绑定同 ``vue``。组件支持2种模式，1、 ``weex`` 组件，同weex写法，参考：[weex 内置组件](https://weex.apache.org/zh/docs/components/a.html)；2、``uni-app``组件，同uni-app写法。部分组件还未在nvue下实现，具体见：[nvue中还未支持的uni-app组件](https://ask.dcloud.net.cn/article/36074)
 * style：由于采用原生渲染，**并非所有浏览器的 css 均支持，布局模型只支持 flex 布局**，虽然不会造成某些界面布局无法实现，但写法要注意。详见：[weex 样式](https://weex.apache.org/cn/wiki/common-styles.html)
-* script：写法同 ``vue``，并支持3种API
-	- weex API ：使用前需先引入对应模块，参考：[weex 内置模块](http://weex-project.io/cn/references/modules/index.html)
-	- uni API：nvue可以使用部分 uni API，详细支持列表请参照：[nvue 里可使用的 uni-app API](/use-weex?id=nvue-里可使用的-uni-app-api)
+* script：写法同 ``vue``，并支持3种API：
+	- weex API ：使用前需先引入对应模块，参考：[weex 模块引入](https://weex.apache.org/zh/docs/api/weex-variable.html#requiremodule)
+	- uni API：nvue可以使用大部分 uni API，个别API不支持，不支持列表请参照：[nvue 里还未支持的 uni-app API](/use-weex?id=nvue-里可使用的-uni-app-api)
 	- plus API：在自定义组件编译模式下，nvue里可直接使用plus API
 
 
@@ -148,9 +148,9 @@ uni-app 深度改进了 weex，提供了2种编译模式，一种是常规的 we
 HBuilderX内置了更好用的weex/uni-app调试工具，包括审查界面元素、看log、debug打断点，[详见](https://uniapp.dcloud.io/snippet?id=%e5%85%b3%e4%ba%8e-app-%e7%9a%84%e8%b0%83%e8%af%95)
 
 
-## 生命周期
+## weex 生命周期
 
-``nvue `` 的 uni-app 编译模式的生命周期同普通vue页面。而 weex 编译模式，即普通 weex 生命周期函数如下：
+``nvue `` 的 uni-app 编译模式的生命周期同普通vue页面，[参考](https://uniapp.dcloud.io/collocation/frame/lifecycle)。而 weex 编译模式，生命周期函数同weex，具体如下：
 
 |Vue 生命周期钩子|说明|
 |---|---|
@@ -292,13 +292,25 @@ globalEvent.addEventListener("plusMessage", e => {
 
 ## vue 和 nvue 共享的变量和数据
 除了通信事件，vue 和 nvue 页面之间还可以共享变量和存储。
-但注意nvue不支持vuex，uni-app提供的共享变量和数据的方案如下：
+uni-app提供的共享变量和数据的方案如下：
 
-1. uni.storage
+
+**1. vuex:**
+
+自```HBuilderX 2.2.5-alpha```起，nvue支持vuex
+
+**注意：**
+- 不支持直接引入`store`使用，可以使用`mapState`、`mapGetters`、`mapMutations`等辅助方法或者使用`this.$store`
+- 暂时只支持`uni-app`编译模式，不支持`weex`编译模式
+- `renderer:native`时也可以使用`vuex`
+
+**2. uni.storage:**
+
 vue和nvue页面可以使用相同的`uni.storage`存储。这个存储是持久化的。
 比如登陆状态可以保存在这里。
 
-2. globalData
+**3. globalData:**
+
 小程序有globalData机制，这套机制在uni-app里也可以使用，全端通用。
 在`App.vue`文件里定义globalData，如下：
 ```html
@@ -583,26 +595,8 @@ App.vue
 </script>
 ```
 
-## nvue 里可使用的 uni-app API
+## nvue 里不支持的 uni-app API
 `nvue` 支持大部分 uni-app API ，下面只列举目前还不支持的 API 。
-
-**地图**
-
-|API|说明|
-|:-|:-|
-|uni.createMapContext()|创建并返回 map 上下文|
-
-**视频**
-
-|API|说明|
-|:-|:-|
-|uni.createVideoContext()|创建并返回 video 上下文|
-
-**直播推流**
-
-|API|说明|
-|:-|:-|
-|uni.createLivePusherContext()|创建并返回 livePusher 上下文|
 
 **动画**
 
@@ -618,20 +612,7 @@ App.vue
 
 **绘画**
 
-|API|说明|
-|:-|:-|
-|uni.createCanvasContext()|创建 canvas 绘图上下文|
-|uni.canvasToTempFilePath()|把当前画布指定区域的内容导出生成指定大小的图片，并返回文件路径|
-|uni.canvasGetImageData()|返回一个数组，用来描述 canvas 区域隐含的像素数据|
-|uni.canvasPutImageData()|将像素数据绘制到画布的方法|
-
-**下拉刷新**
-
-|API|说明|
-|:-|:-|
-|uni.onPullDownRefresh()|监听该页面用户下拉刷新事件|
-|uni.startPullDownRefresh()|开始下拉刷新|
-|uni.stopPullDownRefresh()|停止当前页面下拉刷新|
+canvas API使用，详见canvas文档。
 
 **节点信息**
 
@@ -756,8 +737,7 @@ export default {
 - 现阶段 nvue 的定位是 vue 的补充。在 App 平台实现一些 vue 上无法实现或性能有问题的场景。
 - nvue 的各组件在安卓端默认是透明的，如果不设置background-color，可能会导致出现重影的问题。
 - 在 App.vue 中定义的全局js变量不会在 nvue 页面生效。globalData是生效的。
-- nvue 不支持 vue 里的 vuex
 - nvue 切换横竖屏时可能导致样式出现问题，建议有 nvue 的页面锁定手机方向。
-- 不能在 style 中引入字体文件，nvue 中字体图标的使用参考：[weex 加载自定义字体](https://weex.apache.org/zh/docs/modules/dom.html#addrule)。
+- 不能在 style 中引入字体文件，nvue 中字体图标的使用参考：[weex 加载自定义字体](https://weex.apache.org/zh/docs/modules/dom.html#addrule)。如果是本地字体，可以用plus.io的API转换路径。
 - 目前不支持在 nvue 页面使用 typescript/ts。
 - nvue 页面 ``titleNview`` 设为 ``false``时，想要模拟状态栏，可以参考：[https://ask.dcloud.net.cn/article/35111](https://ask.dcloud.net.cn/article/35111)。

@@ -1,9 +1,9 @@
 * 基础
   * [日志打印](api/log.md)
+  * [定时器](api/timer.md)
   * [uni.base64ToArrayBuffer](api/base64ToArrayBuffer?id=base64toarraybuffer)
   * [uni.arrayBufferToBase64](api/arrayBufferToBase64?id=arraybuffertobase64)
-  * [定时器](api/timer.md)
-  * [生命周期](api/lifetime.md)
+  * [生命周期](api/lifecycle.md)
 * 网络
   * [发起请求](api/request/request.md)
   * [上传、下载](api/request/network-file.md)
@@ -64,7 +64,7 @@
   * [电量](api/system/batteryInfo.md)
   * [NFC](api/system/nfc.md)
   * [设备方向](api/system/deviceMotion.md)
-* [Worker](api/worder.md)
+* [Worker](api/worker.md)
 * 键盘
   * [uni.hideKeyboard](/api/key?id=hidekeyboard)
   * [uni.onKeyboardHeightChange](/api/key?id=onkeyboardheightchange)

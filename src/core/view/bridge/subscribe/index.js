@@ -88,9 +88,9 @@ export default function initSubscribe (subscribe) {
           onReachBottomDistance,
           enableTransparentTitleNView
         })
-        setTimeout(function () { // 避免监听太早，直接触发了 scroll
+        requestAnimationFrame(function () { // 避免监听太早，直接触发了 scroll
           document.addEventListener('scroll', scrollListener)
-        }, 10)
+        })
       }
     })
   }
