@@ -29,7 +29,7 @@
 * camera 组件是由客户端创建的原生组件，它的层级是最高的，不能通过 z-index 控制层级。可使用 cover-view cover-image 覆盖在上面。
 * 请勿在 scroll-view、swiper、picker-view、movable-view 中使用 camera 组件。
 * 同一页面只能插入一个 camera 组件。
-* 相关API：[reateCameraContext](/api/media/camera-context)
+* 相关API：[createCameraContext](/api/media/camera-context)
 
 
 **代码示例**

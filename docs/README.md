@@ -3,7 +3,7 @@
 
 即使不跨端，```uni-app```同时也是更好的小程序开发框架。详见[评测](https://ask.dcloud.net.cn/article/35947)
 
-`DCloud`公司拥有340万开发者用户，旗下```uni-app```有5万+案例、600+插件、50+微信/qq群、更高的百度指数，可以放心选择。
+`DCloud`公司拥有350万开发者用户，旗下```uni-app```有5万+案例、600+插件、50+微信/qq群、更高的百度指数，可以放心选择。
 
 <div class="quick">
     <h3 id="快速体验"><a href="/README?id=%e5%bf%ab%e9%80%9f%e4%bd%93%e9%aa%8c" data-id="快速体验" class="anchor"><span>快速体验</span></a></h3>
@@ -41,19 +41,19 @@
         </a>
         <a href="//m3w.cn/uniapp" target="_blank" class="clear-style barcode-view">
 			<div class="barcode-img-box">
-				<img src="http://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/mp-toutiao.png" width="160"/>
+				<img src="https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/mp-toutiao.png" width="160"/>
 			</div>
         	<b>头条小程序版</b>
         </a>
         <a href="//m3w.cn/uniapp" target="_blank" class="clear-style barcode-view">
 			<div class="barcode-img-box">
-				<img src="http://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/hello-uni-qq.png" width="160"/>
+				<img src="https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/hello-uni-qq.png" width="160"/>
 			</div>
         	<b>QQ小程序版</b>
         </a>
     </div>
     <p>
-        <em>注：Appstore、百度、头条平台不能提交简单demo，故补充了一些其他功能。</em></br>
+        <em>注：某些平台不能提交简单demo，故补充了一些其他功能；hello uni-app示例代码可从[github](https://github.com/dcloudio/hello-uniapp)获取</em></br>
     </p>
 </div>
 

@@ -12,10 +12,11 @@
 
 **Tips**
 
-- `<image>` 组件默认宽度 300px、高度 225px；
+- `<image>` 组件默认宽度 300px、高度 225px；`app-nvue平台，暂时默认为屏幕宽度`
 - `src` 仅支持相对路径、绝对路径，支持 base64 码；
 - 页面结构复杂，css样式太多的情况，使用 image 可能导致样式生效较慢，出现 “闪一下” 的情况，此时设置 `image{will-change: transform}` ,可优化此问题。
 - 自定义组件里面使用 `<image>`时，若 `src` 使用相对路径可能出现路径查找失败的情况，故建议使用绝对路径。
+- webp格式的图片，app-vue下，iOS不支持，Android支持；app-nvue下，iOS和Android均支持。app-vue下也支持gif。
 
 **mode 有效值：**
 
@@ -37,7 +38,7 @@ mode 有 13 种模式，其中 4 种是缩放模式，9 种是裁剪模式。
 |裁剪|bottom left|不缩放图片，只显示图片的左下边区域|
 |裁剪|bottom right|不缩放图片，只显示图片的右下边区域|
 
-**示例：**
+**示例：** [查看示例](https://uniapp.dcloud.io/h5/pages/component/image/image)
  
 ```html
 <template>

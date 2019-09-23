@@ -18,7 +18,7 @@
 
 <img src="https://img-cdn-qiniu.dcloud.net.cn/uni-app-qr-all.jpg"/>
 
-*注： Appstore、百度、头条平台不能提交简单demo，故iOS、百度小程序、头条小程序版补充了一些其他功能。*
+*注： 某些平台不能提交简单demo，补充了一些其他功能。*
 
 ## 快速开始
 

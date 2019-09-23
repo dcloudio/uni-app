@@ -19,7 +19,7 @@
 
 `<picker-view />` 的子组件，仅可放置于 `<picker-view />` 中，其子节点的高度会自动设置成与 picker-view 的选中框的高度一致
 
-**示例**
+**示例** [查看演示](https://uniapp.dcloud.io/h5/pages/component/picker-view/picker-view)
 
 ```html
 <template>

@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-mp-baidu",
-  "version": "0.0.857",
+  "version": "2.0.0-23020190919001",
   "description": "uni-app mp-baidu",
   "main": "dist/index.js",
   "repository": {
@@ -13,5 +13,5 @@
   },
   "author": "fxy060608",
   "license": "Apache-2.0",
-  "gitHead": "08ea04b669e93f0db3acb2dfa38138298edd5789"
+  "gitHead": "0fac47b62d100213ce48c29dd9d0a335f8a00264"
 }

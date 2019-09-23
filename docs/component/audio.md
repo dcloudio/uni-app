@@ -37,7 +37,7 @@ app-nvue也不支持此组件。
 |3|解码错误|
 |4|不合适资源|
 
-**示例：**
+**示例：** [查看示例](https://uniapp.dcloud.io/h5/pages/component/audio/audio)
  
 ```html
 <template>

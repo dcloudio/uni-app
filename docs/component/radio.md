@@ -21,7 +21,7 @@
 |disabled|Boolean|false|是否禁用|
 |color|Color||radio的颜色，同css的color|
 
-**示例**
+**示例** [查看演示](https://uniapp.dcloud.io/h5/pages/component/radio/radio)
  
 ```html
 <template>

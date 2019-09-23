@@ -1,6 +1,11 @@
 ### uni.createMapContext(mapId,this)
 创建并返回 map 上下文 ``mapContext`` 对象。在自定义组件下，第二个参数传入组件实例this，以操作组件内 ``<map>`` 组件。
 
+**注意：uni.createMapContext(mapId, this)**
+- app-nvue 平台 2.2.5+ 支持 uni.createMapContext(mapId, this)
+- app-nvue 平台 2.2.5- 需要同时设置组件属性id和ref ``<map id="map1" ref="map1"></map>``，或者直接使用 ref，例如 ``this.$refs.map1``
+
+
 **平台差异说明**
 
 |5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
@@ -17,11 +22,11 @@ mapContext
 |:-|:-|:-|:-|:-|
 |getCenterLocation|OBJECT|获取当前地图中心的经纬度，返回的是 gcj02 坐标系，可以用于 [uni.openLocation](api/location/location?id=getlocation)|||
 |moveToLocation||将地图中心移动到当前定位点，需要配合map组件的show-location使用|||
-|translateMarker|OBJECT|平移marker，带动画|App-nvue 2.1.5+、微信小程序带动画||
-|includePoints|OBJECT|缩放视野展示所有经纬度|App-nvue 2.1.5+||
+|translateMarker|OBJECT|平移marker，带动画|app-nvue 2.1.5+、微信小程序带动画||
+|includePoints|OBJECT|缩放视野展示所有经纬度|app-nvue 2.1.5+||
 |getRegion|OBJECT|获取当前地图的视野范围|||
 |getScale|OBJECT|获取当前地图的缩放级别|||
-|$getAppMap||获取原生地图对象 [plus.maps.Map](https://www.html5plus.org/doc/zh_cn/maps.html#plus.maps.Map)|5+App自定义组件模式|1.9.3|
+|$getAppMap||获取原生地图对象 [plus.maps.Map](https://www.html5plus.org/doc/zh_cn/maps.html#plus.maps.Map)|app-vue自定义组件模式|1.9.3|
 
 `$getAppMap()` 注意事项：
 
@@ -75,7 +80,7 @@ mapContext
 
 **Tips**
 
-- 如果想在App端实现更多地图功能，可通过`$getAppMap()`获取原生地图对象`plus.maps.Map`，然后参考[文档](https://www.html5plus.org/doc/zh_cn/maps.html#plus.maps.Map)实现更多功能。
+- App端使用map，nvue比vue更强大。
 - H5 端获取定位信息，需要部署在 **https** 服务上，本地预览（localhost）仍然可以使用 http 协议。
 - 无 GPS 模块的 PC 设备使用 Chrome 浏览器的时候，位置信息是连接谷歌服务器获取的，国内用户可能获取位置信息失败。
 - App 端使用地图组件需要向高德或百度等三方服务商申请SDK资质，获取AppKey，打包时需要在manifest的SDK配置中填写Appkey。在manifest可视化界面有详细申请指南。

@@ -340,7 +340,9 @@ page {
 ### 全局样式与局部样式
 定义在 App.vue 中的样式为全局样式，作用于每一个页面。在 pages 目录下 的 vue 文件中定义的样式为局部样式，只作用在对应的页面，并会覆盖 App.vue 中相同的选择器。
 
-**注意：** App.vue 中通过 ``@import`` 语句可以导入外联样式，一样作用于每一个页面。
+**注意：** 
+- App.vue 中通过 ``@import`` 语句可以导入外联样式，一样作用于每一个页面。
+- nvue页面暂不支持全局样式
 
 ### CSS变量
 
@@ -428,6 +430,8 @@ uni-app 提供内置 CSS 变量
 |NavigationBar|导航栏|44px|44px|
 |TabBar|底部选项卡|56px|50px|
 
+各小程序平台，包括同小程序平台的iOS和Android的高度也不一样。TabBar在App端默认高度，与微信iOS版主界面的tabbar高度保持一致。
+
 ### Flex布局
 
 为支持跨平台，框架建议使用Flex布局，关于Flex布局可以参考外部文档[A Complete Guide to Flexbox](https://css-tricks.com/snippets/css/a-guide-to-flexbox/)、[阮一峰的flex教程](http://www.ruanyifeng.com/blog/2015/07/flex-grammar.html)等。
@@ -441,12 +445,16 @@ uni-app 提供内置 CSS 变量
 - 使用本地路径背景图片需注意：
     1. 图片小于 40kb，``uni-app`` 会自动将其转化为 base64 格式；
     2. 图片大于等于 40kb， 需开发者自己将其转换为base64格式使用，或将其挪到服务器上，从网络地址引用。
-    3. 本地背景图片的引用路径仅支持以 ~@ 开头的绝对路径（不支持相对路径）。
+    3. 本地背景图片的引用路径推荐使用以 ~@ 开头的绝对路径。
    ```css
         .test2 {
             background-image: url('~@/static/logo.png');
         }
    ```
+
+**注意**
+- 微信小程序不支持相对路径（真机不支持，开发工具支持）
+- 其他端使用本地背景图片作为背景图没有限制
 
 ### 字体图标
 
@@ -459,7 +467,7 @@ uni-app 提供内置 CSS 变量
 - ``uni-app`` 本地路径图标字体支持情况：
     1. 字体文件小于 40kb，``uni-app`` 会自动将其转化为 base64 格式；
     2. 字体文件大于等于 40kb， 需开发者自己转换，否则使用将不生效；
-    3. 字体文件的引用路径仅支持以 ~@ 开头的绝对路径（不支持相对路径）。
+    3. 字体文件的引用路径推荐使用以 ~@ 开头的绝对路径。
    ```css
         @font-face {
             font-family: test1-icon;
@@ -617,6 +625,8 @@ uni-app支持使用**npm**安装第三方包。
 npm init -y
 ```
 
+cli项目默认已经有package.json了。HBuilderX创建的项目默认没有，需要通过初始化命令来创建。
+
 **安装依赖**
 
 在项目根目录执行命令安装npm包：
@@ -636,7 +646,7 @@ const package = require('packageName')
 
 * 为多端兼容考虑，建议优先从 [uni-app插件市场](https://ext.dcloud.net.cn/) 获取插件。直接从 npm 下载库很容易只兼容H5端。
 * 非 H5 端不支持使用含有 dom、window 等操作的 vue 组件和 js 模块，安装的模块及其依赖的模块使用的 API 必须是 uni-app 已有的 [API](./api/README)（兼容小程序 API），比如：支持[高德地图微信小程序 SDK](https://www.npmjs.com/package/amap-wx)。类似[jQuery](https://www.npmjs.com/package/jquery) 等库只能用于H5端。
-* node_modules 目录必须在项目根目录下。
+* node_modules 目录必须在项目根目录下。不管是cli项目还是HBuilderX创建的项目。
 * 支持安装 mpvue 组件，但npm方式不支持小程序自定义组件（如 wxml格式的vant-weapp），使用小程序自定义组件请参考：[小程序组件支持](./frame?id=%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%BB%84%E4%BB%B6%E6%94%AF%E6%8C%81)。
 * 关于ui库的获取，详见[多端UI库](https://ask.dcloud.net.cn/article/35489)
 
@@ -710,14 +720,14 @@ const package = require('packageName')
 ```
 ## 小程序组件支持
 
-``uni-app`` 支持在 5+App 和小程序中使用**小程序组件**。
+``uni-app`` 支持在 App 和小程序中使用**小程序自定义组件**。
 
 **平台差异说明**
 
 |平台|支持情况|小程序组件存放目录|
 |---|---|---|
 |H5|不支持||
-|5+App|支持微信小程序组件|wxcomponents|
+|App（不含nvue）|支持微信小程序组件|wxcomponents|
 |微信小程序|支持微信小程序组件|wxcomponents|
 |支付宝小程序|支持支付宝小程序组件|mycomponents|
 |百度小程序|支持百度小程序组件|swancomponents|
@@ -922,9 +932,8 @@ slide-view.vue
 
 **注意事项**
 
-* 小程序组件需要放在项目特殊文件夹 ``wxcomponents``（或 mycomponents、swancomponents）。
-* HBuilderX 建立的工程 ``wxcomponents`` 文件夹在 项目根目录下。
-* vue-cli 建立的工程 ``wxcomponents`` 文件夹在 ``src`` 目录下。
+* 小程序组件需要放在项目特殊文件夹 ``wxcomponents``（或 mycomponents、swancomponents）。HBuilderX 建立的工程 ``wxcomponents`` 文件夹在 项目根目录下。vue-cli 建立的工程 ``wxcomponents`` 文件夹在 ``src`` 目录下。可以在 vue.config.js 中自定义其他目录。
+* 当需要在 vue 组件中使用小程序组件时，注意在 pages.json 的 globalStyle 中配置 usingComponents，而不是页面级配置。
 * 注意数据和事件绑定的差异，使用时应按照 vue 的数据和事件绑定方式
 	- 属性绑定从 attr="{{ a }}"，改为 :attr="a"；从 title="复选框{{ item }}" 改为 :title="'复选框' + item"
 	- 事件绑定从 bind:click="toggleActionSheet1" 改为 @click="toggleActionSheet1"
@@ -938,13 +947,22 @@ slide-view.vue
 ## WXS
 
 WXS是微信小程序的一套脚本语言，[规范详见](https://developers.weixin.qq.com/miniprogram/dev/framework/view/wxs/)。
-uni-app可以将wxs代码编译到微信小程序、QQ小程序、5+APP上（`HBuilderX 2.2.4-alpha`及以上版本）
+
+它的特点是运行在渲染层。当需要避免逻辑层和渲染层交互通信折损时，可采用wxs。
+
+uni-app可以将wxs代码编译到微信小程序、QQ小程序、APP、H5上（`HBuilderX 2.2.5-alpha`及以上版本）
 
 与wxs类似，百度小程序提供了Filter、阿里小程序提供了SJS，uni-app也支持使用这些功能，并将它们编译到百度和阿里的小程序端。不过它们的功能还不如wxs强大。此外头条系小程序自身不支持类似功能。
 
+**平台差异说明**
+
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|√(不支持nvue)|√|√|SJS|Filter|x|√|
+
 **wxs示例**
 
-以下是一些使用 WXS 的简单示例，要完整了解 WXS 语法，请参考[WXS 语法参考](https://developers.weixin.qq.com/miniprogram/dev/reference/wxs/)。本示例使用wxs响应touchmove事件，减少视图层与逻辑层通信，使滑动更加丝滑。
+以下是一些使用 WXS 的简单示例，要完整了解 WXS 语法，请参考[WXS 语法参考](https://developers.weixin.qq.com/miniprogram/dev/reference/wxs/)。本示例使用wxs响应`touchmove`事件，减少视图层与逻辑层通信，使滑动更加丝滑。
 
 ```html
 <template>
@@ -954,7 +972,7 @@ uni-app可以将wxs代码编译到微信小程序、QQ小程序、5+APP上（`HB
 		</view>
 	</view>
 </template>
-<wxs module="test">
+<script module="test" lang="wxs">
 	var startX = 0
 	var startY = 0
 	var lastLeft = 50; var lastTop = 50
@@ -985,7 +1003,7 @@ uni-app可以将wxs代码编译到微信小程序、QQ小程序、5+APP上（`HB
 	  touchstart: touchstart,
 	  touchmove: touchmove
 	}
-</wxs>
+</script>
 
 <script>
 	export default {
@@ -1020,7 +1038,7 @@ uni-app可以将wxs代码编译到微信小程序、QQ小程序、5+APP上（`HB
 
 支付宝小程序，百度小程序官方暂未支持事件响应，不过也可以使用对应的SJS、Filter过滤器实现一些数据处理的操作，以下代码展示了一个时间格式化的小功能
 
-index.vue  
+`index.vue`
 
 ```html
 <template>
@@ -1033,8 +1051,8 @@ index.vue
 		</view>
 	</view>
 </template>
-<filter module="utils" src="./utils.filter.js"></filter>
-<import-sjs module="utils" src="./utils.sjs" />
+<script module="utils" lang="filter" src="./utils.filter.js"></script>
+<script module="utils" lang="sjs" src="./utils.sjs"></script>
 
 <script>
 	export default {
@@ -1053,7 +1071,7 @@ index.vue
 </script>
 ```
 
-utils.sjs 与 utils.filter.js 
+`utils.sjs` 与 `utils.filter.js` 内容一致
 
 ```js
 export default {
@@ -1110,17 +1128,39 @@ export default {
 
 **注意**
 
-- **重要**编写wxs、sjs、filter.js 内容时必须遵循相应语法规范
+引入方式
+
+```html
+<!-- 内联 -->
+<script module="test" lang="wxs">
+  //...code
+</script>
+<script module="utils" lang="filter">
+  //...code
+</script>
+
+
+<!-- 外部引入 -->
+<script module="utils" lang="wxs" src="./utils.wxs"></script>
+<script module="utils" lang="filter" src="./utils.filter.js"></script>
+<script module="utils" lang="sjs" src="./utils.sjs"></script>
+```
+
+- **【重要】** 编写wxs、sjs、filter.js 内容时必须遵循相应语法规范
+- **【重要】** `module`所指定的模块名不可与`data`、`methods`、`computed`内的属性重名
 - 目前各个小程序正在完善相关规范，可能会有较大改动，请务必仔细阅读相应平台的文档
 - 支付宝小程序请使用sjs规范，[详见](https://docs.alipay.com/mini/framework/sjs)
-- 支付宝小程序sjs只能定义在.sjs 文件中。然后使用```<import-sjs>```标签引入
-- 支付宝小程序import-sjs的标签属性```name```、```from```被统一为了```module```、```src```以便后续实现多平台统一写法
+- 支付宝小程序sjs只能定义在.sjs 文件中，然后使用```<script>```标签引入
+- 支付宝小程序`script`的标签属性`name`、`from`被统一为了`module`、`src`以便后续实现多平台统一写法
 - 百度小程序中请使用Filter规范，[详见](https://smartprogram.baidu.com/docs/develop/framework/view_filter/)
-- 百度小程序Filter只能导出function函数
+- 百度小程序Filter只能导出`function`函数
 - 暂不支持在 wxs、sjs、filter.js 中调用其他同类型文件
 - wxs、filter.js既能内联使用又可以外部引入，sjs只能外部引入
-- mp-qq 目前对内联的 wxs 支持不好，部分写法会导致编译出错
-- 在微信自定义组件中（wxcomponents）也可以使用wxs
+- QQ小程序目前对内联的 wxs 支持不好，部分写法可能会导致编译出错，尽量使用外部引入的方式
+- 在微信自定义组件中`wxcomponents`也可以使用wxs
+- `nvue`页面暂不支持wxs、sjs、filter.js
+- 各个`script`标签会分别被打包至对应支持平台，不需要额外写条件编译
+- 自`HBuilderX 2.2.5-alpha`开始，不推荐使用各个小程序自有的引入方式，推荐使用`script`标签引入
 
 
 ## 致谢

@@ -2,7 +2,9 @@
 
 ``uni-app`` 在 App 端或小程序端运行时，从架构上分为逻辑层和视图层两个部分。逻辑层负责储存数据和执行业务逻辑，视图层负责页面渲染。
 
-页面加载时，联网和逻辑运算在逻辑层，然后会传递数据给视图层渲染。这种通信有损耗。同样，在视图层操作时，比如拖动页面，要实时传递事件给逻辑层接收，也是有损耗的。
+页面加载时，联网和逻辑运算在逻辑层（Android是v8，iOS是jscore），然后会传递数据给视图层渲染。这种通信有损耗。同样，在视图层操作时，比如拖动页面，要实时传递事件给逻辑层接收，也是有损耗的。
+
+在App端，nvue页面的视图层是由原生引擎渲染的，vue页面的视图层是os的webview渲染的。
 
 
 #### 优化建议
@@ -30,7 +32,7 @@
 **长列表**
 - 长列表中如果每个item有一个点赞按钮，点击后点赞数字+1，此时点赞组件必须是一个单独引用的组件，才能做到差量数据更新。否则会造成整个列表数据重载。（要求自定义组件模式）
 - 长列表中每个item并不一定需要做成组件，取决于你的业务中是否需要差量更新某一行item的数据，如没有此类需求则不应该引入大量组件。（点击item后背景变色，属于css调整，没有更新data数据和渲染，不涉及这个问题）
-- app端nvue的长列表应该使用list组件，有自动的渲染资源回收机制。
+- app端nvue的长列表应该使用list组件，有自动的渲染资源回收机制。vue页面使用页面滚动的性能，好于使用scroll-view的区域滚动。
 - 如需要左右滑动的长列表，请在HBuilderX新建uni-app项目选新闻模板，那是一个标杆实现。自己用swiper和scroll-view做很容易引发性能问题。
 
 **减少一次性渲染的节点数量**
@@ -71,7 +73,7 @@
 **优化包体积**
 
 * uni-app发行到小程序时，自带引擎只有几十K，主要是一个定制过的vue.js核心库。如果使用了es6转es5、css对齐的功能，可能会增大代码体积，可以配置这些编译功能是否开启。
-* uni-app的H5端，自带了vue.js、vue-rooter、小程序ui库（如picker、switch等）、小程序的对齐js api。默认包体积约500k，服务器部署gzip后162k。可以在manifest配置[摇树优化](https://uniapp.dcloud.io/collocation/manifest?id=optimization)，按需使用组件和API。进行摇树优化后，且gzip后，框架体积仅92k，只是相当于vue.js和vue-root及部分es6 polyfill库的体积。
+* uni-app的H5端，自带了vue.js、vue-rooter及部分es6 polyfill库，这部分的体积gzip后只有92k，和web开发使用vue基本一致。而内置组件ui库（如picker、switch等）、小程序的对齐js api等，相当于一个完善的大型ui库。但大多数应用不会用到所有内置组件和API。由此uni-app提供了摇树优化机制，未摇树优化前的uni-app整体包体积约500k，服务器部署gzip后162k。开启摇树优化需在manifest配置，[详情](https://uniapp.dcloud.io/collocation/manifest?id=optimization)。
 * uni-app的App端，因为自带了一个独立v8引擎和小程序框架，所以比HTML5Plus或mui等普通hybrid的App引擎体积要大。Android基础引擎约15M。App还提供了扩展模块，比如地图、蓝牙等，打包时如不需要这些模块，可以裁剪掉，以缩小发行包体积。在 manifest.json-App模块权限 里可以选择。
 * App端支持如果选择纯nvue项目（manifest里设置app-plus下的renderer:"native"），包体积可以进一步减少2M左右。
 * uni-app的App端默认包含arm32和x86两个cpu的支持so库。这会增大包体积。如果你在意体积控制，可以在manifest里去掉x86 cpu的支持（manifest可视化界面-App其他设置里选择cpu），这可以减少包体积到9M。但代价是不支持intel的cpu了。一般手机都是arm的，仅个别少见的Android pad使用x86 cpu。另外as的模拟器里如果选择x86时也无法运行这种apk。

@@ -14,7 +14,7 @@ H5、App的nvue页面，不存在混合渲染的情况，它们或者全部是�
 * [input](/component/input)（仅在微信小程序、百度小程序、支付宝小程序、头条小程序中且input置焦时表现为原生组件）
 * [textarea](/component/textarea)（仅在微信小程序、百度小程序、头条小程序表现为原生组件）
 * [live-player](/component/live-player)（仅微信小程序、百度小程序支持，App端直接使用video组件可同时实现拉流）
-* [live-pusher](/component/live-pusher)（仅微信小程序、百度小程序支持，App端直接使用plus.video.LivePusher可实现推流）
+* [live-pusher](/component/live-pusher)（仅微信小程序、百度小程序、app-nvue支持，app-vue使用plus.video.LivePusher可实现推流）
 * [cover-view](/component/cover-view)
 * [cover-image](/component/cover-view?id=cover-image)
 
@@ -24,7 +24,8 @@ H5、App的nvue页面，不存在混合渲染的情况，它们或者全部是�
 由于原生组件脱离在 WebView 渲染流程外，因此在使用时有以下限制：
 
 * 原生组件的层级是**最高**的，所以页面中的其他组件无论设置 z-index 为多少，都无法盖在原生组件上。后插入的原生组件可以覆盖之前的原生组件。
-* 原生组件无法在 scroll-view、swiper、picker-view、movable-view 中使用（微信基础库2.4.4起支持了原生组件在 scroll-view、swiper、movable-view 中的使用，即原生组件的同层渲染；App-nvue 2.1.5也实现了同层渲染了）
+* 原生组件无法在 scroll-view、swiper、picker-view、movable-view 中使用。
+* 同层渲染支持：微信基础库2.4.4起支持了video的同层渲染、微信基础库2.8.3支持map的同层渲染。支持同层渲染后，相关组件的时候不再有层级问题，无需再使用cover-view覆盖，也可以内嵌入swiper等组件。app-nvue 不涉及层级问题，天然所有组件都是同层渲染。
 * 部分CSS样式无法应用于原生组件，例如：
     * 无法对原生组件设置 CSS 动画；
     * 无法定义原生组件为 position: fixed；

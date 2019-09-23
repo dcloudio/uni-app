@@ -1,11 +1,11 @@
-uni-app编译到App时，使用了DCloud的5+App引擎，该引擎跨iOS和Android，拥有众多案例，上线4年来产生几十万个App，有2亿手机用户在使用基于5+引擎开发的应用。详见[https://dcloud.io/case/](https://dcloud.io/case/)
+如特别关心App端案例，注意uni-app编译到App时，使用了DCloud的5+App引擎，拥有众多案例（包括中国邮政、中国工商、湖北银行、360等），有2亿手机用户在使用基于5+引擎开发的应用。详见[https://dcloud.io/case/](https://dcloud.io/case/)
 
-uni-app已经有几十万开发者，创建了几十万个项目，是开发者数量和案例最丰富的多端开发框架。
-我们相信还有更多优秀案例，没有被我们采集到，欢迎大家到[项目案例征集](//github.com/dcloudio/uni-app/issues/6)提交。
+uni-app已经有几十万开发者，是开发者数量和案例最丰富的多端开发框架。
+我们相信还有更多优秀案例，没有被我们采集到，欢迎大家到[项目案例征集](https://github.com/dcloudio/uni-app/issues/6)提交。
 
 ### 官方示例
 
-<a href="//m3w.cn/uniapp" target="_blank" class="clear-style"><b>Hello uni-app：</b></a>演示uni-app框架的组件、接口、模板，可以使用手机扫描下方App码下载iOS、Android原生安装包，也可以使用微信扫描小程序码，体验uni-app的小程序版本。本项目源码在HBuilderX中新建项目可获得。
+<a href="//m3w.cn/uniapp" target="_blank" class="clear-style"><b>Hello uni-app：</b></a>演示uni-app框架的组件、接口、模板，可以使用手机扫描下方App码下载iOS、Android原生安装包，也可以使用微信扫描小程序码，体验uni-app的小程序版本。本项目源码可在HBuilderX中新建项目获得，也可从[github](https://github.com/dcloudio/hello-uniapp)上获取。
 <div style="display:flex;justify-content: space-around;">
 	<a href="//m3w.cn/uniapp" target="_blank" class="clear-style barcode-view">
 		<img src="//img.cdn.aliyun.dcloud.net.cn/guide/uniapp/app_download.png" width="200"/>
@@ -50,7 +50,7 @@ uni-app已经有几十万开发者，创建了几十万个项目，是开发者�
 <a href="https://www.oschina.net/" target="_blank" class="clear-style"><b>开源中国：</b></a> 中文开源技术交流社区，提供最新的开源软件资讯。
 <div style="display:flex;justify-content: space-around;">
 	<a href="javascript:;" target="_blank" class="clear-style barcode-view">
-		<img src="http://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/oschina_weixin.jpg" width="200"/>
+		<img src="https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/oschina_weixin.jpg" width="200"/>
 		<span style="margin-top:15px;">微信小程序码</span>
 	</a>
     <a href="javascript:;" target="_blank" class="clear-style barcode-view">
@@ -98,11 +98,11 @@ uni-app已经有几十万开发者，创建了几十万个项目，是开发者�
 		<span style="margin-top:15px;">百度小程序码</span>
 	</a>
 	<a href="https://www.cyb520.com/" target="_blank" class="clear-style barcode-view">
-		<img src="https://img.cyb520.com/faceImg/2019/08/17/130C1F3F-2E93-A55D-D6B2-074BEBE1902F.png/a120" width="200"/>
+		<img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/cyb-qq.jpg" width="200"/>
 		<span style="margin-top:15px;">QQ小程序码</span>
 	</a>
 	<a href="https://www.cyb520.com/" target="_blank" class="clear-style barcode-view">
-		<img src="https://img.cyb520.com/faceImg/2019/08/17/404C2595-2B08-D471-1317-6D5375F195C5.png/a120" width="200"/>
+		<img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/cyb-toutiao.png" width="200"/>
 		<span style="margin-top:15px;">头条/抖音小程序码</span>
 	</a>
 </div>
@@ -145,6 +145,8 @@ uni-app已经有几十万开发者，创建了几十万个项目，是开发者�
 
 **极志愿：**专业高考志愿填报。**<span style="color:#42b983">多端获客典型案例，1个月获得400万用户</span>**，[详见报道](https://mp.weixin.qq.com/s?__biz=MzU3NTU5NDc0NA==&mid=2247491214&idx=1&sn=7e334d079146d9e31cea407f45bd8624&chksm=fd219719ca561e0f9a85b30017618eaf9551b46cdd6ecdf856bc4e47aee4ca93767fcf23147f&mpshare=1&scene=1&srcid=0713VwAOIuRllzMB6syoQssb&key=15a2b72b2464b4fe73325967f733ac332583d5db37f1812c63613c083a8f5921bca2ada2140d45e07657b062dc451f27cc48fe4fd298f6456f300895a90bd471480afdc2c8dc5a45254fb1dc48d3b79a&ascene=1&uin=MTkzNjMxMzU%3D&devicetype=Windows+10&version=62060833&lang=zh_CN&pass_ticket=xW6dPp%2F565g5S8hl1lz%2F8FLQBEzW6KUHyyqyHPdT2nk%3D)。体验方式：[App、微信小程序、百度小程序、H5 官网地址](https://www.jizhy.com/home/)
 
+**中华英才网：** 百度小程序搜索“中华英才网”
+
 **联想集团官方小程序：** 微信小程序搜索 “联想集团”
 
 **张亮麻辣烫：** 百度小程序搜索 “张亮麻辣烫”
@@ -161,15 +163,19 @@ uni-app已经有几十万开发者，创建了几十万个项目，是开发者�
 
 **浙江ETC：**微信小程序搜索 “浙江ETC”、支付宝小程序搜索 “浙江ETC”、[H5](https://issue.zjetc.cn/)
 
+**中国银联云闪付：** App部分页面使用uni-app制作
+
 **拉卡拉收款宝：** App部分页面使用uni-app制作
 
 **香橙：** 餐馆SaaS服务，手机点餐、下单、排队叫号、营销推广。[官网](http://ivcvc.com)
 
-**波比英语课堂：**幼儿英语启蒙神器培养国际宝宝。[App、小程序通用链接](//m3w.cn/bbyykt)
+**围棋战场：**围棋对弈，游戏类的小程序（非小游戏）。[微信小程序码](https://user-images.githubusercontent.com/16237216/65005363-327a9f80-d932-11e9-9be6-68cdbcdfdbf1.png)
 
-**课呱呱：**在线学习好工作。[App、小程序、H5通用链接](//m3w.cn/__uni__b19209a)
+**波比英语课堂：**幼儿英语启蒙神器培养国际宝宝。[App、小程序通用链接](http://m3w.cn/bbyykt)
 
 **桂聘：** 广西区域招聘，随时随地找工作，[Android和iOS](http://www.guipin.com/jihui/)
+
+**课呱呱：**在线学习好工作。[App、小程序、H5通用链接](http://m3w.cn/__uni__b19209a)
 
 **阿拉运：** 物流行业app，nvue案例，[iOS和Android下载页](http://mb.ialayun.com/)
 
@@ -438,6 +444,24 @@ uni-app已经有几十万开发者，创建了几十万个项目，是开发者�
 **超英预告：**超级英雄预告，腾讯课堂Next学院的uni-app课程示例，[H5](http://www.imovietrailer.com)、微信小程序搜索“NEXT超英预告”。
 
 **垃圾分类帮帮团：** [微信小程序码地址](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/ljfl.png)
+
+**FUNSOLE：**Funsole疯收是一个专业的球鞋交易平台。[App和小程序通用链接](https://m3w.cn/funsole)
+
+**自由职业助手：**[微信小程序码](https://user-images.githubusercontent.com/34791472/60387434-b6608080-9ad5-11e9-8d5d-bc9f91e740ce.jpg)
+
+**拾阅草堂：**网络小说。[微信小程序码](https://user-images.githubusercontent.com/12842804/61346867-371ccc00-a88d-11e9-8386-18e27677869c.png)
+
+**千家找房：**二手房、新房买卖租赁平台。各大应用商城搜索“千家找房”下载APP、[H5](https://m.allqj.com)、[微信小程序二维码](https://user-images.githubusercontent.com/31872878/62843602-a3081e00-bced-11e9-8a2d-3f997be6cacf.png)
+
+**坤典智慧农场：**体验农村种植、养殖的生活，足不出户就可以租地种植自己的蔬菜了，养殖鸡鸭牛羊，通过视频远程查看。[iOS码](https://user-images.githubusercontent.com/29654065/63156422-3cfdfc80-c047-11e9-8c41-23d298279466.jpg)、[Android码](https://user-images.githubusercontent.com/29654065/63156422-3cfdfc80-c047-11e9-8c41-23d298279466.jpg)、[微信小程序码](https://user-images.githubusercontent.com/29654065/63156422-3cfdfc80-c047-11e9-8c41-23d298279466.jpg)、[H5码](https://user-images.githubusercontent.com/29654065/63156422-3cfdfc80-c047-11e9-8c41-23d298279466.jpg)
+
+**指动全城：**一个为宝宝选择好产品的线上渠道。[App和小程序通用链接](https://m3w.cn/__uni__6020544)
+
+**极客修：**专门修手机的小程序。微信、支付宝搜索 极客修 小程序
+
+**小米手环4自定义表盘软件：** [Android](https://www.coolapk.com/apk/tech.pingx.watchface)、[H5](http://watchface.pingx.tech/h5/)
+
+**斗豆侠：**购物App。[iOS](https://apps.apple.com/cn/app/id1395120441)、[Android](https://obs.myhwclouds.com/vipbean/xgyx_guns/APK/yq.apk)
 
 
 #### 更多小程序案例（可在微信小程序中搜索）@wx-more

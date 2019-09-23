@@ -26,7 +26,7 @@
 - 支持 `\n` 方式换行。
 - 如果使用 `<span>` 组件编译时会被转换为 `<text>`。
 
-**示例**
+**示例** [查看演示](https://uniapp.dcloud.io/h5/pages/component/text/text)
 ```html
 <template>
 	<view>
