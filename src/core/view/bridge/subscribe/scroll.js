@@ -91,6 +91,10 @@ export function createScrollListener (pageId, {
   }
 
   function trigger () {
+    const pages = getCurrentPages()
+    if (!pages.length || pages[pages.length - 1].$page.id !== pageId) {
+      return
+    }
     // publish
     const scrollTop = window.pageYOffset
     if (enablePageScroll) { // 向 Service 发送 onPageScroll 事件
