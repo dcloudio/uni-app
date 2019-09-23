@@ -67,7 +67,9 @@ process.UNI_STAT_CONFIG = {
 
 // 默认启用 自定义组件模式
 // if (isInHBuilderXAlpha) {
+let usingComponentsAbsent = false
 if (!platformOptions.hasOwnProperty('usingComponents')) {
+  usingComponentsAbsent = true
   platformOptions.usingComponents = true
 }
 // }
@@ -170,7 +172,12 @@ if (process.env.UNI_USING_COMPONENTS) { // 是否启用分包优化
   }
 }
 
-const warningMsg = `uni-app将于2019年11月1日起停止支持非自定义组件模式 [详情](https://ask.dcloud.net.cn/article/36385)`
+const warningMsg =
+  usingComponentsAbsent
+    ? `该应用之前可能是非自定义组件模式，目前以自定义组件模式运行。非自定义组件将于2019年11月1日起停止支持。详见：https://ask.dcloud.net.cn/article/36385`
+    : `uni-app将于2019年11月1日起停止支持非自定义组件模式 [详情](https://ask.dcloud.net.cn/article/36385)`
+
+const needWarning = !platformOptions.usingComponents || usingComponentsAbsent
 // 输出编译器版本等信息
 if (process.env.UNI_PLATFORM !== 'h5') {
   try {
@@ -190,20 +197,20 @@ if (process.env.UNI_PLATFORM !== 'h5') {
       }).length) {
         console.log(info)
         console.log(modeText)
-        if (!platformOptions.usingComponents) {
+        if (needWarning) {
           console.log(warningMsg)
         }
         console.log('当前nvue编译模式：' + (isNVueCompiler ? 'uni-app' : 'weex') +
           ' 。编译模式差异见：https://ask.dcloud.net.cn/article/36074')
       } else {
         console.log(info + '，' + modeText)
-        if (!platformOptions.usingComponents) {
+        if (needWarning) {
           console.log(warningMsg)
         }
       }
     } else {
       console.log(modeText)
-      if (!platformOptions.usingComponents) {
+      if (needWarning) {
         console.log(warningMsg)
       }
     }
