@@ -386,21 +386,16 @@ var previewImage = {
 
 // 不支持的 API 列表
 const todos = [
-  'getBackgroundAudioManager',
   'createCameraContext',
   'createLivePlayerContext',
   'getSavedFileInfo',
-  'openDocument',
-  'chooseLocation',
   'createMapContext',
-  'canIUse',
   'onMemoryWarning',
   'onGyroscopeChange',
   'startGyroscope',
   'stopGyroscope',
   'setScreenBrightness',
   'getScreenBrightness',
-  'onUserCaptureScreen',
   'addPhoneContact',
   'openBluetoothAdapter',
   'startBluetoothDevicesDiscovery',
@@ -439,8 +434,6 @@ const todos = [
   'setBackgroundColor',
   'setBackgroundTextStyle',
   'chooseInvoiceTitle',
-  'navigateToMiniProgram',
-  'navigateBackMiniProgram',
   'addTemplate',
   'deleteTemplate',
   'getTemplateLibraryById',
@@ -450,13 +443,12 @@ const todos = [
   'setEnableDebug',
   'onWindowResize',
   'offWindowResize',
-  'compressImage',
   'createOffscreenCanvas',
   'vibrate'
 ];
 
 // 存在兼容性的 API 列表
-// 头条小程序不支持canIUses
+// 头条小程序自1.35.0+支持canIUses
 const canIUses = [
   // 'createIntersectionObserver',
   // 'getSavedFileList',
@@ -472,6 +464,13 @@ const canIUses = [
   // 'onSocketClose',
   // 'getExtConfig',
   // 'getExtConfigSync',
+  // 'navigateToMiniProgram',
+  // 'navigateBackMiniProgram',
+  // 'compressImage',
+  // 'chooseLocation',
+  // 'openDocument',
+  // 'onUserCaptureScreen',
+  // 'getBackgroundAudioManager',
 ];
 
 // 需要做转换的 API 列表
