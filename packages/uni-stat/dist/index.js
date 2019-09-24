@@ -84,7 +84,10 @@ const getPlatformName = () => {
 const getPackName = () => {
   let packName = '';
   if (getPlatformName() === 'wx' || getPlatformName() === 'qq') {
-    packName = uni.getAccountInfoSync().miniProgram.appId || '';
+    // 兼容微信小程序低版本基础库
+    if(uni.canIUse('getAccountInfoSync')){
+      packName = uni.getAccountInfoSync().miniProgram.appId || '';
+    }
   }
   return packName
 };
