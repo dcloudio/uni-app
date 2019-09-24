@@ -1,5 +1,13 @@
 # uni-app 更新日志
 ======================================
+#### 2.3.3.20190923
+  * App-Android平台 新增 uni.request 网络请求增加参数 sslVerify，配置是否验证 ssl 证书。但建议使用普遍受信的证书而不是忽略证书校验。[详情](https://uniapp.dcloud.io/api/request/request)
+  * App-iOS平台 调整 非自定义组件模式 逻辑层默认从 WKWebview 切回 UIWebview，避免 uni.request 无法跨域的问题。但仍建议开发者尽快升级自定义组件模式
+  * App-iOS平台 新增 非自定义组件模式 iOS13上页面无法滚动的问题，如不能很快升级为自定义组件模式，可临时使用本文的方案2来解决，[详情](https://ask.dcloud.net.cn/article/36410)
+  * App-iOS平台 修复 nvue swiper组件包含子组件少于3个时布局可能不正确的Bug
+  * App-iOS平台 修复 nvue video组件退出全屏动画会闪现底层组件的Bug 
+  * H5端 修复 监听页面滚动（onPageScroll）后切换页面报错的Bug [详情](https://ask.dcloud.net.cn/question/78955)
+
 #### 2.3.2.20190921
   * App平台 修复 uni.writeBLECharacteristicValue 无法写入数据的 Bug [详情](https://ask.dcloud.net.cn/question/79204)
   * App平台 修复 调用 uni.pageScrollTo 时页面内元素 fixed 定位失效的 Bug [详情](https://ask.dcloud.net.cn/question/73179)
