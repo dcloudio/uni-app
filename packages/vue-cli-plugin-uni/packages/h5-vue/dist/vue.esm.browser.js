@@ -9215,36 +9215,6 @@ if (inBrowser) {
 
 /*  */
 
-function transformNode(el) {
-  const list = el.attrsList;
-  for (let i = list.length - 1; i >= 0; i--) {
-    const name = list[i].name;
-    if (name.indexOf(':change:') === 0 || name.indexOf('v-bind:change:') === 0) {
-      const nameArr = name.split(':');
-      const wxsProp = nameArr[nameArr.length - 1];
-      const wxsPropBinding = getBindingAttr(el, wxsProp, false);
-      if (wxsPropBinding) {
-        (el.wxsPropBindings || (el.wxsPropBindings = {}))['change:' + wxsProp] = wxsPropBinding;
-      }
-    }
-  }
-}
-
-function genData(el) {
-  let data = '';
-  if (el.wxsPropBindings) {
-    data += `wxsProps:${JSON.stringify(el.wxsPropBindings)},`;
-  }
-  return data
-}
-
-var wxs$1 = {
-  transformNode,
-  genData
-};
-
-/*  */
-
 const defaultTagRE = /\{\{((?:.|\r?\n)+?)\}\}/g;
 const regexEscapeRE = /[-.*+?^${}()|[\]\/\\]/g;
 
@@ -9293,7 +9263,7 @@ function parseText (
 
 /*  */
 
-function transformNode$1 (el, options) {
+function transformNode (el, options) {
   const warn = options.warn || baseWarn;
   const staticClass = getAndRemoveAttr(el, 'class');
   if (staticClass) {
@@ -9317,7 +9287,7 @@ function transformNode$1 (el, options) {
   }
 }
 
-function genData$1 (el) {
+function genData (el) {
   let data = '';
   if (el.staticClass) {
     data += `staticClass:${el.staticClass},`;
@@ -9330,13 +9300,13 @@ function genData$1 (el) {
 
 var klass$1 = {
   staticKeys: ['staticClass'],
-  transformNode: transformNode$1,
-  genData: genData$1
+  transformNode,
+  genData
 };
 
 /*  */
 
-function transformNode$2 (el, options) {
+function transformNode$1 (el, options) {
   const warn = options.warn || baseWarn;
   const staticStyle = getAndRemoveAttr(el, 'style');
   if (staticStyle) {
@@ -9362,7 +9332,7 @@ function transformNode$2 (el, options) {
   }
 }
 
-function genData$2 (el) {
+function genData$1 (el) {
   let data = '';
   if (el.staticStyle) {
     data += `staticStyle:${el.staticStyle},`;
@@ -9375,8 +9345,8 @@ function genData$2 (el) {
 
 var style$1 = {
   staticKeys: ['staticStyle'],
-  transformNode: transformNode$2,
-  genData: genData$2
+  transformNode: transformNode$1,
+  genData: genData$1
 };
 
 /*  */
@@ -9393,8 +9363,8 @@ var he = {
 
 /*  */
 
-const isUnaryTag = makeMap(
-  'area,base,br,col,embed,frame,hr,img,input,isindex,keygen,' +
+const isUnaryTag = makeMap(// fixed by xxxxxx add image
+  'image,area,base,br,col,embed,frame,hr,img,input,isindex,keygen,' +
   'link,meta,param,source,track,wbr'
 );
 
@@ -10724,16 +10694,363 @@ var model$1 = {
   preTransformNode
 };
 
+/*  */
+
+function transformNode$2(el) {
+  const list = el.attrsList;
+  for (let i = list.length - 1; i >= 0; i--) {
+    const name = list[i].name;
+    if (name.indexOf(':change:') === 0 || name.indexOf('v-bind:change:') === 0) {
+      const nameArr = name.split(':');
+      const wxsProp = nameArr[nameArr.length - 1];
+      const wxsPropBinding = el.attrsMap[':' + wxsProp] || el.attrsMap['v-bind:' + wxsProp];
+      if (wxsPropBinding) {
+        (el.wxsPropBindings || (el.wxsPropBindings = {}))['change:' + wxsProp] = wxsPropBinding;
+      }
+    }
+  }
+}
+
+function genData$2(el) {
+  let data = '';
+  if (el.wxsPropBindings) {
+    data += `wxsProps:${JSON.stringify(el.wxsPropBindings)},`;
+  }
+  return data
+}
+
+var wxs$1 = {
+  transformNode: transformNode$2,
+  genData: genData$2
+};
+
+const TAGS = [
+  'resize-sensor',
+  'ad',
+  'audio',
+  'button',
+  'camera',
+  'canvas',
+  'checkbox',
+  'checkbox-group',
+  'cover-image',
+  'cover-view',
+  'form',
+  'functional-page-navigator',
+  'icon',
+  'image',
+  'input',
+  'label',
+  'live-player',
+  'live-pusher',
+  'map',
+  'movable-area',
+  'movable-view',
+  'navigator',
+  'official-account',
+  'open-data',
+  'picker',
+  'picker-view',
+  'picker-view-column',
+  'progress',
+  'radio',
+  'radio-group',
+  'rich-text',
+  'scroll-view',
+  'slider',
+  'swiper',
+  'swiper-item',
+  'switch',
+  'text',
+  'textarea',
+  'video',
+  'view',
+  'web-view'
+];
+
+
+const simplePathRE = /^[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*|\['[^']*?']|\["[^"]*?"]|\[\d+]|\[[A-Za-z_$][\w$]*])*$/;
+
+function processEvent(expr, filterModules) {
+  const isMethodPath = simplePathRE.test(expr);
+  if (isMethodPath) {
+    if (filterModules.find(name => expr.indexOf(name + '.') === 0)) {
+      return `
+$event = $handleWxsEvent($event);
+${expr}($event, $getComponentDescriptor())
+`
+    } else {
+      expr = expr + '($event)';
+    }
+  }
+  return `
+$event = $handleEvent($event);
+${expr}
+`
+}
+
+const deprecated = {
+  events: {
+    'tap': 'click',
+    'longtap': 'longpress'
+  }
+};
+
+
+var tag = {
+  preTransformNode(el) {
+    if (TAGS.indexOf(el.tag) !== -1) {
+      el.tag = 'v-uni-' + el.tag;
+    }
+  },
+  postTransformNode(el, {
+    filterModules
+  }) {
+    if (el.tag === 'block') {
+      el.tag = 'template';
+      const vForKey = el.key;
+      if (vForKey) {
+        delete el.key;
+        el.children.forEach((childEl, index) => {
+          const childVForKey = childEl.key;
+          if (childVForKey) {
+            childEl.key = `${childVForKey}+'_'+${vForKey}+'_${index}'`;
+          } else {
+            childEl.key = `${vForKey}+'_${index}'`;
+          }
+        });
+      }
+    }
+    if (el.events) {
+      filterModules = filterModules || [];
+      const {
+        events: eventsMap
+      } = deprecated;
+      // const warnLogs = new Set()
+      Object.keys(el.events).forEach(name => {
+        // 过时事件类型转换
+        if (eventsMap[name]) {
+          el.events[eventsMap[name]] = el.events[name];
+          delete el.events[name];
+          // warnLogs.add(`警告：事件${name}已过时，推荐使用${eventsMap[name]}代替`)
+          name = eventsMap[name];
+        }
+
+        const handlers = el.events[name];
+        if (Array.isArray(handlers)) {
+          handlers.forEach(handler => {
+            handler.value = processEvent(handler.value, filterModules);
+          });
+        } else {
+          handlers.value = processEvent(handlers.value, filterModules);
+        }
+      });
+    }
+  }
+};
+
+// TODO 待优化
+
+var validDivisionCharRE$1 = /[\w).+\-_$\]]/;
+
+function parseFilters$1(exp) {
+  var inSingle = false;
+  var inDouble = false;
+  var inTemplateString = false;
+  var inRegex = false;
+  var curly = 0;
+  var square = 0;
+  var paren = 0;
+  var lastFilterIndex = 0;
+  var c, prev, i, expression, filters;
+
+  for (i = 0; i < exp.length; i++) {
+    prev = c;
+    c = exp.charCodeAt(i);
+    if (inSingle) {
+      if (c === 0x27 && prev !== 0x5C) {
+        inSingle = false;
+      }
+    } else if (inDouble) {
+      if (c === 0x22 && prev !== 0x5C) {
+        inDouble = false;
+      }
+    } else if (inTemplateString) {
+      if (c === 0x60 && prev !== 0x5C) {
+        inTemplateString = false;
+      }
+    } else if (inRegex) {
+      if (c === 0x2f && prev !== 0x5C) {
+        inRegex = false;
+      }
+    } else if (
+      c === 0x7C && // pipe
+      exp.charCodeAt(i + 1) !== 0x7C &&
+      exp.charCodeAt(i - 1) !== 0x7C &&
+      !curly && !square && !paren
+    ) {
+      if (expression === undefined) {
+        // first filter, end of expression
+        lastFilterIndex = i + 1;
+        expression = exp.slice(0, i).trim();
+      } else {
+        pushFilter();
+      }
+    } else {
+      switch (c) {
+        case 0x22:
+          inDouble = true;
+          break // "
+        case 0x27:
+          inSingle = true;
+          break // '
+        case 0x60:
+          inTemplateString = true;
+          break // `
+        case 0x28:
+          paren++;
+          break // (
+        case 0x29:
+          paren--;
+          break // )
+        case 0x5B:
+          square++;
+          break // [
+        case 0x5D:
+          square--;
+          break // ]
+        case 0x7B:
+          curly++;
+          break // {
+        case 0x7D:
+          curly--;
+          break // }
+      }
+      if (c === 0x2f) { // /
+        var j = i - 1;
+        var p = (void 0);
+        // find first non-whitespace prev char
+        for (; j >= 0; j--) {
+          p = exp.charAt(j);
+          if (p !== ' ') {
+            break
+          }
+        }
+        if (!p || !validDivisionCharRE$1.test(p)) {
+          inRegex = true;
+        }
+      }
+    }
+  }
+
+  if (expression === undefined) {
+    expression = exp.slice(0, i).trim();
+  } else if (lastFilterIndex !== 0) {
+    pushFilter();
+  }
+
+  function pushFilter() {
+    (filters || (filters = [])).push(exp.slice(lastFilterIndex, i).trim());
+    lastFilterIndex = i + 1;
+  }
+
+  if (filters) {
+    for (i = 0; i < filters.length; i++) {
+      expression = wrapFilter$1(expression, filters[i]);
+    }
+  }
+
+  return expression
+}
+
+function wrapFilter$1(exp, filter) {
+  var i = filter.indexOf('(');
+  if (i < 0) {
+    // _f: resolveFilter
+    return ('_f("' + filter + '")(' + exp + ')')
+  } else {
+    var name = filter.slice(0, i);
+    var args = filter.slice(i + 1);
+    return ('_f("' + name + '")(' + exp + (args !== ')' ? ',' + args : args))
+  }
+}
+const defaultTagRE$1 = /\{\{((?:.|\n)+?)\}\}/g;
+
+function parseText$1(
+  text
+) {
+  const tokens = [];
+  const rawTokens = [];
+
+  let lastIndex = defaultTagRE$1.lastIndex = 0;
+  let match, index, tokenValue;
+
+  while ((match = defaultTagRE$1.exec(text))) {
+    index = match.index;
+    // push text token
+    if (index > lastIndex) {
+      rawTokens.push(tokenValue = text.slice(lastIndex, index));
+      tokens.push(JSON.stringify(tokenValue));
+    }
+    // tag token
+    var exp = parseFilters$1(match[1].trim());
+    tokens.push(('_s(' + exp + ')'));
+    rawTokens.push({
+      '@binding': exp
+    });
+    lastIndex = index + match[0].length;
+  }
+  if (lastIndex < text.length) {
+    rawTokens.push(tokenValue = text.slice(lastIndex));
+    tokens.push(JSON.stringify(tokenValue));
+  }
+  return {
+    expression: tokens.join('+'),
+    tokens: rawTokens
+  }
+}
+
+var text = {
+  postTransformNode(el) { // 重新格式化 text 节点,应该使用postTransformNode,但 mpvue 使用的 template-compiler 较老，导致 postTransformNode 时机不对
+    const children = el.children;
+    if (children && children.length) {
+      children.forEach(childEl => {
+        if (childEl.text) {
+          const text = childEl.text.trim();
+          if (childEl.type === 2) {
+            try {
+              const {
+                expression,
+                tokens
+              } = parseText$1(text);
+              childEl.expression = expression;
+              childEl.tokens = tokens;
+              childEl.text = text;
+            } catch (e) {
+              console.log(e);
+            }
+          } else {
+            childEl.text = text;
+          }
+        }
+      });
+    }
+    return ''
+  }
+};
+
 var modules$1 = [
-  wxs$1,
+  text,// fixed by xxxxxx
+  wxs$1,// fixed by xxxxxx
   klass$1,
   style$1,
-  model$1
+  model$1,
+  tag,// fixed by xxxxxx
 ];
 
 /*  */
 
-function text (el, dir) {
+function text$1 (el, dir) {
   if (dir.value) {
     addProp(el, 'textContent', `_s(${dir.value})`, dir);
   }
@@ -10749,7 +11066,7 @@ function html (el, dir) {
 
 var directives$1 = {
   model,
-  text,
+  text: text$1,
   html
 };
 
@@ -10899,7 +11216,7 @@ function isDirectChildOfTemplateFor (node) {
 
 const fnExpRE = /^([\w$_]+|\([^)]*?\))\s*=>|^function\s*(?:[\w$]+)?\s*\(/;
 const fnInvokeRE = /\([^)]*?\);*$/;
-const simplePathRE = /^[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*|\['[^']*?']|\["[^"]*?"]|\[\d+]|\[[A-Za-z_$][\w$]*])*$/;
+const simplePathRE$1 = /^[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*|\['[^']*?']|\["[^"]*?"]|\[\d+]|\[[A-Za-z_$][\w$]*])*$/;
 
 // KeyboardEvent.keyCode aliases
 const keyCodes = {
@@ -10981,9 +11298,9 @@ function genHandler (handler) {
     return `[${handler.map(handler => genHandler(handler)).join(',')}]`
   }
 
-  const isMethodPath = simplePathRE.test(handler.value);
+  const isMethodPath = simplePathRE$1.test(handler.value);
   const isFunctionExpression = fnExpRE.test(handler.value);
-  const isFunctionInvocation = simplePathRE.test(handler.value.replace(fnInvokeRE, ''));
+  const isFunctionInvocation = simplePathRE$1.test(handler.value.replace(fnInvokeRE, ''));
 
   if (!handler.modifiers) {
     if (isMethodPath || isFunctionExpression) {

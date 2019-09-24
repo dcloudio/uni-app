@@ -90,7 +90,7 @@ module.exports = function traverse (ast, state) {
   const blockStatementBody = []
   const objectPropertyArray = []
   const initExpressionStatementArray = []
-
+  // TODO 待重构，至少 filter，method 等实现方式要调整
   babelTraverse(ast, visitor, undefined, {
     scoped: [],
     context: VAR_ROOT,
