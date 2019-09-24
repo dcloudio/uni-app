@@ -106,16 +106,8 @@ export default {
         method(data)
       }
     },
-    _resize ({
-      width,
-      height
-    }) {
-      var canvas = this.$refs.canvas
-      if (canvas.style.width !== (width + 'px') || canvas.style.height !== (height + 'px')) {
-        canvas.width = width
-        canvas.height = height
-        wrapper(canvas)
-      }
+    _resize () {
+      wrapper(this.$refs.canvas)
     },
     _touchmove (event) {
       event.preventDefault()
@@ -390,13 +382,19 @@ export default {
       var imgData
       var canvas = this.$refs.canvas
       if (!width) {
-        width = canvas.width
+        width = canvas.offsetWidth
       }
       if (!height) {
-        height = canvas.height
+        height = canvas.offsetHeight
       }
       try {
-        imgData = canvas.getContext('2d').getImageData(x, y, width, height)
+        const newCanvas = document.createElement('canvas')
+        newCanvas.width = width
+        newCanvas.height = height
+        const context = newCanvas.getContext('2d')
+        context.__hidpi__ = true
+        context.drawImageByCanvas(canvas, x, y, width, height, 0, 0, width, height, false)
+        imgData = context.getImageData(0, 0, width, height)
       } catch (error) {
         UniViewJSBridge.publishHandler('onCanvasMethodCallback', {
           callbackId,
@@ -428,8 +426,12 @@ export default {
         if (!height) {
           height = Math.round(data.length / 4 / width)
         }
-        this.$refs.canvas.getContext('2d').putImageData(new ImageData(new Uint8ClampedArray(data), width,
-          height), x, y)
+        const canvas = document.createElement('canvas')
+        canvas.width = width
+        canvas.height = height
+        const context = canvas.getContext('2d')
+        context.putImageData(new ImageData(new Uint8ClampedArray(data), width, height), 0, 0)
+        this.$refs.canvas.getContext('2d').drawImage(canvas, x, y, width, height)
       } catch (error) {
         UniViewJSBridge.publishHandler('onCanvasMethodCallback', {
           callbackId,
