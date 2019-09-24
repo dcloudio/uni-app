@@ -1,5 +1,4 @@
 import createCallbacks from 'uni-helpers/callbacks'
-import { pixelRatio } from 'uni-helpers/hidpi'
 
 const canvasEventCallbacks = createCallbacks('canvasEvent')
 
@@ -808,8 +807,8 @@ export function canvasPutImageData ({
 }
 
 export function canvasToTempFilePath ({
-  x,
-  y,
+  x = 0,
+  y = 0,
   width,
   height,
   destWidth,
@@ -818,13 +817,7 @@ export function canvasToTempFilePath ({
   fileType,
   qualit
 }, callbackId) {
-  if (typeof width !== 'undefined') {
-    width *= pixelRatio
-  }
-  if (typeof height !== 'undefined') {
-    height *= pixelRatio
-  }
-  var pageId
+  let pageId
   const app = getApp()
   if (app.$route && app.$route.params.__id__) {
     pageId = app.$route.params.__id__
@@ -834,37 +827,39 @@ export function canvasToTempFilePath ({
     })
     return
   }
-  var cId = canvasEventCallbacks.push(function (data) {
-    var imgData = data.data
-    if (!imgData || !imgData.length) {
+  const cId = canvasEventCallbacks.push(function ({
+    data,
+    width,
+    height
+  }) {
+    if (!data || !data.length) {
       invoke(callbackId, {
         errMsg: 'canvasToTempFilePath:fail'
       })
       return
     }
+    let imgData
     try {
-      imgData = new ImageData(new Uint8ClampedArray(imgData), data.width, data.height)
+      imgData = new ImageData(new Uint8ClampedArray(data), width, height)
     } catch (error) {
       invoke(callbackId, {
         errMsg: 'canvasToTempFilePath:fail'
       })
       return
     }
-    var canvas = getTempCanvas()
-    canvas.width = data.width
-    canvas.height = data.height
-    var c2d = canvas.getContext('2d')
+    const canvas = getTempCanvas()
+    canvas.width = width
+    canvas.height = height
+    const c2d = canvas.getContext('2d')
     c2d.putImageData(imgData, 0, 0)
-    var base64 = canvas.toDataURL('image/png')
-    var img = new Image()
+    let base64 = canvas.toDataURL('image/png')
+    const img = new Image()
     img.onload = function () {
-      var width = canvas.width = typeof destWidth === 'number' ? destWidth : imgData.width * pixelRatio
-      var height = canvas.height = typeof destHeight === 'number' ? destHeight : imgData.height * pixelRatio
       if (fileType === 'jpeg') {
         c2d.fillStyle = '#fff'
-        c2d.fillRect(0, 0, width, height)
+        c2d.fillRect(0, 0, width, width)
       }
-      c2d.drawImage(img, 0, 0, img.width, img.height, 0, 0, width, height)
+      c2d.drawImage(img, 0, 0)
       base64 = canvas.toDataURL(`image/${fileType}`, qualit)
       invoke(callbackId, {
         errMsg: 'canvasToTempFilePath:ok',
@@ -878,6 +873,9 @@ export function canvasToTempFilePath ({
     y,
     width,
     height,
+    destWidth,
+    destHeight,
+    hidpi: false,
     callbackId: cId
   })
 }

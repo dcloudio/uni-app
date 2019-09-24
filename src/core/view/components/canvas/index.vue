@@ -21,6 +21,7 @@ import {
 } from 'uni-mixins'
 
 import {
+  pixelRatio,
   wrapper
 } from 'uni-helpers/hidpi'
 
@@ -373,10 +374,13 @@ export default {
       }
     },
     getImageData ({
-      x,
-      y,
+      x = 0,
+      y = 0,
       width,
       height,
+      destWidth,
+      destHeight,
+      hidpi = true,
       callbackId
     }) {
       var imgData
@@ -389,12 +393,25 @@ export default {
       }
       try {
         const newCanvas = document.createElement('canvas')
-        newCanvas.width = width
-        newCanvas.height = height
+        if (!hidpi) {
+          if (!destWidth && !destHeight) {
+            destWidth = Math.round(width * pixelRatio)
+            destHeight = Math.round(height * pixelRatio)
+          } else if (!destWidth) {
+            destWidth = Math.round(width / height * destHeight)
+          } else if (!destHeight) {
+            destHeight = Math.round(height / width * destWidth)
+          }
+        } else {
+          destWidth = width
+          destHeight = height
+        }
+        newCanvas.width = destWidth
+        newCanvas.height = destHeight
         const context = newCanvas.getContext('2d')
         context.__hidpi__ = true
-        context.drawImageByCanvas(canvas, x, y, width, height, 0, 0, width, height, false)
-        imgData = context.getImageData(0, 0, width, height)
+        context.drawImageByCanvas(canvas, x, y, width, height, 0, 0, destWidth, destHeight, false)
+        imgData = context.getImageData(0, 0, destWidth, destHeight)
       } catch (error) {
         UniViewJSBridge.publishHandler('onCanvasMethodCallback', {
           callbackId,
@@ -409,8 +426,8 @@ export default {
         data: {
           errMsg: 'canvasGetImageData:ok',
           data: [...imgData.data],
-          width,
-          height
+          width: destWidth,
+          height: destHeight
         }
       }, this.$page.id)
     },
