@@ -14,7 +14,7 @@ function resolveModule (dir) {
   return path.resolve(__dirname, '../../..', dir)
 }
 
-module.exports = function configureWebpack (platformOptions, manifestPlatformOptions) {
+module.exports = function configureWebpack (platformOptions, manifestPlatformOptions, vueOptions) {
   const {
     runByHBuilderX, // 使用 HBuilderX 运行
     isInHBuilderX, // 在 HBuilderX 的插件中
@@ -261,7 +261,7 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
       resolve: {
         alias: {
           '@': path.resolve(process.env.UNI_INPUT_DIR),
-          'vue$': getPlatformVue(),
+          'vue$': getPlatformVue(vueOptions),
           'uni-pages': path.resolve(process.env.UNI_INPUT_DIR, 'pages.json'),
           '@dcloudio/uni-stat': require.resolve('@dcloudio/uni-stat'),
           'uni-stat-config': path.resolve(process.env.UNI_INPUT_DIR, 'pages.json') +
