@@ -386,10 +386,10 @@ export default {
       var imgData
       var canvas = this.$refs.canvas
       if (!width) {
-        width = canvas.offsetWidth
+        width = canvas.offsetWidth - x
       }
       if (!height) {
-        height = canvas.offsetHeight
+        height = canvas.offsetHeight - y
       }
       try {
         const newCanvas = document.createElement('canvas')
