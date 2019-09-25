@@ -31,11 +31,14 @@ export function switchTab ({
         }
       })
       currentPage.$remove()
-      if (currentPage.$page.openType === 'redirect') {
-        currentPage.$getAppWebview().close(ANI_CLOSE, ANI_DURATION)
-      } else {
-        currentPage.$getAppWebview().close('auto')
-      }
+      // 延迟执行避免iOS应用退出
+      setTimeout(() => {
+        if (currentPage.$page.openType === 'redirect') {
+          currentPage.$getAppWebview().close(ANI_CLOSE, ANI_DURATION)
+        } else {
+          currentPage.$getAppWebview().close('auto')
+        }
+      }, 100)
     } else {
       // 前一个 tabBar 触发 onHide
       currentPage.$vm.__call_hook('onHide')
@@ -64,7 +67,7 @@ export function switchTab ({
         path,
         query: {},
         openType: 'switchTab'
-      })
+      }), 'none', 0
     )
   }
 

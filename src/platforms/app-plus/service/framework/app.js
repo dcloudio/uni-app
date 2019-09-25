@@ -9,7 +9,6 @@ import {
 } from './page'
 
 import {
-  registerPlusMessage,
   consumePlusMessage
 } from './plus-message'
 
@@ -112,7 +111,7 @@ function initTabBar () {
   __uniConfig.__ready__ = true
 
   const onLaunchWebviewReady = function onLaunchWebviewReady () {
-    const tabBarView = tabBar.init(__uniConfig.tabBar, (item, index) => {
+    tabBar.init(__uniConfig.tabBar, (item, index) => {
       UniServiceJSBridge.emit('onTabItemTap', {
         index,
         text: item.text,
@@ -121,16 +120,11 @@ function initTabBar () {
       uni.switchTab({
         url: '/' + item.pagePath,
         openType: 'switchTab',
-        from: 'tabbar'
+        from: 'tabBar'
       })
     })
-    tabBarView && plus.webview.getLaunchWebview().append(tabBarView)
   }
-  if (plus.webview.getLaunchWebview()) {
-    onLaunchWebviewReady()
-  } else {
-    registerPlusMessage('UniWebviewReady-' + plus.runtime.appid, onLaunchWebviewReady, false)
-  }
+  onLaunchWebviewReady()
 }
 
 export function registerApp (appVm) {

@@ -331,6 +331,10 @@ module.exports = function (pagesJson, userManifestJson) {
     if (conditionPagePath && isNVueEntryPage) {
       isNVueEntryPage = appJson.nvue.entryPagePath === conditionPagePath
     }
+    manifestJson.plus.useragent.value = 'uni-app'
+    manifestJson.launch_path = '__uniappview.html'
+    manifestJson.plus.launchwebview.id = '1'
+    manifestJson.plus.launchwebview.kernel = 'WKWebview'
     if (process.env.UNI_USING_NATIVE) {
       appJson.entryPagePath = appJson.nvue.entryPagePath
       // networkTimeout
@@ -346,51 +350,43 @@ module.exports = function (pagesJson, userManifestJson) {
       })
 
       delete appJson.nvue
-
+      
+      delete manifestJson.plus.launchwebview.kernel
+      manifestJson.launch_path = ''
+      Object.assign(manifestJson.plus.launchwebview, {
+        id: '1',
+        uniNView: {
+          path: appJson.pages[0]
+        }
+      })
       // 纯 nvue 带 tab
       if (pagesJson.tabBar && pagesJson.tabBar.list && pagesJson.tabBar.list.length) {
-        manifestJson.launch_path = '__uniapptabbar.html'
-        manifestJson.plus.secondwebview = {
-          id: '1',
-          mode: 'child',
-          top: 0,
-          bottom: 56,
-          uniNView: {
-            path: appJson.pages[0]
-          }
+        const tabBar = manifestJson.plus.tabBar = Object.assign({}, pagesJson.tabBar)
+        tabBar.height = '56px'
+        // 首页是 tabBar 页面
+        const item = tabBar.list.find(page => page.pagePath === appJson.pages[0])
+        if (item) {
+          tabBar.child = ['lauchwebview']
+          tabBar.selected = tabBar.list.indexOf(item)
         }
       } else { // 纯 nvue 不带 tab
-        manifestJson.launch_path = ''
-        Object.assign(manifestJson.plus.launchwebview, {
-          id: '1',
-          uniNView: {
-            path: appJson.pages[0]
-          }
-        })
+        
       }
-    } else if (isNVueEntryPage) { // 临时 tabBar 页面
-      manifestJson.launch_path = '__uniapptabbar.html'
     } else if (pagesJson.tabBar && pagesJson.tabBar.list && pagesJson.tabBar.list.length) {
-      manifestJson.launch_path = '__uniapptabbar.html'
-      manifestJson.plus.secondwebview = {
-        id: '1'
-      }
-      manifestJson.plus.secondwebview.launch_path = '__uniappview.html'
-      if (!manifestJson.plus.secondwebview.kernel) {
-        manifestJson.plus.secondwebview.kernel = 'WKWebview'
-      }
-      // 首页是 tabBar 页面
-      if (pagesJson.tabBar.list.find(page => page.pagePath === entryPagePath)) {
-        manifestJson.plus.secondwebview.mode = 'child'
-        manifestJson.plus.secondwebview.top = 0
-        manifestJson.plus.secondwebview.bottom = 56
+      const tabBar = manifestJson.plus.tabBar = Object.assign({}, pagesJson.tabBar)
+      tabBar.height = '56px'
+      if (isNVueEntryPage) {
+        manifestJson.plus.launchwebview.id = '2'
+      } else {
+        // 首页是 tabBar 页面
+        const item = tabBar.list.find(page => page.pagePath === entryPagePath)
+        if (item) {
+          tabBar.child = ['lauchwebview']
+          tabBar.selected = tabBar.list.indexOf(item)
+        }
       }
     } else { // 无 tabbar 的页面，launchWebview 的 id 为1
-      manifestJson.launch_path = '__uniappview.html'
-      manifestJson.plus.launchwebview.id = '1'
-      if (!manifestJson.plus.launchwebview.kernel) {
-        manifestJson.plus.launchwebview.kernel = 'WKWebview'
-      }
+
     }
   }
 
