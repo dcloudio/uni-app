@@ -333,8 +333,11 @@ module.exports = function (pagesJson, userManifestJson) {
     }
     manifestJson.plus.useragent.value = 'uni-app'
     manifestJson.launch_path = '__uniappview.html'
-    manifestJson.plus.launchwebview.id = '1'
-    manifestJson.plus.launchwebview.kernel = 'WKWebview'
+    Object.assign(manifestJson.plus.launchwebview, {
+      id: '1',
+      kernel: 'WKWebview',
+      'uni-app': 'auto'
+    })
     if (process.env.UNI_USING_NATIVE) {
       appJson.entryPagePath = appJson.nvue.entryPagePath
       // networkTimeout
@@ -354,7 +357,6 @@ module.exports = function (pagesJson, userManifestJson) {
       delete manifestJson.plus.launchwebview.kernel
       manifestJson.launch_path = ''
       Object.assign(manifestJson.plus.launchwebview, {
-        id: '1',
         uniNView: {
           path: appJson.pages[0]
         }
@@ -369,8 +371,6 @@ module.exports = function (pagesJson, userManifestJson) {
           tabBar.child = ['lauchwebview']
           tabBar.selected = tabBar.list.indexOf(item)
         }
-      } else { // 纯 nvue 不带 tab
-        
       }
     } else if (pagesJson.tabBar && pagesJson.tabBar.list && pagesJson.tabBar.list.length) {
       const tabBar = manifestJson.plus.tabBar = Object.assign({}, pagesJson.tabBar)
@@ -385,8 +385,6 @@ module.exports = function (pagesJson, userManifestJson) {
           tabBar.selected = tabBar.list.indexOf(item)
         }
       }
-    } else { // 无 tabbar 的页面，launchWebview 的 id 为1
-
     }
   }
 
