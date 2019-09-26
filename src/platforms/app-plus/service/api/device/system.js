@@ -5,7 +5,6 @@ import {
 } from '../util'
 
 import {
-  TABBAR_HEIGHT,
   TITLEBAR_HEIGHT
 } from '../../constants'
 
@@ -50,7 +49,7 @@ export function getSystemInfo () {
     safeAreaInsets = ios ? plus.navigator.getSafeAreaInsets() : getSafeAreaInsets()
   }
   var windowHeight = Math.min(screenHeight - (titleNView ? (statusBarHeight + TITLEBAR_HEIGHT)
-    : 0) - (isTabBarPage() && tabBar.visible ? TABBAR_HEIGHT : 0), screenHeight)
+    : 0) - (isTabBarPage() && tabBar.visible ? tabBar.height : 0), screenHeight)
   var windowWidth = screenWidth
   var safeArea = {
     left: safeAreaInsets.left,

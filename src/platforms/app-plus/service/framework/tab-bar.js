@@ -6,6 +6,8 @@ import {
   requireNativePlugin
 } from '../bridge'
 
+const TABBAR_HEIGHT = 56
+
 let config
 
 /**
@@ -137,5 +139,8 @@ export default {
   },
   get visible () {
     return visible
+  },
+  get height () {
+    return config && config.height ? parseFloat(config.height) : TABBAR_HEIGHT
   }
 }

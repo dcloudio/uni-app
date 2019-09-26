@@ -64,6 +64,8 @@ module.exports = function (pagesJson, userManifestJson) {
     navigationBarTextStyle = 'white',
     navigationBarBackgroundColor = '#000000'
   } = appJson['window'] || {}
+  
+  const TABBAR_HEIGHT = 56
 
   let manifestJson = JSON.parse(fs.readFileSync(path.resolve(__dirname, './manifest.json'), 'utf8'))
 
@@ -364,7 +366,7 @@ module.exports = function (pagesJson, userManifestJson) {
       // 纯 nvue 带 tab
       if (pagesJson.tabBar && pagesJson.tabBar.list && pagesJson.tabBar.list.length) {
         const tabBar = manifestJson.plus.tabBar = Object.assign({}, pagesJson.tabBar)
-        tabBar.height = '56px'
+        tabBar.height = `${parseFloat(tabBar.height) || TABBAR_HEIGHT}px`
         // 首页是 tabBar 页面
         const item = tabBar.list.find(page => page.pagePath === appJson.pages[0])
         if (item) {
@@ -374,7 +376,7 @@ module.exports = function (pagesJson, userManifestJson) {
       }
     } else if (pagesJson.tabBar && pagesJson.tabBar.list && pagesJson.tabBar.list.length) {
       const tabBar = manifestJson.plus.tabBar = Object.assign({}, pagesJson.tabBar)
-      tabBar.height = '56px'
+      tabBar.height = `${parseFloat(tabBar.height) || TABBAR_HEIGHT}px`
       if (isNVueEntryPage) {
         manifestJson.plus.launchwebview.id = '2'
       } else {
