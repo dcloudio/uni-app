@@ -3,6 +3,7 @@ import {
 } from '../api/util'
 
 import {
+  publish,
   requireNativePlugin
 } from '../bridge'
 
@@ -101,6 +102,9 @@ export default {
     }
     tabBar && tabBar.onClick(({ index }) => {
       clickCallback(config.list[index], index, true)
+    })
+    tabBar && tabBar.onMidButtonClick(() => {
+      publish('onTabBarMidButtonTap', {})
     })
   },
   switchTab (page) {
