@@ -363,25 +363,18 @@ module.exports = function (pagesJson, userManifestJson) {
           path: appJson.pages[0]
         }
       })
-      // 纯 nvue 带 tab
-      if (pagesJson.tabBar && pagesJson.tabBar.list && pagesJson.tabBar.list.length) {
-        const tabBar = manifestJson.plus.tabBar = Object.assign({}, pagesJson.tabBar)
-        tabBar.height = `${parseFloat(tabBar.height) || TABBAR_HEIGHT}px`
-        // 首页是 tabBar 页面
-        const item = tabBar.list.find(page => page.pagePath === appJson.pages[0])
-        if (item) {
-          tabBar.child = ['lauchwebview']
-          tabBar.selected = tabBar.list.indexOf(item)
-        }
-      }
-    } else if (pagesJson.tabBar && pagesJson.tabBar.list && pagesJson.tabBar.list.length) {
+    }
+    // 带 tab
+    if (pagesJson.tabBar && pagesJson.tabBar.list && pagesJson.tabBar.list.length) {
       const tabBar = manifestJson.plus.tabBar = Object.assign({}, pagesJson.tabBar)
+      tabBar.borderStyle = tabBar.borderStyle === 'white' ? '#ffffff' : '#c6c6c6'
       tabBar.height = `${parseFloat(tabBar.height) || TABBAR_HEIGHT}px`
-      if (isNVueEntryPage) {
+      // 非纯 nvue 项目首页为 nvue 页面
+      if (!process.env.UNI_USING_NATIVE && isNVueEntryPage) {
         manifestJson.plus.launchwebview.id = '2'
       } else {
         // 首页是 tabBar 页面
-        const item = tabBar.list.find(page => page.pagePath === entryPagePath)
+        const item = tabBar.list.find(page => page.pagePath === (process.env.UNI_USING_NATIVE ? appJson.pages[0] : entryPagePath))
         if (item) {
           tabBar.child = ['lauchwebview']
           tabBar.selected = tabBar.list.indexOf(item)
