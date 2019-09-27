@@ -17,7 +17,7 @@ uni-app已经有几十万开发者，是开发者数量和案例最丰富的多�
 	</a>
 </div>
 
-<a href="//m3w.cn/__uni__1e99193" target="_blank" class="clear-style"><b>新闻/资讯类App模板：</b></a>nvue 典型案例，App端纯原生渲染，可左右拖动的复杂长列表。并同时能编译为小程序和H5。本项目源码在HBuilderX中新建项目可获得，并可进一步运行到各端小程序。
+<a href="//m3w.cn/__uni__1e99193" target="_blank" class="clear-style"><b>新闻/资讯类App模板：</b></a>nvue 典型案例，App端纯原生渲染，可左右拖动的复杂长列表，满足苛刻的性能要求。并同时能编译为小程序和H5。本项目源码在HBuilderX中新建项目可获得，并可进一步运行到各端小程序。
 <div style="display:flex;justify-content: space-around;">
 	<a href="//m3w.cn/__uni__1e99193" target="_blank" class="clear-style barcode-view">
 		<img src="//img.cdn.aliyun.dcloud.net.cn/stream/qr/__UNI__1E99193.png/256" width="200"/>
