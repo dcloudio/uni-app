@@ -296,7 +296,7 @@ Tips：关于摇树优化（treeShaking）原理及优化结果，参考：[http
 |resizable|Boolean|在iPad上小程序是否支持屏幕旋转，默认关闭|
 |navigateToMiniProgramAppIdList|Array|需要跳转的小程序列表，[详见](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/miniprogram-navigate/wx.navigateToMiniProgram.html)|
 |permission|Object|微信小程序接口权限相关设置，比如申请位置权限必须填此处[详见](https://developers.weixin.qq.com/miniprogram/dev/framework/config.html)|
-|workers|String|Worker 代码放置的目录，**HBuilderX 2.0.0+ Alpha** 支持。 [详见](https://developers.weixin.qq.com/miniprogram/dev/framework/workers.html)|
+|workers|String|Worker 代码放置的目录。 [详见](https://developers.weixin.qq.com/miniprogram/dev/framework/workers.html)|
 
 #### setting
 
@@ -321,6 +321,8 @@ Tips：关于摇树优化（treeShaking）原理及优化结果，参考：[http
 |:-|:-|:-|
 |appid|String|百度小程序的 AppID，登录 [https://smartprogram.baidu.com/docs/introduction/enter_application/](https://smartprogram.baidu.com/docs/introduction/enter_application/) 申请|
 |usingComponents|Boolean| 是否启用自定义组件模式，`v2.0+`，默认为false，[编译模式区别详情](https://ask.dcloud.net.cn/article/35843)|
+|requiredBackgroundModes|Array|小程序需要在后台使用的能力，目前支持背景音频播放，"requiredBackgroundModes": ["audio"]，[详见](https://smartprogram.baidu.com/docs/develop/tutorial/process/#requiredBackgroundModes)	|
+|prefetches|Array|预请求的所有url的列表，[详见](https://smartprogram.baidu.com/docs/develop/tutorial/process/#prefetches)																|
 
 ### mp-toutiao
 
@@ -329,6 +331,7 @@ Tips：关于摇树优化（treeShaking）原理及优化结果，参考：[http
 |appid|String|头条小程序的 AppID，登录 [https://developer.toutiao.com/](https://developer.toutiao.com/) 申请|
 |setting|Object|头条小程序项目设置，参考[头条小程序项目设置](/collocation/manifest?id=mp-toutiao-setting)|
 |usingComponents|Boolean| 是否启用自定义组件模式，`v2.0+`，默认为false，[编译模式区别详情](https://ask.dcloud.net.cn/article/35843)|
+|navigateToMiniProgramAppIdList	|Array|需要跳转的小程序列表，[详见](https://developer.toutiao.com/docs/framework/globalSetting.html#%E5%85%A8%E5%B1%80%E9%85%8D%E7%BD%AE)	|
 
 #### 头条小程序项目设置@mp-toutiao-setting
 
@@ -341,10 +344,16 @@ Tips：关于摇树优化（treeShaking）原理及优化结果，参考：[http
 
 ### mp-qq
 
-|属性|类型|说明|
-|:-|:-|:-|
-|appid|String|qq 小程序的 AppID，登录 [https://q.qq.com](https://q.qq.com) 申请|
-|usingComponents|Boolean| 是否启用自定义组件模式，`v2.0+`，默认为false，[编译模式区别详情](https://ask.dcloud.net.cn/article/35843)。mp-qq只支持自定义组件模式|
+|属性							|类型			|说明																																												|
+|:-								|:-				|:-																																													|
+|appid							|String			|qq 小程序的 AppID，登录 [https://q.qq.com](https://q.qq.com) 申请																													|
+|requiredBackgroundModes		|Array			|小程序需要在后台使用的能力，目前支持背景音频播放，"requiredBackgroundModes": ["audio"]，[详见](https://q.qq.com/wiki/develop/miniprogram/frame/dispose.html#requiredbackgroundmodes)	|
+|navigateToMiniProgramAppIdList	|Array			|需要跳转的小程序列表，[详见](https://q.qq.com/wiki/develop/miniprogram/frame/dispose.html#navigatetominiprogramappidlist)																|
+|permission						|Object			|小程序接口权限相关设置，比如申请位置权限必须填此处[详见](https://q.qq.com/wiki/develop/miniprogram/frame/dispose.html#permission)														|
+|workers						|String			|Worker 代码放置的目录。 [详见](https://q.qq.com/wiki/develop/miniprogram/frame/dispose.html#workers)																					|
+|groupIdList					|String Array	|需要打开群资料卡的群号列表，详见button的open-type																																		|
+
+mp-qq只支持自定义组件模式，不存在usingComponents配置
 
 
 ### 完整 manifest.json
@@ -482,8 +491,7 @@ Tips：关于摇树优化（treeShaking）原理及优化结果，参考：[http
 				"share": {
 					// 微信分享
 					"weixin": {
-						"appid": "",
-						"appsecret": ""
+						"appid": ""
 					},
 					// 新浪微博分享
 					"sina": {
@@ -491,15 +499,9 @@ Tips：关于摇树优化（treeShaking）原理及优化结果，参考：[http
 						"appsecret": "",
 						"redirect_uri": ""
 					},
-					// 分享到QQ好友
+					// 分享到QQ
 					"qq": {
 						"appid": ""
-					},
-					// 腾讯微博分享
-					"tencent": {
-						"appkey": "",
-						"appsecret": "",
-						"redirect_uri": ""
 					}
 				},
 				"statics": {
@@ -512,6 +514,7 @@ Tips：关于摇树优化（treeShaking）原理及优化结果，参考：[http
 					}
 				}
 			},
+			// 屏幕方向
 			"orientation": [
 				"portrait-primary",
 				"landscape-primary",
@@ -634,7 +637,8 @@ Tips：关于摇树优化（treeShaking）原理及优化结果，参考：[http
 		"softinput": {
 			"navBar": "auto", //是否显示iOS软键盘上的“完成”导航条
 			"mode": "adjustResize|adjustPan" //软键盘弹出模式，
-		}
+		},
+    "popGesture": "none" //iOS上是否支持屏幕左边滑动关闭当前页面。默认是可关闭。设为none则不响应左滑动画。
 	},
 	// 快应用特有配置
 	"quickapp": {},

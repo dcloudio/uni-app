@@ -6,7 +6,7 @@ export default {
   mounted () {
     if (this.type === 'transparent') {
       const transparentElemStyle = this.$el.querySelector('.uni-page-head-transparent').style
-      // const titleElem = this.$el.querySelector('.uni-page-head__title')
+      const titleElem = this.$el.querySelector('.uni-page-head__title')
       const iconElems = this.$el.querySelectorAll('.uni-btn-icon')
       const iconElemsStyles = []
       const textColor = this.textColor
@@ -40,10 +40,9 @@ export default {
         }
         this._A = alpha
         // TODO 暂时仅处理背景色
-        // 对齐支付宝小程序，标题不透明渐变
-        // if (titleElem) {
-        //   titleElem.style.opacity = alpha
-        // }
+        if (titleElem) {
+          titleElem.style.opacity = alpha
+        }
         transparentElemStyle.backgroundColor = `rgba(${this._R},${this._G},${this._B},${alpha})`
         borderRadiusElemsStyles.forEach(function (borderRadiusElemStyle, index) {
           let oldColor = oldColors[index]

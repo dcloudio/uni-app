@@ -40,7 +40,7 @@
 
 `<video>` 默认宽度 300px、高度 225px，可通过 css 设置宽高。
 
-**示例**
+**示例** [查看示例](https://uniapp.dcloud.io/h5/pages/component/video/video)
  
 ```html
 <template>

@@ -36,7 +36,7 @@
         v-if="!searchInput"
         class="uni-page-head-bd">
         <div
-          :style="{fontSize:titleSize}"
+          :style="{fontSize:titleSize,opacity:type==='transparent'?0:1}"
           class="uni-page-head__title"
         >
           <i

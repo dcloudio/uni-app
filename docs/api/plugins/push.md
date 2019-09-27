@@ -7,6 +7,10 @@
 
 uni push 推送的开发API文档：[https://www.html5plus.org/doc/zh_cn/push.html](https://www.html5plus.org/doc/zh_cn/push.html)
 
+插件市场有很多推送相关的插件，包括检查应用是否被授予推送权限（[参考](https://ext.dcloud.net.cn/plugin?id=594)）、开启关闭推送服务（[参考](https://ext.dcloud.net.cn/plugin?id=727)）、自定义iOS推送铃声（[参考](https://ext.dcloud.net.cn/plugin?id=690)）
+
+插件市场也提供了其他三方推送方案，但注意unipush是推送成功率更高的解决方案，并且免费使用，更推荐使用。
+
 - 小程序平台
 
 小程序平台的类似概念叫做`模板消息`。

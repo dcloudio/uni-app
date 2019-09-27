@@ -22,7 +22,8 @@
     "test:cli": "cross-env NODE_ENV=test jest",
     "test:unit": "cross-env NODE_ENV=test UNI_PLATFORM=h5 mocha-webpack --require tests/unit/setup.js --webpack-config build/webpack.config.test.js tests/unit/**/*.spec.js",
     "release": "npm run lint:cli && lerna publish --force-publish=*",
-    "release:alpha": "npm run lint:cli && lerna publish --force-publish=* --npm-tag=alpha"
+    "release:alpha": "npm run lint:cli && lerna publish --force-publish=* --npm-tag=alpha",
+    "release:next": "npm run lint:cli && lerna publish --force-publish=* --npm-tag=next"
   },
   "dependencies": {
     "base64-arraybuffer": "^0.2.0",
@@ -62,6 +63,7 @@
     "rollup-plugin-commonjs": "^10.0.1",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-replace": "^2.1.0",
+    "shell-exec": "^1.0.2",
     "strip-json-comments": "^2.0.1",
     "vue": "^2.6.8",
     "vue-router": "^3.0.1",

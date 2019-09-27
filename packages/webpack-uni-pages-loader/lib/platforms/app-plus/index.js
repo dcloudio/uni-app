@@ -390,6 +390,10 @@ module.exports = function (pagesJson, userManifestJson) {
     }
   }
 
+  if (!process.env.UNI_USING_COMPONENTS) {
+    manifestJson.plus.launchwebview.kernel = 'UIWebview'
+  }
+
   manifest.content = manifestJson
 
   // 分包合并

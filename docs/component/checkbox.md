@@ -19,7 +19,7 @@
 |checked|Boolean|false|当前是否选中，可用来设置默认选中|
 |color|Color||checkbox的颜色，同css的color|
 
-**示例**
+**示例** [查看演示](https://uniapp.dcloud.io/h5/pages/component/checkbox/checkbox)
  
 ```html
 <template>
