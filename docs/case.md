@@ -5,11 +5,11 @@ uni-app已经有几十万开发者，是开发者数量和案例最丰富的多�
 
 ### 官方示例
 
-<a href="//m3w.cn/uniapp" target="_blank" class="clear-style"><b>Hello uni-app：</b></a>演示uni-app框架的组件、接口、模板，可以使用手机扫描下方App码下载iOS、Android原生安装包，也可以使用微信扫描小程序码，体验uni-app的小程序版本。本项目源码可在HBuilderX中新建项目获得，也可从[github](https://github.com/dcloudio/hello-uniapp)上获取。
+<a href="//m3w.cn/uniapp" target="_blank" class="clear-style"><b>Hello uni-app：</b></a>演示uni-app框架的组件、接口、模板。本项目源码可在HBuilderX中新建项目获得，也可从[github](https://github.com/dcloudio/hello-uniapp)上获取。
 <div style="display:flex;justify-content: space-around;">
 	<a href="//m3w.cn/uniapp" target="_blank" class="clear-style barcode-view">
 		<img src="//img.cdn.aliyun.dcloud.net.cn/guide/uniapp/app_download.png" width="200"/>
-		<span style="margin-top:15px;">App及H5的通用快码</span>
+		<span style="margin-top:15px;">App、H5、小程序通用快码</span>
 	</a>
 	<a href="//m3w.cn/uniapp" target="_blank" class="clear-style barcode-view">
 		<img src="//img.cdn.aliyun.dcloud.net.cn/guide/uniapp/gh_33446d7f7a26_430.jpg" width="200"/>
@@ -17,7 +17,7 @@ uni-app已经有几十万开发者，是开发者数量和案例最丰富的多�
 	</a>
 </div>
 
-<a href="//m3w.cn/__uni__1e99193" target="_blank" class="clear-style"><b>新闻/资讯类App模板：</b></a>基于uni-app开发的新闻/资讯类App模板，nvue 典型案例。一套代码，在 App 上使用原生渲染，并同时能编译为各端小程序和H5。本项目源码在HBuilderX中新建项目可获得。
+<a href="//m3w.cn/__uni__1e99193" target="_blank" class="clear-style"><b>新闻/资讯类App模板：</b></a>nvue 典型案例，App端纯原生渲染，可左右拖动的复杂长列表。并同时能编译为小程序和H5。本项目源码在HBuilderX中新建项目可获得，并可进一步运行到各端小程序。
 <div style="display:flex;justify-content: space-around;">
 	<a href="//m3w.cn/__uni__1e99193" target="_blank" class="clear-style barcode-view">
 		<img src="//img.cdn.aliyun.dcloud.net.cn/stream/qr/__UNI__1E99193.png/256" width="200"/>
