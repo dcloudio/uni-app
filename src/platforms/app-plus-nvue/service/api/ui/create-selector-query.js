@@ -72,7 +72,7 @@ function findAttrs (ids, elm, result) {
   for (let i = 0; i < nodes.length; i++) {
     let node = nodes[i]
     if (node.attr) {
-      let index = ids.indexOf('#' + node.attr.id)
+      let index = ids.indexOf(node.attr.id)
       if (index >= 0) {
         result[index] = {
           id: ids[index],
@@ -95,7 +95,7 @@ function getSelectors (queue) {
   for (let i = 0; i < queue.length; i++) {
     const selector = queue[i].selector
     if (selector.indexOf('#') === 0) {
-      ids.push(selector)
+      ids.push(selector.substring(1))
     }
   }
   return ids
