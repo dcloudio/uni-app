@@ -47,7 +47,7 @@ export function setTabBarStyle ({
     color,
     selectedColor,
     backgroundColor,
-    borderStyle
+    borderStyle: borderStyle === 'white' ? '#ffffff' : '#c6c6c6'
   })
   return {
     errMsg: 'setTabBarStyle:ok'

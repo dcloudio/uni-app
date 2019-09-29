@@ -134,7 +134,7 @@ export default {
       id: webview.id
     }, ({ code }) => {
       if (code !== 0) {
-        console.log('tab append error')
+        // console.log('tab append error')
         setTimeout(() => {
           this.append(webview)
         }, 20)
