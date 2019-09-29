@@ -2,7 +2,7 @@ export const ANI_DURATION = 300
 const ANI_SHOW = 'pop-in'
 export const ANI_CLOSE = 'pop-out'
 
-export function showWebview (webview, animationType, animationDuration, callback) {
+export function showWebview (webview, animationType, animationDuration, callback, delay = 50) {
   setTimeout(() => {
     webview.show(
       animationType || ANI_SHOW,
@@ -11,5 +11,5 @@ export function showWebview (webview, animationType, animationDuration, callback
         callback && callback()
       }
     )
-  }, 50)
+  }, delay)
 }

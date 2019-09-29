@@ -62,13 +62,11 @@ export function switchTab ({
     tabBarPage.$vm.__call_hook('onShow')
     tabBarPage.$getAppWebview().show('none')
   } else {
-    showWebview(
-      __registerPage({
-        path,
-        query: {},
-        openType: 'switchTab'
-      }), 'none', 0
-    )
+    showWebview(__registerPage({
+      path,
+      query: {},
+      openType: 'switchTab'
+    }), 'none', 0, null, 70)
   }
 
   setStatusBarStyle()

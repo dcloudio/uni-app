@@ -137,7 +137,7 @@ export default {
         console.log('tab append error')
         setTimeout(() => {
           this.append(webview)
-        }, 100)
+        }, 20)
       }
     })
   },
