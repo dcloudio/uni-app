@@ -426,12 +426,12 @@ uni-app 提供内置 CSS 变量
 ### 固定值
 `uni-app` 中以下组件的高度是固定的，不可修改：
 
-|组件|描述|5+App|H5|
+|组件|描述|App|H5|
 |:-|:-|:-|:-|
 |NavigationBar|导航栏|44px|44px|
-|TabBar|底部选项卡|56px（HBuilderX 2.3.4 群测版默认为 50px 且可以更改）|50px|
+|TabBar|底部选项卡|HBuilderX 2.3.4之前为56px，2.3.4及以后版本统一为 50px 且可以自主更改）|50px|
 
-各小程序平台，包括同小程序平台的iOS和Android的高度也不一样。TabBar在App端默认高度，与微信iOS版主界面的tabbar高度保持一致。
+各小程序平台，包括同小程序平台的iOS和Android的高度也不一样。
 
 ### Flex布局
 
