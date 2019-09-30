@@ -7,6 +7,7 @@
 |onLaunch|当``uni-app`` 初始化完成时触发（全局只触发一次）|
 |onShow|当 ``uni-app`` 启动，或从后台进入前台显示|
 |onHide|当 ``uni-app`` 从前台进入后台|
+|onError|当 ``uni-app`` 报错时触发|
 |onUniNViewMessage|对 ``nvue`` 页面发送的数据进行监听，可参考 [nvue 向 vue 通讯](/use-weex?id=nvue-向-vue-通讯)|
 
 **注意**
