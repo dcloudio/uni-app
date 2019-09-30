@@ -1,3 +1,17 @@
+### getApp()
+
+```getApp()``` 函数用于获取当前应用实例，一般用于获取globalData 。
+
+**实例**
+
+```javascript
+const app = getApp()
+console.log(app.globalData) 
+```
+
+**注意：**
+
+- 通过 getApp() 获取实例之后，不要私自调用生命周期函数。
 
 ### getCurrentPages()
 
