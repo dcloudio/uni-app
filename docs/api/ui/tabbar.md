@@ -191,7 +191,7 @@ uni.setTabBarBadge({
 
 |App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|√（HBuilderX 2.3.4+）|x|x|x|x|x|x|
+|√（HBuilderX 2.3.4 群测版）|x|x|x|x|x|x|
 
 
 **Tip**
