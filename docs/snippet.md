@@ -146,6 +146,7 @@ App端也提供真机运行的console.log日志输出，运行到真机或模拟
 
 #### 断点同步
 HBuilderX还有一个强大的功能，那就是可以直接在编辑器中打断点，断点会自动同步到调试工具中。
+
 操作步骤：只需要在需要打断点打代码部分，右击，就会出来同步断点到调试器，然后点击就好了。下面就是演示图：
 
 ![debug](//img-cdn-qiniu.dcloud.net.cn/uniapp/doc/debug-console-gif.gif)
