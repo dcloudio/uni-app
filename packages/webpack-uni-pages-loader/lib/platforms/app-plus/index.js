@@ -65,7 +65,7 @@ module.exports = function (pagesJson, userManifestJson) {
     navigationBarBackgroundColor = '#000000'
   } = appJson['window'] || {}
   
-  const TABBAR_HEIGHT = 56
+  const TABBAR_HEIGHT = 50
 
   let manifestJson = JSON.parse(fs.readFileSync(path.resolve(__dirname, './manifest.json'), 'utf8'))
 
