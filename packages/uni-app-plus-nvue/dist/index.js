@@ -5984,7 +5984,8 @@ var serviceContext = (function () {
     data,
     header,
     method = 'GET',
-    responseType
+    responseType,
+    sslVerify = true
   } = {}) {
     const stream = requireNativePlugin('stream');
     const headers = {};
@@ -6024,7 +6025,9 @@ var serviceContext = (function () {
       headers,
       type: responseType === 'arraybuffer' ? 'base64' : 'text',
       // weex 官方文档未说明实际支持 timeout，单位：ms
-      timeout: timeout || 6e5
+      timeout: timeout || 6e5,
+      // 配置和weex模块内相反
+      sslVerify: !sslVerify
     };
     if (method !== 'GET') {
       options.body = data;

@@ -71,7 +71,11 @@ function updateComponentJson (name, jsonObj, usingComponents = true) {
   const oldJsonStr = getJsonFile(name)
   if (oldJsonStr) { // update
     if (usingComponents) { // merge usingComponents
-      jsonObj.usingComponents = JSON.parse(oldJsonStr).usingComponents || {}
+      const oldJsonObj = JSON.parse(oldJsonStr)
+      jsonObj.usingComponents = oldJsonObj.usingComponents || {}
+      if (oldJsonObj.usingGlobalComponents) { // 复制 global components(针对不支持全局 usingComponents 的平台)
+        jsonObj.usingGlobalComponents = oldJsonObj.usingGlobalComponents
+      }
     }
     const newJsonStr = JSON.stringify(jsonObj, null, 2)
     if (newJsonStr !== oldJsonStr) {
