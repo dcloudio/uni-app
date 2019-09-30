@@ -55,6 +55,9 @@
 		"selectedColor": "#3cc51f",
 		"borderStyle": "black",
 		"backgroundColor": "#ffffff",
+		"height": "56px",
+		"fontSize": "12px",
+		"iconWidth": "24px",
 		"list": [{
 			"pagePath": "pages/component/index",
 			"iconPath": "static/image/icon_component.png",
@@ -65,7 +68,15 @@
 			"iconPath": "static/image/icon_API.png",
 			"selectedIconPath": "static/image/icon_API_HL.png",
 			"text": "接口"
-		}]
+		}],
+		"midButton": {
+			"width": "80px",
+			"height": "56px",
+			"text": "文字",
+			"iconPath": "static/image/midButton_iconPath.png",
+			"iconWidth": "24px",
+			"backgroundImage": "static/image/midButton_backgroundImage.png"
+		}
 	}
 }
 ```
@@ -663,6 +674,10 @@ h5 平台下拉刷新动画，只有 circle 类型。
 |borderStyle|String|否|black|tabbar 上边框的颜色，仅支持 black/white||
 |list|Array|是||tab 的列表，详见 list 属性说明，最少2个、最多5个 tab||
 |position|String|否|bottom|可选值 bottom、top|top 值仅微信小程序支持|
+|fontSize|String|否|12px|文字默认大小|App（HBuilderX 2.3.4+）|
+|iconWidth|String|否|24px|图标默认宽度（高度等比例缩放）|App（HBuilderX 2.3.4+）|
+|height|String|否|56px|tabBar 默认高度|App（HBuilderX 2.3.4+）|
+|midButton|Object|否||中间按钮 仅在 list 项为偶数时有效|App（HBuilderX 2.3.4+）|
 
 其中 list 接收一个数组，数组中的每个项都是一个对象，其属性值如下：
 
@@ -673,6 +688,17 @@ h5 平台下拉刷新动画，只有 circle 类型。
 |iconPath|String|否|图片路径，icon 大小限制为40kb，建议尺寸为 81px * 81px，当 postion 为 top 时，此参数无效，不支持网络图片，不支持字体图标|
 |selectedIconPath|String|否|选中时的图片路径，icon 大小限制为40kb，建议尺寸为 81px * 81px ，当 postion 为 top 时，此参数无效|
 
+**midButton 属性说明**
+
+|属性|类型|必填|默认值|描述|
+|:-|:-|:-|:-|:-|
+|width|String|否|80px|中间按钮的宽度，tabBar 其它项为减去此宽度后平分，默认值为与其它项平分宽度|
+|height|String|否|56px|中间按钮的高度，可以大于 tabBar 高度|
+|text|String|否||中间按钮的文字|
+|iconPath|String|否||中间按钮的图片路径|
+|iconWidth|String|否|24px||图片宽度（高度等比例缩放）|
+|backgroundImage|String|否||中间按钮的背景图片路径|
+
 #### **tabbar常见问题** @tips-tabbar
 - tabbar 的 js api 见[接口-界面-tabbar](https://uniapp.dcloud.io/api/ui/tabbar)，可实现动态显示隐藏（如弹出层无法覆盖tabbar）、内容修改（如国际化）、item加角标等功能。hello uni-app中也有示例。
 - tabbar 的 item 点击事件见[页面生命周期的onTabItemTap](https://uniapp.dcloud.io/frame?id=%E9%A1%B5%E9%9D%A2%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F)。
@@ -680,7 +706,6 @@ h5 平台下拉刷新动画，只有 circle 类型。
 - tabbar 在H5端是div模拟的，属于前端屏幕窗口的一部分，如果要使用bottom居底定位方式，应该使用css变量`--window-bottom`，比如悬浮在tabbar上方10px的按钮，样式如下`bottom: calc(var(--window-bottom) + 10px)`
 - tabbar 的默认高度，在不同平台不一样。[详见](https://uniapp.dcloud.io/frame?id=%e5%9b%ba%e5%ae%9a%e5%80%bc)
 - 中间带+号的tabbar模板例子，[参考](https://ext.dcloud.net.cn/plugin?id=98)。可跨端，但+号不凸起。
-- 如需 tabbar 中间凸起，可自定义tabbar，插件市场有例子，如colorUI等。但注意前端tabbar的性能不如原生tabbar，如果是多页方式，底部tabbar会在切换时闪执行转场动画，如果是单页方式，承载复杂页面内容会有性能问题。[插件市场](https://ext.dcloud.net.cn/search?q=tabbar)搜索tabbar有不少类似例子。
 - App端若使用nvue，自定义tabbar，没有性能体验问题。
 - 纯nvue项目（manifest里renderer为native），目前使用pages.json里的tabbar反而影响性能，建议使用前端自己实现单页面的tabbar。后续会解决这个bug。
 - Android App上弹出键盘顶起tabbar的问题。升级到HBuilderX 2.2后不再存在。
