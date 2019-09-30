@@ -301,6 +301,23 @@ module.exports = function (pagesJson, userManifestJson) {
     manifestJson.plus.popGesture = 'close'
   }
 
+  // 检查原生混淆选项
+  const confusion = manifestJson.plus.confusion
+  if (confusion && confusion.resources) {
+    const resources = {}
+    for (const key in confusion.resources) {
+      if (!/\.nvue$/.test(key)) {
+        throw new Error(`原生混淆仅支持 nvue 页面，错误的页面路径：${key}`)
+      } else {
+        resources[key.replace(/\.nvue$/, '.js')] = confusion.resources[key]
+      }
+      if (!Object.keys(appJson.nvue.pages).find(path => path.replace(/\.html$/, '.nvue') === key)) {
+        throw new Error(`原生混淆页面未在项目内使用，错误的页面路径：${key}`)
+      }
+    }
+    confusion.resources = resources
+  }
+
   // uni-app
   const uniApp = require('../../../package.json')['uni-app']
   manifestJson.plus['uni-app'] = uniApp
