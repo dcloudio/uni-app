@@ -360,7 +360,7 @@ module.exports = function (pagesJson, userManifestJson) {
       manifestJson.launch_path = ''
       Object.assign(manifestJson.plus.launchwebview, {
         uniNView: {
-          path: appJson.pages[0]
+          path: appJson.entryPagePath
         }
       })
     } else if (isNVueEntryPage) {
@@ -377,7 +377,7 @@ module.exports = function (pagesJson, userManifestJson) {
         manifestJson.plus.launchwebview.id = '2'
       } else {
         // 首页是 tabBar 页面
-        const item = tabBar.list.find(page => page.pagePath === (process.env.UNI_USING_NATIVE ? appJson.pages[0] : entryPagePath))
+        const item = tabBar.list.find(page => page.pagePath === (process.env.UNI_USING_NATIVE ? appJson.entryPagePath : entryPagePath))
         if (item) {
           tabBar.child = ['lauchwebview']
           tabBar.selected = tabBar.list.indexOf(item)
