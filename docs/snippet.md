@@ -135,7 +135,7 @@ uni.showToast({
 `console.log`是我们日常开发最常用的调试方法，`HBuilderX`中当然也不能少。
 - App端提供真机运行的`console.log`日志输出，运行到真机或模拟器时，不用点`debug`按钮，操作手机，会在`HBuilderX`的控制台直接输出日志。
 
-- 如果是比较复杂的逻辑，那就推荐使用调试工具重的`console`了。根据上一步，启动完成`debug`窗口后，执行`console.log`方法就可以看到打印的内容了。
+- 如果是比较复杂的逻辑，那就推荐使用调试工具中的`console`了。根据上一步，启动完成`debug`窗口后，执行`console.log`方法就可以看到打印的内容了。
 
 `debug`窗口中看`console.log`的方法如下图：
 
