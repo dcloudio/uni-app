@@ -311,7 +311,14 @@ module.exports = function (pagesJson, userManifestJson) {
       } else {
         resources[key.replace(/\.nvue$/, '.js')] = confusion.resources[key]
       }
-      if (!Object.keys(appJson.nvue.pages).find(path => path.replace(/\.html$/, '.nvue') === key)) {
+      if (!Object.keys(appJson.nvue.pages).find(path => {
+        const subNVues = appJson.nvue.pages[path].window.subNVues || []
+        return path.replace(/\.html$/, '.nvue') === key || subNVues.find(({ path }) => path === key.replace(/\.nvue$/, ''))
+      }) && !pagesJson.pages.find(({ style = {} }) => {
+        style = Object.assign(style, style['app-plus'])
+        const subNVues = style.subNVues || []
+        return subNVues.find(({ path }) => path === key.replace(/\.nvue$/, ''))
+      })) {
         throw new Error(`原生混淆页面未在项目内使用，错误的页面路径：${key}`)
       }
     }
