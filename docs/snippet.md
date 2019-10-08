@@ -155,25 +155,23 @@ uni.showToast({
 ![debug](//img-cdn-qiniu.dcloud.net.cn/uniapp/doc/csdndebug-breakpoint.png)
 
 #### 同步断点到调试器
-当然，如果你觉得从一堆代码中，找到自己的业务代码比较困难的话，`HBuilderX`的调试还提供一个强大的功能，那就是可以直接在编辑器中打断点，断点会自动同步到调试工具中。
+在控制台众多代码中寻找要调试的代码是比较麻烦的一件事，`HBuilderX`的调试还提供一个便利的功能，可直接在编辑器中打断点，断点会自动同步到调试工具中。
 
-操作步骤：只需要在需要打断点打代码部分，右击，就会出来同步断点到调试器，然后点击就好了。下面就是演示图：
+操作步骤：在HBuilderX编辑器中对目标行的行号处点右键，在右键菜单中选择“同步断点到调试器”，然后调试控制台会自动打开对应的代码并在指定行处标记断点。演示如下：
 
 ![debug](//img-cdn-qiniu.dcloud.net.cn/uniapp/doc/debug-console-light.gif)
-
-注意：`vue`跟`nvue`都支持使用同步断点到调试器的方式去打断点。
 
 
 Tip 
 - `debug`仅支持自定义组件模式。如果是非自定义组件模式，请在`manifest`里配置选为自定义组件模式。非自定义组件模式即将停止支持，[详见](https://ask.dcloud.net.cn/article/36385)
-- `vue` 和 `nvue` 页面都能打断点调试
-- 目前仅支持 `nvue` 页面审查元素，`vue` 页面暂不支持，`Android` 暂不支持查看 `style`
-- `App`端提供真机运行的`console.log`日志输出，运行到真机或模拟器时，不用点`debug`按钮，操作手机，会在`HBuilderX`的控制台直接输出日志。
+- `vue` 和 `nvue` 页面均支持断点调试
+- 目前仅支持 `nvue` 页面审查元素，`vue` 页面暂不支持，以及 `Android` 平台的 `nvue` 审查元素暂不支持查看 `style`
+- App端提供真机运行的`console.log`日志输出，运行到真机或模拟器时，不用点`debug`按钮，运行手机App，会在`HBuilderX`的控制台直接输出日志。
 - 如果是调试`App`的界面和常规API，推荐编译到H5端，点`HBuilderX`右上角的预览，在内置浏览器里调`Dom`，保存后立即看到结果，调试更方便。并且H5端也支持`titleNView`的各种复杂设置。唯一要注意的就是`css`兼容性，使用太新的`css`在`pc`上预览可能正常，但低端`Android`上异常，具体可查询`caniuse`等网站。
 - 常用的开发模式就是`pc`上使用内置浏览器预览调dom，运行到真机上看`console.log`。如果是很复杂的问题才使用`debug`。
 - vue页面也可以在微信开发者工具里调试，除了plus API，其他是一样的，微信开发者工具的查看`Dom`和网络和存储等调试工具相对而言更完善些。
 注意：即使不发布微信小程序、只发布`App`，也需要安装微信开发者工具。
-- uni-app的App端没有5+App那种webkit remote debug
+- uni-app的App端没有5+App那种webkit remote debug，因为uni-app的js不是运行在webview里，而是独立的jscore里。
 
 
 ### 持续集成
