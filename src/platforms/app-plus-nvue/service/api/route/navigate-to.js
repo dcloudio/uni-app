@@ -7,14 +7,15 @@ import {
 } from './util'
 
 import {
-  setStatusBarStyle
+  setStatusBarStyle,
+  invoke
 } from '../../bridge'
 
 export function navigateTo ({
   url,
   animationType,
   animationDuration
-}) {
+}, callbackId) {
   const urls = url.split('?')
   const path = urls[0]
 
@@ -32,7 +33,12 @@ export function navigateTo ({
       openType: 'navigate'
     }),
     animationType,
-    animationDuration
+    animationDuration,
+    () => {
+      invoke(callbackId, {
+        errMsg: 'navigateTo:ok'
+      })
+    }
   )
 
   setStatusBarStyle()

@@ -5,7 +5,8 @@ import {
 } from './util'
 
 import {
-  setStatusBarStyle
+  setStatusBarStyle,
+  invoke
 } from '../../bridge'
 
 import tabBar from '../../../../app-plus/service/framework/tab-bar'
@@ -13,7 +14,7 @@ import tabBar from '../../../../app-plus/service/framework/tab-bar'
 export function switchTab ({
   url,
   from
-}) {
+}, callbackId) {
   const path = url.split('?')[0]
 
   tabBar.switchTab(path.slice(1))
@@ -66,8 +67,16 @@ export function switchTab ({
       path,
       query: {},
       openType: 'switchTab'
-    }), 'none', 0, null, 70)
+    }), 'none', 0, () => {
+      invoke(callbackId, {
+        errMsg: 'switchTab:ok'
+      })
+    }, 70)
+    return
   }
 
   setStatusBarStyle()
+  return {
+    errMsg: 'switchTab:ok'
+  }
 }

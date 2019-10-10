@@ -7,14 +7,15 @@ import {
 } from './util'
 
 import {
-  setStatusBarStyle
+  setStatusBarStyle,
+  invoke
 } from '../../bridge'
 
 import tabBar from '../../../../app-plus/service/framework/tab-bar'
 
 export function reLaunch ({
   url
-}) {
+}, callbackId) {
   const urls = url.split('?')
   const path = urls[0]
 
@@ -35,7 +36,12 @@ export function reLaunch ({
       openType: 'reLaunch'
     }),
     'none',
-    0
+    0,
+    () => {
+      invoke(callbackId, {
+        errMsg: 'reLaunch:ok'
+      })
+    }
   )
 
   pages.forEach(page => {
