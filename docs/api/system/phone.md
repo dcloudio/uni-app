@@ -17,3 +17,6 @@ uni.makePhoneCall({
 	phoneNumber: '114' //仅为示例
 });
 ```
+
+
+注：如需发短信，App端参考：[http://www.html5plus.org/doc/zh_cn/messaging.html](http://www.html5plus.org/doc/zh_cn/messaging.html)
