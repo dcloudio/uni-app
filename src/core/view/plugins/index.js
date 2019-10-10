@@ -48,15 +48,18 @@ export default {
       return $event
     }
 
-    Vue.prototype.$getComponentDescriptor = function (vm) {
-      return createComponentDescriptor(vm || this)
+    Vue.prototype.$getComponentDescriptor = function (vm, owner = false) {
+      return createComponentDescriptor(vm || this, owner)
     }
 
     Vue.prototype.$handleWxsEvent = function ($event) {
       if ($event instanceof Event) { // 未处理的 event 对象 需要对 target 校正及包装
         const currentTarget = $event.currentTarget
-        const instance = currentTarget && currentTarget.__vue__ && currentTarget.__vue__.$getComponentDescriptor()
-        $event = processEvent.call(this, $event.type, $event, {}, findUniTarget($event, this.$el) || $event.target, $event.currentTarget)
+        const instance = currentTarget &&
+          currentTarget.__vue__ &&
+          currentTarget.__vue__.$getComponentDescriptor(null, true)
+        $event = processEvent.call(this, $event.type, $event, {}, findUniTarget($event, this.$el) || $event.target,
+          $event.currentTarget)
         $event.instance = instance
       }
       return $event

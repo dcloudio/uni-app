@@ -146,11 +146,12 @@ class ComponentDescriptor {
   }
 }
 
-export function createComponentDescriptor (vm) {
+export function createComponentDescriptor (vm, owner = false) {
   if (vm && vm.$el) {
-    if (!vm.$el.__wxsComponentDescriptor) {
-      vm.$el.__wxsComponentDescriptor = new ComponentDescriptor(vm)
+    const key = owner ? '__wxsComponentDescriptorOwner' : '__wxsComponentDescriptor'
+    if (!vm.$el[key]) {
+      vm.$el[key] = new ComponentDescriptor(vm)
     }
-    return vm.$el.__wxsComponentDescriptor
+    return vm.$el[key]
   }
 }
