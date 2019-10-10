@@ -112,15 +112,17 @@ function initTabBar () {
 
   const onLaunchWebviewReady = function onLaunchWebviewReady () {
     tabBar.init(__uniConfig.tabBar, (item, index) => {
-      UniServiceJSBridge.emit('onTabItemTap', {
-        index,
-        text: item.text,
-        pagePath: item.pagePath
-      })
       uni.switchTab({
         url: '/' + item.pagePath,
         openType: 'switchTab',
-        from: 'tabBar'
+        from: 'tabBar',
+        success () {
+          UniServiceJSBridge.emit('onTabItemTap', {
+            index,
+            text: item.text,
+            pagePath: item.pagePath
+          })
+        }
       })
     })
   }
