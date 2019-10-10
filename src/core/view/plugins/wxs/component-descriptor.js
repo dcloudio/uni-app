@@ -146,12 +146,15 @@ class ComponentDescriptor {
   }
 }
 
-export function createComponentDescriptor (vm, owner = false) {
+export function createComponentDescriptor (vm) {
+  if (vm && vm.$options.name && vm.$options.name.indexOf('VUni') === 0) {
+    // 内置组件需要使用父 vm
+    vm = vm.$parent
+  }
   if (vm && vm.$el) {
-    const key = owner ? '__wxsComponentDescriptorOwner' : '__wxsComponentDescriptor'
-    if (!vm.$el[key]) {
-      vm.$el[key] = new ComponentDescriptor(vm)
+    if (!vm.$el.__wxsComponentDescriptor) {
+      vm.$el.__wxsComponentDescriptor = new ComponentDescriptor(vm)
     }
-    return vm.$el[key]
+    return vm.$el.__wxsComponentDescriptor
   }
 }
