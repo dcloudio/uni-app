@@ -90,4 +90,4 @@ export default {
 **Tips**
 - 微信小程序端，滚动时在iOS自带振动反馈，可在系统设置 -> 声音与触感 -> 系统触感反馈中关闭
 - app-nvue 暂不支持 ``<picker-view>``
-- 如果需要在PC端使用picker-view，可以配置[H5模版](https://uniapp.dcloud.io/collocation/manifest?id=h5-template)，并引入[touch-emulator.js](https://github.com/dcloudio/touchemulator)
+- 如果需要在PC端使用`picker-view`，可以配置[H5模版](https://uniapp.dcloud.io/collocation/manifest?id=h5-template)，并引入[touch-emulator.js](https://github.com/dcloudio/touchemulator)
