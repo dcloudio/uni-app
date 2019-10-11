@@ -147,6 +147,10 @@ class ComponentDescriptor {
 }
 
 export function createComponentDescriptor (vm) {
+  if (vm && vm.$options.name && vm.$options.name.indexOf('VUni') === 0) {
+    // 内置组件需要使用父 vm
+    vm = vm.$parent
+  }
   if (vm && vm.$el) {
     if (!vm.$el.__wxsComponentDescriptor) {
       vm.$el.__wxsComponentDescriptor = new ComponentDescriptor(vm)

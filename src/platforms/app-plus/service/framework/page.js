@@ -12,6 +12,8 @@ import {
   perf
 } from './perf'
 
+import tabBar from '../framework/tab-bar'
+
 const pages = []
 
 export function getCurrentPages (returnAll) {
@@ -52,6 +54,8 @@ export function registerPage ({
   if (openType === 'reLaunch' || pages.length === 0) {
     // pages.length===0 表示首页触发 redirectTo
     routeOptions.meta.isQuit = true
+  } else if (!routeOptions.meta.isTabBar) {
+    routeOptions.meta.isQuit = false
   }
 
   if (!webview) {
@@ -70,8 +74,7 @@ export function registerPage ({
   }
 
   if (routeOptions.meta.isTabBar && webview.id !== '1') {
-    const launchWebview = plus.webview.getLaunchWebview()
-    launchWebview && launchWebview.append(webview)
+    tabBar.append(webview)
   }
 
   if (process.env.NODE_ENV !== 'production') {

@@ -67,6 +67,8 @@ module.exports = function(pagesJson, userManifestJson) {
     navigationBarTextStyle = 'white',
       navigationBarBackgroundColor = '#000000'
   } = appJson['window'] || {}
+  
+  const TABBAR_HEIGHT = 50
 
   let manifestJson = JSON.parse(fs.readFileSync(path.resolve(__dirname, './manifest.json'), 'utf8'))
 
@@ -302,6 +304,30 @@ module.exports = function(pagesJson, userManifestJson) {
     manifestJson.plus.popGesture = 'close'
   }
 
+  // 检查原生混淆选项
+  const confusion = manifestJson.plus.confusion
+  if (confusion && confusion.resources) {
+    const resources = {}
+    for (const key in confusion.resources) {
+      if (!/\.nvue$/.test(key)) {
+        throw new Error(`原生混淆仅支持 nvue 页面，错误的页面路径：${key}`)
+      } else {
+        resources[key.replace(/\.nvue$/, '.js')] = confusion.resources[key]
+      }
+      if (!Object.keys(appJson.nvue.pages).find(path => {
+        const subNVues = appJson.nvue.pages[path].window.subNVues || []
+        return path.replace(/\.html$/, '.nvue') === key || subNVues.find(({ path }) => path === key.replace(/\.nvue$/, ''))
+      }) && !pagesJson.pages.find(({ style = {} }) => {
+        style = Object.assign(style, style['app-plus'])
+        const subNVues = style.subNVues || []
+        return subNVues.find(({ path }) => path === key.replace(/\.nvue$/, ''))
+      })) {
+        throw new Error(`原生混淆页面未在项目内使用，错误的页面路径：${key}`)
+      }
+    }
+    confusion.resources = resources
+  }
+
   // uni-app
   const uniApp = require('../../../package.json')['uni-app']
   manifestJson.plus['uni-app'] = uniApp
@@ -334,6 +360,13 @@ module.exports = function(pagesJson, userManifestJson) {
     if (conditionPagePath && isNVueEntryPage) {
       isNVueEntryPage = appJson.nvue.entryPagePath === conditionPagePath
     }
+    manifestJson.plus.useragent.value = 'uni-app'
+    manifestJson.launch_path = '__uniappview.html'
+    Object.assign(manifestJson.plus.launchwebview, {
+      id: '1',
+      kernel: 'WKWebview',
+      'uni-app': 'auto'
+    })
     if (process.env.UNI_USING_NATIVE) {
       appJson.entryPagePath = appJson.nvue.entryPagePath
       // networkTimeout
@@ -349,50 +382,33 @@ module.exports = function(pagesJson, userManifestJson) {
       })
 
       delete appJson.nvue
-
-      // 纯 nvue 带 tab
-      if (pagesJson.tabBar && pagesJson.tabBar.list && pagesJson.tabBar.list.length) {
-        manifestJson.launch_path = '__uniapptabbar.html'
-        manifestJson.plus.secondwebview = {
-          id: '1',
-          mode: 'child',
-          top: 0,
-          bottom: 56,
-          uniNView: {
-            path: appJson.pages[0]
-          }
+      
+      delete manifestJson.plus.launchwebview.kernel
+      manifestJson.launch_path = ''
+      Object.assign(manifestJson.plus.launchwebview, {
+        uniNView: {
+          path: appJson.entryPagePath
         }
-      } else { // 纯 nvue 不带 tab
-        manifestJson.launch_path = ''
-        Object.assign(manifestJson.plus.launchwebview, {
-          id: '1',
-          uniNView: {
-            path: appJson.pages[0]
-          }
-        })
-      }
-    } else if (isNVueEntryPage) { // 临时 tabBar 页面
-      manifestJson.launch_path = '__uniapptabbar.html'
-    } else if (pagesJson.tabBar && pagesJson.tabBar.list && pagesJson.tabBar.list.length) {
-      manifestJson.launch_path = '__uniapptabbar.html'
-      manifestJson.plus.secondwebview = {
-        id: '1'
-      }
-      manifestJson.plus.secondwebview.launch_path = '__uniappview.html'
-      if (!manifestJson.plus.secondwebview.kernel) {
-        manifestJson.plus.secondwebview.kernel = 'WKWebview'
-      }
-      // 首页是 tabBar 页面
-      if (pagesJson.tabBar.list.find(page => page.pagePath === entryPagePath)) {
-        manifestJson.plus.secondwebview.mode = 'child'
-        manifestJson.plus.secondwebview.top = 0
-        manifestJson.plus.secondwebview.bottom = 56
-      }
-    } else { // 无 tabbar 的页面，launchWebview 的 id 为1
-      manifestJson.launch_path = '__uniappview.html'
-      manifestJson.plus.launchwebview.id = '1'
-      if (!manifestJson.plus.launchwebview.kernel) {
-        manifestJson.plus.launchwebview.kernel = 'WKWebview'
+      })
+    } else if (isNVueEntryPage) {
+      // 非纯 nvue 项目首页为 nvue 页面
+      manifestJson.plus.launchwebview.id = '2'
+    }
+    // 带 tab
+    if (pagesJson.tabBar && pagesJson.tabBar.list && pagesJson.tabBar.list.length) {
+      const tabBar = manifestJson.plus.tabBar = Object.assign({}, pagesJson.tabBar)
+      tabBar.borderStyle = tabBar.borderStyle === 'white' ? '#ffffff' : '#c6c6c6'
+      tabBar.height = `${parseFloat(tabBar.height) || TABBAR_HEIGHT}px`
+      // 非纯 nvue 项目首页为 nvue 页面
+      if (!process.env.UNI_USING_NATIVE && isNVueEntryPage) {
+        manifestJson.plus.launchwebview.id = '2'
+      } else {
+        // 首页是 tabBar 页面
+        const item = tabBar.list.find(page => page.pagePath === (process.env.UNI_USING_NATIVE ? appJson.entryPagePath : entryPagePath))
+        if (item) {
+          tabBar.child = ['lauchwebview']
+          tabBar.selected = tabBar.list.indexOf(item)
+        }
       }
     }
   }

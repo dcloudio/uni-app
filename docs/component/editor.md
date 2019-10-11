@@ -29,11 +29,11 @@ editor组件目前只有App的vue页面和微信支持，其他端的富文本�
 | show-img-size | boolean | false | 否 | 点击图片时显示图片大小控件 |
 | show-img-toolbar | boolean | false | 否 | 点击图片时显示工具栏控件 |
 | show-img-resize | boolean | false | 否 | 点击图片时显示修改尺寸控件 |
-| bindready | eventhandle |  | 否 | 编辑器初始化完成时触发 |
-| bindfocus | eventhandle |  | 否 | 编辑器聚焦时触发，event.detail = {html, text, delta} |
-| bindblur | eventhandle |  | 否 | 编辑器失去焦点时触发，detail = {html, text, delta} |
-| bindinput | eventhandle |  | 否 | 编辑器内容改变时触发，detail = {html, text, delta} |
-| bindstatuschange | eventhandle |  | 否 | 通过 Context 方法改变编辑器内样式时触发，返回选区已设置的样式 |
+| @ready | eventhandle |  | 否 | 编辑器初始化完成时触发 |
+| @focus | eventhandle |  | 否 | 编辑器聚焦时触发，event.detail = {html, text, delta} |
+| @blur | eventhandle |  | 否 | 编辑器失去焦点时触发，detail = {html, text, delta} |
+| @input | eventhandle |  | 否 | 编辑器内容改变时触发，detail = {html, text, delta} |
+| @statuschange | eventhandle |  | 否 | 通过 Context 方法改变编辑器内样式时触发，返回选区已设置的样式 |
 
 编辑器内支持部分 HTML 标签和内连样式，不支持**class**和**id**
 

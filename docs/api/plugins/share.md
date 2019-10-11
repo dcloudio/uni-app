@@ -188,6 +188,7 @@ uni.share({
 ```javascript
 uni.share({
     provider: 'weixin',
+    scene: "WXSceneSession",
     type: 5,
     imageUrl: 'https://img-cdn-qiniu.dcloud.net.cn/uniapp/app/share-logo@3.png',
     title: '欢迎体验uniapp',

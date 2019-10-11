@@ -13,7 +13,7 @@
 |method|String|否|GET|有效值详见下方说明||
 |dataType|String|否|json	|如果设为 json，会尝试对返回的数据做一次 JSON.parse||
 |responseType|String|否|text	|设置响应的数据类型。合法值：text、arraybuffer|5+App和支付宝小程序不支持|
-|sslVerify|Boolean|否|true|验证 ssl 证书|仅5+App安卓端支持（HBuilderX 2.3.4+）|
+|sslVerify|Boolean|否|true|验证 ssl 证书|仅5+App安卓端支持（HBuilderX 2.3.3+）|
 |success|Function|否||收到开发者服务成功返回的回调函数||
 |fail|Function|否||接口调用失败的回调函数||
 |complete|Function|否||接口调用结束的回调函数（调用成功、失败都会执行）|&nbsp;|
@@ -124,5 +124,5 @@ requestTask.abort();
 - iOS App第一次安装启动后，会弹出是否允许联网的询问框，在用户点击同意前，调用联网API会失败。请注意判断这种情况。比如官方提供的新闻模板示例（HBuilderX新建项目可选择），会判断如果无法联网，则提供一个错误页，提示用户设置网络及下拉刷新重试。
 - 良好体验的App，还会判断当前是否处于飞行模式（[参考](https://ext.dcloud.net.cn/plugin?id=594)）、是wifi还是3G（[参考](https://uniapp.dcloud.io/api/system/network)）
 - 部分安卓设备，真机运行或debug模式下的网络，低于release模式很多。
-- 安卓端请求某些 https 服务会失败，可以尝试配置 sslVerify 为 false 关闭 ssl 证书验证
+- 使用一些比较小众的证书机构（如：CFCA OV OCA）签发的 ssl 证书在安卓设备请求会失败，因为这些机构的根证书不在系统内置根证书库，可以更换其他常见机构签发的证书（如：Let's Encrypt），或者配置 sslVerify 为 false 关闭 ssl 证书验证（不推荐）。
 - 单次网络请求数据量建议控制在50K以下（仅指json数据，不含图片），过多数据应分页获取，以提升应用体验。

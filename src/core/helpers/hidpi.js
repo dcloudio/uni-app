@@ -158,9 +158,7 @@ if (pixelRatio !== 1) {
 }
 
 export function wrapper (canvas) {
-  canvas.style.height = canvas.height + 'px'
-  canvas.style.width = canvas.width + 'px'
-  canvas.width *= pixelRatio
-  canvas.height *= pixelRatio
+  canvas.width = canvas.offsetWidth * pixelRatio
+  canvas.height = canvas.offsetHeight * pixelRatio
   canvas.getContext('2d').__hidpi__ = true
 }

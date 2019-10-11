@@ -98,4 +98,8 @@ export function navigateBack ({
   currentPage.$page.meta.isQuit
     ? quit()
     : back(delta, animationType, animationDuration)
+
+  return {
+    errMsg: 'navigateBack:ok'
+  }
 }

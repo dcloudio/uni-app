@@ -7,7 +7,8 @@ import {
 } from './util'
 
 import {
-  setStatusBarStyle
+  setStatusBarStyle,
+  invoke
 } from '../../bridge'
 
 import {
@@ -16,7 +17,7 @@ import {
 
 export function redirectTo ({
   url
-}) {
+}, callbackId) {
   const urls = url.split('?')
   const path = urls[0]
 
@@ -37,6 +38,9 @@ export function redirectTo ({
     0,
     () => {
       lastPage && lastPage.$getAppWebview().close('none')
+      invoke(callbackId, {
+        errMsg: 'redirectTo:ok'
+      })
     }
   )
 

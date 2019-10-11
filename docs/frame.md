@@ -732,6 +732,7 @@ const package = require('packageName')
 |支付宝小程序|支持支付宝小程序组件|mycomponents|
 |百度小程序|支持百度小程序组件|swancomponents|
 |头条小程序|支持头条小程序组件|ttcomponents|
+|QQ小程序|支持QQ小程序组件|wxcomponents|
 
 此文档要求开发者对各端小程序的**自定义组件**有一定了解，没接触过小程序**自定义组件**的可以参考：
 
@@ -739,6 +740,7 @@ const package = require('packageName')
 - [百度小程序自定义组件](https://smartprogram.baidu.com/docs/develop/framework/custom-component/)
 - [支付宝小程序自定义组件](https://docs.alipay.com/mini/framework/custom-component-overview)
 - [头条小程序自定义组件](https://developer.toutiao.com/docs/framework/custom_component_intro.html)
+- [QQ小程序自定义组件](https://q.qq.com/wiki/develop/miniprogram/frame/diy_components/)
 
 **目录结构**
 
@@ -785,7 +787,7 @@ const package = require('packageName')
         	"path": "index/index",
         	"style": {
         		"usingComponents": {
-        			// #ifdef APP-PLUS || MP-WEIXIN
+        			// #ifdef APP-PLUS || MP-WEIXIN || MP-QQ
         			 "custom": "/wxcomponents/custom/index"
         			// #endif
         			// #ifdef MP-BAIDU

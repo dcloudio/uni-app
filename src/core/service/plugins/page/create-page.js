@@ -1,8 +1,14 @@
+import {
+  hasOwn
+} from 'uni-shared'
+
 export default function createPage (pageVm) {
   const $route = pageVm.$route
   pageVm.route = $route.meta.pagePath
+
+  const id = hasOwn($route.params, '__id__') ? $route.params.__id__ : $route.meta.id
   pageVm.__page__ = {
-    id: $route.params.__id__,
+    id,
     path: $route.path,
     route: $route.meta.pagePath,
     meta: Object.assign({}, $route.meta)
