@@ -10,7 +10,7 @@ const {
   isUnaryTag
 } = require('../util')
 
-function getProvides() {
+function getProvides () {
   return {
     '__f__': [path.resolve(__dirname, '../format-log.js'), 'default']
   }
@@ -20,7 +20,7 @@ const v3 = {
   vueConfig: {
     parallel: false
   },
-  webpackConfig(webpackConfig, vueOptions) {
+  webpackConfig (webpackConfig, vueOptions) {
     const isAppService = !!vueOptions.pluginOptions['uni-app-plus']['service']
     const isAppView = !!vueOptions.pluginOptions['uni-app-plus']['view']
 
@@ -33,7 +33,6 @@ const v3 = {
     }
     // disable noEmitOnErrors
     webpackConfig.optimization.noEmitOnErrors = false
-
 
     if (isAppService) {
       webpackConfig.optimization.runtimeChunk = {
@@ -53,7 +52,7 @@ const v3 = {
       externals: {
         vue: 'Vue'
       },
-      entry() {
+      entry () {
         const entry = {}
         if (isAppService) {
           entry['app-service'] = path.resolve(process.env.UNI_INPUT_DIR, getMainEntry())
@@ -96,7 +95,7 @@ const v3 = {
       ]
     }
   },
-  chainWebpack(webpackConfig, vueOptions) {
+  chainWebpack (webpackConfig, vueOptions) {
     const isAppService = !!vueOptions.pluginOptions['uni-app-plus']['service']
     const isAppView = !!vueOptions.pluginOptions['uni-app-plus']['view']
 

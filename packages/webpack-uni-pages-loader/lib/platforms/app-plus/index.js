@@ -15,7 +15,7 @@ const {
 
 const parseV3Config = require('./config-parser')
 
-function parseConfig(appJson) {
+function parseConfig (appJson) {
   return {
     name: 'app-config.js',
     content: `__registerConfig(${JSON.stringify(appJson)});`
@@ -24,11 +24,11 @@ function parseConfig(appJson) {
 
 const _toString = Object.prototype.toString
 
-function isPlainObject(obj) {
+function isPlainObject (obj) {
   return _toString.call(obj) === '[object Object]'
 }
 
-function normalizeNetworkTimeout(appJson) {
+function normalizeNetworkTimeout (appJson) {
   if (!isPlainObject(appJson.networkTimeout)) {
     appJson.networkTimeout = {
       request: 6000,
@@ -52,7 +52,7 @@ function normalizeNetworkTimeout(appJson) {
   }
 }
 
-module.exports = function(pagesJson, userManifestJson) {
+module.exports = function (pagesJson, userManifestJson) {
   const {
     app
   } = require('../mp')(pagesJson, userManifestJson)
@@ -65,9 +65,9 @@ module.exports = function(pagesJson, userManifestJson) {
 
   const {
     navigationBarTextStyle = 'white',
-      navigationBarBackgroundColor = '#000000'
+    navigationBarBackgroundColor = '#000000'
   } = appJson['window'] || {}
-  
+
   const TABBAR_HEIGHT = 50
 
   let manifestJson = JSON.parse(fs.readFileSync(path.resolve(__dirname, './manifest.json'), 'utf8'))
@@ -182,7 +182,7 @@ module.exports = function(pagesJson, userManifestJson) {
   // 允许内联播放视频
   manifestJson.plus.allowsInlineMediaPlayback = true
 
-  const addRenderAlways = function() {
+  const addRenderAlways = function () {
     // "render": "always"
     if (!manifestJson.plus.launchwebview) {
       manifestJson.plus.launchwebview = {
@@ -382,7 +382,7 @@ module.exports = function(pagesJson, userManifestJson) {
       })
 
       delete appJson.nvue
-      
+
       delete manifestJson.plus.launchwebview.kernel
       manifestJson.launch_path = ''
       Object.assign(manifestJson.plus.launchwebview, {
@@ -438,20 +438,19 @@ module.exports = function(pagesJson, userManifestJson) {
     return [manifest, parseConfig(appJson)]
   }
   if (process.env.UNI_USING_V3) {
-
     appJson.entryPagePath = appJson.pages[0]
 
     appJson.page = Object.create(null)
 
-    const addPage = function(pagePath, windowOptions) {
+    const addPage = function (pagePath, windowOptions) {
       delete windowOptions.usingComponents
       appJson.page[pagePath] = {
         window: windowOptions
       }
     }
-    parsePages(pagesJson, function(page) {
+    parsePages(pagesJson, function (page) {
       addPage(page.path, parseStyle(page.style))
-    }, function(root, page) {
+    }, function (root, page) {
       addPage(normalizePath(path.join(root, page.path)), parseStyle(page.style, root))
     })
     manifest.name = 'manifest.json'
