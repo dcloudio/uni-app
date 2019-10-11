@@ -1,7 +1,16 @@
 import {
+  setPreloadWebview,
   initWebview,
   createWebview
-} from './webview/index'
+} from './webview'
+
+import {
+  navigateStack
+} from './navigator'
+
+import {
+  perf
+} from './perf'
 
 const pages = []
 
@@ -9,6 +18,24 @@ export function getCurrentPages (returnAll) {
   return returnAll ? pages.slice(0) : pages.filter(page => {
     return !page.$page.meta.isTabBar || page.$page.meta.visible
   })
+}
+
+const pageFactory = Object.create(null)
+
+export function definePage (name, createPageVueComponent) {
+  pageFactory[name] = createPageVueComponent
+}
+
+export function createPage (name, options) {
+  if (!pageFactory[name]) {
+    console.error(`${name} not found`)
+  }
+  let startTime = Date.now()
+  const pageVm = new (pageFactory[name]())(options)
+  if (process.env.NODE_ENV !== 'production') {
+    perf(`new ${name}`, startTime)
+  }
+  return pageVm
 }
 
 /**
@@ -31,6 +58,11 @@ export function registerPage ({
     webview = createWebview(path, routeOptions)
   } else {
     webview = plus.webview.getWebviewById(webview.id)
+    // renderer:native 时，把 launchWebview 标记 preloadWebview，及 loaded，方便路由跳转识别
+    if (__PLATFORM__ === 'app-plus-nvue') {
+      webview.loaded = true
+      setPreloadWebview(webview)
+    }
   }
 
   if (routeOptions.meta.isTabBar) {
@@ -46,13 +78,13 @@ export function registerPage ({
     console.log(`[uni-app] registerPage`, path, webview.id)
   }
 
-  initWebview(webview, webview.id === '1' && routeOptions)
+  initWebview(webview, routeOptions)
 
   const route = path.slice(1)
 
   webview.__uniapp_route = route
 
-  pages.push({
+  const pageInstance = {
     route,
     options: Object.assign({}, query || {}),
     $getAppWebview () {
@@ -74,7 +106,30 @@ export function registerPage ({
         }
       }
     }
-  })
+  }
+
+  pages.push(pageInstance)
+
+  // 首页是 nvue 时，在 registerPage 时，执行路由堆栈
+  if (webview.id === '1' && routeOptions.meta.isNVue) {
+    webview.nvue = true
+    setTimeout(function () {
+      navigateStack(webview)
+    })
+  }
+
+  if (__PLATFORM__ === 'app-plus') {
+    if (!webview.nvue) {
+      const pagePath = path.slice(1)
+      pageInstance.$vm = createPage(pagePath, {
+        mpType: 'page',
+        pageId: webview.id,
+        pagePath
+      })
+      pageInstance.$vm.$scope = pageInstance
+      pageInstance.$vm.$mount()
+    }
+  }
 
   return webview
 }

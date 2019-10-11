@@ -643,14 +643,6 @@
         "/platforms/h5/service/api/ui/window.js",
         []
     ],
-    "startPullDownRefresh": [
-        "/platforms/h5/service/api/ui/pull-down-refresh.js",
-        []
-    ],
-    "stopPullDownRefresh": [
-        "/platforms/h5/service/api/ui/pull-down-refresh.js",
-        []
-    ],
     "createSelectorQuery": [
         "/platforms/h5/service/api/ui/create-selector-query.js",
         [

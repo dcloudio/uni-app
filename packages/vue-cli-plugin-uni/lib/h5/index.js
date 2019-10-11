@@ -62,6 +62,18 @@ if (devServer && Object.keys(devServer).length) {
 module.exports = {
   vueConfig,
   webpackConfig (webpackConfig) {
+    let useBuiltIns = 'usage'
+
+    const statCode = process.env.UNI_USING_STAT ? `import '@dcloudio/uni-stat';` : ''
+
+    try {
+      const babelConfig = require(path.resolve(process.env.UNI_CLI_CONTEXT, 'babel.config.js'))
+      useBuiltIns = babelConfig.presets[0][1].useBuiltIns
+    } catch (e) {}
+
+    const beforeCode = (useBuiltIns === 'entry' ? `import '@babel/polyfill';` : '') +
+      `import 'uni-pages';import 'uni-${process.env.UNI_PLATFORM}';`
+
     return {
       devtool: process.env.NODE_ENV === 'production' ? false : 'source-map',
       resolve: {
@@ -73,6 +85,16 @@ module.exports = {
       },
       module: {
         rules: [{
+          test: path.resolve(process.env.UNI_INPUT_DIR, getMainEntry()),
+          use: [{
+            loader: 'wrap-loader',
+            options: {
+              before: [
+                beforeCode + statCode
+              ]
+            }
+          }]
+        }, {
           test: /App\.vue$/,
           use: {
             loader: 'wrap-loader',

@@ -10,6 +10,10 @@ import {
   setStatusBarStyle
 } from '../../bridge'
 
+import {
+  registerPage
+} from '../../framework/page'
+
 import tabBar from '../../../../app-plus/service/framework/tab-bar'
 
 export function reLaunch ({
@@ -29,7 +33,7 @@ export function reLaunch ({
   }
 
   showWebview(
-    __registerPage({
+    registerPage({
       path,
       query,
       openType: 'reLaunch'

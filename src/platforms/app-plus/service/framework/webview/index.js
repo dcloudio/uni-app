@@ -1,15 +1,16 @@
 import {
-  isPlainObject
-}
-  from 'uni-shared'
-
-import {
   parseWebviewStyle
 } from './parser/webview-style-parser'
 
 import {
   publish
 } from '../../bridge'
+
+import {
+  VIEW_WEBVIEW_PATH
+} from '../../constants'
+
+export let preloadWebview
 
 let id = 2
 
@@ -20,23 +21,35 @@ const WEBVIEW_LISTENERS = {
   'titleNViewSearchInputClicked': 'onNavigationBarSearchInputClicked'
 }
 
-export function createWebview (path, routeOptions) {
-  const webviewId = id++
-  const webviewStyle = parseWebviewStyle(
-    webviewId,
-    path,
-    routeOptions
-  )
-  if (process.env.NODE_ENV !== 'production') {
-    console.log(`[uni-app] createWebview`, webviewId, path, webviewStyle)
-  }
-  const webview = plus.webview.create('', String(webviewId), webviewStyle)
+export function setPreloadWebview (webview) {
+  preloadWebview = webview
+}
 
+export function createWebview (path, routeOptions) {
+  if (routeOptions.meta.isNVue) {
+    const webviewId = id++
+    const webviewStyle = parseWebviewStyle(
+      webviewId,
+      path,
+      routeOptions
+    )
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`[uni-app] createWebview`, webviewId, path, webviewStyle)
+    }
+    return plus.webview.create('', String(webviewId), webviewStyle, {
+      nvue: true
+    })
+  }
+  if (id === 2) { // 如果首页非 nvue，则直接返回 Launch Webview
+    return plus.webview.getLaunchWebview()
+  }
+  const webview = preloadWebview
   return webview
 }
 
 export function initWebview (webview, routeOptions) {
-  if (isPlainObject(routeOptions)) {
+  // 首页或非 nvue 页面
+  if (webview.id === '1' || !routeOptions.meta.isNVue) {
     const webviewStyle = parseWebviewStyle(
       parseInt(webview.id),
       '',
@@ -85,4 +98,23 @@ export function initWebview (webview, routeOptions) {
   })
 
   return webview
+}
+
+export function createPreloadWebview () {
+  if (!preloadWebview || preloadWebview.__uniapp_route) { // 不存在，或已被使用
+    preloadWebview = plus.webview.create(VIEW_WEBVIEW_PATH, String(id++))
+  }
+  return preloadWebview
+}
+
+const webviewReadyCallbacks = {}
+
+export function registerWebviewReady (pageId, callback) {
+  (webviewReadyCallbacks[pageId] || (webviewReadyCallbacks[pageId] = [])).push(callback)
+}
+
+export function consumeWebviewReady (pageId) {
+  const callbacks = webviewReadyCallbacks[pageId]
+  Array.isArray(callbacks) && callbacks.forEach(callback => callback())
+  delete webviewReadyCallbacks[pageId]
 }

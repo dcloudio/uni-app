@@ -4,7 +4,6 @@ import {
 } from './framework/app'
 
 import {
-  registerPage,
   getCurrentPages
 } from './framework/page'
 
@@ -20,7 +19,15 @@ import {
   invokeCallbackHandler
 } from 'uni-helpers/api'
 
-UniServiceJSBridge.publishHandler = UniServiceJSBridge.emit // TODO
+import {
+  registerPage
+} from 'uni-platform/service/register-page'
+
+import {
+  publishHandler
+} from 'uni-platform/service/publish-handler'
+
+UniServiceJSBridge.publishHandler = publishHandler
 UniServiceJSBridge.invokeCallbackHandler = invokeCallbackHandler
 
 export default {

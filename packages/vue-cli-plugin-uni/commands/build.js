@@ -1,3 +1,5 @@
+const path = require('path')
+
 const {
   runByHBuilderX
 } = require('@dcloudio/uni-cli-shared')
@@ -41,29 +43,8 @@ module.exports = (api, options) => {
   })
 }
 
-async function build (args, api, options) {
-  const fs = require('fs-extra')
-  const path = require('path')
-  const chalk = require('chalk')
-  const webpack = require('webpack')
+function getWebpackConfig (api, args, options) {
   const validateWebpackConfig = require('@vue/cli-service/lib/util/validateWebpackConfig')
-  const {
-    log,
-    done,
-    logWithSpinner,
-    stopSpinner
-  } = require('@vue/cli-shared-utils')
-
-  const runByAliIde = process.env.BUILD_ENV === 'ali-ide'
-
-  log()
-
-  if (!runByHBuilderX && !runByAliIde) {
-    logWithSpinner(`开始编译当前项目至 ${process.env.UNI_PLATFORM} 平台...`)
-  }
-
-  const targetDir = api.resolve(options.outputDir)
-
   // resolve raw webpack config
   const webpackConfig = require('@vue/cli-service/lib/commands/build/resolveAppConfig')(api, args, options)
 
@@ -86,6 +67,47 @@ async function build (args, api, options) {
       config.optimization.namedModules = false
     })
   }
+  return webpackConfig
+}
+
+function getWebpackConfigs (api, args, options) {
+  if (!process.env.UNI_USING_V3) {
+    return [getWebpackConfig(api, args, options)]
+  }
+  const pluginOptions = (options.pluginOptions || (options.pluginOptions = {}))
+  pluginOptions['uni-app-plus'] = {
+    service: true
+  }
+  const serviceWebpackConfig = getWebpackConfig(api, args, options)
+  delete pluginOptions['uni-app-plus']['service']
+  pluginOptions['uni-app-plus']['view'] = true
+  const viewWebpackConfig = getWebpackConfig(api, args, options)
+  return [serviceWebpackConfig, viewWebpackConfig]
+}
+
+async function build (args, api, options) {
+  const fs = require('fs-extra')
+  const chalk = require('chalk')
+  const webpack = require('webpack')
+
+  const {
+    log,
+    done,
+    logWithSpinner,
+    stopSpinner
+  } = require('@vue/cli-shared-utils')
+
+  const runByAliIde = process.env.BUILD_ENV === 'ali-ide'
+
+  log()
+
+  if (!runByHBuilderX && !runByAliIde) {
+    logWithSpinner(`开始编译当前项目至 ${process.env.UNI_PLATFORM} 平台...`)
+  }
+
+  const targetDir = api.resolve(options.outputDir)
+
+  const webpackConfigs = getWebpackConfigs(api, args, options)
 
   if (process.env.NODE_ENV === 'production') {
     try {
@@ -96,8 +118,6 @@ async function build (args, api, options) {
   if (args.clean || process.env.UNI_PLATFORM === 'app-plus') {
     await fs.emptyDir(targetDir)
   }
-
-  const webpackConfigs = [webpackConfig]
 
   if (process.env.UNI_USING_NATIVE) {
     webpackConfigs.length = 0

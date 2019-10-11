@@ -10,6 +10,20 @@ class WebpackAppPlusPlugin {
   apply(compiler) {
     compiler.hooks.done.tapPromise('WebpackAppPlusPlugin', compilation => {
       return new Promise((resolve, reject) => {
+
+        if (process.env.UNI_USING_NATIVE) {
+          return resolve()
+        }
+        if (process.env.UNI_USING_V3) {
+          log()
+          if (process.env.NODE_ENV === 'development') {
+            done(`Build complete. Watching for changes...`)
+          } else {
+            done(`Build complete. `)
+          }
+          return resolve()
+        }
+
         const callback = function() {
           fs.copyFileSync(path.resolve(process.env.UNI_OUTPUT_TMP_DIR,
               'manifest.json'),
@@ -21,10 +35,6 @@ class WebpackAppPlusPlugin {
             done(`Build complete. `)
           }
           resolve()
-        }
-
-        if (process.env.UNI_USING_NATIVE) {
-          return resolve()
         }
         // Copy manifest.json
         const wxmp = require(path.resolve(process.env.UNI_HBUILDERX_PLUGINS,

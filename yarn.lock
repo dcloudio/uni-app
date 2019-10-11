@@ -7679,7 +7679,7 @@ ripemd160@^2.0.0, ripemd160@^2.0.1:
 
 rollup-plugin-alias@^1.4.0:
   version "1.5.2"
-  resolved "https://registry.npm.taobao.org/rollup-plugin-alias/download/rollup-plugin-alias-1.5.2.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Frollup-plugin-alias%2Fdownload%2Frollup-plugin-alias-1.5.2.tgz#f15a1cc8ee0debf74ab5c2bb68a944a66b568411"
+  resolved "https://registry.npm.taobao.org/rollup-plugin-alias/download/rollup-plugin-alias-1.5.2.tgz#f15a1cc8ee0debf74ab5c2bb68a944a66b568411"
   dependencies:
     slash "^3.0.0"
 

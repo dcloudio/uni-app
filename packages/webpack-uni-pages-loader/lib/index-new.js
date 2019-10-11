@@ -56,18 +56,20 @@ module.exports = function (content) {
     return require('./platforms/h5')(pagesJson, manifestJson)
   }
 
-  parsePages(pagesJson, function (page) {
-    updatePageJson(page.path, renameUsingComponents(parseStyle(page.style)))
-  }, function (root, page) {
-    updatePageJson(normalizePath(path.join(root, page.path)), renameUsingComponents(
-      parseStyle(page.style, root)
-    ))
-  })
+  if (!process.env.UNI_USING_V3) {
+    parsePages(pagesJson, function (page) {
+      updatePageJson(page.path, renameUsingComponents(parseStyle(page.style)))
+    }, function (root, page) {
+      updatePageJson(normalizePath(path.join(root, page.path)), renameUsingComponents(
+        parseStyle(page.style, root)
+      ))
+    })
+  }
 
   const jsonFiles = require('./platforms/' + process.env.UNI_PLATFORM)(pagesJson, manifestJson)
 
   if (jsonFiles && jsonFiles.length) {
-    if (process.env.UNI_USING_NATIVE) {
+    if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3) {
       let appConfigContent = ''
       jsonFiles.forEach(jsonFile => {
         if (jsonFile) {

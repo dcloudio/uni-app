@@ -33,7 +33,7 @@ module.exports = function initOptions (options) {
     options.css = {}
   }
 
-  if (process.env.UNI_PLATFORM === 'h5') {
+  if (process.env.UNI_PLATFORM === 'h5' || process.env.UNI_USING_V3) {
     options.css.extract = false
   } else {
     options.css.extract = true

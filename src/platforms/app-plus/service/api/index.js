@@ -42,6 +42,12 @@ export * from './plugin/payment'
 export * from './plugin/push'
 export * from './plugin/share'
 
+export * from './route/navigate-back'
+export * from './route/navigate-to'
+export * from './route/re-launch'
+export * from './route/redirect-to'
+export * from './route/switch-tab'
+
 export * from './ui/keyboard'
 export * from './ui/navigation-bar'
 export * from './ui/popup'

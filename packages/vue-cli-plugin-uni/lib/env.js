@@ -111,6 +111,17 @@ if (process.env.UNI_PLATFORM === 'mp-qq') { // QQ小程序 强制自定义组件
 
 let isNVueCompiler = false
 if (process.env.UNI_PLATFORM === 'app-plus') {
+  if (platformOptions.renderer !== 'native' && // 非 native
+    (
+      platformOptions.compilerVersion === '3' ||
+      platformOptions.compilerVersion === 3
+    )
+  ) {
+    process.env.UNI_USING_V3 = true
+    platformOptions.usingComponents = true
+    process.env.UNI_OUTPUT_TMP_DIR = ''
+  }
+
   if (platformOptions.nvueCompiler === 'uni-app') {
     isNVueCompiler = true
   }
@@ -173,9 +184,9 @@ if (process.env.UNI_USING_COMPONENTS) { // 是否启用分包优化
 }
 
 const warningMsg =
-  usingComponentsAbsent
-    ? `该应用之前可能是非自定义组件模式，目前以自定义组件模式运行。非自定义组件将于2019年11月1日起停止支持。详见：https://ask.dcloud.net.cn/article/36385`
-    : `uni-app将于2019年11月1日起停止支持非自定义组件模式 [详情](https://ask.dcloud.net.cn/article/36385)`
+  usingComponentsAbsent ?
+  `该应用之前可能是非自定义组件模式，目前以自定义组件模式运行。非自定义组件将于2019年11月1日起停止支持。详见：https://ask.dcloud.net.cn/article/36385` :
+  `uni-app将于2019年11月1日起停止支持非自定义组件模式 [详情](https://ask.dcloud.net.cn/article/36385)`
 
 const needWarning = !platformOptions.usingComponents || usingComponentsAbsent
 // 输出编译器版本等信息
@@ -193,8 +204,8 @@ if (process.env.UNI_PLATFORM !== 'h5') {
       }
       const glob = require('glob')
       if (glob.sync('pages/**/*.nvue', {
-        cwd: process.env.UNI_INPUT_DIR
-      }).length) {
+          cwd: process.env.UNI_INPUT_DIR
+        }).length) {
         console.log(info)
         console.log(modeText)
         if (needWarning) {
@@ -226,9 +237,9 @@ moduleAlias.addAlias('mpvue-template-compiler', '@dcloudio/vue-cli-plugin-uni/pa
 
 if (runByHBuilderX) {
   const oldError = console.error
-  console.error = function (msg) {
+  console.error = function(msg) {
     if (typeof msg === 'string' && msg.includes(
-      '[BABEL] Note: The code generator has deoptimised the styling of')) {
+        '[BABEL] Note: The code generator has deoptimised the styling of')) {
       const filePath = msg.replace('[BABEL] Note: The code generator has deoptimised the styling of ', '').split(
         ' as ')[0]
       console.log('[警告] `' + path.relative(process.env.UNI_INPUT_DIR, filePath) +

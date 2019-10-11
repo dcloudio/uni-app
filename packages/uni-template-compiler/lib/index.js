@@ -24,6 +24,22 @@ const generateCodeFrame = require('./codeframe')
 
 module.exports = {
   compile (source, options = {}) {
+    if (options.service) {
+      (options.modules || (options.modules = [])).push(require('./app/service'))
+      options.optimize = true // 启用 staticRenderFns
+      // domProps => attrs
+      options.mustUseProp = () => false
+      // clear staticRenderFns
+      const compiled = compile(source, options)
+      compiled.staticRenderFns.length = 0
+
+      return compiled
+    } else if (options.view) {
+      (options.modules || (options.modules = [])).push(require('./app/view'))
+      options.optimize = false // 暂不启用 staticRenderFns
+      return compile(source, options)
+    }
+
     if (!options.mp) { // h5
       return compile(source, options)
     }

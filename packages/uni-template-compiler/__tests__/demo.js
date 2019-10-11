@@ -1,18 +1,18 @@
 const compiler = require('../lib')
 const res = compiler.compile(
   `
-<button open-type="getPhoneNumber" @getphonenumber="getPhoneNumber">获取手机号</button>
+<view>
+<component v-for="component in components" :item="component.item" :is="component.mode"/>
+</view>
     `, {
     resourcePath: '/User/fxy/Documents/test.wxml',
     mp: {
-      minified: true,
-      isTest: true,
-      platform: 'mp-weixin'
+      platform: 'app-plus'
     },
-    filterModules: {
-      t: {},
-      a: {}
-    }
+    // service: true
+    view: true
   })
-// ---BEGIN:JSON---{"n":"v"}---END:JSON---
-console.log(res)
+console.log(require('util').inspect(res, {
+  colors: true,
+  depth: null
+}))

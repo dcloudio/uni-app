@@ -23,6 +23,7 @@ const {
 
 const {
   md5,
+  hasOwn,
   hasModule,
   hashify,
   camelize,
@@ -64,6 +65,7 @@ const {
 module.exports = {
   md5,
   tags,
+  hasOwn,
   getJson,
   parseJson,
   hashify,

@@ -19,7 +19,6 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
     runByHBuilderX, // 使用 HBuilderX 运行
     isInHBuilderX, // 在 HBuilderX 的插件中
     hasModule,
-    getMainEntry,
     getPlatformVue,
     jsPreprocessOptions,
     htmlPreprocessOptions
@@ -168,7 +167,7 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
 
     let platformWebpackConfig = platformOptions.webpackConfig
     if (typeof platformWebpackConfig === 'function') {
-      platformWebpackConfig = platformWebpackConfig(webpackConfig)
+      platformWebpackConfig = platformWebpackConfig(webpackConfig, vueOptions)
     }
     // 移除 node_modules 目录，避免受路径上的 node_modules 影响
     webpackConfig.resolve.modules = webpackConfig.resolve.modules.filter(module => module !==
@@ -197,26 +196,6 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
       }))
     }
 
-    let useBuiltIns = 'entry'
-    if (process.env.UNI_PLATFORM === 'h5') { // 兼容旧版本 h5
-      useBuiltIns = 'usage'
-      try {
-        const babelConfig = require(path.resolve(process.env.UNI_CLI_CONTEXT, 'babel.config.js'))
-        useBuiltIns = babelConfig.presets[0][1].useBuiltIns
-      } catch (e) {}
-    }
-
-    const statCode = process.env.UNI_USING_STAT ? `import '@dcloudio/uni-stat';` : ''
-
-    let beforeCode = ''
-
-    if (process.env.UNI_PLATFORM === 'h5') {
-      beforeCode = (useBuiltIns === 'entry' ? `import '@babel/polyfill';` : '') +
-        `import 'uni-pages';import 'uni-${process.env.UNI_PLATFORM}';`
-    } else {
-      beforeCode = `import 'uni-pages';`
-    }
-
     const rules = [{
       test: path.resolve(process.env.UNI_INPUT_DIR, 'pages.json'),
       use: [{
@@ -225,18 +204,6 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
         loader: '@dcloudio/webpack-uni-pages-loader'
       }],
       type: 'javascript/auto'
-    },
-    {
-      test: path.resolve(process.env.UNI_INPUT_DIR, getMainEntry()),
-      // resourceQuery: /type=wrapper/,
-      use: [{
-        loader: 'wrap-loader',
-        options: {
-          before: [
-            beforeCode + statCode
-          ]
-        }
-      }]
     },
     {
       resourceQuery: /vue&type=template/,

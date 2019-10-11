@@ -27,6 +27,14 @@ function getShadowCss () {
 }
 
 function getCopyOption (file, options) {
+  if (path.isAbsolute(file)) {
+    if (fs.existsSync(file)) {
+      return Object.assign({
+        from: file,
+        to: path.resolve(process.env.UNI_OUTPUT_DIR)
+      }, options)
+    }
+  }
   const from = path.resolve(process.env.UNI_INPUT_DIR, file)
   if (fs.existsSync(from)) {
     return Object.assign({
@@ -125,12 +133,17 @@ const PLATFORMS = {
     }) {
       const files = ['hybrid/html']
       let wxcomponents = []
-      if (!process.env.UNI_USING_NATIVE) {
+      if (!process.env.UNI_USING_NATIVE && !process.env.UNI_USING_V3) {
         wxcomponents = getCopyOptions(['wxcomponents'], {
           to: path.resolve(process.env.UNI_OUTPUT_TMP_DIR, 'wxcomponents')
         })
       }
+      let template = []
+      if (process.env.UNI_USING_V3) {
+        template = getCopyOptions([path.resolve(__dirname, '../template')])
+      }
       return [
+        ...template,
         ...getStaticCopyOptions(assetsDir),
         ...wxcomponents,
         ...getCopyOptions(files)
@@ -483,6 +496,9 @@ module.exports = {
   getPlatformVue (vueOptions) {
     if (process.env.UNI_PLATFORM === 'h5' && vueOptions && vueOptions.runtimeCompiler) {
       return '@dcloudio/vue-cli-plugin-uni/packages/h5-vue/dist/vue.esm.js'
+    }
+    if (process.env.UNI_PLATFORM === 'app-plus' && process.env.UNI_USING_V3) {
+      return '@dcloudio/uni-app-plus/dist/service.runtime.esm.js'
     }
     if (process.env.UNI_USING_COMPONENTS) {
       return uniRuntime

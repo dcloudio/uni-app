@@ -1,6 +1,9 @@
 const path = require('path')
 
 module.exports = function getSplitChunks () {
+  if (process.env.UNI_USING_V3) {
+    return false
+  }
   if (!process.env.UNI_USING_COMPONENTS) {
     return {
       cacheGroups: {

@@ -5,6 +5,10 @@ import {
 import initOn from 'uni-core/service/bridge/on'
 
 import {
+  NETWORK_TYPES
+} from '../api/constants'
+
+import {
   getCurrentPages
 } from './page'
 
@@ -13,27 +17,21 @@ import {
   consumePlusMessage
 } from './plus-message'
 
-import {
-  isTabBarPage
-} from '../api/util'
-
 import tabBar from './tab-bar'
 
 import {
   publish
 } from '../bridge'
 
-let appCtx
+import {
+  initSubscribeHandlers
+} from './subscribe-handlers'
 
-const NETWORK_TYPES = [
-  'unknown',
-  'none',
-  'ethernet',
-  'wifi',
-  '2g',
-  '3g',
-  '4g'
-]
+import {
+  perf
+} from './perf'
+
+let appCtx
 
 export function getApp () {
   return appCtx
@@ -72,7 +70,7 @@ function initGlobalListeners () {
 
   plus.globalEvent.addEventListener('plusMessage', function (e) {
     if (process.env.NODE_ENV !== 'production') {
-      console.log('UNIAPP[plusMessage]:[' + Date.now() + ']' + JSON.stringify(e.data))
+      console.log('[plusMessage]:[' + Date.now() + ']' + JSON.stringify(e.data))
     }
     if (e.data && e.data.type) {
       const type = e.data.type
@@ -103,10 +101,6 @@ function initTabBar () {
   if (selected !== -1) {
     // 取当前 tab 索引值
     __uniConfig.tabBar.selected = selected
-    // 如果真实的首页与 condition 都是 tabbar，无需启用 realEntryPagePath 机制
-    if (__uniConfig.realEntryPagePath && isTabBarPage(__uniConfig.realEntryPagePath)) {
-      delete __uniConfig.realEntryPagePath
-    }
   }
 
   __uniConfig.__ready__ = true
@@ -147,9 +141,13 @@ export function registerApp (appVm) {
     getCurrentPages
   })
 
-  initAppLaunch(appVm)
+  initTabBar()
 
   initGlobalListeners()
 
-  initTabBar()
+  initSubscribeHandlers()
+
+  initAppLaunch(appVm)
+
+  process.env.NODE_ENV !== 'production' && perf('registerApp')
 }

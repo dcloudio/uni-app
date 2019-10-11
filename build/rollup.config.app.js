@@ -14,12 +14,23 @@ const output = {
 
 const external = []
 
+// if (process.env.UNI_PLATFORM === 'app-plus-nvue') {
+//   external.push('vue')
+//   output.globals = {
+//     vue: 'Vue'
+//   }
+// }
+
 if (process.env.UNI_SERVICE === 'legacy') {
   input = 'src/platforms/app-plus-nvue/services/index.legacy.js'
   output.file = 'packages/uni-app-plus-nvue/dist/index.legacy.js'
 } else {
   input = 'src/platforms/app-plus/service/index.js'
-  output.file = 'packages/uni-app-plus-nvue/dist/index.js'
+  if (process.env.UNI_PLATFORM === 'app-plus') {
+    output.file = `packages/uni-app-plus/dist/index.v3.js`
+  } else {
+    output.file = `packages/uni-app-plus-nvue/dist/index.js`
+  }
   output.format = 'iife'
   output.name = 'serviceContext'
   output.banner =
@@ -48,10 +59,8 @@ module.exports = {
   input,
   output,
   plugins: [
-    nodeResolve(),
-    commonjs(),
-    requireContext(),
     alias({
+      // 'vue': resolve('packages/uni-app-plus/dist/service.runtime.esm.js'),
       'uni-core': resolve('src/core'),
       'uni-platform': resolve('src/platforms/' + process.env.UNI_PLATFORM),
       'uni-platforms': resolve('src/platforms'),
@@ -61,9 +70,12 @@ module.exports = {
       'uni-service-api': resolve('src/core/service/platform-api'),
       'uni-api-protocol': resolve('src/core/helpers/protocol')
     }),
+    nodeResolve(),
+    commonjs(),
+    requireContext(),
     replace({
       __GLOBAL__: 'getGlobalUni()',
-      __PLATFORM__: JSON.stringify('app-plus'),
+      __PLATFORM__: JSON.stringify(process.env.UNI_PLATFORM),
       __PLATFORM_TITLE__: 'app-plus-nvue'
     })
   ],

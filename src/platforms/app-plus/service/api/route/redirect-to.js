@@ -10,6 +10,10 @@ import {
   setStatusBarStyle
 } from '../../bridge'
 
+import {
+  registerPage
+} from '../../framework/page'
+
 export function redirectTo ({
   url
 }) {
@@ -24,7 +28,7 @@ export function redirectTo ({
   lastPage && lastPage.$remove()
 
   showWebview(
-    __registerPage({
+    registerPage({
       path,
       query,
       openType: 'redirect'

@@ -8,14 +8,20 @@ import {
   setStatusBarStyle
 } from '../../bridge'
 
+import {
+  registerPage
+} from '../../framework/page'
+
+import {
+  navigate
+} from '../../framework/navigator'
+
 import tabBar from '../../../../app-plus/service/framework/tab-bar'
 
-export function switchTab ({
-  url,
+function _switchTab ({
+  path,
   from
 }) {
-  const path = url.split('?')[0]
-
   tabBar.switchTab(path.slice(1))
 
   const pages = getCurrentPages()
@@ -60,7 +66,7 @@ export function switchTab ({
     tabBarPage.$getAppWebview().show('none')
   } else {
     showWebview(
-      __registerPage({
+      registerPage({
         path,
         query: {},
         openType: 'switchTab'
@@ -69,4 +75,16 @@ export function switchTab ({
   }
 
   setStatusBarStyle()
+}
+export function switchTab ({
+  url,
+  from
+}) {
+  const path = url.split('?')[0]
+  navigate(path, function () {
+    _switchTab({
+      path,
+      from
+    })
+  })
 }

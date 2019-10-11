@@ -27,6 +27,11 @@ function createUniMPPlugin () {
 }
 
 function getProvides () {
+  if (process.env.UNI_USING_V3) {
+    return {
+      '__f__': [path.resolve(__dirname, 'format-log.js'), 'default']
+    }
+  }
   const uniPath = require.resolve('@dcloudio/uni-' + process.env.UNI_PLATFORM)
   const provides = {
     'uni': [uniPath, 'default']
@@ -68,7 +73,7 @@ module.exports = {
     webpackConfig.optimization.noEmitOnErrors = false
 
     webpackConfig.optimization.runtimeChunk = {
-      name: 'common/runtime'
+      name: process.env.UNI_USING_V3 ? 'app-config' : 'common/runtime'
     }
 
     webpackConfig.optimization.splitChunks = require('./split-chunks')()
@@ -93,10 +98,23 @@ module.exports = {
       }
     }
 
+    if (process.env.UNI_USING_V3) {
+      devtool = false
+    }
+
+    const statCode = process.env.UNI_USING_STAT ? `import '@dcloudio/uni-stat';` : ''
+
+    const beforeCode = `import 'uni-pages';`
+
     return {
       devtool,
       mode: process.env.NODE_ENV,
       entry () {
+        if (process.env.UNI_USING_V3) {
+          return {
+            'app-service': path.resolve(process.env.UNI_INPUT_DIR, getMainEntry())
+          }
+        }
         return process.UNI_ENTRY
       },
       output: {
@@ -119,6 +137,13 @@ module.exports = {
         rules: [{
           test: path.resolve(process.env.UNI_INPUT_DIR, getMainEntry()),
           use: [{
+            loader: 'wrap-loader',
+            options: {
+              before: [
+                beforeCode + statCode
+              ]
+            }
+          }, {
             loader: '@dcloudio/webpack-uni-mp-loader/lib/main'
           }]
         }, {
@@ -160,6 +185,15 @@ module.exports = {
         .add(/\.filter\.js$/)
     }
 
+    const compilerOptions = process.env.UNI_USING_COMPONENTS ? {
+      isUnaryTag,
+      preserveWhitespace: false
+    } : require('./mp-compiler-options')
+
+    if (process.env.UNI_USING_V3) {
+      compilerOptions.service = true
+    }
+
     // disable vue cache-loader
     webpackConfig.module
       .rule('vue')
@@ -167,10 +201,7 @@ module.exports = {
       .use('vue-loader')
       .tap(options => Object.assign(options, {
         compiler: getPlatformCompiler(),
-        compilerOptions: process.env.UNI_USING_COMPONENTS ? {
-          isUnaryTag,
-          preserveWhitespace: false
-        } : require('./mp-compiler-options'),
+        compilerOptions,
         cacheDirectory: false,
         cacheIdentifier: false
       }))
@@ -189,10 +220,12 @@ module.exports = {
 
     const styleExt = getPlatformExts().style
 
-    webpackConfig.plugin('extract-css')
-      .init((Plugin, args) => new Plugin({
-        filename: '[name]' + styleExt
-      }))
+    if (!process.env.UNI_USING_V3) {
+      webpackConfig.plugin('extract-css')
+        .init((Plugin, args) => new Plugin({
+          filename: '[name]' + styleExt
+        }))
+    }
 
     if (
       process.env.NODE_ENV === 'production' &&

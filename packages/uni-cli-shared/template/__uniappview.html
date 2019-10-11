@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      var __UniViewStartTime__ = Date.now();
+      var coverSupport = 'CSS' in window && typeof CSS.supports === 'function' && (CSS.supports('top: env(a)') ||
+        CSS.supports('top: constant(a)'))
+      document.write(
+        '<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
+        (coverSupport ? ', viewport-fit=cover' : '') + '" />')
+    </script>
+    <title>View</title>
+    <style>
+      * {
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      input[type="search"i]::-webkit-search-cancel-button {
+        display: none;
+      }
+    </style>
+    <link rel="stylesheet" href="view.css" />
+    <script>
+      /*CONFIG*/
+    </script>
+    <script>
+      var __id__ = '';
+      window.__dispatchGenerateFunc__ = function(page) {
+        __id__ = page;
+        document.title = page;
+        // window.history.pushState('', '', page);
+        var wxss = page.replace('.html', '.wxss')
+        if (
+          typeof __wxAppCode__ !== 'undefined' &&
+          __wxAppCode__.hasOwnProperty(wxss)
+        ) {
+          var setCssToHead = __wxAppCode__[wxss]
+          typeof setCssToHead === 'function' && setCssToHead()
+          document.dispatchEvent(new CustomEvent("generateFuncReady", {
+            detail: {
+              generateFunc: $gwx(page.replace('.html', '.wxml'))
+            }
+          }));
+        } else {
+          plus.webview.currentWebview().setJsFile('_www/' + page.replace('.html', '.js'));
+        }
+      };
+    </script>
+    <script src="__uniappes6.js"></script>
+    <script src="view.umd.js"></script>
+    <script src="app-view.js"></script>
+  </head>
+
+  <body>
+    <div id="app"></div>
+  </body>
+
+</html>

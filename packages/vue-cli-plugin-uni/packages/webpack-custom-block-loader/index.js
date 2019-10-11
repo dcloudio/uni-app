@@ -38,6 +38,11 @@ module.exports = function(source) {
     needMap: sourceMap
   })
 
+  if (options.isAppService) { // 移除 styles
+    descriptor.styles.length = 0
+    return source
+  }
+
   if (!descriptor.template || !FILTER_TAG) {
     // delete customBlocks
     descriptor.customBlocks.length = 0
