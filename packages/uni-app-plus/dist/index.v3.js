@@ -6831,6 +6831,10 @@ var serviceContext = (function () {
     }
   }
 
+  function requireNativePlugin$1 (name) {
+    return weex.requireModule(name)
+  }
+
   // 0:图文，1:纯文字，2:纯图片，3:音乐，4:视频，5:小程序
   const TYPES = {
     '0': {
@@ -7757,6 +7761,7 @@ var serviceContext = (function () {
     unsubscribePush: unsubscribePush,
     onPush: onPush,
     offPush: offPush,
+    requireNativePlugin: requireNativePlugin$1,
     shareAppMessageDirectly: shareAppMessageDirectly,
     share: share,
     navigateBack: navigateBack$1,

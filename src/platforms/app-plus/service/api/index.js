@@ -40,6 +40,7 @@ export * from './plugin/get-provider'
 export * from './plugin/oauth'
 export * from './plugin/payment'
 export * from './plugin/push'
+export * from './plugin/require-native-plugin'
 export * from './plugin/share'
 
 export * from './route/navigate-back'

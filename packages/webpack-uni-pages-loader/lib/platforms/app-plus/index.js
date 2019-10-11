@@ -439,7 +439,8 @@ module.exports = function (pagesJson, userManifestJson) {
   }
   if (process.env.UNI_USING_V3) {
     appJson.entryPagePath = appJson.pages[0]
-
+    // timeout
+    normalizeNetworkTimeout(appJson)
     appJson.page = Object.create(null)
 
     const addPage = function (pagePath, windowOptions) {
