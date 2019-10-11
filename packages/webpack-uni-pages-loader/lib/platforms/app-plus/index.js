@@ -64,7 +64,7 @@ module.exports = function (pagesJson, userManifestJson) {
     navigationBarTextStyle = 'white',
     navigationBarBackgroundColor = '#000000'
   } = appJson['window'] || {}
-  
+
   const TABBAR_HEIGHT = 50
 
   let manifestJson = JSON.parse(fs.readFileSync(path.resolve(__dirname, './manifest.json'), 'utf8'))
@@ -379,7 +379,7 @@ module.exports = function (pagesJson, userManifestJson) {
       })
 
       delete appJson.nvue
-      
+
       delete manifestJson.plus.launchwebview.kernel
       manifestJson.launch_path = ''
       Object.assign(manifestJson.plus.launchwebview, {
