@@ -7,7 +7,8 @@ import {
 } from './util'
 
 import {
-  setStatusBarStyle
+  setStatusBarStyle,
+  invoke
 } from '../../bridge'
 
 import {
@@ -23,11 +24,12 @@ function _navigateTo ({
   query,
   animationType,
   animationDuration
-}) {
+}, callbackId) {
   UniServiceJSBridge.emit('onAppRoute', {
     type: 'navigateTo',
     path
   })
+
   showWebview(
     registerPage({
       path,
@@ -35,7 +37,12 @@ function _navigateTo ({
       openType: 'navigate'
     }),
     animationType,
-    animationDuration
+    animationDuration,
+    () => {
+      invoke(callbackId, {
+        errMsg: 'navigateTo:ok'
+      })
+    }
   )
   setStatusBarStyle()
 }
