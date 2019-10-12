@@ -147,4 +147,11 @@ export default {
 - App平台：使用 `<video/>` 组件，打包 App 时必须勾选 manifest.json->App 模块权限配置->VideoPlayer 模块。
 - App平台：如果使用的视频路径为本地路径，需要配置资源为释放模式：在 manifest.json 文件内 app-plus 节点下新增 runmode 配置，设置值为liberate。
 - App平台：如果想使用非原生的video，即原来普通的html5自带video，可使用web-view组件load html页面，在其中使用普通h5 video。
+- App平台：`ios`端`<video/>`组件使用`autoplay`时，视频加载的`loading`会偏移到左上角。解决方法是先去掉`<video/>`中的`autoplay`属性，然后在`onReady`里，调用一下`uni.createVideoContext`的`paly()`方法，就可以解决了。示例如下：
+```javascript
+onReady: function() {
+    this.videoContext = uni.createVideoContext('video的id')
+    this.videoContext.play(); // 删掉video中的autoplay属性，调用play可以解决autoplay的loading跑到左上角
+}
+```
 - H5平台： 在部分浏览器中会强制调用原生播放器播放（如：微信内置浏览器、UC浏览器等），在 x5 内核的浏览器中支持配置[同层播放器](https://x5.tencent.com/tbs/guide/video.html)。
