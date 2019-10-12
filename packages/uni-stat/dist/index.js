@@ -699,7 +699,7 @@ class Stat extends Util {
     super();
     this.instance = null;
     // 注册拦截器
-    if (typeof uni.addInterceptor === 'function') {
+    if (typeof uni.addInterceptor === 'function' && process.env.NODE_ENV !== 'development') {
       this.addInterceptorInit();
       this.interceptLogin();
       this.interceptShare(true);
