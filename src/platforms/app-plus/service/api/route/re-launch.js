@@ -30,7 +30,7 @@ function _reLaunch ({
   const routeOptions = __uniRoutes.find(route => route.path === path)
 
   if (routeOptions.meta.isTabBar) {
-    tabBar.switchTab(path)
+    tabBar.switchTab(path.slice(1))
   }
 
   showWebview(

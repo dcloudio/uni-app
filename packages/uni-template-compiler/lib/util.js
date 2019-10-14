@@ -172,7 +172,25 @@ function processMemberExpression (element, state) {
   return element
 }
 
+function hasOwn (obj, key) {
+  return hasOwnProperty.call(obj, key)
+}
+
+const tags = require('../../uni-cli-shared/lib/tags')
+
+const {
+  getTagName
+} = require('./h5')
+
+function isComponent (tagName) {
+  if (tagName === 'block' || tagName === 'template') {
+    return false
+  }
+  return !hasOwn(tags, getTagName(tagName))
+}
+
 module.exports = {
+  isComponent,
   genCode,
   getCode,
   camelize,

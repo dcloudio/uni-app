@@ -22,6 +22,10 @@ const compilerAlipayModule = require('./module-alipay')
 
 const generateCodeFrame = require('./codeframe')
 
+const {
+  isComponent
+} = require('./util')
+
 module.exports = {
   compile (source, options = {}) {
     if (options.service) {
@@ -29,6 +33,9 @@ module.exports = {
       options.optimize = true // 启用 staticRenderFns
       // domProps => attrs
       options.mustUseProp = () => false
+      options.isReservedTag = (tagName) => !isComponent(tagName) // 非组件均为内置
+      options.getTagNamespace = () => false
+
       // clear staticRenderFns
       const compiled = compile(source, options)
       compiled.staticRenderFns.length = 0

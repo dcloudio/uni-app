@@ -7,6 +7,10 @@ const {
   updateForEleId
 } = require('./util')
 
+const {
+  isComponent
+} = require('../util')
+
 const parseText = require('./text-parser')
 const parseEvent = require('./event-parser')
 
@@ -265,7 +269,9 @@ function processText (el) {
 }
 
 function processAttrs (el) {
-  el.attrs = el.attrs.filter(attr => attr.name === ID || isVar(attr.value))
+  if (!isComponent(el.tag)) { // 自定义组件，不能移除静态 attr
+    el.attrs = el.attrs.filter(attr => attr.name === ID || isVar(attr.value))
+  }
 }
 
 function postTransformNode (el) {

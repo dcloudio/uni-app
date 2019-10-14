@@ -104,18 +104,20 @@ function processForKey (el) {
   }
 }
 
+function hasOwn (obj, key) {
+  return hasOwnProperty.call(obj, key)
+}
+
 module.exports = {
   ID,
   DATA_ROOT,
   ITERATOR,
   isVar,
+  hasOwn,
   addAttr,
   getForEl,
   processForKey,
   updateForEleId,
   getBindingAttr,
-  getAndRemoveAttr,
-  hasOwn: function (obj, key) {
-    return hasOwnProperty.call(obj, key)
-  }
+  getAndRemoveAttr
 }

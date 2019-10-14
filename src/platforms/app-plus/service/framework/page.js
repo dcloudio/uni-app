@@ -104,19 +104,18 @@ export function registerPage ({
   if (__PLATFORM__ === 'app-plus') {
     if (!webview.nvue) {
       const pageId = webview.id
-      const pagePath = path.slice(1)
 
       // 通知页面已开始创建
       UniServiceJSBridge.publishHandler('vdSync', {
         data: [
-          [PAGE_CREATE, [pageId, pagePath]]
+          [PAGE_CREATE, [pageId, route]]
         ],
         options: {
           timestamp: Date.now()
         }
       }, [pageId])
 
-      pageInstance.$vm = createPage(pagePath, pageId)
+      pageInstance.$vm = createPage(route, pageId)
       pageInstance.$vm.$scope = pageInstance
       pageInstance.$vm.$mount()
     }

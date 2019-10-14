@@ -524,7 +524,7 @@ var serviceContext = (function () {
   };
 
   const SYNC_API_RE =
-    /^\$|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
+    /^\$|restoreGlobal|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
 
   const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -5853,13 +5853,27 @@ var serviceContext = (function () {
     );
   }
 
-  function registerPlus (newPlus) {
-    // 确保 plus 是 app-service 中的
+  function restoreGlobal (
+    newPlus,
+    newSetTimeout,
+    newClearTimeout,
+    newSetInterval,
+    newClearInterval
+  ) {
+    // 确保部分全局变量 是 app-service 中的
+    // 若首页 nvue 初始化比 app-service 快，导致框架处于该 nvue 环境下
+    // plus 如果不用 app-service，资源路径会出问题
+    // 若首页 nvue 被销毁，如 redirectTo 或 reLaunch，则这些全局功能会损坏
     if (plus !== newPlus) {
       if (process.env.NODE_ENV !== 'production') {
-        console.log(`[registerPlus][${Date.now()}]`);
+        console.log(`[restoreGlobal][${Date.now()}]`);
       }
       plus = newPlus;
+      /* eslint-disable no-global-assign */
+      setTimeout = newSetTimeout;
+      clearTimeout = newClearTimeout;
+      setInterval = newSetInterval;
+      clearInterval = newClearInterval;
     }
   }
 
@@ -6434,19 +6448,18 @@ var serviceContext = (function () {
     {
       if (!webview.nvue) {
         const pageId = webview.id;
-        const pagePath = path.slice(1);
 
         // 通知页面已开始创建
         UniServiceJSBridge.publishHandler('vdSync', {
           data: [
-            [PAGE_CREATE, [pageId, pagePath]]
+            [PAGE_CREATE, [pageId, route]]
           ],
           options: {
             timestamp: Date.now()
           }
         }, [pageId]);
 
-        pageInstance.$vm = createPage(pagePath, pageId);
+        pageInstance.$vm = createPage(route, pageId);
         pageInstance.$vm.$scope = pageInstance;
         pageInstance.$vm.$mount();
       }
@@ -6510,7 +6523,7 @@ var serviceContext = (function () {
     const routeOptions = __uniRoutes.find(route => route.path === path);
 
     if (routeOptions.meta.isTabBar) {
-      tabBar$1.switchTab(path);
+      tabBar$1.switchTab(path.slice(1));
     }
 
     showWebview(
@@ -7144,7 +7157,7 @@ var serviceContext = (function () {
     requireNativePlugin: requireNativePlugin$1,
     shareAppMessageDirectly: shareAppMessageDirectly,
     share: share,
-    registerPlus: registerPlus,
+    restoreGlobal: restoreGlobal,
     navigateBack: navigateBack$1,
     navigateTo: navigateTo$1,
     reLaunch: reLaunch$1,

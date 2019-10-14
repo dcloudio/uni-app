@@ -14,6 +14,7 @@ module.exports = function parseComponent (el) {
   // TODO 需要把自定义组件的 attrs, props 全干掉
   el.tag = getTagName(el.tag)
   if (!hasOwn(tags, el.tag)) {
+    // 仅保留 ID
     el.attrs = el.attrs.filter(attr => attr.name === ID)
   }
 }

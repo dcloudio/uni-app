@@ -11,7 +11,9 @@ module.exports = function definePages (appJson) {
   return {
     name: 'define-pages.js',
     content: `
-uni.registerPlus && uni.registerPlus(typeof plus !== 'undefined' && plus)
+if(uni.restoreGlobal){
+  uni.restoreGlobal(plus,setTimeout,clearTimeout,setInterval,clearInterval)
+}
 ${generatePageCode(appJson.pages, appJson.page)}
 `
   }

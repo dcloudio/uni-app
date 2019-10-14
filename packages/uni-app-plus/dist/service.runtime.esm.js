@@ -6774,6 +6774,11 @@ function callHook$2(hook, args) {
 
 var plugin = {
   install: function install(Vue) {
+
+    Vue.prototype._m = function renderStatic() {
+      return this._e()
+    };
+
     Vue.prototype.__call_hook = callHook$2;
   }
 };

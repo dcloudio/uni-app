@@ -122,26 +122,22 @@ function processProps (el, genVar) {
   })
 }
 
-function processText (el, genVar) {
+function processText (el, parent) {
   const state = {
     index: 0,
     view: true,
-    genVar
+    genVar: createGenVar(parent.attrsMap[ID])
   }
-
-  el.children.forEach(child => {
-    if (child.type === 2) { // ASTExpression
-      child.expression = parseText(child.text, false, state).expression
-    }
-  })
+  el.expression = parseText(el.text, false, state).expression
 }
 
-function postTransformNode (el) {
-  parseComponent(el)
-  parseTag(el)
-  parseEvent(el)
-
+function transformNode (el, parent) {
+  // 更新 id
   updateForEleId(el)
+
+  if (el.type !== 1) {
+    return (el.type === 2 && processText(el, parent))
+  }
 
   const id = el.attrsMap[ID]
   const genVar = createGenVar(id)
@@ -153,7 +149,23 @@ function postTransformNode (el) {
   processDirs(el, genVar)
   processAttrs(el, genVar)
   processProps(el, genVar)
-  processText(el, genVar)
+}
+
+function traverseNode (el, parent) {
+  transformNode(el, parent)
+  el.children && el.children.forEach(child => traverseNode(child, el))
+  el.scopedSlots && Object.values(el.scopedSlots).forEach(slot => traverseNode(slot, el))
+}
+
+function postTransformNode (el) {
+  // 需要提前处理的内容
+  parseComponent(el)
+  parseTag(el)
+  parseEvent(el)
+
+  if (!el.parent) { // 从根节点开始递归处理
+    traverseNode(el)
+  }
 }
 
 function processEvents (events) {
