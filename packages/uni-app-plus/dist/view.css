@@ -880,11 +880,6 @@ uni-picker-view[hidden] {
 }
 
 
-uni-picker {
-  display: block;
-}
-
-
 uni-progress {
 	display: -webkit-flex;
 	display: -webkit-box;

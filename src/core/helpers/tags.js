@@ -8,7 +8,6 @@ module.exports = [
   'uni-page-refresh',
   'uni-actionsheet',
   'uni-modal',
-  'uni-picker',
   'uni-toast',
   'uni-resize-sensor',
 

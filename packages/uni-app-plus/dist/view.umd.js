@@ -10532,262 +10532,8 @@ function processTouches(target, touches) {
   
 
 /***/ }),
-/* 27 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(UniViewJSBridge) {/* harmony import */ var uni_mixins__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-//
-//
-//
-//
-//
-//
-//
-//
-
-var _UniViewJSBridge = UniViewJSBridge,
-    subscribe = _UniViewJSBridge.subscribe,
-    unsubscribe = _UniViewJSBridge.unsubscribe,
-    publishHandler = _UniViewJSBridge.publishHandler;
-var mode = {
-  SELECTOR: 'selector',
-  MULTISELECTOR: 'multiSelector',
-  TIME: 'time',
-  DATE: 'date' // 暂不支持城市选择
-  // REGION: 'region'
-
-};
-var fields = {
-  YEAR: 'year',
-  MONTH: 'month',
-  DAY: 'day'
-};
-/* harmony default export */ __webpack_exports__["a"] = ({
-  name: 'Picker',
-  mixins: [uni_mixins__WEBPACK_IMPORTED_MODULE_0__[/* emitter */ "a"]],
-  props: {
-    name: {
-      type: String,
-      default: ''
-    },
-    range: {
-      type: Array,
-      default: function _default() {
-        return [];
-      }
-    },
-    rangeKey: {
-      type: String,
-      default: ''
-    },
-    value: {
-      type: [Number, String, Array],
-      default: 0
-    },
-    mode: {
-      type: String,
-      default: mode.SELECTOR,
-      validator: function validator(val) {
-        return Object.values(mode).indexOf(val) >= 0;
-      }
-    },
-    fields: {
-      type: String,
-      default: 'day',
-      validator: function validator(val) {
-        return Object.values(fields).indexOf(val) >= 0;
-      }
-    },
-    start: {
-      type: String,
-      default: function _default() {
-        if (this.mode === mode.TIME) {
-          return '00:00';
-        }
-
-        if (this.mode === mode.DATE) {
-          var year = new Date().getFullYear() - 100;
-
-          switch (this.fields) {
-            case fields.YEAR:
-              return year;
-
-            case fields.MONTH:
-              return year + '-01';
-
-            case fields.DAY:
-              return year + '-01-01';
-          }
-        }
-
-        return '';
-      }
-    },
-    end: {
-      type: String,
-      default: function _default() {
-        if (this.mode === mode.TIME) {
-          return '23:59';
-        }
-
-        if (this.mode === mode.DATE) {
-          var year = new Date().getFullYear() + 100;
-
-          switch (this.fields) {
-            case fields.YEAR:
-              return year;
-
-            case fields.MONTH:
-              return year + '-12';
-
-            case fields.DAY:
-              return year + '-12-31';
-          }
-        }
-
-        return '';
-      }
-    },
-    disabled: {
-      type: [Boolean, String],
-      default: false
-    }
-  },
-  data: function data() {
-    return {
-      valueSync: this.value || 0,
-      visible: false,
-      valueChangeSource: ''
-    };
-  },
-  watch: {
-    value: function value(val) {
-      var _this = this;
-
-      if (Array.isArray(val)) {
-        if (!Array.isArray(this.valueSync)) {
-          this.valueSync = [];
-        }
-
-        this.valueSync.length = val.length;
-        val.forEach(function (val, index) {
-          if (val !== _this.valueSync[index]) {
-            _this.$set(_this.valueSync, index, val);
-          }
-        });
-      } else if (_typeof(val) !== 'object') {
-        this.valueSync = val;
-      }
-    },
-    valueSync: function valueSync(val) {
-      if (!this.valueChangeSource) {
-        this._show();
-      } else {
-        this.$emit('update:value', val);
-      }
-    }
-  },
-  created: function created() {
-    var _this2 = this;
-
-    this.$dispatch('Form', 'uni-form-group-update', {
-      type: 'add',
-      vm: this
-    });
-    Object.keys(this.$props).forEach(function (key) {
-      if (key !== 'value' && key !== 'name') {
-        _this2.$watch(key, _this2._show);
-      }
-    });
-  },
-  beforeDestroy: function beforeDestroy() {
-    this.$dispatch('Form', 'uni-form-group-update', {
-      type: 'remove',
-      vm: this
-    });
-  },
-  destroyed: function destroyed() {
-    if (this.visible) {
-      var id = this.$page.id;
-      publishHandler('hidePicker', {}, id);
-    }
-  },
-  methods: {
-    _click: function _click() {
-      if (this.disabled) {
-        return;
-      }
-
-      var id = this.$page.id;
-      subscribe("".concat(id, "-picker-change"), this.change);
-      subscribe("".concat(id, "-picker-columnchange"), this.columnchange);
-      subscribe("".concat(id, "-picker-cancel"), this.cancel);
-      this.visible = true;
-
-      this._show();
-    },
-    _show: function _show() {
-      if (this.visible) {
-        var id = this.$page.id;
-        var options = Object.assign({}, this.$props);
-        options.value = this.valueSync;
-        publishHandler('showPicker', options, id);
-      }
-    },
-    change: function change(args) {
-      this.visible = false;
-      var id = this.$page.id;
-      unsubscribe("".concat(id, "-picker-change"));
-      unsubscribe("".concat(id, "-picker-columnchange"));
-      unsubscribe("".concat(id, "-picker-cancel"));
-
-      if (!this.disabled) {
-        this.valueChangeSource = 'click';
-        var value = args.value;
-        this.valueSync = Array.isArray(value) ? value.map(function (val) {
-          return val;
-        }) : value;
-        this.$trigger('change', {}, {
-          value: value
-        });
-      }
-    },
-    columnchange: function columnchange(args) {
-      this.$trigger('columnchange', {}, args);
-    },
-    cancel: function cancel(args) {
-      this.visible = false;
-      var id = this.$page.id;
-      unsubscribe("".concat(id, "-picker-change"));
-      unsubscribe("".concat(id, "-picker-columnchange"));
-      unsubscribe("".concat(id, "-picker-cancel"));
-      this.$trigger('cancel', {}, {});
-    },
-    _getFormData: function _getFormData() {
-      return {
-        value: this.valueSync,
-        key: this.name
-      };
-    },
-    _resetFormData: function _resetFormData() {
-      this.valueSync = '';
-    }
-  }
-});
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(3)))
-
-/***/ }),
-/* 28 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// extracted by mini-css-extract-plugin
-    if(false) { var cssReload; }
-  
-
-/***/ }),
+/* 27 */,
+/* 28 */,
 /* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -12076,7 +11822,7 @@ function destroyComponentObserver(_ref2) {
 /* 49 */
 /***/ (function(module, exports) {
 
-module.exports = ['uni-app', 'uni-tabbar', 'uni-page', 'uni-page-head', 'uni-page-wrapper', 'uni-page-body', 'uni-page-refresh', 'uni-actionsheet', 'uni-modal', 'uni-picker', 'uni-toast', 'uni-resize-sensor', 'uni-ad', 'uni-audio', 'uni-button', 'uni-camera', 'uni-canvas', 'uni-checkbox', 'uni-checkbox-group', 'uni-cover-image', 'uni-cover-view', 'uni-form', 'uni-functional-page-navigator', 'uni-icon', 'uni-image', 'uni-input', 'uni-label', 'uni-live-player', 'uni-live-pusher', 'uni-map', 'uni-movable-area', 'uni-movable-view', 'uni-navigator', 'uni-official-account', 'uni-open-data', 'uni-picker', 'uni-picker-view', 'uni-picker-view-column', 'uni-progress', 'uni-radio', 'uni-radio-group', 'uni-rich-text', 'uni-scroll-view', 'uni-slider', 'uni-swiper', 'uni-swiper-item', 'uni-switch', 'uni-text', 'uni-textarea', 'uni-video', 'uni-view', 'uni-web-view'];
+module.exports = ['uni-app', 'uni-tabbar', 'uni-page', 'uni-page-head', 'uni-page-wrapper', 'uni-page-body', 'uni-page-refresh', 'uni-actionsheet', 'uni-modal', 'uni-toast', 'uni-resize-sensor', 'uni-ad', 'uni-audio', 'uni-button', 'uni-camera', 'uni-canvas', 'uni-checkbox', 'uni-checkbox-group', 'uni-cover-image', 'uni-cover-view', 'uni-form', 'uni-functional-page-navigator', 'uni-icon', 'uni-image', 'uni-input', 'uni-label', 'uni-live-player', 'uni-live-pusher', 'uni-map', 'uni-movable-area', 'uni-movable-view', 'uni-navigator', 'uni-official-account', 'uni-open-data', 'uni-picker', 'uni-picker-view', 'uni-picker-view-column', 'uni-progress', 'uni-radio', 'uni-radio-group', 'uni-rich-text', 'uni-scroll-view', 'uni-slider', 'uni-swiper', 'uni-swiper-item', 'uni-switch', 'uni-text', 'uni-textarea', 'uni-video', 'uni-view', 'uni-web-view'];
 
 /***/ }),
 /* 50 */
@@ -14294,7 +14040,6 @@ var map = {
 	"./navigator/index.vue": 95,
 	"./picker-view-column/index.vue": 119,
 	"./picker-view/index.vue": 117,
-	"./picker/index.vue": 113,
 	"./progress/index.vue": 108,
 	"./radio-group/index.vue": 107,
 	"./radio/index.vue": 105,
@@ -14452,16 +14197,7 @@ webpackContext.id = 66;
  /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_vue_cli_service_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_vue_cli_service_node_modules_css_loader_index_js_ref_6_oneOf_1_1_node_modules_vue_cli_service_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_vue_cli_service_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_cli_service_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
-/* 79 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var _node_modules_vue_cli_service_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_vue_cli_service_node_modules_css_loader_index_js_ref_6_oneOf_1_1_node_modules_vue_cli_service_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_vue_cli_service_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_cli_service_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(28);
-/* harmony import */ var _node_modules_vue_cli_service_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_vue_cli_service_node_modules_css_loader_index_js_ref_6_oneOf_1_1_node_modules_vue_cli_service_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_vue_cli_service_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_cli_service_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_vue_cli_service_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_vue_cli_service_node_modules_css_loader_index_js_ref_6_oneOf_1_1_node_modules_vue_cli_service_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_vue_cli_service_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_cli_service_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
-/* unused harmony reexport * */
- /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_vue_cli_service_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_vue_cli_service_node_modules_css_loader_index_js_ref_6_oneOf_1_1_node_modules_vue_cli_service_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_vue_cli_service_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_cli_service_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
-
-/***/ }),
+/* 79 */,
 /* 80 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -20229,73 +19965,7 @@ component.options.__file = "src/core/view/components/label/index.vue"
 /* harmony default export */ var label = __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
-/* 113 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-
-// CONCATENATED MODULE: ./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"70784d34-vue-loader-template"}!./node_modules/@vue/cli-service/node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/picker/index.vue?vue&type=template&id=bcf74e32&
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "uni-picker",
-    {
-      on: {
-        click: function($event) {
-          $event.stopPropagation()
-          return _vm._click($event)
-        }
-      }
-    },
-    [_c("div", [_vm._t("default")], 2)]
-  )
-}
-var staticRenderFns = []
-render._withStripped = true
-
-
-// CONCATENATED MODULE: ./src/core/view/components/picker/index.vue?vue&type=template&id=bcf74e32&
-
-// EXTERNAL MODULE: ./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/@vue/cli-plugin-babel/node_modules/babel-loader/lib!./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/picker/index.vue?vue&type=script&lang=js&
-var pickervue_type_script_lang_js_ = __webpack_require__(27);
-
-// CONCATENATED MODULE: ./src/core/view/components/picker/index.vue?vue&type=script&lang=js&
- /* harmony default export */ var components_pickervue_type_script_lang_js_ = (pickervue_type_script_lang_js_["a" /* default */]); 
-// EXTERNAL MODULE: ./src/core/view/components/picker/index.vue?vue&type=style&index=0&lang=css&
-var pickervue_type_style_index_0_lang_css_ = __webpack_require__(79);
-
-// EXTERNAL MODULE: ./node_modules/@vue/cli-service/node_modules/vue-loader/lib/runtime/componentNormalizer.js
-var componentNormalizer = __webpack_require__(0);
-
-// CONCATENATED MODULE: ./src/core/view/components/picker/index.vue
-
-
-
-
-
-
-/* normalize component */
-
-var component = Object(componentNormalizer["a" /* default */])(
-  components_pickervue_type_script_lang_js_,
-  render,
-  staticRenderFns,
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "src/core/view/components/picker/index.vue"
-/* harmony default export */ var picker = __webpack_exports__["default"] = (component.exports);
-
-/***/ }),
+/* 113 */,
 /* 114 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
