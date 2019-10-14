@@ -153,17 +153,15 @@ const protocols = {
     }
   },
   requestPayment: {
+    name: tt.canIUse && tt.canIUse('pay') ? 'pay' : 'requestPayment',
     args: {
-      orderInfo: 'data'
+      orderInfo: tt.canIUse && tt.canIUse('pay') ? 'orderInfo' : 'data'
     }
   },
   getFileInfo: {
     args: {
       digestAlgorithm: false
     }
-  },
-  requestPayment: {
-    name: tt.canIUse && tt.canIUse('pay') ? 'pay' : 'requestPayment',
   }
 }
 
