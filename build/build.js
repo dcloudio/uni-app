@@ -32,7 +32,7 @@ service.run('build', {
   formats: process.env.UNI_WATCH === 'true' ? 'umd' : 'umd-min',
   entry
 }).then(function () {
-  if (process.env.UNI_UI !== 'true') {
+  if (process.env.UNI_WATCH !== 'true' && process.env.UNI_UI !== 'true') {
     generateApiManifest(
       JSON.parse(JSON.stringify(process.UNI_SERVICE_API_MANIFEST)),
       JSON.parse(JSON.stringify(process.UNI_SERVICE_API_PROTOCOL))

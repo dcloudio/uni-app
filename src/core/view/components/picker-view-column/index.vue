@@ -4,6 +4,24 @@ import scroller from 'uni-mixins/scroller/index'
 import { Friction } from 'uni-mixins/scroller/Friction'
 import { Spring } from 'uni-mixins/scroller/Spring'
 
+function onClick (dom, callback) {
+  const MAX_MOVE = 20
+  const hasTouchSupport = navigator.maxTouchPoints
+  let x = 0
+  let y = 0
+  dom.addEventListener(hasTouchSupport ? 'touchstart' : 'mousedown', (event) => {
+    const info = hasTouchSupport ? event.changedTouches[0] : event
+    x = info.clientX
+    y = info.clientY
+  })
+  dom.addEventListener(hasTouchSupport ? 'touchend' : 'mouseup', (event) => {
+    const info = hasTouchSupport ? event.changedTouches[0] : event
+    if (Math.abs(info.clientX - x) < MAX_MOVE && Math.abs(info.clientY - y) < MAX_MOVE) {
+      callback(info)
+    }
+  })
+}
+
 export default {
   name: 'PickerViewColumn',
   mixins: [touchtrack, scroller],
@@ -50,7 +68,7 @@ export default {
     this.indicatorClass = $parent.indicatorClass
     this.maskStyle = $parent.maskStyle
     this.maskClass = $parent.maskClass
-    // this.__pageRerender = this._pageRerender.bind(this)
+    this.deltaY = 0
   },
   mounted: function () {
     this.touchtrack(this.$refs.main, '_handleTrack', true)
@@ -59,6 +77,7 @@ export default {
       this.init()
       this.update()
     })
+    onClick(this.$el, this._handleTap.bind(this))
   },
   methods: {
     _setItemHeight (height) {
@@ -81,20 +100,31 @@ export default {
         }
       }
     },
-    _handleTap: function (e) {
-      if (e.target !== e.currentTarget && !this._scroller.isScrolling()) {
-        var t = e.touches && e.touches[0] && e.touches[0].clientY
-        var n = typeof t === 'number' ? t : e.detail.y - document.body.scrollTop
-        var i = this.$el.getBoundingClientRect()
-        var r = n - i.top - this._height / 2
+    _handleTap: function ({ clientY }) {
+      if (!this._scroller.isScrolling()) {
+        var rect = this.$el.getBoundingClientRect()
+        var r = clientY - rect.top - this.height / 2
         var o = this.indicatorHeight / 2
         if (!(Math.abs(r) <= o)) {
           var a = Math.ceil((Math.abs(r) - o) / this.indicatorHeight)
           var s = r < 0 ? -a : a
-          this.current += s
-          this._scroller.scrollTo(this.current * this.indicatorHeight)
+          var current = Math.min(this.current + s, this.length - 1)
+          this.current = current = Math.max(current, 0)
+          this._scroller.scrollTo(current * this.indicatorHeight)
         }
       }
+    },
+    _handleWheel ($event) {
+      const deltaY = this.deltaY + $event.deltaY
+      if (Math.abs(deltaY) > 10) {
+        this.deltaY = 0
+        var current = Math.min(this.current + (deltaY < 0 ? -1 : 1), this.length - 1)
+        this.current = current = Math.max(current, 0)
+        this._scroller.scrollTo(current * this.indicatorHeight)
+      } else {
+        this.deltaY = deltaY
+      }
+      $event.preventDefault()
     },
     setCurrent: function (current) {
       if (current !== this.current) {
@@ -122,8 +152,8 @@ export default {
     },
     update: function () {
       this.$nextTick(() => {
-        var index = Math.max(this.length - 1, 0)
-        var current = Math.min(this.current, index)
+        var current = Math.min(this.current, this.length - 1)
+        current = Math.max(current, 0)
         this._scroller.update(current * this.indicatorHeight, undefined, this.indicatorHeight)
       })
     },
@@ -137,10 +167,9 @@ export default {
     this.length = (this.$slots.default && this.$slots.default.length) || 0
     return createElement('uni-picker-view-column', {
       on: {
-        tap: this._handleTap
+        wheel: this._handleWheel
       }
-    },
-    [
+    }, [
       createElement('div', {
         ref: 'main',
         staticClass: 'uni-picker-view-group'
