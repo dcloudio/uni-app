@@ -12,7 +12,7 @@ module.exports = function definePages (appJson) {
     name: 'define-pages.js',
     content: `
 if(uni.restoreGlobal){
-  uni.restoreGlobal(plus,setTimeout,clearTimeout,setInterval,clearInterval)
+  uni.restoreGlobal(weex,plus,setTimeout,clearTimeout,setInterval,clearInterval)
 }
 ${generatePageCode(appJson.pages, appJson.page)}
 `

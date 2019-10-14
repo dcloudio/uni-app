@@ -1,4 +1,5 @@
-export function restoreGlobal (
+export function restoreGlobal(
+  newWeex,
   newPlus,
   newSetTimeout,
   newClearTimeout,
@@ -13,6 +14,7 @@ export function restoreGlobal (
     if (process.env.NODE_ENV !== 'production') {
       console.log(`[restoreGlobal][${Date.now()}]`)
     }
+    weex = newWeex
     plus = newPlus
     /* eslint-disable no-global-assign */
     setTimeout = newSetTimeout

@@ -204,7 +204,7 @@ var serviceContext = (function () {
     'offPush',
     'requireNativePlugin',
     'upx2px',
-    'registerPlus'
+    'restoreGlobal'
   ];
 
   const apis = [
@@ -5853,7 +5853,8 @@ var serviceContext = (function () {
     );
   }
 
-  function restoreGlobal (
+  function restoreGlobal(
+    newWeex,
     newPlus,
     newSetTimeout,
     newClearTimeout,
@@ -5868,6 +5869,7 @@ var serviceContext = (function () {
       if (process.env.NODE_ENV !== 'production') {
         console.log(`[restoreGlobal][${Date.now()}]`);
       }
+      weex = newWeex;
       plus = newPlus;
       /* eslint-disable no-global-assign */
       setTimeout = newSetTimeout;
