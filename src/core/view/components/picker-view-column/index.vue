@@ -68,6 +68,7 @@ export default {
     this.indicatorClass = $parent.indicatorClass
     this.maskStyle = $parent.maskStyle
     this.maskClass = $parent.maskClass
+    this.deltaY = 0
   },
   mounted: function () {
     this.touchtrack(this.$refs.main, '_handleTrack', true)
@@ -113,6 +114,18 @@ export default {
         }
       }
     },
+    _handleWheel ($event) {
+      const deltaY = this.deltaY + $event.deltaY
+      if (Math.abs(deltaY) > 10) {
+        this.deltaY = 0
+        var current = Math.min(this.current + (deltaY < 0 ? -1 : 1), this.length - 1)
+        this.current = current = Math.max(current, 0)
+        this._scroller.scrollTo(current * this.indicatorHeight)
+      } else {
+        this.deltaY = deltaY
+      }
+      $event.preventDefault()
+    },
     setCurrent: function (current) {
       if (current !== this.current) {
         this.current = current
@@ -152,7 +165,11 @@ export default {
   },
   render (createElement) {
     this.length = (this.$slots.default && this.$slots.default.length) || 0
-    return createElement('uni-picker-view-column', {}, [
+    return createElement('uni-picker-view-column', {
+      on: {
+        wheel: this._handleWheel
+      }
+    }, [
       createElement('div', {
         ref: 'main',
         staticClass: 'uni-picker-view-group'
