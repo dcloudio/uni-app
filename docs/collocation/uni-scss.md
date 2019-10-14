@@ -1,14 +1,17 @@
+`uni.scss`文件的用途是为了方便整体控制应用的风格。比如按钮颜色、边框风格，`uni.scss`文件里预置了一批scss变量预置。
 
-``uni-app`` 内置了常用的样式变量，采用 scss 预处理方式，文件名为  ``uni.scss``，在代码中无需 import 这个文件即可使用这些样式变量。
+ ``uni-app`` 官方扩展插件（uni ui）及 [插件市场](https://ext.dcloud.net.cn) 上很多三方插件均使用了这些样式变量，如果你是插件开发者，建议你使用 scss 预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App。
 
- ``uni-app`` 官方扩展插件及 [插件市场](https://ext.dcloud.net.cn) 上很多三方插件均使用了这些样式变量，如果你是插件开发者，建议你使用 scss 预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App。
- 
-开发阶段，每个 ``uni-app`` 项目在目录都会有一个 ``uni.scss`` 的文件，可以通过修改 scss 文件的变量来定制自己的插件主题，实现自定义主题功能。
+ ``uni.scss``是一个特殊文件，在代码中无需 import 这个文件即可在scss代码中使用这里的样式变量。uni-app的编译器在webpack配置中特殊处理了这个uni.scss，使得每个scss文件都被注入这个uni.scss，达到全局可用的效果。如果开发者想要less、stylus的全局使用，需要在vue.config.js中自行配置webpack策略。
 
 **注意：** 
 
 1. 如要使用这些常用变量，需要在 HBuilderX 里面安装 scss 插件；
 2. 使用时需要在 style 节点上加上 ``lang="scss"``。
+```
+<style lang="scss">
+</style>
+```
 3. pages.json不支持scss，原生导航栏和tabbar的动态修改只能使用js api
 
 **以下是 uni.scss 的相关变量：**
