@@ -190,7 +190,7 @@ describe('codegen', () => {
   it('generate slot target', () => {
     assertCodegen(
       '<p slot="one">hello world</p>',
-      `with(this){return _c('p',{attrs:{"slot":"one","_i":0},slot:"one"})}`
+      `with(this){return _c('p',{attrs:{"_i":0},slot:"one"})}`
     )
   })
 
@@ -291,7 +291,7 @@ describe('codegen', () => {
   it('generate static attrs', () => {
     assertCodegen(
       '<input name="field1">',
-      `with(this){return _c('input',{attrs:{"name":"field1","_i":0}})}`
+      `with(this){return _c('input',{attrs:{"_i":0}})}`
     )
   })
 
@@ -558,14 +558,14 @@ describe('codegen', () => {
   it('generate component', () => {
     assertCodegen(
       '<my-component name="mycomponent1" :msg="msg" @notify="onNotify"><div>hi</div></my-component>',
-      `with(this){return _c('my-component',{attrs:{"name":"mycomponent1","msg":msg,"_i":0},on:{"notify":onNotify}},[_c('div',{attrs:{"_i":1}})])}`
+      `with(this){return _c('my-component',{attrs:{"msg":msg,"_i":0},on:{"notify":onNotify}},[_c('div',{attrs:{"_i":1}})])}`
     )
   })
 
   it('generate svg component with children', () => {
     assertCodegen(
       '<svg><my-comp><circle :r="10"></circle></my-comp></svg>',
-      `with(this){return _c('svg',{attrs:{"_i":0}},[_c('my-comp',{attrs:{"_i":1}},[_c('circle',{attrs:{"r":10,"_i":2}})])],1)}`
+      `with(this){return _c('svg',{attrs:{"_i":0}},[_c('my-comp',{attrs:{"_i":1}},[_c('circle',{attrs:{"_i":2}})])],1)}`
     )
   })
 

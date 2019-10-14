@@ -21,7 +21,6 @@ function genData (el) {
     dynamicTexts,
     directivesBinding
   } = el
-
   let extras = ''
 
   if (directivesBinding) {
@@ -265,12 +264,17 @@ function processText (el) {
   }
 }
 
+function processAttrs (el) {
+  el.attrs = el.attrs.filter(attr => attr.name === ID || isVar(attr.value))
+}
+
 function postTransformNode (el) {
   parseEvent(el)
 
   removeStatic(el)
   renameBinding(el)
 
+  processAttrs(el)
   processText(el)
 
   updateForEleId(el)

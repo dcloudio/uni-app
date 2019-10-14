@@ -6226,7 +6226,7 @@ var serviceContext = (function () {
 
   let todoNavigator = false;
 
-  function navigate(path, callback) {
+  function navigate (path, callback) {
     {
       if (todoNavigator) {
         return console.error(`已存在待跳转页面${todoNavigator.path},请不要连续多次跳转页面`)
@@ -6254,7 +6254,7 @@ var serviceContext = (function () {
     }
   }
 
-  function todoNavigate() {
+  function todoNavigate () {
     if (!todoNavigator) {
       return
     }
@@ -6268,7 +6268,7 @@ var serviceContext = (function () {
     return navigate()
   }
 
-  function navigateFinish() {
+  function navigateFinish () {
     {
       // 创建预加载
       const preloadWebview = createPreloadWebview();
@@ -6278,9 +6278,9 @@ var serviceContext = (function () {
       if (todoNavigator.nvue) {
         return todoNavigate()
       }
-      preloadWebview.loaded ?
-        todoNavigator.navigate() :
-        registerWebviewReady(preloadWebview.id, todoNavigate);
+      preloadWebview.loaded
+        ? todoNavigator.navigate()
+        : registerWebviewReady(preloadWebview.id, todoNavigate);
     }
   }
 
@@ -8859,7 +8859,6 @@ var serviceContext = (function () {
     'uni-page-refresh',
     'uni-actionsheet',
     'uni-modal',
-    'uni-picker',
     'uni-toast',
     'uni-resize-sensor',
 
