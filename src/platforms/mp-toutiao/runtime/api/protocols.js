@@ -161,6 +161,9 @@ const protocols = {
     args: {
       digestAlgorithm: false
     }
+  },
+  requestPayment: {
+    name: 'pay'
   }
 }
 
