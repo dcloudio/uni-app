@@ -163,7 +163,7 @@ const protocols = {
     }
   },
   requestPayment: {
-    name: 'pay'
+    name: tt.canIUse && tt.canIUse('pay') ? 'pay' : 'requestPayment',
   }
 }
 
