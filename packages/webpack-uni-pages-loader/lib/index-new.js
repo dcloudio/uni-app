@@ -73,7 +73,7 @@ module.exports = function (content) {
       let appConfigContent = ''
       jsonFiles.forEach(jsonFile => {
         if (jsonFile) {
-          if (jsonFile.name === 'app-config.js') {
+          if (jsonFile.name === 'define-pages.js') {
             appConfigContent = jsonFile.content
           } else {
             this.emitFile(jsonFile.name, jsonFile.content)

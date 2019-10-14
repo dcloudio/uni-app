@@ -12,6 +12,10 @@ import {
 
 export default {
   install (Vue, options) {
+    if (process.env.NODE_ENV !== 'production') {
+      Vue.config.performance = true
+    }
+
     initVue(Vue)
 
     ViewPlugin.install(Vue, options)

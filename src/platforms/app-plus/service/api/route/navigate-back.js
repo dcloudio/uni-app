@@ -1,7 +1,7 @@
 import {
   ANI_CLOSE,
   ANI_DURATION
-} from './util'
+} from '../../constants'
 
 import {
   setStatusBarStyle

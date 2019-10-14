@@ -34,11 +34,13 @@ const v3 = {
     // disable noEmitOnErrors
     webpackConfig.optimization.noEmitOnErrors = false
 
-    if (isAppService) {
+    const externals = {}
+    if (isAppService) { // service 层需要编译时注入 vue 内核
       webpackConfig.optimization.runtimeChunk = {
         name: 'app-config'
       }
     } else if (isAppView) {
+      externals['vue'] = 'Vue'
       webpackConfig.optimization.runtimeChunk = false
     }
 
@@ -63,7 +65,8 @@ const v3 = {
       },
       output: {
         filename: '[name].js',
-        chunkFilename: '[id].js'
+        chunkFilename: '[id].js',
+        globalObject: 'this'
       },
       performance: {
         hints: false
@@ -83,6 +86,7 @@ const v3 = {
             loader: isAppService ? 'wrap-loader' : path.resolve(__dirname,
               '../../packages/webpack-uni-view-main-loader'),
             options: {
+              compiler: getPlatformCompiler(),
               before: [
                 beforeCode + statCode
               ]
@@ -110,7 +114,7 @@ const v3 = {
     webpackConfig.module
       .rule('vue')
       .test([/\.vue$/, /\.nvue$/])
-      .use('vue-loader')
+      .use('vue-loader')//  service 层移除 style 节点，view 层返回固定 script
       .loader(path.resolve(__dirname, '../../packages/vue-loader/lib'))
       .tap(options => Object.assign(options, {
         isAppView,

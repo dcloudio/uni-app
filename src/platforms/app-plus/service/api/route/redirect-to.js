@@ -15,14 +15,14 @@ import {
   registerPage
 } from '../../framework/page'
 
-export function redirectTo ({
-  url
+import {
+  navigate
+} from '../../framework/navigator'
+
+function _redirectTo ({
+  path,
+  query
 }, callbackId) {
-  const urls = url.split('?')
-  const path = urls[0]
-
-  const query = parseQuery(urls[1] || '')
-
   const pages = getCurrentPages()
   const lastPage = pages[pages.length - 1]
 
@@ -45,4 +45,17 @@ export function redirectTo ({
   )
 
   setStatusBarStyle()
+}
+export function redirectTo ({
+  url
+}, callbackId) {
+  const urls = url.split('?')
+  const path = urls[0]
+  const query = parseQuery(urls[1] || '')
+  navigate(path, function () {
+    _redirectTo({
+      path,
+      query
+    }, callbackId)
+  })
 }

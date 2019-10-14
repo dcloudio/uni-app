@@ -1,17 +1,4 @@
 import {
-  getApp,
-  registerApp
-} from './framework/app'
-
-import {
-  getCurrentPages
-} from './framework/page'
-
-import {
-  registerConfig
-} from './framework/config'
-
-import {
   uni
 } from 'uni-core/service/uni'
 
@@ -20,18 +7,31 @@ import {
 } from 'uni-helpers/api'
 
 import {
-  registerPage
-} from 'uni-platform/service/register-page'
-
-import {
   publishHandler
 } from 'uni-platform/service/publish-handler'
+
+import {
+  definePage
+} from '../page-factory'
+
+import {
+  getApp,
+  registerApp
+} from './framework/app'
+
+import {
+  registerPage,
+  getCurrentPages
+} from './framework/page'
+
+import vuePlugin from './framework/plugins'
 
 UniServiceJSBridge.publishHandler = publishHandler
 UniServiceJSBridge.invokeCallbackHandler = invokeCallbackHandler
 
 export default {
-  __registerConfig: registerConfig,
+  __vuePlugin: vuePlugin,
+  __definePage: definePage,
   __registerApp: registerApp,
   __registerPage: registerPage,
   uni,

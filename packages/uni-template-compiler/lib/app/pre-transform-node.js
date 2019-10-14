@@ -1,18 +1,10 @@
 const {
-  tags,
-  hasOwn
-} = require('@dcloudio/uni-cli-shared')
-
-const {
   ID,
+  hasOwn,
   addAttr
 } = require('./util')
 
 module.exports = function preTransformNode (el, options) {
-  if (el.tag.indexOf('v-uni-') !== 0 && hasOwn(tags, el.tag)) {
-    el.tag = 'v-uni-' + el.tag
-  }
-
   if (!hasOwn(options, 'nid')) {
     options.nid = 0
   }

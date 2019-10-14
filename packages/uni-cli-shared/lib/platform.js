@@ -139,10 +139,17 @@ const PLATFORMS = {
         })
       }
       let template = []
+      let view = []
       if (process.env.UNI_USING_V3) {
+        view = getCopyOptions([
+          require.resolve('@dcloudio/uni-app-plus/dist/view.css'),
+          // TODO view.umd.min.js
+          require.resolve('@dcloudio/uni-app-plus/dist/view.umd.js')
+        ])
         template = getCopyOptions([path.resolve(__dirname, '../template')])
       }
       return [
+        ...view,
         ...template,
         ...getStaticCopyOptions(assetsDir),
         ...wxcomponents,

@@ -102,8 +102,6 @@ function initTabBar () {
     __uniConfig.tabBar.selected = selected
   }
 
-  __uniConfig.__ready__ = true
-
   tabBar.init(__uniConfig.tabBar, (item, index) => {
     uni.switchTab({
       url: '/' + item.pagePath,
@@ -141,6 +139,8 @@ export function registerApp (appVm) {
   initSubscribeHandlers()
 
   initAppLaunch(appVm)
+
+  __uniConfig.ready = true
 
   process.env.NODE_ENV !== 'production' && perf('registerApp')
 }

@@ -17,20 +17,20 @@ import {
 
 import tabBar from '../../../../app-plus/service/framework/tab-bar'
 
-export function reLaunch ({
-  url
+import {
+  navigate
+} from '../../framework/navigator'
+
+function _reLaunch ({
+  path,
+  query
 }, callbackId) {
-  const urls = url.split('?')
-  const path = urls[0]
-
-  const query = parseQuery(urls[1] || '')
-
   const pages = getCurrentPages(true).slice(0)
 
   const routeOptions = __uniRoutes.find(route => route.path === path)
 
   if (routeOptions.meta.isTabBar) {
-    tabBar.switchTab(url)
+    tabBar.switchTab(path)
   }
 
   showWebview(
@@ -54,4 +54,18 @@ export function reLaunch ({
   })
 
   setStatusBarStyle()
+}
+
+export function reLaunch ({
+  url
+}, callbackId) {
+  const urls = url.split('?')
+  const path = urls[0]
+  const query = parseQuery(urls[1] || '')
+  navigate(path, function () {
+    _reLaunch({
+      path,
+      query
+    }, callbackId)
+  })
 }

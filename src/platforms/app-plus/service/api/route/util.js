@@ -1,20 +1,36 @@
 import {
-  navigateStack
+  ANI_SHOW,
+  ANI_DURATION
+} from '../../constants'
+
+import {
+  navigateFinish
 } from '../../framework/navigator'
 
-export const ANI_DURATION = 300
-const ANI_SHOW = 'pop-in'
-export const ANI_CLOSE = 'pop-out'
+export function showWebview (webview, animationType, animationDuration, showCallback, delay) {
+  if (typeof delay === 'undefined') {
+    delay = webview.nvue ? 0 : 100
+  }
 
-export function showWebview (webview, animationType, animationDuration, showCallback, delay = 50) {
-  animationDuration = typeof animationDuration === 'undefined' ? ANI_DURATION : parseInt(animationDuration)
+  if (typeof animationDuration === 'undefined') {
+    animationDuration = ANI_DURATION
+  } else {
+    animationDuration = parseInt(animationDuration)
+  }
+
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(`[show][${Date.now()}]`, delay)
+  }
   setTimeout(() => {
     webview.show(
       animationType || ANI_SHOW,
       animationDuration || ANI_DURATION,
       () => {
+        if (process.env.NODE_ENV !== 'production') {
+          console.log(`[show.callback][${Date.now()}]`)
+        }
         showCallback && showCallback()
-        navigateStack(webview)
+        navigateFinish(webview)
       }
     )
   }, delay)

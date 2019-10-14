@@ -13,7 +13,8 @@ const {
   parseStyle
 } = require('../../util')
 
-const parseV3Config = require('./config-parser')
+const definePages = require('./define-pages')
+const appConfigService = require('./app-config-service')
 
 function parseConfig (appJson) {
   return {
@@ -316,11 +317,17 @@ module.exports = function (pagesJson, userManifestJson) {
       }
       if (!Object.keys(appJson.nvue.pages).find(path => {
         const subNVues = appJson.nvue.pages[path].window.subNVues || []
-        return path.replace(/\.html$/, '.nvue') === key || subNVues.find(({ path }) => path === key.replace(/\.nvue$/, ''))
-      }) && !pagesJson.pages.find(({ style = {} }) => {
+        return path.replace(/\.html$/, '.nvue') === key || subNVues.find(({
+          path
+        }) => path === key.replace(/\.nvue$/, ''))
+      }) && !pagesJson.pages.find(({
+        style = {}
+      }) => {
         style = Object.assign(style, style['app-plus'])
         const subNVues = style.subNVues || []
-        return subNVues.find(({ path }) => path === key.replace(/\.nvue$/, ''))
+        return subNVues.find(({
+          path
+        }) => path === key.replace(/\.nvue$/, ''))
       })) {
         throw new Error(`原生混淆页面未在项目内使用，错误的页面路径：${key}`)
       }
@@ -404,7 +411,8 @@ module.exports = function (pagesJson, userManifestJson) {
         manifestJson.plus.launchwebview.id = '2'
       } else {
         // 首页是 tabBar 页面
-        const item = tabBar.list.find(page => page.pagePath === (process.env.UNI_USING_NATIVE ? appJson.entryPagePath : entryPagePath))
+        const item = tabBar.list.find(page => page.pagePath === (process.env.UNI_USING_NATIVE ? appJson.entryPagePath
+          : entryPagePath))
         if (item) {
           tabBar.child = ['lauchwebview']
           tabBar.selected = tabBar.list.indexOf(item)
@@ -432,31 +440,54 @@ module.exports = function (pagesJson, userManifestJson) {
 
   delete appJson.subPackages
 
+  // TODO 处理纯原生
   if (process.env.UNI_USING_NATIVE) {
     manifest.name = 'manifest.json'
     manifest.content = JSON.stringify(manifest.content)
     return [manifest, parseConfig(appJson)]
   }
-  if (process.env.UNI_USING_V3) {
+
+  if (process.env.UNI_USING_V3) { // v3
     appJson.entryPagePath = appJson.pages[0]
     // timeout
     normalizeNetworkTimeout(appJson)
     appJson.page = Object.create(null)
 
-    const addPage = function (pagePath, windowOptions) {
+    const addPage = function (pagePath, windowOptions, nvue) {
       delete windowOptions.usingComponents
       appJson.page[pagePath] = {
-        window: windowOptions
+        window: windowOptions,
+        nvue
       }
     }
     parsePages(pagesJson, function (page) {
-      addPage(page.path, parseStyle(page.style))
+      addPage(page.path, parseStyle(page.style), !!page.nvue)
     }, function (root, page) {
-      addPage(normalizePath(path.join(root, page.path)), parseStyle(page.style, root))
+      addPage(normalizePath(path.join(root, page.path)), parseStyle(page.style, root), !!page.nvue)
     })
+    // nvue 权限
+    manifestJson.permissions.UniNView = {
+      'description': 'UniNView原生渲染'
+    }
+    // TODO 需要考虑 condition
+    manifestJson.plus.launchwebview.id = '1' // 首页 id 固定 为 1
+
+    if (appJson.page[appJson.entryPagePath].nvue) { // 首页是 nvue
+      manifestJson.launch_path = '' // 首页地址为空
+      manifestJson.plus.launchwebview.uniNView = {
+        path: appJson.entryPagePath
+      }
+      if (manifestJson.plus.tabBar) {
+        manifestJson.plus.tabBar.child = ['lauchwebview']
+      }
+    } else {
+      manifestJson.plus.launch_path = '__uniappview.html' // 首页地址固定
+    }
+
     manifest.name = 'manifest.json'
     manifest.content = JSON.stringify(manifest.content)
-    return [manifest, parseV3Config(appJson)]
+    delete appJson.nvue
+    return [manifest, definePages(appJson), appConfigService(appJson)]
   }
   return [app, manifest]
 }

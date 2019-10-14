@@ -10,17 +10,25 @@ import {
 } from './vdom-sync'
 
 import {
-  createPage
+  setCurrentPage
 } from '../page'
+
+import {
+  getPageVueComponent
+} from '../../../page-factory'
 
 let vd
 
+let PageVueComponent
+
 const handleData = {
   [PAGE_CREATE]: function onPageCreate (data) {
-    const [pageId] = data
-
-    __uniConfig.id = pageId
-
+    const [pageId, pagePath] = data
+    // 设置当前页面伪对象，方便其他地方使用 getCurrentPages 获取当前页面 id，route
+    setCurrentPage(pageId, pagePath)
+    // 初始化当前页面 VueComponent（生成页面样式代码）
+    PageVueComponent = getPageVueComponent(pagePath)
+    // 生成当前页面 vd
     vd = new VDomSync(pageId)
   },
   [MOUNTED_DATA]: function onMounted (data) {
@@ -30,11 +38,11 @@ const handleData = {
     vd.updateVData.apply(vd, data)
   },
   [PAGE_CREATED]: function onPageCreated (data) {
-    const [pagePath] = data
-    createPage(pagePath, {
+    const [pageId, pagePath] = data
+    new PageVueComponent({
       mpType: 'page',
-      pageId: vd.pageId,
-      pagePath: pagePath
+      pageId,
+      pagePath
     }).$mount('#app')
   }
 }
@@ -66,8 +74,6 @@ export function initData (Vue) {
       if (this._$vd) {
         this._$vd.initVm(this)
         console.log(`[${this._$id}] beforeCreate ` + Date.now())
-      } else {
-        console.log(`[null] beforeCreate ` + Date.now())
       }
     }
   })

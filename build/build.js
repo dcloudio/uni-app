@@ -32,7 +32,6 @@ if (process.env.UNI_PLATFORM === 'app-plus' && process.env.UNI_VIEW === 'true') 
   filename = 'view'
   entry = './lib/' + process.env.UNI_PLATFORM + '/view.js'
 }
-
 service.run('build', {
   name,
   filename,
@@ -40,7 +39,8 @@ service.run('build', {
   target: 'lib',
   formats: process.env.UNI_WATCH === 'true' ? 'umd' : 'umd-min',
   entry,
-  clean: !process.env.UNI_VIEW
+  clean: !process.env.UNI_VIEW,
+  mode: process.env.NODE_ENV
 }).then(function () {
   if (process.env.UNI_UI !== 'true' && process.env.UNI_VIEW !== 'true') {
     generateApiManifest(

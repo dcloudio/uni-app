@@ -42,6 +42,7 @@ export * from './plugin/payment'
 export * from './plugin/push'
 export * from './plugin/require-native-plugin'
 export * from './plugin/share'
+export * from './plugin/register-plus'
 
 export * from './route/navigate-back'
 export * from './route/navigate-to'

@@ -1,5 +1,4 @@
 import {
-  PAGE_CREATE,
   PAGE_CREATED
 } from '../../../constants'
 
@@ -73,8 +72,7 @@ export class VDomSync {
   flush () {
     if (!this.initialized) {
       this.initialized = true
-      this.batchData.unshift([PAGE_CREATE, [this.pageId]])
-      this.batchData.push([PAGE_CREATED, [this.pagePath]])
+      this.batchData.push([PAGE_CREATED, [this.pageId, this.pagePath]])
     }
     if (this.batchData.length) {
       UniServiceJSBridge.publishHandler('vdSync', {

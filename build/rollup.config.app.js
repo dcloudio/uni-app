@@ -34,12 +34,14 @@ if (process.env.UNI_SERVICE === 'legacy') {
   output.format = 'iife'
   output.name = 'serviceContext'
   output.banner =
-    `export function createServiceContext(Vue, weex, plus, __uniConfig, __uniRoutes, UniServiceJSBridge,instanceContext){
+    `export function createServiceContext(Vue, weex, plus, UniServiceJSBridge,instanceContext){
 var localStorage = plus.storage
 var setTimeout = instanceContext.setTimeout
 var clearTimeout = instanceContext.clearTimeout
 var setInterval = instanceContext.setInterval
 var clearInterval = instanceContext.clearInterval
+var __uniConfig = instanceContext.__uniConfig
+var __uniRoutes = instanceContext.__uniRoutes
 `
   output.footer =
     `
@@ -47,7 +49,9 @@ var uni = serviceContext.uni
 var getApp = serviceContext.getApp
 var getCurrentPages = serviceContext.getCurrentPages
 
+var __definePage = serviceContext.__definePage
 var __registerPage = serviceContext.__registerPage
+
 
 return serviceContext \n}
 `

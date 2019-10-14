@@ -76,7 +76,7 @@ export function processEvent (name, $event = {}, detail = {}, target = {}, curre
   }
 
   // fixed mp-vue
-  return wrapperMPEvent({
+  const ret = wrapperMPEvent({
     type: detail.type || name,
     timeStamp: $event.timeStamp || 0,
     detail: detail,
@@ -84,10 +84,20 @@ export function processEvent (name, $event = {}, detail = {}, target = {}, curre
     currentTarget: processTarget(currentTarget),
     // 只处理系统事件
     touches: ($event instanceof Event || $event instanceof CustomEvent) ? processTouches($event.touches) : $event.touches,
-    changedTouches: ($event instanceof Event || $event instanceof CustomEvent) ? processTouches($event.changedTouches) : $event.changedTouches,
-    preventDefault () { },
-    stopPropagation () { }
+    changedTouches: ($event instanceof Event || $event instanceof CustomEvent) ? processTouches($event.changedTouches)
+      : $event.changedTouches,
+    preventDefault () {},
+    stopPropagation () {}
   })
+
+  if (__PLATFORM__ === 'app-plus') {
+    const nid = currentTarget.getAttribute('_i')
+    ret.options = {
+      nid
+    }
+  }
+
+  return ret
 }
 
 const LONGPRESS_TIMEOUT = 350

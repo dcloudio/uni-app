@@ -24,7 +24,7 @@ export function initData (Vue) {
 
   Vue.prototype._$setData = function setData (type, data) {
     this._$vd.push(type, this._$id, data)
-    this.$nextTick(this._$vd.flush.bind(this._$vd))
+    this._$vd.initialized && this.$nextTick(this._$vd.flush.bind(this._$vd))
   }
 
   Object.defineProperty(Vue.prototype, '_$vd', {
@@ -61,6 +61,10 @@ export function initData (Vue) {
       this._$data = JSON.parse(JSON.stringify(this._$newData))
       console.log(`[${this._$id}] mounted ` + Date.now())
       this._$setData(MOUNTED_DATA, diffData)
+      if (this.mpType === 'page') {
+        // 页面 mounted 之后，第一次同步数据
+        this._$vd.flush()
+      }
     },
     beforeUpdate () {
       if (!this._$vd) {

@@ -1,5 +1,3 @@
-import plugin from './plugins/index'
-
 function parseRoutes (config) {
   __uniRoutes.length = 0
   /* eslint-disable no-mixed-operators */
@@ -22,9 +20,6 @@ function parseRoutes (config) {
 }
 
 export function registerConfig (config, Vue) {
-  if (__PLATFORM__ === 'app-plus') {
-    Vue.use(plugin)
-  }
   Object.assign(__uniConfig, config)
 
   __uniConfig.viewport = ''

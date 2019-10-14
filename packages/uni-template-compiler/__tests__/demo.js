@@ -2,7 +2,7 @@ const compiler = require('../lib')
 const res = compiler.compile(
   `
 <view>
-<component v-for="component in components" :item="component.item" :is="component.mode"/>
+<page-head v-if="a" v-for="item in items" :title="title"></page-head>
 </view>
     `, {
     resourcePath: '/User/fxy/Documents/test.wxml',

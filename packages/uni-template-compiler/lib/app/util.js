@@ -114,5 +114,8 @@ module.exports = {
   processForKey,
   updateForEleId,
   getBindingAttr,
-  getAndRemoveAttr
+  getAndRemoveAttr,
+  hasOwn: function (obj, key) {
+    return hasOwnProperty.call(obj, key)
+  }
 }

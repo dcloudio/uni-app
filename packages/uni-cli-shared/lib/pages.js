@@ -146,17 +146,18 @@ function isValidPage (page, root = '') {
     // 存储 nvue 相关信息
     pagePath = normalizePath(path.join(root, pagePath))
 
-    // if (process.env.UNI_USING_NVUE_COMPILER) {
     process.UNI_NVUE_ENTRY[pagePath] = getNVueMainJsPath(pagePath)
-    // } else {
-    //   process.UNI_NVUE_ENTRY[pagePath] = path.resolve(process.env.UNI_INPUT_DIR, pagePath + '.nvue') + '?entry'
-    // }
 
-    uniNVuePages.push({
-      'path': pagePath + '.html',
-      'style': page.style || {}
-    })
-    return false
+    if (process.env.UNI_USING_V3) { // 不移除
+      page.nvue = true
+      return true
+    } else {
+      uniNVuePages.push({
+        'path': pagePath + '.html',
+        'style': page.style || {}
+      })
+      return false
+    }
   }
 
   return true

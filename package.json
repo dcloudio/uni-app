@@ -13,7 +13,7 @@
     "build:app:v3": "npm run lint && npm run build:app:service && npm run dev:app:view",
     "build:app:service": "cross-env UNI_PLATFORM=app-plus rollup -c build/rollup.config.app.js",
     "build:app:view": "cross-env NODE_ENV=production UNI_WATCH=false UNI_PLATFORM=app-plus UNI_VIEW=true node build/build.js",
-    "dev:app:view": "cross-env NODE_ENV=production UNI_WATCH=true UNI_PLATFORM=app-plus UNI_VIEW=true node build/build.js",
+    "dev:app:view": "cross-env NODE_ENV=development UNI_WATCH=true UNI_PLATFORM=app-plus UNI_VIEW=true node build/build.js",
     "build:app:nvue": "cross-env UNI_PLATFORM=app-plus-nvue rollup -c build/rollup.config.app.js",
     "build:app:legacy": "cross-env UNI_PLATFORM=app-plus-nvue UNI_SERVICE=legacy rollup -c build/rollup.config.app.js",
     "build:mp-qq": "cross-env UNI_PLATFORM=mp-qq rollup -c build/rollup.config.mp.js",

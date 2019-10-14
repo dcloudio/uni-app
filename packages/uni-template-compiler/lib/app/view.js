@@ -7,7 +7,10 @@ const {
   processForKey
 } = require('./util')
 
+const parseTag = require('./tag-parser')
 const parseText = require('./text-parser')
+const parseEvent = require('./event-parser')
+const parseComponent = require('./component-parser')
 
 const preTransformNode = require('./pre-transform-node')
 
@@ -134,6 +137,10 @@ function processText (el, genVar) {
 }
 
 function postTransformNode (el) {
+  parseComponent(el)
+  parseTag(el)
+  parseEvent(el)
+
   updateForEleId(el)
 
   const id = el.attrsMap[ID]

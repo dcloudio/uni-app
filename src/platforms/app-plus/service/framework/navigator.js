@@ -4,31 +4,62 @@ import {
   registerWebviewReady
 } from './webview'
 
-export const navigatorStack = []
+let todoNavigator = false
 
 export function navigate (path, callback) {
-  let isReady = true
-  if (navigatorStack.length) { // 已存在路由跳转
-    isReady = false
-  } else {
-    callback.nvue = __uniConfig.page[path.slice(1)].nvue // 设置 nvue 标记
-    // 非 nvue 且 preloadWebview 未准备好
-    if (!callback.nvue && (!preloadWebview || !preloadWebview.loaded)) {
-      isReady = false
+  if (__PLATFORM__ === 'app-plus') {
+    if (todoNavigator) {
+      return console.error(`已存在待跳转页面${todoNavigator.path},请不要连续多次跳转页面`)
+    }
+    // 未创建 preloadWebview 或 preloadWebview 已被使用
+    const waitPreloadWebview = !preloadWebview || (preloadWebview && preloadWebview.__uniapp_route)
+    // 已创建未 loaded
+    const waitPreloadWebviewReady = preloadWebview && !preloadWebview.loaded
+
+    if (waitPreloadWebview || waitPreloadWebviewReady) {
+      todoNavigator = {
+        path: path,
+        nvue: __uniRoutes.find(route => route.path === path).meta.isNVue,
+        navigate: callback
+      }
+      if (process.env.NODE_ENV !== 'production') {
+        console.log(`todoNavigator:${todoNavigator.path} ${waitPreloadWebview ? 'waitForCreate' : 'waitForReady'}`)
+      }
+    } else {
+      callback()
+    }
+    if (waitPreloadWebviewReady) {
+      registerWebviewReady(preloadWebview.id, todoNavigate)
     }
   }
-  isReady ? callback() : navigatorStack.push(callback)
 }
 
-export function navigateStack (webview) {
-  if (!navigatorStack.length) {
-    return (!webview.nvue && createPreloadWebview())
+function todoNavigate () {
+  if (!todoNavigator) {
+    return
   }
-  const navigate = navigatorStack.shift()
-  if (navigate.nvue) {
-    navigate()
-  } else {
+  const {
+    navigate
+  } = todoNavigator
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(`todoNavigate:${todoNavigator.path}`)
+  }
+  todoNavigator = false
+  return navigate()
+}
+
+export function navigateFinish () {
+  if (__PLATFORM__ === 'app-plus') {
+    // 创建预加载
     const preloadWebview = createPreloadWebview()
-    preloadWebview.loaded ? navigate() : registerWebviewReady(preloadWebview.id, navigate)
+    if (!todoNavigator) {
+      return
+    }
+    if (todoNavigator.nvue) {
+      return todoNavigate()
+    }
+    preloadWebview.loaded
+      ? todoNavigator.navigate()
+      : registerWebviewReady(preloadWebview.id, todoNavigate)
   }
 }

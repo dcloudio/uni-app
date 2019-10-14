@@ -1,18 +1,21 @@
 import {
-  setPreloadWebview,
   initWebview,
   createWebview
 } from './webview'
 
 import {
-  navigateStack
+  navigateFinish
 } from './navigator'
 
 import {
-  perf
-} from './perf'
+  PAGE_CREATE
+} from '../../constants'
 
 import tabBar from '../framework/tab-bar'
+
+import {
+  createPage
+} from '../../page-factory'
 
 const pages = []
 
@@ -20,24 +23,6 @@ export function getCurrentPages (returnAll) {
   return returnAll ? pages.slice(0) : pages.filter(page => {
     return !page.$page.meta.isTabBar || page.$page.meta.visible
   })
-}
-
-const pageFactory = Object.create(null)
-
-export function definePage (name, createPageVueComponent) {
-  pageFactory[name] = createPageVueComponent
-}
-
-export function createPage (name, options) {
-  if (!pageFactory[name]) {
-    console.error(`${name} not found`)
-  }
-  let startTime = Date.now()
-  const pageVm = new (pageFactory[name]())(options)
-  if (process.env.NODE_ENV !== 'production') {
-    perf(`new ${name}`, startTime)
-  }
-  return pageVm
 }
 
 /**
@@ -62,11 +47,6 @@ export function registerPage ({
     webview = createWebview(path, routeOptions)
   } else {
     webview = plus.webview.getWebviewById(webview.id)
-    // renderer:native 时，把 launchWebview 标记 preloadWebview，及 loaded，方便路由跳转识别
-    if (__PLATFORM__ === 'app-plus-nvue') {
-      webview.loaded = true
-      setPreloadWebview(webview)
-    }
   }
 
   if (routeOptions.meta.isTabBar) {
@@ -116,19 +96,27 @@ export function registerPage ({
   // 首页是 nvue 时，在 registerPage 时，执行路由堆栈
   if (webview.id === '1' && routeOptions.meta.isNVue) {
     webview.nvue = true
-    setTimeout(function () {
-      navigateStack(webview)
+    __uniConfig.onReady(function () {
+      navigateFinish(webview)
     })
   }
 
   if (__PLATFORM__ === 'app-plus') {
     if (!webview.nvue) {
+      const pageId = webview.id
       const pagePath = path.slice(1)
-      pageInstance.$vm = createPage(pagePath, {
-        mpType: 'page',
-        pageId: webview.id,
-        pagePath
-      })
+
+      // 通知页面已开始创建
+      UniServiceJSBridge.publishHandler('vdSync', {
+        data: [
+          [PAGE_CREATE, [pageId, pagePath]]
+        ],
+        options: {
+          timestamp: Date.now()
+        }
+      }, [pageId])
+
+      pageInstance.$vm = createPage(pagePath, pageId)
       pageInstance.$vm.$scope = pageInstance
       pageInstance.$vm.$mount()
     }

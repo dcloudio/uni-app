@@ -1,6 +1,9 @@
 import {
   ANI_CLOSE,
-  ANI_DURATION,
+  ANI_DURATION
+} from '../../constants'
+
+import {
   showWebview
 } from './util'
 
@@ -17,7 +20,7 @@ import {
   navigate
 } from '../../framework/navigator'
 
-import tabBar from '../../../../app-plus/service/framework/tab-bar'
+import tabBar from '../../framework/tab-bar'
 
 function _switchTab ({
   path,

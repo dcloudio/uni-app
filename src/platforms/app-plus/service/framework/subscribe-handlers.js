@@ -21,6 +21,8 @@ function onWebviewReady (data, pageId) {
   const isLaunchWebview = pageId === '1'
   if (isLaunchWebview) { // 首页
     setPreloadWebview(plus.webview.getLaunchWebview())
+  } else if (!preloadWebview) { // preloadWebview 不存在，重新加载一下
+    setPreloadWebview(plus.webview.getWebviewById(pageId))
   }
   if (preloadWebview.id !== pageId) {
     return console.error(`webview[${pageId}] not found`)
@@ -79,7 +81,7 @@ export function initSubscribeHandlers () {
   registerPlusMessage('subscribeHandler', (data) => {
     subscribeHandler(data.type, data.data, data.pageId)
   })
-
+  // TODO 检测目标 preloadWebview 是否已准备好，因为 preloadWebview 准备好时，此处代码还没执行
   subscribe(WEBVIEW_READY, onWebviewReady)
   subscribe(WEBVIEW_UI_EVENT, onWebviewUIEvent)
 }

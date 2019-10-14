@@ -8,6 +8,7 @@ const {
 } = require('./util')
 
 const parseText = require('./text-parser')
+const parseEvent = require('./event-parser')
 
 const preTransformNode = require('./pre-transform-node')
 
@@ -265,6 +266,8 @@ function processText (el) {
 }
 
 function postTransformNode (el) {
+  parseEvent(el)
+
   removeStatic(el)
   renameBinding(el)
 

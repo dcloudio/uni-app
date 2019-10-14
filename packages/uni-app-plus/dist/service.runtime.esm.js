@@ -6719,7 +6719,7 @@ function updateExtras(oldVnode, vnode) {
 
   if (attrs) {
     for (var key$1 in attrs) {
-      key$1 !== '_i' && $s(id, key$1, attrs[key$1]);
+      key$1 !== '_i' && $s(id, 'a-' + key$1, attrs[key$1]);
     }
   }
   // 存储事件标记
