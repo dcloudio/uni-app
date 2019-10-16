@@ -38,7 +38,8 @@ export function navigateTo ({
       invoke(callbackId, {
         errMsg: 'navigateTo:ok'
       })
-    }
+    },
+    0
   )
 
   setStatusBarStyle()
