@@ -69,9 +69,24 @@ export function chooseImage ({
       tempFilePaths: tempFilePaths,
       tempFiles: tempFiles
     })
-
-    // TODO 用户取消选择时，触发 fail，目前尚未找到合适的方法。
   })
+  
+  // 用户取消选择后，再次产生交互时立刻触发 fail
+  const cancelHandler = function (event) {
+    window.removeEventListener('mousedown', cancelHandler, true)
+    window.removeEventListener('touchstart', cancelHandler, true)
+    if (imageInput) {
+      if (!imageInput.files.length) {
+        invoke(callbackId, {
+          errMsg: 'chooseImage:fail cancel'
+        })
+      }
+      document.body.removeChild(imageInput)
+      imageInput = null
+    }
+  }
+  window.addEventListener('mousedown', cancelHandler, true)
+  window.addEventListener('touchstart', cancelHandler, true)
 
   imageInput.click()
 }
