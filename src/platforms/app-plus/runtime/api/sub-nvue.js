@@ -1,4 +1,6 @@
-import { requireNativePlugin } from './index'
+import {
+  requireNativePlugin
+} from './require-native-plugin'
 
 function wrapper (webview) {
   webview.$processed = true
@@ -22,7 +24,9 @@ function wrapper (webview) {
   }
   const maskColor = webview.__uniapp_mask
   let maskWebview = webview.__uniapp_mask_id === '0' ? {
-    setStyle ({ mask }) {
+    setStyle ({
+      mask
+    }) {
       requireNativePlugin('uni-tabview').setMask({
         color: mask
       })
