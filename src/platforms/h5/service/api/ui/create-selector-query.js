@@ -84,6 +84,7 @@ class SelectorQuery {
   }
 
   ['in'] (component) {
+    // TODO 跨平台，非 h5 平台传递 component._$id
     this._component = component
     return this
   }

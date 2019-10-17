@@ -75,6 +75,7 @@ function getNodeInfo (el, fields) {
 
 function getNodesInfo (pageVm, component, selector, single, fields) {
   /* eslint-disable no-mixed-operators */
+  // TODO 判断 component 是否是 _$id,如果是，从 pageVm 中递归查找该组件实例
   const $el = component && component.$el || pageVm.$el
   if (single) {
     const node = $el && ($el.matches(selector) ? $el : $el.querySelector(selector))
