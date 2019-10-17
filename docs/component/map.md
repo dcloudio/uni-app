@@ -21,6 +21,7 @@
 |controls|Array||控件||
 |include-points|Array||缩放视野以包含所有给定的坐标点|App-nvue 2.1.5+、微信小程序、H5、百度小程序、支付宝小程序|
 |show-location|Boolean||显示带有方向的当前定位点|微信小程序、H5、百度小程序、支付宝小程序|
+|polygons|Array.`<polygon>`||多边形|App-nvue 2.1.5+、微信小程序、百度小程序、支付宝小程序|
 |@markertap|EventHandle||点击标记点时触发|App-nvue 2.3.3+, App平台需要指定 marker 对象属性 id|
 |@callouttap|EventHandle||点击标记点对应的气泡时触发||
 |@controltap|EventHandle||点击控件时触发||
@@ -95,6 +96,16 @@
 |arrowIconPath|更换箭头图标|String|否|在arrowLine为true时生效|App-nvue 2.1.5+、微信小程序、百度小程序|
 |borderColor|线的边框颜色|String|否||App-nvue 2.1.5+、微信小程序、H5、百度小程序|
 |borderWidth|线的厚度|Number|否||App-nvue 2.1.5+、微信小程序、H5、百度小程序|
+
+**polygon**<br>
+指定一系列坐标点，根据 points 坐标数据生成闭合多边形
+
+属性|说明|类型|必填|备注:--|:--|:--|:--|:--|
+points|经纬度数组|array|是|[{latitude: 0, longitude: 0}]
+strokeWidth|描边的宽度|Number|否
+strokeColor|描边的颜色|String|否|十六进制
+fillColor|填充颜色|String|否|十六进制
+zIndex|设置多边形 Z 轴数值|Number|否
 
 **circles**
 
