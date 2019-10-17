@@ -537,8 +537,9 @@ const protocols = {
     }
   },
   requestPayment: {
+    name: tt.canIUse && tt.canIUse('pay') ? 'pay' : 'requestPayment',
     args: {
-      orderInfo: 'data'
+      orderInfo: tt.canIUse && tt.canIUse('pay') ? 'orderInfo' : 'data'
     }
   },
   getFileInfo: {
@@ -630,6 +631,7 @@ function wrapper (methodName, method) {
 const todoApis = Object.create(null);
 
 const TODOS = [
+  'onTabBarMidButtonTap',
   'subscribePush',
   'unsubscribePush',
   'onPush',
