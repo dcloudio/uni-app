@@ -622,6 +622,15 @@
             ]
         ]
     ],
+    "onTabBarMidButtonTap": [
+        "/core/service/api/ui/tab-bar.js",
+        [
+            [
+                "/platforms/h5/service/api/ui/tab-bar.js",
+                "setTabBarBadge"
+            ]
+        ]
+    ],
     "createAnimation": [
         "/core/service/api/ui/create-animation.js",
         []
