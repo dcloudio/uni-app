@@ -41,7 +41,7 @@ describe('codegen', () => {
   it('generate v-for directive', () => {
     assertCodegen(
       '<div><li v-for="item in items" :key="item.uid"></li></div>',
-      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},_l(($r['1']['v-for']),function(item,$i){return _c('v-uni-view',{key:item,attrs:{"_i":("1-"+$i)}})}),1)}`
+      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},_l(($r['1']['v-for']),function(item,$10,$20,$30){return _c('v-uni-view',{key:item,attrs:{"_i":("1-"+$30)}})}),0)}`
     )
     // iterator syntax
     assertCodegen(
@@ -272,7 +272,7 @@ describe('codegen', () => {
     // input + value
     assertCodegen(
       '<input :value="msg">',
-      `with(this){return _c('v-uni-input',{attrs:{"_i":0},domProps:{"value":$r['0']['a-value']}})}`
+      `with(this){return _c('v-uni-input',{attrs:{"value":$r['0']['a-value'],"_i":0}})}`
     )
     // non input
     assertCodegen(

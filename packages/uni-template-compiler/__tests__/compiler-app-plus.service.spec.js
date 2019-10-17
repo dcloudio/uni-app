@@ -41,30 +41,30 @@ describe('codegen', () => {
   it('generate v-for directive', () => {
     assertCodegen(
       '<div><li v-for="item in items" :key="item.uid"></li></div>',
-      `with(this){return _c('div',{attrs:{"_i":0}},_l((items),function(item,$i){return _c('li',{key:_$f(1,{forIndex:$i,key:item.uid}),attrs:{"_i":("1-"+$i)}})}),0)}`
+      `with(this){return _c('div',{attrs:{"_i":0}},_l((_$f(1,{forItems:items})),function(item,$10,$20,$30){return _c('li',{key:_$f(1,{forIndex:$20,key:item.uid}),attrs:{"_i":("1-"+$30)}})}),0)}`
     )
     // iterator syntax
     assertCodegen(
       '<div><li v-for="(item, i) in items"></li></div>',
-      `with(this){return _c('div',{attrs:{"_i":0}},_l((items),function(item,i){return _c('li',{key:_$f(1,{forIndex:i,key:'1-'+i}),attrs:{"_i":("1-"+i)}})}),0)}`
+      `with(this){return _c('div',{attrs:{"_i":0}},_l((_$f(1,{forItems:items})),function(item,i,$20,$30){return _c('li',{key:_$f(1,{forIndex:$20,key:1+'-'+$30}),attrs:{"_i":("1-"+$30)}})}),0)}`
     )
     assertCodegen(
       '<div><li v-for="(item, key, index) in items"></li></div>',
-      `with(this){return _c('div',{attrs:{"_i":0}},_l((items),function(item,key,index){return _c('li',{key:_$f(1,{forIndex:index,key:'1-'+index}),attrs:{"_i":("1-"+index)}})}),0)}`
+      `with(this){return _c('div',{attrs:{"_i":0}},_l((_$f(1,{forItems:items})),function(item,key,index,$30){return _c('li',{key:_$f(1,{forIndex:index,key:1+'-'+$30}),attrs:{"_i":("1-"+$30)}})}),0)}`
     )
     // destructuring
     assertCodegen(
       '<div><li v-for="{ a, b } in items"></li></div>',
-      `with(this){return _c('div',{attrs:{"_i":0}},_l((items),function({ a, b },$i){return _c('li',{key:_$f(1,{forIndex:$i,key:'1-'+$i}),attrs:{"_i":("1-"+$i)}})}),0)}`
+      `with(this){return _c('div',{attrs:{"_i":0}},_l((_$f(1,{forItems:items})),function({ a, b },$10,$20,$30){return _c('li',{key:_$f(1,{forIndex:$20,key:1+'-'+$30}),attrs:{"_i":("1-"+$30)}})}),0)}`
     )
     assertCodegen(
       '<div><li v-for="({ a, b }, key, index) in items"></li></div>',
-      `with(this){return _c('div',{attrs:{"_i":0}},_l((items),function({ a, b },key,index){return _c('li',{key:_$f(1,{forIndex:index,key:'1-'+index}),attrs:{"_i":("1-"+index)}})}),0)}`
+      `with(this){return _c('div',{attrs:{"_i":0}},_l((_$f(1,{forItems:items})),function({ a, b },key,index,$30){return _c('li',{key:_$f(1,{forIndex:index,key:1+'-'+$30}),attrs:{"_i":("1-"+$30)}})}),0)}`
     )
     // v-for with extra element
     assertCodegen(
       '<div><p></p><li v-for="item in items"></li></div>',
-      `with(this){return _c('div',{attrs:{"_i":0}},[_c('p',{attrs:{"_i":1}}),_l((items),function(item,$i){return _c('li',{key:_$f(2,{forIndex:$i,key:'2-'+$i}),attrs:{"_i":("2-"+$i)}})})],2)}`
+      `with(this){return _c('div',{attrs:{"_i":0}},[_c('p',{attrs:{"_i":1}}),_l((_$f(2,{forItems:items})),function(item,$10,$20,$30){return _c('li',{key:_$f(2,{forIndex:$20,key:2+'-'+$30}),attrs:{"_i":("2-"+$30)}})})],2)}`
     )
   })
 
@@ -113,7 +113,7 @@ describe('codegen', () => {
   it('generate ref on v-for', () => {
     assertCodegen(
       '<ul><li v-for="item in items" ref="component1"></li></ul>',
-      `with(this){return _c('ul',{attrs:{"_i":0}},_l((items),function(item,$i){return _c('li',{key:_$f(1,{forIndex:$i,key:'1-'+$i}),ref:"component1",refInFor:true,attrs:{"_i":("1-"+$i)}})}),0)}`
+      `with(this){return _c('ul',{attrs:{"_i":0}},_l((_$f(1,{forItems:items})),function(item,$10,$20,$30){return _c('li',{key:_$f(1,{forIndex:$20,key:1+'-'+$30}),ref:"component1",refInFor:true,attrs:{"_i":("1-"+$30)}})}),0)}`
     )
   })
 
@@ -625,7 +625,7 @@ describe('codegen', () => {
     // normalize type: 2
     assertCodegen(
       '<div><child></child><template v-for="item in list">{{ item }}</template></div>',
-      `with(this){return _c('div',{attrs:{"_i":0}},[_c('child',{attrs:{"_i":1}}),_l((list),function(item,$i){return [_c('text',{key:_$f(2,{forIndex:$i,keyIndex:0,key:'2-0-'+$i}),extras:{t0:_s(item)},attrs:{"_i":("2-"+$i)}})]})],2)}`
+      `with(this){return _c('div',{attrs:{"_i":0}},[_c('child',{attrs:{"_i":1}}),_l((_$f(2,{forItems:list})),function(item,$i){return [_c('text',{key:_$f(2,{forIndex:$i,keyIndex:0,key:'2-0-'+$i}),extras:{t0:_s(item)},attrs:{"_i":("2-"+$i)}})]})],2)}`
     )
   })
 

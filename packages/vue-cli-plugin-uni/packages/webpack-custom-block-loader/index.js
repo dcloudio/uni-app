@@ -14,8 +14,7 @@ const {
 
 const FILTER_TAG = getPlatformFilterTag()
 
-module.exports = function(source) {
-
+module.exports = function (source) {
   const loaderContext = this
 
   const {
@@ -37,11 +36,6 @@ module.exports = function(source) {
     sourceRoot,
     needMap: sourceMap
   })
-
-  if (options.isAppService) { // 移除 styles
-    descriptor.styles.length = 0
-    return source
-  }
 
   if (!descriptor.template || !FILTER_TAG) {
     // delete customBlocks

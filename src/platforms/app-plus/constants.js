@@ -8,3 +8,4 @@ export const APP_SERVICE_ID = '__uniapp__service'
 
 export const WEBVIEW_READY = 'webviewReady'
 export const WEBVIEW_UI_EVENT = 'webviewUIEvent'
+export const VD_SYNC_CALLBACK = 'vdSyncCallback'

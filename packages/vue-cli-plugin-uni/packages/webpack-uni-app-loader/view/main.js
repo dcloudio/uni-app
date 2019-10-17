@@ -3,8 +3,6 @@ const path = require('path')
 const hash = require('hash-sum')
 const loaderUtils = require('loader-utils')
 
-const parser = require('@babel/parser')
-
 const {
   parse
 } = require(require.resolve('@vue/component-compiler-utils', {
@@ -13,29 +11,13 @@ const {
 
 const traverse = require('@dcloudio/webpack-uni-mp-loader/lib/babel/global-component-traverse')
 
-const genStylesCode = require('../vue-loader/lib/codegen/styleInjection')
+const genStylesCode = require('../../vue-loader/lib/codegen/styleInjection')
 
-function parseComponents(content) {
-  const {
-    state: {
-      components
-    }
-  } = traverse(parser.parse(content, {
-    sourceType: 'module',
-    plugins: [
-      'typescript',
-      ['decorators', {
-        decoratorsBeforeExport: true
-      }],
-      'classProperties'
-    ]
-  }), {
-    components: []
-  })
-  return components
-}
+const {
+  parseComponents
+} = require('./util')
 
-function getDefineComponents(components) {
+function getDefineComponents (components) {
   return components.map(({
     name,
     source
@@ -44,7 +26,7 @@ function getDefineComponents(components) {
 
 const appVueFilePath = path.resolve(process.env.UNI_INPUT_DIR, 'app.vue')
 
-function getStylesCode(loaderContext) {
+function getStylesCode (loaderContext) {
   if (!fs.existsSync(appVueFilePath)) {
     return
   }
@@ -89,9 +71,9 @@ function getStylesCode(loaderContext) {
     const needsHotReload = false
 
     const id = hash(
-      isProduction ?
-      (shortFilePath + '\n' + source) :
-      shortFilePath
+      isProduction
+        ? (shortFilePath + '\n' + source)
+        : shortFilePath
     )
 
     stylesCode = genStylesCode(
@@ -104,14 +86,14 @@ function getStylesCode(loaderContext) {
       isServer || isShadow // needs explicit injection?
     )
   }
-  return stylesCode.replace(/main\.js/g,'App.vue')
+  return stylesCode.replace(/main\.js/g, 'App.vue')
 }
 
-module.exports = function(source, map) {
+module.exports = function (source, map) {
   // 解析自定义组件，及 App 样式
   return `import 'uni-pages'
 ${getStylesCode(this)}
-${getDefineComponents(parseComponents(source)).join('\n')}
+${getDefineComponents(parseComponents(source, traverse)).join('\n')}
 UniViewJSBridge.publishHandler('webviewReady')
 `
 }

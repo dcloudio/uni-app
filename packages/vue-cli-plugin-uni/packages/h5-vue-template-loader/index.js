@@ -1,8 +1,6 @@
-const path = require('path')
-
 const loaderUtils = require('loader-utils')
 
-module.exports = function(content) {
+module.exports = function (content) {
   this.cacheable && this.cacheable()
 
   const vueLoaderOptions = this.loaders[0]

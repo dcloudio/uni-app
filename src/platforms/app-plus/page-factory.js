@@ -12,7 +12,7 @@ export const getPageVueComponent = cached(function (pagePath) {
   return pageFactory[pagePath]()
 })
 
-export function createPage (pagePath, pageId) {
+export function createPage (pagePath, pageId, pageQuery, pageInstance) {
   if (!pageFactory[pagePath]) {
     console.error(`${pagePath} not found`)
   }
@@ -20,7 +20,9 @@ export function createPage (pagePath, pageId) {
   const pageVm = new (getPageVueComponent(pagePath))({
     mpType: 'page',
     pageId,
-    pagePath
+    pagePath,
+    pageQuery,
+    pageInstance
   })
   if (process.env.NODE_ENV !== 'production') {
     console.log(`new ${pagePath}`, Date.now() - startTime)

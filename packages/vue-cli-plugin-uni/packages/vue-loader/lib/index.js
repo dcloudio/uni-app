@@ -122,7 +122,7 @@ module.exports = function (source) {
 
   // script
   let scriptImport = `var script = {}`
-  if (descriptor.script) {
+  if (descriptor.script) {// fixed by xxxxxx view 层的 script 在 script-loader 中提取自定义组件信息
     const src = descriptor.script.src || resourcePath
     const attrsQuery = attrsToQuery(descriptor.script.attrs, 'js')
     const query = `?vue&type=script${attrsQuery}${inheritQuery}`
@@ -135,7 +135,7 @@ module.exports = function (source) {
 
   // styles
   let stylesCode = ``
-  if (options.isAppView && descriptor.styles.length) {
+  if (options.isAppView && descriptor.styles.length) {// fixed by xxxxxx 仅限 view 层
     stylesCode = genStylesCode(
       loaderContext,
       descriptor.styles,

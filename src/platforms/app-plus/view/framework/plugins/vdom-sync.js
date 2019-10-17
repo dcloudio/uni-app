@@ -19,7 +19,7 @@ export class VDomSync {
   }
 
   initVm (vm) {
-    const [nodeId, data] = this.addVDatas.pop()
+    const [nodeId, data] = this.addVDatas.shift()
     if (!nodeId) {
       vm._$id = guid()
       console.error('nodeId unmatched', vm)
@@ -37,7 +37,10 @@ export class VDomSync {
       if (!vm) {
         return console.error(`Not found ${nodeId}`)
       }
-      Object.assign(vm.$r, data)
+      Object.keys(data).forEach(nodeId => {
+        Object.assign((vm.$r[nodeId] || (vm.$r[nodeId] = Object.create(null))), data[nodeId])
+      })
+
       vm.$forceUpdate()
     })
     this.updateVDatas.length = 0

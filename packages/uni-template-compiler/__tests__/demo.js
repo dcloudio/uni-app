@@ -1,7 +1,14 @@
 const compiler = require('../lib')
 const res = compiler.compile(
   `
-<p slot="one">{{hello}}</p>
+<div>
+<view v-for="(item, index) in list" :key="index">
+<view ref="add" class="warp" @change="change">
+<view v-for="(sub, key) in item.data">
+</view>
+</view>
+</view>
+</div>
     `, {
     resourcePath: '/User/fxy/Documents/test.wxml',
     isReservedTag: function (tag) {
@@ -13,7 +20,7 @@ const res = compiler.compile(
     mp: {
       platform: 'app-plus'
     },
-    // service: true
+    // service: true,
     view: true
   })
 console.log(require('util').inspect(res, {

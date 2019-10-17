@@ -84,6 +84,9 @@ export function registerPage ({
       const index = pages.findIndex(page => page === this)
       if (index !== -1) {
         pages.splice(index, 1)
+        if (!webview.nvue) {
+          this.$vm.$destroy()
+        }
         if (process.env.NODE_ENV !== 'production') {
           console.log(`[uni-app] removePage`, path, webview.id)
         }
@@ -115,9 +118,7 @@ export function registerPage ({
         }
       }, [pageId])
 
-      pageInstance.$vm = createPage(route, pageId)
-      pageInstance.$vm.$scope = pageInstance
-      pageInstance.$vm.$mount()
+      createPage(route, pageId, query, pageInstance).$mount()
     }
   }
 

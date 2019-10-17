@@ -34,19 +34,29 @@ const v3 = {
     // disable noEmitOnErrors
     webpackConfig.optimization.noEmitOnErrors = false
 
-    const externals = {}
-    if (isAppService) { // service 层需要编译时注入 vue 内核
+    if (isAppService) {
       webpackConfig.optimization.runtimeChunk = {
         name: 'app-config'
       }
     } else if (isAppView) {
-      externals['vue'] = 'Vue'
       webpackConfig.optimization.runtimeChunk = false
     }
 
     webpackConfig.optimization.splitChunks = false
 
     let devtool = false
+
+    const rules = []
+
+    if (isAppView) {
+      rules.push({ // 解析组件，css 等
+        resourceQuery: /vue&type=script/,
+        use: [{
+          loader: path.resolve(__dirname,
+            '../../packages/webpack-uni-app-loader/view/script')
+        }]
+      })
+    }
 
     return {
       devtool,
@@ -84,7 +94,7 @@ const v3 = {
           test: path.resolve(process.env.UNI_INPUT_DIR, getMainEntry()),
           use: [{
             loader: isAppService ? 'wrap-loader' : path.resolve(__dirname,
-              '../../packages/webpack-uni-view-main-loader'),
+              '../../packages/webpack-uni-app-loader/view/main.js'),
             options: {
               compiler: getPlatformCompiler(),
               before: [
@@ -92,7 +102,9 @@ const v3 = {
               ]
             }
           }]
-        }]
+        },
+        ...rules
+        ]
       },
       plugins: [
         new webpack.ProvidePlugin(getProvides())
@@ -114,9 +126,10 @@ const v3 = {
     webpackConfig.module
       .rule('vue')
       .test([/\.vue$/, /\.nvue$/])
-      .use('vue-loader')//  service 层移除 style 节点，view 层返回固定 script
+      .use('vue-loader') //  service 层移除 style 节点，view 层返回固定 script
       .loader(path.resolve(__dirname, '../../packages/vue-loader/lib'))
       .tap(options => Object.assign(options, {
+        isAppService,
         isAppView,
         compiler: getPlatformCompiler(),
         compilerOptions,
@@ -132,6 +145,11 @@ const v3 = {
     // .options({
     //   compiler: getPlatformCompiler()
     // })
+    if (isAppView) {
+      if (process.env.NODE_ENV === 'production') {
+        require('../h5/cssnano-options')(webpackConfig)
+      }
+    }
 
     webpackConfig.plugins.delete('hmr')
     webpackConfig.plugins.delete('html')

@@ -23,6 +23,10 @@ describe('codegen', () => {
       '<div><template v-for="item in items"><div></div><div></div></template></div>',
       `with(this){return _c('v-uni-view',{attrs:{"_i":0}},[_l(($r['1']['v-for']),function(item,$i){return [_c('v-uni-view',{key:item['k0'],attrs:{"_i":("2-"+$i)}}),_c('v-uni-view',{key:item['k1'],attrs:{"_i":("3-"+$i)}})]})],2)}`
     )
+    assertCodegen(
+      '<div><template v-for="item in items"><span v-if="item.sub"></span></template></div>',
+      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},[_l(($r['1']['v-for']),function(item,$i){return [($r[("2-"+$i)]['v-if'])?_c('v-uni-label',{key:item['k0'],attrs:{"_i":("2-"+$i)}}):_e()]})],2)}`
+    )
   })
   it('generate events with multiple statements', () => {
     assertCodegen(

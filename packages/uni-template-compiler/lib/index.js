@@ -8,7 +8,7 @@ const {
   compileToFunctions,
   ssrCompile,
   ssrCompileToFunctions
-} = require('vue-template-compiler')
+} = require('../../vue-cli-plugin-uni/packages/vue-template-compiler')
 
 const platforms = require('./platforms')
 const traverseScript = require('./script/traverse')

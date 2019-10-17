@@ -25,7 +25,7 @@ if (process.env.UNI_USING_V3) {
     return selectorParser(transformer).processSync(complexSelector)
   }
 
-  const parseWord = function(node, opts) {
+  const parseWord = function (node, opts) {
     const pair = unit(node.value)
     if (pair) {
       const num = Number(pair.number)
@@ -51,13 +51,13 @@ if (process.env.UNI_USING_V3) {
     }
   }
 
-  const isInsideKeyframes = function(rule) {
+  const isInsideKeyframes = function (rule) {
     return (
       rule.parent && rule.parent.type === 'atrule' && /^(-\w+-)?keyframes$/.test(rule.parent.name)
     )
   }
 
-  const tranformValue = function(decl, opts) {
+  const tranformValue = function (decl, opts) {
     return valueParser(decl.value)
       .walk(node => {
         if (node.type === 'word') {
@@ -154,12 +154,12 @@ if (process.env.UNI_USING_V3) {
    * 转换 upx
    * 转换 px
    */
-  module.exports = postcss.plugin('postcss-uniapp-plugin', function(opts) {
+  module.exports = postcss.plugin('postcss-uniapp-plugin', function (opts) {
     opts = {
       ...defaultOpts,
       ...opts
     }
-    return function(root, result) {
+    return function (root, result) {
       if (process.env.UNI_PLATFORM === 'h5') {
         // Transform CSS AST here
 
@@ -181,7 +181,7 @@ if (process.env.UNI_USING_V3) {
                     tag.value = 'uni-page-body'
                     hasPage = true
                   } else if (~TAGS.indexOf(tag.value) && tag.value.substring(
-                      0, 4) !== 'uni-') {
+                    0, 4) !== 'uni-') {
                     tag.value = 'uni-' + tag.value
                   }
                 })
@@ -209,7 +209,7 @@ if (process.env.UNI_USING_V3) {
         }
       } else {
         root.walkRules(rule => {
-          const selectors = transformSelector(rule.selectors.join(','), function(selectors) {
+          const selectors = transformSelector(rule.selectors.join(','), function (selectors) {
             selectors.walkUniversals(node => {
               node.parent.remove()
             })
@@ -240,8 +240,8 @@ if (process.env.UNI_USING_V3) {
                 const k = tag.value
                 const v = CSS_TAGS[k]
                 if (v) {
-                  tag.value = v === 'r' ?
-                    `._${k}` : v
+                  tag.value = v === 'r'
+                    ? `._${k}` : v
                 }
               })
             })

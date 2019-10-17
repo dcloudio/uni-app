@@ -1,4 +1,4 @@
-export function restoreGlobal(
+export function restoreGlobal (
   newWeex,
   newPlus,
   newSetTimeout,

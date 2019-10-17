@@ -4,19 +4,23 @@ const {
   isVar,
   getForEl,
   processForKey,
-  updateForEleId
+  updateForEleId,
+  traverseNode
 } = require('./util')
 
 const {
   isComponent
 } = require('../util')
 
-const parseText = require('./text-parser')
-const parseEvent = require('./event-parser')
+const parseText = require('./parser/text-parser')
+const parseEvent = require('./parser/event-parser')
+const parseBlock = require('./parser/block-parser')
 
 const preTransformNode = require('./pre-transform-node')
 
 function genData (el) {
+  delete el.$parentIterator3
+
   const {
     events,
     dynamicClass,
@@ -130,14 +134,6 @@ function processIfConditions (el) {
     })
     el.if = `_$i(${el.attrsMap[ID]},${el.if})`
   }
-
-  el.children && el.children.forEach(child => {
-    processIfConditions(child)
-  })
-
-  el.scopedSlots && Object.values(el.scopedSlots).forEach(child => {
-    processIfConditions(child)
-  })
 }
 
 function removeStatic (el) {
@@ -162,8 +158,10 @@ function processKey (el) {
   if (processForKey(el)) {
     el = el.children[0] // 当 template 下仅文本时，处理第一个动态文本
   }
-
-  if (el.key) { // renderList key
+  if (el.key && (
+    el.key.indexOf('_$f') !== 0 &&
+      el.key.indexOf('_$s') !== 0
+  )) { // renderList key
     const forEl = getForEl(el)
     if (forEl) {
       if (!isVar(forEl.for)) {
@@ -184,8 +182,7 @@ function processKey (el) {
 }
 
 function processIf (el) {
-  // 因为时机问题，在最后处理根节点时，遍历处理 ifConditions
-  !el.parent && processIfConditions(el)
+  processIfConditions(el)
 }
 
 function processDirs (el) {
@@ -226,7 +223,8 @@ function processDynamicText (el, state) {
   el.hasBindings = true
 
   if (el.text) {
-    const ret = parseText(el.text, false, state)
+    // fixed by xxxxxx 注意：保持平台一致性，trim 一下
+    const ret = parseText(el.text.trim(), false, state)
     if (ret && ret.dynamicTexts.length) {
       el.dynamicTexts = ret.dynamicTexts
     }
@@ -274,7 +272,14 @@ function processAttrs (el) {
   }
 }
 
-function postTransformNode (el) {
+function processFor (el) {
+  if (el.for && isVar(el.for)) {
+    el.for = `_$f(${el.forId},{forItems:${el.for}})`
+  }
+}
+
+function transformNode (el, parent, state) {
+  parseBlock(el)
   parseEvent(el)
 
   removeStatic(el)
@@ -283,13 +288,22 @@ function postTransformNode (el) {
   processAttrs(el)
   processText(el)
 
-  updateForEleId(el)
+  updateForEleId(el, state)
 
+  processFor(el)
   processKey(el)
   processIf(el)
   processDirs(el)
 }
 
+function postTransformNode (el) {
+  if (!el.parent) { // 从根节点开始递归处理
+    traverseNode(el, false, {
+      forIteratorId: 0,
+      transformNode
+    })
+  }
+}
 module.exports = {
   preTransformNode,
   postTransformNode,

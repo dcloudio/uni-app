@@ -13,8 +13,7 @@ function diffObject (id, newObj, oldObj, result) {
   }
 }
 
-export function diff (newData, oldData) {
-  const result = Object.create(null)
+export function diff (newData, oldData, result) {
   let id, cur, old
   for (id in newData) {
     cur = newData[id]

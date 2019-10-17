@@ -1,8 +1,16 @@
+import Vue from 'vue'
+
+import {
+  hasOwn
+}
+  from 'uni-shared'
+
 import {
   PAGE_CREATE,
   MOUNTED_DATA,
   UPDATED_DATA,
-  PAGE_CREATED
+  PAGE_CREATED,
+  VD_SYNC_CALLBACK
 } from '../../../constants'
 
 import {
@@ -24,6 +32,7 @@ let PageVueComponent
 const handleData = {
   [PAGE_CREATE]: function onPageCreate (data) {
     const [pageId, pagePath] = data
+    document.title = `${pagePath}[${pageId}]`
     // 设置当前页面伪对象，方便其他地方使用 getCurrentPages 获取当前页面 id，route
     setCurrentPage(pageId, pagePath)
     // 初始化当前页面 VueComponent（生成页面样式代码）
@@ -51,13 +60,36 @@ function vdSync ({
   data,
   options
 }) {
+  let isVdCallback = true
   data.forEach(data => {
+    if (data[0] === PAGE_CREATE) { // 页面创建无需触发 callback
+      isVdCallback = false
+    }
     handleData[data[0]](data[1])
   })
   vd.flush()
+  isVdCallback && Vue.nextTick(() => {
+    UniViewJSBridge.publishHandler(VD_SYNC_CALLBACK)
+  })
+}
+
+function getData (id, name, isFallbackContent = false) {
+  const root = this.$r
+  if (hasOwn(root, id)) {
+    const vNodeData = root[id]
+    if (hasOwn(vNodeData, name)) {
+      return vNodeData[name]
+    } else {
+      !isFallbackContent && console.error(this.$options.__file + `:[${this._$id}]$r[${id}][${name}] is undefined`)
+    }
+  } else {
+    !isFallbackContent && console.error(this.$options.__file + `:[${this._$id}]$r[${id}] is undefined`)
+  }
 }
 
 export function initData (Vue) {
+  Vue.prototype._$g = getData
+
   UniViewJSBridge.subscribe('vdSync', vdSync)
 
   Object.defineProperty(Vue.prototype, '_$vd', {

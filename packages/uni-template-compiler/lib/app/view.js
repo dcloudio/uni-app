@@ -4,22 +4,22 @@ const {
   isVar,
   getForEl,
   updateForEleId,
-  processForKey
+  processForKey,
+  traverseNode
 } = require('./util')
 
-const parseTag = require('./tag-parser')
-const parseText = require('./text-parser')
-const parseEvent = require('./event-parser')
-const parseComponent = require('./component-parser')
+const parseTag = require('./parser/tag-parser')
+const parseText = require('./parser/text-parser')
+const parseEvent = require('./parser/event-parser')
+const parseBlock = require('./parser/block-parser')
+const parseComponent = require('./parser/component-parser')
 
-const preTransformNode = require('./pre-transform-node')
+const basePreTransformNode = require('./pre-transform-node')
 
 function createGenVar (id) {
   return function genVar (name, extra = '') {
-    if (/^\d+$/.test(id)) {
-      return `${DATA_ROOT}['${id}']['${name}']${extra}`
-    }
-    return `${DATA_ROOT}[${id}]['${name}']${extra}`
+    extra = extra ? (',' + extra) : ''
+    return `${DATA_ROOT}(${id},'${name}'${extra})`
   }
 }
 
@@ -34,14 +34,6 @@ function processIfConditions (el) {
 
     el.if = createGenVar(el.attrsMap[ID])('v-if')
   }
-
-  el.children && el.children.forEach(child => {
-    processIfConditions(child)
-  })
-
-  el.scopedSlots && Object.values(el.scopedSlots).forEach(child => {
-    processIfConditions(child)
-  })
 }
 
 function processBinding (el, genVar) {
@@ -62,14 +54,6 @@ function processFor (el, genVal) {
     // <div><li v-for="$item in items"></li></div>
     if (el.alias[0] === '{') {
       el.alias = '$item'
-    }
-    // items 只有两种格式 [1,2,3],[{k0:'1-0',k1:'1-1'}]
-    // <div><li v-for="(item,key,index) in items"></li></div>
-    // =>
-    // <div><li v-for="(item,index) in items"></li></div>
-    if (el.iterator2) {
-      el.iterator1 = el.iterator2
-      delete el.iterator2
     }
   }
 }
@@ -97,8 +81,7 @@ function processKey (el) {
 }
 
 function processIf (el) {
-  // 因为时机问题，在最后处理根节点时，遍历处理 ifConditions
-  !el.parent && processIfConditions(el)
+  processIfConditions(el)
 }
 
 function processDirs (el, genVar) {
@@ -128,12 +111,16 @@ function processText (el, parent) {
     view: true,
     genVar: createGenVar(parent.attrsMap[ID])
   }
-  el.expression = parseText(el.text, false, state).expression
+  // fixed by xxxxxx 注意：保持平台一致性，trim 一下
+  el.expression = parseText(el.text.trim(), false, state).expression
 }
 
-function transformNode (el, parent) {
+function transformNode (el, parent, state) {
+  parseBlock(el)
+  parseComponent(el)
+  parseEvent(el)
   // 更新 id
-  updateForEleId(el)
+  updateForEleId(el, state)
 
   if (el.type !== 1) {
     return (el.type === 2 && processText(el, parent))
@@ -151,20 +138,12 @@ function transformNode (el, parent) {
   processProps(el, genVar)
 }
 
-function traverseNode (el, parent) {
-  transformNode(el, parent)
-  el.children && el.children.forEach(child => traverseNode(child, el))
-  el.scopedSlots && Object.values(el.scopedSlots).forEach(slot => traverseNode(slot, el))
-}
-
 function postTransformNode (el) {
-  // 需要提前处理的内容
-  parseComponent(el)
-  parseTag(el)
-  parseEvent(el)
-
   if (!el.parent) { // 从根节点开始递归处理
-    traverseNode(el)
+    traverseNode(el, false, {
+      forIteratorId: 0,
+      transformNode
+    })
   }
 }
 
@@ -207,6 +186,8 @@ function processEvents (events) {
 }
 
 function genData (el) {
+  delete el.$parentIterator3
+
   if (el.model) {
     el.model.callback = `function ($$v) {}`
   }
@@ -219,7 +200,10 @@ function genData (el) {
 }
 
 module.exports = {
-  preTransformNode,
+  preTransformNode: function (el, options) {
+    parseTag(el)
+    return basePreTransformNode(el, options)
+  },
   postTransformNode,
   genData
 }

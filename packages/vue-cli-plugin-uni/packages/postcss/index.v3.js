@@ -6,13 +6,13 @@ const TAGS = Object.keys(require('@dcloudio/uni-cli-shared').tags)
 const transformSelector = (complexSelector, transformer) => {
   return selectorParser(transformer).processSync(complexSelector)
 }
-const isInsideKeyframes = function(rule) {
+const isInsideKeyframes = function (rule) {
   return (
     rule.parent && rule.parent.type === 'atrule' && /^(-\w+-)?keyframes$/.test(rule.parent.name)
   )
 }
-module.exports = postcss.plugin('postcss-uniapp-plugin', function(opts) {
-  return function(root, result) {
+module.exports = postcss.plugin('postcss-uniapp-plugin', function (opts) {
+  return function (root, result) {
     root.walkRules(rule => {
       // Transform each rule here
       if (!isInsideKeyframes(rule)) {
@@ -27,7 +27,7 @@ module.exports = postcss.plugin('postcss-uniapp-plugin', function(opts) {
               if (tag.value === 'page') {
                 tag.value = 'body'
               } else if (~TAGS.indexOf(tag.value) && tag.value.substring(
-                  0, 4) !== 'uni-') {
+                0, 4) !== 'uni-') {
                 tag.value = 'uni-' + tag.value
               }
             })
