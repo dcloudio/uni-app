@@ -84,7 +84,10 @@ const getPlatformName = () => {
 const getPackName = () => {
   let packName = '';
   if (getPlatformName() === 'wx' || getPlatformName() === 'qq') {
-    packName = uni.getAccountInfoSync().miniProgram.appId || '';
+    // 兼容微信小程序低版本基础库
+    if(uni.canIUse('getAccountInfoSync')){
+      packName = uni.getAccountInfoSync().miniProgram.appId || '';
+    }
   }
   return packName
 };
@@ -696,7 +699,7 @@ class Stat extends Util {
     super();
     this.instance = null;
     // 注册拦截器
-    if (typeof uni.addInterceptor === 'function') {
+    if (typeof uni.addInterceptor === 'function' && process.env.NODE_ENV !== 'development') {
       this.addInterceptorInit();
       this.interceptLogin();
       this.interceptShare(true);

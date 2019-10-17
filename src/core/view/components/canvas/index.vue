@@ -21,6 +21,7 @@ import {
 } from 'uni-mixins'
 
 import {
+  pixelRatio,
   wrapper
 } from 'uni-helpers/hidpi'
 
@@ -106,16 +107,8 @@ export default {
         method(data)
       }
     },
-    _resize ({
-      width,
-      height
-    }) {
-      var canvas = this.$refs.canvas
-      if (canvas.style.width !== (width + 'px') || canvas.style.height !== (height + 'px')) {
-        canvas.width = width
-        canvas.height = height
-        wrapper(canvas)
-      }
+    _resize () {
+      wrapper(this.$refs.canvas)
     },
     _touchmove (event) {
       event.preventDefault()
@@ -381,22 +374,44 @@ export default {
       }
     },
     getImageData ({
-      x,
-      y,
+      x = 0,
+      y = 0,
       width,
       height,
+      destWidth,
+      destHeight,
+      hidpi = true,
       callbackId
     }) {
       var imgData
       var canvas = this.$refs.canvas
       if (!width) {
-        width = canvas.width
+        width = canvas.offsetWidth - x
       }
       if (!height) {
-        height = canvas.height
+        height = canvas.offsetHeight - y
       }
       try {
-        imgData = canvas.getContext('2d').getImageData(x, y, width, height)
+        const newCanvas = document.createElement('canvas')
+        if (!hidpi) {
+          if (!destWidth && !destHeight) {
+            destWidth = Math.round(width * pixelRatio)
+            destHeight = Math.round(height * pixelRatio)
+          } else if (!destWidth) {
+            destWidth = Math.round(width / height * destHeight)
+          } else if (!destHeight) {
+            destHeight = Math.round(height / width * destWidth)
+          }
+        } else {
+          destWidth = width
+          destHeight = height
+        }
+        newCanvas.width = destWidth
+        newCanvas.height = destHeight
+        const context = newCanvas.getContext('2d')
+        context.__hidpi__ = true
+        context.drawImageByCanvas(canvas, x, y, width, height, 0, 0, destWidth, destHeight, false)
+        imgData = context.getImageData(0, 0, destWidth, destHeight)
       } catch (error) {
         UniViewJSBridge.publishHandler('onCanvasMethodCallback', {
           callbackId,
@@ -411,8 +426,8 @@ export default {
         data: {
           errMsg: 'canvasGetImageData:ok',
           data: [...imgData.data],
-          width,
-          height
+          width: destWidth,
+          height: destHeight
         }
       }, this.$page.id)
     },
@@ -428,8 +443,12 @@ export default {
         if (!height) {
           height = Math.round(data.length / 4 / width)
         }
-        this.$refs.canvas.getContext('2d').putImageData(new ImageData(new Uint8ClampedArray(data), width,
-          height), x, y)
+        const canvas = document.createElement('canvas')
+        canvas.width = width
+        canvas.height = height
+        const context = canvas.getContext('2d')
+        context.putImageData(new ImageData(new Uint8ClampedArray(data), width, height), 0, 0)
+        this.$refs.canvas.getContext('2d').drawImage(canvas, x, y, width, height)
       } catch (error) {
         UniViewJSBridge.publishHandler('onCanvasMethodCallback', {
           callbackId,

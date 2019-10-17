@@ -20,6 +20,7 @@ module.exports = {
   transpileDependencies: [],
   productionSourceMap: false,
   configureWebpack: webpackConfig,
+  parallel: process.env.UNI_PLATFORM !== 'h5' || process.env.UNI_WATCH !== 'false' || process.env.UNI_UI === 'true',
   chainWebpack: config => {
     config.devtool('source-map')
 

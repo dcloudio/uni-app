@@ -5,7 +5,8 @@ import {
 } from './util'
 
 import {
-  setStatusBarStyle
+  setStatusBarStyle,
+  invoke
 } from '../../bridge'
 
 import tabBar from '../../../../app-plus/service/framework/tab-bar'
@@ -13,7 +14,7 @@ import tabBar from '../../../../app-plus/service/framework/tab-bar'
 export function switchTab ({
   url,
   from
-}) {
+}, callbackId) {
   const path = url.split('?')[0]
 
   tabBar.switchTab(path.slice(1))
@@ -31,11 +32,14 @@ export function switchTab ({
         }
       })
       currentPage.$remove()
-      if (currentPage.$page.openType === 'redirect') {
-        currentPage.$getAppWebview().close(ANI_CLOSE, ANI_DURATION)
-      } else {
-        currentPage.$getAppWebview().close('auto')
-      }
+      // 延迟执行避免iOS应用退出
+      setTimeout(() => {
+        if (currentPage.$page.openType === 'redirect') {
+          currentPage.$getAppWebview().close(ANI_CLOSE, ANI_DURATION)
+        } else {
+          currentPage.$getAppWebview().close('auto')
+        }
+      }, 100)
     } else {
       // 前一个 tabBar 触发 onHide
       currentPage.$vm.__call_hook('onHide')
@@ -59,14 +63,20 @@ export function switchTab ({
     tabBarPage.$vm.__call_hook('onShow')
     tabBarPage.$getAppWebview().show('none')
   } else {
-    showWebview(
-      __registerPage({
-        path,
-        query: {},
-        openType: 'switchTab'
+    showWebview(__registerPage({
+      path,
+      query: {},
+      openType: 'switchTab'
+    }), 'none', 0, () => {
+      invoke(callbackId, {
+        errMsg: 'switchTab:ok'
       })
-    )
+    }, 70)
+    return
   }
 
   setStatusBarStyle()
+  return {
+    errMsg: 'switchTab:ok'
+  }
 }

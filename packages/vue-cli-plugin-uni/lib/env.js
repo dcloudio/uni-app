@@ -179,7 +179,10 @@ const warningMsg =
 
 const needWarning = !platformOptions.usingComponents || usingComponentsAbsent
 // 输出编译器版本等信息
-if (process.env.UNI_PLATFORM !== 'h5') {
+if (process.env.UNI_USING_NATIVE) {
+  console.log('当前nvue编译模式：' + (isNVueCompiler ? 'uni-app' : 'weex') +
+    ' 。编译模式差异见：https://ask.dcloud.net.cn/article/36074')
+} else if (process.env.UNI_PLATFORM !== 'h5') {
   try {
     const modeText = '当前项目编译模式：' +
       (platformOptions.usingComponents ? '自定义组件模式' : '非自定义组件模式') +
