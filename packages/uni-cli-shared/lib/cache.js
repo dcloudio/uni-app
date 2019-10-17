@@ -53,21 +53,30 @@ function getChangedJsonFileMap (clear = true) {
 }
 
 function updateAppJson (name, jsonObj) {
-  updateComponentJson(name, jsonObj)
+  updateComponentJson(name, jsonObj, true, 'App')
 }
 
 function updatePageJson (name, jsonObj) {
   pageSet.add(name)
-  updateComponentJson(name, jsonObj)
+  updateComponentJson(name, jsonObj, true, 'Page')
 }
 
 function updateProjectJson (name, jsonObj) {
-  updateComponentJson(name, jsonObj, false)
+  updateComponentJson(name, jsonObj, false, 'Project')
 }
 
 const supportGlobalUsingComponents = process.env.UNI_PLATFORM === 'mp-weixin' || process.env.UNI_PLATFORM === 'mp-qq'
 
-function updateComponentJson (name, jsonObj, usingComponents = true) {
+function updateComponentJson (name, jsonObj, usingComponents = true, type = 'Component') {
+  if (type === 'Component') {
+    jsonObj.component = true
+  }
+  if (type === 'Page') {
+    if (process.env.UNI_PLATFORM === 'mp-baidu') {
+      jsonObj.component = true
+    }
+  }
+
   const oldJsonStr = getJsonFile(name)
   if (oldJsonStr) { // update
     if (usingComponents) { // merge usingComponents

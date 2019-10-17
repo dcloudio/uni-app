@@ -11478,6 +11478,8 @@ Scroller.prototype.isScrolling = function () {
         if (n.onTouchStart) {
           n.onTouchStart();
         }
+
+        event.preventDefault();
       }
     },
     _handleTouchMove: function _handleTouchMove(event) {
@@ -21370,6 +21372,26 @@ var Spring = __webpack_require__(42);
 
 
 
+
+function onClick(dom, callback) {
+  var MAX_MOVE = 20;
+  var hasTouchSupport = navigator.maxTouchPoints;
+  var x = 0;
+  var y = 0;
+  dom.addEventListener(hasTouchSupport ? 'touchstart' : 'mousedown', function (event) {
+    var info = hasTouchSupport ? event.changedTouches[0] : event;
+    x = info.clientX;
+    y = info.clientY;
+  });
+  dom.addEventListener(hasTouchSupport ? 'touchend' : 'mouseup', function (event) {
+    var info = hasTouchSupport ? event.changedTouches[0] : event;
+
+    if (Math.abs(info.clientX - x) < MAX_MOVE && Math.abs(info.clientY - y) < MAX_MOVE) {
+      callback(info);
+    }
+  });
+}
+
 /* harmony default export */ var picker_view_columnvue_type_script_lang_js_ = ({
   name: 'PickerViewColumn',
   mixins: [touchtrack["a" /* default */], scroller["a" /* default */]],
@@ -21416,7 +21438,8 @@ var Spring = __webpack_require__(42);
     this.indicatorStyle = $parent.indicatorStyle;
     this.indicatorClass = $parent.indicatorClass;
     this.maskStyle = $parent.maskStyle;
-    this.maskClass = $parent.maskClass; // this.__pageRerender = this._pageRerender.bind(this)
+    this.maskClass = $parent.maskClass;
+    this.deltaY = 0;
   },
   mounted: function mounted() {
     var _this = this;
@@ -21428,6 +21451,7 @@ var Spring = __webpack_require__(42);
 
       _this.update();
     });
+    onClick(this.$el, this._handleTap.bind(this));
   },
   methods: {
     _setItemHeight: function _setItemHeight(height) {
@@ -21455,22 +21479,38 @@ var Spring = __webpack_require__(42);
         }
       }
     },
-    _handleTap: function _handleTap(e) {
-      if (e.target !== e.currentTarget && !this._scroller.isScrolling()) {
-        var t = e.touches && e.touches[0] && e.touches[0].clientY;
-        var n = typeof t === 'number' ? t : e.detail.y - document.body.scrollTop;
-        var i = this.$el.getBoundingClientRect();
-        var r = n - i.top - this._height / 2;
+    _handleTap: function _handleTap(_ref) {
+      var clientY = _ref.clientY;
+
+      if (!this._scroller.isScrolling()) {
+        var rect = this.$el.getBoundingClientRect();
+        var r = clientY - rect.top - this.height / 2;
         var o = this.indicatorHeight / 2;
 
         if (!(Math.abs(r) <= o)) {
           var a = Math.ceil((Math.abs(r) - o) / this.indicatorHeight);
           var s = r < 0 ? -a : a;
-          this.current += s;
+          var current = Math.min(this.current + s, this.length - 1);
+          this.current = current = Math.max(current, 0);
 
-          this._scroller.scrollTo(this.current * this.indicatorHeight);
+          this._scroller.scrollTo(current * this.indicatorHeight);
         }
       }
+    },
+    _handleWheel: function _handleWheel($event) {
+      var deltaY = this.deltaY + $event.deltaY;
+
+      if (Math.abs(deltaY) > 10) {
+        this.deltaY = 0;
+        var current = Math.min(this.current + (deltaY < 0 ? -1 : 1), this.length - 1);
+        this.current = current = Math.max(current, 0);
+
+        this._scroller.scrollTo(current * this.indicatorHeight);
+      } else {
+        this.deltaY = deltaY;
+      }
+
+      $event.preventDefault();
     },
     setCurrent: function setCurrent(current) {
       if (current !== this.current) {
@@ -21503,14 +21543,14 @@ var Spring = __webpack_require__(42);
       var _this3 = this;
 
       this.$nextTick(function () {
-        var index = Math.max(_this3.length - 1, 0);
-        var current = Math.min(_this3.current, index);
+        var current = Math.min(_this3.current, _this3.length - 1);
+        current = Math.max(current, 0);
 
         _this3._scroller.update(current * _this3.indicatorHeight, undefined, _this3.indicatorHeight);
       });
     },
-    _resize: function _resize(_ref) {
-      var height = _ref.height;
+    _resize: function _resize(_ref2) {
+      var height = _ref2.height;
       this.indicatorHeight = height;
     }
   },
@@ -21518,7 +21558,7 @@ var Spring = __webpack_require__(42);
     this.length = this.$slots.default && this.$slots.default.length || 0;
     return createElement('uni-picker-view-column', {
       on: {
-        tap: this._handleTap
+        wheel: this._handleWheel
       }
     }, [createElement('div', {
       ref: 'main',

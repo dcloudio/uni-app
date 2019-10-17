@@ -319,7 +319,7 @@ export default {
       }
     },
     _resetFormData () {
-      this.valueSync = ''
+      this.valueSync = 0
     },
     _createTime () {
       var hours = []

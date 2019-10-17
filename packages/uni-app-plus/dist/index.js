@@ -436,6 +436,7 @@ function wrapper (methodName, method) {
 const todoApis = Object.create(null);
 
 const TODOS = [
+  'onTabBarMidButtonTap',
   'subscribePush',
   'unsubscribePush',
   'onPush',
@@ -519,8 +520,13 @@ function wrapper$1 (webview) {
     return
   }
   const maskColor = webview.__uniapp_mask;
-  let maskWebview = plus.webview.getWebviewById(webview.__uniapp_mask_id);
-  maskWebview = maskWebview.parent() || maskWebview;// 再次检测父
+  let maskWebview = webview.__uniapp_mask_id === '0' ? {
+    setStyle ({ mask }) {
+      requireNativePlugin('uni-tabview').setMask({
+        color: mask
+      });
+    }
+  } : plus.webview.getWebviewById(webview.__uniapp_mask_id);
   const oldShow = webview.show;
   const oldHide = webview.hide;
   const oldClose = webview.close;
