@@ -499,6 +499,15 @@ var eventApi = /*#__PURE__*/Object.freeze({
   $emit: $emit
 });
 
+function requireNativePlugin (pluginName) {
+  /* eslint-disable no-undef */
+  if (typeof weex !== 'undefined') {
+    return weex.requireModule(pluginName)
+  }
+  /* eslint-disable no-undef */
+  return __requireNativePlugin__(pluginName)
+}
+
 function wrapper$1 (webview) {
   webview.$processed = true;
 
@@ -521,7 +530,9 @@ function wrapper$1 (webview) {
   }
   const maskColor = webview.__uniapp_mask;
   let maskWebview = webview.__uniapp_mask_id === '0' ? {
-    setStyle ({ mask }) {
+    setStyle ({
+      mask
+    }) {
       requireNativePlugin('uni-tabview').setMask({
         color: mask
       });
@@ -564,18 +575,11 @@ function getSubNVueById (id) {
   return webview
 }
 
-function requireNativePlugin (pluginName) {
-  /* eslint-disable no-undef */
-  if (typeof weex !== 'undefined') {
-    return weex.requireModule(pluginName)
-  }
-  /* eslint-disable no-undef */
-  return __requireNativePlugin__(pluginName)
-}
+
 
 var api = /*#__PURE__*/Object.freeze({
-  requireNativePlugin: requireNativePlugin,
-  getSubNVueById: getSubNVueById
+  getSubNVueById: getSubNVueById,
+  requireNativePlugin: requireNativePlugin
 });
 
 const MPPage = Page;
