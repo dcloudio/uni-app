@@ -203,7 +203,7 @@ if (process.env.UNI_USING_NATIVE) {
     if (process.env.UNI_PLATFORM === 'app-plus') {
       const pagesPkg = require('@dcloudio/webpack-uni-pages-loader/package.json')
       if (pagesPkg) {
-        info = '编译器版本：' + pagesPkg['uni-app']['compilerVersion']
+        info = '编译器版本：' + pagesPkg['uni-app']['compilerVersion'] + (process.env.UNI_USING_V3 ? '（v3）' : '')
       }
       const glob = require('glob')
       if (glob.sync('pages/**/*.nvue', {
