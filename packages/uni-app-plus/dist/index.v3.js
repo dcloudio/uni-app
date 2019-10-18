@@ -3577,10 +3577,12 @@ var serviceContext = (function () {
     }
   }
 
-  const ANI_SHOW = plus.os.name === 'Android' && parseInt(plus.os.version) < 6 ? 'slide-in-right' : 'pop-in';
+  const downgrade = plus.os.name === 'Android' && parseInt(plus.os.version) < 6;
+
+  const ANI_SHOW = downgrade ? 'slide-in-right' : 'pop-in';
   const ANI_DURATION = 300;
 
-  const ANI_CLOSE = 'pop-out';
+  const ANI_CLOSE = downgrade ? 'slide-out-right' : 'pop-out';
 
   const TITLEBAR_HEIGHT = 44;
 

@@ -12,12 +12,12 @@ import {
   registerWebviewUIEvent
 } from '../subscribe-handlers'
 
-function noop() {}
+function noop () {}
 
 const callbacks = [] // 数据同步 callback
 
 export class VDomSync {
-  constructor(pageId, pagePath) {
+  constructor (pageId, pagePath) {
     this.pageId = pageId
     this.pagePath = pagePath
     this.batchData = []
@@ -29,7 +29,7 @@ export class VDomSync {
     this._init()
   }
 
-  _init() {
+  _init () {
     UniServiceJSBridge.subscribe(VD_SYNC_CALLBACK, () => {
       const copies = callbacks.slice(0)
       callbacks.length = 0
@@ -56,43 +56,43 @@ export class VDomSync {
     })
   }
 
-  addMountedVm(vm) {
+  addMountedVm (vm) {
     vm._$mounted() // 触发vd数据同步
-    this.addCallback(function mounted() {
+    this.addCallback(function mounted () {
       vm.__call_hook('mounted')
     })
   }
 
-  addUpdatedVm(vm) {
+  addUpdatedVm (vm) {
     vm._$updated() // 触发vd数据同步
-    this.addCallback(function mounted() {
+    this.addCallback(function mounted () {
       vm.__call_hook('updated')
     })
   }
 
-  addCallback(callback) {
+  addCallback (callback) {
     isFn(callback) && callbacks.push(callback)
   }
 
-  getVm(id) {
+  getVm (id) {
     return this.vms[id]
   }
 
-  addVm(vm) {
+  addVm (vm) {
     this.vms[vm._$id] = vm
   }
 
-  removeVm(vm) {
+  removeVm (vm) {
     delete this.vms[vm._$id]
   }
 
-  addEvent(cid, nid, name, handler) {
+  addEvent (cid, nid, name, handler) {
     const cHandlers = this.handlers[cid] || (this.handlers[cid] = Object.create(null))
     const nHandlers = cHandlers[nid] || (cHandlers[nid] = Object.create(null));
     (nHandlers[name] || (nHandlers[name] = [])).push(handler)
   }
 
-  removeEvent(cid, nid, name, handler) {
+  removeEvent (cid, nid, name, handler) {
     const cHandlers = this.handlers[cid] || (this.handlers[cid] = Object.create(null))
     const nHandlers = cHandlers[nid] || (cHandlers[nid] = Object.create(null))
     const eHandlers = nHandlers[name]
@@ -104,11 +104,11 @@ export class VDomSync {
     }
   }
 
-  push(type, nodeId, data) {
+  push (type, nodeId, data) {
     this.batchData.push([type, [nodeId, data]])
   }
 
-  flush() {
+  flush () {
     if (!this.initialized) {
       this.initialized = true
       this.batchData.push([PAGE_CREATED, [this.pageId, this.pagePath]])
@@ -124,7 +124,7 @@ export class VDomSync {
     }
   }
 
-  destroy() {
+  destroy () {
     this.batchData.length = 0
     this.vms = Object.create(null)
     this.initialized = false

@@ -41,7 +41,7 @@ service.run('build', {
   entry,
   clean: !process.env.UNI_VIEW,
   mode: process.env.NODE_ENV
-}).then(function() {
+}).then(function () {
   if (
     process.env.UNI_WATCH !== 'true' &&
     process.env.UNI_UI !== 'true' &&
@@ -62,7 +62,7 @@ if (process.env.UNI_PLATFORM === 'h5' && process.env.UNI_WATCH === 'false') {
   const packageJsonPath = path.join(packagePath, 'package.json')
   del(path.join(packagePath, '{lib,src}'))
     .then(() => {
-      copy([path.join(__dirname, '../{lib,src}/**/*')], packagePath, function(err, file) {
+      copy([path.join(__dirname, '../{lib,src}/**/*')], packagePath, function (err, file) {
         if (err) {
           throw err
         }

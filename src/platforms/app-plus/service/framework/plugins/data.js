@@ -16,17 +16,17 @@ import {
   diff
 } from './diff'
 
-export function initData(Vue) {
+export function initData (Vue) {
   Vue.prototype._$s = setData
   Vue.prototype._$i = setIfData
   Vue.prototype._$f = setForData
   Vue.prototype._$e = setElseIfData
 
-  Vue.prototype._$setData = function setData(type, data) {
+  Vue.prototype._$setData = function setData (type, data) {
     this._$vd.push(type, this._$id, data)
   }
 
-  Vue.prototype._$mounted = function mounted() {
+  Vue.prototype._$mounted = function mounted () {
     if (!this._$vd) {
       return
     }
@@ -39,7 +39,7 @@ export function initData(Vue) {
     }
   }
 
-  Vue.prototype._$updated = function updated() {
+  Vue.prototype._$updated = function updated () {
     if (!this._$vd) {
       return
     }
@@ -50,13 +50,13 @@ export function initData(Vue) {
   }
 
   Object.defineProperty(Vue.prototype, '_$vd', {
-    get() {
+    get () {
       return this.$root._$vdomSync
     }
   })
 
   Vue.mixin({
-    beforeCreate() {
+    beforeCreate () {
       if (this.$options.mpType) {
         this.mpType = this.$options.mpType
       }
@@ -77,7 +77,7 @@ export function initData(Vue) {
         this._$newData = Object.create(null)
       }
     },
-    beforeUpdate() {
+    beforeUpdate () {
       if (!this._$vd) {
         return
       }
@@ -86,7 +86,7 @@ export function initData(Vue) {
       console.log(`[${this._$id}] beforeUpdate ` + Date.now())
       this._$newData = Object.create(null)
     },
-    beforeDestroy() {
+    beforeDestroy () {
       if (!this._$vd) {
         return
       }
@@ -96,7 +96,7 @@ export function initData(Vue) {
   })
 }
 
-function setData(id, name, value) {
+function setData (id, name, value) {
   const diffData = this._$newData[id] || (this._$newData[id] = {})
 
   if (typeof name !== 'string') {
@@ -112,7 +112,7 @@ function setData(id, name, value) {
   return (diffData[name] = value)
 }
 
-function setForData(id, value) {
+function setForData (id, value) {
   const diffData = this._$newData[id] || (this._$newData[id] = {})
   const vForData = diffData['v-for'] || (diffData['v-for'] = [])
 
@@ -133,10 +133,10 @@ function setForData(id, value) {
   return key
 }
 
-function setIfData(id, value) {
+function setIfData (id, value) {
   return ((this._$newData[id] || (this._$newData[id] = {}))['v-if'] = value)
 }
 
-function setElseIfData(id, value) {
+function setElseIfData (id, value) {
   return ((this._$newData[id] || (this._$newData[id] = {}))['v-else-if'] = value)
 }
