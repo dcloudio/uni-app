@@ -622,6 +622,15 @@
             ]
         ]
     ],
+    "onTabBarMidButtonTap": [
+        "/core/service/api/ui/tab-bar.js",
+        [
+            [
+                "/platforms/h5/service/api/ui/tab-bar.js",
+                "setTabBarBadge"
+            ]
+        ]
+    ],
     "createAnimation": [
         "/core/service/api/ui/create-animation.js",
         []
@@ -641,6 +650,14 @@
     ],
     "offWindowResize": [
         "/platforms/h5/service/api/ui/window.js",
+        []
+    ],
+    "startPullDownRefresh": [
+        "/platforms/h5/service/api/ui/pull-down-refresh.js",
+        []
+    ],
+    "stopPullDownRefresh": [
+        "/platforms/h5/service/api/ui/pull-down-refresh.js",
         []
     ],
     "createSelectorQuery": [
