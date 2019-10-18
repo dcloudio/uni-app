@@ -56,6 +56,8 @@
 js中操作globalData的方式如下：
 `getApp().globalData.text = 'test'`
 
+在应用onLaunch时，getApp对象还未获取，暂时可以使用this.$scope.globalData获取globalData。
+
 如果需要把globalData的数据绑定到页面上，可在页面的onShow页面生命周期里进行变量重赋值。HBuilderX 2.0.3起，nvue页面在`uni-app`编译模式下，也支持onShow。
 
 weex编译模式中使用globalData的话，由于weex生命周期不支持onShow，但熟悉5+的话，可利用监听webview的addEventListener show事件实现onShow效果，或者直接使用weex生命周期中的beforeCreate。
