@@ -40,7 +40,8 @@ service.run('build', {
   formats: process.env.UNI_WATCH === 'true' ? 'umd' : 'umd-min',
   entry,
   clean: !process.env.UNI_VIEW,
-  mode: process.env.NODE_ENV
+  mode: process.env.NODE_ENV,
+  'inline-vue': process.env.UNI_VIEW === 'true'
 }).then(function () {
   if (
     process.env.UNI_WATCH !== 'true' &&
