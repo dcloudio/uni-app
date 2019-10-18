@@ -58,20 +58,21 @@ const v3 = {
       })
     }
 
-    const entry = {}
-    if (isAppService) {
-      entry['app-service'] = path.resolve(process.env.UNI_INPUT_DIR, getMainEntry())
-    } else if (isAppView) {
-      entry['app-view'] = path.resolve(process.env.UNI_INPUT_DIR, getMainEntry())
-    }
-
     return {
       devtool,
       mode: process.env.NODE_ENV,
       externals: {
         vue: 'Vue'
       },
-      entry,
+      entry () {
+        const entry = {}
+        if (isAppService) {
+          entry['app-service'] = path.resolve(process.env.UNI_INPUT_DIR, getMainEntry())
+        } else if (isAppView) {
+          entry['app-view'] = path.resolve(process.env.UNI_INPUT_DIR, getMainEntry())
+        }
+        return entry
+      },
       output: {
         filename: '[name].js',
         chunkFilename: '[id].js',
