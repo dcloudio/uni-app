@@ -191,10 +191,10 @@ uni.setTabBarBadge({
 
 |App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|√（HBuilderX 2.3.4 Alpha）|x|x|x|x|x|x|
+|√（HBuilderX 2.3.4+）|x|x|x|x|x|x|
 
 
 **Tip**
 - tabbar是原生的，层级高于前端元素
 - [uni-app插件市场](https://ext.dcloud.net.cn/search?q=%E5%BA%95%E9%83%A8%E5%9B%BE%E6%A0%87%E8%8F%9C%E5%8D%95)有封装的前端tabbar，但性能不如原生tabbar
-- HBuilderX 2.3.4 版本以下如果想要一个中间带+号的tabbar，在HBuilderX中新建uni-app项目、选择 底部选项卡 模板
+- 如果想要一个中间带+号的tabbar，在HBuilderX中新建uni-app项目、选择 底部选项卡 模板
