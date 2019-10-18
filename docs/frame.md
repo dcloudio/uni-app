@@ -429,7 +429,7 @@ uni-app 提供内置 CSS 变量
 |组件|描述|App|H5|
 |:-|:-|:-|:-|
 |NavigationBar|导航栏|44px|44px|
-|TabBar|底部选项卡|HBuilderX 2.3.4之前为56px，2.3.4及以后版本统一为 50px 且可以自主更改）|50px|
+|TabBar|底部选项卡|HBuilderX 2.3.4之前为56px，2.3.4起和H5调为一致，统一为 50px。但可以自主更改高度）|50px|
 
 各小程序平台，包括同小程序平台的iOS和Android的高度也不一样。
 
