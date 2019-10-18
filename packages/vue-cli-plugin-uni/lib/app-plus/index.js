@@ -112,6 +112,8 @@ const v3 = {
     }
   },
   chainWebpack (webpackConfig, vueOptions) {
+    webpackConfig.entryPoints.delete('app')
+
     const isAppService = !!vueOptions.pluginOptions['uni-app-plus']['service']
     const isAppView = !!vueOptions.pluginOptions['uni-app-plus']['view']
 
