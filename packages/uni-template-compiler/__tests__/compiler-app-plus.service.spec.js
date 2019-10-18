@@ -616,7 +616,7 @@ describe('codegen', () => {
   it('generate static trees inside v-for', () => {
     assertCodegen(
       `<div><div v-for="i in 10"><p><span></span></p></div></div>`,
-      `with(this){return _c('div',{attrs:{"_i":0}},_l((10),function(i,$i){return _c('div',{attrs:{"_i":("1-"+$i)}},[_m(0,true)])}),0)}`
+      `with(this){return _c('div',{attrs:{"_i":0}},_l((10),function(i,$10,$20,$30){return _c('div',{attrs:{"_i":("1-"+$30)}},[_m(0,true)])}),0)}`
       // [`with(this){return _c('p',[_c('span')])}`]
     )
   })
@@ -625,7 +625,7 @@ describe('codegen', () => {
     // normalize type: 2
     assertCodegen(
       '<div><child></child><template v-for="item in list">{{ item }}</template></div>',
-      `with(this){return _c('div',{attrs:{"_i":0}},[_c('child',{attrs:{"_i":1}}),_l((_$f(2,{forItems:list})),function(item,$i){return [_c('text',{key:_$f(2,{forIndex:$i,keyIndex:0,key:'2-0-'+$i}),extras:{t0:_s(item)},attrs:{"_i":("2-"+$i)}})]})],2)}`
+      `with(this){return _c('div',{attrs:{"_i":0}},[_c('child',{attrs:{"_i":1}}),_l((_$f(2,{forItems:list})),function(item,$10,$20,$30){return [_c('text',{key:_$f(2,{forIndex:$20,keyIndex:0,key:2+'-0'+$30}),extras:{t0:_s(item)},attrs:{"_i":("2-"+$30)}})]})],2)}`
     )
   })
 
@@ -695,7 +695,7 @@ describe('codegen', () => {
   it('should compile single v-for component inside template', () => {
     assertCodegen(
       `<div><template v-if="ok"><foo v-for="i in 1" :key="i"></foo></template></div>`,
-      `with(this){return _c('div',{attrs:{"_i":0}},[(_$i(1,ok))?_l((1),function(i,$i){return _c('foo',{key:i,attrs:{"_i":("2-"+$i)}})}):_e()],2)}`
+      `with(this){return _c('div',{attrs:{"_i":0}},[(_$i(1,ok))?_l((1),function(i,$10,$20,$30){return _c('foo',{key:i,attrs:{"_i":("2-"+$30)}})}):_e()],2)}`
     )
   })
 })

@@ -19,7 +19,7 @@ describe('codegen', () => {
     )
     assertCodegen(
       '<div><block v-for="item in items"><div></div><div></div></block></div>',
-      `with(this){return _c('div',{attrs:{"_i":0}},[_l((_$f(1,{forItems:items})),function(item,$10,$20,$30){return [_c('div',{key:_$f(1,{forIndex:$20,keyIndex:0,key:1+'-0-'+$30}),attrs:{"_i":("2-"+$30)}}),_c('div',{key:_$f(1,{forIndex:$20,keyIndex:1,key:1+'-1-'+$30}),attrs:{"_i":("3-"+$30)}})]})],2)}`
+      `with(this){return _c('div',{attrs:{"_i":0}},[_l((_$f(1,{forItems:items})),function(item,$10,$20,$30){return [_c('div',{key:_$f(1,{forIndex:$20,keyIndex:0,key:1+'-0'+$30}),attrs:{"_i":("2-"+$30)}}),_c('div',{key:_$f(1,{forIndex:$20,keyIndex:1,key:1+'-1'+$30}),attrs:{"_i":("3-"+$30)}})]})],2)}`
     )
     assertCodegen(
       '<div><block v-for="item in items" :key="item.id"><div></div><div></div></block></div>',
@@ -35,27 +35,27 @@ describe('codegen', () => {
   it('generate v-for directive', () => {
     assertCodegen(
       '<div><template v-for="item in items"><div></div><div></div></template></div>',
-      `with(this){return _c('div',{attrs:{"_i":0}},[_l((_$f(1,{forItems:items})),function(item,$10,$20,$30){return [_c('div',{key:_$f(1,{forIndex:$20,keyIndex:0,key:1+'-0-'+$30}),attrs:{"_i":("2-"+$30)}}),_c('div',{key:_$f(1,{forIndex:$20,keyIndex:1,key:1+'-1-'+$30}),attrs:{"_i":("3-"+$30)}})]})],2)}`
+      `with(this){return _c('div',{attrs:{"_i":0}},[_l((_$f(1,{forItems:items})),function(item,$10,$20,$30){return [_c('div',{key:_$f(1,{forIndex:$20,keyIndex:0,key:1+'-0'+$30}),attrs:{"_i":("2-"+$30)}}),_c('div',{key:_$f(1,{forIndex:$20,keyIndex:1,key:1+'-1'+$30}),attrs:{"_i":("3-"+$30)}})]})],2)}`
     )
     assertCodegen(
       '<div><template v-for="item in items">text</template></div>',
-      `with(this){return _c('div',{attrs:{"_i":0}},[_l((_$f(1,{forItems:items})),function(item,$10,$20,$30){return [_c('text',{key:_$f(1,{forIndex:$20,keyIndex:0,key:1+'-0-'+$30}),attrs:{"_i":("1-"+$30)}})]})],2)}`
+      `with(this){return _c('div',{attrs:{"_i":0}},[_l((_$f(1,{forItems:items})),function(item,$10,$20,$30){return [_c('text',{key:_$f(1,{forIndex:$20,keyIndex:0,key:1+'-0'+$30}),attrs:{"_i":("1-"+$30)}})]})],2)}`
     )
     assertCodegen(
       '<div><template v-for="item in items">{{text}}</template></div>',
-      `with(this){return _c('div',{attrs:{"_i":0}},[_l((_$f(1,{forItems:items})),function(item,$i){return [_c('text',{key:_$f(1,{forIndex:$i,keyIndex:0,key:'1-0-'+$i}),extras:{t0:_s(text)},attrs:{"_i":("1-"+$i)}})]})],2)}`
+      `with(this){return _c('div',{attrs:{"_i":0}},[_l((_$f(1,{forItems:items})),function(item,$10,$20,$30){return [_c('text',{key:_$f(1,{forIndex:$20,keyIndex:0,key:1+'-0'+$30}),extras:{t0:_s(text)},attrs:{"_i":("1-"+$30)}})]})],2)}`
     )
     assertCodegen(
       '<div><template v-for="item in items"><span></span>{{text}}</template></div>',
-      `with(this){return _c('div',{attrs:{"_i":0}},[_l((_$f(1,{forItems:items})),function(item,$i){return [_c('span',{key:_$f(1,{forIndex:$i,keyIndex:0,key:'1-0-'+$i}),attrs:{"_i":("2-"+$i)}}),_c('text',{extras:{t0:_s(text)},attrs:{"_i":("1-"+$i)}})]})],2)}`
+      `with(this){return _c('div',{attrs:{"_i":0}},[_l((_$f(1,{forItems:items})),function(item,$10,$20,$30){return [_c('span',{key:_$f(1,{forIndex:$20,keyIndex:0,key:1+'-0'+$30}),attrs:{"_i":("2-"+$30)}}),_c('text',{extras:{t0:_s(text)},attrs:{"_i":("1-"+$30)}})]})],2)}`
     )
     assertCodegen(
       '<div><template v-for="item in items">a {{text1}} b {{text2}}</template></div>',
-      `with(this){return _c('div',{attrs:{"_i":0}},[_l((_$f(1,{forItems:items})),function(item,$i){return [_c('text',{key:_$f(1,{forIndex:$i,keyIndex:0,key:'1-0-'+$i}),extras:{t0:_s(text1),t1:_s(text2)},attrs:{"_i":("1-"+$i)}})]})],2)}`
+      `with(this){return _c('div',{attrs:{"_i":0}},[_l((_$f(1,{forItems:items})),function(item,$10,$20,$30){return [_c('text',{key:_$f(1,{forIndex:$20,keyIndex:0,key:1+'-0'+$30}),extras:{t0:_s(text1),t1:_s(text2)},attrs:{"_i":("1-"+$30)}})]})],2)}`
     )
     assertCodegen(
       '<div><template v-for="item in items"><span v-if="item.sub"></span></template></div>',
-      `with(this){return _c('div',{attrs:{"_i":0}},[_l((_$f(1,{forItems:items})),function(item,$i){return [(_$i(("2-"+$i),item.sub))?_c('span',{key:_$f(1,{forIndex:$i,keyIndex:0,key:'1-0-'+$i}),attrs:{"_i":("2-"+$i)}}):_e()]})],2)}`
+      `with(this){return _c('div',{attrs:{"_i":0}},[_l((_$f(1,{forItems:items})),function(item,$10,$20,$30){return [(_$i(("2-"+$30),item.sub))?_c('span',{key:_$f(1,{forIndex:$20,keyIndex:0,key:1+'-0'+$30}),attrs:{"_i":("2-"+$30)}}):_e()]})],2)}`
     )
   })
   it('generate text with multiple statements', () => {

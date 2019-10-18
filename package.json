@@ -27,7 +27,8 @@
     "test:unit": "cross-env NODE_ENV=test UNI_PLATFORM=h5 mocha-webpack --require tests/unit/setup.js --webpack-config build/webpack.config.test.js tests/unit/**/*.spec.js",
     "release": "npm run lint:cli && lerna publish --force-publish=*",
     "release:alpha": "npm run lint:cli && lerna publish --force-publish=* --npm-tag=alpha",
-    "release:next": "npm run lint:cli && lerna publish --force-publish=* --npm-tag=next"
+    "release:next": "npm run lint:cli && lerna publish --force-publish=* --npm-tag=next",
+    "release:v3": "npm run lint:cli && lerna publish --force-publish=* --npm-tag=v3"
   },
   "dependencies": {
     "base64-arraybuffer": "^0.2.0",

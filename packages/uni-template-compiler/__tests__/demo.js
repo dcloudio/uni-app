@@ -1,14 +1,7 @@
 const compiler = require('../lib')
 const res = compiler.compile(
   `
-<div>
-<view v-for="(item, index) in list" :key="index">
-<view ref="add" class="warp" @change="change">
-<view v-for="(sub, key) in item.data">
-</view>
-</view>
-</view>
-</div>
+<div><template v-for="item in items"><span v-if="item.sub"></span></template></div>
     `, {
     resourcePath: '/User/fxy/Documents/test.wxml',
     isReservedTag: function (tag) {

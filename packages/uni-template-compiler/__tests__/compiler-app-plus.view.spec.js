@@ -15,91 +15,91 @@ describe('codegen', () => {
   it('generate directive', () => {
     assertCodegen(
       '<p v-custom1:arg1.modifier="value1" v-custom2></p>',
-      `with(this){return _c('v-uni-view',{directives:[{name:"custom1",rawName:"v-custom1:arg1.modifier",value:($r['0']['v-custom1']),expression:"$r['0']['v-custom1']",arg:"arg1",modifiers:{"modifier":true}},{name:"custom2",rawName:"v-custom2"}],attrs:{"_i":0}})}`
+      `with(this){return _c('v-uni-view',{directives:[{name:"custom1",rawName:"v-custom1:arg1.modifier",value:(_$g(0,'v-custom1')),expression:"_$g(0,'v-custom1')",arg:"arg1",modifiers:{"modifier":true}},{name:"custom2",rawName:"v-custom2"}],attrs:{"_i":0}})}`
     )
     // extra
     assertCodegen(
       '<p v-custom1:[arg1].modifier="value1" v-custom2></p>',
-      `with(this){return _c('v-uni-view',{directives:[{name:"custom1",rawName:"v-custom1:[arg1].modifier",value:($r['0']['v-custom1']),expression:"$r['0']['v-custom1']",arg:$r['0']['v-custom1-arg'],modifiers:{"modifier":true}},{name:"custom2",rawName:"v-custom2"}],attrs:{"_i":0}})}`
+      `with(this){return _c('v-uni-view',{directives:[{name:"custom1",rawName:"v-custom1:[arg1].modifier",value:(_$g(0,'v-custom1')),expression:"_$g(0,'v-custom1')",arg:_$g(0,'v-custom1-arg'),modifiers:{"modifier":true}},{name:"custom2",rawName:"v-custom2"}],attrs:{"_i":0}})}`
     )
   })
 
   it('generate filters', () => {
     assertCodegen(
       '<div :id="a | b | c">{{ d | e | f }}</div>',
-      `with(this){return _c('v-uni-view',{attrs:{"id":$r['0']['a-id'],"_i":0}},[_v(($r['0']['t0']))])}`
+      `with(this){return _c('v-uni-view',{attrs:{"id":_$g(0,'a-id'),"_i":0}},[_v((_$g(0,'t0')))])}`
     )
   })
 
   it('generate filters with no arguments', () => {
     assertCodegen(
       '<div>{{ d | e() }}</div>',
-      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},[_v(($r['0']['t0']))])}`
+      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},[_v((_$g(0,'t0')))])}`
     )
   })
 
   it('generate v-for directive', () => {
     assertCodegen(
       '<div><li v-for="item in items" :key="item.uid"></li></div>',
-      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},_l(($r['1']['v-for']),function(item,$10,$20,$30){return _c('v-uni-view',{key:item,attrs:{"_i":("1-"+$30)}})}),0)}`
+      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},_l((_$g(1,'v-for')),function(item,$10,$20,$30){return _c('v-uni-view',{key:item,attrs:{"_i":("1-"+$30)}})}),1)}`
     )
     // iterator syntax
     assertCodegen(
       '<div><li v-for="(item, i) in items"></li></div>',
-      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},_l(($r['1']['v-for']),function(item,i){return _c('v-uni-view',{key:item,attrs:{"_i":("1-"+i)}})}),1)}`
+      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},_l((_$g(1,'v-for')),function(item,i,$20,$30){return _c('v-uni-view',{key:item,attrs:{"_i":("1-"+$30)}})}),1)}`
     )
     assertCodegen(
       '<div><li v-for="(item, key, index) in items"></li></div>',
-      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},_l(($r['1']['v-for']),function(item,index){return _c('v-uni-view',{key:item,attrs:{"_i":("1-"+index)}})}),1)}`
+      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},_l((_$g(1,'v-for')),function(item,key,index,$30){return _c('v-uni-view',{key:item,attrs:{"_i":("1-"+$30)}})}),1)}`
     )
     // destructuring
     assertCodegen(
       '<div><li v-for="{ a, b } in items"></li></div>',
-      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},_l(($r['1']['v-for']),function($item,$i){return _c('v-uni-view',{key:$item,attrs:{"_i":("1-"+$i)}})}),1)}`
+      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},_l((_$g(1,'v-for')),function($item,$10,$20,$30){return _c('v-uni-view',{key:$item,attrs:{"_i":("1-"+$30)}})}),1)}`
     )
     assertCodegen(
       '<div><li v-for="({ a, b }, key, index) in items"></li></div>',
-      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},_l(($r['1']['v-for']),function($item,index){return _c('v-uni-view',{key:$item,attrs:{"_i":("1-"+index)}})}),1)}`
+      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},_l((_$g(1,'v-for')),function($item,key,index,$30){return _c('v-uni-view',{key:$item,attrs:{"_i":("1-"+$30)}})}),1)}`
     )
     // v-for with extra element
     assertCodegen(
       '<div><p></p><li v-for="item in items"></li></div>',
-      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},[_c('v-uni-view',{attrs:{"_i":1}}),_l(($r['2']['v-for']),function(item,$i){return _c('v-uni-view',{key:item,attrs:{"_i":("2-"+$i)}})})],2)}`
+      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},[_c('v-uni-view',{attrs:{"_i":1}}),_l((_$g(2,'v-for')),function(item,$10,$20,$30){return _c('v-uni-view',{key:item,attrs:{"_i":("2-"+$30)}})})],2)}`
     )
   })
 
   it('generate v-if directive', () => {
     assertCodegen(
       '<p v-if="show">hello</p>',
-      `with(this){return ($r['0']['v-if'])?_c('v-uni-view',{attrs:{"_i":0}},[_v("hello")]):_e()}`
+      `with(this){return (_$g(0,'v-if'))?_c('v-uni-view',{attrs:{"_i":0}},[_v("hello")]):_e()}`
     )
   })
 
   it('generate v-else directive', () => {
     assertCodegen(
       '<div><p v-if="show">hello</p><p v-else>world</p></div>',
-      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},[($r['1']['v-if'])?_c('v-uni-view',{attrs:{"_i":1}},[_v("hello")]):_c('v-uni-view',{attrs:{"_i":2}},[_v("world")])],1)}`
+      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},[(_$g(1,'v-if'))?_c('v-uni-view',{attrs:{"_i":1}},[_v("hello")]):_c('v-uni-view',{attrs:{"_i":2}},[_v("world")])],1)}`
     )
   })
 
   it('generate v-else-if directive', () => {
     assertCodegen(
       '<div><p v-if="show">hello</p><p v-else-if="hide">world</p></div>',
-      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},[($r['1']['v-if'])?_c('v-uni-view',{attrs:{"_i":1}},[_v("hello")]):($r['2']['v-else-if'])?_c('v-uni-view',{attrs:{"_i":2}},[_v("world")]):_e()],1)}`
+      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},[(_$g(1,'v-if'))?_c('v-uni-view',{attrs:{"_i":1}},[_v("hello")]):(_$g(2,'v-else-if'))?_c('v-uni-view',{attrs:{"_i":2}},[_v("world")]):_e()],1)}`
     )
   })
 
   it('generate v-else-if with v-else directive', () => {
     assertCodegen(
       '<div><p v-if="show">hello</p><p v-else-if="hide">world</p><p v-else>bye</p></div>',
-      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},[($r['1']['v-if'])?_c('v-uni-view',{attrs:{"_i":1}},[_v("hello")]):($r['2']['v-else-if'])?_c('v-uni-view',{attrs:{"_i":2}},[_v("world")]):_c('v-uni-view',{attrs:{"_i":3}},[_v("bye")])],1)}`
+      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},[(_$g(1,'v-if'))?_c('v-uni-view',{attrs:{"_i":1}},[_v("hello")]):(_$g(2,'v-else-if'))?_c('v-uni-view',{attrs:{"_i":2}},[_v("world")]):_c('v-uni-view',{attrs:{"_i":3}},[_v("bye")])],1)}`
     )
   })
 
   it('generate multi v-else-if with v-else directive', () => {
     assertCodegen(
       '<div><p v-if="show">hello</p><p v-else-if="hide">world</p><p v-else-if="3">elseif</p><p v-else>bye</p></div>',
-      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},[($r['1']['v-if'])?_c('v-uni-view',{attrs:{"_i":1}},[_v("hello")]):($r['2']['v-else-if'])?_c('v-uni-view',{attrs:{"_i":2}},[_v("world")]):(3)?_c('v-uni-view',{attrs:{"_i":3}},[_v("elseif")]):_c('v-uni-view',{attrs:{"_i":4}},[_v("bye")])],1)}`
+      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},[(_$g(1,'v-if'))?_c('v-uni-view',{attrs:{"_i":1}},[_v("hello")]):(_$g(2,'v-else-if'))?_c('v-uni-view',{attrs:{"_i":2}},[_v("world")]):(3)?_c('v-uni-view',{attrs:{"_i":3}},[_v("elseif")]):_c('v-uni-view',{attrs:{"_i":4}},[_v("bye")])],1)}`
     )
   })
 
@@ -113,56 +113,56 @@ describe('codegen', () => {
   it('generate ref on v-for', () => {
     assertCodegen(
       '<ul><li v-for="item in items" ref="component1"></li></ul>',
-      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},_l(($r['1']['v-for']),function(item,$i){return _c('v-uni-view',{key:item,ref:"component1",refInFor:true,attrs:{"_i":("1-"+$i)}})}),1)}`
+      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},_l((_$g(1,'v-for')),function(item,$10,$20,$30){return _c('v-uni-view',{key:item,ref:"component1",refInFor:true,attrs:{"_i":("1-"+$30)}})}),1)}`
     )
   })
 
   it('generate v-bind directive', () => {
     assertCodegen(
       '<p v-bind="test"></p>',
-      `with(this){return _c('v-uni-view',_b({attrs:{"_i":0}},'v-uni-view',$r['0']['v-bind'],false))}`
+      `with(this){return _c('v-uni-view',_b({attrs:{"_i":0}},'v-uni-view',_$g(0,'v-bind'),false))}`
     )
   })
 
   it('generate v-bind with prop directive', () => {
     assertCodegen(
       '<p v-bind.prop="test"></p>',
-      `with(this){return _c('v-uni-view',_b({attrs:{"_i":0}},'v-uni-view',$r['0']['v-bind'],true))}`
+      `with(this){return _c('v-uni-view',_b({attrs:{"_i":0}},'v-uni-view',_$g(0,'v-bind'),true))}`
     )
   })
 
   it('generate v-bind directive with sync modifier', () => {
     assertCodegen(
       '<p v-bind.sync="test"></p>',
-      `with(this){return _c('v-uni-view',_b({attrs:{"_i":0}},'v-uni-view',$r['0']['v-bind'],false,true))}`
+      `with(this){return _c('v-uni-view',_b({attrs:{"_i":0}},'v-uni-view',_$g(0,'v-bind'),false,true))}`
     )
   })
 
   it('generate v-model directive', () => {
     assertCodegen(
       '<input v-model="test">',
-      `with(this){return _c('v-uni-input',{attrs:{"_i":0},model:{value:($r['0']['v-model']),callback:function ($$v) {},expression:"$r['0']['v-model']"}})}`
+      `with(this){return _c('v-uni-input',{attrs:{"_i":0},model:{value:(_$g(0,'v-model')),callback:function ($$v) {},expression:"_$g(0,'v-model')"}})}`
     )
   })
 
   it('generate multiline v-model directive', () => {
     assertCodegen(
       '<input v-model="\n test \n">',
-      `with(this){return _c('v-uni-input',{attrs:{"_i":0},model:{value:($r['0']['v-model']),callback:function ($$v) {},expression:"$r['0']['v-model']"}})}`
+      `with(this){return _c('v-uni-input',{attrs:{"_i":0},model:{value:(_$g(0,'v-model')),callback:function ($$v) {},expression:"_$g(0,'v-model')"}})}`
     )
   })
 
   it('generate multiline v-model directive on custom component', () => {
     assertCodegen(
       '<my-component v-model="\n test \n" />',
-      `with(this){return _c('my-component',{attrs:{"_i":0},model:{value:($r['0']['v-model']),callback:function ($$v) {},expression:"$r['0']['v-model']"}})}`
+      `with(this){return _c('my-component',{attrs:{"_i":0},model:{value:(_$g(0,'v-model')),callback:function ($$v) {},expression:"_$g(0,'v-model')"}})}`
     )
   })
 
   it('generate template tag', () => {
     assertCodegen(
       '<div><template><p>{{hello}}</p></template></div>',
-      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},[[_c('v-uni-view',{attrs:{"_i":2}},[_v(($r['2']['t0']))])]],2)}`
+      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},[[_c('v-uni-view',{attrs:{"_i":2}},[_v((_$g(2,'t0')))])]],2)}`
     )
   })
 
@@ -197,47 +197,47 @@ describe('codegen', () => {
   it('generate scoped slot', () => {
     assertCodegen(
       '<foo><template slot-scope="bar">{{ bar }}</template></foo>',
-      `with(this){return _c('foo',{attrs:{"_i":0},scopedSlots:_u([{key:"default",fn:function(bar){return [_v(($r['1']['t0']))]}}])})}`
+      `with(this){return _c('foo',{attrs:{"_i":0},scopedSlots:_u([{key:"default",fn:function(bar){return [_v((_$g(1,'t0')))]}}])})}`
     )
     assertCodegen(
       '<foo><div slot-scope="bar">{{ bar }}</div></foo>',
-      `with(this){return _c('foo',{attrs:{"_i":0},scopedSlots:_u([{key:"default",fn:function(bar){return _c('v-uni-view',{attrs:{"_i":1}},[_v(($r['1']['t0']))])}}])})}`
+      `with(this){return _c('foo',{attrs:{"_i":0},scopedSlots:_u([{key:"default",fn:function(bar){return _c('v-uni-view',{attrs:{"_i":1}},[_v((_$g(1,'t0')))])}}])})}`
     )
   })
 
   it('generate named scoped slot', () => {
     assertCodegen(
       '<foo><template slot="foo" slot-scope="bar">{{ bar }}</template></foo>',
-      `with(this){return _c('foo',{attrs:{"_i":0},scopedSlots:_u([{key:"foo",fn:function(bar){return [_v(($r['1']['t0']))]}}])})}`
+      `with(this){return _c('foo',{attrs:{"_i":0},scopedSlots:_u([{key:"foo",fn:function(bar){return [_v((_$g(1,'t0')))]}}])})}`
     )
     assertCodegen(
       '<foo><div slot="foo" slot-scope="bar">{{ bar }}</div></foo>',
-      `with(this){return _c('foo',{attrs:{"_i":0},scopedSlots:_u([{key:"foo",fn:function(bar){return _c('v-uni-view',{attrs:{"_i":1}},[_v(($r['1']['t0']))])}}])})}`
+      `with(this){return _c('foo',{attrs:{"_i":0},scopedSlots:_u([{key:"foo",fn:function(bar){return _c('v-uni-view',{attrs:{"_i":1}},[_v((_$g(1,'t0')))])}}])})}`
     )
   })
 
   it('generate dynamic scoped slot', () => {
     assertCodegen(
       '<foo><template :slot="foo" slot-scope="bar">{{ bar }}</template></foo>',
-      `with(this){return _c('foo',{attrs:{"_i":0},scopedSlots:_u([{key:foo,fn:function(bar){return [_v(($r['1']['t0']))]}}],null,true)})}`
+      `with(this){return _c('foo',{attrs:{"_i":0},scopedSlots:_u([{key:foo,fn:function(bar){return [_v((_$g(1,'t0')))]}}],null,true)})}`
     )
   })
 
   it('generate scoped slot with multiline v-if', () => {
     assertCodegen(
       '<foo><template v-if="\nshow\n" slot-scope="bar">{{ bar }}</template></foo>',
-      `with(this){return _c('foo',{attrs:{"_i":0},scopedSlots:_u([{key:"default",fn:function(bar){return ($r['1']['v-if'])?[_v(($r['1']['t0']))]:undefined}}],null,true)})}`
+      `with(this){return _c('foo',{attrs:{"_i":0},scopedSlots:_u([{key:"default",fn:function(bar){return (_$g(1,'v-if'))?[_v((_$g(1,'t0')))]:undefined}}],null,true)})}`
     )
     assertCodegen(
       '<foo><div v-if="\nshow\n" slot="foo" slot-scope="bar">{{ bar }}</div></foo>',
-      `with(this){return _c('foo',{attrs:{"_i":0},scopedSlots:_u([{key:"foo",fn:function(bar){return ($r['1']['v-if'])?_c('v-uni-view',{attrs:{"_i":1}},[_v(($r['1']['t0']))]):_e()}}],null,true)})}`
+      `with(this){return _c('foo',{attrs:{"_i":0},scopedSlots:_u([{key:"foo",fn:function(bar){return (_$g(1,'v-if'))?_c('v-uni-view',{attrs:{"_i":1}},[_v((_$g(1,'t0')))]):_e()}}],null,true)})}`
     )
   })
 
   it('generate scoped slot with new slot syntax', () => {
     assertCodegen(
       '<foo><template v-if="show" #default="bar">{{ bar }}</template></foo>',
-      `with(this){return _c('foo',{attrs:{"_i":0},scopedSlots:_u([($r['1']['v-if'])?{key:"default",fn:function(bar){return [_v(($r['1']['t0']))]}}:null],null,true)})}`
+      `with(this){return _c('foo',{attrs:{"_i":0},scopedSlots:_u([(_$g(1,'v-if'))?{key:"default",fn:function(bar){return [_v((_$g(1,'t0')))]}}:null],null,true)})}`
     )
   })
 
@@ -250,21 +250,21 @@ describe('codegen', () => {
     // dynamic
     assertCodegen(
       '<p :class="class1">hello world</p>',
-      `with(this){return _c('v-uni-view',{class:$r['0']['c'],attrs:{"_i":0}},[_v("hello world")])}`
+      `with(this){return _c('v-uni-view',{class:_$g(0,'c'),attrs:{"_i":0}},[_v("hello world")])}`
     )
   })
 
   it('generate style binding', () => {
     assertCodegen(
       '<p :style="error">hello world</p>',
-      `with(this){return _c('v-uni-view',{style:($r['0']['s']),attrs:{"_i":0}},[_v("hello world")])}`
+      `with(this){return _c('v-uni-view',{style:(_$g(0,'s')),attrs:{"_i":0}},[_v("hello world")])}`
     )
   })
 
   it('generate v-show directive', () => {
     assertCodegen(
       '<p v-show="shown">hello world</p>',
-      `with(this){return _c('v-uni-view',{directives:[{name:"show",rawName:"v-show",value:($r['0']['v-show']),expression:"$r['0']['v-show']"}],attrs:{"_i":0}},[_v("hello world")])}`
+      `with(this){return _c('v-uni-view',{directives:[{name:"show",rawName:"v-show",value:(_$g(0,'v-show')),expression:"_$g(0,'v-show')"}],attrs:{"_i":0}},[_v("hello world")])}`
     )
   })
 
@@ -272,19 +272,19 @@ describe('codegen', () => {
     // input + value
     assertCodegen(
       '<input :value="msg">',
-      `with(this){return _c('v-uni-input',{attrs:{"value":$r['0']['a-value'],"_i":0}})}`
+      `with(this){return _c('v-uni-input',{attrs:{"value":_$g(0,'a-value'),"_i":0}})}`
     )
     // non input
     assertCodegen(
       '<p :value="msg"/>',
-      `with(this){return _c('v-uni-view',{attrs:{"value":$r['0']['a-value'],"_i":0}})}`
+      `with(this){return _c('v-uni-view',{attrs:{"value":_$g(0,'a-value'),"_i":0}})}`
     )
   })
 
   it('generate attrs with v-bind directive', () => {
     assertCodegen(
       '<input :name="field1">',
-      `with(this){return _c('v-uni-input',{attrs:{"name":$r['0']['a-name'],"_i":0}})}`
+      `with(this){return _c('v-uni-input',{attrs:{"name":_$g(0,'a-name'),"_i":0}})}`
     )
   })
 
@@ -616,7 +616,7 @@ describe('codegen', () => {
   it('generate static trees inside v-for', () => {
     assertCodegen(
       `<div><div v-for="i in 10"><p><span></span></p></div></div>`,
-      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},_l((10),function(i,$i){return _c('v-uni-view',{attrs:{"_i":("1-"+$i)}},[_c('v-uni-view',{attrs:{"_i":("2-"+$i)}},[_c('v-uni-label',{attrs:{"_i":("3-"+$i)}})],1)],1)}),1)}`
+      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},_l((10),function(i,$10,$20,$30){return _c('v-uni-view',{attrs:{"_i":("1-"+$30)}},[_c('v-uni-view',{attrs:{"_i":("2-"+$30)}},[_c('v-uni-label',{attrs:{"_i":("3-"+$30)}})],1)],1)}),1)}`
       // [`with(this){return _c('v-uni-view',{attrs:{"_i":("2-"+$i)}},[_c('v-uni-view',{attrs:{"_i":("3-"+$i)}})])}`]
     )
   })
@@ -625,7 +625,7 @@ describe('codegen', () => {
     // normalize type: 2
     assertCodegen(
       '<div><child></child><template v-for="item in list">{{ item }}</template></div>',
-      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},[_c('child',{attrs:{"_i":1}}),_l(($r['2']['v-for']),function(item,$i){return [_v(($r[("2-"+$i)]['t0']))]})],2)}`
+      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},[_c('child',{attrs:{"_i":1}}),_l((_$g(2,'v-for')),function(item,$10,$20,$30){return [_v((_$g(("2-"+$30),'t0')))]})],2)}`
     )
   })
 
@@ -685,7 +685,7 @@ describe('codegen', () => {
   it('not specified directives option', () => {
     assertCodegen(
       '<p v-if="show">hello world</p>',
-      `with(this){return ($r['0']['v-if'])?_c('v-uni-view',{attrs:{"_i":0}},[_v("hello world")]):_e()}`, {
+      `with(this){return (_$g(0,'v-if'))?_c('v-uni-view',{attrs:{"_i":0}},[_v("hello world")]):_e()}`, {
         // isReservedTag
       }
     )
@@ -695,7 +695,7 @@ describe('codegen', () => {
   it('should compile single v-for component inside template', () => {
     assertCodegen(
       `<div><template v-if="ok"><foo v-for="i in 1" :key="i"></foo></template></div>`,
-      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},[($r['1']['v-if'])?_l((1),function(i,$i){return _c('foo',{key:i,attrs:{"_i":("2-"+$i)}})}):_e()],2)}`
+      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},[(_$g(1,'v-if'))?_l((1),function(i,$10,$20,$30){return _c('foo',{key:i,attrs:{"_i":("2-"+$30)}})}):_e()],2)}`
     )
   })
 })

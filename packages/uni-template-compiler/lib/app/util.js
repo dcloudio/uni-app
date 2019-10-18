@@ -122,7 +122,7 @@ function processForKey (el) {
         }
       }
     } else {
-      el.key = `${forEl.forId}+${it}`
+      el.key = `${forEl.forId}+'-'+${it}`
     }
   }
 }
