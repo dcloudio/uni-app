@@ -387,6 +387,7 @@ Tis:
 **代码示例**
 
 ```html
+
 <template>
 	<div class="container">
 		<div ref="b1" class="btn" style="background-color:#6A1B9A" @click="clickBtn">
@@ -404,7 +405,7 @@ Tis:
 	</div>
 </template>
 <script>
-	import Binding from 'weex-bindingx';
+	const Binding = uni.requireNativePlugin('bindingx');
 	module.exports = {
 		data: {
 			isExpanded: false
@@ -424,49 +425,48 @@ Tis:
 				let b1 = this.getEl(this.$refs.b1);
 				let b2 = this.getEl(this.$refs.b2);
 				let b3 = this.getEl(this.$refs.b3);
-				Binding.bind({
+				let main_binding = Binding.bind({
 					eventType: 'timing',
-					exitExpression: {
-						origin: 't>800'
-					},
+					exitExpression: 't>800',
 					props: [{
-							element: main_image,
-							property: 'transform.rotateZ',
-							expression: {
-								origin: 'easeOutQuint(t,45,0-45,800)'
-							}
-						},{
-							element: main_btn,
-							property: 'background-color',
-							expression: {
-								origin: "evaluateColor('#607D8B','#ff0000',min(t,800)/800)"
-							}
-						}]
+						element: main_image,
+						property: 'transform.rotateZ',
+						expression: 'easeOutQuint(t,45,0-45,800)'
+
+					}, {
+						element: main_btn,
+						property: 'background-color',
+						expression: "evaluateColor('#607D8B','#ff0000',min(t,800)/800)"
+					}]
+				}, function(res) {
+					if (res.state === 'exit') {
+						Binding.unbind({
+							token: main_binding
+						})
+					}
 				});
-				Binding.bind({
+				let btn_binding = Binding.bind({
 					eventType: 'timing',
-					exitExpression: {
-						origin: 't>800'
-					},
+					exitExpression: 't>800',
 					props: [{
-							element: b1,
-							property: 'transform.translateY',
-							expression: {
-								origin: "easeOutQuint(t,-150,150,800)"
-							}
-						},{
-							element: b2,
-							property: 'transform.translateY',
-							expression: {
-								origin: "t<=100?0:easeOutQuint(t-100,-300,300,700)"
-							}
-						},{
-							element: b3,
-							property: 'transform.translateY',
-							expression: {
-								origin: "t<=200?0:easeOutQuint(t-200,-450,450,600)"
-							}
-						}]
+						element: b1,
+						property: 'transform.translateY',
+						expression: "easeOutQuint(t,-150,150,800)"
+					}, {
+						element: b2,
+						property: 'transform.translateY',
+						expression: "t<=100?0:easeOutQuint(t-100,-300,300,700)"
+					}, {
+						element: b3,
+						property: 'transform.translateY',
+						expression: "t<=200?0:easeOutQuint(t-200,-450,450,600)"
+					}]
+				}, function(res) {
+					if (res.state === 'exit') {
+						Binding.unbind({
+							token: btn_binding
+						})
+					}
 				})
 			},
 			expand: function() {
@@ -475,49 +475,47 @@ Tis:
 				let b1 = this.getEl(this.$refs.b1);
 				let b2 = this.getEl(this.$refs.b2);
 				let b3 = this.getEl(this.$refs.b3);
-				Binding.bind({
+				let main_binding = Binding.bind({
 					eventType: 'timing',
-					exitExpression: {
-						origin: 't>100'
-					},
+					exitExpression: 't>100',
 					props: [{
-							element: main_image,
-							property: 'transform.rotateZ',
-							expression: {
-								origin: 'linear(t,0,45,100)'
-							}
-						},{
-							element: main_btn,
-							property: 'background-color',
-							expression: {
-								origin: "evaluateColor('#ff0000','#607D8B',min(t,100)/100)"
-							}
-						}]
+						element: main_image,
+						property: 'transform.rotateZ',
+						expression: 'linear(t,0,45,100)'
+					}, {
+						element: main_btn,
+						property: 'background-color',
+						expression: "evaluateColor('#ff0000','#607D8B',min(t,100)/100)"
+					}]
+				}, function(res) {
+					if (res.state === 'exit') {
+						Binding.unbind({
+							token: main_binding
+						})
+					}
 				});
-				Binding.bind({
+				let btn_binding = Binding.bind({
 					eventType: 'timing',
-					exitExpression: {
-						origin: 't>800'
-					},
+					exitExpression: 't>800',
 					props: [{
-							element: b1,
-							property: 'transform.translateY',
-							expression: {
-								origin: "easeOutBounce(t,0,0-150,800)"
-							}
-						}, {
-							element: b2,
-							property: 'transform.translateY',
-							expression: {
-								origin: "t<=100?0:easeOutBounce(t-100,0,0-300,700)"
-							}
-						}, {
-							element: b3,
-							property: 'transform.translateY',
-							expression: {
-								origin: "t<=200?0:easeOutBounce(t-200,0,0-450,600)"
-							}
-						}]
+						element: b1,
+						property: 'transform.translateY',
+						expression: "easeOutBounce(t,0,0-150,800)"
+					}, {
+						element: b2,
+						property: 'transform.translateY',
+						expression: "t<=100?0:easeOutBounce(t-100,0,0-300,700)"
+					}, {
+						element: b3,
+						property: 'transform.translateY',
+						expression: "t<=200?0:easeOutBounce(t-200,0,0-450,600)"
+					}]
+				}, function(res) {
+					if (res.state === 'exit') {
+						Binding.unbind({
+							token: btn_binding
+						})
+					}
 				})
 			},
 			clickBtn: function(e) {
@@ -532,12 +530,39 @@ Tis:
 	}
 </script>
 <style>
-	.container {flex: 1;}
-	.image {width: 60px;height: 60px;}
-	.text {color: #ffffff;font-size: 30px;}
-	.btn {width: 100px;height: 100px;background-color: #ff0000;align-items: center;justify-content: center;position: absolute;border-radius: 50px;bottom: 25px;right: 25px;}
+	.container {
+		flex: 1;
+	}
+
+	.image {
+		width: 60px;
+		height: 60px;
+	}
+
+	.text {
+		color: #ffffff;
+		font-size: 30px;
+	}
+
+	.btn {
+		width: 100px;
+		height: 100px;
+		background-color: #ff0000;
+		align-items: center;
+		justify-content: center;
+		position: absolute;
+		border-radius: 50px;
+		bottom: 25px;
+		right: 25px;
+	}
 </style>
+
 ```
+
+**注意**
+
+- 推荐`bindingx`引入方式`uni.requireNativePlugin('bindingx')`
+- 暂时不要在`expression`内使用`origin`
 
 ## nvue 里使用 HTML5Plus API
 
