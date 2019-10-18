@@ -231,7 +231,9 @@ module.exports = function () {
     },
     resolveLoader: {
       alias: {
-        'babel-loader': require.resolve('babel-loader')
+        'babel-loader': require.resolve('babel-loader', {
+          paths: [require.resolve('@vue/cli-plugin-babel')]
+        })
       }
     },
     module: {
