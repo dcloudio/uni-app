@@ -50,7 +50,7 @@ if (process.env.UNI_VIEW) { // 方便调试
 }
 module.exports = function configureWebpack (config) {
   if (process.env.UNI_VIEW === 'true') {
-    delete config.externals['vue']
+    config.externals && (delete config.externals['vue'])
     alias['vue$'] = resolve('packages/uni-app-plus/dist/view.runtime.esm.js')
   }
 
