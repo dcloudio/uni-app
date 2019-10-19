@@ -21,8 +21,7 @@ module.exports = function generateApp (compilation) {
     process.env.NODE_ENV === 'production' &&
     process.env.UNI_PLATFORM !== 'app-plus'
   ) {
-    const entryPage = Object.keys(process.UNI_ENTRY)[1]
-    const targetCssName = entryPage ? (entryPage + ext) : `common/main${ext}`
+    const targetCssName = `common/main${ext}`
 
     if (!compilation.assets[targetCssName]) {
       compilation.assets[targetCssName] = {
