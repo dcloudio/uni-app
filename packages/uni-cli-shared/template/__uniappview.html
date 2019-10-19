@@ -23,39 +23,13 @@
       }
     </style>
     <link rel="stylesheet" href="view.css" />
-    <script>
-      /*CONFIG*/
-    </script>
-    <script>
-      var __id__ = '';
-      window.__dispatchGenerateFunc__ = function(page) {
-        __id__ = page;
-        document.title = page;
-        // window.history.pushState('', '', page);
-        var wxss = page.replace('.html', '.wxss')
-        if (
-          typeof __wxAppCode__ !== 'undefined' &&
-          __wxAppCode__.hasOwnProperty(wxss)
-        ) {
-          var setCssToHead = __wxAppCode__[wxss]
-          typeof setCssToHead === 'function' && setCssToHead()
-          document.dispatchEvent(new CustomEvent("generateFuncReady", {
-            detail: {
-              generateFunc: $gwx(page.replace('.html', '.wxml'))
-            }
-          }));
-        } else {
-          plus.webview.currentWebview().setJsFile('_www/' + page.replace('.html', '.js'));
-        }
-      };
-    </script>
-    <script src="__uniappes6.js"></script>
-    <script src="view.umd.js"></script>
-    <script src="app-view.js"></script>
   </head>
 
   <body>
     <div id="app"></div>
+    <script src="__uniappes6.js"></script>
+    <script src="view.umd.js"></script>
+    <script src="app-view.js"></script>
   </body>
 
 </html>
