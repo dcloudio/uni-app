@@ -16,11 +16,23 @@ const parseComponent = require('./parser/component-parser')
 
 const basePreTransformNode = require('./pre-transform-node')
 
-function createGenVar (id) {
+function createGenVar (id, isInSlot = false) {
   return function genVar (name, extra = '') {
+    const isFallbackContent = isInSlot ? ',1' : ''
     extra = extra ? (',' + extra) : ''
-    return `${DATA_ROOT}(${id},'${name}'${extra})`
+    return `${DATA_ROOT}(${id},'${name}'${isFallbackContent}${extra})`
   }
+}
+
+function isInSlot (el) {
+  let parent = el.parent
+  while (parent) {
+    if (parent.tag === 'slot') {
+      return true
+    }
+    parent = parent.parent
+  }
+  return false
 }
 
 // if 使用该方案是因为 template 节点之类无法挂靠 extras
@@ -28,11 +40,11 @@ function processIfConditions (el) {
   if (el.if) {
     el.ifConditions.forEach(con => {
       if (isVar(con.exp)) {
-        con.exp = createGenVar(con.block.attrsMap[ID])(con.block.elseif ? 'v-else-if' : 'v-if')
+        con.exp = createGenVar(con.block.attrsMap[ID], isInSlot(el))(con.block.elseif ? 'v-else-if' : 'v-if')
       }
     })
 
-    el.if = createGenVar(el.attrsMap[ID])('v-if')
+    el.if = createGenVar(el.attrsMap[ID], isInSlot(el))('v-if')
   }
 }
 
@@ -48,7 +60,7 @@ function processBinding (el, genVar) {
 
 function processFor (el, genVal) {
   if (el.for && isVar(el.for)) {
-    el.for = createGenVar(el.forId)('v-for')
+    el.for = createGenVar(el.forId, isInSlot(el))('v-for')
     // <div><li v-for=" { a, b }  in items"></li></div>
     // =>
     // <div><li v-for="$item in items"></li></div>
@@ -75,7 +87,7 @@ function processKey (el) {
         el.key = `${forEl.alias}['k${keyIndex}']`
       }
     } else {
-      isVar(el.key) && (el.key = createGenVar(el.attrsMap[ID])('a-key'))
+      isVar(el.key) && (el.key = createGenVar(el.attrsMap[ID], isInSlot(el))('a-key'))
     }
   }
 }
@@ -109,7 +121,7 @@ function processText (el, parent) {
   const state = {
     index: 0,
     view: true,
-    genVar: createGenVar(parent.attrsMap[ID])
+    genVar: createGenVar(parent.attrsMap[ID], isInSlot(parent))
   }
   // fixed by xxxxxx 注意：保持平台一致性，trim 一下
   el.expression = parseText(el.text.trim(), false, state).expression
@@ -127,7 +139,7 @@ function transformNode (el, parent, state) {
   }
 
   const id = el.attrsMap[ID]
-  const genVar = createGenVar(id)
+  const genVar = createGenVar(id, isInSlot(el))
 
   processFor(el, genVar)
   processKey(el)
