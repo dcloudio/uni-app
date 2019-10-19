@@ -8557,7 +8557,9 @@ var serviceContext = (function () {
   });
 
   function publishHandler (eventType, args, pageIds) {
-    args = JSON.stringify(args);
+    args = JSON.stringify(args, (k, v) => { //  将 undefined 格式化为空字符串
+      return typeof v === 'undefined' ? '' : v
+    });
     if (process.env.NODE_ENV !== 'production') {
       console.log(`UNIAPP[publishHandler]:[${+new Date()}]`, eventType, args, pageIds);
     }
@@ -8949,12 +8951,12 @@ var serviceContext = (function () {
     };
   }
 
-  function noop() {}
+  function noop () {}
 
   const callbacks$a = []; // 数据同步 callback
 
   class VDomSync {
-    constructor(pageId, pagePath) {
+    constructor (pageId, pagePath) {
       this.pageId = pageId;
       this.pagePath = pagePath;
       this.batchData = [];
@@ -8966,7 +8968,7 @@ var serviceContext = (function () {
       this._init();
     }
 
-    _init() {
+    _init () {
       UniServiceJSBridge.subscribe(VD_SYNC_CALLBACK, () => {
         const copies = callbacks$a.slice(0);
         callbacks$a.length = 0;
@@ -8993,43 +8995,43 @@ var serviceContext = (function () {
       });
     }
 
-    addMountedVm(vm) {
+    addMountedVm (vm) {
       vm._$mounted(); // 触发vd数据同步
-      this.addCallback(function mounted() {
+      this.addCallback(function mounted () {
         vm.__call_hook('mounted');
       });
     }
 
-    addUpdatedVm(vm) {
+    addUpdatedVm (vm) {
       vm._$updated(); // 触发vd数据同步
-      this.addCallback(function mounted() {
+      this.addCallback(function mounted () {
         vm.__call_hook('updated');
       });
     }
 
-    addCallback(callback) {
+    addCallback (callback) {
       isFn(callback) && callbacks$a.push(callback);
     }
 
-    getVm(id) {
+    getVm (id) {
       return this.vms[id]
     }
 
-    addVm(vm) {
+    addVm (vm) {
       this.vms[vm._$id] = vm;
     }
 
-    removeVm(vm) {
+    removeVm (vm) {
       delete this.vms[vm._$id];
     }
 
-    addEvent(cid, nid, name, handler) {
+    addEvent (cid, nid, name, handler) {
       const cHandlers = this.handlers[cid] || (this.handlers[cid] = Object.create(null));
       const nHandlers = cHandlers[nid] || (cHandlers[nid] = Object.create(null));
       (nHandlers[name] || (nHandlers[name] = [])).push(handler);
     }
 
-    removeEvent(cid, nid, name, handler) {
+    removeEvent (cid, nid, name, handler) {
       const cHandlers = this.handlers[cid] || (this.handlers[cid] = Object.create(null));
       const nHandlers = cHandlers[nid] || (cHandlers[nid] = Object.create(null));
       const eHandlers = nHandlers[name];
@@ -9041,11 +9043,11 @@ var serviceContext = (function () {
       }
     }
 
-    push(type, nodeId, data) {
+    push (type, nodeId, data) {
       this.batchData.push([type, [nodeId, data]]);
     }
 
-    flush() {
+    flush () {
       if (!this.initialized) {
         this.initialized = true;
         this.batchData.push([PAGE_CREATED, [this.pageId, this.pagePath]]);
@@ -9061,7 +9063,7 @@ var serviceContext = (function () {
       }
     }
 
-    destroy() {
+    destroy () {
       this.batchData.length = 0;
       this.vms = Object.create(null);
       this.initialized = false;
@@ -9099,17 +9101,17 @@ var serviceContext = (function () {
     return result
   }
 
-  function initData(Vue) {
+  function initData (Vue) {
     Vue.prototype._$s = setData;
     Vue.prototype._$i = setIfData;
     Vue.prototype._$f = setForData;
     Vue.prototype._$e = setElseIfData;
 
-    Vue.prototype._$setData = function setData(type, data) {
+    Vue.prototype._$setData = function setData (type, data) {
       this._$vd.push(type, this._$id, data);
     };
 
-    Vue.prototype._$mounted = function mounted() {
+    Vue.prototype._$mounted = function mounted () {
       if (!this._$vd) {
         return
       }
@@ -9122,7 +9124,7 @@ var serviceContext = (function () {
       }
     };
 
-    Vue.prototype._$updated = function updated() {
+    Vue.prototype._$updated = function updated () {
       if (!this._$vd) {
         return
       }
@@ -9133,13 +9135,13 @@ var serviceContext = (function () {
     };
 
     Object.defineProperty(Vue.prototype, '_$vd', {
-      get() {
+      get () {
         return this.$root._$vdomSync
       }
     });
 
     Vue.mixin({
-      beforeCreate() {
+      beforeCreate () {
         if (this.$options.mpType) {
           this.mpType = this.$options.mpType;
         }
@@ -9160,7 +9162,7 @@ var serviceContext = (function () {
           this._$newData = Object.create(null);
         }
       },
-      beforeUpdate() {
+      beforeUpdate () {
         if (!this._$vd) {
           return
         }
@@ -9169,7 +9171,7 @@ var serviceContext = (function () {
         console.log(`[${this._$id}] beforeUpdate ` + Date.now());
         this._$newData = Object.create(null);
       },
-      beforeDestroy() {
+      beforeDestroy () {
         if (!this._$vd) {
           return
         }
@@ -9179,7 +9181,7 @@ var serviceContext = (function () {
     });
   }
 
-  function setData(id, name, value) {
+  function setData (id, name, value) {
     const diffData = this._$newData[id] || (this._$newData[id] = {});
 
     if (typeof name !== 'string') {
@@ -9195,7 +9197,7 @@ var serviceContext = (function () {
     return (diffData[name] = value)
   }
 
-  function setForData(id, value) {
+  function setForData (id, value) {
     const diffData = this._$newData[id] || (this._$newData[id] = {});
     const vForData = diffData['v-for'] || (diffData['v-for'] = []);
 
@@ -9216,11 +9218,11 @@ var serviceContext = (function () {
     return key
   }
 
-  function setIfData(id, value) {
+  function setIfData (id, value) {
     return ((this._$newData[id] || (this._$newData[id] = {}))['v-if'] = value)
   }
 
-  function setElseIfData(id, value) {
+  function setElseIfData (id, value) {
     return ((this._$newData[id] || (this._$newData[id] = {}))['v-else-if'] = value)
   }
 

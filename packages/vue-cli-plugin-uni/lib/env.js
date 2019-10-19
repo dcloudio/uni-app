@@ -120,6 +120,7 @@ if (process.env.UNI_PLATFORM === 'app-plus') {
     process.env.UNI_USING_V3 = true
     platformOptions.usingComponents = true
     process.env.UNI_OUTPUT_TMP_DIR = ''
+    isNVueCompiler = true // v3 目前仅支持 uni-app 模式
   }
 
   if (platformOptions.nvueCompiler === 'uni-app') {

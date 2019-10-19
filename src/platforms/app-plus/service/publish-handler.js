@@ -1,5 +1,7 @@
 export function publishHandler (eventType, args, pageIds) {
-  args = JSON.stringify(args)
+  args = JSON.stringify(args, (k, v) => { //  将 undefined 格式化为空字符串
+    return typeof v === 'undefined' ? '' : v
+  })
   if (process.env.NODE_ENV !== 'production') {
     console.log(`UNIAPP[publishHandler]:[${+new Date()}]`, eventType, args, pageIds)
   }
