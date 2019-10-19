@@ -7,7 +7,7 @@ import {
   requireNativePlugin
 } from '../bridge'
 
-const TABBAR_HEIGHT = 56
+const TABBAR_HEIGHT = 50
 
 let config
 
@@ -91,6 +91,7 @@ function showTabBar (animation) {
 }
 
 export default {
+  id: '0',
   init (options, clickCallback) {
     if (options && options.list.length) {
       config = options
@@ -101,7 +102,7 @@ export default {
       console.log(`uni.requireNativePlugin("uni-tabview") error ${error}`)
     }
     tabBar && tabBar.onClick(({ index }) => {
-      clickCallback(config.list[index], index, true)
+      clickCallback(config.list[index], index)
     })
     tabBar && tabBar.onMidButtonClick(() => {
       publish('onTabBarMidButtonTap', {})
@@ -146,5 +147,13 @@ export default {
   },
   get height () {
     return config && config.height ? parseFloat(config.height) : TABBAR_HEIGHT
+  },
+  setStyle ({ mask }) {
+    tabBar.setMask({
+      color: mask
+    })
+  },
+  addEventListener (name, callback) {
+    tabBar.onMaskClick(callback)
   }
 }
