@@ -1165,7 +1165,7 @@ export default {
 - 在微信自定义组件中`wxcomponents`也可以使用wxs
 - `nvue`页面暂不支持wxs、sjs、filter.js
 - 各个`script`标签会分别被打包至对应支持平台，不需要额外写条件编译
-- 自`HBuilderX 2.2.5-alpha`开始，不推荐使用各个小程序自有的引入方式，推荐使用`script`标签引入
+- 自`HBuilderX 2.2.5`开始，不推荐使用各个小程序自有的引入方式，推荐使用`script`标签引入
 
 
 ## 致谢
