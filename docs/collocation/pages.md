@@ -58,6 +58,7 @@
 		"height": "50px",
 		"fontSize": "10px",
 		"iconWidth": "24px",
+		"spacing": "3px",
 		"list": [{
 			"pagePath": "pages/component/index",
 			"iconPath": "static/image/icon_component.png",
@@ -676,6 +677,7 @@ h5 平台下拉刷新动画，只有 circle 类型。
 |position|String|否|bottom|可选值 bottom、top|top 值仅微信小程序支持|
 |fontSize|String|否|10px|文字默认大小|App 2.3.4+|
 |iconWidth|String|否|24px|图标默认宽度（高度等比例缩放）|App 2.3.4+|
+|spacing|String|否|3px|图标和文字的间距|App 2.3.4+|
 |height|String|否|50px|tabBar 默认高度|App 2.3.4+|
 |midButton|Object|否||中间按钮 仅在 list 项为偶数时有效|App 2.3.4+|
 
