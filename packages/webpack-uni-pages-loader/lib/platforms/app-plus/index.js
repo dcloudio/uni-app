@@ -395,12 +395,12 @@ module.exports = function (pagesJson, userManifestJson) {
     if (pagesJson.tabBar && pagesJson.tabBar.list && pagesJson.tabBar.list.length) {
       const tabBar = manifestJson.plus.tabBar = Object.assign({}, pagesJson.tabBar)
       const borderStyles = {
-        black: 'rgba(0,0,0,0.8)',
-        white: 'rgba(255,255,255,0.8)'
+        black: 'rgba(0,0,0,0.4)',
+        white: 'rgba(255,255,255,0.4)'
       }
       let borderStyle = tabBar.borderStyle
       if (!borderStyle) {
-        borderStyle = borderStyles.black
+        borderStyle = 'black'
       }
       if (borderStyle in borderStyles) {
         tabBar.borderStyle = borderStyles[borderStyle]
