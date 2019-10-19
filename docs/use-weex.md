@@ -747,7 +747,7 @@ export default {
 - 支持的css有限，不过并不影响布局出你需要的界面，flex还是非常强大的。[详见](https://weex.apache.org/zh/docs/styles/common-styles.html#%E7%9B%92%E6%A8%A1%E5%9E%8B)
 - class 进行绑定时只支持数组语法。
 - nvue页面没有bounce回弹效果，只有几个列表组件有bounce效果，包括 list、recycle-list、waterfall。
-- Android上一个页面内使用大量圆角会造成性能问题，尤其是多个角的样式还不一样。应避免这类使用。
+- Android端在一个页面内使用大量圆角边框会造成性能问题，尤其是多个角的样式还不一样。应避免这类使用。
 
 ## 单位说明
 - weex的css单位支持如下：
