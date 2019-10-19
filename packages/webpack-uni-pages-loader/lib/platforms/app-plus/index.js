@@ -394,7 +394,17 @@ module.exports = function (pagesJson, userManifestJson) {
     // 带 tab
     if (pagesJson.tabBar && pagesJson.tabBar.list && pagesJson.tabBar.list.length) {
       const tabBar = manifestJson.plus.tabBar = Object.assign({}, pagesJson.tabBar)
-      tabBar.borderStyle = tabBar.borderStyle === 'white' ? '#ffffff' : '#c6c6c6'
+      const borderStyles = {
+        black: 'rgba(0,0,0,0.8)',
+        white: 'rgba(255,255,255,0.8)'
+      }
+      let borderStyle = tabBar.borderStyle
+      if (!borderStyle) {
+        borderStyle = borderStyles.black
+      }
+      if (borderStyle in borderStyles) {
+        tabBar.borderStyle = borderStyles[borderStyle]
+      }
       tabBar.height = `${parseFloat(tabBar.height) || TABBAR_HEIGHT}px`
       // 非纯 nvue 项目首页为 nvue 页面
       if (!process.env.UNI_USING_NATIVE && isNVueEntryPage) {
