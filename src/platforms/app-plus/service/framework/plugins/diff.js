@@ -1,16 +1,26 @@
+import {
+  isPlainObject
+} from 'uni-shared'
+
 function setResult (data, k, v) {
   data[k] = v
 }
 
-function diffObject (id, newObj, oldObj, result) {
-  let key, cur, old
+function diffObject (newObj, oldObj) {
+  let result, key, cur, old
   for (key in newObj) {
     cur = newObj[key]
     old = oldObj[key]
     if (old !== cur) {
-      setResult(result[id] || (result[id] = {}), key, cur)
+      if (key === 's' && isPlainObject(cur) && isPlainObject(old)) {
+        const style = diffObject(cur, old)
+        style && setResult(result || (result = Object.create(null)), 's', style)
+      } else {
+        setResult(result || (result = Object.create(null)), key, cur)
+      }
     }
   }
+  return result
 }
 
 export function diff (newData, oldData, result) {
@@ -22,7 +32,8 @@ export function diff (newData, oldData, result) {
       setResult(result, id, cur)
       continue
     }
-    diffObject(id, cur, old, result)
+    const idObj = diffObject(cur, old)
+    idObj && setResult(result, id, idObj)
   }
   return result
 }
