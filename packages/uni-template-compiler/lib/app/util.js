@@ -7,6 +7,10 @@ const ITERATOR2 = '$2'
 const ITERATOR3 = '$3'
 const DATA_ROOT = '_$g'
 
+const V_FOR = 'f'
+const V_IF = 'i'
+const V_ELSE_IF = 'e'
+
 function isVar (str) {
   if (!str) {
     return false
@@ -141,6 +145,9 @@ function traverseNode (el, parent, state) {
 }
 
 module.exports = {
+  V_FOR,
+  V_IF,
+  V_ELSE_IF,
   ID,
   DATA_ROOT,
   isVar,

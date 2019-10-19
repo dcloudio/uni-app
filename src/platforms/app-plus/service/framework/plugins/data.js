@@ -4,13 +4,19 @@ import {
 } from 'uni-shared'
 
 import {
+  MOUNTED_DATA,
+  UPDATED_DATA
+} from '../../../constants'
+
+import {
   VDomSync
 } from './vdom-sync'
 
 import {
-  MOUNTED_DATA,
-  UPDATED_DATA
-} from '../../../constants'
+  V_IF,
+  V_FOR,
+  V_ELSE_IF
+} from '../../constants'
 
 import {
   diff
@@ -114,7 +120,7 @@ function setData (id, name, value) {
 
 function setForData (id, value) {
   const diffData = this._$newData[id] || (this._$newData[id] = {})
-  const vForData = diffData['v-for'] || (diffData['v-for'] = [])
+  const vForData = diffData[V_FOR] || (diffData[V_FOR] = [])
 
   if (value.forItems) {
     return value.forItems
@@ -134,9 +140,9 @@ function setForData (id, value) {
 }
 
 function setIfData (id, value) {
-  return ((this._$newData[id] || (this._$newData[id] = {}))['v-if'] = value)
+  return ((this._$newData[id] || (this._$newData[id] = {}))[V_IF] = value)
 }
 
 function setElseIfData (id, value) {
-  return ((this._$newData[id] || (this._$newData[id] = {}))['v-else-if'] = value)
+  return ((this._$newData[id] || (this._$newData[id] = {}))[V_ELSE_IF] = value)
 }

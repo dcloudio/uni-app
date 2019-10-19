@@ -1,6 +1,9 @@
 const {
   ID,
   DATA_ROOT,
+  V_FOR,
+  V_IF,
+  V_ELSE_IF,
   isVar,
   getForEl,
   updateForEleId,
@@ -40,11 +43,11 @@ function processIfConditions (el) {
   if (el.if) {
     el.ifConditions.forEach(con => {
       if (isVar(con.exp)) {
-        con.exp = createGenVar(con.block.attrsMap[ID], isInSlot(el))(con.block.elseif ? 'v-else-if' : 'v-if')
+        con.exp = createGenVar(con.block.attrsMap[ID], isInSlot(el))(con.block.elseif ? V_ELSE_IF : V_IF)
       }
     })
 
-    el.if = createGenVar(el.attrsMap[ID], isInSlot(el))('v-if')
+    el.if = createGenVar(el.attrsMap[ID], isInSlot(el))(V_IF)
   }
 }
 
@@ -60,7 +63,7 @@ function processBinding (el, genVar) {
 
 function processFor (el, genVal) {
   if (el.for && isVar(el.for)) {
-    el.for = createGenVar(el.forId, isInSlot(el))('v-for')
+    el.for = createGenVar(el.forId, isInSlot(el))(V_FOR)
     // <div><li v-for=" { a, b }  in items"></li></div>
     // =>
     // <div><li v-for="$item in items"></li></div>

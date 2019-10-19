@@ -8,3 +8,8 @@ export const ANI_CLOSE = downgrade ? 'slide-out-right' : 'pop-out'
 export const TITLEBAR_HEIGHT = 44
 
 export const VIEW_WEBVIEW_PATH = '_www/__uniappview.html'
+
+export const V_FOR = 'f'
+export const V_IF = 'i'
+export const V_ELSE_IF = 'e'
+export const V_SHOW = 'v-show'

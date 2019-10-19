@@ -3588,6 +3588,11 @@ var serviceContext = (function () {
 
   const VIEW_WEBVIEW_PATH = '_www/__uniappview.html';
 
+  const V_FOR = 'f';
+  const V_IF = 'i';
+  const V_ELSE_IF = 'e';
+  const V_SHOW = 'v-show';
+
   const callbacks = {};
   const WEB_INVOKE_APPSERVICE = 'WEB_INVOKE_APPSERVICE';
   // 简单处理 view 层与 service 层的通知系统
@@ -3785,7 +3790,7 @@ var serviceContext = (function () {
     }, false);
   }
 
-  const TABBAR_HEIGHT = 56;
+  const TABBAR_HEIGHT = 50;
 
   let config;
 
@@ -3869,6 +3874,7 @@ var serviceContext = (function () {
   }
 
   var tabBar$1 = {
+    id: '0',
     init (options, clickCallback) {
       if (options && options.list.length) {
         config = options;
@@ -3879,7 +3885,7 @@ var serviceContext = (function () {
         console.log(`uni.requireNativePlugin("uni-tabview") error ${error}`);
       }
       tabBar && tabBar.onClick(({ index }) => {
-        clickCallback(config.list[index], index, true);
+        clickCallback(config.list[index], index);
       });
       tabBar && tabBar.onMidButtonClick(() => {
         publish('onTabBarMidButtonTap', {});
@@ -3924,6 +3930,14 @@ var serviceContext = (function () {
     },
     get height () {
       return config && config.height ? parseFloat(config.height) : TABBAR_HEIGHT
+    },
+    setStyle ({ mask }) {
+      tabBar.setMask({
+        color: mask
+      });
+    },
+    addEventListener (name, callback) {
+      tabBar.onMaskClick(callback);
     }
   };
 
@@ -8556,10 +8570,22 @@ var serviceContext = (function () {
     }
   });
 
+  function optimize (k, v) {
+    if (typeof v === 'undefined') {
+      return ''
+    }
+    if (
+      k === V_IF ||
+      k === V_ELSE_IF ||
+      k === V_SHOW
+    ) {
+      return v ? 1 : 0
+    }
+    return v
+  }
+
   function publishHandler (eventType, args, pageIds) {
-    args = JSON.stringify(args, (k, v) => { //  将 undefined 格式化为空字符串
-      return typeof v === 'undefined' ? '' : v
-    });
+    args = JSON.stringify(args, optimize);
     if (process.env.NODE_ENV !== 'production') {
       console.log(`UNIAPP[publishHandler]:[${+new Date()}]`, eventType, args, pageIds);
     }
@@ -9199,7 +9225,7 @@ var serviceContext = (function () {
 
   function setForData (id, value) {
     const diffData = this._$newData[id] || (this._$newData[id] = {});
-    const vForData = diffData['v-for'] || (diffData['v-for'] = []);
+    const vForData = diffData[V_FOR] || (diffData[V_FOR] = []);
 
     if (value.forItems) {
       return value.forItems
@@ -9219,11 +9245,11 @@ var serviceContext = (function () {
   }
 
   function setIfData (id, value) {
-    return ((this._$newData[id] || (this._$newData[id] = {}))['v-if'] = value)
+    return ((this._$newData[id] || (this._$newData[id] = {}))[V_IF] = value)
   }
 
   function setElseIfData (id, value) {
-    return ((this._$newData[id] || (this._$newData[id] = {}))['v-else-if'] = value)
+    return ((this._$newData[id] || (this._$newData[id] = {}))[V_ELSE_IF] = value)
   }
 
   /* @flow */

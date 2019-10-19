@@ -21,11 +21,11 @@ describe('codegen', () => {
   it('generate v-for directive', () => {
     assertCodegen(
       '<div><template v-for="item in items"><div></div><div></div></template></div>',
-      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},[_l((_$g(1,'v-for')),function(item,$10,$20,$30){return [_c('v-uni-view',{key:item['k0'],attrs:{"_i":("2-"+$30)}}),_c('v-uni-view',{key:item['k1'],attrs:{"_i":("3-"+$30)}})]})],2)}`
+      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},[_l((_$g(1,'f')),function(item,$10,$20,$30){return [_c('v-uni-view',{key:item['k0'],attrs:{"_i":("2-"+$30)}}),_c('v-uni-view',{key:item['k1'],attrs:{"_i":("3-"+$30)}})]})],2)}`
     )
     assertCodegen(
       '<div><template v-for="item in items"><span v-if="item.sub"></span></template></div>',
-      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},[_l((_$g(1,'v-for')),function(item,$10,$20,$30){return [(_$g(("2-"+$30),'v-if'))?_c('v-uni-label',{key:item['k0'],attrs:{"_i":("2-"+$30)}}):_e()]})],2)}`
+      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},[_l((_$g(1,'f')),function(item,$10,$20,$30){return [(_$g(("2-"+$30),'i'))?_c('v-uni-label',{key:item['k0'],attrs:{"_i":("2-"+$30)}}):_e()]})],2)}`
     )
   })
   it('generate events with multiple statements', () => {
