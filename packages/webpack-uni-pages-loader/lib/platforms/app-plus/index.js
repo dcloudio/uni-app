@@ -405,6 +405,9 @@ module.exports = function (pagesJson, userManifestJson) {
       if (borderStyle in borderStyles) {
         tabBar.borderStyle = borderStyles[borderStyle]
       }
+      if (!tabBar.selectedColor) {
+        tabBar.selectedColor = '#0062cc'
+      }
       tabBar.height = `${parseFloat(tabBar.height) || TABBAR_HEIGHT}px`
       // 非纯 nvue 项目首页为 nvue 页面
       if (!process.env.UNI_USING_NATIVE && isNVueEntryPage) {
