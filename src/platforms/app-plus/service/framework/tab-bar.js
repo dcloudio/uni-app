@@ -50,17 +50,19 @@ function setTabBarBadge (type, index, text) {
  * 动态设置 tabBar 某一项的内容
  */
 function setTabBarItem (index, text, iconPath, selectedIconPath) {
-  const item = {}
+  const item = {
+    index
+  }
+  if (text !== undefined) {
+    item.text = text
+  }
   if (iconPath) {
     item.iconPath = getRealPath(iconPath)
   }
   if (selectedIconPath) {
     item.selectedIconPath = getRealPath(selectedIconPath)
   }
-  tabBar && tabBar.setTabBarItem(Object.assign({
-    index,
-    text
-  }, item))
+  tabBar && tabBar.setTabBarItem(item)
 }
 /**
  * 动态设置 tabBar 的整体样式
