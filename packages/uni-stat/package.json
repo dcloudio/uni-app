@@ -34,5 +34,5 @@
     "rollup-plugin-replace": "^2.2.0",
     "rollup-plugin-uglify": "^6.0.2"
   },
-  "gitHead": "10184426b19cb76e01c93fb25c982c72887557e8"
+  "gitHead": "f95beee1199e9d4e748ec4eb6d32631f8ce02489"
 }
