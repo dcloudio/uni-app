@@ -390,6 +390,7 @@ module.exports = function (pagesJson, userManifestJson) {
     } else if (isNVueEntryPage) {
       // 非纯 nvue 项目首页为 nvue 页面
       manifestJson.plus.launchwebview.id = '2'
+      manifestJson.plus.launchwebview.render = 'always'
     }
     // 带 tab
     if (pagesJson.tabBar && pagesJson.tabBar.list && pagesJson.tabBar.list.length) {
