@@ -43,12 +43,27 @@ export function setTabBarStyle ({
       errMsg: 'setTabBarStyle:fail not TabBar page'
     }
   }
-  tabBar.setTabBarStyle({
-    color,
-    selectedColor,
-    backgroundColor,
-    borderStyle: borderStyle === 'white' ? '#ffffff' : '#c6c6c6'
-  })
+  const style = {}
+  const borderStyles = {
+    black: 'rgba(0,0,0,0.4)',
+    white: 'rgba(255,255,255,0.4)'
+  }
+  if (color) {
+    style.color = color
+  }
+  if (selectedColor) {
+    style.selectedColor = selectedColor
+  }
+  if (backgroundColor) {
+    style.backgroundColor = backgroundColor
+  }
+  if (borderStyle in borderStyles) {
+    borderStyle = borderStyles[borderStyle]
+  }
+  if (borderStyle) {
+    style.borderStyle = borderStyle
+  }
+  tabBar.setTabBarStyle(style)
   return {
     errMsg: 'setTabBarStyle:ok'
   }
