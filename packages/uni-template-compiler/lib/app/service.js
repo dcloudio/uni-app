@@ -18,6 +18,8 @@ const parseBlock = require('./parser/block-parser')
 
 const preTransformNode = require('./pre-transform-node')
 
+const optimize = require('./optimizer')
+
 function genData (el) {
   delete el.$parentIterator3
 
@@ -296,12 +298,13 @@ function transformNode (el, parent, state) {
   processDirs(el)
 }
 
-function postTransformNode (el) {
+function postTransformNode (el, options) {
   if (!el.parent) { // 从根节点开始递归处理
     traverseNode(el, false, {
       forIteratorId: 0,
       transformNode
     })
+    optimize(el, options)
   }
 }
 module.exports = {

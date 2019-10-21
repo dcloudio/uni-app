@@ -6482,8 +6482,9 @@ var serviceContext = (function () {
             timestamp: Date.now()
           }
         }, [pageId]);
-
-        createPage(route, pageId, query, pageInstance).$mount();
+        try {
+          createPage(route, pageId, query, pageInstance).$mount();
+        } catch (e) {}
       }
     }
 
@@ -8571,9 +8572,6 @@ var serviceContext = (function () {
   });
 
   function optimize (k, v) {
-    if (typeof v === 'undefined') {
-      return ''
-    }
     if (
       k === V_IF ||
       k === V_ELSE_IF ||

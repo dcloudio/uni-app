@@ -1,11 +1,6 @@
 import Vue from 'vue'
 
 import {
-  hasOwn
-}
-  from 'uni-shared'
-
-import {
   PAGE_CREATE,
   MOUNTED_DATA,
   UPDATED_DATA,
@@ -74,16 +69,10 @@ function vdSync ({
 }
 
 function getData (id, name, isFallbackContent = false) {
-  const root = this.$r
-  if (hasOwn(root, id)) {
-    const vNodeData = root[id]
-    if (hasOwn(vNodeData, name)) {
-      return vNodeData[name]
-    } else {
-      !isFallbackContent && console.error(this.$options.__file + `:[${this._$id}]$r[${id}][${name}] is undefined`)
-    }
-  } else {
-    !isFallbackContent && console.error(this.$options.__file + `:[${this._$id}]$r[${id}] is undefined`)
+  try {
+    return this.$r[id][name]
+  } catch (e) {
+    !isFallbackContent && console.error(this.$options.__file + `:[${this._$id}]$r[${id}][${name}] is undefined`)
   }
 }
 

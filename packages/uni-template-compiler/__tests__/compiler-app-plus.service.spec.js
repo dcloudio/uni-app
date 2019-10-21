@@ -34,86 +34,86 @@ describe('codegen', () => {
   it('generate filters with no arguments', () => {
     assertCodegen(
       '<div>{{ d | e() }}</div>',
-      `with(this){return _c('div',{attrs:{"_i":0}},[_c('text',{extras:{t0:_s(_f("e")(d))},attrs:{"_i":0}})])}`
+      `with(this){return _c('div',[_c('text',{extras:{t0:_s(_f("e")(d))},attrs:{"_i":0}})])}`
     )
   })
 
   it('generate v-for directive', () => {
     assertCodegen(
       '<div><li v-for="item in items" :key="item.uid"></li></div>',
-      `with(this){return _c('div',{attrs:{"_i":0}},_l((_$f(1,{forItems:items})),function(item,$10,$20,$30){return _c('li',{key:_$f(1,{forIndex:$20,key:item.uid}),attrs:{"_i":("1-"+$30)}})}),0)}`
+      `with(this){return _c('div',_l((_$f(1,{forItems:items})),function(item,$10,$20,$30){return _c('li',{key:_$f(1,{forIndex:$20,key:item.uid})})}),0)}`
     )
     // iterator syntax
     assertCodegen(
       '<div><li v-for="(item, i) in items"></li></div>',
-      `with(this){return _c('div',{attrs:{"_i":0}},_l((_$f(1,{forItems:items})),function(item,i,$20,$30){return _c('li',{key:_$f(1,{forIndex:$20,key:1+'-'+$30}),attrs:{"_i":("1-"+$30)}})}),0)}`
+      `with(this){return _c('div',_l((_$f(1,{forItems:items})),function(item,i,$20,$30){return _c('li',{key:_$f(1,{forIndex:$20,key:1+'-'+$30})})}),0)}`
     )
     assertCodegen(
       '<div><li v-for="(item, key, index) in items"></li></div>',
-      `with(this){return _c('div',{attrs:{"_i":0}},_l((_$f(1,{forItems:items})),function(item,key,index,$30){return _c('li',{key:_$f(1,{forIndex:index,key:1+'-'+$30}),attrs:{"_i":("1-"+$30)}})}),0)}`
+      `with(this){return _c('div',_l((_$f(1,{forItems:items})),function(item,key,index,$30){return _c('li',{key:_$f(1,{forIndex:index,key:1+'-'+$30})})}),0)}`
     )
     // destructuring
     assertCodegen(
       '<div><li v-for="{ a, b } in items"></li></div>',
-      `with(this){return _c('div',{attrs:{"_i":0}},_l((_$f(1,{forItems:items})),function({ a, b },$10,$20,$30){return _c('li',{key:_$f(1,{forIndex:$20,key:1+'-'+$30}),attrs:{"_i":("1-"+$30)}})}),0)}`
+      `with(this){return _c('div',_l((_$f(1,{forItems:items})),function({ a, b },$10,$20,$30){return _c('li',{key:_$f(1,{forIndex:$20,key:1+'-'+$30})})}),0)}`
     )
     assertCodegen(
       '<div><li v-for="({ a, b }, key, index) in items"></li></div>',
-      `with(this){return _c('div',{attrs:{"_i":0}},_l((_$f(1,{forItems:items})),function({ a, b },key,index,$30){return _c('li',{key:_$f(1,{forIndex:index,key:1+'-'+$30}),attrs:{"_i":("1-"+$30)}})}),0)}`
+      `with(this){return _c('div',_l((_$f(1,{forItems:items})),function({ a, b },key,index,$30){return _c('li',{key:_$f(1,{forIndex:index,key:1+'-'+$30})})}),0)}`
     )
     // v-for with extra element
     assertCodegen(
       '<div><p></p><li v-for="item in items"></li></div>',
-      `with(this){return _c('div',{attrs:{"_i":0}},[_c('p',{attrs:{"_i":1}}),_l((_$f(2,{forItems:items})),function(item,$10,$20,$30){return _c('li',{key:_$f(2,{forIndex:$20,key:2+'-'+$30}),attrs:{"_i":("2-"+$30)}})})],2)}`
+      `with(this){return _c('div',[_c('p'),_l((_$f(2,{forItems:items})),function(item,$10,$20,$30){return _c('li',{key:_$f(2,{forIndex:$20,key:2+'-'+$30})})})],2)}`
     )
   })
 
   it('generate v-if directive', () => {
     assertCodegen(
       '<p v-if="show">hello</p>',
-      `with(this){return (_$i(0,show))?_c('p',{attrs:{"_i":0}}):_e()}`
+      `with(this){return (_$i(0,show))?_c('p'):_e()}`
     )
   })
 
   it('generate v-else directive', () => {
     assertCodegen(
       '<div><p v-if="show">hello</p><p v-else>world</p></div>',
-      `with(this){return _c('div',{attrs:{"_i":0}},[(_$i(1,show))?_c('p',{attrs:{"_i":1}}):_c('p',{attrs:{"_i":2}})])}`
+      `with(this){return _c('div',[(_$i(1,show))?_c('p'):_c('p')])}`
     )
   })
 
   it('generate v-else-if directive', () => {
     assertCodegen(
       '<div><p v-if="show">hello</p><p v-else-if="hide">world</p></div>',
-      `with(this){return _c('div',{attrs:{"_i":0}},[(_$i(1,show))?_c('p',{attrs:{"_i":1}}):(_$e(2,hide))?_c('p',{attrs:{"_i":2}}):_e()])}`
+      `with(this){return _c('div',[(_$i(1,show))?_c('p'):(_$e(2,hide))?_c('p'):_e()])}`
     )
   })
 
   it('generate v-else-if with v-else directive', () => {
     assertCodegen(
       '<div><p v-if="show">hello</p><p v-else-if="hide">world</p><p v-else>bye</p></div>',
-      `with(this){return _c('div',{attrs:{"_i":0}},[(_$i(1,show))?_c('p',{attrs:{"_i":1}}):(_$e(2,hide))?_c('p',{attrs:{"_i":2}}):_c('p',{attrs:{"_i":3}})])}`
+      `with(this){return _c('div',[(_$i(1,show))?_c('p'):(_$e(2,hide))?_c('p'):_c('p')])}`
     )
   })
 
   it('generate multi v-else-if with v-else directive', () => {
     assertCodegen(
       '<div><p v-if="show">hello</p><p v-else-if="hide">world</p><p v-else-if="3">elseif</p><p v-else>bye</p></div>',
-      `with(this){return _c('div',{attrs:{"_i":0}},[(_$i(1,show))?_c('p',{attrs:{"_i":1}}):(_$e(2,hide))?_c('p',{attrs:{"_i":2}}):(3)?_c('p',{attrs:{"_i":3}}):_c('p',{attrs:{"_i":4}})])}`
+      `with(this){return _c('div',[(_$i(1,show))?_c('p'):(_$e(2,hide))?_c('p'):(3)?_c('p'):_c('p')])}`
     )
   })
 
   it('generate ref', () => {
     assertCodegen(
       '<p ref="component1"></p>',
-      `with(this){return _c('p',{ref:"component1",attrs:{"_i":0}})}`
+      `with(this){return _c('p',{ref:"component1"})}`
     )
   })
 
   it('generate ref on v-for', () => {
     assertCodegen(
       '<ul><li v-for="item in items" ref="component1"></li></ul>',
-      `with(this){return _c('ul',{attrs:{"_i":0}},_l((_$f(1,{forItems:items})),function(item,$10,$20,$30){return _c('li',{key:_$f(1,{forIndex:$20,key:1+'-'+$30}),ref:"component1",refInFor:true,attrs:{"_i":("1-"+$30)}})}),0)}`
+      `with(this){return _c('ul',_l((_$f(1,{forItems:items})),function(item,$10,$20,$30){return _c('li',{key:_$f(1,{forIndex:$20,key:1+'-'+$30}),ref:"component1",refInFor:true})}),0)}`
     )
   })
 
@@ -162,35 +162,35 @@ describe('codegen', () => {
   it('generate template tag', () => {
     assertCodegen(
       '<div><template><p>{{hello}}</p></template></div>',
-      `with(this){return _c('div',{attrs:{"_i":0}},[[_c('p',{attrs:{"_i":2}},[_c('text',{extras:{t0:_s(hello)},attrs:{"_i":2}})])]],2)}`
+      `with(this){return _c('div',[[_c('p',[_c('text',{extras:{t0:_s(hello)},attrs:{"_i":2}})])]],2)}`
     )
   })
 
   it('generate single slot', () => {
     assertCodegen(
       '<div><slot></slot></div>',
-      `with(this){return _c('div',{attrs:{"_i":0}},[_t("default",null,{"_i":1})],2)}`
+      `with(this){return _c('div',[_t("default",null,{"_i":1})],2)}`
     )
   })
 
   it('generate named slot', () => {
     assertCodegen(
       '<div><slot name="one"></slot></div>',
-      `with(this){return _c('div',{attrs:{"_i":0}},[_t("one",null,{"_i":1})],2)}`
+      `with(this){return _c('div',[_t("one",null,{"_i":1})],2)}`
     )
   })
 
   it('generate slot fallback content', () => {
     assertCodegen(
       '<div><slot><div>hi</div></slot></div>',
-      `with(this){return _c('div',{attrs:{"_i":0}},[_t("default",[_c('div',{attrs:{"_i":2}})],{"_i":1})],2)}`
+      `with(this){return _c('div',[_t("default",[_c('div')],{"_i":1})],2)}`
     )
   })
 
   it('generate slot target', () => {
     assertCodegen(
       '<p slot="one">hello world</p>',
-      `with(this){return _c('p',{attrs:{"_i":0},slot:"one"})}`
+      `with(this){return _c('p',{slot:"one"})}`
     )
   })
 
@@ -245,7 +245,7 @@ describe('codegen', () => {
     // static
     assertCodegen(
       '<p class="class1">hello world</p>',
-      `with(this){return _c('p',{attrs:{"_i":0}})}`
+      `with(this){return _c('p')}`
     )
     // dynamic
     assertCodegen(
@@ -291,7 +291,7 @@ describe('codegen', () => {
   it('generate static attrs', () => {
     assertCodegen(
       '<input name="field1">',
-      `with(this){return _c('input',{attrs:{"_i":0}})}`
+      `with(this){return _c('input')}`
     )
   })
 
@@ -558,7 +558,7 @@ describe('codegen', () => {
   it('generate component', () => {
     assertCodegen(
       '<my-component name="mycomponent1" :msg="msg" @notify="onNotify"><div>hi</div></my-component>',
-      `with(this){return _c('my-component',{attrs:{"name":"mycomponent1","msg":msg,"_i":0},on:{"notify":onNotify}},[_c('div',{attrs:{"_i":1}})])}`
+      `with(this){return _c('my-component',{attrs:{"name":"mycomponent1","msg":msg,"_i":0},on:{"notify":onNotify}},[_c('div')])}`
     )
   })
 
@@ -572,16 +572,16 @@ describe('codegen', () => {
   it('generate is attribute', () => {
     assertCodegen(
       '<div is="component1"></div>',
-      `with(this){return _c("component1",{tag:"div",attrs:{"_i":0}})}`
+      `with(this){return _c("component1",{tag:"div"})}`
     )
     assertCodegen(
       '<div :is="component1"></div>',
-      `with(this){return _c(component1,{tag:"div",attrs:{"_i":0}})}`
+      `with(this){return _c(component1,{tag:"div"})}`
     )
     // maybe a component and normalize type should be 1
     assertCodegen(
       '<div><div is="component1"></div></div>',
-      `with(this){return _c('div',{attrs:{"_i":0}},[_c("component1",{tag:"div",attrs:{"_i":1}})],1)}`
+      `with(this){return _c('div',[_c("component1",{tag:"div"})],1)}`
     )
   })
 
@@ -589,12 +589,12 @@ describe('codegen', () => {
     // have "inline-template'"
     assertCodegen(
       '<my-component inline-template><p><span>hello world</span></p></my-component>',
-      `with(this){return _c('my-component',{attrs:{"_i":0},inlineTemplate:{render:function(){with(this){return _m(0)}},staticRenderFns:[function(){with(this){return _c('p',{attrs:{"_i":1}},[_c('span',{attrs:{"_i":2}})])}}]}})}`
+      `with(this){return _c('my-component',{attrs:{"_i":0},inlineTemplate:{render:function(){with(this){return _m(0)}},staticRenderFns:[function(){with(this){return _c('p',[_c('span')])}}]}})}`
     )
     // "have inline-template attrs, but not having exactly one child element
     assertCodegen(
       '<my-component inline-template><hr><hr></my-component>',
-      `with(this){return _c('my-component',{attrs:{"_i":0},inlineTemplate:{render:function(){with(this){return _c('hr',{attrs:{"_i":1}})}},staticRenderFns:[]}})}`
+      `with(this){return _c('my-component',{attrs:{"_i":0},inlineTemplate:{render:function(){with(this){return _c('hr')}},staticRenderFns:[]}})}`
     )
     assertCodegen(
       '<my-component inline-template></my-component>',
@@ -603,11 +603,11 @@ describe('codegen', () => {
     // have "is" attribute
     assertCodegen(
       '<div is="myComponent" inline-template><div></div></div>',
-      `with(this){return _c("myComponent",{tag:"div",attrs:{"_i":0},inlineTemplate:{render:function(){with(this){return _c('div',{attrs:{"_i":1}})}},staticRenderFns:[]}})}`
+      `with(this){return _c("myComponent",{tag:"div",inlineTemplate:{render:function(){with(this){return _c('div')}},staticRenderFns:[]}})}`
     )
     assertCodegen(
       '<div is="myComponent" inline-template></div>',
-      `with(this){return _c("myComponent",{tag:"div",attrs:{"_i":0}})}`
+      `with(this){return _c("myComponent",{tag:"div"})}`
     )
     // expect('Inline-template components must have exactly one child element.').toHaveBeenWarned()
     // expect(console.error.calls.count()).toBe(3)
@@ -616,7 +616,7 @@ describe('codegen', () => {
   it('generate static trees inside v-for', () => {
     assertCodegen(
       `<div><div v-for="i in 10"><p><span></span></p></div></div>`,
-      `with(this){return _c('div',{attrs:{"_i":0}},_l((10),function(i,$10,$20,$30){return _c('div',{attrs:{"_i":("1-"+$30)}},[_m(0,true)])}),0)}`
+      `with(this){return _c('div',_l((10),function(i,$10,$20,$30){return _c('div',[_m(0,true)])}),0)}`
       // [`with(this){return _c('p',[_c('span')])}`]
     )
   })
@@ -625,7 +625,7 @@ describe('codegen', () => {
     // normalize type: 2
     assertCodegen(
       '<div><child></child><template v-for="item in list">{{ item }}</template></div>',
-      `with(this){return _c('div',{attrs:{"_i":0}},[_c('child',{attrs:{"_i":1}}),_l((_$f(2,{forItems:list})),function(item,$10,$20,$30){return [_c('text',{key:_$f(2,{forIndex:$20,keyIndex:0,key:2+'-0'+$30}),extras:{t0:_s(item)},attrs:{"_i":("2-"+$30)}})]})],2)}`
+      `with(this){return _c('div',[_c('child',{attrs:{"_i":1}}),_l((_$f(2,{forItems:list})),function(item,$10,$20,$30){return [_c('text',{key:_$f(2,{forIndex:$20,keyIndex:0,key:2+'-0'+$30}),extras:{t0:_s(item)},attrs:{"_i":("2-"+$30)}})]})],2)}`
     )
   })
 
@@ -634,7 +634,7 @@ describe('codegen', () => {
   //     comments: true
   //   }, baseOptions)
   //   const template = '<div><!--comment--></div>'
-  //   const generatedCode = `with(this){return _c('div',{attrs:{"_i":0}})}`
+  //   const generatedCode = `with(this){return _c('div')}`
 
   //   const ast = parse(template, options)
   //   optimize(ast, options)
@@ -648,7 +648,7 @@ describe('codegen', () => {
   //     comments: true
   //   }, baseOptions)
   //   const template = '<div><!--\n\'comment\'\n--></div>'
-  //   const generatedCode = `with(this){return _c('div',{attrs:{"_i":0}})}`
+  //   const generatedCode = `with(this){return _c('div')}`
 
   //   const ast = parse(template, options)
   //   optimize(ast, options)
@@ -685,7 +685,7 @@ describe('codegen', () => {
   it('not specified directives option', () => {
     assertCodegen(
       '<p v-if="show">hello world</p>',
-      `with(this){return (_$i(0,show))?_c('p',{attrs:{"_i":0}}):_e()}`, {
+      `with(this){return (_$i(0,show))?_c('p'):_e()}`, {
         // isReservedTag
       }
     )
@@ -695,7 +695,7 @@ describe('codegen', () => {
   it('should compile single v-for component inside template', () => {
     assertCodegen(
       `<div><template v-if="ok"><foo v-for="i in 1" :key="i"></foo></template></div>`,
-      `with(this){return _c('div',{attrs:{"_i":0}},[(_$i(1,ok))?_l((1),function(i,$10,$20,$30){return _c('foo',{key:i,attrs:{"_i":("2-"+$30)}})}):_e()],2)}`
+      `with(this){return _c('div',[(_$i(1,ok))?_l((1),function(i,$10,$20,$30){return _c('foo',{key:i,attrs:{"_i":("2-"+$30)}})}):_e()],2)}`
     )
   })
 })

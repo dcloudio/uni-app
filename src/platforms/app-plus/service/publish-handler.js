@@ -6,9 +6,6 @@ import {
   from './constants'
 
 function optimize (k, v) {
-  if (typeof v === 'undefined') {
-    return ''
-  }
   if (
     k === V_IF ||
     k === V_ELSE_IF ||

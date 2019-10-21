@@ -117,8 +117,9 @@ export function registerPage ({
           timestamp: Date.now()
         }
       }, [pageId])
-
-      createPage(route, pageId, query, pageInstance).$mount()
+      try {
+        createPage(route, pageId, query, pageInstance).$mount()
+      } catch (e) {}
     }
   }
 
