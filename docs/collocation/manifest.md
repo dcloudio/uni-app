@@ -132,7 +132,7 @@ splash（启动封面）是App必然存在的、不可取消的。
 
 |属性|类型|描述|
 |:-|:-|:-|
-|flex-direction|String| flex 成员项的排列方向，支持项，row：从左到右； row-reverse：从下到上；column：从上到下；column-reverse：与 row 相反，默认值 column。|
+|flex-direction|String| flex 成员项的排列方向，支持项，row：从左到右； row-reverse：从右到左；column：从上到下；column-reverse：与 column 相反，默认值 column。|
 
 
 ### h5
