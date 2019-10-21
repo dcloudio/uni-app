@@ -375,8 +375,19 @@ export default {
           valueArray = [...val]
           break
         case mode.TIME:
+          var timeValTestFail = false
+          if (typeof this.value !== 'string') {
+            timeValTestFail = true
+          } else {
+            val.split(':').map((val, i) => {
+              var valIndex = this.timeArray[i].indexOf(val)
+              if (valIndex === -1) {
+                timeValTestFail = true
+              }
+            })
+          }
           // 处理默认值为当前时间
-          if (this.value === 0) {
+          if (timeValTestFail) {
             val = formatDateTime({
               mode: mode.TIME
             })
@@ -386,8 +397,19 @@ export default {
             .map((val, i) => this.timeArray[i].indexOf(val))
           break
         case mode.DATE:
+          var dateValTestFail = false
+          if (typeof this.value !== 'string') {
+            dateValTestFail = true
+          } else {
+            val.split('-').map((val, i) => {
+              var valIndex = this.dateArray[i].indexOf(val)
+              if (valIndex === -1) {
+                dateValTestFail = true
+              }
+            })
+          }
           // 处理默认值为当前日期
-          if (this.value === 0) {
+          if (dateValTestFail) {
             val = formatDateTime({
               mode: mode.DATE
             })
