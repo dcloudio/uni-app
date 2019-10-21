@@ -118,7 +118,26 @@ query.select('#id').boundingClientRect(data => {
 | --- | --- | --- |
 | context | Object | 节点对应的 Context 对象 |
 
+### nodesRef.node(callback)
 
+获取 `Node` 节点实例。目前支持 `Canvas` 的获取。
+
+**平台差异说明**
+
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|√|x|√|x|x|x|√|
+
+**callback 返回参数**
+
+| 属性 | 类型 | 说明 |
+| --- | --- | --- |
+| node | Object | 节点对应的 Node 实例 |
+
+**注意**
+
+- 目前仅能用于`canvas`
+- `canvas`需设置`type="webgl"`才能正常使用
 
 ### 代码示例
 
