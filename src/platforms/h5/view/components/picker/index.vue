@@ -229,17 +229,6 @@ export default {
         this.valueSync = val
       }
     },
-    valueSync (value) {
-      if (this.valueChangeSource) {
-        this.$trigger(
-          'change',
-          {},
-          {
-            value
-          }
-        )
-      }
-    },
     valueArray (val) {
       if (this.mode === mode.TIME || this.mode === mode.DATE) {
         let getValue =
@@ -444,6 +433,9 @@ export default {
       this.valueChangeSource = 'click'
       let value = this._getValue()
       this.valueSync = Array.isArray(value) ? value.map(val => val) : value
+      this.$trigger('change', {}, {
+        value
+      })
     },
     _cancel () {
       this._close()
