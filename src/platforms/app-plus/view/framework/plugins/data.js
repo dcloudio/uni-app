@@ -1,6 +1,7 @@
 import Vue from 'vue'
 
 import {
+  VD_SYNC,
   PAGE_CREATE,
   MOUNTED_DATA,
   UPDATED_DATA,
@@ -20,7 +21,7 @@ import {
   getPageVueComponent
 } from '../../../page-factory'
 
-let vd
+export let vd
 
 let PageVueComponent
 
@@ -68,18 +69,18 @@ function vdSync ({
   })
 }
 
-function getData (id, name, isFallbackContent = false) {
+function getData (id, name) {
   try {
     return this.$r[id][name]
   } catch (e) {
-    !isFallbackContent && console.error(this.$options.__file + `:[${this._$id}]$r[${id}][${name}] is undefined`)
+    console.error(this.$options.__file + `:[${this._$id}]$r[${id}][${name}] is undefined`)
   }
 }
 
 export function initData (Vue) {
   Vue.prototype._$g = getData
 
-  UniViewJSBridge.subscribe('vdSync', vdSync)
+  UniViewJSBridge.subscribe(VD_SYNC, vdSync)
 
   Object.defineProperty(Vue.prototype, '_$vd', {
     get () {

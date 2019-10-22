@@ -37,7 +37,7 @@ describe('codegen', () => {
   it('generate slot fallback content', () => {
     assertCodegen(
       '<div><slot><div>{{hi}}</div></slot></div>',
-      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},[_t("default",[_c('v-uni-view',{attrs:{"_i":2}},[_v((_$g(2,'t0',1)))])],{"_i":1})],2)}`
+      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},[_t("default",[_c('v-uni-view',{attrs:{"_i":2}},[_v((_$g(2,'t0')))])],{"_i":1})],2)}`
     )
   })
 })

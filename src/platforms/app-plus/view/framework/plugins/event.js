@@ -1,6 +1,6 @@
 import {
-  WEBVIEW_UI_EVENT
-} from '../../../constants'
+  vd
+} from './data'
 
 export function initEvent (Vue) {
   Vue.prototype.$handleViewEvent = function ($vueEvent, options) {
@@ -19,12 +19,10 @@ export function initEvent (Vue) {
     delete $event.stopPropagation
     delete $event.options
 
-    UniViewJSBridge.publishHandler(WEBVIEW_UI_EVENT, {
-      data: $event,
-      options: {
-        cid,
-        nid
-      }
-    })
+    vd.addUIEvent(cid, nid, $event)
+    // 使用 setTimeout 做批量同步
+    setTimeout(() => {
+      vd.sendUIEvent()
+    }, 0)
   }
 }

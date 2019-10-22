@@ -28,7 +28,6 @@ module.exports = function parseText (
   if (!tagRE.test(text)) {
     return
   }
-  const dynamicTexts = [] // fixed by xxxxxx
   const tokens = []
   const rawTokens = []
   let lastIndex = tagRE.lastIndex = 0
@@ -44,14 +43,7 @@ module.exports = function parseText (
     }
     // tag token
     const exp = parseFilters(match[1].trim())
-    if (state.service) {
-      dynamicTexts.push({
-        name: `t${state.index++}`,
-        value: `_s(${exp})`
-      })
-    } else {
-      tokens.push(`(${state.genVar('t' + (state.index++))})`)
-    }
+    tokens.push(`(${state.genVar('t' + (state.index++), '_s(' + exp + ')')})`)
     rawTokens.push({
       '@binding': exp
     })
@@ -65,7 +57,6 @@ module.exports = function parseText (
   }
   return {
     expression: tokens.join('+'),
-    tokens: rawTokens,
-    dynamicTexts
+    tokens: rawTokens
   }
 }

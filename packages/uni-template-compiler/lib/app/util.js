@@ -5,7 +5,8 @@ const ID = '_i'
 const ITERATOR1 = '$1'
 const ITERATOR2 = '$2'
 const ITERATOR3 = '$3'
-const DATA_ROOT = '_$g'
+const SET_DATA = '_$s'
+const GET_DATA = '_$g'
 
 const V_FOR = 'f'
 const V_IF = 'i'
@@ -110,7 +111,7 @@ function getForEl (el) {
 
 function processForKey (el) {
   const forEl = getForEl(el)
-  if (forEl && !el.key && !el.dynamicTexts) { // 占位的 text 标签也无需添加 key
+  if (forEl && !el.key) { // 占位的 text 标签也无需添加 key
     if (!isVar(forEl.for)) { // <view v-for="10"></view>
       return
     }
@@ -121,6 +122,7 @@ function processForKey (el) {
         el.key = `${forEl.forId}+'-${keyIndex}'+${it}`
       } else { // 当 template 下只有文本节点
         if (el.children && el.children.length && !el.children.find(child => child.key)) {
+          el.children[0].parent = el
           el.children[0].key = `${forEl.forId}+'-0'+${it}`
           return true
         }
@@ -149,7 +151,8 @@ module.exports = {
   V_IF,
   V_ELSE_IF,
   ID,
-  DATA_ROOT,
+  SET_DATA,
+  GET_DATA,
   isVar,
   hasOwn,
   addAttr,

@@ -1,9 +1,6 @@
 const {
   ID,
-  DATA_ROOT,
-  V_FOR,
-  V_IF,
-  V_ELSE_IF,
+  GET_DATA,
   isVar,
   getForEl,
   updateForEleId,
@@ -11,69 +8,30 @@ const {
   traverseNode
 } = require('./util')
 
+const {
+  parseIf,
+  parseFor,
+  parseText,
+  parseDirs,
+  parseAttrs,
+  parseProps,
+  parseBinding
+} = require('./parser/base-parser')
+
 const parseTag = require('./parser/tag-parser')
-const parseText = require('./parser/text-parser')
 const parseEvent = require('./parser/event-parser')
 const parseBlock = require('./parser/block-parser')
 const parseComponent = require('./parser/component-parser')
 
 const basePreTransformNode = require('./pre-transform-node')
 
-function createGenVar (id, isInSlot = false) {
-  return function genVar (name, extra = '') {
-    const isFallbackContent = isInSlot ? ',1' : ''
-    extra = extra ? (',' + extra) : ''
-    return `${DATA_ROOT}(${id},'${name}'${isFallbackContent}${extra})`
+function createGenVar (id) {
+  return function genVar (name) {
+    return `${GET_DATA}(${id},'${name}')`
   }
 }
 
-function isInSlot (el) {
-  let parent = el.parent
-  while (parent) {
-    if (parent.tag === 'slot') {
-      return true
-    }
-    parent = parent.parent
-  }
-  return false
-}
-
-// if 使用该方案是因为 template 节点之类无法挂靠 extras
-function processIfConditions (el) {
-  if (el.if) {
-    el.ifConditions.forEach(con => {
-      if (isVar(con.exp)) {
-        con.exp = createGenVar(con.block.attrsMap[ID], isInSlot(el))(con.block.elseif ? V_ELSE_IF : V_IF)
-      }
-    })
-
-    el.if = createGenVar(el.attrsMap[ID], isInSlot(el))(V_IF)
-  }
-}
-
-function processBinding (el, genVar) {
-  if (el.classBinding) {
-    el.classBinding = genVar('c')
-  }
-
-  if (el.styleBinding) {
-    el.styleBinding = genVar('s')
-  }
-}
-
-function processFor (el, genVal) {
-  if (el.for && isVar(el.for)) {
-    el.for = createGenVar(el.forId, isInSlot(el))(V_FOR)
-    // <div><li v-for=" { a, b }  in items"></li></div>
-    // =>
-    // <div><li v-for="$item in items"></li></div>
-    if (el.alias[0] === '{') {
-      el.alias = '$item'
-    }
-  }
-}
-
-function processKey (el) {
+function parseKey (el) {
   // add default key
   processForKey(el)
 
@@ -90,67 +48,44 @@ function processKey (el) {
         el.key = `${forEl.alias}['k${keyIndex}']`
       }
     } else {
-      isVar(el.key) && (el.key = createGenVar(el.attrsMap[ID], isInSlot(el))('a-key'))
+      isVar(el.key) && (el.key = createGenVar(el.attrsMap[ID])('a-key'))
     }
   }
 }
 
-function processIf (el) {
-  processIfConditions(el)
-}
-
-function processDirs (el, genVar) {
-  if (el.directives) {
-    el.directives.forEach(dir => {
-      dir.value && (dir.value = genVar('v-' + dir.name))
-      dir.isDynamicArg && (dir.arg = genVar('v-' + dir.name + '-arg'))
-    })
-  }
-}
-
-function processAttrs (el, genVar) {
-  el.attrs.forEach(attr => {
-    attr.name !== ID && isVar(attr.value) && (attr.value = genVar('a-' + attr.name))
-  })
-}
-
-function processProps (el, genVar) {
-  el.props && el.props.forEach(prop => {
-    isVar(prop.value) && (prop.value = genVar('a-' + prop.name))
-  })
-}
-
-function processText (el, parent) {
-  const state = {
-    index: 0,
-    view: true,
-    genVar: createGenVar(parent.attrsMap[ID], isInSlot(parent))
-  }
-  // fixed by xxxxxx 注意：保持平台一致性，trim 一下
-  el.expression = parseText(el.text.trim(), false, state).expression
-}
-
 function transformNode (el, parent, state) {
+  if (el.type === 3) {
+    return
+  }
   parseBlock(el)
   parseComponent(el)
   parseEvent(el)
   // 更新 id
   updateForEleId(el, state)
 
-  if (el.type !== 1) {
-    return (el.type === 2 && processText(el, parent))
+  if (el.type === 2) {
+    return parseText(el, parent, {
+      index: 0,
+      view: true,
+      // <uni-popup>{{content}}</uni-popup>
+      genVar: createGenVar(parent.attrsMap[ID])
+    })
   }
 
-  const id = el.attrsMap[ID]
-  const genVar = createGenVar(id, isInSlot(el))
+  const genVar = createGenVar(el.attrsMap[ID])
 
-  processFor(el, genVar)
-  processKey(el)
-  processIf(el)
-  processBinding(el, genVar)
-  processDirs(el, genVar)
-  processAttrs(el, genVar)
-  processProps(el, genVar)
+  if (parseFor(el, createGenVar)) {
+    if (el.alias[0] === '{') { // <div><li v-for=" { a, b }  in items"></li></div>
+      el.alias = '$item'
+    }
+  }
+  parseKey(el)
+
+  parseIf(el, createGenVar)
+  parseBinding(el, genVar)
+  parseDirs(el, genVar)
+  parseAttrs(el, genVar)
+  parseProps(el, genVar)
 }
 
 function postTransformNode (el) {
@@ -162,7 +97,7 @@ function postTransformNode (el) {
   }
 }
 
-function processEvents (events) {
+function handleViewEvents (events) {
   Object.keys(events).forEach(name => {
     const modifiers = Object.create(null)
 
@@ -208,9 +143,8 @@ function genData (el) {
   }
 
   // 放在 postTransformNode 中处理的时机太靠前，v-model 等指令会新增 event
-  // 理想情况，应该移除自定义组件的 events 配置，但目前不太好准确确定是自定义组件
-  el.events && processEvents(el.events)
-  el.nativeEvents && processEvents(el.nativeEvents)
+  el.events && handleViewEvents(el.events)
+  el.nativeEvents && handleViewEvents(el.nativeEvents)
   return ''
 }
 

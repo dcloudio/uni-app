@@ -1,7 +1,7 @@
 const compiler = require('../lib')
 const res = compiler.compile(
   `
-<p slot="one">hello world</p>
+<my-component v-model="\n test \n" />
     `, {
     resourcePath: '/User/fxy/Documents/test.wxml',
     isReservedTag: function (tag) {

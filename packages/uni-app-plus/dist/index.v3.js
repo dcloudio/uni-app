@@ -252,6 +252,8 @@ var serviceContext = (function () {
     return hasOwnProperty.call(obj, key)
   }
 
+  function noop () {}
+
   function toRawType (val) {
     return _toString.call(val).slice(8, -1)
   }
@@ -3593,6 +3595,9 @@ var serviceContext = (function () {
   const V_ELSE_IF = 'e';
   const V_SHOW = 'v-show';
 
+  const B_CLASS = 'c';
+  const B_STYLE = 's';
+
   const callbacks = {};
   const WEB_INVOKE_APPSERVICE = 'WEB_INVOKE_APPSERVICE';
   // 简单处理 view 层与 service 层的通知系统
@@ -6350,8 +6355,11 @@ var serviceContext = (function () {
   const UPDATED_DATA = 6;
   const PAGE_CREATED = 10;
 
+  const UI_EVENT = 20;
+
+  const VD_SYNC = 'vdSync';
+
   const WEBVIEW_READY = 'webviewReady';
-  const WEBVIEW_UI_EVENT = 'webviewUIEvent';
   const VD_SYNC_CALLBACK = 'vdSyncCallback';
 
   const pageFactory = Object.create(null);
@@ -6474,7 +6482,7 @@ var serviceContext = (function () {
         const pageId = webview.id;
 
         // 通知页面已开始创建
-        UniServiceJSBridge.publishHandler('vdSync', {
+        UniServiceJSBridge.publishHandler(VD_SYNC, {
           data: [
             [PAGE_CREATE, [pageId, route]]
           ],
@@ -6484,7 +6492,9 @@ var serviceContext = (function () {
         }, [pageId]);
         try {
           createPage(route, pageId, query, pageInstance).$mount();
-        } catch (e) {}
+        } catch (e) {
+          console.error(e);
+        }
       }
     }
 
@@ -8740,31 +8750,37 @@ var serviceContext = (function () {
     }
   }
 
-  const webviewUIEvents = Object.create(null);
+  const vdSyncHandlers = Object.create(null);
 
-  function registerWebviewUIEvent (pageId, callback) {
-    (webviewUIEvents[pageId] || (webviewUIEvents[pageId] = [])).push(callback);
+  function registerVdSync (pageId, callback) {
+    (vdSyncHandlers[pageId] || (vdSyncHandlers[pageId] = [])).push(callback);
   }
 
-  function removeWebviewUIEvent (pageId) {
-    delete webviewUIEvents[pageId];
+  function removeVdSync (pageId) {
+    delete vdSyncHandlers[pageId];
   }
 
-  function onWebviewUIEvent ({
+  function onVdSync ({
     data,
     options
   }, pageId) {
-    const {
-      cid,
-      nid
-    } = options;
-    const handlers = webviewUIEvents[pageId];
+    const handlers = vdSyncHandlers[pageId];
     if (Array.isArray(handlers)) {
       handlers.forEach(handler => {
-        handler(cid, nid, data);
+        handler(data);
       });
     } else {
-      console.error(`events[${pageId}] not found`);
+      console.error(`vdSync[${pageId}] not found`);
+    }
+  }
+
+  const vdSyncCallbacks = []; // 数据同步 callback
+
+  function onVdSyncCallback () {
+    const copies = vdSyncCallbacks.slice(0);
+    vdSyncCallbacks.length = 0;
+    for (let i = 0; i < copies.length; i++) {
+      copies[i]();
     }
   }
 
@@ -8779,7 +8795,9 @@ var serviceContext = (function () {
     });
     // TODO 检测目标 preloadWebview 是否已准备好，因为 preloadWebview 准备好时，此处代码还没执行
     subscribe(WEBVIEW_READY, onWebviewReady);
-    subscribe(WEBVIEW_UI_EVENT, onWebviewUIEvent);
+
+    subscribe(VD_SYNC, onVdSync);
+    subscribe(VD_SYNC_CALLBACK, onVdSyncCallback);
   }
 
   let appCtx;
@@ -8975,109 +8993,99 @@ var serviceContext = (function () {
     };
   }
 
-  function noop () {}
+  const handleVdData = {
+    [UI_EVENT]: function onUIEvent(vdBatchEvent, vd) {
+      vdBatchEvent.forEach(([cid, nid, event]) => {
+        console.log(`[EVENT]`, cid, nid, event);
+        event.preventDefault = noop;
+        event.stopPropagation = noop;
+        const target = vd.elements.find(target => target.cid === cid && target.nid === nid);
+        if (!target) {
+          return console.error(`event handler[${cid}][${nid}] not found`)
+        }
+        target.dispatchEvent(event.type, event);
+      });
+    }
+  };
 
-  const callbacks$a = []; // 数据同步 callback
+  function onVdSync$1(vdBatchData, vd) {
+    vdBatchData.forEach(([type, vdData]) => {
+      handleVdData[type](vdData, vd);
+    });
+  }
 
   class VDomSync {
-    constructor (pageId, pagePath) {
+    constructor(pageId, pagePath) {
       this.pageId = pageId;
       this.pagePath = pagePath;
       this.batchData = [];
       this.vms = Object.create(null);
       this.initialized = false;
-      // 事件
-      this.handlers = Object.create(null);
+
+      this.elements = []; //  目前仅存储事件 element
 
       this._init();
     }
 
-    _init () {
-      UniServiceJSBridge.subscribe(VD_SYNC_CALLBACK, () => {
-        const copies = callbacks$a.slice(0);
-        callbacks$a.length = 0;
-        for (let i = 0; i < copies.length; i++) {
-          copies[i]();
-        }
-      });
-
-      registerWebviewUIEvent(this.pageId, (cid, nid, event) => {
-        console.log(`[EVENT]`, cid, nid, event);
-        event.preventDefault = noop;
-        event.stopPropagation = noop;
-        if (
-          this.handlers[cid] &&
-          this.handlers[cid][nid] &&
-          this.handlers[cid][nid][event.type]
-        ) {
-          this.handlers[cid][nid][event.type].forEach(handler => {
-            handler(event);
-          });
-        } else {
-          console.error(`event handler[${cid}][${nid}][${event.type}] not found`);
-        }
+    _init() {
+      registerVdSync(this.pageId, (vdBatchData) => {
+        onVdSync$1(vdBatchData, this);
       });
     }
 
-    addMountedVm (vm) {
+    addMountedVm(vm) {
       vm._$mounted(); // 触发vd数据同步
-      this.addCallback(function mounted () {
+      this.addVdSyncCallback(function mounted() {
         vm.__call_hook('mounted');
       });
     }
 
-    addUpdatedVm (vm) {
+    addUpdatedVm(vm) {
       vm._$updated(); // 触发vd数据同步
-      this.addCallback(function mounted () {
+      this.addVdSyncCallback(function mounted() {
         vm.__call_hook('updated');
       });
     }
 
-    addCallback (callback) {
-      isFn(callback) && callbacks$a.push(callback);
+    addVdSyncCallback(callback) {
+      isFn(callback) && vdSyncCallbacks.push(callback);
     }
 
-    getVm (id) {
+    getVm(id) {
       return this.vms[id]
     }
 
-    addVm (vm) {
+    addVm(vm) {
       this.vms[vm._$id] = vm;
     }
 
-    removeVm (vm) {
+    removeVm(vm) {
       delete this.vms[vm._$id];
     }
 
-    addEvent (cid, nid, name, handler) {
-      const cHandlers = this.handlers[cid] || (this.handlers[cid] = Object.create(null));
-      const nHandlers = cHandlers[nid] || (cHandlers[nid] = Object.create(null));
-      (nHandlers[name] || (nHandlers[name] = [])).push(handler);
+    addElement(elm) {
+      this.elements.indexOf(elm) === -1 && this.elements.push(elm);
     }
 
-    removeEvent (cid, nid, name, handler) {
-      const cHandlers = this.handlers[cid] || (this.handlers[cid] = Object.create(null));
-      const nHandlers = cHandlers[nid] || (cHandlers[nid] = Object.create(null));
-      const eHandlers = nHandlers[name];
-      if (Array.isArray(eHandlers)) {
-        const index = eHandlers.indexOf(handler);
-        if (index !== -1) {
-          eHandlers.splice(index, 1);
-        }
+    removeElement(elm) {
+      const elmIndex = this.elements.indexOf(elm);
+      if (elmIndex === -1) {
+        return console.error(`removeElement[${elm.cid}][${elm.nid}] not found`)
       }
+      this.elements.splice(elmIndex, 1);
     }
 
-    push (type, nodeId, data) {
-      this.batchData.push([type, [nodeId, data]]);
+    push(type, cid, data) {
+      this.batchData.push([type, [cid, data]]);
     }
 
-    flush () {
+    flush() {
       if (!this.initialized) {
         this.initialized = true;
         this.batchData.push([PAGE_CREATED, [this.pageId, this.pagePath]]);
       }
       if (this.batchData.length) {
-        UniServiceJSBridge.publishHandler('vdSync', {
+        UniServiceJSBridge.publishHandler(VD_SYNC, {
           data: this.batchData,
           options: {
             timestamp: Date.now()
@@ -9087,12 +9095,12 @@ var serviceContext = (function () {
       }
     }
 
-    destroy () {
+    destroy() {
       this.batchData.length = 0;
       this.vms = Object.create(null);
       this.initialized = false;
-      this.handlers = Object.create(null);
-      removeWebviewUIEvent(this.pageId);
+      this.elements.length = 0;
+      removeVdSync(this.pageId);
     }
   }
 
@@ -9159,10 +9167,17 @@ var serviceContext = (function () {
       if (!this._$vd) {
         return
       }
+      // TODO 自定义组件中的 slot 数据采集是在组件内部，导致所在 context 中无法获取到差量数据
+      // 如何保证每个 vm 数据有变动，就加入 diff 中呢？
+      // 每次变化，可能触发多次 beforeUpdate，updated
+      // 子组件 updated 时，可能会增加父组件的 diffData，如 slot 等情况
       diff(this._$newData, this._$data, this._$vdUpdatedData);
       this._$data = JSON.parse(JSON.stringify(this._$newData));
       console.log(`[${this._$id}] updated ` + Date.now());
-      this._$vd.initialized && this.$nextTick(this._$vd.flush.bind(this._$vd));
+      // setTimeout 一下再 nextTick（ 直接 nextTick 的话，会紧接着该 updated 做 flush，导致父组件 updated 数据被丢弃）
+      this._$vd.initialized && setTimeout(() => {
+        this.$nextTick(this._$vd.flush.bind(this._$vd));
+      }, 0);
     };
 
     Object.defineProperty(Vue.prototype, '_$vd', {
@@ -9188,7 +9203,6 @@ var serviceContext = (function () {
           this._$vdMountedData = Object.create(null);
           this._$setData(MOUNTED_DATA, this._$vdMountedData);
           console.log(`[${this._$id}] beforeCreate ` + Date.now());
-          // 目前全量采集做 diff(iOS 需要保留全量状态做 restore)，理论上可以差量采集
           this._$data = Object.create(null);
           this._$newData = Object.create(null);
         }
@@ -9213,19 +9227,22 @@ var serviceContext = (function () {
   }
 
   function setData (id, name, value) {
-    const diffData = this._$newData[id] || (this._$newData[id] = {});
-
-    if (typeof name !== 'string') {
-      for (let key in name) {
-        diffData[key] = name[key];
-      }
-      return name
+    switch (name) {
+      case B_CLASS:
+        value = this._$stringifyClass(value);
+        break
+      case B_STYLE:
+        value = this._$normalizeStyleBinding(value);
+        break
+      case V_IF:
+      case V_ELSE_IF:
+        value = !!value;
+        break
+      case V_FOR:
+        return setForData.call(this, id, value)
     }
 
-    if (name === 'a-_i') {
-      return value
-    }
-    return (diffData[name] = value)
+    return ((this._$newData[id] || (this._$newData[id] = {}))[name] = value)
   }
 
   function setForData (id, value) {
@@ -9250,11 +9267,11 @@ var serviceContext = (function () {
   }
 
   function setIfData (id, value) {
-    return ((this._$newData[id] || (this._$newData[id] = {}))[V_IF] = value)
+    return ((this._$newData[id] || (this._$newData[id] = {}))[V_IF] = !!value)
   }
 
   function setElseIfData (id, value) {
-    return ((this._$newData[id] || (this._$newData[id] = {}))[V_ELSE_IF] = value)
+    return ((this._$newData[id] || (this._$newData[id] = {}))[V_ELSE_IF] = !!value)
   }
 
   /* @flow */

@@ -1,6 +1,7 @@
 import {
-  WEBVIEW_READY,
-  WEBVIEW_UI_EVENT
+  VD_SYNC,
+  VD_SYNC_CALLBACK,
+  WEBVIEW_READY
 } from '../../constants'
 
 import {
@@ -44,31 +45,37 @@ function onWebviewReady (data, pageId) {
   }
 }
 
-const webviewUIEvents = Object.create(null)
+const vdSyncHandlers = Object.create(null)
 
-export function registerWebviewUIEvent (pageId, callback) {
-  (webviewUIEvents[pageId] || (webviewUIEvents[pageId] = [])).push(callback)
+export function registerVdSync (pageId, callback) {
+  (vdSyncHandlers[pageId] || (vdSyncHandlers[pageId] = [])).push(callback)
 }
 
-export function removeWebviewUIEvent (pageId) {
-  delete webviewUIEvents[pageId]
+export function removeVdSync (pageId) {
+  delete vdSyncHandlers[pageId]
 }
 
-function onWebviewUIEvent ({
+function onVdSync ({
   data,
   options
 }, pageId) {
-  const {
-    cid,
-    nid
-  } = options
-  const handlers = webviewUIEvents[pageId]
+  const handlers = vdSyncHandlers[pageId]
   if (Array.isArray(handlers)) {
     handlers.forEach(handler => {
-      handler(cid, nid, data)
+      handler(data)
     })
   } else {
-    console.error(`events[${pageId}] not found`)
+    console.error(`vdSync[${pageId}] not found`)
+  }
+}
+
+export const vdSyncCallbacks = [] // 数据同步 callback
+
+function onVdSyncCallback () {
+  const copies = vdSyncCallbacks.slice(0)
+  vdSyncCallbacks.length = 0
+  for (let i = 0; i < copies.length; i++) {
+    copies[i]()
   }
 }
 
@@ -83,5 +90,7 @@ export function initSubscribeHandlers () {
   })
   // TODO 检测目标 preloadWebview 是否已准备好，因为 preloadWebview 准备好时，此处代码还没执行
   subscribe(WEBVIEW_READY, onWebviewReady)
-  subscribe(WEBVIEW_UI_EVENT, onWebviewUIEvent)
+
+  subscribe(VD_SYNC, onVdSync)
+  subscribe(VD_SYNC_CALLBACK, onVdSyncCallback)
 }

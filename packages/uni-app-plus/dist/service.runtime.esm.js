@@ -5514,28 +5514,58 @@ var noop$1 = {};
 
 var UniElement = function UniElement(tagName) {
   this.tagName = tagName;
-  this.attrs = Object.create(null);
+  this.cid = '';
+  this.nid = '';
+
+  this.events = Object.create(null);
 };
+
 UniElement.prototype.setAttribute = function setAttribute (key, value) {
-  this.attrs[key] = value;
+  if (key === 'cid') {
+    this.cid = value;
+  } else if (key === 'nid') {
+    this.nid = value;
+  }
 };
+
+UniElement.prototype.dispatchEvent = function dispatchEvent (name, target) {
+  var handlers = this.events[name];
+  if (!handlers) {
+    console.error(("cid=" + (this.cid) + ",nid=" + (this.nid) + " dispatchEvent(" + name + ") not found"));
+  }
+  handlers.forEach(function (handler) {
+    handler(target);
+  });
+};
+
 UniElement.prototype.addEventListener = function addEventListener (name, handler) {
-  var ref = this.attrs;
-    var cid = ref.cid;
-    var nid = ref.nid;
-  if (!cid || !nid) {
-    return console.error(("cid=" + cid + ",nid=" + nid + " addEventListener(" + name + ") not found"))
+  if (this.cid === '' || this.nid === '') {
+    return console.error(("cid=" + (this.cid) + ",nid=" + (this.nid) + " addEventListener(" + name + ") not found"))
   }
-  this._$vd.addEvent(cid, nid, name, handler);
+  (this.events[name] || (this.events[name] = [])).push(handler);
+  this._$vd.addElement(this);
 };
+
 UniElement.prototype.removeEventListener = function removeEventListener (name, handler) {
-  var ref = this.attrs;
-    var cid = ref.cid;
-    var nid = ref.nid;
-  if (!cid || !nid) {
-    return console.error(("cid=" + cid + ",nid=" + nid + " removeEventListener(" + name + ") not found"))
+    var this$1 = this;
+
+  if (this.cid === '' || this.nid === '') {
+    return console.error(("cid=" + (this.cid) + ",nid=" + (this.nid) + " removeEventListener(" + name + ") not found"))
   }
-  this._$vd.removeEvent(cid, nid, name, handler);
+  var isRemoved = false;
+  if (this.events[name]) {
+    var handlerIndex = this.events[name].indexOf(handler);
+    if (handlerIndex !== -1) {
+      this.events[name].splice(handlerIndex, 1);
+      isRemoved = true;
+    }
+  }
+  if (!isRemoved) {
+    console.error(("cid=" + (this.cid) + ",nid=" + (this.nid) + " removeEventListener(" + name + ") handler not found"));
+  }
+
+  Object.keys(this.events).every(function (eventType) { return this$1.events[eventType].length === 0; }) &&
+    this._$vd.removeElement(this);
 };
 
 function createElement$1(tagName) {
@@ -6631,7 +6661,14 @@ function updateDOMListeners (oldVnode, vnode) {
   var on = vnode.data.on || {};
   var oldOn = oldVnode.data.on || {};
   target$1 = vnode.elm;
-  target$1._$vd = vnode.context._$vd; // fixed by xxxxxx 存储 vd
+  
+  // fixed by xxxxxx 存储 vd
+  target$1._$vd = vnode.context._$vd;
+  var context = vnode.context;
+  // 存储事件标记
+  target$1.setAttribute('nid', String(vnode.data.attrs['_i']));
+  target$1.setAttribute('cid', context._$id);
+
   normalizeEvents(on);
   updateListeners(on, oldOn, add$1, remove$2, createOnceHandler$1, vnode.context);
   target$1 = undefined;
@@ -6640,6 +6677,31 @@ function updateDOMListeners (oldVnode, vnode) {
 var events = {
   create: updateDOMListeners,
   update: updateDOMListeners
+};
+
+var platformModules = [
+  events
+];
+
+/*  */
+
+// the directive module should be applied last, after all
+// built-in modules have been applied.
+var modules = platformModules.concat(baseModules);
+
+var patch = createPatchFunction({ nodeOps: nodeOps, modules: modules });
+
+var show = {
+  bind: function bind() {},
+  update: function update() {},
+  unbind: function unbind() {}
+};
+
+var platformDirectives = {
+  show: show
+};
+
+var platformComponents = {
 };
 
 /*  */
@@ -6707,82 +6769,6 @@ function normalizeStyleBinding (bindingStyle) {
   return bindingStyle
 }
 
-function updateExtras(oldVnode, vnode) {
-
-  var attrs = vnode.data.attrs;
-  var extras = vnode.data.extras;
-
-  var isExtrasUndef = isUndef(extras);
-  if (isExtrasUndef && isUndef(attrs)) {
-    return
-  }
-
-  var elm = vnode.elm;
-  var context = vnode.context;
-
-  var id = attrs['_i'];
-  // 存储事件标记
-  elm.setAttribute('nid', String(id));
-  elm.setAttribute('cid', context._$id);
-
-  if (
-    (
-      isExtrasUndef ||
-      Object.keys(extras).length === 0
-    ) &&
-    Object.keys(attrs).length === 1
-  ) {
-    return
-  }
-
-  var $s = vnode.context._$s.bind(vnode.context);
-
-  if (extras) {
-    if (extras['c']) {
-      extras['c'] = stringifyClass(extras['c']);
-    }
-    if (extras['s']) {
-      extras['s'] = normalizeStyleBinding(extras['s']);
-    }
-    for (var key in extras) {
-      $s(id, key, extras[key]);
-    }
-  }
-
-  if (attrs) {
-    for (var key$1 in attrs) {
-      key$1 !== '_i' && $s(id, 'a-' + key$1, attrs[key$1]);
-    }
-  }
-
-}
-
-
-
-var extras = {
-  create: updateExtras,
-  update: updateExtras
-};
-
-var platformModules = [
-  extras,// 在前，设置 cid，nid
-  events
-];
-
-/*  */
-
-// the directive module should be applied last, after all
-// built-in modules have been applied.
-var modules = platformModules.concat(baseModules);
-
-var patch = createPatchFunction({ nodeOps: nodeOps, modules: modules });
-
-var platformDirectives = {
-};
-
-var platformComponents = {
-};
-
 function callHook$2(hook, args) {
   var vm = this;
   // #7573 disable dep collection when invoking lifecycle hooks
@@ -6810,6 +6796,9 @@ var plugin = {
     };
 
     Vue.prototype.__call_hook = callHook$2;
+    // 运行时需要格式化 class,style
+    Vue.prototype._$stringifyClass = stringifyClass;
+    Vue.prototype._$normalizeStyleBinding = normalizeStyleBinding;
   }
 };
 

@@ -8,6 +8,7 @@ import {
 } from './navigator'
 
 import {
+  VD_SYNC,
   PAGE_CREATE
 } from '../../constants'
 
@@ -109,7 +110,7 @@ export function registerPage ({
       const pageId = webview.id
 
       // 通知页面已开始创建
-      UniServiceJSBridge.publishHandler('vdSync', {
+      UniServiceJSBridge.publishHandler(VD_SYNC, {
         data: [
           [PAGE_CREATE, [pageId, route]]
         ],
@@ -119,7 +120,9 @@ export function registerPage ({
       }, [pageId])
       try {
         createPage(route, pageId, query, pageInstance).$mount()
-      } catch (e) {}
+      } catch (e) {
+        console.error(e)
+      }
     }
   }
 

@@ -1,20 +1,40 @@
 import {
-  isFn
+  isFn,
+  noop
 } from 'uni-shared'
 
 import {
-  PAGE_CREATED,
-  VD_SYNC_CALLBACK
+  VD_SYNC,
+  UI_EVENT,
+  PAGE_CREATED
 } from '../../../constants'
 
 import {
-  removeWebviewUIEvent,
-  registerWebviewUIEvent
+  vdSyncCallbacks,
+  removeVdSync,
+  registerVdSync
 } from '../subscribe-handlers'
 
-function noop () {}
+const handleVdData = {
+  [UI_EVENT]: function onUIEvent (vdBatchEvent, vd) {
+    vdBatchEvent.forEach(([cid, nid, event]) => {
+      console.log(`[EVENT]`, cid, nid, event)
+      event.preventDefault = noop
+      event.stopPropagation = noop
+      const target = vd.elements.find(target => target.cid === cid && target.nid === nid)
+      if (!target) {
+        return console.error(`event handler[${cid}][${nid}] not found`)
+      }
+      target.dispatchEvent(event.type, event)
+    })
+  }
+}
 
-const callbacks = [] // 数据同步 callback
+function onVdSync (vdBatchData, vd) {
+  vdBatchData.forEach(([type, vdData]) => {
+    handleVdData[type](vdData, vd)
+  })
+}
 
 export class VDomSync {
   constructor (pageId, pagePath) {
@@ -23,55 +43,34 @@ export class VDomSync {
     this.batchData = []
     this.vms = Object.create(null)
     this.initialized = false
-    // 事件
-    this.handlers = Object.create(null)
+
+    this.elements = [] //  目前仅存储事件 element
 
     this._init()
   }
 
   _init () {
-    UniServiceJSBridge.subscribe(VD_SYNC_CALLBACK, () => {
-      const copies = callbacks.slice(0)
-      callbacks.length = 0
-      for (let i = 0; i < copies.length; i++) {
-        copies[i]()
-      }
-    })
-
-    registerWebviewUIEvent(this.pageId, (cid, nid, event) => {
-      console.log(`[EVENT]`, cid, nid, event)
-      event.preventDefault = noop
-      event.stopPropagation = noop
-      if (
-        this.handlers[cid] &&
-        this.handlers[cid][nid] &&
-        this.handlers[cid][nid][event.type]
-      ) {
-        this.handlers[cid][nid][event.type].forEach(handler => {
-          handler(event)
-        })
-      } else {
-        console.error(`event handler[${cid}][${nid}][${event.type}] not found`)
-      }
+    registerVdSync(this.pageId, (vdBatchData) => {
+      onVdSync(vdBatchData, this)
     })
   }
 
   addMountedVm (vm) {
     vm._$mounted() // 触发vd数据同步
-    this.addCallback(function mounted () {
+    this.addVdSyncCallback(function mounted () {
       vm.__call_hook('mounted')
     })
   }
 
   addUpdatedVm (vm) {
     vm._$updated() // 触发vd数据同步
-    this.addCallback(function mounted () {
+    this.addVdSyncCallback(function mounted () {
       vm.__call_hook('updated')
     })
   }
 
-  addCallback (callback) {
-    isFn(callback) && callbacks.push(callback)
+  addVdSyncCallback (callback) {
+    isFn(callback) && vdSyncCallbacks.push(callback)
   }
 
   getVm (id) {
@@ -86,26 +85,20 @@ export class VDomSync {
     delete this.vms[vm._$id]
   }
 
-  addEvent (cid, nid, name, handler) {
-    const cHandlers = this.handlers[cid] || (this.handlers[cid] = Object.create(null))
-    const nHandlers = cHandlers[nid] || (cHandlers[nid] = Object.create(null));
-    (nHandlers[name] || (nHandlers[name] = [])).push(handler)
+  addElement (elm) {
+    this.elements.indexOf(elm) === -1 && this.elements.push(elm)
   }
 
-  removeEvent (cid, nid, name, handler) {
-    const cHandlers = this.handlers[cid] || (this.handlers[cid] = Object.create(null))
-    const nHandlers = cHandlers[nid] || (cHandlers[nid] = Object.create(null))
-    const eHandlers = nHandlers[name]
-    if (Array.isArray(eHandlers)) {
-      const index = eHandlers.indexOf(handler)
-      if (index !== -1) {
-        eHandlers.splice(index, 1)
-      }
+  removeElement (elm) {
+    const elmIndex = this.elements.indexOf(elm)
+    if (elmIndex === -1) {
+      return console.error(`removeElement[${elm.cid}][${elm.nid}] not found`)
     }
+    this.elements.splice(elmIndex, 1)
   }
 
-  push (type, nodeId, data) {
-    this.batchData.push([type, [nodeId, data]])
+  push (type, cid, data) {
+    this.batchData.push([type, [cid, data]])
   }
 
   flush () {
@@ -114,7 +107,7 @@ export class VDomSync {
       this.batchData.push([PAGE_CREATED, [this.pageId, this.pagePath]])
     }
     if (this.batchData.length) {
-      UniServiceJSBridge.publishHandler('vdSync', {
+      UniServiceJSBridge.publishHandler(VD_SYNC, {
         data: this.batchData,
         options: {
           timestamp: Date.now()
@@ -128,7 +121,7 @@ export class VDomSync {
     this.batchData.length = 0
     this.vms = Object.create(null)
     this.initialized = false
-    this.handlers = Object.create(null)
-    removeWebviewUIEvent(this.pageId)
+    this.elements.length = 0
+    removeVdSync(this.pageId)
   }
 }

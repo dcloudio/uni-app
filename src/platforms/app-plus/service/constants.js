@@ -13,3 +13,6 @@ export const V_FOR = 'f'
 export const V_IF = 'i'
 export const V_ELSE_IF = 'e'
 export const V_SHOW = 'v-show'
+
+export const B_CLASS = 'c'
+export const B_STYLE = 's'

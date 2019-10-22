@@ -1,3 +1,12 @@
+const {
+  ID,
+  isVar
+} = require('./util')
+
+const {
+  isComponent
+} = require('../util')
+
 let isPlatformReservedTag
 
 function no (a, b, c) {
@@ -17,7 +26,7 @@ function isStatic (node) {
   if (node.type === 3) {
     return true
   }
-  if (node.dynamicClass || node.dynamicStyle) {
+  if (node.classBinding || node.styleBinding) {
     return false
   }
   return !!(node.pre || (
@@ -40,6 +49,20 @@ function markStatic (node) {
     delete node.attrs
   }
   if (node.type === 1) {
+    delete node.staticClass
+    delete node.staticStyle
+
+    if (node.attrs && !isComponent(node.tag)) { // 移除静态属性
+      node.attrs = node.attrs.filter(attr => attr.name === ID || isVar(attr.value))
+    }
+
+    node.children = node.children.filter(child => { // 移除静态文本
+      if (child.type === 3) { // ASTText
+        return false
+      }
+      return true
+    })
+
     for (let i = 0, l = node.children.length; i < l; i++) {
       const child = node.children[i]
       markStatic(child)

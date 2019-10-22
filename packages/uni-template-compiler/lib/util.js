@@ -183,10 +183,15 @@ const {
 } = require('./h5')
 
 function isComponent (tagName) {
-  if (tagName === 'block' || tagName === 'template') {
+  if (
+    tagName === 'block' ||
+    tagName === 'template' ||
+    tagName === 'c-i' || // v3 service input => c-i
+    tagName === 'c-t' // v3 service textarea => c-t
+  ) {
     return false
   }
-  return !hasOwn(tags, getTagName(tagName))
+  return !hasOwn(tags, getTagName(tagName.replace('v-uni-', '')))
 }
 
 module.exports = {

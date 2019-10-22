@@ -15,7 +15,9 @@ import {
 import {
   V_IF,
   V_FOR,
-  V_ELSE_IF
+  V_ELSE_IF,
+  B_CLASS,
+  B_STYLE
 } from '../../constants'
 
 import {
@@ -49,10 +51,17 @@ export function initData (Vue) {
     if (!this._$vd) {
       return
     }
+    // TODO 自定义组件中的 slot 数据采集是在组件内部，导致所在 context 中无法获取到差量数据
+    // 如何保证每个 vm 数据有变动，就加入 diff 中呢？
+    // 每次变化，可能触发多次 beforeUpdate，updated
+    // 子组件 updated 时，可能会增加父组件的 diffData，如 slot 等情况
     diff(this._$newData, this._$data, this._$vdUpdatedData)
     this._$data = JSON.parse(JSON.stringify(this._$newData))
     console.log(`[${this._$id}] updated ` + Date.now())
-    this._$vd.initialized && this.$nextTick(this._$vd.flush.bind(this._$vd))
+    // setTimeout 一下再 nextTick（ 直接 nextTick 的话，会紧接着该 updated 做 flush，导致父组件 updated 数据被丢弃）
+    this._$vd.initialized && setTimeout(() => {
+      this.$nextTick(this._$vd.flush.bind(this._$vd))
+    }, 0)
   }
 
   Object.defineProperty(Vue.prototype, '_$vd', {
@@ -78,7 +87,6 @@ export function initData (Vue) {
         this._$vdMountedData = Object.create(null)
         this._$setData(MOUNTED_DATA, this._$vdMountedData)
         console.log(`[${this._$id}] beforeCreate ` + Date.now())
-        // 目前全量采集做 diff(iOS 需要保留全量状态做 restore)，理论上可以差量采集
         this._$data = Object.create(null)
         this._$newData = Object.create(null)
       }
@@ -103,19 +111,22 @@ export function initData (Vue) {
 }
 
 function setData (id, name, value) {
-  const diffData = this._$newData[id] || (this._$newData[id] = {})
-
-  if (typeof name !== 'string') {
-    for (let key in name) {
-      diffData[key] = name[key]
-    }
-    return name
+  switch (name) {
+    case B_CLASS:
+      value = this._$stringifyClass(value)
+      break
+    case B_STYLE:
+      value = this._$normalizeStyleBinding(value)
+      break
+    case V_IF:
+    case V_ELSE_IF:
+      value = !!value
+      break
+    case V_FOR:
+      return setForData.call(this, id, value)
   }
 
-  if (name === 'a-_i') {
-    return value
-  }
-  return (diffData[name] = value)
+  return ((this._$newData[id] || (this._$newData[id] = {}))[name] = value)
 }
 
 function setForData (id, value) {
@@ -140,9 +151,9 @@ function setForData (id, value) {
 }
 
 function setIfData (id, value) {
-  return ((this._$newData[id] || (this._$newData[id] = {}))[V_IF] = value)
+  return ((this._$newData[id] || (this._$newData[id] = {}))[V_IF] = !!value)
 }
 
 function setElseIfData (id, value) {
-  return ((this._$newData[id] || (this._$newData[id] = {}))[V_ELSE_IF] = value)
+  return ((this._$newData[id] || (this._$newData[id] = {}))[V_ELSE_IF] = !!value)
 }
