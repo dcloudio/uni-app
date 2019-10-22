@@ -64,7 +64,7 @@ query.select('#id').boundingClientRect(data => {
 |字段名|类型|默认值|必填|说明|平台差异说明|
 |:-|:-|:-|:-|:-|:-|
 |id|Boolean|false|否|是否返回节点 ``id``||
-|dataset|Boolean|false|否|是否返回节点 ``dataset``||
+|dataset|Boolean|false|否|是否返回节点 ``dataset``| App、微信小程序、H5 |
 |rect|Boolean|false|否|是否返回节点布局位置（``left`` ``right`` ``top`` ``bottom``）||
 |size|Boolean|false|否|是否返回节点尺寸（``width`` ``height``）||
 |scrollOffset|Boolean|false|否|是否返回节点的 ``scrollLeft`` ``scrollTop``，节点必须是 ``scroll-view`` 或者 ``viewport``||
