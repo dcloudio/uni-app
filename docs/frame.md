@@ -936,14 +936,14 @@ slide-view.vue
 **注意事项**
 
 * 小程序组件需要放在项目特殊文件夹 ``wxcomponents``（或 mycomponents、swancomponents）。HBuilderX 建立的工程 ``wxcomponents`` 文件夹在 项目根目录下。vue-cli 建立的工程 ``wxcomponents`` 文件夹在 ``src`` 目录下。可以在 vue.config.js 中自定义其他目录。
-* 当需要在 vue 组件中使用小程序组件时，注意在 pages.json 的 globalStyle 中配置 usingComponents，而不是页面级配置。
-* 注意数据和事件绑定的差异，使用时应按照 vue 的数据和事件绑定方式
-	- 属性绑定从 attr="{{ a }}"，改为 :attr="a"；从 title="复选框{{ item }}" 改为 :title="'复选框' + item"
-	- 事件绑定从 bind:click="toggleActionSheet1" 改为 @click="toggleActionSheet1"
-	- 阻止事件冒泡 从 catch:tap="xx" 改为 @tap.native.stop="xx"
-	- wx:if 改为 v-if
-	- wx:for="{{ list }}" wx:key="{{ index }}" 改为`v-for="(item,index) in list"
-	- 原事件命名以短横线分隔的需要手动修改小程序组件源码为驼峰命名，比如：*this.$emit('left-click')* 修改为 *this.$emit('leftClick')*（HBuilderX 1.9.0+ 不再需要修改此项）
+* 当需要在 `vue` 组件中使用小程序组件时，注意在 `pages.json` 的 `globalStyle` 中配置 `usingComponents`，而不是页面级配置。
+* 注意数据和事件绑定的差异，使用时应按照 `vue` 的数据和事件绑定方式
+	- 属性绑定从 `attr="{{ a }}"`，改为 `:attr="a"`；从 `title="复选框{{ item }}"` 改为 `:title="'复选框' + item"`
+	- 事件绑定从 `bind:click="toggleActionSheet1"` 改为 `@click="toggleActionSheet1"`
+	- 阻止事件冒泡 从 `catch:tap="xx"` 改为 `@tap.native.stop="xx"`
+	- `wx:if` 改为 `v-if`
+	- `wx:for="{{ list }}" wx:key="{{ index }}"` 改为`v-for="(item,index) in list"`
+	- 原事件命名以短横线分隔的需要手动修改小程序组件源码为驼峰命名，比如：`this.$emit('left-click')` 修改为 `this.$emit('leftClick')`（HBuilderX 1.9.0+ 不再需要修改此项）
 
 详细的小程序转uni-app语法差异可参考文档[https://ask.dcloud.net.cn/article/35786](https://ask.dcloud.net.cn/article/35786)。
 
