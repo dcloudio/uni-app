@@ -3838,17 +3838,19 @@ var serviceContext = (function () {
    * 动态设置 tabBar 某一项的内容
    */
   function setTabBarItem$1 (index, text, iconPath, selectedIconPath) {
-    const item = {};
+    const item = {
+      index
+    };
+    if (text !== undefined) {
+      item.text = text;
+    }
     if (iconPath) {
       item.iconPath = getRealPath$1(iconPath);
     }
     if (selectedIconPath) {
       item.selectedIconPath = getRealPath$1(selectedIconPath);
     }
-    tabBar && tabBar.setTabBarItem(Object.assign({
-      index,
-      text
-    }, item));
+    tabBar && tabBar.setTabBarItem(item);
   }
   /**
    * 动态设置 tabBar 的整体样式
@@ -7056,12 +7058,27 @@ var serviceContext = (function () {
         errMsg: 'setTabBarStyle:fail not TabBar page'
       }
     }
-    tabBar$1.setTabBarStyle({
-      color,
-      selectedColor,
-      backgroundColor,
-      borderStyle: borderStyle === 'white' ? '#ffffff' : '#c6c6c6'
-    });
+    const style = {};
+    const borderStyles = {
+      black: 'rgba(0,0,0,0.4)',
+      white: 'rgba(255,255,255,0.4)'
+    };
+    if (color) {
+      style.color = color;
+    }
+    if (selectedColor) {
+      style.selectedColor = selectedColor;
+    }
+    if (backgroundColor) {
+      style.backgroundColor = backgroundColor;
+    }
+    if (borderStyle in borderStyles) {
+      borderStyle = borderStyles[borderStyle];
+    }
+    if (borderStyle) {
+      style.borderStyle = borderStyle;
+    }
+    tabBar$1.setTabBarStyle(style);
     return {
       errMsg: 'setTabBarStyle:ok'
     }
@@ -8994,7 +9011,7 @@ var serviceContext = (function () {
   }
 
   const handleVdData = {
-    [UI_EVENT]: function onUIEvent(vdBatchEvent, vd) {
+    [UI_EVENT]: function onUIEvent (vdBatchEvent, vd) {
       vdBatchEvent.forEach(([cid, nid, event]) => {
         console.log(`[EVENT]`, cid, nid, event);
         event.preventDefault = noop;
@@ -9008,14 +9025,14 @@ var serviceContext = (function () {
     }
   };
 
-  function onVdSync$1(vdBatchData, vd) {
+  function onVdSync$1 (vdBatchData, vd) {
     vdBatchData.forEach(([type, vdData]) => {
       handleVdData[type](vdData, vd);
     });
   }
 
   class VDomSync {
-    constructor(pageId, pagePath) {
+    constructor (pageId, pagePath) {
       this.pageId = pageId;
       this.pagePath = pagePath;
       this.batchData = [];
@@ -9027,47 +9044,47 @@ var serviceContext = (function () {
       this._init();
     }
 
-    _init() {
+    _init () {
       registerVdSync(this.pageId, (vdBatchData) => {
         onVdSync$1(vdBatchData, this);
       });
     }
 
-    addMountedVm(vm) {
+    addMountedVm (vm) {
       vm._$mounted(); // 触发vd数据同步
-      this.addVdSyncCallback(function mounted() {
+      this.addVdSyncCallback(function mounted () {
         vm.__call_hook('mounted');
       });
     }
 
-    addUpdatedVm(vm) {
+    addUpdatedVm (vm) {
       vm._$updated(); // 触发vd数据同步
-      this.addVdSyncCallback(function mounted() {
+      this.addVdSyncCallback(function mounted () {
         vm.__call_hook('updated');
       });
     }
 
-    addVdSyncCallback(callback) {
+    addVdSyncCallback (callback) {
       isFn(callback) && vdSyncCallbacks.push(callback);
     }
 
-    getVm(id) {
+    getVm (id) {
       return this.vms[id]
     }
 
-    addVm(vm) {
+    addVm (vm) {
       this.vms[vm._$id] = vm;
     }
 
-    removeVm(vm) {
+    removeVm (vm) {
       delete this.vms[vm._$id];
     }
 
-    addElement(elm) {
+    addElement (elm) {
       this.elements.indexOf(elm) === -1 && this.elements.push(elm);
     }
 
-    removeElement(elm) {
+    removeElement (elm) {
       const elmIndex = this.elements.indexOf(elm);
       if (elmIndex === -1) {
         return console.error(`removeElement[${elm.cid}][${elm.nid}] not found`)
@@ -9075,11 +9092,11 @@ var serviceContext = (function () {
       this.elements.splice(elmIndex, 1);
     }
 
-    push(type, cid, data) {
+    push (type, cid, data) {
       this.batchData.push([type, [cid, data]]);
     }
 
-    flush() {
+    flush () {
       if (!this.initialized) {
         this.initialized = true;
         this.batchData.push([PAGE_CREATED, [this.pageId, this.pagePath]]);
@@ -9095,7 +9112,7 @@ var serviceContext = (function () {
       }
     }
 
-    destroy() {
+    destroy () {
       this.batchData.length = 0;
       this.vms = Object.create(null);
       this.initialized = false;
