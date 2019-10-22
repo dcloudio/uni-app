@@ -3,6 +3,13 @@ import {
 } from './data'
 
 export function initEvent (Vue) {
+  // 部分组件内部使用了$page
+  Object.defineProperty(Vue.prototype, '$page', {
+    get () {
+      return getCurrentPages()[0].$page
+    }
+  })
+
   Vue.prototype.$handleViewEvent = function ($vueEvent, options) {
     const $event = this.$handleEvent($vueEvent)
     const cid = this._$id

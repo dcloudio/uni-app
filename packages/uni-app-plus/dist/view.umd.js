@@ -13108,6 +13108,13 @@ var data = __webpack_require__(12);
 // CONCATENATED MODULE: ./src/platforms/app-plus/view/framework/plugins/event.js
 
 function initEvent(Vue) {
+  // 部分组件内部使用了$page
+  Object.defineProperty(Vue.prototype, '$page', {
+    get: function get() {
+      return getCurrentPages()[0].$page;
+    }
+  });
+
   Vue.prototype.$handleViewEvent = function ($vueEvent, options) {
     var $event = this.$handleEvent($vueEvent);
     var cid = this._$id; // 当自定义组件根节点触发事件时，nid 始终为 0
