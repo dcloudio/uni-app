@@ -160,4 +160,4 @@
 
 实际运行效果如下（点击图片可放大）：
 
-![](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/run1x8.jpg)
+![](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/run1x9.jpg)
