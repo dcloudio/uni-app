@@ -565,7 +565,7 @@ describe('codegen', () => {
   it('generate svg component with children', () => {
     assertCodegen(
       '<svg><my-comp><circle :r="10"></circle></my-comp></svg>',
-      `with(this){return _c('svg',{attrs:{"_i":0}},[_c('my-comp',{attrs:{"_i":1}},[_c('circle',{attrs:{"_i":2}})])],1)}`
+      `with(this){return _c('svg',{attrs:{"_i":0}},[_c('my-comp',{attrs:{"_i":1}},[_c('circle',{attrs:{"_i":2}})],1)],1)}`
     )
   })
 

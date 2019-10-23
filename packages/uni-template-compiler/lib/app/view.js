@@ -57,7 +57,7 @@ function transformNode (el, parent, state) {
   if (el.type === 3) {
     return
   }
-  parseBlock(el)
+  parseBlock(el, parent)
   parseComponent(el)
   parseEvent(el)
   // 更新 id

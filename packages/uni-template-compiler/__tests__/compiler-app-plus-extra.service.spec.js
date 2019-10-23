@@ -64,5 +64,12 @@ describe('codegen', () => {
       `with(this){return _c('div',[_v((_$s(0,'t0',_s(_f("f")(_f("e")(d)))))+(_$s(0,'t1',_s(text))))])}`
     )
   })
+
+  it('generate v-slot', () => {
+    assertCodegen(
+      '<current-user v-slot="{ user }">{{ user.firstName }}</current-user>',
+      `with(this){return _c('current-user',{attrs:{"_i":0},scopedSlots:_u([{key:"default",fn:function({ user }){return [_v((_$s(0,'t0',_s(user.firstName))))]}}])})}`
+    )
+  })
 })
 /* eslint-enable quotes */

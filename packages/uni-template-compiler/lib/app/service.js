@@ -66,7 +66,7 @@ function transformNode (el, parent, state) {
   if (el.type === 3) {
     return
   }
-  parseBlock(el)
+  parseBlock(el, parent)
   parseEvent(el)
 
   updateForEleId(el, state)

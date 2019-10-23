@@ -44,6 +44,7 @@ module.exports = {
     } else if (options.view) {
       (options.modules || (options.modules = [])).push(require('./app/view'))
       options.optimize = false // 暂不启用 staticRenderFns
+      options.isReservedTag = (tagName) => false // 均为组件
       return compile(source, options)
     }
 

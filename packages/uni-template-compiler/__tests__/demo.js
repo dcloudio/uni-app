@@ -1,10 +1,8 @@
 const compiler = require('../lib')
 const res = compiler.compile(
   `
-<input v-model="\n test \n">
-
-
-    `, {
+<div><block v-for="item in items"><div></div><div></div></block></div>
+`, {
     resourcePath: '/User/fxy/Documents/test.wxml',
     isReservedTag: function (tag) {
       return true
@@ -15,7 +13,7 @@ const res = compiler.compile(
     mp: {
       platform: 'app-plus'
     },
-    // service: true,
+    service: true,
     view: true
   })
 console.log(require('util').inspect(res, {

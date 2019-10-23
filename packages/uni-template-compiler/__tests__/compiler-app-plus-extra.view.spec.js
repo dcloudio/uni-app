@@ -40,5 +40,11 @@ describe('codegen', () => {
       `with(this){return _c('v-uni-view',{attrs:{"_i":0}},[_t("default",[_c('v-uni-view',{attrs:{"_i":2}},[_v((_$g(2,'t0')))])],{"_i":1})],2)}`
     )
   })
+  it('generate v-slot', () => {
+    assertCodegen(
+      '<current-user v-slot="{ user }">{{ user.firstName }}</current-user>',
+      `with(this){return _c('current-user',{attrs:{"_i":0},scopedSlots:_u([{key:"default",fn:function({ user }){return [_v((_$g(0,'t0')))]}}])})}`
+    )
+  })
 })
 /* eslint-enable quotes */
