@@ -55,6 +55,8 @@ uni.getLocation({
 **注意**
 
 - H5：在较新的手机浏览器上，H5 端获取定位信息，要求部署在 **https** 服务上，本地预览（localhost）仍然可以使用 http 协议。
+- H5：国产安卓手机上，H5若无非定位，检查手机是否开通位置服务、GPS，ROM是否给该浏览器位置权限、浏览器是否对网页弹出请求给予定位的询问框。
+- H5：安卓手机在原生App内嵌H5时，无法定位需要原生App处理Webview。
 - H5：无 GPS 模块的 PC 设备使用 Chrome 浏览器的时候，位置信息是连接谷歌服务器获取的，国内用户可能获取位置信息失败。
 - H5：微信公众号可使用微信js sdk，[详见](https://ask.dcloud.net.cn/article/35380)
 - App：Android由于谷歌服务被墙，想在国产手机上正常定位，需要向高德等三方服务商申请SDK资质，获取AppKey。云打包时需要在manifest的SDK配置中填写Appkey。在manifest可视化界面有详细申请指南。离线打包自行在原生工程中配置。注意包名和appkey信息必须匹配。
@@ -113,3 +115,4 @@ uni.chooseLocation({
 - 不同端，使用地图选择时基于的底层地图引擎不一样，如微信小程序和H5是腾讯地图，App是高德地图，详见地图map组件的使用注意事项
 - 微信内置浏览器中可使用微信js sdk，[详见](https://ask.dcloud.net.cn/article/35380)
 - chooseLocation属于封装型API，开发者若觉得不够灵活，可自行基于原始的map组件进行封装
+- 若位置不准，见上文uni.getLocation的注意事项
