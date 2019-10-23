@@ -15,6 +15,7 @@ import {
 import {
   V_IF,
   V_FOR,
+  V_SHOW,
   V_ELSE_IF,
   B_CLASS,
   B_STYLE
@@ -119,8 +120,9 @@ function setData (id, name, value) {
       value = this._$normalizeStyleBinding(value)
       break
     case V_IF:
+    case V_SHOW:
     case V_ELSE_IF:
-      value = !!value
+      value = value ? 1 : 0
       break
     case V_FOR:
       return setForData.call(this, id, value)

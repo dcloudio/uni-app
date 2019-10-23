@@ -32,10 +32,12 @@ function parseBinding (el, genVar) {
   el.styleBinding && (el.styleBinding = genVar('s', el.styleBinding))
 }
 
-function parseDirs (el, genVar) {
+function parseDirs (el, genVar, ignoreDirs = []) {
   el.directives && el.directives.forEach(dir => {
-    dir.value && (dir.value = genVar('v-' + dir.name, dir.value))
-    dir.isDynamicArg && (dir.arg = genVar('v-' + dir.name + '-arg', dir.arg))
+    if (ignoreDirs.indexOf(dir.name) === -1) {
+      dir.value && (dir.value = genVar('v-' + dir.name, dir.value))
+      dir.isDynamicArg && (dir.arg = genVar('v-' + dir.name + '-arg', dir.arg))
+    }
   })
 }
 

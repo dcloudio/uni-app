@@ -213,7 +213,7 @@ module.exports = function (pagesJson, userManifestJson) {
 
   let flexDir = false
 
-  if (manifestJson.plus.nvueCompiler && manifestJson.plus.nvueCompiler === 'uni-app') {
+  if (process.env.UNI_USING_NVUE_COMPILER) {
     appJson.nvueCompiler = 'uni-app'
     flexDir = getFlexDirection(manifestJson.plus)
   } else {

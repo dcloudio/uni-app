@@ -26,7 +26,7 @@ const {
 const parseEvent = require('./parser/event-parser')
 const parseBlock = require('./parser/block-parser')
 
-const basePreTransformNode = require('./pre-transform-node')
+const preTransformNode = require('./pre-transform-node')
 
 const optimize = require('./optimizer')
 
@@ -87,7 +87,7 @@ function transformNode (el, parent, state) {
 
   parseIf(el, createGenVar)
   parseBinding(el, genVar)
-  parseDirs(el, genVar)
+  parseDirs(el, genVar, ['model'])
 
   if (!isComponent(el.tag)) {
     parseAttrs(el, genVar)
@@ -106,27 +106,30 @@ function postTransformNode (el, options) {
   }
 }
 
-function parseTag (el) {
-  if (el.tag === 'input' || el.tag === 'textarea') {
-    el.tag = `c-${el.tag.substr(0, 1)}` // 返回一个自定义组件标签,保证 v-model
+function genVModel (el) {
+  if (
+    (el.tag === 'input' || el.tag === 'textarea') &&
+    el.directives &&
+    el.directives.find(dir => dir.name === 'model')
+  ) {
+    const prop = el.props.find(prop => prop.name === 'value')
+    prop.value = createGenVar(el.attrsMap[ID])('v-model', prop.value)
+  }
+  if (el.model) {
+    el.model.value = createGenVar(el.attrsMap[ID])('v-model', el.model.value)
   }
 }
 
 function genData (el) {
   delete el.$parentIterator3
 
-  if (el.model) {
-    el.model.callback = `function ($$v) {}`
-  }
+  genVModel(el)
 
   return ''
 }
 
 module.exports = {
-  preTransformNode: function (el, options) {
-    parseTag(el)
-    return basePreTransformNode(el, options)
-  },
+  preTransformNode,
   postTransformNode,
   genData
 }

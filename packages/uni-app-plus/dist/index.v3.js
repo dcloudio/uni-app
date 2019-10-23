@@ -8598,19 +8598,8 @@ var serviceContext = (function () {
     }
   });
 
-  function optimize (k, v) {
-    if (
-      k === V_IF ||
-      k === V_ELSE_IF ||
-      k === V_SHOW
-    ) {
-      return v ? 1 : 0
-    }
-    return v
-  }
-
   function publishHandler (eventType, args, pageIds) {
-    args = JSON.stringify(args, optimize);
+    args = JSON.stringify(args);
     if (process.env.NODE_ENV !== 'production') {
       console.log(`UNIAPP[publishHandler]:[${+new Date()}]`, eventType, args, pageIds);
     }
@@ -9158,17 +9147,17 @@ var serviceContext = (function () {
     return result
   }
 
-  function initData (Vue) {
+  function initData(Vue) {
     Vue.prototype._$s = setData;
     Vue.prototype._$i = setIfData;
     Vue.prototype._$f = setForData;
     Vue.prototype._$e = setElseIfData;
 
-    Vue.prototype._$setData = function setData (type, data) {
+    Vue.prototype._$setData = function setData(type, data) {
       this._$vd.push(type, this._$id, data);
     };
 
-    Vue.prototype._$mounted = function mounted () {
+    Vue.prototype._$mounted = function mounted() {
       if (!this._$vd) {
         return
       }
@@ -9181,7 +9170,7 @@ var serviceContext = (function () {
       }
     };
 
-    Vue.prototype._$updated = function updated () {
+    Vue.prototype._$updated = function updated() {
       if (!this._$vd) {
         return
       }
@@ -9199,13 +9188,13 @@ var serviceContext = (function () {
     };
 
     Object.defineProperty(Vue.prototype, '_$vd', {
-      get () {
+      get() {
         return this.$root._$vdomSync
       }
     });
 
     Vue.mixin({
-      beforeCreate () {
+      beforeCreate() {
         if (this.$options.mpType) {
           this.mpType = this.$options.mpType;
         }
@@ -9225,7 +9214,7 @@ var serviceContext = (function () {
           this._$newData = Object.create(null);
         }
       },
-      beforeUpdate () {
+      beforeUpdate() {
         if (!this._$vd) {
           return
         }
@@ -9234,7 +9223,7 @@ var serviceContext = (function () {
         console.log(`[${this._$id}] beforeUpdate ` + Date.now());
         this._$newData = Object.create(null);
       },
-      beforeDestroy () {
+      beforeDestroy() {
         if (!this._$vd) {
           return
         }
@@ -9244,7 +9233,7 @@ var serviceContext = (function () {
     });
   }
 
-  function setData (id, name, value) {
+  function setData(id, name, value) {
     switch (name) {
       case B_CLASS:
         value = this._$stringifyClass(value);
@@ -9253,8 +9242,9 @@ var serviceContext = (function () {
         value = this._$normalizeStyleBinding(value);
         break
       case V_IF:
+      case V_SHOW:
       case V_ELSE_IF:
-        value = !!value;
+        value = value ? 1 : 0;
         break
       case V_FOR:
         return setForData.call(this, id, value)
@@ -9263,7 +9253,7 @@ var serviceContext = (function () {
     return ((this._$newData[id] || (this._$newData[id] = {}))[name] = value)
   }
 
-  function setForData (id, value) {
+  function setForData(id, value) {
     const diffData = this._$newData[id] || (this._$newData[id] = {});
     const vForData = diffData[V_FOR] || (diffData[V_FOR] = []);
 
@@ -9284,11 +9274,11 @@ var serviceContext = (function () {
     return key
   }
 
-  function setIfData (id, value) {
+  function setIfData(id, value) {
     return ((this._$newData[id] || (this._$newData[id] = {}))[V_IF] = !!value)
   }
 
-  function setElseIfData (id, value) {
+  function setElseIfData(id, value) {
     return ((this._$newData[id] || (this._$newData[id] = {}))[V_ELSE_IF] = !!value)
   }
 

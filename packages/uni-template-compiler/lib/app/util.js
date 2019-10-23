@@ -28,7 +28,7 @@ function isVar (str) {
   return true
 }
 
-function addAttr (el, name, value) {
+function addRawAttr (el, name, value) {
   el.attrsMap[name] = value
   el.attrsList.push({
     name,
@@ -42,7 +42,7 @@ function updateEleId (el, it, state) {
   }
   const id = el.attrsMap[ID]
   const newId = Number.isInteger(id) ? `("${id}-"+${it})` : `(${id}+${it})`
-  addAttr(el, ID, newId)
+  addRawAttr(el, ID, newId)
   const attr = el.attrs.find(attr => attr.name === ID)
   attr.value = newId
   el.children.forEach(child => {
@@ -146,6 +146,48 @@ function traverseNode (el, parent, state) {
   el.scopedSlots && Object.values(el.scopedSlots).forEach(slot => traverseNode(slot, el, state))
 }
 
+function addAttr (el, name, value, dynamic) {
+  const attrs = dynamic
+    ? (el.dynamicAttrs || (el.dynamicAttrs = []))
+    : (el.attrs || (el.attrs = []))
+  attrs.push({
+    name,
+    value,
+    dynamic
+  })
+  el.plain = false
+}
+
+function removeRawAttr (el, name) {
+  delete el.attrsMap[name]
+  const index = el.attrsList.findIndex(attr => attr.name === name)
+  index !== -1 && el.attrsList.splice(index, 1)
+}
+
+function removeRawBindingAttr (el, name) {
+  removeRawAttr(el, ':' + name)
+  removeRawAttr(el, 'v-bind:' + name)
+  console.log(el)
+  throw new Error('123')
+}
+
+function addHandler (el, name, value, important) {
+  const events = el.events || (el.events = {})
+  const handlers = events[name]
+  const newHandler = {
+    value: value.trim(),
+    dynamic: undefined
+  }
+  if (Array.isArray(handlers)) {
+    important ? handlers.unshift(newHandler) : handlers.push(newHandler)
+  } else if (handlers) {
+    events[name] = important ? [newHandler, handlers] : [handlers, newHandler]
+  } else {
+    events[name] = newHandler
+  }
+  el.plain = false
+}
+
 module.exports = {
   V_FOR,
   V_IF,
@@ -156,7 +198,11 @@ module.exports = {
   isVar,
   hasOwn,
   addAttr,
+  addRawAttr,
+  removeRawAttr,
+  removeRawBindingAttr,
   getForEl,
+  addHandler,
   processForKey,
   updateForEleId,
   getBindingAttr,

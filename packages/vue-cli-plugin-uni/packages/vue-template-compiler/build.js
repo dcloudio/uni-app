@@ -3318,6 +3318,10 @@ function preTransformNode (el, options) {
       return
     }
 
+    if(process.env.UNI_PLATFORM !== 'h5'){ // fixed by xxxxxx  非 h5 平台 type 不会是 checkbox,radio
+      return
+    }
+
     var typeBinding;
     if (map[':type'] || map['v-bind:type']) {
       typeBinding = getBindingAttr(el, 'type');
