@@ -6691,13 +6691,12 @@ var modules = platformModules.concat(baseModules);
 
 var patch = createPatchFunction({ nodeOps: nodeOps, modules: modules });
 
-var show = {
-  bind: function bind() {},
-  update: function update() {},
-  unbind: function unbind() {}
-};
+var model$1 = {};
+
+var show = {};
 
 var platformDirectives = {
+  model: model$1,
   show: show
 };
 

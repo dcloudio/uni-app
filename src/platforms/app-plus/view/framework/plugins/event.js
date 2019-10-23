@@ -10,11 +10,25 @@ export function initEvent (Vue) {
     }
   })
 
+  Vue.prototype.$handleVModelEvent = function (nid, value) {
+    vd.addUIEvent(this._$id, nid, {
+      type: 'input',
+      target: {
+        value
+      }
+    })
+    // 使用 setTimeout 做批量同步
+    setTimeout(() => {
+      vd.sendUIEvent()
+    }, 0)
+  }
+
   Vue.prototype.$handleViewEvent = function ($vueEvent, options) {
+    const isCustomEvent = $vueEvent._processed // 自定义事件已提前处理过
     const $event = this.$handleEvent($vueEvent)
     const cid = this._$id
     // 当自定义组件根节点触发事件时，nid 始终为 0
-    const nid = $vueEvent.currentTarget === this.$el ? 0 : $event.options.nid
+    const nid = isCustomEvent || ($vueEvent.currentTarget === this.$el) ? 0 : $event.options.nid
     if (typeof nid === 'undefined') {
       return console.error(`[${cid}] nid not found`)
     }

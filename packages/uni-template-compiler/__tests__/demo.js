@@ -1,7 +1,7 @@
 const compiler = require('../lib')
 const res = compiler.compile(
   `
-<my-component v-model="\n test \n" />
+<input v-model="\n test \n">
 
 
     `, {
@@ -15,7 +15,7 @@ const res = compiler.compile(
     mp: {
       platform: 'app-plus'
     },
-    service: true,
+    // service: true,
     view: true
   })
 console.log(require('util').inspect(res, {

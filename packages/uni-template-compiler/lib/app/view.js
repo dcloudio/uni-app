@@ -83,7 +83,7 @@ function transformNode (el, parent, state) {
 
   parseIf(el, createGenVar)
   parseBinding(el, genVar)
-  parseDirs(el, genVar)
+  parseDirs(el, genVar, ['model'])
   parseAttrs(el, genVar)
   parseProps(el, genVar)
 }
@@ -135,12 +135,21 @@ function handleViewEvents (events) {
   })
 }
 
+function genVModel (el) {
+  if (el.model) {
+    el.model.value = createGenVar(el.attrsMap[ID])('v-model', el.model.value)
+    if (el.tag === 'v-uni-input' || el.tag === 'v-uni-textarea') {
+      el.model.callback = `function($$v){$handleVModelEvent(${el.attrsMap[ID]},$$v)}`
+    } else {
+      el.model.callback = `function(){}`
+    }
+  }
+}
+
 function genData (el) {
   delete el.$parentIterator3
 
-  if (el.model) {
-    el.model.callback = `function ($$v) {}`
-  }
+  genVModel(el)
 
   // 放在 postTransformNode 中处理的时机太靠前，v-model 等指令会新增 event
   el.events && handleViewEvents(el.events)

@@ -13115,11 +13115,26 @@ function initEvent(Vue) {
     }
   });
 
+  Vue.prototype.$handleVModelEvent = function (nid, value) {
+    data["b" /* vd */].addUIEvent(this._$id, nid, {
+      type: 'input',
+      target: {
+        value: value
+      }
+    }); // 使用 setTimeout 做批量同步
+
+    setTimeout(function () {
+      data["b" /* vd */].sendUIEvent();
+    }, 0);
+  };
+
   Vue.prototype.$handleViewEvent = function ($vueEvent, options) {
+    var isCustomEvent = $vueEvent._processed; // 自定义事件已提前处理过
+
     var $event = this.$handleEvent($vueEvent);
     var cid = this._$id; // 当自定义组件根节点触发事件时，nid 始终为 0
 
-    var nid = $vueEvent.currentTarget === this.$el ? 0 : $event.options.nid;
+    var nid = isCustomEvent || $vueEvent.currentTarget === this.$el ? 0 : $event.options.nid;
 
     if (typeof nid === 'undefined') {
       return console.error("[".concat(cid, "] nid not found"));
