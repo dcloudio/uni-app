@@ -91,16 +91,17 @@ function getStylesCode(loaderContext) {
 
 module.exports = function(source, map) {
   return `
-import 'uni-pages'    
+import 'uni-pages'
 function initView(){
     ${getStylesCode(this)}
+    injectStyles()
     ${getDefineComponents(parseComponents(source, traverse)).join('\n')}
     UniViewJSBridge.publishHandler('webviewReady')
 }
 if(typeof plus !== 'undefined'){
   initView()
 } else {
-  document.addEventListener('plusready',initView)  
+  document.addEventListener('plusready',initView)
 }
 `
 }
