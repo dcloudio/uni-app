@@ -7,11 +7,6 @@ import {
   navigateFinish
 } from './navigator'
 
-import {
-  VD_SYNC,
-  PAGE_CREATE
-} from '../../constants'
-
 import tabBar from '../framework/tab-bar'
 
 import {
@@ -108,16 +103,6 @@ export function registerPage ({
   if (__PLATFORM__ === 'app-plus') {
     if (!webview.nvue) {
       const pageId = webview.id
-
-      // 通知页面已开始创建
-      UniServiceJSBridge.publishHandler(VD_SYNC, {
-        data: [
-          [PAGE_CREATE, [pageId, route]]
-        ],
-        options: {
-          timestamp: Date.now()
-        }
-      }, [pageId])
       try {
         createPage(route, pageId, query, pageInstance).$mount()
       } catch (e) {

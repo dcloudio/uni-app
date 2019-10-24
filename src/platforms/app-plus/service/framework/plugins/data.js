@@ -41,7 +41,6 @@ export function initData (Vue) {
     }
     diff(this._$newData, this._$data, this._$vdMountedData)
     this._$data = JSON.parse(JSON.stringify(this._$newData))
-    console.log(`[${this._$id}] mounted ` + Date.now())
     if (this.mpType === 'page') {
       // 页面 mounted 之后，第一次同步数据
       this._$vd.flush()
@@ -58,7 +57,6 @@ export function initData (Vue) {
     // 子组件 updated 时，可能会增加父组件的 diffData，如 slot 等情况
     diff(this._$newData, this._$data, this._$vdUpdatedData)
     this._$data = JSON.parse(JSON.stringify(this._$newData))
-    console.log(`[${this._$id}] updated ` + Date.now())
     // setTimeout 一下再 nextTick（ 直接 nextTick 的话，会紧接着该 updated 做 flush，导致父组件 updated 数据被丢弃）
     this._$vd.initialized && setTimeout(() => {
       this.$nextTick(this._$vd.flush.bind(this._$vd))
@@ -87,7 +85,6 @@ export function initData (Vue) {
         this._$vd.addVm(this)
         this._$vdMountedData = Object.create(null)
         this._$setData(MOUNTED_DATA, this._$vdMountedData)
-        console.log(`[${this._$id}] beforeCreate ` + Date.now())
         this._$data = Object.create(null)
         this._$newData = Object.create(null)
       }
@@ -98,7 +95,6 @@ export function initData (Vue) {
       }
       this._$vdUpdatedData = Object.create(null)
       this._$setData(UPDATED_DATA, this._$vdUpdatedData)
-      console.log(`[${this._$id}] beforeUpdate ` + Date.now())
       this._$newData = Object.create(null)
     },
     beforeDestroy () {

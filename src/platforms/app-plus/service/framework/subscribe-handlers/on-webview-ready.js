@@ -8,12 +8,18 @@ import {
   perf
 } from '../perf'
 
+let isLaunchWebviewReady = false // 目前首页双向确定 ready，可能会导致触发两次 onWebviewReady(主要是 Android)
+
 export default function onWebviewReady (data, pageId) {
-  if (process.env.NODE_ENV !== 'production') {
-    console.log('[uni-app] onWebviewReady.preloadWebview' + (preloadWebview && preloadWebview.id))
-  }
   const isLaunchWebview = pageId === '1'
+  if (isLaunchWebview && isLaunchWebviewReady) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('[uni-app] onLaunchWebviewReady.prevent')
+    }
+    return
+  }
   if (isLaunchWebview) { // 首页
+    isLaunchWebviewReady = true
     setPreloadWebview(plus.webview.getLaunchWebview())
   } else if (!preloadWebview) { // preloadWebview 不存在，重新加载一下
     setPreloadWebview(plus.webview.getWebviewById(pageId))

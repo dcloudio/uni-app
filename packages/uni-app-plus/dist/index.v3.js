@@ -3588,6 +3588,8 @@ var serviceContext = (function () {
 
   const TITLEBAR_HEIGHT = 44;
 
+  const ON_REACH_BOTTOM_DISTANCE = 50;
+
   const VIEW_WEBVIEW_PATH = '_www/__uniappview.html';
 
   const V_FOR = 'f';
@@ -6358,18 +6360,6 @@ var serviceContext = (function () {
     }, delay);
   }
 
-  const PAGE_CREATE = 2;
-  const MOUNTED_DATA = 4;
-  const UPDATED_DATA = 6;
-  const PAGE_CREATED = 10;
-
-  const UI_EVENT = 20;
-
-  const VD_SYNC = 'vdSync';
-
-  const WEBVIEW_READY = 'webviewReady';
-  const VD_SYNC_CALLBACK = 'vdSyncCallback';
-
   const pageFactory = Object.create(null);
 
   function definePage (name, createPageVueComponent) {
@@ -6488,16 +6478,6 @@ var serviceContext = (function () {
     {
       if (!webview.nvue) {
         const pageId = webview.id;
-
-        // 通知页面已开始创建
-        UniServiceJSBridge.publishHandler(VD_SYNC, {
-          data: [
-            [PAGE_CREATE, [pageId, route]]
-          ],
-          options: {
-            timestamp: Date.now()
-          }
-        }, [pageId]);
         try {
           createPage(route, pageId, query, pageInstance).$mount();
         } catch (e) {
@@ -8728,6 +8708,101 @@ var serviceContext = (function () {
     on('onWebInvokeAppService', onWebInvokeAppService);
   }
 
+  const callbacks$a = {};
+
+  function createCallbacks (namespace) {
+    let scopedCallbacks = callbacks$a[namespace];
+    if (!scopedCallbacks) {
+      scopedCallbacks = {
+        id: 1,
+        callbacks: Object.create(null)
+      };
+      callbacks$a[namespace] = scopedCallbacks;
+    }
+    return {
+      get (id) {
+        return scopedCallbacks.callbacks[id]
+      },
+      pop (id) {
+        const callback = scopedCallbacks.callbacks[id];
+        if (callback) {
+          delete scopedCallbacks.callbacks[id];
+        }
+        return callback
+      },
+      push (callback) {
+        const id = scopedCallbacks.id++;
+        scopedCallbacks.callbacks[id] = callback;
+        return id
+      }
+    }
+  }
+
+  function initSubscribe (subscribe, {
+    getApp,
+    getCurrentPages
+  }) {
+    function createPageEvent (eventType) {
+      return function (args, pageId) {
+        pageId = parseInt(pageId);
+        const pages = getCurrentPages();
+        const page = pages.find(page => page.$page.id === pageId);
+        if (page) {
+          callPageHook(page, eventType, args);
+        } else {
+          console.error(`Not Found：Page[${pageId}]`);
+        }
+      }
+    }
+
+    const requestComponentInfoCallbacks = createCallbacks('requestComponentInfo');
+
+    function onRequestComponentInfo ({
+      reqId,
+      res
+    }) {
+      const callback = requestComponentInfoCallbacks.pop(reqId);
+      if (callback) {
+        callback(res);
+      }
+    }
+
+    const requestComponentObserverCallbacks = createCallbacks('requestComponentObserver');
+
+    function onRequestComponentObserver ({
+      reqId,
+      reqEnd,
+      res
+    }) {
+      const callback = requestComponentObserverCallbacks.get(reqId);
+      if (callback) {
+        if (reqEnd) {
+          requestComponentObserverCallbacks.pop(reqId);
+          return
+        }
+        callback(res);
+      }
+    }
+
+    subscribe('onPageScroll', createPageEvent('onPageScroll'));
+    subscribe('onReachBottom', createPageEvent('onReachBottom'));
+
+    subscribe('onRequestComponentInfo', onRequestComponentInfo);
+    subscribe('onRequestComponentObserver', onRequestComponentObserver);
+  }
+
+  const PAGE_CREATE = 2;
+  const MOUNTED_DATA = 4;
+  const UPDATED_DATA = 6;
+  const PAGE_CREATED = 10;
+
+  const UI_EVENT = 20;
+
+  const VD_SYNC = 'vdSync';
+
+  const WEBVIEW_READY = 'webviewReady';
+  const VD_SYNC_CALLBACK = 'vdSyncCallback';
+
   function perf (type, startTime) {
     /* eslint-disable no-undef */
     startTime = startTime || __UniServiceStartTime__;
@@ -8735,12 +8810,18 @@ var serviceContext = (function () {
     console.log(`[PERF][${endTime}] ${type} 耗时[${Date.now() - startTime}]`);
   }
 
+  let isLaunchWebviewReady = false; // 目前首页双向确定 ready，可能会导致触发两次 onWebviewReady(主要是 Android)
+
   function onWebviewReady (data, pageId) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.log('[uni-app] onWebviewReady.preloadWebview' + (preloadWebview && preloadWebview.id));
-    }
     const isLaunchWebview = pageId === '1';
+    if (isLaunchWebview && isLaunchWebviewReady) {
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('[uni-app] onLaunchWebviewReady.prevent');
+      }
+      return
+    }
     if (isLaunchWebview) { // 首页
+      isLaunchWebviewReady = true;
       setPreloadWebview(plus.webview.getLaunchWebview());
     } else if (!preloadWebview) { // preloadWebview 不存在，重新加载一下
       setPreloadWebview(plus.webview.getWebviewById(pageId));
@@ -8802,14 +8883,27 @@ var serviceContext = (function () {
   function initSubscribeHandlers () {
     const {
       subscribe,
+      publishHandler,
       subscribeHandler
     } = UniServiceJSBridge;
+
+    initSubscribe(subscribe, {
+      getApp,
+      getCurrentPages
+    });
 
     registerPlusMessage('subscribeHandler', (data) => {
       subscribeHandler(data.type, data.data, data.pageId);
     });
-    // TODO 检测目标 preloadWebview 是否已准备好，因为 preloadWebview 准备好时，此处代码还没执行
+
     subscribe(WEBVIEW_READY, onWebviewReady);
+
+    const entryPagePath = '/' + __uniConfig.entryPagePath;
+    const routeOptions = __uniRoutes.find(route => route.path === entryPagePath);
+    if (!routeOptions.meta.isNVue) { // 首页是 vue
+      // 防止首页 webview 初始化过早， service 还未开始监听
+      publishHandler(WEBVIEW_READY, Object.create(null), [1]);
+    }
 
     subscribe(VD_SYNC, onVdSync);
     subscribe(VD_SYNC_CALLBACK, onVdSyncCallback);
@@ -8817,7 +8911,7 @@ var serviceContext = (function () {
 
   let appCtx;
 
-  function getApp () {
+  function getApp$1 () {
     return appCtx
   }
 
@@ -8913,7 +9007,7 @@ var serviceContext = (function () {
     appCtx.globalData = appVm.$options.globalData || {};
 
     initOn(UniServiceJSBridge.on, {
-      getApp,
+      getApp: getApp$1,
       getCurrentPages: getCurrentPages$1
     });
 
@@ -9012,7 +9106,6 @@ var serviceContext = (function () {
     [UI_EVENT]: function onUIEvent (vdBatchEvent, vd) {
       vdBatchEvent.forEach(([cid, nid, event]) => {
         nid = String(nid);
-        console.log(`[EVENT]`, cid, nid, event);
         event.preventDefault = noop;
         event.stopPropagation = noop;
         const target = vd.elements.find(target => target.cid === cid && target.nid === nid);
@@ -9172,7 +9265,6 @@ var serviceContext = (function () {
       }
       diff(this._$newData, this._$data, this._$vdMountedData);
       this._$data = JSON.parse(JSON.stringify(this._$newData));
-      console.log(`[${this._$id}] mounted ` + Date.now());
       if (this.mpType === 'page') {
         // 页面 mounted 之后，第一次同步数据
         this._$vd.flush();
@@ -9189,7 +9281,6 @@ var serviceContext = (function () {
       // 子组件 updated 时，可能会增加父组件的 diffData，如 slot 等情况
       diff(this._$newData, this._$data, this._$vdUpdatedData);
       this._$data = JSON.parse(JSON.stringify(this._$newData));
-      console.log(`[${this._$id}] updated ` + Date.now());
       // setTimeout 一下再 nextTick（ 直接 nextTick 的话，会紧接着该 updated 做 flush，导致父组件 updated 数据被丢弃）
       this._$vd.initialized && setTimeout(() => {
         this.$nextTick(this._$vd.flush.bind(this._$vd));
@@ -9218,7 +9309,6 @@ var serviceContext = (function () {
           this._$vd.addVm(this);
           this._$vdMountedData = Object.create(null);
           this._$setData(MOUNTED_DATA, this._$vdMountedData);
-          console.log(`[${this._$id}] beforeCreate ` + Date.now());
           this._$data = Object.create(null);
           this._$newData = Object.create(null);
         }
@@ -9229,7 +9319,6 @@ var serviceContext = (function () {
         }
         this._$vdUpdatedData = Object.create(null);
         this._$setData(UPDATED_DATA, this._$vdUpdatedData);
-        console.log(`[${this._$id}] beforeUpdate ` + Date.now());
         this._$newData = Object.create(null);
       },
       beforeDestroy () {
@@ -9291,6 +9380,10 @@ var serviceContext = (function () {
     return ((this._$newData[id] || (this._$newData[id] = {}))[V_ELSE_IF] = !!value)
   }
 
+  function hasLifecycleHook (vueOptions = {}, hook) {
+    return Array.isArray(vueOptions[hook]) && vueOptions[hook].length
+  }
+
   /* @flow */
 
   const LIFECYCLE_HOOKS = [
@@ -9349,6 +9442,27 @@ var serviceContext = (function () {
     });
   }
 
+  function parsePageCreateOptions (vm, route) {
+    const pagePath = '/' + route;
+    const routeOptions = __uniRoutes.find(route => route.path === pagePath);
+
+    const windowOptions = Object.assign({}, __uniConfig.window, routeOptions.window);
+    const disableScroll = windowOptions.disableScroll === true ? 1 : 0;
+    const onReachBottomDistance = hasOwn(windowOptions, 'onReachBottomDistance')
+      ? parseInt(windowOptions.onReachBottomDistance)
+      : ON_REACH_BOTTOM_DISTANCE;
+
+    const onPageScroll = hasLifecycleHook(vm.$options, 'onPageScroll') ? 1 : 0;
+    const onPageReachBottom = hasLifecycleHook(vm.$options, 'onReachBottom') ? 1 : 0;
+
+    return {
+      disableScroll,
+      onPageScroll,
+      onPageReachBottom,
+      onReachBottomDistance
+    }
+  }
+
   function initLifecycle (Vue) {
     lifecycleMixin(Vue);
 
@@ -9358,6 +9472,18 @@ var serviceContext = (function () {
           this.$scope = this.$options.pageInstance;
           this.$scope.$vm = this;
           delete this.$options.pageInstance;
+
+          const route = this.$scope.route;
+          const pageId = this.$scope.$page.id;
+          // 通知页面已开始创建
+          UniServiceJSBridge.publishHandler(VD_SYNC, {
+            data: [
+              [PAGE_CREATE, [pageId, route, parsePageCreateOptions(this, route)]]
+            ],
+            options: {
+              timestamp: Date.now()
+            }
+          }, [pageId]);
         }
       },
       created () {
@@ -9406,7 +9532,7 @@ var serviceContext = (function () {
     __registerApp: registerApp,
     __registerPage: registerPage,
     uni: uni$1,
-    getApp,
+    getApp: getApp$1,
     getCurrentPages: getCurrentPages$1
   };
 

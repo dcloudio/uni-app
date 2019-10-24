@@ -22,7 +22,6 @@ const handleVdData = {
   [UI_EVENT]: function onUIEvent (vdBatchEvent, vd) {
     vdBatchEvent.forEach(([cid, nid, event]) => {
       nid = String(nid)
-      console.log(`[EVENT]`, cid, nid, event)
       event.preventDefault = noop
       event.stopPropagation = noop
       const target = vd.elements.find(target => target.cid === cid && target.nid === nid)

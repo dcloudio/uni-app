@@ -10,6 +10,10 @@ import {
 } from '../../../constants'
 
 import {
+  ON_PAGE_CREATE
+} from '../../constants'
+
+import {
   VDomSync
 } from './vdom-sync'
 
@@ -27,7 +31,7 @@ let PageVueComponent
 
 const handleData = {
   [PAGE_CREATE]: function onPageCreate (data) {
-    const [pageId, pagePath] = data
+    const [pageId, pagePath, pageOptions] = data
     document.title = `${pagePath}[${pageId}]`
     // 设置当前页面伪对象，方便其他地方使用 getCurrentPages 获取当前页面 id，route
     setCurrentPage(pageId, pagePath)
@@ -35,6 +39,8 @@ const handleData = {
     PageVueComponent = getPageVueComponent(pagePath)
     // 生成当前页面 vd
     vd = new VDomSync(pageId)
+    // 通知页面创建，根据当前页面配置信息，初始化部分事件
+    UniViewJSBridge.subscribeHandler(ON_PAGE_CREATE, pageOptions, pageId)
   },
   [MOUNTED_DATA]: function onMounted (data) {
     vd.addVData.apply(vd, data)
@@ -95,7 +101,6 @@ export function initData (Vue) {
       }
       if (this._$vd) {
         this._$vd.initVm(this)
-        console.log(`[${this._$id}] beforeCreate ` + Date.now())
       }
     }
   })

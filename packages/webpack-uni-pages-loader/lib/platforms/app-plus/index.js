@@ -486,6 +486,8 @@ module.exports = function (pagesJson, userManifestJson) {
     }
     // TODO 需要考虑 condition
     manifestJson.plus.launchwebview.id = '1' // 首页 id 固定 为 1
+    // 删除首页 style 中的 uni-app 配置（不注入 app-view.js）
+    delete manifestJson.plus.launchwebview['uni-app']
 
     if (appJson.page[appJson.entryPagePath].nvue) { // 首页是 nvue
       manifestJson.launch_path = '' // 首页地址为空

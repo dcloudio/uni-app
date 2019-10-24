@@ -56,7 +56,6 @@ export class VDomSync {
   }
 
   flush () {
-    console.log('update....', this.addBatchVData, this.updateBatchVData)
     this.updateBatchVData.forEach(([cid, data]) => {
       const vm = this.vms[cid]
       if (!vm) {
