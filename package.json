@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "base64-arraybuffer": "^0.2.0",
+    "compare-versions": "^3.5.1",
     "intersection-observer": "^0.7.0",
     "safe-area-insets": "^1.4.1"
   },

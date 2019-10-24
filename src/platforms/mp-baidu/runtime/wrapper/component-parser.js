@@ -2,6 +2,8 @@ import {
   hasOwn
 } from 'uni-shared'
 
+import compareVersions from 'compare-versions'
+
 import {
   isPage,
   initRelation
@@ -28,8 +30,10 @@ export default function parseComponent (vueOptions) {
         this.$vm.__call_hook('onLoad', this.pageinstance._$args)
         delete this.pageinstance._$args
       }
-      // TODO  目前版本 百度 Component 作为页面时，methods 中的 onShow 不触发
-      this.$vm.__call_hook('onShow')
+      // TODO  3.105.17以下基础库内百度 Component 作为页面时，methods 中的 onShow 不触发
+      if (compareVersions.compare(swan.getEnvInfoSync().sdkVersion, '3.105.17', '<')) {
+        this.$vm.__call_hook('onShow')
+      }
     }
   }
 
