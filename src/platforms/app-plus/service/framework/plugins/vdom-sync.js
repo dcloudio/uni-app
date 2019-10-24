@@ -10,10 +10,13 @@ import {
 } from '../../../constants'
 
 import {
-  vdSyncCallbacks,
   removeVdSync,
   registerVdSync
-} from '../subscribe-handlers'
+} from '../subscribe-handlers/on-vd-sync'
+
+import {
+  vdSyncCallbacks
+} from '../subscribe-handlers/on-vd-sync-callback'
 
 const handleVdData = {
   [UI_EVENT]: function onUIEvent (vdBatchEvent, vd) {

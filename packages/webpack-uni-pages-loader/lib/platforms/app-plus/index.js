@@ -339,7 +339,8 @@ module.exports = function (pagesJson, userManifestJson) {
   const uniApp = require('../../../package.json')['uni-app']
   manifestJson.plus['uni-app'] = uniApp
   // 控制页类型
-  manifestJson.plus['uni-app'].control = process.env.UNI_USING_V8 ? 'v8' : 'webview'
+  const control = process.env.UNI_USING_V3 ? 'uni-v3' : (process.env.UNI_USING_V8 ? 'v8' : 'webview')
+  manifestJson.plus['uni-app'].control = control
   manifestJson.plus['uni-app'].nvueCompiler = appJson.nvueCompiler
   manifestJson.plus['uni-app'].renderer = appJson.renderer
   if (flexDir) {

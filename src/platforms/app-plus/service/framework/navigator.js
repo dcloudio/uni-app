@@ -52,6 +52,9 @@ export function navigateFinish () {
   if (__PLATFORM__ === 'app-plus') {
     // 创建预加载
     const preloadWebview = createPreloadWebview()
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`navigateFinish.preloadWebview:${preloadWebview.id}`)
+    }
     if (!todoNavigator) {
       return
     }

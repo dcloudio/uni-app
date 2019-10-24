@@ -6247,6 +6247,9 @@ var serviceContext = (function () {
   function createPreloadWebview () {
     if (!preloadWebview || preloadWebview.__uniapp_route) { // 不存在，或已被使用
       preloadWebview = plus.webview.create(VIEW_WEBVIEW_PATH, String(id++));
+      if (process.env.NODE_ENV !== 'production') {
+        console.log(`[uni-app] preloadWebview[${preloadWebview.id}]`);
+      }
     }
     return preloadWebview
   }
@@ -6311,6 +6314,9 @@ var serviceContext = (function () {
     {
       // 创建预加载
       const preloadWebview = createPreloadWebview();
+      if (process.env.NODE_ENV !== 'production') {
+        console.log(`navigateFinish.preloadWebview:${preloadWebview.id}`);
+      }
       if (!todoNavigator) {
         return
       }
@@ -8730,6 +8736,9 @@ var serviceContext = (function () {
   }
 
   function onWebviewReady (data, pageId) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('[uni-app] onWebviewReady.preloadWebview' + (preloadWebview && preloadWebview.id));
+    }
     const isLaunchWebview = pageId === '1';
     if (isLaunchWebview) { // 首页
       setPreloadWebview(plus.webview.getLaunchWebview());
@@ -8737,7 +8746,7 @@ var serviceContext = (function () {
       setPreloadWebview(plus.webview.getWebviewById(pageId));
     }
     if (preloadWebview.id !== pageId) {
-      return console.error(`webview[${pageId}] not found`)
+      return console.error(`webviewReady[${preloadWebview.id}][${pageId}] not match`)
     }
     preloadWebview.loaded = true; // 标记已 ready
 
