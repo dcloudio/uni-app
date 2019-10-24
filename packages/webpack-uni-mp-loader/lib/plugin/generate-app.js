@@ -21,8 +21,7 @@ module.exports = function generateApp (compilation) {
     process.env.NODE_ENV === 'production' &&
     process.env.UNI_PLATFORM !== 'app-plus'
   ) {
-    const entryPage = Object.keys(process.UNI_ENTRY)[1]
-    const targetCssName = entryPage ? (entryPage + ext) : `common/main${ext}`
+    const targetCssName = `common/main${ext}`
 
     if (!compilation.assets[targetCssName]) {
       compilation.assets[targetCssName] = {
@@ -63,7 +62,7 @@ module.exports = function generateApp (compilation) {
   ) {
     const source =
       `
-  !function(){try{var r=Function("return this")();r&&!r.Math&&Object.assign(r,{Array:Array,Date:Date,Error:Error,Function:Function,Math:Math,Object:Object,RegExp:RegExp,String:String,TypeError:TypeError,setTimeout:setTimeout,clearTimeout:clearTimeout,setInterval:setInterval,clearInterval:clearInterval})}catch(r){}}();
+  !function(){try{var a=Function("return this")();a&&!a.Math&&(Object.assign(a,{Array:Array,Date:Date,Error:Error,Function:Function,Math:Math,Object:Object,RegExp:RegExp,String:String,TypeError:TypeError,setTimeout:setTimeout,clearTimeout:clearTimeout,setInterval:setInterval,clearInterval:clearInterval}),"undefined"!=typeof Reflect&&(a.Reflect=Reflect))}catch(a){}}();
   ${compilation.assets[runtimeJsPath].source()}
   `
     compilation.assets[runtimeJsPath] = {

@@ -436,6 +436,7 @@ function wrapper (methodName, method) {
 const todoApis = Object.create(null);
 
 const TODOS = [
+  'onTabBarMidButtonTap',
   'subscribePush',
   'unsubscribePush',
   'onPush',
@@ -498,6 +499,15 @@ var eventApi = /*#__PURE__*/Object.freeze({
   $emit: $emit
 });
 
+function requireNativePlugin (pluginName) {
+  /* eslint-disable no-undef */
+  if (typeof weex !== 'undefined') {
+    return weex.requireModule(pluginName)
+  }
+  /* eslint-disable no-undef */
+  return __requireNativePlugin__(pluginName)
+}
+
 function wrapper$1 (webview) {
   webview.$processed = true;
 
@@ -519,8 +529,15 @@ function wrapper$1 (webview) {
     return
   }
   const maskColor = webview.__uniapp_mask;
-  let maskWebview = plus.webview.getWebviewById(webview.__uniapp_mask_id);
-  maskWebview = maskWebview.parent() || maskWebview;// 再次检测父
+  let maskWebview = webview.__uniapp_mask_id === '0' ? {
+    setStyle ({
+      mask
+    }) {
+      requireNativePlugin('uni-tabview').setMask({
+        color: mask
+      });
+    }
+  } : plus.webview.getWebviewById(webview.__uniapp_mask_id);
   const oldShow = webview.show;
   const oldHide = webview.hide;
   const oldClose = webview.close;
@@ -558,18 +575,11 @@ function getSubNVueById (id) {
   return webview
 }
 
-function requireNativePlugin (pluginName) {
-  /* eslint-disable no-undef */
-  if (typeof weex !== 'undefined') {
-    return weex.requireModule(pluginName)
-  }
-  /* eslint-disable no-undef */
-  return __requireNativePlugin__(pluginName)
-}
+
 
 var api = /*#__PURE__*/Object.freeze({
-  requireNativePlugin: requireNativePlugin,
-  getSubNVueById: getSubNVueById
+  getSubNVueById: getSubNVueById,
+  requireNativePlugin: requireNativePlugin
 });
 
 const MPPage = Page;

@@ -21,10 +21,6 @@
       v-if="$options.components.Modal"
       v-bind="showModal"
       @close="_onModalClose" />
-    <picker
-      v-if="$options.components.Picker"
-      v-bind="showPicker"
-      @close="_onPickerClose" />
   </uni-app>
 </template>
 <script>

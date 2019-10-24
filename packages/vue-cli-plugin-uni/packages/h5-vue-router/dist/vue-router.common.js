@@ -1,6 +1,6 @@
 /*!
   * vue-router v3.0.1
-  * (c) 2018 Evan You
+  * (c) 2019 Evan You
   * @license MIT
   */
 'use strict';
@@ -1671,19 +1671,19 @@ function scrollToPosition (shouldScroll, position) {
 
 /*  */
 
-var supportsPushState = inBrowser && (function() {
-	var ua = window.navigator.userAgent;
+var supportsPushState = inBrowser && (function () {
+  var ua = window.navigator.userAgent;
 
-	if (
-		(ua.indexOf('Android 2.') !== -1 || ua.indexOf('Android 4.0') !== -1) &&
+  if (
+    (ua.indexOf('Android 2.') !== -1 || ua.indexOf('Android 4.0') !== -1) &&
 		ua.indexOf('Mobile Safari') !== -1 &&
 		ua.indexOf('Chrome') === -1 &&
 		ua.indexOf('Windows Phone') === -1
-	) {
-		return false
-	}
+  ) {
+    return false
+  }
 
-	return window.history && 'pushState' in window.history
+  return window.history && 'pushState' in window.history
 })();
 
 // use User Timing api (if present) for more accurate key precision
@@ -1697,39 +1697,39 @@ function genKey () {
   return Time.now().toFixed(3)
 }
 
-function getStateKey() {
-	return _key
+function getStateKey () {
+  return _key
 }
 
-function setStateKey(key) {
-	_key = key;
+function setStateKey (key) {
+  _key = key;
 }
 
-function pushState(url  , id  , replace  ) {
-	saveScrollPosition();
-	// try...catch the pushState call to get around Safari
-	// DOM Exception 18 where it limits to 100 pushState calls
-	var history = window.history;
-	try {
-		if (replace) {
-			history.replaceState({
+function pushState (url , id , replace ) {
+  saveScrollPosition();
+  // try...catch the pushState call to get around Safari
+  // DOM Exception 18 where it limits to 100 pushState calls
+  var history = window.history;
+  try {
+    if (replace) {
+      history.replaceState({
         id: id,
-				key: _key
-			}, '', url);
-		} else {
-			_key = genKey();
-			history.pushState({
+        key: _key
+      }, '', url);
+    } else {
+      _key = genKey();
+      history.pushState({
         id: id,
-				key: _key
-			}, '', url);
-		}
-	} catch (e) {
-		window.location[replace ? 'replace' : 'assign'](url);
-	}
+        key: _key
+      }, '', url);
+    }
+  } catch (e) {
+    window.location[replace ? 'replace' : 'assign'](url);
+  }
 }
 
-function replaceState(url  , id  ) {
-	pushState(url, id, true);
+function replaceState (url , id ) {
+  pushState(url, id, true);
 }
 
 /*  */
@@ -2776,8 +2776,8 @@ function createHref (base, fullPath, mode) {
 VueRouter.install = install;
 VueRouter.version = '3.0.1';
 
-if (inBrowser && window.Vue) {
-  window.Vue.use(VueRouter);
-}
+// if (inBrowser && window.Vue) {
+//   window.Vue.use(VueRouter)
+// }
 
 module.exports = VueRouter;

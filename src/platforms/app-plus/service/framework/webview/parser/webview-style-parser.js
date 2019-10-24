@@ -6,10 +6,6 @@ import {
   parsePullToRefresh
 } from './pull-to-refresh-parser'
 
-import {
-  TABBAR_HEIGHT
-} from '../../../constants'
-
 const WEBVIEW_STYLE_BLACKLIST = [
   'navigationBarBackgroundColor',
   'navigationBarTextStyle',
@@ -71,11 +67,6 @@ export function parseWebviewStyle (id, path, routeOptions = {}) {
       defaultFontSize: __uniConfig.defaultFontSize,
       viewport: __uniConfig.viewport
     }
-  }
-
-  if (routeOptions.meta.isTabBar) {
-    webviewStyle.top = 0
-    webviewStyle.bottom = TABBAR_HEIGHT
   }
 
   return webviewStyle

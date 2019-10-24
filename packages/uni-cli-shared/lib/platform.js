@@ -480,7 +480,10 @@ module.exports = {
   getPlatformFilterTag () {
     return platform.filterTag
   },
-  getPlatformVue () {
+  getPlatformVue (vueOptions) {
+    if (process.env.UNI_PLATFORM === 'h5' && vueOptions && vueOptions.runtimeCompiler) {
+      return '@dcloudio/vue-cli-plugin-uni/packages/h5-vue/dist/vue.esm.js'
+    }
     if (process.env.UNI_USING_COMPONENTS) {
       return uniRuntime
     }
