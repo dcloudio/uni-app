@@ -6018,6 +6018,31 @@ var serviceContext = (function () {
     }
   }
 
+  function createButtonOnClick (index) {
+    return function onClick (btn) {
+      const pages = getCurrentPages();
+      if (!pages.length) {
+        return
+      }
+      btn.index = index;
+      const page = pages[pages.length - 1];
+      page.$vm &&
+        page.$vm.__call_hook &&
+        page.$vm.__call_hook('onNavigationBarButtonTap', btn);
+    }
+  }
+
+  function parseTitleNViewButtons (titleNView) {
+    const buttons = titleNView.buttons;
+    if (!Array.isArray(buttons)) {
+      return titleNView
+    }
+    buttons.forEach((btn, index) => {
+      btn.onclick = createButtonOnClick(index);
+    });
+    return titleNView
+  }
+
   function parseTitleNView (routeOptions) {
     const windowOptions = routeOptions.window;
     const titleNView = windowOptions.titleNView;
@@ -6061,7 +6086,7 @@ var serviceContext = (function () {
     routeOptions.meta.statusBarStyle = windowOptions.navigationBarTextStyle === 'black' ? 'dark' : 'light';
 
     if (isPlainObject(titleNView)) {
-      return Object.assign(ret, titleNView)
+      return Object.assign(ret, parseTitleNViewButtons(titleNView))
     }
 
     return ret
