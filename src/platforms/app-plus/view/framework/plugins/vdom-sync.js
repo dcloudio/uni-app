@@ -13,8 +13,6 @@ export class VDomSync {
     this.addBatchVData = []
     this.updateBatchVData = []
     this.vms = Object.create(null)
-
-    this.uiEventBatchData = []
   }
 
   addVData (cid, data = {}) {
@@ -37,22 +35,17 @@ export class VDomSync {
     this.vms[vm._$id] = vm
   }
 
-  addUIEvent (cid, nid, event) {
-    this.uiEventBatchData.push([cid, nid, event])
-  }
-
-  sendUIEvent () {
-    if (this.uiEventBatchData.length) {
-      UniViewJSBridge.publishHandler(VD_SYNC, {
-        data: [
-          [UI_EVENT, this.uiEventBatchData]
-        ],
-        options: {
-          timestamp: Date.now()
-        }
-      })
-      this.uiEventBatchData.length = 0
-    }
+  sendUIEvent (cid, nid, event) {
+    UniViewJSBridge.publishHandler(VD_SYNC, {
+      data: [
+        [UI_EVENT, [
+          [cid, nid, event]
+        ]]
+      ],
+      options: {
+        timestamp: Date.now()
+      }
+    })
   }
 
   flush () {

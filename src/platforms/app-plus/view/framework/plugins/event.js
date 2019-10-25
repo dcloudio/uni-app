@@ -11,16 +11,12 @@ export function initEvent (Vue) {
   })
 
   Vue.prototype.$handleVModelEvent = function (nid, value) {
-    vd.addUIEvent(this._$id, nid, {
+    vd.sendUIEvent(this._$id, nid, {
       type: 'input',
       target: {
         value
       }
     })
-    // 使用 setTimeout 做批量同步
-    setTimeout(() => {
-      vd.sendUIEvent()
-    }, 0)
   }
 
   Vue.prototype.$handleViewEvent = function ($vueEvent, options) {
@@ -39,11 +35,7 @@ export function initEvent (Vue) {
     delete $event.preventDefault
     delete $event.stopPropagation
     delete $event.options
-
-    vd.addUIEvent(cid, nid, $event)
-    // 使用 setTimeout 做批量同步
-    setTimeout(() => {
-      vd.sendUIEvent()
-    }, 0)
+    // 实时发送，延迟的话，会导致 touch 类事件被合并，影响实际业务逻辑，比如 touchstart 中修改变量为 true,touchend 修改为 false
+    vd.sendUIEvent(cid, nid, $event)
   }
 }

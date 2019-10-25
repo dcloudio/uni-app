@@ -60,8 +60,8 @@ describe('codegen', () => {
   })
   it('generate text with multiple statements', () => {
     assertCodegen(
-      '<div>A{{ d | e | f }}B{{text}}C</div>',
-      `with(this){return _c('div',[_v((_$s(0,'t0',_s(_f("f")(_f("e")(d)))))+(_$s(0,'t1',_s(text))))])}`
+      `<div :id="'a'+b">A{{ d | e | f }}B{{text}}C</div>`,
+      `with(this){return _c('div',{attrs:{"id":_$s(0,'a-id','a'+b),"_i":0}},[_v((_$s(0,'t0',_s(_f("f")(_f("e")(d)))))+(_$s(0,'t1',_s(text))))])}`
     )
   })
 

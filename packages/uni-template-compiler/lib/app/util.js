@@ -1,5 +1,7 @@
-const VARS = ['true', 'false', 'null']
-const NUMBER_RE = /^-?\d*(\.\d+)?$/
+const {
+  parseExpression
+} = require('@babel/parser')
+const t = require('@babel/types')
 
 const ID = '_i'
 const ITERATOR1 = '$1'
@@ -16,12 +18,12 @@ function isVar (str) {
   if (!str) {
     return false
   }
-  const firstLetter = str[0]
+  const expr = parseExpression(str)
   if (
-    firstLetter === '"' || // string
-    firstLetter === '\'' || // string
-    VARS.includes(str) || // boolean | null
-    NUMBER_RE.test(str) // number
+    t.isStringLiteral(expr) ||
+    t.isNumericLiteral(expr) ||
+    t.isBooleanLiteral(expr) ||
+    t.isNullLiteral(expr)
   ) {
     return false
   }

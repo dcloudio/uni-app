@@ -1,7 +1,7 @@
 const compiler = require('../lib')
 const res = compiler.compile(
   `
-<div><block v-for="item in items"><div></div><div></div></block></div>
+<div :id="'a'+b">A{{ d | e | f }}B{{text}}C</div>
 `, {
     resourcePath: '/User/fxy/Documents/test.wxml',
     isReservedTag: function (tag) {

@@ -5,6 +5,9 @@
     <meta charset="UTF-8" />
     <script>
       var __UniViewStartTime__ = Date.now();
+      document.addEventListener('DOMContentLoaded', function() {
+          document.documentElement.style.fontSize = document.documentElement.clientWidth / 20 + 'px'
+      })
       var coverSupport = 'CSS' in window && typeof CSS.supports === 'function' && (CSS.supports('top: env(a)') ||
         CSS.supports('top: constant(a)'))
       document.write(
@@ -12,16 +15,6 @@
         (coverSupport ? ', viewport-fit=cover' : '') + '" />')
     </script>
     <title>View</title>
-    <style>
-      * {
-        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-        -webkit-tap-highlight-color: transparent;
-      }
-
-      input[type="search"i]::-webkit-search-cancel-button {
-        display: none;
-      }
-    </style>
     <link rel="stylesheet" href="view.css" />
   </head>
 
