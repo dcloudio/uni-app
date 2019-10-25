@@ -3,6 +3,7 @@ import initSubscribe from 'uni-core/service/bridge/subscribe'
 import {
   VD_SYNC,
   VD_SYNC_CALLBACK,
+  INVOKE_API,
   WEBVIEW_READY
 } from '../../../constants'
 
@@ -14,6 +15,8 @@ import onWebviewReady from './on-webview-ready'
 
 import onVdSync from './on-vd-sync'
 import onVdSyncCallback from './on-vd-sync-callback'
+
+import onInvokeApi from './on-invoke-api'
 
 export function initSubscribeHandlers () {
   const {
@@ -42,4 +45,6 @@ export function initSubscribeHandlers () {
 
   subscribe(VD_SYNC, onVdSync)
   subscribe(VD_SYNC_CALLBACK, onVdSyncCallback)
+
+  subscribe(INVOKE_API, onInvokeApi)
 }

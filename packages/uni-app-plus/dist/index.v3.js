@@ -8819,6 +8819,7 @@ var serviceContext = (function () {
 
   const WEBVIEW_READY = 'webviewReady';
   const VD_SYNC_CALLBACK = 'vdSyncCallback';
+  const INVOKE_API = 'invokeApi';
 
   function perf (type, startTime) {
     /* eslint-disable no-undef */
@@ -8897,6 +8898,15 @@ var serviceContext = (function () {
     }
   }
 
+  function onInvokeApi ({
+    data: {
+      method,
+      args
+    }
+  }) {
+    uni[method] && uni[method](args);
+  }
+
   function initSubscribeHandlers () {
     const {
       subscribe,
@@ -8924,6 +8934,8 @@ var serviceContext = (function () {
 
     subscribe(VD_SYNC, onVdSync);
     subscribe(VD_SYNC_CALLBACK, onVdSyncCallback);
+
+    subscribe(INVOKE_API, onInvokeApi);
   }
 
   let appCtx;
