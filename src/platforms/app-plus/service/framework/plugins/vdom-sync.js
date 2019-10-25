@@ -18,17 +18,24 @@ import {
   vdSyncCallbacks
 } from '../subscribe-handlers/on-vd-sync-callback'
 
+function wrapperEvent (event) {
+  event.preventDefault = noop
+  event.stopPropagation = noop
+  event.mp = event
+  return Object.assign({
+    mp: event // mpvue
+  }, event)
+}
+
 const handleVdData = {
   [UI_EVENT]: function onUIEvent (vdBatchEvent, vd) {
     vdBatchEvent.forEach(([cid, nid, event]) => {
       nid = String(nid)
-      event.preventDefault = noop
-      event.stopPropagation = noop
       const target = vd.elements.find(target => target.cid === cid && target.nid === nid)
       if (!target) {
         return console.error(`event handler[${cid}][${nid}] not found`)
       }
-      target.dispatchEvent(event.type, event)
+      target.dispatchEvent(event.type, wrapperEvent(event))
     })
   }
 }

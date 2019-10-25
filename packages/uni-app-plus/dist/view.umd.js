@@ -581,7 +581,7 @@ var request_component_observer = __webpack_require__(49);
   destroyComponentObserver: request_component_observer["a" /* destroyComponentObserver */]
 });
 // EXTERNAL MODULE: ./src/core/view/bridge/subscribe/scroll.js
-var subscribe_scroll = __webpack_require__(13);
+var subscribe_scroll = __webpack_require__(12);
 
 // EXTERNAL MODULE: ./src/platforms/app-plus/view/bridge/subscribe/index.js
 var bridge_subscribe = __webpack_require__(56);
@@ -598,7 +598,7 @@ function initSubscribe(subscribe) {
   Object(bridge_subscribe["a" /* default */])(subscribe);
 }
 // EXTERNAL MODULE: ./src/platforms/app-plus/view/bridge.js
-var bridge = __webpack_require__(12);
+var bridge = __webpack_require__(11);
 
 // CONCATENATED MODULE: ./src/core/view/bridge/index.js
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "on", function() { return on; });
@@ -9449,118 +9449,6 @@ function getWindowOffset() {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(UniViewJSBridge) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return vd; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return initData; });
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5);
-/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
-/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(41);
-/* harmony import */ var _vdom_sync__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(59);
-/* harmony import */ var _page__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(43);
-/* harmony import */ var _page_factory__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(42);
-var _handleData;
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
-
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
-
-function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
-
-
-
-
-
-
-var vd;
-var PageVueComponent;
-var handleData = (_handleData = {}, _defineProperty(_handleData, _constants__WEBPACK_IMPORTED_MODULE_1__[/* PAGE_CREATE */ "c"], function onPageCreate(data) {
-  var _data = _slicedToArray(data, 3),
-      pageId = _data[0],
-      pagePath = _data[1],
-      pageOptions = _data[2];
-
-  document.title = "".concat(pagePath, "[").concat(pageId, "]"); // 设置当前页面伪对象，方便其他地方使用 getCurrentPages 获取当前页面 id，route
-
-  Object(_page__WEBPACK_IMPORTED_MODULE_4__[/* setCurrentPage */ "b"])(pageId, pagePath); // 初始化当前页面 VueComponent（生成页面样式代码）
-
-  PageVueComponent = Object(_page_factory__WEBPACK_IMPORTED_MODULE_5__[/* getPageVueComponent */ "b"])(pagePath); // 生成当前页面 vd
-
-  vd = new _vdom_sync__WEBPACK_IMPORTED_MODULE_3__[/* VDomSync */ "a"](pageId); // 通知页面创建，根据当前页面配置信息，初始化部分事件
-
-  UniViewJSBridge.subscribeHandler(_constants__WEBPACK_IMPORTED_MODULE_2__[/* ON_PAGE_CREATE */ "a"], pageOptions, pageId);
-}), _defineProperty(_handleData, _constants__WEBPACK_IMPORTED_MODULE_1__[/* MOUNTED_DATA */ "b"], function onMounted(data) {
-  vd.addVData.apply(vd, data);
-}), _defineProperty(_handleData, _constants__WEBPACK_IMPORTED_MODULE_1__[/* UPDATED_DATA */ "f"], function onUpdated(data) {
-  vd.updateVData.apply(vd, data);
-}), _defineProperty(_handleData, _constants__WEBPACK_IMPORTED_MODULE_1__[/* PAGE_CREATED */ "d"], function onPageCreated(data) {
-  var _data2 = _slicedToArray(data, 2),
-      pageId = _data2[0],
-      pagePath = _data2[1];
-
-  new PageVueComponent({
-    mpType: 'page',
-    pageId: pageId,
-    pagePath: pagePath
-  }).$mount('#app');
-}), _handleData);
-
-function vdSync(_ref) {
-  var data = _ref.data,
-      options = _ref.options;
-  var isVdCallback = true;
-  data.forEach(function (data) {
-    if (data[0] === _constants__WEBPACK_IMPORTED_MODULE_1__[/* PAGE_CREATE */ "c"]) {
-      // 页面创建无需触发 callback
-      isVdCallback = false;
-    }
-
-    handleData[data[0]](data[1]);
-  });
-  vd.flush();
-  isVdCallback && vue__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].nextTick(function () {
-    UniViewJSBridge.publishHandler(_constants__WEBPACK_IMPORTED_MODULE_1__[/* VD_SYNC_CALLBACK */ "h"]);
-  });
-}
-
-function getData(id, name) {
-  try {
-    return this.$r[id][name];
-  } catch (e) {
-    console.error(this.$options.__file + ":[".concat(this._$id, "]$r[").concat(id, "][").concat(name, "] is undefined"));
-  }
-}
-
-function initData(Vue) {
-  Vue.prototype._$g = getData;
-  UniViewJSBridge.subscribe(_constants__WEBPACK_IMPORTED_MODULE_1__[/* VD_SYNC */ "g"], vdSync);
-  Object.defineProperty(Vue.prototype, '_$vd', {
-    get: function get() {
-      return !this.$options.isReserved && vd;
-    }
-  });
-  Vue.mixin({
-    beforeCreate: function beforeCreate() {
-      if (this.$options.mpType) {
-        this.mpType = this.$options.mpType;
-      }
-
-      if (this._$vd) {
-        this._$vd.initVm(this);
-      }
-    }
-  });
-}
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(4)))
-
-/***/ }),
-/* 11 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
 
 // EXTERNAL MODULE: ./src/shared/index.js + 4 modules
 var shared = __webpack_require__(2);
@@ -9811,7 +9699,7 @@ function initEvents() {
 }
 
 /***/ }),
-/* 12 */
+/* 11 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -9852,14 +9740,14 @@ function publishHandler(event) {
 }
 
 /***/ }),
-/* 13 */
+/* 12 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(UniViewJSBridge) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return disableScroll; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return pageScrollTo; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return createScrollListener; });
-/* harmony import */ var uni_platform_view_bridge__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(12);
+/* harmony import */ var uni_platform_view_bridge__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(11);
 
 function disableScroll(evt) {
   evt.preventDefault();
@@ -9979,6 +9867,118 @@ function createScrollListener(pageId, _ref2) {
 
     ticking = true;
   };
+}
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(4)))
+
+/***/ }),
+/* 13 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(UniViewJSBridge) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return vd; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return initData; });
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5);
+/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
+/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(41);
+/* harmony import */ var _vdom_sync__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(59);
+/* harmony import */ var _page__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(43);
+/* harmony import */ var _page_factory__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(42);
+var _handleData;
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+
+
+
+
+
+
+var vd;
+var PageVueComponent;
+var handleData = (_handleData = {}, _defineProperty(_handleData, _constants__WEBPACK_IMPORTED_MODULE_1__[/* PAGE_CREATE */ "c"], function onPageCreate(data) {
+  var _data = _slicedToArray(data, 3),
+      pageId = _data[0],
+      pagePath = _data[1],
+      pageOptions = _data[2];
+
+  document.title = "".concat(pagePath, "[").concat(pageId, "]"); // 设置当前页面伪对象，方便其他地方使用 getCurrentPages 获取当前页面 id，route
+
+  Object(_page__WEBPACK_IMPORTED_MODULE_4__[/* setCurrentPage */ "b"])(pageId, pagePath); // 初始化当前页面 VueComponent（生成页面样式代码）
+
+  PageVueComponent = Object(_page_factory__WEBPACK_IMPORTED_MODULE_5__[/* getPageVueComponent */ "b"])(pagePath); // 生成当前页面 vd
+
+  vd = new _vdom_sync__WEBPACK_IMPORTED_MODULE_3__[/* VDomSync */ "a"](pageId); // 通知页面创建，根据当前页面配置信息，初始化部分事件
+
+  UniViewJSBridge.subscribeHandler(_constants__WEBPACK_IMPORTED_MODULE_2__[/* ON_PAGE_CREATE */ "a"], pageOptions, pageId);
+}), _defineProperty(_handleData, _constants__WEBPACK_IMPORTED_MODULE_1__[/* MOUNTED_DATA */ "b"], function onMounted(data) {
+  vd.addVData.apply(vd, data);
+}), _defineProperty(_handleData, _constants__WEBPACK_IMPORTED_MODULE_1__[/* UPDATED_DATA */ "f"], function onUpdated(data) {
+  vd.updateVData.apply(vd, data);
+}), _defineProperty(_handleData, _constants__WEBPACK_IMPORTED_MODULE_1__[/* PAGE_CREATED */ "d"], function onPageCreated(data) {
+  var _data2 = _slicedToArray(data, 2),
+      pageId = _data2[0],
+      pagePath = _data2[1];
+
+  new PageVueComponent({
+    mpType: 'page',
+    pageId: pageId,
+    pagePath: pagePath
+  }).$mount('#app');
+}), _handleData);
+
+function vdSync(_ref) {
+  var data = _ref.data,
+      options = _ref.options;
+  var isVdCallback = true;
+  data.forEach(function (data) {
+    if (data[0] === _constants__WEBPACK_IMPORTED_MODULE_1__[/* PAGE_CREATE */ "c"]) {
+      // 页面创建无需触发 callback
+      isVdCallback = false;
+    }
+
+    handleData[data[0]](data[1]);
+  });
+  vd.flush();
+  isVdCallback && vue__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].nextTick(function () {
+    UniViewJSBridge.publishHandler(_constants__WEBPACK_IMPORTED_MODULE_1__[/* VD_SYNC_CALLBACK */ "h"]);
+  });
+}
+
+function getData(id, name) {
+  try {
+    return this.$r[id][name];
+  } catch (e) {
+    console.error(this.$options.__file + ":[".concat(this._$id, "]$r[").concat(id, "][").concat(name, "] is undefined"));
+  }
+}
+
+function initData(Vue) {
+  Vue.prototype._$g = getData;
+  UniViewJSBridge.subscribe(_constants__WEBPACK_IMPORTED_MODULE_1__[/* VD_SYNC */ "g"], vdSync);
+  Object.defineProperty(Vue.prototype, '_$vd', {
+    get: function get() {
+      return !this.$options.isReserved && vd;
+    }
+  });
+  Vue.mixin({
+    beforeCreate: function beforeCreate() {
+      if (this.$options.mpType) {
+        this.mpType = this.$options.mpType;
+      }
+
+      if (this._$vd) {
+        this._$vd.initVm(this);
+      }
+    }
+  });
 }
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(4)))
 
@@ -12625,7 +12625,7 @@ function requestComponentInfo(_ref, pageId) {
 "use strict";
 /* WEBPACK VAR INJECTION */(function(UniViewJSBridge) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return initSubscribe; });
 /* harmony import */ var uni_shared__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
-/* harmony import */ var uni_core_view_bridge_subscribe_scroll__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(13);
+/* harmony import */ var uni_core_view_bridge_subscribe_scroll__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(12);
 /* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(41);
 /* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(3);
 
@@ -12673,7 +12673,7 @@ function initSubscribe(subscribe) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(UniViewJSBridge) {/* harmony import */ var uni_helpers_index__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7);
-/* harmony import */ var _events__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(11);
+/* harmony import */ var _events__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(10);
 /* harmony import */ var _behaviors__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(61);
 /* harmony import */ var _wxs_component_descriptor__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(58);
 
@@ -13127,7 +13127,7 @@ function initVue(Vue) {
 var plugins = __webpack_require__(57);
 
 // EXTERNAL MODULE: ./src/platforms/app-plus/view/framework/plugins/data.js
-var data = __webpack_require__(10);
+var data = __webpack_require__(13);
 
 // CONCATENATED MODULE: ./src/platforms/app-plus/view/framework/plugins/event.js
 
@@ -13149,12 +13149,11 @@ function initEvent(Vue) {
   };
 
   Vue.prototype.$handleViewEvent = function ($vueEvent, options) {
-    var isCustomEvent = $vueEvent._processed; // 自定义事件已提前处理过
-
+    // const isCustomEvent = $vueEvent._processed // 自定义事件已提前处理过
     var $event = this.$handleEvent($vueEvent);
     var cid = this._$id; // 当自定义组件根节点触发事件时，nid 始终为 0
 
-    var nid = isCustomEvent || $vueEvent.currentTarget === this.$el ? 0 : $event.options.nid;
+    var nid = $vueEvent.currentTarget === this.$el ? 0 : $event.options.nid;
 
     if (typeof nid === 'undefined') {
       return console.error("[".concat(cid, "] nid not found"));
@@ -17955,7 +17954,7 @@ function getRealPath(filePath) {
   return filePath;
 }
 // EXTERNAL MODULE: ./src/core/view/plugins/events.js + 1 modules
-var events = __webpack_require__(11);
+var events = __webpack_require__(10);
 
 // CONCATENATED MODULE: ./src/core/view/mixins/base.js
 

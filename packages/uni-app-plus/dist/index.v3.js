@@ -9119,17 +9119,24 @@ var serviceContext = (function () {
     };
   }
 
+  function wrapperEvent (event) {
+    event.preventDefault = noop;
+    event.stopPropagation = noop;
+    event.mp = event;
+    return Object.assign({
+      mp: event // mpvue
+    }, event)
+  }
+
   const handleVdData = {
     [UI_EVENT]: function onUIEvent (vdBatchEvent, vd) {
       vdBatchEvent.forEach(([cid, nid, event]) => {
         nid = String(nid);
-        event.preventDefault = noop;
-        event.stopPropagation = noop;
         const target = vd.elements.find(target => target.cid === cid && target.nid === nid);
         if (!target) {
           return console.error(`event handler[${cid}][${nid}] not found`)
         }
-        target.dispatchEvent(event.type, event);
+        target.dispatchEvent(event.type, wrapperEvent(event));
       });
     }
   };
@@ -9234,15 +9241,53 @@ var serviceContext = (function () {
     data[k] = v;
   }
 
-  function diffObject (newObj, oldObj) {
+  function diffObject (newObj, oldObj, every = true) {
     let result, key, cur, old;
     for (key in newObj) {
       cur = newObj[key];
       old = oldObj[key];
       if (old !== cur) {
-        if (key === 's' && isPlainObject(cur) && isPlainObject(old)) {
+        if (!every) {
+          return newObj
+        }
+        setResult(result || (result = Object.create(null)), key, cur);
+      }
+    }
+    return result
+  }
+
+  function diffArray (newArr, oldArr) {
+    const newLen = newArr.length;
+    if (newLen !== oldArr.length) {
+      return newArr
+    }
+    if (isPlainObject(newArr[0])) {
+      for (let i = 0; i < newLen; i++) {
+        if (diffObject(newArr[i], oldArr[i], false)) {
+          return newArr
+        }
+      }
+    } else {
+      for (let i = 0; i < newLen; i++) {
+        if (newArr[i] !== oldArr[i]) {
+          return newArr
+        }
+      }
+    }
+  }
+
+  function diffElmData (newObj, oldObj) {
+    let result, key, cur, old;
+    for (key in newObj) {
+      cur = newObj[key];
+      old = oldObj[key];
+      if (old !== cur) {
+        if (key === B_STYLE && isPlainObject(cur) && isPlainObject(old)) {
           const style = diffObject(cur, old);
-          style && setResult(result || (result = Object.create(null)), 's', style);
+          style && setResult(result || (result = Object.create(null)), B_STYLE, style);
+        } else if (key === V_FOR && Array.isArray(cur) && Array.isArray(old)) {
+          const vFor = diffArray(cur, old);
+          vFor && setResult(result || (result = Object.create(null)), V_FOR, vFor);
         } else {
           setResult(result || (result = Object.create(null)), key, cur);
         }
@@ -9260,7 +9305,7 @@ var serviceContext = (function () {
         setResult(result, id, cur);
         continue
       }
-      const idObj = diffObject(cur, old);
+      const idObj = diffElmData(cur, old);
       idObj && setResult(result, id, idObj);
     }
     return result

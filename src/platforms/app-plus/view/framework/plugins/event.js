@@ -20,11 +20,11 @@ export function initEvent (Vue) {
   }
 
   Vue.prototype.$handleViewEvent = function ($vueEvent, options) {
-    const isCustomEvent = $vueEvent._processed // 自定义事件已提前处理过
+    // const isCustomEvent = $vueEvent._processed // 自定义事件已提前处理过
     const $event = this.$handleEvent($vueEvent)
     const cid = this._$id
     // 当自定义组件根节点触发事件时，nid 始终为 0
-    const nid = isCustomEvent || ($vueEvent.currentTarget === this.$el) ? 0 : $event.options.nid
+    const nid = $vueEvent.currentTarget === this.$el ? 0 : $event.options.nid
     if (typeof nid === 'undefined') {
       return console.error(`[${cid}] nid not found`)
     }
