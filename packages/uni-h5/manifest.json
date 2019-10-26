@@ -261,8 +261,12 @@
         ]
     ],
     "createMapContext": [
-        "/platforms/h5/service/api/context/map.js",
+        "/core/service/api/context/create-map-context.js",
         [
+            [
+                "/platforms/h5/service/api/context/operate-map-player.js",
+                "operateMapPlayer"
+            ],
             [
                 "/core/helpers/protocol/context/context.js",
                 "createMapContext"
@@ -314,8 +318,12 @@
         ]
     ],
     "createVideoContext": [
-        "/platforms/h5/service/api/context/video.js",
+        "/core/service/api/context/create-video-context.js",
         [
+            [
+                "/platforms/h5/service/api/context/operate-video-player.js",
+                "operateVideoPlayer"
+            ],
             [
                 "/core/helpers/protocol/context/context.js",
                 "createVideoContext"
