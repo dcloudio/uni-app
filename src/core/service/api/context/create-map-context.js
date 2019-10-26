@@ -13,74 +13,28 @@ class MapContext {
     this.pageVm = pageVm
   }
 
-  getCenterLocation ({
-    success,
-    fail,
-    complete
-  }) {
-    operateMapPlayer(this.id, this.pageVm, 'getCenterLocation', {
-      success,
-      fail,
-      complete
-    })
+  getCenterLocation (args) {
+    operateMapPlayer(this.id, this.pageVm, 'getCenterLocation', args)
   }
 
   moveToLocation () {
     operateMapPlayer(this.id, this.pageVm, 'moveToLocation')
   }
 
-  translateMarker ({
-    markerId,
-    destination,
-    autoRotate,
-    rotate,
-    duration,
-    animationEnd,
-    fail
-  }) {
-    operateMapPlayer(this.id, this.pageVm, 'translateMarker', {
-      markerId,
-      destination,
-      autoRotate,
-      rotate,
-      duration,
-      animationEnd,
-      fail
-    })
+  translateMarker (args) {
+    operateMapPlayer(this.id, this.pageVm, 'translateMarker', args)
   }
 
-  includePoints ({
-    points,
-    padding
-  }) {
-    operateMapPlayer(this.id, this.pageVm, 'includePoints', {
-      points,
-      padding
-    })
+  includePoints (args) {
+    operateMapPlayer(this.id, this.pageVm, 'includePoints', args)
   }
 
-  getRegion ({
-    success,
-    fail,
-    complete
-  }) {
-    operateMapPlayer(this.id, this.pageVm, 'getRegion', {
-      success,
-      fail,
-      complete
-    })
+  getRegion (args) {
+    operateMapPlayer(this.id, this.pageVm, 'getRegion', args)
   }
 
-  getScale ({
-    success,
-    fail,
-    complete
-  }) {
-    operateMapPlayer(this.id, this.pageVm, 'getScale', {
-      success,
-      fail,
-      complete
-    })
+  getScale (args) {
+    operateMapPlayer(this.id, this.pageVm, 'getScale', args)
   }
 }
 

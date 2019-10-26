@@ -5,8 +5,8 @@ import {
   operateMapPlayer as operateNVueMapPlayer
 } from 'uni-platforms/app-plus-nvue/service/api/context/operate-map-player'
 
-export function operateMapPlayer(mapId, pageVm, type, data) {
-  pageVm.$page.meta.isNVue ?
-    operateNVueMapPlayer(mapId, pageVm, type, data) :
-    operateVueMapPlayer(mapId, pageVm, type, data)
+export function operateMapPlayer (mapId, pageVm, type, data) {
+  pageVm.$page.meta.isNVue
+    ? operateNVueMapPlayer(mapId, pageVm, type, data)
+    : operateVueMapPlayer(mapId, pageVm, type, data)
 }
