@@ -11,7 +11,7 @@ import parseBaseComponent from '../../../mp-weixin/runtime/wrapper/component-bas
 
 const newLifecycle = swan.canIUse('lifecycle-2-0')
 
-export default function parseComponent(vueOptions) {
+export default function parseComponent (vueOptions) {
   const componentOptions = parseBaseComponent(vueOptions, {
     isPage,
     initRelation
@@ -19,7 +19,7 @@ export default function parseComponent(vueOptions) {
 
   const oldAttached = componentOptions.lifetimes.attached
 
-  componentOptions.lifetimes.attached = function attached() {
+  componentOptions.lifetimes.attached = function attached () {
     oldAttached.call(this)
     if (isPage.call(this)) { // 百度 onLoad 在 attached 之前触发
       // 百度 当组件作为页面时 pageinstancce 不是原来组件的 instance
@@ -37,7 +37,7 @@ export default function parseComponent(vueOptions) {
 
   if (newLifecycle) {
     delete componentOptions.lifetimes.ready
-    componentOptions.methods.onReady = function() {
+    componentOptions.methods.onReady = function () {
       if (this.$vm) {
         this.$vm._isMounted = true
         this.$vm.__call_hook('mounted')
