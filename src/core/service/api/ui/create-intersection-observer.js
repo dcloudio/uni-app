@@ -1,5 +1,9 @@
 import createCallbacks from 'uni-helpers/callbacks'
 
+import {
+  getCurrentPageVm
+} from '../../platform'
+
 const createIntersectionObserverCallbacks = createCallbacks('requestComponentObserver')
 
 const defaultOptions = {
@@ -9,8 +13,8 @@ const defaultOptions = {
 }
 
 class ServiceIntersectionObserver {
-  constructor (pageId, component, options) {
-    this.pageId = pageId
+  constructor (component, options) {
+    this.pageId = component.$page.id
     this.component = component._$id || component // app-plus 平台传输_$id
     this.options = Object.assign({}, defaultOptions, options)
   }
@@ -55,13 +59,7 @@ export function createIntersectionObserver (context, options) {
     context = null
   }
   if (context) {
-    return new ServiceIntersectionObserver(context.$page.id, context, options)
+    return new ServiceIntersectionObserver(context, options)
   }
-  const pages = getCurrentPages()
-  const len = pages.length
-  if (!len) {
-    UniServiceJSBridge.emit('onError', 'createIntersectionObserver:fail')
-  }
-  const page = pages[len - 1]
-  return new ServiceIntersectionObserver(page.$page.id, page.$vm, options)
+  return new ServiceIntersectionObserver(getCurrentPageVm('createIntersectionObserver'), options)
 }

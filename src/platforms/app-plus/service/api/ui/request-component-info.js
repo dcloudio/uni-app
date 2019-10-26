@@ -6,8 +6,8 @@ import {
   requestComponentInfo as requestNVueComponentInfo
 } from 'uni-platforms/app-plus-nvue/service/api/ui/request-component-info'
 
-export function requestComponentInfo (pageInstance, queue, callback) {
-  pageInstance.$page.meta.isNVue
-    ? requestNVueComponentInfo(pageInstance, queue, callback)
-    : requestVueComponentInfo(pageInstance, queue, callback)
+export function requestComponentInfo (pageVm, queue, callback) {
+  pageVm.$page.meta.isNVue
+    ? requestNVueComponentInfo(pageVm, queue, callback)
+    : requestVueComponentInfo(pageVm, queue, callback)
 }

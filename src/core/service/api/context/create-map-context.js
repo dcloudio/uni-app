@@ -1,15 +1,16 @@
-function operateMapPlayer (mapId, pageId, type, data) {
-  UniServiceJSBridge.publishHandler(pageId + '-map-' + mapId, {
-    mapId,
-    type,
-    data
-  }, pageId)
+import {
+  invokeMethod,
+  getCurrentPageVm
+} from '../../platform'
+
+function operateMapPlayer (mapId, pageVm, type, data) {
+  invokeMethod('operateMapPlayer', mapId, pageVm, type, data)
 }
 
 class MapContext {
-  constructor (id, pageId) {
+  constructor (id, pageVm) {
     this.id = id
-    this.pageId = pageId
+    this.pageVm = pageVm
   }
 
   getCenterLocation ({
@@ -17,15 +18,17 @@ class MapContext {
     fail,
     complete
   }) {
-    operateMapPlayer(this.id, this.pageId, 'getCenterLocation', {
+    operateMapPlayer(this.id, this.pageVm, 'getCenterLocation', {
       success,
       fail,
       complete
     })
   }
+
   moveToLocation () {
-    operateMapPlayer(this.id, this.pageId, 'moveToLocation')
+    operateMapPlayer(this.id, this.pageVm, 'moveToLocation')
   }
+
   translateMarker ({
     markerId,
     destination,
@@ -35,7 +38,7 @@ class MapContext {
     animationEnd,
     fail
   }) {
-    operateMapPlayer(this.id, this.pageId, 'translateMarker', {
+    operateMapPlayer(this.id, this.pageVm, 'translateMarker', {
       markerId,
       destination,
       autoRotate,
@@ -45,32 +48,35 @@ class MapContext {
       fail
     })
   }
+
   includePoints ({
     points,
     padding
   }) {
-    operateMapPlayer(this.id, this.pageId, 'includePoints', {
+    operateMapPlayer(this.id, this.pageVm, 'includePoints', {
       points,
       padding
     })
   }
+
   getRegion ({
     success,
     fail,
     complete
   }) {
-    operateMapPlayer(this.id, this.pageId, 'getRegion', {
+    operateMapPlayer(this.id, this.pageVm, 'getRegion', {
       success,
       fail,
       complete
     })
   }
+
   getScale ({
     success,
     fail,
     complete
   }) {
-    operateMapPlayer(this.id, this.pageId, 'getScale', {
+    operateMapPlayer(this.id, this.pageVm, 'getScale', {
       success,
       fail,
       complete
@@ -80,12 +86,7 @@ class MapContext {
 
 export function createMapContext (id, context) {
   if (context) {
-    return new MapContext(id, context.$page.id)
+    return new MapContext(id, context)
   }
-  const app = getApp()
-  if (app.$route && app.$route.params.__id__) {
-    return new MapContext(id, app.$route.params.__id__)
-  } else {
-    UniServiceJSBridge.emit('onError', 'createMapContext:fail')
-  }
+  return new MapContext(id, getCurrentPageVm('createMapContext'))
 }

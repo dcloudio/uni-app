@@ -1,8 +1,10 @@
 import {
   isFn
 } from 'uni-shared'
+
 import {
-  invokeMethod
+  invokeMethod,
+  getCurrentPageVm
 } from '../../platform'
 
 class NodesRef {
@@ -106,10 +108,5 @@ export function createSelectorQuery (context) {
   if (context) {
     return new SelectorQuery(context)
   }
-  const pages = getCurrentPages()
-  const len = pages.length
-  if (!len) {
-    UniServiceJSBridge.emit('onError', 'createSelectorQuery:fail')
-  }
-  return new SelectorQuery(pages[len - 1].$vm)
+  return new SelectorQuery(getCurrentPageVm('createSelectorQuery'))
 }

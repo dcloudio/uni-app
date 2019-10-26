@@ -7256,10 +7256,10 @@ var serviceContext = (function () {
     });
   }
 
-  function requestComponentInfo$2 (pageInstance, queue, callback) {
-    pageInstance.$page.meta.isNVue
-      ? requestComponentInfo$1(pageInstance, queue, callback)
-      : requestComponentInfo(pageInstance, queue, callback);
+  function requestComponentInfo$2 (pageVm, queue, callback) {
+    pageVm.$page.meta.isNVue
+      ? requestComponentInfo$1(pageVm, queue, callback)
+      : requestComponentInfo(pageVm, queue, callback);
   }
 
 
@@ -7427,6 +7427,16 @@ var serviceContext = (function () {
    */
   function onMethod (name, callback) {
     return UniServiceJSBridge.on('api.' + name, callback)
+  }
+
+  function getCurrentPageVm (method) {
+    const pages = getCurrentPages();
+    const len = pages.length;
+    if (!len) {
+      UniServiceJSBridge.emit('onError', `${method}:fail`);
+    }
+    const page = pages[len - 1];
+    return page.$vm
   }
 
   const eventNames = [
@@ -7737,6 +7747,98 @@ var serviceContext = (function () {
     getBackgroundAudioManager: getBackgroundAudioManager
   });
 
+  function operateMapPlayer (mapId, pageVm, type, data) {
+    invokeMethod('operateMapPlayer', mapId, pageVm, type, data);
+  }
+
+  class MapContext {
+    constructor (id, pageVm) {
+      this.id = id;
+      this.pageVm = pageVm;
+    }
+
+    getCenterLocation ({
+      success,
+      fail,
+      complete
+    }) {
+      operateMapPlayer(this.id, this.pageVm, 'getCenterLocation', {
+        success,
+        fail,
+        complete
+      });
+    }
+
+    moveToLocation () {
+      operateMapPlayer(this.id, this.pageVm, 'moveToLocation');
+    }
+
+    translateMarker ({
+      markerId,
+      destination,
+      autoRotate,
+      rotate,
+      duration,
+      animationEnd,
+      fail
+    }) {
+      operateMapPlayer(this.id, this.pageVm, 'translateMarker', {
+        markerId,
+        destination,
+        autoRotate,
+        rotate,
+        duration,
+        animationEnd,
+        fail
+      });
+    }
+
+    includePoints ({
+      points,
+      padding
+    }) {
+      operateMapPlayer(this.id, this.pageVm, 'includePoints', {
+        points,
+        padding
+      });
+    }
+
+    getRegion ({
+      success,
+      fail,
+      complete
+    }) {
+      operateMapPlayer(this.id, this.pageVm, 'getRegion', {
+        success,
+        fail,
+        complete
+      });
+    }
+
+    getScale ({
+      success,
+      fail,
+      complete
+    }) {
+      operateMapPlayer(this.id, this.pageVm, 'getScale', {
+        success,
+        fail,
+        complete
+      });
+    }
+  }
+
+  function createMapContext$1 (id, context) {
+    if (context) {
+      return new MapContext(id, context)
+    }
+    return new MapContext(id, getCurrentPageVm('createMapContext'))
+  }
+
+  var require_context_module_1_6 = /*#__PURE__*/Object.freeze({
+    createMapContext: createMapContext$1
+  });
+
   const callbacks$3 = [];
 
   onMethod('onAccelerometerChange', function (res) {
@@ -7777,7 +7879,7 @@ var serviceContext = (function () {
     })
   }
 
-  var require_context_module_1_6 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_7 = /*#__PURE__*/Object.freeze({
     onAccelerometerChange: onAccelerometerChange,
     startAccelerometer: startAccelerometer,
     stopAccelerometer: stopAccelerometer
@@ -7800,7 +7902,7 @@ var serviceContext = (function () {
   const onBLEConnectionStateChange$1 = on('onBLEConnectionStateChange');
   const onBLECharacteristicValueChange$1 = on('onBLECharacteristicValueChange');
 
-  var require_context_module_1_7 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_8 = /*#__PURE__*/Object.freeze({
     onBluetoothDeviceFound: onBluetoothDeviceFound$1,
     onBluetoothAdapterStateChange: onBluetoothAdapterStateChange$1,
     onBLEConnectionStateChange: onBLEConnectionStateChange$1,
@@ -7847,7 +7949,7 @@ var serviceContext = (function () {
     })
   }
 
-  var require_context_module_1_8 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_9 = /*#__PURE__*/Object.freeze({
     onCompassChange: onCompassChange,
     startCompass: startCompass,
     stopCompass: stopCompass
@@ -7865,7 +7967,7 @@ var serviceContext = (function () {
     callbacks$5.push(callbackId);
   }
 
-  var require_context_module_1_9 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_10 = /*#__PURE__*/Object.freeze({
     onNetworkStatusChange: onNetworkStatusChange
   });
 
@@ -7942,7 +8044,7 @@ var serviceContext = (function () {
     return recorderManager || (recorderManager = new RecorderManager())
   }
 
-  var require_context_module_1_10 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_11 = /*#__PURE__*/Object.freeze({
     getRecorderManager: getRecorderManager
   });
 
@@ -8030,7 +8132,7 @@ var serviceContext = (function () {
     return task
   }
 
-  var require_context_module_1_11 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_12 = /*#__PURE__*/Object.freeze({
     downloadFile: downloadFile$1
   });
 
@@ -8135,7 +8237,7 @@ var serviceContext = (function () {
     return new RequestTask(requestTaskId)
   }
 
-  var require_context_module_1_12 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_13 = /*#__PURE__*/Object.freeze({
     request: request$1
   });
 
@@ -8309,7 +8411,7 @@ var serviceContext = (function () {
     callbacks$7.close = callbackId;
   }
 
-  var require_context_module_1_13 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_14 = /*#__PURE__*/Object.freeze({
     connectSocket: connectSocket$1,
     sendSocketMessage: sendSocketMessage$1,
     closeSocket: closeSocket$1,
@@ -8403,7 +8505,7 @@ var serviceContext = (function () {
     return task
   }
 
-  var require_context_module_1_14 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_15 = /*#__PURE__*/Object.freeze({
     uploadFile: uploadFile$1
   });
 
@@ -8512,7 +8614,7 @@ var serviceContext = (function () {
     return res
   }
 
-  var require_context_module_1_15 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_16 = /*#__PURE__*/Object.freeze({
     setStorage: setStorage$1,
     setStorageSync: setStorageSync$1,
     getStorage: getStorage$1,
@@ -8603,7 +8705,7 @@ var serviceContext = (function () {
     return new MPAnimation(option)
   }
 
-  var require_context_module_1_16 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_17 = /*#__PURE__*/Object.freeze({
     createAnimation: createAnimation
   });
 
@@ -8616,8 +8718,8 @@ var serviceContext = (function () {
   };
 
   class ServiceIntersectionObserver {
-    constructor (pageId, component, options) {
-      this.pageId = pageId;
+    constructor (component, options) {
+      this.pageId = component.$page.id;
       this.component = component._$id || component; // app-plus 平台传输_$id
       this.options = Object.assign({}, defaultOptions, options);
     }
@@ -8662,18 +8764,12 @@ var serviceContext = (function () {
       context = null;
     }
     if (context) {
-      return new ServiceIntersectionObserver(context.$page.id, context, options)
+      return new ServiceIntersectionObserver(context, options)
     }
-    const pages = getCurrentPages();
-    const len = pages.length;
-    if (!len) {
-      UniServiceJSBridge.emit('onError', 'createIntersectionObserver:fail');
-    }
-    const page = pages[len - 1];
-    return new ServiceIntersectionObserver(page.$page.id, page.$vm, options)
+    return new ServiceIntersectionObserver(getCurrentPageVm('createIntersectionObserver'), options)
   }
 
-  var require_context_module_1_17 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_18 = /*#__PURE__*/Object.freeze({
     createIntersectionObserver: createIntersectionObserver
   });
 
@@ -8778,15 +8874,10 @@ var serviceContext = (function () {
     if (context) {
       return new SelectorQuery(context)
     }
-    const pages = getCurrentPages();
-    const len = pages.length;
-    if (!len) {
-      UniServiceJSBridge.emit('onError', 'createSelectorQuery:fail');
-    }
-    return new SelectorQuery(pages[len - 1].$vm)
+    return new SelectorQuery(getCurrentPageVm('createSelectorQuery'))
   }
 
-  var require_context_module_1_18 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_19 = /*#__PURE__*/Object.freeze({
     createSelectorQuery: createSelectorQuery
   });
 
@@ -8802,7 +8893,7 @@ var serviceContext = (function () {
     callbacks$8.push(callbackId);
   }
 
-  var require_context_module_1_19 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_20 = /*#__PURE__*/Object.freeze({
     onKeyboardHeightChange: onKeyboardHeightChange
   });
 
@@ -8814,7 +8905,7 @@ var serviceContext = (function () {
     return {}
   }
 
-  var require_context_module_1_20 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_21 = /*#__PURE__*/Object.freeze({
     pageScrollTo: pageScrollTo$1
   });
 
@@ -8850,7 +8941,7 @@ var serviceContext = (function () {
     callbacks$9.push(callbackId);
   }
 
-  var require_context_module_1_21 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_22 = /*#__PURE__*/Object.freeze({
     removeTabBarBadge: removeTabBarBadge$1,
     showTabBarRedDot: showTabBarRedDot$1,
     hideTabBarRedDot: hideTabBarRedDot$1,
@@ -8873,7 +8964,7 @@ var serviceContext = (function () {
     callbacks$a.splice(callbacks$a.indexOf(callbackId), 1);
   }
 
-  var require_context_module_1_22 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_23 = /*#__PURE__*/Object.freeze({
     onWindowResize: onWindowResize,
     offWindowResize: offWindowResize
   });
@@ -8889,23 +8980,24 @@ var serviceContext = (function () {
   './base/upx2px.js': require_context_module_1_3,
   './context/audio.js': require_context_module_1_4,
   './context/background-audio.js': require_context_module_1_5,
-  './device/accelerometer.js': require_context_module_1_6,
-  './device/bluetooth.js': require_context_module_1_7,
-  './device/compass.js': require_context_module_1_8,
-  './device/network.js': require_context_module_1_9,
-  './media/recorder.js': require_context_module_1_10,
-  './network/download-file.js': require_context_module_1_11,
-  './network/request.js': require_context_module_1_12,
-  './network/socket.js': require_context_module_1_13,
-  './network/upload-file.js': require_context_module_1_14,
-  './storage/storage.js': require_context_module_1_15,
-  './ui/create-animation.js': require_context_module_1_16,
-  './ui/create-intersection-observer.js': require_context_module_1_17,
-  './ui/create-selector-query.js': require_context_module_1_18,
-  './ui/keyboard.js': require_context_module_1_19,
-  './ui/page-scroll-to.js': require_context_module_1_20,
-  './ui/tab-bar.js': require_context_module_1_21,
-  './ui/window.js': require_context_module_1_22,
+  './context/create-map-context.js': require_context_module_1_6,
+  './device/accelerometer.js': require_context_module_1_7,
+  './device/bluetooth.js': require_context_module_1_8,
+  './device/compass.js': require_context_module_1_9,
+  './device/network.js': require_context_module_1_10,
+  './media/recorder.js': require_context_module_1_11,
+  './network/download-file.js': require_context_module_1_12,
+  './network/request.js': require_context_module_1_13,
+  './network/socket.js': require_context_module_1_14,
+  './network/upload-file.js': require_context_module_1_15,
+  './storage/storage.js': require_context_module_1_16,
+  './ui/create-animation.js': require_context_module_1_17,
+  './ui/create-intersection-observer.js': require_context_module_1_18,
+  './ui/create-selector-query.js': require_context_module_1_19,
+  './ui/keyboard.js': require_context_module_1_20,
+  './ui/page-scroll-to.js': require_context_module_1_21,
+  './ui/tab-bar.js': require_context_module_1_22,
+  './ui/window.js': require_context_module_1_23,
 
       };
       var req = function req(key) {

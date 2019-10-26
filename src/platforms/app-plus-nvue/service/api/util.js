@@ -46,7 +46,11 @@ export function invokeVmMethod (vm, method, args, extras) {
 }
 
 export function findElmById (id, vm) {
-  return findRefByElm(id, vm.$el)
+  const elm = findRefByElm(id, vm.$el)
+  if (!elm) {
+    return console.error('Can not find `' + id + '`')
+  }
+  return elm
 }
 
 function findRefByElm (id, elm) {
