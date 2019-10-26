@@ -1499,6 +1499,8 @@ function parseBaseComponent (vueComponentOptions, {
   return [componentOptions, VueComponent]
 }
 
+const newLifecycle = swan.canIUse('lifecycle-2-0');
+
 function parseComponent (vueOptions) {
   const componentOptions = parseBaseComponent(vueOptions, {
     isPage,
@@ -1518,10 +1520,21 @@ function parseComponent (vueOptions) {
         this.$vm.__call_hook('onLoad', this.pageinstance._$args);
         delete this.pageinstance._$args;
       }
-      // TODO  目前版本 百度 Component 作为页面时，methods 中的 onShow 不触发
-      this.$vm.__call_hook('onShow');
+      // TODO  3.105.17以下基础库内百度 Component 作为页面时，methods 中的 onShow 不触发
+      !newLifecycle && this.$vm.__call_hook('onShow');
     }
   };
+
+  if (newLifecycle) {
+    delete componentOptions.lifetimes.ready;
+    componentOptions.methods.onReady = function () {
+      if (this.$vm) {
+        this.$vm._isMounted = true;
+        this.$vm.__call_hook('mounted');
+        this.$vm.__call_hook('onReady');
+      }
+    };
+  }
 
   componentOptions.messages = {
     '__l': componentOptions.methods['__l']
