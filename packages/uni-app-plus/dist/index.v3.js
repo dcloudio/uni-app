@@ -7172,11 +7172,11 @@ var serviceContext = (function () {
 
   const requestComponentInfoCallbacks = createCallbacks('requestComponentInfo');
 
-  function requestComponentInfo (pageInstance, queue, callback) {
+  function requestComponentInfo (pageVm, queue, callback) {
     UniServiceJSBridge.publishHandler('requestComponentInfo', {
       reqId: requestComponentInfoCallbacks.push(callback),
       reqs: queue
-    }, pageInstance.$page.id);
+    }, pageVm.$page.id);
   }
 
   function parseDataset (attr) {
@@ -7245,13 +7245,12 @@ var serviceContext = (function () {
     });
   }
 
-  function requestComponentInfo$1 (pageInstance, queue, callback) {
+  function requestComponentInfo$1 (pageVm, queue, callback) {
     // TODO 重构，逻辑不对，queue 里的每一项可能有单独的作用域查找（即 component）
-    const vm = pageInstance.$vm;
-    const dom = vm._$weex.requireModule('dom');
+    const dom = pageVm._$weex.requireModule('dom');
     const selectors = getSelectors(queue);
     let outAttrs = new Array(selectors.length);
-    findAttrs(selectors, vm.$el, outAttrs);
+    findAttrs(selectors, pageVm.$el, outAttrs);
     getComponentRectAll(dom, outAttrs, 0, [], (result) => {
       callback(result);
     });
@@ -8608,6 +8607,76 @@ var serviceContext = (function () {
     createAnimation: createAnimation
   });
 
+  const createIntersectionObserverCallbacks = createCallbacks('requestComponentObserver');
+
+  const defaultOptions = {
+    thresholds: [0],
+    initialRatio: 0,
+    observeAll: false
+  };
+
+  class ServiceIntersectionObserver {
+    constructor (pageId, component, options) {
+      this.pageId = pageId;
+      this.component = component._$id || component; // app-plus 平台传输_$id
+      this.options = Object.assign({}, defaultOptions, options);
+    }
+    _makeRootMargin (margins = {}) {
+      this.options.rootMargin = ['top', 'right', 'bottom', 'left'].map(name => `${Number(margins[name]) || 0}px`).join(
+        ' ');
+    }
+    relativeTo (selector, margins) {
+      this.options.relativeToSelector = selector;
+      this._makeRootMargin(margins);
+      return this
+    }
+    relativeToViewport (margins) {
+      this.options.relativeToSelector = null;
+      this._makeRootMargin(margins);
+      return this
+    }
+    observe (selector, callback) {
+      if (typeof callback !== 'function') {
+        return
+      }
+      this.options.selector = selector;
+
+      this.reqId = createIntersectionObserverCallbacks.push(callback);
+
+      UniServiceJSBridge.publishHandler('requestComponentObserver', {
+        reqId: this.reqId,
+        component: this.component,
+        options: this.options
+      }, this.pageId);
+    }
+    disconnect () {
+      UniServiceJSBridge.publishHandler('destroyComponentObserver', {
+        reqId: this.reqId
+      }, this.pageId);
+    }
+  }
+
+  function createIntersectionObserver (context, options) {
+    if (!context._isVue) {
+      options = context;
+      context = null;
+    }
+    if (context) {
+      return new ServiceIntersectionObserver(context.$page.id, context, options)
+    }
+    const pages = getCurrentPages();
+    const len = pages.length;
+    if (!len) {
+      UniServiceJSBridge.emit('onError', 'createIntersectionObserver:fail');
+    }
+    const page = pages[len - 1];
+    return new ServiceIntersectionObserver(page.$page.id, page.$vm, options)
+  }
+
+  var require_context_module_1_17 = /*#__PURE__*/Object.freeze({
+    createIntersectionObserver: createIntersectionObserver
+  });
+
   class NodesRef {
     constructor (selectorQuery, component, selector, single) {
       this._selectorQuery = selectorQuery;
@@ -8714,10 +8783,10 @@ var serviceContext = (function () {
     if (!len) {
       UniServiceJSBridge.emit('onError', 'createSelectorQuery:fail');
     }
-    return new SelectorQuery(pages[len - 1])
+    return new SelectorQuery(pages[len - 1].$vm)
   }
 
-  var require_context_module_1_17 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_18 = /*#__PURE__*/Object.freeze({
     createSelectorQuery: createSelectorQuery
   });
 
@@ -8733,7 +8802,7 @@ var serviceContext = (function () {
     callbacks$8.push(callbackId);
   }
 
-  var require_context_module_1_18 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_19 = /*#__PURE__*/Object.freeze({
     onKeyboardHeightChange: onKeyboardHeightChange
   });
 
@@ -8745,7 +8814,7 @@ var serviceContext = (function () {
     return {}
   }
 
-  var require_context_module_1_19 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_20 = /*#__PURE__*/Object.freeze({
     pageScrollTo: pageScrollTo$1
   });
 
@@ -8781,7 +8850,7 @@ var serviceContext = (function () {
     callbacks$9.push(callbackId);
   }
 
-  var require_context_module_1_20 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_21 = /*#__PURE__*/Object.freeze({
     removeTabBarBadge: removeTabBarBadge$1,
     showTabBarRedDot: showTabBarRedDot$1,
     hideTabBarRedDot: hideTabBarRedDot$1,
@@ -8804,7 +8873,7 @@ var serviceContext = (function () {
     callbacks$a.splice(callbacks$a.indexOf(callbackId), 1);
   }
 
-  var require_context_module_1_21 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_22 = /*#__PURE__*/Object.freeze({
     onWindowResize: onWindowResize,
     offWindowResize: offWindowResize
   });
@@ -8831,11 +8900,12 @@ var serviceContext = (function () {
   './network/upload-file.js': require_context_module_1_14,
   './storage/storage.js': require_context_module_1_15,
   './ui/create-animation.js': require_context_module_1_16,
-  './ui/create-selector-query.js': require_context_module_1_17,
-  './ui/keyboard.js': require_context_module_1_18,
-  './ui/page-scroll-to.js': require_context_module_1_19,
-  './ui/tab-bar.js': require_context_module_1_20,
-  './ui/window.js': require_context_module_1_21,
+  './ui/create-intersection-observer.js': require_context_module_1_17,
+  './ui/create-selector-query.js': require_context_module_1_18,
+  './ui/keyboard.js': require_context_module_1_19,
+  './ui/page-scroll-to.js': require_context_module_1_20,
+  './ui/tab-bar.js': require_context_module_1_21,
+  './ui/window.js': require_context_module_1_22,
 
       };
       var req = function req(key) {
@@ -9818,6 +9888,12 @@ var serviceContext = (function () {
 
       initData(Vue);
       initLifecycle(Vue);
+
+      Object.defineProperty(Vue.prototype, '$page', {
+        get () {
+          return this.$root.$scope.$page
+        }
+      });
 
       const oldMount = Vue.prototype.$mount;
       Vue.prototype.$mount = function mount (el, hydrating) {

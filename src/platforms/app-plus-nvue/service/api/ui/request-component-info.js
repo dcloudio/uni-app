@@ -64,13 +64,12 @@ function getComponentRectAll (dom, attrs, index, result, callback) {
   })
 }
 
-export function requestComponentInfo (pageInstance, queue, callback) {
+export function requestComponentInfo (pageVm, queue, callback) {
   // TODO 重构，逻辑不对，queue 里的每一项可能有单独的作用域查找（即 component）
-  const vm = pageInstance.$vm
-  const dom = vm._$weex.requireModule('dom')
+  const dom = pageVm._$weex.requireModule('dom')
   const selectors = getSelectors(queue)
   let outAttrs = new Array(selectors.length)
-  findAttrs(selectors, vm.$el, outAttrs)
+  findAttrs(selectors, pageVm.$el, outAttrs)
   getComponentRectAll(dom, outAttrs, 0, [], (result) => {
     callback(result)
   })

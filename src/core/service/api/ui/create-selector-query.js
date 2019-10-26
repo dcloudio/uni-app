@@ -111,5 +111,5 @@ export function createSelectorQuery (context) {
   if (!len) {
     UniServiceJSBridge.emit('onError', 'createSelectorQuery:fail')
   }
-  return new SelectorQuery(pages[len - 1])
+  return new SelectorQuery(pages[len - 1].$vm)
 }

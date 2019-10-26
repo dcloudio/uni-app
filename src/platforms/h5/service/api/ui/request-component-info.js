@@ -2,9 +2,9 @@ import createCallbacks from 'uni-helpers/callbacks'
 
 const requestComponentInfoCallbacks = createCallbacks('requestComponentInfo')
 
-export function requestComponentInfo (pageInstance, queue, callback) {
+export function requestComponentInfo (pageVm, queue, callback) {
   UniServiceJSBridge.publishHandler('requestComponentInfo', {
     reqId: requestComponentInfoCallbacks.push(callback),
     reqs: queue
-  }, pageInstance.$page.id)
+  }, pageVm.$page.id)
 }

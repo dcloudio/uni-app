@@ -19,6 +19,12 @@ export default {
     initData(Vue)
     initLifecycle(Vue)
 
+    Object.defineProperty(Vue.prototype, '$page', {
+      get () {
+        return this.$root.$scope.$page
+      }
+    })
+
     const oldMount = Vue.prototype.$mount
     Vue.prototype.$mount = function mount (el, hydrating) {
       if (this.mpType === 'app') {
