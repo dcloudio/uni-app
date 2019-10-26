@@ -12616,19 +12616,38 @@ function getNodeInfo(el, fields) {
   return info;
 }
 
+function findElm(id, vm) {
+  if (id === vm._$id) {
+    return vm;
+  }
+
+  var childVms = vm.$children;
+  var len = childVms.length;
+
+  for (var i = 0; i < len; i++) {
+    var childVm = findElm(id, childVms[i]);
+
+    if (childVm) {
+      return childVm;
+    }
+  }
+}
+
 function getElm(component, pageVm) {
   if (!component) {
     return pageVm.$el;
   }
 
-  if (typeof component === 'string') {
-    var componentVm = pageVm._$vd.getVm(component);
+  if (true) {
+    if (typeof component === 'string') {
+      var componentVm = findElm(component, pageVm);
 
-    if (!componentVm) {
-      throw new Error("Not Found\uFF1APage[".concat(pageVm.$page.id, "][").concat(component, "]"));
+      if (!componentVm) {
+        throw new Error("Not Found\uFF1APage[".concat(pageVm.$page.id, "][").concat(component, "]"));
+      }
+
+      return componentVm.$el;
     }
-
-    return componentVm.$el;
   }
 
   return component.$el;

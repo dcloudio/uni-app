@@ -73,16 +73,32 @@ function getNodeInfo (el, fields) {
   return info
 }
 
+function findElm (id, vm) {
+  if (id === vm._$id) {
+    return vm
+  }
+  const childVms = vm.$children
+  const len = childVms.length
+  for (let i = 0; i < len; i++) {
+    const childVm = findElm(id, childVms[i])
+    if (childVm) {
+      return childVm
+    }
+  }
+}
+
 function getElm (component, pageVm) {
   if (!component) {
     return pageVm.$el
   }
-  if (typeof component === 'string') {
-    const componentVm = pageVm._$vd.getVm(component)
-    if (!componentVm) {
-      throw new Error(`Not Found：Page[${pageVm.$page.id}][${component}]`)
+  if (__PLATFORM__ === 'app-plus') {
+    if (typeof component === 'string') {
+      const componentVm = findElm(component, pageVm)
+      if (!componentVm) {
+        throw new Error(`Not Found：Page[${pageVm.$page.id}][${component}]`)
+      }
+      return componentVm.$el
     }
-    return componentVm.$el
   }
   return component.$el
 }
