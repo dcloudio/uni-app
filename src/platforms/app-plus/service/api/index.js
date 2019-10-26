@@ -61,3 +61,5 @@ export {
   from './ui/pull-down-refresh'
 
 export * from './ui/tab-bar'
+
+export * from './ui/request-component-info'

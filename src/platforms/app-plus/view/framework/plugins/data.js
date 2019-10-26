@@ -50,7 +50,8 @@ const handleData = {
   },
   [PAGE_CREATED]: function onPageCreated (data) {
     const [pageId, pagePath] = data
-    new PageVueComponent({
+    const page = getCurrentPages()[0]
+    page.$vm = new PageVueComponent({
       mpType: 'page',
       pageId,
       pagePath

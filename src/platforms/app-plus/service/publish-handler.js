@@ -7,9 +7,9 @@ export function publishHandler (eventType, args, pageIds) {
     pageIds = [pageIds]
   }
   const evalJSCode =
-    `typeof UniViewJSBridge !== 'undefined' && UniViewJSBridge.subscribeHandler("${eventType}",${args})`
+    `typeof UniViewJSBridge !== 'undefined' && UniViewJSBridge.subscribeHandler("${eventType}",${args},__PAGE_ID__)`
   pageIds.forEach(id => {
     const webview = plus.webview.getWebviewById(String(id))
-    webview && webview.evalJS(evalJSCode)
+    webview && webview.evalJS(evalJSCode.replace('__PAGE_ID__', id))
   })
 }

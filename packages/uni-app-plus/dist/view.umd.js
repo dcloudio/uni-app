@@ -9929,7 +9929,8 @@ var handleData = (_handleData = {}, _defineProperty(_handleData, _constants__WEB
       pageId = _data2[0],
       pagePath = _data2[1];
 
-  new PageVueComponent({
+  var page = getCurrentPages()[0];
+  page.$vm = new PageVueComponent({
     mpType: 'page',
     pageId: pageId,
     pagePath: pagePath
@@ -12615,10 +12616,26 @@ function getNodeInfo(el, fields) {
   return info;
 }
 
+function getElm(component, pageVm) {
+  if (!component) {
+    return pageVm.$el;
+  }
+
+  if (typeof component === 'string') {
+    var componentVm = pageVm._$vd.getVm(component);
+
+    if (!componentVm) {
+      throw new Error("Not Found\uFF1APage[".concat(pageVm.$page.id, "][").concat(component, "]"));
+    }
+
+    return componentVm.$el;
+  }
+
+  return component.$el;
+}
+
 function getNodesInfo(pageVm, component, selector, single, fields) {
-  /* eslint-disable no-mixed-operators */
-  // TODO 判断 component 是否是 _$id,如果是，从 pageVm 中递归查找该组件实例
-  var $el = component && component.$el || pageVm.$el;
+  var $el = getElm(component, pageVm);
 
   if (single) {
     var node = $el && ($el.matches(selector) ? $el : $el.querySelector(selector));
@@ -12653,15 +12670,15 @@ function requestComponentInfo(_ref, pageId) {
       reqs = _ref.reqs;
   var pages = getCurrentPages(); // 跨平台时，View 层也应该实现该方法，举例 App 上，View 层的 getCurrentPages 返回长度为1的当前页面数组
 
-  var pageVm = pages.find(function (page) {
+  var page = pages.find(function (page) {
     return page.$page.id === pageId;
   });
 
-  if (!pageVm) {
-    // TODO 是否需要 defer
+  if (!page) {
     throw new Error("Not Found\uFF1APage[".concat(pageId, "]"));
   }
 
+  var pageVm = page.$vm;
   var result = [];
   reqs.forEach(function (_ref2) {
     var component = _ref2.component,
