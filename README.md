@@ -73,3 +73,34 @@
 
 - 评测：[深入测试一周，主流多端框架大比武](https://mp.weixin.qq.com/s/jIDEHfuMnED6HTfNgjsW4w)
 - [uni-app在App端和flutter、react native的比较](https://ask.dcloud.net.cn/article/36083)
+
+
+#English Translation 
+
+# uni-app
+
+`uni-app` is a unified front-end framework for developing small programs, H5, and App using `Vue.js`. Official website address: [https://uniapp.dcloud.io] (https://uniapp.dcloud.io)
+
+Developers use the `Vue` syntax to write code, and the `uni-app` framework compiles them into small programs (WeChat/Alipay/Baidu/Byte Bounce/QQ/Snail), App (iOS/Android), H5, etc. The platform ensures that it runs correctly and achieves an excellent experience.
+
+# uni-app features
+
+- More developers and cases: 200,000+ developers, 50+QQ, WeChat group, tens of thousands of cases ([see details] (https://uniapp.dcloud.io/case)), official tool of Ali Small Program Built-in ([see details] (https://docs.alipay.com/mini/ide/0.70-stable))
+- Higher performance (see [Review] (https://juejin.im/post/5ca1736af265da30ae314248))
+- Richer surrounding ecology (see [Plugin Market] (https://ext.dcloud.net.cn/))
+- Provides a better development experience and higher engineering efficiency than small program native development
+- The cross-end smoothing is more perfect, and the features of each end are more flexible, which can truly realize a multi-end code coverage, without the need for multi-end maintenance upgrade
+
+Few Q/Ans 
+
+- Q: Is multi-end a compromise, will it cause performance degradation?
+A: good question. Multi-end and does not affect performance, it is really difficult, but uni-app did it. On the h5 side, its performance and package size are consistent with the direct use of vue.js development; on the small program side, its performance is better than most development frameworks, uni-app underlying automatic processing of setdata difference synchronization mechanism, than development It is better to write setdata manually, just like using vue.js to update the interface is more efficient than manually writing js to modify dom; in App, uni-app supports webview rendering and native rendering dual engine, when native rendering is enabled, css is limited. But the performance is very close to the effect of the original development. In the current mobile phone environment, the application below tens of thousands of days will not encounter any pressure on the app to use uni-app. Of course, you can also change some pages to uni-app in the native app that has already been done; in addition, we will put a lot of cross-end processing in the compile period, which will reduce the efficiency impact on the runtime.
+
+
+- Q: Don't do versa, don't need uni-app.
+A: No. A large number of developers use uni-app to do only one end. See [Case] ​​(https://uniapp.dcloud.io/case) for details. For developers, a good tool is at hand and nothing to do.
+
+## more info
+
+- Evaluation: [In-depth testing for a week, the mainstream multi-end framework is big] (https://mp.weixin.qq.com/s/jIDEHfuMnED6HTfNgjsW4w)
+- [Comparison of uni-app on the app side and flutter, react native] (https://ask.dcloud.net.cn/article/36083)
