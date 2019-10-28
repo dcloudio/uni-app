@@ -1,5 +1,7 @@
 export * from './context/audio'
 export * from './context/background-audio'
+export * from './context/operate-map-player'
+export * from './context/operate-video-player'
 
 export * from './device/accelerometer'
 export * from './device/add-phone-contact'
