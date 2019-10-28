@@ -2,9 +2,10 @@ import {
   isFn
 } from 'uni-shared'
 
-import createCallbacks from 'uni-helpers/callbacks'
-
-const requestComponentInfoCallbacks = createCallbacks('requestComponentInfo')
+import {
+  invokeMethod,
+  getCurrentPageVm
+} from '../../platform'
 
 class NodesRef {
   constructor (selectorQuery, component, selector, single) {
@@ -54,24 +55,15 @@ class NodesRef {
   }
 }
 
-function requestComponentInfo (pageId, queue, callback) {
-  const reqId = requestComponentInfoCallbacks.push(callback)
-
-  UniServiceJSBridge.publishHandler('requestComponentInfo', {
-    reqId,
-    reqs: queue
-  }, pageId)
-}
-
 class SelectorQuery {
-  constructor (pageId) {
-    this.pageId = pageId
+  constructor (page) {
+    this._page = page
     this._queue = []
     this._queueCb = []
   }
 
   exec (callback) {
-    requestComponentInfo(this.pageId, this._queue, res => {
+    invokeMethod('requestComponentInfo', this._page, this._queue, res => {
       const queueCbs = this._queueCb
       res.forEach((result, index) => {
         const queueCb = queueCbs[index]
@@ -84,8 +76,8 @@ class SelectorQuery {
   }
 
   ['in'] (component) {
-    // TODO 跨平台，非 h5 平台传递 component._$id
-    this._component = component
+    // app-plus 平台传递 id
+    this._component = component._$id || component
     return this
   }
 
@@ -114,12 +106,7 @@ class SelectorQuery {
 
 export function createSelectorQuery (context) {
   if (context) {
-    return new SelectorQuery(context.$page.id)
+    return new SelectorQuery(context)
   }
-  const app = getApp()
-  if (app.$route && app.$route.params.__id__) {
-    return new SelectorQuery(app.$route.params.__id__)
-  } else {
-    UniServiceJSBridge.emit('onError', 'createSelectorQuery:fail')
-  }
+  return new SelectorQuery(getCurrentPageVm('createSelectorQuery'))
 }

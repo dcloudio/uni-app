@@ -7140,6 +7140,128 @@ var serviceContext = (function () {
     }
   }
 
+  const callbacks$1 = {};
+
+  function createCallbacks (namespace) {
+    let scopedCallbacks = callbacks$1[namespace];
+    if (!scopedCallbacks) {
+      scopedCallbacks = {
+        id: 1,
+        callbacks: Object.create(null)
+      };
+      callbacks$1[namespace] = scopedCallbacks;
+    }
+    return {
+      get (id) {
+        return scopedCallbacks.callbacks[id]
+      },
+      pop (id) {
+        const callback = scopedCallbacks.callbacks[id];
+        if (callback) {
+          delete scopedCallbacks.callbacks[id];
+        }
+        return callback
+      },
+      push (callback) {
+        const id = scopedCallbacks.id++;
+        scopedCallbacks.callbacks[id] = callback;
+        return id
+      }
+    }
+  }
+
+  const requestComponentInfoCallbacks = createCallbacks('requestComponentInfo');
+
+  function requestComponentInfo (pageVm, queue, callback) {
+    UniServiceJSBridge.publishHandler('requestComponentInfo', {
+      reqId: requestComponentInfoCallbacks.push(callback),
+      reqs: queue
+    }, pageVm.$page.id);
+  }
+
+  function parseDataset (attr) {
+    const dataset = {};
+
+    Object.keys(attr || {}).forEach(key => {
+      if (key.indexOf('data') === 0) {
+        let str = key.replace('data', '');
+        str = str.charAt(0).toLowerCase() + str.slice(1);
+        dataset[str] = attr[key];
+      }
+    });
+
+    return dataset
+  }
+
+  function findAttrs (ids, elm, result) {
+    let nodes = elm.children;
+    if (!Array.isArray(nodes)) {
+      return false
+    }
+    for (let i = 0; i < nodes.length; i++) {
+      let node = nodes[i];
+      if (node.attr) {
+        let index = ids.indexOf(node.attr.id);
+        if (index >= 0) {
+          result[index] = {
+            id: ids[index],
+            ref: node.ref,
+            dataset: parseDataset(node.attr)
+          };
+          if (ids.length === 1) {
+            break
+          }
+        }
+      }
+      if (node.children) {
+        findAttrs(ids, node, result);
+      }
+    }
+  }
+
+  function getSelectors (queue) {
+    let ids = [];
+    for (let i = 0; i < queue.length; i++) {
+      const selector = queue[i].selector;
+      if (selector.indexOf('#') === 0) {
+        ids.push(selector.substring(1));
+      }
+    }
+    return ids
+  }
+
+  function getComponentRectAll (dom, attrs, index, result, callback) {
+    const attr = attrs[index];
+    dom.getComponentRect(attr.ref, option => {
+      option.size.id = attr.id;
+      option.size.dataset = attr.dataset;
+      result.push(option.size);
+      index += 1;
+      if (index < attrs.length) {
+        getComponentRectAll(dom, attrs, index, result, callback);
+      } else {
+        callback(result);
+      }
+    });
+  }
+
+  function requestComponentInfo$1 (pageVm, queue, callback) {
+    // TODO 重构，逻辑不对，queue 里的每一项可能有单独的作用域查找（即 component）
+    const dom = pageVm._$weex.requireModule('dom');
+    const selectors = getSelectors(queue);
+    let outAttrs = new Array(selectors.length);
+    findAttrs(selectors, pageVm.$el, outAttrs);
+    getComponentRectAll(dom, outAttrs, 0, [], (result) => {
+      callback(result);
+    });
+  }
+
+  function requestComponentInfo$2 (pageVm, queue, callback) {
+    pageVm.$page.meta.isNVue
+      ? requestComponentInfo$1(pageVm, queue, callback)
+      : requestComponentInfo(pageVm, queue, callback);
+  }
+
 
 
   var api = /*#__PURE__*/Object.freeze({
@@ -7257,7 +7379,8 @@ var serviceContext = (function () {
     setTabBarItem: setTabBarItem$2,
     setTabBarStyle: setTabBarStyle$2,
     hideTabBar: hideTabBar$2,
-    showTabBar: showTabBar$2
+    showTabBar: showTabBar$2,
+    requestComponentInfo: requestComponentInfo$2
   });
 
   const Emitter = new Vue();
@@ -7304,6 +7427,16 @@ var serviceContext = (function () {
    */
   function onMethod (name, callback) {
     return UniServiceJSBridge.on('api.' + name, callback)
+  }
+
+  function getCurrentPageVm (method) {
+    const pages = getCurrentPages();
+    const len = pages.length;
+    if (!len) {
+      UniServiceJSBridge.emit('onError', `${method}:fail`);
+    }
+    const page = pages[len - 1];
+    return page.$vm
   }
 
   const eventNames = [
@@ -7482,9 +7615,9 @@ var serviceContext = (function () {
     'error',
     'waiting'
   ];
-  const callbacks$1 = {};
+  const callbacks$2 = {};
   eventNames$1.forEach(name => {
-    callbacks$1[name] = [];
+    callbacks$2[name] = [];
   });
 
   const props$1 = [
@@ -7548,7 +7681,7 @@ var serviceContext = (function () {
         errMsg,
         errCode
       }) => {
-        callbacks$1[state].forEach(callback => {
+        callbacks$2[state].forEach(callback => {
           if (typeof callback === 'function') {
             callback(state === 'error' ? {
               errMsg,
@@ -7600,7 +7733,7 @@ var serviceContext = (function () {
   eventNames$1.forEach(item => {
     const name = item[0].toUpperCase() + item.substr(1);
     BackgroundAudioManager.prototype[`on${name}`] = function (callback) {
-      callbacks$1[item].push(callback);
+      callbacks$2[item].push(callback);
     };
   });
 
@@ -7614,10 +7747,118 @@ var serviceContext = (function () {
     getBackgroundAudioManager: getBackgroundAudioManager
   });
 
-  const callbacks$2 = [];
+  function operateMapPlayer (mapId, pageVm, type, data) {
+    invokeMethod('operateMapPlayer', mapId, pageVm, type, data);
+  }
+
+  class MapContext {
+    constructor (id, pageVm) {
+      this.id = id;
+      this.pageVm = pageVm;
+    }
+
+    getCenterLocation (args) {
+      operateMapPlayer(this.id, this.pageVm, 'getCenterLocation', args);
+    }
+
+    moveToLocation () {
+      operateMapPlayer(this.id, this.pageVm, 'moveToLocation');
+    }
+
+    translateMarker (args) {
+      operateMapPlayer(this.id, this.pageVm, 'translateMarker', args);
+    }
+
+    includePoints (args) {
+      operateMapPlayer(this.id, this.pageVm, 'includePoints', args);
+    }
+
+    getRegion (args) {
+      operateMapPlayer(this.id, this.pageVm, 'getRegion', args);
+    }
+
+    getScale (args) {
+      operateMapPlayer(this.id, this.pageVm, 'getScale', args);
+    }
+  }
+
+  function createMapContext$1 (id, context) {
+    if (context) {
+      return new MapContext(id, context)
+    }
+    return new MapContext(id, getCurrentPageVm('createMapContext'))
+  }
+
+  var require_context_module_1_6 = /*#__PURE__*/Object.freeze({
+    createMapContext: createMapContext$1
+  });
+
+  const RATES = [0.5, 0.8, 1.0, 1.25, 1.5];
+
+  function operateVideoPlayer (videoId, pageVm, type, data) {
+    invokeMethod('operateVideoPlayer', videoId, pageVm, type, data);
+  }
+
+  class VideoContext {
+    constructor (id, pageVm) {
+      this.id = id;
+      this.pageVm = pageVm;
+    }
+
+    play () {
+      operateVideoPlayer(this.id, this.pageVm, 'play');
+    }
+    pause () {
+      operateVideoPlayer(this.id, this.pageVm, 'pause');
+    }
+    stop () {
+      operateVideoPlayer(this.id, this.pageVm, 'stop');
+    }
+    seek (position) {
+      operateVideoPlayer(this.id, this.pageVm, 'seek', {
+        position
+      });
+    }
+    sendDanmu (args) {
+      operateVideoPlayer(this.id, this.pageVm, 'sendDanmu', args);
+    }
+    playbackRate (rate) {
+      if (!~RATES.indexOf(rate)) {
+        rate = 1.0;
+      }
+      operateVideoPlayer(this.id, this.pageVm, 'playbackRate', {
+        rate
+      });
+    }
+    requestFullScreen () {
+      operateVideoPlayer(this.id, this.pageVm, 'requestFullScreen');
+    }
+    exitFullScreen () {
+      operateVideoPlayer(this.id, this.pageVm, 'exitFullScreen');
+    }
+    showStatusBar () {
+      operateVideoPlayer(this.id, this.pageVm, 'showStatusBar');
+    }
+    hideStatusBar () {
+      operateVideoPlayer(this.id, this.pageVm, 'hideStatusBar');
+    }
+  }
+
+  function createVideoContext$1 (id, context) {
+    if (context) {
+      return new VideoContext(id, context)
+    }
+    return new VideoContext(id, getCurrentPageVm('createVideoContext'))
+  }
+
+  var require_context_module_1_7 = /*#__PURE__*/Object.freeze({
+    createVideoContext: createVideoContext$1
+  });
+
+  const callbacks$3 = [];
 
   onMethod('onAccelerometerChange', function (res) {
-    callbacks$2.forEach(callbackId => {
+    callbacks$3.forEach(callbackId => {
       invoke(callbackId, res);
     });
   });
@@ -7629,7 +7870,7 @@ var serviceContext = (function () {
    */
   function onAccelerometerChange (callbackId) {
     // TODO 当没有 start 时，添加 on 需要主动 start?
-    callbacks$2.push(callbackId);
+    callbacks$3.push(callbackId);
     if (!isEnable) {
       startAccelerometer();
     }
@@ -7654,7 +7895,7 @@ var serviceContext = (function () {
     })
   }
 
-  var require_context_module_1_6 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_8 = /*#__PURE__*/Object.freeze({
     onAccelerometerChange: onAccelerometerChange,
     startAccelerometer: startAccelerometer,
     stopAccelerometer: stopAccelerometer
@@ -7677,17 +7918,17 @@ var serviceContext = (function () {
   const onBLEConnectionStateChange$1 = on('onBLEConnectionStateChange');
   const onBLECharacteristicValueChange$1 = on('onBLECharacteristicValueChange');
 
-  var require_context_module_1_7 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_9 = /*#__PURE__*/Object.freeze({
     onBluetoothDeviceFound: onBluetoothDeviceFound$1,
     onBluetoothAdapterStateChange: onBluetoothAdapterStateChange$1,
     onBLEConnectionStateChange: onBLEConnectionStateChange$1,
     onBLECharacteristicValueChange: onBLECharacteristicValueChange$1
   });
 
-  const callbacks$3 = [];
+  const callbacks$4 = [];
 
   onMethod('onCompassChange', function (res) {
-    callbacks$3.forEach(callbackId => {
+    callbacks$4.forEach(callbackId => {
       invoke(callbackId, res);
     });
   });
@@ -7699,7 +7940,7 @@ var serviceContext = (function () {
    */
   function onCompassChange (callbackId) {
     // TODO 当没有 start 时，添加 on 需要主动 start?
-    callbacks$3.push(callbackId);
+    callbacks$4.push(callbackId);
     if (!isEnable$1) {
       startCompass();
     }
@@ -7724,29 +7965,29 @@ var serviceContext = (function () {
     })
   }
 
-  var require_context_module_1_8 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_10 = /*#__PURE__*/Object.freeze({
     onCompassChange: onCompassChange,
     startCompass: startCompass,
     stopCompass: stopCompass
   });
 
-  const callbacks$4 = [];
+  const callbacks$5 = [];
 
   onMethod('onNetworkStatusChange', res => {
-    callbacks$4.forEach(callbackId => {
+    callbacks$5.forEach(callbackId => {
       invoke(callbackId, res);
     });
   });
 
   function onNetworkStatusChange (callbackId) {
-    callbacks$4.push(callbackId);
+    callbacks$5.push(callbackId);
   }
 
-  var require_context_module_1_9 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_11 = /*#__PURE__*/Object.freeze({
     onNetworkStatusChange: onNetworkStatusChange
   });
 
-  const callbacks$5 = {
+  const callbacks$6 = {
     pause: [],
     resume: [],
     start: [],
@@ -7760,7 +8001,7 @@ var serviceContext = (function () {
         const state = res.state;
         delete res.state;
         delete res.errMsg;
-        callbacks$5[state].forEach(callback => {
+        callbacks$6[state].forEach(callback => {
           if (typeof callback === 'function') {
             callback(res);
           }
@@ -7768,7 +8009,7 @@ var serviceContext = (function () {
       });
     }
     onError (callback) {
-      callbacks$5.error.push(callback);
+      callbacks$6.error.push(callback);
     }
     onFrameRecorded (callback) {
 
@@ -7780,16 +8021,16 @@ var serviceContext = (function () {
 
     }
     onPause (callback) {
-      callbacks$5.pause.push(callback);
+      callbacks$6.pause.push(callback);
     }
     onResume (callback) {
-      callbacks$5.resume.push(callback);
+      callbacks$6.resume.push(callback);
     }
     onStart (callback) {
-      callbacks$5.start.push(callback);
+      callbacks$6.start.push(callback);
     }
     onStop (callback) {
-      callbacks$5.stop.push(callback);
+      callbacks$6.stop.push(callback);
     }
     pause () {
       invokeMethod('operateRecorder', {
@@ -7819,7 +8060,7 @@ var serviceContext = (function () {
     return recorderManager || (recorderManager = new RecorderManager())
   }
 
-  var require_context_module_1_10 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_12 = /*#__PURE__*/Object.freeze({
     getRecorderManager: getRecorderManager
   });
 
@@ -7907,7 +8148,7 @@ var serviceContext = (function () {
     return task
   }
 
-  var require_context_module_1_11 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_13 = /*#__PURE__*/Object.freeze({
     downloadFile: downloadFile$1
   });
 
@@ -8012,7 +8253,7 @@ var serviceContext = (function () {
     return new RequestTask(requestTaskId)
   }
 
-  var require_context_module_1_12 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_14 = /*#__PURE__*/Object.freeze({
     request: request$1
   });
 
@@ -8090,7 +8331,7 @@ var serviceContext = (function () {
 
   const socketTasks$1 = Object.create(null);
   const socketTasksArray = [];
-  const callbacks$6 = Object.create(null);
+  const callbacks$7 = Object.create(null);
   onMethod('onSocketTaskStateChange', ({
     socketTaskId,
     state,
@@ -8111,8 +8352,8 @@ var serviceContext = (function () {
     if (state === 'open') {
       socketTask.readyState = socketTask.OPEN;
     }
-    if (socketTask === socketTasksArray[0] && callbacks$6[state]) {
-      invoke(callbacks$6[state], state === 'message' ? {
+    if (socketTask === socketTasksArray[0] && callbacks$7[state]) {
+      invoke(callbacks$7[state], state === 'message' ? {
         data
       } : {});
     }
@@ -8171,22 +8412,22 @@ var serviceContext = (function () {
   }
 
   function onSocketOpen (callbackId) {
-    callbacks$6.open = callbackId;
+    callbacks$7.open = callbackId;
   }
 
   function onSocketError (callbackId) {
-    callbacks$6.error = callbackId;
+    callbacks$7.error = callbackId;
   }
 
   function onSocketMessage (callbackId) {
-    callbacks$6.message = callbackId;
+    callbacks$7.message = callbackId;
   }
 
   function onSocketClose (callbackId) {
-    callbacks$6.close = callbackId;
+    callbacks$7.close = callbackId;
   }
 
-  var require_context_module_1_13 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_15 = /*#__PURE__*/Object.freeze({
     connectSocket: connectSocket$1,
     sendSocketMessage: sendSocketMessage$1,
     closeSocket: closeSocket$1,
@@ -8280,7 +8521,7 @@ var serviceContext = (function () {
     return task
   }
 
-  var require_context_module_1_14 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_16 = /*#__PURE__*/Object.freeze({
     uploadFile: uploadFile$1
   });
 
@@ -8389,7 +8630,7 @@ var serviceContext = (function () {
     return res
   }
 
-  var require_context_module_1_15 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_17 = /*#__PURE__*/Object.freeze({
     setStorage: setStorage$1,
     setStorageSync: setStorageSync$1,
     getStorage: getStorage$1,
@@ -8480,23 +8721,195 @@ var serviceContext = (function () {
     return new MPAnimation(option)
   }
 
-  var require_context_module_1_16 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_18 = /*#__PURE__*/Object.freeze({
     createAnimation: createAnimation
   });
 
-  const callbacks$7 = [];
+  const createIntersectionObserverCallbacks = createCallbacks('requestComponentObserver');
+
+  const defaultOptions = {
+    thresholds: [0],
+    initialRatio: 0,
+    observeAll: false
+  };
+
+  class ServiceIntersectionObserver {
+    constructor (component, options) {
+      this.pageId = component.$page.id;
+      this.component = component._$id || component; // app-plus 平台传输_$id
+      this.options = Object.assign({}, defaultOptions, options);
+    }
+    _makeRootMargin (margins = {}) {
+      this.options.rootMargin = ['top', 'right', 'bottom', 'left'].map(name => `${Number(margins[name]) || 0}px`).join(
+        ' ');
+    }
+    relativeTo (selector, margins) {
+      this.options.relativeToSelector = selector;
+      this._makeRootMargin(margins);
+      return this
+    }
+    relativeToViewport (margins) {
+      this.options.relativeToSelector = null;
+      this._makeRootMargin(margins);
+      return this
+    }
+    observe (selector, callback) {
+      if (typeof callback !== 'function') {
+        return
+      }
+      this.options.selector = selector;
+
+      this.reqId = createIntersectionObserverCallbacks.push(callback);
+
+      UniServiceJSBridge.publishHandler('requestComponentObserver', {
+        reqId: this.reqId,
+        component: this.component,
+        options: this.options
+      }, this.pageId);
+    }
+    disconnect () {
+      UniServiceJSBridge.publishHandler('destroyComponentObserver', {
+        reqId: this.reqId
+      }, this.pageId);
+    }
+  }
+
+  function createIntersectionObserver (context, options) {
+    if (!context._isVue) {
+      options = context;
+      context = null;
+    }
+    if (context) {
+      return new ServiceIntersectionObserver(context, options)
+    }
+    return new ServiceIntersectionObserver(getCurrentPageVm('createIntersectionObserver'), options)
+  }
+
+  var require_context_module_1_19 = /*#__PURE__*/Object.freeze({
+    createIntersectionObserver: createIntersectionObserver
+  });
+
+  class NodesRef {
+    constructor (selectorQuery, component, selector, single) {
+      this._selectorQuery = selectorQuery;
+      this._component = component;
+      this._selector = selector;
+      this._single = single;
+    }
+
+    boundingClientRect (callback) {
+      this._selectorQuery._push(
+        this._selector,
+        this._component,
+        this._single, {
+          id: true,
+          dataset: true,
+          rect: true,
+          size: true
+        },
+        callback);
+      return this._selectorQuery
+    }
+
+    fields (fields, callback) {
+      this._selectorQuery._push(
+        this._selector,
+        this._component,
+        this._single,
+        fields,
+        callback
+      );
+      return this._selectorQuery
+    }
+
+    scrollOffset (callback) {
+      this._selectorQuery._push(
+        this._selector,
+        this._component,
+        this._single, {
+          id: true,
+          dataset: true,
+          scrollOffset: true
+        },
+        callback
+      );
+      return this._selectorQuery
+    }
+  }
+
+  class SelectorQuery {
+    constructor (page) {
+      this._page = page;
+      this._queue = [];
+      this._queueCb = [];
+    }
+
+    exec (callback) {
+      invokeMethod('requestComponentInfo', this._page, this._queue, res => {
+        const queueCbs = this._queueCb;
+        res.forEach((result, index) => {
+          const queueCb = queueCbs[index];
+          if (isFn(queueCb)) {
+            queueCb.call(this, result);
+          }
+        });
+        isFn(callback) && callback.call(this, res);
+      });
+    }
+
+    ['in'] (component) {
+      // app-plus 平台传递 id
+      this._component = component._$id || component;
+      return this
+    }
+
+    select (selector) {
+      return new NodesRef(this, this._component, selector, true)
+    }
+
+    selectAll (selector) {
+      return new NodesRef(this, this._component, selector, false)
+    }
+
+    selectViewport () {
+      return new NodesRef(this, 0, '', true)
+    }
+
+    _push (selector, component, single, fields, callback) {
+      this._queue.push({
+        component,
+        selector,
+        single,
+        fields
+      });
+      this._queueCb.push(callback);
+    }
+  }
+
+  function createSelectorQuery (context) {
+    if (context) {
+      return new SelectorQuery(context)
+    }
+    return new SelectorQuery(getCurrentPageVm('createSelectorQuery'))
+  }
+
+  var require_context_module_1_20 = /*#__PURE__*/Object.freeze({
+    createSelectorQuery: createSelectorQuery
+  });
+
+  const callbacks$8 = [];
 
   onMethod('onKeyboardHeightChange', res => {
-    callbacks$7.forEach(callbackId => {
+    callbacks$8.forEach(callbackId => {
       invoke(callbackId, res);
     });
   });
 
   function onKeyboardHeightChange (callbackId) {
-    callbacks$7.push(callbackId);
+    callbacks$8.push(callbackId);
   }
 
-  var require_context_module_1_17 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_21 = /*#__PURE__*/Object.freeze({
     onKeyboardHeightChange: onKeyboardHeightChange
   });
 
@@ -8508,7 +8921,7 @@ var serviceContext = (function () {
     return {}
   }
 
-  var require_context_module_1_18 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_22 = /*#__PURE__*/Object.freeze({
     pageScrollTo: pageScrollTo$1
   });
 
@@ -8532,42 +8945,42 @@ var serviceContext = (function () {
 
   const hideTabBarRedDot$1 = removeTabBarBadge$1;
 
-  const callbacks$8 = [];
+  const callbacks$9 = [];
 
   onMethod('onTabBarMidButtonTap', res => {
-    callbacks$8.forEach(callbackId => {
+    callbacks$9.forEach(callbackId => {
       invoke(callbackId, res);
     });
   });
 
   function onTabBarMidButtonTap (callbackId) {
-    callbacks$8.push(callbackId);
+    callbacks$9.push(callbackId);
   }
 
-  var require_context_module_1_19 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_23 = /*#__PURE__*/Object.freeze({
     removeTabBarBadge: removeTabBarBadge$1,
     showTabBarRedDot: showTabBarRedDot$1,
     hideTabBarRedDot: hideTabBarRedDot$1,
     onTabBarMidButtonTap: onTabBarMidButtonTap
   });
 
-  const callbacks$9 = [];
+  const callbacks$a = [];
   onMethod('onViewDidResize', res => {
-    callbacks$9.forEach(callbackId => {
+    callbacks$a.forEach(callbackId => {
       invoke(callbackId, res);
     });
   });
 
   function onWindowResize (callbackId) {
-    callbacks$9.push(callbackId);
+    callbacks$a.push(callbackId);
   }
 
   function offWindowResize (callbackId) {
     // 此处和微信平台一致查询不到去掉最后一个
-    callbacks$9.splice(callbacks$9.indexOf(callbackId), 1);
+    callbacks$a.splice(callbacks$a.indexOf(callbackId), 1);
   }
 
-  var require_context_module_1_20 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_24 = /*#__PURE__*/Object.freeze({
     onWindowResize: onWindowResize,
     offWindowResize: offWindowResize
   });
@@ -8583,21 +8996,25 @@ var serviceContext = (function () {
   './base/upx2px.js': require_context_module_1_3,
   './context/audio.js': require_context_module_1_4,
   './context/background-audio.js': require_context_module_1_5,
-  './device/accelerometer.js': require_context_module_1_6,
-  './device/bluetooth.js': require_context_module_1_7,
-  './device/compass.js': require_context_module_1_8,
-  './device/network.js': require_context_module_1_9,
-  './media/recorder.js': require_context_module_1_10,
-  './network/download-file.js': require_context_module_1_11,
-  './network/request.js': require_context_module_1_12,
-  './network/socket.js': require_context_module_1_13,
-  './network/upload-file.js': require_context_module_1_14,
-  './storage/storage.js': require_context_module_1_15,
-  './ui/create-animation.js': require_context_module_1_16,
-  './ui/keyboard.js': require_context_module_1_17,
-  './ui/page-scroll-to.js': require_context_module_1_18,
-  './ui/tab-bar.js': require_context_module_1_19,
-  './ui/window.js': require_context_module_1_20,
+  './context/create-map-context.js': require_context_module_1_6,
+  './context/create-video-context.js': require_context_module_1_7,
+  './device/accelerometer.js': require_context_module_1_8,
+  './device/bluetooth.js': require_context_module_1_9,
+  './device/compass.js': require_context_module_1_10,
+  './device/network.js': require_context_module_1_11,
+  './media/recorder.js': require_context_module_1_12,
+  './network/download-file.js': require_context_module_1_13,
+  './network/request.js': require_context_module_1_14,
+  './network/socket.js': require_context_module_1_15,
+  './network/upload-file.js': require_context_module_1_16,
+  './storage/storage.js': require_context_module_1_17,
+  './ui/create-animation.js': require_context_module_1_18,
+  './ui/create-intersection-observer.js': require_context_module_1_19,
+  './ui/create-selector-query.js': require_context_module_1_20,
+  './ui/keyboard.js': require_context_module_1_21,
+  './ui/page-scroll-to.js': require_context_module_1_22,
+  './ui/tab-bar.js': require_context_module_1_23,
+  './ui/window.js': require_context_module_1_24,
 
       };
       var req = function req(key) {
@@ -8635,10 +9052,10 @@ var serviceContext = (function () {
       pageIds = [pageIds];
     }
     const evalJSCode =
-      `typeof UniViewJSBridge !== 'undefined' && UniViewJSBridge.subscribeHandler("${eventType}",${args})`;
+      `typeof UniViewJSBridge !== 'undefined' && UniViewJSBridge.subscribeHandler("${eventType}",${args},__PAGE_ID__)`;
     pageIds.forEach(id => {
       const webview = plus.webview.getWebviewById(String(id));
-      webview && webview.evalJS(evalJSCode);
+      webview && webview.evalJS(evalJSCode.replace('__PAGE_ID__', id));
     });
   }
 
@@ -8748,36 +9165,6 @@ var serviceContext = (function () {
     on('onNavigationBarSearchInputClicked', createCallCurrentPageHook('onNavigationBarSearchInputClicked'));
 
     on('onWebInvokeAppService', onWebInvokeAppService);
-  }
-
-  const callbacks$a = {};
-
-  function createCallbacks (namespace) {
-    let scopedCallbacks = callbacks$a[namespace];
-    if (!scopedCallbacks) {
-      scopedCallbacks = {
-        id: 1,
-        callbacks: Object.create(null)
-      };
-      callbacks$a[namespace] = scopedCallbacks;
-    }
-    return {
-      get (id) {
-        return scopedCallbacks.callbacks[id]
-      },
-      pop (id) {
-        const callback = scopedCallbacks.callbacks[id];
-        if (callback) {
-          delete scopedCallbacks.callbacks[id];
-        }
-        return callback
-      },
-      push (callback) {
-        const id = scopedCallbacks.id++;
-        scopedCallbacks.callbacks[id] = callback;
-        return id
-      }
-    }
   }
 
   function initSubscribe (subscribe, {
@@ -9610,6 +9997,12 @@ var serviceContext = (function () {
 
       initData(Vue);
       initLifecycle(Vue);
+
+      Object.defineProperty(Vue.prototype, '$page', {
+        get () {
+          return this.$root.$scope.$page
+        }
+      });
 
       const oldMount = Vue.prototype.$mount;
       Vue.prototype.$mount = function mount (el, hydrating) {
