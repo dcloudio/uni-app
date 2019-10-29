@@ -84,8 +84,9 @@ editor组件目前只有App的vue页面和微信支持，其他端的富文本�
 		},
 		methods: {
 			onEditorReady() {
+        const _that = this
 				uni.createSelectorQuery().select('#editor').context((res) => {
-					this.editorCtx = res.context
+          _that.editorCtx = res.context
 				}).exec()
 			},
 			undo() {
