@@ -12,7 +12,7 @@ const METHODS = {
     return invokeVmMethodWithoutArgs(ctx, 'pause')
   },
   seek (ctx, args) {
-    return invokeVmMethod(ctx, 'seek', args)
+    return invokeVmMethod(ctx, 'seek', args.position)
   },
   stop (ctx) {
     return invokeVmMethodWithoutArgs(ctx, 'stop')
@@ -21,7 +21,7 @@ const METHODS = {
     return invokeVmMethod(ctx, 'sendDanmu', args)
   },
   playbackRate (ctx, args) {
-    return invokeVmMethod(ctx, 'playbackRate', args)
+    return invokeVmMethod(ctx, 'playbackRate', args.rate)
   },
   requestFullScreen (ctx, args) {
     return invokeVmMethod(ctx, 'requestFullScreen', args)
