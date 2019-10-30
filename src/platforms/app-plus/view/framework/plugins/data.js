@@ -73,8 +73,9 @@ const NATIVE_COMPONENTS = ['Camera', 'LivePlayer', 'LivePusher', 'Map', 'Video']
 
 function updateView () {
   const pages = getCurrentPages()
-  pages.length && broadcast(
-    pages[0].$vm,
+  const pageVm = pages[0] && pages[0].$vm
+  pageVm && broadcast(
+    pageVm,
     NATIVE_COMPONENTS,
     'uni-view-update'
   )
