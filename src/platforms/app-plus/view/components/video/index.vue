@@ -163,9 +163,7 @@ export default {
       attrs.forEach(key => {
         let val = this.$props[key]
         val = key === 'src' ? this.$getRealPath(val) : val
-        obj[key.replace(/[A-Z]/g, (str) => {
-          return '-' + str.toLowerCase()
-        })] = val
+        obj[key.replace(/[A-Z]/g, str => '-' + str.toLowerCase())] = val
       })
       return obj
     }
