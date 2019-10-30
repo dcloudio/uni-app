@@ -32,6 +32,7 @@ mapContext
 
 - 在页面中，必须在 `onReady` 中调用。
 - 在组件中，必须在 `mounted` 中调用。
+- nvue没有`$getAppMap()`，请使用`createMapContext`
 - `uni-app`中使用原生地图无需提供占位div，得到`$getAppMap()`后直接js使用即可。
 
 **getCenterLocation 的 OBJECT 参数列表**
@@ -77,17 +78,41 @@ mapContext
 |fail|Function|否|接口调用失败的回调函数|
 |complete|Function|否|接口调用结束的回调函数（调用成功、失败都会执行）|
 
-## mapSearch 模块(module)#### reverseGeocode(Object,callback)> 反向地理编码
-##### Object属性|类型 |默认值|必填|说明:--|:--|:--|:--|:--|point|Object| |是|{latitude: 纬度, longitude: 经度}
-##### callback 返回 Object 参数说明
-属性|类型 |说明:--|:--|:--|type|String|"success" 表示成功， "fail" 表示失败code|Number| 成功返回 0,失败返回相应 code 码
+## mapSearch 模块(module)
+
+#### reverseGeocode(Object,callback)
+> 反向地理编码
+
+##### Object
+属性|类型 |默认值|必填|说明
+:--|:--|:--|:--|:--|
+point|Object| |是|{latitude: 纬度, longitude: 经度}
+
+##### callback 返回 Object 参数说明
+属性|类型 |说明
+:--|:--|:--|
+type|String|"success" 表示成功， "fail" 表示失败
+code|Number| 成功返回 0,失败返回相应 code 码
 message|String|失败描述
 address|String|查询后地址 （成功时返回）
 
-#### poiSearchNearBy（Object,callback);> 周边检索##### Object属性|类型 |默认值|必填|说明:--|:--|:--|:--|:--|point|Object| |是|检索的中心点坐标 {latitude: 纬度, longitude: 经度}
-key|String| | 是|搜索关键字radius|Number|3000|否|检索的半径，单位为米index|Number|1|否|要获取检索结果的页号索引##### callback 返回 Object 参数说明
-属性|类型 |说明:--|:--|:--|
-type|String|"success" 表示成功， "fail" 表示失败code|Number| 成功返回 0,失败返回相应 code 码
+
+#### poiSearchNearBy（Object,callback);
+> 周边检索
+
+##### Object
+属性|类型 |默认值|必填|说明
+:--|:--|:--|:--|:--|
+point|Object| |是|检索的中心点坐标 {latitude: 纬度, longitude: 经度}
+key|String| | 是|搜索关键字
+radius|Number|3000|否|检索的半径，单位为米
+index|Number|1|否|要获取检索结果的页号索引
+
+##### callback 返回 Object 参数说明
+属性|类型 |说明
+:--|:--|:--|
+type|String|"success" 表示成功， "fail" 表示失败
+code|Number| 成功返回 0,失败返回相应 code 码
 message|String|失败描述
 totalNumber|Number|返回的POI数目
 currentNumber|Number|当前页POI数目
@@ -96,7 +121,8 @@ pageIndex|Number|当前页号索引
 poiList|Array.&lt;poiObject&gt;|POI信息数组
 
 ##### poiObject
-属性|类型 |说明:--|:--|:--|
+属性|类型 |说明
+:--|:--|:--|
 location|Object|{latitude: 纬度, longitude: 经度}
 name|String|名称
 type|String|类型
