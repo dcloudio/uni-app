@@ -61,7 +61,7 @@ const handleData = {
 
 function broadcast (vm, componentName, eventName, ...params) {
   vm.$children.forEach(child => {
-    const name = child.$options.name && child.$options.name.substr(1)
+    const name = child.$options.name && child.$options.name.replace(/^VUni/, '')
     if (~componentName.indexOf(name)) {
       child.$emit(eventName, ...params)
     }
