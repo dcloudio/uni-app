@@ -207,19 +207,17 @@ export default {
       data = {}
     }) {
       if (methods.includes(type)) {
-        let val
-        switch (type) {
-          case 'seek':
-            val = data.position
-            break
-          case 'playbackRate':
-            val = data.rate
-            break
-          default:
-            val = data
-            break
+        if (typeof data === 'object') {
+          switch (type) {
+            case 'seek':
+              data = data.position
+              break
+            case 'playbackRate':
+              data = data.rate
+              break
+          }
         }
-        this.video && this.video[type](val)
+        this.video && this.video[type](data)
       }
     },
     _updateStyle () {
