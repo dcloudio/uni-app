@@ -59,6 +59,30 @@ const handleData = {
   }
 }
 
+function broadcast (vm, componentName, eventName, ...params) {
+  vm.$children.forEach(child => {
+    const name = child.$options.name && child.$options.name.substr(1)
+    if (~componentName.indexOf(name)) {
+      child.$emit(eventName, ...params)
+    }
+    broadcast(child, componentName, eventName, ...params)
+  })
+}
+
+const NATIVE_COMPONENTS = ['Camera', 'LivePlayer', 'LivePusher', 'Map', 'Video']
+
+function updateView () {
+  const pages = getCurrentPages()
+  const pageVm = pages[0] && pages[0].$vm
+  pageVm && broadcast(
+    pageVm,
+    NATIVE_COMPONENTS,
+    'uni-view-update'
+  )
+}
+
+window.addEventListener('resize', updateView)
+
 function vdSync ({
   data,
   options
@@ -71,8 +95,9 @@ function vdSync ({
     handleData[data[0]](data[1])
   })
   vd.flush()
-  isVdCallback && Vue.nextTick(() => {
-    UniViewJSBridge.publishHandler(VD_SYNC_CALLBACK)
+  Vue.nextTick(() => {
+    updateView()
+    isVdCallback && UniViewJSBridge.publishHandler(VD_SYNC_CALLBACK)
   })
 }
 
