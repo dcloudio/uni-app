@@ -69,6 +69,19 @@ function broadcast (vm, componentName, eventName, ...params) {
   })
 }
 
+const NATIVE_COMPONENTS = ['Camera', 'LivePlayer', 'LivePusher', 'Map', 'Video']
+
+function updateView () {
+  const pages = getCurrentPages()
+  pages.length && broadcast(
+    pages[0].$vm,
+    NATIVE_COMPONENTS,
+    'uni-view-update'
+  )
+}
+
+window.addEventListener('resize', updateView)
+
 function vdSync ({
   data,
   options
@@ -82,11 +95,7 @@ function vdSync ({
   })
   vd.flush()
   Vue.nextTick(() => {
-    broadcast(
-      getCurrentPages()[0].$vm,
-      ['Camera', 'LivePlayer', 'LivePusher', 'Map', 'Video'],
-      'uni-view-update'
-    )
+    updateView()
     isVdCallback && UniViewJSBridge.publishHandler(VD_SYNC_CALLBACK)
   })
 }
