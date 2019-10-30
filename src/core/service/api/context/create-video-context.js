@@ -25,7 +25,9 @@ class VideoContext {
     operateVideoPlayer(this.id, this.pageVm, 'stop')
   }
   seek (position) {
-    operateVideoPlayer(this.id, this.pageVm, 'seek', position)
+    operateVideoPlayer(this.id, this.pageVm, 'seek', {
+      position
+    })
   }
   sendDanmu (args) {
     operateVideoPlayer(this.id, this.pageVm, 'sendDanmu', args)
@@ -34,7 +36,9 @@ class VideoContext {
     if (!~RATES.indexOf(rate)) {
       rate = 1.0
     }
-    operateVideoPlayer(this.id, this.pageVm, 'playbackRate', rate)
+    operateVideoPlayer(this.id, this.pageVm, 'playbackRate', {
+      rate
+    })
   }
   requestFullScreen (args = {}) {
     operateVideoPlayer(this.id, this.pageVm, 'requestFullScreen', args)
