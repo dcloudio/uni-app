@@ -222,10 +222,13 @@ export default {
     },
     _updateStyle () {
       const rect = this.$refs.container.getBoundingClientRect()
-      this.hidden = getComputedStyle(this.$el).display === 'none';
+      this.hidden = false;
       ['top', 'left', 'width', 'height'].forEach(key => {
         let val = rect[key]
         val = key === 'top' ? val + (document.documentElement.scrollTop || document.body.scrollTop || 0) : val
+        if (!val && (key === 'width' || key === 'height')) {
+          this.hidden = true
+        }
         this.style[key] = val + 'px'
       })
     },
