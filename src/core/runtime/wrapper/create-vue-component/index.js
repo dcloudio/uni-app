@@ -1,14 +1,7 @@
 import {
-  parseProperties
+  parseComponentOptions
 } from './parser'
 
 export default function createVueComponent (mpComponentOptions) {
-  const vueComponentOptions = {
-    watch: {},
-    mpObservers: []
-  }
-
-  parseProperties(mpComponentOptions.properties, vueComponentOptions)
-
-  return vueComponentOptions
+  return parseComponentOptions(mpComponentOptions)
 }

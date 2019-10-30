@@ -4232,7 +4232,7 @@ function callHook (vm, hook) {
 
 var MAX_UPDATE_COUNT = 100;
 
-var queue = [];
+var queue = []; // fixed by xxxxxx
 var activatedChildren = [];
 var has = {};
 var circular = {};
@@ -6789,6 +6789,8 @@ function callHook$2(hook, args) {
 
 var plugin = {
   install: function install(Vue) {
+
+    Vue.prototype._$queue = queue;
 
     Vue.prototype._m = function renderStatic() {
       return this._e()

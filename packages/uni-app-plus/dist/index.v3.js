@@ -3004,6 +3004,210 @@ var serviceContext = (function () {
     return data
   }
 
+  function operateMapPlayer (mapId, pageVm, type, data) {
+    const pageId = pageVm.$page.id;
+    UniServiceJSBridge.publishHandler(pageId + '-map-' + mapId, {
+      mapId,
+      type,
+      data
+    }, pageId);
+  }
+
+  const SUCCESS = 'success';
+  const FAIL = 'fail';
+  const COMPLETE = 'complete';
+  const CALLBACKS = [SUCCESS, FAIL, COMPLETE];
+
+  /**
+   * 调用无参数，或仅一个参数且为 callback 的 API
+   * @param {Object} vm
+   * @param {Object} method
+   * @param {Object} args
+   * @param {Object} extras
+   */
+  function invokeVmMethodWithoutArgs (vm, method, args, extras) {
+    if (!vm) {
+      return
+    }
+    if (typeof args === 'undefined') {
+      return vm[method]()
+    }
+    const [, callbacks] = normalizeArgs(args, extras);
+    if (!Object.keys(callbacks).length) {
+      return vm[method]()
+    }
+    return vm[method](normalizeCallback(method, callbacks))
+  }
+  /**
+   * 调用两个参数（第一个入参为普通参数，第二个入参为 callback） API
+   * @param {Object} vm
+   * @param {Object} method
+   * @param {Object} args
+   * @param {Object} extras
+   */
+  function invokeVmMethod (vm, method, args, extras) {
+    if (!vm) {
+      return
+    }
+    const [pureArgs, callbacks] = normalizeArgs(args, extras);
+    if (!Object.keys(callbacks).length) {
+      return vm[method](pureArgs)
+    }
+    return vm[method](pureArgs, normalizeCallback(method, callbacks))
+  }
+
+  function findElmById (id, vm) {
+    const elm = findRefByElm(id, vm.$el);
+    if (!elm) {
+      return console.error('Can not find `' + id + '`')
+    }
+    return elm
+  }
+
+  function findRefByElm (id, elm) {
+    if (!id || !elm) {
+      return
+    }
+    if (elm.attr.id === id) {
+      return elm
+    }
+    const children = elm.children;
+    if (!children) {
+      return
+    }
+    for (let i = 0, len = children.length; i < len; i++) {
+      const elm = findRefByElm(id, children[i]);
+      if (elm) {
+        return elm
+      }
+    }
+  }
+
+  function normalizeArgs (args = {}, extras) {
+    const callbacks = Object.create(null);
+
+    const iterator = function iterator (name) {
+      const callback = args[name];
+      if (isFn(callback)) {
+        callbacks[name] = callback;
+        delete args[name];
+      }
+    };
+
+    CALLBACKS.forEach(iterator);
+
+    extras && extras.forEach(iterator);
+
+    return [args, callbacks]
+  }
+
+  function normalizeCallback (method, callbacks) {
+    return function weexCallback (ret) {
+      const type = ret.type;
+      delete ret.type;
+      const callback = callbacks[type];
+
+      if (type === SUCCESS) {
+        ret.errMsg = `${method}:ok`;
+      } else if (type === FAIL) {
+        ret.errMsg = method + ':fail' + (ret.msg ? (' ' + ret.msg) : '');
+      }
+
+      delete ret.code;
+      delete ret.msg;
+
+      isFn(callback) && callback(ret);
+
+      if (type === SUCCESS || type === FAIL) {
+        const complete = callbacks['complete'];
+        isFn(complete) && complete(ret);
+      }
+    }
+  }
+
+  const METHODS = {
+    getCenterLocation (ctx, cbs) {
+      return invokeVmMethodWithoutArgs(ctx, 'getCenterLocation', cbs)
+    },
+    moveToLocation (ctx) {
+      return invokeVmMethodWithoutArgs(ctx, 'moveToLocation')
+    },
+    translateMarker (ctx, args) {
+      return invokeVmMethod(ctx, 'translateMarker', args, ['animationEnd'])
+    },
+    includePoints (ctx, args) {
+      return invokeVmMethod(ctx, 'includePoints', args)
+    },
+    getRegion (ctx, cbs) {
+      return invokeVmMethodWithoutArgs(ctx, 'getRegion', cbs)
+    },
+    getScale (ctx, cbs) {
+      return invokeVmMethodWithoutArgs(ctx, 'getScale', cbs)
+    }
+  };
+
+  function operateMapPlayer$1 (mapId, pageVm, type, data) {
+    return METHODS[type](findElmById(mapId, pageVm), data)
+  }
+
+  function operateMapPlayer$2 (mapId, pageVm, type, data) {
+    pageVm.$page.meta.isNVue
+      ? operateMapPlayer$1(mapId, pageVm, type, data)
+      : operateMapPlayer(mapId, pageVm, type, data);
+  }
+
+  function operateVideoPlayer (videoId, pageVm, type, data) {
+    const pageId = pageVm.$page.id;
+    UniServiceJSBridge.publishHandler(pageId + '-video-' + videoId, {
+      videoId,
+      type,
+      data
+    }, pageId);
+  }
+
+  const METHODS$1 = {
+    play (ctx) {
+      return invokeVmMethodWithoutArgs(ctx, 'play')
+    },
+    pause (ctx) {
+      return invokeVmMethodWithoutArgs(ctx, 'pause')
+    },
+    seek (ctx, args) {
+      return invokeVmMethod(ctx, 'seek', args)
+    },
+    stop (ctx) {
+      return invokeVmMethodWithoutArgs(ctx, 'stop')
+    },
+    sendDanmu (ctx, args) {
+      return invokeVmMethod(ctx, 'sendDanmu', args)
+    },
+    playbackRate (ctx, args) {
+      return invokeVmMethod(ctx, 'playbackRate', args)
+    },
+    requestFullScreen (ctx, args) {
+      return invokeVmMethod(ctx, 'requestFullScreen', args)
+    },
+    exitFullScreen (ctx) {
+      return invokeVmMethodWithoutArgs(ctx, 'exitFullScreen')
+    },
+    showStatusBar (ctx) {
+      return invokeVmMethodWithoutArgs(ctx, 'showStatusBar')
+    },
+    hideStatusBar (ctx) {
+      return invokeVmMethodWithoutArgs(ctx, 'hideStatusBar')
+    }
+  };
+
+  function operateVideoPlayer$1 (videoId, pageVm, type, data) {
+    return METHODS$1[type](findElmById(videoId, pageVm), data)
+  }
+
+  function operateVideoPlayer$2 (videoId, pageVm, type, data) {
+    pageVm.$page.meta.isNVue
+      ? operateVideoPlayer$1(videoId, pageVm, type, data)
+      : operateVideoPlayer(videoId, pageVm, type, data);
+  }
+
   const DEVICE_FREQUENCY = 200;
   const NETWORK_TYPES = ['unknown', 'none', 'ethernet', 'wifi', '2g', '3g', '4g'];
 
@@ -7267,12 +7471,14 @@ var serviceContext = (function () {
   var api = /*#__PURE__*/Object.freeze({
     startPullDownRefresh: startPullDownRefresh,
     stopPullDownRefresh: stopPullDownRefresh,
-    previewImage: previewImage$1,
+    getImageInfo: getImageInfo$1,
     createAudioInstance: createAudioInstance,
     destroyAudioInstance: destroyAudioInstance,
     setAudioState: setAudioState,
     getAudioState: getAudioState,
     operateAudio: operateAudio,
+    operateMapPlayer: operateMapPlayer$2,
+    operateVideoPlayer: operateVideoPlayer$2,
     enableAccelerometer: enableAccelerometer,
     addPhoneContact: addPhoneContact,
     openBluetoothAdapter: openBluetoothAdapter,
@@ -7327,12 +7533,12 @@ var serviceContext = (function () {
     chooseImage: chooseImage$1,
     chooseVideo: chooseVideo$1,
     compressImage: compressImage,
-    getImageInfo: getImageInfo$1,
     getMusicPlayerState: getMusicPlayerState,
     operateMusicPlayer: operateMusicPlayer,
     setBackgroundAudioState: setBackgroundAudioState,
     operateBackgroundAudio: operateBackgroundAudio,
     getBackgroundAudioState: getBackgroundAudioState,
+    previewImage: previewImage$1,
     operateRecorder: operateRecorder,
     saveImageToPhotosAlbum: saveImageToPhotosAlbum,
     saveVideoToPhotosAlbum: saveVideoToPhotosAlbum,
@@ -7747,7 +7953,7 @@ var serviceContext = (function () {
     getBackgroundAudioManager: getBackgroundAudioManager
   });
 
-  function operateMapPlayer (mapId, pageVm, type, data) {
+  function operateMapPlayer$3 (mapId, pageVm, type, data) {
     invokeMethod('operateMapPlayer', mapId, pageVm, type, data);
   }
 
@@ -7758,27 +7964,27 @@ var serviceContext = (function () {
     }
 
     getCenterLocation (args) {
-      operateMapPlayer(this.id, this.pageVm, 'getCenterLocation', args);
+      operateMapPlayer$3(this.id, this.pageVm, 'getCenterLocation', args);
     }
 
     moveToLocation () {
-      operateMapPlayer(this.id, this.pageVm, 'moveToLocation');
+      operateMapPlayer$3(this.id, this.pageVm, 'moveToLocation');
     }
 
     translateMarker (args) {
-      operateMapPlayer(this.id, this.pageVm, 'translateMarker', args);
+      operateMapPlayer$3(this.id, this.pageVm, 'translateMarker', args);
     }
 
     includePoints (args) {
-      operateMapPlayer(this.id, this.pageVm, 'includePoints', args);
+      operateMapPlayer$3(this.id, this.pageVm, 'includePoints', args);
     }
 
     getRegion (args) {
-      operateMapPlayer(this.id, this.pageVm, 'getRegion', args);
+      operateMapPlayer$3(this.id, this.pageVm, 'getRegion', args);
     }
 
     getScale (args) {
-      operateMapPlayer(this.id, this.pageVm, 'getScale', args);
+      operateMapPlayer$3(this.id, this.pageVm, 'getScale', args);
     }
   }
 
@@ -7795,7 +8001,7 @@ var serviceContext = (function () {
 
   const RATES = [0.5, 0.8, 1.0, 1.25, 1.5];
 
-  function operateVideoPlayer (videoId, pageVm, type, data) {
+  function operateVideoPlayer$3 (videoId, pageVm, type, data) {
     invokeMethod('operateVideoPlayer', videoId, pageVm, type, data);
   }
 
@@ -7806,41 +8012,41 @@ var serviceContext = (function () {
     }
 
     play () {
-      operateVideoPlayer(this.id, this.pageVm, 'play');
+      operateVideoPlayer$3(this.id, this.pageVm, 'play');
     }
     pause () {
-      operateVideoPlayer(this.id, this.pageVm, 'pause');
+      operateVideoPlayer$3(this.id, this.pageVm, 'pause');
     }
     stop () {
-      operateVideoPlayer(this.id, this.pageVm, 'stop');
+      operateVideoPlayer$3(this.id, this.pageVm, 'stop');
     }
     seek (position) {
-      operateVideoPlayer(this.id, this.pageVm, 'seek', {
+      operateVideoPlayer$3(this.id, this.pageVm, 'seek', {
         position
       });
     }
     sendDanmu (args) {
-      operateVideoPlayer(this.id, this.pageVm, 'sendDanmu', args);
+      operateVideoPlayer$3(this.id, this.pageVm, 'sendDanmu', args);
     }
     playbackRate (rate) {
       if (!~RATES.indexOf(rate)) {
         rate = 1.0;
       }
-      operateVideoPlayer(this.id, this.pageVm, 'playbackRate', {
+      operateVideoPlayer$3(this.id, this.pageVm, 'playbackRate', {
         rate
       });
     }
     requestFullScreen () {
-      operateVideoPlayer(this.id, this.pageVm, 'requestFullScreen');
+      operateVideoPlayer$3(this.id, this.pageVm, 'requestFullScreen');
     }
     exitFullScreen () {
-      operateVideoPlayer(this.id, this.pageVm, 'exitFullScreen');
+      operateVideoPlayer$3(this.id, this.pageVm, 'exitFullScreen');
     }
     showStatusBar () {
-      operateVideoPlayer(this.id, this.pageVm, 'showStatusBar');
+      operateVideoPlayer$3(this.id, this.pageVm, 'showStatusBar');
     }
     hideStatusBar () {
-      operateVideoPlayer(this.id, this.pageVm, 'hideStatusBar');
+      operateVideoPlayer$3(this.id, this.pageVm, 'hideStatusBar');
     }
   }
 
@@ -10011,6 +10217,18 @@ var serviceContext = (function () {
           registerApp(this);
         }
         return oldMount.call(this, el, hydrating)
+      };
+
+      Vue.prototype.$nextTick = function nextTick (cb) {
+        const renderWatcher = this._watcher;
+        if (
+          renderWatcher &&
+          this._$queue.find(watcher => renderWatcher === watcher)
+        ) {
+          vdSyncCallbacks.push(cb);
+        } else {
+          Vue.nextTick(cb);
+        }
       };
     }
   };
