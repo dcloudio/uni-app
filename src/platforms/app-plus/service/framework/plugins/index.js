@@ -12,6 +12,10 @@ import {
   initLifecycle
 } from './lifecycle'
 
+import {
+  vdSyncCallbacks
+} from '../subscribe-handlers/on-vd-sync-callback'
+
 export default {
   install (Vue, options) {
     initVue(Vue)
@@ -32,6 +36,18 @@ export default {
         registerApp(this)
       }
       return oldMount.call(this, el, hydrating)
+    }
+
+    Vue.prototype.$nextTick = function nextTick (cb) {
+      const renderWatcher = this._watcher
+      if (
+        renderWatcher &&
+        this._$queue.find(watcher => renderWatcher === watcher)
+      ) {
+        vdSyncCallbacks.push(cb)
+      } else {
+        Vue.nextTick(cb)
+      }
     }
   }
 }
