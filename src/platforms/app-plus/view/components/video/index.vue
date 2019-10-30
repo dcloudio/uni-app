@@ -12,7 +12,8 @@
 </template>
 <script>
 import {
-  subscriber
+  subscriber,
+  listeners
 } from 'uni-mixins'
 
 const methods = [
@@ -59,15 +60,11 @@ const attrs = [
 
 export default {
   name: 'Video',
-  mixins: [subscriber],
+  mixins: [subscriber, listeners],
   props: {
     id: {
       type: String,
       default: ''
-    },
-    hidden: {
-      type: [Boolean, String],
-      default: false
     },
     src: {
       type: String,
@@ -156,7 +153,8 @@ export default {
         width: '0px',
         height: '0px',
         position: 'static'
-      }
+      },
+      hidden: false
     }
   },
   computed: {
@@ -174,8 +172,11 @@ export default {
   },
   watch: {
     hidden (val) {
-      this.video && this.video[val ? 'show' : 'hide']()
+      this.video && this.video[val ? 'hide' : 'show']()
     }
+  },
+  listeners: {
+    '@view-update': '_requestUpdate'
   },
   mounted () {
     this._updateStyle()
@@ -185,17 +186,16 @@ export default {
       video.hide()
     }
     this.$watch('attrs', () => {
-      video.setStyles(this.attrs)
-    }, { deep })
+      this.video && this.video.setStyles(this.attrs)
+    }, { deep: true })
     this.$watch('style', () => {
-      video.setStyles(this.style)
-    }, { deep })
+      this.video && this.video.setStyles(this.style)
+    }, { deep: true })
     events.forEach(key => {
       video.addEventListener(key, (data = {}) => {
         this.$trigger(key, {}, data)
       })
     })
-    this.$on('view-update', this._update)
   },
   beforeDestroy () {
     this.video && this.video.close()
@@ -223,21 +223,24 @@ export default {
       }
     },
     _updateStyle () {
-      const rect = this.$refs.container.getBoundingClientRect();
+      const rect = this.$refs.container.getBoundingClientRect()
+      this.hidden = getComputedStyle(this.$el).display === 'none';
       ['top', 'left', 'width', 'height'].forEach(key => {
         let val = rect[key]
         val = key === 'top' ? val + (document.documentElement.scrollTop || document.body.scrollTop || 0) : val
         this.style[key] = val + 'px'
       })
     },
-    _update () {
+    _requestUpdate () {
       if (this._animationFrame) {
         cancelAnimationFrame(this._animationFrame)
       }
-      this._animationFrame = requestAnimationFrame(() => {
-        delete this._animationFrame
-        this._updateStyle()
-      })
+      if (this.video) {
+        this._animationFrame = requestAnimationFrame(() => {
+          delete this._animationFrame
+          this._updateStyle()
+        })
+      }
     }
   }
 }
