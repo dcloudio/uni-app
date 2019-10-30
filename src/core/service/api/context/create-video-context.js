@@ -3,7 +3,7 @@ import {
   getCurrentPageVm
 } from '../../platform'
 
-const RATES = [0.5, 0.8, 1.0, 1.25, 1.5]
+const RATES = [0.5, 0.8, 1.0, 1.25, 1.5, 2.0]
 
 function operateVideoPlayer (videoId, pageVm, type, data) {
   invokeMethod('operateVideoPlayer', videoId, pageVm, type, data)
@@ -40,8 +40,8 @@ class VideoContext {
       rate
     })
   }
-  requestFullScreen () {
-    operateVideoPlayer(this.id, this.pageVm, 'requestFullScreen')
+  requestFullScreen (args) {
+    operateVideoPlayer(this.id, this.pageVm, 'requestFullScreen', args)
   }
   exitFullScreen () {
     operateVideoPlayer(this.id, this.pageVm, 'exitFullScreen')
