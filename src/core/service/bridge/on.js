@@ -50,17 +50,6 @@ export default function initOn (on, {
     callCurrentPageHook('onShow')
   }
 
-  function onWebInvokeAppService ({
-    name,
-    arg
-  }, pageIds) {
-    if (name === 'postMessage') {
-      // TODO 小程序后退、组件销毁、分享时通知
-    } else {
-      uni[name](arg)
-    }
-  }
-
   const routeHooks = {
     navigateTo () {
       callCurrentPageHook('onHide')
@@ -95,6 +84,4 @@ export default function initOn (on, {
   on('onNavigationBarSearchInputChanged', createCallCurrentPageHook('onNavigationBarSearchInputChanged'))
   on('onNavigationBarSearchInputConfirmed', createCallCurrentPageHook('onNavigationBarSearchInputConfirmed'))
   on('onNavigationBarSearchInputClicked', createCallCurrentPageHook('onNavigationBarSearchInputClicked'))
-
-  on('onWebInvokeAppService', onWebInvokeAppService)
 }

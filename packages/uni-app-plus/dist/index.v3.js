@@ -9326,15 +9326,6 @@ var serviceContext = (function () {
       callCurrentPageHook('onShow');
     }
 
-    function onWebInvokeAppService ({
-      name,
-      arg
-    }, pageIds) {
-      if (name === 'postMessage') ; else {
-        uni[name](arg);
-      }
-    }
-
     const routeHooks = {
       navigateTo () {
         callCurrentPageHook('onHide');
@@ -9369,8 +9360,6 @@ var serviceContext = (function () {
     on('onNavigationBarSearchInputChanged', createCallCurrentPageHook('onNavigationBarSearchInputChanged'));
     on('onNavigationBarSearchInputConfirmed', createCallCurrentPageHook('onNavigationBarSearchInputConfirmed'));
     on('onNavigationBarSearchInputClicked', createCallCurrentPageHook('onNavigationBarSearchInputClicked'));
-
-    on('onWebInvokeAppService', onWebInvokeAppService);
   }
 
   function initSubscribe (subscribe, {
@@ -9526,6 +9515,40 @@ var serviceContext = (function () {
     uni[method] && uni[method](args);
   }
 
+  function onMessage (pageId, arg) {
+    pageId = parseInt(pageId);
+    const page = getCurrentPages(true).find(page => page.$page.id === pageId);
+    if (!page) {
+      return
+    }
+    if (!page.$page.meta.isNVue) {
+      const target = page.$vm._$vd.elements.find(target => target.tagName === 'web-view' && target.events['message']);
+      if (!target) {
+        return
+      }
+      target.dispatchEvent('message', {
+        type: 'message',
+        target: Object.create(null),
+        currentTarget: Object.create(null),
+        timeStamp: Date.now(),
+        detail: {
+          data: [arg]
+        }
+      });
+    }
+  }
+
+  function onWebInvokeAppService ({
+    name,
+    arg
+  }, pageIds) {
+    if (name === 'postMessage') {
+      onMessage(pageIds[0], arg);
+    } else {
+      uni[name](arg);
+    }
+  }
+
   function initSubscribeHandlers () {
     const {
       on,
@@ -9556,6 +9579,7 @@ var serviceContext = (function () {
     on('api.' + WEB_INVOKE_APPSERVICE$1, function (data, webviewIds) {
       emit('onWebInvokeAppService', data, webviewIds);
     });
+    on('onWebInvokeAppService', onWebInvokeAppService);
 
     subscribe(VD_SYNC, onVdSync);
     subscribe(VD_SYNC_CALLBACK, onVdSyncCallback);
