@@ -9,6 +9,7 @@ const {
 } = require('./util')
 
 const {
+  parseIs,
   parseIf,
   parseFor,
   parseText,
@@ -73,6 +74,8 @@ function transformNode (el, parent, state) {
   }
 
   const genVar = createGenVar(el.attrsMap[ID])
+
+  parseIs(el, genVar)
 
   if (parseFor(el, createGenVar)) {
     if (el.alias[0] === '{') { // <div><li v-for=" { a, b }  in items"></li></div>

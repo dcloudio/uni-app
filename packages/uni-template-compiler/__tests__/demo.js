@@ -1,7 +1,7 @@
 const compiler = require('../lib')
 const res = compiler.compile(
   `
-<div :id="'a'+b">A{{ d | e | f }}B{{text}}C</div>
+<keep-alive exclude="componentWithStatus1"><component is="componentWithStatus"/></keep-alive>
 `, {
     resourcePath: '/User/fxy/Documents/test.wxml',
     isReservedTag: function (tag) {

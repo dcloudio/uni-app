@@ -14,7 +14,11 @@ function no (a, b, c) {
 }
 
 function isBuiltInTag (tag) {
-  if (tag === 'slot' || tag === 'component') {
+  if (
+    tag === 'slot' ||
+    tag === 'component' ||
+    tag === 'keep-alive'
+  ) {
     return true
   }
 }
@@ -52,7 +56,7 @@ function markStatic (node) {
     delete node.staticClass
     delete node.staticStyle
 
-    if (node.attrs && !isComponent(node.tag)) { // 移除静态属性
+    if (node.attrs && !isComponent(node.tag) && node.tag !== 'keep-alive') { // 移除静态属性
       node.attrs = node.attrs.filter(attr => attr.name === ID || isVar(attr.value))
     }
 

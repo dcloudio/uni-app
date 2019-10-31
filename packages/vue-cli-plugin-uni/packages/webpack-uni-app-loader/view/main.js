@@ -17,7 +17,9 @@ const {
   parseComponents
 } = require('./util')
 
-function getDefineComponents(components) {
+function getDefineComponents({
+  components
+}) {
   return components.map(({
     name,
     source

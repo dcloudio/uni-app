@@ -576,7 +576,7 @@ describe('codegen', () => {
     )
     assertCodegen(
       '<div :is="component1"></div>',
-      `with(this){return _c(component1,{tag:"v-uni-view",attrs:{"_i":0}})}`
+      `with(this){return _c(_$g(0,'is'),{tag:"v-uni-view",attrs:{"_i":0}})}`
     )
     // maybe a component and normalize type should be 1
     assertCodegen(

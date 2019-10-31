@@ -46,5 +46,15 @@ describe('codegen', () => {
       `with(this){return _c('current-user',{attrs:{"_i":0},scopedSlots:_u([{key:"default",fn:function({ user }){return [_v((_$g(0,'t0')))]}}])})}`
     )
   })
+  it('generate keep-alive', () => {
+    assertCodegen(
+      `<keep-alive exclude="componentWithStatus1"><component is="componentWithStatus"/></keep-alive>`,
+      `with(this){return _c('keep-alive',{attrs:{"exclude":"componentWithStatus1","_i":0}},[_c("componentWithStatus",{tag:"component",attrs:{"_i":1}})],1)}`
+    )
+    assertCodegen(
+      `<keep-alive :exclude="componentWithStatus1"><component :is="'componentWithStatus'+index"/></keep-alive>`,
+      `with(this){return _c('keep-alive',{attrs:{"exclude":_$g(0,'a-exclude'),"_i":0}},[_c(_$g(1,'is'),{tag:"component",attrs:{"_i":1}})],1)}`
+    )
+  })
 })
 /* eslint-enable quotes */
