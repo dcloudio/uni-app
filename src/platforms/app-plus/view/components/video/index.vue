@@ -12,9 +12,9 @@
 </template>
 <script>
 import {
-  subscriber,
-  listeners
+  subscriber
 } from 'uni-mixins'
+import native from '../../mixins/native'
 
 const methods = [
   'play',
@@ -60,7 +60,7 @@ const attrs = [
 
 export default {
   name: 'Video',
-  mixins: [subscriber, listeners],
+  mixins: [subscriber, native],
   props: {
     id: {
       type: String,
@@ -145,18 +145,6 @@ export default {
       default: true
     }
   },
-  data () {
-    return {
-      style: {
-        top: '0px',
-        left: '0px',
-        width: '0px',
-        height: '0px',
-        position: 'static'
-      },
-      hidden: false
-    }
-  },
   computed: {
     attrs () {
       const obj = {}
@@ -173,11 +161,7 @@ export default {
       this.video && this.video[val ? 'hide' : 'show']()
     }
   },
-  listeners: {
-    '@view-update': '_requestUpdate'
-  },
   mounted () {
-    this._updateStyle()
     const video = this.video = plus.video.createVideoPlayer('video' + Date.now(), Object.assign({}, this.attrs, this.style))
     plus.webview.currentWebview().append(video)
     if (this.hidden) {
@@ -216,29 +200,6 @@ export default {
           }
         }
         this.video && this.video[type](data)
-      }
-    },
-    _updateStyle () {
-      const rect = this.$refs.container.getBoundingClientRect()
-      this.hidden = false;
-      ['top', 'left', 'width', 'height'].forEach(key => {
-        let val = rect[key]
-        val = key === 'top' ? val + (document.documentElement.scrollTop || document.body.scrollTop || 0) : val
-        if (!val && (key === 'width' || key === 'height')) {
-          this.hidden = true
-        }
-        this.style[key] = val + 'px'
-      })
-    },
-    _requestUpdate () {
-      if (this._animationFrame) {
-        cancelAnimationFrame(this._animationFrame)
-      }
-      if (this.video) {
-        this._animationFrame = requestAnimationFrame(() => {
-          delete this._animationFrame
-          this._updateStyle()
-        })
       }
     }
   }
