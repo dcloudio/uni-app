@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-mp-weixin",
-  "version": "3.0.0-alpha-24020191018021",
+  "version": "3.0.0-alpha-24020191018022",
   "description": "uni-app mp-weixin",
   "main": "dist/index.js",
   "repository": {
@@ -13,5 +13,5 @@
   },
   "author": "fxy060608",
   "license": "Apache-2.0",
-  "gitHead": "f43230ed9ff6554a10fbb5085e78ef98be691373"
+  "gitHead": "a45fd8399f6eb89d466a2834475e3297cb2cd900"
 }
