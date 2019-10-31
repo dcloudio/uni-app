@@ -15,7 +15,7 @@ describe('codegen', () => {
   it('generate directive', () => {
     assertCodegen(
       '<p v-custom1:[arg1].modifier="value1" v-custom2></p>',
-      `with(this){return _c('v-uni-view',{directives:[{name:"custom1",rawName:"v-custom1:[arg1].modifier",value:(_$g(0,'v-custom1')),expression:"_$g(0,'v-custom1')",arg:_$g(0,'v-custom1-arg'),modifiers:{"modifier":true}},{name:"custom2",rawName:"v-custom2"}],attrs:{"_i":0}})}`
+      `with(this){return _c('v-uni-view',{attrs:{"_i":0}})}`
     )
   })
   it('generate v-for directive', () => {
@@ -44,6 +44,16 @@ describe('codegen', () => {
     assertCodegen(
       '<current-user v-slot="{ user }">{{ user.firstName }}</current-user>',
       `with(this){return _c('current-user',{attrs:{"_i":0},scopedSlots:_u([{key:"default",fn:function({ user }){return [_v((_$g(0,'t0')))]}}])})}`
+    )
+  })
+  it('generate keep-alive', () => {
+    assertCodegen(
+      `<keep-alive exclude="componentWithStatus1"><component is="componentWithStatus"/></keep-alive>`,
+      `with(this){return _c('keep-alive',{attrs:{"exclude":"componentWithStatus1","_i":0}},[_c("componentWithStatus",{tag:"component",attrs:{"_i":1}})],1)}`
+    )
+    assertCodegen(
+      `<keep-alive :exclude="componentWithStatus1"><component :is="'componentWithStatus'+index"/></keep-alive>`,
+      `with(this){return _c('keep-alive',{attrs:{"exclude":_$g(0,'a-exclude'),"_i":0}},[_c(_$g(1,'is'),{tag:"component",attrs:{"_i":1}})],1)}`
     )
   })
 })

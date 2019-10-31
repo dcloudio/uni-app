@@ -10,6 +10,8 @@ const ITERATOR3 = '$3'
 const SET_DATA = '_$s'
 const GET_DATA = '_$g'
 
+const C_IS = 'is'
+
 const V_FOR = 'f'
 const V_IF = 'i'
 const V_ELSE_IF = 'e'
@@ -191,6 +193,7 @@ function addHandler (el, name, value, important) {
 }
 
 module.exports = {
+  C_IS,
   V_FOR,
   V_IF,
   V_ELSE_IF,

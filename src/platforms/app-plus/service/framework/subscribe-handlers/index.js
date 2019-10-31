@@ -4,7 +4,8 @@ import {
   VD_SYNC,
   VD_SYNC_CALLBACK,
   INVOKE_API,
-  WEBVIEW_READY
+  WEBVIEW_READY,
+  WEB_INVOKE_APPSERVICE
 } from '../../../constants'
 
 import {
@@ -17,6 +18,7 @@ import onVdSync from './on-vd-sync'
 import onVdSyncCallback from './on-vd-sync-callback'
 
 import onInvokeApi from './on-invoke-api'
+import onWebInvokeApi from './on-web-invoke-api'
 
 export function initSubscribeHandlers () {
   const {
@@ -33,6 +35,8 @@ export function initSubscribeHandlers () {
   registerPlusMessage('subscribeHandler', (data) => {
     subscribeHandler(data.type, data.data, data.pageId)
   })
+
+  registerPlusMessage(WEB_INVOKE_APPSERVICE, onWebInvokeApi)
 
   subscribe(WEBVIEW_READY, onWebviewReady)
 

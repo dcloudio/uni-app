@@ -28,7 +28,7 @@
     "release": "npm run lint:cli && lerna publish --force-publish=*",
     "release:alpha": "npm run lint:cli && lerna publish --force-publish=* --npm-tag=alpha",
     "release:next": "npm run lint:cli && lerna publish --force-publish=* --npm-tag=next",
-    "release:v3": "npm run lint:cli && lerna publish --force-publish=* --npm-tag=v3"
+    "release:v3": "npm run lint:cli && lerna publish --no-git-tag-version --force-publish=* --npm-tag=v3"
   },
   "dependencies": {
     "base64-arraybuffer": "^0.2.0",
