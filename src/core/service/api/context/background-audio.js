@@ -9,7 +9,7 @@ const eventNames = [
   'pause',
   'stop',
   'ended',
-  'timeupdate',
+  'timeUpdate',
   'prev',
   'next',
   'error',
