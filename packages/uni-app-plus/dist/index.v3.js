@@ -2481,8 +2481,8 @@ var serviceContext = (function () {
   /**
    * 触发 service 层，与 onMethod 对应
    */
-  function publish (name, res) {
-    return UniServiceJSBridge.emit('api.' + name, res)
+  function publish (name, ...args) {
+    return UniServiceJSBridge.emit('api.' + name, ...args)
   }
 
   let lastStatusBarStyle;
@@ -9329,7 +9329,7 @@ var serviceContext = (function () {
     function onWebInvokeAppService ({
       name,
       arg
-    }, pageId) {
+    }, pageIds) {
       if (name === 'postMessage') ; else {
         uni[name](arg);
       }
@@ -9438,6 +9438,7 @@ var serviceContext = (function () {
   const WEBVIEW_READY = 'webviewReady';
   const VD_SYNC_CALLBACK = 'vdSyncCallback';
   const INVOKE_API = 'invokeApi';
+  const WEB_INVOKE_APPSERVICE$1 = 'WEB_INVOKE_APPSERVICE';
 
   function perf (type, startTime) {
     /* eslint-disable no-undef */
@@ -9527,6 +9528,8 @@ var serviceContext = (function () {
 
   function initSubscribeHandlers () {
     const {
+      on,
+      emit,
       subscribe,
       publishHandler,
       subscribeHandler
@@ -9549,6 +9552,10 @@ var serviceContext = (function () {
       // 防止首页 webview 初始化过早， service 还未开始监听
       publishHandler(WEBVIEW_READY, Object.create(null), [1]);
     }
+    // 应该使用subscribe，兼容老版本先用 on api 吧
+    on('api.' + WEB_INVOKE_APPSERVICE$1, function (data, webviewIds) {
+      emit('onWebInvokeAppService', data, webviewIds);
+    });
 
     subscribe(VD_SYNC, onVdSync);
     subscribe(VD_SYNC_CALLBACK, onVdSyncCallback);

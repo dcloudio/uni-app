@@ -53,7 +53,7 @@ export default function initOn (on, {
   function onWebInvokeAppService ({
     name,
     arg
-  }, pageId) {
+  }, pageIds) {
     if (name === 'postMessage') {
       // TODO 小程序后退、组件销毁、分享时通知
     } else {
