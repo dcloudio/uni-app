@@ -30,7 +30,7 @@ module.exports = {
   compile (source, options = {}) {
     if (options.service) {
       (options.modules || (options.modules = [])).push(require('./app/service'))
-      options.optimize = true // 启用 staticRenderFns
+      options.optimize = false // 启用 staticRenderFns
       // domProps => attrs
       options.mustUseProp = () => false
       options.isReservedTag = (tagName) => !isComponent(tagName) // 非组件均为内置
@@ -38,7 +38,6 @@ module.exports = {
 
       // clear staticRenderFns
       const compiled = compile(source, options)
-      compiled.staticRenderFns.length = 0
 
       return compiled
     } else if (options.view) {

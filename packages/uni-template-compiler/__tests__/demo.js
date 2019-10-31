@@ -1,7 +1,7 @@
 const compiler = require('../lib')
 const res = compiler.compile(
   `
-<keep-alive exclude="componentWithStatus1"><component is="componentWithStatus"/></keep-alive>
+<p v-text="test"></p>
 `, {
     resourcePath: '/User/fxy/Documents/test.wxml',
     isReservedTag: function (tag) {
@@ -13,7 +13,7 @@ const res = compiler.compile(
     mp: {
       platform: 'app-plus'
     },
-    service: true,
+    // service: true,
     view: true
   })
 console.log(require('util').inspect(res, {

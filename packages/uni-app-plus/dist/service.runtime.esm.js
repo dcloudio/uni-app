@@ -6801,10 +6801,6 @@ var plugin = {
 
     Vue.prototype._$queue = queue;
 
-    Vue.prototype._m = function renderStatic() {
-      return this._e()
-    };
-
     Vue.prototype.__call_hook = callHook$2;
     // 运行时需要格式化 class,style
     Vue.prototype._$stringifyClass = stringifyClass;
