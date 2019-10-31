@@ -15,12 +15,12 @@ describe('codegen', () => {
   it('generate directive', () => {
     assertCodegen(
       '<p v-custom1:arg1.modifier="value1" v-custom2></p>',
-      `with(this){return _c('v-uni-view',{directives:[{name:"custom1",rawName:"v-custom1:arg1.modifier",value:(_$g(0,'v-custom1')),expression:"_$g(0,'v-custom1')",arg:"arg1",modifiers:{"modifier":true}},{name:"custom2",rawName:"v-custom2"}],attrs:{"_i":0}})}`
+      `with(this){return _c('v-uni-view',{attrs:{"_i":0}})}`
     )
     // extra
     assertCodegen(
       '<p v-custom1:[arg1].modifier="value1" v-custom2></p>',
-      `with(this){return _c('v-uni-view',{directives:[{name:"custom1",rawName:"v-custom1:[arg1].modifier",value:(_$g(0,'v-custom1')),expression:"_$g(0,'v-custom1')",arg:_$g(0,'v-custom1-arg'),modifiers:{"modifier":true}},{name:"custom2",rawName:"v-custom2"}],attrs:{"_i":0}})}`
+      `with(this){return _c('v-uni-view',{attrs:{"_i":0}})}`
     )
   })
 
@@ -576,7 +576,7 @@ describe('codegen', () => {
     )
     assertCodegen(
       '<div :is="component1"></div>',
-      `with(this){return _c(component1,{tag:"v-uni-view",attrs:{"_i":0}})}`
+      `with(this){return _c(_$g(0,'is'),{tag:"v-uni-view",attrs:{"_i":0}})}`
     )
     // maybe a component and normalize type should be 1
     assertCodegen(

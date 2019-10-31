@@ -183,7 +183,11 @@ const {
 } = require('./h5')
 
 function isComponent (tagName) {
-  if (tagName === 'block' || tagName === 'template') {
+  if (
+    tagName === 'block' ||
+    tagName === 'template' ||
+    tagName === 'keep-alive'
+  ) {
     return false
   }
   return !hasOwn(tags, getTagName(tagName.replace('v-uni-', '')))

@@ -6,10 +6,27 @@ const {
 } = require('./util')
 
 function handleObjectExpression (declaration, path, state) {
+  if (state.options) { // name,inheritAttrs
+    Object.keys(state.options).forEach(name => {
+      const optionProperty = declaration.properties.filter(prop => {
+        return t.isObjectProperty(prop) &&
+          t.isIdentifier(prop.key) &&
+          prop.key.name === name
+      })[0]
+      if (optionProperty) {
+        if (t.isStringLiteral(optionProperty.value)) {
+          state.options[name] = JSON.stringify(optionProperty.value.value)
+        } else {
+          state.options[name] = optionProperty.value.value
+        }
+      }
+    })
+  }
+
   const componentsProperty = declaration.properties.filter(prop => {
     return t.isObjectProperty(prop) &&
-            t.isIdentifier(prop.key) &&
-            prop.key.name === 'components'
+      t.isIdentifier(prop.key) &&
+      prop.key.name === 'components'
   })[0]
 
   if (componentsProperty && t.isObjectExpression(componentsProperty.value)) {
@@ -27,7 +44,8 @@ function handleObjectExpression (declaration, path, state) {
 
 module.exports = function (ast, state = {
   type: 'Component',
-  components: []
+  components: [],
+  options: {}
 }) {
   babelTraverse(ast, {
     ExportDefaultDeclaration (path) {
@@ -35,15 +53,15 @@ module.exports = function (ast, state = {
       if (t.isObjectExpression(declaration)) { // export default {components:{}}
         handleObjectExpression(declaration, path, state)
       } else if (t.isCallExpression(declaration) &&
-                t.isMemberExpression(declaration.callee) &&
-                declaration.arguments.length === 1) { // export default Vue.extend({components:{}})
+        t.isMemberExpression(declaration.callee) &&
+        declaration.arguments.length === 1) { // export default Vue.extend({components:{}})
         if (declaration.callee.object.name === 'Vue' && declaration.callee.property.name ===
-                    'extend') {
+          'extend') {
           handleObjectExpression(declaration.arguments[0], path, state)
         }
       } else if (t.isClassDeclaration(declaration) &&
-                declaration.decorators &&
-                declaration.decorators.length) { // export default @Component({components:{}}) class MyComponent extend Vue
+        declaration.decorators &&
+        declaration.decorators.length) { // export default @Component({components:{}}) class MyComponent extend Vue
         const componentDecorator = declaration.decorators[0]
         if (t.isCallExpression(componentDecorator.expression)) {
           const args = componentDecorator.expression.arguments

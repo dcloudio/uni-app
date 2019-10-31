@@ -14,6 +14,7 @@ const {
 } = require('../util')
 
 const {
+  parseIs,
   parseIf,
   parseFor,
   parseText,
@@ -82,6 +83,7 @@ function transformNode (el, parent, state) {
 
   const genVar = createGenVar(el.attrsMap[ID])
 
+  parseIs(el, genVar)
   parseFor(el, createGenVar)
   parseKey(el)
 

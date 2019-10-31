@@ -576,7 +576,7 @@ describe('codegen', () => {
     )
     assertCodegen(
       '<div :is="component1"></div>',
-      `with(this){return _c(component1,{tag:"div"})}`
+      `with(this){return _c(_$s(0,'is',component1),{tag:"div"})}`
     )
     // maybe a component and normalize type should be 1
     assertCodegen(
@@ -589,7 +589,7 @@ describe('codegen', () => {
     // have "inline-template'"
     assertCodegen(
       '<my-component inline-template><p><span>hello world</span></p></my-component>',
-      `with(this){return _c('my-component',{attrs:{"_i":0},inlineTemplate:{render:function(){with(this){return _m(0)}},staticRenderFns:[function(){with(this){return _c('p',[_c('span')])}}]}})}`
+      `with(this){return _c('my-component',{attrs:{"_i":0},inlineTemplate:{render:function(){with(this){return _c('p',[_c('span')])}},staticRenderFns:[]}})}`
     )
     // "have inline-template attrs, but not having exactly one child element
     assertCodegen(
@@ -616,7 +616,7 @@ describe('codegen', () => {
   it('generate static trees inside v-for', () => {
     assertCodegen(
       `<div><div v-for="i in 10"><p><span></span></p></div></div>`,
-      `with(this){return _c('div',_l((10),function(i,$10,$20,$30){return _c('div',[_m(0,true)])}),0)}`
+      `with(this){return _c('div',_l((10),function(i,$10,$20,$30){return _c('div',[_c('p',[_c('span')])])}),0)}`
       // [`with(this){return _c('p',[_c('span')])}`]
     )
   })
@@ -660,7 +660,7 @@ describe('codegen', () => {
   it('does not squash templates inside v-pre', () => {
     assertCodegen(
       '<div v-pre><template><p>{{msg}}</p></template></div>',
-      `with(this){return _m(0)}`
+      `with(this){return _c('div',[[_c('p')]],2)}`
     )
     // const template = '<div v-pre><template><p>{{msg}}</p></template></div>'
     // const generatedCode = `with(this){return _m(0)}`

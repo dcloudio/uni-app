@@ -9,10 +9,10 @@ const {
 } = require('./util')
 
 const {
+  parseIs,
   parseIf,
   parseFor,
   parseText,
-  parseDirs,
   parseAttrs,
   parseProps,
   parseBinding
@@ -53,6 +53,41 @@ function parseKey (el) {
   }
 }
 
+function parseDirs (el, genVar, ignoreDirs, includeDirs = []) {
+  if (!el.directives) {
+    return
+  }
+  el.directives = el.directives.filter(dir => {
+    if (includeDirs.indexOf(dir.name) !== -1) {
+      if (ignoreDirs.indexOf(dir.name) === -1) {
+        dir.value && (dir.value = genVar('v-' + dir.name, dir.value))
+        dir.isDynamicArg && (dir.arg = genVar('v-' + dir.name + '-arg', dir.arg))
+      }
+      return true
+    }
+  })
+}
+
+const includeDirs = [
+  'text',
+  'html',
+  'bind',
+  'model',
+  'show',
+  'if',
+  'else',
+  'else-if',
+  'for',
+  'on',
+  'bind',
+  'slot',
+  'pre',
+  'cloak',
+  'once'
+]
+
+const ignoreDirs = ['model']
+
 function transformNode (el, parent, state) {
   if (el.type === 3) {
     return
@@ -74,6 +109,8 @@ function transformNode (el, parent, state) {
 
   const genVar = createGenVar(el.attrsMap[ID])
 
+  parseIs(el, genVar)
+
   if (parseFor(el, createGenVar)) {
     if (el.alias[0] === '{') { // <div><li v-for=" { a, b }  in items"></li></div>
       el.alias = '$item'
@@ -83,7 +120,7 @@ function transformNode (el, parent, state) {
 
   parseIf(el, createGenVar)
   parseBinding(el, genVar)
-  parseDirs(el, genVar, ['model'])
+  parseDirs(el, genVar, ignoreDirs, includeDirs)
   parseAttrs(el, genVar)
   parseProps(el, genVar)
 }

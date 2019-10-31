@@ -1,8 +1,9 @@
 const parser = require('@babel/parser')
 
-function parseComponents (content, traverse) {
+function parseComponents(content, traverse) {
   const {
     state: {
+      options,
       components
     }
   } = traverse(parser.parse(content, {
@@ -15,9 +16,16 @@ function parseComponents (content, traverse) {
       'classProperties'
     ]
   }), {
-    components: []
+    components: [],
+    options: {
+      name: null,
+      inheritAttrs: null
+    }
   })
-  return components
+  return {
+    components,
+    options
+  }
 }
 
 module.exports = {

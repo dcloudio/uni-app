@@ -10,7 +10,7 @@ const {
   parseComponents
 } = require('./util')
 
-function genComponentCode (components) {
+function genComponentCode(components) {
   const importCode = []
   const componentsCode = []
   components.forEach(({
@@ -24,12 +24,20 @@ function genComponentCode (components) {
   return [importCode.join('\n'), componentsCode.join(',\n')]
 }
 
-function genCode (components, css = []) {
+function genCode({
+  components,
+  options
+}, css = []) {
+  const optionsCode = []
+  Object.keys(options).forEach(name => {
+    options[name] !== null && optionsCode.push(`${name}:${options[name]}`)
+  })
   const [importComponentCode, componentsCode] = genComponentCode(components)
   // TODO js 内引用 css
   return `
 ${importComponentCode}
 export default {
+  ${optionsCode.length?(optionsCode.join(',')+','):''}
   data(){
     return {}
   },
@@ -40,7 +48,7 @@ export default {
 `
 }
 
-module.exports = function (content, map) {
+module.exports = function(content, map) {
   this.cacheable && this.cacheable()
 
   content = preprocessor.preprocess(content, jsPreprocessOptions.context, {

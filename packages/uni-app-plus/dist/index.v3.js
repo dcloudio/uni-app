@@ -3173,7 +3173,7 @@ var serviceContext = (function () {
       return invokeVmMethodWithoutArgs(ctx, 'pause')
     },
     seek (ctx, args) {
-      return invokeVmMethod(ctx, 'seek', args)
+      return invokeVmMethod(ctx, 'seek', args.position)
     },
     stop (ctx) {
       return invokeVmMethodWithoutArgs(ctx, 'stop')
@@ -3182,7 +3182,7 @@ var serviceContext = (function () {
       return invokeVmMethod(ctx, 'sendDanmu', args)
     },
     playbackRate (ctx, args) {
-      return invokeVmMethod(ctx, 'playbackRate', args)
+      return invokeVmMethod(ctx, 'playbackRate', args.rate)
     },
     requestFullScreen (ctx, args) {
       return invokeVmMethod(ctx, 'requestFullScreen', args)
@@ -7999,7 +7999,7 @@ var serviceContext = (function () {
     createMapContext: createMapContext$1
   });
 
-  const RATES = [0.5, 0.8, 1.0, 1.25, 1.5];
+  const RATES = [0.5, 0.8, 1.0, 1.25, 1.5, 2.0];
 
   function operateVideoPlayer$3 (videoId, pageVm, type, data) {
     invokeMethod('operateVideoPlayer', videoId, pageVm, type, data);
@@ -8036,8 +8036,8 @@ var serviceContext = (function () {
         rate
       });
     }
-    requestFullScreen () {
-      operateVideoPlayer$3(this.id, this.pageVm, 'requestFullScreen');
+    requestFullScreen (args = {}) {
+      operateVideoPlayer$3(this.id, this.pageVm, 'requestFullScreen', args);
     }
     exitFullScreen () {
       operateVideoPlayer$3(this.id, this.pageVm, 'exitFullScreen');

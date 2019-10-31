@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/webpack-uni-mp-loader",
-  "version": "3.0.0-alpha-24020191018012",
+  "version": "3.0.0-alpha-24020191018017",
   "description": "webpack-uni-mp-loader",
   "main": "index.js",
   "repository": {
@@ -16,5 +16,5 @@
   },
   "author": "fxy060608",
   "license": "Apache-2.0",
-  "gitHead": "10184426b19cb76e01c93fb25c982c72887557e8"
+  "gitHead": "e5da9bbe2de350cb7302245c0e968a5610c65a23"
 }
