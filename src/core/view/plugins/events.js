@@ -125,11 +125,9 @@ function touchstart (evt) {
     return
   }
   const {
-    touches: [{
-      pageX,
-      pageY
-    }]
-  } = evt
+    pageX,
+    pageY
+  } = evt.touches[0]
 
   startPageX = pageX
   startPageY = pageY

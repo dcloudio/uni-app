@@ -9575,7 +9575,7 @@ var serviceContext = (function () {
       return
     }
     if (isLaunchWebview) { // 首页
-      isLaunchWebviewReady = true;
+      // isLaunchWebviewReady = true
       setPreloadWebview(plus.webview.getLaunchWebview());
     } else if (!preloadWebview) { // preloadWebview 不存在，重新加载一下
       setPreloadWebview(plus.webview.getWebviewById(pageId));
@@ -9908,7 +9908,7 @@ var serviceContext = (function () {
     };
   }
 
-  function wrapperEvent(event) {
+  function wrapperEvent (event) {
     event.preventDefault = noop;
     event.stopPropagation = noop;
     event.mp = event;
@@ -9918,7 +9918,7 @@ var serviceContext = (function () {
   }
 
   const handleVdData = {
-    [UI_EVENT]: function onUIEvent(vdBatchEvent, vd) {
+    [UI_EVENT]: function onUIEvent (vdBatchEvent, vd) {
       vdBatchEvent.forEach(([cid, nid, event]) => {
         nid = String(nid);
         const target = vd.elements.find(target => target.cid === cid && target.nid === nid);
@@ -9930,14 +9930,14 @@ var serviceContext = (function () {
     }
   };
 
-  function onVdSync$1(vdBatchData, vd) {
+  function onVdSync$1 (vdBatchData, vd) {
     vdBatchData.forEach(([type, vdData]) => {
       handleVdData[type](vdData, vd);
     });
   }
 
   class VDomSync {
-    constructor(pageId, pagePath, pageVm) {
+    constructor (pageId, pagePath, pageVm) {
       this.pageId = pageId;
       this.pagePath = pagePath;
       this.pageVm = pageVm;
@@ -9952,47 +9952,47 @@ var serviceContext = (function () {
       this._init();
     }
 
-    _init() {
+    _init () {
       registerVdSync(this.pageId, (vdBatchData) => {
         onVdSync$1(vdBatchData, this);
       });
     }
 
-    addMountedVm(vm) {
+    addMountedVm (vm) {
       vm._$mounted(); // 触发vd数据同步
-      this.addVdSyncCallback(function mounted() {
+      this.addVdSyncCallback(function mounted () {
         vm.__call_hook('mounted');
       });
     }
 
-    addUpdatedVm(vm) {
+    addUpdatedVm (vm) {
       vm._$updated(); // 触发vd数据同步
-      this.addVdSyncCallback(function mounted() {
+      this.addVdSyncCallback(function mounted () {
         vm.__call_hook('updated');
       });
     }
 
-    addVdSyncCallback(callback) {
+    addVdSyncCallback (callback) {
       isFn(callback) && vdSyncCallbacks.push(callback);
     }
 
-    getVm(id) {
+    getVm (id) {
       return this.vms[id]
     }
 
-    addVm(vm) {
+    addVm (vm) {
       this.vms[vm._$id] = vm;
     }
 
-    removeVm(vm) {
+    removeVm (vm) {
       delete this.vms[vm._$id];
     }
 
-    addElement(elm) {
+    addElement (elm) {
       this.elements.indexOf(elm) === -1 && this.elements.push(elm);
     }
 
-    removeElement(elm) {
+    removeElement (elm) {
       const elmIndex = this.elements.indexOf(elm);
       if (elmIndex === -1) {
         return console.error(`removeElement[${elm.cid}][${elm.nid}] not found`)
@@ -10000,11 +10000,11 @@ var serviceContext = (function () {
       this.elements.splice(elmIndex, 1);
     }
 
-    push(type, cid, data) {
+    push (type, cid, data) {
       this.batchData.push([type, [cid, data]]);
     }
 
-    sendPageCreate(data) {
+    sendPageCreate (data) {
       this.pageCreateData = data;
       UniServiceJSBridge.publishHandler(VD_SYNC, {
         data: [
@@ -10016,7 +10016,7 @@ var serviceContext = (function () {
       }, [this.pageId]);
     }
 
-    flush() {
+    flush () {
       if (!this.initialized) {
         this.initialized = true;
         this.batchData.push([PAGE_CREATED, [this.pageId, this.pagePath]]);
@@ -10032,26 +10032,26 @@ var serviceContext = (function () {
       }
     }
 
-    restorePageCreate() {
+    restorePageCreate () {
       this.batchData.push([PAGE_CREATE, this.pageCreateData]);
     }
 
-    restoreMountedData() {
+    restoreMountedData () {
       const addMountedData = (vm) => {
         if (vm._$id) {
           this.push(MOUNTED_DATA, vm._$id, vm._$data);
         }
-        // vue 中 $children 顺序不可靠，可能存在恢复误差
+        // TODO vue 中 $children 顺序不可靠，可能存在恢复误差
         vm.$children.forEach(childVm => addMountedData(childVm));
       };
       addMountedData(this.pageVm);
     }
 
-    restorePageCreated() {
+    restorePageCreated () {
       this.batchData.push([PAGE_CREATED, [this.pageId, this.pagePath]]);
     }
 
-    restore() {
+    restore () {
       this.initialized = true;
       this.batchData.length = 0;
 
@@ -10062,7 +10062,7 @@ var serviceContext = (function () {
       this.flush();
     }
 
-    destroy() {
+    destroy () {
       this.batchData.length = 0;
       this.vms = Object.create(null);
       this.initialized = false;
