@@ -70,8 +70,8 @@ process.UNI_STAT_CONFIG = {
 let usingComponentsAbsent = false
 if (!platformOptions.hasOwnProperty('usingComponents')) {
   usingComponentsAbsent = true
-  platformOptions.usingComponents = true
 }
+platformOptions.usingComponents = true
 // }
 
 if (process.env.UNI_PLATFORM === 'h5') {
