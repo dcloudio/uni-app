@@ -6821,7 +6821,9 @@ var serviceContext = (function () {
       route,
       options: Object.assign({}, query || {}),
       $getAppWebview () {
-        return webview
+        // 重要，不能直接返回 webview 对象，因为 plus 可能会被二次替换，返回的 webview 对象内部的 plus 不正确
+        // 导致 webview.getStyle 等逻辑出错(旧的 webview 内部 plus 被释放)
+        return plus.webview.getWebviewById(webview.id)
       },
       $page: {
         id: parseInt(webview.id),
@@ -9575,7 +9577,7 @@ var serviceContext = (function () {
       return
     }
     if (isLaunchWebview) { // 首页
-      // isLaunchWebviewReady = true
+      isLaunchWebviewReady = true;
       setPreloadWebview(plus.webview.getLaunchWebview());
     } else if (!preloadWebview) { // preloadWebview 不存在，重新加载一下
       setPreloadWebview(plus.webview.getWebviewById(pageId));
