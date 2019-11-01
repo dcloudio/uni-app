@@ -19,6 +19,11 @@ export default function initOn (on, {
     callAppHook(getApp(), 'onPageNotFound', page)
   }
 
+  function onResize (args, pageId) {
+    const page = getCurrentPages().find(page => page.$page.id === pageId)
+    page && callPageHook(page, 'onResize')
+  }
+
   function onPullDownRefresh (args, pageId) {
     const page = getCurrentPages().find(page => page.$page.id === pageId)
     if (page) {
@@ -76,6 +81,7 @@ export default function initOn (on, {
   on('onAppEnterBackground', onAppEnterBackground)
   on('onAppEnterForeground', onAppEnterForeground)
 
+  on('onResize', onResize)
   on('onPullDownRefresh', onPullDownRefresh)
 
   on('onTabItemTap', createCallCurrentPageHook('onTabItemTap'))
