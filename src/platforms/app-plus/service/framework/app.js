@@ -30,6 +30,10 @@ import {
   perf
 } from './perf'
 
+import {
+  backbuttonListener
+} from './backbutton'
+
 let appCtx
 
 export function getApp () {
@@ -39,10 +43,9 @@ export function getApp () {
 function initGlobalListeners () {
   const emit = UniServiceJSBridge.emit
 
-  plus.key.addEventListener('backbutton', () => {
-    uni.navigateBack({
-      from: 'backbutton'
-    })
+  // splashclosed 时开始监听 backbutton
+  plus.globalEvent.addEventListener('splashclosed', () => {
+    plus.key.addEventListener('backbutton', backbuttonListener)
   })
 
   plus.globalEvent.addEventListener('pause', () => {

@@ -3,12 +3,28 @@ import {
 } from './parser/webview-style-parser'
 
 import {
-  publish
-} from '../../bridge'
+  initSubNVues
+} from './parser/sub-nvue-parser'
 
 import {
   VIEW_WEBVIEW_PATH
 } from '../../constants'
+
+import {
+  onWebviewClose
+} from './on-webview-close'
+
+import {
+  onWebviewResize
+} from './on-webview-resize'
+
+import {
+  onWebviewRecovery
+} from './on-webview-recovery'
+
+import {
+  onWebviewPopGesture
+} from './on-webview-pop-gesture'
 
 export let preloadWebview
 
@@ -67,28 +83,22 @@ export function initWebview (webview, routeOptions) {
     emit
   } = UniServiceJSBridge
 
-  // TODO subNVues
+  initSubNVues(routeOptions, webview)
+
   Object.keys(WEBVIEW_LISTENERS).forEach(name => {
     webview.addEventListener(name, (e) => {
       emit(WEBVIEW_LISTENERS[name], e, parseInt(webview.id))
     })
   })
 
-  webview.addEventListener('resize', ({
-    width,
-    height
-  }) => {
-    const res = {
-      size: {
-        windowWidth: Math.ceil(width),
-        windowHeight: Math.ceil(height)
-      }
-    }
-    publish('onViewDidResize', res)
-    emit('onResize', res, parseInt(webview.id))
-  })
+  onWebviewClose(webview)
+  onWebviewResize(webview)
 
-  // TODO 应该结束之前未完成的下拉刷新
+  if (plus.os.name === 'iOS') {
+    !webview.nvue && onWebviewRecovery(webview, routeOptions)
+    onWebviewPopGesture(webview)
+  }
+
   on(webview.id + '.startPullDownRefresh', () => {
     webview.beginPullToRefresh()
   })

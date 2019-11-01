@@ -6,7 +6,9 @@ import {
 import {
   VD_SYNC,
   UI_EVENT,
-  PAGE_CREATED
+  PAGE_CREATE,
+  PAGE_CREATED,
+  MOUNTED_DATA
 } from '../../../constants'
 
 import {
@@ -47,12 +49,15 @@ function onVdSync (vdBatchData, vd) {
 }
 
 export class VDomSync {
-  constructor (pageId, pagePath) {
+  constructor (pageId, pagePath, pageVm) {
     this.pageId = pageId
     this.pagePath = pagePath
+    this.pageVm = pageVm
     this.batchData = []
     this.vms = Object.create(null)
     this.initialized = false
+
+    this.pageCreateData = false
 
     this.elements = [] //  目前仅存储事件 element
 
@@ -111,6 +116,18 @@ export class VDomSync {
     this.batchData.push([type, [cid, data]])
   }
 
+  sendPageCreate (data) {
+    this.pageCreateData = data
+    UniServiceJSBridge.publishHandler(VD_SYNC, {
+      data: [
+        [PAGE_CREATE, data]
+      ],
+      options: {
+        timestamp: Date.now()
+      }
+    }, [this.pageId])
+  }
+
   flush () {
     if (!this.initialized) {
       this.initialized = true
@@ -125,6 +142,36 @@ export class VDomSync {
       }, [this.pageId])
       this.batchData.length = 0
     }
+  }
+
+  restorePageCreate () {
+    this.batchData.push([PAGE_CREATE, this.pageCreateData])
+  }
+
+  restoreMountedData () {
+    const addMountedData = (vm) => {
+      if (vm._$id) {
+        this.push(MOUNTED_DATA, vm._$id, vm._$data)
+      }
+      // TODO vue 中 $children 顺序不可靠，可能存在恢复误差
+      vm.$children.forEach(childVm => addMountedData(childVm))
+    }
+    addMountedData(this.pageVm)
+  }
+
+  restorePageCreated () {
+    this.batchData.push([PAGE_CREATED, [this.pageId, this.pagePath]])
+  }
+
+  restore () {
+    this.initialized = true
+    this.batchData.length = 0
+
+    this.restorePageCreate()
+    this.restoreMountedData()
+    this.restorePageCreated()
+
+    this.flush()
   }
 
   destroy () {

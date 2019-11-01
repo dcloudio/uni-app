@@ -79,3 +79,12 @@ export function updateElementStyle (element, styles) {
 export function guid () {
   return Math.floor(4294967296 * (1 + Math.random())).toString(16).slice(1)
 }
+
+export function debounce (fn, delay) {
+  let timeout
+  return function () {
+    clearTimeout(timeout)
+    const timerFn = () => fn.apply(this, arguments)
+    timeout = setTimeout(timerFn, delay)
+  }
+}

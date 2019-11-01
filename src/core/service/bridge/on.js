@@ -19,6 +19,11 @@ export default function initOn (on, {
     callAppHook(getApp(), 'onPageNotFound', page)
   }
 
+  function onResize (args, pageId) {
+    const page = getCurrentPages().find(page => page.$page.id === pageId)
+    page && callPageHook(page, 'onResize', args)
+  }
+
   function onPullDownRefresh (args, pageId) {
     const page = getCurrentPages().find(page => page.$page.id === pageId)
     if (page) {
@@ -50,17 +55,6 @@ export default function initOn (on, {
     callCurrentPageHook('onShow')
   }
 
-  function onWebInvokeAppService ({
-    name,
-    arg
-  }, pageId) {
-    if (name === 'postMessage') {
-      // TODO 小程序后退、组件销毁、分享时通知
-    } else {
-      uni[name](arg)
-    }
-  }
-
   const routeHooks = {
     navigateTo () {
       callCurrentPageHook('onHide')
@@ -87,6 +81,7 @@ export default function initOn (on, {
   on('onAppEnterBackground', onAppEnterBackground)
   on('onAppEnterForeground', onAppEnterForeground)
 
+  on('onResize', onResize)
   on('onPullDownRefresh', onPullDownRefresh)
 
   on('onTabItemTap', createCallCurrentPageHook('onTabItemTap'))
@@ -95,6 +90,4 @@ export default function initOn (on, {
   on('onNavigationBarSearchInputChanged', createCallCurrentPageHook('onNavigationBarSearchInputChanged'))
   on('onNavigationBarSearchInputConfirmed', createCallCurrentPageHook('onNavigationBarSearchInputConfirmed'))
   on('onNavigationBarSearchInputClicked', createCallCurrentPageHook('onNavigationBarSearchInputClicked'))
-
-  on('onWebInvokeAppService', onWebInvokeAppService)
 }

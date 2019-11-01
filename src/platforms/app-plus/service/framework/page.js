@@ -43,6 +43,7 @@ export function registerPage ({
     webview = createWebview(path, routeOptions)
   } else {
     webview = plus.webview.getWebviewById(webview.id)
+    webview.nvue = routeOptions.meta.isNVue
   }
 
   if (routeOptions.meta.isTabBar) {
@@ -67,7 +68,9 @@ export function registerPage ({
     route,
     options: Object.assign({}, query || {}),
     $getAppWebview () {
-      return webview
+      // 重要，不能直接返回 webview 对象，因为 plus 可能会被二次替换，返回的 webview 对象内部的 plus 不正确
+      // 导致 webview.getStyle 等逻辑出错(旧的 webview 内部 plus 被释放)
+      return plus.webview.getWebviewById(webview.id)
     },
     $page: {
       id: parseInt(webview.id),
@@ -93,8 +96,7 @@ export function registerPage ({
   pages.push(pageInstance)
 
   // 首页是 nvue 时，在 registerPage 时，执行路由堆栈
-  if (webview.id === '1' && routeOptions.meta.isNVue) {
-    webview.nvue = true
+  if (webview.id === '1' && webview.nvue) {
     __uniConfig.onReady(function () {
       navigateFinish(webview)
     })
