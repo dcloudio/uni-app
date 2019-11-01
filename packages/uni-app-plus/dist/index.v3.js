@@ -6641,17 +6641,15 @@ var serviceContext = (function () {
   }
 
   function onWebviewClose (webview) {
-    webview.addEventListener('close', () => {
-      if (webview.popupSubNVueWebviews) { // 移除所有 popupSubNVueWebview
-        Object.keys(webview.popupSubNVueWebviews).forEach(id => {
-          if (process.env.NODE_ENV !== 'production') {
-            console.log(
-              `UNIAPP[webview][${webview.id}]:popupSubNVueWebview[${id}].close`
-            );
-          }
-          webview.popupSubNVueWebviews[id].close('none');
-        });
-      }
+    webview.popupSubNVueWebviews && webview.addEventListener('close', () => {
+      Object.keys(webview.popupSubNVueWebviews).forEach(id => {
+        if (process.env.NODE_ENV !== 'production') {
+          console.log(
+            `UNIAPP[webview][${webview.id}]:popupSubNVueWebview[${id}].close`
+          );
+        }
+        webview.popupSubNVueWebviews[id].close('none');
+      });
     });
   }
 
@@ -6782,28 +6780,6 @@ var serviceContext = (function () {
 
     initSubNVues(routeOptions, webview);
 
-    // TODO 优化相关依赖性
-    // webview.addEventListener('popGesture', e => {
-    //   if (e.type === 'start') {
-    //     // 开始拖拽,还原状态栏前景色
-    //     this.restoreStatusBarStyle()
-    //   } else if (e.type === 'end' && !e.result) {
-    //     // 拖拽未完成,设置为当前状态栏前景色
-    //     this.setStatusBarStyle()
-    //   } else if (e.type === 'end' && e.result) {
-    //     removeWebview(this.id)
-    //     const lastWebview = getLastWebview()
-    //     if (lastWebview) {
-    //       publish('onAppRoute', {
-    //         path: lastWebview.page.replace('.html', ''),
-    //         query: {},
-    //         openType: 'navigateBack',
-    //         webviewId: lastWebview.id
-    //       })
-    //     }
-    //   }
-    // })
-
     Object.keys(WEBVIEW_LISTENERS).forEach(name => {
       webview.addEventListener(name, (e) => {
         emit(WEBVIEW_LISTENERS[name], e, parseInt(webview.id));
@@ -6813,8 +6789,8 @@ var serviceContext = (function () {
     onWebviewClose(webview);
     onWebviewResize(webview);
 
-    if (plus.os.name === 'iOS' && webview.nvue) {
-      onWebviewRecovery(webview, routeOptions);
+    if (plus.os.name === 'iOS') {
+      !webview.nvue && onWebviewRecovery(webview, routeOptions);
     }
 
     on(webview.id + '.startPullDownRefresh', () => {
