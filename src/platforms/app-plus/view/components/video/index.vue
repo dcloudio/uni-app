@@ -156,13 +156,8 @@ export default {
       return obj
     }
   },
-  watch: {
-    hidden (val) {
-      this.video && this.video[val ? 'hide' : 'show']()
-    }
-  },
   mounted () {
-    const video = this.video = plus.video.createVideoPlayer('video' + Date.now(), Object.assign({}, this.attrs, this.style))
+    const video = this.video = plus.video.createVideoPlayer('video' + Date.now(), Object.assign({}, this.attrs, this.position))
     plus.webview.currentWebview().append(video)
     if (this.hidden) {
       video.hide()
@@ -170,9 +165,12 @@ export default {
     this.$watch('attrs', () => {
       this.video && this.video.setStyles(this.attrs)
     }, { deep: true })
-    this.$watch('style', () => {
-      this.video && this.video.setStyles(this.style)
+    this.$watch('position', () => {
+      this.video && this.video.setStyles(this.position)
     }, { deep: true })
+    this.$watch('hidden', (val) => {
+      this.video && this.video[val ? 'hide' : 'show']()
+    })
     events.forEach(key => {
       video.addEventListener(key, (data = {}) => {
         this.$trigger(key, {}, data)

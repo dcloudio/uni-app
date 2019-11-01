@@ -69,7 +69,7 @@ function broadcast (vm, componentName, eventName, ...params) {
   })
 }
 
-const NATIVE_COMPONENTS = ['Camera', 'LivePlayer', 'LivePusher', 'Map', 'Video']
+const NATIVE_COMPONENTS = ['Camera', 'LivePlayer', 'LivePusher', 'Map', 'Video', 'CoverView', 'CoverImage']
 
 function updateView () {
   const pages = getCurrentPages()

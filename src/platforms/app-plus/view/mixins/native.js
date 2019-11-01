@@ -1,83 +1,48 @@
-import {
-  listeners
-} from 'uni-mixins'
-
 export default {
   name: 'Native',
-  mixins: [listeners],
   data () {
     return {
-      style: {
+      position: {
         top: '0px',
         left: '0px',
         width: '0px',
         height: '0px',
         position: 'static'
       },
-      hidden: false,
-      tags: []
+      hidden: false
     }
   },
+  created () {
+    this.isNative = true
+    this.onCanInsertCallbacks = []
+  },
   mounted () {
-    this._updateStyle()
+    this._updatePosition()
     this.$nextTick(() => {
-      if (this.tags.length) {
-        const view = this.view = plus.nativeObj.View('view' + Date.now(), this.style, this.tags)
-        plus.webview.currentWebview().append(view)
-        if (this.hidden) {
-          view.hide()
-        }
-      }
+      this.onCanInsertCallbacks.forEach(callback => callback())
     })
-  },
-  beforeDestroy () {
-    this.view && this.view.close()
-    delete this.view
-  },
-  listeners: {
-    '@view-update': '_requestUpdate'
+    this.$on('uni-view-update', this._requestPositionUpdate)
   },
   methods: {
-    insertTextView () {
-
-    },
-    updateTextView () {
-
-    },
-    removeTextView () {
-
-    },
-    insertImageView () {
-
-    },
-    updateImageView () {
-
-    },
-    removeImageView () {
-
-    },
-    _updateStyle () {
-      const rect = this.$refs.container.getBoundingClientRect()
-      this.hidden = false;
-      ['top', 'left', 'width', 'height'].forEach(key => {
-        let val = rect[key]
-        val = key === 'top' ? val + (document.documentElement.scrollTop || document.body.scrollTop || 0) : val
-        if (!val && (key === 'width' || key === 'height')) {
-          this.hidden = true
-        }
-        this.style[key] = val + 'px'
-      })
-    },
-    _requestUpdate () {
-      if (this._animationFrame) {
-        cancelAnimationFrame(this._animationFrame)
-      }
-      if (this._isMounted) {
-        this._animationFrame = requestAnimationFrame(() => {
-          delete this._animationFrame
-          this._updateStyle()
+    _updatePosition () {
+      const rect = (this.$refs.container || this.$el).getBoundingClientRect()
+      this.hidden = rect.width === 0 || rect.height === 0
+      if (!this.hidden) {
+        ['top', 'left', 'width', 'height'].forEach(key => {
+          let val = rect[key]
+          val = key === 'top' ? val + (document.documentElement.scrollTop || document.body.scrollTop || 0) : val
+          this.position[key] = val + 'px'
         })
       }
+    },
+    _requestPositionUpdate () {
+      if (this._positionUpdateRequest) {
+        cancelAnimationFrame(this._positionUpdateRequest)
+      }
+      this._positionUpdateRequest = requestAnimationFrame(() => {
+        delete this._positionUpdateRequest
+        this._updatePosition()
+      })
     }
   }
 }
