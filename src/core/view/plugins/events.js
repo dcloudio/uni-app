@@ -155,11 +155,9 @@ function touchmove (evt) {
   }
 
   const {
-    touches: [{
-      pageX,
-      pageY
-    }]
-  } = evt
+    pageX,
+    pageY
+  } = evt.touches[0]
 
   if (Math.abs(pageX - startPageX) > LONGPRESS_THRESHOLD || Math.abs(pageY - startPageY) > LONGPRESS_THRESHOLD) {
     return clearLongPressTimer()
