@@ -30,6 +30,10 @@ import {
   perf
 } from './perf'
 
+import {
+  backbuttonListener
+} from './backbutton'
+
 let appCtx
 
 export function getApp () {
@@ -39,11 +43,7 @@ export function getApp () {
 function initGlobalListeners () {
   const emit = UniServiceJSBridge.emit
 
-  plus.key.addEventListener('backbutton', () => {
-    uni.navigateBack({
-      from: 'backbutton'
-    })
-  })
+  plus.key.addEventListener('backbutton', backbuttonListener)
 
   plus.globalEvent.addEventListener('pause', () => {
     emit('onAppEnterBackground')
