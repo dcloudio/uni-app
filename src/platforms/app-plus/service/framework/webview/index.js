@@ -3,6 +3,10 @@ import {
 } from './parser/webview-style-parser'
 
 import {
+  initSubNVues
+} from './parser/sub-nvue-parser'
+
+import {
   publish
 } from '../../bridge'
 
@@ -125,6 +129,44 @@ export function initWebview (webview, routeOptions) {
   } = UniServiceJSBridge
 
   // TODO subNVues
+  initSubNVues(routeOptions,webview)
+
+  // TODO 优化相关依赖性
+  // webview.addEventListener('popGesture', e => {
+  //   if (e.type === 'start') {
+  //     // 开始拖拽,还原状态栏前景色
+  //     this.restoreStatusBarStyle()
+  //   } else if (e.type === 'end' && !e.result) {
+  //     // 拖拽未完成,设置为当前状态栏前景色
+  //     this.setStatusBarStyle()
+  //   } else if (e.type === 'end' && e.result) {
+  //     removeWebview(this.id)
+  //     const lastWebview = getLastWebview()
+  //     if (lastWebview) {
+  //       publish('onAppRoute', {
+  //         path: lastWebview.page.replace('.html', ''),
+  //         query: {},
+  //         openType: 'navigateBack',
+  //         webviewId: lastWebview.id
+  //       })
+  //     }
+  //   }
+  // })
+
+  webview.addEventListener('close', () => {
+    if (this.popupSubNVueWebviews) { // 移除所有 popupSubNVueWebview
+      Object.keys(this.popupSubNVueWebviews).forEach(id => {
+        if (process.env.NODE_ENV !== 'production') {
+          console.log(
+            `UNIAPP[webview][${this.id}]:popupSubNVueWebview[${id}].close`
+          )
+        }
+        this.popupSubNVueWebviews[id].close('none')
+      })
+    }
+    typeof this.closeCallback === 'function' && this.closeCallback()
+  })
+
   Object.keys(WEBVIEW_LISTENERS).forEach(name => {
     webview.addEventListener(name, (e) => {
       emit(WEBVIEW_LISTENERS[name], e, parseInt(webview.id))
