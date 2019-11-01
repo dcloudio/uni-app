@@ -68,3 +68,7 @@ export function getSubNVueById (id) {
   }
   return webview
 }
+
+export function getCurrentSubNVue () {
+  return getSubNVueById(plus.webview.currentWebview().id)
+}
