@@ -43,7 +43,10 @@ export function getApp () {
 function initGlobalListeners () {
   const emit = UniServiceJSBridge.emit
 
-  plus.key.addEventListener('backbutton', backbuttonListener)
+  // splashclosed 时开始监听 backbutton
+  plus.globalEvent.addEventListener('splashclosed', () => {
+    plus.key.addEventListener('backbutton', backbuttonListener)
+  })
 
   plus.globalEvent.addEventListener('pause', () => {
     emit('onAppEnterBackground')
