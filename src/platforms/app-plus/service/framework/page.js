@@ -43,6 +43,7 @@ export function registerPage ({
     webview = createWebview(path, routeOptions)
   } else {
     webview = plus.webview.getWebviewById(webview.id)
+    webview.nvue = routeOptions.meta.isNVue
   }
 
   if (routeOptions.meta.isTabBar) {
@@ -93,8 +94,7 @@ export function registerPage ({
   pages.push(pageInstance)
 
   // 首页是 nvue 时，在 registerPage 时，执行路由堆栈
-  if (webview.id === '1' && routeOptions.meta.isNVue) {
-    webview.nvue = true
+  if (webview.id === '1' && webview.nvue) {
     __uniConfig.onReady(function () {
       navigateFinish(webview)
     })

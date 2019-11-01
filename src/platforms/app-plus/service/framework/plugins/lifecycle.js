@@ -16,11 +16,6 @@ import {
   from 'uni-core/service/plugins/lifecycle'
 
 import {
-  VD_SYNC,
-  PAGE_CREATE
-} from '../../../constants'
-
-import {
   ON_REACH_BOTTOM_DISTANCE
 }
   from '../../constants'
@@ -59,14 +54,7 @@ export function initLifecycle (Vue) {
         const route = this.$scope.route
         const pageId = this.$scope.$page.id
         // 通知页面已开始创建
-        UniServiceJSBridge.publishHandler(VD_SYNC, {
-          data: [
-            [PAGE_CREATE, [pageId, route, parsePageCreateOptions(this, route)]]
-          ],
-          options: {
-            timestamp: Date.now()
-          }
-        }, [pageId])
+        this._$vd.sendPageCreate([pageId, route, parsePageCreateOptions(this, route)])
       }
     },
     created () {

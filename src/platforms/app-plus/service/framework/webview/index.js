@@ -10,6 +10,10 @@ import {
   VIEW_WEBVIEW_PATH
 } from '../../constants'
 
+import {
+  WEBVIEW_READY
+} from '../../../constants'
+
 export let preloadWebview
 
 let id = 2
@@ -47,6 +51,59 @@ export function createWebview (path, routeOptions) {
   return webview
 }
 
+function onWebviewResize (webview) {
+  webview.addEventListener('resize', ({
+    width,
+    height
+  }) => {
+    const landscape = Math.abs(plus.navigator.getOrientation()) === 90
+    const res = {
+      deviceOrientation: landscape ? 'landscape' : 'portrait',
+      size: {
+        windowWidth: Math.ceil(width),
+        windowHeight: Math.ceil(height)
+      }
+    }
+    publish('onViewDidResize', res) // API
+    UniServiceJSBridge.emit('onResize', res, parseInt(webview.id)) // Page lifecycle
+  })
+}
+
+function onWebviewRecovery (webview, routeOptions) {
+  const {
+    subscribe,
+    unsubscribe
+  } = UniServiceJSBridge
+
+  const id = webview.id
+  const onWebviewRecoveryReady = function (data, pageId) {
+    if (id !== pageId) {
+      return
+    }
+    unsubscribe(WEBVIEW_READY, onWebviewRecoveryReady)
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`UNIAPP[webview][${this.id}]:onWebviewRecoveryReady ready`)
+    }
+    // 恢复目标页面
+    pageId = parseInt(pageId)
+    const page = getCurrentPages(true).find(page => page.$page.id === pageId)
+    if (!page) {
+      return console.error(`Page[${pageId}] not found`)
+    }
+    page.$vm._$vd.restore()
+  }
+
+  webview.addEventListener('recovery', e => {
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`UNIAPP[webview][${this.id}].recovery.reload:` + JSON.stringify({
+        path: routeOptions.path,
+        webviewId: id
+      }))
+    }
+    subscribe(WEBVIEW_READY, onWebviewRecoveryReady)
+  })
+}
+
 export function initWebview (webview, routeOptions) {
   // 首页或非 nvue 页面
   if (webview.id === '1' || !routeOptions.meta.isNVue) {
@@ -74,19 +131,11 @@ export function initWebview (webview, routeOptions) {
     })
   })
 
-  webview.addEventListener('resize', ({
-    width,
-    height
-  }) => {
-    const res = {
-      size: {
-        windowWidth: Math.ceil(width),
-        windowHeight: Math.ceil(height)
-      }
-    }
-    publish('onViewDidResize', res)
-    emit('onResize', res, parseInt(webview.id))
-  })
+  onWebviewResize(webview)
+
+  if (plus.os.name === 'iOS' && webview.nvue) {
+    onWebviewRecovery(webview, routeOptions)
+  }
 
   // TODO 应该结束之前未完成的下拉刷新
   on(webview.id + '.startPullDownRefresh', () => {

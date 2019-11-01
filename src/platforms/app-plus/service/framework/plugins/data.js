@@ -78,7 +78,7 @@ export function initData (Vue) {
         return
       }
       if (this.mpType === 'page') {
-        this._$vdomSync = new VDomSync(this.$options.pageId, this.$options.pagePath)
+        this._$vdomSync = new VDomSync(this.$options.pageId, this.$options.pagePath, this)
       }
       if (this._$vd) {
         this._$id = guid()
