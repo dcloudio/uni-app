@@ -10,15 +10,9 @@ import {
   isTabBarPage
 } from '../../../bridge'
 
-function getDefaultFontSize(width) {
-    return Math.round((width || plus.screen.resolutionWidth) / 20)
-}
+import tabBar from '../../tab-bar'
 
-function getDefaultViewport() {
-    return plus.screen.resolutionWidth
-}
-
-function initPopupSubNVue(subNVueWebview, style, maskWebview) {
+function initPopupSubNVue (subNVueWebview, style, maskWebview) {
   if (!maskWebview.popupSubNVueWebviews) {
     maskWebview.popupSubNVueWebviews = {}
   }
@@ -63,15 +57,15 @@ function initPopupSubNVue(subNVueWebview, style, maskWebview) {
   })
 }
 
-function initNormalSubNVue(subNVueWebview, style, webview) {
+function initNormalSubNVue (subNVueWebview, style, webview) {
   webview.append(subNVueWebview)
 }
 
-function initSubNVue(subNVue,routeOptions,webview) {
+function initSubNVue (subNVue, routeOptions, webview) {
   if (!subNVue.path) {
     return
   }
-  const style = subNVue.style || {} // 格式化
+  const style = subNVue.style || {}
   const isNavigationBar = subNVue.type === 'navigationBar'
   const isPopup = subNVue.type === 'popup'
 
@@ -84,8 +78,8 @@ function initSubNVue(subNVue,routeOptions,webview) {
 
   style.uniNView = {
     path: subNVue.path.replace('.nvue', '.js'),
-    defaultFontSize: getDefaultFontSize(),
-    viewport: getDefaultViewport()
+    defaultFontSize: __uniConfig.defaultFontSize,
+    viewport: __uniConfig.viewport
   }
 
   const extras = {
@@ -109,7 +103,7 @@ function initSubNVue(subNVue,routeOptions,webview) {
     delete style.margin
   } else if (isPopup) {
     style.position = 'absolute'
-    console.log(isTabBarPage(routeOptions.path));
+    console.log(isTabBarPage(routeOptions.path))
     if (isTabBarPage(routeOptions.path)) {
       maskWebview = tabBar
     } else {
@@ -133,12 +127,12 @@ function initSubNVue(subNVue,routeOptions,webview) {
   }
 }
 
-export function initSubNVues(routeOptions,webview) {
+export function initSubNVues (routeOptions, webview) {
   const subNVues = routeOptions.window.subNVues
   if (!subNVues || !subNVues.length) {
     return
   }
   subNVues.forEach(subNVue => {
-    initSubNVue(subNVue,routeOptions,webview)
+    initSubNVue(subNVue, routeOptions, webview)
   })
 }

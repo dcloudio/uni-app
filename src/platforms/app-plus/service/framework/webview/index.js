@@ -128,8 +128,7 @@ export function initWebview (webview, routeOptions) {
     emit
   } = UniServiceJSBridge
 
-  // TODO subNVues
-  initSubNVues(routeOptions,webview)
+  initSubNVues(routeOptions, webview)
 
   // TODO 优化相关依赖性
   // webview.addEventListener('popGesture', e => {
@@ -154,17 +153,16 @@ export function initWebview (webview, routeOptions) {
   // })
 
   webview.addEventListener('close', () => {
-    if (this.popupSubNVueWebviews) { // 移除所有 popupSubNVueWebview
-      Object.keys(this.popupSubNVueWebviews).forEach(id => {
+    if (webview.popupSubNVueWebviews) { // 移除所有 popupSubNVueWebview
+      Object.keys(webview.popupSubNVueWebviews).forEach(id => {
         if (process.env.NODE_ENV !== 'production') {
           console.log(
-            `UNIAPP[webview][${this.id}]:popupSubNVueWebview[${id}].close`
+            `UNIAPP[webview][${webview.id}]:popupSubNVueWebview[${id}].close`
           )
         }
-        this.popupSubNVueWebviews[id].close('none')
+        webview.popupSubNVueWebviews[id].close('none')
       })
     }
-    typeof this.closeCallback === 'function' && this.closeCallback()
   })
 
   Object.keys(WEBVIEW_LISTENERS).forEach(name => {
@@ -179,7 +177,6 @@ export function initWebview (webview, routeOptions) {
     onWebviewRecovery(webview, routeOptions)
   }
 
-  // TODO 应该结束之前未完成的下拉刷新
   on(webview.id + '.startPullDownRefresh', () => {
     webview.beginPullToRefresh()
   })
