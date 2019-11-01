@@ -21,7 +21,7 @@ export default function initOn (on, {
 
   function onResize (args, pageId) {
     const page = getCurrentPages().find(page => page.$page.id === pageId)
-    page && callPageHook(page, 'onResize')
+    page && callPageHook(page, 'onResize', args)
   }
 
   function onPullDownRefresh (args, pageId) {
