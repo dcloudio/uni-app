@@ -698,7 +698,7 @@ h5 平台下拉刷新动画，只有 circle 类型。
 |height|String|否|50px|中间按钮的高度，可以大于 tabBar 高度，达到中间凸起的效果|
 |text|String|否||中间按钮的文字|
 |iconPath|String|否||中间按钮的图片路径|
-|iconWidth|String|否|24px||图片宽度（高度等比例缩放）|
+|iconWidth|String|否|24px|图片宽度（高度等比例缩放）|
 |backgroundImage|String|否||中间按钮的背景图片路径|
 
 midButton没有pagePath，需监听点击事件，自行处理点击后的行为逻辑。监听点击事件为调用API：uni.onTabBarMidButtonTap，详见[https://uniapp.dcloud.io/api/ui/tabbar?id=ontabbarmidbuttontap](https://uniapp.dcloud.io/api/ui/tabbar?id=ontabbarmidbuttontap)
