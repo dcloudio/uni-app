@@ -74,7 +74,7 @@
       </div>
       <div class="uniapp-home-content-item-header">
         <h5 class="uniapp-home-content-item-title">开发者/案例数量更多</h5>
-        <p class="uniapp-home-content-item-text">5万+案例、600+插件、50+微信/qq群、更高的百度指数</p>
+        <p class="uniapp-home-content-item-text">5万+案例、800+插件、50+微信/qq群、更高的百度指数</p>
         <p class="uniapp-home-content-item-text">跨端完善度更高，真正落地的提高生产力</p>
       </div>
     </div>
