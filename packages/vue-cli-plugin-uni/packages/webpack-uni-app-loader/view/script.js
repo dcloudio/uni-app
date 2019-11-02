@@ -19,7 +19,7 @@ function genComponentCode(components) {
     source
   }) => {
     importCode.push(`import ${value} from '${source}'`)
-    componentsCode.push(`${name}: ${value}`)
+    componentsCode.push(`'${name}': ${value}`)
   })
   return [importCode.join('\n'), componentsCode.join(',\n')]
 }

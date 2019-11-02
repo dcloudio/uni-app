@@ -1,8 +1,14 @@
 import {
-  hasOwn
+  hasOwn,
+  isPlainObject
 } from 'uni-shared'
 
 function parseProperty (name, property, watch) {
+  if (!isPlainObject(property)) {
+    property = {
+      type: property
+    }
+  }
   const type = [property.type]
   if (Array.isArray(property.optionalTypes)) {
     type.push(...property.optionalTypes)
@@ -10,7 +16,7 @@ function parseProperty (name, property, watch) {
   const prop = Object.create(null)
   prop.type = type
   if (hasOwn(property, 'value')) {
-    prop['default'] = prop.value
+    prop['default'] = property.value
   }
   if (hasOwn(property, 'observer')) {
     watch[name] = property.observer

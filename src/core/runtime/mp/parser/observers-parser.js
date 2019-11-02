@@ -13,7 +13,7 @@ export function parseObservers (observers, vueComponentOptions) {
 
   const {
     mpObservers
-  } = vueComponentOptions
+  } = vueComponentOptions.mpOptions
 
   Object.keys(observers).forEach(path => {
     mpObservers.push({

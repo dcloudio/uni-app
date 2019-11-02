@@ -2,5 +2,5 @@ export function parseRelations (relations, vueComponentOptions) {
   if (!relations) {
     return
   }
-  vueComponentOptions.mpRelations = relations
+  vueComponentOptions.mpOptions.relations = relations
 }

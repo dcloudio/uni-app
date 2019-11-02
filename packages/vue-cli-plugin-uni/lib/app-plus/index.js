@@ -12,7 +12,9 @@ const {
 
 function getProvides () {
   return {
-    '__f__': [path.resolve(__dirname, '../format-log.js'), 'default']
+    '__f__': [path.resolve(__dirname, '../format-log.js'), 'default'],
+    'Behavior': ['@dcloudio/uni-mp-weixin/dist/mp.js', 'Behavior'],
+    'Component': ['@dcloudio/uni-mp-weixin/dist/mp.js', 'Component']
   }
 }
 
