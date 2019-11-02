@@ -1,6 +1,7 @@
 const base = ['padding', 'borderRadius', 'borderColor', 'borderWidth', 'backgroundColor']
-const text = ['color', 'textAlign', 'lineHeight', 'fontSize', 'fontWeight', 'textOverflow']
+const text = ['color', 'textAlign', 'lineHeight', 'fontSize', 'fontWeight', 'textOverflow', 'whiteSpace']
 const image = []
+const textAlign = { start: 'left', end: 'right' }
 let index = 0
 
 export default {
@@ -53,13 +54,14 @@ export default {
           tag: 'font',
           position,
           textStyles: {
-            align: style.textAlign,
+            align: textAlign[style.textAlign] || style.textAlign,
             color: style.color,
             decoration: 'none',
             lineSpacing: (parseFloat(style.lineHeight) - parseFloat(style.fontSize)) + 'px',
             margin: style.padding,
             overflow: style.textOverflow,
             size: style.fontSize,
+            verticalAlign: 'top',
             weight: style.fontWeight,
             whiteSpace: style.whiteSpace
           },
