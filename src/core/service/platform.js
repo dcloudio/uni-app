@@ -24,3 +24,9 @@ export function getCurrentPageVm (method) {
   const page = pages[len - 1]
   return page.$vm
 }
+
+export function getCurrentPageId () {
+  const pages = getCurrentPages()
+  const page = pages[pages.length - 1]
+  return page && page.$page.id
+}
