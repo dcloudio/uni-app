@@ -175,7 +175,9 @@ uni-app已经有几十万开发者，是开发者数量和案例最丰富的多�
 
 **波比英语课堂：**幼儿英语启蒙神器培养国际宝宝。[App、小程序通用链接](http://m3w.cn/bbyykt)
 
-**桂聘：** 广西区域招聘，随时随地找工作，[Android和iOS](http://www.guipin.com/jihui/)
+**桂聘：**广西区域招聘。[Android和iOS](http://www.guipin.com/jihui/)
+
+**新疆包邮：**新疆网民的专属导购APP。[Android](https://android.myapp.com/myapp/detail.htm?apkName=com.h5415379.wux)、[iOS](https://apps.apple.com/cn/app/%E6%96%B0%E7%96%86%E5%8C%85%E9%82%AE/id1433935701)
 
 **课呱呱：**在线学习好工作。[App、小程序、H5通用链接](http://m3w.cn/__uni__b19209a)
 
@@ -345,7 +347,7 @@ uni-app已经有几十万开发者，是开发者数量和案例最丰富的多�
 
 **卡邦：**一款集云智能消费管理系统、全国落地POS管理系统、大数据信用评估系统为三位一体的综合管理平台类app，[H5](http://h5kb.d5x319.cn)。
 
-**法保网：**一款提供法律服务app，[iOS](https://itunes.apple.com/cn/app/id1453634358)。
+**法保网：**一款提供法律服务app，[iOS](https://itunes.apple.com/cn/app/id1453634358)、[Android](https://android.myapp.com/myapp/detail.htm?apkName=com.lawprotect)。
 
 **遂宁之窗：**快速获取遂宁信息。[Android](http://index.scsn.cn/Appurl_AndroidVer.html)、[iOS](https://itunes.apple.com/cn/app/%E9%81%82%E5%AE%81%E4%B9%8B%E7%AA%97/id1435590219?mt=8)
 
@@ -466,6 +468,17 @@ uni-app已经有几十万开发者，是开发者数量和案例最丰富的多�
 **小米手环4自定义表盘软件：** [Android](https://www.coolapk.com/apk/tech.pingx.watchface)、[H5](http://watchface.pingx.tech/h5/)
 
 **斗豆侠：**购物App。[iOS](https://apps.apple.com/cn/app/id1395120441)、[Android](https://obs.myhwclouds.com/vipbean/xgyx_guns/APK/yq.apk)
+
+**RUCY：**衣着搭配。[Android](https://appstore.huawei.com/app/C101136185)、[iOS](https://apps.apple.com/cn/app/rucy/id1479275199)
+
+**BookChat：**通用电子书应用。[iOS](https://apps.apple.com/cn/app/id1481932361)、[Android](https://www.pgyer.com/bookchat-app)
+
+**乐猪租房：**租房网站和小程序。[h5](https://h5.lezf.com/)、微信、支付宝、百度、头条搜索 乐猪租房
+
+**稀饭旅行小程序：**微信、百度搜索 稀饭旅行
+
+**吾爱街机：**可在小程序玩街机游戏。微信小程序搜索 吾爱街机
+
 
 
 #### 更多小程序案例（可在微信小程序中搜索）@wx-more
