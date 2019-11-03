@@ -2,8 +2,6 @@
 
 生物认证，又称活体检测。它包含指纹识别、人脸识别这两部分。即通过人体身体特征来进行身份认证识别。
 
-各平台开发方式暂未统一，使用时需注意用[条件编译](https://uniapp.dcloud.io/platform)调用不同平台的代码。（APP端自`HBuilderX 2.3.9-alpha`开始支持生物认证）
-
 ### uni.startSoterAuthentication(OBJECT)
 
 开始 SOTER 生物认证。
@@ -12,7 +10,9 @@
 
 |App|H5	|微信小程序	|支付宝小程序	|百度小程序	|头条小程序	|QQ小程序	|
 |:-	|:-	|:-					|:-						|:-					|:-					|:-				|
-|√（HBuilderX 2.3.9+）	|x	|√					|x						|x					|x					|x				|
+|√（2.3.8+）	|x	|√					|x						|x					|x					|x				|
+
+App端在2.3.8版以前，可在插件市场获取指纹相关插件。
 
 **OBJECT参数说明**
 
@@ -31,6 +31,8 @@
 |:-					|:-				|
 |fingerPrint|指纹识别	|
 |facial			|人脸识别	|
+
+注意：App端人脸识别，iOS平台使用自带的faceID，而Android平台需要依赖三方SDK方可实现，可在插件市场搜索[人脸识别](https://ext.dcloud.net.cn/search?q=%E4%BA%BA%E8%84%B8%E8%AF%86%E5%88%AB)插件
 
 **OBJECT.success返回值说明**
 
@@ -231,7 +233,8 @@
 
 #### 注意事项
 
-- APP端自`HBuilderX 2.3.9-alpha`开始支持生物认证
+- App端自2.3.8版本起开始支持生物认证
+- App端的人脸识别，仅支持iOS端的faceID。Android端需要依赖三方SDK方可实现，可在插件市场搜索[人脸识别](https://ext.dcloud.net.cn/search?q=%E4%BA%BA%E8%84%B8%E8%AF%86%E5%88%AB)插件
 - 微信小程序如果使用腾讯云的SDK，可参考[网友分享](https://segmentfault.com/a/1190000020102601)
 - 支付宝小程序只支持人脸识别，[规范详情](https://docs.alipay.com/mini/api/facecapture)
 - 百度小程序只支持人脸识别，[规范详情](https://smartprogram.baidu.com/docs/develop/api/ai_face/#swan-ai-faceDetect/)
