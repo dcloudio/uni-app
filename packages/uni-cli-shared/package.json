@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-cli-shared",
-  "version": "2.0.0-alpha-23820191101001",
+  "version": "2.0.0-alpha-23820191103001",
   "description": "uni-cli-shared",
   "main": "lib/index.js",
   "repository": {
