@@ -1,23 +1,27 @@
+import {
+  setStatusBarStyle
+} from '../../bridge'
 export function onWebviewPopGesture (webview) {
-  // TODO 优化相关依赖性
-  // webview.addEventListener('popGesture', e => {
-  //   if (e.type === 'start') {
-  //     // 开始拖拽,还原状态栏前景色
-  //     this.restoreStatusBarStyle()
-  //   } else if (e.type === 'end' && !e.result) {
-  //     // 拖拽未完成,设置为当前状态栏前景色
-  //     this.setStatusBarStyle()
-  //   } else if (e.type === 'end' && e.result) {
-  //     removeWebview(this.id)
-  //     const lastWebview = getLastWebview()
-  //     if (lastWebview) {
-  //       publish('onAppRoute', {
-  //         path: lastWebview.page.replace('.html', ''),
-  //         query: {},
-  //         openType: 'navigateBack',
-  //         webviewId: lastWebview.id
-  //       })
-  //     }
-  //   }
-  // })
+  webview.addEventListener('popGesture', e => {
+    if (e.type === 'start') {
+      // 设置下一个页面的 statusBarStyle
+      const pages = getCurrentPages()
+      const page = pages[pages.length - 2]
+      const statusBarStyle = page && page.$page.meta.statusBarStyle
+      statusBarStyle && setStatusBarStyle(statusBarStyle)
+    } else if (e.type === 'end' && !e.result) {
+      // 拖拽未完成,设置为当前状态栏前景色
+      setStatusBarStyle()
+    } else if (e.type === 'end' && e.result) {
+      const pages = getCurrentPages()
+      const page = pages[pages.length - 1]
+      page && page.$remove()
+
+      setStatusBarStyle()
+
+      UniServiceJSBridge.emit('onAppRoute', {
+        type: 'navigateBack'
+      })
+    }
+  })
 }
