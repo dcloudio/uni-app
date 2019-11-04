@@ -413,6 +413,9 @@ export default {
         context.drawImageByCanvas(canvas, x, y, width, height, 0, 0, destWidth, destHeight, false)
         imgData = context.getImageData(0, 0, destWidth, destHeight)
       } catch (error) {
+        if (!callbackId) {
+          return
+        }
         UniViewJSBridge.publishHandler('onCanvasMethodCallback', {
           callbackId,
           data: {
@@ -421,15 +424,23 @@ export default {
         }, this.$page.id)
         return
       }
-      UniViewJSBridge.publishHandler('onCanvasMethodCallback', {
-        callbackId,
-        data: {
-          errMsg: 'canvasGetImageData:ok',
+      if (!callbackId) {
+        return {
           data: [...imgData.data],
           width: destWidth,
           height: destHeight
         }
-      }, this.$page.id)
+      } else {
+        UniViewJSBridge.publishHandler('onCanvasMethodCallback', {
+          callbackId,
+          data: {
+            errMsg: 'canvasGetImageData:ok',
+            data: [...imgData.data],
+            width: destWidth,
+            height: destHeight
+          }
+        }, this.$page.id)
+      }
     },
     putImageData ({
       data,
@@ -464,6 +475,74 @@ export default {
           errMsg: 'canvasPutImageData:ok'
         }
       }, this.$page.id)
+    },
+    getDataUrl ({
+      x = 0,
+      y = 0,
+      width,
+      height,
+      destWidth,
+      destHeight,
+      hidpi = true,
+      fileType,
+      qualit,
+      callbackId
+    }) {
+      let res = this.getImageData({
+        x,
+        y,
+        width,
+        height,
+        destWidth,
+        destHeight,
+        hidpi
+      })
+      if (!res.data || !res.data.length) {
+        UniViewJSBridge.publishHandler('onCanvasMethodCallback', {
+          callbackId,
+          data: {
+            errMsg: 'canvasGetDataUrl:fail'
+          }
+        }, this.$page.id)
+        return
+      }
+      let imgData
+      try {
+        imgData = new ImageData(new Uint8ClampedArray(res.data), res.width, res.height)
+      } catch (error) {
+        UniViewJSBridge.publishHandler('onCanvasMethodCallback', {
+          callbackId,
+          data: {
+            errMsg: 'canvasGetDataUrl:fail'
+          }
+        }, this.$page.id)
+        return
+      }
+      destWidth = res.width
+      destHeight = res.height
+      const canvas = document.createElement('canvas')
+      canvas.width = destWidth
+      canvas.height = destHeight
+      const c2d = canvas.getContext('2d')
+      c2d.putImageData(imgData, 0, 0)
+      let base64 = canvas.toDataURL('image/png')
+      const img = new Image()
+      img.onload = () => {
+        if (fileType === 'jpeg') {
+          c2d.fillStyle = '#fff'
+          c2d.fillRect(0, 0, destWidth, destHeight)
+        }
+        c2d.drawImage(img, 0, 0)
+        base64 = canvas.toDataURL(`image/${fileType}`, qualit)
+        UniViewJSBridge.publishHandler('onCanvasMethodCallback', {
+          callbackId,
+          data: {
+            errMsg: 'canvasGetDataUrl:ok',
+            base64: base64
+          }
+        }, this.$page.id)
+      }
+      img.src = base64
     }
   }
 }
