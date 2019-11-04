@@ -1,4 +1,4 @@
-如关心App端案例，注意uni-app编译到App时，使用了DCloud的5+App引擎，拥有众多案例（包括中国邮政、中国工商、湖北银行、360等），有3亿手机用户在使用基于5+引擎开发的应用。详见[https://dcloud.io/case/](https://dcloud.io/case/)
+如关心App端案例，注意uni-app编译到App时，其实是使用了DCloud的5+App引擎，该引擎拥有众多案例（包括中国邮政、中国工商、湖北银行、360等），有3亿手机用户在使用基于5+引擎开发的应用。详见[https://dcloud.io/case/](https://dcloud.io/case/)
 
 uni-app已经有几十万开发者，是开发者数量和案例最丰富的多端开发框架。
 我们相信还有更多优秀案例，没有被我们采集到，欢迎大家到[项目案例征集](https://github.com/dcloudio/uni-app/issues/6)提交。
@@ -207,7 +207,7 @@ uni-app已经有几十万开发者，是开发者数量和案例最丰富的多�
 
 **江苏公安网上政工慰问：**[H5](https://jxt.jsga.gov.cn:10006/app/njqxgzzs/zgww/#/)
 
-**杭州智安通：*[H5](https://hzjjzat.citydo.com.cn/vehicle-test)
+**杭州智安通：**[H5](https://hzjjzat.citydo.com.cn/vehicle-test)
 
 **深圳福田区爱福田：**[H5](https://ifutian.szft.gov.cn/masterSecond/)
 
