@@ -15,7 +15,7 @@ export function onWebviewRecovery (webview, routeOptions) {
     }
     unsubscribe(WEBVIEW_READY, onWebviewRecoveryReady)
     if (process.env.NODE_ENV !== 'production') {
-      console.log(`UNIAPP[webview][${this.id}]:onWebviewRecoveryReady ready`)
+      console.log(`UNIAPP[webview][${id}]:onWebviewRecoveryReady ready`)
     }
     // 恢复目标页面
     pageId = parseInt(pageId)
