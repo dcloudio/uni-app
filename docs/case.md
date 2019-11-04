@@ -195,6 +195,8 @@ uni-app已经有几十万开发者，是开发者数量和案例最丰富的多�
 
 **共青团全国青少年弘扬中华优秀传统文化交流展示活动专题网站：**[同时适配PC和手机版的H5](https://chuancheng.xwhdw.com/)
 
+**北京财政局某报考系统：**[H5](http://czj.beijing.gov.cn/kjbmh5)
+
 **上海宣传系统e支部：**[H5](http://ezb.shxc.gov.cn/eParty/#/)
 
 **广西国税：**[H5](http://www.gxgs.gov.cn:7701/#/)
