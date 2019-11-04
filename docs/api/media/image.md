@@ -153,8 +153,8 @@ uni.chooseImage({
 |width|Number|图片宽度，单位px||
 |height|Number|图片高度，单位px||
 |path|String|返回图片的本地路径||
-|orientation|String|返回图片的方向，有效值见下表|小程序|
-|type|String|返回图片的格式|小程序|
+|orientation|String|返回图片的方向，有效值见下表|App、小程序|
+|type|String|返回图片的格式|App、小程序|
 
 **orientation 参数说明**
 
