@@ -211,7 +211,7 @@ uni ui支持npm安装，和HBuilderX单独导入个别组件等多种使用方�
 |[Fav](https://ext.dcloud.net.cn/plugin?id=864)| 收藏按钮|
 |[GoodsNav](https://ext.dcloud.net.cn/plugin?id=865)| 底部购物导航|
 |[Grid](https://ext.dcloud.net.cn/plugin?id=27)| 宫格|
-|[Icon](https://ext.dcloud.net.cn/plugin?id=28)| 图标|
+|[Icons](https://ext.dcloud.net.cn/plugin?id=28)| 图标|
 |[IndexedList](https://ext.dcloud.net.cn/plugin?id=375)| 索引列表|
 |[List](https://ext.dcloud.net.cn/plugin?id=24)| 列表|
 |[LoadMore](https://ext.dcloud.net.cn/plugin?id=29)| 加载更多|
