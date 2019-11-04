@@ -1,8 +1,13 @@
 import createCallbacks from 'uni-helpers/callbacks'
 
 import {
+  invokeMethod,
   getCurrentPageId
 } from '../../platform'
+
+import {
+  invoke
+} from '../../bridge'
 
 const canvasEventCallbacks = createCallbacks('canvasEvent')
 
@@ -229,10 +234,6 @@ function checkColor (e) {
   return [0, 0, 0, 255]
 }
 
-function TextMetrics (width) {
-  this.width = width
-}
-
 function Pattern (image, repetition) {
   this.image = image
   this.repetition = repetition
@@ -256,14 +257,6 @@ var methods3 = ['setFillStyle', 'setTextAlign', 'setStrokeStyle', 'setGlobalAlph
   'setFontSize', 'setLineCap', 'setLineJoin', 'setLineWidth', 'setMiterLimit',
   'setTextBaseline', 'setLineDash'
 ]
-
-var tempCanvas
-function getTempCanvas () {
-  if (!tempCanvas) {
-    tempCanvas = document.createElement('canvas')
-  }
-  return tempCanvas
-}
 
 class CanvasContext {
   constructor (id, pageId) {
@@ -319,11 +312,9 @@ class CanvasContext {
       return new Pattern(image, repetition)
     }
   }
-  measureText (text) {
-    var c2d = getTempCanvas().getContext('2d')
-    c2d.font = this.state.font
-    return new TextMetrics(c2d.measureText(text).width || 0)
-  }
+  // TODO
+  // measureText (text) {
+  // }
   save () {
     this.actions.push({
       method: 'save',
@@ -742,10 +733,6 @@ export function createCanvasContext (id, context) {
   }
 }
 
-const {
-  invokeCallbackHandler: invoke
-} = UniServiceJSBridge
-
 export function canvasGetImageData ({
   canvasId,
   x,
@@ -823,47 +810,27 @@ export function canvasToTempFilePath ({
     return
   }
   const cId = canvasEventCallbacks.push(function ({
-    data,
-    width,
-    height
+    base64
   }) {
-    if (!data || !data.length) {
+    if (!base64 || !base64.length) {
       invoke(callbackId, {
         errMsg: 'canvasToTempFilePath:fail'
       })
-      return
     }
-    let imgData
-    try {
-      imgData = new ImageData(new Uint8ClampedArray(data), width, height)
-    } catch (error) {
-      invoke(callbackId, {
-        errMsg: 'canvasToTempFilePath:fail'
-      })
-      return
-    }
-    const canvas = getTempCanvas()
-    canvas.width = width
-    canvas.height = height
-    const c2d = canvas.getContext('2d')
-    c2d.putImageData(imgData, 0, 0)
-    let base64 = canvas.toDataURL('image/png')
-    const img = new Image()
-    img.onload = function () {
-      if (fileType === 'jpeg') {
-        c2d.fillStyle = '#fff'
-        c2d.fillRect(0, 0, width, width)
-      }
-      c2d.drawImage(img, 0, 0)
-      base64 = canvas.toDataURL(`image/${fileType}`, qualit)
-      invoke(callbackId, {
-        errMsg: 'canvasToTempFilePath:ok',
-        tempFilePath: base64
-      })
-    }
-    img.src = base64
+    invokeMethod('base64ToTempFilePath', {
+      base64Data: base64,
+      x,
+      y,
+      width,
+      height,
+      destWidth,
+      destHeight,
+      canvasId,
+      fileType,
+      qualit
+    }, callbackId)
   })
-  operateCanvas(canvasId, pageId, 'getImageData', {
+  operateCanvas(canvasId, pageId, 'getDataUrl', {
     x,
     y,
     width,
@@ -871,6 +838,8 @@ export function canvasToTempFilePath ({
     destWidth,
     destHeight,
     hidpi: false,
+    fileType,
+    qualit,
     callbackId: cId
   })
 }

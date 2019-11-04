@@ -1,5 +1,6 @@
 export * from './context/audio'
 export * from './context/background-audio'
+export * from './context/canvas'
 export * from './context/operate-map-player'
 export * from './context/operate-video-player'
 
