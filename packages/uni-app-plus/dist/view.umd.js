@@ -13382,8 +13382,8 @@ function pageMounted() {
       return $event;
     };
 
-    Vue.prototype.$getComponentDescriptor = function (vm) {
-      return Object(_wxs_component_descriptor__WEBPACK_IMPORTED_MODULE_3__[/* createComponentDescriptor */ "a"])(vm || this);
+    Vue.prototype.$getComponentDescriptor = function (vm, isOwnerInstance) {
+      return Object(_wxs_component_descriptor__WEBPACK_IMPORTED_MODULE_3__[/* createComponentDescriptor */ "a"])(vm || this, isOwnerInstance);
     };
 
     Vue.prototype.$handleWxsEvent = function ($event) {
@@ -13391,7 +13391,7 @@ function pageMounted() {
         // 未处理的 event 对象 需要对 target 校正及包装
         var currentTarget = $event.currentTarget;
 
-        var instance = currentTarget && currentTarget.__vue__ && currentTarget.__vue__.$getComponentDescriptor();
+        var instance = currentTarget && currentTarget.__vue__ && currentTarget.__vue__.$getComponentDescriptor(currentTarget.__vue__, false);
 
         $event = _events__WEBPACK_IMPORTED_MODULE_1__[/* processEvent */ "b"].call(this, $event.type, $event, {}, findUniTarget($event, this.$el) || $event.target, $event.currentTarget);
         $event.instance = instance;
@@ -13498,7 +13498,7 @@ function () {
       }
 
       var el = this.$el.querySelector(selector);
-      return el && el.__vue__ && createComponentDescriptor(el.__vue__);
+      return el && el.__vue__ && createComponentDescriptor(el.__vue__, false);
     }
   }, {
     key: "selectAllComponents",
@@ -13509,7 +13509,7 @@ function () {
 
       var descriptors = [];
       this.$el.querySelectorAll(selector).forEach(function (el) {
-        el.__vue__ && descriptors.push(createComponentDescriptor(el.__vue__));
+        el.__vue__ && descriptors.push(createComponentDescriptor(el.__vue__, false));
       });
       return descriptors;
     }
@@ -13629,8 +13629,10 @@ function () {
 }();
 
 function createComponentDescriptor(vm) {
-  if (vm && vm.$options.name && vm.$options.name.indexOf('VUni') === 0) {
-    // 内置组件需要使用父 vm
+  var isOwnerInstance = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+
+  if (isOwnerInstance && vm && vm.$options.name && vm.$options.name.indexOf('VUni') === 0) {
+    // ownerInstance 内置组件需要使用父 vm
     vm = vm.$parent;
   }
 
