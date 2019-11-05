@@ -69,11 +69,24 @@ module.exports = function (content) {
   const jsonFiles = require('./platforms/' + process.env.UNI_PLATFORM)(pagesJson, manifestJson)
 
   if (jsonFiles && jsonFiles.length) {
-    if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3) {
+    if (process.env.UNI_USING_V3) {
       let appConfigContent = ''
       jsonFiles.forEach(jsonFile => {
         if (jsonFile) {
           if (jsonFile.name === 'define-pages.js') {
+            appConfigContent = jsonFile.content
+          } else {
+            this.emitFile(jsonFile.name, jsonFile.content)
+          }
+        }
+      })
+      return appConfigContent
+    }
+    if (process.env.UNI_USING_NATIVE) {
+      let appConfigContent = ''
+      jsonFiles.forEach(jsonFile => {
+        if (jsonFile) {
+          if (jsonFile.name === 'app-config.js') {
             appConfigContent = jsonFile.content
           } else {
             this.emitFile(jsonFile.name, jsonFile.content)
