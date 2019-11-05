@@ -164,14 +164,6 @@ const v3 = {
       .end()
 
     if (isAppView) {
-      webpackConfig.module
-        .rule('vue')
-        .test([/\.vue$/, /\.nvue$/])
-        .use('uniapp-custom-block-loader')
-        .loader(require.resolve('@dcloudio/vue-cli-plugin-uni/packages/webpack-custom-block-loader'))
-        .options({
-          compiler: getPlatformCompiler()
-        })
       if (process.env.NODE_ENV === 'production') {
         require('../h5/cssnano-options')(webpackConfig)
       }
