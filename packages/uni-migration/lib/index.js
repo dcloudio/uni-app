@@ -17,6 +17,7 @@ module.exports = function migrate(input, out, options = {
   }
   migrater.transform(input, out, options).forEach(file => {
     console.log(`写入: ${file.path}`)
-    fs.outputFileSync(file.path, file.content)
+    console.log(`${file.content}`)
+    // fs.outputFileSync(file.path, file.content)
   })
 }
