@@ -60,9 +60,11 @@ class ComponentDescriptor {
       return []
     }
     const descriptors = []
-    this.$el.querySelectorAll(selector).forEach(el => {
+    const els = this.$el.querySelectorAll(selector)
+    for (let i = 0; i < els.length; i++) {
+      const el = els[i]
       el.__vue__ && descriptors.push(createComponentDescriptor(el.__vue__, false))
-    })
+    }
     return descriptors
   }
 
