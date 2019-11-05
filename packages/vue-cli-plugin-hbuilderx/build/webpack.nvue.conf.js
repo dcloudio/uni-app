@@ -167,7 +167,7 @@ if (process.env.UNI_USING_NATIVE) {
   }, {
     from: path.resolve(
       process.env.UNI_HBUILDERX_PLUGINS,
-      'weapp-tools/template/v8'
+      'weapp-tools/template/v8-native'
     ),
     to: process.env.UNI_OUTPUT_DIR
   }, {

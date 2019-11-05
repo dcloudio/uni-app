@@ -54,9 +54,11 @@ if (process.env.UNI_USING_NVUE_COMPILER) {
         Object.keys(el.events).forEach(name => {
           // 过时事件类型转换
           if (eventsMap[name]) {
-            el.events[eventsMap[name]] = el.events[name]
-            delete el.events[name]
-            name = eventsMap[name]
+            if (!(name === 'tap' && el.tag === 'map')) { // map 的 tap 事件不做转换
+              el.events[eventsMap[name]] = el.events[name]
+              delete el.events[name]
+              name = eventsMap[name]
+            }
           }
         })
       }
