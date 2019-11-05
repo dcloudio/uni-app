@@ -43,6 +43,7 @@ function getProvides () {
     process.env.UNI_USING_V8
   ) {
     provides['__f__'] = [path.resolve(__dirname, 'format-log.js'), 'default']
+    provides['crypto'] = [path.resolve(__dirname, 'crypto.js'), 'default']
   }
 
   // TODO 目前依赖库 megalo 通过判断 wx 对象是否存在来识别平台做不同处理
