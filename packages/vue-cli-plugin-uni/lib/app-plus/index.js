@@ -153,6 +153,12 @@ const v3 = {
         cacheIdentifier: false
       }))
       .end()
+      .use('uniapp-custom-block-loader')
+      .loader(require.resolve('@dcloudio/vue-cli-plugin-uni/packages/webpack-custom-block-loader'))
+      .options({
+        compiler: getPlatformCompiler()
+      })
+      .end()
       .uses
       .delete('cache-loader')
       .end()
