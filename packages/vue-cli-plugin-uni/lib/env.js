@@ -234,7 +234,7 @@ if (process.env.UNI_USING_NATIVE) {
   } catch (e) {}
 }
 if (process.env.NODE_ENV !== 'production') { // 运行模式性能提示
-  let perfMsg = `请注意运行模式下，因日志输出、sourcemap以及未压缩源码等原因，性能和包体积，均不如发行模式。`
+  let perfMsg = `请注意运行模式下，因日志输出、sourcemap以及未压缩源码等原因，性能和包体积，均不及发行模式。`
   if (hasNVue) { // app-nvue
     perfMsg = perfMsg + `尤其是app-nvue的sourcemap影响较大`
   } else if (process.env.UNI_PLATFORM.indexOf('mp-') === 0) { // 小程序
