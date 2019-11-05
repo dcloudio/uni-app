@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-mp-alipay",
-  "version": "3.0.0-alpha-24020191018022",
+  "version": "3.0.0-alpha-24020191018026",
   "description": "uni-app mp-alipay",
   "main": "dist/index.js",
   "repository": {
@@ -13,5 +13,5 @@
   },
   "author": "fxy060608",
   "license": "Apache-2.0",
-  "gitHead": "a45fd8399f6eb89d466a2834475e3297cb2cd900"
+  "gitHead": "703d87d80652b1485bc4be373cb40d0f64dfec0a"
 }
