@@ -2509,6 +2509,9 @@ var serviceContext = (function () {
         return
       }
     }
+    if (statusBarStyle === lastStatusBarStyle) {
+      return
+    }
     if (process.env.NODE_ENV !== 'production') {
       console.log(`[uni-app] setStatusBarStyle`, statusBarStyle);
     }
@@ -3015,6 +3018,85 @@ var serviceContext = (function () {
     return data
   }
 
+  const DEVICE_FREQUENCY = 200;
+  const NETWORK_TYPES = ['unknown', 'none', 'ethernet', 'wifi', '2g', '3g', '4g'];
+
+  const MAP_ID = '__UNIAPP_MAP';
+
+  const TEMP_PATH_BASE = '_doc/uniapp_temp';
+  const TEMP_PATH = `${TEMP_PATH_BASE}_${Date.now()}`;
+
+  /**
+   * 5+错误对象转换为错误消息
+   * @param {*} error 5+错误对象
+   */
+  function toErrMsg (error) {
+    var msg = 'base64ToTempFilePath:fail';
+    if (error && error.message) {
+      msg += ` ${error.message}`;
+    } else if (error) {
+      msg += ` ${error}`;
+    }
+    return msg
+  }
+
+  function base64ToTempFilePath ({
+    base64Data,
+    x,
+    y,
+    width,
+    height,
+    destWidth,
+    destHeight,
+    canvasId,
+    fileType,
+    quality
+  } = {}, callbackId) {
+    var id = Date.now();
+    var bitmap = new plus.nativeObj.Bitmap(`bitmap${id}`);
+    bitmap.loadBase64Data(base64Data, function () {
+      var formats = ['jpg', 'png'];
+      var format = String(fileType).toLowerCase();
+      if (formats.indexOf(format) < 0) {
+        format = 'png';
+      }
+      /**
+           * 保存配置
+           */
+      var saveOption = {
+        overwrite: true,
+        quality: typeof quality === 'number' ? quality * 100 : 100,
+        format
+      };
+      /**
+           * 保存文件路径
+           */
+      var tempFilePath = `${TEMP_PATH}/canvas/${id}.${format}`;
+
+      bitmap.save(tempFilePath, saveOption, function () {
+        clear();
+        invoke(callbackId, {
+          tempFilePath,
+          errMsg: 'base64ToTempFilePath:ok'
+        });
+      }, function (error) {
+        clear();
+        invoke(callbackId, {
+          errMsg: toErrMsg(error)
+        });
+      });
+    }, function (error) {
+      clear();
+      invoke(callbackId, {
+        errMsg: toErrMsg(error)
+      });
+    });
+
+    function clear () {
+      bitmap.clear();
+    }
+  }
+
   function operateMapPlayer (mapId, pageVm, type, data) {
     const pageId = pageVm.$page.id;
     UniServiceJSBridge.publishHandler(pageId + '-map-' + mapId, {
@@ -3218,14 +3300,6 @@ var serviceContext = (function () {
       ? operateVideoPlayer$1(videoId, pageVm, type, data)
       : operateVideoPlayer(videoId, pageVm, type, data);
   }
-
-  const DEVICE_FREQUENCY = 200;
-  const NETWORK_TYPES = ['unknown', 'none', 'ethernet', 'wifi', '2g', '3g', '4g'];
-
-  const MAP_ID = '__UNIAPP_MAP';
-
-  const TEMP_PATH_BASE = '_doc/uniapp_temp';
-  const TEMP_PATH = `${TEMP_PATH_BASE}_${Date.now()}`;
 
   let watchAccelerationId = false;
   let isWatchAcceleration = false;
@@ -6699,7 +6773,7 @@ var serviceContext = (function () {
       }
       unsubscribe(WEBVIEW_READY, onWebviewRecoveryReady);
       if (process.env.NODE_ENV !== 'production') {
-        console.log(`UNIAPP[webview][${this.id}]:onWebviewRecoveryReady ready`);
+        console.log(`UNIAPP[webview][${id}]:onWebviewRecoveryReady ready`);
       }
       // 恢复目标页面
       pageId = parseInt(pageId);
@@ -6718,6 +6792,31 @@ var serviceContext = (function () {
         }));
       }
       subscribe(WEBVIEW_READY, onWebviewRecoveryReady);
+    });
+  }
+
+  function onWebviewPopGesture (webview) {
+    webview.addEventListener('popGesture', e => {
+      if (e.type === 'start') {
+        // 设置下一个页面的 statusBarStyle
+        const pages = getCurrentPages();
+        const page = pages[pages.length - 2];
+        const statusBarStyle = page && page.$page.meta.statusBarStyle;
+        statusBarStyle && setStatusBarStyle(statusBarStyle);
+      } else if (e.type === 'end' && !e.result) {
+        // 拖拽未完成,设置为当前状态栏前景色
+        setStatusBarStyle();
+      } else if (e.type === 'end' && e.result) {
+        const pages = getCurrentPages();
+        const page = pages[pages.length - 1];
+        page && page.$remove();
+
+        setStatusBarStyle();
+
+        UniServiceJSBridge.emit('onAppRoute', {
+          type: 'navigateBack'
+        });
+      }
     });
   }
 
@@ -6791,6 +6890,7 @@ var serviceContext = (function () {
 
     if (plus.os.name === 'iOS') {
       !webview.nvue && onWebviewRecovery(webview, routeOptions);
+      onWebviewPopGesture(webview);
     }
 
     on(webview.id + '.startPullDownRefresh', () => {
@@ -7785,12 +7885,13 @@ var serviceContext = (function () {
   var api = /*#__PURE__*/Object.freeze({
     startPullDownRefresh: startPullDownRefresh,
     stopPullDownRefresh: stopPullDownRefresh,
-    previewImage: previewImage$1,
+    getImageInfo: getImageInfo$1,
     createAudioInstance: createAudioInstance,
     destroyAudioInstance: destroyAudioInstance,
     setAudioState: setAudioState,
     getAudioState: getAudioState,
     operateAudio: operateAudio,
+    base64ToTempFilePath: base64ToTempFilePath,
     operateMapPlayer: operateMapPlayer$2,
     operateVideoPlayer: operateVideoPlayer$2,
     enableAccelerometer: enableAccelerometer,
@@ -7847,12 +7948,12 @@ var serviceContext = (function () {
     chooseImage: chooseImage$1,
     chooseVideo: chooseVideo$1,
     compressImage: compressImage,
-    getImageInfo: getImageInfo$1,
     getMusicPlayerState: getMusicPlayerState,
     operateMusicPlayer: operateMusicPlayer,
     setBackgroundAudioState: setBackgroundAudioState,
     operateBackgroundAudio: operateBackgroundAudio,
     getBackgroundAudioState: getBackgroundAudioState,
+    previewImage: previewImage$1,
     operateRecorder: operateRecorder,
     saveImageToPhotosAlbum: saveImageToPhotosAlbum,
     saveVideoToPhotosAlbum: saveVideoToPhotosAlbum,
@@ -8500,10 +8601,6 @@ var serviceContext = (function () {
     return [0, 0, 0, 255]
   }
 
-  function TextMetrics (width) {
-    this.width = width;
-  }
-
   function Pattern (image, repetition) {
     this.image = image;
     this.repetition = repetition;
@@ -8527,14 +8624,6 @@ var serviceContext = (function () {
     'setFontSize', 'setLineCap', 'setLineJoin', 'setLineWidth', 'setMiterLimit',
     'setTextBaseline', 'setLineDash'
   ];
-
-  var tempCanvas;
-  function getTempCanvas () {
-    if (!tempCanvas) {
-      tempCanvas = document.createElement('canvas');
-    }
-    return tempCanvas
-  }
 
   class CanvasContext {
     constructor (id, pageId) {
@@ -8590,11 +8679,9 @@ var serviceContext = (function () {
         return new Pattern(image, repetition)
       }
     }
-    measureText (text) {
-      var c2d = getTempCanvas().getContext('2d');
-      c2d.font = this.state.font;
-      return new TextMetrics(c2d.measureText(text).width || 0)
-    }
+    // TODO
+    // measureText (text) {
+    // }
     save () {
       this.actions.push({
         method: 'save',
@@ -9013,10 +9100,6 @@ var serviceContext = (function () {
     }
   }
 
-  const {
-    invokeCallbackHandler: invoke$1
-  } = UniServiceJSBridge;
-
   function canvasGetImageData$1 ({
     canvasId,
     x,
@@ -9026,7 +9109,7 @@ var serviceContext = (function () {
   }, callbackId) {
     var pageId = getCurrentPageId();
     if (!pageId) {
-      invoke$1(callbackId, {
+      invoke(callbackId, {
         errMsg: 'canvasGetImageData:fail'
       });
       return
@@ -9036,7 +9119,7 @@ var serviceContext = (function () {
       if (imgData && imgData.length) {
         data.data = new Uint8ClampedArray(imgData);
       }
-      invoke$1(callbackId, data);
+      invoke(callbackId, data);
     });
     operateCanvas(canvasId, pageId, 'getImageData', {
       x,
@@ -9057,13 +9140,13 @@ var serviceContext = (function () {
   }, callbackId) {
     var pageId = getCurrentPageId();
     if (!pageId) {
-      invoke$1(callbackId, {
+      invoke(callbackId, {
         errMsg: 'canvasPutImageData:fail'
       });
       return
     }
     var cId = canvasEventCallbacks.push(function (data) {
-      invoke$1(callbackId, data);
+      invoke(callbackId, data);
     });
     operateCanvas(canvasId, pageId, 'putImageData', {
       data: [...data],
@@ -9088,53 +9171,33 @@ var serviceContext = (function () {
   }, callbackId) {
     var pageId = getCurrentPageId();
     if (!pageId) {
-      invoke$1(callbackId, {
+      invoke(callbackId, {
         errMsg: 'canvasToTempFilePath:fail'
       });
       return
     }
     const cId = canvasEventCallbacks.push(function ({
-      data,
-      width,
-      height
+      base64
     }) {
-      if (!data || !data.length) {
-        invoke$1(callbackId, {
+      if (!base64 || !base64.length) {
+        invoke(callbackId, {
           errMsg: 'canvasToTempFilePath:fail'
         });
-        return
       }
-      let imgData;
-      try {
-        imgData = new ImageData(new Uint8ClampedArray(data), width, height);
-      } catch (error) {
-        invoke$1(callbackId, {
-          errMsg: 'canvasToTempFilePath:fail'
-        });
-        return
-      }
-      const canvas = getTempCanvas();
-      canvas.width = width;
-      canvas.height = height;
-      const c2d = canvas.getContext('2d');
-      c2d.putImageData(imgData, 0, 0);
-      let base64 = canvas.toDataURL('image/png');
-      const img = new Image();
-      img.onload = function () {
-        if (fileType === 'jpeg') {
-          c2d.fillStyle = '#fff';
-          c2d.fillRect(0, 0, width, width);
-        }
-        c2d.drawImage(img, 0, 0);
-        base64 = canvas.toDataURL(`image/${fileType}`, qualit);
-        invoke$1(callbackId, {
-          errMsg: 'canvasToTempFilePath:ok',
-          tempFilePath: base64
-        });
-      };
-      img.src = base64;
+      invokeMethod('base64ToTempFilePath', {
+        base64Data: base64,
+        x,
+        y,
+        width,
+        height,
+        destWidth,
+        destHeight,
+        canvasId,
+        fileType,
+        qualit
+      }, callbackId);
     });
-    operateCanvas(canvasId, pageId, 'getImageData', {
+    operateCanvas(canvasId, pageId, 'getDataUrl', {
       x,
       y,
       width,
@@ -9142,6 +9205,8 @@ var serviceContext = (function () {
       destWidth,
       destHeight,
       hidpi: false,
+      fileType,
+      qualit,
       callbackId: cId
     });
   }
@@ -10744,6 +10809,23 @@ var serviceContext = (function () {
     }
   }
 
+  function onWxsInvokeCallMethod ({
+    cid,
+    method,
+    args
+  }, pageId) {
+    pageId = parseInt(pageId);
+    const page = getCurrentPages(true).find(page => page.$page.id === pageId);
+    if (!page) {
+      return console.error(`Page[${pageId}] not found`)
+    }
+    const vm = page.$vm._$vd.getVm(cid);
+    if (!vm) {
+      return console.error(`vm[${cid}] not found`)
+    }
+    vm[method] && vm[method](args);
+  }
+
   function initSubscribeHandlers () {
     const {
       on,
@@ -10774,7 +10856,10 @@ var serviceContext = (function () {
     on('api.' + WEB_INVOKE_APPSERVICE$1, function (data, webviewIds) {
       emit('onWebInvokeAppService', data, webviewIds);
     });
+
     on('onWebInvokeAppService', onWebInvokeAppService);
+
+    subscribe('onWxsInvokeCallMethod', onWxsInvokeCallMethod);
 
     subscribe(VD_SYNC, onVdSync);
     subscribe(VD_SYNC_CALLBACK, onVdSyncCallback);

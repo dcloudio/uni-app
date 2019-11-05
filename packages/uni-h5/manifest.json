@@ -740,8 +740,12 @@
         ]
     ],
     "createCanvasContext": [
-        "/platforms/h5/service/api/context/canvas.js",
+        "/core/service/api/context/canvas.js",
         [
+            [
+                "/platforms/h5/service/api/context/canvas.js",
+                "base64ToTempFilePath"
+            ],
             [
                 "/core/helpers/protocol/context/context.js",
                 "createCanvasContext"
@@ -749,8 +753,12 @@
         ]
     ],
     "canvasToTempFilePath": [
-        "/platforms/h5/service/api/context/canvas.js",
+        "/core/service/api/context/canvas.js",
         [
+            [
+                "/platforms/h5/service/api/context/canvas.js",
+                "base64ToTempFilePath"
+            ],
             [
                 "/core/helpers/protocol/context/canvas.js",
                 "canvasToTempFilePath"
@@ -758,8 +766,12 @@
         ]
     ],
     "canvasPutImageData": [
-        "/platforms/h5/service/api/context/canvas.js",
+        "/core/service/api/context/canvas.js",
         [
+            [
+                "/platforms/h5/service/api/context/canvas.js",
+                "base64ToTempFilePath"
+            ],
             [
                 "/core/helpers/protocol/context/canvas.js",
                 "canvasPutImageData"
@@ -767,8 +779,12 @@
         ]
     ],
     "canvasGetImageData": [
-        "/platforms/h5/service/api/context/canvas.js",
+        "/core/service/api/context/canvas.js",
         [
+            [
+                "/platforms/h5/service/api/context/canvas.js",
+                "base64ToTempFilePath"
+            ],
             [
                 "/core/helpers/protocol/context/canvas.js",
                 "canvasGetImageData"

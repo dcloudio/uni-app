@@ -128,8 +128,15 @@ class ComponentDescriptor {
   }
 
   callMethod (funcName, args = {}) {
-    // TODO 需跨平台
-    return (this.$vm[funcName] && this.$vm[funcName](JSON.parse(JSON.stringify(args))), this)
+    if (this.$vm[funcName]) {
+      this.$vm[funcName](JSON.parse(JSON.stringify(args)))
+    } else if (this.$vm._$id) {
+      UniViewJSBridge.publishHandler('onWxsInvokeCallMethod', {
+        cid: this.$vm._$id,
+        method: funcName,
+        args
+      })
+    }
   }
 
   requestAnimationFrame (callback) {

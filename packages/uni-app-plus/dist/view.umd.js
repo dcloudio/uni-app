@@ -13431,7 +13431,7 @@ function pageMounted() {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(global) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return createComponentDescriptor; });
+/* WEBPACK VAR INJECTION */(function(UniViewJSBridge, global) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return createComponentDescriptor; });
 /* harmony import */ var uni_shared__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -13602,8 +13602,16 @@ function () {
     key: "callMethod",
     value: function callMethod(funcName) {
       var args = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      // TODO 需跨平台
-      return this.$vm[funcName] && this.$vm[funcName](JSON.parse(JSON.stringify(args))), this;
+
+      if (this.$vm[funcName]) {
+        this.$vm[funcName](JSON.parse(JSON.stringify(args)));
+      } else if (this.$vm._$id) {
+        UniViewJSBridge.publishHandler('onWxsInvokeCallMethod', {
+          cid: this.$vm._$id,
+          method: funcName,
+          args: args
+        });
+      }
     }
   }, {
     key: "requestAnimationFrame",
@@ -13644,7 +13652,7 @@ function createComponentDescriptor(vm) {
     return vm.$el.__wxsComponentDescriptor;
   }
 }
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(56)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(4), __webpack_require__(56)))
 
 /***/ }),
 /* 68 */
