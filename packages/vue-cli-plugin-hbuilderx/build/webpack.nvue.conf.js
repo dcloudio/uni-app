@@ -1,3 +1,4 @@
+const fs = require('fs')
 const path = require('path')
 const webpack = require('webpack')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
@@ -51,6 +52,7 @@ if (
   process.env.UNI_USING_V8
 ) {
   provide['__f__'] = [require.resolve('@dcloudio/vue-cli-plugin-uni/lib/format-log.js'), 'default']
+  provide['crypto'] = [require.resolve('@dcloudio/vue-cli-plugin-uni/lib/crypto.js'), 'default']
 }
 
 const plugins = [
@@ -161,14 +163,24 @@ rules.unshift({
 
 if (process.env.UNI_USING_NATIVE) {
   plugins.push(new WebpackUniMPPlugin())
+
+  let nativeTemplatePath = path.resolve(
+    process.env.UNI_HBUILDERX_PLUGINS,
+    'weapp-tools/template/v8-native'
+  )
+
+  if (!fs.existsSync(nativeTemplatePath)) { // 兼容旧版本
+    nativeTemplatePath = path.resolve(
+      process.env.UNI_HBUILDERX_PLUGINS,
+      'weapp-tools/template/v8'
+    )
+  }
+
   plugins.push(new CopyWebpackPlugin([{
     from: path.resolve(process.env.UNI_INPUT_DIR, 'static'),
     to: 'static'
   }, {
-    from: path.resolve(
-      process.env.UNI_HBUILDERX_PLUGINS,
-      'weapp-tools/template/v8-native'
-    ),
+    from: nativeTemplatePath,
     to: process.env.UNI_OUTPUT_DIR
   }, {
     from: path.resolve(
