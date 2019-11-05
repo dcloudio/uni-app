@@ -27,6 +27,9 @@ const {
 const parseEvent = require('./parser/event-parser')
 const parseBlock = require('./parser/block-parser')
 
+const parseWxsProps = require('./parser/wxs-props-parser')
+const parseWxsEvents = require('./parser/wxs-events-parser')
+
 const preTransformNode = require('./pre-transform-node')
 
 const optimize = require('./optimizer')
@@ -91,18 +94,28 @@ function transformNode (el, parent, state) {
   parseBinding(el, genVar)
   parseDirs(el, genVar, ['model'])
 
+  parseWxsProps(el, {
+    isAppService: true
+  })
+
   if (!isComponent(el.tag)) {
     parseAttrs(el, genVar)
   }
 
   parseProps(el, genVar)
+
+  parseWxsEvents(el, {
+    filterModules: state.filterModules,
+    isAppService: true
+  })
 }
 
 function postTransformNode (el, options) {
   if (!el.parent) { // 从根节点开始递归处理
     traverseNode(el, false, {
       forIteratorId: 0,
-      transformNode
+      transformNode,
+      filterModules: options.filterModules
     })
     optimize(el, options)
   }

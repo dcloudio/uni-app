@@ -39,7 +39,9 @@ ${importComponentCode}
 export default {
   ${optionsCode.length?(optionsCode.join(',')+','):''}
   data(){
-    return {}
+    return {
+      wxsProps:{}
+    }
   },
   components:{
     ${componentsCode}

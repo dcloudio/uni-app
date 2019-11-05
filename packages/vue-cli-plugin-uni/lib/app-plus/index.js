@@ -58,6 +58,12 @@ const v3 = {
             '../../packages/webpack-uni-app-loader/view/script')
         }]
       })
+      rules.push({
+        resourceQuery: [/lang=wxs/, /blockType=wxs/],
+        use: [{
+          loader: path.resolve(__dirname, '../../packages/webpack-uni-filter-loader')
+        }]
+      })
     }
 
     const entry = {}
@@ -104,6 +110,13 @@ const v3 = {
             }
           }]
         },
+        {
+          resourceQuery: /vue&type=template/,
+          use: [{
+            loader: path.resolve(__dirname,
+              '../../packages/webpack-uni-app-loader/filter-modules-template.js')
+          }]
+        },
         ...rules
         ]
       },
@@ -142,13 +155,17 @@ const v3 = {
       .end()
       .uses
       .delete('cache-loader')
-    // .end()
-    // .use('uniapp-custom-block-loader')
-    // .loader(require.resolve('@dcloudio/vue-cli-plugin-uni/packages/webpack-custom-block-loader'))
-    // .options({
-    //   compiler: getPlatformCompiler()
-    // })
+      .end()
+
     if (isAppView) {
+      webpackConfig.module
+        .rule('vue')
+        .test([/\.vue$/, /\.nvue$/])
+        .use('uniapp-custom-block-loader')
+        .loader(require.resolve('@dcloudio/vue-cli-plugin-uni/packages/webpack-custom-block-loader'))
+        .options({
+          compiler: getPlatformCompiler()
+        })
       if (process.env.NODE_ENV === 'production') {
         require('../h5/cssnano-options')(webpackConfig)
       }

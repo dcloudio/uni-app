@@ -1,0 +1,17 @@
+{
+  "name": "@dcloudio/uni-migration",
+  "version": "3.0.0-alpha-24020191018022",
+  "description": "uni-app migration",
+  "main": "lib/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/uni-migration"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "fxy060608",
+  "license": "Apache-2.0",
+  "gitHead": "a45fd8399f6eb89d466a2834475e3297cb2cd900"
+}

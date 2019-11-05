@@ -104,7 +104,7 @@ module.exports = {
         }, {
           resourceQuery: /vue&type=template/,
           use: [{
-            loader: resolve('packages/h5-vue-template-loader')
+            loader: resolve('packages/webpack-uni-app-loader/filter-modules-template.js')
           }]
         }, {
           resourceQuery: [/lang=wxs/, /blockType=wxs/],

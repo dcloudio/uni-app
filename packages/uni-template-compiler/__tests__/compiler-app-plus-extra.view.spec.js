@@ -5,7 +5,8 @@ function assertCodegen (template, generatedCode, ...args) {
     mp: {
       platform: 'app-plus'
     },
-    view: true
+    view: true,
+    filterModules: ['swipe']
   })
   expect(compiled.render).toBe(generatedCode)
 }
@@ -54,6 +55,12 @@ describe('codegen', () => {
     assertCodegen(
       `<keep-alive :exclude="componentWithStatus1"><component :is="'componentWithStatus'+index"/></keep-alive>`,
       `with(this){return _c('keep-alive',{attrs:{"exclude":_$g(0,'a-exclude'),"_i":0}},[_c(_$g(1,'is'),{tag:"component",attrs:{"_i":1}})],1)}`
+    )
+  })
+  it('generate wxs props', () => {
+    assertCodegen(
+      '<p :change:prop="swipe.sizeReady" :prop="pos" @touchstart="swipe.touchstart" @touchmove="swipe.touchmove" @touchend="swipe.touchend" @change="change"></p>',
+      `with(this){return _c('v-uni-view',{wxsProps:{"change:prop":"pos"},attrs:{"change:prop":swipe.sizeReady,"prop":_$gc(0,'change:pos'),"_i":0},on:{"touchstart":function($event){$event = $handleWxsEvent($event);swipe.touchstart($event, $getComponentDescriptor())},"touchmove":function($event){$event = $handleWxsEvent($event);swipe.touchmove($event, $getComponentDescriptor())},"touchend":function($event){$event = $handleWxsEvent($event);swipe.touchend($event, $getComponentDescriptor())},"change":function($event){return $handleViewEvent($event)}}})}`
     )
   })
 })

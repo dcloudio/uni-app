@@ -23,6 +23,9 @@ const parseEvent = require('./parser/event-parser')
 const parseBlock = require('./parser/block-parser')
 const parseComponent = require('./parser/component-parser')
 
+const parseWxsProps = require('./parser/wxs-props-parser')
+const parseWxsEvents = require('./parser/wxs-events-parser')
+
 const basePreTransformNode = require('./pre-transform-node')
 
 function createGenVar (id) {
@@ -121,21 +124,36 @@ function transformNode (el, parent, state) {
   parseIf(el, createGenVar)
   parseBinding(el, genVar)
   parseDirs(el, genVar, ignoreDirs, includeDirs)
+  parseWxsProps(el, {
+    isAppView: true
+  })
   parseAttrs(el, genVar)
   parseProps(el, genVar)
+
+  parseWxsEvents(el, {
+    filterModules: state.filterModules,
+    isAppView: true
+  })
 }
 
-function postTransformNode (el) {
+function postTransformNode (el, options) {
   if (!el.parent) { // 从根节点开始递归处理
     traverseNode(el, false, {
       forIteratorId: 0,
-      transformNode
+      transformNode,
+      filterModules: options.filterModules
     })
   }
 }
 
 function handleViewEvents (events) {
   Object.keys(events).forEach(name => {
+    const eventOpts = events[name]
+    // wxs
+    if (eventOpts.value && eventOpts.value.indexOf('$handleWxsEvent') !== -1) {
+      return
+    }
+
     const modifiers = Object.create(null)
 
     let type = name
@@ -152,7 +170,6 @@ function handleViewEvents (events) {
     isOnce && (modifiers.once = true)
     isCapture && (modifiers.capture = true)
 
-    const eventOpts = events[name]
     if (Array.isArray(eventOpts)) {
       eventOpts.forEach(eventOpt => {
         eventOpt.modifiers && Object.assign(modifiers, eventOpt.modifiers)

@@ -108,9 +108,24 @@ function getData (id, name) {
     console.error(this.$options.__file + `:[${this._$id}]$r[${id}][${name}] is undefined`)
   }
 }
+/**
+ * wxs change:prop
+ * @param {Object} id
+ * @param {Object} name
+ */
+function getChangeData (id, name) {
+  try {
+    const value = this.$r[id][name]
+    this.$set(this.wxsProps, name.replace('change:', ''), value)
+    return value
+  } catch (e) {
+    console.error(this.$options.__file + `:[${this._$id}]$r[${id}][${name}] is undefined`)
+  }
+}
 
 export function initData (Vue) {
   Vue.prototype._$g = getData
+  Vue.prototype._$gc = getChangeData
 
   UniViewJSBridge.subscribe(VD_SYNC, vdSync)
 

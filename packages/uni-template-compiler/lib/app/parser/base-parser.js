@@ -53,7 +53,14 @@ function parseDirs (el, genVar, ignoreDirs = []) {
 
 function parseAttrs (el, genVar) {
   el.attrs && el.attrs.forEach(attr => {
-    attr.name !== ID && isVar(attr.value) && (attr.value = genVar('a-' + attr.name, attr.value))
+    if (
+      attr.name !== ID &&
+      attr.name.indexOf('change:') !== 0 && // wxs change:prop
+      isVar(attr.value) &&
+      attr.value.indexOf('_$') !== 0 // 已被提前处理过了，如 wxs prop:_$gc(2,'change:prop')
+    ) {
+      attr.value = genVar('a-' + attr.name, attr.value)
+    }
   })
 }
 

@@ -6736,7 +6736,13 @@ function updateWxsProps(oldVnode, vnode) {
   vnode.$wxsWatches = {};
 
   Object.keys(wxsProps).forEach(function (prop) {
-    vnode.$wxsWatches[prop] = oldWxsWatches[prop] || vnode.context.$watch(prop, function(newVal, oldVal) {
+    // app-plus view wxs
+    var watchProp = prop;
+    if (vnode.context.wxsProps) {
+      watchProp = 'wxsProps.' + prop;
+    }
+
+    vnode.$wxsWatches[prop] = oldWxsWatches[prop] || vnode.context.$watch(watchProp, function(newVal, oldVal) {
       wxsProps[prop](
         newVal,
         oldVal,

@@ -5,7 +5,8 @@ function assertCodegen (template, generatedCode, ...args) {
     mp: {
       platform: 'app-plus'
     },
-    service: true
+    service: true,
+    filterModules: ['swipe']
   })
   expect(compiled.render).toBe(generatedCode)
 }
@@ -80,6 +81,12 @@ describe('codegen', () => {
     assertCodegen(
       `<keep-alive :exclude="componentWithStatus1"><component :is="'componentWithStatus'+index"/></keep-alive>`,
       `with(this){return _c('keep-alive',{attrs:{"exclude":_$s(0,'a-exclude',componentWithStatus1),"_i":0}},[_c(_$s(1,'is','componentWithStatus'+index),{tag:"component",attrs:{"_i":1}})],1)}`
+    )
+  })
+  it('generate wxs props', () => {
+    assertCodegen(
+      '<p :change:prop="swipe.sizeReady" :prop="pos" @touchstart="swipe.touchstart" @touchmove="swipe.touchmove" @touchend="swipe.touchend" @change="change"></p>',
+      `with(this){return _c('p',{wxsProps:{"change:prop":"pos"},attrs:{"prop":_$s(0,'change:pos',pos),"_i":0},on:{"change":change}})}`
     )
   })
 })

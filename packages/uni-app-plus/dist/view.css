@@ -1357,6 +1357,39 @@ uni-view[hidden] {
 }
 
 
+uni-cover-image {
+  display: block;
+  line-height: 1.2;
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+  pointer-events: auto;
+}
+uni-cover-image[hidden] {
+  display: none;
+}
+uni-cover-image .uni-cover-image {
+  width: 100%;
+  height: 100%;
+}
+
+
+uni-cover-view {
+  display: block;
+  line-height: 1.2;
+  overflow: hidden;
+  white-space: nowrap;
+  pointer-events: auto;
+}
+uni-cover-view[hidden] {
+  display: none;
+}
+uni-cover-view .uni-cover-view {
+  width: 100%;
+  height: 100%;
+}
+
+
 uni-picker {
   display: block;
 }
