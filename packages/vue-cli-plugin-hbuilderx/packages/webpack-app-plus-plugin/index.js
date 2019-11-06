@@ -8,25 +8,65 @@ const {
 
 let serviceCompiled = true
 let viewCompiled = true
-      
+
+
+const serviceChangedFiles = []
+const viewChangedFiles = []
+
+let isFirst = true
 class WebpackAppPlusPlugin {
   apply(compiler) {
     if (process.env.UNI_USING_V3) {
+
+      const chunkVersions = {}
+
       const isAppService = compiler.options.entry['app-service']
       const isAppView = compiler.options.entry['app-view']
+
       compiler.hooks.beforeCompile.tapAsync('WebpackAppPlusPlugin', (params, callback) => {
         isAppService && (serviceCompiled = false)
         isAppView && (viewCompiled = false)
         callback()
       })
+
+      compiler.hooks.emit.tapAsync('WebpackAppPlusPlugin', (compilation, callback) => {
+
+        isAppService && (serviceChangedFiles.length = 0)
+        isAppView && (viewChangedFiles.length = 0)
+
+        const changedChunks = compilation.chunks.filter(chunk => {
+          const oldVersion = chunkVersions[chunk.name]
+          chunkVersions[chunk.name] = chunk.hash
+          return chunk.hash !== oldVersion
+        })
+        changedChunks.map(chunk => {
+          if (Array.isArray(chunk.files)) {
+            chunk.files.forEach(file => {
+              if (isAppService) {
+                !serviceChangedFiles.includes(file) && (serviceChangedFiles.push(file))
+              } else if (isAppView) {
+                !viewChangedFiles.includes(file) && (viewChangedFiles.push(file))
+              }
+            })
+          }
+        })
+        callback()
+      })
+
       compiler.hooks.done.tapPromise('WebpackAppPlusPlugin', compilation => {
         return new Promise((resolve, reject) => {
           isAppService && (serviceCompiled = true)
           isAppView && (viewCompiled = true)
 
           if (serviceCompiled && viewCompiled) {
+            const changedFiles = [...new Set([...serviceChangedFiles, ...viewChangedFiles])]
             if (process.env.NODE_ENV === 'development') {
-              done(`Build complete. Watching for changes...`)
+              if (!isFirst && changedFiles.length > 0) {
+                done(`Build complete. FILES:` + JSON.stringify(changedFiles))
+              } else {
+                done(`Build complete. Watching for changes...`)
+              }
+              isFirst = false
             } else {
               done(`Build complete. `)
             }

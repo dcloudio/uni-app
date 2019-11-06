@@ -75,7 +75,7 @@ const v3 = {
 
     return {
       devtool,
-      mode: isAppView ? 'production' : process.env.NODE_ENV,
+      mode: process.env.NODE_ENV,
       externals: {
         vue: 'Vue'
       },

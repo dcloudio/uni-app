@@ -129,8 +129,16 @@ const PLATFORMS = {
       '--window-bottom': '0px'
     },
     copyWebpackOptions ({
-      assetsDir
+      assetsDir,
+      vueOptions
     }) {
+      if (
+        vueOptions.pluginOptions['uni-app-plus'] &&
+        vueOptions.pluginOptions['uni-app-plus']['view']
+      ) { // app-view 无需拷贝资源(app-service 已经做了)
+        return []
+      }
+
       const files = ['hybrid/html']
       let wxcomponents = []
       if (!process.env.UNI_USING_NATIVE && !process.env.UNI_USING_V3) {
@@ -143,7 +151,6 @@ const PLATFORMS = {
       if (process.env.UNI_USING_V3) {
         view = getCopyOptions([
           require.resolve('@dcloudio/uni-app-plus/dist/view.css'),
-          // TODO view.umd.min.js
           require.resolve('@dcloudio/uni-app-plus/dist/view.umd.js')
         ])
         template = getCopyOptions([path.resolve(__dirname, '../template')])

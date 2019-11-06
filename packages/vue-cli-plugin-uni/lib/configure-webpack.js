@@ -174,7 +174,7 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
       'node_modules')
 
     const plugins = [
-      new CopyWebpackPlugin(getCopyWebpackPluginOptions(manifestPlatformOptions))
+      new CopyWebpackPlugin(getCopyWebpackPluginOptions(manifestPlatformOptions, vueOptions))
     ]
 
     if (process.UNI_SCRIPT_ENV && Object.keys(process.UNI_SCRIPT_ENV).length) {

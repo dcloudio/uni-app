@@ -93,7 +93,7 @@ function getStylesCode(loaderContext) {
 
 module.exports = function(source, map) {
   return `
-import 'uni-pages'
+import 'uni-pages?${JSON.stringify({type:'view'})}'
 function initView(){
     ${getStylesCode(this)}
     injectStyles()
