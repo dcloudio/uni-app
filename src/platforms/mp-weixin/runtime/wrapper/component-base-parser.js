@@ -28,8 +28,8 @@ export default function parseBaseComponent (vueComponentOptions, {
 
   if (__PLATFORM__ === 'mp-weixin') {
     // 微信multipleSlots  部分情况有 bug，导致内容顺序错乱 如 u-list，提供覆盖选项
-    if (vueComponentOptions['mp-weixin'] && vueComponentOptions['mp-weixin']['options']) {
-      Object.assign(options, vueComponentOptions['mp-weixin']['options'])
+    if (vueOptions['mp-weixin'] && vueOptions['mp-weixin']['options']) {
+      Object.assign(options, vueOptions['mp-weixin']['options'])
     }
   }
 
