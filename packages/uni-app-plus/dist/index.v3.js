@@ -123,7 +123,10 @@ var serviceContext = (function () {
     'onBeaconUpdate',
     'getBeacons',
     'startBeaconDiscovery',
-    'stopBeaconDiscovery'
+    'stopBeaconDiscovery',
+    'checkIsSupportSoterAuthentication',
+    'checkIsSoterEnrolledInDevice',
+    'startSoterAuthentication'
   ];
 
   const keyboard = [
@@ -553,7 +556,7 @@ var serviceContext = (function () {
   }
 
   function isCallbackApi (name) {
-    return CALLBACK_API_RE.test(name)
+    return CALLBACK_API_RE.test(name) && name !== 'onPush'
   }
 
   function isTaskApi (name) {
@@ -2477,6 +2480,35 @@ var serviceContext = (function () {
     upx2px: upx2px$1
   });
 
+  const Emitter = new Vue();
+
+  function apply (ctx, method, args) {
+    return ctx[method].apply(ctx, args)
+  }
+
+  function $on$1 () {
+    return apply(Emitter, '$on', [...arguments])
+  }
+
+  function $off$1 () {
+    return apply(Emitter, '$off', [...arguments])
+  }
+
+  function $once$1 () {
+    return apply(Emitter, '$once', [...arguments])
+  }
+
+  function $emit$1 () {
+    return apply(Emitter, '$emit', [...arguments])
+  }
+
+  var eventApis = /*#__PURE__*/Object.freeze({
+    $on: $on$1,
+    $off: $off$1,
+    $once: $once$1,
+    $emit: $emit$1
+  });
+
   function unpack (args) {
     return args
   }
@@ -4101,6 +4133,227 @@ var serviceContext = (function () {
         result = res;
       }
     }, false);
+  }
+
+  function checkIsSupportFaceID () {
+    const platform = plus.os.name.toLowerCase();
+    if (platform !== 'ios') {
+      return false
+    }
+    const faceID = requireNativePlugin('faceID');
+    return !!(faceID && faceID.isSupport())
+  }
+
+  function checkIsSupportFingerPrint () {
+    return !!(plus.fingerprint && plus.fingerprint.isSupport())
+  }
+
+  function checkIsSupportSoterAuthentication () {
+    let supportMode = [];
+    if (checkIsSupportFingerPrint()) {
+      supportMode.push('fingerPrint');
+    }
+    if (checkIsSupportFaceID()) {
+      supportMode.push('facial');
+    }
+    return {
+      supportMode,
+      errMsg: 'checkIsSupportSoterAuthentication:ok'
+    }
+  }
+
+  function checkIsSoterEnrolledInDevice ({
+    checkAuthMode
+  } = {}) {
+    if (checkAuthMode === 'fingerPrint') {
+      if (checkIsSupportFingerPrint()) {
+        const isEnrolled = plus.fingerprint.isKeyguardSecure() && plus.fingerprint.isEnrolledFingerprints();
+        if (isEnrolled) {
+          return {
+            isEnrolled,
+            errMsg: 'checkIsSoterEnrolledInDevice:ok'
+          }
+        } else {
+          return {
+            isEnrolled,
+            errMsg: 'checkIsSoterEnrolledInDevice:ok'
+          }
+        }
+      } else {
+        return {
+          isEnrolled: false,
+          errMsg: 'checkIsSoterEnrolledInDevice:fail not support'
+        }
+      }
+    } else if (checkAuthMode === 'facial') {
+      if (checkIsSupportFaceID()) {
+        const faceID = requireNativePlugin('faceID');
+        const isEnrolled = faceID && faceID.isKeyguardSecure() && faceID.isEnrolledFaceID();
+        if (isEnrolled) {
+          return {
+            isEnrolled,
+            errMsg: 'checkIsSoterEnrolledInDevice:ok'
+          }
+        } else {
+          return {
+            isEnrolled,
+            errMsg: 'checkIsSoterEnrolledInDevice:ok'
+          }
+        }
+      } else {
+        return {
+          isEnrolled: false,
+          errMsg: 'checkIsSoterEnrolledInDevice:fail not support'
+        }
+      }
+    } else {
+      return {
+        isEnrolled: false,
+        errMsg: 'checkIsSoterEnrolledInDevice:fail not support'
+      }
+    }
+  }
+
+  function startSoterAuthentication ({
+    requestAuthModes,
+    challenge = false,
+    authContent
+  } = {}, callbackId) {
+    const supportMode = checkIsSupportSoterAuthentication().supportMode;
+    if (supportMode.length === 0) {
+      return {
+        authMode: supportMode[0] || 'fingerPrint',
+        errCode: 90001,
+        errMsg: 'startSoterAuthentication:fail'
+      }
+    }
+    let supportRequestAuthMode = [];
+    requestAuthModes.map((item, index) => {
+      if (supportMode.indexOf(item) > -1) {
+        supportRequestAuthMode.push(item);
+      }
+    });
+    if (supportRequestAuthMode.length === 0) {
+      return {
+        authMode: supportRequestAuthMode[0] || 'fingerPrint',
+        errCode: 90003,
+        errMsg: 'startSoterAuthentication:fail no corresponding mode'
+      }
+    }
+    let enrolledRequestAuthMode = [];
+    supportRequestAuthMode.map((item, index) => {
+      const checked = checkIsSoterEnrolledInDevice({
+        checkAuthMode: item
+      }).isEnrolled;
+      if (checked) {
+        enrolledRequestAuthMode.push(item);
+      }
+    });
+    if (enrolledRequestAuthMode.length === 0) {
+      return {
+        authMode: supportRequestAuthMode[0],
+        errCode: 90011,
+        errMsg: `startSoterAuthentication:fail no ${supportRequestAuthMode[0]} enrolled`
+      }
+    }
+    const realAuthMode = enrolledRequestAuthMode[0];
+    if (realAuthMode === 'fingerPrint') {
+      if (plus.os.name.toLowerCase() === 'android') {
+        plus.nativeUI.showWaiting(authContent || '指纹识别中...').onclose = function () {
+          plus.fingerprint.cancel();
+        };
+      }
+      plus.fingerprint.authenticate(() => {
+        plus.nativeUI.closeWaiting();
+        invoke(callbackId, {
+          authMode: realAuthMode,
+          errCode: 0,
+          errMsg: 'startSoterAuthentication:ok'
+        });
+      }, (e) => {
+        switch (e.code) {
+          case e.AUTHENTICATE_MISMATCH:
+            // 微信小程序没有这个回调，如果要实现此处回调需要多次触发需要用事件publish实现
+            // invoke(callbackId, {
+            //   authMode: realAuthMode,
+            //   errCode: 90009,
+            //   errMsg: 'startSoterAuthentication:fail'
+            // })
+            break
+          case e.AUTHENTICATE_OVERLIMIT:
+            // 微信小程序在第一次重试次数超限时安卓IOS返回不一致，安卓端会返回次数超过限制（errCode: 90010），IOS端会返回认证失败（errCode: 90009）。APP-IOS实际运行时不会次数超限，超过指定次数之后会弹出输入密码的界面
+            plus.nativeUI.closeWaiting();
+            invoke(callbackId, {
+              authMode: realAuthMode,
+              errCode: 90010,
+              errMsg: 'startSoterAuthentication:fail authenticate freeze. please try again later'
+            });
+            break
+          case e.CANCEL:
+            plus.nativeUI.closeWaiting();
+            invoke(callbackId, {
+              authMode: realAuthMode,
+              errCode: 90008,
+              errMsg: 'startSoterAuthentication:fail cancel'
+            });
+            break
+          default:
+            plus.nativeUI.closeWaiting();
+            invoke(callbackId, {
+              authMode: realAuthMode,
+              errCode: 90007,
+              errMsg: 'startSoterAuthentication:fail'
+            });
+            break
+        }
+      }, {
+        message: authContent
+      });
+    } else if (realAuthMode === 'facial') {
+      const faceID = requireNativePlugin('faceID');
+      faceID.authenticate({
+        message: authContent
+      }, (e) => {
+        if (e.type === 'success' && e.code === 1) {
+          invoke(callbackId, {
+            authMode: realAuthMode,
+            errCode: 0,
+            errMsg: 'startSoterAuthentication:ok'
+          });
+        } else {
+          switch (e.code) {
+            case 4:
+              invoke(callbackId, {
+                authMode: realAuthMode,
+                errCode: 90009,
+                errMsg: 'startSoterAuthentication:fail'
+              });
+              break
+            case 5:
+              invoke(callbackId, {
+                authMode: realAuthMode,
+                errCode: 90010,
+                errMsg: 'startSoterAuthentication:fail authenticate freeze. please try again later'
+              });
+              break
+            case 6:
+              invoke(callbackId, {
+                authMode: realAuthMode,
+                errCode: 90008,
+                errMsg: 'startSoterAuthentication:fail cancel'
+              });
+              break
+            default:
+              invoke(callbackId, {
+                authMode: realAuthMode,
+                errCode: 90007,
+                errMsg: 'startSoterAuthentication:fail'
+              });
+              break
+          }
+        }
+      });
+    }
   }
 
   const TABBAR_HEIGHT = 50;
@@ -7885,12 +8138,16 @@ var serviceContext = (function () {
   var api = /*#__PURE__*/Object.freeze({
     startPullDownRefresh: startPullDownRefresh,
     stopPullDownRefresh: stopPullDownRefresh,
-    getImageInfo: getImageInfo$1,
-    createAudioInstance: createAudioInstance,
-    destroyAudioInstance: destroyAudioInstance,
-    setAudioState: setAudioState,
-    getAudioState: getAudioState,
-    operateAudio: operateAudio,
+    compressImage: compressImage,
+    $on: $on$1,
+    $off: $off$1,
+    $once: $once$1,
+    $emit: $emit$1,
+    getMusicPlayerState: getMusicPlayerState,
+    operateMusicPlayer: operateMusicPlayer,
+    setBackgroundAudioState: setBackgroundAudioState,
+    operateBackgroundAudio: operateBackgroundAudio,
+    getBackgroundAudioState: getBackgroundAudioState,
     base64ToTempFilePath: base64ToTempFilePath,
     operateMapPlayer: operateMapPlayer$2,
     operateVideoPlayer: operateVideoPlayer$2,
@@ -7927,6 +8184,9 @@ var serviceContext = (function () {
     SCAN_ID: SCAN_ID,
     SCAN_PATH: SCAN_PATH,
     scanCode: scanCode,
+    checkIsSupportSoterAuthentication: checkIsSupportSoterAuthentication,
+    checkIsSoterEnrolledInDevice: checkIsSoterEnrolledInDevice,
+    startSoterAuthentication: startSoterAuthentication,
     getSystemInfoSync: getSystemInfoSync,
     getSystemInfo: getSystemInfo,
     vibrateLong: vibrateLong,
@@ -7947,12 +8207,12 @@ var serviceContext = (function () {
     stopVoice: stopVoice,
     chooseImage: chooseImage$1,
     chooseVideo: chooseVideo$1,
-    compressImage: compressImage,
-    getMusicPlayerState: getMusicPlayerState,
-    operateMusicPlayer: operateMusicPlayer,
-    setBackgroundAudioState: setBackgroundAudioState,
-    operateBackgroundAudio: operateBackgroundAudio,
-    getBackgroundAudioState: getBackgroundAudioState,
+    createAudioInstance: createAudioInstance,
+    destroyAudioInstance: destroyAudioInstance,
+    setAudioState: setAudioState,
+    getAudioState: getAudioState,
+    operateAudio: operateAudio,
+    getImageInfo: getImageInfo$1,
     previewImage: previewImage$1,
     operateRecorder: operateRecorder,
     saveImageToPhotosAlbum: saveImageToPhotosAlbum,
@@ -8004,35 +8264,6 @@ var serviceContext = (function () {
     hideTabBar: hideTabBar$2,
     showTabBar: showTabBar$2,
     requestComponentInfo: requestComponentInfo$2
-  });
-
-  const Emitter = new Vue();
-
-  function apply (ctx, method, args) {
-    return ctx[method].apply(ctx, args)
-  }
-
-  function $on$1 () {
-    return apply(Emitter, '$on', [...arguments])
-  }
-
-  function $off$1 () {
-    return apply(Emitter, '$off', [...arguments])
-  }
-
-  function $once$1 () {
-    return apply(Emitter, '$once', [...arguments])
-  }
-
-  function $emit$1 () {
-    return apply(Emitter, '$emit', [...arguments])
-  }
-
-  var eventApis = /*#__PURE__*/Object.freeze({
-    $on: $on$1,
-    $off: $off$1,
-    $once: $once$1,
-    $emit: $emit$1
   });
 
   var platformApi = Object.assign(Object.create(null), api, eventApis);
@@ -10534,16 +10765,17 @@ var serviceContext = (function () {
   }
 
   function callHook (vm, hook, params) {
-    return (vm.$vm || vm).__call_hook(hook, params)
+    vm = vm.$vm || vm;
+    return vm.__call_hook && vm.__call_hook(hook, params)
   }
 
   function callAppHook (vm, hook, params) {
     if (hook !== 'onError') {
       console.debug(`App：${hook} have been invoked` + (params ? ` ${JSON.stringify(params)}` : ''));
     }
-    return (vm.$vm || vm).__call_hook(hook, params)
+    vm = vm.$vm || vm;
+    return vm.__call_hook && vm.__call_hook(hook, params)
   }
-
   function callPageHook (vm, hook, params) {
     if (hook !== 'onPageScroll') {
       console.debug(`${vm.$page.route}[${vm.$page.id}]：${hook} have been invoked`);
@@ -11557,6 +11789,14 @@ var serviceContext = (function () {
           return this.$root.$scope.$page
         }
       });
+      // 兼容旧版本
+      Object.defineProperty(Vue.prototype, '$mp', {
+        get () {
+          return {
+            page: this.$root.$scope
+          }
+        }
+      });
 
       const oldMount = Vue.prototype.$mount;
       Vue.prototype.$mount = function mount (el, hydrating) {
@@ -11575,7 +11815,10 @@ var serviceContext = (function () {
         ) {
           vdSyncCallbacks.push(cb);
         } else {
-          Vue.nextTick(cb);
+          // $nextTick bind vm context
+          Vue.nextTick(() => {
+            cb.call(this);
+          });
         }
       };
     }

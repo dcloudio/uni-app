@@ -32,7 +32,7 @@ export default {
     Object.defineProperty(Vue.prototype, '$mp', {
       get () {
         return {
-          page: this.$root.$scope.$page
+          page: this.$root.$scope
         }
       }
     })
@@ -55,7 +55,9 @@ export default {
         vdSyncCallbacks.push(cb)
       } else {
         // $nextTick bind vm context
-        Vue.nextTick.call(this, cb)
+        Vue.nextTick(() => {
+          cb.call(this)
+        })
       }
     }
   }
