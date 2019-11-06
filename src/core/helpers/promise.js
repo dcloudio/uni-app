@@ -24,7 +24,7 @@ export function isSyncApi (name) {
 }
 
 export function isCallbackApi (name) {
-  return CALLBACK_API_RE.test(name)
+  return CALLBACK_API_RE.test(name) && name !== 'onPush'
 }
 
 export function isTaskApi (name) {
