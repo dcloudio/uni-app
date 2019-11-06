@@ -27,11 +27,9 @@ if (process.env.UNI_PLATFORM === 'h5' && process.env.UNI_UI === 'true') {
   entry = './lib/' + process.env.UNI_PLATFORM + '/ui.js'
 }
 
-let formats = process.env.UNI_WATCH === 'true' ? 'umd' : 'umd-min'
 if (process.env.UNI_PLATFORM === 'app-plus' && process.env.UNI_VIEW === 'true') {
   name = 'uni'
   filename = 'view'
-  formats = 'umd'
   entry = './lib/' + process.env.UNI_PLATFORM + '/view.js'
 }
 service.run('build', {
@@ -39,11 +37,11 @@ service.run('build', {
   filename,
   watch: process.env.UNI_WATCH === 'true',
   target: 'lib',
-  formats,
+  formats: process.env.UNI_WATCH === 'true' ? 'umd' : 'umd-min',
   entry,
   clean: !process.env.UNI_VIEW,
   mode: process.env.NODE_ENV
-}).then(function() {
+}).then(function () {
   if (
     process.env.UNI_WATCH !== 'true' &&
     process.env.UNI_UI !== 'true' &&
@@ -64,7 +62,7 @@ if (process.env.UNI_PLATFORM === 'h5' && process.env.UNI_WATCH === 'false') {
   const packageJsonPath = path.join(packagePath, 'package.json')
   del(path.join(packagePath, '{lib,src}'))
     .then(() => {
-      copy([path.join(__dirname, '../{lib,src}/**/*')], packagePath, function(err, file) {
+      copy([path.join(__dirname, '../{lib,src}/**/*')], packagePath, function (err, file) {
         if (err) {
           throw err
         }

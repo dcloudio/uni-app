@@ -151,9 +151,12 @@ const PLATFORMS = {
       if (process.env.UNI_USING_V3) {
         view = getCopyOptions([
           require.resolve('@dcloudio/uni-app-plus/dist/view.css'),
-          require.resolve('@dcloudio/uni-app-plus/dist/view.umd.js')
+          require.resolve('@dcloudio/uni-app-plus/dist/view.umd.min.js')
         ])
-        template = getCopyOptions([path.resolve(__dirname, '../template')])
+        template = [
+          ...getCopyOptions([path.resolve(__dirname, '../template/common')]),
+          ...getCopyOptions([path.resolve(__dirname, '../template/v3')])
+        ]
       }
       return [
         ...view,

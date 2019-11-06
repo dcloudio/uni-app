@@ -164,10 +164,7 @@ rules.unshift({
 if (process.env.UNI_USING_NATIVE) {
   plugins.push(new WebpackUniMPPlugin())
 
-  let nativeTemplatePath = path.resolve(
-    process.env.UNI_HBUILDERX_PLUGINS,
-    'weapp-tools/template/v8-native'
-  )
+  let nativeTemplatePath = path.resolve(__dirname, '../../uni-cli-shared/template/common')
 
   if (!fs.existsSync(nativeTemplatePath)) { // 兼容旧版本
     nativeTemplatePath = path.resolve(
