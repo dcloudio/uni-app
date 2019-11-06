@@ -21,11 +21,20 @@ export default function parseBaseComponent (vueComponentOptions, {
 } = {}) {
   let [VueComponent, vueOptions] = initVueComponent(Vue, vueComponentOptions)
 
+  const options = {
+    multipleSlots: true,
+    addGlobalClass: true
+  }
+
+  if (__PLATFORM__ === 'mp-weixin') {
+    // 微信multipleSlots  部分情况有 bug，导致内容顺序错乱 如 u-list，提供覆盖选项
+    if (vueOptions['mp-weixin'] && vueOptions['mp-weixin']['options']) {
+      Object.assign(options, vueOptions['mp-weixin']['options'])
+    }
+  }
+
   const componentOptions = {
-    options: {
-      multipleSlots: true,
-      addGlobalClass: true
-    },
+    options,
     data: initData(vueOptions, Vue.prototype),
     behaviors: initBehaviors(vueOptions, initBehavior),
     properties: initProperties(vueOptions.props, false, vueOptions.__file),
