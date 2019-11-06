@@ -15,6 +15,7 @@ export * from './device/get-network-type'
 export * from './device/ibeacon'
 export * from './device/make-phone-call'
 export * from './device/scan-code'
+export * from './device/soter-authentication'
 export * from './device/system'
 export * from './device/vibrate'
 
