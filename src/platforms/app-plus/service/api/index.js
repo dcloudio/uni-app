@@ -1,3 +1,4 @@
+export * from './base/event-bus'
 export * from './context/audio'
 export * from './context/background-audio'
 export * from './context/canvas'
