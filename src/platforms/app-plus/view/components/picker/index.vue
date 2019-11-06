@@ -110,9 +110,9 @@ export default {
     Object.keys(this.$props).forEach(key => {
       if (key !== 'name') {
         this.$watch(key, (val) => {
-          this._updatePicker({
-            key: val
-          })
+          const data = {}
+          data[key] = val
+          this._updatePicker(data)
         })
       }
     })

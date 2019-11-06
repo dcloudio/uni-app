@@ -1,21 +1,31 @@
-function getPageType () {
-  return typeof window === 'object' && typeof navigator === 'object' && typeof document === 'object' ? 'vue' : 'nvue'
+let plus_
+let weex_
+let uni_
+
+let runtime
+
+function getRuntime () {
+  return runtime || (runtime = typeof window === 'object' && typeof navigator === 'object' && typeof document ===
+    'object'
+    ? 'webview' : 'v8')
 }
 
-let pageId
+function setRuntime (value) {
+  runtime = value
+}
 
 function getPageId () {
-  return pageId || (pageId = plus.webview.currentWebview().id)
+  return plus_.webview.currentWebview().id
 }
 
 let initedEventListener = false
 const callbacks = {}
 
 function addEventListener (pageId, callback) {
-  let type = getPageType()
+  const runtime = getRuntime()
 
   function onPlusMessage (res) {
-    const message = res.data.__message
+    const message = res.data && res.data.__message
     if (!message || !message.__page) {
       return
     }
@@ -27,9 +37,11 @@ function addEventListener (pageId, callback) {
     }
   }
   if (!initedEventListener) {
-    if (type === 'nvue') {
-      const globalEvent = weex.requireModule('globalEvent')
+    if (runtime === 'v8') {
+      const globalEvent = weex_.requireModule('globalEvent')
       globalEvent.addEventListener('plusMessage', onPlusMessage)
+    } else if (runtime === 'v8-native') {
+      uni_.$on(getPageId(), onPlusMessage)
     } else {
       window.__plusMessage = onPlusMessage
     }
@@ -43,23 +55,51 @@ class Page {
     this.webview = webview
   }
   sendMessage (data) {
-    plus.webview.postMessageToUniNView({
+    const runtime = getRuntime()
+    const message = {
       __message: {
         data
       }
-    }, this.webview.id)
+    }
+    if (runtime === 'v8-native') {
+      uni_.$emit(this.webview.id, {
+        data: JSON.parse(JSON.stringify(message))
+      })
+    } else {
+      plus_.webview.postMessageToUniNView(message, this.webview.id)
+    }
+  }
+  close () {
+    this.webview.close()
   }
 }
 
 export function showPage ({
+  context,
+  runtime,
   url,
   data = {},
   style = {},
   onMessage,
   onClose
 }) {
-  const type = getPageType()
-  const fromId = getPageId()
+  if (context) {
+    plus_ = context.plus
+    weex_ = context.weex
+    uni_ = context.uni
+  } else {
+    // eslint-disable-next-line
+    plus_ = typeof plus === 'object' ? plus : null
+    // eslint-disable-next-line
+    weex_ = typeof weex === 'object' ? weex : null
+    // eslint-disable-next-line
+    uni_ = typeof uni === 'object' ? uni : null
+  }
+  if (runtime) {
+    setRuntime(runtime)
+  } else {
+    runtime = getRuntime()
+  }
   const titleNView = {
     autoBackButton: true,
     titleSize: '17px'
@@ -78,13 +118,13 @@ export function showPage ({
     animationType: 'pop-in',
     animationDuration: 200,
     uniNView: {
-      path: `_www/${url}.js?from=${fromId}&type=${type}&data=${encodeURIComponent(JSON.stringify(data))}`,
-      defaultFontSize: plus.screen.resolutionWidth / 20,
-      viewport: plus.screen.resolutionWidth
+      path: `/${url}.js?from=${getPageId()}&runtime=${runtime}&data=${encodeURIComponent(JSON.stringify(data))}`,
+      defaultFontSize: plus_.screen.resolutionWidth / 20,
+      viewport: plus_.screen.resolutionWidth
     }
   }
   style = Object.assign(defaultStyle, style)
-  const page = plus.webview.create('', pageId, style)
+  const page = plus_.webview.create('', pageId, style)
   page.addEventListener('close', onClose)
   addEventListener(pageId, message => {
     if (typeof onMessage === 'function') {
