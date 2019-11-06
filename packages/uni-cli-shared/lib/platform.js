@@ -133,6 +133,7 @@ const PLATFORMS = {
       vueOptions
     }) {
       if (
+        vueOptions &&
         vueOptions.pluginOptions['uni-app-plus'] &&
         vueOptions.pluginOptions['uni-app-plus']['view']
       ) { // app-view 无需拷贝资源(app-service 已经做了)
