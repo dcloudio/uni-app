@@ -30,14 +30,14 @@ const methods = [
   '$getAppMap'
 ]
 
-const events = [
-  'markertap',
-  'callouttap',
-  'controltap',
-  'regionchange',
-  'tap',
-  'updated'
-]
+// const events = [
+//   'markertap',
+//   'callouttap',
+//   'controltap',
+//   'regionchange',
+//   'tap',
+//   'updated'
+// ]
 
 const attrs = [
   'latitude',
@@ -60,6 +60,20 @@ const convertCoordinates = (lng, lat, callback) => {
       longitude: lng
     }
   })
+}
+
+function parseHex (color) {
+  if (color.indexOf('#') !== 0) {
+    return {
+      color,
+      opacity: 1
+    }
+  }
+  const opacity = color.substr(7, 2)
+  return {
+    color: color.substr(0, 7),
+    opacity: opacity ? Number('0x' + opacity) / 255 : 1
+  }
 }
 
 export default {
@@ -201,11 +215,11 @@ export default {
     },
     getRegion () {
       // TODO
-      const region = this.map.getBounds()
+      // const region = this.map.getBounds()
     },
     getScale () {
       // TODO
-      const zoom = this.map.getZoom()
+      // const zoom = this.map.getZoom()
     },
     _updateStyle () {
       const rect = this.$refs.container.getBoundingClientRect()
@@ -236,14 +250,14 @@ export default {
     _addMarker (nativeMap, marker) {
       const {
         id,
-        title,
+        // title,
         latitude,
         longitude,
         iconPath,
-        width,
-        height,
-        rotate,
-        alpha,
+        // width,
+        // height,
+        // rotate,
+        // alpha,
         callout,
         label
       } = marker
@@ -335,12 +349,12 @@ export default {
       lines.forEach(line => {
         const {
           color,
-          width,
-          dottedLine,
-          arrowLine,
-          arrowIconPath,
-          borderColor,
-          borderWidth
+          width
+          // dottedLine,
+          // arrowLine,
+          // arrowIconPath,
+          // borderColor,
+          // borderWidth
         } = line
         const points = line.points.map(point => new plus.maps.Point(point.longitude, point.latitude))
         const polyline = new plus.maps.Polyline(points)
