@@ -28,6 +28,14 @@ export default {
         return this.$root.$scope.$page
       }
     })
+    // 兼容旧版本
+    Object.defineProperty(Vue.prototype, '$mp', {
+      get () {
+        return {
+          page: this.$root.$scope.$page
+        }
+      }
+    })
 
     const oldMount = Vue.prototype.$mount
     Vue.prototype.$mount = function mount (el, hydrating) {
@@ -46,7 +54,8 @@ export default {
       ) {
         vdSyncCallbacks.push(cb)
       } else {
-        Vue.nextTick(cb)
+        // $nextTick bind vm context
+        Vue.nextTick.call(this, cb)
       }
     }
   }
