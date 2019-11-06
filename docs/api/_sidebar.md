@@ -119,7 +119,6 @@
   * [获取发票抬头](api/other/invoice-title.md)
   * [小程序跳转](api/other/open-miniprogram.md)
   * [账号信息](api/other/getAccountInfoSync.md)
-  * [生物认证(指纹及人脸识别)](api/other/authentication.md)
   * [运动(计步器)](api/other/sport.md)
   * [统计](api/other/report.md)
   * [卡券](api/other/card.md)
