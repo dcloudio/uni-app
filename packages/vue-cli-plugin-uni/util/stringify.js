@@ -20,9 +20,8 @@ module.exports = function stringify (errors) {
                   result.line = 1
                 }
                 return `${result.message} at ${file}:${result.line || 1}`
-              } else {
-                return `${result.message}`
               }
+              return `${result.message}`
             }
           } else if (result === false) {
             return '' // skip
