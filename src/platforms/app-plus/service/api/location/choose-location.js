@@ -1,55 +1,82 @@
 import {
-  MAP_ID
-} from '../constants'
-
-import {
   invoke
 } from '../../bridge'
 
 import {
-  ANI_DURATION
-} from '../../constants'
+  showPage
+} from '../page.js'
 
-import {
-  registerPlusMessage,
-  consumePlusMessage
-} from '../../framework/plus-message'
+function getStatusBarStyle() {
+  let style = plus.navigator.getStatusBarStyle()
+  if (style === 'UIStatusBarStyleBlackTranslucent' || style === 'UIStatusBarStyleBlackOpaque' || style === 'null') {
+    style = 'light'
+  } else if (style === 'UIStatusBarStyleDefault') {
+    style = 'dark'
+  }
+  return style
+}
 
-const CHOOSE_LOCATION_PATH = '_www/__uniappchooselocation.html'
+export function chooseLocation(options, callbackId) {
+  const statusBarStyle = getStatusBarStyle()
+  const isDark = statusBarStyle !== 'light'
 
-const MESSAGE_TYPE = 'chooseLocation'
-
-export function chooseLocation (params, callbackId) {
-  const statusBarStyle = plus.navigator.getStatusBarStyle()
-  const webview = plus.webview.create(
-    CHOOSE_LOCATION_PATH,
-    MAP_ID, {
+  let result
+  const page = showPage({
+    url: '__uniappchooselocation',
+    data: {
+      keyword: options.keyword
+    },
+    style: {
+      animationType: options.animationType || 'slide-in-bottom',
       titleNView: {
-        autoBackButton: true,
-        backgroundColor: '#000000',
+        autoBackButton: false,
+        titleText: options.titleText || "选择位置",
         titleColor: '#ffffff',
-        titleText: '选择位置',
-        titleSize: '17px',
+        backgroundColor: 'rgba(0,0,0,1)',
         buttons: [{
-          float: 'right',
-          text: '完成',
-          fontSize: '17px',
-          onclick: function () {
-            webview.evalJS('__chooseLocationConfirm__()')
+          // text: options.cancelText || "取消",
+          // fontSize: "17px",
+          type: "close",
+          float: "left",
+          onclick: () => {
+            page.close()
+          }
+        }, {
+          text: options.doneText || "完成",
+          fontSize: "17px",
+          onclick: () => {
+            page.sendMessage({
+              type: "done"
+            })
           }
         }]
       },
       popGesture: 'close',
       scrollIndicator: 'none'
-    }, {
-      __uniapp_type: 'map',
-      __uniapp_statusbar_style: statusBarStyle,
-      'uni-app': 'none'
+    },
+    onMessage({
+      event,
+      detail
+    }) {
+      if (event === 'selected') {
+        result = detail
+        result.errMsg = 'chooseLocation:ok'
+      }
+    },
+    onClose() {
+      if (isDark) {
+        plus.navigator.setStatusBarStyle('dark')
+      }
+
+      invoke(callbackId, result || {
+        errMsg: 'chooseLocation:fail cancel'
+      })
     }
-  )
-  if (statusBarStyle === 'dark') {
+  })
+
+  if (isDark) {
     plus.navigator.setStatusBarStyle('light')
-    webview.addEventListener('popGesture', ({
+    page.webview.addEventListener('popGesture', ({
       type,
       result
     }) => {
@@ -60,38 +87,4 @@ export function chooseLocation (params, callbackId) {
       }
     })
   }
-  let index = 0
-  let onShow = function () {
-    index++
-    if (index === 2) {
-      webview.evalJS(`__chooseLocation__(${JSON.stringify(params)})`)
-    }
-  }
-  webview.addEventListener('loaded', onShow)
-  webview.show('slide-in-bottom', ANI_DURATION, onShow)
-
-  let result
-
-  webview.addEventListener('close', () => {
-    if (result) {
-      invoke(callbackId, {
-        name: result.poiname,
-        address: result.poiaddress,
-        latitude: result.latlng.lat,
-        longitude: result.latlng.lng,
-        errMsg: 'chooseLocation:ok'
-      })
-    } else {
-      consumePlusMessage(MESSAGE_TYPE)
-      invoke(callbackId, {
-        errMsg: 'chooseLocation:fail cancel'
-      })
-    }
-  })
-
-  registerPlusMessage(MESSAGE_TYPE, function (res) {
-    if (res && 'latlng' in res) {
-      result = res
-    }
-  }, false)
 }
