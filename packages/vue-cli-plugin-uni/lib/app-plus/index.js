@@ -79,7 +79,9 @@ const v3 = {
       externals: {
         vue: 'Vue'
       },
-      entry,
+      entry () {
+        return entry
+      },
       output: {
         filename: '[name].js',
         chunkFilename: '[id].js',
