@@ -92,8 +92,6 @@ uni.showToast({
 
 进入 ``uni-app`` 项目，`点击工具栏的运行 -> 运行到浏览器 -> 选择 Chrome`，即可将 `uni-app`运行到 浏览器，可参考 [运行uni-app](/quickstart?id=运行uni-app)，运行到浏览器后，就能和普通 `web` 项目一样进行预览和调试了。
 
-**注意**：`Chrome`调试只能保证样式一致，部分原生能力是不支持的。
-
 点 `Chrome` 控制台的 `Sources` 栏，可以给 js 打断点调试。
 
 在 `Page` 下找到 `webpack` 里的工程目录，可直接找到对应的`vue`页面进行断点调试；或按 `Ctrl+P`搜文件名，进入页面调试；也可点击控制台的 `log` 信息，进入对应的页面进行调试。
@@ -101,6 +99,8 @@ uni.showToast({
 ![](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/chrome-debug1.png)
 
 ![](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/chrome-debug2.png)
+
+点击HBuilderX的右上角的预览按钮，可以在内置浏览器里打开H5运行结果，也可以点右键打开控制台调试，方法同上。
 
 ### 使用各家小程序开发工具调试
 
@@ -110,7 +110,7 @@ uni.showToast({
 
 ![uni-app](//img-cdn-qiniu.dcloud.net.cn/uniapp/doc/debug1.png)
 
-调试 `js` 时需要切换到 `Sources` 栏，选中想要调试的那个页面的`js`，进行调试（如果`js`代码是压缩过的，点击右下角的{}可格式化代码），如下图：
+调试 `js` 时需要切换到 `Sources` 栏，根据sourcemap，找到 `webpack` 里正确的目录，选中想要调试的那个页面的`js`，进行调试（如果`js`代码是压缩过的，点击右下角的{}可格式化代码），如下图：
 
 ![uni-app](//img-cdn-qiniu.dcloud.net.cn/uniapp/doc/debug2.png)
 
