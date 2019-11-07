@@ -14,11 +14,14 @@ module.exports = function stringify (errors) {
             if (typeof result === 'string') {
               return result
             } else {
-              const file = path.relative(process.env.UNI_INPUT_DIR, err.module.resource).split('?')[0]
-              if (file === 'pages.json') {
-                result.line = 1
+              if (err.module.resource) {
+                const file = path.relative(process.env.UNI_INPUT_DIR, err.module.resource).split('?')[0]
+                if (file === 'pages.json') {
+                  result.line = 1
+                }
+                return `${result.message} at ${file}:${result.line || 1}`
               }
-              return `${result.message} at ${file}:${result.line || 1}`
+              return `${result.message}`
             }
           } else if (result === false) {
             return '' // skip

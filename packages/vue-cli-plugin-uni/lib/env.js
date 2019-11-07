@@ -254,6 +254,8 @@ if (runByHBuilderX) {
   }
 }
 
+console.log(`正在编译中...`)
+
 module.exports = {
   manifestPlatformOptions: platformOptions
 }
