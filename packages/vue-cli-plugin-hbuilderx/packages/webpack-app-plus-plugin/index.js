@@ -20,8 +20,9 @@ class WebpackAppPlusPlugin {
 
       const chunkVersions = {}
 
-      const isAppService = compiler.options.entry['app-service']
-      const isAppView = compiler.options.entry['app-view']
+      const entry = compiler.options.entry()
+      const isAppService = entry['app-service']
+      const isAppView = entry['app-view']
 
       compiler.hooks.beforeCompile.tapAsync('WebpackAppPlusPlugin', (params, callback) => {
         isAppService && (serviceCompiled = false)
