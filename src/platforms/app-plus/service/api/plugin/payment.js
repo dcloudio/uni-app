@@ -14,9 +14,8 @@ export function requestPayment (params, callbackId) {
       })
     } else {
       plus.payment.request(service, params.orderInfo, res => {
-        invoke(callbackId, {
-          errMsg: 'requestPayment:ok'
-        })
+        res.errMsg = 'requestPayment:ok'
+        invoke(callbackId, res)
       }, err => {
         invoke(callbackId, {
           errMsg: 'requestPayment:fail:' + err.message
