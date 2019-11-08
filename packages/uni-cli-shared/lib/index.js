@@ -30,7 +30,8 @@ const {
   removeExt,
   normalizePath,
   getComponentName,
-  convertStaticStyle
+  convertStaticStyle,
+  getTemplatePath
 } = require('./util')
 
 const {
@@ -102,6 +103,7 @@ module.exports = {
   parseManifestJson,
   getComponentName,
   convertStaticStyle,
+  getTemplatePath,
   jsPreprocessOptions,
   cssPreprocessOptions,
   htmlPreprocessOptions,
