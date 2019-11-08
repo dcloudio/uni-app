@@ -86,7 +86,6 @@ uni.getLocation({
 **注意**
 - 因平台差异，如果SDK配置百度地图，需要设置keyword，才能显示相关地点
 - nvue下只支持高德地图，不支持百度地图
-- 纯nvue项目（manifest中renderer为native），暂不支持此API。可自行基于map组件封装。
 
 
 **success 返回参数说明**
