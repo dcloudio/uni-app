@@ -209,11 +209,11 @@ module.exports = function (pagesJson, userManifestJson) {
 
   let flexDir = false
 
-  if (manifestJson.plus.nvueCompiler && manifestJson.plus.nvueCompiler === 'uni-app') {
+  if (manifestJson.plus.nvueCompiler && manifestJson.plus.nvueCompiler === 'weex') {
+    appJson.nvueCompiler = 'weex'
+  } else {
     appJson.nvueCompiler = 'uni-app'
     flexDir = getFlexDirection(manifestJson.plus)
-  } else {
-    appJson.nvueCompiler = 'weex'
   }
 
   if (manifestJson.plus.renderer === 'native') {
