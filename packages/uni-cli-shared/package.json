@@ -9,7 +9,8 @@
     "directory": "packages/uni-cli-shared"
   },
   "files": [
-    "lib"
+    "lib",
+    "template"
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
