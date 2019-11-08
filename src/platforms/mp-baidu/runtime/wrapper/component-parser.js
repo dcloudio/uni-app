@@ -32,6 +32,12 @@ export default function parseComponent (vueOptions) {
       }
       // TODO  3.105.17以下基础库内百度 Component 作为页面时，methods 中的 onShow 不触发
       !newLifecycle && this.$vm.__call_hook('onShow')
+    } else {
+      // 百度小程序组件不触发methods内的onReady
+      if (this.$vm) {
+        this.$vm._isMounted = true
+        this.$vm.__call_hook('mounted')
+      }
     }
   }
 
