@@ -89,11 +89,11 @@ export function scanCode ({
   const buttons = []
   if (!onlyFromCamera) {
     buttons.push({
-      'float': 'right',
-      'text': '相册',
-      'fontSize': '17px',
-      'width': '60px',
-      'onclick': function () {
+      float: 'right',
+      text: '相册',
+      fontSize: '17px',
+      width: '60px',
+      onclick: function () {
         plus.gallery.pick(file => {
           barcode.scan(file, (type, code) => {
             if (isDark) {
