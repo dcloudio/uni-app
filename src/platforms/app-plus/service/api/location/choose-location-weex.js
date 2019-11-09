@@ -44,6 +44,7 @@ export function chooseLocation (options, callbackId) {
         }, {
           text: options.doneText || '完成',
           fontSize: '17px',
+          width: '60px',
           onclick: () => {
             page.sendMessage({
               type: 'done'

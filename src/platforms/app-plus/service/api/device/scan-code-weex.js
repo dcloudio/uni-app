@@ -37,6 +37,7 @@ export function scanCode (options, callbackId) {
         buttons: !options.onlyFromCamera ? [{
           text: options.albumText || '相册',
           fontSize: '17px',
+          width: '60px',
           onclick: () => {
             page.sendMessage({
               type: 'gallery'

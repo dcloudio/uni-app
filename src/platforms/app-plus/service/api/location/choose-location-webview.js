@@ -34,6 +34,7 @@ export function chooseLocation (params, callbackId) {
           float: 'right',
           text: '完成',
           fontSize: '17px',
+          width: '60px',
           onclick: function () {
             webview.evalJS('__chooseLocationConfirm__()')
           }
