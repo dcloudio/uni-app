@@ -600,6 +600,7 @@ var PROP_NAME_GROUPS = {
   },
   common: {
     opacity: NUMBER_VALIDATOR,
+    boxShadow: ANYTHING_VALIDATOR,
     backgroundColor: COLOR_VALIDATOR,
     backgroundImage: ANYTHING_VALIDATOR
   },
