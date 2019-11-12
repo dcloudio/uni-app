@@ -540,7 +540,7 @@ ES6 API 的支持，详见如下表格部分（`x` 表示不支持，无特殊�
 |String|iOS8|iOS9|iOS10|Android|
 |:-|:-|:-|:-|:-|
 |codePointAt|||||
-|normalize|x|x||x|
+|normalize|x|x||仅支持 NFD/NFC|
 |includes|||||
 |startsWith|||||
 |endsWith|||||
