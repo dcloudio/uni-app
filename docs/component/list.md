@@ -25,9 +25,10 @@ app端nvue专用组件。在app-nvue下，如果是长列表，使用list组件�
 ```
 
 > **注意**
-> - 不允许相同方向的 `<list>` 或者 `<scroll-view>` 互相嵌套，换句话说就是嵌套的 `<list>` / `<scroll-view>` 必须是不同的方向。
+> - 相同方向 `<list>` 或者 `<scroll-view>` 互相嵌套时，Android 平台子 `<list>` 不可滚动，iOS 可以，iOS 有Bounce效果， Android仅可滚动时有
 > - `<list>` 需要显式的设置其宽高，可使用 position: absolute; 定位或 width、height 设置其宽高值。
 > - list是区域滚动，不会触发页面滚动，无法触发pages.json配置的下拉刷新、页面触底onReachBottomDistance、titleNView的transparent透明渐变。
+
 
 #### 子组件
 `<list>` 的子组件只能包括以下四种组件或是 fix 定位的组件，其他形式的组件将不能被正确渲染。
