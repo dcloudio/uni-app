@@ -796,7 +796,10 @@ subPackages 节点接收一个数组，数组每一项都是应用的子包，�
 |root|String|是|子包的根目录|
 |pages|Array|是|子包由哪些页面组成，参数同 [pages](/collocation/pages?id=pages)|
 
-**注意：** ```subPackages``` 里的pages的路径是 ``root`` 下的相对路径，不是全路径。
+**注意：** 
+
+- ```subPackages``` 里的pages的路径是 ``root`` 下的相对路径，不是全路径。
+- uni-app内支持对微信小程序、QQ小程序、百度小程序分包优化，[关于分包优化的说明](/collocation/manifest?id=关于分包优化的说明)
 
 **使用方法：**
 
