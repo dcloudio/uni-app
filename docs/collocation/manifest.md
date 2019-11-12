@@ -297,6 +297,7 @@ Tips：关于摇树优化（treeShaking）原理及优化结果，参考：[http
 |navigateToMiniProgramAppIdList|Array|需要跳转的小程序列表，[详见](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/miniprogram-navigate/wx.navigateToMiniProgram.html)|
 |permission|Object|微信小程序接口权限相关设置，比如申请位置权限必须填此处[详见](https://developers.weixin.qq.com/miniprogram/dev/framework/config.html)|
 |workers|String|Worker 代码放置的目录。 [详见](https://developers.weixin.qq.com/miniprogram/dev/framework/workers.html)|
+|optimization|Object| 对微信小程序的优化配置 |
 
 #### setting
 
@@ -308,6 +309,14 @@ Tips：关于摇树优化（treeShaking）原理及优化结果，参考：[http
 |es6|Boolean|ES6 转 ES5|
 |postcss|Boolean|上传代码时样式是否自动补全|
 |minified|Boolean|上传代码时是否自动压缩|
+
+#### optimization
+
+对微信小程序的优化配置
+
+|属性|类型|说明|
+|:-|:-|:-|
+|subPackages|Boolean|是否开启分包优化|
 
 ### mp-alipay
 
@@ -323,6 +332,15 @@ Tips：关于摇树优化（treeShaking）原理及优化结果，参考：[http
 |usingComponents|Boolean| 是否启用自定义组件模式，`v2.0+`，默认为false，[编译模式区别详情](https://ask.dcloud.net.cn/article/35843)|
 |requiredBackgroundModes|Array|小程序需要在后台使用的能力，目前支持背景音频播放，"requiredBackgroundModes": ["audio"]，[详见](https://smartprogram.baidu.com/docs/develop/tutorial/process/#requiredBackgroundModes)	|
 |prefetches|Array|预请求的所有url的列表，[详见](https://smartprogram.baidu.com/docs/develop/tutorial/process/#prefetches)																|
+|optimization|Object| 对百度小程序的优化配置 |
+
+#### optimization
+
+对百度小程序的优化配置
+
+|属性|类型|说明|
+|:-|:-|:-|
+|subPackages|Boolean|是否开启分包优化|
 
 ### mp-toutiao
 
@@ -352,8 +370,26 @@ Tips：关于摇树优化（treeShaking）原理及优化结果，参考：[http
 |permission						|Object			|小程序接口权限相关设置，比如申请位置权限必须填此处[详见](https://q.qq.com/wiki/develop/miniprogram/frame/dispose.html#permission)														|
 |workers						|String			|Worker 代码放置的目录。 [详见](https://q.qq.com/wiki/develop/miniprogram/frame/dispose.html#workers)																					|
 |groupIdList					|String Array	|需要打开群资料卡的群号列表，详见button的open-type																																		|
+|optimization|Object| 对QQ小程序的优化配置 |
+
+#### optimization
+
+对QQ小程序的优化配置
+
+|属性|类型|说明|
+|:-|:-|:-|
+|subPackages|Boolean|是否开启分包优化|
 
 mp-qq只支持自定义组件模式，不存在usingComponents配置
+
+### 关于分包优化的说明
+
+- 在对应平台的配置下添加`"optimization":{"subPackages":true}`开启分包优化
+- 目前只支持`mp-weixin`、`mp-qq`、`mp-baidu`的分包优化
+- 分包优化具体逻辑：
+  1.针对静态文件：分包下支持 static 等静态资源拷贝
+  2.针对 js 文件：当某个 js 仅被一个分包引用时，该 js 会被打包到该分包内，否则仍打到主包（即被主包引用，或被超过 1 个分包引用）
+  3.针对 自定义组件：若某个自定义组件仅被一个分包引用时，且未放入到分包内，编译时会输出提示信息
 
 
 ### 完整 manifest.json
