@@ -1,6 +1,26 @@
 # uni-app 更新日志
 ======================================
+#### 2.4.0.20191112-alpha
+  * 【重要】nvue文件编译模式默认从 weex 模式修改为 uni-app 模式。推荐使用多端可用、更成熟、组件更丰富的 uni-app 模式。如仍需使用 weex 模式，需在manifest中手动配置
+  * 【重要】uni ui 新版正式发布，同时兼容vue和nvue。欢迎插件市场作者也升级自己的组件，同时兼容nvue [详情](https://uniapp.dcloud.io/component/README?id=uniui)
+  * 【重要】自定义组件模式新增 crypto.getRandomValues 方法，获取符合密码学要求的安全随机值
+  * H5平台 修复 wxs getDataset() 函数获取不到参数的Bug。uni ui 的 swiperaction 组件的问题也因此得到修复 [详情](https://ask.dcloud.net.cn/question/82718)
+  * APP平台 新增 nvue picker 组件支持多列
+  * APP平台 优化 picker、扫码、选择位置、打开位置API的界面通过原生实现，提升性能体验（nvue为weex编译模式时未优化）
+  * APP平台 修复 swiper 设置为autoplay时滑动导致速度加快的BUG [详情](https://ask.dcloud.net.cn/question/82431)
+  * App-iOS平台 修复 nvue页面在iOS13及以上系统默认字体不对的Bug
+  * App-iOS平台 修复 nvue list 组件 scroll 事件返回的 isDragging 属性不正确的Bug [详情](https://github.com/dcloudio/uni-app/issues/932)
+  * App-iOS平台 修复 nvue swiper 组件动态修改 current 属性触发 transition 事件返回的参数不准确的Bug
+  * 百度小程序平台 修复 新版百度小程序生命周期下组件内mounted不触发的BUG
+  * uni ui 优化 uni-swipe-action 组件在nvue中使用 BindingX ，使跟手动画更流畅
+  * uni ui 优化 uni-list 组件在nvue中使用原生list组件，提升性能
+  * 新闻模板 优化 顶部tab栏目增加下滑横线（支持app-nvue、app-vue、h5、微信小程序、qq小程序，其他端暂无下滑横线）
+
 #### 2.3.9.20191104-alpha
+  * App平台 修复 uni.requestPayment API 回调结果中没有支付收据的Bug [详情](https://github.com/dcloudio/uni-app/issues/621#issuecomment-518001954)
+  * App-Android平台 修复 tabBar 页面真机运行可能无法同步更新的Bug
+
+#### 2.3.8.20191103-alpha
   * 【重要】 公告：非自定义组件模式停止支持 [详情](https://ask.dcloud.net.cn/article/36385)
   * App平台 新增 生物认证API，包括指纹和 Apple Face ID [详情](https://uniapp.dcloud.io/api/system/authentication)
   * App-Android平台 修复 64位专用包 启动时概率出现白屏的Bug [详情](https://ask.dcloud.net.cn/question/79556)
