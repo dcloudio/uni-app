@@ -281,6 +281,7 @@ export default {
     this.$watch('mode', this._setValue)
   },
   beforeDestroy () {
+    this.$refs.picker.remove()
     this.$dispatch('Form', 'uni-form-group-update', {
       type: 'remove',
       vm: this
