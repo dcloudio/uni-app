@@ -58,6 +58,7 @@ export function pageScrollTo ({
   // 	bodyStyle.webkitTransform = `translateY(${documentElement.scrollTop}px) translateZ(0)`
 }
 
+let testReachBottomTimer
 export function createScrollListener (pageId, {
   enablePageScroll,
   enablePageReachBottom,
@@ -72,13 +73,12 @@ export function createScrollListener (pageId, {
 
   function isReachBottom () {
     const {
-      clientHeight,
       scrollHeight
     } = document.documentElement
+    // 部分浏览器窗口高度变化后document.documentelement.clientheight不会变化，采用window.innerHeight
+    const windowHeight = window.innerHeight
     const scrollY = window.scrollY
-
-    let isBottom = scrollY > 0 && scrollHeight > clientHeight && (scrollY + clientHeight + onReachBottomDistance) >=
-			scrollHeight
+    let isBottom = scrollY > 0 && scrollHeight > windowHeight && (scrollY + windowHeight + onReachBottomDistance) >= scrollHeight
     if (isBottom && !hasReachBottom) {
       hasReachBottom = true
       return true
@@ -108,18 +108,28 @@ export function createScrollListener (pageId, {
         scrollTop
       })
     }
-
-    if (enablePageReachBottom && onReachBottom && isReachBottom()) {
-      publishHandler('onReachBottom', {}, pageId)
-      onReachBottom = false
-      setTimeout(function () {
-        onReachBottom = true
-      }, 350)
+    function testReachBottom () {
+      if (isReachBottom()) {
+        publishHandler('onReachBottom', {}, pageId)
+        onReachBottom = false
+        setTimeout(function () {
+          onReachBottom = true
+        }, 350)
+        return true
+      }
+    }
+    if (enablePageReachBottom && onReachBottom) {
+      if (testReachBottom()) {
+      } else {
+        // 解决部分浏览器滚动中js获取窗口高度不准确导致的问题
+        testReachBottomTimer = setTimeout(testReachBottom, 300)
+      }
     }
     ticking = false
   }
 
   return function onScroll () {
+    clearTimeout(testReachBottomTimer)
     if (!ticking) {
       requestAnimationFrame(trigger)
     }
