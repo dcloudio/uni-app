@@ -20,12 +20,12 @@ module.exports = function updateComponents(tags) {
   autoloadTags.root.forEach(tagName => {
     tags.add(tagName)
   })
-  tags = [...tags]
   Object.keys(autoloadTags.other).forEach(tagName => {
-    if (tags.includes(tagName)) {
-      tags.push(...autoloadTags.other[tagName])
+    if (tags.has(tagName)) {
+      autoloadTags.other[tagName].forEach(tag => tags.add(tag))
     }
   })
+  tags = [...tags]
   const importsStr = tags.map(tagName => {
     if (platformTags.indexOf(tagName) !== -1) {
       return `import ${capitalize(camelize(tagName))} from 'uni-platform/view/components/${tagName}'`
