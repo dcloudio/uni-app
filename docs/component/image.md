@@ -7,6 +7,7 @@
 |src|String||图片资源地址||
 |mode|String|'scaleToFill'|图片裁剪、缩放的模式|<div style="width:68px;"></div>|
 |lazy-load|Boolean|false|图片懒加载。只针对page与scroll-view下的image有效|微信小程序、5+APP、百度小程序、头条小程序|
+|fede-show|Boolean|true|图片显示动画效果|仅App-nvue 2.3.4+ Android有效|
 |@error|HandleEvent||当错误发生时，发布到 AppService 的事件名，事件对象event.detail = {errMsg: 'something wrong'}||
 |@load|HandleEvent||当图片载入完毕时，发布到 AppService 的事件名，事件对象event.detail = {height:'图片高度px', width:'图片宽度px'}|&nbsp;|
 
