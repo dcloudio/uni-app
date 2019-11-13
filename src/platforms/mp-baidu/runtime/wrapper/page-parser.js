@@ -29,7 +29,7 @@ export default function parsePage (vuePageOptions) {
 
   // 纠正百度小程序新生命周期(2.0)methods:onShow在methods:onLoad之前触发的问题
   if (newLifecycle) {
-  	delete pageOptions.methods.onShow
+    delete pageOptions.methods.onShow
   }
 
   pageOptions.methods.onLoad = function onLoad (args) {
