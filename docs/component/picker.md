@@ -24,10 +24,11 @@
 
 **平台差异说明**
 
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|
-|vue支持，nvue不支持|√|√|x|√|√|
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|vue支持，nvue自2.4起支持|√|√|x|√|√|√|
 
+支付宝小程序 picker 组件不支持多列选择，可以使用 picker-view 组件替代。
 
 **属性说明**
 
@@ -51,9 +52,11 @@
 
 **平台差异说明**
 
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|
-|√|√|√|x|√|√|
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|√|√|√|x|√|√|√|
+
+支付宝小程序平台可使用picker-view装载时间数据来替代实现。
 
 **属性说明**
 
@@ -72,9 +75,11 @@
 
 **平台差异说明**
 
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|
-|√|√|√|x|√|√|
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|√|√|√|x|√|√|√|
+
+支付宝小程序平台可使用picker-view装载日期数据来替代实现。
 
 **属性说明**
 
@@ -102,13 +107,11 @@
 
 **平台差异说明**
 
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|
-|x|x|√|x|√|√|
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|x|x|√|x|√|√|√|
 
-- 因省市区选择器包含大量数据，占用体积，且很多城市数据有自维护需求，所以在App和H5平台没有内置。有两种方案解决：
-	1. 使用mpvue-picker代替，全端通用，自定义性更强，参考： Hello uni-app的模板-多列选择picker，或[插件市场](https://ext.dcloud.net.cn/plugin?id=115)。手机预览网址：[https://uniapp.dcloud.io/h5/pages/template/mpvue-picker/mpvue-picker](https://uniapp.dcloud.io/h5/pages/template/mpvue-picker/mpvue-picker)
-	2. 在H5和App平台使用多列选择器，自行填充城市数据（上述mpvue-picker或hello uni-app自带城市数据city.data.js）
+- 因省市区选择器包含大量数据，占用体积，并非所有应用都需要，且很多城市数据有自维护需求，所以在App和H5平台没有内置。可以基于多列picker或picker-view，自行填充城市数据，插件市场有较多类似插件，[详见](https://ext.dcloud.net.cn/search?q=%E5%9F%8E%E5%B8%82%E9%80%89%E6%8B%A9)。注意基于多列picker方式的地区选择不能运行在支付宝小程序上，只有基于picker-view的可以全端运行。已知mpvue-picker插件是基于picker-view的。
 
 |属性名|类型|默认值|说明|
 |:-|:-|:-|:-|
@@ -227,5 +230,4 @@ export default {
 
 **注意**
 - 在picker内容还在滚动时或滚动回弹动画还未结束时，点确定关闭弹出的picker，数据无法及时更新。需等待一下，或手动触停滚动再点确定。所有平台均如此
-- app-nvue 平台，mode 目前仅支持 ``selector`` ``time`` ``date``
-- 如果需要在PC端使用`picker`，可以配置[H5模版](https://uniapp.dcloud.io/collocation/manifest?id=h5-template)，并引入[touch-emulator.js](https://github.com/dcloudio/touchemulator)
+- 如果需要在PC端使用`picker`，需注意pc端没有touchmove事件，可以配置[H5模版](https://uniapp.dcloud.io/collocation/manifest?id=h5-template)，并引入[touch-emulator.js](https://github.com/dcloudio/touchemulator)来解决。hello uni-app的pc版也是使用了这个方案。
