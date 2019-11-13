@@ -238,6 +238,7 @@ App端在2.3.8版以前，可在插件市场获取[指纹相关插件](https://e
 
 - App端自2.3.8版本起开始支持生物认证，更低版本或想使用指纹功能，可在插件市场获取[插件](https://ext.dcloud.net.cn/plugin?id=358)
 - App端的人脸识别，仅支持iOS端的faceID。Android端需要依赖三方SDK方可实现，可在插件市场搜索[人脸识别](https://ext.dcloud.net.cn/search?q=%E4%BA%BA%E8%84%B8%E8%AF%86%E5%88%AB)插件
+- App端打包时，注意需要在manifest的模块中选择指纹和faceID，否则打包后无法运行相关功能。
 - hello uni-app已经集成相关示例，最新版HBuilderX新建新版hello uni-app示例项目真机运行可见，在API-设备-生物认证里。
 - 微信小程序如果使用腾讯云的SDK，可参考[网友分享](https://segmentfault.com/a/1190000020102601)
 - 支付宝小程序只支持人脸识别，[规范详情](https://docs.alipay.com/mini/api/facecapture)
