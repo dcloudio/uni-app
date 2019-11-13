@@ -59,6 +59,8 @@ export function pageScrollTo ({
 }
 
 let testReachBottomTimer
+let lastScrollHeight = 0
+
 export function createScrollListener (pageId, {
   enablePageScroll,
   enablePageReachBottom,
@@ -79,7 +81,10 @@ export function createScrollListener (pageId, {
     const windowHeight = window.innerHeight
     const scrollY = window.scrollY
     let isBottom = scrollY > 0 && scrollHeight > windowHeight && (scrollY + windowHeight + onReachBottomDistance) >= scrollHeight
-    if (isBottom && !hasReachBottom) {
+    // 兼容部分浏览器滚动时scroll事件不触发
+    const heightChanged = Math.abs(scrollHeight - lastScrollHeight) > onReachBottomDistance
+    if (isBottom && (!hasReachBottom || heightChanged)) {
+      lastScrollHeight = scrollHeight
       hasReachBottom = true
       return true
     }
