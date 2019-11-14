@@ -70,8 +70,8 @@ process.UNI_STAT_CONFIG = {
 let usingComponentsAbsent = false
 if (!platformOptions.hasOwnProperty('usingComponents')) {
   usingComponentsAbsent = true
-  platformOptions.usingComponents = true
 }
+platformOptions.usingComponents = true
 // }
 
 if (process.env.UNI_PLATFORM === 'h5') {
@@ -109,10 +109,10 @@ if (process.env.UNI_PLATFORM === 'mp-qq') { // QQ小程序 强制自定义组件
   platformOptions.usingComponents = true
 }
 
-let isNVueCompiler = false
+let isNVueCompiler = true
 if (process.env.UNI_PLATFORM === 'app-plus') {
-  if (platformOptions.nvueCompiler === 'uni-app') {
-    isNVueCompiler = true
+  if (platformOptions.nvueCompiler === 'weex') {
+    isNVueCompiler = false
   }
   if (platformOptions.renderer === 'native') {
     process.env.UNI_USING_NATIVE = true
@@ -122,9 +122,9 @@ if (process.env.UNI_PLATFORM === 'app-plus') {
 } else { // 其他平台，待确认配置方案
   if (
     manifestJsonObj['app-plus'] &&
-    manifestJsonObj['app-plus']['nvueCompiler'] === 'uni-app'
+    manifestJsonObj['app-plus']['nvueCompiler'] === 'weex'
   ) {
-    isNVueCompiler = true
+    isNVueCompiler = false
   }
 }
 
@@ -178,6 +178,7 @@ const warningMsg =
     : `uni-app将于2019年11月1日起停止支持非自定义组件模式 [详情](https://ask.dcloud.net.cn/article/36385)`
 
 const needWarning = !platformOptions.usingComponents || usingComponentsAbsent
+let hasNVue = false
 // 输出编译器版本等信息
 if (process.env.UNI_USING_NATIVE) {
   console.log('当前nvue编译模式：' + (isNVueCompiler ? 'uni-app' : 'weex') +
@@ -195,9 +196,10 @@ if (process.env.UNI_USING_NATIVE) {
         info = '编译器版本：' + pagesPkg['uni-app']['compilerVersion']
       }
       const glob = require('glob')
-      if (glob.sync('pages/**/*.nvue', {
+      hasNVue = !!glob.sync('pages/**/*.nvue', {
         cwd: process.env.UNI_INPUT_DIR
-      }).length) {
+      }).length
+      if (hasNVue) {
         console.log(info)
         console.log(modeText)
         if (needWarning) {
@@ -218,6 +220,15 @@ if (process.env.UNI_USING_NATIVE) {
       }
     }
   } catch (e) {}
+}
+if (process.env.NODE_ENV !== 'production') { // 运行模式性能提示
+  let perfMsg = `请注意运行模式下，因日志输出、sourcemap以及未压缩源码等原因，性能和包体积，均不及发行模式。`
+  if (hasNVue) { // app-nvue
+    perfMsg = perfMsg + `尤其是app-nvue的sourcemap影响较大`
+  } else if (process.env.UNI_PLATFORM.indexOf('mp-') === 0) { // 小程序
+    perfMsg = perfMsg + `若要正式发布，请点击发行菜单或使用cli发布命令进行发布`
+  }
+  console.log(perfMsg)
 }
 
 const moduleAlias = require('module-alias')
@@ -242,6 +253,8 @@ if (runByHBuilderX) {
     }
   }
 }
+
+console.log(`正在编译中...`)
 
 module.exports = {
   manifestPlatformOptions: platformOptions

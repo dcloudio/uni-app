@@ -245,7 +245,7 @@ function isSyncApi (name) {
 }
 
 function isCallbackApi (name) {
-  return CALLBACK_API_RE.test(name)
+  return CALLBACK_API_RE.test(name) && name !== 'onPush'
 }
 
 function handlePromise (promise) {
