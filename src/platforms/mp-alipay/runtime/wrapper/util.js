@@ -16,8 +16,7 @@ const customize = cached((str) => {
   return camelize(str.replace(customizeRE, '-'))
 })
 
-// 钉钉小程序是 component2 模式
-export const isComponent2 = my.dd || my.canIUse('component2')
+export const isComponent2 = my.canIUse('component2')
 
 export const mocks = ['$id']
 

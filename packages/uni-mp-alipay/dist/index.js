@@ -1667,8 +1667,7 @@ const customize = cached((str) => {
   return camelize(str.replace(customizeRE, '-'))
 });
 
-// 钉钉小程序是 component2 模式
-const isComponent2 = my.dd || my.canIUse('component2');
+const isComponent2 = my.canIUse('component2');
 
 const mocks = ['$id'];
 
@@ -2024,7 +2023,13 @@ function parseComponent (vueComponentOptions) {
     data: initData(vueOptions, Vue.prototype),
     props,
     didMount () {
-      initVm.call(this, VueComponent);
+      if (my.dd) { // 钉钉小程序底层基础库有 bug,组件嵌套使用时,在 didMount 中无法及时调用 props 中的方法
+        setTimeout(() => {
+          initVm.call(this, VueComponent);
+        }, 4);
+      } else {
+        initVm.call(this, VueComponent);
+      }
 
       initSpecialMethods(this);
 
