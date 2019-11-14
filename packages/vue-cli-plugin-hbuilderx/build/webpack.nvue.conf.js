@@ -96,7 +96,7 @@ const rules = [{
       babelrc: false
     }
   },
-    jsPreprocessorLoader
+  jsPreprocessorLoader
   ],
   exclude (modulePath) {
     return excludeModuleReg.test(modulePath) && modulePath.indexOf('@dcloudio') === -1
