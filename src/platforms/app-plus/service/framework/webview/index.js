@@ -12,10 +12,6 @@ import {
   setStatusBarStyle
 } from '../../bridge'
 
-import {
-  getLastWebview
-} from '../../api/util'
-
 let id = 2
 
 const WEBVIEW_LISTENERS = {
