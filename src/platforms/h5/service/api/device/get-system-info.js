@@ -84,7 +84,7 @@ export function getSystemInfoSync () {
   const {
     top: windowTop,
     bottom: windowBottom
-  } = getWindowOffset()
+  } = getWindowOffset(false, true)
 
   windowHeight -= windowTop
   windowHeight -= windowBottom
