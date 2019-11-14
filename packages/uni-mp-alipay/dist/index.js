@@ -245,7 +245,7 @@ function isSyncApi (name) {
 }
 
 function isCallbackApi (name) {
-  return CALLBACK_API_RE.test(name)
+  return CALLBACK_API_RE.test(name) && name !== 'onPush'
 }
 
 function handlePromise (promise) {
@@ -1667,7 +1667,8 @@ const customize = cached((str) => {
   return camelize(str.replace(customizeRE, '-'))
 });
 
-const isComponent2 = my.canIUse('component2');
+// 钉钉小程序是 component2 模式
+const isComponent2 = my.dd || my.canIUse('component2');
 
 const mocks = ['$id'];
 
