@@ -26,8 +26,8 @@ export default function parseBaseComponent (vueComponentOptions, {
     addGlobalClass: true
   }
 
-  if (__PLATFORM__ === 'mp-weixin') {
-    // 微信multipleSlots  部分情况有 bug，导致内容顺序错乱 如 u-list，提供覆盖选项
+  if (__PLATFORM__ === 'mp-weixin' || __PLATFORM__ === 'mp-qq') {
+    // 微信 multipleSlots 部分情况有 bug，导致内容顺序错乱 如 u-list，提供覆盖选项
     if (vueOptions['mp-weixin'] && vueOptions['mp-weixin']['options']) {
       Object.assign(options, vueOptions['mp-weixin']['options'])
     }
