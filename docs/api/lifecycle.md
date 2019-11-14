@@ -37,6 +37,10 @@
 |onNavigationBarSearchInputConfirmed|监听原生标题栏搜索输入框搜索事件，用户点击软键盘上的“搜索”按钮时触发。|App、H5|1.6.0|
 |onNavigationBarSearchInputClicked|监听原生标题栏搜索输入框点击事件|App、H5|1.6.0|
 
+**注意**
+
+- H5端`onBackPress`只能监听页面导航栏的返回按钮的点击事件，不能监听浏览器返回以及手机的返回
+
 ``onPageScroll`` 参数说明：
 
 |属性|类型|说明|
