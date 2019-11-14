@@ -48,8 +48,8 @@ export default {
       return $event
     }
 
-    Vue.prototype.$getComponentDescriptor = function (vm) {
-      return createComponentDescriptor(vm || this)
+    Vue.prototype.$getComponentDescriptor = function (vm, isOwnerInstance) {
+      return createComponentDescriptor(vm || this, isOwnerInstance)
     }
 
     Vue.prototype.$handleWxsEvent = function ($event) {
@@ -57,7 +57,7 @@ export default {
         const currentTarget = $event.currentTarget
         const instance = currentTarget &&
           currentTarget.__vue__ &&
-          currentTarget.__vue__.$getComponentDescriptor()
+          currentTarget.__vue__.$getComponentDescriptor(currentTarget.__vue__, false)
         $event = processEvent.call(this, $event.type, $event, {}, findUniTarget($event, this.$el) || $event.target,
           $event.currentTarget)
         $event.instance = instance

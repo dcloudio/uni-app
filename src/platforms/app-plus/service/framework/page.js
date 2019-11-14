@@ -59,7 +59,7 @@ export function registerPage ({
     route,
     options: Object.assign({}, query || {}),
     $getAppWebview () {
-      return webview
+      return plus.webview.getWebviewById(webview.id)
     },
     $page: {
       id: parseInt(webview.id),

@@ -115,5 +115,8 @@ module.exports = {
       return str.replace('wx-', 'weixin-')
     }
     return str
-  })
+  }),
+  getTemplatePath () {
+    return path.join(__dirname, '../template')
+  }
 }

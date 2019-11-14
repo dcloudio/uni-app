@@ -2,3 +2,4 @@ src/core/helpers/html-parser.js
 src/platforms/app-plus-nvue/runtime
 build/rollup-plugin-require-context
 packages/*/packages
+packages/*/template/**/*

@@ -1,3 +1,4 @@
+const fs = require('fs')
 const path = require('path')
 const webpack = require('webpack')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
@@ -7,7 +8,8 @@ const {
   getNVueMainEntry,
   nvueJsPreprocessOptions,
   nvueHtmlPreprocessOptions,
-  devtoolModuleFilenameTemplate
+  devtoolModuleFilenameTemplate,
+  getTemplatePath
 } = require('@dcloudio/uni-cli-shared')
 
 const WebpackAppPlusNVuePlugin = require('../packages/webpack-app-plus-nvue-plugin')
@@ -49,6 +51,7 @@ if (
   process.env.UNI_USING_V8
 ) {
   provide['__f__'] = [require.resolve('@dcloudio/vue-cli-plugin-uni/lib/format-log.js'), 'default']
+  provide['crypto'] = [require.resolve('@dcloudio/vue-cli-plugin-uni/lib/crypto.js'), 'default']
 }
 
 const plugins = [
@@ -93,7 +96,7 @@ const rules = [{
       babelrc: false
     }
   },
-  jsPreprocessorLoader
+    jsPreprocessorLoader
   ],
   exclude (modulePath) {
     return excludeModuleReg.test(modulePath) && modulePath.indexOf('@dcloudio') === -1
@@ -159,28 +162,56 @@ rules.unshift({
 
 if (process.env.UNI_USING_NATIVE) {
   plugins.push(new WebpackUniMPPlugin())
-  plugins.push(new CopyWebpackPlugin([{
+  const array = [{
     from: path.resolve(process.env.UNI_INPUT_DIR, 'static'),
     to: 'static'
-  }, {
-    from: path.resolve(
-      process.env.UNI_HBUILDERX_PLUGINS,
-      'weapp-tools/template/v8'
-    ),
-    to: process.env.UNI_OUTPUT_DIR
-  }, {
-    from: path.resolve(
-      process.env.UNI_HBUILDERX_PLUGINS,
-      'weapp-tools/template/common'
-    ),
-    to: process.env.UNI_OUTPUT_DIR,
-    ignore: [
-      '*.js',
-      '*.json',
-      '__uniapppicker.html',
-      '__uniappview.html'
-    ]
-  }]))
+  }]
+  if (process.env.UNI_USING_NVUE_COMPILER) {
+    array.push({
+      from: path.resolve(getTemplatePath(), 'common'),
+      to: process.env.UNI_OUTPUT_DIR
+    }, {
+      from: path.resolve(
+        process.env.UNI_HBUILDERX_PLUGINS,
+        'weapp-tools/template/common'
+      ),
+      to: process.env.UNI_OUTPUT_DIR,
+      ignore: [
+        '*.js',
+        '*.json',
+        '__uniapppicker.html',
+        '__uniappview.html',
+        '__uniappmarker@3x.png',
+        '__uniappopenlocation.html',
+        '__uniapppicker.html'
+      ]
+    })
+  } else {
+    let nativeTemplatePath = path.resolve(process.env.UNI_HBUILDERX_PLUGINS, 'weapp-tools/template/v8-native')
+    if (!fs.existsSync(nativeTemplatePath)) { // 兼容旧版本
+      nativeTemplatePath = path.resolve(
+        process.env.UNI_HBUILDERX_PLUGINS,
+        'weapp-tools/template/v8'
+      )
+    }
+    array.push({
+      from: nativeTemplatePath,
+      to: process.env.UNI_OUTPUT_DIR
+    }, {
+      from: path.resolve(
+        process.env.UNI_HBUILDERX_PLUGINS,
+        'weapp-tools/template/common'
+      ),
+      to: process.env.UNI_OUTPUT_DIR,
+      ignore: [
+        '*.js',
+        '*.json',
+        '__uniapppicker.html',
+        '__uniappview.html'
+      ]
+    })
+  }
+  plugins.push(new CopyWebpackPlugin(array))
 }
 
 module.exports = function () {

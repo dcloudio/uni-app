@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-stat",
-  "version": "2.0.0-23720191024001",
+  "version": "2.0.0-24120191114002",
   "description": "",
   "main": "dist/index.js",
   "repository": {
@@ -34,5 +34,5 @@
     "rollup-plugin-replace": "^2.2.0",
     "rollup-plugin-uglify": "^6.0.2"
   },
-  "gitHead": "5064652ab5aa907aedf637f163815660ecb8cfd9"
+  "gitHead": "5e13dffd1c33347c5faa64f1f8f15f5b0edcfeed"
 }
