@@ -216,8 +216,6 @@ module.exports = function (pagesJson, userManifestJson) {
   if (process.env.UNI_USING_NVUE_COMPILER) {
     appJson.nvueCompiler = 'uni-app'
     flexDir = getFlexDirection(manifestJson.plus)
-  } else {
-    appJson.nvueCompiler = 'weex'
   }
 
   if (manifestJson.plus.renderer === 'native') {

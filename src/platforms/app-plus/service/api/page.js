@@ -4,27 +4,27 @@ let uni_
 
 let runtime
 
-function getRuntime() {
+function getRuntime () {
   return runtime || (runtime = typeof window === 'object' && typeof navigator === 'object' && typeof document ===
-    'object' ?
-    'webview' : 'v8')
+    'object'
+    ? 'webview' : 'v8')
 }
 
-function setRuntime(value) {
+function setRuntime (value) {
   runtime = value
 }
 
-function getPageId() {
+function getPageId () {
   return plus_.webview.currentWebview().id
 }
 
 let initedEventListener = false
 const callbacks = {}
 
-function addEventListener(pageId, callback) {
+function addEventListener (pageId, callback) {
   const runtime = getRuntime()
 
-  function onPlusMessage(res) {
+  function onPlusMessage (res) {
     const message = res.data && res.data.__message
     if (!message || !message.__page) {
       return
@@ -51,10 +51,10 @@ function addEventListener(pageId, callback) {
 }
 
 class Page {
-  constructor(webview) {
+  constructor (webview) {
     this.webview = webview
   }
-  sendMessage(data) {
+  sendMessage (data) {
     const runtime = getRuntime()
     const message = {
       __message: {
@@ -69,12 +69,12 @@ class Page {
       plus_.webview.postMessageToUniNView(message, this.webview.id)
     }
   }
-  close() {
+  close () {
     this.webview.close()
   }
 }
 
-export function showPage({
+export function showPage ({
   context,
   runtime,
   url,

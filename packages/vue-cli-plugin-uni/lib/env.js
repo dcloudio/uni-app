@@ -109,8 +109,11 @@ if (process.env.UNI_PLATFORM === 'mp-qq') { // QQ小程序 强制自定义组件
   platformOptions.usingComponents = true
 }
 
-let isNVueCompiler = false
+let isNVueCompiler = true
 if (process.env.UNI_PLATFORM === 'app-plus') {
+  if (platformOptions.nvueCompiler === 'weex') {
+    isNVueCompiler = false
+  }
   if (platformOptions.renderer !== 'native' && // 非 native
     (
       platformOptions.compilerVersion === '3' ||
@@ -122,10 +125,6 @@ if (process.env.UNI_PLATFORM === 'app-plus') {
     process.env.UNI_OUTPUT_TMP_DIR = ''
     isNVueCompiler = true // v3 目前仅支持 uni-app 模式
   }
-
-  if (platformOptions.nvueCompiler === 'uni-app') {
-    isNVueCompiler = true
-  }
   if (platformOptions.renderer === 'native') {
     process.env.UNI_USING_NATIVE = true
     process.env.UNI_USING_V8 = true
@@ -134,9 +133,9 @@ if (process.env.UNI_PLATFORM === 'app-plus') {
 } else { // 其他平台，待确认配置方案
   if (
     manifestJsonObj['app-plus'] &&
-    manifestJsonObj['app-plus']['nvueCompiler'] === 'uni-app'
+    manifestJsonObj['app-plus']['nvueCompiler'] === 'weex'
   ) {
-    isNVueCompiler = true
+    isNVueCompiler = false
   }
 }
 
