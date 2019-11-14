@@ -31,7 +31,7 @@ Tips
 uni.report('title','首页')
 
 // 登录
-uni.report('lgoin',{
+uni.report('login',{
   'name':'uni-app',
   'age':'21',
   // ...
