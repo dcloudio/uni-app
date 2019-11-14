@@ -245,7 +245,7 @@ function isSyncApi (name) {
 }
 
 function isCallbackApi (name) {
-  return CALLBACK_API_RE.test(name)
+  return CALLBACK_API_RE.test(name) && name !== 'onPush'
 }
 
 function handlePromise (promise) {
@@ -1420,11 +1420,13 @@ function parseBaseComponent (vueComponentOptions, {
 } = {}) {
   let [VueComponent, vueOptions] = initVueComponent(Vue, vueComponentOptions);
 
+  const options = {
+    multipleSlots: true,
+    addGlobalClass: true
+  };
+
   const componentOptions = {
-    options: {
-      multipleSlots: true,
-      addGlobalClass: true
-    },
+    options,
     data: initData(vueOptions, Vue.prototype),
     behaviors: initBehaviors(vueOptions, initBehavior),
     properties: initProperties(vueOptions.props, false, vueOptions.__file),
@@ -1507,21 +1509,27 @@ function parseComponent (vueOptions) {
     initRelation
   });
 
+  // 关于百度小程序新生命周期(2.0)的说明(组件作为页面时):
+  // lifetimes:attached --> methods:onShow --> methods:onLoad --> methods:onReady
+  // 这里在新生命周期强制将onShow挪到onLoad之后触发,另外一处修改在page-parser.js
   const oldAttached = componentOptions.lifetimes.attached;
-
   componentOptions.lifetimes.attached = function attached () {
     oldAttached.call(this);
     if (isPage.call(this)) { // 百度 onLoad 在 attached 之前触发
       // 百度 当组件作为页面时 pageinstancce 不是原来组件的 instance
       this.pageinstance.$vm = this.$vm;
-
       if (hasOwn(this.pageinstance, '_$args')) {
         this.$vm.$mp.query = this.pageinstance._$args;
         this.$vm.__call_hook('onLoad', this.pageinstance._$args);
+        this.$vm.__call_hook('onShow');
         delete this.pageinstance._$args;
       }
-      // TODO  3.105.17以下基础库内百度 Component 作为页面时，methods 中的 onShow 不触发
-      !newLifecycle && this.$vm.__call_hook('onShow');
+    } else {
+      // 百度小程序组件不触发methods内的onReady
+      if (this.$vm) {
+        this.$vm._isMounted = true;
+        this.$vm.__call_hook('mounted');
+      }
     }
   };
 
@@ -1588,11 +1596,19 @@ function parsePage (vuePageOptions) {
     initRelation
   });
 
+  const newLifecycle = swan.canIUse('lifecycle-2-0');
+
+  // 纠正百度小程序新生命周期(2.0)methods:onShow在methods:onLoad之前触发的问题
+  if (newLifecycle) {
+    delete pageOptions.methods.onShow;
+  }
+
   pageOptions.methods.onLoad = function onLoad (args) {
     // 百度 onLoad 在 attached 之前触发，先存储 args, 在 attached 里边触发 onLoad
     if (this.$vm) {
       this.$vm.$mp.query = args;
       this.$vm.__call_hook('onLoad', args);
+      this.$vm.__call_hook('onShow');
     } else {
       this.pageinstance._$args = args;
     }
