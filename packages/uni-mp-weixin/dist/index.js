@@ -1281,7 +1281,7 @@ function parseBaseComponent (vueComponentOptions, {
   };
 
   {
-    // 微信multipleSlots  部分情况有 bug，导致内容顺序错乱 如 u-list，提供覆盖选项
+    // 微信 multipleSlots 部分情况有 bug，导致内容顺序错乱 如 u-list，提供覆盖选项
     if (vueOptions['mp-weixin'] && vueOptions['mp-weixin']['options']) {
       Object.assign(options, vueOptions['mp-weixin']['options']);
     }
