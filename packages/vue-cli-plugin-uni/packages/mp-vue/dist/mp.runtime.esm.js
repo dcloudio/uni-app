@@ -5769,9 +5769,8 @@ function internalMixin(Vue) {
       this.$scope['triggerEvent'](event, {
         __args__: toArray(arguments, 1)
       });
-    } else {
-      return oldEmit.apply(this, arguments)
     }
+    return oldEmit.apply(this, arguments)
   };
 
   Vue.prototype.$nextTick = function(fn) {
