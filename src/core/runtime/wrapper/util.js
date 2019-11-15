@@ -487,18 +487,6 @@ export function handleEvent (event) {
             handlerCtx = handlerCtx.$parent.$parent
           }
           const handler = handlerCtx[methodName]
-          if (methodName === '$emit') {
-            handlerCtx.$emit.apply(handlerCtx,
-              processEventArgs(
-                this.$vm,
-                event,
-                eventArray[1],
-                eventArray[2],
-                isCustom,
-                methodName
-              ))
-            return
-          }
           if (!isFn(handler)) {
             throw new Error(` _vm.${methodName} is not a function`)
           }
