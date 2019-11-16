@@ -6,9 +6,8 @@
 
 #### 如果你熟悉h5，但不熟悉vue和小程序 
 1. 看完这篇[白话uni-app](http://ask.dcloud.net.cn/article/35657)
-2. 看这个培训视频，从vue到uni-app全部讲了。[《uni-app 商业级应用实战》](https://ke.qq.com/course/379043?from=800006421)，出品人：腾讯课堂NEXT学院
-3. 如果不愿意付费看视频，可以去vue官网自学。注意vuejs可以在html中使用，而uni-app里没有HTML，直接就是vue文件。另外vue的路由、npm可以不学
-4. 不太需要专门去学习小程序开发，只看uni-app官网即可
+2. DCloud与vue合作，在[vue.js官网](https://cn.vuejs.org/v2/guide/)提供了免费视频教程，也可以直达教程地址：[https://learning.dcloud.io](https://learning.dcloud.io)
+3. 不太需要专门去学习小程序开发，只看uni-app官网即可
 
 #### 如果你使用过mpvue
 几乎不用学习，看完这篇即可[mpvue转uni-app指南](http://ask.dcloud.net.cn/article/34945)
