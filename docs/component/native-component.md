@@ -65,11 +65,17 @@ plus.nativeObj.view的API比较原生，可以画出任何界面，但plus.nativ
 
 - [subNVue](https://ask.dcloud.net.cn/article/35948)
 
-subNVue是把weex渲染的原生子窗体，覆盖在vue页面上，它解决了plus.nativeObj.view的所有不足，提供了最强大的层级问题解决方案。subNVue的详细介绍见：[https://ask.dcloud.net.cn/article/35948](https://ask.dcloud.net.cn/article/35948)
+subNVue是把weex渲染的原生子窗体，覆盖在vue页面上，它解决了plus.nativeObj.view的不足，提供了强大的层级问题解决方案。subNVue的详细介绍见：[https://ask.dcloud.net.cn/article/35948](https://ask.dcloud.net.cn/article/35948)
 
-subNVue强大，同时也意味着比plus.nativeObj.view多占用一些内存。所以如果你要覆盖的内容很简单，cover-view或plus.nativeObj.view可以简单实现，也没必要用subNVue。
+注意App的非自定义组件编译模式不支持subNVue。
 
-另注意App的非自定义组件编译模式不支持subNVue。
+- [弹出部分区域透明的nvue页面](https://ext.dcloud.net.cn/plugin?id=953)
+
+uni-app支持在App端弹出半透明的nvue窗体。即看起来是在本窗体弹出一个元素，但实际上是弹出了一个部分区域蒙灰透明的新窗体。这样的窗体比subnvue有个优势就是可以全局复用。具体参考这个[插件](https://ext.dcloud.net.cn/plugin?id=953)
+
+subNVue或弹出部分区域透明的nvue页面，会比plus.nativeObj.view多占用一些内存。所以如果你要覆盖的内容很简单，cover-view或plus.nativeObj.view可以简单实现，也没必要用subNVue或nvue。
+
+
 
 **关于subNVue和Webview的层级问题**
 subNVue的层级高于前端元素，但多个subNVue以及Webview，它们之间的也存在层级关系。
@@ -89,4 +95,4 @@ nvue页面全部都是原生组件，互相之间没有层级问题。
 #### 总结
 所以如果你的层级覆盖问题比较简单，不用嵌套，且有跨端需求，就使用cover-view。
 
-如果App端cover-view无法满足需求，且需要覆盖的原生界面比较简单，可以用plus.nativeObj.view。否则，就使用subnvue吧。
+如果App端cover-view无法满足需求，且需要覆盖的原生界面比较简单，可以用plus.nativeObj.view。否则，就使用subnvue或部分区域透明的nvue吧。
