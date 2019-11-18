@@ -1,4 +1,6 @@
+const fs = require('fs')
 const path = require('path')
+const mkdirp = require('mkdirp')
 
 // 初始化环境变量
 const defaultInputDir = '../../../../src'
@@ -119,6 +121,8 @@ if (process.env.UNI_PLATFORM === 'app-plus') {
     isNVueCompiler = false
   }
   if (platformOptions.renderer === 'native') {
+    // 纯原生目前不提供 cache
+    process.env.UNI_USING_CACHE = false
     process.env.UNI_USING_NATIVE = true
     process.env.UNI_USING_V8 = true
     process.env.UNI_OUTPUT_TMP_DIR = ''
@@ -254,6 +258,27 @@ if (runByHBuilderX) {
     } else {
       oldError.apply(console, arguments)
       // TODO 如果是首次运行遇到错误直接退出
+    }
+  }
+}
+
+if (process.env.UNI_USING_CACHE) { // 使用 cache, 拷贝 cache 的 json
+  const cacheJsonPath = path.resolve(
+    process.env.UNI_CLI_CONTEXT,
+    'node_modules/.cache/uni-pages-loader/' + process.env.UNI_PLATFORM,
+    'cache.json'
+  )
+  const cacheJsonDir = path.dirname(cacheJsonPath)
+
+  if (!fs.existsSync(cacheJsonDir)) { //  创建 cache 目录
+    mkdirp(cacheJsonDir)
+  } else {
+    if (fs.existsSync(cacheJsonPath)) {
+      // 设置 json 缓存
+      const {
+        restore
+      } = require('@dcloudio/uni-cli-shared/lib/cache')
+      restore(require(cacheJsonPath))
     }
   }
 }

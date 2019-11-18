@@ -51,7 +51,6 @@ function read (key, callback) {
       const mpTemplates = data['mpTemplates']
       if (mpTemplates) {
         Object.keys(mpTemplates).forEach(name => {
-          console.log('read=>write', name)
           fs.writeFileSync(name, mpTemplates[name], 'utf-8')
         })
       }

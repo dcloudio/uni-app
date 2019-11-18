@@ -4,11 +4,11 @@
  * 3.script-loader 修改缓存 usingComponents 节点
  * 5.webpack plugin 中获取被修改的 page.json,component.json 并 emitFile
  */
-const jsonFileMap = new Map()
+let jsonFileMap = new Map()
 const changedJsonFileSet = new Set()
-const componentSet = new Set()
+let componentSet = new Set()
 
-const pageSet = new Set()
+let pageSet = new Set()
 
 let globalUsingComponents = Object.create(null)
 let appJsonUsingComponents = Object.create(null)
@@ -234,6 +234,32 @@ module.exports = {
   },
   getJsonFileMap () {
     return jsonFileMap
+  },
+  store () {
+    const files = Array.from(jsonFileMap.entries())
+    const pages = Array.from(pageSet)
+    const components = Array.from(componentSet)
+    const methods = componentSpecialMethods
+    return JSON.stringify({
+      files,
+      pages,
+      components,
+      methods,
+      globalUsingComponents,
+      appJsonUsingComponents
+    })
+  },
+  restore (jsonCache) {
+    jsonFileMap = new Map(jsonCache.files)
+    pageSet = new Set(jsonCache.pages)
+    componentSet = new Set(jsonCache.components)
+    componentSpecialMethods = jsonCache.methods
+    globalUsingComponents = jsonCache.globalUsingComponents
+    appJsonUsingComponents = jsonCache.appJsonUsingComponents
+    // restore 时,所有 file 均触发 change
+    for (let name of jsonFileMap.keys()) {
+      changedJsonFileSet.add(name)
+    }
   },
   getJsonFile,
   getPagesJson,
