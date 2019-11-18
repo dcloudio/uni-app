@@ -5,7 +5,7 @@
 注意: 
 
 1. 引入中文字体，体积过大时会发生错误，建议抽离出部分中文，减少体积，或者用图片替代
-2. 微信小程序端只支持网络字体，字体链接必须是https。App支持网络或本地的字体。
+2. 微信小程序端只支持网络字体，字体链接必须是https。App支持网络或本地的字体（本地字体需使用[平台绝对路径](http://www.html5plus.org/doc/zh_cn/io.html#plus.io.convertLocalFileSystemURL)）。
 3. 微信小程序端字体链接必须是同源下的，或开启了cors支持，微信小程序的域名是servicewechat.com
 4. canvas等原生组件不支持使用接口添加的字体
 5. 微信工具里提示 Faild to load font可以忽略
