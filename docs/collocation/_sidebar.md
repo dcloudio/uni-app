@@ -2,7 +2,7 @@
   * [pages.json](collocation/pages.md)
   * [manifest.json](collocation/manifest.md)
   * [package.json](collocation/package.md)
-  * [vue-config.js](collocation/vue-config.md)
+  * [vue.config.js](collocation/vue-config.md)
   * [uni.scss](collocation/uni-scss.md)
   * [App.vue](collocation/App.md)
   * [main.js](collocation/main.md)
