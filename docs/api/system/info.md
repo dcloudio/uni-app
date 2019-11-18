@@ -55,6 +55,7 @@
 **Tips**
 - 屏幕高度=状态栏高度+原生导航栏高度+可使用窗口高度+原生tabbar高度
 - H5端，windowHeight不包含NavigationBar和TabBar的高度，windowTop等于NavigationBar高度，windowBottom等于TabBar高度，statusBarHeight为0
+- APP端windowTop和windowBottom都是0，注意区分与H5端的差异
 
 **safeArea 的结构**
 
