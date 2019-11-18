@@ -6,7 +6,7 @@ const {
   isInHBuilderX
 } = require('@dcloudio/uni-cli-shared')
 
-// override
+// nvue override
 moduleAlias.addAlias('weex-styler', path.resolve(__dirname, 'packages/weex-styler'))
 moduleAlias.addAlias('weex-template-compiler', path.resolve(__dirname, 'packages/weex-template-compiler'))
 moduleAlias.addAlias('./compileTemplate', path.resolve(__dirname,
@@ -19,6 +19,14 @@ moduleAlias.addAlias('./templateLoader', (fromPath, request, alias) => {
   }
   return request
 })
+// vue cache
+moduleAlias.addAlias('./loaders/pitcher', (fromPath, request, alias) => {
+  if (fromPath.indexOf('vue-loader') !== -1) {
+    return path.resolve(__dirname, 'packages/vue-loader/lib/loaders/pitcher')
+  }
+  return request
+})
+
 if (isInHBuilderX) {
   moduleAlias.addAlias('typescript', path.resolve(process.env.UNI_HBUILDERX_PLUGINS,
     'compile-typescript/node_modules/typescript'))

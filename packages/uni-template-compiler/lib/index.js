@@ -109,6 +109,17 @@ at ${resourcePath}.vue:1`)
      * ...暂时使用方案1
      */
     if (options.emitFile) {
+      // cache
+      if (process.env.UNI_USING_CACHE) {
+        const oldEmitFile = options.emitFile
+        process.UNI_CACHE_TEMPLATES = {}
+        options.emitFile = function emitFile (name, content) {
+          const absolutePath = path.resolve(process.env.UNI_OUTPUT_DIR, name)
+          process.UNI_CACHE_TEMPLATES[absolutePath] = content
+          oldEmitFile(name, content)
+        }
+      }
+
       if (options.updateSpecialMethods) {
         options.updateSpecialMethods(resourcePath, [...res.specialMethods])
       }
