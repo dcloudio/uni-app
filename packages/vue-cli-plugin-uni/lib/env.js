@@ -262,24 +262,20 @@ if (runByHBuilderX) {
   }
 }
 
-if (process.env.UNI_USING_CACHE) { // 使用 cache, 拷贝 cache 的 json
-  const cacheJsonPath = path.resolve(
+if (
+  process.env.UNI_USING_CACHE &&
+  process.env.UNI_PLATFORM !== 'h5' &&
+  !process.env.UNI_USING_V3 &&
+  !process.env.UNI_USING_NATIVE
+) { // 使用 cache, 拷贝 cache 的 json
+  const cacheJsonDir = path.resolve(
     process.env.UNI_CLI_CONTEXT,
-    'node_modules/.cache/uni-pages-loader/' + process.env.UNI_PLATFORM,
-    'cache.json'
+    'node_modules/.cache/uni-pages-loader/' + process.env.UNI_PLATFORM
   )
-  const cacheJsonDir = path.dirname(cacheJsonPath)
-
   if (!fs.existsSync(cacheJsonDir)) { //  创建 cache 目录
     mkdirp(cacheJsonDir)
   } else {
-    if (fs.existsSync(cacheJsonPath)) {
-      // 设置 json 缓存
-      const {
-        restore
-      } = require('@dcloudio/uni-cli-shared/lib/cache')
-      restore(require(cacheJsonPath))
-    }
+    require('@dcloudio/uni-cli-shared/lib/cache').restore()
   }
 }
 

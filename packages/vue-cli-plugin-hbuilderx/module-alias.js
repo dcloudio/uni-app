@@ -20,12 +20,18 @@ moduleAlias.addAlias('./templateLoader', (fromPath, request, alias) => {
   return request
 })
 // vue cache
-moduleAlias.addAlias('./loaders/pitcher', (fromPath, request, alias) => {
-  if (fromPath.indexOf('vue-loader') !== -1) {
-    return path.resolve(__dirname, 'packages/vue-loader/lib/loaders/pitcher')
-  }
-  return request
-})
+if ( // 非 h5 ,非 v3,非 native
+  process.env.UNI_PLATFORM !== 'h5' &&
+  !process.env.UNI_USING_V3 &&
+  !process.env.UNI_USING_NATIVE
+) {
+  moduleAlias.addAlias('./loaders/pitcher', (fromPath, request, alias) => {
+    if (fromPath.indexOf('vue-loader') !== -1) {
+      return path.resolve(__dirname, 'packages/vue-loader/lib/loaders/pitcher')
+    }
+    return request
+  })
+}
 
 if (isInHBuilderX) {
   moduleAlias.addAlias('typescript', path.resolve(process.env.UNI_HBUILDERX_PLUGINS,

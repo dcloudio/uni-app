@@ -7,7 +7,7 @@ const {
   getPlatformCssnano
 } = require('@dcloudio/uni-cli-shared')
 
-const modifyVueLoader = require('./vue-loader')
+const modifyVueLoader = require('../vue-loader')
 
 const WebpackHtmlAppendPlugin = require('../../packages/webpack-html-append-plugin')
 

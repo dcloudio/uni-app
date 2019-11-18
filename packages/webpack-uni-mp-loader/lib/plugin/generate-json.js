@@ -1,4 +1,3 @@
-const fs = require('fs')
 const path = require('path')
 
 const {
@@ -177,17 +176,7 @@ module.exports = function generateJson (compilation) {
   }
   if (process.env.UNI_USING_CACHE && jsonFileMap.size) {
     setTimeout(() => {
-      const {
-        store
-      } = require('@dcloudio/uni-cli-shared/lib/cache')
-
-      const filepath = path.resolve(
-        process.env.UNI_CLI_CONTEXT,
-        'node_modules/.cache/uni-pages-loader/' + process.env.UNI_PLATFORM,
-        'cache.json'
-      )
-      // 异步写入 cache,避免影响热更新性能
-      fs.writeFileSync(filepath, store())
+      require('@dcloudio/uni-cli-shared/lib/cache').store()
     }, 50)
   }
 }
