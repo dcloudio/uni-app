@@ -118,13 +118,19 @@ export function showPage ({
     animationType: 'pop-in',
     animationDuration: 200,
     uniNView: {
-      path: `/${url}.js?from=${getPageId()}&runtime=${runtime}&data=${encodeURIComponent(JSON.stringify(data))}`,
+      path: `${(typeof process === 'object' && process.env && process.env.VUE_APP_TEMPLATE_PATH) || ''}/${url}.js`,
       defaultFontSize: plus_.screen.resolutionWidth / 20,
       viewport: plus_.screen.resolutionWidth
     }
   }
   style = Object.assign(defaultStyle, style)
-  const page = plus_.webview.create('', pageId, style)
+  const page = plus_.webview.create('', pageId, style, {
+    extras: {
+      from: getPageId(),
+      runtime: runtime,
+      data
+    }
+  })
   page.addEventListener('close', onClose)
   addEventListener(pageId, message => {
     if (typeof onMessage === 'function') {

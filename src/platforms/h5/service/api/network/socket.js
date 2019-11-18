@@ -68,6 +68,9 @@ class SocketTask {
     const data = options.data
     const ws = this._webSocket
     try {
+      if (ws.readyState !== ws.OPEN) {
+        throw new Error('SocketTask.readyState is not OPEN')
+      }
       ws.send(data)
       this._callback(options, 'sendSocketMessage:ok')
     } catch (error) {
