@@ -1217,6 +1217,18 @@ function handleEvent (event) {
           ) { // mp-weixin,mp-toutiao 抽象节点模拟 scoped slots
             handlerCtx = handlerCtx.$parent.$parent;
           }
+          if (methodName === '$emit') {
+            handlerCtx.$emit.apply(handlerCtx,
+              processEventArgs(
+                this.$vm,
+                event,
+                eventArray[1],
+                eventArray[2],
+                isCustom,
+                methodName
+              ));
+            return
+          }
           const handler = handlerCtx[methodName];
           if (!isFn(handler)) {
             throw new Error(` _vm.${methodName} is not a function`)
@@ -1596,12 +1608,12 @@ function parsePage (vuePageOptions) {
     initRelation
   });
 
-  const newLifecycle = swan.canIUse('lifecycle-2-0');
-
   // 纠正百度小程序新生命周期(2.0)methods:onShow在methods:onLoad之前触发的问题
-  if (newLifecycle) {
-    delete pageOptions.methods.onShow;
-  }
+  pageOptions.methods.onShow = function onShow () {
+    if (this.$vm && this.$vm.$mp.query) {
+      this.$vm.__call_hook('onShow');
+    }
+  };
 
   pageOptions.methods.onLoad = function onLoad (args) {
     // 百度 onLoad 在 attached 之前触发，先存储 args, 在 attached 里边触发 onLoad
