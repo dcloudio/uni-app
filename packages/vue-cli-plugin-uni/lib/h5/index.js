@@ -4,9 +4,10 @@ const path = require('path')
 const {
   getMainEntry,
   getH5Options,
-  getPlatformCompiler,
   getPlatformCssnano
 } = require('@dcloudio/uni-cli-shared')
+
+const modifyVueLoader = require('../vue-loader')
 
 const WebpackHtmlAppendPlugin = require('../../packages/webpack-html-append-plugin')
 
@@ -100,7 +101,7 @@ module.exports = {
       plugins
     }
   },
-  chainWebpack (webpackConfig) {
+  chainWebpack (webpackConfig, api) {
     webpackConfig.plugins.delete('copy')
 
     if (!process.env.UNI_OPT_PREFETCH) {
@@ -109,29 +110,8 @@ module.exports = {
     if (!process.env.UNI_OPT_PRELOAD) {
       webpackConfig.plugins.delete('preload-index')
     }
-    // Vue
-    webpackConfig.module
-      .rule('vue')
-      .test([/\.vue$/, /\.nvue$/])
-      .use('vue-loader')
-      .tap(options => Object.assign(options, {
-        compiler: getPlatformCompiler(),
-        compilerOptions: require('./compiler-options'),
-        cacheDirectory: false,
-        cacheIdentifier: false
-      }))
-      .end()
-      .use('uniapp-custom-block-loader')
-      .loader(require.resolve('@dcloudio/vue-cli-plugin-uni/packages/webpack-custom-block-loader'))
-      .options({
-        compiler: getPlatformCompiler()
-      })
-      .end()
-      .use('uniapp-scoped')
-      .loader(resolve('packages/webpack-scoped-loader'))
-      .end()
-      .uses
-      .delete('cache-loader')
+
+    modifyVueLoader(webpackConfig, require('./compiler-options'), api)
 
     if (process.env.NODE_ENV === 'production') {
       const module = webpackConfig.module
