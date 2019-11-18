@@ -4,11 +4,15 @@ const {
   sassLoaderVersion
 } = require('@dcloudio/uni-cli-shared/lib/scss')
 
+const {
+  getPartialIdentifier
+} = require('./util')
+
 function resolve (dir) {
   return path.resolve(__dirname, '..', dir)
 }
 
-module.exports = function chainWebpack (platformOptions) {
+module.exports = function chainWebpack (platformOptions, api) {
   const {
     runByHBuilderX, // 使用 HBuilderX 运行
     cssPreprocessOptions
@@ -48,11 +52,22 @@ module.exports = function chainWebpack (platformOptions) {
       const langRule = webpackConfig.module.rule(lang)
       const loader = loaders[lang]
       cssTypes.forEach(type => {
+        if (process.env.UNI_USING_CACHE) {
+          langRule.oneOf(type)
+            .use(`uniapp-cache-css`)
+            .loader('cache-loader')
+            .options(api.genCacheConfig(
+              'css-loader/' + process.env.UNI_PLATFORM,
+              getPartialIdentifier()
+            ))
+            .before('css-loader')
+        }
         langRule.oneOf(type)
           .use(`uniapp-preprocss`)
           .loader(resolve('packages/webpack-preprocess-loader'))
           .options(cssPreprocessOptions)
           .before('css-loader') // 在 css-loader 之后条件编译一次，避免 import 进来的 css 没有走条件编译
+
         if (loader) { // 在 scss,less,stylus 之前先条件编译一次
           langRule.oneOf(type)
             .use(`uniapp-preprocss-` + lang)
@@ -79,7 +94,7 @@ module.exports = function chainWebpack (platformOptions) {
       })
     }
 
-    platformOptions.chainWebpack(webpackConfig)
+    platformOptions.chainWebpack(webpackConfig, api)
     // define
     webpackConfig
       .plugin('uni-define')

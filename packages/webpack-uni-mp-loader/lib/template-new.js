@@ -32,8 +32,8 @@ const filterTagName = getPlatformFilterTag() || ''
 module.exports = function (content) {
   this.cacheable && this.cacheable()
 
-  const vueLoaderOptions = this.loaders[0]
-  if (vueLoaderOptions.ident === 'vue-loader-options') {
+  const vueLoaderOptions = this.loaders.find(loader => loader.ident === 'vue-loader-options')
+  if (vueLoaderOptions) {
     const globalUsingComponents = getGlobalUsingComponents()
     const realResourcePath = path.relative(process.env.UNI_INPUT_DIR, this.resourcePath)
     const resourcePath = normalizeNodeModules(removeExt(realResourcePath) + templateExt)
