@@ -51,11 +51,12 @@
 </template>
 <script>
 import {
-  emitter
+  emitter,
+  keyboard
 } from 'uni-mixins'
 export default {
   name: 'Textarea',
-  mixins: [emitter],
+  mixins: [emitter, keyboard],
   model: {
     prop: 'value',
     event: 'update:value'
@@ -210,6 +211,7 @@ export default {
     this._resize({
       height: this.$refs.sensor.$el.offsetHeight
     })
+    this.initKeyboard(this.$refs.textarea)
   },
   beforeDestroy () {
     this.$dispatch('Form', 'uni-form-group-update', {

@@ -20,6 +20,10 @@ import {
   vdSyncCallbacks
 } from '../subscribe-handlers/on-vd-sync-callback'
 
+import {
+  hookKeyboardEvent
+} from './keyboard'
+
 function wrapperEvent (event) {
   event.preventDefault = noop
   event.stopPropagation = noop
@@ -37,7 +41,15 @@ const handleVdData = {
       if (!target) {
         return console.error(`event handler[${cid}][${nid}] not found`)
       }
-      target.dispatchEvent(event.type, wrapperEvent(event))
+      const type = event.type
+      const mpEvent = wrapperEvent(event)
+      if (type === 'focus' || type === 'blur') {
+        hookKeyboardEvent(mpEvent, event => {
+          target.dispatchEvent(type, event)
+        })
+      } else {
+        target.dispatchEvent(type, mpEvent)
+      }
     })
   }
 }
