@@ -246,6 +246,14 @@ moduleAlias.addAlias('vue-template-compiler', '@dcloudio/vue-cli-plugin-uni/pack
 moduleAlias.addAlias('@megalo/template-compiler', '@dcloudio/vue-cli-plugin-uni/packages/@megalo/template-compiler')
 moduleAlias.addAlias('mpvue-template-compiler', '@dcloudio/vue-cli-plugin-uni/packages/mpvue-template-compiler')
 
+if (process.env.UNI_PLATFORM === 'mp-toutiao') {
+  // !important 始终带有一个空格
+  moduleAlias.addAlias(
+    'postcss-normalize-whitespace',
+    '@dcloudio/vue-cli-plugin-uni/packages/postcss-normalize-whitespace'
+  )
+}
+
 if (runByHBuilderX) {
   const oldError = console.error
   console.error = function (msg) {

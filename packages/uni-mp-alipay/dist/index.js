@@ -1775,7 +1775,7 @@ function handleRef (ref) {
   if (refName) {
     this.$vm.$refs[refName] = ref.$vm || ref;
   } else if (refInForName) {
-    this.$vm.$refs[refInForName] = [ref.$vm || ref];
+    (this.$vm.$refs[refInForName] || (this.$vm.$refs[refInForName] = [])).push(ref.$vm || ref);
   }
 }
 
