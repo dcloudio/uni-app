@@ -1217,6 +1217,18 @@ function handleEvent (event) {
           ) { // mp-weixin,mp-toutiao 抽象节点模拟 scoped slots
             handlerCtx = handlerCtx.$parent.$parent;
           }
+          if (methodName === '$emit') {
+            handlerCtx.$emit.apply(handlerCtx,
+              processEventArgs(
+                this.$vm,
+                event,
+                eventArray[1],
+                eventArray[2],
+                isCustom,
+                methodName
+              ));
+            return
+          }
           const handler = handlerCtx[methodName];
           if (!isFn(handler)) {
             throw new Error(` _vm.${methodName} is not a function`)
@@ -1509,9 +1521,9 @@ function parseComponent (vueOptions) {
     initRelation
   });
 
-  // 关于百度小程序新生命周期(2.0)的说明(组件作为页面时):
+  // 关于百度小程序生命周期的说明(组件作为页面时):
   // lifetimes:attached --> methods:onShow --> methods:onLoad --> methods:onReady
-  // 这里在新生命周期强制将onShow挪到onLoad之后触发,另外一处修改在page-parser.js
+  // 这里在强制将onShow挪到onLoad之后触发,另外一处修改在page-parser.js
   const oldAttached = componentOptions.lifetimes.attached;
   componentOptions.lifetimes.attached = function attached () {
     oldAttached.call(this);
@@ -1596,12 +1608,12 @@ function parsePage (vuePageOptions) {
     initRelation
   });
 
-  const newLifecycle = swan.canIUse('lifecycle-2-0');
-
-  // 纠正百度小程序新生命周期(2.0)methods:onShow在methods:onLoad之前触发的问题
-  if (newLifecycle) {
-    delete pageOptions.methods.onShow;
-  }
+  // 纠正百度小程序生命周期methods:onShow在methods:onLoad之前触发的问题
+  pageOptions.methods.onShow = function onShow () {
+    if (this.$vm && this.$vm.$mp.query) {
+      this.$vm.__call_hook('onShow');
+    }
+  };
 
   pageOptions.methods.onLoad = function onLoad (args) {
     // 百度 onLoad 在 attached 之前触发，先存储 args, 在 attached 里边触发 onLoad
