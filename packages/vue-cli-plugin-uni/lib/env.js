@@ -1,4 +1,6 @@
+const fs = require('fs')
 const path = require('path')
+const mkdirp = require('mkdirp')
 
 // 初始化环境变量
 const defaultInputDir = '../../../../src'
@@ -25,6 +27,10 @@ if (process.env.UNI_PLATFORM === 'app-plus') {
 process.env.UNI_CLI_CONTEXT = path.resolve(__dirname, '../../../../')
 
 process.UNI_LIBRARIES = process.UNI_LIBRARIES || ['@dcloudio/uni-ui']
+
+if (process.env.NODE_ENV === 'production') { // 发行模式,不启用 cache
+  delete process.env.UNI_USING_CACHE
+}
 
 const {
   isSupportSubPackages,
@@ -126,6 +132,8 @@ if (process.env.UNI_PLATFORM === 'app-plus') {
     isNVueCompiler = true // v3 目前仅支持 uni-app 模式
   }
   if (platformOptions.renderer === 'native') {
+    // 纯原生目前不提供 cache
+    delete process.env.UNI_USING_CACHE
     process.env.UNI_USING_NATIVE = true
     process.env.UNI_USING_V8 = true
     process.env.UNI_OUTPUT_TMP_DIR = ''
@@ -249,6 +257,14 @@ moduleAlias.addAlias('vue-template-compiler', '@dcloudio/vue-cli-plugin-uni/pack
 moduleAlias.addAlias('@megalo/template-compiler', '@dcloudio/vue-cli-plugin-uni/packages/@megalo/template-compiler')
 moduleAlias.addAlias('mpvue-template-compiler', '@dcloudio/vue-cli-plugin-uni/packages/mpvue-template-compiler')
 
+if (process.env.UNI_PLATFORM === 'mp-toutiao') {
+  // !important 始终带有一个空格
+  moduleAlias.addAlias(
+    'postcss-normalize-whitespace',
+    '@dcloudio/vue-cli-plugin-uni/packages/postcss-normalize-whitespace'
+  )
+}
+
 if (runByHBuilderX) {
   const oldError = console.error
   console.error = function (msg) {
@@ -265,7 +281,24 @@ if (runByHBuilderX) {
   }
 }
 
-console.log(`正在编译中...`)
+if (
+  process.env.UNI_USING_CACHE &&
+  process.env.UNI_PLATFORM !== 'h5' &&
+  !process.env.UNI_USING_V3 &&
+  !process.env.UNI_USING_NATIVE
+) { // 使用 cache, 拷贝 cache 的 json
+  const cacheJsonDir = path.resolve(
+    process.env.UNI_CLI_CONTEXT,
+    'node_modules/.cache/uni-pages-loader/' + process.env.UNI_PLATFORM
+  )
+  if (!fs.existsSync(cacheJsonDir)) { //  创建 cache 目录
+    mkdirp(cacheJsonDir)
+  } else {
+    require('@dcloudio/uni-cli-shared/lib/cache').restore()
+  }
+}
+
+runByHBuilderX && console.log(`正在编译中...`)
 
 module.exports = {
   manifestPlatformOptions: platformOptions

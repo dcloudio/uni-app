@@ -25,8 +25,8 @@ module.exports = function (content) {
 
   if (process.env.UNI_USING_COMPONENTS) {
     // 向 uni-template-compier 传递 emitFile
-    const vueLoaderOptions = this.loaders[0]
-    if (vueLoaderOptions.ident === 'vue-loader-options') {
+    const vueLoaderOptions = this.loaders.find(loader => loader.ident === 'vue-loader-options')
+    if (vueLoaderOptions) {
       Object.assign(vueLoaderOptions.options.compilerOptions, {
         resourcePath: removeExt(realResourcePath) + templateExt,
         emitFile: this.emitFile
@@ -57,8 +57,8 @@ module.exports = function (content) {
     cacheCompilerOptions(realResourcePath, compilerOptions)
 
     // 向 vue-loader templateLoader 传递 compilerOptions
-    const vueLoaderOptions = this.loaders[0]
-    if (vueLoaderOptions.ident === 'vue-loader-options') {
+    const vueLoaderOptions = this.loaders.find(loader => loader.ident === 'vue-loader-options')
+    if (vueLoaderOptions) {
       Object.assign(vueLoaderOptions.options.compilerOptions, compilerOptions)
     } else {
       throw new Error('vue-loader-options parse error')

@@ -1,5 +1,3 @@
-import getRealPath from 'uni-platform/helpers/get-real-path'
-
 function _getServiceAddress () {
   return window.location.protocol + '//' + window.location.host
 }
@@ -11,7 +9,7 @@ export function getImageInfo ({
     invokeCallbackHandler: invoke
   } = UniServiceJSBridge
   const img = new Image()
-  const realPath = getRealPath(src)
+  const realPath = src
   img.onload = function () {
     invoke(callbackId, {
       errMsg: 'getImageInfo:ok',

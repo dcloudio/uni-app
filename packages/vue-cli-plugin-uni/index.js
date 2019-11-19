@@ -25,8 +25,8 @@ module.exports = (api, options) => {
 
   require('./lib/options')(options)
 
-  api.configureWebpack(require('./lib/configure-webpack')(platformOptions, manifestPlatformOptions, options))
-  api.chainWebpack(require('./lib/chain-webpack')(platformOptions, options))
+  api.configureWebpack(require('./lib/configure-webpack')(platformOptions, manifestPlatformOptions, options, api))
+  api.chainWebpack(require('./lib/chain-webpack')(platformOptions, api))
 }
 
 module.exports.defaultModes = {

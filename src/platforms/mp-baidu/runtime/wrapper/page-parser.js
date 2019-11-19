@@ -25,11 +25,11 @@ export default function parsePage (vuePageOptions) {
     initRelation
   })
 
-  const newLifecycle = swan.canIUse('lifecycle-2-0')
-
-  // 纠正百度小程序新生命周期(2.0)methods:onShow在methods:onLoad之前触发的问题
-  if (newLifecycle) {
-    delete pageOptions.methods.onShow
+  // 纠正百度小程序生命周期methods:onShow在methods:onLoad之前触发的问题
+  pageOptions.methods.onShow = function onShow () {
+    if (this.$vm && this.$vm.$mp.query) {
+      this.$vm.__call_hook('onShow')
+    }
   }
 
   pageOptions.methods.onLoad = function onLoad (args) {

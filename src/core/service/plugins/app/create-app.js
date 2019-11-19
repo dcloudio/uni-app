@@ -6,11 +6,13 @@ export function getApp () {
   return appVm
 }
 
-export function getCurrentPages (isAll = false) {
+export function getCurrentPages (isAll = false, ignoreError = false) {
   const pages = []
   const app = getApp()
   if (!app) {
-    console.error('app is not ready')
+    if (ignoreError) {
+      console.error('app is not ready')
+    }
     return []
   }
   const childrenVm = app.$children[0]
