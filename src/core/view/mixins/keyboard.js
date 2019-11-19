@@ -1,6 +1,10 @@
 function hideKeyboard () {
   document.activeElement.blur()
 }
+/**
+ * 保证iOS点击输入框外隐藏键盘
+ */
+function iosHideKeyboard () { }
 
 export default {
   name: 'Keyboard',
@@ -27,7 +31,7 @@ export default {
     }
   },
   beforeDestroy () {
-    UniViewJSBridge.unsubscribe('hideKeyboard', hideKeyboard)
+    this.onKeyboardHide()
   },
   methods: {
     plusReady (callback) {
@@ -42,11 +46,10 @@ export default {
     initKeyboard (el) {
       el.addEventListener('focus', () => {
         UniViewJSBridge.subscribe('hideKeyboard', hideKeyboard)
+        document.addEventListener('click', iosHideKeyboard, false)
         this.setSoftinputTemporary()
       })
-      el.addEventListener('blur', () => {
-        UniViewJSBridge.unsubscribe('hideKeyboard', hideKeyboard)
-      })
+      el.addEventListener('blur', this.onKeyboardHide)
     },
     showSoftKeybord () {
       this.plusReady(() => {
@@ -69,6 +72,10 @@ export default {
           }
         })
       })
+    },
+    onKeyboardHide () {
+      UniViewJSBridge.unsubscribe('hideKeyboard', hideKeyboard)
+      document.removeEventListener('click', iosHideKeyboard, false)
     }
   }
 }
