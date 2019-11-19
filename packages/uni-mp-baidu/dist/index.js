@@ -1521,9 +1521,9 @@ function parseComponent (vueOptions) {
     initRelation
   });
 
-  // 关于百度小程序新生命周期(2.0)的说明(组件作为页面时):
+  // 关于百度小程序生命周期的说明(组件作为页面时):
   // lifetimes:attached --> methods:onShow --> methods:onLoad --> methods:onReady
-  // 这里在新生命周期强制将onShow挪到onLoad之后触发,另外一处修改在page-parser.js
+  // 这里在强制将onShow挪到onLoad之后触发,另外一处修改在page-parser.js
   const oldAttached = componentOptions.lifetimes.attached;
   componentOptions.lifetimes.attached = function attached () {
     oldAttached.call(this);
@@ -1608,7 +1608,7 @@ function parsePage (vuePageOptions) {
     initRelation
   });
 
-  // 纠正百度小程序新生命周期(2.0)methods:onShow在methods:onLoad之前触发的问题
+  // 纠正百度小程序生命周期methods:onShow在methods:onLoad之前触发的问题
   pageOptions.methods.onShow = function onShow () {
     if (this.$vm && this.$vm.$mp.query) {
       this.$vm.__call_hook('onShow');
