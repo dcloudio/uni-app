@@ -29,7 +29,7 @@ process.env.UNI_CLI_CONTEXT = path.resolve(__dirname, '../../../../')
 process.UNI_LIBRARIES = process.UNI_LIBRARIES || ['@dcloudio/uni-ui']
 
 if (process.env.NODE_ENV === 'production') { // 发行模式,不启用 cache
-  process.env.UNI_USING_CACHE = false
+  delete process.env.UNI_USING_CACHE
 }
 
 const {
@@ -122,7 +122,7 @@ if (process.env.UNI_PLATFORM === 'app-plus') {
   }
   if (platformOptions.renderer === 'native') {
     // 纯原生目前不提供 cache
-    process.env.UNI_USING_CACHE = false
+    delete process.env.UNI_USING_CACHE
     process.env.UNI_USING_NATIVE = true
     process.env.UNI_USING_V8 = true
     process.env.UNI_OUTPUT_TMP_DIR = ''
