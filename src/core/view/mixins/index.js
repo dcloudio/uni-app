@@ -17,3 +17,8 @@ export {
   default as subscriber
 }
   from './subscriber'
+
+export {
+  default as keyboard
+}
+  from './keyboard'

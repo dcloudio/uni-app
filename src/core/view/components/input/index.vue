@@ -33,13 +33,13 @@
 </template>
 <script>
 import {
-  emitter
+  emitter, keyboard
 } from 'uni-mixins'
 const INPUT_TYPES = ['text', 'number', 'idcard', 'digit', 'password']
 const NUMBER_TYPES = ['number', 'digit']
 export default {
   name: 'Input',
-  mixins: [emitter],
+  mixins: [emitter, keyboard],
   model: {
     prop: 'value',
     event: 'update:value'
@@ -166,6 +166,8 @@ export default {
     }
 
     this.focus && this._focusInput()
+
+    this.initKeyboard(this.$refs.input)
   },
   beforeDestroy () {
     this.$dispatch('Form', 'uni-form-group-update', {
@@ -225,6 +227,10 @@ export default {
     },
     _focusInput () {
       setTimeout(() => {
+        this.plusReady(() => {
+          plus.key.showSoftKeybord()
+        })
+
         this.$refs.input.focus()
       }, 350)
     },
