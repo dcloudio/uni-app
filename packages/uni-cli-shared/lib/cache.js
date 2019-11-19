@@ -1,14 +1,17 @@
+const fs = require('fs')
+const path = require('path')
+const crypto = require('crypto')
 /**
  * 1.page-loader 缓存基础的  app.json page.json project.config.json
  * 2.main-loader 缓存 app.json 中的 usingComponents 节点
  * 3.script-loader 修改缓存 usingComponents 节点
  * 5.webpack plugin 中获取被修改的 page.json,component.json 并 emitFile
  */
-const jsonFileMap = new Map()
+let jsonFileMap = new Map()
 const changedJsonFileSet = new Set()
-const componentSet = new Set()
+let componentSet = new Set()
 
-const pageSet = new Set()
+let pageSet = new Set()
 
 let globalUsingComponents = Object.create(null)
 let appJsonUsingComponents = Object.create(null)
@@ -228,12 +231,89 @@ function getSpecialMethods (name) {
   return componentSpecialMethods[name] || []
 }
 
+const pagesJsonPath = path.resolve(process.env.UNI_INPUT_DIR, 'pages.json')
+
+const cacheTypes = ['babel-loader', 'css-loader', 'uni-template-compiler', 'vue-loader']
+
+function clearCache () {
+  const fsExtra = require('fs-extra')
+  cacheTypes.forEach(cacheType => {
+    fsExtra.emptyDirSync(path.resolve(
+      process.env.UNI_CLI_CONTEXT,
+      'node_modules/.cache/' + cacheType + '/' + process.env.UNI_PLATFORM
+    ))
+  })
+}
+
+function digest (str) {
+  return crypto
+    .createHash('md5')
+    .update(str)
+    .digest('hex')
+}
+
 module.exports = {
   getPageSet () {
     return pageSet
   },
   getJsonFileMap () {
     return jsonFileMap
+  },
+  // 先简单处理,该方案不好,
+  // 后续为 pages-loader 增加 cache-loader,
+  // 然后其他修改 json 的地方也要定制 cache-loader
+  store () {
+    const filepath = path.resolve(
+      process.env.UNI_CLI_CONTEXT,
+      'node_modules/.cache/uni-pages-loader/' + process.env.UNI_PLATFORM,
+      digest(process.env.UNI_INPUT_DIR) + '.json'
+    )
+
+    const files = Array.from(jsonFileMap.entries())
+    const pages = Array.from(pageSet)
+    const components = Array.from(componentSet)
+    const methods = componentSpecialMethods
+    fs.writeFileSync(filepath, JSON.stringify({
+      mtimeMs: fs.statSync(pagesJsonPath).mtimeMs,
+      files,
+      pages,
+      components,
+      methods,
+      globalUsingComponents,
+      appJsonUsingComponents
+    }))
+  },
+  restore () {
+    const filepath = path.resolve(
+      process.env.UNI_CLI_CONTEXT,
+      'node_modules/.cache/uni-pages-loader/' + process.env.UNI_PLATFORM,
+      digest(process.env.UNI_INPUT_DIR) + '.json'
+    )
+    if (!fs.existsSync(filepath)) {
+      try {
+        clearCache()
+      } catch (e) {}
+      return
+    }
+    const mtimeMs = fs.statSync(pagesJsonPath).mtimeMs
+    const jsonCache = require(filepath)
+    if (jsonCache.mtimeMs !== mtimeMs) {
+      try {
+        clearCache()
+      } catch (e) {}
+      return
+    }
+    jsonFileMap = new Map(jsonCache.files)
+    pageSet = new Set(jsonCache.pages)
+    componentSet = new Set(jsonCache.components)
+    componentSpecialMethods = jsonCache.methods
+    globalUsingComponents = jsonCache.globalUsingComponents
+    appJsonUsingComponents = jsonCache.appJsonUsingComponents
+    // restore 时,所有 file 均触发 change
+    for (let name of jsonFileMap.keys()) {
+      changedJsonFileSet.add(name)
+    }
+    return true
   },
   getJsonFile,
   getPagesJson,

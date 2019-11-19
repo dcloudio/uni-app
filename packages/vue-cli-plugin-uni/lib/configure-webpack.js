@@ -6,6 +6,10 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 const merge = require('webpack-merge')
 
+const {
+  getPartialIdentifier
+} = require('./util')
+
 function resolve (dir) {
   return path.resolve(__dirname, '..', dir)
 }
@@ -14,11 +18,12 @@ function resolveModule (dir) {
   return path.resolve(__dirname, '../../..', dir)
 }
 
-module.exports = function configureWebpack (platformOptions, manifestPlatformOptions, vueOptions) {
+module.exports = function configureWebpack (platformOptions, manifestPlatformOptions, vueOptions, api) {
   const {
     runByHBuilderX, // 使用 HBuilderX 运行
     isInHBuilderX, // 在 HBuilderX 的插件中
     hasModule,
+    getMainEntry,
     getPlatformVue,
     jsPreprocessOptions,
     htmlPreprocessOptions
@@ -137,13 +142,19 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
   return function (webpackConfig) {
     // disable js cache-loader
     const rawRules = webpackConfig.module.rules
-
     for (let i = rawRules.length - 1; i >= 0; i--) {
       const uses = rawRules[i].use
       if (Array.isArray(uses)) {
         if (uses.find(use => use.loader === 'babel-loader')) {
           const index = uses.findIndex(use => use.loader === 'cache-loader')
-          uses.splice(index, 1)
+          if (process.env.UNI_USING_CACHE) {
+            Object.assign(uses[index].options, api.genCacheConfig(
+              'babel-loader/' + process.env.UNI_PLATFORM,
+              getPartialIdentifier()
+            ))
+          } else {
+            uses.splice(index, 1)
+          }
         }
       }
     }
@@ -167,14 +178,14 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
 
     let platformWebpackConfig = platformOptions.webpackConfig
     if (typeof platformWebpackConfig === 'function') {
-      platformWebpackConfig = platformWebpackConfig(webpackConfig, vueOptions)
+      platformWebpackConfig = platformWebpackConfig(webpackConfig, api)
     }
     // 移除 node_modules 目录，避免受路径上的 node_modules 影响
     webpackConfig.resolve.modules = webpackConfig.resolve.modules.filter(module => module !==
       'node_modules')
 
     const plugins = [
-      new CopyWebpackPlugin(getCopyWebpackPluginOptions(manifestPlatformOptions, vueOptions))
+      new CopyWebpackPlugin(getCopyWebpackPluginOptions(manifestPlatformOptions))
     ]
 
     if (process.UNI_SCRIPT_ENV && Object.keys(process.UNI_SCRIPT_ENV).length) {
@@ -196,6 +207,26 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
       }))
     }
 
+    let useBuiltIns = 'entry'
+    if (process.env.UNI_PLATFORM === 'h5') { // 兼容旧版本 h5
+      useBuiltIns = 'usage'
+      try {
+        const babelConfig = require(path.resolve(process.env.UNI_CLI_CONTEXT, 'babel.config.js'))
+        useBuiltIns = babelConfig.presets[0][1].useBuiltIns
+      } catch (e) {}
+    }
+
+    const statCode = process.env.UNI_USING_STAT ? `import '@dcloudio/uni-stat';` : ''
+
+    let beforeCode = ''
+
+    if (process.env.UNI_PLATFORM === 'h5') {
+      beforeCode = (useBuiltIns === 'entry' ? `import '@babel/polyfill';` : '') +
+        `import 'uni-pages';import 'uni-${process.env.UNI_PLATFORM}';`
+    } else {
+      beforeCode = `import 'uni-pages';`
+    }
+
     const rules = [{
       test: path.resolve(process.env.UNI_INPUT_DIR, 'pages.json'),
       use: [{
@@ -204,6 +235,18 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
         loader: '@dcloudio/webpack-uni-pages-loader'
       }],
       type: 'javascript/auto'
+    },
+    {
+      test: path.resolve(process.env.UNI_INPUT_DIR, getMainEntry()),
+      // resourceQuery: /type=wrapper/,
+      use: [{
+        loader: 'wrap-loader',
+        options: {
+          before: [
+            beforeCode + statCode
+          ]
+        }
+      }]
     },
     {
       resourceQuery: /vue&type=template/,

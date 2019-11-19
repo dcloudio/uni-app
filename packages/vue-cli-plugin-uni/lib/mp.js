@@ -9,13 +9,14 @@ const {
   parseEntry,
   getMainEntry,
   getPlatformExts,
-  getPlatformCompiler,
   getPlatformCssnano
 } = require('@dcloudio/uni-cli-shared')
 
+const modifyVueLoader = require('./vue-loader')
+
 const {
-  isUnaryTag
-} = require('./util')
+  createTemplateCacheLoader
+} = require('./cache-loader')
 
 function createUniMPPlugin () {
   if (process.env.UNI_USING_COMPONENTS) {
@@ -27,11 +28,6 @@ function createUniMPPlugin () {
 }
 
 function getProvides () {
-  if (process.env.UNI_USING_V3) {
-    return {
-      '__f__': [path.resolve(__dirname, 'format-log.js'), 'default']
-    }
-  }
   const uniPath = require.resolve('@dcloudio/uni-' + process.env.UNI_PLATFORM)
   const provides = {
     'uni': [uniPath, 'default']
@@ -66,7 +62,7 @@ module.exports = {
   vueConfig: {
     parallel: false
   },
-  webpackConfig (webpackConfig) {
+  webpackConfig (webpackConfig, api) {
     if (!webpackConfig.optimization) {
       webpackConfig.optimization = {}
     }
@@ -74,7 +70,7 @@ module.exports = {
     webpackConfig.optimization.noEmitOnErrors = false
 
     webpackConfig.optimization.runtimeChunk = {
-      name: process.env.UNI_USING_V3 ? 'app-config' : 'common/runtime'
+      name: 'common/runtime'
     }
 
     webpackConfig.optimization.splitChunks = require('./split-chunks')()
@@ -99,23 +95,10 @@ module.exports = {
       }
     }
 
-    if (process.env.UNI_USING_V3) {
-      devtool = false
-    }
-
-    const statCode = process.env.UNI_USING_STAT ? `import '@dcloudio/uni-stat';` : ''
-
-    const beforeCode = `import 'uni-pages';`
-
     return {
       devtool,
       mode: process.env.NODE_ENV,
       entry () {
-        if (process.env.UNI_USING_V3) {
-          return {
-            'app-service': path.resolve(process.env.UNI_INPUT_DIR, getMainEntry())
-          }
-        }
         return process.UNI_ENTRY
       },
       output: {
@@ -138,13 +121,6 @@ module.exports = {
         rules: [{
           test: path.resolve(process.env.UNI_INPUT_DIR, getMainEntry()),
           use: [{
-            loader: 'wrap-loader',
-            options: {
-              before: [
-                beforeCode + statCode
-              ]
-            }
-          }, {
             loader: '@dcloudio/webpack-uni-mp-loader/lib/main'
           }]
         }, {
@@ -157,7 +133,7 @@ module.exports = {
           use: [{
             loader: '@dcloudio/webpack-uni-mp-loader/lib/template'
           }]
-        }, {
+        }, createTemplateCacheLoader(api), {
           resourceQuery: [
             /lang=wxs/,
             /lang=filter/,
@@ -178,7 +154,7 @@ module.exports = {
       ]
     }
   },
-  chainWebpack (webpackConfig) {
+  chainWebpack (webpackConfig, api) {
     if (process.env.UNI_PLATFORM === 'mp-baidu') {
       webpackConfig.module
         .rule('js')
@@ -186,47 +162,16 @@ module.exports = {
         .add(/\.filter\.js$/)
     }
 
-    const compilerOptions = process.env.UNI_USING_COMPONENTS ? {
-      isUnaryTag,
-      preserveWhitespace: false
-    } : require('./mp-compiler-options')
+    const compilerOptions = process.env.UNI_USING_COMPONENTS ? {} : require('./mp-compiler-options')
 
-    if (process.env.UNI_USING_V3) {
-      compilerOptions.service = true
-    }
-
-    // disable vue cache-loader
-    webpackConfig.module
-      .rule('vue')
-      .test([/\.vue$/, /\.nvue$/])
-      .use('vue-loader')
-      .tap(options => Object.assign(options, {
-        compiler: getPlatformCompiler(),
-        compilerOptions,
-        cacheDirectory: false,
-        cacheIdentifier: false
-      }))
-      .end()
-      .use('uniapp-custom-block-loader')
-      .loader(require.resolve('@dcloudio/vue-cli-plugin-uni/packages/webpack-custom-block-loader'))
-      .options({
-        compiler: getPlatformCompiler()
-      })
-      .end()
-      .use('uniapp-nvue-loader')
-      .loader(require.resolve('@dcloudio/webpack-uni-mp-loader/lib/style.js'))
-      .end()
-      .uses
-      .delete('cache-loader')
+    modifyVueLoader(webpackConfig, compilerOptions, api)
 
     const styleExt = getPlatformExts().style
 
-    if (!process.env.UNI_USING_V3) {
-      webpackConfig.plugin('extract-css')
-        .init((Plugin, args) => new Plugin({
-          filename: '[name]' + styleExt
-        }))
-    }
+    webpackConfig.plugin('extract-css')
+      .init((Plugin, args) => new Plugin({
+        filename: '[name]' + styleExt
+      }))
 
     if (
       process.env.NODE_ENV === 'production' &&

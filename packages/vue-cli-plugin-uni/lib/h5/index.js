@@ -4,8 +4,10 @@ const path = require('path')
 const {
   getMainEntry,
   getH5Options,
-  getPlatformCompiler
+  getPlatformCssnano
 } = require('@dcloudio/uni-cli-shared')
+
+const modifyVueLoader = require('../vue-loader')
 
 const WebpackHtmlAppendPlugin = require('../../packages/webpack-html-append-plugin')
 
@@ -61,18 +63,6 @@ if (devServer && Object.keys(devServer).length) {
 module.exports = {
   vueConfig,
   webpackConfig (webpackConfig) {
-    let useBuiltIns = 'usage'
-
-    const statCode = process.env.UNI_USING_STAT ? `import '@dcloudio/uni-stat';` : ''
-
-    try {
-      const babelConfig = require(path.resolve(process.env.UNI_CLI_CONTEXT, 'babel.config.js'))
-      useBuiltIns = babelConfig.presets[0][1].useBuiltIns
-    } catch (e) {}
-
-    const beforeCode = (useBuiltIns === 'entry' ? `import '@babel/polyfill';` : '') +
-            `import 'uni-pages';import 'uni-${process.env.UNI_PLATFORM}';`
-
     return {
       devtool: process.env.NODE_ENV === 'production' ? false : 'source-map',
       resolve: {
@@ -84,16 +74,6 @@ module.exports = {
       },
       module: {
         rules: [{
-          test: path.resolve(process.env.UNI_INPUT_DIR, getMainEntry()),
-          use: [{
-            loader: 'wrap-loader',
-            options: {
-              before: [
-                beforeCode + statCode
-              ]
-            }
-          }]
-        }, {
           test: /App\.vue$/,
           use: {
             loader: 'wrap-loader',
@@ -104,7 +84,7 @@ module.exports = {
         }, {
           resourceQuery: /vue&type=template/,
           use: [{
-            loader: resolve('packages/webpack-uni-app-loader/filter-modules-template.js')
+            loader: resolve('packages/h5-vue-template-loader')
           }]
         }, {
           resourceQuery: [/lang=wxs/, /blockType=wxs/],
@@ -121,7 +101,7 @@ module.exports = {
       plugins
     }
   },
-  chainWebpack (webpackConfig) {
+  chainWebpack (webpackConfig, api) {
     webpackConfig.plugins.delete('copy')
 
     if (!process.env.UNI_OPT_PREFETCH) {
@@ -130,32 +110,56 @@ module.exports = {
     if (!process.env.UNI_OPT_PRELOAD) {
       webpackConfig.plugins.delete('preload-index')
     }
-    // Vue
-    webpackConfig.module
-      .rule('vue')
-      .test([/\.vue$/, /\.nvue$/])
-      .use('vue-loader')
-      .tap(options => Object.assign(options, {
-        compiler: getPlatformCompiler(),
-        compilerOptions: require('./compiler-options'),
-        cacheDirectory: false,
-        cacheIdentifier: false
-      }))
-      .end()
-      .use('uniapp-custom-block-loader')
-      .loader(require.resolve('@dcloudio/vue-cli-plugin-uni/packages/webpack-custom-block-loader'))
-      .options({
-        compiler: getPlatformCompiler()
-      })
-      .end()
-      .use('uniapp-scoped')
-      .loader(resolve('packages/webpack-scoped-loader'))
-      .end()
-      .uses
-      .delete('cache-loader')
+
+    modifyVueLoader(webpackConfig, require('./compiler-options'), api)
 
     if (process.env.NODE_ENV === 'production') {
-      require('./cssnano-options')(webpackConfig)
+      const module = webpackConfig.module
+      // TODO 临时 hack calc:false 看看 vue cli 后续是否开放 cssnano 的配置
+      const cssnanoOptions = {
+        sourceMap: false,
+        plugins: [require('cssnano')({
+          preset: ['default', getPlatformCssnano()]
+        })]
+      }
+
+      module.rule('css').oneOf('vue-modules').use('cssnano').loader('postcss-loader').options(cssnanoOptions)
+      module.rule('css').oneOf('vue').use('cssnano').loader('postcss-loader').options(cssnanoOptions)
+      module.rule('css').oneOf('normal-modules').use('cssnano').loader('postcss-loader').options(
+        cssnanoOptions)
+      module.rule('css').oneOf('normal').use('cssnano').loader('postcss-loader').options(cssnanoOptions)
+
+      module.rule('postcss').oneOf('vue-modules').use('cssnano').loader('postcss-loader').options(
+        cssnanoOptions)
+      module.rule('postcss').oneOf('vue').use('cssnano').loader('postcss-loader').options(cssnanoOptions)
+      module.rule('postcss').oneOf('normal-modules').use('cssnano').loader('postcss-loader').options(
+        cssnanoOptions)
+      module.rule('postcss').oneOf('normal').use('cssnano').loader('postcss-loader').options(cssnanoOptions)
+
+      module.rule('scss').oneOf('vue-modules').use('cssnano').loader('postcss-loader').options(cssnanoOptions)
+      module.rule('scss').oneOf('vue').use('cssnano').loader('postcss-loader').options(cssnanoOptions)
+      module.rule('scss').oneOf('normal-modules').use('cssnano').loader('postcss-loader').options(
+        cssnanoOptions)
+      module.rule('scss').oneOf('normal').use('cssnano').loader('postcss-loader').options(cssnanoOptions)
+
+      module.rule('sass').oneOf('vue-modules').use('cssnano').loader('postcss-loader').options(cssnanoOptions)
+      module.rule('sass').oneOf('vue').use('cssnano').loader('postcss-loader').options(cssnanoOptions)
+      module.rule('sass').oneOf('normal-modules').use('cssnano').loader('postcss-loader').options(
+        cssnanoOptions)
+      module.rule('sass').oneOf('normal').use('cssnano').loader('postcss-loader').options(cssnanoOptions)
+
+      module.rule('less').oneOf('vue-modules').use('cssnano').loader('postcss-loader').options(cssnanoOptions)
+      module.rule('less').oneOf('vue').use('cssnano').loader('postcss-loader').options(cssnanoOptions)
+      module.rule('less').oneOf('normal-modules').use('cssnano').loader('postcss-loader').options(
+        cssnanoOptions)
+      module.rule('less').oneOf('normal').use('cssnano').loader('postcss-loader').options(cssnanoOptions)
+
+      module.rule('stylus').oneOf('vue-modules').use('cssnano').loader('postcss-loader').options(
+        cssnanoOptions)
+      module.rule('stylus').oneOf('vue').use('cssnano').loader('postcss-loader').options(cssnanoOptions)
+      module.rule('stylus').oneOf('normal-modules').use('cssnano').loader('postcss-loader').options(
+        cssnanoOptions)
+      module.rule('stylus').oneOf('normal').use('cssnano').loader('postcss-loader').options(cssnanoOptions)
     }
   }
 }

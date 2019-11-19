@@ -34,7 +34,7 @@ export function getNetworkType () {
   if (connection) {
     networkType = connection.type
     if (networkType === 'cellular') {
-      networkType = connection.effectiveType.replace('slow-', '')
+      networkType = connection.effectiveType && connection.effectiveType.replace('slow-', '')
     } else if (!['none', 'wifi'].includes(networkType)) {
       networkType = 'unknown'
     }

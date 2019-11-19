@@ -36,49 +36,32 @@ export function checkIsSoterEnrolledInDevice ({
   if (checkAuthMode === 'fingerPrint') {
     if (checkIsSupportFingerPrint()) {
       const isEnrolled = plus.fingerprint.isKeyguardSecure() && plus.fingerprint.isEnrolledFingerprints()
-      if (isEnrolled) {
-        return {
-          isEnrolled,
-          errMsg: 'checkIsSoterEnrolledInDevice:ok'
-        }
-      } else {
-        return {
-          isEnrolled,
-          errMsg: 'checkIsSoterEnrolledInDevice:ok'
-        }
-      }
-    } else {
       return {
-        isEnrolled: false,
-        errMsg: 'checkIsSoterEnrolledInDevice:fail not support'
+        isEnrolled,
+        errMsg: 'checkIsSoterEnrolledInDevice:ok'
       }
+    }
+    return {
+      isEnrolled: false,
+      errMsg: 'checkIsSoterEnrolledInDevice:fail not support'
     }
   } else if (checkAuthMode === 'facial') {
     if (checkIsSupportFaceID()) {
       const faceID = requireNativePlugin('faceID')
       const isEnrolled = faceID && faceID.isKeyguardSecure() && faceID.isEnrolledFaceID()
-      if (isEnrolled) {
-        return {
-          isEnrolled,
-          errMsg: 'checkIsSoterEnrolledInDevice:ok'
-        }
-      } else {
-        return {
-          isEnrolled,
-          errMsg: 'checkIsSoterEnrolledInDevice:ok'
-        }
-      }
-    } else {
       return {
-        isEnrolled: false,
-        errMsg: 'checkIsSoterEnrolledInDevice:fail not support'
+        isEnrolled,
+        errMsg: 'checkIsSoterEnrolledInDevice:ok'
       }
     }
-  } else {
     return {
       isEnrolled: false,
       errMsg: 'checkIsSoterEnrolledInDevice:fail not support'
     }
+  }
+  return {
+    isEnrolled: false,
+    errMsg: 'checkIsSoterEnrolledInDevice:fail not support'
   }
 }
 
@@ -87,6 +70,24 @@ export function startSoterAuthentication ({
   challenge = false,
   authContent
 } = {}, callbackId) {
+  /*
+  以手机不支持facial未录入fingerPrint为例
+  requestAuthModes:['facial','fingerPrint']时，微信小程序返回值里的authMode为"fingerPrint"
+  requestAuthModes:['fingerPrint','facial']时，微信小程序返回值里的authMode为"fingerPrint"
+  即先过滤不支持的方式之后再判断是否录入
+  微信小程序errCode（从企业号开发者中心查到如下文档）：
+  0：识别成功  'startSoterAuthentication:ok'
+  90001：本设备不支持SOTER  'startSoterAuthentication:fail not support soter'
+  90002：用户未授权微信使用该生物认证接口  注：APP端暂不支持
+  90003：请求使用的生物认证方式不支持  'startSoterAuthentication:fail no corresponding mode'
+  90004：未传入challenge或challenge长度过长（最长512字符）注：APP端暂不支持
+  90005：auth_content长度超过限制（最长42个字符）注：微信小程序auth_content指纹识别时无效果，faceID暂未测试
+  90007：内部错误  'startSoterAuthentication:fail auth key update error'
+  90008：用户取消授权  'startSoterAuthentication:fail cancel'
+  90009：识别失败  'startSoterAuthentication:fail'
+  90010：重试次数过多被冻结  'startSoterAuthentication:fail authenticate freeze. please try again later'
+  90011：用户未录入所选识别方式  'startSoterAuthentication:fail no fingerprint enrolled'
+  */
   const supportMode = checkIsSupportSoterAuthentication().supportMode
   if (supportMode.length === 0) {
     return {
@@ -182,7 +183,7 @@ export function startSoterAuthentication ({
     faceID.authenticate({
       message: authContent
     }, (e) => {
-      if (e.type === 'success' && e.code === 1) {
+      if (e.type === 'success' && e.code === 0) {
         invoke(callbackId, {
           authMode: realAuthMode,
           errCode: 0,
