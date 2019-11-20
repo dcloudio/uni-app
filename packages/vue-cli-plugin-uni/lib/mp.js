@@ -62,7 +62,7 @@ module.exports = {
   vueConfig: {
     parallel: false
   },
-  webpackConfig (webpackConfig, api) {
+  webpackConfig (webpackConfig, vueOptions, api) {
     if (!webpackConfig.optimization) {
       webpackConfig.optimization = {}
     }

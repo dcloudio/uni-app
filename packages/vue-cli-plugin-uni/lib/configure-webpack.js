@@ -178,7 +178,7 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
 
     let platformWebpackConfig = platformOptions.webpackConfig
     if (typeof platformWebpackConfig === 'function') {
-      platformWebpackConfig = platformWebpackConfig(webpackConfig, api)
+      platformWebpackConfig = platformWebpackConfig(webpackConfig, vueOptions, api)
     }
     // 移除 node_modules 目录，避免受路径上的 node_modules 影响
     webpackConfig.resolve.modules = webpackConfig.resolve.modules.filter(module => module !==
