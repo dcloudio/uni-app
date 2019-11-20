@@ -123,7 +123,7 @@ export default {
       focusSync: this.focus,
       height: 0,
       focusChangeSource: '',
-      isIOS: String(navigator.platform).indexOf('iP') === 0 && String(navigator.vendor).indexOf('Apple') === 0
+      isIOS: String(navigator.platform).indexOf('iP') === 0 && String(navigator.vendor).indexOf('Apple') === 0 && String(navigator.appVersion).split('OS ')[1].split('_')[0] < 13
     }
   },
   computed: {
