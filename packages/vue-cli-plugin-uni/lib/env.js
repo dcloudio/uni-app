@@ -254,7 +254,7 @@ if ( // 非 h5 ,非 v3,非 native
 ) {
   moduleAlias.addAlias('./loaders/pitcher', (fromPath, request, alias) => {
     if (fromPath.indexOf('vue-loader') !== -1) {
-      return path.resolve(__dirname, '@dcloudio/vue-cli-plugin-hbuilderx/packages/vue-loader/lib/loaders/pitcher')
+      return require.resolve('@dcloudio/vue-cli-plugin-hbuilderx/packages/vue-loader/lib/loaders/pitcher')
     }
     return request
   })
