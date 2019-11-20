@@ -154,7 +154,7 @@ module.exports = {
       ]
     }
   },
-  chainWebpack (webpackConfig, api) {
+  chainWebpack (webpackConfig, vueOptions, api) {
     if (process.env.UNI_PLATFORM === 'mp-baidu') {
       webpackConfig.module
         .rule('js')

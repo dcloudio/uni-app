@@ -101,7 +101,7 @@ module.exports = {
       plugins
     }
   },
-  chainWebpack (webpackConfig, api) {
+  chainWebpack (webpackConfig, vueOptions, api) {
     webpackConfig.plugins.delete('copy')
 
     if (!process.env.UNI_OPT_PREFETCH) {
