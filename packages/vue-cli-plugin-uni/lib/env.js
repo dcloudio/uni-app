@@ -126,6 +126,7 @@ if (process.env.UNI_PLATFORM === 'app-plus') {
       platformOptions.compilerVersion === 3
     )
   ) {
+    delete process.env.UNI_USING_CACHE
     process.env.UNI_USING_V3 = true
     platformOptions.usingComponents = true
     process.env.UNI_OUTPUT_TMP_DIR = ''

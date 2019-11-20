@@ -11,6 +11,10 @@ const {
   getPartialIdentifier
 } = require('../util')
 
+// const {
+//   createTemplateCacheLoader
+// } = require('../cache-loader')
+
 function getProvides () {
   return {
     '__f__': [path.resolve(__dirname, '../format-log.js'), 'default'],
@@ -23,7 +27,7 @@ const v3 = {
   vueConfig: {
     parallel: false
   },
-  webpackConfig (webpackConfig, vueOptions) {
+  webpackConfig (webpackConfig, vueOptions, api) {
     const isAppService = !!vueOptions.pluginOptions['uni-app-plus']['service']
     const isAppView = !!vueOptions.pluginOptions['uni-app-plus']['view']
 
@@ -121,6 +125,12 @@ const v3 = {
           }]
         },
         ...rules
+          // v3 暂不支持 cache
+          // createTemplateCacheLoader(api,
+          //   isAppService
+          //     ? 'uni-template-compiler-service'
+          //     : 'uni-template-compiler-view'
+          // )
         ]
       },
       plugins: [
@@ -146,12 +156,12 @@ const v3 = {
       ))
     }
 
-    const compilerOptions = Object.assign({
+    const compilerOptions = {
       isUnaryTag,
       preserveWhitespace: false,
       service: isAppService,
       view: isAppView
-    }, cacheConfig)
+    }
 
     // disable vue cache-loader
     webpackConfig.module
@@ -164,7 +174,7 @@ const v3 = {
         isAppView,
         compiler: getPlatformCompiler(),
         compilerOptions
-      }))
+      }, cacheConfig))
       .end()
       .use('uniapp-custom-block-loader')
       .loader(require.resolve('@dcloudio/vue-cli-plugin-uni/packages/webpack-custom-block-loader'))
