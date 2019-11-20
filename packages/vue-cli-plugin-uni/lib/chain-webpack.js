@@ -12,7 +12,7 @@ function resolve (dir) {
   return path.resolve(__dirname, '..', dir)
 }
 
-module.exports = function chainWebpack (platformOptions, api) {
+module.exports = function chainWebpack (platformOptions, vueOptions, api) {
   const {
     runByHBuilderX, // 使用 HBuilderX 运行
     cssPreprocessOptions
@@ -94,7 +94,7 @@ module.exports = function chainWebpack (platformOptions, api) {
       })
     }
 
-    platformOptions.chainWebpack(webpackConfig, api)
+    platformOptions.chainWebpack(webpackConfig, vueOptions, api)
     // define
     webpackConfig
       .plugin('uni-define')
