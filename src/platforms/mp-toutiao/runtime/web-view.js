@@ -6,8 +6,6 @@ export function initWebviewApi (readyCallback) {
   if (!isToutiao) {
     return
   }
-  setTimeout(() => {
-    document.addEventListener('DOMContentLoaded', readyCallback)
-  }, 0)
+  document.addEventListener('DOMContentLoaded', readyCallback)
   return window.tt.miniProgram
 }

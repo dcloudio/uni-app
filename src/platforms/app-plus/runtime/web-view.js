@@ -8,12 +8,10 @@ export function initWebviewApi (readyCallback) {
   if (!isAppPlus) {
     return
   }
-  setTimeout(() => {
-    if (window.plus && readyRE.test(document.readyState)) {
-      readyCallback()
-    } else {
-      document.addEventListener('plusready', readyCallback)
-    }
-  }, 0)
+  if (window.plus && readyRE.test(document.readyState)) {
+    setTimeout(readyCallback, 0)
+  } else {
+    document.addEventListener('plusready', readyCallback)
+  }
   return api
 }

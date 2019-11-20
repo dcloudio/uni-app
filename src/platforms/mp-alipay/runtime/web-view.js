@@ -4,9 +4,7 @@ export function initWebviewApi (readyCallback) {
   if (!isAlipay) {
     return
   }
-  setTimeout(() => {
-    document.addEventListener('DOMContentLoaded', readyCallback)
-  }, 0)
+  document.addEventListener('DOMContentLoaded', readyCallback)
   const {
     navigateTo,
     navigateBack,
