@@ -10,6 +10,7 @@
       :key="index"
       :src="control.iconPath"
       :style="control.position"
+      auto-size
       @click="controlclick(control)"/>
     <div class="uni-map-slot">
       <slot />
