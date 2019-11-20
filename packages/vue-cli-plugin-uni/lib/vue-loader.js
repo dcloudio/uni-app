@@ -14,7 +14,6 @@ module.exports = function modifyVueLoader (webpackConfig, compilerOptions, api) 
     cacheDirectory: false,
     cacheIdentifier: false
   }
-  const partialIdentifier = {}
 
   if (process.env.UNI_USING_CACHE) {
     Object.assign(cacheConfig, api.genCacheConfig(
@@ -60,7 +59,7 @@ module.exports = function modifyVueLoader (webpackConfig, compilerOptions, api) 
       .use('cache-loader')
       .tap(options => Object.assign(options, api.genCacheConfig(
         'vue-loader/' + process.env.UNI_PLATFORM,
-        partialIdentifier
+        getPartialIdentifier()
       )))
   } else {
     webpackConfig.module

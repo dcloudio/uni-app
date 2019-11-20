@@ -62,14 +62,14 @@ function read (key, callback) {
 }
 
 module.exports = {
-  createTemplateCacheLoader: function (api) {
+  createTemplateCacheLoader: function (api, id = 'uni-template-compiler') {
     return {
       resourceQuery: /type=uni-cache-loader-template/,
       use: [{
         loader: 'cache-loader',
         ident: 'uni-cache-loader-template-options',
         options: Object.assign(api.genCacheConfig(
-          'uni-template-compiler/' + process.env.UNI_PLATFORM,
+          id + '/' + process.env.UNI_PLATFORM,
           getPartialIdentifier()
         ), {
           read,

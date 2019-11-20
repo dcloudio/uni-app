@@ -7,8 +7,13 @@ const {
 } = require('@dcloudio/uni-cli-shared')
 
 const {
-  isUnaryTag
+  isUnaryTag,
+  getPartialIdentifier
 } = require('../util')
+
+// const {
+//   createTemplateCacheLoader
+// } = require('../cache-loader')
 
 function getProvides () {
   return {
@@ -22,7 +27,7 @@ const v3 = {
   vueConfig: {
     parallel: false
   },
-  webpackConfig (webpackConfig, vueOptions) {
+  webpackConfig (webpackConfig, vueOptions, api) {
     const isAppService = !!vueOptions.pluginOptions['uni-app-plus']['service']
     const isAppView = !!vueOptions.pluginOptions['uni-app-plus']['view']
 
@@ -120,6 +125,12 @@ const v3 = {
           }]
         },
         ...rules
+          // v3 暂不支持 cache
+          // createTemplateCacheLoader(api,
+          //   isAppService
+          //     ? 'uni-template-compiler-service'
+          //     : 'uni-template-compiler-view'
+          // )
         ]
       },
       plugins: [
@@ -127,11 +138,23 @@ const v3 = {
       ]
     }
   },
-  chainWebpack (webpackConfig, vueOptions) {
+  chainWebpack (webpackConfig, vueOptions, api) {
     webpackConfig.entryPoints.delete('app')
 
     const isAppService = !!vueOptions.pluginOptions['uni-app-plus']['service']
     const isAppView = !!vueOptions.pluginOptions['uni-app-plus']['view']
+
+    const cacheConfig = {
+      cacheDirectory: false,
+      cacheIdentifier: false
+    }
+
+    if (process.env.UNI_USING_CACHE) {
+      Object.assign(cacheConfig, api.genCacheConfig(
+        'vue-template-compiler/' + process.env.UNI_PLATFORM,
+        getPartialIdentifier()
+      ))
+    }
 
     const compilerOptions = {
       isUnaryTag,
@@ -150,20 +173,30 @@ const v3 = {
         isAppService,
         isAppView,
         compiler: getPlatformCompiler(),
-        compilerOptions,
-        cacheDirectory: false,
-        cacheIdentifier: false
-      }))
+        compilerOptions
+      }, cacheConfig))
       .end()
       .use('uniapp-custom-block-loader')
       .loader(require.resolve('@dcloudio/vue-cli-plugin-uni/packages/webpack-custom-block-loader'))
       .options({
         compiler: getPlatformCompiler()
       })
-      .end()
-      .uses
-      .delete('cache-loader')
-      .end()
+
+    // 是否启用 cache
+    if (process.env.UNI_USING_CACHE) {
+      webpackConfig.module
+        .rule('vue')
+        .use('cache-loader')
+        .tap(options => Object.assign(options, api.genCacheConfig(
+          'vue-loader/' + process.env.UNI_PLATFORM,
+          getPartialIdentifier()
+        )))
+    } else {
+      webpackConfig.module
+        .rule('vue')
+        .uses
+        .delete('cache-loader')
+    }
 
     if (isAppView) {
       if (process.env.NODE_ENV === 'production') {

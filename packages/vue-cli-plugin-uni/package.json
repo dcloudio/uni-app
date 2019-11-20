@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/vue-cli-plugin-uni",
-  "version": "2.0.0-23320190923002",
+  "version": "3.0.0-alpha-24020191018043",
   "description": "uni-app plugin for vue-cli 3",
   "main": "index.js",
   "repository": {
@@ -36,5 +36,5 @@
     "wrap-loader": "^0.2.0",
     "xregexp": "4.0.0"
   },
-  "gitHead": "10184426b19cb76e01c93fb25c982c72887557e8"
+  "gitHead": "110501ffb0313e417858dec92acf07522d4ded00"
 }

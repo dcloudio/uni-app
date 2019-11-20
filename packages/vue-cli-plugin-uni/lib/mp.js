@@ -62,7 +62,7 @@ module.exports = {
   vueConfig: {
     parallel: false
   },
-  webpackConfig (webpackConfig, api) {
+  webpackConfig (webpackConfig, vueOptions, api) {
     if (!webpackConfig.optimization) {
       webpackConfig.optimization = {}
     }
@@ -94,6 +94,9 @@ module.exports = {
         devtool = 'sourcemap'
       }
     }
+    const statCode = process.env.UNI_USING_STAT ? `import '@dcloudio/uni-stat';` : ''
+
+    const beforeCode = `import 'uni-pages';`
 
     return {
       devtool,
@@ -121,6 +124,13 @@ module.exports = {
         rules: [{
           test: path.resolve(process.env.UNI_INPUT_DIR, getMainEntry()),
           use: [{
+            loader: 'wrap-loader',
+            options: {
+              before: [
+                beforeCode + statCode
+              ]
+            }
+          }, {
             loader: '@dcloudio/webpack-uni-mp-loader/lib/main'
           }]
         }, {
@@ -154,7 +164,7 @@ module.exports = {
       ]
     }
   },
-  chainWebpack (webpackConfig, api) {
+  chainWebpack (webpackConfig, vueOptions, api) {
     if (process.env.UNI_PLATFORM === 'mp-baidu') {
       webpackConfig.module
         .rule('js')

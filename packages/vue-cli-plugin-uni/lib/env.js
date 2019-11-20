@@ -126,6 +126,7 @@ if (process.env.UNI_PLATFORM === 'app-plus') {
       platformOptions.compilerVersion === 3
     )
   ) {
+    delete process.env.UNI_USING_CACHE
     process.env.UNI_USING_V3 = true
     platformOptions.usingComponents = true
     process.env.UNI_OUTPUT_TMP_DIR = ''
@@ -256,6 +257,20 @@ const moduleAlias = require('module-alias')
 moduleAlias.addAlias('vue-template-compiler', '@dcloudio/vue-cli-plugin-uni/packages/vue-template-compiler')
 moduleAlias.addAlias('@megalo/template-compiler', '@dcloudio/vue-cli-plugin-uni/packages/@megalo/template-compiler')
 moduleAlias.addAlias('mpvue-template-compiler', '@dcloudio/vue-cli-plugin-uni/packages/mpvue-template-compiler')
+
+// vue cache
+if ( // 非 h5 ,非 v3,非 native
+  process.env.UNI_PLATFORM !== 'h5' &&
+  !process.env.UNI_USING_V3 &&
+  !process.env.UNI_USING_NATIVE
+) {
+  moduleAlias.addAlias('./loaders/pitcher', (fromPath, request, alias) => {
+    if (fromPath.indexOf('vue-loader') !== -1) {
+      return require.resolve('@dcloudio/vue-cli-plugin-hbuilderx/packages/vue-loader/lib/loaders/pitcher')
+    }
+    return request
+  })
+}
 
 if (process.env.UNI_PLATFORM === 'mp-toutiao') {
   // !important 始终带有一个空格
