@@ -38,12 +38,14 @@ const uniPath = process.env.UNI_USING_V8
 
 const provide = {}
 
-if (!process.env.UNI_USING_NATIVE) {
-  provide['uni'] = [path.resolve(__dirname, uniPath), 'default']
-}
+if (!process.env.UNI_USING_V3) {
+  if (!process.env.UNI_USING_NATIVE) {
+    provide['uni'] = [path.resolve(__dirname, uniPath), 'default']
+  }
 
-if (process.env.UNI_USING_V8) {
-  provide['plus'] = [path.resolve(__dirname, uniPath), 'weexPlus']
+  if (process.env.UNI_USING_V8) {
+    provide['plus'] = [path.resolve(__dirname, uniPath), 'weexPlus']
+  }
 }
 
 if (
