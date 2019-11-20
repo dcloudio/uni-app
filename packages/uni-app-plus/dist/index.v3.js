@@ -4044,11 +4044,11 @@ var serviceContext = (function () {
     const buttons = [];
     if (!onlyFromCamera) {
       buttons.push({
-        'float': 'right',
-        'text': '相册',
-        'fontSize': '17px',
-        'width': '60px',
-        'onclick': function () {
+        float: 'right',
+        text: '相册',
+        fontSize: '17px',
+        width: '60px',
+        onclick: function () {
           plus.gallery.pick(file => {
             barcode.scan(file, (type, code) => {
               if (isDark) {
@@ -4135,6 +4135,245 @@ var serviceContext = (function () {
     }, false);
   }
 
+  var webview = /*#__PURE__*/Object.freeze({
+    SCAN_ID: SCAN_ID,
+    SCAN_PATH: SCAN_PATH,
+    scanCode: scanCode
+  });
+
+  let plus_;
+  let weex_;
+  let uni_;
+
+  let runtime;
+
+  function getRuntime () {
+    return runtime || (runtime = typeof window === 'object' && typeof navigator === 'object' && typeof document ===
+      'object'
+      ? 'webview' : 'v8')
+  }
+
+  function setRuntime (value) {
+    runtime = value;
+  }
+
+  function getPageId () {
+    return plus_.webview.currentWebview().id
+  }
+
+  let initedEventListener = false;
+  const callbacks$1 = {};
+
+  function addEventListener (pageId, callback) {
+    const runtime = getRuntime();
+
+    function onPlusMessage (res) {
+      const message = res.data && res.data.__message;
+      if (!message || !message.__page) {
+        return
+      }
+      const pageId = message.__page;
+      const callback = callbacks$1[pageId];
+      callback && callback(message);
+      if (!message.keep) {
+        delete callbacks$1[pageId];
+      }
+    }
+    if (!initedEventListener) {
+      if (runtime === 'v8') {
+        const globalEvent = weex_.requireModule('globalEvent');
+        globalEvent.addEventListener('plusMessage', onPlusMessage);
+      } else if (runtime === 'v8-native') {
+        uni_.$on(getPageId(), onPlusMessage);
+      } else {
+        window.__plusMessage = onPlusMessage;
+      }
+      initedEventListener = true;
+    }
+    callbacks$1[pageId] = callback;
+  }
+
+  class Page {
+    constructor (webview) {
+      this.webview = webview;
+    }
+    sendMessage (data) {
+      const runtime = getRuntime();
+      const message = {
+        __message: {
+          data
+        }
+      };
+      if (runtime === 'v8-native') {
+        uni_.$emit(this.webview.id, {
+          data: JSON.parse(JSON.stringify(message))
+        });
+      } else {
+        plus_.webview.postMessageToUniNView(message, this.webview.id);
+      }
+    }
+    close () {
+      this.webview.close();
+    }
+  }
+
+  function showPage ({
+    context,
+    runtime,
+    url,
+    data = {},
+    style = {},
+    onMessage,
+    onClose
+  }) {
+    if (context) {
+      plus_ = context.plus;
+      weex_ = context.weex;
+      uni_ = context.uni;
+    } else {
+      // eslint-disable-next-line
+      plus_ = typeof plus === 'object' ? plus : null;
+      // eslint-disable-next-line
+      weex_ = typeof weex === 'object' ? weex : null;
+      // eslint-disable-next-line
+      uni_ = typeof uni === 'object' ? uni : null;
+    }
+    if (runtime) {
+      setRuntime(runtime);
+    } else {
+      runtime = getRuntime();
+    }
+    const titleNView = {
+      autoBackButton: true,
+      titleSize: '17px'
+    };
+    const pageId = `page${Date.now()}`;
+    style = Object.assign({}, style);
+    if (style.titleNView !== false && style.titleNView !== 'none') {
+      style.titleNView = Object.assign(titleNView, style.titleNView);
+    }
+    const defaultStyle = {
+      top: 0,
+      bottom: 0,
+      usingComponents: {},
+      popGesture: 'close',
+      scrollIndicator: 'none',
+      animationType: 'pop-in',
+      animationDuration: 200,
+      uniNView: {
+        path: `${(typeof process === 'object' && process.env && process.env.VUE_APP_TEMPLATE_PATH) || ''}/${url}.js`,
+        defaultFontSize: plus_.screen.resolutionWidth / 20,
+        viewport: plus_.screen.resolutionWidth
+      }
+    };
+    style = Object.assign(defaultStyle, style);
+    const page = plus_.webview.create('', pageId, style, {
+      extras: {
+        from: getPageId(),
+        runtime: runtime,
+        data
+      }
+    });
+    page.addEventListener('close', onClose);
+    addEventListener(pageId, message => {
+      if (typeof onMessage === 'function') {
+        onMessage(message.data);
+      }
+      if (!message.keep) {
+        page.close('auto');
+      }
+    });
+    page.show(style.animationType, style.animationDuration);
+    return new Page(page)
+  }
+
+  function getStatusBarStyle$1 () {
+    let style = plus.navigator.getStatusBarStyle();
+    if (style === 'UIStatusBarStyleBlackTranslucent' || style === 'UIStatusBarStyleBlackOpaque' || style === 'null') {
+      style = 'light';
+    } else if (style === 'UIStatusBarStyleDefault') {
+      style = 'dark';
+    }
+    return style
+  }
+
+  function scanCode$1 (options, callbackId) {
+    const statusBarStyle = getStatusBarStyle$1();
+    const isDark = statusBarStyle !== 'light';
+
+    let result;
+    const page = showPage({
+      url: '__uniappscan',
+      data: {
+        scanType: options.scanType
+      },
+      style: {
+        animationType: options.animationType || 'pop-in',
+        titleNView: {
+          autoBackButton: true,
+          type: 'float',
+          titleText: options.titleText || '扫码',
+          titleColor: '#ffffff',
+          backgroundColor: 'rgba(0,0,0,0)',
+          buttons: !options.onlyFromCamera ? [{
+            text: options.albumText || '相册',
+            fontSize: '17px',
+            width: '60px',
+            onclick: () => {
+              page.sendMessage({
+                type: 'gallery'
+              });
+            }
+          }] : []
+        },
+        popGesture: 'close',
+        backButtonAutoControl: 'close'
+      },
+      onMessage ({
+        event,
+        detail
+      }) {
+        result = detail;
+        if (event === 'marked') {
+          result.errMsg = 'scanCode:ok';
+        } else {
+          result.errMsg = 'scanCode:fail ' + detail.message;
+        }
+      },
+      onClose () {
+        if (isDark) {
+          plus.navigator.setStatusBarStyle('dark');
+        }
+        invoke(callbackId, result || {
+          errMsg: 'scanCode:fail cancel'
+        });
+      }
+    });
+
+    if (isDark) {
+      plus.navigator.setStatusBarStyle('light');
+      page.webview.addEventListener('popGesture', ({
+        type,
+        result
+      }) => {
+        if (type === 'start') {
+          plus.navigator.setStatusBarStyle('dark');
+        } else if (type === 'end' && !result) {
+          plus.navigator.setStatusBarStyle('light');
+        }
+      });
+    }
+  }
+
+  var weex$1 = /*#__PURE__*/Object.freeze({
+    scanCode: scanCode$1
+  });
+
+  function scanCode$2 (...array) {
+    const api = __uniConfig.nvueCompiler === 'uni-app' ? weex$1 : webview;
+    return api.scanCode(...array)
+  }
+
   function checkIsSupportFaceID () {
     const platform = plus.os.name.toLowerCase();
     if (platform !== 'ios') {
@@ -4168,49 +4407,32 @@ var serviceContext = (function () {
     if (checkAuthMode === 'fingerPrint') {
       if (checkIsSupportFingerPrint()) {
         const isEnrolled = plus.fingerprint.isKeyguardSecure() && plus.fingerprint.isEnrolledFingerprints();
-        if (isEnrolled) {
-          return {
-            isEnrolled,
-            errMsg: 'checkIsSoterEnrolledInDevice:ok'
-          }
-        } else {
-          return {
-            isEnrolled,
-            errMsg: 'checkIsSoterEnrolledInDevice:ok'
-          }
-        }
-      } else {
         return {
-          isEnrolled: false,
-          errMsg: 'checkIsSoterEnrolledInDevice:fail not support'
+          isEnrolled,
+          errMsg: 'checkIsSoterEnrolledInDevice:ok'
         }
+      }
+      return {
+        isEnrolled: false,
+        errMsg: 'checkIsSoterEnrolledInDevice:fail not support'
       }
     } else if (checkAuthMode === 'facial') {
       if (checkIsSupportFaceID()) {
         const faceID = requireNativePlugin('faceID');
         const isEnrolled = faceID && faceID.isKeyguardSecure() && faceID.isEnrolledFaceID();
-        if (isEnrolled) {
-          return {
-            isEnrolled,
-            errMsg: 'checkIsSoterEnrolledInDevice:ok'
-          }
-        } else {
-          return {
-            isEnrolled,
-            errMsg: 'checkIsSoterEnrolledInDevice:ok'
-          }
-        }
-      } else {
         return {
-          isEnrolled: false,
-          errMsg: 'checkIsSoterEnrolledInDevice:fail not support'
+          isEnrolled,
+          errMsg: 'checkIsSoterEnrolledInDevice:ok'
         }
       }
-    } else {
       return {
         isEnrolled: false,
         errMsg: 'checkIsSoterEnrolledInDevice:fail not support'
       }
+    }
+    return {
+      isEnrolled: false,
+      errMsg: 'checkIsSoterEnrolledInDevice:fail not support'
     }
   }
 
@@ -4219,6 +4441,24 @@ var serviceContext = (function () {
     challenge = false,
     authContent
   } = {}, callbackId) {
+    /*
+    以手机不支持facial未录入fingerPrint为例
+    requestAuthModes:['facial','fingerPrint']时，微信小程序返回值里的authMode为"fingerPrint"
+    requestAuthModes:['fingerPrint','facial']时，微信小程序返回值里的authMode为"fingerPrint"
+    即先过滤不支持的方式之后再判断是否录入
+    微信小程序errCode（从企业号开发者中心查到如下文档）：
+    0：识别成功  'startSoterAuthentication:ok'
+    90001：本设备不支持SOTER  'startSoterAuthentication:fail not support soter'
+    90002：用户未授权微信使用该生物认证接口  注：APP端暂不支持
+    90003：请求使用的生物认证方式不支持  'startSoterAuthentication:fail no corresponding mode'
+    90004：未传入challenge或challenge长度过长（最长512字符）注：APP端暂不支持
+    90005：auth_content长度超过限制（最长42个字符）注：微信小程序auth_content指纹识别时无效果，faceID暂未测试
+    90007：内部错误  'startSoterAuthentication:fail auth key update error'
+    90008：用户取消授权  'startSoterAuthentication:fail cancel'
+    90009：识别失败  'startSoterAuthentication:fail'
+    90010：重试次数过多被冻结  'startSoterAuthentication:fail authenticate freeze. please try again later'
+    90011：用户未录入所选识别方式  'startSoterAuthentication:fail no fingerprint enrolled'
+    */
     const supportMode = checkIsSupportSoterAuthentication().supportMode;
     if (supportMode.length === 0) {
       return {
@@ -4314,7 +4554,7 @@ var serviceContext = (function () {
       faceID.authenticate({
         message: authContent
       }, (e) => {
-        if (e.type === 'success' && e.code === 1) {
+        if (e.type === 'success' && e.code === 0) {
           invoke(callbackId, {
             authMode: realAuthMode,
             errCode: 0,
@@ -4803,6 +5043,7 @@ var serviceContext = (function () {
             float: 'right',
             text: '完成',
             fontSize: '17px',
+            width: '60px',
             onclick: function () {
               webview.evalJS('__chooseLocationConfirm__()');
             }
@@ -4863,6 +5104,103 @@ var serviceContext = (function () {
         result = res;
       }
     }, false);
+  }
+
+  var webview$1 = /*#__PURE__*/Object.freeze({
+    chooseLocation: chooseLocation$1
+  });
+
+  function getStatusBarStyle$2 () {
+    let style = plus.navigator.getStatusBarStyle();
+    if (style === 'UIStatusBarStyleBlackTranslucent' || style === 'UIStatusBarStyleBlackOpaque' || style === 'null') {
+      style = 'light';
+    } else if (style === 'UIStatusBarStyleDefault') {
+      style = 'dark';
+    }
+    return style
+  }
+
+  function chooseLocation$2 (options, callbackId) {
+    const statusBarStyle = getStatusBarStyle$2();
+    const isDark = statusBarStyle !== 'light';
+
+    let result;
+    const page = showPage({
+      url: '__uniappchooselocation',
+      data: {
+        keyword: options.keyword
+      },
+      style: {
+        animationType: options.animationType || 'slide-in-bottom',
+        titleNView: {
+          autoBackButton: false,
+          titleText: options.titleText || '选择位置',
+          titleColor: '#ffffff',
+          backgroundColor: 'rgba(0,0,0,1)',
+          buttons: [{
+            // text: options.cancelText || "取消",
+            // fontSize: "17px",
+            type: 'close',
+            float: 'left',
+            onclick: () => {
+              page.close();
+            }
+          }, {
+            text: options.doneText || '完成',
+            fontSize: '17px',
+            width: '60px',
+            onclick: () => {
+              page.sendMessage({
+                type: 'done'
+              });
+            }
+          }]
+        },
+        popGesture: 'close',
+        scrollIndicator: 'none'
+      },
+      onMessage ({
+        event,
+        detail
+      }) {
+        if (event === 'selected') {
+          result = detail;
+          result.errMsg = 'chooseLocation:ok';
+        }
+      },
+      onClose () {
+        if (isDark) {
+          plus.navigator.setStatusBarStyle('dark');
+        }
+
+        invoke(callbackId, result || {
+          errMsg: 'chooseLocation:fail cancel'
+        });
+      }
+    });
+
+    if (isDark) {
+      plus.navigator.setStatusBarStyle('light');
+      page.webview.addEventListener('popGesture', ({
+        type,
+        result
+      }) => {
+        if (type === 'start') {
+          plus.navigator.setStatusBarStyle('dark');
+        } else if (type === 'end' && !result) {
+          plus.navigator.setStatusBarStyle('light');
+        }
+      });
+    }
+  }
+
+  var weex$2 = /*#__PURE__*/Object.freeze({
+    chooseLocation: chooseLocation$2
+  });
+
+  function chooseLocation$3 (...array) {
+    const api = __uniConfig.nvueCompiler === 'uni-app' ? weex$2 : webview$1;
+    return api.chooseLocation(...array)
   }
 
   function getLocationSuccess (type, position, callbackId) {
@@ -4974,6 +5312,34 @@ var serviceContext = (function () {
     return {
       errMsg: 'openLocation:ok'
     }
+  }
+
+  var webview$2 = /*#__PURE__*/Object.freeze({
+    openLocation: openLocation$1
+  });
+
+  function openLocation$2 (data) {
+    showPage({
+      url: '__uniappopenlocation',
+      data,
+      style: {
+        titleNView: {
+          type: 'transparent'
+        }
+      }
+    });
+    return {
+      errMsg: 'openLocation:ok'
+    }
+  }
+
+  var weex$3 = /*#__PURE__*/Object.freeze({
+    openLocation: openLocation$2
+  });
+
+  function openLocation$3 (...array) {
+    const api = __uniConfig.nvueCompiler === 'uni-app' ? weex$3 : webview$2;
+    return api.openLocation(...array)
   }
 
   const RECORD_TIME = 60 * 60 * 1000;
@@ -6169,9 +6535,8 @@ var serviceContext = (function () {
         });
       } else {
         plus.payment.request(service, params.orderInfo, res => {
-          invoke(callbackId, {
-            errMsg: 'requestPayment:ok'
-          });
+          res.errMsg = 'requestPayment:ok';
+          invoke(callbackId, res);
         }, err => {
           invoke(callbackId, {
             errMsg: 'requestPayment:fail:' + err.message
@@ -7876,23 +8241,23 @@ var serviceContext = (function () {
     });
   }
 
-  let webview;
+  let webview$3;
 
   function setPullDownRefreshPageId (pullDownRefreshWebview) {
     if (typeof pullDownRefreshWebview === 'number') {
-      webview = plus.webview.getWebviewById(String(pullDownRefreshWebview));
+      webview$3 = plus.webview.getWebviewById(String(pullDownRefreshWebview));
     } else {
-      webview = pullDownRefreshWebview;
+      webview$3 = pullDownRefreshWebview;
     }
   }
 
   function startPullDownRefresh () {
-    if (webview) {
-      webview.endPullToRefresh();
+    if (webview$3) {
+      webview$3.endPullToRefresh();
     }
-    webview = getLastWebview();
-    if (webview) {
-      webview.beginPullToRefresh();
+    webview$3 = getLastWebview();
+    if (webview$3) {
+      webview$3.beginPullToRefresh();
       return {
         errMsg: 'startPullDownRefresh:ok'
       }
@@ -7903,12 +8268,12 @@ var serviceContext = (function () {
   }
 
   function stopPullDownRefresh () {
-    if (!webview) {
-      webview = getLastWebview();
+    if (!webview$3) {
+      webview$3 = getLastWebview();
     }
-    if (webview) {
-      webview.endPullToRefresh();
-      webview = null;
+    if (webview$3) {
+      webview$3.endPullToRefresh();
+      webview$3 = null;
       return {
         errMsg: 'stopPullDownRefresh:ok'
       }
@@ -8011,16 +8376,16 @@ var serviceContext = (function () {
     }
   }
 
-  const callbacks$1 = {};
+  const callbacks$2 = {};
 
   function createCallbacks (namespace) {
-    let scopedCallbacks = callbacks$1[namespace];
+    let scopedCallbacks = callbacks$2[namespace];
     if (!scopedCallbacks) {
       scopedCallbacks = {
         id: 1,
         callbacks: Object.create(null)
       };
-      callbacks$1[namespace] = scopedCallbacks;
+      callbacks$2[namespace] = scopedCallbacks;
     }
     return {
       get (id) {
@@ -8181,9 +8546,7 @@ var serviceContext = (function () {
     startBeaconDiscovery: startBeaconDiscovery,
     stopBeaconDiscovery: stopBeaconDiscovery,
     makePhoneCall: makePhoneCall$1,
-    SCAN_ID: SCAN_ID,
-    SCAN_PATH: SCAN_PATH,
-    scanCode: scanCode,
+    scanCode: scanCode$2,
     checkIsSupportSoterAuthentication: checkIsSupportSoterAuthentication,
     checkIsSoterEnrolledInDevice: checkIsSoterEnrolledInDevice,
     startSoterAuthentication: startSoterAuthentication,
@@ -8197,9 +8560,9 @@ var serviceContext = (function () {
     getSavedFileInfo: getSavedFileInfo,
     removeSavedFile: removeSavedFile,
     openDocument: openDocument$1,
-    chooseLocation: chooseLocation$1,
+    chooseLocation: chooseLocation$3,
     getLocation: getLocation$1,
-    openLocation: openLocation$1,
+    openLocation: openLocation$3,
     startRecord: startRecord,
     stopRecord: stopRecord,
     playVoice: playVoice,
@@ -8475,9 +8838,9 @@ var serviceContext = (function () {
     'error',
     'waiting'
   ];
-  const callbacks$2 = {};
+  const callbacks$3 = {};
   eventNames$1.forEach(name => {
-    callbacks$2[name] = [];
+    callbacks$3[name] = [];
   });
 
   const props$1 = [
@@ -8541,7 +8904,7 @@ var serviceContext = (function () {
         errMsg,
         errCode
       }) => {
-        callbacks$2[state].forEach(callback => {
+        callbacks$3[state].forEach(callback => {
           if (typeof callback === 'function') {
             callback(state === 'error' ? {
               errMsg,
@@ -8593,7 +8956,7 @@ var serviceContext = (function () {
   eventNames$1.forEach(item => {
     const name = item[0].toUpperCase() + item.substr(1);
     BackgroundAudioManager.prototype[`on${name}`] = function (callback) {
-      callbacks$2[item].push(callback);
+      callbacks$3[item].push(callback);
     };
   });
 
@@ -9557,10 +9920,10 @@ var serviceContext = (function () {
     createVideoContext: createVideoContext$1
   });
 
-  const callbacks$3 = [];
+  const callbacks$4 = [];
 
   onMethod('onAccelerometerChange', function (res) {
-    callbacks$3.forEach(callbackId => {
+    callbacks$4.forEach(callbackId => {
       invoke(callbackId, res);
     });
   });
@@ -9572,7 +9935,7 @@ var serviceContext = (function () {
    */
   function onAccelerometerChange (callbackId) {
     // TODO 当没有 start 时，添加 on 需要主动 start?
-    callbacks$3.push(callbackId);
+    callbacks$4.push(callbackId);
     if (!isEnable) {
       startAccelerometer();
     }
@@ -9627,10 +9990,10 @@ var serviceContext = (function () {
     onBLECharacteristicValueChange: onBLECharacteristicValueChange$1
   });
 
-  const callbacks$4 = [];
+  const callbacks$5 = [];
 
   onMethod('onCompassChange', function (res) {
-    callbacks$4.forEach(callbackId => {
+    callbacks$5.forEach(callbackId => {
       invoke(callbackId, res);
     });
   });
@@ -9642,7 +10005,7 @@ var serviceContext = (function () {
    */
   function onCompassChange (callbackId) {
     // TODO 当没有 start 时，添加 on 需要主动 start?
-    callbacks$4.push(callbackId);
+    callbacks$5.push(callbackId);
     if (!isEnable$1) {
       startCompass();
     }
@@ -9673,23 +10036,23 @@ var serviceContext = (function () {
     stopCompass: stopCompass
   });
 
-  const callbacks$5 = [];
+  const callbacks$6 = [];
 
   onMethod('onNetworkStatusChange', res => {
-    callbacks$5.forEach(callbackId => {
+    callbacks$6.forEach(callbackId => {
       invoke(callbackId, res);
     });
   });
 
   function onNetworkStatusChange (callbackId) {
-    callbacks$5.push(callbackId);
+    callbacks$6.push(callbackId);
   }
 
   var require_context_module_1_12 = /*#__PURE__*/Object.freeze({
     onNetworkStatusChange: onNetworkStatusChange
   });
 
-  const callbacks$6 = {
+  const callbacks$7 = {
     pause: [],
     resume: [],
     start: [],
@@ -9703,7 +10066,7 @@ var serviceContext = (function () {
         const state = res.state;
         delete res.state;
         delete res.errMsg;
-        callbacks$6[state].forEach(callback => {
+        callbacks$7[state].forEach(callback => {
           if (typeof callback === 'function') {
             callback(res);
           }
@@ -9711,7 +10074,7 @@ var serviceContext = (function () {
       });
     }
     onError (callback) {
-      callbacks$6.error.push(callback);
+      callbacks$7.error.push(callback);
     }
     onFrameRecorded (callback) {
 
@@ -9723,16 +10086,16 @@ var serviceContext = (function () {
 
     }
     onPause (callback) {
-      callbacks$6.pause.push(callback);
+      callbacks$7.pause.push(callback);
     }
     onResume (callback) {
-      callbacks$6.resume.push(callback);
+      callbacks$7.resume.push(callback);
     }
     onStart (callback) {
-      callbacks$6.start.push(callback);
+      callbacks$7.start.push(callback);
     }
     onStop (callback) {
-      callbacks$6.stop.push(callback);
+      callbacks$7.stop.push(callback);
     }
     pause () {
       invokeMethod('operateRecorder', {
@@ -10033,7 +10396,7 @@ var serviceContext = (function () {
 
   const socketTasks$1 = Object.create(null);
   const socketTasksArray = [];
-  const callbacks$7 = Object.create(null);
+  const callbacks$8 = Object.create(null);
   onMethod('onSocketTaskStateChange', ({
     socketTaskId,
     state,
@@ -10054,8 +10417,8 @@ var serviceContext = (function () {
     if (state === 'open') {
       socketTask.readyState = socketTask.OPEN;
     }
-    if (socketTask === socketTasksArray[0] && callbacks$7[state]) {
-      invoke(callbacks$7[state], state === 'message' ? {
+    if (socketTask === socketTasksArray[0] && callbacks$8[state]) {
+      invoke(callbacks$8[state], state === 'message' ? {
         data
       } : {});
     }
@@ -10114,19 +10477,19 @@ var serviceContext = (function () {
   }
 
   function onSocketOpen (callbackId) {
-    callbacks$7.open = callbackId;
+    callbacks$8.open = callbackId;
   }
 
   function onSocketError (callbackId) {
-    callbacks$7.error = callbackId;
+    callbacks$8.error = callbackId;
   }
 
   function onSocketMessage (callbackId) {
-    callbacks$7.message = callbackId;
+    callbacks$8.message = callbackId;
   }
 
   function onSocketClose (callbackId) {
-    callbacks$7.close = callbackId;
+    callbacks$8.close = callbackId;
   }
 
   var require_context_module_1_16 = /*#__PURE__*/Object.freeze({
@@ -10599,16 +10962,16 @@ var serviceContext = (function () {
     createSelectorQuery: createSelectorQuery
   });
 
-  const callbacks$8 = [];
+  const callbacks$9 = [];
 
   onMethod('onKeyboardHeightChange', res => {
-    callbacks$8.forEach(callbackId => {
+    callbacks$9.forEach(callbackId => {
       invoke(callbackId, res);
     });
   });
 
   function onKeyboardHeightChange (callbackId) {
-    callbacks$8.push(callbackId);
+    callbacks$9.push(callbackId);
   }
 
   var require_context_module_1_22 = /*#__PURE__*/Object.freeze({
@@ -10647,16 +11010,16 @@ var serviceContext = (function () {
 
   const hideTabBarRedDot$1 = removeTabBarBadge$1;
 
-  const callbacks$9 = [];
+  const callbacks$a = [];
 
   onMethod('onTabBarMidButtonTap', res => {
-    callbacks$9.forEach(callbackId => {
+    callbacks$a.forEach(callbackId => {
       invoke(callbackId, res);
     });
   });
 
   function onTabBarMidButtonTap (callbackId) {
-    callbacks$9.push(callbackId);
+    callbacks$a.push(callbackId);
   }
 
   var require_context_module_1_24 = /*#__PURE__*/Object.freeze({
@@ -10666,22 +11029,22 @@ var serviceContext = (function () {
     onTabBarMidButtonTap: onTabBarMidButtonTap
   });
 
-  const callbacks$a = [];
+  const callbacks$b = [];
   onMethod('onViewDidResize', res => {
-    callbacks$a.forEach(callbackId => {
+    callbacks$b.forEach(callbackId => {
       invoke(callbackId, res);
     });
   });
 
   function onWindowResize (callbackId) {
-    callbacks$a.push(callbackId);
+    callbacks$b.push(callbackId);
   }
 
   function offWindowResize (callbackId) {
     // TODO 目前 on 和 off 即使传入同一个 function，获取到的 callbackId 也不会一致，导致不能 off 掉指定
     // 后续修复
     // 此处和微信平台一致查询不到去掉最后一个
-    callbacks$a.splice(callbacks$a.indexOf(callbackId), 1);
+    callbacks$b.splice(callbacks$b.indexOf(callbackId), 1);
   }
 
   var require_context_module_1_25 = /*#__PURE__*/Object.freeze({
@@ -11291,6 +11654,56 @@ var serviceContext = (function () {
     };
   }
 
+  const isAndroid = plus.os.name.toLowerCase() === 'android';
+  const FOCUS_TIMEOUT = isAndroid ? 300 : 700;
+  const HIDE_TIMEOUT = 300;
+  let keyboardHeight = 0;
+  let onKeyboardShow;
+  let focusTimer;
+  let hideKeyboardTimeout;
+
+  function hookKeyboardEvent (event, callback) {
+    onKeyboardShow = null;
+    focusTimer && clearTimeout(focusTimer);
+    if (event.type === 'focus') {
+      if (keyboardHeight > 0) {
+        event.detail.height = keyboardHeight;
+      } else {
+        focusTimer = setTimeout(function () {
+          event.detail.height = keyboardHeight;
+          callback(event);
+        }, FOCUS_TIMEOUT);
+        onKeyboardShow = function () {
+          clearTimeout(focusTimer);
+          event.detail.height = keyboardHeight;
+          callback(event);
+        };
+        return
+      }
+    }
+    callback(event);
+  }
+
+  onMethod('onKeyboardHeightChange', res => {
+    keyboardHeight = res.height;
+    if (keyboardHeight > 0) {
+      onKeyboardShow && onKeyboardShow();
+      if (hideKeyboardTimeout) {
+        clearTimeout(hideKeyboardTimeout);
+        hideKeyboardTimeout = null;
+      }
+    } else {
+      // 仅安卓收起键盘时通知view层失去焦点
+      if (isAndroid) {
+        hideKeyboardTimeout = setTimeout(function () {
+          hideKeyboardTimeout = null;
+          var pageId = getCurrentPageId();
+          UniServiceJSBridge.publishHandler('hideKeyboard', {}, pageId);
+        }, HIDE_TIMEOUT);
+      }
+    }
+  });
+
   function wrapperEvent (event) {
     event.preventDefault = noop;
     event.stopPropagation = noop;
@@ -11308,7 +11721,15 @@ var serviceContext = (function () {
         if (!target) {
           return console.error(`event handler[${cid}][${nid}] not found`)
         }
-        target.dispatchEvent(event.type, wrapperEvent(event));
+        const type = event.type;
+        const mpEvent = wrapperEvent(event);
+        if (type === 'focus' || type === 'blur') {
+          hookKeyboardEvent(mpEvent, event => {
+            target.dispatchEvent(type, event);
+          });
+        } else {
+          target.dispatchEvent(type, mpEvent);
+        }
       });
     }
   };
