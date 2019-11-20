@@ -7,12 +7,11 @@ export function initWebviewApi (readyCallback) {
   if (!isWeixin) {
     return
   }
-  setTimeout(() => {
-    if (window.WeixinJSBridge && window.WeixinJSBridge.invoke) {
-      readyCallback()
-    } else {
-      document.addEventListener('WeixinJSBridgeReady', readyCallback)
-    }
-  }, 0)
+  if (window.WeixinJSBridge && window.WeixinJSBridge.invoke) {
+    setTimeout(readyCallback, 0)
+  } else {
+    document.addEventListener('WeixinJSBridgeReady', readyCallback)
+  }
+
   return window.wx.miniProgram
 }

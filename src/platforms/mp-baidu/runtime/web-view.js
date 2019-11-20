@@ -1,13 +1,11 @@
 const isBaidu = window.swan &&
   window.swan.webView &&
-  /swan-baiduboxapp/i.test(navigator.userAgent)
+  /swan/i.test(navigator.userAgent)
 
 export function initWebviewApi (readyCallback) {
   if (!isBaidu) {
     return
   }
-  setTimeout(() => {
-    document.addEventListener('DOMContentLoaded', readyCallback)
-  }, 0)
+  document.addEventListener('DOMContentLoaded', readyCallback)
   return window.swan.webView
 }

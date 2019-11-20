@@ -7,12 +7,10 @@ export function initWebviewApi (readyCallback) {
   if (!isQQ) {
     return
   }
-  setTimeout(() => {
-    if (window.QQJSBridge && window.QQJSBridge.invoke) {
-      readyCallback()
-    } else {
-      document.addEventListener('QQJSBridgeReady', readyCallback)
-    }
-  }, 0)
+  if (window.QQJSBridge && window.QQJSBridge.invoke) {
+    setTimeout(readyCallback, 0)
+  } else {
+    document.addEventListener('QQJSBridgeReady', readyCallback)
+  }
   return window.qq.miniProgram
 }
