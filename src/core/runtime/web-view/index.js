@@ -53,10 +53,10 @@ if (!webViewApi) {
 const api = typeof uni !== 'undefined' ? uni : {}
 
 if (api.navigateTo) {
-  api.miniProgram = webViewApi
+  api.webView = webViewApi
 } else {
   Object.assign(api, webViewApi, {
-    miniProgram: webViewApi
+    webView: webViewApi
   })
 }
 
