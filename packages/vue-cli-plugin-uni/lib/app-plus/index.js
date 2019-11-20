@@ -7,7 +7,8 @@ const {
 } = require('@dcloudio/uni-cli-shared')
 
 const {
-  isUnaryTag
+  isUnaryTag,
+  getPartialIdentifier
 } = require('../util')
 
 function getProvides () {
@@ -127,18 +128,30 @@ const v3 = {
       ]
     }
   },
-  chainWebpack (webpackConfig, vueOptions) {
+  chainWebpack (webpackConfig, vueOptions, api) {
     webpackConfig.entryPoints.delete('app')
 
     const isAppService = !!vueOptions.pluginOptions['uni-app-plus']['service']
     const isAppView = !!vueOptions.pluginOptions['uni-app-plus']['view']
 
-    const compilerOptions = {
+    const cacheConfig = {
+      cacheDirectory: false,
+      cacheIdentifier: false
+    }
+
+    if (process.env.UNI_USING_CACHE) {
+      Object.assign(cacheConfig, api.genCacheConfig(
+        'vue-template-compiler/' + process.env.UNI_PLATFORM,
+        getPartialIdentifier()
+      ))
+    }
+
+    const compilerOptions = Object.assign({
       isUnaryTag,
       preserveWhitespace: false,
       service: isAppService,
       view: isAppView
-    }
+    }, cacheConfig)
 
     // disable vue cache-loader
     webpackConfig.module
@@ -150,9 +163,7 @@ const v3 = {
         isAppService,
         isAppView,
         compiler: getPlatformCompiler(),
-        compilerOptions,
-        cacheDirectory: false,
-        cacheIdentifier: false
+        compilerOptions
       }))
       .end()
       .use('uniapp-custom-block-loader')
@@ -160,10 +171,22 @@ const v3 = {
       .options({
         compiler: getPlatformCompiler()
       })
-      .end()
-      .uses
-      .delete('cache-loader')
-      .end()
+
+    // 是否启用 cache
+    if (process.env.UNI_USING_CACHE) {
+      webpackConfig.module
+        .rule('vue')
+        .use('cache-loader')
+        .tap(options => Object.assign(options, api.genCacheConfig(
+          'vue-loader/' + process.env.UNI_PLATFORM,
+          getPartialIdentifier()
+        )))
+    } else {
+      webpackConfig.module
+        .rule('vue')
+        .uses
+        .delete('cache-loader')
+    }
 
     if (isAppView) {
       if (process.env.NODE_ENV === 'production') {
