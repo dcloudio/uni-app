@@ -94,6 +94,9 @@ module.exports = {
         devtool = 'sourcemap'
       }
     }
+    const statCode = process.env.UNI_USING_STAT ? `import '@dcloudio/uni-stat';` : ''
+
+    const beforeCode = `import 'uni-pages';`
 
     return {
       devtool,
@@ -121,6 +124,13 @@ module.exports = {
         rules: [{
           test: path.resolve(process.env.UNI_INPUT_DIR, getMainEntry()),
           use: [{
+            loader: 'wrap-loader',
+            options: {
+              before: [
+                beforeCode + statCode
+              ]
+            }
+          }, {
             loader: '@dcloudio/webpack-uni-mp-loader/lib/main'
           }]
         }, {
