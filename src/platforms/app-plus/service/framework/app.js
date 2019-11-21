@@ -70,15 +70,20 @@ function initGlobalListeners () {
     })
   })
 
-  plus.globalEvent.addEventListener('plusMessage', function (e) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.log('[plusMessage]:[' + Date.now() + ']' + JSON.stringify(e.data))
-    }
-    if (e.data && e.data.type) {
-      const type = e.data.type
-      consumePlusMessage(type, e.data.args || {})
-    }
-  })
+  plus.globalEvent.addEventListener('plusMessage', onPlusMessage)
+
+  // nvue webview post message
+  plus.globalEvent.addEventListener('WebviewPostMessage', onPlusMessage)
+}
+
+function onPlusMessage (e) {
+  if (process.env.NODE_ENV !== 'production') {
+    console.log('[plusMessage]:[' + Date.now() + ']' + JSON.stringify(e.data))
+  }
+  if (e.data && e.data.type) {
+    const type = e.data.type
+    consumePlusMessage(type, e.data.args || {})
+  }
 }
 
 function initAppLaunch (appVm) {
