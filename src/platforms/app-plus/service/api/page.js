@@ -84,7 +84,7 @@ export function showPage ({
     animationType: 'pop-in',
     animationDuration: 200,
     uniNView: {
-      path: `${(typeof process === 'object' && process.env && process.env.VUE_APP_TEMPLATE_PATH) || '/template'}/${url}.js`,
+      path: `${(typeof process === 'object' && process.env && process.env.VUE_APP_TEMPLATE_PATH) || ''}/${url}.js`,
       defaultFontSize: plus_.screen.resolutionWidth / 20,
       viewport: plus_.screen.resolutionWidth
     }

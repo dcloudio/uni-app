@@ -17,11 +17,11 @@ $event = $handleWxsEvent($event);
 ${expr}($event, $getComponentDescriptor())
 `
     } else {
-      expr = expr + '($event)'
+      expr = expr + '(...arguments)'
     }
   }
   return `
-$event = $handleEvent($event);
+arguments[0] = $event = $handleEvent($event);
 ${expr}
 `
 }
