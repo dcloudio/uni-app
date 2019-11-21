@@ -43,6 +43,7 @@ function isStatic (node) {
 function markStatic (node) {
   if (isStatic(node)) { // 静态节点且仅包含 ID 属性
     if (
+      node.attrs &&
       node.attrs.length === 1 &&
       !node.key &&
       !node.ref &&
@@ -56,13 +57,17 @@ function markStatic (node) {
     delete node.staticClass
     delete node.staticStyle
 
-    if (node.attrs && !isComponent(node.tag) && node.tag !== 'keep-alive') { // 移除静态属性
+    const isCustomComponent = isComponent(node.tag)
+    if (node.attrs && !isCustomComponent && node.tag !== 'keep-alive') { // 移除静态属性
       node.attrs = node.attrs.filter(attr => attr.name === ID || isVar(attr.value))
     }
 
     node.children = node.children.filter(child => { // 移除静态文本
       if (child.type === 3) { // ASTText
-        return false
+        if (!isCustomComponent) {
+          return false
+        }
+        child.text = '' // slot <custom>ABCD</custom>
       }
       return true
     })

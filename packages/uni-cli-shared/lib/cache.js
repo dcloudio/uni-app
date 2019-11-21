@@ -231,8 +231,6 @@ function getSpecialMethods (name) {
   return componentSpecialMethods[name] || []
 }
 
-const pagesJsonPath = path.resolve(process.env.UNI_INPUT_DIR, 'pages.json')
-
 const cacheTypes = ['babel-loader', 'css-loader', 'uni-template-compiler', 'vue-loader']
 
 function clearCache () {
@@ -263,6 +261,7 @@ module.exports = {
   // 后续为 pages-loader 增加 cache-loader,
   // 然后其他修改 json 的地方也要定制 cache-loader
   store () {
+    const pagesJsonPath = path.resolve(process.env.UNI_INPUT_DIR, 'pages.json')
     const filepath = path.resolve(
       process.env.UNI_CLI_CONTEXT,
       'node_modules/.cache/uni-pages-loader/' + process.env.UNI_PLATFORM,
@@ -295,6 +294,7 @@ module.exports = {
       } catch (e) {}
       return
     }
+    const pagesJsonPath = path.resolve(process.env.UNI_INPUT_DIR, 'pages.json')
     const mtimeMs = fs.statSync(pagesJsonPath).mtimeMs
     const jsonCache = require(filepath)
     if (jsonCache.mtimeMs !== mtimeMs) {

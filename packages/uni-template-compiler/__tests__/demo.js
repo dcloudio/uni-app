@@ -1,7 +1,7 @@
 const compiler = require('../lib')
 const res = compiler.compile(
   `
-<p :change:prop="swipe.sizeReady" :prop="pos" @touchstart="swipe.touchstart" @touchmove="swipe.touchmove" @touchend="swipe.touchend" @change="change"></p>
+<current-user>ABCD</current-user>
 `, {
     resourcePath: '/User/fxy/Documents/test.wxml',
     isReservedTag: function (tag) {
@@ -14,8 +14,8 @@ const res = compiler.compile(
       platform: 'app-plus'
     },
     filterModules: ['swipe'],
-    // service: true,
-    view: true
+    service: true
+    // view: true
 
   })
 console.log(require('util').inspect(res, {

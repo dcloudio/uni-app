@@ -71,6 +71,10 @@ describe('codegen', () => {
       '<current-user v-slot="{ user }">{{ user.firstName }}</current-user>',
       `with(this){return _c('current-user',{attrs:{"_i":0},scopedSlots:_u([{key:"default",fn:function({ user }){return [_v((_$s(0,'t0',_s(user.firstName))))]}}])})}`
     )
+    assertCodegen(
+      '<current-user>ABCD</current-user>',
+      `with(this){return _c('current-user',{attrs:{"_i":0}},[_v("")])}`
+    )
   })
 
   it('generate keep-alive', () => {
