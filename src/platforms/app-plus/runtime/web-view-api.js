@@ -11,13 +11,42 @@ const publish = function (method, params) {
     name: method,
     arg: params
   }
-  if (!window.plus) { // h5
+
+  const isNvue = window.__dcloud_weex_postMessage || window.__dcloud_weex_
+  if (isNvue) { // nvue web-view
+    if (method === 'postMessage') {
+      const message = {
+        data: [params]
+      }
+      if (window.__dcloud_weex_postMessage) {
+        return window.__dcloud_weex_postMessage(message)
+      } else {
+        return window.__dcloud_weex_.postMessage(JSON.stringify(message))
+      }
+    }
+
+    const serviceMessage = {
+      type: WEB_INVOKE_APPSERVICE,
+      args: {
+        data: paramsObj,
+        webviewIds
+      }
+    }
+    if (window.__dcloud_weex_postMessage) {
+      window.__dcloud_weex_postMessageToService(serviceMessage)
+    } else {
+      window.__dcloud_weex_.postMessageToService(JSON.stringify(serviceMessage))
+    }
+  }
+
+  if (!window.plus) { // h5 web-view
     return window.parent.postMessage({
       type: WEB_INVOKE_APPSERVICE,
       data: paramsObj,
       pageId: ''
     }, '*')
   }
+
   // app-plus
   if (webviewIds.length === 0) {
     const currentWebview = plus.webview.currentWebview()
@@ -34,7 +63,6 @@ const publish = function (method, params) {
     }
     webviewIds.push(webviewId)
   }
-  const paramsString = JSON.stringify(paramsObj)
   if (plus.webview.getWebviewById(UNIAPP_SERVICE_NVUE_ID)) {
     plus.webview.postMessageToUniNView({
       type: WEB_INVOKE_APPSERVICE,
@@ -44,6 +72,7 @@ const publish = function (method, params) {
       }
     }, UNIAPP_SERVICE_NVUE_ID)
   } else {
+    const paramsString = JSON.stringify(paramsObj)
     plus.webview.getLaunchWebview().evalJS(
       `UniPlusBridge.subscribeHandler("${WEB_INVOKE_APPSERVICE}",${paramsString},${JSON.stringify(webviewIds)});`
     )

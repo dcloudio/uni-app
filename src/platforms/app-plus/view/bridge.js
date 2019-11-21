@@ -1,16 +1,9 @@
 import {
   APP_SERVICE_ID
 } from '../constants'
-
-function plusReady (callback) {
-  if (!callback) {
-    return
-  }
-  if (window.plus) {
-    return callback()
-  }
-  document.addEventListener('plusready', callback)
-}
+import {
+  plusReady
+} from 'uni-shared'
 
 export function publishHandler (event, args = {}) {
   plusReady(function () {

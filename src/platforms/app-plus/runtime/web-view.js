@@ -8,7 +8,9 @@ export function initWebviewApi (readyCallback) {
   if (!isAppPlus) {
     return
   }
-  if (window.plus && readyRE.test(document.readyState)) {
+  if (window.__dcloud_weex_postMessage || window.__dcloud_weex_) { // nvue web-view
+    document.addEventListener('DOMContentLoaded', readyCallback)
+  } else if (window.plus && readyRE.test(document.readyState)) {
     setTimeout(readyCallback, 0)
   } else {
     document.addEventListener('plusready', readyCallback)

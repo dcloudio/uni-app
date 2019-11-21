@@ -1,3 +1,7 @@
+import {
+  plusReady
+} from 'uni-shared'
+
 function hideKeyboard () {
   document.activeElement.blur()
 }
@@ -34,15 +38,6 @@ export default {
     this.onKeyboardHide()
   },
   methods: {
-    plusReady (callback) {
-      if (!callback) {
-        return
-      }
-      if (window.plus) {
-        return callback()
-      }
-      document.addEventListener('plusready', callback)
-    },
     initKeyboard (el) {
       el.addEventListener('focus', () => {
         UniViewJSBridge.subscribe('hideKeyboard', hideKeyboard)
@@ -52,12 +47,12 @@ export default {
       el.addEventListener('blur', this.onKeyboardHide)
     },
     showSoftKeybord () {
-      this.plusReady(() => {
+      plusReady(() => {
         plus.key.showSoftKeybord()
       })
     },
     setSoftinputTemporary () {
-      this.plusReady(() => {
+      plusReady(() => {
         var currentWebview = plus.webview.currentWebview()
         var style = currentWebview.getStyle() || {}
         if (style.softinputMode === 'adjustResize') {
