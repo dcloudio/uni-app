@@ -1,4 +1,5 @@
 let plus_
+let weex_
 let BroadcastChannel_
 
 function getRuntime () {
@@ -10,6 +11,7 @@ function getPageId () {
 }
 
 let channel
+let globalEvent
 const callbacks = {}
 
 function onPlusMessage (res) {
@@ -27,9 +29,15 @@ function onPlusMessage (res) {
 
 function addEventListener (pageId, callback) {
   if (getRuntime() === 'v8') {
-    channel && channel.close()
-    channel = new BroadcastChannel_(getPageId())
-    channel.onmessage = onPlusMessage
+    if (BroadcastChannel_) {
+      channel && channel.close()
+      channel = new BroadcastChannel_(getPageId())
+      channel.onmessage = onPlusMessage
+    } else {
+      globalEvent && globalEvent.removeEventListener('plusMessage', onPlusMessage)
+      globalEvent = weex_.requireModule('globalEvent')
+      globalEvent.addEventListener('plusMessage', onPlusMessage)
+    }
   } else {
     window.__plusMessage = onPlusMessage
   }
@@ -46,8 +54,13 @@ class Page {
         data
       }
     }
-    const channel = new BroadcastChannel_(this.webview.id)
-    channel.postMessage(message)
+    const id = this.webview.id
+    if (BroadcastChannel_) {
+      const channel = new BroadcastChannel_(id)
+      channel.postMessage(message)
+    } else {
+      plus_.webview.postMessageToUniNView(message, id)
+    }
   }
   close () {
     this.webview.close()
@@ -65,7 +78,9 @@ export function showPage ({
   // eslint-disable-next-line
   plus_ = context.plus || plus
   // eslint-disable-next-line
-  BroadcastChannel_ = context.BroadcastChannel || BroadcastChannel
+  weex_ = context.weex || weex
+  // eslint-disable-next-line
+  BroadcastChannel_ = context.BroadcastChannel || (typeof BroadcastChannel === 'object' ? BroadcastChannel : null)
   const titleNView = {
     autoBackButton: true,
     titleSize: '17px'
@@ -94,7 +109,8 @@ export function showPage ({
     extras: {
       from: getPageId(),
       runtime: getRuntime(),
-      data
+      data,
+      useGlobalEvent: !BroadcastChannel_
     }
   })
   page.addEventListener('close', onClose)
