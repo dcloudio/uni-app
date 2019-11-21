@@ -38,6 +38,10 @@ const uniPath = process.env.UNI_USING_V8
 
 const provide = {}
 
+if (process.env.UNI_USING_V3 || process.env.UNI_USING_NATIVE) {
+  provide['uni.requireNativePlugin'] = [path.resolve(__dirname, '../packages/uni-app-plus-nvue/dist/require-native-plugin.js'), 'default']
+}
+
 if (!process.env.UNI_USING_V3) {
   if (!process.env.UNI_USING_NATIVE) {
     provide['uni'] = [path.resolve(__dirname, uniPath), 'default']
