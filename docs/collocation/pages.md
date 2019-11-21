@@ -59,6 +59,7 @@
 		"fontSize": "10px",
 		"iconWidth": "24px",
 		"spacing": "3px",
+		"blurEffect": "none|extralight|light|dark", // 模糊效果，使用模糊效果时不要设置背景颜色，否则模糊效果会失效，默认值为none（仅iOS平台支持 HBuilderX 2.4.3+）
 		"list": [{
 			"pagePath": "pages/component/index",
 			"iconPath": "static/image/icon_component.png",
