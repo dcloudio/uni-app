@@ -59,7 +59,7 @@ uni.getLocation({
 - H5：安卓手机在原生App内嵌H5时，无法定位需要原生App处理Webview。
 - H5：无 GPS 模块的 PC 设备使用 Chrome 浏览器的时候，位置信息是连接谷歌服务器获取的，国内用户可能获取位置信息失败。
 - H5：微信公众号可使用微信js sdk，[详见](https://ask.dcloud.net.cn/article/35380)
-- App：Android由于谷歌服务被墙，想在国产手机上正常定位，需要向高德等三方服务商申请SDK资质，获取AppKey。云打包时需要在manifest的SDK配置中填写Appkey。在manifest可视化界面有详细申请指南。离线打包自行在原生工程中配置。注意包名、appkey、证书信息必须匹配。
+- App：Android由于谷歌服务被墙，想在国产手机上正常定位，需要向高德等三方服务商申请SDK资质，获取AppKey。云打包时需要在manifest的SDK配置中填写Appkey。在manifest可视化界面有详细申请指南，详见：[https://ask.dcloud.net.cn/article/29](https://ask.dcloud.net.cn/article/29)。离线打包自行在原生工程中配置。注意包名、appkey、证书信息必须匹配。
 - App：``<map>`` 组件默认为国测局坐标gcj02，调用 ``uni.getLocation`` 返回结果传递给 ``<map>`` 组件时，需指定 type 为 gcj02。
 - App：持续定位方案：iOS端可以申请持续定位权限，[参考](https://ask.dcloud.net.cn/article/12569)。Android如果进程被杀，代码无法执行。可以使用[unipush](https://ask.dcloud.net.cn/article/35622)，通过服务器激活App，执行透传消息，让App启动然后采集位置。Android上，即使自己写原生插件做后台进程，也很容易被杀，unipush是更合适的方案
 - 小程序：api默认不返回详细地址中文描述。需要中文地址有2种方式：1、使用高德地图小程序sdk，在app和微信上都可以获得中文地址，[参考](http://ask.dcloud.net.cn/article/35070)。2、只考虑app，使用``plus.geolocation``也可以获取中文地址
@@ -114,4 +114,4 @@ uni.chooseLocation({
 - 不同端，使用地图选择时基于的底层地图引擎不一样，如微信小程序和H5是腾讯地图，App是高德地图，详见地图map组件的使用注意事项
 - 微信内置浏览器中可使用微信js sdk，[详见](https://ask.dcloud.net.cn/article/35380)
 - chooseLocation属于封装型API，开发者若觉得不够灵活，可自行基于原始的map组件进行封装
-- 若位置不准，见上文uni.getLocation的注意事项
+- 若Android App端位置不准，见上文uni.getLocation的注意事项
