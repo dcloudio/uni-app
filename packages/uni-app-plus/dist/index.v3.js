@@ -4142,53 +4142,39 @@ var serviceContext = (function () {
   });
 
   let plus_;
-  let weex_;
-  let uni_;
-
-  let runtime;
+  let BroadcastChannel_;
 
   function getRuntime () {
-    return runtime || (runtime = typeof window === 'object' && typeof navigator === 'object' && typeof document ===
-      'object'
-      ? 'webview' : 'v8')
-  }
-
-  function setRuntime (value) {
-    runtime = value;
+    return typeof window === 'object' && typeof navigator === 'object' && typeof document === 'object' ? 'webview' : 'v8'
   }
 
   function getPageId () {
     return plus_.webview.currentWebview().id
   }
 
-  let initedEventListener = false;
+  let channel;
   const callbacks$1 = {};
 
-  function addEventListener (pageId, callback) {
-    const runtime = getRuntime();
-
-    function onPlusMessage (res) {
-      const message = res.data && res.data.__message;
-      if (!message || !message.__page) {
-        return
-      }
-      const pageId = message.__page;
-      const callback = callbacks$1[pageId];
-      callback && callback(message);
-      if (!message.keep) {
-        delete callbacks$1[pageId];
-      }
+  function onPlusMessage (res) {
+    const message = res.data && res.data.__message;
+    if (!message || !message.__page) {
+      return
     }
-    if (!initedEventListener) {
-      if (runtime === 'v8') {
-        const globalEvent = weex_.requireModule('globalEvent');
-        globalEvent.addEventListener('plusMessage', onPlusMessage);
-      } else if (runtime === 'v8-native') {
-        uni_.$on(getPageId(), onPlusMessage);
-      } else {
-        window.__plusMessage = onPlusMessage;
-      }
-      initedEventListener = true;
+    const pageId = message.__page;
+    const callback = callbacks$1[pageId];
+    callback && callback(message);
+    if (!message.keep) {
+      delete callbacks$1[pageId];
+    }
+  }
+
+  function addEventListener (pageId, callback) {
+    if (getRuntime() === 'v8') {
+      channel && channel.close();
+      channel = new BroadcastChannel_(getPageId());
+      channel.onmessage = onPlusMessage;
+    } else {
+      window.__plusMessage = onPlusMessage;
     }
     callbacks$1[pageId] = callback;
   }
@@ -4198,19 +4184,13 @@ var serviceContext = (function () {
       this.webview = webview;
     }
     sendMessage (data) {
-      const runtime = getRuntime();
       const message = {
         __message: {
           data
         }
       };
-      if (runtime === 'v8-native') {
-        uni_.$emit(this.webview.id, {
-          data: JSON.parse(JSON.stringify(message))
-        });
-      } else {
-        plus_.webview.postMessageToUniNView(message, this.webview.id);
-      }
+      const channel = new BroadcastChannel_(this.webview.id);
+      channel.postMessage(message);
     }
     close () {
       this.webview.close();
@@ -4218,31 +4198,17 @@ var serviceContext = (function () {
   }
 
   function showPage ({
-    context,
-    runtime,
+    context = {},
     url,
     data = {},
     style = {},
     onMessage,
     onClose
   }) {
-    if (context) {
-      plus_ = context.plus;
-      weex_ = context.weex;
-      uni_ = context.uni;
-    } else {
-      // eslint-disable-next-line
-      plus_ = typeof plus === 'object' ? plus : null;
-      // eslint-disable-next-line
-      weex_ = typeof weex === 'object' ? weex : null;
-      // eslint-disable-next-line
-      uni_ = typeof uni === 'object' ? uni : null;
-    }
-    if (runtime) {
-      setRuntime(runtime);
-    } else {
-      runtime = getRuntime();
-    }
+    // eslint-disable-next-line
+    plus_ = context.plus || plus;
+    // eslint-disable-next-line
+    BroadcastChannel_ = context.BroadcastChannel || BroadcastChannel;
     const titleNView = {
       autoBackButton: true,
       titleSize: '17px'
@@ -4261,7 +4227,7 @@ var serviceContext = (function () {
       animationType: 'pop-in',
       animationDuration: 200,
       uniNView: {
-        path: `${(typeof process === 'object' && process.env && process.env.VUE_APP_TEMPLATE_PATH) || ''}/${url}.js`,
+        path: `${(typeof process === 'object' && process.env && process.env.VUE_APP_TEMPLATE_PATH) || '/template'}/${url}.js`,
         defaultFontSize: plus_.screen.resolutionWidth / 20,
         viewport: plus_.screen.resolutionWidth
       }
@@ -4270,7 +4236,7 @@ var serviceContext = (function () {
     const page = plus_.webview.create('', pageId, style, {
       extras: {
         from: getPageId(),
-        runtime: runtime,
+        runtime: getRuntime(),
         data
       }
     });
@@ -11498,15 +11464,20 @@ var serviceContext = (function () {
       });
     });
 
-    plus.globalEvent.addEventListener('plusMessage', function (e) {
-      if (process.env.NODE_ENV !== 'production') {
-        console.log('[plusMessage]:[' + Date.now() + ']' + JSON.stringify(e.data));
-      }
-      if (e.data && e.data.type) {
-        const type = e.data.type;
-        consumePlusMessage(type, e.data.args || {});
-      }
-    });
+    plus.globalEvent.addEventListener('plusMessage', onPlusMessage$1);
+
+    // nvue webview post message
+    plus.globalEvent.addEventListener('WebviewPostMessage', onPlusMessage$1);
+  }
+
+  function onPlusMessage$1 (e) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('[plusMessage]:[' + Date.now() + ']' + JSON.stringify(e.data));
+    }
+    if (e.data && e.data.type) {
+      const type = e.data.type;
+      consumePlusMessage(type, e.data.args || {});
+    }
   }
 
   function initAppLaunch (appVm) {
@@ -12234,7 +12205,7 @@ var serviceContext = (function () {
           renderWatcher &&
           this._$queue.find(watcher => renderWatcher === watcher)
         ) {
-          vdSyncCallbacks.push(cb);
+          vdSyncCallbacks.push(cb.bind(this));
         } else {
           // $nextTick bind vm context
           Vue.nextTick(() => {

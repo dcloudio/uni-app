@@ -52,7 +52,7 @@ export default {
         renderWatcher &&
         this._$queue.find(watcher => renderWatcher === watcher)
       ) {
-        vdSyncCallbacks.push(cb)
+        vdSyncCallbacks.push(cb.bind(this))
       } else {
         // $nextTick bind vm context
         Vue.nextTick(() => {
