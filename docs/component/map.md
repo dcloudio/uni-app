@@ -200,8 +200,8 @@ map 组件相关操作的 JS API：[uni.createMapContext](api/location/map?id=cr
 
 ##### FAQ
 
-Q：应用中使用了 `<map>` 组件，打包为原生应用时，提示缺少权限模块怎么办？
-A：原生的地图，依赖第三方的 SDK，因此打包移动应用时，需要勾选相关的权限并填写 key 信息。详见：[http://ask.dcloud.net.cn/article/35090](http://ask.dcloud.net.cn/article/35090)
+Q：应用中使用了 `<map>` 组件，打包为App时，提示缺少权限模块怎么办？
+A：App端原生地图，依赖第三方的 SDK，因此打包移动应用时，需要在manifest中勾选相关的权限并填写 key 信息。详见：[https://ask.dcloud.net.cn/article/29](https://ask.dcloud.net.cn/article/29)
 
 Q：国外应用想使用谷歌地图/google地图怎么办？
 A：1. 可以在web-view下调用谷歌的web地图；2. 可以写一个原生插件封装谷歌原生地图，具体参考uni-app插件市场的原生插件开发教程
