@@ -21,6 +21,24 @@ const fields = {
   MONTH: 'month',
   DAY: 'day'
 }
+function padLeft (num) {
+  return num > 9 ? num : (`0${num}`)
+}
+function getDate (str, mode_) {
+  const date = new Date()
+  if (mode_ === mode.TIME) {
+    str = str.split(':')
+    if (str.length === 2) {
+      date.setHours(parseInt(str[0]), parseInt(str[1]))
+    }
+  } else {
+    str = str.split('-')
+    if (str.length === 3) {
+      date.setFullYear(parseInt(str[0]), parseInt(str[1] - 1), parseInt(str[2]))
+    }
+  }
+  return date
+}
 export default {
   name: 'Picker',
   mixins: [emitter],
@@ -131,40 +149,54 @@ export default {
       this._showPicker(Object.assign({}, this.$props))
     },
     _showPicker (data) {
-      if (this.page) {
-        return
+      if (this.mode === mode.TIME || this.mode === mode.DATE) {
+        plus.nativeUI[this.mode === mode.TIME ? 'pickTime' : 'pickDate']((res) => {
+          const date = res.date
+          this.$trigger('change', {}, {
+            value: this.mode === mode.TIME ? `${padLeft(date.getHours())}:${padLeft(date.getMinutes())}` : `${date.getFullYear()}-${padLeft(date.getMonth() + 1)}-${padLeft(date.getDate())}`
+          })
+        }, () => {
+          this.$trigger('cancel', {}, {})
+        }, this.mode === mode.TIME ? {
+          time: getDate(this.value, mode.TIME)
+        } : {
+          date: getDate(this.value, mode.DATE),
+          minDate: getDate(this.start, mode.DATE),
+          maxDate: getDate(this.end, mode.DATE)
+        })
+      } else {
+        let res = { event: 'cancel' }
+        this.page = showPage({
+          url: '__uniapppicker',
+          data,
+          style: {
+            titleNView: false,
+            animationType: 'none',
+            animationDuration: 0,
+            background: 'rgba(0,0,0,0)',
+            popGesture: 'none'
+          },
+          onMessage: (message) => {
+            const event = message.event
+            if (event === 'created') {
+              this._updatePicker(data)
+              return
+            }
+            if (event === 'columnchange') {
+              delete message.event
+              this.$trigger(event, {}, message)
+              return
+            }
+            res = message
+          },
+          onClose: () => {
+            this.page = null
+            const event = res.event
+            delete res.event
+            this.$trigger(event, {}, res)
+          }
+        })
       }
-      let res = { event: 'cancel' }
-      this.page = showPage({
-        url: '__uniapppicker',
-        data,
-        style: {
-          titleNView: false,
-          animationType: 'none',
-          animationDuration: 0,
-          background: 'rgba(0,0,0,0)',
-          popGesture: 'none'
-        },
-        onMessage: (message) => {
-          const event = message.event
-          if (event === 'created') {
-            this._updatePicker(data)
-            return
-          }
-          if (event === 'columnchange') {
-            delete message.event
-            this.$trigger(event, {}, message)
-            return
-          }
-          res = message
-        },
-        onClose: () => {
-          this.page = null
-          const event = res.event
-          delete res.event
-          this.$trigger(event, {}, res)
-        }
-      })
     },
     _updatePicker (data) {
       this.page && this.page.sendMessage(data)
