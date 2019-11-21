@@ -191,7 +191,7 @@ map 组件相关操作的 JS API：[uni.createMapContext](api/location/map?id=cr
 - 在涉及层级问题的小程序中和app-vue中，请勿在 scroll-view、swiper、picker-view、movable-view 中使用 `<map>` 组件。
 - 小程序和 app-vue 中，css 动画对 `<map>` 组件无效。
 - map 组件使用的经纬度是国测局坐标，调用 uni.getLocation 接口需要指定 type 为 gcj02。
-- `<map>` 组件在不同平台的底层引擎是不同的：H5、微信小程序为腾讯地图；App、支付宝小程序为高德地图；百度小程序端为百度地图。app-vue也可以使用百度地图，在manifest中配置，但app-nvue只支持高德地图。
+- `<map>` 组件在不同平台的底层引擎是不同的：H5、微信小程序为腾讯地图；App、支付宝小程序为高德地图；百度小程序端为百度地图。app-vue也可以使用百度地图，在manifest中配置，但app-nvue只支持高德地图。另外选择地图、查看地图位置的API也仅支持高德地图。App端如无特殊必要，建议使用高德地图。
 - map 组件默认的api是参考微信小程序的，如需要使用plus.map，可以通过`$getAppMap`获取原生地图对象，[详见](https://uniapp.dcloud.io/api/location/map)。注意nvue的map组件不是plus.map对象，无法使用`$getAppMap`
 - H5 端获取定位信息，需要部署在 **https** 服务上，本地预览（localhost）仍然可以使用 http 协议。
 - 无 GPS 模块的 PC 设备使用 Chrome 浏览器的时候，位置信息是连接谷歌服务器获取的，国内用户可能获取位置信息失败。
