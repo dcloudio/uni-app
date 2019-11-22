@@ -2554,10 +2554,12 @@ var serviceContext = (function () {
 
   const oldSetStatusBarStyle = plus.navigator.setStatusBarStyle;
 
-  plus.navigator.setStatusBarStyle = function (style) {
+  function newSetStatusBarStyle(style) {
     lastStatusBarStyle = style;
     oldSetStatusBarStyle(style);
-  };
+  }
+
+  plus.navigator.setStatusBarStyle = newSetStatusBarStyle;
 
   function setStatusBarStyle (statusBarStyle) {
     if (!statusBarStyle) {
@@ -6830,6 +6832,7 @@ var serviceContext = (function () {
       }
       weex = newWeex;
       plus = newPlus;
+      plus.navigator.setStatusBarStyle = newSetStatusBarStyle;
       /* eslint-disable no-global-assign */
       setTimeout = newSetTimeout;
       clearTimeout = newClearTimeout;
@@ -7424,16 +7427,18 @@ var serviceContext = (function () {
   }
 
   function onWebviewPopGesture (webview) {
+    let popStartStatusBarStyle;
     webview.addEventListener('popGesture', e => {
       if (e.type === 'start') {
         // 设置下一个页面的 statusBarStyle
         const pages = getCurrentPages();
         const page = pages[pages.length - 2];
+        popStartStatusBarStyle = lastStatusBarStyle;
         const statusBarStyle = page && page.$page.meta.statusBarStyle;
         statusBarStyle && setStatusBarStyle(statusBarStyle);
       } else if (e.type === 'end' && !e.result) {
         // 拖拽未完成,设置为当前状态栏前景色
-        setStatusBarStyle();
+        setStatusBarStyle(popStartStatusBarStyle);
       } else if (e.type === 'end' && e.result) {
         const pages = getCurrentPages();
         const page = pages[pages.length - 1];
