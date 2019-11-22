@@ -213,24 +213,27 @@ if (process.env.UNI_USING_NATIVE) {
     if (process.env.UNI_PLATFORM === 'app-plus') {
       const pagesPkg = require('@dcloudio/webpack-uni-pages-loader/package.json')
       if (pagesPkg) {
-        info = '编译器版本：' + pagesPkg['uni-app']['compilerVersion'] + (process.env.UNI_USING_V3 ? '（v3）' : '')
+        const v3Tips = `（v3）详见：https://ask.dcloud.net.cn/article/36599。`
+        info = '编译器版本：' + pagesPkg['uni-app']['compilerVersion'] + (process.env.UNI_USING_V3 ? v3Tips : '')
       }
-      const glob = require('glob')
-      hasNVue = !!glob.sync('pages/**/*.nvue', {
-        cwd: process.env.UNI_INPUT_DIR
-      }).length
-      if (hasNVue) {
-        console.log(info)
-        console.log(modeText)
-        if (needWarning) {
-          console.log(warningMsg)
-        }
-        console.log('当前nvue编译模式：' + (isNVueCompiler ? 'uni-app' : 'weex') +
-          ' 。编译模式差异见：https://ask.dcloud.net.cn/article/36074')
-      } else {
-        console.log(info + '，' + modeText)
-        if (needWarning) {
-          console.log(warningMsg)
+      if (!process.env.UNI_USING_V3) {
+        const glob = require('glob')
+        hasNVue = !!glob.sync('pages/**/*.nvue', {
+          cwd: process.env.UNI_INPUT_DIR
+        }).length
+        if (hasNVue) {
+          console.log(info)
+          console.log(modeText)
+          if (needWarning) {
+            console.log(warningMsg)
+          }
+          console.log('当前nvue编译模式：' + (isNVueCompiler ? 'uni-app' : 'weex') +
+            ' 。编译模式差异见：https://ask.dcloud.net.cn/article/36074')
+        } else {
+          console.log(info + '，' + modeText)
+          if (needWarning) {
+            console.log(warningMsg)
+          }
         }
       }
     } else {
