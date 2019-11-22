@@ -7311,7 +7311,6 @@ var serviceContext = (function () {
       delete style.margin;
     } else if (isPopup) {
       style.position = 'absolute';
-      console.log(isTabBarPage(routeOptions.path));
       if (isTabBarPage(routeOptions.path)) {
         maskWebview = tabBar$1;
       } else {
