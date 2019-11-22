@@ -216,7 +216,9 @@ if (process.env.UNI_USING_NATIVE) {
         const v3Tips = `（v3）详见：https://ask.dcloud.net.cn/article/36599。`
         info = '编译器版本：' + pagesPkg['uni-app']['compilerVersion'] + (process.env.UNI_USING_V3 ? v3Tips : '')
       }
-      if (!process.env.UNI_USING_V3) {
+      if (process.env.UNI_USING_V3) {
+        console.log(info)
+      } else {
         const glob = require('glob')
         hasNVue = !!glob.sync('pages/**/*.nvue', {
           cwd: process.env.UNI_INPUT_DIR
