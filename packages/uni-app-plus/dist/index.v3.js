@@ -4142,6 +4142,7 @@ var serviceContext = (function () {
   });
 
   let plus_;
+  let weex_;
   let BroadcastChannel_;
 
   function getRuntime () {
@@ -4153,6 +4154,7 @@ var serviceContext = (function () {
   }
 
   let channel;
+  let globalEvent;
   const callbacks$1 = {};
 
   function onPlusMessage (res) {
@@ -4170,9 +4172,15 @@ var serviceContext = (function () {
 
   function addEventListener (pageId, callback) {
     if (getRuntime() === 'v8') {
-      channel && channel.close();
-      channel = new BroadcastChannel_(getPageId());
-      channel.onmessage = onPlusMessage;
+      if (BroadcastChannel_) {
+        channel && channel.close();
+        channel = new BroadcastChannel_(getPageId());
+        channel.onmessage = onPlusMessage;
+      } else {
+        globalEvent && globalEvent.removeEventListener('plusMessage', onPlusMessage);
+        globalEvent = weex_.requireModule('globalEvent');
+        globalEvent.addEventListener('plusMessage', onPlusMessage);
+      }
     } else {
       window.__plusMessage = onPlusMessage;
     }
@@ -4189,8 +4197,13 @@ var serviceContext = (function () {
           data
         }
       };
-      const channel = new BroadcastChannel_(this.webview.id);
-      channel.postMessage(message);
+      const id = this.webview.id;
+      if (BroadcastChannel_) {
+        const channel = new BroadcastChannel_(id);
+        channel.postMessage(message);
+      } else {
+        plus_.webview.postMessageToUniNView(message, id);
+      }
     }
     close () {
       this.webview.close();
@@ -4208,7 +4221,9 @@ var serviceContext = (function () {
     // eslint-disable-next-line
     plus_ = context.plus || plus;
     // eslint-disable-next-line
-    BroadcastChannel_ = context.BroadcastChannel || BroadcastChannel;
+    weex_ = context.weex || weex;
+    // eslint-disable-next-line
+    BroadcastChannel_ = context.BroadcastChannel || (typeof BroadcastChannel === 'object' ? BroadcastChannel : null);
     const titleNView = {
       autoBackButton: true,
       titleSize: '17px'
@@ -4227,7 +4242,7 @@ var serviceContext = (function () {
       animationType: 'pop-in',
       animationDuration: 200,
       uniNView: {
-        path: `${(typeof process === 'object' && process.env && process.env.VUE_APP_TEMPLATE_PATH) || '/template'}/${url}.js`,
+        path: `${(typeof process === 'object' && process.env && process.env.VUE_APP_TEMPLATE_PATH) || ''}/${url}.js`,
         defaultFontSize: plus_.screen.resolutionWidth / 20,
         viewport: plus_.screen.resolutionWidth
       }
@@ -4237,7 +4252,8 @@ var serviceContext = (function () {
       extras: {
         from: getPageId(),
         runtime: getRuntime(),
-        data
+        data,
+        useGlobalEvent: !BroadcastChannel_
       }
     });
     page.addEventListener('close', onClose);
@@ -4336,7 +4352,7 @@ var serviceContext = (function () {
   });
 
   function scanCode$2 (...array) {
-    const api = __uniConfig.nvueCompiler === 'uni-app' ? weex$1 : webview;
+    const api = __uniConfig.nvueCompiler !== 'weex' ? weex$1 : webview;
     return api.scanCode(...array)
   }
 
@@ -5165,7 +5181,7 @@ var serviceContext = (function () {
   });
 
   function chooseLocation$3 (...array) {
-    const api = __uniConfig.nvueCompiler === 'uni-app' ? weex$2 : webview$1;
+    const api = __uniConfig.nvueCompiler !== 'weex' ? weex$2 : webview$1;
     return api.chooseLocation(...array)
   }
 
@@ -5304,7 +5320,7 @@ var serviceContext = (function () {
   });
 
   function openLocation$3 (...array) {
-    const api = __uniConfig.nvueCompiler === 'uni-app' ? weex$3 : webview$2;
+    const api = __uniConfig.nvueCompiler !== 'weex' ? weex$3 : webview$2;
     return api.openLocation(...array)
   }
 
