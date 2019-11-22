@@ -21,7 +21,7 @@ export function publish (name, ...args) {
   return UniServiceJSBridge.emit('api.' + name, ...args)
 }
 
-let lastStatusBarStyle
+export let lastStatusBarStyle
 
 const oldSetStatusBarStyle = plus.navigator.setStatusBarStyle
 
