@@ -139,7 +139,6 @@ function createApiCallback (apiName, params = {}, extras = {}) {
     const extra = extras[name]
     if (isFn(extra)) {
       wrapperCallbacks[name] = tryCatchFramework(extra)
-      delete extras[name]
     }
   }
 
