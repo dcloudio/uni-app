@@ -1,3 +1,7 @@
+import {
+  newSetStatusBarStyle
+} from '../../bridge'
+
 export function restoreGlobal (
   newWeex,
   newPlus,
@@ -16,6 +20,7 @@ export function restoreGlobal (
     }
     weex = newWeex
     plus = newPlus
+    plus.navigator.setStatusBarStyle = newSetStatusBarStyle
     /* eslint-disable no-global-assign */
     setTimeout = newSetTimeout
     clearTimeout = newClearTimeout

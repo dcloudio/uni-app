@@ -25,10 +25,12 @@ let lastStatusBarStyle
 
 const oldSetStatusBarStyle = plus.navigator.setStatusBarStyle
 
-plus.navigator.setStatusBarStyle = function (style) {
+export function newSetStatusBarStyle(style) {
   lastStatusBarStyle = style
   oldSetStatusBarStyle(style)
 }
+
+plus.navigator.setStatusBarStyle = newSetStatusBarStyle
 
 export function setStatusBarStyle (statusBarStyle) {
   if (!statusBarStyle) {
