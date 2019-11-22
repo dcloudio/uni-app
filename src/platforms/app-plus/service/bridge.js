@@ -21,7 +21,8 @@ export function publish (name, ...args) {
   return UniServiceJSBridge.emit('api.' + name, ...args)
 }
 
-let lastStatusBarStyle
+// 不知道为什么加的这个，暂时去掉
+// let lastStatusBarStyle
 
 export function setStatusBarStyle (statusBarStyle) {
   if (!statusBarStyle) {
@@ -30,18 +31,18 @@ export function setStatusBarStyle (statusBarStyle) {
       return
     }
     statusBarStyle = pages[pages.length - 1].$page.meta.statusBarStyle
-    if (!statusBarStyle || statusBarStyle === lastStatusBarStyle) {
-      return
-    }
+    // if (!statusBarStyle || statusBarStyle === lastStatusBarStyle) {
+    //   return
+    // }
   }
-  if (statusBarStyle === lastStatusBarStyle) {
-    return
-  }
+  // if (statusBarStyle === lastStatusBarStyle) {
+  //   return
+  // }
   if (process.env.NODE_ENV !== 'production') {
     console.log(`[uni-app] setStatusBarStyle`, statusBarStyle)
   }
 
-  lastStatusBarStyle = statusBarStyle
+  // lastStatusBarStyle = statusBarStyle
 
   plus.navigator.setStatusBarStyle(statusBarStyle)
 }
