@@ -255,7 +255,7 @@ function wrapperExtras (name, extras) {
   }
 }
 
-export function wrapper (name, invokeMethod, extras) {
+export function wrapper (name, invokeMethod, extras = {}) {
   if (!isFn(invokeMethod)) {
     return invokeMethod
   }
