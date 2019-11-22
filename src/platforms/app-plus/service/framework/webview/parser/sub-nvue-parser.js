@@ -103,7 +103,6 @@ function initSubNVue (subNVue, routeOptions, webview) {
     delete style.margin
   } else if (isPopup) {
     style.position = 'absolute'
-    console.log(isTabBarPage(routeOptions.path))
     if (isTabBarPage(routeOptions.path)) {
       maskWebview = tabBar
     } else {
