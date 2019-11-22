@@ -1,6 +1,6 @@
 import {
   plusReady
-} from 'uni-shared'
+} from './platform'
 let view
 let pullToRefreshStyle
 let disabled
