@@ -1939,7 +1939,8 @@ if (typeof Promise !== 'undefined' && isNative(Promise)) {
     // microtask queue but the queue isn't being flushed, until the browser
     // needs to do some other work, e.g. handle a timer. Therefore we can
     // "force" the microtask queue to be flushed by adding an empty timer.
-    if (isIOS) { setTimeout(noop); }
+    // fixed by xxxxxx
+    // if (isIOS) { setTimeout(noop); }
   };
 } else if (!isIE && typeof MutationObserver !== 'undefined' && (
   isNative(MutationObserver) ||
@@ -6670,7 +6671,7 @@ function updateDOMListeners (oldVnode, vnode) {
   var on = vnode.data.on || {};
   var oldOn = oldVnode.data.on || {};
   target$1 = vnode.elm;
-  
+
   // fixed by xxxxxx 存储 vd
   target$1._$vd = vnode.context._$vd;
   var context = vnode.context;
