@@ -1,4 +1,4 @@
-export const getClipboardData = {
+export const setClipboardData = {
   beforeSuccess () {
     uni.showToast({
       title: '内容已复制',
