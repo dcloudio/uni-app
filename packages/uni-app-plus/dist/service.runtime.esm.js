@@ -1,8 +1,5 @@
-/*!
- * Vue.js v2.6.10
- * (c) 2014-2019 Evan You
- * Released under the MIT License.
- */
+export default function vueFactory (exports, SharedObject) {
+
 /*  */
 
 var emptyObject = Object.freeze({});
@@ -6832,6 +6829,10 @@ Vue.prototype.$mount = function (
 };
 Vue.use(plugin);
 
-/*  */
+// this entry is built and wrapped with a factory function
 
-export default Vue;
+exports.Vue = Vue;
+
+
+
+}

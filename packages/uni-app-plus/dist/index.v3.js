@@ -872,6 +872,20 @@ var serviceContext = (function () {
     makePhoneCall: makePhoneCall
   });
 
+  const setClipboardData = {
+    beforeSuccess () {
+      uni.showToast({
+        title: '内容已复制',
+        icon: 'success',
+        mask: false
+      });
+    }
+  };
+
+  var require_context_module_0_8 = /*#__PURE__*/Object.freeze({
+    setClipboardData: setClipboardData
+  });
+
   const openDocument = {
     filePath: {
       type: String,
@@ -882,7 +896,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_8 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_9 = /*#__PURE__*/Object.freeze({
     openDocument: openDocument
   });
 
@@ -892,7 +906,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_9 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_10 = /*#__PURE__*/Object.freeze({
     chooseLocation: chooseLocation
   });
 
@@ -915,7 +929,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_10 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_11 = /*#__PURE__*/Object.freeze({
     getLocation: getLocation
   });
 
@@ -944,7 +958,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_11 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_12 = /*#__PURE__*/Object.freeze({
     openLocation: openLocation
   });
 
@@ -1001,7 +1015,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_12 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_13 = /*#__PURE__*/Object.freeze({
     chooseImage: chooseImage
   });
 
@@ -1028,7 +1042,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_13 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_14 = /*#__PURE__*/Object.freeze({
     chooseVideo: chooseVideo
   });
 
@@ -1120,7 +1134,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_14 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_15 = /*#__PURE__*/Object.freeze({
     getImageInfo: getImageInfo
   });
 
@@ -1155,7 +1169,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_15 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_16 = /*#__PURE__*/Object.freeze({
     previewImage: previewImage
   });
 
@@ -1172,7 +1186,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_16 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_17 = /*#__PURE__*/Object.freeze({
     downloadFile: downloadFile
   });
 
@@ -1274,7 +1288,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_17 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_18 = /*#__PURE__*/Object.freeze({
     request: request
   });
 
@@ -1327,7 +1341,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_18 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_19 = /*#__PURE__*/Object.freeze({
     connectSocket: connectSocket,
     sendSocketMessage: sendSocketMessage,
     closeSocket: closeSocket
@@ -1363,7 +1377,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_19 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_20 = /*#__PURE__*/Object.freeze({
     uploadFile: uploadFile
   });
 
@@ -1387,7 +1401,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_20 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_21 = /*#__PURE__*/Object.freeze({
     getProvider: getProvider
   });
 
@@ -1535,7 +1549,7 @@ var serviceContext = (function () {
     ]
   ));
 
-  var require_context_module_0_21 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_22 = /*#__PURE__*/Object.freeze({
     redirectTo: redirectTo,
     reLaunch: reLaunch,
     navigateTo: navigateTo,
@@ -1578,7 +1592,7 @@ var serviceContext = (function () {
   const removeStorage = getStorage;
   const removeStorageSync = getStorageSync;
 
-  var require_context_module_0_22 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_23 = /*#__PURE__*/Object.freeze({
     getStorage: getStorage,
     getStorageSync: getStorageSync,
     setStorage: setStorage,
@@ -1625,7 +1639,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_23 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_24 = /*#__PURE__*/Object.freeze({
     setNavigationBarColor: setNavigationBarColor,
     setNavigationBarTitle: setNavigationBarTitle
   });
@@ -1644,7 +1658,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_24 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_25 = /*#__PURE__*/Object.freeze({
     pageScrollTo: pageScrollTo
   });
 
@@ -1761,7 +1775,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_25 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_26 = /*#__PURE__*/Object.freeze({
     showModal: showModal,
     showToast: showToast,
     showLoading: showLoading,
@@ -1845,7 +1859,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_26 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_27 = /*#__PURE__*/Object.freeze({
     setTabBarItem: setTabBarItem,
     setTabBarStyle: setTabBarStyle,
     hideTabBar: hideTabBar,
@@ -1868,25 +1882,26 @@ var serviceContext = (function () {
   './context/canvas.js': require_context_module_0_5,
   './context/context.js': require_context_module_0_6,
   './device/make-phone-call.js': require_context_module_0_7,
-  './file/open-document.js': require_context_module_0_8,
-  './location/choose-location.js': require_context_module_0_9,
-  './location/get-location.js': require_context_module_0_10,
-  './location/open-location.js': require_context_module_0_11,
-  './media/choose-image.js': require_context_module_0_12,
-  './media/choose-video.js': require_context_module_0_13,
-  './media/get-image-info.js': require_context_module_0_14,
-  './media/preview-image.js': require_context_module_0_15,
-  './network/download-file.js': require_context_module_0_16,
-  './network/request.js': require_context_module_0_17,
-  './network/socket.js': require_context_module_0_18,
-  './network/upload-file.js': require_context_module_0_19,
-  './plugin/get-provider.js': require_context_module_0_20,
-  './route/route.js': require_context_module_0_21,
-  './storage/storage.js': require_context_module_0_22,
-  './ui/navigation-bar.js': require_context_module_0_23,
-  './ui/page-scroll-to.js': require_context_module_0_24,
-  './ui/popup.js': require_context_module_0_25,
-  './ui/tab-bar.js': require_context_module_0_26,
+  './device/set-clipboard-data.js': require_context_module_0_8,
+  './file/open-document.js': require_context_module_0_9,
+  './location/choose-location.js': require_context_module_0_10,
+  './location/get-location.js': require_context_module_0_11,
+  './location/open-location.js': require_context_module_0_12,
+  './media/choose-image.js': require_context_module_0_13,
+  './media/choose-video.js': require_context_module_0_14,
+  './media/get-image-info.js': require_context_module_0_15,
+  './media/preview-image.js': require_context_module_0_16,
+  './network/download-file.js': require_context_module_0_17,
+  './network/request.js': require_context_module_0_18,
+  './network/socket.js': require_context_module_0_19,
+  './network/upload-file.js': require_context_module_0_20,
+  './plugin/get-provider.js': require_context_module_0_21,
+  './route/route.js': require_context_module_0_22,
+  './storage/storage.js': require_context_module_0_23,
+  './ui/navigation-bar.js': require_context_module_0_24,
+  './ui/page-scroll-to.js': require_context_module_0_25,
+  './ui/popup.js': require_context_module_0_26,
+  './ui/tab-bar.js': require_context_module_0_27,
 
       };
       var req = function req(key) {
@@ -2171,7 +2186,6 @@ var serviceContext = (function () {
       const extra = extras[name];
       if (isFn(extra)) {
         wrapperCallbacks[name] = tryCatchFramework(extra);
-        delete extras[name];
       }
     }
 
@@ -2280,10 +2294,18 @@ var serviceContext = (function () {
     }
   }
 
-  function wrapper (name, invokeMethod, extras) {
+  function wrapperExtras (name, extras) {
+    const protocolOptions = protocol[name];
+    if (protocolOptions) {
+      isFn(protocolOptions.beforeSuccess) && (extras.beforeSuccess = protocolOptions.beforeSuccess);
+    }
+  }
+
+  function wrapper (name, invokeMethod, extras = {}) {
     if (!isFn(invokeMethod)) {
       return invokeMethod
     }
+    wrapperExtras(name, extras);
     return function (...args) {
       if (isSyncApi(name)) {
         if (validateParams(name, args, -1)) {
@@ -2529,6 +2551,13 @@ var serviceContext = (function () {
   }
 
   let lastStatusBarStyle;
+
+  const oldSetStatusBarStyle = plus.navigator.setStatusBarStyle;
+
+  plus.navigator.setStatusBarStyle = function (style) {
+    lastStatusBarStyle = style;
+    oldSetStatusBarStyle(style);
+  };
 
   function setStatusBarStyle (statusBarStyle) {
     if (!statusBarStyle) {
@@ -3772,7 +3801,7 @@ var serviceContext = (function () {
     });
   }
 
-  function setClipboardData ({
+  function setClipboardData$1 ({
     data
   }) {
     const clipboard = requireNativePlugin('clipboard');
@@ -8518,7 +8547,7 @@ var serviceContext = (function () {
     setScreenBrightness: setScreenBrightness,
     setKeepScreenOn: setKeepScreenOn,
     getClipboardData: getClipboardData,
-    setClipboardData: setClipboardData,
+    setClipboardData: setClipboardData$1,
     enableCompass: enableCompass,
     getNetworkType: getNetworkType,
     onBeaconUpdate: onBeaconUpdate,
