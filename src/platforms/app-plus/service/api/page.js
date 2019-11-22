@@ -33,8 +33,7 @@ function addEventListener (pageId, callback) {
       channel && channel.close()
       channel = new BroadcastChannel_(getPageId())
       channel.onmessage = onPlusMessage
-    } else {
-      globalEvent && globalEvent.removeEventListener('plusMessage', onPlusMessage)
+    } else if (!globalEvent) {
       globalEvent = weex_.requireModule('globalEvent')
       globalEvent.addEventListener('plusMessage', onPlusMessage)
     }
@@ -78,7 +77,7 @@ export function showPage ({
   // eslint-disable-next-line
   plus_ = context.plus || plus
   // eslint-disable-next-line
-  weex_ = context.weex || weex
+  weex_ = context.weex || (typeof weex === 'object' ? weex : null)
   // eslint-disable-next-line
   BroadcastChannel_ = context.BroadcastChannel || (typeof BroadcastChannel === 'object' ? BroadcastChannel : null)
   const titleNView = {
