@@ -1,8 +1,13 @@
+import {
+  plusReady
+} from 'uni-shared'
 let view
 let pullToRefreshStyle
 let disabled
 
-export function disableScrollBounce ({ disable }) {
+export function disableScrollBounce ({
+  disable
+}) {
   function exec () {
     if (!view) {
       view = plus.webview.currentWebview()
@@ -17,10 +22,13 @@ export function disableScrollBounce ({ disable }) {
       }))
     }
   }
-  if (plus.os.name === 'iOS') {
-    // 延迟执行避免iOS13触摸卡死
-    setTimeout(exec, 20)
-  } else {
-    exec()
-  }
+
+  plusReady(() => {
+    if (plus.os.name === 'iOS') {
+      // 延迟执行避免iOS13触摸卡死
+      setTimeout(exec, 20)
+    } else {
+      exec()
+    }
+  })
 }
