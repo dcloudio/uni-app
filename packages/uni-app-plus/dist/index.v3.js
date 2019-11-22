@@ -540,7 +540,7 @@ var serviceContext = (function () {
   };
 
   const SYNC_API_RE =
-    /^\$|restoreGlobal|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
+    /^\$|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
 
   const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -4176,8 +4176,7 @@ var serviceContext = (function () {
         channel && channel.close();
         channel = new BroadcastChannel_(getPageId());
         channel.onmessage = onPlusMessage;
-      } else {
-        globalEvent && globalEvent.removeEventListener('plusMessage', onPlusMessage);
+      } else if (!globalEvent) {
         globalEvent = weex_.requireModule('globalEvent');
         globalEvent.addEventListener('plusMessage', onPlusMessage);
       }
@@ -4221,7 +4220,7 @@ var serviceContext = (function () {
     // eslint-disable-next-line
     plus_ = context.plus || plus;
     // eslint-disable-next-line
-    weex_ = context.weex || weex;
+    weex_ = context.weex || (typeof weex === 'object' ? weex : null);
     // eslint-disable-next-line
     BroadcastChannel_ = context.BroadcastChannel || (typeof BroadcastChannel === 'object' ? BroadcastChannel : null);
     const titleNView = {
@@ -8485,11 +8484,15 @@ var serviceContext = (function () {
   var api = /*#__PURE__*/Object.freeze({
     startPullDownRefresh: startPullDownRefresh,
     stopPullDownRefresh: stopPullDownRefresh,
-    compressImage: compressImage,
     $on: $on$1,
     $off: $off$1,
     $once: $once$1,
     $emit: $emit$1,
+    createAudioInstance: createAudioInstance,
+    destroyAudioInstance: destroyAudioInstance,
+    setAudioState: setAudioState,
+    getAudioState: getAudioState,
+    operateAudio: operateAudio,
     getMusicPlayerState: getMusicPlayerState,
     operateMusicPlayer: operateMusicPlayer,
     setBackgroundAudioState: setBackgroundAudioState,
@@ -8552,11 +8555,7 @@ var serviceContext = (function () {
     stopVoice: stopVoice,
     chooseImage: chooseImage$1,
     chooseVideo: chooseVideo$1,
-    createAudioInstance: createAudioInstance,
-    destroyAudioInstance: destroyAudioInstance,
-    setAudioState: setAudioState,
-    getAudioState: getAudioState,
-    operateAudio: operateAudio,
+    compressImage: compressImage,
     getImageInfo: getImageInfo$1,
     previewImage: previewImage$1,
     operateRecorder: operateRecorder,
