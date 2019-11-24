@@ -78,9 +78,11 @@ function getWebpackConfigs (api, args, options) {
   pluginOptions['uni-app-plus'] = {
     service: true
   }
+  options.publicPath = '/'
   const serviceWebpackConfig = getWebpackConfig(api, args, options)
   delete pluginOptions['uni-app-plus']['service']
   pluginOptions['uni-app-plus']['view'] = true
+  options.publicPath = './'
   const viewWebpackConfig = getWebpackConfig(api, args, options)
   return [serviceWebpackConfig, viewWebpackConfig]
 }

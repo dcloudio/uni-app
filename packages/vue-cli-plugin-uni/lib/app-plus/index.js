@@ -144,6 +144,24 @@ const v3 = {
     const isAppService = !!vueOptions.pluginOptions['uni-app-plus']['service']
     const isAppView = !!vueOptions.pluginOptions['uni-app-plus']['view']
 
+    // 处理静态资源
+    webpackConfig.module
+      .rule('images')
+      .use('url-loader')
+      .loader('url-loader')
+      .tap(options => Object.assign(options, {
+        limit: 1,
+        fallback: {
+          loader: 'file-loader',
+          options: {
+            emitFile: isAppView,
+            name: '[name].[ext]',
+            useRelativePath: true,
+            context: process.env.UNI_INPUT_DIR
+          }
+        }
+      }))
+
     const cacheConfig = {
       cacheDirectory: false,
       cacheIdentifier: false
