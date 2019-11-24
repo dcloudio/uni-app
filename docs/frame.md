@@ -950,9 +950,9 @@ slide-view.vue
 
 ## WXS
 
-WXS是微信小程序的一套脚本语言，[规范详见](https://developers.weixin.qq.com/miniprogram/dev/framework/view/wxs/)。
+WXS是一套运行在视图层的脚本语言，[微信端的规范详见](https://developers.weixin.qq.com/miniprogram/dev/framework/view/wxs/)。
 
-它的特点是运行在渲染层。当需要避免逻辑层和渲染层交互通信折损时，可采用wxs。
+它的特点是运行在视图层。当需要避免逻辑层和渲染层交互通信折损时，可采用wxs。
 
 uni-app可以将wxs代码编译到微信小程序、QQ小程序、APP、H5上（`HBuilderX 2.2.5`及以上版本）
 
@@ -964,7 +964,7 @@ uni-app可以将wxs代码编译到微信小程序、QQ小程序、APP、H5上（
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |√(不支持nvue)|√|√|SJS|Filter|x|√|
 
-App端nvue解决类型需求，不应该使用wxs，而是使用bindingx。
+App端nvue解决此类需求，不应该使用wxs，而是使用bindingx。
 
 **wxs示例**
 
