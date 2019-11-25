@@ -118,7 +118,10 @@ module.exports = {
         compiler: getPlatformCompiler(),
         compilerOptions: require('./compiler-options'),
         cacheDirectory: false,
-        cacheIdentifier: false
+        cacheIdentifier: false,
+        transformAssetUrls: {
+          'v-uni-image': 'src'
+        }
       }))
       .end()
       .use('uniapp-custom-block-loader')
