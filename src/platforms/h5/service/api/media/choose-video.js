@@ -50,7 +50,8 @@ export function chooseVideo ({
       size: file.size,
       duration: 0,
       width: 0,
-      height: 0
+      height: 0,
+      name: file.name
     }
 
     const video = document.createElement('video')
