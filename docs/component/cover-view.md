@@ -5,7 +5,7 @@
 
 **平台差异说明**
 
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |√|√|√|√|√|x|√|
 
@@ -16,7 +16,7 @@
 
 **平台差异说明**
 
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |√|√|√|x|√|x|√|
 
@@ -44,13 +44,29 @@
 
 **Tips**
 
-- App端vue页面 `cover-view`、`cover-image` 中不支持嵌套其它组件，包括再次嵌套`cover-view`，仅可覆盖`video`、`map`。App端nvue页面自2.1.5起没有这些受限制。
-- App端还可以使用强大的plus.nativeObj.view绘制原生内容，参考:[uni-app中使用5+界面控件](https://ask.dcloud.net.cn/article/35036)、[plus.nativeObj.view规范](https://www.html5plus.org/doc/zh_cn/nativeobj.html#plus.nativeObj.View)
+- App端vue页面 `cover-view`、`cover-image` 中不支持嵌套其它组件，包括再次嵌套`cover-view`，仅可覆盖`video`、`map`。App端nvue页面自2.1.5起没有这些限制。
+- App端还可以使用plus.nativeObj.view绘制原生内容，参考:[uni-app中使用5+界面控件](https://ask.dcloud.net.cn/article/35036)、[plus.nativeObj.view规范](https://www.html5plus.org/doc/zh_cn/nativeobj.html#plus.nativeObj.View)
 - App端还提供了更灵活和强大的`subNvue`，参考[原生子窗体subNvue](/api/window/subNVues)
 - 在 video 组件中使用时，若想在全屏模式下使用`cover-view`，只有在微信小程序、App端的nvue页面可实现。
 - 百度小程序iOS端暂不支持一个页面有多个video时嵌套cover-view。
 - 支付宝小程序中 `cover-view` 不支持嵌套。
 
+**微信小程序的cover-view使用注意：**
+- cover-view和cover-image的aria-role仅可设置为button，读屏模式下才可以点击，并朗读出“按钮”；为空时可以聚焦，但不可点击
+- 基础库 2.2.4 起支持 touch 相关事件，也可使用 hover-class 设置点击态
+- 基础库 2.1.0 起支持设置 scale rotate 的 css 样式，包括 transition 动画
+- 基础库 1.9.90 起 cover-view 支持 overflow: scroll，但不支持动态更新 overflow
+- 基础库 1.9.90 起最外层 cover-view 支持 position: fixed
+- 基础库 1.9.0 起支持插在 view 等标签下。在此之前只可嵌套在原生组件map、video、canvas、camera内，避免嵌套在其他组件内。
+- 基础库 1.6.0 起支持css transition动画，transition-property只支持transform (translateX, translateY)与opacity。
+- 基础库 1.6.0 起支持css opacity。
+- 事件模型遵循冒泡模型，但不会冒泡到原生组件。
+- 文本建议都套上cover-view标签，避免排版错误。
+- 只支持基本的定位、布局、文本样式。不支持设置单边的border、background-image、shadow、overflow: visible等。
+- 建议子节点不要溢出父节点
+- 支持使用 z-index 控制层级
+- 默认设置的样式有：white-space: nowrap; line-height: 1.2; display: block;
+- 自定义组件嵌套 cover-view 时，自定义组件的 slot 及其父节点暂不支持通过 wx:if 控制显隐，否则会导致 cover-view 不显示
 
 **示例** [查看演示](https://uniapp.dcloud.io/h5/pages/component/cover-view/cover-view)
 
