@@ -20,21 +20,16 @@ module.exports = function chainWebpack (platformOptions, vueOptions, api) {
 
   return function (webpackConfig) {
     // 处理静态资源 limit
-    webpackConfig.module
-      .rule('images')
-      .use('url-loader')
-      .loader('url-loader')
-      .tap(options => Object.assign(options, {
-        limit: 40960
-      }))
-
-    webpackConfig.module
-      .rule('fonts')
-      .use('url-loader')
-      .loader('url-loader')
-      .tap(options => Object.assign(options, {
-        limit: 40960
-      }))
+    const staticTypes = ['images', 'svg', 'media', 'fonts']
+    staticTypes.forEach(staticType => {
+      webpackConfig.module
+        .rule(staticType)
+        .use('url-loader')
+        .loader('url-loader')
+        .tap(options => Object.assign(options, {
+          limit: 40960
+        }))
+    })
     // 条件编译 vue 文件统一直接过滤html,js,css三种类型,单独资源文件引用各自过滤
 
     const loaders = {
