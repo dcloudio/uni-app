@@ -3,6 +3,7 @@ const webpack = require('webpack')
 
 const {
   getMainEntry,
+  isInHBuilderX,
   getPlatformCompiler
 } = require('@dcloudio/uni-cli-shared')
 
@@ -144,16 +145,23 @@ const v3 = {
     const isAppService = !!vueOptions.pluginOptions['uni-app-plus']['service']
     const isAppView = !!vueOptions.pluginOptions['uni-app-plus']['view']
 
+    const fileLoaderOptions = isInHBuilderX ? {
+      emitFile: isAppView,
+      name: '[path][name].[ext]',
+      context: process.env.UNI_INPUT_DIR
+    } : {
+      emitFile: isAppView,
+      outputPath (url, resourcePath, context) {
+        return path.relative(process.env.UNI_INPUT_DIR, resourcePath)
+      }
+    }
+
     // 处理静态资源
     webpackConfig.module
       .rule('svg')
       .use('file-loader')
-      .options({
-        emitFile: isAppView,
-        outputPath (url, resourcePath, context) {
-          return path.relative(process.env.UNI_INPUT_DIR, resourcePath)
-        }
-      })
+      .options(fileLoaderOptions)
+
     const staticTypes = ['images', 'media', 'fonts']
     staticTypes.forEach(staticType => {
       webpackConfig.module
@@ -164,12 +172,7 @@ const v3 = {
           limit: 1,
           fallback: {
             loader: 'file-loader',
-            options: {
-              emitFile: isAppView,
-              outputPath (url, resourcePath, context) {
-                return path.relative(process.env.UNI_INPUT_DIR, resourcePath)
-              }
-            }
+            options: fileLoaderOptions
           }
         }))
     })
