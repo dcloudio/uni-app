@@ -145,7 +145,16 @@ const v3 = {
     const isAppView = !!vueOptions.pluginOptions['uni-app-plus']['view']
 
     // 处理静态资源
-    const staticTypes = ['images', 'svg', 'media', 'fonts']
+    webpackConfig.module
+      .rule('svg')
+      .use('file-loader')
+      .options({
+        emitFile: isAppView,
+        outputPath (url, resourcePath, context) {
+          return path.relative(process.env.UNI_INPUT_DIR, resourcePath)
+        }
+      })
+    const staticTypes = ['images', 'media', 'fonts']
     staticTypes.forEach(staticType => {
       webpackConfig.module
         .rule(staticType)
@@ -157,9 +166,9 @@ const v3 = {
             loader: 'file-loader',
             options: {
               emitFile: isAppView,
-              name: '[name].[ext]',
-              useRelativePath: true,
-              context: process.env.UNI_INPUT_DIR
+              outputPath (url, resourcePath, context) {
+                return path.relative(process.env.UNI_INPUT_DIR, resourcePath)
+              }
             }
           }
         }))
