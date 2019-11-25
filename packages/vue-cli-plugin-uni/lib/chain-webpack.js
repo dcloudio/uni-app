@@ -20,7 +20,7 @@ module.exports = function chainWebpack (platformOptions, vueOptions, api) {
 
   return function (webpackConfig) {
     // 处理静态资源 limit
-    const staticTypes = ['images', 'svg', 'media', 'fonts']
+    const staticTypes = ['images', 'media', 'fonts']
     staticTypes.forEach(staticType => {
       webpackConfig.module
         .rule(staticType)
