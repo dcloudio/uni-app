@@ -49,6 +49,7 @@ function _navigateTo ({
 
 export function navigateTo ({
   url,
+  openType,
   animationType,
   animationDuration
 }) {
@@ -62,5 +63,5 @@ export function navigateTo ({
       animationType,
       animationDuration
     })
-  })
+  }, openType === 'appLaunch')
 }
