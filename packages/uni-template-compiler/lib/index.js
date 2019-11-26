@@ -39,7 +39,7 @@ module.exports = {
       try {
         return compile(source, options)
       } catch (e) {
-        console.error(`'错误:${options.resourcePath}'`)
+        console.error(`错误:${options.resourcePath}`)
         throw new Error(e.message)
       }
     } else if (options.view) {
@@ -49,7 +49,7 @@ module.exports = {
       try {
         return compile(source, options)
       } catch (e) {
-        console.error(`'错误:${options.resourcePath}'`)
+        console.error(`错误:${options.resourcePath}`)
         throw new Error(e.message)
       }
     }
