@@ -50,7 +50,7 @@ function parseKey (el) {
   }
   const forEl = getForEl(el)
   if (!forEl) {
-    isVar(el.key) && (el.key = createGenVar(el.attrsMap[ID])('a-key', el.key))
+    return isVar(el.key) && (el.key = createGenVar(el.attrsMap[ID])('a-key', el.key))
   }
   if (!isVar(forEl.for)) {
     return

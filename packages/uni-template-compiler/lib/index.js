@@ -36,15 +36,22 @@ module.exports = {
       options.isReservedTag = (tagName) => !isComponent(tagName) // 非组件均为内置
       options.getTagNamespace = () => false
 
-      // clear staticRenderFns
-      const compiled = compile(source, options)
-
-      return compiled
+      try {
+        return compile(source, options)
+      } catch (e) {
+        console.error(`'错误:${options.resourcePath}'`)
+        throw new Error(e.message)
+      }
     } else if (options.view) {
       (options.modules || (options.modules = [])).push(require('./app/view'))
       options.optimize = false // 暂不启用 staticRenderFns
       options.isReservedTag = (tagName) => false // 均为组件
-      return compile(source, options)
+      try {
+        return compile(source, options)
+      } catch (e) {
+        console.error(`'错误:${options.resourcePath}'`)
+        throw new Error(e.message)
+      }
     }
 
     if (!options.mp) { // h5
