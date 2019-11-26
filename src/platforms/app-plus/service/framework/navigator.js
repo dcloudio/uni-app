@@ -6,10 +6,10 @@ import {
 
 let todoNavigator = false
 
-export function navigate (path, callback) {
+export function navigate (path, callback, isAppLaunch) {
   if (__PLATFORM__ === 'app-plus') {
-    if (todoNavigator) {
-      return console.error(`已存在待跳转页面${todoNavigator.path},请不要连续多次跳转页面`)
+    if (!isAppLaunch && todoNavigator) {
+      return console.error(`已存在待跳转页面${todoNavigator.path},请不要连续多次跳转页面${path}`)
     }
     // 未创建 preloadWebview 或 preloadWebview 已被使用
     const waitPreloadWebview = !preloadWebview || (preloadWebview && preloadWebview.__uniapp_route)

@@ -1601,6 +1601,37 @@ var serviceContext = (function () {
     removeStorageSync: removeStorageSync
   });
 
+  const loadFontFace = {
+    family: {
+      type: String,
+      required: true
+    },
+    source: {
+      type: String,
+      required: true
+    },
+    desc: {
+      type: Object,
+      required: false
+    },
+    success: {
+      type: Function,
+      required: false
+    },
+    fail: {
+      type: Function,
+      required: false
+    },
+    complete: {
+      type: Function,
+      required: false
+    }
+  };
+
+  var require_context_module_0_24 = /*#__PURE__*/Object.freeze({
+    loadFontFace: loadFontFace
+  });
+
   const FRONT_COLORS = ['#ffffff', '#000000'];
   const setNavigationBarColor = {
     'frontColor': {
@@ -1639,7 +1670,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_24 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_25 = /*#__PURE__*/Object.freeze({
     setNavigationBarColor: setNavigationBarColor,
     setNavigationBarTitle: setNavigationBarTitle
   });
@@ -1658,7 +1689,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_25 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_26 = /*#__PURE__*/Object.freeze({
     pageScrollTo: pageScrollTo
   });
 
@@ -1775,7 +1806,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_26 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_27 = /*#__PURE__*/Object.freeze({
     showModal: showModal,
     showToast: showToast,
     showLoading: showLoading,
@@ -1859,7 +1890,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_27 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_28 = /*#__PURE__*/Object.freeze({
     setTabBarItem: setTabBarItem,
     setTabBarStyle: setTabBarStyle,
     hideTabBar: hideTabBar,
@@ -1898,10 +1929,11 @@ var serviceContext = (function () {
   './plugin/get-provider.js': require_context_module_0_21,
   './route/route.js': require_context_module_0_22,
   './storage/storage.js': require_context_module_0_23,
-  './ui/navigation-bar.js': require_context_module_0_24,
-  './ui/page-scroll-to.js': require_context_module_0_25,
-  './ui/popup.js': require_context_module_0_26,
-  './ui/tab-bar.js': require_context_module_0_27,
+  './ui/load-font-face.js': require_context_module_0_24,
+  './ui/navigation-bar.js': require_context_module_0_25,
+  './ui/page-scroll-to.js': require_context_module_0_26,
+  './ui/popup.js': require_context_module_0_27,
+  './ui/tab-bar.js': require_context_module_0_28,
 
       };
       var req = function req(key) {
@@ -2554,7 +2586,7 @@ var serviceContext = (function () {
 
   const oldSetStatusBarStyle = plus.navigator.setStatusBarStyle;
 
-  function newSetStatusBarStyle(style) {
+  function newSetStatusBarStyle (style) {
     lastStatusBarStyle = style;
     oldSetStatusBarStyle(style);
   }
@@ -7560,10 +7592,10 @@ var serviceContext = (function () {
 
   let todoNavigator = false;
 
-  function navigate (path, callback) {
+  function navigate (path, callback, isAppLaunch) {
     {
-      if (todoNavigator) {
-        return console.error(`已存在待跳转页面${todoNavigator.path},请不要连续多次跳转页面`)
+      if (!isAppLaunch && todoNavigator) {
+        return console.error(`已存在待跳转页面${todoNavigator.path},请不要连续多次跳转页面${path}`)
       }
       // 未创建 preloadWebview 或 preloadWebview 已被使用
       const waitPreloadWebview = !preloadWebview || (preloadWebview && preloadWebview.__uniapp_route);
@@ -7811,6 +7843,7 @@ var serviceContext = (function () {
 
   function navigateTo$1 ({
     url,
+    openType,
     animationType,
     animationDuration
   }) {
@@ -7824,7 +7857,7 @@ var serviceContext = (function () {
         animationType,
         animationDuration
       });
-    });
+    }, openType === 'appLaunch');
   }
 
   function _reLaunch ({
@@ -7986,7 +8019,8 @@ var serviceContext = (function () {
 
   function switchTab$1 ({
     url,
-    from
+    from,
+    openType
   }) {
     const path = url.split('?')[0];
     navigate(path, function () {
@@ -7994,7 +8028,7 @@ var serviceContext = (function () {
         path,
         from
       });
-    });
+    }, openType === 'appLaunch');
   }
 
   function showKeyboard () {
@@ -8517,11 +8551,15 @@ var serviceContext = (function () {
   var api = /*#__PURE__*/Object.freeze({
     startPullDownRefresh: startPullDownRefresh,
     stopPullDownRefresh: stopPullDownRefresh,
-    compressImage: compressImage,
     $on: $on$1,
     $off: $off$1,
     $once: $once$1,
     $emit: $emit$1,
+    createAudioInstance: createAudioInstance,
+    destroyAudioInstance: destroyAudioInstance,
+    setAudioState: setAudioState,
+    getAudioState: getAudioState,
+    operateAudio: operateAudio,
     getMusicPlayerState: getMusicPlayerState,
     operateMusicPlayer: operateMusicPlayer,
     setBackgroundAudioState: setBackgroundAudioState,
@@ -8584,11 +8622,7 @@ var serviceContext = (function () {
     stopVoice: stopVoice,
     chooseImage: chooseImage$1,
     chooseVideo: chooseVideo$1,
-    createAudioInstance: createAudioInstance,
-    destroyAudioInstance: destroyAudioInstance,
-    setAudioState: setAudioState,
-    getAudioState: getAudioState,
-    operateAudio: operateAudio,
+    compressImage: compressImage,
     getImageInfo: getImageInfo$1,
     previewImage: previewImage$1,
     operateRecorder: operateRecorder,
@@ -10992,6 +11026,30 @@ var serviceContext = (function () {
     onKeyboardHeightChange: onKeyboardHeightChange
   });
 
+  UniServiceJSBridge.subscribe('onLoadFontFaceCallback', ({
+    callbackId,
+    data
+  }) => {
+    invoke(callbackId, data);
+  });
+
+  function loadFontFace$1 (options, callbackId) {
+    const pageId = getCurrentPageId();
+    if (!pageId) {
+      return {
+        errMsg: 'loadFontFace:fail not font page'
+      }
+    }
+    UniServiceJSBridge.publishHandler('loadFontFace', {
+      options,
+      callbackId
+    }, pageId);
+  }
+
+  var require_context_module_1_23 = /*#__PURE__*/Object.freeze({
+    loadFontFace: loadFontFace$1
+  });
+
   function pageScrollTo$1 (args) {
     const pages = getCurrentPages();
     if (pages.length) {
@@ -11000,7 +11058,7 @@ var serviceContext = (function () {
     return {}
   }
 
-  var require_context_module_1_23 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_24 = /*#__PURE__*/Object.freeze({
     pageScrollTo: pageScrollTo$1
   });
 
@@ -11036,7 +11094,7 @@ var serviceContext = (function () {
     callbacks$a.push(callbackId);
   }
 
-  var require_context_module_1_24 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_25 = /*#__PURE__*/Object.freeze({
     removeTabBarBadge: removeTabBarBadge$1,
     showTabBarRedDot: showTabBarRedDot$1,
     hideTabBarRedDot: hideTabBarRedDot$1,
@@ -11061,7 +11119,7 @@ var serviceContext = (function () {
     callbacks$b.splice(callbacks$b.indexOf(callbackId), 1);
   }
 
-  var require_context_module_1_25 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_26 = /*#__PURE__*/Object.freeze({
     onWindowResize: onWindowResize,
     offWindowResize: offWindowResize
   });
@@ -11094,9 +11152,10 @@ var serviceContext = (function () {
   './ui/create-intersection-observer.js': require_context_module_1_20,
   './ui/create-selector-query.js': require_context_module_1_21,
   './ui/keyboard.js': require_context_module_1_22,
-  './ui/page-scroll-to.js': require_context_module_1_23,
-  './ui/tab-bar.js': require_context_module_1_24,
-  './ui/window.js': require_context_module_1_25,
+  './ui/load-font-face.js': require_context_module_1_23,
+  './ui/page-scroll-to.js': require_context_module_1_24,
+  './ui/tab-bar.js': require_context_module_1_25,
+  './ui/window.js': require_context_module_1_26,
 
       };
       var req = function req(key) {
@@ -11335,7 +11394,8 @@ var serviceContext = (function () {
         const navigateType = routeOptions.meta.isTabBar ? 'switchTab' : 'navigateTo';
         process.env.NODE_ENV !== 'production' && perf(`${entryPagePath} navigateTo`);
         return uni[navigateType]({
-          url: entryPagePath
+          url: entryPagePath,
+          openType: 'appLaunch'
         })
       }
     }

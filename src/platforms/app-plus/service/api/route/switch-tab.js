@@ -91,7 +91,8 @@ function _switchTab ({
 
 export function switchTab ({
   url,
-  from
+  from,
+  openType
 }) {
   const path = url.split('?')[0]
   navigate(path, function () {
@@ -99,5 +100,5 @@ export function switchTab ({
       path,
       from
     })
-  })
+  }, openType === 'appLaunch')
 }
