@@ -381,8 +381,9 @@ Tis:
 
 ``uni-app`` 内置了 [BindingX](https://alibaba.github.io/bindingx/)，可在 ``nvue`` 中使用 BindingX 完成复杂的动画效果。
 
-* 从HBuilderX 2.3.4起，可直接引用`uni.requireNativePlugin('bindingx')`模块
+* 从HBuilderX 2.3.4起，`uni-app` 编译模式可直接引用`uni.requireNativePlugin('bindingx')`模块，`weex` 模式还需使用 npm 方式引用。查看如何修改 [nvue 编译模式](https://ask.dcloud.net.cn/article/36074)
 * 2.3.4以前，需要通过npm的方式安装BindingX的库到项目下。使用方式可参考 [BindingX 快速开始](https://alibaba.github.io/bindingx/guide/cn_guide_start)。若引入 weex-bindingx 时发现不生效，检查项目路径，路径不能含有中文。使用npm时如果命令行报错，需要注意看命令行的提示
+* 
 * BindingX demo示例可参考 [BindingX 示例](https://alibaba.github.io/bindingx/demos) 里 ``vue`` 的相关示例，将实验田里的 ``vue`` 代码拷贝到 ``nvue`` 文件里即可。
 
 **代码示例**
