@@ -333,5 +333,5 @@ uni.hideShareMenu()
 
 
 ##### FAQ
-- Q：App端如何集成其他登陆SDK
-- A：使用原生插件方式，可以集成三方sdk，原生插件开发文档见[https://ask.dcloud.net.cn/article/35428](https://ask.dcloud.net.cn/article/35428)。开发之前可以先去[插件市场](https://ext.dcloud.net.cn/)看下有没有做好的。
+- Q：App端如何集成其他分享SDK，如facebook分享、twitter分享
+- A：插件市场已有相关插件，[详见](https://ext.dcloud.net.cn/search?q=%E5%88%86%E4%BA%AB)；也可以根据原生插件教程自行开发，原生插件开发文档见[https://ask.dcloud.net.cn/article/35428](https://ask.dcloud.net.cn/article/35428)
