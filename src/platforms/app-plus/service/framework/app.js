@@ -36,8 +36,19 @@ import {
 
 let appCtx
 
-export function getApp () {
-  return appCtx
+const defaultApp = {
+  globalData: {}
+}
+
+export function getApp ({
+  allowDefault = false
+} = {}) {
+  if (appCtx) { // 真实的 App 已初始化
+    return appCtx
+  }
+  if (allowDefault) { // 返回默认实现
+    return defaultApp
+  }
 }
 
 function initGlobalListeners () {
@@ -133,7 +144,11 @@ export function registerApp (appVm) {
 
   appCtx = appVm
 
-  appCtx.globalData = appVm.$options.globalData || {}
+  Object.assign(appCtx, defaultApp) // 拷贝默认实现
+
+  const globalData = appVm.$options.globalData || {}
+  // merge globalData
+  appCtx.globalData = Object.assign(globalData, appCtx.globalData)
 
   initOn(UniServiceJSBridge.on, {
     getApp,
