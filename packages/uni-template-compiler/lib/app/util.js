@@ -119,6 +119,9 @@ function updateScopedSlotEleId (el, state) {
       }
       const it = '_si'
       const newId = getNewId(el.attrsMap[ID], it)
+      if (el.forId) {
+        el.forId = getNewId(el.forId, it)
+      }
       addRawAttr(el, ID, newId)
       if (el.attrs) {
         const attr = el.attrs.find(attr => attr.name === ID)

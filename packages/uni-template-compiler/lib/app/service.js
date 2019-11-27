@@ -100,7 +100,7 @@ function transformNode (el, parent, state, isScopedSlot) {
 
   parseIs(el, genVar)
   parseFor(el, createGenVar, isScopedSlot)
-  parseKey(el)
+  parseKey(el, isScopedSlot)
 
   parseIf(el, createGenVar, isScopedSlot)
   parseBinding(el, genVar)

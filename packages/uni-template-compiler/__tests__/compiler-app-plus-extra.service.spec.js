@@ -79,6 +79,14 @@ describe('codegen', () => {
       '<current-user>ABCD</current-user>',
       `with(this){return _c('current-user',{attrs:{"_i":0}},[_v("")])}`
     )
+    assertCodegen(
+      `<current-user>
+      <template v-slot:default="{result}">
+        <view v-for="(item,index) in result.list">{{item.name}}</view>
+      </template>
+    </current-user>`,
+      `with(this){return _c('current-user',{attrs:{"_i":0},scopedSlots:_u([{key:"default",fn:function({result}, _svm, _si){return _l((_svm._$s(("2-"+_si),'f',{forItems:result.list})),function(item,index,$20,$30){return _c('view',{key:_svm._$s(("2-"+_si),'f',{forIndex:$20,key:("2-"+_si)+'-'+$30}),attrs:{"_i":(("2-"+_si)+$30)}},[_v((_svm._$s((("2-"+_si)+$30),'t0',_s(item.name))))])})}}])})}`
+    )
   })
 
   it('generate keep-alive', () => {
