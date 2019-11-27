@@ -81,7 +81,7 @@ export default {
         },
         goTop: function(e) {
             this.scrollTop = this.old.scrollTop
-            this.$nextTick(function() {
+            this.$nextTick(()=> {
                 this.scrollTop = 0
             });
             uni.showToast({
