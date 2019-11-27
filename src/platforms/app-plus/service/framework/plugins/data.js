@@ -27,9 +27,6 @@ import {
 
 export function initData (Vue) {
   Vue.prototype._$s = setData
-  Vue.prototype._$i = setIfData
-  Vue.prototype._$f = setForData
-  Vue.prototype._$e = setElseIfData
 
   Vue.prototype._$setData = function setData (type, data) {
     this._$vd.push(type, this._$id, data)
@@ -146,12 +143,4 @@ function setForData (id, value) {
     (vForData[forIndex] || (vForData[forIndex] = {}))['k' + value.keyIndex] = key
   }
   return key
-}
-
-function setIfData (id, value) {
-  return ((this._$newData[id] || (this._$newData[id] = {}))[V_IF] = !!value)
-}
-
-function setElseIfData (id, value) {
-  return ((this._$newData[id] || (this._$newData[id] = {}))[V_ELSE_IF] = !!value)
 }

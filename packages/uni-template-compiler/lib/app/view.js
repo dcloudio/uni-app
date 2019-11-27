@@ -2,8 +2,10 @@ const {
   ID,
   GET_DATA,
   isVar,
+  getNewId,
   getForEl,
   updateForEleId,
+  updateScopedSlotEleId,
   processForKey,
   traverseNode
 } = require('./util')
@@ -28,13 +30,18 @@ const parseWxsEvents = require('./parser/wxs-events-parser')
 
 const basePreTransformNode = require('./pre-transform-node')
 
-function createGenVar (id) {
+function createGenVar (id, isScopedSlot) {
+  if (isScopedSlot) {
+    return function genVar (name, value) {
+      return `_svm.${GET_DATA}(${id},'${name}')`
+    }
+  }
   return function genVar (name) {
     return `${GET_DATA}(${id},'${name}')`
   }
 }
 
-function parseKey (el) {
+function parseKey (el, isScopedSlot) {
   // add default key
   processForKey(el)
 
@@ -51,7 +58,7 @@ function parseKey (el) {
         el.key = `${forEl.alias}['k${keyIndex}']`
       }
     } else {
-      isVar(el.key) && (el.key = createGenVar(el.attrsMap[ID])('a-key'))
+      isVar(el.key) && (el.key = createGenVar(el.attrsMap[ID], isScopedSlot)('a-key'))
     }
   }
 }
@@ -91,7 +98,7 @@ const includeDirs = [
 
 const ignoreDirs = ['model']
 
-function transformNode (el, parent, state) {
+function transformNode (el, parent, state, isScopedSlot) {
   if (el.type === 3) {
     return
   }
@@ -100,28 +107,33 @@ function transformNode (el, parent, state) {
   parseEvent(el)
   // 更新 id
   updateForEleId(el, state)
+  updateScopedSlotEleId(el, state)
 
   if (el.type === 2) {
+    let pid = parent.attrsMap[ID]
+    if (isScopedSlot && String(pid).indexOf('_si') === -1) {
+      pid = getNewId(pid, '_si')
+    }
     return parseText(el, parent, {
       index: 0,
       view: true,
       // <uni-popup>{{content}}</uni-popup>
-      genVar: createGenVar(parent.attrsMap[ID])
+      genVar: createGenVar(pid, isScopedSlot)
     })
   }
 
-  const genVar = createGenVar(el.attrsMap[ID])
+  const genVar = createGenVar(el.attrsMap[ID], isScopedSlot)
 
   parseIs(el, genVar)
 
-  if (parseFor(el, createGenVar)) {
+  if (parseFor(el, createGenVar, isScopedSlot)) {
     if (el.alias[0] === '{') { // <div><li v-for=" { a, b }  in items"></li></div>
       el.alias = '$item'
     }
   }
-  parseKey(el)
+  parseKey(el, isScopedSlot)
 
-  parseIf(el, createGenVar)
+  parseIf(el, createGenVar, isScopedSlot)
   parseBinding(el, genVar)
   parseDirs(el, genVar, ignoreDirs, includeDirs)
   parseWxsProps(el, {
@@ -189,9 +201,9 @@ function handleViewEvents (events) {
   })
 }
 
-function genVModel (el) {
+function genVModel (el, isScopedSlot) {
   if (el.model) {
-    el.model.value = createGenVar(el.attrsMap[ID])('v-model', el.model.value)
+    el.model.value = createGenVar(el.attrsMap[ID], isScopedSlot)('v-model', el.model.value)
     if (el.tag === 'v-uni-input' || el.tag === 'v-uni-textarea') {
       el.model.callback = `function($$v){$handleVModelEvent(${el.attrsMap[ID]},$$v)}`
     } else {

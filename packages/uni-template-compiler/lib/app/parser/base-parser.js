@@ -18,21 +18,24 @@ function parseIs (el, genVar) {
   }
 }
 
-function parseIf (el, createGenVar) {
+function parseIf (el, createGenVar, isScopedSlot) {
   if (!el.if) {
     return
   }
+  if (el.slotTarget && el.tag === 'template') { // new v-slot
+    isScopedSlot = false
+  }
   el.ifConditions.forEach(con => {
     if (isVar(con.exp)) {
-      con.exp = createGenVar(con.block.attrsMap[ID])(con.block.elseif ? V_ELSE_IF : V_IF, con.exp)
+      con.exp = createGenVar(con.block.attrsMap[ID], isScopedSlot)(con.block.elseif ? V_ELSE_IF : V_IF, con.exp)
     }
   })
-  el.if = createGenVar(el.attrsMap[ID])(V_IF, el.if)
+  el.if = createGenVar(el.attrsMap[ID], isScopedSlot)(V_IF, el.if)
 }
 
-function parseFor (el, createGenVar) {
+function parseFor (el, createGenVar, isScopedSlot) {
   if (el.for && isVar(el.for)) {
-    el.for = createGenVar(el.forId)(V_FOR, `{forItems:${el.for}}`)
+    el.for = createGenVar(el.forId, isScopedSlot)(V_FOR, `{forItems:${el.for}}`)
     return true
   }
 }

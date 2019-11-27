@@ -1,7 +1,7 @@
 const compiler = require('../lib')
 const res = compiler.compile(
   `
-<div><block v-for="(item,index) in list" :key="index"><block><text>{{item}}</text></block></block></div>
+<foo><template v-if="show" #default="bar">{{ bar }}</template></foo>
 `, {
     resourcePath: '/User/fxy/Documents/test.wxml',
     isReservedTag: function (tag) {
@@ -14,7 +14,7 @@ const res = compiler.compile(
       platform: 'app-plus'
     },
     filterModules: ['swipe'],
-    service: true,
+    // service: true,
     view: true
 
   })

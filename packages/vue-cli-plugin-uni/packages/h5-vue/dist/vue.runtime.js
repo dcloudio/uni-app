@@ -2697,7 +2697,8 @@
         }
         props = extend(extend({}, bindObject), props);
       }
-      nodes = scopedSlotFn(props) || fallback;
+      // fixed by xxxxxx app-plus scopedSlot
+      nodes = scopedSlotFn(props, this, props._i) || fallback;
     } else {
       nodes = this.$slots[name] || fallback;
     }

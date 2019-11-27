@@ -73,7 +73,7 @@ describe('codegen', () => {
   it('generate v-slot', () => {
     assertCodegen(
       '<current-user v-slot="{ user }">{{ user.firstName }}</current-user>',
-      `with(this){return _c('current-user',{attrs:{"_i":0},scopedSlots:_u([{key:"default",fn:function({ user }){return [_v((_$s(0,'t0',_s(user.firstName))))]}}])})}`
+      `with(this){return _c('current-user',{attrs:{"_i":0},scopedSlots:_u([{key:"default",fn:function({ user }, _svm, _si){return [_v((_svm._$s(("0-"+_si),'t0',_s(user.firstName))))]}}])})}`
     )
     assertCodegen(
       '<current-user>ABCD</current-user>',

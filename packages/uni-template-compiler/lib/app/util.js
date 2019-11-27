@@ -45,11 +45,12 @@ function updateEleId (el, it, state) {
   if (el.type !== 1) {
     return
   }
-  const id = el.attrsMap[ID]
-  const newId = Number.isInteger(id) ? `("${id}-"+${it})` : `(${id}+${it})`
+  const newId = getNewId(el.attrsMap[ID], it)
   addRawAttr(el, ID, newId)
-  const attr = el.attrs.find(attr => attr.name === ID)
-  attr.value = newId
+  if (el.attrs) {
+    const attr = el.attrs.find(attr => attr.name === ID)
+    attr.value = newId
+  }
   el.children.forEach(child => {
     if (!child.for) { // 忽略嵌套 for
       updateEleId(child, it)
@@ -105,6 +106,42 @@ function updateForEleId (el, state) {
   }
 }
 
+function getNewId (id, it) {
+  return Number.isInteger(id) ? `("${id}-"+${it})` : `(${id}+${it})`
+}
+
+function updateScopedSlotEleId (el, state) {
+  // TODO 暂不考虑 scopedSlot 嵌套情况
+  if (el.slotScope) {
+    const updateEleId = function (el) {
+      if (el.type !== 1) {
+        return
+      }
+      const it = '_si'
+      const newId = getNewId(el.attrsMap[ID], it)
+      addRawAttr(el, ID, newId)
+      if (el.attrs) {
+        const attr = el.attrs.find(attr => attr.name === ID)
+        attr.value = newId
+      }
+      el.children.forEach(child => {
+        if (!child.slotScope) { // 忽略嵌套 scopedSlot
+          updateEleId(child, state)
+        }
+      })
+    }
+    if (el.tag === 'template' && el.slotTarget) { // new v-slot
+      el.children.forEach(child => {
+        if (!child.slotScope) { // 忽略嵌套 scopedSlot
+          updateEleId(child, state)
+        }
+      })
+    } else { // old slot-scope
+      updateEleId(el)
+    }
+  }
+}
+
 function getForEl (el) {
   if (el.for) {
     return el
@@ -142,13 +179,16 @@ function hasOwn (obj, key) {
   return hasOwnProperty.call(obj, key)
 }
 
-function traverseNode (el, parent, state) {
-  state.transformNode(el, parent, state)
-  el.children && el.children.forEach(child => traverseNode(child, el, state))
+function traverseNode (el, parent, state, isScopedSlot) {
+  state.transformNode(el, parent, state, isScopedSlot)
+  el.children && el.children.forEach(child => traverseNode(child, el, state, isScopedSlot))
   el.ifConditions && el.ifConditions.forEach((con, index) => {
-    index !== 0 && traverseNode(con.block, el, state)
+    index !== 0 && traverseNode(con.block, el, state, isScopedSlot)
   })
-  el.scopedSlots && Object.values(el.scopedSlots).forEach(slot => traverseNode(slot, el, state))
+  el.scopedSlots && Object.values(el.scopedSlots).forEach(slot => {
+    slot.slotScope = `${slot.slotScope}, _svm, _si`
+    traverseNode(slot, el, state, true)
+  })
 }
 
 function addAttr (el, name, value, dynamic) {
@@ -208,10 +248,12 @@ module.exports = {
   addRawAttr,
   removeRawAttr,
   removeRawBindingAttr,
+  getNewId,
   getForEl,
   addHandler,
   processForKey,
   updateForEleId,
+  updateScopedSlotEleId,
   getBindingAttr,
   getAndRemoveAttr,
   traverseNode

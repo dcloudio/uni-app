@@ -39,8 +39,8 @@ module.exports = {
       try {
         return compile(source, options)
       } catch (e) {
-        console.error(`错误:${options.resourcePath}`)
-        throw new Error(e.message)
+        console.error(source)
+        throw e
       }
     } else if (options.view) {
       (options.modules || (options.modules = [])).push(require('./app/view'))
@@ -49,8 +49,8 @@ module.exports = {
       try {
         return compile(source, options)
       } catch (e) {
-        console.error(`错误:${options.resourcePath}`)
-        throw new Error(e.message)
+        console.error(source)
+        throw e
       }
     }
 

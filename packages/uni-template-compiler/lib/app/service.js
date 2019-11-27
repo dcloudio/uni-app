@@ -3,10 +3,12 @@ const {
   V_FOR,
   SET_DATA,
   isVar,
+  getNewId,
   getForEl,
   processForKey,
   updateForEleId,
-  traverseNode
+  traverseNode,
+  updateScopedSlotEleId
 } = require('./util')
 
 const {
@@ -34,13 +36,18 @@ const preTransformNode = require('./pre-transform-node')
 
 const optimize = require('./optimizer')
 
-function createGenVar (id) {
+function createGenVar (id, isScopedSlot) {
+  if (isScopedSlot) {
+    return function genVar (name, value) {
+      return `_svm.${SET_DATA}(${id},'${name}',${value})`
+    }
+  }
   return function genVar (name, value) {
     return `${SET_DATA}(${id},'${name}',${value})`
   }
 }
 
-function parseKey (el) {
+function parseKey (el, isScopedSlot) {
   // add default key
   if (processForKey(el)) {
     el = el.children[0] // 当 template 下仅文本时，处理第一个动态文本
@@ -50,14 +57,14 @@ function parseKey (el) {
   }
   const forEl = getForEl(el)
   if (!forEl) {
-    return isVar(el.key) && (el.key = createGenVar(el.attrsMap[ID])('a-key', el.key))
+    return isVar(el.key) && (el.key = createGenVar(el.attrsMap[ID], isScopedSlot)('a-key', el.key))
   }
   if (!isVar(forEl.for)) {
     return
   }
   const forId = forEl.forId
   const it = forEl.iterator2
-  const genVar = createGenVar(forId)
+  const genVar = createGenVar(forId, isScopedSlot)
   if (forEl === el) { // <view v-for="item in items" :key="item.id"></view>
     el.key = genVar(V_FOR, `{forIndex:${it},key:${el.key}}`)
   } else { // <template v-for="item in items"><view :key="item.id+'1'"></view><view :key="item.id+'2'"></view></template>
@@ -66,7 +73,7 @@ function parseKey (el) {
   }
 }
 
-function transformNode (el, parent, state) {
+function transformNode (el, parent, state, isScopedSlot) {
   if (el.type === 3) {
     return
   }
@@ -74,23 +81,28 @@ function transformNode (el, parent, state) {
   parseEvent(el)
 
   updateForEleId(el, state)
+  updateScopedSlotEleId(el, state)
 
   if (el.type === 2) {
+    let pid = parent.attrsMap[ID]
+    if (isScopedSlot && String(pid).indexOf('_si') === -1) {
+      pid = getNewId(pid, '_si')
+    }
     return parseText(el, parent, {
       index: 0,
       service: true,
       // <uni-popup>{{content}}</uni-popup>
-      genVar: createGenVar(parent.attrsMap[ID])
+      genVar: createGenVar(pid, isScopedSlot)
     })
   }
 
-  const genVar = createGenVar(el.attrsMap[ID])
+  const genVar = createGenVar(el.attrsMap[ID], isScopedSlot)
 
   parseIs(el, genVar)
-  parseFor(el, createGenVar)
+  parseFor(el, createGenVar, isScopedSlot)
   parseKey(el)
 
-  parseIf(el, createGenVar)
+  parseIf(el, createGenVar, isScopedSlot)
   parseBinding(el, genVar)
   parseDirs(el, genVar, ['model'])
 
@@ -121,17 +133,17 @@ function postTransformNode (el, options) {
   }
 }
 
-function genVModel (el) {
+function genVModel (el, isScopedSlot) {
   if (
     (el.tag === 'input' || el.tag === 'textarea') &&
     el.directives &&
     el.directives.find(dir => dir.name === 'model')
   ) {
     const prop = el.props.find(prop => prop.name === 'value')
-    prop.value = createGenVar(el.attrsMap[ID])('v-model', prop.value)
+    prop.value = createGenVar(el.attrsMap[ID], isScopedSlot)('v-model', prop.value)
   }
   if (el.model) {
-    el.model.value = createGenVar(el.attrsMap[ID])('v-model', el.model.value)
+    el.model.value = createGenVar(el.attrsMap[ID], isScopedSlot)('v-model', el.model.value)
   }
 }
 
