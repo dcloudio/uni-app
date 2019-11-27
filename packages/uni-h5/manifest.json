@@ -660,6 +660,15 @@
         "/platforms/h5/service/api/ui/window.js",
         []
     ],
+    "loadFontFace": [
+        "/core/service/api/ui/load-font-face.js",
+        [
+            [
+                "/core/helpers/protocol/ui/load-font-face.js",
+                "loadFontFace"
+            ]
+        ]
+    ],
     "startPullDownRefresh": [
         "/platforms/h5/service/api/ui/pull-down-refresh.js",
         []
