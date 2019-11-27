@@ -26,6 +26,10 @@ describe('codegen', () => {
       '<div><block v-for="item in items" :key="item.id"><div></div><div></div></block></div>',
       `with(this){return _c('div',[_l((_$s(1,'f',{forItems:items})),function(item,$10,$20,$30){return [_c('div',{key:_$s(1,'f',{forIndex:$20,keyIndex:0,key:item.id+'_0'})}),_c('div',{key:_$s(1,'f',{forIndex:$20,keyIndex:1,key:item.id+'_1'})})]})],2)}`
     )
+    assertCodegen(
+      '<div><block v-for="(item,index) in list" :key="index"><block><text>{{item}}</text></block></block></div>',
+      `with(this){return _c('div',[_l((_$s(1,'f',{forItems:list})),function(item,index,$20,$30){return [[_c('text',{key:_$s(("3-"+$30),'a-key',index+'_0'+'_0')},[_v((_$s(("3-"+$30),'t0',_s(item))))])]]})],2)}`
+    )
   })
   it('generate directive', () => {
     assertCodegen(
