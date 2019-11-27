@@ -19,8 +19,11 @@ export function initEvent (Vue) {
     })
   }
 
-  Vue.prototype.$handleViewEvent = function ($vueEvent, options) {
+  Vue.prototype.$handleViewEvent = function ($vueEvent, options = {}) {
     // const isCustomEvent = $vueEvent._processed // 自定义事件已提前处理过
+    if (options.stop) {
+      $vueEvent.stopPropagation()
+    }
     const $event = this.$handleEvent($vueEvent)
     const cid = this._$id
     // 当自定义组件根节点触发事件时，nid 始终为 0
