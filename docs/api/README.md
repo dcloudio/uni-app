@@ -366,10 +366,10 @@ function async request () {
 
 |API|说明|
 |:-|:-|
-|[uni.createCanvasContext](api/ui/canvas?id=createcanvascontext)|创建绘图上下文|
-|[uni.canvasToTempFilePath](api/ui/canvas?id=canvastotempfilepath)|将画布内容保存成文件|
-|[uni.canvasGetImageData](api/ui/canvas?id=canvasgetimagedata)|获取画布图像数据|
-|[uni.canvasPutImageData](api/ui/canvas?id=canvasputimagedata)|设置画布图像数据|
+|[uni.createCanvasContext](/api/canvas/createCanvasContext)|创建绘图上下文|
+|[uni.canvasToTempFilePath](/api/canvas/canvasToTempFilePath)|将画布内容保存成文件|
+|[uni.canvasGetImageData](/api/canvas/canvasGetImageData)|获取画布图像数据|
+|[uni.canvasPutImageData](/api/canvas/canvasPutImageData)|设置画布图像数据|
 ##### 下拉刷新
 
 |API|说明|
