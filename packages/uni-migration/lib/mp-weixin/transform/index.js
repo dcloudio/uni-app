@@ -3,41 +3,62 @@ const glob = require('glob')
 const transformFile = require('./file-transformer')
 
 function generateVueFile(input, out, options) {
-  const content = transformFile(input, out, options)
+  const [content, deps] = transformFile(input, options)
   return {
-    path: path.resolve(out, path.basename(input).replace(options.extname, '.vue')),
-    content
+    path: path.resolve(out, path.basename(input).replace(options.extname.template, '.vue')),
+    content,
+    deps
   }
 }
 
 function generateVueFolder(input, out, options) {
-  return glob.sync('**/*.wxml', {
-    cwd: input
-  }).map(wxmlFile => {
-    return generateVueFile(
-      path.resolve(input, wxmlFile),
-      path.dirname(path.resolve(out, wxmlFile)),
-      options
-    )
+  const extname = options.extname.template
+  const files = []
+  const assets = []
+  const deps = []
+  glob.sync('**/*', {
+    cwd: input,
+    nodir: true
+  }).map(file => {
+    if (path.extname(file) === extname) {
+      const vueFile = generateVueFile(
+        path.resolve(input, file),
+        path.dirname(path.resolve(out, file)),
+        options
+      )
+      files.push(vueFile)
+      deps.push(...vueFile.deps)
+    } else {
+      assets.push(file)
+    }
   })
+  return [files, assets.filter(asset => {
+    return !deps.includes(path.resolve(input, asset))
+  })]
 }
 
 function generateVueApp(input, out, options) {
   console.error(`暂不支持转换整个 App`)
+  return [
+    [],
+    []
+  ]
 }
 
 module.exports = function transform(input, out, options) {
-  const ret = []
   switch (options.target) {
     case 'file':
-      ret.push(generateVueFile(input, out, options))
-      break
+      return [
+        [generateVueFile(input, out, options)],
+        []
+      ]
     case 'folder':
-      ret.push(...generateVueFolder(input, out, options))
-      break
+      return generateVueFolder(input, out, options)
     case 'app':
-      ret.push(...generateVueApp(input, out, options))
-      break
+      return generateVueApp(input, out, options)
   }
-  return ret
+  return [
+    [],
+    []
+  ]
 }

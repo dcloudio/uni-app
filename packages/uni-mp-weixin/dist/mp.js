@@ -34,7 +34,10 @@ function parseProperty (name, property, watch) {
     type.push(...property.optionalTypes);
   }
   const prop = Object.create(null);
-  prop.type = type;
+  prop.type = type.filter(sType => sType !== null); // remove null
+  if (!prop.type.length) {
+    delete prop.type;
+  }
   if (hasOwn(property, 'value')) {
     prop['default'] = property.value;
   }
@@ -267,14 +270,37 @@ var polyfill = {
   }
 };
 
+/**
+ * wxs getRegExp
+ */
+function getRegExp () {
+  const args = Array.prototype.slice.call(arguments);
+  args.unshift(RegExp);
+  return new (Function.prototype.bind.apply(RegExp, args))()
+}
+
+/**
+ * wxs getDate
+ */
+function getDate () {
+  const args = Array.prototype.slice.call(arguments);
+  args.unshift(Date);
+  return new (Function.prototype.bind.apply(Date, args))()
+}
+
+global['__wxRoute'] = [];
+
 function Component (options) {
   const componentOptions = parseComponent(options);
   componentOptions.mixins.unshift(polyfill);
-  global['__wxComponents'][global['__wxRoute']] = componentOptions;
+  if (!global['__wxComponents']) {
+    global['__wxComponents'] = Object.create(null);
+  }
+  global['__wxComponents'][global['__wxRoute'].pop()] = componentOptions;
 }
 
 function Behavior (options) {
   return options
 }
 
-export { Behavior, Component };
+export { Behavior, Component, getDate, getRegExp };

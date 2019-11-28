@@ -1,4 +1,6 @@
+const path = require('path')
 const fs = require('fs-extra')
+
 const validate = require('./validate')
 
 const migraters = {
@@ -15,9 +17,16 @@ module.exports = function migrate(input, out, options = {
   if (!validate(input, out, options)) {
     return
   }
-  migrater.transform(input, out, options).forEach(file => {
-    console.log(`写入: ${file.path}`)
-    console.log(`${file.content}`)
-    // fs.outputFileSync(file.path, file.content)
+  const [files, assets] = migrater.transform(input, out, options)
+  files.forEach(file => {
+    console.log(`write: ${file.path}`)
+    fs.outputFileSync(file.path, file.content)
+  })
+  const styleExtname = options.extname.style
+  assets.forEach(asset => {
+    const src = path.resolve(input, asset)
+    const dest = path.resolve(out, asset.replace(styleExtname, '.css'))
+    console.log(`copy: ${dest}`)
+    fs.copySync(src, dest)
   })
 }

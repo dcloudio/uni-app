@@ -8,12 +8,32 @@ const ATTRS = {
   'wx:else': 'v-else'
 }
 
-function parseMustache(expr) {
+const FOR = {
+  for: 'wx:for',
+  item: 'wx:for-item',
+  index: 'wx:for-index',
+  key: 'wx:key'
+}
+
+const FOR_DEFAULT = {
+  item: 'item',
+  index: 'index'
+}
+
+function parseMustache(expr, identifier = false) {
+  if (!expr) {
+    return ''
+  }
   const tokens = parse(expr)
   const isIdentifier = tokens.length === 1
   return tokens.map(token => {
     if (token[0] === 'text') {
+      if (identifier) {
+        return token[1]
+      }
       return `'${token[1]}'`
+    } else if (token[0] === '!') { // {{ !loading }}
+      return `!${token[1]}`
     } else if (token[0] === 'name') {
       if (isIdentifier) {
         return token[1]
@@ -29,6 +49,24 @@ function transformDirective(name, value, attribs) {
     attribs[ATTRS[name]] = parseMustache(value)
     return true
   }
+}
+
+function transformFor(attribs) {
+  const vFor = attribs[FOR.for]
+  if (!vFor) {
+    return
+  }
+  const vKey = parseMustache(attribs[FOR.key], true) // TODO
+  const vItem = parseMustache(attribs[FOR.item], true) || FOR_DEFAULT.item
+  const vIndex = parseMustache(attribs[FOR.index], true) || FOR_DEFAULT.index
+
+  attribs['v-for'] = `(${vItem},${vIndex}) in (${parseMustache(vFor)})`
+  vKey && (attribs[':key'] = vKey)
+
+  delete attribs[FOR.for]
+  delete attribs[FOR.item]
+  delete attribs[FOR.index]
+  delete attribs[FOR.key]
 }
 
 const bindRE = /bind:?/
@@ -55,6 +93,12 @@ function transformEvent(name, value, attribs) {
 
 
 function transformAttr(name, value, attribs) {
+  if (
+    name.indexOf('v-') === 0 ||
+    name.indexOf(':') === 0
+  ) { // 已提前处理
+    return
+  }
   delete attribs[name]
   if (transformDirective(name, value, attribs)) {
     return
@@ -74,6 +118,7 @@ function transformAttrs(node, state) {
   if (!attribs) {
     return
   }
+  transformFor(attribs)
   Object.keys(attribs).forEach(name => {
     transformAttr(name, attribs[name], attribs)
   })

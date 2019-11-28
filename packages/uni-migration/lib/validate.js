@@ -12,12 +12,13 @@ module.exports = function validate(input, out, options) {
   }
 
   const platformOptions = migraters[options.platform]
-  options.extname = platformOptions.file.extname
+  options.extname = platformOptions.extname
+  const templateExtname = options.extname.template
 
   const stat = fs.lstatSync(input)
   if (stat.isFile()) {
-    if (path.extname(input) !== options.extname) {
-      return console.error(`错误: 单文件转换需要传入 ${options.extname.substr(1)} 文件地址`)
+    if (path.extname(input) !== templateExtname) {
+      return console.error(`错误: 单文件转换需要传入 ${templateExtname.substr(1)} 文件地址`)
     }
     options.target = 'file'
   } else if (stat.isDirectory()) {

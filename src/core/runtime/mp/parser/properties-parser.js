@@ -14,7 +14,10 @@ function parseProperty (name, property, watch) {
     type.push(...property.optionalTypes)
   }
   const prop = Object.create(null)
-  prop.type = type
+  prop.type = type.filter(sType => sType !== null) // remove null
+  if (!prop.type.length) {
+    delete prop.type
+  }
   if (hasOwn(property, 'value')) {
     prop['default'] = property.value
   }
