@@ -66,10 +66,13 @@ const getPageComponents = function (inputDir, pagesJson) {
   removePlatformStyle(process.UNI_H5_PAGES_JSON.globalStyle)
 
   return pages.map(page => {
+    let oriPath = page.path
+    if(pagesJson.simplifyPath) page.path = (typeof(pagesJson.simplifyPath) === 'string' ? pagesJson.simplifyPath: 'pages/') + page.path
+
     const name = page.path.replace(/\//g, '-')
     const pagePath = normalizePath(path.resolve(inputDir, page.path))
     const props = page.style || {}
-    const isEntry = firstPagePath === page.path
+    const isEntry = firstPagePath === oriPath
     const tabBarIndex = tabBarList.findIndex(tabBarPage => tabBarPage.pagePath === page.path)
     const isTabBar = tabBarIndex !== -1
 
@@ -101,12 +104,12 @@ const getPageComponents = function (inputDir, pagesJson) {
     // 删除 app-plus 平台配置
     delete props['app-plus']
     delete props['h5']
-
-    process.UNI_H5_PAGES_JSON.pages[page.path] = props
+      
+    process.UNI_H5_PAGES_JSON.pages[oriPath] = props
 
     return {
       name,
-      route: page.path,
+      route: oriPath,
       path: pagePath,
       props,
       isNVue,
