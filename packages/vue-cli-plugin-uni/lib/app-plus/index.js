@@ -16,17 +16,24 @@ const {
 //   createTemplateCacheLoader
 // } = require('../cache-loader')
 
+const runtimePath = '@dcloudio/uni-mp-weixin/dist/mp.js'
+
 function getProvides () {
   return {
     '__f__': [path.resolve(__dirname, '../format-log.js'), 'default'],
-    'Behavior': ['@dcloudio/uni-mp-weixin/dist/mp.js', 'Behavior'],
-    'Component': ['@dcloudio/uni-mp-weixin/dist/mp.js', 'Component']
+    'Behavior': [runtimePath, 'Behavior'],
+    'Component': [runtimePath, 'Component'],
+    'getDate': [runtimePath, 'getDate'],
+    'getRegExp': [runtimePath, 'getRegExp']
   }
 }
 
 const v3 = {
   vueConfig: {
-    parallel: false
+    parallel: false,
+    transpileDependencies: [
+      runtimePath
+    ]
   },
   webpackConfig (webpackConfig, vueOptions, api) {
     const isAppService = !!vueOptions.pluginOptions['uni-app-plus']['service']

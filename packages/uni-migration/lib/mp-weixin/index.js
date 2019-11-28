@@ -1,7 +1,8 @@
 module.exports = {
   options: {
-    file: {
-      extname: '.wxml'
+    extname: {
+      template: '.wxml',
+      style: '.wxss'
     }
   },
   transform: require('./transform')
