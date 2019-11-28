@@ -3,7 +3,7 @@
 
 即使不跨端，```uni-app```同时也是更好的小程序开发框架。详见[评测](https://ask.dcloud.net.cn/article/35947)
 
-`DCloud`公司拥有370万开发者用户，旗下```uni-app```有5万+案例、900款插件、50+微信/qq群，并且被阿里小程序工具内置（[详见](https://docs.alipay.com/mini/ide/0.70-stable)），开发者可以放心选择。
+`DCloud`公司拥有380万开发者，旗下```uni-app```有5万+案例、900款插件、50+微信/qq群，并且被阿里小程序工具内置（[详见](https://docs.alipay.com/mini/ide/0.70-stable)），开发者可以放心选择。
 
 <div class="quick">
     <h3 id="快速体验"><a href="/README?id=%e5%bf%ab%e9%80%9f%e4%bd%93%e9%aa%8c" data-id="快速体验" class="anchor"><span>快速体验</span></a></h3>
