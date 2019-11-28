@@ -6,11 +6,12 @@
 
 # uni-app的特点
 
-- 开发者和案例更多：30万+开发者，50+QQ、微信群，数万案例（[详见](https://uniapp.dcloud.io/case)），被阿里小程序官方工具内置（[详见](https://docs.alipay.com/mini/ide/0.70-stable)）
+- 开发者和案例更多：HBuilder装机量380万台，开发者社区月活百万，70多个QQ微信群承载10万人。案例众多（[详见](https://uniapp.dcloud.io/case)）
 - 性能更高（见[评测](https://juejin.im/post/5ca1736af265da30ae314248)）
 - 更丰富的周边生态（见[插件市场](https://ext.dcloud.net.cn/)近千款插件）
 - 提供比小程序原生开发更好的开发体验和更高的工程化效率
 - 跨端抹平度更完善，且各端特色发挥更灵活，可真正实现一套代码多端覆盖，无需各端多头维护升级
+- 权威认可：被阿里小程序官方工具内置（[详见](https://docs.alipay.com/mini/ide/0.70-stable)）
 
 ## 扫码体验
 
@@ -43,7 +44,7 @@
 
 ## 论坛
 
-由于`uni-app`有几十万开发者，50多个QQ、微信群，官方已无法维护更多交流群。请开发者到官方论坛交流：[https://ask.dcloud.net.cn/explore/](https://ask.dcloud.net.cn/explore/) 。论坛提供了比issues更专业的工具服务。
+由于`DCloud`有70多个QQ、微信群，官方已无法维护更多交流群。请开发者到官方论坛交流：[https://ask.dcloud.net.cn/explore/](https://ask.dcloud.net.cn/explore/) 。论坛提供了比issues更专业的工具服务。
 
 ## 插件市场
 
