@@ -5,7 +5,9 @@ import {
   VD_SYNC_CALLBACK,
   INVOKE_API,
   WEBVIEW_READY,
-  WEB_INVOKE_APPSERVICE
+  WEB_INVOKE_APPSERVICE,
+  WEBVIEW_INSERTED,
+  WEBVIEW_REMOVED
 } from '../../../constants'
 
 import {
@@ -20,6 +22,11 @@ import onVdSyncCallback from './on-vd-sync-callback'
 import onInvokeApi from './on-invoke-api'
 import onWebInvokeAppService from './on-web-invoke-app-service'
 import onWxsInvokeCallMethod from './on-wxs-invoke-call-method'
+
+import {
+  onWebviewInserted,
+  onWebviewRemoved
+} from './on-webview-lifecycle'
 
 export function initSubscribeHandlers () {
   const {
@@ -60,4 +67,7 @@ export function initSubscribeHandlers () {
   subscribe(VD_SYNC_CALLBACK, onVdSyncCallback)
 
   subscribe(INVOKE_API, onInvokeApi)
+
+  subscribe(WEBVIEW_INSERTED, onWebviewInserted)
+  subscribe(WEBVIEW_REMOVED, onWebviewRemoved)
 }

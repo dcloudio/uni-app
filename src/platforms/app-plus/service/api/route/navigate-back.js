@@ -22,9 +22,6 @@ function quit () {
 }
 
 function backWebview (webview, callback) {
-  if (!webview.__uniapp_webview) {
-    return callback()
-  }
   const children = webview.children()
   if (!children || !children.length) { // 有子 webview
     return callback()
@@ -53,14 +50,14 @@ function back (delta, animationType, animationDuration) {
     })
   }
 
-  backWebview(currentPage, () => {
+  const backPage = function () {
     if (animationType) {
-      currentPage.$getAppWebview().close(animationType, animationDuration || ANI_DURATION)
+      webview.close(animationType, animationDuration || ANI_DURATION)
     } else {
       if (currentPage.$page.openType === 'redirect') { // 如果是 redirectTo 跳转的，需要制定 back 动画
-        currentPage.$getAppWebview().close(ANI_CLOSE, ANI_DURATION)
+        webview.close(ANI_CLOSE, ANI_DURATION)
       }
-      currentPage.$getAppWebview().close('auto')
+      webview.close('auto')
     }
 
     pages.slice(len - delta, len).forEach(page => page.$remove())
@@ -70,7 +67,13 @@ function back (delta, animationType, animationDuration) {
     UniServiceJSBridge.emit('onAppRoute', {
       type: 'navigateBack'
     })
-  })
+  }
+
+  if (!currentPage.__uniapp_webview) {
+    return backPage()
+  }
+  const webview = currentPage.$getAppWebview()
+  backWebview(webview, backPage)
 }
 
 export function navigateBack ({

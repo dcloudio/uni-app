@@ -2,6 +2,10 @@
   <uni-web-view />
 </template>
 <script>
+import {
+  WEBVIEW_INSERTED,
+  WEBVIEW_REMOVED
+} from '../../../constants'
 let webview = false
 const insertHTMLWebView = ({
   htmlId
@@ -87,9 +91,11 @@ export default {
       src: this.$getRealPath(this.src),
       webviewStyles: this.webviewStyles
     })
+    UniViewJSBridge.publishHandler(WEBVIEW_INSERTED, {}, this.$page.id)
   },
   beforeDestroy () {
     removeHTMLWebView()
+    UniViewJSBridge.publishHandler(WEBVIEW_REMOVED, {}, this.$page.id)
   }
 }
 </script>
