@@ -1,15 +1,23 @@
 `push` 是指从服务器主动给手机端发送消息。
 
 - App平台
-`uni-app` 提供了 uni push 服务，这是一个包括客户端和服务器的统一服务，整合了苹果APNs、华为、小米、OPPO、魅族等多家厂商的推送和个推的独立推送，不管客户端还是服务器，一套代码多端推送。
+`uni-app` 提供了 uni push 服务，这是一个包括客户端和服务器的统一服务，整合了苹果APNs、华为、小米、OPPO、VIVO、魅族等多家厂商的推送和个推的独立推送，不管客户端还是服务器，一套代码多端推送。
+
+开发者可以在uniPush中只接入个推，不配置其他厂商服务，但这将导致Android上App离线后无法推送消息。因为现在的国产rom节电管理策略严格，不使用rom厂商的push基本难以离线送达消息。
+若想提供消息推送成功率，只有使用uniPush，并向各rom厂商申请开通推送服务（免费）。
 
 因本文档内容有限，单独写了一篇详细的 uni push 业务介绍，请仔细阅读 [https://ask.dcloud.net.cn/article/35622](https://ask.dcloud.net.cn/article/35622)。
 
 uni push 推送的开发API文档：[https://www.html5plus.org/doc/zh_cn/push.html](https://www.html5plus.org/doc/zh_cn/push.html)
 
-插件市场有很多推送相关的插件，包括检查应用是否被授予推送权限（[参考](https://ext.dcloud.net.cn/plugin?id=594)）、开启关闭推送服务（[参考](https://ext.dcloud.net.cn/plugin?id=727)）、自定义iOS推送铃声（[参考](https://ext.dcloud.net.cn/plugin?id=690)）
+插件市场有很多推送相关的插件：
+- 检查应用是否被授予推送权限（[参考](https://ext.dcloud.net.cn/plugin?id=594)）
+- 开启关闭推送服务（[参考](https://ext.dcloud.net.cn/plugin?id=727)）
+- 自定义iOS推送铃声（[参考](https://ext.dcloud.net.cn/plugin?id=690)）
 
-插件市场也提供了其他三方推送方案，但注意unipush是推送成功率更高的解决方案，并且免费使用，更推荐使用。
+插件市场也提供了其他三方推送方案，但注意unipush是推送成功率更高的解决方案，并且免费使用。不推荐开发者使用其他推送服务。
+
+部分开发者误解DCloud提供uniPush的专业性是否比得过其他推送厂商。实际情况是uniPush是个推为DCloud打造的。本来该业务是个推的vip push收费业务，被DCloud谈判免费开放给DCloud的开发者，并且账户层面和DCloud打通。推送的实际业务是由个推完成的，个推是A股上市公司，产品品质值得信赖。
 
 - 小程序平台
 
@@ -23,6 +31,7 @@ uni push 推送的开发API文档：[https://www.html5plus.org/doc/zh_cn/push.ht
 
 百度模板消息文档：[https://smartprogram.baidu.com/docs/develop/third/api/](https://smartprogram.baidu.com/docs/develop/third/api/)
 
+<!--
 **注意：以下API暂停维护，仅为向下兼容而保留。App端 uni push 的API请使用 [https://www.html5plus.org/doc/zh_cn/push.html](https://www.html5plus.org/doc/zh_cn/push.html)**
 
 ### uni.subscribePush(OBJECT)
@@ -152,7 +161,7 @@ uni.offPush({
 	}
 });
 ```
-
+-->
 
 ##### FAQ
 
