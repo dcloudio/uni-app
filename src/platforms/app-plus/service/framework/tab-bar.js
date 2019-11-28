@@ -113,7 +113,7 @@ export default {
     })
   },
   indexOf (page) {
-    const itemLength = config.list.length
+    const itemLength = config && config.list && config.list.length
     if (itemLength) {
       for (let i = 0; i < itemLength; i++) {
         if (
