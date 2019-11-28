@@ -19,12 +19,37 @@ const passiveOptions = supportsPassive ? {
   passive: false
 } : false
 
+function onCssVar ({
+  windowTop,
+  windowBottom
+}) {
+  global.__WINDOW_TOP = windowTop
+  global.__WINDOW_BOTTOM = windowBottom
+  if (uni.canIUse('css.var')) {
+    const style = document.documentElement.style
+    style.setProperty('--window-top', windowTop + 'px')
+    style.setProperty('--window-bottom', windowBottom + 'px')
+    style.setProperty('--status-bar-height', plus.navigator.getStatusbarHeight() + 'px')
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`--window-top=${windowTop}`)
+      console.log(`--window-bottom=${windowBottom}`)
+    }
+  }
+}
+
 function onPageCreate ({
+  windowTop,
+  windowBottom,
   disableScroll,
   onPageScroll,
   onPageReachBottom,
   onReachBottomDistance
 }, pageId) {
+  onCssVar({
+    windowTop,
+    windowBottom
+  })
+
   if (disableScroll) {
     document.addEventListener('touchmove', disableScrollListener, passiveOptions)
   } else if (onPageScroll || onPageReachBottom) {

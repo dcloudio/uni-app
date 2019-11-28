@@ -227,12 +227,16 @@ var VAR_STATUS_BAR_HEIGHT = /var\(--status-bar-height\)/gi
 var VAR_WINDOW_TOP = /var\(--window-top\)/gi
 var VAR_WINDOW_BOTTOM = /var\(--window-bottom\)/gi
 
+var statusBarHeight = false
 function processCss(css) {
 	if (!uni.canIUse('css.var')) { //不支持 css 变量
+    if (statusBarHeight === false) {
+      statusBarHeight = plus.navigator.getStatusbarHeight()
+    }
 		var offset = {
-            statusBarHeight: plus.navigator.getStatusbarHeight(),
-            top:0,
-            bottom:0
+            statusBarHeight: statusBarHeight,
+            top: window.__WINDOW_TOP || 0,
+            bottom: window.__WINDOW_BOTTOM || 0
         }
 		css = css.replace(VAR_STATUS_BAR_HEIGHT, offset.statusBarHeight + 'px')
 			.replace(VAR_WINDOW_TOP, offset.top + 'px')
