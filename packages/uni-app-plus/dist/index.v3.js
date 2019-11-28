@@ -4640,8 +4640,18 @@ var serviceContext = (function () {
     }
   }
 
-  const TABBAR_HEIGHT = 50;
+  var safeAreaInsets = {
+    get bottom () {
+      if (plus.os.name === 'iOS') {
+        const safeArea = plus.navigator.getSafeAreaInsets();
+        return safeArea ? safeArea.bottom : 0
+      }
+      return 0
+    }
+  };
 
+  const TABBAR_HEIGHT = 50;
+  const isIOS$1 = plus.os.name === 'iOS';
   let config;
 
   /**
@@ -4706,7 +4716,7 @@ var serviceContext = (function () {
   }
   /**
    * 隐藏 tabBar
-   * @param {boolean} animation 是否需要动画效果 暂未支持
+   * @param {boolean} animation 是否需要动画效果
    */
   function hideTabBar$1 (animation) {
     visible = false;
@@ -4716,7 +4726,7 @@ var serviceContext = (function () {
   }
   /**
    * 显示 tabBar
-   * @param {boolean} animation 是否需要动画效果 暂未支持
+   * @param {boolean} animation 是否需要动画效果
    */
   function showTabBar$1 (animation) {
     visible = true;
@@ -4743,7 +4753,7 @@ var serviceContext = (function () {
         publish('onTabBarMidButtonTap', {});
       });
     },
-    switchTab (page) {
+    indexOf (page) {
       const itemLength = config.list.length;
       if (itemLength) {
         for (let i = 0; i < itemLength; i++) {
@@ -4751,12 +4761,19 @@ var serviceContext = (function () {
             config.list[i].pagePath === page ||
             config.list[i].pagePath === `${page}.html`
           ) {
-            tabBar && tabBar.switchSelect({
-              index: i
-            });
-            return true
+            return i
           }
         }
+      }
+      return -1
+    },
+    switchTab (page) {
+      const index = this.indexOf(page);
+      if (index >= 0) {
+        tabBar && tabBar.switchSelect({
+          index
+        });
+        return true
       }
       return false
     },
@@ -4781,7 +4798,13 @@ var serviceContext = (function () {
       return visible
     },
     get height () {
-      return config && config.height ? parseFloat(config.height) : TABBAR_HEIGHT
+      return (config && config.height ? parseFloat(config.height) : TABBAR_HEIGHT) + safeAreaInsets.bottom
+    },
+    // tabBar是否遮挡内容区域
+    get cover () {
+      const array = ['extralight', 'light', 'dark'];
+      // 设置背景颜色会失效
+      return isIOS$1 && array.indexOf(config.blurEffect) >= 0 && !config.backgroundColor
     },
     setStyle ({ mask }) {
       tabBar.setMask({
@@ -4831,8 +4854,9 @@ var serviceContext = (function () {
     } else {
       safeAreaInsets = ios ? plus.navigator.getSafeAreaInsets() : getSafeAreaInsets();
     }
+    var windowBottom = isTabBarPage() && tabBar$1.visible && tabBar$1.cover ? tabBar$1.height : 0;
     var windowHeight = Math.min(screenHeight - (titleNView ? (statusBarHeight + TITLEBAR_HEIGHT)
-      : 0) - (isTabBarPage() && tabBar$1.visible ? tabBar$1.height : 0), screenHeight);
+      : 0) - windowBottom, screenHeight);
     var windowWidth = screenWidth;
     var safeArea = {
       left: safeAreaInsets.left,
@@ -4860,7 +4884,7 @@ var serviceContext = (function () {
       platform,
       SDKVersion: '',
       windowTop: 0,
-      windowBottom: 0,
+      windowBottom,
       safeArea
     }
   }
@@ -6023,6 +6047,16 @@ var serviceContext = (function () {
       if (!hasContentType && name.toLowerCase() === 'content-type') {
         hasContentType = true;
         headers['Content-Type'] = header[name];
+        // TODO 需要重构
+        if(method === 'POST' && header[name].indexOf('application/x-www-form-urlencoded') === 0) {
+          let bodyArray = [];
+          for (let key in data) {
+            if (data.hasOwnProperty(key)) {
+              bodyArray.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
+            }
+          }
+          data = bodyArray.join('&');
+        }
       } else {
         headers[name] = header[name];
       }
@@ -6934,9 +6968,6 @@ var serviceContext = (function () {
   }
 
   function backWebview (webview, callback) {
-    if (!webview.__uniapp_webview) {
-      return callback()
-    }
     const children = webview.children();
     if (!children || !children.length) { // 有子 webview
       return callback()
@@ -6965,14 +6996,14 @@ var serviceContext = (function () {
       });
     }
 
-    backWebview(currentPage, () => {
+    const backPage = function (webview) {
       if (animationType) {
-        currentPage.$getAppWebview().close(animationType, animationDuration || ANI_DURATION);
+        webview.close(animationType, animationDuration || ANI_DURATION);
       } else {
         if (currentPage.$page.openType === 'redirect') { // 如果是 redirectTo 跳转的，需要制定 back 动画
-          currentPage.$getAppWebview().close(ANI_CLOSE, ANI_DURATION);
+          webview.close(ANI_CLOSE, ANI_DURATION);
         }
-        currentPage.$getAppWebview().close('auto');
+        webview.close('auto');
       }
 
       pages.slice(len - delta, len).forEach(page => page.$remove());
@@ -6982,6 +7013,14 @@ var serviceContext = (function () {
       UniServiceJSBridge.emit('onAppRoute', {
         type: 'navigateBack'
       });
+    };
+
+    const webview = currentPage.$getAppWebview();
+    if (!currentPage.__uniapp_webview) {
+      return backPage(webview)
+    }
+    backWebview(webview, () => {
+      backPage(webview);
     });
   }
 
@@ -7044,6 +7083,7 @@ var serviceContext = (function () {
   function parseTitleNView (routeOptions) {
     const windowOptions = routeOptions.window;
     const titleNView = windowOptions.titleNView;
+    routeOptions.meta.statusBarStyle = windowOptions.navigationBarTextStyle === 'black' ? 'dark' : 'light';
     if ( // 无头
       titleNView === false ||
       titleNView === 'false' ||
@@ -7080,8 +7120,6 @@ var serviceContext = (function () {
         }
       }]
     };
-
-    routeOptions.meta.statusBarStyle = windowOptions.navigationBarTextStyle === 'black' ? 'dark' : 'light';
 
     if (isPlainObject(titleNView)) {
       return Object.assign(ret, parseTitleNViewButtons(titleNView))
@@ -7396,6 +7434,8 @@ var serviceContext = (function () {
   const VD_SYNC_CALLBACK = 'vdSyncCallback';
   const INVOKE_API = 'invokeApi';
   const WEB_INVOKE_APPSERVICE$1 = 'WEB_INVOKE_APPSERVICE';
+  const WEBVIEW_INSERTED = 'webviewInserted';
+  const WEBVIEW_REMOVED = 'webviewRemoved';
 
   function onWebviewRecovery (webview, routeOptions) {
     const {
@@ -7980,6 +8020,7 @@ var serviceContext = (function () {
         query: {},
         openType: 'switchTab'
       }), 'none', 0, () => {
+        setStatusBarStyle();
         invoke(callbackId, {
           errMsg: 'switchTab:ok'
         });
@@ -11470,6 +11511,23 @@ var serviceContext = (function () {
     vm[method] && vm[method](args);
   }
 
+  function findPage (pageId) {
+    pageId = parseInt(pageId);
+    const page = getCurrentPages(true).find(page => page.$page.id === pageId);
+    if (!page) {
+      return console.error(`Page[${pageId}] not found`)
+    }
+    return page
+  }
+  function onWebviewInserted (data, pageId) {
+    const page = findPage(pageId);
+    page && (page.__uniapp_webview = true);
+  }
+  function onWebviewRemoved (data, pageId) {
+    const page = findPage(pageId);
+    page && (delete page.__uniapp_webview);
+  }
+
   function initSubscribeHandlers () {
     const {
       on,
@@ -11509,6 +11567,9 @@ var serviceContext = (function () {
     subscribe(VD_SYNC_CALLBACK, onVdSyncCallback);
 
     subscribe(INVOKE_API, onInvokeApi);
+
+    subscribe(WEBVIEW_INSERTED, onWebviewInserted);
+    subscribe(WEBVIEW_REMOVED, onWebviewRemoved);
   }
 
   let appCtx;
@@ -12219,7 +12280,7 @@ var serviceContext = (function () {
       onPageReachBottom,
       onReachBottomDistance,
       windowTop: 0, // TODO
-      windowBottom: 0 // TODO
+      windowBottom: (tabBar$1.indexOf(route) >= 0 && tabBar$1.cover) ? tabBar$1.height : 0
     }
   }
 
