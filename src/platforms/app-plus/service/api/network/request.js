@@ -31,7 +31,7 @@ export function createRequestTaskById (requestTaskId, {
       hasContentType = true
       headers['Content-Type'] = header[name]
       // TODO 需要重构
-      if(method === 'POST' && header[name].indexOf('application/x-www-form-urlencoded') === 0) {
+      if (method === 'POST' && header[name].indexOf('application/x-www-form-urlencoded') === 0) {
         let bodyArray = []
         for (let key in data) {
           if (data.hasOwnProperty(key)) {
