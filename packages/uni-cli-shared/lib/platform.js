@@ -125,8 +125,7 @@ const PLATFORMS = {
     filterTag: 'wxs',
     subPackages: false,
     cssVars: {
-      '--window-top': '0px',
-      '--window-bottom': '0px'
+      '--window-top': '0px'
     },
     copyWebpackOptions ({
       assetsDir,

@@ -7,8 +7,10 @@ import {
   requireNativePlugin
 } from '../bridge'
 
-const TABBAR_HEIGHT = 50
+import safeAreaInsets from './safe-area-insets'
 
+const TABBAR_HEIGHT = 50
+const isIOS = plus.os.name === 'iOS'
 let config
 
 /**
@@ -73,7 +75,7 @@ function setTabBarStyle (style) {
 }
 /**
  * 隐藏 tabBar
- * @param {boolean} animation 是否需要动画效果 暂未支持
+ * @param {boolean} animation 是否需要动画效果
  */
 function hideTabBar (animation) {
   visible = false
@@ -83,7 +85,7 @@ function hideTabBar (animation) {
 }
 /**
  * 显示 tabBar
- * @param {boolean} animation 是否需要动画效果 暂未支持
+ * @param {boolean} animation 是否需要动画效果
  */
 function showTabBar (animation) {
   visible = true
@@ -110,7 +112,7 @@ export default {
       publish('onTabBarMidButtonTap', {})
     })
   },
-  switchTab (page) {
+  indexOf (page) {
     const itemLength = config.list.length
     if (itemLength) {
       for (let i = 0; i < itemLength; i++) {
@@ -118,12 +120,19 @@ export default {
           config.list[i].pagePath === page ||
           config.list[i].pagePath === `${page}.html`
         ) {
-          tabBar && tabBar.switchSelect({
-            index: i
-          })
-          return true
+          return i
         }
       }
+    }
+    return -1
+  },
+  switchTab (page) {
+    const index = this.indexOf(page)
+    if (index >= 0) {
+      tabBar && tabBar.switchSelect({
+        index
+      })
+      return true
     }
     return false
   },
@@ -148,7 +157,13 @@ export default {
     return visible
   },
   get height () {
-    return config && config.height ? parseFloat(config.height) : TABBAR_HEIGHT
+    return (config && config.height ? parseFloat(config.height) : TABBAR_HEIGHT) + safeAreaInsets.bottom
+  },
+  // tabBar是否遮挡内容区域
+  get cover () {
+    const array = ['extralight', 'light', 'dark']
+    // 设置背景颜色会失效
+    return isIOS && array.indexOf(config.blurEffect) >= 0 && !config.backgroundColor
   },
   setStyle ({ mask }) {
     tabBar.setMask({

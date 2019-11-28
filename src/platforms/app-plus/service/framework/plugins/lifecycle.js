@@ -20,6 +20,8 @@ import {
 }
   from '../../constants'
 
+import tabBar from '../tab-bar'
+
 function parsePageCreateOptions (vm, route) {
   const pagePath = '/' + route
   const routeOptions = __uniRoutes.find(route => route.path === pagePath)
@@ -39,7 +41,7 @@ function parsePageCreateOptions (vm, route) {
     onPageReachBottom,
     onReachBottomDistance,
     windowTop: 0, // TODO
-    windowBottom: 0 // TODO
+    windowBottom: (tabBar.indexOf(route) >= 0 && tabBar.cover) ? tabBar.height : 0
   }
 }
 
