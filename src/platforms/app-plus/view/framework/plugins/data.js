@@ -35,12 +35,12 @@ const handleData = {
     document.title = `${pagePath}[${pageId}]`
     // 设置当前页面伪对象，方便其他地方使用 getCurrentPages 获取当前页面 id，route
     setCurrentPage(pageId, pagePath)
+    // 通知页面创建，根据当前页面配置信息，初始化部分事件
+    UniViewJSBridge.subscribeHandler(ON_PAGE_CREATE, pageOptions, pageId)
     // 初始化当前页面 VueComponent（生成页面样式代码）
     PageVueComponent = getPageVueComponent(pagePath)
     // 生成当前页面 vd
     vd = new VDomSync(pageId)
-    // 通知页面创建，根据当前页面配置信息，初始化部分事件
-    UniViewJSBridge.subscribeHandler(ON_PAGE_CREATE, pageOptions, pageId)
   },
   [MOUNTED_DATA]: function onMounted (data) {
     vd.addVData.apply(vd, data)

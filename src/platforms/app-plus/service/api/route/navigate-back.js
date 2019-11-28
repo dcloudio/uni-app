@@ -50,7 +50,7 @@ function back (delta, animationType, animationDuration) {
     })
   }
 
-  const backPage = function () {
+  const backPage = function (webview) {
     if (animationType) {
       webview.close(animationType, animationDuration || ANI_DURATION)
     } else {
@@ -69,11 +69,13 @@ function back (delta, animationType, animationDuration) {
     })
   }
 
-  if (!currentPage.__uniapp_webview) {
-    return backPage()
-  }
   const webview = currentPage.$getAppWebview()
-  backWebview(webview, backPage)
+  if (!currentPage.__uniapp_webview) {
+    return backPage(webview)
+  }
+  backWebview(webview, () => {
+    backPage(webview)
+  })
 }
 
 export function navigateBack ({

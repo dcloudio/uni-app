@@ -77,6 +77,7 @@ function _switchTab ({
       query: {},
       openType: 'switchTab'
     }), 'none', 0, () => {
+      setStatusBarStyle()
       invoke(callbackId, {
         errMsg: 'switchTab:ok'
       })

@@ -31,6 +31,7 @@ function parseTitleNViewButtons (titleNView) {
 export function parseTitleNView (routeOptions) {
   const windowOptions = routeOptions.window
   const titleNView = windowOptions.titleNView
+  routeOptions.meta.statusBarStyle = windowOptions.navigationBarTextStyle === 'black' ? 'dark' : 'light'
   if ( // 无头
     titleNView === false ||
     titleNView === 'false' ||
@@ -67,8 +68,6 @@ export function parseTitleNView (routeOptions) {
       }
     }]
   }
-
-  routeOptions.meta.statusBarStyle = windowOptions.navigationBarTextStyle === 'black' ? 'dark' : 'light'
 
   if (isPlainObject(titleNView)) {
     return Object.assign(ret, parseTitleNViewButtons(titleNView))
