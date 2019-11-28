@@ -37,7 +37,9 @@ function parsePageCreateOptions (vm, route) {
     disableScroll,
     onPageScroll,
     onPageReachBottom,
-    onReachBottomDistance
+    onReachBottomDistance,
+    windowTop: 0, // TODO
+    windowBottom: 0 // TODO
   }
 }
 
