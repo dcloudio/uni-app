@@ -119,6 +119,12 @@ module.exports = function (pagesJson, userManifestJson) {
     }
   }
 
+  // 屏幕启动方向
+  if (manifestJson.plus.screenOrientation) {
+    manifestJson.screenOrientation = manifestJson.plus.screenOrientation
+    delete manifestJson.plus.screenOrientation
+  }
+
   // 地图坐标系
   if (manifestJson.permissions && manifestJson.permissions.Maps) {
     manifestJson.permissions.Maps.coordType = 'gcj02'
