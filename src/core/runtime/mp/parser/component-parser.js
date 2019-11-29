@@ -7,6 +7,10 @@ import {
 } from './properties-parser'
 
 import {
+  parseComponents
+} from './components-parser'
+
+import {
   parseOptions
 } from './options-parser'
 
@@ -67,6 +71,8 @@ export function parseComponent (mpComponentOptions) {
       mpObservers: []
     }
   }
+
+  parseComponents(vueComponentOptions)
 
   parseData(data, vueComponentOptions)
   parseOptions(options, vueComponentOptions)

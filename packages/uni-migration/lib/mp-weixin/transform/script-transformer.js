@@ -7,7 +7,7 @@ const {
 
 function transformScript(content, route, usingComponentsCode) {
   return `global['__wxRoute'].push('${route}')
-global['__wxUsingComponents'] = ${usingComponentsCode}
+global['__wxUsingComponents'].push(${usingComponentsCode})
 ${content}
 export default global['__wxComponents']['${route}']`
 }

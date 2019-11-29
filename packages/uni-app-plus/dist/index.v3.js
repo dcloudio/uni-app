@@ -4754,7 +4754,7 @@ var serviceContext = (function () {
       });
     },
     indexOf (page) {
-      const itemLength = config.list.length;
+      const itemLength = config && config.list && config.list.length;
       if (itemLength) {
         for (let i = 0; i < itemLength; i++) {
           if (
@@ -6048,7 +6048,7 @@ var serviceContext = (function () {
         hasContentType = true;
         headers['Content-Type'] = header[name];
         // TODO 需要重构
-        if(method === 'POST' && header[name].indexOf('application/x-www-form-urlencoded') === 0) {
+        if (method === 'POST' && header[name].indexOf('application/x-www-form-urlencoded') === 0) {
           let bodyArray = [];
           for (let key in data) {
             if (data.hasOwnProperty(key)) {
@@ -12289,6 +12289,17 @@ var serviceContext = (function () {
 
     Vue.mixin({
       beforeCreate () {
+        // TODO 临时解决方案,service 层也注入 wxs (适用于工具类)
+        const options = this.$options;
+
+        const wxs = options.wxs;
+        if (wxs) {
+          Object.keys(wxs).forEach(module => {
+            this[module] = wxs[module];
+          });
+        }
+
+
         if (this.mpType === 'page') {
           this.$scope = this.$options.pageInstance;
           this.$scope.$vm = this;

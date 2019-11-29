@@ -71,13 +71,14 @@ const v3 = {
             '../../packages/webpack-uni-app-loader/view/script')
         }]
       })
-      rules.push({
-        resourceQuery: [/lang=wxs/, /blockType=wxs/],
-        use: [{
-          loader: path.resolve(__dirname, '../../packages/webpack-uni-filter-loader')
-        }]
-      })
     }
+    // TODO 临时方案,将 wxs 也编译至 service
+    rules.push({
+      resourceQuery: [/lang=wxs/, /blockType=wxs/],
+      use: [{
+        loader: path.resolve(__dirname, '../../packages/webpack-uni-filter-loader')
+      }]
+    })
 
     const entry = {}
     if (isAppService) {

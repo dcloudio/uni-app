@@ -50,6 +50,16 @@ export function initLifecycle (Vue) {
 
   Vue.mixin({
     beforeCreate () {
+      // TODO 临时解决方案,service 层也注入 wxs (适用于工具类)
+      const options = this.$options
+
+      const wxs = options.wxs
+      if (wxs) {
+        Object.keys(wxs).forEach(module => {
+          this[module] = wxs[module]
+        })
+      }
+
       if (this.mpType === 'page') {
         this.$scope = this.$options.pageInstance
         this.$scope.$vm = this
