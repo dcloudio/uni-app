@@ -159,12 +159,12 @@ HBuilderX 还提供了快捷运行菜单，可以按数字快速选择要运行�
 
 
 **发布为头条小程序：**
-1. 入驻头条小程序，参考：[头条小程序教程](https://developer.toutiao.com/docs/intro/create.html)。
+1. 入驻头条小程序，参考：[头条小程序教程](https://developer.toutiao.com/dev/cn/mini-app/introduction/plug-in/registration)。
 2. 在HBuilderX中顶部菜单依次点击 "发行" => "小程序-字节跳动"，即可在 ``/unpackage/dist/build/mp-alipay`` 生成头条小程序项目代码。
 <div align=center>
   <img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/uni20190222-8.png"/>
 </div>
-3. 在字节跳动小程序开发者工具中，导入生成的头条小程序项目，测试项目代码运行正常后，点击“上传”按钮上传代码，在 [头条小程序后台](https://developer.toutiao.com/app/applist)，选择刚提交的版本点击提交审核，详见：[头条小程序文档](https://developer.toutiao.com/docs/intro/create.html#%E6%8F%90%E5%AE%A1%E3%80%81%E5%8F%91%E5%B8%83%E3%80%81%E6%9B%B4%E6%96%B0)。
+3. 在字节跳动小程序开发者工具中，导入生成的头条小程序项目，测试项目代码运行正常后，点击“上传”按钮上传代码，在 [头条小程序后台](https://developer.toutiao.com/app/applist)，选择刚提交的版本点击提交审核，详见：[头条小程序文档](https://developer.toutiao.com/dev/cn/mini-app/introduction/plug-in/verification)。
 
 发布的快捷键是`Ctrl+u`。同样可拉下快速发布菜单并按数字键选择。
 

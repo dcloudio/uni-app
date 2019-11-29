@@ -349,7 +349,7 @@ Tips：关于摇树优化（treeShaking）原理及优化结果，参考：[http
 |appid|String|头条小程序的 AppID，登录 [https://developer.toutiao.com/](https://developer.toutiao.com/) 申请|
 |setting|Object|头条小程序项目设置，参考[头条小程序项目设置](/collocation/manifest?id=mp-toutiao-setting)|
 |usingComponents|Boolean| 是否启用自定义组件模式，`v2.0+`，默认为false，[编译模式区别详情](https://ask.dcloud.net.cn/article/35843)|
-|navigateToMiniProgramAppIdList	|Array|需要跳转的小程序列表，[详见](https://developer.toutiao.com/docs/framework/globalSetting.html#%E5%85%A8%E5%B1%80%E9%85%8D%E7%BD%AE)	|
+|navigateToMiniProgramAppIdList	|Array|需要跳转的小程序列表，[详见](https://developer.toutiao.com/dev/cn/mini-app/develop/framework/basic-reference/general-configuration)	|
 
 #### 头条小程序项目设置@mp-toutiao-setting
 

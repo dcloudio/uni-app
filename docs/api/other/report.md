@@ -93,7 +93,7 @@ uni.report('search',{
 - 数据分析：[swan.reportAnalytics](https://smartprogram.baidu.com/docs/develop/api/data/#swan-reportAnalytics/)
 
 ##### 头条小程序平台：
-- [reportAnalytics](https://developer.toutiao.com/docs/open/reportAnalytics.html)
+- [reportAnalytics](https://developer.toutiao.com/dev/cn/mini-app/develop/open-capacity/data-analysis/reportanalytics)
 
 ##### QQ小程序平台：
 - 数据上报：[qq.reportMonitor](https://q.qq.com/wiki/develop/miniprogram/API/open_port/port_dataup.html)

@@ -36,12 +36,12 @@ uni.requestPayment是一个统一各平台的客户端支付API，不管是在�
 
 
 #### 注意事项
-- 头条小程序支付接口调整使用时请注意[发起头条支付](https://developer.toutiao.com/dev/miniapp/ucTO2EjL3kjNx4yN5YTM)
+- 头条小程序支付接口调整使用时请注意[发起头条支付](https://developer.toutiao.com/dev/cn/mini-app/develop/open-capacity/payment/pay)
 
 #### orderInfo 注意事项@orderInfo
 1. 百度小程序的 orderInfo 为 Object 类型，详细的数据结构，参考：[百度收银台支付](https://smartprogram.baidu.com/docs/develop/api/open_payment/#requestPolymerPayment/)。
 2. 支付宝小程序的 orderInfo(支付宝的规范为 tradeNO) 为 String 类型，表示支付宝交易号。
-3. 头条小程序的 orderInfo(头条的规范为 data) 为 Object 类型，详见：[发起头条支付](https://developer.toutiao.com/dev/miniapp/ucTO2EjL3kjNx4yN5YTM)
+3. 头条小程序的 orderInfo(头条的规范为 data) 为 Object 类型，详见：[发起头条支付](https://developer.toutiao.com/dev/cn/mini-app/develop/open-capacity/payment/pay)
 4. App端，支付宝支付和微信支付 orderInfo 均为 String 类型。
 5. App端，苹果应用内支付 orderInfo 为Object 类型，{productid: 'productid'}。
 
