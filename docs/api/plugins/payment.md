@@ -117,8 +117,8 @@ uni.requestPayment是一个统一各平台的客户端支付API，不管是在�
 - Q：如何使用ping++等聚合支付
   A：uni-app的js API 已经完成跨端统一，客户端无需使用三方聚合支付。仅在服务器端使用三方聚合支付即可。
 
-- Q：App端如何集成其他支付SDK
-  A：使用原生插件方式，可以集成如paypal或三方聚合支付sdk，原生插件开发文档见[https://ask.dcloud.net.cn/article/35428](https://ask.dcloud.net.cn/article/35428)。开发之前可以先去[插件市场](https://ext.dcloud.net.cn/)看下有没有做好的。
+- Q：App端如何使用其他支付，比如银联、PayPal。
+  A：1、可以在web-view组件里使用它们的wap版支付；2、可以集成原生sdk，插件市场均有，[详见](https://ext.dcloud.net.cn/search?q=%E6%94%AF%E4%BB%98)。也可以自行开发原生插件，开发文档见[https://ask.dcloud.net.cn/article/35428](https://ask.dcloud.net.cn/article/35428)。
 
 - Q：Appstore审核报PGPay SDK不允许上架的问题
   A：数字类产品（比如购买会员等不需要配送实物的商品），Apple规定必须使用苹果IAP应用内支付，给Apple分成30%。打包的时候不要勾选微信或支付宝等其他支付方式。如果你提交的包里包含了微信支付宝等支付的sdk，即使没使用，Appstore也会认为你有隐藏方式，以后会绕过iap，不给Apple分成，因此拒绝你的App上线。云打包时，manifest里选上支付模块，但sdk配置里去掉微信支付和支付宝支付。很多开发者的Android版是包含微信和支付宝支付的，此时注意分开判断。详见[https://ask.dcloud.net.cn/article/36447](https://ask.dcloud.net.cn/article/36447)
