@@ -257,6 +257,10 @@ moduleAlias.addAlias('vue-template-compiler', '@dcloudio/vue-cli-plugin-uni/pack
 moduleAlias.addAlias('@megalo/template-compiler', '@dcloudio/vue-cli-plugin-uni/packages/@megalo/template-compiler')
 moduleAlias.addAlias('mpvue-template-compiler', '@dcloudio/vue-cli-plugin-uni/packages/mpvue-template-compiler')
 
+if (process.env.UNI_USING_V3 && process.env.UNI_PLATFORM === 'app-plus') {
+  moduleAlias.addAlias('vue-style-loader', '@dcloudio/vue-cli-plugin-uni/packages/app-vue-style-loader')
+}
+
 // vue cache
 if ( // 非 h5 ,非 v3,非 native
   process.env.UNI_PLATFORM !== 'h5' &&
