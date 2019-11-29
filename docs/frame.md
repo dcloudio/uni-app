@@ -536,7 +536,16 @@ uni-app 提供内置 CSS 变量
 ## ES6 支持
 uni-app 在支持绝大部分 ES6 API 的同时，也支持了 ES7 的 await/async。
 
-ES6 API 的支持，详见如下表格部分（`x` 表示不支持，无特殊说明则表示支持。不区分App、小程序、H5）：
+ES6 API 的支持，详见如下表格部分（`x` 表示不支持，无特殊说明则表示支持）：
+- 因为iOS上不允许三方js引擎，所以iOS上不区分App、小程序、H5，各端均仅依赖iOS版本。
+- 各端Android版本有差异：
+* App端的数据见下表；
+* H5端数据见caniuse；
+* 微信小程序[详见](https://developers.weixin.qq.com/miniprogram/dev/framework/runtime/js-support.html#%E5%AE%A2%E6%88%B7%E7%AB%AF%20ES6%20API%20%E6%94%AF%E6%8C%81%E6%83%85%E5%86%B5)
+* 阿里小程序[详见](https://docs.alipay.com/mini/framework/implementation-detail)
+* 百度小程序[详见](https://smartprogram.baidu.com/docs/develop/framework/operating-environment/)
+* 头条小程序[详见](https://developer.toutiao.com/dev/cn/mini-app/develop/framework/mini-app-runtime/javascript-support)
+* QQ小程序[详见](https://q.qq.com/wiki/develop/miniprogram/frame/useful/useful_env.html#es6%E6%94%AF%E6%8C%81%E6%83%85%E5%86%B5)
 
 |String|iOS8|iOS9|iOS10|Android|
 |:-|:-|:-|:-|:-|
@@ -610,7 +619,7 @@ ES6 API 的支持，详见如下表格部分（`x` 表示不支持，无特殊�
 |Promise||||&nbsp;|
 
 **注意**
-- 不管哪个端都是这个数据，即便是Android4.4。因为uni-app编译器把es6语法自动转es5了。低版本Android的兼容性主要是css，太新的css语法在低版本不支持，js语法不受影响。
+- App端Android支持不依赖Android版本号，即便是Android4.4也是上表数据。因为uni-app的js代码运行在自带的独立jscore中，没有js的浏览器兼容性问题。uni-app的vue页面在Android低端机上只有css浏览器兼容性问题，因为vue页面仍然渲染在webview中，受Android版本影响，太新的css语法在低版本不支持。
 - 默认不需要在微信工具里继续开启es6转换。但如果用了微信的wxml自定义组件（wxcomponents目录下），uni-app编译器并不会处理这些文件中的es6代码，需要去微信工具里开启转换。从HBuilderX调起微信工具时，如果发现工程下有wxcomponents目录会自动配置微信工程打开es6转换。
 
 
