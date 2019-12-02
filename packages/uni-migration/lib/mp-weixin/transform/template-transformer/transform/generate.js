@@ -33,8 +33,28 @@ function genElement(node) {
   return ''
 }
 
-function genWxs(wxs) {
-  return wxs.map(wxsNode => genElement(wxsNode)).join('').trim()
+function genWxs(wxs, state) {
+  const wxsCode = []
+  const wxsFiles = []
+  wxs.forEach(wxsNode => {
+    const {
+      src,
+      module
+    } = wxsNode.attribs
+    if (!module) {
+      return
+    }
+    if (!src) {
+      wxsNode.attribs.src = './' + (state.filename ? (state.filename + '-' + module) : module) + '.wxs'
+      wxsFiles.push({
+        path: wxsNode.attribs.src,
+        content: genChildren(wxsNode)
+      })
+    }
+    wxsNode.children.length = 0
+    wxsCode.push(genElement(wxsNode))
+  })
+  return [wxsCode.join('').trim(), wxsFiles]
 }
 
 function shouldWrapper(node) {
@@ -56,7 +76,7 @@ function shouldWrapper(node) {
 
 module.exports = function generate(node, state) {
   if (shouldWrapper(node)) {
-    return [`<view>${genChildren(node).trim()}</view>`, genWxs(state.wxs)]
+    return [`<view>${genChildren(node).trim()}</view>`, ...genWxs(state.wxs, state)]
   }
-  return [genChildren(node).trim(), genWxs(state.wxs)]
+  return [genChildren(node).trim(), ...genWxs(state.wxs, state)]
 }

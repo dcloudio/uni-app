@@ -3,11 +3,12 @@ const glob = require('glob')
 const transformFile = require('./file-transformer')
 
 function generateVueFile(input, out, options) {
-  const [content, deps] = transformFile(input, options)
+  const [content, deps, wxsFiles] = transformFile(input, options)
   return {
     path: path.resolve(out, path.basename(input).replace(options.extname.template, '.vue')),
     content,
-    deps
+    deps,
+    wxsFiles
   }
 }
 
@@ -28,12 +29,21 @@ function generateVueFolder(input, out, options) {
       )
       files.push(vueFile)
       deps.push(...vueFile.deps)
+
+      const dirname = path.dirname(file)
+      vueFile.wxsFiles.forEach(wxsFile => {
+        wxsFile.path = path.join(dirname, wxsFile.path)
+        assets.push(wxsFile)
+      })
     } else {
       assets.push(file)
     }
   })
   return [files, assets.filter(asset => {
-    return !deps.includes(path.resolve(input, asset))
+    if (typeof asset === 'string') {
+      return !deps.includes(path.resolve(input, asset))
+    }
+    return true
   })]
 }
 

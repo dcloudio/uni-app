@@ -61,6 +61,10 @@ function parseProperties (properties, vueComponentOptions) {
   vueComponentOptions.props = props;
 }
 
+function parseComponents (vueComponentOptions) {
+  vueComponentOptions.components = global['__wxVueOptions'].components;
+}
+
 function parseOptions (options, vueComponentOptions) {
   if (!options) {
     return
@@ -71,6 +75,10 @@ function parseOptions (options, vueComponentOptions) {
 function parseMethods (methods, vueComponentOptions) {
   if (!methods) {
     return
+  }
+  if (methods.$emit) {
+    console.warn(`Method "$emit" conflicts with an existing Vue instance method`);
+    delete methods.$emit;
   }
   vueComponentOptions.methods = methods;
 }
@@ -233,6 +241,8 @@ function parseComponent (mpComponentOptions) {
     }
   };
 
+  parseComponents(vueComponentOptions);
+
   parseData(data, vueComponentOptions);
   parseOptions(options, vueComponentOptions);
   parseMethods(methods, vueComponentOptions);
@@ -288,15 +298,14 @@ function getDate () {
   return new (Function.prototype.bind.apply(Date, args))()
 }
 
-global['__wxRoute'] = [];
+global['__wxRoute'] = '';
+global['__wxComponents'] = Object.create(null);
+global['__wxVueOptions'] = Object.create(null);
 
 function Component (options) {
   const componentOptions = parseComponent(options);
   componentOptions.mixins.unshift(polyfill);
-  if (!global['__wxComponents']) {
-    global['__wxComponents'] = Object.create(null);
-  }
-  global['__wxComponents'][global['__wxRoute'].pop()] = componentOptions;
+  global['__wxComponents'][global['__wxRoute']] = componentOptions;
 }
 
 function Behavior (options) {

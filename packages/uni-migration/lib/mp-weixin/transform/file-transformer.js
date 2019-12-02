@@ -1,3 +1,5 @@
+const path = require('path')
+
 const {
   transformJsonFile
 } = require('./json-transformer')
@@ -23,12 +25,14 @@ module.exports = function transformFile(input, options) {
     filepath + templateExtname
   ]
 
-  const [usingComponentsCode] = transformJsonFile(filepath + '.json', deps)
+  const [jsCode] = transformJsonFile(filepath + '.json', deps)
 
-  const [templateCode, wxsCode = ''] = transformTemplateFile(filepath + templateExtname)
+  const [templateCode, wxsCode = '', wxsFiles = []] = transformTemplateFile(filepath + templateExtname, {
+    filename: path.basename(filepath)
+  })
 
   const styleCode = transformStyleFile(filepath + styleExtname, options, deps) || ''
-  const scriptCode = transformScriptFile(filepath + '.js', usingComponentsCode, options, deps)
+  const scriptCode = transformScriptFile(filepath + '.js', jsCode, options, deps)
 
   return [
     `<template>
@@ -41,6 +45,7 @@ ${scriptCode}
 <style>
 ${styleCode}
 </style>`,
-    deps
+    deps,
+    wxsFiles
   ]
 }

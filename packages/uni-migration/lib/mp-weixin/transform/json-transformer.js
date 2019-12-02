@@ -1,27 +1,35 @@
 const fs = require('fs')
 
+const {
+  camelize,
+  capitalize
+} = require('../util')
+
 function transformJson(content) {
   const {
     usingComponents
   } = JSON.parse(content)
   if (!usingComponents) {
-    return ['{}']
+    return ['']
   }
-  const usingComponentsCode = []
+  const importCode = []
+  const componentsCode = []
   Object.keys(usingComponents).forEach(name => {
-    usingComponentsCode.push(`'${name}': require('${usingComponents[name]}.vue').default`)
+    const identifier = capitalize(camelize(name))
+    importCode.push(`import ${identifier} from '${usingComponents[name]}.vue'`)
+    componentsCode.push(`'${name}': ${identifier}`)
   })
 
-  return [`{
-${usingComponentsCode.join(',\n')}
-}`]
+  return [`${importCode.join('\n')}
+global['__wxVueOptions'] = {components:{${componentsCode.join(',')}}}
+`]
 }
 
 module.exports = {
   transformJson,
   transformJsonFile(filepath, deps) {
     if (!fs.existsSync(filepath)) {
-      return ['{}']
+      return ['']
     }
     deps.push(filepath)
     return transformJson(fs.readFileSync(filepath, 'utf8').toString().trim())

@@ -5,16 +5,16 @@ const {
   normalizePath
 } = require('../util')
 
-function transformScript(content, route, usingComponentsCode) {
-  return `global['__wxRoute'].push('${route}')
-global['__wxUsingComponents'].push(${usingComponentsCode})
+function transformScript(content, route, code) {
+  return `${code}
+global['__wxRoute'] = '${route}'
 ${content}
 export default global['__wxComponents']['${route}']`
 }
 
 module.exports = {
   transformScript,
-  transformScriptFile(filepath, usingComponentsCode, options, deps) {
+  transformScriptFile(filepath, code, options, deps) {
     let content = ''
     if (!fs.existsSync(filepath)) {
       content = `
@@ -29,6 +29,6 @@ Component({})
       route = normalizePath(path.relative(options.base, filepath))
     }
     route = route.replace('.js', '')
-    return transformScript(content, route, usingComponentsCode, options)
+    return transformScript(content, route, code, options)
   }
 }
