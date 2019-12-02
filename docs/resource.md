@@ -20,6 +20,7 @@
 * [《uni-app实战社区交友类app开发》](https://study.163.com/course/introduction.htm?courseId=1209188809&_trace_c_p_k2_=4b765abfb2f946039c8ea6230737f6af)，出品人：帝莎IT学院。适用人群：具备Html+Css+Javascript基础知识。
 * [《uni-app仿小米商城实战》](https://study.163.com/course/courseMain.htm?courseId=1209401825&share=2&shareId=480000001892585)，出品人：帝莎IT学院。首页使用nvue开发，目前支持app端和小程序端。
 * [《uni-app多端调试环境配置》](https://study.163.com/course/courseMain.htm?courseId=1209401924&share=2&shareId=480000001892585)，出品人：帝莎IT学院。
+* [《uni-app实战仿微信app全栈开发》](https://study.163.com/course/courseMain.htm?courseId=1209487898&share=2&shareId=480000001892585)，出品人：帝莎IT学院。
 <!-- * [《跟枫桥一起开发App》](https://www.lusita.cn)，出品人：唐枫桥，来源：源码商城（注：源码商城App、小程序本身就是基于```uni-app```开发的） -->
 <!-- * [《广州番禺职业技术学院 uni-app课程》](http://doc.zengqs.com/1143144)，出品人：曾教授 -->
 
