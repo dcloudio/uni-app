@@ -283,7 +283,7 @@
 |titleOverflow|String|ellipsis|标题文字超出显示区域时处理方式。"clip"-超出显示区域时内容裁剪；"ellipsis"-超出显示区域时尾部显示省略标记（...）。||
 |titleText|String||标题文字内容||
 |titleSize|String||标题文字字体大小||
-|type|String|default|导航栏样式。"default"-默认样式；"transparent"-滚动透明渐变；"float"-悬浮导航栏。|nuve 暂不支持|
+|type|String|default|导航栏样式。"default"-默认样式；"transparent"-滚动透明渐变；"float"-悬浮导航栏。|App-nvue 2.4.4+ 支持|
 |tags|Array||原生 View 增强，详见：[5+ View 控件](http://www.html5plus.org/doc/zh_cn/nativeobj.html#plus.nativeObj.ViewDrawTagStyles)||
 |searchInput|Object||原生导航栏上的搜索框配置，详见：[searchInput](/collocation/pages?id=app-titlenview-searchinput)|1.6.0|
 
@@ -292,7 +292,7 @@
 - 页面支持通过配置 navigationStyle为custom，或titleNView为false，来禁用原生导航栏。一旦禁用原生导航，请注意阅读[自定义导航注意事项](/collocation/pages?id=customnav)。
 - `titleNView` 不能设置 `autoBackButton`、`homeButton`等属性
 - `titleNView` 的 `type` 值为 `transparent` 时，导航栏为滚动透明渐变导航栏，默认只有button，滚动后标题栏底色和title文字会渐变出现； `type` 为 `float` 时，导航栏为悬浮标题栏，此时页面内容上顶到了屏幕顶部，包括状态栏，但导航栏悬浮盖在页面上方，一般这种场景会同时设置导航栏的背景色为rgba半透明颜色。
-- `titleNView` 的 `type` 值为 `transparent` 时，nvue 页面暂不支持
+- `titleNView` 的 `type` 值为 `transparent` 时，App-nvue 2.4.4+ 支持
 - 在 `titleNView` 配置 `buttons` 后，监听按钮的点击事件，vue 页面及 nvue 的uni-app编译模式参考：[onNavigationBarButtonTap](/frame?id=页面生命周期)、nvue 的weex编译模式参考：[uni.onNavigationBarButtonTap](/use-weex?id=onnavigationbarbuttontap)
 - 在 `titleNView` 配置 `searchInput` 后，相关的事件监听参考：[onNavigationBarSearchInputChanged 等](/frame?id=页面生命周期)
 - App下原生导航栏的按钮如果使用字体图标，注意检查字体库的名字（font-family）是否使用了默认的 iconfont，这个名字是保留字，不能作为外部引入的字体库的名字，需要调整为自定义的名称，否则无法显示。
@@ -382,7 +382,7 @@ searchInput的点击输入框onNavigationBarSearchInputClicked、文本变化onN
 				"navigationBarTitleText": "详情",
 				"app-plus": {
 					"titleNView": {
-						"type": "transparent"//透明渐变导航栏 nvue页面暂不支持
+						"type": "transparent"//透明渐变导航栏 App-nvue 2.4.4+ 支持
 					}
 				}
 			}
@@ -391,7 +391,7 @@ searchInput的点击输入框onNavigationBarSearchInputClicked、文本变化onN
 			"style": {
 				"app-plus": {
 					"titleNView": {
-						"type": "transparent",//透明渐变导航栏 nvue页面暂不支持
+						"type": "transparent",//透明渐变导航栏 App-nvue 2.4.4+ 支持
 						"searchInput": {
 							"backgroundColor": "#fff",
 							"borderRadius": "6px", //输入框圆角
