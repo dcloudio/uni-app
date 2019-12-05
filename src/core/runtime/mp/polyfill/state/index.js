@@ -1,4 +1,5 @@
 import {
+  isFn,
   hasOwn,
   isPlainObject
 } from 'uni-shared'
@@ -46,6 +47,7 @@ export function initState (vm) {
       }
     })
     vm.$forceUpdate()
+    isFn(callback) && vm.$nextTick(callback)
   }
 
   initProperties(vm, instanceData)

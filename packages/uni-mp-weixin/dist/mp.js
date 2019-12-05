@@ -538,6 +538,7 @@ function initState (vm) {
       }
     });
     vm.$forceUpdate();
+    isFn(callback) && vm.$nextTick(callback);
   };
 
   initProperties(vm, instanceData);
