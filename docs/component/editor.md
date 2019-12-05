@@ -43,7 +43,7 @@ editor组件目前只有App的vue页面和微信支持，其他端的富文本�
 
 | 类型 | 节点 |
 | --- | --- |
-| 行内元素 | ` <strong> <b> <ins> <em> <i> <u>  <del> <s> <sub> <sup> <img>` |
+| 行内元素 | `<span> <strong> <b> <ins> <em> <i> <u> <a> <del> <s> <sub> <sup> <img>` |
 | 块级元素 | `<p> <h1> <h2> <h3> <h4> <h5> <h6> <hr> <ol> <ul> <li>` |
 
 #### 支持的内连样式
@@ -52,10 +52,8 @@ editor组件目前只有App的vue页面和微信支持，其他端的富文本�
 
 | 类型 | 样式 |
 | --- | --- |
-| 块级样式 | `text-align` `direction` `margin` `margin-top` `margin-left` `margin-right` `margin-bottom`
-`padding` `padding-top` `padding-left` `padding-right` `padding-bottom` `line-height` `text-indent` |
-| 行内样式 | `font` `font-size` `font-style` `font-variant` `font-weight` `font-family`
-`letter-spacing` `text-decoration` `color` `background-color` |
+| 块级样式 | `text-align` `direction` `margin` `margin-top` `margin-left` `margin-right` `margin-bottom` `padding` `padding-top` `padding-left` `padding-right` `padding-bottom` `line-height` `text-indent` |
+| 行内样式 | `font` `font-size` `font-style` `font-variant` `font-weight` `font-family` `letter-spacing` `text-decoration` `color` `background-color` |
 
 **注意事项**
 
