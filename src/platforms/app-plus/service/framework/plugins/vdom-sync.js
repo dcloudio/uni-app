@@ -8,7 +8,8 @@ import {
   UI_EVENT,
   PAGE_CREATE,
   PAGE_CREATED,
-  MOUNTED_DATA
+  MOUNTED_DATA,
+  UPDATED_DATA
 } from '../../../constants'
 
 import {
@@ -23,6 +24,8 @@ import {
 import {
   hookKeyboardEvent
 } from './keyboard'
+
+import parseComponentCreateOptions from './parse-component-create-options'
 
 function wrapperEvent (event) {
   event.preventDefault = noop
@@ -124,8 +127,12 @@ export class VDomSync {
     this.elements.splice(elmIndex, 1)
   }
 
-  push (type, cid, data) {
-    this.batchData.push([type, [cid, data]])
+  push (type, cid, data, options) {
+    const typeData = [cid, data]
+    if (options) {
+      typeData.push(options)
+    }
+    this.batchData.push([type, typeData])
   }
 
   sendPageCreate (data) {
@@ -145,6 +152,12 @@ export class VDomSync {
       this.initialized = true
       this.batchData.push([PAGE_CREATED, [this.pageId, this.pagePath]])
     }
+    this.batchData = this.batchData.filter(data => {
+      if (data[0] === UPDATED_DATA && !Object.keys(data[1][1]).length) {
+        return false
+      }
+      return true
+    })
     if (this.batchData.length) {
       UniServiceJSBridge.publishHandler(VD_SYNC, {
         data: this.batchData,
@@ -163,7 +176,7 @@ export class VDomSync {
   restoreMountedData () {
     const addMountedData = (vm) => {
       if (vm._$id) {
-        this.push(MOUNTED_DATA, vm._$id, vm._$data)
+        this.push(MOUNTED_DATA, vm._$id, vm._$data, parseComponentCreateOptions(vm))
       }
       // TODO vue 中 $children 顺序不可靠，可能存在恢复误差
       vm.$children.forEach(childVm => addMountedData(childVm))

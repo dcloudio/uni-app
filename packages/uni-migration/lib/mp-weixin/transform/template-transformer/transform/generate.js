@@ -5,7 +5,7 @@ const BOOL_ATTRS = [
 function genAttrs(node) {
   const attribs = node.attribs
   const attribsArr = Object.keys(attribs).map(name => {
-    if (BOOL_ATTRS.includes(name)) {
+    if (BOOL_ATTRS.includes(name) || attribs[name] === '') { // boolean attribute
       return name
     }
     return `${name}="${attribs[name]}"`

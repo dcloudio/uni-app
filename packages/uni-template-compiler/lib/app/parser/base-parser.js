@@ -41,6 +41,7 @@ function parseFor (el, createGenVar, isScopedSlot) {
 }
 
 function parseBinding (el, genVar) {
+  el.staticClass && (el.staticClass = genVar('sc', el.staticClass))
   el.classBinding && (el.classBinding = genVar('c', el.classBinding))
   el.styleBinding && (el.styleBinding = genVar('s', el.styleBinding))
 }

@@ -3,12 +3,17 @@ const glob = require('glob')
 const transformFile = require('./file-transformer')
 
 function generateVueFile(input, out, options) {
-  const [content, deps, wxsFiles] = transformFile(input, options)
-  return {
-    path: path.resolve(out, path.basename(input).replace(options.extname.template, '.vue')),
-    content,
-    deps,
-    wxsFiles
+  try {
+    const [content, deps, wxsFiles] = transformFile(input, options)
+    return {
+      path: path.resolve(out, path.basename(input).replace(options.extname.template, '.vue')),
+      content,
+      deps,
+      wxsFiles
+    }
+  } catch (e) {
+    console.error(input)
+    throw e
   }
 }
 

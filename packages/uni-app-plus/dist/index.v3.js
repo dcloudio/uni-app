@@ -274,6 +274,14 @@ var serviceContext = (function () {
     }
   }
 
+  /**
+   * Camelize a hyphen-delimited string.
+   */
+  const camelizeRE = /-(\w)/g;
+  const camelize = cached((str) => {
+    return str.replace(camelizeRE, (_, c) => c ? c.toUpperCase() : '')
+  });
+
   function getLen (str = '') {
     /* eslint-disable no-control-regex */
     return ('' + str).replace(/[^\x00-\xff]/g, '**').length
@@ -2941,6 +2949,9 @@ var serviceContext = (function () {
 
   let audio;
 
+  let timeUpdateTimer = null;
+  const TIME_UPDATE = 250;
+
   const publishBackgroundAudioStateChange = (state, res = {}) => publish('onBackgroundAudioStateChange', Object.assign({
     state
   }, res));
@@ -2962,9 +2973,15 @@ var serviceContext = (function () {
         // 添加 isStopped 属性是为了解决 安卓设备停止播放后获取播放进度不正确的问题
         if (event === 'play') {
           audio.isStopped = false;
+          startTimeUpdateTimer();
         } else if (event === 'stop') {
           audio.isStopped = true;
         }
+
+        if (event === 'pause' || event === 'ended' || event === 'stop') {
+          stopTimeUpdateTimer();
+        }
+
         const eventName = `onMusic${event[0].toUpperCase() + event.substr(1)}`;
         publish(eventName, {
           dataUrl: audio.src,
@@ -2976,11 +2993,13 @@ var serviceContext = (function () {
       });
     });
     audio.addEventListener('waiting', () => {
+      stopTimeUpdateTimer();
       publishBackgroundAudioStateChange('waiting', {
         dataUrl: audio.src
       });
     });
     audio.addEventListener('error', err => {
+      stopTimeUpdateTimer();
       publish('onMusicError', {
         dataUrl: audio.src,
         errMsg: 'Error:' + err.message
@@ -2993,6 +3012,19 @@ var serviceContext = (function () {
     });
     audio.addEventListener('prev', () => publish('onBackgroundAudioPrev'));
     audio.addEventListener('next', () => publish('onBackgroundAudioNext'));
+  }
+
+  function startTimeUpdateTimer () {
+    stopTimeUpdateTimer();
+    timeUpdateTimer = setInterval(() => {
+      publishBackgroundAudioStateChange('timeUpdate', {});
+    }, TIME_UPDATE);
+  }
+
+  function stopTimeUpdateTimer () {
+    if (timeUpdateTimer !== null) {
+      clearInterval(timeUpdateTimer);
+    }
   }
 
   function setMusicState (args) {
@@ -4000,6 +4032,8 @@ var serviceContext = (function () {
 
   const B_CLASS = 'c';
   const B_STYLE = 's';
+
+  const S_CLASS = 'sc';
 
   const callbacks = {};
   const WEB_INVOKE_APPSERVICE = 'WEB_INVOKE_APPSERVICE';
@@ -7802,6 +7836,13 @@ var serviceContext = (function () {
             console.log(`[uni-app] removePage`, path, webview.id);
           }
         }
+      },
+      // 兼容小程序框架
+      selectComponent (selector) {
+        return this.$vm.selectComponent(selector)
+      },
+      selectAllComponent (selector) {
+        return this.$vm.selectAllComponent(selector)
       }
     };
 
@@ -11784,6 +11825,75 @@ var serviceContext = (function () {
     };
   }
 
+  /**
+   * 补充一些环境兼容内容,如小程序 需要使用的 selectComponent...
+   * 之所以在框架内补充,而不是在 mp-runtime 中处理,是因为小程序自定义组件可能需要获取 page 对象并使用 selectComponent
+   * 故, 暂时添加到所有 vm 上
+   * @param {Object} Vue
+   */
+  /**
+   * 先简单支持 id 和 class
+   * @param {Object} selector
+   */
+  function parseSelector (selector) {
+    if (selector.indexOf('#') === 0) {
+      const id = selector.substr(1);
+      return function match (vnode) {
+        return vnode.data && vnode.data.attrs && vnode.data.attrs.id === id
+      }
+    } else if (selector.indexOf('.') === 0) {
+      const clazz = selector.substr(1);
+      return function match (vnode) {
+        return vnode.data && matchClass(clazz, vnode.data.staticClass, vnode.data.class)
+      }
+    }
+  }
+
+  const CLASS_RE = /\s+/;
+
+  function matchClass (clazz, staticClass = '', dynamicClass = '') {
+    if (staticClass) {
+      return staticClass.split(CLASS_RE).indexOf(clazz) !== -1
+    }
+    if (dynamicClass && typeof dynamicClass === 'string') {
+      return dynamicClass.split(CLASS_RE).indexOf(clazz) !== -1
+    }
+  }
+
+  function querySelector (vm, matchSelector) {
+    if (matchSelector(vm.$vnode || vm._vnode)) {
+      return vm
+    }
+    const $children = vm.$children;
+    for (let i = 0; i < $children.length; i++) {
+      const childVm = querySelector($children[i], matchSelector);
+      if (childVm) {
+        return childVm
+      }
+    }
+  }
+
+  function querySelectorAll (vm, matchSelector, ret) {
+    if (matchSelector(vm.$vnode || vm._vnode)) {
+      ret.push(vm);
+    }
+    const $children = vm.$children;
+    for (let i = 0; i < $children.length; i++) {
+      const childVm = querySelectorAll($children[i], matchSelector, ret);
+      childVm && ret.push(childVm);
+    }
+  }
+
+  function initPolyfill (Vue) {
+    Vue.prototype.selectComponent = function selectComponent (selector) {
+      return querySelector(this, parseSelector(selector))
+    };
+
+    Vue.prototype.selectAllComponent = function selectAllComponent (selector) {
+      return querySelectorAll(this, parseSelector(selector), [])
+    };
+  }
+
   const isAndroid = plus.os.name.toLowerCase() === 'android';
   const FOCUS_TIMEOUT = isAndroid ? 300 : 700;
   const HIDE_TIMEOUT = 300;
@@ -11833,6 +11943,17 @@ var serviceContext = (function () {
       }
     }
   });
+
+  function parseComponentCreateOptions (vm) {
+    // 目前方案调整为 service 层直接处理,暂不需要同步配置到 view 层
+    // if (vm.$options.mpOptions && vm.$options.mpOptions.externalClasses) {
+    //   return {
+    //     mpOptions: {
+    //       externalClasses: vm.$options.mpOptions.externalClasses
+    //     }
+    //   }
+    // }
+  }
 
   function wrapperEvent (event) {
     event.preventDefault = noop;
@@ -11934,8 +12055,12 @@ var serviceContext = (function () {
       this.elements.splice(elmIndex, 1);
     }
 
-    push (type, cid, data) {
-      this.batchData.push([type, [cid, data]]);
+    push (type, cid, data, options) {
+      const typeData = [cid, data];
+      if (options) {
+        typeData.push(options);
+      }
+      this.batchData.push([type, typeData]);
     }
 
     sendPageCreate (data) {
@@ -11955,6 +12080,12 @@ var serviceContext = (function () {
         this.initialized = true;
         this.batchData.push([PAGE_CREATED, [this.pageId, this.pagePath]]);
       }
+      this.batchData = this.batchData.filter(data => {
+        if (data[0] === UPDATED_DATA && !Object.keys(data[1][1]).length) {
+          return false
+        }
+        return true
+      });
       if (this.batchData.length) {
         UniServiceJSBridge.publishHandler(VD_SYNC, {
           data: this.batchData,
@@ -11973,7 +12104,7 @@ var serviceContext = (function () {
     restoreMountedData () {
       const addMountedData = (vm) => {
         if (vm._$id) {
-          this.push(MOUNTED_DATA, vm._$id, vm._$data);
+          this.push(MOUNTED_DATA, vm._$id, vm._$data, parseComponentCreateOptions());
         }
         // TODO vue 中 $children 顺序不可靠，可能存在恢复误差
         vm.$children.forEach(childVm => addMountedData(childVm));
@@ -12083,7 +12214,12 @@ var serviceContext = (function () {
     Vue.prototype._$s = setData;
 
     Vue.prototype._$setData = function setData (type, data) {
-      this._$vd.push(type, this._$id, data);
+      this._$vd.push(
+        type,
+        this._$id,
+        data,
+        type === MOUNTED_DATA && parseComponentCreateOptions()
+      );
     };
 
     Vue.prototype._$mounted = function mounted () {
@@ -12158,10 +12294,25 @@ var serviceContext = (function () {
     });
   }
 
+  function parseExternalClasses (clazz, vm) {
+    const mpOptions = vm.$options.mpOptions;
+    if (mpOptions && Array.isArray(mpOptions.externalClasses)) {
+      mpOptions.externalClasses.forEach(externalClass => {
+        // 简单替换 externalClass
+        const externalClassValue = vm[camelize(externalClass)];
+        externalClassValue && (clazz = clazz.replace(externalClass, externalClassValue));
+      });
+    }
+    return clazz
+  }
+
   function setData (id, name, value) {
     switch (name) {
       case B_CLASS:
-        value = this._$stringifyClass(value);
+        value = parseExternalClasses(this._$stringifyClass(value), this);
+        break
+      case S_CLASS:
+        value = parseExternalClasses(value, this);
         break
       case B_STYLE:
         value = this._$normalizeStyleBinding(value);
@@ -12283,6 +12434,29 @@ var serviceContext = (function () {
       windowBottom: (tabBar$1.indexOf(route) >= 0 && tabBar$1.cover) ? tabBar$1.height : 0
     }
   }
+  const KEYS = ['data', 'properties', 'options', 'relations'];
+
+  function mergeObject (ret, fromVal, key) {
+    if (fromVal[key]) {
+      Object.assign((ret[key] || (ret[key] = {})), fromVal[key]);
+    }
+  }
+
+  function mergeArray (toArray, fromArray) {
+    toArray.push(...fromArray);
+  }
+
+  function mergeOptions (ret, toVal) {
+    KEYS.forEach(key => {
+      mergeObject(ret, toVal, key);
+    });
+    if (toVal.externalClasses) {
+      mergeArray((ret.externalClasses || (ret.externalClasses = [])), toVal.externalClasses);
+    }
+    if (toVal.path) {
+      ret.path = toVal.path;
+    }
+  }
 
   function initLifecycle (Vue) {
     lifecycleMixin(Vue);
@@ -12298,7 +12472,6 @@ var serviceContext = (function () {
             this[module] = wxs[module];
           });
         }
-
 
         if (this.mpType === 'page') {
           this.$scope = this.$options.pageInstance;
@@ -12328,6 +12501,21 @@ var serviceContext = (function () {
         }
       }
     });
+
+    const strategies = Vue.config.optionMergeStrategies;
+
+    strategies.mpOptions = function (toVal, fromVal) {
+      // data,properties,options,externalClasses,relations,path
+      if (!toVal) {
+        return fromVal
+      }
+      const ret = Object.create(null);
+      mergeOptions(ret, toVal);
+      if (fromVal) {
+        mergeOptions(ret, fromVal);
+      }
+      return ret
+    };
   }
 
   var vuePlugin = {
@@ -12336,6 +12524,8 @@ var serviceContext = (function () {
 
       initData(Vue);
       initLifecycle(Vue);
+
+      initPolyfill(Vue);
 
       Object.defineProperty(Vue.prototype, '$page', {
         get () {

@@ -90,6 +90,13 @@ export function registerPage ({
           console.log(`[uni-app] removePage`, path, webview.id)
         }
       }
+    },
+    // 兼容小程序框架
+    selectComponent (selector) {
+      return this.$vm.selectComponent(selector)
+    },
+    selectAllComponent (selector) {
+      return this.$vm.selectAllComponent(selector)
     }
   }
 

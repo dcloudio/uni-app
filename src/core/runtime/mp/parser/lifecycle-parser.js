@@ -2,19 +2,16 @@ import {
   hasOwn
 } from 'uni-shared'
 
-const LIFECYCLE = {
-  'created': 'created',
-  'attached': 'created',
-  'ready': 'mounted',
-  'moved': 'moved',
-  'detached': 'destroyed'
-}
-const LIFECYCLE_KEYS = Object.keys(LIFECYCLE)
+import {
+  COMPONENT_LIFECYCLE,
+  COMPONENT_LIFECYCLE_KEYS
+} from '../constants'
 
 export function parseLifecycle (mpComponentOptions, vueComponentOptions) {
-  Object.keys(LIFECYCLE_KEYS).forEach(name => {
+  COMPONENT_LIFECYCLE_KEYS.forEach(name => {
     if (hasOwn(mpComponentOptions, name)) {
-      vueComponentOptions[LIFECYCLE[name]] = mpComponentOptions[name]
+      (vueComponentOptions[COMPONENT_LIFECYCLE[name]] || (vueComponentOptions[COMPONENT_LIFECYCLE[name]] = []))
+        .push(mpComponentOptions[name])
     }
   })
 }

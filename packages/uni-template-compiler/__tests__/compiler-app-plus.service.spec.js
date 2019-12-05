@@ -245,7 +245,7 @@ describe('codegen', () => {
     // static
     assertCodegen(
       '<p class="class1">hello world</p>',
-      `with(this){return _c('p')}`
+      `with(this){return _c('p',{staticClass:_$s(0,'sc',"class1"),attrs:{"_i":0}})}`
     )
     // dynamic
     assertCodegen(

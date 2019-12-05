@@ -1,6 +1,7 @@
 import {
   guid,
-  hasOwn
+  hasOwn,
+  camelize
 } from 'uni-shared'
 
 import {
@@ -18,18 +19,26 @@ import {
   V_SHOW,
   V_ELSE_IF,
   B_CLASS,
-  B_STYLE
+  B_STYLE,
+  S_CLASS
 } from '../../constants'
 
 import {
   diff
 } from './diff'
 
+import parseComponentCreateOptions from './parse-component-create-options'
+
 export function initData (Vue) {
   Vue.prototype._$s = setData
 
   Vue.prototype._$setData = function setData (type, data) {
-    this._$vd.push(type, this._$id, data)
+    this._$vd.push(
+      type,
+      this._$id,
+      data,
+      type === MOUNTED_DATA && parseComponentCreateOptions(this)
+    )
   }
 
   Vue.prototype._$mounted = function mounted () {
@@ -104,10 +113,25 @@ export function initData (Vue) {
   })
 }
 
+function parseExternalClasses (clazz, vm) {
+  const mpOptions = vm.$options.mpOptions
+  if (mpOptions && Array.isArray(mpOptions.externalClasses)) {
+    mpOptions.externalClasses.forEach(externalClass => {
+      // 简单替换 externalClass
+      const externalClassValue = vm[camelize(externalClass)]
+      externalClassValue && (clazz = clazz.replace(externalClass, externalClassValue))
+    })
+  }
+  return clazz
+}
+
 function setData (id, name, value) {
   switch (name) {
     case B_CLASS:
-      value = this._$stringifyClass(value)
+      value = parseExternalClasses(this._$stringifyClass(value), this)
+      break
+    case S_CLASS:
+      value = parseExternalClasses(value, this)
       break
     case B_STYLE:
       value = this._$normalizeStyleBinding(value)

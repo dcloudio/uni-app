@@ -1,19 +1,31 @@
 import {
+  parsePage
+} from './parser/page-parser'
+
+import {
   parseComponent
 } from './parser/component-parser'
 
-import polyfill from './polyfill'
+import polyfill from './polyfill/index'
 
 export * from './wxs'
 
-global['__wxRoute'] = []
+global['__wxRoute'] = ''
 global['__wxComponents'] = Object.create(null)
-global['__wxUsingComponents'] = []
+global['__wxVueOptions'] = Object.create(null)
+
+export function Page (options) {
+  const pageOptions = parsePage(options)
+  pageOptions.mixins.unshift(polyfill)
+  pageOptions.mpOptions.path = global['__wxRoute']
+  global['__wxComponents'][global['__wxRoute']] = pageOptions
+}
 
 export function Component (options) {
   const componentOptions = parseComponent(options)
   componentOptions.mixins.unshift(polyfill)
-  global['__wxComponents'][global['__wxRoute'].pop()] = componentOptions
+  componentOptions.mpOptions.path = global['__wxRoute']
+  global['__wxComponents'][global['__wxRoute']] = componentOptions
 }
 
 export function Behavior (options) {

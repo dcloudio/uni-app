@@ -1,12 +1,9 @@
 const compiler = require('../lib')
 const res = compiler.compile(
   `
-<current-user>
-  <template v-slot:default="{result}">
-    <view v-for="(item,index) in result.list">{{item.name}}</view>
-  </template>
-</current-user>
+<view><van-grid-item v-for="(item,index) in (4)" :key="item"></van-grid-item></view>
 `, {
+    miniprogram: true,
     resourcePath: '/User/fxy/Documents/test.wxml',
     isReservedTag: function (tag) {
       return true

@@ -1,6 +1,10 @@
 import initVue from 'uni-core/vue'
 
 import {
+  initPolyfill
+} from 'uni-core/service/plugins/polyfill'
+
+import {
   registerApp
 } from '../app'
 
@@ -22,6 +26,8 @@ export default {
 
     initData(Vue)
     initLifecycle(Vue)
+
+    initPolyfill(Vue)
 
     Object.defineProperty(Vue.prototype, '$page', {
       get () {

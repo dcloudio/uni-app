@@ -2257,6 +2257,24 @@ function mergeVNodeHook (def, hookKey, hook) {
 
 /*  */
 
+// fixed by xxxxxx (mp properties)
+function extractPropertiesFromVNodeData(data, Ctor, res) {
+  var propOptions = Ctor.options.mpOptions && Ctor.options.mpOptions.properties;
+  if (isUndef(propOptions)) {
+    return res
+  }
+  var attrs = data.attrs;
+  var props = data.props;
+  if (isDef(attrs) || isDef(props)) {
+    for (var key in propOptions) {
+      var altKey = hyphenate(key);
+      checkProp(res, props, key, altKey, true) ||
+        checkProp(res, attrs, key, altKey, false);
+    }
+  }
+  return res
+}
+
 function extractPropsFromVNodeData (
   data,
   Ctor,
@@ -2267,7 +2285,8 @@ function extractPropsFromVNodeData (
   // component itself.
   var propOptions = Ctor.options.props;
   if (isUndef(propOptions)) {
-    return
+    // fixed by xxxxxx
+    return extractPropertiesFromVNodeData(data, Ctor, {})
   }
   var res = {};
   var attrs = data.attrs;
@@ -2295,7 +2314,8 @@ function extractPropsFromVNodeData (
       checkProp(res, attrs, key, altKey, false);
     }
   }
-  return res
+  // fixed by xxxxxx
+  return extractPropertiesFromVNodeData(data, Ctor, res)
 }
 
 function checkProp (
@@ -6598,6 +6618,40 @@ var baseModules = [
   directives
 ];
 
+function parseDataset(attrs) {
+  var dataset = Object.create(null);
+  Object.keys(attrs).forEach(function (name) {
+    if (name.indexOf('data-') === 0) {
+      dataset[camelize(name.replace('data-', ''))] = attrs[name];
+    }
+  });
+  return dataset
+}
+
+function updateAttrs(oldVnode, vnode) {
+
+  var attrs = vnode.data.attrs;
+
+  if (isUndef(attrs)) {
+    return
+  }
+
+  var id = attrs['_i'];
+  if (isUndef(id)) {
+    return
+  }
+
+  var elm = vnode.elm;
+  elm.dataset = Object.assign(elm.dataset || {}, parseDataset(attrs));
+}
+
+
+
+var attrs = {
+  create: updateAttrs,
+  update: updateAttrs
+};
+
 /*  */
 
 /*  */
@@ -6687,6 +6741,7 @@ var events = {
 };
 
 var platformModules = [
+  attrs,
   events
 ];
 

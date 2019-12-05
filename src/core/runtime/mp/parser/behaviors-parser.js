@@ -44,13 +44,37 @@ function parseBehavior (behavior) {
   return vueComponentOptions
 }
 
+const BEHAVIORS = {
+  'wx://form-field': {
+    beforeCreate () {
+      const mpOptions = this.$options.mpOptions
+      if (!mpOptions.properties) {
+        mpOptions.properties = Object.create(null)
+      }
+
+      const props = mpOptions.properties
+      // TODO form submit,reset
+      if (!props.name) {
+        props.name = {
+          type: String
+        }
+      }
+      if (!props.value) {
+        props.value = {
+          type: null
+        }
+      }
+    }
+  }
+}
+
 export function parseBehaviors (behaviors, vueComponentOptions) {
   if (!behaviors) {
     return
   }
   behaviors.forEach(behavior => {
     if (typeof behavior === 'string') {
-      (vueComponentOptions.behaviors || (vueComponentOptions.behaviors = [])).push(behavior)
+      BEHAVIORS[behavior] && vueComponentOptions.mixins.push(BEHAVIORS[behavior])
     } else {
       vueComponentOptions.mixins.push(parseBehavior(behavior))
     }

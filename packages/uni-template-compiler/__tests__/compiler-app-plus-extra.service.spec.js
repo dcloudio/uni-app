@@ -105,5 +105,12 @@ describe('codegen', () => {
       `with(this){return _c('p',{wxsProps:{"change:prop":"pos"},attrs:{"prop":_$s(0,'change:pos',pos),"_i":0},on:{"change":change}})}`
     )
   })
+
+  it('generate staticClass and id', () => {
+    assertCodegen(
+      '<view id="aaa" class="bbbb"></view>',
+      `with(this){return _c('view',{staticClass:_$s(0,'sc',"bbbb"),attrs:{"id":"aaa","_i":0}})}`
+    )
+  })
 })
 /* eslint-enable quotes */

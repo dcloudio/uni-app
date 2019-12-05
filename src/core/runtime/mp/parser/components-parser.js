@@ -1,3 +1,3 @@
 export function parseComponents (vueComponentOptions) {
-  vueComponentOptions.components = global['__wxUsingComponents'].pop()
+  vueComponentOptions.components = global['__wxVueOptions'].components
 }

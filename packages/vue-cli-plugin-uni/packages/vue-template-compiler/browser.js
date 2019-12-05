@@ -522,7 +522,9 @@
           : options.shouldDecodeNewlines;
         attrs[i] = {
           name: args[1],
-          value: decodeAttr(value, shouldDecodeNewlines)
+          value: decodeAttr(value, shouldDecodeNewlines),
+          // fixed by xxxxxx 标记 Boolean Attribute
+          bool: args[3] === undefined && args[4] === undefined && args[5] === undefined
         };
         if (options.outputSourceRange) {
           attrs[i].start = args.start + args[0].match(/^\s*/).length;

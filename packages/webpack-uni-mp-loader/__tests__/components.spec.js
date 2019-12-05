@@ -64,6 +64,36 @@ export default {
         'value': 'uniCard',
         'source': '@dcloudio/uni-ui/lib/uni-card/uni-card'
       }])
+
+    assertCodegen(
+      `
+import VanIcon from '../icon/index.vue'
+import VanPopup from '../icon/popup.vue'
+import VanLoading from '../icon/loading.vue'
+global['__wxVueOptions'] = {
+  components:{
+    'van-icon': VanIcon,
+    'van-popup': VanPopup,
+    'van-loading': VanLoading
+  }
+}
+                `,
+      [{
+        name: 'van-icon',
+        value: 'VanIcon',
+        source: '../icon/index.vue'
+      },
+      {
+        name: 'van-popup',
+        value: 'VanPopup',
+        source: '../icon/popup.vue'
+      },
+      {
+        name: 'van-loading',
+        value: 'VanLoading',
+        source: '../icon/loading.vue'
+      }
+      ])
   })
 
   it('parse global component', () => {

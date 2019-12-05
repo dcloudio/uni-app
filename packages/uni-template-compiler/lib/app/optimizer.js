@@ -30,7 +30,7 @@ function isStatic (node) {
   if (node.type === 3) {
     return true
   }
-  if (node.classBinding || node.styleBinding) {
+  if (node.staticClass || node.classBinding || node.styleBinding) {
     return false
   }
   return !!(node.pre || (
@@ -51,15 +51,19 @@ function markStatic (node) {
     ) {
       node.plain = true
     }
-    delete node.attrs
+    if (!node.attrsMap || !node.attrsMap['id']) { // 保留 id 属性, selectComponent 需要使用
+      delete node.attrs
+    }
   }
   if (node.type === 1) {
-    delete node.staticClass
+    // 需要保留 staticClass , selectComponent,externalClasses
+    // delete node.staticClass
     delete node.staticStyle
 
     const isCustomComponent = isComponent(node.tag)
     if (node.attrs && !isCustomComponent && node.tag !== 'keep-alive') { // 移除静态属性
-      node.attrs = node.attrs.filter(attr => attr.name === ID || isVar(attr.value))
+      // 保留 id 属性, selectComponent 需要使用
+      node.attrs = node.attrs.filter(attr => attr.name === 'id' || attr.name === ID || isVar(attr.value))
     }
 
     node.children = node.children.filter(child => { // 移除静态文本

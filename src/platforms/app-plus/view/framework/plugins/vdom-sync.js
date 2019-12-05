@@ -15,8 +15,8 @@ export class VDomSync {
     this.vms = Object.create(null)
   }
 
-  addVData (cid, data = {}) {
-    this.addBatchVData.push([cid, data])
+  addVData (cid, data = {}, options = {}) {
+    this.addBatchVData.push([cid, data, options])
   }
 
   updateVData (cid, data = {}) {
@@ -24,13 +24,14 @@ export class VDomSync {
   }
 
   initVm (vm) {
-    const [cid, data] = this.addBatchVData.shift()
+    const [cid, data, options] = this.addBatchVData.shift()
     if (!cid) {
       vm._$id = guid()
       console.error('cid unmatched', vm)
     } else {
       vm._$id = cid
     }
+    Object.assign(vm.$options, options)
     vm.$r = data || Object.create(null)
     this.vms[vm._$id] = vm
   }

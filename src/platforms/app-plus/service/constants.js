@@ -18,3 +18,5 @@ export const V_SHOW = 'v-show'
 
 export const B_CLASS = 'c'
 export const B_STYLE = 's'
+
+export const S_CLASS = 'sc'

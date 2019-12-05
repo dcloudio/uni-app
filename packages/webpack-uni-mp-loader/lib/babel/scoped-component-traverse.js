@@ -32,7 +32,6 @@ function handleObjectExpression (declaration, path, state) {
   if (componentsProperty && t.isObjectExpression(componentsProperty.value)) {
     const properties = componentsProperty.value.properties
       .filter(prop => t.isObjectProperty(prop) && t.isIdentifier(prop.value))
-
     state.components = parseComponents(properties.map(prop => {
       return {
         name: prop.key.name || prop.key.value,
@@ -48,6 +47,18 @@ module.exports = function (ast, state = {
   options: {}
 }) {
   babelTraverse(ast, {
+    AssignmentExpression (path) {
+      const memberExpression = path.node.left
+      const objectExpression = path.node.right
+      if (
+        t.isMemberExpression(memberExpression) &&
+        t.isObjectExpression(objectExpression) &&
+        memberExpression.object.name === 'global' &&
+        memberExpression.property.value === '__wxVueOptions'
+      ) {
+        handleObjectExpression(objectExpression, path, state)
+      }
+    },
     ExportDefaultDeclaration (path) {
       const declaration = path.node.declaration
       if (t.isObjectExpression(declaration)) { // export default {components:{}}

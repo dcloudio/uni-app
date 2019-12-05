@@ -6935,7 +6935,16 @@ function updateClass (oldVnode, vnode) {
     });
     cls = Object.keys(clsObj).join(' ');
   }
-
+  // fixed by xxxxxx (extenalClasses)
+  const context = vnode.context;
+  const externalClasses = context.$options.mpOptions &&
+    context.$options.mpOptions.externalClasses;
+  if (Array.isArray(externalClasses)) {
+    externalClasses.forEach(externalClass => {
+      // 简单替换 externalClass
+      cls.replace(externalClass, context[externalClass]);
+    });
+  }
   // set the class
   if (cls !== el._prevClass) {
     el.setAttribute('class', cls);

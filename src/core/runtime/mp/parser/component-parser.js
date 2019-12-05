@@ -66,6 +66,7 @@ export function parseComponent (mpComponentOptions) {
 
   const vueComponentOptions = {
     mixins: [],
+    props: {},
     watch: {},
     mpOptions: {
       mpObservers: []

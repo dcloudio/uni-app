@@ -9,6 +9,7 @@ const ITERATOR2 = '$2'
 const ITERATOR3 = '$3'
 const SET_DATA = '_$s'
 const GET_DATA = '_$g'
+const SET_MP_CLASS = '_$smc'
 const GET_CHANGE_DATA = '_$gc' // wxs
 
 const C_IS = 'is'
@@ -244,6 +245,7 @@ module.exports = {
   ID,
   SET_DATA,
   GET_DATA,
+  SET_MP_CLASS,
   GET_CHANGE_DATA,
   isVar,
   hasOwn,

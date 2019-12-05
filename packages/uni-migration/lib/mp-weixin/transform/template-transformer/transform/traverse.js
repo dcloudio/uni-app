@@ -17,7 +17,8 @@ const FOR = {
 
 const FOR_DEFAULT = {
   item: 'item',
-  index: 'index'
+  index: 'index',
+  index_fallback: '___i___'
 }
 
 function parseMustache(expr, identifier = false) {
@@ -56,12 +57,18 @@ function transformFor(attribs) {
   if (!vFor) {
     return
   }
-  const vKey = parseMustache(attribs[FOR.key], true) // TODO
+  let vKey = parseMustache(attribs[FOR.key], true)
   const vItem = parseMustache(attribs[FOR.item], true) || FOR_DEFAULT.item
-  const vIndex = parseMustache(attribs[FOR.index], true) || FOR_DEFAULT.index
+  const vIndex = parseMustache(attribs[FOR.index], true) || (
+    FOR_DEFAULT.index === vItem ? FOR_DEFAULT.index_fallback : FOR_DEFAULT.index
+    //处理 wx:for-item="index"
+  )
 
   attribs['v-for'] = `(${vItem},${vIndex}) in (${parseMustache(vFor)})`
-  vKey && (attribs[':key'] = vKey)
+  if (vKey) {
+    vKey === '*this' ? (vKey = vItem) : (vKey = vItem + '.' + vKey)
+    attribs[':key'] = vKey
+  }
 
   delete attribs[FOR.for]
   delete attribs[FOR.item]
@@ -86,7 +93,7 @@ function transformEvent(name, value, attribs) {
     event = name.replace(captureCatchRE, '@') + '.stop.capture'
   }
   if (event !== name) {
-    attribs[event] = value
+    attribs[event] = parseMustache(value, true)
     return true
   }
 }
