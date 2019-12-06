@@ -12181,10 +12181,12 @@ var serviceContext = (function () {
       cur = newObj[key];
       old = oldObj[key];
       if (old !== cur) {
-        if (key === B_STYLE && isPlainObject(cur) && isPlainObject(old)) {
-          const style = diffObject(cur, old);
-          style && setResult(result || (result = Object.create(null)), B_STYLE, style);
-        } else if (key === V_FOR && Array.isArray(cur) && Array.isArray(old)) {
+        // 全量同步 style (因为 style 可能会动态删除部分样式)
+        // if (key === B_STYLE && isPlainObject(cur) && isPlainObject(old)) {
+        //   const style = diffObject(cur, old)
+        //   style && setResult(result || (result = Object.create(null)), B_STYLE, style)
+        // } else
+        if (key === V_FOR && Array.isArray(cur) && Array.isArray(old)) {
           const vFor = diffArray(cur, old);
           vFor && setResult(result || (result = Object.create(null)), V_FOR, vFor);
         } else {
