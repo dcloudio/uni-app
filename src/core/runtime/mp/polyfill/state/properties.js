@@ -85,8 +85,8 @@ export function initProperties (vm, instanceData) {
         if (newVal === value || (newVal !== newVal && value !== value)) {
           return
         }
+        value = newVal
         if (observer) {
-          value = newVal
           observe(observer, vm, newVal, oldVal)
         }
         // 触发渲染
