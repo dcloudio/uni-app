@@ -20,6 +20,7 @@ module.exports = function migrate(input, out, options = {
   }
   const [files, assets] = migrater.transform(input, out, options)
   files.forEach(file => {
+    migrater.patch.vue(file)
     console.log(`write: ${file.path}`)
     fs.outputFileSync(file.path, file.content)
   })
@@ -30,7 +31,7 @@ module.exports = function migrate(input, out, options = {
     if (typeof asset === 'string') {
       const src = path.resolve(input, asset)
       const dest = path.resolve(out, asset.replace(styleExtname, '.css'))
-      if (!migrater.patch(src, dest)) {
+      if (!migrater.patch.asset(src, dest)) {
         if (
           needCopy || (
             asset.indexOf(styleExtname) !== -1 &&

@@ -1,3 +1,7 @@
+import {
+  updateProperties
+} from './state/properties'
+
 export function initMethods (vm) {
   const oldEmit = vm.$emit
   vm.triggerEvent = (eventName, detail, options) => {
@@ -18,4 +22,6 @@ export function initMethods (vm) {
     /* eslint-disable  no-mixed-operators */
     return vm._$relationNodes && vm._$relationNodes[relationKey] || []
   }
+
+  vm._$updateProperties = updateProperties
 }

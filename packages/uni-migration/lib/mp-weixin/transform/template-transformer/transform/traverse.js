@@ -66,7 +66,11 @@ function transformFor(attribs) {
 
   attribs['v-for'] = `(${vItem},${vIndex}) in (${parseMustache(vFor)})`
   if (vKey) {
-    vKey === '*this' ? (vKey = vItem) : (vKey = vItem + '.' + vKey)
+    if (vKey === '*this') {
+      vKey = vItem
+    } else if (vKey !== vItem) {
+      vKey = vItem + '.' + vKey
+    }
     attribs[':key'] = vKey
   }
 

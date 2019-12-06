@@ -1,3 +1,5 @@
+import Vue from 'vue';
+
 function parseData (data, vueComponentOptions) {
   if (!data) {
     return
@@ -397,6 +399,34 @@ function proxy (target, sourceKey, key) {
   Object.defineProperty(target, key, sharedPropertyDefinition);
 }
 
+function setDataByExprPath (exprPath, value, data) {
+  const keys = exprPath.replace(/\[(\d+?)\]/g, '.$1').split('.');
+  keys.reduce((obj, key, idx) => {
+    if (idx === keys.length - 1) {
+      obj[key] = value;
+    } else {
+      if (typeof obj[key] === 'undefined') {
+        obj[key] = {};
+      }
+      return obj[key]
+    }
+  }, data);
+  return keys.length === 1
+}
+
+function setData (data, callback) {
+  if (!isPlainObject(data)) {
+    return
+  }
+  Object.keys(data).forEach(key => {
+    if (setDataByExprPath(key, data[key], this.data)) {
+      !hasOwn(this, key) && proxy(this, SOURCE_KEY, key);
+    }
+  });
+  this.$forceUpdate();
+  isFn(callback) && this.$nextTick(callback);
+}
+
 const PROP_DEFAULT_VALUES = {
   String: '',
   Number: 0,
@@ -474,24 +504,24 @@ function initProperties (vm, instanceData) {
         return value
       },
       set (newVal) {
+        const oldVal = value;
+        /* eslint-disable no-self-compare */
+        if (newVal === value || (newVal !== newVal && value !== value)) {
+          return
+        }
         if (observer) {
-          const oldVal = value;
-          /* eslint-disable no-self-compare */
-          if (newVal === value || (newVal !== newVal && value !== value)) {
-            return
-          }
           value = newVal;
           observe(observer, vm, newVal, oldVal);
-        } else {
-          value = newVal;
         }
+        // 触发渲染
+        vm.$forceUpdate();
       }
     });
   }
 }
 
 function updateProperties (vm) {
-  const properties = vm.$options.mpOptions.properties;
+  const properties = vm.$options.mpOptions && vm.$options.mpOptions.properties;
   const propsData = vm.$options.propsData;
   if (propsData && properties) {
     Object.keys(properties).forEach(key => {
@@ -526,20 +556,7 @@ function initState (vm) {
     properties: propertyDefinition
   });
 
-  vm.setData = (data, callback) => {
-    // TODO data path: array[0].text,object.text
-    if (!isPlainObject(data)) {
-      return
-    }
-    Object.keys(data).forEach(key => {
-      vm.data[key] = data[key];
-      if (!hasOwn(vm, key)) {
-        proxy(vm, SOURCE_KEY, key);
-      }
-    });
-    vm.$forceUpdate();
-    isFn(callback) && vm.$nextTick(callback);
-  };
+  vm.setData = setData;
 
   initProperties(vm, instanceData);
 
@@ -568,6 +585,8 @@ function initMethods (vm) {
     /* eslint-disable  no-mixed-operators */
     return vm._$relationNodes && vm._$relationNodes[relationKey] || []
   };
+
+  vm._$updateProperties = updateProperties;
 }
 
 function initRelationHandlers (type, handler, target, ctx, handlerCtx) {
@@ -696,9 +715,6 @@ var polyfill = {
   mounted () {
     handleObservers(this);
   },
-  beforeUpdate () {
-    updateProperties(this);
-  },
   beforeDestroy () {
     handleRelations(this, 'unlinked');
   }
@@ -744,4 +760,7 @@ function Behavior (options) {
   return options
 }
 
-export { Behavior, Component, Page, getDate, getRegExp };
+const nextTick = Vue.nextTick;
+
+export default uni;
+export { Behavior, Component, Page, getDate, getRegExp, nextTick };

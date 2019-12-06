@@ -15,10 +15,6 @@ import {
   handleObservers
 } from './observers'
 
-import {
-  updateProperties
-} from './state/properties'
-
 export default {
   beforeCreate () {
     initState(this)
@@ -30,9 +26,6 @@ export default {
   },
   mounted () {
     handleObservers(this)
-  },
-  beforeUpdate () {
-    updateProperties(this)
   },
   beforeDestroy () {
     handleRelations(this, 'unlinked')

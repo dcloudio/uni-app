@@ -80,24 +80,24 @@ export function initProperties (vm, instanceData) {
         return value
       },
       set (newVal) {
+        const oldVal = value
+        /* eslint-disable no-self-compare */
+        if (newVal === value || (newVal !== newVal && value !== value)) {
+          return
+        }
         if (observer) {
-          const oldVal = value
-          /* eslint-disable no-self-compare */
-          if (newVal === value || (newVal !== newVal && value !== value)) {
-            return
-          }
           value = newVal
           observe(observer, vm, newVal, oldVal)
-        } else {
-          value = newVal
         }
+        // 触发渲染
+        vm.$forceUpdate()
       }
     })
   }
 }
 
 export function updateProperties (vm) {
-  const properties = vm.$options.mpOptions.properties
+  const properties = vm.$options.mpOptions && vm.$options.mpOptions.properties
   const propsData = vm.$options.propsData
   if (propsData && properties) {
     Object.keys(properties).forEach(key => {

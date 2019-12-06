@@ -1,3 +1,5 @@
+import Vue from 'vue'
+
 import {
   parsePage
 } from './parser/page-parser'
@@ -31,3 +33,7 @@ export function Component (options) {
 export function Behavior (options) {
   return options
 }
+
+export const nextTick = Vue.nextTick
+
+export default uni

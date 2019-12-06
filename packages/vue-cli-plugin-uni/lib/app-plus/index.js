@@ -21,7 +21,8 @@ const runtimePath = '@dcloudio/uni-mp-weixin/dist/mp.js'
 function getProvides () {
   return {
     '__f__': [path.resolve(__dirname, '../format-log.js'), 'default'],
-    'wx': ['@dcloudio/uni-app-plus/dist/uni.js', 'default'],
+    'wx': [runtimePath, 'default'],
+    'wx.nextTick': [runtimePath, 'nextTick'],
     'Page': [runtimePath, 'Page'],
     'Component': [runtimePath, 'Component'],
     'Behavior': [runtimePath, 'Behavior'],

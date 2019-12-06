@@ -24,7 +24,7 @@ describe('wxml:compiler', () => {
       `<view v-for="(item1,index) in (isSimple(columns) ? [columns] : columns)" :key="item1.index"></view>`
     )
     assertCodegen(
-      '<view wx:for="{{ columns }}" wx:for-item="item1" wx:key="*this"/>',
+      '<view wx:for="{{ columns }}" wx:for-item="item1" wx:key="item1"/>',
       `<view v-for="(item1,index) in (columns)" :key="item1"></view>`
     )
     assertCodegen(

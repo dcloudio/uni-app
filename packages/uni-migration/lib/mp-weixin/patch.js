@@ -4,40 +4,52 @@ const {
   normalizePath
 } = require('./util')
 
-const VANTS = [{ // wxs array.constructor
+const VANT_ASSETS = [{ // wxs array.constructor
   test(src) {
     return src.indexOf('array.wxs') !== -1
   },
   source(code) {
     return code.replace(`array.constructor === 'Array'`, 'Array.isArray(array)')
   }
-}, { // vue $options conflicts
-  test(src) {
-    return normalizePath(src).indexOf('mixins/observer/index.js') !== -1
+}]
+
+const PATCH_ASSETS = [
+  ...VANT_ASSETS
+]
+
+const VANT_VUES = [{
+  test(file) {
+    return normalizePath(file.path).indexOf('/image/index.vue') !== -1
   },
   source(code) {
-    return code.replace(`options.methods.$options`, `options.methods.$getVantOptions`)
-  }
-}, { // vue $options conflicts
-  test(src) {
-    return normalizePath(src).indexOf('mixins/observer/behavior.js') !== -1
-  },
-  source(code) {
-    return code.replace(`!this.$options`, `!this.$getVantOptions`)
-      .replace(`this.$options()`, `this.$getVantOptions()`)
+    // onLoad 与 onError 是生命周期函数名,需要替换为其他
+    return code.replace(/onLoad/g, 'onImageLoad')
+      .replace(/onError/g, 'onImageError')
   }
 }]
 
-const PATCHS = [
-  ...VANTS
+const PATCH_VUES = [
+  ...VANT_VUES
 ]
 
-module.exports = function patch(src, dest) {
-  const options = PATCHS.find(patch => patch.test(src))
+function patchAsset(src, dest) {
+  const options = PATCH_ASSETS.find(patch => patch.test(src))
   if (options) {
     console.log(`write: ${dest}`)
     fs.outputFileSync(dest, options.source(fs.readFileSync(src).toString()))
     return true
   }
   return false
+}
+
+function patchVue(file) {
+  const options = PATCH_VUES.find(patch => patch.test(file))
+  if (options) {
+    file.content = options.source(file.content)
+  }
+}
+
+module.exports = {
+  vue: patchVue,
+  asset: patchAsset
 }

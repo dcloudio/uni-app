@@ -4181,6 +4181,9 @@ function updateChildComponent (
     vm.$options.propsData = propsData;
   }
 
+  // fixed by xxxxxx update properties(mp runtime)
+  vm._$updateProperties && vm._$updateProperties(vm);
+
   // update listeners
   listeners = listeners || emptyObject;
   var oldListeners = vm.$options._parentListeners;

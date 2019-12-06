@@ -1,16 +1,14 @@
 import {
-  isFn,
-  hasOwn,
-  isPlainObject
-} from 'uni-shared'
-
-import {
   SOURCE_KEY
 } from '../../constants'
 
 import {
   proxy
 } from './proxy'
+
+import {
+  setData
+} from './data'
 
 import {
   initProperties
@@ -35,20 +33,7 @@ export function initState (vm) {
     properties: propertyDefinition
   })
 
-  vm.setData = (data, callback) => {
-    // TODO data path: array[0].text,object.text
-    if (!isPlainObject(data)) {
-      return
-    }
-    Object.keys(data).forEach(key => {
-      vm.data[key] = data[key]
-      if (!hasOwn(vm, key)) {
-        proxy(vm, SOURCE_KEY, key)
-      }
-    })
-    vm.$forceUpdate()
-    isFn(callback) && vm.$nextTick(callback)
-  }
+  vm.setData = setData
 
   initProperties(vm, instanceData)
 
