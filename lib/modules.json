@@ -66,8 +66,7 @@
     "uni.saveVideoToPhotosAlbum": true,
     "uni.createVideoContext": true,
     "uni.createCameraContext": true,
-    "uni.createLivePlayerContext": true,
-    "uni.createEditorContext": true
+    "uni.createLivePlayerContext": true
   }
 }, {
   "name": "device",

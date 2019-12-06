@@ -258,7 +258,7 @@ var methods3 = ['setFillStyle', 'setTextAlign', 'setStrokeStyle', 'setGlobalAlph
   'setTextBaseline', 'setLineDash'
 ]
 
-class CanvasContext {
+export class CanvasContext {
   constructor (id, pageId) {
     this.id = id
     this.pageId = pageId

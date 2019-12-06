@@ -19,6 +19,9 @@ export default {
   },
   beforeDestroy () { // 销毁时移除
     this._toggleListeners('unsubscribe', this.id)
+    if (this._contextId) {
+      this._toggleListeners('unsubscribe', this._contextId)
+    }
   },
   methods: {
     _toggleListeners (type, id, watch) {
@@ -31,6 +34,18 @@ export default {
       }
       // 纠正VUniVideo等组件命名为Video
       UniViewJSBridge[type](this.$page.id + '-' + this.$options.name.replace(/VUni([A-Z])/, '$1').toLowerCase() + '-' + id, this._handleSubscribe)
+    },
+    _getContextInfo () {
+      const id = `context-${this._uid}`
+      if (!this._contextId) {
+        this._toggleListeners('subscribe', id)
+        this._contextId = id
+      }
+      return {
+        name: this.$options.name.replace(/VUni([A-Z])/, '$1').toLowerCase(),
+        id,
+        page: this.$page.id
+      }
     }
   }
 }

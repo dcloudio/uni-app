@@ -1,7 +1,4 @@
 import {
-  getCurrentPageId
-} from '../../platform'
-import {
   callback
 } from 'uni-shared'
 
@@ -22,7 +19,7 @@ UniServiceJSBridge.subscribe('onEditorMethodCallback', ({
 
 const methods = ['insertDivider', 'insertImage', 'insertText', 'setContents', 'getContents', 'clear', 'removeFormat', 'undo', 'redo']
 
-class EditorContext {
+export class EditorContext {
   constructor (id, pageId) {
     this.id = id
     this.pageId = pageId
@@ -45,15 +42,3 @@ methods.forEach(function (method) {
     })
   })
 })
-
-export function createEditorContext (id, context) {
-  if (context) {
-    return new EditorContext(id, context.$page.id)
-  }
-  const pageId = getCurrentPageId()
-  if (pageId) {
-    return new EditorContext(id, pageId)
-  } else {
-    UniServiceJSBridge.emit('onError', 'createEditorContext:fail')
-  }
-}

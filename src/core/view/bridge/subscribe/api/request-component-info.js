@@ -74,6 +74,11 @@ function getNodeInfo (el, fields) {
       info.scrollTop = 0
     }
   }
+  if (fields.context) {
+    if (el.__vue__ && el.__vue__._getContextInfo) {
+      info.context = el.__vue__._getContextInfo()
+    }
+  }
   return info
 }
 

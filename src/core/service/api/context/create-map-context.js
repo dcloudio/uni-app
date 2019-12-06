@@ -7,7 +7,7 @@ function operateMapPlayer (mapId, pageVm, type, data) {
   invokeMethod('operateMapPlayer', mapId, pageVm, type, data)
 }
 
-class MapContext {
+export class MapContext {
   constructor (id, pageVm) {
     this.id = id
     this.pageVm = pageVm
