@@ -21,7 +21,7 @@ export function hasOwn (obj, key) {
   return hasOwnProperty.call(obj, key)
 }
 
-export function noop () {}
+export function noop () { }
 
 export function toRawType (val) {
   return _toString.call(val).slice(8, -1)
@@ -87,4 +87,8 @@ export function debounce (fn, delay) {
     const timerFn = () => fn.apply(this, arguments)
     timeout = setTimeout(timerFn, delay)
   }
+}
+
+export function kebabCase (string) {
+  return string.replace(/[A-Z]/g, str => '-' + str.toLowerCase())
 }

@@ -9,6 +9,7 @@ module.exports = {
   'checkbox-group': ['app-plus', 'mp-weixin', 'h5'],
   'cover-image': ['app-plus', 'mp-weixin'],
   'cover-view': ['app-plus', 'mp-weixin'],
+  'editor': ['app-plus', 'mp-weixin', 'h5'],
   'form': ['app-plus', 'mp-weixin', 'h5'],
   'functional-page-navigator': ['mp-weixin'],
   'icon': ['app-plus', 'mp-weixin'],

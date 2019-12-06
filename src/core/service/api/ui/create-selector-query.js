@@ -7,6 +7,26 @@ import {
   getCurrentPageVm
 } from '../../platform'
 
+import { CanvasContext } from '../context/canvas'
+import { MapContext } from '../context/create-map-context'
+import { VideoContext } from '../context/create-video-context'
+import { EditorContext } from '../context/editor'
+
+const ContextClasss = {
+  canvas: CanvasContext,
+  map: MapContext,
+  video: VideoContext,
+  editor: EditorContext
+}
+
+function convertContext (result) {
+  if (result.context) {
+    const { id, name, page } = result.context
+    const ContextClass = ContextClasss[name]
+    result.context = ContextClass && new ContextClass(id, page)
+  }
+}
+
 class NodesRef {
   constructor (selectorQuery, component, selector, single) {
     this._selectorQuery = selectorQuery
@@ -53,6 +73,18 @@ class NodesRef {
     )
     return this._selectorQuery
   }
+
+  context (callback) {
+    this._selectorQuery._push(
+      this._selector,
+      this._component,
+      this._single, {
+        context: true
+      },
+      callback
+    )
+    return this._selectorQuery
+  }
 }
 
 class SelectorQuery {
@@ -66,6 +98,11 @@ class SelectorQuery {
     invokeMethod('requestComponentInfo', this._page, this._queue, res => {
       const queueCbs = this._queueCb
       res.forEach((result, index) => {
+        if (Array.isArray(result)) {
+          result.forEach(convertContext)
+        } else {
+          convertContext(result)
+        }
         const queueCb = queueCbs[index]
         if (isFn(queueCb)) {
           queueCb.call(this, result)

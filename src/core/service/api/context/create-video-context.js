@@ -9,7 +9,7 @@ function operateVideoPlayer (videoId, pageVm, type, data) {
   invokeMethod('operateVideoPlayer', videoId, pageVm, type, data)
 }
 
-class VideoContext {
+export class VideoContext {
   constructor (id, pageVm) {
     this.id = id
     this.pageVm = pageVm
