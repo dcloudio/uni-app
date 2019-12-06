@@ -13,9 +13,6 @@ import {
 import HTMLParser from 'uni-helpers/html-parser'
 import * as formats from './formats'
 
-let Quill
-let ImageResize
-
 export default {
   name: 'Editor',
   mixins: [subscriber, emitter, keyboard],
@@ -80,11 +77,8 @@ export default {
       imageResizeModules.push('Resize')
     }
     this.loadQuill(() => {
-      Quill = window.Quill
       if (imageResizeModules.length) {
         this.loadImageResizeModule(() => {
-          ImageResize = window.ImageResize
-          Quill.register('modules/ImageResize', ImageResize.default)
           this.initQuill(imageResizeModules)
         })
       } else {
@@ -99,6 +93,7 @@ export default {
     }) {
       const { options, callbackId } = data
       const quill = this.quill
+      const Quill = window.Quill
       let res
       let range
       let errMsg
@@ -204,19 +199,19 @@ export default {
       }
     },
     loadQuill (callback) {
-      if (typeof Quill === 'function') {
+      if (typeof window.Quill === 'function') {
         if (typeof callback === 'function') {
           callback()
         }
         return
       }
       let script = document.createElement('script')
-      script.src = 'https://unpkg.com/quill@1.3.6/dist/quill.min.js'
+      script.src = 'https://unpkg.com/quill@1.3.7/dist/quill.min.js'
       document.body.appendChild(script)
       script.onload = callback
     },
     loadImageResizeModule (callback) {
-      if (typeof ImageResize === 'function') {
+      if (typeof window.ImageResize === 'function') {
         if (typeof callback === 'function') {
           callback()
         }
@@ -228,6 +223,10 @@ export default {
       script.onload = callback
     },
     initQuill (imageResizeModules) {
+      const Quill = window.Quill
+      Quill.register('modules/ImageResize', window.ImageResize.default)
+      formats.register(Quill)
+
       const quill = this.quill = new Quill(this.$el, {
         toolbar: false,
         readOnly: this.readOnly,
@@ -238,7 +237,6 @@ export default {
           }
         }
       })
-      formats.register(Quill)
       const $el = quill.root
       const events = ['focus', 'blur']
       events.forEach(name => {
