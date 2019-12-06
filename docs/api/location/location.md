@@ -24,7 +24,7 @@
 |altitude|高度，单位 m|
 |verticalAccuracy|垂直精度，单位 m（Android 无法获取，返回 0）|
 |horizontalAccuracy|水平精度，单位 m|
-|[address](/api/location/location?id=address)|地址信息|
+|[address](/api/location/location?id=address)|地址信息（仅App端支持，需配置geocode为true）|
 
 **address 地址信息说明**
 
