@@ -98,6 +98,7 @@ export default {
   },
   watch: {
     src (newValue, oldValue) {
+      this._setContentImage()
       this._loadImage()
     },
     mode (newValue, oldValue) {
@@ -112,6 +113,10 @@ export default {
   },
   mounted () {
     this.availHeight = this.$el.style.height || ''
+    this._setContentImage()
+    if (!this.realImagePath) {
+      return
+    }
     this._loadImage()
   },
   methods: {
@@ -132,9 +137,10 @@ export default {
         this.sizeFixed = true
       }
     },
-    _loadImage () {
+    _setContentImage () {
       this.$refs.content.style.backgroundImage = this.src ? `url(${this.realImagePath})` : 'none'
-
+    },
+    _loadImage () {
       const _self = this
       const img = new Image()
       img.onload = function ($event) {
