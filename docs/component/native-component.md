@@ -80,7 +80,9 @@ uni-app支持在App端弹出半透明的nvue窗体。即看起来是在本窗体
 
 subNVue或弹出部分区域透明的nvue页面，会比plus.nativeObj.view多占用一些内存。所以如果你要覆盖的内容很简单，cover-view或plus.nativeObj.view可以简单实现的话，就没必要用subNVue或nvue。
 
+所以如果你的层级覆盖问题比较简单，不用嵌套，且有跨端需求，就使用cover-view。
 
+如果App端cover-view无法满足需求，且需要覆盖的原生界面比较简单，可以用plus.nativeObj.view。否则，就使用subnvue或部分区域透明的nvue吧。
 
 **关于subNVue和Webview的层级问题**
 subNVue的层级高于前端元素，但多个subNVue以及Webview，它们之间的也存在层级关系。
@@ -97,7 +99,14 @@ nvue页面全部都是原生组件，互相之间没有层级问题。
 
 如果仅开发App，不跨端，不愿涉及层级问题，也可以不使用pages.json里的原生导航栏和tabbar，nvue页面不需要这些来强化性能。
 
-#### 总结
-所以如果你的层级覆盖问题比较简单，不用嵌套，且有跨端需求，就使用cover-view。
+#### Android系统主题字体对原生组件渲染的影响
 
-如果App端cover-view无法满足需求，且需要覆盖的原生界面比较简单，可以用plus.nativeObj.view。否则，就使用subnvue或部分区域透明的nvue吧。
+在Android手机上，调整系统主题字体，所有原生渲染的控件的字体都会变化，而webview渲染的字体则不会变化。
+
+如果原生渲染和webview渲染出现在同一页面，就会发现字体不一致。
+
+部分小程序通过修改了自带的webview内核，实现了webview也可以使用rom主题字体，比如微信、qq、支付宝；其他小程序及app-vue下，webview仍然无法渲染为rom主题字体。
+
+app端若在意字体不一致的问题，建议直接使用nvue。
+
+不管Android字体问题、还是同层渲染问题，微信小程序都是依靠自带一个几十M的定制webview实现的，这对于App而言增加了太大的体积，不如使用nvue解决这类问题。
