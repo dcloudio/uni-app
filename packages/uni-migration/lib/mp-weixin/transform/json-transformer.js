@@ -7,6 +7,7 @@ const {
 
 function transformJson(content) {
   const {
+    component,
     usingComponents
   } = JSON.parse(content)
   if (!usingComponents) {
@@ -22,7 +23,7 @@ function transformJson(content) {
 
   return [`${importCode.join('\n')}
 global['__wxVueOptions'] = {components:{${componentsCode.join(',')}}}
-`]
+`, component]
 }
 
 module.exports = {

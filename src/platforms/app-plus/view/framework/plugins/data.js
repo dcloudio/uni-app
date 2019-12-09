@@ -103,9 +103,6 @@ function vdSync ({
 
 function getData (id, name) {
   try {
-    if (name.indexOf('a-data-') === 0) { // TODO 临时方案序列化,反序列化dataset,后续应该将dataset保留在service层
-      return JSON.parse(this.$r[id][name])
-    }
     return this.$r[id][name]
   } catch (e) {
     console.error(this.$options.__file + `:[${this._$id}]$r[${id}][${name}] is undefined`)

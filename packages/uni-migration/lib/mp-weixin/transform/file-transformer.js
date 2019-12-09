@@ -25,11 +25,13 @@ module.exports = function transformFile(input, options) {
     filepath + templateExtname
   ]
 
-  const [jsCode] = transformJsonFile(filepath + '.json', deps)
+  const [jsCode, isComponent] = transformJsonFile(filepath + '.json', deps)
 
-  const [templateCode, wxsCode = '', wxsFiles = []] = transformTemplateFile(filepath + templateExtname, {
-    filename: path.basename(filepath)
-  })
+  options.isComponent = isComponent
+  options.filepath = filepath
+  options.filename = path.basename(filepath)
+  
+  const [templateCode, wxsCode = '', wxsFiles = []] = transformTemplateFile(filepath + templateExtname, options)
 
   const styleCode = transformStyleFile(filepath + styleExtname, options, deps) || ''
   const scriptCode = transformScriptFile(filepath + '.js', jsCode, options, deps)

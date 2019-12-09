@@ -49,7 +49,26 @@ function patchVue(file) {
   }
 }
 
+const VANT_WRAPPERS = [
+  function test(filepath) {
+    return filepath.indexOf('/cell/index') !== -1
+  },
+  function test(filepath) {
+    return filepath.indexOf('/sticky/index') !== -1
+  }
+]
+
+const PATCH_WRAPPERS = [
+  ...VANT_WRAPPERS
+]
+
+function patchWrapper(filepath) {
+  filepath = normalizePath(filepath)
+  return !!PATCH_WRAPPERS.find(test => test(filepath))
+}
+
 module.exports = {
   vue: patchVue,
-  asset: patchAsset
+  asset: patchAsset,
+  wrapper: patchWrapper
 }

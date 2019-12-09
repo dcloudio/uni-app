@@ -57,7 +57,10 @@ function genWxs(wxs, state) {
   return [wxsCode.join('').trim(), wxsFiles]
 }
 
-function shouldWrapper(node) {
+function shouldWrapper(node, state) {
+  if (state.shouldWrapper(state.filepath)) {
+    return true
+  }
   node.children = node.children.filter(child => { // remove \n
     if (child.type === 'text' && !child.data.trim()) {
       return false
@@ -75,8 +78,9 @@ function shouldWrapper(node) {
 }
 
 module.exports = function generate(node, state) {
-  if (shouldWrapper(node)) {
-    return [`<view>${genChildren(node).trim()}</view>`, ...genWxs(state.wxs, state)]
+  // [`<uni-shadow-root>${genChildren(node).trim()}</uni-shadow-root>`, ...genWxs(state.wxs, state)]
+  if (shouldWrapper(node, state)) {
+    return [`<uni-shadow-root>${genChildren(node).trim()}</uni-shadow-root>`, ...genWxs(state.wxs, state)]
   }
   return [genChildren(node).trim(), ...genWxs(state.wxs, state)]
 }

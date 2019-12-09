@@ -2,9 +2,7 @@ const traverse = require('./traverse')
 const generate = require('./generate')
 
 module.exports = function transform(ast, options) {
-  const state = {
-    wxs: [],
-    filename: options.filename
-  }
-  return generate(traverse(ast, state), state)
+  options.wxs = []
+  options.shouldWrapper = options.shouldWrapper || function noop() {}
+  return generate(traverse(ast, options), options)
 }

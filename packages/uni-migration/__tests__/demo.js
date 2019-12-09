@@ -7,13 +7,13 @@ migrate('/Users/fxy/Downloads/wa-vantui_1.1')
 // const {
 //   parse
 // } = require('mustache')
-// console.log(parse('{{ { enter: 300, leave: 1000 } }}'))
+// console.log(parse("van-notice-bar__content {{ !scrollable && !wrapable ? 'van-ellipsis' : '' }}"))
 
 // const {
 //   transformTemplate
 // } = require('../lib/mp-weixin/transform/template-transformer')
 // console.log(transformTemplate(
-//   `<view wx:for="{{ columns }}" wx:for-item="item1" wx:key="item1"/>`, {
+//   `<view class="van-notice-bar__content {{ !scrollable && !wrapable ? 'van-ellipsis' : '' }}"></view>`, {
 //     filename: 'index'
 //   }
 // ))

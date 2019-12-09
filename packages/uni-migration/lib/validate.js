@@ -2,7 +2,7 @@ const fs = require('fs')
 const path = require('path')
 
 const migraters = {
-  'mp-weixin': require('./mp-weixin').options
+  'mp-weixin': require('./mp-weixin')
 }
 
 module.exports = function validate(input, out, options) {
@@ -10,9 +10,7 @@ module.exports = function validate(input, out, options) {
   if (!fs.existsSync(input)) {
     return console.error(`错误: '${input}' 不存在`)
   }
-
-  const platformOptions = migraters[options.platform]
-  options.extname = platformOptions.extname
+  Object.assign(options, migraters[options.platform].options)
   const templateExtname = options.extname.template
 
   const stat = fs.lstatSync(input)

@@ -34,7 +34,7 @@ function parseMustache(expr, identifier = false) {
       }
       return `'${token[1]}'`
     } else if (token[0] === '!') { // {{ !loading }}
-      return `!${token[1]}`
+      return `(!${token[1]})`
     } else if (token[0] === 'name') {
       if (isIdentifier) {
         return token[1]

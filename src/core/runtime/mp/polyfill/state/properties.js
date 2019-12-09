@@ -12,11 +12,11 @@ const PROP_DEFAULT_VALUES = {
   null: null
 }
 
-const PROP_DEFAULT_KEYS = Object.keys(PROP_DEFAULT_VALUES)
+const PROP_DEFAULT_KEY_RE = Object.keys(PROP_DEFAULT_VALUES).map(type => new RegExp(type))
 
-function getDefaultVal (type) {
-  return PROP_DEFAULT_KEYS
-    .filter(type => new RegExp(type).test(type + ''))
+function getDefaultVal (propType) {
+  return PROP_DEFAULT_KEY_RE
+    .filter(regex => regex.test(String(propType)))
     .map(type => PROP_DEFAULT_VALUES[type])[0]
 }
 
