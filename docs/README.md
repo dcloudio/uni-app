@@ -74,7 +74,7 @@
       </div>
       <div class="uniapp-home-content-item-header">
         <h5 class="uniapp-home-content-item-title">开发者/案例数量更多</h5>
-        <p class="uniapp-home-content-item-text">10万+案例、uni统计月活过2亿、1000+插件、70+微信/qq群、更高的百度指数</p>
+        <p class="uniapp-home-content-item-text">10万+案例、uni统计月活过2亿、70+微信/qq群、更高的百度指数</p>
         <p class="uniapp-home-content-item-text">跨端完善度更高，真正落地的提高生产力</p>
       </div>
     </div>
@@ -105,7 +105,7 @@
       </div>
       <div class="uniapp-home-content-item-header">
         <h5 class="uniapp-home-content-item-title">周边生态丰富</h5>
-        <p class="uniapp-home-content-item-text">丰富的<a href="https://ext.dcloud.net.cn/?orderBy=WeekDownload">插件市场</a>，各种轮子拿来即用。</p>
+        <p class="uniapp-home-content-item-text"><a href="https://ext.dcloud.net.cn/?orderBy=WeekDownload">插件市场</a>数千款插件。</p>
         <p class="uniapp-home-content-item-text">支持NPM、支持小程序组件和SDK、兼容mpvue组件和项目、兼容weex组件。</p>
         <p class="uniapp-home-content-item-text">微信生态的各种sdk可直接用于跨平台App。</p>
       </div>
