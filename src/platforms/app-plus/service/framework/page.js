@@ -95,8 +95,8 @@ export function registerPage ({
     selectComponent (selector) {
       return this.$vm.selectComponent(selector)
     },
-    selectAllComponent (selector) {
-      return this.$vm.selectAllComponent(selector)
+    selectAllComponents (selector) {
+      return this.$vm.selectAllComponents(selector)
     }
   }
 

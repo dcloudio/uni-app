@@ -257,7 +257,7 @@ var serviceContext = (function () {
     return hasOwnProperty.call(obj, key)
   }
 
-  function noop () {}
+  function noop () { }
 
   function toRawType (val) {
     return _toString.call(val).slice(8, -1)
@@ -329,6 +329,45 @@ var serviceContext = (function () {
 
     return res
   }
+
+  let id = 0;
+  const callbacks = {};
+
+  function warp (fn) {
+    return function (options = {}) {
+      const callbackId = String(id++);
+      callbacks[callbackId] = {
+        success: options.success,
+        fail: options.fail,
+        complete: options.complete
+      };
+      const data = Object.assign({}, options);
+      delete data.success;
+      delete data.fail;
+      delete data.complete;
+      const res = fn.bind(this)(data, callbackId);
+      if (res) {
+        invoke(callbackId, res);
+      }
+    }
+  }
+
+  function invoke (callbackId, res) {
+    const callback = callbacks[callbackId] || {};
+    delete callbacks[callbackId];
+    const errMsg = res.errMsg || '';
+    if (new RegExp('\\:\\s*fail').test(errMsg)) {
+      callback.fail && callback.fail(res);
+    } else {
+      callback.success && callback.success(res);
+    }
+    callback.complete && callback.complete(res);
+  }
+
+  const callback = {
+    warp,
+    invoke
+  };
 
   /**
    * 框架内 try-catch
@@ -2575,7 +2614,7 @@ var serviceContext = (function () {
     return args
   }
 
-  function invoke (...args) {
+  function invoke$1 (...args) {
     return UniServiceJSBridge.invokeCallbackHandler(...args)
   }
 
@@ -3202,19 +3241,19 @@ var serviceContext = (function () {
 
       bitmap.save(tempFilePath, saveOption, function () {
         clear();
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           tempFilePath,
           errMsg: 'base64ToTempFilePath:ok'
         });
       }, function (error) {
         clear();
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           errMsg: toErrMsg(error)
         });
       });
     }, function (error) {
       clear();
-      invoke(callbackId, {
+      invoke$1(callbackId, {
         errMsg: toErrMsg(error)
       });
     });
@@ -3673,16 +3712,16 @@ var serviceContext = (function () {
       contact.addresses = [defaultAddress, homeAddress, companyAddress];
 
       contact.save(() => {
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           errMsg: 'addPhoneContact:ok'
         });
       }, (e) => {
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           errMsg: 'addPhoneContact:fail'
         });
       });
     }, (e) => {
-      invoke(callbackId, {
+      invoke$1(callbackId, {
         errMsg: 'addPhoneContact:fail'
       });
     });
@@ -3706,14 +3745,14 @@ var serviceContext = (function () {
         if (typeof beforeSuccess === 'function') {
           beforeSuccess(data);
         }
-        invoke(callbackId, Object.assign({}, data, {
+        invoke$1(callbackId, Object.assign({}, data, {
           errMsg: `${method}:ok`,
           code: undefined,
           message: undefined
         }));
       },
       fail (error = {}) {
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           errMsg: `${method}:fail ${error.message || ''}`,
           errCode: error.code || 0
         });
@@ -3854,12 +3893,12 @@ var serviceContext = (function () {
     const clipboard = requireNativePlugin('clipboard');
     clipboard.getString(ret => {
       if (ret.result === 'success') {
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           data: ret.data,
           errMsg: 'getClipboardData:ok'
         });
       } else {
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           data: ret.result,
           errMsg: 'getClipboardData:fail'
         });
@@ -3954,13 +3993,13 @@ var serviceContext = (function () {
   function getBeacons (params, callbackId) {
     plus.ibeacon.getBeacons({
       success: (result) => {
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           errMsg: 'getBeacons:ok',
           beacons: result.beacons
         });
       },
       fail: (error) => {
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           errMsg: 'getBeacons:fail:' + error.message
         });
       }
@@ -3975,13 +4014,13 @@ var serviceContext = (function () {
       uuids,
       ignoreBluetoothAvailable,
       success: (result) => {
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           errMsg: 'startBeaconDiscovery:ok',
           beacons: result.beacons
         });
       },
       fail: (error) => {
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           errMsg: 'startBeaconDiscovery:fail:' + error.message
         });
       }
@@ -3991,12 +4030,12 @@ var serviceContext = (function () {
   function stopBeaconDiscovery (params, callbackId) {
     plus.ibeacon.stopBeaconDiscovery({
       success: (result) => {
-        invoke(callbackId, Object.assign(result, {
+        invoke$1(callbackId, Object.assign(result, {
           errMsg: 'stopBeaconDiscovery:ok'
         }));
       },
       fail: (error) => {
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           errMsg: 'stopBeaconDiscovery:fail:' + error.message
         });
       }
@@ -4035,7 +4074,7 @@ var serviceContext = (function () {
 
   const S_CLASS = 'sc';
 
-  const callbacks = {};
+  const callbacks$1 = {};
   const WEB_INVOKE_APPSERVICE = 'WEB_INVOKE_APPSERVICE';
   // 简单处理 view 层与 service 层的通知系统
   /**
@@ -4047,11 +4086,11 @@ var serviceContext = (function () {
       publish(WEB_INVOKE_APPSERVICE, args.data, args.webviewIds);
       return true
     }
-    const callback = callbacks[type];
+    const callback = callbacks$1[type];
     if (callback) {
       callback(args);
       if (!callback.keepAlive) {
-        delete callbacks[type];
+        delete callbacks$1[type];
       }
       return true
     }
@@ -4061,11 +4100,11 @@ var serviceContext = (function () {
    * 注册 view 层通知 service 层事件处理
    */
   function registerPlusMessage (type, callback, keepAlive = true) {
-    if (callbacks[type]) {
-      return console.warn(`${type} 已注册:` + (callbacks[type].toString()))
+    if (callbacks$1[type]) {
+      return console.warn(`${type} 已注册:` + (callbacks$1[type].toString()))
     }
     callback.keepAlive = !!keepAlive;
-    callbacks[type] = callback;
+    callbacks$1[type] = callback;
   }
 
   const SCAN_ID = '__UNIAPP_SCAN';
@@ -4197,7 +4236,7 @@ var serviceContext = (function () {
     });
     webview.addEventListener('close', () => {
       if (result) {
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           result: result.code,
           scanType: SCAN_MAPS[result.type] || '',
           charSet: 'utf8',
@@ -4205,7 +4244,7 @@ var serviceContext = (function () {
           errMsg: 'scanCode:ok'
         });
       } else {
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           errMsg: 'scanCode:fail cancel'
         });
       }
@@ -4252,7 +4291,7 @@ var serviceContext = (function () {
 
   let channel;
   let globalEvent;
-  const callbacks$1 = {};
+  const callbacks$2 = {};
 
   function onPlusMessage (res) {
     const message = res.data && res.data.__message;
@@ -4260,10 +4299,10 @@ var serviceContext = (function () {
       return
     }
     const pageId = message.__page;
-    const callback = callbacks$1[pageId];
+    const callback = callbacks$2[pageId];
     callback && callback(message);
     if (!message.keep) {
-      delete callbacks$1[pageId];
+      delete callbacks$2[pageId];
     }
   }
 
@@ -4280,7 +4319,7 @@ var serviceContext = (function () {
     } else {
       window.__plusMessage = onPlusMessage;
     }
-    callbacks$1[pageId] = callback;
+    callbacks$2[pageId] = callback;
   }
 
   class Page {
@@ -4422,7 +4461,7 @@ var serviceContext = (function () {
         if (isDark) {
           plus.navigator.setStatusBarStyle('dark');
         }
-        invoke(callbackId, result || {
+        invoke$1(callbackId, result || {
           errMsg: 'scanCode:fail cancel'
         });
       }
@@ -4583,7 +4622,7 @@ var serviceContext = (function () {
       }
       plus.fingerprint.authenticate(() => {
         plus.nativeUI.closeWaiting();
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           authMode: realAuthMode,
           errCode: 0,
           errMsg: 'startSoterAuthentication:ok'
@@ -4601,7 +4640,7 @@ var serviceContext = (function () {
           case e.AUTHENTICATE_OVERLIMIT:
             // 微信小程序在第一次重试次数超限时安卓IOS返回不一致，安卓端会返回次数超过限制（errCode: 90010），IOS端会返回认证失败（errCode: 90009）。APP-IOS实际运行时不会次数超限，超过指定次数之后会弹出输入密码的界面
             plus.nativeUI.closeWaiting();
-            invoke(callbackId, {
+            invoke$1(callbackId, {
               authMode: realAuthMode,
               errCode: 90010,
               errMsg: 'startSoterAuthentication:fail authenticate freeze. please try again later'
@@ -4609,7 +4648,7 @@ var serviceContext = (function () {
             break
           case e.CANCEL:
             plus.nativeUI.closeWaiting();
-            invoke(callbackId, {
+            invoke$1(callbackId, {
               authMode: realAuthMode,
               errCode: 90008,
               errMsg: 'startSoterAuthentication:fail cancel'
@@ -4617,7 +4656,7 @@ var serviceContext = (function () {
             break
           default:
             plus.nativeUI.closeWaiting();
-            invoke(callbackId, {
+            invoke$1(callbackId, {
               authMode: realAuthMode,
               errCode: 90007,
               errMsg: 'startSoterAuthentication:fail'
@@ -4633,7 +4672,7 @@ var serviceContext = (function () {
         message: authContent
       }, (e) => {
         if (e.type === 'success' && e.code === 0) {
-          invoke(callbackId, {
+          invoke$1(callbackId, {
             authMode: realAuthMode,
             errCode: 0,
             errMsg: 'startSoterAuthentication:ok'
@@ -4641,28 +4680,28 @@ var serviceContext = (function () {
         } else {
           switch (e.code) {
             case 4:
-              invoke(callbackId, {
+              invoke$1(callbackId, {
                 authMode: realAuthMode,
                 errCode: 90009,
                 errMsg: 'startSoterAuthentication:fail'
               });
               break
             case 5:
-              invoke(callbackId, {
+              invoke$1(callbackId, {
                 authMode: realAuthMode,
                 errCode: 90010,
                 errMsg: 'startSoterAuthentication:fail authenticate freeze. please try again later'
               });
               break
             case 6:
-              invoke(callbackId, {
+              invoke$1(callbackId, {
                 authMode: realAuthMode,
                 errCode: 90008,
                 errMsg: 'startSoterAuthentication:fail cancel'
               });
               break
             default:
-              invoke(callbackId, {
+              invoke$1(callbackId, {
                 authMode: realAuthMode,
                 errCode: 90007,
                 errMsg: 'startSoterAuthentication:fail'
@@ -4971,23 +5010,23 @@ var serviceContext = (function () {
         getSavedFileDir(dir => {
           entry.copyTo(dir, fileName, () => { // 复制临时文件 FileEntry，为了避免把相册里的文件删除，使用 copy，微信中是要删除临时文件的
             const savedFilePath = SAVE_PATH + '/' + fileName;
-            invoke(callbackId, {
+            invoke$1(callbackId, {
               errMsg: 'saveFile:ok',
               savedFilePath
             });
           }, err => {
-            invoke(callbackId, {
+            invoke$1(callbackId, {
               errMsg: 'saveFile:fail 保存文件[' + tempFilePath +
                 '] copyTo 失败:' + err.message
             });
           });
         }, message => {
-          invoke(callbackId, {
+          invoke$1(callbackId, {
             errMsg: 'saveFile:fail ' + message
           });
         });
       }, err => {
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           errMsg: 'saveFile:fail 文件[' + tempFilePath + ']读取失败' + err.message
         });
       });
@@ -5013,30 +5052,30 @@ var serviceContext = (function () {
                 size: meta.size
               });
               if (fileList.length === entries.length) {
-                invoke(callbackId, {
+                invoke$1(callbackId, {
                   errMsg: 'getSavedFileList:ok',
                   fileList
                 });
               }
             }, error => {
-              invoke(callbackId, {
+              invoke$1(callbackId, {
                 errMsg: 'getSavedFileList:fail ' + error.message
               });
             }, false);
           });
         } else {
-          invoke(callbackId, {
+          invoke$1(callbackId, {
             errMsg: 'getSavedFileList:ok',
             fileList
           });
         }
       }, error => {
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           errMsg: 'getSavedFileList:fail ' + error.message
         });
       });
     }, message => {
-      invoke(callbackId, {
+      invoke$1(callbackId, {
         errMsg: 'getSavedFileList:fail ' + message
       });
     });
@@ -5049,20 +5088,20 @@ var serviceContext = (function () {
     // TODO 计算文件摘要
     plus.io.resolveLocalFileSystemURL(getRealPath$1(filePath), entry => {
       entry.getMetadata(meta => {
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           errMsg: 'getFileInfo:ok',
           size: meta.size,
           digestAlgorithm: ''
         });
       }, err => {
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           errMsg: 'getFileInfo:fail 文件[' +
             filePath +
             '] getMetadata 失败:' + err.message
         });
       });
     }, err => {
-      invoke(callbackId, {
+      invoke$1(callbackId, {
         errMsg: 'getFileInfo:fail 文件[' + filePath + ']读取失败:' + err.message
       });
     });
@@ -5073,18 +5112,18 @@ var serviceContext = (function () {
   } = {}, callbackId) {
     plus.io.resolveLocalFileSystemURL(getRealPath$1(filePath), entry => {
       entry.getMetadata(meta => {
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           createTime: meta.modificationTime.getTime(),
           size: meta.size,
           errMsg: 'getSavedFileInfo:ok'
         });
       }, error => {
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           errMsg: 'getSavedFileInfo:fail ' + error.message
         });
       }, false);
     }, () => {
-      invoke(callbackId, {
+      invoke$1(callbackId, {
         errMsg: 'getSavedFileInfo:fail file not find'
       });
     });
@@ -5095,16 +5134,16 @@ var serviceContext = (function () {
   } = {}, callbackId) {
     plus.io.resolveLocalFileSystemURL(getRealPath$1(filePath), entry => {
       entry.remove(() => {
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           errMsg: 'removeSavedFile:ok'
         });
       }, err => {
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           errMsg: 'removeSavedFile:fail 文件[' + filePath + ']删除失败:' + err.message
         });
       });
     }, () => {
-      invoke(callbackId, {
+      invoke$1(callbackId, {
         errMsg: 'removeSavedFile:fail file not find'
       });
     });
@@ -5116,11 +5155,11 @@ var serviceContext = (function () {
   } = {}, callbackId) {
     plus.io.resolveLocalFileSystemURL(getRealPath$1(filePath), entry => {
       plus.runtime.openFile(getRealPath$1(filePath));
-      invoke(callbackId, {
+      invoke$1(callbackId, {
         errMsg: 'openDocument:ok'
       });
     }, err => {
-      invoke(callbackId, {
+      invoke$1(callbackId, {
         errMsg: 'openDocument:fail 文件[' + filePath + ']读取失败:' + err.message
       });
     });
@@ -5186,7 +5225,7 @@ var serviceContext = (function () {
 
     webview.addEventListener('close', () => {
       if (result) {
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           name: result.poiname,
           address: result.poiaddress,
           latitude: result.latlng.lat,
@@ -5195,7 +5234,7 @@ var serviceContext = (function () {
         });
       } else {
         consumePlusMessage(MESSAGE_TYPE$1);
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           errMsg: 'chooseLocation:fail cancel'
         });
       }
@@ -5250,7 +5289,7 @@ var serviceContext = (function () {
           plus.navigator.setStatusBarStyle('dark');
         }
 
-        invoke(callbackId, result || {
+        invoke$1(callbackId, result || {
           errMsg: 'chooseLocation:fail cancel'
         });
       }
@@ -5309,7 +5348,7 @@ var serviceContext = (function () {
       }
     }
 
-    invoke(callbackId, {
+    invoke$1(callbackId, {
       type,
       altitude: coords.altitude || 0,
       latitude: coords.latitude,
@@ -5337,7 +5376,7 @@ var serviceContext = (function () {
           return
         }
 
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           errMsg: 'getLocation:fail ' + e.message
         });
       }, {
@@ -5431,12 +5470,12 @@ var serviceContext = (function () {
       filename: '_doc/audio/',
       format: 'aac'
     }, (res) => {
-      invoke(callbackId, {
+      invoke$1(callbackId, {
         errMsg: 'startRecord:ok',
         tempFilePath: res
       });
     }, (res) => {
-      invoke(callbackId, {
+      invoke$1(callbackId, {
         errMsg: 'startRecord:fail'
       });
     });
@@ -5472,7 +5511,7 @@ var serviceContext = (function () {
         player = false;
         playerFilePath = false;
         playerStatus = false;
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           errMsg: 'playVoice:ok'
         });
       });
@@ -5491,7 +5530,7 @@ var serviceContext = (function () {
       player = false;
       playerFilePath = false;
       playerStatus = false;
-      invoke(callbackId, {
+      invoke$1(callbackId, {
         errMsg: 'playVoice:ok'
       });
     });
@@ -5538,7 +5577,7 @@ var serviceContext = (function () {
 
   const invokeChooseImage = function (callbackId, type, sizeType, tempFilePaths = []) {
     if (!tempFilePaths.length) {
-      invoke(callbackId, {
+      invoke$1(callbackId, {
         code: sizeType,
         errMsg: `chooseImage:${type}`
       });
@@ -5594,14 +5633,14 @@ var serviceContext = (function () {
     }, Promise.resolve())
       .then(() => {
         plus.nativeUI.closeWaiting();
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           errMsg: `chooseImage:${type}`,
           tempFilePaths,
           tempFiles
         });
       }).catch(() => {
         plus.nativeUI.closeWaiting();
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           errMsg: `chooseImage:${type}`
         });
       });
@@ -5677,7 +5716,7 @@ var serviceContext = (function () {
     };
 
     if (type !== 'ok') {
-      invoke(callbackId, callbackResult);
+      invoke$1(callbackId, callbackResult);
       return
     }
 
@@ -5688,13 +5727,13 @@ var serviceContext = (function () {
         callbackResult.duration = videoInfo.duration;
         callbackResult.width = videoInfo.width;
         callbackResult.height = videoInfo.height;
-        invoke(callbackId, callbackResult);
+        invoke$1(callbackId, callbackResult);
       },
       fail () {
-        invoke(callbackId, callbackResult);
+        invoke$1(callbackId, callbackResult);
       },
       complete () {
-        invoke(callbackId, callbackResult);
+        invoke$1(callbackId, callbackResult);
       }
     });
   };
@@ -5766,12 +5805,12 @@ var serviceContext = (function () {
       dst,
       quality
     }, () => {
-      invoke(callbackId, {
+      invoke$1(callbackId, {
         errMsg: `compressImage:ok`,
         tempFilePath: dst
       });
     }, () => {
-      invoke(callbackId, {
+      invoke$1(callbackId, {
         errMsg: `compressImage:fail`
       });
     });
@@ -5784,13 +5823,13 @@ var serviceContext = (function () {
     plus.io.getImageInfo({
       src,
       success (imageInfo) {
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           errMsg: 'getImageInfo:ok',
           ...imageInfo
         });
       },
       fail () {
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           errMsg: 'getImageInfo:fail'
         });
       }
@@ -5948,11 +5987,11 @@ var serviceContext = (function () {
     filePath
   } = {}, callbackId) {
     plus.gallery.save(getRealPath$1(filePath), e => {
-      invoke(callbackId, {
+      invoke$1(callbackId, {
         errMsg: 'saveImageToPhotosAlbum:ok'
       });
     }, e => {
-      invoke(callbackId, {
+      invoke$1(callbackId, {
         errMsg: 'saveImageToPhotosAlbum:fail'
       });
     });
@@ -5962,11 +6001,11 @@ var serviceContext = (function () {
     filePath
   } = {}, callbackId) {
     plus.gallery.save(getRealPath$1(filePath), e => {
-      invoke(callbackId, {
+      invoke$1(callbackId, {
         errMsg: 'saveVideoToPhotosAlbum:ok'
       });
     }, e => {
-      invoke(callbackId, {
+      invoke$1(callbackId, {
         errMsg: 'saveVideoToPhotosAlbum:fail'
       });
     });
@@ -6475,11 +6514,11 @@ var serviceContext = (function () {
     if (providers[service]) {
       providers[service]((err, provider) => {
         if (err) {
-          invoke(callbackId, {
+          invoke$1(callbackId, {
             errMsg: 'getProvider:fail:' + err.message
           });
         } else {
-          invoke(callbackId, {
+          invoke$1(callbackId, {
             errMsg: 'getProvider:ok',
             service,
             provider
@@ -6487,7 +6526,7 @@ var serviceContext = (function () {
         }
       });
     } else {
-      invoke(callbackId, {
+      invoke$1(callbackId, {
         errMsg: 'getProvider:fail:服务[' + service + ']不支持'
       });
     }
@@ -6499,13 +6538,13 @@ var serviceContext = (function () {
     function login () {
       loginServices[provider].login(res => {
         const authResult = res.target.authResult;
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           code: authResult.code,
           authResult: authResult,
           errMsg: 'login:ok'
         });
       }, err => {
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           code: err.code,
           errMsg: 'login:fail:' + err.message
         });
@@ -6527,7 +6566,7 @@ var serviceContext = (function () {
           id
         }) => id === provider);
         if (!loginServices[provider]) {
-          invoke(callbackId, {
+          invoke$1(callbackId, {
             code: '',
             errMsg: 'login:fail:登录服务[' + provider + ']不存在'
           });
@@ -6535,7 +6574,7 @@ var serviceContext = (function () {
           loginByService(provider, callbackId);
         }
       }, err => {
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           code: err.code,
           errMsg: 'login:fail:' + err.message
         });
@@ -6547,7 +6586,7 @@ var serviceContext = (function () {
     const provider = params.provider || 'weixin';
     const loginService = loginServices[provider];
     if (!loginService || !loginService.authResult) {
-      return invoke(callbackId, {
+      return invoke$1(callbackId, {
         errMsg: 'operateWXData:fail:请先调用 uni.login'
       })
     }
@@ -6587,9 +6626,9 @@ var serviceContext = (function () {
       } else {
         result.userInfo = userInfo;
       }
-      invoke(callbackId, result);
+      invoke$1(callbackId, result);
     }, err => {
-      invoke(callbackId, {
+      invoke$1(callbackId, {
         errMsg: 'operateWXData:fail:' + err.message
       });
     });
@@ -6617,21 +6656,21 @@ var serviceContext = (function () {
         id
       }) => id === provider);
       if (!service) {
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           errMsg: 'requestPayment:fail:支付服务[' + provider + ']不存在'
         });
       } else {
         plus.payment.request(service, params.orderInfo, res => {
           res.errMsg = 'requestPayment:ok';
-          invoke(callbackId, res);
+          invoke$1(callbackId, res);
         }, err => {
-          invoke(callbackId, {
+          invoke$1(callbackId, {
             errMsg: 'requestPayment:fail:' + err.message
           });
         });
       }
     }, err => {
-      invoke(callbackId, {
+      invoke$1(callbackId, {
         errMsg: 'requestPayment:fail:' + err.message
       });
     });
@@ -6778,12 +6817,12 @@ var serviceContext = (function () {
     service.send(
       params,
       () => {
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           errMsg: method + ':ok'
         });
       },
       err => {
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           errMsg: method + ':fail:' + err.message
         });
       }
@@ -6829,14 +6868,14 @@ var serviceContext = (function () {
                 goShare();
               },
               err => {
-                invoke(callbackId, {
+                invoke$1(callbackId, {
                   errMsg: 'shareAppMessageDirectly:fail:' + err.message
                 });
               }
             );
           },
           err => {
-            invoke(callbackId, {
+            invoke$1(callbackId, {
               errMsg: 'shareAppMessageDirectly:fail:' + err.message
             });
           }
@@ -6852,7 +6891,7 @@ var serviceContext = (function () {
   function share (params, callbackId, method = 'share') {
     params = parseParams(params);
     if (typeof params === 'string') {
-      return invoke(callbackId, {
+      return invoke$1(callbackId, {
         errMsg: method + ':fail:' + params
       })
     }
@@ -6863,7 +6902,7 @@ var serviceContext = (function () {
           id
         }) => id === provider);
         if (!service) {
-          invoke(callbackId, {
+          invoke$1(callbackId, {
             errMsg: method + ':fail:分享服务[' + provider + ']不存在'
           });
         } else {
@@ -6873,7 +6912,7 @@ var serviceContext = (function () {
             service.authorize(
               () => sendShareMsg(service, params, callbackId),
               err => {
-                invoke(callbackId, {
+                invoke$1(callbackId, {
                   errMsg: method + ':fail:' + err.message
                 });
               }
@@ -6882,7 +6921,7 @@ var serviceContext = (function () {
         }
       },
       err => {
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           errMsg: method + ':fail:' + err.message
         });
       }
@@ -7535,7 +7574,7 @@ var serviceContext = (function () {
 
   let preloadWebview;
 
-  let id = 2;
+  let id$1 = 2;
 
   const WEBVIEW_LISTENERS = {
     'pullToRefresh': 'onPullDownRefresh',
@@ -7550,7 +7589,7 @@ var serviceContext = (function () {
 
   function createWebview (path, routeOptions) {
     if (routeOptions.meta.isNVue) {
-      const webviewId = id++;
+      const webviewId = id$1++;
       const webviewStyle = parseWebviewStyle(
         webviewId,
         path,
@@ -7563,7 +7602,7 @@ var serviceContext = (function () {
         nvue: true
       })
     }
-    if (id === 2) { // 如果首页非 nvue，则直接返回 Launch Webview
+    if (id$1 === 2) { // 如果首页非 nvue，则直接返回 Launch Webview
       return plus.webview.getLaunchWebview()
     }
     const webview = preloadWebview;
@@ -7619,7 +7658,7 @@ var serviceContext = (function () {
 
   function createPreloadWebview () {
     if (!preloadWebview || preloadWebview.__uniapp_route) { // 不存在，或已被使用
-      preloadWebview = plus.webview.create(VIEW_WEBVIEW_PATH, String(id++));
+      preloadWebview = plus.webview.create(VIEW_WEBVIEW_PATH, String(id$1++));
       if (process.env.NODE_ENV !== 'production') {
         console.log(`[uni-app] preloadWebview[${preloadWebview.id}]`);
       }
@@ -7841,8 +7880,8 @@ var serviceContext = (function () {
       selectComponent (selector) {
         return this.$vm.selectComponent(selector)
       },
-      selectAllComponent (selector) {
-        return this.$vm.selectAllComponent(selector)
+      selectAllComponents (selector) {
+        return this.$vm.selectAllComponents(selector)
       }
     };
 
@@ -7889,7 +7928,7 @@ var serviceContext = (function () {
       animationType,
       animationDuration,
       () => {
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           errMsg: 'navigateTo:ok'
         });
       }
@@ -7902,7 +7941,7 @@ var serviceContext = (function () {
     openType,
     animationType,
     animationDuration
-  }) {
+  }, callbackId) {
     const urls = url.split('?');
     const path = urls[0];
     const query = parseQuery(urls[1] || '');
@@ -7912,7 +7951,7 @@ var serviceContext = (function () {
         query,
         animationType,
         animationDuration
-      });
+      }, callbackId);
     }, openType === 'appLaunch');
   }
 
@@ -7937,7 +7976,7 @@ var serviceContext = (function () {
       'none',
       0,
       () => {
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           errMsg: 'reLaunch:ok'
         });
       }
@@ -7984,7 +8023,7 @@ var serviceContext = (function () {
       0,
       () => {
         lastPage && lastPage.$getAppWebview().close('none');
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           errMsg: 'redirectTo:ok'
         });
       }
@@ -8062,29 +8101,29 @@ var serviceContext = (function () {
         openType: 'switchTab'
       }), 'none', 0, () => {
         setStatusBarStyle();
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           errMsg: 'switchTab:ok'
         });
       }, 70)
     }
 
     setStatusBarStyle();
-    return {
+    invoke$1(callbackId, {
       errMsg: 'switchTab:ok'
-    }
+    });
   }
 
   function switchTab$1 ({
     url,
     from,
     openType
-  }) {
+  }, callbackId) {
     const path = url.split('?')[0];
     navigate(path, function () {
       _switchTab({
         path,
         from
-      });
+      }, callbackId);
     }, openType === 'appLaunch');
   }
 
@@ -8300,13 +8339,13 @@ var serviceContext = (function () {
   } = {}, callbackId) {
     plus.nativeUI.confirm(content, (e) => {
       if (showCancel) {
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           errMsg: 'showModal:ok',
           confirm: e.index === 1,
           cancel: e.index === 0 || e.index === -1
         });
       } else {
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           errMsg: 'showModal:ok',
           confirm: e.index === 0,
           cancel: false
@@ -8334,12 +8373,12 @@ var serviceContext = (function () {
 
     plus.nativeUI.actionSheet(options, (e) => {
       if (e.index > 0) {
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           errMsg: 'showActionSheet:ok',
           tapIndex: e.index - 1
         });
       } else {
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           errMsg: 'showActionSheet:fail cancel'
         });
       }
@@ -8481,16 +8520,16 @@ var serviceContext = (function () {
     }
   }
 
-  const callbacks$2 = {};
+  const callbacks$3 = {};
 
   function createCallbacks (namespace) {
-    let scopedCallbacks = callbacks$2[namespace];
+    let scopedCallbacks = callbacks$3[namespace];
     if (!scopedCallbacks) {
       scopedCallbacks = {
         id: 1,
         callbacks: Object.create(null)
       };
-      callbacks$2[namespace] = scopedCallbacks;
+      callbacks$3[namespace] = scopedCallbacks;
     }
     return {
       get (id) {
@@ -8943,9 +8982,9 @@ var serviceContext = (function () {
     'error',
     'waiting'
   ];
-  const callbacks$3 = {};
+  const callbacks$4 = {};
   eventNames$1.forEach(name => {
-    callbacks$3[name] = [];
+    callbacks$4[name] = [];
   });
 
   const props$1 = [
@@ -9009,7 +9048,7 @@ var serviceContext = (function () {
         errMsg,
         errCode
       }) => {
-        callbacks$3[state].forEach(callback => {
+        callbacks$4[state].forEach(callback => {
           if (typeof callback === 'function') {
             callback(state === 'error' ? {
               errMsg,
@@ -9061,7 +9100,7 @@ var serviceContext = (function () {
   eventNames$1.forEach(item => {
     const name = item[0].toUpperCase() + item.substr(1);
     BackgroundAudioManager.prototype[`on${name}`] = function (callback) {
-      callbacks$3[item].push(callback);
+      callbacks$4[item].push(callback);
     };
   });
 
@@ -9808,7 +9847,7 @@ var serviceContext = (function () {
   }, callbackId) {
     var pageId = getCurrentPageId();
     if (!pageId) {
-      invoke(callbackId, {
+      invoke$1(callbackId, {
         errMsg: 'canvasGetImageData:fail'
       });
       return
@@ -9818,7 +9857,7 @@ var serviceContext = (function () {
       if (imgData && imgData.length) {
         data.data = new Uint8ClampedArray(imgData);
       }
-      invoke(callbackId, data);
+      invoke$1(callbackId, data);
     });
     operateCanvas(canvasId, pageId, 'getImageData', {
       x,
@@ -9839,13 +9878,13 @@ var serviceContext = (function () {
   }, callbackId) {
     var pageId = getCurrentPageId();
     if (!pageId) {
-      invoke(callbackId, {
+      invoke$1(callbackId, {
         errMsg: 'canvasPutImageData:fail'
       });
       return
     }
     var cId = canvasEventCallbacks.push(function (data) {
-      invoke(callbackId, data);
+      invoke$1(callbackId, data);
     });
     operateCanvas(canvasId, pageId, 'putImageData', {
       data: [...data],
@@ -9870,7 +9909,7 @@ var serviceContext = (function () {
   }, callbackId) {
     var pageId = getCurrentPageId();
     if (!pageId) {
-      invoke(callbackId, {
+      invoke$1(callbackId, {
         errMsg: 'canvasToTempFilePath:fail'
       });
       return
@@ -9879,7 +9918,7 @@ var serviceContext = (function () {
       base64
     }) {
       if (!base64 || !base64.length) {
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           errMsg: 'canvasToTempFilePath:fail'
         });
       }
@@ -9911,6 +9950,7 @@ var serviceContext = (function () {
   }
 
   var require_context_module_1_6 = /*#__PURE__*/Object.freeze({
+    CanvasContext: CanvasContext,
     createCanvasContext: createCanvasContext$1,
     canvasGetImageData: canvasGetImageData$1,
     canvasPutImageData: canvasPutImageData$1,
@@ -9960,6 +10000,7 @@ var serviceContext = (function () {
   }
 
   var require_context_module_1_7 = /*#__PURE__*/Object.freeze({
+    MapContext: MapContext,
     createMapContext: createMapContext$1
   });
 
@@ -10022,14 +10063,60 @@ var serviceContext = (function () {
   }
 
   var require_context_module_1_8 = /*#__PURE__*/Object.freeze({
+    VideoContext: VideoContext,
     createVideoContext: createVideoContext$1
   });
 
-  const callbacks$4 = [];
+  function operateEditor (componentId, pageId, type, data) {
+    UniServiceJSBridge.publishHandler(pageId + '-editor-' + componentId, {
+      componentId,
+      type,
+      data
+    }, pageId);
+  }
+
+  UniServiceJSBridge.subscribe('onEditorMethodCallback', ({
+    callbackId,
+    data
+  }) => {
+    callback.invoke(callbackId, data);
+  });
+
+  const methods = ['insertDivider', 'insertImage', 'insertText', 'setContents', 'getContents', 'clear', 'removeFormat', 'undo', 'redo'];
+
+  class EditorContext {
+    constructor (id, pageId) {
+      this.id = id;
+      this.pageId = pageId;
+    }
+    format (name, value) {
+      operateEditor(this.id, this.pageId, 'format', {
+        options: {
+          name,
+          value
+        }
+      });
+    }
+  }
+
+  methods.forEach(function (method) {
+    EditorContext.prototype[method] = callback.warp(function (options, callbackId) {
+      operateEditor(this.id, this.pageId, method, {
+        options,
+        callbackId
+      });
+    });
+  });
+
+  var require_context_module_1_9 = /*#__PURE__*/Object.freeze({
+    EditorContext: EditorContext
+  });
+
+  const callbacks$5 = [];
 
   onMethod('onAccelerometerChange', function (res) {
-    callbacks$4.forEach(callbackId => {
-      invoke(callbackId, res);
+    callbacks$5.forEach(callbackId => {
+      invoke$1(callbackId, res);
     });
   });
 
@@ -10040,7 +10127,7 @@ var serviceContext = (function () {
    */
   function onAccelerometerChange (callbackId) {
     // TODO 当没有 start 时，添加 on 需要主动 start?
-    callbacks$4.push(callbackId);
+    callbacks$5.push(callbackId);
     if (!isEnable) {
       startAccelerometer();
     }
@@ -10065,7 +10152,7 @@ var serviceContext = (function () {
     })
   }
 
-  var require_context_module_1_9 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_10 = /*#__PURE__*/Object.freeze({
     onAccelerometerChange: onAccelerometerChange,
     startAccelerometer: startAccelerometer,
     stopAccelerometer: stopAccelerometer
@@ -10075,7 +10162,7 @@ var serviceContext = (function () {
     const callbacks = [];
     onMethod(method, data => {
       callbacks.forEach(callbackId => {
-        invoke(callbackId, data);
+        invoke$1(callbackId, data);
       });
     });
     return function (callbackId) {
@@ -10088,18 +10175,18 @@ var serviceContext = (function () {
   const onBLEConnectionStateChange$1 = on('onBLEConnectionStateChange');
   const onBLECharacteristicValueChange$1 = on('onBLECharacteristicValueChange');
 
-  var require_context_module_1_10 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_11 = /*#__PURE__*/Object.freeze({
     onBluetoothDeviceFound: onBluetoothDeviceFound$1,
     onBluetoothAdapterStateChange: onBluetoothAdapterStateChange$1,
     onBLEConnectionStateChange: onBLEConnectionStateChange$1,
     onBLECharacteristicValueChange: onBLECharacteristicValueChange$1
   });
 
-  const callbacks$5 = [];
+  const callbacks$6 = [];
 
   onMethod('onCompassChange', function (res) {
-    callbacks$5.forEach(callbackId => {
-      invoke(callbackId, res);
+    callbacks$6.forEach(callbackId => {
+      invoke$1(callbackId, res);
     });
   });
 
@@ -10110,7 +10197,7 @@ var serviceContext = (function () {
    */
   function onCompassChange (callbackId) {
     // TODO 当没有 start 时，添加 on 需要主动 start?
-    callbacks$5.push(callbackId);
+    callbacks$6.push(callbackId);
     if (!isEnable$1) {
       startCompass();
     }
@@ -10135,29 +10222,29 @@ var serviceContext = (function () {
     })
   }
 
-  var require_context_module_1_11 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_12 = /*#__PURE__*/Object.freeze({
     onCompassChange: onCompassChange,
     startCompass: startCompass,
     stopCompass: stopCompass
   });
 
-  const callbacks$6 = [];
+  const callbacks$7 = [];
 
   onMethod('onNetworkStatusChange', res => {
-    callbacks$6.forEach(callbackId => {
-      invoke(callbackId, res);
+    callbacks$7.forEach(callbackId => {
+      invoke$1(callbackId, res);
     });
   });
 
   function onNetworkStatusChange (callbackId) {
-    callbacks$6.push(callbackId);
+    callbacks$7.push(callbackId);
   }
 
-  var require_context_module_1_12 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_13 = /*#__PURE__*/Object.freeze({
     onNetworkStatusChange: onNetworkStatusChange
   });
 
-  const callbacks$7 = {
+  const callbacks$8 = {
     pause: [],
     resume: [],
     start: [],
@@ -10171,7 +10258,7 @@ var serviceContext = (function () {
         const state = res.state;
         delete res.state;
         delete res.errMsg;
-        callbacks$7[state].forEach(callback => {
+        callbacks$8[state].forEach(callback => {
           if (typeof callback === 'function') {
             callback(res);
           }
@@ -10179,7 +10266,7 @@ var serviceContext = (function () {
       });
     }
     onError (callback) {
-      callbacks$7.error.push(callback);
+      callbacks$8.error.push(callback);
     }
     onFrameRecorded (callback) {
 
@@ -10191,16 +10278,16 @@ var serviceContext = (function () {
 
     }
     onPause (callback) {
-      callbacks$7.pause.push(callback);
+      callbacks$8.pause.push(callback);
     }
     onResume (callback) {
-      callbacks$7.resume.push(callback);
+      callbacks$8.resume.push(callback);
     }
     onStart (callback) {
-      callbacks$7.start.push(callback);
+      callbacks$8.start.push(callback);
     }
     onStop (callback) {
-      callbacks$7.stop.push(callback);
+      callbacks$8.stop.push(callback);
     }
     pause () {
       invokeMethod('operateRecorder', {
@@ -10230,7 +10317,7 @@ var serviceContext = (function () {
     return recorderManager || (recorderManager = new RecorderManager())
   }
 
-  var require_context_module_1_13 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_14 = /*#__PURE__*/Object.freeze({
     getRecorderManager: getRecorderManager
   });
 
@@ -10290,14 +10377,14 @@ var serviceContext = (function () {
         });
         break
       case 'success':
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           tempFilePath,
           statusCode,
           errMsg: 'request:ok'
         });
         // eslint-disable-next-line no-fallthrough
       case 'fail':
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           errMsg: 'request:fail ' + errMsg
         });
         // eslint-disable-next-line no-fallthrough
@@ -10318,7 +10405,7 @@ var serviceContext = (function () {
     return task
   }
 
-  var require_context_module_1_14 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_15 = /*#__PURE__*/Object.freeze({
     downloadFile: downloadFile$1
   });
 
@@ -10374,7 +10461,7 @@ var serviceContext = (function () {
     delete requestTasks$1[requestTaskId];
     switch (state) {
       case 'success':
-        invoke(callbackId, formatResponse({
+        invoke$1(callbackId, formatResponse({
           data,
           statusCode,
           header,
@@ -10382,7 +10469,7 @@ var serviceContext = (function () {
         }, args));
         break
       case 'fail':
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           errMsg: 'request:fail ' + errMsg
         });
         break
@@ -10423,7 +10510,7 @@ var serviceContext = (function () {
     return new RequestTask(requestTaskId)
   }
 
-  var require_context_module_1_15 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_16 = /*#__PURE__*/Object.freeze({
     request: request$1
   });
 
@@ -10501,7 +10588,7 @@ var serviceContext = (function () {
 
   const socketTasks$1 = Object.create(null);
   const socketTasksArray = [];
-  const callbacks$8 = Object.create(null);
+  const callbacks$9 = Object.create(null);
   onMethod('onSocketTaskStateChange', ({
     socketTaskId,
     state,
@@ -10522,8 +10609,8 @@ var serviceContext = (function () {
     if (state === 'open') {
       socketTask.readyState = socketTask.OPEN;
     }
-    if (socketTask === socketTasksArray[0] && callbacks$8[state]) {
-      invoke(callbacks$8[state], state === 'message' ? {
+    if (socketTask === socketTasksArray[0] && callbacks$9[state]) {
+      invoke$1(callbacks$9[state], state === 'message' ? {
         data
       } : {});
     }
@@ -10545,7 +10632,7 @@ var serviceContext = (function () {
     socketTasks$1[socketTaskId] = task;
     socketTasksArray.push(task);
     setTimeout(() => {
-      invoke(callbackId, {
+      invoke$1(callbackId, {
         errMsg: 'connectSocket:ok'
       });
     }, 0);
@@ -10555,7 +10642,7 @@ var serviceContext = (function () {
   function sendSocketMessage$1 (args, callbackId) {
     const socketTask = socketTasksArray[0];
     if (!socketTask || socketTask.readyState !== socketTask.OPEN) {
-      invoke(callbackId, {
+      invoke$1(callbackId, {
         errMsg: 'sendSocketMessage:fail WebSocket is not connected'
       });
       return
@@ -10569,7 +10656,7 @@ var serviceContext = (function () {
   function closeSocket$1 (args, callbackId) {
     const socketTask = socketTasksArray[0];
     if (!socketTask) {
-      invoke(callbackId, {
+      invoke$1(callbackId, {
         errMsg: 'closeSocket:fail WebSocket is not connected'
       });
       return
@@ -10582,22 +10669,22 @@ var serviceContext = (function () {
   }
 
   function onSocketOpen (callbackId) {
-    callbacks$8.open = callbackId;
+    callbacks$9.open = callbackId;
   }
 
   function onSocketError (callbackId) {
-    callbacks$8.error = callbackId;
+    callbacks$9.error = callbackId;
   }
 
   function onSocketMessage (callbackId) {
-    callbacks$8.message = callbackId;
+    callbacks$9.message = callbackId;
   }
 
   function onSocketClose (callbackId) {
-    callbacks$8.close = callbackId;
+    callbacks$9.close = callbackId;
   }
 
-  var require_context_module_1_16 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_17 = /*#__PURE__*/Object.freeze({
     connectSocket: connectSocket$1,
     sendSocketMessage: sendSocketMessage$1,
     closeSocket: closeSocket$1,
@@ -10663,14 +10750,14 @@ var serviceContext = (function () {
         });
         break
       case 'success':
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           data,
           statusCode,
           errMsg: 'request:ok'
         });
         // eslint-disable-next-line no-fallthrough
       case 'fail':
-        invoke(callbackId, {
+        invoke$1(callbackId, {
           errMsg: 'request:fail ' + errMsg
         });
         // eslint-disable-next-line no-fallthrough
@@ -10691,7 +10778,7 @@ var serviceContext = (function () {
     return task
   }
 
-  var require_context_module_1_17 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_18 = /*#__PURE__*/Object.freeze({
     uploadFile: uploadFile$1
   });
 
@@ -10800,7 +10887,7 @@ var serviceContext = (function () {
     return res
   }
 
-  var require_context_module_1_18 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_19 = /*#__PURE__*/Object.freeze({
     setStorage: setStorage$1,
     setStorageSync: setStorageSync$1,
     getStorage: getStorage$1,
@@ -10891,7 +10978,7 @@ var serviceContext = (function () {
     return new MPAnimation(option)
   }
 
-  var require_context_module_1_19 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_20 = /*#__PURE__*/Object.freeze({
     createAnimation: createAnimation
   });
 
@@ -10955,9 +11042,24 @@ var serviceContext = (function () {
     return new ServiceIntersectionObserver(getCurrentPageVm('createIntersectionObserver'), options)
   }
 
-  var require_context_module_1_20 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_21 = /*#__PURE__*/Object.freeze({
     createIntersectionObserver: createIntersectionObserver
   });
+
+  const ContextClasss = {
+    canvas: CanvasContext,
+    map: MapContext,
+    video: VideoContext,
+    editor: EditorContext
+  };
+
+  function convertContext (result) {
+    if (result.context) {
+      const { id, name, page } = result.context;
+      const ContextClass = ContextClasss[name];
+      result.context = ContextClass && new ContextClass(id, page);
+    }
+  }
 
   class NodesRef {
     constructor (selectorQuery, component, selector, single) {
@@ -11005,6 +11107,18 @@ var serviceContext = (function () {
       );
       return this._selectorQuery
     }
+
+    context (callback) {
+      this._selectorQuery._push(
+        this._selector,
+        this._component,
+        this._single, {
+          context: true
+        },
+        callback
+      );
+      return this._selectorQuery
+    }
   }
 
   class SelectorQuery {
@@ -11018,6 +11132,11 @@ var serviceContext = (function () {
       invokeMethod('requestComponentInfo', this._page, this._queue, res => {
         const queueCbs = this._queueCb;
         res.forEach((result, index) => {
+          if (Array.isArray(result)) {
+            result.forEach(convertContext);
+          } else {
+            convertContext(result);
+          }
           const queueCb = queueCbs[index];
           if (isFn(queueCb)) {
             queueCb.call(this, result);
@@ -11063,23 +11182,23 @@ var serviceContext = (function () {
     return new SelectorQuery(getCurrentPageVm('createSelectorQuery'))
   }
 
-  var require_context_module_1_21 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_22 = /*#__PURE__*/Object.freeze({
     createSelectorQuery: createSelectorQuery
   });
 
-  const callbacks$9 = [];
+  const callbacks$a = [];
 
   onMethod('onKeyboardHeightChange', res => {
-    callbacks$9.forEach(callbackId => {
-      invoke(callbackId, res);
+    callbacks$a.forEach(callbackId => {
+      invoke$1(callbackId, res);
     });
   });
 
   function onKeyboardHeightChange (callbackId) {
-    callbacks$9.push(callbackId);
+    callbacks$a.push(callbackId);
   }
 
-  var require_context_module_1_22 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_23 = /*#__PURE__*/Object.freeze({
     onKeyboardHeightChange: onKeyboardHeightChange
   });
 
@@ -11087,7 +11206,7 @@ var serviceContext = (function () {
     callbackId,
     data
   }) => {
-    invoke(callbackId, data);
+    invoke$1(callbackId, data);
   });
 
   function loadFontFace$1 (options, callbackId) {
@@ -11103,7 +11222,7 @@ var serviceContext = (function () {
     }, pageId);
   }
 
-  var require_context_module_1_23 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_24 = /*#__PURE__*/Object.freeze({
     loadFontFace: loadFontFace$1
   });
 
@@ -11115,7 +11234,7 @@ var serviceContext = (function () {
     return {}
   }
 
-  var require_context_module_1_24 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_25 = /*#__PURE__*/Object.freeze({
     pageScrollTo: pageScrollTo$1
   });
 
@@ -11139,44 +11258,44 @@ var serviceContext = (function () {
 
   const hideTabBarRedDot$1 = removeTabBarBadge$1;
 
-  const callbacks$a = [];
+  const callbacks$b = [];
 
   onMethod('onTabBarMidButtonTap', res => {
-    callbacks$a.forEach(callbackId => {
-      invoke(callbackId, res);
+    callbacks$b.forEach(callbackId => {
+      invoke$1(callbackId, res);
     });
   });
 
   function onTabBarMidButtonTap (callbackId) {
-    callbacks$a.push(callbackId);
+    callbacks$b.push(callbackId);
   }
 
-  var require_context_module_1_25 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_26 = /*#__PURE__*/Object.freeze({
     removeTabBarBadge: removeTabBarBadge$1,
     showTabBarRedDot: showTabBarRedDot$1,
     hideTabBarRedDot: hideTabBarRedDot$1,
     onTabBarMidButtonTap: onTabBarMidButtonTap
   });
 
-  const callbacks$b = [];
+  const callbacks$c = [];
   onMethod('onViewDidResize', res => {
-    callbacks$b.forEach(callbackId => {
-      invoke(callbackId, res);
+    callbacks$c.forEach(callbackId => {
+      invoke$1(callbackId, res);
     });
   });
 
   function onWindowResize (callbackId) {
-    callbacks$b.push(callbackId);
+    callbacks$c.push(callbackId);
   }
 
   function offWindowResize (callbackId) {
     // TODO 目前 on 和 off 即使传入同一个 function，获取到的 callbackId 也不会一致，导致不能 off 掉指定
     // 后续修复
     // 此处和微信平台一致查询不到去掉最后一个
-    callbacks$b.splice(callbacks$b.indexOf(callbackId), 1);
+    callbacks$c.splice(callbacks$c.indexOf(callbackId), 1);
   }
 
-  var require_context_module_1_26 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_27 = /*#__PURE__*/Object.freeze({
     onWindowResize: onWindowResize,
     offWindowResize: offWindowResize
   });
@@ -11195,24 +11314,25 @@ var serviceContext = (function () {
   './context/canvas.js': require_context_module_1_6,
   './context/create-map-context.js': require_context_module_1_7,
   './context/create-video-context.js': require_context_module_1_8,
-  './device/accelerometer.js': require_context_module_1_9,
-  './device/bluetooth.js': require_context_module_1_10,
-  './device/compass.js': require_context_module_1_11,
-  './device/network.js': require_context_module_1_12,
-  './media/recorder.js': require_context_module_1_13,
-  './network/download-file.js': require_context_module_1_14,
-  './network/request.js': require_context_module_1_15,
-  './network/socket.js': require_context_module_1_16,
-  './network/upload-file.js': require_context_module_1_17,
-  './storage/storage.js': require_context_module_1_18,
-  './ui/create-animation.js': require_context_module_1_19,
-  './ui/create-intersection-observer.js': require_context_module_1_20,
-  './ui/create-selector-query.js': require_context_module_1_21,
-  './ui/keyboard.js': require_context_module_1_22,
-  './ui/load-font-face.js': require_context_module_1_23,
-  './ui/page-scroll-to.js': require_context_module_1_24,
-  './ui/tab-bar.js': require_context_module_1_25,
-  './ui/window.js': require_context_module_1_26,
+  './context/editor.js': require_context_module_1_9,
+  './device/accelerometer.js': require_context_module_1_10,
+  './device/bluetooth.js': require_context_module_1_11,
+  './device/compass.js': require_context_module_1_12,
+  './device/network.js': require_context_module_1_13,
+  './media/recorder.js': require_context_module_1_14,
+  './network/download-file.js': require_context_module_1_15,
+  './network/request.js': require_context_module_1_16,
+  './network/socket.js': require_context_module_1_17,
+  './network/upload-file.js': require_context_module_1_18,
+  './storage/storage.js': require_context_module_1_19,
+  './ui/create-animation.js': require_context_module_1_20,
+  './ui/create-intersection-observer.js': require_context_module_1_21,
+  './ui/create-selector-query.js': require_context_module_1_22,
+  './ui/keyboard.js': require_context_module_1_23,
+  './ui/load-font-face.js': require_context_module_1_24,
+  './ui/page-scroll-to.js': require_context_module_1_25,
+  './ui/tab-bar.js': require_context_module_1_26,
+  './ui/window.js': require_context_module_1_27,
 
       };
       var req = function req(key) {
@@ -11769,6 +11889,7 @@ var serviceContext = (function () {
     'uni-checkbox-group',
     'uni-cover-image',
     'uni-cover-view',
+    'uni-editor',
     'uni-form',
     'uni-functional-page-navigator',
     'uni-icon',
@@ -11839,7 +11960,15 @@ var serviceContext = (function () {
     if (selector.indexOf('#') === 0) {
       const id = selector.substr(1);
       return function match (vnode) {
-        return vnode.data && vnode.data.attrs && vnode.data.attrs.id === id
+        // props
+        if (vnode.componentInstance && vnode.componentInstance.id === id) {
+          return true
+        }
+        // attrs
+        if (vnode.data && vnode.data.attrs && vnode.data.attrs.id === id) {
+          return true
+        }
+        return false
       }
     } else if (selector.indexOf('.') === 0) {
       const clazz = selector.substr(1);
@@ -11879,17 +12008,21 @@ var serviceContext = (function () {
     }
     const $children = vm.$children;
     for (let i = 0; i < $children.length; i++) {
-      const childVm = querySelectorAll($children[i], matchSelector, ret);
-      childVm && ret.push(childVm);
+      querySelectorAll($children[i], matchSelector, ret);
     }
+    return ret
   }
 
   function initPolyfill (Vue) {
+    Vue.prototype.createIntersectionObserver = function createIntersectionObserver (options) {
+      return uni.createIntersectionObserver(this, options)
+    };
+
     Vue.prototype.selectComponent = function selectComponent (selector) {
       return querySelector(this, parseSelector(selector))
     };
 
-    Vue.prototype.selectAllComponent = function selectAllComponent (selector) {
+    Vue.prototype.selectAllComponents = function selectAllComponents (selector) {
       return querySelectorAll(this, parseSelector(selector), [])
     };
   }
@@ -12080,20 +12213,20 @@ var serviceContext = (function () {
         this.initialized = true;
         this.batchData.push([PAGE_CREATED, [this.pageId, this.pagePath]]);
       }
-      this.batchData = this.batchData.filter(data => {
+      const batchData = this.batchData.filter(data => {
         if (data[0] === UPDATED_DATA && !Object.keys(data[1][1]).length) {
           return false
         }
         return true
       });
-      if (this.batchData.length) {
+      this.batchData.length = 0;
+      if (batchData.length) {
         UniServiceJSBridge.publishHandler(VD_SYNC, {
-          data: this.batchData,
+          data: batchData,
           options: {
             timestamp: Date.now()
           }
         }, [this.pageId]);
-        this.batchData.length = 0;
       }
     }
 
@@ -12182,11 +12315,14 @@ var serviceContext = (function () {
       old = oldObj[key];
       if (old !== cur) {
         // 全量同步 style (因为 style 可能会动态删除部分样式)
-        // if (key === B_STYLE && isPlainObject(cur) && isPlainObject(old)) {
-        //   const style = diffObject(cur, old)
-        //   style && setResult(result || (result = Object.create(null)), B_STYLE, style)
-        // } else
-        if (key === V_FOR && Array.isArray(cur) && Array.isArray(old)) {
+        if (key === B_STYLE && isPlainObject(cur) && isPlainObject(old)) {
+          if (Object.keys(cur).length !== Object.keys(old).length) { // 长度不等
+            setResult(result || (result = Object.create(null)), B_STYLE, cur);
+          } else {
+            const style = diffObject(cur, old, false);
+            style && setResult(result || (result = Object.create(null)), B_STYLE, style);
+          }
+        } else if (key === V_FOR && Array.isArray(cur) && Array.isArray(old)) {
           const vFor = diffArray(cur, old);
           vFor && setResult(result || (result = Object.create(null)), V_FOR, vFor);
         } else {
@@ -12327,6 +12463,12 @@ var serviceContext = (function () {
       case V_FOR:
         return setForData.call(this, id, value)
     }
+    // TODO 暂时先传递 dataset 至 view 层(理论上不需要)
+    if (name.indexOf('a-data-') === 0) {
+      try {
+        value = JSON.stringify(value);
+      } catch (e) {}
+    }
 
     return ((this._$newData[id] || (this._$newData[id] = {}))[name] = value)
   }
@@ -12386,7 +12528,10 @@ var serviceContext = (function () {
     // 'onReady', // 兼容旧版本，应该移除该事件
     'onPageShow',
     'onPageHide',
-    'onPageResize'
+    'onPageResize',
+    // 小程序的 created,attached 生命周期(需要在 service 层的 Vue 内核 mounted 时触发,因小程序 created 可以使用 selectComponent)
+    'onServiceCreated',
+    'onServiceAttached'
   ];
   function lifecycleMixin (Vue) {
     // fixed vue-class-component

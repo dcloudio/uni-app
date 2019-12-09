@@ -26,7 +26,7 @@ function hasOwn (obj, key) {
   return hasOwnProperty.call(obj, key)
 }
 
-function noop () {}
+function noop () { }
 
 /**
  * Create a cached version of a pure function.
@@ -50,8 +50,8 @@ const camelize = cached((str) => {
 const SOURCE_KEY = '__data__';
 
 const COMPONENT_LIFECYCLE = {
-  'created': 'created',
-  'attached': 'created',
+  'created': 'onServiceCreated',
+  'attached': 'onServiceAttached',
   'ready': 'mounted',
   'moved': 'moved',
   'detached': 'destroyed'
@@ -382,6 +382,102 @@ function parseComponent (mpComponentOptions) {
   return vueComponentOptions
 }
 
+function initRelationHandlers (type, handler, target, ctx) {
+  if (!handler) {
+    return
+  }
+  const name = `_$${type}Handlers`;
+  (ctx[name] || (ctx[name] = [])).push(function () {
+    handler.call(ctx, target);
+  });
+}
+
+function initLinkedHandlers (relation, target, ctx) {
+  const type = 'linked';
+  const name = relation.name;
+  const relationNodes = ctx._$relationNodes || (ctx._$relationNodes = Object.create(null));
+  (relationNodes[name] || (relationNodes[name] = [])).push(target);
+  initRelationHandlers(type, relation[type], target, ctx);
+}
+
+function initUnlinkedHandlers (relation, target, ctx) {
+  const type = 'unlinked';
+  initRelationHandlers(type, relation[type], target, ctx);
+}
+
+function findParentRelation (parentVm, target, type) {
+  const relations = parentVm &&
+    parentVm.$options.mpOptions &&
+    parentVm.$options.mpOptions.relations;
+
+  if (!relations) {
+    return []
+  }
+  const name = Object.keys(relations).find(name => {
+    const relation = relations[name];
+    return relation.target === target && relation.type === type
+  });
+  if (!name) {
+    return []
+  }
+  return [relations[name], parentVm]
+}
+
+function initParentRelation (vm, childRelation, match) {
+  const [parentRelation, parentVm] = match(vm, vm.$options.mpOptions.path);
+  if (!parentRelation) {
+    return
+  }
+
+  initLinkedHandlers(parentRelation, vm, parentVm);
+  initLinkedHandlers(childRelation, parentVm, vm);
+
+  initUnlinkedHandlers(parentRelation, vm, parentVm);
+  initUnlinkedHandlers(childRelation, parentVm, vm);
+}
+
+function initRelation (relation, vm) {
+  const type = relation.type;
+  if (type === 'parent') {
+    initParentRelation(vm, relation, function matchParent (vm, target) {
+      return findParentRelation(vm.$parent, target, 'child')
+    });
+  } else if (type === 'ancestor') {
+    initParentRelation(vm, relation, function matchAncestor (vm, target) {
+      let $parent = vm.$parent;
+      while ($parent) {
+        const ret = findParentRelation($parent, target, 'descendant');
+        if (ret.length) {
+          return ret
+        }
+        $parent = $parent.$parent;
+      }
+      return []
+    });
+  }
+}
+
+function initRelations (vm) {
+  const {
+    relations
+  } = vm.$options.mpOptions || {};
+  if (!relations) {
+    return
+  }
+  Object.keys(relations).forEach(name => {
+    initRelation(relations[name], vm);
+  });
+}
+
+function handleRelations (vm, type) {
+  // TODO 需要移除 relationNodes
+  const handlers = vm[`_$${type}Handlers`];
+  if (!handlers) {
+    return
+  }
+  handlers.forEach(handler => handler());
+}
+
 const sharedPropertyDefinition = {
   enumerable: true,
   configurable: true,
@@ -467,7 +563,12 @@ function validateProp (key, propsOptions, propsData, vm) {
       value = !!value;
     }
     const observer = propOptions && propOptions.observer;
-    observer && observe(observer, vm, value);
+    if (observer) {
+      // 初始化时,异步触发 observer,否则 observer 中无法访问 methods 或其他
+      setTimeout(function () {
+        observe(observer, vm, value);
+      }, 4);
+    }
     return value
   }
   return getPropertyVal(propsOptions[key])
@@ -589,102 +690,6 @@ function initMethods (vm) {
   vm._$updateProperties = updateProperties;
 }
 
-function initRelationHandlers (type, handler, target, ctx, handlerCtx) {
-  if (!handler) {
-    return
-  }
-  const name = `_$${type}Handlers`;
-  (handlerCtx[name] || (handlerCtx[name] = [])).push(function () {
-    handler.call(ctx, target);
-  });
-}
-
-function initLinkedHandlers (relation, target, ctx, handlerCtx) {
-  const type = 'linked';
-  const name = relation.name;
-  const relationNodes = ctx._$relationNodes || (ctx._$relationNodes = Object.create(null));
-  (relationNodes[name] || (relationNodes[name] = [])).push(target);
-  initRelationHandlers(type, relation[type], target, ctx, handlerCtx);
-}
-
-function initUnlinkedHandlers (relation, target, ctx, handlerCtx) {
-  const type = 'unlinked';
-  initRelationHandlers(type, relation[type], target, ctx, handlerCtx);
-}
-
-function findParentRelation (parentVm, target, type) {
-  const relations = parentVm &&
-    parentVm.$options.mpOptions &&
-    parentVm.$options.mpOptions.relations;
-
-  if (!relations) {
-    return []
-  }
-  const name = Object.keys(relations).find(name => {
-    const relation = relations[name];
-    return relation.target === target && relation.type === type
-  });
-  if (!name) {
-    return []
-  }
-  return [relations[name], parentVm]
-}
-
-function initParentRelation (vm, childRelation, match) {
-  const [parentRelation, parentVm] = match(vm, vm.$options.mpOptions.path);
-  if (!parentRelation) {
-    return
-  }
-  // 先父后子
-  initLinkedHandlers(parentRelation, vm, parentVm, vm);
-  initLinkedHandlers(childRelation, parentVm, vm, vm);
-
-  initUnlinkedHandlers(parentRelation, vm, parentVm, vm);
-  initUnlinkedHandlers(childRelation, parentVm, vm, vm);
-}
-
-function initRelation (relation, vm) {
-  const type = relation.type;
-  if (type === 'parent') {
-    initParentRelation(vm, relation, function matchParent (vm, target) {
-      return findParentRelation(vm.$parent, target, 'child')
-    });
-  } else if (type === 'ancestor') {
-    initParentRelation(vm, relation, function matchAncestor (vm, target) {
-      let $parent = vm.$parent;
-      while ($parent) {
-        const ret = findParentRelation($parent, target, 'descendant');
-        if (ret.length) {
-          return ret
-        }
-        $parent = $parent.$parent;
-      }
-      return []
-    });
-  }
-}
-
-function initRelations (vm) {
-  const {
-    relations
-  } = vm.$options.mpOptions || {};
-  if (!relations) {
-    return
-  }
-  Object.keys(relations).forEach(name => {
-    initRelation(relations[name], vm);
-  });
-}
-
-function handleRelations (vm, type) {
-  // TODO 需要移除 relationNodes
-  const handlers = vm[`_$${type}Handlers`];
-  if (!handlers) {
-    return
-  }
-  handlers.forEach(handler => handler());
-}
-
 function handleObservers (vm) {
   const watch = vm.$options.watch;
   if (!watch) {
@@ -705,12 +710,13 @@ function handleObservers (vm) {
 
 var polyfill = {
   beforeCreate () {
+    // 取消 development 时的 Proxy,避免小程序组件模板中使用尚未定义的属性告警
+    this._renderProxy = this;
+  },
+  created () { // properties 中可能会访问 methods,故需要在 created 中初始化
     initState(this);
     initMethods(this);
     initRelations(this);
-  },
-  created () {
-    handleRelations(this, 'linked');
   },
   mounted () {
     handleObservers(this);
@@ -749,10 +755,21 @@ function Page (options) {
   global['__wxComponents'][global['__wxRoute']] = pageOptions;
 }
 
+function initRelationsHandler (vueComponentOptions) {
+  // linked 需要在当前组件 attached 之后再执行
+  if (!vueComponentOptions['onServiceAttached']) {
+    vueComponentOptions['onServiceAttached'] = [];
+  }
+  vueComponentOptions['onServiceAttached'].push(function onServiceAttached () {
+    handleRelations(this, 'linked');
+  });
+}
+
 function Component (options) {
   const componentOptions = parseComponent(options);
   componentOptions.mixins.unshift(polyfill);
   componentOptions.mpOptions.path = global['__wxRoute'];
+  initRelationsHandler(componentOptions);
   global['__wxComponents'][global['__wxRoute']] = componentOptions;
 }
 

@@ -1918,7 +1918,10 @@ function flushCallbacks () {
 // where microtasks have too high a priority and fire in between supposedly
 // sequential events (e.g. #4521, #6690, which have workarounds)
 // or even between bubbling of the same event (#6566).
-var timerFunc;
+// fixed by xxxxxx app-plus 平台 Promise 执行顺序不一致,导致各种乱七八糟的 Bug,统一使用 setTimeout
+var timerFunc = function () {
+  setTimeout(flushCallbacks, 0);
+};
 
 // The nextTick behavior leverages the microtask queue, which can be accessed
 // via either native Promise.then or MutationObserver.
@@ -1927,48 +1930,50 @@ var timerFunc;
 // completely stops working after triggering a few times... so, if native
 // Promise is available, we will use it:
 /* istanbul ignore next, $flow-disable-line */
-if (typeof Promise !== 'undefined' && isNative(Promise) && !isIOS) { // fixed by xxxxxx
-  var p = Promise.resolve();
-  timerFunc = function () {
-    p.then(flushCallbacks);
-    // In problematic UIWebViews, Promise.then doesn't completely break, but
-    // it can get stuck in a weird state where callbacks are pushed into the
-    // microtask queue but the queue isn't being flushed, until the browser
-    // needs to do some other work, e.g. handle a timer. Therefore we can
-    // "force" the microtask queue to be flushed by adding an empty timer.
-    if (isIOS) { setTimeout(noop); }
-  };
-} else if (!isIE && typeof MutationObserver !== 'undefined' && (
-  isNative(MutationObserver) ||
-  // PhantomJS and iOS 7.x
-  MutationObserver.toString() === '[object MutationObserverConstructor]'
-)) {
-  // Use MutationObserver where native Promise is not available,
-  // e.g. PhantomJS, iOS7, Android 4.4
-  // (#6466 MutationObserver is unreliable in IE11)
-  var counter = 1;
-  var observer = new MutationObserver(flushCallbacks);
-  var textNode = document.createTextNode(String(counter));
-  observer.observe(textNode, {
-    characterData: true
-  });
-  timerFunc = function () {
-    counter = (counter + 1) % 2;
-    textNode.data = String(counter);
-  };
-} else if (typeof setImmediate !== 'undefined' && isNative(setImmediate)) {
-  // Fallback to setImmediate.
-  // Technically it leverages the (macro) task queue,
-  // but it is still a better choice than setTimeout.
-  timerFunc = function () {
-    setImmediate(flushCallbacks);
-  };
-} else {
-  // Fallback to setTimeout.
-  timerFunc = function () {
-    setTimeout(flushCallbacks, 0);
-  };
-}
+// if (typeof Promise !== 'undefined' && isNative(Promise)) {
+//   const p = Promise.resolve()
+//   timerFunc = () => {
+//     p.then(flushCallbacks)
+//     // In problematic UIWebViews, Promise.then doesn't completely break, but
+//     // it can get stuck in a weird state where callbacks are pushed into the
+//     // microtask queue but the queue isn't being flushed, until the browser
+//     // needs to do some other work, e.g. handle a timer. Therefore we can
+//     // "force" the microtask queue to be flushed by adding an empty timer.
+//     if (isIOS) setTimeout(noop)
+//   }
+//   isUsingMicroTask = true
+// } else if (!isIE && typeof MutationObserver !== 'undefined' && (
+//   isNative(MutationObserver) ||
+//   // PhantomJS and iOS 7.x
+//   MutationObserver.toString() === '[object MutationObserverConstructor]'
+// )) {
+//   // Use MutationObserver where native Promise is not available,
+//   // e.g. PhantomJS, iOS7, Android 4.4
+//   // (#6466 MutationObserver is unreliable in IE11)
+//   let counter = 1
+//   const observer = new MutationObserver(flushCallbacks)
+//   const textNode = document.createTextNode(String(counter))
+//   observer.observe(textNode, {
+//     characterData: true
+//   })
+//   timerFunc = () => {
+//     counter = (counter + 1) % 2
+//     textNode.data = String(counter)
+//   }
+//   isUsingMicroTask = true
+// } else if (typeof setImmediate !== 'undefined' && isNative(setImmediate)) {
+//   // Fallback to setImmediate.
+//   // Technically it leverages the (macro) task queue,
+//   // but it is still a better choice than setTimeout.
+//   timerFunc = () => {
+//     setImmediate(flushCallbacks)
+//   }
+// } else {
+//   // Fallback to setTimeout.
+//   timerFunc = () => {
+//     setTimeout(flushCallbacks, 0)
+//   }
+// }
 
 function nextTick (cb, ctx) {
   var _resolve;
@@ -2258,18 +2263,29 @@ function mergeVNodeHook (def, hookKey, hook) {
 /*  */
 
 // fixed by xxxxxx (mp properties)
-function extractPropertiesFromVNodeData(data, Ctor, res) {
+function extractPropertiesFromVNodeData(data, Ctor, res, context) {
   var propOptions = Ctor.options.mpOptions && Ctor.options.mpOptions.properties;
   if (isUndef(propOptions)) {
     return res
   }
+  var externalClasses = Ctor.options.mpOptions.externalClasses || [];
   var attrs = data.attrs;
   var props = data.props;
   if (isDef(attrs) || isDef(props)) {
     for (var key in propOptions) {
       var altKey = hyphenate(key);
-      checkProp(res, props, key, altKey, true) ||
-        checkProp(res, attrs, key, altKey, false);
+      var result = checkProp(res, props, key, altKey, true) ||
+          checkProp(res, attrs, key, altKey, false);
+      // externalClass
+      if (
+        result &&
+        res[key] &&
+        externalClasses.indexOf(altKey) !== -1 &&
+        context[camelize(res[key])]
+      ) {
+        // 赋值 externalClass 真正的值(模板里 externalClass 的值可能是字符串)
+        res[key] = context[camelize(res[key])];
+      }
     }
   }
   return res
@@ -2278,7 +2294,8 @@ function extractPropertiesFromVNodeData(data, Ctor, res) {
 function extractPropsFromVNodeData (
   data,
   Ctor,
-  tag
+  tag,
+  context
 ) {
   // we are only extracting raw values here.
   // validation and default values are handled in the child
@@ -2286,7 +2303,7 @@ function extractPropsFromVNodeData (
   var propOptions = Ctor.options.props;
   if (isUndef(propOptions)) {
     // fixed by xxxxxx
-    return extractPropertiesFromVNodeData(data, Ctor, {})
+    return extractPropertiesFromVNodeData(data, Ctor, {}, context)
   }
   var res = {};
   var attrs = data.attrs;
@@ -2315,7 +2332,7 @@ function extractPropsFromVNodeData (
     }
   }
   // fixed by xxxxxx
-  return extractPropertiesFromVNodeData(data, Ctor, res)
+  return extractPropertiesFromVNodeData(data, Ctor, res, context)
 }
 
 function checkProp (
@@ -3158,6 +3175,8 @@ var componentVNodeHooks = {
       // fixed by xxxxxx
       componentInstance._isMounted = true;
       if (componentInstance._$vd) {// 延迟 mounted
+        callHook(componentInstance, 'onServiceCreated');
+        callHook(componentInstance, 'onServiceAttached');
         componentInstance._$vd.addMountedVm(componentInstance);
       } else {
         callHook(componentInstance, 'mounted');
@@ -3249,7 +3268,7 @@ function createComponent (
   }
 
   // extract props
-  var propsData = extractPropsFromVNodeData(data, Ctor, tag);
+  var propsData = extractPropsFromVNodeData(data, Ctor, tag, context);
 
   // functional component
   if (isTrue(Ctor.options.functional)) {
@@ -4110,6 +4129,8 @@ function mountComponent (
     // fixed by xxxxxx
     vm._isMounted = true;
     if (vm._$vd) {// 延迟 mounted 事件
+      callHook(vm, 'onServiceCreated');
+      callHook(vm, 'onServiceAttached');
       vm._$vd.addMountedVm(vm);
     } else {
       callHook(vm, 'mounted');

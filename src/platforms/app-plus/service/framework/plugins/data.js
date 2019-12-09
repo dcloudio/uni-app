@@ -144,6 +144,12 @@ function setData (id, name, value) {
     case V_FOR:
       return setForData.call(this, id, value)
   }
+  // TODO 暂时先传递 dataset 至 view 层(理论上不需要)
+  if (name.indexOf('a-data-') === 0) {
+    try {
+      value = JSON.stringify(value)
+    } catch (e) {}
+  }
 
   return ((this._$newData[id] || (this._$newData[id] = {}))[name] = value)
 }
