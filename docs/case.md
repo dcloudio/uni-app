@@ -171,6 +171,8 @@ uni-app已经有几十万开发者，uni统计月活2亿，是开发者数量和
 
 **拉卡拉收款宝：** App部分页面使用uni-app制作
 
+**汕头公交：** 广东移动出品。[Android](https://android.myapp.com/myapp/detail.htm?apkName=com.gmcc.stgj)、[iOS](https://apps.apple.com/cn/app/%E6%B1%95%E5%A4%B4%E5%85%AC%E4%BA%A4/id1091442840)、微信小程序搜索“汕头智慧公交”
+
 **香橙：** 餐馆SaaS服务，手机点餐、下单、排队叫号、营销推广。[官网](http://ivcvc.com)
 
 **围棋战场：**围棋对弈，游戏类的小程序（非小游戏）。[微信小程序码](https://user-images.githubusercontent.com/16237216/65005363-327a9f80-d932-11e9-9be6-68cdbcdfdbf1.png)
