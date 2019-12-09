@@ -399,6 +399,9 @@ const protocols = { // 需要做转换的 API 列表
   },
   showShareMenu: {
     name: 'showSharePanel'
+  },
+  hideHomeButton: {
+    name: 'hideBackHome'
   }
 }
 
