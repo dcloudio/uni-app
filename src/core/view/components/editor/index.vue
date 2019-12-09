@@ -115,6 +115,7 @@ export default {
               }
             } else if (name === 'indent') {
               const rtl = quill.getFormat(range).direction === 'rtl'
+              value = value === '+1'
               if (rtl) {
                 value = !value
               }
