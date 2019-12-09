@@ -7941,7 +7941,7 @@ var serviceContext = (function () {
     openType,
     animationType,
     animationDuration
-  }) {
+  }, callbackId) {
     const urls = url.split('?');
     const path = urls[0];
     const query = parseQuery(urls[1] || '');
