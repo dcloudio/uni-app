@@ -617,11 +617,11 @@ export default {
     }
 
     return createElement(
-      'uni-swiper',
-      [createElement('div', {
-        ref: 'slidesWrapper',
-        'class': 'uni-swiper-wrapper',
+      'uni-swiper', {
         on: this.$listeners
+      }, [createElement('div', {
+        ref: 'slidesWrapper',
+        'class': 'uni-swiper-wrapper'
       }, slidesWrapperChild)]
     )
   }

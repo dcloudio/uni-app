@@ -182,12 +182,15 @@ export default {
     this.length = (this.$slots.default && this.$slots.default.length) || 0
     return createElement('uni-picker-view-column', {
       on: {
-        wheel: this._handleWheel
+        on: this.$listeners
       }
     }, [
       createElement('div', {
         ref: 'main',
-        staticClass: 'uni-picker-view-group'
+        staticClass: 'uni-picker-view-group',
+        on: {
+          wheel: this._handleWheel
+        }
       },
       [
         createElement('div', {

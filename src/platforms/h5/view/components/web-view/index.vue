@@ -1,5 +1,5 @@
 <template>
-  <uni-web-view />
+  <uni-web-view v-on="$listeners" />
 </template>
 <script>
 export default {

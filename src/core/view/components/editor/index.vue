@@ -1,7 +1,8 @@
 <template>
   <uni-editor
     :id="id"
-    class="ql-container" />
+    class="ql-container"
+    v-on="$listeners" />
 </template>
 
 <script>
