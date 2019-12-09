@@ -20,7 +20,7 @@ const ContextClasss = {
 }
 
 function convertContext (result) {
-  if (result.context) {
+  if (result && result.context) {
     const { id, name, page } = result.context
     const ContextClass = ContextClasss[name]
     result.context = ContextClass && new ContextClass(id, page)
