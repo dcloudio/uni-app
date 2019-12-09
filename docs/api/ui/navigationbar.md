@@ -130,3 +130,34 @@ App平台调用此API时会关闭屏幕中间悬浮显示的loading
 ```javascript
 uni.hideNavigationBarLoading()
 ```
+
+
+### uni.hideHomeButton(OBJECT)
+
+在当前页面隐藏导航条加载动画。
+
+**平台差异说明**
+
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|x|x|√|x|x|x|x|
+
+隐藏返回首页按钮。
+
+**OBJECT参数说明**
+
+|参数|类型|必填|说明|
+|---|---|---|---|
+|success|Function|否|接口调用成功的回调函数|
+|fail|Function|否|接口调用失败的回调函数|
+|complete|Function|否|接口调用结束的回调函数（调用成功、失败都会执行）|
+
+**示例**
+
+```javascript
+uni.hideHomeButton()
+```
+
+**说明**
+- 微信小程序自基础库版本2.8.3开始支持
+- 当用户打开的小程序最底层页面是非首页时，默认展示“返回首页”按钮，开发者可在页面`onShow`中调用`hideHomeButton`进行隐藏。
