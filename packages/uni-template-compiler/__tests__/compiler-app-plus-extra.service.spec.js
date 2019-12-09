@@ -112,5 +112,12 @@ describe('codegen', () => {
       `with(this){return _c('view',{staticClass:_$s(0,'sc',"bbbb"),attrs:{"id":"aaa","_i":0}})}`
     )
   })
+  // TODO 后续优化 dataset
+  // it('generate dataset', () => {
+  //   assertCodegen(
+  //     '<view data-a="1" :data-b="b"></view>',
+  //     `with(this){return _c('view',{attrs:{"data-a":"1","data-b":b,"_i":0}})}`
+  //   )
+  // })
 })
 /* eslint-enable quotes */

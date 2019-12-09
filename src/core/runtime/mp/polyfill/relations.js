@@ -1,24 +1,24 @@
-function initRelationHandlers (type, handler, target, ctx, handlerCtx) {
+function initRelationHandlers (type, handler, target, ctx) {
   if (!handler) {
     return
   }
   const name = `_$${type}Handlers`;
-  (handlerCtx[name] || (handlerCtx[name] = [])).push(function () {
+  (ctx[name] || (ctx[name] = [])).push(function () {
     handler.call(ctx, target)
   })
 }
 
-function initLinkedHandlers (relation, target, ctx, handlerCtx) {
+function initLinkedHandlers (relation, target, ctx) {
   const type = 'linked'
   const name = relation.name
   const relationNodes = ctx._$relationNodes || (ctx._$relationNodes = Object.create(null));
   (relationNodes[name] || (relationNodes[name] = [])).push(target)
-  initRelationHandlers(type, relation[type], target, ctx, handlerCtx)
+  initRelationHandlers(type, relation[type], target, ctx)
 }
 
-function initUnlinkedHandlers (relation, target, ctx, handlerCtx) {
+function initUnlinkedHandlers (relation, target, ctx) {
   const type = 'unlinked'
-  initRelationHandlers(type, relation[type], target, ctx, handlerCtx)
+  initRelationHandlers(type, relation[type], target, ctx)
 }
 
 function findParentRelation (parentVm, target, type) {
@@ -44,12 +44,12 @@ function initParentRelation (vm, childRelation, match) {
   if (!parentRelation) {
     return
   }
-  // 先父后子
-  initLinkedHandlers(parentRelation, vm, parentVm, vm)
-  initLinkedHandlers(childRelation, parentVm, vm, vm)
 
-  initUnlinkedHandlers(parentRelation, vm, parentVm, vm)
-  initUnlinkedHandlers(childRelation, parentVm, vm, vm)
+  initLinkedHandlers(parentRelation, vm, parentVm)
+  initLinkedHandlers(childRelation, parentVm, vm)
+
+  initUnlinkedHandlers(parentRelation, vm, parentVm)
+  initUnlinkedHandlers(childRelation, parentVm, vm)
 }
 
 function initRelation (relation, vm) {

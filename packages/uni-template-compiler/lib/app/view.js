@@ -139,6 +139,11 @@ function transformNode (el, parent, state, isScopedSlot) {
   parseWxsProps(el, {
     isAppView: true
   })
+
+  // if (el.attrs) { // TODO 过滤 dataset
+  //   el.attrs = el.attrs.filter(attr => attr.name.indexOf('data-') !== 0)
+  // }
+
   parseAttrs(el, genVar)
   parseProps(el, genVar)
 

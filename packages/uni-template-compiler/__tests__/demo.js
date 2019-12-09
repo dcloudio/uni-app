@@ -1,7 +1,7 @@
 const compiler = require('../lib')
 const res = compiler.compile(
   `
-<view><van-grid-item v-for="(item,index) in (4)" :key="item"></van-grid-item></view>
+<view data-a="1" :data-b="b"></view>
 `, {
     miniprogram: true,
     resourcePath: '/User/fxy/Documents/test.wxml',

@@ -43,7 +43,12 @@ function validateProp (key, propsOptions, propsData, vm) {
       value = !!value
     }
     const observer = propOptions && propOptions.observer
-    observer && observe(observer, vm, value)
+    if (observer) {
+      // 初始化时,异步触发 observer,否则 observer 中无法访问 methods 或其他
+      setTimeout(function () {
+        observe(observer, vm, value)
+      }, 4)
+    }
     return value
   }
   return getPropertyVal(propsOptions[key])

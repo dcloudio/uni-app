@@ -12,7 +12,15 @@ function parseSelector (selector) {
   if (selector.indexOf('#') === 0) {
     const id = selector.substr(1)
     return function match (vnode) {
-      return vnode.data && vnode.data.attrs && vnode.data.attrs.id === id
+      // props
+      if (vnode.componentInstance && vnode.componentInstance.id === id) {
+        return true
+      }
+      // attrs
+      if (vnode.data && vnode.data.attrs && vnode.data.attrs.id === id) {
+        return true
+      }
+      return false
     }
   } else if (selector.indexOf('.') === 0) {
     const clazz = selector.substr(1)
@@ -52,17 +60,21 @@ function querySelectorAll (vm, matchSelector, ret) {
   }
   const $children = vm.$children
   for (let i = 0; i < $children.length; i++) {
-    const childVm = querySelectorAll($children[i], matchSelector, ret)
-    childVm && ret.push(childVm)
+    querySelectorAll($children[i], matchSelector, ret)
   }
+  return ret
 }
 
 export function initPolyfill (Vue) {
+  Vue.prototype.createIntersectionObserver = function createIntersectionObserver (options) {
+    return uni.createIntersectionObserver(this, options)
+  }
+
   Vue.prototype.selectComponent = function selectComponent (selector) {
     return querySelector(this, parseSelector(selector))
   }
 
-  Vue.prototype.selectAllComponent = function selectAllComponent (selector) {
+  Vue.prototype.selectAllComponents = function selectAllComponents (selector) {
     return querySelectorAll(this, parseSelector(selector), [])
   }
 }

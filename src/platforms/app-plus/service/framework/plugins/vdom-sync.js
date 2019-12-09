@@ -152,20 +152,20 @@ export class VDomSync {
       this.initialized = true
       this.batchData.push([PAGE_CREATED, [this.pageId, this.pagePath]])
     }
-    this.batchData = this.batchData.filter(data => {
+    const batchData = this.batchData.filter(data => {
       if (data[0] === UPDATED_DATA && !Object.keys(data[1][1]).length) {
         return false
       }
       return true
     })
-    if (this.batchData.length) {
+    this.batchData.length = 0
+    if (batchData.length) {
       UniServiceJSBridge.publishHandler(VD_SYNC, {
-        data: this.batchData,
+        data: batchData,
         options: {
           timestamp: Date.now()
         }
       }, [this.pageId])
-      this.batchData.length = 0
     }
   }
 

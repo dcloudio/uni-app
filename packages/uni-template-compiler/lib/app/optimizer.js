@@ -63,7 +63,16 @@ function markStatic (node) {
     const isCustomComponent = isComponent(node.tag)
     if (node.attrs && !isCustomComponent && node.tag !== 'keep-alive') { // 移除静态属性
       // 保留 id 属性, selectComponent 需要使用
-      node.attrs = node.attrs.filter(attr => attr.name === 'id' || attr.name === ID || isVar(attr.value))
+      node.attrs = node.attrs.filter(attr => {
+        const {
+          name,
+          value
+        } = attr
+        return name === 'id' ||
+          name === ID ||
+          // name.indexOf('data-') === 0 || // TODO dataset
+          isVar(value)
+      })
     }
 
     node.children = node.children.filter(child => { // 移除静态文本

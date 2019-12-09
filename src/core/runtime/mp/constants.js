@@ -1,8 +1,8 @@
 export const SOURCE_KEY = '__data__'
 
 export const COMPONENT_LIFECYCLE = {
-  'created': 'created',
-  'attached': 'created',
+  'created': 'onServiceCreated',
+  'attached': 'onServiceAttached',
   'ready': 'mounted',
   'moved': 'moved',
   'detached': 'destroyed'

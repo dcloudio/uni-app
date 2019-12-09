@@ -63,5 +63,12 @@ describe('codegen', () => {
       `with(this){return _c('v-uni-view',{wxsProps:{"change:prop":"pos"},attrs:{"change:prop":swipe.sizeReady,"prop":_$gc(0,'change:pos'),"_i":0},on:{"touchstart":function($event){$event = $handleWxsEvent($event);swipe.touchstart($event, $getComponentDescriptor())},"touchmove":function($event){$event = $handleWxsEvent($event);swipe.touchmove($event, $getComponentDescriptor())},"touchend":function($event){$event = $handleWxsEvent($event);swipe.touchend($event, $getComponentDescriptor())},"change":function($event){return $handleViewEvent($event)}}})}`
     )
   })
+  // TODO 后续优化dataset
+  // it('generate dataset', () => {
+  //   assertCodegen(
+  //     '<view data-a="1" :data-b="b"></view>',
+  //     `with(this){return _c('v-uni-view',{attrs:{"_i":0}})}`
+  //   )
+  // })
 })
 /* eslint-enable quotes */

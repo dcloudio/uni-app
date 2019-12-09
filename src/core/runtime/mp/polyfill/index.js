@@ -17,12 +17,13 @@ import {
 
 export default {
   beforeCreate () {
+    // 取消 development 时的 Proxy,避免小程序组件模板中使用尚未定义的属性告警
+    this._renderProxy = this
+  },
+  created () { // properties 中可能会访问 methods,故需要在 created 中初始化
     initState(this)
     initMethods(this)
     initRelations(this)
-  },
-  created () {
-    handleRelations(this, 'linked')
   },
   mounted () {
     handleObservers(this)

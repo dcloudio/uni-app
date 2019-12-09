@@ -8,6 +8,10 @@ import {
   parseComponent
 } from './parser/component-parser'
 
+import {
+  handleRelations
+} from './polyfill/relations'
+
 import polyfill from './polyfill/index'
 
 export * from './wxs'
@@ -23,10 +27,21 @@ export function Page (options) {
   global['__wxComponents'][global['__wxRoute']] = pageOptions
 }
 
+function initRelationsHandler (vueComponentOptions) {
+  // linked 需要在当前组件 attached 之后再执行
+  if (!vueComponentOptions['onServiceAttached']) {
+    vueComponentOptions['onServiceAttached'] = []
+  }
+  vueComponentOptions['onServiceAttached'].push(function onServiceAttached () {
+    handleRelations(this, 'linked')
+  })
+}
+
 export function Component (options) {
   const componentOptions = parseComponent(options)
   componentOptions.mixins.unshift(polyfill)
   componentOptions.mpOptions.path = global['__wxRoute']
+  initRelationsHandler(componentOptions)
   global['__wxComponents'][global['__wxRoute']] = componentOptions
 }
 

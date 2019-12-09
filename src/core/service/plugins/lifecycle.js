@@ -28,7 +28,10 @@ const LIFECYCLE_HOOKS = [
   // 'onReady', // 兼容旧版本，应该移除该事件
   'onPageShow',
   'onPageHide',
-  'onPageResize'
+  'onPageResize',
+  // 小程序的 created,attached 生命周期(需要在 service 层的 Vue 内核 mounted 时触发,因小程序 created 可以使用 selectComponent)
+  'onServiceCreated',
+  'onServiceAttached'
 ]
 export function lifecycleMixin (Vue) {
   // fixed vue-class-component
