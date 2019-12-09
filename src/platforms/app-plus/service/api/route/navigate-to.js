@@ -62,6 +62,6 @@ export function navigateTo ({
       query,
       animationType,
       animationDuration
-    })
+    }, callbackId)
   }, openType === 'appLaunch')
 }

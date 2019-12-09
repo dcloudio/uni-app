@@ -85,21 +85,21 @@ function _switchTab ({
   }
 
   setStatusBarStyle()
-  return {
+  invoke(callbackId, {
     errMsg: 'switchTab:ok'
-  }
+  })
 }
 
 export function switchTab ({
   url,
   from,
   openType
-}) {
+}, callbackId) {
   const path = url.split('?')[0]
   navigate(path, function () {
     _switchTab({
       path,
       from
-    })
+    }, callbackId)
   }, openType === 'appLaunch')
 }
