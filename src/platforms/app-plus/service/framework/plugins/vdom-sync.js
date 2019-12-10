@@ -33,7 +33,9 @@ function parseDataset (dataset) {
   Object.keys(dataset).forEach(name => {
     try {
       ret[name] = JSON.parse(dataset[name])
-    } catch (e) {}
+    } catch (e) { // dataset 存在两种,一种是被JSON.stringify的,一种是原始的
+      ret[name] = dataset[name]
+    }
   })
   return ret
 }
