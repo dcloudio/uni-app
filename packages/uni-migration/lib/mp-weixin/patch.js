@@ -9,7 +9,14 @@ const VANT_ASSETS = [{ // wxs array.constructor
     return src.indexOf('array.wxs') !== -1
   },
   source(code) {
-    return code.replace(`array.constructor === 'Array'`, 'Array.isArray(array)')
+    return code.replace(`array && array.constructor === 'Array'`, `array && (array.constructor === 'Array' || (typeof Array !== 'undefined' && Array.isArray(array)))`)
+  }
+}, { // notify.js show 方法与 show 属性冲突
+  test(src) {
+    return src.indexOf('notify/notify.js') !== -1
+  },
+  source(code) {
+    return code.replace(`show()`, 'showNotify()')
   }
 }]
 
@@ -18,13 +25,20 @@ const PATCH_ASSETS = [
 ]
 
 const VANT_VUES = [{
-  test(file) {
-    return normalizePath(file.path).indexOf('/image/index.vue') !== -1
+  test(filepath) {
+    return filepath.indexOf('/image/index.vue') !== -1
   },
   source(code) {
     // onLoad 与 onError 是生命周期函数名,需要替换为其他
     return code.replace(/onLoad/g, 'onImageLoad')
       .replace(/onError/g, 'onImageError')
+  }
+}, { // notify show方法与show属性冲突
+  test(filepath) {
+    return filepath.indexOf('/notify/index.vue') !== -1
+  },
+  source(code) {
+    return code.replace(`show()`, 'showNotify()')
   }
 }]
 
@@ -33,6 +47,7 @@ const PATCH_VUES = [
 ]
 
 function patchAsset(src, dest) {
+  src = normalizePath(src)
   const options = PATCH_ASSETS.find(patch => patch.test(src))
   if (options) {
     console.log(`write: ${dest}`)
@@ -43,7 +58,8 @@ function patchAsset(src, dest) {
 }
 
 function patchVue(file) {
-  const options = PATCH_VUES.find(patch => patch.test(file))
+  const filepath = normalizePath(file.path)
+  const options = PATCH_VUES.find(patch => patch.test(filepath))
   if (options) {
     file.content = options.source(file.content)
   }

@@ -119,5 +119,11 @@ describe('codegen', () => {
   //     `with(this){return _c('view',{attrs:{"data-a":"1","data-b":b,"_i":0}})}`
   //   )
   // })
+  it('generate dataset', () => {
+    assertCodegen(
+      '<view data-a="1" :data-b="b"></view>',
+      `with(this){return _c('view',{attrs:{"data-b":_$s(0,'a-data-b',b),"_i":0}})}`
+    )
+  })
 })
 /* eslint-enable quotes */

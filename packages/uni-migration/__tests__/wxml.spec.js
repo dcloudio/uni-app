@@ -9,7 +9,11 @@ describe('wxml:compiler', () => {
   it('generate event', () => {
     assertCodegen(
       `<view bindtouchstart="startDrag" catchtouchmove="{{ catchMove ? 'noop' : '' }}"/>`,
-      `<view @touchstart="startDrag" @touchmove.stop="catchMove ? 'noop' : ''"></view>`
+      `<view @touchstart="startDrag" @touchmove.stop.prevent="catchMove ? 'noop' : ''"></view>`
+    )
+    assertCodegen(
+      `<uni-transition bind:click="click" bindtouchstart="startDrag" catchtouchmove="{{ catchMove ? 'noop' : '' }}"/>`,
+      `<uni-transition @click="click" @touchstart.native="startDrag" @touchmove.native.stop.prevent="catchMove ? 'noop' : ''"></uni-transition>`
     )
   })
   it('generate class', () => {

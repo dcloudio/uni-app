@@ -24,6 +24,10 @@ export function initEvent (Vue) {
     if (options.stop) {
       $vueEvent.stopPropagation()
     }
+    if (options.prevent) {
+      $vueEvent.preventDefault()
+    }
+
     const $event = this.$handleEvent($vueEvent)
     const cid = this._$id
     // 当自定义组件根节点触发事件时，nid 始终为 0

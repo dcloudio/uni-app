@@ -10,6 +10,7 @@ module.exports = [
   'uni-modal',
   'uni-toast',
   'uni-resize-sensor',
+  'uni-shadow-root',
 
   'uni-ad',
   'uni-audio',

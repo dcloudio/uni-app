@@ -12,7 +12,7 @@ import {
 
 import getWindowOffset from 'uni-platform/helpers/get-window-offset'
 
-function processTarget (target, detail) {
+function processTarget (target, detail, checkShadowRoot = false) {
   const res = {
     id: target.id,
     offsetLeft: target.offsetLeft,
@@ -81,7 +81,7 @@ export function processEvent (name, $event = {}, detail = {}, target = {}, curre
     timeStamp: $event.timeStamp || 0,
     detail: detail,
     target: processTarget(target, detail),
-    currentTarget: processTarget(currentTarget),
+    currentTarget: processTarget(currentTarget, false, true),
     // 只处理系统事件
     touches: ($event instanceof Event || $event instanceof CustomEvent) ? processTouches($event.touches) : $event.touches,
     changedTouches: ($event instanceof Event || $event instanceof CustomEvent) ? processTouches($event.changedTouches)

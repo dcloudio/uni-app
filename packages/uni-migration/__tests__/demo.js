@@ -13,7 +13,7 @@ migrate('/Users/fxy/Downloads/wa-vantui_1.1')
 //   transformTemplate
 // } = require('../lib/mp-weixin/transform/template-transformer')
 // console.log(transformTemplate(
-//   `<view class="van-notice-bar__content {{ !scrollable && !wrapable ? 'van-ellipsis' : '' }}"></view>`, {
+//   `<uni-transition bind:click="click" bindtouchstart="startDrag" catchtouchmove="{{ catchMove ? 'noop' : '' }}"/>`, {
 //     filename: 'index'
 //   }
 // ))

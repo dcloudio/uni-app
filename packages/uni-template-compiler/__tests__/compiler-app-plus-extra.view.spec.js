@@ -70,5 +70,11 @@ describe('codegen', () => {
   //     `with(this){return _c('v-uni-view',{attrs:{"_i":0}})}`
   //   )
   // })
+  it('generate dataset', () => {
+    assertCodegen(
+      '<view data-a="1" :data-b="b"></view>',
+      `with(this){return _c('v-uni-view',{attrs:{"data-a":"1","data-b":_$g(0,'a-data-b'),"_i":0}})}`
+    )
+  })
 })
 /* eslint-enable quotes */

@@ -6646,7 +6646,7 @@ function parseDataset(attrs) {
   var dataset = Object.create(null);
   Object.keys(attrs).forEach(function (name) {
     if (name.indexOf('data-') === 0) {
-      dataset[camelize(name.replace('data-', ''))] = attrs[name];
+      dataset[camelize(name.replace('data-', ''))] = JSON.parse(attrs[name]);
     }
   });
   return dataset

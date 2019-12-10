@@ -2,6 +2,65 @@ const {
   parse
 } = require('mustache')
 
+const TAGS = [
+  'ad',
+  'audio',
+  'button',
+  'camera',
+  'canvas',
+  'checkbox',
+  'checkbox-group',
+  'cover-image',
+  'cover-view',
+  'editor',
+  'form',
+  'functional-page-navigator',
+  'icon',
+  'image',
+  'input',
+  'label',
+  'live-player',
+  'live-pusher',
+  'map',
+  'movable-area',
+  'movable-view',
+  'navigator',
+  'official-account',
+  'open-data',
+  'picker',
+  'picker-view',
+  'picker-view-column',
+  'progress',
+  'radio',
+  'radio-group',
+  'rich-text',
+  'scroll-view',
+  'slider',
+  'swiper',
+  'swiper-item',
+  'switch',
+  'text',
+  'textarea',
+  'video',
+  'view',
+  'web-view'
+]
+
+const EVENTS = {
+  'touchstart': 'touchstart',
+  'touchmove': 'touchmove',
+  'touchcancel': 'touchcancel',
+  'touchend': 'touchend',
+  'tap': 'click',
+  'longpress': 'longpress',
+  'longtap': 'longpress',
+  'transitionend': 'transitionend',
+  'animationstart': 'animationstart',
+  'animationiteration': 'animationiteration',
+  'animationend': 'animationend',
+  'touchforcechange': 'touchforcechange'
+}
+
 const ATTRS = {
   'wx:if': 'v-if',
   'wx:elif': 'v-else-if',
@@ -85,16 +144,23 @@ const catchRE = /catch:?/
 const captureBindRE = /capture-bind:?/
 const captureCatchRE = /capture-catch:?/
 
-function transformEvent(name, value, attribs) {
+function transformEventName(name, state) {
+  if (state.isComponent) {
+    return '@' + (EVENTS[name] ? (EVENTS[name] + '.native') : name)
+  }
+  return '@' + (EVENTS[name] || name)
+}
+
+function transformEvent(name, value, attribs, state) {
   let event = name
   if (name.indexOf('bind') === 0) {
-    event = name.replace(bindRE, '@')
+    event = transformEventName(name.replace(bindRE, ''), state)
   } else if (name.indexOf('catch') === 0) {
-    event = name.replace(catchRE, '@') + '.stop'
+    event = transformEventName(name.replace(catchRE, ''), state) + '.stop.prevent'
   } else if (name.indexOf('capture-bind') === 0) {
-    event = name.replace(captureBindRE, '@') + '.capture'
+    event = transformEventName(name.replace(captureBindRE, ''), state) + '.capture'
   } else if (name.indexOf('capture-catch') === 0) {
-    event = name.replace(captureCatchRE, '@') + '.stop.capture'
+    event = transformEventName(name.replace(captureCatchRE, ''), state) + '.stop.prevent.capture'
   }
   if (event !== name) {
     attribs[event] = parseMustache(value, true)
@@ -103,7 +169,7 @@ function transformEvent(name, value, attribs) {
 }
 
 
-function transformAttr(name, value, attribs) {
+function transformAttr(name, value, attribs, state) {
   if (
     name.indexOf('v-') === 0 ||
     name.indexOf(':') === 0
@@ -114,7 +180,7 @@ function transformAttr(name, value, attribs) {
   if (transformDirective(name, value, attribs)) {
     return
   }
-  if (transformEvent(name, value, attribs)) {
+  if (transformEvent(name, value, attribs, state)) {
     return
   }
   if (value.indexOf('{{') === -1) {
@@ -130,8 +196,11 @@ function transformAttrs(node, state) {
     return
   }
   transformFor(attribs)
+  const isComponent = !TAGS.includes(node.name)
   Object.keys(attribs).forEach(name => {
-    transformAttr(name, attribs[name], attribs)
+    transformAttr(name, attribs[name], attribs, {
+      isComponent
+    })
   })
 }
 

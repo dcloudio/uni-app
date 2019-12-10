@@ -3,21 +3,21 @@ import {
   isPlainObject
 } from 'uni-shared'
 
+import {
+  deepClone
+} from './deep-clone'
+
 const PROP_DEFAULT_VALUES = {
-  String: '',
-  Number: 0,
-  Boolean: false,
-  Object: null,
-  Array: [],
-  null: null
+  [String]: '',
+  [Number]: 0,
+  [Boolean]: false,
+  [Object]: null,
+  [Array]: [],
+  [null]: null
 }
 
-const PROP_DEFAULT_KEY_RE = Object.keys(PROP_DEFAULT_VALUES).map(type => new RegExp(type))
-
 function getDefaultVal (propType) {
-  return PROP_DEFAULT_KEY_RE
-    .filter(regex => regex.test(String(propType)))
-    .map(type => PROP_DEFAULT_VALUES[type])[0]
+  return PROP_DEFAULT_VALUES[propType]
 }
 
 function getPropertyVal (options) {
@@ -73,7 +73,8 @@ export function initProperties (vm, instanceData) {
   if (!properties) {
     return
   }
-  const propsData = vm.$options.propsData || {}
+
+  const propsData = deepClone(vm.$options.propsData) || {}
 
   for (const key in properties) {
     const observer = isPlainObject(properties[key]) ? properties[key].observer : false
@@ -90,7 +91,8 @@ export function initProperties (vm, instanceData) {
         if (newVal === value || (newVal !== newVal && value !== value)) {
           return
         }
-        value = newVal
+        // TODO 临时方案,clone array
+        value = Array.isArray(newVal) ? newVal.slice(0) : newVal
         if (observer) {
           observe(observer, vm, newVal, oldVal)
         }

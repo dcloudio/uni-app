@@ -79,8 +79,8 @@ function shouldWrapper(node, state) {
 
 module.exports = function generate(node, state) {
   // [`<uni-shadow-root>${genChildren(node).trim()}</uni-shadow-root>`, ...genWxs(state.wxs, state)]
-  if (shouldWrapper(node, state)) {
+  // if (shouldWrapper(node, state)) {
     return [`<uni-shadow-root>${genChildren(node).trim()}</uni-shadow-root>`, ...genWxs(state.wxs, state)]
-  }
-  return [genChildren(node).trim(), ...genWxs(state.wxs, state)]
+  // }
+  // return [genChildren(node).trim(), ...genWxs(state.wxs, state)]
 }

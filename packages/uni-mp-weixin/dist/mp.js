@@ -523,21 +523,57 @@ function setData (data, callback) {
   isFn(callback) && this.$nextTick(callback);
 }
 
-const PROP_DEFAULT_VALUES = {
-  String: '',
-  Number: 0,
-  Boolean: false,
-  Object: null,
-  Array: [],
-  null: null
+/**
+ * https://github.com/swan-team/swan-js/blob/61e2a63f7aa576b5daafbe77fdfa7c65b977060c/src/utils/index.js
+ */
+
+const _toString$1 = Object.prototype.toString;
+/**
+ * 深度assign的函数
+ * @param {Object} targetObject 要被拷贝的目标对象
+ * @param {Object} originObject 拷贝的源对象
+ * @return {Object} merge后的对象
+ */
+const deepAssign = (targetObject = {}, originObject) => {
+  const originType = _toString$1.call(originObject);
+  if (originType === '[object Array]') {
+    targetObject = originObject.slice(0);
+    return targetObject
+  } else if (originType === '[object Object]') {
+    for (const key in originObject) {
+      targetObject[key] = deepAssign(targetObject[key], originObject[key]);
+    }
+    return targetObject
+  } else if (originType === '[object Date]') {
+    return new Date(originObject.getTime())
+  } else if (originType === '[object RegExp]') {
+    const target = String(originObject);
+    const lastIndex = target.lastIndexOf('/');
+    return new RegExp(target.slice(1, lastIndex), target.slice(lastIndex + 1))
+  }
+  return originObject
 };
 
-const PROP_DEFAULT_KEY_RE = Object.keys(PROP_DEFAULT_VALUES).map(type => new RegExp(type));
+/**
+ * 深度拷贝逻辑，不同于lodash等库，但是与微信一致
+ * @param {*} [originObj] 原对象
+ * @return {Object|Array} 拷贝结果
+ */
+const deepClone = originObj => {
+  return deepAssign(_toString$1.call(originObj) === '[object Array]' ? [] : {}, originObj)
+};
+
+const PROP_DEFAULT_VALUES = {
+  [String]: '',
+  [Number]: 0,
+  [Boolean]: false,
+  [Object]: null,
+  [Array]: [],
+  [null]: null
+};
 
 function getDefaultVal (propType) {
-  return PROP_DEFAULT_KEY_RE
-    .filter(regex => regex.test(String(propType)))
-    .map(type => PROP_DEFAULT_VALUES[type])[0]
+  return PROP_DEFAULT_VALUES[propType]
 }
 
 function getPropertyVal (options) {
@@ -593,7 +629,8 @@ function initProperties (vm, instanceData) {
   if (!properties) {
     return
   }
-  const propsData = vm.$options.propsData || {};
+
+  const propsData = deepClone(vm.$options.propsData) || {};
 
   for (const key in properties) {
     const observer = isPlainObject(properties[key]) ? properties[key].observer : false;
@@ -610,7 +647,8 @@ function initProperties (vm, instanceData) {
         if (newVal === value || (newVal !== newVal && value !== value)) {
           return
         }
-        value = newVal;
+        // TODO 临时方案,clone array
+        value = Array.isArray(newVal) ? newVal.slice(0) : newVal;
         if (observer) {
           observe(observer, vm, newVal, oldVal);
         }

@@ -30,7 +30,7 @@ module.exports = function transformFile(input, options) {
   options.isComponent = isComponent
   options.filepath = filepath
   options.filename = path.basename(filepath)
-  
+
   const [templateCode, wxsCode = '', wxsFiles = []] = transformTemplateFile(filepath + templateExtname, options)
 
   const styleCode = transformStyleFile(filepath + styleExtname, options, deps) || ''

@@ -1,5 +1,6 @@
 const fs = require('fs')
 const path = require('path')
+const webpack = require('webpack')
 
 const {
   getMainEntry,
@@ -21,7 +22,21 @@ const {
   devServer
 } = getH5Options()
 
-const plugins = []
+const runtimePath = '@dcloudio/uni-mp-weixin/dist/mp.js'
+
+function getProvides () {
+  return {
+    'Page': [runtimePath, 'Page'],
+    'Component': [runtimePath, 'Component'],
+    'Behavior': [runtimePath, 'Behavior'],
+    'getDate': [runtimePath, 'getDate'],
+    'getRegExp': [runtimePath, 'getRegExp']
+  }
+}
+
+const plugins = [
+  new webpack.ProvidePlugin(getProvides())
+]
 
 if (process.env.NODE_ENV !== 'production') {
   plugins.push(new WebpackHtmlAppendPlugin(

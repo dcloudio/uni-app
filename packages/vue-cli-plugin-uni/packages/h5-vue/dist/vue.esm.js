@@ -3161,6 +3161,8 @@ var componentVNodeHooks = {
     var context = vnode.context;
     var componentInstance = vnode.componentInstance;
     if (!componentInstance._isMounted) {
+      callHook(componentInstance, 'onServiceCreated');
+      callHook(componentInstance, 'onServiceAttached');
       componentInstance._isMounted = true;
       callHook(componentInstance, 'mounted');
     }
@@ -4102,6 +4104,9 @@ function mountComponent (
   // manually mounted instance, call mounted on self
   // mounted is called for render-created child components in its inserted hook
   if (vm.$vnode == null) {
+    // fixed by xxxxxx
+    callHook(vm, 'onServiceCreated');
+    callHook(vm, 'onServiceAttached');
     vm._isMounted = true;
     callHook(vm, 'mounted');
   }
@@ -6929,14 +6934,15 @@ function updateClass (oldVnode, vnode) {
     });
     cls = Object.keys(clsObj).join(' ');
   }
-  // fixed by xxxxxx (extenalClasses)
+  // fixed by xxxxxx (仅 h5 平台 extenalClasses)
   var context = vnode.context;
   var externalClasses = context.$options.mpOptions &&
     context.$options.mpOptions.externalClasses;
   if (Array.isArray(externalClasses)) {
     externalClasses.forEach(function (externalClass) {
       // 简单替换 externalClass
-      cls.replace(externalClass, context[externalClass]);
+      var externalClassValue = context[camelize(externalClass)];
+      externalClassValue && (cls = cls.replace(externalClass, externalClassValue));
     });
   }
   // set the class
@@ -9642,7 +9648,9 @@ function parseHTML (html, options) {
         : options.shouldDecodeNewlines;
       attrs[i] = {
         name: args[1],
-        value: decodeAttr(value, shouldDecodeNewlines)
+        value: decodeAttr(value, shouldDecodeNewlines),
+        // fixed by xxxxxx 标记 Boolean Attribute
+        bool: args[3] === undefined && args[4] === undefined && args[5] === undefined
       };
       if (process.env.NODE_ENV !== 'production' && options.outputSourceRange) {
         attrs[i].start = args.start + args[0].match(/^\s*/).length;

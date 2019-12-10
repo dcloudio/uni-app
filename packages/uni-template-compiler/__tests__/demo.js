@@ -1,15 +1,7 @@
 const compiler = require('../lib')
 const res = compiler.compile(
   `
-<view>
-<view v-for="(item, index) in dataList" :key="item.id">
-    <view v-if="dataType === 2">
-    </view>
-    <view v-else>
-            {{ item.text }}
-    </view>
-</view>
-</view>
+<view data-a="1" :data-b="b"></view>
 `, {
     miniprogram: true,
     resourcePath: '/User/fxy/Documents/test.wxml',

@@ -73,6 +73,18 @@ function parseKey (el, isScopedSlot) {
   }
 }
 
+function parseComponentAttrs (el, genVar) {
+  el.attrs && el.attrs.forEach(attr => {
+    const {
+      name,
+      value
+    } = attr
+    if (name.indexOf('data-') === 0) {
+      attr.value = genVar('a-' + name, value)
+    }
+  })
+}
+
 function transformNode (el, parent, state, isScopedSlot) {
   if (el.type === 3) {
     return
@@ -112,6 +124,8 @@ function transformNode (el, parent, state, isScopedSlot) {
 
   if (!isComponent(el.tag)) {
     parseAttrs(el, genVar)
+  } else { // 目前的方案需要同步dataset
+    parseComponentAttrs(el, genVar)
   }
 
   parseProps(el, genVar)
