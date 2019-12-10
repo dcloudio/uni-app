@@ -1,4 +1,5 @@
 const TAGS = [
+  'ad',
   'text',
   'image',
   'input',
