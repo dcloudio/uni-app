@@ -104,6 +104,7 @@ export default {
 </script>
 
 <style>
+  @import "~uni-core/view/index.css";
 	uni-app {
 		display: block;
 		box-sizing: border-box;
