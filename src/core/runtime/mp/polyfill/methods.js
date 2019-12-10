@@ -1,4 +1,8 @@
 import {
+  noop
+} from 'uni-shared'
+
+import {
   updateProperties
 } from './state/properties'
 
@@ -8,11 +12,16 @@ export function initMethods (vm) {
     const target = {
       dataset: vm.$el.dataset
     }
-    oldEmit.call(vm, eventName, {
+
+    const event = {
       target,
       currentTarget: target,
-      detail
-    })
+      detail,
+      preventDefault: noop,
+      stopPropagation: noop
+    }
+
+    oldEmit.call(vm, eventName, event)
   }
   // 主要是Vant 自己封装了 $emit,放到 methods 中会触发 Vue 的警告,索性,框架直接重写该方法
   vm.$emit = (...args) => {

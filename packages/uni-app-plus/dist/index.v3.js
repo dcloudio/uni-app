@@ -12088,7 +12088,30 @@ var serviceContext = (function () {
     // }
   }
 
+  // TODO 临时通过序列化,反序列化传递dataset,后续可以全部保留在service,不做传递
+  function parseDataset$1 (dataset) {
+    const ret = Object.create(null);
+    Object.keys(dataset).forEach(name => {
+      try {
+        ret[name] = JSON.parse(dataset[name]);
+      } catch (e) {}
+    });
+    return ret
+  }
+
+  function parseTargets (event) {
+    const targetDataset = event.target && event.target.dataset;
+    if (targetDataset) {
+      event.target.dataset = parseDataset$1(targetDataset);
+    }
+    const currentTargetDataset = event.currentTarget && event.currentTarget.dataset;
+    if (currentTargetDataset) {
+      event.currentTarget.dataset = parseDataset$1(currentTargetDataset);
+    }
+  }
+
   function wrapperEvent (event) {
+    parseTargets(event);
     event.preventDefault = noop;
     event.stopPropagation = noop;
     event.mp = event;

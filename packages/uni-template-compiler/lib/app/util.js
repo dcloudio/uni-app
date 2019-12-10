@@ -60,6 +60,9 @@ function updateEleId (el, it, state) {
       child.forId = `${child.forId}+'-'+${it}`
     }
   })
+  el.ifConditions && el.ifConditions.forEach((con, index) => {
+    index !== 0 && updateEleId(con.block, it, state)
+  })
 }
 
 function getBindingAttr (el, name) {

@@ -12,10 +12,16 @@ describe('wxml:compiler', () => {
       `<view @touchstart="startDrag" @touchmove.stop="catchMove ? 'noop' : ''"></view>`
     )
   })
+  it('generate class', () => {
+    assertCodegen(
+      `<view class="van-notice-bar__content {{ !scrollable && !wrapable ? 'van-ellipsis' : '' }}"></view>`,
+      `<view :class="'van-notice-bar__content '+(!scrollable && !wrapable ? 'van-ellipsis' : '')"></view>`
+    )
+  })
   it('generate v-if', () => {
     assertCodegen(
       '<block wx:if="{{ !loading }}" loading loading-text="">{{ item.name }}</block>',
-      `<block v-if="!loading" loading loading-text>{{ item.name }}</block>`
+      `<block v-if="(!loading)" loading loading-text>{{ item.name }}</block>`
     )
   })
   it('generate v-for', () => {
@@ -35,7 +41,7 @@ describe('wxml:compiler', () => {
   it('generate root element', () => {
     assertCodegen(
       '<view></view><view></view>',
-      `<view><view></view><view></view></view>`
+      `<uni-shadow-root><view></view><view></view></uni-shadow-root>`
     )
 
     assertCodegen(
@@ -47,7 +53,7 @@ describe('wxml:compiler', () => {
 
     assertCodegen(
       '<slot></slot>',
-      `<view><slot></slot></view>`
+      `<uni-shadow-root><slot></slot></uni-shadow-root>`
     )
   })
 })

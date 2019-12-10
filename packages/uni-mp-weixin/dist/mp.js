@@ -532,11 +532,11 @@ const PROP_DEFAULT_VALUES = {
   null: null
 };
 
-const PROP_DEFAULT_KEYS = Object.keys(PROP_DEFAULT_VALUES);
+const PROP_DEFAULT_KEY_RE = Object.keys(PROP_DEFAULT_VALUES).map(type => new RegExp(type));
 
-function getDefaultVal (type) {
-  return PROP_DEFAULT_KEYS
-    .filter(type => new RegExp(type).test(type + ''))
+function getDefaultVal (propType) {
+  return PROP_DEFAULT_KEY_RE
+    .filter(regex => regex.test(String(propType)))
     .map(type => PROP_DEFAULT_VALUES[type])[0]
 }
 
@@ -547,7 +547,7 @@ function getPropertyVal (options) {
     }
     return getDefaultVal(options.type)
   }
-  return getDefaultVal()
+  return getDefaultVal(options)
 }
 
 function getType (propOptions) {
@@ -672,11 +672,16 @@ function initMethods (vm) {
     const target = {
       dataset: vm.$el.dataset
     };
-    oldEmit.call(vm, eventName, {
+
+    const event = {
       target,
       currentTarget: target,
-      detail
-    });
+      detail,
+      preventDefault: noop,
+      stopPropagation: noop
+    };
+
+    oldEmit.call(vm, eventName, event);
   };
   // 主要是Vant 自己封装了 $emit,放到 methods 中会触发 Vue 的警告,索性,框架直接重写该方法
   vm.$emit = (...args) => {
