@@ -372,7 +372,7 @@ module.exports = function (pagesJson, userManifestJson) {
 
     let isNVueEntryPage = appJson.nvue && appJson.nvue.entryPagePath
     conditionPagePath = process.env.UNI_CLI_LAUNCH_PAGE_PATH || conditionPagePath
-    if (conditionPagePath) {
+    if (conditionPagePath && appJson.nvue) {
       isNVueEntryPage = `${conditionPagePath}.html` in appJson.nvue.pages
     }
     manifestJson.plus.useragent.value = 'uni-app'
