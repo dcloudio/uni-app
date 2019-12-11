@@ -8,6 +8,10 @@ const {
 } = require('@dcloudio/uni-cli-shared')
 
 const {
+  getGlobalUsingComponentsCode
+} = require('@dcloudio/uni-cli-shared/lib/pages')
+
+const {
   isUnaryTag,
   getPartialIdentifier
 } = require('../util')
@@ -17,17 +21,23 @@ const {
 // } = require('../cache-loader')
 
 const runtimePath = '@dcloudio/uni-mp-weixin/dist/mp.js'
-
-function getProvides () {
-  return {
-    '__f__': [path.resolve(__dirname, '../format-log.js'), 'default'],
-    'wx': [runtimePath, 'default'],
-    'wx.nextTick': [runtimePath, 'nextTick'],
-    'Page': [runtimePath, 'Page'],
-    'Component': [runtimePath, 'Component'],
-    'Behavior': [runtimePath, 'Behavior'],
-    'getDate': [runtimePath, 'getDate'],
-    'getRegExp': [runtimePath, 'getRegExp']
+const wxsPath = '@dcloudio/uni-mp-weixin/dist/wxs.js'
+function getProvides (isAppService) {
+  if (isAppService) {
+    return { // app-service
+      '__f__': [path.resolve(__dirname, '../format-log.js'), 'default'],
+      'wx': [runtimePath, 'default'],
+      'wx.nextTick': [runtimePath, 'nextTick'],
+      'Page': [runtimePath, 'Page'],
+      'Component': [runtimePath, 'Component'],
+      'Behavior': [runtimePath, 'Behavior'],
+      'getDate': [wxsPath, 'getDate'],
+      'getRegExp': [wxsPath, 'getRegExp']
+    }
+  }
+  return { // app-view
+    'getDate': [wxsPath, 'getDate'],
+    'getRegExp': [wxsPath, 'getRegExp']
   }
 }
 
@@ -66,15 +76,21 @@ const v3 = {
 
     const rules = []
 
+    const scriptLoaders = []
     if (isAppView) {
-      rules.push({ // 解析组件，css 等
-        resourceQuery: /vue&type=script/,
-        use: [{
-          loader: path.resolve(__dirname,
-            '../../packages/webpack-uni-app-loader/view/script')
-        }]
+      scriptLoaders.push({
+        loader: path.resolve(__dirname,
+          '../../packages/webpack-uni-app-loader/view/script')
       })
     }
+    scriptLoaders.push({
+      loader: path.resolve(__dirname,
+        '../../packages/webpack-uni-app-loader/using-components')
+    })
+    rules.push({ // 解析组件，css 等
+      resourceQuery: /vue&type=script/,
+      use: scriptLoaders
+    })
     // TODO 临时方案,将 wxs 也编译至 service
     rules.push({
       resourceQuery: [/lang=wxs/, /blockType=wxs/],
@@ -124,7 +140,7 @@ const v3 = {
             options: {
               compiler: getPlatformCompiler(),
               before: [
-                beforeCode + statCode
+                beforeCode + statCode + getGlobalUsingComponentsCode()
               ]
             }
           }]
@@ -146,7 +162,7 @@ const v3 = {
         ]
       },
       plugins: [
-        new webpack.ProvidePlugin(getProvides())
+        new webpack.ProvidePlugin(getProvides(isAppService))
       ]
     }
   },

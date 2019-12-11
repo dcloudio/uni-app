@@ -769,24 +769,6 @@ var polyfill = {
   }
 };
 
-/**
- * wxs getRegExp
- */
-function getRegExp () {
-  const args = Array.prototype.slice.call(arguments);
-  args.unshift(RegExp);
-  return new (Function.prototype.bind.apply(RegExp, args))()
-}
-
-/**
- * wxs getDate
- */
-function getDate () {
-  const args = Array.prototype.slice.call(arguments);
-  args.unshift(Date);
-  return new (Function.prototype.bind.apply(Date, args))()
-}
-
 global['__wxRoute'] = '';
 global['__wxComponents'] = Object.create(null);
 global['__wxVueOptions'] = Object.create(null);
@@ -823,4 +805,4 @@ function Behavior (options) {
 const nextTick = Vue.nextTick;
 
 export default uni;
-export { Behavior, Component, Page, getDate, getRegExp, nextTick };
+export { Behavior, Component, Page, nextTick };

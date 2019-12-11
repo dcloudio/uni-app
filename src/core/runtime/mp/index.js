@@ -14,8 +14,6 @@ import {
 
 import polyfill from './polyfill/index'
 
-export * from './wxs'
-
 global['__wxRoute'] = ''
 global['__wxComponents'] = Object.create(null)
 global['__wxVueOptions'] = Object.create(null)

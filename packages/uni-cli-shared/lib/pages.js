@@ -3,7 +3,9 @@ const path = require('path')
 
 const {
   removeExt,
-  normalizePath
+  normalizePath,
+  camelize,
+  capitalize
 } = require('./util')
 
 const {
@@ -244,6 +246,87 @@ function parseEntry (pagesJson) {
   }
 }
 
+function parseUsingComponents (usingComponents = {}) {
+  const components = []
+  Object.keys(usingComponents).forEach(name => {
+    const identifier = capitalize(camelize(name))
+    let source = usingComponents[name]
+    if (source.indexOf('/') === 0) { // 绝对路径
+      source = '@' + source
+    } else if (source.indexOf('.') !== 0) { // 相对路径
+      source = './' + source
+    }
+    components.push({
+      name,
+      identifier,
+      source
+    })
+  })
+  return components
+}
+
+function generateUsingComponentsCode (usingComponents) {
+  const components = parseUsingComponents(usingComponents)
+  const importCode = []
+  const componentsCode = []
+  components.forEach(({
+    name,
+    identifier,
+    source
+  }) => {
+    importCode.push(`import ${identifier} from '${source}.vue'`)
+    componentsCode.push(`'${name}':${identifier}`)
+  })
+  if (!importCode.length) {
+    return ''
+  }
+  return `${importCode.join(';')};global['__wxVueOptions'] = {components:{${componentsCode.join(',')}}};`
+}
+
+function generateGlobalUsingComponentsCode (usingComponents) {
+  const components = parseUsingComponents(usingComponents)
+  const importCode = []
+  const componentsCode = []
+  components.forEach(({
+    name,
+    identifier,
+    source
+  }) => {
+    importCode.push(`import ${identifier} from '${source}.vue'`)
+    componentsCode.push(`Vue.component('${name}',${identifier})`)
+  })
+  if (!importCode.length) {
+    return ''
+  }
+  return `${importCode.join(';')};${componentsCode.join(';')};`
+}
+
+function getGlobalUsingComponentsCode () {
+  const pagesJson = getPagesJson()
+  const usingComponents = pagesJson.globalStyle && pagesJson.globalStyle.usingComponents
+  if (!usingComponents) {
+    return ''
+  }
+  return generateGlobalUsingComponentsCode(usingComponents)
+}
+
+function getUsingComponentsCode (pagePath) {
+  const usingComponents = usingComponentsPages[pagePath]
+  if (!usingComponents) {
+    return ''
+  }
+  return generateUsingComponentsCode(usingComponents)
+}
+
+const usingComponentsPages = Object.create(null)
+
+function addPageUsingComponents (pagePath, usingComponents) {
+  if (usingComponents && Object.keys(usingComponents).length) {
+    console.log(pagePath + ':' + JSON.stringify(usingComponents))
+    usingComponentsPages[pagePath] = usingComponents
+  }
+}
+
 module.exports = {
   getMainEntry,
   getNVueMainEntry,
@@ -251,5 +334,10 @@ module.exports = {
   parseEntry,
   getPagesJson,
   parsePagesJson,
-  pagesJsonJsFileName
+  pagesJsonJsFileName,
+  addPageUsingComponents,
+  getUsingComponentsCode,
+  generateUsingComponentsCode,
+  getGlobalUsingComponentsCode,
+  generateGlobalUsingComponentsCode
 }

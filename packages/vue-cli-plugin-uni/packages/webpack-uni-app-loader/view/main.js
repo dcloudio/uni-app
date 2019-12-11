@@ -9,6 +9,10 @@ const {
   paths: [require.resolve('vue-loader')]
 })) // 确保使用的与 vue-loader 一致
 
+const {
+  getGlobalUsingComponentsCode
+} = require('@dcloudio/uni-cli-shared/lib/pages')
+
 const traverse = require('@dcloudio/webpack-uni-mp-loader/lib/babel/global-component-traverse')
 
 const genStylesCode = require('../../vue-loader/lib/codegen/styleInjection')
@@ -92,6 +96,9 @@ function getStylesCode(loaderContext) {
 }
 
 module.exports = function(source, map) {
+  // 追加小程序全局自定义组件(仅v3)
+  source = getGlobalUsingComponentsCode() + source
+
   return `
 import 'uni-pages?${JSON.stringify({type:'view'})}'
 function initView(){

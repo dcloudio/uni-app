@@ -10,6 +10,10 @@ const {
 } = require('@dcloudio/uni-cli-shared')
 
 const {
+  addPageUsingComponents
+} = require('@dcloudio/uni-cli-shared/lib/pages')
+
+const {
   parseStyle
 } = require('../../util')
 
@@ -476,6 +480,8 @@ module.exports = function (pagesJson, userManifestJson) {
     appJson.page = Object.create(null)
 
     const addPage = function (pagePath, windowOptions, nvue) {
+      // 缓存页面级usingComponents
+      addPageUsingComponents(pagePath, windowOptions.usingComponents)
       delete windowOptions.usingComponents
       appJson.page[pagePath] = {
         window: windowOptions,

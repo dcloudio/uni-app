@@ -57,30 +57,6 @@ function genWxs(wxs, state) {
   return [wxsCode.join('').trim(), wxsFiles]
 }
 
-function shouldWrapper(node, state) {
-  if (state.shouldWrapper(state.filepath)) {
-    return true
-  }
-  node.children = node.children.filter(child => { // remove \n
-    if (child.type === 'text' && !child.data.trim()) {
-      return false
-    }
-    return true
-  })
-  if (node.children.length > 1) { // multi root
-    return true
-  }
-  const rootNode = node.children[0]
-  if (rootNode && rootNode.name === 'slot') { // slot root
-    return true
-  }
-  return false
-}
-
 module.exports = function generate(node, state) {
-  // [`<uni-shadow-root>${genChildren(node).trim()}</uni-shadow-root>`, ...genWxs(state.wxs, state)]
-  // if (shouldWrapper(node, state)) {
-    return [`<uni-shadow-root>${genChildren(node).trim()}</uni-shadow-root>`, ...genWxs(state.wxs, state)]
-  // }
-  // return [genChildren(node).trim(), ...genWxs(state.wxs, state)]
+  return [`<uni-shadow-root>${genChildren(node).trim()}</uni-shadow-root>`, ...genWxs(state.wxs, state)]
 }

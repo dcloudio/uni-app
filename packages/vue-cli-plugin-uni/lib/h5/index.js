@@ -7,6 +7,10 @@ const {
   getH5Options
 } = require('@dcloudio/uni-cli-shared')
 
+const {
+  getGlobalUsingComponentsCode
+} = require('@dcloudio/uni-cli-shared/lib/pages')
+
 const modifyVueLoader = require('../vue-loader')
 
 const WebpackHtmlAppendPlugin = require('../../packages/webpack-html-append-plugin')
@@ -23,14 +27,14 @@ const {
 } = getH5Options()
 
 const runtimePath = '@dcloudio/uni-mp-weixin/dist/mp.js'
-
+const wxsPath = '@dcloudio/uni-mp-weixin/dist/wxs.js'
 function getProvides () {
   return {
     'Page': [runtimePath, 'Page'],
     'Component': [runtimePath, 'Component'],
     'Behavior': [runtimePath, 'Behavior'],
-    'getDate': [runtimePath, 'getDate'],
-    'getRegExp': [runtimePath, 'getRegExp']
+    'getDate': [wxsPath, 'getDate'],
+    'getRegExp': [wxsPath, 'getRegExp']
   }
 }
 
@@ -105,7 +109,7 @@ module.exports = {
             loader: 'wrap-loader',
             options: {
               before: [
-                beforeCode + statCode
+                beforeCode + statCode + getGlobalUsingComponentsCode()
               ]
             }
           }]
