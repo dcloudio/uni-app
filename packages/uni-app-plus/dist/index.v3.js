@@ -9367,6 +9367,18 @@ var serviceContext = (function () {
     'setTextBaseline', 'setLineDash'
   ];
 
+  var tempCanvas;
+  function getTempCanvas () {
+    if (!tempCanvas) {
+      tempCanvas = document.createElement('canvas');
+    }
+    return tempCanvas
+  }
+
+  function TextMetrics (width) {
+    this.width = width;
+  }
+
   class CanvasContext {
     constructor (id, pageId) {
       this.id = id;
@@ -9422,8 +9434,15 @@ var serviceContext = (function () {
       }
     }
     // TODO
-    // measureText (text) {
-    // }
+    measureText (text) {
+      if (typeof document === 'object') {
+        var c2d = getTempCanvas().getContext('2d');
+        c2d.font = this.state.font;
+        return new TextMetrics(c2d.measureText(text).width || 0)
+      } else {
+        return new TextMetrics(0)
+      }
+    }
     save () {
       this.actions.push({
         method: 'save',
