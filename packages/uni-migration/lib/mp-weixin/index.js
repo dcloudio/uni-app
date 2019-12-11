@@ -5,6 +5,5 @@ module.exports = {
       style: '.wxss'
     }
   },
-  transform: require('./transform'),
-  patch
+  transform: require('./transform')
 }

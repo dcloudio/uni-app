@@ -3,7 +3,7 @@ const fs = require('fs')
 const {
   camelize,
   capitalize
-} = require('../util')
+} = require('../../util')
 
 function transformJson(content) {
   const {

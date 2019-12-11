@@ -30,15 +30,19 @@ function handleObjectExpression (declaration, path, state) {
   })[0]
 
   if (componentsProperty && t.isObjectExpression(componentsProperty.value)) {
-    const properties = componentsProperty.value.properties
-      .filter(prop => t.isObjectProperty(prop) && t.isIdentifier(prop.value))
-    state.components = parseComponents(properties.map(prop => {
-      return {
-        name: prop.key.name || prop.key.value,
-        value: prop.value.name
-      }
-    }), path.scope.bindings, path)
+    handleComponentsObjectExpression(componentsProperty.value, path, state)
   }
+}
+
+function handleComponentsObjectExpression (componentsObjExpr, path, state) {
+  const properties = componentsObjExpr.properties
+    .filter(prop => t.isObjectProperty(prop) && t.isIdentifier(prop.value))
+  state.components = parseComponents(properties.map(prop => {
+    return {
+      name: prop.key.name || prop.key.value,
+      value: prop.value.name
+    }
+  }), path.scope.bindings, path)
 }
 
 module.exports = function (ast, state = {
@@ -48,15 +52,29 @@ module.exports = function (ast, state = {
 }) {
   babelTraverse(ast, {
     AssignmentExpression (path) {
-      const memberExpression = path.node.left
-      const objectExpression = path.node.right
-      if (
-        t.isMemberExpression(memberExpression) &&
-        t.isObjectExpression(objectExpression) &&
-        memberExpression.object.name === 'global' &&
-        memberExpression.property.value === '__wxVueOptions'
+      const leftExpression = path.node.left
+      const rightExpression = path.node.right
+
+      if ( // global['__wxVueOptions'] = {'van-button':VanButton}
+        t.isMemberExpression(leftExpression) &&
+        t.isObjectExpression(rightExpression) &&
+        leftExpression.object.name === 'global' &&
+        leftExpression.property.value === '__wxVueOptions'
       ) {
-        handleObjectExpression(objectExpression, path, state)
+        handleObjectExpression(rightExpression, path, state)
+      }
+
+      if ( // exports.default.components = Object.assign({'van-button': VanButton}, exports.default.components || {})
+        t.isMemberExpression(leftExpression) &&
+        t.isCallExpression(rightExpression) &&
+        leftExpression.property.name === 'components' &&
+        t.isMemberExpression(leftExpression.object) &&
+        leftExpression.object.object.name === 'exports' &&
+        leftExpression.object.property.name === 'default' &&
+        rightExpression.arguments.length === 2 &&
+        t.isObjectExpression(rightExpression.arguments[0])
+      ) {
+        handleComponentsObjectExpression(rightExpression.arguments[0], path, state)
       }
     },
     ExportDefaultDeclaration (path) {

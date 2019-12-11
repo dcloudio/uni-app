@@ -10,7 +10,7 @@ describe('shared:pages', () => {
       'van-button': '/wxcomponents/vant/button/index',
       'van-card': '../../wxcomponents/vant/card/index'
     })).toBe(
-      `import VanButton from '@/wxcomponents/vant/button/index.vue';import VanCard from '../../wxcomponents/vant/card/index.vue';global['__wxVueOptions'] = {components:{'van-button':VanButton,'van-card':VanCard}};`
+      `;import VanButton from '@/wxcomponents/vant/button/index.vue';import VanCard from '../../wxcomponents/vant/card/index.vue';exports.default.components=Object.assign({'van-button':VanButton,'van-card':VanCard},exports.default.components||{});`
     )
   })
   it('generate global usingComponents', () => {

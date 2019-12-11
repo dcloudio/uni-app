@@ -13,6 +13,5 @@ module.exports = function(content, map) {
   const resourcePath = removeExt(
     normalizePath(path.relative(process.env.UNI_INPUT_DIR, this.resourcePath))
   )
-  console.log('resourcePath:' + resourcePath)
-  return getUsingComponentsCode(resourcePath) + content
+  return content + getUsingComponentsCode(resourcePath)
 }

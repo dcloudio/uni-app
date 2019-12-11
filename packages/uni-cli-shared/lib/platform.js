@@ -27,6 +27,13 @@ function getShadowCss () {
 }
 
 function getCopyOption (file, options) {
+  if (file === 'wxcomponents') {
+    if (!options) {
+      options = {}
+    }
+    // 不拷贝vue,css(这些可能是 uni-migration 转换二来的)
+    options.ignore = ['**/*.vue', '**/*.css']
+  }
   if (path.isAbsolute(file)) {
     if (fs.existsSync(file)) {
       return Object.assign({

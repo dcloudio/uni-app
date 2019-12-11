@@ -280,7 +280,7 @@ function generateUsingComponentsCode (usingComponents) {
   if (!importCode.length) {
     return ''
   }
-  return `${importCode.join(';')};global['__wxVueOptions'] = {components:{${componentsCode.join(',')}}};`
+  return `;${importCode.join(';')};exports.default.components=Object.assign({${componentsCode.join(',')}},exports.default.components||{});`
 }
 
 function generateGlobalUsingComponentsCode (usingComponents) {
@@ -322,7 +322,6 @@ const usingComponentsPages = Object.create(null)
 
 function addPageUsingComponents (pagePath, usingComponents) {
   if (usingComponents && Object.keys(usingComponents).length) {
-    console.log(pagePath + ':' + JSON.stringify(usingComponents))
     usingComponentsPages[pagePath] = usingComponents
   }
 }
