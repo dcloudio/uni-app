@@ -6,7 +6,6 @@ const migraters = {
 }
 
 module.exports = function validate(input, out, options) {
-  input = path.resolve(input)
   if (!fs.existsSync(input)) {
     return console.error(`错误: '${input}' 不存在`)
   }

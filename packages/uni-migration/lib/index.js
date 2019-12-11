@@ -15,7 +15,8 @@ module.exports = function migrate(input, out, options = {}) {
   if (!migrater) {
     return console.error(`错误: 目前支持 Object.keys(migraters).join(',') 转换`)
   }
-  out = out || input
+  input = path.resolve(input)
+  out = path.resolve(out || input)
   if (!validate(input, out, options)) {
     return
   }
