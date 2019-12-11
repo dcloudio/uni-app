@@ -93,8 +93,8 @@ const getPageComponents = function (inputDir, pagesJson) {
 
     let windowTop = 44
     let pageStyle = Object.assign({}, globalStyle, props)
-    if (pageStyle.navigationStyle === 'custom' || !pageStyle.titleNView || pageStyle.titleNView.type ===
-        'transparent' || pageStyle.titleNView.type === 'float') {
+    if (pageStyle.navigationStyle === 'custom' || ('titleNView' in pageStyle && (!pageStyle.titleNView || pageStyle.titleNView.type ===
+      'transparent' || pageStyle.titleNView.type === 'float'))) {
       windowTop = 0
     }
 
