@@ -33,6 +33,31 @@ const LIFECYCLE_HOOKS = [
   'onServiceCreated',
   'onServiceAttached'
 ]
+
+const KEYS = ['data', 'properties', 'options', 'relations']
+
+function mergeObject (ret, fromVal, key) {
+  if (fromVal[key]) {
+    Object.assign((ret[key] || (ret[key] = {})), fromVal[key])
+  }
+}
+
+function mergeArray (toArray, fromArray) {
+  toArray.push(...fromArray)
+}
+
+function mergeOptions (ret, toVal) {
+  KEYS.forEach(key => {
+    mergeObject(ret, toVal, key)
+  })
+  if (toVal.externalClasses) {
+    mergeArray((ret.externalClasses || (ret.externalClasses = [])), toVal.externalClasses)
+  }
+  if (toVal.path) {
+    ret.path = toVal.path
+  }
+}
+
 export function lifecycleMixin (Vue) {
   // fixed vue-class-component
   const oldExtend = Vue.extend
@@ -57,4 +82,18 @@ export function lifecycleMixin (Vue) {
   LIFECYCLE_HOOKS.forEach(hook => {
     strategies[hook] = mergeHook
   })
+
+  // mp runtime
+  strategies.mpOptions = function (toVal, fromVal) {
+    // data,properties,options,externalClasses,relations,path
+    if (!toVal) {
+      return fromVal
+    }
+    const ret = Object.create(null)
+    mergeOptions(ret, toVal)
+    if (fromVal) {
+      mergeOptions(ret, fromVal)
+    }
+    return ret
+  }
 }

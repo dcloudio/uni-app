@@ -13,6 +13,8 @@ const {
   transformScriptFile
 } = require('./script-transformer')
 
+const pkg = require('../../../package.json')
+
 module.exports = function transformFile(input, options) {
 
   const {
@@ -37,14 +39,16 @@ module.exports = function transformFile(input, options) {
   const scriptCode = transformScriptFile(filepath + '.js', jsCode, options, deps)
 
   return [
-    `<template>
+    `<!-- @dcloudio/uni-migration@${pkg.version} -->
+<!-- ${new Date().toLocaleString()} -->
+<template>
 ${templateCode}
 </template>
 ${wxsCode}
 <script>
 ${scriptCode}
 </script>
-<style>
+<style platform="mp-weixin">
 ${styleCode}
 </style>`,
     deps,

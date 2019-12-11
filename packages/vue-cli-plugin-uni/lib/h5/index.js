@@ -28,8 +28,10 @@ const {
 
 const runtimePath = '@dcloudio/uni-mp-weixin/dist/mp.js'
 const wxsPath = '@dcloudio/uni-mp-weixin/dist/wxs.js'
+
 function getProvides () {
   return {
+    'wx.nextTick': [runtimePath, 'nextTick'],
     'Page': [runtimePath, 'Page'],
     'Component': [runtimePath, 'Component'],
     'Behavior': [runtimePath, 'Behavior'],
@@ -121,6 +123,12 @@ module.exports = {
               before: [`<template><App :keepAliveInclude="keepAliveInclude"/></template>`]
             }
           }
+        }, { // 解析组件，css 等
+          resourceQuery: /vue&type=script/,
+          use: [{
+            loader: path.resolve(__dirname,
+              '../../packages/webpack-uni-app-loader/using-components')
+          }]
         }, {
           resourceQuery: /vue&type=template/,
           use: [{

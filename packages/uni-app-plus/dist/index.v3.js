@@ -12563,6 +12563,31 @@ var serviceContext = (function () {
     'onServiceCreated',
     'onServiceAttached'
   ];
+
+  const KEYS = ['data', 'properties', 'options', 'relations'];
+
+  function mergeObject (ret, fromVal, key) {
+    if (fromVal[key]) {
+      Object.assign((ret[key] || (ret[key] = {})), fromVal[key]);
+    }
+  }
+
+  function mergeArray (toArray, fromArray) {
+    toArray.push(...fromArray);
+  }
+
+  function mergeOptions (ret, toVal) {
+    KEYS.forEach(key => {
+      mergeObject(ret, toVal, key);
+    });
+    if (toVal.externalClasses) {
+      mergeArray((ret.externalClasses || (ret.externalClasses = [])), toVal.externalClasses);
+    }
+    if (toVal.path) {
+      ret.path = toVal.path;
+    }
+  }
+
   function lifecycleMixin (Vue) {
     // fixed vue-class-component
     const oldExtend = Vue.extend;
@@ -12587,6 +12612,20 @@ var serviceContext = (function () {
     LIFECYCLE_HOOKS.forEach(hook => {
       strategies[hook] = mergeHook;
     });
+
+    // mp runtime
+    strategies.mpOptions = function (toVal, fromVal) {
+      // data,properties,options,externalClasses,relations,path
+      if (!toVal) {
+        return fromVal
+      }
+      const ret = Object.create(null);
+      mergeOptions(ret, toVal);
+      if (fromVal) {
+        mergeOptions(ret, fromVal);
+      }
+      return ret
+    };
   }
 
   function parsePageCreateOptions (vm, route) {
@@ -12609,29 +12648,6 @@ var serviceContext = (function () {
       onReachBottomDistance,
       windowTop: 0, // TODO
       windowBottom: (tabBar$1.indexOf(route) >= 0 && tabBar$1.cover) ? tabBar$1.height : 0
-    }
-  }
-  const KEYS = ['data', 'properties', 'options', 'relations'];
-
-  function mergeObject (ret, fromVal, key) {
-    if (fromVal[key]) {
-      Object.assign((ret[key] || (ret[key] = {})), fromVal[key]);
-    }
-  }
-
-  function mergeArray (toArray, fromArray) {
-    toArray.push(...fromArray);
-  }
-
-  function mergeOptions (ret, toVal) {
-    KEYS.forEach(key => {
-      mergeObject(ret, toVal, key);
-    });
-    if (toVal.externalClasses) {
-      mergeArray((ret.externalClasses || (ret.externalClasses = [])), toVal.externalClasses);
-    }
-    if (toVal.path) {
-      ret.path = toVal.path;
     }
   }
 
@@ -12678,21 +12694,6 @@ var serviceContext = (function () {
         }
       }
     });
-
-    const strategies = Vue.config.optionMergeStrategies;
-
-    strategies.mpOptions = function (toVal, fromVal) {
-      // data,properties,options,externalClasses,relations,path
-      if (!toVal) {
-        return fromVal
-      }
-      const ret = Object.create(null);
-      mergeOptions(ret, toVal);
-      if (fromVal) {
-        mergeOptions(ret, fromVal);
-      }
-      return ret
-    };
   }
 
   var vuePlugin = {

@@ -3,7 +3,7 @@ const path = require('path')
 
 const {
   normalizePath
-} = require('../util')
+} = require('../../util')
 
 function transformScript(content, route, code) {
   return `${code}

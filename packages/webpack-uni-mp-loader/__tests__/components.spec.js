@@ -94,6 +94,34 @@ global['__wxVueOptions'] = {
         source: '../icon/loading.vue'
       }
       ])
+
+    assertCodegen(
+      `
+      import VanIcon from '../icon/index.vue'
+      import VanPopup from '../icon/popup.vue'
+      import VanLoading from '../icon/loading.vue'
+      exports.default.components = Object.assign({
+          'van-icon': VanIcon,
+          'van-popup': VanPopup,
+          'van-loading': VanLoading
+        },exports.default.components || {})
+                      `,
+      [{
+        name: 'van-icon',
+        value: 'VanIcon',
+        source: '../icon/index.vue'
+      },
+      {
+        name: 'van-popup',
+        value: 'VanPopup',
+        source: '../icon/popup.vue'
+      },
+      {
+        name: 'van-loading',
+        value: 'VanLoading',
+        source: '../icon/loading.vue'
+      }
+      ])
   })
 
   it('parse global component', () => {
