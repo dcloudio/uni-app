@@ -11,7 +11,7 @@
 - 更丰富的周边生态，[插件市场](https://ext.dcloud.net.cn/)数千款插件
 - 提供比小程序原生开发更好的开发体验、更高的工程化效率
 - 跨端抹平度更完善，且各端特色发挥更灵活，可真正实现一套代码多端覆盖，无需各端多头维护升级
-- 权威认可：阿里小程序官方工具内置（[详见](https://docs.alipay.com/mini/ide/0.70-stable)）、腾讯课堂官方自制uni-app培训视频（[详见](https://ask.dcloud.net.cn/article/35640)）
+- 权威认可：阿里小程序官方工具内置uni-app（[详见](https://docs.alipay.com/mini/ide/0.70-stable)）、腾讯课堂官方自制uni-app培训视频（[详见](https://ask.dcloud.net.cn/article/35640)）
 
 ## 扫码体验
 
