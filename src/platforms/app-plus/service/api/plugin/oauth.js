@@ -18,7 +18,7 @@ const loginByService = (provider, callbackId) => {
         code: err.code,
         errMsg: 'login:fail:' + err.message
       })
-    }, {scope: 'email'})
+    }, { scope: 'email' })
   }
   // 先注销再登录
   // apple登录logout之后无法重新触发获取email,fullname
@@ -80,15 +80,15 @@ export function getUserInfo (params, callbackId) {
         unionId: wechatUserInfo.unionid
       }
     } else if (provider === 'apple') {
-        const appleInfo = loginService.appleInfo
-        userInfo = {
-          openId: appleInfo.user,
-          fullName: appleInfo.fullName,
-          email: appleInfo.email,
-          authorizationCode: appleInfo.authorizationCode,
-          identityToken: appleInfo.identityToken,
-          realUserStatus: appleInfo.realUserStatus
-        }
+      const appleInfo = loginService.appleInfo
+      userInfo = {
+        openId: appleInfo.user,
+        fullName: appleInfo.fullName,
+        email: appleInfo.email,
+        authorizationCode: appleInfo.authorizationCode,
+        identityToken: appleInfo.identityToken,
+        realUserStatus: appleInfo.realUserStatus
+      }
     } else {
       loginService.userInfo.openId = loginService.userInfo.openId || loginService.userInfo.openid ||
                 loginService.authResult.openid
