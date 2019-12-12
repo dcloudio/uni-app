@@ -30,6 +30,16 @@ export function createRequestTaskById (requestTaskId, {
     if (!hasContentType && name.toLowerCase() === 'content-type') {
       hasContentType = true
       headers['Content-Type'] = header[name]
+      // TODO 需要重构
+      if (method === 'POST' && header[name].indexOf('application/x-www-form-urlencoded') === 0) {
+        let bodyArray = []
+        for (let key in data) {
+          if (data.hasOwnProperty(key)) {
+            bodyArray.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
+          }
+        }
+        data = bodyArray.join('&')
+      }
     } else {
       headers[name] = header[name]
     }
