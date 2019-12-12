@@ -766,3 +766,23 @@ export default {
 - 不能在 style 中引入字体文件，nvue 中字体图标的使用参考：[weex 加载自定义字体](https://weex.apache.org/zh/docs/modules/dom.html#addrule)。如果是本地字体，可以用plus.io的API转换路径。
 - 目前不支持在 nvue 页面使用 typescript/ts。
 - nvue 页面 ``titleNview`` 设为 ``false``时，想要模拟状态栏，可以参考：[https://ask.dcloud.net.cn/article/35111](https://ask.dcloud.net.cn/article/35111)。
+
+## 补充
+
+#### box-shadow兼容安卓端
+
+由于`weex`阴影在一些安卓手机上支持不佳，`uni-app`为此提供了一个兼容方案
+
+|属性			|类型		|默认值	|必填	|说明																																																		|
+|:--			|:--		|:--		|:--	|:--																																																		|
+|elevation|Number	|0px		|否		|android专属阴影设置 值域float 值域越大阴影越大 阴影效果与view位置有关。设置elevation后box-shadow将失效	|
+
+**用法**
+
+```html
+<view elevation="5px"></view>
+```
+
+**注意**
+
+- 使用此属性需要阴影元素的父元素大于阴影范围，否则会对阴影进行裁剪
