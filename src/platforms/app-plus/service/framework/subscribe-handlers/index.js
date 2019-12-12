@@ -20,7 +20,6 @@ import onVdSync from './on-vd-sync'
 import onVdSyncCallback from './on-vd-sync-callback'
 
 import onInvokeApi from './on-invoke-api'
-import onWebInvokeAppService from './on-web-invoke-app-service'
 import onWxsInvokeCallMethod from './on-wxs-invoke-call-method'
 
 import {
@@ -58,8 +57,6 @@ export function initSubscribeHandlers () {
   on('api.' + WEB_INVOKE_APPSERVICE, function (data, webviewIds) {
     emit('onWebInvokeAppService', data, webviewIds)
   })
-
-  on('onWebInvokeAppService', onWebInvokeAppService)
 
   subscribe('onWxsInvokeCallMethod', onWxsInvokeCallMethod)
 

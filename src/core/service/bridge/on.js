@@ -7,6 +7,8 @@ import {
   setPullDownRefreshPageId
 } from 'uni-platform/service/api/ui/pull-down-refresh'
 
+import onWebInvokeAppService from 'uni-platform/service/on-web-invoke-app-service'
+
 export default function initOn (on, {
   getApp,
   getCurrentPages
@@ -90,4 +92,6 @@ export default function initOn (on, {
   on('onNavigationBarSearchInputChanged', createCallCurrentPageHook('onNavigationBarSearchInputChanged'))
   on('onNavigationBarSearchInputConfirmed', createCallCurrentPageHook('onNavigationBarSearchInputConfirmed'))
   on('onNavigationBarSearchInputClicked', createCallCurrentPageHook('onNavigationBarSearchInputClicked'))
+
+  on('onWebInvokeAppService', onWebInvokeAppService)
 }
