@@ -58,5 +58,8 @@ function genWxs(wxs, state) {
 }
 
 module.exports = function generate(node, state) {
-  return [`<uni-shadow-root>${genChildren(node).trim()}</uni-shadow-root>`, ...genWxs(state.wxs, state)]
+  return [
+    `<uni-shadow-root class="${state.shadowRootHost}">${genChildren(node).trim()}</uni-shadow-root>`,
+    ...genWxs(state.wxs, state)
+  ]
 }

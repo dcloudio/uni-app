@@ -41,6 +41,10 @@ describe('wxml:compiler', () => {
       '<view wx:for="{{ columns }}" wx:for-item="index" wx:key="*this"/>',
       `<uni-shadow-root><view v-for="(index,___i___) in (columns)" :key="index"></view></uni-shadow-root>`
     )
+    assertCodegen(
+      '<view wx:for="{{ columns }}" wx:for-item="item" wx:key="{{item.value}}"/>',
+      `<uni-shadow-root><view v-for="(item,index) in (columns)" :key="item.value"></view></uni-shadow-root>`
+    )
   })
   it('generate root element', () => {
     assertCodegen(

@@ -13,6 +13,10 @@ const {
   transformScriptFile
 } = require('./script-transformer')
 
+const {
+  normalizePath
+} = require('../../util')
+
 const pkg = require('../../../package.json')
 
 module.exports = function transformFile(input, options) {
@@ -32,6 +36,12 @@ module.exports = function transformFile(input, options) {
   options.isComponent = isComponent
   options.filepath = filepath
   options.filename = path.basename(filepath)
+  if (options.base) {
+    options.route = normalizePath(path.relative(options.base, filepath))
+  } else {
+    options.route = options.filename
+  }
+  options.shadowRootHost = options.route.replace(/\//g, '-')
 
   const [templateCode, wxsCode = '', wxsFiles = []] = transformTemplateFile(filepath + templateExtname, options)
 

@@ -127,7 +127,7 @@ function transformFor(attribs) {
   if (vKey) {
     if (vKey === '*this') {
       vKey = vItem
-    } else if (vKey !== vItem) {
+    } else if (vKey !== vItem && vKey.indexOf('.')===-1) {// wx:for-key="{{item.value}}"
       vKey = vItem + '.' + vKey
     }
     attribs[':key'] = vKey

@@ -2,6 +2,7 @@ const fs = require('fs')
 
 function transformStyle(content, options) {
   return content.replace(new RegExp(`\\${options.extname.style}`, 'g'), '.css')
+    .replace(':host', '.' + options.shadowRootHost)
 }
 
 module.exports = {
