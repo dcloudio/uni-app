@@ -17,7 +17,11 @@ const insertHTMLWebView = ({
   }
   const parentTitleNView = parentWebview.getTitleNView()
   if (parentTitleNView) {
-    styles.top = 44 + plus.navigator.getStatusbarHeight()
+    if (plus.navigator.isImmersedStatusbar()) {
+      styles.top = 44 + plus.navigator.getStatusbarHeight()
+    } else {
+      styles.top = 44
+    }
     styles.bottom = 0
   }
   webview = plus.webview.create('', htmlId, styles)
