@@ -96,6 +96,8 @@ function vdSync ({
   })
   vd.flush()
   Vue.nextTick(() => {
+    // 清空本次 addBatchData
+    vd.clearAddBatchVData()
     updateView()
     isVdCallback && UniViewJSBridge.publishHandler(VD_SYNC_CALLBACK)
   })

@@ -99,8 +99,18 @@ export function initData (Vue) {
       if (!this._$vd) {
         return
       }
-      this._$vdUpdatedData = Object.create(null)
-      this._$setData(UPDATED_DATA, this._$vdUpdatedData)
+      // 当已存在 _$vdMountedData 时,使用重置后的 _$vdMountedData
+      const mountedData = this._$vd.find(MOUNTED_DATA, this._$id)
+      if (mountedData) {
+        this._$data = Object.create(null) // 清空已有数据
+        this._$vdUpdatedData = mountedData[1][1] = Object.create(null)
+        if (process.env.NODE_ENV !== 'production') {
+          console.log('updated=>mounted:' + this._$id)
+        }
+      } else {
+        this._$vdUpdatedData = Object.create(null)
+        this._$setData(UPDATED_DATA, this._$vdUpdatedData)
+      }
       this._$newData = Object.create(null)
     },
     beforeDestroy () {

@@ -227,7 +227,7 @@ const BEHAVIORS = {
       }
       if (!props.value) {
         props.value = {
-          type: null
+          type: String // 默认类型为 String,否则默认值为 null,导致一些自定义 input 显示不正确
         };
       }
     }

@@ -6552,10 +6552,15 @@ var serviceContext = (function () {
           code: err.code,
           errMsg: 'login:fail:' + err.message
         });
-      });
+      }, { scope: 'email' });
     }
     // 先注销再登录
-    loginServices[provider].logout(login, login);
+    // apple登录logout之后无法重新触发获取email,fullname
+    if (provider === 'apple') {
+      login();
+    } else {
+      loginServices[provider].logout(login, login);
+    }
   };
   /**
    * 微信登录
@@ -6607,6 +6612,16 @@ var serviceContext = (function () {
           country: wechatUserInfo.country,
           avatarUrl: wechatUserInfo.headimgurl,
           unionId: wechatUserInfo.unionid
+        };
+      } else if (provider === 'apple') {
+        const appleInfo = loginService.appleInfo;
+        userInfo = {
+          openId: appleInfo.user,
+          fullName: appleInfo.fullName,
+          email: appleInfo.email,
+          authorizationCode: appleInfo.authorizationCode,
+          identityToken: appleInfo.identityToken,
+          realUserStatus: appleInfo.realUserStatus
         };
       } else {
         loginService.userInfo.openId = loginService.userInfo.openId || loginService.userInfo.openid ||
@@ -12245,6 +12260,10 @@ var serviceContext = (function () {
       this.batchData.push([type, typeData]);
     }
 
+    find (type, cid) {
+      return this.batchData.find(data => data[0] === type && data[1][0] === cid)
+    }
+
     sendPageCreate (data) {
       this.pageCreateData = data;
       UniServiceJSBridge.publishHandler(VD_SYNC, {
@@ -12467,8 +12486,18 @@ var serviceContext = (function () {
         if (!this._$vd) {
           return
         }
-        this._$vdUpdatedData = Object.create(null);
-        this._$setData(UPDATED_DATA, this._$vdUpdatedData);
+        // 当已存在 _$vdMountedData 时,使用重置后的 _$vdMountedData
+        const mountedData = this._$vd.find(MOUNTED_DATA, this._$id);
+        if (mountedData) {
+          this._$data = Object.create(null); // 清空已有数据
+          this._$vdUpdatedData = mountedData[1][1] = Object.create(null);
+          if (process.env.NODE_ENV !== 'production') {
+            console.log('updated=>mounted:' + this._$id);
+          }
+        } else {
+          this._$vdUpdatedData = Object.create(null);
+          this._$setData(UPDATED_DATA, this._$vdUpdatedData);
+        }
         this._$newData = Object.create(null);
       },
       beforeDestroy () {

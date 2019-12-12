@@ -160,6 +160,10 @@ export class VDomSync {
     this.batchData.push([type, typeData])
   }
 
+  find (type, cid) {
+    return this.batchData.find(data => data[0] === type && data[1][0] === cid)
+  }
+
   sendPageCreate (data) {
     this.pageCreateData = data
     UniServiceJSBridge.publishHandler(VD_SYNC, {

@@ -22,7 +22,7 @@ export function unsubscribe (event, callback) {
 
 export function subscribeHandler (event, args, pageId) {
   if (process.env.NODE_ENV !== 'production') {
-    console.log(`[subscribeHandler][${Date.now()}]:`, event, args, pageId)
+    console.log(`[subscribeHandler][${Date.now()}]:${event}, ${JSON.stringify(args)}, ${pageId}`)
   }
   return emit('view.' + event, args, pageId)
 }

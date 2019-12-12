@@ -49,6 +49,10 @@ export class VDomSync {
     })
   }
 
+  clearAddBatchVData () {
+    this.addBatchVData.length = 0
+  }
+
   flush () {
     this.updateBatchVData.forEach(([cid, data]) => {
       const vm = this.vms[cid]
