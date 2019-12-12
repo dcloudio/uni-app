@@ -21,9 +21,9 @@ const definePages = require('./define-pages')
 const appConfigService = require('./app-config-service')
 
 const wxPageOrientationMapping = {
-  auto: ["portrait-primary", "portrait-secondary", "landscape-primary", "landscape-secondary"],
-  portrait: ["portrait-primary", "portrait-secondary"],
-  landscape: ["landscape-primary", "landscape-secondary"]
+  auto: ['portrait-primary', 'portrait-secondary', 'landscape-primary', 'landscape-secondary'],
+  portrait: ['portrait-primary', 'portrait-secondary'],
+  landscape: ['landscape-primary', 'landscape-secondary']
 }
 
 function parseConfig (appJson) {
@@ -134,10 +134,10 @@ module.exports = function (pagesJson, userManifestJson) {
   }
 
   // 屏幕启动方向
-  if (manifestJson.plus.screenOrientation) {// app平台优先使用 manifest 配置
+  if (manifestJson.plus.screenOrientation) { // app平台优先使用 manifest 配置
     manifestJson.screenOrientation = manifestJson.plus.screenOrientation
     delete manifestJson.plus.screenOrientation
-  } else if (appJson.window && appJson.window.pageOrientation) {// 兼容微信小程序
+  } else if (appJson.window && appJson.window.pageOrientation) { // 兼容微信小程序
     const pageOrientationValue = wxPageOrientationMapping[appJson.window.pageOrientation]
     if (pageOrientationValue) {
       manifestJson.screenOrientation = pageOrientationValue

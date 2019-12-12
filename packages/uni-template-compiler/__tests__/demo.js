@@ -1,7 +1,7 @@
 const compiler = require('../lib')
 const res = compiler.compile(
   `
-<view data-a="1" :data-b="b"></view>
+<view class="custom-class"></view>
 `, {
     miniprogram: true,
     resourcePath: '/User/fxy/Documents/test.wxml',
@@ -15,7 +15,7 @@ const res = compiler.compile(
       platform: 'app-plus'
     },
     filterModules: ['swipe'],
-    service: true,
+    // service: true,
     view: true
 
   })
