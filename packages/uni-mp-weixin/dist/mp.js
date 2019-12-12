@@ -595,9 +595,7 @@ function validateProp (key, propsOptions, propsData, vm) {
   if (value !== undefined) {
     const propOptions = propsOptions[key];
     const type = getType(propOptions);
-    if (type === Boolean) {
-      value = !!value;
-    }
+    value = formatVal(value, type);
     const observer = propOptions && propOptions.observer;
     if (observer) {
       // 初始化时,异步触发 observer,否则 observer 中无法访问 methods 或其他
@@ -608,6 +606,15 @@ function validateProp (key, propsOptions, propsData, vm) {
     return value
   }
   return getPropertyVal(propsOptions[key])
+}
+
+function formatVal (val, type) {
+  if (type === Boolean) {
+    return !!val
+  } else if (type === String) {
+    return String(val)
+  }
+  return val
 }
 
 function observe (observer, vm, newVal, oldVal) {
@@ -665,12 +672,7 @@ function updateProperties (vm) {
   if (propsData && properties) {
     Object.keys(properties).forEach(key => {
       if (hasOwn(propsData, key)) {
-        const type = getType(properties[key]);
-        if (type === Boolean) {
-          vm[key] = !!propsData[key];
-        } else {
-          vm[key] = propsData[key];
-        }
+        vm[key] = formatVal(propsData[key], getType(properties[key]));
       }
     });
   }
