@@ -19,15 +19,14 @@ const loginByService = (provider, callbackId) => {
         errMsg: 'login:fail:' + err.message
       })
     }, { scope: 'email' })
-    // apple登录logout之后无法重新触发获取email,fullname
-    if (provider === 'apple') {
-      login()
-    } else {
-      loginServices[provider].logout(login, login)
-    }
   }
   // 先注销再登录
-  loginServices[provider].logout(login, login)
+  // apple登录logout之后无法重新触发获取email,fullname
+  if (provider === 'apple') {
+    login()
+  } else {
+    loginServices[provider].logout(login, login)
+  }
 }
 /**
  * 微信登录
