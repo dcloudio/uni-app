@@ -18,10 +18,15 @@ const loginByService = (provider, callbackId) => {
         code: err.code,
         errMsg: 'login:fail:' + err.message
       })
-    })
+    }, {scope: 'email'})
   }
   // 先注销再登录
-  loginServices[provider].logout(login, login)
+  // apple登录logout之后无法重新触发获取email,fullname
+  if (provider === 'apple') {
+    login()
+  } else {
+    loginServices[provider].logout(login, login)
+  }
 }
 /**
  * 微信登录
@@ -74,6 +79,16 @@ export function getUserInfo (params, callbackId) {
         avatarUrl: wechatUserInfo.headimgurl,
         unionId: wechatUserInfo.unionid
       }
+    } else if (provider === 'apple') {
+        const appleInfo = loginService.appleInfo
+        userInfo = {
+          openId: appleInfo.user,
+          fullName: appleInfo.fullName,
+          email: appleInfo.email,
+          authorizationCode: appleInfo.authorizationCode,
+          identityToken: appleInfo.identityToken,
+          realUserStatus: appleInfo.realUserStatus
+        }
     } else {
       loginService.userInfo.openId = loginService.userInfo.openId || loginService.userInfo.openid ||
                 loginService.authResult.openid
