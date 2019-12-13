@@ -22,6 +22,7 @@ const {
 
 const runtimePath = '@dcloudio/uni-mp-weixin/dist/mp.js'
 const wxsPath = '@dcloudio/uni-mp-weixin/dist/wxs.js'
+
 function getProvides (isAppService) {
   if (isAppService) {
     return { // app-service
@@ -74,6 +75,10 @@ const v3 = {
     webpackConfig.optimization.splitChunks = false
 
     let devtool = false
+
+    if (isAppService && process.env.NODE_ENV !== 'production') {
+      devtool = 'eval-source-map'
+    }
 
     const rules = []
 
