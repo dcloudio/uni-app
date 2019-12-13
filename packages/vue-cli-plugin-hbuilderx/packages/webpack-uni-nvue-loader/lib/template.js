@@ -56,6 +56,11 @@ module.exports = function(content) {
   if (!pageJson) {
     return content
   }
+
+  if (!appJson.globalStyle) {
+    appJson.globalStyle = {}
+  }
+
   Object.assign(appJson.globalStyle, appJson.globalStyle['app-plus'] || {})
   Object.assign(pageJson.style, pageJson.style['app-plus'] || {})
   const pageJsonStyle = Object.assign(appJson.globalStyle, pageJson.style)
