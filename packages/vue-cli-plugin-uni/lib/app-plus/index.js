@@ -45,6 +45,7 @@ const v3 = {
   vueConfig: {
     parallel: false,
     transpileDependencies: [
+      wxsPath,
       runtimePath
     ]
   },
