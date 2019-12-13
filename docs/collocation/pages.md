@@ -112,14 +112,13 @@
 |mp-baidu|Object||设置编译到 mp-baidu 平台的特定样式|百度小程序|
 |mp-toutiao|Object||设置编译到 mp-toutiao 平台的特定样式|字节跳动小程序|
 |mp-qq|Object||设置编译到 mp-qq 平台的特定样式|QQ小程序|
-|usingComponents|Object| |引用小程序组件，参考 [小程序组件](/frame?id=小程序组件支持)|微信小程序、App|
+|usingComponents|Object| |引用小程序组件，参考 [小程序组件](/frame?id=小程序组件支持)||
 
 
 **注意**
 
 - 支付宝小程序使用`titleImage`时必须使用`https`的图片链接地址，需要真机调试才能看到效果，支付宝开发者工具内无效果
 - `globalStyle`中设置的`titleImage`也会覆盖掉`pages`->`style`内的设置文字标题
-- navigationBarTextStyle 在iOS13上可能会错乱，此问题后续版本会修复
 
 # pages
 
