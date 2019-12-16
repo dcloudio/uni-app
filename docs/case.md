@@ -148,8 +148,17 @@ uni-app已经有几十万开发者，uni统计月活2亿，是开发者数量和
 **中华英才网：** 百度小程序搜索“中华英才网”
 
 **联想集团官方小程序：** 微信小程序搜索 “联想集团”
+  
+<div class="scan-code">
+ <strong>vivo 会员官方小程序：</strong> 微信小程序搜索 “vivo会员”
+ <div class="scan-code-hover">
+    <div class="scan-code-hover-box">
+      <img src="https://img.cdn.aliyun.dcloud.net.cn/uni-app/vivovip.jpg" alt="二维码获取失败" />
+    </div>
+ </div>
+</div>
 
-**张亮麻辣烫：** 百度小程序搜索 “张亮麻辣烫”
+**张亮麻辣烫：** 百度小程序搜索 “张亮麻辣烫” 
 
 **西祠胡同：** [App及H5版](https://www.xici.net/)
 
