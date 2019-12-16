@@ -3,7 +3,7 @@
 
 **平台差异说明**
 
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |√|x|√|√|√|√|√|
 
@@ -36,7 +36,7 @@ H5平台登陆注意事项：
 * [支付宝小程序用户授权](https://docs.alipay.com/mini/introduce/auth)
 * [百度小程序登录](https://smartprogram.baidu.com/docs/develop/api/open_log/#%E6%8E%88%E6%9D%83%E6%B5%81%E7%A8%8B%E8%AF%B4%E6%98%8E/)
 * [头条小程序登录](https://developer.toutiao.com/dev/cn/mini-app/develop/open-capacity/log-in/login)
-* [Apple登录](https://ask.dcloud.net.cn/article/36651)
+* [Apple登录、苹果登录、Sign in with Apple](https://ask.dcloud.net.cn/article/36651)
 
 
 **示例**
@@ -58,7 +58,7 @@ uni.login({
 
 **平台差异说明**
 
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |x|x|√|x|√|√|√|
 
@@ -75,7 +75,7 @@ uni.login({
 
 **平台差异说明**
 
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |√|x|√|√|√|√|√|
 
