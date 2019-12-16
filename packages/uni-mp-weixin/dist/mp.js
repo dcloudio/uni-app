@@ -220,14 +220,14 @@ const BEHAVIORS = {
 
       const props = mpOptions.properties;
       // TODO form submit,reset
-      if (!props.name) {
+      if (!hasOwn(props, 'name')) {
         props.name = {
           type: String
         };
       }
-      if (!props.value) {
+      if (!hasOwn(props, 'value')) {
         props.value = {
-          type: String // 默认类型为 String,否则默认值为 null,导致一些自定义 input 显示不正确
+          type: String // 默认类型调整为 String,否则默认值为 null,导致一些自定义 input 显示不正确
         };
       }
     }
@@ -728,8 +728,9 @@ function initMethods (vm) {
     vm.triggerEvent(...args);
   };
   vm.getRelationNodes = (relationKey) => {
+    // 需要过滤已被销毁的vm
     /* eslint-disable  no-mixed-operators */
-    return vm._$relationNodes && vm._$relationNodes[relationKey] || []
+    return (vm._$relationNodes && vm._$relationNodes[relationKey] || []).filter(vm => !vm._isDestroyed)
   };
 
   vm._$updateProperties = updateProperties;
@@ -766,7 +767,7 @@ var polyfill = {
   mounted () {
     handleObservers(this);
   },
-  beforeDestroy () {
+  destroyed () {
     handleRelations(this, 'unlinked');
   }
 };

@@ -28,7 +28,7 @@ export default {
   mounted () {
     handleObservers(this)
   },
-  beforeDestroy () {
+  destroyed () {
     handleRelations(this, 'unlinked')
   }
 }

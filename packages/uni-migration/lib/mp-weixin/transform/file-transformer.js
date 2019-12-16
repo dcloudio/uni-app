@@ -48,10 +48,12 @@ module.exports = function transformFile(input, options) {
   const styleCode = transformStyleFile(filepath + styleExtname, options, deps) || ''
   const scriptCode = transformScriptFile(filepath + '.js', jsCode, options, deps)
 
-  return [
+  const commentsCode = options.silent ? '' :
     `<!-- @dcloudio/uni-migration@${pkg.version} -->
 <!-- ${new Date().toLocaleString()} -->
-<template>
+`
+  return [
+    `${commentsCode}<template>
 ${templateCode}
 </template>
 ${wxsCode}

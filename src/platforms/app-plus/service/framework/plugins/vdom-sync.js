@@ -137,7 +137,10 @@ export class VDomSync {
   }
 
   removeVm (vm) {
-    delete this.vms[vm._$id]
+    const cid = vm._$id
+    // 移除尚未同步的data
+    this.batchData = this.batchData.filter(data => data[1][0] !== cid)
+    delete this.vms[cid]
   }
 
   addElement (elm) {

@@ -28,8 +28,9 @@ export function initMethods (vm) {
     vm.triggerEvent(...args)
   }
   vm.getRelationNodes = (relationKey) => {
+    // 需要过滤已被销毁的vm
     /* eslint-disable  no-mixed-operators */
-    return vm._$relationNodes && vm._$relationNodes[relationKey] || []
+    return (vm._$relationNodes && vm._$relationNodes[relationKey] || []).filter(vm => !vm._isDestroyed)
   }
 
   vm._$updateProperties = updateProperties

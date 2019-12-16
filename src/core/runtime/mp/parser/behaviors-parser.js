@@ -1,4 +1,8 @@
 import {
+  hasOwn
+} from 'uni-shared'
+
+import {
   parseData
 } from './data-parser'
 
@@ -54,14 +58,14 @@ const BEHAVIORS = {
 
       const props = mpOptions.properties
       // TODO form submit,reset
-      if (!props.name) {
+      if (!hasOwn(props, 'name')) {
         props.name = {
           type: String
         }
       }
-      if (!props.value) {
+      if (!hasOwn(props, 'value')) {
         props.value = {
-          type: String // 默认类型为 String,否则默认值为 null,导致一些自定义 input 显示不正确
+          type: String // 默认类型调整为 String,否则默认值为 null,导致一些自定义 input 显示不正确
         }
       }
     }
