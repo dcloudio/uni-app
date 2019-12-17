@@ -61,6 +61,7 @@
 |onLaunch|当``uni-app`` 初始化完成时触发（全局只触发一次）|
 |onShow|当 ``uni-app`` 启动，或从后台进入前台显示|
 |onHide|当 ``uni-app`` 从前台进入后台|
+|onError|当 `uni-app` 报错时触发	|
 |onUniNViewMessage|对 ``nvue`` 页面发送的数据进行监听，可参考 [nvue 向 vue 通讯](/use-weex?id=nvue-向-vue-通讯)|
 
 **注意**
@@ -425,12 +426,12 @@ uni-app 提供内置 CSS 变量
 ### 固定值
 `uni-app` 中以下组件的高度是固定的，不可修改：
 
-|组件|描述|5+App|H5|
+|组件|描述|App|H5|
 |:-|:-|:-|:-|
 |NavigationBar|导航栏|44px|44px|
-|TabBar|底部选项卡|56px|50px|
+|TabBar|底部选项卡|HBuilderX 2.3.4之前为56px，2.3.4起和H5调为一致，统一为 50px。但可以自主更改高度）|50px|
 
-各小程序平台，包括同小程序平台的iOS和Android的高度也不一样。TabBar在App端默认高度，与微信iOS版主界面的tabbar高度保持一致。
+各小程序平台，包括同小程序平台的iOS和Android的高度也不一样。
 
 ### Flex布局
 
@@ -443,9 +444,10 @@ uni-app 提供内置 CSS 变量
 - 支持 base64 格式图片。
 - 支持网络路径图片。
 - 使用本地路径背景图片需注意：
-    1. 图片小于 40kb，``uni-app`` 会自动将其转化为 base64 格式；
-    2. 图片大于等于 40kb， 需开发者自己将其转换为base64格式使用，或将其挪到服务器上，从网络地址引用。
+    1. 图片小于 40kb，``uni-app`` 会自动将其转化为 base64 格式
+    2. 图片大于等于 40kb， 需开发者自己将其转换为 base64 格式使用，或将其挪到服务器上，从网络地址引用。
     3. 本地背景图片的引用路径推荐使用以 ~@ 开头的绝对路径。
+    4. `uni-app v3`版本设定为不自动将图片转 base64 格式
    ```css
         .test2 {
             background-image: url('~@/static/logo.png');
@@ -534,12 +536,21 @@ uni-app 提供内置 CSS 变量
 ## ES6 支持
 uni-app 在支持绝大部分 ES6 API 的同时，也支持了 ES7 的 await/async。
 
-ES6 API 的支持，详见如下表格部分（`x` 表示不支持，无特殊说明则表示支持。不区分App、小程序、H5）：
+ES6 API 的支持，详见如下表格部分（`x` 表示不支持，无特殊说明则表示支持）：
+- 因为iOS上不允许三方js引擎，所以iOS上不区分App、小程序、H5，各端均仅依赖iOS版本。
+- 各端Android版本有差异：
+* App端的数据见下表；
+* H5端数据见caniuse；
+* 微信小程序[详见](https://developers.weixin.qq.com/miniprogram/dev/framework/runtime/js-support.html#%E5%AE%A2%E6%88%B7%E7%AB%AF%20ES6%20API%20%E6%94%AF%E6%8C%81%E6%83%85%E5%86%B5)
+* 阿里小程序[详见](https://docs.alipay.com/mini/framework/implementation-detail)
+* 百度小程序[详见](https://smartprogram.baidu.com/docs/develop/framework/operating-environment/)
+* 头条小程序[详见](https://developer.toutiao.com/dev/cn/mini-app/develop/framework/mini-app-runtime/javascript-support)
+* QQ小程序[详见](https://q.qq.com/wiki/develop/miniprogram/frame/useful/useful_env.html#es6%E6%94%AF%E6%8C%81%E6%83%85%E5%86%B5)
 
 |String|iOS8|iOS9|iOS10|Android|
 |:-|:-|:-|:-|:-|
 |codePointAt|||||
-|normalize|x|x|||
+|normalize|x|x||仅支持 NFD/NFC|
 |includes|||||
 |startsWith|||||
 |endsWith|||||
@@ -608,7 +619,7 @@ ES6 API 的支持，详见如下表格部分（`x` 表示不支持，无特殊�
 |Promise||||&nbsp;|
 
 **注意**
-- 不管哪个端都是这个数据，即便是Android4.4。因为uni-app编译器把es6语法自动转es5了。低版本Android的兼容性主要是css，太新的css语法在低版本不支持，js语法不受影响。
+- App端Android支持不依赖Android版本号，即便是Android4.4也是上表数据。因为uni-app的js代码运行在自带的独立jscore中，没有js的浏览器兼容性问题。uni-app的vue页面在Android低端机上只有css浏览器兼容性问题，因为vue页面仍然渲染在webview中，受Android版本影响，太新的css语法在低版本不支持。
 - 默认不需要在微信工具里继续开启es6转换。但如果用了微信的wxml自定义组件（wxcomponents目录下），uni-app编译器并不会处理这些文件中的es6代码，需要去微信工具里开启转换。从HBuilderX调起微信工具时，如果发现工程下有wxcomponents目录会自动配置微信工程打开es6转换。
 
 
@@ -720,7 +731,7 @@ const package = require('packageName')
 ```
 ## 小程序组件支持
 
-``uni-app`` 支持在 App 和小程序中使用**小程序自定义组件**。
+``uni-app`` 支持在 App 和 小程序 中使用**小程序自定义组件**。
 
 **平台差异说明**
 
@@ -934,25 +945,26 @@ slide-view.vue
 
 **注意事项**
 
-* 小程序组件需要放在项目特殊文件夹 ``wxcomponents``（或 mycomponents、swancomponents）。HBuilderX 建立的工程 ``wxcomponents`` 文件夹在 项目根目录下。vue-cli 建立的工程 ``wxcomponents`` 文件夹在 ``src`` 目录下。可以在 vue.config.js 中自定义其他目录。
-* 当需要在 vue 组件中使用小程序组件时，注意在 pages.json 的 globalStyle 中配置 usingComponents，而不是页面级配置。
-* 注意数据和事件绑定的差异，使用时应按照 vue 的数据和事件绑定方式
-	- 属性绑定从 attr="{{ a }}"，改为 :attr="a"；从 title="复选框{{ item }}" 改为 :title="'复选框' + item"
-	- 事件绑定从 bind:click="toggleActionSheet1" 改为 @click="toggleActionSheet1"
-	- 阻止事件冒泡 从 catch:tap="xx" 改为 @tap.native.stop="xx"
-	- wx:if 改为 v-if
-	- wx:for="{{ list }}" wx:key="{{ index }}" 改为`v-for="(item,index) in list"
-	- 原事件命名以短横线分隔的需要手动修改小程序组件源码为驼峰命名，比如：*this.$emit('left-click')* 修改为 *this.$emit('leftClick')*（HBuilderX 1.9.0+ 不再需要修改此项）
+* 小程序组件需要放在项目特殊文件夹 ``wxcomponents``（或 mycomponents、swancomponents）。HBuilderX 建立的工程 ``wxcomponents`` 文件夹在 项目根目录下。vue-cli 建立的工程 ``wxcomponents`` 文件夹在 ``src`` 目录下。可以在 vue.config.js 中自定义其他目录
+* 小程序组件的性能，不如vue组件。使用小程序组件，需要自己手动setData，很难自动管理差量数据更新。而使用vue组件会自动diff更新差量数据。所以如无明显必要，建议使用vue组件而不是小程序组件。比如某些小程序ui组件，完全可以用更高性能的uni ui替代。
+* 当需要在 `vue` 组件中使用小程序组件时，注意在 `pages.json` 的 `globalStyle` 中配置 `usingComponents`，而不是页面级配置。
+* 注意数据和事件绑定的差异，使用时应按照 `vue` 的数据和事件绑定方式
+	- 属性绑定从 `attr="{{ a }}"`，改为 `:attr="a"`；从 `title="复选框{{ item }}"` 改为 `:title="'复选框' + item"`
+	- 事件绑定从 `bind:click="toggleActionSheet1"` 改为 `@click="toggleActionSheet1"`
+	- 阻止事件冒泡 从 `catch:tap="xx"` 改为 `@tap.native.stop="xx"`
+	- `wx:if` 改为 `v-if`
+	- `wx:for="{{ list }}" wx:key="{{ index }}"` 改为`v-for="(item,index) in list"`
+	- 原事件命名以短横线分隔的需要手动修改小程序组件源码为驼峰命名，比如：`this.$emit('left-click')` 修改为 `this.$emit('leftClick')`（HBuilderX 1.9.0+ 不再需要修改此项）
 
 详细的小程序转uni-app语法差异可参考文档[https://ask.dcloud.net.cn/article/35786](https://ask.dcloud.net.cn/article/35786)。
 
 ## WXS
 
-WXS是微信小程序的一套脚本语言，[规范详见](https://developers.weixin.qq.com/miniprogram/dev/framework/view/wxs/)。
+WXS是一套运行在视图层的脚本语言，[微信端的规范详见](https://developers.weixin.qq.com/miniprogram/dev/framework/view/wxs/)。
 
-它的特点是运行在渲染层。当需要避免逻辑层和渲染层交互通信折损时，可采用wxs。
+它的特点是运行在视图层。当需要避免逻辑层和渲染层交互通信折损时，可采用wxs。
 
-uni-app可以将wxs代码编译到微信小程序、QQ小程序、APP、H5上（`HBuilderX 2.2.5-alpha`及以上版本）
+uni-app可以将wxs代码编译到微信小程序、QQ小程序、APP、H5上（`HBuilderX 2.2.5`及以上版本）
 
 与wxs类似，百度小程序提供了Filter、阿里小程序提供了SJS，uni-app也支持使用这些功能，并将它们编译到百度和阿里的小程序端。不过它们的功能还不如wxs强大。此外头条系小程序自身不支持类似功能。
 
@@ -961,6 +973,8 @@ uni-app可以将wxs代码编译到微信小程序、QQ小程序、APP、H5上（
 |App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |√(不支持nvue)|√|√|SJS|Filter|x|√|
+
+App端nvue解决此类需求，不应该使用wxs，而是使用bindingx。
 
 **wxs示例**
 
@@ -1162,7 +1176,7 @@ export default {
 - 在微信自定义组件中`wxcomponents`也可以使用wxs
 - `nvue`页面暂不支持wxs、sjs、filter.js
 - 各个`script`标签会分别被打包至对应支持平台，不需要额外写条件编译
-- 自`HBuilderX 2.2.5-alpha`开始，不推荐使用各个小程序自有的引入方式，推荐使用`script`标签引入
+- 自`HBuilderX 2.2.5`开始，不推荐使用各个小程序自有的引入方式，推荐使用`script`标签引入
 
 
 ## 致谢

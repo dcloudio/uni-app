@@ -48,16 +48,18 @@
 		"backgroundColor": "#F8F8F8",
 		"usingComponents":{
 			"collapse-tree-item":"/components/collapse-tree-item"
-		}
+		},
+    "pageOrientation": "portrait"//全局屏幕旋转设置(仅微信/QQ小程序)，支持 auto / portrait / landscape
 	},
 	"tabBar": {
 		"color": "#7A7E83",
 		"selectedColor": "#3cc51f",
 		"borderStyle": "black",
 		"backgroundColor": "#ffffff",
-		"height": "56px",
-		"fontSize": "12px",
+		"height": "50px",
+		"fontSize": "10px",
 		"iconWidth": "24px",
+		"spacing": "3px",
 		"list": [{
 			"pagePath": "pages/component/index",
 			"iconPath": "static/image/icon_component.png",
@@ -71,7 +73,7 @@
 		}],
 		"midButton": {
 			"width": "80px",
-			"height": "56px",
+			"height": "50px",
 			"text": "文字",
 			"iconPath": "static/image/midButton_iconPath.png",
 			"iconWidth": "24px",
@@ -100,7 +102,7 @@
 |titleImage|String||导航栏图片地址（替换当前文字标题），支付宝小程序内必须使用https的图片链接地址|支付宝小程序、H5、APP|
 |transparentTitle|String|none|导航栏透明设置。支持 always 一直透明 / auto 滑动自适应 / none 不透明|支付宝小程序、H5、APP|
 |titlePenetrate|String|NO|导航栏点击穿透|支付宝小程序、H5|
-|pageOrientation|String|portrait|屏幕旋转设置，仅支持 auto / portrait 详见 [响应显示区域变化](https://developers.weixin.qq.com/miniprogram/dev/framework/view/resizable.html)|微信小程序|
+|pageOrientation|String|portrait|屏幕旋转设置，仅支持 auto / portrait / landscape 详见 [响应显示区域变化](https://developers.weixin.qq.com/miniprogram/dev/framework/view/resizable.html)|微信小程序|
 |animationType|String|pop-in|窗口显示的动画效果，详见：[窗口动画](api/router?id=animation)|App|
 |animationDuration|Number|300|窗口显示动画的持续时间，单位为 ms|App|
 |app-plus|Object||设置编译到 App 平台的特定样式，配置项参考下方 [app-plus](/collocation/pages?id=app-plus)|App|
@@ -263,7 +265,7 @@
 |:-|:-|:-|:-|:-|
 |titleNView|Object||导航栏 ，详见:[导航栏](/collocation/pages?id=app-titleNView)|App、H5|
 |subNVues|Object||原生子窗体，详见:[原生子窗体](/collocation/pages?id=app-subNVues)|App 1.9.10+|
-|bounce|String||页面回弹效果，设置为 "none" 时关闭效果。|App（nvue Android暂无bounce效果）|
+|bounce|String||页面回弹效果，设置为 "none" 时关闭效果。|App（nvue Android无页面级bounce效果，仅list、recycle-list、waterfall等滚动组件有bounce效果）|
 |softinputNavBar|String|auto|iOS软键盘上完成工具栏的显示模式，设置为 "none" 时关闭工具栏。|仅ios生效|
 |softinputMode|String|adjustPan|软键盘弹出模式，支持 adjustResize、adjustPan 两种模式|App|
 |pullToRefresh|Object||下拉刷新|App|
@@ -271,7 +273,7 @@
 |animationType|String|pop-in|窗口显示的动画效果，详见：[窗口动画](api/router?id=animation)。|App|
 |animationDuration|Number|300|窗口显示动画的持续时间，单位为 ms。|App|
 **Tips**
-- `.nvue` 页面仅支持 `titleNView` 配置，其它配置项暂不支持
+- `.nvue` 页面仅支持 `titleNView、pullToRefresh` 配置，其它配置项暂不支持
 
 #### 导航栏@app-titleNView
 |属性|类型|默认值|描述|版本兼容性|
@@ -282,15 +284,16 @@
 |titleOverflow|String|ellipsis|标题文字超出显示区域时处理方式。"clip"-超出显示区域时内容裁剪；"ellipsis"-超出显示区域时尾部显示省略标记（...）。||
 |titleText|String||标题文字内容||
 |titleSize|String||标题文字字体大小||
-|type|String|default|导航栏样式。"default"-默认样式；"transparent"-滚动透明渐变；"float"-悬浮导航栏。||
+|type|String|default|导航栏样式。"default"-默认样式；"transparent"-滚动透明渐变；"float"-悬浮导航栏。|App-nvue 2.4.4+ 支持|
 |tags|Array||原生 View 增强，详见：[5+ View 控件](http://www.html5plus.org/doc/zh_cn/nativeobj.html#plus.nativeObj.ViewDrawTagStyles)||
 |searchInput|Object||原生导航栏上的搜索框配置，详见：[searchInput](/collocation/pages?id=app-titlenview-searchinput)|1.6.0|
 
 **Tips**
 
-- 每个页面均支持通过配置 `titleNView:false` 来禁用原生导航栏。一旦禁用原生导航，请注意阅读[自定义导航注意事项](/collocation/pages?id=customnav)。
+- 页面支持通过配置 navigationStyle为custom，或titleNView为false，来禁用原生导航栏。一旦禁用原生导航，请注意阅读[自定义导航注意事项](/collocation/pages?id=customnav)。
 - `titleNView` 不能设置 `autoBackButton`、`homeButton`等属性
 - `titleNView` 的 `type` 值为 `transparent` 时，导航栏为滚动透明渐变导航栏，默认只有button，滚动后标题栏底色和title文字会渐变出现； `type` 为 `float` 时，导航栏为悬浮标题栏，此时页面内容上顶到了屏幕顶部，包括状态栏，但导航栏悬浮盖在页面上方，一般这种场景会同时设置导航栏的背景色为rgba半透明颜色。
+- `titleNView` 的 `type` 值为 `transparent` 时，App-nvue 2.4.4+ 支持
 - 在 `titleNView` 配置 `buttons` 后，监听按钮的点击事件，vue 页面及 nvue 的uni-app编译模式参考：[onNavigationBarButtonTap](/frame?id=页面生命周期)、nvue 的weex编译模式参考：[uni.onNavigationBarButtonTap](/use-weex?id=onnavigationbarbuttontap)
 - 在 `titleNView` 配置 `searchInput` 后，相关的事件监听参考：[onNavigationBarSearchInputChanged 等](/frame?id=页面生命周期)
 - App下原生导航栏的按钮如果使用字体图标，注意检查字体库的名字（font-family）是否使用了默认的 iconfont，这个名字是保留字，不能作为外部引入的字体库的名字，需要调整为自定义的名称，否则无法显示。
@@ -380,7 +383,7 @@ searchInput的点击输入框onNavigationBarSearchInputClicked、文本变化onN
 				"navigationBarTitleText": "详情",
 				"app-plus": {
 					"titleNView": {
-						"type": "transparent"//透明渐变导航栏
+						"type": "transparent"//透明渐变导航栏 App-nvue 2.4.4+ 支持
 					}
 				}
 			}
@@ -389,7 +392,7 @@ searchInput的点击输入框onNavigationBarSearchInputClicked、文本变化onN
 			"style": {
 				"app-plus": {
 					"titleNView": {
-						"type": "transparent",//透明渐变导航栏
+						"type": "transparent",//透明渐变导航栏 App-nvue 2.4.4+ 支持
 						"searchInput": {
 							"backgroundColor": "#fff",
 							"borderRadius": "6px", //输入框圆角
@@ -671,13 +674,14 @@ h5 平台下拉刷新动画，只有 circle 类型。
 |color|HexColor|是||tab 上的文字默认颜色||
 |selectedColor|HexColor|是||tab 上的文字选中时的颜色||
 |backgroundColor|HexColor|是||tab 的背景色||
-|borderStyle|String|否|black|tabbar 上边框的颜色，仅支持 black/white||
+|borderStyle|String|否|black|tabbar 上边框的颜色，仅支持 black/white|App 2.3.4+ 支持其他颜色值|
 |list|Array|是||tab 的列表，详见 list 属性说明，最少2个、最多5个 tab||
 |position|String|否|bottom|可选值 bottom、top|top 值仅微信小程序支持|
-|fontSize|String|否|12px|文字默认大小|App（HBuilderX 2.3.4+）|
-|iconWidth|String|否|24px|图标默认宽度（高度等比例缩放）|App（HBuilderX 2.3.4+）|
-|height|String|否|56px|tabBar 默认高度|App（HBuilderX 2.3.4+）|
-|midButton|Object|否||中间按钮 仅在 list 项为偶数时有效|App（HBuilderX 2.3.4+）|
+|fontSize|String|否|10px|文字默认大小|App 2.3.4+|
+|iconWidth|String|否|24px|图标默认宽度（高度等比例缩放）|App 2.3.4+|
+|spacing|String|否|3px|图标和文字的间距|App 2.3.4+|
+|height|String|否|50px|tabBar 默认高度|App 2.3.4+|
+|midButton|Object|否||中间按钮 仅在 list 项为偶数时有效|App 2.3.4+|
 
 其中 list 接收一个数组，数组中的每个项都是一个对象，其属性值如下：
 
@@ -693,23 +697,25 @@ h5 平台下拉刷新动画，只有 circle 类型。
 |属性|类型|必填|默认值|描述|
 |:-|:-|:-|:-|:-|
 |width|String|否|80px|中间按钮的宽度，tabBar 其它项为减去此宽度后平分，默认值为与其它项平分宽度|
-|height|String|否|56px|中间按钮的高度，可以大于 tabBar 高度|
+|height|String|否|50px|中间按钮的高度，可以大于 tabBar 高度，达到中间凸起的效果|
 |text|String|否||中间按钮的文字|
 |iconPath|String|否||中间按钮的图片路径|
-|iconWidth|String|否|24px||图片宽度（高度等比例缩放）|
+|iconWidth|String|否|24px|图片宽度（高度等比例缩放）|
 |backgroundImage|String|否||中间按钮的背景图片路径|
 
+midButton没有pagePath，需监听点击事件，自行处理点击后的行为逻辑。监听点击事件为调用API：uni.onTabBarMidButtonTap，详见[https://uniapp.dcloud.io/api/ui/tabbar?id=ontabbarmidbuttontap](https://uniapp.dcloud.io/api/ui/tabbar?id=ontabbarmidbuttontap)
+
 #### **tabbar常见问题** @tips-tabbar
+- tabbar 的默认高度，在不同平台不一样。App端的默认高度在HBuilderX 2.3.4起从56px调整为50px，与H5端统一。开发者也可以自行设定高度，调回56px。[详见](https://uniapp.dcloud.io/frame?id=%e5%9b%ba%e5%ae%9a%e5%80%bc)
 - tabbar 的 js api 见[接口-界面-tabbar](https://uniapp.dcloud.io/api/ui/tabbar)，可实现动态显示隐藏（如弹出层无法覆盖tabbar）、内容修改（如国际化）、item加角标等功能。hello uni-app中也有示例。
 - tabbar 的 item 点击事件见[页面生命周期的onTabItemTap](https://uniapp.dcloud.io/frame?id=%E9%A1%B5%E9%9D%A2%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F)。
 - 代码跳转到tabbar页面，api只能使用[uni.switchTab](https://uniapp.dcloud.io/api/router?id=switchtab)，不能使用uni.navigateTo、uni.redirectTo；使用navigator组件跳转时必须设置[open-type="switchTab"](https://uniapp.dcloud.io/component/navigator)
 - tabbar 在H5端是div模拟的，属于前端屏幕窗口的一部分，如果要使用bottom居底定位方式，应该使用css变量`--window-bottom`，比如悬浮在tabbar上方10px的按钮，样式如下`bottom: calc(var(--window-bottom) + 10px)`
-- tabbar 的默认高度，在不同平台不一样。[详见](https://uniapp.dcloud.io/frame?id=%e5%9b%ba%e5%ae%9a%e5%80%bc)
-- 中间带+号的tabbar模板例子，[参考](https://ext.dcloud.net.cn/plugin?id=98)。可跨端，但+号不凸起。
+- 中间带+号的tabbar模板例子，[参考](https://ext.dcloud.net.cn/plugin?id=98)。可跨端，但+号不凸起。如需中间凸起，配置tabbar的midButton。
 - App端若使用nvue，自定义tabbar，没有性能体验问题。
 - 纯nvue项目（manifest里renderer为native），目前使用pages.json里的tabbar反而影响性能，建议使用前端自己实现单页面的tabbar。后续会解决这个bug。
 - Android App上弹出键盘顶起tabbar的问题。升级到HBuilderX 2.2后不再存在。
-- 原生的tabbar只有一个且在首页。二级页如需的tab，前端自己实现。
+- 原生的tabbar有且只有一个且在首页。二级页如需的tab，前端自行实现。
 - 如果是需要先登录、后进入tab页面，不需要把登陆页设为首页，首页仍然是tabbar页，可参考HBuilderX新建uni-app项目时的登陆模板
 - 前端弹出遮罩层挡不住tabbar的问题，跨端处理方式时动态隐藏tabbar。App端可以使用plus.nativeObj.view或subNVue做弹出和遮罩，可参考这个[底部原生图标分享菜单例子](https://ext.dcloud.net.cn/plugin?id=69)
 - 微信小程序模拟器1.02.1904090版有bug，在缩放模拟器页面百分比后，tabbar点击多次后就会卡死。真机无碍，使用时注意。[详见](https://developers.weixin.qq.com/community/develop/doc/0002e6e6bf0d602d8c783e10756400)
@@ -792,7 +798,13 @@ subPackages 节点接收一个数组，数组每一项都是应用的子包，�
 |root|String|是|子包的根目录|
 |pages|Array|是|子包由哪些页面组成，参数同 [pages](/collocation/pages?id=pages)|
 
-**注意：** ```subPackages``` 里的pages的路径是 ``root`` 下的相对路径，不是全路径。
+**注意：** 
+
+- ```subPackages``` 里的pages的路径是 ``root`` 下的相对路径，不是全路径。
+- `uni-app`内支持对微信小程序、QQ小程序、百度小程序分包优化，[关于分包优化的说明](/collocation/manifest?id=关于分包优化的说明)
+- 针对`vendor.js`过大的情况可以使用运行时压缩代码
+  + `HBuilderX`创建的项目勾选`运行-->运行到小程序模拟器-->运行时是否压缩代码`
+  + `cli`创建的项目可以在`pacakge.json`中添加参数`--minimize`，示例：`"dev:mp-weixin": "cross-env NODE_ENV=development UNI_PLATFORM=mp-weixin vue-cli-service uni-build --watch --minimize"`
 
 **使用方法：**
 

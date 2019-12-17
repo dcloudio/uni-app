@@ -1,15 +1,15 @@
-如特别关心App端案例，注意uni-app编译到App时，使用了DCloud的5+App引擎，拥有众多案例（包括中国邮政、中国工商、湖北银行、360等），有2亿手机用户在使用基于5+引擎开发的应用。详见[https://dcloud.io/case/](https://dcloud.io/case/)
+如关心App端案例，注意uni-app编译到App时，其实是使用了DCloud的5+App引擎，该引擎拥有众多案例（包括中国工商总局、公安部、中国邮政、湖北银行、360等），有3亿手机用户在使用基于5+引擎开发的应用。详见[https://dcloud.io/case/](https://dcloud.io/case/)
 
 uni-app已经有几十万开发者，是开发者数量和案例最丰富的多端开发框架。
 我们相信还有更多优秀案例，没有被我们采集到，欢迎大家到[项目案例征集](https://github.com/dcloudio/uni-app/issues/6)提交。
 
 ### 官方示例
 
-<a href="//m3w.cn/uniapp" target="_blank" class="clear-style"><b>Hello uni-app：</b></a>演示uni-app框架的组件、接口、模板，可以使用手机扫描下方App码下载iOS、Android原生安装包，也可以使用微信扫描小程序码，体验uni-app的小程序版本。本项目源码可在HBuilderX中新建项目获得，也可从[github](https://github.com/dcloudio/hello-uniapp)上获取。
+<a href="//m3w.cn/uniapp" target="_blank" class="clear-style"><b>Hello uni-app：</b></a>演示uni-app框架的组件、接口、模板。本项目源码可在HBuilderX中新建项目获得，也可从[github](https://github.com/dcloudio/hello-uniapp)上获取。
 <div style="display:flex;justify-content: space-around;">
 	<a href="//m3w.cn/uniapp" target="_blank" class="clear-style barcode-view">
 		<img src="//img.cdn.aliyun.dcloud.net.cn/guide/uniapp/app_download.png" width="200"/>
-		<span style="margin-top:15px;">App及H5的通用快码</span>
+		<span style="margin-top:15px;">App、H5、小程序通用快码</span>
 	</a>
 	<a href="//m3w.cn/uniapp" target="_blank" class="clear-style barcode-view">
 		<img src="//img.cdn.aliyun.dcloud.net.cn/guide/uniapp/gh_33446d7f7a26_430.jpg" width="200"/>
@@ -17,7 +17,7 @@ uni-app已经有几十万开发者，是开发者数量和案例最丰富的多�
 	</a>
 </div>
 
-<a href="//m3w.cn/__uni__1e99193" target="_blank" class="clear-style"><b>新闻/资讯类App模板：</b></a>基于uni-app开发的新闻/资讯类App模板，nvue 典型案例。一套代码，在 App 上使用原生渲染，并同时能编译为各端小程序和H5。本项目源码在HBuilderX中新建项目可获得。
+<a href="//m3w.cn/__uni__1e99193" target="_blank" class="clear-style"><b>新闻/资讯类App模板：</b></a>nvue 典型案例，App端纯原生渲染，可左右拖动的复杂长列表，满足苛刻的性能要求。并同时能编译为小程序和H5。本项目源码在HBuilderX中新建项目可获得，并可进一步运行到各端小程序。
 <div style="display:flex;justify-content: space-around;">
 	<a href="//m3w.cn/__uni__1e99193" target="_blank" class="clear-style barcode-view">
 		<img src="//img.cdn.aliyun.dcloud.net.cn/stream/qr/__UNI__1E99193.png/256" width="200"/>
@@ -165,6 +165,8 @@ uni-app已经有几十万开发者，是开发者数量和案例最丰富的多�
 
 **中国银联云闪付：** App部分页面使用uni-app制作
 
+**招商银行：** App部分页面使用uni-app制作
+
 **拉卡拉收款宝：** App部分页面使用uni-app制作
 
 **香橙：** 餐馆SaaS服务，手机点餐、下单、排队叫号、营销推广。[官网](http://ivcvc.com)
@@ -173,7 +175,9 @@ uni-app已经有几十万开发者，是开发者数量和案例最丰富的多�
 
 **波比英语课堂：**幼儿英语启蒙神器培养国际宝宝。[App、小程序通用链接](http://m3w.cn/bbyykt)
 
-**桂聘：** 广西区域招聘，随时随地找工作，[Android和iOS](http://www.guipin.com/jihui/)
+**桂聘：**广西区域招聘。[Android和iOS](http://www.guipin.com/jihui/)
+
+**新疆包邮：**新疆网民的专属导购APP。[Android](https://android.myapp.com/myapp/detail.htm?apkName=com.h5415379.wux)、[iOS](https://apps.apple.com/cn/app/%E6%96%B0%E7%96%86%E5%8C%85%E9%82%AE/id1433935701)
 
 **课呱呱：**在线学习好工作。[App、小程序、H5通用链接](http://m3w.cn/__uni__b19209a)
 
@@ -191,6 +195,8 @@ uni-app已经有几十万开发者，是开发者数量和案例最丰富的多�
 
 **共青团全国青少年弘扬中华优秀传统文化交流展示活动专题网站：**[同时适配PC和手机版的H5](https://chuancheng.xwhdw.com/)
 
+**北京财政局某报考系统：**[H5](http://czj.beijing.gov.cn/kjbmh5)
+
 **上海宣传系统e支部：**[H5](http://ezb.shxc.gov.cn/eParty/#/)
 
 **广西国税：**[H5](http://www.gxgs.gov.cn:7701/#/)
@@ -201,7 +207,7 @@ uni-app已经有几十万开发者，是开发者数量和案例最丰富的多�
 
 **江苏公安网上政工慰问：**[H5](https://jxt.jsga.gov.cn:10006/app/njqxgzzs/zgww/#/)
 
-**杭州智安通：*[H5](https://hzjjzat.citydo.com.cn/vehicle-test)
+**杭州智安通：**[H5](https://hzjjzat.citydo.com.cn/vehicle-test)
 
 **深圳福田区爱福田：**[H5](https://ifutian.szft.gov.cn/masterSecond/)
 
@@ -281,6 +287,8 @@ uni-app已经有几十万开发者，是开发者数量和案例最丰富的多�
 
 **蚂蚁猎聘：**让求职更快乐、求职招聘一站式服务平台，[Android](http://www.antliepin.com/APPobject/liepin.apk)、[iOS](https://itunes.apple.com/cn/app/id1441284344)。
 
+**so米直播：**体育赛事直播。[H5](https://wap.smzb8.net:168/)、[App](https://smzb8.net:168/)
+
 **有鱼严选：**专心做商品内容的导购返利APP，[Android](https://android.myapp.com/myapp/detail.htm?apkName=io.dcloud.UNI2F373EE)、[iOS](https://itunes.apple.com/cn/app/%E6%9C%89%E9%B1%BC%E4%B8%A5%E9%80%89-%E7%B2%BE%E6%8C%91%E5%A4%A9%E7%8C%AB%E5%A5%BD%E8%B4%A7%E5%B8%AE%E6%82%A8%E7%9C%81%E9%92%B1%E6%B7%98%E5%AE%9D/id1445349622?mt=8)。
 
 **肆台：**看见世界，让世界看见（使用 nvue 实现的新闻 App）。[Android](https://android.myapp.com/myapp/detail.htm?apkName=com.sitai.zlstyle)
@@ -341,7 +349,7 @@ uni-app已经有几十万开发者，是开发者数量和案例最丰富的多�
 
 **卡邦：**一款集云智能消费管理系统、全国落地POS管理系统、大数据信用评估系统为三位一体的综合管理平台类app，[H5](http://h5kb.d5x319.cn)。
 
-**法保网：**一款提供法律服务app，[iOS](https://itunes.apple.com/cn/app/id1453634358)。
+**法保网：**一款提供法律服务app，[iOS](https://itunes.apple.com/cn/app/id1453634358)、[Android](https://android.myapp.com/myapp/detail.htm?apkName=com.lawprotect)。
 
 **遂宁之窗：**快速获取遂宁信息。[Android](http://index.scsn.cn/Appurl_AndroidVer.html)、[iOS](https://itunes.apple.com/cn/app/%E9%81%82%E5%AE%81%E4%B9%8B%E7%AA%97/id1435590219?mt=8)
 
@@ -462,6 +470,17 @@ uni-app已经有几十万开发者，是开发者数量和案例最丰富的多�
 **小米手环4自定义表盘软件：** [Android](https://www.coolapk.com/apk/tech.pingx.watchface)、[H5](http://watchface.pingx.tech/h5/)
 
 **斗豆侠：**购物App。[iOS](https://apps.apple.com/cn/app/id1395120441)、[Android](https://obs.myhwclouds.com/vipbean/xgyx_guns/APK/yq.apk)
+
+**RUCY：**衣着搭配。[Android](https://appstore.huawei.com/app/C101136185)、[iOS](https://apps.apple.com/cn/app/rucy/id1479275199)
+
+**BookChat：**通用电子书应用。[iOS](https://apps.apple.com/cn/app/id1481932361)、[Android](https://www.pgyer.com/bookchat-app)
+
+**乐猪租房：**租房网站和小程序。[h5](https://h5.lezf.com/)、微信、支付宝、百度、头条搜索 乐猪租房
+
+**稀饭旅行小程序：**微信、百度搜索 稀饭旅行
+
+**吾爱街机：**可在小程序玩街机游戏。微信小程序搜索 吾爱街机
+
 
 
 #### 更多小程序案例（可在微信小程序中搜索）@wx-more

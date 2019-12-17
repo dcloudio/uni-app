@@ -43,6 +43,7 @@ editor 组件对应的 editorContext 实例，可通过 [uni.createSelectorQuery
 | lineHeight | css style |
 | letterSpacing | css style |
 | textDecoration | css style |
+| textIndent | css style |
 
 对已经应用样式的选区设置会取消样式。css style 表示 css 中规定的允许值。
 

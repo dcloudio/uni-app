@@ -13,7 +13,7 @@
 |:-|:-|:-|:-|:-|
 |src|String|音频的数据链接，用于直接播放。|否||
 |startTime|Number|开始播放的位置（单位：s），默认 0|否||
-|autoplay|Boolean|是否自动开始播放，默认 false|否||
+|autoplay|Boolean|是否自动开始播放，默认 false|否|H5端部分浏览器不支持|
 |loop|Boolean|是否循环播放，默认 false|否||
 |obeyMuteSwitch|Boolean|是否遵循系统静音开关，当此参数为 false 时，即使用户打开了静音开关，也能继续发出声音，默认值 true|否|微信小程序、百度小程序、头条小程序|
 |duration|Number|当前音频的长度（单位：s），只有在当前有合法的 src 时返回|是||
@@ -27,7 +27,7 @@
 
 |方法|参数|说明|
 |:-|:-|:-|
-|play||播放|
+|play||播放（H5端部分浏览器需在用户交互时进行）|
 |pause||暂停|
 |stop||停止|
 |seek|position|跳转到指定位置，单位 s|

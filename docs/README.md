@@ -3,7 +3,7 @@
 
 即使不跨端，```uni-app```同时也是更好的小程序开发框架。详见[评测](https://ask.dcloud.net.cn/article/35947)
 
-`DCloud`公司拥有350万开发者用户，旗下```uni-app```有5万+案例、600+插件、50+微信/qq群、更高的百度指数，可以放心选择。
+`DCloud`公司拥有380万开发者，几十万应用案例、近千款插件、70+微信/qq群，并且被阿里小程序工具内置（[详见](https://docs.alipay.com/mini/ide/0.70-stable)），开发者可以放心选择。
 
 <div class="quick">
     <h3 id="快速体验"><a href="/README?id=%e5%bf%ab%e9%80%9f%e4%bd%93%e9%aa%8c" data-id="快速体验" class="anchor"><span>快速体验</span></a></h3>
@@ -61,7 +61,7 @@
 
 我们精心准备了一个简单的十分钟介绍视频，方便你快速了解```uni-app```的主要特征：
 
-<video id="video" onplay="videoPlay()" preload="none" controls="controls" width="100%" poster="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/poster.png" src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/uni-app20190127.mp4"></video>
+<video id="video" onplay="videoPlay()" preload="none" controls="controls" width="100%" poster="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/poster.png" src="https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/%E7%AC%AC1%E8%AE%B2%EF%BC%88uni-app%E4%BA%A7%E5%93%81%E4%BB%8B%E7%BB%8D%EF%BC%89-%20DCloud%E5%AE%98%E6%96%B9%E8%A7%86%E9%A2%91%E6%95%99%E7%A8%8B@20181126.mp4"></video>
 
 ### 为什么要选择uni-app？
 
@@ -74,7 +74,7 @@
       </div>
       <div class="uniapp-home-content-item-header">
         <h5 class="uniapp-home-content-item-title">开发者/案例数量更多</h5>
-        <p class="uniapp-home-content-item-text">5万+案例、600+插件、50+微信/qq群、更高的百度指数</p>
+        <p class="uniapp-home-content-item-text">10万+案例、900+插件、70+微信/qq群、更高的百度指数</p>
         <p class="uniapp-home-content-item-text">跨端完善度更高，真正落地的提高生产力</p>
       </div>
     </div>
@@ -150,14 +150,14 @@
 
 从下面```uni-app```功能框架图可看出，```uni-app```在跨平台的过程中，不牺牲平台特色，可优雅的调用平台专有能力，真正做到海纳百川、各取所长。
 
-![](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/uni0124.png)
+![](https://dcloud-img.oss-cn-hangzhou.aliyuncs.com/uni-app/doc/uni0124.png)
 
 ### 一套代码，运行到多个平台
 
 ```uni-app```实现了一套代码，同时运行到多个平台；如下图所示，一套代码，同时运行到iOS模拟器、Android模拟器、H5、微信开发者工具、支付宝小程序Studio、百度开发者工具、字节跳动开发者工具、QQ开发者工具（底部8个终端选项卡代表8个终端模拟器）：
 
-![](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/dev1x8.jpg)
+![](https://dcloud-img.oss-cn-hangzhou.aliyuncs.com/uni-app/doc/dev1x8.jpg)
 
 实际运行效果如下（点击图片可放大）：
 
-![](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/run1x8.jpg)
+![](https://dcloud-img.oss-cn-hangzhou.aliyuncs.com/uni-app/doc/run1x9.jpg)

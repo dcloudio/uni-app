@@ -30,6 +30,8 @@
 
 - [uni-shop](https://github.com/siberiawolf/uni-shop)：用 `uni-app` 创建的类微信应用 -- by siberiawolf
 
+- [bookstack](https://github.com/TruthHun/BookChatApp)：通用书籍阅读APP及多端小程序 -- by www.bookstack.cn
+
 - [uni-app音乐书库](https://gitee.com/yanglilong127/uniapp_music_library)：基于 `uni-app` 的音乐电子书库 -- by burtyang
 
 - [仿One](https://github.com/dcloudio/uni-template-one)：基于uni-app开发仿One -- by DCloud

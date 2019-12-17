@@ -35,7 +35,7 @@ H5平台登陆注意事项：
 * [微信小程序登录](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/login.html)
 * [支付宝小程序用户授权](https://docs.alipay.com/mini/introduce/auth)
 * [百度小程序登录](https://smartprogram.baidu.com/docs/develop/api/open_log/#%E6%8E%88%E6%9D%83%E6%B5%81%E7%A8%8B%E8%AF%B4%E6%98%8E/)
-* [头条小程序登录](https://developer.toutiao.com/docs/open/login.html)
+* [头条小程序登录](https://developer.toutiao.com/dev/cn/mini-app/develop/open-capacity/log-in/login)
 
 **示例**
 

@@ -12,7 +12,7 @@
 
 该功能为各小程序平台提供的开放能力。App端和H5端不涉及此概念。
 
-支付宝和头条没有open-data组件，但提供了API方式获取相关信息。支付宝[参考](https://docs.alipay.com/mini/api/ch8chh)、头条[参考](https://developer.toutiao.com/docs/open/getUserInfo.html)
+支付宝和头条没有open-data组件，但提供了API方式获取相关信息。支付宝[参考](https://docs.alipay.com/mini/api/ch8chh)、头条[参考](https://developer.toutiao.com/dev/cn/mini-app/develop/open-capacity/user-information/getuserinfo)
 
 **属性说明**
 

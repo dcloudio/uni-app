@@ -297,7 +297,7 @@ uni-app提供的共享变量和数据的方案如下：
 
 **1. vuex:**
 
-自```HBuilderX 2.2.5-alpha```起，nvue支持vuex
+自```HBuilderX 2.2.5```起，nvue支持vuex
 
 **注意：**
 - 不支持直接引入`store`使用，可以使用`mapState`、`mapGetters`、`mapMutations`等辅助方法或者使用`this.$store`
@@ -375,18 +375,21 @@ npm i weex-ui -S
 
 Tis:
 * 插件市场有一个集成好 weex ui 的示例，可以直接查看[https://ext.dcloud.net.cn/plugin?id=442](https://ext.dcloud.net.cn/plugin?id=442)
+* 官方的uni ui库，已经支持了nvue，需要使用uni-app编译模式。详见：[https://github.com/dcloudio/uni-ui/tree/nvue-uni-ui](https://github.com/dcloudio/uni-ui/tree/nvue-uni-ui)
 
 ## nvue 里使用 BindingX
 
 ``uni-app`` 内置了 [BindingX](https://alibaba.github.io/bindingx/)，可在 ``nvue`` 中使用 BindingX 完成复杂的动画效果。
 
-* 使用方式可参考 [BindingX 快速开始](https://alibaba.github.io/bindingx/guide/cn_guide_start)，demo示例可参考 [BindingX 示例](https://alibaba.github.io/bindingx/demos) 里 ``vue`` 的相关示例，将实验田里的 ``vue`` 代码拷贝到 ``nvue`` 文件里即可。
-* 若引入 weex-bindingx 时发现不生效，检查项目路径，路径不能含有中文。
-* 使用npm时如果命令行报错，需要注意看命令行的提示
+* 从HBuilderX 2.3.4起，`uni-app` 编译模式可直接引用`uni.requireNativePlugin('bindingx')`模块，`weex` 模式还需使用 npm 方式引用。查看如何修改 [nvue 编译模式](https://ask.dcloud.net.cn/article/36074)
+* 2.3.4以前，需要通过npm的方式安装BindingX的库到项目下。使用方式可参考 [BindingX 快速开始](https://alibaba.github.io/bindingx/guide/cn_guide_start)。若引入 weex-bindingx 时发现不生效，检查项目路径，路径不能含有中文。使用npm时如果命令行报错，需要注意看命令行的提示
+* 
+* BindingX demo示例可参考 [BindingX 示例](https://alibaba.github.io/bindingx/demos) 里 ``vue`` 的相关示例，将实验田里的 ``vue`` 代码拷贝到 ``nvue`` 文件里即可。
 
 **代码示例**
 
 ```html
+
 <template>
 	<div class="container">
 		<div ref="b1" class="btn" style="background-color:#6A1B9A" @click="clickBtn">
@@ -404,7 +407,7 @@ Tis:
 	</div>
 </template>
 <script>
-	import Binding from 'weex-bindingx';
+	const Binding = uni.requireNativePlugin('bindingx');
 	module.exports = {
 		data: {
 			isExpanded: false
@@ -424,49 +427,48 @@ Tis:
 				let b1 = this.getEl(this.$refs.b1);
 				let b2 = this.getEl(this.$refs.b2);
 				let b3 = this.getEl(this.$refs.b3);
-				Binding.bind({
+				let main_binding = Binding.bind({
 					eventType: 'timing',
-					exitExpression: {
-						origin: 't>800'
-					},
+					exitExpression: 't>800',
 					props: [{
-							element: main_image,
-							property: 'transform.rotateZ',
-							expression: {
-								origin: 'easeOutQuint(t,45,0-45,800)'
-							}
-						},{
-							element: main_btn,
-							property: 'background-color',
-							expression: {
-								origin: "evaluateColor('#607D8B','#ff0000',min(t,800)/800)"
-							}
-						}]
+						element: main_image,
+						property: 'transform.rotateZ',
+						expression: 'easeOutQuint(t,45,0-45,800)'
+
+					}, {
+						element: main_btn,
+						property: 'background-color',
+						expression: "evaluateColor('#607D8B','#ff0000',min(t,800)/800)"
+					}]
+				}, function(res) {
+					if (res.state === 'exit') {
+						Binding.unbind({
+							token: main_binding
+						})
+					}
 				});
-				Binding.bind({
+				let btn_binding = Binding.bind({
 					eventType: 'timing',
-					exitExpression: {
-						origin: 't>800'
-					},
+					exitExpression: 't>800',
 					props: [{
-							element: b1,
-							property: 'transform.translateY',
-							expression: {
-								origin: "easeOutQuint(t,-150,150,800)"
-							}
-						},{
-							element: b2,
-							property: 'transform.translateY',
-							expression: {
-								origin: "t<=100?0:easeOutQuint(t-100,-300,300,700)"
-							}
-						},{
-							element: b3,
-							property: 'transform.translateY',
-							expression: {
-								origin: "t<=200?0:easeOutQuint(t-200,-450,450,600)"
-							}
-						}]
+						element: b1,
+						property: 'transform.translateY',
+						expression: "easeOutQuint(t,-150,150,800)"
+					}, {
+						element: b2,
+						property: 'transform.translateY',
+						expression: "t<=100?0:easeOutQuint(t-100,-300,300,700)"
+					}, {
+						element: b3,
+						property: 'transform.translateY',
+						expression: "t<=200?0:easeOutQuint(t-200,-450,450,600)"
+					}]
+				}, function(res) {
+					if (res.state === 'exit') {
+						Binding.unbind({
+							token: btn_binding
+						})
+					}
 				})
 			},
 			expand: function() {
@@ -475,49 +477,47 @@ Tis:
 				let b1 = this.getEl(this.$refs.b1);
 				let b2 = this.getEl(this.$refs.b2);
 				let b3 = this.getEl(this.$refs.b3);
-				Binding.bind({
+				let main_binding = Binding.bind({
 					eventType: 'timing',
-					exitExpression: {
-						origin: 't>100'
-					},
+					exitExpression: 't>100',
 					props: [{
-							element: main_image,
-							property: 'transform.rotateZ',
-							expression: {
-								origin: 'linear(t,0,45,100)'
-							}
-						},{
-							element: main_btn,
-							property: 'background-color',
-							expression: {
-								origin: "evaluateColor('#ff0000','#607D8B',min(t,100)/100)"
-							}
-						}]
+						element: main_image,
+						property: 'transform.rotateZ',
+						expression: 'linear(t,0,45,100)'
+					}, {
+						element: main_btn,
+						property: 'background-color',
+						expression: "evaluateColor('#ff0000','#607D8B',min(t,100)/100)"
+					}]
+				}, function(res) {
+					if (res.state === 'exit') {
+						Binding.unbind({
+							token: main_binding
+						})
+					}
 				});
-				Binding.bind({
+				let btn_binding = Binding.bind({
 					eventType: 'timing',
-					exitExpression: {
-						origin: 't>800'
-					},
+					exitExpression: 't>800',
 					props: [{
-							element: b1,
-							property: 'transform.translateY',
-							expression: {
-								origin: "easeOutBounce(t,0,0-150,800)"
-							}
-						}, {
-							element: b2,
-							property: 'transform.translateY',
-							expression: {
-								origin: "t<=100?0:easeOutBounce(t-100,0,0-300,700)"
-							}
-						}, {
-							element: b3,
-							property: 'transform.translateY',
-							expression: {
-								origin: "t<=200?0:easeOutBounce(t-200,0,0-450,600)"
-							}
-						}]
+						element: b1,
+						property: 'transform.translateY',
+						expression: "easeOutBounce(t,0,0-150,800)"
+					}, {
+						element: b2,
+						property: 'transform.translateY',
+						expression: "t<=100?0:easeOutBounce(t-100,0,0-300,700)"
+					}, {
+						element: b3,
+						property: 'transform.translateY',
+						expression: "t<=200?0:easeOutBounce(t-200,0,0-450,600)"
+					}]
+				}, function(res) {
+					if (res.state === 'exit') {
+						Binding.unbind({
+							token: btn_binding
+						})
+					}
 				})
 			},
 			clickBtn: function(e) {
@@ -532,12 +532,39 @@ Tis:
 	}
 </script>
 <style>
-	.container {flex: 1;}
-	.image {width: 60px;height: 60px;}
-	.text {color: #ffffff;font-size: 30px;}
-	.btn {width: 100px;height: 100px;background-color: #ff0000;align-items: center;justify-content: center;position: absolute;border-radius: 50px;bottom: 25px;right: 25px;}
+	.container {
+		flex: 1;
+	}
+
+	.image {
+		width: 60px;
+		height: 60px;
+	}
+
+	.text {
+		color: #ffffff;
+		font-size: 30px;
+	}
+
+	.btn {
+		width: 100px;
+		height: 100px;
+		background-color: #ff0000;
+		align-items: center;
+		justify-content: center;
+		position: absolute;
+		border-radius: 50px;
+		bottom: 25px;
+		right: 25px;
+	}
 </style>
+
 ```
+
+**注意**
+
+- 推荐`bindingx`引入方式`uni.requireNativePlugin('bindingx')`
+- 暂时不要在`expression`内使用`origin`
 
 ## nvue 里使用 HTML5Plus API
 
@@ -613,12 +640,6 @@ App.vue
 **绘画**
 
 canvas API使用，详见canvas文档。
-
-**节点信息**
-
-|API|说明|
-|:-|:-|
-|uni.createSelectorQuery()|返回一个 SelectorQuery 对象实例|
 
 **节点布局交互**
 
@@ -720,12 +741,16 @@ export default {
 但仍然还有一些区别需要注意：
 
 - nvue 页面只能使用 flex 布局，不支持其他布局方式。
-- weex 下，页面内容高过屏幕高度并不会自动滚动，它没有页面滚动的概念，只有区域滚动，要滚得内容需要套在<scroller>组件下。在 nvue 编译为 uni-app模式时，纠正了这个问题，页面内容过高会自动滚动。
+- weex 下，页面内容高过屏幕高度并不会自动滚动，它没有页面滚动的概念，只有部分组件可滚动（list、waterfall、scroll-view/scroller），要滚得内容需要套在可滚动组件下。这不符合前端开发的习惯，所以在 nvue 编译为 uni-app模式时，给页面外层自动套了一个 scroller，页面内容过高会自动滚动。（组件不会套，页面有recycle-list时也不会套）。后续会提供配置，可以设置不自动套。
 - weex 下，px是与屏幕宽度相关的动态单位，750px代表成屏幕宽度100%，它的静态单位是wx。在 nvue 编译为 uni-app模式时，纠正了这个问题，rpx是与屏幕宽度相关的动态单位，px是静态单位。
 - 页面开发前，首先想清楚这个页面的纵向内容有什么，哪些是要滚动的，然后每个纵向内容的横轴排布有什么，按 flex 布局设计好界面。
-- 文字内容，必须、只能在<text>组件下。不能在<div>、<view>的text区域里直接写文字。
+- 文字内容，必须、只能在<text>组件下。不能在<div>、<view>的text区域里直接写文字。否则即使渲染了，也无法绑定js里的变量。
 - 支持的css有限，不过并不影响布局出你需要的界面，flex还是非常强大的。[详见](https://weex.apache.org/zh/docs/styles/common-styles.html#%E7%9B%92%E6%A8%A1%E5%9E%8B)
+- 不支持背景图。但可以使用image组件和层级来实现类似web中的背景效果。因为原生开发本身也没有web这种背景图概念
+- css选择器支持的比较少，没有web丰富。详见weex的样式文档
 - class 进行绑定时只支持数组语法。
+- nvue页面没有bounce回弹效果，只有几个列表组件有bounce效果，包括 list、recycle-list、waterfall。
+- Android端在一个页面内使用大量圆角边框会造成性能问题，尤其是多个角的样式还不一样。应避免这类使用。
 
 ## 单位说明
 - weex的css单位支持如下：
@@ -736,7 +761,7 @@ export default {
 ## 注意事项
 - 现阶段 nvue 的定位是 vue 的补充。在 App 平台实现一些 vue 上无法实现或性能有问题的场景。
 - nvue 的各组件在安卓端默认是透明的，如果不设置background-color，可能会导致出现重影的问题。
-- 在 App.vue 中定义的全局js变量不会在 nvue 页面生效。globalData是生效的。
+- 在 App.vue 中定义的全局js变量不会在 nvue 页面生效。globalData和vuex是生效的。
 - nvue 切换横竖屏时可能导致样式出现问题，建议有 nvue 的页面锁定手机方向。
 - 不能在 style 中引入字体文件，nvue 中字体图标的使用参考：[weex 加载自定义字体](https://weex.apache.org/zh/docs/modules/dom.html#addrule)。如果是本地字体，可以用plus.io的API转换路径。
 - 目前不支持在 nvue 页面使用 typescript/ts。

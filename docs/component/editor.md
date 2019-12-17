@@ -39,11 +39,11 @@ editor组件目前只有H5、App的vue页面和微信支持，其他端的富文
 
 #### 支持的标签
 
-不满足的标签会被忽略，``会被转行为`<p>`储存。
+不满足的标签会被忽略，`<div>`会被转行为`<p>`储存。
 
 | 类型 | 节点 |
 | --- | --- |
-| 行内元素 | ` <strong> <b> <ins> <em> <i> <u>  <del> <s> <sub> <sup> <img>` |
+| 行内元素 | `<span> <strong> <b> <ins> <em> <i> <u> <a> <del> <s> <sub> <sup> <img>` |
 | 块级元素 | `<p> <h1> <h2> <h3> <h4> <h5> <h6> <hr> <ol> <ul> <li>` |
 
 #### 支持的内连样式
@@ -52,17 +52,15 @@ editor组件目前只有H5、App的vue页面和微信支持，其他端的富文
 
 | 类型 | 样式 |
 | --- | --- |
-| 块级样式 | `text-align` `direction` `margin` `margin-top` `margin-left` `margin-right` `margin-bottom`
-`padding` `padding-top` `padding-left` `padding-right` `padding-bottom` `line-height` `text-indent` |
-| 行内样式 | `font` `font-size` `font-style` `font-variant` `font-weight` `font-family`
-`letter-spacing` `text-decoration` `color` `background-color` |
+| 块级样式 | `text-align` `direction` `margin` `margin-top` `margin-left` `margin-right` `margin-bottom` `padding` `padding-top` `padding-left` `padding-right` `padding-bottom` `line-height` `text-indent` |
+| 行内样式 | `font` `font-size` `font-style` `font-variant` `font-weight` `font-family` `letter-spacing` `text-decoration` `color` `background-color` |
 
 **注意事项**
 
 1. 插入的 html 中事件绑定会被移除
 2. formats 中的 color 属性会统一以 hex 格式返回
 3. 粘贴时仅纯文本内容会被拷贝进编辑器
-4. 插入 html 到编辑器内时，编辑器会删除一些不必要的标签，以保证内容的统一。例如`<p>xxx</p>`会改写为`<p>xxx</p>`
+4. 插入 html 到编辑器内时，编辑器会删除一些不必要的标签，以保证内容的统一。例如`<p><span>xxx</span></p>`会改写为`<p>xxx</p>`
 5. 编辑器聚焦时页面会被上推，系统行为以保证编辑区可见
 
 **示例代码**

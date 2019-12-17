@@ -167,5 +167,5 @@ subNvue.onMessage(function(data){
 **注意事项**
 - 了解更多 `subNVue` 原生子窗体的用途，请详读[subNVues 原生子窗体开发指南](https://ask.dcloud.net.cn/article/35948)
 - 在hello uni-app的接口-界面-原生子窗体中，有完整的subNVue示例，包括带渐变色的原生导航栏、可遮盖地图的侧滑菜单、可从顶部弹出的popup、可在视频上滚动的消息列表
-- 每个 `subNVue` 页面都要在 pages.json 中注册
+- 每个 `subNVue` 页面都要在 pages.json 中注册。如果需要全局弹窗，也可以直接弹出nvue页面，参考这个[插件](https://ext.dcloud.net.cn/plugin?id=953)
 - `subNVue` 比cover-view和plus.nativeObj.view更强大，也占用更多内存，为了保证更好的性能体验，一个vue页面不要加载太多 `subNVue` 子窗体，建议控制在三个以内

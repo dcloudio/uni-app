@@ -3,7 +3,7 @@
 
 **平台差异说明**
 
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |√|√|√|√|√|√|x|
 
@@ -42,12 +42,12 @@ uni.getLocation({
 **Tips**
 
 - 本API是一个非原子的封装界面，开发者如有定制需求，可自己做页面实现类似功能。
-- H5 端获取定位信息，需要部署在 **https** 服务上，本地预览（localhost）仍然可以使用 http 协议。
-- 无 GPS 模块的 PC 设备使用 Chrome 浏览器的时候，位置信息是连接谷歌服务器获取的，国内用户可能获取位置信息失败。
-- 纯nvue项目（manifest中renderer为native），App端暂不支持此API。可自行基于map组件封装。
+- 若定位不准，参考[uni.getLocation文档的注意事项](https://uniapp.dcloud.io/api/location/location)
 - ``<map>`` 组件默认为国测局坐标，调用 ``uni.getLocation`` 返回结果传递给 ``<map>`` 组件时，需指定 type 为 gcj02。
-- App 端使用地图组件需要向高德或百度等三方服务商申请SDK资质，获取AppKey，打包时需要在manifest的SDK配置中填写Appkey。在manifest可视化界面有详细申请指南。
+- App 端使用地图组件需要向高德等三方服务商申请SDK资质，获取AppKey，打包时需要在manifest的SDK配置中填写Appkey。在manifest可视化界面有详细申请指南，详见：[https://ask.dcloud.net.cn/article/29](https://ask.dcloud.net.cn/article/29)。
 - iOS端 如需使用第三方地图进行导航，需要在 manifest.json 文件内增加 ``urlschemewhitelist`` 节点，在线打包即可
+- 不同平台打开的地图不一样，App端是高德地图、H5端是腾讯地图、微信小程序端是腾讯地图、百度小程序是百度地图、阿里小程序是高德地图、头条小程序是高德地图。
+
 ```json
 {  
     "app-plus": {  
