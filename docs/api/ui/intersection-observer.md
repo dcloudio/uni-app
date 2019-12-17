@@ -3,6 +3,10 @@
 ### uni.createIntersectionObserver([this], [options])
 创建并返回一个 ``IntersectionObserver`` 对象实例。
 
+**this说明：**
+
+自定义组件实例。**支付宝小程序不支持此参数，传入仅为抹平写法差异**
+
 **options 的可选参数为：**
 
 |字段名|类型|说明|
