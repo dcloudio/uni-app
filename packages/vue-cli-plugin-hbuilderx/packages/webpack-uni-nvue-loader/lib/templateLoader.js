@@ -25,7 +25,8 @@ module.exports = function (source) {
     outputSourceRange: true
   }, options.compilerOptions, {
     scopeId: query.scoped ? `data-v-${id}` : null,
-    comments: query.comments
+    comments: query.comments,
+    filename: this.resourcePath // fixed by xxxxxx 传递 filename
   })
 
   // for vue-component-compiler
