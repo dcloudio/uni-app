@@ -33,7 +33,7 @@ module.exports = function initOptions (options) {
     options.css = {}
   }
 
-  if (process.env.UNI_PLATFORM === 'h5') {
+  if (process.env.UNI_PLATFORM === 'h5' || process.env.UNI_USING_V3) {
     options.css.extract = false
   } else {
     options.css.extract = true
@@ -64,6 +64,12 @@ module.exports = function initOptions (options) {
     sassData = `${sassData}
   @import "@/uni.scss";`
   }
+
+  if (!options.css.loaderOptions.sass.sassOptions) {
+    options.css.loaderOptions.sass.sassOptions = {}
+  }
+  // 指定 outputStyle, 否则 production 模式下会被默认成 compressed
+  options.css.loaderOptions.sass.sassOptions.outputStyle = 'nested'
 
   if (sassLoaderVersion < 8) {
     options.css.loaderOptions.sass.data = sassData

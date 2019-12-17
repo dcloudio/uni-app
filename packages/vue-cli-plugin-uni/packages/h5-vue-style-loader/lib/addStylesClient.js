@@ -239,6 +239,14 @@ var VAR_WINDOW_BOTTOM = /var\(--window-bottom\)/gi
 
 
 function processCss(css) {
+	var envMethod = ''
+	envMethod = uni.canIUse('css.constant') ? 'constant' : envMethod
+	envMethod = uni.canIUse('css.env') ? 'env' : envMethod
+	if (envMethod) {
+		css = css.replace(VAR_STATUS_BAR_HEIGHT, envMethod + '(safe-area-inset-top)')
+			.replace(VAR_WINDOW_TOP, 'calc(var(--window-top) + ' + envMethod + '(safe-area-inset-top))')
+			.replace(VAR_WINDOW_BOTTOM, 'calc(var(--window-bottom) + ' + envMethod + '(safe-area-inset-bottom))')
+	}
 	var page = getPage()
 	if (!uni.canIUse('css.var')) { //不支持 css 变量
 		var offset = getWindowOffset()
@@ -265,6 +273,7 @@ function getWindowOffset() {
 	if (app && app.$route && app.$route.meta && app.$route.meta.name) {
 		return {
 			top: app.$route.meta.windowTop,
+			// TODO 可配置 TabBar 高度
 			bottom: app.$route.meta.isTabBar ? 50 : 0
 		}
 	}

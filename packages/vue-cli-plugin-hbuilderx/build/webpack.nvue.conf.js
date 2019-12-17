@@ -38,12 +38,19 @@ const uniPath = process.env.UNI_USING_V8
 
 const provide = {}
 
-if (!process.env.UNI_USING_NATIVE) {
-  provide['uni'] = [path.resolve(__dirname, uniPath), 'default']
+if (process.env.UNI_USING_V3 || process.env.UNI_USING_NATIVE) {
+  provide['uni.getCurrentSubNVue'] = [path.resolve(__dirname, '../packages/uni-app-plus-nvue/dist/get-current-sub-nvue.js'), 'default']
+  provide['uni.requireNativePlugin'] = [path.resolve(__dirname, '../packages/uni-app-plus-nvue/dist/require-native-plugin.js'), 'default']
 }
 
-if (process.env.UNI_USING_V8) {
-  provide['plus'] = [path.resolve(__dirname, uniPath), 'weexPlus']
+if (!process.env.UNI_USING_V3) {
+  if (!process.env.UNI_USING_NATIVE) {
+    provide['uni'] = [path.resolve(__dirname, uniPath), 'default']
+  }
+
+  if (process.env.UNI_USING_V8) {
+    provide['plus'] = [path.resolve(__dirname, uniPath), 'weexPlus']
+  }
 }
 
 if (

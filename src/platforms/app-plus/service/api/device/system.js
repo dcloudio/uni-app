@@ -48,8 +48,9 @@ export function getSystemInfo () {
   } else {
     safeAreaInsets = ios ? plus.navigator.getSafeAreaInsets() : getSafeAreaInsets()
   }
+  var windowBottom = isTabBarPage() && tabBar.visible && tabBar.cover ? tabBar.height : 0
   var windowHeight = Math.min(screenHeight - (titleNView ? (statusBarHeight + TITLEBAR_HEIGHT)
-    : 0) - (isTabBarPage() && tabBar.visible ? tabBar.height : 0), screenHeight)
+    : 0) - windowBottom, screenHeight)
   var windowWidth = screenWidth
   var safeArea = {
     left: safeAreaInsets.left,
@@ -77,7 +78,7 @@ export function getSystemInfo () {
     platform,
     SDKVersion: '',
     windowTop: 0,
-    windowBottom: 0,
+    windowBottom,
     safeArea
   }
 }

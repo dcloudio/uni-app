@@ -12,6 +12,10 @@ if (process.env.UNI_PLATFORM === 'h5' && process.env.UNI_UI === 'true') {
   outputDir = resolve('./packages/uni-' + process.env.UNI_PLATFORM + '-ui/dist')
 }
 
+if (process.env.UNI_PLATFORM === 'app-plus' && process.env.UNI_VIEW === 'true') {
+  outputDir = resolve('./packages/uni-' + process.env.UNI_PLATFORM + '/dist')
+}
+
 module.exports = {
   publicPath: '/',
   outputDir,

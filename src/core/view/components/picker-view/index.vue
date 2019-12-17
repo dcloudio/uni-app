@@ -37,13 +37,15 @@ export default {
     }
   },
   watch: {
-    value (val) {
-      this.valueSync.length = val.length
-      val.forEach((val, index) => {
-        if (val !== this.valueSync[index]) {
-          this.$set(this.valueSync, index, val)
-        }
-      })
+    value (val, oldVal) {
+      if (val === oldVal || val.length !== oldVal.length || val.find((item, index) => item !== oldVal[index])) {
+        this.valueSync.length = val.length
+        val.forEach((val, index) => {
+          if (val !== this.valueSync[index]) {
+            this.$set(this.valueSync, index, val)
+          }
+        })
+      }
     },
     valueSync: {
       deep: true,

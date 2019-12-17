@@ -8,7 +8,7 @@ const {
   compileToFunctions,
   ssrCompile,
   ssrCompileToFunctions
-} = require('vue-template-compiler')
+} = require('../../vue-cli-plugin-uni/packages/vue-template-compiler')
 
 const platforms = require('./platforms')
 const traverseScript = require('./script/traverse')
@@ -22,8 +22,38 @@ const compilerAlipayModule = require('./module-alipay')
 
 const generateCodeFrame = require('./codeframe')
 
+const {
+  isComponent
+} = require('./util')
+
 module.exports = {
   compile (source, options = {}) {
+    if (options.service) {
+      (options.modules || (options.modules = [])).push(require('./app/service'))
+      options.optimize = false // 启用 staticRenderFns
+      // domProps => attrs
+      options.mustUseProp = () => false
+      options.isReservedTag = (tagName) => !isComponent(tagName) // 非组件均为内置
+      options.getTagNamespace = () => false
+
+      try {
+        return compile(source, options)
+      } catch (e) {
+        console.error(source)
+        throw e
+      }
+    } else if (options.view) {
+      (options.modules || (options.modules = [])).push(require('./app/view'))
+      options.optimize = false // 暂不启用 staticRenderFns
+      options.isReservedTag = (tagName) => false // 均为组件
+      try {
+        return compile(source, options)
+      } catch (e) {
+        console.error(source)
+        throw e
+      }
+    }
+
     if (!options.mp) { // h5
       return compile(source, options)
     }

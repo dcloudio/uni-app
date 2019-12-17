@@ -3,7 +3,9 @@ const path = require('path')
 
 const {
   removeExt,
-  normalizePath
+  normalizePath,
+  camelize,
+  capitalize
 } = require('./util')
 
 const {
@@ -146,17 +148,18 @@ function isValidPage (page, root = '') {
     // 存储 nvue 相关信息
     pagePath = normalizePath(path.join(root, pagePath))
 
-    // if (process.env.UNI_USING_NVUE_COMPILER) {
     process.UNI_NVUE_ENTRY[pagePath] = getNVueMainJsPath(pagePath)
-    // } else {
-    //   process.UNI_NVUE_ENTRY[pagePath] = path.resolve(process.env.UNI_INPUT_DIR, pagePath + '.nvue') + '?entry'
-    // }
 
-    uniNVuePages.push({
-      'path': pagePath + '.html',
-      'style': page.style || {}
-    })
-    return false
+    if (process.env.UNI_USING_V3) { // 不移除
+      page.nvue = true
+      return true
+    } else {
+      uniNVuePages.push({
+        'path': pagePath + '.html',
+        'style': page.style || {}
+      })
+      return false
+    }
   }
 
   return true
@@ -243,6 +246,86 @@ function parseEntry (pagesJson) {
   }
 }
 
+function parseUsingComponents (usingComponents = {}) {
+  const components = []
+  Object.keys(usingComponents).forEach(name => {
+    const identifier = capitalize(camelize(name))
+    let source = usingComponents[name]
+    if (source.indexOf('/') === 0) { // 绝对路径
+      source = '@' + source
+    } else if (source.indexOf('.') !== 0) { // 相对路径
+      source = './' + source
+    }
+    components.push({
+      name,
+      identifier,
+      source
+    })
+  })
+  return components
+}
+
+function generateUsingComponentsCode (usingComponents) {
+  const components = parseUsingComponents(usingComponents)
+  const importCode = []
+  const componentsCode = []
+  components.forEach(({
+    name,
+    identifier,
+    source
+  }) => {
+    importCode.push(`import ${identifier} from '${source}.vue'`)
+    componentsCode.push(`'${name}':${identifier}`)
+  })
+  if (!importCode.length) {
+    return ''
+  }
+  return `;${importCode.join(';')};exports.default.components=Object.assign({${componentsCode.join(',')}},exports.default.components||{});`
+}
+
+function generateGlobalUsingComponentsCode (usingComponents) {
+  const components = parseUsingComponents(usingComponents)
+  const importCode = []
+  const componentsCode = []
+  components.forEach(({
+    name,
+    identifier,
+    source
+  }) => {
+    importCode.push(`import ${identifier} from '${source}.vue'`)
+    componentsCode.push(`Vue.component('${name}',${identifier})`)
+  })
+  if (!importCode.length) {
+    return ''
+  }
+  return `${importCode.join(';')};${componentsCode.join(';')};`
+}
+
+function getGlobalUsingComponentsCode () {
+  const pagesJson = getPagesJson()
+  const usingComponents = pagesJson.globalStyle && pagesJson.globalStyle.usingComponents
+  if (!usingComponents) {
+    return ''
+  }
+  return generateGlobalUsingComponentsCode(usingComponents)
+}
+
+function getUsingComponentsCode (pagePath) {
+  const usingComponents = usingComponentsPages[pagePath]
+  if (!usingComponents) {
+    return ''
+  }
+  return generateUsingComponentsCode(usingComponents)
+}
+
+const usingComponentsPages = Object.create(null)
+
+function addPageUsingComponents (pagePath, usingComponents) {
+  if (usingComponents && Object.keys(usingComponents).length) {
+    usingComponentsPages[pagePath] = usingComponents
+  }
+}
+
 module.exports = {
   getMainEntry,
   getNVueMainEntry,
@@ -250,5 +333,10 @@ module.exports = {
   parseEntry,
   getPagesJson,
   parsePagesJson,
-  pagesJsonJsFileName
+  pagesJsonJsFileName,
+  addPageUsingComponents,
+  getUsingComponentsCode,
+  generateUsingComponentsCode,
+  getGlobalUsingComponentsCode,
+  generateGlobalUsingComponentsCode
 }

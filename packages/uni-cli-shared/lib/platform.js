@@ -27,6 +27,21 @@ function getShadowCss () {
 }
 
 function getCopyOption (file, options) {
+  if (file === 'wxcomponents') {
+    if (!options) {
+      options = {}
+    }
+    // 不拷贝vue,css(这些可能是 uni-migration 转换二来的)
+    options.ignore = ['**/*.vue', '**/*.css']
+  }
+  if (path.isAbsolute(file)) {
+    if (fs.existsSync(file)) {
+      return Object.assign({
+        from: file,
+        to: path.resolve(process.env.UNI_OUTPUT_DIR)
+      }, options)
+    }
+  }
   const from = path.resolve(process.env.UNI_INPUT_DIR, file)
   if (fs.existsSync(from)) {
     return Object.assign({
@@ -117,20 +132,43 @@ const PLATFORMS = {
     filterTag: 'wxs',
     subPackages: false,
     cssVars: {
-      '--window-top': '0px',
-      '--window-bottom': '0px'
+      '--window-top': '0px'
     },
     copyWebpackOptions ({
-      assetsDir
+      assetsDir,
+      vueOptions
     }) {
+      if (
+        vueOptions &&
+        vueOptions.pluginOptions &&
+        vueOptions.pluginOptions['uni-app-plus'] &&
+        vueOptions.pluginOptions['uni-app-plus']['view']
+      ) { // app-view 无需拷贝资源(app-service 已经做了)
+        return []
+      }
+
       const files = ['hybrid/html']
       let wxcomponents = []
-      if (!process.env.UNI_USING_NATIVE) {
+      if (!process.env.UNI_USING_NATIVE && !process.env.UNI_USING_V3) {
         wxcomponents = getCopyOptions(['wxcomponents'], {
           to: path.resolve(process.env.UNI_OUTPUT_TMP_DIR, 'wxcomponents')
         })
       }
+      let template = []
+      let view = []
+      if (process.env.UNI_USING_V3) {
+        view = getCopyOptions([
+          require.resolve('@dcloudio/uni-app-plus/dist/view.css'),
+          require.resolve('@dcloudio/uni-app-plus/dist/view.umd.min.js')
+        ])
+        template = [
+          ...getCopyOptions([path.resolve(__dirname, '../template/common')]),
+          ...getCopyOptions([path.resolve(__dirname, '../template/v3')])
+        ]
+      }
       return [
+        ...view,
+        ...template,
         ...getStaticCopyOptions(assetsDir),
         ...wxcomponents,
         ...getCopyOptions(files)
@@ -483,6 +521,9 @@ module.exports = {
   getPlatformVue (vueOptions) {
     if (process.env.UNI_PLATFORM === 'h5' && vueOptions && vueOptions.runtimeCompiler) {
       return '@dcloudio/vue-cli-plugin-uni/packages/h5-vue/dist/vue.esm.js'
+    }
+    if (process.env.UNI_PLATFORM === 'app-plus' && process.env.UNI_USING_V3) {
+      return '@dcloudio/uni-app-plus/dist/service.runtime.esm.js'
     }
     if (process.env.UNI_USING_COMPONENTS) {
       return uniRuntime

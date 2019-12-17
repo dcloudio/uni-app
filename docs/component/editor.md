@@ -6,7 +6,7 @@
 
 通过`setContents`接口设置内容时，解析插入的 `html` 可能会由于一些非法标签导致解析错误，建议开发者在应用内使用时通过 delta 进行插入。
 
-富文本组件内部引入了一些基本的样式使得内容可以正确的展示，开发时可以进行覆盖。需要注意的是，在其它组件或环境中使用富文本组件导出的html时，需要额外引入[这段样式](https://github.com/wechat-miniprogram/editor-style/blob/master/editor.css)，并维护`<ql-container><ql-editor></ql-editor></ql-container>`的结构，参考：[使用 editor 组件导出的 html](https://ask.dcloud.net.cn/article/36205)。
+富文本组件内部引入了一些基本的样式使得内容可以正确的展示，开发时可以进行覆盖。需要注意的是，在其它组件或环境中使用富文本组件导出的html时，需要额外引入[这段样式](https://github.com/dcloudio/uni-app/blob/master/src/core/view/components/editor/editor.css)，并维护`<ql-container><ql-editor></ql-editor></ql-container>`的结构，参考：[使用 editor 组件导出的 html](https://ask.dcloud.net.cn/article/36205)。
 
 图片控件仅初始化时设置有效。
 
@@ -16,11 +16,11 @@
 
 |App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|2.0.0+ [自定义组件编译模式](https://ask.dcloud.net.cn/article/35843)，不含nvue|x|基础库 2.7.0+|x|x|x|x|
+|2.0.0+ [自定义组件编译模式](https://ask.dcloud.net.cn/article/35843)，不含nvue|2.4.5+|基础库 2.7.0+|x|x|x|x|
 
 本功能自HBuilderX2.0起支持。运行到微信小程序工具时，注意在微信工具里选择最新的基础库。
 
-editor组件目前只有App的vue页面和微信支持，其他端的富文本编辑解决方案，可使用web-view加载web页面，也可搜索[插件市场](https://ext.dcloud.net.cn/search?q=%E5%AF%8C%E6%96%87%E6%9C%AC%E7%BC%96%E8%BE%91) 获取简单的markdown富文本编辑器
+editor组件目前只有H5、App的vue页面和微信支持，其他端的富文本编辑解决方案，可使用web-view加载web页面，也可搜索[插件市场](https://ext.dcloud.net.cn/search?q=%E5%AF%8C%E6%96%87%E6%9C%AC%E7%BC%96%E8%BE%91) 获取简单的markdown富文本编辑器
 
 | 属性 | 类型 | 默认值 | 必填 | 说明 |
 | --- | --- | --- | --- | --- |

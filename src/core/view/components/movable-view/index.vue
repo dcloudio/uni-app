@@ -11,7 +11,9 @@ import {
   Friction,
   STD
 } from './utils'
-
+import {
+  disableScrollBounce
+} from 'uni-shared'
 var requesting = false
 
 function _requestAnimationFrame (e) {
@@ -278,6 +280,9 @@ export default {
     __handleTouchStart: function () {
       if (!this._isScaling) {
         if (!this.disabled) {
+          disableScrollBounce({
+            disable: true
+          })
           if (this._FA) {
             this._FA.cancel()
           }
@@ -383,6 +388,9 @@ export default {
     __handleTouchEnd: function () {
       var self = this
       if (!this._isScaling && !this.disabled && this._isTouching) {
+        disableScrollBounce({
+          disable: true
+        })
         this.$el.style.willChange = 'auto'
         this._isTouching = false
         if (!this._checkCanMove && !this._revise('out-of-bounds') && this.inertia) {

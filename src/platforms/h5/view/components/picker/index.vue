@@ -1,5 +1,7 @@
 <template>
-  <uni-picker @click.stop="_show">
+  <uni-picker
+    @click.stop="_show"
+    v-on="$listeners">
     <div
       ref="picker"
       class="uni-picker-container"

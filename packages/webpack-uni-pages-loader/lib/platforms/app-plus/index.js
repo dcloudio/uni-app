@@ -4,13 +4,27 @@ const path = require('path')
 const merge = require('merge')
 
 const {
+  parsePages,
   normalizePath,
   getFlexDirection
 } = require('@dcloudio/uni-cli-shared')
 
 const {
+  addPageUsingComponents
+} = require('@dcloudio/uni-cli-shared/lib/pages')
+
+const {
   parseStyle
 } = require('../../util')
+
+const definePages = require('./define-pages')
+const appConfigService = require('./app-config-service')
+
+const wxPageOrientationMapping = {
+  auto: ['portrait-primary', 'portrait-secondary', 'landscape-primary', 'landscape-secondary'],
+  portrait: ['portrait-primary', 'portrait-secondary'],
+  landscape: ['landscape-primary', 'landscape-secondary']
+}
 
 function parseConfig (appJson) {
   return {
@@ -119,6 +133,17 @@ module.exports = function (pagesJson, userManifestJson) {
     }
   }
 
+  // 屏幕启动方向
+  if (manifestJson.plus.screenOrientation) { // app平台优先使用 manifest 配置
+    manifestJson.screenOrientation = manifestJson.plus.screenOrientation
+    delete manifestJson.plus.screenOrientation
+  } else if (appJson.window && appJson.window.pageOrientation) { // 兼容微信小程序
+    const pageOrientationValue = wxPageOrientationMapping[appJson.window.pageOrientation]
+    if (pageOrientationValue) {
+      manifestJson.screenOrientation = pageOrientationValue
+    }
+  }
+
   // 地图坐标系
   if (manifestJson.permissions && manifestJson.permissions.Maps) {
     manifestJson.permissions.Maps.coordType = 'gcj02'
@@ -209,11 +234,11 @@ module.exports = function (pagesJson, userManifestJson) {
 
   let flexDir = false
 
-  if (manifestJson.plus.nvueCompiler && manifestJson.plus.nvueCompiler === 'weex') {
-    appJson.nvueCompiler = 'weex'
-  } else {
+  if (process.env.UNI_USING_NVUE_COMPILER) {
     appJson.nvueCompiler = 'uni-app'
     flexDir = getFlexDirection(manifestJson.plus)
+  } else {
+    appJson.nvueCompiler = 'weex'
   }
 
   if (manifestJson.plus.renderer === 'native') {
@@ -313,11 +338,17 @@ module.exports = function (pagesJson, userManifestJson) {
       }
       if (!Object.keys(appJson.nvue.pages).find(path => {
         const subNVues = appJson.nvue.pages[path].window.subNVues || []
-        return path.replace(/\.html$/, '.nvue') === key || subNVues.find(({ path }) => path === key.replace(/\.nvue$/, ''))
-      }) && !pagesJson.pages.find(({ style = {} }) => {
+        return path.replace(/\.html$/, '.nvue') === key || subNVues.find(({
+          path
+        }) => path === key.replace(/\.nvue$/, ''))
+      }) && !pagesJson.pages.find(({
+        style = {}
+      }) => {
         style = Object.assign(style, style['app-plus'])
         const subNVues = style.subNVues || []
-        return subNVues.find(({ path }) => path === key.replace(/\.nvue$/, ''))
+        return subNVues.find(({
+          path
+        }) => path === key.replace(/\.nvue$/, ''))
       })) {
         throw new Error(`原生混淆页面未在项目内使用，错误的页面路径：${key}`)
       }
@@ -329,7 +360,8 @@ module.exports = function (pagesJson, userManifestJson) {
   const uniApp = require('../../../package.json')['uni-app']
   manifestJson.plus['uni-app'] = uniApp
   // 控制页类型
-  manifestJson.plus['uni-app'].control = process.env.UNI_USING_V8 ? 'v8' : 'webview'
+  const control = process.env.UNI_USING_V3 ? 'uni-v3' : (process.env.UNI_USING_V8 ? 'v8' : 'webview')
+  manifestJson.plus['uni-app'].control = control
   manifestJson.plus['uni-app'].nvueCompiler = appJson.nvueCompiler
   manifestJson.plus['uni-app'].renderer = appJson.renderer
   if (flexDir) {
@@ -354,8 +386,9 @@ module.exports = function (pagesJson, userManifestJson) {
     }
 
     let isNVueEntryPage = appJson.nvue && appJson.nvue.entryPagePath
-    if (conditionPagePath && isNVueEntryPage) {
-      isNVueEntryPage = appJson.nvue.entryPagePath === conditionPagePath
+    conditionPagePath = process.env.UNI_CLI_LAUNCH_PAGE_PATH || conditionPagePath
+    if (conditionPagePath && appJson.nvue) {
+      isNVueEntryPage = `${conditionPagePath}.html` in appJson.nvue.pages
     }
     manifestJson.plus.useragent.value = 'uni-app'
     manifestJson.launch_path = '__uniappview.html'
@@ -415,7 +448,8 @@ module.exports = function (pagesJson, userManifestJson) {
         manifestJson.plus.launchwebview.id = '2'
       } else {
         // 首页是 tabBar 页面
-        const item = tabBar.list.find(page => page.pagePath === (process.env.UNI_USING_NATIVE ? appJson.entryPagePath : entryPagePath))
+        const item = tabBar.list.find(page => page.pagePath === (process.env.UNI_USING_NATIVE ? appJson.entryPagePath
+          : entryPagePath))
         if (item) {
           tabBar.child = ['lauchwebview']
           tabBar.selected = tabBar.list.indexOf(item)
@@ -443,10 +477,58 @@ module.exports = function (pagesJson, userManifestJson) {
 
   delete appJson.subPackages
 
+  // TODO 处理纯原生
   if (process.env.UNI_USING_NATIVE) {
     manifest.name = 'manifest.json'
     manifest.content = JSON.stringify(manifest.content)
     return [manifest, parseConfig(appJson)]
+  }
+
+  if (process.env.UNI_USING_V3) { // v3
+    appJson.entryPagePath = appJson.pages[0]
+    // timeout
+    normalizeNetworkTimeout(appJson)
+    appJson.page = Object.create(null)
+
+    const addPage = function (pagePath, windowOptions, nvue) {
+      // 缓存页面级usingComponents
+      addPageUsingComponents(pagePath, windowOptions.usingComponents)
+      delete windowOptions.usingComponents
+      appJson.page[pagePath] = {
+        window: windowOptions,
+        nvue
+      }
+    }
+    parsePages(pagesJson, function (page) {
+      addPage(page.path, parseStyle(page.style), !!page.nvue)
+    }, function (root, page) {
+      addPage(normalizePath(path.join(root, page.path)), parseStyle(page.style, root), !!page.nvue)
+    })
+    // nvue 权限
+    manifestJson.permissions.UniNView = {
+      'description': 'UniNView原生渲染'
+    }
+    // TODO 需要考虑 condition
+    manifestJson.plus.launchwebview.id = '1' // 首页 id 固定 为 1
+    // 删除首页 style 中的 uni-app 配置（不注入 app-view.js）
+    delete manifestJson.plus.launchwebview['uni-app']
+
+    if (appJson.page[appJson.entryPagePath].nvue) { // 首页是 nvue
+      manifestJson.launch_path = '' // 首页地址为空
+      manifestJson.plus.launchwebview.uniNView = {
+        path: appJson.entryPagePath
+      }
+      if (manifestJson.plus.tabBar) {
+        manifestJson.plus.tabBar.child = ['lauchwebview']
+      }
+    } else {
+      manifestJson.plus.launch_path = '__uniappview.html' // 首页地址固定
+    }
+
+    manifest.name = 'manifest.json'
+    manifest.content = JSON.stringify(manifest.content)
+    delete appJson.nvue
+    return [manifest, definePages(appJson), appConfigService(appJson)]
   }
   return [app, manifest]
 }

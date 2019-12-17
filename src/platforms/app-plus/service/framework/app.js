@@ -5,6 +5,10 @@ import {
 import initOn from 'uni-core/service/bridge/on'
 
 import {
+  NETWORK_TYPES
+} from '../api/constants'
+
+import {
   getCurrentPages
 } from './page'
 
@@ -12,39 +16,47 @@ import {
   consumePlusMessage
 } from './plus-message'
 
-import {
-  isTabBarPage
-} from '../api/util'
-
 import tabBar from './tab-bar'
 
 import {
   publish
 } from '../bridge'
 
+import {
+  initSubscribeHandlers
+} from './subscribe-handlers'
+
+import {
+  perf
+} from './perf'
+
+import {
+  backbuttonListener
+} from './backbutton'
+
 let appCtx
 
-const NETWORK_TYPES = [
-  'unknown',
-  'none',
-  'ethernet',
-  'wifi',
-  '2g',
-  '3g',
-  '4g'
-]
+const defaultApp = {
+  globalData: {}
+}
 
-export function getApp () {
-  return appCtx
+export function getApp ({
+  allowDefault = false
+} = {}) {
+  if (appCtx) { // 真实的 App 已初始化
+    return appCtx
+  }
+  if (allowDefault) { // 返回默认实现
+    return defaultApp
+  }
 }
 
 function initGlobalListeners () {
   const emit = UniServiceJSBridge.emit
 
-  plus.key.addEventListener('backbutton', () => {
-    uni.navigateBack({
-      from: 'backbutton'
-    })
+  // splashclosed 时开始监听 backbutton
+  plus.globalEvent.addEventListener('splashclosed', () => {
+    plus.key.addEventListener('backbutton', backbuttonListener)
   })
 
   plus.globalEvent.addEventListener('pause', () => {
@@ -69,15 +81,20 @@ function initGlobalListeners () {
     })
   })
 
-  plus.globalEvent.addEventListener('plusMessage', function (e) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.log('UNIAPP[plusMessage]:[' + Date.now() + ']' + JSON.stringify(e.data))
-    }
-    if (e.data && e.data.type) {
-      const type = e.data.type
-      consumePlusMessage(type, e.data.args || {})
-    }
-  })
+  plus.globalEvent.addEventListener('plusMessage', onPlusMessage)
+
+  // nvue webview post message
+  plus.globalEvent.addEventListener('WebviewPostMessage', onPlusMessage)
+}
+
+function onPlusMessage (e) {
+  if (process.env.NODE_ENV !== 'production') {
+    console.log('[plusMessage]:[' + Date.now() + ']' + JSON.stringify(e.data))
+  }
+  if (e.data && e.data.type) {
+    const type = e.data.type
+    consumePlusMessage(type, e.data.args || {})
+  }
 }
 
 function initAppLaunch (appVm) {
@@ -102,31 +119,22 @@ function initTabBar () {
   if (selected !== -1) {
     // 取当前 tab 索引值
     __uniConfig.tabBar.selected = selected
-    // 如果真实的首页与 condition 都是 tabbar，无需启用 realEntryPagePath 机制
-    if (__uniConfig.realEntryPagePath && isTabBarPage(__uniConfig.realEntryPagePath)) {
-      delete __uniConfig.realEntryPagePath
-    }
   }
 
-  __uniConfig.__ready__ = true
-
-  const onLaunchWebviewReady = function onLaunchWebviewReady () {
-    tabBar.init(__uniConfig.tabBar, (item, index) => {
-      uni.switchTab({
-        url: '/' + item.pagePath,
-        openType: 'switchTab',
-        from: 'tabBar',
-        success () {
-          UniServiceJSBridge.emit('onTabItemTap', {
-            index,
-            text: item.text,
-            pagePath: item.pagePath
-          })
-        }
-      })
+  tabBar.init(__uniConfig.tabBar, (item, index) => {
+    uni.switchTab({
+      url: '/' + item.pagePath,
+      openType: 'switchTab',
+      from: 'tabBar',
+      success () {
+        UniServiceJSBridge.emit('onTabItemTap', {
+          index,
+          text: item.text,
+          pagePath: item.pagePath
+        })
+      }
     })
-  }
-  onLaunchWebviewReady()
+  })
 }
 
 export function registerApp (appVm) {
@@ -136,16 +144,26 @@ export function registerApp (appVm) {
 
   appCtx = appVm
 
-  appCtx.globalData = appVm.$options.globalData || {}
+  Object.assign(appCtx, defaultApp) // 拷贝默认实现
+
+  const globalData = appVm.$options.globalData || {}
+  // merge globalData
+  appCtx.globalData = Object.assign(globalData, appCtx.globalData)
 
   initOn(UniServiceJSBridge.on, {
     getApp,
     getCurrentPages
   })
 
-  initAppLaunch(appVm)
+  initTabBar()
 
   initGlobalListeners()
 
-  initTabBar()
+  initSubscribeHandlers()
+
+  initAppLaunch(appVm)
+
+  __uniConfig.ready = true
+
+  process.env.NODE_ENV !== 'production' && perf('registerApp')
 }

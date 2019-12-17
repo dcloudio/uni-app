@@ -47,7 +47,6 @@ export default [
   'stopBeaconDiscovery',
   'setBackgroundColor',
   'setBackgroundTextStyle',
-  'loadFontFace',
   'getProvider',
   'login',
   'checkSession',

@@ -41,6 +41,7 @@ module.exports = (api, options, rootOptions) => {
       },
       devDependencies: {
         '@dcloudio/uni-cli-shared': version,
+        '@dcloudio/uni-migration': version,
         '@dcloudio/uni-template-compiler': version,
         '@dcloudio/vue-cli-plugin-hbuilderx': version,
         '@dcloudio/vue-cli-plugin-uni': version,

@@ -1,6 +1,8 @@
 const fs = require('fs')
 const path = require('path')
 
+const loaderUtils = require('loader-utils')
+
 const {
   parsePages,
   normalizePath,
@@ -32,6 +34,12 @@ function renameUsingComponents (jsonObj) {
 module.exports = function (content) {
   this.cacheable && this.cacheable()
 
+  let isAppView = false
+  if (this.resourceQuery) {
+    const params = loaderUtils.parseQuery(this.resourceQuery)
+    isAppView = params.type === 'view'
+  }
+
   const pagesJsonJsPath = path.resolve(process.env.UNI_INPUT_DIR, pagesJsonJsFileName)
   const manifestJsonPath = path.resolve(process.env.UNI_INPUT_DIR, 'manifest.json')
   const manifestJson = parseManifestJson(fs.readFileSync(manifestJsonPath, 'utf8'))
@@ -56,17 +64,33 @@ module.exports = function (content) {
     return require('./platforms/h5')(pagesJson, manifestJson)
   }
 
-  parsePages(pagesJson, function (page) {
-    updatePageJson(page.path, renameUsingComponents(parseStyle(page.style)))
-  }, function (root, page) {
-    updatePageJson(normalizePath(path.join(root, page.path)), renameUsingComponents(
-      parseStyle(page.style, root)
-    ))
-  })
+  if (!process.env.UNI_USING_V3) {
+    parsePages(pagesJson, function (page) {
+      updatePageJson(page.path, renameUsingComponents(parseStyle(page.style)))
+    }, function (root, page) {
+      updatePageJson(normalizePath(path.join(root, page.path)), renameUsingComponents(
+        parseStyle(page.style, root)
+      ))
+    })
+  }
 
   const jsonFiles = require('./platforms/' + process.env.UNI_PLATFORM)(pagesJson, manifestJson)
 
   if (jsonFiles && jsonFiles.length) {
+    if (process.env.UNI_USING_V3) {
+      let appConfigContent = ''
+      jsonFiles.forEach(jsonFile => {
+        if (jsonFile) {
+          if (jsonFile.name === 'define-pages.js') {
+            appConfigContent = jsonFile.content
+          } else {
+            // app-view 不需要生成 app-config-service.js,manifest.json
+            !isAppView && this.emitFile(jsonFile.name, jsonFile.content)
+          }
+        }
+      })
+      return appConfigContent
+    }
     if (process.env.UNI_USING_NATIVE) {
       let appConfigContent = ''
       jsonFiles.forEach(jsonFile => {

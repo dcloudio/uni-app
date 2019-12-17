@@ -1,18 +1,25 @@
 const compiler = require('../lib')
 const res = compiler.compile(
   `
-<button open-type="getPhoneNumber" @getphonenumber="getPhoneNumber">获取手机号</button>
-    `, {
+<view class="custom-class"></view>
+`, {
+    miniprogram: true,
     resourcePath: '/User/fxy/Documents/test.wxml',
-    mp: {
-      minified: true,
-      isTest: true,
-      platform: 'mp-weixin'
+    isReservedTag: function (tag) {
+      return true
     },
-    filterModules: {
-      t: {},
-      a: {}
-    }
+    getTagNamespace () {
+      return false
+    },
+    mp: {
+      platform: 'app-plus'
+    },
+    filterModules: ['swipe'],
+    // service: true,
+    view: true
+
   })
-// ---BEGIN:JSON---{"n":"v"}---END:JSON---
-console.log(res)
+console.log(require('util').inspect(res, {
+  colors: true,
+  depth: null
+}))

@@ -31,12 +31,20 @@ const PLATFORMS = {
 
 const platform = PLATFORMS[process.env.UNI_PLATFORM]
 
+let input = 'src/core/runtime/index.js'
+const output = {
+  file: `packages/uni-${process.env.UNI_PLATFORM}/dist/index.js`,
+  format: 'es'
+}
+
+if (process.env.UNI_MP) {
+  input = 'src/core/runtime/mp/index.js'
+  output.file = `packages/uni-${process.env.UNI_PLATFORM}/dist/mp.js`
+}
+
 module.exports = {
-  input: 'src/core/runtime/index.js',
-  output: {
-    file: `packages/uni-${process.env.UNI_PLATFORM}/dist/index.js`,
-    format: 'es'
-  },
+  input,
+  output,
   plugins: [
     alias({
       'uni-shared': path.resolve(__dirname, '../src/shared/util.js'),

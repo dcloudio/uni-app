@@ -17,12 +17,13 @@
 <script>
 import scroller from 'uni-mixins/scroller/index'
 import {
-  supportsPassive
+  supportsPassive,
+  disableScrollBounce
 } from 'uni-shared'
+
 const passiveOptions = supportsPassive ? {
   passive: true
 } : false
-
 export default {
   name: 'ScrollView',
   mixins: [scroller],
@@ -151,8 +152,12 @@ export default {
         event.stopPropagation()
       }
     }
+
     this.__handleTouchStart = function (event) {
       if (event.touches.length === 1) {
+        disableScrollBounce({
+          disable: true
+        })
         needStop = null
         touchStart = {
           x: event.touches[0].pageX,
@@ -160,11 +165,17 @@ export default {
         }
       }
     }
+    this.__handleTouchEnd = function (event) {
+      disableScrollBounce({
+        disable: false
+      })
+    }
     this.$refs.main.addEventListener('touchstart', this.__handleTouchStart, passiveOptions)
     this.$refs.main.addEventListener('touchmove', this.__handleTouchMove, passiveOptions)
     this.$refs.main.addEventListener('scroll', this.__handleScroll, supportsPassive ? {
       passive: false
     } : false)
+    this.$refs.main.addEventListener('touchend', this.__handleTouchEnd, passiveOptions)
   },
   activated () {
     // 还原 scroll-view 滚动位置
@@ -177,6 +188,7 @@ export default {
     this.$refs.main.removeEventListener('scroll', this.__handleScroll, supportsPassive ? {
       passive: false
     } : false)
+    this.$refs.main.removeEventListener('touchend', this.__handleTouchEnd, passiveOptions)
   },
   methods: {
     scrollTo: function (t, n) {
@@ -359,7 +371,6 @@ export default {
         main.style.overflowY = this.scrollY ? 'auto' : 'hidden'
         main.scrollTop = val
       }
-
       this.$refs.content.removeEventListener('transitionend', this.__transitionEnd)
       this.$refs.content.removeEventListener('webkitTransitionEnd', this.__transitionEnd)
     },

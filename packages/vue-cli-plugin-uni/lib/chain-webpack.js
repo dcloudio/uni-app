@@ -12,7 +12,7 @@ function resolve (dir) {
   return path.resolve(__dirname, '..', dir)
 }
 
-module.exports = function chainWebpack (platformOptions, api) {
+module.exports = function chainWebpack (platformOptions, vueOptions, api) {
   const {
     runByHBuilderX, // 使用 HBuilderX 运行
     cssPreprocessOptions
@@ -20,21 +20,16 @@ module.exports = function chainWebpack (platformOptions, api) {
 
   return function (webpackConfig) {
     // 处理静态资源 limit
-    webpackConfig.module
-      .rule('images')
-      .use('url-loader')
-      .loader('url-loader')
-      .tap(options => Object.assign(options, {
-        limit: 40960
-      }))
-
-    webpackConfig.module
-      .rule('fonts')
-      .use('url-loader')
-      .loader('url-loader')
-      .tap(options => Object.assign(options, {
-        limit: 40960
-      }))
+    const staticTypes = ['images', 'media', 'fonts']
+    staticTypes.forEach(staticType => {
+      webpackConfig.module
+        .rule(staticType)
+        .use('url-loader')
+        .loader('url-loader')
+        .tap(options => Object.assign(options, {
+          limit: 40960
+        }))
+    })
     // 条件编译 vue 文件统一直接过滤html,js,css三种类型,单独资源文件引用各自过滤
 
     const loaders = {
@@ -94,7 +89,7 @@ module.exports = function chainWebpack (platformOptions, api) {
       })
     }
 
-    platformOptions.chainWebpack(webpackConfig, api)
+    platformOptions.chainWebpack(webpackConfig, vueOptions, api)
     // define
     webpackConfig
       .plugin('uni-define')
