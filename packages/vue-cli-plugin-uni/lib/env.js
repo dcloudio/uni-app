@@ -261,6 +261,10 @@ if (process.env.UNI_USING_V3 && process.env.UNI_PLATFORM === 'app-plus') {
   moduleAlias.addAlias('vue-style-loader', '@dcloudio/vue-cli-plugin-uni/packages/app-vue-style-loader')
 }
 
+if (process.env.UNI_PLATFORM === 'h5') {
+  moduleAlias.addAlias('vue-style-loader', '@dcloudio/vue-cli-plugin-uni/packages/h5-vue-style-loader')
+}
+
 // vue cache
 if ( // 非 h5 ,非 v3,非 native
   process.env.UNI_PLATFORM !== 'h5' &&
