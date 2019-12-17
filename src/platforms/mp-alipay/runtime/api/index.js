@@ -90,3 +90,11 @@ export function createSelectorQuery () {
   }
   return query
 }
+
+export function createIntersectionObserver (component, options) {
+  if (options && options.observeAll) {
+    options.selectAll = options.observeAll
+    delete options.observeAll
+  }
+  return my.createIntersectionObserver(options)
+}
