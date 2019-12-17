@@ -96,7 +96,7 @@
         <h5 class="uniapp-home-content-item-title">性能体验优秀</h5>
         <p class="uniapp-home-content-item-text">体验更好的Hybrid框架，加载新页面速度更快。</p>
         <p class="uniapp-home-content-item-text">App端支持weex原生渲染，可支撑更流畅的用户体验。</p>
-        <p class="uniapp-home-content-item-text">小程序端的性能优于市场其他框架。<a href="https://ask.dcloud.net.cn/article/35947">评测</a></p>
+        <p class="uniapp-home-content-item-text">小程序端的性能优于市场其他框架。<a href="https://ask.dcloud.net.cn/article/35947" target="_blank">评测</a></p>
       </div>
     </div>
     <div class="uniapp-home-content-item">
@@ -105,7 +105,7 @@
       </div>
       <div class="uniapp-home-content-item-header">
         <h5 class="uniapp-home-content-item-title">周边生态丰富</h5>
-        <p class="uniapp-home-content-item-text"><a href="https://ext.dcloud.net.cn/?orderBy=WeekDownload">插件市场</a>数千款插件。</p>
+        <p class="uniapp-home-content-item-text"><a href="https://ext.dcloud.net.cn/?orderBy=WeekDownload" target="_blank">插件市场</a>数千款插件。</p>
         <p class="uniapp-home-content-item-text">支持NPM、支持小程序组件和SDK、兼容mpvue组件和项目、兼容weex组件。</p>
         <p class="uniapp-home-content-item-text">微信生态的各种sdk可直接用于跨平台App。</p>
       </div>
