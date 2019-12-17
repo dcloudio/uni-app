@@ -31,7 +31,7 @@
 
 下面的示例代码中，如果目标节点 ``".test"`` 进入 ``".scroll"`` 区域以下 100px 时，就会触发回调函数。
 ```
-uni.createIntersectionObserver(this).relativeTo('.scroll',{bottom: 100}}).observe('.test', (res) => {
+uni.createIntersectionObserver(this).relativeTo('.scroll',{bottom: 100}).observe('.test', (res) => {
   console.log(res);
 })
 ```
