@@ -320,6 +320,13 @@ if (
   }
 }
 
+process.UNI_AUTO_COMPONENTS = [{
+  test (str) {
+    return new RegExp('uni-(.*)').test(str)
+  },
+  replacement: '@components/uni-$1/uni-$1.vue'
+}]
+
 runByHBuilderX && console.log(`正在编译中...`)
 
 module.exports = {

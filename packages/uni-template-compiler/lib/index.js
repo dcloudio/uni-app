@@ -26,8 +26,25 @@ const {
   isComponent
 } = require('./util')
 
+function compileTemplate (source, options) {
+  const res = compile(source, options)
+  console.log(options)
+  const {
+    autoComponents
+  } = options.isReservedTag
+  if (autoComponents) {
+    console.log('检测到的自定义组件:' + [...autoComponents])
+  }
+  res.components = `{
+    'uni-badge': require('@components/uni-badge/uni-badge.vue').default,
+    'uni-tag': require('@components/uni-tag/uni-tag.vue').default
+  }`
+  return res
+}
+
 module.exports = {
   compile (source, options = {}) {
+    (options.modules || (options.modules = [])).push(require('./auto-components'))
     if (options.service) {
       (options.modules || (options.modules = [])).push(require('./app/service'))
       options.optimize = false // 启用 staticRenderFns
@@ -37,7 +54,7 @@ module.exports = {
       options.getTagNamespace = () => false
 
       try {
-        return compile(source, options)
+        return compileTemplate(source, options)
       } catch (e) {
         console.error(source)
         throw e
@@ -47,7 +64,7 @@ module.exports = {
       options.optimize = false // 暂不启用 staticRenderFns
       options.isReservedTag = (tagName) => false // 均为组件
       try {
-        return compile(source, options)
+        return compileTemplate(source, options)
       } catch (e) {
         console.error(source)
         throw e
@@ -55,7 +72,7 @@ module.exports = {
     }
 
     if (!options.mp) { // h5
-      return compile(source, options)
+      return compileTemplate(source, options)
     }
 
     (options.modules || (options.modules = [])).push(compilerModule)
@@ -64,7 +81,7 @@ module.exports = {
       options.modules.push(compilerAlipayModule)
     }
 
-    const res = compile(source, Object.assign(options, {
+    const res = compileTemplate(source, Object.assign(options, {
       optimize: false
     }))
 

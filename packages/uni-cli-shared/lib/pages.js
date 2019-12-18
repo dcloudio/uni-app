@@ -325,6 +325,35 @@ function addPageUsingComponents (pagePath, usingComponents) {
     usingComponentsPages[pagePath] = usingComponents
   }
 }
+// 存储自动组件
+const autoComponentMap = {}
+
+function addAutoComponent (name) {
+  const options = process.UNI_AUTO_COMPONENTS
+  const opt = options.find(opt => opt.test(name))
+  if (!opt) { // 不匹配
+    return (autoComponentMap[name] = true) // cache
+  }
+  return (autoComponentMap[name] = {
+    name,
+    identifier: capitalize(camelize(name + '-auto-import')),
+    source: name.replace(opt.test, opt.replacement)
+  })
+}
+
+function getAutoComponents (autoComponents) {
+  const components = []
+  autoComponents.forEach(name => {
+    let autoComponent = autoComponentMap[name]
+    if (!autoComponent) {
+      autoComponent = addAutoComponent(name)
+    }
+    if (autoComponent !== true) {
+      components.push(autoComponent)
+    }
+  })
+  return components
+}
 
 module.exports = {
   getMainEntry,
@@ -334,6 +363,7 @@ module.exports = {
   getPagesJson,
   parsePagesJson,
   pagesJsonJsFileName,
+  getAutoComponents,
   addPageUsingComponents,
   getUsingComponentsCode,
   generateUsingComponentsCode,

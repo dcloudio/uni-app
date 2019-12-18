@@ -94,6 +94,7 @@ if (process.env.UNI_USING_NVUE_COMPILER) {
 
 module.exports = {
   preserveWhitespace: false,
+  isAppNVue: true,
   compiler: require('weex-template-compiler'),
   compilerOptions: {
     modules

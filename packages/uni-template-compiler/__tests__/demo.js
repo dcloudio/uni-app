@@ -1,7 +1,12 @@
 const compiler = require('../lib')
 const res = compiler.compile(
   `
-<view class="custom-class"></view>
+<view class="custom-class">
+<uni-badge/>
+<uni-badge/>
+<uni-tag/>
+<uni-tag/>
+</view>
 `, {
     miniprogram: true,
     resourcePath: '/User/fxy/Documents/test.wxml',
@@ -14,9 +19,9 @@ const res = compiler.compile(
     mp: {
       platform: 'app-plus'
     },
-    filterModules: ['swipe'],
+    filterModules: ['swipe']
     // service: true,
-    view: true
+    // view: true
 
   })
 console.log(require('util').inspect(res, {

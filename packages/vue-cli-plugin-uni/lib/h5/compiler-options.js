@@ -4,7 +4,7 @@ const {
 
 const {
   isUnaryTag
-} = require('../util')
+} = require('@dcloudio/uni-template-compiler/lib/util')
 
 const simplePathRE = /^[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*|\['[^']*?']|\["[^"]*?"]|\[\d+]|\[[A-Za-z_$][\w$]*])*$/
 
@@ -69,9 +69,7 @@ module.exports = {
   isUnaryTag,
   preserveWhitespace: false,
   modules: [require('../format-text'), {
-    preTransformNode (el, {
-      warn
-    }) {
+    preTransformNode (el, options) {
       fixBooleanAttribute(el)
       if (el.tag.indexOf('v-uni-') === 0) {
         addTag(el.tag.replace('v-uni-', ''))

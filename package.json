@@ -75,9 +75,9 @@
     "rollup-plugin-uglify": "^6.0.3",
     "shell-exec": "^1.0.2",
     "strip-json-comments": "^2.0.1",
-    "vue": "^2.6.8",
+    "vue": "^2.6.11",
     "vue-router": "^3.0.1",
-    "vue-template-compiler": "^2.6.8",
+    "vue-template-compiler": "^2.6.11",
     "webpack": "^4.18.0",
     "webpack-bundle-analyzer": "^3.0.3",
     "webpack-virtual-modules": "^0.1.10"

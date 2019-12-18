@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const webpack = require('webpack')
-const VueLoaderPlugin = require('vue-loader/lib/plugin')
+const VueLoaderPlugin = require('@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib/plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 const {
@@ -39,8 +39,10 @@ const uniPath = process.env.UNI_USING_V8
 const provide = {}
 
 if (process.env.UNI_USING_V3 || process.env.UNI_USING_NATIVE) {
-  provide['uni.getCurrentSubNVue'] = [path.resolve(__dirname, '../packages/uni-app-plus-nvue/dist/get-current-sub-nvue.js'), 'default']
-  provide['uni.requireNativePlugin'] = [path.resolve(__dirname, '../packages/uni-app-plus-nvue/dist/require-native-plugin.js'), 'default']
+  provide['uni.getCurrentSubNVue'] = [path.resolve(__dirname,
+    '../packages/uni-app-plus-nvue/dist/get-current-sub-nvue.js'), 'default']
+  provide['uni.requireNativePlugin'] = [path.resolve(__dirname,
+    '../packages/uni-app-plus-nvue/dist/require-native-plugin.js'), 'default']
 }
 
 if (!process.env.UNI_USING_V3) {
@@ -110,17 +112,9 @@ const rules = [{
   }
 },
 {
-  test: /\.nvue(\?[^?]+)?$/,
+  test: [/\.nvue(\?[^?]+)?$/, /\.vue(\?[^?]+)?$/],
   use: [{
-    loader: path.resolve(__dirname, '../packages/vue-loader'),
-    options: vueLoaderOptions
-  }],
-  exclude: excludeModuleReg
-},
-{
-  test: /\.vue(\?[^?]+)?$/,
-  use: [{
-    loader: path.resolve(__dirname, '../packages/vue-loader'),
+    loader: require.resolve('@dcloudio/vue-cli-plugin-uni/packages/vue-loader'),
     options: vueLoaderOptions
   }],
   exclude: excludeModuleReg

@@ -1,6 +1,6 @@
 {
   "name": "vue-loader",
-  "version": "15.7.1",
+  "version": "15.8.3",
   "description": "Vue single-file component loader for Webpack",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
@@ -34,10 +34,15 @@
   },
   "peerDependencies": {
     "css-loader": "*",
-    "webpack": "^4.1.0 || ^5.0.0-0"
+    "webpack": "^3.0.0 || ^4.1.0 || ^5.0.0-0"
+  },
+  "peerDependenciesMeta": {
+    "cache-loader": {
+      "optional": true
+    }
   },
   "dependencies": {
-    "@vue/component-compiler-utils": "^3.0.0",
+    "@vue/component-compiler-utils": "^3.1.0",
     "hash-sum": "^1.0.2",
     "loader-utils": "^1.1.0",
     "vue-hot-reload-api": "^2.3.0",
