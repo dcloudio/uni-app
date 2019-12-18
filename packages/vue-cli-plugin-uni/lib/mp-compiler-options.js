@@ -3,15 +3,9 @@ const {
   convertStaticStyle
 } = require('@dcloudio/uni-cli-shared')
 
-const {
-  isUnaryTag
-} = require('@dcloudio/uni-template-compiler/lib/util')
-
 module.exports = {
-  isUnaryTag,
-  preserveWhitespace: false,
   modules: [require('./format-text'), {
-    preTransformNode(el, {
+    preTransformNode (el, {
       warn
     }) {
       if (el.attrsMap) {
@@ -40,7 +34,7 @@ module.exports = {
         })
       }
     },
-    postTransformNode(el) {
+    postTransformNode (el) {
       if (process.env.UNI_PLATFORM === 'mp-alipay') {
         if (el.tag === 'slot') {
           if (!el.children.length) {

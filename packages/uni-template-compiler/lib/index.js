@@ -23,7 +23,8 @@ const compilerAlipayModule = require('./module-alipay')
 const generateCodeFrame = require('./codeframe')
 
 const {
-  isComponent
+  isComponent,
+  isUnaryTag
 } = require('./util')
 
 function compileTemplate (source, options) {
@@ -31,7 +32,7 @@ function compileTemplate (source, options) {
   console.log(options)
   const {
     autoComponents
-  } = options.isReservedTag
+  } = options.isUnaryTag
   if (autoComponents) {
     console.log('检测到的自定义组件:' + [...autoComponents])
   }
@@ -45,6 +46,8 @@ function compileTemplate (source, options) {
 module.exports = {
   compile (source, options = {}) {
     (options.modules || (options.modules = [])).push(require('./auto-components'))
+    options.isUnaryTag = isUnaryTag
+    options.preserveWhitespace = false
     if (options.service) {
       (options.modules || (options.modules = [])).push(require('./app/service'))
       options.optimize = false // 启用 staticRenderFns
@@ -62,6 +65,7 @@ module.exports = {
     } else if (options.view) {
       (options.modules || (options.modules = [])).push(require('./app/view'))
       options.optimize = false // 暂不启用 staticRenderFns
+      options.isUnaryTag = isUnaryTag
       options.isReservedTag = (tagName) => false // 均为组件
       try {
         return compileTemplate(source, options)

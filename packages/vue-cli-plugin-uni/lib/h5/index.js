@@ -145,6 +145,11 @@ module.exports = {
           }]
         }]
       },
+      resolveLoader: {
+        alias: {
+          'vue-style-loader': resolve('packages/h5-vue-style-loader')
+        }
+      },
       plugins
     }
   },

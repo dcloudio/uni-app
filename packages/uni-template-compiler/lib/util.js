@@ -6,9 +6,9 @@ const {
   METHOD_RENDER_LIST
 } = require('./constants')
 
-function cached(fn) {
+function cached (fn) {
   const cache = Object.create(null)
-  return function cachedFn(str) {
+  return function cachedFn (str) {
     const hit = cache[str]
     return hit || (cache[str] = fn(str))
   }
@@ -21,7 +21,7 @@ const camelize = cached((str) => {
   return str.replace(camelizeRE, (_, c) => c ? c.toUpperCase() : '')
 })
 
-function getCode(node) {
+function getCode (node) {
   return babelGenerate(t.cloneDeep(node), {
     compact: true,
     jsescOption: {
@@ -31,11 +31,11 @@ function getCode(node) {
   }).code
 }
 
-function traverseKey(ast, state) {
+function traverseKey (ast, state) {
   let forKey = false
   babelTraverse(ast, {
     noScope: true,
-    ObjectProperty(path) {
+    ObjectProperty (path) {
       if (forKey) {
         return
       }
@@ -44,7 +44,7 @@ function traverseKey(ast, state) {
         path.stop()
       }
     },
-    CallExpression(path) {
+    CallExpression (path) {
       if (path.node.callee.name === METHOD_RENDER_LIST) {
         path.stop()
       }
@@ -53,7 +53,7 @@ function traverseKey(ast, state) {
   return forKey
 }
 
-function traverseFilter(ast, state) {
+function traverseFilter (ast, state) {
   const filterModules = state.options.filterModules
   if (!filterModules.length) {
     return false
@@ -61,7 +61,7 @@ function traverseFilter(ast, state) {
   let isFilter = false
   babelTraverse(ast, {
     noScope: true,
-    Identifier(path) {
+    Identifier (path) {
       if (filterModules.includes(path.node.name)) {
         const parentNode = path.parent
         if ( // t.msg || t['msg']
@@ -81,11 +81,11 @@ function traverseFilter(ast, state) {
   return isFilter
 }
 
-function wrapper(code, reverse = false) {
+function wrapper (code, reverse = false) {
   return reverse ? `{{!(${code})}}` : `{{${code}}}`
 }
 
-function genCode(node, noWrapper = false, reverse = false, quotes = true) {
+function genCode (node, noWrapper = false, reverse = false, quotes = true) {
   if (t.isStringLiteral(node)) {
     return reverse ? `!(${node.value})` : node.value
   } else if (t.isIdentifier(node)) {
@@ -98,11 +98,11 @@ function genCode(node, noWrapper = false, reverse = false, quotes = true) {
   return noWrapper ? code : wrapper(code, reverse)
 }
 
-function getForIndexIdentifier(id) {
+function getForIndexIdentifier (id) {
   return `__i${id}__`
 }
 
-function getForKey(forKey, forIndex, state) {
+function getForKey (forKey, forIndex, state) {
   if (forKey) {
     if (t.isIdentifier(forKey)) {
       if (forIndex !== forKey.name) { // 非 forIndex
@@ -121,7 +121,7 @@ function getForKey(forKey, forIndex, state) {
   return ''
 }
 
-function processMemberProperty(node, state) {
+function processMemberProperty (node, state) {
   if (node.computed) {
     const property = node.property
     if (t.isNumericLiteral(property)) {
@@ -139,7 +139,7 @@ function processMemberProperty(node, state) {
   }
 }
 
-function processMemberExpression(element, state) {
+function processMemberExpression (element, state) {
   // item['order']=>item.order
   if (t.isMemberExpression(element)) {
     element = t.cloneDeep(element)
@@ -152,19 +152,19 @@ function processMemberExpression(element, state) {
 
     babelTraverse(element, {
       noScope: true,
-      MemberExpression(path) {
+      MemberExpression (path) {
         processMemberProperty(path.node, state)
       }
     })
 
     babelTraverse(element, {
       noScope: true,
-      MemberExpression(path) {
+      MemberExpression (path) {
         if (t.isStringLiteral(path.node.property)) {
           path.node.computed = false
         }
       },
-      StringLiteral(path) {
+      StringLiteral (path) {
         path.replaceWith(t.identifier(path.node.value))
       }
     })
@@ -172,7 +172,7 @@ function processMemberExpression(element, state) {
   return element
 }
 
-function hasOwn(obj, key) {
+function hasOwn (obj, key) {
   return hasOwnProperty.call(obj, key)
 }
 
@@ -182,7 +182,7 @@ const {
   getTagName
 } = require('./h5')
 
-function isComponent(tagName) {
+function isComponent (tagName) {
   if (
     tagName === 'block' ||
     tagName === 'component' ||
@@ -194,15 +194,15 @@ function isComponent(tagName) {
   return !hasOwn(tags, getTagName(tagName.replace('v-uni-', '')))
 }
 
-function makeMap(str, expectsLowerCase) {
+function makeMap (str, expectsLowerCase) {
   const map = Object.create(null)
   const list = str.split(',')
   for (let i = 0; i < list.length; i++) {
     map[list[i]] = true
   }
-  return expectsLowerCase ?
-    val => map[val.toLowerCase()] :
-    val => map[val]
+  return expectsLowerCase
+    ? val => map[val.toLowerCase()]
+    : val => map[val]
 }
 module.exports = {
   isUnaryTag: makeMap(
