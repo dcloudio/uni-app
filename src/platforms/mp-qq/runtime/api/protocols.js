@@ -3,11 +3,6 @@ export const protocols = {
   previewImage
 }
 export const todos = [
-  'createLivePlayerContext',
-  'createLivePusherContext',
-  'loadFontFace',
-  'onMemoryWarning',
-  'onNetworkStatusChange',
   'startBeaconDiscovery',
   'stopBeaconDiscovery',
   'getBeacons',
@@ -27,10 +22,7 @@ export const todos = [
   'setWifiList',
   'onWifiConnected',
   'getConnectedWifi',
-  'setNavigationBarColor',
   'setTopBarText',
-  'getExtConfig',
-  'getExtConfigSync',
   'getPhoneNumber',
   'chooseAddress',
   'addCard',
@@ -41,9 +33,6 @@ export const todos = [
   'checkIsSupportSoterAuthentication',
   'startSoterAuthentication',
   'checkIsSoterEnrolledInDevice',
-  'reportMonitor',
-  'getLogManager',
-  'reportAnalytics',
   'vibrate'
 ]
 export const canIUses = [
@@ -69,5 +58,16 @@ export const canIUses = [
   'onSocketClose',
   'openDocument',
   'updateShareMenu',
-  'getShareInfo'
+  'getShareInfo',
+  'createLivePlayerContext',
+  'createLivePusherContext',
+  'setNavigationBarColor',
+  'loadFontFace',
+  'onMemoryWarning',
+  'onNetworkStatusChange',
+  'getExtConfig',
+  'getExtConfigSync',
+  'reportMonitor',
+  'getLogManager',
+  'reportAnalytics'
 ]
