@@ -33,7 +33,10 @@ export const todos = [
   'checkIsSupportSoterAuthentication',
   'startSoterAuthentication',
   'checkIsSoterEnrolledInDevice',
-  'vibrate'
+  'vibrate',
+  'loadFontFace',
+  'getExtConfig',
+  'getExtConfigSync'
 ]
 export const canIUses = [
   'scanCode',
@@ -62,11 +65,8 @@ export const canIUses = [
   'createLivePlayerContext',
   'createLivePusherContext',
   'setNavigationBarColor',
-  'loadFontFace',
   'onMemoryWarning',
   'onNetworkStatusChange',
-  'getExtConfig',
-  'getExtConfigSync',
   'reportMonitor',
   'getLogManager',
   'reportAnalytics'
