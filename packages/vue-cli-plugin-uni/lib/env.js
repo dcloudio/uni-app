@@ -321,11 +321,17 @@ if (
     require('@dcloudio/uni-cli-shared/lib/cache').restore()
   }
 }
-
-process.UNI_AUTO_COMPONENTS = [{
-  pattern: new RegExp('uni-(.*)'),
-  replacement: '@/components/uni-$1/uni-$1.vue'
-}]
+// 组件自动导入配置
+process.UNI_AUTO_COMPONENTS = []
+const usingAutoImportComponents = pagesJsonObj.usingAutoImportComponents
+if (usingAutoImportComponents) {
+  Object.keys(usingAutoImportComponents).forEach(pattern => {
+    process.UNI_AUTO_COMPONENTS.push({
+      pattern: new RegExp(pattern),
+      replacement: usingAutoImportComponents[pattern]
+    })
+  })
+}
 
 runByHBuilderX && console.log(`正在编译中...`)
 
