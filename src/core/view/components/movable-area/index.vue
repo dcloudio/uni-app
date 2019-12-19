@@ -163,7 +163,7 @@ export default {
       on: {
         resize: this._resize
       }
-    }), ...items])
+    }), this.$slots.default])
   }
 }
 </script>
