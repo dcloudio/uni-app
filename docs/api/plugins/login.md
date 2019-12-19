@@ -87,7 +87,7 @@ uni.login({
 |:-|:-|:-|:-|:-|:-|
 |provider|String|否|登录服务提供商，通过 uni.getProvider 获取||
 |withCredentials|Boolean|否|是否带上登录态信息。|微信小程序、头条小程序|
-|lang|Number|否|指定返回用户信息的语言，默认为 en。更多值请参考下面的说明。|微信小程序|
+|lang|String|否|指定返回用户信息的语言，默认为 en。更多值请参考下面的说明。|微信小程序|
 |timeout|Number|否|超时时间，单位 ms。|微信小程序|
 |success|Function|否|接口调用成功的回调||
 |fail|Function|否|接口调用失败的回调函数||
