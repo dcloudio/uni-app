@@ -116,8 +116,7 @@ const rules = [{
   use: [{
     loader: require.resolve('@dcloudio/vue-cli-plugin-uni/packages/vue-loader'),
     options: vueLoaderOptions
-  }],
-  exclude: excludeModuleReg
+  }]
 },
 {
   test: /\.pug$/,
