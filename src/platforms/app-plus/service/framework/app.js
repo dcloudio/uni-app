@@ -49,6 +49,7 @@ export function getApp ({
   if (allowDefault) { // 返回默认实现
     return defaultApp
   }
+  console.error('[warn]: getApp() 操作失败，v3模式加速了首页 nvue 的启动速度，当在首页 nvue 中使用 getApp() 不一定可以获取真正的 App 对象。详情请参考：https://uniapp.dcloud.io/collocation/frame/window?id=getapp')
 }
 
 function initGlobalListeners () {
