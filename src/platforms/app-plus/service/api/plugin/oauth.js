@@ -18,7 +18,7 @@ const loginByService = (provider, callbackId) => {
         code: err.code,
         errMsg: 'login:fail:' + err.message
       })
-    }, { scope: 'email' })
+    }, provider === 'apple' ? { scope: 'email' } : {})
   }
   // 先注销再登录
   // apple登录logout之后无法重新触发获取email,fullname
