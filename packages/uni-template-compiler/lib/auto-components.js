@@ -20,6 +20,11 @@ function formatSource (source) {
   if (source.indexOf('@/') === 0) { // 根目录
     source = source.replace('@/', '')
   } else { // node_modules
+    if (process.env.UNI_PLATFORM === 'mp-alipay') {
+      if (source.indexOf('@') === 0) {
+        source = source.replace('@', 'npm-scope-')
+      }
+    }
     source = 'node-modules/' + source
   }
   return removeExt(source)

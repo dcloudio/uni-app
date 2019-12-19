@@ -19,7 +19,7 @@ function hasOwn (obj, key) {
   return hasOwnProperty.call(obj, key)
 }
 
-function noop () {}
+function noop () { }
 
 /**
  * Create a cached version of a pure function.
@@ -751,6 +751,9 @@ const protocols = { // 需要做转换的 API 列表
   },
   showShareMenu: {
     name: 'showSharePanel'
+  },
+  hideHomeButton: {
+    name: 'hideBackHome'
   }
 };
 

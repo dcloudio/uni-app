@@ -79,7 +79,7 @@ module.exports = {
 
     const res = compileTemplate(source, Object.assign(options, {
       optimize: false
-    }))
+    }), compile)
 
     options.mp.platform = platforms[options.mp.platform]
 

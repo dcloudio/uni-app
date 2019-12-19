@@ -267,20 +267,6 @@ if (process.env.UNI_PLATFORM === 'h5') {
   moduleAlias.addAlias('vue-style-loader', '@dcloudio/vue-cli-plugin-uni/packages/h5-vue-style-loader')
 }
 
-// vue cache
-if ( // 非 h5 ,非 v3,非 native
-  process.env.UNI_PLATFORM !== 'h5' &&
-  !process.env.UNI_USING_V3 &&
-  !process.env.UNI_USING_NATIVE
-) {
-  moduleAlias.addAlias('./loaders/pitcher', (fromPath, request, alias) => {
-    if (fromPath.indexOf('vue-loader') !== -1) {
-      return require.resolve('@dcloudio/vue-cli-plugin-hbuilderx/packages/vue-loader/lib/loaders/pitcher')
-    }
-    return request
-  })
-}
-
 if (process.env.UNI_PLATFORM === 'mp-toutiao') {
   // !important 始终带有一个空格
   moduleAlias.addAlias(
@@ -305,6 +291,18 @@ if (runByHBuilderX) {
   }
 }
 
+// 组件自动导入配置
+process.UNI_AUTO_COMPONENTS = []
+const usingAutoImportComponents = pagesJsonObj.usingAutoImportComponents
+if (usingAutoImportComponents) {
+  Object.keys(usingAutoImportComponents).forEach(pattern => {
+    process.UNI_AUTO_COMPONENTS.push({
+      pattern: new RegExp(pattern),
+      replacement: usingAutoImportComponents[pattern]
+    })
+  })
+}
+
 if (
   process.env.UNI_USING_CACHE &&
   process.env.UNI_PLATFORM !== 'h5' &&
@@ -320,17 +318,6 @@ if (
   } else {
     require('@dcloudio/uni-cli-shared/lib/cache').restore()
   }
-}
-// 组件自动导入配置
-process.UNI_AUTO_COMPONENTS = []
-const usingAutoImportComponents = pagesJsonObj.usingAutoImportComponents
-if (usingAutoImportComponents) {
-  Object.keys(usingAutoImportComponents).forEach(pattern => {
-    process.UNI_AUTO_COMPONENTS.push({
-      pattern: new RegExp(pattern),
-      replacement: usingAutoImportComponents[pattern]
-    })
-  })
 }
 
 runByHBuilderX && console.log(`正在编译中...`)
