@@ -91,14 +91,13 @@ module.exports = function generateJson (compilation) {
   const jsonFileMap = getChangedJsonFileMap()
   for (let name of jsonFileMap.keys()) {
     const jsonObj = JSON.parse(jsonFileMap.get(name))
-
     // customUsingComponents
-    if (jsonObj.customUsingComponents && Object.keys(jsonObj.customUsingComponents)) {
+    if (jsonObj.customUsingComponents && Object.keys(jsonObj.customUsingComponents).length) {
       jsonObj.usingComponents = Object.assign(jsonObj.customUsingComponents, jsonObj.usingComponents)
     }
     delete jsonObj.customUsingComponents
     // usingGlobalComponents
-    if (jsonObj.usingGlobalComponents && Object.keys(jsonObj.usingGlobalComponents)) {
+    if (jsonObj.usingGlobalComponents && Object.keys(jsonObj.usingGlobalComponents).length) {
       jsonObj.usingComponents = Object.assign(jsonObj.usingGlobalComponents, jsonObj.usingComponents)
     }
     delete jsonObj.usingGlobalComponents
@@ -141,6 +140,12 @@ module.exports = function generateJson (compilation) {
     }
 
     delete jsonObj.genericComponents
+
+    // usingAutoImportComponents
+    if (jsonObj.usingAutoImportComponents && Object.keys(jsonObj.usingAutoImportComponents).length) {
+      jsonObj.usingComponents = Object.assign(jsonObj.usingAutoImportComponents, jsonObj.usingComponents)
+    }
+    delete jsonObj.usingAutoImportComponents
 
     if (process.env.UNI_PLATFORM !== 'app-plus' && process.env.UNI_PLATFORM !== 'h5') {
       delete jsonObj.navigationBarShadow

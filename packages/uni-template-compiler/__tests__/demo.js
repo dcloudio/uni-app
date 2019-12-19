@@ -1,11 +1,10 @@
 const compiler = require('../lib')
 const res = compiler.compile(
   `
-<view class="custom-class">
-<uni-badge/>
-<uni-badge/>
-<uni-tag/>
-<uni-tag/>
+<view>
+    <view v-for="item in list[idx]" :key="item.id" class="mid-item-title" @click="mabc1(item)">
+      <view class="mid-item-icon" @click.stop="mabc2(item)"></view>
+    </view>
 </view>
 `, {
     miniprogram: true,

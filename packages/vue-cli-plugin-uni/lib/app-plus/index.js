@@ -234,7 +234,7 @@ const v3 = {
       .rule('vue')
       .test([/\.vue$/, /\.nvue$/])
       .use('vue-loader') //  service 层移除 style 节点，view 层返回固定 script
-      .loader(path.resolve(__dirname, '../../packages/vue-loader/lib'))
+      .loader(require.resolve('@dcloudio/vue-cli-plugin-uni/packages/vue-loader'))
       .tap(options => Object.assign(options, {
         isAppService,
         isAppView,

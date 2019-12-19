@@ -114,7 +114,7 @@ module.exports = function (source) {
   let templateRequest
   if (descriptor.template) {
     // fixed by xxxxxx
-    recyclable = options.isAppNVue && !!(template.attrs && template.attrs.recyclable)
+    recyclable = options.isAppNVue && !!(descriptor.template.attrs && descriptor.template.attrs.recyclable)
     const src = descriptor.template.src || resourcePath
     const idQuery = `&id=${id}`
     const scopedQuery = hasScoped ? `&scoped=true` : ``
@@ -167,8 +167,8 @@ var component = normalizer(
   ${hasFunctional ? `true` : `false`},
   ${options.isAppNVue ? `null`: (/injectStyles/.test(stylesCode) ? `injectStyles` : `null`)},
   ${hasScoped ? JSON.stringify(id) : `null`},
-  ${isServer ? JSON.stringify(hash(request)) : `null`}
-  ${isShadow ? `,true` : ``},
+  ${isServer ? JSON.stringify(hash(request)) : `null`},
+  ${isShadow ? `true` : `false`},
   components
 )
   `.trim() + `\n`

@@ -83,8 +83,10 @@ function updateComponentJson (name, jsonObj, usingComponents = true, type = 'Com
   const oldJsonStr = getJsonFile(name)
   if (oldJsonStr) { // update
     if (usingComponents) { // merge usingComponents
+      // 其实直接拿新的 merge 到旧的应该就行
       const oldJsonObj = JSON.parse(oldJsonStr)
       jsonObj.usingComponents = oldJsonObj.usingComponents || {}
+      jsonObj.usingAutoImportComponents = oldJsonObj.usingAutoImportComponents || {}
       if (oldJsonObj.usingGlobalComponents) { // 复制 global components(针对不支持全局 usingComponents 的平台)
         jsonObj.usingGlobalComponents = oldJsonObj.usingGlobalComponents
       }
@@ -115,6 +117,22 @@ function updateUsingGlobalComponents (name, usingGlobalComponents) {
       usingGlobalComponents
     }
     updateJsonFile(name, jsonObj)
+  }
+}
+
+function updateUsingAutoImportComponents (name, usingAutoImportComponents) {
+  const oldJsonStr = getJsonFile(name)
+  if (oldJsonStr) { // update
+    const jsonObj = JSON.parse(oldJsonStr)
+    jsonObj.usingAutoImportComponents = usingAutoImportComponents
+    const newJsonStr = JSON.stringify(jsonObj, null, 2)
+    if (newJsonStr !== oldJsonStr) {
+      updateJsonFile(name, newJsonStr)
+    }
+  } else { // add
+    updateJsonFile(name, {
+      usingAutoImportComponents
+    })
   }
 }
 
@@ -328,6 +346,7 @@ module.exports = {
   updateUsingComponents,
   updateUsingGlobalComponents,
   updateAppJsonUsingComponents,
+  updateUsingAutoImportComponents,
   updateComponentGenerics,
   updateGenericComponents,
   getChangedJsonFileMap,

@@ -27,26 +27,18 @@ const {
   isUnaryTag
 } = require('./util')
 
-function compileTemplate (source, options) {
-  const res = compile(source, options)
-  console.log(options)
-  const {
-    autoComponents
-  } = options.isUnaryTag
-  if (autoComponents) {
-    console.log('检测到的自定义组件:' + [...autoComponents])
-  }
-  res.components = `{
-    'uni-badge': require('@components/uni-badge/uni-badge.vue').default,
-    'uni-tag': require('@components/uni-tag/uni-tag.vue').default
-  }`
-  return res
-}
+const {
+  module: autoComponentsModule,
+  compileTemplate
+} = require('./auto-components')
 
 module.exports = {
   compile (source, options = {}) {
-    (options.modules || (options.modules = [])).push(require('./auto-components'))
+    (options.modules || (options.modules = [])).push(autoComponentsModule)
     options.isUnaryTag = isUnaryTag
+    // 将 autoComponents 挂在 isUnaryTag 上边
+    options.isUnaryTag.autoComponents = new Set()
+
     options.preserveWhitespace = false
     if (options.service) {
       (options.modules || (options.modules = [])).push(require('./app/service'))
@@ -57,7 +49,7 @@ module.exports = {
       options.getTagNamespace = () => false
 
       try {
-        return compileTemplate(source, options)
+        return compileTemplate(source, options, compile)
       } catch (e) {
         console.error(source)
         throw e
@@ -68,7 +60,7 @@ module.exports = {
       options.isUnaryTag = isUnaryTag
       options.isReservedTag = (tagName) => false // 均为组件
       try {
-        return compileTemplate(source, options)
+        return compileTemplate(source, options, compile)
       } catch (e) {
         console.error(source)
         throw e
@@ -76,7 +68,7 @@ module.exports = {
     }
 
     if (!options.mp) { // h5
-      return compileTemplate(source, options)
+      return compileTemplate(source, options, compile)
     }
 
     (options.modules || (options.modules = [])).push(compilerModule)

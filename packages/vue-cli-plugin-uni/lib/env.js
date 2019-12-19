@@ -256,6 +256,8 @@ const moduleAlias = require('module-alias')
 moduleAlias.addAlias('vue-template-compiler', '@dcloudio/vue-cli-plugin-uni/packages/vue-template-compiler')
 moduleAlias.addAlias('@megalo/template-compiler', '@dcloudio/vue-cli-plugin-uni/packages/@megalo/template-compiler')
 moduleAlias.addAlias('mpvue-template-compiler', '@dcloudio/vue-cli-plugin-uni/packages/mpvue-template-compiler')
+// vue-loader
+moduleAlias.addAlias('vue-loader', '@dcloudio/vue-cli-plugin-uni/packages/vue-loader')
 
 if (process.env.UNI_USING_V3 && process.env.UNI_PLATFORM === 'app-plus') {
   moduleAlias.addAlias('vue-style-loader', '@dcloudio/vue-cli-plugin-uni/packages/app-vue-style-loader')
@@ -321,10 +323,8 @@ if (
 }
 
 process.UNI_AUTO_COMPONENTS = [{
-  test (str) {
-    return new RegExp('uni-(.*)').test(str)
-  },
-  replacement: '@components/uni-$1/uni-$1.vue'
+  pattern: new RegExp('uni-(.*)'),
+  replacement: '@/components/uni-$1/uni-$1.vue'
 }]
 
 runByHBuilderX && console.log(`正在编译中...`)

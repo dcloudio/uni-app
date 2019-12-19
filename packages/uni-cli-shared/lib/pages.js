@@ -330,14 +330,14 @@ const autoComponentMap = {}
 
 function addAutoComponent (name) {
   const options = process.UNI_AUTO_COMPONENTS
-  const opt = options.find(opt => opt.test(name))
+  const opt = options.find(opt => opt.pattern.test(name))
   if (!opt) { // 不匹配
     return (autoComponentMap[name] = true) // cache
   }
   return (autoComponentMap[name] = {
     name,
     identifier: capitalize(camelize(name + '-auto-import')),
-    source: name.replace(opt.test, opt.replacement)
+    source: name.replace(opt.pattern, opt.replacement)
   })
 }
 

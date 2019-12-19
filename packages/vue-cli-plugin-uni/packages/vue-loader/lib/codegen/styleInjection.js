@@ -9,7 +9,8 @@ module.exports = function genStyleInjectionCode (
   resourcePath,
   stringifyRequest,
   needsHotReload,
-  needsExplicitInjection // fixed by xxxxxx nvue 时,指定了 target 为 node,激活 needsExplicitInjection
+  needsExplicitInjection, // fixed by xxxxxx nvue 时,指定了 target 为 node,激活 needsExplicitInjection
+  platform
 ) {
   let styleImportsCode = ``
   let styleInjectionCode = ``
@@ -85,29 +86,42 @@ module.exports = function genStyleInjectionCode (
         if (style.module) genCSSModulesCode(style, request, i)
       }
     })
-  } else { // fixed by xxxxxx nvue style
-    styleInjectionCode = `if(!this.options.style){
-    this.options.style = {}
-}
-if(Vue.prototype.__merge_style && Vue.prototype.__$appStyle__){
-  Vue.prototype.__merge_style(Vue.prototype.__$appStyle__, this.options.style)
-}
-`
-    styles.forEach((style, i) => {
-      if (isNotEmptyStyle(style)) {
-        const request = genStyleRequest(style, i)
-        styleInjectionCode += (
-          `if(Vue.prototype.__merge_style){
-              Vue.prototype.__merge_style(require(${request}).default, this.options.style)
-          }else{
-              Object.assign(this.options.style,require(${request}).default)
-          }\n`//fixed by xxxxxx 简单处理，与 weex-vue-loader 保持一致
-          //`var style${i} = require(${request})\n` +
-          //`if (style${i}.__inject__) style${i}.__inject__(context)\n`
-        )
-        if (style.module) genCSSModulesCode(style, request, i)
+  } else { // fixed by xxxxxx (app-plus v3 view style and app-nvue style)
+    if (platform === 'app-vue') {
+      styles.forEach((style, i) => {
+        if (isNotEmptyStyle(style)) {
+          const request = genStyleRequest(style, i)
+          styleInjectionCode += (
+            `var style${i} = require(${request})\n` +
+            `if (style${i}.__inject__) style${i}.__inject__(context)\n`
+          )
+          if (style.module) genCSSModulesCode(style, request, i)
+        }
+      })
+    } else {
+      styleInjectionCode = `if(!this.options.style){
+          this.options.style = {}
       }
-    })
+      if(Vue.prototype.__merge_style && Vue.prototype.__$appStyle__){
+        Vue.prototype.__merge_style(Vue.prototype.__$appStyle__, this.options.style)
+      }
+      `
+      styles.forEach((style, i) => {
+        if (isNotEmptyStyle(style)) {
+          const request = genStyleRequest(style, i)
+          styleInjectionCode += (
+            `if(Vue.prototype.__merge_style){
+                Vue.prototype.__merge_style(require(${request}).default, this.options.style)
+            }else{
+                Object.assign(this.options.style,require(${request}).default)
+            }\n`//fixed by xxxxxx 简单处理，与 weex-vue-loader 保持一致
+            //`var style${i} = require(${request})\n` +
+            //`if (style${i}.__inject__) style${i}.__inject__(context)\n`
+          )
+          if (style.module) genCSSModulesCode(style, request, i)
+        }
+      })
+    }
   }
 
   if (!needsExplicitInjection && !hasCSSModules) {

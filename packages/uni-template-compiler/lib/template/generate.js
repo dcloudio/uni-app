@@ -81,17 +81,17 @@ function genElement (ast, state, isRoot = false) {
   const names = Object.keys(ast.attr)
   const props = names.length
     ? ' ' +
-        names
-          .map(name => {
-            if (name.includes(':else')) {
-              return name
-            }
-            if (ast.attr[name] === '' && name !== 'value') { // value属性需要保留=''
-              return name
-            }
-            return `${name}="${ast.attr[name]}"`
-          })
-          .join(' ')
+    names
+      .map(name => {
+        if (name.includes(':else')) {
+          return name
+        }
+        if (ast.attr[name] === '' && name !== 'value') { // value属性需要保留=''
+          return name
+        }
+        return `${name}="${ast.attr[name]}"`
+      })
+      .join(' ')
     : ''
   if (SELF_CLOSING_TAGS.includes(ast.type)) {
     return `<${ast.type}${props}/>`
@@ -123,7 +123,7 @@ module.exports = function generate (ast, state) {
   const replaceCodes = state.options.replaceCodes
   if (replaceCodes) {
     Object.keys(replaceCodes).forEach(key => {
-      code = code.replace(key, replaceCodes[key])
+      code = code.replace(new RegExp(key.replace('$', '\\$'), 'g'), replaceCodes[key])
     })
   }
 
