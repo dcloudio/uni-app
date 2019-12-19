@@ -103,18 +103,39 @@ const PLATFORMS = {
     copyWebpackOptions ({
       assetsDir
     }) {
+      const indexCssCopyOptions = [{
+        from: require.resolve('@dcloudio/uni-h5/dist/index.css'),
+        to: assetsDir,
+        transform (content) {
+          if (process.env.NODE_ENV === 'production') {
+            return content + getShadowCss()
+          }
+          return content
+        }
+      }]
+      const VUE_APP_INDEX_CSS_HASH = process.env.VUE_APP_INDEX_CSS_HASH
+      if (VUE_APP_INDEX_CSS_HASH) {
+        const {
+          getH5Options
+        } = require('./manifest')
+        const {
+          template
+        } = getH5Options()
+        const to = path.join(assetsDir, `[name].${VUE_APP_INDEX_CSS_HASH}.[ext]`)
+        if (process.env.NODE_ENV === 'production') {
+          const templateContent = fs.readFileSync(template, { encoding: 'utf8' })
+          if (/\bVUE_APP_INDEX_CSS_HASH\b/.test(templateContent)) {
+            indexCssCopyOptions[0].to = to
+          }
+        } else {
+          const indexCssCopyOption = Object.assign({}, indexCssCopyOptions[0])
+          indexCssCopyOption.to = to
+          indexCssCopyOptions.push(indexCssCopyOption)
+        }
+      }
       return [
         ...getStaticCopyOptions(assetsDir),
-        {
-          from: require.resolve('@dcloudio/uni-h5/dist/index.css'),
-          to: assetsDir,
-          transform (content) {
-            if (process.env.NODE_ENV === 'production') {
-              return content + getShadowCss()
-            }
-            return content
-          }
-        },
+        ...indexCssCopyOptions,
         ...getCopyOptions(['hybrid/html'])
       ]
     }
