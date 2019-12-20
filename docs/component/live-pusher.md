@@ -53,67 +53,88 @@ whiteness|Number|0|否|美白，取值范围 0-9（iOS取值范围为1） ，0 �
 
 ```javascript
 <script>
-	export default {
-    onReady() {
-      this.context = uni.createLivePusherContext("livePusher1", this);
-    },
-		methods: {
-			statechange(e) {
-				console.log("statechange:" + JSON.stringify(e));
-			},
-			netstatus(e) {
-				console.log("netstatus:" + JSON.stringify(e));
-			},
-			error(e) {
-				console.log("error:" + JSON.stringify(e));
-			},
-			start: function() {
-				this.context.start((a) => {
-					console.log("livePusher.start:" + JSON.stringify(a));
-				});
-			},
-			close: function() {
-				this.context.close((a) => {
-					console.log("livePusher.close:" + JSON.stringify(a));
-				});
-			},
-			snapshot: function() {
-				this.context.snapshot((e) => {
-					console.log(JSON.stringify(e));
-				});
-			},
-			resume: function() {
-				this.context.resume((a) => {
-					console.log("livePusher.resume:" + JSON.stringify(a));
-				});
-			},
-			pause: function() {
-				this.context.pause((a) => {
-					console.log("livePusher.pause:" + JSON.stringify(a));
-				});
-			},
-			stop: function() {
-				this.context.stop((a) => {
-					console.log(JSON.stringify(a));
-				});
-			},
-			switchCamera: function() {
-				this.context.switchCamera((a) => {
-					console.log("livePusher.switchCamera:" + JSON.stringify(a));
-				});
-			},
-			startPreview: function() {
-				this.context.startPreview((a) => {
-					console.log("livePusher.startPreview:" + JSON.stringify(a));
-				});
-			},
-			stopPreview: function() {
-				this.context.stopPreview((a) => {
-					console.log("livePusher.stopPreview:" + JSON.stringify(a));
-				});
-			}
-		}
-	}
+    export default {
+        data: {
+            fil: true
+        },
+        onReady() {
+            this.context = uni.createLivePusherContext("livePusher", this);
+        },
+        methods: {
+            statechange(e) {
+                console.log("statechange:" + JSON.stringify(e));
+            },
+            netstatus(e) {
+                console.log("netstatus:" + JSON.stringify(e));
+            },
+            error(e) {
+                console.log("error:" + JSON.stringify(e));
+            },
+            start: function() {
+                this.context.start({
+                    success: (a) => {
+                        console.log("livePusher.start:" + JSON.stringify(a));
+                    }
+                });
+            },
+            close: function() {
+                this.context.close({
+                    success: (a) => {
+                        console.log("livePusher.close:" + JSON.stringify(a));
+                    }
+                });
+            },
+            snapshot: function() {
+                this.context.snapshot({
+                    success: (e) => {
+                        console.log(JSON.stringify(e));
+                    }
+                });
+            },
+            resume: function() {
+                this.context.resume({
+                    success: (a) => {
+                        console.log("livePusher.resume:" + JSON.stringify(a));
+                    }
+                });
+            },
+            pause: function() {
+                this.context.pause({
+                    success: (a) => {
+                        console.log("livePusher.pause:" + JSON.stringify(a));
+                    }
+                });
+            },
+            stop: function() {
+                this.context.stop({
+                    success: (a) => {
+                        console.log(JSON.stringify(a));
+                    }
+                });
+            },
+            switchCamera: function() {
+                this.context.switchCamera({
+                    success: (a) => {
+                        console.log("livePusher.switchCamera:" + JSON.stringify(a));
+                    }
+                });
+            },
+            startPreview: function() {
+                this.context.startPreview({
+                    success: (a) => {
+                        console.log("livePusher.startPreview:" + JSON.stringify(a));
+                    }
+                });
+            },
+            stopPreview: function() {
+                this.context.stopPreview({
+                    success: (a) => {
+                        console.log("livePusher.stopPreview:" + JSON.stringify(a));
+                    }
+                });
+            }
+        }
+    }
 </script>
 ```
 

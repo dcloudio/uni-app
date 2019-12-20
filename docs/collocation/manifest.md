@@ -46,9 +46,9 @@
 |modules|Object|权限模块，[详见](/collocation/manifest?id=modules)||
 |distribute|Object|5+App 发布信息，[详见](/collocation/manifest?id=distribute)||
 |usingComponents|Boolean|是否启用自定义组件模式，默认为false，[编译模式区别详情](https://ask.dcloud.net.cn/article/35843)|1.9.0|
-|nvueCompiler|String|切换 nvue 编译模式，可选值，`weex` ：老编译模式，`uni-app`： 新编译模式，默认为 `weex` 。[编译模式区别详情](http://ask.dcloud.net.cn/article/36074)|2.0.3 Alpha|
+|nvueCompiler|String|切换 nvue 编译模式，可选值，`weex` ：老编译模式，`uni-app`： 新编译模式，默认为 `weex` 。[编译模式区别详情](http://ask.dcloud.net.cn/article/36074)|2.0.3|
 |renderer|String|可不加载基于 webview 的运行框架，减少包体积、提升启动速度。可选值 `native`| App-nvue 2.2.0+|
-|nvue|Object|nvue 页面布局初始配置，[详见](/collocation/manifest?id=nvue)|2.0.3 Alpha|
+|nvue|Object|nvue 页面布局初始配置，[详见](/collocation/manifest?id=nvue)|2.0.3|
 PS：这里只列出了核心部分，更多内容请参考 [完整的 manifest.json](/collocation/manifest?id=完整-manifestjson)。
 
 **Tips**
@@ -102,7 +102,7 @@ splash（启动封面）是App必然存在的、不可取消的。
 
 **注意**
 - 仅App云打包生效。本地打包需自行在原生工程中配置。
-- 
+
 #### App Distribute@distribute
 
 |属性|类型|描述|
@@ -132,7 +132,7 @@ splash（启动封面）是App必然存在的、不可取消的。
 
 |属性|类型|描述|
 |:-|:-|:-|
-|flex-direction|String| flex 成员项的排列方向，支持项，row：从左到右； row-reverse：从下到上；column：从上到下；column-reverse：与 row 相反，默认值 column。|
+|flex-direction|String| flex 成员项的排列方向，支持项，row：从左到右； row-reverse：从右到左；column：从上到下；column-reverse：与 column 相反，默认值 column。|
 
 
 ### h5
@@ -297,6 +297,7 @@ Tips：关于摇树优化（treeShaking）原理及优化结果，参考：[http
 |navigateToMiniProgramAppIdList|Array|需要跳转的小程序列表，[详见](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/miniprogram-navigate/wx.navigateToMiniProgram.html)|
 |permission|Object|微信小程序接口权限相关设置，比如申请位置权限必须填此处[详见](https://developers.weixin.qq.com/miniprogram/dev/framework/config.html)|
 |workers|String|Worker 代码放置的目录。 [详见](https://developers.weixin.qq.com/miniprogram/dev/framework/workers.html)|
+|optimization|Object| 对微信小程序的优化配置 |
 
 #### setting
 
@@ -308,6 +309,14 @@ Tips：关于摇树优化（treeShaking）原理及优化结果，参考：[http
 |es6|Boolean|ES6 转 ES5|
 |postcss|Boolean|上传代码时样式是否自动补全|
 |minified|Boolean|上传代码时是否自动压缩|
+
+#### optimization
+
+对微信小程序的优化配置
+
+|属性|类型|说明|
+|:-|:-|:-|
+|subPackages|Boolean|是否开启分包优化|
 
 ### mp-alipay
 
@@ -323,6 +332,15 @@ Tips：关于摇树优化（treeShaking）原理及优化结果，参考：[http
 |usingComponents|Boolean| 是否启用自定义组件模式，`v2.0+`，默认为false，[编译模式区别详情](https://ask.dcloud.net.cn/article/35843)|
 |requiredBackgroundModes|Array|小程序需要在后台使用的能力，目前支持背景音频播放，"requiredBackgroundModes": ["audio"]，[详见](https://smartprogram.baidu.com/docs/develop/tutorial/process/#requiredBackgroundModes)	|
 |prefetches|Array|预请求的所有url的列表，[详见](https://smartprogram.baidu.com/docs/develop/tutorial/process/#prefetches)																|
+|optimization|Object| 对百度小程序的优化配置 |
+
+#### optimization
+
+对百度小程序的优化配置
+
+|属性|类型|说明|
+|:-|:-|:-|
+|subPackages|Boolean|是否开启分包优化|
 
 ### mp-toutiao
 
@@ -331,7 +349,7 @@ Tips：关于摇树优化（treeShaking）原理及优化结果，参考：[http
 |appid|String|头条小程序的 AppID，登录 [https://developer.toutiao.com/](https://developer.toutiao.com/) 申请|
 |setting|Object|头条小程序项目设置，参考[头条小程序项目设置](/collocation/manifest?id=mp-toutiao-setting)|
 |usingComponents|Boolean| 是否启用自定义组件模式，`v2.0+`，默认为false，[编译模式区别详情](https://ask.dcloud.net.cn/article/35843)|
-|navigateToMiniProgramAppIdList	|Array|需要跳转的小程序列表，[详见](https://developer.toutiao.com/docs/framework/globalSetting.html#%E5%85%A8%E5%B1%80%E9%85%8D%E7%BD%AE)	|
+|navigateToMiniProgramAppIdList	|Array|需要跳转的小程序列表，[详见](https://developer.toutiao.com/dev/cn/mini-app/develop/framework/basic-reference/general-configuration)	|
 
 #### 头条小程序项目设置@mp-toutiao-setting
 
@@ -352,8 +370,26 @@ Tips：关于摇树优化（treeShaking）原理及优化结果，参考：[http
 |permission						|Object			|小程序接口权限相关设置，比如申请位置权限必须填此处[详见](https://q.qq.com/wiki/develop/miniprogram/frame/dispose.html#permission)														|
 |workers						|String			|Worker 代码放置的目录。 [详见](https://q.qq.com/wiki/develop/miniprogram/frame/dispose.html#workers)																					|
 |groupIdList					|String Array	|需要打开群资料卡的群号列表，详见button的open-type																																		|
+|optimization|Object| 对QQ小程序的优化配置 |
+
+#### optimization
+
+对QQ小程序的优化配置
+
+|属性|类型|说明|
+|:-|:-|:-|
+|subPackages|Boolean|是否开启分包优化|
 
 mp-qq只支持自定义组件模式，不存在usingComponents配置
+
+### 关于分包优化的说明
+
+- 在对应平台的配置下添加`"optimization":{"subPackages":true}`开启分包优化
+- 目前只支持`mp-weixin`、`mp-qq`、`mp-baidu`的分包优化
+- 分包优化具体逻辑：
+  + 静态文件：分包下支持 static 等静态资源拷贝
+  + js文件：当某个 js 仅被一个分包引用时，该 js 会被打包到该分包内，否则仍打到主包（即被主包引用，或被超过 1 个分包引用）
+  + 自定义组件：若某个自定义组件仅被一个分包引用时，且未放入到分包内，编译时会输出提示信息
 
 
 ### 完整 manifest.json
@@ -514,7 +550,7 @@ mp-qq只支持自定义组件模式，不存在usingComponents配置
 					}
 				}
 			},
-			// 屏幕方向
+			// 屏幕方向 需要云打包/本地打包/自定义基座生效
 			"orientation": [
 				"portrait-primary",
 				"landscape-primary",

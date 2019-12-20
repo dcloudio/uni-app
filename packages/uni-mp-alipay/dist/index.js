@@ -19,7 +19,7 @@ function hasOwn (obj, key) {
   return hasOwnProperty.call(obj, key)
 }
 
-function noop () {}
+function noop () { }
 
 /**
  * Create a cached version of a pure function.
@@ -751,6 +751,9 @@ const protocols = { // 需要做转换的 API 列表
   },
   showShareMenu: {
     name: 'showSharePanel'
+  },
+  hideHomeButton: {
+    name: 'hideBackHome'
   }
 };
 
@@ -1021,12 +1024,21 @@ function createSelectorQuery () {
   return query
 }
 
+function createIntersectionObserver (component, options) {
+  if (options && options.observeAll) {
+    options.selectAll = options.observeAll;
+    delete options.observeAll;
+  }
+  return my.createIntersectionObserver(options)
+}
+
 var api = /*#__PURE__*/Object.freeze({
   setStorageSync: setStorageSync,
   getStorageSync: getStorageSync,
   removeStorageSync: removeStorageSync,
   startGyroscope: startGyroscope,
-  createSelectorQuery: createSelectorQuery
+  createSelectorQuery: createSelectorQuery,
+  createIntersectionObserver: createIntersectionObserver
 });
 
 const PAGE_EVENT_HOOKS = [

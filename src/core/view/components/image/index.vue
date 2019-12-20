@@ -138,7 +138,7 @@ export default {
       }
     },
     _setContentImage () {
-      this.$refs.content.style.backgroundImage = this.src ? `url(${this.realImagePath})` : 'none'
+      this.$refs.content.style.backgroundImage = this.src ? `url("${this.realImagePath}")` : 'none'
     },
     _loadImage () {
       const _self = this

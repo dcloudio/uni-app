@@ -1,5 +1,6 @@
 * [什么是 uni-app](README.md)
 * [快速上手](quickstart.md)
+* [uni-app的由来](history.md)
 * [如何学习](resource.md)
 * [框架简介](frame.md)
 * [使用 Vue.js 注意事项](use.md)

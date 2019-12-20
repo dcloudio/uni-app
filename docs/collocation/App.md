@@ -12,6 +12,7 @@
 |onLaunch					|当`uni-app` 初始化完成时触发（全局只触发一次）																							|
 |onShow						|当 `uni-app` 启动，或从后台进入前台显示																										|
 |onHide						|当 `uni-app` 从前台进入后台																																|
+|onError					|当 `uni-app` 报错时触发																																|
 |onUniNViewMessage|对 `nvue` 页面发送的数据进行监听，可参考 [nvue 向 vue 通讯](/use-weex?id=nvue-向-vue-通讯)	|
 
 在`App.vue`文件里使用生命周期函数，如下：
@@ -54,6 +55,8 @@
 
 js中操作globalData的方式如下：
 `getApp().globalData.text = 'test'`
+
+在应用onLaunch时，getApp对象还未获取，暂时可以使用this.$scope.globalData获取globalData。
 
 如果需要把globalData的数据绑定到页面上，可在页面的onShow页面生命周期里进行变量重赋值。HBuilderX 2.0.3起，nvue页面在`uni-app`编译模式下，也支持onShow。
 

@@ -64,7 +64,7 @@ query.select('#id').boundingClientRect(data => {
 |字段名|类型|默认值|必填|说明|平台差异说明|
 |:-|:-|:-|:-|:-|:-|
 |id|Boolean|false|否|是否返回节点 ``id``||
-|dataset|Boolean|false|否|是否返回节点 ``dataset``||
+|dataset|Boolean|false|否|是否返回节点 ``dataset``| App、微信小程序、H5 |
 |rect|Boolean|false|否|是否返回节点布局位置（``left`` ``right`` ``top`` ``bottom``）||
 |size|Boolean|false|否|是否返回节点尺寸（``width`` ``height``）||
 |scrollOffset|Boolean|false|否|是否返回节点的 ``scrollLeft`` ``scrollTop``，节点必须是 ``scroll-view`` 或者 ``viewport``||
@@ -110,7 +110,7 @@ query.select('#id').boundingClientRect(data => {
 
 |App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|√|2.4.5+|√|x|x|x|√|
+|√|HBuilderX 2.4.7+|√|x|x|x|√|
 
 **callback 返回参数**
 
@@ -118,7 +118,26 @@ query.select('#id').boundingClientRect(data => {
 | --- | --- | --- |
 | context | Object | 节点对应的 Context 对象 |
 
+### nodesRef.node(callback)
 
+获取 `Node` 节点实例。目前支持 `Canvas` 的获取。
+
+**平台差异说明**
+
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|√|x|√|x|x|x|√|
+
+**callback 返回参数**
+
+| 属性 | 类型 | 说明 |
+| --- | --- | --- |
+| node | Object | 节点对应的 Node 实例 |
+
+**注意**
+
+- 目前仅能用于`canvas`
+- `canvas`需设置`type="webgl"`才能正常使用
 
 ### 代码示例
 

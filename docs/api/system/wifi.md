@@ -4,7 +4,7 @@
 
 微信小程序平台实现参考：[规范详情](https://developers.weixin.qq.com/miniprogram/dev/api/wx.startWifi.html)
 
-头条小程序的wifi API参考：[规范详情](https://developer.toutiao.com/docs/api/getConnectedWifi.html)
+头条小程序的wifi API参考：[规范详情](https://developer.toutiao.com/dev/cn/mini-app/develop/api/device/wi-fi/getconnectedwifi)
 
 App 平台实现参考
 

@@ -1,6 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const mkdirp = require('mkdirp')
+const loaderUtils = require('loader-utils')
 
 // 初始化环境变量
 const defaultInputDir = '../../../../src'
@@ -109,6 +110,8 @@ if (process.env.UNI_PLATFORM === 'h5') {
       process.env.UNI_OPT_PRELOAD = true
     }
   }
+  const buffer = fs.readFileSync(require.resolve('@dcloudio/uni-h5/dist/index.css'))
+  process.env.VUE_APP_INDEX_CSS_HASH = loaderUtils.getHashDigest(buffer, 'md5', 'hex', 8)
 }
 
 if (process.env.UNI_PLATFORM === 'mp-qq') { // QQ小程序 强制自定义组件模式

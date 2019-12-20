@@ -6,11 +6,12 @@
 
 # uni-app的特点
 
-- 开发者和案例更多：20万+开发者，50+QQ、微信群，数万案例应用。[案例](https://uniapp.dcloud.io/case)
+- 开发者和案例更多：HBuilder装机量380万台，开发者社区月活百万，70多个QQ微信群承载10万人。案例众多（[详见](https://uniapp.dcloud.io/case)）
 - 性能更高（见[评测](https://juejin.im/post/5ca1736af265da30ae314248)）
-- 更丰富的周边生态（见[插件市场](https://ext.dcloud.net.cn/)）。
+- 更丰富的周边生态（见[插件市场](https://ext.dcloud.net.cn/)近千款插件）
 - 提供比小程序原生开发更好的开发体验和更高的工程化效率
-- 跨端抹平度更完善，且各端特色发挥更灵活，可真正实现一套代码多端覆盖，无需各端多头维护升级。
+- 跨端抹平度更完善，且各端特色发挥更灵活，可真正实现一套代码多端覆盖，无需各端多头维护升级
+- 权威认可：被阿里小程序官方工具内置（[详见](https://docs.alipay.com/mini/ide/0.70-stable)）
 
 ## 扫码体验
 
@@ -43,7 +44,7 @@
 
 ## 论坛
 
-由于`uni-app`有几十万开发者，50多个QQ、微信群，官方已无法维护更多交流群。请开发者到官方论坛交流：[https://ask.dcloud.net.cn/explore/](https://ask.dcloud.net.cn/explore/) 。论坛提供了比issus更专业的工具服务。
+由于`DCloud`有70多个QQ、微信群，官方已无法维护更多交流群。请开发者到官方论坛交流：[https://ask.dcloud.net.cn/explore/](https://ask.dcloud.net.cn/explore/) 。论坛提供了比issues更专业的工具服务。
 
 ## 插件市场
 
@@ -54,6 +55,7 @@
 - 微信小程序转换uni-app指南及转换器：[https://ask.dcloud.net.cn/article/35786](https://ask.dcloud.net.cn/article/35786)
 - vue h5项目转换uni-app指南：[https://ask.dcloud.net.cn/article/36174](https://ask.dcloud.net.cn/article/36174)
 - mpvue 项目（组件）迁移指南、示例及资源汇总： [https://ask.dcloud.net.cn/article/34945](https://ask.dcloud.net.cn/article/34945)
+- wepy转uni-app转换器：[https://github.com/zhangdaren/wepy-to-uniapp](https://github.com/zhangdaren/wepy-to-uniapp)
 
 ## 常见疑问
 
@@ -65,8 +67,11 @@
 - 答：good question。多端且不影响性能，确实很难，但uni-app做到了。在h5端，它的性能、包体积与直接使用vue.js开发一致； 在小程序端，它的性能比大多数开发框架更好，uni-app底层自动处理的setdata差量同步机制，比开发者手动写setdata更好，就像使用vue.js更新界面比手动写js修改dom更高效一样； 在App，uni-app支持webview渲染和原生渲染双引擎，启用原生渲染时，css写法受限，但性能是很接近原生开发的效果的，在当前的手机环境下，千万日活以下的应用在App使用uni-app也不会遇到任何压力。当然也可以在已经做好的原生App中将部分页面改为uni-app实现; 此外，我们会把很多跨端处理放在编译期完成的，这样会减少对运行期的效率影响。
 
 
-- 问：不做多端，是不是不需要uni-app。
+- 问：不做多端，是不是不需要uni-app？
 - 答：不是。大量开发者用uni-app只做一个端，详见[案例](https://uniapp.dcloud.io/case)。对于开发者而言，一个优秀工具在手，做什么都不愁。
+
+- 问：uni-app以后会不会变更开源协议，转向收费？
+- 答：官方承诺永远不会变更开源协议。无论HBuilderX、uni-app、5+app，面向中国人永久免费。
 
 ## 更多资料
 

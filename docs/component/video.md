@@ -129,7 +129,7 @@ export default {
  
 - 视频播放格式说明：
 	* H5平台：支持支持的视频格式视浏览器而定，一般通用的都支持：mp4、webm 和 ogg。（``<video/>`` 组件编译到 H5 时会替换为标准 html 的 video 标签）。H5端也可以自行在条件编译里使用video.js等三方库，这些库可以自动判断环境兼容以决定使用标准video或flash来播放。
-	* 小程序平台：各小程序平台支持程度不同，详见各家文档：[微信小程序视频组件文档](https://developers.weixin.qq.com/miniprogram/dev/component/video.html)、支付宝不支持video组件、[百度小程序视频组件文档](https://smartprogram.baidu.com/docs/develop/component/media/#video/)、[头条小程序视频组件文档](https://developer.toutiao.com/docs/comp/video.html)
+	* 小程序平台：各小程序平台支持程度不同，详见各家文档：[微信小程序视频组件文档](https://developers.weixin.qq.com/miniprogram/dev/component/video.html)、支付宝不支持video组件、[百度小程序视频组件文档](https://smartprogram.baidu.com/docs/develop/component/media/#video/)、[头条小程序视频组件文档](https://developer.toutiao.com/dev/cn/mini-app/develop/component/media-component/video)
 	* App平台： 支持本地视频(mp4/flv)、网络视频地址（mp4/flv/m3u8）及流媒体（rtmp/hls/rtsp）。
 
 - video全屏后，如何自行绘制界面？比如加个标题、加个分享按钮
@@ -145,5 +145,6 @@ export default {
 - 除微信基础库 2.4.0 和app端nvue页面 2.1.5 以上，其他情况下非H5的video不能放入scroll-view和swiper。注意参考 [原生组件使用限制](/component/native-component)。
 
 - App平台：使用 `<video/>` 组件，打包 App 时必须勾选 manifest.json->App 模块权限配置->VideoPlayer 模块。
+- App平台：如果使用的视频路径为本地路径，需要配置资源为释放模式：在 manifest.json 文件内 app-plus 节点下新增 runmode 配置，设置值为liberate。
 - App平台：如果想使用非原生的video，即原来普通的html5自带video，可使用web-view组件load html页面，在其中使用普通h5 video。
 - H5平台： 在部分浏览器中会强制调用原生播放器播放（如：微信内置浏览器、UC浏览器等），在 x5 内核的浏览器中支持配置[同层播放器](https://x5.tencent.com/tbs/guide/video.html)。

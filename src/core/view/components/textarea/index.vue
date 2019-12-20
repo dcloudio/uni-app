@@ -23,13 +23,16 @@
         :class="placeholderClass"
         class="uni-textarea-placeholder"
       >{{ placeholder }}</div>
+      <div
+        ref="line"
+        class="uni-textarea-line">&nbsp;</div>
       <div class="uni-textarea-compute">
         <div
           v-for="(item,index) in valueCompute"
           :key="index">{{ item.trim() ? item : '.' }}</div>
         <v-uni-resize-sensor
           ref="sensor"
-          @resize="_resize"/>
+          @resize="_resize" />
       </div>
       <textarea
         ref="textarea"
@@ -188,7 +191,10 @@ export default {
       this._checkSelection()
     },
     height (height) {
-      const lineHeight = getComputedStyle(this.$el).lineHeight.replace('px', '')
+      let lineHeight = parseFloat(getComputedStyle(this.$el).lineHeight)
+      if (isNaN(lineHeight)) {
+        lineHeight = this.$refs.line.offsetHeight
+      }
       var lineCount = Math.round(height / lineHeight)
       this.$trigger('linechange', {}, {
         height,
@@ -305,6 +311,7 @@ uni-textarea[auto-height] .uni-textarea-textarea {
 }
 .uni-textarea-wrapper,
 .uni-textarea-placeholder,
+.uni-textarea-line,
 .uni-textarea-compute,
 .uni-textarea-textarea {
   outline: none;
@@ -320,6 +327,7 @@ uni-textarea[auto-height] .uni-textarea-textarea {
   height: 100%;
 }
 .uni-textarea-placeholder,
+.uni-textarea-line,
 .uni-textarea-compute,
 .uni-textarea-textarea {
   position: absolute;
@@ -334,9 +342,13 @@ uni-textarea[auto-height] .uni-textarea-textarea {
   color: grey;
   overflow: hidden;
 }
+.uni-textarea-line,
 .uni-textarea-compute {
   visibility: hidden;
   height: auto;
+}
+.uni-textarea-line {
+  width: 1em;
 }
 .uni-textarea-textarea {
   resize: none;

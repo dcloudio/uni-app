@@ -9,22 +9,22 @@
 
 **videoContext 对象的方法列表**
 
-|方法|参数|说明|
-|:-|:-|:-|
-|play|无|播放|
-|pause|无|暂停|
-|seek|position|跳转到指定位置，单位 s|
-|stop||停止视频，仅`微信小程序平台`支持，[规范详情](https://developers.weixin.qq.com/miniprogram/dev/api/VideoContext.stop.html)|
-|sendDanmu|danmu|发送弹幕，danmu 包含两个属性 text, color|
-|playbackRate|rate|设置倍速播放，支持的倍率有 0.5/0.8/1.0/1.25/1.5|
-|requestFullScreen|无|进入全屏，可传入{direction}参数，详见 video 组件文档|
-|exitFullScreen|无|退出全屏|
-|showStatusBar|无|显示状态栏，仅在iOS全屏下有效|
-|hideStatusBar|无|隐藏状态栏，仅在iOS全屏下有效|
+|方法|参数|说明|平台差异说明
+|:-|:-|:-|:-|
+|play|无|播放||
+|pause|无|暂停||
+|seek|position|跳转到指定位置，单位 s||
+|stop||停止视频|微信小程序|
+|sendDanmu|danmu|发送弹幕，danmu 包含两个属性 text, color||
+|playbackRate|rate|设置倍速播放，支持的倍率有 0.5/0.8/1.0/1.25/1.5。微信基础库2.6.3 起支持 2.0 倍速||
+|requestFullScreen|无|进入全屏，可传入{direction}参数，详见 video 组件文档||
+|exitFullScreen|无|退出全屏||
+|showStatusBar|无|显示状态栏，仅在iOS全屏下有效|微信小程序、百度小程序、QQ小程序|
+|hideStatusBar|无|隐藏状态栏，仅在iOS全屏下有效|微信小程序、百度小程序、QQ小程序|
 
 **注意：**
-- app-nvue 平台 2.2.5(alpha)+ 支持 uni.createVideoContext(videoId, this)
-- app-nvue 平台 2.2.5(alpha)- 需要同时设置组件属性id和ref ``<video id="video1" ref="video1"></video>``，或者直接使用 ref，例如 ``this.$refs.video1``
+- app-nvue 平台 2.2.5+ 支持 uni.createVideoContext(videoId, this)
+- app-nvue 平台 2.2.5以下使用本API，需同时设置组件属性id和ref ``<video id="video1" ref="video1"></video>``，或者直接使用 ref，例如 ``this.$refs.video1``
 
 **示例**
 

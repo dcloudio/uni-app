@@ -4,7 +4,7 @@ const {
   addRawAttr
 } = require('./util')
 
-const dirRE = /^v-|^@|^:/
+const dirRE = /^v-|^@|^:|^#/
 /**
  * 兼容小程序Boolean属性的怪异行为(<custom loading/>为true,<custom loading=""/>为false)
  * @param {Object} el

@@ -75,3 +75,6 @@ export default {
 示例代码说明：以上示例代码从hello uni-app示例中复制，涉及的css样式在hello uni-app的app.vue和uni.css中
 
 预览H5效果：使用浏览器的手机模式访问[https://uniapp.dcloud.io/h5/pages/component/slider/slider](https://uniapp.dcloud.io/h5/pages/component/slider/slider)
+
+**Tips**
+- 如果需要在PC端使用`slider`，可以配置[H5模版](https://uniapp.dcloud.io/collocation/manifest?id=h5-template)，并引入[touch-emulator.js](https://github.com/dcloudio/touchemulator)

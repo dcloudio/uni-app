@@ -18,8 +18,8 @@
 |cursor-spacing|Number|0|指定光标与键盘的距离，单位 px 。取 textarea 距离底部的距离和 cursor-spacing 指定的距离的最小值作为光标与键盘的距离|5+App、微信小程序、百度小程序、头条小程序、QQ小程序|
 |cursor|Number||指定focus时的光标位置|微信小程序、5+App、H5、百度小程序、头条小程序、QQ小程序|
 |show-confirm-bar|Boolean|true|是否显示键盘上方带有”完成“按钮那一栏|微信小程序、百度小程序、QQ小程序|
-|selection-start|Number|-1|光标起始位置，自动聚集时有效，需与selection-end搭配使用|微信小程序、5+App、H5、百度小程序、头条小程序、QQ小程序|
-|selection-end|Number|-1|光标结束位置，自动聚集时有效，需与selection-start搭配使用|微信小程序、5+App、H5、百度小程序、头条小程序、QQ小程序|
+|selection-start|Number|-1|光标起始位置，自动聚焦时有效，需与selection-end搭配使用|微信小程序、5+App、H5、百度小程序、头条小程序、QQ小程序|
+|selection-end|Number|-1|光标结束位置，自动聚焦时有效，需与selection-start搭配使用|微信小程序、5+App、H5、百度小程序、头条小程序、QQ小程序|
 |adjust-position|Boolean|true|键盘弹起时，是否自动上推页面|5+App、微信小程序、百度小程序、QQ小程序|
 |@focus|EventHandle||输入框聚焦时触发，event.detail = { value, height }，height 为键盘高度|仅微信小程序、5+App（HBuilderX 2.0+ [nvue uni-app模式](http://ask.dcloud.net.cn/article/36074)） 、QQ小程序支持 height|
 |@blur|EventHandle||输入框失去焦点时触发，event.detail = {value, cursor}||

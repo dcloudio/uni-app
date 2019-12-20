@@ -1,5 +1,177 @@
 # uni-app 更新日志
 ======================================
+#### 2.4.3.20191125-alpha
+* 新增 查找索引符号，可快速查找函数、变量等文档结构图中的内容 （快捷键 Ctrl+Shift+o）
+* 新增 鼠标悬停在代码折叠后的省略号处，可悬浮预览被折叠内容
+* 优化 文件路径提示
+* 优化 字符搜索的性能和指示器样式
+* 优化 字符搜索时点击大小写、全词匹配等操作时自动触发重新搜索
+* 优化 文件搜索的性能，补充匹配字符高亮
+* 修复 某些情况下，git/svn项目，更新代码或切换分支后，文件内容没有更新的Bug
+* 修复 无标题文档不更新title的Bug
+* 修复 某些情况下，状态栏语言名称丢失的Bug
+* 修复 文件未修改状态下，中文输入法敲字卡的Bug
+* 修复 当文件第一行是空行时，再次打开编辑器折叠计算错误的Bug
+* 修复 通过拖拽分栏后的tabbar背景色不正确的Bug
+* 修复 某种情况下，分左右两栏，没有对齐的Bug
+* 优化 编辑器搜索字符指示器加深颜色
+* 修复 vscode快捷键方案，搜索上一个/下一个字符，快捷键显示错误的Bug
+* 修复 win7 安装插件窗口滚动条过细的Bug
+* 修复 win7 QQ输入法输入单引号时触发移动光标的Bug
+* 修复 项目管理器，焦点在目录文件上时，按Ctrl+Shift+c复制路径不生效的Bug
+* 修复 打开WebView调试控制台，菜单状态错误的Bug
+* 删除 uni-app项目的manifest.json可视化视图删除自定义组件模式选择，因为已不再支持非自定组件模式
+* 【uni-app插件】
+  + 【重要】App端重大架构升级 “v3编译器”，更快的启动速度、更好的性能、更多vue语法支持、可webview调试视图层。可通过设置`manifest.json`文件中`app-plus`节点下的`compilerVersion:3 `启用新架构 [详情](https://ask.dcloud.net.cn/article/36599)
+  + 新增 支持在页面文件调用 `App.vue` 中定义的函数方法 [#665](https://github.com/dcloudio/uni-app/issues/665)
+  + 修复 发行模式下使用 scss ，部分情况条件编译不生效的 Bug [1013](https://github.com/dcloudio/uni-app/issues/1013)
+  + 优化 `babel.config.js` 文件里的 `@vue/babel-preset-app` 支持配置 `modules:false` ，让打包出来的代码体积更小，运行更快 [#929](https://github.com/dcloudio/uni-app/issues/929)
+  + App平台 新增 uni-app编译模式的nvue页面 控制是否自动包裹 scroll 组件（通过 pages.json 里 style 的 `disableScroll` 属性配置页面) [详见](https://uniapp.dcloud.io/collocation/pages?id=style)
+  + App平台 新增 uni-app编译模式的nvue页面 webview 组件加载的HTML支持调用部分uni API [详情](https://ask.dcloud.net.cn/question/83399)
+  + App平台 修复 nvue 页面中 picker 组件多次打开后无法关闭的Bug [详情](https://ask.dcloud.net.cn/question/83417)
+  + App-Android平台 优化 应用退出后不清掉后台，再热启动可能出现白屏的问题 [详情](https://ask.dcloud.net.cn/question/77397)
+  + App-Android平台 修复 应用在 tabbar 页面跳转到其它页面在Android10上可能出现图片闪烁的Bug
+  + App-Android平台 修复 nvue scroll-view 组件无法触发 touchstart/touchend 事件及动态设置 scroll-left 属性可能不生效的Bug [详情](https://ask.dcloud.net.cn/question/83256)
+  + App-Android平台 修复 nvue input 组件设置 autofocus 属性为 true 在subnvue页面可能出现软键盘弹出后自动隐藏的Bug [详情](https://ask.dcloud.net.cn/question/83014)
+  + App-Android平台 修复 nvue map 组件下的view子节点不显示的Bug [详情](https://ask.dcloud.net.cn/question/83719)
+  + App-Android平台 修复 nvue live-pusher 组件推流成功后拉流可能显示绿屏或卡在首帧的Bug [详情](https://ask.dcloud.net.cn/question/83198)
+  + App-iOS平台 修复 nvue view 组件设置 border 属性可能引起应用崩溃的Bug [详情](https://ask.dcloud.net.cn/question/83206)
+  + App-iOS平台 修复 iOS 13 系统中 textarea 输入的内容，比 placeholder 偏左一点的Bug [详情](https://ask.dcloud.net.cn/question/83373)
+  + App-iOS平台 修复 faceID 识别成功时不能正确触发成功回调的Bug [详情](https://ask.dcloud.net.cn/question/83068)
+  + H5平台 修复 webview 组件 加载的HTML中调用 uni.getEnv 错误的Bug [详情](https://github.com/dcloudio/uni-app/issues/1011)
+  + H5平台 修复 h5 平台组件的自定义事件无法接收多个参数的Bug [#1016](https://github.com/dcloudio/uni-app/issues/1016)
+  + H5平台 修复 在企业微信中 uni.chooseImage 无法使用的Bug [详情](https://github.com/dcloudio/uni-app/issues/82872)
+  + 小程序平台 修复 不能直接在模版内使用 $emit 的 Bug [详情](https://ask.dcloud.net.cn/question/82865)
+  + 微信小程序平台 修复在发行模式使用 lodash@4.17.15 ，运行报错的 Bug[#994](https://github.com/dcloudio/uni-app/issues/994)
+  + 支付宝小程序平台 修复 for 循环中 ref 生成的多个组件数组长度不准确的Bug [#930](https://github.com/dcloudio/uni-app/issues/930)
+  + 头条小程序平台 修复 当 rpx 后跟着 !important 时，发行模式下 rpx 未被编译成px的Bug [#1014](https://github.com/dcloudio/uni-app/issues/1014)
+  + 百度小程序平台 修复 页面 onShow 只能触发一次的Bug
+  + uni-ui 新增 uni-transition 过渡动画组件
+  + uni-ui 新增 uni-fab 悬浮按钮支持nvue
+  + uni-ui 修复 uni-calendar 动态获取 selected 属性就会导致切换不了月份的Bug
+  + uni-ui 修复 uni-calendar H5 端选择月份按钮不能点击的Bug
+  + uni-ui 优化 uni-calendar 切换月份必选中每月1号的Bug
+  + uni-ui 优化 uni-calendar 视图样式,优化逻辑代码实现,使性能更好
+  + uni-ui 优化 uni-calendar 切换月份返回事件
+  + uni-ui 修复 uni-grid 正方形宫格显示不正确的Bug
+  + uni-ui 修复 uni-grid 动态数据不渲染的Bug
+  + uni-ui 优化 uni-grid 用户可自定义宫格内容，如添加角标、红点、修改背景色等
+  + uni-ui 优化 uni-load-more 支持调整图标大小
+  + uni-ui 修复 uni-popup 点击蒙版关闭后，再次打开弹框失败的Bug
+  + uni-ui 修复 uni-popup type 属性为静态值时导致弹出层错误的Bug
+  + uni-ui 优化 uni-popup 弹出层动画，使动画更流畅
+  + uni-ui 修复 uni-swipe-action autoClose 属性开启状态下滑动不正常的Bug
+  + uni-ui 优化 uni-swipe-action 组件间联动效果更流畅
+* 【5+App插件】
+  + Android平台 优化 启动时申请手机存储权限，若用户拒绝则会弹出说明文字。满足部分应用商店要求的权限申请需申明的要求 [详情](https://ask.dcloud.net.cn/article/36549#externalstorage)
+  + Android平台 修复 Webview窗口设置drag滑屏操作手势，快速滑动操作可能引起白屏的Bug [详情](https://ask.dcloud.net.cn/question/82668)
+  + Android平台 修复 视频播放控件（VideoPlayer）可能无法播放某些本地视频文件的Bug
+  + Andrpid平台 修复 数据库执行SQL语句（plus.sqlite.executeSql）传入错误sql语句时，可能在控制台输出错误日志且不触发错误回调的Bug [详情](https://ask.dcloud.net.cn/question/83203)
+  + iOS平台 新增 Webview窗口原生标题栏样式属性 blurEffect，支持模糊毛玻璃）效果 [详情](https://www.html5plus.org/doc/zh_cn/webview.html#plus.webview.WebviewTitleNViewStyles)
+  + iOS平台 补齐 直播推流（LivePusher）控件支持设置最小码率（min-bitrate）和最大码率（max-bitrate）
+  + iOS平台 修复 Webview窗口原生标题栏的搜索框（searchInput）获取焦点会导致placeholder文字移位的Bug [详情](https://ask.dcloud.net.cn/question/83027)
+  + iOS平台 修复 图片预览（plus.nativeUI.previewImage）可能出现长图片不能滚动的Bug [详情](https://ask.dcloud.net.cn/question/82455)
+  + iOS平台 修复 使用UniPush或个推推送在后台统计数据中没有展示数和点击数的Bug [详情](https://ask.dcloud.net.cn/question/83292)
+  + iOS平台 修复 用户拒绝访问相机后，调用摄像头拍照或录像时不会触发错误回调的Bug
+  + iOS平台 修复 配置使用高德或百度地图后，定位默认没有使用gcj02坐标的Bug
+  + iOS平台 修复 系统日期（plus.nativeUI.pickDate）、时间（plus.nativeUI.pickTime）选择框与系统提示框遮罩颜色不一致的Bug
+* 【mui】
+  + iOS平台 wkwebview下，plusready未触发时调用mui.ajax，在控制台输出正确的告警提醒
+
+#### 2.4.2.20191115
+  * APP平台 修复 当`manifest.json`中`nvueCompiler`配置项不是`weex`时，picker 组件文字超出无法隐藏的Bug [详情](https://ask.dcloud.net.cn/question/83048)
+  * APP平台 修复 当`manifest.json`中`nvueCompiler`配置项不是`weex`时，uni.scanCode 接口无法回调的Bug [详情](https://ask.dcloud.net.cn/question/82984)
+  * APP平台 修复 当`manifest.json`中`nvueCompiler`配置项不是`weex`时，uni.chooseLocation 接口无法回调的Bug [详情](https://ask.dcloud.net.cn/question/82988)
+  * App-Android平台 修复 nvue barcode 组件设置 autostart 为true时在部分设备可能出现黑屏的Bug
+  * App-iOS平台 修复 纯nvue项目 侧滑关闭后无法触发上个页面生命周期 onShow 的Bug [详情](https://ask.dcloud.net.cn/question/81830)
+  * H5平台 修复 uni.getImageInfo 回调信息中 path 错误的Bug [详情](https://ask.dcloud.net.cn/question/82793)
+  * H5平台 修复 路由后退时弹出的 picker 无法自动关闭的Bug [详情](https://ask.dcloud.net.cn/question/82684)
+  * H5平台 修复 在夸克浏览器（iOS）onReachBottom 生命周期只触发一次的Bug [详情](https://ask.dcloud.net.cn/question/67636)
+  * H5平台 修复 在手机QQ浏览器 onReachBottom 无法触发的Bug [详情](https://ask.dcloud.net.cn/question/82795)
+  * H5平台 修复 在网络断开的情况下 SocketTask.send 回调不正确的Bug [#744](https://github.com/dcloudio/uni-app/issues/744)
+  * 微信小程序 调整微信基础库版本为2.9.2，解决微信2.9.3基础库input事件不触发的Bug [详情](https://developers.weixin.qq.com/community/develop/doc/000a067cd0c6102d0d79558e65bc00?highLine=bindinput)
+  * 钉钉小程序 修复 多层组件嵌套的情况下，子组件生命周期不触发的Bug
+  * 百度小程序 修复 onShow在onLoad之前触发的Bug [详情](https://ask.dcloud.net.cn/question/82822)
+
+#### 2.4.1.20191114
+  * 【重要】 公告：非自定义组件模式停止支持 [详情](https://ask.dcloud.net.cn/article/36385)
+  * 【重要】nvue文件编译模式默认从 weex 模式修改为 uni-app 模式。推荐使用多端可用、更成熟、组件更丰富的 uni-app 模式。如仍需使用 weex 模式，需在manifest中手动配置
+  * 【重要】uni ui 新版正式发布，同时兼容vue和nvue。欢迎插件市场作者也升级自己的组件，同时兼容nvue [详情](https://uniapp.dcloud.io/component/README?id=uniui)
+  * 【重要】自定义组件模式新增 crypto.getRandomValues 方法，获取符合密码学要求的安全随机值
+  * App平台 新增 生物认证API，包括指纹和 Apple Face ID [详情](https://uniapp.dcloud.io/api/system/authentication)
+  * APP平台 新增 nvue picker 组件支持多列
+  * APP平台 优化 picker、扫码、选择位置、打开位置API的界面通过原生实现，提升性能体验（nvue为weex编译模式时未优化）
+  * APP平台 修复 swiper 设置为autoplay时滑动导致速度加快的BUG [详情](https://ask.dcloud.net.cn/question/82431)
+  * App平台 修复 uni.requestPayment API 回调结果中没有支付收据的Bug [详情](https://github.com/dcloudio/uni-app/issues/621#issuecomment-518001954)
+  * App-Android平台 优化 weex原生渲染引擎的圆角和边框绘制效率
+  * App-Android平台 修复 tabBar 页面真机运行可能无法同步更新的Bug
+  * App-Android平台 修复 64位专用包 启动时概率出现白屏的Bug [详情](https://ask.dcloud.net.cn/question/79556)
+  * App-Android平台 修复 input 组件在部分场景获取焦点可能引起软键盘闪现后自动关闭的Bug [详情](https://ask.dcloud.net.cn/question/81642)
+  * App-Android平台 修复 nvue input 组件密码框焦点切换时可能出现自动关闭软键盘的Bug [详情](https://ask.dcloud.net.cn/question/81779)
+  * App-Android平台 修复 nvue map 组件在真机运行同步更新时可能无法显示的Bug [详情](https://ask.dcloud.net.cn/question/81364)
+  * App-Android平台 修复 nvue video 组件在应用首页中可能无法正常播放视频的Bug [详情](https://ask.dcloud.net.cn/question/81877)
+  * App-Android平台 修复 nvue video 组件前后台切换不触发 onShow/onHide 事件的Bug [详情](https://ask.dcloud.net.cn/question/81812)
+  * App-Android平台 修复 websocket 传输数据类型为 ArrayBuffer 某些情况下报错的Bug [详情](https://ask.dcloud.net.cn/question/81687)
+  * App-iOS平台 修复 nvue页面在iOS13及以上系统默认字体不对的Bug
+  * App-iOS平台 修复 nvue list 组件 scroll 事件返回的 isDragging 属性不正确的Bug [详情](https://github.com/dcloudio/uni-app/issues/932)
+  * App-iOS平台 修复 nvue list 组件滚动时 scrollStart/scrollEnd 事件返回参数值为负数的Bug
+  * App-iOS平台 修复 nvue swiper 组件动态修改 current 属性触发 transition 事件返回的参数不准确的Bug
+  * App-iOS平台 修复 uni.hideKeyboard 不能收起软键盘的Bug [#903](https://github.com/dcloudio/uni-app/issues/903)
+  * App-iOS平台 修复 picker 组件可能被软键盘遮挡的Bug [#888](https://github.com/dcloudio/uni-app/issues/888)
+  * App-iOS平台 修复 input 组件输入中文时失焦导致文字消失的Bug [#888](https://github.com/dcloudio/uni-app/issues/888)
+  * App-iOS平台 修复 nvue text 组件设置 line-height 属性可能引起显示不正确的Bug
+  * App-iOS平台 修复 nvue live-pusher 组件设置 whiteness 属性为false不生效的Bug
+  * App-iOS平台 修复 nvue barcode 组件动态修改属性不生效的Bug
+  * H5平台 修复 wxs getDataset() 函数获取不到参数的Bug。uni ui 的 swiperaction 组件的问题也因此得到修复 [详情](https://ask.dcloud.net.cn/question/82718)
+  * H5平台 修复 picker 组件初始值不是合法日期/时间的情况下返回值不正确的Bug
+  * 百度小程序 修复 新版百度小程序生命周期下组件内mounted不触发的BUG
+  * 百度小程序 修复 页面 onShow 触发两次的Bug [详情](https://ask.dcloud.net.cn/question/81243)
+  * 百度小程序 修复 3.105.17 以上的调试库页面 onReady 事件比 onLoad 事件执行的要早的Bug [详情](https://ask.dcloud.net.cn/question/81504)
+  * uni ui 优化 uni-swipe-action 组件在nvue中使用 BindingX ，使跟手动画更流畅
+  * uni ui 优化 uni-list 组件在nvue中使用原生list组件，提升性能
+  * uni ui 修复 uniNoticeBar跑马灯组件，在Android平台webview版本高于66时，且在隐藏的tabbar的vue页面中使用，造成App卡顿的Bug [详情](https://ask.dcloud.net.cn/article/36537)
+  * hello uni-app 新增 生物认证API示例
+  * 新闻模板 优化 顶部tab栏目增加下滑横线（支持app-nvue、app-vue、h5、微信小程序、qq小程序，其他端暂无下滑横线）
+
+#### 2.3.7.20191024
+  * 修复 在 App.vue 的 onLaunch 中，不支持 this.globalData 的 Bug
+  * H5平台 修复 开启 treeShaking 后 picker 组件无法使用的Bug [#841](https://github.com/dcloudio/uni-app/issues/841)
+  * App-Android平台 修复 input组件使用特定输入法（如搜狗）时，无法正常切换键盘模式的Bug [详情](https://ask.dcloud.net.cn/question/80172)
+  * App-iOS平台 修复 nvue map组件的标记点（markers）的 iconPath 属性值设置为相对路径时可能引起应用崩溃的Bug [详情](https://ask.dcloud.net.cn/question/79444)
+
+#### 2.3.6.20191021
+  * App平台 修复 nvue bindingx API bind 参数导致异常的Bug [详情](https://ask.dcloud.net.cn/question/80735)
+  * App平台 修复 tabBar 设置 borderStyle 为 black 不生效的Bug [详情](https://ask.dcloud.net.cn/question/80921)
+  * App平台 修复 tabBar 使用默认高度时 uni.getSystemInfo 获取的 windowHeight 不正确的Bug [详情](https://ask.dcloud.net.cn/question/80888)
+  * App-Android平台 修复 tabBar 调用 uni.setTabBarItem 动态设置tabBar某一项内容导致选中状态失效的Bug [详情](https://ask.dcloud.net.cn/question/80941)
+  * App-iOS平台 修复 tabBar 页面因内存不足而白屏后无法自动恢复的Bug [详情](https://ask.dcloud.net.cn/question/80927)
+  * App-iOS平台 修复 tabBar 设置 icon 图标可能无法显示的Bug [详情](https://ask.dcloud.net.cn/question/80946)
+  * App-iOS平台 修复 nvue list组件 scroll 事件返回的参数缺少 isDragging 属性的Bug [详情](https://ask.dcloud.net.cn/question/80928)
+
+#### 2.3.5.20191018
+  * 【重要】App平台 重构 tabBar，原生支持 midButton（中间凸起），支持高度调节（App、H5默认高度统一为50px），降低内存占用，避免iOS白屏。注意不再支持通过 plus API 操作 tabBar [详情](https://uniapp.dcloud.io/collocation/pages?id=tabbar)
+  * App平台 新增 nvue 云打包支持原生混淆源码 [详情](https://ask.dcloud.net.cn/article/36437)
+  * App平台 新增 nvue （uni-app编译模式）内置 bindingx 模块，可以免安装node模块直接使用
+  * App平台 新增 nvue API uni.createSelectorQuery(仅支持id选择器)
+  * App平台 修复 nvue swiper组件纵向滚动时，transition 事件属性值不正确的Bug [详情](https://ask.dcloud.net.cn/question/79694)
+  * App平台 修复 nvue swiper组件设置 current 后滑动不触发 change 事件的Bug [详情](https://ask.dcloud.net.cn/question/79469)
+  * App平台 修复 nvue 部分机型样式 width 设置为 750rpx 不会占满整个屏幕的Bug [详情](https://ask.dcloud.net.cn/question/79565)
+  * App平台 修复 nvue barcode组件扫码成功触发 marked 事件返回参数条码数据为空的Bug [详情](https://ask.dcloud.net.cn/question/79475)
+  * App平台 修复 uni.canvasGetImageData 和 uni.canvasPutImageData 位置大小不正确的Bug [详情](https://ask.dcloud.net.cn/question/79273)
+  * App平台 修复 使用 plus.webview API 手工创建webview时，默认注入uni-app组件样式，导致干扰html页面样式的Bug
+  * App-Android平台 修复 WebSocket 在Android4.4手机上使用 ws 协议时无法连接服务器的Bug [详情](https://ask.dcloud.net.cn/question/79534)
+  * App-Android平台 修复 WebSocket 传输二进制数据时 uni.onSocketMessage 返回为字符串数据的Bug
+  * App-Android平台 修复 nvue video组件的 show-progress 属性值设置为 false 不生效的Bug [详情](https://github.com/dcloudio/uni-app/issues/788)
+  * App-Android平台 修复 nvue video组件在 swiper 中实现仿抖音效果时滑动不灵敏的Bug
+  * App-Android平台 修复 nvue live-pusher组件动态设置 beauty whiteness 属性值无效的Bug [详情](https://ask.dcloud.net.cn/question/80285)
+  * App-Android平台 修复 nvue live-pusher组件没有开始推流时无法切换摄像头的Bug
+  * App-Android平台 修复 nvue image组件的 src 属性值为空时 placeholder 无法正常显示的Bug
+  * App-iOS平台 新增 nvue live-pusher组件支持 orientation 属性设置画面方向 
+  * App-iOS平台 修复 nvue map组件的点击控件事件 @controltap 不响应的Bug [详情](https://ask.dcloud.net.cn/question/80170)
+  * 百度小程序 修复 开发时修改保存页面，百度模拟器页面无法正常刷新的Bug
+  * uni ui 实现nvue化，源码及示例工程详见：[https://github.com/dcloudio/uni-ui/tree/nvue-uni-ui](https://github.com/dcloudio/uni-ui/tree/nvue-uni-ui)
+  * uni统计 修复 关闭统计的情况下，统计系统事件（如：登录、分享）还能上报数据的 Bug
+
 #### 2.3.3.20190924
   * App-Android平台 新增 uni.request 网络请求增加参数 sslVerify，配置是否验证 ssl 证书。但建议使用普遍受信的证书而不是忽略证书校验。[详情](https://uniapp.dcloud.io/api/request/request)
   * App-iOS平台 调整 非自定义组件模式 逻辑层默认从 WKWebview 切回 UIWebview，避免 uni.request 无法跨域的问题。但仍建议开发者尽快升级自定义组件模式
@@ -120,171 +292,6 @@
   * uni-ui 优化 SwipeDot 优化指示器样式
   * uni-ui 修复 Icons 组件在 H5 平台不显示的BUG。老用户请更新Icons组件 [详情](https://ask.dcloud.net.cn/article/36404)
   * 新闻模板 优化 拖动标签卡时更快的渲染页面、无网络时引导用户设置
-
-
-#### 2.2.8.20190918
-
-  * 【重要】uni统计平台上线，一份报表，掌握业务全景 [详情](https://tongji.dcloud.net.cn)
-  * 【重要】调整：编译模式默认为自定义组件模式。若开发者需要非自定义组件模式，需在manifest.json中明确配置usingComponents节点为false
-  * 【重要】公告：非自定义组件模式，将于2019年11月1日起，停止支持。请开发者尽快升级 [详情](https://ask.dcloud.net.cn/article/36385)
-  * 【重要】App/微信小程序/H5 新增 支持wxs，支付宝小程序平台支持SJS，百度小程序平台支持Filter [详情](https://uniapp.dcloud.io/frame?id=wxs)
-  * 【重要】App平台 优化使用Tab时应用的内存占用，提升Android平台窗体动画和页面滚动的平滑度（自定义组件模式）
-  * 【重要】App平台 iOS环境，uni-app 编译模式下的nvue页面及所有vue页面，web-view组件从UIWebview调整为WKWebview。[详情](https://ask.dcloud.net.cn/article/36348)
-  * 【重要】App平台 新增 nvue 页面支持 vuex 的使用 [详情](https://uniapp.dcloud.io/use-weex?id=vue-%e5%92%8c-nvue-%e5%85%b1%e4%ba%ab%e7%9a%84%e5%8f%98%e9%87%8f%e5%92%8c%e6%95%b0%e6%8d%ae)
-  * 新增 编译时增加警告信息（不影响运行）
-  * 新增 支持sass-loader 8.0.0版本 [#776](https://github.com/dcloudio/uni-app/issues/776)
-  * 优化 image 组件支持自闭合写法 [#625](https://github.com/dcloudio/uni-app/issues/625)
-  * 优化 autoprefixer 目标浏览器兼容，减少生成的 css 代码
-  * 修复 部分模板写法导致编译器报错的Bug [#604](https://github.com/dcloudio/uni-app/issues/604)
-  * 修复 mode 不正确导致 cli 下读取 .env 错误的Bug [#710](https://github.com/dcloudio/uni-app/issues/710)
-  * 修复 for 循环中绑定多个事件方法，参数获取不正确的Bug [#720](https://github.com/dcloudio/uni-app/issues/720)
-  * 修复 静态资源过大时编译报错的 Bug
-  * 修复 部分样式编译时未自动增加 webkit 前缀的 Bug [#769](https://github.com/dcloudio/uni-app/issues/769)
-  * App/H5/支付宝小程序平台 新增 导航栏支持配置图片（titleImage） [详情](https://uniapp.dcloud.io/collocation/pages?id=style)
-  * App/H5平台 新增 支持导航栏透明配置（transparentTitle） [详情](https://uniapp.dcloud.io/collocation/pages?id=style)
-  * App/H5平台 新增 uni.getSystemInfo 支持返回安全区信息（safeArea）
-  * App/H5平台 新增 swiper 组件支持 transition 事件
-  * App/H5平台 修复 input、textarea 组件禁用状态黑色文字在 iOS 颜色变浅的 Bug
-  * App平台 优化 页面背景样式生效时机，解决深色背景等特定场景下，页面切换时闪白的问题
-  * App平台 修复 iOS13 页面无法滚动的Bug [详情](https://ask.dcloud.net.cn/question/77877)
-  * App平台 新增 uni.onKeyboardHeightChange 支持监听键盘高度变化
-  * App平台 新增 uni.getSystemInfo 支持返回手机品牌信息（brand） [详情](https://ask.dcloud.net.cn/question/77313)
-  * App平台 新增 nvue 中支持 uni.scss
-  * App平台 新增 uni-app 编译模式下的 nvue 页面支持 recycle-list 组件 [详情](https://uniapp.dcloud.io/component/recycle-list)
-  * App平台 新增 uni-app 编译模式下的 nvue 页面支持 picker-view 组件
-  * App平台 优化 websocket 支持创建多个连接，支持收发 ArrayBuffer 类型数据
-  * App平台 优化 renderer配置为native的纯nvue项目，uni.request 发起网络请求时，Content-Type 默认设置为 application/json
-  * App平台 优化 uni.request 自动去除 url 首尾空白字符
-  * App平台 优化 input 组件 @focus 事件支持获取键盘高度
-  * App平台(Android系统) 优化 nvue 版switch的样式与性能
-  * App平台 优化 nvue button 组件内部支持嵌套 text 组件
-  * App平台 修复 调用 setNavigationBarTitle 不生效的Bug
-  * App平台 修复 微信自定义组件运行时报错的Bug [详情](https://ask.dcloud.net.cn/question/77358)
-  * App平台 修复 nvue 环境 movable-area 组件手势和滚动冲突的 Bug
-  * App平台 修复 键盘高度变化事件不生效的 Bug
-  * App平台 修复 页面中 web-view 组件的页面加载完成之前标题栏会显示 null 的 Bug
-  * App平台 修复 解决 scroll-view、movable-view 组件触摸滑动时会触发下拉刷新的 Bug
-  * App平台 修复 纯nvue项目中 uni.scanCode、uni.chooseLocation 接口不触发回调的Bug
-  * App平台 修复 纯nvue项目中 uni.stopPullDownRefresh 不生效的Bug
-  * App平台 修复 纯nvue项目中 开发运行期间新增 nvue 页面，热更新白屏的Bug
-  * H5平台 新增 支持导航栏点击穿透配置（titlePenetrate） [详情](https://uniapp.dcloud.io/collocation/pages?id=style)
-  * H5平台 新增 支持 icon 组件
-  * H5平台 优化 uni.getNetworkType 支持 Safari 浏览器
-  * H5平台 修复 rich-text 内部节点包含多个 class 时渲染不正确的 Bug [#756](https://github.com/dcloudio/uni-app/issues/756)
-  * H5平台 修复 input 组件 confirm-type 值为 search 时文字垂直不居中的 Bug
-  * H5平台 修复 input 组件的 change 事件会冒泡到父组件的Bug [详情](https://ask.dcloud.net.cn/question/77962)
-  * H5平台 修复 animation 属性中部分动画不生效的 Bug
-  * H5平台 修复 svg 或非base64格式的 Data URI 无法使用的Bug [#668](https://github.com/dcloudio/uni-app/issues/668)
-  * 小程序平台 新增 uni.getMenuButtonBoundingClientRect 接口，可获取导航栏右上角胶囊按钮的布局位置信息 [详情](https://uniapp.dcloud.io/api/ui/menuButton?id=getmenubuttonboundingclientrect)
-  * 小程序平台 优化 发行时压缩 css 代码
-  * 微信小程序平台 修复 当使用小程序插件后，调用数组方法修改数组未触发界面渲染的 Bug [#694](https://github.com/dcloudio/uni-app/issues/694)
-  * 支付宝小程序平台 新增 支持分包加载功能
-  * 支付宝小程序 新增 button 组件 open-type 属性支持 getPhoneNumber
-  * 百度/头条小程序平台 修复 开发工具 sourcemap 无效的Bug [#724](https://github.com/dcloudio/uni-app/issues/724)
-  * hello uni-app 新增 nvue地图 组件及API示例
-  * hello uni-app 新增 全屏视频上下滑动 示例模板
-  * hello uni-app 优化 cover-view 组件示例(App端使用nvue实现)，支持在视频全屏界面覆盖遮罩物
-  * hello uni-app 优化 video 组件示例，新增播放、暂停、设置倍速等能力演示
-  * hello uni-app 新增 globalData和vuex的示例模板
-  * uni-ui 新增 SearchBar 搜索输入框
-  * uni-ui 新增 GoodsNav 商品详情页底部购物车、购买导航条
-  * uni-ui 新增 Fav 收藏按钮
-  * uni-ui 优化 SwipeAction 滑动操作组件，App平台、H5 平台、微信小程序平台使用 wxs 实现跟手式流畅拖动
-  * uni-ui 优化 Collapse 折叠面板在低配设备中动画卡顿的问题
-  * uni-ui 优化 LoadMore 加载图标可按平台配置或由用户指定，Android平台默认circle，iOS平台默认雪花
-  * uni-ui 优化 SwipeDot 优化指示器样式
-  * uni-ui 修复 Icons 组件在 H5 平台不显示的BUG
-  * 新闻模板 优化 拖动标签卡时更快的渲染页面、无网络时引导用户设置
-
-#### 2.2.7.20190916-alpha
-
-* 【重要】App平台 优化 不显示的Tab页面，释放渲染内存占用，提升窗体动画和页面滚动的平滑度
-* 【重要】uni统计 优化 统计接口上报性能，已启用uni统计的历史项目，请在小程序后台request安全域名中新增（不是替换）：tongji.dcloud.io
-* 修复 兼容sass-loader 8.0.0版本 [#776](https://github.com/dcloudio/uni-app/issues/776)
-* App平台 新增 nvue 中支持 uni.scss
-* App平台 修复 setNavigationBarTitle不生效的Bug
-* hello uni-app 优化 cover-view 组件示例(App端使用nvue实现)，支持在视频全屏界面覆盖遮罩物
-* hello uni-app 优化 video 组件示例，新增播放、暂停、设置倍速等能力演示
-
-#### 2.2.6.20190914-alpha
-
-* 【重要】 App平台 优化使用Tab时应用的内存占用，提升窗体动画和页面滚动的平滑度（自定义组件模式）
-* 【重要】 公告：非自定义组件模式，将于11月1日起，停止支持。请开发者尽快升级
-* 新增 编译时增加警告信息（不影响运行）
-* 修复 静态资源过大时编译报错的 Bug
-* 修复 部分样式编译时未自动增加 webkit 前缀的 Bug [#769](https://github.com/dcloudio/uni-app/issues/769)
-* App平台/H5平台 新增 支持导航栏透明配置（transparentTitle） [详情](https://uniapp.dcloud.io/collocation/pages?id=style)
-* App平台/H5平台 修复 input、textarea 组件禁用状态黑色文字在 iOS 颜色变浅的 Bug
-* App平台 新增 导航栏支持配置图片（titleImage） [详情](https://uniapp.dcloud.io/collocation/pages?id=style)
-* App平台 新增 nvue 环境支持 recycle-list 组件 [详情](https://uniapp.dcloud.io/component/recycle-list)
-* App平台 新增 nvue 环境支持 picker-view 组件
-* App平台 修复 nvue 环境 movable-area 组件手势和滚动冲突的 Bug
-* App平台 优化 websocket 支持创建多个连接，支持收发 ArrayBuffer 类型数据
-* App平台 修复 键盘高度变化事件不生效的 Bug
-* App平台 修复 页面中 web-view 组件的页面加载完成之前标题栏会显示 null 的 Bug
-* H5平台 新增 支持导航栏点击穿透配置（titlePenetrate） [详情](https://uniapp.dcloud.io/collocation/pages?id=style)
-* H5平台 修复 rich-text 内部节点包含多个 class 时渲染不正确的 Bug [#756](https://github.com/dcloudio/uni-app/issues/756)
-* uni统计 运行测试时不再上报数据，仅发行后才报数
-* uni统计 修复预览模式自定义统计（uni.report）报错的问题
-
-#### 2.2.5.20190907-alpha
-* 【重要】新增 nvue 页面支持 vuex 的使用 [详情](https://uniapp.dcloud.io/use-weex?id=vue-%e5%92%8c-nvue-%e5%85%b1%e4%ba%ab%e7%9a%84%e5%8f%98%e9%87%8f%e5%92%8c%e6%95%b0%e6%8d%ae)
-* 【重要】调整 App平台 iOS下，vue及nvue页面的uni-app编译模式下，web-view组件从UIWebview改为WKWebview。[详情](https://ask.dcloud.net.cn/article/36348)
-* 优化 wxs 支持script方式写法，方便着色、格式化、语法校验 [详情](https://uniapp.dcloud.io/frame?id=wxs)
-* 优化 image 组件支持自闭合写法 [#625](https://github.com/dcloudio/uni-app/issues/625)
-* 优化 autoprefixer 目标浏览器兼容，减少生成的 css 代码
-* 修复 部分模板写法导致编译器报错的Bug [#604](https://github.com/dcloudio/uni-app/issues/604)
-* 修复 mode 不正确导致 cli 下读取 .env 错误的Bug [#710](https://github.com/dcloudio/uni-app/issues/710)
-* 修复 for 循环中绑定多个事件方法，参数获取不正确的Bug [#720](https://github.com/dcloudio/uni-app/issues/720)
-* App/H5平台 新增 uni.getSystemInfo 支持返回安全区信息（safeArea）
-* App/H5平台 新增 swiper 组件支持 transition 事件
-* App平台 优化 tab切换减少白屏概率
-* App平台 优化 页面背景样式生效时机，解决深色背景等特定场景下，页面切换时闪白的问题
-* App平台 修复 iOS13 页面无法滚动的Bug [详情](https://ask.dcloud.net.cn/question/77877)
-* App平台 新增 uni.getSystemInfo 支持返回手机品牌信息（brand） [详情](https://ask.dcloud.net.cn/question/77313)
-* App平台 修复 纯nvue项目中 uni.scanCode、uni.chooseLocation 接口不触发回调的Bug
-* App平台 修复 纯nvue项目中 uni.stopPullDownRefresh 不生效的Bug
-* App平台 修复 纯nvue项目中 开发运行期间新增 nvue 页面，热更新白屏的Bug
-* App平台 优化 nvue Android版switch的样式与性能
-* App平台 优化 nvue button 组件内部支持嵌套 text 组件
-* H5平台/支付宝平台 新增 导航栏配置项titleImage（导航栏标题图） [详情](https://uniapp.dcloud.io/collocation/pages?id=style)
-* H5平台 修复 input 组件的 change 事件会冒泡到父组件的Bug [详情](https://ask.dcloud.net.cn/question/77962)
-* H5平台 修复 svg 或非base64格式的 Data URI 无法使用的Bug [#668](https://github.com/dcloudio/uni-app/issues/668)
-* 小程序平台 新增 uni.getMenuButtonBoundingClientRect 接口，可获取导航栏右上角胶囊按钮的布局位置信息 [详情](https://uniapp.dcloud.io/api/ui/menuButton?id=getmenubuttonboundingclientrect)
-* 小程序平台 优化 发行时压缩 css 代码
-* 百度/头条小程序平台 修复 开发工具 sourcemap 无效的Bug [#724](https://github.com/dcloudio/uni-app/issues/724)
-* 支付宝小程序 新增 button 组件 open-type 属性支持 getPhoneNumber
-* hello uni-app 新增 nvue地图 组件及API示例
-* hello uni-app 新增 全屏视频上下滑动 示例模板
-* uni-ui 新增 SearchBar 搜索输入框
-* uni-ui 新增 GoodsNav 商品详情页底部购物车、购买导航条
-* uni-ui 新增 Fav 收藏按钮
-* uni-ui 优化 SwipeAction 滑动操作组件，App平台、H5 平台、微信小程序平台使用 wxs 实现跟手式流畅拖动
-* uni-ui 优化 Collapse 折叠面板在低配设备中动画卡顿的问题
-* uni-ui 优化 LoadMore 加载图标可按平台配置或由用户指定，Android平台默认circle，iOS平台默认雪花
-* uni-ui 优化 SwipeDot 优化指示器样式
-* uni-ui 修复 Icons 组件在 H5 平台不显示的BUG
-* 新闻模板 优化 拖动标签卡时更快的渲染页面、无网络时引导用户设置
-* uni统计 修复 页面标题和页面 url 不匹配的Bug
-* uni统计 修复 选项卡页面 url 上报不正确的Bug
-
-#### 2.2.4.20190823-alpha
-* 【重要】App/微信小程序平台 新增 支持wxs，支付宝小程序平台支持SJS，百度小程序平台支持Filter [详情](https://uniapp.dcloud.io/frame?id=wxs)
-* App平台 修复 微信自定义组件运行时报错的Bug [详情](https://ask.dcloud.net.cn/question/77358)
-
-#### 2.2.3.20190822-alpha
-* 【重要】uni统计平台上线，一份报表，掌握业务全景 [详情](https://tongji.dcloud.net.cn)
-* App平台 新增 uni.onKeyboardHeightChange 支持监听键盘高度变化
-* App平台 优化 renderer配置为native的纯nvue项目，uni.request 发起网络请求时，Content-Type 默认设置为 application/json
-* App平台 优化 input 组件 @focus 事件支持获取键盘高度
-* App平台 优化 uni.request 自动去除 url 首尾空白字符
-* App平台 修复 解决 scroll-view、movable-view 组件触摸滑动时会触发下拉刷新的 Bug
-* H5平台 新增 支持 icon 组件
-* H5平台 优化 uni.getNetworkType 支持 Safari 浏览器
-* H5平台 修复 input 组件 confirm-type 值为 search 时文字垂直不居中的 Bug
-* H5平台 修复 animation 属性中部分动画不生效的 Bug
-* 微信小程序平台 修复 当使用小程序插件后，调用数组方法修改数组未触发界面渲染的 Bug [#694](https://github.com/dcloudio/uni-app/issues/694)
-* 支付宝小程序平台 新增 支持分包加载功能
 
 #### 2.2.2.20190816
 * App平台 修复 uni.chooseLocation 界面搜索地点导致地图高度异常的Bug [详情](https://ask.dcloud.net.cn/question/76645)
