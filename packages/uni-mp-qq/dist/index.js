@@ -388,11 +388,6 @@ const protocols = {
   previewImage
 };
 const todos = [
-  'createLivePlayerContext',
-  'createLivePusherContext',
-  'loadFontFace',
-  'onMemoryWarning',
-  'onNetworkStatusChange',
   'startBeaconDiscovery',
   'stopBeaconDiscovery',
   'getBeacons',
@@ -412,10 +407,7 @@ const todos = [
   'setWifiList',
   'onWifiConnected',
   'getConnectedWifi',
-  'setNavigationBarColor',
   'setTopBarText',
-  'getExtConfig',
-  'getExtConfigSync',
   'getPhoneNumber',
   'chooseAddress',
   'addCard',
@@ -426,10 +418,10 @@ const todos = [
   'checkIsSupportSoterAuthentication',
   'startSoterAuthentication',
   'checkIsSoterEnrolledInDevice',
-  'reportMonitor',
-  'getLogManager',
-  'reportAnalytics',
-  'vibrate'
+  'vibrate',
+  'loadFontFace',
+  'getExtConfig',
+  'getExtConfigSync'
 ];
 const canIUses = [
   'scanCode',
@@ -454,7 +446,15 @@ const canIUses = [
   'onSocketClose',
   'openDocument',
   'updateShareMenu',
-  'getShareInfo'
+  'getShareInfo',
+  'createLivePlayerContext',
+  'createLivePusherContext',
+  'setNavigationBarColor',
+  'onMemoryWarning',
+  'onNetworkStatusChange',
+  'reportMonitor',
+  'getLogManager',
+  'reportAnalytics'
 ];
 
 const CALLBACKS = ['success', 'fail', 'cancel', 'complete'];

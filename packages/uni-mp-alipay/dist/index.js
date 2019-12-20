@@ -352,20 +352,17 @@ var baseApi = /*#__PURE__*/Object.freeze({
 
 // 不支持的 API 列表
 const todos = [
-  'saveImageToPhotosAlbum',
   'getRecorderManager',
   'getBackgroundAudioManager',
   'createInnerAudioContext',
   'createVideoContext',
   'createCameraContext',
   'createLivePlayerContext',
-  'openDocument',
   'onMemoryWarning',
   'startAccelerometer',
   'startCompass',
   'addPhoneContact',
   'authorize',
-  'chooseAddress',
   'chooseInvoiceTitle',
   'addTemplate',
   'deleteTemplate',
@@ -377,8 +374,7 @@ const todos = [
   'getExtConfig',
   'getExtConfigSync',
   'onWindowResize',
-  'offWindowResize',
-  'saveVideoToPhotosAlbum'
+  'offWindowResize'
 ];
 
 // 存在兼容性的 API 列表
@@ -397,7 +393,11 @@ const canIUses = [
   'createIntersectionObserver',
   'getUpdateManager',
   'setBackgroundColor',
-  'setBackgroundTextStyle'
+  'setBackgroundTextStyle',
+  'checkIsSupportSoterAuthentication',
+  'startSoterAuthentication',
+  'checkIsSoterEnrolledInDevice',
+  'openDocument'
 ];
 
 function _handleNetworkInfo (result) {
@@ -754,6 +754,29 @@ const protocols = { // 需要做转换的 API 列表
   },
   hideHomeButton: {
     name: 'hideBackHome'
+  },
+  saveImageToPhotosAlbum: {
+    name: 'saveImage',
+    args: {
+      filePath: 'url'
+    }
+  },
+  saveVideoToPhotosAlbum: {
+    args: {
+      filePath: 'src'
+    }
+  },
+  chooseAddress: {
+    name: 'getAddress',
+    returnValue (result) {
+      let info = result.result || {};
+      result.userName = info.fullname;
+      result.provinceName = info.prov;
+      result.cityName = info.city;
+      result.detailInfo = info.address;
+      result.telNumber = info.mobilePhone;
+      result.errMsg = result.resultStatus;
+    }
   }
 };
 

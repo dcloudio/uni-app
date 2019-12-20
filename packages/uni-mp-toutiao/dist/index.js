@@ -537,9 +537,9 @@ const protocols = {
     }
   },
   requestPayment: {
-    name: tt.canIUse && tt.canIUse('pay') ? 'pay' : 'requestPayment',
+    name: tt.pay ? 'pay' : 'requestPayment',
     args: {
-      orderInfo: tt.canIUse && tt.canIUse('pay') ? 'orderInfo' : 'data'
+      orderInfo: tt.pay ? 'orderInfo' : 'data'
     }
   },
   getFileInfo: {
