@@ -17,7 +17,9 @@ const {
 } = require('@dcloudio/uni-cli-shared/lib/cache')
 
 const {
-  pagesJsonJsFileName
+  pagesJsonJsFileName,
+  refreshAutoComponentMap,
+  parseUsingAutoImportComponents
 } = require('@dcloudio/uni-cli-shared/lib/pages')
 
 const parseStyle = require('./util').parseStyle
@@ -29,6 +31,17 @@ function renameUsingComponents (jsonObj) {
     delete jsonObj.usingComponents
   }
   return jsonObj
+}
+
+let lastUsingAutoImportComponentsJson = ''
+
+function initAutoImportComponents (usingAutoImportComponents = {}) {
+  const newUsingAutoImportComponentsJson = JSON.stringify(usingAutoImportComponents)
+  if (newUsingAutoImportComponentsJson !== lastUsingAutoImportComponentsJson) {
+    lastUsingAutoImportComponentsJson = newUsingAutoImportComponentsJson
+    process.UNI_AUTO_COMPONENTS = parseUsingAutoImportComponents(usingAutoImportComponents)
+    refreshAutoComponentMap()
+  }
 }
 
 module.exports = function (content) {
@@ -53,6 +66,10 @@ module.exports = function (content) {
       this.addDependency(file)
     }
   })
+
+  // 组件自动导入配置
+  initAutoImportComponents(pagesJson.usingAutoImportComponents)
+
   // TODO 与 usingComponents 放在一块读取设置
   if (manifestJson.transformPx === false) {
     process.UNI_TRANSFORM_PX = false

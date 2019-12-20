@@ -328,6 +328,15 @@ function addPageUsingComponents (pagePath, usingComponents) {
 // 存储自动组件
 const autoComponentMap = {}
 
+/**
+ * UNI_AUTO_COMPONENTS 被更新,重新刷新 map
+ */
+function refreshAutoComponentMap () {
+  Object.keys(autoComponentMap).forEach(name => {
+    addAutoComponent(name)
+  })
+}
+
 function addAutoComponent (name) {
   const options = process.UNI_AUTO_COMPONENTS
   const opt = options.find(opt => opt.pattern.test(name))
@@ -355,6 +364,18 @@ function getAutoComponents (autoComponents) {
   return components
 }
 
+function parseUsingAutoImportComponents (usingAutoImportComponents) {
+  const autoImportComponents = []
+  if (usingAutoImportComponents) {
+    Object.keys(usingAutoImportComponents).forEach(pattern => {
+      autoImportComponents.push({
+        pattern: new RegExp(pattern),
+        replacement: usingAutoImportComponents[pattern]
+      })
+    })
+  }
+  return autoImportComponents
+}
 module.exports = {
   getMainEntry,
   getNVueMainEntry,
@@ -364,9 +385,11 @@ module.exports = {
   parsePagesJson,
   pagesJsonJsFileName,
   getAutoComponents,
+  refreshAutoComponentMap,
   addPageUsingComponents,
   getUsingComponentsCode,
   generateUsingComponentsCode,
   getGlobalUsingComponentsCode,
+  parseUsingAutoImportComponents,
   generateGlobalUsingComponentsCode
 }

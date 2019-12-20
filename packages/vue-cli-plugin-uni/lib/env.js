@@ -291,18 +291,6 @@ if (runByHBuilderX) {
   }
 }
 
-// 组件自动导入配置
-process.UNI_AUTO_COMPONENTS = []
-const usingAutoImportComponents = pagesJsonObj.usingAutoImportComponents
-if (usingAutoImportComponents) {
-  Object.keys(usingAutoImportComponents).forEach(pattern => {
-    process.UNI_AUTO_COMPONENTS.push({
-      pattern: new RegExp(pattern),
-      replacement: usingAutoImportComponents[pattern]
-    })
-  })
-}
-
 if (
   process.env.UNI_USING_CACHE &&
   process.env.UNI_PLATFORM !== 'h5' &&
