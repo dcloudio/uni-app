@@ -3,13 +3,10 @@ const todos = [
   'getRecorderManager',
   'getBackgroundAudioManager',
   'createInnerAudioContext',
-  'createVideoContext',
   'createCameraContext',
   'createLivePlayerContext',
-  'onMemoryWarning',
   'startAccelerometer',
   'startCompass',
-  'addPhoneContact',
   'authorize',
   'chooseInvoiceTitle',
   'addTemplate',
@@ -45,7 +42,10 @@ const canIUses = [
   'checkIsSupportSoterAuthentication',
   'startSoterAuthentication',
   'checkIsSoterEnrolledInDevice',
-  'openDocument'
+  'openDocument',
+  'createVideoContext',
+  'onMemoryWarning',
+  'addPhoneContact'
 ]
 
 function _handleNetworkInfo (result) {
