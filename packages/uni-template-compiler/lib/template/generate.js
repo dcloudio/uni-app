@@ -123,7 +123,7 @@ module.exports = function generate (ast, state) {
   const replaceCodes = state.options.replaceCodes
   if (replaceCodes) {
     Object.keys(replaceCodes).forEach(key => {
-      code = code.replace(key, replaceCodes[key])
+      code = code.replace(new RegExp(key.replace('$', '\\$'), 'g'), replaceCodes[key])
     })
   }
 
