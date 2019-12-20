@@ -308,6 +308,12 @@ if (
   }
 }
 
+const {
+  initAutoImportComponents
+} = require('@dcloudio/uni-cli-shared/lib/pages')
+
+initAutoImportComponents(pagesJsonObj.usingAutoImportComponents)
+
 runByHBuilderX && console.log(`正在编译中...`)
 
 module.exports = {

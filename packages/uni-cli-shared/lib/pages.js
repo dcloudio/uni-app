@@ -328,6 +328,19 @@ function addPageUsingComponents (pagePath, usingComponents) {
 // 存储自动组件
 const autoComponentMap = {}
 
+let lastUsingAutoImportComponentsJson = ''
+
+process.UNI_AUTO_COMPONENTS = []
+
+function initAutoImportComponents (usingAutoImportComponents = {}) {
+  const newUsingAutoImportComponentsJson = JSON.stringify(usingAutoImportComponents)
+  if (newUsingAutoImportComponentsJson !== lastUsingAutoImportComponentsJson) {
+    lastUsingAutoImportComponentsJson = newUsingAutoImportComponentsJson
+    process.UNI_AUTO_COMPONENTS = parseUsingAutoImportComponents(usingAutoImportComponents)
+    refreshAutoComponentMap()
+  }
+}
+
 /**
  * UNI_AUTO_COMPONENTS 被更新,重新刷新 map
  */
@@ -385,7 +398,7 @@ module.exports = {
   parsePagesJson,
   pagesJsonJsFileName,
   getAutoComponents,
-  refreshAutoComponentMap,
+  initAutoImportComponents,
   addPageUsingComponents,
   getUsingComponentsCode,
   generateUsingComponentsCode,

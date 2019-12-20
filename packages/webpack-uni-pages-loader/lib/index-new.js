@@ -18,8 +18,7 @@ const {
 
 const {
   pagesJsonJsFileName,
-  refreshAutoComponentMap,
-  parseUsingAutoImportComponents
+  initAutoImportComponents
 } = require('@dcloudio/uni-cli-shared/lib/pages')
 
 const parseStyle = require('./util').parseStyle
@@ -31,17 +30,6 @@ function renameUsingComponents (jsonObj) {
     delete jsonObj.usingComponents
   }
   return jsonObj
-}
-
-let lastUsingAutoImportComponentsJson = ''
-
-function initAutoImportComponents (usingAutoImportComponents = {}) {
-  const newUsingAutoImportComponentsJson = JSON.stringify(usingAutoImportComponents)
-  if (newUsingAutoImportComponentsJson !== lastUsingAutoImportComponentsJson) {
-    lastUsingAutoImportComponentsJson = newUsingAutoImportComponentsJson
-    process.UNI_AUTO_COMPONENTS = parseUsingAutoImportComponents(usingAutoImportComponents)
-    refreshAutoComponentMap()
-  }
 }
 
 module.exports = function (content) {
