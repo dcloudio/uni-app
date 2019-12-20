@@ -737,7 +737,7 @@ const package = require('packageName')
 
 |平台|支持情况|小程序组件存放目录|
 |---|---|---|
-|H5|不支持||
+|H5|支持微信小程序组件|wxcomponents|
 |App（不含nvue）|支持微信小程序组件|wxcomponents|
 |微信小程序|支持微信小程序组件|wxcomponents|
 |支付宝小程序|支持支付宝小程序组件|mycomponents|
