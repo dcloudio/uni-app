@@ -1,6 +1,6 @@
 > 5+App同样拥有众多案例（包括中国工商总局、公安部、中国邮政、湖北银行、360等），另见链接[https://dcloud.io/case/](https://dcloud.io/case/)
 
-uni-app已经有几十万开发者，[uni统计](https://tongji.dcloud.net.cn/)覆盖终端9亿，月活2亿。是开发者数量和案例最丰富的多端开发框架。
+uni-app已经有几十万开发者，[uni统计](https://tongji.dcloud.net.cn/)覆盖终端9亿，月活2.2亿。是开发者数量和案例最丰富的多端开发框架。
 欢迎知名开发商提交案例或接入uni统计，[项目案例征集](https://github.com/dcloudio/uni-app/issues/6)提交。
 
 ### 官方示例
@@ -135,7 +135,7 @@ uni-app已经有几十万开发者，[uni统计](https://tongji.dcloud.net.cn/)�
 <br>
 
 
-**极志愿：**专业高考志愿填报。**<span style="color:#42b983">多端获客典型案例，1个月获得400万用户</span>**，[详见报道](https://mp.weixin.qq.com/s?__biz=MzU3NTU5NDc0NA==&mid=2247491214&idx=1&sn=7e334d079146d9e31cea407f45bd8624&chksm=fd219719ca561e0f9a85b30017618eaf9551b46cdd6ecdf856bc4e47aee4ca93767fcf23147f&mpshare=1&scene=1&srcid=0713VwAOIuRllzMB6syoQssb&key=15a2b72b2464b4fe73325967f733ac332583d5db37f1812c63613c083a8f5921bca2ada2140d45e07657b062dc451f27cc48fe4fd298f6456f300895a90bd471480afdc2c8dc5a45254fb1dc48d3b79a&ascene=1&uin=MTkzNjMxMzU%3D&devicetype=Windows+10&version=62060833&lang=zh_CN&pass_ticket=xW6dPp%2F565g5S8hl1lz%2F8FLQBEzW6KUHyyqyHPdT2nk%3D)。体验方式：[App、微信小程序、百度小程序、H5 官网地址](https://www.jizhy.com/home/)
+**极志愿：**专业高考志愿填报。**<span style="color:#42b983">多端获客典型案例，1个月获得400万用户</span>**，[详见报道](https://mp.weixin.qq.com/s?__biz=MzU3NTU5NDc0NA==&mid=2247491214&idx=1&sn=7e334d079146d9e31cea407f45bd8624)。体验方式：[App、微信小程序、百度小程序、H5 官网地址](https://www.jizhy.com/home/)
 
 #### 互联网公司
 
@@ -154,7 +154,7 @@ uni-app已经有几十万开发者，[uni统计](https://tongji.dcloud.net.cn/)�
  </div>
 </div>
 
-**西祠胡同：** [App及H5版](https://www.xici.net/)
+**西祠胡同：** [App官网扫码下载](https://www.xici.net/)、[H5](https://3g.xici.net/)
 
 **达内在线：** 达内教育的在线培训App。[App官网下载](http://www.tmooc.cn/app/index.shtml)
 
@@ -170,7 +170,7 @@ uni-app已经有几十万开发者，[uni统计](https://tongji.dcloud.net.cn/)�
 
 **贵州联通沃扫码：**[H5，需扫码访问](http://www.gz10010.shop/wsm-h5/#/)
 
-**上铁12306：** [Android](https://android.myapp.com/myapp/detail.htm?apkName=com.shentie.app)、[iOS](https://apps.apple.com/cn/app/shang-tie12306/id1080296082)
+**上铁12306：**上海铁路局App，[Android](https://android.myapp.com/myapp/detail.htm?apkName=com.shentie.app)、[iOS](https://apps.apple.com/cn/app/shang-tie12306/id1080296082)
 
 <div class="scan-code">
  <strong>昆铁+：</strong> 中国铁路昆明局为乘客提供的应用。[App下载页](https://media.kunming-railway.cn/)、微信小程序搜索“昆铁+”
@@ -181,7 +181,7 @@ uni-app已经有几十万开发者，[uni统计](https://tongji.dcloud.net.cn/)�
  </div>
 </div>
 
-**ADR之声：** 航空工业信息中心App。[Android](https://m3w.cn/__uni__937cb89)
+**ADR之声：** 航空工业信息中心出品，是航空产业从业人员以及爱好者的工具书。[Android](https://appstore.huawei.com/app/C100599457)、[iOS](https://apps.apple.com/cn/app/id1450103696)
 
 **机场行：** 中国航信以机场为核心为旅客提供智能全行程服务应用。微信小程序搜索“机场行”，[微信H5](http://airporttravel.travelsky.com/weixin/)
 
@@ -207,7 +207,7 @@ uni-app已经有几十万开发者，[uni统计](https://tongji.dcloud.net.cn/)�
 
 **NSTL国家科技图书文献中心：**[App下载页](https://www.nstl.gov.cn/download_app.html)、[H5](https://www.nstl.gov.cn/index_app.html#/)
 
-**惠动体育：** 北京体育局指定体育场馆预定合作平台，[iOS和Android下载页](https://hsport.cn/)、[H5](https://web.hsport.cn/#/)、微信小程序搜索“惠动平台”
+**惠动体育：** 北京体育局指定体育场馆预定合作平台，[App下载页](https://hsport.cn/)、[H5](https://web.hsport.cn/#/)、微信小程序搜索“惠动平台”
 
 **北京财政局会计专业考试系统：**[H5](http://fwxt.czj.beijing.gov.cn/kjbmh5/)
 
@@ -215,7 +215,7 @@ uni-app已经有几十万开发者，[uni统计](https://tongji.dcloud.net.cn/)�
 
 <!-- **上海闵行区委党务公开网：**[H5（有UA限制）](http://dj.mhdw.gov.cn/djwx/) -->
 
-**广东省工会：**粤工惠，广东省工友福利App，[Android](https://android.myapp.com/myapp/detail.htm?apkName=com.gdftu.ygh)、[iOS](https://apps.apple.com/cn/app/id1464193434) 、微信小程序搜索“粤工惠”
+**广东省工会：**粤工惠，广东工友服务App，[Android](https://android.myapp.com/myapp/detail.htm?apkName=com.gdftu.ygh)、[iOS](https://apps.apple.com/cn/app/id1464193434) 、微信小程序搜索“粤工惠”
 
 **广东省广州民政局：**[微信H5](https://wxpt.gzmz.gov.cn/ydzw-wx/#/pagesA/login/index)
 
@@ -341,7 +341,7 @@ uni-app已经有几十万开发者，[uni统计](https://tongji.dcloud.net.cn/)�
 
 **课呱呱：**在线学习好工作。[App、小程序、H5通用链接](http://m3w.cn/__uni__b19209a)
 
-**阿拉运：** 物流行业app，nvue案例，[iOS和Android下载页](http://mb.ialayun.com/)
+**阿拉运：** 物流行业app，[iOS和Android下载页](http://mb.ialayun.com/)
 
 **财金宝：** 多端理财记账工具，[iOS](https://itunes.apple.com/cn/app/%E8%B4%A2%E9%87%91%E5%AE%9D-%E8%AE%B0%E8%B4%A6%E7%90%86%E8%B4%A2%E8%B5%84%E4%BA%A7%E7%AE%A1%E5%AE%B6/id1275489865?mt=8)、[Android](https://android.myapp.com/myapp/detail.htm?apkName=me.caijinbao.jlm)、微信小程序、支付宝小程序搜索“财金宝”
 
