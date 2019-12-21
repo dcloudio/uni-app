@@ -1,7 +1,7 @@
-如关心App端案例，注意uni-app编译到App时，其实是使用了DCloud的5+App引擎，该引擎拥有众多案例（包括中国工商总局、公安部、中国邮政、湖北银行、360等），有3亿手机用户在使用基于5+引擎开发的应用。详见[https://dcloud.io/case/](https://dcloud.io/case/)
+> 5+App同样拥有众多案例（包括中国工商总局、公安部、中国邮政、湖北银行、360等），另见链接[https://dcloud.io/case/](https://dcloud.io/case/)
 
-uni-app已经有几十万开发者，uni统计月活2亿，是开发者数量和案例最丰富的多端开发框架。
-欢迎知名开发商提交案例或接入uni统计，越多人加入uni-app生态，这个生态会发展的更好，[项目案例征集](https://github.com/dcloudio/uni-app/issues/6)提交。
+uni-app已经有几十万开发者，[uni统计](https://tongji.dcloud.net.cn/)覆盖终端9亿，月活2亿。是开发者数量和案例最丰富的多端开发框架。
+欢迎知名开发商提交案例或接入uni统计，[项目案例征集](https://github.com/dcloudio/uni-app/issues/6)提交。
 
 ### 官方示例
 
@@ -57,18 +57,6 @@ uni-app已经有几十万开发者，uni统计月活2亿，是开发者数量和
 		<img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/onchina.png" width="200"/>
 		<span style="margin-top:15px;">百度小程序码</span>
 	</a>
-</div>
-
-<a href="https://media.kunming-railway.cn/" target="_blank" class="clear-style"><b>昆铁+：</b></a>中国铁路昆明局官方应用。同时支持iOS、Android和微信小程序。
-<div style="display:flex;justify-content: space-around;">
-	<a href="https://media.kunming-railway.cn/" target="_blank" class="clear-style barcode-view">
-		<img src="//img-cdn-qiniu.dcloud.net.cn/uniapp/doc/kuntie.jpg" width="200"/>
-		<span style="margin-top:15px;">App码</span>
-	</a>
-    <a href="javascript:;" target="_blank" class="clear-style barcode-view">
-      <img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/wxkt.jpg" width="200"/>
-      <span style="margin-top:15px;">微信小程序码</span>
-    </a>
 </div>
 
 <a href="http://ext.dcloud.net.cn/plugin?id=239" target="_blank" class="clear-style"><b>ColorUI：</b></a>ColorUI官方组件库for uni-app，高颜值示例。本项目插件市场地址：[https://ext.dcloud.net.cn/plugin?id=239](https://ext.dcloud.net.cn/plugin?id=239)
@@ -172,8 +160,6 @@ uni-app已经有几十万开发者，uni统计月活2亿，是开发者数量和
 
 #### 国企
 
-**上铁12306：** [Android](https://android.myapp.com/myapp/detail.htm?apkName=com.shentie.app)、[iOS](https://apps.apple.com/cn/app/shang-tie12306/id1080296082)
-
 **中国移动咪咕商城：**[H5](https://mgmall.migudm.cn/)
 
 **浙江移动境外出行指南：**[H5](https://wap.zj.10086.cn/szhy/business/20190610gmh5/#/)
@@ -183,6 +169,17 @@ uni-app已经有几十万开发者，uni统计月活2亿，是开发者数量和
 **广东联通粉丝卡：**[H5（特定UA）](https://wxv.gd10010.cn/)
 
 **贵州联通沃扫码：**[H5，需扫码访问](http://www.gz10010.shop/wsm-h5/#/)
+
+**上铁12306：** [Android](https://android.myapp.com/myapp/detail.htm?apkName=com.shentie.app)、[iOS](https://apps.apple.com/cn/app/shang-tie12306/id1080296082)
+
+<div class="scan-code">
+ <strong>昆铁+：</strong> 中国铁路昆明局为乘客提供的应用。[App下载页](https://media.kunming-railway.cn/)、微信小程序搜索“昆铁+”
+ <div class="scan-code-hover">
+    <div class="scan-code-hover-box">
+      <img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/wxkt.jpg" alt="二维码获取失败" />
+    </div>
+ </div>
+</div>
 
 **ADR之声：** 航空工业信息中心App。[Android](https://m3w.cn/__uni__937cb89)
 
@@ -286,6 +283,8 @@ uni-app已经有几十万开发者，uni统计月活2亿，是开发者数量和
 **内蒙古乌兰察布市市场监督管理局：**[H5](http://amr.wulanchabu.gov.cn/h5/#/)
 
 <!-- **数字福建政协云综合信息服务平台：**App部分页面 -->
+**山东海洋预报：**为您提供山东范围内的海洋预报信息，及早作出防范，避免损失。[App码](//m3w.cn/h5bf0c9e7)
+
 **山东青岛海洋预报：**为您提供青岛市周边海域的海洋预警报信息。[Android和iOS通用链接](http://m3w.cn/__uni__3b4e57a)
 
 **山东威海医疗保障局：**[微信H5](http://ylbzjgzh.weihai.gov.cn/wx/#/)
@@ -332,6 +331,8 @@ uni-app已经有几十万开发者，uni统计月活2亿，是开发者数量和
 
 **安咕在家早教：**0-6岁宝宝能力跟踪发展工具，[iOS](https://itunes.apple.com/cn/app/%E5%AE%89%E5%92%95%E5%9C%A8%E5%AE%B6%E6%97%A9%E6%95%99/id1455168710?mt=8)、[Android](https://android.myapp.com/myapp/detail.htm?apkName=com.angubaby.earlyeduhome)、微信小程序搜索“安咕在家早教”。
 
+**so米直播：**体育赛事直播。[H5](https://wap.smzb8.net:168/)、[App](https://smzb8.net:168/)
+
 **加减号：**专业健身健身App，[Android和iOS](https://www.jvhv.com/wap/pages/index/download/download)、[H5](https://www.jvhv.com)。
 
 **围棋战场：**围棋对弈，游戏类的小程序（非小游戏）。[微信小程序码](https://user-images.githubusercontent.com/16237216/65005363-327a9f80-d932-11e9-9be6-68cdbcdfdbf1.png)
@@ -360,8 +361,6 @@ uni-app已经有几十万开发者，uni统计月活2亿，是开发者数量和
 
 **小情绪：**一款随时随地分享您的心情及图片的应用。[App和小程序通用码](//m3w.cn/__uni__2d73605)
 
-**山东海洋预报：**为您提供山东范围内的海洋预报信息，及早作出防范，避免损失。[App码](//m3w.cn/h5bf0c9e7)
-
 **纸塘日记：**一款简约的记录生活的应用。[App码和小程序通用码](//m3w.cn/__uni__55a7b4e)
 
 **TokenData：**一款创新型的区块链移动端浏览器，大数据智能监控，数据及时可靠。[App码](//m3w.cn/tokendata)
@@ -387,8 +386,6 @@ uni-app已经有几十万开发者，uni统计月活2亿，是开发者数量和
 **壹恒出行：**共享汽车，APP内线上找到距离你最近的网点或汽车，[iOS](https://itunes.apple.com/cn/app/%E5%A3%B9%E6%81%92%E5%87%BA%E8%A1%8C/id1455172086?mt=8)、[Android](http://appstore.huawei.com/app/C100659807)
 
 **蚂蚁猎聘：**让求职更快乐、求职招聘一站式服务平台，[Android](http://www.antliepin.com/APPobject/liepin.apk)、[iOS](https://itunes.apple.com/cn/app/id1441284344)。
-
-**so米直播：**体育赛事直播。[H5](https://wap.smzb8.net:168/)、[App](https://smzb8.net:168/)
 
 **有鱼严选：**专心做商品内容的导购返利APP，[Android](https://android.myapp.com/myapp/detail.htm?apkName=io.dcloud.UNI2F373EE)、[iOS](https://itunes.apple.com/cn/app/%E6%9C%89%E9%B1%BC%E4%B8%A5%E9%80%89-%E7%B2%BE%E6%8C%91%E5%A4%A9%E7%8C%AB%E5%A5%BD%E8%B4%A7%E5%B8%AE%E6%82%A8%E7%9C%81%E9%92%B1%E6%B7%98%E5%AE%9D/id1445349622?mt=8)。
 
