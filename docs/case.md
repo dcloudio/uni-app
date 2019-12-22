@@ -1,6 +1,5 @@
-> 5+App同样拥有众多案例（包括中国工商总局、公安部、中国邮政、湖北银行、360等），另见链接[https://dcloud.io/case/](https://dcloud.io/case/)
+DCloud有380万开发者，[uni统计](https://tongji.dcloud.net.cn/)覆盖手机终端9亿，月活2.2亿。是开发者数量和案例最丰富的多端开发框架。
 
-uni-app已经有几十万开发者，[uni统计](https://tongji.dcloud.net.cn/)覆盖终端9亿，月活2.2亿。是开发者数量和案例最丰富的多端开发框架。
 欢迎知名开发商提交案例或接入uni统计，[项目案例征集](https://github.com/dcloudio/uni-app/issues/6)提交。
 
 ### 官方示例
@@ -191,17 +190,27 @@ uni-app已经有几十万开发者，[uni统计](https://tongji.dcloud.net.cn/)�
 
 **招商银行：** App部分页面使用uni-app制作
 
+**湖北银行（5+App）：**[Android](https://android.myapp.com/myapp/detail.htm?apkName=cn.com.yusys.app.HuBeiBank)、[iOS](https://apps.apple.com/cn/app/%E6%B9%96%E5%8C%97%E9%93%B6%E8%A1%8C%E4%B8%AA%E4%BA%BA%E6%89%8B%E6%9C%BA%E9%93%B6%E8%A1%8C%E5%AE%A2%E6%88%B7%E7%AB%AF/id718080432)
+
 **中原银行信用卡：** [微信H5](https://cch.zybank.com.cn:10080/credit/#/pages/home/home)
+
+**包商银行（5+App）：**[Android](https://android.myapp.com/myapp/detail.htm?apkName=cn.com.bsb.mbank)、[iOS](https://itunes.apple.com/cn/app/bao-shang-yin-xing/id875246323?mt=8)
 
 **平安集团：**金管家AI祝福，[H5](https://laip-gbr-pai.pingan.com/static/goodStart/#/)
 
 **拉卡拉收款宝：** App部分页面使用uni-app制作
 
-**长城人寿：**微信小程序搜索 长城银保e站、长城人寿线上培训平台等
+**长城人寿：**微信小程序搜索 “长城银保e站”、“长城人寿线上培训平台”等
 
 #### 政府
 
 **共青团全国青少年弘扬中华优秀传统文化交流展示活动专题网站：**[同时适配PC和手机版的H5](https://chuancheng.xwhdw.com/)
+
+**登记注册身份验证（5+App）：**国家工商总局，企业登记注册身份验证。[Android](https://android.myapp.com/myapp/detail.htm?apkName=gov.zwfw.samr.djzc)、[iOS](https://apps.apple.com/cn/app/%E7%99%BB%E8%AE%B0%E6%B3%A8%E5%86%8C%E8%BA%AB%E4%BB%BD%E9%AA%8C%E8%AF%81/id1466043859)
+
+**农交安（5+App）：**公安部交通管理局，农村道路交通安全信息系统App。[Android](https://android.myapp.com/myapp/detail.htm?apkName=com.tmri.nda)、[iOS](https://itunes.apple.com/cn/app/id1445388528)
+
+**安易递（5+App）：**国家邮政局，实名快递收寄系统。[Android](http://sj.qq.com/myapp/detail.htm?apkName=cn.aiqy.demo_postman)、[iOS](https://apps.apple.com/cn/app/%E5%AE%89%E6%98%93%E9%80%92%E6%94%B6%E5%AF%84%E7%89%88/id1148473259)
 
 **国家卫生健康委员会：**离退休精准服务平台，[H5](https://ltj.nhc.gov.cn:8032/#/)
 
@@ -319,7 +328,21 @@ uni-app已经有几十万开发者，[uni统计](https://tongji.dcloud.net.cn/)�
 
 **张亮麻辣烫：** 百度小程序搜索 “张亮麻辣烫” 
 
-**西贝骑手** 西贝莜面村外卖骑手App
+**西贝骑手：** 西贝莜面村外卖骑手App
+
+**一汽丰田官方App（5+App）：**[Android](https://android.myapp.com/myapp/detail.htm?apkName=com.toyota.ftmsApp&amp;ADTAG=mobile)、[iOS](https://apps.apple.com/cn/app/%E4%B8%80%E6%B1%BD%E4%B8%B0%E7%94%B0/id687516806)
+
+**新航道雅思（5+App）：**[Android](https://android.myapp.com/myapp/detail.htm?apkName=xhd.com.ys&amp;ADTAG=mobile)、[iOS](https://apps.apple.com/cn/app/%E6%96%B0%E8%88%AA%E9%81%93%E9%9B%85%E6%80%9D-%E9%9B%85%E6%80%9D%E5%90%AC%E5%8A%9B%E5%8F%A3%E8%AF%AD%E6%8F%90%E5%88%86%E7%A5%9E%E5%99%A8/id1209333327)
+
+**日上会员（5+App）：**日上免税店官方App。[Android](http://sj.qq.com/myapp/detail.htm?apkName=com.sunrisedutyfree.apps.sunrisemembers)、[iOS](https://itunes.apple.com/cn/app/%E6%97%A5%E4%B8%8A%E4%BC%9A%E5%91%98/id1135820611?mt=8)
+
+**国珍在线（5+App）：**新时代健康产业集团移动展业应用。[Android](http://sj.qq.com/myapp/detail.htm?apkName=cn.guozhen.guozhenzaixian)、[iOS](https://itunes.apple.com/cn/app/%E5%9B%BD%E7%8F%8D%E5%9C%A8%E7%BA%BF/id1098479063?mt=8)
+
+#### html5游戏
+
+**信任的进化：** 曾Taptap首页推荐的益智小游戏。[Android](http://sj.qq.com/myapp/detail.htm?apkName=com.xuangames.xrdjh)、[iOS](https://itunes.apple.com/cn/app/%E4%BF%A1%E4%BB%BB%E7%9A%84%E8%BF%9B%E5%8C%96-%E5%90%88%E4%BD%9C%E8%87%AA%E7%A7%81%E7%9A%84%E5%9F%BA%E5%9B%A0/id1290206167?mt=8)
+
+**出发吧！冒险家：** 曾Taptap首页推荐的冒险游戏。[Android](https://www.seagame.com/mxj/android1.apk)、[iOS](https://apps.apple.com/cn/app/id1367825240)
 
 #### 创业公司
 
@@ -331,9 +354,13 @@ uni-app已经有几十万开发者，[uni统计](https://tongji.dcloud.net.cn/)�
 
 **安咕在家早教：**0-6岁宝宝能力跟踪发展工具，[iOS](https://itunes.apple.com/cn/app/%E5%AE%89%E5%92%95%E5%9C%A8%E5%AE%B6%E6%97%A9%E6%95%99/id1455168710?mt=8)、[Android](https://android.myapp.com/myapp/detail.htm?apkName=com.angubaby.earlyeduhome)、微信小程序搜索“安咕在家早教”。
 
+**批改网（5+App）：**智能批改，辅助英文教与学，[Android](http://sj.qq.com/myapp/detail.htm?apkName=org.pigai.allround)、[iOS](https://itunes.apple.com/cn/app/id1158628103)
+
 **so米直播：**体育赛事直播。[H5](https://wap.smzb8.net:168/)、[App](https://smzb8.net:168/)
 
 **加减号：**专业健身健身App，[Android和iOS](https://www.jvhv.com/wap/pages/index/download/download)、[H5](https://www.jvhv.com)。
+
+**弈客围棋（5+App）：**Appstore体育分类排名前100的棋友App。[iOS](https://apps.apple.com/cn/app/yi-ke-wei-qi-quan-qiu-yi-wan/id988682022)
 
 **围棋战场：**围棋对弈，游戏类的小程序（非小游戏）。[微信小程序码](https://user-images.githubusercontent.com/16237216/65005363-327a9f80-d932-11e9-9be6-68cdbcdfdbf1.png)
 
