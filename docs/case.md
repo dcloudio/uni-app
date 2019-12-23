@@ -157,6 +157,8 @@ DCloud有380万开发者，[uni统计](https://tongji.dcloud.net.cn/)覆盖手�
 
 **达内在线：** 达内教育的在线培训App。[App官网下载](http://www.tmooc.cn/app/index.shtml)
 
+**即速应用：** 微信小程序搜索“即速应用商家版”
+
 #### 国企
 
 **中国移动咪咕商城：**[H5](https://mgmall.migudm.cn/)
