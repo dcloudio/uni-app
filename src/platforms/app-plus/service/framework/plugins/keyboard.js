@@ -42,8 +42,8 @@ onMethod('onKeyboardHeightChange', res => {
       hideKeyboardTimeout = null
     }
   } else {
-    // 仅安卓收起键盘时通知view层失去焦点
-    if (isAndroid) {
+    // 安卓/iOS13收起键盘时通知view层失去焦点
+    if (isAndroid || parseInt(plus.os.version) >= 13) {
       hideKeyboardTimeout = setTimeout(function () {
         hideKeyboardTimeout = null
         var pageId = getCurrentPageId()
