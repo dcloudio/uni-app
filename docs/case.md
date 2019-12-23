@@ -196,6 +196,8 @@ DCloud有380万开发者，[uni统计](https://tongji.dcloud.net.cn/)覆盖手�
 
 **包商银行（5+App）：**[Android](https://android.myapp.com/myapp/detail.htm?apkName=cn.com.bsb.mbank)、[iOS](https://itunes.apple.com/cn/app/bao-shang-yin-xing/id875246323?mt=8)
 
+**晋享生活（5+App）：**山西农信App，[Android](https://android.myapp.com/myapp/detail.htm?apkName=com.ydnsh.buy.mobileBank)、[iOS](https://apps.apple.com/cn/app/id1147645808)
+
 **平安集团：**金管家AI祝福，[H5](https://laip-gbr-pai.pingan.com/static/goodStart/#/)
 
 **拉卡拉收款宝：** App部分页面使用uni-app制作
