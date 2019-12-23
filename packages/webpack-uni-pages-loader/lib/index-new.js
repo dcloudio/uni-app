@@ -56,7 +56,7 @@ module.exports = function (content) {
   })
 
   // 组件自动导入配置
-  initAutoImportComponents(pagesJson.usingAutoImportComponents)
+  initAutoImportComponents(pagesJson.easycom)
 
   // TODO 与 usingComponents 放在一块读取设置
   if (manifestJson.transformPx === false) {
