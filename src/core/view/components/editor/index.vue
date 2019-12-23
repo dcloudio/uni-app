@@ -226,19 +226,20 @@ export default {
     },
     initQuill (imageResizeModules) {
       const Quill = window.Quill
-      Quill.register('modules/ImageResize', window.ImageResize.default)
       formats.register(Quill)
-
-      const quill = this.quill = new Quill(this.$el, {
+      const options = {
         toolbar: false,
         readOnly: this.readOnly,
         placeholder: this.placeholder,
-        modules: {
-          ImageResize: {
-            modules: imageResizeModules
-          }
+        modules: { }
+      }
+      if (imageResizeModules.length) {
+        Quill.register('modules/ImageResize', window.ImageResize.default)
+        options.modules.ImageResize = {
+          modules: imageResizeModules
         }
-      })
+      }
+      const quill = this.quill = new Quill(this.$el, options)
       const $el = quill.root
       const events = ['focus', 'blur']
       events.forEach(name => {
