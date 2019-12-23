@@ -36,7 +36,6 @@ const todos = [
   'getBeacons',
   'startBeaconDiscovery',
   'stopBeaconDiscovery',
-  'setNavigationBarColor',
   'showNavigationBarLoading',
   'hideNavigationBarLoading',
   'setTabBarItem',
@@ -87,6 +86,7 @@ const canIUses = [
   // 'openDocument',
   // 'onUserCaptureScreen',
   // 'getBackgroundAudioManager',
+  // 'setNavigationBarColor',
 ]
 
 // 需要做转换的 API 列表
