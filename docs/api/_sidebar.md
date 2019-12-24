@@ -123,6 +123,7 @@
   * [统计](api/other/report.md)
   * [卡券](api/other/card.md)
   * [模板消息](api/other/template.md)
+  * [订阅消息](api/other/requestSubscribeMessage.md)
   * [小程序更新](api/other/update.md)
   * [调试](api/other/set-enable-debug.md)
   * [获取第三方平台数据](api/other/get-extconfig.md)
