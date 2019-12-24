@@ -1,12 +1,6 @@
 <template>
   <uni-audio
     :id="id"
-    :src="src"
-    :loop="loop"
-    :controls="controls"
-    :poster="poster"
-    :name="name"
-    :author="author"
     v-on="$listeners"
   >
     <audio

@@ -1,7 +1,5 @@
 <template>
-  <uni-map
-    v-bind="attrs"
-    v-on="$listeners">
+  <uni-map v-on="$listeners">
     <div
       ref="container"
       class="uni-map-container" />

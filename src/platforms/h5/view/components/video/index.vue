@@ -1,29 +1,6 @@
 <template>
   <uni-video
     :id="id"
-    :src="src"
-    :initial-time="initialTime"
-    :duration="duration"
-    :controls="controls"
-    :danmu-list="danmuList"
-    :danmu-btn="danmuBtn"
-    :enable-danmu="enableDanmu"
-    :autoplay="autoplay"
-    :loop="loop"
-    :muted="muted"
-    :page-gesture="pageGesture"
-    :direction="direction"
-    :show-progress="showProgress"
-    :show-fullscreen-btn="showFullscreenBtn"
-    :show-play-btn="showPlayBtn"
-    :show-center-play-btn="showCenterPlayBtn"
-    :enable-progress-gesture="enableProgressGesture"
-    :object-fit="objectFit"
-    :poster="poster"
-    :x5-video-player-type="x5VideoPlayerType"
-    :x5-video-player-fullscreen="x5VideoPlayerFullscren"
-    :x5-video-orientation="x5VideoOrientation"
-    :x5-playsinline="x5Playsinline"
     v-on="$listeners"
   >
     <div
@@ -43,10 +20,7 @@
         :loop="loop"
         :src="srcSync"
         :poster="poster"
-        :x5-video-player-type="x5VideoPlayerType"
-        :x5-video-player-fullscreen="x5VideoPlayerFullscren"
-        :x5-video-orientation="x5VideoOrientation"
-        :x5-playsinline="x5Playsinline"
+        v-bind="$attrs"
         class="uni-video-video"
         webkit-playsinline
         playsinline
@@ -71,12 +45,12 @@
             <div class="uni-video-progress">
               <div
                 :style="{width:buffered*100+'%'}"
-                class="uni-video-progress-buffered"/>
+                class="uni-video-progress-buffered" />
               <div
                 ref="ball"
                 :style="{left:progress+'%'}"
                 class="uni-video-ball">
-                <div class="uni-video-inner"/>
+                <div class="uni-video-inner" />
               </div>
             </div>
           </div>
@@ -99,14 +73,14 @@
         v-show="start&&enableDanmuSync"
         ref="danmu"
         style="z-index: 0;"
-        class="uni-video-danmu"/>
+        class="uni-video-danmu" />
       <div
         v-if="!start"
         class="uni-video-cover"
         @click.stop>
         <div
           class="uni-video-cover-play-button"
-          @click.stop="play"/>
+          @click.stop="play" />
         <p class="uni-video-cover-duration">{{ (duration||durationTime)|getTime }}</p>
       </div>
       <div
@@ -148,7 +122,7 @@
     <div
       style="position: absolute; top: 0; width: 100%; height: 100%; overflow: hidden; pointer-events: none;"
     >
-      <slot/>
+      <slot />
     </div>
   </uni-video>
 </template>
@@ -267,22 +241,6 @@ export default {
     showPlayBtn: {
       type: [Boolean, String],
       default: true
-    },
-    x5VideoPlayerType: {
-      type: [Boolean, String],
-      default: false
-    },
-    x5VideoPlayerFullscren: {
-      type: [Boolean, String],
-      default: false
-    },
-    x5VideoOrientation: {
-      type: [Boolean, String],
-      default: false
-    },
-    x5Playsinline: {
-      type: [Boolean, String],
-      default: false
     }
   },
   data () {
