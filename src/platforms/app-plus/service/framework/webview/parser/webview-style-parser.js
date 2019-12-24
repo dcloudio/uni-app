@@ -44,7 +44,11 @@ export function parseWebviewStyle (id, path, routeOptions = {}) {
 
   const titleNView = parseTitleNView(routeOptions)
   if (titleNView) {
-    if (id === 1 && __uniConfig.realEntryPagePath) {
+    if (
+      id === 1 &&
+      __uniConfig.realEntryPagePath &&
+      !routeOptions.meta.isQuit // 可能是tabBar
+    ) {
       titleNView.autoBackButton = true
     }
     webviewStyle.titleNView = titleNView

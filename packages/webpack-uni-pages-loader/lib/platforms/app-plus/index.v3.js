@@ -16,15 +16,28 @@ const {
 const definePages = require('./define-pages')
 const appConfigService = require('./app-config-service')
 
+function getTabBarPages (appJson) {
+  return appJson.tabBar &&
+    appJson.tabBar.list &&
+    appJson.tabBar.list.length &&
+    appJson.tabBar.list
+}
+
+function isTabBarPage (pathName, tabBarPages) {
+  return tabBarPages.find(item => item.pagePath === pathName)
+}
+
 function parseEntryPagePath (appJson, manifestJson) {
   const argsJsonStr = manifestJson.plus.arguments
   if (argsJsonStr) {
     try {
       const args = JSON.parse(argsJsonStr)
       const pathName = args.path || args.pathName
-      if (pathName && pathName !== appJson.pages[0]) {
+      if (pathName && appJson.pages[0] !== pathName) {
         appJson.entryPagePath = pathName
-        appJson.realEntryPagePath = appJson.pages[0]
+        if (!isTabBarPage(pathName, getTabBarPages(appJson))) {
+          appJson.realEntryPagePath = appJson.pages[0]
+        }
       }
     } catch (e) {}
   }
@@ -32,6 +45,7 @@ function parseEntryPagePath (appJson, manifestJson) {
     appJson.entryPagePath = appJson.pages[0]
   }
 }
+
 module.exports = function (appJson, manifestJson, {
   pagesJson,
   manifest,
@@ -61,7 +75,7 @@ module.exports = function (appJson, manifestJson, {
   manifestJson.permissions.UniNView = {
     'description': 'UniNView原生渲染'
   }
-  // TODO 需要考虑 condition
+
   manifestJson.plus.launchwebview.id = '1' // 首页 id 固定 为 1
   // 删除首页 style 中的 uni-app 配置（不注入 app-view.js）
   delete manifestJson.plus.launchwebview['uni-app']

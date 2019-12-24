@@ -67,8 +67,8 @@ export default function parsePage (vuePageOptions) {
     },
     events: {
       // 支付宝小程序有些页面事件只能放在events下
-      onBack(){
-          this.$vm.__call_hook('onBackPress');
+      onBack () {
+        this.$vm.__call_hook('onBackPress')
       }
     },
     __r: handleRef,
