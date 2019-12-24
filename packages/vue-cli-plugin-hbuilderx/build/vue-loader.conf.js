@@ -1,3 +1,12 @@
+const {
+  module: autoComponentsModule,
+  compileTemplate
+} = require('@dcloudio/uni-template-compiler/lib/auto-components')
+
+const {
+  isUnaryTag
+} = require('@dcloudio/uni-template-compiler/lib/util')
+
 const TAGS = [
   'ad',
   'text',
@@ -92,9 +101,20 @@ if (process.env.UNI_USING_NVUE_COMPILER) {
   })
 }
 
+const compiler = require('weex-template-compiler')
+const oldCompile = compiler.compile
+compiler.compile = function (source, options = {}) {
+  (options.modules || (options.modules = [])).push(autoComponentsModule)
+  options.isUnaryTag = isUnaryTag
+  // 将 autoComponents 挂在 isUnaryTag 上边
+  options.isUnaryTag.autoComponents = new Set()
+  options.preserveWhitespace = false
+  return compileTemplate(source, options, oldCompile)
+}
+
 module.exports = {
-  preserveWhitespace: false,
-  compiler: require('weex-template-compiler'),
+  isAppNVue: true,
+  compiler,
   compilerOptions: {
     modules
   }

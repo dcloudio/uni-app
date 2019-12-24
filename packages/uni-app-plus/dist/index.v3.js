@@ -670,6 +670,7 @@ var serviceContext = (function () {
   }];
 
   var require_context_module_0_0 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     base64ToArrayBuffer: base64ToArrayBuffer,
     arrayBufferToBase64: arrayBufferToBase64
   });
@@ -681,6 +682,7 @@ var serviceContext = (function () {
   }];
 
   var require_context_module_0_1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     canIUse: canIUse
   });
 
@@ -711,6 +713,7 @@ var serviceContext = (function () {
   }];
 
   var require_context_module_0_2 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     $on: $on,
     $once: $once,
     $off: $off,
@@ -725,6 +728,7 @@ var serviceContext = (function () {
   const removeInterceptor$1 = addInterceptor$1;
 
   var require_context_module_0_3 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     addInterceptor: addInterceptor$1,
     removeInterceptor: removeInterceptor$1
   });
@@ -736,6 +740,7 @@ var serviceContext = (function () {
   }];
 
   var require_context_module_0_4 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     upx2px: upx2px
   });
 
@@ -872,6 +877,7 @@ var serviceContext = (function () {
   };
 
   var require_context_module_0_5 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     canvasGetImageData: canvasGetImageData,
     canvasPutImageData: canvasPutImageData,
     canvasToTempFilePath: canvasToTempFilePath,
@@ -897,6 +903,7 @@ var serviceContext = (function () {
   }];
 
   var require_context_module_0_6 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     createAudioContext: createAudioContext,
     createVideoContext: createVideoContext,
     createMapContext: createMapContext,
@@ -916,6 +923,7 @@ var serviceContext = (function () {
   };
 
   var require_context_module_0_7 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     makePhoneCall: makePhoneCall
   });
 
@@ -930,6 +938,7 @@ var serviceContext = (function () {
   };
 
   var require_context_module_0_8 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     setClipboardData: setClipboardData
   });
 
@@ -944,6 +953,7 @@ var serviceContext = (function () {
   };
 
   var require_context_module_0_9 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     openDocument: openDocument
   });
 
@@ -954,6 +964,7 @@ var serviceContext = (function () {
   };
 
   var require_context_module_0_10 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     chooseLocation: chooseLocation
   });
 
@@ -977,6 +988,7 @@ var serviceContext = (function () {
   };
 
   var require_context_module_0_11 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     getLocation: getLocation
   });
 
@@ -1006,6 +1018,7 @@ var serviceContext = (function () {
   };
 
   var require_context_module_0_12 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     openLocation: openLocation
   });
 
@@ -1067,6 +1080,7 @@ var serviceContext = (function () {
   };
 
   var require_context_module_0_13 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     chooseImage: chooseImage
   });
 
@@ -1094,6 +1108,7 @@ var serviceContext = (function () {
   };
 
   var require_context_module_0_14 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     chooseVideo: chooseVideo
   });
 
@@ -1186,6 +1201,7 @@ var serviceContext = (function () {
   };
 
   var require_context_module_0_15 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     getImageInfo: getImageInfo
   });
 
@@ -1221,6 +1237,7 @@ var serviceContext = (function () {
   };
 
   var require_context_module_0_16 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     previewImage: previewImage
   });
 
@@ -1238,6 +1255,7 @@ var serviceContext = (function () {
   };
 
   var require_context_module_0_17 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     downloadFile: downloadFile
   });
 
@@ -1340,6 +1358,7 @@ var serviceContext = (function () {
   };
 
   var require_context_module_0_18 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     request: request
   });
 
@@ -1393,6 +1412,7 @@ var serviceContext = (function () {
   };
 
   var require_context_module_0_19 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     connectSocket: connectSocket,
     sendSocketMessage: sendSocketMessage,
     closeSocket: closeSocket
@@ -1429,6 +1449,7 @@ var serviceContext = (function () {
   };
 
   var require_context_module_0_20 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     uploadFile: uploadFile
   });
 
@@ -1453,6 +1474,7 @@ var serviceContext = (function () {
   };
 
   var require_context_module_0_21 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     getProvider: getProvider
   });
 
@@ -1601,6 +1623,7 @@ var serviceContext = (function () {
   ));
 
   var require_context_module_0_22 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     redirectTo: redirectTo,
     reLaunch: reLaunch,
     navigateTo: navigateTo,
@@ -1644,6 +1667,7 @@ var serviceContext = (function () {
   const removeStorageSync = getStorageSync;
 
   var require_context_module_0_23 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     getStorage: getStorage,
     getStorageSync: getStorageSync,
     setStorage: setStorage,
@@ -1680,6 +1704,7 @@ var serviceContext = (function () {
   };
 
   var require_context_module_0_24 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     loadFontFace: loadFontFace
   });
 
@@ -1722,6 +1747,7 @@ var serviceContext = (function () {
   };
 
   var require_context_module_0_25 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     setNavigationBarColor: setNavigationBarColor,
     setNavigationBarTitle: setNavigationBarTitle
   });
@@ -1741,6 +1767,7 @@ var serviceContext = (function () {
   };
 
   var require_context_module_0_26 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     pageScrollTo: pageScrollTo
   });
 
@@ -1858,6 +1885,7 @@ var serviceContext = (function () {
   };
 
   var require_context_module_0_27 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     showModal: showModal,
     showToast: showToast,
     showLoading: showLoading,
@@ -1942,6 +1970,7 @@ var serviceContext = (function () {
   };
 
   var require_context_module_0_28 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     setTabBarItem: setTabBarItem,
     setTabBarStyle: setTabBarStyle,
     hideTabBar: hideTabBar,
@@ -2510,6 +2539,7 @@ var serviceContext = (function () {
   }
 
   var require_context_module_1_0 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     base64ToArrayBuffer: base64ToArrayBuffer$1,
     arrayBufferToBase64: arrayBufferToBase64$1
   });
@@ -2526,6 +2556,7 @@ var serviceContext = (function () {
   }
 
   var require_context_module_1_1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     canIUse: canIUse$1
   });
 
@@ -2534,6 +2565,7 @@ var serviceContext = (function () {
   };
 
   var require_context_module_1_2 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     interceptors: interceptors,
     addInterceptor: addInterceptor,
     removeInterceptor: removeInterceptor
@@ -2582,6 +2614,7 @@ var serviceContext = (function () {
   }
 
   var require_context_module_1_3 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     upx2px: upx2px$1
   });
 
@@ -2608,6 +2641,7 @@ var serviceContext = (function () {
   }
 
   var eventApis = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     $on: $on$1,
     $off: $off$1,
     $once: $once$1,
@@ -4276,6 +4310,7 @@ var serviceContext = (function () {
   }
 
   var webview = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     SCAN_ID: SCAN_ID,
     SCAN_PATH: SCAN_PATH,
     scanCode: scanCode
@@ -4487,6 +4522,7 @@ var serviceContext = (function () {
   }
 
   var weex$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     scanCode: scanCode$1
   });
 
@@ -5252,6 +5288,7 @@ var serviceContext = (function () {
   }
 
   var webview$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     chooseLocation: chooseLocation$1
   });
 
@@ -5315,6 +5352,7 @@ var serviceContext = (function () {
   }
 
   var weex$2 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     chooseLocation: chooseLocation$2
   });
 
@@ -5435,6 +5473,7 @@ var serviceContext = (function () {
   }
 
   var webview$2 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     openLocation: openLocation$1
   });
 
@@ -5454,6 +5493,7 @@ var serviceContext = (function () {
   }
 
   var weex$3 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     openLocation: openLocation$2
   });
 
@@ -7138,10 +7178,16 @@ var serviceContext = (function () {
 
     uni.hideToast(); // 后退时，关闭 toast,loading
 
-    currentPage.$page.meta.isQuit
-      ? quit()
-      : back(delta, animationType, animationDuration);
-
+    // 当前页面是 condition 进入
+    if (currentPage.$page.id === 1 && __uniConfig.realEntryPagePath) {
+      uni.reLaunch({
+        url: '/' + __uniConfig.realEntryPagePath
+      });
+    } else {
+      currentPage.$page.meta.isQuit
+        ? quit()
+        : back(delta, animationType, animationDuration);
+    }
     return {
       errMsg: 'navigateBack:ok'
     }
@@ -7319,7 +7365,7 @@ var serviceContext = (function () {
 
     const titleNView = parseTitleNView(routeOptions);
     if (titleNView) {
-      if (id === 1 && __uniConfig.realEntryPagePath === path) {
+      if (id === 1 && __uniConfig.realEntryPagePath) {
         titleNView.autoBackButton = true;
       }
       webviewStyle.titleNView = titleNView;
@@ -7995,16 +8041,15 @@ var serviceContext = (function () {
       'none',
       0,
       () => {
+        pages.forEach(page => {
+          page.$remove();
+          page.$getAppWebview().close('none');
+        });
         invoke$1(callbackId, {
           errMsg: 'reLaunch:ok'
         });
       }
     );
-
-    pages.forEach(page => {
-      page.$remove();
-      page.$getAppWebview().close('none');
-    });
 
     setStatusBarStyle();
   }
@@ -8664,6 +8709,7 @@ var serviceContext = (function () {
 
 
   var api = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     startPullDownRefresh: startPullDownRefresh,
     stopPullDownRefresh: stopPullDownRefresh,
     $on: $on$1,
@@ -8986,6 +9032,7 @@ var serviceContext = (function () {
   }
 
   var require_context_module_1_4 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     createInnerAudioContext: createInnerAudioContext
   });
 
@@ -9130,6 +9177,7 @@ var serviceContext = (function () {
   }
 
   var require_context_module_1_5 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     getBackgroundAudioManager: getBackgroundAudioManager
   });
 
@@ -9988,6 +10036,7 @@ var serviceContext = (function () {
   }
 
   var require_context_module_1_6 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     CanvasContext: CanvasContext,
     createCanvasContext: createCanvasContext$1,
     canvasGetImageData: canvasGetImageData$1,
@@ -10038,6 +10087,7 @@ var serviceContext = (function () {
   }
 
   var require_context_module_1_7 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     MapContext: MapContext,
     createMapContext: createMapContext$1
   });
@@ -10101,6 +10151,7 @@ var serviceContext = (function () {
   }
 
   var require_context_module_1_8 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     VideoContext: VideoContext,
     createVideoContext: createVideoContext$1
   });
@@ -10147,6 +10198,7 @@ var serviceContext = (function () {
   });
 
   var require_context_module_1_9 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     EditorContext: EditorContext
   });
 
@@ -10191,6 +10243,7 @@ var serviceContext = (function () {
   }
 
   var require_context_module_1_10 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     onAccelerometerChange: onAccelerometerChange,
     startAccelerometer: startAccelerometer,
     stopAccelerometer: stopAccelerometer
@@ -10214,6 +10267,7 @@ var serviceContext = (function () {
   const onBLECharacteristicValueChange$1 = on('onBLECharacteristicValueChange');
 
   var require_context_module_1_11 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     onBluetoothDeviceFound: onBluetoothDeviceFound$1,
     onBluetoothAdapterStateChange: onBluetoothAdapterStateChange$1,
     onBLEConnectionStateChange: onBLEConnectionStateChange$1,
@@ -10261,6 +10315,7 @@ var serviceContext = (function () {
   }
 
   var require_context_module_1_12 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     onCompassChange: onCompassChange,
     startCompass: startCompass,
     stopCompass: stopCompass
@@ -10279,6 +10334,7 @@ var serviceContext = (function () {
   }
 
   var require_context_module_1_13 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     onNetworkStatusChange: onNetworkStatusChange
   });
 
@@ -10356,6 +10412,7 @@ var serviceContext = (function () {
   }
 
   var require_context_module_1_14 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     getRecorderManager: getRecorderManager
   });
 
@@ -10444,6 +10501,7 @@ var serviceContext = (function () {
   }
 
   var require_context_module_1_15 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     downloadFile: downloadFile$1
   });
 
@@ -10549,6 +10607,7 @@ var serviceContext = (function () {
   }
 
   var require_context_module_1_16 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     request: request$1
   });
 
@@ -10723,6 +10782,7 @@ var serviceContext = (function () {
   }
 
   var require_context_module_1_17 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     connectSocket: connectSocket$1,
     sendSocketMessage: sendSocketMessage$1,
     closeSocket: closeSocket$1,
@@ -10817,6 +10877,7 @@ var serviceContext = (function () {
   }
 
   var require_context_module_1_18 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     uploadFile: uploadFile$1
   });
 
@@ -10926,6 +10987,7 @@ var serviceContext = (function () {
   }
 
   var require_context_module_1_19 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     setStorage: setStorage$1,
     setStorageSync: setStorageSync$1,
     getStorage: getStorage$1,
@@ -11017,6 +11079,7 @@ var serviceContext = (function () {
   }
 
   var require_context_module_1_20 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     createAnimation: createAnimation
   });
 
@@ -11081,6 +11144,7 @@ var serviceContext = (function () {
   }
 
   var require_context_module_1_21 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     createIntersectionObserver: createIntersectionObserver
   });
 
@@ -11221,6 +11285,7 @@ var serviceContext = (function () {
   }
 
   var require_context_module_1_22 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     createSelectorQuery: createSelectorQuery
   });
 
@@ -11237,6 +11302,7 @@ var serviceContext = (function () {
   }
 
   var require_context_module_1_23 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     onKeyboardHeightChange: onKeyboardHeightChange
   });
 
@@ -11261,6 +11327,7 @@ var serviceContext = (function () {
   }
 
   var require_context_module_1_24 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     loadFontFace: loadFontFace$1
   });
 
@@ -11273,6 +11340,7 @@ var serviceContext = (function () {
   }
 
   var require_context_module_1_25 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     pageScrollTo: pageScrollTo$1
   });
 
@@ -11309,6 +11377,7 @@ var serviceContext = (function () {
   }
 
   var require_context_module_1_26 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     removeTabBarBadge: removeTabBarBadge$1,
     showTabBarRedDot: showTabBarRedDot$1,
     hideTabBarRedDot: hideTabBarRedDot$1,
@@ -11334,6 +11403,7 @@ var serviceContext = (function () {
   }
 
   var require_context_module_1_27 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     onWindowResize: onWindowResize,
     offWindowResize: offWindowResize
   });

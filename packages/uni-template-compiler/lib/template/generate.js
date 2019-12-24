@@ -81,17 +81,17 @@ function genElement (ast, state, isRoot = false) {
   const names = Object.keys(ast.attr)
   const props = names.length
     ? ' ' +
-        names
-          .map(name => {
-            if (name.includes(':else')) {
-              return name
-            }
-            if (ast.attr[name] === '' && name !== 'value') { // value属性需要保留=''
-              return name
-            }
-            return `${name}="${ast.attr[name]}"`
-          })
-          .join(' ')
+    names
+      .map(name => {
+        if (name.includes(':else')) {
+          return name
+        }
+        if (ast.attr[name] === '' && name !== 'value') { // value属性需要保留=''
+          return name
+        }
+        return `${name}="${ast.attr[name]}"`
+      })
+      .join(' ')
     : ''
   if (SELF_CLOSING_TAGS.includes(ast.type)) {
     return `<${ast.type}${props}/>`

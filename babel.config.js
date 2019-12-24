@@ -1,9 +1,9 @@
 const config = {
-  ignore: [
-    "./packages",
-  ],
+  // ignore: [
+  //   "./packages",
+  // ],
   presets: [
-    ["@vue/app", {
+    ["@vue/cli-plugin-babel/preset", {
       useBuiltIns: "entry"
     }]
   ],

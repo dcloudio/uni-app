@@ -9247,7 +9247,7 @@ Vue.prototype.__call_hook = function(hook, args) {
       }
   }
   if (vm._hasHookEvent) {
-      vm.$emit('hook:' + hook);
+      vm.$emit('hook:' + hook, args);
   }
   popTarget();
   return ret

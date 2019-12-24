@@ -23,11 +23,23 @@ const compilerAlipayModule = require('./module-alipay')
 const generateCodeFrame = require('./codeframe')
 
 const {
-  isComponent
+  isComponent,
+  isUnaryTag
 } = require('./util')
+
+const {
+  module: autoComponentsModule,
+  compileTemplate
+} = require('./auto-components')
 
 module.exports = {
   compile (source, options = {}) {
+    (options.modules || (options.modules = [])).push(autoComponentsModule)
+    options.isUnaryTag = isUnaryTag
+    // 将 autoComponents 挂在 isUnaryTag 上边
+    options.isUnaryTag.autoComponents = new Set()
+
+    options.preserveWhitespace = false
     if (options.service) {
       (options.modules || (options.modules = [])).push(require('./app/service'))
       options.optimize = false // 启用 staticRenderFns
@@ -37,7 +49,7 @@ module.exports = {
       options.getTagNamespace = () => false
 
       try {
-        return compile(source, options)
+        return compileTemplate(source, options, compile)
       } catch (e) {
         console.error(source)
         throw e
@@ -45,9 +57,10 @@ module.exports = {
     } else if (options.view) {
       (options.modules || (options.modules = [])).push(require('./app/view'))
       options.optimize = false // 暂不启用 staticRenderFns
+      options.isUnaryTag = isUnaryTag
       options.isReservedTag = (tagName) => false // 均为组件
       try {
-        return compile(source, options)
+        return compileTemplate(source, options, compile)
       } catch (e) {
         console.error(source)
         throw e
@@ -55,7 +68,7 @@ module.exports = {
     }
 
     if (!options.mp) { // h5
-      return compile(source, options)
+      return compileTemplate(source, options, compile)
     }
 
     (options.modules || (options.modules = [])).push(compilerModule)
@@ -64,9 +77,9 @@ module.exports = {
       options.modules.push(compilerAlipayModule)
     }
 
-    const res = compile(source, Object.assign(options, {
+    const res = compileTemplate(source, Object.assign(options, {
       optimize: false
-    }))
+    }), compile)
 
     options.mp.platform = platforms[options.mp.platform]
 

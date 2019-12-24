@@ -108,21 +108,26 @@ module.exports = function (source) {
   )
 
   // template
-  let templateImport = `var render, staticRenderFns`
+  // fixed by xxxxxx (recyclable,auto components)
+  let recyclable
+  let templateImport = `var render, staticRenderFns, recyclableRender, components`
   let templateRequest
   if (descriptor.template) {
+    // fixed by xxxxxx
+    recyclable = options.isAppNVue && !!(descriptor.template.attrs && descriptor.template.attrs.recyclable)
     const src = descriptor.template.src || resourcePath
     const idQuery = `&id=${id}`
     const scopedQuery = hasScoped ? `&scoped=true` : ``
     const attrsQuery = attrsToQuery(descriptor.template.attrs)
     const query = `?vue&type=template${idQuery}${scopedQuery}${attrsQuery}${inheritQuery}`
     const request = templateRequest = stringifyRequest(src + query)
-    templateImport = `import { render, staticRenderFns } from ${request}`
+    // fixed by xxxxxx (auto components)
+    templateImport = `import { render, staticRenderFns, recyclableRender, components } from ${request}`
   }
 
   // script
   let scriptImport = `var script = {}`
-  if (descriptor.script) {// fixed by xxxxxx view 层的 script 在 script-loader 中提取自定义组件信息
+  if (descriptor.script) {
     const src = descriptor.script.src || resourcePath
     const attrsQuery = attrsToQuery(descriptor.script.attrs, 'js')
     const query = `?vue&type=script${attrsQuery}${inheritQuery}`
@@ -135,7 +140,8 @@ module.exports = function (source) {
 
   // styles
   let stylesCode = ``
-  if (options.isAppView && descriptor.styles.length) {// fixed by xxxxxx 仅限 view 层
+  // fixed by xxxxxx 仅限 view 层
+  if (!options.isAppService && descriptor.styles.length) {
     stylesCode = genStylesCode(
       loaderContext,
       descriptor.styles,
@@ -146,7 +152,7 @@ module.exports = function (source) {
       isServer || isShadow // needs explicit injection?
     )
   }
-
+  // fixed by xxxxxx (injectStyles,auto components)
   let code = `
 ${templateImport}
 ${scriptImport}
@@ -159,10 +165,11 @@ var component = normalizer(
   render,
   staticRenderFns,
   ${hasFunctional ? `true` : `false`},
-  ${/injectStyles/.test(stylesCode) ? `injectStyles` : `null`},
+  ${options.isAppNVue ? `null`: (/injectStyles/.test(stylesCode) ? `injectStyles` : `null`)},
   ${hasScoped ? JSON.stringify(id) : `null`},
-  ${isServer ? JSON.stringify(hash(request)) : `null`}
-  ${isShadow ? `,true` : ``}
+  ${isServer ? JSON.stringify(hash(request)) : `null`},
+  ${isShadow ? `true` : `false`},
+  components
 )
   `.trim() + `\n`
 
@@ -178,7 +185,10 @@ var component = normalizer(
   if (needsHotReload) {
     code += `\n` + genHotReloadCode(id, hasFunctional, templateRequest)
   }
-
+  // fixed by xxxxxx (app-nvue injectStyles)
+  if (options.isAppNVue && /injectStyles/.test(stylesCode)) {
+    code +=`\ninjectStyles.call(component)`
+  }
   // Expose filename. This is used by the devtools and Vue runtime warnings.
   if (!isProduction) {
     // Expose the file's full path in development, so that it can be opened
@@ -189,7 +199,9 @@ var component = normalizer(
     // For security reasons, only expose the file's basename in production.
     code += `\ncomponent.options.__file = ${JSON.stringify(filename)}`
   }
-
+  if (recyclable) { // fixed by xxxxxx app-plus recyclable
+    code += `\nrecyclableRender && (component.options["@render"] = recyclableRender)` // fixed by xxxxxx
+  }
   code += `\nexport default component.exports`
   // console.log(code)
   return code
