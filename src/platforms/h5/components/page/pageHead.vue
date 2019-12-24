@@ -453,7 +453,7 @@ export default {
         })
       } else {
         uni.navigateBack({
-          from: 'backButton'
+          from: 'backbutton'
         })
       }
     },
