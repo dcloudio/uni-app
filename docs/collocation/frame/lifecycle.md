@@ -46,7 +46,7 @@
 |onResize|监听窗口尺寸变化|App、微信小程序||
 |onPullDownRefresh|监听用户下拉动作，一般用于下拉刷新，参考[示例](api/ui/pulldown)|||
 |onReachBottom|页面滚动到底部的事件（不是scroll-view滚到底），常用于下拉下一页数据。具体见下方注意事项|||
-|onTabItemTap|点击 tab 时触发，参数为Object，具体见下方注意事项|微信小程序、百度小程序、H5、App（自定义组件模式）||
+|onTabItemTap|点击 tab 时触发，参数为Object，具体见下方注意事项|微信小程序、支付宝小程序、百度小程序、H5、App（自定义组件模式）||
 |onShareAppMessage|用户点击右上角分享|微信小程序、百度小程序、头条小程序、支付宝小程序||
 |onPageScroll|监听页面滚动，参数为Object|nvue暂不支持||
 |onNavigationBarButtonTap|监听原生标题栏按钮点击事件，参数为Object|App、H5||
@@ -90,6 +90,7 @@ onPageScroll : function(e) { //nvue暂不支持滚动监听，可用bindingx代�
 **注意**
 - onTabItemTap常用于点击当前tabitem，滚动或刷新当前页面。如果是点击不同的tabitem，一定会触发页面切换。
 - 如果想在App端实现点击某个tabitem不跳转页面，不能使用onTabItemTap，可以使用[plus.nativeObj.view](http://www.html5plus.org/doc/zh_cn/nativeobj.html)放一个区块盖住原先的tabitem，并拦截点击事件。
+- 支付宝小程序平台onTabItemTap表现为点击非当前tabitem后触发，因此不能用于实现点击返回顶部这种操作
 
 ```js
 onTabItemTap : function(e) {
