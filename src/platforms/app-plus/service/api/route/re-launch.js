@@ -42,16 +42,15 @@ function _reLaunch ({
     'none',
     0,
     () => {
+      pages.forEach(page => {
+        page.$remove()
+        page.$getAppWebview().close('none')
+      })
       invoke(callbackId, {
         errMsg: 'reLaunch:ok'
       })
     }
   )
-
-  pages.forEach(page => {
-    page.$remove()
-    page.$getAppWebview().close('none')
-  })
 
   setStatusBarStyle()
 }

@@ -67,21 +67,20 @@ const manifestJson2AppJson = {
   'debug': defaultCopy
 }
 
-const pagesJson2ProjectJson = {
-  'condition': function (name, value, json) {
-    if (process.env.NODE_ENV === 'development') { // 仅开发期间 condition 生效
-      // 启动Condition
-      const condition = getCondition(value)
-      if (condition) {
-        if (!json.condition) {
-          json.condition = {}
-        }
-        process.UNI_CONDITION = condition // app-plus编译时，需要获取该参数
-        json.condition.miniprogram = condition
+function parseCondition (projectJson, pagesJson) {
+  if (process.env.NODE_ENV === 'development') { // 仅开发期间 condition 生效
+    // 启动Condition
+    const condition = getCondition(pagesJson)
+    if (condition) {
+      if (!projectJson.condition) {
+        projectJson.condition = {}
       }
+      projectJson.condition.miniprogram = condition
     }
   }
 }
+
+const pagesJson2ProjectJson = {}
 
 const manifestJson2ProjectJson = {
 
@@ -119,7 +118,8 @@ function copyToJson (json, fromJson, options) {
   })
 }
 
-function getCondition (condition) {
+function getCondition (pagesJson) {
+  const condition = pagesJson.condition
   const launchPagePath = process.env.UNI_CLI_LAUNCH_PAGE_PATH || ''
   const launchPageQuery = process.env.UNI_CLI_LAUNCH_PAGE_QUERY || ''
 
@@ -158,10 +158,11 @@ function getCondition (condition) {
     }
   }
   if (launchPagePath) {
-    return {
+    pagesJson.condition = {
       'current': 0,
       'list': [launchPageOptions]
     }
+    return pagesJson.condition
   }
   return false
 }
@@ -249,6 +250,8 @@ module.exports = function (pagesJson, manifestJson, project = {}) {
       }
     }
   } else {
+    parseCondition(project, pagesJson)
+
     copyToJson(project, pagesJson, pagesJson2ProjectJson)
 
     copyToJson(project, manifestJson, manifestJson2ProjectJson)

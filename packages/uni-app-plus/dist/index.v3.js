@@ -7138,10 +7138,16 @@ var serviceContext = (function () {
 
     uni.hideToast(); // 后退时，关闭 toast,loading
 
-    currentPage.$page.meta.isQuit
-      ? quit()
-      : back(delta, animationType, animationDuration);
-
+    // 当前页面是 condition 进入
+    if (currentPage.$page.id === 1 && __uniConfig.realEntryPagePath) {
+      uni.reLaunch({
+        url: '/' + __uniConfig.realEntryPagePath
+      });
+    } else {
+      currentPage.$page.meta.isQuit
+        ? quit()
+        : back(delta, animationType, animationDuration);
+    }
     return {
       errMsg: 'navigateBack:ok'
     }
@@ -7319,7 +7325,7 @@ var serviceContext = (function () {
 
     const titleNView = parseTitleNView(routeOptions);
     if (titleNView) {
-      if (id === 1 && __uniConfig.realEntryPagePath === path) {
+      if (id === 1 && __uniConfig.realEntryPagePath) {
         titleNView.autoBackButton = true;
       }
       webviewStyle.titleNView = titleNView;
@@ -7995,16 +8001,15 @@ var serviceContext = (function () {
       'none',
       0,
       () => {
+        pages.forEach(page => {
+          page.$remove();
+          page.$getAppWebview().close('none');
+        });
         invoke$1(callbackId, {
           errMsg: 'reLaunch:ok'
         });
       }
     );
-
-    pages.forEach(page => {
-      page.$remove();
-      page.$getAppWebview().close('none');
-    });
 
     setStatusBarStyle();
   }
