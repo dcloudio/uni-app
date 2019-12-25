@@ -57,7 +57,7 @@
           >
             <div class="uni-video-progress">
               <div
-                :style="{width:buffered*100+'%'}"
+                :style="{width:buffered+'%'}"
                 class="uni-video-progress-buffered" />
               <div
                 ref="ball"
@@ -313,6 +313,13 @@ export default {
     },
     duration () {
       this.updateProgress()
+    },
+    buffered (buffered) {
+      if (buffered !== 0) {
+        this.$trigger('progress', {}, {
+          buffered
+        })
+      }
     }
   },
   created () {
@@ -537,11 +544,13 @@ export default {
         height: video.videoHeight,
         duration: video.duration
       })
+      this.onProgress($event)
     },
-    onProgress ({ target }) {
-      const buffered = target.buffered
+    onProgress ($event) {
+      const video = $event.target
+      const buffered = video.buffered
       if (buffered.length) {
-        this.buffered = buffered.end(buffered.length - 1) / target.duration
+        this.buffered = buffered.end(buffered.length - 1) / video.duration * 100
       }
     },
     onWaiting ($event) {
