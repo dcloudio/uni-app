@@ -8,6 +8,7 @@
 |:-|:-|:-|:-|:-|
 |[globalStyle](/collocation/pages?id=globalstyle)|Object|否|设置默认页面的窗口表现||
 |[pages](/collocation/pages?id=pages)|Object Array|是|设置页面路径及窗口表现||
+|[easycom](/collocation/pages?id=easycom)|Object|否|组件自动引入规则|2.5.0+|
 |[tabBar](/collocation/pages?id=tabbar)|Object|否|设置底部 tab 的表现||
 |[condition](/collocation/pages?id=condition)|Object|否|启动模式配置||
 |[subPackages](/collocation/pages?id=subPackages)|Object Array|否|分包加载配置||
@@ -79,7 +80,10 @@
 			"iconWidth": "24px",
 			"backgroundImage": "static/image/midButton_backgroundImage.png"
 		}
-	}
+	},
+  "easycom": {
+    "uni-(.*)": "@/components/uni-$1/uni-$1.vue"
+  }
 }
 ```
 
@@ -647,13 +651,30 @@ h5 平台下拉刷新动画，只有 circle 类型。
 
 **注意事项**
 
-- ```titleImage```仅支持https地址，设置了```titleImage```会替换页面文字标题
-- ```backgroundImageUrl```支持网络地址和本地地址，尽量使用绝对地址
+- `titleImage`仅支持https地址，设置了`titleImage`会替换页面文字标题
+- `backgroundImageUrl`支持网络地址和本地地址，尽量使用绝对地址
 - 部分配置可能会只在真机运行的时候生效，支付宝未来应该会改善
 
-# FAQ
+## FAQ
 - Q：如何取消原生导航栏？或自定义导航
 - A：参考[导航栏开发指南](http://ask.dcloud.net.cn/article/34921)
+
+# easycom
+自`2.5.0`版本开始uni-app支持在`pages.json`内使用`easycom`以正则匹配的方式自动引入组件。
+
+**使用示例**
+
+```
+"easycom": {
+  "uni-(.*)": "@/components/uni-$1/uni-$1.vue"
+}
+```
+
+**说明**
+- `easycom`方式引入的组件无需在页面内`import`，也不需要在`components`内声明，即可在任意页面使用
+- `easycom`方式引入组件不是全局引入，而是局部引入。例如在H5端只有加载相应页面才会加载使用的组件
+- 在组件名完全一致的情况下，`easycom`引入的优先级低于手动引入（区分连字符形式于驼峰形式）
+- 考虑到编译速度，直接修改`easycom`不会触发重新编译，需要改动页面内容触发。
 
 # tabBar
 如果应用是一个多 tab 应用，可以通过 tabBar 配置项指定 tab 栏的表现，以及 tab 切换时显示的对应页。
