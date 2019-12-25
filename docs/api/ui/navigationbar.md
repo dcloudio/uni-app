@@ -142,7 +142,6 @@ uni.hideNavigationBarLoading()
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |x|x|√|x|x|x|x|
 
-隐藏返回首页按钮。
 
 **OBJECT参数说明**
 
