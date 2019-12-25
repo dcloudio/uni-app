@@ -1,7 +1,7 @@
 如关心App端案例，注意uni-app编译到App时，其实是使用了DCloud的5+App引擎，该引擎拥有众多案例（包括中国工商总局、公安部、中国邮政、湖北银行、360等），有3亿手机用户在使用基于5+引擎开发的应用。详见[https://dcloud.io/case/](https://dcloud.io/case/)
 
-uni-app已经有几十万开发者，是开发者数量和案例最丰富的多端开发框架。
-我们相信还有更多优秀案例，没有被我们采集到，欢迎大家到[项目案例征集](https://github.com/dcloudio/uni-app/issues/6)提交。
+uni-app已经有几十万开发者，uni统计月活2亿，是开发者数量和案例最丰富的多端开发框架。
+欢迎知名开发商提交案例或接入uni统计，越多人加入uni-app生态，这个生态会发展的更好，[项目案例征集](https://github.com/dcloudio/uni-app/issues/6)提交。
 
 ### 官方示例
 
@@ -17,7 +17,7 @@ uni-app已经有几十万开发者，是开发者数量和案例最丰富的多�
 	</a>
 </div>
 
-<a href="//m3w.cn/__uni__1e99193" target="_blank" class="clear-style"><b>新闻/资讯类App模板：</b></a>nvue 典型案例，App端纯原生渲染，可左右拖动的复杂长列表，满足苛刻的性能要求。并同时能编译为小程序和H5。本项目源码在HBuilderX中新建项目可获得，并可进一步运行到各端小程序。
+<a href="//m3w.cn/__uni__1e99193" target="_blank" class="clear-style"><b>新闻/资讯类App模板：</b></a>nvue 典型案例，App端纯原生渲染，可左右拖动的复杂长列表，满足苛刻的性能要求。并同时能编译为小程序和H5。本项目源码在HBuilderX中新建项目选新闻模块可获得。
 <div style="display:flex;justify-content: space-around;">
 	<a href="//m3w.cn/__uni__1e99193" target="_blank" class="clear-style barcode-view">
 		<img src="//img.cdn.aliyun.dcloud.net.cn/stream/qr/__UNI__1E99193.png/256" width="200"/>
@@ -151,6 +151,8 @@ uni-app已经有几十万开发者，是开发者数量和案例最丰富的多�
 
 **张亮麻辣烫：** 百度小程序搜索 “张亮麻辣烫”
 
+**西祠胡同：** [App及H5版](https://www.xici.net/)
+
 **上铁12306：** [Android](https://android.myapp.com/myapp/detail.htm?apkName=com.shentie.app)、[iOS](https://apps.apple.com/cn/app/shang-tie12306/id1080296082)
 
 **浙江移动境外出行指南：**[H5](https://wap.zj.10086.cn/szhy/business/20190610gmh5/#/)
@@ -169,11 +171,13 @@ uni-app已经有几十万开发者，是开发者数量和案例最丰富的多�
 
 **拉卡拉收款宝：** App部分页面使用uni-app制作
 
+**汕头公交：** 广东移动出品。[Android](https://android.myapp.com/myapp/detail.htm?apkName=com.gmcc.stgj)、[iOS](https://apps.apple.com/cn/app/%E6%B1%95%E5%A4%B4%E5%85%AC%E4%BA%A4/id1091442840)、微信小程序搜索“汕头智慧公交”
+
 **香橙：** 餐馆SaaS服务，手机点餐、下单、排队叫号、营销推广。[官网](http://ivcvc.com)
 
 **围棋战场：**围棋对弈，游戏类的小程序（非小游戏）。[微信小程序码](https://user-images.githubusercontent.com/16237216/65005363-327a9f80-d932-11e9-9be6-68cdbcdfdbf1.png)
 
-**波比英语课堂：**幼儿英语启蒙神器培养国际宝宝。[App、小程序通用链接](http://m3w.cn/bbyykt)
+**波比英语课堂：**幼儿英语启蒙，培养国际宝宝。[App、小程序通用链接](http://m3w.cn/bbyykt)
 
 **桂聘：**广西区域招聘。[Android和iOS](http://www.guipin.com/jihui/)
 
@@ -242,6 +246,8 @@ uni-app已经有几十万开发者，是开发者数量和案例最丰富的多�
 **郑州图书馆：**[H5](https://wxlib.zzlib.org.cn/h5/)
 
 **同济医院官方App：** [iOS和Android下载页](https://tjhapp.com.cn/app/appdown.html)
+
+**碧桂园：**凤凰云[h5](https://fhyhub.bgy.com.cn/h5/activity/#/)
 
 <!-- **湖州市妇幼保健院：**[H5](http://my.hzfby.com/h5/#/) -->
 

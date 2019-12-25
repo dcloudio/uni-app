@@ -298,6 +298,7 @@ Tips：关于摇树优化（treeShaking）原理及优化结果，参考：[http
 |permission|Object|微信小程序接口权限相关设置，比如申请位置权限必须填此处[详见](https://developers.weixin.qq.com/miniprogram/dev/framework/config.html)|
 |workers|String|Worker 代码放置的目录。 [详见](https://developers.weixin.qq.com/miniprogram/dev/framework/workers.html)|
 |optimization|Object| 对微信小程序的优化配置 |
+|cloudfunctionRoot|String| 配置云开发目录，参考[setting](/collocation/manifest?id=cloudfunctionRoot)|
 
 #### setting
 
@@ -317,6 +318,36 @@ Tips：关于摇树优化（treeShaking）原理及优化结果，参考：[http
 |属性|类型|说明|
 |:-|:-|:-|
 |subPackages|Boolean|是否开启分包优化|
+
+#### cloudfunctionRoot
+
+如果需要使用微信小程序的云开发，需要在 mp-weixin 配置云开发目录
+
+```javascript
+"mp-weixin":{
+  // ...
+   "cloudfunctionRoot": "cloudfunctions/", // 配置云开发目录
+  // ...
+}
+```
+
+配置目录之后，需要在项目根目录新建 `vue.config.js` 配置对应的文件编译规则
+
+```javascript
+
+{
+
+ plugins: [
+     new CopyWebpackPlugin([
+       {
+         from: path.join(__dirname, '../cloudfunctions'),
+         to: path.join(__dirname, 'unpackage', 'dist', process.env.NODE_ENV === 'production' ? 'build' : 'dev', process.env.UNI_PLATFORM, 'cloudfunctions'),
+       },
+     ]),
+   ],
+}
+
+```
 
 ### mp-alipay
 

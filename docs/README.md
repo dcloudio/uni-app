@@ -1,9 +1,9 @@
 
 ```uni-app``` 是一个使用 [Vue.js](https://vuejs.org/) 开发所有前端应用的框架，开发者编写一套代码，可发布到iOS、Android、H5、以及各种小程序（微信/支付宝/百度/头条/QQ/钉钉）等多个平台。
 
-即使不跨端，```uni-app```同时也是更好的小程序开发框架。详见[评测](https://ask.dcloud.net.cn/article/35947)
+`DCloud`公司拥有380万开发者，几十万应用案例、8.5亿手机端用户，数千款uni-app插件、70+微信/qq群。阿里小程序工具官方内置uni-app（[详见](https://docs.alipay.com/mini/ide/0.70-stable)），腾讯课堂官方为uni-app录制培训课程（[详见](https://ask.dcloud.net.cn/article/35640)），开发者可以放心选择。
 
-`DCloud`公司拥有380万开发者，几十万应用案例、近千款插件、70+微信/qq群，并且被阿里小程序工具内置（[详见](https://docs.alipay.com/mini/ide/0.70-stable)），开发者可以放心选择。
+`uni-app`在手，做啥都不愁。即使不跨端，```uni-app```也是更好的小程序开发框架（[详见](https://ask.dcloud.net.cn/article/35947)）、更好的App跨平台框架、更方便的H5开发框架。不管领导安排什么样的项目，你都可以快速交付，不需要转换开发思维、不需要更改开发习惯。
 
 <div class="quick">
     <h3 id="快速体验"><a href="/README?id=%e5%bf%ab%e9%80%9f%e4%bd%93%e9%aa%8c" data-id="快速体验" class="anchor"><span>快速体验</span></a></h3>
@@ -74,7 +74,7 @@
       </div>
       <div class="uniapp-home-content-item-header">
         <h5 class="uniapp-home-content-item-title">开发者/案例数量更多</h5>
-        <p class="uniapp-home-content-item-text">10万+案例、900+插件、70+微信/qq群、更高的百度指数</p>
+        <p class="uniapp-home-content-item-text">10万+案例、uni统计月活过2亿、70+微信/qq群、更高的百度指数</p>
         <p class="uniapp-home-content-item-text">跨端完善度更高，真正落地的提高生产力</p>
       </div>
     </div>
@@ -105,7 +105,7 @@
       </div>
       <div class="uniapp-home-content-item-header">
         <h5 class="uniapp-home-content-item-title">周边生态丰富</h5>
-        <p class="uniapp-home-content-item-text">丰富的<a href="https://ext.dcloud.net.cn/?orderBy=WeekDownload">插件市场</a>，各种轮子拿来即用。</p>
+        <p class="uniapp-home-content-item-text"><a href="https://ext.dcloud.net.cn/?orderBy=WeekDownload">插件市场</a>数千款插件。</p>
         <p class="uniapp-home-content-item-text">支持NPM、支持小程序组件和SDK、兼容mpvue组件和项目、兼容weex组件。</p>
         <p class="uniapp-home-content-item-text">微信生态的各种sdk可直接用于跨平台App。</p>
       </div>
