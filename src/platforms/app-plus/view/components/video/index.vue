@@ -112,7 +112,7 @@ export default {
     },
     direction: {
       type: [String, Number],
-      default: 360
+      default: ''
     },
     showProgress: {
       type: Boolean,
