@@ -26,6 +26,7 @@ module.exports = function modifyVueLoader (webpackConfig, compilerOptions, api) 
     .rule('vue')
     .test([/\.vue$/, /\.nvue$/])
     .use('vue-loader')
+    .loader(require.resolve('@dcloudio/vue-cli-plugin-uni/packages/vue-loader'))
     .tap(options => Object.assign(options, {
       compiler: getPlatformCompiler(),
       compilerOptions: Object.assign({

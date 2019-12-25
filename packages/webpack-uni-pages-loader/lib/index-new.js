@@ -17,7 +17,8 @@ const {
 } = require('@dcloudio/uni-cli-shared/lib/cache')
 
 const {
-  pagesJsonJsFileName
+  pagesJsonJsFileName,
+  initAutoImportComponents
 } = require('@dcloudio/uni-cli-shared/lib/pages')
 
 const parseStyle = require('./util').parseStyle
@@ -53,6 +54,10 @@ module.exports = function (content) {
       this.addDependency(file)
     }
   })
+
+  // 组件自动导入配置
+  initAutoImportComponents(pagesJson.easycom)
+
   // TODO 与 usingComponents 放在一块读取设置
   if (manifestJson.transformPx === false) {
     process.UNI_TRANSFORM_PX = false

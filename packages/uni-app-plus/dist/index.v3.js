@@ -6552,7 +6552,7 @@ var serviceContext = (function () {
           code: err.code,
           errMsg: 'login:fail:' + err.message
         });
-      }, { scope: 'email' });
+      }, provider === 'apple' ? { scope: 'email' } : {});
     }
     // 先注销再登录
     // apple登录logout之后无法重新触发获取email,fullname
@@ -7138,10 +7138,16 @@ var serviceContext = (function () {
 
     uni.hideToast(); // 后退时，关闭 toast,loading
 
-    currentPage.$page.meta.isQuit
-      ? quit()
-      : back(delta, animationType, animationDuration);
-
+    if (currentPage.$page.meta.isQuit) {
+      quit();
+    } else if (currentPage.$page.id === 1 && __uniConfig.realEntryPagePath) {
+      // condition
+      uni.reLaunch({
+        url: '/' + __uniConfig.realEntryPagePath
+      });
+    } else {
+      back(delta, animationType, animationDuration);
+    }
     return {
       errMsg: 'navigateBack:ok'
     }
@@ -7319,7 +7325,11 @@ var serviceContext = (function () {
 
     const titleNView = parseTitleNView(routeOptions);
     if (titleNView) {
-      if (id === 1 && __uniConfig.realEntryPagePath === path) {
+      if (
+        id === 1 &&
+        __uniConfig.realEntryPagePath &&
+        !routeOptions.meta.isQuit // 可能是tabBar
+      ) {
         titleNView.autoBackButton = true;
       }
       webviewStyle.titleNView = titleNView;
@@ -7836,8 +7846,13 @@ var serviceContext = (function () {
   }) {
     const routeOptions = JSON.parse(JSON.stringify(__uniRoutes.find(route => route.path === path)));
 
-    if (openType === 'reLaunch' || pages.length === 0) {
-      // pages.length===0 表示首页触发 redirectTo
+    if (
+      openType === 'reLaunch' ||
+      (
+        openType === 'redirect' &&
+        pages.length === 0
+      ) // 首页 redirect
+    ) {
       routeOptions.meta.isQuit = true;
     } else if (!routeOptions.meta.isTabBar) {
       routeOptions.meta.isQuit = false;
@@ -7995,16 +8010,15 @@ var serviceContext = (function () {
       'none',
       0,
       () => {
+        pages.forEach(page => {
+          page.$remove();
+          page.$getAppWebview().close('none');
+        });
         invoke$1(callbackId, {
           errMsg: 'reLaunch:ok'
         });
       }
     );
-
-    pages.forEach(page => {
-      page.$remove();
-      page.$getAppWebview().close('none');
-    });
 
     setStatusBarStyle();
   }
@@ -11786,6 +11800,9 @@ var serviceContext = (function () {
     if (allowDefault) { // 返回默认实现
       return defaultApp
     }
+    console.error(
+      '[warn]: getApp() 操作失败，v3模式加速了首页 nvue 的启动速度，当在首页 nvue 中使用 getApp() 不一定可以获取真正的 App 对象。详情请参考：https://uniapp.dcloud.io/collocation/frame/window?id=getapp'
+    );
   }
 
   function initGlobalListeners () {
@@ -11874,6 +11891,31 @@ var serviceContext = (function () {
     });
   }
 
+  function initHotReload () {
+    const reloadUrl = weex.config.reloadUrl;
+    if (!reloadUrl) {
+      return
+    }
+    if (reloadUrl === __uniConfig.entryPagePath) {
+      return
+    }
+    const reloadPath = '/' + reloadUrl;
+    const routeOptions = __uniRoutes.find(route => route.path === reloadPath);
+    if (!routeOptions) {
+      return
+    }
+    if (routeOptions.meta.isNVue) { // 暂不处理 nvue
+      return
+    }
+    if (!routeOptions.meta.isTabBar) {
+      __uniConfig.realEntryPagePath = __uniConfig.realEntryPagePath || __uniConfig.entryPagePath;
+    }
+    __uniConfig.entryPagePath = reloadUrl;
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`[uni-app] reloadUrl(${reloadUrl})`);
+    }
+  }
+
   function registerApp (appVm) {
     if (process.env.NODE_ENV !== 'production') {
       console.log(`[uni-app] registerApp`);
@@ -11891,6 +11933,8 @@ var serviceContext = (function () {
       getApp: getApp$1,
       getCurrentPages: getCurrentPages$1
     });
+
+    initHotReload();
 
     initTabBar();
 
@@ -12105,8 +12149,8 @@ var serviceContext = (function () {
         hideKeyboardTimeout = null;
       }
     } else {
-      // 仅安卓收起键盘时通知view层失去焦点
-      if (isAndroid) {
+      // 安卓/iOS13收起键盘时通知view层失去焦点
+      if (isAndroid || parseInt(plus.os.version) >= 13) {
         hideKeyboardTimeout = setTimeout(function () {
           hideKeyboardTimeout = null;
           var pageId = getCurrentPageId();

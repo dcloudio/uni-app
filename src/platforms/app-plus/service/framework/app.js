@@ -49,7 +49,9 @@ export function getApp ({
   if (allowDefault) { // 返回默认实现
     return defaultApp
   }
-  console.error('[warn]: getApp() 操作失败，v3模式加速了首页 nvue 的启动速度，当在首页 nvue 中使用 getApp() 不一定可以获取真正的 App 对象。详情请参考：https://uniapp.dcloud.io/collocation/frame/window?id=getapp')
+  console.error(
+    '[warn]: getApp() 操作失败，v3模式加速了首页 nvue 的启动速度，当在首页 nvue 中使用 getApp() 不一定可以获取真正的 App 对象。详情请参考：https://uniapp.dcloud.io/collocation/frame/window?id=getapp'
+  )
 }
 
 function initGlobalListeners () {
@@ -138,6 +140,31 @@ function initTabBar () {
   })
 }
 
+function initHotReload () {
+  const reloadUrl = weex.config.reloadUrl
+  if (!reloadUrl) {
+    return
+  }
+  if (reloadUrl === __uniConfig.entryPagePath) {
+    return
+  }
+  const reloadPath = '/' + reloadUrl
+  const routeOptions = __uniRoutes.find(route => route.path === reloadPath)
+  if (!routeOptions) {
+    return
+  }
+  if (routeOptions.meta.isNVue) { // 暂不处理 nvue
+    return
+  }
+  if (!routeOptions.meta.isTabBar) {
+    __uniConfig.realEntryPagePath = __uniConfig.realEntryPagePath || __uniConfig.entryPagePath
+  }
+  __uniConfig.entryPagePath = reloadUrl
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(`[uni-app] reloadUrl(${reloadUrl})`)
+  }
+}
+
 export function registerApp (appVm) {
   if (process.env.NODE_ENV !== 'production') {
     console.log(`[uni-app] registerApp`)
@@ -155,6 +182,8 @@ export function registerApp (appVm) {
     getApp,
     getCurrentPages
   })
+
+  initHotReload()
 
   initTabBar()
 

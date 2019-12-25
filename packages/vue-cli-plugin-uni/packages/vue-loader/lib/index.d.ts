@@ -1,5 +1,5 @@
 import { Plugin } from 'webpack'
-import { VueTemplateCompiler } from '@vue/component-compiler-utils/lib/types'
+import { VueTemplateCompiler } from '@vue/component-compiler-utils/dist/types'
 import { CompilerOptions } from 'vue-template-compiler'
 
 declare namespace VueLoader {
