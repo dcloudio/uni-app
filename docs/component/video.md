@@ -22,7 +22,7 @@
 |danmu-btn|Boolean|false|是否显示弹幕按钮，只在初始化时有效，不能动态变更|头条小程序不支持|
 |enable-danmu|Boolean|false|是否展示弹幕，只在初始化时有效，不能动态变更|头条小程序不支持|
 |page-gesture|Boolean|false|在非全屏模式下，是否开启亮度与音量调节手势|微信小程序、H5|
-|direction|Number||设置全屏时视频的方向，不指定则根据宽高比自动判断。有效值为 0（正常竖向）, 90（屏幕逆时针90度）, -90（屏幕顺时针90度）|头条小程序不支持|
+|direction|Number||设置全屏时视频的方向，不指定则根据宽高比自动判断。有效值为 0（正常竖向）, 90（屏幕逆时针90度）, -90（屏幕顺时针90度）|H5和头条小程序不支持|
 |show-progress|Boolean|true|若不设置，宽度大于240时才会显示|头条小程序不支持|
 |show-fullscreen-btn|Boolean|true|是否显示全屏按钮|头条小程序不支持|
 |show-play-btn|Boolean|true|是否显示视频底部控制栏的播放按钮|头条小程序不支持|
@@ -30,6 +30,16 @@
 |enable-progress-gesture|Boolean|true|是否开启控制进度的手势|头条小程序不支持|
 |objectFit|String|contain|当视频大小与 video 容器大小不一致时，视频的表现形式。contain：包含，fill：填充，cover：覆盖|微信小程序、H5|
 |poster|String||视频封面的图片网络资源地址，如果 controls 属性值为 false 则设置 poster 无效|头条小程序不支持|
+|show-mute-btn|Boolean|false|是否显示静音按钮|微信小程序|
+|title|String||视频的标题，全屏时在顶部展示|微信小程序|
+|play-btn-position|String|bottom|播放按钮的位置|微信小程序|
+|enable-play-gesture|Boolean|false|是否开启播放手势，即双击切换播放/暂停|微信小程序|
+|auto-pause-if-navigate|Boolean|true|当跳转到其它小程序页面时，是否自动暂停本页面的视频|微信小程序|
+|auto-pause-if-open-native|Boolean|true|当跳转到其它微信原生页面时，是否自动暂停本页面的视频|微信小程序|
+|vslide-gesture|Boolean|false|在非全屏模式下，是否开启亮度与音量调节手势（同 page-gesture）|微信小程序|
+|vslide-gesture-in-fullscreen|Boolean|true|在全屏模式下，是否开启亮度与音量调节手势|微信小程序|
+|ad-unit-id|String||视频前贴广告单元ID，更多详情可参考开放能力[视频前贴广告](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/ad/video-patch-ad.html)|微信小程序|
+|poster-for-crawler|String||用于给搜索等场景作为视频封面展示，建议使用无播放 icon 的视频封面图，只支持网络地址|微信小程序|
 |@play|EventHandle||当开始/继续播放时触发play事件|头条小程序不支持|
 |@pause|EventHandle||当暂停播放时触发 pause 事件|头条小程序不支持|
 |@ended|EventHandle||当播放到末尾时触发 ended 事件|头条小程序不支持|
@@ -37,6 +47,8 @@
 |@fullscreenchange|EventHandle||当视频进入和退出全屏时触发，event.detail = {fullScreen, direction}，direction取为 vertical 或 horizontal|头条小程序不支持|
 |@waiting|EventHandle||视频出现缓冲时触发|头条小程序不支持|
 |@error|EventHandle||视频播放出错时触发|头条小程序不支持|
+|@progress|EventHandle||加载进度变化时触发，只支持一段加载。event.detail = {buffered}，百分比|微信小程序、H5|
+|@loadedmetadata|EventHandle||视频元数据加载完成时触发。event.detail = {width, height, duration}|微信小程序、H5|
 
 `<video>` 默认宽度 300px、高度 225px，可通过 css 设置宽高。
 
