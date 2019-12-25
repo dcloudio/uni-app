@@ -1,17 +1,16 @@
 <template>
   <uni-video
     :id="id"
-    v-on="$listeners"
-  >
+    v-on="$listeners">
     <div
       ref="container"
-      :class="{'uni-video-type-fullscreen':fullscreen,'uni-video-type-rotate-left':rotateType==='left','uni-video-type-rotate-right':rotateType==='right'}"
-      :style="{width:fullscreen?width:'100%',height:fullscreen?height:'100%'}"
       class="uni-video-container"
       @click="triggerControls"
-      @touchstart="touchstart($event)"
-      @touchend="touchend($event)"
-      @touchmove="touchmove($event)"
+      @touchstart="touchstart"
+      @touchend="touchend"
+      @touchmove="touchmove"
+      @fullscreenchange.stop="onFullscreenChange"
+      @webkitfullscreenchange.stop="onFullscreenChange($event,true)"
     >
       <video
         ref="video"
@@ -20,10 +19,24 @@
         :loop="loop"
         :src="srcSync"
         :poster="poster"
+        :autoplay="autoplay"
         v-bind="$attrs"
         class="uni-video-video"
         webkit-playsinline
         playsinline
+        @durationchange="onDurationChange"
+        @loadedmetadata="onLoadedMetadata"
+        @progress="onProgress"
+        @waiting="onWaiting"
+        @error="onVideoError"
+        @play="onPlay"
+        @pause="onPause"
+        @ended="onEnded"
+        @timeupdate="onTimeUpdate"
+        @webkitbeginfullscreen="emitFullscreenChange(true)"
+        @x5videoenterfullscreen="emitFullscreenChange(true)"
+        @webkitendfullscreen="emitFullscreenChange(false)"
+        @x5videoexitfullscreen="emitFullscreenChange(false)"
       />
       <div
         v-show="controlsShow"
@@ -66,7 +79,7 @@
           v-show="showFullscreenBtn"
           :class="{'uni-video-type-fullscreen':fullscreen}"
           class="uni-video-fullscreen"
-          @click.stop="triggerFullscreen"
+          @click.stop="triggerFullscreen(!fullscreen)"
         />
       </div>
       <div
@@ -128,7 +141,8 @@
 </template>
 <script>
 import {
-  subscriber
+  subscriber,
+  interact
 } from 'uni-mixins'
 import {
   supportsPassive
@@ -149,20 +163,20 @@ export default {
   name: 'Video',
   filters: {
     getTime (time) {
-      var h = Math.floor(time / 3600)
-      var m = Math.floor(time % 3600 / 60)
-      var s = Math.floor(time % 3600 % 60)
+      let h = Math.floor(time / 3600)
+      let m = Math.floor(time % 3600 / 60)
+      let s = Math.floor(time % 3600 % 60)
       h = (h < 10 ? '0' : '') + h
       m = (m < 10 ? '0' : '') + m
       s = (s < 10 ? '0' : '') + s
-      var str = m + ':' + s
+      let str = m + ':' + s
       if (h !== '00') {
         str = h + ':' + str
       }
       return str
     }
   },
-  mixins: [subscriber],
+  mixins: [subscriber, interact],
   props: {
     id: {
       type: String,
@@ -216,7 +230,7 @@ export default {
     },
     direction: {
       type: [String, Number],
-      default: 360
+      default: ''
     },
     showProgress: {
       type: Boolean,
@@ -254,11 +268,7 @@ export default {
       enableDanmuSync: Boolean(this.enableDanmu),
       controlsVisible: true,
       fullscreen: false,
-      width: '0',
-      height: '0',
-      fullscreenTriggering: false,
       controlsTouching: false,
-      directionSync: Number(this.direction),
       touchStartOrigin: {
         x: 0,
         y: 0
@@ -268,9 +278,8 @@ export default {
       currentTimeNew: 0,
       volumeOld: null,
       volumeNew: null,
-      isIOS: false,
       buffered: 0,
-      rotateType: ''
+      isSafari: /^Apple/.test(navigator.vendor)
     }
   },
   computed: {
@@ -295,38 +304,9 @@ export default {
         this.autoHideEnd()
       }
     },
-    fullscreen (val) {
-      var container = this.$refs.container
-      var playing = this.playing
-      this.fullscreenTriggering = true
-      container.remove()
-      if (val) {
-        this.resize()
-        document.body.appendChild(container)
-      } else {
-        this.$el.appendChild(container)
-      }
-      this.$trigger('fullscreenchange', {}, {
-        fullScreen: val
-      })
-      if (playing) {
-        this.play()
-      }
-      setTimeout(() => {
-        this.fullscreenTriggering = false
-      }, 0)
-    },
-    direction (val) {
-      this.directionSync = Number(val)
-    },
     srcSync (val) {
       this.playing = false
       this.currentTime = 0
-      if (val && this.autoplay) {
-        this.$nextTick(() => {
-          this.$refs.video.play()
-        })
-      }
     },
     currentTime () {
       this.updateProgress()
@@ -344,134 +324,40 @@ export default {
       },
       hideTiming: null
     }
-    var danmuList = this.otherData.danmuList = JSON.parse(JSON.stringify(this.danmuList || []))
+    const danmuList = this.otherData.danmuList = JSON.parse(JSON.stringify(this.danmuList || []))
     danmuList.sort(function (a, b) {
       return (a.time || 0) - (a.time || 0)
     })
-    this.width = window.innerWidth + 'px'
-    this.height = window.innerHeight + 'px'
   },
   mounted () {
-    var self = this
-    var otherData = this.otherData
-    var video = this.$refs.video
-    var ball = this.$refs.ball
-    video.addEventListener('durationchange', function (event) {
-      self.durationTime = video.duration
-    })
-    video.addEventListener('loadedmetadata', function (event) {
-      var initialTime = Number(self.initialTime) || 0
-      if (initialTime > 0) {
-        video.currentTime = initialTime
-      }
-    })
-    video.addEventListener('progress', function (event) {
-      var buffered = video.buffered
-      if (buffered.length) {
-        self.buffered = buffered.end(buffered.length - 1) / video.duration
-      }
-    })
-    video.addEventListener('waiting', function ($event) {
-      self.$trigger('waiting', $event, {})
-    })
-    video.addEventListener('error', function ($event) {
-      self.playing = false
-      self.$trigger('error', $event, {})
-    })
-    video.addEventListener('play', function ($event) {
-      self.start = true
-      self.playing = true
-      if (self.fullscreenTriggering) {
-        return
-      }
-      self.$trigger('play', $event, {})
-    })
-    video.addEventListener('pause', function ($event) {
-      self.playing = false
-      if (self.fullscreenTriggering) {
-        return
-      }
-      self.$trigger('pause', $event, {})
-    })
-    video.addEventListener('ended', function ($event) {
-      self.playing = false
-      self.$trigger('ended', $event, {})
-    })
-
-    video.addEventListener('timeupdate', function ($event) {
-      var currentTime = self.currentTime = video.currentTime
-      var duration = video.duration
-      var oldDanmuIndex = otherData.danmuIndex
-      var danmuIndex = {
-        time: currentTime,
-        index: oldDanmuIndex.index
-      }
-      var danmuList = otherData.danmuList
-      if (currentTime > oldDanmuIndex.time) {
-        for (let index = oldDanmuIndex.index + 1; index < danmuList.length; index++) {
-          let element = danmuList[index]
-          if (currentTime >= (element.time || 0)) {
-            danmuIndex.index = index
-            if (self.playing && self.enableDanmuSync) {
-              self.playDanmu(element)
-            }
-          } else {
-            break
-          }
-        }
-      } else if (currentTime < oldDanmuIndex.time) {
-        for (let index = oldDanmuIndex.index - 1; index > -1; index--) {
-          let element = danmuList[index]
-          if (currentTime <= (element.time || 0)) {
-            danmuIndex.index = index - 1
-          } else {
-            break
-          }
-        }
-      }
-      otherData.danmuIndex = danmuIndex
-
-      self.$trigger('timeupdate', $event, {
-        currentTime,
-        duration
-      })
-    })
-    video.addEventListener('x5videoenterfullscreen', function ($event) {
-      self.$trigger('fullscreenchange', $event, {
-        fullScreen: true
-      })
-    })
-    video.addEventListener('x5videoexitfullscreen', function ($event) {
-      self.$trigger('fullscreenchange', $event, {
-        fullScreen: false
-      })
-    })
-    var originX
-    var originY
-    var moveOnce = true
-    var originProgress
-    ball.addEventListener('touchstart', function (event) {
-      self.controlsTouching = true
-      var toucher = self.getScreenXY(event.targetTouches[0])
+    const self = this
+    let originX
+    let originY
+    let moveOnce = true
+    let originProgress
+    const ball = this.$refs.ball
+    ball.addEventListener('touchstart', (event) => {
+      this.controlsTouching = true
+      const toucher = event.targetTouches[0]
       originX = toucher.pageX
       originY = toucher.pageY
-      originProgress = self.progress
+      originProgress = this.progress
       moveOnce = true
-      self.touching = true
+      this.touching = true
       ball.addEventListener('touchmove', touchmove, passiveOptions)
     })
 
     function touchmove (event) {
-      var toucher = self.getScreenXY(event.targetTouches[0])
-      var pageX = toucher.pageX
-      var pageY = toucher.pageY
+      const toucher = event.targetTouches[0]
+      const pageX = toucher.pageX
+      const pageY = toucher.pageY
       if (moveOnce && Math.abs(pageX - originX) < Math.abs(pageY - originY)) {
         touchend()
         return
       }
       moveOnce = false
-      var w = self.$refs.progress.offsetWidth
-      var progress = originProgress + (pageX - originX) / w * 100
+      const w = self.$refs.progress.offsetWidth
+      let progress = originProgress + (pageX - originX) / w * 100
       if (progress < 0) {
         progress = 0
       } else if (progress > 100) {
@@ -496,13 +382,9 @@ export default {
     }
     ball.addEventListener('touchend', touchend)
     ball.addEventListener('touchcancel', touchend)
-
-    if (String(this.srcSync).length && this.autoplay) {
-      video.play()
-    }
   },
   beforeDestroy () {
-    this.$refs.container.remove()
+    this.triggerFullscreen(false)
     clearTimeout(this.otherData.hideTiming)
   },
   methods: {
@@ -510,56 +392,21 @@ export default {
       type,
       data = {}
     }) {
+      const methods = ['play', 'pause', 'seek', 'sendDanmu', 'playbackRate', 'requestFullScreen', 'exitFullScreen']
+      let options
       switch (type) {
-        case 'play':
-          this.play()
-          break
-        case 'pause':
-          this.pause()
-          break
         case 'seek':
-          this.seek(data.position)
+          options = data.position
           break
         case 'sendDanmu':
-          this.sendDanmu(data)
+          options = data
           break
         case 'playbackRate':
-          this.$refs.video.playbackRate = data.rate
-          break
-        case 'requestFullScreen':
-          this.enterFullscreen()
-          break
-        case 'exitFullScreen':
-          this.leaveFullscreen()
+          options = data.rate
           break
       }
-    },
-    resize () {
-      var w = window.innerWidth
-      var h = window.innerHeight
-      var direction = Math.abs(this.directionSync)
-
-      if (direction === 0) {
-        if (w > h) {
-          this.rotateType = 'left'
-        } else {
-          this.rotateType = ''
-        }
-      } else if (direction === 90) {
-        if (w > h) {
-          this.rotateType = ''
-        } else {
-          this.rotateType = 'right'
-        }
-      } else {
-        this.rotateType = ''
-      }
-      if (!this.rotateType) {
-        this.width = w + 'px'
-        this.height = h + 'px'
-      } else {
-        this.width = h + 'px'
-        this.height = w + 'px'
+      if (methods.indexOf(type) >= 0) {
+        this[type](options)
       }
     },
     trigger () {
@@ -583,15 +430,15 @@ export default {
       }
     },
     clickProgress (event) {
-      var x = event.offsetX
-      var _progress = this.$refs.progress
-      var element = event.target
-      while (element !== _progress) {
+      const $progress = this.$refs.progress
+      let element = event.target
+      let x = event.offsetX
+      while (element !== $progress) {
         x += element.offsetLeft
         element = element.parentNode
       }
-      var w = _progress.offsetWidth
-      var progress = 0
+      const w = $progress.offsetWidth
+      let progress = 0
       if (x >= 0 && x <= w) {
         progress = x / w
         this.seek(this.$refs.video.duration * progress)
@@ -601,10 +448,10 @@ export default {
       this.enableDanmuSync = !this.enableDanmuSync
     },
     playDanmu (danmu) {
-      var p = document.createElement('p')
+      const p = document.createElement('p')
       p.className = 'uni-video-danmu-item'
       p.innerText = danmu.text
-      var style = `bottom: ${Math.random() * 100}%;color: ${danmu.color};`
+      let style = `bottom: ${Math.random() * 100}%;color: ${danmu.color};`
       p.setAttribute('style', style)
       this.$refs.danmu.appendChild(p)
       setTimeout(function () {
@@ -616,31 +463,144 @@ export default {
       }, 17)
     },
     sendDanmu (danmu) {
-      var otherData = this.otherData
+      const otherData = this.otherData
       otherData.danmuList.splice(otherData.danmuIndex.index + 1, 0, {
         text: String(danmu.text),
         color: danmu.color,
         time: this.$refs.video.currentTime || 0
       })
     },
-    triggerFullscreen () {
-      this.fullscreen = !this.fullscreen
+    playbackRate (rate) {
+      this.$refs.video.playbackRate = rate
     },
-    enterFullscreen (direction) {
-      var directionSync = Number(direction)
-      if (!isNaN(NaN)) {
-        this.directionSync = directionSync
+    triggerFullscreen (val) {
+      const container = this.$refs.container
+      const video = this.$refs.video
+      let mockFullScreen
+      if (val) {
+        if ((document.fullscreenEnabled || document.webkitFullscreenEnabled) && (!this.isSafari || this.userInteract)) {
+          container[document.fullscreenEnabled ? 'requestFullscreen' : 'webkitRequestFullscreen']()
+        } else if (video.webkitEnterFullScreen) {
+          video.webkitEnterFullScreen()
+        } else {
+          mockFullScreen = true
+          container.remove()
+          container.classList.add('uni-video-type-fullscreen')
+          document.body.appendChild(container)
+        }
+      } else {
+        if (document.fullscreenEnabled || document.webkitFullscreenEnabled) {
+          document[document.fullscreenEnabled ? 'exitFullscreen' : 'webkitExitFullscreen']()
+        } else if (video.webkitExitFullScreen) {
+          video.webkitExitFullScreen()
+        } else {
+          mockFullScreen = true
+          container.remove()
+          container.classList.remove('uni-video-type-fullscreen')
+          this.$el.appendChild(container)
+        }
       }
-      this.fullscreen = true
+      if (mockFullScreen) {
+        this.emitFullscreenChange(val)
+      }
     },
-    leaveFullscreen () {
-      this.fullscreen = false
+    onFullscreenChange ($event, webkit) {
+      if (webkit && document.fullscreenEnabled) {
+        return
+      }
+      this.emitFullscreenChange(!!(document.fullscreenElement || document.webkitFullscreenElement))
+    },
+    emitFullscreenChange (val) {
+      this.fullscreen = val
+      this.$trigger('fullscreenchange', {}, {
+        fullScreen: val,
+        direction: 'vertical'
+      })
+    },
+    requestFullScreen () {
+      this.triggerFullscreen(true)
+    },
+    exitFullScreen () {
+      this.triggerFullscreen(false)
+    },
+    onDurationChange ({ target }) {
+      this.durationTime = target.duration
+    },
+    onLoadedMetadata ({ target }) {
+      const initialTime = Number(this.initialTime) || 0
+      if (initialTime > 0) {
+        target.currentTime = initialTime
+      }
+    },
+    onProgress ({ target }) {
+      const buffered = target.buffered
+      if (buffered.length) {
+        this.buffered = buffered.end(buffered.length - 1) / target.duration
+      }
+    },
+    onWaiting ($event) {
+      this.$trigger('waiting', $event, {})
+    },
+    onVideoError ($event) {
+      this.playing = false
+      this.$trigger('error', $event, {})
+    },
+    onPlay ($event) {
+      this.start = true
+      this.playing = true
+      this.$trigger('play', $event, {})
+    },
+    onPause ($event) {
+      this.playing = false
+      this.$trigger('pause', $event, {})
+    },
+    onEnded ($event) {
+      this.playing = false
+      this.$trigger('ended', $event, {})
+    },
+    onTimeUpdate ($event) {
+      const video = $event.target
+      const otherData = this.otherData
+      const currentTime = this.currentTime = video.currentTime
+      const oldDanmuIndex = otherData.danmuIndex
+      const danmuIndex = {
+        time: currentTime,
+        index: oldDanmuIndex.index
+      }
+      const danmuList = otherData.danmuList
+      if (currentTime > oldDanmuIndex.time) {
+        for (let index = oldDanmuIndex.index + 1; index < danmuList.length; index++) {
+          let element = danmuList[index]
+          if (currentTime >= (element.time || 0)) {
+            danmuIndex.index = index
+            if (this.playing && this.enableDanmuSync) {
+              this.playDanmu(element)
+            }
+          } else {
+            break
+          }
+        }
+      } else if (currentTime < oldDanmuIndex.time) {
+        for (let index = oldDanmuIndex.index - 1; index > -1; index--) {
+          let element = danmuList[index]
+          if (currentTime <= (element.time || 0)) {
+            danmuIndex.index = index - 1
+          } else {
+            break
+          }
+        }
+      }
+      otherData.danmuIndex = danmuIndex
+      this.$trigger('timeupdate', $event, {
+        currentTime,
+        duration: video.duration
+      })
     },
     triggerControls () {
       this.controlsVisible = !this.controlsVisible
     },
     touchstart (event) {
-      var toucher = this.getScreenXY(event.targetTouches[0])
+      const toucher = event.targetTouches[0]
       this.touchStartOrigin = {
         x: toucher.pageX,
         y: toucher.pageY
@@ -657,14 +617,14 @@ export default {
       if (this.fullscreen) {
         stop()
       }
-      var gestureType = this.gestureType
+      const gestureType = this.gestureType
       if (gestureType === GestureType.STOP) {
         return
       }
-      var toucher = this.getScreenXY(event.targetTouches[0])
-      var pageX = toucher.pageX
-      var pageY = toucher.pageY
-      var origin = this.touchStartOrigin
+      const toucher = event.targetTouches[0]
+      const pageX = toucher.pageX
+      const pageY = toucher.pageY
+      const origin = this.touchStartOrigin
       if (gestureType === GestureType.PROGRESS) {
         this.changeProgress(pageX - origin.x)
       } else if (gestureType === GestureType.VOLUME) {
@@ -706,8 +666,8 @@ export default {
       this.gestureType = GestureType.NONE
     },
     changeProgress (x) {
-      var duration = this.$refs.video.duration
-      var currentTimeNew = x / 600 * duration + this.currentTimeOld
+      const duration = this.$refs.video.duration
+      let currentTimeNew = x / 600 * duration + this.currentTimeOld
       if (currentTimeNew < 0) {
         currentTimeNew = 0
       } else if (currentTimeNew > duration) {
@@ -716,8 +676,8 @@ export default {
       this.currentTimeNew = currentTimeNew
     },
     changeVolume (y) {
-      var valueOld = this.volumeOld
-      var value
+      const valueOld = this.volumeOld
+      let value
       if (typeof valueOld === 'number') {
         value = valueOld - y / 200
         if (value < 0) {
@@ -735,33 +695,10 @@ export default {
       }, 3000)
     },
     autoHideEnd () {
-      var otherData = this.otherData
+      const otherData = this.otherData
       if (otherData.hideTiming) {
         clearTimeout(otherData.hideTiming)
         otherData.hideTiming = null
-      }
-    },
-    getScreenXY (dataOrigin) {
-      var rotateType = this.rotateType
-      if (!this.fullscreen || !rotateType) {
-        return dataOrigin
-      }
-      var w = screen.width
-      var h = screen.height
-      var x = dataOrigin.pageX
-      var y = dataOrigin.pageY
-      var pageX
-      var pageY
-      if (rotateType === 'left') {
-        pageX = h - y
-        pageY = x
-      } else {
-        pageX = y
-        pageY = w - x
-      }
-      return {
-        pageX,
-        pageY
       }
     },
     updateProgress () {
@@ -801,18 +738,7 @@ uni-video[hidden] {
 
 .uni-video-container.uni-video-type-fullscreen {
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   z-index: 999;
-}
-
-.uni-video-container.uni-video-type-fullscreen.uni-video-type-rotate-left {
-  transform: translate(-50%, -50%) rotate(-90deg);
-}
-
-.uni-video-container.uni-video-type-fullscreen.uni-video-type-rotate-right {
-  transform: translate(-50%, -50%) rotate(90deg);
 }
 
 .uni-video-video {

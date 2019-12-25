@@ -22,3 +22,8 @@ export {
   default as keyboard
 }
   from './keyboard'
+
+export {
+  default as interact
+}
+  from './interact'
