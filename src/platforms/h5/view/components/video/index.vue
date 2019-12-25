@@ -526,11 +526,17 @@ export default {
     onDurationChange ({ target }) {
       this.durationTime = target.duration
     },
-    onLoadedMetadata ({ target }) {
+    onLoadedMetadata ($event) {
       const initialTime = Number(this.initialTime) || 0
+      const video = $event.target
       if (initialTime > 0) {
-        target.currentTime = initialTime
+        video.currentTime = initialTime
       }
+      this.$trigger('loadedmetadata', $event, {
+        width: video.videoWidth,
+        height: video.videoHeight,
+        duration: video.duration
+      })
     },
     onProgress ({ target }) {
       const buffered = target.buffered
