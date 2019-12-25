@@ -148,6 +148,8 @@ if (process.env.UNI_USING_NVUE_COMPILER) {
     },
     use: [{
       loader: '@dcloudio/vue-cli-plugin-hbuilderx/packages/webpack-uni-nvue-loader/lib/template'
+    }, {
+      loader: '@dcloudio/vue-cli-plugin-uni/packages/webpack-uni-app-loader/page-meta'
     }]
   })
 }

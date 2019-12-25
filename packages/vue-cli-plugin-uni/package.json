@@ -19,7 +19,7 @@
   "dependencies": {
     "@dcloudio/uni-stat": "^2.0.0-alpha-24720191216006",
     "buffer-json": "^2.0.0",
-    "copy-webpack-plugin": "^4.6.0",
+    "copy-webpack-plugin": "^5.1.1",
     "cross-env": "^5.2.0",
     "envinfo": "^6.0.1",
     "hash-sum": "^1.0.2",

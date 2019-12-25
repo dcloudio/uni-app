@@ -35,6 +35,9 @@ function getWebpackChunkName (source) {
 }
 
 function updateMPUsingAutoImportComponents (autoComponents, options) {
+  if (!options.resourcePath) {
+    return
+  }
   const resourcePath = options.resourcePath.replace(path.extname(options.resourcePath), '')
   const usingAutoImportComponents = Object.create(null)
   autoComponents.forEach(({

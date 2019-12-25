@@ -113,7 +113,20 @@ function genText (ast, state) {
   return ast
 }
 
+function parsePageMeta (ast, state) {
+  // 目前仅 mp-weixin 支持 page-meta
+  if (state.options.platform.name === 'mp-weixin') {
+    const children = ast.children
+    if (Array.isArray(children) && children.find(child => child.type === 'page-meta')) {
+      return children
+    }
+  }
+  return ast
+}
+
 module.exports = function generate (ast, state) {
+  ast = parsePageMeta(ast, state)
+
   if (!Array.isArray(ast)) {
     ast = [ast]
   }

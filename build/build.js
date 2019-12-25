@@ -39,6 +39,7 @@ service.run('build', {
   target: 'lib',
   formats: process.env.UNI_WATCH === 'true' ? 'umd' : 'umd-min',
   entry,
+  'inline-vue': !!process.env.UNI_VIEW,
   clean: !process.env.UNI_VIEW,
   mode: process.env.NODE_ENV
 }).then(function () {

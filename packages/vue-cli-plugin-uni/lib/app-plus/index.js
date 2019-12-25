@@ -156,6 +156,9 @@ const v3 = {
           use: [{
             loader: path.resolve(__dirname,
               '../../packages/webpack-uni-app-loader/filter-modules-template.js')
+          }, {
+            loader: path.resolve(__dirname,
+              '../../packages/webpack-uni-app-loader/page-meta')
           }]
         },
         ...rules

@@ -333,6 +333,18 @@ let lastUsingAutoImportComponentsJson = ''
 process.UNI_AUTO_COMPONENTS = []
 
 function initAutoImportComponents (usingAutoImportComponents = {}) {
+  // 目前仅 mp-weixin 内置支持 page-meta 等组件
+  if (process.env.UNI_PLATFORM !== 'mp-weixin') {
+    if (!usingAutoImportComponents['page-meta']) {
+      usingAutoImportComponents['page-meta'] =
+        '@dcloudio/uni-cli-shared/components/page-meta.vue'
+    }
+    if (!usingAutoImportComponents['navigation-bar']) {
+      usingAutoImportComponents['navigation-bar'] =
+        '@dcloudio/uni-cli-shared/components/navigation-bar.vue'
+    }
+  }
+
   const newUsingAutoImportComponentsJson = JSON.stringify(usingAutoImportComponents)
   if (newUsingAutoImportComponentsJson !== lastUsingAutoImportComponentsJson) {
     lastUsingAutoImportComponentsJson = newUsingAutoImportComponentsJson

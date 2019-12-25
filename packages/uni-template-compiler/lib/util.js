@@ -191,6 +191,12 @@ function isComponent (tagName) {
   ) {
     return false
   }
+  // mp-weixin 底层支持 page-meta,navigation-bar
+  if (process.env.UNI_PLATFORM === 'mp-weixin') {
+    if (tagName === 'page-meta' || tagName === 'navigation-bar') {
+      return false
+    }
+  }
   return !hasOwn(tags, getTagName(tagName.replace('v-uni-', '')))
 }
 

@@ -142,6 +142,8 @@ module.exports = {
           resourceQuery: /vue&type=template/,
           use: [{
             loader: '@dcloudio/webpack-uni-mp-loader/lib/template'
+          }, {
+            loader: '@dcloudio/vue-cli-plugin-uni/packages/webpack-uni-app-loader/page-meta'
           }]
         }, createTemplateCacheLoader(api), {
           resourceQuery: [
