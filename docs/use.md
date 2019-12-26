@@ -211,7 +211,7 @@ export default {
     touchcancel: 'touchcancel',
     touchend: 'touchend',
     tap: 'tap',
-    longtap: 'longtap',
+    longtap: 'longtap', //推荐使用longpress代替
     input: 'input',
     change: 'change',
     submit: 'submit',
