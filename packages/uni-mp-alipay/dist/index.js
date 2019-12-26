@@ -353,29 +353,26 @@ var baseApi = /*#__PURE__*/Object.freeze({
 
 // 不支持的 API 列表
 const todos = [
-  'getRecorderManager',
-  'getBackgroundAudioManager',
-  'createInnerAudioContext',
-  'createVideoContext',
-  'createCameraContext',
-  'createLivePlayerContext',
-  'onMemoryWarning',
-  'startAccelerometer',
-  'startCompass',
-  'addPhoneContact',
-  'authorize',
-  'chooseInvoiceTitle',
-  'addTemplate',
-  'deleteTemplate',
-  'getTemplateLibraryById',
-  'getTemplateLibraryList',
-  'getTemplateList',
-  'sendTemplateMessage',
-  'setEnableDebug',
-  'getExtConfig',
-  'getExtConfigSync',
-  'onWindowResize',
-  'offWindowResize'
+  // 'getRecorderManager',
+  // 'getBackgroundAudioManager',
+  // 'createInnerAudioContext',
+  // 'createCameraContext',
+  // 'createLivePlayerContext',
+  // 'startAccelerometer',
+  // 'startCompass',
+  // 'authorize',
+  // 'chooseInvoiceTitle',
+  // 'addTemplate',
+  // 'deleteTemplate',
+  // 'getTemplateLibraryById',
+  // 'getTemplateLibraryList',
+  // 'getTemplateList',
+  // 'sendTemplateMessage',
+  // 'setEnableDebug',
+  // 'getExtConfig',
+  // 'getExtConfigSync',
+  // 'onWindowResize',
+  // 'offWindowResize'
 ];
 
 // 存在兼容性的 API 列表
@@ -398,7 +395,10 @@ const canIUses = [
   'checkIsSupportSoterAuthentication',
   'startSoterAuthentication',
   'checkIsSoterEnrolledInDevice',
-  'openDocument'
+  'openDocument',
+  'createVideoContext',
+  'onMemoryWarning',
+  'addPhoneContact'
 ];
 
 function _handleNetworkInfo (result) {
@@ -1993,6 +1993,12 @@ function parsePage (vuePageOptions) {
     onUnload () {
       this.$vm.__call_hook('onUnload');
       this.$vm.$destroy();
+    },
+    events: {
+      // 支付宝小程序有些页面事件只能放在events下
+      onBack () {
+        this.$vm.__call_hook('onBackPress');
+      }
     },
     __r: handleRef,
     __e: handleEvent,
