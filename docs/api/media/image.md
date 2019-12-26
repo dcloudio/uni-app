@@ -19,6 +19,7 @@ App端如需要更丰富的相机拍照API（如直接调用前置摄像头）�
 **Tips**
 
 - count 值在 H5 平台的表现，基于浏览器本身的规范。目前测试的结果来看，只能限制单选/多选，并不能限制数量。并且，在实际的手机浏览器很少有能够支持多选的。
+- sourceType 在H5端对应`input`的`capture`属性，设置为`['album']`无效，依然可以使用相机。
 - 可以通过用户授权API来判断用户是否给应用授予相册或摄像头的访问权限[https://uniapp.dcloud.io/api/other/authorize](https://uniapp.dcloud.io/api/other/authorize)
 
 **注：文件的临时路径，在应用本次启动期间可以正常使用，如需持久保存，需在主动调用 [uni.saveFile](api/file/file?id=savefile)，在应用下次启动时才能访问得到。**
@@ -241,7 +242,7 @@ uni.chooseImage({
 
 |5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序
 |:-:|:-:|:-:|:-:|:-:|:-:|
-|1.9.7+ [自定义组件编译模式](https://ask.dcloud.net.cn/article/35843)|x|√|√|x|√|
+|1.9.7+ [自定义组件编译模式](https://ask.dcloud.net.cn/article/35843)|x|√|√|√(基础库版本>=3.110.3)|√|
 
 **OBJECT 参数说明**
 

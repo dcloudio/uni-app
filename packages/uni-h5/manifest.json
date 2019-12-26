@@ -818,5 +818,9 @@
             ]
         ],
         true
+    ],
+    "setPageMeta": [
+        "/core/service/api/ui/set-page-meta.js",
+        []
     ]
 }

@@ -1,0 +1,3 @@
+dist/compileTemplate
+dist/parse
+dist/parseCustomBlocks

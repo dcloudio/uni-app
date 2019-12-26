@@ -127,16 +127,20 @@ module.exports.pitch = function (remainingRequest) {
   // for templates: inject the template compiler & optional cache
   if (query.type === `template`) {
     const path = require('path')
+    // const cacheLoader = cacheDirectory && cacheIdentifier
+    //   ? [`${require.resolve('cache-loader')}?${JSON.stringify({
+    //     // For some reason, webpack fails to generate consistent hash if we
+    //     // use absolute paths here, even though the path is only used in a
+    //     // comment. For now we have to ensure cacheDirectory is a relative path.
+    //     cacheDirectory: (path.isAbsolute(cacheDirectory)
+    //       ? path.relative(process.cwd(), cacheDirectory)
+    //       : cacheDirectory).replace(/\\/g, '/'),
+    //     cacheIdentifier: hash(cacheIdentifier) + '-vue-loader-template'
+    //   })}`]
+    //   : []
+    // fixed by xxxxxx 定制 template cache
     const cacheLoader = cacheDirectory && cacheIdentifier
-      ? [`cache-loader?${JSON.stringify({
-        // For some reason, webpack fails to generate consistent hash if we
-        // use absolute paths here, even though the path is only used in a
-        // comment. For now we have to ensure cacheDirectory is a relative path.
-        cacheDirectory: (path.isAbsolute(cacheDirectory)
-          ? path.relative(process.cwd(), cacheDirectory)
-          : cacheDirectory).replace(/\\/g, '/'),
-        cacheIdentifier: hash(cacheIdentifier) + '-vue-loader-template'
-      })}`]
+      ? [`${require.resolve('cache-loader')}??uni-cache-loader-template-options`]
       : []
 
     const preLoaders = loaders.filter(isPreLoader)

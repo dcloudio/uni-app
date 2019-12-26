@@ -137,6 +137,8 @@ module.exports = {
           resourceQuery: /vue&type=template/,
           use: [{
             loader: resolve('packages/webpack-uni-app-loader/filter-modules-template.js')
+          }, {
+            loader: '@dcloudio/vue-cli-plugin-uni/packages/webpack-uni-app-loader/page-meta'
           }]
         }, {
           resourceQuery: [/lang=wxs/, /blockType=wxs/],

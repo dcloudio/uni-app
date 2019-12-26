@@ -3,8 +3,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const assetUrl_1 = __importDefault(require("@vue/component-compiler-utils/dist/templateCompilerModules/assetUrl"));
-const srcset_1 = __importDefault(require("@vue/component-compiler-utils/dist/templateCompilerModules/srcset"));
+const assetUrl_1 = __importDefault(require("./templateCompilerModules/assetUrl"));
+const srcset_1 = __importDefault(require("./templateCompilerModules/srcset"));
 const consolidate = require('consolidate');
 const transpile = require('vue-template-es2015-compiler');
 function compileTemplate(options) {
@@ -16,8 +16,8 @@ function compileTemplate(options) {
         }));
     }
     else if (preprocessLang) {
-        return {
-            code: `var render = function () {}\n` + `var staticRenderFns = []\n`,
+        return { // fixed by xxxxxx recyclableRender,components
+            code: `var render = function () {}\n` + `var staticRenderFns = []\n` + `var recyclableRender\n` + `var components\n`,
             source: options.source,
             tips: [
                 `Component ${options.filename} uses lang ${preprocessLang} for template. Please install the language preprocessor.`
@@ -66,10 +66,11 @@ function actuallyCompile(options) {
             modules: [...builtInModules, ...(compilerOptions.modules || [])]
         });
     }
-    const { render, staticRenderFns, tips, errors, '@render': recyclableRender } = compile(source, finalCompilerOptions);
+    // fixed by xxxxxx
+    const { render, staticRenderFns, tips, errors, '@render': recyclableRender, components } = compile(source, finalCompilerOptions);
     if (errors && errors.length) {
-        return {
-            code: `var render = function () {}\n` + `var staticRenderFns = []\n`,
+        return { // fixed by xxxxxx recyclableRender,components
+            code: `var render = function () {}\n` + `var staticRenderFns = []\n` + `var recyclableRender\n` + `var components\n`,
             source,
             tips,
             errors
@@ -84,15 +85,17 @@ function actuallyCompile(options) {
         const toFunction = (code) => {
             return `function (${isFunctional ? `_h,_vm` : ``}) {${code}}`;
         };
+         // fixed by xxxxxx
         // transpile code with vue-template-es2015-compiler, which is a forked
         // version of Buble that applies ES2015 transforms + stripping `with` usage
         let code = transpile(`var __render__ = ${toFunction(render)}\n` +
-            (recyclableRender ? (`var __recyclableRender__ = ${toFunction(recyclableRender)}\n`) : '') +
+            `var __recyclableRender__ = ${recyclableRender ? toFunction(recyclableRender) : 'false'}\n` +
             `var __staticRenderFns__ = [${staticRenderFns.map(toFunction)}]`, finalTranspileOptions) + `\n`;
         // #23 we use __render__ to avoid `render` not being prefixed by the
         // transpiler when stripping with, but revert it back to `render` to
         // maintain backwards compat
         code = code.replace(/\s__(render|recyclableRender|staticRenderFns)__\s/g, ' $1 ');
+        code = (components || '') + '\n' + code // fixed by xxxxxx
         if (!isProduction) {
             // mark with stripped (this enables Vue to use correct runtime proxy
             // detection)

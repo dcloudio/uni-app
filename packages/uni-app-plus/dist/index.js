@@ -344,6 +344,7 @@ const interceptors = {
 
 
 var baseApi = /*#__PURE__*/Object.freeze({
+  __proto__: null,
   upx2px: upx2px,
   interceptors: interceptors,
   addInterceptor: addInterceptor,
@@ -493,6 +494,7 @@ function $emit () {
 }
 
 var eventApi = /*#__PURE__*/Object.freeze({
+  __proto__: null,
   $on: $on,
   $off: $off,
   $once: $once,
@@ -578,6 +580,7 @@ function getSubNVueById (id) {
 
 
 var api = /*#__PURE__*/Object.freeze({
+  __proto__: null,
   getSubNVueById: getSubNVueById,
   requireNativePlugin: requireNativePlugin
 });

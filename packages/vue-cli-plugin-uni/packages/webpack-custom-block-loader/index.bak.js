@@ -14,7 +14,7 @@ const {
 
 const FILTER_TAG = getPlatformFilterTag()
 
-module.exports = function (source) {
+module.exports = function(source) {
   const loaderContext = this
 
   const {
@@ -54,6 +54,15 @@ module.exports = function (source) {
       )
     ) {
       modules[block.attrs.module] = block
+      return true
+    }
+    if ( // renderjs
+      options.isAppView &&
+      (
+        block.type === 'renderjs' ||
+        block.attrs.lang === 'renderjs'
+      )
+    ) {
       return true
     }
   })

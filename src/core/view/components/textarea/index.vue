@@ -1,20 +1,7 @@
 <template>
   <uni-textarea
-    :value="_checkEmpty(value)"
-    :maxlength="maxlengthNumber"
-    :placeholder="_checkEmpty(placeholder)"
-    :disabled="disabled"
-    :focus="focus"
-    :auto-focus="autoFocus"
-    :placeholder-class="_checkEmpty(placeholderClass)"
-    :placeholder-style="_checkEmpty(placeholderStyle)"
-    :auto-height="autoHeight"
-    :cursor="cursorNumber"
-    :selection-start="selectionStartNumber"
-    :selection-end="selectionEndNumber"
     @change.stop
-    v-on="$listeners"
-  >
+    v-on="$listeners">
     <div class="uni-textarea-wrapper">
       <div
         v-show="!(composition||valueSync.length)"
@@ -41,6 +28,7 @@
         :maxlength="maxlengthNumber"
         :autofocus="autoFocus"
         :class="{'uni-textarea-textarea-ios': isIOS}"
+        :style="{'overflow-y': autoHeight? 'hidden':'auto'}"
         class="uni-textarea-textarea"
         @compositionstart="_compositionstart"
         @compositionend="_compositionend"
@@ -286,9 +274,6 @@ export default {
     },
     _resetFormData () {
       this.valueSync = ''
-    },
-    _checkEmpty (str) {
-      return str || false
     }
   }
 }
@@ -305,9 +290,6 @@ uni-textarea {
 }
 uni-textarea[hidden] {
   display: none;
-}
-uni-textarea[auto-height] .uni-textarea-textarea {
-  overflow-y: hidden;
 }
 .uni-textarea-wrapper,
 .uni-textarea-placeholder,

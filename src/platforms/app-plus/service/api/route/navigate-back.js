@@ -100,10 +100,18 @@ export function navigateBack ({
 
   uni.hideToast() // 后退时，关闭 toast,loading
 
-  currentPage.$page.meta.isQuit
-    ? quit()
-    : back(delta, animationType, animationDuration)
-
+  if (currentPage.$page.meta.isQuit) {
+    quit()
+  } else if (currentPage.$page.id === 1 && __uniConfig.realEntryPagePath) {
+    // condition
+    __uniConfig.entryPagePath = __uniConfig.realEntryPagePath
+    delete __uniConfig.realEntryPagePath
+    uni.reLaunch({
+      url: '/' + __uniConfig.entryPagePath
+    })
+  } else {
+    back(delta, animationType, animationDuration)
+  }
   return {
     errMsg: 'navigateBack:ok'
   }

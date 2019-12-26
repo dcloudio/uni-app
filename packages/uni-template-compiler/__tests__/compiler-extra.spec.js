@@ -311,6 +311,14 @@ describe('mp:compiler-extra', () => {
       `<view class="input-list" v-for="(item,index) in dataList" :key="item.id"><input v-model.trim="dataList2[index].val" /></view>`,
       `<block wx:for="{{dataList}}" wx:for-item="item" wx:for-index="index" wx:key="id"><view class="input-list"><input data-event-opts="{{[['input',[['__set_model',['$0','val','$event',['trim']],['dataList2.'+index+'']]]],['blur',[['$forceUpdate']]]]}}" value="{{dataList2[index].val}}" bindinput="__e" bindblur="__e"/></view></block>`
     )
+    assertCodegen(
+      ` <view>
+        <view v-for="item in list[idx]" :key="item.id" class="mid-item-title" @click="m1(item)">
+          <view class="mid-item-icon" @click.stop="m2(item)"></view>
+        </view>
+        </view>`,
+      `<view><block wx:for="{{list[idx]}}" wx:for-item="item" wx:for-index="__i0__" wx:key="id"><view data-event-opts="{{[['tap',[['m1',['$0'],[[['list.'+idx+'','id',item.id]]]]]]]}}" class="mid-item-title" bindtap="__e"><view data-event-opts="{{[['tap',[['m2',['$0'],[[['list.'+idx+'','id',item.id]]]]]]]}}" class="mid-item-icon" catchtap="__e"></view></view></block></view>`
+    )
   })
 
   it('generate class binding', () => {

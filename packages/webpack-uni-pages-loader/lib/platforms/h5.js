@@ -301,6 +301,7 @@ module.exports = function (pagesJson, manifestJson) {
 
   const pageComponents = getPageComponents(inputDir, pagesJson)
 
+  pagesJson.globalStyle = process.UNI_H5_PAGES_JSON.globalStyle
   delete pagesJson.pages
   delete pagesJson.subPackages
 

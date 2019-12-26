@@ -557,7 +557,7 @@ function parseHTML (html, options) {
 var splitRE = /\r?\n/g;
 var replaceRE = /./g;
 var isSpecialTag = makeMap('script,style,template', true);
-var isCustomBlock = makeMap('wxs,filter,sjs', true);// fixed by xxxxxx
+var isCustomBlock = makeMap('wxs,filter,sjs,renderjs', true);// fixed by xxxxxx
 
 /**
  * Parse a single-file component (*.vue) file into an SFC Descriptor Object.

@@ -1,7 +1,5 @@
 <template>
-  <uni-video
-    v-bind="attrs"
-    v-on="$listeners">
+  <uni-video v-on="$listeners">
     <div
       ref="container"
       class="uni-video-container" />
@@ -114,7 +112,7 @@ export default {
     },
     direction: {
       type: [String, Number],
-      default: 360
+      default: ''
     },
     showProgress: {
       type: Boolean,

@@ -185,15 +185,36 @@ const {
 function isComponent (tagName) {
   if (
     tagName === 'block' ||
+    tagName === 'component' ||
     tagName === 'template' ||
     tagName === 'keep-alive'
   ) {
     return false
   }
+  // mp-weixin 底层支持 page-meta,navigation-bar
+  if (process.env.UNI_PLATFORM === 'mp-weixin') {
+    if (tagName === 'page-meta' || tagName === 'navigation-bar') {
+      return false
+    }
+  }
   return !hasOwn(tags, getTagName(tagName.replace('v-uni-', '')))
 }
 
+function makeMap (str, expectsLowerCase) {
+  const map = Object.create(null)
+  const list = str.split(',')
+  for (let i = 0; i < list.length; i++) {
+    map[list[i]] = true
+  }
+  return expectsLowerCase
+    ? val => map[val.toLowerCase()]
+    : val => map[val]
+}
 module.exports = {
+  isUnaryTag: makeMap(
+    'image,area,base,br,col,embed,frame,hr,img,input,isindex,keygen,' +
+    'link,meta,param,source,track,wbr'
+  ),
   isComponent,
   genCode,
   getCode,

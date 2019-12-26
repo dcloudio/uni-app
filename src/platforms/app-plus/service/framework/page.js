@@ -32,8 +32,13 @@ export function registerPage ({
 }) {
   const routeOptions = JSON.parse(JSON.stringify(__uniRoutes.find(route => route.path === path)))
 
-  if (openType === 'reLaunch' || pages.length === 0) {
-    // pages.length===0 表示首页触发 redirectTo
+  if (
+    openType === 'reLaunch' ||
+    (
+      !__uniConfig.realEntryPagePath &&
+      pages.length === 0
+    )
+  ) {
     routeOptions.meta.isQuit = true
   } else if (!routeOptions.meta.isTabBar) {
     routeOptions.meta.isQuit = false

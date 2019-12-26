@@ -81,7 +81,6 @@ function getStylesCode(loaderContext) {
       (shortFilePath + '\n' + source) :
       shortFilePath
     )
-
     stylesCode = genStylesCode(
       loaderContext,
       descriptor.styles,
@@ -89,7 +88,8 @@ function getStylesCode(loaderContext) {
       resourcePath,
       stringifyRequest,
       needsHotReload,
-      true // needs explicit injection?
+      true, // needs explicit injection?
+      'app-vue'
     )
   }
   return stylesCode.replace(/main\.js/g, 'App.vue')

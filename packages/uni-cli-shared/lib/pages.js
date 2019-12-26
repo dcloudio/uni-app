@@ -325,7 +325,82 @@ function addPageUsingComponents (pagePath, usingComponents) {
     usingComponentsPages[pagePath] = usingComponents
   }
 }
+// 存储自动组件
+const autoComponentMap = {}
 
+let lastUsingAutoImportComponentsJson = ''
+
+process.UNI_AUTO_COMPONENTS = []
+
+function initAutoImportComponents (usingAutoImportComponents = {}) {
+  // 目前仅 mp-weixin 内置支持 page-meta 等组件
+  if (process.env.UNI_PLATFORM !== 'mp-weixin') {
+    if (!usingAutoImportComponents['page-meta']) {
+      usingAutoImportComponents['page-meta'] =
+        '@dcloudio/uni-cli-shared/components/page-meta.vue'
+    }
+    if (!usingAutoImportComponents['navigation-bar']) {
+      usingAutoImportComponents['navigation-bar'] =
+        '@dcloudio/uni-cli-shared/components/navigation-bar.vue'
+    }
+  }
+
+  const newUsingAutoImportComponentsJson = JSON.stringify(usingAutoImportComponents)
+  if (newUsingAutoImportComponentsJson !== lastUsingAutoImportComponentsJson) {
+    lastUsingAutoImportComponentsJson = newUsingAutoImportComponentsJson
+    process.UNI_AUTO_COMPONENTS = parseUsingAutoImportComponents(usingAutoImportComponents)
+    refreshAutoComponentMap()
+  }
+}
+
+/**
+ * UNI_AUTO_COMPONENTS 被更新,重新刷新 map
+ */
+function refreshAutoComponentMap () {
+  Object.keys(autoComponentMap).forEach(name => {
+    addAutoComponent(name)
+  })
+}
+
+function addAutoComponent (name) {
+  const options = process.UNI_AUTO_COMPONENTS
+  const opt = options.find(opt => opt.pattern.test(name))
+  if (!opt) { // 不匹配
+    return (autoComponentMap[name] = true) // cache
+  }
+  return (autoComponentMap[name] = {
+    name,
+    identifier: capitalize(camelize(name + '-auto-import')),
+    source: name.replace(opt.pattern, opt.replacement)
+  })
+}
+
+function getAutoComponents (autoComponents) {
+  const components = []
+  autoComponents.forEach(name => {
+    let autoComponent = autoComponentMap[name]
+    if (!autoComponent) {
+      autoComponent = addAutoComponent(name)
+    }
+    if (autoComponent !== true) {
+      components.push(autoComponent)
+    }
+  })
+  return components
+}
+
+function parseUsingAutoImportComponents (usingAutoImportComponents) {
+  const autoImportComponents = []
+  if (usingAutoImportComponents) {
+    Object.keys(usingAutoImportComponents).forEach(pattern => {
+      autoImportComponents.push({
+        pattern: new RegExp(pattern),
+        replacement: usingAutoImportComponents[pattern]
+      })
+    })
+  }
+  return autoImportComponents
+}
 module.exports = {
   getMainEntry,
   getNVueMainEntry,
@@ -334,9 +409,12 @@ module.exports = {
   getPagesJson,
   parsePagesJson,
   pagesJsonJsFileName,
+  getAutoComponents,
+  initAutoImportComponents,
   addPageUsingComponents,
   getUsingComponentsCode,
   generateUsingComponentsCode,
   getGlobalUsingComponentsCode,
+  parseUsingAutoImportComponents,
   generateGlobalUsingComponentsCode
 }

@@ -4,7 +4,6 @@ const {
 } = require('@dcloudio/uni-cli-shared')
 
 module.exports = {
-  preserveWhitespace: false,
   modules: [require('./format-text'), {
     preTransformNode (el, {
       warn

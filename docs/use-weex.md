@@ -752,6 +752,21 @@ export default {
 - nvue页面没有bounce回弹效果，只有几个列表组件有bounce效果，包括 list、recycle-list、waterfall。
 - Android端在一个页面内使用大量圆角边框会造成性能问题，尤其是多个角的样式还不一样。应避免这类使用。
 
+## Android平台阴影(box-shadow)问题
+
+Android平台weex对阴影样式(`box-shadow`)支持不完善，如设置圆角边框时阴影样式显示不正常、设置动画时在`Android7`上显示不正常等。为解决这些问题，新增`elevation`属性（组件的属性，不是css样式）设置组件的层级，`Number`类型，层级值越大阴影越明显，阴影效果也与组件位置有关，越靠近页面底部阴影效果越明显
+
+**用法**
+
+```html
+<view elevation="5px"></view>
+```
+
+**注意**
+
+- 为了避免`elevation`属性的阴影效果与阴影样式(`box-shadow`)冲突，设置`elevation`属性后`box-shadow`样式失效
+- 使用`elevation`需要阴影元素的父元素大于阴影范围，否则会对阴影进行裁剪
+
 ## 单位说明
 - weex的css单位支持如下：
 	* px：以750宽的屏幕为基准动态计算的长度单位，与vue页面中的rpx理念相同。（一定要注意nvue里的px，和vue里的px逻辑不一样）
