@@ -10,7 +10,8 @@
   },
   "files": [
     "lib",
-    "template"
+    "template",
+    "components"
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

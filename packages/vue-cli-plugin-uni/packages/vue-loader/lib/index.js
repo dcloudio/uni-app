@@ -69,7 +69,10 @@ module.exports = function (source) {
     compiler: options.compiler || loadTemplateCompiler(loaderContext),
     filename,
     sourceRoot,
-    needMap: sourceMap
+    needMap: sourceMap,
+    isAppService: options.isAppService,
+    isAppView: options.isAppView,
+    isAppNVue: options.isAppNVue
   })
 
   // if the query has a type field, this is a language block request

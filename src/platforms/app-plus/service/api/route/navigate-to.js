@@ -3,6 +3,11 @@ import {
 } from 'uni-shared'
 
 import {
+  ANI_SHOW,
+  ANI_DURATION
+} from '../../constants'
+
+import {
   showWebview
 } from './util'
 
@@ -55,6 +60,14 @@ export function navigateTo ({
 }, callbackId) {
   const urls = url.split('?')
   const path = urls[0]
+  const routeStyles = __uniRoutes.find(route => route.path === path).window
+  const globalStyle = __uniConfig.window
+  if (!animationType) {
+    animationType = routeStyles.animationType || globalStyle.animationType || ANI_SHOW
+  }
+  if (!animationDuration) {
+    animationDuration = routeStyles.animationDuration || globalStyle.animationDuration || ANI_DURATION
+  }
   const query = parseQuery(urls[1] || '')
   navigate(path, function () {
     _navigateTo({

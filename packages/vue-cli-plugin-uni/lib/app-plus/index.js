@@ -88,6 +88,13 @@ const v3 = {
         loader: path.resolve(__dirname,
           '../../packages/webpack-uni-app-loader/view/script')
       })
+      // view 层 renderjs
+      rules.push({
+        resourceQuery: [/lang=renderjs/, /blockType=renderjs/],
+        use: [{
+          loader: path.resolve(__dirname, '../../packages/webpack-uni-app-loader/view/renderjs')
+        }]
+      })
     }
     scriptLoaders.push({
       loader: path.resolve(__dirname,
@@ -245,11 +252,13 @@ const v3 = {
         compilerOptions
       }, cacheConfig))
       .end()
-      .use('uniapp-custom-block-loader')
-      .loader(require.resolve('@dcloudio/vue-cli-plugin-uni/packages/webpack-custom-block-loader'))
-      .options({
-        compiler: getPlatformCompiler()
-      })
+      // .use('uniapp-custom-block-loader')
+      // .loader(require.resolve('@dcloudio/vue-cli-plugin-uni/packages/webpack-custom-block-loader'))
+      // .options({
+      //   isAppService,
+      //   isAppView,
+      //   compiler: getPlatformCompiler()
+      // })
 
     // 是否启用 cache
     if (process.env.UNI_USING_CACHE) {
