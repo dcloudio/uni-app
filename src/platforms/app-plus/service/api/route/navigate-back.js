@@ -104,8 +104,10 @@ export function navigateBack ({
     quit()
   } else if (currentPage.$page.id === 1 && __uniConfig.realEntryPagePath) {
     // condition
+    __uniConfig.entryPagePath = __uniConfig.realEntryPagePath
+    delete __uniConfig.realEntryPagePath
     uni.reLaunch({
-      url: '/' + __uniConfig.realEntryPagePath
+      url: '/' + __uniConfig.entryPagePath
     })
   } else {
     back(delta, animationType, animationDuration)

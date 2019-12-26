@@ -7183,8 +7183,10 @@ var serviceContext = (function () {
       quit();
     } else if (currentPage.$page.id === 1 && __uniConfig.realEntryPagePath) {
       // condition
+      __uniConfig.entryPagePath = __uniConfig.realEntryPagePath;
+      delete __uniConfig.realEntryPagePath;
       uni.reLaunch({
-        url: '/' + __uniConfig.realEntryPagePath
+        url: '/' + __uniConfig.entryPagePath
       });
     } else {
       back(delta, animationType, animationDuration);
@@ -7890,9 +7892,9 @@ var serviceContext = (function () {
     if (
       openType === 'reLaunch' ||
       (
-        openType === 'redirect' &&
+        !__uniConfig.realEntryPagePath &&
         pages.length === 0
-      ) // 首页 redirect
+      )
     ) {
       routeOptions.meta.isQuit = true;
     } else if (!routeOptions.meta.isTabBar) {
@@ -8019,6 +8021,14 @@ var serviceContext = (function () {
   }, callbackId) {
     const urls = url.split('?');
     const path = urls[0];
+    const routeStyles = __uniRoutes.find(route => route.path === path).window;
+    const globalStyle = __uniConfig.window;
+    if (!animationType) {
+      animationType = routeStyles.animationType || globalStyle.animationType || ANI_SHOW;
+    }
+    if (!animationDuration) {
+      animationDuration = routeStyles.animationDuration || globalStyle.animationDuration || ANI_DURATION;
+    }
     const query = parseQuery(urls[1] || '');
     navigate(path, function () {
       _navigateTo({

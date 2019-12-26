@@ -35,9 +35,9 @@ export function registerPage ({
   if (
     openType === 'reLaunch' ||
     (
-      openType === 'redirect' &&
+      !__uniConfig.realEntryPagePath &&
       pages.length === 0
-    ) // 首页 redirect
+    )
   ) {
     routeOptions.meta.isQuit = true
   } else if (!routeOptions.meta.isTabBar) {
