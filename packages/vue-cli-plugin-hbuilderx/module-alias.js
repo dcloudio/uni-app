@@ -9,8 +9,8 @@ const {
 // nvue override
 moduleAlias.addAlias('weex-styler', path.resolve(__dirname, 'packages/weex-styler'))
 moduleAlias.addAlias('weex-template-compiler', path.resolve(__dirname, 'packages/weex-template-compiler'))
-moduleAlias.addAlias('./compileTemplate', require.resolve(
-  '@dcloudio/vue-cli-plugin-uni/packages/@vue/component-compiler-utils/dist/compileTemplate'))
+moduleAlias.addAlias('@vue/component-compiler-utils', require.resolve('@dcloudio/vue-cli-plugin-uni/packages/@vue/component-compiler-utils'))
+moduleAlias.addAlias('@vue/component-compiler-utils/package.json', require.resolve('@dcloudio/vue-cli-plugin-uni/packages/@vue/component-compiler-utils/package.json'))
 
 if (isInHBuilderX) {
   moduleAlias.addAlias('typescript', path.resolve(process.env.UNI_HBUILDERX_PLUGINS,
