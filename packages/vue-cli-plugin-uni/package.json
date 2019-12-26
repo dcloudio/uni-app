@@ -24,6 +24,7 @@
     "envinfo": "^6.0.1",
     "hash-sum": "^1.0.2",
     "loader-utils": "^1.1.0",
+    "lru-cache": "^4.1.2",
     "mkdirp": "^0.5.1",
     "module-alias": "^2.1.0",
     "postcss": "^7.0.7",
