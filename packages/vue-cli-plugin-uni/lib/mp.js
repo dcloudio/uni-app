@@ -1,10 +1,6 @@
 const path = require('path')
 const webpack = require('webpack')
 
-const moduleAlias = require('module-alias')
-// TODO 重写 vue scoped(若升级 vue 编译器，需要确认该文件路径是否发生变化)
-moduleAlias.addAlias('./stylePlugins/scoped', path.resolve(__dirname, './scoped.js'))
-
 const {
   parseEntry,
   getMainEntry,

@@ -58,9 +58,16 @@ exports.default = postcss.plugin('add-id', (options) => (root) => {
                     // So all leading spaces must be eliminated to avoid problems.
                     selector.first.spaces.before = '';
                 }
-                selector.insertAfter(node, selectorParser.attribute({
-                    attribute: id
-                }));
+                // fixed by xxxxxx (h5 平台继续使用 attribute,其他平台使用 className)
+                if(process.env.UNI_PLATFORM === 'h5'){
+                  selector.insertAfter(node, selectorParser.attribute({
+                      attribute: id
+                  }));
+                } else {
+                  selector.insertAfter(node, selectorParser.className({
+                      value: id
+                  }));
+                }
             });
         }).processSync(node.selector);
     });

@@ -69,7 +69,7 @@ function broadcast (vm, componentName, eventName, ...params) {
   })
 }
 
-const NATIVE_COMPONENTS = ['Camera', 'LivePlayer', 'LivePusher', 'Map', 'Video', 'CoverView', 'CoverImage']
+const NATIVE_COMPONENTS = ['Camera', 'LivePlayer', 'LivePusher', 'Map', 'Video', 'CoverView', 'CoverImage', 'Ad']
 
 function updateView () {
   const pages = getCurrentPages()
@@ -82,6 +82,7 @@ function updateView () {
 }
 
 window.addEventListener('resize', updateView)
+window.addEventListener('updateview', updateView)
 
 function vdSync ({
   data,
