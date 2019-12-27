@@ -24,6 +24,10 @@ query.select('#id').boundingClientRect(data => {
 }).exec();
 ```
 
+**注意**
+
+- 支付宝小程序不支持in(component)，请注意使用条件编译
+
 ### selectorQuery.select(selector)
 
 在当前页面下选择第一个匹配选择器 ``selector`` 的节点，返回一个 ``NodesRef`` 对象实例，可以用于获取节点信息。
