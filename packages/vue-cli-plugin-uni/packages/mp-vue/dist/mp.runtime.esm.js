@@ -5832,13 +5832,16 @@ function internalMixin(Vue) {
       if (this.$scope && this.$scope[method]) {
         return this.$scope[method](args)
       }
-      // 主要是 mp-alipay
+      // mp-alipay
+      if(typeof my === 'undefined'){
+        return
+      }
       if (method === 'createSelectorQuery') {
         /* eslint-disable no-undef */
-        return uni.createSelectorQuery(args).in(this)
+        return my.createSelectorQuery(args)
       } else if (method === 'createIntersectionObserver') {
         /* eslint-disable no-undef */
-        return uni.createIntersectionObserver(this, args)
+        return my.createIntersectionObserver(args)
       }
       // TODO mp-alipay 暂不支持 selectAllComponents,selectComponent
     };
