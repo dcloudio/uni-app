@@ -92,6 +92,10 @@ module.exports = function (appJson, manifestJson, {
     manifestJson.plus.launch_path = '__uniappview.html' // 首页地址固定
   }
 
+  // nvue 首页启动模式
+  manifestJson.plus['uni-app'].nvueLaunchMode = manifestJson.plus.nvueLaunchMode === 'fast' ? 'fast' : 'normal'
+  delete manifestJson.plus.nvueLaunchMode
+
   manifest.name = 'manifest.json'
   manifest.content = JSON.stringify(manifest.content)
   delete appJson.nvue

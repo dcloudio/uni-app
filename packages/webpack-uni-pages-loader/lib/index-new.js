@@ -86,6 +86,12 @@ module.exports = function (content) {
       let appConfigContent = ''
       jsonFiles.forEach(jsonFile => {
         if (jsonFile) {
+          if (!isAppView && jsonFile.name === 'manifest.json') {
+            const content = JSON.parse(jsonFile.content)
+            if (!content.launch_path && content.plus['uni-app'].nvueLaunchMode === 'fast') {
+              console.log('Nvue 首页启动模式: fast 详见: https://ask.dcloud.net.cn/article/36749')
+            }
+          }
           if (jsonFile.name === 'define-pages.js') {
             appConfigContent = jsonFile.content
           } else {
