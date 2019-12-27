@@ -24,7 +24,7 @@ function getTabBarPages (appJson) {
 }
 
 function isTabBarPage (pathName, tabBarPages) {
-  return tabBarPages.find(item => item.pagePath === pathName)
+  return tabBarPages && tabBarPages.find(item => item.pagePath === pathName)
 }
 
 function parseEntryPagePath (appJson, manifestJson) {

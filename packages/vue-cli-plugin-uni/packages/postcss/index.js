@@ -171,22 +171,24 @@ if (process.env.UNI_USING_V3) {
           if (!isInsideKeyframes(rule)) {
             // rule.selectors == comma seperated selectors
             // a, b.c {} => ["a", "b.c"]
-            rule.selectors = rule.selectors.map(complexSelector =>
+            rule.selectors = rule.selectors.map(complexSelector => {
               // complexSelector => simpleSelectors
               // "a.b#c" => ["a", ".b", "#c"]
-              transformSelector(complexSelector, simpleSelectors =>
+              if (complexSelector === 'page') {
+                hasPage = true
+              }
+              return transformSelector(complexSelector, simpleSelectors =>
                 // only process type selector, leave alone class & id selectors
                 simpleSelectors.walkTags(tag => {
                   if (tag.value === 'page') {
                     tag.value = 'uni-page-body'
-                    hasPage = true
                   } else if (~TAGS.indexOf(tag.value) && tag.value.substring(
                     0, 4) !== 'uni-') {
                     tag.value = 'uni-' + tag.value
                   }
                 })
               )
-            )
+            })
           }
           // handle upx unit
           rule.walkDecls(decl => {
