@@ -26,7 +26,7 @@ query.select('#id').boundingClientRect(data => {
 
 **注意**
 
-- 支付宝小程序不支持in(component)，请注意使用条件编译
+- 支付宝小程序不支持in(component)，使用无效果
 
 ### selectorQuery.select(selector)
 
