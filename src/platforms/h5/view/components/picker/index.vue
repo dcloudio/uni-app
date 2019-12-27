@@ -298,7 +298,7 @@ export default {
       this._setValue()
       var $picker = this.$refs.picker
       $picker.remove();
-      (document.querySelector('uni-app') || document.body).append($picker)
+      (document.querySelector('uni-app') || document.body).appendChild($picker)
       $picker.style.display = 'block'
       setTimeout(() => {
         this.visible = true
