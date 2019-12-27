@@ -88,6 +88,12 @@ export function createSelectorQuery () {
       return this
     }
   }
+
+  if (!query.in) {
+    query.in = function () {
+      return this
+    }
+  }
   return query
 }
 
