@@ -8,7 +8,6 @@ const {
 } = require('@dcloudio/uni-template-compiler/lib/util')
 
 const TAGS = [
-  'ad',
   'text',
   'image',
   'input',
