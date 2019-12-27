@@ -259,10 +259,12 @@ var methods3 = ['setFillStyle', 'setTextAlign', 'setStrokeStyle', 'setGlobalAlph
 ]
 
 var tempCanvas
-function getTempCanvas () {
+function getTempCanvas (width = 0, height = 0) {
   if (!tempCanvas) {
     tempCanvas = document.createElement('canvas')
   }
+  tempCanvas.width = width
+  tempCanvas.height = height
   return tempCanvas
 }
 
