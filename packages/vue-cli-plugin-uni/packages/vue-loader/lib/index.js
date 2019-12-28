@@ -141,6 +141,20 @@ module.exports = function (source) {
     )
   }
 
+  let renderjsImport = `var renderjs`
+  if(options.isAppView && descriptor.renderjs){
+    const src = descriptor.renderjs.src || resourcePath
+    const attrsQuery = attrsToQuery(descriptor.renderjs.attrs, 'js')
+    const query = `?vue&type=renderjs${attrsQuery}${inheritQuery}`
+    const request = stringifyRequest(src + query)
+    renderjsImport = (
+      `import renderjs from ${request}\n` +
+      `renderjs.__module = '${descriptor.renderjs.attrs.module}'\n` +
+      `export * from ${request}` // support named exports
+    )
+  }
+
+
   // styles
   let stylesCode = ``
   // fixed by xxxxxx 仅限 view 层
@@ -158,6 +172,7 @@ module.exports = function (source) {
   // fixed by xxxxxx (injectStyles,auto components)
   let code = `
 ${templateImport}
+${renderjsImport}
 ${scriptImport}
 ${stylesCode}
 
@@ -172,7 +187,8 @@ var component = normalizer(
   ${hasScoped ? JSON.stringify(id) : `null`},
   ${isServer ? JSON.stringify(hash(request)) : `null`},
   ${isShadow ? `true` : `false`},
-  components
+  components,
+  renderjs
 )
   `.trim() + `\n`
 

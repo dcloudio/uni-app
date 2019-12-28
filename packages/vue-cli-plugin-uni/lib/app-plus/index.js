@@ -37,6 +37,7 @@ function getProvides (isAppService) {
     }
   }
   return { // app-view
+    '__f__': [path.resolve(__dirname, '../format-log.js'), 'default'],
     'getDate': [wxsPath, 'getDate'],
     'getRegExp': [wxsPath, 'getRegExp']
   }
@@ -89,12 +90,12 @@ const v3 = {
           '../../packages/webpack-uni-app-loader/view/script')
       })
       // view 层 renderjs
-      rules.push({
-        resourceQuery: [/lang=renderjs/, /blockType=renderjs/],
-        use: [{
-          loader: path.resolve(__dirname, '../../packages/webpack-uni-app-loader/view/renderjs')
-        }]
-      })
+      // rules.push({
+      //   resourceQuery: [/lang=renderjs/, /blockType=renderjs/],
+      //   use: [{
+      //     loader: path.resolve(__dirname, '../../packages/webpack-uni-app-loader/view/renderjs')
+      //   }]
+      // })
     }
     scriptLoaders.push({
       loader: path.resolve(__dirname,

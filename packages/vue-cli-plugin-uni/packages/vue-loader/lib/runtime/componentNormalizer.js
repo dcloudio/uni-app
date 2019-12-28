@@ -13,7 +13,8 @@ export default function normalizeComponent (
   scopeId,
   moduleIdentifier, /* server only */
   shadowMode, /* vue-cli only */
-  components // fixed by xxxxxx auto components
+  components, // fixed by xxxxxx auto components
+  renderjs // fixed by xxxxxx renderjs
 ) {
   // Vue.extend constructor export interop
   var options = typeof scriptExports === 'function'
@@ -23,6 +24,13 @@ export default function normalizeComponent (
   // fixed by xxxxxx auto components
   if (components) {
     options.components = Object.assign(components, options.components || {})
+  }
+  // fixed by xxxxxx renderjs
+  if (renderjs) {
+    (renderjs.beforeCreate || (renderjs.beforeCreate = [])).unshift(function() {
+      this[renderjs.__module] = this
+    });
+    (options.mixins || (options.mixins = [])).push(renderjs)
   }
 
   // render functions

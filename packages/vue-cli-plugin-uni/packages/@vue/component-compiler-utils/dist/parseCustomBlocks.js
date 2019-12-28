@@ -27,13 +27,14 @@ module.exports = function parseCustomBlocks(descriptor, options) {
       return true
     }
     if ( // renderjs
-      options.isAppView &&
+      block.attrs.module &&
       (
         block.type === 'renderjs' ||
         block.attrs.lang === 'renderjs'
       )
     ) {
-      return true
+      descriptor.renderjs = block
+      modules[block.attrs.module] = block
     }
   })
 
