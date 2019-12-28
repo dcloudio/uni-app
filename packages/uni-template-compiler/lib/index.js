@@ -168,12 +168,15 @@ at ${resourcePath}.vue:1`)
       }
       const filterTemplate = []
       options.mp.filterModules.forEach(name => {
-        filterTemplate.push(
-          options.mp.platform.createFilterTag(
-            options.filterTagName,
-            options.filterModules[name]
+        const filterModule = options.filterModules[name]
+        if (filterModule.type !== 'renderjs' && filterModule.attrs.lang !== 'renderjs') {
+          filterTemplate.push(
+            options.mp.platform.createFilterTag(
+              options.filterTagName,
+              options.filterModules[name]
+            )
           )
-        )
+        }
       })
 
       if (filterTemplate.length) {

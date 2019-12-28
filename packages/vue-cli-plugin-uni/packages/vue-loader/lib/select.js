@@ -30,6 +30,19 @@ module.exports = function selectBlock (
     return
   }
 
+  // renderjs
+  if (query.type === `renderjs`) {
+    if (appendExtension) {
+      loaderContext.resourcePath += '.js'
+    }
+    loaderContext.callback(
+      null,
+      descriptor.renderjs.content,
+      descriptor.renderjs.map
+    )
+    return
+  }
+
   // styles
   if (query.type === `style` && query.index != null) {
     const style = descriptor.styles[query.index]

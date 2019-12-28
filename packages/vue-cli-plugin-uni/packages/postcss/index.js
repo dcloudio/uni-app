@@ -212,6 +212,27 @@ if (process.env.UNI_USING_V3) {
       } else {
         root.walkRules(rule => {
           const selectors = transformSelector(rule.selectors.join(','), function (selectors) {
+            selectors.each((selector) => {
+              // find the last child node to insert attribute selector
+              selector.each((n) => {
+                // ">>>" combinator
+                // and /deep/ alias for >>>, since >>> doesn't work in SASS
+                if (n.type === 'combinator' &&
+                  (n.value === '>>>' || n.value ===
+                    '/deep/')) {
+                  n.value = ' '
+                  n.spaces.before = n.spaces.after = ''
+                  return false
+                }
+                // in newer versions of sass, /deep/ support is also dropped, so add a ::v-deep alias
+                if (n.type === 'pseudo' && n.value ===
+                  '::v-deep') {
+                  n.value = n.spaces.before = n.spaces.after =
+                    ''
+                  return false
+                }
+              })
+            })
             selectors.walkUniversals(node => {
               node.parent.remove()
             })

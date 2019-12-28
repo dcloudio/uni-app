@@ -119,7 +119,9 @@ function getData (id, name) {
 function getChangeData (id, name) {
   try {
     const value = this.$r[id][name]
-    this.$set(this.wxsProps, name.replace('change:', ''), value)
+    const wxsPropName = name.replace('change:', '')
+    this[wxsPropName] = value
+    this.$set(this.wxsProps, wxsPropName, value)
     return value
   } catch (e) {
     console.error(this.$options.__file + `:[${this._$id}]$r[${id}][${name}] is undefined`)
