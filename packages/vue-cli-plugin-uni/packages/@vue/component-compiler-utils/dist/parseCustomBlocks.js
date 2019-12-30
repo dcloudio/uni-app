@@ -34,7 +34,9 @@ module.exports = function parseCustomBlocks(descriptor, options) {
       )
     ) {
       descriptor.renderjs = block
-      modules[block.attrs.module] = block
+      modules[block.attrs.module] = Object.assign({}, block, {
+        content: ''
+      })
     }
   })
 
