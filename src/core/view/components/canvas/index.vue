@@ -425,6 +425,7 @@ export default {
         context.drawImageByCanvas(canvas, x, y, width, height, 0, 0, destWidth, destHeight, false)
         imgData = context.getImageData(0, 0, destWidth, destHeight)
         newCanvas.height = newCanvas.width = 0
+        context.__hidpi__ = false
       } catch (error) {
         if (!callbackId) {
           return
