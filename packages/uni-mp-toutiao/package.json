@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-mp-toutiao",
-  "version": "2.0.0-alpha-25020191230003",
+  "version": "2.0.0-alpha-25020191230004",
   "description": "uni-app mp-toutiao",
   "main": "dist/index.js",
   "repository": {
