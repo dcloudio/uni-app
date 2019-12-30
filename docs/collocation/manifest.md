@@ -353,9 +353,17 @@ Tips：关于摇树优化（treeShaking）原理及优化结果，参考：[http
 
 ### mp-alipay
 
-|属性|类型|说明|
-|:-|:-|:-|
-|usingComponents|Boolean| 是否启用自定义组件模式，`v2.0+`，默认为false，[编译模式区别详情](https://ask.dcloud.net.cn/article/35843)|
+|属性									|类型		|说明																																																										|
+|:-										|:-			|:-																																																											|
+|usingComponents			|Boolean| 是否启用自定义组件模式，`v2.0+`，默认为false，[编译模式区别详情](https://ask.dcloud.net.cn/article/35843)							|
+|component2						|Boolean| 是否启用 `component2` 编译，默认为false，[查看详情](https://docs.alipay.com/mini/framework/custom-component-overview)	|
+|axmlStrictCheck			|Boolean| 是否启用 `axml` 严格语法检查，默认为false																																							|
+|enableParallelLoader	|Boolean| 是否启用多进程编译，默认为false																																												|
+|enableDistFileMinify	|Boolean| 是否压缩编译产物（仅在真机预览/真机调试时生效），默认为false																													|
+
+**注意**
+
+- 以上选项对应支付宝小程序内的`mini.project.json`，但是在支付宝小程序IDE启动的情况下中修改这个文件可能并不会生效，后续支付宝应该会修复这个问题
 
 ### mp-baidu
 
