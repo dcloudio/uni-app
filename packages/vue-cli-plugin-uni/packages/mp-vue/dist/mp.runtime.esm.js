@@ -5809,7 +5809,13 @@ function getTarget(obj, path) {
 function internalMixin(Vue) {
 
   Vue.config.errorHandler = function(err) {
-    console.error(err);
+    /* eslint-disable no-undef */
+    var app = getApp();
+    if (app && app.onError) {
+      app.onError(err);
+    } else {
+      console.error(err);
+    }
   };
 
   var oldEmit = Vue.prototype.$emit;
@@ -5833,7 +5839,7 @@ function internalMixin(Vue) {
         return this.$scope[method](args)
       }
       // mp-alipay
-      if(typeof my === 'undefined'){
+      if (typeof my === 'undefined') {
         return
       }
       if (method === 'createSelectorQuery') {

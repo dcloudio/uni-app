@@ -1,7 +1,20 @@
 // 使用白名单过滤（前期有一批自定义组件使用了 uni-）
 import tags from 'uni-helpers/tags'
 
+import {
+  hasLifecycleHook
+} from 'uni-helpers/index'
+
 export default function initVue (Vue) {
+  Vue.config.errorHandler = function (err) {
+    const app = getApp()
+    if (app && hasLifecycleHook(app.$options, 'onError')) {
+      app.__call_hook('onError', err)
+    } else {
+      console.error(err)
+    }
+  }
+
   const oldIsReservedTag = Vue.config.isReservedTag
 
   Vue.config.isReservedTag = function (tag) {
