@@ -20,6 +20,7 @@ import {
 } from '../../framework/navigator'
 
 function _redirectTo ({
+  url,
   path,
   query
 }, callbackId) {
@@ -30,6 +31,7 @@ function _redirectTo ({
 
   showWebview(
     registerPage({
+      url,
       path,
       query,
       openType: 'redirect'
@@ -54,6 +56,7 @@ export function redirectTo ({
   const query = parseQuery(urls[1] || '')
   navigate(path, function () {
     _redirectTo({
+      url,
       path,
       query
     }, callbackId)

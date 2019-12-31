@@ -7681,7 +7681,7 @@ var serviceContext = (function () {
     return webview
   }
 
-  function initWebview (webview, routeOptions) {
+  function initWebview (webview, routeOptions, url = '') {
     // 首页或非 nvue 页面
     if (webview.id === '1' || !routeOptions.meta.isNVue) {
       const webviewStyle = parseWebviewStyle(
@@ -7689,6 +7689,17 @@ var serviceContext = (function () {
         '',
         routeOptions
       );
+      if (url) {
+        const part = url.split('?');
+        webviewStyle.debugRefresh = {
+          isTab: routeOptions.meta.isTabBar,
+          arguments: JSON.stringify({
+            path: part[0].substr(1),
+            query: part[1] || ''
+          })
+        };
+      }
+
       if (process.env.NODE_ENV !== 'production') {
         console.log(`[uni-app] updateWebview`, webviewStyle);
       }
@@ -7882,6 +7893,7 @@ var serviceContext = (function () {
    * 首页需要主动registerPage，二级页面路由跳转时registerPage
    */
   function registerPage ({
+    url,
     path,
     query,
     openType,
@@ -7920,7 +7932,7 @@ var serviceContext = (function () {
       console.log(`[uni-app] registerPage`, path, webview.id);
     }
 
-    initWebview(webview, routeOptions);
+    initWebview(webview, routeOptions, url);
 
     const route = path.slice(1);
 
@@ -7986,6 +7998,7 @@ var serviceContext = (function () {
   }
 
   function _navigateTo ({
+    url,
     path,
     query,
     animationType,
@@ -7998,6 +8011,7 @@ var serviceContext = (function () {
 
     showWebview(
       registerPage({
+        url,
         path,
         query,
         openType: 'navigate'
@@ -8032,6 +8046,7 @@ var serviceContext = (function () {
     const query = parseQuery(urls[1] || '');
     navigate(path, function () {
       _navigateTo({
+        url,
         path,
         query,
         animationType,
@@ -8041,6 +8056,7 @@ var serviceContext = (function () {
   }
 
   function _reLaunch ({
+    url,
     path,
     query
   }, callbackId) {
@@ -8054,6 +8070,7 @@ var serviceContext = (function () {
 
     showWebview(
       registerPage({
+        url,
         path,
         query,
         openType: 'reLaunch'
@@ -8082,6 +8099,7 @@ var serviceContext = (function () {
     const query = parseQuery(urls[1] || '');
     navigate(path, function () {
       _reLaunch({
+        url,
         path,
         query
       }, callbackId);
@@ -8089,6 +8107,7 @@ var serviceContext = (function () {
   }
 
   function _redirectTo ({
+    url,
     path,
     query
   }, callbackId) {
@@ -8099,6 +8118,7 @@ var serviceContext = (function () {
 
     showWebview(
       registerPage({
+        url,
         path,
         query,
         openType: 'redirect'
@@ -8123,6 +8143,7 @@ var serviceContext = (function () {
     const query = parseQuery(urls[1] || '');
     navigate(path, function () {
       _redirectTo({
+        url,
         path,
         query
       }, callbackId);
@@ -8130,6 +8151,7 @@ var serviceContext = (function () {
   }
 
   function _switchTab ({
+    url,
     path,
     from
   }, callbackId) {
@@ -8180,6 +8202,7 @@ var serviceContext = (function () {
       tabBarPage.$getAppWebview().show('none');
     } else {
       return showWebview(registerPage({
+        url,
         path,
         query: {},
         openType: 'switchTab'
@@ -8205,6 +8228,7 @@ var serviceContext = (function () {
     const path = url.split('?')[0];
     navigate(path, function () {
       _switchTab({
+        url,
         path,
         from
       }, callbackId);

@@ -1,9 +1,21 @@
 const {
   getPlatformFilterTag,
-  normalizeNodeModules
+  normalizeNodeModules,
+  jsPreprocessOptions
 } = require('@dcloudio/uni-cli-shared/lib/platform')
 
+const preprocessor = require('@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader/preprocess')
+
 const FILTER_TAG = getPlatformFilterTag()
+
+function preprocessBlock(block) {
+  if (block.content) {
+    block.content = preprocessor.preprocess(block.content, jsPreprocessOptions.context, {
+      type: jsPreprocessOptions.type
+    }).trim()
+  }
+  return block
+}
 
 module.exports = function parseCustomBlocks(descriptor, options) {
 
@@ -23,7 +35,7 @@ module.exports = function parseCustomBlocks(descriptor, options) {
         block.attrs.lang === FILTER_TAG
       )
     ) {
-      modules[block.attrs.module] = block
+      modules[block.attrs.module] = preprocessBlock(block)
       return true
     }
     if ( // renderjs
@@ -33,7 +45,7 @@ module.exports = function parseCustomBlocks(descriptor, options) {
         block.attrs.lang === 'renderjs'
       )
     ) {
-      descriptor.renderjs = block
+      descriptor.renderjs = preprocessBlock(block)
       modules[block.attrs.module] = Object.assign({}, block, {
         content: ''
       })
