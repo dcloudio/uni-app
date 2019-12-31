@@ -63,7 +63,7 @@ export function createWebview (path, routeOptions) {
   return webview
 }
 
-export function initWebview (webview, routeOptions) {
+export function initWebview (webview, routeOptions, url = '') {
   // 首页或非 nvue 页面
   if (webview.id === '1' || !routeOptions.meta.isNVue) {
     const webviewStyle = parseWebviewStyle(
@@ -71,6 +71,17 @@ export function initWebview (webview, routeOptions) {
       '',
       routeOptions
     )
+    if (url) {
+      const part = url.split('?')
+      webviewStyle.debugRefresh = {
+        isTab: routeOptions.meta.isTabBar,
+        arguments: JSON.stringify({
+          path: part[0].substr(1),
+          query: part[1] || ''
+        })
+      }
+    }
+
     if (process.env.NODE_ENV !== 'production') {
       console.log(`[uni-app] updateWebview`, webviewStyle)
     }

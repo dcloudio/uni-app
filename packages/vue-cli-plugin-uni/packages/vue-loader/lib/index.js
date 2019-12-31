@@ -142,7 +142,7 @@ module.exports = function (source) {
   }
 
   let renderjsImport = `var renderjs`
-  if(options.isAppView && descriptor.renderjs){
+  if((options.isAppView || options.isH5) && descriptor.renderjs){
     const src = descriptor.renderjs.src || resourcePath
     const attrsQuery = attrsToQuery(descriptor.renderjs.attrs, 'js')
     const query = `?vue&type=renderjs${attrsQuery}${inheritQuery}`

@@ -89,13 +89,6 @@ const v3 = {
         loader: path.resolve(__dirname,
           '../../packages/webpack-uni-app-loader/view/script')
       })
-      // view 层 renderjs
-      // rules.push({
-      //   resourceQuery: [/lang=renderjs/, /blockType=renderjs/],
-      //   use: [{
-      //     loader: path.resolve(__dirname, '../../packages/webpack-uni-app-loader/view/renderjs')
-      //   }]
-      // })
     }
     scriptLoaders.push({
       loader: path.resolve(__dirname,

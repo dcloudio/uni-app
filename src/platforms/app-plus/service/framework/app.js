@@ -140,28 +140,39 @@ function initTabBar () {
   })
 }
 
-function initHotReload () {
-  const reloadUrl = weex.config.reloadUrl
-  if (!reloadUrl) {
+function initEntryPage () {
+  const argsJsonStr = plus.runtime.arguments
+  if (!argsJsonStr) {
     return
   }
-  if (reloadUrl === __uniConfig.entryPagePath) {
+
+  let entryPagePath
+  let entryPageQuery
+
+  try {
+    const args = JSON.parse(argsJsonStr)
+    entryPagePath = args.path || args.pathName
+    entryPageQuery = (args.query ? ('?' + args.query) : '')
+  } catch (e) {}
+  if (!entryPagePath || entryPagePath === __uniConfig.entryPagePath) {
     return
   }
-  const reloadPath = '/' + reloadUrl
-  const routeOptions = __uniRoutes.find(route => route.path === reloadPath)
+
+  const entryRoute = '/' + entryPagePath
+  const routeOptions = __uniRoutes.find(route => route.path === entryRoute)
   if (!routeOptions) {
     return
   }
-  if (routeOptions.meta.isNVue) { // 暂不处理 nvue
-    return
-  }
+
   if (!routeOptions.meta.isTabBar) {
     __uniConfig.realEntryPagePath = __uniConfig.realEntryPagePath || __uniConfig.entryPagePath
   }
-  __uniConfig.entryPagePath = reloadUrl
+
+  __uniConfig.entryPagePath = entryPagePath
+  __uniConfig.entryPageQuery = entryPageQuery
+
   if (process.env.NODE_ENV !== 'production') {
-    console.log(`[uni-app] reloadUrl(${reloadUrl})`)
+    console.log(`[uni-app] entryPagePath(${entryPagePath + entryPageQuery})`)
   }
 }
 
@@ -183,7 +194,7 @@ export function registerApp (appVm) {
     getCurrentPages
   })
 
-  initHotReload()
+  initEntryPage()
 
   initTabBar()
 

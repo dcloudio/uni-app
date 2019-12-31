@@ -49,7 +49,7 @@
             class="uni-video-control-button"
             @click.stop="trigger"
           />
-          <div class="uni-video-current-time">{{ currentTime|getTime }}</div>
+          <div class="uni-video-current-time">{{ currentTime|time }}</div>
           <div
             ref="progress"
             class="uni-video-progress-container"
@@ -67,7 +67,7 @@
               </div>
             </div>
           </div>
-          <div class="uni-video-duration">{{ (duration||durationTime)|getTime }}</div>
+          <div class="uni-video-duration">{{ (duration||durationTime)|time }}</div>
         </div>
         <div
           v-if="danmuBtn"
@@ -94,7 +94,7 @@
         <div
           class="uni-video-cover-play-button"
           @click.stop="play" />
-        <p class="uni-video-cover-duration">{{ (duration||durationTime)|getTime }}</p>
+        <p class="uni-video-cover-duration">{{ (duration||durationTime)|time }}</p>
       </div>
       <div
         :class="{'uni-video-toast-volume':gestureType==='volume'}"
@@ -129,7 +129,7 @@
       <div
         :class="{'uni-video-toast-progress':gestureType=='progress'}"
         class="uni-video-toast">
-        <div class="uni-video-toast-title">{{ currentTimeNew|getTime }} / {{ durationTime|getTime }}</div>
+        <div class="uni-video-toast-title">{{ currentTimeNew|time }} / {{ durationTime|time }}</div>
       </div>
     </div>
     <div
@@ -162,10 +162,11 @@ const GestureType = {
 export default {
   name: 'Video',
   filters: {
-    getTime (time) {
-      let h = Math.floor(time / 3600)
-      let m = Math.floor(time % 3600 / 60)
-      let s = Math.floor(time % 3600 % 60)
+    time (val) {
+      val = val > 0 && val < Infinity ? val : 0
+      let h = Math.floor(val / 3600)
+      let m = Math.floor(val % 3600 / 60)
+      let s = Math.floor(val % 3600 % 60)
       h = (h < 10 ? '0' : '') + h
       m = (m < 10 ? '0' : '') + m
       s = (s < 10 ? '0' : '') + s

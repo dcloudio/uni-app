@@ -25,6 +25,7 @@ import {
 } from '../../framework/navigator'
 
 function _navigateTo ({
+  url,
   path,
   query,
   animationType,
@@ -37,6 +38,7 @@ function _navigateTo ({
 
   showWebview(
     registerPage({
+      url,
       path,
       query,
       openType: 'navigate'
@@ -71,6 +73,7 @@ export function navigateTo ({
   const query = parseQuery(urls[1] || '')
   navigate(path, function () {
     _navigateTo({
+      url,
       path,
       query,
       animationType,
