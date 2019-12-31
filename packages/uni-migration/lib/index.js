@@ -39,7 +39,7 @@ module.exports = function migrate(input, out, options = {}) {
         )
       ) {
         options.silent !== true && console.log(`copy: ${dest}`)
-        fs.copySync(src, dest)
+        src !== dest && fs.copySync(src, dest)
       }
     } else {
       options.silent !== true && console.log(`write: ${path.resolve(out, asset.path)}`)
