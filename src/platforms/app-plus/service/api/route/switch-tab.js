@@ -23,6 +23,7 @@ import {
 import tabBar from '../../framework/tab-bar'
 
 function _switchTab ({
+  url,
   path,
   from
 }, callbackId) {
@@ -73,6 +74,7 @@ function _switchTab ({
     tabBarPage.$getAppWebview().show('none')
   } else {
     return showWebview(registerPage({
+      url,
       path,
       query: {},
       openType: 'switchTab'
@@ -98,6 +100,7 @@ export function switchTab ({
   const path = url.split('?')[0]
   navigate(path, function () {
     _switchTab({
+      url,
       path,
       from
     }, callbackId)

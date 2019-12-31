@@ -22,6 +22,7 @@ import {
 } from '../../framework/navigator'
 
 function _reLaunch ({
+  url,
   path,
   query
 }, callbackId) {
@@ -35,6 +36,7 @@ function _reLaunch ({
 
   showWebview(
     registerPage({
+      url,
       path,
       query,
       openType: 'reLaunch'
@@ -63,6 +65,7 @@ export function reLaunch ({
   const query = parseQuery(urls[1] || '')
   navigate(path, function () {
     _reLaunch({
+      url,
       path,
       query
     }, callbackId)

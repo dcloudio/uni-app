@@ -25,6 +25,7 @@ export function getCurrentPages (returnAll) {
  * 首页需要主动registerPage，二级页面路由跳转时registerPage
  */
 export function registerPage ({
+  url,
   path,
   query,
   openType,
@@ -63,7 +64,7 @@ export function registerPage ({
     console.log(`[uni-app] registerPage`, path, webview.id)
   }
 
-  initWebview(webview, routeOptions)
+  initWebview(webview, routeOptions, url)
 
   const route = path.slice(1)
 
