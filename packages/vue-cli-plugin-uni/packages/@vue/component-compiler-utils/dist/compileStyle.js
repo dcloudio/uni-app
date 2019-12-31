@@ -7,6 +7,7 @@ const postcss = require('postcss');
 const trim_1 = __importDefault(require("./stylePlugins/trim"));
 const scoped_1 = __importDefault(require("./stylePlugins/scoped"));
 const styleProcessors_1 = require("./styleProcessors");
+const removeScoped_1 = __importDefault(require("./stylePlugins/remove-scoped"));
 function compileStyle(options) {
     return doCompileStyle(Object.assign({}, options, { isAsync: false }));
 }
@@ -27,6 +28,8 @@ function doCompileStyle(options) {
     }
     if (scoped) {
         plugins.push(scoped_1.default(id));
+    } else { // fixed by xxxxxx
+        plugins.push(removeScoped_1.default(id));
     }
     const postCSSOptions = Object.assign({}, postcssOptions, { to: filename, from: filename });
     if (map) {
