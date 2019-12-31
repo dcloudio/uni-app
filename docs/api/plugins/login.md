@@ -101,7 +101,7 @@ uni.login({
 |zh_TW|繁体中文|
 |en|英文|
 
-**注意：**在小程序 withCredentials 为 true 时或是在 5+App 调用 uni.getUserInfo，要求此前有调用过 uni.login 且登录态尚未过期。
+**注意：**在小程序 withCredentials 为 true 时或是在 App 调用 uni.getUserInfo，要求此前有调用过 uni.login 且登录态尚未过期。
 
 **success 返回参数说明**
 
@@ -119,7 +119,7 @@ uni.login({
 |参数|类型|说明|平台差异说明|
 |:-|:-|:-||
 |nickName|String|用户昵称||
-|openId|String|该服务商唯一用户标识|5+App|
+|openId|String|该服务商唯一用户标识|App|
 |avatarUrl|String|用户头像|&nbsp;|
 
 除了以上三个必有的信息外，不同服务供应商返回的其它信息会存在差异。

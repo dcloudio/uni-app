@@ -708,7 +708,7 @@ h5 平台下拉刷新动画，只有 circle 类型。
 |属性|类型|必填|说明|
 |:-|:-|:-|:-|
 |pagePath|String|是|页面路径，必须在 pages 中先定义|
-|text|String|是|tab 上按钮文字，在 5+APP 和 H5 平台为非必填。例如中间可放一个没有文字的+号图标|
+|text|String|是|tab 上按钮文字，在 App 和 H5 平台为非必填。例如中间可放一个没有文字的+号图标|
 |iconPath|String|否|图片路径，icon 大小限制为40kb，建议尺寸为 81px * 81px，当 postion 为 top 时，此参数无效，不支持网络图片，不支持字体图标|
 |selectedIconPath|String|否|选中时的图片路径，icon 大小限制为40kb，建议尺寸为 81px * 81px ，当 postion 为 top 时，此参数无效|
 
@@ -779,7 +779,7 @@ midButton没有pagePath，需监听点击事件，自行处理点击后的行为
 |path|String|是|启动页面路径|
 |query|String|否|启动参数，可在页面的 [onLoad](use?id=页面生命周期) 函数里获得|
 
-**注意：** 在 5+App 里真机运行可直接打开配置的页面，微信开发者工具里需要手动改变编译模式，如下图：
+**注意：** 在 App 里真机运行可直接打开配置的页面，微信开发者工具里需要手动改变编译模式，如下图：
 
 <div style="text-align:center;">
 	<img src="//img-cdn-qiniu.dcloud.net.cn/uniapp/doc/condition.png" />
@@ -807,7 +807,7 @@ midButton没有pagePath，需监听点击事件，自行处理点击后的行为
 
 分包加载配置
 
-**注意：**此配置为小程序的分包加载机制。在5+App里始终为整包。
+**注意：**此配置为小程序的分包加载机制。在App里始终为整包。
 - 微信、百度小程序每个分包的大小是2M，总体积一共不能超过8M。
 - 支付宝小程序每个分包的大小是2M，总体积一共不能超过4M。
 

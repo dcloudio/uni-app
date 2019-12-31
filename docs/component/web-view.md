@@ -9,12 +9,12 @@
 |属性名|类型|说明|平台差异说明|
 |:-|:-|:-|:|
 |src|String|webview 指向网页的链接|&nbsp;|
-|webview-styles|Object|webview 的样式|5+App|
+|webview-styles|Object|webview 的样式|App|
 |@message|EventHandler|网页向应用 `postMessage` 时，会在特定时机（后退、组件销毁、分享）触发并收到消息。|H5 暂不支持|
 
 **src**
 
-|来源|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|来源|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
 |:-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |网络|√|√|√|√|√|√|√|
 |本地|√|暂不支持|x|x|x|x|x|
@@ -121,7 +121,7 @@
 
 |属性|类型|说明|
 |:-|:-|:-|
-|plus|Boolean|5+App|
+|plus|Boolean|App|
 |miniprogram|Boolean|微信小程序|
 |smartprogram|Boolean|百度小程序|
 |miniprogram|Boolean|支付宝小程序|
@@ -264,7 +264,7 @@ web-view组件在App和小程序中层级较高，如需要在vue页面中写代
 - App端，web-view加载的html页面可以运行plus的api，但注意如果该页面调用了plus.key的API监听了back按键（或使用mui的封装），会造成back监听冲突。需要该html页面移除对back的监听。或按照上面的示例代码禁止网页使用plus对象
 - `uni.webview.js` 最新版地址：[https://js.cdn.aliyun.dcloud.net.cn/dev/uni-app/uni.webview.1.5.2.js](https://js.cdn.aliyun.dcloud.net.cn/dev/uni-app/uni.webview.1.5.2.js)
 - 小程序平台，个人类型与海外类型的小程序使用 `web-view` 组件，提交审核时注意微信等平台是否允许使用
-- 小程序平台， `src` 指向的链接需登录小程序管理后台配置域名白名单。`5+App`和`H5` 无此限制。
+- 小程序平台， `src` 指向的链接需登录小程序管理后台配置域名白名单。`App`和`H5` 无此限制。
 
 ##### FAQ
 

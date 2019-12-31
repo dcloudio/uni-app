@@ -34,7 +34,7 @@ uni.setNavigationBarTitle({
 
 |参数|类型|必填|说明|平台差异说明|
 |:-|:-|:-|:-|:-|
-|frontColor|String|是|前景颜色值，包括按钮、标题、状态栏的颜色，仅支持 #ffffff 和 #000000|5+App、H5、微信小程序、百度小程序|
+|frontColor|String|是|前景颜色值，包括按钮、标题、状态栏的颜色，仅支持 #ffffff 和 #000000|App、H5、微信小程序、百度小程序|
 |backgroundColor|String|是|背景颜色值，有效值为十六进制颜色||
 |animation|Object|否|动画效果，{duration,timingFunc}|微信小程序、百度小程序|
 |success|Function|否|接口调用成功的回调函数||

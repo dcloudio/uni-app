@@ -3,7 +3,7 @@
 
 **平台差异说明**
 
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |√|x|√|x|√|√|√|
 
@@ -18,7 +18,7 @@
 |onStart|callback|录音开始事件||
 |onPause|callback|录音暂停事件||
 |onStop|callback|录音停止事件，会回调文件地址||
-|onFrameRecorded|callback|已录制完指定帧大小的文件，会回调录音分片结果数据。如果设置了 frameSize ，则会回调此事件|5+App 暂不支持|
+|onFrameRecorded|callback|已录制完指定帧大小的文件，会回调录音分片结果数据。如果设置了 frameSize ，则会回调此事件|App 暂不支持|
 |onError|callback|录音错误事件, 会回调错误信息|&nbsp;|
 
 **start(options) 说明**

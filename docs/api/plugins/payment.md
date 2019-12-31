@@ -11,7 +11,7 @@ uni.requestPayment是一个统一各平台的客户端支付API，不管是在�
 
 **平台差异说明**
 
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |√|[说明](/api/plugins/payment?id=h5-payment)|√|√|√|√|√|
 
@@ -20,7 +20,7 @@ uni.requestPayment是一个统一各平台的客户端支付API，不管是在�
 |参数名|类型|必填|说明|平台差异说明|
 |:-|:-|:-|:-||
 |provider|String|是|服务提供商，通过 [uni.getProvider](/api/plugins/provider) 获取。||
-|orderInfo|String/Object|是|订单数据，[注意事项](/api/plugins/payment?id=orderinfo)|5+App、支付宝小程序、百度小程序、头条小程序|
+|orderInfo|String/Object|是|订单数据，[注意事项](/api/plugins/payment?id=orderinfo)|App、支付宝小程序、百度小程序、头条小程序|
 |timeStamp|String|微信小程序必填|时间戳从1970年1月1日至今的秒数，即当前的时间。|微信小程序|
 |nonceStr|String|微信小程序必填|随机字符串，长度为32个字符以下。|微信小程序|
 |package|String|微信小程序必填|统一下单接口返回的 prepay_id 参数值，提交格式如：prepay_id=xx。|微信小程序|

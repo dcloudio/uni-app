@@ -12,7 +12,7 @@
 |transformPx|Boolean|true|是否转换项目的px，为true时将px转换为rpx，为false时，px为传统的实际像素||
 |networkTimeout|Object||网络超时时间，[详见](/collocation/manifest?id=networktimeout)||
 |debug|Boolean|false|是否开启 debug 模式，开启后调试信息以 ``info`` 的形式给出，其信息有页面的注册，页面路由，数据更新，事件触发等||
-|app-plus|Object||[5+App 特有配置](/collocation/manifest?id=app-plus)||
+|app-plus|Object||[App 特有配置](/collocation/manifest?id=app-plus)||
 |h5|Object||[H5 特有配置](/collocation/manifest?id=h5)||
 |quickapp|Object||快应用特有配置，即将支持||
 |mp-weixin|Object||[微信小程序特有配置](/collocation/manifest?id=mp-weixin)||
@@ -42,9 +42,9 @@
 
 |属性|类型|说明|最低版本|
 |:-|:-|:-|:-|
-|splashscreen|Object|5+App 启动界面信息，[详见](/collocation/manifest?id=splashscreen)||
+|splashscreen|Object|App 启动界面信息，[详见](/collocation/manifest?id=splashscreen)||
 |modules|Object|权限模块，[详见](/collocation/manifest?id=modules)||
-|distribute|Object|5+App 发布信息，[详见](/collocation/manifest?id=distribute)||
+|distribute|Object|App 发布信息，[详见](/collocation/manifest?id=distribute)||
 |usingComponents|Boolean|是否启用自定义组件模式，默认为false，[编译模式区别详情](https://ask.dcloud.net.cn/article/35843)|1.9.0+|
 |nvueCompiler|String|切换 nvue 编译模式，可选值，`weex` ：老编译模式，`uni-app`： 新编译模式，默认为 `weex` 。[编译模式区别详情](http://ask.dcloud.net.cn/article/36074)|2.0.3+|
 |renderer|String|可不加载基于 webview 的运行框架，减少包体积、提升启动速度。可选值 `native`| App-nvue 2.2.0+|
@@ -454,7 +454,7 @@ mp-qq只支持自定义组件模式，不存在usingComponents配置
 	"description": "应用描述",
 	"versionName": "1.0.0",
 	"versionCode": "100",
-	// app-plus 节点是 5+App 特有配置，推荐在 HBuilderX 的 manifest.json 可视化界面操作完成配置。
+	// app-plus 节点是 App 特有配置，推荐在 HBuilderX 的 manifest.json 可视化界面操作完成配置。
 	"app-plus": {
 		// HBuilderX->manifest.json->模块权限配置
 		"modules": {
@@ -759,7 +759,7 @@ mp-qq只支持自定义组件模式，不存在usingComponents配置
 	}
 }
 ```
-更多配置相关的说明，请参考 [manifest.json文档说明](https://ask.dcloud.net.cn/article/94) 中的描述。可能节点的位置与普通的 5+App 有差异，请按照配置的名称进行对应。
+更多配置相关的说明，请参考 [manifest.json文档说明](https://ask.dcloud.net.cn/article/94) 中的描述。可能节点的位置与普通的 App 有差异，请按照配置的名称进行对应。
 
 # FAQ
 Q：iOS 应用调用相机等权限时，弹出的提示语如何修改？
