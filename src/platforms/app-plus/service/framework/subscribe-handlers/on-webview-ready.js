@@ -38,7 +38,7 @@ export default function onWebviewReady (data, pageId) {
       const navigateType = routeOptions.meta.isTabBar ? 'switchTab' : 'navigateTo'
       process.env.NODE_ENV !== 'production' && perf(`${entryPagePath} navigateTo`)
       return uni[navigateType]({
-        url: entryPagePath,
+        url: entryPagePath + (__uniConfig.entryPageQuery || ''),
         openType: 'appLaunch'
       })
     }

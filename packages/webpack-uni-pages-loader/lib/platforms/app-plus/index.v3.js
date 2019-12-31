@@ -33,8 +33,10 @@ function parseEntryPagePath (appJson, manifestJson) {
     try {
       const args = JSON.parse(argsJsonStr)
       const pathName = args.path || args.pathName
+      const entryPageQuery = (args.query ? ('?' + args.query) : '')
       if (pathName && appJson.pages[0] !== pathName) {
         appJson.entryPagePath = pathName
+        appJson.entryPageQuery = entryPageQuery
         if (!isTabBarPage(pathName, getTabBarPages(appJson))) {
           appJson.realEntryPagePath = appJson.pages[0]
         }
@@ -83,7 +85,7 @@ module.exports = function (appJson, manifestJson, {
   if (appJson.page[appJson.entryPagePath].nvue) { // 首页是 nvue
     manifestJson.launch_path = '' // 首页地址为空
     manifestJson.plus.launchwebview.uniNView = {
-      path: appJson.entryPagePath
+      path: appJson.entryPagePath + '.js' + (appJson.entryPageQuery || '')
     }
     if (manifestJson.plus.tabBar) {
       manifestJson.plus.tabBar.child = ['lauchwebview']
