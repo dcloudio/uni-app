@@ -1,6 +1,7 @@
 import {
   guid,
   hasOwn,
+  isObject,
   camelize
 } from 'uni-shared'
 
@@ -164,11 +165,29 @@ function setData (id, name, value) {
   return ((this._$newData[id] || (this._$newData[id] = {}))[name] = value)
 }
 
+function fillVForData (forItems, vForData) {
+  let i, l
+  if (Array.isArray(forItems) || typeof forItems === 'string') {
+    for (i = 0, l = forItems.length; i < l; i++) {
+      vForData[i] = i
+    }
+  } else if (typeof forItems === 'number') {
+    for (i = 0; i < forItems; i++) {
+      vForData[i] = i
+    }
+  } else if (isObject(forItems)) {
+    for (i = 0, l = Object.keys(forItems).length; i < l; i++) {
+      vForData[i] = i
+    }
+  }
+}
+
 function setForData (id, value) {
   const diffData = this._$newData[id] || (this._$newData[id] = {})
   const vForData = diffData[V_FOR] || (diffData[V_FOR] = [])
 
   if (value.forItems) {
+    value.fill && fillVForData(value.forItems, vForData)
     return value.forItems
   }
 

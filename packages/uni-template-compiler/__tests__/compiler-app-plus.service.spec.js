@@ -625,7 +625,7 @@ describe('codegen', () => {
     // normalize type: 2
     assertCodegen(
       '<div><child></child><template v-for="item in list">{{ item }}</template></div>',
-      `with(this){return _c('div',[_c('child',{attrs:{"_i":1}}),_l((_$s(2,'f',{forItems:list})),function(item,$10,$20,$30){return [_v((_$s(("2-"+$30),'t0',_s(item))))]})],2)}`
+      `with(this){return _c('div',[_c('child',{attrs:{"_i":1}}),_l((_$s(2,'f',{forItems:list,fill:true})),function(item,$10,$20,$30){return [_v((_$s(("2-"+$30),'t0',_s(item))))]})],2)}`
     )
   })
 

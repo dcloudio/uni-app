@@ -250,6 +250,10 @@ var serviceContext = (function () {
     return typeof fn === 'function'
   }
 
+  function isObject (obj) {
+    return obj !== null && typeof obj === 'object'
+  }
+
   function isPlainObject (obj) {
     return _toString.call(obj) === '[object Object]'
   }
@@ -258,7 +262,7 @@ var serviceContext = (function () {
     return hasOwnProperty.call(obj, key)
   }
 
-  function noop () { }
+  function noop () {}
 
   function toRawType (val) {
     return _toString.call(val).slice(8, -1)
@@ -2718,7 +2722,7 @@ var serviceContext = (function () {
         }
         return page.$page.meta.isTabBar
       }
-      const route = __uniRoutes.find(route => route.path.slice(1) === path);
+      const route = __uniRoutes.find(route => route.path.replace(/^\//, '') === path.replace(/^\//, ''));
       return route && route.meta.isTabBar
     } catch (e) {
       if (process.env.NODE_ENV !== 'production') {
@@ -12760,11 +12764,29 @@ var serviceContext = (function () {
     return ((this._$newData[id] || (this._$newData[id] = {}))[name] = value)
   }
 
+  function fillVForData (forItems, vForData) {
+    let i, l;
+    if (Array.isArray(forItems) || typeof forItems === 'string') {
+      for (i = 0, l = forItems.length; i < l; i++) {
+        vForData[i] = i;
+      }
+    } else if (typeof forItems === 'number') {
+      for (i = 0; i < forItems; i++) {
+        vForData[i] = i;
+      }
+    } else if (isObject(forItems)) {
+      for (i = 0, l = Object.keys(forItems).length; i < l; i++) {
+        vForData[i] = i;
+      }
+    }
+  }
+
   function setForData (id, value) {
     const diffData = this._$newData[id] || (this._$newData[id] = {});
     const vForData = diffData[V_FOR] || (diffData[V_FOR] = []);
 
     if (value.forItems) {
+      value.fill && fillVForData(value.forItems, vForData);
       return value.forItems
     }
 

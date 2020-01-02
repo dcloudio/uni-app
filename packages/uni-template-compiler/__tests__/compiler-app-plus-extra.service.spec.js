@@ -44,11 +44,11 @@ describe('codegen', () => {
     )
     assertCodegen(
       '<div><template v-for="item in items">text</template></div>',
-      `with(this){return _c('div',[_l((_$s(1,'f',{forItems:items})),function(item,$10,$20,$30){return void 0})],2)}`
+      `with(this){return _c('div',[_l((_$s(1,'f',{forItems:items,fill:true})),function(item,$10,$20,$30){return void 0})],2)}`
     )
     assertCodegen(
       '<div><template v-for="item in items">{{text}}</template></div>',
-      `with(this){return _c('div',[_l((_$s(1,'f',{forItems:items})),function(item,$10,$20,$30){return [_v((_$s(("1-"+$30),'t0',_s(text))))]})],2)}`
+      `with(this){return _c('div',[_l((_$s(1,'f',{forItems:items,fill:true})),function(item,$10,$20,$30){return [_v((_$s(("1-"+$30),'t0',_s(text))))]})],2)}`
     )
     assertCodegen(
       '<div><template v-for="item in items"><span></span>{{text}}</template></div>',
@@ -56,11 +56,19 @@ describe('codegen', () => {
     )
     assertCodegen(
       '<div><template v-for="item in items">a {{text1}} b {{text2}}</template></div>',
-      `with(this){return _c('div',[_l((_$s(1,'f',{forItems:items})),function(item,$10,$20,$30){return [_v((_$s(("1-"+$30),'t0',_s(text1)))+(_$s(("1-"+$30),'t1',_s(text2))))]})],2)}`
+      `with(this){return _c('div',[_l((_$s(1,'f',{forItems:items,fill:true})),function(item,$10,$20,$30){return [_v((_$s(("1-"+$30),'t0',_s(text1)))+(_$s(("1-"+$30),'t1',_s(text2))))]})],2)}`
     )
     assertCodegen(
       '<div><template v-for="item in items"><span v-if="item.sub"></span></template></div>',
       `with(this){return _c('div',[_l((_$s(1,'f',{forItems:items})),function(item,$10,$20,$30){return [(_$s(("2-"+$30),'i',item.sub))?_c('span',{key:_$s(1,'f',{forIndex:$20,keyIndex:0,key:1+'-0'+$30})}):_e()]})],2)}`
+    )
+    assertCodegen(
+      '<view><template v-for="(item, index) in arr">{{item}}</template></view>',
+      `with(this){return _c('view',[_l((_$s(1,'f',{forItems:arr,fill:true})),function(item,index,$20,$30){return [_v((_$s(("1-"+$30),'t0',_s(item))))]})],2)}`
+    )
+    assertCodegen(
+      '<view><block v-for="(item, index) in arr" v-bind:key="index">{{item}}</block></view>',
+      `with(this){return _c('view',[_l((_$s(1,'f',{forItems:arr,fill:true})),function(item,index,$20,$30){return [_v((_$s(("1-"+$30),'t0',_s(item))))]})],2)}`
     )
   })
   it('generate text with multiple statements', () => {

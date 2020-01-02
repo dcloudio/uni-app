@@ -170,9 +170,15 @@ function processForKey (el) {
         const keyIndex = forEl.children.indexOf(el)
         el.key = `${forEl.forId}+'-${keyIndex}'+${it}`
       } else { // 当 template 下只有文本节点
-        if (el.children && el.children.length && !el.children.find(child => child.key)) {
+        if (
+          el.children &&
+          el.children.length &&
+          !el.children.find(child => child.type === 1)
+        ) {
           el.children[0].parent = el
-          el.children[0].key = `${forEl.forId}+'-0'+${it}`
+          if (!el.children.find(child => child.key)) {
+            el.children[0].key = `${forEl.forId}+'-0'+${it}`
+          }
           return true
         }
       }
@@ -219,8 +225,6 @@ function removeRawAttr (el, name) {
 function removeRawBindingAttr (el, name) {
   removeRawAttr(el, ':' + name)
   removeRawAttr(el, 'v-bind:' + name)
-  console.log(el)
-  throw new Error('123')
 }
 
 function addHandler (el, name, value, important) {
