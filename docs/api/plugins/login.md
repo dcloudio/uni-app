@@ -33,7 +33,7 @@ H5平台登陆注意事项：
 各个平台的登录流程存在差异，详细请参考相关平台的文档说明：
 
 * [微信小程序登录](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/login.html)
-* [支付宝小程序用户授权](https://docs.alipay.com/mini/introduce/auth)
+* [支付宝小程序用户授权](https://docs.alipay.com/mini/introduce/authcode)
 * [百度小程序登录](https://smartprogram.baidu.com/docs/develop/api/open_log/#%E6%8E%88%E6%9D%83%E6%B5%81%E7%A8%8B%E8%AF%B4%E6%98%8E/)
 * [头条小程序登录](https://developer.toutiao.com/dev/cn/mini-app/develop/open-capacity/log-in/login)
 * [Apple登录、苹果登录、Sign in with Apple](https://ask.dcloud.net.cn/article/36651)
