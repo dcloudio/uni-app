@@ -71,7 +71,7 @@ export function isTabBarPage (path = '') {
       }
       return page.$page.meta.isTabBar
     }
-    const route = __uniRoutes.find(route => route.path.slice(1) === path)
+    const route = __uniRoutes.find(route => route.path.replace(/^\//, '') === path.replace(/^\//, ''))
     return route && route.meta.isTabBar
   } catch (e) {
     if (process.env.NODE_ENV !== 'production') {

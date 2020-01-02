@@ -1,7 +1,7 @@
 const compiler = require('../lib')
 const res = compiler.compile(
   `
-<view><page-meta/><view><button></button></view></view>
+<div><template v-for="item in items">text</template></div>
 `, {
     miniprogram: true,
     resourcePath: '/User/fxy/Documents/test.wxml',
@@ -14,9 +14,9 @@ const res = compiler.compile(
     mp: {
       platform: 'mp-weixin'
     },
-    filterModules: ['swipe']
-    // service: true,
-    // view: true
+    filterModules: ['swipe'],
+    service: true,
+    view: true
 
   })
 console.log(require('util').inspect(res, {

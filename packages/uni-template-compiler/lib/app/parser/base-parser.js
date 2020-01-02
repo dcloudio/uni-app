@@ -33,9 +33,14 @@ function parseIf (el, createGenVar, isScopedSlot) {
   el.if = createGenVar(el.attrsMap[ID], isScopedSlot)(V_IF, el.if)
 }
 
-function parseFor (el, createGenVar, isScopedSlot) {
+function parseFor (el, createGenVar, isScopedSlot, fill = false) {
   if (el.for && isVar(el.for)) {
-    el.for = createGenVar(el.forId, isScopedSlot)(V_FOR, `{forItems:${el.for}}`)
+    el.for = createGenVar(el.forId, isScopedSlot)(
+      V_FOR,
+      fill
+        ? `{forItems:${el.for},fill:true}`
+        : `{forItems:${el.for}}`
+    )
     return true
   }
 }

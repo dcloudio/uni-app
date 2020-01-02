@@ -85,6 +85,20 @@ function parseComponentAttrs (el, genVar) {
   })
 }
 
+function checkAutoFill (el) {
+  if (
+    el.for &&
+    (
+      el.tag === 'template' ||
+      el.tag === 'block'
+    ) &&
+    !el.children.find(child => child.type === 1)
+  ) {
+    return true
+  }
+  return false
+}
+
 function transformNode (el, parent, state, isScopedSlot) {
   if (el.type === 3) {
     return
@@ -111,7 +125,7 @@ function transformNode (el, parent, state, isScopedSlot) {
   const genVar = createGenVar(el.attrsMap[ID], isScopedSlot)
 
   parseIs(el, genVar)
-  parseFor(el, createGenVar, isScopedSlot)
+  parseFor(el, createGenVar, isScopedSlot, checkAutoFill(el))
   parseKey(el, isScopedSlot)
 
   parseIf(el, createGenVar, isScopedSlot)
