@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-app-plus-nvue",
-  "version": "2.0.0-alpha-25020191231002",
+  "version": "2.0.0-alpha-25020191231003",
   "description": "uni-app app-plus-nvue",
   "main": "dist/index.js",
   "repository": {
