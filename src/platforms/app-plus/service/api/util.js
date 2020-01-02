@@ -149,3 +149,21 @@ const _transformlng = function (lng, lat) {
 const outOfChina = function (lng, lat) {
   return (lng < 72.004 || lng > 137.8347) || ((lat < 0.8293 || lat > 55.8271) || false)
 }
+
+export function getStatusbarHeight () {
+  // 横屏时 iOS 获取的状态栏高度错误，进行纠正
+  return plus.navigator.isImmersedStatusbar() ? Math.round(plus.os.name === 'iOS' ? plus.navigator.getSafeAreaInsets().top : plus.navigator.getStatusbarHeight()) : 0
+}
+
+export function getScreenInfo () {
+  const orientation = plus.navigator.getOrientation()
+  const landscape = Math.abs(orientation) === 90
+  // 安卓 plus 接口获取的屏幕大小值不为整数
+  const width = plus.screen.resolutionWidth
+  const height = plus.screen.resolutionHeight
+  // 根据方向纠正宽高
+  return {
+    screenWidth: Math[landscape ? 'max' : 'min'](width, height),
+    screenHeight: Math[landscape ? 'min' : 'max'](width, height)
+  }
+}

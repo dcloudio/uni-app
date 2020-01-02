@@ -16,11 +16,16 @@ import {
   from 'uni-core/service/plugins/lifecycle'
 
 import {
-  ON_REACH_BOTTOM_DISTANCE
+  ON_REACH_BOTTOM_DISTANCE,
+  TITLEBAR_HEIGHT
 }
   from '../../constants'
 
 import tabBar from '../tab-bar'
+
+import {
+  getStatusbarHeight
+} from '../../api/util'
 
 function parsePageCreateOptions (vm, route) {
   const pagePath = '/' + route
@@ -40,7 +45,7 @@ function parsePageCreateOptions (vm, route) {
     onPageScroll,
     onPageReachBottom,
     onReachBottomDistance,
-    windowTop: 0, // TODO
+    windowTop: windowOptions.titleNView && windowOptions.titleNView.type === 'float' ? (getStatusbarHeight() + TITLEBAR_HEIGHT) : 0,
     windowBottom: (tabBar.indexOf(route) >= 0 && tabBar.cover) ? tabBar.height : 0
   }
 }
