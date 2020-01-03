@@ -141,7 +141,7 @@ export default {
         width: this.position.width
       },
       (res) => {
-        this._fillData(res[0])
+        this._fillData(res.ads[0])
       },
       (err) => {
         this.$trigger('error', {}, {
