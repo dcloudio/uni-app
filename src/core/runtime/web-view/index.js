@@ -52,12 +52,13 @@ if (!webViewApi) {
 
 const api = typeof uni !== 'undefined' ? uni : {}
 
-if (api.navigateTo) {
-  api.webView = webViewApi
-} else {
-  Object.assign(api, webViewApi, {
-    webView: webViewApi
-  })
+if (!api.navigateTo) {
+  for (const key in webViewApi) {
+    if (webViewApi.hasOwnProperty(key)) {
+      api[key] = webViewApi[key]
+    }
+  }
 }
+api.webView = webViewApi
 
 export default api
