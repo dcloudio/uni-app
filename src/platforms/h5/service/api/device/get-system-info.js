@@ -21,7 +21,7 @@ export function getSystemInfoSync () {
   var screenWidth = screen.width
   var screenHeight = screen.height
   var language = navigator.language
-  var statusBarHeight = 0
+  var statusBarHeight = safeAreaInsets.top
   var osname
   var osversion
   var model
@@ -84,7 +84,7 @@ export function getSystemInfoSync () {
   const {
     top: windowTop,
     bottom: windowBottom
-  } = getWindowOffset(false, true)
+  } = getWindowOffset()
 
   windowHeight -= windowTop
   windowHeight -= windowBottom
@@ -102,7 +102,13 @@ export function getSystemInfoSync () {
     system,
     platform,
     model,
-    safeArea
+    safeArea,
+    safeAreaInsets: {
+      top: safeAreaInsets.top,
+      right: safeAreaInsets.right,
+      bottom: safeAreaInsets.bottom,
+      left: safeAreaInsets.left
+    }
   }
 }
 /**

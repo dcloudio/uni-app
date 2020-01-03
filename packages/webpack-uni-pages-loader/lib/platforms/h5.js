@@ -96,9 +96,22 @@ const getPageComponents = function (inputDir, pagesJson) {
     }
 
     let windowTop = 44
-    let pageStyle = Object.assign({}, globalStyle, props)
-    if (pageStyle.navigationStyle === 'custom' || ('titleNView' in pageStyle && (!pageStyle.titleNView || pageStyle.titleNView.type ===
-      'transparent' || pageStyle.titleNView.type === 'float'))) {
+    const pageStyle = Object.assign({}, globalStyle, props)
+    const titleNViewTypeList = {
+      'none': 'default',
+      'auto': 'transparent',
+      'always': 'float'
+    }
+    let titleNView = pageStyle.titleNView
+    titleNView = Object.assign({}, {
+      type: pageStyle.navigationStyle === 'custom' ? 'none' : 'default'
+    }, pageStyle.transparentTitle in titleNViewTypeList ? {
+      type: titleNViewTypeList[pageStyle.transparentTitle],
+      backgroundColor: 'rgba(0,0,0,0)'
+    } : null, typeof titleNView === 'object' ? titleNView : (typeof titleNView === 'boolean' ? {
+      type: titleNView ? 'default' : 'none'
+    } : null))
+    if (titleNView.type === 'none' || titleNView.type === 'transparent') {
       windowTop = 0
     }
 
