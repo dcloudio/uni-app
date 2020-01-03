@@ -2722,7 +2722,10 @@ var serviceContext = (function () {
         }
         return page.$page.meta.isTabBar
       }
-      const route = __uniRoutes.find(route => route.path.replace(/^\//, '') === path.replace(/^\//, ''));
+      if (!/^\//.test(path)) {
+        path = '/' + path;
+      }
+      const route = __uniRoutes.find(route => route.path === path);
       return route && route.meta.isTabBar
     } catch (e) {
       if (process.env.NODE_ENV !== 'production') {
@@ -7276,7 +7279,7 @@ var serviceContext = (function () {
   function parsePullToRefresh (routeOptions) {
     const windowOptions = routeOptions.window;
 
-    if (windowOptions.enablePullDownRefresh) {
+    if (windowOptions.enablePullDownRefresh || (windowOptions.pullToRefresh && windowOptions.pullToRefresh.support)) {
       const pullToRefreshStyles = Object.create(null);
       // 初始化默认值
       if (plus.os.name === 'Android') {
