@@ -41,14 +41,12 @@
         >
           <i
             v-if="loading"
-            class="uni-loading"/>
+            class="uni-loading" />
           <img
             v-if="titleImage!==''"
             :src="titleImage"
             class="uni-page-head__title_image" >
-          <template v-else>
-            {{ titleText }}
-          </template>
+          <template v-else>{{ titleText }}</template>
         </div>
       </div>
       <div
@@ -98,7 +96,8 @@
     <div
       v-if="type!=='transparent'&&type!=='float'"
       :class="{'uni-placeholder-titlePenetrate': titlePenetrate}"
-      class="uni-placeholder"/>
+      class="uni-placeholder"
+    />
   </uni-page-head>
 </template>
 <style>
@@ -112,7 +111,11 @@ uni-page-head .uni-page-head {
   left: 0;
   width: 100%;
   height: 44px;
+  height: calc(44px + constant(safe-area-inset-top));
+  height: calc(44px + env(safe-area-inset-top));
   padding: 7px 3px;
+  padding-top: calc(7px + constant(safe-area-inset-top));
+  padding-top: calc(7px + env(safe-area-inset-top));
   display: flex;
   overflow: hidden;
   justify-content: space-between;
@@ -129,7 +132,7 @@ uni-page-head .uni-page-head-titlePenetrate .uni-page-head-bd * {
   pointer-events: none;
 }
 
-uni-page-head .uni-page-head-titlePenetrate *{
+uni-page-head .uni-page-head-titlePenetrate * {
   pointer-events: auto;
 }
 
@@ -140,9 +143,11 @@ uni-page-head .uni-page-head.uni-page-head-transparent .uni-page-head-ft > div {
 uni-page-head .uni-page-head ~ .uni-placeholder {
   width: 100%;
   height: 44px;
+  height: calc(44px + constant(safe-area-inset-top));
+  height: calc(44px + env(safe-area-inset-top));
 }
 
-uni-page-head .uni-placeholder-titlePenetrate{
+uni-page-head .uni-placeholder-titlePenetrate {
   pointer-events: none;
 }
 
@@ -321,7 +326,9 @@ export default {
     },
     backgroundColor: {
       type: String,
-      default: '#000'
+      default () {
+        return this.type === 'transparent' ? '#000' : '#F8F8F8'
+      }
     },
     textColor: {
       type: String,
@@ -372,12 +379,6 @@ export default {
     titleImage: {
       type: String,
       default: ''
-    },
-    transparentTitle: {
-      default: 'none',
-      validator (value) {
-        return ['none', 'auto', 'always'].indexOf(value) !== -1
-      }
     },
     titlePenetrate: {
       type: Boolean,
