@@ -39,13 +39,15 @@ function parsePageCreateOptions (vm, route) {
 
   const onPageScroll = hasLifecycleHook(vm.$options, 'onPageScroll') ? 1 : 0
   const onPageReachBottom = hasLifecycleHook(vm.$options, 'onReachBottom') ? 1 : 0
+  const statusbarHeight = getStatusbarHeight()
 
   return {
     disableScroll,
     onPageScroll,
     onPageReachBottom,
     onReachBottomDistance,
-    windowTop: windowOptions.titleNView && windowOptions.titleNView.type === 'float' ? (getStatusbarHeight() + TITLEBAR_HEIGHT) : 0,
+    statusbarHeight,
+    windowTop: windowOptions.titleNView && windowOptions.titleNView.type === 'float' ? (statusbarHeight + TITLEBAR_HEIGHT) : 0,
     windowBottom: (tabBar.indexOf(route) >= 0 && tabBar.cover) ? tabBar.height : 0
   }
 }
