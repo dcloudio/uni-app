@@ -255,8 +255,8 @@
 
   /*  */
 
-  var isUnaryTag = makeMap(
-    'area,base,br,col,embed,frame,hr,img,input,isindex,keygen,' +
+  var isUnaryTag = makeMap(// fixed by xxxxxx add image
+    'image,area,base,br,col,embed,frame,hr,img,input,isindex,keygen,' +
     'link,meta,param,source,track,wbr'
   );
 
@@ -310,7 +310,7 @@
   var startTagClose = /^\s*(\/?)>/;
   var endTag = new RegExp(("^<\\/" + qnameCapture + "[^>]*>"));
   var doctype = /^<!DOCTYPE [^>]+>/i;
-  // #7298: escape - to avoid being pased as HTML comment when inlined in page
+  // #7298: escape - to avoid being passed as HTML comment when inlined in page
   var comment = /^<!\--/;
   var conditionalComment = /^<!\[/;
 
@@ -522,7 +522,9 @@
           : options.shouldDecodeNewlines;
         attrs[i] = {
           name: args[1],
-          value: decodeAttr(value, shouldDecodeNewlines)
+          value: decodeAttr(value, shouldDecodeNewlines),
+          // fixed by xxxxxx 标记 Boolean Attribute
+          bool: args[3] === undefined && args[4] === undefined && args[5] === undefined
         };
         if (options.outputSourceRange) {
           attrs[i].start = args.start + args[0].match(/^\s*/).length;
@@ -597,7 +599,7 @@
   var splitRE$1 = /\r?\n/g;
   var replaceRE = /./g;
   var isSpecialTag = makeMap('script,style,template', true);
-  var isCustomBlock = makeMap('wxs,filter,sjs', true);// fixed by xxxxxx
+  var isCustomBlock = makeMap('wxs,filter,sjs,renderjs', true);// fixed by xxxxxx
 
   /**
    * Parse a single-file component (*.vue) file into an SFC Descriptor Object.
@@ -1036,7 +1038,13 @@
    * directives subscribing to it.
    */
   var Dep = function Dep () {
-    this.id = uid++;
+    // fixed by xxxxxx (nvue vuex)
+    /* eslint-disable no-undef */
+    if(typeof SharedObject !== 'undefined'){
+      this.id = SharedObject.uid++;
+    } else {
+      this.id = uid++;
+    }
     this.subs = [];
   };
 
@@ -1765,36 +1773,6 @@
 
   /*  */
 
-  function transformNode(el) {
-    var list = el.attrsList;
-    for (var i = list.length - 1; i >= 0; i--) {
-      var name = list[i].name;
-      if (name.indexOf(':change:') === 0 || name.indexOf('v-bind:change:') === 0) {
-        var nameArr = name.split(':');
-        var wxsProp = nameArr[nameArr.length - 1];
-        var wxsPropBinding = el.attrsMap[':' + wxsProp] || el.attrsMap['v-bind:' + wxsProp];
-        if (wxsPropBinding) {
-          (el.wxsPropBindings || (el.wxsPropBindings = {}))['change:' + wxsProp] = wxsPropBinding;
-        }
-      }
-    }
-  }
-
-  function genData(el) {
-    var data = '';
-    if (el.wxsPropBindings) {
-      data += "wxsProps:" + (JSON.stringify(el.wxsPropBindings)) + ",";
-    }
-    return data
-  }
-
-  var wxs = {
-    transformNode: transformNode,
-    genData: genData
-  };
-
-  /*  */
-
   var validDivisionCharRE = /[\w).+\-_$\]]/;
 
   function parseFilters (exp) {
@@ -2170,7 +2148,7 @@
 
   /*  */
 
-  function transformNode$1 (el, options) {
+  function transformNode (el, options) {
     var warn = options.warn || baseWarn;
     var staticClass = getAndRemoveAttr(el, 'class');
     if (staticClass) {
@@ -2194,7 +2172,7 @@
     }
   }
 
-  function genData$1 (el) {
+  function genData (el) {
     var data = '';
     if (el.staticClass) {
       data += "staticClass:" + (el.staticClass) + ",";
@@ -2207,8 +2185,8 @@
 
   var klass = {
     staticKeys: ['staticClass'],
-    transformNode: transformNode$1,
-    genData: genData$1
+    transformNode: transformNode,
+    genData: genData
   };
 
   /*  */
@@ -2228,7 +2206,7 @@
 
   /*  */
 
-  function transformNode$2 (el, options) {
+  function transformNode$1 (el, options) {
     var warn = options.warn || baseWarn;
     var staticStyle = getAndRemoveAttr(el, 'style');
     if (staticStyle) {
@@ -2254,7 +2232,7 @@
     }
   }
 
-  function genData$2 (el) {
+  function genData$1 (el) {
     var data = '';
     if (el.staticStyle) {
       data += "staticStyle:" + (el.staticStyle) + ",";
@@ -2267,8 +2245,8 @@
 
   var style = {
     staticKeys: ['staticStyle'],
-    transformNode: transformNode$2,
-    genData: genData$2
+    transformNode: transformNode$1,
+    genData: genData$1
   };
 
   var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
@@ -2767,7 +2745,7 @@
   /*  */
 
   var onRE = /^@|^v-on:/;
-  var dirRE = /^v-|^@|^:/;
+  var dirRE = /^v-|^@|^:|^#/;
   var forAliasRE = /([\s\S]*?)\s+(?:in|of)\s+([\s\S]*)/;
   var forIteratorRE = /,([^,\}\]]*)(?:,([^,\}\]]*))?$/;
   var stripParensRE = /^\(|\)$/g;
@@ -3392,7 +3370,7 @@
             if (el.parent && !maybeComponent(el.parent)) {
               warn$1(
                 "<template v-slot> can only appear at the root level inside " +
-                "the receiving the component",
+                "the receiving component",
                 el
               );
             }
@@ -3720,6 +3698,10 @@
         return
       }
 
+      if(process.env.UNI_PLATFORM !== 'h5'){ // fixed by xxxxxx  非 h5 平台 type 不会是 checkbox,radio
+        return
+      }
+
       var typeBinding;
       if (map[':type'] || map['v-bind:type']) {
         typeBinding = getBindingAttr(el, 'type');
@@ -3781,6 +3763,36 @@
 
   var model = {
     preTransformNode: preTransformNode
+  };
+
+  /*  */
+
+  function transformNode$2(el) {
+    var list = el.attrsList;
+    for (var i = list.length - 1; i >= 0; i--) {
+      var name = list[i].name;
+      if (name.indexOf(':change:') === 0 || name.indexOf('v-bind:change:') === 0) {
+        var nameArr = name.split(':');
+        var wxsProp = nameArr[nameArr.length - 1];
+        var wxsPropBinding = el.attrsMap[':' + wxsProp] || el.attrsMap['v-bind:' + wxsProp];
+        if (wxsPropBinding) {
+          (el.wxsPropBindings || (el.wxsPropBindings = {}))['change:' + wxsProp] = wxsPropBinding;
+        }
+      }
+    }
+  }
+
+  function genData$2(el) {
+    var data = '';
+    if (el.wxsPropBindings) {
+      data += "wxsProps:" + (JSON.stringify(el.wxsPropBindings)) + ",";
+    }
+    return data
+  }
+
+  var wxs = {
+    transformNode: transformNode$2,
+    genData: genData$2
   };
 
   var modules = [
@@ -4122,7 +4134,7 @@
 
   /*  */
 
-  var fnExpRE = /^([\w$_]+|\([^)]*?\))\s*=>|^function\s*(?:[\w$]+)?\s*\(/;
+  var fnExpRE = /^([\w$_]+|\([^)]*?\))\s*=>|^function(?:\s+[\w$]+)?\s*\(/;
   var fnInvokeRE = /\([^)]*?\);*$/;
   var simplePathRE = /^[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*|\['[^']*?']|\["[^"]*?"]|\[\d+]|\[[A-Za-z_$][\w$]*])*$/;
 
@@ -4470,7 +4482,7 @@
     var alias = el.alias;
     var iterator1 = el.iterator1 ? ("," + (el.iterator1)) : '';
     var iterator2 = el.iterator2 ? ("," + (el.iterator2)) : '';
-
+    var iterator3 = el.iterator3 ? ("," + (el.iterator3)) : ''; // fixed by xxxxxx
     if (state.maybeComponent(el) &&
       el.tag !== 'slot' &&
       el.tag !== 'template' &&
@@ -4487,7 +4499,7 @@
 
     el.forProcessed = true; // avoid recursion
     return (altHelper || '_l') + "((" + exp + ")," +
-      "function(" + alias + iterator1 + iterator2 + "){" +
+      "function(" + alias + iterator1 + iterator2 + iterator3 + "){" + // fixed by xxxxxx
         "return " + ((altGen || genElement)(el, state)) +
       '})'
   }
@@ -4891,6 +4903,8 @@
             var range = node.rawAttrsMap[name];
             if (name === 'v-for') {
               checkFor(node, ("v-for=\"" + value + "\""), warn, range);
+            } else if (name === 'v-slot' || name[0] === '#') {
+              checkFunctionParameterExpression(value, (name + "=\"" + value + "\""), warn, range);
             } else if (onRE.test(name)) {
               checkEvent(value, (name + "=\"" + value + "\""), warn, range);
             } else {
@@ -4910,9 +4924,9 @@
   }
 
   function checkEvent (exp, text, warn, range) {
-    var stipped = exp.replace(stripStringRE, '');
-    var keywordMatch = stipped.match(unaryOperatorsRE);
-    if (keywordMatch && stipped.charAt(keywordMatch.index - 1) !== '$') {
+    var stripped = exp.replace(stripStringRE, '');
+    var keywordMatch = stripped.match(unaryOperatorsRE);
+    if (keywordMatch && stripped.charAt(keywordMatch.index - 1) !== '$') {
       warn(
         "avoid using JavaScript unary operator as property name: " +
         "\"" + (keywordMatch[0]) + "\" in expression " + (text.trim()),
@@ -4964,6 +4978,19 @@
           range
         );
       }
+    }
+  }
+
+  function checkFunctionParameterExpression (exp, text, warn, range) {
+    try {
+      new Function(exp, '');
+    } catch (e) {
+      warn(
+        "invalid function parameter expression: " + (e.message) + " in\n\n" +
+        "    " + exp + "\n\n" +
+        "  Raw expression: " + (text.trim()) + "\n",
+        range
+      );
     }
   }
 

@@ -6,6 +6,10 @@ import {
   parsePullToRefresh
 } from './pull-to-refresh-parser'
 
+import {
+  parseStyleUnit
+} from './style-unit-parser'
+
 const WEBVIEW_STYLE_BLACKLIST = [
   'navigationBarBackgroundColor',
   'navigationBarTextStyle',
@@ -27,10 +31,10 @@ export function parseWebviewStyle (id, path, routeOptions = {}) {
   const webviewStyle = Object.create(null)
 
   // 合并
-  routeOptions.window = Object.assign(
+  routeOptions.window = parseStyleUnit(Object.assign(
     JSON.parse(JSON.stringify(__uniConfig.window || {})),
     routeOptions.window || {}
-  )
+  ))
 
   Object.keys(routeOptions.window).forEach(name => {
     if (WEBVIEW_STYLE_BLACKLIST.indexOf(name) === -1) {
@@ -40,7 +44,11 @@ export function parseWebviewStyle (id, path, routeOptions = {}) {
 
   const titleNView = parseTitleNView(routeOptions)
   if (titleNView) {
-    if (id === 1 && __uniConfig.realEntryPagePath === path) {
+    if (
+      id === 1 &&
+      __uniConfig.realEntryPagePath &&
+      !routeOptions.meta.isQuit // 可能是tabBar
+    ) {
       titleNView.autoBackButton = true
     }
     webviewStyle.titleNView = titleNView

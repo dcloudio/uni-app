@@ -1,18 +1,25 @@
 const compiler = require('../lib')
 const res = compiler.compile(
   `
-<button open-type="getPhoneNumber" @getphonenumber="getPhoneNumber">获取手机号</button>
-    `, {
+<div><template v-for="item in items">text</template></div>
+`, {
+    miniprogram: true,
     resourcePath: '/User/fxy/Documents/test.wxml',
+    isReservedTag: function (tag) {
+      return true
+    },
+    getTagNamespace () {
+      return false
+    },
     mp: {
-      minified: true,
-      isTest: true,
       platform: 'mp-weixin'
     },
-    filterModules: {
-      t: {},
-      a: {}
-    }
+    filterModules: ['swipe'],
+    service: true,
+    view: true
+
   })
-// ---BEGIN:JSON---{"n":"v"}---END:JSON---
-console.log(res)
+console.log(require('util').inspect(res, {
+  colors: true,
+  depth: null
+}))

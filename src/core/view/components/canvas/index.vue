@@ -12,7 +12,7 @@
     </div>
     <v-uni-resize-sensor
       ref="sensor"
-      @resize="_resize"/>
+      @resize="_resize" />
   </uni-canvas>
 </template>
 <script>
@@ -40,6 +40,16 @@ function processTouches (target, touches) {
       y: touch.clientY - boundingClientRect.top
     }
   })
+}
+
+var tempCanvas
+function getTempCanvas (width = 0, height = 0) {
+  if (!tempCanvas) {
+    tempCanvas = document.createElement('canvas')
+  }
+  tempCanvas.width = width
+  tempCanvas.height = height
+  return tempCanvas
 }
 
 export default {
@@ -96,6 +106,10 @@ export default {
       width: this.$refs.sensor.$el.offsetWidth,
       height: this.$refs.sensor.$el.offsetHeight
     })
+  },
+  beforeDestroy () {
+    const canvas = this.$refs.canvas
+    canvas.height = canvas.width = 0
   },
   methods: {
     _handleSubscribe ({
@@ -335,7 +349,7 @@ export default {
           } else {
             // 解决 PLUS-APP（wkwebview）以及 H5 图像跨域问题（H5图像响应头需包含access-control-allow-origin）
             if (window.plus && src.indexOf('http://') !== 0 && src.indexOf('https://') !==
-                                0) {
+              0) {
               loadFile(src)
             } else if (/^data:.*,.*/.test(src)) {
               sefl._images[src].src = src
@@ -392,7 +406,6 @@ export default {
         height = canvas.offsetHeight - y
       }
       try {
-        const newCanvas = document.createElement('canvas')
         if (!hidpi) {
           if (!destWidth && !destHeight) {
             destWidth = Math.round(width * pixelRatio)
@@ -406,13 +419,17 @@ export default {
           destWidth = width
           destHeight = height
         }
-        newCanvas.width = destWidth
-        newCanvas.height = destHeight
+        const newCanvas = getTempCanvas(destWidth, destHeight)
         const context = newCanvas.getContext('2d')
         context.__hidpi__ = true
         context.drawImageByCanvas(canvas, x, y, width, height, 0, 0, destWidth, destHeight, false)
         imgData = context.getImageData(0, 0, destWidth, destHeight)
+        newCanvas.height = newCanvas.width = 0
+        context.__hidpi__ = false
       } catch (error) {
+        if (!callbackId) {
+          return
+        }
         UniViewJSBridge.publishHandler('onCanvasMethodCallback', {
           callbackId,
           data: {
@@ -421,15 +438,23 @@ export default {
         }, this.$page.id)
         return
       }
-      UniViewJSBridge.publishHandler('onCanvasMethodCallback', {
-        callbackId,
-        data: {
-          errMsg: 'canvasGetImageData:ok',
+      if (!callbackId) {
+        return {
           data: [...imgData.data],
           width: destWidth,
           height: destHeight
         }
-      }, this.$page.id)
+      } else {
+        UniViewJSBridge.publishHandler('onCanvasMethodCallback', {
+          callbackId,
+          data: {
+            errMsg: 'canvasGetImageData:ok',
+            data: [...imgData.data],
+            width: destWidth,
+            height: destHeight
+          }
+        }, this.$page.id)
+      }
     },
     putImageData ({
       data,
@@ -443,12 +468,11 @@ export default {
         if (!height) {
           height = Math.round(data.length / 4 / width)
         }
-        const canvas = document.createElement('canvas')
-        canvas.width = width
-        canvas.height = height
+        const canvas = getTempCanvas(width, height)
         const context = canvas.getContext('2d')
         context.putImageData(new ImageData(new Uint8ClampedArray(data), width, height), 0, 0)
         this.$refs.canvas.getContext('2d').drawImage(canvas, x, y, width, height)
+        canvas.height = canvas.width = 0
       } catch (error) {
         UniViewJSBridge.publishHandler('onCanvasMethodCallback', {
           callbackId,
@@ -464,23 +488,92 @@ export default {
           errMsg: 'canvasPutImageData:ok'
         }
       }, this.$page.id)
+    },
+    getDataUrl ({
+      x = 0,
+      y = 0,
+      width,
+      height,
+      destWidth,
+      destHeight,
+      hidpi = true,
+      fileType,
+      qualit,
+      callbackId
+    }) {
+      let res = this.getImageData({
+        x,
+        y,
+        width,
+        height,
+        destWidth,
+        destHeight,
+        hidpi
+      })
+      if (!res.data || !res.data.length) {
+        UniViewJSBridge.publishHandler('onCanvasMethodCallback', {
+          callbackId,
+          data: {
+            errMsg: 'canvasGetDataUrl:fail'
+          }
+        }, this.$page.id)
+        return
+      }
+      let imgData
+      try {
+        imgData = new ImageData(new Uint8ClampedArray(res.data), res.width, res.height)
+      } catch (error) {
+        UniViewJSBridge.publishHandler('onCanvasMethodCallback', {
+          callbackId,
+          data: {
+            errMsg: 'canvasGetDataUrl:fail'
+          }
+        }, this.$page.id)
+        return
+      }
+      destWidth = res.width
+      destHeight = res.height
+      const canvas = getTempCanvas(destWidth, destHeight)
+      const c2d = canvas.getContext('2d')
+      c2d.putImageData(imgData, 0, 0)
+      let base64 = canvas.toDataURL('image/png')
+      canvas.height = canvas.width = 0
+      const img = new Image()
+      img.onload = () => {
+        const canvas = getTempCanvas(destWidth, destHeight)
+        if (fileType === 'jpeg') {
+          c2d.fillStyle = '#fff'
+          c2d.fillRect(0, 0, destWidth, destHeight)
+        }
+        c2d.drawImage(img, 0, 0)
+        base64 = canvas.toDataURL(`image/${fileType}`, qualit)
+        canvas.height = canvas.width = 0
+        UniViewJSBridge.publishHandler('onCanvasMethodCallback', {
+          callbackId,
+          data: {
+            errMsg: 'canvasGetDataUrl:ok',
+            base64: base64
+          }
+        }, this.$page.id)
+      }
+      img.src = base64
     }
   }
 }
 </script>
 <style>
-    uni-canvas {
-        width: 300px;
-        height: 150px;
-        display: block;
-        position: relative;
-    }
+uni-canvas {
+  width: 300px;
+  height: 150px;
+  display: block;
+  position: relative;
+}
 
-    uni-canvas>canvas {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-    }
+uni-canvas > canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
 </style>

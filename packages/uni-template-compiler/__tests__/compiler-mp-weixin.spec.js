@@ -87,4 +87,10 @@ describe('mp:compiler-mp-weixin', () => {
       }
     )
   })
+  it('generate page-meta', () => {
+    assertCodegen(// TODO vue-id
+      '<view><page-meta/><view><button></button></view></view>',
+      `<page-meta vue-id="1" bind:__l="__l"></page-meta><view><button></button></view>`
+    )
+  })
 })

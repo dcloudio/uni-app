@@ -1,20 +1,7 @@
 <template>
   <uni-textarea
-    :value="_checkEmpty(value)"
-    :maxlength="maxlengthNumber"
-    :placeholder="_checkEmpty(placeholder)"
-    :disabled="disabled"
-    :focus="focus"
-    :auto-focus="autoFocus"
-    :placeholder-class="_checkEmpty(placeholderClass)"
-    :placeholder-style="_checkEmpty(placeholderStyle)"
-    :auto-height="autoHeight"
-    :cursor="cursorNumber"
-    :selection-start="selectionStartNumber"
-    :selection-end="selectionEndNumber"
     @change.stop
-    v-on="$listeners"
-  >
+    v-on="$listeners">
     <div class="uni-textarea-wrapper">
       <div
         v-show="!(composition||valueSync.length)"
@@ -23,13 +10,16 @@
         :class="placeholderClass"
         class="uni-textarea-placeholder"
       >{{ placeholder }}</div>
+      <div
+        ref="line"
+        class="uni-textarea-line">&nbsp;</div>
       <div class="uni-textarea-compute">
         <div
           v-for="(item,index) in valueCompute"
           :key="index">{{ item.trim() ? item : '.' }}</div>
         <v-uni-resize-sensor
           ref="sensor"
-          @resize="_resize"/>
+          @resize="_resize" />
       </div>
       <textarea
         ref="textarea"
@@ -38,6 +28,7 @@
         :maxlength="maxlengthNumber"
         :autofocus="autoFocus"
         :class="{'uni-textarea-textarea-ios': isIOS}"
+        :style="{'overflow-y': autoHeight? 'hidden':'auto'}"
         class="uni-textarea-textarea"
         @compositionstart="_compositionstart"
         @compositionend="_compositionend"
@@ -51,11 +42,12 @@
 </template>
 <script>
 import {
-  emitter
+  emitter,
+  keyboard
 } from 'uni-mixins'
 export default {
   name: 'Textarea',
-  mixins: [emitter],
+  mixins: [emitter, keyboard],
   model: {
     prop: 'value',
     event: 'update:value'
@@ -122,7 +114,7 @@ export default {
       focusSync: this.focus,
       height: 0,
       focusChangeSource: '',
-      isIOS: String(navigator.platform).indexOf('iP') === 0 && String(navigator.vendor).indexOf('Apple') === 0
+      isIOS: String(navigator.platform).indexOf('iP') === 0 && String(navigator.vendor).indexOf('Apple') === 0 && String(navigator.appVersion).split('OS ')[1].split('_')[0] < 13
     }
   },
   computed: {
@@ -187,7 +179,10 @@ export default {
       this._checkSelection()
     },
     height (height) {
-      const lineHeight = getComputedStyle(this.$el).lineHeight.replace('px', '')
+      let lineHeight = parseFloat(getComputedStyle(this.$el).lineHeight)
+      if (isNaN(lineHeight)) {
+        lineHeight = this.$refs.line.offsetHeight
+      }
       var lineCount = Math.round(height / lineHeight)
       this.$trigger('linechange', {}, {
         height,
@@ -210,6 +205,7 @@ export default {
     this._resize({
       height: this.$refs.sensor.$el.offsetHeight
     })
+    this.initKeyboard(this.$refs.textarea)
   },
   beforeDestroy () {
     this.$dispatch('Form', 'uni-form-group-update', {
@@ -278,9 +274,6 @@ export default {
     },
     _resetFormData () {
       this.valueSync = ''
-    },
-    _checkEmpty (str) {
-      return str || false
     }
   }
 }
@@ -298,11 +291,9 @@ uni-textarea {
 uni-textarea[hidden] {
   display: none;
 }
-uni-textarea[auto-height] .uni-textarea-textarea {
-  overflow-y: hidden;
-}
 .uni-textarea-wrapper,
 .uni-textarea-placeholder,
+.uni-textarea-line,
 .uni-textarea-compute,
 .uni-textarea-textarea {
   outline: none;
@@ -318,6 +309,7 @@ uni-textarea[auto-height] .uni-textarea-textarea {
   height: 100%;
 }
 .uni-textarea-placeholder,
+.uni-textarea-line,
 .uni-textarea-compute,
 .uni-textarea-textarea {
   position: absolute;
@@ -332,9 +324,13 @@ uni-textarea[auto-height] .uni-textarea-textarea {
   color: grey;
   overflow: hidden;
 }
+.uni-textarea-line,
 .uni-textarea-compute {
   visibility: hidden;
   height: auto;
+}
+.uni-textarea-line {
+  width: 1em;
 }
 .uni-textarea-textarea {
   resize: none;

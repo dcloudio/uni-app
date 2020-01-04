@@ -555,7 +555,7 @@ function parseHTML (html, options) {
 var splitRE = /\r?\n/g;
 var replaceRE = /./g;
 var isSpecialTag = makeMap('script,style,template', true);
-var isCustomBlock = makeMap('wxs,filter,sjs', true);// fixed by xxxxxx
+var isCustomBlock = makeMap('wxs,filter,sjs,renderjs', true);// fixed by xxxxxx
 
 /**
  * Parse a single-file component (*.vue) file into an SFC Descriptor Object.
@@ -2779,7 +2779,13 @@ var uid = 0;
  * directives subscribing to it.
  */
 var Dep = function Dep () {
-  this.id = uid++;
+  // fixed by xxxxxx (nvue vuex)
+  /* eslint-disable no-undef */
+  if(typeof SharedObject !== 'undefined'){
+    this.id = SharedObject.uid++;
+  } else {
+    this.id = uid++;
+  }
   this.subs = [];
 };
 

@@ -1,0 +1,456 @@
+<template>
+  <uni-map v-on="$listeners">
+    <div
+      ref="container"
+      class="uni-map-container" />
+    <v-uni-cover-image
+      v-for="(control, index) in mapControls"
+      :key="index"
+      :src="control.iconPath"
+      :style="control.position"
+      auto-size
+      @click="controlclick(control)"/>
+    <div class="uni-map-slot">
+      <slot />
+    </div>
+  </uni-map>
+</template>
+<script>
+import {
+  subscriber
+} from 'uni-mixins'
+import native from '../../mixins/native'
+
+const methods = [
+  'getCenterLocation',
+  'moveToLocation',
+  'getRegion',
+  'getScale',
+  '$getAppMap'
+]
+
+// const events = [
+//   'markertap',
+//   'callouttap',
+//   'controltap',
+//   'regionchange',
+//   'tap',
+//   'updated'
+// ]
+
+const attrs = [
+  'latitude',
+  'longitude',
+  'scale',
+  'markers',
+  'polyline',
+  'circles',
+  'controls',
+  'show-location'
+]
+
+const convertCoordinates = (lng, lat, callback) => {
+  // plus.maps.Map.convertCoordinates(new plus.maps.Point(lng, lat), {
+  //   coordType: 'gcj02'
+  // }, callback)
+  callback({
+    coord: {
+      latitude: lat,
+      longitude: lng
+    }
+  })
+}
+
+function parseHex (color) {
+  if (color.indexOf('#') !== 0) {
+    return {
+      color,
+      opacity: 1
+    }
+  }
+  const opacity = color.substr(7, 2)
+  return {
+    color: color.substr(0, 7),
+    opacity: opacity ? Number('0x' + opacity) / 255 : 1
+  }
+}
+
+export default {
+  name: 'Map',
+  mixins: [subscriber, native],
+  props: {
+    id: {
+      type: String,
+      default: ''
+    },
+    latitude: {
+      type: [Number, String],
+      default: ''
+    },
+    longitude: {
+      type: [Number, String],
+      default: ''
+    },
+    scale: {
+      type: [String, Number],
+      default: 1
+    },
+    markers: {
+      type: Array,
+      default () {
+        return []
+      }
+    },
+    polyline: {
+      type: Array,
+      default () {
+        return []
+      }
+    },
+    circles: {
+      type: Array,
+      default () {
+        return []
+      }
+    },
+    controls: {
+      type: Array,
+      default () {
+        return []
+      }
+    }
+  },
+  data () {
+    return {
+      style: {
+        top: '0px',
+        left: '0px',
+        width: '0px',
+        height: '0px',
+        position: 'static'
+      },
+      hidden: false
+    }
+  },
+  computed: {
+    attrs () {
+      const obj = {}
+      attrs.forEach(key => {
+        let val = this.$props[key]
+        val = key === 'src' ? this.$getRealPath(val) : val
+        obj[key.replace(/[A-Z]/g, str => '-' + str.toLowerCase())] = val
+      })
+      return obj
+    },
+    mapControls () {
+      const list = this.controls.map((control) => {
+        let position = { position: 'absolute' };
+        ['top', 'left', 'width', 'height'].forEach(key => {
+          position[key] = control.position[key] + 'px'
+        })
+        return {
+          id: control.id,
+          iconPath: this.$getRealPath(control.iconPath),
+          position: position
+        }
+      })
+      return list
+    }
+  },
+  watch: {
+    hidden (val) {
+      this.map && this.map[val ? 'hide' : 'show']()
+    }
+  },
+  listeners: {
+    '@view-update': '_requestUpdate'
+  },
+  mounted () {
+    this._updateStyle()
+    let mapStyle = Object.assign({}, this.attrs, this.style)
+    if (this.latitude && this.longitude) {
+      mapStyle.center = new plus.maps.Point(this.longitude, this.latitude)
+    }
+    const map = this.map = plus.maps.create('map' + Date.now(), mapStyle)
+    map.__markers__ = {}
+    map.__lines__ = []
+    map.__circles__ = []
+    plus.webview.currentWebview().append(map)
+    if (this.hidden) {
+      map.hide()
+    }
+    this.$watch('attrs', () => {
+      this.map && this.map.setStyles(this.attrs)
+    }, {
+      deep: true
+    })
+    this.$watch('style', () => {
+      this.map && this.map.setStyles(this.style)
+    }, {
+      deep: true
+    })
+    map.onclick((data = {}) => {
+      this.$trigger('tap', {}, data)
+    })
+    map.onstatuschanged((data = {}) => {
+      this.$trigger('end', {}, data)
+    })
+    this._addMarkers(this.markers)
+    this._addMapLines(this.polyline)
+    this._addMapCircles(this.circles)
+  },
+  beforeDestroy () {
+    delete this.map
+  },
+  methods: {
+    _handleSubscribe ({
+      type,
+      data = {}
+    }) {
+      if (!methods.includes(type)) {
+        return
+      }
+      this.map && this[type](data)
+    },
+    getRegion () {
+      // TODO
+      // const region = this.map.getBounds()
+    },
+    getScale () {
+      // TODO
+      // const zoom = this.map.getZoom()
+    },
+    _updateStyle () {
+      const rect = this.$refs.container.getBoundingClientRect()
+      this.hidden = false;
+      ['top', 'left', 'width', 'height'].forEach(key => {
+        let val = rect[key]
+        val = key === 'top' ? val + (document.documentElement.scrollTop || document.body.scrollTop || 0) : val
+        if (!val && (key === 'width' || key === 'height')) {
+          this.hidden = true
+        }
+        this.style[key] = val + 'px'
+      })
+    },
+    _requestUpdate () {
+      if (this._animationFrame) {
+        cancelAnimationFrame(this._animationFrame)
+      }
+      if (this.video) {
+        this._animationFrame = requestAnimationFrame(() => {
+          delete this._animationFrame
+          this._updateStyle()
+        })
+      }
+    },
+    controlclick (e) {
+      this.$trigger('controltap', {}, { id: e.id })
+    },
+    _addMarker (nativeMap, marker) {
+      const {
+        id,
+        // title,
+        latitude,
+        longitude,
+        iconPath,
+        // width,
+        // height,
+        // rotate,
+        // alpha,
+        callout,
+        label
+      } = marker
+      convertCoordinates(longitude, latitude, res => {
+        const {
+          latitude,
+          longitude
+        } = res.coord
+        const nativeMarker = new plus.maps.Marker(new plus.maps.Point(longitude, latitude))
+        if (iconPath) {
+          nativeMarker.setIcon(this.$getRealPath(iconPath))
+        }
+        if (label && label.content) {
+          nativeMarker.setLabel(label.content)
+        }
+        let nativeBubble = false
+        if (callout && callout.content) {
+          nativeBubble = new plus.maps.Bubble(callout.content)
+        }
+        if (nativeBubble) {
+          nativeMarker.setBubble(nativeBubble)
+        }
+        if (id || id === 0) {
+          nativeMarker.onclick = (e) => {
+            this.$trigger('markertap', {}, {
+              id
+            })
+          }
+          if (nativeBubble) {
+            nativeBubble.onclick = () => {
+              this.$trigger('callouttap', {}, {
+                id
+              })
+            }
+          }
+        }
+        nativeMap.addOverlay(nativeMarker)
+        nativeMap.__markers__[id + ''] = nativeMarker
+      })
+    },
+    _addMarkers (markers, clear) {
+      if (this.map) {
+        if (clear) {
+          this.map.clearOverlays()
+        }
+        markers.forEach(marker => {
+          this._addMarker(this.map, marker)
+        })
+        return {
+          errMsg: 'addMapMarkers:ok'
+        }
+      }
+      return {
+        errMsg: 'addMapMarkers:fail:请先创建地图元素'
+      }
+    },
+    _translateMapMarker ({
+      autoRotate,
+      callbackId,
+      destination,
+      duration,
+      markerId
+    }) {
+      if (this.map) {
+        const nativeMarker = this.map.__markers__[markerId + '']
+        if (nativeMarker) {
+          nativeMarker.setPoint(new plus.maps.Point(destination.longitude, destination.latitude))
+        }
+      }
+      return {
+        errMsg: 'translateMapMarker:ok'
+      }
+    },
+    _addMapLines (lines) {
+      const nativeMap = this.map
+      if (!nativeMap) {
+        return {
+          errMsg: 'addMapLines:fail:请先创建地图元素'
+        }
+      }
+
+      if (nativeMap.__lines__.length > 0) {
+        nativeMap.__lines__.forEach(circle => {
+          nativeMap.removeOverlay(circle)
+        })
+        nativeMap.__lines__ = []
+      }
+
+      lines.forEach(line => {
+        const {
+          color,
+          width
+          // dottedLine,
+          // arrowLine,
+          // arrowIconPath,
+          // borderColor,
+          // borderWidth
+        } = line
+        const points = line.points.map(point => new plus.maps.Point(point.longitude, point.latitude))
+        const polyline = new plus.maps.Polyline(points)
+        if (color) {
+          const strokeStyle = parseHex(color)
+          polyline.setStrokeColor(strokeStyle.color)
+          polyline.setStrokeOpacity(strokeStyle.opacity)
+        }
+        if (width) {
+          polyline.setLineWidth(width)
+        }
+        nativeMap.addOverlay(polyline)
+        nativeMap.__lines__.push(polyline)
+      })
+      return {
+        errMsg: 'addMapLines:ok'
+      }
+    },
+    _addMapCircles (circles) {
+      const nativeMap = this.map
+      if (!nativeMap) {
+        return {
+          errMsg: 'addMapCircles:fail:请先创建地图元素'
+        }
+      }
+
+      if (nativeMap.__circles__.length > 0) {
+        nativeMap.__circles__.forEach(circle => {
+          nativeMap.removeOverlay(circle)
+        })
+        nativeMap.__circles__ = []
+      }
+
+      circles.forEach(circle => {
+        const {
+          latitude,
+          longitude,
+          color,
+          fillColor,
+          radius,
+          strokeWidth
+        } = circle
+        const nativeCircle = new plus.maps.Circle(new plus.maps.Point(longitude, latitude), radius)
+        if (color) {
+          const strokeStyle = parseHex(color)
+          nativeCircle.setStrokeColor(strokeStyle.color)
+          nativeCircle.setStrokeOpacity(strokeStyle.opacity)
+        }
+        if (fillColor) {
+          const fillStyle = parseHex(fillColor)
+          nativeCircle.setFillColor(fillStyle.color)
+          nativeCircle.setFillOpacity(fillStyle.opacity)
+        }
+        if (strokeWidth) {
+          nativeCircle.setLineWidth(strokeWidth)
+        }
+        nativeMap.addOverlay(nativeCircle)
+        nativeMap.__circles__.push(nativeCircle)
+      })
+      return {
+        errMsg: 'addMapCircles:ok'
+      }
+    }
+  }
+}
+</script>
+
+<style>
+  uni-map {
+    width: 300px;
+    height: 225px;
+    display: inline-block;
+    line-height: 0;
+    overflow: hidden;
+    position: relative;
+  }
+
+  uni-map[hidden] {
+    display: none;
+  }
+
+  .uni-map-container {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    background-color: black;
+  }
+
+  .uni-map-slot {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+  }
+</style>

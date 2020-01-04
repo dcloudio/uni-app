@@ -60,7 +60,8 @@ export function chooseImage ({
       tempFilePaths.push(filePath)
       tempFiles.push({
         path: filePath,
-        size: file.size
+        size: file.size,
+        name: file.name
       })
     }
 

@@ -27,6 +27,21 @@ function getShadowCss () {
 }
 
 function getCopyOption (file, options) {
+  if (file === 'wxcomponents') {
+    if (!options) {
+      options = {}
+    }
+    // 不拷贝vue,css(这些可能是 uni-migration 转换二来的)
+    options.ignore = ['**/*.vue', '**/*.css']
+  }
+  if (path.isAbsolute(file)) {
+    if (fs.existsSync(file)) {
+      return Object.assign({
+        from: file,
+        to: path.resolve(process.env.UNI_OUTPUT_DIR)
+      }, options)
+    }
+  }
   const from = path.resolve(process.env.UNI_INPUT_DIR, file)
   if (fs.existsSync(from)) {
     return Object.assign({
@@ -88,18 +103,39 @@ const PLATFORMS = {
     copyWebpackOptions ({
       assetsDir
     }) {
+      const indexCssCopyOptions = [{
+        from: require.resolve('@dcloudio/uni-h5/dist/index.css'),
+        to: assetsDir,
+        transform (content) {
+          if (process.env.NODE_ENV === 'production') {
+            return content + getShadowCss()
+          }
+          return content
+        }
+      }]
+      const VUE_APP_INDEX_CSS_HASH = process.env.VUE_APP_INDEX_CSS_HASH
+      if (VUE_APP_INDEX_CSS_HASH) {
+        const {
+          getH5Options
+        } = require('./manifest')
+        const {
+          template
+        } = getH5Options()
+        const to = path.join(assetsDir, `[name].${VUE_APP_INDEX_CSS_HASH}.[ext]`)
+        if (process.env.NODE_ENV === 'production') {
+          const templateContent = fs.readFileSync(template, { encoding: 'utf8' })
+          if (/\bVUE_APP_INDEX_CSS_HASH\b/.test(templateContent)) {
+            indexCssCopyOptions[0].to = to
+          }
+        } else {
+          const indexCssCopyOption = Object.assign({}, indexCssCopyOptions[0])
+          indexCssCopyOption.to = to
+          indexCssCopyOptions.push(indexCssCopyOption)
+        }
+      }
       return [
         ...getStaticCopyOptions(assetsDir),
-        {
-          from: require.resolve('@dcloudio/uni-h5/dist/index.css'),
-          to: assetsDir,
-          transform (content) {
-            if (process.env.NODE_ENV === 'production') {
-              return content + getShadowCss()
-            }
-            return content
-          }
-        },
+        ...indexCssCopyOptions,
         ...getCopyOptions(['hybrid/html'])
       ]
     }
@@ -117,20 +153,43 @@ const PLATFORMS = {
     filterTag: 'wxs',
     subPackages: false,
     cssVars: {
-      '--window-top': '0px',
-      '--window-bottom': '0px'
+      '--window-top': '0px'
     },
     copyWebpackOptions ({
-      assetsDir
+      assetsDir,
+      vueOptions
     }) {
+      if (
+        vueOptions &&
+        vueOptions.pluginOptions &&
+        vueOptions.pluginOptions['uni-app-plus'] &&
+        vueOptions.pluginOptions['uni-app-plus']['view']
+      ) { // app-view 无需拷贝资源(app-service 已经做了)
+        return []
+      }
+
       const files = ['hybrid/html']
       let wxcomponents = []
-      if (!process.env.UNI_USING_NATIVE) {
+      if (!process.env.UNI_USING_NATIVE && !process.env.UNI_USING_V3) {
         wxcomponents = getCopyOptions(['wxcomponents'], {
           to: path.resolve(process.env.UNI_OUTPUT_TMP_DIR, 'wxcomponents')
         })
       }
+      let template = []
+      let view = []
+      if (process.env.UNI_USING_V3) {
+        view = getCopyOptions([
+          require.resolve('@dcloudio/uni-app-plus/dist/view.css'),
+          require.resolve('@dcloudio/uni-app-plus/dist/view.umd.min.js')
+        ])
+        template = [
+          ...getCopyOptions([path.resolve(__dirname, '../template/common')]),
+          ...getCopyOptions([path.resolve(__dirname, '../template/v3')])
+        ]
+      }
       return [
+        ...view,
+        ...template,
         ...getStaticCopyOptions(assetsDir),
         ...wxcomponents,
         ...getCopyOptions(files)
@@ -483,6 +542,9 @@ module.exports = {
   getPlatformVue (vueOptions) {
     if (process.env.UNI_PLATFORM === 'h5' && vueOptions && vueOptions.runtimeCompiler) {
       return '@dcloudio/vue-cli-plugin-uni/packages/h5-vue/dist/vue.esm.js'
+    }
+    if (process.env.UNI_PLATFORM === 'app-plus' && process.env.UNI_USING_V3) {
+      return '@dcloudio/uni-app-plus/dist/service.runtime.esm.js'
     }
     if (process.env.UNI_USING_COMPONENTS) {
       return uniRuntime

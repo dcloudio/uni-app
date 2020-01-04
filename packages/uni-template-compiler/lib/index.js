@@ -8,7 +8,7 @@ const {
   compileToFunctions,
   ssrCompile,
   ssrCompileToFunctions
-} = require('vue-template-compiler')
+} = require('../../vue-cli-plugin-uni/packages/vue-template-compiler')
 
 const platforms = require('./platforms')
 const traverseScript = require('./script/traverse')
@@ -22,10 +22,53 @@ const compilerAlipayModule = require('./module-alipay')
 
 const generateCodeFrame = require('./codeframe')
 
+const {
+  isComponent,
+  isUnaryTag
+} = require('./util')
+
+const {
+  module: autoComponentsModule,
+  compileTemplate
+} = require('./auto-components')
+
 module.exports = {
   compile (source, options = {}) {
+    (options.modules || (options.modules = [])).push(autoComponentsModule)
+    options.isUnaryTag = isUnaryTag
+    // 将 autoComponents 挂在 isUnaryTag 上边
+    options.isUnaryTag.autoComponents = new Set()
+
+    options.preserveWhitespace = false
+    if (options.service) {
+      (options.modules || (options.modules = [])).push(require('./app/service'))
+      options.optimize = false // 启用 staticRenderFns
+      // domProps => attrs
+      options.mustUseProp = () => false
+      options.isReservedTag = (tagName) => !isComponent(tagName) // 非组件均为内置
+      options.getTagNamespace = () => false
+
+      try {
+        return compileTemplate(source, options, compile)
+      } catch (e) {
+        console.error(source)
+        throw e
+      }
+    } else if (options.view) {
+      (options.modules || (options.modules = [])).push(require('./app/view'))
+      options.optimize = false // 暂不启用 staticRenderFns
+      options.isUnaryTag = isUnaryTag
+      options.isReservedTag = (tagName) => false // 均为组件
+      try {
+        return compileTemplate(source, options, compile)
+      } catch (e) {
+        console.error(source)
+        throw e
+      }
+    }
+
     if (!options.mp) { // h5
-      return compile(source, options)
+      return compileTemplate(source, options, compile)
     }
 
     (options.modules || (options.modules = [])).push(compilerModule)
@@ -34,9 +77,9 @@ module.exports = {
       options.modules.push(compilerAlipayModule)
     }
 
-    const res = compile(source, Object.assign(options, {
+    const res = compileTemplate(source, Object.assign(options, {
       optimize: false
-    }))
+    }), compile)
 
     options.mp.platform = platforms[options.mp.platform]
 
@@ -109,17 +152,31 @@ at ${resourcePath}.vue:1`)
      * ...暂时使用方案1
      */
     if (options.emitFile) {
+      // cache
+      if (process.env.UNI_USING_CACHE) {
+        const oldEmitFile = options.emitFile
+        process.UNI_CACHE_TEMPLATES = {}
+        options.emitFile = function emitFile (name, content) {
+          const absolutePath = path.resolve(process.env.UNI_OUTPUT_DIR, name)
+          process.UNI_CACHE_TEMPLATES[absolutePath] = content
+          oldEmitFile(name, content)
+        }
+      }
+
       if (options.updateSpecialMethods) {
         options.updateSpecialMethods(resourcePath, [...res.specialMethods])
       }
       const filterTemplate = []
       options.mp.filterModules.forEach(name => {
-        filterTemplate.push(
-          options.mp.platform.createFilterTag(
-            options.filterTagName,
-            options.filterModules[name]
+        const filterModule = options.filterModules[name]
+        if (filterModule.type !== 'renderjs' && filterModule.attrs.lang !== 'renderjs') {
+          filterTemplate.push(
+            options.mp.platform.createFilterTag(
+              options.filterTagName,
+              options.filterModules[name]
+            )
           )
-        )
+        }
       })
 
       if (filterTemplate.length) {

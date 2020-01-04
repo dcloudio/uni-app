@@ -91,14 +91,13 @@ module.exports = function generateJson (compilation) {
   const jsonFileMap = getChangedJsonFileMap()
   for (let name of jsonFileMap.keys()) {
     const jsonObj = JSON.parse(jsonFileMap.get(name))
-
     // customUsingComponents
-    if (jsonObj.customUsingComponents && Object.keys(jsonObj.customUsingComponents)) {
+    if (jsonObj.customUsingComponents && Object.keys(jsonObj.customUsingComponents).length) {
       jsonObj.usingComponents = Object.assign(jsonObj.customUsingComponents, jsonObj.usingComponents)
     }
     delete jsonObj.customUsingComponents
     // usingGlobalComponents
-    if (jsonObj.usingGlobalComponents && Object.keys(jsonObj.usingGlobalComponents)) {
+    if (jsonObj.usingGlobalComponents && Object.keys(jsonObj.usingGlobalComponents).length) {
       jsonObj.usingComponents = Object.assign(jsonObj.usingGlobalComponents, jsonObj.usingComponents)
     }
     delete jsonObj.usingGlobalComponents
@@ -142,6 +141,12 @@ module.exports = function generateJson (compilation) {
 
     delete jsonObj.genericComponents
 
+    // usingAutoImportComponents
+    if (jsonObj.usingAutoImportComponents && Object.keys(jsonObj.usingAutoImportComponents).length) {
+      jsonObj.usingComponents = Object.assign(jsonObj.usingAutoImportComponents, jsonObj.usingComponents)
+    }
+    delete jsonObj.usingAutoImportComponents
+
     if (process.env.UNI_PLATFORM !== 'app-plus' && process.env.UNI_PLATFORM !== 'h5') {
       delete jsonObj.navigationBarShadow
     }
@@ -150,10 +155,10 @@ module.exports = function generateJson (compilation) {
 
     const jsFile = name.replace('.json', '.js')
     if (
-      !['app.js', 'manifest.js', 'project.config.js', 'project.swan.js'].includes(jsFile) &&
+      !['app.js', 'manifest.js', 'mini.project.js', 'project.config.js', 'project.swan.js'].includes(jsFile) &&
       !compilation.assets[jsFile]
     ) {
-      compilation.assets[jsFile] = {
+      const jsFileAsset = {
         size () {
           return Buffer.byteLength(EMPTY_COMPONENT, 'utf8')
         },
@@ -161,8 +166,9 @@ module.exports = function generateJson (compilation) {
           return EMPTY_COMPONENT
         }
       }
+      compilation.assets[jsFile] = jsFileAsset
     }
-    compilation.assets[name] = {
+    const jsonAsset = {
       size () {
         return Buffer.byteLength(source, 'utf8')
       },
@@ -170,5 +176,12 @@ module.exports = function generateJson (compilation) {
         return source
       }
     }
+
+    compilation.assets[name] = jsonAsset
+  }
+  if (process.env.UNI_USING_CACHE && jsonFileMap.size) {
+    setTimeout(() => {
+      require('@dcloudio/uni-cli-shared/lib/cache').store()
+    }, 50)
   }
 }

@@ -68,8 +68,14 @@ module.exports = function (pagesJson, manifestJson) {
     updateAppJsonUsingComponents(app.usingComponents)
   }
 
+  const project = Object.assign({}, manifestJson['mp-alipay'] || {})
+  delete project.usingComponents
+
   return [{
     name: 'app',
     content: app
+  }, {
+    name: 'mini.project',
+    content: project
   }]
 }

@@ -7,6 +7,8 @@ import {
   setPullDownRefreshPageId
 } from 'uni-platform/service/api/ui/pull-down-refresh'
 
+import onWebInvokeAppService from 'uni-platform/service/on-web-invoke-app-service'
+
 export default function initOn (on, {
   getApp,
   getCurrentPages
@@ -17,6 +19,11 @@ export default function initOn (on, {
 
   function onPageNotFound (page) {
     callAppHook(getApp(), 'onPageNotFound', page)
+  }
+
+  function onResize (args, pageId) {
+    const page = getCurrentPages().find(page => page.$page.id === pageId)
+    page && callPageHook(page, 'onResize', args)
   }
 
   function onPullDownRefresh (args, pageId) {
@@ -50,17 +57,6 @@ export default function initOn (on, {
     callCurrentPageHook('onShow')
   }
 
-  function onWebInvokeAppService ({
-    name,
-    arg
-  }, pageId) {
-    if (name === 'postMessage') {
-      // TODO 小程序后退、组件销毁、分享时通知
-    } else {
-      uni[name](arg)
-    }
-  }
-
   const routeHooks = {
     navigateTo () {
       callCurrentPageHook('onHide')
@@ -87,6 +83,7 @@ export default function initOn (on, {
   on('onAppEnterBackground', onAppEnterBackground)
   on('onAppEnterForeground', onAppEnterForeground)
 
+  on('onResize', onResize)
   on('onPullDownRefresh', onPullDownRefresh)
 
   on('onTabItemTap', createCallCurrentPageHook('onTabItemTap'))

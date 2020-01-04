@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-cli-shared",
-  "version": "2.0.0-24220191115004",
+  "version": "2.0.0-alpha-25120200103006",
   "description": "uni-cli-shared",
   "main": "lib/index.js",
   "repository": {
@@ -10,7 +10,8 @@
   },
   "files": [
     "lib",
-    "template"
+    "template",
+    "components"
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -21,5 +22,5 @@
     "hash-sum": "^1.0.2",
     "strip-json-comments": "^2.0.1"
   },
-  "gitHead": "5e13dffd1c33347c5faa64f1f8f15f5b0edcfeed"
+  "gitHead": "63b678965212cc805e0884bb7d4a2ac7702b3191"
 }

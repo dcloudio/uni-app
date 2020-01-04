@@ -23,35 +23,10 @@ export function chooseLocation (options, callbackId) {
   let result
   const page = showPage({
     url: '__uniappchooselocation',
-    data: {
-      keyword: options.keyword
-    },
+    data: options,
     style: {
       animationType: options.animationType || 'slide-in-bottom',
-      titleNView: {
-        autoBackButton: false,
-        titleText: options.titleText || '选择位置',
-        titleColor: '#ffffff',
-        backgroundColor: 'rgba(0,0,0,1)',
-        buttons: [{
-          // text: options.cancelText || "取消",
-          // fontSize: "17px",
-          type: 'close',
-          float: 'left',
-          onclick: () => {
-            page.close()
-          }
-        }, {
-          text: options.doneText || '完成',
-          fontSize: '17px',
-          width: '60px',
-          onclick: () => {
-            page.sendMessage({
-              type: 'done'
-            })
-          }
-        }]
-      },
+      titleNView: false,
       popGesture: 'close',
       scrollIndicator: 'none'
     },

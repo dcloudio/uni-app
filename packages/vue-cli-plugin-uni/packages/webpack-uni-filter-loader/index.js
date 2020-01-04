@@ -12,7 +12,13 @@ const {
 
 module.exports = function(source, map) {
   const params = loaderUtils.parseQuery(this.resourceQuery)
-  if (process.env.UNI_PLATFORM === 'h5') { // h5
+  if (
+    process.env.UNI_PLATFORM === 'h5' ||
+    (
+      process.env.UNI_PLATFORM === 'app-plus' &&
+      process.env.UNI_USING_V3
+    )
+  ) { // h5 or v3 app-plus
     this.callback(
       null,
       `export default function (Component) {

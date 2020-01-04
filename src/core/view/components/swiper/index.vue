@@ -166,6 +166,7 @@ export default {
   },
   beforeDestroy () {
     this._cancelSchedule()
+    cancelAnimationFrame(this._animationFrame)
   },
   methods: {
     _inintAutoplay (enable) {
@@ -421,7 +422,7 @@ export default {
       var s = acc * time * time / 2
       var l = toPos + s
       this._updateViewport(l)
-      requestAnimationFrame(this._animateFrameFuncProto.bind(this))
+      this._animationFrame = requestAnimationFrame(this._animateFrameFuncProto.bind(this))
     },
     _animateViewport (current, source, n) {
       this._cancelViewportAnimation()
@@ -464,7 +465,7 @@ export default {
       }
       if (!this._requestedAnimation) {
         this._requestedAnimation = true
-        requestAnimationFrame(this._animateFrameFuncProto.bind(this))
+        this._animationFrame = requestAnimationFrame(this._animateFrameFuncProto.bind(this))
       }
     },
     _cancelViewportAnimation () {
@@ -617,11 +618,11 @@ export default {
     }
 
     return createElement(
-      'uni-swiper',
-      [createElement('div', {
-        ref: 'slidesWrapper',
-        'class': 'uni-swiper-wrapper',
+      'uni-swiper', {
         on: this.$listeners
+      }, [createElement('div', {
+        ref: 'slidesWrapper',
+        'class': 'uni-swiper-wrapper'
       }, slidesWrapperChild)]
     )
   }

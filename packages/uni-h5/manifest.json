@@ -261,8 +261,12 @@
         ]
     ],
     "createMapContext": [
-        "/platforms/h5/service/api/context/map.js",
+        "/core/service/api/context/create-map-context.js",
         [
+            [
+                "/platforms/h5/service/api/context/operate-map-player.js",
+                "operateMapPlayer"
+            ],
             [
                 "/core/helpers/protocol/context/context.js",
                 "createMapContext"
@@ -314,8 +318,12 @@
         ]
     ],
     "createVideoContext": [
-        "/platforms/h5/service/api/context/video.js",
+        "/core/service/api/context/create-video-context.js",
         [
+            [
+                "/platforms/h5/service/api/context/operate-video-player.js",
+                "operateVideoPlayer"
+            ],
             [
                 "/core/helpers/protocol/context/context.js",
                 "createVideoContext"
@@ -652,6 +660,15 @@
         "/platforms/h5/service/api/ui/window.js",
         []
     ],
+    "loadFontFace": [
+        "/core/service/api/ui/load-font-face.js",
+        [
+            [
+                "/core/helpers/protocol/ui/load-font-face.js",
+                "loadFontFace"
+            ]
+        ]
+    ],
     "startPullDownRefresh": [
         "/platforms/h5/service/api/ui/pull-down-refresh.js",
         []
@@ -661,8 +678,12 @@
         []
     ],
     "createSelectorQuery": [
-        "/platforms/h5/service/api/ui/create-selector-query.js",
+        "/core/service/api/ui/create-selector-query.js",
         [
+            [
+                "/platforms/h5/service/api/ui/request-component-info.js",
+                "requestComponentInfo"
+            ],
             [
                 "/core/view/bridge/subscribe/api/request-component-info.js",
                 "requestComponentInfo"
@@ -670,7 +691,7 @@
         ]
     ],
     "createIntersectionObserver": [
-        "/platforms/h5/service/api/ui/create-intersection-observer.js",
+        "/core/service/api/ui/create-intersection-observer.js",
         [
             [
                 "/core/view/bridge/subscribe/api/request-component-observer.js",
@@ -728,8 +749,12 @@
         ]
     ],
     "createCanvasContext": [
-        "/platforms/h5/service/api/context/canvas.js",
+        "/core/service/api/context/canvas.js",
         [
+            [
+                "/platforms/h5/service/api/context/canvas.js",
+                "base64ToTempFilePath"
+            ],
             [
                 "/core/helpers/protocol/context/context.js",
                 "createCanvasContext"
@@ -737,8 +762,12 @@
         ]
     ],
     "canvasToTempFilePath": [
-        "/platforms/h5/service/api/context/canvas.js",
+        "/core/service/api/context/canvas.js",
         [
+            [
+                "/platforms/h5/service/api/context/canvas.js",
+                "base64ToTempFilePath"
+            ],
             [
                 "/core/helpers/protocol/context/canvas.js",
                 "canvasToTempFilePath"
@@ -746,8 +775,12 @@
         ]
     ],
     "canvasPutImageData": [
-        "/platforms/h5/service/api/context/canvas.js",
+        "/core/service/api/context/canvas.js",
         [
+            [
+                "/platforms/h5/service/api/context/canvas.js",
+                "base64ToTempFilePath"
+            ],
             [
                 "/core/helpers/protocol/context/canvas.js",
                 "canvasPutImageData"
@@ -755,8 +788,12 @@
         ]
     ],
     "canvasGetImageData": [
-        "/platforms/h5/service/api/context/canvas.js",
+        "/core/service/api/context/canvas.js",
         [
+            [
+                "/platforms/h5/service/api/context/canvas.js",
+                "base64ToTempFilePath"
+            ],
             [
                 "/core/helpers/protocol/context/canvas.js",
                 "canvasGetImageData"
@@ -781,5 +818,9 @@
             ]
         ],
         true
+    ],
+    "setPageMeta": [
+        "/core/service/api/ui/set-page-meta.js",
+        []
     ]
 }

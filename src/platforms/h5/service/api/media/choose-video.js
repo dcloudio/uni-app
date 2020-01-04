@@ -50,11 +50,12 @@ export function chooseVideo ({
       size: file.size,
       duration: 0,
       width: 0,
-      height: 0
+      height: 0,
+      name: file.name
     }
 
     const video = document.createElement('video')
-    if (video.onloadedmetadata) {
+    if (video.onloadedmetadata !== undefined) {
       // 尝试获取视频的宽高信息
       video.onloadedmetadata = function () {
         callbackResult.duration = video.duration || 0

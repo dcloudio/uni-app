@@ -10,6 +10,7 @@ module.exports = [
   'uni-modal',
   'uni-toast',
   'uni-resize-sensor',
+  'uni-shadow-root',
 
   'uni-ad',
   'uni-audio',
@@ -20,6 +21,7 @@ module.exports = [
   'uni-checkbox-group',
   'uni-cover-image',
   'uni-cover-view',
+  'uni-editor',
   'uni-form',
   'uni-functional-page-navigator',
   'uni-icon',

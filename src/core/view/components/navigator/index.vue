@@ -47,11 +47,11 @@ export default {
       default: 1
     },
     hoverStartTime: {
-      type: Number,
+      type: [Number, String],
       default: 20
     },
     hoverStayTime: {
-      type: Number,
+      type: [Number, String],
       default: 600
     }
   },

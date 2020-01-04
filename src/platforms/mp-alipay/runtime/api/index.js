@@ -88,5 +88,19 @@ export function createSelectorQuery () {
       return this
     }
   }
+
+  if (!query.in) {
+    query.in = function () {
+      return this
+    }
+  }
   return query
+}
+
+export function createIntersectionObserver (component, options) {
+  if (options && options.observeAll) {
+    options.selectAll = options.observeAll
+    delete options.observeAll
+  }
+  return my.createIntersectionObserver(options)
 }

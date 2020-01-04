@@ -1,5 +1,5 @@
 <template>
-  <uni-icon>
+  <uni-icon v-on="$listeners">
     <i
       :class="`uni-icon-${type}`"
       :style="{'font-size': _converPx(size),'color': color}"

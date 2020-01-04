@@ -12,6 +12,44 @@ const {
 } = require('../shared')
 
 const uniPath = normalizePath(require.resolve('@dcloudio/uni-' + process.env.UNI_PLATFORM))
+
+function findModule (modules, resource, altResource) {
+  return modules.find(
+    module => {
+      let moduleResource = module.resource
+      if (
+        !moduleResource ||
+        (
+          moduleResource.indexOf('.vue') === -1 &&
+          moduleResource.indexOf('.nvue') === -1
+        )
+      ) {
+        return
+      }
+      moduleResource = removeExt(module.resource)
+      return moduleResource === resource || moduleResource === altResource
+    }
+  )
+}
+
+function findModuleId (modules, resource, altResource) {
+  const module = findModule(modules, resource, altResource)
+  return module && module.id
+}
+
+function findModuleIdFromConcatenatedModules (modules, resource, altResource) {
+  const module = modules.find(module => {
+    return findModule(module.modules, resource, altResource)
+  })
+  return module && module.id
+}
+
+function findComponentModuleId (modules, concatenatedModules, resource, altResource) {
+  return findModuleId(modules, resource, altResource) ||
+    findModuleIdFromConcatenatedModules(concatenatedModules, resource, altResource) ||
+    resource
+}
+
 // TODO 解决方案不太理想
 module.exports = function generateComponent (compilation) {
   const components = getComponentSet()
@@ -19,6 +57,7 @@ module.exports = function generateComponent (compilation) {
     const assets = compilation.assets
     const modules = compilation.modules
 
+    const concatenatedModules = modules.filter(module => module.modules)
     const uniModuleId = modules.find(module => module.resource && normalizePath(module.resource) === uniPath).id
 
     Object.keys(assets).forEach(name => {
@@ -30,31 +69,10 @@ module.exports = function generateComponent (compilation) {
           const modulePath = removeExt(restoreNodeModules(name))
           const resource = normalizePath(path.resolve(process.env.UNI_INPUT_DIR, '..', modulePath))
           const altResource = normalizePath(path.resolve(process.env.UNI_INPUT_DIR, modulePath))
-          moduleId = modules.find(
-            module => {
-              if (module.resource) {
-                const moduleResource = removeExt(module.resource)
-                return (
-                  module.resource.indexOf('.vue') !== -1 ||
-                                        module.resource.indexOf('.nvue') !== -1
-                ) &&
-                                    (
-                                      moduleResource === resource ||
-                                        moduleResource === altResource
-                                    )
-              }
-            }).id
+          moduleId = findComponentModuleId(modules, concatenatedModules, resource, altResource)
         } else {
           const resource = removeExt(path.resolve(process.env.UNI_INPUT_DIR, name))
-          moduleId = modules.find(
-            module => {
-              return module.resource &&
-                                (
-                                  module.resource.indexOf('.vue') !== -1 ||
-                                    module.resource.indexOf('.nvue') !== -1
-                                ) &&
-                                removeExt(module.resource) === resource
-            }).id
+          moduleId = findComponentModuleId(modules, concatenatedModules, resource)
         }
 
         const origSource = assets[name].source()
@@ -66,7 +84,7 @@ module.exports = function generateComponent (compilation) {
             beforeCode = ';my.defineComponent || (my.defineComponent = Component);'
           }
           const source = beforeCode + origSource +
-                        `
+            `
 ;(${globalVar}["webpackJsonp"] = ${globalVar}["webpackJsonp"] || []).push([
     '${chunkName}',
     {
@@ -75,7 +93,7 @@ module.exports = function generateComponent (compilation) {
         })
     },
     [['${chunkName}']]
-]);                
+]);
 `
           assets[name] = {
             size () {

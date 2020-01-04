@@ -1,32 +1,25 @@
 // 不支持的 API 列表
 const todos = [
-  'saveImageToPhotosAlbum',
-  'getRecorderManager',
-  'getBackgroundAudioManager',
-  'createInnerAudioContext',
-  'createVideoContext',
-  'createCameraContext',
-  'createLivePlayerContext',
-  'openDocument',
-  'onMemoryWarning',
-  'startAccelerometer',
-  'startCompass',
-  'addPhoneContact',
-  'authorize',
-  'chooseAddress',
-  'chooseInvoiceTitle',
-  'addTemplate',
-  'deleteTemplate',
-  'getTemplateLibraryById',
-  'getTemplateLibraryList',
-  'getTemplateList',
-  'sendTemplateMessage',
-  'setEnableDebug',
-  'getExtConfig',
-  'getExtConfigSync',
-  'onWindowResize',
-  'offWindowResize',
-  'saveVideoToPhotosAlbum'
+  // 'getRecorderManager',
+  // 'getBackgroundAudioManager',
+  // 'createInnerAudioContext',
+  // 'createCameraContext',
+  // 'createLivePlayerContext',
+  // 'startAccelerometer',
+  // 'startCompass',
+  // 'authorize',
+  // 'chooseInvoiceTitle',
+  // 'addTemplate',
+  // 'deleteTemplate',
+  // 'getTemplateLibraryById',
+  // 'getTemplateLibraryList',
+  // 'getTemplateList',
+  // 'sendTemplateMessage',
+  // 'setEnableDebug',
+  // 'getExtConfig',
+  // 'getExtConfigSync',
+  // 'onWindowResize',
+  // 'offWindowResize'
 ]
 
 // 存在兼容性的 API 列表
@@ -45,7 +38,14 @@ const canIUses = [
   'createIntersectionObserver',
   'getUpdateManager',
   'setBackgroundColor',
-  'setBackgroundTextStyle'
+  'setBackgroundTextStyle',
+  'checkIsSupportSoterAuthentication',
+  'startSoterAuthentication',
+  'checkIsSoterEnrolledInDevice',
+  'openDocument',
+  'createVideoContext',
+  'onMemoryWarning',
+  'addPhoneContact'
 ]
 
 function _handleNetworkInfo (result) {
@@ -399,6 +399,32 @@ const protocols = { // 需要做转换的 API 列表
   },
   showShareMenu: {
     name: 'showSharePanel'
+  },
+  hideHomeButton: {
+    name: 'hideBackHome'
+  },
+  saveImageToPhotosAlbum: {
+    name: 'saveImage',
+    args: {
+      filePath: 'url'
+    }
+  },
+  saveVideoToPhotosAlbum: {
+    args: {
+      filePath: 'src'
+    }
+  },
+  chooseAddress: {
+    name: 'getAddress',
+    returnValue (result) {
+      let info = result.result || {}
+      result.userName = info.fullname
+      result.provinceName = info.prov
+      result.cityName = info.city
+      result.detailInfo = info.address
+      result.telNumber = info.mobilePhone
+      result.errMsg = result.resultStatus
+    }
   }
 }
 

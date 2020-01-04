@@ -8,15 +8,13 @@
 2. 微信小程序端只支持网络字体，字体链接必须是https。App支持网络或本地的字体（本地字体需使用[平台绝对路径](http://www.html5plus.org/doc/zh_cn/io.html#plus.io.convertLocalFileSystemURL)）。
 3. 微信小程序端字体链接必须是同源下的，或开启了cors支持，微信小程序的域名是servicewechat.com
 4. canvas等原生组件不支持使用接口添加的字体
-5. 微信工具里提示 Faild to load font可以忽略
+5. 工具里提示 Faild to load font可以忽略
 
 **平台差异说明**
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|1.9.0+|x|基础库 2.1.0+|x|x|x|x|
-
-App端非自定义组件模式不支持此API。
+|1.9.0+ [自定义组件编译模式](https://ask.dcloud.net.cn/article/35843)|2.3.4+|基础库 2.1.0+|x|x|x|x|
 
 **参数说明**
 

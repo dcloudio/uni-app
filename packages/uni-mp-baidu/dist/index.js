@@ -231,7 +231,7 @@ const promiseInterceptor = {
 };
 
 const SYNC_API_RE =
-  /^\$|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
+  /^\$|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -344,6 +344,7 @@ const interceptors = {
 
 
 var baseApi = /*#__PURE__*/Object.freeze({
+  __proto__: null,
   upx2px: upx2px,
   interceptors: interceptors,
   addInterceptor: addInterceptor,
@@ -386,37 +387,37 @@ var previewImage = {
 
 // 不支持的 API 列表
 const todos = [
-  'hideKeyboard',
-  'onGyroscopeChange',
-  'startGyroscope',
-  'stopGyroscope',
-  'openBluetoothAdapter',
-  'startBluetoothDevicesDiscovery',
-  'onBluetoothDeviceFound',
-  'stopBluetoothDevicesDiscovery',
-  'onBluetoothAdapterStateChange',
-  'getConnectedBluetoothDevices',
-  'getBluetoothDevices',
-  'getBluetoothAdapterState',
-  'closeBluetoothAdapter',
-  'writeBLECharacteristicValue',
-  'readBLECharacteristicValue',
-  'onBLEConnectionStateChange',
-  'onBLECharacteristicValueChange',
-  'notifyBLECharacteristicValueChange',
-  'getBLEDeviceServices',
-  'getBLEDeviceCharacteristics',
-  'createBLEConnection',
-  'closeBLEConnection',
-  'onBeaconServiceChange',
-  'onBeaconUpdate',
-  'getBeacons',
-  'startBeaconDiscovery',
-  'stopBeaconDiscovery',
-  'hideShareMenu',
-  'onWindowResize',
-  'offWindowResize',
-  'vibrate'
+  // 'hideKeyboard',
+  // 'onGyroscopeChange',
+  // 'startGyroscope',
+  // 'stopGyroscope',
+  // 'openBluetoothAdapter',
+  // 'startBluetoothDevicesDiscovery',
+  // 'onBluetoothDeviceFound',
+  // 'stopBluetoothDevicesDiscovery',
+  // 'onBluetoothAdapterStateChange',
+  // 'getConnectedBluetoothDevices',
+  // 'getBluetoothDevices',
+  // 'getBluetoothAdapterState',
+  // 'closeBluetoothAdapter',
+  // 'writeBLECharacteristicValue',
+  // 'readBLECharacteristicValue',
+  // 'onBLEConnectionStateChange',
+  // 'onBLECharacteristicValueChange',
+  // 'notifyBLECharacteristicValueChange',
+  // 'getBLEDeviceServices',
+  // 'getBLEDeviceCharacteristics',
+  // 'createBLEConnection',
+  // 'closeBLEConnection',
+  // 'onBeaconServiceChange',
+  // 'onBeaconUpdate',
+  // 'getBeacons',
+  // 'startBeaconDiscovery',
+  // 'stopBeaconDiscovery',
+  // 'hideShareMenu',
+  // 'onWindowResize',
+  // 'offWindowResize',
+  // 'vibrate'
 ];
 
 // 存在兼容性的 API 列表
@@ -635,6 +636,7 @@ function getProvider ({
 }
 
 var extraApi = /*#__PURE__*/Object.freeze({
+  __proto__: null,
   getProvider: getProvider
 });
 
@@ -670,6 +672,7 @@ function $emit () {
 }
 
 var eventApi = /*#__PURE__*/Object.freeze({
+  __proto__: null,
   $on: $on,
   $off: $off,
   $once: $once,
@@ -695,6 +698,7 @@ function requestPayment (params) {
 }
 
 var api = /*#__PURE__*/Object.freeze({
+  __proto__: null,
   requestPayment: requestPayment
 });
 
@@ -1217,6 +1221,18 @@ function handleEvent (event) {
           ) { // mp-weixin,mp-toutiao 抽象节点模拟 scoped slots
             handlerCtx = handlerCtx.$parent.$parent;
           }
+          if (methodName === '$emit') {
+            handlerCtx.$emit.apply(handlerCtx,
+              processEventArgs(
+                this.$vm,
+                event,
+                eventArray[1],
+                eventArray[2],
+                isCustom,
+                methodName
+              ));
+            return
+          }
           const handler = handlerCtx[methodName];
           if (!isFn(handler)) {
             throw new Error(` _vm.${methodName} is not a function`)
@@ -1316,6 +1332,13 @@ function parseBaseApp (vm, {
 
   // 兼容旧版本 globalData
   appOptions.globalData = vm.$options.globalData || {};
+  // 将 methods 中的方法挂在 getApp() 中
+  const methods = vm.$options.methods;
+  if (methods) {
+    Object.keys(methods).forEach(name => {
+      appOptions[name] = methods[name];
+    });
+  }
 
   initHooks(appOptions, hooks);
 
@@ -1324,12 +1347,15 @@ function parseBaseApp (vm, {
 
 function findVmByVueId (vm, vuePid) {
   const $children = vm.$children;
-  // 优先查找直属
-  let parentVm = $children.find(childVm => childVm.$scope._$vueId === vuePid);
-  if (parentVm) {
-    return parentVm
+  // 优先查找直属(反向查找:https://github.com/dcloudio/uni-app/issues/1200)
+  for (let i = $children.length - 1; i >= 0; i--) {
+    const childVm = $children[i];
+    if (childVm.$scope._$vueId === vuePid) {
+      return childVm
+    }
   }
   // 反向递归查找
+  let parentVm;
   for (let i = $children.length - 1; i >= 0; i--) {
     parentVm = findVmByVueId($children[i], vuePid);
     if (parentVm) {
@@ -1509,9 +1535,9 @@ function parseComponent (vueOptions) {
     initRelation
   });
 
-  // 关于百度小程序新生命周期(2.0)的说明(组件作为页面时):
+  // 关于百度小程序生命周期的说明(组件作为页面时):
   // lifetimes:attached --> methods:onShow --> methods:onLoad --> methods:onReady
-  // 这里在新生命周期强制将onShow挪到onLoad之后触发,另外一处修改在page-parser.js
+  // 这里在强制将onShow挪到onLoad之后触发,另外一处修改在page-parser.js
   const oldAttached = componentOptions.lifetimes.attached;
   componentOptions.lifetimes.attached = function attached () {
     oldAttached.call(this);
@@ -1596,12 +1622,12 @@ function parsePage (vuePageOptions) {
     initRelation
   });
 
-  const newLifecycle = swan.canIUse('lifecycle-2-0');
-
-  // 纠正百度小程序新生命周期(2.0)methods:onShow在methods:onLoad之前触发的问题
-  if (newLifecycle) {
-    delete pageOptions.methods.onShow;
-  }
+  // 纠正百度小程序生命周期methods:onShow在methods:onLoad之前触发的问题
+  pageOptions.methods.onShow = function onShow () {
+    if (this.$vm && this.$vm.$mp.query) {
+      this.$vm.__call_hook('onShow');
+    }
+  };
 
   pageOptions.methods.onLoad = function onLoad (args) {
     // 百度 onLoad 在 attached 之前触发，先存储 args, 在 attached 里边触发 onLoad

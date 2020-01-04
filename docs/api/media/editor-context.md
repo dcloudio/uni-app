@@ -8,7 +8,7 @@ editor 组件对应的 editorContext 实例，可通过 [uni.createSelectorQuery
 
 |App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|√|x|√|x|x|x|x|
+|√|2.4.5+|√|x|x|x|x|
 
 
 ## editorContext.format(name, value)

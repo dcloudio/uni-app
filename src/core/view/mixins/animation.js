@@ -35,7 +35,7 @@ function getStyle (action) {
       } else if (type.startsWith('translate')) {
         args = args.map(converPx)
       }
-      if (animateTypes2.indexOf(type)) {
+      if (animateTypes2.indexOf(type) >= 0) {
         args.length = 1
       }
       transform.push(`${type}(${args.join(',')})`)

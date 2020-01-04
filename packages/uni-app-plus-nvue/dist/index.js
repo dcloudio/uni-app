@@ -1500,7 +1500,7 @@ var serviceContext = (function () {
     });
   }
 
-  function registerConfig (config) {
+  function registerConfig (config, Vue) {
     Object.assign(__uniConfig, config);
 
     __uniConfig.viewport = '';
@@ -9156,7 +9156,11 @@ var serviceContext = (function () {
     }
   });
 
-  UniServiceJSBridge.publishHandler = UniServiceJSBridge.emit; // TODO
+  function publishHandler (event, args, pageId) {
+    // TODO
+  }
+
+  UniServiceJSBridge.publishHandler = publishHandler;
   UniServiceJSBridge.invokeCallbackHandler = invokeCallbackHandler;
 
   var index = {

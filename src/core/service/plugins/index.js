@@ -17,6 +17,10 @@ import {
 } from './lifecycle'
 
 import {
+  initPolyfill
+} from './polyfill'
+
+import {
   getTabBarScrollPosition
 } from './app/router-guard'
 
@@ -56,6 +60,8 @@ export default {
   install (Vue, {
     routes
   } = {}) {
+    initPolyfill(Vue)
+
     lifecycleMixin(Vue)
 
     const minId = getMinId(routes)
@@ -70,9 +76,9 @@ export default {
         } else {
           if (
             to &&
-                        from &&
-                        to.meta.isTabBar &&
-                        from.meta.isTabBar
+            from &&
+            to.meta.isTabBar &&
+            from.meta.isTabBar
           ) { // tabbar 跳 tabbar
             const position = getTabBarScrollPosition(to.params.__id__)
             if (position) {
