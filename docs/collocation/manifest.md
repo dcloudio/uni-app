@@ -173,7 +173,7 @@ splash（启动封面）是App必然存在的、不可取消的。
 				document.documentElement.style.fontSize = document.documentElement.clientWidth / 20 + 'px'
 			})
 		</script>
-		<link rel="stylesheet" href="<%= BASE_URL %>static/index.css" />
+		<link rel="stylesheet" href="<%= BASE_URL %>static/index.<%= VUE_APP_INDEX_CSS_HASH %>.css" />
 	</head>
 	<body>
 		<noscript>
