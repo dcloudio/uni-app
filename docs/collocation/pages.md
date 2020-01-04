@@ -694,7 +694,8 @@ h5 平台下拉刷新动画，只有 circle 类型。
 |color|HexColor|是||tab 上的文字默认颜色||
 |selectedColor|HexColor|是||tab 上的文字选中时的颜色||
 |backgroundColor|HexColor|是||tab 的背景色||
-|borderStyle|String|否|black|tabbar 上边框的颜色，仅支持 black/white|App 2.3.4+ 支持其他颜色值|
+|borderStyle|String|否|black|tabbar 上边框的颜色，可选值 black/white|App 2.3.4+ 支持其他颜色值|
+|blurEffect|String|否|none|iOS 高斯模糊效果，可选值 dark/extralight/light/none（参考:[使用说明](https://ask.dcloud.net.cn/article/36617)）|App 2.4.0+ 支持|
 |list|Array|是||tab 的列表，详见 list 属性说明，最少2个、最多5个 tab||
 |position|String|否|bottom|可选值 bottom、top|top 值仅微信小程序支持|
 |fontSize|String|否|10px|文字默认大小|App 2.3.4+|
