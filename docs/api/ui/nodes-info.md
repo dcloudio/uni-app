@@ -130,7 +130,7 @@ query.select('#id').boundingClientRect(data => {
 
 |App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|√|x|√|x|x|x|√|
+|x|x|√|x|x|x|√|
 
 **callback 返回参数**
 
