@@ -8,6 +8,9 @@ let todoNavigator = false
 
 export function navigate (path, callback, isAppLaunch) {
   if (__PLATFORM__ === 'app-plus') {
+    if (isAppLaunch && __uniConfig.splashscreen && __uniConfig.splashscreen.autoclose && (!__uniConfig.splashscreen.alwaysShowBeforeRender)) {
+      plus.navigator.closeSplashscreen()
+    }
     if (!isAppLaunch && todoNavigator) {
       return console.error(`已存在待跳转页面${todoNavigator.path},请不要连续多次跳转页面${path}`)
     }
