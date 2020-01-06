@@ -162,12 +162,8 @@ export default {
       this.map && this.map[val ? 'hide' : 'show']()
     }
   },
-  listeners: {
-    '@view-update': '_requestUpdate'
-  },
   mounted () {
-    this._updateStyle()
-    let mapStyle = Object.assign({}, this.attrs, this.style)
+    let mapStyle = Object.assign({}, this.attrs, this.position)
     if (this.latitude && this.longitude) {
       mapStyle.center = new plus.maps.Point(this.longitude, this.latitude)
     }
@@ -180,12 +176,18 @@ export default {
       map.hide()
     }
     this.$watch('attrs', () => {
-      this.map && this.map.setStyles(this.attrs)
+      if (this.map) {
+        this.map.setStyles(this.attrs)
+        // TODO 临时处理更新 longitude, latitude 无效问题
+        this.map.setStyles({
+          center: new plus.maps.Point(this.longitude, this.latitude)
+        })
+      }
     }, {
       deep: true
     })
-    this.$watch('style', () => {
-      this.map && this.map.setStyles(this.style)
+    this.$watch('position', () => {
+      this.map && this.map.setStyles(this.position)
     }, {
       deep: true
     })
@@ -213,35 +215,8 @@ export default {
       this.map && this[type](data)
     },
     getRegion () {
-      // TODO
-      // const region = this.map.getBounds()
     },
     getScale () {
-      // TODO
-      // const zoom = this.map.getZoom()
-    },
-    _updateStyle () {
-      const rect = this.$refs.container.getBoundingClientRect()
-      this.hidden = false;
-      ['top', 'left', 'width', 'height'].forEach(key => {
-        let val = rect[key]
-        val = key === 'top' ? val + (document.documentElement.scrollTop || document.body.scrollTop || 0) : val
-        if (!val && (key === 'width' || key === 'height')) {
-          this.hidden = true
-        }
-        this.style[key] = val + 'px'
-      })
-    },
-    _requestUpdate () {
-      if (this._animationFrame) {
-        cancelAnimationFrame(this._animationFrame)
-      }
-      if (this.video) {
-        this._animationFrame = requestAnimationFrame(() => {
-          delete this._animationFrame
-          this._updateStyle()
-        })
-      }
     },
     controlclick (e) {
       this.$trigger('controltap', {}, { id: e.id })

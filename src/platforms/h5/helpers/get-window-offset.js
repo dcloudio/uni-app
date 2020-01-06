@@ -7,9 +7,11 @@ import safeAreaInsets from 'safe-area-insets'
 export default function getWindowOffset () {
   if (uni.canIUse('css.var')) {
     const style = document.documentElement.style
+    const top = parseInt((style.getPropertyValue('--window-top').match(/\d+/) || ['0'])[0])
+    const bottom = parseInt((style.getPropertyValue('--window-bottom').match(/\d+/) || ['0'])[0])
     return {
-      top: (parseInt(style.getPropertyValue('--window-top')) || 0) + safeAreaInsets.top,
-      bottom: (parseInt(style.getPropertyValue('--window-bottom')) || 0) + safeAreaInsets.bottom
+      top: top ? (top + safeAreaInsets.top) : 0,
+      bottom: bottom ? (bottom + safeAreaInsets.bottom) : 0
     }
   }
 
@@ -18,7 +20,8 @@ export default function getWindowOffset () {
   const pages = getCurrentPages()
   if (pages.length) {
     const pageVm = pages[pages.length - 1].$parent.$parent
-    top = pageVm.showNavigationBar && (pageVm.navigationBar.type !== 'transparent' || pageVm.navigationBar.type !== 'float') ? NAVBAR_HEIGHT : 0
+    const navigationBarType = pageVm.navigationBar.type
+    top = navigationBarType === 'default' || navigationBarType === 'float' ? NAVBAR_HEIGHT : 0
   }
   const app = getApp()
   if (app) {

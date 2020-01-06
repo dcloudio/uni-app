@@ -20,6 +20,7 @@ const passiveOptions = supportsPassive ? {
 } : false
 
 function onCssVar ({
+  statusbarHeight,
   windowTop,
   windowBottom
 }) {
@@ -29,8 +30,9 @@ function onCssVar ({
     const style = document.documentElement.style
     style.setProperty('--window-top', windowTop + 'px')
     style.setProperty('--window-bottom', windowBottom + 'px')
-    style.setProperty('--status-bar-height', plus.navigator.getStatusbarHeight() + 'px')
+    style.setProperty('--status-bar-height', statusbarHeight + 'px')
     if (process.env.NODE_ENV !== 'production') {
+      console.log(`--status-bar-height=${statusbarHeight}`)
       console.log(`--window-top=${windowTop}`)
       console.log(`--window-bottom=${windowBottom}`)
     }
@@ -38,6 +40,7 @@ function onCssVar ({
 }
 
 function onPageCreate ({
+  statusbarHeight,
   windowTop,
   windowBottom,
   disableScroll,
@@ -46,6 +49,7 @@ function onPageCreate ({
   onReachBottomDistance
 }, pageId) {
   onCssVar({
+    statusbarHeight,
     windowTop,
     windowBottom
   })

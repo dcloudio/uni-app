@@ -154,9 +154,7 @@ const PLATFORMS = {
     megalo: false,
     filterTag: 'wxs',
     subPackages: false,
-    cssVars: {
-      '--window-top': '0px'
-    },
+    cssVars: {},
     copyWebpackOptions ({
       assetsDir,
       vueOptions
