@@ -39,6 +39,8 @@
   * [canvas](component/canvas.md)
 * webview
   * [web-view](component/web-view.md)
+* 广告
+  * [ad](component/ad.md)
 * 小程序开放能力组件
   * [official-account](component/official-account.md)
   * [open-data](component/open-data.md)
@@ -49,8 +51,6 @@
   * [recycle-list](component/recycle-list.md)
   * [waterfall](component/waterfall.md)
   * [refresh](component/refresh.md)
-* 广告
-  * [ad](component/ad.md)
 * 扩展组件（uni ui）
   * [uni-ui整体介绍](component/README?id=uniui)
   * [Badge 数字角标](https://ext.dcloud.net.cn/plugin?id=21)
