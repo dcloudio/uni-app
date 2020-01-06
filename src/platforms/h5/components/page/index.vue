@@ -195,7 +195,7 @@ export default {
 
     let offset = upx2px(refreshOptions.offset)
 
-    if (titleNView.type !== 'transparent') {
+    if (titleNView.type !== 'none' && titleNView.type !== 'transparent') {
       offset += NAVBAR_HEIGHT + safeAreaInsets.top
     }
 
