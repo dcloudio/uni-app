@@ -1,6 +1,7 @@
 <template>
   <uni-audio
     :id="id"
+    :controls="!!controls"
     v-on="$listeners"
   >
     <audio
