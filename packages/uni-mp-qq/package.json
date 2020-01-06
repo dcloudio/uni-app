@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-mp-qq",
-  "version": "2.0.0-alpha-25120200103006",
+  "version": "2.0.0-25120200103006",
   "description": "uni-app mp-qq",
   "main": "dist/index.js",
   "repository": {
