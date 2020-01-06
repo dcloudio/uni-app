@@ -33,7 +33,7 @@ files 参数是一个 file 对象的数组，file 对象的结构如下：
 |参数名|类型|必填|说明|
 |:-|:-|:-|:-|
 |name|String|否|multipart 提交时，表单的项目名，默认为 file|
-|uri|String|是|文件的本地地址|
+|url|String|是|文件的本地地址|
 
 Tip:
 
