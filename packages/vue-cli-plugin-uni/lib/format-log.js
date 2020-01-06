@@ -4,15 +4,18 @@ function typof (v) {
 }
 
 function isDebugMode () {
-  return typeof name === 'string' && name === 'uni-app'
+  /* eslint-disable no-undef */
+  return typeof __channelId__ === 'string' && __channelId__
 }
 
 export default function formatLog () {
   for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
     args[_key] = arguments[_key]
   }
+  const type = args.shift()
   if (isDebugMode()) {
-    return args
+    args.push(args.pop().replace('at ', 'uni-app:///'))
+    return console[type]['apply'](console, args)
   }
 
   var msgs = args.map(function (v) {
@@ -57,5 +60,5 @@ export default function formatLog () {
     msg = msgs[0]
   }
 
-  return msg
+  console[type](msg)
 }
