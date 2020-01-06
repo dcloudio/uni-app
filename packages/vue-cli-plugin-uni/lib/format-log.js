@@ -3,9 +3,16 @@ function typof (v) {
   return s.substring(8, s.length - 1)
 }
 
+function isDebugMode () {
+  return typeof name === 'string' && name === 'uni-app'
+}
+
 export default function formatLog () {
   for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
     args[_key] = arguments[_key]
+  }
+  if (isDebugMode()) {
+    return args
   }
 
   var msgs = args.map(function (v) {
