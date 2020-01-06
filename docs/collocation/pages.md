@@ -660,7 +660,7 @@ h5 平台下拉刷新动画，只有 circle 类型。
 - A：参考[导航栏开发指南](http://ask.dcloud.net.cn/article/34921)
 
 # easycom
-自`2.5.0`版本开始uni-app支持在`pages.json`内使用`easycom`以正则匹配的方式自动引入组件。
+自`2.5.0`版本开始uni-app支持在`pages.json`内使用`easycom`以正则匹配的方式自动引入组件，可以在`HBuilderX 2.5.3`及以上版本新建`uni-ui`项目体验。
 
 **使用示例**
 
