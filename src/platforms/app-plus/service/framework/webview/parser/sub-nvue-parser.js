@@ -10,6 +10,10 @@ import {
   isTabBarPage
 } from '../../../bridge'
 
+import {
+  getStatusbarHeight
+} from '../../../api/util'
+
 import tabBar from '../../tab-bar'
 
 function initPopupSubNVue (subNVueWebview, style, maskWebview) {
@@ -96,7 +100,7 @@ function initSubNVue (subNVue, routeOptions, webview) {
     style.dock = 'top'
     style.top = 0
     style.width = '100%'
-    style.height = TITLEBAR_HEIGHT + plus.navigator.getStatusbarHeight()
+    style.height = TITLEBAR_HEIGHT + getStatusbarHeight()
     delete style.left
     delete style.right
     delete style.bottom

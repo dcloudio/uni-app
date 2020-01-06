@@ -52,7 +52,7 @@ export default {
           borderRadiusElemStyle.backgroundColor = `rgba(${rgba})`
         })
       })
-    } else if (this.transparentTitle === 'always') {
+    } else if (this.type === 'float') {
       const iconElems = this.$el.querySelectorAll('.uni-btn-icon')
       const iconElemsStyles = []
       for (let i = 0; i < iconElems.length; i++) {
@@ -70,13 +70,13 @@ export default {
   },
   computed: {
     color () {
-      return this.type === 'transparent' || this.transparentTitle === 'always' ? '#fff' : this.textColor
+      return this.type === 'transparent' ? '#fff' : this.textColor
     },
     offset () {
       return parseInt(this.coverage)
     },
     bgColor () {
-      if (this.type === 'transparent' || this.transparentTitle === 'always') {
+      if (this.type === 'transparent') {
         const {
           r,
           g,

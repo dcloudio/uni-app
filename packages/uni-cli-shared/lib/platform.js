@@ -123,7 +123,9 @@ const PLATFORMS = {
         } = getH5Options()
         const to = path.join(assetsDir, `[name].${VUE_APP_INDEX_CSS_HASH}.[ext]`)
         if (process.env.NODE_ENV === 'production') {
-          const templateContent = fs.readFileSync(template, { encoding: 'utf8' })
+          const templateContent = fs.readFileSync(template, {
+            encoding: 'utf8'
+          })
           if (/\bVUE_APP_INDEX_CSS_HASH\b/.test(templateContent)) {
             indexCssCopyOptions[0].to = to
           }
@@ -152,9 +154,7 @@ const PLATFORMS = {
     megalo: false,
     filterTag: 'wxs',
     subPackages: false,
-    cssVars: {
-      '--window-top': '0px'
-    },
+    cssVars: {},
     copyWebpackOptions ({
       assetsDir,
       vueOptions
@@ -584,5 +584,18 @@ module.exports = {
   },
   getPlatformSass () {
     return SASS
+  },
+  getBabelParserOptions () {
+    return {
+      sourceType: 'module',
+      plugins: [
+        'optionalChaining',
+        'typescript',
+        ['decorators', {
+          decoratorsBeforeExport: true
+        }],
+        'classProperties'
+      ]
+    }
   }
 }

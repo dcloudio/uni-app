@@ -1,19 +1,21 @@
 <template>
   <uni-page :data-page="$route.meta.pagePath">
     <page-head
-      v-if="showNavigationBar"
+      v-if="navigationBar.type!=='none'"
       v-bind="navigationBar" />
     <page-refresh
       v-if="enablePullDownRefresh"
       ref="refresh"
       :color="refreshOptions.color"
-      :offset="refreshOptions.offset" />
+      :offset="refreshOptions.offset"
+    />
     <page-body
       v-if="enablePullDownRefresh"
       @touchstart.native="_touchstart"
       @touchmove.native="_touchmove"
       @touchend.native="_touchend"
-      @touchcancel.native="_touchend">
+      @touchcancel.native="_touchend"
+    >
       <slot name="page" />
     </page-body>
     <page-body v-else>
@@ -22,11 +24,11 @@
   </uni-page>
 </template>
 <style>
-    uni-page {
-        display: block;
-        width: 100%;
-        height: 100%;
-    }
+uni-page {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
 </style>
 <script>
 import {
@@ -46,6 +48,8 @@ import PageBody from './pageBody'
 import PageRefresh from './pageRefresh'
 
 import pullToRefresh from './pull-to-refresh'
+
+import safeAreaInsets from 'safe-area-insets'
 
 export default {
   name: 'Page',
@@ -124,8 +128,8 @@ export default {
       default: false
     },
     titleNView: {
-      type: [Boolean, Object],
-      default: true
+      type: [Boolean, Object, String],
+      default: ''
     },
     pullToRefresh: {
       type: Object,
@@ -139,7 +143,7 @@ export default {
     },
     transparentTitle: {
       type: String,
-      default: 'none'
+      default: ''
     },
     titlePenetrate: {
       type: String,
@@ -152,6 +156,16 @@ export default {
       'auto': 'transparent',
       'always': 'float'
     }
+    // 将 navigationStyle 和 transparentTitle 都合并到 titleNView
+    let titleNView = this.titleNView
+    titleNView = Object.assign({}, {
+      type: this.navigationStyle === 'custom' ? 'none' : 'default'
+    }, this.transparentTitle in titleNViewTypeList ? {
+      type: titleNViewTypeList[this.transparentTitle],
+      backgroundColor: 'rgba(0,0,0,0)'
+    } : null, typeof titleNView === 'object' ? titleNView : (typeof titleNView === 'boolean' ? {
+      type: titleNView ? 'default' : 'none'
+    } : null))
 
     const yesNoParseList = {
       'YES': true,
@@ -167,12 +181,8 @@ export default {
       titleImage: this.titleImage,
       duration: '0',
       timingFunc: '',
-      type: titleNViewTypeList[this.transparentTitle],
-      transparentTitle: this.transparentTitle,
       titlePenetrate: yesNoParseList[this.titlePenetrate]
-    }, this.titleNView)
-
-    const showNavigationBar = this.navigationStyle === 'default' && this.titleNView
+    }, titleNView)
 
     const refreshOptions = Object.assign({
       support: true,
@@ -185,10 +195,8 @@ export default {
 
     let offset = upx2px(refreshOptions.offset)
 
-    if (showNavigationBar) {
-      if (!(this.titleNView && this.titleNView.type === 'transparent')) {
-        offset += NAVBAR_HEIGHT
-      }
+    if (titleNView.type !== 'none' && titleNView.type !== 'transparent') {
+      offset += NAVBAR_HEIGHT + safeAreaInsets.top
     }
 
     refreshOptions.offset = offset
@@ -196,7 +204,6 @@ export default {
     refreshOptions.range = upx2px(refreshOptions.range)
 
     return {
-      showNavigationBar,
       navigationBar,
       refreshOptions
     }
