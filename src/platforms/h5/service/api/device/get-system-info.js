@@ -14,12 +14,12 @@ const isIOS = /iphone|ipad|ipod/i.test(ua)
  * 获取系统信息-同步
  */
 export function getSystemInfoSync () {
-  var windowWidth = window.innerWidth
-  var windowHeight = window.innerHeight
   var screen = window.screen
   var pixelRatio = window.devicePixelRatio
   var screenWidth = screen.width
   var screenHeight = screen.height
+  var windowWidth = Math.min(window.innerWidth, document.documentElement.clientWidth, screenWidth)
+  var windowHeight = window.innerHeight
   var language = navigator.language
   var statusBarHeight = safeAreaInsets.top
   var osname
