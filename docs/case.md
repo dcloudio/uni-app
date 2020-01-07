@@ -45,7 +45,7 @@ DCloud有380万开发者，[uni统计](https://tongji.dcloud.net.cn/)覆盖手�
 	</a>
     <a href="javascript:;" target="_blank" class="clear-style barcode-view">
 		<img src="https://dcloud-img.oss-cn-hangzhou.aliyuncs.com/uni-app/case/tx-chaogu-h5.png" width="200"/>
-		<span style="margin-top:15px;">H5码</span>
+		<span style="margin-top:15px;">H5码（请使用微信扫码）</span>
 	</a>
 </div>
 
