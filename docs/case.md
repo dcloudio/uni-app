@@ -37,6 +37,17 @@ DCloud有380万开发者，[uni统计](https://tongji.dcloud.net.cn/)覆盖手�
 
 ### 第三方开发者案例
 
+<a href="https://zqact.tenpay.com/chaogu/" target="_blank" class="clear-style"><b>腾讯全民模拟炒股大赛：</b></a> 由腾讯金融科技倾力打造的证券投资者教育平台。
+<div style="display:flex;justify-content: space-around;">
+	<a href="javascript:;" target="_blank" class="clear-style barcode-view">
+		<img src="https://dcloud-img.oss-cn-hangzhou.aliyuncs.com/uni-app/case/tx-chaogu-mp-weixin.jpg" width="200"/>
+		<span style="margin-top:15px;">微信小程序码</span>
+	</a>
+    <a href="javascript:;" target="_blank" class="clear-style barcode-view">
+		<img src="https://dcloud-img.oss-cn-hangzhou.aliyuncs.com/uni-app/case/tx-chaogu-h5.png" width="200"/>
+		<span style="margin-top:15px;">H5码</span>
+	</a>
+</div>
 
 <a href="https://www.csdn.net/" target="_blank" class="clear-style"><b>CSDN：</b></a> 专业 IT 技术社区，致力于为中国软件开发者提供知识传播、在线学习、职业发展等全生命周期服务。
 <div style="display:flex;justify-content: space-around;">
