@@ -2,6 +2,8 @@ import initVue from 'uni-core/vue'
 
 import ViewPlugin from 'uni-core/view/plugins/index'
 
+import getRealPath from 'uni-platform/helpers/get-real-path'
+
 import {
   initData
 } from './data'
@@ -16,6 +18,8 @@ export default {
       Vue.config.productionTip = false
       Vue.config.performance = true
     }
+
+    Vue.prototype._$getRealPath = getRealPath
 
     initVue(Vue)
 

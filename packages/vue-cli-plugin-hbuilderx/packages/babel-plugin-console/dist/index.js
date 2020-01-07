@@ -7,7 +7,6 @@ module.exports = function({
   return {
     visitor: {
       CallExpression(path, state) {
-
         const opts = state.opts
 
         if (path.node.callee.object &&
@@ -36,12 +35,14 @@ module.exports = function({
                 type: 'StringLiteral',
                 value: ` at ${file}:${path.node.loc.start.line}`
               })
-              path.node.arguments = [
-                t.callExpression(
-                  t.identifier(FORMAT_LOG),
-                  args
-                )
-              ]
+              args.unshift(t.stringLiteral(path.node.callee.property.name))
+              path.replaceWith(t.callExpression(t.identifier(FORMAT_LOG), args))
+              // path.node.arguments = [
+              //   t.callExpression(
+              //     t.identifier(FORMAT_LOG),
+              //     args
+              //   )
+              // ]
             }
           }
         }
