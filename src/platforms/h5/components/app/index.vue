@@ -73,7 +73,9 @@ export default {
     hideTabBar (newVal, oldVal) {
       // TODO 不支持 css 变量时
       if (uni.canIUse('css.var')) {
-        const windowBottom = !newVal ? (TABBAR_HEIGHT + 'px') : '0px'
+        const windowBottomValue = !newVal ? (TABBAR_HEIGHT) : 0
+        const envMethod = uni.canIUse('css.env') ? 'env' : (uni.canIUse('css.constant') ? 'constant' : '')
+        const windowBottom = windowBottomValue && envMethod ? `calc(${windowBottomValue}px + ${envMethod}(safe-area-inset-bottom))` : `${windowBottomValue}px`
         document.documentElement.style.setProperty('--window-bottom', windowBottom)
         console.debug(`uni.${windowBottom ? 'showTabBar' : 'hideTabBar'}：--window-bottom=${windowBottom}`)
       }
