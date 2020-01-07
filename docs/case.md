@@ -149,12 +149,16 @@ DCloud有380万开发者，[uni统计](https://tongji.dcloud.net.cn/)覆盖手�
 
 #### 互联网公司
 
+**腾讯：** 微信小程序搜索“腾讯全民模拟炒股大赛”
+
+**CSDN：** 微信小程序搜索“CSDN”
+
+**开源中国：** 微信小程序搜索“osc+”、百度小程序搜索“开源中国社区”
+
 **中华英才网：** 百度小程序搜索“中华英才网”
 
 **当当网：** [H5](https://dh5.dangdang.com/)
 
-**联想集团官方小程序：** 微信小程序搜索 “联想集团”
-  
 <div class="scan-code">
  <strong>vivo 会员官方小程序：</strong> 微信小程序搜索 “vivo会员”
  <div class="scan-code-hover">
@@ -164,6 +168,8 @@ DCloud有380万开发者，[uni统计](https://tongji.dcloud.net.cn/)覆盖手�
  </div>
 </div>
 
+**联想集团官方小程序：** 微信小程序搜索 “联想集团”
+  
 **西祠胡同：** [App官网扫码下载](https://www.xici.net/)、[H5](https://3g.xici.net/)
 
 **达内在线：** 达内教育的在线培训App。[App官网下载](http://www.tmooc.cn/app/index.shtml)
