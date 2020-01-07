@@ -14,3 +14,19 @@ export function invokeMethod (name, ...args) {
 export function onMethod (name, callback) {
   return UniServiceJSBridge.on('api.' + name, callback)
 }
+
+export function getCurrentPageVm (method) {
+  const pages = getCurrentPages()
+  const len = pages.length
+  if (!len) {
+    UniServiceJSBridge.emit('onError', `${method}:fail`)
+  }
+  const page = pages[len - 1]
+  return page.$vm
+}
+
+export function getCurrentPageId () {
+  const pages = getCurrentPages()
+  const page = pages[pages.length - 1]
+  return page && page.$page.id
+}

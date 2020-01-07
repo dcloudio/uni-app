@@ -68,6 +68,7 @@
 * 分享新浪微博不会返回正确的成功回调
 * 不能直接分享到QQ空间，可以分享到QQ，然后在QQ的界面里选择QQ空间。
 * 分享微信朋友圈多图，微信官方已经禁掉这个功能。可以考虑把多张图用canvas合并成一张图分享出去。
+* 从APP分享到微信时，无法判断用户点击取消分享，因为微信官方禁掉了分享成功的返回值。
 
 #### 分享到微信聊天界面
 
@@ -188,6 +189,7 @@ uni.share({
 ```javascript
 uni.share({
     provider: 'weixin',
+    scene: "WXSceneSession",
     type: 5,
     imageUrl: 'https://img-cdn-qiniu.dcloud.net.cn/uniapp/app/share-logo@3.png',
     title: '欢迎体验uniapp',
@@ -208,12 +210,12 @@ uni.share({
 
 小程序中用户点击分享后，在 js 中定义 onShareAppMessage 处理函数（和 onLoad 等生命周期函数同级），设置该页面的分享信息。
 
-* 用户点击分享按钮的时候会调用。这个分享按钮可能是小程序原生菜单自带的分享按钮，也可能是开发者在页面中放置的分享按钮（<button open-type="share">）；
+* 用户点击分享按钮的时候会调用。这个分享按钮可能是小程序原生菜单自带的分享按钮，也可能是开发者在页面中放置的分享按钮（\<button open-type="share">）；
 * 此事件需要 return 一个Object，用于自定义分享内容。
 
 **平台差异说明**
 
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|
 |x|x|√|√|√|√|
 
@@ -261,7 +263,7 @@ export default {
 
 **平台差异说明**
 
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|
 |x|x|√|x|√|√|
 
@@ -281,7 +283,7 @@ export default {
 
 **平台差异说明**
 
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|
 |x|x|√|√|x|√|
 
@@ -331,5 +333,5 @@ uni.hideShareMenu()
 
 
 ##### FAQ
-- Q：App端如何集成其他登陆SDK
-- A：使用原生插件方式，可以集成三方sdk，原生插件开发文档见[https://ask.dcloud.net.cn/article/35428](https://ask.dcloud.net.cn/article/35428)。开发之前可以先去[插件市场](https://ext.dcloud.net.cn/)看下有没有做好的。
+- Q：App端如何集成其他分享SDK，如facebook分享、twitter分享
+- A：插件市场已有相关插件，[详见](https://ext.dcloud.net.cn/search?q=%E5%88%86%E4%BA%AB)；也可以根据原生插件教程自行开发，原生插件开发文档见[https://ask.dcloud.net.cn/article/35428](https://ask.dcloud.net.cn/article/35428)

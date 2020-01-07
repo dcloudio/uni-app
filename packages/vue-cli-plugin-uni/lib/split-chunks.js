@@ -1,6 +1,9 @@
 const path = require('path')
 
 module.exports = function getSplitChunks () {
+  if (process.env.UNI_USING_V3) {
+    return false
+  }
   if (!process.env.UNI_USING_COMPONENTS) {
     return {
       cacheGroups: {
@@ -12,6 +15,13 @@ module.exports = function getSplitChunks () {
       }
     }
   }
+
+  const {
+    normalizePath
+  } = require('@dcloudio/uni-cli-shared')
+
+  const mainPath = normalizePath(path.resolve(process.env.UNI_INPUT_DIR, 'main.'))
+
   if (!process.env.UNI_OPT_SUBPACKAGES) {
     return {
       chunks (chunk) { // 防止 node_modules 内 vue 组件被 split
@@ -27,7 +37,8 @@ module.exports = function getSplitChunks () {
             }
             if (module.resource && (
               module.resource.indexOf('.vue') !== -1 ||
-                module.resource.indexOf('.nvue') !== -1
+                module.resource.indexOf('.nvue') !== -1 ||
+                normalizePath(module.resource).indexOf(mainPath) === 0 // main.js
             )) {
               return false
             }
@@ -40,11 +51,6 @@ module.exports = function getSplitChunks () {
       }
     }
   }
-  const {
-    normalizePath
-  } = require('@dcloudio/uni-cli-shared')
-
-  const mainPath = normalizePath(path.resolve(process.env.UNI_INPUT_DIR, 'main.'))
 
   function baseTest (module) {
     if (module.type === 'css/mini-extract') {

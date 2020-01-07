@@ -1,10 +1,10 @@
 import { version } from '../package.json';
 
-const STAT_VERSION = version; 
-const STAT_URL = 'https://tongji.dcloud.net.cn/uni/stat'; 
-const STAT_H5_URL = 'https://tongji.dcloud.net.cn/uni/stat.gif'; 
-const PAGE_PVER_TIME = 1800; 
-const APP_PVER_TIME = 300; 
+const STAT_VERSION = version;
+const STAT_URL = 'https://tongji.dcloud.io/uni/stat';
+const STAT_H5_URL = 'https://tongji.dcloud.io/uni/stat.gif'; 
+const PAGE_PVER_TIME = 1800;
+const APP_PVER_TIME = 300;
 const OPERATING_TIME = 10;
 
 const UUID_KEY = '__DC_STAT_UUID';
@@ -84,7 +84,10 @@ const getPlatformName = () => {
 const getPackName = () => {
   let packName = '';
   if (getPlatformName() === 'wx' || getPlatformName() === 'qq') {
-    packName = uni.getAccountInfoSync().miniProgram.appId || '';
+    // 兼容微信小程序低版本基础库
+    if(uni.canIUse('getAccountInfoSync')){
+      packName = uni.getAccountInfoSync().miniProgram.appId || '';
+    }
   }
   return packName
 };
@@ -484,13 +487,6 @@ class Util {
       t: getTime(),
       p: this.statData.p
     };
-    if (getPlatformName() === 'n' && this.statData.p === 'a') {
-      setTimeout(() => {
-        this.request(options);
-      }, 200);
-      return
-    }
-
     this.request(options);
   }
 
@@ -511,12 +507,6 @@ class Util {
       t: getTime(),
       p: this.statData.p
     };
-    if (getPlatformName() === 'n' && this.statData.p === 'a') {
-      setTimeout(() => {
-        this.request(options, type);
-      }, 200);
-      return
-    }
     this.request(options, type);
   }
   _sendEventRequest({
@@ -643,6 +633,15 @@ class Util {
       return
     }
 
+    if (getPlatformName() === 'n' && this.statData.p === 'a') {
+      setTimeout(() => {
+        this._sendRequest(optionsData);
+      }, 200);
+      return
+    }
+    this._sendRequest(optionsData);
+  }
+  _sendRequest(optionsData) {
     uni.request({
       url: STAT_URL,
       method: 'POST',
@@ -651,22 +650,18 @@ class Util {
       // },
       data: optionsData,
       success: () => {
-        if (process.env.NODE_ENV === 'development') {
-          console.log('stat request success');
-        }
+        // if (process.env.NODE_ENV === 'development') {
+        //   console.log('stat request success');
+        // }
       },
       fail: (e) => {
-        if (process.env.NODE_ENV === 'development') {
-          console.log('stat request fail', e);
-        }
         if (++this._retry < 3) {
           setTimeout(() => {
-            this.request(data);
+            this._sendRequest(optionsData);
           }, 1000);
         }
       }
     });
-
   }
   /**
    * h5 请求
@@ -704,7 +699,7 @@ class Stat extends Util {
     super();
     this.instance = null;
     // 注册拦截器
-    if (typeof uni.addInterceptor === 'function') {
+    if (typeof uni.addInterceptor === 'function' && process.env.NODE_ENV !== 'development') {
       this.addInterceptorInit();
       this.interceptLogin();
       this.interceptShare(true);
@@ -760,9 +755,9 @@ class Stat extends Util {
 
   report(options, self) {
     this.self = self;
-    if (process.env.NODE_ENV === 'development') {
-      console.log('report init');
-    }
+    // if (process.env.NODE_ENV === 'development') {
+    //   console.log('report init');
+    // }
     setPageResidenceTime();
     this.__licationShow = true;
     this._sendReportRequest(options, true);
@@ -779,16 +774,18 @@ class Stat extends Util {
 
   show(self) {
     this.self = self;
-    if (!getPageTypes(self)) {
+    if (getPageTypes(self)) {
+      this._pageShow(self);
+    } else {
       this._applicationShow(self);
     }
   }
 
   ready(self) {
-    this.self = self;
-    if (getPageTypes(self)) {
-      this._pageShow(self);
-    }
+    // this.self = self;
+    // if (getPageTypes(self)) {
+    //   this._pageShow(self);
+    // }
   }
   hide(self) {
     this.self = self;
@@ -840,6 +837,14 @@ const lifecycle = {
   },
   onLoad(options) {
     stat.load(options, this);
+    // 重写分享，获取分享上报事件
+    if (this.$scope && this.$scope.onShareAppMessage) {
+      let oldShareAppMessage = this.$scope.onShareAppMessage;
+      this.$scope.onShareAppMessage = function(options) {
+        stat.interceptShare(false);
+        return oldShareAppMessage.call(this, options)
+      };
+    }
   },
   onShow() {
     isHide = false;
@@ -858,18 +863,19 @@ const lifecycle = {
   },
   onError(e) {
     stat.error(e);
-  },
-  onShareAppMessage() {
-    stat.interceptShare(false);
   }
 };
 
 function main() {
-  const Vue = require('vue');
-  (Vue.default || Vue).mixin(lifecycle);
-  uni.report = function(type, options) {
-    stat.sendEvent(type, options);
-  };
+  if (process.env.NODE_ENV === 'development') {
+    uni.report = function(type, options) {};
+  }else{
+    const Vue = require('vue');
+    (Vue.default || Vue).mixin(lifecycle);
+    uni.report = function(type, options) {
+      stat.sendEvent(type, options);
+    };
+  }
 }
 
 main();

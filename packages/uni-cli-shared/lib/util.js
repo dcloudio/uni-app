@@ -50,6 +50,10 @@ const camelize = cached((str) => {
   return str.replace(camelizeRE, (_, c) => c ? c.toUpperCase() : '')
 })
 
+function capitalize (str) {
+  return str.charAt(0).toUpperCase() + str.slice(1)
+}
+
 const hyphenateRE = /\B([A-Z])/g
 
 const hyphenate = cached((str) => {
@@ -107,6 +111,7 @@ module.exports = {
   hashify,
   removeExt,
   camelize,
+  capitalize,
   hyphenate,
   normalizePath,
   convertStaticStyle,
@@ -115,5 +120,8 @@ module.exports = {
       return str.replace('wx-', 'weixin-')
     }
     return str
-  })
+  }),
+  getTemplatePath () {
+    return path.join(__dirname, '../template')
+  }
 }

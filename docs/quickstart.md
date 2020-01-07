@@ -138,7 +138,7 @@ HBuilderX 还提供了快捷运行菜单，可以按数字快速选择要运行�
 <div align=center>
   <img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/uni20190222-6.png"/>
 </div>
-3. 在微信开小程序发者工具中，导入生成的微信小程序项目，测试项目代码运行正常后，点击“上传”按钮，之后按照 “提交审核” => “发布” 小程序标准流程，逐步操作即可，详细查看：[微信官方教程](https://developers.weixin.qq.com/miniprogram/dev/quickstart/basic/release.html)。
+3. 在微信小程序开发者工具中，导入生成的微信小程序项目，测试项目代码运行正常后，点击“上传”按钮，之后按照 “提交审核” => “发布” 小程序标准流程，逐步操作即可，详细查看：[微信官方教程](https://developers.weixin.qq.com/miniprogram/dev/quickstart/basic/release.html)。
 
 **发布为百度小程序：**
 1. 入驻小程序并申请百度小程序AppID，参考：[百度小程序教程](https://smartprogram.baidu.com/docs/introduction/enter_application/)。
@@ -159,12 +159,15 @@ HBuilderX 还提供了快捷运行菜单，可以按数字快速选择要运行�
 
 
 **发布为头条小程序：**
-1. 入驻头条小程序，参考：[头条小程序教程](https://developer.toutiao.com/docs/intro/create.html)。
+1. 入驻头条小程序，参考：[头条小程序教程](https://developer.toutiao.com/dev/cn/mini-app/introduction/plug-in/registration)。
 2. 在HBuilderX中顶部菜单依次点击 "发行" => "小程序-字节跳动"，即可在 ``/unpackage/dist/build/mp-alipay`` 生成头条小程序项目代码。
 <div align=center>
   <img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/uni20190222-8.png"/>
 </div>
-3. 在字节跳动小程序开发者工具中，导入生成的头条小程序项目，测试项目代码运行正常后，点击“上传”按钮上传代码，在 [头条小程序后台](https://developer.toutiao.com/app/applist)，选择刚提交的版本点击提交审核，详见：[头条小程序文档](https://developer.toutiao.com/docs/intro/create.html#%E6%8F%90%E5%AE%A1%E3%80%81%E5%8F%91%E5%B8%83%E3%80%81%E6%9B%B4%E6%96%B0)。
+3. 在字节跳动小程序开发者工具中，导入生成的头条小程序项目，测试项目代码运行正常后，点击“上传”按钮上传代码，在 [头条小程序后台](https://developer.toutiao.com/app/applist)，选择刚提交的版本点击提交审核，详见：[头条小程序文档](https://developer.toutiao.com/dev/cn/mini-app/introduction/plug-in/verification)。
+
+*发布为QQ小程序：*
+内容同上，不再重复。
 
 发布的快捷键是`Ctrl+u`。同样可拉下快速发布菜单并按数字键选择。
 
@@ -172,9 +175,6 @@ HBuilderX 还提供了快捷运行菜单，可以按数字快速选择要运行�
 
 除了HBuilderX可视化界面，也可以使用 `cli` 脚手架，可以通过 `vue-cli` 创建 `uni-app` 项目。
 
-**注意：**
-- vue-cli 版本必须是3.x
-- `cli` 版本更新快于HBuilderX正式版。HBuilderX正式版所包含的uni-app编译器一般是在`cli`版发布一段时间并稳定后才会更新到HBuilderX正式版。
 
 ### 环境安装
 
@@ -186,13 +186,22 @@ npm install -g @vue/cli
 
 ### 创建uni-app
 
+**使用正式版**（对应HBuilderX最新正式版）
+
 ```
 vue create -p dcloudio/uni-preset-vue my-project
 ```
+
+**使用alpha版**（对应HBuilderX最新alpha版）
+
+```
+vue create -p dcloudio/uni-preset-vue#alpha my-alpha-project
+```
+
 此时，会提示选择项目模板，初次体验建议选择 `hello uni-app` 项目模板，如下所示：
 
 <div>
-<img src="http://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/h5-cli-01.png" width="300">
+<img src="https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/h5-cli-01.png" width="300">
 </div>
 
 #### 自定义模板
@@ -240,9 +249,11 @@ npm run build:%PLATFORM%
  
 #### 开发工具的区别
 * ``cli``创建的项目，内置了d.ts，同其他常规npm库一样，可在[vscode](https://ask.dcloud.net.cn/article/36286)、[webstorm](https://ask.dcloud.net.cn/article/36307)等支持d.ts的开发工具里正常开发并有语法提示。
-* 使用HBuilderX创建的项目不带d.ts，此时可以在项目下执行 ``npm i @types/uni-app -D``，来补充d.ts
+* 使用HBuilderX创建的项目不带d.ts，HBuilderX内置了uni-app语法提示库。如需把HBuilderX创建的项目在其他编辑器打开并且补充d.ts，可以在项目下先执行 ``npm init``，然后``npm i @types/uni-app -D``，来补充d.ts。
 * 但vscode等其他开发工具，在vue或uni-app领域，开发效率比不过HBuilderX。详见：[https://ask.dcloud.net.cn/article/35451](https://ask.dcloud.net.cn/article/35451)
 * 发布App时，仍然需要使用HBuilderX。其他开发工具无法发布App，但可以发布H5、各种小程序。如需开发App，可以先在HBuilderX里运行起来，然后在其他编辑器里修改保存代码，代码修改后会自动同步到手机基座。
 * 如果使用``cli``创建项目，那下载HBuilderX时只需下载10M的标准版即可。因为编译器已经安装到项目下了。
 * 对 `cli` 使用有疑问，欢迎扫码加入 uni-app 微信交流群讨论：
-    <br/><img src="http://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/wx-barcode.png" width="250"/>
+    <br/><img src="https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/wx-barcode.png" width="250"/>
+
+注意：HBuilderX创建的项目，一样可以使用npm，参考：[https://uniapp.dcloud.io/frame?id=npm%e6%94%af%e6%8c%81](https://uniapp.dcloud.io/frame?id=npm%e6%94%af%e6%8c%81)

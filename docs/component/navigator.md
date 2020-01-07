@@ -9,12 +9,13 @@
 |url|String||应用内的跳转链接，值为相对路径或绝对路径，如："../first/first"，"/pages/first/first"，注意不能加 ``.vue`` 后缀||
 |open-type|String|navigate|跳转方式||
 |delta|Number||当 open-type 为 'navigateBack' 时有效，表示回退的层数||
-|animation-type|String|pop-in/out|当 open-type 为 navigate、navigateBack 时有效，窗口的显示/关闭动画效果，详见：[窗口动画](api/router?id=animation)|5+App|
-|animation-duration|Number|300|当 open-type 为 navigate、navigateBack 时有效，窗口显示/关闭动画的持续时间。|5+App|
+|animation-type|String|pop-in/out|当 open-type 为 navigate、navigateBack 时有效，窗口的显示/关闭动画效果，详见：[窗口动画](api/router?id=animation)|App|
+|animation-duration|Number|300|当 open-type 为 navigate、navigateBack 时有效，窗口显示/关闭动画的持续时间。|App|
 |hover-class|String|navigator-hover|指定点击时的样式类，当hover-class="none"时，没有点击态效果||
 |hover-stop-propagation|Boolean|false|指定是否阻止本节点的祖先节点出现点击态|微信小程序|
 |hover-start-time|Number|50|按住后多久出现点击态，单位毫秒||
 |hover-stay-time|Number|600|手指松开后点击态保留时间，单位毫秒|&nbsp;|
+|target|String|self|在哪个小程序目标上发生跳转，默认当前小程序，值域self/miniProgram|微信2.0.7+、百度2.5.2+、QQ|
 
 **open-type 有效值**
 
@@ -24,13 +25,15 @@
 |redirect|对应 uni.redirectTo 的功能||
 |switchTab|对应 uni.switchTab 的功能||
 |reLaunch|对应 uni.reLaunch 的功能|头条小程序不支持|
-|navigateBack|对应 uni.navigateBack 的功能|&nbsp;|
+|navigateBack|对应 uni.navigateBack 的功能||
+|exit|退出小程序，target="miniProgram"时生效|微信2.1.0+、百度2.5.2+、QQ1.4.7+|
 
 **注意**
 - navigator-hover 默认为 {background-color: rgba(0, 0, 0, 0.1); opacity: 0.7;}, ``<navigator>`` 的子节点背景色应为透明色。**
-- app-nvue 平台暂不支持 `<navigator>`
+- app-nvue 平台只有纯nvue项目（render为native）才支持 `<navigator>`。非render为native的情况下，nvue暂不支持navigator组件，请使用API跳转。
+- app下退出应用，Android平台可以使用[plus.runtime.quit](https://www.html5plus.org/doc/zh_cn/runtime.html#plus.runtime.quit)
 
-**示例**
+**示例** [查看示例](https://uniapp.dcloud.io/h5/pages/component/navigator/navigator)
  
 ```html
 <template>
@@ -40,8 +43,11 @@
 				<navigator url="navigate/navigate?title=navigate" hover-class="navigator-hover">
 					<button type="default">跳转到新页面</button>
 				</navigator>
-				<navigator url="redirect/redirect?title=redirect" redirect hover-class="other-navigator-hover">
+				<navigator url="redirect/redirect?title=redirect" open-type="redirect" hover-class="other-navigator-hover">
 					<button type="default">在当前页打开</button>
+				</navigator>
+				<navigator url="/pages/tabBar/extUI/extUI" open-type="switchTab" hover-class="other-navigator-hover">
+					<button type="default">跳转tab页面</button>
 				</navigator>
 			</view>
 		</view>

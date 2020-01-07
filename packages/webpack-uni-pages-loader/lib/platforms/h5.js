@@ -8,6 +8,10 @@ const {
   getNetworkTimeout
 } = require('@dcloudio/uni-cli-shared')
 
+const {
+  addPageUsingComponents
+} = require('@dcloudio/uni-cli-shared/lib/pages')
+
 const PLATFORMS = getPlatforms()
 
 const isWin = /^win/.test(process.platform)
@@ -92,8 +96,9 @@ const getPageComponents = function (inputDir, pagesJson) {
     }
 
     let windowTop = 44
-    if (props.navigationStyle === 'custom' || (props.titleNView && props.titleNView.type ===
-        'transparent')) {
+    let pageStyle = Object.assign({}, globalStyle, props)
+    if (pageStyle.navigationStyle === 'custom' || ('titleNView' in pageStyle && (!pageStyle.titleNView || pageStyle.titleNView.type ===
+      'transparent' || pageStyle.titleNView.type === 'float'))) {
       windowTop = 0
     }
 
@@ -102,6 +107,9 @@ const getPageComponents = function (inputDir, pagesJson) {
     delete props['h5']
 
     process.UNI_H5_PAGES_JSON.pages[page.path] = props
+
+    // 缓存usingComponents
+    addPageUsingComponents(page.path, props.usingComponents)
 
     return {
       name,
@@ -293,6 +301,7 @@ module.exports = function (pagesJson, manifestJson) {
 
   const pageComponents = getPageComponents(inputDir, pagesJson)
 
+  pagesJson.globalStyle = process.UNI_H5_PAGES_JSON.globalStyle
   delete pagesJson.pages
   delete pagesJson.subPackages
 

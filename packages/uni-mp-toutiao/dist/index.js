@@ -231,7 +231,7 @@ const promiseInterceptor = {
 };
 
 const SYNC_API_RE =
-  /^\$|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
+  /^\$|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -245,7 +245,7 @@ function isSyncApi (name) {
 }
 
 function isCallbackApi (name) {
-  return CALLBACK_API_RE.test(name)
+  return CALLBACK_API_RE.test(name) && name !== 'onPush'
 }
 
 function handlePromise (promise) {
@@ -344,6 +344,7 @@ const interceptors = {
 
 
 var baseApi = /*#__PURE__*/Object.freeze({
+  __proto__: null,
   upx2px: upx2px,
   interceptors: interceptors,
   addInterceptor: addInterceptor,
@@ -386,76 +387,68 @@ var previewImage = {
 
 // 不支持的 API 列表
 const todos = [
-  'getBackgroundAudioManager',
-  'createCameraContext',
-  'createLivePlayerContext',
-  'getSavedFileInfo',
-  'openDocument',
-  'chooseLocation',
-  'createMapContext',
-  'canIUse',
-  'onMemoryWarning',
-  'onGyroscopeChange',
-  'startGyroscope',
-  'stopGyroscope',
-  'setScreenBrightness',
-  'getScreenBrightness',
-  'onUserCaptureScreen',
-  'addPhoneContact',
-  'openBluetoothAdapter',
-  'startBluetoothDevicesDiscovery',
-  'onBluetoothDeviceFound',
-  'stopBluetoothDevicesDiscovery',
-  'onBluetoothAdapterStateChange',
-  'getConnectedBluetoothDevices',
-  'getBluetoothDevices',
-  'getBluetoothAdapterState',
-  'closeBluetoothAdapter',
-  'writeBLECharacteristicValue',
-  'readBLECharacteristicValue',
-  'onBLEConnectionStateChange',
-  'onBLECharacteristicValueChange',
-  'notifyBLECharacteristicValueChange',
-  'getBLEDeviceServices',
-  'getBLEDeviceCharacteristics',
-  'createBLEConnection',
-  'closeBLEConnection',
-  'onBeaconServiceChange',
-  'onBeaconUpdate',
-  'getBeacons',
-  'startBeaconDiscovery',
-  'stopBeaconDiscovery',
-  'setNavigationBarColor',
-  'showNavigationBarLoading',
-  'hideNavigationBarLoading',
-  'setTabBarItem',
-  'setTabBarStyle',
-  'hideTabBar',
-  'showTabBar',
-  'setTabBarBadge',
-  'removeTabBarBadge',
-  'showTabBarRedDot',
-  'hideTabBarRedDot',
-  'setBackgroundColor',
-  'setBackgroundTextStyle',
-  'chooseInvoiceTitle',
-  'navigateToMiniProgram',
-  'navigateBackMiniProgram',
-  'addTemplate',
-  'deleteTemplate',
-  'getTemplateLibraryById',
-  'getTemplateLibraryList',
-  'getTemplateList',
-  'sendTemplateMessage',
-  'setEnableDebug',
-  'onWindowResize',
-  'offWindowResize',
-  'compressImage',
-  'createOffscreenCanvas'
+  // 'createCameraContext',
+  // 'createLivePlayerContext',
+  // 'getSavedFileInfo',
+  // 'createMapContext',
+  // 'onMemoryWarning',
+  // 'onGyroscopeChange',
+  // 'startGyroscope',
+  // 'stopGyroscope',
+  // 'setScreenBrightness',
+  // 'getScreenBrightness',
+  // 'addPhoneContact',
+  // 'openBluetoothAdapter',
+  // 'startBluetoothDevicesDiscovery',
+  // 'onBluetoothDeviceFound',
+  // 'stopBluetoothDevicesDiscovery',
+  // 'onBluetoothAdapterStateChange',
+  // 'getConnectedBluetoothDevices',
+  // 'getBluetoothDevices',
+  // 'getBluetoothAdapterState',
+  // 'closeBluetoothAdapter',
+  // 'writeBLECharacteristicValue',
+  // 'readBLECharacteristicValue',
+  // 'onBLEConnectionStateChange',
+  // 'onBLECharacteristicValueChange',
+  // 'notifyBLECharacteristicValueChange',
+  // 'getBLEDeviceServices',
+  // 'getBLEDeviceCharacteristics',
+  // 'createBLEConnection',
+  // 'closeBLEConnection',
+  // 'onBeaconServiceChange',
+  // 'onBeaconUpdate',
+  // 'getBeacons',
+  // 'startBeaconDiscovery',
+  // 'stopBeaconDiscovery',
+  // 'showNavigationBarLoading',
+  // 'hideNavigationBarLoading',
+  // 'setTabBarItem',
+  // 'setTabBarStyle',
+  // 'hideTabBar',
+  // 'showTabBar',
+  // 'setTabBarBadge',
+  // 'removeTabBarBadge',
+  // 'showTabBarRedDot',
+  // 'hideTabBarRedDot',
+  // 'setBackgroundColor',
+  // 'setBackgroundTextStyle',
+  // 'chooseInvoiceTitle',
+  // 'addTemplate',
+  // 'deleteTemplate',
+  // 'getTemplateLibraryById',
+  // 'getTemplateLibraryList',
+  // 'getTemplateList',
+  // 'sendTemplateMessage',
+  // 'setEnableDebug',
+  // 'onWindowResize',
+  // 'offWindowResize',
+  // 'createOffscreenCanvas',
+  // 'vibrate'
 ];
 
 // 存在兼容性的 API 列表
-// 头条小程序不支持canIUses
+// 头条小程序自1.35.0+支持canIUses
 const canIUses = [
   // 'createIntersectionObserver',
   // 'getSavedFileList',
@@ -471,6 +464,14 @@ const canIUses = [
   // 'onSocketClose',
   // 'getExtConfig',
   // 'getExtConfigSync',
+  // 'navigateToMiniProgram',
+  // 'navigateBackMiniProgram',
+  // 'compressImage',
+  // 'chooseLocation',
+  // 'openDocument',
+  // 'onUserCaptureScreen',
+  // 'getBackgroundAudioManager',
+  // 'setNavigationBarColor',
 ];
 
 // 需要做转换的 API 列表
@@ -537,8 +538,9 @@ const protocols = {
     }
   },
   requestPayment: {
+    name: tt.pay ? 'pay' : 'requestPayment',
     args: {
-      orderInfo: 'data'
+      orderInfo: tt.pay ? 'orderInfo' : 'data'
     }
   },
   getFileInfo: {
@@ -630,6 +632,7 @@ function wrapper (methodName, method) {
 const todoApis = Object.create(null);
 
 const TODOS = [
+  'onTabBarMidButtonTap',
   'subscribePush',
   'unsubscribePush',
   'onPush',
@@ -685,6 +688,7 @@ function getProvider ({
 }
 
 var extraApi = /*#__PURE__*/Object.freeze({
+  __proto__: null,
   getProvider: getProvider
 });
 
@@ -720,6 +724,7 @@ function $emit () {
 }
 
 var eventApi = /*#__PURE__*/Object.freeze({
+  __proto__: null,
   $on: $on,
   $off: $off,
   $once: $once,
@@ -729,7 +734,7 @@ var eventApi = /*#__PURE__*/Object.freeze({
 
 
 var api = /*#__PURE__*/Object.freeze({
-
+  __proto__: null
 });
 
 const MPPage = Page;
@@ -1225,6 +1230,18 @@ function handleEvent (event) {
           ) { // mp-weixin,mp-toutiao 抽象节点模拟 scoped slots
             handlerCtx = handlerCtx.$parent.$parent;
           }
+          if (methodName === '$emit') {
+            handlerCtx.$emit.apply(handlerCtx,
+              processEventArgs(
+                this.$vm,
+                event,
+                eventArray[1],
+                eventArray[2],
+                isCustom,
+                methodName
+              ));
+            return
+          }
           const handler = handlerCtx[methodName];
           if (!isFn(handler)) {
             throw new Error(` _vm.${methodName} is not a function`)
@@ -1268,6 +1285,10 @@ function parseBaseApp (vm, {
   mocks,
   initRefs
 }) {
+  if (vm.$options.store) {
+    Vue.prototype.$store = vm.$options.store;
+  }
+
   Vue.prototype.mpHost = "mp-toutiao";
 
   Vue.mixin({
@@ -1308,6 +1329,8 @@ function parseBaseApp (vm, {
       };
 
       this.$vm.$scope = this;
+      // vm 上也挂载 globalData
+      this.$vm.globalData = this.globalData;
 
       this.$vm._isMounted = true;
       this.$vm.__call_hook('mounted', args);
@@ -1318,6 +1341,13 @@ function parseBaseApp (vm, {
 
   // 兼容旧版本 globalData
   appOptions.globalData = vm.$options.globalData || {};
+  // 将 methods 中的方法挂在 getApp() 中
+  const methods = vm.$options.methods;
+  if (methods) {
+    Object.keys(methods).forEach(name => {
+      appOptions[name] = methods[name];
+    });
+  }
 
   initHooks(appOptions, hooks);
 
@@ -1326,12 +1356,15 @@ function parseBaseApp (vm, {
 
 function findVmByVueId (vm, vuePid) {
   const $children = vm.$children;
-  // 优先查找直属
-  let parentVm = $children.find(childVm => childVm.$scope._$vueId === vuePid);
-  if (parentVm) {
-    return parentVm
+  // 优先查找直属(反向查找:https://github.com/dcloudio/uni-app/issues/1200)
+  for (let i = $children.length - 1; i >= 0; i--) {
+    const childVm = $children[i];
+    if (childVm.$scope._$vueId === vuePid) {
+      return childVm
+    }
   }
   // 反向递归查找
+  let parentVm;
   for (let i = $children.length - 1; i >= 0; i--) {
     parentVm = findVmByVueId($children[i], vuePid);
     if (parentVm) {
@@ -1371,21 +1404,45 @@ function isPage () {
 
 function initRefs (vm) {
   const mpInstance = vm.$scope;
-  mpInstance.selectAllComponents('.vue-ref', (components) => {
-    components.forEach(component => {
-      const ref = component.dataset.ref;
-      vm.$refs[ref] = component.$vm || component;
-    });
-  });
-  mpInstance.selectAllComponents('.vue-ref-in-for', (forComponents) => {
-    forComponents.forEach(component => {
-      const ref = component.dataset.ref;
-      if (!vm.$refs[ref]) {
-        vm.$refs[ref] = [];
+  /* eslint-disable no-undef */
+  const minorVersion = parseInt(tt.getSystemInfoSync().SDKVersion.split('.')[1]);
+  if (minorVersion > 16) {
+    Object.defineProperty(vm, '$refs', {
+      get () {
+        const $refs = {};
+        const components = mpInstance.selectAllComponents('.vue-ref');
+        components.forEach(component => {
+          const ref = component.dataset.ref;
+          $refs[ref] = component.$vm || component;
+        });
+        const forComponents = mpInstance.selectAllComponents('.vue-ref-in-for');
+        forComponents.forEach(component => {
+          const ref = component.dataset.ref;
+          if (!$refs[ref]) {
+            $refs[ref] = [];
+          }
+          $refs[ref].push(component.$vm || component);
+        });
+        return $refs
       }
-      vm.$refs[ref].push(component.$vm || component);
     });
-  });
+  } else {
+    mpInstance.selectAllComponents('.vue-ref', (components) => {
+      components.forEach(component => {
+        const ref = component.dataset.ref;
+        vm.$refs[ref] = component.$vm || component;
+      });
+    });
+    mpInstance.selectAllComponents('.vue-ref-in-for', (forComponents) => {
+      forComponents.forEach(component => {
+        const ref = component.dataset.ref;
+        if (!vm.$refs[ref]) {
+          vm.$refs[ref] = [];
+        }
+        vm.$refs[ref].push(component.$vm || component);
+      });
+    });
+  }
 }
 
 const instances = Object.create(null);
@@ -1479,11 +1536,13 @@ function parseBaseComponent (vueComponentOptions, {
 } = {}) {
   let [VueComponent, vueOptions] = initVueComponent(Vue, vueComponentOptions);
 
+  const options = {
+    multipleSlots: true,
+    addGlobalClass: true
+  };
+
   const componentOptions = {
-    options: {
-      multipleSlots: true,
-      addGlobalClass: true
-    },
+    options,
     data: initData(vueOptions, Vue.prototype),
     behaviors: initBehaviors(vueOptions, initBehavior),
     properties: initProperties(vueOptions.props, false, vueOptions.__file),
@@ -1543,6 +1602,14 @@ function parseBaseComponent (vueComponentOptions, {
       __e: handleEvent
     }
   };
+
+  if (Array.isArray(vueOptions.wxsCallMethods)) {
+    vueOptions.wxsCallMethods.forEach(callMethod => {
+      componentOptions.methods[callMethod] = function (args) {
+        return this.$vm[callMethod](args)
+      };
+    });
+  }
 
   if (isPage) {
     return componentOptions

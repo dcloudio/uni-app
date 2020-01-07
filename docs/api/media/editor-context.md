@@ -1,14 +1,14 @@
 ## editorContext
 
-editorContext 实例，可通过 [uni.createSelectorQuery](/api/ui/nodes-info?id=createselectorquery) 获取。
+editor 组件对应的 editorContext 实例，可通过 [uni.createSelectorQuery](/api/ui/nodes-info?id=createselectorquery) 获取。
 
 `editorContext` 通过 `id` 跟一个 [`<editor>`](/component/editor) 组件绑定，操作对应的 [`<editor>`](/component/editor) 组件。
 
 **平台差异说明**
 
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|
-|√|x|√|x|x|x|
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|√|2.4.5+|√|x|x|x|x|
 
 
 ## editorContext.format(name, value)
@@ -43,6 +43,7 @@ editorContext 实例，可通过 [uni.createSelectorQuery](/api/ui/nodes-info?id
 | lineHeight | css style |
 | letterSpacing | css style |
 | textDecoration | css style |
+| textIndent | css style |
 
 对已经应用样式的选区设置会取消样式。css style 表示 css 中规定的允许值。
 
@@ -86,7 +87,7 @@ editorContext 实例，可通过 [uni.createSelectorQuery](/api/ui/nodes-info?id
 | fail | Function |  | 否 | 接口调用失败的回调函数 |
 | complete | Function |  | 否 | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
-# editorContext.setContents(OBJECT)
+## editorContext.setContents(OBJECT)
 
 初始化编辑器内容，hmlt和delta同时存在时仅delta生效
 

@@ -33,9 +33,9 @@ export default {
     const {
       latitude,
       longitude,
-      scale,
-      name,
-      address
+      scale = 18,
+      name = '',
+      address = ''
     } = this.$route.query
     return {
       latitude,
@@ -70,7 +70,7 @@ export default {
     },
     _nav () {
       var url =
-					`https://apis.map.qq.com/uri/v1/routeplan?type=drive&to=${encodeURIComponent(this.name)}&tocoord=${this.latitude},${this.longitude}&referer=${referer}`
+					`https://apis.map.qq.com/uri/v1/routeplan?type=drive&to=${encodeURIComponent(this.name || '目的地')}&tocoord=${this.latitude},${this.longitude}&referer=${referer}`
       this.$refs.map.src = url
     }
   }

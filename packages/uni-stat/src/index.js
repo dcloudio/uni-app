@@ -10,6 +10,14 @@ const lifecycle = {
   },
   onLoad(options) {
     stat.load(options, this);
+    // 重写分享，获取分享上报事件
+    if (this.$scope && this.$scope.onShareAppMessage) {
+      let oldShareAppMessage = this.$scope.onShareAppMessage;
+      this.$scope.onShareAppMessage = function(options) {
+        stat.interceptShare(false);
+        return oldShareAppMessage.call(this, options)
+      }
+    }
   },
   onShow() {
     isHide = false
@@ -28,18 +36,19 @@ const lifecycle = {
   },
   onError(e) {
     stat.error(e)
-  },
-  onShareAppMessage() {
-    stat.interceptShare(false)
   }
 }
 
 function main() {
-  const Vue = require('vue');
-  (Vue.default || Vue).mixin(lifecycle);
-  uni.report = function(type, options) {
-    stat.sendEvent(type, options);
-  };
+  if (process.env.NODE_ENV === 'development') {
+    uni.report = function(type, options) {};
+  }else{
+    const Vue = require('vue');
+    (Vue.default || Vue).mixin(lifecycle);
+    uni.report = function(type, options) {
+      stat.sendEvent(type, options);
+    };
+  }
 }
 
 main();

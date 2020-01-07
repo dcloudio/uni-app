@@ -231,7 +231,7 @@ const promiseInterceptor = {
 };
 
 const SYNC_API_RE =
-  /^\$|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
+  /^\$|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -245,7 +245,7 @@ function isSyncApi (name) {
 }
 
 function isCallbackApi (name) {
-  return CALLBACK_API_RE.test(name)
+  return CALLBACK_API_RE.test(name) && name !== 'onPush'
 }
 
 function handlePromise (promise) {
@@ -344,6 +344,7 @@ const interceptors = {
 
 
 var baseApi = /*#__PURE__*/Object.freeze({
+  __proto__: null,
   upx2px: upx2px,
   interceptors: interceptors,
   addInterceptor: addInterceptor,
@@ -386,36 +387,37 @@ var previewImage = {
 
 // 不支持的 API 列表
 const todos = [
-  'hideKeyboard',
-  'onGyroscopeChange',
-  'startGyroscope',
-  'stopGyroscope',
-  'openBluetoothAdapter',
-  'startBluetoothDevicesDiscovery',
-  'onBluetoothDeviceFound',
-  'stopBluetoothDevicesDiscovery',
-  'onBluetoothAdapterStateChange',
-  'getConnectedBluetoothDevices',
-  'getBluetoothDevices',
-  'getBluetoothAdapterState',
-  'closeBluetoothAdapter',
-  'writeBLECharacteristicValue',
-  'readBLECharacteristicValue',
-  'onBLEConnectionStateChange',
-  'onBLECharacteristicValueChange',
-  'notifyBLECharacteristicValueChange',
-  'getBLEDeviceServices',
-  'getBLEDeviceCharacteristics',
-  'createBLEConnection',
-  'closeBLEConnection',
-  'onBeaconServiceChange',
-  'onBeaconUpdate',
-  'getBeacons',
-  'startBeaconDiscovery',
-  'stopBeaconDiscovery',
-  'hideShareMenu',
-  'onWindowResize',
-  'offWindowResize'
+  // 'hideKeyboard',
+  // 'onGyroscopeChange',
+  // 'startGyroscope',
+  // 'stopGyroscope',
+  // 'openBluetoothAdapter',
+  // 'startBluetoothDevicesDiscovery',
+  // 'onBluetoothDeviceFound',
+  // 'stopBluetoothDevicesDiscovery',
+  // 'onBluetoothAdapterStateChange',
+  // 'getConnectedBluetoothDevices',
+  // 'getBluetoothDevices',
+  // 'getBluetoothAdapterState',
+  // 'closeBluetoothAdapter',
+  // 'writeBLECharacteristicValue',
+  // 'readBLECharacteristicValue',
+  // 'onBLEConnectionStateChange',
+  // 'onBLECharacteristicValueChange',
+  // 'notifyBLECharacteristicValueChange',
+  // 'getBLEDeviceServices',
+  // 'getBLEDeviceCharacteristics',
+  // 'createBLEConnection',
+  // 'closeBLEConnection',
+  // 'onBeaconServiceChange',
+  // 'onBeaconUpdate',
+  // 'getBeacons',
+  // 'startBeaconDiscovery',
+  // 'stopBeaconDiscovery',
+  // 'hideShareMenu',
+  // 'onWindowResize',
+  // 'offWindowResize',
+  // 'vibrate'
 ];
 
 // 存在兼容性的 API 列表
@@ -578,6 +580,7 @@ function wrapper (methodName, method) {
 const todoApis = Object.create(null);
 
 const TODOS = [
+  'onTabBarMidButtonTap',
   'subscribePush',
   'unsubscribePush',
   'onPush',
@@ -633,6 +636,7 @@ function getProvider ({
 }
 
 var extraApi = /*#__PURE__*/Object.freeze({
+  __proto__: null,
   getProvider: getProvider
 });
 
@@ -668,6 +672,7 @@ function $emit () {
 }
 
 var eventApi = /*#__PURE__*/Object.freeze({
+  __proto__: null,
   $on: $on,
   $off: $off,
   $once: $once,
@@ -693,6 +698,7 @@ function requestPayment (params) {
 }
 
 var api = /*#__PURE__*/Object.freeze({
+  __proto__: null,
   requestPayment: requestPayment
 });
 
@@ -1215,6 +1221,18 @@ function handleEvent (event) {
           ) { // mp-weixin,mp-toutiao 抽象节点模拟 scoped slots
             handlerCtx = handlerCtx.$parent.$parent;
           }
+          if (methodName === '$emit') {
+            handlerCtx.$emit.apply(handlerCtx,
+              processEventArgs(
+                this.$vm,
+                event,
+                eventArray[1],
+                eventArray[2],
+                isCustom,
+                methodName
+              ));
+            return
+          }
           const handler = handlerCtx[methodName];
           if (!isFn(handler)) {
             throw new Error(` _vm.${methodName} is not a function`)
@@ -1258,6 +1276,10 @@ function parseBaseApp (vm, {
   mocks,
   initRefs
 }) {
+  if (vm.$options.store) {
+    Vue.prototype.$store = vm.$options.store;
+  }
+
   Vue.prototype.mpHost = "mp-baidu";
 
   Vue.mixin({
@@ -1298,6 +1320,8 @@ function parseBaseApp (vm, {
       };
 
       this.$vm.$scope = this;
+      // vm 上也挂载 globalData
+      this.$vm.globalData = this.globalData;
 
       this.$vm._isMounted = true;
       this.$vm.__call_hook('mounted', args);
@@ -1308,6 +1332,13 @@ function parseBaseApp (vm, {
 
   // 兼容旧版本 globalData
   appOptions.globalData = vm.$options.globalData || {};
+  // 将 methods 中的方法挂在 getApp() 中
+  const methods = vm.$options.methods;
+  if (methods) {
+    Object.keys(methods).forEach(name => {
+      appOptions[name] = methods[name];
+    });
+  }
 
   initHooks(appOptions, hooks);
 
@@ -1316,12 +1347,15 @@ function parseBaseApp (vm, {
 
 function findVmByVueId (vm, vuePid) {
   const $children = vm.$children;
-  // 优先查找直属
-  let parentVm = $children.find(childVm => childVm.$scope._$vueId === vuePid);
-  if (parentVm) {
-    return parentVm
+  // 优先查找直属(反向查找:https://github.com/dcloudio/uni-app/issues/1200)
+  for (let i = $children.length - 1; i >= 0; i--) {
+    const childVm = $children[i];
+    if (childVm.$scope._$vueId === vuePid) {
+      return childVm
+    }
   }
   // 反向递归查找
+  let parentVm;
   for (let i = $children.length - 1; i >= 0; i--) {
     parentVm = findVmByVueId($children[i], vuePid);
     if (parentVm) {
@@ -1412,11 +1446,13 @@ function parseBaseComponent (vueComponentOptions, {
 } = {}) {
   let [VueComponent, vueOptions] = initVueComponent(Vue, vueComponentOptions);
 
+  const options = {
+    multipleSlots: true,
+    addGlobalClass: true
+  };
+
   const componentOptions = {
-    options: {
-      multipleSlots: true,
-      addGlobalClass: true
-    },
+    options,
     data: initData(vueOptions, Vue.prototype),
     behaviors: initBehaviors(vueOptions, initBehavior),
     properties: initProperties(vueOptions.props, false, vueOptions.__file),
@@ -1477,11 +1513,21 @@ function parseBaseComponent (vueComponentOptions, {
     }
   };
 
+  if (Array.isArray(vueOptions.wxsCallMethods)) {
+    vueOptions.wxsCallMethods.forEach(callMethod => {
+      componentOptions.methods[callMethod] = function (args) {
+        return this.$vm[callMethod](args)
+      };
+    });
+  }
+
   if (isPage) {
     return componentOptions
   }
   return [componentOptions, VueComponent]
 }
+
+const newLifecycle = swan.canIUse('lifecycle-2-0');
 
 function parseComponent (vueOptions) {
   const componentOptions = parseBaseComponent(vueOptions, {
@@ -1489,23 +1535,40 @@ function parseComponent (vueOptions) {
     initRelation
   });
 
+  // 关于百度小程序生命周期的说明(组件作为页面时):
+  // lifetimes:attached --> methods:onShow --> methods:onLoad --> methods:onReady
+  // 这里在强制将onShow挪到onLoad之后触发,另外一处修改在page-parser.js
   const oldAttached = componentOptions.lifetimes.attached;
-
   componentOptions.lifetimes.attached = function attached () {
     oldAttached.call(this);
     if (isPage.call(this)) { // 百度 onLoad 在 attached 之前触发
       // 百度 当组件作为页面时 pageinstancce 不是原来组件的 instance
       this.pageinstance.$vm = this.$vm;
-
       if (hasOwn(this.pageinstance, '_$args')) {
         this.$vm.$mp.query = this.pageinstance._$args;
         this.$vm.__call_hook('onLoad', this.pageinstance._$args);
+        this.$vm.__call_hook('onShow');
         delete this.pageinstance._$args;
       }
-      // TODO  目前版本 百度 Component 作为页面时，methods 中的 onShow 不触发
-      this.$vm.__call_hook('onShow');
+    } else {
+      // 百度小程序组件不触发methods内的onReady
+      if (this.$vm) {
+        this.$vm._isMounted = true;
+        this.$vm.__call_hook('mounted');
+      }
     }
   };
+
+  if (newLifecycle) {
+    delete componentOptions.lifetimes.ready;
+    componentOptions.methods.onReady = function () {
+      if (this.$vm) {
+        this.$vm._isMounted = true;
+        this.$vm.__call_hook('mounted');
+        this.$vm.__call_hook('onReady');
+      }
+    };
+  }
 
   componentOptions.messages = {
     '__l': componentOptions.methods['__l']
@@ -1559,11 +1622,19 @@ function parsePage (vuePageOptions) {
     initRelation
   });
 
+  // 纠正百度小程序生命周期methods:onShow在methods:onLoad之前触发的问题
+  pageOptions.methods.onShow = function onShow () {
+    if (this.$vm && this.$vm.$mp.query) {
+      this.$vm.__call_hook('onShow');
+    }
+  };
+
   pageOptions.methods.onLoad = function onLoad (args) {
     // 百度 onLoad 在 attached 之前触发，先存储 args, 在 attached 里边触发 onLoad
     if (this.$vm) {
       this.$vm.$mp.query = args;
       this.$vm.__call_hook('onLoad', args);
+      this.$vm.__call_hook('onShow');
     } else {
       this.pageinstance._$args = args;
     }

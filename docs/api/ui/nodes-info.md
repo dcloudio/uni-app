@@ -24,6 +24,10 @@ query.select('#id').boundingClientRect(data => {
 }).exec();
 ```
 
+**注意**
+
+- 支付宝小程序不支持in(component)，使用无效果
+
 ### selectorQuery.select(selector)
 
 在当前页面下选择第一个匹配选择器 ``selector`` 的节点，返回一个 ``NodesRef`` 对象实例，可以用于获取节点信息。
@@ -64,7 +68,7 @@ query.select('#id').boundingClientRect(data => {
 |字段名|类型|默认值|必填|说明|平台差异说明|
 |:-|:-|:-|:-|:-|:-|
 |id|Boolean|false|否|是否返回节点 ``id``||
-|dataset|Boolean|false|否|是否返回节点 ``dataset``||
+|dataset|Boolean|false|否|是否返回节点 ``dataset``| App、微信小程序、H5 |
 |rect|Boolean|false|否|是否返回节点布局位置（``left`` ``right`` ``top`` ``bottom``）||
 |size|Boolean|false|否|是否返回节点尺寸（``width`` ``height``）||
 |scrollOffset|Boolean|false|否|是否返回节点的 ``scrollLeft`` ``scrollTop``，节点必须是 ``scroll-view`` 或者 ``viewport``||
@@ -108,9 +112,9 @@ query.select('#id').boundingClientRect(data => {
 
 **平台差异说明**
 
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|
-|√|x|√|x|x|x|
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|√|HBuilderX 2.4.7+|√|x|x|x|√|
 
 **callback 返回参数**
 
@@ -118,7 +122,26 @@ query.select('#id').boundingClientRect(data => {
 | --- | --- | --- |
 | context | Object | 节点对应的 Context 对象 |
 
+### nodesRef.node(callback)
 
+获取 `Node` 节点实例。目前支持 `Canvas` 的获取。
+
+**平台差异说明**
+
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|x|x|√|x|x|x|√|
+
+**callback 返回参数**
+
+| 属性 | 类型 | 说明 |
+| --- | --- | --- |
+| node | Object | 节点对应的 Node 实例 |
+
+**注意**
+
+- 目前仅能用于`canvas`
+- `canvas`需设置`type="webgl"`才能正常使用
 
 ### 代码示例
 
@@ -141,4 +164,52 @@ view.boundingClientRect(data => {
   console.log("得到布局位置信息" + JSON.stringify(data));
   console.log("节点离页面顶部的距离为" + data.top);
 }).exec();
+```
+
+**注意**
+- nvue 暂不支持 uni.createSelectorQuery，暂时使用下面的方案
+
+```
+<template>
+  <view class="wrapper">
+    <view ref="box" class="box">
+      <text class="info">Width: {{size.width}}</text>
+      <text class="info">Height: {{size.height}}</text>
+      <text class="info">Top: {{size.top}}</text>
+      <text class="info">Bottom: {{size.bottom}}</text>
+      <text class="info">Left: {{size.left}}</text>
+      <text class="info">Right: {{size.right}}</text>
+    </view>
+  </view>
+</template>
+
+<script>
+  // 注意平台差异
+  // #ifdef APP-NVUE
+  const dom = weex.requireModule('dom')
+  // #endif
+
+  export default {
+    data () {
+      return {
+        size: {
+          width: 0,
+          height: 0,
+          top: 0,
+          bottom: 0,
+          left: 0,
+          right: 0
+        }
+      }
+    },
+    onReady () {
+      const result = dom.getComponentRect(this.$refs.box, option => {
+        console.log('getComponentRect:', option)
+        this.size = option.size
+      })
+      console.log('return value:', result)
+      console.log('viewport:', dom.getComponentRect('viewport'))
+    }
+  }
+</script>
 ```

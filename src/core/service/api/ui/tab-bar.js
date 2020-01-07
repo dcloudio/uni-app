@@ -1,6 +1,11 @@
 import {
+  onMethod,
   invokeMethod
 } from '../../platform'
+
+import {
+  invoke
+} from 'uni-core/service/bridge'
 
 export function removeTabBarBadge ({
   index
@@ -21,3 +26,15 @@ export function showTabBarRedDot ({
 }
 
 export const hideTabBarRedDot = removeTabBarBadge
+
+const callbacks = []
+
+onMethod('onTabBarMidButtonTap', res => {
+  callbacks.forEach(callbackId => {
+    invoke(callbackId, res)
+  })
+})
+
+export function onTabBarMidButtonTap (callbackId) {
+  callbacks.push(callbackId)
+}

@@ -3,6 +3,10 @@ const {
 } = require('@dcloudio/uni-cli-shared')
 
 const {
+  updateAppJsonUsingComponents
+} = require('@dcloudio/uni-cli-shared/lib/cache')
+
+const {
   hasOwn,
   parseStyle,
   parseTabBar
@@ -60,8 +64,18 @@ module.exports = function (pagesJson, manifestJson) {
 
   copyToJson(app, pagesJson, pagesJson2AppJson)
 
+  if (app.usingComponents) {
+    updateAppJsonUsingComponents(app.usingComponents)
+  }
+
+  const project = Object.assign({}, manifestJson['mp-alipay'] || {})
+  delete project.usingComponents
+
   return [{
     name: 'app',
     content: app
+  }, {
+    name: 'mini.project',
+    content: project
   }]
 }

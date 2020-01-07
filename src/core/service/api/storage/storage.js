@@ -1,20 +1,20 @@
+const STORAGE_DATA_TYPE = '__TYPE'
+const STORAGE_KEYS = 'uni-storage-keys'
+
 export function setStorage ({
   key,
   data
 } = {}) {
-  const value = {
-    type: typeof data === 'object' ? 'object' : 'string',
+  const type = typeof data
+  const value = type === 'string' ? data : JSON.stringify({
+    type,
     data: data
-  }
-  localStorage.setItem(key, JSON.stringify(value))
-  const keyList = localStorage.getItem('uni-storage-keys')
-  if (!keyList) {
-    localStorage.setItem('uni-storage-keys', JSON.stringify([key]))
-  } else {
-    const keys = JSON.parse(keyList)
-    if (keys.indexOf(key) < 0) {
-      keys.push(key)
-      localStorage.setItem('uni-storage-keys', JSON.stringify(keys))
+  })
+  try {
+    localStorage.setItem(key, value)
+  } catch (error) {
+    return {
+      errMsg: `setStorage:fail ${error}`
     }
   }
   return {
@@ -32,13 +32,33 @@ export function setStorageSync (key, data) {
 export function getStorage ({
   key
 } = {}) {
-  const data = localStorage.getItem(key)
-  return data ? {
-    data: JSON.parse(data).data,
+  const value = localStorage && localStorage.getItem(key)
+  if (typeof value !== 'string') {
+    return {
+      data: '',
+      errMsg: 'getStorage:fail'
+    }
+  }
+  let data = value
+  try {
+    const object = JSON.parse(value)
+    // 兼容App端历史格式
+    const type = localStorage.getItem(key + STORAGE_DATA_TYPE)
+    if (!type) {
+      const keys = Object.keys(object)
+      if (keys.length === 2 && 'type' in object && 'data' in object) {
+        data = object.data
+      } else if (keys.length === 1 && 'type' in object) {
+        data = ''
+      }
+    } else if (type !== 'String') {
+      data = object
+      data = typeof data === 'string' ? JSON.parse(data) : data
+    }
+  } catch (error) { }
+  return {
+    data,
     errMsg: 'getStorage:ok'
-  } : {
-    data: '',
-    errMsg: 'getStorage:fail'
   }
 }
 
@@ -52,14 +72,11 @@ export function getStorageSync (key) {
 export function removeStorage ({
   key
 } = {}) {
-  const keyList = localStorage.getItem('uni-storage-keys')
-  if (keyList) {
-    const keys = JSON.parse(keyList)
-    const index = keys.indexOf(key)
-    keys.splice(index, 1)
-    localStorage.setItem('uni-storage-keys', JSON.stringify(keys))
+  if (localStorage) {
+    // 兼容App端历史格式
+    localStorage.removeItem(key + STORAGE_DATA_TYPE)
+    localStorage.removeItem(key)
   }
-  localStorage.removeItem(key)
   return {
     errMsg: 'removeStorage:ok'
   }
@@ -72,7 +89,7 @@ export function removeStorageSync (key) {
 }
 
 export function clearStorage () {
-  localStorage.clear()
+  localStorage && localStorage.clear()
   return {
     errMsg: 'clearStorage:ok'
   }
@@ -82,18 +99,23 @@ export function clearStorageSync () {
   clearStorage()
 }
 
-export function getStorageInfo () { // TODO 暂时先不做大小的转换
-  const keyList = localStorage.getItem('uni-storage-keys')
-  return keyList ? {
-    keys: JSON.parse(keyList),
-    currentSize: 0,
-    limitSize: 0,
+export function getStorageInfo () {
+  const length = (localStorage && (localStorage.length || localStorage.getLength())) || 0
+  const keys = []
+  let currentSize = 0
+  for (let index = 0; index < length; index++) {
+    const key = localStorage.key(index)
+    if (key !== STORAGE_KEYS && key.indexOf(STORAGE_DATA_TYPE) + STORAGE_DATA_TYPE.length !== key.length) {
+      const value = localStorage.getItem(key)
+      currentSize += key.length + value.length
+      keys.push(key)
+    }
+  }
+  return {
+    keys,
+    currentSize: Math.ceil(currentSize * 2 / 1024),
+    limitSize: Number.MAX_VALUE,
     errMsg: 'getStorageInfo:ok'
-  } : {
-    keys: '',
-    currentSize: 0,
-    limitSize: 0,
-    errMsg: 'getStorageInfo:fail'
   }
 }
 

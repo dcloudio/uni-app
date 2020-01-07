@@ -21,10 +21,6 @@
       v-if="$options.components.Modal"
       v-bind="showModal"
       @close="_onModalClose" />
-    <picker
-      v-if="$options.components.Picker"
-      v-bind="showPicker"
-      @close="_onPickerClose" />
   </uni-app>
 </template>
 <script>
@@ -108,8 +104,7 @@ export default {
 </script>
 
 <style>
-	@import "~uni-core/view/index.css";
-
+  @import "~uni-core/view/index.css";
 	uni-app {
 		display: block;
 		box-sizing: border-box;

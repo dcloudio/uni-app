@@ -1,10 +1,26 @@
-框架提供丰富的 API，可以方便的调起客户端提供的能力，如获取用户信息，本地存储，支付功能等。
+`uni-app`的js API由标准ECMAScript的js API 和 uni 扩展 API 这两部分组成。
 
-JS API命名与小程序相同。各端受自身限制，可能某些API无法使用，具体见每个API的兼容性说明。
+标准ecmascript的API非常多，本文档没有必要列全，仅以console、settimeout为例做简要说明。扩展 API 命名与小程序相同。
+
+## 标准js和浏览器js的区别
+
+`uni-app`的js代码，h5端运行于浏览器中。非h5端，Android平台运行在v8引擎中，iOS平台运行在iOS自带的jscore引擎中。
+
+非H5端，虽然不支持window、document、navigator等浏览器的js API，但也支持标准ECMAScript。
+
+开发者不要把浏览器里的js等价于标准js。
+
+ECMAScript由Ecma国际管理，是基础js语法。浏览器基于标准js扩充了window、document等js API；Node.js基于标准js扩充了fs等模块；小程序也基于标准js扩展了各种wx.xx、my.xx、swan.xx的API。
+
+所以uni-app的非H5端，一样支持标准js，支持if、for等语法，支持字符串、数组、时间等变量及各种处理方法。仅仅是不支持浏览器专用对象。
+
+## 各端特色API调用
 
 除了uni-app框架内置的跨端API，各端自己的特色API也可通过[条件编译](https://uniapp.dcloud.io/platform)自由使用。
 
 各端特色API规范参考各端的开发文档。其中App端的JS API参考[html5plus.org](https://www.html5plus.org/doc/h5p.html)；uni-app也支持通过扩展原生插件来丰富App端的开发能力，具体参考[插件开发文档](http://ask.dcloud.net.cn/article/35408)
+
+各平台的API新增，不需要uni-app升级，开发者就可以直接使用。
 
 ## 说明
 
@@ -350,10 +366,10 @@ function async request () {
 
 |API|说明|
 |:-|:-|
-|[uni.createCanvasContext](api/ui/canvas?id=createcanvascontext)|创建绘图上下文|
-|[uni.canvasToTempFilePath](api/ui/canvas?id=canvastotempfilepath)|将画布内容保存成文件|
-|[uni.canvasGetImageData](api/ui/canvas?id=canvasgetimagedata)|获取画布图像数据|
-|[uni.canvasPutImageData](api/ui/canvas?id=canvasputimagedata)|设置画布图像数据|
+|[uni.createCanvasContext](/api/canvas/createCanvasContext)|创建绘图上下文|
+|[uni.canvasToTempFilePath](/api/canvas/canvasToTempFilePath)|将画布内容保存成文件|
+|[uni.canvasGetImageData](/api/canvas/canvasGetImageData)|获取画布图像数据|
+|[uni.canvasPutImageData](/api/canvas/canvasPutImageData)|设置画布图像数据|
 ##### 下拉刷新
 
 |API|说明|

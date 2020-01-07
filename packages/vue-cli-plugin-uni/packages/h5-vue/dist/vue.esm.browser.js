@@ -1,5 +1,5 @@
 /*!
- * Vue.js v2.6.10
+ * Vue.js v2.6.11
  * (c) 2014-2019 Evan You
  * Released under the MIT License.
  */
@@ -716,7 +716,13 @@ class Dep {
   
 
   constructor () {
-    this.id = uid++;
+    // fixed by xxxxxx (nvue vuex)
+    /* eslint-disable no-undef */
+    if(typeof SharedObject !== 'undefined'){
+      this.id = SharedObject.uid++;
+    } else {
+      this.id = uid++;
+    }
     this.subs = [];
   }
 
@@ -729,8 +735,8 @@ class Dep {
   }
 
   depend () {
-    if (Dep.target) {
-      Dep.target.addDep(this);
+    if (Dep.SharedObject.target) {
+      Dep.SharedObject.target.addDep(this);
     }
   }
 
@@ -752,17 +758,20 @@ class Dep {
 // The current target watcher being evaluated.
 // This is globally unique because only one watcher
 // can be evaluated at a time.
-Dep.target = null;
-const targetStack = [];
+// fixed by xxxxxx (nvue shared vuex)
+/* eslint-disable no-undef */
+Dep.SharedObject = typeof SharedObject !== 'undefined' ? SharedObject : {};
+Dep.SharedObject.target = null;
+Dep.SharedObject.targetStack = [];
 
 function pushTarget (target) {
-  targetStack.push(target);
-  Dep.target = target;
+  Dep.SharedObject.targetStack.push(target);
+  Dep.SharedObject.target = target;
 }
 
 function popTarget () {
-  targetStack.pop();
-  Dep.target = targetStack[targetStack.length - 1];
+  Dep.SharedObject.targetStack.pop();
+  Dep.SharedObject.target = Dep.SharedObject.targetStack[Dep.SharedObject.targetStack.length - 1];
 }
 
 /*  */
@@ -955,7 +964,9 @@ class Observer {
     def(value, '__ob__', this);
     if (Array.isArray(value)) {
       if (hasProto) {
-        protoAugment(value, arrayMethods);
+        {
+          protoAugment(value, arrayMethods);
+        }
       } else {
         copyAugment(value, arrayMethods, arrayKeys);
       }
@@ -1068,7 +1079,7 @@ function defineReactive$$1 (
     configurable: true,
     get: function reactiveGetter () {
       const value = getter ? getter.call(obj) : val;
-      if (Dep.target) {
+      if (Dep.SharedObject.target) { // fixed by xxxxxx
         dep.depend();
         if (childOb) {
           childOb.dep.depend();
@@ -1996,7 +2007,7 @@ if (typeof Promise !== 'undefined' && isNative(Promise)) {
   isUsingMicroTask = true;
 } else if (typeof setImmediate !== 'undefined' && isNative(setImmediate)) {
   // Fallback to setImmediate.
-  // Techinically it leverages the (macro) task queue,
+  // Technically it leverages the (macro) task queue,
   // but it is still a better choice than setTimeout.
   timerFunc = () => {
     setImmediate(flushCallbacks);
@@ -2085,7 +2096,7 @@ let initProxy;
     warn(
       `Property "${key}" must be accessed with "$data.${key}" because ` +
       'properties starting with "$" or "_" are not proxied in the Vue instance to ' +
-      'prevent conflicts with Vue internals' +
+      'prevent conflicts with Vue internals. ' +
       'See: https://vuejs.org/v2/api/#data',
       target
     );
@@ -2293,17 +2304,50 @@ function mergeVNodeHook (def, hookKey, hook) {
 
 /*  */
 
+// fixed by xxxxxx (mp properties)
+function extractPropertiesFromVNodeData(data, Ctor, res, context) {
+  const propOptions = Ctor.options.mpOptions && Ctor.options.mpOptions.properties;
+  if (isUndef(propOptions)) {
+    return res
+  }
+  const externalClasses = Ctor.options.mpOptions.externalClasses || [];
+  const {
+    attrs,
+    props
+  } = data;
+  if (isDef(attrs) || isDef(props)) {
+    for (const key in propOptions) {
+      const altKey = hyphenate(key);
+      const result = checkProp(res, props, key, altKey, true) ||
+          checkProp(res, attrs, key, altKey, false);
+      // externalClass
+      if (
+        result &&
+        res[key] &&
+        externalClasses.indexOf(altKey) !== -1 &&
+        context[camelize(res[key])]
+      ) {
+        // 赋值 externalClass 真正的值(模板里 externalClass 的值可能是字符串)
+        res[key] = context[camelize(res[key])];
+      }
+    }
+  }
+  return res
+}
+
 function extractPropsFromVNodeData (
   data,
   Ctor,
-  tag
+  tag,
+  context,// fixed by xxxxxx
 ) {
   // we are only extracting raw values here.
   // validation and default values are handled in the child
   // component itself.
   const propOptions = Ctor.options.props;
   if (isUndef(propOptions)) {
-    return
+    // fixed by xxxxxx
+    return extractPropertiesFromVNodeData(data, Ctor, {}, context)
   }
   const res = {};
   const { attrs, props } = data;
@@ -2330,7 +2374,8 @@ function extractPropsFromVNodeData (
       checkProp(res, attrs, key, altKey, false);
     }
   }
-  return res
+  // fixed by xxxxxx
+  return extractPropertiesFromVNodeData(data, Ctor, res, context)
 }
 
 function checkProp (
@@ -2663,12 +2708,12 @@ function renderList (
   if (Array.isArray(val) || typeof val === 'string') {
     ret = new Array(val.length);
     for (i = 0, l = val.length; i < l; i++) {
-      ret[i] = render(val[i], i);
+      ret[i] = render(val[i], i, i, i); // fixed by xxxxxx
     }
   } else if (typeof val === 'number') {
     ret = new Array(val);
     for (i = 0; i < val; i++) {
-      ret[i] = render(i + 1, i);
+      ret[i] = render(i + 1, i, i, i); // fixed by xxxxxx
     }
   } else if (isObject(val)) {
     if (hasSymbol && val[Symbol.iterator]) {
@@ -2676,7 +2721,7 @@ function renderList (
       const iterator = val[Symbol.iterator]();
       let result = iterator.next();
       while (!result.done) {
-        ret.push(render(result.value, ret.length));
+        ret.push(render(result.value, ret.length, i++, i)); // fixed by xxxxxx
         result = iterator.next();
       }
     } else {
@@ -2684,7 +2729,7 @@ function renderList (
       ret = new Array(keys.length);
       for (i = 0, l = keys.length; i < l; i++) {
         key = keys[i];
-        ret[i] = render(val[key], key, i);
+        ret[i] = render(val[key], key, i, i); // fixed by xxxxxx
       }
     }
   }
@@ -2719,7 +2764,8 @@ function renderSlot (
       }
       props = extend(extend({}, bindObject), props);
     }
-    nodes = scopedSlotFn(props) || fallback;
+    // fixed by xxxxxx app-plus scopedSlot
+    nodes = scopedSlotFn(props, this, props._i) || fallback;
   } else {
     nodes = this.$slots[name] || fallback;
   }
@@ -2945,7 +2991,7 @@ function bindDynamicKeys (baseObj, values) {
     if (typeof key === 'string' && key) {
       baseObj[values[i]] = values[i + 1];
     } else if (key !== '' && key !== null) {
-      // null is a speical value for explicitly removing a binding
+      // null is a special value for explicitly removing a binding
       warn(
         `Invalid value for dynamic directive argument (expected string or null): ${key}`,
         this
@@ -3166,6 +3212,8 @@ const componentVNodeHooks = {
   insert (vnode) {
     const { context, componentInstance } = vnode;
     if (!componentInstance._isMounted) {
+      callHook(componentInstance, 'onServiceCreated');
+      callHook(componentInstance, 'onServiceAttached');
       componentInstance._isMounted = true;
       callHook(componentInstance, 'mounted');
     }
@@ -3255,7 +3303,7 @@ function createComponent (
   }
 
   // extract props
-  const propsData = extractPropsFromVNodeData(data, Ctor, tag);
+  const propsData = extractPropsFromVNodeData(data, Ctor, tag, context); // fixed by xxxxxx
 
   // functional component
   if (isTrue(Ctor.options.functional)) {
@@ -3437,6 +3485,12 @@ function _createElement (
     ns = (context.$vnode && context.$vnode.ns) || config.getTagNamespace(tag);
     if (config.isReservedTag(tag)) {
       // platform built-in elements
+      if (isDef(data) && isDef(data.nativeOn)) {
+        warn(
+          `The .native modifier for v-on is only valid on components but it was used on <${tag}>.`,
+          context
+        );
+      }
       vnode = new VNode(
         config.parsePlatformTagName(tag), data, children,
         undefined, undefined, context
@@ -3560,7 +3614,7 @@ function renderMixin (Vue) {
     // render self
     let vnode;
     try {
-      // There's no need to maintain a stack becaues all render fns are called
+      // There's no need to maintain a stack because all render fns are called
       // separately from one another. Nested component's render fns are called
       // when parent component is patched.
       currentRenderingInstance = vm;
@@ -4099,6 +4153,9 @@ function mountComponent (
   // manually mounted instance, call mounted on self
   // mounted is called for render-created child components in its inserted hook
   if (vm.$vnode == null) {
+    // fixed by xxxxxx
+    callHook(vm, 'onServiceCreated');
+    callHook(vm, 'onServiceAttached');
     vm._isMounted = true;
     callHook(vm, 'mounted');
   }
@@ -4167,7 +4224,10 @@ function updateChildComponent (
     // keep a copy of raw propsData
     vm.$options.propsData = propsData;
   }
-
+  
+  // fixed by xxxxxx update properties(mp runtime)
+  vm._$updateProperties && vm._$updateProperties(vm);
+  
   // update listeners
   listeners = listeners || emptyObject;
   const oldListeners = vm.$options._parentListeners;
@@ -4865,7 +4925,7 @@ function createComputedGetter (key) {
       if (watcher.dirty) {
         watcher.evaluate();
       }
-      if (Dep.target) {
+      if (Dep.SharedObject.target) {// fixed by xxxxxx
         watcher.depend();
       }
       return watcher.value
@@ -5469,7 +5529,7 @@ Object.defineProperty(Vue, 'FunctionalRenderContext', {
   value: FunctionalRenderContext
 });
 
-Vue.version = '2.6.10';
+Vue.version = '2.6.11';
 
 /*  */
 
@@ -6141,7 +6201,7 @@ function createPatchFunction (backend) {
     }
   }
 
-  function removeVnodes (parentElm, vnodes, startIdx, endIdx) {
+  function removeVnodes (vnodes, startIdx, endIdx) {
     for (; startIdx <= endIdx; ++startIdx) {
       const ch = vnodes[startIdx];
       if (isDef(ch)) {
@@ -6252,7 +6312,7 @@ function createPatchFunction (backend) {
       refElm = isUndef(newCh[newEndIdx + 1]) ? null : newCh[newEndIdx + 1].elm;
       addVnodes(parentElm, refElm, newCh, newStartIdx, newEndIdx, insertedVnodeQueue);
     } else if (newStartIdx > newEndIdx) {
-      removeVnodes(parentElm, oldCh, oldStartIdx, oldEndIdx);
+      removeVnodes(oldCh, oldStartIdx, oldEndIdx);
     }
   }
 
@@ -6344,7 +6404,7 @@ function createPatchFunction (backend) {
         if (isDef(oldVnode.text)) nodeOps.setTextContent(elm, '');
         addVnodes(elm, null, ch, 0, ch.length - 1, insertedVnodeQueue);
       } else if (isDef(oldCh)) {
-        removeVnodes(elm, oldCh, 0, oldCh.length - 1);
+        removeVnodes(oldCh, 0, oldCh.length - 1);
       } else if (isDef(oldVnode.text)) {
         nodeOps.setTextContent(elm, '');
       }
@@ -6571,7 +6631,7 @@ function createPatchFunction (backend) {
 
         // destroy old node
         if (isDef(parentElm)) {
-          removeVnodes(parentElm, [oldVnode], 0, 0);
+          removeVnodes([oldVnode], 0, 0);
         } else if (isDef(oldVnode.tag)) {
           invokeDestroyHook(oldVnode);
         }
@@ -6707,6 +6767,72 @@ var baseModules = [
 
 /*  */
 
+function findWxsProps(wxsProps, attrs) {
+  const ret = {};
+  Object.keys(wxsProps).forEach(name => {
+    if (attrs[name]) {
+      ret[wxsProps[name]] = attrs[name];
+      delete attrs[name];
+    }
+  });
+  return ret
+}
+
+function updateWxsProps(oldVnode, vnode) {
+  if (
+    isUndef(oldVnode.data.wxsProps) &&
+    isUndef(vnode.data.wxsProps)
+  ) {
+    return
+  }
+
+  let oldWxsWatches = oldVnode.$wxsWatches;
+  const wxsPropsKey = Object.keys(vnode.data.wxsProps);
+  if (!oldWxsWatches && !wxsPropsKey.length) {
+    return
+  }
+
+  if (!oldWxsWatches) {
+    oldWxsWatches = {};
+  }
+
+  const wxsProps = findWxsProps(vnode.data.wxsProps, vnode.data.attrs);
+  const context = vnode.context;
+
+  vnode.$wxsWatches = {};
+
+  Object.keys(wxsProps).forEach(prop => {
+    // app-plus view wxs
+    let watchProp = prop;
+    if (vnode.context.wxsProps) {
+      watchProp = 'wxsProps.' + prop;
+    }
+
+    vnode.$wxsWatches[prop] = oldWxsWatches[prop] || vnode.context.$watch(watchProp, function(newVal, oldVal) {
+      wxsProps[prop](
+        newVal,
+        oldVal,
+        context.$getComponentDescriptor(context, true),
+        vnode.elm.__vue__.$getComponentDescriptor(vnode.elm.__vue__, false)
+      );
+    });
+  });
+
+  Object.keys(oldWxsWatches).forEach(oldName => {
+    if (!vnode.$wxsWatches[oldName]) {
+      oldWxsWatches[oldName]();
+      delete oldWxsWatches[oldName];
+    }
+  });
+}
+
+var wxs = {
+  create: updateWxsProps,
+  update: updateWxsProps
+};
+
+/*  */
+
 function updateAttrs (oldVnode, vnode) {
   const opts = vnode.componentOptions;
   if (isDef(opts) && opts.Ctor.options.inheritAttrs === false) {
@@ -6820,7 +6946,9 @@ function updateClass (oldVnode, vnode) {
         isUndef(oldData.staticClass) &&
         isUndef(oldData.class)
       )
-    )
+    ) &&
+    isUndef(el.__wxsAddClass) &&
+    isUndef(el.__wxsRemoveClass) // fixed by xxxxxx __wxsClass
   ) {
     return
   }
@@ -6833,6 +6961,39 @@ function updateClass (oldVnode, vnode) {
     cls = concat(cls, stringifyClass(transitionClass));
   }
 
+  // fixed by xxxxxx __wxsClass
+  if(Array.isArray(el.__wxsRemoveClass) && el.__wxsRemoveClass.length){
+    const clsArr = cls.split(/\s+/);
+    el.__wxsRemoveClass.forEach(removeCls=>{
+      const clsIndex = clsArr.findIndex(cls => cls === removeCls);
+      if (clsIndex !== -1) {
+        clsArr.splice(clsIndex, 1);
+      }
+    });
+    cls = clsArr.join(' ');
+    el.__wxsRemoveClass.length = 0;
+  }
+
+  if (el.__wxsAddClass) {
+    // 去重
+    const clsArr = cls.split(/\s+/).concat(el.__wxsAddClass.split(/\s+/));
+    const clsObj = Object.create(null);
+    clsArr.forEach(cls => {
+      cls && (clsObj[cls] = 1);
+    });
+    cls = Object.keys(clsObj).join(' ');
+  }
+  // fixed by xxxxxx (仅 h5 平台 extenalClasses)
+  const context = vnode.context;
+  const externalClasses = context.$options.mpOptions &&
+    context.$options.mpOptions.externalClasses;
+  if (Array.isArray(externalClasses)) {
+    externalClasses.forEach(externalClass => {
+      // 简单替换 externalClass
+      const externalClassValue = context[camelize(externalClass)];
+      externalClassValue && (cls = cls.replace(externalClass, externalClassValue));
+    });
+  }
   // set the class
   if (cls !== el._prevClass) {
     el.setAttribute('class', cls);
@@ -7849,15 +8010,16 @@ const normalize = cached(function (prop) {
 function updateStyle (oldVnode, vnode) {
   const data = vnode.data;
   const oldData = oldVnode.data;
-
+  const el = vnode.elm;
   if (isUndef(data.staticStyle) && isUndef(data.style) &&
-    isUndef(oldData.staticStyle) && isUndef(oldData.style)
+    isUndef(oldData.staticStyle) && isUndef(oldData.style) &&
+    isUndef(el.__wxsStyle) // fixed by xxxxxx __wxsStyle
   ) {
     return
   }
 
   let cur, name;
-  const el = vnode.elm;
+  
   const oldStaticStyle = oldData.staticStyle;
   const oldStyleBinding = oldData.normalizedStyle || oldData.style || {};
 
@@ -7874,6 +8036,12 @@ function updateStyle (oldVnode, vnode) {
     : style;
 
   const newStyle = getStyle(vnode, true);
+
+  // fixed by xxxxxx __wxsStyle
+  if(el.__wxsStyle){
+    Object.assign(vnode.data.normalizedStyle, el.__wxsStyle);
+    Object.assign(newStyle, el.__wxsStyle);
+  }
 
   for (name in oldStyle) {
     if (isUndef(newStyle[name])) {
@@ -8465,6 +8633,7 @@ var transition = inBrowser ? {
 } : {};
 
 var platformModules = [
+  wxs,// fixed by xxxxxx wxs props
   attrs,
   klass,
   events,
@@ -9074,7 +9243,7 @@ Vue.prototype.__call_hook = function(hook, args) {
       }
   }
   if (vm._hasHookEvent) {
-      vm.$emit('hook:' + hook);
+      vm.$emit('hook:' + hook, args);
   }
   popTarget();
   return ret
@@ -9265,8 +9434,8 @@ var he = {
 
 /*  */
 
-const isUnaryTag = makeMap(
-  'area,base,br,col,embed,frame,hr,img,input,isindex,keygen,' +
+const isUnaryTag = makeMap(// fixed by xxxxxx add image
+  'image,area,base,br,col,embed,frame,hr,img,input,isindex,keygen,' +
   'link,meta,param,source,track,wbr'
 );
 
@@ -9299,7 +9468,7 @@ const startTagOpen = new RegExp(`^<${qnameCapture}`);
 const startTagClose = /^\s*(\/?)>/;
 const endTag = new RegExp(`^<\\/${qnameCapture}[^>]*>`);
 const doctype = /^<!DOCTYPE [^>]+>/i;
-// #7298: escape - to avoid being pased as HTML comment when inlined in page
+// #7298: escape - to avoid being passed as HTML comment when inlined in page
 const comment = /^<!\--/;
 const conditionalComment = /^<!\[/;
 
@@ -9511,7 +9680,9 @@ function parseHTML (html, options) {
         : options.shouldDecodeNewlines;
       attrs[i] = {
         name: args[1],
-        value: decodeAttr(value, shouldDecodeNewlines)
+        value: decodeAttr(value, shouldDecodeNewlines),
+        // fixed by xxxxxx 标记 Boolean Attribute
+        bool: args[3] === undefined && args[4] === undefined && args[5] === undefined
       };
       if (options.outputSourceRange) {
         attrs[i].start = args.start + args[0].match(/^\s*/).length;
@@ -9584,7 +9755,7 @@ function parseHTML (html, options) {
 /*  */
 
 const onRE = /^@|^v-on:/;
-const dirRE = /^v-|^@|^:/;
+const dirRE = /^v-|^@|^:|^#/;
 const forAliasRE = /([\s\S]*?)\s+(?:in|of)\s+([\s\S]*)/;
 const forIteratorRE = /,([^,\}\]]*)(?:,([^,\}\]]*))?$/;
 const stripParensRE = /^\(|\)$/g;
@@ -9770,6 +9941,7 @@ function parse (
     shouldKeepComment: options.comments,
     outputSourceRange: options.outputSourceRange,
     start (tag, attrs, unary, start, end) {
+
       // check namespace.
       // inherit parent ns if there is one
       const ns = (currentParent && currentParent.ns) || platformGetTagNamespace(tag);
@@ -10208,7 +10380,7 @@ function processSlotContent (el) {
           if (el.parent && !maybeComponent(el.parent)) {
             warn$2(
               `<template v-slot> can only appear at the root level inside ` +
-              `the receiving the component`,
+              `the receiving component`,
               el
             );
           }
@@ -10532,6 +10704,10 @@ function preTransformNode (el, options) {
       return
     }
 
+    if(process.env.UNI_PLATFORM !== 'h5'){ // fixed by xxxxxx  非 h5 平台 type 不会是 checkbox,radio
+      return
+    }
+
     let typeBinding;
     if (map[':type'] || map['v-bind:type']) {
       typeBinding = getBindingAttr(el, 'type');
@@ -10595,7 +10771,38 @@ var model$1 = {
   preTransformNode
 };
 
+/*  */
+
+function transformNode$2(el) {
+  const list = el.attrsList;
+  for (let i = list.length - 1; i >= 0; i--) {
+    const name = list[i].name;
+    if (name.indexOf(':change:') === 0 || name.indexOf('v-bind:change:') === 0) {
+      const nameArr = name.split(':');
+      const wxsProp = nameArr[nameArr.length - 1];
+      const wxsPropBinding = el.attrsMap[':' + wxsProp] || el.attrsMap['v-bind:' + wxsProp];
+      if (wxsPropBinding) {
+        (el.wxsPropBindings || (el.wxsPropBindings = {}))['change:' + wxsProp] = wxsPropBinding;
+      }
+    }
+  }
+}
+
+function genData$2(el) {
+  let data = '';
+  if (el.wxsPropBindings) {
+    data += `wxsProps:${JSON.stringify(el.wxsPropBindings)},`;
+  }
+  return data
+}
+
+var wxs$1 = {
+  transformNode: transformNode$2,
+  genData: genData$2
+};
+
 var modules$1 = [
+  wxs$1,// fixed by xxxxxx
   klass$1,
   style$1,
   model$1
@@ -10767,7 +10974,7 @@ function isDirectChildOfTemplateFor (node) {
 
 /*  */
 
-const fnExpRE = /^([\w$_]+|\([^)]*?\))\s*=>|^function\s*(?:[\w$]+)?\s*\(/;
+const fnExpRE = /^([\w$_]+|\([^)]*?\))\s*=>|^function(?:\s+[\w$]+)?\s*\(/;
 const fnInvokeRE = /\([^)]*?\);*$/;
 const simplePathRE = /^[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*|\['[^']*?']|\["[^"]*?"]|\[\d+]|\[[A-Za-z_$][\w$]*])*$/;
 
@@ -11029,7 +11236,7 @@ function genElement (el, state) {
     } else {
       let data;
       if (!el.plain || (el.pre && state.maybeComponent(el))) {
-        data = genData$2(el, state);
+        data = genData$3(el, state);
       }
 
       const children = el.inlineTemplate ? null : genChildren(el, state, true);
@@ -11145,7 +11352,7 @@ function genFor (
   const alias = el.alias;
   const iterator1 = el.iterator1 ? `,${el.iterator1}` : '';
   const iterator2 = el.iterator2 ? `,${el.iterator2}` : '';
-
+  const iterator3 = el.iterator3 ? `,${el.iterator3}` : ''; // fixed by xxxxxx
   if (state.maybeComponent(el) &&
     el.tag !== 'slot' &&
     el.tag !== 'template' &&
@@ -11162,12 +11369,12 @@ function genFor (
 
   el.forProcessed = true; // avoid recursion
   return `${altHelper || '_l'}((${exp}),` +
-    `function(${alias}${iterator1}${iterator2}){` +
+    `function(${alias}${iterator1}${iterator2}${iterator3}){` + // fixed by xxxxxx
       `return ${(altGen || genElement)(el, state)}` +
     '})'
 }
 
-function genData$2 (el, state) {
+function genData$3 (el, state) {
   let data = '{';
 
   // directives first.
@@ -11524,7 +11731,7 @@ function genComponent (
   state
 ) {
   const children = el.inlineTemplate ? null : genChildren(el, state, true);
-  return `_c(${componentName},${genData$2(el, state)}${
+  return `_c(${componentName},${genData$3(el, state)}${
     children ? `,${children}` : ''
   })`
 }
@@ -11592,6 +11799,8 @@ function checkNode (node, warn) {
           const range = node.rawAttrsMap[name];
           if (name === 'v-for') {
             checkFor(node, `v-for="${value}"`, warn, range);
+          } else if (name === 'v-slot' || name[0] === '#') {
+            checkFunctionParameterExpression(value, `${name}="${value}"`, warn, range);
           } else if (onRE.test(name)) {
             checkEvent(value, `${name}="${value}"`, warn, range);
           } else {
@@ -11611,9 +11820,9 @@ function checkNode (node, warn) {
 }
 
 function checkEvent (exp, text, warn, range) {
-  const stipped = exp.replace(stripStringRE, '');
-  const keywordMatch = stipped.match(unaryOperatorsRE);
-  if (keywordMatch && stipped.charAt(keywordMatch.index - 1) !== '$') {
+  const stripped = exp.replace(stripStringRE, '');
+  const keywordMatch = stripped.match(unaryOperatorsRE);
+  if (keywordMatch && stripped.charAt(keywordMatch.index - 1) !== '$') {
     warn(
       `avoid using JavaScript unary operator as property name: ` +
       `"${keywordMatch[0]}" in expression ${text.trim()}`,
@@ -11665,6 +11874,19 @@ function checkExpression (exp, text, warn, range) {
         range
       );
     }
+  }
+}
+
+function checkFunctionParameterExpression (exp, text, warn, range) {
+  try {
+    new Function(exp, '');
+  } catch (e) {
+    warn(
+      `invalid function parameter expression: ${e.message} in\n\n` +
+      `    ${exp}\n\n` +
+      `  Raw expression: ${text.trim()}\n`,
+      range
+    );
   }
 }
 

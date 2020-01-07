@@ -48,6 +48,7 @@ export default function initUni (uni, nvue, plus, BroadcastChannel) {
       },
       set (target, name, value) {
         target[name] = value
+        return true
       }
     })
   }

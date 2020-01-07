@@ -252,6 +252,10 @@ describe('mp:compiler-extra', () => {
   })
 
   it('generate events inside v-for', () => {
+    assertCodegen(
+      `<view v-for="item in dataList" :key="item.id" @click="click1(item, 1);click2(item, 2);"/>`,
+      `<block wx:for="{{dataList}}" wx:for-item="item" wx:for-index="__i0__" wx:key="id"><view data-event-opts="{{[['tap',[['click1',['$0',1],[[['dataList','id',item.id]]]],['click2',['$0',2],[[['dataList','id',item.id]]]]]]]}}" bindtap="__e"></view></block>`
+    )
     // TODO vue的数字 item 是从1，小程序是从0，后续考虑抹平差异
     assertCodegen(
       `<view>1<view  v-for="item in items" :key="item"><input v-for="item1 in item" :key="item1" @input="handle" @click="e=>count++"></view></view>`,
@@ -306,6 +310,14 @@ describe('mp:compiler-extra', () => {
     assertCodegen(
       `<view class="input-list" v-for="(item,index) in dataList" :key="item.id"><input v-model.trim="dataList2[index].val" /></view>`,
       `<block wx:for="{{dataList}}" wx:for-item="item" wx:for-index="index" wx:key="id"><view class="input-list"><input data-event-opts="{{[['input',[['__set_model',['$0','val','$event',['trim']],['dataList2.'+index+'']]]],['blur',[['$forceUpdate']]]]}}" value="{{dataList2[index].val}}" bindinput="__e" bindblur="__e"/></view></block>`
+    )
+    assertCodegen(
+      ` <view>
+        <view v-for="item in list[idx]" :key="item.id" class="mid-item-title" @click="m1(item)">
+          <view class="mid-item-icon" @click.stop="m2(item)"></view>
+        </view>
+        </view>`,
+      `<view><block wx:for="{{list[idx]}}" wx:for-item="item" wx:for-index="__i0__" wx:key="id"><view data-event-opts="{{[['tap',[['m1',['$0'],[[['list.'+idx+'','id',item.id]]]]]]]}}" class="mid-item-title" bindtap="__e"><view data-event-opts="{{[['tap',[['m2',['$0'],[[['list.'+idx+'','id',item.id]]]]]]]}}" class="mid-item-icon" catchtap="__e"></view></view></block></view>`
     )
   })
 
@@ -581,6 +593,11 @@ describe('mp:compiler-extra', () => {
     )
   })
   it('generate event ', () => {
+    assertCodegen(
+      `<view @/>`,
+      `<view></view>`
+    )
+
     assertCodegen(
       `<text v-for="item in items['metas']" :key="item['id']" class="title" @tap="handle(item['id'],item['title'])">{{item.title}}</text>`,
       `<block wx:for="{{items['metas']}}" wx:for-item="item" wx:for-index="__i0__" wx:key="id"><text data-event-opts="{{[['tap',[['handle',['$0','$1'],[[['items.metas','id',item['id'],'id']],[['items.metas','id',item['id'],'title']]]]]]]}}" class="title" bindtap="__e">{{item.title}}</text></block>`

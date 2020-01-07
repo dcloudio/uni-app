@@ -1,19 +1,26 @@
 {
-    "name": "@dcloudio/uni-cli-shared",
-    "version": "0.2.989",
-    "description": "uni-cli-shared",
-    "main": "lib/index.js",
-    "files": [
-        "lib"
-    ],
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "author": "fxy060608",
-    "license": "Apache-2.0",
-    "dependencies": {
-        "hash-sum": "^1.0.2",
-        "strip-json-comments": "^2.0.1"
-    },
-    "gitHead": "08ea04b669e93f0db3acb2dfa38138298edd5789"
+  "name": "@dcloudio/uni-cli-shared",
+  "version": "2.0.0-25120200103006",
+  "description": "uni-cli-shared",
+  "main": "lib/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/uni-cli-shared"
+  },
+  "files": [
+    "lib",
+    "template",
+    "components"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "fxy060608",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "hash-sum": "^1.0.2",
+    "strip-json-comments": "^2.0.1"
+  },
+  "gitHead": "63b678965212cc805e0884bb7d4a2ac7702b3191"
 }

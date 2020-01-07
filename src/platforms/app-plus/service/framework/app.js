@@ -5,16 +5,16 @@ import {
 import initOn from 'uni-core/service/bridge/on'
 
 import {
+  NETWORK_TYPES
+} from '../api/constants'
+
+import {
   getCurrentPages
 } from './page'
 
 import {
-  registerPlusMessage
+  consumePlusMessage
 } from './plus-message'
-
-import {
-  isTabBarPage
-} from '../api/util'
 
 import tabBar from './tab-bar'
 
@@ -22,30 +22,44 @@ import {
   publish
 } from '../bridge'
 
+import {
+  initSubscribeHandlers
+} from './subscribe-handlers'
+
+import {
+  perf
+} from './perf'
+
+import {
+  backbuttonListener
+} from './backbutton'
+
 let appCtx
 
-const NETWORK_TYPES = [
-  'unknown',
-  'none',
-  'ethernet',
-  'wifi',
-  '2g',
-  '3g',
-  '4g'
-]
+const defaultApp = {
+  globalData: {}
+}
 
-export function getApp () {
-  return appCtx
+export function getApp ({
+  allowDefault = false
+} = {}) {
+  if (appCtx) { // 真实的 App 已初始化
+    return appCtx
+  }
+  if (allowDefault) { // 返回默认实现
+    return defaultApp
+  }
+  console.error(
+    '[warn]: getApp() 操作失败，v3模式加速了首页 nvue 的启动速度，当在首页 nvue 中使用 getApp() 不一定可以获取真正的 App 对象。详情请参考：https://uniapp.dcloud.io/collocation/frame/window?id=getapp'
+  )
 }
 
 function initGlobalListeners () {
   const emit = UniServiceJSBridge.emit
 
-  plus.key.addEventListener('backbutton', () => {
-    // TODO uni?
-    uni.navigateBack({
-      from: 'backbutton'
-    })
+  // splashclosed 时开始监听 backbutton
+  plus.globalEvent.addEventListener('splashclosed', () => {
+    plus.key.addEventListener('backbutton', backbuttonListener)
   })
 
   plus.globalEvent.addEventListener('pause', () => {
@@ -69,6 +83,21 @@ function initGlobalListeners () {
       height: event.height
     })
   })
+
+  plus.globalEvent.addEventListener('plusMessage', onPlusMessage)
+
+  // nvue webview post message
+  plus.globalEvent.addEventListener('WebviewPostMessage', onPlusMessage)
+}
+
+function onPlusMessage (e) {
+  if (process.env.NODE_ENV !== 'production') {
+    console.log('[plusMessage]:[' + Date.now() + ']' + JSON.stringify(e.data))
+  }
+  if (e.data && e.data.type) {
+    const type = e.data.type
+    consumePlusMessage(type, e.data.args || {})
+  }
 }
 
 function initAppLaunch (appVm) {
@@ -87,32 +116,63 @@ function initTabBar () {
     return
   }
 
-  const currentTab = isTabBarPage(__uniConfig.entryPagePath)
-  if (currentTab) {
+  __uniConfig.tabBar.selected = 0
+
+  const selected = __uniConfig.tabBar.list.findIndex(page => page.pagePath === __uniConfig.entryPagePath)
+  if (selected !== -1) {
     // 取当前 tab 索引值
-    __uniConfig.tabBar.selected = __uniConfig.tabBar.list.indexOf(currentTab)
-    // 如果真实的首页与 condition 都是 tabbar，无需启用 realEntryPagePath 机制
-    if (__uniConfig.realEntryPagePath && isTabBarPage(__uniConfig.realEntryPagePath)) {
-      delete __uniConfig.realEntryPagePath
-    }
+    __uniConfig.tabBar.selected = selected
   }
 
-  __uniConfig.__ready__ = true
-
-  const onLaunchWebviewReady = function onLaunchWebviewReady () {
-    const tabBarView = tabBar.init(__uniConfig.tabBar, (item) => {
-      uni.switchTab({
-        url: '/' + item.pagePath,
-        openType: 'switchTab',
-        from: 'tabbar'
-      })
+  tabBar.init(__uniConfig.tabBar, (item, index) => {
+    uni.switchTab({
+      url: '/' + item.pagePath,
+      openType: 'switchTab',
+      from: 'tabBar',
+      success () {
+        UniServiceJSBridge.emit('onTabItemTap', {
+          index,
+          text: item.text,
+          pagePath: item.pagePath
+        })
+      }
     })
-    tabBarView && plus.webview.getLaunchWebview().append(tabBarView)
+  })
+}
+
+function initEntryPage () {
+  const argsJsonStr = plus.runtime.arguments
+  if (!argsJsonStr) {
+    return
   }
-  if (plus.webview.getLaunchWebview()) {
-    onLaunchWebviewReady()
-  } else {
-    registerPlusMessage('UniWebviewReady-' + plus.runtime.appid, onLaunchWebviewReady, false)
+
+  let entryPagePath
+  let entryPageQuery
+
+  try {
+    const args = JSON.parse(argsJsonStr)
+    entryPagePath = args.path || args.pathName
+    entryPageQuery = (args.query ? ('?' + args.query) : '')
+  } catch (e) {}
+  if (!entryPagePath || entryPagePath === __uniConfig.entryPagePath) {
+    return
+  }
+
+  const entryRoute = '/' + entryPagePath
+  const routeOptions = __uniRoutes.find(route => route.path === entryRoute)
+  if (!routeOptions) {
+    return
+  }
+
+  if (!routeOptions.meta.isTabBar) {
+    __uniConfig.realEntryPagePath = __uniConfig.realEntryPagePath || __uniConfig.entryPagePath
+  }
+
+  __uniConfig.entryPagePath = entryPagePath
+  __uniConfig.entryPageQuery = entryPageQuery
+
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(`[uni-app] entryPagePath(${entryPagePath + entryPageQuery})`)
   }
 }
 
@@ -123,16 +183,28 @@ export function registerApp (appVm) {
 
   appCtx = appVm
 
-  appCtx.globalData = appVm.$options.globalData || {}
+  Object.assign(appCtx, defaultApp) // 拷贝默认实现
+
+  const globalData = appVm.$options.globalData || {}
+  // merge globalData
+  appCtx.globalData = Object.assign(globalData, appCtx.globalData)
 
   initOn(UniServiceJSBridge.on, {
     getApp,
     getCurrentPages
   })
 
-  initAppLaunch(appVm)
+  initEntryPage()
+
+  initTabBar()
 
   initGlobalListeners()
 
-  initTabBar()
+  initSubscribeHandlers()
+
+  initAppLaunch(appVm)
+
+  __uniConfig.ready = true
+
+  process.env.NODE_ENV !== 'production' && perf('registerApp')
 }

@@ -19,20 +19,20 @@ uni-app 已将常用的组件、JS API 封装到框架中，开发者按照 uni-
 * <span style="color:#859900;"> #ifndef</span>：if not defined 除了某平台均存在
 * <b style="color:#268BD2"> %PLATFORM%</b>：平台名称
 
-<table><thead><tr><th>条件编译写法</th><th>说明</th></tr></thead><tbody><tr><td><div class="code"><span class="token comment"><span style="color:#859900;"> #ifdef</span><b style="color:#268BD2"> APP-PLUS</b></span><br>需条件编译的代码<br><span class="token comment"> <span style="color:#859900;"> #endif</span></span></div></td><td>仅出现在 5+App 平台下的代码</td></tr><tr><td><div class="code"><span class="token comment"> <span style="color:#859900;"> #ifndef</span><b style="color:#268BD2"> H5</b></span><br>需条件编译的代码<br><span class="token comment"> <span style="color:#859900;"> #endif</span></span></div></td><td>除了 H5 平台，其它平台均存在的代码</td></tr><tr><td><div class="code"><span class="token comment"> <span style="color:#859900;"> #ifdef</span><b style="color:#268BD2"> H5</b></span><span style="color:#859900;"> || </span><b style="color:#268BD2">MP-WEIXIN</b><br>需条件编译的代码<br><span class="token comment"> <span style="color:#859900;"> #endif</span></span></div></td><td>仅在 H5 平台或微信小程序平台存在的代码</td></tr></tbody></table>
+<table><thead><tr><th>条件编译写法</th><th>说明</th></tr></thead><tbody><tr><td><div class="code"><span class="token comment"><span style="color:#859900;"> #ifdef</span><b style="color:#268BD2"> APP-PLUS</b></span><br>需条件编译的代码<br><span class="token comment"> <span style="color:#859900;"> #endif</span></span></div></td><td>仅出现在 App 平台下的代码</td></tr><tr><td><div class="code"><span class="token comment"> <span style="color:#859900;"> #ifndef</span><b style="color:#268BD2"> H5</b></span><br>需条件编译的代码<br><span class="token comment"> <span style="color:#859900;"> #endif</span></span></div></td><td>除了 H5 平台，其它平台均存在的代码</td></tr><tr><td><div class="code"><span class="token comment"> <span style="color:#859900;"> #ifdef</span><b style="color:#268BD2"> H5</b></span><span style="color:#859900;"> || </span><b style="color:#268BD2">MP-WEIXIN</b><br>需条件编译的代码<br><span class="token comment"> <span style="color:#859900;"> #endif</span></span></div></td><td>仅在 H5 平台或微信小程序平台存在的代码</td></tr></tbody></table>
 
 
 <b style="color:#268BD2"> %PLATFORM%</b> **可取值如下：**
 
 |值|平台|参考文档|
 |:-|:-|:-|
-|APP-PLUS|5+App|[HTML5+ 规范](http://www.html5plus.org/doc/)|
-|APP-PLUS-NVUE|5+App nvue|[Weex 规范](https://weex.apache.org/cn/guide/)|
+|APP-PLUS|App|[HTML5+ 规范](http://www.html5plus.org/doc/)|
+|APP-PLUS-NVUE|App nvue|[Weex 规范](https://weex.apache.org/cn/guide/)|
 |H5|H5||
 |MP-WEIXIN|微信小程序|[微信小程序](https://developers.weixin.qq.com/miniprogram/dev/api/)|
 |MP-ALIPAY|支付宝小程序|[支付宝小程序](https://docs.alipay.com/mini/developer/getting-started)|
 |MP-BAIDU|百度小程序|[百度小程序](https://smartprogram.baidu.com/docs/develop/tutorial/codedir/)|
-|MP-TOUTIAO|头条小程序|[头条小程序](https://developer.toutiao.com/docs/framework/)|
+|MP-TOUTIAO|头条小程序|[头条小程序](https://developer.toutiao.com/dev/cn/mini-app/develop/framework/basic-reference/introduction)|
 |MP-QQ|QQ小程序|	（目前仅cli版支持）|
 |MP|微信小程序/支付宝小程序/百度小程序/头条小程序/QQ小程序|&nbsp;|
 
@@ -54,7 +54,7 @@ uni-app 已将常用的组件、JS API 封装到框架中，开发者按照 uni-
 <span class="token comment">//<span style="color:#859900;"> #endif</span></span></code></pre>
 
 
-示例，如下代码仅在 5+App 下出现:
+示例，如下代码仅在 App 下出现:
 
 ![](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/img/platform-7.png)
 
@@ -64,7 +64,7 @@ uni-app 已将常用的组件、JS API 封装到框架中，开发者按照 uni-
 
 除了支持单个平台的条件编译外，还支持**多平台**同时编译，使用 || 来分隔平台名称。
 
-示例，如下代码会在 5+App 和 H5 平台上出现：
+示例，如下代码会在 App 和 H5 平台上出现：
 
 ![](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/img/platform-5.png)
 
@@ -93,7 +93,7 @@ uni-app 已将常用的组件、JS API 封装到框架中，开发者按照 uni-
 ![](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/img/platform-3.png)
 
 ### pages.json 的条件编译
-下面的页面，只有运行至 5+App 时才会编译进去。
+下面的页面，只有运行至 App 时才会编译进去。
 
 ![](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/img/platform-4.png)
 

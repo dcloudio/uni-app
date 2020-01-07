@@ -1,9 +1,9 @@
 
 ```uni-app``` 是一个使用 [Vue.js](https://vuejs.org/) 开发所有前端应用的框架，开发者编写一套代码，可发布到iOS、Android、H5、以及各种小程序（微信/支付宝/百度/头条/QQ/钉钉）等多个平台。
 
-即使不跨端，```uni-app```同时也是更好的小程序开发框架。详见[评测](https://ask.dcloud.net.cn/article/35947)
+`DCloud`公司拥有380万开发者，几十万应用案例、8.5亿手机端用户，数千款uni-app插件、70+微信/qq群。阿里小程序工具官方内置uni-app（[详见](https://docs.alipay.com/mini/ide/0.70-stable)），腾讯课堂官方为uni-app录制培训课程（[详见](https://ask.dcloud.net.cn/article/35640)），开发者可以放心选择。
 
-`DCloud`公司拥有340万开发者用户，旗下```uni-app```有5万+案例、600+插件、50+微信/qq群、更高的百度指数，可以放心选择。
+`uni-app`在手，做啥都不愁。即使不跨端，```uni-app```也是更好的小程序开发框架（[详见](https://ask.dcloud.net.cn/article/35947)）、更好的App跨平台框架、更方便的H5开发框架。不管领导安排什么样的项目，你都可以快速交付，不需要转换开发思维、不需要更改开发习惯。
 
 <div class="quick">
     <h3 id="快速体验"><a href="/README?id=%e5%bf%ab%e9%80%9f%e4%bd%93%e9%aa%8c" data-id="快速体验" class="anchor"><span>快速体验</span></a></h3>
@@ -41,19 +41,19 @@
         </a>
         <a href="//m3w.cn/uniapp" target="_blank" class="clear-style barcode-view">
 			<div class="barcode-img-box">
-				<img src="http://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/mp-toutiao.png" width="160"/>
+				<img src="https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/mp-toutiao.png" width="160"/>
 			</div>
         	<b>头条小程序版</b>
         </a>
         <a href="//m3w.cn/uniapp" target="_blank" class="clear-style barcode-view">
 			<div class="barcode-img-box">
-				<img src="http://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/hello-uni-qq.png" width="160"/>
+				<img src="https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/hello-uni-qq.png" width="160"/>
 			</div>
         	<b>QQ小程序版</b>
         </a>
     </div>
     <p>
-        <em>注：Appstore、百度、头条平台不能提交简单demo，故补充了一些其他功能。</em></br>
+        <em>注：某些平台不能提交简单demo，故补充了一些其他功能；hello uni-app示例代码可从[github](https://github.com/dcloudio/hello-uniapp)获取</em></br>
     </p>
 </div>
 
@@ -61,7 +61,7 @@
 
 我们精心准备了一个简单的十分钟介绍视频，方便你快速了解```uni-app```的主要特征：
 
-<video id="video" onplay="videoPlay()" preload="none" controls="controls" width="100%" poster="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/poster.png" src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/uni-app20190127.mp4"></video>
+<video id="video" onplay="videoPlay()" preload="none" controls="controls" width="100%" poster="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/poster.png" src="https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/%E7%AC%AC1%E8%AE%B2%EF%BC%88uni-app%E4%BA%A7%E5%93%81%E4%BB%8B%E7%BB%8D%EF%BC%89-%20DCloud%E5%AE%98%E6%96%B9%E8%A7%86%E9%A2%91%E6%95%99%E7%A8%8B@20181126.mp4"></video>
 
 ### 为什么要选择uni-app？
 
@@ -74,7 +74,7 @@
       </div>
       <div class="uniapp-home-content-item-header">
         <h5 class="uniapp-home-content-item-title">开发者/案例数量更多</h5>
-        <p class="uniapp-home-content-item-text">5万+案例、600+插件、50+微信/qq群、更高的百度指数</p>
+        <p class="uniapp-home-content-item-text">10万+案例、uni统计月活过2亿、70+微信/qq群、更高的百度指数</p>
         <p class="uniapp-home-content-item-text">跨端完善度更高，真正落地的提高生产力</p>
       </div>
     </div>
@@ -96,7 +96,7 @@
         <h5 class="uniapp-home-content-item-title">性能体验优秀</h5>
         <p class="uniapp-home-content-item-text">体验更好的Hybrid框架，加载新页面速度更快。</p>
         <p class="uniapp-home-content-item-text">App端支持weex原生渲染，可支撑更流畅的用户体验。</p>
-        <p class="uniapp-home-content-item-text">小程序端的性能优于市场其他框架。<a href="https://ask.dcloud.net.cn/article/35947">评测</a></p>
+        <p class="uniapp-home-content-item-text">小程序端的性能优于市场其他框架。<a href="https://ask.dcloud.net.cn/article/35947" target="_blank">评测</a></p>
       </div>
     </div>
     <div class="uniapp-home-content-item">
@@ -105,7 +105,7 @@
       </div>
       <div class="uniapp-home-content-item-header">
         <h5 class="uniapp-home-content-item-title">周边生态丰富</h5>
-        <p class="uniapp-home-content-item-text">丰富的<a href="https://ext.dcloud.net.cn/?orderBy=WeekDownload">插件市场</a>，各种轮子拿来即用。</p>
+        <p class="uniapp-home-content-item-text"><a href="https://ext.dcloud.net.cn/?orderBy=WeekDownload" target="_blank">插件市场</a>数千款插件。</p>
         <p class="uniapp-home-content-item-text">支持NPM、支持小程序组件和SDK、兼容mpvue组件和项目、兼容weex组件。</p>
         <p class="uniapp-home-content-item-text">微信生态的各种sdk可直接用于跨平台App。</p>
       </div>
@@ -150,14 +150,14 @@
 
 从下面```uni-app```功能框架图可看出，```uni-app```在跨平台的过程中，不牺牲平台特色，可优雅的调用平台专有能力，真正做到海纳百川、各取所长。
 
-![](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/uni0124.png)
+![](https://dcloud-img.oss-cn-hangzhou.aliyuncs.com/uni-app/doc/uni0124.png)
 
 ### 一套代码，运行到多个平台
 
 ```uni-app```实现了一套代码，同时运行到多个平台；如下图所示，一套代码，同时运行到iOS模拟器、Android模拟器、H5、微信开发者工具、支付宝小程序Studio、百度开发者工具、字节跳动开发者工具、QQ开发者工具（底部8个终端选项卡代表8个终端模拟器）：
 
-![](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/dev1x8.jpg)
+![](https://dcloud-img.oss-cn-hangzhou.aliyuncs.com/uni-app/doc/dev1x8.jpg)
 
 实际运行效果如下（点击图片可放大）：
 
-![](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/run1x8.jpg)
+![](https://dcloud-img.oss-cn-hangzhou.aliyuncs.com/uni-app/doc/run1x9.jpg)

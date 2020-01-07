@@ -23,6 +23,7 @@ const {
 
 const {
   md5,
+  hasOwn,
   hasModule,
   hashify,
   camelize,
@@ -30,7 +31,8 @@ const {
   removeExt,
   normalizePath,
   getComponentName,
-  convertStaticStyle
+  convertStaticStyle,
+  getTemplatePath
 } = require('./util')
 
 const {
@@ -64,6 +66,7 @@ const {
 module.exports = {
   md5,
   tags,
+  hasOwn,
   getJson,
   parseJson,
   hashify,
@@ -102,6 +105,7 @@ module.exports = {
   parseManifestJson,
   getComponentName,
   convertStaticStyle,
+  getTemplatePath,
   jsPreprocessOptions,
   cssPreprocessOptions,
   htmlPreprocessOptions,

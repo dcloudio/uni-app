@@ -66,6 +66,7 @@ module.exports = function (content, map) {
   } = traverse(parser.parse(content, {
     sourceType: 'module',
     plugins: [
+      'optionalChaining',
       'typescript',
       ['decorators', {
         decoratorsBeforeExport: true

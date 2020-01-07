@@ -41,11 +41,11 @@ function getButton (weex) {
         default: false
       },
       hoverStartTime: {
-        type: Number,
+        type: [Number, String],
         default: 20
       },
       hoverStayTime: {
-        type: Number,
+        type: [Number, String],
         default: 70
       },
       formType: {

@@ -1,12 +1,13 @@
 export const pixelRatio = (function () {
   const canvas = document.createElement('canvas')
+  canvas.height = canvas.width = 0
   const context = canvas.getContext('2d')
   const backingStore = context.backingStorePixelRatio ||
-        context.webkitBackingStorePixelRatio ||
-        context.mozBackingStorePixelRatio ||
-        context.msBackingStorePixelRatio ||
-        context.oBackingStorePixelRatio ||
-        context.backingStorePixelRatio || 1
+    context.webkitBackingStorePixelRatio ||
+    context.mozBackingStorePixelRatio ||
+    context.msBackingStorePixelRatio ||
+    context.oBackingStorePixelRatio ||
+    context.backingStorePixelRatio || 1
   return (window.devicePixelRatio || 1) / backingStore
 })()
 
@@ -158,9 +159,7 @@ if (pixelRatio !== 1) {
 }
 
 export function wrapper (canvas) {
-  canvas.style.height = canvas.height + 'px'
-  canvas.style.width = canvas.width + 'px'
-  canvas.width *= pixelRatio
-  canvas.height *= pixelRatio
+  canvas.width = canvas.offsetWidth * pixelRatio
+  canvas.height = canvas.offsetHeight * pixelRatio
   canvas.getContext('2d').__hidpi__ = true
 }

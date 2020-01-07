@@ -4,10 +4,12 @@
  
 **平台差异说明**
 
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|
-|x|x|√|x|√|√|
- 
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|x|x|√|x|√|√|√|
+
+注意：App平台的授权判断方式，另见：[https://ext.dcloud.net.cn/plugin?id=594](https://ext.dcloud.net.cn/plugin?id=594)
+
 **OBJECT 参数说明**
 
 |参数|类型|必填|说明|
@@ -23,13 +25,15 @@
 |---|---|---|---|
 |scope.userInfo	|[uni.getUserInfo](/api/plugins/login?id=getuserinfo)	|用户信息||
 |scope.userLocation|[uni.getLocation](/api/location/location?id=getlocation), [uni.chooseLocation](/api/location/location?id=chooselocation)	|地理位置||
-|scope.address	|[uni.chooseAddress](/api/other/choose-address)	|收货地址||
-|scope.invoiceTitle|[uni.chooseInvoiceTitle](/api/other/invoice-title)		|发票抬头||
+|scope.userLocationBackground|wx.userLocationBackground|后台定位|微信小程序|
+|scope.address	|[uni.chooseAddress](/api/other/choose-address)	|通信地址||
 |scope.record	|[uni.getRecorderManager](/api/media/record-manager?id=getrecordermanager)	|录音功能||
-|scope.writePhotosAlbum	|[uni.saveImageToPhotosAlbum](/api/media/image?id=saveimagetophotosalbum), [uni.saveVideoToPhotosAlbum](/api/media/video?id=savevideotophotosalbum)	|保存到相册||
-|scope.camera	|[``<camera />``](/component/camera) 组件	|摄像头	|微信小程序|
-|scope.invoice	|[wx.chooseInvoice](https://developers.weixin.qq.com/miniprogram/dev/api/wx.chooseInvoice.html)	|获取发票|微信小程序|
+|scope.writePhotosAlbum	|[uni.saveImageToPhotosAlbum](/api/media/image?id=saveimagetophotosalbum), [uni.saveVideoToPhotosAlbum](/api/media/video?id=savevideotophotosalbum)	|保存到相册|头条小程序的返回值是scope.album|
+|scope.camera	|[``<camera />``](/component/camera) 组件，头条下的扫码、拍照、选择相册	|摄像头	||
+|scope.invoice	|[wx.chooseInvoice](https://developers.weixin.qq.com/miniprogram/dev/api/wx.chooseInvoice.html)	|获取发票|微信小程序、QQ小程序|
+|scope.invoiceTitle|[uni.chooseInvoiceTitle](/api/other/invoice-title)		|发票抬头|微信小程序、百度小程序、QQ小程序|
 |scope.werun	|[wx.getWeRunData](https://developers.weixin.qq.com/miniprogram/dev/api/wx.getWeRunData.html)	|微信运动步数	|微信小程序|
+
 
 **代码示例**
 

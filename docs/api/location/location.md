@@ -1,6 +1,6 @@
 ### uni.getLocation(OBJECT)
 获取当前的地理位置、速度。
-在微信小程序中，当用户离开应用后，此接口无法调用；当用户点击“显示在聊天顶部”时，此接口可继续调用。
+在微信小程序中，当用户离开应用后，此接口无法调用，除非申请后台持续定位权限；当用户点击“显示在聊天顶部”时，此接口可继续调用。
 
 **OBJECT 参数说明**
 
@@ -24,7 +24,7 @@
 |altitude|高度，单位 m|
 |verticalAccuracy|垂直精度，单位 m（Android 无法获取，返回 0）|
 |horizontalAccuracy|水平精度，单位 m|
-|[address](/api/location/location?id=address)|地址信息|
+|[address](/api/location/location?id=address)|地址信息（仅App端支持，需配置geocode为true）|
 
 **address 地址信息说明**
 
@@ -52,24 +52,29 @@ uni.getLocation({
 });
 ```
 
-**注意**
+#### 注意
 
-- H5：在较新的手机浏览器上，H5 端获取定位信息，要求部署在 **https** 服务上，本地预览（localhost）仍然可以使用 http 协议。
-- H5：无 GPS 模块的 PC 设备使用 Chrome 浏览器的时候，位置信息是连接谷歌服务器获取的，国内用户可能获取位置信息失败。
+- H5：在较新的浏览器上，H5 端获取定位信息，要求部署在 **https** 服务上，本地预览（localhost）仍然可以使用 http 协议。
+- H5：国产安卓手机上，H5若无法定位，检查手机是否开通位置服务、GPS，ROM是否给该浏览器位置权限、浏览器是否对网页弹出请求给予定位的询问框。
+- H5：安卓手机在原生App内嵌H5时，无法定位需要原生App处理Webview。
+- H5：移动端浏览器普遍仅支持GPS定位，在GPS信号弱的地方可能定位失败。
+- H5：PC 设备使用 Chrome 浏览器的时候，位置信息是连接谷歌服务器获取的，国内用户可能获取位置信息失败。
+- H5：使用坐标类型为 gcj02 时，需要配置腾讯地图 sdk 信息（manifest.json -> h5）。
 - H5：微信公众号可使用微信js sdk，[详见](https://ask.dcloud.net.cn/article/35380)
-- App：Android由于谷歌服务被墙，想在国产手机上正常定位，需要向高德等三方服务商申请SDK资质，获取AppKey。云打包时需要在manifest的SDK配置中填写Appkey。在manifest可视化界面有详细申请指南。离线打包自行在原生工程中配置。
+- App：Android由于谷歌服务被墙，想在国产手机上正常定位，需要向高德等三方服务商申请SDK资质，获取AppKey。云打包时需要在manifest的SDK配置中填写Appkey。在manifest可视化界面有详细申请指南，详见：[https://ask.dcloud.net.cn/article/29](https://ask.dcloud.net.cn/article/29)。离线打包自行在原生工程中配置。注意包名、appkey、证书信息必须匹配。
 - App：``<map>`` 组件默认为国测局坐标gcj02，调用 ``uni.getLocation`` 返回结果传递给 ``<map>`` 组件时，需指定 type 为 gcj02。
 - App：持续定位方案：iOS端可以申请持续定位权限，[参考](https://ask.dcloud.net.cn/article/12569)。Android如果进程被杀，代码无法执行。可以使用[unipush](https://ask.dcloud.net.cn/article/35622)，通过服务器激活App，执行透传消息，让App启动然后采集位置。Android上，即使自己写原生插件做后台进程，也很容易被杀，unipush是更合适的方案
 - 小程序：api默认不返回详细地址中文描述。需要中文地址有2种方式：1、使用高德地图小程序sdk，在app和微信上都可以获得中文地址，[参考](http://ask.dcloud.net.cn/article/35070)。2、只考虑app，使用``plus.geolocation``也可以获取中文地址
+- 可以通过用户授权API来判断用户是否给应用授予定位权限[https://uniapp.dcloud.io/api/other/authorize](https://uniapp.dcloud.io/api/other/authorize)
 
 ### uni.chooseLocation(OBJECT)
 打开地图选择位置。
 
 **平台差异说明**
 
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|
-|√|√|√|√|√|x|
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|√|√|√|√|√|x|x|
 
 **OBJECT 参数说明**
 
@@ -81,8 +86,9 @@ uni.getLocation({
 |complete|Function|否|接口调用结束的回调函数（调用成功、失败都会执行）|
 
 **注意**
-- keyword参数，HBuilderX 2.1.4 以后版本支持
 - 因平台差异，如果SDK配置百度地图，需要设置keyword，才能显示相关地点
+- nvue下只支持高德地图，不支持百度地图
+- HBuilderX 2.4.0+ 非 weex 编译模式仅支持高德地图
 
 
 **success 返回参数说明**
@@ -108,7 +114,7 @@ uni.chooseLocation({
 ```
 
 **注意**
-- 不同端，使用地图选择时基于的底层地图引擎不一样，如微信小程序和H5是腾讯地图，App是高德地图，详见地图map组件的使用注意事项
+- 不同端，使用地图选择时基于的底层地图引擎不一样，如微信小程序和H5是腾讯地图，App和阿里小程序是高德地图（注意app端不支持百度地图），百度小程序是百度地图，详见地图map组件的使用注意事项
 - 微信内置浏览器中可使用微信js sdk，[详见](https://ask.dcloud.net.cn/article/35380)
 - chooseLocation属于封装型API，开发者若觉得不够灵活，可自行基于原始的map组件进行封装
-- HBuilderX 1.9.2的Android平台chooseLocation失效，请更新到更高版本。
+- 若Android App端位置不准，见上文uni.getLocation的注意事项

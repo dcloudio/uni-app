@@ -1,17 +1,22 @@
 {
-    "name": "@dcloudio/vue-cli-plugin-hbuilderx",
-    "version": "1.0.136",
-    "description": "HBuilderX plugin for vue-cli 3",
-    "main": "index.js",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "author": "fxy060608",
-    "license": "Apache-2.0",
-    "dependencies": {
-        "acorn": "^5.2.1",
-        "css": "~2.2.1",
-        "escodegen": "^1.8.1"
-    },
-    "gitHead": "08ea04b669e93f0db3acb2dfa38138298edd5789"
+  "name": "@dcloudio/vue-cli-plugin-hbuilderx",
+  "version": "2.0.0-25120200103006",
+  "description": "HBuilderX plugin for vue-cli 3",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/vue-cli-plugin-hbuilderx"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "fxy060608",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "acorn": "^5.2.1",
+    "css": "~2.2.1",
+    "escodegen": "^1.8.1"
+  },
+  "gitHead": "63b678965212cc805e0884bb7d4a2ac7702b3191"
 }

@@ -219,13 +219,6 @@ class Util {
       t: getTime(),
       p: this.statData.p
     }
-    if (getPlatformName() === 'n' && this.statData.p === 'a') {
-      setTimeout(() => {
-        this.request(options);
-      }, 200)
-      return
-    }
-
     this.request(options);
   }
 
@@ -245,12 +238,6 @@ class Util {
       usv: this.statData.usv,
       t: getTime(),
       p: this.statData.p
-    }
-    if (getPlatformName() === 'n' && this.statData.p === 'a') {
-      setTimeout(() => {
-        this.request(options, type)
-      }, 200)
-      return
     }
     this.request(options, type)
   }
@@ -378,6 +365,15 @@ class Util {
       return
     }
 
+    if (getPlatformName() === 'n' && this.statData.p === 'a') {
+      setTimeout(() => {
+        this._sendRequest(optionsData);
+      }, 200)
+      return
+    }
+    this._sendRequest(optionsData)
+  }
+  _sendRequest(optionsData) {
     uni.request({
       url: STAT_URL,
       method: 'POST',
@@ -386,22 +382,18 @@ class Util {
       // },
       data: optionsData,
       success: () => {
-        if (process.env.NODE_ENV === 'development') {
-          console.log('stat request success');
-        }
+        // if (process.env.NODE_ENV === 'development') {
+        //   console.log('stat request success');
+        // }
       },
       fail: (e) => {
-        if (process.env.NODE_ENV === 'development') {
-          console.log('stat request fail', e);
-        }
         if (++this._retry < 3) {
           setTimeout(() => {
-            this.request(data);
+            this._sendRequest(optionsData);
           }, 1000);
         }
       }
     });
-
   }
   /**
    * h5 请求
@@ -439,7 +431,7 @@ class Stat extends Util {
     super()
     this.instance = null;
     // 注册拦截器
-    if (typeof uni.addInterceptor === 'function') {
+    if (typeof uni.addInterceptor === 'function' && process.env.NODE_ENV !== 'development') {
       this.addInterceptorInit();
       this.interceptLogin();
       this.interceptShare(true);
@@ -495,9 +487,9 @@ class Stat extends Util {
 
   report(options, self) {
     this.self = self;
-    if (process.env.NODE_ENV === 'development') {
-      console.log('report init');
-    }
+    // if (process.env.NODE_ENV === 'development') {
+    //   console.log('report init');
+    // }
     setPageResidenceTime()
     this.__licationShow = true;
     this._sendReportRequest(options, true);
@@ -514,16 +506,18 @@ class Stat extends Util {
 
   show(self) {
     this.self = self;
-    if (!getPageTypes(self)) {
+    if (getPageTypes(self)) {
+      this._pageShow(self);
+    } else {
       this._applicationShow(self);
     }
   }
 
   ready(self) {
-    this.self = self;
-    if (getPageTypes(self)) {
-      this._pageShow(self);
-    }
+    // this.self = self;
+    // if (getPageTypes(self)) {
+    //   this._pageShow(self);
+    // }
   }
   hide(self) {
     this.self = self;

@@ -7,8 +7,8 @@
 |参数|类型|必填|默认值|说明|平台差异说明|
 |:-|:-|:-|:-|:-|:-|
 |url|String|是||需要跳转的应用内非 tabBar 的页面的路径 , 路径后可以带参数。参数与路径之间使用?分隔，参数键与参数值用=相连，不同参数用&分隔；如 'path?key=value&key2=value2'，path为下一个页面的路径，下一个页面的onLoad函数可得到传递的参数|:-|
-|animationType|String|否|pop-in|窗口显示的动画效果，详见：[窗口动画](api/router?id=animation)|5+App|
-|animationDuration|Number|否|300|窗口动画持续时间，单位为 ms|5+App|
+|animationType|String|否|pop-in|窗口显示的动画效果，详见：[窗口动画](api/router?id=animation)|App|
+|animationDuration|Number|否|300|窗口动画持续时间，单位为 ms|App|
 |success|Function|否||接口调用成功的回调函数||
 |fail|Function|否||接口调用失败的回调函数||
 |complete|Function|否||接口调用结束的回调函数（调用成功、失败都会执行）|&nbsp;|
@@ -145,8 +145,8 @@ uni.switchTab({
 |参数|类型|必填|默认值|说明|平台差异说明|
 |:-|:-|:-|:-|:-|:-|
 |delta|Number|否|1|返回的页面数，如果 delta 大于现有页面数，则返回到首页。||
-|animationType|String|否|pop-out|窗口关闭的动画效果，详见：[窗口动画](api/router?id=animation)|5+App|
-|animationDuration|Number|否|300|窗口关闭动画的持续时间，单位为 ms|5+App|
+|animationType|String|否|pop-out|窗口关闭的动画效果，详见：[窗口动画](api/router?id=animation)|App|
+|animationDuration|Number|否|300|窗口关闭动画的持续时间，单位为 ms|App|
 
 **示例**
 
@@ -175,9 +175,14 @@ Tips：
 * ``reLaunch`` 可以打开任意页面。
 * 页面底部的 ``tabBar`` 由页面决定，即只要是定义为 ``tabBar`` 的页面，底部都有 ``tabBar``。
 * 不能在 ```App.vue``` 里面进行页面跳转。
+* H5端页面刷新之后页面栈会消失，此时`navigateBack`不能返回，如果一定要返回可以使用`history.back()`。
+
+**参考事项**
+- 页面路由拦截和管理，插件市场有很多封装好的工具类，搜索[路由](https://ext.dcloud.net.cn/search?q=%E8%B7%AF%E7%94%B1)
+
 
 #### 窗口动画@animation
-> 本API仅App端支持。小程序自身不支持自定义动画。H5的窗体动画可使用常规单页动画处理方案，见[H5下单页动画示例](https://ext.dcloud.net.cn/plugin?id=659&tdsourcetag=s_pctim_aiomsg)
+> 本API仅App支持。小程序自身不支持自定义动画。H5的窗体动画可使用常规单页动画处理方案，见[H5下单页动画示例](https://ext.dcloud.net.cn/plugin?id=659&tdsourcetag=s_pctim_aiomsg)
 
 窗口的显示/关闭动画效果，支持在 API、组件、pages.json 中配置，优先级为：`API = 组件 > pages.json`。
 
@@ -228,10 +233,10 @@ pages.json 中配置的是窗口显示的动画
 |slide-in-left|slide-out-left|新窗体从左侧进入|
 |slide-in-top|slide-out-top|新窗体从顶部进入|
 |slide-in-bottom|slide-out-bottom|新窗体从底部进入|
+|pop-in|pop-out|新窗体从左侧进入，且老窗体被挤压而出|
 |fade-in|fade-out|新窗体从透明到不透明逐渐显示|
 |zoom-out|zoom-in|新窗体从小到大缩放显示|
 |zoom-fade-out|zoom-fade-in|新窗体从小到大逐渐放大并且从透明到不透明逐渐显示|
-|pop-in|pop-out|新窗体从左侧进入，且老窗体被挤压而出|
 |none|none|无动画|
 
 详细的窗口动画说明，请参考：
@@ -239,5 +244,7 @@ pages.json 中配置的是窗口显示的动画
 - 窗口显示的动画：[AnimationTypeShow](http://www.html5plus.org/doc/zh_cn/webview.html#plus.webview.AnimationTypeShow)
 - 窗口关闭的动画：[AnimationTypeClose](http://www.html5plus.org/doc/zh_cn/webview.html#plus.webview.AnimationTypeClose)
 
-**参考事项**
-- 页面路由拦截和管理，插件市场有很多封装好的工具类，搜索[路由](https://ext.dcloud.net.cn/search?q=%E8%B7%AF%E7%94%B1)
+**注意**
+- 纯nvue项目（render为native），窗体动画默认进入动画为popin，返回为pop-out。如果想修改动画类型，只能通过uni.navigateTo API修改，在组件或pages.json里配置动画类型无效
+- 非纯nvue项目，App端窗体动画，默认进入动画为slider-in-right，默认返回动画为pop-out
+

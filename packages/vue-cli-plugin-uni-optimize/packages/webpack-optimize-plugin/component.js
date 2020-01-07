@@ -6,14 +6,24 @@ const {
   capitalize
 } = require('./util')
 
-const platformTags = ['audio', 'map', 'video', 'web-view', 'cover-view', 'cover-image']
+const platformTags = ['audio', 'map', 'video', 'web-view', 'cover-view', 'cover-image', 'picker']
 
-//input 在 pageHead 中有使用，resize-sensor 在很多组件中有使用，暂时直接加载
-const autoloadTags = ['input', 'resize-sensor']
+const autoloadTags = {
+  // input 在 pageHead 中有使用，resize-sensor 在很多组件中有使用，暂时直接加载
+  root: ['input', 'resize-sensor'],
+  other: {
+    picker: ['picker-view', 'picker-view-column']
+  }
+}
 
 module.exports = function updateComponents(tags) {
-  autoloadTags.forEach(tagName => {
+  autoloadTags.root.forEach(tagName => {
     tags.add(tagName)
+  })
+  Object.keys(autoloadTags.other).forEach(tagName => {
+    if (tags.has(tagName)) {
+      autoloadTags.other[tagName].forEach(tag => tags.add(tag))
+    }
   })
   tags = [...tags]
   const importsStr = tags.map(tagName => {

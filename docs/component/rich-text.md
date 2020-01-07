@@ -3,9 +3,11 @@
 
 **属性说明**
 
-|属性名|类型|默认值|说明|
-|:-|:-|:-|:-|
-|nodes|Array / String|[]|节点列表 / HTML String|
+|属性名|类型|默认值|说明|平台兼容|
+|:-|:-|:-|:-|:-|
+|nodes|Array / String|[]|节点列表 / HTML String||
+|[space](https://developers.weixin.qq.com/miniprogram/dev/component/rich-text.html)|string||显示连续空格|微信基础库2.4.1+、QQ小程序|
+|selectable|Boolean|false|富文本是否可以长按选中，可用于复制，粘贴等场景|百度APP 11.10+|
 
 **注意**
 
@@ -87,7 +89,7 @@
 |tr||
 |ul|&nbsp;|
 
-**示例**
+**示例** [查看演示](https://uniapp.dcloud.io/h5/pages/component/rich-text/rich-text)
 ```html
 <template>
 	<view class="content">
@@ -136,7 +138,7 @@ export default {
 **Tips**
 
 - nodes 不推荐使用 String 类型，性能会有所下降。
-- rich-text 组件内屏蔽所有节点的事件。所以如果内容中有链接、图片需要点击，则不能使用rich-text，此时可在[uni-app插件市场](https://ext.dcloud.net.cn/)搜索uparse插件使用。
+- rich-text 组件内屏蔽所有节点的事件。所以如果内容中有链接、图片需要点击，则不能使用rich-text，此时可在[uni-app插件市场](https://ext.dcloud.net.cn/)搜索uparse插件使用。app-nvue的rich-text组件支持链接图片点击，且nvue下不能使用uparse等插件。
 - attrs 属性不支持 id ，支持 class 。
 - name 属性大小写不敏感。
 - 如果使用了不受信任的HTML节点，该节点及其所有子节点将会被移除。

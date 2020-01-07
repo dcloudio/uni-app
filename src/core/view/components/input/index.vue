@@ -1,5 +1,7 @@
 <template>
-  <uni-input v-on="$listeners">
+  <uni-input
+    @change.stop
+    v-on="$listeners">
     <div
       ref="wrapper"
       class="uni-input-wrapper">
@@ -31,13 +33,14 @@
 </template>
 <script>
 import {
-  emitter
+  emitter,
+  keyboard
 } from 'uni-mixins'
 const INPUT_TYPES = ['text', 'number', 'idcard', 'digit', 'password']
 const NUMBER_TYPES = ['number', 'digit']
 export default {
   name: 'Input',
-  mixins: [emitter],
+  mixins: [emitter, keyboard],
   model: {
     prop: 'value',
     event: 'update:value'
@@ -162,6 +165,8 @@ export default {
       }
       $vm = $vm.$parent
     }
+
+    this.initKeyboard(this.$refs.input)
 
     this.focus && this._focusInput()
   },
@@ -306,7 +311,8 @@ uni-input[hidden] {
   height: 100%;
   background: none;
   color: inherit;
-  opacity: inherit;
+  opacity: 1;
+  -webkit-text-fill-color: currentcolor;
   font: inherit;
   line-height: inherit;
   letter-spacing: inherit;

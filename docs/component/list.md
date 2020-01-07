@@ -1,6 +1,10 @@
 #### list
 
-app端nvue专用组件。
+app端nvue专用组件。在app-nvue下，如果是长列表，使用list组件的性能高于使用view或scroll-view的滚动。原因在于list在不可见部分的渲染资源回收有特殊的优化处理。
+
+原生渲染的资源回收机制，与webview渲染不同。webview不需要数据有规则格式，长页面处于不可视的部分，其渲染资源会自动回收，除非webview使用区域滚动而不是页面滚动。所以vue页面只要不用scroll-view，就不需要关注这个问题。而原生渲染则必须注意。
+
+**如果需要跨端，建议使用uni-ui的uni-list组件，它会自动处理webview渲染和原生渲染的情况，在app-nvue下使用list组件，而在其他平台则使用页面滚动。详见[https://ext.dcloud.net.cn/plugin?id=24](https://ext.dcloud.net.cn/plugin?id=24)**
 
 `<list>` 组件是提供垂直列表功能的核心组件，拥有平滑的滚动和高效的内存管理，非常适合用于长列表的展示。最简单的使用方法是在 `<list>` 标签内使用一组由简单数组循环生成的 `<cell>` 标签填充。
 
@@ -25,8 +29,10 @@ app端nvue专用组件。
 ```
 
 > **注意**
-> - 不允许相同方向的 `<list>` 或者 `<scroll-view>` 互相嵌套，换句话说就是嵌套的 `<list>` / `<scroll-view>` 必须是不同的方向。
+> - 相同方向 `<list>` 或者 `<scroll-view>` 互相嵌套时，Android 平台子 `<list>` 不可滚动，iOS 可以，iOS 有Bounce效果， Android仅可滚动时有
 > - `<list>` 需要显式的设置其宽高，可使用 position: absolute; 定位或 width、height 设置其宽高值。
+> - list是区域滚动，不会触发页面滚动，无法触发pages.json配置的下拉刷新、页面触底onReachBottomDistance、titleNView的transparent透明渐变。
+> - Android 平台，因 `<list>` 高效内存回收机制，不在屏幕可见区域的组件不会被创建，导致一些内部需要计算宽高的组件无法正常工作，例如 `<slider>`、`<progress>`、`<swiper>`
 
 #### 子组件
 `<list>` 的子组件只能包括以下四种组件或是 fix 定位的组件，其他形式的组件将不能被正确渲染。
@@ -45,8 +51,8 @@ app端nvue专用组件。
 |show-scrollbar|控制是否出现滚动条|boolean|true|
 |loadmoreoffset|触发 loadmore 事件所需要的垂直偏移距离（设备屏幕底部与 list 底部之间的距离），建议手动设置此值，设置大于0的值即可|number|0|
 |offset-accuracy|控制 onscroll 事件触发的频率：表示两次onscroll事件之间列表至少滚动了10px。注意，将该值设置为较小的数值会提高滚动事件采样的精度，但同时也会降低页面的性能|number|10|
-|pagingEnabled|是否按分页模式线上List，默认值false|boolean|true/false|
-|scrollable|是否运行List关系|boolean|true/false|
+|pagingEnabled|是否按分页模式显示List，默认值false|boolean|true/false|
+|scrollable|是否允许List滚动|boolean|true/false|
 
 `loadmoreoffset` 示意图：
 

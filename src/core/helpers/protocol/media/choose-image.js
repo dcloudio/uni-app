@@ -13,7 +13,7 @@ export const chooseImage = {
     }
   },
   'sizeType': {
-    type: Array,
+    type: [Array, String],
     required: false,
     default: SIZE_TYPES,
     validator (sizeType, params) {
@@ -21,6 +21,10 @@ export const chooseImage = {
       const length = sizeType.length
       if (!length) {
         params.sizeType = SIZE_TYPES
+      } else if (typeof sizeType === 'string') {
+        if (!~SIZE_TYPES.indexOf(sizeType)) {
+          params.sizeType = SIZE_TYPES
+        }
       } else {
         for (let i = 0; i < length; i++) {
           if (typeof sizeType[i] !== 'string' || !~SIZE_TYPES.indexOf(sizeType[i])) {

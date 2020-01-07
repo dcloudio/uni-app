@@ -5,7 +5,6 @@ import {
 } from '../util'
 
 import {
-  TABBAR_HEIGHT,
   TITLEBAR_HEIGHT
 } from '../../constants'
 
@@ -23,9 +22,18 @@ export function getSystemInfo () {
   const screenHeight = plus.screen.resolutionHeight
   // 横屏时 iOS 获取的状态栏高度错误，进行纠正
   var landscape = Math.abs(plus.navigator.getOrientation()) === 90
-  var statusBarHeight = plus.navigator.getStatusbarHeight()
+  var statusBarHeight = Math.round(plus.navigator.getStatusbarHeight())
   if (ios && landscape) {
     statusBarHeight = Math.min(20, statusBarHeight)
+  }
+  var safeAreaInsets
+  function getSafeAreaInsets () {
+    return {
+      left: 0,
+      right: 0,
+      top: titleNView ? 0 : statusBarHeight,
+      bottom: 0
+    }
   }
   // 判断是否存在 titleNView
   var titleNView
@@ -36,19 +44,32 @@ export function getSystemInfo () {
       titleNView = style && style.titleNView
       titleNView = titleNView && titleNView.type === 'default'
     }
+    safeAreaInsets = ios ? webview.getSafeAreaInsets() : getSafeAreaInsets()
+  } else {
+    safeAreaInsets = ios ? plus.navigator.getSafeAreaInsets() : getSafeAreaInsets()
   }
+  var windowBottom = isTabBarPage() && tabBar.visible && tabBar.cover ? tabBar.height : 0
+  var windowHeight = Math.min(screenHeight - (titleNView ? (statusBarHeight + TITLEBAR_HEIGHT)
+    : 0) - windowBottom, screenHeight)
+  var windowWidth = screenWidth
+  var safeArea = {
+    left: safeAreaInsets.left,
+    right: windowWidth - safeAreaInsets.right,
+    top: safeAreaInsets.top,
+    bottom: windowHeight - safeAreaInsets.bottom,
+    width: windowWidth - safeAreaInsets.left - safeAreaInsets.right,
+    height: windowHeight - safeAreaInsets.top - safeAreaInsets.bottom
+  }
+
   return {
     errMsg: 'getSystemInfo:ok',
-    brand: '',
+    brand: plus.device.vendor,
     model: plus.device.model,
     pixelRatio: plus.screen.scale,
     screenWidth,
     screenHeight,
-    // 安卓端 webview 宽度有时比屏幕多 1px，相比取最小值
-    // TODO screenWidth,screenHeight
-    windowWidth: screenWidth,
-    windowHeight: Math.min(screenHeight - (titleNView ? (statusBarHeight + TITLEBAR_HEIGHT)
-      : 0) - (isTabBarPage() && tabBar.visible ? TABBAR_HEIGHT : 0), screenHeight),
+    windowWidth,
+    windowHeight,
     statusBarHeight,
     language: plus.os.language,
     system: plus.os.version,
@@ -57,6 +78,7 @@ export function getSystemInfo () {
     platform,
     SDKVersion: '',
     windowTop: 0,
-    windowBottom: 0
+    windowBottom,
+    safeArea
   }
 }

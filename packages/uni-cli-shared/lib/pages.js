@@ -3,7 +3,9 @@ const path = require('path')
 
 const {
   removeExt,
-  normalizePath
+  normalizePath,
+  camelize,
+  capitalize
 } = require('./util')
 
 const {
@@ -35,8 +37,8 @@ function getPagesJson () {
   return processPagesJson(getJson('pages.json', true))
 }
 
-function parsePagesJson (content) {
-  return processPagesJson(parseJson(content, true))
+function parsePagesJson (content, loader) {
+  return processPagesJson(parseJson(content, true), loader)
 }
 
 function filterPages (pages = [], root) {
@@ -48,7 +50,25 @@ function filterPages (pages = [], root) {
   }
 }
 
-function processPagesJson (pagesJson) {
+const pagesJsonJsFileName = 'pages.js'
+
+function processPagesJson (pagesJson, loader = {
+  addDependency: function () {}
+}) {
+  const pagesJsonJsPath = path.resolve(process.env.UNI_INPUT_DIR, pagesJsonJsFileName)
+  if (fs.existsSync(pagesJsonJsPath)) {
+    delete require.cache[pagesJsonJsPath]
+    const pagesJsonJsFn = require(pagesJsonJsPath)
+    if (typeof pagesJsonJsFn === 'function') {
+      pagesJson = pagesJsonJsFn(pagesJson, loader)
+      if (!pagesJson) {
+        console.error(`${pagesJsonJsFileName}  必须返回一个 json 对象`)
+      }
+    } else {
+      console.error(`${pagesJsonJsFileName} 必须导出 function`)
+    }
+  }
+
   let uniNVueEntryPagePath
   if (pagesJson.pages && pagesJson.pages.length) { // 如果首页是 nvue
     if (isNVuePage(pagesJson.pages[0])) {
@@ -64,9 +84,9 @@ function processPagesJson (pagesJson) {
     })
   }
 
-  if (Object.keys(uniNVuePages).length) { // 直接挂在 pagesJson 上
+  if (uniNVuePages.length) { // 直接挂在 pagesJson 上
     pagesJson.nvue = {
-      pages: uniNVuePages
+      pages: uniNVuePages.reverse()
     }
     if (uniNVueEntryPagePath) {
       pagesJson.nvue.entryPagePath = uniNVueEntryPagePath
@@ -128,16 +148,18 @@ function isValidPage (page, root = '') {
     // 存储 nvue 相关信息
     pagePath = normalizePath(path.join(root, pagePath))
 
-    // if (process.env.UNI_USING_NVUE_COMPILER) {
     process.UNI_NVUE_ENTRY[pagePath] = getNVueMainJsPath(pagePath)
-    // } else {
-    //   process.UNI_NVUE_ENTRY[pagePath] = path.resolve(process.env.UNI_INPUT_DIR, pagePath + '.nvue') + '?entry'
-    // }
 
-    uniNVuePages[pagePath + '.html'] = {
-      'window': page.style || {}
+    if (process.env.UNI_USING_V3) { // 不移除
+      page.nvue = true
+      return true
+    } else {
+      uniNVuePages.push({
+        'path': pagePath + '.html',
+        'style': page.style || {}
+      })
+      return false
     }
-    return false
   }
 
   return true
@@ -158,7 +180,7 @@ function getNVueMainJsPath (page) {
 process.UNI_ENTRY = {}
 process.UNI_NVUE_ENTRY = {}
 
-let uniNVuePages = {}
+const uniNVuePages = []
 
 function parsePages (pagesJson, pageCallback, subPageCallback) {
   if (!pagesJson) {
@@ -193,12 +215,11 @@ function parseEntry (pagesJson) {
   process.UNI_NVUE_ENTRY = {}
 
   if (process.env.UNI_USING_NATIVE) {
-    // TODO 考虑 pages.json.js
     process.UNI_NVUE_ENTRY['app-config'] = path.resolve(process.env.UNI_INPUT_DIR, 'pages.json')
     process.UNI_NVUE_ENTRY['app-service'] = path.resolve(process.env.UNI_INPUT_DIR, getMainEntry())
   }
 
-  uniNVuePages = {}
+  uniNVuePages.length = 0
 
   if (!pagesJson) {
     pagesJson = getPagesJson() // 会检测修改 nvue entry
@@ -225,11 +246,175 @@ function parseEntry (pagesJson) {
   }
 }
 
+function parseUsingComponents (usingComponents = {}) {
+  const components = []
+  Object.keys(usingComponents).forEach(name => {
+    const identifier = capitalize(camelize(name))
+    let source = usingComponents[name]
+    if (source.indexOf('/') === 0) { // 绝对路径
+      source = '@' + source
+    } else if (source.indexOf('.') !== 0) { // 相对路径
+      source = './' + source
+    }
+    components.push({
+      name,
+      identifier,
+      source
+    })
+  })
+  return components
+}
+
+function generateUsingComponentsCode (usingComponents) {
+  const components = parseUsingComponents(usingComponents)
+  const importCode = []
+  const componentsCode = []
+  components.forEach(({
+    name,
+    identifier,
+    source
+  }) => {
+    importCode.push(`import ${identifier} from '${source}.vue'`)
+    componentsCode.push(`'${name}':${identifier}`)
+  })
+  if (!importCode.length) {
+    return ''
+  }
+  return `;${importCode.join(';')};exports.default.components=Object.assign({${componentsCode.join(',')}},exports.default.components||{});`
+}
+
+function generateGlobalUsingComponentsCode (usingComponents) {
+  const components = parseUsingComponents(usingComponents)
+  const importCode = []
+  const componentsCode = []
+  components.forEach(({
+    name,
+    identifier,
+    source
+  }) => {
+    importCode.push(`import ${identifier} from '${source}.vue'`)
+    componentsCode.push(`Vue.component('${name}',${identifier})`)
+  })
+  if (!importCode.length) {
+    return ''
+  }
+  return `${importCode.join(';')};${componentsCode.join(';')};`
+}
+
+function getGlobalUsingComponentsCode () {
+  const pagesJson = getPagesJson()
+  const usingComponents = pagesJson.globalStyle && pagesJson.globalStyle.usingComponents
+  if (!usingComponents) {
+    return ''
+  }
+  return generateGlobalUsingComponentsCode(usingComponents)
+}
+
+function getUsingComponentsCode (pagePath) {
+  const usingComponents = usingComponentsPages[pagePath]
+  if (!usingComponents) {
+    return ''
+  }
+  return generateUsingComponentsCode(usingComponents)
+}
+
+const usingComponentsPages = Object.create(null)
+
+function addPageUsingComponents (pagePath, usingComponents) {
+  if (usingComponents && Object.keys(usingComponents).length) {
+    usingComponentsPages[pagePath] = usingComponents
+  }
+}
+// 存储自动组件
+const autoComponentMap = {}
+
+let lastUsingAutoImportComponentsJson = ''
+
+process.UNI_AUTO_COMPONENTS = []
+
+function initAutoImportComponents (usingAutoImportComponents = {}) {
+  // 目前仅 mp-weixin 内置支持 page-meta 等组件
+  if (process.env.UNI_PLATFORM !== 'mp-weixin') {
+    if (!usingAutoImportComponents['page-meta']) {
+      usingAutoImportComponents['page-meta'] =
+        '@dcloudio/uni-cli-shared/components/page-meta.vue'
+    }
+    if (!usingAutoImportComponents['navigation-bar']) {
+      usingAutoImportComponents['navigation-bar'] =
+        '@dcloudio/uni-cli-shared/components/navigation-bar.vue'
+    }
+  }
+
+  const newUsingAutoImportComponentsJson = JSON.stringify(usingAutoImportComponents)
+  if (newUsingAutoImportComponentsJson !== lastUsingAutoImportComponentsJson) {
+    lastUsingAutoImportComponentsJson = newUsingAutoImportComponentsJson
+    process.UNI_AUTO_COMPONENTS = parseUsingAutoImportComponents(usingAutoImportComponents)
+    refreshAutoComponentMap()
+  }
+}
+
+/**
+ * UNI_AUTO_COMPONENTS 被更新,重新刷新 map
+ */
+function refreshAutoComponentMap () {
+  Object.keys(autoComponentMap).forEach(name => {
+    addAutoComponent(name)
+  })
+}
+
+function addAutoComponent (name) {
+  const options = process.UNI_AUTO_COMPONENTS
+  const opt = options.find(opt => opt.pattern.test(name))
+  if (!opt) { // 不匹配
+    return (autoComponentMap[name] = true) // cache
+  }
+  return (autoComponentMap[name] = {
+    name,
+    identifier: capitalize(camelize(name + '-auto-import')),
+    source: name.replace(opt.pattern, opt.replacement)
+  })
+}
+
+function getAutoComponents (autoComponents) {
+  const components = []
+  autoComponents.forEach(name => {
+    let autoComponent = autoComponentMap[name]
+    if (!autoComponent) {
+      autoComponent = addAutoComponent(name)
+    }
+    if (autoComponent !== true) {
+      components.push(autoComponent)
+    }
+  })
+  return components
+}
+
+function parseUsingAutoImportComponents (usingAutoImportComponents) {
+  const autoImportComponents = []
+  if (usingAutoImportComponents) {
+    Object.keys(usingAutoImportComponents).forEach(pattern => {
+      autoImportComponents.push({
+        pattern: new RegExp(pattern),
+        replacement: usingAutoImportComponents[pattern]
+      })
+    })
+  }
+  return autoImportComponents
+}
 module.exports = {
   getMainEntry,
   getNVueMainEntry,
   parsePages,
   parseEntry,
   getPagesJson,
-  parsePagesJson
+  parsePagesJson,
+  pagesJsonJsFileName,
+  getAutoComponents,
+  initAutoImportComponents,
+  addPageUsingComponents,
+  getUsingComponentsCode,
+  generateUsingComponentsCode,
+  getGlobalUsingComponentsCode,
+  parseUsingAutoImportComponents,
+  generateGlobalUsingComponentsCode
 }

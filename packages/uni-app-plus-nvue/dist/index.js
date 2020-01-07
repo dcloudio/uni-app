@@ -101,10 +101,6 @@ var serviceContext = (function () {
   var base64Arraybuffer_1 = base64Arraybuffer.encode;
   var base64Arraybuffer_2 = base64Arraybuffer.decode;
 
-  function pack (args) {
-    return args
-  }
-
   function unpack (args) {
     return args
   }
@@ -162,7 +158,8 @@ var serviceContext = (function () {
         }
         return page.$page.meta.isTabBar
       }
-      return !!__uniRoutes.find(route => route.path.slice(1) === path)
+      const route = __uniRoutes.find(route => route.path.slice(1) === path);
+      return route && route.meta.isTabBar
     } catch (e) {
       if (process.env.NODE_ENV !== 'production') {
         console.log('getCurrentPages is not ready');
@@ -173,6 +170,10 @@ var serviceContext = (function () {
 
   function base64ToArrayBuffer (data) {
     return base64Arraybuffer_2(data)
+  }
+
+  function arrayBufferToBase64 (data) {
+    return base64Arraybuffer_1(data)
   }
 
   function callApiSync (api, args, name, alias) {
@@ -217,7 +218,7 @@ var serviceContext = (function () {
 
   function getRealPath (filePath) {
     const SCHEME_RE = /^([a-z-]+:)?\/\//i;
-    const BASE64_RE = /^data:[a-z-]+\/[a-z-]+;base64,/;
+    const DATA_RE = /^data:.*,.*/;
 
     // 无协议的情况补全 https
     if (filePath.indexOf('//') === 0) {
@@ -225,7 +226,7 @@ var serviceContext = (function () {
     }
 
     // 网络资源或base64
-    if (SCHEME_RE.test(filePath) || BASE64_RE.test(filePath)) {
+    if (SCHEME_RE.test(filePath) || DATA_RE.test(filePath)) {
       return filePath
     }
 
@@ -326,7 +327,11 @@ var serviceContext = (function () {
   let webview;
 
   function setPullDownRefreshPageId (pullDownRefreshWebview) {
-    webview = pullDownRefreshWebview;
+    if (typeof pullDownRefreshWebview === 'number') {
+      webview = plus.webview.getWebviewById(String(pullDownRefreshWebview));
+    } else {
+      webview = pullDownRefreshWebview;
+    }
   }
 
   function startPullDownRefresh () {
@@ -817,6 +822,27 @@ var serviceContext = (function () {
   }
 
   const callbacks = {};
+  const WEB_INVOKE_APPSERVICE = 'WEB_INVOKE_APPSERVICE';
+  // 简单处理 view 层与 service 层的通知系统
+  /**
+   * 消费 view 层通知
+   */
+  function consumePlusMessage (type, args) {
+    // 处理 web-view 组件发送的通知
+    if (type === WEB_INVOKE_APPSERVICE) {
+      publish(WEB_INVOKE_APPSERVICE, args.data, args.webviewIds);
+      return true
+    }
+    const callback = callbacks[type];
+    if (callback) {
+      callback(args);
+      if (!callback.keepAlive) {
+        delete callbacks[type];
+      }
+      return true
+    }
+    return false
+  }
   /**
    * 注册 view 层通知 service 层事件处理
    */
@@ -1342,7 +1368,6 @@ var serviceContext = (function () {
     const emit = UniServiceJSBridge.emit;
 
     plus.key.addEventListener('backbutton', () => {
-      // TODO uni?
       uni.navigateBack({
         from: 'backbutton'
       });
@@ -1369,6 +1394,16 @@ var serviceContext = (function () {
         height: event.height
       });
     });
+
+    plus.globalEvent.addEventListener('plusMessage', function (e) {
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('UNIAPP[plusMessage]:[' + Date.now() + ']' + JSON.stringify(e.data));
+      }
+      if (e.data && e.data.type) {
+        const type = e.data.type;
+        consumePlusMessage(type, e.data.args || {});
+      }
+    });
   }
 
   function initAppLaunch (appVm) {
@@ -1387,10 +1422,12 @@ var serviceContext = (function () {
       return
     }
 
-    const currentTab = isTabBarPage(__uniConfig.entryPagePath);
-    if (currentTab) {
+    __uniConfig.tabBar.selected = 0;
+
+    const selected = __uniConfig.tabBar.list.findIndex(page => page.pagePath === __uniConfig.entryPagePath);
+    if (selected !== -1) {
       // 取当前 tab 索引值
-      __uniConfig.tabBar.selected = __uniConfig.tabBar.list.indexOf(currentTab);
+      __uniConfig.tabBar.selected = selected;
       // 如果真实的首页与 condition 都是 tabbar，无需启用 realEntryPagePath 机制
       if (__uniConfig.realEntryPagePath && isTabBarPage(__uniConfig.realEntryPagePath)) {
         delete __uniConfig.realEntryPagePath;
@@ -1400,7 +1437,12 @@ var serviceContext = (function () {
     __uniConfig.__ready__ = true;
 
     const onLaunchWebviewReady = function onLaunchWebviewReady () {
-      const tabBarView = tabBar.init(__uniConfig.tabBar, (item) => {
+      const tabBarView = tabBar.init(__uniConfig.tabBar, (item, index) => {
+        UniServiceJSBridge.emit('onTabItemTap', {
+          index,
+          text: item.text,
+          pagePath: item.pagePath
+        });
         uni.switchTab({
           url: '/' + item.pagePath,
           openType: 'switchTab',
@@ -1458,7 +1500,7 @@ var serviceContext = (function () {
     });
   }
 
-  function registerConfig (config) {
+  function registerConfig (config, Vue) {
     Object.assign(__uniConfig, config);
 
     __uniConfig.viewport = '';
@@ -1907,7 +1949,7 @@ var serviceContext = (function () {
   };
 
   const SYNC_API_RE =
-    /^\$|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
+    /^\$|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
 
   const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -1983,7 +2025,7 @@ var serviceContext = (function () {
     required: true
   }];
 
-  const arrayBufferToBase64 = [{
+  const arrayBufferToBase64$1 = [{
     name: 'arrayBuffer',
     type: [ArrayBuffer, Uint8Array],
     required: true
@@ -1991,7 +2033,7 @@ var serviceContext = (function () {
 
   var require_context_module_0_0 = /*#__PURE__*/Object.freeze({
     base64ToArrayBuffer: base64ToArrayBuffer$1,
-    arrayBufferToBase64: arrayBufferToBase64
+    arrayBufferToBase64: arrayBufferToBase64$1
   });
 
   const canIUse = [{
@@ -2433,7 +2475,7 @@ var serviceContext = (function () {
   }
 
   const SCHEME_RE = /^([a-z-]+:)?\/\//i;
-  const BASE64_RE = /^data:[a-z-]+\/[a-z-]+;base64,/;
+  const DATA_RE = /^data:.*,.*/;
 
   function addBase (filePath) {
     return filePath
@@ -2448,7 +2490,7 @@ var serviceContext = (function () {
       }
     }
     // 网络资源或base64
-    if (SCHEME_RE.test(filePath) || BASE64_RE.test(filePath) || filePath.indexOf('blob:') === 0) {
+    if (SCHEME_RE.test(filePath) || DATA_RE.test(filePath) || filePath.indexOf('blob:') === 0) {
       return filePath
     }
 
@@ -2601,8 +2643,12 @@ var serviceContext = (function () {
     header: {
       type: Object,
       validator (value, params) {
-        params.header = value || {};
-        params.header['content-type'] = params.header['content-type'] || 'application/json';
+        const header = params.header = value || {};
+        if (params.method !== method.GET) {
+          if (!Object.keys(header).find(key => key.toLowerCase() === 'content-type')) {
+            header['Content-Type'] = 'application/json';
+          }
+        }
       }
     },
     dataType: {
@@ -3671,13 +3717,13 @@ var serviceContext = (function () {
     return base64Arraybuffer_2(str)
   }
 
-  function arrayBufferToBase64$1 (buffer) {
+  function arrayBufferToBase64$2 (buffer) {
     return base64Arraybuffer_1(buffer)
   }
 
   var require_context_module_1_0 = /*#__PURE__*/Object.freeze({
     base64ToArrayBuffer: base64ToArrayBuffer$2,
-    arrayBufferToBase64: arrayBufferToBase64$1
+    arrayBufferToBase64: arrayBufferToBase64$2
   });
 
   var platformSchema = {};
@@ -4337,7 +4383,7 @@ var serviceContext = (function () {
   /**
    * 执行蓝牙相关方法
    */
-  function bluetoothExec (method, callbackId, data = {}) {
+  function bluetoothExec (method, callbackId, data = {}, beforeSuccess) {
     var deviceId = data.deviceId;
     if (deviceId) {
       data.deviceId = deviceId.toUpperCase();
@@ -4349,7 +4395,10 @@ var serviceContext = (function () {
 
     plus.bluetooth[method.replace('Changed', 'Change')](Object.assign(data, {
       success (data) {
-        invoke(callbackId, Object.assign({}, pack(data), {
+        if (typeof beforeSuccess === 'function') {
+          beforeSuccess(data);
+        }
+        invoke(callbackId, Object.assign({}, data, {
           errMsg: `${method}:ok`,
           code: undefined,
           message: undefined
@@ -4366,14 +4415,27 @@ var serviceContext = (function () {
   /**
    * 监听蓝牙相关事件
    */
-  function bluetoothOn (method) {
+  function bluetoothOn (method, beforeSuccess) {
     plus.bluetooth[method.replace('Changed', 'Change')](function (data) {
-      publish(method, Object.assign({}, pack(data), {
+      if (typeof beforeSuccess === 'function') {
+        beforeSuccess(data);
+      }
+      publish(method, Object.assign({}, data, {
         code: undefined,
         message: undefined
       }));
     });
     return true
+  }
+
+  function checkDevices (data) {
+    data.devices = data.devices.map(device => {
+      var advertisData = device.advertisData;
+      if (advertisData && typeof advertisData !== 'string') {
+        device.advertisData = arrayBufferToBase64(advertisData);
+      }
+      return device
+    });
   }
 
   var onBluetoothAdapterStateChange;
@@ -4396,7 +4458,7 @@ var serviceContext = (function () {
   }
 
   function startBluetoothDevicesDiscovery (data, callbackId) {
-    onBluetoothDeviceFound = onBluetoothDeviceFound || bluetoothOn('onBluetoothDeviceFound');
+    onBluetoothDeviceFound = onBluetoothDeviceFound || bluetoothOn('onBluetoothDeviceFound', checkDevices);
     bluetoothExec('startBluetoothDevicesDiscovery', callbackId, data);
   }
 
@@ -4405,7 +4467,7 @@ var serviceContext = (function () {
   }
 
   function getBluetoothDevices (data, callbackId) {
-    bluetoothExec('getBluetoothDevices', callbackId, {});
+    bluetoothExec('getBluetoothDevices', callbackId, {}, checkDevices);
   }
 
   function getConnectedBluetoothDevices (data, callbackId) {
@@ -4431,12 +4493,18 @@ var serviceContext = (function () {
   }
 
   function notifyBLECharacteristicValueChange (data, callbackId) {
-    onBLECharacteristicValueChange = onBLECharacteristicValueChange || bluetoothOn('onBLECharacteristicValueChange');
+    onBLECharacteristicValueChange = onBLECharacteristicValueChange || bluetoothOn('onBLECharacteristicValueChange',
+      data => {
+        data.value = arrayBufferToBase64(data.value);
+      });
     bluetoothExec('notifyBLECharacteristicValueChange', callbackId, data);
   }
 
   function notifyBLECharacteristicValueChanged (data, callbackId) {
-    onBLECharacteristicValueChange = onBLECharacteristicValueChange || bluetoothOn('onBLECharacteristicValueChange');
+    onBLECharacteristicValueChange = onBLECharacteristicValueChange || bluetoothOn('onBLECharacteristicValueChange',
+      data => {
+        data.value = arrayBufferToBase64(data.value);
+      });
     bluetoothExec('notifyBLECharacteristicValueChanged', callbackId, data);
   }
 
@@ -4445,7 +4513,8 @@ var serviceContext = (function () {
   }
 
   function writeBLECharacteristicValue (data, callbackId) {
-    bluetoothExec('writeBLECharacteristicValue', callbackId, unpack(data));
+    data.value = base64ToArrayBuffer(data.value);
+    bluetoothExec('writeBLECharacteristicValue', callbackId, data);
   }
 
   function getScreenBrightness () {
@@ -4718,11 +4787,11 @@ var serviceContext = (function () {
               if (isDark) {
                 plus.navigator.setStatusBarStyle('isDark');
               }
-              webview.close('auto');
               result = {
                 type,
                 code
               };
+              webview.close('auto');
             }, () => {
               plus.nativeUI.toast('识别失败');
             }, filters);
@@ -4763,7 +4832,7 @@ var serviceContext = (function () {
       });
     });
     webview.addEventListener('close', () => {
-      if (result && 'code' in result) {
+      if (result) {
         invoke(callbackId, {
           result: result.code,
           scanType: SCAN_MAPS[result.type] || '',
@@ -4776,6 +4845,7 @@ var serviceContext = (function () {
           errMsg: 'scanCode:fail cancel'
         });
       }
+      consumePlusMessage(MESSAGE_TYPE);
     });
     if (isDark) { // 状态栏前景色
       plus.navigator.setStatusBarStyle('light');
@@ -4790,15 +4860,10 @@ var serviceContext = (function () {
         }
       });
     }
-    // fixed by hxy 注册扫码事件
+
     registerPlusMessage(MESSAGE_TYPE, function (res) {
-      if (res && !res.errMsg) {
+      if (res && 'code' in res) {
         result = res;
-      } else {
-        const errMsg = res && res.errMsg ? ' ' + res.errMsg : '';
-        result = {
-          errMsg: 'scanCode:fail' + errMsg
-        };
       }
     }, false);
   }
@@ -4815,9 +4880,18 @@ var serviceContext = (function () {
     const screenHeight = plus.screen.resolutionHeight;
     // 横屏时 iOS 获取的状态栏高度错误，进行纠正
     var landscape = Math.abs(plus.navigator.getOrientation()) === 90;
-    var statusBarHeight = plus.navigator.getStatusbarHeight();
+    var statusBarHeight = Math.round(plus.navigator.getStatusbarHeight());
     if (ios && landscape) {
       statusBarHeight = Math.min(20, statusBarHeight);
+    }
+    var safeAreaInsets;
+    function getSafeAreaInsets () {
+      return {
+        left: 0,
+        right: 0,
+        top: titleNView ? 0 : statusBarHeight,
+        bottom: 0
+      }
     }
     // 判断是否存在 titleNView
     var titleNView;
@@ -4828,19 +4902,31 @@ var serviceContext = (function () {
         titleNView = style && style.titleNView;
         titleNView = titleNView && titleNView.type === 'default';
       }
+      safeAreaInsets = ios ? webview.getSafeAreaInsets() : getSafeAreaInsets();
+    } else {
+      safeAreaInsets = ios ? plus.navigator.getSafeAreaInsets() : getSafeAreaInsets();
     }
+    var windowHeight = Math.min(screenHeight - (titleNView ? (statusBarHeight + TITLEBAR_HEIGHT)
+      : 0) - (isTabBarPage() && tabBar.visible ? TABBAR_HEIGHT : 0), screenHeight);
+    var windowWidth = screenWidth;
+    var safeArea = {
+      left: safeAreaInsets.left,
+      right: windowWidth - safeAreaInsets.right,
+      top: safeAreaInsets.top,
+      bottom: windowHeight - safeAreaInsets.bottom,
+      width: windowWidth - safeAreaInsets.left - safeAreaInsets.right,
+      height: windowHeight - safeAreaInsets.top - safeAreaInsets.bottom
+    };
+
     return {
       errMsg: 'getSystemInfo:ok',
-      brand: '',
+      brand: plus.device.vendor,
       model: plus.device.model,
       pixelRatio: plus.screen.scale,
       screenWidth,
       screenHeight,
-      // 安卓端 webview 宽度有时比屏幕多 1px，相比取最小值
-      // TODO screenWidth,screenHeight
-      windowWidth: screenWidth,
-      windowHeight: Math.min(screenHeight - (titleNView ? (statusBarHeight + TITLEBAR_HEIGHT)
-        : 0) - (isTabBarPage() && tabBar.visible ? TABBAR_HEIGHT : 0), screenHeight),
+      windowWidth,
+      windowHeight,
       statusBarHeight,
       language: plus.os.language,
       system: plus.os.version,
@@ -4849,7 +4935,8 @@ var serviceContext = (function () {
       platform,
       SDKVersion: '',
       windowTop: 0,
-      windowBottom: 0
+      windowBottom: 0,
+      safeArea
     }
   }
 
@@ -5058,6 +5145,8 @@ var serviceContext = (function () {
 
   const CHOOSE_LOCATION_PATH = '_www/__uniappchooselocation.html';
 
+  const MESSAGE_TYPE$1 = 'chooseLocation';
+
   function chooseLocation$1 (params, callbackId) {
     const statusBarStyle = plus.navigator.getStatusBarStyle();
     const webview = plus.webview.create(
@@ -5099,26 +5188,38 @@ var serviceContext = (function () {
         }
       });
     }
+    let index = 0;
+    let onShow = function () {
+      index++;
+      if (index === 2) {
+        webview.evalJS(`__chooseLocation__(${JSON.stringify(params)})`);
+      }
+    };
+    webview.addEventListener('loaded', onShow);
+    webview.show('slide-in-bottom', ANI_DURATION, onShow);
 
-    webview.show('slide-in-bottom', ANI_DURATION, () => {
-      webview.evalJS(`__chooseLocation__(${JSON.stringify(params)})`);
-    });
+    let result;
 
-    // fixed by hxy
-    registerPlusMessage('chooseLocation', function (res) {
-      if (res && !res.errMsg) {
+    webview.addEventListener('close', () => {
+      if (result) {
         invoke(callbackId, {
-          name: res.poiname,
-          address: res.poiaddress,
-          latitude: res.latlng.lat,
-          longitude: res.latlng.lng,
+          name: result.poiname,
+          address: result.poiaddress,
+          latitude: result.latlng.lat,
+          longitude: result.latlng.lng,
           errMsg: 'chooseLocation:ok'
         });
       } else {
-        const errMsg = res && res.errMsg ? ' ' + res.errMsg : '';
+        consumePlusMessage(MESSAGE_TYPE$1);
         invoke(callbackId, {
-          errMsg: 'chooseLocation:fail' + errMsg
+          errMsg: 'chooseLocation:fail cancel'
         });
+      }
+    });
+
+    registerPlusMessage(MESSAGE_TYPE$1, function (res) {
+      if (res && 'latlng' in res) {
+        result = res;
       }
     }, false);
   }
@@ -5883,7 +5984,8 @@ var serviceContext = (function () {
     data,
     header,
     method = 'GET',
-    responseType
+    responseType,
+    sslVerify = true
   } = {}) {
     const stream = requireNativePlugin('stream');
     const headers = {};
@@ -5923,7 +6025,9 @@ var serviceContext = (function () {
       headers,
       type: responseType === 'arraybuffer' ? 'base64' : 'text',
       // weex 官方文档未说明实际支持 timeout，单位：ms
-      timeout: timeout || 6e5
+      timeout: timeout || 6e5,
+      // 配置和weex模块内相反
+      sslVerify: !sslVerify
     };
     if (method !== 'GET') {
       options.body = data;
@@ -6005,12 +6109,49 @@ var serviceContext = (function () {
     }
   }
 
-  let socketTaskId = 0;
   const socketTasks = {};
 
   const publishStateChange$2 = (res) => {
     publish('onSocketTaskStateChange', res);
   };
+
+  let socket;
+  function getSocket () {
+    if (socket) {
+      return socket
+    }
+    socket = requireNativePlugin('uni-webSocket');
+    socket.onopen(function (e) {
+      publishStateChange$2({
+        socketTaskId: e.id,
+        state: 'open'
+      });
+    });
+    socket.onmessage(function (e) {
+      const data = e.data;
+      publishStateChange$2({
+        socketTaskId: e.id,
+        state: 'message',
+        data: typeof data === 'object' ? base64ToArrayBuffer(data.base64) : data
+      });
+    });
+    socket.onerror(function (e) {
+      publishStateChange$2({
+        socketTaskId: e.id,
+        state: 'error',
+        errMsg: e.data
+      });
+    });
+    socket.onclose(function (e) {
+      const socketTaskId = e.id;
+      delete socketTasks[socketTaskId];
+      publishStateChange$2({
+        socketTaskId,
+        state: 'close'
+      });
+    });
+    return socket
+  }
 
   const createSocketTaskById = function (socketTaskId, {
     url,
@@ -6019,39 +6160,13 @@ var serviceContext = (function () {
     method,
     protocols
   } = {}) {
-    // fixed by hxy 需要测试是否支持 arraybuffer
-    const socket = requireNativePlugin('webSocket');
-    socket.WebSocket(url, Array.isArray(protocols) ? protocols.join(',') : protocols);
-    // socket.binaryType = 'arraybuffer'
+    const socket = getSocket();
+    socket.WebSocket({
+      id: socketTaskId,
+      url,
+      protocol: Array.isArray(protocols) ? protocols.join(',') : protocols
+    });
     socketTasks[socketTaskId] = socket;
-
-    socket.onopen(function (e) {
-      publishStateChange$2({
-        socketTaskId,
-        state: 'open'
-      });
-    });
-    socket.onmessage(function (e) {
-      publishStateChange$2({
-        socketTaskId,
-        state: 'message',
-        data: e.data
-      });
-    });
-    socket.onerror(function (e) {
-      publishStateChange$2({
-        socketTaskId,
-        state: 'error',
-        errMsg: e.message
-      });
-    });
-    socket.onclose(function (e) {
-      delete socketTasks[socketTaskId];
-      publishStateChange$2({
-        socketTaskId,
-        state: 'close'
-      });
-    });
     return {
       socketTaskId,
       errMsg: 'createSocketTask:ok'
@@ -6059,13 +6174,14 @@ var serviceContext = (function () {
   };
 
   function createSocketTask (args) {
-    return createSocketTaskById(++socketTaskId, args)
+    return createSocketTaskById(String(Date.now()), args)
   }
 
   function operateSocketTask (args) {
     const {
       operationType,
       code,
+      reason,
       data,
       socketTaskId
     } = unpack(args);
@@ -6078,13 +6194,23 @@ var serviceContext = (function () {
     switch (operationType) {
       case 'send':
         if (data) {
-          socket.send(data);
+          socket.send({
+            id: socketTaskId,
+            data: typeof data === 'object' ? {
+              '@type': 'binary',
+              base64: arrayBufferToBase64(data)
+            } : data
+          });
         }
         return {
           errMsg: 'operateSocketTask:ok'
         }
       case 'close':
-        socket.close(code);
+        socket.close({
+          id: socketTaskId,
+          code,
+          reason
+        });
         delete socketTasks[socketTaskId];
         return {
           errMsg: 'operateSocketTask:ok'
@@ -8824,16 +8950,28 @@ var serviceContext = (function () {
   }
 
   function navigateBack$1 ({
+    from = 'navigateBack',
     delta,
     animationType,
     animationDuration
   }) {
     const pages = getCurrentPages();
-    const len = pages.length;
+
+    const currentPage = pages[pages.length - 1];
+    if (
+      currentPage.$vm &&
+      currentPage.$vm.$options.onBackPress &&
+      currentPage.$vm.__call_hook &&
+      currentPage.$vm.__call_hook('onBackPress', {
+        from
+      })
+    ) {
+      return
+    }
 
     uni.hideToast(); // 后退时，关闭 toast,loading
 
-    pages[len - 1].$page.meta.isQuit
+    currentPage.$page.meta.isQuit
       ? quit()
       : back(delta, animationType, animationDuration);
   }
@@ -9018,7 +9156,11 @@ var serviceContext = (function () {
     }
   });
 
-  UniServiceJSBridge.publishHandler = UniServiceJSBridge.emit; // TODO
+  function publishHandler (event, args, pageId) {
+    // TODO
+  }
+
+  UniServiceJSBridge.publishHandler = publishHandler;
   UniServiceJSBridge.invokeCallbackHandler = invokeCallbackHandler;
 
   var index = {

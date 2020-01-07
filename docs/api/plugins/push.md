@@ -1,11 +1,33 @@
 `push` 是指从服务器主动给手机端发送消息。
 
 - App平台
-`uni-app` 提供了 uni push 服务，这是一个包括客户端和服务器的统一服务，整合了苹果APNs、华为、小米、OPPO、魅族等多家厂商的推送和个推的独立推送，不管客户端还是服务器，一套代码多端推送。
 
-因本文档内容有限，单独写了一篇详细的 uni push 业务介绍，请仔细阅读 [https://ask.dcloud.net.cn/article/35622](https://ask.dcloud.net.cn/article/35622)。
+`uni-app` 提供了 uni push 服务，这是一个包括客户端和服务器的统一服务，整合了苹果APNs、华为、小米、OPPO、VIVO、魅族等多家厂商的推送和个推的独立推送，不管客户端还是服务器，一套代码多端推送。
 
-uni push 推送的开发API文档：[https://www.html5plus.org/doc/zh_cn/push.html](https://www.html5plus.org/doc/zh_cn/push.html)
+开发者可以在uniPush中只接入个推，不配置其他厂商服务，但这将导致Android上App离线后无法推送消息。因为现在的国产rom节电管理策略严格，不使用rom厂商的push基本难以离线送达消息。
+若想提供消息推送成功率，只有使用uniPush，并向各rom厂商申请开通推送服务（免费）。
+
+因本文档内容有限，另行开贴，介绍业务、开通流程，请务必仔细阅读 [https://ask.dcloud.net.cn/article/35622](https://ask.dcloud.net.cn/article/35622)。
+
+- 客户端调用的js API见：[https://www.html5plus.org/doc/zh_cn/push.html](https://www.html5plus.org/doc/zh_cn/push.html)
+- 服务器调用接口文档，仍然是个推的服务器文档[http://docs.getui.com/](http://docs.getui.com/)
+- web发送界面，在DCloud的开发者后台：[https://dev.dcloud.net.cn/](https://dev.dcloud.net.cn/)
+
+## 其他相关资源
+- 检查应用是否被授予推送权限：[https://ext.dcloud.net.cn/plugin?id=594](https://ext.dcloud.net.cn/plugin?id=594)
+- 开启关闭推送服务：[https://ext.dcloud.net.cn/plugin?id=727](https://ext.dcloud.net.cn/plugin?id=727)
+- 自定义iOS推送铃声：[https://ext.dcloud.net.cn/plugin?id=690](https://ext.dcloud.net.cn/plugin?id=690)
+- 如何自定义推送通知的图标：[https://ask.dcloud.net.cn/article/35537](https://ask.dcloud.net.cn/article/35537)
+
+插件市场也提供了其他三方推送方案，但注意unipush是推送成功率更高的解决方案，并且免费使用。不推荐开发者使用其他推送服务。
+
+但我们发现很多开发者有误解，导致还在错误使用其他推送。
+- 常见误解1：“uniPush的专业性，和专业的个推、极光等服务可相比吗？”
+答：uniPush是由个推将其本来收费的vip push产品，免费提供给了DCloud的开发者。它与个推vip push的只有2个区别：1、免费；2、账户使用的是DCloud开发者账户，而无需再重新注册个推账户。个推是A股上市公司，专业性在推送领域领先。
+- 常见误解2：“uniPush好麻烦，我就喜欢个推、极光这种简单sdk，不想去各个rom厂商去申请一圈”
+答：有此误解的开发者，根本不知道推送行业的现状。不集成rom厂商的推送，就无法在App离线时发送push。开发者可以只使用uniPush里面的个推服务，不去各个rom厂商申请推送，但你要知道这样做的后果就是在华为、小米、OPPO、VIVO、魅族上发不了离线消息。
+- 常见误解3：“uniPush的送达率还是不够，是否可以付费来提升送达率，个推是有付费提升送达率的方法的”
+答：前文已经说了。个推的付费提升送达率的产品就是vip push，而uniPush就是个推的vip Push。DCloud通过谈判免费给DCloud的开发者使用了。
 
 - 小程序平台
 
@@ -19,6 +41,7 @@ uni push 推送的开发API文档：[https://www.html5plus.org/doc/zh_cn/push.ht
 
 百度模板消息文档：[https://smartprogram.baidu.com/docs/develop/third/api/](https://smartprogram.baidu.com/docs/develop/third/api/)
 
+<!--
 **注意：以下API暂停维护，仅为向下兼容而保留。App端 uni push 的API请使用 [https://www.html5plus.org/doc/zh_cn/push.html](https://www.html5plus.org/doc/zh_cn/push.html)**
 
 ### uni.subscribePush(OBJECT)
@@ -26,7 +49,7 @@ uni push 推送的开发API文档：[https://www.html5plus.org/doc/zh_cn/push.ht
 开启推送
 
 平台差异说明：
-- 5+App
+- App
 
 **OBJECT 参数说明**
 
@@ -64,7 +87,7 @@ uni.getProvider({
 
 **平台差异说明**
 
-- 5+App
+- App
 
 **OBJECT 参数说明**
 
@@ -92,7 +115,7 @@ uni.unsubscribePush({
 
 **平台差异说明**
 
-- 5+App
+- App
 
 **OBJECT 参数说明**
 
@@ -124,7 +147,7 @@ uni.onPush({
 
 **平台差异说明**
 
-- 5+App
+- App
 
 **OBJECT 参数说明**
 
@@ -148,7 +171,7 @@ uni.offPush({
 	}
 });
 ```
-
+-->
 
 ##### FAQ
 

@@ -25,11 +25,19 @@ export default function parsePage (vuePageOptions) {
     initRelation
   })
 
+  // 纠正百度小程序生命周期methods:onShow在methods:onLoad之前触发的问题
+  pageOptions.methods.onShow = function onShow () {
+    if (this.$vm && this.$vm.$mp.query) {
+      this.$vm.__call_hook('onShow')
+    }
+  }
+
   pageOptions.methods.onLoad = function onLoad (args) {
     // 百度 onLoad 在 attached 之前触发，先存储 args, 在 attached 里边触发 onLoad
     if (this.$vm) {
       this.$vm.$mp.query = args
       this.$vm.__call_hook('onLoad', args)
+      this.$vm.__call_hook('onShow')
     } else {
       this.pageinstance._$args = args
     }

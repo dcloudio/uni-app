@@ -1,8 +1,6 @@
 module.exports = (api, options, rootOptions) => {
-  let version = '*'
-  if (require('./package.json').version.indexOf('alpha') !== -1) {
-    version = '^1.0.0-alpha-22120190814001'
-  }
+  const mainVersion = require('./package.json').version
+  const version = '^' + mainVersion
   api.extendPackage(pkg => {
     delete pkg.postcss
     delete pkg.browserslist
@@ -43,14 +41,17 @@ module.exports = (api, options, rootOptions) => {
       },
       devDependencies: {
         '@dcloudio/uni-cli-shared': version,
+        '@dcloudio/uni-migration': version,
         '@dcloudio/uni-template-compiler': version,
+        '@dcloudio/vue-cli-plugin-hbuilderx': version,
+        '@dcloudio/vue-cli-plugin-uni': version,
+        '@dcloudio/vue-cli-plugin-uni-optimize': version,
         '@dcloudio/webpack-uni-mp-loader': version,
         '@dcloudio/webpack-uni-pages-loader': version,
         'babel-plugin-import': '^1.11.0'
       },
       browserslist: [
-        'last 3 versions',
-        'Android >= 4.4',
+        'Android >= 4',
         'ios >= 8'
       ]
     }

@@ -1,15 +1,32 @@
 import {
-  isPlainObject
-}
-  from 'uni-shared'
-
-import {
   parseWebviewStyle
 } from './parser/webview-style-parser'
 
 import {
-  publish
-} from '../../bridge'
+  initSubNVues
+} from './parser/sub-nvue-parser'
+
+import {
+  VIEW_WEBVIEW_PATH
+} from '../../constants'
+
+import {
+  onWebviewClose
+} from './on-webview-close'
+
+import {
+  onWebviewResize
+} from './on-webview-resize'
+
+import {
+  onWebviewRecovery
+} from './on-webview-recovery'
+
+import {
+  onWebviewPopGesture
+} from './on-webview-pop-gesture'
+
+export let preloadWebview
 
 let id = 2
 
@@ -20,28 +37,51 @@ const WEBVIEW_LISTENERS = {
   'titleNViewSearchInputClicked': 'onNavigationBarSearchInputClicked'
 }
 
-export function createWebview (path, routeOptions) {
-  const webviewId = id++
-  const webviewStyle = parseWebviewStyle(
-    webviewId,
-    path,
-    routeOptions
-  )
-  if (process.env.NODE_ENV !== 'production') {
-    console.log(`[uni-app] createWebview`, webviewId, path, webviewStyle)
-  }
-  const webview = plus.webview.create('', String(webviewId), webviewStyle)
+export function setPreloadWebview (webview) {
+  preloadWebview = webview
+}
 
+export function createWebview (path, routeOptions) {
+  if (routeOptions.meta.isNVue) {
+    const webviewId = id++
+    const webviewStyle = parseWebviewStyle(
+      webviewId,
+      path,
+      routeOptions
+    )
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`[uni-app] createWebview`, webviewId, path, webviewStyle)
+    }
+    return plus.webview.create('', String(webviewId), webviewStyle, {
+      nvue: true
+    })
+  }
+  if (id === 2) { // 如果首页非 nvue，则直接返回 Launch Webview
+    return plus.webview.getLaunchWebview()
+  }
+  const webview = preloadWebview
   return webview
 }
 
-export function initWebview (webview, routeOptions) {
-  if (isPlainObject(routeOptions)) {
+export function initWebview (webview, routeOptions, url = '') {
+  // 首页或非 nvue 页面
+  if (webview.id === '1' || !routeOptions.meta.isNVue) {
     const webviewStyle = parseWebviewStyle(
       parseInt(webview.id),
       '',
       routeOptions
     )
+    if (url) {
+      const part = url.split('?')
+      webviewStyle.debugRefresh = {
+        isTab: routeOptions.meta.isTabBar,
+        arguments: JSON.stringify({
+          path: part[0].substr(1),
+          query: part[1] || ''
+        })
+      }
+    }
+
     if (process.env.NODE_ENV !== 'production') {
       console.log(`[uni-app] updateWebview`, webviewStyle)
     }
@@ -54,28 +94,22 @@ export function initWebview (webview, routeOptions) {
     emit
   } = UniServiceJSBridge
 
-  // TODO subNVues
+  initSubNVues(routeOptions, webview)
+
   Object.keys(WEBVIEW_LISTENERS).forEach(name => {
     webview.addEventListener(name, (e) => {
       emit(WEBVIEW_LISTENERS[name], e, parseInt(webview.id))
     })
   })
 
-  webview.addEventListener('resize', ({
-    width,
-    height
-  }) => {
-    const res = {
-      size: {
-        windowWidth: Math.ceil(width),
-        windowHeight: Math.ceil(height)
-      }
-    }
-    publish('onViewDidResize', res)
-    emit('onResize', res, parseInt(webview.id))
-  })
+  onWebviewClose(webview)
+  onWebviewResize(webview)
 
-  // TODO 应该结束之前未完成的下拉刷新
+  if (plus.os.name === 'iOS') {
+    !webview.nvue && onWebviewRecovery(webview, routeOptions)
+    onWebviewPopGesture(webview)
+  }
+
   on(webview.id + '.startPullDownRefresh', () => {
     webview.beginPullToRefresh()
   })
@@ -85,4 +119,26 @@ export function initWebview (webview, routeOptions) {
   })
 
   return webview
+}
+
+export function createPreloadWebview () {
+  if (!preloadWebview || preloadWebview.__uniapp_route) { // 不存在，或已被使用
+    preloadWebview = plus.webview.create(VIEW_WEBVIEW_PATH, String(id++))
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`[uni-app] preloadWebview[${preloadWebview.id}]`)
+    }
+  }
+  return preloadWebview
+}
+
+const webviewReadyCallbacks = {}
+
+export function registerWebviewReady (pageId, callback) {
+  (webviewReadyCallbacks[pageId] || (webviewReadyCallbacks[pageId] = [])).push(callback)
+}
+
+export function consumeWebviewReady (pageId) {
+  const callbacks = webviewReadyCallbacks[pageId]
+  Array.isArray(callbacks) && callbacks.forEach(callback => callback())
+  delete webviewReadyCallbacks[pageId]
 }

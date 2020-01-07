@@ -3,9 +3,9 @@
 
 **平台差异说明**
 
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|
-|√|x|√|x|√|√|
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|√|x|√|x|√|√|√|
 
 **recorderManager 对象的方法列表**
 
@@ -18,7 +18,7 @@
 |onStart|callback|录音开始事件||
 |onPause|callback|录音暂停事件||
 |onStop|callback|录音停止事件，会回调文件地址||
-|onFrameRecorded|callback|已录制完指定帧大小的文件，会回调录音分片结果数据。如果设置了 frameSize ，则会回调此事件|5+App 暂不支持|
+|onFrameRecorded|callback|已录制完指定帧大小的文件，会回调录音分片结果数据。如果设置了 frameSize ，则会回调此事件|App 暂不支持|
 |onError|callback|录音错误事件, 会回调错误信息|&nbsp;|
 
 **start(options) 说明**
@@ -65,6 +65,10 @@
 |属性|类型|说明|
 |:-|:-|:-|
 |errMsg|String|错误信息|
+
+**注意**
+
+- 可以通过用户授权API来判断用户是否给应用授予麦克风的访问权限[https://uniapp.dcloud.io/api/other/authorize](https://uniapp.dcloud.io/api/other/authorize)
 
 **示例**
 

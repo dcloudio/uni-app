@@ -1,6 +1,6 @@
 #### picker
 
-从底部弹起的滚动选择器，现支持五种选择器，通过mode来区分，分别是普通选择器，多列选择器，时间选择器，日期选择器，省市区选择器，默认是普通选择器。
+从底部弹起的滚动选择器。支持五种选择器，通过mode来区分，分别是普通选择器，多列选择器，时间选择器，日期选择器，省市区选择器，默认是普通选择器。
 
 **普通选择器**
 
@@ -17,6 +17,7 @@
 |disabled|Boolean|false|是否禁用|
 |@cancel|EventHandle||取消选择或点遮罩层收起 picker 时触发|
 
+- picker在各平台的实现是有UI差异的，有的平台如百度、支付宝小程序的Android端是从中间弹出的；有的平台支持循环滚动如微信、百度小程序；有的平台没有取消按钮如App端。但均不影响功能使用。
 
 **多列选择器**
 
@@ -24,10 +25,11 @@
 
 **平台差异说明**
 
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|
-|√|√|√|x|√|√|
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|vue支持，nvue自2.4起支持|√|√|x|√|√|√|
 
+支付宝小程序 picker 组件不支持多列选择，可以使用 picker-view 组件替代。
 
 **属性说明**
 
@@ -51,17 +53,19 @@
 
 **平台差异说明**
 
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|
-|√|√|√|x|√|√|
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|√|√|√|√|√|√|√|
+
+- 时间选择在App端调用的是os的原生时间选择控件，在不同平台有不同的ui表现
 
 **属性说明**
 
 |属性名|类型|默认值|说明|平台差异说明|
 |:-|:-|:-|:-|:-|
 |value|String||表示选中的时间，格式为"hh:mm"||
-|start|String||表示有效时间范围的开始，字符串格式为"hh:mm"|5+App 不支持|
-|end|String||表示有效时间范围的结束，字符串格式为"hh:mm"|5+App 不支持|
+|start|String||表示有效时间范围的开始，字符串格式为"hh:mm"|App 不支持|
+|end|String||表示有效时间范围的结束，字符串格式为"hh:mm"|App 不支持|
 |@change|EventHandle||value 改变时触发 change 事件，event.detail = {value: value}||
 |@cancel|EventHandle||取消选择时触发||
 |disabled|Boolean|false|是否禁用|&nbsp;|
@@ -72,9 +76,11 @@
 
 **平台差异说明**
 
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|
-|√|√|√|x|√|√|
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|√|√|√|√|√|√|√|
+
+- 日期选择在App端调用的是os的原生日期选择控件，在不同平台有不同的ui表现。
 
 **属性说明**
 
@@ -102,13 +108,11 @@
 
 **平台差异说明**
 
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|
-|x|x|√|x|√|√|
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|x|x|√|x|√|√|√|
 
-- 因省市区选择器包含大量数据，占用体积，且很多城市数据有自维护需求，所以在App和H5平台没有内置。有两种方案解决：
-	1. 使用mpvue-picker代替，全端通用，自定义性更强，参考： Hello uni-app的模板-多列选择picker，或[插件市场](https://ext.dcloud.net.cn/plugin?id=115)。手机预览网址：[https://uniapp.dcloud.io/h5/pages/template/mpvue-picker/mpvue-picker](https://uniapp.dcloud.io/h5/pages/template/mpvue-picker/mpvue-picker)
-	2. 在H5和App平台使用多列选择器，自行填充城市数据（上述mpvue-picker或hello uni-app自带城市数据city.data.js）
+- 因省市区选择器包含大量数据，占用体积，并非所有应用都需要，且很多城市数据有自维护需求，所以在App和H5平台没有内置。可以基于多列picker或picker-view，自行填充城市数据，插件市场有较多类似插件，[详见](https://ext.dcloud.net.cn/search?q=%E5%9F%8E%E5%B8%82%E9%80%89%E6%8B%A9)。注意基于多列picker方式的地区选择不能运行在支付宝小程序上，只有基于picker-view的可以全端运行。这些插件中，比较推荐的是[SimpleJalon的地址联动选择插件](https://ext.dcloud.net.cn/plugin?id=1084)，它可以同时兼容app-nvue、app-vue、h5、及各端小程序。
 
 |属性名|类型|默认值|说明|
 |:-|:-|:-|:-|
@@ -118,7 +122,7 @@
 |@cancel|EventHandle||取消选择时触发|
 |disabled|Boolean|false|是否禁用|
 
-**示例**
+**示例** [查看演示](https://uniapp.dcloud.io/h5/pages/component/picker/picker)
  
 ```html
 <template>
@@ -227,4 +231,4 @@ export default {
 
 **注意**
 - 在picker内容还在滚动时或滚动回弹动画还未结束时，点确定关闭弹出的picker，数据无法及时更新。需等待一下，或手动触停滚动再点确定。所有平台均如此
-- app-nvue 平台，mode 目前仅支持 ``selector`` ``time`` ``date``
+- 如果需要在PC端使用`picker`，需注意pc端没有touchmove事件，可以配置[H5模版](https://uniapp.dcloud.io/collocation/manifest?id=h5-template)，并引入[touch-emulator.js](https://github.com/dcloudio/touchemulator)来解决。hello uni-app的pc版也是使用了这个方案。

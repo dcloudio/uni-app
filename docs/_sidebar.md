@@ -1,5 +1,6 @@
 * [什么是 uni-app](README.md)
 * [快速上手](quickstart.md)
+* [uni-app的由来](history.md)
 * [如何学习](resource.md)
 * [框架简介](frame.md)
 * [使用 Vue.js 注意事项](use.md)
@@ -16,7 +17,7 @@
 * [从其他项目转uni-app](translate.md)
 * [选型评估指南](select.md)
 * [常见问题](faq.md)
-* [更新日志](//uniapp.dcloud.io/release)
+* [更新日志](release.md)
 <!-- * [更新日志](//update.dcloud.net.cn/hbuilderx/changelog/2.1.1.20190716.html) -->
 <!--  <li><a id="update-hock" href="javascript:;" target="__blank">更新日志</a></li> -->
   <li class="show-sponsor-in-phone show-last"><a href="//ext.dcloud.net.cn/" target="__blank">插件市场</a></li>

@@ -1,3 +1,6 @@
+const fs = require('fs')
+const path = require('path')
+
 const {
   manifestPlatformOptions
 } = require('./lib/env')
@@ -18,18 +21,40 @@ module.exports = (api, options) => {
 
   const platformOptions = require('./lib/' + process.env.UNI_PLATFORM)
 
-  Object.assign(options, {
+  let vueConfig = platformOptions.vueConfig
+
+  if (typeof vueConfig === 'function') {
+    vueConfig = vueConfig(options, api)
+  }
+
+  Object.assign(options, { // TODO 考虑非 HBuilderX 运行时，可以支持自定义输出目录
     outputDir: process.env.UNI_OUTPUT_TMP_DIR || process.env.UNI_OUTPUT_DIR,
     assetsDir
-  }, platformOptions.vueConfig)
+  }, vueConfig)
 
   require('./lib/options')(options)
 
-  api.configureWebpack(require('./lib/configure-webpack')(platformOptions, manifestPlatformOptions))
-  api.chainWebpack(require('./lib/chain-webpack')(platformOptions))
+  api.configureWebpack(require('./lib/configure-webpack')(platformOptions, manifestPlatformOptions, options, api))
+  api.chainWebpack(require('./lib/chain-webpack')(platformOptions, options, api))
+
+  if (
+    process.env.UNI_PLATFORM === 'h5' ||
+    (
+      process.env.UNI_PLATFORM === 'app-plus' &&
+      process.env.UNI_USING_V3
+    )
+  ) {
+    const migrate = require('@dcloudio/uni-migration')
+    const wxcomponents = path.resolve(process.env.UNI_INPUT_DIR, 'wxcomponents')
+    if (fs.existsSync(wxcomponents)) { // 转换 mp-weixin 小程序组件
+      migrate(wxcomponents, false, {
+        silent: true // 不输出日志
+      })
+    }
+  }
 }
 
 module.exports.defaultModes = {
-  serve: 'development',
-  build: 'production'
+  'uni-serve': 'development',
+  'uni-build': process.env.NODE_ENV
 }

@@ -50,25 +50,15 @@ var socketTask = uni.connectSocket({
 **注意事项**
 
 - 网络请求的 ``超时时间`` 可以统一在 ``manifest.json`` 中配置 [networkTimeout](/collocation/manifest?id=networktimeout)。
-- 目前不支持 ``ArrayBuffer`` 类型的数据收发，可以使用 [plus-websocket](http://ext.dcloud.net.cn/plugin?id=647) 插件替代。
-- 自定义组件模式下是基于 `weex` 的 `v8` 引擎运行，所有 `vue` 页面的 `js` 都是在同一个 `weex` 的 `js` 环境中运行。目前 `weex` 限制一个 `js` 环境中只支持一个 `websocket` 连接，所以导致所有 `vue` 页面只能使用一个 `websocket` 连接。
+- App平台，2.2.6以下的版本，不支持 ``ArrayBuffer`` 类型的数据收发。老版本不愿升级也可以使用 [plus-websocket插件](https://ext.dcloud.net.cn/plugin?id=647) 插件替代。
+- App平台自定义组件模式下，以及支付宝小程序下，所有 `vue` 页面只能使用一个 `websocket` 连接。App下可以使用 [plus-websocket](https://ext.dcloud.net.cn/plugin?id=647) 插件替代实现多链接。App平台，2.2.6+起支持多个socket链接，数量没有限制。
+- 微信小程序平台1.7.0 及以上版本，最多可以同时存在5个WebSocket 连接。老版本只支持一个socket连接
+- 百度小程序平台自基础库版本 1.9.4 及以后支持多个socket连接。老版本只支持一个socket连接
+- QQ小程序平台最多支持同时存在5个socket链接
 
-**临时解决方案：**
-
-	- 回退使用非自定义组件模式（不推荐）
-	- 多个 websocket 在独立的 nvue 页面中使用
-    - 使用 [plus-websocket](http://ext.dcloud.net.cn/plugin?id=647) 插件替代
-	
-后续我们会修改 `weex` 的限制，以支持多个 `websocket` 连接
 
 ### uni.onSocketOpen(CALLBACK)
 监听WebSocket连接打开事件。
-
-**平台差异说明**
-
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|
-|√|√|√|√|√|√|
 
 **CALLBACK 返回参数**
 
@@ -91,12 +81,6 @@ uni.onSocketOpen(function (res) {
 ### uni.onSocketError(CALLBACK)
 监听WebSocket错误。
 
-**平台差异说明**
-
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|
-|√|√|√|√|√|√|
-
 **示例代码**
 
 ```javascript
@@ -113,12 +97,6 @@ uni.onSocketError(function (res) {
 
 ### uni.sendSocketMessage(OBJECT)
 通过 WebSocket 连接发送数据，需要先 [uni.connectSocket](/api/request/websocket?id=connectsocket)，并在 [uni.onSocketOpen](/api/request/websocket?id=onsocketopen) 回调之后才能发送。
-
-**平台差异说明**
-
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|
-|√|√|√|√|√|√|
 
 **OBJECT 参数说明：**
 
@@ -161,12 +139,6 @@ function sendSocketMessage(msg) {
 ### uni.onSocketMessage(CALLBACK)
 监听WebSocket接受到服务器的消息事件。
 
-**平台差异说明**
-
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|
-|√|√|√|√|√|√|
-
 **CALLBACK 返回参数**
 
 |参数|类型|说明|
@@ -188,12 +160,6 @@ uni.onSocketMessage(function (res) {
 ### uni.closeSocket(OBJECT)
 关闭 WebSocket 连接。
 
-**平台差异说明**
-
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|
-|√|√|√|√|√|√|
-
 **OBJECT 参数说明**
 
 |参数名|类型|必填|说明|
@@ -206,12 +172,6 @@ uni.onSocketMessage(function (res) {
 
 ### uni.onSocketClose(CALLBACK)
 监听WebSocket关闭。
-
-**平台差异说明**
-
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|
-|√|√|√|√|√|√|
 
 ```javascript
 uni.connectSocket({

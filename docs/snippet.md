@@ -90,33 +90,35 @@ uni.showToast({
 
 ### 使用 Chrome 调试 H5
 
-进入 ``uni-app`` 项目，点击工具栏的运行 -> 运行到浏览器 -> 选择 Chrome，即可将 uni-app运行到 浏览器，可参考 [运行uni-app](/quickstart?id=运行uni-app)，运行到浏览器后，就能和普通 web 项目一样进行预览和调试了。
+进入 ``uni-app`` 项目，`点击工具栏的运行 -> 运行到浏览器 -> 选择 Chrome`，即可将 `uni-app`运行到 浏览器，可参考 [运行uni-app](/quickstart?id=运行uni-app)，运行到浏览器后，就能和普通 `web` 项目一样进行预览和调试了。
 
-**注意**：Chrome调试只能保证样式一致，部分原生能力是不支持的。
+点 `Chrome` 控制台的 `Sources` 栏，可以给 js 打断点调试。
 
-点 Chrome 控制台的 Sources 栏，可以给 js 打断点调试。
-
-在 Page 下找到 webpack 里的工程目录，可直接找到对应的vue页面进行断点调试；或按 Ctrl+P搜文件名，进入页面调试；也可点击控制台的 log 信息，进入对应的页面进行调试。
+在 `Page` 下找到 `webpack` 里的工程目录，可直接找到对应的`vue`页面进行断点调试；或按 `Ctrl+P`搜文件名，进入页面调试；也可点击控制台的 `log` 信息，进入对应的页面进行调试。
 
 ![](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/chrome-debug1.png)
 
 ![](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/chrome-debug2.png)
 
+点击HBuilderX的右上角的预览按钮，可以在内置浏览器里打开H5运行结果，也可以点右键打开控制台调试，方法同上。
+
 ### 使用各家小程序开发工具调试
 
 ``uni-app`` 运行到微信web开发者工具等小程序开发工具里，可在这些工具的控制台查看 ``console`` 信息，网络请求等信息等。
 
-页面样式调试和一般的web项目一样，通过调试的箭头选中元素即可查看相应的节点和样式，如下图：
+页面样式调试和一般的`web`项目一样，通过调试的箭头选中元素即可查看相应的节点和样式，如下图：
 
 ![uni-app](//img-cdn-qiniu.dcloud.net.cn/uniapp/doc/debug1.png)
 
-调试 js 时需要切换到 Sources 栏，选中想要调试的那个页面的js，进行调试（如果js代码是压缩过的，点击右下角的{}可格式化代码），如下图：
+调试 `js` 时需要切换到 `Sources` 栏，根据sourcemap，找到 `webpack` 里正确的目录，选中想要调试的那个页面的`js`，进行调试（如果`js`代码是压缩过的，点击右下角的{}可格式化代码），如下图：
 
 ![uni-app](//img-cdn-qiniu.dcloud.net.cn/uniapp/doc/debug2.png)
 
-### 关于 App 的调试
+### 关于 App 的调试debug
 
-自 `HBuilderX 2.0.3+ Alpha` 版本起开始支持 `App` 端的调试 
+常规开发里，在HBuilderX的运行菜单里运行App，手机端的错误或console.log日志信息会直接打印到控制台。
+
+如果需要更多功能，比如审查元素、打断点debug，则需要启动调试模式。自 `HBuilderX 2.0.3+` 版本起开始支持 `App` 端的调试。
 
 #### 打开调试窗口
 在 `HBuilderX` 中，正确运行项目： `运行 --> 运行到手机或模拟器 --> 选择设备`，项目启动后，在下方的控制台选择 `debug` 图标。
@@ -126,10 +128,27 @@ uni.showToast({
 正确打开调试窗口后，显示如下：
 ![debug](//img-cdn-qiniu.dcloud.net.cn/uniapp/doc/csdndebug-window.png)
 
-#### 调试页面
-在调试窗口控制台的 Sources （图中指示1） 栏，可以给 js 打断点调试。
+#### Elements
 
-在 uniapp:// （图中指示2）下找到需要调试的页面，单击打开 ，在右侧可以看到我们需要调试的内容（图中指示3）。在需要调试的代码行号的位置，点击打上断点（图中指示4）。
+根据上一步，启动完成`debug`窗口后，可以看到`Elements`。`Elements` 主要显示当前页面的组织结构，目前`Elements`只支持`nvue`。
+![debug](//img-cdn-qiniu.dcloud.net.cn/uniapp/doc/debug-elements.png)
+
+#### console.log打日志
+`console.log`是我们日常开发最常用的调试方法，`HBuilderX`中当然也不能少。
+- App端提供真机运行的`console.log`日志输出，运行到真机或模拟器时，不用点`debug`按钮，操作手机，会在`HBuilderX`的控制台直接输出日志。
+
+- 如果是比较复杂的逻辑，那就推荐使用调试工具中的`console`了。根据上一步，启动完成`debug`窗口后，执行`console.log`方法就可以看到打印的内容了。
+
+`debug`窗口中看`console.log`的方法如下图：
+
+![debug](//img-cdn-qiniu.dcloud.net.cn/uniapp/doc/debug-console-new.jpg)
+
+
+
+#### 调试页面
+在调试窗口控制台的 `Sources` （图中指示1） 栏，可以给 `js` 打断点调试。
+
+在 `uniapp`（图中指示2）下找到需要调试的页面，单击打开 ，在右侧可以看到我们需要调试的内容（图中指示3）。在需要调试的代码行号的位置，点击打上断点（图中指示4）。
 
 ![debug](//img-cdn-qiniu.dcloud.net.cn/uniapp/doc/csdndebug-log.png)
 
@@ -137,22 +156,26 @@ uni.showToast({
 
 ![debug](//img-cdn-qiniu.dcloud.net.cn/uniapp/doc/csdndebug-breakpoint.png)
 
+#### 同步断点到调试器
+在控制台众多代码中寻找要调试的代码是比较麻烦的一件事，`HBuilderX`的调试还提供一个便利的功能，可直接在编辑器中打断点，断点会自动同步到调试工具中。
+
+操作步骤：在HBuilderX编辑器中对目标行的行号处点右键，在右键菜单中选择“同步断点到调试器”，然后调试控制台会自动打开对应的代码并在指定行处标记断点。演示如下：
+
+![debug](//img-cdn-qiniu.dcloud.net.cn/uniapp/doc/debug-console-light.gif)
+
+
 Tip 
-- 不支持非自定义组件模式
-- `vue` 和 `nvue` 页面都能打断点调试
-- 目前仅支持 `nvue` 页面查看元素，`vue` 页面暂不支持，`Android` 暂不支持查看 `style`
+- `debug`仅支持自定义组件模式。如果是非自定义组件模式，请在`manifest`里配置选为自定义组件模式。非自定义组件模式即将停止支持，[详见](https://ask.dcloud.net.cn/article/36385)
+- `vue` 和 `nvue` 页面均支持断点调试
+- 目前仅支持 `nvue` 页面审查元素，`vue` 页面暂不支持，以及 `Android` 平台的 `nvue` 审查元素暂不支持查看 `style`
+- App端提供真机运行的`console.log`日志输出，运行到真机或模拟器时，不用点`debug`按钮，运行手机App，会在`HBuilderX`的控制台直接输出日志。
+- 如果是调试`App`的界面和常规API，推荐编译到H5端，点`HBuilderX`右上角的预览，在内置浏览器里调`Dom`，保存后立即看到结果，调试更方便。并且H5端也支持`titleNView`的各种复杂设置。唯一要注意的就是`css`兼容性，使用太新的`css`在`pc`上预览可能正常，但低端`Android`上异常，具体可查询`caniuse`等网站。
+- 常用的开发模式就是`pc`上使用内置浏览器预览调dom，运行到真机上看`console.log`。如果是很复杂的问题才使用`debug`。
+- vue页面也可以在微信开发者工具里调试，除了plus API，其他是一样的，微信开发者工具的查看`Dom`和网络和存储等调试工具相对而言更完善些。
+注意：即使不发布微信小程序、只发布`App`，也需要安装微信开发者工具。
+- uni-app的App端没有App那种webkit remote debug，因为uni-app的js不是运行在webview里，而是独立的jscore里。
+- 部分manifest配置，如三方sdk配置，需要打包后生效的，可以打包一个自定义运行基座。打包自定义基座后运行这个自定义基座，同样可以真机运行和debug。打包正式包将无法真机运行和debug。
 
-<!-- uni-app的App端没有webview调试（即webkit remote debug）。
-
-- App端提供真机运行的console.log日志输出，运行到真机或模拟器时，会在HBuilderX的控制台输出日志。（如果使用老版的非自定义组件编译模式，无法输出对象，需要把对象转字符串后输出）
-- 如果是调App的界面和常规API，推荐编译到H5端，用Chrome调Dom，保存后立即看到结果，调试更方便。并且H5端也支持titleNView的各种复杂设置。
-- 如果是调与手机能力有关的JS API，那么 uni 部分的js api可以使用微信开发者工具调试，因为uni-app 的 App端引擎实际上是一个强化的小程序引擎，所以可以使用微信开发者工具进行debug调试、查看Dom和网络和存储。
-- 如果是调plus专用的API，目前只能在控制台打log
-- 如果是调nvue，可以使用weex的调试工具，[详见](https://weex.apache.org/zh/tools/toolkit.html)
-
-一般推荐的做法是在PC的Chrome下开发测试，基本完成后运行到微信工具测试，最后再上真机运行看兼容性问题。但此时务必注意css兼容性问题，不要使用太新的css，否则在低版本Android上会不兼容。
-
-注意：即使不发布微信小程序、只发布App，也需要安装微信开发者工具。 -->
 
 ### 持续集成
 

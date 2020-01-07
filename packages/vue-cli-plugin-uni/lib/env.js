@@ -1,4 +1,7 @@
+const fs = require('fs')
 const path = require('path')
+const mkdirp = require('mkdirp')
+const loaderUtils = require('loader-utils')
 
 // 初始化环境变量
 const defaultInputDir = '../../../../src'
@@ -26,10 +29,14 @@ process.env.UNI_CLI_CONTEXT = path.resolve(__dirname, '../../../../')
 
 process.UNI_LIBRARIES = process.UNI_LIBRARIES || ['@dcloudio/uni-ui']
 
+if (process.env.NODE_ENV === 'production') { // 发行模式,不启用 cache
+  delete process.env.UNI_USING_CACHE
+}
+
 const {
   isSupportSubPackages,
   runByHBuilderX,
-  isInHBuilderXAlpha,
+  // isInHBuilderXAlpha,
   getPagesJson,
   getManifestJson
 } = require('@dcloudio/uni-cli-shared')
@@ -65,12 +72,14 @@ process.UNI_STAT_CONFIG = {
   appid: manifestJsonObj.appid
 }
 
-// fixed by hxy alpha 版默认启用新的框架
-if (isInHBuilderXAlpha) {
-  if (!platformOptions.hasOwnProperty('usingComponents')) {
-    platformOptions.usingComponents = true
-  }
+// 默认启用 自定义组件模式
+// if (isInHBuilderXAlpha) {
+let usingComponentsAbsent = false
+if (!platformOptions.hasOwnProperty('usingComponents')) {
+  usingComponentsAbsent = true
 }
+platformOptions.usingComponents = true
+// }
 
 if (process.env.UNI_PLATFORM === 'h5') {
   const optimization = platformOptions.optimization
@@ -101,18 +110,34 @@ if (process.env.UNI_PLATFORM === 'h5') {
       process.env.UNI_OPT_PRELOAD = true
     }
   }
+  const buffer = fs.readFileSync(require.resolve('@dcloudio/uni-h5/dist/index.css'))
+  process.env.VUE_APP_INDEX_CSS_HASH = loaderUtils.getHashDigest(buffer, 'md5', 'hex', 8)
 }
 
 if (process.env.UNI_PLATFORM === 'mp-qq') { // QQ小程序 强制自定义组件模式
   platformOptions.usingComponents = true
 }
 
-let isNVueCompiler = false
+let isNVueCompiler = true
 if (process.env.UNI_PLATFORM === 'app-plus') {
-  if (platformOptions.nvueCompiler === 'uni-app') {
-    isNVueCompiler = true
+  if (platformOptions.nvueCompiler === 'weex') {
+    isNVueCompiler = false
+  }
+  if (platformOptions.renderer !== 'native' && // 非 native
+    (
+      platformOptions.compilerVersion === '3' ||
+      platformOptions.compilerVersion === 3
+    )
+  ) {
+    delete process.env.UNI_USING_CACHE
+    process.env.UNI_USING_V3 = true
+    platformOptions.usingComponents = true
+    process.env.UNI_OUTPUT_TMP_DIR = ''
+    isNVueCompiler = true // v3 目前仅支持 uni-app 模式
   }
   if (platformOptions.renderer === 'native') {
+    // 纯原生目前不提供 cache
+    delete process.env.UNI_USING_CACHE
     process.env.UNI_USING_NATIVE = true
     process.env.UNI_USING_V8 = true
     process.env.UNI_OUTPUT_TMP_DIR = ''
@@ -120,9 +145,9 @@ if (process.env.UNI_PLATFORM === 'app-plus') {
 } else { // 其他平台，待确认配置方案
   if (
     manifestJsonObj['app-plus'] &&
-    manifestJsonObj['app-plus']['nvueCompiler'] === 'uni-app'
+    manifestJsonObj['app-plus']['nvueCompiler'] === 'weex'
   ) {
-    isNVueCompiler = true
+    isNVueCompiler = false
   }
 }
 
@@ -139,16 +164,18 @@ if (platformOptions.usingComponents === true) {
   }
 }
 
-if (process.env.UNI_USING_COMPONENTS || process.env.UNI_PLATFORM === 'h5') { // 自定义组件模式或 h5 平台
+if (
+  process.env.UNI_USING_COMPONENTS ||
+  process.env.UNI_PLATFORM === 'h5'
+) { // 自定义组件模式或 h5 平台
   const uniStatistics = Object.assign(
     manifestJsonObj.uniStatistics || {},
     platformOptions.uniStatistics || {}
   )
 
   if (uniStatistics.enable !== false) {
-    if (process.UNI_STAT_CONFIG.appid) {
-      process.env.UNI_USING_STAT = true
-    } else {
+    process.env.UNI_USING_STAT = true
+    if (!process.UNI_STAT_CONFIG.appid && process.env.NODE_ENV === 'production') {
       console.log()
       console.warn(`当前应用未配置Appid，无法使用uni统计，详情参考：https://ask.dcloud.net.cn/article/36303`)
       console.log()
@@ -168,42 +195,88 @@ if (process.env.UNI_USING_COMPONENTS) { // 是否启用分包优化
   }
 }
 
-// 输出编译器版本等信息
-if (process.env.UNI_PLATFORM !== 'h5') {
-  try {
-    const modeText = '当前项目编译模式：' +
-      (platformOptions.usingComponents ? '自定义组件模式' : '非自定义组件模式') +
-      '。编译模式差异见：https://ask.dcloud.net.cn/article/35843'
+const warningMsg =
+  usingComponentsAbsent
+    ? `该应用之前可能是非自定义组件模式，目前以自定义组件模式运行。非自定义组件将于2019年11月1日起停止支持。详见：https://ask.dcloud.net.cn/article/36385`
+    : `uni-app将于2019年11月1日起停止支持非自定义组件模式 [详情](https://ask.dcloud.net.cn/article/36385)`
 
+const needWarning = !platformOptions.usingComponents || usingComponentsAbsent
+let hasNVue = false
+// 输出编译器版本等信息
+if (process.env.UNI_USING_NATIVE) {
+  console.log('当前nvue编译模式：' + (isNVueCompiler ? 'uni-app' : 'weex') +
+    ' 。编译模式差异见：https://ask.dcloud.net.cn/article/36074')
+} else if (process.env.UNI_PLATFORM !== 'h5') {
+  try {
     let info = ''
     if (process.env.UNI_PLATFORM === 'app-plus') {
       const pagesPkg = require('@dcloudio/webpack-uni-pages-loader/package.json')
       if (pagesPkg) {
-        info = '编译器版本：' + pagesPkg['uni-app']['compilerVersion']
+        const v3Tips = `（v3）详见：https://ask.dcloud.net.cn/article/36599。`
+        info = '编译器版本：' + pagesPkg['uni-app']['compilerVersion'] + (process.env.UNI_USING_V3 ? v3Tips : '')
       }
-      const glob = require('glob')
-      if (glob.sync('pages/**/*.nvue', {
-        cwd: process.env.UNI_INPUT_DIR
-      }).length) {
+      if (process.env.UNI_USING_V3) {
         console.log(info)
-        console.log(modeText)
-
-        console.log('当前nvue编译模式：' + (isNVueCompiler ? 'uni-app' : 'weex') +
-          ' 。编译模式差异见：https://ask.dcloud.net.cn/article/36074')
       } else {
-        console.log(info + '，' + modeText)
+        const glob = require('glob')
+        hasNVue = !!glob.sync('pages/**/*.nvue', {
+          cwd: process.env.UNI_INPUT_DIR
+        }).length
+        if (hasNVue) {
+          console.log(info)
+          if (needWarning) {
+            console.log(warningMsg)
+          }
+          console.log('当前nvue编译模式：' + (isNVueCompiler ? 'uni-app' : 'weex') +
+            ' 。编译模式差异见：https://ask.dcloud.net.cn/article/36074')
+        } else {
+          console.log(info)
+          if (needWarning) {
+            console.log(warningMsg)
+          }
+        }
       }
     } else {
-      console.log(modeText)
+      if (needWarning) {
+        console.log(warningMsg)
+      }
     }
   } catch (e) {}
+}
+if (process.env.NODE_ENV !== 'production') { // 运行模式性能提示
+  let perfMsg = `请注意运行模式下，因日志输出、sourcemap以及未压缩源码等原因，性能和包体积，均不及发行模式。`
+  if (hasNVue) { // app-nvue
+    perfMsg = perfMsg + `尤其是app-nvue的sourcemap影响较大`
+  } else if (process.env.UNI_PLATFORM.indexOf('mp-') === 0) { // 小程序
+    perfMsg = perfMsg + `若要正式发布，请点击发行菜单或使用cli发布命令进行发布`
+  }
+  console.log(perfMsg)
 }
 
 const moduleAlias = require('module-alias')
 
 // 将 template-compiler 指向修订后的版本
+moduleAlias.addAlias('vue-template-compiler', '@dcloudio/vue-cli-plugin-uni/packages/vue-template-compiler')
 moduleAlias.addAlias('@megalo/template-compiler', '@dcloudio/vue-cli-plugin-uni/packages/@megalo/template-compiler')
 moduleAlias.addAlias('mpvue-template-compiler', '@dcloudio/vue-cli-plugin-uni/packages/mpvue-template-compiler')
+// vue-loader
+moduleAlias.addAlias('vue-loader', '@dcloudio/vue-cli-plugin-uni/packages/vue-loader')
+
+if (process.env.UNI_USING_V3 && process.env.UNI_PLATFORM === 'app-plus') {
+  moduleAlias.addAlias('vue-style-loader', '@dcloudio/vue-cli-plugin-uni/packages/app-vue-style-loader')
+}
+
+if (process.env.UNI_PLATFORM === 'h5') {
+  moduleAlias.addAlias('vue-style-loader', '@dcloudio/vue-cli-plugin-uni/packages/h5-vue-style-loader')
+}
+
+if (process.env.UNI_PLATFORM === 'mp-toutiao') {
+  // !important 始终带有一个空格
+  moduleAlias.addAlias(
+    'postcss-normalize-whitespace',
+    '@dcloudio/vue-cli-plugin-uni/packages/postcss-normalize-whitespace'
+  )
+}
 
 if (runByHBuilderX) {
   const oldError = console.error
@@ -220,6 +293,31 @@ if (runByHBuilderX) {
     }
   }
 }
+
+if (
+  process.env.UNI_USING_CACHE &&
+  process.env.UNI_PLATFORM !== 'h5' &&
+  !process.env.UNI_USING_V3 &&
+  !process.env.UNI_USING_NATIVE
+) { // 使用 cache, 拷贝 cache 的 json
+  const cacheJsonDir = path.resolve(
+    process.env.UNI_CLI_CONTEXT,
+    'node_modules/.cache/uni-pages-loader/' + process.env.UNI_PLATFORM
+  )
+  if (!fs.existsSync(cacheJsonDir)) { //  创建 cache 目录
+    mkdirp(cacheJsonDir)
+  } else {
+    require('@dcloudio/uni-cli-shared/lib/cache').restore()
+  }
+}
+
+const {
+  initAutoImportComponents
+} = require('@dcloudio/uni-cli-shared/lib/pages')
+
+initAutoImportComponents(pagesJsonObj.easycom)
+
+runByHBuilderX && console.log(`正在编译中...`)
 
 module.exports = {
   manifestPlatformOptions: platformOptions

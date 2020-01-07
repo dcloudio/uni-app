@@ -38,8 +38,3 @@ module.exports = (api, options) => { // 仅处理 app-plus 相关逻辑
     }
   })
 }
-
-module.exports.defaultModes = {
-  serve: 'development',
-  build: 'production'
-}

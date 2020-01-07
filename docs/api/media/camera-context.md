@@ -1,11 +1,13 @@
 ### uni.createCameraContext()
-创建并返回 camera 上下文 cameraContext 对象。
+创建并返回 camera 组件的上下文 cameraContext 对象。
 
 **平台差异说明**
 
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|
-|x|x|√|x|√|x|
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|x|x|√|x|√|x|√|
+
+本API为 camera 组件配套的js API，与 camera 组件的平台兼容性相同，可实现非全屏摄像头。App端可通过[plus.camera](https://www.html5plus.org/doc/zh_cn/camera.html)实现全屏摄像头。
 
 **cameraContext 对象的方法列表**
 
@@ -29,6 +31,7 @@
 
 |参数|类型|必填|说明|
 |:-|:-|:-|:-|
+|timeoutCallback|Function|否|接超过30s或页面 onHide 时会结束录像|
 |success|Function|否|接口调用成功的回调函数|
 |fail|Function|否|接口调用失败的回调函数|
 |complete|Function|否|接口调用结束的回调函数（调用成功、失败都会执行）|
@@ -45,3 +48,4 @@
 
 - App下实现OCR等证件识别等需求，可在插件市场获取原生插件，[https://ext.dcloud.net.cn/plugin?id=135](https://ext.dcloud.net.cn/plugin?id=135)
 - 微信小程序下实现OCR等证件识别等需求，插件市场也有封装，搜索 [ocr](https://ext.dcloud.net.cn/search?q=ocr) 可见。
+- 可以通过用户授权API来判断用户是否给应用授予摄像头的访问权限[https://uniapp.dcloud.io/api/other/authorize](https://uniapp.dcloud.io/api/other/authorize)

@@ -1,0 +1,17 @@
+{
+  "name": "@dcloudio/uni-h5-ui",
+  "version": "2.0.0-25120200103006",
+  "description": "uni-app h5 ui",
+  "main": "dist/index.umd.min.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/uni-h5-ui"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "fxy060608",
+  "license": "Apache-2.0",
+  "gitHead": "63b678965212cc805e0884bb7d4a2ac7702b3191"
+}

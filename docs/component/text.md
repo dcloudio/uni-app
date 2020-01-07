@@ -6,8 +6,8 @@
 |属性名		|类型	|默认值	|说明			|平台差异说明				|
 |:-|:-			|:-		|:-		|:-				|:-						|
 |selectable	|Boolean|false	|文本是否可选	|						|
-|space		|String	|		|显示连续空格	|5+APP、H5、微信小程序	|
-|decode		|Boolean|false	|是否解码		|5+APP、H5、微信小程序	|
+|space		|String	|		|显示连续空格	|App、H5、微信小程序	|
+|decode		|Boolean|false	|是否解码		|App、H5、微信小程序	|
 
 **space 值说明**
 
@@ -26,7 +26,7 @@
 - 支持 `\n` 方式换行。
 - 如果使用 `<span>` 组件编译时会被转换为 `<text>`。
 
-**示例**
+**示例** [查看演示](https://uniapp.dcloud.io/h5/pages/component/text/text)
 ```html
 <template>
 	<view>

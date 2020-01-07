@@ -9,19 +9,27 @@
 |indicator-dots|Boolean|false|是否显示面板指示点||
 |indicator-color|Color|rgba(0, 0, 0, .3)|指示点颜色||
 |indicator-active-color|Color|#000000|当前选中的指示点颜色||
+|active-class|String||swiper-item 可见时的 class|支付宝小程序|
+|changing-class|String||acceleration 设置为 {{true}} 时且处于滑动过程中，中间若干屏处于可见时的class|支付宝小程序|
 |autoplay|Boolean|false|是否自动切换||
 |current|Number|0|当前所在滑块的 index||
-|current-item-id|String||当前所在滑块的 item-id ，不能与 current 被同时指定|微信小程序、5+App、H5、百度小程序、头条小程序|
+|current-item-id|String||当前所在滑块的 item-id ，不能与 current 被同时指定|支付宝小程序不支持|
 |interval|Number|5000|自动切换时间间隔||
-|duration|Number|500|滑动动画时长||
+|duration|Number|500|滑动动画时长|app-nvue不支持|
 |circular|Boolean|false|是否采用衔接滑动||
 |vertical|Boolean|false|滑动方向是否为纵向||
-|previous-margin|String|0px|前边距，可用于露出前一项的一小部分，接受 px 和 rpx 值|头条小程序不支持|
-|next-margin|String|0px|后边距，可用于露出后一项的一小部分，接受 px 和 rpx 值|头条小程序不支持|
-|display-multiple-items|Number|1|同时显示的滑块数量|微信小程序、5+App、H5、百度小程序、头条小程序|
-|skip-hidden-item-layout|Boolean|false|是否跳过未显示的滑块布局，设为 true 可优化复杂情况下的滑动性能，但会丢失隐藏状态滑块的布局信息|微信小程序、5+App|
+|previous-margin|String|0px|前边距，可用于露出前一项的一小部分，接受 px 和 rpx 值|app-nvue、头条小程序不支持|
+|next-margin|String|0px|后边距，可用于露出后一项的一小部分，接受 px 和 rpx 值|app-nvue、头条小程序不支持|
+|acceleration|Boolean|false|当开启时，会根据滑动速度，连续滑动多屏|支付宝小程序|
+|disable-programmatic-animation|Boolean|false|是否禁用代码变动触发 swiper 切换时使用动画。|支付宝小程序|
+|display-multiple-items|Number|1|同时显示的滑块数量|支付宝小程序不支持|
+|skip-hidden-item-layout|Boolean|false|是否跳过未显示的滑块布局，设为 true 可优化复杂情况下的滑动性能，但会丢失隐藏状态滑块的布局信息|App、微信小程序|
+|disable-touch|Boolean|false|是否禁止用户 touch 操作|支付宝小程序|
+|touchable|Boolean|true|是否监听用户的触摸事件|头条小程序|
+|easing-function|String|default|指定 swiper 切换缓动动画类型，有效值：default、linear、easeInCubic、easeOutCubic、easeInOutCubic|微信小程序|
 |@change|EventHandle||current 改变时会触发 change 事件，event.detail = {current: current, source: source}||
-|@animationfinish|EventHandle||动画结束时会触发 animationfinish 事件，event.detail 同上|头条小程序不支持|
+|@transition|EventHandle||swiper-item 的位置发生改变时会触发 transition 事件，event.detail = {dx: dx, dy: dy}|App、H5、微信小程序、支付宝小程序、头条小程序、QQ小程序|
+|@animationfinish|EventHandle||动画结束时会触发 animationfinish 事件，event.detail = {current: current, source: source}|头条小程序不支持|
 
 change 事件返回 detail 中包含一个 source 字段，表示导致变更的原因，可能值如下：
 
@@ -41,6 +49,7 @@ change 事件返回 detail 中包含一个 source 字段，表示导致变更的
 - 如果遇到current、current-item-id属性设置不生效的问题参考：[组件属性设置不生效解决办法](/use?id=%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98)
 - banner图的切换效果和指示器的样式，有多种风格可自定义，可在[uni-app插件市场](https://ext.dcloud.net.cn/search?q=%E8%BD%AE%E6%92%AD)搜索
 - swiper在App的vue中、百度支付宝头条QQ小程序中，不支持内嵌video、map等原生组件。在微信基础库2.4.4起和App nvue2.1.5起支持内嵌原生组件。竖向的swiper内嵌视频可实现抖音、映客等视频垂直拖动切换效果。
+- 同时监听 change transition，开始滑动时触发transition, 放开手后，在ios平台触发顺序为 transition... change，Android/微信小程序/支付宝为 transition... change transition...
  
 #### swiper-item
 仅可放置在 ``<swiper>`` 组件中，宽高自动设置为100%。
@@ -49,7 +58,7 @@ change 事件返回 detail 中包含一个 source 字段，表示导致变更的
 |:-|:-|:-|:-|:-|
 |item-id|String||该 swiper-item 的标识符|
 
-**示例**
+**示例** [查看演示](https://uniapp.dcloud.io/h5/pages/component/swiper/swiper)
 ```html
 <template>
 	<view>

@@ -7,7 +7,8 @@ const callbacks = {
   pause: [],
   resume: [],
   start: [],
-  stop: []
+  stop: [],
+  error: []
 }
 
 class RecorderManager {

@@ -132,17 +132,44 @@ export default {
       default () {
         return {}
       }
+    },
+    titleImage: {
+      type: String,
+      default: ''
+    },
+    transparentTitle: {
+      type: String,
+      default: 'none'
+    },
+    titlePenetrate: {
+      type: String,
+      default: 'NO'
     }
   },
   data () {
+    const titleNViewTypeList = {
+      'none': 'default',
+      'auto': 'transparent',
+      'always': 'float'
+    }
+
+    const yesNoParseList = {
+      'YES': true,
+      'NO': false
+    }
+
     const navigationBar = mergeTitleNView({
       loading: false,
       backButton: !this.isQuit && !this.$route.meta.isQuit, // redirectTo,reLaunch时可能动态修改 meta.isQuit
       backgroundColor: this.navigationBarBackgroundColor,
       textColor: this.navigationBarTextStyle === 'black' ? '#000' : '#fff',
       titleText: this.navigationBarTitleText,
+      titleImage: this.titleImage,
       duration: '0',
-      timingFunc: ''
+      timingFunc: '',
+      type: titleNViewTypeList[this.transparentTitle],
+      transparentTitle: this.transparentTitle,
+      titlePenetrate: yesNoParseList[this.titlePenetrate]
     }, this.titleNView)
 
     const showNavigationBar = this.navigationStyle === 'default' && this.titleNView

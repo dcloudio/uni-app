@@ -3,11 +3,13 @@
 
 **平台差异说明**
 
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|
-|√|√|√|x|√|x|
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|√|√|√|x|√|x|x|
 
-**注意：** 微信小程序平台自基础库 1.6.0 版本开始，不再维护 audio 组件，建议在微信小程序平台使用 [uni.createInnerAudioContext](/api/media/audio-context?id=createinneraudiocontext) 替代。
+**注意：** 微信小程序平台自基础库 1.6.0 版本开始，不再维护 audio 组件，推荐使用API方式而不是组件方式来播放音频。API见 [uni.createInnerAudioContext](/api/media/audio-context?id=createinneraudiocontext) 替代。
+
+app-nvue也不支持此组件。
 
 **属性说明**
 
@@ -35,7 +37,7 @@
 |3|解码错误|
 |4|不合适资源|
 
-**示例：**
+**示例：** [查看示例](https://uniapp.dcloud.io/h5/pages/component/audio/audio)
  
 ```html
 <template>

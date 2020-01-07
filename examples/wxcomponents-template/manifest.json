@@ -5,7 +5,7 @@
     "versionName": "1.0.0",
     "versionCode": "100",
 	"transformPx":false,
-    "app-plus": { /* 5+App特有相关 */
+    "app-plus": { /* App特有相关 */
         "modules": { /* 模块配置 */
 
         },

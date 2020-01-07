@@ -12,6 +12,12 @@ const {
   parseStyle
 } = require('../../util')
 
+const wxPageOrientationMapping = {
+  auto: ['portrait-primary', 'portrait-secondary', 'landscape-primary', 'landscape-secondary'],
+  portrait: ['portrait-primary', 'portrait-secondary'],
+  landscape: ['landscape-primary', 'landscape-secondary']
+}
+
 function parseConfig (appJson) {
   return {
     name: 'app-config.js',
@@ -65,6 +71,8 @@ module.exports = function (pagesJson, userManifestJson) {
     navigationBarBackgroundColor = '#000000'
   } = appJson['window'] || {}
 
+  const TABBAR_HEIGHT = 50
+
   let manifestJson = JSON.parse(fs.readFileSync(path.resolve(__dirname, './manifest.json'), 'utf8'))
 
   // 状态栏
@@ -117,6 +125,17 @@ module.exports = function (pagesJson, userManifestJson) {
     }
   }
 
+  // 屏幕启动方向
+  if (manifestJson.plus.screenOrientation) { // app平台优先使用 manifest 配置
+    manifestJson.screenOrientation = manifestJson.plus.screenOrientation
+    delete manifestJson.plus.screenOrientation
+  } else if (appJson.window && appJson.window.pageOrientation) { // 兼容微信小程序
+    const pageOrientationValue = wxPageOrientationMapping[appJson.window.pageOrientation]
+    if (pageOrientationValue) {
+      manifestJson.screenOrientation = pageOrientationValue
+    }
+  }
+
   // 地图坐标系
   if (manifestJson.permissions && manifestJson.permissions.Maps) {
     manifestJson.permissions.Maps.coordType = 'gcj02'
@@ -128,12 +147,14 @@ module.exports = function (pagesJson, userManifestJson) {
 
   const nvuePages = pagesJson.nvue && pagesJson.nvue.pages
 
-  const nvuePagePaths = Object.keys(nvuePages || {})
-  if (nvuePagePaths.length) {
+  if (nvuePages && nvuePages.length) {
     const pages = {}
-    nvuePagePaths.forEach(nvuePagePath => {
-      pages[nvuePagePath] = {
-        'window': parseStyle(pagesJson.nvue.pages[nvuePagePath]['window'] || {}),
+    nvuePages.forEach(({
+      path,
+      style
+    }) => {
+      pages[path] = {
+        'window': parseStyle(style),
         'nvue': true
       }
     })
@@ -175,9 +196,19 @@ module.exports = function (pagesJson, userManifestJson) {
   // 允许内联播放视频
   manifestJson.plus.allowsInlineMediaPlayback = true
 
-  // 安全区配置
+  const addRenderAlways = function () {
+    // "render": "always"
+    if (!manifestJson.plus.launchwebview) {
+      manifestJson.plus.launchwebview = {
+        'render': 'always'
+      }
+    } else if (!manifestJson.plus.launchwebview.render) {
+      manifestJson.plus.launchwebview.render = 'always'
+    }
+  }
+
   if (appJson.tabBar && appJson.tabBar.list && appJson.tabBar.list.length) {
-    // 仅包含 tabBar 的时候才配置
+    // 安全区配置 仅包含 tabBar 的时候才配置
     if (!manifestJson.plus.safearea) {
       manifestJson.plus.safearea = {
         background: appJson.tabBar.backgroundColor || '#FFFFFF',
@@ -186,11 +217,16 @@ module.exports = function (pagesJson, userManifestJson) {
         }
       }
     }
+    if (!process.env.UNI_USING_COMPONENTS) { // 非自定义组件模式下，仍旧添加 render always
+      addRenderAlways()
+    }
+  } else {
+    addRenderAlways()
   }
 
   let flexDir = false
 
-  if (manifestJson.plus.nvueCompiler && manifestJson.plus.nvueCompiler === 'uni-app') {
+  if (process.env.UNI_USING_NVUE_COMPILER) {
     appJson.nvueCompiler = 'uni-app'
     flexDir = getFlexDirection(manifestJson.plus)
   } else {
@@ -282,11 +318,42 @@ module.exports = function (pagesJson, userManifestJson) {
     manifestJson.plus.popGesture = 'close'
   }
 
+  // 检查原生混淆选项
+  const confusion = manifestJson.plus.confusion
+  if (confusion && confusion.resources) {
+    const resources = {}
+    for (const key in confusion.resources) {
+      if (!/\.nvue$/.test(key)) {
+        throw new Error(`原生混淆仅支持 nvue 页面，错误的页面路径：${key}`)
+      } else {
+        resources[key.replace(/\.nvue$/, '.js')] = confusion.resources[key]
+      }
+      if (!Object.keys(appJson.nvue.pages).find(path => {
+        const subNVues = appJson.nvue.pages[path].window.subNVues || []
+        return path.replace(/\.html$/, '.nvue') === key || subNVues.find(({
+          path
+        }) => path === key.replace(/\.nvue$/, ''))
+      }) && !pagesJson.pages.find(({
+        style = {}
+      }) => {
+        style = Object.assign(style, style['app-plus'])
+        const subNVues = style.subNVues || []
+        return subNVues.find(({
+          path
+        }) => path === key.replace(/\.nvue$/, ''))
+      })) {
+        throw new Error(`原生混淆页面未在项目内使用，错误的页面路径：${key}`)
+      }
+    }
+    confusion.resources = resources
+  }
+
   // uni-app
   const uniApp = require('../../../package.json')['uni-app']
   manifestJson.plus['uni-app'] = uniApp
   // 控制页类型
-  manifestJson.plus['uni-app'].control = process.env.UNI_USING_V8 ? 'v8' : 'webview'
+  const control = process.env.UNI_USING_V3 ? 'uni-v3' : (process.env.UNI_USING_V8 ? 'v8' : 'webview')
+  manifestJson.plus['uni-app'].control = control
   manifestJson.plus['uni-app'].nvueCompiler = appJson.nvueCompiler
   manifestJson.plus['uni-app'].renderer = appJson.renderer
   if (flexDir) {
@@ -311,15 +378,23 @@ module.exports = function (pagesJson, userManifestJson) {
     }
 
     let isNVueEntryPage = appJson.nvue && appJson.nvue.entryPagePath
-    if (conditionPagePath && isNVueEntryPage) {
-      isNVueEntryPage = appJson.nvue.entryPagePath === conditionPagePath
+    conditionPagePath = process.env.UNI_CLI_LAUNCH_PAGE_PATH || conditionPagePath
+    if (conditionPagePath && appJson.nvue) {
+      isNVueEntryPage = `${conditionPagePath}.html` in appJson.nvue.pages
     }
+    manifestJson.plus.useragent.value = 'uni-app'
+    manifestJson.launch_path = '__uniappview.html'
+    Object.assign(manifestJson.plus.launchwebview, {
+      id: '1',
+      kernel: 'WKWebview',
+      'uni-app': 'auto'
+    })
     if (process.env.UNI_USING_NATIVE) {
       appJson.entryPagePath = appJson.nvue.entryPagePath
       // networkTimeout
       normalizeNetworkTimeout(appJson)
       appJson.page = Object.create(null)
-      appJson.pages = Object.keys(appJson.nvue.pages).reverse().map(pagePath => {
+      appJson.pages = Object.keys(appJson.nvue.pages).map(pagePath => {
         const newPagePath = pagePath.replace('.html', '')
         appJson.page[newPagePath] = {
           window: appJson.nvue.pages[pagePath].window,
@@ -330,51 +405,53 @@ module.exports = function (pagesJson, userManifestJson) {
 
       delete appJson.nvue
 
-      // 纯 nvue 带 tab
-      if (pagesJson.tabBar && pagesJson.tabBar.list && pagesJson.tabBar.list.length) {
-        manifestJson.launch_path = '__uniapptabbar.html'
-        manifestJson.plus.secondwebview = {
-          id: '1',
-          mode: 'child',
-          top: 0,
-          bottom: 56,
-          uniNView: {
-            path: appJson.pages[0]
-          }
+      delete manifestJson.plus.launchwebview.kernel
+      manifestJson.launch_path = ''
+      Object.assign(manifestJson.plus.launchwebview, {
+        uniNView: {
+          path: appJson.entryPagePath
         }
-      } else { // 纯 nvue 不带 tab
-        manifestJson.launch_path = ''
-        Object.assign(manifestJson.plus.launchwebview, {
-          id: '1',
-          uniNView: {
-            path: appJson.pages[0]
-          }
-        })
+      })
+    } else if (isNVueEntryPage) {
+      // 非纯 nvue 项目首页为 nvue 页面
+      manifestJson.plus.launchwebview.id = '2'
+      manifestJson.plus.launchwebview.render = 'always'
+    }
+    // 带 tab
+    if (pagesJson.tabBar && pagesJson.tabBar.list && pagesJson.tabBar.list.length) {
+      const tabBar = manifestJson.plus.tabBar = Object.assign({}, pagesJson.tabBar)
+      const borderStyles = {
+        black: 'rgba(0,0,0,0.4)',
+        white: 'rgba(255,255,255,0.4)'
       }
-    } else if (isNVueEntryPage) { // 临时 tabBar 页面
-      manifestJson.launch_path = '__uniapptabbar.html'
-    } else if (pagesJson.tabBar && pagesJson.tabBar.list && pagesJson.tabBar.list.length) {
-      manifestJson.launch_path = '__uniapptabbar.html'
-      manifestJson.plus.secondwebview = {
-        id: '1'
+      let borderStyle = tabBar.borderStyle
+      if (!borderStyle) {
+        borderStyle = 'black'
       }
-      manifestJson.plus.secondwebview.launch_path = '__uniappview.html'
-      if (!manifestJson.plus.secondwebview.kernel) {
-        manifestJson.plus.secondwebview.kernel = 'WKWebview'
+      if (borderStyle in borderStyles) {
+        tabBar.borderStyle = borderStyles[borderStyle]
       }
-      // 首页是 tabBar 页面
-      if (pagesJson.tabBar.list.find(page => page.pagePath === entryPagePath)) {
-        manifestJson.plus.secondwebview.mode = 'child'
-        manifestJson.plus.secondwebview.top = 0
-        manifestJson.plus.secondwebview.bottom = 56
+      if (!tabBar.selectedColor) {
+        tabBar.selectedColor = '#0062cc'
       }
-    } else { // 无 tabbar 的页面，launchWebview 的 id 为1
-      manifestJson.launch_path = '__uniappview.html'
-      manifestJson.plus.launchwebview.id = '1'
-      if (!manifestJson.plus.launchwebview.kernel) {
-        manifestJson.plus.launchwebview.kernel = 'WKWebview'
+      tabBar.height = `${parseFloat(tabBar.height) || TABBAR_HEIGHT}px`
+      // 非纯 nvue 项目首页为 nvue 页面
+      if (!process.env.UNI_USING_NATIVE && isNVueEntryPage) {
+        manifestJson.plus.launchwebview.id = '2'
+      } else {
+        // 首页是 tabBar 页面
+        const item = tabBar.list.find(page => page.pagePath === (process.env.UNI_USING_NATIVE ? appJson.entryPagePath
+          : entryPagePath))
+        if (item) {
+          tabBar.child = ['lauchwebview']
+          tabBar.selected = tabBar.list.indexOf(item)
+        }
       }
     }
+  }
+
+  if (!process.env.UNI_USING_COMPONENTS) {
+    manifestJson.plus.launchwebview.kernel = 'UIWebview'
   }
 
   manifest.content = manifestJson
@@ -392,10 +469,19 @@ module.exports = function (pagesJson, userManifestJson) {
 
   delete appJson.subPackages
 
+  // TODO 处理纯原生
   if (process.env.UNI_USING_NATIVE) {
     manifest.name = 'manifest.json'
     manifest.content = JSON.stringify(manifest.content)
     return [manifest, parseConfig(appJson)]
+  }
+
+  if (process.env.UNI_USING_V3) {
+    return require('./index.v3')(appJson, manifestJson, {
+      manifest,
+      pagesJson,
+      normalizeNetworkTimeout
+    })
   }
   return [app, manifest]
 }

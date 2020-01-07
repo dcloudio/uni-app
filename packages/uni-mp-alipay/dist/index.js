@@ -231,7 +231,7 @@ const promiseInterceptor = {
 };
 
 const SYNC_API_RE =
-  /^\$|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
+  /^\$|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -245,7 +245,7 @@ function isSyncApi (name) {
 }
 
 function isCallbackApi (name) {
-  return CALLBACK_API_RE.test(name)
+  return CALLBACK_API_RE.test(name) && name !== 'onPush'
 }
 
 function handlePromise (promise) {
@@ -344,6 +344,7 @@ const interceptors = {
 
 
 var baseApi = /*#__PURE__*/Object.freeze({
+  __proto__: null,
   upx2px: upx2px,
   interceptors: interceptors,
   addInterceptor: addInterceptor,
@@ -352,33 +353,26 @@ var baseApi = /*#__PURE__*/Object.freeze({
 
 // 不支持的 API 列表
 const todos = [
-  'saveImageToPhotosAlbum',
-  'getRecorderManager',
-  'getBackgroundAudioManager',
-  'createInnerAudioContext',
-  'createVideoContext',
-  'createCameraContext',
-  'createLivePlayerContext',
-  'openDocument',
-  'onMemoryWarning',
-  'startAccelerometer',
-  'startCompass',
-  'addPhoneContact',
-  'authorize',
-  'chooseAddress',
-  'chooseInvoiceTitle',
-  'addTemplate',
-  'deleteTemplate',
-  'getTemplateLibraryById',
-  'getTemplateLibraryList',
-  'getTemplateList',
-  'sendTemplateMessage',
-  'setEnableDebug',
-  'getExtConfig',
-  'getExtConfigSync',
-  'onWindowResize',
-  'offWindowResize',
-  'saveVideoToPhotosAlbum'
+  // 'getRecorderManager',
+  // 'getBackgroundAudioManager',
+  // 'createInnerAudioContext',
+  // 'createCameraContext',
+  // 'createLivePlayerContext',
+  // 'startAccelerometer',
+  // 'startCompass',
+  // 'authorize',
+  // 'chooseInvoiceTitle',
+  // 'addTemplate',
+  // 'deleteTemplate',
+  // 'getTemplateLibraryById',
+  // 'getTemplateLibraryList',
+  // 'getTemplateList',
+  // 'sendTemplateMessage',
+  // 'setEnableDebug',
+  // 'getExtConfig',
+  // 'getExtConfigSync',
+  // 'onWindowResize',
+  // 'offWindowResize'
 ];
 
 // 存在兼容性的 API 列表
@@ -397,7 +391,14 @@ const canIUses = [
   'createIntersectionObserver',
   'getUpdateManager',
   'setBackgroundColor',
-  'setBackgroundTextStyle'
+  'setBackgroundTextStyle',
+  'checkIsSupportSoterAuthentication',
+  'startSoterAuthentication',
+  'checkIsSoterEnrolledInDevice',
+  'openDocument',
+  'createVideoContext',
+  'onMemoryWarning',
+  'addPhoneContact'
 ];
 
 function _handleNetworkInfo (result) {
@@ -639,9 +640,23 @@ const protocols = { // 需要做转换的 API 列表
   },
   scanCode: {
     name: 'scan',
-    args: {
-      onlyFromCamera: 'hideAlbum',
-      scanType: false
+    args (fromArgs) {
+      if (fromArgs.scanType === 'qrCode') {
+        fromArgs.type = 'qr';
+        return {
+          onlyFromCamera: 'hideAlbum'
+        }
+      } else if (fromArgs.scanType === 'barCode') {
+        fromArgs.type = 'bar';
+        return {
+          onlyFromCamera: 'hideAlbum'
+        }
+      } else {
+        return {
+          scanType: false,
+          onlyFromCamera: 'hideAlbum'
+        }
+      }
     },
     returnValue: {
       code: 'result'
@@ -737,6 +752,32 @@ const protocols = { // 需要做转换的 API 列表
   },
   showShareMenu: {
     name: 'showSharePanel'
+  },
+  hideHomeButton: {
+    name: 'hideBackHome'
+  },
+  saveImageToPhotosAlbum: {
+    name: 'saveImage',
+    args: {
+      filePath: 'url'
+    }
+  },
+  saveVideoToPhotosAlbum: {
+    args: {
+      filePath: 'src'
+    }
+  },
+  chooseAddress: {
+    name: 'getAddress',
+    returnValue (result) {
+      let info = result.result || {};
+      result.userName = info.fullname;
+      result.provinceName = info.prov;
+      result.cityName = info.city;
+      result.detailInfo = info.address;
+      result.telNumber = info.mobilePhone;
+      result.errMsg = result.resultStatus;
+    }
   }
 };
 
@@ -822,6 +863,7 @@ function wrapper (methodName, method) {
 const todoApis = Object.create(null);
 
 const TODOS = [
+  'onTabBarMidButtonTap',
   'subscribePush',
   'unsubscribePush',
   'onPush',
@@ -877,6 +919,7 @@ function getProvider ({
 }
 
 var extraApi = /*#__PURE__*/Object.freeze({
+  __proto__: null,
   getProvider: getProvider
 });
 
@@ -912,6 +955,7 @@ function $emit () {
 }
 
 var eventApi = /*#__PURE__*/Object.freeze({
+  __proto__: null,
   $on: $on,
   $off: $off,
   $once: $once,
@@ -1003,15 +1047,31 @@ function createSelectorQuery () {
       return this
     };
   }
+
+  if (!query.in) {
+    query.in = function () {
+      return this
+    };
+  }
   return query
 }
 
+function createIntersectionObserver (component, options) {
+  if (options && options.observeAll) {
+    options.selectAll = options.observeAll;
+    delete options.observeAll;
+  }
+  return my.createIntersectionObserver(options)
+}
+
 var api = /*#__PURE__*/Object.freeze({
+  __proto__: null,
   setStorageSync: setStorageSync,
   getStorageSync: getStorageSync,
   removeStorageSync: removeStorageSync,
   startGyroscope: startGyroscope,
-  createSelectorQuery: createSelectorQuery
+  createSelectorQuery: createSelectorQuery,
+  createIntersectionObserver: createIntersectionObserver
 });
 
 const PAGE_EVENT_HOOKS = [
@@ -1457,6 +1517,18 @@ function handleEvent (event) {
           ) { // mp-weixin,mp-toutiao 抽象节点模拟 scoped slots
             handlerCtx = handlerCtx.$parent.$parent;
           }
+          if (methodName === '$emit') {
+            handlerCtx.$emit.apply(handlerCtx,
+              processEventArgs(
+                this.$vm,
+                event,
+                eventArray[1],
+                eventArray[2],
+                isCustom,
+                methodName
+              ));
+            return
+          }
           const handler = handlerCtx[methodName];
           if (!isFn(handler)) {
             throw new Error(` _vm.${methodName} is not a function`)
@@ -1500,6 +1572,10 @@ function parseBaseApp (vm, {
   mocks,
   initRefs
 }) {
+  if (vm.$options.store) {
+    Vue.prototype.$store = vm.$options.store;
+  }
+
   Vue.prototype.mpHost = "mp-alipay";
 
   Vue.mixin({
@@ -1540,6 +1616,8 @@ function parseBaseApp (vm, {
       };
 
       this.$vm.$scope = this;
+      // vm 上也挂载 globalData
+      this.$vm.globalData = this.globalData;
 
       this.$vm._isMounted = true;
       this.$vm.__call_hook('mounted', args);
@@ -1550,6 +1628,13 @@ function parseBaseApp (vm, {
 
   // 兼容旧版本 globalData
   appOptions.globalData = vm.$options.globalData || {};
+  // 将 methods 中的方法挂在 getApp() 中
+  const methods = vm.$options.methods;
+  if (methods) {
+    Object.keys(methods).forEach(name => {
+      appOptions[name] = methods[name];
+    });
+  }
 
   initHooks(appOptions, hooks);
 
@@ -1558,12 +1643,15 @@ function parseBaseApp (vm, {
 
 function findVmByVueId (vm, vuePid) {
   const $children = vm.$children;
-  // 优先查找直属
-  let parentVm = $children.find(childVm => childVm.$scope._$vueId === vuePid);
-  if (parentVm) {
-    return parentVm
+  // 优先查找直属(反向查找:https://github.com/dcloudio/uni-app/issues/1200)
+  for (let i = $children.length - 1; i >= 0; i--) {
+    const childVm = $children[i];
+    if (childVm.$scope._$vueId === vuePid) {
+      return childVm
+    }
   }
   // 反向递归查找
+  let parentVm;
   for (let i = $children.length - 1; i >= 0; i--) {
     parentVm = findVmByVueId($children[i], vuePid);
     if (parentVm) {
@@ -1742,7 +1830,7 @@ function handleRef (ref) {
   if (refName) {
     this.$vm.$refs[refName] = ref.$vm || ref;
   } else if (refInForName) {
-    this.$vm.$refs[refInForName] = [ref.$vm || ref];
+    (this.$vm.$refs[refInForName] || (this.$vm.$refs[refInForName] = [])).push(ref.$vm || ref);
   }
 }
 
@@ -1829,6 +1917,33 @@ function parseApp (vm) {
     }
   });
 
+  Vue.prototype.$onAliGetAuthorize = function onAliGetAuthorize (method, $event) {
+    my.getPhoneNumber({
+      success: (res) => {
+        $event.type = 'getphonenumber';
+        const response = JSON.parse(res.response).response;
+        if (response.code === '10000') { // success
+          $event.detail.errMsg = 'getPhoneNumber:ok';
+          $event.detail.encryptedData = res.response;
+        } else {
+          $event.detail.errMsg = 'getPhoneNumber:fail Error: ' + res.response;
+        }
+        this[method]($event);
+      },
+      fail: (res) => {
+        $event.type = 'getphonenumber';
+        $event.detail.errMsg = 'getPhoneNumber:fail';
+        this[method]($event);
+      }
+    });
+  };
+
+  Vue.prototype.$onAliAuthError = function $onAliAuthError (method, $event) {
+    $event.type = 'getphonenumber';
+    $event.detail.errMsg = 'getPhoneNumber:fail Error: ' + $event.detail.errorMessage;
+    this[method]($event);
+  };
+
   return parseBaseApp(vm, {
     mocks,
     initRefs
@@ -1887,6 +2002,12 @@ function parsePage (vuePageOptions) {
     onUnload () {
       this.$vm.__call_hook('onUnload');
       this.$vm.$destroy();
+    },
+    events: {
+      // 支付宝小程序有些页面事件只能放在events下
+      onBack () {
+        this.$vm.__call_hook('onBackPress');
+      }
     },
     __r: handleRef,
     __e: handleEvent,
@@ -1975,7 +2096,13 @@ function parseComponent (vueComponentOptions) {
     data: initData(vueOptions, Vue.prototype),
     props,
     didMount () {
-      initVm.call(this, VueComponent);
+      if (my.dd) { // 钉钉小程序底层基础库有 bug,组件嵌套使用时,在 didMount 中无法及时调用 props 中的方法
+        setTimeout(() => {
+          initVm.call(this, VueComponent);
+        }, 4);
+      } else {
+        initVm.call(this, VueComponent);
+      }
 
       initSpecialMethods(this);
 

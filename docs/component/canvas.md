@@ -19,8 +19,8 @@
 
 * canvas 标签默认宽度 300px、高度 225px，动态修改 canvas 大小后需要重新绘制。
 * 同一页面中的 canvas-id 不可重复，如果使用一个已经出现过的 canvas-id，该 canvas 标签对应的画布将被隐藏并不再正常工作。
-* canvas 在微信小程序、百度小程序中为原生组件，层级高于前端组件，请勿内嵌在 scroll-view、swiper、picker-view、movable-view 中使用。解决 canvas 层级过高无法覆盖，参考 [native-component](/component/native-component)。
-* canvas 在App端 vue 页面不是原生组件，目前App端 nvue 还不支持 canvas 组件。
+* canvas 在微信小程序、百度小程序、QQ小程序中为原生组件，层级高于前端组件，请勿内嵌在 scroll-view、swiper、picker-view、movable-view 中使用。解决 canvas 层级过高无法覆盖，参考 [native-component](/component/native-component)。
+* canvas 在App端 vue 页面不是原生组件。App-nvue下如需使用canvas，暂未封装为uni API，可参考[文档](https://github.com/dcloudio/NvueCanvasDemo)使用。目前对nvue的开发者仍然建议在使用canvas时单独起一个vue页面，或者用web-view组件。
 
 **示例：**
  

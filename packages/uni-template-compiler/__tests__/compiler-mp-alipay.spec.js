@@ -104,6 +104,13 @@ describe('mp:compiler-mp-alipay', () => {
     )
   })
 
+  it('generate getPhoneNumber', () => {
+    assertCodegen(
+      '<button open-type="getPhoneNumber" @getphonenumber="getPhoneNumber">获取手机号</button>',
+      `<button open-type="getAuthorize" scope="phoneNumber" data-event-opts="{{[['getAuthorize',[['$onAliGetAuthorize',['getPhoneNumber','$event']]]],['error',[['$onAliAuthError',['getPhoneNumber','$event']]]]]}}" onGetAuthorize="__e" onError="__e">获取手机号</button>`
+    )
+  })
+
   it('generate events with v-on directive', () => {
     assertCodegen(
       `<uni-list-item title="标题文字" note="描述信息" show-extra-icon="true" :extra-icon="{color: '#4cd964',size: '22',type: 'spinner'}"></uni-list-item>`,

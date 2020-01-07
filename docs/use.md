@@ -4,6 +4,7 @@
 相比Web平台， ``Vue.js`` 在 ``uni-app`` 中使用差异主要集中在两个方面：
 - 新增：uni-app除了支持Vue实例的生命周期，还支持应用启动、页面显示等生命周期
 - 受限：相比web平台，在小程序和App端部分功能受限，具体见下。
+- v3版本App端可以使用更多的vue特性，[详见](https://ask.dcloud.net.cn/article/36599)
 
 ## 生命周期
 
@@ -210,7 +211,7 @@ export default {
     touchcancel: 'touchcancel',
     touchend: 'touchend',
     tap: 'tap',
-    longtap: 'longtap',
+    longtap: 'longtap', //推荐使用longpress代替
     input: 'input',
     change: 'change',
     submit: 'submit',
@@ -355,7 +356,9 @@ export default {
 </script>
 ```
 
-**uni-app只支持vue单文件组件（.vue 组件）**。其他的诸如：动态组件，自定义 ``render``，和``<script type="text/x-template">`` 字符串模版等，在非H5端不支持。
+- `2.5.0+`版本支持在pages.json内引入组件，[详见](/collocation/pages?id=easycom)
+- **uni-app只支持vue单文件组件（.vue 组件）**。其他的诸如：动态组件，自定义 ``render``，和``<script type="text/x-template">`` 字符串模版等，在非H5端不支持。
+
 
 详细的非H5端不支持列表：
 
@@ -389,7 +392,10 @@ export default {
 
 ```uni-app``` 支持配置全局组件，需在 ``main.js`` 里进行全局注册，注册后就可在所有页面里使用该组件。
 
-**注意**：``Vue.component`` 的第一个参数必须是静态的字符串。
+**注意**
+
+- ``Vue.component`` 的第一个参数必须是静态的字符串。
+- nvue页面暂不支持全局组件
 
 **示例**
 

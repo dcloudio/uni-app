@@ -6,14 +6,25 @@ const pkgPath = resolve('package.json')
 
 const webpackConfig = require('./webpack.config.js')
 
+let outputDir = resolve('./packages/uni-' + process.env.UNI_PLATFORM + '/dist')
+
+if (process.env.UNI_PLATFORM === 'h5' && process.env.UNI_UI === 'true') {
+  outputDir = resolve('./packages/uni-' + process.env.UNI_PLATFORM + '-ui/dist')
+}
+
+if (process.env.UNI_PLATFORM === 'app-plus' && process.env.UNI_VIEW === 'true') {
+  outputDir = resolve('./packages/uni-' + process.env.UNI_PLATFORM + '/dist')
+}
+
 module.exports = {
   publicPath: '/',
-  outputDir: resolve('./packages/uni-' + process.env.UNI_PLATFORM + '/dist'),
+  outputDir,
   lintOnSave: true, // or error
   runtimeCompiler: false,
   transpileDependencies: [],
   productionSourceMap: false,
   configureWebpack: webpackConfig,
+  parallel: process.env.UNI_PLATFORM !== 'h5' || process.env.UNI_WATCH !== 'false' || process.env.UNI_UI === 'true',
   chainWebpack: config => {
     config.devtool('source-map')
 

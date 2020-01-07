@@ -52,17 +52,31 @@ export default {
           borderRadiusElemStyle.backgroundColor = `rgba(${rgba})`
         })
       })
+    } else if (this.transparentTitle === 'always') {
+      const iconElems = this.$el.querySelectorAll('.uni-btn-icon')
+      const iconElemsStyles = []
+      for (let i = 0; i < iconElems.length; i++) {
+        iconElemsStyles.push(iconElems[i].style)
+      }
+      const borderRadiusElems = this.$el.querySelectorAll('.uni-page-head-btn')
+      const oldColors = []
+      const borderRadiusElemsStyles = []
+      for (let i = 0; i < borderRadiusElems.length; i++) {
+        let borderRadiusElem = borderRadiusElems[i]
+        oldColors.push(getComputedStyle(borderRadiusElem).backgroundColor)
+        borderRadiusElemsStyles.push(borderRadiusElem.style)
+      }
     }
   },
   computed: {
     color () {
-      return this.type === 'transparent' ? '#fff' : this.textColor
+      return this.type === 'transparent' || this.transparentTitle === 'always' ? '#fff' : this.textColor
     },
     offset () {
       return parseInt(this.coverage)
     },
     bgColor () {
-      if (this.type === 'transparent') {
+      if (this.type === 'transparent' || this.transparentTitle === 'always') {
         const {
           r,
           g,

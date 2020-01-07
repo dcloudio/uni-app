@@ -15,7 +15,10 @@ const alipayWindowMap = {
   'optionMenu': 'optionMenu',
   'backgroundColor': 'backgroundColor',
   'usingComponents': 'usingComponents',
-  'navigationBarShadow': 'navigationBarShadow'
+  'navigationBarShadow': 'navigationBarShadow',
+  'titleImage': 'titleImage',
+  'transparentTitle': 'transparentTitle',
+  'titlePenetrate': 'titlePenetrate'
 }
 
 const alipayTabBarMap = {
@@ -37,6 +40,9 @@ function hasOwn (obj, key) {
 }
 
 function parseStyle (style = {}, root = '') {
+  // TODO pages.json 触发了两次，需要排查
+  style = JSON.parse(JSON.stringify(style))
+
   let platformStyle = {}
 
   Object.keys(style).forEach(name => {

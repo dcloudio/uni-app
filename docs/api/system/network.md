@@ -23,7 +23,7 @@
 |2g|2g 网络||
 |3g|3g 网络||
 |4g|4g 网络||
-|ethernet|有线网络|5+App|
+|ethernet|有线网络|App|
 |unknown|Android 下不常见的网络类型||
 |none|无网络|&nbsp;|
 

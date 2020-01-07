@@ -2,12 +2,12 @@
 * [框架](collocation/pages.md)
 * [组件](component/README.md)
 * [API](api/README.md)
-* 其它规范
+* [其它规范](javascript:;)
   - [App扩展规范HTML5 Plus](http://www.html5plus.org/doc/h5p.html)
   - [微信小程序](https://developers.weixin.qq.com/miniprogram/dev/framework/)
   - [支付宝小程序](https://docs.alipay.com/mini/developer/getting-started)
   - [百度小程序](https://smartprogram.baidu.com/docs/develop/tutorial/codedir/)
-  - [头条小程序](https://developer.toutiao.com/docs/framework/)
+  - [头条小程序](https://developer.toutiao.com/dev/cn/mini-app/develop/component/introduction/basic-component)
   - [QQ小程序](https://q.qq.com/wiki/develop/miniprogram/frame/)
   - [Weex](https://weex.apache.org/cn/guide/)
 

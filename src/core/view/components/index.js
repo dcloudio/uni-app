@@ -22,6 +22,8 @@ requireComponents.forEach((components, index) => {
 
     componentConfig.name = 'VUni' + componentConfig.name
 
+    componentConfig.isReserved = true
+
     // 全局注册组件
     Vue.component(componentConfig.name, componentConfig)
   })

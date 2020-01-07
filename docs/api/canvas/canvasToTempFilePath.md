@@ -1,8 +1,14 @@
-#### uni.canvasToTempFilePath(OBJECT, this)
+#### uni.canvasToTempFilePath(object, component)
 
-把当前画布指定区域的内容导出生成指定大小的图片，并返回文件路径。在自定义组件下，第二个参数传入自定义组件实例 this，以操作组件内 `<canvas>` 组件。
+把当前画布指定区域的内容导出生成指定大小的图片，并返回文件路径。在自定义组件下，第二个参数传入自定义组件实例，以操作组件内 `<canvas>` 组件。
 
-**OBJECT参数说明：**
+**平台差异说明**
+
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|√|√|√|x（[CanvasContext.toTempFilePath](https://opendocs.alipay.com/mini/api/rod3ti)）|√|√|√|
+
+**object参数说明：**
 
 |参数	|类型		|必填		|说明	|
 |---|---|---|---|---|
@@ -31,8 +37,12 @@ uni.canvasToTempFilePath({
   destHeight: 100,
   canvasId: 'myCanvas',
   success: function(res) {
-	// 在H5平台下，tempFilePath 为 base64
+    // 在H5平台下，tempFilePath 为 base64
     console.log(res.tempFilePath)
   } 
 })
 ```
+
+**Tips**
+
+- H5端 Canvas 内绘制的图像需要支持跨域访问才能成功。
