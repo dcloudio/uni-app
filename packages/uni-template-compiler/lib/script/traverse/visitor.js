@@ -1,5 +1,7 @@
 const t = require('@babel/types')
 
+let _$vueId = 0
+
 const {
   METHOD_CREATE_ELEMENT,
   METHOD_TO_STRING,
@@ -56,9 +58,9 @@ function addVueId (path, state) {
   //   return
   // }
   if (!state.options.hasOwnProperty('$vueId')) {
-    state.options.$vueId = 1
+    state.options.$vueId = String(_$vueId++)
   }
-  const vueId = String(state.options.$vueId++)
+  const vueId = String(_$vueId++)
 
   let value
 
