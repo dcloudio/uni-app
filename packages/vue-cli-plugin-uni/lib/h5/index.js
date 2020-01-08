@@ -15,6 +15,8 @@ const modifyVueLoader = require('../vue-loader')
 
 const WebpackHtmlAppendPlugin = require('../../packages/webpack-html-append-plugin')
 
+const WebpackUniAppPlugin = require('../../packages/webpack-uni-app-loader/plugin/index')
+
 function resolve (dir) {
   return path.resolve(__dirname, '../../', dir)
 }
@@ -41,6 +43,7 @@ function getProvides () {
 }
 
 const plugins = [
+  new WebpackUniAppPlugin(),
   new webpack.ProvidePlugin(getProvides())
 ]
 
