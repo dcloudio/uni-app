@@ -312,10 +312,15 @@ if (
 }
 
 const {
-  initAutoImportComponents
+  initAutoImportComponents,
+  initAutoImportScanComponents
 } = require('@dcloudio/uni-cli-shared/lib/pages')
 
+process.UNI_AUTO_SCAN_COMPONENTS = !(pagesJsonObj.easycom && pagesJsonObj.easycom.autoscan === false)
 initAutoImportComponents(pagesJsonObj.easycom)
+if (process.UNI_AUTO_SCAN_COMPONENTS) {
+  initAutoImportScanComponents()
+}
 
 runByHBuilderX && console.log(`正在编译中...`)
 

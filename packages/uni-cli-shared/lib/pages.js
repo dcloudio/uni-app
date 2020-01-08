@@ -330,17 +330,47 @@ const autoComponentMap = {}
 
 let lastUsingAutoImportComponentsJson = ''
 
-process.UNI_AUTO_COMPONENTS = []
+let uniAutoImportComponents = []
 
-function initAutoImportComponents (usingAutoImportComponents = {}) {
+let uniAutoImportScanComponents = []
+
+function initAutoImportScanComponents () {
+  const componentsPath = path.resolve(process.env.UNI_INPUT_DIR, 'components')
+  const components = {}
+  try {
+    fs.readdirSync(componentsPath).forEach(name => {
+      if (fs.existsSync(path.resolve(componentsPath, name, name + '.vue'))) {
+        components[`^${name}$`] = `@/components/${name}/${name}.vue`
+      } else if (fs.existsSync(path.resolve(componentsPath, name, name + '.nvue'))) {
+        components[`^${name}$`] = `@/components/${name}/${name}.nvue`
+      }
+    })
+  } catch (e) {}
+
+  uniAutoImportScanComponents = parseUsingAutoImportComponents(components)
+
+  refreshAutoComponentMap()
+}
+
+const _toString = Object.prototype.toString
+
+function isPlainObject (obj) {
+  return _toString.call(obj) === '[object Object]'
+}
+
+function initAutoImportComponents (easycom = {}) {
+  let usingAutoImportComponents = easycom.custom || easycom || {}
+  if (!isPlainObject(usingAutoImportComponents)) {
+    usingAutoImportComponents = {}
+  }
   // 目前仅 mp-weixin 内置支持 page-meta 等组件
   if (process.env.UNI_PLATFORM !== 'mp-weixin') {
-    if (!usingAutoImportComponents['page-meta']) {
-      usingAutoImportComponents['page-meta'] =
+    if (!usingAutoImportComponents['^page-meta$']) {
+      usingAutoImportComponents['^page-meta$'] =
         '@dcloudio/uni-cli-shared/components/page-meta.vue'
     }
-    if (!usingAutoImportComponents['navigation-bar']) {
-      usingAutoImportComponents['navigation-bar'] =
+    if (!usingAutoImportComponents['^navigation-bar$']) {
+      usingAutoImportComponents['^navigation-bar$'] =
         '@dcloudio/uni-cli-shared/components/navigation-bar.vue'
     }
   }
@@ -348,7 +378,7 @@ function initAutoImportComponents (usingAutoImportComponents = {}) {
   const newUsingAutoImportComponentsJson = JSON.stringify(usingAutoImportComponents)
   if (newUsingAutoImportComponentsJson !== lastUsingAutoImportComponentsJson) {
     lastUsingAutoImportComponentsJson = newUsingAutoImportComponentsJson
-    process.UNI_AUTO_COMPONENTS = parseUsingAutoImportComponents(usingAutoImportComponents)
+    uniAutoImportComponents = parseUsingAutoImportComponents(usingAutoImportComponents)
     refreshAutoComponentMap()
   }
 }
@@ -363,8 +393,10 @@ function refreshAutoComponentMap () {
 }
 
 function addAutoComponent (name) {
-  const options = process.UNI_AUTO_COMPONENTS
-  const opt = options.find(opt => opt.pattern.test(name))
+  let opt = uniAutoImportComponents.find(opt => opt.pattern.test(name))
+  if (!opt) {
+    opt = uniAutoImportScanComponents.find(opt => opt.pattern.test(name))
+  }
   if (!opt) { // 不匹配
     return (autoComponentMap[name] = true) // cache
   }
@@ -393,10 +425,13 @@ function parseUsingAutoImportComponents (usingAutoImportComponents) {
   const autoImportComponents = []
   if (usingAutoImportComponents) {
     Object.keys(usingAutoImportComponents).forEach(pattern => {
-      autoImportComponents.push({
-        pattern: new RegExp(pattern),
-        replacement: usingAutoImportComponents[pattern]
-      })
+      const replacement = usingAutoImportComponents[pattern]
+      if (replacement && typeof replacement === 'string') {
+        autoImportComponents.push({
+          pattern: new RegExp(pattern),
+          replacement: replacement
+        })
+      }
     })
   }
   return autoImportComponents
@@ -411,6 +446,7 @@ module.exports = {
   pagesJsonJsFileName,
   getAutoComponents,
   initAutoImportComponents,
+  initAutoImportScanComponents,
   addPageUsingComponents,
   getUsingComponentsCode,
   generateUsingComponentsCode,
