@@ -9,7 +9,7 @@ const eventNames = [
   'pause',
   'stop',
   'ended',
-  'timeupdate',
+  'timeUpdate',
   'error',
   'waiting',
   'seeking',
@@ -69,7 +69,7 @@ class InnerAudioContext {
     this._callbacks = {}
     this._options = {}
     eventNames.forEach(name => {
-      this._callbacks[name] = []
+      this._callbacks[name.toLowerCase()] = []
     })
     props.forEach(item => {
       const name = item.name
@@ -103,11 +103,12 @@ class InnerAudioContext {
     this._operate('stop')
   }
   seek (position) {
-    this._operate('play', {
-      currentTime: position
+    this._operate('seek', {
+      currentTime: position * 1e3
     })
   }
   destroy () {
+    clearInterval(audio.__timing)
     invokeMethod('destroyAudioInstance', {
       audioId: this.id
     })
@@ -123,6 +124,7 @@ class InnerAudioContext {
 
 eventNames.forEach(item => {
   const name = item[0].toUpperCase() + item.substr(1)
+  item = item.toLowerCase()
   InnerAudioContext.prototype[`on${name}`] = function (callback) {
     this._callbacks[item].push(callback)
   }
@@ -135,14 +137,8 @@ eventNames.forEach(item => {
   }
 })
 
-onMethod('onAudioStateChange', ({
-  state,
-  audioId,
-  errMsg,
-  errCode
-}) => {
-  const audio = innerAudioContexts[audioId]
-  audio && audio._callbacks[state].forEach(callback => {
+function emit (audio, state, errMsg, errCode) {
+  audio._callbacks[state].forEach(callback => {
     if (typeof callback === 'function') {
       callback(state === 'error' ? {
         errMsg,
@@ -150,6 +146,29 @@ onMethod('onAudioStateChange', ({
       } : {})
     }
   })
+}
+
+onMethod('onAudioStateChange', ({
+  state,
+  audioId,
+  errMsg,
+  errCode
+}) => {
+  const audio = innerAudioContexts[audioId]
+  if (audio) {
+    emit(audio, state, errMsg, errCode)
+    if (state === 'play') {
+      const oldCurrentTime = audio.currentTime
+      audio.__timing = setInterval(() => {
+        const currentTime = audio.currentTime
+        if (currentTime !== oldCurrentTime) {
+          emit(audio, 'timeupdate')
+        }
+      }, 200)
+    } else if (state === 'pause' || state === 'stop' || state === 'error') {
+      clearInterval(audio.__timing)
+    }
+  }
 })
 
 const innerAudioContexts = Object.create(null)
