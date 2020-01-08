@@ -330,17 +330,37 @@ const autoComponentMap = {}
 
 let lastUsingAutoImportComponentsJson = ''
 
-process.UNI_AUTO_COMPONENTS = []
+let uniAutoImportComponents = []
+
+let uniAutoImportScanComponents = []
+
+function initAutoImportScanComponents () {
+  const componentsPath = path.resolve(process.env.UNI_INPUT_DIR, 'components')
+  const components = {}
+  try {
+    fs.readdirSync(componentsPath).forEach(name => {
+      if (fs.existsSync(path.resolve(componentsPath, name, name + '.vue'))) {
+        components[`^${name}$`] = `@/components/${name}/${name}.vue`
+      } else if (fs.existsSync(path.resolve(componentsPath, name, name + '.nvue'))) {
+        components[`^${name}$`] = `@/components/${name}/${name}.nvue`
+      }
+    })
+  } catch (e) {}
+
+  uniAutoImportScanComponents = parseUsingAutoImportComponents(components)
+
+  refreshAutoComponentMap()
+}
 
 function initAutoImportComponents (usingAutoImportComponents = {}) {
   // 目前仅 mp-weixin 内置支持 page-meta 等组件
   if (process.env.UNI_PLATFORM !== 'mp-weixin') {
-    if (!usingAutoImportComponents['page-meta']) {
-      usingAutoImportComponents['page-meta'] =
+    if (!usingAutoImportComponents['^page-meta$']) {
+      usingAutoImportComponents['^page-meta$'] =
         '@dcloudio/uni-cli-shared/components/page-meta.vue'
     }
-    if (!usingAutoImportComponents['navigation-bar']) {
-      usingAutoImportComponents['navigation-bar'] =
+    if (!usingAutoImportComponents['^navigation-bar$']) {
+      usingAutoImportComponents['^navigation-bar$'] =
         '@dcloudio/uni-cli-shared/components/navigation-bar.vue'
     }
   }
@@ -348,7 +368,7 @@ function initAutoImportComponents (usingAutoImportComponents = {}) {
   const newUsingAutoImportComponentsJson = JSON.stringify(usingAutoImportComponents)
   if (newUsingAutoImportComponentsJson !== lastUsingAutoImportComponentsJson) {
     lastUsingAutoImportComponentsJson = newUsingAutoImportComponentsJson
-    process.UNI_AUTO_COMPONENTS = parseUsingAutoImportComponents(usingAutoImportComponents)
+    uniAutoImportComponents = parseUsingAutoImportComponents(usingAutoImportComponents)
     refreshAutoComponentMap()
   }
 }
@@ -363,8 +383,10 @@ function refreshAutoComponentMap () {
 }
 
 function addAutoComponent (name) {
-  const options = process.UNI_AUTO_COMPONENTS
-  const opt = options.find(opt => opt.pattern.test(name))
+  let opt = uniAutoImportComponents.find(opt => opt.pattern.test(name))
+  if (!opt) {
+    opt = uniAutoImportScanComponents.find(opt => opt.pattern.test(name))
+  }
   if (!opt) { // 不匹配
     return (autoComponentMap[name] = true) // cache
   }
@@ -411,6 +433,7 @@ module.exports = {
   pagesJsonJsFileName,
   getAutoComponents,
   initAutoImportComponents,
+  initAutoImportScanComponents,
   addPageUsingComponents,
   getUsingComponentsCode,
   generateUsingComponentsCode,
