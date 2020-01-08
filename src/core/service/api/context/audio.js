@@ -108,7 +108,7 @@ class InnerAudioContext {
     })
   }
   destroy () {
-    clearInterval(audio.__timing)
+    clearInterval(this.__timing)
     invokeMethod('destroyAudioInstance', {
       audioId: this.id
     })
