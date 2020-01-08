@@ -6785,6 +6785,8 @@ function updateWxsProps(oldVnode, vnode) {
         context.$getComponentDescriptor(context, true),
         vnode.elm.__vue__.$getComponentDescriptor(vnode.elm.__vue__, false)
       );
+    }, {
+      deep: true
     });
   });
 
