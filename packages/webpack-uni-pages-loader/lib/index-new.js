@@ -56,6 +56,7 @@ module.exports = function (content) {
   })
 
   // 组件自动导入配置
+  process.UNI_AUTO_SCAN_COMPONENTS = !(pagesJson.easycom && pagesJson.easycom.autoscan === false)
   initAutoImportComponents(pagesJson.easycom)
 
   // TODO 与 usingComponents 放在一块读取设置

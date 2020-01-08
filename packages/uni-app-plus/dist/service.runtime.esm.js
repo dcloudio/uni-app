@@ -6642,6 +6642,53 @@ var baseModules = [
   directives
 ];
 
+/*  */
+
+function updateWxsProps(oldVnode, vnode) {
+  if (
+    isUndef(oldVnode.data.wxsProps) &&
+    isUndef(vnode.data.wxsProps)
+  ) {
+    return
+  }
+
+  var oldWxsWatches = oldVnode.$wxsWatches;
+  var wxsPropsKey = Object.keys(vnode.data.wxsProps);
+  if (!oldWxsWatches && !wxsPropsKey.length) {
+    return
+  }
+
+  if (!oldWxsWatches) {
+    oldWxsWatches = {};
+  }
+
+  var wxsProps = vnode.data.wxsProps;
+
+  vnode.$wxsWatches = {};
+
+  Object.keys(wxsProps).forEach(function (prop) {
+    var watchProp = wxsProps[prop];
+
+    vnode.$wxsWatches[prop] = oldWxsWatches[prop] || vnode.context.$watch(watchProp, function() {
+      this.$forceUpdate();
+    }, {
+      deep: true
+    });
+  });
+
+  Object.keys(oldWxsWatches).forEach(function (oldName) {
+    if (!vnode.$wxsWatches[oldName]) {
+      oldWxsWatches[oldName]();
+      delete oldWxsWatches[oldName];
+    }
+  });
+}
+
+var wxs = {
+  create: updateWxsProps,
+  update: updateWxsProps
+};
+
 function parseDataset(attrs) {
   var dataset = Object.create(null);
   Object.keys(attrs).forEach(function (name) {
@@ -6765,6 +6812,7 @@ var events = {
 };
 
 var platformModules = [
+  wxs,
   attrs,
   events
 ];

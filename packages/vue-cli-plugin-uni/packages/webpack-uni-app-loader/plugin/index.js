@@ -13,7 +13,9 @@ class WebpackUniAppPlugin {
     compiler.hooks.invalid.tap('webpack-uni-app-invalid', (fileName, changeTime) => {
       if (fileName && typeof fileName === 'string') {
         if (fileName.indexOf('.vue') !== -1 || fileName.indexOf('.nvue') !== -1) {
-          initAutoImportScanComponents()
+          if (process.UNI_AUTO_SCAN_COMPONENTS) {
+            initAutoImportScanComponents()
+          }
         }
       }
     })

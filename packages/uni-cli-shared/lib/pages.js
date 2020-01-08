@@ -352,7 +352,17 @@ function initAutoImportScanComponents () {
   refreshAutoComponentMap()
 }
 
-function initAutoImportComponents (usingAutoImportComponents = {}) {
+const _toString = Object.prototype.toString
+
+function isPlainObject (obj) {
+  return _toString.call(obj) === '[object Object]'
+}
+
+function initAutoImportComponents (easycom = {}) {
+  let usingAutoImportComponents = easycom.custom || easycom || {}
+  if (!isPlainObject(usingAutoImportComponents)) {
+    usingAutoImportComponents = {}
+  }
   // 目前仅 mp-weixin 内置支持 page-meta 等组件
   if (process.env.UNI_PLATFORM !== 'mp-weixin') {
     if (!usingAutoImportComponents['^page-meta$']) {
@@ -415,10 +425,13 @@ function parseUsingAutoImportComponents (usingAutoImportComponents) {
   const autoImportComponents = []
   if (usingAutoImportComponents) {
     Object.keys(usingAutoImportComponents).forEach(pattern => {
-      autoImportComponents.push({
-        pattern: new RegExp(pattern),
-        replacement: usingAutoImportComponents[pattern]
-      })
+      const replacement = usingAutoImportComponents[pattern]
+      if (replacement && typeof replacement === 'string') {
+        autoImportComponents.push({
+          pattern: new RegExp(pattern),
+          replacement: replacement
+        })
+      }
     })
   }
   return autoImportComponents
