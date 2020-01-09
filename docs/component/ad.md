@@ -1,28 +1,33 @@
 
 #### ad
-广告组件
-
-App 平台 HBuilderX 2.5.2+ 支持
+应用内展示的广告组件，可用于banner或信息流。
 
 
 **平台差异说明**
 
 |App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|√|x|√|x|√|√|√|
+|√（2.5.2+）|x|√|x|√|√|√|
 
 
 **开通配置广告**
 
-- App平台：[详见](http://uniad.dcloud.net.cn/)
+开通广告步骤：
+1. 开通广告
+需在广告平台后台操作：
+- App平台：[详见](https://uniad.dcloud.net.cn/)
+- 小程序平台：在各自的小程序管理后台操作。
+2. 申请广告位id
+在各位后台申请广告位id
+3. 在页面合适位置编写代码，放置ad组件，配上广告位id（app是adpid，微信、头条、qq小程序是unit-id，百度小程序是apid）
 
 
 **属性说明**
 
 |属性名|类型|默认值|说明|平台差异|
 |:-|:-|:-|:-|:-|
-|adpid|String||DCloud 广告位id|App 平台|
-|data|Object|可选|广告数据，通过 plus.ad.getAds (参考示例代码)，设置后adpid将无效|App 平台|
+|data|Object|可选|广告数据，通过 plus.ad.getAds (参考示例代码)，设置后adpid将无效|App|
+|adpid|String||uni-AD App广告位id，在[uni-AD官网](https://uniad.dcloud.net.cn/)申请广告位|App|
 |unit-id|String||广告单元id，可在小程序管理后台的流量主模块新建|微信小程序、头条小程序(最低版本1.19.0+)、QQ小程序|
 |ad-intervals|number||广告自动刷新的间隔时间，单位为秒，参数值必须大于等于30（该参数不传入时 Banner 广告不会自动刷新）|微信小程序(基础库2.3.1+)|
 |appid|String||小程序应用 ID|百度小程序|
@@ -54,12 +59,14 @@ App 平台 HBuilderX 2.5.2+ 支持
 |card|卡片广告，1 图，可关闭|
 |feeds|自定义广告，可灵活控制广告上、左边距和宽高，以适应界面其他内容。可监听size事件获取实际宽高|
 
+App和微信小程序的ad组件没有type属性，可以用于banner，也可以用于信息流。
+
 
 **注意**
 - 无广告时没有高度，关闭广告时释放高度，宽度由父容器决定
 - App 平台，因广告组件内部获得广告数据计算后设置组件大小，会出现界面抖动问题，可以提前通过 plus.ad.getAds 获得广告数据，设置 data 后 adpid 将无效
 - 微信小程序 `<ad>` 组件不支持触发 tap 等触摸相关事件
-- Android 平台 `<list>` 组件中使用 `<ad>` 时需要指定宽度属性`<ad width="750rpx" />`，因 `<list>` 高效内存回收机制不在屏幕范围的组件不被创建，组件内部无法获取大小
+- Android 平台 nvue的 `<list>` 组件中使用 `<ad>` 时，必须指定宽度属性`<ad width="750rpx" />`，因为 `<list>` 有自动的内存回收机制，不在屏幕范围的组件不被创建，组件内部无法获取大小
 - `<recycle-list>` 暂不支持 `<ad>`
 - `<ad>` 组件内部一次获得一条广告数据，如果广告商为广点通概率出现重复广告，可根据需求请求广告数据，推荐单次大于1条(plus.ad.getAds) 来降低重复率
 
@@ -192,10 +199,7 @@ export default {
 </style>
 ```
 
-
-- App平台：无需编码，在打包App时可直接勾选广告位，[详见](https://dcloud.io/dad.html)
-- 微信小程序：[规范文档](https://developers.weixin.qq.com/miniprogram/dev/component/ad.html)
-- 百度小程序：[规范文档](https://smartprogram.baidu.com/docs/develop/component/ad/)
-- 头条小程序：[规范文档](https://developer.toutiao.com/dev/cn/mini-app/develop/component/ad-component)
-- QQ小程序：[规范文档](https://q.qq.com/wiki/develop/miniprogram/component/open-ability/ad.html)
-- 支付宝小程序：不支持此能力
+**注意**
+- App端除了ad组件，还支持开屏。详见[uni-AD官网](https://uniad.dcloud.net.cn/)
+- App端uni-AD聚合了腾讯广点通、头条穿山甲、360广告联盟等服务，打包时需勾选相应的sdk，详见：[https://ask.dcloud.net.cn/article/36718](https://ask.dcloud.net.cn/article/36718)
+- App端广告常见问题：[https://ask.dcloud.net.cn/article/36769](https://ask.dcloud.net.cn/article/36769)
