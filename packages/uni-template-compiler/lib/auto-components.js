@@ -6,15 +6,15 @@ const {
 
 const {
   removeExt
-} = require('../../uni-cli-shared/lib/util')
+} = require('@dcloudio/uni-cli-shared/lib/util')
 
 const {
   getAutoComponents
-} = require('../../uni-cli-shared/lib/pages')
+} = require('@dcloudio/uni-cli-shared/lib/pages')
 
 const {
   updateUsingAutoImportComponents
-} = require('../../uni-cli-shared/lib/cache')
+} = require('@dcloudio/uni-cli-shared/lib/cache')
 
 function formatSource (source) {
   if (source.indexOf('@/') === 0) { // 根目录
