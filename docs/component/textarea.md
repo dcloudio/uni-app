@@ -12,7 +12,7 @@
 |placeholder-class|String|textarea-placeholder|指定 placeholder 的样式类|头条小程序不支持|
 |disabled|Boolean|false|是否禁用||
 |maxlength|Number|140|最大输入长度，设置为 -1 的时候不限制最大长度||
-|focus|Boolean|false|获取焦点||
+|focus|Boolean|false|获取焦点|在 H5 平台能否聚焦以及软键盘是否跟随弹出，取决于当前浏览器本身的实现。|
 |auto-height|Boolean|false|是否自动增高，设置auto-height时，style.height不生效||
 |fixed|Boolean|false|如果 textarea 是在一个 position:fixed 的区域，需要显示指定属性 fixed 为 true|微信小程序、百度小程序、头条小程序、QQ小程序|
 |cursor-spacing|Number|0|指定光标与键盘的距离，单位 px 。取 textarea 距离底部的距离和 cursor-spacing 指定的距离的最小值作为光标与键盘的距离|App、微信小程序、百度小程序、头条小程序、QQ小程序|
