@@ -1,5 +1,6 @@
 const fs = require('fs')
 const path = require('path')
+const updateComponents = require('./component')
 
 const tmpDir = path.resolve(__dirname, '../../.tmp')
 
@@ -72,6 +73,12 @@ function updateAppComponents(paths) {
   return updateExportDefaultObject(paths, 'app-components.js', false)
 }
 
+function updateCoreComponents(paths){
+  const tags = process.UNI_TAGS || new Set()
+  Object.keys(paths).forEach(tag => tags.add(tag.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()))
+  updateComponents(tags)
+}
+
 function updateAppMixins(paths) {
   return updateExportDefaultObject(paths, 'app-mixins.js', false, true)
 }
@@ -91,6 +98,11 @@ const isPlatformApi = filepath => {
 const isAppComponents = filepath => {
   return path.extname(filepath) === '.vue' &&
     filepath.indexOf('/platforms/' + process.env.UNI_PLATFORM + '/components/app/') === 0
+}
+
+const isCoreComponents = filepath => {
+  return path.extname(filepath) === '.vue' &&
+    filepath.indexOf('/core/view/components/') === 0
 }
 
 const isAppMixins = filepath => {
@@ -113,6 +125,7 @@ function parseDeps(apis, manifest) {
   const apiProtocolPaths = Object.create(null)
   const invokeApiPaths = Object.create(null)
   const appComponentsPaths = Object.create(null)
+  const coreComponentsPaths = Object.create(null)
   const appMixinsPaths = Object.create(null)
   const systemRoutesPaths = Object.create(null)
   const apiSubscribePaths = Object.create(null)
@@ -126,6 +139,9 @@ function parseDeps(apis, manifest) {
   }, {
     test: isAppComponents,
     paths: appComponentsPaths
+  }, {
+    test: isCoreComponents,
+    paths: coreComponentsPaths
   }, {
     test: isAppMixins,
     paths: appMixinsPaths
@@ -175,6 +191,7 @@ function parseDeps(apis, manifest) {
     apiProtocolPaths,
     invokeApiPaths,
     appComponentsPaths,
+    coreComponentsPaths,
     appMixinsPaths,
     systemRoutesPaths,
     apiSubscribePaths
@@ -203,6 +220,7 @@ module.exports = function updateApis(apis = new Set(), userApis = new Set()) {
     invokeApiPaths,
     apiSubscribePaths,
     appComponentsPaths,
+    coreComponentsPaths,
     appMixinsPaths,
     systemRoutesPaths
   } = parseDeps(apis, manifest)
@@ -214,6 +232,7 @@ module.exports = function updateApis(apis = new Set(), userApis = new Set()) {
   updateInvokeApi(invokeApiPaths)
 
   updateAppComponents(appComponentsPaths)
+  updateCoreComponents(coreComponentsPaths)
   updateAppMixins(appMixinsPaths)
   updateSystemRoutes(systemRoutesPaths)
 }
