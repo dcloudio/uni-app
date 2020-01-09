@@ -6,7 +6,7 @@ const {
   getTagName
 } = require('../../h5')
 
-const tags = require('../../../../uni-cli-shared/lib/tags')
+const tags = require('@dcloudio/uni-cli-shared/lib/tags')
 
 // 仅限 view 层
 module.exports = function parseTag (el) {
