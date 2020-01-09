@@ -359,6 +359,8 @@ DCloud有380万开发者，[uni统计](https://tongji.dcloud.net.cn/)覆盖手�
 
 **国珍在线（5+App）：**新时代健康产业集团移动展业应用。[Android](http://sj.qq.com/myapp/detail.htm?apkName=cn.guozhen.guozhenzaixian)、[iOS](https://itunes.apple.com/cn/app/%E5%9B%BD%E7%8F%8D%E5%9C%A8%E7%BA%BF/id1098479063?mt=8)
 
+**太合音乐 秀动：**演出门票销售。[h5](https://wap.showstart.com/)
+
 #### html5游戏
 
 **信任的进化：** 曾Taptap首页推荐的益智小游戏。[Android](http://sj.qq.com/myapp/detail.htm?apkName=com.xuangames.xrdjh)、[iOS](https://itunes.apple.com/cn/app/%E4%BF%A1%E4%BB%BB%E7%9A%84%E8%BF%9B%E5%8C%96-%E5%90%88%E4%BD%9C%E8%87%AA%E7%A7%81%E7%9A%84%E5%9F%BA%E5%9B%A0/id1290206167?mt=8)
