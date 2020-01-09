@@ -15,7 +15,7 @@
 开通广告步骤：
 1. 开通广告
 需在广告平台后台操作：
-- App平台：[详见](https://uniad.dcloud.net.cn/)
+- App平台：[https://uniad.dcloud.net.cn/](https://uniad.dcloud.net.cn/)
 - 小程序平台：在各自的小程序管理后台操作。
 2. 申请广告位id
 在各位后台申请广告位id
@@ -72,8 +72,8 @@ App和微信小程序的ad组件没有type属性，可以用于banner，也可�
 
 
 **@error 错误码**
-- 穿山甲：[错误码](https://ad.oceanengine.com/union/media/doc?id=5de4cc6d78c8690012a90aa5)
-- 广点通：[错误码](https://developers.adnet.qq.com/doc/ios/union/union_debug#%E9%94%99%E8%AF%AF%E7%A0%81)
+- App端聚合的穿山甲：[错误码](https://ad.oceanengine.com/union/media/doc?id=5de4cc6d78c8690012a90aa5)
+- App端聚合的广点通：[错误码](https://developers.adnet.qq.com/doc/ios/union/union_debug#%E9%94%99%E8%AF%AF%E7%A0%81)
 
 
 **@downloadchange status**
