@@ -38,6 +38,24 @@ const ratioArgs = {
 }
 
 const proto = CanvasRenderingContext2D.prototype
+
+proto.drawImageByCanvas = (function (_super) {
+  return function (canvas, srcx, srcy, srcw, srch, desx, desy, desw, desh, isScale) {
+    if (!this.__hidpi__) {
+      return _super.apply(this, arguments)
+    }
+    srcx *= pixelRatio
+    srcy *= pixelRatio
+    srcw *= pixelRatio
+    srch *= pixelRatio
+    desx *= pixelRatio
+    desy *= pixelRatio
+    desw = isScale ? desw * pixelRatio : desw
+    desh = isScale ? desh * pixelRatio : desh
+    _super.call(this, canvas, srcx, srcy, srcw, srch, desx, desy, desw, desh)
+  }
+})(proto.drawImage)
+
 if (pixelRatio !== 1) {
   forEach(ratioArgs, function (value, key) {
     proto[key] = (function (_super) {
@@ -140,23 +158,6 @@ if (pixelRatio !== 1) {
     }
   })(proto.drawImage)
 }
-
-proto.drawImageByCanvas = (function (_super) {
-  return function (canvas, srcx, srcy, srcw, srch, desx, desy, desw, desh, isScale) {
-    if (!this.__hidpi__) {
-      return _super.apply(this, arguments)
-    }
-    srcx *= pixelRatio
-    srcy *= pixelRatio
-    srcw *= pixelRatio
-    srch *= pixelRatio
-    desx *= pixelRatio
-    desy *= pixelRatio
-    desw = isScale ? desw * pixelRatio : desw
-    desh = isScale ? desh * pixelRatio : desh
-    _super.call(this, canvas, srcx, srcy, srcw, srch, desx, desy, desw, desh)
-  }
-})(proto.drawImage)
 
 export function wrapper (canvas) {
   canvas.width = canvas.offsetWidth * pixelRatio
