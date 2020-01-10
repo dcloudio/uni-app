@@ -61,6 +61,10 @@ export default {
     displayMultipleItems: {
       type: [Number, String],
       default: 1
+    },
+    disableTouch: {
+      type: [Boolean, String],
+      default: false
     }
   },
   data () {
@@ -538,6 +542,9 @@ export default {
       }
     },
     _handleContentTrack (e) {
+      if (this.disableTouch) {
+        return
+      }
       if (!this._invalid) {
         if (e.detail.state === 'start') {
           this.userTracking = true
