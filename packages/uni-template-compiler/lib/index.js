@@ -19,6 +19,7 @@ const generateTemplate = require('./template/generate')
 const compilerModule = require('./module')
 
 const compilerAlipayModule = require('./module-alipay')
+const compilerToutiaoModule = require('./module-toutiao')
 
 const generateCodeFrame = require('./codeframe')
 
@@ -75,6 +76,8 @@ module.exports = {
 
     if (options.mp.platform === 'mp-alipay') {
       options.modules.push(compilerAlipayModule)
+    } else if (options.mp.platform === 'mp-toutiao') {
+      options.modules.push(compilerToutiaoModule)
     }
 
     const res = compileTemplate(source, Object.assign(options, {
