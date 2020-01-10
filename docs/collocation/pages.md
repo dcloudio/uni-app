@@ -666,6 +666,16 @@ h5 平台下拉刷新动画，只有 circle 类型。
 
 ```
 "easycom": {
+  "autoscan": true,
+  "custom": {
+    "uni-(.*)": "@/components/uni-$1.vue"
+  }
+}
+```
+
+```
+//2.5.5以下版本的用法
+"easycom": {
   "uni-(.*)": "@/components/uni-$1/uni-$1.vue"
 }
 ```
@@ -675,6 +685,7 @@ h5 平台下拉刷新动画，只有 circle 类型。
 - `easycom`方式引入组件不是全局引入，而是局部引入。例如在H5端只有加载相应页面才会加载使用的组件
 - 在组件名完全一致的情况下，`easycom`引入的优先级低于手动引入（区分连字符形式与驼峰形式）
 - 考虑到编译速度，直接修改`easycom`不会触发重新编译，需要改动页面内容触发。
+- 自`HBuilderX 2.5.5`开始支持`autoscan`，配置为`true`则自动扫描符合`components/组件名称/组件名称.vue`目录结构的组件，不满足规范的，可以在custom中手动配置
 
 # tabBar
 如果应用是一个多 tab 应用，可以通过 tabBar 配置项指定 tab 栏的表现，以及 tab 切换时显示的对应页。
