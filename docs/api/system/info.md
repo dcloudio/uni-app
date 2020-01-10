@@ -51,6 +51,7 @@
 |locationEnabled	|	地理位置的系统开关	|微信小程序|
 |wifiEnabled	|	Wi-Fi 的系统开关	|微信小程序|
 |safeArea|在竖屏正方向下的安全区域|5+App、H5、微信小程序|
+|safeAreaInsets|在竖屏正方向下的安全区域插入位置（2.5.3+）|5+App、H5、微信小程序|
 
 **Tips**
 - 屏幕高度=状态栏高度+原生导航栏高度+可使用窗口高度+原生tabbar高度
@@ -67,6 +68,15 @@
 |bottom	|Number	|安全区域右下角纵坐标			|
 |width	|Number	|安全区域的宽度，单位逻辑像素	|
 |height	|Number	|安全区域的高度，单位逻辑像素	|
+
+**safeAreaInsets 的结构**
+
+|参数	|类型	|说明							|
+|:-		|:-								|:-								|
+|left	|Number	|安全区域左侧插入位置			|
+|right	|Number	|安全区域右侧插入位置			|
+|top	|Number	|安全区顶部插入位置			|
+|bottom	|Number	|安全区域底部插入位置			|
 
 
 **示例**
@@ -130,6 +140,7 @@ uni.getSystemInfo({
 |locationEnabled	|	地理位置的系统开关	|微信小程序|
 |wifiEnabled	|	Wi-Fi 的系统开关	|微信小程序|
 |safeArea|在竖屏正方向下的安全区域|5+App、H5、微信小程序|
+|safeAreaInsets|在竖屏正方向下的安全区域插入位置（2.5.3+）|5+App、H5、微信小程序|
 
 **Tips**
 - 使用注意同上getSystemInfo
@@ -145,6 +156,14 @@ uni.getSystemInfo({
 |width	|Number	|安全区域的宽度，单位逻辑像素	|
 |height	|Number	|安全区域的高度，单位逻辑像素	|
 
+**safeAreaInsets 的结构**
+
+|参数	|类型	|说明							|
+|:-		|:-								|:-								|
+|left	|Number	|安全区域左侧插入位置			|
+|right	|Number	|安全区域右侧插入位置			|
+|top	|Number	|安全区顶部插入位置			|
+|bottom	|Number	|安全区域底部插入位置			|
 
 **示例**
 
