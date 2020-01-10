@@ -77,8 +77,13 @@ module.exports = function (source) {
 
   if (options.isH5TreeShaking) { // 摇树优化逻辑(框架组件移除样式,禁用 modules)
     const isWin = /^win/.test(process.platform)
-
     const normalizePath = path => (isWin ? path.replace(/\\/g, '/') : path)
+    
+    if(options.compilerOptions){
+      options.compilerOptions = {}
+    }
+    options.compilerOptions.autoComponentResourcePath = normalizePath(resourcePath)
+    
     // fixed by xxxxxx
     if(!modules && options.compilerOptions && options.compilerOptions.modules){
         modules = options.compilerOptions.modules
