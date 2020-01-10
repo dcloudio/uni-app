@@ -7,7 +7,7 @@ module.exports = {
     collectCoverageFrom: ['packages/*/src/**/*.js'],
     moduleFileExtensions: ['js', 'json'],
     moduleNameMapper: {
-        '^@dcloudio/(.*?)$': '<rootDir>/packages/$1/src'
+        '^@dcloudio/(.*?)$': '<rootDir>/packages/$1'
     },
     rootDir: __dirname,
     testMatch: ['<rootDir>/packages/**/__tests__/**/*spec.(t|j)s']
