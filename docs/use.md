@@ -324,7 +324,7 @@ export default {
 
 ## v-html指令
 
-由于非H5端，不支持dom和普通html元素，所以自然非H5端也不支持v-html。
+App端（vue页面[V3编译模式](https://ask.dcloud.net.cn/article/36599)）和H5端支持v-html，其他端不支持v-html。
 
 跨端的富文本处理方案详见：[https://ask.dcloud.net.cn/article/35772](https://ask.dcloud.net.cn/article/35772)
 
