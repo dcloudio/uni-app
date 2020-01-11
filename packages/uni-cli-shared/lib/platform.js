@@ -567,6 +567,7 @@ module.exports = {
       mergeLonghand: false,
       mergeRules: false,
       cssDeclarationSorter: false,
+      uniqueSelectors: false, // 标签排序影响头条小程序
       discardComments: false,
       discardDuplicates: false // 条件编译会导致重复
     }
