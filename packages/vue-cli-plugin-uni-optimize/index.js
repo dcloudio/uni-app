@@ -80,11 +80,10 @@ module.exports = (api, options) => {
     webpackConfig.module
       .rule('vue')
       .use('vue-loader')
-      .loader(resolve('packages/vue-loader'))
       .tap(options => Object.assign(options, {
+        isH5TreeShaking: true,
         cacheDirectory: false,
-        cacheIdentifier: false,
-        compilerOptions: require('@dcloudio/vue-cli-plugin-uni/lib/h5/compiler-options')
+        cacheIdentifier: false
       }))
       .end()
       .uses

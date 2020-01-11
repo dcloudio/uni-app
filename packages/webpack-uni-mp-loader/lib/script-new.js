@@ -11,6 +11,10 @@ const {
 } = require('@dcloudio/uni-cli-shared')
 
 const {
+  getBabelParserOptions
+} = require('@dcloudio/uni-cli-shared/lib/platform')
+
+const {
   updateUsingComponents
 } = require('@dcloudio/uni-cli-shared/lib/cache')
 
@@ -63,17 +67,7 @@ module.exports = function (content, map) {
     state: {
       components
     }
-  } = traverse(parser.parse(content, {
-    sourceType: 'module',
-    plugins: [
-      'optionalChaining',
-      'typescript',
-      ['decorators', {
-        decoratorsBeforeExport: true
-      }],
-      'classProperties'
-    ]
-  }), {
+  } = traverse(parser.parse(content, getBabelParserOptions()), {
     type,
     components: []
   })

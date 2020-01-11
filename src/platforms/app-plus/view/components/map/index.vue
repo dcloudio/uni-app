@@ -146,7 +146,9 @@ export default {
       const list = this.controls.map((control) => {
         let position = { position: 'absolute' };
         ['top', 'left', 'width', 'height'].forEach(key => {
-          position[key] = control.position[key] + 'px'
+          if (control.position[key]) {
+            position[key] = control.position[key] + 'px'
+          }
         })
         return {
           id: control.id,
@@ -160,14 +162,29 @@ export default {
   watch: {
     hidden (val) {
       this.map && this.map[val ? 'hide' : 'show']()
+    },
+    latitude (val) {
+      this.map && this.map.setStyles({
+        center: new plus.maps.Point(this.longitude, this.latitude)
+      })
+    },
+    longitude (val) {
+      this.map && this.map.setStyles({
+        center: new plus.maps.Point(this.longitude, this.latitude)
+      })
+    },
+    markers (val) {
+      this.map && this._addMarkers(val)
+    },
+    polyline (val) {
+      this.map && this._addMapLines(val)
+    },
+    circles (val) {
+      this.map && this._addMapCircles(val)
     }
   },
-  listeners: {
-    '@view-update': '_requestUpdate'
-  },
   mounted () {
-    this._updateStyle()
-    let mapStyle = Object.assign({}, this.attrs, this.style)
+    let mapStyle = Object.assign({}, this.attrs, this.position)
     if (this.latitude && this.longitude) {
       mapStyle.center = new plus.maps.Point(this.longitude, this.latitude)
     }
@@ -179,13 +196,8 @@ export default {
     if (this.hidden) {
       map.hide()
     }
-    this.$watch('attrs', () => {
-      this.map && this.map.setStyles(this.attrs)
-    }, {
-      deep: true
-    })
-    this.$watch('style', () => {
-      this.map && this.map.setStyles(this.style)
+    this.$watch('position', () => {
+      this.map && this.map.setStyles(this.position)
     }, {
       deep: true
     })
@@ -212,39 +224,39 @@ export default {
       }
       this.map && this[type](data)
     },
-    getRegion () {
-      // TODO
-      // const region = this.map.getBounds()
+    moveToLocation (data) {
+      this.map.setCenter(new plus.maps.Point(this.longitude, this.latitude))
     },
-    getScale () {
-      // TODO
-      // const zoom = this.map.getZoom()
-    },
-    _updateStyle () {
-      const rect = this.$refs.container.getBoundingClientRect()
-      this.hidden = false;
-      ['top', 'left', 'width', 'height'].forEach(key => {
-        let val = rect[key]
-        val = key === 'top' ? val + (document.documentElement.scrollTop || document.body.scrollTop || 0) : val
-        if (!val && (key === 'width' || key === 'height')) {
-          this.hidden = true
-        }
-        this.style[key] = val + 'px'
+    getCenterLocation ({ callbackId }) {
+      const center = this.map.getCenter()
+      this._publishHandler(callbackId, {
+        longitude: center.longitude,
+        latitude: center.latitude,
+        errMsg: 'getCenterLocation:ok'
       })
     },
-    _requestUpdate () {
-      if (this._animationFrame) {
-        cancelAnimationFrame(this._animationFrame)
-      }
-      if (this.video) {
-        this._animationFrame = requestAnimationFrame(() => {
-          delete this._animationFrame
-          this._updateStyle()
-        })
-      }
+    getRegion ({ callbackId }) {
+      const rect = this.map.getBounds()
+      this._publishHandler(callbackId, {
+        southwest: rect.southwest,
+        northeast: rect.northeast || rect.northease, // 5plus API 名字写错了
+        errMsg: 'getRegion:ok'
+      })
+    },
+    getScale ({ callbackId }) {
+      this._publishHandler(callbackId, {
+        scale: this.map.getZoom(),
+        errMsg: 'getScale:ok'
+      })
     },
     controlclick (e) {
       this.$trigger('controltap', {}, { id: e.id })
+    },
+    _publishHandler (callbackId, data) {
+      UniViewJSBridge.publishHandler('onMapMethodCallback', {
+        callbackId,
+        data
+      }, this.$page.id)
     },
     _addMarker (nativeMap, marker) {
       const {

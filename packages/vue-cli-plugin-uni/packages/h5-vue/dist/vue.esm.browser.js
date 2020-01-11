@@ -1,6 +1,6 @@
 /*!
  * Vue.js v2.6.11
- * (c) 2014-2019 Evan You
+ * (c) 2014-2020 Evan You
  * Released under the MIT License.
  */
 /*  */
@@ -6815,6 +6815,8 @@ function updateWxsProps(oldVnode, vnode) {
         context.$getComponentDescriptor(context, true),
         vnode.elm.__vue__.$getComponentDescriptor(vnode.elm.__vue__, false)
       );
+    }, {
+      deep: true
     });
   });
 
@@ -7968,7 +7970,22 @@ const transformUnit = (val) => {
   return val
 };
 
-const setProp = (el, name, val) => {
+const urlRE = /url\(\s*'?"?([a-zA-Z0-9\.\-\_\/]+\.(jpg|gif|png))"?'?\s*\)/;
+
+const transformUrl = (val, ctx) => {
+  if (typeof val === 'string' && val.indexOf('url(') !== -1) {
+    const matches = val.match(urlRE);
+    if (matches && matches.length === 3) {
+        val = val.replace(matches[1], ctx._$getRealPath(matches[1]));
+    }
+  }
+  return val
+};
+
+const setProp = (el, name, val, ctx) => {
+  if(ctx && ctx._$getRealPath && val){
+    val = transformUrl(val, ctx);
+  }
   /* istanbul ignore if */
   if (cssVarRE.test(name)) {
     el.style.setProperty(name, val);
@@ -8019,7 +8036,7 @@ function updateStyle (oldVnode, vnode) {
   }
 
   let cur, name;
-  
+
   const oldStaticStyle = oldData.staticStyle;
   const oldStyleBinding = oldData.normalizedStyle || oldData.style || {};
 
@@ -8052,7 +8069,7 @@ function updateStyle (oldVnode, vnode) {
     cur = newStyle[name];
     if (cur !== oldStyle[name]) {
       // ie9 setting to null has no effect, must use empty string
-      setProp(el, name, cur == null ? '' : cur);
+      setProp(el, name, cur == null ? '' : cur, vnode.context);
     }
   }
 }

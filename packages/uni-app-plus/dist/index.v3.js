@@ -2891,6 +2891,24 @@ var serviceContext = (function () {
     return (lng < 72.004 || lng > 137.8347) || ((lat < 0.8293 || lat > 55.8271) || false)
   };
 
+  function getStatusbarHeight () {
+    // 横屏时 iOS 获取的状态栏高度错误，进行纠正
+    return plus.navigator.isImmersedStatusbar() ? Math.round(plus.os.name === 'iOS' ? plus.navigator.getSafeAreaInsets().top : plus.navigator.getStatusbarHeight()) : 0
+  }
+
+  function getScreenInfo () {
+    const orientation = plus.navigator.getOrientation();
+    const landscape = Math.abs(orientation) === 90;
+    // 安卓 plus 接口获取的屏幕大小值不为整数
+    const width = plus.screen.resolutionWidth;
+    const height = plus.screen.resolutionHeight;
+    // 根据方向纠正宽高
+    return {
+      screenWidth: Math[landscape ? 'max' : 'min'](width, height),
+      screenHeight: Math[landscape ? 'min' : 'max'](width, height)
+    }
+  }
+
   let audios = {};
 
   const evts = ['play', 'canplay', 'ended', 'stop', 'waiting', 'seeking', 'seeked', 'pause'];
@@ -4944,48 +4962,55 @@ var serviceContext = (function () {
   function getSystemInfo () {
     const platform = plus.os.name.toLowerCase();
     const ios = platform === 'ios';
-    // 安卓 plus 接口获取的屏幕大小值不为整数，iOS js 获取的屏幕大小横屏时颠倒
-    const screenWidth = plus.screen.resolutionWidth;
-    const screenHeight = plus.screen.resolutionHeight;
-    // 横屏时 iOS 获取的状态栏高度错误，进行纠正
-    var landscape = Math.abs(plus.navigator.getOrientation()) === 90;
-    var statusBarHeight = Math.round(plus.navigator.getStatusbarHeight());
-    if (ios && landscape) {
-      statusBarHeight = Math.min(20, statusBarHeight);
-    }
-    var safeAreaInsets;
-    function getSafeAreaInsets () {
-      return {
-        left: 0,
-        right: 0,
-        top: titleNView ? 0 : statusBarHeight,
-        bottom: 0
-      }
-    }
-    // 判断是否存在 titleNView
-    var titleNView;
-    var webview = getLastWebview();
+    const {
+      screenWidth,
+      screenHeight
+    } = getScreenInfo();
+    const statusBarHeight = getStatusbarHeight();
+
+    let safeAreaInsets;
+    const titleNView = {
+      height: 0,
+      cover: false
+    };
+    const webview = getLastWebview();
     if (webview) {
       let style = webview.getStyle();
-      if (style) {
-        titleNView = style && style.titleNView;
-        titleNView = titleNView && titleNView.type === 'default';
+      style = style && style.titleNView;
+      if (style && style.type && style.type !== 'none') {
+        titleNView.height = style.type === 'transparent' ? 0 : (statusBarHeight + TITLEBAR_HEIGHT);
+        titleNView.cover = style.type === 'transparent' || style.type === 'float';
       }
-      safeAreaInsets = ios ? webview.getSafeAreaInsets() : getSafeAreaInsets();
+      safeAreaInsets = webview.getSafeAreaInsets();
     } else {
-      safeAreaInsets = ios ? plus.navigator.getSafeAreaInsets() : getSafeAreaInsets();
+      safeAreaInsets = plus.navigator.getSafeAreaInsets();
     }
-    var windowBottom = isTabBarPage() && tabBar$1.visible && tabBar$1.cover ? tabBar$1.height : 0;
-    var windowHeight = Math.min(screenHeight - (titleNView ? (statusBarHeight + TITLEBAR_HEIGHT)
-      : 0) - windowBottom, screenHeight);
-    var windowWidth = screenWidth;
-    var safeArea = {
+    const tabBarView = {
+      height: 0,
+      cover: false
+    };
+    if (isTabBarPage()) {
+      tabBarView.height = tabBar$1.visible ? tabBar$1.height : 0;
+      tabBarView.cover = tabBar$1.cover;
+    }
+    const windowTop = titleNView.cover ? titleNView.height : 0;
+    const windowBottom = tabBarView.cover ? tabBarView.height : 0;
+    const windowHeight = screenHeight - titleNView.height - tabBarView.height;
+    const windowHeightReal = screenHeight - (titleNView.cover ? 0 : titleNView.height) - (tabBarView.cover ? 0 : tabBarView.height);
+    const windowWidth = screenWidth;
+    safeAreaInsets = ios ? safeAreaInsets : {
+      left: 0,
+      right: 0,
+      top: titleNView.height && !titleNView.cover ? 0 : statusBarHeight,
+      bottom: 0
+    };
+    const safeArea = {
       left: safeAreaInsets.left,
       right: windowWidth - safeAreaInsets.right,
       top: safeAreaInsets.top,
-      bottom: windowHeight - safeAreaInsets.bottom,
+      bottom: windowHeightReal - safeAreaInsets.bottom,
       width: windowWidth - safeAreaInsets.left - safeAreaInsets.right,
-      height: windowHeight - safeAreaInsets.top - safeAreaInsets.bottom
+      height: windowHeightReal - safeAreaInsets.top - safeAreaInsets.bottom
     };
 
     return {
@@ -5004,9 +5029,15 @@ var serviceContext = (function () {
       fontSizeSetting: '',
       platform,
       SDKVersion: '',
-      windowTop: 0,
+      windowTop,
       windowBottom,
-      safeArea
+      safeArea,
+      safeAreaInsets: {
+        top: safeAreaInsets.top,
+        right: safeAreaInsets.right,
+        bottom: safeAreaInsets.bottom,
+        left: safeAreaInsets.left
+      }
     }
   }
 
@@ -6173,7 +6204,7 @@ var serviceContext = (function () {
         hasContentType = true;
         headers['Content-Type'] = header[name];
         // TODO 需要重构
-        if (method === 'POST' && header[name].indexOf('application/x-www-form-urlencoded') === 0) {
+        if (method !== 'GET' && header[name].indexOf('application/x-www-form-urlencoded') === 0 && typeof data !== 'string' && !(data instanceof ArrayBuffer)) {
           let bodyArray = [];
           for (let key in data) {
             if (data.hasOwnProperty(key)) {
@@ -7501,7 +7532,7 @@ var serviceContext = (function () {
       style.dock = 'top';
       style.top = 0;
       style.width = '100%';
-      style.height = TITLEBAR_HEIGHT + plus.navigator.getStatusbarHeight();
+      style.height = TITLEBAR_HEIGHT + getStatusbarHeight();
       delete style.left;
       delete style.right;
       delete style.bottom;
@@ -7772,6 +7803,9 @@ var serviceContext = (function () {
 
   function navigate (path, callback, isAppLaunch) {
     {
+      if (isAppLaunch && __uniConfig.splashscreen && __uniConfig.splashscreen.autoclose && (!__uniConfig.splashscreen.alwaysShowBeforeRender)) {
+        plus.navigator.closeSplashscreen();
+      }
       if (!isAppLaunch && todoNavigator) {
         return console.error(`已存在待跳转页面${todoNavigator.path},请不要连续多次跳转页面${path}`)
       }
@@ -8928,7 +8962,7 @@ var serviceContext = (function () {
     'pause',
     'stop',
     'ended',
-    'timeupdate',
+    'timeUpdate',
     'error',
     'waiting',
     'seeking',
@@ -8988,7 +9022,7 @@ var serviceContext = (function () {
       this._callbacks = {};
       this._options = {};
       eventNames.forEach(name => {
-        this._callbacks[name] = [];
+        this._callbacks[name.toLowerCase()] = [];
       });
       props.forEach(item => {
         const name = item.name;
@@ -9022,11 +9056,12 @@ var serviceContext = (function () {
       this._operate('stop');
     }
     seek (position) {
-      this._operate('play', {
-        currentTime: position
+      this._operate('seek', {
+        currentTime: position * 1e3
       });
     }
     destroy () {
+      clearInterval(this.__timing);
       invokeMethod('destroyAudioInstance', {
         audioId: this.id
       });
@@ -9042,6 +9077,7 @@ var serviceContext = (function () {
 
   eventNames.forEach(item => {
     const name = item[0].toUpperCase() + item.substr(1);
+    item = item.toLowerCase();
     InnerAudioContext.prototype[`on${name}`] = function (callback) {
       this._callbacks[item].push(callback);
     };
@@ -9054,14 +9090,8 @@ var serviceContext = (function () {
     };
   });
 
-  onMethod('onAudioStateChange', ({
-    state,
-    audioId,
-    errMsg,
-    errCode
-  }) => {
-    const audio = innerAudioContexts[audioId];
-    audio && audio._callbacks[state].forEach(callback => {
+  function emit (audio, state, errMsg, errCode) {
+    audio._callbacks[state].forEach(callback => {
       if (typeof callback === 'function') {
         callback(state === 'error' ? {
           errMsg,
@@ -9069,6 +9099,29 @@ var serviceContext = (function () {
         } : {});
       }
     });
+  }
+
+  onMethod('onAudioStateChange', ({
+    state,
+    audioId,
+    errMsg,
+    errCode
+  }) => {
+    const audio = innerAudioContexts[audioId];
+    if (audio) {
+      emit(audio, state, errMsg, errCode);
+      if (state === 'play') {
+        const oldCurrentTime = audio.currentTime;
+        audio.__timing = setInterval(() => {
+          const currentTime = audio.currentTime;
+          if (currentTime !== oldCurrentTime) {
+            emit(audio, 'timeupdate');
+          }
+        }, 200);
+      } else if (state === 'pause' || state === 'stop' || state === 'error') {
+        clearInterval(audio.__timing);
+      }
+    }
   });
 
   const innerAudioContexts = Object.create(null);
@@ -10101,36 +10154,38 @@ var serviceContext = (function () {
     invokeMethod('operateMapPlayer', mapId, pageVm, type, data);
   }
 
+  UniServiceJSBridge.subscribe('onMapMethodCallback', ({
+    callbackId,
+    data
+  }) => {
+    callback.invoke(callbackId, data);
+  });
+
+  const methods = ['getCenterLocation', 'translateMarker', 'getScale', 'getRegion'];
+
   class MapContext {
     constructor (id, pageVm) {
       this.id = id;
       this.pageVm = pageVm;
     }
 
-    getCenterLocation (args) {
-      operateMapPlayer$3(this.id, this.pageVm, 'getCenterLocation', args);
-    }
-
     moveToLocation () {
       operateMapPlayer$3(this.id, this.pageVm, 'moveToLocation');
-    }
-
-    translateMarker (args) {
-      operateMapPlayer$3(this.id, this.pageVm, 'translateMarker', args);
     }
 
     includePoints (args) {
       operateMapPlayer$3(this.id, this.pageVm, 'includePoints', args);
     }
-
-    getRegion (args) {
-      operateMapPlayer$3(this.id, this.pageVm, 'getRegion', args);
-    }
-
-    getScale (args) {
-      operateMapPlayer$3(this.id, this.pageVm, 'getScale', args);
-    }
   }
+
+  methods.forEach(function (method) {
+    MapContext.prototype[method] = callback.warp(function (options, callbackId) {
+      operateMapPlayer$3(this.id, this.pageVm, method, {
+        options,
+        callbackId
+      });
+    });
+  });
 
   function createMapContext$1 (id, context) {
     if (context) {
@@ -10224,7 +10279,7 @@ var serviceContext = (function () {
     callback.invoke(callbackId, data);
   });
 
-  const methods = ['insertDivider', 'insertImage', 'insertText', 'setContents', 'getContents', 'clear', 'removeFormat', 'undo', 'redo'];
+  const methods$1 = ['insertDivider', 'insertImage', 'insertText', 'setContents', 'getContents', 'clear', 'removeFormat', 'undo', 'redo'];
 
   class EditorContext {
     constructor (id, pageId) {
@@ -10241,7 +10296,7 @@ var serviceContext = (function () {
     }
   }
 
-  methods.forEach(function (method) {
+  methods$1.forEach(function (method) {
     EditorContext.prototype[method] = callback.warp(function (options, callbackId) {
       operateEditor(this.id, this.pageId, method, {
         options,
@@ -12078,6 +12133,7 @@ var serviceContext = (function () {
     }
 
     appCtx = appVm;
+    appCtx.$vm = appVm;
 
     Object.assign(appCtx, defaultApp); // 拷贝默认实现
 
@@ -12281,7 +12337,7 @@ var serviceContext = (function () {
 
   const isAndroid = plus.os.name.toLowerCase() === 'android';
   const FOCUS_TIMEOUT = isAndroid ? 300 : 700;
-  const HIDE_TIMEOUT = 300;
+  const HIDE_TIMEOUT = 800;
   let keyboardHeight = 0;
   let onKeyboardShow;
   let focusTimer;
@@ -12918,13 +12974,15 @@ var serviceContext = (function () {
 
     const onPageScroll = hasLifecycleHook(vm.$options, 'onPageScroll') ? 1 : 0;
     const onPageReachBottom = hasLifecycleHook(vm.$options, 'onReachBottom') ? 1 : 0;
+    const statusbarHeight = getStatusbarHeight();
 
     return {
       disableScroll,
       onPageScroll,
       onPageReachBottom,
       onReachBottomDistance,
-      windowTop: 0, // TODO
+      statusbarHeight,
+      windowTop: windowOptions.titleNView && windowOptions.titleNView.type === 'float' ? (statusbarHeight + TITLEBAR_HEIGHT) : 0,
       windowBottom: (tabBar$1.indexOf(route) >= 0 && tabBar$1.cover) ? tabBar$1.height : 0
     }
   }

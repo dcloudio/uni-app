@@ -14,6 +14,10 @@ const {
 } = require('@dcloudio/uni-cli-shared')
 
 const {
+  getBabelParserOptions
+} = require('@dcloudio/uni-cli-shared/lib/platform')
+
+const {
   updateUsingComponents
 } = require('@dcloudio/uni-cli-shared/lib/cache')
 
@@ -55,14 +59,14 @@ module.exports = function (content) {
         const vuePagePath = path.resolve(process.env.UNI_INPUT_DIR, normalizePath(params.page) + '.vue')
         if (!fs.existsSync(vuePagePath)) {
           const nvuePagePath = path.resolve(process.env.UNI_INPUT_DIR, normalizePath(params.page) +
-                        '.nvue')
+            '.nvue')
           if (fs.existsSync(nvuePagePath)) {
             ext = '.nvue'
           }
         }
       }
       return `
-import Vue from 'vue'            
+import Vue from 'vue'
 import Page from './${normalizePath(params.page)}${ext}'
 createPage(Page)
 `
@@ -78,17 +82,7 @@ createPage(Page)
       state: {
         components
       }
-    } = traverse(parser.parse(content, {
-      sourceType: 'module',
-      plugins: [
-        'optionalChaining',
-        'typescript',
-        ['decorators', {
-          decoratorsBeforeExport: true
-        }],
-        'classProperties'
-      ]
-    }), {
+    } = traverse(parser.parse(content, getBabelParserOptions()), {
       components: []
     })
 

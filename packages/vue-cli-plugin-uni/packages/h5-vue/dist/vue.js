@@ -1,6 +1,6 @@
 /*!
  * Vue.js v2.6.11
- * (c) 2014-2019 Evan You
+ * (c) 2014-2020 Evan You
  * Released under the MIT License.
  */
 (function (global, factory) {
@@ -6789,6 +6789,8 @@
           context.$getComponentDescriptor(context, true),
           vnode.elm.__vue__.$getComponentDescriptor(vnode.elm.__vue__, false)
         );
+      }, {
+        deep: true
       });
     });
 
@@ -7947,7 +7949,22 @@
     return val
   };
 
-  var setProp = function (el, name, val) {
+  var urlRE = /url\(\s*'?"?([a-zA-Z0-9\.\-\_\/]+\.(jpg|gif|png))"?'?\s*\)/;
+
+  var transformUrl = function (val, ctx) {
+    if (typeof val === 'string' && val.indexOf('url(') !== -1) {
+      var matches = val.match(urlRE);
+      if (matches && matches.length === 3) {
+          val = val.replace(matches[1], ctx._$getRealPath(matches[1]));
+      }
+    }
+    return val
+  };
+
+  var setProp = function (el, name, val, ctx) {
+    if(ctx && ctx._$getRealPath && val){
+      val = transformUrl(val, ctx);
+    }
     /* istanbul ignore if */
     if (cssVarRE.test(name)) {
       el.style.setProperty(name, val);
@@ -7998,7 +8015,7 @@
     }
 
     var cur, name;
-    
+
     var oldStaticStyle = oldData.staticStyle;
     var oldStyleBinding = oldData.normalizedStyle || oldData.style || {};
 
@@ -8031,7 +8048,7 @@
       cur = newStyle[name];
       if (cur !== oldStyle[name]) {
         // ie9 setting to null has no effect, must use empty string
-        setProp(el, name, cur == null ? '' : cur);
+        setProp(el, name, cur == null ? '' : cur, vnode.context);
       }
     }
   }

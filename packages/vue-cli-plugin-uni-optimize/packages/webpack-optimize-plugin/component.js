@@ -37,12 +37,14 @@ module.exports = function updateComponents(tags) {
     tagName = capitalize(camelize(tagName))
     return `${tagName}.name = 'VUni${tagName}'
      ${tagName}.mixins = ${tagName}.mixins ? [].concat(baseMixin, ${tagName}.mixins) : [baseMixin]
+     ${tagName}.mixins.push(animation)
      Vue.component(${tagName}.name,${tagName})`
   }).join('\n')
 
   const content = `
 import Vue from 'vue'
 import baseMixin from 'uni-mixins/base'
+import animation from 'uni-mixins/animation'
 ${importsStr}
 ${componentsStr}
 `

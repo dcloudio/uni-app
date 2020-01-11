@@ -498,7 +498,11 @@ export default {
         }
       } else {
         if (document.fullscreenEnabled || document.webkitFullscreenEnabled) {
-          document[document.fullscreenEnabled ? 'exitFullscreen' : 'webkitExitFullscreen']()
+          if (document.fullscreenElement) {
+            document.exitFullscreen()
+          } else if (document.webkitFullscreenElement) {
+            document.webkitExitFullscreen()
+          }
         } else if (video.webkitExitFullScreen) {
           video.webkitExitFullScreen()
         } else {

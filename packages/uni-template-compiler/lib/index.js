@@ -8,7 +8,7 @@ const {
   compileToFunctions,
   ssrCompile,
   ssrCompileToFunctions
-} = require('../../vue-cli-plugin-uni/packages/vue-template-compiler')
+} = require('@dcloudio/vue-cli-plugin-uni/packages/vue-template-compiler')
 
 const platforms = require('./platforms')
 const traverseScript = require('./script/traverse')
@@ -19,6 +19,7 @@ const generateTemplate = require('./template/generate')
 const compilerModule = require('./module')
 
 const compilerAlipayModule = require('./module-alipay')
+const compilerToutiaoModule = require('./module-toutiao')
 
 const generateCodeFrame = require('./codeframe')
 
@@ -34,7 +35,13 @@ const {
 
 module.exports = {
   compile (source, options = {}) {
-    (options.modules || (options.modules = [])).push(autoComponentsModule)
+    if ( // 启用摇树优化后,需要过滤内置组件
+      !options.autoComponentResourcePath ||
+      options.autoComponentResourcePath.indexOf('@dcloudio/uni-h5/src') === -1
+    ) {
+      (options.modules || (options.modules = [])).push(autoComponentsModule)
+    }
+
     options.isUnaryTag = isUnaryTag
     // 将 autoComponents 挂在 isUnaryTag 上边
     options.isUnaryTag.autoComponents = new Set()
@@ -75,6 +82,8 @@ module.exports = {
 
     if (options.mp.platform === 'mp-alipay') {
       options.modules.push(compilerAlipayModule)
+    } else if (options.mp.platform === 'mp-toutiao') {
+      options.modules.push(compilerToutiaoModule)
     }
 
     const res = compileTemplate(source, Object.assign(options, {

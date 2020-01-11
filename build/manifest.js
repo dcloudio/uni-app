@@ -31,6 +31,8 @@ const DEPS = {
     ['/platforms/h5/components/system-routes/open-location/index.vue', 'OpenLocation']
   ],
   'previewImage': [
+    ['/core/view/components/swiper/index.vue', 'Swiper'],
+    ['/core/view/components/swiper-item/index.vue', 'SwiperItem'],
     ['/platforms/h5/components/system-routes/preview-image/index.vue', 'PreviewImage']
   ],
   'showToast': TOAST_DEPS,

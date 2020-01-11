@@ -8,6 +8,8 @@ const {
   getPlatformCssnano
 } = require('@dcloudio/uni-cli-shared')
 
+const WebpackUniAppPlugin = require('../packages/webpack-uni-app-loader/plugin/index')
+
 const modifyVueLoader = require('./vue-loader')
 
 const {
@@ -157,6 +159,7 @@ module.exports = {
         }]
       },
       plugins: [
+        new WebpackUniAppPlugin(),
         createUniMPPlugin(),
         new webpack.ProvidePlugin(getProvides())
       ]

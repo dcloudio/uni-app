@@ -58,11 +58,20 @@ export function chooseVideo ({
     if (video.onloadedmetadata !== undefined) {
       // 尝试获取视频的宽高信息
       video.onloadedmetadata = function () {
-        callbackResult.duration = video.duration || 0
-        callbackResult.width = video.videoWidth || 0
-        callbackResult.height = video.videoHeight || 0
-        invoke(callbackId, callbackResult)
+        invoke(callbackId, Object.assign({}, callbackResult, {
+          duration: video.duration || 0,
+          width: video.videoWidth || 0,
+          height: video.videoHeight || 0
+        }))
       }
+      // 部分浏览器（如微信内置浏览器）未播放无法触发loadedmetadata事件
+      setTimeout(() => {
+        invoke(callbackId, Object.assign({}, callbackResult, {
+          duration: 0,
+          width: 0,
+          height: 0
+        }))
+      }, 300)
       video.src = filePath
     } else {
       invoke(callbackId, callbackResult)

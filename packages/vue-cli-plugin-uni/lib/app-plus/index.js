@@ -11,6 +11,8 @@ const {
   getGlobalUsingComponentsCode
 } = require('@dcloudio/uni-cli-shared/lib/pages')
 
+const WebpackUniAppPlugin = require('../../packages/webpack-uni-app-loader/plugin/index')
+
 const {
   isUnaryTag,
   getPartialIdentifier
@@ -172,6 +174,7 @@ const v3 = {
         ]
       },
       plugins: [
+        new WebpackUniAppPlugin(),
         new webpack.ProvidePlugin(getProvides(isAppService))
       ]
     }
@@ -246,13 +249,13 @@ const v3 = {
         compilerOptions
       }, cacheConfig))
       .end()
-      // .use('uniapp-custom-block-loader')
-      // .loader(require.resolve('@dcloudio/vue-cli-plugin-uni/packages/webpack-custom-block-loader'))
-      // .options({
-      //   isAppService,
-      //   isAppView,
-      //   compiler: getPlatformCompiler()
-      // })
+    // .use('uniapp-custom-block-loader')
+    // .loader(require.resolve('@dcloudio/vue-cli-plugin-uni/packages/webpack-custom-block-loader'))
+    // .options({
+    //   isAppService,
+    //   isAppView,
+    //   compiler: getPlatformCompiler()
+    // })
 
     // 是否启用 cache
     if (process.env.UNI_USING_CACHE) {

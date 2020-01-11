@@ -13,7 +13,7 @@ const componentNormalizerPath = require.resolve('./runtime/componentNormalizer')
 const { NS } = require('./plugin')
 
 let errorEmitted = false
-
+let modules // h5 平台摇树优化时,需要保留编译器原始modules(因为框架内代码不需要modules,开发者代码需要)
 function loadTemplateCompiler (loaderContext) {
   try {
     return require('vue-template-compiler')
@@ -74,6 +74,28 @@ module.exports = function (source) {
     isAppView: options.isAppView,
     isAppNVue: options.isAppNVue
   })
+
+  if (options.isH5TreeShaking) { // 摇树优化逻辑(框架组件移除样式,禁用 modules)
+    const isWin = /^win/.test(process.platform)
+    const normalizePath = path => (isWin ? path.replace(/\\/g, '/') : path)
+    
+    if(options.compilerOptions){
+      options.compilerOptions = {}
+    }
+    options.compilerOptions.autoComponentResourcePath = normalizePath(resourcePath)
+    
+    // fixed by xxxxxx
+    if(!modules && options.compilerOptions && options.compilerOptions.modules){
+        modules = options.compilerOptions.modules
+    }
+    const sourcePath = normalizePath(require('@dcloudio/uni-h5/path').src)
+    if (normalizePath(this.resourcePath).indexOf(sourcePath) === 0) {
+      descriptor.styles.length = 0
+      options.compilerOptions && (delete options.compilerOptions.modules)
+    } else if(options.compilerOptions){
+      options.compilerOptions.modules = modules
+    }
+  }
 
   // if the query has a type field, this is a language block request
   // e.g. foo.vue?type=template&id=xxxxx

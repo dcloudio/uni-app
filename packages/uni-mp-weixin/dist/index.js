@@ -385,8 +385,25 @@ var previewImage = {
   }
 };
 
+function addSafeAreaInsets (result) {
+  if (result.safeArea) {
+    const safeArea = result.safeArea;
+    result.safeAreaInsets = {
+      top: safeArea.top,
+      left: safeArea.left,
+      right: result.windowWidth - safeArea.right,
+      bottom: result.windowHeight - safeArea.bottom
+    };
+  }
+}
 const protocols = {
-  previewImage
+  previewImage,
+  getSystemInfo: {
+    returnValue: addSafeAreaInsets
+  },
+  getSystemInfoSync: {
+    returnValue: addSafeAreaInsets
+  }
 };
 const todos = [
   'vibrate'

@@ -1179,6 +1179,37 @@ export default {
 - 各个`script`标签会分别被打包至对应支持平台，不需要额外写条件编译
 - 自`HBuilderX 2.2.5`开始，不推荐使用各个小程序自有的引入方式，推荐使用`script`标签引入
 
+## renderjs
+
+uni-app 2.5.5+ 在 [WXS](?id=wxs) 的基础上扩展了 renderjs，以 vue 组件的写法运行在 view 层。仅支持 App（[V3](https://ask.dcloud.net.cn/article/36599) 且不含 nvue）、H5。
+
+### 使用方式
+设置 script 节点的 lang 为 renderjs
+```html
+<script module="test" lang="renderjs">
+	export default {
+		mounted() {
+			// ...
+		},
+		methods: {
+			// ...
+		}
+	}
+</script>
+```
+
+### 示例
+
+* [echarts 示例](https://ext.dcloud.net.cn/plugin?id=1207)
+
+### 注意事项
+
+* 可以使用 dom、bom API 不可直接访问 service 层数据
+* view 层和 service 层通讯方式与 [WXS](?id=wxs) 一致
+* 观测更新的数据在 view 层可以直接访问到
+* 不要直接引用大型类库，推荐通过动态创建 script 方式引用
+* view 层的页面引用资源的路径相对于根目录计算，例如：./static/test.js
+
 
 ## 致谢
 

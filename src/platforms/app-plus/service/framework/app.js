@@ -182,6 +182,7 @@ export function registerApp (appVm) {
   }
 
   appCtx = appVm
+  appCtx.$vm = appVm
 
   Object.assign(appCtx, defaultApp) // 拷贝默认实现
 
