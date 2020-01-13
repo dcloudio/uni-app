@@ -13,6 +13,35 @@ import {
 } from 'uni-mixins'
 import native from '../../mixins/native'
 
+const _adDataCache = {}
+function getAdData (adpid, adWidth, onsuccess, onerror) {
+  const key = adpid + '-' + adWidth
+  const adDataList = _adDataCache[key]
+  if (adDataList && adDataList.length > 0) {
+    onsuccess(adDataList.splice(0, 1)[0])
+    return
+  }
+
+  plus.ad.getAds(
+    {
+      adpid: adpid,
+      count: 10,
+      width: adWidth
+    },
+    (res) => {
+      const list = res.ads
+      onsuccess(list.splice(0, 1)[0])
+      _adDataCache[key] = adDataList ? adDataList.concat(list) : list
+    },
+    (err) => {
+      onerror({
+        errCode: err.code,
+        errMsg: err.message
+      })
+    }
+  )
+}
+
 const methods = [
   'draw'
 ]
@@ -135,19 +164,10 @@ export default {
       }
     },
     _loadData (adpid) {
-      plus.ad.getAds({
-        adpid: adpid || this.adpid,
-        count: 1,
-        width: this.position.width
-      },
-      (res) => {
-        this._fillData(res.ads[0])
-      },
-      (err) => {
-        this.$trigger('error', {}, {
-          errCode: err.code,
-          errMsg: err.message
-        })
+      getAdData(adpid || this.adpid, this.position.width, (data) => {
+        this._fillData(data)
+      }, (err) => {
+        this.$trigger('error', err)
       })
     },
     _fillData (data) {

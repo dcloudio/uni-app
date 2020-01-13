@@ -2328,7 +2328,7 @@ var serviceContext = (function () {
       } else if (res.errMsg.indexOf(':cancel') !== -1) {
         res.errMsg = apiName + ':cancel';
       } else if (res.errMsg.indexOf(':fail') !== -1) {
-        res.errMsg = apiName + ':fail';
+        res.errMsg = apiName + ':fail' + res.errMsg.substr(res.errMsg.indexOf(' '));
       }
 
       const errMsg = res.errMsg;
@@ -6275,7 +6275,7 @@ var serviceContext = (function () {
             requestTaskId,
             state: 'fail',
             statusCode,
-            errMsg: 'abort'
+            errMsg: 'abort statusCode:' + statusCode
           });
         }
       });
