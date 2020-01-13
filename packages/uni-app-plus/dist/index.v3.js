@@ -2328,7 +2328,7 @@ var serviceContext = (function () {
       } else if (res.errMsg.indexOf(':cancel') !== -1) {
         res.errMsg = apiName + ':cancel';
       } else if (res.errMsg.indexOf(':fail') !== -1) {
-        res.errMsg = apiName + ':fail';
+        res.errMsg = apiName + ':fail' + res.errMsg.substr(res.errMsg.indexOf(' '));
       }
 
       const errMsg = res.errMsg;
@@ -6204,7 +6204,7 @@ var serviceContext = (function () {
         hasContentType = true;
         headers['Content-Type'] = header[name];
         // TODO 需要重构
-        if (method === 'POST' && header[name].indexOf('application/x-www-form-urlencoded') === 0) {
+        if (method !== 'GET' && header[name].indexOf('application/x-www-form-urlencoded') === 0 && typeof data !== 'string' && !(data instanceof ArrayBuffer)) {
           let bodyArray = [];
           for (let key in data) {
             if (data.hasOwnProperty(key)) {
@@ -6275,7 +6275,7 @@ var serviceContext = (function () {
             requestTaskId,
             state: 'fail',
             statusCode,
-            errMsg: 'abort'
+            errMsg: 'abort statusCode:' + statusCode
           });
         }
       });
@@ -10154,36 +10154,38 @@ var serviceContext = (function () {
     invokeMethod('operateMapPlayer', mapId, pageVm, type, data);
   }
 
+  UniServiceJSBridge.subscribe('onMapMethodCallback', ({
+    callbackId,
+    data
+  }) => {
+    callback.invoke(callbackId, data);
+  });
+
+  const methods = ['getCenterLocation', 'translateMarker', 'getScale', 'getRegion'];
+
   class MapContext {
     constructor (id, pageVm) {
       this.id = id;
       this.pageVm = pageVm;
     }
 
-    getCenterLocation (args) {
-      operateMapPlayer$3(this.id, this.pageVm, 'getCenterLocation', args);
-    }
-
     moveToLocation () {
       operateMapPlayer$3(this.id, this.pageVm, 'moveToLocation');
-    }
-
-    translateMarker (args) {
-      operateMapPlayer$3(this.id, this.pageVm, 'translateMarker', args);
     }
 
     includePoints (args) {
       operateMapPlayer$3(this.id, this.pageVm, 'includePoints', args);
     }
-
-    getRegion (args) {
-      operateMapPlayer$3(this.id, this.pageVm, 'getRegion', args);
-    }
-
-    getScale (args) {
-      operateMapPlayer$3(this.id, this.pageVm, 'getScale', args);
-    }
   }
+
+  methods.forEach(function (method) {
+    MapContext.prototype[method] = callback.warp(function (options, callbackId) {
+      operateMapPlayer$3(this.id, this.pageVm, method, {
+        options,
+        callbackId
+      });
+    });
+  });
 
   function createMapContext$1 (id, context) {
     if (context) {
@@ -10277,7 +10279,7 @@ var serviceContext = (function () {
     callback.invoke(callbackId, data);
   });
 
-  const methods = ['insertDivider', 'insertImage', 'insertText', 'setContents', 'getContents', 'clear', 'removeFormat', 'undo', 'redo'];
+  const methods$1 = ['insertDivider', 'insertImage', 'insertText', 'setContents', 'getContents', 'clear', 'removeFormat', 'undo', 'redo'];
 
   class EditorContext {
     constructor (id, pageId) {
@@ -10294,7 +10296,7 @@ var serviceContext = (function () {
     }
   }
 
-  methods.forEach(function (method) {
+  methods$1.forEach(function (method) {
     EditorContext.prototype[method] = callback.warp(function (options, callbackId) {
       operateEditor(this.id, this.pageId, method, {
         options,

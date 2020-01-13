@@ -6693,7 +6693,12 @@ function parseDataset(attrs) {
   var dataset = Object.create(null);
   Object.keys(attrs).forEach(function (name) {
     if (name.indexOf('data-') === 0) {
-      dataset[camelize(name.replace('data-', ''))] = JSON.parse(attrs[name]);
+      var camelizeName = camelize(name.replace('data-', ''));
+      try {
+        dataset[camelizeName] = JSON.parse(attrs[name]);
+      } catch (e) {
+        dataset[camelizeName] = attrs[name];
+      }
     }
   });
   return dataset
