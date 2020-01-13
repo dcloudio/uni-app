@@ -102,7 +102,7 @@ export function createRequestTaskById (requestTaskId, {
           requestTaskId,
           state: 'fail',
           statusCode,
-          errMsg: 'abort'
+          errMsg: 'abort statusCode:' + statusCode
         })
       }
     })
