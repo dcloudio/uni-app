@@ -965,7 +965,7 @@ WXS是一套运行在视图层的脚本语言，[微信端的规范详见](https
 
 它的特点是运行在视图层。当需要避免逻辑层和渲染层交互通信折损时，可采用wxs。
 
-uni-app可以将wxs代码编译到微信小程序、QQ小程序、APP、H5上（`HBuilderX 2.2.5`及以上版本）
+uni-app可以将wxs代码编译到微信小程序、QQ小程序、app-vue、H5上（`uni-app 2.2.5`及以上版本）
 
 与wxs类似，百度小程序提供了Filter、阿里小程序提供了SJS，uni-app也支持使用这些功能，并将它们编译到百度和阿里的小程序端。不过它们的功能还不如wxs强大。此外头条系小程序自身不支持类似功能。
 
@@ -1178,10 +1178,24 @@ export default {
 - `nvue`页面暂不支持wxs、sjs、filter.js
 - 各个`script`标签会分别被打包至对应支持平台，不需要额外写条件编译
 - 自`HBuilderX 2.2.5`开始，不推荐使用各个小程序自有的引入方式，推荐使用`script`标签引入
+- App和H5端，提供了wxs的升级版，更加强大，见下面的 [renderjs](?id=renderjs) 章节
 
 ## renderjs
 
-uni-app 2.5.5+ 在 [WXS](?id=wxs) 的基础上扩展了 renderjs，以 vue 组件的写法运行在 view 层。仅支持 App（[V3](https://ask.dcloud.net.cn/article/36599) 且不含 nvue）、H5。
+[WXS](?id=wxs)全称是微信脚本语言，它不够强大。uni-app的app端和h5端做了更多扩展，但扩展后的技术，不再适合使用wxs这个名字了。新的名称叫`renderjs`。
+ 
+wxs仍可以在app和h5端运行。升级版的`renderjs`只支持app-vue和h5。
+
+**平台差异说明**
+
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|√(2.5.5+，仅支持vue，并要求v3编译器)|√|x|x|x|x|x|
+
+renderjs，以 vue 组件的写法运行在 view 层。它有两大优势：
+1. 运行在视图层。当需要频繁操作视图层时，renderjs比运行在逻辑层的普通js，提供更流畅的ui交互。比如canvas动画、比如跟手绘画
+2. 可以直接操作dom、window等web api。也就是完整的echart、three等库都可以使用了
+
 
 ### 使用方式
 设置 script 节点的 lang 为 renderjs
@@ -1200,12 +1214,12 @@ uni-app 2.5.5+ 在 [WXS](?id=wxs) 的基础上扩展了 renderjs，以 vue 组�
 
 ### 示例
 
-* [echarts 示例](https://ext.dcloud.net.cn/plugin?id=1207)
+* [通过renderjs，在app和h5端使用完成的 echarts](https://ext.dcloud.net.cn/plugin?id=1207)
 
 ### 注意事项
 
-* 可以使用 dom、bom API 不可直接访问 service 层数据
-* view 层和 service 层通讯方式与 [WXS](?id=wxs) 一致
+* 可以使用 dom、bom API 不可直接访问逻辑层数据
+* 视图层和逻辑层通讯方式与 [WXS](?id=wxs) 一致
 * 观测更新的数据在 view 层可以直接访问到
 * 不要直接引用大型类库，推荐通过动态创建 script 方式引用
 * view 层的页面引用资源的路径相对于根目录计算，例如：./static/test.js
