@@ -188,7 +188,7 @@ export default {
     if (this.latitude && this.longitude) {
       mapStyle.center = new plus.maps.Point(this.longitude, this.latitude)
     }
-    const map = this.map = plus.maps.create('map' + Date.now(), mapStyle)
+    const map = this.map = plus.maps.create(this.$page.id + '-map-' + (this.id || Date.now()), mapStyle)
     map.__markers__ = {}
     map.__lines__ = []
     map.__circles__ = []

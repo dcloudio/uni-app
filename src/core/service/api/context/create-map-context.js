@@ -35,6 +35,10 @@ export class MapContext {
   }
 }
 
+MapContext.prototype.$getAppMap = function() {
+  return plus.maps.getMapById(this.pageVm.$page.id + '-map-' + this.id);
+}
+
 methods.forEach(function (method) {
   MapContext.prototype[method] = callback.warp(function (options, callbackId) {
     operateMapPlayer(this.id, this.pageVm, method, {
