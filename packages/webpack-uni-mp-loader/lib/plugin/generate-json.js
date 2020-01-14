@@ -92,7 +92,7 @@ module.exports = function generateJson (compilation) {
   for (let name of jsonFileMap.keys()) {
     const jsonObj = JSON.parse(jsonFileMap.get(name))
     if (process.env.UNI_PLATFORM === 'app-plus') { // App平台默认增加usingComponents,激活__wxAppCode__
-      jsonObj.usingComponents = {}
+      jsonObj.usingComponents = jsonObj.usingComponents || {}
     }
     // customUsingComponents
     if (jsonObj.customUsingComponents && Object.keys(jsonObj.customUsingComponents).length) {
