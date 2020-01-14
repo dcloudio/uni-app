@@ -2,6 +2,8 @@
 #### ad
 应用内展示的广告组件，可用于banner或信息流。
 
+- app端的广告源由腾讯广点通、头条穿山甲、360广告联盟提供，DCloud负责聚合
+- 小程序端的广告由小程序平台提供
 
 **平台差异说明**
 
@@ -14,13 +16,17 @@
 
 开通广告步骤：
 1. 开通广告
+
 需在广告平台后台操作：
 - App平台：[https://uniad.dcloud.net.cn/](https://uniad.dcloud.net.cn/)
 - 小程序平台：在各自的小程序管理后台操作。
 2. 申请广告位id
+
 在各位后台申请广告位id
+
 3. 在页面合适位置编写代码，放置ad组件，配上广告位id（app是adpid，微信、头条、qq小程序是unit-id，百度小程序是apid）
 
+4. App端打包后生效，打包时必须选择要集成的广告SDK（穿山甲、广点通、360联盟）。
 
 **属性说明**
 
@@ -201,5 +207,6 @@ export default {
 
 **注意**
 - App端除了ad组件，还支持开屏。详见[uni-AD官网](https://uniad.dcloud.net.cn/)
-- App端uni-AD聚合了腾讯广点通、头条穿山甲、360广告联盟等服务，打包时需勾选相应的sdk，详见：[https://ask.dcloud.net.cn/article/36718](https://ask.dcloud.net.cn/article/36718)
-- App端广告常见问题：[https://ask.dcloud.net.cn/article/36769](https://ask.dcloud.net.cn/article/36769)
+- App端uni-AD聚合了腾讯广点通、头条穿山甲、360广告联盟等服务，打包时必须勾选相应的sdk，详见：[https://ask.dcloud.net.cn/article/36718](https://ask.dcloud.net.cn/article/36718)
+![](https://img-cdn-qiniu.dcloud.net.cn/uploads/article/20200115/10b714ce030ce2032a9d9b0bdd0ae03a.jpg)
+- App端广告开通指南和收益相关问题：[https://ask.dcloud.net.cn/article/36769](https://ask.dcloud.net.cn/article/36769)
