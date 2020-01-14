@@ -160,7 +160,7 @@ DCloud有380万开发者，[uni统计](https://tongji.dcloud.net.cn/)覆盖手�
 **当当网：** [H5](https://dh5.dangdang.com/)
 
 <div class="scan-code">
- <strong>vivo商城官方小程序：</strong> 支付宝搜索 “vivo”，或鼠标移此查看[小程序码]
+ <strong>vivo商城官方小程序：</strong> 支付宝搜索 "vivo"，或鼠标移此查看[支付宝小程序码]
  <div class="scan-code-hover">
     <div class="scan-code-hover-box">
       <img src="https://img.cdn.aliyun.dcloud.net.cn/uni-app/case/vivo-mall.png" alt="二维码获取失败" />
@@ -169,7 +169,7 @@ DCloud有380万开发者，[uni统计](https://tongji.dcloud.net.cn/)覆盖手�
 </div>
 
 <div class="scan-code">
- <strong>vivo会员官方小程序：</strong> 微信小程序搜索 “vivo会员”
+ <strong>vivo会员官方小程序：</strong> 微信小程序搜索 "vivo会员"，或鼠标移此查看[微信小程序码]
  <div class="scan-code-hover">
     <div class="scan-code-hover-box">
       <img src="https://img.cdn.aliyun.dcloud.net.cn/uni-app/vivovip.jpg" alt="二维码获取失败" />
