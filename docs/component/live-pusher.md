@@ -23,8 +23,8 @@
 
 属性|类型 |默认值|必填|说明:--|:--|:--|:--|:--|
 url|string| |是|推流地址，支持RTMP协议。
-mode |string| |否|推流视频模式，可取值：SD（标清）, HD（高清）, FHD（超清）。
-aspect |string|16:9|否|视频宽高比例
+mode |string|SD|否|推流视频模式，可取值：SD（标清）, HD（高清）, FHD（超清）。
+aspect |string|3:2|否|视频宽高比例
 muted|Boolean|false|否|是否静音。
 enable-camera|Boolean|true|否|开启摄像头。
 auto-focus|Boolean|true|否|自动聚集。
