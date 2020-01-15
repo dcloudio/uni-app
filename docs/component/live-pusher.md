@@ -24,6 +24,7 @@
 属性|类型 |默认值|必填|说明:--|:--|:--|:--|:--|
 url|string| |是|推流地址，支持RTMP协议。
 mode |string| |否|推流视频模式，可取值：SD（标清）, HD（高清）, FHD（超清）。
+aspect |string|16:9|否|视频宽高比例
 muted|Boolean|false|否|是否静音。
 enable-camera|Boolean|true|否|开启摄像头。
 auto-focus|Boolean|true|否|自动聚集。
@@ -34,10 +35,9 @@ whiteness|Number|0|否|美白，取值范围 0-9（iOS取值范围为1） ，0 �
 ```html
 <template>
 		<view>
-			<live-pusher id='livePusher1' class="livePusher" ref="livePusher" url=""
+			<live-pusher id='livePusher1' ref="livePusher" class="livePusher" url=""
 			mode="SD" :muted="true" :enable-camera="true" :auto-focus="true" :beauty="1" whiteness="2"
-			aspect="9:16" postition="absolute"
-			@statechange="statechange" @netstatus="netstatus" @error = "error"
+			aspect="9:16" @statechange="statechange" @netstatus="netstatus" @error = "error"
 			></live-pusher>
 			<button class="btn" @click="start">开始推流</button>
 			<button class="btn" @click="pause">暂停推流</button>
@@ -58,6 +58,7 @@ whiteness|Number|0|否|美白，取值范围 0-9（iOS取值范围为1） ，0 �
             fil: true
         },
         onReady() {
+            // 注意：需要在onReady中 或 onLoad 延时
             this.context = uni.createLivePusherContext("livePusher", this);
         },
         methods: {
