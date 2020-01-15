@@ -69,9 +69,9 @@ App和微信小程序的ad组件没有type属性，可以用于banner，也可�
 - App 平台，因广告组件内部获得广告数据计算后设置组件大小，会出现界面抖动问题，可以提前通过 plus.ad.getAds 获得广告数据，设置 data 后 adpid 将无效
 - 微信小程序 `<ad>` 组件不支持触发 tap 等触摸相关事件
 - Android 平台 nvue的 `<list>` 组件中使用 `<ad>` 时，必须指定宽度属性`<ad width="750rpx" />`，因为 `<list>` 有自动的内存回收机制，不在屏幕范围的组件不被创建，组件内部无法获取大小
+- 广点通概率出现重复广告，可根据需求请求广告数据，推荐单次大于1条(plus.ad.getAds) 来降低重复率
+- vue 页面使用 `<ad>` 暂不支持非 V3 编译，manifest.json 可配置
 - `<recycle-list>` 暂不支持 `<ad>`
-- `<ad>` 组件内部一次获得一条广告数据，如果广告商为广点通概率出现重复广告，可根据需求请求广告数据，推荐单次大于1条(plus.ad.getAds) 来降低重复率
-
 
 **@error 错误码**
 - App端聚合的穿山甲：[错误码](https://ad.oceanengine.com/union/media/doc?id=5de4cc6d78c8690012a90aa5)
