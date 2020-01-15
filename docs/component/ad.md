@@ -17,8 +17,8 @@
 开通广告步骤：
 1. 开通广告
 需在广告平台后台操作：
-* App平台：[https://uniad.dcloud.net.cn/](https://uniad.dcloud.net.cn/)
-* 小程序平台：在各自的小程序管理后台操作。
+    * App平台：[https://uniad.dcloud.net.cn/](https://uniad.dcloud.net.cn/)
+    * 小程序平台：在各自的小程序管理后台操作。
 2. 申请广告位id
 在各位后台申请广告位id
 3. 在页面合适位置编写代码，放置ad组件，配上广告位id（app是adpid，微信、头条、qq小程序是unit-id，百度小程序是apid）
