@@ -92,7 +92,7 @@ tcb.init({
 
 ### 客户端上使用Ticket登录
 
-创建`Ticket`之后，开发者应将`Ticket`发送至客户端，然后使用`客户端SDK`提供的 `signInWithTicket()` 登录`UniCloud`：
+创建`Ticket`之后，开发者应将`Ticket`发送至客户端，然后使用`客户端SDK`提供的 `signInWithTicket()` 登录`uniCloud`：
 
 ```js
 auth.signInWithTicket(ticket).then(() => {
