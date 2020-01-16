@@ -1,0 +1,203 @@
+## uploadFile(Object uploadOptions)
+
+上传文件到云存储
+
+#### 请求参数
+
+|参数名						|类型			|必填	|默认值	|说明												|平台差异说明		|
+|:-:							|:-:			|:-:	|:-:		|:-:												|:-:						|
+|cloudPath				|String		|是		|-			|文件的绝对路径，包含文件名	|仅腾讯云侧支持	|
+|filePath					|String		|是		|-			|要上传的文件对象						|								|
+|onUploadProgress	|Function	|否		|-			|上传进度回调								|仅腾讯云侧支持	|
+
+**注意**
+
+- `cloudPath` 为文件的绝对路径，包含文件名 foo/bar.jpg、foo/bar/baz.jpg 等，不能包含除[0-9 , a-z , A-Z]、/、!、-、\_、.、、\*和中文以外的字符，使用 / 字符来实现类似传统文件系统的层级结构。[查看详情](https://cloud.tencent.com/document/product/436/13324)
+
+#### 响应参数
+
+|字段		|类型	|说明														|
+|:-:		|:-:	|:-:														|
+|code		|String	|状态码，操作成功则不返回									|
+|message	|String	|错误描述													|
+|fileID		|String	|文件唯一 ID，用来访问文件，建议存储起来	|
+|requestId	|String	|请求序列号，用于错误排查									|
+
+#### 示例代码
+
+```javascript
+uni.chooseImage({
+	count: 1,
+	success(res) {
+		console.log(res);
+		if (res.tempFilePaths.length > 0) {
+			let filePath = res.tempFilePaths[0]
+			//进行上传操作
+
+			// promise
+			const result = await uniClient.uploadFile({
+				cloudPath: 'test-admin.jpeg',
+				filePath: filePath,
+				onUploadProgress: function(progressEvent) {
+					console.log(progressEvent);
+					var percentCompleted = Math.round(
+						(progressEvent.loaded * 100) / progressEvent.total
+					);
+				}
+			});
+
+			// callback
+			uniClient.uploadFile({
+				cloudPath: 'test-admin.jpeg',
+				filePath: filePath,
+				onUploadProgress: function(progressEvent) {
+					console.log(progressEvent);
+					var percentCompleted = Math.round(
+						(progressEvent.loaded * 100) / progressEvent.total
+					);
+				},
+				success() {},
+				fail() {},
+				complete() {}
+			});
+			
+		}
+	}
+});
+
+```
+
+**注意**
+
+- 为了提高文件上传性能，文件上传方式为直接上传到对象存储，为了防止在使用过程中出现 CORS 报错，需要到 Web 控制台/用户管理/登录设置选项中设置安全域名。如果已有域名出现 CORS 报错，请删除安全域名，重新添加。
+- 阿里云返回的fileID为链接形式
+
+## getTempFileURL(Object getTempFileURLOptions)
+
+获取文件临时下载链接，**仅腾讯云支持**
+
+#### 请求参数
+
+|字段		|类型						|必填	|默认值	|说明								|平台差异说明	|
+|:-:		|:-:						|:-:	|:-:	|:-:								|:-:			|
+|fileList	|&lt;Array&gt;.String,Object|是		|-		|要获取下载链接的文件 ID 组成的数组	|仅腾讯云支持	|
+
+**fileList**
+
+|字段	|类型	|必填	|说明					|
+|:-:	|:-:	|:-:	|:-:					|
+|fileID	|String	|是		|文件 ID				|
+|maxAge	|Number	|是		|文件链接有效期，单位：秒	|
+
+#### 响应参数
+
+|字段		|类型					|说明							|
+|:-:		|:-:					|:-:							|
+|code		|String					|状态码，操作成功则为 SUCCESS	|
+|message	|String					|错误描述						|
+|fileList	|&lt;Array&gt;.Object	|存储下载链接的数组				|
+|requestId	|String					|请求序列号，用于错误排查		|
+
+**fileList**
+
+|字段		|类型	|说明			|
+|:-:		|:-:	|:-:			|
+|fileID		|String	|文件 ID		|
+|tempFileURL|String	|文件访问链接	|
+
+#### 示例代码
+
+```javascript
+// promise
+uniClient.getTempFileURL({
+		fileList: ['cloud://test-28farb/a.png']
+	})
+	.then(res => {});
+
+// callback
+uniClient.getTempFileURL({
+	fileList: ['cloud://test-28farb/a.png'],
+	success() {},
+	fail() {},
+	complete() {}
+});
+```
+
+## deleteFile(Object deleteFileOptions)
+
+删除云端文件
+
+#### 请求参数
+
+|字段		|类型					|必填	|说明						|
+|:-:		|:-:					|----	|:-:						|
+|fileList	|&lt;Array&gt;.String	|是		|要删除的文件 ID 组成的数组，**阿里云只支持一次删除一个文件**|
+
+#### 响应参数
+
+|字段		|类型					|必填	|说明						|
+|:-:		|:-:					|:-:	|:-:						|
+|code		|String					|否		|状态码，操作成功则不返回	|
+|message	|String					|否		|错误描述					|
+|fileList	|&lt;Array&gt;.Object	|否		|删除结果组成的数组			|
+|requestId	|String					|否		|请求序列号，用于错误排查	|
+
+**fileList**
+
+|字段	|类型	|必填	|说明						|
+|:-:	|:-:	|:-:	|:-:						|
+|code	|String	|否		|删除结果，成功为 SUCCESS	|
+|fileID	|String	|是		|文件 ID					|
+
+#### 示例代码
+
+```javascript
+// promise
+uniClient
+  .deleteFile({
+    fileList: ['cloud://jimmytest-088bef/1534576354877.jpg']
+  })
+  .then(res => {});
+
+// callback
+uniClient.deleteFile(
+  {
+    fileList: ['cloud://jimmytest-088bef/1534576354877.jpg'],
+	success(){},
+	fail(){},
+	complete(){}
+  }
+);
+```
+
+<!-- ### 下载文件
+
+downloadFile(Object)
+
+请求参数
+
+| 字段 | 类型 | 必填 | 说明
+| :-: | :-: | :-: | :-: |
+| fileID | String | 是 | 要下载的文件的id
+| tempFilePath | String | 否 | 下载的文件要存储的位置
+
+响应参数
+
+| 字段 | 类型 | 必填 | 说明
+| :-: | :-: | :-: | :-: |
+| code | String | 否 | 状态码，操作成功则不返回
+| message | String | 否 | 错误描述
+| fileContent | Buffer | 否 | 下载的文件的内容。如果传入tempFilePath则不返回该字段
+| requestId | String | 否 | 请求序列号，用于错误排查
+
+示例代码
+
+```javascript
+let result = await tcb.downloadFile({
+    fileID: "cloud://aa-99j9f/my-photo.png",
+    // tempFilePath: '/tmp/test/storage/my-photo.png',
+	success(){},
+	fail(){},
+	complete(){}
+});
+``` -->
