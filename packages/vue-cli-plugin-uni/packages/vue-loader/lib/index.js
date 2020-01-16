@@ -79,7 +79,7 @@ module.exports = function (source) {
     const isWin = /^win/.test(process.platform)
     const normalizePath = path => (isWin ? path.replace(/\\/g, '/') : path)
     
-    if(options.compilerOptions){
+    if(!options.compilerOptions){
       options.compilerOptions = {}
     }
     options.compilerOptions.autoComponentResourcePath = normalizePath(resourcePath)
