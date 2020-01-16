@@ -3,6 +3,11 @@ const path = require('path')
 const mkdirp = require('mkdirp')
 const loaderUtils = require('loader-utils')
 
+if (process.env.UNI_PLATFORM === 'mp-360') {
+  process.env.UNI_PLATFORM = 'h5'
+  process.env.UNI_SUB_PLATFORM = 'mp-360'
+}
+
 // 初始化环境变量
 const defaultInputDir = '../../../../src'
 const defaultOutputDir = '../../../../dist/' +
@@ -20,6 +25,11 @@ process.env.UNI_PLATFORM = process.env.UNI_PLATFORM || 'h5'
 process.env.VUE_APP_PLATFORM = process.env.UNI_PLATFORM
 process.env.UNI_INPUT_DIR = process.env.UNI_INPUT_DIR || path.resolve(__dirname, defaultInputDir)
 process.env.UNI_OUTPUT_DIR = process.env.UNI_OUTPUT_DIR || path.resolve(__dirname, defaultOutputDir)
+
+if (process.env.UNI_SUB_PLATFORM === 'mp-360') {
+  const outputDir = process.env.UNI_OUTPUT_DIR
+  process.env.UNI_OUTPUT_DIR = path.resolve(outputDir.substr(0, outputDir.lastIndexOf('h5')), 'mp-360/dist')
+}
 
 if (process.env.UNI_PLATFORM === 'app-plus') {
   process.env.UNI_OUTPUT_TMP_DIR = path.resolve(process.env.UNI_OUTPUT_DIR, '../.tmp/app-plus')

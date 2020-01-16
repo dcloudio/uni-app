@@ -3,3 +3,5 @@ src/platforms/app-plus-nvue/runtime
 build/rollup-plugin-require-context
 packages/*/packages
 packages/*/template/**/*
+qh-api.js
+touch-emulator.js

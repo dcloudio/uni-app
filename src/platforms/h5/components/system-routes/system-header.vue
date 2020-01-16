@@ -34,6 +34,11 @@ export default {
   created () {
     if (__PLATFORM__ === 'h5') {
       document.title = this.$slots.default[0].text
+      if (typeof qh !== 'undefined') {
+        qh.setNavigationBarTitle({
+          title: document.title
+        })
+      }
     }
   },
   methods: {
