@@ -3,6 +3,30 @@ const path = require('path')
 const mkdirp = require('mkdirp')
 const loaderUtils = require('loader-utils')
 
+process.env.UNI_CLOUD_PROVIDER = JSON.stringify({})
+
+if (process.env.UNI_CLOUD_SPACES) {
+  try {
+    const spaces = JSON.parse(process.env.UNI_CLOUD_SPACES)
+    if (Array.isArray(spaces) && spaces.length === 1) {
+      const space = spaces[0]
+      if (space.clientSecret) {
+        process.env.UNI_CLOUD_PROVIDER = JSON.stringify({
+          provider: 'aliyun',
+          spaceId: space.name,
+          clientSecret: space.clientSecret,
+          endpoint: space.apiEndpoint
+        })
+      } else {
+        process.env.UNI_CLOUD_PROVIDER = JSON.stringify({
+          provider: 'tencent',
+          spaceId: space.name
+        })
+      }
+    }
+  } catch (e) {}
+}
+
 if (process.env.UNI_PLATFORM === 'mp-360') {
   process.env.UNI_PLATFORM = 'h5'
   process.env.UNI_SUB_PLATFORM = 'mp-360'

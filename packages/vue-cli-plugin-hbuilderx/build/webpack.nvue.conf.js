@@ -72,7 +72,8 @@ const plugins = [
   new webpack.DefinePlugin({
     'process.env': {
       'NODE_ENV': JSON.stringify(process.env.NODE_ENV),
-      'VUE_APP_PLATFORM': JSON.stringify(process.env.UNI_PLATFORM)
+      'VUE_APP_PLATFORM': JSON.stringify(process.env.UNI_PLATFORM),
+      'UNI_CLOUD_PROVIDER': process.env.UNI_CLOUD_PROVIDER
     }
   }),
   new webpack.BannerPlugin({
