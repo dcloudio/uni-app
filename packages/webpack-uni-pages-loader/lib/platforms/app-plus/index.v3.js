@@ -24,7 +24,7 @@ function getTabBarPages (appJson) {
 }
 
 function isTabBarPage (pathName, tabBarPages) {
-  return tabBarPages && tabBarPages.find(item => item.pagePath === pathName)
+  return Array.isArray(tabBarPages) && tabBarPages.find(item => item.pagePath === pathName)
 }
 
 function parseEntryPagePath (appJson, manifestJson) {
@@ -89,7 +89,7 @@ module.exports = function (appJson, manifestJson, {
       path: entryPagePath + '.js' + (appJson.entryPageQuery || '')
     }
     const tabBar = manifestJson.plus.tabBar
-    if (isTabBarPage(entryPagePath, tabBar.list)) {
+    if (tabBar && isTabBarPage(entryPagePath, tabBar.list)) {
       tabBar.child = ['lauchwebview']
     }
   } else {
