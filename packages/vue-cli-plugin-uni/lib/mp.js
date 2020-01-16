@@ -27,8 +27,10 @@ function createUniMPPlugin () {
 
 function getProvides () {
   const uniPath = require.resolve('@dcloudio/uni-' + process.env.UNI_PLATFORM)
+  const uniCloudPath = path.resolve(__dirname, '../packages/uni-cloud/dist/index.js')
   const provides = {
-    'uni': [uniPath, 'default']
+    'uni': [uniPath, 'default'],
+    'uniCloud': [uniCloudPath, 'default']
   }
 
   if (process.env.UNI_USING_COMPONENTS) {

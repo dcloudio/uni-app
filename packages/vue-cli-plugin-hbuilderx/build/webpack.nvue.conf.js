@@ -36,7 +36,11 @@ const uniPath = process.env.UNI_USING_V8
   ? '../packages/uni-app-plus-nvue-v8/dist/index.js'
   : '../packages/uni-app-plus-nvue/dist/index.js'
 
-const provide = {}
+const uniCloudPath = require.resolve('@dcloudio/vue-cli-plugin-uni/packages/uni-cloud/dist/index.js')
+
+const provide = {
+  'uniCloud': [uniCloudPath, 'default']
+}
 
 if (process.env.UNI_USING_V3 || process.env.UNI_USING_NATIVE) {
   provide['uni.getCurrentSubNVue'] = [path.resolve(__dirname,
