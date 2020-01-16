@@ -36,7 +36,11 @@ const uniPath = process.env.UNI_USING_V8
   ? '../packages/uni-app-plus-nvue-v8/dist/index.js'
   : '../packages/uni-app-plus-nvue/dist/index.js'
 
-const provide = {}
+const uniCloudPath = require.resolve('@dcloudio/vue-cli-plugin-uni/packages/uni-cloud/dist/index.js')
+
+const provide = {
+  'uniCloud': [uniCloudPath, 'default']
+}
 
 if (process.env.UNI_USING_V3 || process.env.UNI_USING_NATIVE) {
   provide['uni.getCurrentSubNVue'] = [path.resolve(__dirname,
@@ -68,7 +72,8 @@ const plugins = [
   new webpack.DefinePlugin({
     'process.env': {
       'NODE_ENV': JSON.stringify(process.env.NODE_ENV),
-      'VUE_APP_PLATFORM': JSON.stringify(process.env.UNI_PLATFORM)
+      'VUE_APP_PLATFORM': JSON.stringify(process.env.UNI_PLATFORM),
+      'UNI_CLOUD_PROVIDER': process.env.UNI_CLOUD_PROVIDER
     }
   }),
   new webpack.BannerPlugin({

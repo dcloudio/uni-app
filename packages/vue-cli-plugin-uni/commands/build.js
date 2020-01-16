@@ -64,6 +64,9 @@ function getWebpackConfig (api, args, options) {
     })
   } else {
     modifyConfig(webpackConfig, config => {
+      if (!config.optimization) {
+        config.optimization = {}
+      }
       config.optimization.namedModules = false
     })
   }
