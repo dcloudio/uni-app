@@ -10178,6 +10178,10 @@ var serviceContext = (function () {
     }
   }
 
+  MapContext.prototype.$getAppMap = function () {
+    return plus.maps.getMapById(this.pageVm.$page.id + '-map-' + this.id)
+  };
+
   methods.forEach(function (method) {
     MapContext.prototype[method] = callback.warp(function (options, callbackId) {
       operateMapPlayer$3(this.id, this.pageVm, method, {
