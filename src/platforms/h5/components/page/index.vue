@@ -7,15 +7,13 @@
       v-if="enablePullDownRefresh"
       ref="refresh"
       :color="refreshOptions.color"
-      :offset="refreshOptions.offset"
-    />
+      :offset="refreshOptions.offset" />
     <page-body
       v-if="enablePullDownRefresh"
       @touchstart.native="_touchstart"
       @touchmove.native="_touchmove"
       @touchend.native="_touchend"
-      @touchcancel.native="_touchend"
-    >
+      @touchcancel.native="_touchend">
       <slot name="page" />
     </page-body>
     <page-body v-else>
@@ -24,11 +22,11 @@
   </uni-page>
 </template>
 <style>
-uni-page {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
+  uni-page {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
 </style>
 <script>
 import {
@@ -210,7 +208,19 @@ export default {
   },
   created () {
     if (__PLATFORM__ === 'h5') {
-      document.title = this.navigationBar.titleText
+      const navigationBar = this.navigationBar
+      document.title = navigationBar.titleText
+      if (typeof qh !== 'undefined') {
+        qh.setNavigationBarTitle({
+          title: document.title
+        })
+        qh.setNavigationBarColor({
+          backgroundColor: navigationBar.backgroundColor
+        })
+        qh.setNavigationBarTextStyle({
+          textStyle: navigationBar.textColor === '#000' ? 'black' : 'white'
+        })
+      }
     }
   }
 }
