@@ -12,10 +12,10 @@
 
 **响应参数**
 
-| 字段			| 类型	| 必填| 说明											|
+| 字段			| 类型	| 必备| 说明											|
 | ---				| ---		| ---	| ---												|
-| code			| string| 否	| 状态码，操作成功则不返回。|
-| message		| string| 否	| 错误描述。								|
+| errCode		| string| 否	| 状态码，操作成功则不返回。|
+| errMsg		| string| 否	| 错误描述。								|
 | result		| object| 否	| 云函数执行结果。					|
 | requestId	| string| 否	| 请求序列号，用于错误排查。|
 
