@@ -50,7 +50,7 @@ function getNodeInfo (el, fields) {
       info.left = rect.left
       info.right = rect.right
       info.top = rect.top - top
-      info.bottom = rect.bottom
+      info.bottom = rect.bottom - top
     }
     if (fields.size) {
       info.width = rect.width
