@@ -663,12 +663,12 @@ h5 平台下拉刷新动画，只有 circle 类型。
 - A：参考[导航栏开发指南](http://ask.dcloud.net.cn/article/34921)
 
 # easycom
-自`HBuilderX 2.5.0`起支持`easycom`组件模式，简化组件使用。无需在页面里引入和注册组件，打包时会自动剔除没有使用的组件。可以在`HBuilderX 2.5.3`及以上版本新建`uni-ui`项目体验。
+自`HBuilderX 2.5.5`起支持`easycom`组件模式，简化组件使用。无需在页面里引入和注册组件，打包时会自动剔除没有使用的组件。可以在`HBuilderX 2.5.5`及以上版本新建`uni-ui`项目体验。`easycom`的`autoscan`默认为开启状态，如果需要配置`easycom`请在`pages.json`内修改`easycom`字段。
 
-|属性		|类型	|默认值	|描述																											|
-|:-			|:-		|:-		|:-																												|
-|autoscan	|Boolean|true	|是否开启自动扫描，开启后将会自动扫描符合`components/组件名称/组件名称.vue`目录结构的组件，`HBuilderX 2.5.5+`	|
-|custom		|Object	|-		|以正则方式自定义组件匹配规则，`HBuilderX 2.5.5+`																|
+|属性			|类型		|默认值	|描述																																											|
+|:-				|:-			|:-			|:-																																												|
+|autoscan	|Boolean|true		|是否开启自动扫描，开启后将会自动扫描符合`components/组件名称/组件名称.vue`目录结构的组件	|
+|custom		|Object	|-			|以正则方式自定义组件匹配规则。如果`autoscan`不能满足需求，可以使用`custom`自定义匹配规则	|
 
 **使用示例**
 
@@ -681,18 +681,11 @@ h5 平台下拉刷新动画，只有 circle 类型。
 }
 ```
 
-```
-//2.5.5以下版本的用法
-"easycom": {
-  "uni-(.*)": "@/components/uni-$1/uni-$1.vue"
-}
-```
-
 **说明**
 - `easycom`方式引入的组件无需在页面内`import`，也不需要在`components`内声明，即可在任意页面使用
 - `easycom`方式引入组件不是全局引入，而是局部引入。例如在H5端只有加载相应页面才会加载使用的组件
 - 在组件名完全一致的情况下，`easycom`引入的优先级低于手动引入（区分连字符形式与驼峰形式）
-- 考虑到编译速度，直接修改`easycom`不会触发重新编译，需要改动页面内容触发。
+- 考虑到编译速度，直接在`pages.json`内修改`easycom`不会触发重新编译，需要改动页面内容触发。
 
 # tabBar
 如果应用是一个多 tab 应用，可以通过 tabBar 配置项指定 tab 栏的表现，以及 tab 切换时显示的对应页。
