@@ -24,7 +24,7 @@ function getTabBarPages (appJson) {
 }
 
 function isTabBarPage (pathName, tabBarPages) {
-  return tabBarPages && tabBarPages.find(item => item.pagePath === pathName)
+  return Array.isArray(tabBarPages) && tabBarPages.find(item => item.pagePath === pathName)
 }
 
 function parseEntryPagePath (appJson, manifestJson) {
@@ -82,13 +82,15 @@ module.exports = function (appJson, manifestJson, {
   // 删除首页 style 中的 uni-app 配置（不注入 app-view.js）
   delete manifestJson.plus.launchwebview['uni-app']
 
-  if (appJson.page[appJson.entryPagePath].nvue) { // 首页是 nvue
+  const entryPagePath = appJson.entryPagePath
+  if (appJson.page[entryPagePath].nvue) { // 首页是 nvue
     manifestJson.launch_path = '' // 首页地址为空
     manifestJson.plus.launchwebview.uniNView = {
-      path: appJson.entryPagePath + '.js' + (appJson.entryPageQuery || '')
+      path: entryPagePath + '.js' + (appJson.entryPageQuery || '')
     }
-    if (manifestJson.plus.tabBar) {
-      manifestJson.plus.tabBar.child = ['lauchwebview']
+    const tabBar = manifestJson.plus.tabBar
+    if (tabBar && isTabBarPage(entryPagePath, tabBar.list)) {
+      tabBar.child = ['lauchwebview']
     }
   } else {
     manifestJson.plus.launch_path = '__uniappview.html' // 首页地址固定

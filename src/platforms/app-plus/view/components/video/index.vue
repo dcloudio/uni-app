@@ -193,6 +193,9 @@ export default {
             case 'playbackRate':
               data = data.rate
               break
+            case 'requestFullScreen':
+              data = data.direction
+              break
           }
         }
         this.video && this.video[type](data)
