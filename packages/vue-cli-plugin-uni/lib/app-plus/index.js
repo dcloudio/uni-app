@@ -110,6 +110,15 @@ const v3 = {
       }]
     })
 
+    if (isAppService) {
+      rules.push({
+        test: [/\.css$/, /\.p(ost)?css$/, /\.scss$/, /\.sass$/, /\.less$/, /\.styl(us)?$/],
+        use: [{
+          loader: path.resolve(__dirname, '../../packages/webpack-uni-app-loader/service/style.js')
+        }]
+      })
+    }
+
     const entry = {}
     if (isAppService) {
       entry['app-service'] = path.resolve(process.env.UNI_INPUT_DIR, getMainEntry())
@@ -279,6 +288,12 @@ const v3 = {
       if (process.env.NODE_ENV === 'production') {
         require('../h5/cssnano-options')(webpackConfig)
       }
+    }
+
+    if (isAppService) { // service 层移除 css 相关
+      ['css', 'postcss', 'scss', 'sass', 'less', 'stylus'].forEach(cssLang => {
+        webpackConfig.module.rules.delete(cssLang)
+      })
     }
 
     webpackConfig.plugins.delete('hmr')

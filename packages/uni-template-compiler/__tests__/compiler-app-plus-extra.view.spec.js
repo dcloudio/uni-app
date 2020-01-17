@@ -16,29 +16,29 @@ describe('codegen', () => {
   it('generate directive', () => {
     assertCodegen(
       '<p v-custom1:[arg1].modifier="value1" v-custom2></p>',
-      `with(this){return _c('v-uni-view',{attrs:{"_i":0}})}`
+      `with(this){return _c('p',{attrs:{"_i":0}})}`
     )
   })
   it('generate v-for directive', () => {
     assertCodegen(
       '<div><template v-for="item in items"><div></div><div></div></template></div>',
-      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},[_l((_$g(1,'f')),function(item,$10,$20,$30){return [_c('v-uni-view',{key:item['k0'],attrs:{"_i":("2-"+$30)}}),_c('v-uni-view',{key:item['k1'],attrs:{"_i":("3-"+$30)}})]})],2)}`
+      `with(this){return _c('div',{attrs:{"_i":0}},[_l((_$g(1,'f')),function(item,$10,$20,$30){return [_c('div',{key:item['k0'],attrs:{"_i":("2-"+$30)}}),_c('div',{key:item['k1'],attrs:{"_i":("3-"+$30)}})]})],2)}`
     )
     assertCodegen(
       '<div><template v-for="item in items"><span v-if="item.sub"></span></template></div>',
-      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},[_l((_$g(1,'f')),function(item,$10,$20,$30){return [(_$g(("2-"+$30),'i'))?_c('v-uni-label',{key:item['k0'],attrs:{"_i":("2-"+$30)}}):_e()]})],2)}`
+      `with(this){return _c('div',{attrs:{"_i":0}},[_l((_$g(1,'f')),function(item,$10,$20,$30){return [(_$g(("2-"+$30),'i'))?_c('span',{key:item['k0'],attrs:{"_i":("2-"+$30)}}):_e()]})],2)}`
     )
   })
   it('generate events with multiple statements', () => {
     assertCodegen(
       '<div>A{{ d | e | f }}B{{text}}C</div>',
-      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},[_v("A"+(_$g(0,'t0'))+"B"+(_$g(0,'t1'))+"C")])}`
+      `with(this){return _c('div',{attrs:{"_i":0}},[_v("A"+(_$g(0,'t0'))+"B"+(_$g(0,'t1'))+"C")])}`
     )
   })
   it('generate slot fallback content', () => {
     assertCodegen(
       '<div><slot><div>{{hi}}</div></slot></div>',
-      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},[_t("default",[_c('v-uni-view',{attrs:{"_i":2}},[_v((_$g(2,'t0')))])],{"_i":1})],2)}`
+      `with(this){return _c('div',{attrs:{"_i":0}},[_t("default",[_c('div',{attrs:{"_i":2}},[_v((_$g(2,'t0')))])],{"_i":1})],2)}`
     )
   })
   it('generate v-slot', () => {
@@ -60,14 +60,14 @@ describe('codegen', () => {
   it('generate wxs props', () => {
     assertCodegen(
       '<p :change:prop="swipe.sizeReady" :prop="pos" @touchstart="swipe.touchstart" @touchmove="swipe.touchmove" @touchend="swipe.touchend" @change="change"></p>',
-      `with(this){return _c('v-uni-view',{wxsProps:{"change:prop":"pos"},attrs:{"change:prop":swipe.sizeReady,"prop":_$gc(0,'change:pos'),"_i":0},on:{"touchstart":function($event){$event = $handleWxsEvent($event);swipe.touchstart($event, $getComponentDescriptor())},"touchmove":function($event){$event = $handleWxsEvent($event);swipe.touchmove($event, $getComponentDescriptor())},"touchend":function($event){$event = $handleWxsEvent($event);swipe.touchend($event, $getComponentDescriptor())},"change":function($event){return $handleViewEvent($event)}}})}`
+      `with(this){return _c('p',{wxsProps:{"change:prop":"pos"},attrs:{"change:prop":swipe.sizeReady,"prop":_$gc(0,'change:pos'),"_i":0},on:{"touchstart":function($event){$event = $handleWxsEvent($event);swipe.touchstart($event, $getComponentDescriptor())},"touchmove":function($event){$event = $handleWxsEvent($event);swipe.touchmove($event, $getComponentDescriptor())},"touchend":function($event){$event = $handleWxsEvent($event);swipe.touchend($event, $getComponentDescriptor())},"change":function($event){return $handleViewEvent($event)}}})}`
     )
   })
   // TODO 后续优化dataset
   // it('generate dataset', () => {
   //   assertCodegen(
   //     '<view data-a="1" :data-b="b"></view>',
-  //     `with(this){return _c('v-uni-view',{attrs:{"_i":0}})}`
+  //     `with(this){return _c('div',{attrs:{"_i":0}})}`
   //   )
   // })
   it('generate dataset', () => {

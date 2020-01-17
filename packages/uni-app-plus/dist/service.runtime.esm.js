@@ -5639,8 +5639,10 @@ function insertBefore() {
 
 }
 
-function removeChild() {
-
+function removeChild(node, child) {
+  if (child && child._$vd) {
+    child._$vd.removeElement(child);
+  }
 }
 
 function appendChild() {
