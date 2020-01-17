@@ -47,7 +47,8 @@ function parsePageCreateOptions (vm, route) {
     onPageReachBottom,
     onReachBottomDistance,
     statusbarHeight,
-    windowTop: windowOptions.titleNView && windowOptions.titleNView.type === 'float' ? (statusbarHeight + TITLEBAR_HEIGHT) : 0,
+    windowTop: windowOptions.titleNView && windowOptions.titleNView.type === 'float' ? (statusbarHeight +
+      TITLEBAR_HEIGHT) : 0,
     windowBottom: (tabBar.indexOf(route) >= 0 && tabBar.cover) ? tabBar.height : 0
   }
 }
@@ -59,6 +60,11 @@ export function initLifecycle (Vue) {
     beforeCreate () {
       // TODO 临时解决方案,service 层也注入 wxs (适用于工具类)
       const options = this.$options
+
+      // 自动挂载 $store
+      if (options.store && !Vue.prototype.$store) {
+        Vue.prototype.$store = options.store
+      }
 
       const wxs = options.wxs
       if (wxs) {
