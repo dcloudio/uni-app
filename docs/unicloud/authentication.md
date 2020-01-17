@@ -92,13 +92,9 @@ auth.signInWithTicket('YourTicket').then(() => {
 
 ### 获取私钥文件
 
-登录腾讯云[云开发控制台](https://console.cloud.tencent.com/tcb)，在[用户管理页面](https://console.cloud.tencent.com/tcb/user)中，点击“登录设置”，然后**生成并下载私钥**：
+登录uniCloud控制台[uniCloud控制台](http://unicloud.dcloud.net.cn/)，在`用户管理页面`中，点击“登录设置”，然后**生成并下载私钥**：
 
-**此处链接需替换为UniCloud链接【uniCloud替换标记】**
-
-![云开发下载私钥](https://main.qcloudimg.com/raw/e08751567a86afceda9e3e8536d37c52.png)
-
-**此处图片需替换为UniCloud图片【uniCloud替换标记】**
+![uniCloud下载私钥](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/auth-custom.png)
 
 ### 使用云函数创建登录凭据
 
@@ -159,9 +155,9 @@ auth.signInWithTicket(ticket).then(() => {
 uniCloud允许开发者使用匿名登录的方式进行静默授权，可以避免强制登录。在匿名状态下可正常的调用uniCloud的资源，开发者同时可以配合安全规则针对匿名用户制定对应的访问限制。
 
 ### 开启匿名登录授权
-登录腾讯云[云开发控制台](https://console.cloud.tencent.com/tcb)，在[用户管理页面](https://console.cloud.tencent.com/tcb/user)中，点击“登录设置”，然后在“匿名登录”一栏打开/关闭可用状态。
+登录uniCloud控制台[uniCloud控制台](http://unicloud.dcloud.net.cn/)，在`用户管理页面`中，点击“登录设置”，点击“登录设置”，然后在“匿名登录”一栏打开/关闭可用状态。
 
-**此处链接需替换为UniCloud链接【uniCloud替换标记】**
+![uniCloud匿名登录](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/auth-anonymously.png)
 
 ### 客户端进行匿名登录
 ```js

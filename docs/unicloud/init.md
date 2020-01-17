@@ -20,9 +20,7 @@
 ```javascript
 const uniClient = uniCloud.init({
   provider: 'tencent',
-  spaceId: 'xxxx-yyy',
-  clientSecret: 'xxxx',
-  endpoint: 'https://api.bspapp.com'
+  spaceId: 'xxxx-yyy'
 });
 ```
 
