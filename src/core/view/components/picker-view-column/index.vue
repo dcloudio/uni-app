@@ -11,7 +11,7 @@ import {
   disableScrollBounce
 } from 'uni-shared'
 
-function onClick (dom, callback) {
+function initClick (dom) {
   const MAX_MOVE = 20
   const hasTouchSupport = navigator.maxTouchPoints
   let x = 0
@@ -24,7 +24,17 @@ function onClick (dom, callback) {
   dom.addEventListener(hasTouchSupport ? 'touchend' : 'mouseup', (event) => {
     const info = hasTouchSupport ? event.changedTouches[0] : event
     if (Math.abs(info.clientX - x) < MAX_MOVE && Math.abs(info.clientY - y) < MAX_MOVE) {
-      callback(info)
+      let customEvent = new CustomEvent('click', {
+        bubbles: true,
+        cancelable: true,
+        target: event.target,
+        currentTarget: event.currentTarget
+      });
+      ['screenX', 'screenY', 'clientX', 'clientY', 'pageX', 'pageY'].forEach(key => {
+        customEvent[key] = info[key]
+      })
+      console.log(customEvent)
+      event.target.dispatchEvent(customEvent)
     }
   })
 }
@@ -84,7 +94,7 @@ export default {
       this.init()
       this.update()
     })
-    onClick(this.$el, this._handleTap.bind(this))
+    initClick(this.$el)
   },
   methods: {
     _setItemHeight (height) {
@@ -189,7 +199,8 @@ export default {
         ref: 'main',
         staticClass: 'uni-picker-view-group',
         on: {
-          wheel: this._handleWheel
+          wheel: this._handleWheel,
+          click: this._handleTap
         }
       },
       [
