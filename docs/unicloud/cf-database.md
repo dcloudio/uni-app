@@ -4,6 +4,14 @@
 const db = uniCloud.database();
 ```
 
+## 新增集合
+
+如果集合已存在，则报错。
+
+```
+db.createCollection(collectionName)
+```
+
 ## 获取集合的引用
 
 ```js

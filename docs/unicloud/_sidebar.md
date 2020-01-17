@@ -1,10 +1,10 @@
 * [什么是uniCloud](uniCloud/README.md)
 * [快速上手](uniCloud/quickstart.md)
 * 服务端sdk
-  * [身份认证](uniCloud/cf-authentication.md)
   * [云函数](uniCloud/cf-functions.md)
   * [数据库](uniCloud/cf-database.md)
   * [云存储](uniCloud/cf-storage.md)
+  * [身份认证](uniCloud/cf-authentication.md)
 * 客户端sdk
   * [初始化](uniCloud/init.md)
   * [云函数](uniCloud/functions.md)

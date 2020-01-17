@@ -1,6 +1,10 @@
 **本章内容仅针对腾讯云开发，阿里侧暂不支持**
 
-## 获取登录对象
+**腾讯云侧必须以任意登录方式登录之后才可以访问云端资源。开发者在控制台开启匿名登录之后，可以在客户端调用匿名登录来获取访问云端资源的权限**
+
+## uniClient.auth()
+
+获取登录对象
 
 **示例代码**
 
@@ -9,27 +13,77 @@ const uniClient = uniCloud.init({
   spaceId: 'xxxx-yyy'
 });
 
-let auth = uniClient.auth()
+const auth = uniClient.auth()
 ```
 
+## auth.signInAnonymously()
 
-## 获取登录状态
+进行匿名登录，详细描述参考[匿名登录](#匿名登录)
+
+**示例代码**
+
+```js
+const uniClient = uniCloud.init({
+  spaceId: 'xxxx-yyy'
+});
+
+const auth = uniClient.auth()
+auth.signInAnonymously()
+```
+
+## auth.signInWithTicket()
+
+进行自定义登录，详细描述参考[自定义登录](#自定义登录)
+
+**示例代码**
+
+```js
+auth.signInWithTicket('YourTicket').then(() => {
+    // 获取用户信息
+    return auth.getUserInfo()
+  })
+  .then(userInfo => {
+    //...
+  })
+```
+
+## auth.getLoginState()
 
 开发者可以通过 `getLoginState()` 来获取当前的登录状态，调用 `getLoginState()` 后，SDK 会识别本地是否有登录状态，如果有，则会尝试刷新登录状态，若刷新登录状态成功，则会返回新的登录状态，否则返回 `undefined`。
 
 **示例代码**
 
 ```js
-const uniClient = uniCloud.init({
-  spaceId: 'xxxx-yyy'
-});
-uniClient.auth().getLoginState().then(loginState => {
+auth.getLoginState().then(loginState => {
   if (loginState) {
     // 登录态有效
   } else {
     // 没有登录态，或者登录态已经失效
   }
 })
+```
+
+## auth.getUserInfo()
+
+任何方式登录成功后，可以调用 `getUserInfo` 获得用户的身份信息。
+
+**响应参数**
+
+|字段					|类型		|是否必备	|说明														|
+|:-:					|:-:		|:-:			|:-:														|
+|uid					|string	|是				|用户在云开发的唯一ID						|
+<!-- |customUserId	|string	|否				|用户使用自定义登录传入的用户Id	| -->
+
+**示例代码**
+
+```js
+auth.signInWithTicket('YourTicket').then(() => {
+    // 获取用户信息
+    return auth.getUserInfo()
+  })
+  .then(userInfo => {
+    //...
+  })
 ```
 
 ## 自定义登录
@@ -100,32 +154,6 @@ auth.signInWithTicket(ticket).then(() => {
 })
 ```
 
-## 获取用户信息
-
-任何方式登录成功后，可以调用 `getUserInfo` 获得用户的身份信息。
-
-**响应参数**
-
-|字段					|类型		|是否必备	|说明														|
-|:-:					|:-:		|:-:			|:-:														|
-|uid					|string	|是				|用户在云开发的唯一ID						|
-|customUserId	|string	|否				|用户使用自定义登录传入的用户Id	|
-
-**示例代码**
-```js
-const uniClient = uniCloud.init({
-  spaceId: 'xxxx-yyy'
-});
-
-const auth = uniClient.auth()
-auth.signInWithTicket('YourTicket').then(() => {
-    // 获取用户信息
-    return auth.getUserInfo()
-  })
-  .then(userInfo => {
-    //...
-  })
-```
 
 ## 匿名登录
 uniCloud允许开发者使用匿名登录的方式进行静默授权，可以避免强制登录。在匿名状态下可正常的调用uniCloud的资源，开发者同时可以配合安全规则针对匿名用户制定对应的访问限制。
@@ -137,10 +165,6 @@ uniCloud允许开发者使用匿名登录的方式进行静默授权，可以避
 
 ### 客户端进行匿名登录
 ```js
-const uniClient = uniCloud.init({
-  spaceId: 'xxxx-yyy'
-});
-const auth = uniClient.auth();
 await auth.signInAnonymously().catch(err=>{
   // 登录失败会抛出错误
 });

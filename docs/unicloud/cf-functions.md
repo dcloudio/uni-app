@@ -1,9 +1,8 @@
-## 执行函数
+## uniCloud.callFunction(Object callFunctionOptions)
 
-- 接口名称：callFunction(object)
-- 接口功能：远程调用云函数。
+云函数中调用云函数。**目前仅腾讯云支持**
 
-### 请求参数
+**callFunctionOptions参数说明**
 
 | 字段		| 类型		| 必填| 说明				|
 | ---			| ---			| ---	| ---					|
@@ -11,7 +10,7 @@
 | data		| object	| 否	| 云函数参数。|
 | callback| function| 否	| 回调函数。	|
 
-### 响应参数
+**响应参数**
 
 | 字段			| 类型	| 必填| 说明											|
 | ---				| ---		| ---	| ---												|
@@ -20,7 +19,7 @@
 | result		| object| 否	| 云函数执行结果。					|
 | requestId	| string| 否	| 请求序列号，用于错误排查。|
 
-### 示例代码
+**示例代码**
 
 ```javascript
 //promise
