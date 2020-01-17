@@ -1,8 +1,14 @@
 ## 获取数据库的引用
 
 ```js
-const db = uniCloud.database();
+const db = uniCloud.database(Object DBOptions);
 ```
+
+**DBOptions参数说明**
+
+|字段	|类型		|必填	|描述				|平台差异说明	|
+|:-:	|:-:		|:-:	|:-:				|:-:					|
+|env	|String	|否		|服务空间ID	|仅腾讯云支持	|
 
 ## 新增集合
 
