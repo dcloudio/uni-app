@@ -13,24 +13,23 @@ exports.main = async (event, context) => {
 }
 ```
 
-**event参数说明**
+**clientInfo为保留字段，开发者在调用云函数时应避免使用，比如以下示例就是错误用法**
 
-|字段				|类型			|必备	|说明						|
-|---				|---			|---	|---						|
-|clientInfo	|object		|是		|客户端设备信息	|
-
-`event`其余参数为客户端上传的参数
-
-**clientInfo参数说明**
-
-|字段			|类型		|必备	|说明																|
-|---			|---		|---	|---																|
-|platform	|String	|是		|客户端平台，如：h5、app、mp-weixin	|
-|platform	|String	|是		|客户端系统，如：android、ios				|
+```
+uniClient.callFunction({
+    name: 'test',
+    data: { clientInfo: 1 }
+  })
+  .then(res => {});
+```
 
 **context参数说明**
 
-`context`为云函数所在环境原始的`context`
+|字段			|类型		|必备	|说明																|
+|---			|---		|---	|---																|
+|PLATFORM	|String	|是		|客户端平台，如：h5、app、mp-weixin	|
+|OS				|String	|是		|客户端系统，如：android、ios				|
+|APPID		|String	|是		|客户端DCloud appId									|
 
 ## 云函数特别注意
 
