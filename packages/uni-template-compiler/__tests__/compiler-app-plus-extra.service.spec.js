@@ -28,7 +28,7 @@ describe('codegen', () => {
     )
     assertCodegen(
       '<div><block v-for="(item,index) in list" :key="index"><block><text>{{item}}</text></block></block></div>',
-      `with(this){return _c('div',[_l((_$s(1,'f',{forItems:list})),function(item,index,$20,$30){return [[_c('text',{key:_$s(("3-"+$30),'a-key',index+'_0'+'_0')},[_v((_$s(("3-"+$30),'t0',_s(item))))])]]})],2)}`
+      `with(this){return _c('div',[_l((_$s(1,'f',{forItems:list,fill:true})),function(item,index,$20,$30){return [[_c('text',{key:_$s(("3-"+$30),'a-key',index+'_0'+'_0')},[_v((_$s(("3-"+$30),'t0',_s(item))))])]]})],2)}`
     )
   })
   it('generate directive', () => {

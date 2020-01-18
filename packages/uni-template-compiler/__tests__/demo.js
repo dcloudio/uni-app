@@ -19,7 +19,12 @@ const scopedPath = path.resolve(__dirname, '../../')
 const compiler = require('../lib')
 const res = compiler.compile(
   `
-<view><block v-for="(item,index) in arr" v-bind:key="index"><block v-if="item==3">{{item}}</block></block></view>
+<view class="h-page">
+    <slot></slot>
+    <h-dialog></h-dialog>
+    <h-navbar></h-navbar>
+    <h-toast></h-toast>
+  </view>
 `, {
     miniprogram: true,
     resourcePath: '/User/fxy/Documents/test.wxml',
@@ -32,9 +37,9 @@ const res = compiler.compile(
     mp: {
       platform: 'mp-weixin'
     },
-    filterModules: ['swipe'],
-    service: true,
-    view: true
+    filterModules: ['swipe']
+    // service: true,
+    // view: true
 
   })
 console.log(require('util').inspect(res, {
