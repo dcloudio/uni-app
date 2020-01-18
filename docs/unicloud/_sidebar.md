@@ -18,6 +18,7 @@
 <!-- ** 权限管理
   * [腾讯云](uniCloud/policy-tcb.md)
   * [阿里云](uniCloud/policy-ali.md)-->
+<!-- * [FAQ](uniCloud/faq.md) -->
 <li></li>
 <div class="contact-box">
   <a href="//ask.dcloud.net.cn/explore/" target="_blank" class="contact-item">
