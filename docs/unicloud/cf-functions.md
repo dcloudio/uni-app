@@ -1,4 +1,5 @@
-## 云函数示例
+
+云函数是运行在云端的 `JavaScript` 代码，
 
 **示例代码**
 
@@ -48,6 +49,7 @@ module.exports = async (context) => {
 }
 ```
 
+<!-- 
 ## uniCloud.callFunction(Object callFunctionOptions)
 
 云函数中调用云函数。**目前仅腾讯云支持**
@@ -80,3 +82,5 @@ uniCloud.callFunction({
     
 });
 ```
+
+ -->
