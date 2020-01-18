@@ -31,7 +31,7 @@
 - A:运行到H5端时，可以参考 [Chrome 跨域插件免翻墙安装](https://ask.dcloud.net.cn/article/35267) 或 [firefox跨域插件](https://addons.mozilla.org/zh-CN/firefox/addon/access-control-allow-origin/)。发行到H5端时，可以在uniCloud控制台`用户管理-->登录设置`里配置`WEB安全域名`。
 
 
-**注意**
+<!-- **注意**
 
-- 服务提供商为腾讯云时，需要开发者手动去管理控制台开启匿名登录[详情](/uniCloud/authentication#匿名登录)
+- 服务提供商为腾讯云时，需要开发者手动去管理控制台开启匿名登录[详情](/uniCloud/authentication#匿名登录) -->
 
