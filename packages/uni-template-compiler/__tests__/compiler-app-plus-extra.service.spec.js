@@ -70,6 +70,10 @@ describe('codegen', () => {
       '<view><block v-for="(item, index) in arr" v-bind:key="index">{{item}}</block></view>',
       `with(this){return _c('view',[_l((_$s(1,'f',{forItems:arr,fill:true})),function(item,index,$20,$30){return [_v((_$s(("1-"+$30),'t0',_s(item))))]})],2)}`
     )
+    assertCodegen(
+      '<view><block v-for="(item,index) in arr" v-bind:key="index"><block v-if="item==3">{{item}}</block></block></view>',
+      `with(this){return _c('view',[_l((_$s(1,'f',{forItems:arr,fill:true})),function(item,index,$20,$30){return [(_$s(("2-"+$30),'i',item==3))?[_v((_$s(("2-"+$30),'t0',_s(item))))]:_e()]})],2)}`
+    )
   })
   it('generate text with multiple statements', () => {
     assertCodegen(

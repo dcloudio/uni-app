@@ -92,7 +92,11 @@ function checkAutoFill (el) {
       el.tag === 'template' ||
       el.tag === 'block'
     ) &&
-    !el.children.find(child => child.type === 1)
+    !el.children.find(child =>
+      child.type === 1 &&
+      child.tag !== 'template' &&
+      child.tag !== 'block'
+    )
   ) {
     return true
   }
