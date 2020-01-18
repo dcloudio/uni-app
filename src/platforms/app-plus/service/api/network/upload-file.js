@@ -52,7 +52,7 @@ const createUploadTaskById = function (uploadTaskId, {
   }
   for (const name in formData) {
     if (formData.hasOwnProperty(name)) {
-      uploader.addData(name, formData[name])
+      uploader.addData(name, String(formData[name]))
     }
   }
   if (files && files.length) {
