@@ -4,12 +4,14 @@ const STORAGE_KEYS = 'uni-storage-keys'
 function parseValue (value) {
   const types = ['object', 'string', 'number', 'boolean', 'undefined']
   try {
-    const object = JSON.parse(value)
-    if (types.indexOf(object.type) >= 0) {
+    const object = typeof value === 'string' ? JSON.parse(value) : value
+    const type = object.type
+    if (types.indexOf(type) >= 0) {
       const keys = Object.keys(object)
-      if (keys.length === 2 && 'type' in object && 'data' in object) {
+      // eslint-disable-next-line valid-typeof
+      if (keys.length === 2 && 'data' in object && typeof object.data === type) {
         return object.data
-      } else if (keys.length === 1 && 'type' in object) {
+      } else if (keys.length === 1) {
         return ''
       }
     }
@@ -27,7 +29,7 @@ export function setStorage ({
   })
   try {
     if (type === 'string' && parseValue(value) !== undefined) {
-      localStorage.setItem(key + STORAGE_DATA_TYPE, 'String')
+      localStorage.setItem(key + STORAGE_DATA_TYPE, type)
     } else {
       localStorage.removeItem(key + STORAGE_DATA_TYPE)
     }
@@ -60,16 +62,24 @@ export function getStorage ({
     }
   }
   let data = value
-  const type = localStorage.getItem(key + STORAGE_DATA_TYPE)
-  if (!type) {
-    // 兼容H5和V3初期历史格式
-    const object = parseValue(value)
-    data = object !== undefined ? object : data
-  } else if (type !== 'String') {
-    // 兼容App端历史格式
+  const typeOrigin = localStorage.getItem(key + STORAGE_DATA_TYPE) || ''
+  const type = typeOrigin.toLowerCase()
+  if (type !== 'string' || (typeOrigin === 'String' && value === '{"type":"undefined"}')) {
     try {
-      data = JSON.parse(value)
-      data = typeof data === 'string' ? JSON.parse(data) : data
+      // 兼容H5和V3初期历史格式
+      let object = JSON.parse(value)
+      const result = parseValue(object)
+      if (result !== undefined) {
+        data = result
+      } else if (type) {
+        // 兼容App端历史格式
+        data = object
+        if (typeof object === 'string') {
+          object = JSON.parse(object)
+          // eslint-disable-next-line valid-typeof
+          data = typeof object === (type === 'null' ? 'object' : type) ? object : data
+        }
+      }
     } catch (error) { }
   }
   return {
