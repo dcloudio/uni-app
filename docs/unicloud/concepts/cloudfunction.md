@@ -1,20 +1,14 @@
-云函数是一段运行在云端的 JS 代码，如下是一个最简单的云函数示例：
+云函数即在云端（服务器端）运行的函数。
 
-```
-'use strict';
-exports.main = async (event, context) => {
-	//event为客户端上传的参数
-	console.log('Hello World')
-	//返回数据给客户端
-	return event
-}
-```
+开发者无需购买、搭建服务器，只需编写函数代码并部署到云端即可在客户端（App/H5/小程序等）调用，同时云函数之间也可互相调用。
 
-开发者无需购买服务器，在开发工具内编写、一键上传部署即可运行云函数。
+一个云函数的写法与一个在本地定义的 `JavaScript` 方法无异，代码运行在云端 `Node.js` 中。当云函数被客户端调用时，定义的代码会被放在 `Node.js` 运行环境中执行。
+
+开发者可以如在 `Node.js` 环境中使用 `JavaScript` 一样在云函数中进行网络请求等操作，而且还可以通过云函数服务端 SDK 搭配使用多种服务，比如使用云函数 SDK 中提供的数据库和存储 API 进行数据库和存储的操作，这部分可参考数据库和存储后端 API 文档。
+
+当客户端调用云函数时，云函数的传入参数中会被自动注入客户端的设备信息，开发者可通过云函数的`event`入参获取设备信息（`event.clientInfo`）。
 
 开发者可在HBuiderX中，在`cloudfunctions`目录上右键、新建云函数，如下：
 ![](http://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/unicloud-02.png)
 
 云函数修改后，需上传到云端，方可生效。
-
-云函数中可访问数据库，具体接口参考[服务端SDK](http://uniapp.dcloud.io/#/uniCloud/cf-functions)
