@@ -13,14 +13,16 @@ if (process.env.UNI_CLOUD_SPACES) {
       if (space.clientSecret) {
         process.env.UNI_CLOUD_PROVIDER = JSON.stringify({
           provider: 'aliyun',
-          spaceId: space.name,
+          spaceName: space.name,
+          spaceId: space.id,
           clientSecret: space.clientSecret,
           endpoint: space.apiEndpoint
         })
       } else {
         process.env.UNI_CLOUD_PROVIDER = JSON.stringify({
           provider: 'tencent',
-          spaceId: space.name
+          spaceName: space.name,
+          spaceId: space.id
         })
       }
     }
