@@ -1,6 +1,21 @@
 const STORAGE_DATA_TYPE = '__TYPE'
 const STORAGE_KEYS = 'uni-storage-keys'
 
+function parseValue (value) {
+  const types = ['object', 'string', 'number', 'boolean', 'undefined']
+  try {
+    const object = JSON.parse(value)
+    if (types.indexOf(object.type) >= 0) {
+      const keys = Object.keys(object)
+      if (keys.length === 2 && 'type' in object && 'data' in object) {
+        return object.data
+      } else if (keys.length === 1 && 'type' in object) {
+        return ''
+      }
+    }
+  } catch (error) { }
+}
+
 export function setStorage ({
   key,
   data
@@ -11,6 +26,11 @@ export function setStorage ({
     data: data
   })
   try {
+    if (type === 'string' && parseValue(value) !== undefined) {
+      localStorage.setItem(key + STORAGE_DATA_TYPE, 'String')
+    } else {
+      localStorage.removeItem(key + STORAGE_DATA_TYPE)
+    }
     localStorage.setItem(key, value)
   } catch (error) {
     return {
@@ -40,22 +60,18 @@ export function getStorage ({
     }
   }
   let data = value
-  try {
-    const object = JSON.parse(value)
+  const type = localStorage.getItem(key + STORAGE_DATA_TYPE)
+  if (!type) {
+    // 兼容H5和V3初期历史格式
+    const object = parseValue(value)
+    data = object !== undefined ? object : data
+  } else if (type !== 'String') {
     // 兼容App端历史格式
-    const type = localStorage.getItem(key + STORAGE_DATA_TYPE)
-    if (!type) {
-      const keys = Object.keys(object)
-      if (keys.length === 2 && 'type' in object && 'data' in object) {
-        data = object.data
-      } else if (keys.length === 1 && 'type' in object) {
-        data = ''
-      }
-    } else if (type !== 'String') {
-      data = object
+    try {
+      data = JSON.parse(value)
       data = typeof data === 'string' ? JSON.parse(data) : data
-    }
-  } catch (error) { }
+    } catch (error) { }
+  }
   return {
     data,
     errMsg: 'getStorage:ok'
