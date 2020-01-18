@@ -31,6 +31,23 @@ exports.main = async (event, context) => {
 
 `context`为云函数所在环境原始的`context`
 
+## 云函数特别注意
+
+  - 以无状态的风格编写函数代码，确保您的代码不会进行任何状态维护。（见以下示例）
+  - 本地存储和内存结果都是可能丢失的，如需存储文件应使用云存储。
+  - 在执行方法外实例化任何可能复用的对象，例如数据库连接等。
+
+**错误示例**
+
+使用下面的写法可能会导致多次访问`count`值递增，而不是如预期的返回0。
+
+```javascript
+let count = 0;
+module.exports = async (context) => {
+  return count++
+}
+```
+
 ## uniCloud.callFunction(Object callFunctionOptions)
 
 云函数中调用云函数。**目前仅腾讯云支持**
