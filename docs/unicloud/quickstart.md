@@ -2,6 +2,7 @@
   
   - 在`HBuilderX`创建uni-app项目时勾选`启用uniCloud`
   - 在右侧选择服务供应商（目前支持腾讯云和阿里云）
+  - **服务提供商为阿里云时，暂不支持发行到H5端，后续会完善安全域名配置**
 
 ![创建uniCloud项目](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/create-project.png)
 
@@ -19,6 +20,12 @@
 ## 体验uniCloud
 
 `uniCloud`项目创建完成之后，开发者可以在`cloudfunctions`目录右键创建云函数。
+
+## FAQ
+
+- Q:H5端出现跨域问题如何处理？ 
+- A:运行到H5端时，可以参考 [Chrome 跨域插件免翻墙安装](https://ask.dcloud.net.cn/article/35267) 或 [firefox跨域插件](https://addons.mozilla.org/zh-CN/firefox/addon/access-control-allow-origin/)。发行到H5端时，可以在uniCloud控制台`用户管理-->登录设置`里配置`WEB安全域名`。
+
 
 **注意**
 
