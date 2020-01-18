@@ -3,7 +3,6 @@
 * 重要概念
   * [服务空间](uniCloud/concepts/space.md)
   * [数据库](uniCloud/concepts/database.md)
-  * [云存储](uniCloud/concepts/storage.md)
   * [云函数](uniCloud/concepts/cloudfunction.md)
 * 服务端sdk
   * [云函数](uniCloud/cf-functions.md)
