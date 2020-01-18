@@ -3,30 +3,44 @@ const path = require('path')
 const mkdirp = require('mkdirp')
 const loaderUtils = require('loader-utils')
 
+process.UNI_CLOUD_ALIYUN = false
 process.env.UNI_CLOUD_PROVIDER = JSON.stringify({})
 
 if (process.env.UNI_CLOUD_SPACES) {
   try {
     const spaces = JSON.parse(process.env.UNI_CLOUD_SPACES)
-    if (Array.isArray(spaces) && spaces.length === 1) {
-      const space = spaces[0]
-      if (space.clientSecret) {
-        process.env.UNI_CLOUD_PROVIDER = JSON.stringify({
-          provider: 'aliyun',
-          spaceName: space.name,
-          spaceId: space.id,
-          clientSecret: space.clientSecret,
-          endpoint: space.apiEndpoint
-        })
-      } else {
-        process.env.UNI_CLOUD_PROVIDER = JSON.stringify({
-          provider: 'tencent',
-          spaceName: space.name,
-          spaceId: space.id
-        })
+    if (Array.isArray(spaces)) {
+      process.UNI_CLOUD_ALIYUN = !!spaces.find(space => space.clientSecret)
+      if (spaces.length === 1) {
+        const space = spaces[0]
+        if (space.clientSecret) {
+          process.env.UNI_CLOUD_PROVIDER = JSON.stringify({
+            provider: 'aliyun',
+            spaceName: space.name,
+            spaceId: space.id,
+            clientSecret: space.clientSecret,
+            endpoint: space.apiEndpoint
+          })
+        } else {
+          process.env.UNI_CLOUD_PROVIDER = JSON.stringify({
+            provider: 'tencent',
+            spaceName: space.name,
+            spaceId: space.id
+          })
+        }
       }
     }
   } catch (e) {}
+}
+
+// h5 暂不支持阿里云服务空间
+if (
+  process.UNI_CLOUD_ALIYUN &&
+  process.env.UNI_PLATFORM === 'h5' &&
+  process.env.NODE_ENV === 'production'
+) {
+  console.error(`当前项目使用了阿里云服务空间，暂不支持发行到H5平台`)
+  process.exit(0)
 }
 
 if (process.env.UNI_PLATFORM === 'mp-360') {
