@@ -49,12 +49,12 @@ const collection = db.collection('user');
 
 通过 `db.collection(collectionName).doc(docId)` 可以获取指定集合上指定 id 的记录的引用，在记录上可以进行以下操作
 
-| 接口 | 说明   |
-| ---- | ------ |
-| 写   | set    | 覆写记录               |
-|      | update | 局部更新记录(触发请求) |
-|      | remove | 删除记录(触发请求)     |
-| 读   | get    | 获取记录(触发请求)     |
+| 接口| 说明	|												|
+| ----	| ------								|
+| 写	| set		| 覆写记录							|
+|			| update| 局部更新记录(触发请求)|
+|			| remove| 删除记录(触发请求)		|
+| 读	| get		| 获取记录(触发请求)		|
 
 
 ### 查询筛选指令 Query Command
