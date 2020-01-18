@@ -8,7 +8,7 @@ const db = uniCloud.database(Object DBOptions);
 
 |字段	|类型		|必填	|描述				|平台差异说明	|
 |:-:	|:-:		|:-:	|:-:				|:-:					|
-|env	|String	|否		|服务空间ID	|仅腾讯云支持	|
+|spaceId	|String	|否		|服务空间ID	|仅腾讯云支持	|
 
 ## 新增集合
 
