@@ -14,7 +14,7 @@ export default {
   name: 'Keyboard',
   props: {
     cursorSpacing: {
-      type: Number,
+      type: [Number, String],
       default: 0
     },
     adjustPosition: {
@@ -63,7 +63,7 @@ export default {
           mode: this.adjustPosition ? 'adjustPan' : 'nothing',
           position: {
             top: rect.top,
-            height: rect.height + this.cursorSpacing
+            height: rect.height + (Number(this.cursorSpacing) || 0)
           }
         })
       })
