@@ -15,9 +15,9 @@
   * [云函数](uniCloud/functions.md)
   * [云存储](uniCloud/storage.md)
   <!-- * [登录授权](uniCloud/authentication.md) -->
-<!-- ** 权限管理
-  * [腾讯云](uniCloud/policy-tcb.md)
-  * [阿里云](uniCloud/policy-ali.md)-->
+<!-- ** 权限管理-->
+  <!-- * [腾讯云](uniCloud/policy-tcb.md) -->
+  <!-- * [阿里云](uniCloud/policy-ali.md) -->
 <!-- * [FAQ](uniCloud/faq.md) -->
 <li></li>
 <div class="contact-box">
