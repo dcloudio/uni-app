@@ -25,7 +25,7 @@ describe('mp:compiler-mp-toutiao', () => {
   it('generate ref', () => {
     assertCodegen(
       '<my-component ref="ref"></my-component>',
-      `<my-component class="vue-ref" vue-id="1" data-ref="ref" bind:__l="__l"></my-component>`
+      `<my-component class="vue-ref" vue-id="551070e6-1" data-ref="ref" bind:__l="__l"></my-component>`
     )
   })
 

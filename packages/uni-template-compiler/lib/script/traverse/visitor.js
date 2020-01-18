@@ -58,7 +58,8 @@ function addVueId (path, state) {
   if (!state.options.hasOwnProperty('$vueId')) {
     state.options.$vueId = 1
   }
-  const vueId = String(state.options.$vueId++)
+  const hashId = state.options.hashId
+  const vueId = String((hashId ? (hashId + '-') : '') + (state.options.$vueId++))
 
   let value
 

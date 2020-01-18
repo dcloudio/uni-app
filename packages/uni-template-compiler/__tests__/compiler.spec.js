@@ -159,7 +159,7 @@ describe('mp:compiler', () => {
   it('generate multiline v-model directive on custom component', () => {
     assertCodegen(
       '<my-component v-model="\n test \n" />',
-      `<my-component bind:input="__e" vue-id="1" value="{{test}}" data-event-opts="{{[['^input',[['__set_model',['','test','$event',[]]]]]]}}" bind:__l="__l"></my-component>`
+      `<my-component bind:input="__e" vue-id="551070e6-1" value="{{test}}" data-event-opts="{{[['^input',[['__set_model',['','test','$event',[]]]]]]}}" bind:__l="__l"></my-component>`
     )
   })
 
@@ -558,7 +558,7 @@ describe('mp:compiler', () => {
   it('generate component', () => {
     assertCodegen(
       '<my-component name="mycomponent1" :msg="msg" @notify="onNotify"><div>hi</div></my-component>',
-      `<my-component vue-id="1" name="mycomponent1" msg="{{msg}}" data-event-opts="{{[['^notify',[['onNotify']]]]}}" bind:notify="__e" bind:__l="__l" vue-slots="{{['default']}}"><view class="_div">hi</view></my-component>`
+      `<my-component vue-id="551070e6-1" name="mycomponent1" msg="{{msg}}" data-event-opts="{{[['^notify',[['onNotify']]]]}}" bind:notify="__e" bind:__l="__l" vue-slots="{{['default']}}"><view class="_div">hi</view></my-component>`
       // `with(this){if(!$mp.events){$mp.events=__get_event({"e0":{on:{"notify":onNotify},component:true}})}}`
     )
   })
@@ -573,7 +573,7 @@ describe('mp:compiler', () => {
   it('generate is attribute', () => {
     assertCodegen(
       '<div is="component1"></div>',
-      '<component1 vue-id="1" bind:__l="__l"></component1>'
+      '<component1 vue-id="551070e6-1" bind:__l="__l"></component1>'
     )
     //         assertCodegen(
     //             '<div :is="component1"></div>',
@@ -582,7 +582,7 @@ describe('mp:compiler', () => {
     // maybe a component and normalize type should be 1
     assertCodegen(
       '<div><div is="component1"></div></div>',
-      '<view class="_div"><component1 vue-id="1" bind:__l="__l"></component1></view>'
+      '<view class="_div"><component1 vue-id="551070e6-1" bind:__l="__l"></component1></view>'
     )
   })
 
@@ -619,7 +619,7 @@ describe('mp:compiler', () => {
     // normalize type: 2
     assertCodegen(
       '<div><child></child><template v-for="item in list">{{ item }}</template></div>',
-      `<view class="_div"><child vue-id="1" bind:__l="__l"></child><block wx:for="{{list}}" wx:for-item="item" wx:for-index="__i0__">{{item}}</block></view>`
+      `<view class="_div"><child vue-id="551070e6-1" bind:__l="__l"></child><block wx:for="{{list}}" wx:for-item="item" wx:for-index="__i0__">{{item}}</block></view>`
     )
   })
 
@@ -662,7 +662,7 @@ describe('mp:compiler', () => {
   it('should compile single v-for component inside template', () => {
     assertCodegen(
       `<div><template v-if="ok"><foo v-for="i in 1" :key="i"></foo></template></div>`,
-      `<view class="_div"><block wx:if="{{ok}}"><block wx:for="{{1}}" wx:for-item="i" wx:for-index="__i0__" wx:key="*this"><foo vue-id="{{'1-'+__i0__}}" bind:__l="__l"></foo></block></block></view>`
+      `<view class="_div"><block wx:if="{{ok}}"><block wx:for="{{1}}" wx:for-item="i" wx:for-index="__i0__" wx:key="*this"><foo vue-id="{{'551070e6-1-'+__i0__}}" bind:__l="__l"></foo></block></block></view>`
     )
   })
 })
