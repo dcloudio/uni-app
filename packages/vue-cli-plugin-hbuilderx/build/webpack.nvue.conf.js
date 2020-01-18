@@ -73,7 +73,8 @@ const plugins = [
     'process.env': {
       'NODE_ENV': JSON.stringify(process.env.NODE_ENV),
       'VUE_APP_PLATFORM': JSON.stringify(process.env.UNI_PLATFORM),
-      'UNI_CLOUD_PROVIDER': process.env.UNI_CLOUD_PROVIDER
+      'UNI_CLOUD_PROVIDER': process.env.UNI_CLOUD_PROVIDER,
+      'HBX_USER_TOKEN': process.env.HBX_USER_TOKEN || ''
     }
   }),
   new webpack.BannerPlugin({
