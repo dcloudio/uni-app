@@ -20,11 +20,11 @@ function init(options):uniCloud
 
 **options 参数说明**
 
-|参数名				|类型		|必填				|默认值	|说明																								|平台差异说明		|
-|:-:					|:-:		|:-:				|:-:		|:-:																								|:-:						|
-|provider			|String	|是					|-			|选择服务供应商（可选值tencent，aliyun）						|								|
-|spaceId			|String	|是					|-			|服务空间ID，**注意是服务空间ID，不是服务空间名称**	|								|
-|clientSecret	|String	|阿里云必填	|-			|服务空间secret key，可以在uniCloud控制台查看				|仅阿里云侧支持	|
+|参数名				|类型		|必填				|默认值	|说明																								|
+|:-:					|:-:		|:-:				|:-:		|:-:																								|
+|provider			|String	|是					|-			|目前仅支持aliyun					|
+|spaceId			|String	|是					|-			|服务空间ID，**注意是服务空间ID，不是服务空间名称**	|
+|clientSecret	|String	|是	|-			|可以在[uniCloud控制台](https://unicloud.dcloud.net.cn)服务空间列表中查看				|
 <!-- |endpoint			|String	|否					|https://api.bspapp.com	|服务空间地址																			|仅阿里云侧支持																																	| -->
 <!-- |autoSignIn		|Boolean|否					|true										|是否自动匿名登录																	|仅腾讯云侧支持																																	|
 |debugFunction|Boolean|否					|true										|是否启用云函数日志输出														|仅开发阶段生效，平台支持：APP、H5(使用`HBuilderX`内置浏览器获得更好的调试体验)	| -->
