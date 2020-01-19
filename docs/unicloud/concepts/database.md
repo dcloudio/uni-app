@@ -3,7 +3,10 @@
 关系型数据库和 JSON 文档型数据库的概念对应关系如下表：
 
 |关系型					|JSON 文档型			|
+|:-							|:-								|
 |数据库 database|数据库 database	|
 |表 table				|集合 collection	|
 |行 row					|记录 record / doc|
 |列 column			|字段 field				|
+
+更多云数据库介绍参考[规范](../cf-database)。

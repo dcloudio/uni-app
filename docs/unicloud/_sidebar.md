@@ -1,14 +1,15 @@
 * [什么是uniCloud](uniCloud/README.md)
 * [快速上手](uniCloud/quickstart.md)
+* 基本概念
+  * [服务空间](uniCloud/concepts/space.md)
+  * [数据库](uniCloud/concepts/database.md)
+  * [云函数](uniCloud/concepts/cloudfunction.md)
 * [初始化](uniCloud/init.md)
 * [云函数](uniCloud/cf-functions.md)
 * [云数据](uniCloud/cf-database.md)
 * [云存储](uniCloud/storage.md)
 * [日志输出](uniCloud/cf-logger.md)
-<!-- * 重要概念
-  * [服务空间](uniCloud/concepts/space.md)
-  * [数据库](uniCloud/concepts/database.md)
-  * [云函数](uniCloud/concepts/cloudfunction.md) -->
+
 <!--  * [云存储](uniCloud/cf-storage.md) -->
 <!--* [身份认证](uniCloud/cf-authentication.md) -->
 <!-- * [登录授权](uniCloud/authentication.md) -->
