@@ -52,7 +52,7 @@ iOS还好，但Android低端机上，每次通信都要耗时几十毫秒。平�
 
 wxs中可以监听手势，以uni ui的swiperAction组件为例，手指拖动，侧边的列表菜单项要跟手滑出，此时就需要使用wxs才能实现流畅效果。
 
-至于canvas动画，微信的canvas是原生的，无法运用wxs操作，且一样有通信折算，所以绘制动画的性能不佳。而uni-app的app-vue的canvas是webview的，并且支持wxs操作，开发者可以在普通js中传递数据和指令给wxs，在wxs里绘制动画，将不再有通信折损，实现更流畅的效果（app端需v3编译器）
+至于canvas动画，微信的canvas是原生的，无法运用wxs操作，且一样有通信折损，所以绘制动画的性能不佳。而uni-app的app-vue的canvas是webview的，并且支持wxs操作，开发者可以在普通js中传递数据和指令给wxs，在wxs里绘制动画，将不再有通信折损，实现更流畅的效果（app端需v3编译器）
 
 - 原生渲染的视图层
 
