@@ -12,7 +12,7 @@
 
 |参数名						|类型			|必填	|默认值	|说明												|平台差异说明		|
 |:-:							|:-:			|:-:	|:-:		|:-:												|:-:						|
-|filePath					|String		|是		|-			|要上传的文件对象						|								|
+|filePath					|String		|是		|-			|要上传的文件对象						|-							|
 
 <!-- |cloudPath				|String		|是		|-			|文件的绝对路径，包含文件名	|仅腾讯云侧支持	| -->
 <!-- |onUploadProgress	|Function	|否		|-			|上传进度回调								|仅腾讯云侧支持	| -->
@@ -32,6 +32,17 @@
 
 #### 示例代码
 
+<!-- 
+cloudPath: 'test-admin.jpeg',
+filePath: filePath,
+onUploadProgress: function(progressEvent) {
+  console.log(progressEvent);
+  var percentCompleted = Math.round(
+    (progressEvent.loaded * 100) / progressEvent.total
+  );
+}
+ -->
+
 ```javascript
 uni.chooseImage({
 	count: 1,
@@ -43,25 +54,12 @@ uni.chooseImage({
 
 			// promise
 			const result = await uniClient.uploadFile({
-				cloudPath: 'test-admin.jpeg',
-				filePath: filePath,
-				onUploadProgress: function(progressEvent) {
-					console.log(progressEvent);
-					var percentCompleted = Math.round(
-						(progressEvent.loaded * 100) / progressEvent.total
-					);
-				}
+				filePath: filePath
 			});
 
 			// callback
 			uniClient.uploadFile({
-				cloudPath: 'test-admin.jpeg',
-				filePath: filePath,
-				onUploadProgress: function(progressEvent) {
-					console.log(progressEvent);
-					var percentCompleted = Math.round(
-						(progressEvent.loaded * 100) / progressEvent.total
-					);
+				filePath: filePath
 				},
 				success() {},
 				fail() {},

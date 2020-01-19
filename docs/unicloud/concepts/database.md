@@ -9,4 +9,4 @@
 |行 row					|记录 record / doc|
 |列 column			|字段 field				|
 
-更多云数据库介绍参考[规范](../cf-database)。
+更多云数据库介绍参考[规范](uniCloud/cf-database)。
