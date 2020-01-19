@@ -1,10 +1,14 @@
-若开发者仅有一个服务空间，`uniCloud`会自动识别，并将开发者这个唯一的服务空间设置为当前服务空间，之后的云函数、云存储等资源操作，均在当前服务空间进行。
+若开发者仅有一个服务空间，`uniCloud`框架会自动绑定服务空间，开发者可通过`uniCloud`直接调用云开发的API（可理解为类调用）。
+```
+//开发者仅创建了一个服务空间，则无需初始化
+//可通过uniCloud直接调用云开发的API
+uniCloud.callFunction()
+uniCloud.uploadFile()
+```
 
-若开发者创建了多个服务空间，`uniCloud`无法自动识别；需开发者在客户端调用云开发API之前，先调用初始化方法`uniCloud.init`，指定具体服务空间。
+若开发者创建了多个服务空间，`uniCloud`无法自动绑定；需开发者在客户端代码中，手动调用初始化方法`uniCloud.init`，绑定服务空间。
 
-`uniCloud.init`方法会返回一个`uniCloud`实例，之后云开发API的调用都需要通过该`uniCloud`实例发起。
-
-云函数会自动识别自己所属的服务空间，无需初始化。
+`uniCloud.init`方法会返回一个`uniCloud`实例，之后云开发API的调用都需要通过该`uniCloud`实例发起（类似实例调用）。
 
 `uniCloud.init`方法定义如下：
 
@@ -38,11 +42,10 @@ const myCloud = uniCloud.init({
 myCloud.callFunction()
 myCloud.uploadFile()
 
-//开发者仅创建了一个服务空间，则无需初始化
-//可通过uniCloud直接调用云开发的API
-uniCloud.callFunction()
-uniCloud.uploadFile()
 ```
+
+**Tips：**
+- 云函数会自动识别自己所属的服务空间，无需初始化。
 
 <!-- **注意**
 
