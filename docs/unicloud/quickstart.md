@@ -28,7 +28,7 @@
 ## FAQ
 
 - Q:H5端出现跨域问题如何处理？ 
-- A:运行到H5端时，可以参考 [Chrome 跨域插件免翻墙安装](https://ask.dcloud.net.cn/article/35267) 或 [firefox跨域插件](https://addons.mozilla.org/zh-CN/firefox/addon/access-control-allow-origin/)。发行到H5端时，可以在uniCloud控制台`用户管理-->登录设置`里配置`WEB安全域名`。
+- A:运行到H5端时，可以参考 [Chrome 跨域插件免翻墙安装](https://ask.dcloud.net.cn/article/35267) 或 [firefox跨域插件](https://addons.mozilla.org/zh-CN/firefox/addon/access-control-allow-origin/)。**服务商为阿里云时暂不支持发行到H5端（近期会进行支持，敬请期待）**<!-- 发行到H5端时，可以在uniCloud控制台`用户管理 - 登录设置`里配置`WEB安全域名`。 -->
 
 
 <!-- **注意**
