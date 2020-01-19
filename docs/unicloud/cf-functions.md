@@ -59,11 +59,45 @@ console.log(res)
 Tips:
 - 目前每个云函数上传包大小限制为10M。
 
-### 云函数调用
+### 客户端调用云函数
 
-目前仅支持客户端调用云函数，调用方式详见[规范](functions.md)
+客户端可通过`callFunction`调用云函数，`callFunction`定义如下：
 
-即将支持云函数调用云函数。
+#### 请求参数
+
+|字段	|类型	|必填	|说明		|
+|:-:	|:-:	|:-:	|:-:		|
+|name	|String	|是		|云函数名称|
+|data	|Object	|否		|客户端需要传递的参数|
+
+#### 响应参数
+
+|字段		|类型	|说明						|
+|:-:		|:-:	|:-:						|
+|result		|Object	|云函数执行结果				|
+|requestId	|String	|请求序列号，用于错误排查	|
+
+#### 示例代码
+
+```javascript
+// promise
+uniClient.callFunction({
+    name: 'test',
+    data: { a: 1 }
+  })
+  .then(res => {});
+
+// callback
+uniClient.callFunction({
+	name: 'test',
+	data: { a: 1 },
+	success(){},
+	fail(){},
+	complete(){}
+});
+```
+
+目前仅支持客户端调用云函数，即将支持云函数调用云函数。
 
 ### 注意事项
 
