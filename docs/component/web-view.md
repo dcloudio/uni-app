@@ -63,6 +63,7 @@
 - App 端使用 `自定义组件模式` 时，uni.web-view.js 的最低版为 [uni.webview.1.5.2.js](https://js.cdn.aliyun.dcloud.net.cn/dev/uni-app/uni.webview.1.5.2.js)
 - App 平台同时支持网络网页和本地网页，但本地网页及相关资源（js、css等文件）必须放在 `uni-app 项目根目录->hybrid->html` 文件夹下，如下为一个加载本地网页的`uni-app`项目文件目录示例：
 - nvue `web-view` 必须指定样式宽高, @message 暂时写成 @onPostMessage，示例: <web-view @message="onmessage" @onPostMessage="onmessage"></web-view>
+- V3 编译模式，网页向应用 `postMessage` 为实时消息
 
 <pre v-pre="" data-lang="">
 	<code class="lang-" style="padding:0">
