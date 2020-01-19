@@ -1,6 +1,6 @@
 ## 普通日志
 
-包括`console.info`、`console.info`、`console.warn`、`console.error`四种。
+开发者在云函数内也可以使用`console.info`、`console.info`、`console.warn`、`console.error`四种方式打印日志。
 
 ## 高级日志
 
