@@ -1,23 +1,27 @@
+`uniCloud`云函数中可访问云数据库。
+
+鉴于安全问题，暂不支持客户端直接访问数据库。
+
 ## 获取数据库的引用
 
 ```js
-const db = uniCloud.database(Object DBOptions);
+const db = uniCloud.database();
 ```
 
-**DBOptions参数说明**
+<!-- **DBOptions参数说明**
 
 |字段	|类型		|必填	|描述				|平台差异说明	|
 |:-:	|:-:		|:-:	|:-:				|:-:					|
 |spaceId	|String	|否		|服务空间ID	|仅腾讯云支持	|
-
-## 新增集合
+ -->
+<!-- ## 新增集合
 
 如果集合已存在，则报错。
 
 ```
 db.createCollection(collectionName)
 ```
-
+ -->
 ## 获取集合的引用
 
 ```js
@@ -127,9 +131,9 @@ const collection = db.collection('user');
   })
   ```
 
-2. 地理位置
+<!-- 2. 地理位置
 
-参考：[GEO地理位置](#GEO地理位置)
+参考：[GEO地理位置](#GEO地理位置) -->
 
 3. Null
 
@@ -154,6 +158,8 @@ collection.add({
 });
 ```
 
+Tips:云服务商为阿里云时，若集合不存在，调用add方法会自动创建集合
+
 方法2： collection.doc().set(data)
 
 也可通过 `set` 方法新增一个文档，需先取得文档引用再调用 `set` 方法。
@@ -165,6 +171,7 @@ collection.doc().set({
 });
 ```
 
+
 ## 查询文档
 
 支持 `where()`、`limit()`、`skip()`、`orderBy()`、`get()`、`update()`、`field()`、`count()` 等操作。
@@ -173,6 +180,7 @@ collection.doc().set({
 注：默认取前100条数据，最大取前100条数据。
 
 ### 添加查询条件
+
 collection.where()
 参数
 
@@ -200,6 +208,7 @@ db.collection('goods').where({
 ```
 
 ### 获取查询数量
+
 collection.count()
 
 参数
@@ -226,6 +235,7 @@ db.collection('goods').where({
 
 
 ### 设置记录数量
+
 collection.limit()
 
 参数说明
@@ -243,6 +253,7 @@ collection.limit(1).get().then(function(res) {
 ```
 
 ### 设置起始位置
+
 collection.skip()
 
 参数说明
@@ -260,6 +271,7 @@ collection.skip(4).get().then(function(res) {
 ```
 
 ### 对结果排序
+
 collection.orderBy()
 
 参数说明
@@ -507,7 +519,8 @@ db.collection('articles').where({
 ```
 
 ## 删除文档
-方式1 通过指定文档ID
+
+**方式1 通过指定文档ID删除**
 
 collection.doc(_id).remove()
 
@@ -525,7 +538,7 @@ collection.get()
   });
 ```
 
-方式2 条件查找文档然后直接批量删除
+**方式2 条件查找文档然后直接批量删除**
 
 collection.where().remove()
 
@@ -669,7 +682,7 @@ db.collection('comments').doc('comment-id').update({
 删除数组头部元素。使用同pop
 
 
-## GEO地理位置
+<!-- ## GEO地理位置
 
 注意：**如果需要对类型为地理位置的字段进行搜索，一定要建立地理位置索引**。
 
@@ -864,8 +877,8 @@ db.collection('user').where({
   })
 })
 ```
-
-## 数据库实时推送
+ -->
+<!-- ## 数据库实时推送
 
 监听指定集合中符合查询条件的文档，通过onchange回调获得文档的变化详情
 (where参数为查询条件 参考 [查询文档](#查询文档))
@@ -904,11 +917,11 @@ db.collection('user').where({
 ```js
   ref.close()
 ```
-
-## 平台差异
+ -->
+<!-- ## 平台差异
 
 |差异项					|说明																							|
 |:-:						|:-:																							|
 |add						|使用阿里云时在集合不存在的时候调用会自动创建集合	|
 |数据库实时推送	|阿里云暂不支持																		|
-|GEO地理位置		|阿里云暂不支持																		|
+|GEO地理位置		|阿里云暂不支持																		| -->
