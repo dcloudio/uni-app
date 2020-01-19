@@ -38,7 +38,7 @@ export default {
   },
   watch: {
     value (val, oldVal) {
-      if (val === oldVal || val.length !== oldVal.length || val.find((item, index) => item !== oldVal[index])) {
+      if (val === oldVal || val.length !== oldVal.length || val.findIndex((item, index) => item !== oldVal[index]) >= 0) {
         this.valueSync.length = val.length
         val.forEach((val, index) => {
           if (val !== this.valueSync[index]) {
