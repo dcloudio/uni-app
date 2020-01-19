@@ -3,7 +3,7 @@
 
 云函数是运行在云端的 `JavaScript` 代码，和普通的`Node.js`开发一样，熟悉`Node.js`的开发者可以直接上手。
 
-如下是将传入参数求和的云函数实现示例：
+如下是将传入的两个参数求和并返回客户端的云函数代码示例：
 
 ```
 'use strict';
@@ -26,9 +26,7 @@ exports.main = async (event, context) => {
   let os = context.OS //客户端操作系统，返回值：android、ios	等
   let platform = context.PLATFORM //运行平台，返回值为 mp-weixin、app-plus等
   let appid = context.APPID // manifest.json中配置的appid
-	return {
-    sum:event.a + event.b
-  }
+	... //其它业务代码
 }
 ```
 
@@ -38,7 +36,7 @@ exports.main = async (event, context) => {
 
 ### 访问HTTP服务
 
-`uniCloud`提供了`uniCloud.httpclient`供开发者使用。无需额外依赖，就可以请求任何 HTTP 和 HTTPS 协议的 Web 服务。`uniCloud.httpclient`返回的是一个[urllib实例](https://github.com/node-modules/urllib)，即`uniCloud.httpclient = require('urllib').create()`
+`uniCloud`提供了`uniCloud.httpclient`供开发者使用。无需额外依赖，就可以请求任何 HTTP 和 HTTPS 协议的 Web 服务。`uniCloud.httpclient`返回的是一个[urllib实例](https://github.com/node-modules/urllib)。
 
 **示例代码**
 

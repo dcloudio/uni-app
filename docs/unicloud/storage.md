@@ -1,18 +1,24 @@
-## uploadFile(Object uploadOptions)
+开发者使用`uniCloud`的云存储，无需再像传统模式那样单独去购买存储空间、CDN映射、流量采购等；`uniCloud`云存储支持文本、图片和其他由用户生成的内容存储到云端，并提供CDN下载地址，
+
+开发者可在客户端使用云存储API，文件上传成功后，系统会自动生成一个资源链接，开发者需保存该文件地址供后续业务下载使用。
+
+即将支持云函数中使用云存储功能。
+
+## uploadFile(Object object)
 
 上传文件到云存储
-
 #### 请求参数
+**Object object**
 
 |参数名						|类型			|必填	|默认值	|说明												|平台差异说明		|
 |:-:							|:-:			|:-:	|:-:		|:-:												|:-:						|
-|cloudPath				|String		|是		|-			|文件的绝对路径，包含文件名	|仅腾讯云侧支持	|
+<!-- |cloudPath				|String		|是		|-			|文件的绝对路径，包含文件名	|仅腾讯云侧支持	| -->
 |filePath					|String		|是		|-			|要上传的文件对象						|								|
-|onUploadProgress	|Function	|否		|-			|上传进度回调								|仅腾讯云侧支持	|
+<!-- |onUploadProgress	|Function	|否		|-			|上传进度回调								|仅腾讯云侧支持	| -->
 
-**注意**
+<!-- **注意**
 
-- `cloudPath` 为文件的绝对路径，包含文件名 foo/bar.jpg、foo/bar/baz.jpg 等，不能包含除[0-9 , a-z , A-Z]、/、!、-、\_、.、、\*和中文以外的字符，使用 / 字符来实现类似传统文件系统的层级结构。[查看详情](https://cloud.tencent.com/document/product/436/13324)
+- `cloudPath` 为文件的绝对路径，包含文件名 foo/bar.jpg、foo/bar/baz.jpg 等，不能包含除[0-9 , a-z , A-Z]、/、!、-、\_、.、、\*和中文以外的字符，使用 / 字符来实现类似传统文件系统的层级结构。[查看详情](https://cloud.tencent.com/document/product/436/13324) -->
 
 #### 响应参数
 
@@ -67,9 +73,8 @@ uni.chooseImage({
 
 ```
 
-**注意**
+**Tips**
 
-- 为了提高文件上传性能，文件上传方式为直接上传到对象存储，为了防止在使用过程中出现 CORS 报错，需要到 Web 控制台/用户管理/登录设置选项中设置安全域名。如果已有域名出现 CORS 报错，请删除安全域名，重新添加。
 - 阿里云返回的fileID为链接形式
 
 <!-- ## getTempFileURL(Object getTempFileURLOptions)
@@ -123,11 +128,13 @@ uniClient.getTempFileURL({
 });
 ```
  -->
-## deleteFile(Object deleteFileOptions)
+## deleteFile(Object object)
 
 删除云端文件
 
 #### 请求参数
+
+**Object object**
 
 |字段		|类型					|必填	|说明						|
 |:-:		|:-:					|----	|:-:						|
@@ -142,7 +149,7 @@ uniClient.getTempFileURL({
 |fileList	|&lt;Array&gt;.Object	|否		|删除结果组成的数组			|
 |requestId	|String					|否		|请求序列号，用于错误排查	|
 
-**fileList**
+**fileList定义**
 
 |字段	|类型	|必填	|说明						|
 |:-:	|:-:	|:-:	|:-:						|
