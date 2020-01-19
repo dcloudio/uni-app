@@ -72,7 +72,7 @@ uni.chooseImage({
 - 为了提高文件上传性能，文件上传方式为直接上传到对象存储，为了防止在使用过程中出现 CORS 报错，需要到 Web 控制台/用户管理/登录设置选项中设置安全域名。如果已有域名出现 CORS 报错，请删除安全域名，重新添加。
 - 阿里云返回的fileID为链接形式
 
-## getTempFileURL(Object getTempFileURLOptions)
+<!-- ## getTempFileURL(Object getTempFileURLOptions)
 
 获取文件临时下载链接，**仅腾讯云支持**
 
@@ -122,7 +122,7 @@ uniClient.getTempFileURL({
 	complete() {}
 });
 ```
-
+ -->
 ## deleteFile(Object deleteFileOptions)
 
 删除云端文件
