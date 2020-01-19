@@ -6,9 +6,10 @@
   * [云函数](uniCloud/concepts/cloudfunction.md)
 * [初始化](uniCloud/init.md)
 * [云函数](uniCloud/cf-functions.md)
-* [云数据](uniCloud/cf-database.md)
+* [云数据库](uniCloud/cf-database.md)
 * [云存储](uniCloud/storage.md)
 * [日志输出](uniCloud/cf-logger.md)
+* [FAQ](uniCloud/faq.md)
 
 <!--  * [云存储](uniCloud/cf-storage.md) -->
 <!--* [身份认证](uniCloud/cf-authentication.md) -->
@@ -16,7 +17,7 @@
 <!-- ** 权限管理-->
 <!-- * [腾讯云](uniCloud/policy-tcb.md) -->
 <!-- * [阿里云](uniCloud/policy-ali.md) -->
-<!-- * [FAQ](uniCloud/faq.md) -->
+
 <li></li>
 <div class="contact-box">
   <a href="//ask.dcloud.net.cn/explore/" target="_blank" class="contact-item">
