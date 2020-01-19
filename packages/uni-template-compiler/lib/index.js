@@ -1,5 +1,5 @@
 const path = require('path')
-
+const hash = require('hash-sum')
 const parser = require('@babel/parser')
 
 const {
@@ -95,6 +95,11 @@ module.exports = {
     options.mp.scopeId = options.scopeId
 
     options.mp.resourcePath = options.resourcePath
+    if (options.resourcePath) {
+      options.mp.hashId = hash(options.resourcePath)
+    } else {
+      options.mp.hashId = ''
+    }
 
     options.mp.globalUsingComponents = options.globalUsingComponents || Object.create(null)
 

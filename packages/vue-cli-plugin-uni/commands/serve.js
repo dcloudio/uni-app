@@ -250,6 +250,9 @@ module.exports = (api, options) => {
           isFirstCompile = false
 
           if (!isProduction) {
+            if (process.UNI_CLOUD_ALIYUN) {
+              console.warn(`当前项目使用了阿里云服务空间，暂不支持发行到H5平台`)
+            }
             // const buildCommand = hasProjectYarn(api.getCwd()) ? `yarn build` : `npm run build`
             // console.log(`  Note that the development build is not optimized.`)
             // console.log(`  To create a production build, run ${chalk.cyan(buildCommand)}.`)
