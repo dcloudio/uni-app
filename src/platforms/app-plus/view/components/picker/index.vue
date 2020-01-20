@@ -27,6 +27,7 @@ function padLeft (num) {
   return num > 9 ? num : (`0${num}`)
 }
 function getDate (str, mode_) {
+  str = String(str || '')
   const date = new Date()
   if (mode_ === mode.TIME) {
     str = str.split(':')
