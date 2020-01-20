@@ -61,7 +61,7 @@ Tips:
 
 ### 客户端调用云函数
 
-客户端可通过`callFunction`调用云函数，`callFunction`定义如下：
+前端代码（H5前端、App、小程序），不再执行uni.request联网，而是通过`uniCloud.callFunction`调用云函数，`callFunction`定义如下：
 
 #### 请求参数
 
@@ -80,15 +80,15 @@ Tips:
 #### 示例代码
 
 ```javascript
-// promise
-uniClient.callFunction({
+// promise方式
+uniCloud.callFunction({
     name: 'test',
     data: { a: 1 }
   })
   .then(res => {});
 
-// callback
-uniClient.callFunction({
+// callback方式
+uniCloud.callFunction({
 	name: 'test',
 	data: { a: 1 },
 	success(){},
