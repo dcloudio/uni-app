@@ -607,13 +607,13 @@ collection.where({name: _.eq('hey')}).update({
 更新指令。用于设定字段等于指定值。这种方法相比传入纯 JS 对象的好处是能够指定字段等于一个对象：
 
 ```js
-// 以下方法只会更新 property.location 和 property.size，如果 property 对象中有
+const _ = db.command
 db.collection('photo').doc('doc-id').update({
   data: {
-    property: {
+    property: _.set({
       location: 'guangzhou',
       size: 8
-    }
+    })
   }
 }).then(function(res) {
   
