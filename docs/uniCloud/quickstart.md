@@ -27,13 +27,14 @@
   
 **说明**
 
-- 如果未进行实名认证，这时会跳转至实名认证页面进行实名认证，等待实名认证审核之后可以开通服务空间
+- 如果未进行实名认证，会跳转至实名认证页面进行实名认证，等待实名认证审核之后可以开通服务空间
 - 创建服务空间可能需要几分钟的时间，可以在控制台查看是否创建完成
 - 目前只支持应用的所有者使用uniCloud，协作者无法使用
+- 如果一个项目只对应一个服务空间，此时前端可直接使用这个服务空间。如果一个项目绑定了多个服务空间，则需要先做初始化，具体参考：[https://uniapp.dcloud.io/uniCloud/init](https://uniapp.dcloud.io/uniCloud/init)
 
 ## 创建云函数
 
-`uniCloud`项目创建完成之后，开发者可以在`cloudfunctions`目录右键创建云函数。
+`uniCloud`项目创建并绑定服务空间后，开发者可以在`cloudfunctions`目录右键创建云函数。
 
 创建后会以云函数名称为名生成一个特殊目录，该目录下自动有一个index.js的入口文件，不可改名。如果需要引入其他js，可以在这个index.js的入口文件中引用。
 
@@ -44,7 +45,7 @@
 - 单个云函数大小限制为10M（包含node_modules）
 
 ## 编写云函数
-云函数是普通的Node.js补充了uniCloud的专用API，可参考开发文档编写，也可以直接新建项目时选择`hello uniCloud`模板体验。
+云函数的语法，是在普通的Node.js基础上补充了uniCloud的专用API。可参考API开发文档编写，也可以直接新建项目时选择`hello uniCloud`模板体验。
 
 HBuilderX为uniCloud开发提供了良好的语法提示和转到定义支持，对于代码中的API，选中并按下F1，也可以直接查看相应的文档。
 
@@ -53,10 +54,12 @@ HBuilderX为uniCloud开发提供了良好的语法提示和转到定义支持，
 
 前者仅完成部署，后者会在部署后同时运行，并打印日志出来。
 
-在云函数文档里，按`ctrl+r`运行快捷键，或点工具栏的运行，还会直接看到上传并运行云函数的快捷指令。`ctrl+r`然后回车，即可在控制台看到运行结果和日志输出。
+在云函数编辑器里，按`Ctrl+r`运行快捷键，或点工具栏的运行，还会直接看到上传并运行云函数的快捷指令。`Ctrl+r`然后回车，即可高效的在控制台看到运行结果和日志输出。
+
+云函数目前还无法断点debug，只能打印`console.log`。
 
 ## 手机端调用云函数
-在uni-app的前端代码中，通过uniCloud.callFunction方法调用云函数。详见[callFunction文档](https://uniapp.dcloud.io/uniCloud/functions?id=callfunction)
+在uni-app的前端代码中，通过`uniCloud.callFunction`方法调用云函数。详见[callFunction文档](https://uniapp.dcloud.io/uniCloud/functions?id=callfunction)
 
 如下代码中，调用了名为`add`的云函数，并发送了`data`的json数据作为上行参数。
 ```javascript
