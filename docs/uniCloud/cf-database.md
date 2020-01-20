@@ -211,11 +211,11 @@ db.collection('goods').where({
 
 如果要表达更复杂的查询，可使用高级查询指令，比如筛选出所有内存大于 8g 的计算机商品：
 ```js
-const _ = db.command // 取指令
+const dbCmd = db.command // 取指令
 db.collection('goods').where({
   category: 'computer',
   type: {
-    memory: _.gt(8), // 表示大于 8
+    memory: dbCmd.gt(8), // 表示大于 8
   }
 })
 ```
@@ -336,10 +336,10 @@ db.collection('articles').where({
 还可以用指令：
 
 ```js
-const _ = db.command
+const dbCmd = db.command
 const myOpenID = 'xxx'
 db.collection('articles').where({
-  _openid: _.eq(openid)
+  _openid: dbCmd.eq(openid)
 })
 ```
 
@@ -354,9 +354,9 @@ db.collection('articles').where({
   }
 })
 // 这种写法表示 stat 对象等于 { publishYear: 2018, language: 'zh-CN' }
-const _ = db.command
+const dbCmd = db.command
 db.collection('articles').where({
-  stat: _.eq({
+  stat: dbCmd.eq({
     publishYear: 2018,
     language: 'zh-CN'
   })
@@ -370,11 +370,11 @@ db.collection('articles').where({
 如筛选出品牌不为 X 的计算机：
 
 ```js
-const _ = db.command
+const dbCmd = db.command
 db.collection('goods').where({
   category: 'computer',
   type: {
-    brand: _.neq('X')
+    brand: dbCmd.neq('X')
   },
 })
 ```
@@ -386,10 +386,10 @@ db.collection('goods').where({
 如筛选出价格大于 2000 的计算机：
 
 ```js
-const _ = db.command
+const dbCmd = db.command
 db.collection('goods').where({
   category: 'computer',
-  price: _.gt(2000)
+  price: dbCmd.gt(2000)
 })
 ```
 
@@ -412,11 +412,11 @@ db.collection('goods').where({
 筛选出内存为 8g 或 16g 的计算机商品：
 
 ```js
-const _ = db.command
+const dbCmd = db.command
 db.collection('goods').where({
   category: 'computer',
   type: {
-    memory: _.in([8, 16])
+    memory: dbCmd.in([8, 16])
   }
 })
 ```
@@ -428,11 +428,11 @@ db.collection('goods').where({
 筛选出内存不是 8g 或 16g 的计算机商品：
 
 ```js
-const _ = db.command
+const dbCmd = db.command
 db.collection('goods').where({
   category: 'computer',
   type: {
-    memory: _.nin([8, 16])
+    memory: dbCmd.nin([8, 16])
   }
 })
 ```
@@ -445,22 +445,22 @@ db.collection('goods').where({
 
 流式写法：
 ```js
-const _ = db.command
+const dbCmd = db.command
 db.collection('goods').where({
   category: 'computer',
   type: {
-    memory: _.gt(4).and(_.lt(32))
+    memory: dbCmd.gt(4).and(dbCmd.lt(32))
   }
 })
 ```
 
 前置写法：
 ```js
-const _ = db.command
+const dbCmd = db.command
 db.collection('goods').where({
   category: 'computer',
   type: {
-    memory: _.and(_.gt(4), _.lt(32))
+    memory: dbCmd.and(dbCmd.gt(4), dbCmd.lt(32))
   }
 })
 ```
@@ -471,22 +471,22 @@ db.collection('goods').where({
 
 流式写法：
 ```js
-const _ = db.command
+const dbCmd = db.command
 db.collection('goods').where({
   category: 'computer',
   type: {
-    price:_.lt(4000).or(_.gt(6000).and(_.lt(8000)))
+    price:dbCmd.lt(4000).or(dbCmd.gt(6000).and(dbCmd.lt(8000)))
   }
 })
 ```
 
 前置写法：
 ```js
-const _ = db.command
+const dbCmd = db.command
 db.collection('goods').where({
   category: 'computer',
   type: {
-    price: _.or(_.lt(4000), _.and(_.gt(6000), _.lt(8000)))
+    price: dbCmd.or(dbCmd.lt(4000), dbCmd.and(dbCmd.gt(6000), dbCmd.lt(8000)))
   }
 })
 ```
@@ -494,11 +494,11 @@ db.collection('goods').where({
 如果要跨字段 “或” 操作：(如筛选出内存 8g 或 cpu 3.2 ghz 的计算机)
 
 ```js
-const _ = db.command
-db.collection('goods').where(_.or(
+const dbCmd = db.command
+db.collection('goods').where(dbCmd.or(
   {
     type: {
-      memory: _.gt(8)
+      memory: dbCmd.gt(8)
     }
   },
   {
@@ -557,9 +557,9 @@ collection.where().remove()
 
 ```js
 // 删除字段a的值大于2的文档
-const _ = db.command
+const dbCmd = db.command
 collection.where({
-  a: _.gt(2)
+  a: dbCmd.gt(2)
 }).remove().then(function(res) {
   
 })
@@ -573,8 +573,33 @@ collection.doc().update()
 
 ```js
 collection.doc('doc-id').update({
-  name: "Hey"
+  name: "Hey",
+  count: {
+    fav: 1
+  }
 });
+```
+
+```
+// 更新前
+{
+  _id: 'xxx',
+  name: "Hello",
+  count: {
+    fav: 0,
+    follow: 0
+  }
+}
+
+// 更新后
+{
+  _id: 'xxx',
+  name: "Hey",
+  count: {
+    fav: 1,
+    follow: 0
+  }
+}
 ```
 
 ### 更新文档，如果不存在则创建
@@ -582,23 +607,48 @@ collection.doc().set()
 
 ```js
 collection.doc('doc-id').set({
-  name: "Hey"
+  name: "Hey",
+  count: {
+    fav: 1
+  }
 }).then(function(res) {
   
 });
+```
+
+```
+// 更新前
+{
+  _id: 'xxx',
+  name: "Hello",
+  count: {
+    fav: 0,
+    follow: 0
+  }
+}
+
+// 更新后
+{
+  _id: 'xxx',
+  name: "Hey",
+  count: {
+    fav: 1
+  }
+}
 ```
 
 ### 批量更新文档
 collection.update()
 
 ```js
-const _ = db.command
-collection.where({name: _.eq('hey')}).update({
+const dbCmd = db.command
+collection.where({name: dbCmd.eq('hey')}).update({
   age: 18,
 }).then(function(res) {
   
 });
 ```
+
 
 ### 更新指令
 
@@ -607,17 +657,39 @@ collection.where({name: _.eq('hey')}).update({
 更新指令。用于设定字段等于指定值。这种方法相比传入纯 JS 对象的好处是能够指定字段等于一个对象：
 
 ```js
-const _ = db.command
+const dbCmd = db.command
 db.collection('photo').doc('doc-id').update({
-  data: {
-    property: _.set({
-      location: 'guangzhou',
-      size: 8
+  count: dbCmd.set({
+    property: dbCmd.set({
+      fav: 1,
+      follow: 1
     })
-  }
+  })
 }).then(function(res) {
   
 })
+```
+
+```
+// 更新前
+{
+  _id: 'xxx',
+  name: "Hello",
+  count: {
+    fav: 0,
+    follow: 0
+  }
+}
+
+// 更新后
+{
+  _id: 'xxx',
+  name: "Hello",
+  count: {
+    fav: 1,
+    follow: 1
+  }
+}
 ```
 
 #### inc
@@ -632,70 +704,223 @@ db.collection('photo').doc('doc-id').update({
 如给收藏的商品数量加一：
 
 ```js
-const _ = db.command
+const dbCmd = db.command
 
 db.collection('user').where({
-  _openid: 'my-open-id'
+  _id: 'my-doc-id'
 }).update({
   count: {
-    favorites: _.inc(1)
+    fav: dbCmd.inc(1)
   }
 }).then(function(res) {
   
 })
 ```
 
+```
+// 更新前
+{
+  _id: 'xxx',
+  name: "Hello",
+  count: {
+    fav: 0,
+    follow: 0
+  }
+}
+
+// 更新后
+{
+  _id: 'xxx',
+  name: "Hello",
+  count: {
+    fav: 1,
+    follow: 0
+  }
+}
+```
+
 #### mul
 
 更新指令。用于指示字段自乘某个值。
 
+以下示例将count内的fav字段乘10
+
+```js
+const dbCmd = db.command
+
+db.collection('user').where({
+  _id: 'my-doc-id'
+}).update({
+  count: {
+    fav: dbCmd.mul(10)
+  }
+}).then(function(res) {
+  
+})
+```
+
+```
+// 更新前
+{
+  _id: 'xxx',
+  name: "Hello",
+  count: {
+    fav: 2,
+    follow: 0
+  }
+}
+
+// 更新后
+{
+  _id: 'xxx',
+  name: "Hello",
+  count: {
+    fav: 20,
+    follow: 0
+  }
+}
+```
 
 #### remove
 
 更新指令。用于表示删除某个字段。如某人删除了自己一条商品评价中的评分：
 
 ```js
-const _ = db.command
+const dbCmd = db.command
 db.collection('comments').doc('comment-id').update({
-  rating: _.remove()
+  rating: dbCmd.remove()
 }).then(function(res) {
   
 })
 
+```
+
+```
+// 更新前
+{
+  _id: 'xxx',
+  rating: 5,
+  comment: 'xxxx'
+}
+
+// 更新后
+{
+  _id: 'xxx',
+  comment: 'xxxx'
+}
 ```
 
 #### push
 向数组尾部追加元素，支持传入单个元素或数组
 
 ```js
-const _ = db.command
+const dbCmd = db.command
 
 db.collection('comments').doc('comment-id').update({
-  // users: _.push('aaa')
-  users: _.push(['aaa', 'bbb'])
+  // users: dbCmd.push('aaa')
+  users: dbCmd.push(['c', 'd'])
 }).then(function(res) {
   
 })
 
+```
+
+```
+// 更新前
+{
+  _id: 'xxx',
+  users: ['a','b']
+}
+
+// 更新后
+{
+  _id: 'xxx',
+  users: ['a','b','c','d']
+}
 ```
 
 #### pop
 删除数组尾部元素
 
 ```js
-const _ = db.command
+const dbCmd = db.command
 
 db.collection('comments').doc('comment-id').update({
-  users: _.pop()
+  users: dbCmd.pop()
 }).then(function(res) {
   
 })
 ```
+
+```
+// 更新前
+{
+  _id: 'xxx',
+  users: ['a','b']
+}
+
+// 更新后
+{
+  _id: 'xxx',
+  users: ['a']
+}
+```
+
 #### unshift
 向数组头部添加元素，支持传入单个元素或数组。使用同push
+
+```js
+const dbCmd = db.command
+
+db.collection('comments').doc('comment-id').update({
+  // users: dbCmd.push('aaa')
+  users: dbCmd.unshift(['c', 'd'])
+}).then(function(res) {
+  
+})
+
+```
+
+```
+// 更新前
+{
+  _id: 'xxx',
+  users: ['a','b']
+}
+
+// 更新后
+{
+  _id: 'xxx',
+  users: ['c','d','a','b']
+}
+```
+
 #### shift
 删除数组头部元素。使用同pop
 
+```js
+const dbCmd = db.command
+
+db.collection('comments').doc('comment-id').update({
+  users: dbCmd.shift()
+}).then(function(res) {
+  
+})
+```
+
+```
+// 更新前
+{
+  _id: 'xxx',
+  users: ['a','b']
+}
+
+// 更新后
+{
+  _id: 'xxx',
+  users: ['b']
+}
+```
 
 <!-- ## GEO地理位置
 
@@ -903,10 +1128,10 @@ db.collection('user').where({
       spaceId: 'YourSpaceId
   });
   const db = uniClient.database();
-  const _ = db.command
+  const dbCmd = db.command
   const collection = db.collection('collName') // collName 需填当前服务空间下集合名称
 
-  let ref = collection.where({ test: _.gt(0) }).watch({
+  let ref = collection.where({ test: dbCmd.gt(0) }).watch({
     onChange: snapshot => {
         console.log("收到snapshot**********", snapshot)
     },
