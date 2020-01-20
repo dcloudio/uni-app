@@ -141,14 +141,14 @@ describe('codegen', () => {
   it('generate v-model directive', () => {
     assertCodegen(
       '<input v-model="test">',
-      `with(this){return _c('v-uni-input',{attrs:{"_i":0},model:{value:_$g(0,'v-model'),callback:function(){},expression:"test"}})}`
+      `with(this){return _c('v-uni-input',{attrs:{"_i":0},model:{value:_$g(0,'v-model'),callback:function($$v){$handleVModelEvent(0,$$v)},expression:"test"}})}`
     )
   })
 
   it('generate multiline v-model directive', () => {
     assertCodegen(
       '<input v-model="\n test \n">',
-      `with(this){return _c('v-uni-input',{attrs:{"_i":0},model:{value:_$g(0,'v-model'),callback:function(){},expression:"\\n test \\n"}})}`
+      `with(this){return _c('v-uni-input',{attrs:{"_i":0},model:{value:_$g(0,'v-model'),callback:function($$v){$handleVModelEvent(0,$$v)},expression:"\\n test \\n"}})}`
     )
   })
 
