@@ -126,7 +126,7 @@ const collection = db.collection('user');
 * Null
 
 以下对几个特殊的数据类型做个补充说明
-1. 时间 Date
+- 时间 Date
 
   Date 类型用于表示时间，精确到毫秒，可以用 JavaScript 内置 Date 对象创建。需要特别注意的是，用此方法创建的时间是客户端时间，不是服务端时间。如果需要使用服务端时间，应该用 API 中提供的 serverDate 对象来创建一个服务端当前时间的标记，当使用了 serverDate 对象的请求抵达服务端处理时，该字段会被转换成服务端当前的时间，更棒的是，我们在构造 serverDate 对象时还可通过传入一个有 offset 字段的对象来标记一个与当前服务端时间偏移 offset 毫秒的时间，这样我们就可以达到比如如下效果：指定一个字段为服务端时间往后一个小时。
 
@@ -148,7 +148,7 @@ const collection = db.collection('user');
 
 参考：[GEO地理位置](#GEO地理位置) -->
 
-3. Null
+- Null
 
   Null 相当于一个占位符，表示一个字段存在但是值为空。
 
