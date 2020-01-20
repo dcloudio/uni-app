@@ -557,6 +557,7 @@ collection.where().remove()
 
 ```js
 // 删除字段a的值大于2的文档
+const _ = db.command
 collection.where({
   a: _.gt(2)
 }).remove().then(function(res) {
@@ -591,6 +592,7 @@ collection.doc('doc-id').set({
 collection.update()
 
 ```js
+const _ = db.command
 collection.where({name: _.eq('hey')}).update({
   age: 18,
 }).then(function(res) {
