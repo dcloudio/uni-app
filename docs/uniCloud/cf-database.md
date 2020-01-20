@@ -660,10 +660,8 @@ collection.where({name: dbCmd.eq('hey')}).update({
 const dbCmd = db.command
 db.collection('photo').doc('doc-id').update({
   count: dbCmd.set({
-    property: dbCmd.set({
-      fav: 1,
-      follow: 1
-    })
+    fav: 1,
+    follow: 1
   })
 }).then(function(res) {
   
