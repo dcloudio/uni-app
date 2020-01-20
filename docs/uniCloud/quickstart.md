@@ -61,15 +61,23 @@ HBuilderX为uniCloud开发提供了良好的语法提示和转到定义支持，
 ## 手机端调用云函数
 在uni-app的前端代码中，通过`uniCloud.callFunction`方法调用云函数。详见[callFunction文档](https://uniapp.dcloud.io/uniCloud/functions?id=callfunction)
 
-如下代码中，调用了名为`add`的云函数，并发送了`data`的json数据作为上行参数。
+如下代码中，调用了名为`test`的云函数，并发送了`data`的json数据作为上行参数。
 ```javascript
+// promise方式
 uniCloud.callFunction({
-  name: 'add',
-  data: {
-    name: 'DCloud',
-    subType: 'uniCloud'
-  }
-})
+    name: 'test',
+    data: { a: 1 }
+  })
+  .then(res => {});
+
+// callback方式
+uniCloud.callFunction({
+	name: 'test',
+	data: { a: 1 },
+	success(){},
+	fail(){},
+	complete(){}
+});
 ```
 
 - 在App真机运行模式下，在前端控制台也会打印云函数输出的`console.log`。
