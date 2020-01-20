@@ -148,7 +148,7 @@ const collection = db.collection('user');
 
 参考：[GEO地理位置](#GEO地理位置) -->
 
-2. Null
+3. Null
 
   Null 相当于一个占位符，表示一个字段存在但是值为空。
 
@@ -557,7 +557,6 @@ collection.where().remove()
 
 ```js
 // 删除字段a的值大于2的文档
-const _ = db.command
 collection.where({
   a: _.gt(2)
 }).remove().then(function(res) {
@@ -592,7 +591,6 @@ collection.doc('doc-id').set({
 collection.update()
 
 ```js
-const _ = db.command
 collection.where({name: _.eq('hey')}).update({
   age: 18,
 }).then(function(res) {
