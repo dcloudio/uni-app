@@ -209,7 +209,7 @@ function handleViewEvents (events) {
 function genVModel (el, isScopedSlot) {
   if (el.model) {
     el.model.value = createGenVar(el.attrsMap[ID], isScopedSlot)('v-model', el.model.value)
-    if (el.tag === 'v-uni-input' || el.tag === 'v-uni-textarea' && !(el.events && el.events.input)) {
+    if ((el.tag === 'v-uni-input' || el.tag === 'v-uni-textarea') && !(el.events && el.events.input)) {
       el.model.callback = `function($$v){$handleVModelEvent(${el.attrsMap[ID]},$$v)}`
     } else {
       el.model.callback = `function(){}`
