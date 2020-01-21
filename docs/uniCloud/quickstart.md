@@ -91,7 +91,7 @@ uniCloud.callFunction({
 |阿里云			|api.bspapp.com	|bsppub.oss-cn-shanghai.aliyuncs.com|
 
 **Bug&Tips**
-- 目前微信小程序开发工具的真机预览功能无法调用云函数，后续会修复。模拟器的PC端预览、真机调试均正常，不影响使用。
+- 微信小程序开发工具的真机预览功能，必须添加上述域名白名单，否则无法调用云函数。模拟器的PC端预览、真机调试不受此影响。
 - 云函数的初次冷启动较慢，表现为某个云函数第一次被调用时联网时间较长。第二次即可正常。并非每个手机用户都要经历一次冷启动，开发者运行过一次云函数，用户再连接时就不会经历冷启动。但长期不使用的云函数，会被回收资源。回收后再调用云函数，仍然会经历一次冷启动。
 - Q:H5端出现跨域问题如何处理？ 
   A:HBuilderX自带的内置浏览器不会有跨域问题。外部浏览器可以参考 [Chrome 跨域插件免翻墙安装](https://ask.dcloud.net.cn/article/35267) 或 [firefox跨域插件](https://addons.mozilla.org/zh-CN/firefox/addon/access-control-allow-origin/)。
