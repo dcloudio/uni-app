@@ -82,6 +82,14 @@ uniCloud.callFunction({
 
 - 在App真机运行模式下，在前端控制台也会打印云函数输出的`console.log`。
 
+## 小程序中使用uniCloud
+
+小程序中使用uniCloud需要在相应的小程序管理后台设置request合法域名、uploadFile合法域名。
+
+|服务提供商	|request合法域名|uploadFile合法域名									|
+|:-:				|:-:						|:-:																|
+|阿里云			|api.bspapp.com	|bsppub.oss-cn-shanghai.aliyuncs.com|
+
 ## FAQ
 
 - Q:H5端出现跨域问题如何处理？ 
