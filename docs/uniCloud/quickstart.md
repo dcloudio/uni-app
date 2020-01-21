@@ -84,7 +84,7 @@ uniCloud.callFunction({
 
 ## 小程序中使用uniCloud
 
-小程序中使用uniCloud需要在相应的小程序管理后台设置request合法域名、uploadFile合法域名。
+小程序中使用uniCloud需要在相应的小程序管理后台设置request合法域名、uploadFile合法域名。这些域名均为阿里云或腾讯云自有域名，并非DCloud所属域名。
 
 |服务提供商	|request合法域名|uploadFile合法域名									|
 |:-:				|:-:						|:-:																|
