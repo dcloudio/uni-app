@@ -1,6 +1,6 @@
 `uniCloud` 是 DCloud 联合阿里云、腾讯云，为 uni-app 的开发者提供的基于 serverLess 模式和 js 编程的云开发平台。
 
-> 从HBuilderX 2.5.8起支持。目前在部分QQ群中公测（vip群、uni群1-3、uni群24）。目前仅支持阿里云，春节后开放腾讯云。
+> 从HBuilderX 2.5.8起支持。目前在QQ群中公测（含vip群、uni群1-35群，从群文件中下载，暂未推送升级）。目前仅支持阿里云，春节后开放腾讯云。
 
 ### uniCloud 的价值
 
