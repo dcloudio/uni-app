@@ -28,3 +28,12 @@ uni-app可以开发web界面，注意3个问题：
 1. 如果要多端适配界面，使用css的媒体查询处理适配。
 2. 网上有三方库可以替换touch的拖动为pc上的drag。比如hello uni-app的h5示例使用的touch-emulator.js
 3. uni-app的内置组件和api仅适配了webkit内核浏览器，ie和firefox可能有兼容问题
+
+**腾讯、阿里的serverLess有什么大案例？**
+
+- 微信小程序云开发，已经有50万开发者，包括腾讯自有的很多大日活应用都构建在腾讯云serverLess上，如微信生活缴费、乘车码、微信读书、腾讯新闻、腾讯相册等。
+- 2019年双11，阿里部分业务已经迁移在serverLess上。支付宝小程序也提供了云开发功能。
+
+**uniCloud费用贵不贵？**
+
+目前uniCloud处于公测期，是免费的。未来uniCloud的租用费用，也会低于租用传统云主机的费用。
