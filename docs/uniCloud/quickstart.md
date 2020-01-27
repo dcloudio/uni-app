@@ -35,8 +35,9 @@
 ## 创建云函数
 
 `uniCloud`项目创建并绑定服务空间后，开发者可以在`cloudfunctions`目录右键创建云函数。
+![新建云函数](http://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/unicloud-02.png)
 
-创建后会以云函数名称为名生成一个特殊目录，该目录下自动有一个index.js的入口文件，不可改名。如果需要引入其他js，可以在这个index.js的入口文件中引用。
+创建后会以云函数名称为名生成一个特殊目录，该目录下自动生成index.js，是该云函数的入口文件，不可改名。如果该云函数还需要引入其他js，可在index.js入口文件中引用。
 
 **注意**
 
@@ -49,6 +50,19 @@
 
 HBuilderX为uniCloud开发提供了良好的语法提示和转到定义支持，对于代码中的API，选中并按下F1，也可以直接查看相应的文档。
 
+如下为一个云函数示例
+```javascript
+'use strict';
+const db = uniCloud.database()
+exports.main = async (event, context) => {
+	//event为客户端上传的参数
+	const collection = db.collection('unicloud-test') // 获取表'unicloud-test'的集合对象
+	const res = await collection.limit(10).get() // 获取表中的10条数据，结果为json格式
+	return res // 返回json给客户端
+};
+
+```
+
 ## 运行和调试云函数
 编写云函数后，在项目管理器里右键点击该云函数的目录，在弹出菜单中可选择“上传部署云函数”、“上传并运行测试云函数”。
 
@@ -56,7 +70,7 @@ HBuilderX为uniCloud开发提供了良好的语法提示和转到定义支持，
 
 在云函数编辑器里，按`Ctrl+r`运行快捷键，或点工具栏的运行，还会直接看到上传并运行云函数的快捷指令。`Ctrl+r`然后回车，即可高效的在控制台看到运行结果和日志输出。
 
-云函数目前还无法断点debug，只能打印`console.log`。
+云函数目前无法断点debug，只能打印`console.log`看日志。
 
 ## 手机端调用云函数
 在uni-app的前端代码中，通过`uniCloud.callFunction`方法调用云函数。详见[callFunction文档](https://uniapp.dcloud.io/uniCloud/functions?id=callfunction)
@@ -93,6 +107,7 @@ uniCloud.callFunction({
 **Bug&Tips**
 - 微信小程序开发工具的真机预览功能，必须添加上述域名白名单，否则无法调用云函数。模拟器的PC端预览、真机调试不受此影响。
 - 云函数的初次冷启动较慢，表现为某个云函数第一次被调用时联网时间较长。第二次即可正常。并非每个手机用户都要经历一次冷启动，开发者运行过一次云函数，用户再连接时就不会经历冷启动。但长期不使用的云函数，会被回收资源。回收后再调用云函数，仍然会经历一次冷启动。
+- web控制台网址：[http://unicloud.dcloud.net.cn](http://unicloud.dcloud.net.cn)，在HX中对云函数目录点右键，或者在帮助菜单中，均有入口链接。
 - Q:H5端出现跨域问题如何处理？ 
   A:HBuilderX自带的内置浏览器不会有跨域问题。外部浏览器可以参考 [Chrome 跨域插件免翻墙安装](https://ask.dcloud.net.cn/article/35267) 或 [firefox跨域插件](https://addons.mozilla.org/zh-CN/firefox/addon/access-control-allow-origin/)。
 - 服务商为阿里云时，因还不支持域名绑定，所以暂时无法发行为H5网站，近期会进行支持。不影响使用H5做调试。
