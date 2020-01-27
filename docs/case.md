@@ -1,4 +1,4 @@
-DCloud有380万开发者，[uni统计](https://tongji.dcloud.net.cn/)覆盖手机终端9亿，月活2.2亿。是开发者数量和案例最丰富的多端开发框架。
+DCloud有420万开发者，[uni统计](https://tongji.dcloud.net.cn/)覆盖手机终端10亿，月活3.3亿。是开发者数量和案例最丰富的多端开发框架。
 
 欢迎知名开发商提交案例或接入uni统计，[项目案例征集](https://github.com/dcloudio/uni-app/issues/6)提交。
 
@@ -147,6 +147,13 @@ DCloud有380万开发者，[uni统计](https://tongji.dcloud.net.cn/)覆盖手�
 
 **极志愿：**专业高考志愿填报。**<span style="color:#42b983">多端获客典型案例，1个月获得400万用户</span>**，[详见报道](https://mp.weixin.qq.com/s?__biz=MzU3NTU5NDc0NA==&mid=2247491214&idx=1&sn=7e334d079146d9e31cea407f45bd8624)。体验方式：[App、微信小程序、百度小程序、H5 官网地址](https://www.jizhy.com/home/)
 
+#### 新冠抗疫专区
+疫情凶猛，要求各项工作火速完工，不管是几天建成一个医院，还是半天上线一个系统。
+
+在uni-app的支持下，开发者半天开发完了查疫情的小程序（微信小程序搜索“一起抗病毒”）、快速上线了湖北医疗物资需求信息平台（[http://onwh.51rry.com](http://onwh.51rry.com)）。
+
+很高兴我们做的一些事情，为大家争分夺秒的抢到了时间。也欢迎更多开发者为打赢这场没有硝烟的战争出力。
+
 #### 互联网公司
 
 **腾讯：** 微信小程序搜索“腾讯全民模拟炒股大赛”
@@ -188,6 +195,8 @@ DCloud有380万开发者，[uni统计](https://tongji.dcloud.net.cn/)覆盖手�
 #### 国企
 
 **中国移动咪咕商城：**[H5](https://mgmall.migudm.cn/)
+
+**北京移动：**App部分页面使用uni-app制作
 
 **浙江移动境外出行指南：**[H5](https://wap.zj.10086.cn/szhy/business/20190610gmh5/#/)
 
@@ -369,6 +378,10 @@ DCloud有380万开发者，[uni统计](https://tongji.dcloud.net.cn/)覆盖手�
 **国珍在线（5+App）：**新时代健康产业集团移动展业应用。[Android](http://sj.qq.com/myapp/detail.htm?apkName=cn.guozhen.guozhenzaixian)、[iOS](https://itunes.apple.com/cn/app/%E5%9B%BD%E7%8F%8D%E5%9C%A8%E7%BA%BF/id1098479063?mt=8)
 
 **太合音乐 秀动：**演出门票销售。[h5](https://wap.showstart.com/)
+
+**旺仔旺铺：**旺旺食品官方电商平台。[h5](https://srv.hotkidceo.com/store/)
+
+**掌上春城：**昆明日报官媒。[h5](https://zsccv7.kmzscc.com/htmlv7/#/)
 
 #### html5游戏
 
