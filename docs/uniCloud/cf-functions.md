@@ -32,7 +32,7 @@ exports.main = async (event, context) => {
 
 ### 访问数据库
 
-云函数中支持访问本服务空间下的数据库，调用方式详见[规范](cf-database.md)
+云函数中支持访问本服务空间下的数据库，调用方式详见[规范](uniCloud/cf-database.md)
 
 ### 访问HTTP服务
 
