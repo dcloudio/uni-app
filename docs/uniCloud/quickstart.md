@@ -23,7 +23,7 @@
 
 ![创建服务空间](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/create-space.png)
 
-  - 创建好服务空间后，对目录`cloudfunctions`点右键，菜单中点击选择服务空间，完成绑定关系。
+  - 创建好服务空间后，对目录`cloudfunctions`点右键，菜单中点击`选择云服务空间`，绑定你之前创建的服务空间。
   
 **说明**
 
