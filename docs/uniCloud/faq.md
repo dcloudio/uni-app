@@ -26,8 +26,8 @@
 
 uni-app可以开发web界面，注意3个问题：
 1. 如果要多端适配界面，使用css的媒体查询处理适配。
-2. 网上有三方库可以替换touch的拖动为pc上的drag。比如hello uni-app的h5示例使用的touch-emulator.js
-3. uni-app的内置组件和api仅适配了webkit内核浏览器，ie和firefox可能有兼容问题
+2. 网上有三方库可以替换touch的拖动为pc上的drag。比如hello uni-app的h5示例使用的touch-emulator.js。
+3. uni-app的内置组件和api仅适配了webkit内核浏览器，ie和firefox可能有兼容问题。如有问题需自己写额外css或js适配。
 
 后续DCloud会进一步强化内置组件和uni-ui对PC浏览器的适配。
 
