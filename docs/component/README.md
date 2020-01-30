@@ -205,6 +205,7 @@ uni ui支持npm安装，和HBuilderX单独导入个别组件等多种使用方�
 |[Calendar](https://ext.dcloud.net.cn/plugin?id=56)| 日历|
 |[Card](https://ext.dcloud.net.cn/plugin?id=22)| 卡片|
 |[Collapse](https://ext.dcloud.net.cn/plugin?id=23)| 折叠面板|
+|[Combox](https://ext.dcloud.net.cn/plugin?id=1261)| 可选择输入框|
 |[CountDown](https://ext.dcloud.net.cn/plugin?id=25)| 倒计时|
 |[Drawer](https://ext.dcloud.net.cn/plugin?id=26)| 抽屉|
 |[Fab](https://ext.dcloud.net.cn/plugin?id=144)| 悬浮按钮|
