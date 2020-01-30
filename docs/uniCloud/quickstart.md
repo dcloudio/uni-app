@@ -110,7 +110,7 @@ uniCloud.callFunction({
 - web控制台网址：[http://unicloud.dcloud.net.cn](http://unicloud.dcloud.net.cn)，在HX中对云函数目录点右键，或者在帮助菜单中，均有入口链接。
 - Q:H5端出现跨域问题如何处理？ 
   A:HBuilderX自带的内置浏览器不会有跨域问题。外部浏览器可以参考 [Chrome 跨域插件免翻墙安装](https://ask.dcloud.net.cn/article/35267) 或 [firefox跨域插件](https://addons.mozilla.org/zh-CN/firefox/addon/access-control-allow-origin/)。
-- 服务商为阿里云时，解决跨域需要由阿里云配置域名绑定，有需求时请向service@dcloud.io申请。目前DCloud还提供了m3w.cn的二级域名供开发者快速上线使用，可以免去购买域名的流程和费用，直接开通xxx.m3w.cn的二级域名。
+- 服务商为阿里云时，解决跨域需要由阿里云配置域名绑定，有需求时请向service@dcloud.io申请。目前DCloud还提供了m3w.cn的二级域名供开发者快速上线使用，可以免去购买域名的流程和费用，直接开通xxx.m3w.cn的二级域名。示例：[hellounicloud.m3w.cn](https://hellounicloud.m3w.cn)
 
 <!-- 发行到H5端时，可以在uniCloud控制台`用户管理 - 登录设置`里配置`WEB安全域名`。 -->
 
