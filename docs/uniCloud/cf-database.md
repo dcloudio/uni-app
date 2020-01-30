@@ -220,6 +220,13 @@ db.collection('goods').where({
 })
 ```
 
+`where` 可以使用正则表达式来查询文档，比如一下示例查询所有`name`字段以ABC开头的用户
+```js
+db.collection('user').where({
+  name: new RegExp('^ABC')
+})
+```
+
 ### 获取查询数量
 
 collection.count()
