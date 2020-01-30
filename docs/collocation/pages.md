@@ -669,14 +669,16 @@ h5 平台下拉刷新动画，只有 circle 类型。
 
 在[uni-app插件市场](https://ext.dcloud.net.cn/)下载符合规则的组件后，也可以直接使用。
 
-`easycom`是自动开启的，可以在`pages.json`的`easycom`节点进行个性化设置。
+uni ui组件是完全符合easycom规则的，在`HBuilderX 2.5.5`以上什么都不用配，可直接使用uni ui的组件。在`HBuilderX`中新建项目选择`uni ui项目`，可直接使用所有uni ui组件。
+
+`easycom`是自动开启的，可以在`pages.json`的`easycom`节点进行个性化设置，如关闭自动扫描，或自定义扫描匹配组件的策略。
 
 |属性			|类型		|默认值	|描述																																											|
 |:-				|:-			|:-			|:-																																												|
 |autoscan	|Boolean|true		|是否开启自动扫描，开启后将会自动扫描符合`components/组件名称/组件名称.vue`目录结构的组件	|
 |custom		|Object	|-			|以正则方式自定义组件匹配规则。如果`autoscan`不能满足需求，可以使用`custom`自定义匹配规则	|
 
-**使用示例**
+**如需自定义easycom，参考如下示例**
 
 ```
 "easycom": {
