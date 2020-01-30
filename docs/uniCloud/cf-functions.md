@@ -45,7 +45,8 @@ const res = await uniCloud.httpclient.request(apiUrl, {
     method: 'POST',
     data: {
       test: 'testValue'
-    }
+    },
+    dataType: 'json'
   })
 console.log(res)
 ```
