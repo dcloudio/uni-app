@@ -663,11 +663,11 @@ h5 平台下拉刷新动画，只有 circle 类型。
 - A：参考[导航栏开发指南](http://ask.dcloud.net.cn/article/34921)
 
 # easycom
-传统vue组件，需要安装、引用、注册，三个步骤后才能使用组件。`easycom`将其精简为一步。只要组件安装下项目的components目录下，并符合一定规则。就可以不用引用、注册，直接在页面中使用。同时打包后会自动剔除没有使用的组件。
+传统vue组件，需要安装、引用、注册，三个步骤后才能使用组件。`easycom`将其精简为一步。只要组件安装在项目的components目录下，并符合`components/组件名称/组件名称.vue`目录结构的组件。就可以不用引用、注册，直接在页面中使用。同时打包后会自动剔除没有使用的组件。
 
 自`HBuilderX 2.5.5`起支持`easycom`组件模式。可以在HBuilderX新建项目界面选择`uni-ui`项目模板体验。只需在页面中敲u，拉出大量代码块，直接选择，即可使用。大幅提升开发效率，降低使用门槛。
 
-在[uni-app插件市场](https://ext.dcloud.net.cn/)下载符合规则的组件后，也可以直接使用。
+在[uni-app插件市场](https://ext.dcloud.net.cn/)下载符合`components/组件名称/组件名称.vue`目录结构的组件后，也可以直接使用。
 
 uni ui组件是完全符合easycom规则的，在`HBuilderX 2.5.5`以上什么都不用配，可直接使用uni ui的组件。在`HBuilderX`中新建项目选择`uni ui项目`，可直接使用所有uni ui组件。
 
