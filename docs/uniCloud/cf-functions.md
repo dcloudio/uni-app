@@ -38,6 +38,24 @@ exports.main = async (event, context) => {
 
 `uniCloud`提供了`uniCloud.httpclient`供开发者使用。无需额外依赖，就可以请求任何 HTTP 和 HTTPS 协议的 Web 服务。`uniCloud.httpclient`返回的是一个[urllib实例](https://github.com/node-modules/urllib)。
 
+**uniCloud.httpclient。request(URL,requestOptions)**
+
+**requestOptions参数说明**
+
+|参数名						|类型																																																				|是否必填	|默认值	|说明																																																																												|
+|----							|----																																																				|----			|----		|----																																																																												|
+|method						|String																																																			| -				|GET		|HTTP 请求方法, 默认为：GET. 可选值： GET, POST, DELETE, PUT																																																|
+|data							|Object																																																			| -				|-			|发送的数据																																																																									|
+|dataAsQueryString|Boolean																																																		| -				|true		|是否强制转换data为queryString																																																															|
+|content					|String &#124; Buffer																																												| -				|-			|手动设置请求的payload，设置后会忽略data																																																										|
+|files						|Array&lt;ReadStream&#124;Buffer&#124;String&gt; &#124; Object &#124; ReadStream &#124; Buffer &#124; String| -				|-			|上传的文件，设置后将会使用 multipart/form-data 格式。如果未设置method，将会自动将method设置为POST																													|
+|contentType			|String																																																			| -				|-			|上传数据的格式，设为`json`会自动在`header`内设置`Content-Type: application/json`																																						|
+|nestedQuerystring|Boolean																																																		| -				|-			|转换data为queryString时默认不支持嵌套Object，此选项设置为true则支持转换嵌套Object																																					|
+|dataType					|String																																																			| -				|-			|返回的数据格式																																																																							|
+|headers					|Object																																																			| -				|-			|请求头																																																																											|
+|timeout					|Number &#124; Array																																												| -				|-			|超时时间设置。设置为数组时第一项为请求超时，第二项为返回超时。设置为数字时相当于同时设置请求超时和返回超时，即`timeout:3000`效果等于`timeouut:[3000,3000]`	|
+
+
 **示例代码**
 
 ```
@@ -54,6 +72,32 @@ console.log(res)
 ### 参数校验
 
 开发者可以使用`uniCloud.validate`对参数进行校验，`uniCloud.validata`用法等同于[jsonschema的validate方法](https://github.com/tdegrunt/jsonschema)
+
+**uniCloud.validate(instance,schema)**
+
+|参数			|说明						|
+|----			|----						|
+|instance	|需要检验的参数	|
+|schema		|校验规则，[详见](https://github.com/tdegrunt/jsonschema)				|
+
+**返回值**
+
+|字段			|说明											|
+|----			|----											|
+|instance	|需要校验的参数						|
+|schema		|校验规则									|
+|errors		|校验返回的错误组成的数组，Array<error>	|
+|valid		|校验是否通过							|
+
+**error字段说明**
+
+|字段			|说明							|
+|----			|----							|
+|property	|校验未通过的字段	|
+|message	|错误信息					|
+|name			|规则名称					|
+|stack		|完整错误描述			|
+
 
 **使用示例**
 
