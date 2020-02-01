@@ -46,6 +46,7 @@ myCloud.uploadFile()
 
 **Tips：**
 - 云函数会自动识别自己所属的服务空间，无需初始化。
+- `HBuilderX 2.5.8`版本在`main.js`使用`uniCloud`时，运行到H5端会报错，可以先使用其他平台进行调试。此问题会在`HBuilderX 2.5.9`修复
 
 <!-- **注意**
 
