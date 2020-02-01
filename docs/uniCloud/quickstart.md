@@ -2,7 +2,6 @@
   
   - 在`HBuilderX`创建uni-app项目时勾选`启用uniCloud`
   - 在右侧选择服务供应商（目前仅支持阿里云，春节后会开放腾讯云）
-  - **服务提供商为阿里云时，暂不支持发行到H5端**
 
 ![创建uniCloud项目](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/create-project.png)
 
