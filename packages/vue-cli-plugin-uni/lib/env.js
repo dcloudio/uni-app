@@ -3,6 +3,7 @@ const path = require('path')
 const mkdirp = require('mkdirp')
 const loaderUtils = require('loader-utils')
 
+process.UNI_CLOUD = false
 process.UNI_CLOUD_ALIYUN = false
 process.env.UNI_CLOUD_PROVIDER = JSON.stringify({})
 
@@ -10,6 +11,7 @@ if (process.env.UNI_CLOUD_SPACES) {
   try {
     const spaces = JSON.parse(process.env.UNI_CLOUD_SPACES)
     if (Array.isArray(spaces)) {
+      process.UNI_CLOUD = spaces.length > 0
       process.UNI_CLOUD_ALIYUN = !!spaces.find(space => space.clientSecret)
       if (spaces.length === 1) {
         const space = spaces[0]
@@ -39,8 +41,7 @@ if (
   process.env.UNI_PLATFORM === 'h5' &&
   process.env.NODE_ENV === 'production'
 ) {
-  console.error(`当前项目使用了阿里云服务空间，暂不支持发行到H5平台`)
-  process.exit(0)
+  console.warn(`当前项目使用了基于阿里云的uniCloud，为解决浏览器跨域问题，必须由阿里云配置安全域名。目前还暂无自主申请界面，请发邮件到service@dcloud.io申请，提供你的appid和计划发布的域名。DCloud同时提供了m3w.cn的二级域名供申请，如：hellounicloud.m3w.cn`)
 }
 
 if (process.env.UNI_PLATFORM === 'mp-360') {
