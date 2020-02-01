@@ -107,8 +107,9 @@ uniCloud.callFunction({
 - 微信小程序开发工具的真机预览功能，必须添加上述域名白名单，否则无法调用云函数。模拟器的PC端预览、真机调试不受此影响。
 - 云函数的初次冷启动较慢，表现为某个云函数第一次被调用时联网时间较长。第二次即可正常。并非每个手机用户都要经历一次冷启动，开发者运行过一次云函数，用户再连接时就不会经历冷启动。但长期不使用的云函数，会被回收资源。回收后再调用云函数，仍然会经历一次冷启动。
 - web控制台网址：[http://unicloud.dcloud.net.cn](http://unicloud.dcloud.net.cn)，在HX中对云函数目录点右键，或者在帮助菜单中，均有入口链接。
-- Q:H5端出现跨域问题如何处理？ 
-  A:HBuilderX自带的内置浏览器不会有跨域问题。外部浏览器可以参考 [Chrome 跨域插件免翻墙安装](https://ask.dcloud.net.cn/article/35267) 或 [firefox跨域插件](https://addons.mozilla.org/zh-CN/firefox/addon/access-control-allow-origin/)。
+- Q: H5端出现跨域问题如何处理？ 
+
+  A: win版的HBuilderX的内置浏览器不会有跨域问题。mac版内置浏览器存在跨域问题，暂无法使用uniCloud。外部浏览器需要安装跨域插件，可以参考 [Chrome 跨域插件免翻墙安装](https://ask.dcloud.net.cn/article/35267) 或 [firefox跨域插件](https://addons.mozilla.org/zh-CN/firefox/addon/access-control-allow-origin/)。
 - 发布H5时，为解决域名跨域问题，需配置发布域名。如serverLess服务商为阿里云，请向service@dcloud.io申请，提供你的appid和域名。目前DCloud还提供了m3w.cn的二级域名供开发者快速上线使用，可以免去购买域名的流程和费用，直接开通xxx.m3w.cn的二级域名。示例：[hellounicloud.m3w.cn](https://hellounicloud.m3w.cn)
 
 <!-- 发行到H5端时，可以在uniCloud控制台`用户管理 - 登录设置`里配置`WEB安全域名`。 -->
