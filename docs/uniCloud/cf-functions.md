@@ -69,7 +69,7 @@ const res = await uniCloud.httpclient.request(apiUrl, {
 console.log(res)
 ```
 
-### 参数校验
+<!-- ### 参数校验
 
 开发者可以使用`uniCloud.validate`对参数进行校验，`uniCloud.validata`用法等同于[jsonschema的validate方法](https://github.com/tdegrunt/jsonschema)
 
@@ -130,7 +130,7 @@ exports.main = async function(event) {
 }
 
 ```
-
+ -->
 ### 使用npm
 
 在云函数中我们可以引入第三方依赖来帮助我们更快的开发。云函数的运行环境是 `Node.js`，因此我们可以使用 `npm` 安装第三方依赖。
