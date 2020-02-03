@@ -38,7 +38,7 @@ exports.main = async (event, context) => {
 
 `uniCloud`提供了`uniCloud.httpclient`供开发者使用。无需额外依赖，就可以请求任何 HTTP 和 HTTPS 协议的 Web 服务。`uniCloud.httpclient`返回的是一个[urllib实例](https://github.com/node-modules/urllib)。
 
-**uniCloud.httpclient。request(URL,requestOptions)**
+**uniCloud.httpclient.request(URL,requestOptions)**
 
 **requestOptions参数说明**
 
@@ -192,8 +192,11 @@ uniCloud.callFunction({
 
 ```javascript
 let count = 0;
-module.exports = async (context) => {
+module.exports = async (event) => {
   return count++
+  //此示例为错误示例
+  //云函数实例未复用时，每次返回0
+  //若实例被复用，则可能返回1、2、3等各种意外情况
 }
 ```
 
