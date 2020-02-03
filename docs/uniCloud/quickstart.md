@@ -14,7 +14,7 @@
 
 项目环境建好后，需要为这个项目选择一个服务空间。如果开发者账户没有实名认证，首先需要实名认证。
 
-一个开发者可以拥有多个服务空间，每个服务空间都是一个独立的serverLess云环境，不同服务空间之间的云函数、数据库、存储都是隔离的。
+一个开发者可以拥有多个服务空间，每个服务空间都是一个独立的serverless云环境，不同服务空间之间的云函数、数据库、存储都是隔离的。
 
 服务空间和手机端项目是多对多绑定关系。同账号下，一个项目可以关联到多个服务空间。一个服务空间也可以被多个项目访问。
 
@@ -110,7 +110,7 @@ uniCloud.callFunction({
 - Q: H5端出现跨域问题如何处理？ 
 
   A: win版的HBuilderX的内置浏览器不会有跨域问题。mac版内置浏览器存在跨域问题，暂无法使用uniCloud。外部浏览器需要安装跨域插件，可以参考 [Chrome 跨域插件免翻墙安装](https://ask.dcloud.net.cn/article/35267) 或 [firefox跨域插件](https://addons.mozilla.org/zh-CN/firefox/addon/access-control-allow-origin/)。
-- 发布H5时，为解决域名跨域问题，需配置发布域名。如serverLess服务商为阿里云，请向service@dcloud.io申请，提供你的appid和域名。目前DCloud还提供了m3w.cn的二级域名供开发者快速上线使用，可以免去购买域名的流程和费用，直接开通xxx.m3w.cn的二级域名。示例：[hellounicloud.m3w.cn](https://hellounicloud.m3w.cn)
+- 发布H5时，为解决域名跨域问题，需配置发布域名。如serverless服务商为阿里云，请向service@dcloud.io申请，提供你的appid和域名。目前DCloud还提供了m3w.cn的二级域名供开发者快速上线使用，可以免去购买域名的流程和费用，直接开通xxx.m3w.cn的二级域名。示例：[hellounicloud.m3w.cn](https://hellounicloud.m3w.cn)
 
 <!-- 发行到H5端时，可以在uniCloud控制台`用户管理 - 登录设置`里配置`WEB安全域名`。 -->
 
