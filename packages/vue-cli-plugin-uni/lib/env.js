@@ -15,7 +15,7 @@ if (process.env.UNI_CLOUD_SPACES) {
       process.UNI_CLOUD_ALIYUN = !!spaces.find(space => space.clientSecret)
       if (spaces.length === 1) {
         const space = spaces[0]
-        console.log(`本项目的uniCloud所用的服务空间为：${space.name}`)
+        console.log(`本项目的uniCloud使用的默认服务空间spaceId为：${space.id}`)
         if (space.clientSecret) {
           process.env.UNI_CLOUD_PROVIDER = JSON.stringify({
             provider: 'aliyun',
