@@ -610,7 +610,12 @@ collection.doc('doc-id').update({
 ```
 
 ### 更新文档，如果不存在则创建
+
 collection.doc().set()
+
+**注意：**
+
+- 此方法会覆写已有字段，需注意与`update`表现不同，比如以下示例执行`set`之后`follow`字段会被删除
 
 ```js
 collection.doc('doc-id').set({
