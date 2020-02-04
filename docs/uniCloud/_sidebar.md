@@ -9,7 +9,8 @@
 * [云数据库](uniCloud/cf-database.md)
 * [云存储](uniCloud/storage.md)
 * [日志输出](uniCloud/cf-logger.md)
-* [FAQ](uniCloud/faq.md)
+* [示例及源码](uniCloud/resource.md)
+* [常见问题](uniCloud/faq.md)
 
 <!--  * [云存储](uniCloud/cf-storage.md) -->
 <!--* [身份认证](uniCloud/cf-authentication.md) -->
