@@ -695,6 +695,7 @@ uni ui组件是完全符合easycom规则的，在`HBuilderX 2.5.5`以上什么�
 - 在组件名完全一致的情况下，`easycom`引入的优先级低于手动引入（区分连字符形式与驼峰形式）
 - 考虑到编译速度，直接在`pages.json`内修改`easycom`不会触发重新编译，需要改动页面内容触发。
 - `easycom`只处理vue组件，不处理小程序组件
+- `easycom`同样也支持`nvue`页面
 
 # tabBar
 如果应用是一个多 tab 应用，可以通过 tabBar 配置项指定 tab 栏的表现，以及 tab 切换时显示的对应页。
