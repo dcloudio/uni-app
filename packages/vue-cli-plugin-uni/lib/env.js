@@ -42,7 +42,7 @@ if (
   process.env.UNI_PLATFORM === 'h5' &&
   process.env.NODE_ENV === 'production'
 ) {
-  console.warn(`当前项目使用了基于阿里云的uniCloud，为解决浏览器跨域问题，必须由阿里云配置安全域名。目前还暂无自主申请界面，请发邮件到service@dcloud.io申请，提供你的appid和计划发布的域名。DCloud同时提供了m3w.cn的二级域名供申请，如：hellounicloud.m3w.cn`)
+  console.warn(`当前项目使用了基于阿里云的uniCloud，为解决浏览器跨域问题，必须由阿里云配置安全域名。目前还暂无自主申请界面，请发邮件到service@dcloud.io申请，提供你的appid和计划发布的域名。DCloud同时提供了m3w.cn的二级域名供申请，如：hellounicloud.m3w.cn。如要申请二级域名需在邮件内注明要解析的ip地址。`)
 }
 
 if (process.env.UNI_PLATFORM === 'mp-360') {
