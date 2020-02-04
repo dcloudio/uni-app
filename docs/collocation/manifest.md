@@ -33,10 +33,12 @@
 
 |属性|类型|必填|默认值|说明|
 |--|--|--|--|--|
-|request|Number|否|6000|uni.request 的超时时间，单位毫秒。|
-|connectSocket|Number|否|6000|uni.connectSocket 的超时时间，单位毫秒。|
-|uploadFile|Number|否|6000|uni.uploadFile 的超时时间，单位毫秒。|
-|downloadFile|Number|否|6000|uni.downloadFile 的超时时间，单位毫秒。|
+|request|Number|否|60000|uni.request 的超时时间，单位毫秒。|
+|connectSocket|Number|否|60000|uni.connectSocket 的超时时间，单位毫秒。|
+|uploadFile|Number|否|60000|uni.uploadFile 的超时时间，单位毫秒。|
+|downloadFile|Number|否|60000|uni.downloadFile 的超时时间，单位毫秒。|
+
+自`HBuilderX 2.5.10`起，上述默认超时时间由6秒改为60秒，对齐微信小程序平台。
 
 ### app-plus
 
