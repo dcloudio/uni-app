@@ -164,7 +164,12 @@ function createApiCallback (apiName, params = {}, extras = {}) {
     } else if (res.errMsg.indexOf(':cancel') !== -1) {
       res.errMsg = apiName + ':cancel'
     } else if (res.errMsg.indexOf(':fail') !== -1) {
-      res.errMsg = apiName + ':fail' + res.errMsg.substr(res.errMsg.indexOf(' '))
+      let errDetail = ''
+      let spaceIndex = res.errMsg.indexOf(' ')
+      if (spaceIndex > -1) {
+        errDetail = res.errMsg.substr(spaceIndex)
+      }
+      res.errMsg = apiName + ':fail' + errDetail
     }
 
     const errMsg = res.errMsg
