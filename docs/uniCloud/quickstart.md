@@ -103,9 +103,13 @@ uniCloud.callFunction({
 |:-:				|:-:						|:-:																|
 |阿里云			|api.bspapp.com	|bsppub.oss-cn-shanghai.aliyuncs.com|
 
+小程序开发工具的真机预览功能，必须添加上述域名白名单，否则无法调用云函数。模拟器的PC端预览、真机调试不受此影响。
+
 ## H5中使用unicloud
 
-运行到H5端时，可以使用HBuilderX内置浏览器以解决跨域问题。如使用外部浏览器需安装跨域插件，详见：[https://ask.dcloud.net.cn/article/35267](https://ask.dcloud.net.cn/article/35267)。
+H5前端js访问云函数，涉及跨域问题。
+
+运行到H5端时，可以使用HBuilderX内置浏览器以解决跨域问题（mac版需2.5.10+）。如使用外部浏览器需安装跨域插件，详见：[https://ask.dcloud.net.cn/article/35267](https://ask.dcloud.net.cn/article/35267)。
 
 发行到H5端时，需要在uniCloud后台操作，绑定安全域名，否则会因为跨域问题而无法访问。在`cloudfunctions`目录右键打开uniCloud后台。
 
@@ -113,17 +117,15 @@ uniCloud.callFunction({
 
 ![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/uniCloud-add-domain.png)
 
+绑定安全域名后，开发者需要注意自行处理好域名的解析，和将发布生成的H5前端代码，部署到自己的web服务器。
+
+**m3w.cn二级域名申请**
+
+若为新冠抗疫需紧急上线H5，来不及注册域名，可申请使用DCloud提供的m3w.cn的二级域名，示例：[hellounicloud.m3w.cn](https://hellounicloud.m3w.cn) 。此时请使用你注册DCloud账户的邮箱向service@dcloud.io发邮件申请，提供你的appid、计划使用的二级域名名称、解析的ip地址、应用的使用用途。
 
 **Bug&Tips**
-- 微信小程序开发工具的真机预览功能，必须添加上述域名白名单，否则无法调用云函数。模拟器的PC端预览、真机调试不受此影响。
-- 云函数的初次冷启动较慢，表现为某个云函数第一次被调用时联网时间较长。第二次即可正常。并非每个手机用户都要经历一次冷启动，开发者运行过一次云函数，用户再连接时就不会经历冷启动。但长期不使用的云函数，会被回收资源。回收后再调用云函数，仍然会经历一次冷启动。
+- 阿里云的云函数的初次冷启动较慢，表现为某个云函数第一次被调用时联网时间较长，可能要5秒左右。第二次即可正常。并非每个手机用户都要经历一次冷启动，开发者运行过一次云函数，用户再连接时就不会经历冷启动。但长期不使用的云函数（15分钟），会被回收资源。回收后再调用云函数，仍然会经历一次冷启动。
 - web控制台网址：[http://unicloud.dcloud.net.cn](http://unicloud.dcloud.net.cn)，在HX中对云函数目录点右键，或者在帮助菜单中，均有入口链接。
-- Q: H5端出现跨域问题如何处理？ 
-
-  A: HBuilderX的内置浏览器不会有跨域问题（mac版需要HBuilderX 2.5.10+才解决了跨域）。外部浏览器需要安装跨域插件，可以参考 [Chrome 跨域插件免翻墙安装](https://ask.dcloud.net.cn/article/35267) 或 [firefox跨域插件](https://addons.mozilla.org/zh-CN/firefox/addon/access-control-allow-origin/)。
-- 发布H5时，为解决域名跨域问题，需配置发布域名。如serverless服务商为阿里云，请向service@dcloud.io申请，提供你的appid和域名。目前DCloud还提供了m3w.cn的二级域名供开发者快速上线使用，可以免去购买域名的流程和费用，直接开通xxx.m3w.cn的二级域名。示例：[hellounicloud.m3w.cn](https://hellounicloud.m3w.cn) （暂时m3w.cn的二级域名仅为新型冠状病毒抗疫项目使用，申请时需要额外提供项目说明和域名解析IP地址）
-
-<!-- 发行到H5端时，可以在uniCloud控制台`用户管理 - 登录设置`里配置`WEB安全域名`。 -->
 
 <!-- **注意**
 - 服务提供商为腾讯云时，需要开发者手动去管理控制台开启匿名登录[详情](/uniCloud/authentication#匿名登录) -->
