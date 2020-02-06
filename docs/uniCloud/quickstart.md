@@ -63,7 +63,9 @@ exports.main = async (event, context) => {
 ```
 
 ## 运行和调试云函数
-编写云函数后，在项目管理器里右键点击该云函数的目录，在弹出菜单中可选择“上传部署云函数”、“上传并运行测试云函数”。
+编写云函数后，在项目管理器里右键点击该云函数的目录，在弹出菜单中可选择“上传部署云函数”、“上传并运行测试云函数”。如下图所示：
+
+![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/uniCloud-run-function.png)
 
 前者仅完成部署，后者会在部署后同时运行，并打印日志出来。
 
