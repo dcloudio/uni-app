@@ -1,5 +1,35 @@
 # uni-app 更新日志
 ======================================
+#### 2.5.10.20200205-alpha
++ APP平台、H5平台 优化 默认请求超时时间（request、connectSocket、uploadFile、downloadFile）对齐微信小程序由6秒改为60秒
+
+#### 2.5.9.20200203-alpha
++ uniCloud 支持 H5平台的发布
++ uniCloud 支持设置协作者，多人使用相同AppID的项目，可绑定同一服务空间。方法：[开发者中心](https://dev.dcloud.net.cn) -> 选择应用 -> 项目成员管理。
++ uniCloud 修复 H5平台 main.js 内使用 uniCloud 报错的Bug
++ uniCloud 修复 App平台 callback 方式调用云函数报错的Bug
++ uniCloud 修复 上传 mp3 文件报错的Bug
++ uni-ui 新增 uni-combox 组合框组件
+
+#### 2.5.8.20200128-alpha
++ 【重要】uniCloud公测。serverless模式，全端云开发，js编写后端代码 [详情](https://uniapp.dcloud.io/uniCloud/README)
++ App-Android平台 修复 tabBar 设置 midButton 可能显示不全的Bug [详情](https://ask.dcloud.net.cn/question/87744)
++ App-iOS平台 修复 video 组件未播放时调用 seek 可能导致界面不正常的bug [详情](https://ask.dcloud.net.cn/question/80013)
++ App-iOS平台 修复 nvue input 组件 placeholder-style 和 placeholder-class 设置 fontSize 不生效的Bug
++ App-iOS平台 修复 页面中使用字体图标时可能无法正常显示的Bug
+
+#### 2.5.7.20200116-alpha
++ App平台 修复 v3版本 原生组件 fixed 定位无效的Bug [详情](https://ask.dcloud.net.cn/question/87475)
++ App平台 修复 v3版本 uni.createSelectorQuery 无法查询到 id 的Bug [详情](https://ask.dcloud.net.cn/question/87644)
++ App平台 修复 v3版本 非 tab 首页（nvue）显示 tabBar 的Bug [详情](https://ask.dcloud.net.cn/question/87536)
++ App平台 修复 v3版本 div、span 等 H5 组件样式不生效的Bug
++ App平台 修复 v3版本 videoContext.requestFullScreen 不生效的Bug [详情](https://ask.dcloud.net.cn/question/87202)
++ App平台 修复 v3版本 vue map 组件 API 不支持通过 $getAppMap 获取原生 map 对象的Bug
++ App-Android平台 修复 nvue map 组件 markers 更新频繁可能出现失败的Bug [详情](https://ask.dcloud.net.cn/question/87625)
++ H5平台 修复 启用摇树优化后 页面样式错乱的Bug [详情](https://ask.dcloud.net.cn/question/87495)
++ uni-ui 修复 v3版本 app-vue 页面中 swipe-action 组件无法滑动的Bug
+
+
 #### 2.5.6.20200113-alpha
 + App平台 修复 非v3编译模式 自定义组件失效的Bug [#1271](https://github.com/dcloudio/uni-app/issues/1271)
 + App平台 修复 v3版本 组件 dataset 属性可能导致运行报错的Bug
