@@ -42,7 +42,7 @@ if (
   process.env.UNI_PLATFORM === 'h5' &&
   process.env.NODE_ENV === 'production'
 ) {
-  console.warn(`发布H5，需要在uniCloud后台操作，绑定安全域名，否则会因为跨域问题而无法访问。教程参考：https://uniapp.dcloud.io/uniCloud/quickstart?id=H5%E4%B8%AD%E4%BD%BF%E7%94%A8unicloud`)
+  console.warn(`发布H5，需要在uniCloud后台操作，绑定安全域名，否则会因为跨域问题而无法访问。教程参考：https://uniapp.dcloud.io/uniCloud/quickstart?id=H5`)
 }
 
 if (process.env.UNI_PLATFORM === 'mp-360') {
