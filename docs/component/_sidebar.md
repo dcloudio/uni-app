@@ -41,6 +41,7 @@
   * [web-view](component/web-view.md)
 * 广告
   * [ad](component/ad.md)
+  * [激励视频广告](component/ad-rewarded-video.md)
 * 小程序开放能力组件
   * [official-account](component/official-account.md)
   * [open-data](component/open-data.md)
