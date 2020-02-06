@@ -103,15 +103,15 @@ uniCloud.callFunction({
 |:-:				|:-:						|:-:																|
 |阿里云			|api.bspapp.com	|bsppub.oss-cn-shanghai.aliyuncs.com|
 
-<!-- ## H5中使用unicloud
+## H5中使用unicloud
 
 运行到H5端时，可以使用HBuilderX内置浏览器以解决跨域问题。如使用外部浏览器需安装跨域插件，详见：[https://ask.dcloud.net.cn/article/35267](https://ask.dcloud.net.cn/article/35267)。
 
-发行到H5端时，需要在uniCloud后台操作，绑定安全域名，否则会因为跨域问题而无法访问。
+发行到H5端时，需要在uniCloud后台操作，绑定安全域名，否则会因为跨域问题而无法访问。在`cloudfunctions`目录右键打开uniCloud后台。
 
 **uniCloud后台配置安全域名：**
 
-![]() -->
+![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/uniCloud-add-domain.png)
 
 
 **Bug&Tips**
