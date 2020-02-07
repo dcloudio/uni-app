@@ -759,9 +759,9 @@ mp-qq只支持自定义组件模式，不存在usingComponents配置
 	// 微信小程序特有配置
 	"mp-weixin": {
 		"appid": "wx开头的微信小程序appid",
-    "uniStatistics": {
-        "enable": false//仅微信小程序关闭uni统计
-    },
+		"uniStatistics": {
+			"enable": false//仅微信小程序关闭uni统计
+		},
 	},
 	// 百度小程序特有配置
 	"mp-baidu": {
