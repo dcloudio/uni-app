@@ -1,4 +1,4 @@
-DCloud有420万开发者，[uni统计](https://tongji.dcloud.net.cn/)覆盖手机终端10亿，月活3.3亿。是开发者数量和案例最丰富的多端开发框架。
+DCloud有420万开发者，[uni统计](https://tongji.dcloud.net.cn/)覆盖手机终端10亿，月活4.5亿。是开发者数量和案例最丰富的多端开发框架。
 
 欢迎知名开发商提交案例或接入uni统计，[项目案例征集](https://github.com/dcloudio/uni-app/issues/6)提交。
 
@@ -150,9 +150,40 @@ DCloud有420万开发者，[uni统计](https://tongji.dcloud.net.cn/)覆盖手�
 #### 新冠抗疫专区
 疫情凶猛，要求各项工作火速完工，不管是几天建成一个医院，还是半天上线一个系统。
 
-在uni-app的支持下，开发者半天开发完了查疫情的小程序（微信小程序搜索“一起抗病毒”）、快速上线了湖北医疗物资需求信息平台（[http://onwh.51rry.com](http://onwh.51rry.com)）。
+在uni-app的支持下，开发者们快速上线各种应用，为抗疫工作作出大量贡献。
 
-很高兴我们做的一些事情，为大家争分夺秒的抢到了时间。也欢迎更多开发者为打赢这场没有硝烟的战争出力。
+**京东抗疫应急产品服务平台：**京东云开发了应急资源信息发布、安全出行查询通知等众多产品。[H5](http://yingji-h5.chanye.jdcloud.com/index.html#/)
+
+**福州官方新冠病毒疫情地图：** 每日病例、各区地图、增长曲线、人员回流趋势、新型肺炎小区查询、确诊患者同行查询。 [H5](https://minqing.fzzhengxinyun.com/#/)
+
+**来苏返苏人员健康状况主动申报告知系统：**江苏省疾控中心 [h5](http://jscdc.weiynet.cn/#/)，[宣传报道](http://www.jscdc.cn/zxzx/jkzt1/tfyjzt/xxgzbd/fkdt/202002/t20200205_67929.html)
+
+**湛江市政府口罩预约购买：**[微信H5](http://book.zjfy.zjzwy.com/h5/#/)
+
+**平安章贡：** 防控信息自助申报、密切接触者自助申报日报、湖北入赣人员健康登记、发热人员信息登记 [微信H5](https://www.zhzgq.com/zgqfy/test/h5/)
+
+**白银疫情防控实名登记系统：** [H5](http://zhby.by943.cn:39001/h5/#/)
+
+**兰州大学师生健康打卡系统：** [H5](http://202.201.13.178/dailyReportAll/)
+
+**重庆南岸区抗疫小程序：** 个人申报（可上传身份证照片自动识别，自动填写身份证等信息）、疫情监督（拍照涉鄂车辆，及时通知疾病预防控制中心） [H5](https://nanan.fanyu.morninfo.com/)
+
+**广西大学每日健康打卡：** [H5](http://yqcj1.gxu.edu.cn/#/)
+
+**一起抗病毒：**微信小程序搜索“一起抗病毒”
+
+**E起支援疫情物资供需平台：**[H5](http://onwh.51rry.com)
+
+DCloud牵头发起了新冠抗疫开源项目，包括四套系统：
+**出入登记系统：** 疫情期间严格执行出入登记。支持外来人员自助扫描填表，支持管理员查看、搜索和导出excel。可根据车次、航班自动识别是否乘坐过确诊人员乘坐的交通工具。开源项目地址：[出入人员登记系统](https://gitee.com/dcloud/xinguan2020-alien-registration)。demo体验：[https://wlry.m3w.cn/](https://wlry.m3w.cn/)。已经在几十家单位上线。
+
+**员工疫情筛查工具：**单位采集和统计员工状况。免部署的托管方式。体验地址：[hvlcpc.m3w.cn](https://hvlcpc.m3w.cn)。已经上线，6家单位使用中。开源项目地址：[https://gitee.com/hvlcode/hvl](https://gitee.com/hvlcode/hvl)
+
+**学生健康报备管理系统：**学生健康情况排查。分为学生、家长、老师，不同角色。避免微信接龙管理低效、避免公开文档表格泄露隐私。开源项目地址：[https://gitee.com/dcloud/xinguan2020-xuesheng](https://gitee.com/dcloud/xinguan2020-xuesheng)。demo体验地址：[xsjk.m3w.cn](https://xsjk.m3w.cn)
+
+**消毒登记管理：**电梯、门、车辆、卫生间等公共场所的消毒登记，消毒员在手机上选择位置、对消毒完毕的现场进行拍照。管理员汇总报表，监管工作及时和无遗漏。开源项目地址：[https://gitee.com/dcloud/xinguan2020-xiaodu](https://gitee.com/dcloud/xinguan2020-xiaodu).demo体验地址：[xiaodu.m3w.cn](https://xiaodu.m3w.cn)
+
+**物资管理：**抗疫物资的进销存，入库、出库登记管理。开源项目地址：[https://gitee.com/dcloud/material_management](https://gitee.com/dcloud/material_management)。demo体验地址：[wuzi.m3w.cn](https://wuzi.m3w.cn)
 
 #### 互联网公司
 
@@ -235,11 +266,15 @@ DCloud有420万开发者，[uni统计](https://tongji.dcloud.net.cn/)覆盖手�
 
 **晋享生活（5+App）：**山西农信App，[Android](https://android.myapp.com/myapp/detail.htm?apkName=com.ydnsh.buy.mobileBank)、[iOS](https://apps.apple.com/cn/app/id1147645808)
 
-**平安集团：**金管家AI祝福，[H5](https://laip-gbr-pai.pingan.com/static/goodStart/#/)
+**平安集团：**金管家多个页面，[H5](https://laip-gbr-pai.pingan.com/static/goodStart/#/)
 
 **拉卡拉收款宝：** App部分页面使用uni-app制作
 
 **长城人寿：**微信小程序搜索 “长城银保e站”、“长城人寿线上培训平台”等
+
+**华夏保险：** app部分页面使用uni-app制作
+
+**国泰君安：** app部分页面使用uni-app制作
 
 #### 政府
 
@@ -380,6 +415,8 @@ DCloud有420万开发者，[uni统计](https://tongji.dcloud.net.cn/)覆盖手�
 **太合音乐 秀动：**演出门票销售。[h5](https://wap.showstart.com/)
 
 **旺仔旺铺：**旺旺食品官方电商平台。[h5](https://srv.hotkidceo.com/store/)
+
+**贝因美：** [微信H5](http://mp.beingmate.com/h5/)
 
 **掌上春城：**昆明日报官媒。[h5](https://zsccv7.kmzscc.com/htmlv7/#/)
 
