@@ -109,17 +109,28 @@ uniCloud.callFunction({
 
 ## H5中使用unicloud
 
-H5前端js访问云函数，涉及跨域问题。
+H5前端js访问云函数，涉及跨域问题，导致前端js无法连接云函数服务器。处理方式如下：。
 
-运行到H5端时，可以使用HBuilderX内置浏览器以解决跨域问题（mac版需2.5.10+）。如使用外部浏览器需安装跨域插件，详见：[https://ask.dcloud.net.cn/article/35267](https://ask.dcloud.net.cn/article/35267)。
+- 运行到H5端时，使用HBuilderX内置浏览器，可以忽略跨域问题（mac版需2.5.10+）。
 
-发行到H5端时，需要在uniCloud后台操作，绑定安全域名，否则会因为跨域问题而无法访问。在`cloudfunctions`目录右键打开uniCloud后台。
+- 发行到H5端时，需要在uniCloud后台操作，绑定安全域名，否则会因为跨域问题而无法访问。（在`cloudfunctions`目录右键可打开uniCloud后台）
 
 **uniCloud后台配置安全域名：**
 
 ![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/uniCloud-add-domain.png)
 
-绑定安全域名后，开发者需要注意自行处理好域名的解析，和将发布生成的H5前端代码，部署到自己的web服务器。
+- 如果运行时，想使用外部浏览器运行，方案如下：
+  * 方式1：在uniCloud web控制台绑定测试期的地址为安全域名，如配置：localhost:8080、192.168.0.1:8080
+  * 方式2：在外部浏览器安装跨域插件，详见：[https://ask.dcloud.net.cn/article/35267](https://ask.dcloud.net.cn/article/35267)。要跨域的地址，详见上述文档中小程序配置安全域名章节。
+
+
+**H5前端页面部署问题**
+
+阿里云Serverless暂未支持H5前端页面部署，需开发者自行准备web服务器，在HBuilderX中点发行菜单，生成H5，将生成的前端文件部署在Nginx等web服务器下。
+
+然后自行注册或使用已有域名，在域名服务商处处理好域名的解析，指向你的Nginx等服务器ip。
+
+最后将该域名通过uniCloud后台配置为安全域名，即可在浏览器中访问。
 
 **m3w.cn二级域名申请**
 
