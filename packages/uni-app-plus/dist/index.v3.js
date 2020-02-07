@@ -213,6 +213,10 @@ var serviceContext = (function () {
     'setPageMeta'
   ];
 
+  const ad = [
+    'createRewardedVideoAd'
+  ];
+
   const apis = [
     ...base,
     ...network,
@@ -226,7 +230,8 @@ var serviceContext = (function () {
     ...event,
     ...file,
     ...canvas,
-    ...third
+    ...third,
+    ...ad
   ];
 
   var apis_1 = apis;
@@ -6483,7 +6488,7 @@ var serviceContext = (function () {
     }
     for (const name in formData) {
       if (formData.hasOwnProperty(name)) {
-        uploader.addData(name, formData[name]);
+        uploader.addData(name, String(formData[name]));
       }
     }
     if (files && files.length) {
@@ -8791,6 +8796,92 @@ var serviceContext = (function () {
       : requestComponentInfo(pageVm, queue, callback);
   }
 
+  const eventNames = [
+    'load',
+    'close',
+    'error'
+  ];
+
+  class RewardedVideoAd {
+    constructor (adpid) {
+      this._options = {
+        adpid: adpid
+      };
+
+      const _callbacks = this._callbacks = {};
+      eventNames.forEach(item => {
+        _callbacks[item] = [];
+        const name = item[0].toUpperCase() + item.substr(1);
+        this[`on${name}`] = function (callback) {
+          _callbacks[item].push(callback);
+        };
+      });
+
+      this._isLoad = false;
+      this._loadPromiseResolve = null;
+      this._loadPromisereject = null;
+      const rewardAd = this._rewardAd = plus.ad.createRewardedVideoAd(this._options);
+      rewardAd.onLoad((e) => {
+        this._isLoad = true;
+        this._dispatchEvent('load', {});
+        if(this._loadPromiseResolve != null) {
+          this._loadPromiseResolve();
+          this._loadPromiseResolve = null;
+        }
+      });
+      rewardAd.onClose((e) => {
+        this._dispatchEvent('close', {isEnded: e.isEnded});
+      });
+      rewardAd.onError((e) => {
+        const detail = {code: e.code, message: e.message};
+        this._dispatchEvent('error', detail);
+        if(this._loadPromisereject != null) {
+          this._loadPromisereject(detail);
+          this._loadPromisereject = null;
+        }
+      });
+      this._loadAd();
+    }
+    load () {
+      return new Promise((resolve, reject) => {
+        if(this._isLoad) {
+          resolve();
+          return
+        }
+        this._loadPromiseResolve = resolve;
+        this._loadPromisereject = reject;
+        this._loadAd();
+      })
+    }
+    show () {
+      return new Promise((resolve, reject) => {
+        if(this._isLoad) {
+          this._rewardAd.show();
+          resolve();
+        } else {
+          reject();
+        }
+      })
+    }
+    _loadAd () {
+      this._isLoad = false;
+      this._rewardAd.load();
+    }
+    _dispatchEvent(name, data) {
+      this._callbacks[name].forEach(callback => {
+        if (typeof callback === 'function') {
+          callback(data || {});
+        }
+      });
+    }
+  }
+
+  function createRewardedVideoAd ({
+    adpid = ''
+  } = {}) {
+    return new RewardedVideoAd(adpid)
+  }
+
 
 
   var api = /*#__PURE__*/Object.freeze({
@@ -8920,7 +9011,8 @@ var serviceContext = (function () {
     setTabBarStyle: setTabBarStyle$2,
     hideTabBar: hideTabBar$2,
     showTabBar: showTabBar$2,
-    requestComponentInfo: requestComponentInfo$2
+    requestComponentInfo: requestComponentInfo$2,
+    createRewardedVideoAd: createRewardedVideoAd
   });
 
   var platformApi = Object.assign(Object.create(null), api, eventApis);
@@ -8956,7 +9048,7 @@ var serviceContext = (function () {
     return page && page.$page.id
   }
 
-  const eventNames = [
+  const eventNames$1 = [
     'canplay',
     'play',
     'pause',
@@ -9021,7 +9113,7 @@ var serviceContext = (function () {
       this.id = id;
       this._callbacks = {};
       this._options = {};
-      eventNames.forEach(name => {
+      eventNames$1.forEach(name => {
         this._callbacks[name.toLowerCase()] = [];
       });
       props.forEach(item => {
@@ -9075,7 +9167,7 @@ var serviceContext = (function () {
     }
   }
 
-  eventNames.forEach(item => {
+  eventNames$1.forEach(item => {
     const name = item[0].toUpperCase() + item.substr(1);
     item = item.toLowerCase();
     InnerAudioContext.prototype[`on${name}`] = function (callback) {
@@ -9140,7 +9232,7 @@ var serviceContext = (function () {
     createInnerAudioContext: createInnerAudioContext
   });
 
-  const eventNames$1 = [
+  const eventNames$2 = [
     'canplay',
     'play',
     'pause',
@@ -9153,7 +9245,7 @@ var serviceContext = (function () {
     'waiting'
   ];
   const callbacks$4 = {};
-  eventNames$1.forEach(name => {
+  eventNames$2.forEach(name => {
     callbacks$4[name] = [];
   });
 
@@ -9267,7 +9359,7 @@ var serviceContext = (function () {
     }
   }
 
-  eventNames$1.forEach(item => {
+  eventNames$2.forEach(item => {
     const name = item[0].toUpperCase() + item.substr(1);
     BackgroundAudioManager.prototype[`on${name}`] = function (callback) {
       callbacks$4[item].push(callback);
@@ -10996,6 +11088,23 @@ var serviceContext = (function () {
   const STORAGE_DATA_TYPE = '__TYPE';
   const STORAGE_KEYS = 'uni-storage-keys';
 
+  function parseValue (value) {
+    const types = ['object', 'string', 'number', 'boolean', 'undefined'];
+    try {
+      const object = typeof value === 'string' ? JSON.parse(value) : value;
+      const type = object.type;
+      if (types.indexOf(type) >= 0) {
+        const keys = Object.keys(object);
+        // eslint-disable-next-line valid-typeof
+        if (keys.length === 2 && 'data' in object && typeof object.data === type) {
+          return object.data
+        } else if (keys.length === 1) {
+          return ''
+        }
+      }
+    } catch (error) { }
+  }
+
   function setStorage$1 ({
     key,
     data
@@ -11006,6 +11115,11 @@ var serviceContext = (function () {
       data: data
     });
     try {
+      if (type === 'string' && parseValue(value) !== undefined) {
+        localStorage.setItem(key + STORAGE_DATA_TYPE, type);
+      } else {
+        localStorage.removeItem(key + STORAGE_DATA_TYPE);
+      }
       localStorage.setItem(key, value);
     } catch (error) {
       return {
@@ -11035,22 +11149,26 @@ var serviceContext = (function () {
       }
     }
     let data = value;
-    try {
-      const object = JSON.parse(value);
-      // 兼容App端历史格式
-      const type = localStorage.getItem(key + STORAGE_DATA_TYPE);
-      if (!type) {
-        const keys = Object.keys(object);
-        if (keys.length === 2 && 'type' in object && 'data' in object) {
-          data = object.data;
-        } else if (keys.length === 1 && 'type' in object) {
-          data = '';
+    const typeOrigin = localStorage.getItem(key + STORAGE_DATA_TYPE) || '';
+    const type = typeOrigin.toLowerCase();
+    if (type !== 'string' || (typeOrigin === 'String' && value === '{"type":"undefined"}')) {
+      try {
+        // 兼容H5和V3初期历史格式
+        let object = JSON.parse(value);
+        const result = parseValue(object);
+        if (result !== undefined) {
+          data = result;
+        } else if (type) {
+          // 兼容App端历史格式
+          data = object;
+          if (typeof object === 'string') {
+            object = JSON.parse(object);
+            // eslint-disable-next-line valid-typeof
+            data = typeof object === (type === 'null' ? 'object' : type) ? object : data;
+          }
         }
-      } else if (type !== 'String') {
-        data = object;
-        data = typeof data === 'string' ? JSON.parse(data) : data;
-      }
-    } catch (error) { }
+      } catch (error) { }
+    }
     return {
       data,
       errMsg: 'getStorage:ok'
