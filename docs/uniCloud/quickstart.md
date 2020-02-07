@@ -65,13 +65,16 @@ exports.main = async (event, context) => {
 ## 运行和调试云函数
 编写云函数后，在项目管理器里右键点击该云函数的目录，在弹出菜单中可选择“上传部署云函数”、“上传并运行测试云函数”。如下图所示：
 
-![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/uniCloud-run-function.png)
 
 前者仅完成部署，后者会在部署后同时运行，并打印日志出来。
 
 在云函数编辑器里，按`Ctrl+r`运行快捷键，或点工具栏的运行，还会直接看到上传并运行云函数的快捷指令。`Ctrl+r`然后回车，即可高效的在控制台看到运行结果和日志输出。
 
 云函数目前无法断点debug，只能打印`console.log`看日志。
+
+![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/uniCloud-run-function.png)
+
+![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/uniCloud-run-function-2.png)
 
 ## 手机端调用云函数
 在uni-app的前端代码中，通过`uniCloud.callFunction`方法调用云函数。详见[callFunction文档](https://uniapp.dcloud.io/uniCloud/functions?id=callfunction)
@@ -95,7 +98,30 @@ uniCloud.callFunction({
 });
 ```
 
-- 在App真机运行模式下，在前端控制台也会打印云函数输出的`console.log`。
+## 手机端看日志
+
+在App真机运行模式下，在前端控制台也会打印云函数输出的`console.log`。非App端前端控制台不会打印日志，后续会在uniCloud web控制台提供日志查看功能
+
+**App端真机调试输出云函数日志，如下图所示**
+
+所执行云函数代码
+
+```
+'use strict';
+exports.main = async (event, context) => {
+	console.log('------------');
+	console.log('云函数日志输出');
+	console.log('------------');
+	return {
+		action: 'log demo'
+	}
+};
+```
+
+日志输出
+
+![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/uniCloud-function-log.png)
+
 
 ## 小程序中使用uniCloud
 
