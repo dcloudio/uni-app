@@ -12,6 +12,7 @@
 |transformPx|Boolean|true|是否转换项目的px，为true时将px转换为rpx，为false时，px为传统的实际像素||
 |networkTimeout|Object||网络超时时间，[详见](/collocation/manifest?id=networktimeout)||
 |debug|Boolean|false|是否开启 debug 模式，开启后调试信息以 ``info`` 的形式给出，其信息有页面的注册，页面路由，数据更新，事件触发等||
+|uniStatistics|Object||[全平台是否开启 uni 统计](/collocation/manifest?id=uniStatistics)||
 |app-plus|Object||[App 特有配置](/collocation/manifest?id=app-plus)||
 |h5|Object||[H5 特有配置](/collocation/manifest?id=h5)||
 |quickapp|Object||快应用特有配置，即将支持||
@@ -40,6 +41,13 @@
 
 自`HBuilderX 2.5.10`起，上述默认超时时间由6秒改为60秒，对齐微信小程序平台。
 
+
+### uniStatistics
+uni 统计配置项
+|属性|类型|必填|默认值|说明|
+|--|--|--|--|--|
+|enable|Boolean|是|true|是否开启uni统计|
+
 ### app-plus
 
 |属性|类型|说明|最低版本|
@@ -53,6 +61,7 @@
 |compilerVersion|Number|编译器版本，可选值：2、3 默认 2 [详见](https://ask.dcloud.net.cn/article/36599)|HBuilderX alpha 2.4.4+或HBuilderX 2.5.0+|
 |nvueLaunchMode|Number|Nvue 首页启动模式，在 compilerVersion 值为 3 时生效，可选值：normal、fast 默认 normal（HBuilderX alpha 2.4.4-2.4.9 固定为 fast） [详见](https://ask.dcloud.net.cn/article/36749)|2.5.0+|
 |nvue|Object|nvue 页面布局初始配置，[详见](/collocation/manifest?id=nvue)|2.0.3+|
+|uniStatistics|Object|[App 是否开启 uni 统计，配置方法同全局配置](/collocation/manifest?id=uniStatistics)||
 PS：这里只列出了核心部分，更多内容请参考 [完整的 manifest.json](/collocation/manifest?id=完整-manifestjson)。
 
 **Tips**
@@ -150,7 +159,7 @@ splash（启动封面）是App必然存在的、不可取消的。
 |publicPath|String|引用资源的地址前缀，仅发布时生效。参考：[publicPath](collocation/manifest?id=publicPath)|
 |sdkConfigs|String|SDK配置，例如地图...  参考：[sdkConfigs](collocation/manifest?id=h5sdkconfig)|
 |optimization|Object|打包优化配置（HBuilderX 2.1.5 以上支持），参考[optimization](collocation/manifest?id=optimization)|
-
+|uniStatistics|Object|[H5 是否开启 uni 统计，配置方法同全局配置](/collocation/manifest?id=uniStatistics)||
 
 #### 自定义模板@h5-template
 需要使用自定义模板的场景，通常有以下几种情况：
@@ -306,6 +315,7 @@ Tips：关于摇树优化（treeShaking）原理及优化结果，参考：[http
 |workers|String|Worker 代码放置的目录。 [详见](https://developers.weixin.qq.com/miniprogram/dev/framework/workers.html)|
 |optimization|Object| 对微信小程序的优化配置 |
 |cloudfunctionRoot|String| 配置云开发目录，参考[setting](/collocation/manifest?id=cloudfunctionRoot)|
+|uniStatistics|Object|[微信小程序是否开启 uni 统计，配置方法同全局配置](/collocation/manifest?id=uniStatistics)||
 
 #### setting
 
@@ -364,7 +374,8 @@ Tips：关于摇树优化（treeShaking）原理及优化结果，参考：[http
 |component2						|Boolean| 是否启用 `component2` 编译，默认为false，[查看详情](https://docs.alipay.com/mini/framework/custom-component-overview)	|
 |axmlStrictCheck			|Boolean| 是否启用 `axml` 严格语法检查，默认为false																																							|
 |enableParallelLoader	|Boolean| 是否启用多进程编译，默认为false																																												|
-|enableDistFileMinify	|Boolean| 是否压缩编译产物（仅在真机预览/真机调试时生效），默认为false																													|
+|enableDistFileMinify	|Boolean| 是否压缩编译产物（仅在真机预览/真机调试时生效），默认为false|
+|uniStatistics|Object|[支付宝小程序是否开启 uni 统计，配置方法同全局配置](/collocation/manifest?id=uniStatistics)|
 
 **注意**
 
@@ -379,6 +390,7 @@ Tips：关于摇树优化（treeShaking）原理及优化结果，参考：[http
 |requiredBackgroundModes|Array|小程序需要在后台使用的能力，目前支持背景音频播放，"requiredBackgroundModes": ["audio"]，[详见](https://smartprogram.baidu.com/docs/develop/tutorial/process/#requiredBackgroundModes)	|
 |prefetches|Array|预请求的所有url的列表，[详见](https://smartprogram.baidu.com/docs/develop/tutorial/process/#prefetches)																|
 |optimization|Object| 对百度小程序的优化配置 |
+|uniStatistics|Object|[百度小程序是否开启 uni 统计，配置方法同全局配置](/collocation/manifest?id=uniStatistics)|
 
 #### optimization
 
@@ -396,6 +408,7 @@ Tips：关于摇树优化（treeShaking）原理及优化结果，参考：[http
 |setting|Object|头条小程序项目设置，参考[头条小程序项目设置](/collocation/manifest?id=mp-toutiao-setting)|
 |usingComponents|Boolean| 是否启用自定义组件模式，`v2.0+`，默认为false，[编译模式区别详情](https://ask.dcloud.net.cn/article/35843)|
 |navigateToMiniProgramAppIdList	|Array|需要跳转的小程序列表，[详见](https://developer.toutiao.com/dev/cn/mini-app/develop/framework/basic-reference/general-configuration)	|
+|uniStatistics|Object|[头条小程序是否开启 uni 统计，配置方法同全局配置](/collocation/manifest?id=uniStatistics)|
 
 #### 头条小程序项目设置@mp-toutiao-setting
 
@@ -417,6 +430,7 @@ Tips：关于摇树优化（treeShaking）原理及优化结果，参考：[http
 |workers						|String			|Worker 代码放置的目录。 [详见](https://q.qq.com/wiki/develop/miniprogram/frame/dispose.html#workers)																					|
 |groupIdList					|String Array	|需要打开群资料卡的群号列表，详见button的open-type																																		|
 |optimization|Object| 对QQ小程序的优化配置 |
+|uniStatistics|Object|[QQ小程序是否开启 uni 统计，配置方法同全局配置](/collocation/manifest?id=uniStatistics)|
 
 #### optimization
 
@@ -459,6 +473,10 @@ mp-qq只支持自定义组件模式，不存在usingComponents配置
 	"description": "应用描述",
 	"versionName": "1.0.0",
 	"versionCode": "100",
+  // 是否全局关闭uni统计
+  "uniStatistics": {  
+      "enable": false//全局关闭  
+  },
 	// app-plus 节点是 App 特有配置，推荐在 HBuilderX 的 manifest.json 可视化界面操作完成配置。
 	"app-plus": {
 		// HBuilderX->manifest.json->模块权限配置
@@ -738,7 +756,10 @@ mp-qq只支持自定义组件模式，不存在usingComponents配置
 	"quickapp": {},
 	// 微信小程序特有配置
 	"mp-weixin": {
-		"appid": "wx开头的微信小程序appid"
+		"appid": "wx开头的微信小程序appid",
+    "uniStatistics": {
+        "enable": false//仅微信小程序关闭uni统计
+    },
 	},
 	// 百度小程序特有配置
 	"mp-baidu": {
