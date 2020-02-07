@@ -12,7 +12,7 @@
 |transformPx|Boolean|true|是否转换项目的px，为true时将px转换为rpx，为false时，px为传统的实际像素||
 |networkTimeout|Object||网络超时时间，[详见](/collocation/manifest?id=networktimeout)||
 |debug|Boolean|false|是否开启 debug 模式，开启后调试信息以 ``info`` 的形式给出，其信息有页面的注册，页面路由，数据更新，事件触发等||
-|uniStatistics|Object||[全平台是否开启 uni 统计](/collocation/manifest?id=uniStatistics)||
+|uniStatistics|Object||[是否开启 uni 统计，全局配置](/collocation/manifest?id=uniStatistics)|2.2.3+|
 |app-plus|Object||[App 特有配置](/collocation/manifest?id=app-plus)||
 |h5|Object||[H5 特有配置](/collocation/manifest?id=h5)||
 |quickapp|Object||快应用特有配置，即将支持||
@@ -44,6 +44,7 @@
 
 ### uniStatistics
 uni 统计配置项
+
 |属性|类型|必填|默认值|说明|
 |--|--|--|--|--|
 |enable|Boolean|是|true|是否开启uni统计|
@@ -61,7 +62,8 @@ uni 统计配置项
 |compilerVersion|Number|编译器版本，可选值：2、3 默认 2 [详见](https://ask.dcloud.net.cn/article/36599)|HBuilderX alpha 2.4.4+或HBuilderX 2.5.0+|
 |nvueLaunchMode|Number|Nvue 首页启动模式，在 compilerVersion 值为 3 时生效，可选值：normal、fast 默认 normal（HBuilderX alpha 2.4.4-2.4.9 固定为 fast） [详见](https://ask.dcloud.net.cn/article/36749)|2.5.0+|
 |nvue|Object|nvue 页面布局初始配置，[详见](/collocation/manifest?id=nvue)|2.0.3+|
-|uniStatistics|Object|[App 是否开启 uni 统计，配置方法同全局配置](/collocation/manifest?id=uniStatistics)||
+|uniStatistics|Object|[App 是否开启 uni 统计，配置方法同全局配置](/collocation/manifest?id=uniStatistics)|2.2.3+|
+
 PS：这里只列出了核心部分，更多内容请参考 [完整的 manifest.json](/collocation/manifest?id=完整-manifestjson)。
 
 **Tips**
