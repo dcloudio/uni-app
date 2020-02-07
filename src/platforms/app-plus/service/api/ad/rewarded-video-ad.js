@@ -38,11 +38,12 @@ class RewardedVideoAd {
       this._dispatchEvent('close', { isEnded: e.isEnded })
     })
     rewardAd.onError((e) => {
-      const { code } = e
+      const { code, message } = e
+      const data = { code: code, errMsg: message }
       this._adError = (code && code < 5005)
-      this._dispatchEvent('error', e)
+      this._dispatchEvent('error', data)
       if (code === 5005 && this._loadPromiseReject != null) {
-        this._loadPromiseReject(e)
+        this._loadPromiseReject(data)
         this._loadPromiseReject = null
       }
     })
