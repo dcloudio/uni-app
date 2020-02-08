@@ -76,5 +76,11 @@ describe('codegen', () => {
       `with(this){return _c('v-uni-view',{attrs:{"data-a":"1","data-b":_$g(0,'a-data-b'),"_i":0}})}`
     )
   })
+  it('generate v-if directive', () => {
+    assertCodegen(
+      '<text v-if="a">1</text><text v-else-if="b">2</text><text v-else-if="c">3</text><text v-else>d</text>',
+      `with(this){return (_$g(0,'i'))?_c('v-uni-text',{attrs:{"_i":0}},[_v("1")]):(_$g(1,'e'))?_c('v-uni-text',{attrs:{"_i":1}},[_v("2")]):(_$g(2,'e'))?_c('v-uni-text',{attrs:{"_i":2}},[_v("3")]):_c('v-uni-text',{attrs:{"_i":3}},[_v("d")])}`
+    )
+  })
 })
 /* eslint-enable quotes */
