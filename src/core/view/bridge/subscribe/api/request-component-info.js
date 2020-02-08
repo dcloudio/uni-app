@@ -101,7 +101,7 @@ function getNodesInfo (pageVm, component, selector, single, fields) {
       })
     }
     if ($el.matches(selector)) {
-      infos.unshift($el)
+      infos.unshift(getNodeInfo($el, fields))
     }
     return infos
   }
