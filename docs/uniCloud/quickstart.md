@@ -1,6 +1,6 @@
 ## 创建uniCloud项目
   
-  - 在`HBuilderX`创建uni-app项目时勾选`启用uniCloud`
+  - 在 [HBuilderX 2.5.8](https://www.dcloud.io/hbuilderx.html) 新建项目，选择uni-app项目，并勾选`启用uniCloud`
   - 在右侧选择服务供应商（目前仅支持阿里云，春节后会开放腾讯云）
 
 ![创建uniCloud项目](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/create-project.png)
@@ -68,7 +68,7 @@ exports.main = async (event, context) => {
 
 前者仅完成部署，后者会在部署后同时运行，并打印日志出来。
 
-在云函数编辑器里，按`Ctrl+r`运行快捷键，或点工具栏的运行，还会直接看到上传并运行云函数的快捷指令。`Ctrl+r`然后回车，即可高效的在控制台看到运行结果和日志输出。
+在云函数编辑器里，按`Ctrl+r`运行快捷键，或点工具栏的运行，还会直接看到上传并运行云函数的快捷指令。`Ctrl+r`然后回车或选`0`，即可高效的在控制台看到运行结果和日志输出。
 
 云函数目前无法断点debug，只能打印`console.log`看日志。
 
@@ -100,7 +100,7 @@ uniCloud.callFunction({
 
 ## 手机端看日志
 
-在App真机运行模式下，在前端控制台也会打印云函数输出的`console.log`。非App端前端控制台不会打印日志，后续会在uniCloud web控制台提供日志查看功能。
+uni-app运行在各端，均可查看手机端日志。额外的，在App真机运行模式下，在HBuilderX的自带控制台也会打印云函数输出的`console.log`。
 
 **App端真机调试输出云函数日志，如下图所示**
 
@@ -122,6 +122,10 @@ exports.main = async (event, context) => {
 
 ![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/uniCloud-function-log.png)
 
+- 运行到H5，需要在浏览器的控制台查看日志，但仅包含前端日志，不包含云函数内部的console.log。
+- 运行到小程序，需要在小程序开发工具的控制台查看日志，但仅包含前端日志，不包含云函数内部的console.log。
+
+目前uniCloud的web控制台还不能查看运行日志，后续会提供此功能。
 
 ## 小程序中使用uniCloud
 
