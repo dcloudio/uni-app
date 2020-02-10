@@ -100,7 +100,7 @@ uniCloud.callFunction({
 
 ## 手机端看日志
 
-在App真机运行模式下，在前端控制台也会打印云函数输出的`console.log`。非App端前端控制台不会打印日志，后续会在uniCloud web控制台提供日志查看功能
+在App真机运行模式下，在前端控制台也会打印云函数输出的`console.log`。非App端前端控制台不会打印日志，后续会在uniCloud web控制台提供日志查看功能。
 
 **App端真机调试输出云函数日志，如下图所示**
 
@@ -161,6 +161,33 @@ H5前端js访问云函数，涉及跨域问题，导致前端js无法连接云�
 **m3w.cn二级域名申请**
 
 若为新冠抗疫需紧急上线H5，来不及注册域名，可申请使用DCloud提供的m3w.cn的二级域名，示例：[hellounicloud.m3w.cn](https://hellounicloud.m3w.cn) 。此时请使用你注册DCloud账户的邮箱向service@dcloud.io发邮件申请，提供你的appid、计划使用的二级域名名称、解析的ip地址、应用的使用用途。
+
+<!-- ## 使用db_init.json初始化项目数据库
+
+`uniCloud`提供了`db_init.json`来方便开发者快速进行数据库的初始化操作。将`db_init.json`放在对应的`cloudfucntions`目录下即可在`db_init.json`上右键初始化数据库。
+
+**db_init.json形式如下**
+
+```
+{
+    "my_plugin_user": { // 集合
+        "data": [{ // 数据
+            "_id": "da51bd8c5e37ac14099ea43a2505a1a5",
+            "name": "tom"
+        }],
+        "index": [{ // 索引
+            "IndexName": "index_a", // 索引名称
+            "MgoKeySchema": { // 索引规则
+                "MgoIndexKeys": [{
+                    "Name": "a_2d", // 索引字段
+                    "Direction": "2d" // 索引方向，1：ASC，-1：DESC，2d：双向，如果有 2d，2d 必须放最前面
+                }],
+                "MgoIsUnique": false // 索引是否唯一
+            }
+        }]
+    }
+}
+``` -->
 
 **Bug&Tips**
 - 阿里云的云函数的初次冷启动较慢，表现为某个云函数第一次被调用时联网时间较长，可能要5秒左右。第二次即可正常。并非每个手机用户都要经历一次冷启动，开发者运行过一次云函数，用户再连接时就不会经历冷启动。但长期不使用的云函数（15分钟），会被回收资源。回收后再调用云函数，仍然会经历一次冷启动。这个问题阿里云正在优化，会提供更好的方案。
