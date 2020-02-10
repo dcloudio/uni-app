@@ -671,7 +671,7 @@ h5 平台下拉刷新动画，只有 circle 类型。
 
 uni ui组件是完全符合easycom规则的，在`HBuilderX 2.5.5`以上什么都不用配，可直接使用uni ui的组件。在`HBuilderX`中新建项目选择`uni ui项目`，可直接使用所有uni ui组件。
 
-`easycom`是自动开启的，可以在`pages.json`的`easycom`节点进行个性化设置，如关闭自动扫描，或自定义扫描匹配组件的策略。
+`easycom`是自动开启的，不需要手动开启，有需求时可以在`pages.json`的`easycom`节点进行个性化设置，如关闭自动扫描，或自定义扫描匹配组件的策略。
 
 |属性			|类型		|默认值	|描述																																											|
 |:-				|:-			|:-			|:-																																												|
@@ -694,8 +694,8 @@ uni ui组件是完全符合easycom规则的，在`HBuilderX 2.5.5`以上什么�
 - `easycom`方式引入组件不是全局引入，而是局部引入。例如在H5端只有加载相应页面才会加载使用的组件
 - 在组件名完全一致的情况下，`easycom`引入的优先级低于手动引入（区分连字符形式与驼峰形式）
 - 考虑到编译速度，直接在`pages.json`内修改`easycom`不会触发重新编译，需要改动页面内容触发。
-- `easycom`只处理vue组件，不处理小程序组件
-- `easycom`同样也支持`nvue`页面
+- `easycom`只处理vue组件，不处理小程序组件。暂不处理后缀为.nvue的组件，建议参考uni ui，使用vue后缀，同时兼容nvue页面。
+- `nvue`页面里的`.vue`后缀的组件，同样支持`easycom`
 
 # tabBar
 如果应用是一个多 tab 应用，可以通过 tabBar 配置项指定 tab 栏的表现，以及 tab 切换时显示的对应页。
