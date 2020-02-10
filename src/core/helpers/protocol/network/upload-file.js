@@ -7,14 +7,12 @@ export const uploadFile = {
   },
   filePath: {
     type: String,
-    required: true,
     validator (value, params) {
       params.type = getRealPath(value)
     }
   },
   name: {
-    type: String,
-    required: true
+    type: String
   },
   header: {
     type: Object,
