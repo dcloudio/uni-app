@@ -1,6 +1,6 @@
 ## 创建uniCloud项目
   
-  - 在 [HBuilderX 2.5.8](https://www.dcloud.io/hbuilderx.html) 新建项目，选择uni-app项目，并勾选`启用uniCloud`
+  - 在 [HBuilderX 2.5.8+](https://www.dcloud.io/hbuilderx.html) 新建项目，选择uni-app项目，并勾选`启用uniCloud`
   - 在右侧选择服务供应商（目前仅支持阿里云，春节后会开放腾讯云）
 
 ![创建uniCloud项目](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/create-project.png)
@@ -179,21 +179,13 @@ H5前端js访问云函数，涉及跨域问题，导致前端js无法连接云�
 
 ```
 {
-    "my_plugin_user": { // 集合
-        "data": [{ // 数据
-            "_id": "da51bd8c5e37ac14099ea43a2505a1a5",
-            "name": "tom"
-        }],
-        "index": [{ // 索引
-            "IndexName": "index_a", // 索引名称
-            "MgoKeySchema": { // 索引规则
-                "MgoIndexKeys": [{
-                    "Name": "a_2d", // 索引字段
-                    "Direction": "2d" // 索引方向，1：ASC-升序，-1：DESC-降序，2d：双向，如果有 2d，2d 必须放最前面
-                }],
-                "MgoIsUnique": false // 索引是否唯一
-            }
-        }]
+    "collection_test": { // 集合（表名）
+        "data": [ // 数据
+           {
+                "_id": "da51bd8c5e37ac14099ea43a2505a1a5",
+               "name": "tom"
+           }
+        ]
     }
 }
 ```
