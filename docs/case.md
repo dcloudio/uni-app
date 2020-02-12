@@ -2,6 +2,10 @@ DCloud有420万开发者，[uni统计](https://tongji.dcloud.net.cn/)覆盖手�
 
 欢迎知名开发商提交案例或接入uni统计，[项目案例征集](https://github.com/dcloudio/uni-app/issues/6)提交。
 
+### 新冠抗疫专区案例
+
+uni-app助力数百家单位快速上线抗疫系统，开源众多项目，详见专题：[xinguan2020.dcloud.net.cn](https://dcloud.io/ncp.html)
+
 ### 官方示例
 
 <a href="//m3w.cn/uniapp" target="_blank" class="clear-style"><b>Hello uni-app：</b></a>演示uni-app框架的组件、接口、模板。本项目源码可在HBuilderX中新建项目获得，也可从[github](https://github.com/dcloudio/hello-uniapp)上获取。
@@ -147,44 +151,6 @@ DCloud有420万开发者，[uni统计](https://tongji.dcloud.net.cn/)覆盖手�
 
 **极志愿：**专业高考志愿填报。**<span style="color:#42b983">多端获客典型案例，1个月获得400万用户</span>**，[详见报道](https://mp.weixin.qq.com/s?__biz=MzU3NTU5NDc0NA==&mid=2247491214&idx=1&sn=7e334d079146d9e31cea407f45bd8624)。体验方式：[App、微信小程序、百度小程序、H5 官网地址](https://www.jizhy.com/home/)
 
-#### 新冠抗疫专区
-疫情凶猛，要求各项工作火速完工，不管是几天建成一个医院，还是半天上线一个系统。
-
-在uni-app的支持下，开发者们快速上线各种应用，为抗疫工作作出大量贡献。
-
-**京东抗疫应急产品服务平台：**京东云开发了应急资源信息发布、安全出行查询通知等众多产品。[H5](http://yingji-h5.chanye.jdcloud.com/index.html#/)
-
-**福州官方新冠病毒疫情地图：** 每日病例、各区地图、增长曲线、人员回流趋势、新型肺炎小区查询、确诊患者同行查询。 [H5](https://minqing.fzzhengxinyun.com/#/)
-
-**来苏返苏人员健康状况主动申报告知系统：**江苏省疾控中心 [h5](http://jscdc.weiynet.cn/#/)，[宣传报道](http://www.jscdc.cn/zxzx/jkzt1/tfyjzt/xxgzbd/fkdt/202002/t20200205_67929.html)
-
-**湛江市政府口罩预约购买：**[微信H5](http://book.zjfy.zjzwy.com/h5/#/)
-
-**平安章贡：** 防控信息自助申报、密切接触者自助申报日报、湖北入赣人员健康登记、发热人员信息登记 [微信H5](https://www.zhzgq.com/zgqfy/test/h5/)
-
-**白银疫情防控实名登记系统：** [H5](http://zhby.by943.cn:39001/h5/#/)
-
-**兰州大学师生健康打卡系统：** [H5](http://202.201.13.178/dailyReportAll/)
-
-**重庆南岸区抗疫小程序：** 个人申报（可上传身份证照片自动识别，自动填写身份证等信息）、疫情监督（拍照涉鄂车辆，及时通知疾病预防控制中心） [H5](https://nanan.fanyu.morninfo.com/)
-
-**广西大学每日健康打卡：** [H5](http://yqcj1.gxu.edu.cn/#/)
-
-**一起抗病毒：**微信小程序搜索“一起抗病毒”
-
-**E起支援疫情物资供需平台：**[H5](http://onwh.51rry.com)
-
-DCloud牵头发起了新冠抗疫开源项目，包括四套系统：
-**出入登记系统：** 疫情期间严格执行出入登记。支持外来人员自助扫描填表，支持管理员查看、搜索和导出excel。可根据车次、航班自动识别是否乘坐过确诊人员乘坐的交通工具。开源项目地址：[出入人员登记系统](https://gitee.com/dcloud/xinguan2020-alien-registration)。demo体验：[https://wlry.m3w.cn/](https://wlry.m3w.cn/)。已经在几十家单位上线。
-
-**员工疫情筛查工具：**单位采集和统计员工状况。免部署的托管方式。体验地址：[hvlcpc.m3w.cn](https://hvlcpc.m3w.cn)。已经上线，6家单位使用中。开源项目地址：[https://gitee.com/hvlcode/hvl](https://gitee.com/hvlcode/hvl)
-
-**学生健康报备管理系统：**学生健康情况排查。分为学生、家长、老师，不同角色。避免微信接龙管理低效、避免公开文档表格泄露隐私。开源项目地址：[https://gitee.com/dcloud/xinguan2020-xuesheng](https://gitee.com/dcloud/xinguan2020-xuesheng)。demo体验地址：[xsjk.m3w.cn](https://xsjk.m3w.cn)
-
-**消毒登记管理：**电梯、门、车辆、卫生间等公共场所的消毒登记，消毒员在手机上选择位置、对消毒完毕的现场进行拍照。管理员汇总报表，监管工作及时和无遗漏。开源项目地址：[https://gitee.com/dcloud/xinguan2020-xiaodu](https://gitee.com/dcloud/xinguan2020-xiaodu).demo体验地址：[xiaodu.m3w.cn](https://xiaodu.m3w.cn)
-
-**物资管理：**抗疫物资的进销存，入库、出库登记管理。开源项目地址：[https://gitee.com/dcloud/material_management](https://gitee.com/dcloud/material_management)。demo体验地址：[wuzi.m3w.cn](https://wuzi.m3w.cn)
-
 #### 互联网公司
 
 **腾讯：** 微信小程序搜索“腾讯全民模拟炒股大赛”
@@ -265,6 +231,8 @@ DCloud牵头发起了新冠抗疫开源项目，包括四套系统：
 **包商银行（5+App）：**[Android](https://android.myapp.com/myapp/detail.htm?apkName=cn.com.bsb.mbank)、[iOS](https://itunes.apple.com/cn/app/bao-shang-yin-xing/id875246323?mt=8)
 
 **晋享生活（5+App）：**山西农信App，[Android](https://android.myapp.com/myapp/detail.htm?apkName=com.ydnsh.buy.mobileBank)、[iOS](https://apps.apple.com/cn/app/id1147645808)
+
+**苍南农商银行** 丰收联盟。[H5](https://wxmapp.zjcnbank.com/)
 
 **平安集团：**金管家多个页面，[H5](https://laip-gbr-pai.pingan.com/static/goodStart/#/)
 
