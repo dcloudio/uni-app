@@ -1,5 +1,10 @@
 # uni-app 更新日志
 ======================================
+#### 2.5.11.20200212-alpha
++ App平台 新增 API uni.createRewardedVideoAd，激励视频广告 [详情](https://uniapp.dcloud.io/component/ad-rewarded-video)
++ hello uni-app 新增 ad 组件示例
++ hello uni-app 新增 激励视频广告 API示例
+
 #### 2.5.10.20200205-alpha
 + APP平台、H5平台 优化 默认请求超时时间（request、connectSocket、uploadFile、downloadFile）对齐微信小程序由6秒改为60秒
 
