@@ -60,6 +60,9 @@ function _switchTab ({
   // 查找当前 tabBarPage，且设置 visible
   getCurrentPages(true).forEach(page => {
     if (('/' + page.route) === path) {
+      if (!page.$page.meta.visible) {
+        page.$vm.__call_hook('onShow')
+      }
       page.$page.meta.visible = true
       tabBarPage = page
     } else {
@@ -70,7 +73,6 @@ function _switchTab ({
   })
 
   if (tabBarPage) {
-    tabBarPage.$vm.__call_hook('onShow')
     tabBarPage.$getAppWebview().show('none')
   } else {
     return showWebview(registerPage({
