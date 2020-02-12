@@ -69,3 +69,5 @@ export {
 export * from './ui/tab-bar'
 
 export * from './ui/request-component-info'
+
+export * from './ad/rewarded-video-ad'

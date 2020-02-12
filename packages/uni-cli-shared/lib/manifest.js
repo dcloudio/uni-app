@@ -18,10 +18,10 @@ const defaultAsync = {
 }
 
 const networkTimeout = {
-  request: 6000,
-  connectSocket: 6000,
-  uploadFile: 6000,
-  downloadFile: 6000
+  request: 60000,
+  connectSocket: 60000,
+  uploadFile: 60000,
+  downloadFile: 60000
 }
 
 function getManifestJson () {

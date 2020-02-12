@@ -206,4 +206,10 @@
     "uni.base64ToArrayBuffer": true,
     "uni.arrayBufferToBase64": true
   }
+}, {
+  "name": "ad",
+  "title": "广告",
+  "apiList": {
+    "uni.createRewardedVideoAd": true
+  }
 }]

@@ -3,6 +3,7 @@ const path = require('path')
 const mkdirp = require('mkdirp')
 const loaderUtils = require('loader-utils')
 
+process.UNI_CLOUD = false
 process.UNI_CLOUD_ALIYUN = false
 process.env.UNI_CLOUD_PROVIDER = JSON.stringify({})
 
@@ -10,9 +11,11 @@ if (process.env.UNI_CLOUD_SPACES) {
   try {
     const spaces = JSON.parse(process.env.UNI_CLOUD_SPACES)
     if (Array.isArray(spaces)) {
+      process.UNI_CLOUD = spaces.length > 0
       process.UNI_CLOUD_ALIYUN = !!spaces.find(space => space.clientSecret)
       if (spaces.length === 1) {
         const space = spaces[0]
+        console.log(`本项目的uniCloud使用的默认服务空间spaceId为：${space.id}`)
         if (space.clientSecret) {
           process.env.UNI_CLOUD_PROVIDER = JSON.stringify({
             provider: 'aliyun',
@@ -35,12 +38,11 @@ if (process.env.UNI_CLOUD_SPACES) {
 
 // h5 暂不支持阿里云服务空间
 if (
-  process.UNI_CLOUD_ALIYUN &&
+  process.UNI_CLOUD &&
   process.env.UNI_PLATFORM === 'h5' &&
   process.env.NODE_ENV === 'production'
 ) {
-  console.error(`当前项目使用了阿里云服务空间，暂不支持发行到H5平台`)
-  process.exit(0)
+  console.warn(`发布H5，需要在uniCloud后台操作，绑定安全域名，否则会因为跨域问题而无法访问。教程参考：https://uniapp.dcloud.io/uniCloud/quickstart-H5`)
 }
 
 if (process.env.UNI_PLATFORM === 'mp-360') {

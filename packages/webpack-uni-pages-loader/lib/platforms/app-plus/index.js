@@ -34,23 +34,23 @@ function isPlainObject (obj) {
 function normalizeNetworkTimeout (appJson) {
   if (!isPlainObject(appJson.networkTimeout)) {
     appJson.networkTimeout = {
-      request: 6000,
-      connectSocket: 6000,
-      uploadFile: 6000,
-      downloadFile: 6000
+      request: 60000,
+      connectSocket: 60000,
+      uploadFile: 60000,
+      downloadFile: 60000
     }
   } else {
     if (typeof appJson.networkTimeout.request === 'undefined') {
-      appJson.networkTimeout.request = 6000
+      appJson.networkTimeout.request = 60000
     }
     if (typeof appJson.networkTimeout.connectSocket === 'undefined') {
-      appJson.networkTimeout.connectSocket = 6000
+      appJson.networkTimeout.connectSocket = 60000
     }
     if (typeof appJson.networkTimeout.uploadFile === 'undefined') {
-      appJson.networkTimeout.uploadFile = 6000
+      appJson.networkTimeout.uploadFile = 60000
     }
     if (typeof appJson.networkTimeout.downloadFile === 'undefined') {
-      appJson.networkTimeout.downloadFile = 6000
+      appJson.networkTimeout.downloadFile = 60000
     }
   }
 }

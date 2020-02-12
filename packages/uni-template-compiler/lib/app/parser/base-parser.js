@@ -18,6 +18,10 @@ function parseIs (el, genVar) {
   }
 }
 
+function isProcessed (exp) {
+  return String(exp).indexOf('_$') === 0
+}
+// 当根节点是由if,elseif,else组成，会调用多次parseIf来解析root
 function parseIf (el, createGenVar, isScopedSlot) {
   if (!el.if) {
     return
@@ -26,11 +30,13 @@ function parseIf (el, createGenVar, isScopedSlot) {
     isScopedSlot = false
   }
   el.ifConditions.forEach(con => {
-    if (isVar(con.exp)) {
+    if (!isProcessed(con.exp) && isVar(con.exp)) {
       con.exp = createGenVar(con.block.attrsMap[ID], isScopedSlot)(con.block.elseif ? V_ELSE_IF : V_IF, con.exp)
     }
   })
-  el.if = createGenVar(el.attrsMap[ID], isScopedSlot)(V_IF, el.if)
+  if (!isProcessed(el.if)) {
+    el.if = createGenVar(el.attrsMap[ID], isScopedSlot)(V_IF, el.if)
+  }
 }
 
 function parseFor (el, createGenVar, isScopedSlot, fill = false) {

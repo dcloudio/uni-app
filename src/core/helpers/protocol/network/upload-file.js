@@ -1,20 +1,19 @@
-import getRealPath from 'uni-platform/helpers/get-real-path'
+// App端可以只使用files不传filePath和name
+// import getRealPath from 'uni-platform/helpers/get-real-path'
 
 export const uploadFile = {
   url: {
     type: String,
     required: true
   },
+  files: {
+    type: Array
+  },
   filePath: {
-    type: String,
-    required: true,
-    validator (value, params) {
-      params.type = getRealPath(value)
-    }
+    type: String
   },
   name: {
-    type: String,
-    required: true
+    type: String
   },
   header: {
     type: Object,

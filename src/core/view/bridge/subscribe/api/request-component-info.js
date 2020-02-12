@@ -84,14 +84,15 @@ function getNodeInfo (el, fields) {
 
 function getNodesInfo (pageVm, component, selector, single, fields) {
   const $el = findElm(component, pageVm)
+  if (!$el || ($el && $el.nodeType === 8)) { // Comment
+    return single ? null : []
+  }
   if (single) {
-    const node = $el && ($el.matches(selector) ? $el : $el.querySelector(selector))
+    const node = $el.matches(selector) ? $el : $el.querySelector(selector)
     if (node) {
       return getNodeInfo(node, fields)
     }
     return null
-  } else if (!$el) {
-    return []
   } else {
     let infos = []
     const nodeList = $el.querySelectorAll(selector)
@@ -101,7 +102,7 @@ function getNodesInfo (pageVm, component, selector, single, fields) {
       })
     }
     if ($el.matches(selector)) {
-      infos.unshift($el)
+      infos.unshift(getNodeInfo($el, fields))
     }
     return infos
   }

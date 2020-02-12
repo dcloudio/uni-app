@@ -137,5 +137,11 @@ describe('codegen', () => {
       `with(this){return _c('view',{attrs:{"data-b":_$s(0,'a-data-b',b),"_i":0}})}`
     )
   })
+  it('generate v-if directive', () => {
+    assertCodegen(
+      '<text v-if="a">1</text><text v-else-if="b">2</text><text v-else-if="c">3</text><text v-else>d</text>',
+      `with(this){return (_$s(0,'i',a))?_c('text'):(_$s(1,'e',b))?_c('text'):(_$s(2,'e',c))?_c('text'):_c('text')}`
+    )
+  })
 })
 /* eslint-enable quotes */
