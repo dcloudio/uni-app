@@ -5,6 +5,8 @@ const eventNames = [
   'error'
 ]
 
+const ERROR_CODE_LIST = [-5001, -5002, -5003, -5004, -5005, -5006]
+
 class RewardedVideoAd {
   constructor (adpid) {
     this._options = {
@@ -21,7 +23,7 @@ class RewardedVideoAd {
     })
 
     this._isLoad = false
-    this._adError = false
+    this._adError = ''
     this._loadPromiseResolve = null
     this._loadPromiseReject = null
     const rewardAd = this._rewardAd = plus.ad.createRewardedVideoAd(this._options)
@@ -40,9 +42,9 @@ class RewardedVideoAd {
     rewardAd.onError((e) => {
       const { code, message } = e
       const data = { code: code, errMsg: message }
-      this._adError = (code && code < 5005)
+      this._adError = message
       this._dispatchEvent('error', data)
-      if (code === 5005 && this._loadPromiseReject != null) {
+      if ((code === -5005 || ERROR_CODE_LIST.index(code) === -1) && this._loadPromiseReject != null) {
         this._loadPromiseReject(data)
         this._loadPromiseReject = null
       }
@@ -66,14 +68,11 @@ class RewardedVideoAd {
         this._rewardAd.show()
         resolve()
       } else {
-        reject(new Error(''))
+        reject(new Error(this._adError))
       }
     })
   }
   _loadAd () {
-    if (this._adError) {
-      return
-    }
     this._isLoad = false
     this._rewardAd.load()
   }
