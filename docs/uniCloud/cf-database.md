@@ -127,6 +127,10 @@ const collection = db.collection('user');
 * Date：时间
 * Null
 
+**注意**
+
+- 阿里云数据库在存入emoji表情时会导致uniCloud控制台无法获取数据列表，目前阿里正在处理此问题，开发者可以先自行过滤一下
+
 以下对几个特殊的数据类型做个补充说明
 ### 时间 Date
 
