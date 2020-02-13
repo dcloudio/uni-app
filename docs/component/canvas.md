@@ -76,3 +76,10 @@ canvas的常用用途有图表和图片处理，在uni-app插件市场有大量�
 - H5端流行的echart报表因为涉及大量dom操作，无法跨端使用，而wx-chart在跨端和更新方面都不足。如考虑小程序，推荐使用全端可用的[uChart](https://ext.dcloud.net.cn/plugin?id=271)。
 - 如只考虑H5端，也可以继续使用echart、f2等常规web图表。
 - 如不考虑小程序，那么App端和H5，也可以通过renderjs技术来使用echart、f2等web图表，功能性能比uchart更好。[什么是renderjs](https://uniapp.dcloud.io/frame?id=renderjs)、[基于renderjs使用echart的示例](https://ext.dcloud.net.cn/plugin?id=1207)
+
+
+**nvue页面如何使用canvas**
+
+HBuilderX 2.2.5（alpha）开始 nvue 页面支持 Canvas，支持 W3C WebGL API [WebGL 1.0](https://www.khronos.org/registry/webgl/specs/latest/1.0/)
+
+示例工程地址：[NvueCanvasDemo](https://github.com/dcloudio/NvueCanvasDemo)
