@@ -1429,7 +1429,6 @@ var serviceContext = (function () {
   });
 
   // App端可以只使用files不传filePath和name
-  // import getRealPath from 'uni-platform/helpers/get-real-path'
 
   const uploadFile = {
     url: {
@@ -1440,7 +1439,12 @@ var serviceContext = (function () {
       type: Array
     },
     filePath: {
-      type: String
+      type: String,
+      validator (value, params) {
+        if (value) {
+          params.type = getRealPath(value);
+        }
+      }
     },
     name: {
       type: String
@@ -8240,6 +8244,9 @@ var serviceContext = (function () {
     // 查找当前 tabBarPage，且设置 visible
     getCurrentPages(true).forEach(page => {
       if (('/' + page.route) === path) {
+        if (!page.$page.meta.visible) {
+          page.$vm.__call_hook('onShow');
+        }
         page.$page.meta.visible = true;
         tabBarPage = page;
       } else {
@@ -8250,7 +8257,6 @@ var serviceContext = (function () {
     });
 
     if (tabBarPage) {
-      tabBarPage.$vm.__call_hook('onShow');
       tabBarPage.$getAppWebview().show('none');
     } else {
       return showWebview(registerPage({
@@ -8808,6 +8814,8 @@ var serviceContext = (function () {
     'error'
   ];
 
+  const ERROR_CODE_LIST = [-5001, -5002, -5003, -5004, -5005, -5006];
+
   class RewardedVideoAd {
     constructor (adpid) {
       this._options = {
@@ -8824,7 +8832,7 @@ var serviceContext = (function () {
       });
 
       this._isLoad = false;
-      this._adError = false;
+      this._adError = '';
       this._loadPromiseResolve = null;
       this._loadPromiseReject = null;
       const rewardAd = this._rewardAd = plus.ad.createRewardedVideoAd(this._options);
@@ -8843,9 +8851,9 @@ var serviceContext = (function () {
       rewardAd.onError((e) => {
         const { code, message } = e;
         const data = { code: code, errMsg: message };
-        this._adError = (code && code < 5005);
+        this._adError = message;
         this._dispatchEvent('error', data);
-        if (code === 5005 && this._loadPromiseReject != null) {
+        if ((code === -5005 || ERROR_CODE_LIST.index(code) === -1) && this._loadPromiseReject != null) {
           this._loadPromiseReject(data);
           this._loadPromiseReject = null;
         }
@@ -8869,14 +8877,11 @@ var serviceContext = (function () {
           this._rewardAd.show();
           resolve();
         } else {
-          reject(new Error(''));
+          reject(new Error(this._adError));
         }
       })
     }
     _loadAd () {
-      if (this._adError) {
-        return
-      }
       this._isLoad = false;
       this._rewardAd.load();
     }
