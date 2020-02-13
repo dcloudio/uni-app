@@ -1428,21 +1428,22 @@ var serviceContext = (function () {
     closeSocket: closeSocket
   });
 
+  // App端可以只使用files不传filePath和name
+  // import getRealPath from 'uni-platform/helpers/get-real-path'
+
   const uploadFile = {
     url: {
       type: String,
       required: true
     },
+    files: {
+      type: Array
+    },
     filePath: {
-      type: String,
-      required: true,
-      validator (value, params) {
-        params.type = getRealPath(value);
-      }
+      type: String
     },
     name: {
-      type: String,
-      required: true
+      type: String
     },
     header: {
       type: Object,
@@ -2333,7 +2334,12 @@ var serviceContext = (function () {
       } else if (res.errMsg.indexOf(':cancel') !== -1) {
         res.errMsg = apiName + ':cancel';
       } else if (res.errMsg.indexOf(':fail') !== -1) {
-        res.errMsg = apiName + ':fail' + res.errMsg.substr(res.errMsg.indexOf(' '));
+        let errDetail = '';
+        let spaceIndex = res.errMsg.indexOf(' ');
+        if (spaceIndex > -1) {
+          errDetail = res.errMsg.substr(spaceIndex);
+        }
+        res.errMsg = apiName + ':fail' + errDetail;
       }
 
       const errMsg = res.errMsg;
@@ -8818,56 +8824,63 @@ var serviceContext = (function () {
       });
 
       this._isLoad = false;
+      this._adError = false;
       this._loadPromiseResolve = null;
-      this._loadPromisereject = null;
+      this._loadPromiseReject = null;
       const rewardAd = this._rewardAd = plus.ad.createRewardedVideoAd(this._options);
       rewardAd.onLoad((e) => {
         this._isLoad = true;
         this._dispatchEvent('load', {});
-        if(this._loadPromiseResolve != null) {
+        if (this._loadPromiseResolve != null) {
           this._loadPromiseResolve();
           this._loadPromiseResolve = null;
         }
       });
       rewardAd.onClose((e) => {
-        this._dispatchEvent('close', {isEnded: e.isEnded});
+        this._loadAd();
+        this._dispatchEvent('close', { isEnded: e.isEnded });
       });
       rewardAd.onError((e) => {
-        const detail = {code: e.code, message: e.message};
-        this._dispatchEvent('error', detail);
-        if(this._loadPromisereject != null) {
-          this._loadPromisereject(detail);
-          this._loadPromisereject = null;
+        const { code, message } = e;
+        const data = { code: code, errMsg: message };
+        this._adError = (code && code < 5005);
+        this._dispatchEvent('error', data);
+        if (code === 5005 && this._loadPromiseReject != null) {
+          this._loadPromiseReject(data);
+          this._loadPromiseReject = null;
         }
       });
       this._loadAd();
     }
     load () {
       return new Promise((resolve, reject) => {
-        if(this._isLoad) {
+        if (this._isLoad) {
           resolve();
           return
         }
         this._loadPromiseResolve = resolve;
-        this._loadPromisereject = reject;
+        this._loadPromiseReject = reject;
         this._loadAd();
       })
     }
     show () {
       return new Promise((resolve, reject) => {
-        if(this._isLoad) {
+        if (this._isLoad) {
           this._rewardAd.show();
           resolve();
         } else {
-          reject();
+          reject(new Error(''));
         }
       })
     }
     _loadAd () {
+      if (this._adError) {
+        return
+      }
       this._isLoad = false;
       this._rewardAd.load();
     }
-    _dispatchEvent(name, data) {
+    _dispatchEvent (name, data) {
       this._callbacks[name].forEach(callback => {
         if (typeof callback === 'function') {
           callback(data || {});
@@ -9348,7 +9361,7 @@ var serviceContext = (function () {
       this._operate('stop');
     }
     seek (position) {
-      this._operate('play', {
+      this._operate('seek', {
         currentTime: position
       });
     }
@@ -12348,7 +12361,7 @@ var serviceContext = (function () {
 
   function initVue (Vue) {
     Vue.config.errorHandler = function (err) {
-      const app = getApp();
+      const app = typeof getApp === 'function' && getApp();
       if (app && hasLifecycleHook(app.$options, 'onError')) {
         app.__call_hook('onError', err);
       } else {
