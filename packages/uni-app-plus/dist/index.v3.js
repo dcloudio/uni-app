@@ -297,10 +297,6 @@ var serviceContext = (function () {
     return ('' + str).replace(/[^\x00-\xff]/g, '**').length
   }
 
-  function guid () {
-    return Math.floor(4294967296 * (1 + Math.random())).toString(16).slice(1)
-  }
-
   function debounce (fn, delay) {
     let timeout;
     return function () {
@@ -12886,7 +12882,11 @@ var serviceContext = (function () {
           this._$vdomSync = new VDomSync(this.$options.pageId, this.$options.pagePath, this);
         }
         if (this._$vd) {
-          this._$id = guid();
+          if (!this.$parent) {
+            this._$id = '-1';
+          } else {
+            this._$id = this.$parent._$id + ',' + this.$vnode.data.attrs._i;
+          }
           this._$vd.addVm(this);
           this._$vdMountedData = Object.create(null);
           this._$setData(MOUNTED_DATA, this._$vdMountedData);

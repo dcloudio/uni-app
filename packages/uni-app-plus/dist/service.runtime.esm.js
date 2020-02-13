@@ -5641,7 +5641,6 @@ function insertBefore() {
 
 function removeChild(node, child) {
   if (child && child._$vd) {
-    // TODO 目前存储的 element 非树形，remove 的不干净(会遗留子节点)
     child._$vd.removeElement(child);
   }
 }
@@ -6801,14 +6800,13 @@ function updateDOMListeners (oldVnode, vnode) {
   var on = vnode.data.on || {};
   var oldOn = oldVnode.data.on || {};
   target$1 = vnode.elm;
-
+  
   // fixed by xxxxxx 存储 vd
+  target$1._$vd = vnode.context._$vd;
   var context = vnode.context;
-  target$1._$vd = context._$vd || (context.$root && context.$root._$vd);
-
   // 存储事件标记
   target$1.setAttribute('nid', String(vnode.data.attrs['_i']));
-  target$1.setAttribute('cid', context._$id || vnode.data.cid);
+  target$1.setAttribute('cid', context._$id);
 
   normalizeEvents(on);
   updateListeners(on, oldOn, add$1, remove$2, createOnceHandler$1, vnode.context);
