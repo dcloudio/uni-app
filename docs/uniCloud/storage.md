@@ -4,6 +4,8 @@
 
 即将支持云函数中使用云存储功能。
 
+# 客户端API
+
 ## uploadFile(Object object)
 
 上传文件到云存储，**阿里云单文件大小限制为100M，腾讯云单文件最大为5G**
@@ -14,13 +16,12 @@
 |参数名						|类型			|必填	|默认值	|说明												|平台差异说明		|
 |:-:							|:-:			|:-:	|:-:		|:-:												|:-:						|
 |filePath					|String		|是		|-			|要上传的文件对象						|-							|
+|cloudPath				|String		|是		|-			|文件的绝对路径，包含文件名	|仅腾讯云侧支持	|
+|onUploadProgress	|Function	|否		|-			|上传进度回调								|仅腾讯云侧支持	|
 
-<!-- |cloudPath				|String		|是		|-			|文件的绝对路径，包含文件名	|仅腾讯云侧支持	| -->
-<!-- |onUploadProgress	|Function	|否		|-			|上传进度回调								|仅腾讯云侧支持	| -->
+**注意**
 
-<!-- **注意**
-
-- `cloudPath` 为文件的绝对路径，包含文件名 foo/bar.jpg、foo/bar/baz.jpg 等，不能包含除[0-9 , a-z , A-Z]、/、!、-、\_、.、、\*和中文以外的字符，使用 / 字符来实现类似传统文件系统的层级结构。[查看详情](https://cloud.tencent.com/document/product/436/13324) -->
+- 腾讯云`cloudPath` 为文件的绝对路径，包含文件名 foo/bar.jpg、foo/bar/baz.jpg 等，不能包含除[0-9 , a-z , A-Z]、/、!、-、\_、.、、\*和中文以外的字符，使用 / 字符来实现类似传统文件系统的层级结构。
 
 #### 响应参数
 
@@ -54,12 +55,12 @@ uni.chooseImage({
 			//进行上传操作
 
 			// promise
-			const result = await uniClient.uploadFile({
+			const result = await uniCloud.uploadFile({
 				filePath: filePath
 			});
 
 			// callback
-			uniClient.uploadFile({
+			uniCloud.uploadFile({
 				filePath: filePath
 				},
 				success() {},
@@ -77,9 +78,15 @@ uni.chooseImage({
 
 - 阿里云返回的fileID为链接形式
 
-<!-- ## getTempFileURL(Object getTempFileURLOptions)
+## getTempFileURL(Object object)
 
-获取文件临时下载链接，**仅腾讯云支持**
+获取文件临时下载链接。
+
+**平台兼容性**
+
+|阿里云	|腾讯云	|
+|----		|----		|
+|×			|√			|
 
 #### 请求参数
 
@@ -114,20 +121,20 @@ uni.chooseImage({
 
 ```javascript
 // promise
-uniClient.getTempFileURL({
+uniCloud.getTempFileURL({
 		fileList: ['cloud://test-28farb/a.png']
 	})
 	.then(res => {});
 
 // callback
-uniClient.getTempFileURL({
+uniCloud.getTempFileURL({
 	fileList: ['cloud://test-28farb/a.png'],
 	success() {},
 	fail() {},
 	complete() {}
 });
 ```
- -->
+
 ## deleteFile(Object object)
 
 删除云端文件
@@ -160,14 +167,14 @@ uniClient.getTempFileURL({
 
 ```javascript
 // promise
-uniClient
+uniCloud
   .deleteFile({
     fileList: ['cloud://jimmytest-088bef/1534576354877.jpg']
   })
   .then(res => {});
 
 // callback
-uniClient.deleteFile(
+uniCloud.deleteFile(
   {
     fileList: ['cloud://jimmytest-088bef/1534576354877.jpg'],
 	success(){},
@@ -208,3 +215,168 @@ let result = await tcb.downloadFile({
 	complete(){}
 });
 ``` -->
+
+# 云函数API
+
+## uniCloud.uploadFile(Object uploadFileOptions)
+
+上传文件至云开发存储服务。
+
+**平台兼容性**
+
+|阿里云	|腾讯云	|
+|----		|----		|
+|×			|√			|
+
+#### 请求参数
+**uploadFileOptions参数说明**
+
+| 字段				| 类型					| 必填| 说明																																															|
+| ---					| ---						| ---	| ---																																																|
+| cloudPath		| string				| 是	| 文件的绝对路径，包含文件名。例如 foo/bar.jpg、foo/bar/baz.jpg 等。																|
+| fileContent	| fs.ReadStream	| 是	| buffer或要上传的文件 [可读流](https://nodejs.org/api/stream.html#stream_class_stream_readable) 。	|
+
+#### 响应参数
+
+| 字段			| 类型	| 必填| 说明																			|
+| ---				| ---		| ---	| ---																				|
+| code			| string| 否	| 状态码，操作成功则不返回。								|
+| message		| string| 否	| 错误描述。																|
+| fileID		| fileID| 是	| 文件唯一 ID，用来访问文件，建议存储起来。	|
+| requestId	| string| 否	| 请求序列号，用于错误排查。								|
+
+#### 示例代码
+
+```javascript
+const fs = require("fs");
+
+let result = await uniCloud.uploadFile({
+    cloudPath: "test-admin.jpeg",
+    fileContent: fs.createReadStream(`${__dirname}/cos.jpeg`)
+});
+```
+
+### uniCloud.getTempFileURL(Object getTempFileURLOptions)
+
+获取文件下载链接。
+
+**平台兼容性**
+
+|阿里云	|腾讯云	|
+|----		|----		|
+|×			|√			|
+
+#### 请求参数
+
+**getTempFileURLOptions参数说明**
+
+| 字段		| 类型								| 必填| 说明												|
+| ---			| ---									| ---	| ---													|
+| fileList| &lt;Array&gt;.string| 是	| 要下载的文件 ID 组成的数组。|
+
+**fileList字段**
+
+| 字段	| 类型		| 必填| 说明						|
+| ---		| ---			| ---	| ---							|
+| fileID| string	| 是	| 文件 ID。				|
+| maxAge| Integer	| 是	| 文件链接有效期。|
+
+#### 响应参数
+
+| 字段			| 类型								| 必填| 说明													|
+| ---				| ---									| ---	| ---														|
+| code			| string							| 否	| 状态码，操作成功则为 SUCCESS。|
+| message		| string							| 否	| 错误描述。										|
+| fileList	| &lt;Array&gt;.object| 否	| 存储下载链接的数组。					|
+| requestId	| string							| 否	| 请求序列号，用于错误排查。		|
+
+**fileList字段**
+
+| 字段				| 类型	| 必填| 说明											|
+| ---					| ---		| ---	| ---												|
+| code				| string| 否	| 删除结果，成功为 SUCCESS。|
+| fileID			| string| 是	| 文件 ID。									|
+| tempFileURL	| string| 是	| 文件访问链接。						|
+
+#### 示例代码
+
+```javascript
+let result = await uniCloud.getTempFileURL({
+    fileList: ['cloud://test-28farb/a.png']
+});
+```
+
+## uniCloud.deleteFile(Object deleteFileOptions)
+
+删除云端文件。
+
+#### 请求参数
+
+**deleteFileOptions参数说明**
+
+| 字段		| 类型								| 必填| 说明												|
+| ---			| ---									| ---	| ---													|
+| fileList| &lt;Array&gt;.string| 是	| 要删除的文件 ID 组成的数组。|
+
+#### 响应参数
+
+| 字段			| 类型								| 必填| 说明											|
+| ---				| ---									| ---	| ---												|
+| code			| string							| 否	| 状态码，操作成功则不返回。|
+| message		| string							| 否	| 错误描述									|
+| fileList	| &lt;Array&gt;.object| 否	| 删除结果组成的数组。			|
+| requestId	| string							| 否	| 请求序列号，用于错误排查。|
+
+**fileList字段**
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| code | string | 否 | 删除结果，成功为SUCCESS。 |
+| fileID | string | 是 | 文件 ID。 |
+
+#### 示例代码
+
+```javascript
+let result = await uniCloud.deleteFile({
+    fileList: [
+        "cloud://test-28farb/a.png"
+    ]
+});
+```
+
+## uniCloud.downloadFile(Object downloadFileOptions)
+
+下载已上传至云开发的文件至本地（默认本地根目录/root）。
+
+**平台兼容性**
+
+|阿里云	|腾讯云	|
+|----		|----		|
+|×			|√			|
+
+#### 请求参数
+
+**downloadFileOptions参数说明**
+
+| 字段				| 类型	| 必填| 说明										|
+| ---					| ---		| ---	| ---											|
+| fileID			| string| 是	| 要下载的文件的 ID。			|
+| tempFilePath| string| 否	| 下载的文件要存储的位置。|
+
+#### 响应参数
+
+| 字段				| 类型	| 必填| 说明																										|
+| ---					| ---		| ---	| ---																											|
+| code				| string| 否	| 状态码，操作成功则不返回。															|
+| message			| string| 否	| 错误描述。																							|
+| fileContent	| Buffer| 否	| 下载的文件的内容。如果传入 tempFilePath 则不返回该字段。|
+| requestId		| string| 否	| 请求序列号，用于错误排查。															|
+
+#### 示例代码
+
+```javascript
+let result = await uniCloud.downloadFile({
+    fileID: "cloud://aa-99j9f/my-photo.png",
+    // tempFilePath: '/tmp/test/storage/my-photo.png'
+});
+```

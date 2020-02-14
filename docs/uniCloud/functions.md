@@ -20,14 +20,14 @@
 
 ```javascript
 // promise
-uniClient.callFunction({
+uniCloud.callFunction({
     name: 'test',
     data: { a: 1 }
   })
   .then(res => {});
 
 // callback
-uniClient.callFunction({
+uniCloud.callFunction({
 	name: 'test',
 	data: { a: 1 },
 	success(){},

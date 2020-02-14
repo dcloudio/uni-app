@@ -23,20 +23,26 @@
 const db = uniCloud.database();
 ```
 
-<!-- **DBOptions参数说明**
+**DBOptions参数说明**
 
-|字段	|类型		|必填	|描述				|平台差异说明	|
-|:-:	|:-:		|:-:	|:-:				|:-:					|
-|spaceId	|String	|否		|服务空间ID	|仅腾讯云支持	|
- -->
-<!-- ## 新增集合
+|字段		|类型		|必填	|描述											|平台差异说明	|
+|:-:		|:-:		|:-:	|:-:											|:-:					|
+|spaceId|String	|否		|同一账号下的，服务空间ID	|仅腾讯云支持	|
+
+## 新增集合
 
 如果集合已存在，则报错。
+
+**平台差异说明**
+
+|阿里云	|腾讯云	|
+|----		|----		|
+|×			|√			|
 
 ```
 db.createCollection(collectionName)
 ```
- -->
+
 ## 获取集合的引用
 
 ```js
@@ -158,7 +164,7 @@ const collection = db.collection('user');
 
 **阿里云暂不支持地理位置类型**
 
-<!-- 参考：[GEO地理位置](#GEO地理位置) -->
+参考：[GEO地理位置](#GEO地理位置)
 
 ### Null
 
@@ -946,9 +952,16 @@ db.collection('comments').doc('comment-id').update({
 }
 ```
 
-<!-- ## GEO地理位置
+## GEO地理位置
 
 注意：**如果需要对类型为地理位置的字段进行搜索，一定要建立地理位置索引**。
+
+**平台差异说明**
+
+|阿里云	|腾讯云	|
+|----		|----		|
+|×			|√			|
+
 
 ### GEO数据类型
 
@@ -1141,17 +1154,17 @@ db.collection('user').where({
   })
 })
 ```
- -->
+
 <!-- ## 数据库实时推送
 
 监听指定集合中符合查询条件的文档，通过onchange回调获得文档的变化详情
 (where参数为查询条件 参考 [查询文档](#查询文档))
 
 ```js
-  const uniClient =  uniCloud.init({
+  const uniCloud =  uniCloud.init({
       spaceId: 'YourSpaceId
   });
-  const db = uniClient.database();
+  const db = uniCloud.database();
   const dbCmd = db.command
   const collection = db.collection('collName') // collName 需填当前服务空间下集合名称
 
@@ -1182,13 +1195,6 @@ db.collection('user').where({
   ref.close()
 ```
  -->
-<!-- ## 平台差异
-
-|差异项					|说明																							|
-|:-:						|:-:																							|
-|add						|使用阿里云时在集合不存在的时候调用会自动创建集合	|
-|数据库实时推送	|阿里云暂不支持																		|
-|GEO地理位置		|阿里云暂不支持																		| -->
 
 ## 聚合操作
 
@@ -1630,7 +1636,7 @@ db.collection('items').aggregate()
 }
 ```
 
-<!-- ### geoNear
+### geoNear
 
 聚合阶段。将记录按照离给定点从近到远输出。
 
@@ -1783,7 +1789,7 @@ db.collection('attractions').aggregate()
   },
   "distance": 1928300.3308822548
 }
-``` -->
+```
 
 ### group
 
