@@ -192,7 +192,7 @@ export default {
       if (val.indexOf(-1) >= 0) {
         val = array.map(() => 0)
       }
-      return val
+      return this._filterDateValue(val)
     },
     endArray () {
       var splitStr = this.mode === mode.DATE ? '-' : ':'
@@ -202,7 +202,7 @@ export default {
       if (val.indexOf(-1) >= 0) {
         val = array.map((val) => val.length - 1)
       }
-      return val
+      return this._filterDateValue(val)
     },
     units () {
       switch (this.mode) {
@@ -241,13 +241,12 @@ export default {
         if (this.mode === mode.DATE) {
           const dateArray = this.dateArray
           let max = dateArray[2].length
-          let day = dateArray[2][valueArray[2]]
+          let day = Number(dateArray[2][valueArray[2]]) || 1
           let realDay = new Date(
             `${dateArray[0][valueArray[0]]}/${
               dateArray[1][valueArray[1]]
             }/${day}`
           ).getDate()
-          day = Number(day)
           if (realDay < day) {
             valueArray[2] -= realDay + max - day
           }
@@ -406,9 +405,7 @@ export default {
               mode: mode.DATE
             })
           }
-          valueArray = val
-            .split('-')
-            .map((val, i) => this.dateArray[i].indexOf(val))
+          valueArray = this._filterDateValue(val.split('-').map((val, i) => this.dateArray[i].indexOf(val)))
           break
       }
       this.oldValueArray = [...valueArray]
@@ -430,6 +427,17 @@ export default {
             .map((val, i) => this.dateArray[i][val])
             .join('-')
       }
+    },
+    _filterDateValue (val) {
+      switch (this.fields) {
+        case fields.YEAR:
+          val.length = 1
+          break
+        case fields.MONTH:
+          val.length = 2
+          break
+      }
+      return val
     },
     _change () {
       this._close()
