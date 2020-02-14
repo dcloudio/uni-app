@@ -33,7 +33,6 @@ function initClick (dom) {
       ['screenX', 'screenY', 'clientX', 'clientY', 'pageX', 'pageY'].forEach(key => {
         customEvent[key] = info[key]
       })
-      console.log(customEvent)
       event.target.dispatchEvent(customEvent)
     }
   })
