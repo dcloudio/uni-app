@@ -55,6 +55,42 @@
 import { emitter } from 'uni-mixins'
 import { formatDateTime } from 'uni-shared'
 
+function getDefaultStartValue () {
+  if (this.mode === mode.TIME) {
+    return '00:00'
+  }
+  if (this.mode === mode.DATE) {
+    let year = new Date().getFullYear() - 100
+    switch (this.fields) {
+      case fields.YEAR:
+        return year
+      case fields.MONTH:
+        return year + '-01'
+      case fields.DAY:
+        return year + '-01-01'
+    }
+  }
+  return ''
+}
+
+function getDefaultEndValue () {
+  if (this.mode === mode.TIME) {
+    return '23:59'
+  }
+  if (this.mode === mode.DATE) {
+    let year = new Date().getFullYear() + 100
+    switch (this.fields) {
+      case fields.YEAR:
+        return year
+      case fields.MONTH:
+        return year + '-12'
+      case fields.DAY:
+        return year + '-12-31'
+    }
+  }
+  return ''
+}
+
 const mode = {
   SELECTOR: 'selector',
   MULTISELECTOR: 'multiSelector',
@@ -106,43 +142,11 @@ export default {
     },
     start: {
       type: String,
-      default () {
-        if (this.mode === mode.TIME) {
-          return '00:00'
-        }
-        if (this.mode === mode.DATE) {
-          let year = new Date().getFullYear() - 100
-          switch (this.fields) {
-            case fields.YEAR:
-              return year
-            case fields.MONTH:
-              return year + '-01'
-            case fields.DAY:
-              return year + '-01-01'
-          }
-        }
-        return ''
-      }
+      default: getDefaultStartValue
     },
     end: {
       type: String,
-      default () {
-        if (this.mode === mode.TIME) {
-          return '23:59'
-        }
-        if (this.mode === mode.DATE) {
-          let year = new Date().getFullYear() + 100
-          switch (this.fields) {
-            case fields.YEAR:
-              return year
-            case fields.MONTH:
-              return year + '-12'
-            case fields.DAY:
-              return year + '-12-31'
-          }
-        }
-        return ''
-      }
+      default: getDefaultEndValue
     },
     disabled: {
       type: [Boolean, String],
@@ -185,24 +189,10 @@ export default {
       }
     },
     startArray () {
-      var splitStr = this.mode === mode.DATE ? '-' : ':'
-      var array = this.mode === mode.DATE ? this.dateArray : this.timeArray
-      var val = this.start.split(splitStr).map((val, i) => array[i].indexOf(
-        val))
-      if (val.indexOf(-1) >= 0) {
-        val = array.map(() => 0)
-      }
-      return this._filterDateValue(val)
+      return this._getDateValueArray(this.start, getDefaultStartValue.bind(this)())
     },
     endArray () {
-      var splitStr = this.mode === mode.DATE ? '-' : ':'
-      var array = this.mode === mode.DATE ? this.dateArray : this.timeArray
-      var val = this.end.split(splitStr).map((val, i) => array[i].indexOf(
-        val))
-      if (val.indexOf(-1) >= 0) {
-        val = array.map((val) => val.length - 1)
-      }
-      return this._filterDateValue(val)
+      return this._getDateValueArray(this.end, getDefaultEndValue.bind(this)())
     },
     units () {
       switch (this.mode) {
@@ -366,46 +356,14 @@ export default {
           valueArray = [...val]
           break
         case mode.TIME:
-          var timeValTestFail = false
-          if (typeof this.value !== 'string') {
-            timeValTestFail = true
-          } else {
-            val.split(':').map((val, i) => {
-              var valIndex = this.timeArray[i].indexOf(val)
-              if (valIndex === -1) {
-                timeValTestFail = true
-              }
-            })
-          }
-          // 处理默认值为当前时间
-          if (timeValTestFail) {
-            val = formatDateTime({
-              mode: mode.TIME
-            })
-          }
-          valueArray = val
-            .split(':')
-            .map((val, i) => this.timeArray[i].indexOf(val))
+          valueArray = this._getDateValueArray(val, formatDateTime({
+            mode: mode.TIME
+          }))
           break
         case mode.DATE:
-          var dateValTestFail = false
-          if (typeof this.value !== 'string') {
-            dateValTestFail = true
-          } else {
-            val.split('-').map((val, i) => {
-              var valIndex = this.dateArray[i].indexOf(val)
-              if (valIndex === -1) {
-                dateValTestFail = true
-              }
-            })
-          }
-          // 处理默认值为当前日期
-          if (dateValTestFail) {
-            val = formatDateTime({
-              mode: mode.DATE
-            })
-          }
-          valueArray = this._filterDateValue(val.split('-').map((val, i) => this.dateArray[i].indexOf(val)))
+          valueArray = this._getDateValueArray(val, formatDateTime({
+            mode: mode.DATE
+          }))
           break
       }
       this.oldValueArray = [...valueArray]
@@ -428,16 +386,28 @@ export default {
             .join('-')
       }
     },
-    _filterDateValue (val) {
+    _getDateValueArray (valueStr, defaultValue) {
+      const splitStr = this.mode === mode.DATE ? '-' : ':'
+      const array = this.mode === mode.DATE ? this.dateArray : this.timeArray
+      let max = 3
       switch (this.fields) {
         case fields.YEAR:
-          val.length = 1
+          max = 1
           break
         case fields.MONTH:
-          val.length = 2
+          max = 2
           break
       }
-      return val
+      const inputArray = String(valueStr).split(splitStr)
+      let value = []
+      for (let i = 0; i < max; i++) {
+        const val = inputArray[i]
+        value.push(array[i].indexOf(val))
+      }
+      if (value.indexOf(-1) >= 0) {
+        value = defaultValue ? this._getDateValueArray(defaultValue) : value.map(() => 0)
+      }
+      return value
     },
     _change () {
       this._close()
