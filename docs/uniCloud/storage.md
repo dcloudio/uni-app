@@ -6,7 +6,8 @@
 
 ## uploadFile(Object object)
 
-上传文件到云存储
+上传文件到云存储，**单文件大小限制为100M**
+
 #### 请求参数
 **Object object**
 
