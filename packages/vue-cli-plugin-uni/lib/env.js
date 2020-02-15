@@ -86,6 +86,7 @@ if (process.env.NODE_ENV === 'production') { // 发行模式,不启用 cache
 }
 
 const {
+  normalizePath,
   isSupportSubPackages,
   runByHBuilderX,
   // isInHBuilderXAlpha,
@@ -193,6 +194,21 @@ if (process.env.UNI_PLATFORM === 'app-plus') {
     process.env.UNI_USING_NATIVE = true
     process.env.UNI_USING_V8 = true
     process.env.UNI_OUTPUT_TMP_DIR = ''
+  }
+  // v3 支持指定 js 混淆（仅发行模式）
+  if (
+    process.env.NODE_ENV === 'production' &&
+    process.env.UNI_USING_V3
+  ) {
+    const resources = platformOptions.confusion &&
+      platformOptions.confusion.resources
+    const resourcesKeys = resources &&
+      Object.keys(resources).filter(filepath => path.extname(filepath) === '.js')
+    if (resourcesKeys && resourcesKeys.length) {
+      process.UNI_CONFUSION = resourcesKeys.map(filepath =>
+        normalizePath(path.resolve(process.env.UNI_INPUT_DIR, filepath))
+      )
+    }
   }
 } else { // 其他平台，待确认配置方案
   if (
