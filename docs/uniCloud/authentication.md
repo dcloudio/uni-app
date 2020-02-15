@@ -2,18 +2,14 @@
 
 **腾讯云侧必须以任意登录方式登录之后才可以访问云端资源。开发者在控制台开启匿名登录之后，可以在客户端调用匿名登录来获取访问云端资源的权限**
 
-## uniClient.auth()
+## uniCloud.auth()
 
 获取登录对象
 
 **示例代码**
 
 ```js
-const uniClient = uniCloud.init({
-  spaceId: 'xxxx-yyy'
-});
-
-const auth = uniClient.auth()
+const auth = uniCloud.auth()
 ```
 
 ## auth.signInAnonymously()
@@ -23,11 +19,7 @@ const auth = uniClient.auth()
 **示例代码**
 
 ```js
-const uniClient = uniCloud.init({
-  spaceId: 'xxxx-yyy'
-});
-
-const auth = uniClient.auth()
+const auth = uniCloud.auth()
 auth.signInAnonymously()
 ```
 
@@ -194,7 +186,7 @@ auth.linkAndRetrieveDataWithTicket(ticket).then(res => {
 当登录态失效时，会触发这个事件，开发者可以在这个事件回调内，尝试重新登录 uniCloud。
 
 ```js
-uniClient.on('loginStateExpire', () => {
+uniCloud.on('loginStateExpire', () => {
   // 尝试重新登录
 });
 ```
@@ -206,7 +198,7 @@ JS SDK 会在登录态生效期间，自动刷新和维护短期访问令牌（a
 对于两种登录态并存（uniCloud、自身业务登录态）的 Web 应用，这个事件可以用于同步登录态之间的状态。
 
 ```js
-uniClient.on('refreshAccessToken', () => {
+uniCloud.on('refreshAccessToken', () => {
   // 此时 uniCloud 短期访问令牌已经刷新，可以尝试刷新自身业务的登录态
 })
 ```

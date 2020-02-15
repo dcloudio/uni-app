@@ -1148,10 +1148,10 @@ db.collection('user').where({
 (where参数为查询条件 参考 [查询文档](#查询文档))
 
 ```js
-  const uniClient =  uniCloud.init({
+  const uniCloud =  uniCloud.init({
       spaceId: 'YourSpaceId
   });
-  const db = uniClient.database();
+  const db = uniCloud.database();
   const dbCmd = db.command
   const collection = db.collection('collName') // collName 需填当前服务空间下集合名称
 

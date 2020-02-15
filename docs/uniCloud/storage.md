@@ -54,12 +54,12 @@ uni.chooseImage({
 			//进行上传操作
 
 			// promise
-			const result = await uniClient.uploadFile({
+			const result = await uniCloud.uploadFile({
 				filePath: filePath
 			});
 
 			// callback
-			uniClient.uploadFile({
+			uniCloud.uploadFile({
 				filePath: filePath
 				},
 				success() {},
@@ -114,13 +114,13 @@ uni.chooseImage({
 
 ```javascript
 // promise
-uniClient.getTempFileURL({
+uniCloud.getTempFileURL({
 		fileList: ['cloud://test-28farb/a.png']
 	})
 	.then(res => {});
 
 // callback
-uniClient.getTempFileURL({
+uniCloud.getTempFileURL({
 	fileList: ['cloud://test-28farb/a.png'],
 	success() {},
 	fail() {},
@@ -160,14 +160,14 @@ uniClient.getTempFileURL({
 
 ```javascript
 // promise
-uniClient
+uniCloud
   .deleteFile({
     fileList: ['cloud://jimmytest-088bef/1534576354877.jpg']
   })
   .then(res => {});
 
 // callback
-uniClient.deleteFile(
+uniCloud.deleteFile(
   {
     fileList: ['cloud://jimmytest-088bef/1534576354877.jpg'],
 	success(){},
