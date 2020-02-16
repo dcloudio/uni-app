@@ -56,13 +56,25 @@ uni.chooseImage({
 
 			// promise
 			const result = await uniCloud.uploadFile({
-				filePath: filePath
+				filePath: filePath,
+        onUploadProgress: function(progressEvent) {
+          console.log(progressEvent);
+          var percentCompleted = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
+        }
 			});
 
 			// callback
 			uniCloud.uploadFile({
 				filePath: filePath
 				},
+        onUploadProgress: function(progressEvent) {
+          console.log(progressEvent);
+          var percentCompleted = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
+        },
 				success() {},
 				fail() {},
 				complete() {}
