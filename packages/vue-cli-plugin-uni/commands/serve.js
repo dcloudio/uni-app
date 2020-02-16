@@ -251,7 +251,7 @@ module.exports = (api, options) => {
 
           if (!isProduction) {
             if (process.UNI_CLOUD) {
-              console.warn(`当前项目使用了uniCloud，为避免云函数调用跨域问题，建议在HBuilderX内置浏览器里调试，如使用外部浏览器需处理跨域，详见：https://uniapp.dcloud.io/uniCloud/quickstart-H5`)
+              console.warn(`当前项目使用了uniCloud，为避免云函数调用跨域问题，建议在HBuilderX内置浏览器里调试，如使用外部浏览器需处理跨域，详见：https://uniapp.dcloud.io/uniCloud/quickstart?id=useinh5`)
             }
             // const buildCommand = hasProjectYarn(api.getCwd()) ? `yarn build` : `npm run build`
             // console.log(`  Note that the development build is not optimized.`)

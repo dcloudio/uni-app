@@ -36,7 +36,6 @@ if (process.env.UNI_CLOUD_SPACES) {
   } catch (e) {}
 }
 
-// h5 暂不支持阿里云服务空间
 if (
   process.UNI_CLOUD &&
   process.env.UNI_PLATFORM === 'h5' &&
