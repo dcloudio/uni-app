@@ -63,7 +63,8 @@
 //云数据库
 {
   "read": "auth.uid == doc._openid", //仅创建者可读
-  "write": "auth.uid == doc._openid" //仅创建者可写
+  "write": "auth.uid == doc._openid", //仅创建者可写
+  "create": false //不允许客户端创建记录
 }
 
 //云存储
@@ -94,7 +95,7 @@
 
 - 比较运算符的右值必须为数值。
 
-### 函数
+<!-- ### 函数
 
 #### get
 
@@ -113,7 +114,7 @@
 
 - 一个表达式最多可以有3个get函数。
 - 最多可以访问2个不同的文档。
-- 不允许嵌套调用，例如：get("xxxx").prop[get("xxxxx").zzzz];
+- 不允许嵌套调用，例如：get("xxxx").prop[get("xxxxx").zzzz]; -->
 
 
 ## 云数据库
@@ -122,15 +123,11 @@
 
 开发者可以在uniCloud控制台设置数据库权限
 
-**步骤**
+**目前不支持在客户端操作数据库，推荐直接使用以下配置：**
 
-1.
-2.
-3.
+![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/uniCloud-tcb-db-policy.png)
 
-**此处需补充uniCloud控制台截图【uniCloud替换标记】**
-
-### 云数据库操作类型
+<!-- ### 云数据库操作类型
 
 |操作类型	|说明																			|默认值	|
 |:-:			|:-:																			|:-:		|
@@ -138,21 +135,15 @@
 |write		|写文档，可以细分为 create、update、delete|false	|
 |create		|新建文档																	|无			|
 |update		|更新文档																	|无			|
-|delete		|删除文档																	|无			|
+|delete		|删除文档																	|无			| -->
 
 ## 云存储
 
 ### 配置说明
 
-开发者可以在uniCloud控制台设置云存储权限
+开发者可以在uniCloud控制台设置云存储权限。如下图所示，点击`编辑`按钮，使用默认的四条规则，点击`切换到安全规则`可以自行配置JSON格式的权限规则。
 
-**步骤**
-
-1.
-2.
-3.
-
-**此处需补充uniCloud控制台截图【uniCloud替换标记】**
+![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/uniCloud-tcb-storage-policy.png)
 
 ### 云存储操作类型
 
