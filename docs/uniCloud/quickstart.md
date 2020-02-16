@@ -185,7 +185,17 @@ H5前端js访问云函数，涉及跨域问题，导致前端js无法连接云�
                 "_id": "da51bd8c5e37ac14099ea43a2505a1a5",
                "name": "tom"
            }
-        ]
+        ],
+        "index": [{ // 索引
+            "IndexName": "index_a", // 索引名称
+            "MgoKeySchema": { // 索引规则
+                "MgoIndexKeys": [{
+                    "Name": "index", // 索引字段
+                    "Direction": 1 // 索引方向，1：ASC-升序，-1：DESC-降序
+                }],
+                "MgoIsUnique": false // 索引是否唯一
+            }
+        }]
     }
 }
 ```
