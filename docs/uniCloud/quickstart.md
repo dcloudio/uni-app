@@ -147,7 +147,13 @@ H5前端js访问云函数，涉及跨域问题，导致前端js无法连接云�
 
 **uniCloud后台配置安全域名：**
 
+**使用阿里云**
+
 ![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/uniCloud-add-domain.png)
+
+**使用腾讯云**
+
+![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/tcb-domain-list.png)
 
 - 如果运行时，想使用外部浏览器运行，方案如下：
   * 方式1：在uniCloud web控制台绑定测试期的地址为安全域名，如配置：localhost:8080、192.168.0.1:8080
