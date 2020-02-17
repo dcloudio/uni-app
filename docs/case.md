@@ -4,7 +4,7 @@ DCloud有420万开发者，[uni统计](https://tongji.dcloud.net.cn/)覆盖手�
 
 ### 新冠抗疫专区案例
 
-uni-app助力数百家单位快速上线抗疫系统，开源众多项目，详见专题：[xinguan2020.dcloud.net.cn](https://dcloud.io/ncp.html)
+uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，详见专题：[xinguan2020.dcloud.net.cn](https://dcloud.io/ncp.html)
 
 ### 官方示例
 
@@ -112,7 +112,7 @@ uni-app助力数百家单位快速上线抗疫系统，开源众多项目，详�
 		<span style="margin-top:15px;">头条/抖音小程序码</span>
 	</a>
 </div>
-
+<!-- 
 <b>垃圾分类：</b>垃圾分一分，环境美十分。参与垃圾分类，保护地球家园，共创美好世界。
 <div style="display:flex;justify-content: space-around;">
 	<a href="#" class="clear-style barcode-view">
@@ -134,7 +134,7 @@ uni-app助力数百家单位快速上线抗疫系统，开源众多项目，详�
 </div>
 
 
-<!-- <a href="//m3w.cn/__uni__4c6db6e" target="_blank" class="clear-style"><b>UniApp视频教程：</b></a>视频教育App，帮助开发者学习了解uni-app、h5+、mui等DCloud产品。开发者枫桥。
+<a href="//m3w.cn/__uni__4c6db6e" target="_blank" class="clear-style"><b>UniApp视频教程：</b></a>视频教育App，帮助开发者学习了解uni-app、h5+、mui等DCloud产品。开发者枫桥。
 <div style="display:flex;justify-content: space-around;">
 	<a href="//m3w.cn/__uni__4c6db6e" target="_blank" class="clear-style barcode-view">
 		<img src="//img.cdn.aliyun.dcloud.net.cn/stream/qr/__UNI__4C6DB6E.png" width="200"/>
@@ -184,12 +184,20 @@ uni-app助力数百家单位快速上线抗疫系统，开源众多项目，详�
 </div>
 
 **联想集团官方小程序：** 微信小程序搜索 “联想集团”
+
+**太平洋汽车网：** H5，VR看车。需特定入口。
   
 **西祠胡同：** [App官网扫码下载](https://www.xici.net/)、[H5](https://3g.xici.net/)
 
 **达内在线：** 达内教育的在线培训App。[App官网下载](http://www.tmooc.cn/app/index.shtml)
 
+#### 托管服务商
+
+**搜狐快站：** 可视化拖拽建站，例：[https://yiguob.kuaizhan.com/#/](https://yiguob.kuaizhan.com/#/)
+
 **即速应用：** 微信小程序搜索“即速应用商家版”
+
+**香橙：** 餐馆SaaS服务，为餐馆提供多端的手机点餐、下单、排队叫号、营销推广解决方案。[官网](http://ivcvc.com)
 
 #### 国企
 
@@ -247,6 +255,8 @@ uni-app助力数百家单位快速上线抗疫系统，开源众多项目，详�
 **国泰君安：** app部分页面使用uni-app制作
 
 #### 政府
+
+**大量新冠抗疫项目，详见专题：**[xinguan2020.dcloud.net.cn](https://dcloud.io/ncp.html)
 
 **共青团全国青少年弘扬中华优秀传统文化交流展示活动专题网站：**[同时适配PC和手机版的H5](https://chuancheng.xwhdw.com/)
 
@@ -399,8 +409,6 @@ uni-app助力数百家单位快速上线抗疫系统，开源众多项目，详�
 **出发吧！冒险家：** 曾Taptap首页推荐的冒险游戏。[Android](https://www.seagame.com/mxj/android1.apk)、[iOS](https://apps.apple.com/cn/app/id1367825240)
 
 #### 创业公司
-
-**香橙：** 餐馆SaaS服务，为餐馆提供多端的手机点餐、下单、排队叫号、营销推广解决方案。[官网](http://ivcvc.com)
 
 **波比英语课堂：**幼儿英语启蒙，培养国际宝宝。[App、小程序通用链接](http://m3w.cn/bbyykt)
 
