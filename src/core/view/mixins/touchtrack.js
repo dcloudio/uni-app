@@ -51,8 +51,8 @@ export default {
       let hasTouchStart
       let hasMouseDown
       addListenerToElement(element, 'touchstart', function ($event) {
+        hasTouchStart = true
         if ($event.touches.length === 1 && !$eventOld) {
-          hasTouchStart = true
           $eventOld = $event
           x0 = x1 = $event.touches[0].pageX
           y0 = y1 = $event.touches[0].pageY
@@ -61,7 +61,7 @@ export default {
       })
       addListenerToElement(element, 'mousedown', function ($event) {
         hasMouseDown = true
-        if (!hasTouchStart) {
+        if (!hasTouchStart && !$eventOld) {
           // TODO touches changedTouches
           $eventOld = $event
           x0 = x1 = $event.pageX
@@ -78,7 +78,7 @@ export default {
         }
       })
       const mouseMoveEventListener = this.__mouseMoveEventListener = function ($event) {
-        if (!hasTouchStart && hasMouseDown) {
+        if (!hasTouchStart && hasMouseDown && $eventOld) {
           // TODO target currentTarget touches changedTouches
           const res = fn($event, 'move', $event.pageX, $event.pageY)
           x1 = $event.pageX
@@ -96,7 +96,7 @@ export default {
       })
       const mouseUpEventListener = this.__mouseUpEventListener = function ($event) {
         hasMouseDown = false
-        if (!hasTouchStart) {
+        if (!hasTouchStart && $eventOld) {
           // TODO target currentTarget touches changedTouches
           $eventOld = null
           return fn($event, 'end', $event.pageX, $event.pageY)
