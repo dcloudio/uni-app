@@ -259,6 +259,7 @@ export default {
 		margin-left: -14px;
 		background-color: transparent;
 		z-index: 3;
+		cursor: grab;
 	}
 
 	uni-slider .uni-slider-thumb {

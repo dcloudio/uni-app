@@ -131,6 +131,7 @@ export default {
 		overflow: hidden;
 		color: #000000;
 		background-color: #F8F8F8;
+		cursor: pointer;
 	}
 
 	uni-button[hidden] {
@@ -192,6 +193,7 @@ export default {
 
 	uni-button[disabled] {
 		color: rgba(255, 255, 255, 0.6);
+		cursor: not-allowed;
 	}
 
 	uni-button[disabled][type=default],
@@ -285,6 +287,10 @@ export default {
 
 	uni-button[size=mini][native] .uni-button-cover-view-inner {
 		padding: 0 1.34em;
+	}
+
+	uni-button[loading]:not([disabled]){
+		cursor: progress;
 	}
 
 	uni-button[loading]:before {

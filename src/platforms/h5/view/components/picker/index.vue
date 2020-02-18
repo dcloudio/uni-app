@@ -1,5 +1,6 @@
 <template>
   <uni-picker
+    :disabled="disabled"
     @click.stop="_show"
     v-on="$listeners">
     <div
@@ -438,6 +439,15 @@ export default {
 <style>
 uni-picker {
   display: block;
+  cursor: pointer;
+}
+
+uni-picker[hidden] {
+  display: none;
+}
+
+uni-picker[disabled] {
+  cursor: not-allowed;
 }
 
 .uni-picker-container {
@@ -526,6 +536,7 @@ uni-picker {
   font-size: 17px;
   line-height: 45px;
   overflow: hidden;
+  cursor: pointer;
 }
 
 .uni-picker-container .uni-picker-action.uni-picker-action-cancel {

@@ -596,6 +596,11 @@ export default {
     for (let index = 0, length = swiperItems.length; index < length; index++) {
       let currentSync = this.currentSync
       slidesDots.push(createElement('div', {
+        on: {
+          click: () => {
+            this._animateViewport(this.currentSync = index, this.currentChangeSource = 'click', this.circularEnabled ? 1 : 0)
+          }
+        },
         class: {
           'uni-swiper-dot': true,
           'uni-swiper-dot-active': (index < currentSync + this.displayMultipleItemsNumber && index >= currentSync) || (index < currentSync + this.displayMultipleItemsNumber - length)
