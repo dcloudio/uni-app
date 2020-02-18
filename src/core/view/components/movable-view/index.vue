@@ -658,6 +658,7 @@ uni-movable-view {
   top: 0px;
   left: 0px;
   position: absolute;
+  cursor: grab;
 }
 
 uni-movable-view[hidden] {
