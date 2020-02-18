@@ -13,16 +13,15 @@ import {
 
 function initClick (dom) {
   const MAX_MOVE = 20
-  const hasTouchSupport = navigator.maxTouchPoints
   let x = 0
   let y = 0
-  dom.addEventListener(hasTouchSupport ? 'touchstart' : 'mousedown', (event) => {
-    const info = hasTouchSupport ? event.changedTouches[0] : event
+  dom.addEventListener('touchstart', (event) => {
+    const info = event.changedTouches[0]
     x = info.clientX
     y = info.clientY
   })
-  dom.addEventListener(hasTouchSupport ? 'touchend' : 'mouseup', (event) => {
-    const info = hasTouchSupport ? event.changedTouches[0] : event
+  dom.addEventListener('touchend', (event) => {
+    const info = event.changedTouches[0]
     if (Math.abs(info.clientX - x) < MAX_MOVE && Math.abs(info.clientY - y) < MAX_MOVE) {
       let customEvent = new CustomEvent('click', {
         bubbles: true,
@@ -301,6 +300,7 @@ export default {
     width: 100%;
     will-change: transform;
     padding: 102px 0;
+    cursor: pointer;
   }
 
   .uni-picker-view-content>* {
