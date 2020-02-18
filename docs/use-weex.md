@@ -177,6 +177,30 @@ nvue 的页面跳转，与 weex 不同，仍然遵循 uni-app 的路由模型。
 
 在 uni-app 中，nvue 和 vue 页面可以混搭使用。
 
+推荐使用`uni.$on`,`uni.$emit`的方式进行页面通讯，旧的通讯方式（下面的`uni.postMessage`及`plus.webview.postMessageToUniNView`）不再推荐使用。
+
+**通讯实现方式**
+
+```
+// 接收信息的页面
+// $on(eventName, callback)  
+uni.$on('page-popup', (data) => {  
+    console.log('标题：' + data.title)
+    console.log('内容：' + data.content)
+})  
+
+// 发送信息的页面
+// $emit(eventName, data)  
+uni.$emit('page-popup', {  
+    title: '我是title',  
+    content: '我是content'  
+});
+
+```
+
+
+**使用此页面通讯时注意事项：要在页面卸载前，使用 uni.$off 移除事件监听器。**[参考](https://uniapp.dcloud.io/collocation/frame/communication?id=off)
+
 ### nvue 向 vue 通讯
 
 **步骤：**
