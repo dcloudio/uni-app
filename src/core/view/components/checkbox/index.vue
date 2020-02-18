@@ -1,6 +1,6 @@
 <template>
   <uni-checkbox
-    :disable="disabled"
+    :disabled="disabled"
     v-on="$listeners"
     @click="_onClick">
     <div class="uni-checkbox-wrapper">
