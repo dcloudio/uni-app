@@ -112,8 +112,8 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 		<span style="margin-top:15px;">头条/抖音小程序码</span>
 	</a>
 </div>
-<!-- 
-<b>垃圾分类：</b>垃圾分一分，环境美十分。参与垃圾分类，保护地球家园，共创美好世界。
+
+<!-- <b>垃圾分类：</b>垃圾分一分，环境美十分。参与垃圾分类，保护地球家园，共创美好世界。
 <div style="display:flex;justify-content: space-around;">
 	<a href="#" class="clear-style barcode-view">
 		<img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/wastesep-mp-weixin.png" width="200"/>
@@ -131,10 +131,10 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 		<img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/wastesep-mp-toutiao.png" width="200"/>
 		<span style="margin-top:15px;">头条小程序码</span>
 	</a>
-</div>
+</div> -->
 
 
-<a href="//m3w.cn/__uni__4c6db6e" target="_blank" class="clear-style"><b>UniApp视频教程：</b></a>视频教育App，帮助开发者学习了解uni-app、h5+、mui等DCloud产品。开发者枫桥。
+<!-- <a href="//m3w.cn/__uni__4c6db6e" target="_blank" class="clear-style"><b>UniApp视频教程：</b></a>视频教育App，帮助开发者学习了解uni-app、h5+、mui等DCloud产品。开发者枫桥。
 <div style="display:flex;justify-content: space-around;">
 	<a href="//m3w.cn/__uni__4c6db6e" target="_blank" class="clear-style barcode-view">
 		<img src="//img.cdn.aliyun.dcloud.net.cn/stream/qr/__UNI__4C6DB6E.png" width="200"/>
