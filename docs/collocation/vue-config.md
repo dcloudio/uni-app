@@ -10,12 +10,12 @@ vue.config.js 是一个可选的配置文件，如果项目的根目录中存在
 
 * publicPath  不支持，如果需要配置，请在 manifest.json->h5->router->base 中配置，参考文档：[h5-router](collocation/manifest?id=h5-router)
 * outputDir  不支持
-* assetsDir 固定 static
+* assetsDir 支持，默认值 static
 * pages  不支持
-* runtimeCompiler 固定 false
-* productionSourceMap 固定 false
-* css.extract  H5 平台固定 false，其他平台固定 true
-* parallel 固定 false
+* runtimeCompiler 支持，默认值 false
+* productionSourceMap 支持，默认值 false
+* css.extract  支持，H5 平台默认值 false，其他平台默认值 true
+* parallel 支持，默认值 false
 
 **使用示例**
 
