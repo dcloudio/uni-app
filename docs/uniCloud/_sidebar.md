@@ -10,6 +10,7 @@
 * [日志输出](uniCloud/cf-logger.md)
 * [身份认证](uniCloud/cf-authentication.md)
 * [登录授权](uniCloud/authentication.md)
+* [HTTP触发](uniCloud/http.md)
 * 权限管理
   * [腾讯云](uniCloud/policy-tcb.md)
 <!-- * [阿里云](uniCloud/policy-ali.md) -->
