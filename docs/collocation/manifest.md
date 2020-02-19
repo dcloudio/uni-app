@@ -205,7 +205,7 @@ H5平台是SPA单页应用，普通的SEO信息即加meta字段只能在，自�
 |loading|String|AsyncLoading|页面 js 加载时使用的组件（需注册为全局组件）|
 |error|String|AsyncError|页面 js 加载失败时使用的组件（需注册为全局组件）|
 |delay|Number|200|展示 loading 加载组件的延时时间（页面 js 若在 delay 时间内加载完成，则不会显示 loading 组件）|
-|timeout|Number|3000|页面 js 加载超时时间（超时后展示 error 对应的组件）|
+|timeout|Number|60000|页面 js 加载超时时间（超时后展示 error 对应的组件）|
 
 #### devServer
 |属性|类型|默认值|说明|

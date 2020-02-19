@@ -14,7 +14,7 @@ const defaultAsync = {
   loading: 'AsyncLoading',
   error: 'AsyncError',
   delay: 200,
-  timeout: 3000
+  timeout: 60000
 }
 
 const networkTimeout = {
