@@ -4,6 +4,7 @@ const mkdirp = require('mkdirp')
 const loaderUtils = require('loader-utils')
 
 process.UNI_CLOUD = false
+process.UNI_CLOUD_TCB = false
 process.UNI_CLOUD_ALIYUN = false
 process.env.UNI_CLOUD_PROVIDER = JSON.stringify({})
 
@@ -12,6 +13,7 @@ if (process.env.UNI_CLOUD_SPACES) {
     const spaces = JSON.parse(process.env.UNI_CLOUD_SPACES)
     if (Array.isArray(spaces)) {
       process.UNI_CLOUD = spaces.length > 0
+      process.UNI_CLOUD_TCB = !!spaces.find(space => !space.clientSecret)
       process.UNI_CLOUD_ALIYUN = !!spaces.find(space => space.clientSecret)
       if (spaces.length === 1) {
         const space = spaces[0]
