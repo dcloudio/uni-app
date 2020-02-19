@@ -4,13 +4,15 @@
   * [服务空间](uniCloud/concepts/space.md)
   * [数据库](uniCloud/concepts/database.md)
   * [云函数](uniCloud/concepts/cloudfunction.md)
-* [云函数](uniCloud/cf-functions.md)
+* 云函数
+  * [开发云函数](uniCloud/cf-functions.md)
+  * [日志输出](uniCloud/cf-logger.md)
+  * [身份认证](uniCloud/cf-authentication.md)
+  * [定时触发](uniCloud/trigger.md)
+  * [HTTP触发](uniCloud/http.md)
 * [云数据库](uniCloud/cf-database.md)
 * [云存储](uniCloud/storage.md)
-* [日志输出](uniCloud/cf-logger.md)
-* [身份认证](uniCloud/cf-authentication.md)
 * [登录授权](uniCloud/authentication.md)
-* [HTTP触发](uniCloud/http.md)
 * 权限管理
   * [腾讯云](uniCloud/policy-tcb.md)
 <!-- * [阿里云](uniCloud/policy-ali.md) -->

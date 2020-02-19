@@ -166,7 +166,7 @@ console.log(loginState.isAnonymous) // true
 匿名用户如果要重新使用开发者提供的身份登录，可以调用`auth.signInWithTicket`来进行。[参考](#客户端上使用Ticket登录)
 
 #### 匿名用户转化为自定义用户
-目前UniCloud支持将匿名用户转化为自定义登录用户，此转正用户将会继承匿名用户在云端创建的资源，流程如下：
+目前uniCloud支持将匿名用户转化为自定义登录用户，此转正用户将会继承匿名用户在云端创建的资源，流程如下：
 1. 首先需要按照自定义登录的流程搭建获取自定义登录凭证`ticket`的服务；
 2. 客户端请求接口获取自定义登录凭证`ticket`。**请注意**，此`ticket`必须未注册过uniCloud，换句话说，匿名用户只能转化为新的uniCloud用户；
 3. 客户端调用`auth.linkAndRetrieveDataWithTicket`API，如下：
