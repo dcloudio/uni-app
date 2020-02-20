@@ -6,7 +6,7 @@ const loaderUtils = require('loader-utils')
 process.UNI_CLOUD = false
 process.UNI_CLOUD_TCB = false
 process.UNI_CLOUD_ALIYUN = false
-process.env.UNI_CLOUD_PROVIDER = JSON.stringify({})
+process.env.UNI_CLOUD_PROVIDER = JSON.stringify([])
 
 if (process.env.UNI_CLOUD_SPACES) {
   try {
@@ -18,22 +18,24 @@ if (process.env.UNI_CLOUD_SPACES) {
       if (spaces.length === 1) {
         const space = spaces[0]
         console.log(`本项目的uniCloud使用的默认服务空间spaceId为：${space.id}`)
+      }
+      process.env.UNI_CLOUD_PROVIDER = JSON.stringify(spaces.map(space => {
         if (space.clientSecret) {
-          process.env.UNI_CLOUD_PROVIDER = JSON.stringify({
+          return {
             provider: 'aliyun',
             spaceName: space.name,
             spaceId: space.id,
             clientSecret: space.clientSecret,
             endpoint: space.apiEndpoint
-          })
+          }
         } else {
-          process.env.UNI_CLOUD_PROVIDER = JSON.stringify({
+          return {
             provider: 'tencent',
             spaceName: space.name,
             spaceId: space.id
-          })
+          }
         }
-      }
+      }))
     }
   } catch (e) {}
 }
