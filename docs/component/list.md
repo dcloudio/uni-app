@@ -84,7 +84,7 @@ app端nvue专用组件。在app-nvue下，如果是长列表，使用list组件�
     methods: {
         // 重置 loadmore
         resetLoadMore() {
-            this.$refs["list"].resetloadmore();
+            this.$refs["list"].resetLoadmore();
         }
     }
   }
