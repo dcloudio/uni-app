@@ -16,9 +16,18 @@
 |scroll-with-animation	|Boolean	|false	|在设置滚动条位置时使用动画过渡																	|			|
 |enable-back-to-top		|Boolean	|false	|iOS点击顶部状态栏、安卓双击标题栏时，滚动条返回顶部，只支持竖向								|微信小程序	|
 |show-scrollbar         |Boolean	|false	|控制是否出现滚动条| App-nvue 2.1.5+ |
+|refresher-enabled		|Boolean	|false	|开启自定义下拉刷新|app-vue 2.5.12+,微信小程序基础库2.10.1+|
+|refresher-threshold	|number		|45		|设置自定义下拉刷新阈值|app-vue 2.5.12+,微信小程序基础库2.10.1+|
+|refresher-default-style|string		|"black"|设置自定义下拉刷新默认样式，支持设置 black，white，none，none 表示不使用默认样式|app-vue 2.5.12+,微信小程序基础库2.10.1+|
+|refresher-background	|string		|"#FFF" |设置自定义下拉刷新区域背景颜色|app-vue 2.5.12+,微信小程序基础库2.10.1+|
+|refresher-triggered	|boolean	|false	|设置当前下拉刷新状态，true 表示下拉刷新已经被触发，false 表示下拉刷新未被触发|app-vue 2.5.12+,微信小程序基础库2.10.1+|
 |@scrolltoupper			|EventHandle|		|滚动到顶部/左边，会触发 scrolltoupper 事件														|			|
 |@scrolltolower			|EventHandle|		|滚动到底部/右边，会触发 scrolltolower 事件														|			|
 |@scroll				|EventHandle|		|滚动时触发，event.detail = {scrollLeft, scrollTop, scrollHeight, scrollWidth, deltaX, deltaY}	|&nbsp;|
+|@refresherpulling		|EventHandle|		|自定义下拉刷新控件被下拉|app-vue 2.5.12+,微信小程序基础库2.10.1+|
+|@refresherrefresh		|EventHandle|		|自定义下拉刷新被触发|app-vue 2.5.12+,微信小程序基础库2.10.1+|
+|@refresherrestore		|EventHandle|		|自定义下拉刷新被复位|app-vue 2.5.12+,微信小程序基础库2.10.1+|
+|@refresherabort		|EventHandle|		|自定义下拉刷新被中止|app-vue 2.5.12+,微信小程序基础库2.10.1+|
 
 使用竖向滚动时，需要给 ``<scroll-view>`` 一个固定高度，通过 css 设置 height。
  
@@ -92,7 +101,57 @@ export default {
     }
 }
 ```
- 
+
+**自定义下拉刷新**
+```html
+<template>
+    <view>
+        <scroll-view style="height: 300px;" scroll-y="true" refresher-enabled="true" :refresher-triggered="triggered"
+            :refresher-threshold="100" refresher-background="lightgreen" @refresherpulling="onPulling"
+            @refresherrefresh="onRefresh" @refresherrestore="onRestore" @refresherabort="onAbort"></scroll-view>
+    </view>
+</template>
+```
+
+```javascript
+
+<script>
+    export default {
+        data() {
+            return {
+                triggered: false
+            }
+        },
+        onLoad() {
+            this._freshing = false;
+            setTimeout(() => {
+                this.triggered = true;
+            }, 1000)
+        },
+        methods: {
+            onPulling(e) {
+                console.log("onpulling", e);
+            },
+            onRefresh() {
+                if (this._freshing) return;
+                this._freshing = true;
+                setTimeout(() => {
+                    this.triggered = false;
+                    this._freshing = false;
+                }, 3000)
+            },
+            onRestore() {
+                this.triggered = 'restore'; // 需要重置
+                console.log("onRestore");
+            },
+            onAbort() {
+                console.log("onAbort");
+            }
+        }
+    }
+</script>
+
+```
 ![uniapp](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/img/scroll-view.png)
  
 **Tips**
