@@ -71,7 +71,8 @@ var serviceContext = (function () {
     'saveVideoToPhotosAlbum',
     'createVideoContext',
     'createCameraContext',
-    'createLivePlayerContext'
+    'createLivePlayerContext',
+    'createLivePusherContext'
   ];
 
   const device = [
@@ -3542,6 +3543,84 @@ var serviceContext = (function () {
       : operateVideoPlayer(videoId, pageVm, type, data);
   }
 
+  class LivePusherContext {
+    constructor (id, ctx) {
+      this.id = id;
+      this.ctx = ctx;
+    }
+
+    start (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'start', cbs)
+    }
+
+    stop (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'stop', cbs)
+    }
+
+    pause (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'pause', cbs)
+    }
+
+    resume (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'resume', cbs)
+    }
+
+    switchCamera (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'switchCamera', cbs)
+    }
+
+    snapshot (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'snapshot', cbs)
+    }
+
+    toggleTorch (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'toggleTorch', cbs)
+    }
+
+    playBGM (args) {
+      return invokeVmMethod(this.ctx, 'playBGM', args)
+    }
+
+    stopBGM (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'stopBGM', cbs)
+    }
+
+    pauseBGM (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'pauseBGM', cbs)
+    }
+
+    resumeBGM (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'resumeBGM', cbs)
+    }
+
+    setBGMVolume (cbs) {
+      return invokeVmMethod(this.ctx, 'setBGMVolume', cbs)
+    }
+
+    startPreview (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'startPreview', cbs)
+    }
+
+    stopPreview (args) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'stopPreview', args)
+    }
+  }
+
+  function createLivePusherContext (id, vm) {
+    if (!vm) {
+      return console.warn('uni.createLivePusherContext 必须传入第二个参数，即当前 vm 对象(this)')
+    }
+    const elm = findElmById(id, vm);
+    if (!elm) {
+      return console.warn('Can not find `' + id + '`')
+    }
+    return new LivePusherContext(id, elm)
+  }
+
+  function createLivePusherContext$1 (id, vm) {
+    return createLivePusherContext(id, vm)
+  }
+
   let watchAccelerationId = false;
   let isWatchAcceleration = false;
 
@@ -4885,6 +4964,8 @@ var serviceContext = (function () {
     });
   }
 
+  let maskClickCallback = [];
+
   var tabBar$1 = {
     id: '0',
     init (options, clickCallback) {
@@ -4896,6 +4977,11 @@ var serviceContext = (function () {
       } catch (error) {
         console.log(`uni.requireNativePlugin("uni-tabview") error ${error}`);
       }
+      tabBar.onMaskClick(() => {
+        maskClickCallback.forEach((callback) => {
+          callback();
+        });
+      });
       tabBar && tabBar.onClick(({ index }) => {
         clickCallback(config.list[index], index);
       });
@@ -4962,7 +5048,11 @@ var serviceContext = (function () {
       });
     },
     addEventListener (name, callback) {
-      tabBar.onMaskClick(callback);
+      maskClickCallback.push(callback);
+    },
+    removeEventListener (name, callback) {
+      let callbackIndex = maskClickCallback.indexOf(callback);
+      maskClickCallback.splice(callbackIndex, 1);
     }
   };
 
@@ -6243,7 +6333,7 @@ var serviceContext = (function () {
           statusCode: 0,
           errMsg: 'timeout'
         });
-      }, timeout);
+      }, (timeout + 200));// TODO +200 发消息到原生层有时间开销，以后考虑由原生层回调超时
     }
     const options = {
       method,
@@ -8919,6 +9009,7 @@ var serviceContext = (function () {
     base64ToTempFilePath: base64ToTempFilePath,
     operateMapPlayer: operateMapPlayer$2,
     operateVideoPlayer: operateVideoPlayer$2,
+    createLivePusherContext: createLivePusherContext$1,
     enableAccelerometer: enableAccelerometer,
     addPhoneContact: addPhoneContact,
     openBluetoothAdapter: openBluetoothAdapter,
@@ -12228,19 +12319,27 @@ var serviceContext = (function () {
   }
 
   function initEntryPage () {
-    const argsJsonStr = plus.runtime.arguments;
-    if (!argsJsonStr) {
-      return
-    }
-
     let entryPagePath;
     let entryPageQuery;
 
-    try {
-      const args = JSON.parse(argsJsonStr);
-      entryPagePath = args.path || args.pathName;
-      entryPageQuery = (args.query ? ('?' + args.query) : '');
-    } catch (e) {}
+    const weexPlus = weex.requireModule('plus');
+
+    if (weexPlus.getRedirectInfo) {
+      const info = weexPlus.getRedirectInfo() || {};
+      entryPagePath = info.path;
+      entryPageQuery = info.query ? ('?' + info.query) : '';
+    } else {
+      const argsJsonStr = plus.runtime.arguments;
+      if (!argsJsonStr) {
+        return
+      }
+      try {
+        const args = JSON.parse(argsJsonStr);
+        entryPagePath = args.path || args.pathName;
+        entryPageQuery = args.query ? ('?' + args.query) : '';
+      } catch (e) {}
+    }
+
     if (!entryPagePath || entryPagePath === __uniConfig.entryPagePath) {
       return
     }
@@ -13212,16 +13311,18 @@ var serviceContext = (function () {
 
       Vue.prototype.$nextTick = function nextTick (cb) {
         const renderWatcher = this._watcher;
+        const callback = typeof cb === 'function';
         if (
           renderWatcher &&
           this._$queue.find(watcher => renderWatcher === watcher)
         ) {
-          vdSyncCallbacks.push(cb.bind(this));
+          const result = new Promise((resolve) => {
+            vdSyncCallbacks.push(callback ? cb.bind(this) : resolve);
+          });
+          return callback ? result : undefined
         } else {
           // $nextTick bind vm context
-          Vue.nextTick(() => {
-            cb.call(this);
-          });
+          return Vue.nextTick(callback ? () => cb.call(this) : undefined)
         }
       };
     }

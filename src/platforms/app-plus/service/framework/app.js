@@ -141,19 +141,27 @@ function initTabBar () {
 }
 
 function initEntryPage () {
-  const argsJsonStr = plus.runtime.arguments
-  if (!argsJsonStr) {
-    return
-  }
-
   let entryPagePath
   let entryPageQuery
 
-  try {
-    const args = JSON.parse(argsJsonStr)
-    entryPagePath = args.path || args.pathName
-    entryPageQuery = (args.query ? ('?' + args.query) : '')
-  } catch (e) {}
+  const weexPlus = weex.requireModule('plus')
+
+  if (weexPlus.getRedirectInfo) {
+    const info = weexPlus.getRedirectInfo() || {}
+    entryPagePath = info.path
+    entryPageQuery = info.query ? ('?' + info.query) : ''
+  } else {
+    const argsJsonStr = plus.runtime.arguments
+    if (!argsJsonStr) {
+      return
+    }
+    try {
+      const args = JSON.parse(argsJsonStr)
+      entryPagePath = args.path || args.pathName
+      entryPageQuery = args.query ? ('?' + args.query) : ''
+    } catch (e) {}
+  }
+
   if (!entryPagePath || entryPagePath === __uniConfig.entryPagePath) {
     return
   }
