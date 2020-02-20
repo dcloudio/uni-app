@@ -201,6 +201,9 @@ export default {
 </style>
 ```
 
+**激励视频广告**
+文档地址：[https://uniapp.dcloud.io/api/ad/rewarded-video-ad](https://uniapp.dcloud.io/api/ad/rewarded-video-ad)
+
 **注意**
 - App端广告开通指南和收益相关问题：[https://ask.dcloud.net.cn/article/36769](https://ask.dcloud.net.cn/article/36769)
 - App端除了ad组件，还支持开屏。详见[uni-AD官网](https://uniad.dcloud.net.cn/)
