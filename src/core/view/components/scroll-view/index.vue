@@ -139,7 +139,7 @@ export default {
       lastScrollToLowerTime: 0,
       refresherHeight: 0,
       refreshRotate: 0,
-      refreshState: 'pulling'
+      refreshState: ''
     }
   },
   computed: {
@@ -229,7 +229,7 @@ export default {
         event.stopPropagation()
       }
 
-      if (self.refresherEnabled && self.refreshState !== 'refreshing' && touchStart && main.scrollTop === 0) {
+      if (self.refresherEnabled && self.refreshState === 'pulling') {
         let dy = y - touchStart.y
         self.refresherHeight = dy
 
