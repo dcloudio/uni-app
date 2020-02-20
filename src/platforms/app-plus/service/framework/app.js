@@ -119,10 +119,6 @@ function initTabBar () {
   __uniConfig.tabBar.selected = 0
 
   const selected = __uniConfig.tabBar.list.findIndex(page => page.pagePath === __uniConfig.entryPagePath)
-  if (selected !== -1) {
-    // 取当前 tab 索引值
-    __uniConfig.tabBar.selected = selected
-  }
 
   tabBar.init(__uniConfig.tabBar, (item, index) => {
     uni.switchTab({
@@ -138,6 +134,12 @@ function initTabBar () {
       }
     })
   })
+
+  if (selected !== -1) {
+    // 取当前 tab 索引值
+    __uniConfig.tabBar.selected = selected
+    selected !== 0 && tabBar.switchTab(__uniConfig.entryPagePath)
+  }
 }
 
 function initEntryPage () {

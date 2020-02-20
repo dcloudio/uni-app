@@ -12297,10 +12297,6 @@ var serviceContext = (function () {
     __uniConfig.tabBar.selected = 0;
 
     const selected = __uniConfig.tabBar.list.findIndex(page => page.pagePath === __uniConfig.entryPagePath);
-    if (selected !== -1) {
-      // 取当前 tab 索引值
-      __uniConfig.tabBar.selected = selected;
-    }
 
     tabBar$1.init(__uniConfig.tabBar, (item, index) => {
       uni.switchTab({
@@ -12316,6 +12312,12 @@ var serviceContext = (function () {
         }
       });
     });
+
+    if (selected !== -1) {
+      // 取当前 tab 索引值
+      __uniConfig.tabBar.selected = selected;
+      selected !== 0 && tabBar$1.switchTab(__uniConfig.entryPagePath);
+    }
   }
 
   function initEntryPage () {
