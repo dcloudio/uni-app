@@ -7530,6 +7530,10 @@ var serviceContext = (function () {
       delete webviewStyle.popGesture;
     }
 
+    if (routeOptions.meta.isQuit) { // 退出
+      webviewStyle.popGesture = plus.os.name === 'iOS' ? 'appback' : 'none';
+    }
+
     // TODO 下拉刷新
 
     if (path && routeOptions.meta.isNVue) {
