@@ -21,7 +21,8 @@
 
 设置live-pusher组件的推流地址，推流视频模式等。
 
-属性|类型 |默认值|必填|说明:--|:--|:--|:--|:--|
+属性|类型 |默认值|必填|说明
+:--|:--|:--|:--|:--|
 url|string| |是|推流地址，支持RTMP协议。
 mode |string|SD|否|推流视频模式，可取值：SD（标清）, HD（高清）, FHD（超清）。
 aspect |string|3:2|否|视频宽高比例
@@ -35,7 +36,7 @@ whiteness|Number|0|否|美白，取值范围 0-9（iOS取值范围为1） ，0 �
 ```html
 <template>
 		<view>
-			<live-pusher id='livePusher1' ref="livePusher" class="livePusher" url=""
+			<live-pusher id='livePusher' ref="livePusher" class="livePusher" url=""
 			mode="SD" :muted="true" :enable-camera="true" :auto-focus="true" :beauty="1" whiteness="2"
 			aspect="9:16" @statechange="statechange" @netstatus="netstatus" @error = "error"
 			></live-pusher>
