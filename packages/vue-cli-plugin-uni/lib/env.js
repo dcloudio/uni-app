@@ -40,6 +40,10 @@ if (process.env.UNI_CLOUD_SPACES) {
   } catch (e) {}
 }
 
+if (process.UNI_CLOUD_TCB) {
+  console.warn(`当前项目使用了腾讯云云服务空间，需在uniCloud后台开启匿名登录，详见：https://uniapp.dcloud.io/uniCloud/authentication?id=auth-anonymously`)
+}
+
 if (
   process.UNI_CLOUD &&
   process.env.UNI_PLATFORM === 'h5' &&
