@@ -663,7 +663,9 @@ h5 平台下拉刷新动画，只有 circle 类型。
 - A：参考[导航栏开发指南](http://ask.dcloud.net.cn/article/34921)
 
 # easycom
+
 > `HBuilderX 2.5.5`起支持`easycom`组件模式。
+
 传统vue组件，需要安装、引用、注册，三个步骤后才能使用组件。`easycom`将其精简为一步。
 只要组件安装在项目的components目录下，并符合`components/组件名称/组件名称.vue`目录结构。就可以不用引用、注册，直接在页面中使用。
 如下：
