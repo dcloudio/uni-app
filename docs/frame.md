@@ -1196,6 +1196,7 @@ export default {
 renderjs，以 vue 组件的写法运行在 view 层。
 
 ### 使用方式
+
 设置 script 节点的 lang 为 renderjs
 ```html
 <script module="test" lang="renderjs">
@@ -1212,7 +1213,7 @@ renderjs，以 vue 组件的写法运行在 view 层。
 
 ### 示例
 
-* [通过renderjs，在app和h5端使用完成的 echarts](https://ext.dcloud.net.cn/plugin?id=1207)
+* [通过renderjs，在app和h5端使用完整的 `echarts`](https://ext.dcloud.net.cn/plugin?id=1207)
 
 ### 功能详解
 - 大幅降低逻辑层和视图层的通讯损耗，提供高性能视图交互能力
@@ -1230,7 +1231,7 @@ renderjs，以 vue 组件的写法运行在 view 层。
 
 这是一个基于`renderjs`运行echart完整版的示例：[renderjs版echart](https://ext.dcloud.net.cn/plugin?id=1207)
 
-同理，f2、threejs等库都可以这么用。
+同理，`f2`、`threejs`等库都可以这么用。
 
 
 ### 注意事项
