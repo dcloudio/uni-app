@@ -44,11 +44,11 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 <a href="https://zqact.tenpay.com/chaogu/" target="_blank" class="clear-style"><b>腾讯全民模拟炒股大赛：</b></a> 由腾讯金融科技倾力打造的证券投资者教育平台。
 <div style="display:flex;justify-content: space-around;">
 	<a href="javascript:;" target="_blank" class="clear-style barcode-view">
-		<img src="https://dcloud-img.oss-cn-hangzhou.aliyuncs.com/uni-app/case/tx-chaogu-mp-weixin.jpg" width="200"/>
+		<img src="https://img.cdn.aliyun.dcloud.net.cn/uni-app/case/tx-chaogu-mp-weixin.jpg" width="200"/>
 		<span style="margin-top:15px;">微信小程序码</span>
 	</a>
     <a href="javascript:;" target="_blank" class="clear-style barcode-view">
-		<img src="https://dcloud-img.oss-cn-hangzhou.aliyuncs.com/uni-app/case/tx-chaogu-h5.png" width="200"/>
+		<img src="https://img.cdn.aliyun.dcloud.net.cn/uni-app/case/tx-chaogu-h5.png" width="200"/>
 		<span style="margin-top:15px;">H5码（请使用微信扫码）</span>
 	</a>
 </div>
