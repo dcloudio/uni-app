@@ -7,7 +7,7 @@
   * 在原生App里集成uni小程序sdk，[参考](https://ask.dcloud.net.cn/docs/#https://ask.dcloud.net.cn/article/36941)
   * 如果不想集成原生sdk，那就把uni-app代码发布成H5方式，在原生App里通过webview打开。
 
-如果只是想离线打包，不扩展原生能力，那么上述两种都不合适，请在HBuilderX的发行菜单里点击离线打包。
+如果应用是uni-app开发为主，只是想离线打包，那么不应该使用uni小程序sdk，请在HBuilderX的发行菜单里点击离线打包。
 另注意离线打包无法享受插件市场的付费原生插件，如有相关需求需自己进行原生插件开发，参考[插件市场](https://ext.dcloud.net.cn/)右上角的原生插件开发教程。
 
 **uni-app和原生小程序混合问题：** 
