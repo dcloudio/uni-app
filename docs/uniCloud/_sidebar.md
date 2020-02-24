@@ -11,13 +11,13 @@
 * [同时连多服务空间](uniCloud/init.md)
 * [示例及源码](uniCloud/resource.md)
 * [常见问题](uniCloud/faq.md)
-
 <!--  * [云存储](uniCloud/cf-storage.md) -->
 <!--* [身份认证](uniCloud/cf-authentication.md) -->
 <!-- * [登录授权](uniCloud/authentication.md) -->
 <!-- ** 权限管理-->
 <!-- * [腾讯云](uniCloud/policy-tcb.md) -->
 <!-- * [阿里云](uniCloud/policy-ali.md) -->
+* [更新日志](uniCloud/release.md)
 
 <li></li>
 <div class="contact-box">
