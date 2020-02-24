@@ -1,5 +1,6 @@
 <template>
   <uni-picker
+    :disabled="disabled"
     @click.stop="_show"
     v-on="$listeners">
     <div
@@ -55,6 +56,42 @@
 import { emitter } from 'uni-mixins'
 import { formatDateTime } from 'uni-shared'
 
+function getDefaultStartValue () {
+  if (this.mode === mode.TIME) {
+    return '00:00'
+  }
+  if (this.mode === mode.DATE) {
+    let year = new Date().getFullYear() - 100
+    switch (this.fields) {
+      case fields.YEAR:
+        return year
+      case fields.MONTH:
+        return year + '-01'
+      case fields.DAY:
+        return year + '-01-01'
+    }
+  }
+  return ''
+}
+
+function getDefaultEndValue () {
+  if (this.mode === mode.TIME) {
+    return '23:59'
+  }
+  if (this.mode === mode.DATE) {
+    let year = new Date().getFullYear() + 100
+    switch (this.fields) {
+      case fields.YEAR:
+        return year
+      case fields.MONTH:
+        return year + '-12'
+      case fields.DAY:
+        return year + '-12-31'
+    }
+  }
+  return ''
+}
+
 const mode = {
   SELECTOR: 'selector',
   MULTISELECTOR: 'multiSelector',
@@ -106,43 +143,11 @@ export default {
     },
     start: {
       type: String,
-      default () {
-        if (this.mode === mode.TIME) {
-          return '00:00'
-        }
-        if (this.mode === mode.DATE) {
-          let year = new Date().getFullYear() - 100
-          switch (this.fields) {
-            case fields.YEAR:
-              return year
-            case fields.MONTH:
-              return year + '-01'
-            case fields.DAY:
-              return year + '-01-01'
-          }
-        }
-        return ''
-      }
+      default: getDefaultStartValue
     },
     end: {
       type: String,
-      default () {
-        if (this.mode === mode.TIME) {
-          return '23:59'
-        }
-        if (this.mode === mode.DATE) {
-          let year = new Date().getFullYear() + 100
-          switch (this.fields) {
-            case fields.YEAR:
-              return year
-            case fields.MONTH:
-              return year + '-12'
-            case fields.DAY:
-              return year + '-12-31'
-          }
-        }
-        return ''
-      }
+      default: getDefaultEndValue
     },
     disabled: {
       type: [Boolean, String],
@@ -185,24 +190,10 @@ export default {
       }
     },
     startArray () {
-      var splitStr = this.mode === mode.DATE ? '-' : ':'
-      var array = this.mode === mode.DATE ? this.dateArray : this.timeArray
-      var val = this.start.split(splitStr).map((val, i) => array[i].indexOf(
-        val))
-      if (val.indexOf(-1) >= 0) {
-        val = array.map(() => 0)
-      }
-      return val
+      return this._getDateValueArray(this.start, getDefaultStartValue.bind(this)())
     },
     endArray () {
-      var splitStr = this.mode === mode.DATE ? '-' : ':'
-      var array = this.mode === mode.DATE ? this.dateArray : this.timeArray
-      var val = this.end.split(splitStr).map((val, i) => array[i].indexOf(
-        val))
-      if (val.indexOf(-1) >= 0) {
-        val = array.map((val) => val.length - 1)
-      }
-      return val
+      return this._getDateValueArray(this.end, getDefaultEndValue.bind(this)())
     },
     units () {
       switch (this.mode) {
@@ -241,13 +232,12 @@ export default {
         if (this.mode === mode.DATE) {
           const dateArray = this.dateArray
           let max = dateArray[2].length
-          let day = dateArray[2][valueArray[2]]
+          let day = Number(dateArray[2][valueArray[2]]) || 1
           let realDay = new Date(
             `${dateArray[0][valueArray[0]]}/${
               dateArray[1][valueArray[1]]
             }/${day}`
           ).getDate()
-          day = Number(day)
           if (realDay < day) {
             valueArray[2] -= realDay + max - day
           }
@@ -367,48 +357,14 @@ export default {
           valueArray = [...val]
           break
         case mode.TIME:
-          var timeValTestFail = false
-          if (typeof this.value !== 'string') {
-            timeValTestFail = true
-          } else {
-            val.split(':').map((val, i) => {
-              var valIndex = this.timeArray[i].indexOf(val)
-              if (valIndex === -1) {
-                timeValTestFail = true
-              }
-            })
-          }
-          // 处理默认值为当前时间
-          if (timeValTestFail) {
-            val = formatDateTime({
-              mode: mode.TIME
-            })
-          }
-          valueArray = val
-            .split(':')
-            .map((val, i) => this.timeArray[i].indexOf(val))
+          valueArray = this._getDateValueArray(val, formatDateTime({
+            mode: mode.TIME
+          }))
           break
         case mode.DATE:
-          var dateValTestFail = false
-          if (typeof this.value !== 'string') {
-            dateValTestFail = true
-          } else {
-            val.split('-').map((val, i) => {
-              var valIndex = this.dateArray[i].indexOf(val)
-              if (valIndex === -1) {
-                dateValTestFail = true
-              }
-            })
-          }
-          // 处理默认值为当前日期
-          if (dateValTestFail) {
-            val = formatDateTime({
-              mode: mode.DATE
-            })
-          }
-          valueArray = val
-            .split('-')
-            .map((val, i) => this.dateArray[i].indexOf(val))
+          valueArray = this._getDateValueArray(val, formatDateTime({
+            mode: mode.DATE
+          }))
           break
       }
       this.oldValueArray = [...valueArray]
@@ -430,6 +386,29 @@ export default {
             .map((val, i) => this.dateArray[i][val])
             .join('-')
       }
+    },
+    _getDateValueArray (valueStr, defaultValue) {
+      const splitStr = this.mode === mode.DATE ? '-' : ':'
+      const array = this.mode === mode.DATE ? this.dateArray : this.timeArray
+      let max = 3
+      switch (this.fields) {
+        case fields.YEAR:
+          max = 1
+          break
+        case fields.MONTH:
+          max = 2
+          break
+      }
+      const inputArray = String(valueStr).split(splitStr)
+      let value = []
+      for (let i = 0; i < max; i++) {
+        const val = inputArray[i]
+        value.push(array[i].indexOf(val))
+      }
+      if (value.indexOf(-1) >= 0) {
+        value = defaultValue ? this._getDateValueArray(defaultValue) : value.map(() => 0)
+      }
+      return value
     },
     _change () {
       this._close()
@@ -460,6 +439,15 @@ export default {
 <style>
 uni-picker {
   display: block;
+  cursor: pointer;
+}
+
+uni-picker[hidden] {
+  display: none;
+}
+
+uni-picker[disabled] {
+  cursor: not-allowed;
 }
 
 .uni-picker-container {
@@ -548,6 +536,7 @@ uni-picker {
   font-size: 17px;
   line-height: 45px;
   overflow: hidden;
+  cursor: pointer;
 }
 
 .uni-picker-container .uni-picker-action.uni-picker-action-cancel {

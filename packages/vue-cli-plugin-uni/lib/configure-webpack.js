@@ -159,7 +159,7 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
     }
 
     // js preprocess
-    updateJsLoader(rawRules, 'foo.js', /^babel-loader/, {
+    updateJsLoader(rawRules, 'foo.js', /^(.*[/\\])?babel-loader/, {
       loader: resolve('packages/webpack-preprocess-loader'),
       options: jsPreprocessOptions
     })

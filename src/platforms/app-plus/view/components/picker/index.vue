@@ -27,6 +27,7 @@ function padLeft (num) {
   return num > 9 ? num : (`0${num}`)
 }
 function getDate (str, mode_) {
+  str = String(str || '')
   const date = new Date()
   if (mode_ === mode.TIME) {
     str = str.split(':')
@@ -72,10 +73,7 @@ export default {
     },
     fields: {
       type: String,
-      default: 'day',
-      validator (val) {
-        return Object.values(fields).indexOf(val) >= 0
-      }
+      default: ''
     },
     start: {
       type: String,
@@ -90,7 +88,7 @@ export default {
               return year
             case fields.MONTH:
               return year + '-01'
-            case fields.DAY:
+            default:
               return year + '-01-01'
           }
         }
@@ -110,7 +108,7 @@ export default {
               return year
             case fields.MONTH:
               return year + '-12'
-            case fields.DAY:
+            default:
               return year + '-12-31'
           }
         }
@@ -151,7 +149,7 @@ export default {
       this._showPicker(Object.assign({}, this.$props))
     },
     _showPicker (data) {
-      if (this.mode === mode.TIME || this.mode === mode.DATE) {
+      if ((data.mode === mode.TIME || data.mode === mode.DATE) && !data.fields) {
         plus.nativeUI[this.mode === mode.TIME ? 'pickTime' : 'pickDate']((res) => {
           const date = res.date
           this.$trigger('change', {}, {
@@ -167,6 +165,7 @@ export default {
           maxDate: getDate(this.end, mode.DATE)
         })
       } else {
+        data.fields = Object.values(fields).includes(data.fields) ? data.fields : fields.DAY
         let res = { event: 'cancel' }
         this.page = showPage({
           url: '__uniapppicker',

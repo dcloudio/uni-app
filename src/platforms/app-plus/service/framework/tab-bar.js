@@ -94,6 +94,8 @@ function showTabBar (animation) {
   })
 }
 
+let maskClickCallback = []
+
 export default {
   id: '0',
   init (options, clickCallback) {
@@ -105,6 +107,11 @@ export default {
     } catch (error) {
       console.log(`uni.requireNativePlugin("uni-tabview") error ${error}`)
     }
+    tabBar.onMaskClick(() => {
+      maskClickCallback.forEach((callback) => {
+        callback()
+      })
+    })
     tabBar && tabBar.onClick(({ index }) => {
       clickCallback(config.list[index], index)
     })
@@ -171,6 +178,10 @@ export default {
     })
   },
   addEventListener (name, callback) {
-    tabBar.onMaskClick(callback)
+    maskClickCallback.push(callback)
+  },
+  removeEventListener (name, callback) {
+    let callbackIndex = maskClickCallback.indexOf(callback)
+    maskClickCallback.splice(callbackIndex, 1)
   }
 }

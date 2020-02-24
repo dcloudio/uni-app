@@ -1,8 +1,33 @@
 const path = require('path')
 
 module.exports = function getSplitChunks () {
+  const {
+    normalizePath
+  } = require('@dcloudio/uni-cli-shared')
+
   if (process.env.UNI_USING_V3) {
-    return false
+    if (!process.UNI_CONFUSION) { // 无加密
+      return false
+    }
+    return {
+      cacheGroups: {
+        vendor: {
+          minSize: 0,
+          minChunks: 1,
+          test: function (module) {
+            if (!module.resource) {
+              return false
+            }
+            if (process.UNI_CONFUSION.includes(normalizePath(module.resource))) {
+              return true
+            }
+            return false
+          },
+          name: 'app-confusion',
+          chunks: 'all'
+        }
+      }
+    }
   }
   if (!process.env.UNI_USING_COMPONENTS) {
     return {
@@ -15,10 +40,6 @@ module.exports = function getSplitChunks () {
       }
     }
   }
-
-  const {
-    normalizePath
-  } = require('@dcloudio/uni-cli-shared')
 
   const mainPath = normalizePath(path.resolve(process.env.UNI_INPUT_DIR, 'main.'))
 

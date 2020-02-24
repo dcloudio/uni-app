@@ -105,7 +105,7 @@ function updateForIterator (el, state) {
 function updateForEleId (el, state) {
   updateForIterator(el, state)
   if (el.for) {
-    const it = el.$parentIterator3 ? (el.$parentIterator3 + '+' + el.iterator3) : el.iterator3
+    const it = el.$parentIterator3 ? (el.$parentIterator3 + '+' + "'-'" + '+' + el.iterator3) : el.iterator3
     updateEleId(el, it, state)
   }
 }

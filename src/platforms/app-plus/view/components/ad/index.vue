@@ -167,7 +167,7 @@ export default {
       getAdData(adpid || this.adpid, this.position.width, (data) => {
         this._fillData(data)
       }, (err) => {
-        this.$trigger('error', err)
+        this.$trigger('error', {}, err)
       })
     },
     _fillData (data) {

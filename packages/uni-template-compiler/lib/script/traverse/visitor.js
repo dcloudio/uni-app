@@ -59,7 +59,7 @@ function addVueId (path, state) {
     state.options.$vueId = 1
   }
   const hashId = state.options.hashId
-  const vueId = String((hashId ? (hashId + '-') : '') + (state.options.$vueId++))
+  const vueId = (hashId ? (hashId + '-') : '') + (state.options.$vueId++)
 
   let value
 

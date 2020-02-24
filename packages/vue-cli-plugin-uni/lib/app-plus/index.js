@@ -73,11 +73,11 @@ const v3 = {
       webpackConfig.optimization.runtimeChunk = {
         name: 'app-config'
       }
+      webpackConfig.optimization.splitChunks = require('../split-chunks')()
     } else if (isAppView) {
       webpackConfig.optimization.runtimeChunk = false
+      webpackConfig.optimization.splitChunks = false
     }
-
-    webpackConfig.optimization.splitChunks = false
 
     let devtool = false
 

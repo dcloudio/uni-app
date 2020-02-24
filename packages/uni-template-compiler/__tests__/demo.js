@@ -19,12 +19,7 @@ const scopedPath = path.resolve(__dirname, '../../')
 const compiler = require('../lib')
 const res = compiler.compile(
   `
-<view class="h-page">
-    <slot></slot>
-    <h-dialog></h-dialog>
-    <h-navbar></h-navbar>
-    <h-toast></h-toast>
-  </view>
+<text v-if="a">1</text><text v-else-if="b">2</text><text v-else-if="c">3</text><text v-else>d</text>
 `, {
     miniprogram: true,
     resourcePath: '/User/fxy/Documents/test.wxml',
@@ -37,9 +32,9 @@ const res = compiler.compile(
     mp: {
       platform: 'mp-weixin'
     },
-    filterModules: ['swipe']
+    filterModules: ['swipe'],
     // service: true,
-    // view: true
+    view: true
 
   })
 console.log(require('util').inspect(res, {

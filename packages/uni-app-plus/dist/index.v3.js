@@ -71,7 +71,8 @@ var serviceContext = (function () {
     'saveVideoToPhotosAlbum',
     'createVideoContext',
     'createCameraContext',
-    'createLivePlayerContext'
+    'createLivePlayerContext',
+    'createLivePusherContext'
   ];
 
   const device = [
@@ -213,6 +214,10 @@ var serviceContext = (function () {
     'setPageMeta'
   ];
 
+  const ad = [
+    'createRewardedVideoAd'
+  ];
+
   const apis = [
     ...base,
     ...network,
@@ -226,7 +231,8 @@ var serviceContext = (function () {
     ...event,
     ...file,
     ...canvas,
-    ...third
+    ...third,
+    ...ad
   ];
 
   var apis_1 = apis;
@@ -290,10 +296,6 @@ var serviceContext = (function () {
   function getLen (str = '') {
     /* eslint-disable no-control-regex */
     return ('' + str).replace(/[^\x00-\xff]/g, '**').length
-  }
-
-  function guid () {
-    return Math.floor(4294967296 * (1 + Math.random())).toString(16).slice(1)
   }
 
   function debounce (fn, delay) {
@@ -1423,21 +1425,26 @@ var serviceContext = (function () {
     closeSocket: closeSocket
   });
 
+  // App端可以只使用files不传filePath和name
+
   const uploadFile = {
     url: {
       type: String,
       required: true
     },
+    files: {
+      type: Array
+    },
     filePath: {
       type: String,
-      required: true,
       validator (value, params) {
-        params.type = getRealPath(value);
+        if (value) {
+          params.type = getRealPath(value);
+        }
       }
     },
     name: {
-      type: String,
-      required: true
+      type: String
     },
     header: {
       type: Object,
@@ -2328,7 +2335,12 @@ var serviceContext = (function () {
       } else if (res.errMsg.indexOf(':cancel') !== -1) {
         res.errMsg = apiName + ':cancel';
       } else if (res.errMsg.indexOf(':fail') !== -1) {
-        res.errMsg = apiName + ':fail' + res.errMsg.substr(res.errMsg.indexOf(' '));
+        let errDetail = '';
+        let spaceIndex = res.errMsg.indexOf(' ');
+        if (spaceIndex > -1) {
+          errDetail = res.errMsg.substr(spaceIndex);
+        }
+        res.errMsg = apiName + ':fail' + errDetail;
       }
 
       const errMsg = res.errMsg;
@@ -3529,6 +3541,84 @@ var serviceContext = (function () {
     pageVm.$page.meta.isNVue
       ? operateVideoPlayer$1(videoId, pageVm, type, data)
       : operateVideoPlayer(videoId, pageVm, type, data);
+  }
+
+  class LivePusherContext {
+    constructor (id, ctx) {
+      this.id = id;
+      this.ctx = ctx;
+    }
+
+    start (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'start', cbs)
+    }
+
+    stop (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'stop', cbs)
+    }
+
+    pause (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'pause', cbs)
+    }
+
+    resume (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'resume', cbs)
+    }
+
+    switchCamera (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'switchCamera', cbs)
+    }
+
+    snapshot (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'snapshot', cbs)
+    }
+
+    toggleTorch (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'toggleTorch', cbs)
+    }
+
+    playBGM (args) {
+      return invokeVmMethod(this.ctx, 'playBGM', args)
+    }
+
+    stopBGM (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'stopBGM', cbs)
+    }
+
+    pauseBGM (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'pauseBGM', cbs)
+    }
+
+    resumeBGM (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'resumeBGM', cbs)
+    }
+
+    setBGMVolume (cbs) {
+      return invokeVmMethod(this.ctx, 'setBGMVolume', cbs)
+    }
+
+    startPreview (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'startPreview', cbs)
+    }
+
+    stopPreview (args) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'stopPreview', args)
+    }
+  }
+
+  function createLivePusherContext (id, vm) {
+    if (!vm) {
+      return console.warn('uni.createLivePusherContext 必须传入第二个参数，即当前 vm 对象(this)')
+    }
+    const elm = findElmById(id, vm);
+    if (!elm) {
+      return console.warn('Can not find `' + id + '`')
+    }
+    return new LivePusherContext(id, elm)
+  }
+
+  function createLivePusherContext$1 (id, vm) {
+    return createLivePusherContext(id, vm)
   }
 
   let watchAccelerationId = false;
@@ -4874,6 +4964,8 @@ var serviceContext = (function () {
     });
   }
 
+  let maskClickCallback = [];
+
   var tabBar$1 = {
     id: '0',
     init (options, clickCallback) {
@@ -4885,6 +4977,11 @@ var serviceContext = (function () {
       } catch (error) {
         console.log(`uni.requireNativePlugin("uni-tabview") error ${error}`);
       }
+      tabBar.onMaskClick(() => {
+        maskClickCallback.forEach((callback) => {
+          callback();
+        });
+      });
       tabBar && tabBar.onClick(({ index }) => {
         clickCallback(config.list[index], index);
       });
@@ -4951,7 +5048,11 @@ var serviceContext = (function () {
       });
     },
     addEventListener (name, callback) {
-      tabBar.onMaskClick(callback);
+      maskClickCallback.push(callback);
+    },
+    removeEventListener (name, callback) {
+      let callbackIndex = maskClickCallback.indexOf(callback);
+      maskClickCallback.splice(callbackIndex, 1);
     }
   };
 
@@ -6232,7 +6333,7 @@ var serviceContext = (function () {
           statusCode: 0,
           errMsg: 'timeout'
         });
-      }, timeout);
+      }, (timeout + 200));// TODO +200 发消息到原生层有时间开销，以后考虑由原生层回调超时
     }
     const options = {
       method,
@@ -6483,7 +6584,7 @@ var serviceContext = (function () {
     }
     for (const name in formData) {
       if (formData.hasOwnProperty(name)) {
-        uploader.addData(name, formData[name]);
+        uploader.addData(name, String(formData[name]));
       }
     }
     if (files && files.length) {
@@ -7429,6 +7530,10 @@ var serviceContext = (function () {
       delete webviewStyle.popGesture;
     }
 
+    if (routeOptions.meta.isQuit) { // 退出
+      webviewStyle.popGesture = plus.os.name === 'iOS' ? 'appback' : 'none';
+    }
+
     // TODO 下拉刷新
 
     if (path && routeOptions.meta.isNVue) {
@@ -8229,6 +8334,9 @@ var serviceContext = (function () {
     // 查找当前 tabBarPage，且设置 visible
     getCurrentPages(true).forEach(page => {
       if (('/' + page.route) === path) {
+        if (!page.$page.meta.visible) {
+          page.$vm.__call_hook('onShow');
+        }
         page.$page.meta.visible = true;
         tabBarPage = page;
       } else {
@@ -8239,7 +8347,6 @@ var serviceContext = (function () {
     });
 
     if (tabBarPage) {
-      tabBarPage.$vm.__call_hook('onShow');
       tabBarPage.$getAppWebview().show('none');
     } else {
       return showWebview(registerPage({
@@ -8791,6 +8898,98 @@ var serviceContext = (function () {
       : requestComponentInfo(pageVm, queue, callback);
   }
 
+  const eventNames = [
+    'load',
+    'close',
+    'error'
+  ];
+
+  const ERROR_CODE_LIST = [-5001, -5002, -5003, -5004, -5005, -5006];
+
+  class RewardedVideoAd {
+    constructor (adpid) {
+      this._options = {
+        adpid: adpid
+      };
+
+      const _callbacks = this._callbacks = {};
+      eventNames.forEach(item => {
+        _callbacks[item] = [];
+        const name = item[0].toUpperCase() + item.substr(1);
+        this[`on${name}`] = function (callback) {
+          _callbacks[item].push(callback);
+        };
+      });
+
+      this._isLoad = false;
+      this._adError = '';
+      this._loadPromiseResolve = null;
+      this._loadPromiseReject = null;
+      const rewardAd = this._rewardAd = plus.ad.createRewardedVideoAd(this._options);
+      rewardAd.onLoad((e) => {
+        this._isLoad = true;
+        this._dispatchEvent('load', {});
+        if (this._loadPromiseResolve != null) {
+          this._loadPromiseResolve();
+          this._loadPromiseResolve = null;
+        }
+      });
+      rewardAd.onClose((e) => {
+        this._loadAd();
+        this._dispatchEvent('close', { isEnded: e.isEnded });
+      });
+      rewardAd.onError((e) => {
+        const { code, message } = e;
+        const data = { code: code, errMsg: message };
+        this._adError = message;
+        this._dispatchEvent('error', data);
+        if ((code === -5005 || ERROR_CODE_LIST.index(code) === -1) && this._loadPromiseReject != null) {
+          this._loadPromiseReject(data);
+          this._loadPromiseReject = null;
+        }
+      });
+      this._loadAd();
+    }
+    load () {
+      return new Promise((resolve, reject) => {
+        if (this._isLoad) {
+          resolve();
+          return
+        }
+        this._loadPromiseResolve = resolve;
+        this._loadPromiseReject = reject;
+        this._loadAd();
+      })
+    }
+    show () {
+      return new Promise((resolve, reject) => {
+        if (this._isLoad) {
+          this._rewardAd.show();
+          resolve();
+        } else {
+          reject(new Error(this._adError));
+        }
+      })
+    }
+    _loadAd () {
+      this._isLoad = false;
+      this._rewardAd.load();
+    }
+    _dispatchEvent (name, data) {
+      this._callbacks[name].forEach(callback => {
+        if (typeof callback === 'function') {
+          callback(data || {});
+        }
+      });
+    }
+  }
+
+  function createRewardedVideoAd ({
+    adpid = ''
+  } = {}) {
+    return new RewardedVideoAd(adpid)
+  }
+
 
 
   var api = /*#__PURE__*/Object.freeze({
@@ -8814,6 +9013,7 @@ var serviceContext = (function () {
     base64ToTempFilePath: base64ToTempFilePath,
     operateMapPlayer: operateMapPlayer$2,
     operateVideoPlayer: operateVideoPlayer$2,
+    createLivePusherContext: createLivePusherContext$1,
     enableAccelerometer: enableAccelerometer,
     addPhoneContact: addPhoneContact,
     openBluetoothAdapter: openBluetoothAdapter,
@@ -8920,7 +9120,8 @@ var serviceContext = (function () {
     setTabBarStyle: setTabBarStyle$2,
     hideTabBar: hideTabBar$2,
     showTabBar: showTabBar$2,
-    requestComponentInfo: requestComponentInfo$2
+    requestComponentInfo: requestComponentInfo$2,
+    createRewardedVideoAd: createRewardedVideoAd
   });
 
   var platformApi = Object.assign(Object.create(null), api, eventApis);
@@ -8956,7 +9157,7 @@ var serviceContext = (function () {
     return page && page.$page.id
   }
 
-  const eventNames = [
+  const eventNames$1 = [
     'canplay',
     'play',
     'pause',
@@ -9021,7 +9222,7 @@ var serviceContext = (function () {
       this.id = id;
       this._callbacks = {};
       this._options = {};
-      eventNames.forEach(name => {
+      eventNames$1.forEach(name => {
         this._callbacks[name.toLowerCase()] = [];
       });
       props.forEach(item => {
@@ -9075,7 +9276,7 @@ var serviceContext = (function () {
     }
   }
 
-  eventNames.forEach(item => {
+  eventNames$1.forEach(item => {
     const name = item[0].toUpperCase() + item.substr(1);
     item = item.toLowerCase();
     InnerAudioContext.prototype[`on${name}`] = function (callback) {
@@ -9140,7 +9341,7 @@ var serviceContext = (function () {
     createInnerAudioContext: createInnerAudioContext
   });
 
-  const eventNames$1 = [
+  const eventNames$2 = [
     'canplay',
     'play',
     'pause',
@@ -9153,7 +9354,7 @@ var serviceContext = (function () {
     'waiting'
   ];
   const callbacks$4 = {};
-  eventNames$1.forEach(name => {
+  eventNames$2.forEach(name => {
     callbacks$4[name] = [];
   });
 
@@ -9256,7 +9457,7 @@ var serviceContext = (function () {
       this._operate('stop');
     }
     seek (position) {
-      this._operate('play', {
+      this._operate('seek', {
         currentTime: position
       });
     }
@@ -9267,7 +9468,7 @@ var serviceContext = (function () {
     }
   }
 
-  eventNames$1.forEach(item => {
+  eventNames$2.forEach(item => {
     const name = item[0].toUpperCase() + item.substr(1);
     BackgroundAudioManager.prototype[`on${name}`] = function (callback) {
       callbacks$4[item].push(callback);
@@ -10996,6 +11197,23 @@ var serviceContext = (function () {
   const STORAGE_DATA_TYPE = '__TYPE';
   const STORAGE_KEYS = 'uni-storage-keys';
 
+  function parseValue (value) {
+    const types = ['object', 'string', 'number', 'boolean', 'undefined'];
+    try {
+      const object = typeof value === 'string' ? JSON.parse(value) : value;
+      const type = object.type;
+      if (types.indexOf(type) >= 0) {
+        const keys = Object.keys(object);
+        // eslint-disable-next-line valid-typeof
+        if (keys.length === 2 && 'data' in object && typeof object.data === type) {
+          return object.data
+        } else if (keys.length === 1) {
+          return ''
+        }
+      }
+    } catch (error) { }
+  }
+
   function setStorage$1 ({
     key,
     data
@@ -11006,6 +11224,11 @@ var serviceContext = (function () {
       data: data
     });
     try {
+      if (type === 'string' && parseValue(value) !== undefined) {
+        localStorage.setItem(key + STORAGE_DATA_TYPE, type);
+      } else {
+        localStorage.removeItem(key + STORAGE_DATA_TYPE);
+      }
       localStorage.setItem(key, value);
     } catch (error) {
       return {
@@ -11035,22 +11258,26 @@ var serviceContext = (function () {
       }
     }
     let data = value;
-    try {
-      const object = JSON.parse(value);
-      // 兼容App端历史格式
-      const type = localStorage.getItem(key + STORAGE_DATA_TYPE);
-      if (!type) {
-        const keys = Object.keys(object);
-        if (keys.length === 2 && 'type' in object && 'data' in object) {
-          data = object.data;
-        } else if (keys.length === 1 && 'type' in object) {
-          data = '';
+    const typeOrigin = localStorage.getItem(key + STORAGE_DATA_TYPE) || '';
+    const type = typeOrigin.toLowerCase();
+    if (type !== 'string' || (typeOrigin === 'String' && value === '{"type":"undefined"}')) {
+      try {
+        // 兼容H5和V3初期历史格式
+        let object = JSON.parse(value);
+        const result = parseValue(object);
+        if (result !== undefined) {
+          data = result;
+        } else if (type) {
+          // 兼容App端历史格式
+          data = object;
+          if (typeof object === 'string') {
+            object = JSON.parse(object);
+            // eslint-disable-next-line valid-typeof
+            data = typeof object === (type === 'null' ? 'object' : type) ? object : data;
+          }
         }
-      } else if (type !== 'String') {
-        data = object;
-        data = typeof data === 'string' ? JSON.parse(data) : data;
-      }
-    } catch (error) { }
+      } catch (error) { }
+    }
     return {
       data,
       errMsg: 'getStorage:ok'
@@ -12074,10 +12301,6 @@ var serviceContext = (function () {
     __uniConfig.tabBar.selected = 0;
 
     const selected = __uniConfig.tabBar.list.findIndex(page => page.pagePath === __uniConfig.entryPagePath);
-    if (selected !== -1) {
-      // 取当前 tab 索引值
-      __uniConfig.tabBar.selected = selected;
-    }
 
     tabBar$1.init(__uniConfig.tabBar, (item, index) => {
       uni.switchTab({
@@ -12093,22 +12316,36 @@ var serviceContext = (function () {
         }
       });
     });
+
+    if (selected !== -1) {
+      // 取当前 tab 索引值
+      __uniConfig.tabBar.selected = selected;
+      selected !== 0 && tabBar$1.switchTab(__uniConfig.entryPagePath);
+    }
   }
 
   function initEntryPage () {
-    const argsJsonStr = plus.runtime.arguments;
-    if (!argsJsonStr) {
-      return
-    }
-
     let entryPagePath;
     let entryPageQuery;
 
-    try {
-      const args = JSON.parse(argsJsonStr);
-      entryPagePath = args.path || args.pathName;
-      entryPageQuery = (args.query ? ('?' + args.query) : '');
-    } catch (e) {}
+    const weexPlus = weex.requireModule('plus');
+
+    if (weexPlus.getRedirectInfo) {
+      const info = weexPlus.getRedirectInfo() || {};
+      entryPagePath = info.path;
+      entryPageQuery = info.query ? ('?' + info.query) : '';
+    } else {
+      const argsJsonStr = plus.runtime.arguments;
+      if (!argsJsonStr) {
+        return
+      }
+      try {
+        const args = JSON.parse(argsJsonStr);
+        entryPagePath = args.path || args.pathName;
+        entryPageQuery = args.query ? ('?' + args.query) : '';
+      } catch (e) {}
+    }
+
     if (!entryPagePath || entryPagePath === __uniConfig.entryPagePath) {
       return
     }
@@ -12230,7 +12467,7 @@ var serviceContext = (function () {
 
   function initVue (Vue) {
     Vue.config.errorHandler = function (err) {
-      const app = getApp();
+      const app = typeof getApp === 'function' && getApp();
       if (app && hasLifecycleHook(app.$options, 'onError')) {
         app.__call_hook('onError', err);
       } else {
@@ -12750,7 +12987,11 @@ var serviceContext = (function () {
           this._$vdomSync = new VDomSync(this.$options.pageId, this.$options.pagePath, this);
         }
         if (this._$vd) {
-          this._$id = guid();
+          if (!this.$parent) {
+            this._$id = '-1';
+          } else {
+            this._$id = this.$parent._$id + ',' + this.$vnode.data.attrs._i;
+          }
           this._$vd.addVm(this);
           this._$vdMountedData = Object.create(null);
           this._$setData(MOUNTED_DATA, this._$vdMountedData);
@@ -13076,16 +13317,18 @@ var serviceContext = (function () {
 
       Vue.prototype.$nextTick = function nextTick (cb) {
         const renderWatcher = this._watcher;
+        const callback = typeof cb === 'function';
         if (
           renderWatcher &&
           this._$queue.find(watcher => renderWatcher === watcher)
         ) {
-          vdSyncCallbacks.push(cb.bind(this));
+          const result = new Promise((resolve) => {
+            vdSyncCallbacks.push(callback ? cb.bind(this) : resolve);
+          });
+          return callback ? result : undefined
         } else {
           // $nextTick bind vm context
-          Vue.nextTick(() => {
-            cb.call(this);
-          });
+          return Vue.nextTick(callback ? () => cb.call(this) : undefined)
         }
       };
     }

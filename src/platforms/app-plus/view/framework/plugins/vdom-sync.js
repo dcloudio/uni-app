@@ -1,22 +1,28 @@
 import {
-  guid
-} from 'uni-shared'
-
-import {
   VD_SYNC,
   UI_EVENT
 } from '../../../constants'
 
+function findParentCid (vm) {
+  let parent = vm.$parent
+  while (parent) {
+    if (parent._$id) {
+      return parent._$id
+    }
+    parent = parent.$parent
+  }
+}
+
 export class VDomSync {
   constructor (pageId) {
     this.pageId = pageId
-    this.addBatchVData = []
+    this.addBatchVData = Object.create(null)
     this.updateBatchVData = []
     this.vms = Object.create(null)
   }
 
   addVData (cid, data = {}, options = {}) {
-    this.addBatchVData.push([cid, data, options])
+    this.addBatchVData[cid] = [data, options]
   }
 
   updateVData (cid, data = {}) {
@@ -24,13 +30,22 @@ export class VDomSync {
   }
 
   initVm (vm) {
-    const [cid, data, options] = this.addBatchVData.shift()
-    if (!cid) {
-      vm._$id = guid()
-      console.error('cid unmatched', vm)
+    if (!vm.$parent) {
+      vm._$id = '-1'
     } else {
-      vm._$id = cid
+      vm._$id = findParentCid(vm) + ',' + vm.$vnode.data.attrs._i
     }
+    let vData = this.addBatchVData[vm._$id]
+    if (!vData) {
+      console.error('cid unmatched', vm)
+      vData = {
+        data: {},
+        options: {}
+      }
+    } else {
+      delete this.addBatchVData[vm._$id]
+    }
+    const [data, options] = vData
     Object.assign(vm.$options, options)
     vm.$r = data || Object.create(null)
     this.vms[vm._$id] = vm
@@ -50,7 +65,12 @@ export class VDomSync {
   }
 
   clearAddBatchVData () {
-    this.addBatchVData.length = 0
+    if (process.env.NODE_ENV !== 'production') {
+      if (Object.keys(this.addBatchVData).length) {
+        console.error('this.addBatchVData...=' + JSON.stringify(this.addBatchVData))
+      }
+    }
+    this.addBatchVData = Object.create(null)
   }
 
   flush () {

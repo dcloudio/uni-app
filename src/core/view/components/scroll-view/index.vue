@@ -8,6 +8,48 @@
         :style="{'overflow-x': scrollX?'auto':'hidden','overflow-y': scrollY?'auto':'hidden'}"
         class="uni-scroll-view">
         <div ref="content">
+          <div
+            v-if="refresherEnabled"
+            ref="refresherinner"
+            :style="{'background-color': refresherBackground, 'height': refresherHeight + 'px'}"
+            class="uni-scroll-view-refresher">
+            <div
+              v-if="refresherDefaultStyle !== 'none'"
+              class="uni-scroll-view-refresh">
+              <div class="uni-scroll-view-refresh-inner">
+                <svg
+                  v-if="refreshState=='pulling'"
+                  :style="{'transform': 'rotate('+ refreshRotate +'deg)'}"
+                  fill="#2BD009"
+                  class="uni-scroll-view-refresh__icon"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24">
+                  <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" />
+                  <path
+                    d="M0 0h24v24H0z"
+                    fill="none" />
+                </svg>
+                <svg
+                  v-if="refreshState=='refreshing'"
+                  class="uni-scroll-view-refresh__spinner"
+                  width="24"
+                  height="24"
+                  viewBox="25 25 50 50">
+                  <circle
+                    cx="50"
+                    cy="50"
+                    r="20"
+                    fill="none"
+                    style="color: #2BD009;"
+                    stroke-width="3"/>
+                </svg>
+              </div>
+            </div>
+            <slot
+              v-if="refresherDefaultStyle=='none'"
+              name="refresher"/>
+          </div>
           <slot/>
         </div>
       </div>
@@ -24,6 +66,10 @@ import {
 const passiveOptions = supportsPassive ? {
   passive: true
 } : false
+
+// const PULLING = 'pulling'
+// const REFRESHING = 'refreshing'
+
 export default {
   name: 'ScrollView',
   mixins: [scroller],
@@ -63,6 +109,26 @@ export default {
     enableBackToTop: {
       type: [Boolean, String],
       default: false
+    },
+    refresherEnabled: {
+      type: [Boolean, String],
+      default: false
+    },
+    refresherThreshold: {
+      type: Number,
+      default: 45
+    },
+    refresherDefaultStyle: {
+      type: String,
+      default: 'back'
+    },
+    refresherBackground: {
+      type: String,
+      default: '#fff'
+    },
+    refresherTriggered: {
+      type: [Boolean, String],
+      default: false
     }
   },
   data () {
@@ -70,7 +136,10 @@ export default {
       lastScrollTop: this.scrollTopNumber,
       lastScrollLeft: this.scrollLeftNumber,
       lastScrollToUpperTime: 0,
-      lastScrollToLowerTime: 0
+      lastScrollToLowerTime: 0,
+      refresherHeight: 0,
+      refreshRotate: 0,
+      refreshState: ''
     }
   },
   computed: {
@@ -98,6 +167,14 @@ export default {
     },
     scrollIntoView (val) {
       this._scrollIntoViewChanged(val)
+    },
+    refresherTriggered (val) {
+      // TODO
+      if (val === true) {
+        this._setRefreshState('refreshing')
+      } else if (val === false) {
+        this._setRefreshState('restore')
+      }
     }
   },
   mounted () {
@@ -151,6 +228,23 @@ export default {
       if (needStop) {
         event.stopPropagation()
       }
+
+      if (self.refresherEnabled && self.refreshState === 'pulling') {
+        let dy = y - touchStart.y
+        self.refresherHeight = dy
+
+        let rotate = dy / self.refresherThreshold
+        if (rotate > 1) {
+          rotate = 1
+        } else {
+          rotate = rotate * 360
+        }
+        self.refreshRotate = rotate
+
+        self.$trigger('refresherpulling', event, {
+          deltaY: dy
+        })
+      }
     }
 
     this.__handleTouchStart = function (event) {
@@ -163,12 +257,22 @@ export default {
           x: event.touches[0].pageX,
           y: event.touches[0].pageY
         }
+        if (self.refresherEnabled && self.refreshState !== 'refreshing' && self.$refs.main.scrollTop === 0) {
+          self.refreshState = 'pulling'
+        }
       }
     }
     this.__handleTouchEnd = function (event) {
+      touchStart = null
       disableScrollBounce({
         disable: false
       })
+      if (self.refresherHeight >= self.refresherThreshold) {
+        self._setRefreshState('refreshing')
+      } else {
+        self.refresherHeight = 0
+        self.$trigger('refresherabort', event, {})
+      }
     }
     this.$refs.main.addEventListener('touchstart', this.__handleTouchStart, passiveOptions)
     this.$refs.main.addEventListener('touchmove', this.__handleTouchMove, passiveOptions)
@@ -374,6 +478,19 @@ export default {
       this.$refs.content.removeEventListener('transitionend', this.__transitionEnd)
       this.$refs.content.removeEventListener('webkitTransitionEnd', this.__transitionEnd)
     },
+    _setRefreshState (state) {
+      switch (state) {
+        case 'refreshing':
+          this.refresherHeight = this.refresherThreshold
+          this.$trigger('refresherrefresh', event, {})
+          break
+        case 'restore':
+          this.refresherHeight = 0
+          this.$trigger('refresherrestore', {}, {})
+          break
+      }
+      this.refreshState = state
+    },
     getScrollPosition () {
       const main = this.$refs.main
       return {
@@ -401,5 +518,72 @@ uni-scroll-view[hidden] {
   /* display: flex; 时在安卓下会导致scrollWidth和offsetWidth一样 */
   height: 100%;
   max-height: inherit;
+}
+
+.uni-scroll-view-refresher {
+  position: relative;
+  overflow: hidden;
+}
+
+.uni-scroll-view-refresh {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.uni-scroll-view-refresh-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #fff;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, .117647), 0 1px 4px rgba(0, 0, 0, .117647);
+}
+
+.uni-scroll-view-refresh__spinner {
+  transform-origin: center center;
+  animation: uni-scroll-view-refresh-rotate 2s linear infinite;
+}
+
+.uni-scroll-view-refresh__spinner > circle {
+  stroke: currentColor;
+  stroke-linecap: round;
+  animation: uni-scroll-view-refresh-dash 2s linear infinite;
+}
+
+@keyframes uni-scroll-view-refresh-rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes uni-scroll-view-refresh-dash {
+  0% {
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+  }
+
+  50% {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -35px;
+  }
+
+  100% {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -124px;
+  }
 }
 </style>

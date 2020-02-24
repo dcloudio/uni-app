@@ -17,6 +17,10 @@ export default {
       type: [Number, String],
       default: 0
     },
+    showConfirmBar: {
+      type: [Boolean, String],
+      default: 'auto'
+    },
     adjustPosition: {
       type: Boolean,
       default: true
@@ -42,9 +46,10 @@ export default {
       el.addEventListener('focus', () => {
         UniViewJSBridge.subscribe('hideKeyboard', hideKeyboard)
         document.addEventListener('click', iosHideKeyboard, false)
+        this.setSoftinputNavBar()
         this.setSoftinputTemporary()
       })
-      el.addEventListener('blur', this.onKeyboardHide)
+      el.addEventListener('blur', this.onKeyboardHide.bind(this))
     },
     showSoftKeybord () {
       plusReady(() => {
@@ -53,12 +58,12 @@ export default {
     },
     setSoftinputTemporary () {
       plusReady(() => {
-        var currentWebview = plus.webview.currentWebview()
-        var style = currentWebview.getStyle() || {}
+        const currentWebview = plus.webview.currentWebview()
+        const style = currentWebview.getStyle() || {}
         if (style.softinputMode === 'adjustResize') {
           return
         }
-        var rect = this.$el.getBoundingClientRect()
+        const rect = this.$el.getBoundingClientRect()
         currentWebview.setSoftinputTemporary && currentWebview.setSoftinputTemporary({
           mode: this.adjustPosition ? 'adjustPan' : 'nothing',
           position: {
@@ -68,9 +73,40 @@ export default {
         })
       })
     },
+    setSoftinputNavBar () {
+      if (this.showConfirmBar === 'auto') {
+        delete this.__softinputNavBar
+        return
+      }
+      plusReady(() => {
+        const currentWebview = plus.webview.currentWebview()
+        const { softinputNavBar } = currentWebview.getStyle() || {}
+        const showConfirmBar = softinputNavBar !== 'none'
+        if (showConfirmBar !== this.showConfirmBar) {
+          this.__softinputNavBar = softinputNavBar || 'auto'
+          currentWebview.setStyle({
+            softinputNavBar: this.showConfirmBar ? 'auto' : 'none'
+          })
+        } else {
+          delete this.__softinputNavBar
+        }
+      })
+    },
+    resetSoftinputNavBar () {
+      const softinputNavBar = this.__softinputNavBar
+      if (softinputNavBar) {
+        plusReady(() => {
+          const currentWebview = plus.webview.currentWebview()
+          currentWebview.setStyle({
+            softinputNavBar
+          })
+        })
+      }
+    },
     onKeyboardHide () {
       UniViewJSBridge.unsubscribe('hideKeyboard', hideKeyboard)
       document.removeEventListener('click', iosHideKeyboard, false)
+      this.resetSoftinputNavBar()
     }
   }
 }

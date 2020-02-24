@@ -59,7 +59,7 @@ export function createRequestTaskById (requestTaskId, {
         statusCode: 0,
         errMsg: 'timeout'
       })
-    }, timeout)
+    }, (timeout + 200))// TODO +200 发消息到原生层有时间开销，以后考虑由原生层回调超时
   }
   const options = {
     method,

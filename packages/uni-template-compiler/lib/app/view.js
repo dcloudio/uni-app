@@ -155,6 +155,11 @@ function transformNode (el, parent, state, isScopedSlot) {
 
 function postTransformNode (el, options) {
   if (!el.parent) { // 从根节点开始递归处理
+    if (options.root) { // 当根节点是由if,elseif,else组成
+      parseIf(options.root, createGenVar)
+    } else {
+      options.root = el
+    }
     traverseNode(el, false, {
       forIteratorId: 0,
       transformNode,
@@ -209,7 +214,7 @@ function handleViewEvents (events) {
 function genVModel (el, isScopedSlot) {
   if (el.model) {
     el.model.value = createGenVar(el.attrsMap[ID], isScopedSlot)('v-model', el.model.value)
-    if (el.tag === 'v-uni-input' || el.tag === 'v-uni-textarea' && !(el.events && el.events.input)) {
+    if ((el.tag === 'v-uni-input' || el.tag === 'v-uni-textarea') && !(el.events && el.events.input)) {
       el.model.callback = `function($$v){$handleVModelEvent(${el.attrsMap[ID]},$$v)}`
     } else {
       el.model.callback = `function(){}`

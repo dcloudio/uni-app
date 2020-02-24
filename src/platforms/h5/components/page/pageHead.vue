@@ -175,6 +175,7 @@ uni-page-head .uni-page-head-bd {
   margin: 0 2px;
   word-break: keep-all;
   white-space: pre;
+  cursor: pointer;
 }
 
 .uni-page-head-transparent .uni-page-head-btn {
