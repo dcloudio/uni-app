@@ -13,6 +13,7 @@
 * [开放生态](ecosystem.md)
 * [从其他项目转uni-app](translate.md)
 * [混合开发](hybrid.md)
+* [uni小程序sdk](https://ask.dcloud.net.cn/docs/#https://ask.dcloud.net.cn/article/36941)
 * [运营服务](cloud.md)
 * [案例](case.md)
 * [开源项目资源汇总](casecode.md)
