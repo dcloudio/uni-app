@@ -25,6 +25,7 @@ const {
 const runtimePath = '@dcloudio/uni-mp-weixin/dist/mp.js'
 const wxsPath = '@dcloudio/uni-mp-weixin/dist/wxs.js'
 const uniCloudPath = path.resolve(__dirname, '../../packages/uni-cloud/dist/index.js')
+const cryptoPath = path.resolve(__dirname, '../crypto.js')
 
 function getProvides (isAppService) {
   if (isAppService) {
@@ -37,7 +38,10 @@ function getProvides (isAppService) {
       'Behavior': [runtimePath, 'Behavior'],
       'getDate': [wxsPath, 'getDate'],
       'getRegExp': [wxsPath, 'getRegExp'],
-      'uniCloud': [uniCloudPath, 'default']
+      'uniCloud': [uniCloudPath, 'default'],
+      'crypto': [cryptoPath, 'default'],
+      'window.crypto': [cryptoPath, 'default'],
+      'global.crypto': [cryptoPath, 'default']
     }
   }
   return { // app-view
