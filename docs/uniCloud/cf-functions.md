@@ -203,20 +203,19 @@ module.exports = async (event) => {
 ```
 
 
-<!-- 
-## uniCloud.callFunction(Object callFunctionOptions)
 
-云函数中调用云函数。**目前仅腾讯云支持**
+## 云函数中调用云函数
 
-**callFunctionOptions参数说明**
+用法同客户端调用云函数，不支持callback形式
+
+#### 请求参数
 
 |字段			|类型			|必填	|说明					|
 |---			|---			|---	|---					|
 |name			|String		|是		|云函数名称。	|
 |data			|Object		|否		|云函数参数。	|
-|callback	|Function	|否		|回调函数。		|
 
-**响应参数**
+#### 响应参数
 
 |字段			|类型		|必备	|说明												|
 |---			|---		|---	|---												|
@@ -228,13 +227,10 @@ module.exports = async (event) => {
 **示例代码**
 
 ```javascript
-//promise
-uniCloud.callFunction({
+let callFunctionResult = await uniCloud.callFunction({
     name: "test",
     data: { a: 1 }
-}).then((res) => {
-    
-});
+})
 ```
 
- -->
+
