@@ -63,12 +63,12 @@ module.exports = function (pagesJson, manifestJson) {
   })
 
   copyToJson(app, pagesJson, pagesJson2AppJson)
-  
+
   const platformJson = manifestJson['mp-alipay'] || {}
   if (hasOwn(platformJson, 'plugins')) {
     app.plugins = platformJson.plugins
   }
-  
+
   if (app.usingComponents) {
     updateAppJsonUsingComponents(app.usingComponents)
   }

@@ -101,7 +101,7 @@ module.exports = (api, options) => {
     // inject dev & hot-reload middleware entries
     if (!isProduction) {
       const sockjsUrl = publicUrl
-      // explicitly configured via devServer.public
+        // explicitly configured via devServer.public
         ? `?${publicUrl}/sockjs-node`
         : isInContainer
         // can't infer public netowrk url if inside a container...
@@ -163,7 +163,7 @@ module.exports = (api, options) => {
         // this works with vue-devtools & @vue/cli-overlay
         app.use('/__open-in-editor', launchEditorMiddleware(() => console.log(
           `To specify an editor, sepcify the EDITOR env variable or ` +
-                    `add "editor" field to your Vue project config.\n`
+          `add "editor" field to your Vue project config.\n`
         )))
         // allow other plugins to register middlewares, e.g. PWA
         api.service.devServerConfigFns.forEach(fn => fn(app, server))
@@ -173,7 +173,7 @@ module.exports = (api, options) => {
       }
     }))
 
-        ;
+    ;
     ['SIGINT', 'SIGTERM'].forEach(signal => {
       process.on(signal, () => {
         server.close(() => {
@@ -251,7 +251,9 @@ module.exports = (api, options) => {
 
           if (!isProduction) {
             if (process.UNI_CLOUD) {
-              console.warn(`当前项目使用了uniCloud，为避免云函数调用跨域问题，建议在HBuilderX内置浏览器里调试，如使用外部浏览器需处理跨域，详见：https://uniapp.dcloud.io/uniCloud/quickstart?id=useinh5`)
+              console.warn(
+                `当前项目使用了uniCloud，为避免云函数调用跨域问题，建议在HBuilderX内置浏览器里调试，如使用外部浏览器需处理跨域，详见：https://uniapp.dcloud.io/uniCloud/quickstart?id=useinh5`
+              )
             }
             // const buildCommand = hasProjectYarn(api.getCwd()) ? `yarn build` : `npm run build`
             // console.log(`  Note that the development build is not optimized.`)
@@ -291,6 +293,10 @@ module.exports = (api, options) => {
           console.log('App updated')
         }
       })
+
+      if (server.showStatus) {
+        server.showStatus = function () {}
+      }
 
       server.listen(port, host, err => {
         if (err) {
