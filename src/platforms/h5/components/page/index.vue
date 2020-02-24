@@ -159,8 +159,7 @@ export default {
     titleNView = Object.assign({}, {
       type: this.navigationStyle === 'custom' ? 'none' : 'default'
     }, this.transparentTitle in titleNViewTypeList ? {
-      type: titleNViewTypeList[this.transparentTitle],
-      backgroundColor: 'rgba(0,0,0,0)'
+      type: titleNViewTypeList[this.transparentTitle]
     } : null, typeof titleNView === 'object' ? titleNView : (typeof titleNView === 'boolean' ? {
       type: titleNView ? 'default' : 'none'
     } : null))

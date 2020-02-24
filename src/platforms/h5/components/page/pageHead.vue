@@ -109,6 +109,7 @@ uni-page-head {
 uni-page-head .uni-page-head {
   position: fixed;
   left: 0;
+  top: 0;
   width: 100%;
   height: 44px;
   height: calc(44px + constant(safe-area-inset-top));
