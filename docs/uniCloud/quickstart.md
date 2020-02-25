@@ -193,7 +193,7 @@ H5前端js访问云函数，涉及跨域问题，导致前端js无法连接云�
             "MgoKeySchema": { // 索引规则
                 "MgoIndexKeys": [{
                     "Name": "index", // 索引字段
-                    "Direction": "1" // 索引方向，1：ASC-升序，-1：DESC-降序
+                    "Direction": 1 // 索引方向，1：ASC-升序，-1：DESC-降序 ，暂时使用数字后续此字段会修改为字符串形式
                 }],
                 "MgoIsUnique": false // 索引是否唯一
             }
