@@ -32,19 +32,25 @@ describe('codegen', () => {
   it('generate events with multiple statements', () => {
     assertCodegen(
       '<div>A{{ d | e | f }}B{{text}}C</div>',
-      `with(this){return _c('div',{attrs:{"_i":0}},[_v("A"+(_$g(0,'t0'))+"B"+(_$g(0,'t1'))+"C")])}`
+      `with(this){return _c('div',{attrs:{"_i":0}},[_v("A"+(_$g(0,'t0-0'))+"B"+(_$g(0,'t0-1'))+"C")])}`
     )
   })
   it('generate slot fallback content', () => {
     assertCodegen(
       '<div><slot><div>{{hi}}</div></slot></div>',
-      `with(this){return _c('div',{attrs:{"_i":0}},[_t("default",[_c('div',{attrs:{"_i":2}},[_v((_$g(2,'t0')))])],{"_i":1})],2)}`
+      `with(this){return _c('div',{attrs:{"_i":0}},[_t("default",[_c('div',{attrs:{"_i":2}},[_v((_$g(2,'t0-0')))])],{"_i":1})],2)}`
+    )
+  })
+  it('generate text with multiple statements', () => {
+    assertCodegen(
+      `<view>{{obj.param1}}123123{{obj.param1}}123123{{obj.param1}}<text> -{{obj.param3}}---{{obj.param3}} </text>{{obj.param2}}aaaa{{obj.param2}}aaaa{{obj.param2}}</view>`,
+      `with(this){return _c('v-uni-view',{attrs:{"_i":0}},[_v((_$g(0,'t0-0'))+"123123"+(_$g(0,'t0-1'))+"123123"+(_$g(0,'t0-2'))),_c('v-uni-text',{attrs:{"_i":1}},[_v("-"+(_$g(1,'t0-0'))+"---"+(_$g(1,'t0-1')))]),_v((_$g(0,'t2-0'))+"aaaa"+(_$g(0,'t2-1'))+"aaaa"+(_$g(0,'t2-2')))],1)}`
     )
   })
   it('generate v-slot', () => {
     assertCodegen(
       '<current-user v-slot="{ user }">{{ user.firstName }}</current-user>',
-      `with(this){return _c('current-user',{attrs:{"_i":0},scopedSlots:_u([{key:"default",fn:function({ user }, _svm, _si){return [_v((_svm._$g(("0-"+_si),'t0')))]}}])})}`
+      `with(this){return _c('current-user',{attrs:{"_i":0},scopedSlots:_u([{key:"default",fn:function({ user }, _svm, _si){return [_v((_svm._$g(("0-"+_si),'t0-0')))]}}])})}`
     )
   })
   it('generate keep-alive', () => {

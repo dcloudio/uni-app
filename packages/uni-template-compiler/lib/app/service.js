@@ -119,6 +119,7 @@ function transformNode (el, parent, state, isScopedSlot) {
       pid = getNewId(pid, '_si')
     }
     return parseText(el, parent, {
+      childIndex: state.childIndex || 0,
       index: 0,
       service: true,
       // <uni-popup>{{content}}</uni-popup>
