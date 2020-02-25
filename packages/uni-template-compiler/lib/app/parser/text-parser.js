@@ -43,7 +43,7 @@ module.exports = function parseText (
     }
     // tag token
     const exp = parseFilters(match[1].trim())
-    tokens.push(`(${state.genVar('t' + (state.index++), '_s(' + exp + ')')})`)
+    tokens.push(`(${state.genVar('t' + (state.childIndex) + '-' + (state.index++), '_s(' + exp + ')')})`)
     rawTokens.push({
       '@binding': exp
     })

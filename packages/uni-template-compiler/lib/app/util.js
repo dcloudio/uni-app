@@ -194,11 +194,18 @@ function hasOwn (obj, key) {
 
 function traverseNode (el, parent, state, isScopedSlot) {
   state.transformNode(el, parent, state, isScopedSlot)
-  el.children && el.children.forEach(child => traverseNode(child, el, state, isScopedSlot))
-  el.ifConditions && el.ifConditions.forEach((con, index) => {
-    index !== 0 && traverseNode(con.block, el, state, isScopedSlot)
+  el.children && el.children.forEach((child, index) => {
+    state.childIndex = index
+    traverseNode(child, el, state, isScopedSlot)
   })
-  el.scopedSlots && Object.values(el.scopedSlots).forEach(slot => {
+  el.ifConditions && el.ifConditions.forEach((con, index) => {
+    if (index !== 0) {
+      state.childIndex = index
+      traverseNode(con.block, el, state, isScopedSlot)
+    }
+  })
+  el.scopedSlots && Object.values(el.scopedSlots).forEach((slot, index) => {
+    state.childIndex = index
     slot.slotScope = `${slot.slotScope}, _svm, _si`
     traverseNode(slot, el, state, true)
   })
