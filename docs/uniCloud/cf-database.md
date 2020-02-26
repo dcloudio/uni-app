@@ -164,7 +164,7 @@ const collection = db.collection('user');
 
   Null 相当于一个占位符，表示一个字段存在但是值为空。
 
-
+<span id="add"></span>
 ## 新增文档
 
 方法1： collection.add(data)
@@ -173,13 +173,26 @@ const collection = db.collection('user');
 
 | 参数 | 类型   | 必填 | 说明                                     |
 | ---- | ------ | ---- | ---------------------------------------- |
-| data | object | 是   | {_id: '10001', 'name': 'Ben'} _id 非必填 |
+| data | object|array | 是   | {_id: '10001', 'name': 'Ben'} _id 非必填|
 
 ```js
+// 单条插入数据
 collection.add({
   name: 'Ben'
 }).then((res) => {
 
+});
+// 批量插入数据
+collection.add([{
+  name: 'Alex'
+},{
+  name: 'Ben'
+},{
+  name: 'John'
+}]).then((res) => {
+// res.inserted // 插入成功条数
+// res.result // 阿里云特有，批量插入返回的所有记录 id
+// res.failIndexes // 腾讯云特有，插入失败的记录的下标
 });
 ```
 
