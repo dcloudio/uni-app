@@ -1181,10 +1181,11 @@ export default {
 - App和H5端，提供了wxs的升级版，更加强大，见下面的 [renderjs](?id=renderjs) 章节
 
 ## renderjs
+`renderjs`是一个运行在视图层的js。它比[WXS](?id=wxs)更加强大。它只支持app-vue和h5。
 
-[WXS](?id=wxs)全称是微信脚本语言，它不够强大。uni-app的app端和h5端做了更多扩展，但扩展后的技术，不再适合使用wxs这个名字了。新的名称叫`renderjs`。
- 
-wxs仍可以在app和h5端运行。升级版的`renderjs`只支持app-vue和h5。
+`renderjs`的主要作用有2个：
+- 大幅降低逻辑层和视图层的通讯损耗，提供高性能视图交互能力
+- 在视图层操作dom，运行for web的js库
 
 **平台差异说明**
 
@@ -1192,12 +1193,10 @@ wxs仍可以在app和h5端运行。升级版的`renderjs`只支持app-vue和h5�
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |√(2.5.5+，仅支持vue，并要求v3编译器)|√|x|x|x|x|x|
 
-renderjs，以 vue 组件的写法运行在 view 层。它有两大优势：
-1. 运行在视图层。当需要频繁操作视图层时，renderjs比运行在逻辑层的普通js，提供更流畅的ui交互。比如canvas动画、比如跟手绘画
-2. 可以直接操作dom、window等web api。也就是完整的echart、three等库都可以使用了
-
+renderjs，以 vue 组件的写法运行在 view 层。
 
 ### 使用方式
+
 设置 script 节点的 lang 为 renderjs
 ```html
 <script module="test" lang="renderjs">
@@ -1214,7 +1213,26 @@ renderjs，以 vue 组件的写法运行在 view 层。它有两大优势：
 
 ### 示例
 
-* [通过renderjs，在app和h5端使用完成的 echarts](https://ext.dcloud.net.cn/plugin?id=1207)
+* [通过renderjs，在app和h5端使用完整的 `echarts`](https://ext.dcloud.net.cn/plugin?id=1207)
+
+### 功能详解
+- 大幅降低逻辑层和视图层的通讯损耗，提供高性能视图交互能力
+
+逻辑层和视图层分离有很多好处，但也有一个副作用是在造成了两层之间通信阻塞。尤其是小程序和App的Android端阻塞问题影响了高性能应用的制作。
+
+`renderjs`运行在视图层，可以直接操作视图层的元素，避免通信折损。
+
+在hello uni-app的canvas示例中，App端使用了`renderjs`，由运行在视图层的`renderjs`直接操作视图层的canvas，实现了远超微信小程序的流畅canvas动画示例。具体在[hello uni-app](https://m3w.cn/uniapp)示例中体验，对比App端和小程序端的性能差异。
+
+- 在视图层操作dom，运行for web的js库
+官方不建议在uni-app里操作dom，但如果你不开发小程序，想使用一些操作了dom、window的库，其实可以使用`renderjs`来解决。
+
+在app-vue环境下，视图层由webview渲染，而`renderjs`运行在视图层，自然可以操作dom和window。
+
+这是一个基于`renderjs`运行echart完整版的示例：[renderjs版echart](https://ext.dcloud.net.cn/plugin?id=1207)
+
+同理，`f2`、`threejs`等库都可以这么用。
+
 
 ### 注意事项
 
@@ -1230,6 +1248,6 @@ renderjs，以 vue 组件的写法运行在 view 层。它有两大优势：
 
 ```uni-app```使用 ```vue``` 语法，开发多端应用，感谢```Vue```团队！！
 
-为了照顾开发者的已有学习积累，```uni-app```的组件和api设计，基本参考了微信小程序，学过微信小程序开发，了解```vue```，就能直接上手```uni-app```；感谢微信小程序团队！
+为了减少开发者的学习成本，```uni-app```的组件和api设计，基本参考了微信小程序，学过微信小程序开发，了解```vue```，就能直接上手```uni-app```；感谢微信小程序团队！
 
 ```uni-app``` 在小程序端，学习参考了[mpvue](https://mpvue.com/)及[Megalo](https://megalojs.org/)，感谢美团点评技术团队、网易考拉团队!

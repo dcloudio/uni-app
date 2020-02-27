@@ -72,6 +72,7 @@ App和微信小程序的ad组件没有type属性，可以用于banner，也可�
 - 广点通概率出现重复广告，可根据需求请求广告数据，推荐单次大于1条(plus.ad.getAds) 来降低重复率
 - vue 页面使用 `<ad>` 暂不支持非 V3 编译，manifest.json 可配置
 - `<recycle-list>` 暂不支持 `<ad>`
+- app-vue|QQ是客户端原生组件，层级最高无法被覆盖，app-nvue|微信|头条没有层级覆盖问题
 
 **@error 错误码**
 - App端聚合的穿山甲：[错误码](https://ad.oceanengine.com/union/media/doc?id=5de4cc6d78c8690012a90aa5)

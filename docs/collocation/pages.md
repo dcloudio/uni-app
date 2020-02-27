@@ -8,7 +8,7 @@
 |:-|:-|:-|:-|:-|
 |[globalStyle](/collocation/pages?id=globalstyle)|Object|否|设置默认页面的窗口表现||
 |[pages](/collocation/pages?id=pages)|Object Array|是|设置页面路径及窗口表现||
-|[easycom](/collocation/pages?id=easycom)|Object|否|组件自动引入规则|2.5.0+|
+|[easycom](/collocation/pages?id=easycom)|Object|否|组件自动引入规则|2.5.5+|
 |[tabBar](/collocation/pages?id=tabbar)|Object|否|设置底部 tab 的表现||
 |[condition](/collocation/pages?id=condition)|Object|否|启动模式配置||
 |[subPackages](/collocation/pages?id=subPackages)|Object Array|否|分包加载配置||
@@ -82,10 +82,10 @@
 		}
 	},
   "easycom": {
-	"autoscan": true, //是否自动扫描组件
-	"custom": {//自定义扫描规则
-		"uni-(.*)": "@/components/uni-$1.vue"
-	}
+    "autoscan": true, //是否自动扫描组件
+    "custom": {//自定义扫描规则
+      "uni-(.*)": "@/components/uni-$1.vue"
+    }
   }
 }
 ```
@@ -300,7 +300,7 @@
 - `titleNView` 不能设置 `autoBackButton`、`homeButton`等属性
 - `titleNView` 的 `type` 值为 `transparent` 时，导航栏为滚动透明渐变导航栏，默认只有button，滚动后标题栏底色和title文字会渐变出现； `type` 为 `float` 时，导航栏为悬浮标题栏，此时页面内容上顶到了屏幕顶部，包括状态栏，但导航栏悬浮盖在页面上方，一般这种场景会同时设置导航栏的背景色为rgba半透明颜色。
 - `titleNView` 的 `type` 值为 `transparent` 时，App-nvue 2.4.4+ 支持
-- 在 `titleNView` 配置 `buttons` 后，监听按钮的点击事件，vue 页面及 nvue 的uni-app编译模式参考：[onNavigationBarButtonTap](/frame?id=页面生命周期)、nvue 的weex编译模式参考：[uni.onNavigationBarButtonTap](/use-weex?id=onnavigationbarbuttontap)
+- 在 `titleNView` 配置 `buttons` 后，监听按钮的点击事件，vue 页面及 nvue 的weex编译模式参考：[uni.onNavigationBarButtonTap](/use-weex?id=onnavigationbarbuttontap)
 - 在 `titleNView` 配置 `searchInput` 后，相关的事件监听参考：[onNavigationBarSearchInputChanged 等](/frame?id=页面生命周期)
 - App下原生导航栏的按钮如果使用字体图标，注意检查字体库的名字（font-family）是否使用了默认的 iconfont，这个名字是保留字，不能作为外部引入的字体库的名字，需要调整为自定义的名称，否则无法显示。
 - 想了解各种导航栏的开发方法，请详读[导航栏开发指南](https://ask.dcloud.net.cn/article/34921)
@@ -663,22 +663,47 @@ h5 平台下拉刷新动画，只有 circle 类型。
 - A：参考[导航栏开发指南](http://ask.dcloud.net.cn/article/34921)
 
 # easycom
-传统vue组件，需要安装、引用、注册，三个步骤后才能使用组件。`easycom`将其精简为一步。只要组件安装在项目的components目录下，并符合`components/组件名称/组件名称.vue`目录结构的组件。就可以不用引用、注册，直接在页面中使用。同时打包后会自动剔除没有使用的组件。
 
-自`HBuilderX 2.5.5`起支持`easycom`组件模式。可以在HBuilderX新建项目界面选择`uni-ui`项目模板体验。只需在页面中敲u，拉出大量代码块，直接选择，即可使用。大幅提升开发效率，降低使用门槛。
+> `HBuilderX 2.5.5`起支持`easycom`组件模式。
 
-在[uni-app插件市场](https://ext.dcloud.net.cn/)下载符合`components/组件名称/组件名称.vue`目录结构的组件后，也可以直接使用。
+传统vue组件，需要安装、引用、注册，三个步骤后才能使用组件。`easycom`将其精简为一步。
+只要组件安装在项目的components目录下，并符合`components/组件名称/组件名称.vue`目录结构。就可以不用引用、注册，直接在页面中使用。
+如下：
+```html
+<template>
+	<view class="container">
+		<uni-list>
+			<uni-list-item title="第一行"></uni-list-item>
+			<uni-list-item title="第二行"></uni-list-item>
+		</uni-list>
+	</view>
+</template>
+<script>
+	// 这里不用import引入，也不需要在components内注册uni-list组件。template里就可以直接用
+	export default {
+		data() {
+			return {
+				
+			}
+		}
+	}
+</script>
+```
 
-uni ui组件是完全符合easycom规则的，在`HBuilderX 2.5.5`以上什么都不用配，可直接使用uni ui的组件。在`HBuilderX`中新建项目选择`uni ui项目`，可直接使用所有uni ui组件。
+不管components目录下安装了多少组件，`easycom`打包后会自动剔除没有使用的组件，对组件库的使用尤为有好。
 
-`easycom`是自动开启的，不需要手动开启，有需求时可以在`pages.json`的`easycom`节点进行个性化设置，如关闭自动扫描，或自定义扫描匹配组件的策略。
+组件库批量安装，随意使用，自动按需打包。以官方的`uni-ui`为例，在HBuilderX新建项目界面选择`uni-ui`项目模板，只需在页面中敲u，拉出大量组件代码块，直接选择，即可使用。大幅提升开发效率，降低使用门槛。
+
+在[uni-app插件市场](https://ext.dcloud.net.cn/)下载符合`components/组件名称/组件名称.vue`目录结构的组件，均可直接使用。
+
+`easycom`是自动开启的，不需要手动开启，有需求时可以在`pages.json`的`easycom`节点进行个性化设置，如关闭自动扫描，或自定义扫描匹配组件的策略。设置参数如下：
 
 |属性			|类型		|默认值	|描述																																											|
 |:-				|:-			|:-			|:-																																												|
 |autoscan	|Boolean|true		|是否开启自动扫描，开启后将会自动扫描符合`components/组件名称/组件名称.vue`目录结构的组件	|
 |custom		|Object	|-			|以正则方式自定义组件匹配规则。如果`autoscan`不能满足需求，可以使用`custom`自定义匹配规则	|
 
-**如需自定义easycom，参考如下示例**
+**自定义easycom配置的示例**
 
 ```
 "easycom": {

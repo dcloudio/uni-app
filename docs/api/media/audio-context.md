@@ -95,3 +95,7 @@ innerAudioContext.onError((res) => {
   console.log(res.errCode);
 });
 ```
+
+**tips**
+
+如需音频的倍速播放，可通过video的倍速播放替代实现。插件市场有封装好的插件[音频倍速播放](https://ext.dcloud.net.cn/search?q=%E9%9F%B3%E9%A2%91%E5%80%8D%E9%80%9F%E6%92%AD%E6%94%BE)

@@ -44,11 +44,11 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 <a href="https://zqact.tenpay.com/chaogu/" target="_blank" class="clear-style"><b>腾讯全民模拟炒股大赛：</b></a> 由腾讯金融科技倾力打造的证券投资者教育平台。
 <div style="display:flex;justify-content: space-around;">
 	<a href="javascript:;" target="_blank" class="clear-style barcode-view">
-		<img src="https://dcloud-img.oss-cn-hangzhou.aliyuncs.com/uni-app/case/tx-chaogu-mp-weixin.jpg" width="200"/>
+		<img src="https://img.cdn.aliyun.dcloud.net.cn/uni-app/case/tx-chaogu-mp-weixin.jpg" width="200"/>
 		<span style="margin-top:15px;">微信小程序码</span>
 	</a>
     <a href="javascript:;" target="_blank" class="clear-style barcode-view">
-		<img src="https://dcloud-img.oss-cn-hangzhou.aliyuncs.com/uni-app/case/tx-chaogu-h5.png" width="200"/>
+		<img src="https://img.cdn.aliyun.dcloud.net.cn/uni-app/case/tx-chaogu-h5.png" width="200"/>
 		<span style="margin-top:15px;">H5码（请使用微信扫码）</span>
 	</a>
 </div>
@@ -356,6 +356,8 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 
 **安徽法律服务网：**[H5](http://ah.12348.gov.cn/h5/#/)
 
+**赣服通：**江西政务办理[H5](http://ganfutong.jiangxi.gov.cn/jmopen/webapp/html5/unZip/0c39647d0c004736a23f7355c56a91b8/nkyy/#/)
+
 **江西赣州民政局社会救助**[微信H5](http://gzshjz.ganzhou.gov.cn/h5gz/)
 
 **山西晋城市政府晋来办：**[钉钉H5](https://bmfw.jcgov.gov.cn/app/aliPay/#/)
@@ -378,9 +380,11 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 
 **同济医院官方App：** [App官网下载页](https://tjhapp.com.cn/app/appdown.html)
 
+**张亮麻辣烫：** 百度小程序搜索 “张亮麻辣烫” 
+
 **碧桂园：**凤凰云[h5](https://fhyhub.bgy.com.cn/h5/activity/#/)
 
-**张亮麻辣烫：** 百度小程序搜索 “张亮麻辣烫” 
+**必胜客App：** 部分页面使用uni-app制作
 
 **西贝骑手：** 西贝莜面村外卖骑手App
 

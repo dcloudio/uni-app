@@ -164,7 +164,7 @@ const collection = db.collection('user');
 
   Null 相当于一个占位符，表示一个字段存在但是值为空。
 
-
+<span id="add"></span>
 ## 新增文档
 
 方法1： collection.add(data)
@@ -173,13 +173,26 @@ const collection = db.collection('user');
 
 | 参数 | 类型   | 必填 | 说明                                     |
 | ---- | ------ | ---- | ---------------------------------------- |
-| data | object | 是   | {_id: '10001', 'name': 'Ben'} _id 非必填 |
+| data | object|array | 是   | {_id: '10001', 'name': 'Ben'} _id 非必填|
 
 ```js
+// 单条插入数据
 collection.add({
   name: 'Ben'
 }).then((res) => {
 
+});
+// 批量插入数据
+collection.add([{
+  name: 'Alex'
+},{
+  name: 'Ben'
+},{
+  name: 'John'
+}]).then((res) => {
+// res.inserted // 插入成功条数
+// res.result // 阿里云特有，批量插入返回的所有记录 id
+// res.failIndexes // 腾讯云特有，插入失败的记录的下标
 });
 ```
 
@@ -348,7 +361,7 @@ collection.field({ 'age': true })
 比如筛选出所有自己发表的文章，除了用传对象的方式：
 
 ```js
-const myOpenID = 'xxx'
+const myOpenID = "xxx"
 db.collection('articles').where({
   _openid: myOpenID
 })
@@ -358,7 +371,7 @@ db.collection('articles').where({
 
 ```js
 const dbCmd = db.command
-const myOpenID = 'xxx'
+const myOpenID = "xxx"
 db.collection('articles').where({
   _openid: dbCmd.eq(openid)
 })
@@ -604,22 +617,43 @@ collection.doc('doc-id').update({
 ```
 // 更新前
 {
-  _id: 'xxx',
-  name: "Hello",
-  count: {
-    fav: 0,
-    follow: 0
+  "_id": "xxx",
+  "name": "Hello",
+  "count": {
+    "fav": 0,
+    "follow": 0
   }
 }
 
 // 更新后
 {
-  _id: 'xxx',
-  name: "Hey",
-  count: {
-    fav: 1,
-    follow: 0
+  "_id": "xxx",
+  "name": "Hey",
+  "count": {
+    "fav": 1,
+    "follow": 0
   }
+}
+```
+
+更新数组时，已数组下标作为key即可，比如以下示例将数组arr内下标为1的值修改为 uniCloud
+
+```
+collection.doc('doc-id').update({
+  arr: {
+    1: "uniCloud"
+  }
+})
+```
+
+```
+// 更新前
+{
+  "arr": ["hello", "world"]
+}
+// 更新后
+{
+  "arr": ["hello", "uniCloud"]
 }
 ```
 
@@ -645,20 +679,20 @@ collection.doc('doc-id').set({
 ```
 // 更新前
 {
-  _id: 'xxx',
-  name: "Hello",
-  count: {
-    fav: 0,
-    follow: 0
+  "_id": "xxx",
+  "name": "Hello",
+  "count": {
+    "fav": 0,
+    "follow": 0
   }
 }
 
 // 更新后
 {
-  _id: 'xxx',
-  name: "Hey",
-  count: {
-    fav: 1
+  "_id": "xxx",
+  "name": "Hey",
+  "count": {
+    "fav": 1
   }
 }
 ```
@@ -697,21 +731,21 @@ db.collection('photo').doc('doc-id').update({
 ```
 // 更新前
 {
-  _id: 'xxx',
-  name: "Hello",
-  count: {
-    fav: 0,
-    follow: 0
+  "_id": "xxx",
+  "name": "Hello",
+  "count": {
+    "fav": 0,
+    "follow": 0
   }
 }
 
 // 更新后
 {
-  _id: 'xxx',
-  name: "Hello",
-  count: {
-    fav: 1,
-    follow: 1
+  "_id": "xxx",
+  "name": "Hello",
+  "count": {
+    "fav": 1,
+    "follow": 1
   }
 }
 ```
@@ -744,21 +778,21 @@ db.collection('user').where({
 ```
 // 更新前
 {
-  _id: 'xxx',
-  name: "Hello",
-  count: {
-    fav: 0,
-    follow: 0
+  "_id": "xxx",
+  "name": "Hello",
+  "count": {
+    "fav": 0,
+    "follow": 0
   }
 }
 
 // 更新后
 {
-  _id: 'xxx',
-  name: "Hello",
-  count: {
-    fav: 1,
-    follow: 0
+  "_id": "xxx",
+  "name": "Hello",
+  "count": {
+    "fav": 1,
+    "follow": 0
   }
 }
 ```
@@ -786,21 +820,21 @@ db.collection('user').where({
 ```
 // 更新前
 {
-  _id: 'xxx',
-  name: "Hello",
-  count: {
-    fav: 2,
-    follow: 0
+  "_id": "xxx",
+  "name": "Hello",
+  "count": {
+    "fav": 2,
+    "follow": 0
   }
 }
 
 // 更新后
 {
-  _id: 'xxx',
-  name: "Hello",
-  count: {
-    fav: 20,
-    follow: 0
+  "_id": "xxx",
+  "name": "Hello",
+  "count": {
+    "fav": 20,
+    "follow": 0
   }
 }
 ```
@@ -822,15 +856,15 @@ db.collection('comments').doc('comment-id').update({
 ```
 // 更新前
 {
-  _id: 'xxx',
-  rating: 5,
-  comment: 'xxxx'
+  "_id": "xxx",
+  "rating": 5,
+  "comment": "xxx"
 }
 
 // 更新后
 {
-  _id: 'xxx',
-  comment: 'xxxx'
+  "_id": "xxx",
+  "comment": "xxx"
 }
 ```
 
@@ -852,14 +886,14 @@ db.collection('comments').doc('comment-id').update({
 ```
 // 更新前
 {
-  _id: 'xxx',
-  users: ['a','b']
+  "_id": "xxx",
+  "users": ["a","b"]
 }
 
 // 更新后
 {
-  _id: 'xxx',
-  users: ['a','b','c','d']
+  "_id": "xxx",
+  "users": ["a","b","c","d"]
 }
 ```
 
@@ -879,14 +913,14 @@ db.collection('comments').doc('comment-id').update({
 ```
 // 更新前
 {
-  _id: 'xxx',
-  users: ['a','b']
+  "_id": "xxx",
+  "users": ["a","b"]
 }
 
 // 更新后
 {
-  _id: 'xxx',
-  users: ['a']
+  "_id": "xxx",
+  "users": ["a"]
 }
 ```
 
@@ -908,14 +942,14 @@ db.collection('comments').doc('comment-id').update({
 ```
 // 更新前
 {
-  _id: 'xxx',
-  users: ['a','b']
+  "_id": "xxx",
+  "users": ["a","b"]
 }
 
 // 更新后
 {
-  _id: 'xxx',
-  users: ['c','d','a','b']
+  "_id": "xxx",
+  "users": ["c","d","a","b"]
 }
 ```
 
@@ -935,14 +969,14 @@ db.collection('comments').doc('comment-id').update({
 ```
 // 更新前
 {
-  _id: 'xxx',
-  users: ['a','b']
+  "_id": "xxx",
+  "users": ["a","b"]
 }
 
 // 更新后
 {
-  _id: 'xxx',
-  users: ['b']
+  "_id": "xxx",
+  "users": ["b"]
 }
 ```
 

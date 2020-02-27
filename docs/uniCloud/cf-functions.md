@@ -190,6 +190,8 @@ uniCloud.callFunction({
 
 以如下代码为例，`count`作为全局变量，当多次调用该云函数时，可能会出现变量累加的情况（实例未复用时，每次返回0，若实例被复用，则可能返回1、2、3等各种意外情况）
 
+**云函数中使用的时区是 `UTC+0`，而不是 `UTC+8`，在云函数中使用时间时需特别注意。**
+
 ```javascript
 let count = 0;
 module.exports = async (event) => {
@@ -201,20 +203,19 @@ module.exports = async (event) => {
 ```
 
 
-<!-- 
-## uniCloud.callFunction(Object callFunctionOptions)
+<span id="callbyfunction"></span>
+## 云函数中调用云函数
 
-云函数中调用云函数。**目前仅腾讯云支持**
+用法同客户端调用云函数，不支持callback形式
 
-**callFunctionOptions参数说明**
+#### 请求参数
 
 |字段			|类型			|必填	|说明					|
 |---			|---			|---	|---					|
 |name			|String		|是		|云函数名称。	|
 |data			|Object		|否		|云函数参数。	|
-|callback	|Function	|否		|回调函数。		|
 
-**响应参数**
+#### 响应参数
 
 |字段			|类型		|必备	|说明												|
 |---			|---		|---	|---												|
@@ -226,13 +227,10 @@ module.exports = async (event) => {
 **示例代码**
 
 ```javascript
-//promise
-uniCloud.callFunction({
+let callFunctionResult = await uniCloud.callFunction({
     name: "test",
     data: { a: 1 }
-}).then((res) => {
-    
-});
+})
 ```
 
- -->
+

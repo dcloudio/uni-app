@@ -38,6 +38,8 @@
 
 **App初期启动的引导轮播：** 因为是App专用，为了更好的性能，推荐使用nvue制作。参考插件市场已经封装的插件[https://ext.dcloud.net.cn/plugin?id=676](https://ext.dcloud.net.cn/plugin?id=676)
 
+**原生App和uni-app混合开发：** [详见](hybrid)
+
 ## H5常见问题
 
 **uni-app 的 H5 版使用注意事项：**[https://ask.dcloud.net.cn/article/35232](https://ask.dcloud.net.cn/article/35232)
