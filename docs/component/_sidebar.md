@@ -78,6 +78,8 @@
   * [SwiperDot 轮播图指示点](https://ext.dcloud.net.cn/plugin?id=284)
   * [Tag 标签](https://ext.dcloud.net.cn/plugin?id=35)
   * [更多插件市场的组件](https://ext.dcloud.net.cn/?cat1=2)
+* 页面属性配置节点
+  * [page-meta](component/page-meta.md)
 * [配置微信小程序插件](component/mp-weixin-plugin.md)
 * [原生组件说明](component/native-component.md)
 <div class="contact-box">
