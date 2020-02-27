@@ -39,6 +39,9 @@ function updateMPUsingAutoImportComponents (autoComponents, options) {
     return
   }
   const resourcePath = options.resourcePath.replace(path.extname(options.resourcePath), '')
+  if (resourcePath == 'App') {
+    return
+  }
   const usingAutoImportComponents = Object.create(null)
   autoComponents.forEach(({
     name,
