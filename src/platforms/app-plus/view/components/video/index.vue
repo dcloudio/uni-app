@@ -30,6 +30,7 @@ const events = [
   'ended',
   'timeupdate',
   'fullscreenchange',
+  'fullscreenclick',
   'waiting',
   'error'
 ]
