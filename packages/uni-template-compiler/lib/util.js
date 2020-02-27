@@ -176,7 +176,7 @@ function hasOwn (obj, key) {
   return hasOwnProperty.call(obj, key)
 }
 
-const tags = require('../../uni-cli-shared/lib/tags')
+const tags = require('@dcloudio/uni-cli-shared/lib/tags')
 
 const {
   getTagName
