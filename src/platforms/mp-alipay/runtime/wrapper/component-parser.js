@@ -109,7 +109,7 @@ export default function parseComponent (vueComponentOptions) {
       }
     },
     didUnmount () {
-      this.$vm.$destroy()
+      this.$vm && this.$vm.$destroy()
     },
     methods: {
       __r: handleRef,
