@@ -9,8 +9,6 @@
 
 页面属性配置节点，用于指定页面的一些属性、监听页面事件。只能是页面内的第一个节点。可以配合 navigation-bar 组件一同使用。
 
-通过这个节点可以获得类似于调用 uni.setBackgroundTextStyle uni.setBackgroundColor 等接口调用的效果。
-
 |属性|类型|默认值|必填|说明|最低版本
 |:-|:-|:-|:-|:-|:-|
 |background-text-style|string||否|下拉背景字体、loading 图的样式，仅支持 dark 和 light|微信基础库 2.9.0|
