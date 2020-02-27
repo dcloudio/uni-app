@@ -65,9 +65,25 @@ module.exports = function ({
         if (!source) {
           throw new Error(`组件 ${key} 引用错误`)
         }
-        if (process.UNI_LIBRARIES.includes(source)) {
-          const componentName = hyphenate(key)
-          components[key] = source + '/lib/' + componentName + '/' + componentName
+        const lib = (process.UNI_LIBRARIES || []).find(lib => {
+          if (typeof lib === 'string') {
+            if (lib === source) {
+              return true
+            }
+          } else {
+            if (lib.library === source) {
+              return true
+            }
+          }
+        })
+        if (lib) {
+          if (typeof lib === 'string') {
+            const componentName = hyphenate(key)
+            components[key] = source + '/lib/' + componentName + '/' + componentName
+          } else {
+            const componentName = hyphenate(key)
+            components[key] = lib.customName(componentName)
+          }
         } else {
           components[key] = source
         }

@@ -37,9 +37,25 @@ function parseComponents (names, bindings, path) {
       throw new Error(`组件 ${name} 引用错误,仅支持 import 方式引入组件`)
     }
     let source = importDeclaration.node.source.value
-    if (process.UNI_LIBRARIES && process.UNI_LIBRARIES.includes(source)) {
-      const componentName = hyphenate(name)
-      source = source + '/lib/' + componentName + '/' + componentName
+    const lib = (process.UNI_LIBRARIES || []).find(lib => {
+      if (typeof lib === 'string') {
+        if (lib === source) {
+          return true
+        }
+      } else {
+        if (lib.library === source) {
+          return true
+        }
+      }
+    })
+    if (lib) {
+      if (typeof lib === 'string') {
+        const componentName = hyphenate(name)
+        source = source + '/lib/' + componentName + '/' + componentName
+      } else {
+        const componentName = hyphenate(name)
+        source = lib.customName(componentName)
+      }
     }
     const dynamicImportArray = dynamicImportMap.get(importDeclaration) || []
     dynamicImportArray.push({
