@@ -27,6 +27,7 @@ const {
 const IP = auth.getClientIP()
 ```
 
+<span id="createticket"></span>
 ### auth.createTicket(String customUserId, Object createTicketOptions)
 
 开发者可以使用云函数创建登录凭证，提供给客户端进行登录操作。[详见](uniCloud/authentication.md#自定义登录)
