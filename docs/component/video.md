@@ -49,8 +49,10 @@
 |@error|EventHandle||视频播放出错时触发|头条小程序不支持|
 |@progress|EventHandle||加载进度变化时触发，只支持一段加载。event.detail = {buffered}，百分比|微信小程序、H5|
 |@loadedmetadata|EventHandle||视频元数据加载完成时触发。event.detail = {width, height, duration}|微信小程序、H5|
+|@fullscreenclick|EventHandle||视频播放全屏播放时点击事件。event.detail = { screenX:"Number类型，点击点相对于屏幕左侧边缘的 X 轴坐标", screenY:"Number类型，点击点相对于屏幕顶部边缘的 Y 轴坐标", screenWidth:"Number类型，屏幕总宽度", screenHeight:"Number类型，屏幕总高度"}|App 2.6.3+|
 
 `<video>` 默认宽度 300px、高度 225px，可通过 css 设置宽高。
+
 
 **示例** [查看示例](https://uniapp.dcloud.io/h5/pages/component/video/video)
  
