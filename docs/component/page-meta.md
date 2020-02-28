@@ -1,13 +1,9 @@
 #### page-meta
 
-**平台差异说明**
+页面属性配置节点，用于指定页面的一些属性、监听页面事件。只能是页面内的第一个节点。可以配合 [navigation-bar](https://uniapp.dcloud.io/component/navigation-bar) 组件一同使用。
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|√（2.6.3+）|√（2.6.3+）|√|x|x|x|x|
+HBuilderX 2.6.3+ 支持
 
-
-页面属性配置节点，用于指定页面的一些属性、监听页面事件。只能是页面内的第一个节点。可以配合 navigation-bar 组件一同使用。
 
 |属性|类型|默认值|必填|说明|最低版本
 |:-|:-|:-|:-|:-|:-|
@@ -44,27 +40,29 @@
       :background-color="nbBackgroundColor"
     />
   </page-meta>
+  <view class="content">
+  </view>
 </template>
 
 <script>
-    export default {
-        data() {
-            return {
-                bgTextStyle: 'dark',
-                scrollTop: '200rpx',
-                bgColor: '#ff0000',
-                bgColorTop: '#00ff00',
-                bgColorBottom: '#0000ff',
-                nbTitle: '标题',
-                nbLoading: false,
-                nbFrontColor: '#000000',
-                nbBackgroundColor: '#ffffff'
-            }
-        },
-        onLoad() {
-        },
-        methods: {
-        }
+  export default {
+    data() {
+      return {
+        bgTextStyle: 'dark',
+        scrollTop: '200rpx',
+        bgColor: '#ff0000',
+        bgColorTop: '#00ff00',
+        bgColorBottom: '#0000ff',
+        nbTitle: '标题',
+        nbLoading: false,
+        nbFrontColor: '#000000',
+        nbBackgroundColor: '#ffffff'
+      }
+    },
+    onLoad() {
+    },
+    methods: {
     }
+  }
 </script>
 ```
