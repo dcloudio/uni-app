@@ -3,6 +3,10 @@
 ### uni.createIntersectionObserver([this], [options])
 创建并返回一个 ``IntersectionObserver`` 对象实例。
 
+**this说明：**
+
+自定义组件实例。**支付宝小程序不支持此参数，传入仅为抹平写法差异**
+
 **options 的可选参数为：**
 
 |字段名|类型|说明|
@@ -31,7 +35,7 @@
 
 下面的示例代码中，如果目标节点 ``".test"`` 进入 ``".scroll"`` 区域以下 100px 时，就会触发回调函数。
 ```
-uni.createIntersectionObserver(this).relativeTo('.scroll',{bottom: 100}}).observe('.test', (res) => {
+uni.createIntersectionObserver(this).relativeTo('.scroll',{bottom: 100}).observe('.test', (res) => {
   console.log(res);
 })
 ```

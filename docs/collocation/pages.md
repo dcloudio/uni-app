@@ -8,6 +8,7 @@
 |:-|:-|:-|:-|:-|
 |[globalStyle](/collocation/pages?id=globalstyle)|Object|否|设置默认页面的窗口表现||
 |[pages](/collocation/pages?id=pages)|Object Array|是|设置页面路径及窗口表现||
+|[easycom](/collocation/pages?id=easycom)|Object|否|组件自动引入规则|2.5.5+|
 |[tabBar](/collocation/pages?id=tabbar)|Object|否|设置底部 tab 的表现||
 |[condition](/collocation/pages?id=condition)|Object|否|启动模式配置||
 |[subPackages](/collocation/pages?id=subPackages)|Object Array|否|分包加载配置||
@@ -49,7 +50,7 @@
 		"usingComponents":{
 			"collapse-tree-item":"/components/collapse-tree-item"
 		},
-    "pageOrientation": "portrait"//全局屏幕旋转设置(仅微信/QQ小程序)，支持 auto / portrait / landscape
+    "pageOrientation": "portrait"//横屏配置，全局屏幕旋转设置(仅 APP/微信/QQ小程序)，支持 auto / portrait / landscape
 	},
 	"tabBar": {
 		"color": "#7A7E83",
@@ -79,7 +80,13 @@
 			"iconWidth": "24px",
 			"backgroundImage": "static/image/midButton_backgroundImage.png"
 		}
-	}
+	},
+  "easycom": {
+    "autoscan": true, //是否自动扫描组件
+    "custom": {//自定义扫描规则
+      "uni-(.*)": "@/components/uni-$1.vue"
+    }
+  }
 }
 ```
 
@@ -89,7 +96,7 @@
 
 |属性|类型|默认值|描述|平台差异说明|
 |:-|:-|:-|:-|:-|
-|navigationBarBackgroundColor|HexColor|#F7F7F7|导航栏背景颜色（同状态栏背景色）|APP与H5为#F7F7F7，小程序平台请参考相应小程序文档||
+|navigationBarBackgroundColor|HexColor|#F7F7F7|导航栏背景颜色（同状态栏背景色）|APP与H5为#F7F7F7，小程序平台请参考相应小程序文档|
 |navigationBarTextStyle|String|white|导航栏标题颜色及状态栏前景颜色，仅支持 black/white||
 |navigationBarTitleText|String||导航栏标题文字内容||
 |navigationStyle|String|default|导航栏样式，仅支持 default/custom。custom即取消默认的原生导航栏，需看[使用注意](/collocation/pages?id=customnav)|微信小程序 7.0+、百度小程序、H5、App（2.0.3+）|
@@ -102,7 +109,7 @@
 |titleImage|String||导航栏图片地址（替换当前文字标题），支付宝小程序内必须使用https的图片链接地址|支付宝小程序、H5、APP|
 |transparentTitle|String|none|导航栏透明设置。支持 always 一直透明 / auto 滑动自适应 / none 不透明|支付宝小程序、H5、APP|
 |titlePenetrate|String|NO|导航栏点击穿透|支付宝小程序、H5|
-|pageOrientation|String|portrait|屏幕旋转设置，仅支持 auto / portrait / landscape 详见 [响应显示区域变化](https://developers.weixin.qq.com/miniprogram/dev/framework/view/resizable.html)|App 2.4.7+、微信小程序|
+|pageOrientation|String|portrait|横屏配置，屏幕旋转设置，仅支持 auto / portrait / landscape 详见 [响应显示区域变化](https://developers.weixin.qq.com/miniprogram/dev/framework/view/resizable.html)|App 2.4.7+、微信小程序|
 |animationType|String|pop-in|窗口显示的动画效果，详见：[窗口动画](api/router?id=animation)|App|
 |animationDuration|Number|300|窗口显示动画的持续时间，单位为 ms|App|
 |app-plus|Object||设置编译到 App 平台的特定样式，配置项参考下方 [app-plus](/collocation/pages?id=app-plus)|App|
@@ -293,7 +300,7 @@
 - `titleNView` 不能设置 `autoBackButton`、`homeButton`等属性
 - `titleNView` 的 `type` 值为 `transparent` 时，导航栏为滚动透明渐变导航栏，默认只有button，滚动后标题栏底色和title文字会渐变出现； `type` 为 `float` 时，导航栏为悬浮标题栏，此时页面内容上顶到了屏幕顶部，包括状态栏，但导航栏悬浮盖在页面上方，一般这种场景会同时设置导航栏的背景色为rgba半透明颜色。
 - `titleNView` 的 `type` 值为 `transparent` 时，App-nvue 2.4.4+ 支持
-- 在 `titleNView` 配置 `buttons` 后，监听按钮的点击事件，vue 页面及 nvue 的uni-app编译模式参考：[onNavigationBarButtonTap](/frame?id=页面生命周期)、nvue 的weex编译模式参考：[uni.onNavigationBarButtonTap](/use-weex?id=onnavigationbarbuttontap)
+- 在 `titleNView` 配置 `buttons` 后，监听按钮的点击事件，vue 页面及 nvue 的weex编译模式参考：[uni.onNavigationBarButtonTap](/use-weex?id=onnavigationbarbuttontap)
 - 在 `titleNView` 配置 `searchInput` 后，相关的事件监听参考：[onNavigationBarSearchInputChanged 等](/frame?id=页面生命周期)
 - App下原生导航栏的按钮如果使用字体图标，注意检查字体库的名字（font-family）是否使用了默认的 iconfont，这个名字是保留字，不能作为外部引入的字体库的名字，需要调整为自定义的名称，否则无法显示。
 - 想了解各种导航栏的开发方法，请详读[导航栏开发指南](https://ask.dcloud.net.cn/article/34921)
@@ -647,13 +654,73 @@ h5 平台下拉刷新动画，只有 circle 类型。
 
 **注意事项**
 
-- ```titleImage```仅支持https地址，设置了```titleImage```会替换页面文字标题
-- ```backgroundImageUrl```支持网络地址和本地地址，尽量使用绝对地址
+- `titleImage`仅支持https地址，设置了`titleImage`会替换页面文字标题
+- `backgroundImageUrl`支持网络地址和本地地址，尽量使用绝对地址
 - 部分配置可能会只在真机运行的时候生效，支付宝未来应该会改善
 
-# FAQ
+## FAQ
 - Q：如何取消原生导航栏？或自定义导航
 - A：参考[导航栏开发指南](http://ask.dcloud.net.cn/article/34921)
+
+# easycom
+
+> `HBuilderX 2.5.5`起支持`easycom`组件模式。
+
+传统vue组件，需要安装、引用、注册，三个步骤后才能使用组件。`easycom`将其精简为一步。
+只要组件安装在项目的components目录下，并符合`components/组件名称/组件名称.vue`目录结构。就可以不用引用、注册，直接在页面中使用。
+如下：
+```html
+<template>
+	<view class="container">
+		<uni-list>
+			<uni-list-item title="第一行"></uni-list-item>
+			<uni-list-item title="第二行"></uni-list-item>
+		</uni-list>
+	</view>
+</template>
+<script>
+	// 这里不用import引入，也不需要在components内注册uni-list组件。template里就可以直接用
+	export default {
+		data() {
+			return {
+				
+			}
+		}
+	}
+</script>
+```
+
+不管components目录下安装了多少组件，`easycom`打包后会自动剔除没有使用的组件，对组件库的使用尤为有好。
+
+组件库批量安装，随意使用，自动按需打包。以官方的`uni-ui`为例，在HBuilderX新建项目界面选择`uni-ui`项目模板，只需在页面中敲u，拉出大量组件代码块，直接选择，即可使用。大幅提升开发效率，降低使用门槛。
+
+在[uni-app插件市场](https://ext.dcloud.net.cn/)下载符合`components/组件名称/组件名称.vue`目录结构的组件，均可直接使用。
+
+`easycom`是自动开启的，不需要手动开启，有需求时可以在`pages.json`的`easycom`节点进行个性化设置，如关闭自动扫描，或自定义扫描匹配组件的策略。设置参数如下：
+
+|属性			|类型		|默认值	|描述																																											|
+|:-				|:-			|:-			|:-																																												|
+|autoscan	|Boolean|true		|是否开启自动扫描，开启后将会自动扫描符合`components/组件名称/组件名称.vue`目录结构的组件	|
+|custom		|Object	|-			|以正则方式自定义组件匹配规则。如果`autoscan`不能满足需求，可以使用`custom`自定义匹配规则	|
+
+**自定义easycom配置的示例**
+
+```
+"easycom": {
+  "autoscan": true,
+  "custom": {
+    "uni-(.*)": "@/components/uni-$1.vue"
+  }
+}
+```
+
+**说明**
+- `easycom`方式引入的组件无需在页面内`import`，也不需要在`components`内声明，即可在任意页面使用
+- `easycom`方式引入组件不是全局引入，而是局部引入。例如在H5端只有加载相应页面才会加载使用的组件
+- 在组件名完全一致的情况下，`easycom`引入的优先级低于手动引入（区分连字符形式与驼峰形式）
+- 考虑到编译速度，直接在`pages.json`内修改`easycom`不会触发重新编译，需要改动页面内容触发。
+- `easycom`只处理vue组件，不处理小程序组件。暂不处理后缀为.nvue的组件，建议参考uni ui，使用vue后缀，同时兼容nvue页面。
+- `nvue`页面里的`.vue`后缀的组件，同样支持`easycom`
 
 # tabBar
 如果应用是一个多 tab 应用，可以通过 tabBar 配置项指定 tab 栏的表现，以及 tab 切换时显示的对应页。
@@ -673,7 +740,8 @@ h5 平台下拉刷新动画，只有 circle 类型。
 |color|HexColor|是||tab 上的文字默认颜色||
 |selectedColor|HexColor|是||tab 上的文字选中时的颜色||
 |backgroundColor|HexColor|是||tab 的背景色||
-|borderStyle|String|否|black|tabbar 上边框的颜色，仅支持 black/white|App 2.3.4+ 支持其他颜色值|
+|borderStyle|String|否|black|tabbar 上边框的颜色，可选值 black/white|App 2.3.4+ 支持其他颜色值|
+|blurEffect|String|否|none|iOS 高斯模糊效果，可选值 dark/extralight/light/none（参考:[使用说明](https://ask.dcloud.net.cn/article/36617)）|App 2.4.0+ 支持|
 |list|Array|是||tab 的列表，详见 list 属性说明，最少2个、最多5个 tab||
 |position|String|否|bottom|可选值 bottom、top|top 值仅微信小程序支持|
 |fontSize|String|否|10px|文字默认大小|App 2.3.4+|
@@ -687,7 +755,7 @@ h5 平台下拉刷新动画，只有 circle 类型。
 |属性|类型|必填|说明|
 |:-|:-|:-|:-|
 |pagePath|String|是|页面路径，必须在 pages 中先定义|
-|text|String|是|tab 上按钮文字，在 5+APP 和 H5 平台为非必填。例如中间可放一个没有文字的+号图标|
+|text|String|是|tab 上按钮文字，在 App 和 H5 平台为非必填。例如中间可放一个没有文字的+号图标|
 |iconPath|String|否|图片路径，icon 大小限制为40kb，建议尺寸为 81px * 81px，当 postion 为 top 时，此参数无效，不支持网络图片，不支持字体图标|
 |selectedIconPath|String|否|选中时的图片路径，icon 大小限制为40kb，建议尺寸为 81px * 81px ，当 postion 为 top 时，此参数无效|
 
@@ -758,7 +826,7 @@ midButton没有pagePath，需监听点击事件，自行处理点击后的行为
 |path|String|是|启动页面路径|
 |query|String|否|启动参数，可在页面的 [onLoad](use?id=页面生命周期) 函数里获得|
 
-**注意：** 在 5+App 里真机运行可直接打开配置的页面，微信开发者工具里需要手动改变编译模式，如下图：
+**注意：** 在 App 里真机运行可直接打开配置的页面，微信开发者工具里需要手动改变编译模式，如下图：
 
 <div style="text-align:center;">
 	<img src="//img-cdn-qiniu.dcloud.net.cn/uniapp/doc/condition.png" />
@@ -784,11 +852,7 @@ midButton没有pagePath，需监听点击事件，自行处理点击后的行为
 
 # subPackages
 
-分包加载配置
-
-**注意：**此配置为小程序的分包加载机制。在5+App里始终为整包。
-- 微信、百度小程序每个分包的大小是2M，总体积一共不能超过8M。
-- 支付宝小程序每个分包的大小是2M，总体积一共不能超过4M。
+分包加载配置，此配置为小程序的分包加载机制。在App里始终为整包。
 
 subPackages 节点接收一个数组，数组每一项都是应用的子包，其属性值如下：
 
@@ -800,6 +864,9 @@ subPackages 节点接收一个数组，数组每一项都是应用的子包，�
 **注意：** 
 
 - ```subPackages``` 里的pages的路径是 ``root`` 下的相对路径，不是全路径。
+- 微信、百度小程序每个分包的大小是2M，总体积一共不能超过8M。
+- 支付宝小程序每个分包的大小是2M，总体积一共不能超过4M。
+- 分包下支持独立的 ```static``` 目录，用来对静态资源进行分包。
 - `uni-app`内支持对微信小程序、QQ小程序、百度小程序分包优化，[关于分包优化的说明](/collocation/manifest?id=关于分包优化的说明)
 - 针对`vendor.js`过大的情况可以使用运行时压缩代码
   + `HBuilderX`创建的项目勾选`运行-->运行到小程序模拟器-->运行时是否压缩代码`
@@ -816,9 +883,11 @@ subPackages 节点接收一个数组，数组每一项都是应用的子包，�
 │  └─login
 │     └─login.vue    
 ├─pagesA   
+│  ├─static
 │  └─list
 │     └─list.vue 
 ├─pagesB    
+│  ├─static
 │  └─detail
 │     └─detail.vue  
 ├─static             

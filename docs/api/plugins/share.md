@@ -5,8 +5,8 @@
 
 |平台|说明|
 |:-|:-|
-|App|使用 ``uni.share`` 进行分享，需要在 `manifest.json` 里配置各平台分享所必需的的字段，如appid、appsecret等|
-|小程序|不支持方法调用，只能用户主动点击触发分享，可使用 <button open-type="share"> 和 onShareAppMessage 进行自定义|
+|App|使用 ``uni.share`` 进行分享，需要在 `manifest.json` 里配置各平台分享所必需的的字段，如appid等|
+|小程序|不支持方法调用，只能用户主动点击触发分享，可使用 &lt;button open-type="share"&gt; 和 onShareAppMessage 进行自定义|
 |H5|如果是普通浏览器，浏览器自带分享按钮；如果是在微信内嵌浏览器中调用js-sdk，[参考](https://ask.dcloud.net.cn/article/35380)|
 
 
@@ -20,7 +20,7 @@
 |scene|String|provider 为 weixin 时必选|场景，可取值参考下面说明。|
 |summary|String|type 为 1 时必选|摘要|
 |href|String|type 为 0 时必选|跳转链接|
-|imageUrl|String|type 为 0、2、5 时必选|图片地址，type为0时，图片大小于 20Kb|
+|imageUrl|String|type 为 0、2、5 时必选|图片地址。type为0时，推荐使用小于20Kb的图片|
 |mediaUrl|String|type 为 3、4 时必选|音视频地址|
 |miniProgram|Object|type 为 5 时必选|分享小程序必要参数|
 |success|Function|否|接口调用成功的回调|
@@ -215,7 +215,7 @@ uni.share({
 
 **平台差异说明**
 
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|
 |x|x|√|√|√|√|
 
@@ -263,7 +263,7 @@ export default {
 
 **平台差异说明**
 
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|
 |x|x|√|x|√|√|
 
@@ -283,7 +283,7 @@ export default {
 
 **平台差异说明**
 
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|
 |x|x|√|√|x|√|
 
@@ -307,9 +307,14 @@ uni.hideShareMenu()
 
 #### 微信分享
 
-在 manifest.json 的 App SDK 配置里，勾选微信消息及朋友圈，并填写相关 appkey，微信 appkey 申请步骤可参考：[https://ask.dcloud.net.cn/article/208](https://ask.dcloud.net.cn/article/208)。
+在 manifest.json 的 App SDK 配置里，勾选微信消息及朋友圈，并填写 appid，如需在iOS平台使用还需要配置通用链接。
 
-![](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/uni2019022501.png)
+**参考文档**
+
+- 微信 appid 申请步骤：[https://ask.dcloud.net.cn/article/208](https://ask.dcloud.net.cn/article/208)。
+- iOS平台微信SDK配置通用链接：[https://ask.dcloud.net.cn/article/36445](https://ask.dcloud.net.cn/article/36445)。
+
+![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/doc/mp-weixin-manifest-share.png)
 
 #### 新浪微博分享
 在 manifest.json 的 App SDK 配置里，勾选勾选新浪微博，并填写相关appkey，新浪微博 appkey 申请步骤可参考：[https://ask.dcloud.net.cn/article/209](https://ask.dcloud.net.cn/article/209)。

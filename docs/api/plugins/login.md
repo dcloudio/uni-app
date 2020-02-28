@@ -3,7 +3,7 @@
 
 **平台差异说明**
 
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |√|x|√|√|√|√|√|
 
@@ -33,10 +33,10 @@ H5平台登陆注意事项：
 各个平台的登录流程存在差异，详细请参考相关平台的文档说明：
 
 * [微信小程序登录](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/login.html)
-* [支付宝小程序用户授权](https://docs.alipay.com/mini/introduce/auth)
+* [支付宝小程序用户授权](https://docs.alipay.com/mini/introduce/authcode)
 * [百度小程序登录](https://smartprogram.baidu.com/docs/develop/api/open_log/#%E6%8E%88%E6%9D%83%E6%B5%81%E7%A8%8B%E8%AF%B4%E6%98%8E/)
 * [头条小程序登录](https://developer.toutiao.com/dev/cn/mini-app/develop/open-capacity/log-in/login)
-* [Apple登录](https://ask.dcloud.net.cn/article/36651)
+* [Apple登录、苹果登录、Sign in with Apple](https://ask.dcloud.net.cn/article/36651)
 
 
 **示例**
@@ -58,7 +58,7 @@ uni.login({
 
 **平台差异说明**
 
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |x|x|√|x|√|√|√|
 
@@ -75,7 +75,7 @@ uni.login({
 
 **平台差异说明**
 
-|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |√|x|√|√|√|√|√|
 
@@ -87,7 +87,7 @@ uni.login({
 |:-|:-|:-|:-|:-|:-|
 |provider|String|否|登录服务提供商，通过 uni.getProvider 获取||
 |withCredentials|Boolean|否|是否带上登录态信息。|微信小程序、头条小程序|
-|lang|Number|否|指定返回用户信息的语言，默认为 en。更多值请参考下面的说明。|微信小程序|
+|lang|String|否|指定返回用户信息的语言，默认为 en。更多值请参考下面的说明。|微信小程序|
 |timeout|Number|否|超时时间，单位 ms。|微信小程序|
 |success|Function|否|接口调用成功的回调||
 |fail|Function|否|接口调用失败的回调函数||
@@ -101,7 +101,7 @@ uni.login({
 |zh_TW|繁体中文|
 |en|英文|
 
-**注意：**在小程序 withCredentials 为 true 时或是在 5+App 调用 uni.getUserInfo，要求此前有调用过 uni.login 且登录态尚未过期。
+**注意：**在小程序 withCredentials 为 true 时或是在 App 调用 uni.getUserInfo，要求此前有调用过 uni.login 且登录态尚未过期。
 
 **success 返回参数说明**
 
@@ -119,7 +119,7 @@ uni.login({
 |参数|类型|说明|平台差异说明|
 |:-|:-|:-||
 |nickName|String|用户昵称||
-|openId|String|该服务商唯一用户标识|5+App|
+|openId|String|该服务商唯一用户标识|App|
 |avatarUrl|String|用户头像|&nbsp;|
 
 除了以上三个必有的信息外，不同服务供应商返回的其它信息会存在差异。

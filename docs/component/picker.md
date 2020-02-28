@@ -64,8 +64,8 @@
 |属性名|类型|默认值|说明|平台差异说明|
 |:-|:-|:-|:-|:-|
 |value|String||表示选中的时间，格式为"hh:mm"||
-|start|String||表示有效时间范围的开始，字符串格式为"hh:mm"|5+App 不支持|
-|end|String||表示有效时间范围的结束，字符串格式为"hh:mm"|5+App 不支持|
+|start|String||表示有效时间范围的开始，字符串格式为"hh:mm"|App 不支持|
+|end|String||表示有效时间范围的结束，字符串格式为"hh:mm"|App 不支持|
 |@change|EventHandle||value 改变时触发 change 事件，event.detail = {value: value}||
 |@cancel|EventHandle||取消选择时触发||
 |disabled|Boolean|false|是否禁用|&nbsp;|

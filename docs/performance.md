@@ -31,7 +31,7 @@ Android上小程序大多自带了一个几十M的chromium webview，而App端�
 
 逻辑层和视图层分离，好处是js运算不卡渲染，最简单直接的感受就是：窗体动画稳。
 
-如果开发者使用过5+App，应该有概念，webview新窗体一边做进入动画，一边自身渲染，很容易卡动画。而uni-app则无需写预载代码，新窗体渲染快且动画稳定。
+如果开发者使用过App，应该有概念，webview新窗体一边做进入动画，一边自身渲染，很容易卡动画。而uni-app则无需写预载代码，新窗体渲染快且动画稳定。
 
 但是两层分离也带来一个坏处，这两层互相通信，其实是有损耗的。
 
@@ -52,7 +52,7 @@ iOS还好，但Android低端机上，每次通信都要耗时几十毫秒。平�
 
 wxs中可以监听手势，以uni ui的swiperAction组件为例，手指拖动，侧边的列表菜单项要跟手滑出，此时就需要使用wxs才能实现流畅效果。
 
-至于canvas动画，微信的canvas是原生的，无法运用wxs操作，且一样有通信折算，所以绘制动画的性能不佳。而uni-app的app-vue的canvas是webview的，并且支持wxs操作，开发者可以在普通js中传递数据和指令给wxs，在wxs里绘制动画，将不再有通信折损，实现更流畅的效果（app端需v3编译器）
+至于canvas动画，微信的canvas是原生的，无法运用wxs操作，且一样有通信折损，所以绘制动画的性能不佳。而uni-app的app-vue的canvas是webview的，并且支持wxs操作，开发者可以在普通js中传递数据和指令给wxs，在wxs里绘制动画，将不再有通信折损，实现更流畅的效果（app端需v3编译器）
 
 - 原生渲染的视图层
 
@@ -145,7 +145,7 @@ app-nvue和h5不存在此问题。造成差异的原因是小程序目前只提�
 ##### 优化包体积
 
 * uni-app发行到小程序时，自带引擎只有几十K，主要是一个定制过的vue.js核心库。如果使用了es6转es5、css对齐的功能，可能会增大代码体积，可以配置这些编译功能是否开启。
-* uni-app的H5端，自带了vue.js、vue-rooter及部分es6 polyfill库，这部分的体积gzip后只有92k，和web开发使用vue基本一致。而内置组件ui库（如picker、switch等）、小程序的对齐js api等，相当于一个完善的大型ui库。但大多数应用不会用到所有内置组件和API。由此uni-app提供了摇树优化机制，未摇树优化前的uni-app整体包体积约500k，服务器部署gzip后162k。开启摇树优化需在manifest配置，[详情](https://uniapp.dcloud.io/collocation/manifest?id=optimization)。
+* uni-app的H5端，自带了vue.js、vue-router及部分es6 polyfill库，这部分的体积gzip后只有92k，和web开发使用vue基本一致。而内置组件ui库（如picker、switch等）、小程序的对齐js api等，相当于一个完善的大型ui库。但大多数应用不会用到所有内置组件和API。由此uni-app提供了摇树优化机制，未摇树优化前的uni-app整体包体积约500k，服务器部署gzip后162k。开启摇树优化需在manifest配置，[详情](https://uniapp.dcloud.io/collocation/manifest?id=optimization)。
 * uni-app的App端，因为自带了一个独立v8引擎和小程序框架，所以比HTML5Plus或mui等普通hybrid的App引擎体积要大。Android基础引擎约15M。App还提供了扩展模块，比如地图、蓝牙等，打包时如不需要这些模块，可以裁剪掉，以缩小发行包体积。在 manifest.json-App模块权限 里可以选择。
 * App端支持如果选择纯nvue项目（manifest里设置app-plus下的renderer:"native"），包体积可以进一步减少2M左右。
 * uni-app的App端默认包含arm32和x86两个cpu的支持so库。这会增大包体积。如果你在意体积控制，可以在manifest里去掉x86 cpu的支持（manifest可视化界面-App其他设置里选择cpu），这可以减少包体积到9M。但代价是不支持intel的cpu了。一般手机都是arm的，仅个别少见的Android pad使用x86 cpu。另外as的模拟器里如果选择x86时也无法运行这种apk。

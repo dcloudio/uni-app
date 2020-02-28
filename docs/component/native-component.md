@@ -107,6 +107,8 @@ nvue页面全部都是原生组件，互相之间没有层级问题。
 
 部分小程序通过修改了自带的webview内核，实现了webview也可以使用rom主题字体，比如微信、qq、支付宝；其他小程序及app-vue下，webview仍然无法渲染为rom主题字体。
 
-app端若在意字体不一致的问题，建议直接使用nvue。
+不管Android字体问题、还是同层渲染问题，微信小程序都是依靠自带一个几十M的定制webview实现的，这对于App而言增加了太大的体积，不现实。
 
-不管Android字体问题、还是同层渲染问题，微信小程序都是依靠自带一个几十M的定制webview实现的，这对于App而言增加了太大的体积，不如使用nvue解决这类问题。
+app端若在意字体不一致的问题，有2种解决建议：
+1. 直接使用nvue。nvue是纯原生渲染，不存在webview渲染和原生字体不一致的问题。
+2. app端不使用系统webview，而是使用x5浏览器内核。详见：[https://ask.dcloud.net.cn/article/36806](https://ask.dcloud.net.cn/article/36806)

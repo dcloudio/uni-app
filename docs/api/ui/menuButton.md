@@ -6,19 +6,20 @@
 
 **平台差异说明**
 
-|5+App	|H5	|微信小程序	|支付宝小程序	|百度小程序	|头条小程序	|QQ小程序	|
+|App	|H5	|微信小程序	|支付宝小程序	|百度小程序	|头条小程序	|QQ小程序	|
 |:-:	|:-:|:-:		|:-:			|:-:		|:-:		|:-:		|
 |x		|x	|√			|x				|√			|√			|√			|
 
 **返回值说明**
 
-|属性	|类型	|说明					|
-|width	|number	|宽度，单位：px			|
-|height	|number	|高度，单位：px			|
-|top	|number	|上边界坐标，单位：px	|
+|属性	  |类型	  |说明					      |
+|:-:	  |:-:    |:-:		            |
+|width	|number	|宽度，单位：px			  |
+|height	|number	|高度，单位：px			  |
+|top	  |number	|上边界坐标，单位：px	|
 |right	|number	|右边界坐标，单位：px	|
 |bottom	|number	|下边界坐标，单位：px	|
-|left	|number	|左边界坐标，单位：px	|
+|left	  |number	|左边界坐标，单位：px	|
 
 **示例**
 

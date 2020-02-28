@@ -173,7 +173,7 @@ Tip
 - 常用的开发模式就是`pc`上使用内置浏览器预览调dom，运行到真机上看`console.log`。如果是很复杂的问题才使用`debug`。
 - vue页面也可以在微信开发者工具里调试，除了plus API，其他是一样的，微信开发者工具的查看`Dom`和网络和存储等调试工具相对而言更完善些。
 注意：即使不发布微信小程序、只发布`App`，也需要安装微信开发者工具。
-- uni-app的App端没有5+App那种webkit remote debug，因为uni-app的js不是运行在webview里，而是独立的jscore里。
+- uni-app的App端没有App那种webkit remote debug，因为uni-app的js不是运行在webview里，而是独立的jscore里。
 - 部分manifest配置，如三方sdk配置，需要打包后生效的，可以打包一个自定义运行基座。打包自定义基座后运行这个自定义基座，同样可以真机运行和debug。打包正式包将无法真机运行和debug。
 
 
