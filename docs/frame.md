@@ -371,6 +371,10 @@ uni-app 提供内置 CSS 变量
 
 ```html
 <template>
+    <!-- HBuilderX 2.6.3+ 新增 page-meta, 详情：https://uniapp.dcloud.io/component/page-meta -->
+    <page-meta>
+        <navigation-bar />
+    </page-meta>
 	<view>
 		<view class="status_bar">
 			<!-- 这里是状态栏 -->
