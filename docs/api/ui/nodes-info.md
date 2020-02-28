@@ -24,6 +24,10 @@ query.select('#id').boundingClientRect(data => {
 }).exec();
 ```
 
+**注意**
+
+- 支付宝小程序不支持in(component)，使用无效果
+
 ### selectorQuery.select(selector)
 
 在当前页面下选择第一个匹配选择器 ``selector`` 的节点，返回一个 ``NodesRef`` 对象实例，可以用于获取节点信息。
@@ -126,7 +130,7 @@ query.select('#id').boundingClientRect(data => {
 
 |App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|√|x|√|x|x|x|√|
+|x|x|√|x|x|x|√|
 
 **callback 返回参数**
 

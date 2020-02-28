@@ -7,15 +7,18 @@ body的元素选择器请改为page，同样，div和ul和li等改为view、span
 
 - webview浏览器兼容性
 
-vue页面在App端是被系统的webview渲染的（不是手机自带浏览器，是rom的webview），在较老的手机上，比如Android4.4、5.0或iOS8，很多css是不支持的，所以不要使用太新的css，会导致界面异常。
+vue页面在App端，默认是被系统的webview渲染的（不是手机自带浏览器，是rom的webview），在较老的手机上，比如Android4.4、5.0或iOS8，很多css是不支持的，所以不要使用太新的css，会导致界面异常。
 
 注意这不意味着不能使用flex，Android4.4也支持flex，只是不要使用太新的css。
 
 可以找Android4.4手机或使用pc模拟器实际测试下，大多数国产Android模拟器都是4.4或5.0。
 
+从 uni-app 2.5.3 起，Android端支持引入腾讯x5浏览器内核，可以抹平低端Android的浏览器兼容性问题，[详见x5使用指南](https://ask.dcloud.net.cn/article/36806)
+
 小程序不存在此情况。所以如果你的H5和小程序界面正常，而App界面异常，大多是因为css兼容性。解决这类问题，可以在caniuse查询，也可以使用一个较低版本的chrome浏览器在H5端测试。
 
-Android4.4对应的webview是chrome37，如找不到老版chrome，也可以下载老版HBuilder（在HBuilderX下载页面底部有“上一代HBuilder下载”），在老HBuilder的右上角边改边看模式里是chrome37内核，可以把uni-app的H5版运行起来，将url粘贴到边改边看的浏览器中，点右键可以审查元素，排查不支持的css。
+app端nvue页面，不存在浏览器兼容问题，它自带一个统一的原生渲染引擎，不依赖webview。
+Android4.4对应的webview是chrome37。各端浏览器内核的详情查阅，参考：[关于手机webview内核、默认浏览器、各家小程序的渲染层浏览器的区别和兼容性](https://ask.dcloud.net.cn/article/1318)
 
 - 原生组件层级问题
 H5没有原生组件概念问题，非H5端有原生组件并引发了原生组件层级高于前端组件的概念，要遮挡video、map等原生组件，请使用cover-view组件。

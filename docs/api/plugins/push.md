@@ -49,7 +49,7 @@
 开启推送
 
 平台差异说明：
-- 5+App
+- App
 
 **OBJECT 参数说明**
 
@@ -87,7 +87,7 @@ uni.getProvider({
 
 **平台差异说明**
 
-- 5+App
+- App
 
 **OBJECT 参数说明**
 
@@ -115,7 +115,7 @@ uni.unsubscribePush({
 
 **平台差异说明**
 
-- 5+App
+- App
 
 **OBJECT 参数说明**
 
@@ -147,7 +147,7 @@ uni.onPush({
 
 **平台差异说明**
 
-- 5+App
+- App
 
 **OBJECT 参数说明**
 

@@ -54,7 +54,7 @@ App平台的直播播放，不使用此API，而直接使用video的API。
 
 |App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|见下|x|√|x|x|x|x|
+|见下|x|√|x|x|x|√|
 
 - app-nvue 平台 2.2.5+ 支持 uni.createLivePusherContext(livePusherId, this)
 - app-nvue 平台 2.2.5以下，需要同时设置组件属性id和ref ``<live-pusher id="livepusher1" ref="livepusher1"></live-pusher>``，或者直接使用 ref，例如 ``this.$refs.livepusher1``

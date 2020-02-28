@@ -177,6 +177,30 @@ nvue 的页面跳转，与 weex 不同，仍然遵循 uni-app 的路由模型。
 
 在 uni-app 中，nvue 和 vue 页面可以混搭使用。
 
+推荐使用`uni.$on`,`uni.$emit`的方式进行页面通讯，旧的通讯方式（下面的`uni.postMessage`及`plus.webview.postMessageToUniNView`）不再推荐使用。
+
+**通讯实现方式**
+
+```
+// 接收信息的页面
+// $on(eventName, callback)  
+uni.$on('page-popup', (data) => {  
+    console.log('标题：' + data.title)
+    console.log('内容：' + data.content)
+})  
+
+// 发送信息的页面
+// $emit(eventName, data)  
+uni.$emit('page-popup', {  
+    title: '我是title',  
+    content: '我是content'  
+});
+
+```
+
+
+**使用此页面通讯时注意事项：要在页面卸载前，使用 uni.$off 移除事件监听器。**[参考](https://uniapp.dcloud.io/collocation/frame/communication?id=off)
+
 ### nvue 向 vue 通讯
 
 **步骤：**
@@ -744,7 +768,7 @@ export default {
 - weex 下，页面内容高过屏幕高度并不会自动滚动，它没有页面滚动的概念，只有部分组件可滚动（list、waterfall、scroll-view/scroller），要滚得内容需要套在可滚动组件下。这不符合前端开发的习惯，所以在 nvue 编译为 uni-app模式时，给页面外层自动套了一个 scroller，页面内容过高会自动滚动。（组件不会套，页面有recycle-list时也不会套）。后续会提供配置，可以设置不自动套。
 - weex 下，px是与屏幕宽度相关的动态单位，750px代表成屏幕宽度100%，它的静态单位是wx。在 nvue 编译为 uni-app模式时，纠正了这个问题，rpx是与屏幕宽度相关的动态单位，px是静态单位。
 - 页面开发前，首先想清楚这个页面的纵向内容有什么，哪些是要滚动的，然后每个纵向内容的横轴排布有什么，按 flex 布局设计好界面。
-- 文字内容，必须、只能在<text>组件下。不能在<div>、<view>的text区域里直接写文字。否则即使渲染了，也无法绑定js里的变量。
+- 文字内容，必须、只能在`<text>`组件下。不能在`<div>`、`<view>`的text区域里直接写文字。否则即使渲染了，也无法绑定js里的变量。
 - 支持的css有限，不过并不影响布局出你需要的界面，flex还是非常强大的。[详见](https://weex.apache.org/zh/docs/styles/common-styles.html#%E7%9B%92%E6%A8%A1%E5%9E%8B)
 - 不支持背景图。但可以使用image组件和层级来实现类似web中的背景效果。因为原生开发本身也没有web这种背景图概念
 - css选择器支持的比较少，没有web丰富。详见weex的样式文档
@@ -754,7 +778,7 @@ export default {
 
 ## Android平台阴影(box-shadow)问题
 
-Android平台weex对阴影样式(`box-shadow`)支持不完善，如设置圆角边框时阴影样式显示不正常、设置动画时在`Android7`上显示不正常等。为解决这些问题，新增`elevation`属性（组件的属性，不是css样式）设置组件的层级，`Number`类型，层级值越大阴影越明显，阴影效果也与组件位置有关，越靠近页面底部阴影效果越明显
+Android平台weex对阴影样式(`box-shadow`)支持不完善，如设置圆角边框时阴影样式显示不正常、设置动画时在`Android7`上显示不正常等。为解决这些问题，从HBuilderX 2.4.7起，新增`elevation`属性（组件的属性，不是css样式）设置组件的层级，`Number`类型，层级值越大阴影越明显，阴影效果也与组件位置有关，越靠近页面底部阴影效果越明显
 
 **用法**
 

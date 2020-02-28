@@ -8,13 +8,13 @@
 |参数名|类型|必填|默认值|说明|平台差异说明|
 |:-|:-|:-|:-|:-|:-|
 |url|String|是||开发者服务器接口地址||
-|data|Object/String/ArrayBuffer|否||请求的参数|5+App（自定义组件编译模式）不支持ArrayBuffer类型|
+|data|Object/String/ArrayBuffer|否||请求的参数|App（自定义组件编译模式）不支持ArrayBuffer类型|
 |header|Object|否||设置请求的 header，header 中不能设置 Referer。||
 |method|String|否|GET|有效值详见下方说明||
 |timeout|Number|否|30000|超时时间，单位 ms|支付宝小程序|
 |dataType|String|否|json	|如果设为 json，会尝试对返回的数据做一次 JSON.parse||
-|responseType|String|否|text	|设置响应的数据类型。合法值：text、arraybuffer|5+App和支付宝小程序不支持|
-|sslVerify|Boolean|否|true|验证 ssl 证书|仅5+App安卓端支持（HBuilderX 2.3.3+）|
+|responseType|String|否|text	|设置响应的数据类型。合法值：text、arraybuffer|App和支付宝小程序不支持|
+|sslVerify|Boolean|否|true|验证 ssl 证书|仅App安卓端支持（HBuilderX 2.3.3+）|
 |success|Function|否||收到开发者服务成功返回的回调函数||
 |fail|Function|否||接口调用失败的回调函数||
 |complete|Function|否||接口调用结束的回调函数（调用成功、失败都会执行）|&nbsp;|
@@ -23,7 +23,7 @@
 
 必须大写，有效值在不同平台差异说明不同。
 
-|method|5+App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
+|method|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |GET|√|√|√|√|√|√|
 |POST|√|√|√|√|√|√|
