@@ -20,11 +20,11 @@ export default function parseBaseComponent (vueComponentOptions, {
   initRelation
 } = {}) {
   let [VueComponent, vueOptions] = initVueComponent(Vue, vueComponentOptions)
-
+  const _options = vueOptions.otpions || {}
   const options = {
     multipleSlots: true,
     addGlobalClass: true,
-    ...vueOptions.options
+    ..._options
   }
 
   if (__PLATFORM__ === 'mp-weixin' || __PLATFORM__ === 'mp-qq') {
