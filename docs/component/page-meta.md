@@ -20,6 +20,10 @@ HBuilderX 2.6.3+ 支持
 |@scrolldone|eventhandle||否|如果通过改变 scroll-top 属性来使页面滚动，页面滚动结束后会触发 scrolldone 事件|微信基础库 2.9.0|
 
 
+**注意**
+- `<page-meta>` 会覆盖 page.json 配置
+
+
 #### 示例代码
 
 ```
