@@ -3888,8 +3888,8 @@ db.command.aggregate.arrayElemAt([<array>, <index>])
 const $ = db.command.aggregate
 db.collection('exams').aggregate()
   .project({
-    first: $.arraElemAt(['$scores', 0]),
-    last: $.arraElemAt(['$scores', -1]),
+    first: $.arrayElemAt(['$scores', 0]),
+    last: $.arrayElemAt(['$scores', -1]),
   })
   .end()
 ```
