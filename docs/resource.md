@@ -12,6 +12,9 @@
 #### 如果你使用过mpvue
 几乎不用学习，uni-app对vue语法的支持是mpvue的超集。这里有篇[mpvue转uni-app指南](http://ask.dcloud.net.cn/article/34945)
 
+#### 如果你熟悉小程序，但不熟悉vue
+参考三方总结[https://segmentfault.com/a/1190000015684864](https://segmentfault.com/a/1190000015684864)
+
 #### 三方培训机构视频
 如下是三方专业培训机构的视频教程
 * [《uni-app 商业级应用实战》](https://ke.qq.com/course/379043?from=800006421)，出品人：腾讯课堂NEXT学院。亮点：腾讯课堂官方出品；不懂 vue 的工程师也可快速学习；从入门到实战都包括。
