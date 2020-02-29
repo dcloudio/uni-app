@@ -1,4 +1,4 @@
-DCloud有420万开发者，[uni统计](https://tongji.dcloud.net.cn/)覆盖手机终端10亿，月活4.5亿。是开发者数量和案例最丰富的多端开发框架。
+DCloud有**420万**开发者，[uni统计](https://tongji.dcloud.net.cn/)手机端月活**6.5亿**。是开发者数量和案例最丰富的多端开发框架。
 
 欢迎知名开发商提交案例或接入uni统计，[项目案例征集](https://github.com/dcloudio/uni-app/issues/6)提交。
 
