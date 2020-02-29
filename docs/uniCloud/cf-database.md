@@ -173,7 +173,7 @@ const collection = db.collection('user');
 
 | 参数 | 类型   | 必填 | 说明                                     |
 | ---- | ------ | ---- | ---------------------------------------- |
-| data | object|array | 是   | {_id: '10001', 'name': 'Ben'} _id 非必填|
+| data | object &#124; array | 是   | {_id: '10001', 'name': 'Ben'} _id 非必填|
 
 ```js
 // 单条插入数据
