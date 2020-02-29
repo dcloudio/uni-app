@@ -6,7 +6,7 @@
 
 # uni-app的特点
 
-- 开发者和案例更多：HBuilder装机量420万台，开发者社区月活百万，70多个QQ微信群承载10万人。案例众多，uni统计月活4.5亿（[详见](https://uniapp.dcloud.io/case)）
+- 开发者和案例更多：HBuilder装机量420万台，开发者社区月活百万，70多个QQ微信群承载10万人。案例众多，uni统计月活6.5亿（[详见](https://uniapp.dcloud.io/case)）
 - 性能更高（见[评测](https://juejin.im/post/5ca1736af265da30ae314248)）
 - 更丰富的周边生态，[插件市场](https://ext.dcloud.net.cn/)数千款插件
 - 提供比小程序原生开发更好的开发体验、更高的工程化效率
