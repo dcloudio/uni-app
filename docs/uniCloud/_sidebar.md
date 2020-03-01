@@ -9,10 +9,10 @@
   * [日志输出](uniCloud/cf-logger.md)
   * [身份认证](uniCloud/cf-authentication.md)
   * [定时触发](uniCloud/trigger.md)
-  * [HTTP触发](uniCloud/http.md)
+  * [设置HTTP访问地址](uniCloud/http.md)
 * [云数据库](uniCloud/cf-database.md)
 * [云存储](uniCloud/storage.md)
-* [登录授权](uniCloud/authentication.md)
+* [云Token](uniCloud/authentication.md)
 * 权限管理
   * [腾讯云](uniCloud/policy-tcb.md)
 <!-- * [阿里云](uniCloud/policy-ali.md) -->
