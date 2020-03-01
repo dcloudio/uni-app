@@ -2,7 +2,15 @@
 
 页面导航条配置节点，用于指定导航栏的一些属性。只能是 [page-meta](https://uniapp.dcloud.io/component/page-meta) 组件内的第一个节点，需要配合它一同使用。
 
-HBuilderX 2.6.3+ 支持
+**平台差异说明**
+
+|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|√ 2.6.3+|2.6.3+|√ 2.9.0+|√|√|√|√|
+
+从HBuilderX 2.9.3起，编译到所有平台均支持`navigation-bar`，但编译到微信时，受微信基础库版本限制；编译到其他平台不受平台版本限制。
+
+**属性说明**
 
 |属性|类型|默认值|必填|说明|最低版本
 |:-|:-|:-|:-|:-|:-|
@@ -14,7 +22,8 @@ HBuilderX 2.6.3+ 支持
 |color-animation-timing-func|string|"linear"|否|改变导航栏颜色时的动画方式，支持 linear 、 easeIn 、 easeOut 和 easeInOut|微信基础库 2.9.0|
 
 **注意**
-- `<navigation-bar>` 会覆盖 page.json style 节点配置
+- `navigation-bar` 目前支持的配置仅为上表所列，并不支持 page.json 中关于导航栏的所有配置
+- `navigation-bar` 与 pages.json 的设置相冲突时，会覆盖 page.json 的配置
 
 
 #### 示例代码
