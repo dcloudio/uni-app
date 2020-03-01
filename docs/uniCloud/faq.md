@@ -25,7 +25,7 @@
 **uniCloud只支持uni-app，怎么开发web界面？**
 
 uni-app本来也可以开发web界面，只是内置组件对宽屏没有自动适配。你可以：
-1. 新建uni-app项目，但不使用内置组件，而是直接用三方ui库，比如elementUI。这些基于vue的、适合宽屏使用的ui库可以直接用。至于js api，仍然使用uni的，比如uni.setStorage等。
+1. 新建uni-app项目，但不使用内置组件，而是直接用三方ui库，比如elementUI。这些基于vue的、适合宽屏使用的ui库可以直接用。至于js api，仍然使用uni的，比如uni.setStorage等。有一个可参考插件[GraceAdmin](https://ext.dcloud.net.cn/plugin?id=1347)，是基于uniCloud的pc端管理后台框架。
 2. 继续使用内置组件，自己处理pc适配：
     - 如果要多端适配界面，使用css的媒体查询处理适配。
     - 网上有三方库可以替换touch的拖动为pc上的drag。比如hello uni-app的h5示例使用的touch-emulator.js。
