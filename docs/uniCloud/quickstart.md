@@ -8,7 +8,7 @@
   - 对于老的uni-app项目，也可以对项目点右键，菜单中选择“创建uniCloud云开发环境”
   - 新建uni-app项目的模板中，有一个`Hello uniCloud`项目模板，演示了各种云函数的使用。
   
-  uniCloud云开发环境创建成功后，项目下会有一个带有云图标的特殊目录，名为“cloudfunctions”。
+  uniCloud云开发环境创建成功后，项目根目录下会有一个带有云图标的特殊目录，名为“cloudfunctions”。（即便是cli创建的项目，云函数目录也在项目的根目录下，而不是src下）
 
 ## 创建和绑定服务空间
 
