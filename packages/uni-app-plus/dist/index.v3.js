@@ -10907,6 +10907,9 @@ var serviceContext = (function () {
   }
 
   function request$1 (args, callbackId) {
+    if (args.method !== 'GET' && args.header['Content-Type'].indexOf('application/json') === 0 && isPlainObject(args.data)) {
+      args.data = JSON.stringify(args.data);
+    }
     const {
       requestTaskId
     } = invokeMethod('createRequestTask', args);

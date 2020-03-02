@@ -6070,8 +6070,7 @@ function createPatchFunction (backend) {
 
   function removeAndInvokeRemoveHook (vnode, rm) {
     if (isDef(rm) || isDef(vnode.data)) {
-      var i;
-      var children;
+      var i, children;
       var listeners = cbs.remove.length + 1;
       if (isDef(rm)) {
         // we have a recursively passed down rm callback
@@ -6084,9 +6083,10 @@ function createPatchFunction (backend) {
       // recursively invoke hooks on child component root node
       if (isDef(i = vnode.componentInstance) && isDef(i = i._vnode) && isDef(i.data)) {
         removeAndInvokeRemoveHook(i, rm);
-      } else if(isDef(children = vnode.children)) {
-        // service层获取不到componentInstance，暂用此方式递归
-        for (var i = 0; i < children.length; i++) {
+      } else if (isDef(children = vnode.children)) {
+        // app-plus service 层 elm 暂未实现父子关系维护，移除父 elm 时，导致子 elm 还存留(影响了事件查找)
+        // 暂时使用 vnode 的 children 递归 rm 掉子 elm
+        for (i = 0; i < children.length; i++) {
           if (children[i].tag) {
             removeAndInvokeRemoveHook(children[i]);
           }
@@ -6787,7 +6787,7 @@ function updateDOMListeners (oldVnode, vnode) {
   var on = vnode.data.on || {};
   var oldOn = oldVnode.data.on || {};
   target$1 = vnode.elm;
-
+  
   // fixed by xxxxxx 存储 vd
   target$1._$vd = vnode.context._$vd;
   var context = vnode.context;
