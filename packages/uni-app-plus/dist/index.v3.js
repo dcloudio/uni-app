@@ -10362,7 +10362,7 @@ var serviceContext = (function () {
     callback.invoke(callbackId, data);
   });
 
-  const methods = ['getCenterLocation', 'translateMarker', 'getScale', 'getRegion'];
+  const methods = ['getCenterLocation', 'getScale', 'getRegion'];
 
   class MapContext {
     constructor (id, pageVm) {
@@ -10376,6 +10376,10 @@ var serviceContext = (function () {
 
     includePoints (args) {
       operateMapPlayer$3(this.id, this.pageVm, 'includePoints', args);
+    }
+
+    translateMarker (args) {
+      operateMapPlayer$3(this.id, this.pageVm, 'translateMarker', args);
     }
   }
 
