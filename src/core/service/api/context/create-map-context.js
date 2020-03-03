@@ -18,7 +18,7 @@ UniServiceJSBridge.subscribe('onMapMethodCallback', ({
   callback.invoke(callbackId, data)
 })
 
-const methods = ['getCenterLocation', 'translateMarker', 'getScale', 'getRegion']
+const methods = ['getCenterLocation', 'getScale', 'getRegion']
 
 export class MapContext {
   constructor (id, pageVm) {
@@ -32,6 +32,10 @@ export class MapContext {
 
   includePoints (args) {
     operateMapPlayer(this.id, this.pageVm, 'includePoints', args)
+  }
+
+  translateMarker (args) {
+    operateMapPlayer(this.id, this.pageVm, 'translateMarker', args)
   }
 }
 
