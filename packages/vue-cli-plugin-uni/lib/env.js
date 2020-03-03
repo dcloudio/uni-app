@@ -268,8 +268,8 @@ if (process.env.UNI_USING_COMPONENTS) { // 是否启用分包优化
 
 const warningMsg =
   usingComponentsAbsent
-    ? `该应用之前可能是非自定义组件模式，目前以自定义组件模式运行。非自定义组件将于2019年11月1日起停止支持。详见：https://ask.dcloud.net.cn/article/36385`
-    : `uni-app将于2019年11月1日起停止支持非自定义组件模式 [详情](https://ask.dcloud.net.cn/article/36385)`
+    ? `该应用之前可能是非自定义组件模式，目前以自定义组件模式运行。非自定义组件已于2019年11月1日起停止支持。详见：https://ask.dcloud.net.cn/article/36385`
+    : `uni-app已于2019年11月1日起停止支持非自定义组件模式 [详情](https://ask.dcloud.net.cn/article/36385)`
 
 const needWarning = !platformOptions.usingComponents || usingComponentsAbsent
 let hasNVue = false

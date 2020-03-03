@@ -23,7 +23,8 @@ export default function parseBaseComponent (vueComponentOptions, {
 
   const options = {
     multipleSlots: true,
-    addGlobalClass: true
+    addGlobalClass: true,
+    ...(vueOptions.options || {})
   }
 
   if (__PLATFORM__ === 'mp-weixin' || __PLATFORM__ === 'mp-qq') {
