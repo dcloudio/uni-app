@@ -212,6 +212,7 @@ export default {
     this._addMapCircles(this.circles)
   },
   beforeDestroy () {
+    this.map && this.map.close()
     delete this.map
   },
   methods: {
