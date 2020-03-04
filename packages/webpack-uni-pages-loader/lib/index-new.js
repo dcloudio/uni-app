@@ -17,7 +17,7 @@ const {
 } = require('@dcloudio/uni-cli-shared/lib/cache')
 
 const {
-  pagesJsonJsFileName,
+  // pagesJsonJsFileName,
   initAutoImportComponents
 } = require('@dcloudio/uni-cli-shared/lib/pages')
 
@@ -41,11 +41,11 @@ module.exports = function (content) {
     isAppView = params.type === 'view'
   }
 
-  const pagesJsonJsPath = path.resolve(process.env.UNI_INPUT_DIR, pagesJsonJsFileName)
+  // const pagesJsonJsPath = path.resolve(process.env.UNI_INPUT_DIR, pagesJsonJsFileName)
   const manifestJsonPath = path.resolve(process.env.UNI_INPUT_DIR, 'manifest.json')
   const manifestJson = parseManifestJson(fs.readFileSync(manifestJsonPath, 'utf8'))
 
-  this.addDependency(pagesJsonJsPath)
+  // this.addDependency(pagesJsonJsPath)
   this.addDependency(manifestJsonPath)
 
   const pagesJson = parsePagesJson(content, {
