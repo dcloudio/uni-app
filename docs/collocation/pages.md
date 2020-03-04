@@ -663,6 +663,10 @@ h5 平台下拉刷新动画，只有 circle 类型。
 |:-|:-|:-|
 |colorType|String|阴影的颜色，支持：grey、blue、green、orange、red、yellow|
 
+**注意事项：**
+- 微信/百度/头条 需要配置: "disableScroll": true
+- 支付宝 "mp-alipay": { "allowsBounceVertical": "NO" }
+
 ### mp-alipay
 配置编译到 MP-ALIPAY 平台时的特定样式
 
