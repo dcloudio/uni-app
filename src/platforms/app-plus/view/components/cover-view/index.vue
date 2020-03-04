@@ -3,7 +3,8 @@
     v-on="$listeners">
     <div
       ref="container"
-      class="uni-cover-view"/>
+      class="uni-cover-view"
+      v-text="coverContent"/>
   </uni-cover-view>
 </template>
 <script>

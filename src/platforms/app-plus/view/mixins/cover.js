@@ -1,5 +1,5 @@
-const base = ['padding', 'borderRadius', 'borderColor', 'borderWidth', 'backgroundColor']
-const text = ['color', 'textAlign', 'lineHeight', 'fontSize', 'fontWeight', 'textOverflow', 'whiteSpace']
+const base = ['borderRadius', 'borderColor', 'borderWidth', 'backgroundColor']
+const text = ['paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft', 'color', 'textAlign', 'lineHeight', 'fontSize', 'fontWeight', 'textOverflow', 'whiteSpace']
 const image = []
 const textAlign = { start: 'left', end: 'right' }
 let index = 0
@@ -35,30 +35,42 @@ export default {
     tags () {
       const position = this._getTagPosition()
       const style = this.style
-      return [
-        {
-          tag: 'rect',
-          position,
-          rectStyles: {
-            color: style.backgroundColor,
-            radius: style.borderRadius,
-            borderColor: style.borderColor,
-            borderWidth: style.borderWidth
-          }
-        },
-        this.coverType === 'image' ? {
+      const tags = [{
+        tag: 'rect',
+        position,
+        rectStyles: {
+          color: style.backgroundColor,
+          radius: style.borderRadius,
+          borderColor: style.borderColor,
+          borderWidth: style.borderWidth
+        }
+      }]
+      if (this.coverType === 'image') {
+        tags.push({
           tag: 'img',
           position,
           src: this.coverContent
-        } : {
+        })
+      } else {
+        const lineSpacing = parseFloat(style.lineHeight) - parseFloat(style.fontSize)
+        let width = parseFloat(position.width) - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight)
+        width = width < 0 ? 0 : width
+        let height = parseFloat(position.height) - parseFloat(style.paddingTop) - lineSpacing / 2 - parseFloat(style.paddingBottom)
+        height = height < 0 ? 0 : height
+        tags.push({
           tag: 'font',
-          position,
+          position: {
+            top: `${parseFloat(position.top) + parseFloat(style.paddingTop) + lineSpacing / 2}px`,
+            left: `${parseFloat(position.left) + parseFloat(style.paddingLeft)}px`,
+            width: `${width}px`,
+            height: `${height}px`
+          },
           textStyles: {
             align: textAlign[style.textAlign] || style.textAlign,
             color: style.color,
             decoration: 'none',
-            lineSpacing: (parseFloat(style.lineHeight) - parseFloat(style.fontSize)) + 'px',
-            margin: style.padding,
+            lineSpacing: `${lineSpacing}px`,
+            margin: '0px',
             overflow: style.textOverflow,
             size: style.fontSize,
             verticalAlign: 'top',
@@ -66,8 +78,9 @@ export default {
             whiteSpace: style.whiteSpace
           },
           text: this.coverContent
-        }
-      ]
+        })
+      }
+      return tags
     }
   },
   mounted () {
