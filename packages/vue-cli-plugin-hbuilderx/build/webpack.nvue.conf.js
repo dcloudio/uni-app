@@ -12,7 +12,10 @@ const {
   getTemplatePath
 } = require('@dcloudio/uni-cli-shared')
 
-const WebpackAppPlusNVuePlugin = require('../packages/webpack-app-plus-nvue-plugin')
+const WebpackAppPlusNVuePlugin = process.env.UNI_USING_V3
+  ? require('../packages/webpack-app-plus-plugin')
+  : require('../packages/webpack-app-plus-nvue-plugin')
+
 const WebpackErrorsPlugin = require('@dcloudio/vue-cli-plugin-uni/packages/webpack-errors-plugin')
 const WebpackUniMPPlugin = require('@dcloudio/webpack-uni-mp-loader/lib/plugin/index-new')
 
