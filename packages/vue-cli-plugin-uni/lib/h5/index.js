@@ -113,7 +113,7 @@ global.onAppShow = function(){};
 ` : ''
 
     return {
-      devtool: process.env.NODE_ENV === 'production' ? false : 'source-map',
+      devtool: process.env.NODE_ENV === 'production' ? false : 'cheap-module-eval-source-map',
       resolve: {
         extensions: ['.nvue'],
         alias: {
