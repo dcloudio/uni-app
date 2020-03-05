@@ -21,6 +21,7 @@
 |controls|Array||控件||
 |include-points|Array||缩放视野以包含所有给定的坐标点|App-nvue 2.1.5+、微信小程序、H5、百度小程序、支付宝小程序|
 |enable-satellite|Boolean||是否开启卫星图|App-nvue 2.1.5+|
+|enable-traffic|Boolean||是否开启实时路况|App-nvue 2.1.5+|
 |show-location|Boolean||显示带有方向的当前定位点|微信小程序、H5、百度小程序、支付宝小程序|
 |polygons|Array.`<polygon>`||多边形|App-nvue 2.1.5+、微信小程序、百度小程序、支付宝小程序|
 |@markertap|EventHandle||点击标记点时触发|App-nvue 2.3.3+, App平台需要指定 marker 对象属性 id|
