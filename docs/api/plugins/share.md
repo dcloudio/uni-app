@@ -365,41 +365,41 @@ export default {
 * QQ小程序还支持通过[qq.offShareAppMessage](https://q.qq.com/wiki/develop/game/API/share/qq.offShareAppMessage.html)取消对系统分享按钮的监听。
 
 ### uni.showShareMenu(OBJECT)
-小程序的原生菜单中显示分享按钮
 
-> 1.6.0 新增
+小程序的原生菜单中显示分享按钮
 
 **平台差异说明**
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|x|x|√|x|√|√|√|
+|App|H5	|微信小程序	|支付宝小程序	|百度小程序	|头条小程序	|QQ小程序	|
+|:-:|:-:|:-:				|:-:					|:-:				|:-:				|:-:			|
+|x	|x	|√					|√						|√					|√					|√				|
 
-|属性|类型|必填|说明|平台差异说明|
-|:-|:-|:-|:-|:-|
-|withShareTicket|Boolean|否|是否使用带 shareTicket 的转发，默认为 flase。[详情](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/share.html)|微信小程序|
-|title|String|否|分享标题|百度小程序|
-|content|String|否|分享内容|百度小程序|
-|imageUrl|String|否|分享图标|百度小程序|
-|path|String|否|页面 path ，必须是以 / 开头的完整路径。|百度小程序|
-|success|Function|否|接口调用成功的回调函数||
-|fail|Function|否|接口调用失败的回调函数||
-|complete|Function|否|接口调用结束的回调函数（调用成功、失败都会执行）|&nbsp;|
+|属性						|类型			|必填	|说明																																																																		|平台差异说明	|
+|:-							|:-				|:-		|:-																																																																			|:-						|
+|withShareTicket|Boolean	|否		|是否使用带 shareTicket 的转发，默认为 flase。[详情](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/share.html)|微信小程序		|
+|title					|String		|否		|分享标题																																																																|百度小程序		|
+|content				|String		|否		|分享内容																																																																|百度小程序		|
+|imageUrl				|String		|否		|分享图标																																																																|百度小程序		|
+|path						|String		|否		|页面 path ，必须是以 / 开头的完整路径。																																																|百度小程序		|
+|success				|Function	|否		|接口调用成功的回调函数																																																									|							|
+|fail						|Function	|否		|接口调用失败的回调函数																																																									|							|
+|complete				|Function	|否		|接口调用结束的回调函数（调用成功、失败都会执行）																																												|&nbsp;				|
 
 ### uni.hideShareMenu(OBJECT)
 小程序的原生菜单中隐藏分享按钮
 
 **平台差异说明**
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|
-|x|x|√|√(1.17.0+)|x|√|
+|App|H5	|微信小程序	|支付宝小程序	|百度小程序	|头条小程序	|
+|:-:|:-:|:-:				|:-:					|:-:				|:-:				|
+|x	|x	|√					|√(1.17.0+)	|x					|√					|
 
-|属性|类型|必填|说明|
-|:-|:-|:-|:-|
-|success|function|否|接口调用成功的回调函数|
-|fail|function|否|接口调用失败的回调函数|
-|complete|function|否|接口调用结束的回调函数（调用成功、失败都会执行）|
+|属性						|类型			|必填	|说明																																																																			|平台差异说明	|
+|:-							|:-				|:-		|:-																																																																				|:-						|
+|hideShareItems	|Array		|否		|['qq']控制是否隐藏"转发"，['qzone']控制是否隐藏"分享到空间"，不带hideShareItems参数默认"转发"、"分享到空间"全隐藏。目前只支持'qq'、'qzone'。	|QQ小程序			|
+|success				|function	|否		|接口调用成功的回调函数																																																										|							|
+|fail						|function	|否		|接口调用失败的回调函数																																																										|							|
+|complete				|function	|否		|接口调用结束的回调函数（调用成功、失败都会执行）																																													|							|
 
 **代码示例**
 
