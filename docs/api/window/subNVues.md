@@ -117,7 +117,8 @@ subNVue.setStyle({
 
 
 ### subNVue.postMessage(OBJECT)
-发送消息
+
+发送消息，此通讯方式已过时，请使用`uni.$emit`进行通讯，[参考](/collocation/frame/communication?id=emit)
 
 **代码示例**
 
@@ -131,7 +132,8 @@ subNvue.postMessage({
 ```
 
 ### subNVue.onMessage(CallBack)
-监听消息
+
+监听消息，此通讯方式已过时，请使用`uni.$on`进行通讯，[参考](/collocation/frame/communication?id=on)
 
 **代码示例**
 
