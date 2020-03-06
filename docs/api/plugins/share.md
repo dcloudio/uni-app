@@ -259,6 +259,46 @@ uni.share({
 - Q：弹出分享菜单，是否有已经写好的插件？
 - A：插件市场有很多封装好的分享菜单插件，[底部图标菜单](https://ext.dcloud.net.cn/search?q=%E5%BA%95%E9%83%A8%E5%9B%BE%E6%A0%87%E8%8F%9C%E5%8D%95)，可直接弹出菜单，并且没有遮挡层级问题，推荐使用。
 
+### uni.shareWithSystem(OBJECT)
+
+调用系统分享组件发送分享消息，不需要配置分享SDK
+
+**平台差异说明**
+
+|App						|H5	|微信小程序	|支付宝小程序	|百度小程序	|头条小程序	|QQ小程序	|
+|:-:						|:-:|:-:				|:-:					|:-:				|:-:				|:-:			|
+|√(App 2.6.4+)	|x	|x					|x						|x					|x					|x				|
+
+
+**OBJECT 参数说明**
+
+|参数名		|类型		|必填	|说明																		|
+|:-				|:-			|:-		|:-																			|
+|type			|String	|-		|分享类型，只支持text，image，默认为text|
+|summary	|String	|-		|分享的文字内容													|
+|href			|String	|-		|分享链接，ios端分享到微信时必填此字段	|
+|imageUrl	|String	|-		|分享图片，仅支持本地路径								|
+
+**注意事项**
+
+- Android端当msg参数中设置图片（`imageUrl`属性）时，分享类型自动变为为`image`，在分享时可能只会发送图片（如微信）；没有设置图片时分享类型则认为是文本`text`。
+- iOS端不同的分享程序对分享内容有要求，如微信分享时必需添加链接地址`href`，否则微信分享失败。 注：iOS8.0及以上系统触发成功回调则表示发送消息成功。
+
+**示例代码**
+
+```javascript
+uni.shareWithSystem({
+  summary: '',
+  href: 'https://uniapp.dcloud.io',
+  success(){
+    // 分享完成，请注意此时不一定是成功分享
+  },
+  fail(){
+    // 分享失败
+  }
+})
+```
+
 ### plus.share.sendWithSystem(msg, successCB, errorCB)
 
 Android和iOS都有应用注册分享接口的机制，基本上所有有接收分享内容功能的应用，都会注册分享接口。
@@ -331,18 +371,19 @@ App端可调用手机的系统分享，实现所有注册分享的应用的呼�
 
 此事件需要 return 一个 Object，用于自定义分享内容，其内容如下：
 
-|参数名|类型|必填|说明|平台差异说明|
-|:-|:-|:-|:-|:-|
-|title|String|是|分享标题||
-|path|String|是|页面 path ，必须是以 / 开头的完整路径。|QQ小程序不支持|
-|imageUrl|String|否|分享图标，路径可以是本地文件路径、代码包文件路径或者网络图片路径。支持PNG及JPG。显示图片长宽比是 5:4||
-|content|String|否|百度小程序表现为：分享内容；支付宝小程序表现为：吱口令文案|百度小程序、支付宝小程序|
-|desc|String|否|自定义分享描述|支付宝小程序、头条小程序|
-|bgImgUrl|String|否|自定义分享二维码的背景图，建议大小750*950（网络图片路径）|支付宝小程序|
-|query|String|否|QQ小程序查询字符串，必须是 key1=val1&key2=val2 的格式。从这条转发消息进入后，可通过 qq.getLaunchOptionSync() 或 qq.onShow() 获取启动参数中的 query。|QQ小程序|
-|success|Function|否|接口调用成功的回调函数|支付宝小程序、百度小程序|
-|fail|Function|否|接口调用失败的回调函数|支付宝小程序、百度小程序|
-|complete|Function|否|接口调用结束的回调函数（调用成功、失败都会执行）|百度小程序|
+|参数名			|类型			|必填	|说明																																																																									|平台差异说明							|
+|:-					|:-				|:-		|:-																																																																										|:-												|
+|title			|String		|是		|分享标题																																																																							|													|
+|path				|String		|是		|页面 path ，必须是以 / 开头的完整路径。																																																							|QQ小程序不支持						|
+|imageUrl		|String		|否		|分享图标，路径可以是本地文件路径、代码包文件路径或者网络图片路径。支持PNG及JPG。显示图片长宽比是 5:4																									|													|
+|content		|String		|否		|百度小程序表现为：分享内容；支付宝小程序表现为：吱口令文案																																														|百度小程序、支付宝小程序	|
+|desc				|String		|否		|自定义分享描述																																																																				|支付宝小程序、头条小程序	|
+|bgImgUrl		|String		|否		|自定义分享二维码的背景图，建议大小750*950（网络图片路径）																																														|支付宝小程序							|
+|query			|String		|否		|QQ小程序查询字符串，必须是 key1=val1&key2=val2 的格式。从这条转发消息进入后，可通过 qq.getLaunchOptionSync() 或 qq.onShow() 获取启动参数中的 query。	|QQ小程序									|
+|templateId	|String		|否		|开发者后台设置的分享素材模板 id																																																											|头条小程序								|
+|success		|Function	|否		|接口调用成功的回调函数																																																																|支付宝小程序、百度小程序	|
+|fail				|Function	|否		|接口调用失败的回调函数																																																																|支付宝小程序、百度小程序	|
+|complete		|Function	|否		|接口调用结束的回调函数（调用成功、失败都会执行）																																																			|百度小程序								|
 
 **示例代码**
 
