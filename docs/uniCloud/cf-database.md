@@ -184,23 +184,20 @@ const collection = db.collection('user');
 
 ```js
 // 单条插入数据
-collection.add({
+let res = await collection.add({
   name: 'Ben'
-}).then((res) => {
-
-});
+})
 // 批量插入数据
-collection.add([{
+let res = await collection.add([{
   name: 'Alex'
 },{
   name: 'Ben'
 },{
   name: 'John'
-}]).then((res) => {
+}])
 // res.inserted // 插入成功条数
 // res.result // 阿里云特有，批量插入返回的所有记录 id
 // res.failIndexes // 腾讯云特有，插入失败的记录的下标
-});
 ```
 
 **Tips**
@@ -213,7 +210,7 @@ collection.add([{
 如果文档不存在，`set` 方法会创建一个新文档。
 
 ```js
-collection.doc().set({
+let res = await collection.doc().set({
   name: "Hey"
 });
 ```
@@ -235,12 +232,12 @@ collection.where()
 where 可接收对象作为参数，表示筛选出拥有和传入对象相同的 key-value 的文档。比如筛选出所有类型为计算机的、内存为 8g 的商品：
 
 ```js
-db.collection('goods').where({
+let res = await db.collection('goods').where({
   category: 'computer',
   type: {
     memory: 8,
   }
-})
+}).get()
 ```
 
 如果要表达更复杂的查询，可使用高级查询指令，比如筛选出所有内存大于 8g 的计算机商品：
@@ -267,14 +264,12 @@ collection.count()
 
 参数
 ```js
-db.collection('goods').where({
+let res = await db.collection('goods').where({
   category: 'computer',
   type: {
     memory: 8,
   }
-}).count().then(function(res) {
-
-})
+}).count()
 ```
 
 响应参数
@@ -301,9 +296,7 @@ collection.limit()
 使用示例
 
 ```js
-collection.limit(1).get().then(function(res) {
-
-});
+let res = await collection.limit(1).get()
 ```
 
 ### 设置起始位置
@@ -319,9 +312,7 @@ collection.skip()
 使用示例
 
 ```js
-collection.skip(4).get().then(function(res) {
-
-});
+let res = await collection.skip(4).get()
 ```
 
 ### 对结果排序
@@ -338,9 +329,7 @@ collection.orderBy()
 使用示例
 
 ```js
-collection.orderBy("name", "asc").get().then(function(res) {
-
-});
+let res = await collection.orderBy("name", "asc").get()
 ```
 
 ### 指定返回字段
@@ -369,9 +358,9 @@ collection.field({ 'age': true })
 
 ```js
 const myOpenID = "xxx"
-db.collection('articles').where({
+let res = await db.collection('articles').where({
   _openid: myOpenID
-})
+}).get()
 ```
 
 还可以用指令：
@@ -379,29 +368,29 @@ db.collection('articles').where({
 ```js
 const dbCmd = db.command
 const myOpenID = "xxx"
-db.collection('articles').where({
+let res = await db.collection('articles').where({
   _openid: dbCmd.eq(openid)
-})
+}).get()
 ```
 
 注意 `eq` 指令比对象的方式有更大的灵活性，可以用于表示字段等于某个对象的情况，比如：
 
 ```js
 // 这种写法表示匹配 stat.publishYear == 2018 且 stat.language == 'zh-CN'
-db.collection('articles').where({
+let res = await db.collection('articles').where({
   stat: {
     publishYear: 2018,
     language: 'zh-CN'
   }
-})
+}).get()
 // 这种写法表示 stat 对象等于 { publishYear: 2018, language: 'zh-CN' }
 const dbCmd = db.command
-db.collection('articles').where({
+let res = await db.collection('articles').where({
   stat: dbCmd.eq({
     publishYear: 2018,
     language: 'zh-CN'
   })
-})
+}).get()
 ```
 
 #### neq
@@ -412,12 +401,12 @@ db.collection('articles').where({
 
 ```js
 const dbCmd = db.command
-db.collection('goods').where({
+let res = await db.collection('goods').where({
   category: 'computer',
   type: {
     brand: dbCmd.neq('X')
   },
-})
+}).get()
 ```
 
 #### gt
@@ -428,10 +417,10 @@ db.collection('goods').where({
 
 ```js
 const dbCmd = db.command
-db.collection('goods').where({
+let res = await db.collection('goods').where({
   category: 'computer',
   price: dbCmd.gt(2000)
-})
+}).get()
 ```
 
 #### gte
@@ -454,12 +443,12 @@ db.collection('goods').where({
 
 ```js
 const dbCmd = db.command
-db.collection('goods').where({
+let res = await db.collection('goods').where({
   category: 'computer',
   type: {
     memory: dbCmd.in([8, 16])
   }
-})
+}).get()
 ```
 
 #### nin
@@ -580,16 +569,10 @@ collection.doc(_id).remove()
 
 ```js
 // 清理全部数据
-collection.get()
-  .then((res) => {
-    const promiseList = res.data.map(document => {
-      return collection.doc(document.id).remove();
-    });
-    Promise.all(promiseList);
-  })
-  .catch((e) => {
-
-  });
+let res = await collection.get()
+res.data.map(async(document) => {
+  return await collection.doc(document.id).remove();
+});
 ```
 
 **方式2 条件查找文档然后直接批量删除**
@@ -599,11 +582,9 @@ collection.where().remove()
 ```js
 // 删除字段a的值大于2的文档
 const dbCmd = db.command
-collection.where({
+let res = await collection.where({
   a: dbCmd.gt(2)
-}).remove().then(function(res) {
-  
-})
+}).remove()
 ```
 
 ## 更新文档
@@ -613,7 +594,7 @@ collection.where({
 collection.doc().update()
 
 ```js
-collection.doc('doc-id').update({
+let res = await collection.doc('doc-id').update({
   name: "Hey",
   count: {
     fav: 1
@@ -645,15 +626,15 @@ collection.doc('doc-id').update({
 
 更新数组时，已数组下标作为key即可，比如以下示例将数组arr内下标为1的值修改为 uniCloud
 
-```
-collection.doc('doc-id').update({
+```js
+let res = await collection.doc('doc-id').update({
   arr: {
     1: "uniCloud"
   }
 })
 ```
 
-```
+```json
 // 更新前
 {
   "arr": ["hello", "world"]
@@ -673,17 +654,15 @@ collection.doc().set()
 - 此方法会覆写已有字段，需注意与`update`表现不同，比如以下示例执行`set`之后`follow`字段会被删除
 
 ```js
-collection.doc('doc-id').set({
+let res = await collection.doc('doc-id').set({
   name: "Hey",
   count: {
     fav: 1
   }
-}).then(function(res) {
-  
-});
+})
 ```
 
-```
+```json
 // 更新前
 {
   "_id": "xxx",
@@ -709,11 +688,9 @@ collection.update()
 
 ```js
 const dbCmd = db.command
-collection.where({name: dbCmd.eq('hey')}).update({
+let res = await collection.where({name: dbCmd.eq('hey')}).update({
   age: 18,
-}).then(function(res) {
-  
-});
+})
 ```
 
 
@@ -727,13 +704,11 @@ collection.where({name: dbCmd.eq('hey')}).update({
 
 ```js
 const dbCmd = db.command
-db.collection('photo').doc('doc-id').update({
+let res = await db.collection('photo').doc('doc-id').update({
   count: dbCmd.set({
     fav: 1,
     follow: 1
   })
-}).then(function(res) {
-  
 })
 ```
 
@@ -773,14 +748,12 @@ db.collection('photo').doc('doc-id').update({
 ```js
 const dbCmd = db.command
 
-db.collection('user').where({
+let res = await db.collection('user').where({
   _id: 'my-doc-id'
 }).update({
   count: {
     fav: dbCmd.inc(1)
   }
-}).then(function(res) {
-  
 })
 ```
 
@@ -815,14 +788,12 @@ db.collection('user').where({
 ```js
 const dbCmd = db.command
 
-db.collection('user').where({
+let res = await db.collection('user').where({
   _id: 'my-doc-id'
 }).update({
   count: {
     fav: dbCmd.mul(10)
   }
-}).then(function(res) {
-  
 })
 ```
 
@@ -854,12 +825,9 @@ db.collection('user').where({
 
 ```js
 const dbCmd = db.command
-db.collection('comments').doc('comment-id').update({
+let res = await db.collection('comments').doc('comment-id').update({
   rating: dbCmd.remove()
-}).then(function(res) {
-  
 })
-
 ```
 
 ```
@@ -883,16 +851,13 @@ db.collection('comments').doc('comment-id').update({
 ```js
 const dbCmd = db.command
 
-db.collection('comments').doc('comment-id').update({
+let res = await db.collection('comments').doc('comment-id').update({
   // users: dbCmd.push('aaa')
   users: dbCmd.push(['c', 'd'])
-}).then(function(res) {
-  
 })
-
 ```
 
-```
+```json
 // 更新前
 {
   "_id": "xxx",
@@ -912,14 +877,12 @@ db.collection('comments').doc('comment-id').update({
 ```js
 const dbCmd = db.command
 
-db.collection('comments').doc('comment-id').update({
+let res = await db.collection('comments').doc('comment-id').update({
   users: dbCmd.pop()
-}).then(function(res) {
-  
 })
 ```
 
-```
+```json
 // 更新前
 {
   "_id": "xxx",
@@ -939,16 +902,13 @@ db.collection('comments').doc('comment-id').update({
 ```js
 const dbCmd = db.command
 
-db.collection('comments').doc('comment-id').update({
+let res = await db.collection('comments').doc('comment-id').update({
   // users: dbCmd.push('aaa')
   users: dbCmd.unshift(['c', 'd'])
-}).then(function(res) {
-  
 })
-
 ```
 
-```
+```json
 // 更新前
 {
   "_id": "xxx",
@@ -968,14 +928,12 @@ db.collection('comments').doc('comment-id').update({
 ```js
 const dbCmd = db.command
 
-db.collection('comments').doc('comment-id').update({
+let res = await db.collection('comments').doc('comment-id').update({
   users: dbCmd.shift()
-}).then(function(res) {
-  
 })
 ```
 
-```
+```json
 // 更新前
 {
   "_id": "xxx",
@@ -1117,13 +1075,13 @@ interface IOptions {
 示例：
 
 ```js
-db.collection('user').where({
+let res = await db.collection('user').where({
   location: db.command.geoNear({
     geometry: new db.Geo.Point(lngA, latA),
     maxDistance: 1000,
     minDistance: 0
   })
-})
+}).get()
 ```
 
 #### geoWithin
@@ -1154,11 +1112,11 @@ const area = new Polygon([
 ])
 
 // 搜索 location 字段在这个区域中的 user
-db.collection('user').where({
+let res = await db.collection('user').where({
   location: db.command.geoWithin({
     geometry: area
   })
-})
+}).get()
 ```
 
 #### geoIntersects
@@ -1185,11 +1143,11 @@ const line = new LineString([
 ])
 
 // 搜索 location 与这条路径相交的 user
-db.collection('user').where({
+let res = await db.collection('user').where({
   location: db.command.geoIntersects({
     geometry: line
   })
-})
+}).get()
 ```
 
 <!-- ## 数据库实时推送
@@ -1411,7 +1369,7 @@ exports.main = async (event) => {
 ## 聚合操作
 
 获取数据库集合的聚合操作实例
-```
+```js
 db.collection('scores').aggregate()
 ```
 
@@ -1425,7 +1383,7 @@ db.collection('scores').aggregate()
 `addFields` 等同于同时指定了所有已有字段和新增字段的 `project` 阶段。
 
 **`addFields` 的形式如下：**
-```
+```js
 addFields({
   <新字段>: <表达式>
 })
@@ -1437,7 +1395,7 @@ addFields({
 **示例 1：连续两次 addFields**
 
 假设集合 scores 有如下记录：
-```
+```js
 {
   _id: 1,
   student: "Maya",
@@ -1454,9 +1412,9 @@ addFields({
 }
 ```
 应用两次 `addFields`，第一次增加两个字段分别为 `homework` 和 `quiz` 的和值，第二次增加一个字段再基于上两个和值求一次和值。
-```
+```js
 const $ = db.command.aggregate
-db.collection('scores').aggregate()
+let res = await db.collection('scores').aggregate()
   .addFields({
     totalHomework: $.sum('$homework'),
     totalQuiz: $.sum('$quiz')
@@ -1468,7 +1426,7 @@ db.collection('scores').aggregate()
 ```
 
 返回结果如下：
-```
+```js
 {
   "_id" : 1,
   "student" : "Maya",
@@ -1494,14 +1452,14 @@ db.collection('scores').aggregate()
 **示例 2：在嵌套记录里增加字段**
 
 可以用点表示法在嵌套记录里增加字段。假设 vehicles 集合含有如下记录：
-```
+```js
 { _id: 1, type: "car", specs: { doors: 4, wheels: 4 } }
 { _id: 2, type: "motorcycle", specs: { doors: 0, wheels: 2 } }
 { _id: 3, type: "jet ski" }
 ```
 可以用如下操作在 `specs` 字段下增加一个新的字段 `fuel_type`，值都设为固定字符串 `unleaded`：
-```
-db.collection('vehicles').aggregate()
+```js
+let res = await db.collection('vehicles').aggregate()
   .addFields({
     'spec.fuel_type': 'unleaded'
   })
@@ -1509,7 +1467,7 @@ db.collection('vehicles').aggregate()
 ```
 
 返回结果如下：
-```
+```js
 { _id: 1, type: "car",
    specs: { doors: 4, wheels: 4, fuel_type: "unleaded" } }
 { _id: 2, type: "motorcycle",
@@ -1523,15 +1481,15 @@ db.collection('vehicles').aggregate()
 可以通过 `$` 加字段名组成的字符串作为值的表达式来设置字段的值为另一个字段的值。
 
 同样用上一个集合示例，可以用如下操作添加一个字段 `vehicle_type`，将其值设置为 `type` 字段的值：
-```
-db.collection('vehicles').aggregate()
+```js
+let res = await db.collection('vehicles').aggregate()
   .addFields({
     vehicle_type: '$type'
   })
   .end()
 ```
 返回结果如下：
-```
+```js
 { _id: 1, type: "car", vehicle_type: "car",
    specs: { doors: 4, wheels: 4, fuel_type: "unleaded" } }
 { _id: 2, type: "motorcycle", vehicle_type: "motorcycle",
@@ -1551,7 +1509,7 @@ db.collection('vehicles').aggregate()
 `bucket` 只会在组内有至少一个记录的时候输出。
 
 **bucket 的形式如下：**
-```
+```js
 bucket({
   groupBy: <expression>,
   boundaries: [<lowerbound1>, <lowerbound2>, ...],
@@ -1570,7 +1528,7 @@ bucket({
 `default` 可选，指定之后，没有进入任何分组的记录将都进入一个默认分组，这个分组记录的 `_id` 即由 `default` 决定。`default` 的值必须小于 `boundaries` 中的最小值或大于等于其中的最大值。`default` 的值可以与 `boundaries` 元素值类型不同。
 
 `output` 可选，用以决定输出记录除了 `_id` 外还要包含哪些字段，各个字段的值必须用累加器表达式指定。当 `output` 指定时，默认的 `count` 是不会被默认输出的，必须手动指定：
-```
+```js
 output: {
   count: $.sum(1),
   ...
@@ -1586,7 +1544,7 @@ output: {
 **示例**
 
 假设集合 items 有如下记录：
-```
+```js
 {
   _id: "1",
   price: 10
@@ -1611,9 +1569,9 @@ output: {
 
 对上述记录进行分组，将 [0, 50) 分为一组，[50, 100) 分为一组，其他分为一组：
 
-```
+```js
 const $ = db.command.aggregate
-db.collection('items').aggregate()
+let res = await db.collection('items').aggregate()
   .bucket({
     groupBy: '$price',
     boundaries: [0, 50, 100],
@@ -1628,7 +1586,7 @@ db.collection('items').aggregate()
 
 返回结果如下：
 
-```
+```js
 [
   {
     "_id": 0,
@@ -1664,7 +1622,7 @@ db.collection('items').aggregate()
 每组分别作为一个记录输出，包含一个以包含组中最大值和最小值两个字段的对象为值的 _id 字段和一个以组中记录数为值的 count 字段。count 在没有指定 output 的时候是默认输出的。
 
 **bucketAuto 的形式如下：**
-```
+```js
 bucketAuto({
   groupBy: <expression>,
   buckets: <number>,
@@ -1683,7 +1641,7 @@ bucketAuto({
 `granularity` 是可选枚举值字符串，用于保证自动计算出的边界符合给定的规则。这个字段仅可在所有 `groupBy` 值都是数字并且没有 `NaN` 的情况下使用。枚举值包括：`R5、R10、R20、R40、R80、1-2-5、E6、E12、E24、E48、E96、E192、POWERSOF2`。
 
 `output` 可选，用以决定输出记录除了 `_id` 外还要包含哪些字段，各个字段的值必须用累加器表达式指定。当 `output` 指定时，默认的 `count` 是不会被默认输出的，必须手动指定：
-```
+```js
 output: {
   count: $.sum(1),
   ...
@@ -1722,7 +1680,7 @@ E 序列是以 10 的 6 / 12 / 24 / 48 / 96 / 192 次方跟来推导的、带有
 **示例**
 
 假设集合 items 有如下记录：
-```
+```js
 {
   _id: "1",
   price: 10.5
@@ -1745,9 +1703,9 @@ E 序列是以 10 的 6 / 12 / 24 / 48 / 96 / 192 次方跟来推导的、带有
 }
 ```
 对上述记录进行自动分组，分成三组：
-```
+```js
 const $ = db.command.aggregate
-db.collection('items').aggregate()
+let res = await db.collection('items').aggregate()
   .bucket({
     groupBy: '$price',
     buckets: 3,
@@ -1755,7 +1713,7 @@ db.collection('items').aggregate()
   .end()
 ```
 返回结果如下：
-```
+```js
 {
   "_id": {
     "min": 10.5,
@@ -1786,15 +1744,15 @@ db.collection('items').aggregate()
 **API 说明**
 
 **count 的形式如下：**
-```
+```js
 count(<string>)
 ```
 <string> 是输出记录数的字段的名字，不能是空字符串，不能以 $ 开头，不能包含 . 字符。
 
 count 阶段等同于 group + project 的操作：
-```
+```js
 const $ = db.command.aggregate
-db.collection('items').aggregate()
+let res = await db.collection('items').aggregate()
   .group({
     _id: null,
     count: $.sum(1),
@@ -1809,7 +1767,7 @@ db.collection('items').aggregate()
 **示例**
 
 假设集合 items 有如下记录：
-```
+```js
 {
   _id: "1",
   price: 10.5
@@ -1832,9 +1790,9 @@ db.collection('items').aggregate()
 }
 ```
 找出价格大于 50 的记录数：
-```
+```js
 const $ = db.command.aggregate
-db.collection('items').aggregate()
+let res = await db.collection('items').aggregate()
   .match({
     price: $.gt(50)
   })
@@ -1842,7 +1800,7 @@ db.collection('items').aggregate()
   .end()
 ```
 返回结果如下：
-```
+```js
 {
   "expensiveCount": 3
 }
@@ -1873,7 +1831,7 @@ db.collection('items').aggregate()
 **示例**
 
 假设集合 attractions 有如下记录：
-```
+```js
 {
   "_id": "geoNear.0",
   "city": "Guangzhou",
@@ -1927,9 +1885,9 @@ db.collection('items').aggregate()
   "name": "Great Wall"
 }
 ```
-```
+```js
 const $ = db.command.aggregate
-db.collection('attractions').aggregate()
+let res = await db.collection('attractions').aggregate()
   .geoNear({
     distanceField: 'distance', // 输出的每个记录中 distance 即是与给定点的距离
     spherical: true,
@@ -1944,7 +1902,7 @@ db.collection('attractions').aggregate()
 ```
 
 返回结果如下：
-```
+```js
 {
   "_id": "geoNear.0",
   "location": {
@@ -2011,7 +1969,7 @@ db.collection('attractions').aggregate()
 **API 说明**
 
 **group 的形式如下：**
-```
+```js
 group({
   _id: <expression>,
   <field1>: <accumulator1>,
@@ -2047,7 +2005,7 @@ group({
 **示例 1：按字段值分组**
 
 假设集合 avatar 有如下记录：
-```
+```js
 {
   _id: "1",
   alias: "john",
@@ -2091,9 +2049,9 @@ group({
   coins: 120
 }
 ```
-```
+```js
 const $ = db.command.aggregate
-db.collection('avatar').aggregate()
+let res = await db.collection('avatar').aggregate()
   .group({
     _id: '$alias',
     num: $.sum(1)
@@ -2101,7 +2059,7 @@ db.collection('avatar').aggregate()
   .end()
 ```
 返回结果如下：
-```
+```js
 {
   "_id": "john",
   "num": 3
@@ -2119,9 +2077,9 @@ db.collection('avatar').aggregate()
 **示例 2：按多个值分组**
 
 可以给 _id 传入记录的方式按多个值分组。还是沿用上面的示例数据，按各个区域（region）获得相同最高分（score）的来分组，并求出各组虚拟币（coins）的总量：
-```
+```js
 const $ = db.command.aggregate
-db.collection('avatar').aggregate()
+let res = await db.collection('avatar').aggregate()
   .group({
     _id: {
       region: '$region',
@@ -2132,7 +2090,7 @@ db.collection('avatar').aggregate()
   .end()
 ```
 返回结果如下：
-```
+```js
 {
   "_id": {
     "region": "asia",
@@ -2170,7 +2128,7 @@ db.collection('avatar').aggregate()
 **示例**
 
 假设集合 items 有如下记录：
-```
+```js
 {
   _id: "1",
   price: 10
@@ -2193,9 +2151,9 @@ db.collection('avatar').aggregate()
 }
 ```
 返回价格大于 20 的记录的最小的两个记录：
-```
+```js
 const $ = db.command.aggregate
-db.collection('items').aggregate()
+let res = await db.collection('items').aggregate()
   .match({
     price: $.gt(20)
   })
@@ -2206,7 +2164,7 @@ db.collection('items').aggregate()
   .end()
 ```
 返回结果如下：
-```
+```js
 {
   "_id": "3",
   "price": 20
@@ -2227,7 +2185,7 @@ db.collection('items').aggregate()
 
 #### 相等匹配
 将输入记录的一个字段和被连接集合的一个字段进行相等匹配时，采用以下定义：
-```
+```js
 lookup({
   from: <要连接的集合名>,
   localField: <输入记录的要进行相等匹配的字段>,
@@ -2266,7 +2224,7 @@ WHERE <output array field> IN (SELECT *
 **此用法阿里云暂不支持**
 
 如果需要指定除相等匹配之外的连接条件，或指定多个相等匹配条件，或需要拼接被连接集合的子查询结果，那可以使用如下定义：
-```
+```js
 lookup({
   from: <要连接的集合名>,
   let: { <变量1>: <表达式1>, ..., <变量n>: <表达式n> },
@@ -2303,7 +2261,7 @@ WHERE <output array field> IN (SELECT <documents as determined from the pipeline
 **指定一个相等匹配条件**
 
 假设 orders 集合有以下记录：
-```
+```js
 [
   {"_id":4,"book":"novel 1","price":30,"quantity":2},
   {"_id":5,"book":"science 1","price":20,"quantity":1},
@@ -2311,7 +2269,7 @@ WHERE <output array field> IN (SELECT <documents as determined from the pipeline
 ]
 ```
 books 集合有以下记录：
-```
+```js
 [
   {"_id":"book1","author":"author 1","category":"novel","stock":10,"time":1564456048486,"title":"novel 1"},
   {"_id":"book3","author":"author 3","category":"science","stock":30,"title":"science 1"},
@@ -2322,9 +2280,9 @@ books 集合有以下记录：
 ]
 ```
 以下聚合操作可以通过一个相等匹配条件连接 `orders` 和 `books` 集合，匹配的字段是 `orders` 集合的 `book` 字段和 `books` 集合的 title 字段：
-```
+```js
 const db = cloud.database()
-db.collection('orders').aggregate()
+let res = await db.collection('orders').aggregate()
   .lookup({
     from: 'books',
     localField: 'book',
@@ -2332,11 +2290,9 @@ db.collection('orders').aggregate()
     as: 'bookList',
   })
   .end()
-  .then(res => console.log(res))
-  .catch(err => console.error(err))
 ```
 结果：
-```
+```js
 [
   {
     "_id": 4,
@@ -2390,7 +2346,7 @@ db.collection('orders').aggregate()
 ```
 对数组字段应用相等匹配
 假设 authors 集合有以下记录：
-```
+```js
 [
   {"_id": 1, "name": "author 1", "intro": "Two-time best-selling sci-fiction novelist"},
   {"_id": 3, "name": "author 3", "intro": "UCB assistant professor"},
@@ -2398,7 +2354,7 @@ db.collection('orders').aggregate()
 ]
 ```
 books 集合有以下记录：
-```
+```js
 [
   {"_id":"book1","authors":["author 1"],"category":"novel","stock":10,"time":1564456048486,"title":"novel 1"},
   {"_id":"book3","authors":["author 3", "author 4"],"category":"science","stock":30,"title":"science 1"},
@@ -2406,9 +2362,9 @@ books 集合有以下记录：
 ]
 ```
 以下操作获取作者信息及他们分别发表的书籍，使用了 lookup 操作匹配 authors 集合的 name 字段和 books 集合的 authors 数组字段：
-```
+```js
 const db = cloud.database()
-db.collection('authors').aggregate()
+let res = await db.collection('authors').aggregate()
   .lookup({
     from: 'books',
     localField: 'name',
@@ -2416,11 +2372,9 @@ db.collection('authors').aggregate()
     as: 'publishedBooks',
   })
   .end()
-  .then(res => console.log(res))
-  .catch(err => console.error(err))
 ```
 结果
-```
+```js
 [
   {
     "_id": 1,
@@ -2487,7 +2441,7 @@ db.collection('authors').aggregate()
 **组合 mergeObjects 应用相等匹配**
 
 假设 `orders` 集合有以下记录：
-```
+```js
 [
   {"_id":4,"book":"novel 1","price":30,"quantity":2},
   {"_id":5,"book":"science 1","price":20,"quantity":1},
@@ -2495,7 +2449,7 @@ db.collection('authors').aggregate()
 ]
 ```
 `books` 集合有以下记录：
-```
+```js
 [
   {"_id":"book1","author":"author 1","category":"novel","stock":10,"time":1564456048486,"title":"novel 1"},
   {"_id":"book3","author":"author 3","category":"science","stock":30,"title":"science 1"},
@@ -2506,10 +2460,10 @@ db.collection('authors').aggregate()
 ]
 ```
 以下操作匹配 orders 的 book 字段和 books 的 title 字段，并将 books 匹配结果直接 merge 到 orders 记录中。
-```
+```js
 var db = cloud.database()
 var $ = db.command.aggregate
-db.collection('orders').aggregate()
+let res = await db.collection('orders').aggregate()
   .lookup({
     from: "books",
     localField: "book",
@@ -2523,11 +2477,9 @@ db.collection('orders').aggregate()
     bookList: 0
   })
   .end()
-  .then(res => console.log(res))
-  .catch(err => console.error(err))
 ```
 结果
-```
+```js
 [
   {
     "_id": 4,
@@ -2562,14 +2514,14 @@ db.collection('orders').aggregate()
 **指定多个连接条件**
 
 假设 `orders` 集合有以下记录：
-```
+```js
 [
   {"_id":4,"book":"novel 1","price":300,"quantity":20},
   {"_id":5,"book":"science 1","price":20,"quantity":1}
 ]
 ```
 `books` 集合有以下记录：
-```
+```js
 [
   {"_id":"book1","author":"author 1","category":"novel","stock":10,"time":1564456048486,"title":"novel 1"},
   {"_id":"book3","author":"author 3","category":"science","stock":30,"title":"science 1"}
@@ -2579,10 +2531,10 @@ db.collection('orders').aggregate()
 
 - orders 的 book 字段与 books 的 title 字段相等
 - orders 的 quantity 字段大于或等于 books 的 stock 字段
-```
+```js
 const db = cloud.database()
 const $ = db.command.aggregate
-db.collection('orders').aggregate()
+let res = await db.collection('orders').aggregate()
   .lookup({
     from: 'books',
     let: {
@@ -2604,11 +2556,9 @@ db.collection('orders').aggregate()
     as: 'bookList',
   })
   .end()
-  .then(res => console.log(res))
-  .catch(err => console.error(err))
 ```
 结果：
-```
+```js
 [
   {
     "_id": 4,
@@ -2636,14 +2586,14 @@ db.collection('orders').aggregate()
 **拼接被连接集合的子查询**
 
 假设 `orders` 集合有以下记录：
-```
+```js
 [
   {"_id":4,"book":"novel 1","price":30,"quantity":2},
   {"_id":5,"book":"science 1","price":20,"quantity":1}
 ]
 ```
 `books` 集合有以下记录：
-```
+```js
 [
   {"_id":"book1","author":"author 1","category":"novel","stock":10,"time":1564456048486,"title":"novel 1"},
   {"_id":"book3","author":"author 3","category":"science","stock":30,"title":"science 1"},
@@ -2651,10 +2601,10 @@ db.collection('orders').aggregate()
 ]
 ```
 在每条输出记录上加上一个数组字段，该数组字段的值是对 books 集合的一个查询语句的结果：
-```
+```js
 const db = cloud.database()
 const $ = db.command.aggregate
-db.collection('orders').aggregate()
+let res = await db.collection('orders').aggregate()
   .lookup({
     from: 'books',
     let: {
@@ -2675,11 +2625,9 @@ db.collection('orders').aggregate()
     as: 'bookList',
   })
   .end()
-  .then(res => console.log(res))
-  .catch(err => console.error(err))
 ```
 结果
-```
+```js
 [
   {
     "_id": 4,
@@ -2727,18 +2675,18 @@ db.collection('orders').aggregate()
 **API 说明**
 
 **match 的形式如下：**
-```
+```js
 match(<查询条件>)
 ```
 
 查询条件与普通查询一致，可以用普通查询操作符，注意 match 阶段和其他聚合阶段不同，不可使用聚合操作符，只能使用查询操作符。
-```
+```js
 // 直接使用字符串
 match({
   name: 'Tony Stark'
 })
 ```
-```
+```js
 // 使用操作符
 const _ = db.command
 match({
@@ -2749,7 +2697,7 @@ match({
 **示例**
 
 假设集合 articles 有如下记录：
-```
+```js
 { "_id" : "1", "author" : "stark",  "score" : 80 }
 { "_id" : "2", "author" : "stark",  "score" : 85 }
 { "_id" : "3", "author" : "bob",    "score" : 60 }
@@ -2762,8 +2710,8 @@ match({
 **匹配**
 
 下面是一个直接匹配的例子：
-```
-db.collection('articles')
+```js
+let res = await db.collection('articles')
   .aggregate()
   .match({
     author: 'stark'
@@ -2771,7 +2719,7 @@ db.collection('articles')
   .end()
 ```
 这里的代码尝试找到所有 author 字段是 stark 的文章，那么匹配如下：
-```
+```js
 { "_id" : "1", "author" : "stark", "score" : 80 }
 { "_id" : "2", "author" : "stark", "score" : 85 }
 ```
@@ -2781,10 +2729,10 @@ db.collection('articles')
 match 过滤出文档后，还可以与其他流水线阶段配合使用。
 
 比如下面这个例子，我们使用 group 进行搭配，计算 score 字段大于 80 的文档数量：
-```
+```js
 const _ = db.command
 const $ = _.aggregate
-db.collection('articles')
+let res = await db.collection('articles')
   .aggregate()
   .match({
     score: _.gt(80)
@@ -2796,7 +2744,7 @@ db.collection('articles')
   .end()
 ```
 返回值如下：
-```
+```js
 { "_id" : null, "count" : 3 }
 ```
 
@@ -2807,7 +2755,7 @@ db.collection('articles')
 **API 说明**
 
 **project 的形式如下：**
-```
+```js
 project({
   <表达式>
 })
@@ -2837,18 +2785,18 @@ _id 字段是默认包含在输出中的，除此之外其他任何字段，如�
 **多层嵌套的字段**
 
 有时有些字段处于多层嵌套的底层，我们可以使用点记法：
-```
+```js
 "contact.phone.number": <1 or 0 or 表达式>
 ```
 也可以直接使用嵌套的格式：
-```
+```js
 contact: { phone: { number: <1 or 0 or 表达式> } }
 ```
 
 **示例**
 
 假设我们有一个 articles 集合，其中含有以下文档：
-```
+```js
 {
     "_id": 666,
     "title": "This is title",
@@ -2860,8 +2808,8 @@ contact: { phone: { number: <1 or 0 or 表达式> } }
 **指定包含某些字段**
 
 下面的代码使用 project，让输出只包含 _id、title 和 author 字段：
-```
-db.collection('articles')
+```js
+let res = await db.collection('articles')
   .aggregate()
   .project({
     title: 1,
@@ -2871,15 +2819,15 @@ db.collection('articles')
 ```
 
 输出如下：
-```
+```js
 { "_id" : 666, "title" : "This is title", "author" : "Nobody" }
 ```
 
 **去除输出中的 _id 字段**
 
 _id 是默认包含在输出中的，如果不想要它，可以指定去除它：
-```
-db.collection('articles')
+```js
+let res = await db.collection('articles')
   .aggregate()
   .project({
     _id: 0,  // 指定去除 _id 字段
@@ -2889,15 +2837,15 @@ db.collection('articles')
   .end()
 ```
 输出如下：
-```
+```js
 { "title" : "This is title", "author" : "Nobody" }
 ```
 
 **去除某个非 _id 字段**
 
 我们还可以指定在输出中去掉某个非 _id 字段，这样其它字段都会被输出：
-```
-db.collection('articles')
+```js
+let res = await db.collection('articles')
   .aggregate()
   .project({
     isbn: 0,  // 指定去除 isbn 字段
@@ -2905,7 +2853,7 @@ db.collection('articles')
   .end()
 ```
 输出如下，相比输入，没有了 isbn 字段：
-```
+```js
 {
     "_id" : 666,
     "title" : "This is title",
@@ -2917,7 +2865,7 @@ db.collection('articles')
 **加入计算出的新字段**
 
 假设我们有一个 students 集合，其中包含以下文档：
-```
+```js
 {
     "_id": 1,
     "name": "小明",
@@ -2929,9 +2877,9 @@ db.collection('articles')
 }
 ```
 下面的代码，我们使用 project，在输出中加入了一个新的字段 totalScore：
-```
+```js
 const { sum } = db.command.aggregate
-db.collection('students')
+let res = await db.collection('students')
   .aggregate()
   .project({
     _id: 0,
@@ -2945,22 +2893,22 @@ db.collection('students')
   .end()
 ```
 输出为：
-```
+```js
 { "name": "小明", "totalScore": 240 }
 ```
 
 **加入新的数组字段**
 
 假设我们有一个 points 集合，包含以下文档：
-```
+```js
 { "_id": 1, "x": 1, "y": 1 }
 { "_id": 2, "x": 2, "y": 2 }
 { "_id": 3, "x": 3, "y": 3 }
 ```
 
 下面的代码，我们使用 project，把 x 和 y 字段，放入到一个新的数组字段 coordinate 中：
-```
-db.collection('points')
+```js
+let res = await db.collection('points')
   .aggregate()
   .project({
     coordinate: ["$x", "$y"]
@@ -2968,7 +2916,7 @@ db.collection('points')
   .end()
 ```
 输出如下：
-```
+```js
 { "_id": 1, "coordinate": [1, 1] }
 { "_id": 2, "coordinate": [2, 2] }
 { "_id": 3, "coordinate": [3, 3] }
@@ -2981,7 +2929,7 @@ db.collection('points')
 **API 说明**
 
 **replaceRoot 使用形式如下：**
-```
+```js
 replaceRoot({
     newRoot: <表达式>
 })
@@ -2998,7 +2946,7 @@ replaceRoot({
 **使用已有字段作为根节点**
 
 假设我们有一个 schools 集合，内容如下：
-```
+```js
 {
   "_id": 1,
   "name": "SFLS",
@@ -3011,8 +2959,8 @@ replaceRoot({
 }
 ```
 下面的代码使用 replaceRoot，把 teachers 字段作为根节点输出：
-```
-db.collection('schools')
+```js
+let res = await db.collection('schools')
   .aggregate()
   .replaceRoot({
     newRoot: '$teachers'
@@ -3020,7 +2968,7 @@ db.collection('schools')
   .end()
 ```
 输出如下：
-```
+```js
 {
   "chinese": 22,
   "math": 18,
@@ -3031,15 +2979,15 @@ db.collection('schools')
 **使用计算出的新字段作为根节点**
 
 假设我们有一个 roles 集合，内容如下：
-```
+```js
 { "_id": 1, "first_name": "四郎", "last_name": "黄" }
 { "_id": 2, "first_name": "邦德", "last_name": "马" }
 { "_id": 3, "first_name": "牧之", "last_name": "张" }
 ```
 下面的代码使用 replaceRoot，把 first_name 和 last_name 拼在一起：
-```
+```js
 const { concat } = db.command.aggregate
-db.collection('roles')
+let res = await db.collection('roles')
   .aggregate()
   .replaceRoot({
     newRoot: {
@@ -3049,7 +2997,7 @@ db.collection('roles')
   .end()
 ```
 输出如下：
-```
+```js
 { "full_name": "黄四郎" }
 { "full_name": "马邦德" }
 { "full_name": "张牧之" }
@@ -3062,7 +3010,7 @@ db.collection('roles')
 **API 说明**
 
 **sample 的形式如下：**
-```
+```js
 sample({
     size: <正整数>
 })
@@ -3072,7 +3020,7 @@ sample({
 **示例**
 
 假设文档 users 有以下记录：
-```
+```js
 { "name": "a" }
 { "name": "b" }
 ```
@@ -3080,8 +3028,8 @@ sample({
 **随机选取**
 
 如果现在进行抽奖活动，需要选出一名幸运用户。那么 sample 的调用方式如下：
-```
-db.collection('users')
+```js
+let res = await db.collection('users')
   .aggregate()
   .sample({
     size: 1
@@ -3091,7 +3039,7 @@ db.collection('users')
 
 返回了随机选中的一个用户对应的记录，结果如下：
 
-```
+```js
 { "_id": "696529e4-7e82-4e7f-812e-5144714edff6", "name": "b" }
 ```
 
@@ -3100,8 +3048,8 @@ db.collection('users')
 聚合阶段。指定一个正整数，跳过对应数量的文档，输出剩下的文档。
 
 **示例**
-```
-db.collection('users')
+```js
+let res = await db.collection('users')
   .aggregate()
   .skip(5)
   .end()
@@ -3116,7 +3064,7 @@ db.collection('users')
 **API 说明**
 
 **形式如下：**
-```
+```js
 sort({
     <字段名1>: <排序规则>,
     <字段名2>: <排序规则>,
@@ -3133,15 +3081,15 @@ sort({
 升序/降序排列
 
 假设我们有集合 articles，其中包含数据如下：
-```
+```js
 { "_id": "1", "author": "stark",  "score": 80, "age": 18 }
 { "_id": "2", "author": "bob",    "score": 60, "age": 18 }
 { "_id": "3", "author": "li",     "score": 55, "age": 19 }
 { "_id": "4", "author": "jimmy",  "score": 60, "age": 22 }
 { "_id": "5", "author": "justan", "score": 95, "age": 33 }
 ```
-```
-db.collection('articles')
+```js
+let res = await db.collection('articles')
   .aggregate()
   .sort({
       age: -1,
@@ -3152,7 +3100,7 @@ db.collection('articles')
 上面的代码在 students 集合中进行聚合搜索，并且将结果排序，首先根据 age 字段降序排列，然后再根据 score 字段进行降序排列。
 
 输出结果如下：
-```
+```js
 { "_id": "5", "author": "justan", "score": 95, "age": 33 }
 { "_id": "4", "author": "jimmy",  "score": 60, "age": 22 }
 { "_id": "3", "author": "li",     "score": 55, "age": 19 }
@@ -3167,7 +3115,7 @@ db.collection('articles')
 **API 说明**
 
 **sortByCount 的调用方式如下：**
-```
+```js
 sortByCount(<表达式>)
 ```
 
@@ -3178,28 +3126,28 @@ sortByCount(<表达式>)
 **统计基础类型**
 
 假设集合 passages 的记录如下：
-```
+```js
 { "category": "Web" }
 { "category": "Web" }
 { "category": "Life" }
 ```
 下面的代码就可以统计文章的分类信息，并且计算每个分类的数量。即对 category 字段执行 sortByCount 聚合操作。
-```
-db.collection('passages')
+```js
+let res = await db.collection('passages')
   .aggregate()
   .sortByCount('$category')
   .end()
 ```
 
 返回的结果如下所示：Web 分类下有2篇文章，Life 分类下有1篇文章。
-```
+```js
 { "_id": "Web", "count": 2 }
 { "_id": "Life", "count": 1 }
 ```
 **解构数组类型**
 
 假设集合 passages 的记录如下：tags 字段对应的值是数组类型。
-```
+```js
 { "tags": [ "JavaScript", "C#" ] }
 { "tags": [ "Go", "C#" ] }
 { "tags": [ "Go", "Python", "JavaScript" ] }
@@ -3207,15 +3155,15 @@ db.collection('passages')
 如何统计文章的标签信息，并且计算每个标签的数量？因为 tags 字段对应的数组，所以需要借助 unwind 操作解构 tags 字段，然后再调用 sortByCount。
 
 下面的代码实现了这个功能：
-```
-db.collection('passages')
+```js
+let res = await db.collection('passages')
   .aggregate()
   .unwind(`$tags`)
   .sortByCount(`$tags`)
   .end()
 ```
 返回的结果如下所示：
-```
+```js
 { "_id": "Go", "count": 2 }
 { "_id": "C#", "count": 2 }
 { "_id": "JavaScript", "count": 2 }
@@ -3233,11 +3181,11 @@ db.collection('passages')
 **unwind 有两种使用形式：**
 
 **参数是一个字段名**
-```
+```js
 unwind(<字段名>)
 ```
 **参数是一个对象**
-```
+```js
 unwind({
     path: <字段名>,
     includeArrayIndex: <string>,
@@ -3256,7 +3204,7 @@ unwind({
 **拆分数组**
 
 假设我们有一个 products 集合，包含数据如下：
-```
+```js
 { "_id": "1", "product": "tshirt", "size": ["S", "M", "L"] }
 { "_id": "2", "product": "pants", "size": [] }
 { "_id": "3", "product": "socks", "size": null }
@@ -3265,7 +3213,7 @@ unwind({
 ```
 
 我们根据 size 字段对这些文档进行拆分
-```
+```js
 db.collection('products')
   .aggregate()
   .unwind('$size')
@@ -3273,7 +3221,7 @@ db.collection('products')
 ```
 
 输出如下：
-```
+```js
 { "_id": "1", "product": "tshirt", "size": "S" }
 { "_id": "1", "product": "tshirt", "size": "M" }
 { "_id": "1", "product": "tshirt", "size": "L" }
@@ -3285,8 +3233,8 @@ db.collection('products')
 **拆分后，保留原数组的索引**
 
 我们根据 size 字段对文档进行拆分后，想要保留原数组索引在新的 index 字段中。
-```
-db.collection('products')
+```js
+let res = await db.collection('products')
   .aggregate()
   .unwind({
       path: '$size',
@@ -3295,7 +3243,7 @@ db.collection('products')
   .end()
 ```
 输出如下：
-```
+```js
 { "_id": "1", "product": "tshirt", "size": "S", "index": 0 }
 { "_id": "1", "product": "tshirt", "size": "M", "index": 1 }
 { "_id": "1", "product": "tshirt", "size": "L", "index": 2 }
@@ -3307,15 +3255,15 @@ db.collection('products')
 **保留字段为空的文档**
 
 注意到我们的集合中有两行特殊的空值数据：
-```
+```js
 ...
 { "_id": "2", "product": "pants", "size": [] }
 { "_id": "3", "product": "socks", "size": null }
 ...
 ```
 如果想要在输出中保留 size 为空数组、null，或者 size 字段不存在的文档，可以使用 preserveNullAndEmptyArrays 参数
-```
-db.collection('products')
+```js
+let res = await db.collection('products')
   .aggregate()
   .unwind({
       path: '$size',
@@ -3324,7 +3272,7 @@ db.collection('products')
   .end()
 ```
 输出如下：
-```
+```js
 { "_id": "1", "product": "tshirt", "size": "S" }
 { "_id": "1", "product": "tshirt", "size": "M" }
 { "_id": "1", "product": "tshirt", "size": "L" }
@@ -3348,9 +3296,9 @@ Promise.&lt;Object&gt;
 |list	|Array.&lt;any&gt;|聚合结果列表	|
 
 **示例代码**
-```
+```js
 const $ = db.command.aggregate
-db.collection('books').aggregate()
+let res = await db.collection('books').aggregate()
   .group({
     // 按 category 字段分组
     _id: '$category',
@@ -3358,8 +3306,6 @@ db.collection('books').aggregate()
     avgSales: $.avg('$sales')
   })
   .end()
-  .then(res => console.log(res))
-  .catch(err => console.error(err))
 ```
 
 <span id="dbcmd"></span>
@@ -3382,9 +3328,9 @@ db.collection('books').aggregate()
  此时需传入多个查询条件，表示需同时满足提供的多个完整查询条件  
 
  
-```
+```js
 const dbCmd = db.command
-db.collection('todo').where(dbCmd.and([
+let res = await db.collection('todo').where(dbCmd.and([
   {
     progress: dbCmd.gt(50)
   },
@@ -3396,9 +3342,9 @@ db.collection('todo').where(dbCmd.and([
 但以上用 `and` 组成的查询条件是不必要的，因为传入的对象的各字段隐式组成了 “与” 的关系，上述条件等价于下方更简洁的写法：  
 
  
-```
+```js
 const dbCmd = db.command
-db.collection('todo').where({
+let res = await db.collection('todo').where({
   progress: dbCmd.gt(50),
   tags: 'cloud'
 }).get()
@@ -3406,9 +3352,9 @@ db.collection('todo').where({
 通常需要显示使用 `and` 是用在有跨字段或操作的时候，如以下表示 “progress 字段大于 50 或 tags 字段等于 cloud 或 tags 数组字段（如果 tags 是数组）中含有 cloud”：  
 
  
-```
+```js
 const dbCmd = db.command
-db.collection('todo').where(dbCmd.and([
+let res = await db.collection('todo').where(dbCmd.and([
   dbCmd.or({
     progress: dbCmd.gt(50)
   }),
@@ -3426,36 +3372,36 @@ db.collection('todo').where(dbCmd.and([
  如以下用前置写法的方式表示 "progress 字段值大于 50 且小于 100"  
 
  
-```
+```js
 const dbCmd = db.command
-db.collection('todo').where({
+let res = await db.collection('todo').where({
   progress: dbCmd.and(dbCmd.gt(50), dbCmd.lt(100))
-})
+}).get()
 ```
 还可以用后置写法的方式表示同样的条件：  
 
  
-```
+```js
 const dbCmd = db.command
-db.collection('todo').where({
+let res = await db.collection('todo').where({
   progress: dbCmd.gt(50).and(dbCmd.lt(100))
-})
+}).get()
 ```
 注意 `Command` 默认也可以直接链式调用其他 `Command`，默认表示多个 `Command` 的与操作，因此上述代码还可以精简为：  
 
  
-```
+```js
 const dbCmd = db.command
-db.collection('todo').where({
+let res = await db.collection('todo').where({
   progress: dbCmd.gt(50).lt(100)
-})
+}).get()
 ```
 
 ##### 调用风格
  方法接收两种传参方式，一是传入一个数组参数，二是传入多个参数，效果一样。  
 
  
-```
+```js
 // 传入数组
 function and(expressions: Expression[]): Command
 // 传入多参数
@@ -3475,29 +3421,29 @@ function and(...expressions: Expression[]): Command
  流式写法：  
 
  
-```
-const dbCmd = db.command
+```js
+let res = await const dbCmd = db.command
 db.collection('todo').where({
   progress: dbCmd.gt(80).or(dbCmd.lt(20))
-})
+}).get()
 ```
 前置写法：  
 
  
-```
+```js
 const dbCmd = db.command
-db.collection('todo').where({
+let res = await db.collection('todo').where({
   progress: dbCmd.or(dbCmd.gt(80), dbCmd.lt(20))
-})
+}).get()
 ```
 前置写法也可接收一个数组：  
 
  
-```
+```js
 const dbCmd = db.command
-db.collection('todo').where({
+let res = await db.collection('todo').where({
   progress: dbCmd.or([dbCmd.gt(80), dbCmd.lt(20)])
-})
+}).get()
 ```
 
 ##### 跨字段的或操作
@@ -3506,23 +3452,23 @@ db.collection('todo').where({
  如筛选出进度大于 80 或已标为已完成的 todo：  
 
  
-```
+```js
 const dbCmd = db.command
-db.collection('todo').where(dbCmd.or([
+let res = await db.collection('todo').where(dbCmd.or([
   {
     progress: dbCmd.gt(80)
   },
   {
     done: true
   }
-]))
+])).get()
 ```
 
 ##### 调用风格
  方法接收两种传参方式，一是传入一个数组参数，二是传入多个参数，效果一样。  
 
  
-```
+```js
 // 传入数组
 function or(expressions: Expression[]): Command
 // 传入多参数
@@ -3538,20 +3484,20 @@ function or(...expressions: Expression[]): Command
  如筛选出进度不等于100的 todo：  
 
  
-```
+```js
 const dbCmd = db.command
-db.collection('todo').where({
+let res = await db.collection('todo').where({
   progress: dbCmd.not(dbCmd.eq(100))
-})
+}).get()
 ```
 `not` 也可搭配其他逻辑指令使用，包括 `and`, `or`, `nor`, `not`，如 `or`：  
 
  
-```
+```js
 const dbCmd = db.command
-db.collection('todo').where({
+let res = await db.collection('todo').where({
   progress: dbCmd.not(dbCmd.or([dbCmd.lt(50), dbCmd.eq(100)]))
-})
+}).get()
 ```
 
 #### nor
@@ -3563,18 +3509,18 @@ db.collection('todo').where({
  筛选出进度既不小于20又不大于80的 todo ：  
 
  
-```
+```js
 const dbCmd = db.command
-db.collection('todo').where({
+let res = await db.collection('todo').where({
   progress: dbCmd.nor([dbCmd.lt(20), dbCmd.gt(80)])
-})
+}).get()
 ```
 以上同时会筛选出不存在 `progress` 字段的记录，如果要要求 `progress` 字段存在，可以用 `exists` 指令：  
 
  
-```
+```js
 const dbCmd = db.command
-db.collection('todo').where({
+let res = await db.collection('todo').where({
   progress: dbCmd.exists().nor([dbCmd.lt(20), dbCmd.gt(80)])
   // 等价于以下非链式调用的写法：
   // progress: dbCmd.exists().and(dbCmd.nor([dbCmd.lt(20), dbCmd.gt(80)]))
@@ -3585,7 +3531,7 @@ db.collection('todo').where({
  筛选出 `progress` 不小于 20 且 `tags` 数组不包含 `miniprogram` 字符串的记录：  
 
  
-```
+```js
 const dbCmd = db.command
 db.collection('todo').where(dbCmd.nor([{
   progress: dbCmd.lt(20),
@@ -3600,9 +3546,9 @@ db.collection('todo').where(dbCmd.nor([{
  如果要求 `progress` 和 `tags` 字段存在，可以用 `exists` 指令：  
 
  
-```
+```js
 const dbCmd = db.command
-db.collection('todo').where(
+let res = await db.collection('todo').where(
   dbCmd.nor([{
     progress: dbCmd.lt(20),
   }, {
@@ -3612,14 +3558,14 @@ db.collection('todo').where(
     progress: dbCmd.exists(true),
     tags: dbCmd.exists(true),
   })
-)
+).get()
 ```
 
 ##### 调用风格
  方法接收两种传参方式，一是传入一个数组参数，二是传入多个参数，效果一样。  
 
  
-```
+```js
 // 传入数组
 function nor(expressions: Expression[]): Command
 // 传入多参数
@@ -3637,41 +3583,41 @@ function nor(...expressions: Expression[]): Command
  比如筛选出所有自己发表的文章，除了用传对象的方式：  
 
  
-```
+```js
 const openID = 'xxx'
-db.collection('articles').where({
+let res = await db.collection('articles').where({
   _openid: openID
-})
+}).get()
 ```
 还可以用指令：  
 
  
-```
+```js
 const dbCmd = db.command
 const openID = 'xxx'
-db.collection('articles').where({
+let res = await db.collection('articles').where({
   _openid: dbCmd.eq(openid)
-})
+}).get()
 ```
 注意 `eq` 指令比对象的方式有更大的灵活性，可以用于表示字段等于某个对象的情况，比如：  
 
  
-```
+```js
 // 这种写法表示匹配 stat.publishYear == 2018 且 stat.language == 'zh-CN'
-db.collection('articles').where({
+let res = await db.collection('articles').where({
   stat: {
     publishYear: 2018,
     language: 'zh-CN'
   }
-})
+}).get()
 // 这种写法表示 stat 对象等于 { publishYear: 2018, language: 'zh-CN' }
 const dbCmd = db.command
-db.collection('articles').where({
+let res = await db.collection('articles').where({
   stat: dbCmd.eq({
     publishYear: 2018,
     language: 'zh-CN'
   })
-})
+}).get()
 ```
 
 #### neq
@@ -3691,9 +3637,9 @@ db.collection('articles').where({
  找出进度小于 50 的 todo  
 
  
-```
+```js
 const dbCmd = db.command
-db.collection('todos').where({
+let res = await db.collection('todos').where({
   progress: dbCmd.lt(50)
 })
 .get({
@@ -3711,9 +3657,9 @@ db.collection('todos').where({
  找出进度小于或等于 50 的 todo  
 
  
-```
+```js
 const dbCmd = db.command
-db.collection('todos').where({
+let res = await db.collection('todos').where({
   progress: dbCmd.lte(50)
 })
 .get({
@@ -3731,9 +3677,9 @@ db.collection('todos').where({
  找出进度大于 50 的 todo  
 
  
-```
+```js
 const dbCmd = db.command
-db.collection('todos').where({
+let res = await db.collection('todos').where({
   progress: dbCmd.gt(50)
 })
 .get({
@@ -3751,9 +3697,9 @@ db.collection('todos').where({
  找出进度大于或等于 50 的 todo  
 
  
-```
+```js
 const dbCmd = db.command
-db.collection('todos').where({
+let res = await db.collection('todos').where({
   progress: dbCmd.gte(50)
 })
 .get({
@@ -3771,9 +3717,9 @@ db.collection('todos').where({
  找出进度为 0 或 100 的 todo  
 
  
-```
+```js
 const dbCmd = db.command
-db.collection('todos').where({
+let res = await db.collection('todos').where({
   progress: dbCmd.in([0, 100])
 })
 .get({
@@ -3791,9 +3737,9 @@ db.collection('todos').where({
  找出进度不是 0 或 100 的 todo  
 
  
-```
+```js
 const dbCmd = db.command
-db.collection('todos').where({
+let res = await db.collection('todos').where({
   progress: dbCmd.nin([0, 100])
 })
 .get({
@@ -3813,15 +3759,12 @@ db.collection('todos').where({
  找出存在 tags 字段的记录  
 
  
-```
+```js
 const dbCmd = db.command
-db.collection('todos').where({
+let res = await db.collection('todos').where({
   tags: dbCmd.exists(true)
 })
-.get({
-  success: console.log,
-  fail: console.error
-})
+.get()
 ```
 
 #### mod
@@ -3833,15 +3776,12 @@ db.collection('todos').where({
  找出进度为 10 的倍数的字段的记录  
 
  
-```
+```js
 const dbCmd = db.command
-db.collection('todos').where({
+let res = await db.collection('todos').where({
   progress: dbCmd.mod(10, 0)
 })
-.get({
-  success: console.log,
-  fail: console.error
-})
+.get()
 ```
 
 ### 查询·数组操作符
@@ -3855,15 +3795,12 @@ db.collection('todos').where({
  找出 tags 数组字段同时包含 cloud 和 database 的记录  
 
  
-```
+```js
 const dbCmd = db.command
-db.collection('todos').where({
+let res = await db.collection('todos').where({
   tags: dbCmd.all(['cloud', 'database'])
 })
-.get({
-  success: console.log,
-  fail: console.error
-})
+.get()
 ```
 
 ##### 示例代码 2：对象数组
@@ -3872,7 +3809,7 @@ db.collection('todos').where({
  假设有字段 `places` 定义如下：  
 
  
-```
+```js
 {
   "type": string
   "area": number
@@ -3882,9 +3819,9 @@ db.collection('todos').where({
 找出数组字段中至少同时包含一个满足 “area 大于 100 且 age 小于 2” 的元素和一个满足 “type 为 mall 且 age 大于 5” 的元素  
 
  
-```
+```js
 const dbCmd = db.command
-db.collection('todos').where({
+let res = await db.collection('todos').where({
   places: dbCmd.all([
     dbCmd.elemMatch({
       area: dbCmd.gt(100),
@@ -3896,10 +3833,7 @@ db.collection('todos').where({
     }),
   ]),
 })
-.get({
-  success: console.log,
-  fail: console.error,
-})
+.get()
 ```
 
 #### elemMatch
@@ -3911,7 +3845,7 @@ db.collection('todos').where({
  假设集合示例数据如下：  
 
  
-```
+```js
 {
   "_id": "a0",
   "city": "x0",
@@ -3929,9 +3863,9 @@ db.collection('todos').where({
 找出 `places` 数组字段中至少同时包含一个满足 “area 大于 100 且 age 小于 2” 的元素  
 
  
-```
+```js
 const dbCmd = db.command
-db.collection('todos').where({
+let res = await db.collection('todos').where({
   places: dbCmd.elemMatch({
     area: dbCmd.gt(100),
     age: dbCmd.lt(2),
@@ -3942,9 +3876,9 @@ db.collection('todos').where({
 *注意**：如果不使用 `elemMatch` 而直接如下指定条件，则表示的是 `places` 数组字段中至少有一个元素的 `area` 字段大于 100 且 `places` 数组字段中至少有一个元素的 `age` 字段小于 2：  
 
  
-```
+```js
 const dbCmd = db.command
-db.collection('todos').where({
+let res = await db.collection('todos').where({
   places: {
     area: dbCmd.gt(100),
     age: dbCmd.lt(2),
@@ -3957,7 +3891,7 @@ db.collection('todos').where({
  假设集合示例数据如下：  
 
  
-```
+```js
 {
   "_id": "a0",
   "scores": [60, 80, 90]
@@ -3966,9 +3900,9 @@ db.collection('todos').where({
 找出 `scores` 数组字段中至少同时包含一个满足 “大于 80 且小于 100” 的元素  
 
  
-```
+```js
 const dbCmd = db.command
-db.collection('todos').where({
+let res = await db.collection('todos').where({
   places: dbCmd.elemMatch(dbCmd.gt(80).lt(100))
 })
 .get()
@@ -3983,15 +3917,12 @@ db.collection('todos').where({
  找出 tags 数组字段长度为 2 的所有记录  
 
  
-```
+```js
 const dbCmd = db.command
-db.collection('todos').where({
+let res = await db.collection('todos').where({
   places: dbCmd.size(2)
 })
-.get({
-  success: console.log,
-  fail: console.error,
-})
+.get()
 ```
 
 ### 查询·地理位置操作符
@@ -4009,9 +3940,9 @@ db.collection('todos').where({
  找出离给定位置 1 公里到 5 公里范围内的记录  
 
  
-```
+```js
 const dbCmd = db.command
-db.collection('restaurants').where({
+let res = await db.collection('restaurants').where({
   location: dbCmd.geoNear({
     geometry: db.Geo.Point(113.323809, 23.097732),
     minDistance: 1000,
@@ -4031,10 +3962,10 @@ db.collection('restaurants').where({
  
 ##### 示例代码 1：给定多边形
  
-```
+```js
 const dbCmd = db.command
 const { Point, LineString, Polygon } = db.Geo
-db.collection('restaurants').where({
+let res = await .collection('restaurants').where({
   location: dbCmd.geoWithin({
     geometry: Polygon([
       LineString([
@@ -4045,7 +3976,7 @@ db.collection('restaurants').where({
       ])
     ]),
   })
-})
+}).get()
 ```
 
 ##### 示例代码 2：给定圆形
@@ -4056,16 +3987,16 @@ db.collection('restaurants').where({
  半径需以弧度计，比如需要 10km 的半径，则用距离除以地球半径 6378.1km 得出的数字。  
 
  
-```
+```js
 const dbCmd = db.command
-db.collection('restaurants').where({
+let res = await db.collection('restaurants').where({
   location: dbCmd.geoWithin({
     centerSphere: [
       [-88, 30],
       10 / 6378.1,
     ]
   })
-})
+}).get()
 ```
 
 #### geoIntersects
@@ -4079,10 +4010,10 @@ db.collection('restaurants').where({
  
 ##### 示例代码：找出和一个多边形相交的记录
  
-```
+```js
 const dbCmd = db.command
 const { Point, LineString, Polygon } = db.Geo
-db.collection('restaurants').where({
+let res = await db.collection('restaurants').where({
   location: dbCmd.geoIntersects({
     geometry: Polygon([
       LineString([
@@ -4093,7 +4024,7 @@ db.collection('restaurants').where({
       ])
     ]),
   })
-})
+}).get()
 ```
 
 ### 查询·表达式操作符
@@ -4111,7 +4042,7 @@ db.collection('restaurants').where({
  假设 `items` 集合的数据结构如下：  
 
  
-```
+```js
 {
   "_id": string,
   "inStock": number, // 库存量
@@ -4121,17 +4052,17 @@ db.collection('restaurants').where({
 找出被订量大于库存量的记录：  
 
  
-```
+```js
 const dbCmd = db.command
 const $ = dbCmd.aggregate
-db.collection('items').where(dbCmd.expr($.gt('$ordered', '$inStock'))).get()
+let res = await db.collection('items').where(dbCmd.expr($.gt('$ordered', '$inStock'))).get()
 ```
 
 ##### 示例代码 2：与条件语句组合使用
  假设 `items` 集合的数据结构如下：  
 
  
-```
+```json
 {
   "_id": string,
   "price": number
@@ -4140,10 +4071,10 @@ db.collection('items').where(dbCmd.expr($.gt('$ordered', '$inStock'))).get()
 假设加个小于等于 10 的打 8 折，大于 10 的打 5 折，让数据库查询返回打折后价格小于等于 8 的记录：  
 
  
-```
+```js
 const dbCmd = db.command
 const $ = dbCmd.aggregate
-db.collection('items').where(dbCmd.expr(
+let res = await db.collection('items').where(dbCmd.expr(
   $.lt(
     $.cond({
       if: $.gte('$price', 10),
@@ -4169,9 +4100,9 @@ db.collection('items').where(dbCmd.expr(
  
 ##### 示例
  
-```
+```js
 // 以下方法只会更新 style.color 为 red，而不是将 style 更新为 { color: 'red' }，即不影响 style 中的其他字段
-db.collection('todos').doc('doc-id').update({
+let res = await db.collection('todos').doc('doc-id').update({
   data: {
     style: {
       color: 'red'
@@ -4180,7 +4111,7 @@ db.collection('todos').doc('doc-id').update({
 })
 
 // 以下方法更新 style 为 { color: 'red', size: 'large' }
-db.collection('todos').doc('doc-id').update({
+let res = await db.collection('todos').doc('doc-id').update({
   data: {
     style: dbCmd.set({
       color: 'red',
@@ -4199,9 +4130,9 @@ db.collection('todos').doc('doc-id').update({
  删除 style 字段：  
 
  
-```
+```js
 const dbCmd = db.command
-db.collection('todos').doc('todo-id').update({
+let res = await db.collection('todos').doc('todo-id').update({
   data: {
     style: dbCmd.remove()
   }
@@ -4221,9 +4152,9 @@ db.collection('todos').doc('todo-id').update({
  将一个 todo 的进度自增 10：  
 
  
-```
+```js
 const dbCmd = db.command
-db.collection('todos').doc('todo-id').update({
+let res = await db.collection('todos').doc('todo-id').update({
   data: {
     progress: dbCmd.inc(10)
   }
@@ -4243,9 +4174,9 @@ db.collection('todos').doc('todo-id').update({
  将一个 todo 的进度自乘 10：  
 
  
-```
+```js
 const dbCmd = db.command
-db.collection('todos').doc('todo-id').update({
+let res = await db.collection('todos').doc('todo-id').update({
   data: {
     progress: dbCmd.mul(10)
   }
@@ -4261,9 +4192,9 @@ db.collection('todos').doc('todo-id').update({
  如果字段 progress > 50，则更新到 50  
 
  
-```
+```js
 const dbCmd = db.command
-db.collection('todos').doc('doc-id').update({
+let res = await db.collection('todos').doc('doc-id').update({
   data: {
     progress: dbCmd.min(50)
   }
@@ -4279,9 +4210,9 @@ db.collection('todos').doc('doc-id').update({
  如果字段 progress < 50，则更新到 50  
 
  
-```
+```js
 const dbCmd = db.command
-db.collection('todos').doc('doc-id').update({
+let res = await db.collection('todos').doc('doc-id').update({
   data: {
     progress: dbCmd.max(50)
   }
@@ -4295,9 +4226,9 @@ db.collection('todos').doc('doc-id').update({
      
 ##### 示例 1：重命名顶层字段
  
-```
+```js
 const dbCmd = db.command
-db.collection('todos').doc('doc-id').update({
+let res = await db.collection('todos').doc('doc-id').update({
   data: {
     progress: dbCmd.rename('totalProgress')
   }
@@ -4306,9 +4237,9 @@ db.collection('todos').doc('doc-id').update({
 
 ##### 示例 2：重命名嵌套字段
  
-```
+```js
 const dbCmd = db.command
-db.collection('todos').doc('doc-id').update({
+let res = await db.collection('todos').doc('doc-id').update({
   data: {
     someObject: {
       someField: dbCmd.rename('someObject.renamedField')
@@ -4319,9 +4250,9 @@ db.collection('todos').doc('doc-id').update({
 或：  
 
  
-```
+```js
 const dbCmd = db.command
-db.collection('todos').doc('doc-id').update({
+let res = await db.collection('todos').doc('doc-id').update({
   data: {
     'someObject.someField': dbCmd.rename('someObject.renamedField')
   }
@@ -4367,9 +4298,9 @@ db.collection('todos').doc('doc-id').update({
 
 ##### 示例 1：尾部添加元素
  
-```
+```js
 const dbCmd = db.command
-db.collection('todos').doc('doc-id').update({
+let res = await db.collection('todos').doc('doc-id').update({
   data: {
     tags: dbCmd.push(['mini-program', 'cloud'])
   }
@@ -4378,9 +4309,9 @@ db.collection('todos').doc('doc-id').update({
 
 ##### 示例 2：从第二个位置开始插入
  
-```
+```js
 const dbCmd = db.command
-db.collection('todos').doc('doc-id').update({
+let res = await db.collection('todos').doc('doc-id').update({
   data: {
     tags: dbCmd.push({
       each: ['mini-program', 'cloud'],
@@ -4394,9 +4325,9 @@ db.collection('todos').doc('doc-id').update({
  插入后对整个数组做排序  
 
  
-```
+```js
 const dbCmd = db.command
-db.collection('todos').doc('doc-id').update({
+let res = await db.collection('todos').doc('doc-id').update({
   data: {
     tags: dbCmd.push({
       each: ['mini-program', 'cloud'],
@@ -4408,9 +4339,9 @@ db.collection('todos').doc('doc-id').update({
 不插入，只对数组做排序  
 
  
-```
+```js
 const dbCmd = db.command
-db.collection('todos').doc('doc-id').update({
+let res = await db.collection('todos').doc('doc-id').update({
   data: {
     tags: dbCmd.push({
       each: [],
@@ -4422,9 +4353,9 @@ db.collection('todos').doc('doc-id').update({
 如果字段是对象数组，可以如下根据元素对象里的字段进行排序：  
 
  
-```
+```js
 const dbCmd = db.command
-db.collection('todos').doc('doc-id').update({
+let res = await db.collection('todos').doc('doc-id').update({
   data: {
     tags: dbCmd.push({
       each: [
@@ -4443,9 +4374,9 @@ db.collection('todos').doc('doc-id').update({
  插入后只保留后 2 个元素  
 
  
-```
+```js
 const dbCmd = db.command
-db.collection('todos').doc('doc-id').update({
+let res = await db.collection('todos').doc('doc-id').update({
   data: {
     tags: dbCmd.push({
       each: ['mini-program', 'cloud'],
@@ -4457,9 +4388,9 @@ db.collection('todos').doc('doc-id').update({
 
 ##### 示例 5：在指定位置插入、然后排序、最后只保留前 2 个元素
  
-```
+```js
 const dbCmd = db.command
-db.collection('todos').doc('doc-id').update({
+let res = await db.collection('todos').doc('doc-id').update({
   data: {
     tags: dbCmd.push({
       each: ['mini-program', 'cloud'],
@@ -4478,9 +4409,9 @@ db.collection('todos').doc('doc-id').update({
    
 ##### 示例代码
  
-```
+```js
 const dbCmd = db.command
-db.collection('todos').doc('doc-id').update({
+let res = await db.collection('todos').doc('doc-id').update({
   data: {
     tags: dbCmd.pop()
   }
@@ -4494,9 +4425,9 @@ db.collection('todos').doc('doc-id').update({
      
 ##### 示例代码
  
-```
+```js
 const dbCmd = db.command
-db.collection('todos').doc('doc-id').update({
+let res = await db.collection('todos').doc('doc-id').update({
   data: {
     tags: dbCmd.unshift(['mini-program', 'cloud'])
   }
@@ -4510,9 +4441,9 @@ db.collection('todos').doc('doc-id').update({
    
 ##### 示例代码
  
-```
+```js
 const dbCmd = db.command
-db.collection('todos').doc('doc-id').update({
+let res = await db.collection('todos').doc('doc-id').update({
   data: {
     tags: dbCmd.shift()
   }
@@ -4526,9 +4457,9 @@ db.collection('todos').doc('doc-id').update({
       
 ##### 示例代码 1：根据常量匹配移除
  
-```
+```js
 const dbCmd = db.command
-db.collection('todos').doc('doc-id').update({
+let res = await db.collection('todos').doc('doc-id').update({
   data: {
     tags: dbCmd.pull('database')
   }
@@ -4537,9 +4468,9 @@ db.collection('todos').doc('doc-id').update({
 
 ##### 示例代码 2：根据查询条件匹配移除
  
-```
+```js
 const dbCmd = db.command
-db.collection('todos').doc('doc-id').update({
+let res = await db.collection('todos').doc('doc-id').update({
   data: {
     tags: dbCmd.pull(dbCmd.in(['database', 'cloud']))
   }
@@ -4550,7 +4481,7 @@ db.collection('todos').doc('doc-id').update({
  假设有字段 `places` 数组中的元素结构如下  
 
  
-```
+```json
 {
   "type": string
   "area": number
@@ -4558,9 +4489,9 @@ db.collection('todos').doc('doc-id').update({
 }
 ```
 
-```
+```js
 const dbCmd = db.command
-db.collection('todos').doc('doc-id').update({
+let res = await db.collection('todos').doc('doc-id').update({
   data: {
     places: dbCmd.pull({
       area: dbCmd.gt(100),
@@ -4574,7 +4505,7 @@ db.collection('todos').doc('doc-id').update({
  假设有字段 `cities` 数组中的元素结构如下  
 
  
-```
+```json
 {
   "name": string
   "places": Place[]
@@ -4583,7 +4514,7 @@ db.collection('todos').doc('doc-id').update({
 `Place` 结构如下：  
 
  
-```
+```json
 {
   "type": string
   "area": number
@@ -4593,9 +4524,9 @@ db.collection('todos').doc('doc-id').update({
 可用 `elemMatch` 匹配嵌套在对象数组里面的对象数组字段 places  
 
  
-```
+```js
 const dbCmd = db.command
-db.collection('todos').doc('doc-id').update({
+let res = await db.collection('todos').doc('doc-id').update({
   data: {
     cities: dbCmd.pull({
       places: dbCmd.elemMatch({
@@ -4616,9 +4547,9 @@ db.collection('todos').doc('doc-id').update({
  从 tags 中移除所有 database 和 cloud 字符串  
 
  
-```
+```js
 const dbCmd = db.command
-db.collection('todos').doc('doc-id').update({
+let res = await db.collection('todos').doc('doc-id').update({
   data: {
     tags: dbCmd.pullAll(['database', 'cloud'])
   }
@@ -4634,9 +4565,9 @@ db.collection('todos').doc('doc-id').update({
  如果 tags 数组中不包含 database，添加进去  
 
  
-```
+```js
 const dbCmd = db.command
-db.collection('todos').doc('doc-id').update({
+let res = await db.collection('todos').doc('doc-id').update({
   data: {
     tags: dbCmd.addToSet('database')
   }
@@ -4647,15 +4578,15 @@ db.collection('todos').doc('doc-id').update({
  需传入一个对象，其中有一个字段 `each`，其值为数组，每个元素就是要添加的元素  
 
  
-```
-  const dbCmd = db.command
-  db.collection('todos').doc('doc-id').update({
-    data: {
-      tags: dbCmd.addToSet({
-        each: ['database', 'cloud']
-      })
-    }
-  })
+```js
+const dbCmd = db.command
+let res = await db.collection('todos').doc('doc-id').update({
+  data: {
+    tags: dbCmd.addToSet({
+      each: ['database', 'cloud']
+    })
+  }
+})
 ```
 
 
@@ -4673,7 +4604,7 @@ db.collection('todos').doc('doc-id').update({
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.abs(<number>)
 ```
 `abs` 传入的值除了数字常量外，也可以是任何最终解析成一个数字的表达式。  
@@ -4685,7 +4616,7 @@ db.command.aggregate.abs(<number>)
  假设集合 `ratings` 有如下记录：  
 
  
-```
+```json
 { _id: 1, start: 5, end: 8 }
 { _id: 2, start: 4, end: 4 }
 { _id: 3, start: 9, end: 7 }
@@ -4695,9 +4626,9 @@ db.command.aggregate.abs(<number>)
 可以用如下方式求得各个记录的 `start` 和 `end` 之间的绝对差异大小：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db.collection('ratings').aggregate()
+let res = await db.collection('ratings').aggregate()
   .project({
     delta: $.abs($.subtract(['$start', '$end']))
   })
@@ -4706,7 +4637,7 @@ db.collection('ratings').aggregate()
 返回结果如下：  
 
  
-```
+```json
 { "_id" : 1, "delta" : 3 }
 { "_id" : 2, "delta" : 0 }
 { "_id" : 3, "delta" : 2 }
@@ -4722,7 +4653,7 @@ db.collection('ratings').aggregate()
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.add([<表达式1>, <表达式2>, ...])
 ```
 表达式可以是形如 `$ + 指定字段`，也可以是普通字符串。只要能够被解析成字符串即可。  
@@ -4732,7 +4663,7 @@ db.command.aggregate.add([<表达式1>, <表达式2>, ...])
  假设集合 `staff` 有如下记录：  
 
  
-```
+```json
 { _id: 1, department: "x", sales: 5, engineer: 10, lastUpdate: ISODate("2019-05-01T00:00:00Z") }
 { _id: 2, department: "y", sales: 10, engineer: 20, lastUpdate: ISODate("2019-05-01T02:00:00Z") }
 { _id: 3, department: "z", sales: 20, engineer: 5, lastUpdate: ISODate("2019-05-02T03:00:00Z") }
@@ -4744,9 +4675,9 @@ db.command.aggregate.add([<表达式1>, <表达式2>, ...])
  可以用如下方式求得各个记录人数总数：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db.collection('staff').aggregate()
+let res = await db.collection('staff').aggregate()
   .project({
     department: 1,
     total: $.add(['$sales', '$engineer'])
@@ -4756,7 +4687,7 @@ db.collection('staff').aggregate()
 返回结果如下：  
 
  
-```
+```json
 { _id: 1, department: "x", total: 15 }
 { _id: 2, department: "y", total: 30 }
 { _id: 3, department: "z", total: 25 }
@@ -4768,9 +4699,9 @@ db.collection('staff').aggregate()
  如下操作可以获取各个记录的 `lastUpdate` 加一个小时之后的值：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db.collection('staff').aggregate()
+let res = await db.collection('staff').aggregate()
   .project({
     department: 1,
     lastUpdate: $.add(['$lastUpdate', 60*60*1000])
@@ -4780,7 +4711,7 @@ db.collection('staff').aggregate()
 返回结果如下：  
 
  
-```
+```json
 { _id: 1, department: "x", lastUpdate: ISODate("2019-05-01T01:00:00Z") }
 { _id: 2, department: "y", lastUpdate: ISODate("2019-05-01T03:00:00Z") }
 { _id: 3, department: "z", lastUpdate: ISODate("2019-05-02T04:00:00Z") }
@@ -4795,7 +4726,7 @@ db.collection('staff').aggregate()
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.ceil(<number>)
 ```
 `<number>` 可以是任意解析为数字的表达式。如果表达式解析为 `null` 或指向一个不存在的字段，则返回 `null`，如果解析为 `NaN`，则返回 `NaN`。  
@@ -4805,7 +4736,7 @@ db.command.aggregate.ceil(<number>)
  假设集合 `sales` 有如下记录：  
 
  
-```
+```json
 { _id: 1, sales: 5.2 }
 { _id: 2, sales: 1.32 }
 { _id: 3, sales: -3.2 }
@@ -4813,9 +4744,9 @@ db.command.aggregate.ceil(<number>)
 可以用如下方式取各个数字的向上取整值：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db.collection('sales').aggregate()
+let res = await db.collection('sales').aggregate()
   .project({
     sales: $.ceil('$sales')
   })
@@ -4824,7 +4755,7 @@ db.collection('sales').aggregate()
 返回结果如下：  
 
  
-```
+```json
 { _id: 1, sales: 6 }
 { _id: 2, sales: 2 }
 { _id: 3, sales: -3 }
@@ -4839,7 +4770,7 @@ db.collection('sales').aggregate()
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.divide([<被除数表达式>, <除数表达式>])
 ```
 表达式可以是任意解析为数字的表达式。  
@@ -4849,7 +4780,7 @@ db.command.aggregate.divide([<被除数表达式>, <除数表达式>])
  假设集合 `railroads` 有如下记录：  
 
  
-```
+```js
 { _id: 1, meters: 5300 }
 { _id: 2, meters: 64000 }
 { _id: 3, meters: 130 }
@@ -4857,9 +4788,9 @@ db.command.aggregate.divide([<被除数表达式>, <除数表达式>])
 可以用如下方式取各个数字转换为千米之后的值：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db.collection('railroads').aggregate()
+let res = await db.collection('railroads').aggregate()
   .project({
     km: $.divide(['$meters', 1000])
   })
@@ -4868,7 +4799,7 @@ db.collection('railroads').aggregate()
 返回结果如下：  
 
  
-```
+```js
 { _id: 1, km: 5.3 }
 { _id: 2, km: 64 }
 { _id: 3, km: 0.13 }
@@ -4883,7 +4814,7 @@ db.collection('railroads').aggregate()
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.exp(<exponent>)
 ```
 `<exponent>` 可以是任意解析为数字的表达式。如果表达式解析为 `null` 或指向一个不存在的字段，则返回 `null`，如果解析为 `NaN`，则返回 `NaN`。  
@@ -4893,15 +4824,15 @@ db.command.aggregate.exp(<exponent>)
  假设集合 `math` 有如下记录：  
 
  
-```
+```js
 { _id: 1, exp: 0 }
 { _id: 2, exp: 1 }
 { _id: 3, exp: 2 }
 ```
 
-```
+```js
 const $ = db.command.aggregate
-db.collection('math').aggregate()
+let res = await db.collection('math').aggregate()
   .project({
     result: $.exp('$exp')
   })
@@ -4910,7 +4841,7 @@ db.collection('math').aggregate()
 返回结果如下：  
 
  
-```
+```js
 { _id: 1, result: 1 }
 { _id: 2, result: 2.71828182845905 }
 { _id: 3, result: 7.38905609893065 }
@@ -4925,7 +4856,7 @@ db.collection('math').aggregate()
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.floor(<number>)
 ```
 `<number>` 可以是任意解析为数字的表达式。如果表达式解析为 `null` 或指向一个不存在的字段，则返回 `null`，如果解析为 `NaN`，则返回 `NaN`。  
@@ -4935,7 +4866,7 @@ db.command.aggregate.floor(<number>)
  假设集合 `sales` 有如下记录：  
 
  
-```
+```js
 { _id: 1, sales: 5.2 }
 { _id: 2, sales: 1.32 }
 { _id: 3, sales: -3.2 }
@@ -4943,9 +4874,9 @@ db.command.aggregate.floor(<number>)
 可以用如下方式取各个数字的向下取整值：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db.collection('sales').aggregate()
+let res = await db.collection('sales').aggregate()
   .project({
     sales: $.floor('$sales')
   })
@@ -4954,7 +4885,7 @@ db.collection('sales').aggregate()
 返回结果如下：  
 
  
-```
+```js
 { _id: 1, sales: 5 }
 { _id: 2, sales: 1 }
 { _id: 3, sales: -6 }
@@ -4969,7 +4900,7 @@ db.collection('sales').aggregate()
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.ln(<number>)
 ```
 `<number>` 可以是任意解析为非负数字的表达式。  
@@ -4985,7 +4916,7 @@ db.command.aggregate.ln(<number>)
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.ln(<number>)
 ```
 `<number>` 可以是任意解析为非负数字的表达式。  
@@ -5001,7 +4932,7 @@ db.command.aggregate.ln(<number>)
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.log([<number>, <base>])
 ```
 `<number>` 可以是任意解析为非负数字的表达式。`<base>` 可以是任意解析为大于 1 的数字的表达式。  
@@ -5013,7 +4944,7 @@ db.command.aggregate.log([<number>, <base>])
  假设集合 `curve` 有如下记录：  
 
  
-```
+```js
 { _id: 1, x: 1 }
 { _id: 2, x: 2 }
 { _id: 3, x: 3 }
@@ -5021,9 +4952,9 @@ db.command.aggregate.log([<number>, <base>])
 计算 `log2(x)` 的值：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db.collection('staff').aggregate()
+let res = await db.collection('staff').aggregate()
   .project({
     log: $.log(['$x', 2])
   })
@@ -5032,7 +4963,7 @@ db.collection('staff').aggregate()
 返回结果如下：  
 
  
-```
+```js
 { _id: 1, log: 0 }
 { _id: 2, log: 1 }
 { _id: 3, log: 1.58496250072 }
@@ -5047,7 +4978,7 @@ db.collection('staff').aggregate()
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.log(<number>)
 ```
 `<number>` 可以是任意解析为非负数字的表达式。  
@@ -5063,7 +4994,7 @@ db.command.aggregate.log(<number>)
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.log(<number>)
 ```
 `<number>` 可以是任意解析为非负数字的表达式。  
@@ -5079,7 +5010,7 @@ db.command.aggregate.log(<number>)
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.mod([<dividend>, <divisor>])
 ```
 第一个数字是被除数，第二个数字是除数。参数可以是任意解析为数字的表达式。  
@@ -5089,7 +5020,7 @@ db.command.aggregate.mod([<dividend>, <divisor>])
  假设集合 `shopping` 有如下记录：  
 
  
-```
+```js
 { _id: 1, bags: 3, items: 5 }
 { _id: 2, bags: 2, items: 8 }
 { _id: 3, bags: 5, items: 16 }
@@ -5097,9 +5028,9 @@ db.command.aggregate.mod([<dividend>, <divisor>])
 各记录取 `items` 除以 `bags` 的余数（`items % bags`）：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db.collection('shopping').aggregate()
+let res = await db.collection('shopping').aggregate()
   .project({
     overflow: $.mod(['$items', '$bags'])
   })
@@ -5108,7 +5039,7 @@ db.collection('shopping').aggregate()
 返回结果如下：  
 
  
-```
+```js
 { _id: 1, log: 2 }
 { _id: 2, log: 0 }
 { _id: 3, log: 1 }
@@ -5123,7 +5054,7 @@ db.collection('shopping').aggregate()
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.multiply([<expression1>, <expression2>, ...])
 ```
 参数可以是任意解析为数字的表达式。  
@@ -5133,7 +5064,7 @@ db.command.aggregate.multiply([<expression1>, <expression2>, ...])
  假设集合 `fruits` 有如下记录：  
 
  
-```
+```js
 { "_id": 1, "name": "apple", "price": 10, "quantity": 100 }
 { "_id": 2, "name": "orange", "price": 15, "quantity": 50 }
 { "_id": 3, "name": "lemon", "price": 5, "quantity": 20 }
@@ -5141,9 +5072,9 @@ db.command.aggregate.multiply([<expression1>, <expression2>, ...])
 求各个水果的的总价值：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db.collection('fruits').aggregate()
+let res = await db.collection('fruits').aggregate()
   .project({
     name: 1,
     total: $.multiply(['$price', '$quantity']),
@@ -5153,7 +5084,7 @@ db.collection('fruits').aggregate()
 返回结果如下：  
 
  
-```
+```js
 { "_id": 1, "name": "apple", "total": 1000 }
 { "_id": 2, "name": "orange", "total": 750 }
 { "_id": 3, "name": "lemo", "total": 100 }
@@ -5168,7 +5099,7 @@ db.collection('fruits').aggregate()
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.pow([<base>, <exponent>])
 ```
 参数可以是任意解析为数字的表达式。  
@@ -5178,7 +5109,7 @@ db.command.aggregate.pow([<base>, <exponent>])
  假设集合 `stats` 有如下记录：  
 
  
-```
+```js
 { "_id": 1, "x": 2, "y": 3 }
 { "_id": 2, "x": 5, "y": 7 }
 { "_id": 3, "x": 10, "y": 20 }
@@ -5186,9 +5117,9 @@ db.command.aggregate.pow([<base>, <exponent>])
 求 `x` 和 `y` 的平方和：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db.collection('stats').aggregate()
+let res = await db.collection('stats').aggregate()
   .project({
     sumOfSquares: $.add([$.pow(['$x', 2]), $.pow(['$y', 2])]),
   })
@@ -5197,7 +5128,7 @@ db.collection('stats').aggregate()
 返回结果如下：  
 
  
-```
+```js
 { "_id": 1, "sumOfSquares": 13 }
 { "_id": 2, "sumOfSquares": 74 }
 { "_id": 3, "sumOfSquares": 500 }
@@ -5212,7 +5143,7 @@ db.collection('stats').aggregate()
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.sqrt([<number>])
 ```
 参数可以是任意解析为非负数字的表达式。  
@@ -5222,7 +5153,7 @@ db.command.aggregate.sqrt([<number>])
  假设直角三角形集合 `triangle` 有如下记录：  
 
  
-```
+```js
 { "_id": 1, "x": 2, "y": 3 }
 { "_id": 2, "x": 5, "y": 7 }
 { "_id": 3, "x": 10, "y": 20 }
@@ -5230,9 +5161,9 @@ db.command.aggregate.sqrt([<number>])
 假设 `x` 和 `y` 分别为两直角边，则求斜边长：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db.collection('triangle').aggregate()
+let res = await db.collection('triangle').aggregate()
   .project({
     len: $.sqrt([$.add([$.pow(['$x', 2]), $.pow(['$y', 2])])]),
   })
@@ -5241,7 +5172,7 @@ db.collection('triangle').aggregate()
 返回结果如下：  
 
  
-```
+```js
 { "_id": 1, "len": 3.605551275463989 }
 { "_id": 2, "len": 8.602325267042627 }
 { "_id": 3, "len": 22.360679774997898 }
@@ -5256,7 +5187,7 @@ db.collection('triangle').aggregate()
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.subtract([<expression1>, <expression2>])
 ```
 参数可以是任意解析为数字或日期的表达式。  
@@ -5266,7 +5197,7 @@ db.command.aggregate.subtract([<expression1>, <expression2>])
  假设集合 `scores` 有如下记录：  
 
  
-```
+```js
 { "_id": 1, "max": 10, "min": 1 }
 { "_id": 2, "max": 7, "min": 5 }
 { "_id": 3, "max": 6, "min": 6 }
@@ -5274,9 +5205,9 @@ db.command.aggregate.subtract([<expression1>, <expression2>])
 求各个记录的 `max` 和 `min` 的差值。：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db.collection('scores').aggregate()
+let res = await db.collection('scores').aggregate()
   .project({
     diff: $.subtract(['$max', '$min'])
   })
@@ -5285,7 +5216,7 @@ db.collection('scores').aggregate()
 返回结果如下：  
 
  
-```
+```js
 { "_id": 1, "diff": 9 }
 { "_id": 2, "diff": 2 }
 { "_id": 3, "diff": 0 }
@@ -5300,7 +5231,7 @@ db.collection('scores').aggregate()
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.trunc(<number>)
 ```
 参数可以是任意解析为数字的表达式。  
@@ -5310,15 +5241,15 @@ db.command.aggregate.trunc(<number>)
  假设集合 `scores` 有如下记录：  
 
  
-```
+```js
 { "_id": 1, "value": 1.21 }
 { "_id": 2, "value": 3.83 }
 { "_id": 3, "value": -4.94 }
 ```
 
-```
+```js
 const $ = db.command.aggregate
-db.collection('scores').aggregate()
+let res = await db.collection('scores').aggregate()
   .project({
     int: $.trunc('$value')
   })
@@ -5327,7 +5258,7 @@ db.collection('scores').aggregate()
 返回结果如下：  
 
  
-```
+```js
 { "_id": 1, "value": 1 }
 { "_id": 2, "value": 3 }
 { "_id": 3, "value": -4 }
@@ -5344,7 +5275,7 @@ db.collection('scores').aggregate()
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.arrayElemAt([<array>, <index>])
 ```
 `<array>` 可以是任意解析为数字的表达式。  
@@ -5356,7 +5287,7 @@ db.command.aggregate.arrayElemAt([<array>, <index>])
  假设集合 `exams` 有如下记录：  
 
  
-```
+```js
 { "_id": 1, "scores": [80, 60, 65, 90] }
 { "_id": 2, "scores": [78] }
 { "_id": 3, "scores": [95, 88, 92] }
@@ -5364,9 +5295,9 @@ db.command.aggregate.arrayElemAt([<array>, <index>])
 求各个第一次考试的分数和和最后一次的分数：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db.collection('exams').aggregate()
+let res = await db.collection('exams').aggregate()
   .project({
     first: $.arrayElemAt(['$scores', 0]),
     last: $.arrayElemAt(['$scores', -1]),
@@ -5376,7 +5307,7 @@ db.collection('exams').aggregate()
 返回结果如下：  
 
  
-```
+```js
 { "_id": 1, "first": 80, "last": 90 }
 { "_id": 2, "first": 78, "last": 78 }
 { "_id": 3, "first": 95, "last": 92 }
@@ -5393,7 +5324,7 @@ db.collection('exams').aggregate()
  第一种：传入一个二维数组，第二维的数组长度必须为 2，其第一个值为字段名，第二个值为字段值  
 
  
-```
+```js
 db.command.aggregate.arrayToObject([
   [<key1>, <value1>],
   [<key2>, <value2>],
@@ -5403,7 +5334,7 @@ db.command.aggregate.arrayToObject([
 第二种：传入一个对象数组，各个对象必须包含字段 `k` 和 `v`，分别指定字段名和字段值  
 
  
-```
+```js
 db.command.aggregate.arrayToObject([
   { "k": <key1>, "v": <value1> },
   { "k": <key2>, "v": <value2> },
@@ -5417,7 +5348,7 @@ db.command.aggregate.arrayToObject([
  假设集合 `shops` 有如下记录：  
 
  
-```
+```js
 { "_id": 1, "sales": [ ["max", 100], ["min", 50] ] }
 { "_id": 2, "sales": [ ["max", 70], ["min", 60] ] }
 { "_id": 3, "sales": [ { "k": "max", "v": 50 }, { "k": "min", "v": 30 } ] }
@@ -5425,9 +5356,9 @@ db.command.aggregate.arrayToObject([
 求各个第一次考试的分数和和最后一次的分数：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db.collection('shops').aggregate()
+let res = await db.collection('shops').aggregate()
   .project({
     sales: $.arrayToObject('$sales'),
   })
@@ -5436,7 +5367,7 @@ db.collection('shops').aggregate()
 返回结果如下：  
 
  
-```
+```js
 { "_id": 1, "sales": { "max": 100, "min": 50 } }
 { "_id": 2, "sales": { "max": 70, "min": 60 } }
 { "_id": 3, "sales": { "max": 50, "min": 30 } }
@@ -5451,7 +5382,7 @@ db.collection('shops').aggregate()
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.arrayToObject([ <array1>, <array2>, ... ])
 ```
 参数可以是任意解析为数组的表达式。  
@@ -5461,15 +5392,15 @@ db.command.aggregate.arrayToObject([ <array1>, <array2>, ... ])
  假设集合 `items` 有如下记录：  
 
  
-```
+```js
 { "_id": 1, "fruits": [ "apple" ], "vegetables": [ "carrot" ] }
 { "_id": 2, "fruits": [ "orange", "lemon" ], "vegetables": [ "cabbage" ] }
 { "_id": 3, "fruits": [ "strawberry" ], "vegetables": [ "spinach" ] }
 ```
 
-```
+```js
 const $ = db.command.aggregate
-db.collection('items').aggregate()
+let res = await db.collection('items').aggregate()
   .project({
     list: $.concatArrays(['$fruits', '$vegetables']),
   })
@@ -5478,7 +5409,7 @@ db.collection('items').aggregate()
 返回结果如下：  
 
  
-```
+```js
 { "_id": 1, "list": [ "apple", "carrot" ] }
 { "_id": 2, "list": [ "orange", "lemon", "cabbage" ] }
 { "_id": 3, "list": [ "strawberry", "spinach" ] }
@@ -5493,7 +5424,7 @@ db.collection('items').aggregate()
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.filter({
   input: <array>,
   as: <string>,
@@ -5514,7 +5445,7 @@ db.command.aggregate.filter({
  假设集合 `fruits` 有如下记录：  
 
  
-```
+```json
 {
   "_id": 1,
   "stock": [
@@ -5530,10 +5461,10 @@ db.command.aggregate.filter({
 }
 ```
 
-```
+```js
 const _ = db.command
 const $ = db.command.aggregate
-db.collection('fruits').aggregate()
+let res = await db.collection('fruits').aggregate()
   .project({
     stock: $.filter({
       input: '$stock',
@@ -5546,7 +5477,7 @@ db.collection('fruits').aggregate()
 返回结果如下：  
 
  
-```
+```js
 { "_id": 1, "stock": [ { "name": "orange", "price": 20} ] }
 { "_id": 2, "stock": [ { "name": "lemon", "price": 15 } ] }
 ```
@@ -5560,7 +5491,7 @@ db.collection('fruits').aggregate()
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.in([<value>, <array>])
 ```
 `<value>` 可以是任意表达式。  
@@ -5572,7 +5503,7 @@ db.command.aggregate.in([<value>, <array>])
  假设集合 `shops` 有如下记录：  
 
  
-```
+```js
 { "_id": 1, "topsellers": ["bread", "ice cream", "butter"] }
 { "_id": 2, "topsellers": ["ice cream", "cheese", "yagurt"] }
 { "_id": 3, "topsellers": ["croissant", "cucumber", "coconut"] }
@@ -5580,9 +5511,9 @@ db.command.aggregate.in([<value>, <array>])
 标记销量最高的商品包含 `ice cream` 的记录。  
 
  
-```
+```js
 const $ = db.command.aggregate
-db.collection('price').aggregate()
+let res = await db.collection('price').aggregate()
   .project({
     included: $.in(['ice cream', '$topsellers'])
   })
@@ -5591,7 +5522,7 @@ db.collection('price').aggregate()
 返回结果如下：  
 
  
-```
+```js
 { "_id": 1, "included": true }
 { "_id": 2, "included": true }
 { "_id": 3, "included": false }
@@ -5606,7 +5537,7 @@ db.collection('price').aggregate()
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.indexOfArray([ <array expression>, <search expression>, <start>, <end> ])
 ```
 
@@ -5624,7 +5555,7 @@ db.command.aggregate.indexOfArray([ <array expression>, <search expression>, <st
  假设集合 `stats` 有如下记录：  
 
  
-```
+```json
 {
   "_id": 1,
   "sales": [ 1, 6, 2, 2, 5 ]
@@ -5639,9 +5570,9 @@ db.command.aggregate.indexOfArray([ <array expression>, <search expression>, <st
 }
 ```
 
-```
+```js
 const $ = db.command.aggregate
-db.collection('stats').aggregate()
+let res = await db.collection('stats').aggregate()
   .project({
     index: $.indexOfArray(['$sales', 2, 2])
   })
@@ -5650,7 +5581,7 @@ db.collection('stats').aggregate()
 返回结果如下：  
 
  
-```
+```js
 { "_id": 1, "index": 2 }
 { "_id": 2, "index": 4 }
 { "_id": 3, "index": -1 }
@@ -5665,7 +5596,7 @@ db.collection('stats').aggregate()
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.isArray(<expression>)
 ```
 参数可以是任意表达式。  
@@ -5675,7 +5606,7 @@ db.command.aggregate.isArray(<expression>)
  假设集合 `stats` 有如下记录：  
 
  
-```
+```js
 {
   "_id": 1,
   "base": 10,
@@ -5690,9 +5621,9 @@ db.command.aggregate.isArray(<expression>)
 计算总销量，如果 `sales` 是数字，则求 `sales * base`，如果 `sales` 是数组，则求数组元素之和与 `base` 的乘积。  
 
  
-```
+```js
 const $ = db.command.aggregate
-db.collection('stats').aggregate()
+let res = await db.collection('stats').aggregate()
   .project({
     sum: $.cond({
       if: $.isArray('$sales'),
@@ -5705,7 +5636,7 @@ db.collection('stats').aggregate()
 返回结果如下：  
 
  
-```
+```js
 { "_id": 1, "index": 160 }
 { "_id": 2, "index": 100 }
 ```
@@ -5719,7 +5650,7 @@ db.collection('stats').aggregate()
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.map({
   input: <expression>,
   as: <string>,
@@ -5737,7 +5668,7 @@ db.command.aggregate.map({
  假设集合 `stats` 有如下记录：  
 
  
-```
+```js
 {
   "_id": 1,
   "sales": [ 1.32, 6.93, 2.48, 2.82, 5.74 ]
@@ -5749,10 +5680,10 @@ db.command.aggregate.map({
 ```
 将各个数字截断为整形，然后求和  
 
- 
-```
+
+```js
 const $ = db.command.aggregate
-db.collection('stats').aggregate()
+let res = await db.collection('stats').aggregate()
   .project({
     truncated: $.map({
       input: '$sales',
@@ -5768,7 +5699,7 @@ db.collection('stats').aggregate()
 返回结果如下：  
 
  
-```
+```js
 { "_id": 1, "index": 16 }
 { "_id": 2, "index": 19 }
 ```
@@ -5782,7 +5713,7 @@ db.collection('stats').aggregate()
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.objectToArray(<object>)
 ```
 
@@ -5790,7 +5721,7 @@ db.command.aggregate.objectToArray(<object>)
  假设集合 `items` 有如下记录：  
 
  
-```
+```js
 { "_id": 1, "attributes": { "color": "red", "price": 150 } }
 { "_id": 2, "attributes": { "color": "blue", "price": 50 } }
 { "_id": 3, "attributes": { "color": "yellow", "price": 10 } }
@@ -5798,7 +5729,7 @@ db.command.aggregate.objectToArray(<object>)
 
 ```
 const $ = db.command.aggregate
-db.collection('items').aggregate()
+let res = await db.collection('items').aggregate()
   .project({
     array: $.objectToArray('$attributes')
   })
@@ -5807,7 +5738,7 @@ db.collection('items').aggregate()
 返回结果如下：  
 
  
-```
+```js
 { "_id": 1, "array": [{ "k": "color", "v": "red" }, { "k": "price", "v": 150 }] }
 { "_id": 2, "array": [{ "k": "color", "v": "blue" }, { "k": "price", "v": 50 }] }
 { "_id": 3, "array": [{ "k": "color", "v": "yellow" }, { "k": "price", "v": 10 }] }
@@ -5822,7 +5753,7 @@ db.collection('items').aggregate()
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.range([<start>, <end>, <non-zero step>])
 ```
 
@@ -5836,12 +5767,12 @@ db.command.aggregate.range([<start>, <end>, <non-zero step>])
  假设集合 `stats` 有如下记录：  
 
  
-```
+```js
 { "_id": 1, "max": 52 }
 { "_id": 2, "max": 38 }
 ```
 
-```
+```js
 const $ = db.command.aggregate
 db.collection('stats').aggregate()
   .project({
@@ -5852,7 +5783,7 @@ db.collection('stats').aggregate()
 返回结果如下：  
 
  
-```
+```js
 { "_id": 1, "points": [0, 10, 20, 30, 40, 50] }
 { "_id": 2, "points": [0, 10, 20] }
 ```
@@ -5866,7 +5797,7 @@ db.collection('stats').aggregate()
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.reduce({
   input: <array>
   initialValue: <expression>,
@@ -5888,16 +5819,16 @@ db.command.aggregate.reduce({
  假设集合 `player` 有如下记录：  
 
  
-```
+```js
 { "_id": 1, "fullname": [ "Stephen", "Curry" ] }
 { "_id": 2, "fullname": [ "Klay", "Thompsom" ] }
 ```
 获取各个球员的全名，并加 `Player:` 前缀：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db.collection('player').aggregate()
+let res = await db.collection('player').aggregate()
   .project({
     info: $.reduce({
       input: '$fullname',
@@ -5910,16 +5841,16 @@ db.collection('player').aggregate()
 返回结果如下：  
 
  
-```
+```js
 { "_id": 1, "info": "Player: Stephen Curry" }
 { "_id": 2, "info": "Player: Klay Thompson" }
 ```
 获取各个球员的全名，不加前缀：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db.collection('player').aggregate()
+let res = await db.collection('player').aggregate()
   .project({
     name: $.reduce({
       input: '$fullname',
@@ -5940,7 +5871,7 @@ db.collection('player').aggregate()
 返回结果如下：  
 
  
-```
+```js
 { "_id": 1, "name": "Stephen Curry" }
 { "_id": 2, "name": "Klay Thompson" }
 ```
@@ -5954,7 +5885,7 @@ db.collection('player').aggregate()
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.reverseArray(<array>)
 ```
 参数可以是任意解析为数组表达式。  
@@ -5964,7 +5895,7 @@ db.command.aggregate.reverseArray(<array>)
  假设集合 `stats` 有如下记录：  
 
  
-```
+```js
 {
   "_id": 1,
   "sales": [ 1, 2, 3, 4, 5 ]
@@ -5973,9 +5904,9 @@ db.command.aggregate.reverseArray(<array>)
 取 `sales` 倒序：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db.collection('stats').aggregate()
+let res = await db.collection('stats').aggregate()
   .project({
     reversed: $.reverseArray('$sales'),
   })
@@ -5984,7 +5915,7 @@ db.collection('stats').aggregate()
 返回结果如下：  
 
  
-```
+```js
 { "_id": 1, "reversed": [5, 4, 3, 2, 1] }
 ```
 
@@ -5997,7 +5928,7 @@ db.collection('stats').aggregate()
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.size(<array>)
 ```
 `<array>` 可以是任意解析为数组的表达式。  
@@ -6007,16 +5938,16 @@ db.command.aggregate.size(<array>)
  假设集合 `shops` 有如下记录：  
 
  
-```
+```js
 { "_id": 1, "staff": [ "John", "Middleton", "George" ] }
 { "_id": 2, "staff": [ "Steph", "Jack" ] }
 ```
 计算各个商店的雇员数量：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db.collection('staff').aggregate()
+let res = await db.collection('staff').aggregate()
   .project({
     totalStaff: $.size('$staff')
   })
@@ -6025,7 +5956,7 @@ db.collection('staff').aggregate()
 返回结果如下：  
 
  
-```
+```js
 { "_id": 1, "totalStaff": 3 }
 { "_id": 2, "totalStaff": 2 }
 ```
@@ -6041,13 +5972,13 @@ db.collection('staff').aggregate()
  返回从开头或结尾开始的 `n` 个元素：  
 
  
-```
+```js
 db.command.aggregate.slice([<array>, <n>])
 ```
 返回从指定位置算作数组开头、再向后或向前的 `n` 个元素：  
 
  
-```
+```js
 db.command.aggregate.slice([<array>, <position>, <n>])
 ```
 `<array>` 可以是任意解析为数组的表达式。  
@@ -6061,7 +5992,7 @@ db.command.aggregate.slice([<array>, <position>, <n>])
  假设集合 `people` 有如下记录：  
 
  
-```
+```js
 { "_id": 1, "hobbies": [ "basketball", "football", "tennis", "badminton" ] }
 { "_id": 2, "hobbies": [ "golf", "handball" ] }
 { "_id": 3, "hobbies": [ "table tennis", "swimming", "rowing" ] }
@@ -6069,9 +6000,9 @@ db.command.aggregate.slice([<array>, <position>, <n>])
 统一返回前两个爱好：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db.collection('fruits').aggregate()
+let res = await db.collection('fruits').aggregate()
   .project({
     hobbies: $.slice(['$hobbies', 2]),
   })
@@ -6080,7 +6011,7 @@ db.collection('fruits').aggregate()
 返回结果如下：  
 
  
-```
+```js
 { "_id": 1, "hobbies": [ "basketball", "football" ] }
 { "_id": 2, "hobbies": [ "golf", "handball" ] }
 { "_id": 3, "hobbies": [ "table tennis", "swimming" ] }
@@ -6095,7 +6026,7 @@ db.collection('fruits').aggregate()
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.zip({
   inputs: [<array1>, <array2>, ...],
   useLongestLength: <boolean>,
@@ -6113,7 +6044,7 @@ db.command.aggregate.zip({
  假设集合 `stats` 有如下记录：  
 
  
-```
+```js
 { "_id": 1, "zip1": [1, 2], "zip2": [3, 4], "zip3": [5, 6] ] }
 { "_id": 2, "zip1": [1, 2], "zip2": [3], "zip3": [4, 5, 6] ] }
 { "_id": 3, "zip1": [1, 2], "zip2": [3] ] }
@@ -6123,9 +6054,9 @@ db.command.aggregate.zip({
 **只传 inputs**
 
  
-```
+```js
 const $ = db.command.aggregate
-db.collection('items').aggregate()
+let res = await db.collection('items').aggregate()
   .project({
     zip: $.zip({
       inputs: [
@@ -6140,7 +6071,7 @@ db.collection('items').aggregate()
 返回结果如下：  
 
  
-```
+```js
 { "_id": 1, "zip": [ [1, 3, 5], [2, 4, 6] ] }
 { "_id": 2, "zip": [ [1, 3, 4] ] }
 { "_id": 3, "zip": null }
@@ -6152,9 +6083,9 @@ db.collection('items').aggregate()
  如果设 `useLongestLength` 为 `true`：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db.collection('items').aggregate()
+let res = await db.collection('items').aggregate()
   .project({
     zip: $.zip({
       inputs: [
@@ -6170,7 +6101,7 @@ db.collection('items').aggregate()
 返回结果如下：  
 
  
-```
+```js
 { "_id": 1, "zip": [ [1, 3, 5], [2, 4, 6] ] }
 { "_id": 2, "zip": [ [1, 3, 4], [2, null, 5], [null, null, 6] ] }
 { "_id": 3, "zip": null }
@@ -6180,9 +6111,9 @@ db.collection('items').aggregate()
 **设置 defaults**
 
  
-```
+```js
 const $ = db.command.aggregate
-db.collection('items').aggregate()
+let res = await db.collection('items').aggregate()
   .project({
     zip: $.zip({
       inputs: [
@@ -6199,7 +6130,7 @@ db.collection('items').aggregate()
 返回结果如下：  
 
  
-```
+```js
 { "_id": 1, "zip": [ [1, 3, 5], [2, 4, 6] ] }
 { "_id": 2, "zip": [ [1, 3, 4], [2, -200, 5], [-300, -200, 6] ] }
 { "_id": 3, "zip": null }
@@ -6216,7 +6147,7 @@ db.collection('items').aggregate()
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.and([<expression1>, <expression2>, ...])
 ```
 如果表达式返回 `false`、`null`、`0`、或 `undefined`，表达式会解析为 `false`，否则对其他返回值都认为是 `true`。  
@@ -6226,7 +6157,7 @@ db.command.aggregate.and([<expression1>, <expression2>, ...])
  假设集合 `price` 有如下记录：  
 
  
-```
+```js
 { "_id": 1, "min": 10, "max": 100 }
 { "_id": 2, "min": 60, "max": 80 }
 { "_id": 3, "min": 30, "max": 50 }
@@ -6234,9 +6165,9 @@ db.command.aggregate.and([<expression1>, <expression2>, ...])
 求 `min` 大于等于 30 且 `max` 小于等于 80 的记录。  
 
  
-```
+```js
 const $ = db.command.aggregate
-db.collection('price').aggregate()
+let res = await db.collection('price').aggregate()
   .project({
     fullfilled: $.and([$.gte(['$min', 30]), $.lte(['$max', 80])])
   })
@@ -6245,7 +6176,7 @@ db.collection('price').aggregate()
 返回结果如下：  
 
  
-```
+```js
 { "_id": 1, "fullfilled": false }
 { "_id": 2, "fullfilled": true }
 { "_id": 3, "fullfilled": true }
@@ -6260,7 +6191,7 @@ db.collection('price').aggregate()
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.not(<expression>)
 ```
 如果表达式返回 `false`、`null`、`0`、或 `undefined`，表达式会解析为 `false`，否则对其他返回值都认为是 `true`。  
@@ -6270,7 +6201,7 @@ db.command.aggregate.not(<expression>)
  假设集合 `price` 有如下记录：  
 
  
-```
+```js
 { "_id": 1, "min": 10, "max": 100 }
 { "_id": 2, "min": 60, "max": 80 }
 { "_id": 3, "min": 30, "max": 50 }
@@ -6278,9 +6209,9 @@ db.command.aggregate.not(<expression>)
 求 `min` 不大于 40 的记录。  
 
  
-```
+```js
 const $ = db.command.aggregate
-db.collection('price').aggregate()
+let res = await db.collection('price').aggregate()
   .project({
     fullfilled: $.not($.gt(['$min', 40]))
   })
@@ -6289,7 +6220,7 @@ db.collection('price').aggregate()
 返回结果如下：  
 
  
-```
+```js
 { "_id": 1, "fullfilled": true }
 { "_id": 2, "fullfilled": false }
 { "_id": 3, "fullfilled": true }
@@ -6304,7 +6235,7 @@ db.collection('price').aggregate()
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.or([<expression1>, <expression2>, ...])
 ```
 如果表达式返回 `false`、`null`、`0`、或 `undefined`，表达式会解析为 `false`，否则对其他返回值都认为是 `true`。  
@@ -6314,7 +6245,7 @@ db.command.aggregate.or([<expression1>, <expression2>, ...])
  假设集合 `price` 有如下记录：  
 
  
-```
+```js
 { "_id": 1, "min": 10, "max": 100 }
 { "_id": 2, "min": 60, "max": 80 }
 { "_id": 3, "min": 30, "max": 50 }
@@ -6322,9 +6253,9 @@ db.command.aggregate.or([<expression1>, <expression2>, ...])
 求 `min` 小于 40 且 `max` 大于 60 的记录。  
 
  
-```
+```js
 const $ = db.command.aggregate
-db.collection('price').aggregate()
+let res = await db.collection('price').aggregate()
   .project({
     fullfilled: $.or([$.lt(['$min', 30]), $.gt(['$max', 60])])
   })
@@ -6333,7 +6264,7 @@ db.collection('price').aggregate()
 返回结果如下：  
 
  
-```
+```js
 { "_id": 1, "fullfilled": true }
 { "_id": 2, "fullfilled": false }
 { "_id": 3, "fullfilled": true }
@@ -6354,7 +6285,7 @@ db.collection('price').aggregate()
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.cmp([<expression1>, <expression2>])
 ```
 
@@ -6362,7 +6293,7 @@ db.command.aggregate.cmp([<expression1>, <expression2>])
  假设集合 `price` 有如下记录：  
 
  
-```
+```js
 { "_id": 1, "shop1": 10, "shop2": 100 }
 { "_id": 2, "shop1": 80, "shop2": 20 }
 { "_id": 3, "shop1": 50, "shop2": 50 }
@@ -6370,9 +6301,9 @@ db.command.aggregate.cmp([<expression1>, <expression2>])
 求 `shop1` 和 `shop2` 的各个物品的价格对比。  
 
  
-```
+```js
 const $ = db.command.aggregate
-db.collection('price').aggregate()
+let res = await db.collection('price').aggregate()
   .project({
     compare: $.cmp(['$shop1', '$shop2']))
   })
@@ -6381,7 +6312,7 @@ db.collection('price').aggregate()
 返回结果如下：  
 
  
-```
+```js
 { "_id": 1, "compare": -1 }
 { "_id": 2, "compare": 1 }
 { "_id": 3, "compare": 0 }
@@ -6396,7 +6327,7 @@ db.collection('price').aggregate()
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.eq([<value1>, <value2>])
 ```
 
@@ -6404,7 +6335,7 @@ db.command.aggregate.eq([<value1>, <value2>])
  假设集合 `price` 有如下记录：  
 
  
-```
+```js
 { "_id": 1, "value": 10 }
 { "_id": 2, "value": 80 }
 { "_id": 3, "value": 50 }
@@ -6412,9 +6343,9 @@ db.command.aggregate.eq([<value1>, <value2>])
 求 `value` 等于 50 的记录。  
 
  
-```
+```js
 const $ = db.command.aggregate
-db.collection('price').aggregate()
+let res = await db.collection('price').aggregate()
   .project({
     matched: $.eq(['$value', 50])
   })
@@ -6423,7 +6354,7 @@ db.collection('price').aggregate()
 返回结果如下：  
 
  
-```
+```js
 { "_id": 1, "matched": false }
 { "_id": 2, "matched": false }
 { "_id": 3, "matched": true }
@@ -6438,7 +6369,7 @@ db.collection('price').aggregate()
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.gt([<value1>, <value2>])
 ```
 
@@ -6446,7 +6377,7 @@ db.command.aggregate.gt([<value1>, <value2>])
  假设集合 `price` 有如下记录：  
 
  
-```
+```js
 { "_id": 1, "value": 10 }
 { "_id": 2, "value": 80 }
 { "_id": 3, "value": 50 }
@@ -6454,7 +6385,7 @@ db.command.aggregate.gt([<value1>, <value2>])
 判断 `value` 是否大于 50。  
 
  
-```
+```js
 const $ = db.command.aggregate
 db.collection('price').aggregate()
   .project({
@@ -6465,7 +6396,7 @@ db.collection('price').aggregate()
 返回结果如下：  
 
  
-```
+```js
 { "_id": 1, "matched": false }
 { "_id": 2, "matched": true }
 { "_id": 3, "matched": false }
@@ -6480,7 +6411,7 @@ db.collection('price').aggregate()
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.gte([<value1>, <value2>])
 ```
 
@@ -6488,7 +6419,7 @@ db.command.aggregate.gte([<value1>, <value2>])
  假设集合 `price` 有如下记录：  
 
  
-```
+```js
 { "_id": 1, "value": 10 }
 { "_id": 2, "value": 80 }
 { "_id": 3, "value": 50 }
@@ -6496,9 +6427,9 @@ db.command.aggregate.gte([<value1>, <value2>])
 判断 `value` 是否大于或等于 50。  
 
  
-```
+```js
 const $ = db.command.aggregate
-db.collection('price').aggregate()
+let res = await b.collection('price').aggregate()
   .project({
     matched: $.gte(['$value', 50])
   })
@@ -6507,7 +6438,7 @@ db.collection('price').aggregate()
 返回结果如下：  
 
  
-```
+```js
 { "_id": 1, "matched": false }
 { "_id": 2, "matched": true }
 { "_id": 3, "matched": true }
@@ -6522,7 +6453,7 @@ db.collection('price').aggregate()
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.lt([<value1>, <value2>])
 ```
 
@@ -6538,9 +6469,9 @@ db.command.aggregate.lt([<value1>, <value2>])
 判断 `value` 是否小于 50。  
 
  
-```
+```js
 const $ = db.command.aggregate
-db.collection('price').aggregate()
+let res = await db.collection('price').aggregate()
   .project({
     matched: $.lt(['$value', 50])
   })
@@ -6549,7 +6480,7 @@ db.collection('price').aggregate()
 返回结果如下：  
 
  
-```
+```js
 { "_id": 1, "matched": true }
 { "_id": 2, "matched": false }
 { "_id": 3, "matched": false }
@@ -6564,7 +6495,7 @@ db.collection('price').aggregate()
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.lte([<value1>, <value2>])
 ```
 
@@ -6572,7 +6503,7 @@ db.command.aggregate.lte([<value1>, <value2>])
  假设集合 `price` 有如下记录：  
 
  
-```
+```js
 { "_id": 1, "value": 10 }
 { "_id": 2, "value": 80 }
 { "_id": 3, "value": 50 }
@@ -6580,9 +6511,9 @@ db.command.aggregate.lte([<value1>, <value2>])
 判断 `value` 是否小于 50。  
 
  
-```
+```js
 const $ = db.command.aggregate
-db.collection('price').aggregate()
+let res = await db.collection('price').aggregate()
   .project({
     matched: $.lte(['$value', 50])
   })
@@ -6591,7 +6522,7 @@ db.collection('price').aggregate()
 返回结果如下：  
 
  
-```
+```js
 { "_id": 1, "matched": true }
 { "_id": 2, "matched": false }
 { "_id": 3, "matched": true }
@@ -6606,7 +6537,7 @@ db.collection('price').aggregate()
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.neq([<value1>, <value2>])
 ```
 
@@ -6614,7 +6545,7 @@ db.command.aggregate.neq([<value1>, <value2>])
  假设集合 `price` 有如下记录：  
 
  
-```
+```js
 { "_id": 1, "value": 10 }
 { "_id": 2, "value": 80 }
 { "_id": 3, "value": 50 }
@@ -6622,9 +6553,9 @@ db.command.aggregate.neq([<value1>, <value2>])
 求 `value` 不等于 50 的记录。  
 
  
-```
+```js
 const $ = db.command.aggregate
-db.collection('price').aggregate()
+let res = await db.collection('price').aggregate()
   .project({
     matched: $.neq(['$value', 50])
   })
@@ -6633,7 +6564,7 @@ db.collection('price').aggregate()
 返回结果如下：  
 
  
-```
+```js
 { "_id": 1, "matched": true }
 { "_id": 2, "matched": true }
 { "_id": 3, "matched": false }
@@ -6650,13 +6581,13 @@ db.collection('price').aggregate()
  `cond` 的使用形式如下：  
 
  
-```
+```js
 cond({ if: <布尔表达式>, then: <真值>, else: <假值>  })
 ```
 或者：  
 
  
-```
+```js
 cond([ <布尔表达式>, <真值>, <假值> ])
 ```
 两种形式中，三个参数（`if`、`then`、`else`）都是必须的。  
@@ -6668,7 +6599,7 @@ cond([ <布尔表达式>, <真值>, <假值> ])
  假设集合 `items` 的记录如下：  
 
  
-```
+```js
 { "_id": "0", "name": "item-a", "amount": 100 }
 { "_id": "1", "name": "item-b", "amount": 200 }
 { "_id": "2", "name": "item-c", "amount": 300 }
@@ -6676,9 +6607,9 @@ cond([ <布尔表达式>, <真值>, <假值> ])
 我们可以使用 `cond`，根据 `amount` 字段，来生成新的字段 `discount`：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db.collection('items').aggregate()
+let res = await db.collection('items').aggregate()
   .project({
     name: 1,
     discount: $.cond({
@@ -6692,7 +6623,7 @@ db.collection('items').aggregate()
 输出如下：  
 
  
-```
+```js
 { "_id": "0", "name": "item-a", "discount": 0.9 }
 { "_id": "1", "name": "item-b", "discount": 0.7 }
 { "_id": "2", "name": "item-c", "discount": 0.7 }
@@ -6707,7 +6638,7 @@ db.collection('items').aggregate()
  `ifNull` 的使用形式如下：  
 
  
-```
+```js
 ifNull([ <表达式>, <替代值> ])
 ```
 
@@ -6715,7 +6646,7 @@ ifNull([ <表达式>, <替代值> ])
  假设集合 `items` 的记录如下：  
 
  
-```
+```js
 { "_id": "0", "name": "A", "description": "这是商品A" }
 { "_id": "1", "name": "B", "description": null }
 { "_id": "2", "name": "C" }
@@ -6723,9 +6654,9 @@ ifNull([ <表达式>, <替代值> ])
 我们可以使用 `ifNull`，对不存在 `desc` 字段的文档，或者 `desc` 字段为 `null` 的文档，补充一个替代值。  
 
  
-```
+```js
 const $ = db.command.aggregate
-db.collection('items').aggregate()
+let res = await db.collection('items').aggregate()
   .project({
     _id: 0,
     name: 1,
@@ -6736,7 +6667,7 @@ db.collection('items').aggregate()
 输出如下：  
 
  
-```
+```js
 { "name": "A", "description": "这是商品A" }
 { "name": "B", "description": "商品描述空缺" }
 { "name": "C", "description": "商品描述空缺" }
@@ -6751,7 +6682,7 @@ db.collection('items').aggregate()
  `switch` 的使用形式如下：  
 
  
-```
+```js
 switch({
     branches: [
         case: <表达式>, then: <表达式>,
@@ -6766,7 +6697,7 @@ switch({
  假设集合 `items` 的记录如下：  
 
  
-```
+```js
 { "_id": "0", "name": "item-a", "amount": 100 }
 { "_id": "1", "name": "item-b", "amount": 200 }
 { "_id": "2", "name": "item-c", "amount": 300 }
@@ -6774,9 +6705,9 @@ switch({
 我们可以使用 `switch`，根据 `amount` 字段，来生成新的字段 `discount`：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db.collection('items').aggregate()
+let res = await db.collection('items').aggregate()
   .project({
     name: 1,
     discount: $.switch({
@@ -6792,7 +6723,7 @@ db.collection('items').aggregate()
 输出如下：  
 
  
-```
+```js
 { "_id": "0", "name": "item-a", "discount": 1 }
 { "_id": "1", "name": "item-b", "discount": 0.9 }
 { "_id": "2", "name": "item-c", "discount": 0.8 }
@@ -6814,7 +6745,7 @@ db.collection('items').aggregate()
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.dateFromParts({
     year: <year>,
     month: <month>,
@@ -6829,7 +6760,7 @@ db.command.aggregate.dateFromParts({
 你也可以使用 ISO 8601 的标准：  
 
  
-```
+```js
 db.command.aggregate.dateFromParts({
     isoWeekYear: <year>,
     isoWeek: <week>,
@@ -6848,9 +6779,9 @@ db.command.aggregate.dateFromParts({
 
 #####  示例代码
  
-```
+```js
 const $ = db.command.aggregate
-db
+let res = await db
   .collection('dates')
   .aggregate()
   .project({
@@ -6868,7 +6799,7 @@ db
 输出如下：  
 
  
-```
+```js
 {
     "date": ISODate("2017-02-08T17:00:00.000Z")
 }
@@ -6888,7 +6819,7 @@ db
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.dateFromString({
     dateString: <dateStringExpression>,
     timezone: <tzExpression>
@@ -6897,9 +6828,9 @@ db.command.aggregate.dateFromString({
 
 #####  示例代码
  
-```
+```js
 const $ = db.command.aggregate
-db
+let res = await db
   .collection('dates')
   .aggregate()
   .project({
@@ -6913,7 +6844,7 @@ db
 输出如下：  
 
  
-```
+```js
 {
     "date": ISODate("2019-05-14T09:38:51.686Z")
 }
@@ -6933,7 +6864,7 @@ db
  `dateToString` 的调用形式如下：  
 
  
-```
+```js
 db.command.aggregate.dateToString({
   date: <日期表达式>,
   format: <格式化表达式>,
@@ -6975,7 +6906,7 @@ db.command.aggregate.dateToString({
  假设集合 `students` 有如下记录：  
 
  
-```
+```js
 { "date": "1999-12-11T16:00:00.000Z", "firstName": "Yuanxin", "lastName": "Dong" }
 { "date": "1998-11-10T16:00:00.000Z", "firstName": "Weijia", "lastName": "Wang" }
 { "date": "1997-10-09T16:00:00.000Z", "firstName": "Chengxi", "lastName": "Li" }
@@ -6987,9 +6918,9 @@ db.command.aggregate.dateToString({
  下面是将 `date` 字段的值，格式化成形如 `年份-月份-日期` 的字符串：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db
+let res = await db
   .collection('students')
   .aggregate()
   .project({
@@ -7004,7 +6935,7 @@ db
 返回的结果如下：  
 
  
-```
+```js
 { "formatDate": "1999-12-11" }
 { "formatDate": "1998-11-10" }
 { "formatDate": "1997-10-09" }
@@ -7016,9 +6947,9 @@ db
  下面是将 `date` 字段值格式化为上海时区时间的例子：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db
+let res = await db
   .collection('students')
   .aggregate()
   .project({
@@ -7034,7 +6965,7 @@ db
 返回的结果如下：  
 
  
-```
+```js
 { "formatDate": "00:00:00" }
 { "formatDate": "00:00:00" }
 { "formatDate": "00:00:00" }
@@ -7046,9 +6977,9 @@ db
  当指定的 `<日期表达式>` 返回空或者不存在的时候，可以设置缺失情况下的默认值：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db
+let res = await db
   .collection('students')
   .aggregate()
   .project({
@@ -7063,7 +6994,7 @@ db
 返回的结果如下：  
 
  
-```
+```js
 { "formatDate": "null" }
 { "formatDate": "null" }
 { "formatDate": "null" }
@@ -7078,7 +7009,7 @@ db
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.dayOfMonth(<日期字段>)
 ```
 
@@ -7086,7 +7017,7 @@ db.command.aggregate.dayOfMonth(<日期字段>)
  假设集合 `dates` 有以下文档：  
 
  
-```
+```js
 {
     "_id": 1,
     "date": ISODate("2019-05-14T09:38:51.686Z")
@@ -7095,9 +7026,9 @@ db.command.aggregate.dayOfMonth(<日期字段>)
 我们使用 `dayOfMonth()` 对 `date` 字段进行投影，获取对应的日期：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db
+let res = await db
   .collection('dates')
   .aggregate()
   .project({
@@ -7109,7 +7040,7 @@ db
 输出如下：  
 
  
-```
+```js
 {
     "dayOfMonth": 14
 }
@@ -7126,7 +7057,7 @@ db
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.dayOfWeek(<日期字段>)
 ```
 
@@ -7134,7 +7065,7 @@ db.command.aggregate.dayOfWeek(<日期字段>)
  假设集合 `dates` 有以下文档：  
 
  
-```
+```js
 {
     "_id": 1,
     "date": ISODate("2019-05-14T09:38:51.686Z")
@@ -7143,9 +7074,9 @@ db.command.aggregate.dayOfWeek(<日期字段>)
 我们使用 `dayOfWeek()` 对 `date` 字段进行投影，获取对应的天数（一周中的第几天）：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db
+let res = await db
   .collection('dates')
   .aggregate()
   .project({
@@ -7157,7 +7088,7 @@ db
 输出如下：  
 
  
-```
+```js
 {
     "dayOfWeek": 3
 }
@@ -7172,7 +7103,7 @@ db
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.dayOfYear(<日期字段>)
 ```
 
@@ -7180,7 +7111,7 @@ db.command.aggregate.dayOfYear(<日期字段>)
  假设集合 `dates` 有以下文档：  
 
  
-```
+```js
 {
     "_id": 1,
     "date": ISODate("2019-05-14T09:38:51.686Z")
@@ -7189,9 +7120,9 @@ db.command.aggregate.dayOfYear(<日期字段>)
 我们使用 `dayOfYear()` 对 `date` 字段进行投影，获取对应的天数（一年中的第几天）：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db
+let res = await db
   .collection('dates')
   .aggregate()
   .project({
@@ -7203,7 +7134,7 @@ db
 输出如下：  
 
  
-```
+```js
 {
     "dayOfYear": 134
 }
@@ -7218,7 +7149,7 @@ db
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.hour(<日期字段>)
 ```
 
@@ -7226,7 +7157,7 @@ db.command.aggregate.hour(<日期字段>)
  假设集合 `dates` 有以下文档：  
 
  
-```
+```js
 {
     "_id": 1,
     "date": ISODate("2019-05-14T09:38:51.686Z")
@@ -7235,9 +7166,9 @@ db.command.aggregate.hour(<日期字段>)
 我们使用 `hour()` 对 `date` 字段进行投影，获取对应的小时数：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db
+let res = await db
   .collection('dates')
   .aggregate()
   .project({
@@ -7249,7 +7180,7 @@ db
 输出如下：  
 
  
-```
+```js
 {
     "hour": 9
 }
@@ -7264,7 +7195,7 @@ db
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.month(<日期字段>)
 ```
 
@@ -7272,7 +7203,7 @@ db.command.aggregate.month(<日期字段>)
  假设集合 `dates` 有以下文档：  
 
  
-```
+```js
 {
     "_id": 1,
     "date": ISODate("2019-05-14T09:38:51.686Z")
@@ -7281,9 +7212,9 @@ db.command.aggregate.month(<日期字段>)
 我们使用 `month()` 对 `date` 字段进行投影，获取对应的 ISO 8601 标准的天数（一周中的第几天）：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db
+let res = await db
   .collection('dates')
   .aggregate()
   .project({
@@ -7295,7 +7226,7 @@ db
 输出如下：  
 
  
-```
+```js
 {
     "isoDayOfWeek": 2
 }
@@ -7314,7 +7245,7 @@ db
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.isoWeek(<日期字段>)
 ```
 
@@ -7322,7 +7253,7 @@ db.command.aggregate.isoWeek(<日期字段>)
  假设集合 `dates` 有以下文档：  
 
  
-```
+```js
 {
     "_id": 1,
     "date": ISODate("2019-05-14T09:38:51.686Z")
@@ -7331,9 +7262,9 @@ db.command.aggregate.isoWeek(<日期字段>)
 我们使用 `isoWeek()` 对 `date` 字段进行投影，获取对应的 ISO 8601 标准的周数（一年中的第几周）：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db
+let res = await db
   .collection('dates')
   .aggregate()
   .project({
@@ -7345,7 +7276,7 @@ db
 输出如下：  
 
  
-```
+```js
 {
     "isoWeek": 20
 }
@@ -7362,7 +7293,7 @@ db
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.isoWeekYear(<日期字段>)
 ```
 
@@ -7370,7 +7301,7 @@ db.command.aggregate.isoWeekYear(<日期字段>)
  假设集合 `dates` 有以下文档：  
 
  
-```
+```js
 {
     "_id": 1,
     "date": ISODate("2019-05-14T09:38:51.686Z")
@@ -7379,9 +7310,9 @@ db.command.aggregate.isoWeekYear(<日期字段>)
 我们使用 `isoWeekYear()` 对 `date` 字段进行投影，获取对应的 ISO 8601 标准的天数（一年中的第几天）：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db
+let res = await db
   .collection('dates')
   .aggregate()
   .project({
@@ -7393,7 +7324,7 @@ db
 输出如下：  
 
  
-```
+```js
 {
     "isoWeekYear": 2019
 }
@@ -7408,7 +7339,7 @@ db
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.millisecond(<日期字段>)
 ```
 
@@ -7416,7 +7347,7 @@ db.command.aggregate.millisecond(<日期字段>)
  假设集合 `dates` 有以下文档：  
 
  
-```
+```js
 {
     "_id": 1,
     "date": ISODate("2019-05-14T09:38:51.686Z")
@@ -7425,9 +7356,9 @@ db.command.aggregate.millisecond(<日期字段>)
 我们使用 `millisecond()` 对 `date` 字段进行投影，获取对应的毫秒数：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db
+let res = await db
   .collection('dates')
   .aggregate()
   .project({
@@ -7439,7 +7370,7 @@ db
 输出如下：  
 
  
-```
+```js
 {
     "millisecond": 686
 }
@@ -7454,7 +7385,7 @@ db
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.minute(<日期字段>)
 ```
 
@@ -7462,7 +7393,7 @@ db.command.aggregate.minute(<日期字段>)
  假设集合 `dates` 有以下文档：  
 
  
-```
+```js
 {
     "_id": 1,
     "date": ISODate("2019-05-14T09:38:51.686Z")
@@ -7471,9 +7402,9 @@ db.command.aggregate.minute(<日期字段>)
 我们使用 `minute()` 对 `date` 字段进行投影，获取对应的分钟数：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db
+let res = await db
   .collection('dates')
   .aggregate()
   .project({
@@ -7485,7 +7416,7 @@ db
 输出如下：  
 
  
-```
+```js
 {
     "minute": 38
 }
@@ -7500,7 +7431,7 @@ db
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.month(<日期字段>)
 ```
 
@@ -7508,7 +7439,7 @@ db.command.aggregate.month(<日期字段>)
  假设集合 `dates` 有以下文档：  
 
  
-```
+```js
 {
     "_id": 1,
     "date": ISODate("2019-05-14T09:38:51.686Z")
@@ -7517,9 +7448,9 @@ db.command.aggregate.month(<日期字段>)
 我们使用 `month()` 对 `date` 字段进行投影，获取对应的月份：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db
+let res = await db
   .collection('dates')
   .aggregate()
   .project({
@@ -7531,7 +7462,7 @@ db
 输出如下：  
 
  
-```
+```js
 {
     "month": 5
 }
@@ -7546,7 +7477,7 @@ db
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.second(<日期字段>)
 ```
 
@@ -7554,7 +7485,7 @@ db.command.aggregate.second(<日期字段>)
  假设集合 `dates` 有以下文档：  
 
  
-```
+```js
 {
     "_id": 1,
     "date": ISODate("2019-05-14T09:38:51.686Z")
@@ -7563,9 +7494,9 @@ db.command.aggregate.second(<日期字段>)
 我们使用 `second()` 对 `date` 字段进行投影，获取对应的秒数：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db
+let res = await db
   .collection('dates')
   .aggregate()
   .project({
@@ -7577,7 +7508,7 @@ db
 输出如下：  
 
  
-```
+```js
 {
     "second": 51
 }
@@ -7594,7 +7525,7 @@ db
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.week(<日期字段>)
 ```
 
@@ -7602,7 +7533,7 @@ db.command.aggregate.week(<日期字段>)
  假设集合 `dates` 有以下文档：  
 
  
-```
+```js
 {
     "_id": 1,
     "date": ISODate("2019-05-14T09:38:51.686Z")
@@ -7611,9 +7542,9 @@ db.command.aggregate.week(<日期字段>)
 我们使用 `week()` 对 `date` 字段进行投影，获取对应的周数（一年中的第几周）：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db
+let res = await db
   .collection('dates')
   .aggregate()
   .project({
@@ -7625,7 +7556,7 @@ db
 输出如下：  
 
  
-```
+```js
 {
     "week": 19
 }
@@ -7640,7 +7571,7 @@ db
  语法如下：  
 
  
-```
+```js
 db.command.aggregate.year(<日期字段>)
 ```
 
@@ -7648,7 +7579,7 @@ db.command.aggregate.year(<日期字段>)
  假设集合 `dates` 有以下文档：  
 
  
-```
+```js
 {
     "_id": 1,
     "date": ISODate("2019-05-14T09:38:51.686Z")
@@ -7657,9 +7588,9 @@ db.command.aggregate.year(<日期字段>)
 我们使用 `year()` 对 `date` 字段进行投影，获取对应的年份：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db
+let res = await db
   .collection('dates')
   .aggregate()
   .project({
@@ -7671,7 +7602,7 @@ db
 输出如下：  
 
  
-```
+```js
 {
     "year": 2019
 }
@@ -7692,7 +7623,7 @@ db
  `literal` 使用形式如下：  
 
  
-```
+```js
 literal(<值>)
 ```
 如果 `<值>` 是一个表达式，那么 `literal` **不会**解析或者计算这个表达式，而是直接返回这个表达式。  
@@ -7702,7 +7633,7 @@ literal(<值>)
  比如我们有一个 `items` 集合，其中数据如下：  
 
  
-```
+```js
 { "_id": "0", "price": "$1" }
 { "_id": "1", "price": "$5.60" }
 { "_id": "2", "price": "$8.90" }
@@ -7716,9 +7647,9 @@ literal(<值>)
  注意：我们这里无法使用 `eq(['$price', '$1'])`，因为 `"$1"` 是一个表达式，代表 `"1"` 字段对应的值，而不是字符串字面量 `"$1"`。  
 
  
-```
+```js
 const $ = db.command.aggregate
-db.collection('items').aggregate()
+let res = await db.collection('items').aggregate()
   .project({
     isOneDollar: $.eq(['$price', $.literal('$1')])
   })
@@ -7727,7 +7658,7 @@ db.collection('items').aggregate()
 输出如下：  
 
  
-```
+```js
 { "_id": "0", "isOneDollar": true }
 { "_id": "1", "isOneDollar": false }
 { "_id": "2", "isOneDollar": false }
@@ -7739,7 +7670,7 @@ db.collection('items').aggregate()
  下面的代码使用 `literal`，投影了一个新的字段 `amount`，其值为 `1`。  
 
  
-```
+```js
 const $ = db.command.aggregate
 db.collection('items').aggregate()
   .project({
@@ -7751,7 +7682,7 @@ db.collection('items').aggregate()
 输出如下：  
 
  
-```
+```js
 { "_id": "0", "price": "$1", "amount": 1 }
 { "_id": "1", "price": "$5.60", "amount": 1 }
 { "_id": "2", "price": "$8.90", "amount": 1 }
@@ -7774,13 +7705,13 @@ db.collection('items').aggregate()
 在 `group()` 中使用时：  
 
  
-```
+```js
 mergeObjects(<document>)
 ```
 在其它表达式中使用时：  
 
  
-```
+```js
 mergeObjects([<document1>, <document2>, ...])
 ```
 
@@ -7792,7 +7723,7 @@ mergeObjects([<document1>, <document2>, ...])
  假设集合 `sales` 存在以下文档：  
 
  
-```
+```js
 { "_id": 1, "year": 2018, "name": "A", "volume": { "2018Q1": 500, "2018Q2": 500 } }
 { "_id": 2, "year": 2017, "name": "A", "volume": { "2017Q1": 400, "2017Q2": 300, "2017Q3": 0, "2017Q4": 0 } }
 { "_id": 3, "year": 2018, "name": "B", "volume": { "2018Q1": 100 } }
@@ -7801,9 +7732,9 @@ mergeObjects([<document1>, <document2>, ...])
 下面的代码使用 `mergeObjects()`，将用相同 `name` 的文档合并：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db.collection('sales').aggregate()
+let res = await db.collection('sales').aggregate()
   .group({
     _id: '$name',
     mergedVolume: $.mergeObjects('$volume')
@@ -7813,7 +7744,7 @@ db.collection('sales').aggregate()
 输出如下：  
 
  
-```
+```js
 { "_id": "A", "mergedVolume": { "2017Q1": 400, "2017Q2": 300, "2017Q3": 0, "2017Q4": 0, "2018Q1": 500, "2018Q2": 500 } }
 { "_id": "B", "mergedVolume": { "2017Q3": 100, "2017Q4": 250, "2018Q1": 100 } }
 ```
@@ -7824,7 +7755,7 @@ db.collection('sales').aggregate()
  假设集合 `test` 存在以下文档：  
 
  
-```
+```js
 { "_id": 1, "foo": { "a": 1 }, "bar": { "b": 2 } }
 { "_id": 2, "foo": { "c": 1 }, "bar": { "d": 2 } }
 { "_id": 3, "foo": { "e": 1 }, "bar": { "f": 2 } }
@@ -7832,9 +7763,9 @@ db.collection('sales').aggregate()
 下面的代码使用 `mergeObjects()`，将文档中的 `foo` 和 `bar` 字段合并为 `foobar`：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db.collection('sales').aggregate()
+let res = await db.collection('sales').aggregate()
   .project({
     foobar: $.mergeObjects(['$foo', '$bar'])
   })
@@ -7843,7 +7774,7 @@ db.collection('sales').aggregate()
 输出结果如下：  
 
  
-```
+```js
 { "_id": 1, "foobar": { "a": 1, "b": 2 } }
 { "_id": 2, "foobar": { "c": 1, "d": 2 } }
 { "_id": 3, "foobar": { "e": 1, "f": 2 } }
@@ -7864,7 +7795,7 @@ db.collection('sales').aggregate()
  语法如下：  
 
  
-```
+```js
 allElementsTrue([<expression>])
 ```
 
@@ -7872,7 +7803,7 @@ allElementsTrue([<expression>])
  假设集合 `test` 有如下记录：  
 
  
-```
+```js
 { "_id": 1, "array": [ true ] }
 { "_id": 2, "array": [ ] }
 { "_id": 3, "array": [ false ] }
@@ -7883,9 +7814,9 @@ allElementsTrue([<expression>])
 下面的代码使用 `allElementsTrue()`，判断 `array` 字段中是否均为真值：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db.collection('price')
+let res = await db.collection('price')
   .aggregate()
   .project({
     isAllTrue: $.allElementsTrue(['$array'])
@@ -7895,7 +7826,7 @@ db.collection('price')
 返回结果如下：  
 
  
-```
+```js
 { "_id": 1, "isAllTrue": true }
 { "_id": 2, "isAllTrue": true }
 { "_id": 3, "isAllTrue": false }
@@ -7913,7 +7844,7 @@ db.collection('price')
  语法如下：  
 
  
-```
+```js
 anyElementTrue([<expression>])
 ```
 
@@ -7921,7 +7852,7 @@ anyElementTrue([<expression>])
  假设集合 `test` 有如下记录：  
 
  
-```
+```js
 { "_id": 1, "array": [ true ] }
 { "_id": 2, "array": [ ] }
 { "_id": 3, "array": [ false ] }
@@ -7932,9 +7863,9 @@ anyElementTrue([<expression>])
 下面的代码使用 `anyElementTrue()`，判断 `array` 字段中是否含有真值：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db.collection('price')
+let res = await db.collection('price')
   .aggregate()
   .project({
     isAnyTrue: $.anyElementTrue(['$array'])
@@ -7944,7 +7875,7 @@ db.collection('price')
 返回结果如下：  
 
  
-```
+```js
 { "_id": 1, "isAnyTrue": true }
 { "_id": 2, "isAnyTrue": false }
 { "_id": 3, "isAnyTrue": false }
@@ -7962,7 +7893,7 @@ db.collection('price')
  使用形式如下：  
 
  
-```
+```js
 setDifference([<expression1>, <expression2>])
 ```
 
@@ -7970,7 +7901,7 @@ setDifference([<expression1>, <expression2>])
  假设集合 `test` 存在以下数据：  
 
  
-```
+```js
 { "_id": 1, "A": [ 1, 2 ], "B": [ 1, 2 ] }
 { "_id": 2, "A": [ 1, 2 ], "B": [ 2, 1, 2 ] }
 { "_id": 3, "A": [ 1, 2 ], "B": [ 1, 2, 3 ] }
@@ -7983,8 +7914,8 @@ setDifference([<expression1>, <expression2>])
 下面的代码使用 `setDifference`，找到只存在于 `B` 中的数字：  
 
  
-```
-db.collection('test')
+```js
+let res = await db.collection('test')
   .aggregate()
   .project({
     isBOnly: $.setDifference(['$B', '$A'])
@@ -7992,7 +7923,7 @@ db.collection('test')
   .end()
 ```
 
-```
+```js
 { "_id": 1, "isBOnly": [] }
 { "_id": 2, "isBOnly": [3] }
 { "_id": 3, "isBOnly": [3] }
@@ -8012,7 +7943,7 @@ db.collection('test')
  使用形式如下：  
 
  
-```
+```js
 setEquals([<expression1>, <expression2>])
 ```
 
@@ -8020,7 +7951,7 @@ setEquals([<expression1>, <expression2>])
  假设集合 `test` 存在以下数据：  
 
  
-```
+```js
 { "_id": 1, "A": [ 1, 2 ], "B": [ 1, 2 ] }
 { "_id": 2, "A": [ 1, 2 ], "B": [ 2, 1, 2 ] }
 { "_id": 3, "A": [ 1, 2 ], "B": [ 1, 2, 3 ] }
@@ -8033,8 +7964,8 @@ setEquals([<expression1>, <expression2>])
 下面的代码使用 `setEquals`，判断两个集合中包含的元素是否相同：  
 
  
-```
-db.collection('test')
+```js
+let res = await db.collection('test')
   .aggregate()
   .project({
     sameElements: $.setEquals(['$A', '$B'])
@@ -8042,7 +7973,7 @@ db.collection('test')
   .end()
 ```
 
-```
+```js
 { "_id": 1, "sameElements": true }
 { "_id": 2, "sameElements": true }
 { "_id": 3, "sameElements": false }
@@ -8062,7 +7993,7 @@ db.collection('test')
  使用形式如下：  
 
  
-```
+```js
 setIntersection([<expression1>, <expression2>])
 ```
 
@@ -8070,7 +8001,7 @@ setIntersection([<expression1>, <expression2>])
  假设集合 `test` 存在以下数据：  
 
  
-```
+```js
 { "_id": 1, "A": [ 1, 2 ], "B": [ 1, 2 ] }
 { "_id": 2, "A": [ 1, 2 ], "B": [ 2, 1, 2 ] }
 { "_id": 3, "A": [ 1, 2 ], "B": [ 1, 2, 3 ] }
@@ -8083,8 +8014,8 @@ setIntersection([<expression1>, <expression2>])
 下面的代码使用 `setIntersection`，输出两个集合的交集：  
 
  
-```
-db.collection('test')
+```js
+let res = await db.collection('test')
   .aggregate()
   .project({
     commonToBoth: $.setIntersection(['$A', '$B'])
@@ -8094,7 +8025,7 @@ db.collection('test')
 输出如下：  
 
  
-```
+```js
 { "_id": 1, "commonToBoth": [ 1, 2 ] }
 { "_id": 2, "commonToBoth": [ 1, 2 ] }
 { "_id": 3, "commonToBoth": [ 1, 2 ] }
@@ -8114,7 +8045,7 @@ db.collection('test')
  使用形式如下：  
 
  
-```
+```js
 setIsSubset([<expression1>, <expression2>])
 ```
 
@@ -8122,7 +8053,7 @@ setIsSubset([<expression1>, <expression2>])
  假设集合 `test` 存在以下数据：  
 
  
-```
+```js
 { "_id": 1, "A": [ 1, 2 ], "B": [ 1, 2 ] }
 { "_id": 2, "A": [ 1, 2 ], "B": [ 2, 1, 2 ] }
 { "_id": 3, "A": [ 1, 2 ], "B": [ 1, 2, 3 ] }
@@ -8135,8 +8066,8 @@ setIsSubset([<expression1>, <expression2>])
 下面的代码使用 `setIsSubset`，判断第一个集合是否是第二个集合的子集：  
 
  
-```
-db.collection('test')
+```js
+let res = await db.collection('test')
   .aggregate()
   .project({
     AisSubsetOfB: $.setIsSubset(['$A', '$B'])
@@ -8144,7 +8075,7 @@ db.collection('test')
   .end()
 ```
 
-```
+```js
 { "_id": 1, "AisSubsetOfB": true }
 { "_id": 2, "AisSubsetOfB": true }
 { "_id": 3, "AisSubsetOfB": true }
@@ -8164,7 +8095,7 @@ db.collection('test')
  使用形式如下：  
 
  
-```
+```js
 setUnion([<expression1>, <expression2>])
 ```
 
@@ -8172,7 +8103,7 @@ setUnion([<expression1>, <expression2>])
  假设集合 `test` 存在以下数据：  
 
  
-```
+```js
 { "_id": 1, "A": [ 1, 2 ], "B": [ 1, 2 ] }
 { "_id": 2, "A": [ 1, 2 ], "B": [ 2, 1, 2 ] }
 { "_id": 3, "A": [ 1, 2 ], "B": [ 1, 2, 3 ] }
@@ -8185,8 +8116,8 @@ setUnion([<expression1>, <expression2>])
 下面的代码使用 `setUnion`，输出两个集合的并集：  
 
  
-```
-db.collection('test')
+```js
+let res = await db.collection('test')
   .aggregate()
   .project({
     AB: $.setUnion(['$A', '$B'])
@@ -8196,7 +8127,7 @@ db.collection('test')
 输出如下：  
 
  
-```
+```js
 { "_id": 1, "AB": [ 1, 2 ] }
 { "_id": 2, "AB": [ 1, 2 ] }
 { "_id": 3, "AB": [ 1, 2, 3 ] }
@@ -8218,7 +8149,7 @@ db.collection('test')
  `concat` 的语法如下：  
 
  
-```
+```js
 db.command.aggregate.concat([<表达式1>, <表达式2>, ...])
 ```
 表达式可以是形如 `$ + 指定字段`，也可以是普通字符串。只要能够被解析成字符串即可。  
@@ -8228,7 +8159,7 @@ db.command.aggregate.concat([<表达式1>, <表达式2>, ...])
  假设集合 `students` 的记录如下：  
 
  
-```
+```js
 { "firstName": "Yuanxin", "group": "a", "lastName": "Dong", "score": 84 }
 { "firstName": "Weijia", "group": "a", "lastName": "Wang", "score": 96 }
 { "firstName": "Chengxi", "group": "b", "lastName": "Li", "score": 80 }
@@ -8236,7 +8167,7 @@ db.command.aggregate.concat([<表达式1>, <表达式2>, ...])
 借助 `concat` 可以拼接 `lastName` 和 `firstName` 字段，得到每位学生的名字全称：  
 
  
-```
+```js
 const $ = db.command.aggregate
 db
   .collection('students')
@@ -8250,7 +8181,7 @@ db
 返回的结果如下：  
 
  
-```
+```js
 { "fullName": "Yuanxin Dong" }
 { "fullName": "Weijia Wang" }
 { "fullName": "Chengxi Li" }
@@ -8273,7 +8204,7 @@ db
  `indexOfBytes` 的语法如下：  
 
  
-```
+```js
 db.command.aggregate.indexOfBytes([<目标字符串表达式>, <子字符串表达式>, <开始位置表达式>, <结束位置表达式>])
 ```
 下面是 4 种表达式的详细描述：  
@@ -8289,7 +8220,7 @@ db.command.aggregate.indexOfBytes([<目标字符串表达式>, <子字符串表�
  假设集合 `students` 的记录如下：  
 
  
-```
+```js
 { "firstName": "Yuanxin", "group": "a", "lastName": "Dong", "score": 84 }
 { "firstName": "Weijia", "group": "a", "lastName": "Wang", "score": 96 }
 { "firstName": "Chengxi", "group": "b", "lastName": "Li", "score": 80 }
@@ -8297,9 +8228,9 @@ db.command.aggregate.indexOfBytes([<目标字符串表达式>, <子字符串表�
 借助 `indexOfBytes` 查找字符 `"a"` 在字段 `firstName` 中的位置：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db
+let res = await db
   .collection('students')
   .aggregate()
   .project({
@@ -8311,7 +8242,7 @@ db
 返回的结果如下：  
 
  
-```
+```js
 { "aStrIndex": 2 }
 { "aStrIndex": 5 }
 { "aStrIndex": -1 }
@@ -8328,7 +8259,7 @@ db
  `indexOfCP` 的语法如下：  
 
  
-```
+```js
 db.command.aggregate.indexOfCP([<目标字符串表达式>, <子字符串表达式>, <开始位置表达式>, <结束位置表达式>])
 ```
 下面是 4 种表达式的详细描述：  
@@ -8344,7 +8275,7 @@ db.command.aggregate.indexOfCP([<目标字符串表达式>, <子字符串表达�
  假设集合 `students` 的记录如下：  
 
  
-```
+```js
 { "firstName": "Yuanxin", "group": "a", "lastName": "Dong", "score": 84 }
 { "firstName": "Weijia", "group": "a", "lastName": "Wang", "score": 96 }
 { "firstName": "Chengxi", "group": "b", "lastName": "Li", "score": 80 }
@@ -8352,9 +8283,9 @@ db.command.aggregate.indexOfCP([<目标字符串表达式>, <子字符串表达�
 借助 `indexOfCP` 查找字符 `"a"` 在字段 `firstName` 中的位置：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db
+let res = await db
   .collection('students')
   .aggregate()
   .project({
@@ -8366,7 +8297,7 @@ db
 返回的结果如下：  
 
  
-```
+```js
 { "aStrIndex": 2 }
 { "aStrIndex": 5 }
 { "aStrIndex": -1 }
@@ -8381,7 +8312,7 @@ db
  `split` 的语法如下：  
 
  
-```
+```js
 db.command.aggregate.split([<字符串表达式>, <分隔符表达式>])
 ```
 字符串表达式和分隔符表达式可以是任意形式的表达式，只要它可以被解析为字符串即可。  
@@ -8391,7 +8322,7 @@ db.command.aggregate.split([<字符串表达式>, <分隔符表达式>])
  假设集合 `students` 的记录如下：  
 
  
-```
+```js
 { "birthday": "1999/12/12" }
 { "birthday": "1998/11/11" }
 { "birthday": "1997/10/10" }
@@ -8399,9 +8330,9 @@ db.command.aggregate.split([<字符串表达式>, <分隔符表达式>])
 通过 `split` 将每条记录中的 `birthday` 字段对应值分隔成数组，每个数组分别由代表年、月、日的3个元素组成：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db
+let res = await db
   .collection('students')
   .aggregate()
   .project({
@@ -8413,7 +8344,7 @@ db
 返回的结果如下：  
 
  
-```
+```js
 { "birthday": [ "1999", "12", "12" ] }
 { "birthday": [ "1998", "11", "11" ] }
 { "birthday": [ "1997", "10", "10" ] }
@@ -8428,7 +8359,7 @@ db
  `strLenBytes` 的语法如下：  
 
  
-```
+```js
 db.command.aggregate.strLenBytes(<表达式>)
 ```
 只要表达式可以被解析成字符串，那么它就是有效表达式。  
@@ -8438,13 +8369,13 @@ db.command.aggregate.strLenBytes(<表达式>)
  假设集合 `students` 的记录如下：  
 
  
-```
+```js
 { "name": "dongyuanxin", "nickname": "心谭" }
 ```
 借助 `strLenBytes` 计算 `name` 字段和 `nickname` 字段对应值的字节长度：  
 
  
-```
+```js
 const $ = db.command.aggregate
 db
   .collection('students')
@@ -8459,7 +8390,7 @@ db
 返回结果如下：  
 
  
-```
+```js
 { "nameLength": 11, "nicknameLength": 6 }
 ```
 
@@ -8472,7 +8403,7 @@ db
  `strLenCP` 的语法如下：  
 
  
-```
+```js
 db.command.aggregate.strLenCP(<表达式>)
 ```
 只要表达式可以被解析成字符串，那么它就是有效表达式。  
@@ -8482,15 +8413,15 @@ db.command.aggregate.strLenCP(<表达式>)
  假设集合 `students` 的记录如下：  
 
  
-```
+```js
 { "name": "dongyuanxin", "nickname": "心谭" }
 ```
 借助 `strLenCP` 计算 `name` 字段和 `nickname` 字段对应值的UTF-8 [code points<span></span>](http://www.unicode.org/glossary/#code_point)的数量：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db
+let res = await db
   .collection('students')
   .aggregate()
   .project({
@@ -8503,7 +8434,7 @@ db
 返回结果如下：  
 
  
-```
+```js
 { "nameLength": 11, "nicknameLength": 2 }
 ```
 
@@ -8516,7 +8447,7 @@ db
  `strcasecmp` 的语法如下：  
 
  
-```
+```js
 db.command.aggregate.strcasecmp([<表达式1>, <表达式2>])
 ```
 只要 `表达式1`和 `表达式2` 可以被解析成字符串，那么它们就是有效的。  
@@ -8530,7 +8461,7 @@ db.command.aggregate.strcasecmp([<表达式1>, <表达式2>])
  假设集合 `students` 的记录如下：  
 
  
-```
+```js
 { "firstName": "Yuanxin", "group": "a", "lastName": "Dong", "score": 84 }
 { "firstName": "Weijia", "group": "a", "lastName": "Wang", "score": 96 }
 { "firstName": "Chengxi", "group": "b", "lastName": "Li", "score": 80 }
@@ -8538,9 +8469,9 @@ db.command.aggregate.strcasecmp([<表达式1>, <表达式2>])
 借助 `strcasecmp` 比较 `firstName` 字段值和 `lastName` 字段值的大小：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db
+let res = await db
   .collection('students')
   .aggregate()
   .project({
@@ -8552,7 +8483,7 @@ db
 返回结果如下：  
 
  
-```
+```js
 { "result": 1 }
 { "result": 1 }
 { "result": -1 }
@@ -8567,7 +8498,7 @@ db
  `substr` 的语法如下：  
 
  
-```
+```js
 db.command.aggregate.substr([<表达式1>, <表达式2>, <表达式3>])
 ```
 `表达式1` 是任何可以解析为字符串的有效表达式，`表达式2` 和 `表达式3` 是任何可以解析为数字的有效表达式。  
@@ -8581,7 +8512,7 @@ db.command.aggregate.substr([<表达式1>, <表达式2>, <表达式3>])
  假设集合 `students` 的记录如下：  
 
  
-```
+```js
 { "birthday": "1999/12/12", "firstName": "Yuanxin", "group": "a", "lastName": "Dong", "score": 84 }
 { "birthday": "1998/11/11", "firstName": "Weijia", "group": "a", "lastName": "Wang", "score": 96 }
 { "birthday": "1997/10/10", "firstName": "Chengxi", "group": "b", "lastName": "Li", "score": 80 }
@@ -8589,9 +8520,9 @@ db.command.aggregate.substr([<表达式1>, <表达式2>, <表达式3>])
 借助 `substr` 可以提取 `birthday` 中的年、月、日信息，代码如下：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db
+let res = await db
   .collection('students')
   .aggregate()
   .project({
@@ -8605,7 +8536,7 @@ db
 返回的结果如下：  
 
  
-```
+```js
 { "day": "12", "month": "12", "year": "1999" }
 { "day": "11", "month": "11", "year": "1998" }
 { "day": "10", "month": "10", "year": "1997" }
@@ -8620,7 +8551,7 @@ db
  `substrBytes` 的语法如下：  
 
  
-```
+```js
 db.command.aggregate.substrBytes([<表达式1>, <表达式2>, <表达式3>])
 ```
 `表达式1` 是任何可以解析为字符串的有效表达式，`表达式2` 和 `表达式3` 是任何可以解析为数字的有效表达式。  
@@ -8634,7 +8565,7 @@ db.command.aggregate.substrBytes([<表达式1>, <表达式2>, <表达式3>])
  假设集合 `students` 的记录如下：  
 
  
-```
+```js
 { "birthday": "1999/12/12", "firstName": "Yuanxin", "group": "a", "lastName": "Dong", "score": 84 }
 { "birthday": "1998/11/11", "firstName": "Weijia", "group": "a", "lastName": "Wang", "score": 96 }
 { "birthday": "1997/10/10", "firstName": "Chengxi", "group": "b", "lastName": "Li", "score": 80 }
@@ -8642,9 +8573,9 @@ db.command.aggregate.substrBytes([<表达式1>, <表达式2>, <表达式3>])
 借助 `substrBytes` 可以提取 `birthday` 中的年、月、日信息，代码如下：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db
+let res = await db
   .collection('students')
   .aggregate()
   .project({
@@ -8658,7 +8589,7 @@ db
 返回的结果如下：  
 
  
-```
+```js
 { "day": "12", "month": "12", "year": "1999" }
 { "day": "11", "month": "11", "year": "1998" }
 { "day": "10", "month": "10", "year": "1997" }
@@ -8673,7 +8604,7 @@ db
  `substrCP` 的语法如下：  
 
  
-```
+```js
 db.command.aggregate.substrCP([<表达式1>, <表达式2>, <表达式3>])
 ```
 `表达式1` 是任何可以解析为字符串的有效表达式，`表达式2` 和 `表达式3` 是任何可以解析为数字的有效表达式。  
@@ -8687,15 +8618,15 @@ db.command.aggregate.substrCP([<表达式1>, <表达式2>, <表达式3>])
  假设集合 `students` 的记录如下：  
 
  
-```
+```js
 { "name": "dongyuanxin", "nickname": "心谭" }
 ```
 借助 `substrCP` 可以提取 `nickname` 字段值的第一个汉字：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db
+let res = await db
   .collection('students')
   .aggregate()
   .project({
@@ -8707,7 +8638,7 @@ db
 返回的结果如下：  
 
  
-```
+```js
 { "firstCh": "心" }
 ```
 
@@ -8720,7 +8651,7 @@ db
  `toLower` 的语法如下：  
 
  
-```
+```js
 db.command.aggregate.toLower(表达式)
 ```
 只要表达式可以被解析成字符串，那么它就是有效表达式。例如：`$ + 指定字段`。  
@@ -8730,7 +8661,7 @@ db.command.aggregate.toLower(表达式)
  假设集合 `students` 的记录如下：  
 
  
-```
+```js
 { "firstName": "Yuanxin", "group": "a", "lastName": "Dong", "score": 84 }
 { "firstName": "Weijia", "group": "a", "lastName": "Wang", "score": 96 }
 { "firstName": "Chengxi", "group": "b", "lastName": "Li", "score": 80 }
@@ -8738,9 +8669,9 @@ db.command.aggregate.toLower(表达式)
 借助 `toLower` 将 `firstName` 的字段值转化为小写：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db
+let res = await db
   .collection('students')
   .aggregate()
   .project({
@@ -8752,7 +8683,7 @@ db
 返回的结果如下：  
 
  
-```
+```js
 { "result": "yuanxin" }
 { "result": "weijia" }
 { "result": "chengxi" }
@@ -8767,7 +8698,7 @@ db
  `toUpper` 的语法如下：  
 
  
-```
+```js
 db.command.aggregate.toUpper(表达式)
 ```
 只要表达式可以被解析成字符串，那么它就是有效表达式。例如：`$ + 指定字段`。  
@@ -8777,7 +8708,7 @@ db.command.aggregate.toUpper(表达式)
  假设集合 `students` 的记录如下：  
 
  
-```
+```js
 { "firstName": "Yuanxin", "group": "a", "lastName": "Dong", "score": 84 }
 { "firstName": "Weijia", "group": "a", "lastName": "Wang", "score": 96 }
 { "firstName": "Chengxi", "group": "b", "lastName": "Li", "score": 80 }
@@ -8785,9 +8716,9 @@ db.command.aggregate.toUpper(表达式)
 借助 `toUpper` 将 `lastName` 的字段值转化为大写：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db
+let res = await db
   .collection('students')
   .aggregate()
   .project({
@@ -8799,7 +8730,7 @@ db
 返回的结果如下：  
 
  
-```
+```js
 { "result": "DONG" }
 { "result": "WANG" }
 { "result": "LI" }
@@ -8816,7 +8747,7 @@ db
  `addToSet` 语法如下：  
 
  
-```
+```js
 db.command.aggregate.addToSet(<表达式>)
 ```
 表达式是形如 `$ + 指定字段` 的字符串。如果指定字段的值是数组，那么整个数组会被当作一个元素。  
@@ -8826,7 +8757,7 @@ db.command.aggregate.addToSet(<表达式>)
  假设集合 `passages` 的记录如下：  
 
  
-```
+```js
 { "category": "web", "tags": [ "JavaScript", "CSS" ], "title": "title1" }
 { "category": "System", "tags": [ "C++", "C" ], "title": "title2" }
 ```
@@ -8837,9 +8768,9 @@ db.command.aggregate.addToSet(<表达式>)
  每条记录的 `category` 对应值的类型是非数组，利用 `addToSet` 统计所有分类：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db
+let res = await db
   .collection('passages')
   .aggregate()
   .group({
@@ -8851,7 +8782,7 @@ db
 返回的结果如下：  
 
  
-```
+```js
 { "_id": null, "categories": [ "System", "web" ] }
 ```
 
@@ -8861,9 +8792,9 @@ db
  每条记录的 `tags` 对应值的类型是数组，数组不会被自动展开：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db
+let res = await db
   .collection('passages')
   .aggregate()
   .group({
@@ -8875,7 +8806,7 @@ db
 返回的结果如下：  
 
  
-```
+```js
 { "_id": null, "tagsList": [ [ "C++", "C" ], [ "JavaScript", "CSS" ] ] }
 ```
 
@@ -8888,7 +8819,7 @@ db
  `avg` 的语法如下：  
 
  
-```
+```js
 db.command.aggregate.avg(<number>)
 ```
 `avg` 传入的值除了数字常量外，也可以是任何最终解析成一个数字的表达式。它会忽略非数字值。  
@@ -8898,7 +8829,7 @@ db.command.aggregate.avg(<number>)
  假设集合 `students` 的记录如下：  
 
  
-```
+```js
 { "group": "a", "name": "stu1", "score": 84 }
 { "group": "a", "name": "stu2", "score": 96 }
 { "group": "b", "name": "stu3", "score": 80 }
@@ -8907,9 +8838,9 @@ db.command.aggregate.avg(<number>)
 借助 `avg` 可以计算所有记录的 `score` 的平均值：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db
+let res = await db
   .collection('students')
   .aggregate()
   .group({
@@ -8921,7 +8852,7 @@ db
 返回的结果如下：  
 
  
-```
+```js
 { "_id": null, "average": 90 }
 ```
 
@@ -8934,7 +8865,7 @@ db
  `first` 的语法如下：  
 
  
-```
+```js
 db.command.aggregate.first(<表达式>)
 ```
 表达式是形如 `$ + 指定字段` 的字符串。  
@@ -8946,7 +8877,7 @@ db.command.aggregate.first(<表达式>)
  假设集合 `students` 的记录如下：  
 
  
-```
+```js
 { "group": "a", "name": "stu1", "score": 84 }
 { "group": "a", "name": "stu2", "score": 96 }
 { "group": "b", "name": "stu3", "score": 80 }
@@ -8955,9 +8886,9 @@ db.command.aggregate.first(<表达式>)
 如果需要得到所有记录中 `score` 的最小值，可以先将所有记录按照 `score` 排序，然后取出第一条记录的 `first`。  
 
  
-```
+```js
 const $ = db.command.aggregate
-db
+let res = await db
   .collection('students')
   .aggregate()
   .sort({
@@ -8972,7 +8903,7 @@ db
 返回的数据结果如下：  
 
  
-```
+```js
 { "_id": null, "min": 80 }
 ```
 
@@ -8985,7 +8916,7 @@ db
  `last` 的语法如下：  
 
  
-```
+```js
 db.command.aggregate.last(<表达式>)
 ```
 表达式是形如 `$ + 指定字段` 的字符串。  
@@ -8997,7 +8928,7 @@ db.command.aggregate.last(<表达式>)
  假设集合 `students` 的记录如下：  
 
  
-```
+```js
 { "group": "a", "name": "stu1", "score": 84 }
 { "group": "a", "name": "stu2", "score": 96 }
 { "group": "b", "name": "stu3", "score": 80 }
@@ -9006,9 +8937,9 @@ db.command.aggregate.last(<表达式>)
 如果需要得到所有记录中 `score` 的最大值，可以先将所有记录按照 `score` 排序，然后取出最后一条记录的 `last`。  
 
  
-```
+```js
 const $ = db.command.aggregate
-db
+let res = await db
   .collection('students')
   .aggregate()
   .sort({
@@ -9023,7 +8954,7 @@ db
 返回的数据结果如下：  
 
  
-```
+```js
 { "_id": null, "max": 100 }
 ```
 
@@ -9036,7 +8967,7 @@ db
  `max` 的语法如下：  
 
  
-```
+```js
 db.command.aggregate.max(<表达式>)
 ```
 表达式是形如 `$ + 指定字段` 的字符串。  
@@ -9046,7 +8977,7 @@ db.command.aggregate.max(<表达式>)
  假设集合 `students` 的记录如下：  
 
  
-```
+```js
 { "group": "a", "name": "stu1", "score": 84 }
 { "group": "a", "name": "stu2", "score": 96 }
 { "group": "b", "name": "stu3", "score": 80 }
@@ -9055,9 +8986,9 @@ db.command.aggregate.max(<表达式>)
 借助 `max` 可以统计不同组（ `group` ）中成绩的最高值，代码如下：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db
+let res = await db
   .collection('students')
   .aggregate()
   .group({
@@ -9069,11 +9000,10 @@ db
 返回的数据结果如下：  
 
  
-```
+```js
 { "_id": "b", "maxScore": 100 }
 { "_id": "a", "maxScore": 96 }
-```.
-
+...
 ```
 
 #### mergeObjects
@@ -9089,7 +9019,7 @@ db
  `min` 的语法如下：  
 
  
-```
+```js
 db.command.aggregate.min(<表达式>)
 ```
 表达式是形如 `$ + 指定字段` 的字符串。  
@@ -9099,7 +9029,7 @@ db.command.aggregate.min(<表达式>)
  假设集合 `students` 的记录如下：  
 
  
-```
+```js
 { "group": "a", "name": "stu1", "score": 84 }
 { "group": "a", "name": "stu2", "score": 96 }
 { "group": "b", "name": "stu3", "score": 80 }
@@ -9108,9 +9038,9 @@ db.command.aggregate.min(<表达式>)
 借助 `min` 可以统计不同组（ `group` ）中成绩的最低值，代码如下：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db
+let res = await db
   .collection('students')
   .aggregate()
   .group({
@@ -9122,7 +9052,7 @@ db
 返回的数据结果如下：  
 
  
-```
+```js
 { "_id": "b", "minScore": 80 }
 { "_id": "a", "minScore": 84 }
 ```
@@ -9136,7 +9066,7 @@ db
  `push` 语法如下：  
 
  
-```
+```js
 db.command.aggregate.push({
   <字段名1>: <指定字段1>,
   <字段名2>: <指定字段2>,
@@ -9148,7 +9078,7 @@ db.command.aggregate.push({
  假设集合 `students` 的记录如下：  
 
  
-```
+```js
 { "group": "a", "name": "stu1", "score": 84 }
 { "group": "a", "name": "stu2", "score": 96 }
 { "group": "b", "name": "stu3", "score": 80 }
@@ -9157,9 +9087,9 @@ db.command.aggregate.push({
 借助 `push` 操作，对不同分组( `group` )的所有记录，聚合所有数据并且将其放入一个新的字段中，进一步结构化和语义化数据。  
 
  
-```
+```js
 const $ = db.command.aggregate
-db
+let res = await db
   .collection('students')
   .aggregate()
   .group({
@@ -9174,7 +9104,7 @@ db
 输出结果如下：  
 
  
-```
+```js
 { "_id": "b", "students": [{ "name": "stu3", "score": 80 }, { "name": "stu4", "score": 100 }] }
 { "_id": "a", "students": [{ "name": "stu1", "score": 84 }, { "name": "stu2", "score": 96 }] }
 ```
@@ -9188,7 +9118,7 @@ db
  `stdDevPop` 的使用形式如下：  
 
  
-```
+```js
 db.command.aggregate.stdDevPop(<表达式>)
 ```
 表达式传入的是指定字段，指定字段对应的值的数据类型必须是 `number` ，否则结果会返回 `null`。  
@@ -9198,7 +9128,7 @@ db.command.aggregate.stdDevPop(<表达式>)
  假设集合 `students` 的记录如下：`a` 组同学的成绩分别是84和96，`b`组同学的成绩分别是80和100。  
 
  
-```
+```js
 { "group":"a", "score":84 }
 { "group":"a", "score":96 }
 { "group":"b", "score":80 }
@@ -9207,9 +9137,9 @@ db.command.aggregate.stdDevPop(<表达式>)
 可以用 `stdDevPop` 来分别计算 `a` 和 `b` 两组同学成绩的标准差，以此来比较哪一组同学的成绩更稳定。代码如下：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db.collection('students').aggregate()
+let res = await db.collection('students').aggregate()
   .group({
     _id: '$group',
     stdDev: $.stdDevPop('$score')
@@ -9219,7 +9149,7 @@ db.collection('students').aggregate()
 返回的数据结果如下：  
 
  
-```
+```js
 { "_id": "b", "stdDev": 10 }
 { "_id": "a", "stdDev": 6 }
 ```
@@ -9233,7 +9163,7 @@ db.collection('students').aggregate()
  `stdDevSamp` 的使用形式如下：  
 
  
-```
+```js
 db.command.aggregate.stdDevSamp(<表达式>)
 ```
 表达式传入的是指定字段，`stdDevSamp` 会自动忽略非数字值。如果指定字段所有的值均是非数字，那么结果返回 `null`。  
@@ -9243,16 +9173,16 @@ db.command.aggregate.stdDevSamp(<表达式>)
  假设集合 `students` 的记录如下：  
 
  
-```
+```js
 { "score": 80 }
 { "score": 100 }
 ```
 可以用 `stdDevSamp` 来计算成绩的标准样本偏差。代码如下：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db.collection('students').aggregate()
+let res = await db.collection('students').aggregate()
   .group({
     _id: null,
     ageStdDev: $.stdDevSamp('$score')
@@ -9262,13 +9192,13 @@ db.collection('students').aggregate()
 返回的数据结果如下：  
 
  
-```
+```js
 { "_id": null, "ageStdDev": 14.142135623730951 }
 ```
 如果向集合 `students` 添加一条新记录，它的 `score` 字段类型是 `string`：  
 
  
-```
+```js
 { "score": "aa" }
 ```
 用上面代码计算标准样本偏差时，`stdDevSamp` 会自动忽略类型不为 `number` 的记录，返回结果保持不变。
@@ -9282,7 +9212,7 @@ db.collection('students').aggregate()
  `sum` 的使用形式如下：  
 
  
-```
+```js
 db.command.aggregate.sum(<表达式>)
 ```
 表达式可以传入指定字段，也可以传入指定字段组成的列表。`sum` 会自动忽略非数字值。如果字段下的所有值均是非数字，那么结果返回 0。若传入数字常量，则当做所有记录该字段的值都给给定常量，在聚合时相加，最终值为输入记录数乘以常量。  
@@ -9292,7 +9222,7 @@ db.command.aggregate.sum(<表达式>)
  假设代表商品的集合 `goods` 的记录如下：`price` 代表商品销售额，`cost` 代表商品成本  
 
  
-```
+```js
 { "cost": -10, "price": 100 }
 { "cost": -15, "price": 1 }
 { "cost": -10, "price": 10 }
@@ -9304,9 +9234,9 @@ db.command.aggregate.sum(<表达式>)
  借助 `sum` 可以计算所有商品的销售总和，代码如下：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db
+let res = await db
   .collection('goods')
   .aggregate()
   .group({
@@ -9318,7 +9248,7 @@ db
 返回的数据结果如下：销售额是 111  
 
  
-```
+```js
 { "_id": null, "totalPrice": 111 }
 ```
 
@@ -9330,9 +9260,9 @@ db
  借助 `sum`，代码如下：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db
+let res = await db
   .collection('goods')
   .aggregate()
   .group({
@@ -9346,7 +9276,7 @@ db
 返回的数据结果如下：利润总额为 76  
 
  
-```
+```js
 { "_id": null, "totalProfit": 76 }
 ```
 
@@ -9361,7 +9291,7 @@ db
  `let` 的语法如下：  
 
  
-```
+```js
 db.command.aggregate.let({
   vars: {
     <变量1>: <变量表达式>,
@@ -9380,7 +9310,7 @@ db.command.aggregate.let({
  假设代表商品的集合 `goods` 的记录如下：`price` 代表商品价格，`discount` 代表商品折扣率，`cost` 代表商品成本  
 
  
-```
+```js
 { "cost": -10, "discount": 0.95, "price": 100 }
 { "cost": -15, "discount": 0.98, "price": 1 }
 { "cost": -10, "discount": 1, "price": 10 }
@@ -9390,9 +9320,9 @@ db.command.aggregate.let({
  代码如下：  
 
  
-```
+```js
 const $ = db.command.aggregate
-db
+let res = await db
   .collection('goods')
   .aggregate()
   .project({
