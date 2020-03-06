@@ -39,7 +39,7 @@ export function parseQuery (query) {
   return res
 }
 
-export function stringifyQuery (obj) {
+export function stringifyQuery (obj, encodeStr = encode) {
   const res = obj ? Object.keys(obj).map(key => {
     const val = obj[key]
 
@@ -48,7 +48,7 @@ export function stringifyQuery (obj) {
     }
 
     if (val === null) {
-      return encode(key)
+      return encodeStr(key)
     }
 
     if (Array.isArray(val)) {
@@ -58,15 +58,15 @@ export function stringifyQuery (obj) {
           return
         }
         if (val2 === null) {
-          result.push(encode(key))
+          result.push(encodeStr(key))
         } else {
-          result.push(encode(key) + '=' + encode(val2))
+          result.push(encodeStr(key) + '=' + encodeStr(val2))
         }
       })
       return result.join('&')
     }
 
-    return encode(key) + '=' + encode(val)
+    return encodeStr(key) + '=' + encodeStr(val)
   }).filter(x => x.length > 0).join('&') : null
   return res ? `?${res}` : ''
 }
