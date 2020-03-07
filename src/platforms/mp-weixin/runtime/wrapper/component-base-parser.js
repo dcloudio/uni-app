@@ -20,6 +20,7 @@ export default function parseBaseComponent (vueComponentOptions, {
   initRelation
 } = {}) {
   let [VueComponent, vueOptions] = initVueComponent(Vue, vueComponentOptions)
+  vueOptions = VueComponent.options || vueOptions
 
   const options = {
     multipleSlots: true,
@@ -95,6 +96,10 @@ export default function parseBaseComponent (vueComponentOptions, {
       __l: handleLink,
       __e: handleEvent
     }
+  }
+  // externalClasses
+  if (vueOptions.externalClasses) {
+    componentOptions.externalClasses = vueOptions.externalClasses
   }
 
   if (Array.isArray(vueOptions.wxsCallMethods)) {
