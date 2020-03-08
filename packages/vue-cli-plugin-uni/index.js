@@ -19,6 +19,18 @@ module.exports = (api, options) => {
 
   initBuildCommand(api, options)
 
+  if (process.env.UNI_PLATFORM === 'quickapp') {
+    Object.assign(options, {
+      assetsDir,
+      outputDir: path.resolve(process.env.UNI_OUTPUT_DIR, 'build')
+    })
+    require('./lib/options')(options)
+    const vueConfig = require('@dcloudio/uni-quickapp/lib/vue.config.js')
+    api.configureWebpack(vueConfig.configureWebpack)
+    api.chainWebpack(vueConfig.chainWebpack)
+    return
+  }
+
   const platformOptions = require('./lib/' + process.env.UNI_PLATFORM)
 
   let vueConfig = platformOptions.vueConfig

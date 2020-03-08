@@ -50,7 +50,8 @@ module.exports = (api, options, rootOptions) => {
         '@dcloudio/vue-cli-plugin-uni-optimize': version,
         '@dcloudio/webpack-uni-mp-loader': version,
         '@dcloudio/webpack-uni-pages-loader': version,
-        'babel-plugin-import': '^1.11.0'
+        'babel-plugin-import': '^1.11.0',
+        'cross-env': '^7.0.2'
       },
       browserslist: [
         'Android >= 4',
