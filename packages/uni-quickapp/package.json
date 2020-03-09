@@ -2,7 +2,6 @@
   "name": "@dcloudio/uni-quickapp",
   "version": "2.0.0-alpha-24720191216006",
   "description": "uni-app quickapp",
-  "main": "dist/index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dcloudio/uni-app.git",
@@ -16,6 +15,7 @@
   "gitHead": "110501ffb0313e417858dec92acf07522d4ded00",
   "dependencies": {
     "@hap-toolkit/dsl-vue": "0.6.13",
-    "@hap-toolkit/packager": "0.6.13"
+    "@hap-toolkit/packager": "0.6.13",
+    "@hap-toolkit/server": "0.6.13"
   }
 }
