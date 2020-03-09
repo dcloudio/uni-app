@@ -8,6 +8,7 @@ module.exports = config => {
     .tap(options => Object.assign(options, {
       compiler: require('@dcloudio/uni-template-compiler'),
       compilerOptions: {
+        quickapp: true,
         preserveWhitespace: false
       },
       hotReload: false,
