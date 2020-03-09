@@ -21,9 +21,10 @@ const LINK_MODE = {
 
 function getProjectName(e, t) {
   try {
-    const r = _path.default.join(e, t, "manifest.json"),
-      s = require(r);
-    return s && s.package || "Bundle"
+    const stripJsonComments = require('strip-json-comments');
+    const r = _path.default.join(e, t, "manifest.json");
+    const s = JSON.parse(stripJsonComments(_fs.default.readFileSync(r).toString()))
+    return s && s.quickapp && s.quickapp.package || "Bundle"
   } catch (e) {
     _sharedUtils.colorconsole.error(`### App Server ### 获取项目名称出错：${e.message}`)
   }
