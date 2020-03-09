@@ -60,9 +60,10 @@ function getH5Options (manifestJson) {
 
   let base = h5.router.base
 
-  if (base.indexOf('/') !== 0) {
+  if (base.indexOf('/') !== 0 && base.indexOf('./') !== 0) {
     base = '/' + base
   }
+
   if (base.substr(-1) !== '/') {
     base = base + '/'
   }
