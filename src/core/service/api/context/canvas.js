@@ -192,6 +192,8 @@ const predefinedColor = {
 }
 
 function checkColor (e) {
+  // 其他开发者适配的echarts会传入一个undefined到这里
+  e = e || '#000000'
   var t = null
   if ((t = /^#([0-9|A-F|a-f]{6})$/.exec(e)) != null) {
     let n = parseInt(t[1].slice(0, 2), 16)
