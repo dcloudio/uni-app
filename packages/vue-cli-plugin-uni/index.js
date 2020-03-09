@@ -23,6 +23,7 @@ module.exports = (api, options) => {
     process.env.UNI_OUTPUT_DIR = path.resolve(process.env.UNI_OUTPUT_DIR, 'build')
     Object.assign(options, {
       assetsDir,
+      parallel: false,
       outputDir: process.env.UNI_OUTPUT_DIR
     })
     require('./lib/options')(options)

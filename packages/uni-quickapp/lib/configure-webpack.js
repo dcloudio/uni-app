@@ -10,6 +10,8 @@ const NotifyPlugin = require('@hap-toolkit/packager/lib/plugin/notify-plugin')
 const Css2jsonPlugin = require('@hap-toolkit/dsl-vue/lib/plugin/css2json-plugin')
 const InstVuePlugin = require('@hap-toolkit/dsl-vue/lib/plugin/instvue-plugin')
 
+const parseManifest = require('./manifest/index')
+
 const env = {
   // 平台：native
   NODE_PLATFORM: 'native',
@@ -19,10 +21,9 @@ const env = {
 
 const dslFilename = ('vue.' + (process.env.NODE_ENV === 'production' ? 'prod' : 'dev') + '.js')
 
-const manifest = process.UNI_MANIFEST.quickapp || {}
-const entryPagePath = process.UNI_PAGES.pages[0].path
+parseManifest(process.UNI_PAGES, process.UNI_MANIFEST)
 
-const versionCode = parseInt(manifest.versionCode || process.UNI_MANIFEST.versionCode) || 1
+const manifest = global.framework.manifest
 
 if (!manifest.package) {
   console.error(`maniest.json quickapp 节点缺少 package 配置`)
@@ -39,11 +40,8 @@ function genPriorities(entryPagePath) {
 
 module.exports = {
   devtool: false,
-  entry: {
-    'app': '/Users/fxy/Documents/demo/my-qa-project/src/App.vue?uxType=app',
-    'pages/index/index': '/Users/fxy/Documents/demo/my-qa-project/src/pages/index/index.vue?uxType=page',
-    'pages/detail/detail': '/Users/fxy/Documents/demo/my-qa-project/src/pages/detail/detail.vue?uxType=page',
-    'pages/about/about': '/Users/fxy/Documents/demo/my-qa-project/src/pages/about/about.vue?uxType=page'
+  entry() {
+    return process.UNI_ENTRY
   },
   plugins: [
     new webpack.DefinePlugin({
@@ -62,16 +60,15 @@ module.exports = {
     new HandlerPlugin({}),
     new Css2jsonPlugin(),
     new InstVuePlugin(),
-    // TODO 目前 manifest,entryPagePath 是启动时读取一次
     new ZipPlugin({
       name: manifest.package,
       icon: manifest.icon,
-      versionCode,
+      versionCode: manifest.versionCode,
       output: path.resolve(process.env.UNI_OUTPUT_DIR, '..'),
       pathBuild: process.env.UNI_OUTPUT_DIR,
       pathSignFolder: './sign',
       sign: process.env.NODE_ENV === 'production' ? 'release' : 'debug',
-      priorities: genPriorities(entryPagePath),
+      priorities: genPriorities(manifest.router.entry),
       subpackages: undefined,
       comment: '',
       cwd: process.env.UNI_INPUT_DIR,
