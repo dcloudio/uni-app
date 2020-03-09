@@ -93,7 +93,7 @@ export default {
     },
     scale: {
       type: [String, Number],
-      default: 1
+      default: 16
     },
     markers: {
       type: Array,
@@ -163,6 +163,9 @@ export default {
     hidden (val) {
       this.map && this.map[val ? 'hide' : 'show']()
     },
+    scale (val) {
+      this.map && this.map.setZoom(val)
+    },
     latitude (val) {
       this.map && this.map.setStyles({
         center: new plus.maps.Point(this.longitude, this.latitude)
@@ -192,6 +195,7 @@ export default {
     map.__markers__ = {}
     map.__lines__ = []
     map.__circles__ = []
+    map.setZoom(this.scale)
     plus.webview.currentWebview().append(map)
     if (this.hidden) {
       map.hide()
@@ -201,9 +205,9 @@ export default {
     }, {
       deep: true
     })
-    map.onclick((data = {}) => {
-      this.$trigger('tap', {}, data)
-    })
+    map.onclick = (e) => {
+      this.$trigger('click', {}, e)
+    }
     map.onstatuschanged((data = {}) => {
       this.$trigger('end', {}, data)
     })
