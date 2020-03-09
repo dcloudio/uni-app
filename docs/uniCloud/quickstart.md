@@ -68,9 +68,13 @@ exports.main = async (event, context) => {
 
 前者仅完成部署，后者会在部署后同时运行，并打印日志出来。
 
+在云函数对应的目录右键可以配置运行测试参数，如下图，选择之后会生成一个形如`${函数名}.param.json`的文件，此文件内容会在云函数`上传并运行`时作为参数传入云函数内。
+
 在云函数编辑器里，按`Ctrl+r`运行快捷键，或点工具栏的运行，还会直接看到上传并运行云函数的快捷指令。`Ctrl+r`然后回车或选`0`，即可高效的在控制台看到运行结果和日志输出。
 
 云函数目前无法断点debug，只能打印`console.log`看日志。
+
+![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/uniCloud-run-function-1.png)
 
 ![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/uniCloud-run-function.png)
 
