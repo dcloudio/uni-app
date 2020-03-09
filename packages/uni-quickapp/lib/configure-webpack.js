@@ -17,15 +17,23 @@ const env = {
   NODE_PHASE: process.env.NODE_PHASE
 }
 
-const dslFilename = 'vue.' + (process.env.NODE_ENV === 'production' ? 'prod' : 'dev') + '.js'
-const manifest = global.framework.manifest
+const dslFilename = ('vue.' + (process.env.NODE_ENV === 'production' ? 'prod' : 'dev') + '.js')
 
-function genPriorities(e) {
+const manifest = process.UNI_MANIFEST.quickapp || {}
+const entryPagePath = process.UNI_PAGES.pages[0].path
+
+const versionCode = parseInt(manifest.versionCode || process.UNI_MANIFEST.versionCode) || 1
+
+if (!manifest.package) {
+  console.error(`maniest.json quickapp 节点缺少 package 配置`)
+  process.exit(0)
+}
+
+function genPriorities(entryPagePath) {
   const o = [/^i18n\/.+\.json$/i, 'manifest.json', 'app.js', /^common\//i];
-  if (e && e.router && e.router.entry) {
-    const n = e.router.entry;
-    o.splice(3, 0, new RegExp(`^${n}/$`), new RegExp(`^${n}/.+`))
-  } else colorconsole.error('manifest.json 中未配置入口页面 router.entry');
+  if (entryPagePath) {
+    o.splice(3, 0, new RegExp(`^${entryPagePath}/$`), new RegExp(`^${entryPagePath}/.+`))
+  } else console.error('未配置入口页面');
   return o
 }
 
@@ -50,23 +58,22 @@ module.exports = {
     new CopyPlugin([{
       from: path.resolve(__dirname, '../dist/' + dslFilename),
       to: 'dsl.js'
-    }, {
-      from: path.resolve(process.env.UNI_INPUT_DIR, 'manifest.json')
     }]),
     new HandlerPlugin({}),
     new Css2jsonPlugin(),
     new InstVuePlugin(),
+    // TODO 目前 manifest,entryPagePath 是启动时读取一次
     new ZipPlugin({
       name: manifest.package,
       icon: manifest.icon,
-      versionCode: manifest.versionCode,
-      output: path.resolve(process.env.UNI_OUTPUT_DIR),
-      pathBuild: path.resolve(process.env.UNI_OUTPUT_DIR, 'build'),
+      versionCode,
+      output: path.resolve(process.env.UNI_OUTPUT_DIR, '..'),
+      pathBuild: process.env.UNI_OUTPUT_DIR,
       pathSignFolder: './sign',
       sign: process.env.NODE_ENV === 'production' ? 'release' : 'debug',
-      priorities: genPriorities(manifest),
+      priorities: genPriorities(entryPagePath),
       subpackages: undefined,
-      comment: '{"toolkit":"0.6.13","timeStamp":"2020-03-08T13:22:31.014Z","node":"v12.15.0","platform":"darwin","arch":"x64","extends":null}',
+      comment: '',
       cwd: process.env.UNI_INPUT_DIR,
       disableStreamPack: undefined,
       disableSubpackages: undefined

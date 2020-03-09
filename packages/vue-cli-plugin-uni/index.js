@@ -20,9 +20,10 @@ module.exports = (api, options) => {
   initBuildCommand(api, options)
 
   if (process.env.UNI_PLATFORM === 'quickapp') {
+    process.env.UNI_OUTPUT_DIR = path.resolve(process.env.UNI_OUTPUT_DIR, 'build')
     Object.assign(options, {
       assetsDir,
-      outputDir: path.resolve(process.env.UNI_OUTPUT_DIR, 'build')
+      outputDir: process.env.UNI_OUTPUT_DIR
     })
     require('./lib/options')(options)
     const platformOptions = {
