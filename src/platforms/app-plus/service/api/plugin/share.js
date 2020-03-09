@@ -215,7 +215,7 @@ export function shareWithSystem (params, callbackId, method = 'shareWithSystem')
   }
   plus.share.sendWithSystem({
     type,
-    pictures: imageUrl ? [imageUrl] : [],
+    pictures: imageUrl ? [imageUrl] : void 0,
     content,
     href
   }, function (res) {
