@@ -16,6 +16,7 @@
   "dependencies": {
     "@hap-toolkit/dsl-vue": "0.6.13",
     "@hap-toolkit/packager": "0.6.13",
-    "@hap-toolkit/server": "0.6.13"
+    "@hap-toolkit/server": "0.6.13",
+    "module-alias": "^2.1.0"
   }
 }

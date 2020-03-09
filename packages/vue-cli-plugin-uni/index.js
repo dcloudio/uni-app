@@ -25,6 +25,14 @@ module.exports = (api, options) => {
       outputDir: path.resolve(process.env.UNI_OUTPUT_DIR, 'build')
     })
     require('./lib/options')(options)
+    const platformOptions = {
+      webpackConfig: {},
+      chainWebpack () {}
+    }
+    const manifestPlatformOptions = {}
+    api.configureWebpack(require('./lib/configure-webpack')(platformOptions, manifestPlatformOptions, options, api))
+    api.chainWebpack(require('./lib/chain-webpack')(platformOptions, options, api))
+
     const vueConfig = require('@dcloudio/uni-quickapp/lib/vue.config.js')
     api.configureWebpack(vueConfig.configureWebpack)
     api.chainWebpack(vueConfig.chainWebpack)
