@@ -18,8 +18,6 @@ import {
 
 global.UniServiceJSBridge.invokeCallbackHandler = invokeCallbackHandler
 
-// TODO 补充__uniRoutes?路由校验那里用到了
-
 export default {
   uni,
   Vue,
