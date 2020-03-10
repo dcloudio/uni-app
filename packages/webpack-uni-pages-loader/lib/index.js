@@ -41,7 +41,11 @@ module.exports = function (content) {
     }
   }
 
-  if (process.env.UNI_USING_COMPONENTS || process.env.UNI_PLATFORM === 'h5') {
+  if (
+    process.env.UNI_USING_COMPONENTS ||
+    process.env.UNI_PLATFORM === 'h5' ||
+    process.env.UNI_PLATFORM === 'quickapp'
+  ) {
     return require('./index-new').call(this, content)
   }
 

@@ -334,21 +334,41 @@ let uniAutoImportComponents = []
 
 let uniAutoImportScanComponents = []
 
-function initAutoImportScanComponents () {
-  const componentsPath = path.resolve(process.env.UNI_INPUT_DIR, 'components')
+let uniQuickAppAutoImportScanComponents = false
+
+function getAutoComponentsByDir (componentsPath, absolute = false) {
   const components = {}
   try {
     fs.readdirSync(componentsPath).forEach(name => {
-      if (fs.existsSync(path.resolve(componentsPath, name, name + '.vue'))) {
-        components[`^${name}$`] = `@/components/${name}/${name}.vue`
-      } else if (fs.existsSync(path.resolve(componentsPath, name, name + '.nvue'))) {
-        components[`^${name}$`] = `@/components/${name}/${name}.nvue`
+      const folder = path.resolve(componentsPath, name)
+      const importDir = absolute ? normalizePath(folder) : `@/components/${name}`
+      if (fs.existsSync(path.resolve(folder, name + '.vue'))) {
+        components[`^${name}$`] = `${importDir}/${name}.vue`
+      } else if (fs.existsSync(path.resolve(folder, name + '.nvue'))) {
+        components[`^${name}$`] = `${importDir}/${name}.nvue`
       }
     })
   } catch (e) {}
+  return components
+}
+
+function initAutoImportScanComponents () {
+  const componentsPath = path.resolve(process.env.UNI_INPUT_DIR, 'components')
+
+  const components = getAutoComponentsByDir(componentsPath)
+
+  if (process.env.UNI_PLATFORM === 'quickapp') {
+    if (!uniQuickAppAutoImportScanComponents) {
+      uniQuickAppAutoImportScanComponents = getAutoComponentsByDir(
+        path.resolve(require.resolve('@dcloudio/uni-quickapp'), '../../components'),
+        true
+      )
+    }
+    // 平台内置组件优先级高
+    Object.assign(components, uniQuickAppAutoImportScanComponents)
+  }
 
   uniAutoImportScanComponents = parseUsingAutoImportComponents(components)
-
   refreshAutoComponentMap()
 }
 

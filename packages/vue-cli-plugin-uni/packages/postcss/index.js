@@ -235,19 +235,20 @@ if (process.env.UNI_USING_V3) {
             // Transform each property declaration here
             decl.value = tranformValue(decl, opts)
           })
-
-          rule.selectors = rule.selectors.map(complexSelector => {
-            return transformSelector(complexSelector, simpleSelectors => {
-              return simpleSelectors.walkTags(tag => {
-                const k = tag.value
-                const v = CSS_TAGS[k]
-                if (v) {
-                  tag.value = v === 'r'
-                    ? `._${k}` : v
-                }
+          if (process.env.UNI_PLATFORM !== 'quickapp') {
+            rule.selectors = rule.selectors.map(complexSelector => {
+              return transformSelector(complexSelector, simpleSelectors => {
+                return simpleSelectors.walkTags(tag => {
+                  const k = tag.value
+                  const v = CSS_TAGS[k]
+                  if (v) {
+                    tag.value = v === 'r'
+                      ? `._${k}` : v
+                  }
+                })
               })
             })
-          })
+          }
         })
       }
     }

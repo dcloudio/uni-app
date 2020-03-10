@@ -141,6 +141,7 @@ export default {
     this._request()
   },
   beforeDestroy () {
+    this.adView && this.adView.close()
     delete this.adView
   },
   methods: {
