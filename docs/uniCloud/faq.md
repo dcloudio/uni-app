@@ -35,7 +35,7 @@ uni-app本来也可以开发web界面，只是内置组件对宽屏没有自动�
 
 ### 云函数是否有http url触发方式？
 
-目前可以用uni-app做个web页面，通过这个url来操作云函数。比如微信支付需要回调url时可以使用这种方式。插件市场有一个做好的样例，详见[https://ext.dcloud.net.cn/plugin?id=1360](https://ext.dcloud.net.cn/plugin?id=1360)
+目前可以用uni-app做个web页面，通过这个url来操作云函数。插件市场有一个做好的样例，详见[https://ext.dcloud.net.cn/plugin?id=1360](https://ext.dcloud.net.cn/plugin?id=1360)
 
 后续会原生支持http url触发云函数。
 
