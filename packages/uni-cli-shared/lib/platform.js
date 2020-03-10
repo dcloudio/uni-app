@@ -337,6 +337,23 @@ const PLATFORMS = {
         ...getCopyOptions(['ttcomponents'])
       ]
     }
+  },
+  'quickapp': {
+    vue: '@dcloudio/vue-cli-plugin-uni/packages/h5-vue',
+    subPackages: false,
+    cssVars: {
+      '--status-bar-height': '25px',
+      '--window-top': '0px',
+      '--window-bottom': '0px'
+    },
+    copyWebpackOptions ({
+      assetsDir
+    }) {
+      return [
+        ...getStaticCopyOptions(assetsDir),
+        ...getCopyOptions(['qacomponents'])
+      ]
+    }
   }
 }
 // 解决 vue-cli-service lint 时 UNI_PLATFORM 不存在
@@ -564,7 +581,11 @@ module.exports = {
     return platform.vue
   },
   getPlatformCompiler () {
-    if (process.env.UNI_USING_COMPONENTS || process.env.UNI_PLATFORM === 'h5') {
+    if (
+      process.env.UNI_USING_COMPONENTS ||
+      process.env.UNI_PLATFORM === 'h5' ||
+      process.env.UNI_PLATFORM === 'quickapp'
+    ) {
       return require(uniCompiler)
     }
     return require(platform.compiler)
