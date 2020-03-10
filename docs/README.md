@@ -150,7 +150,7 @@
 
 从下面```uni-app```功能框架图可看出，```uni-app```在跨平台的过程中，不牺牲平台特色，可优雅的调用平台专有能力，真正做到海纳百川、各取所长。
 
-![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/doc/uni0124.png)
+![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/doc/uni-app-frame-0310.png)
 
 ### 一套代码，运行到多个平台
 
