@@ -12,6 +12,11 @@ const Css2jsonPlugin = require('@hap-toolkit/dsl-vue/lib/plugin/css2json-plugin'
 const InstVuePlugin = require('./plugin/instvue-plugin')
 
 const parseManifest = require('./manifest/index')
+const validate = require('./validate')
+
+parseManifest(process.UNI_PAGES, process.UNI_MANIFEST)
+
+validate()
 
 const env = {
   // 平台：native
@@ -22,14 +27,9 @@ const env = {
 
 const dslFilename = ('vue.' + (process.env.NODE_ENV === 'production' ? 'prod' : 'dev') + '.js')
 
-parseManifest(process.UNI_PAGES, process.UNI_MANIFEST)
 
 const manifest = global.framework.manifest
 
-if (!manifest.package) {
-  console.error(`maniest.json quickapp 节点缺少 package 配置`)
-  process.exit(0)
-}
 
 function genPriorities(entryPagePath) {
   const o = [/^i18n\/.+\.json$/i, 'manifest.json', 'app.js', /^common\//i];

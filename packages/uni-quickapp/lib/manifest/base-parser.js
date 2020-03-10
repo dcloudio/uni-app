@@ -16,6 +16,10 @@ module.exports = function parseBase(manifest, manifestJson) {
   merge(manifest, manifestJson)
   manifest.versionCode = parseInt(manifest.versionCode) || 1
 
+  if (!manifest.package) {
+    manifest.package = manifest.name || 'Bundle'
+  }
+
   if (!manifest.config) {
     manifest.config = {}
   }
