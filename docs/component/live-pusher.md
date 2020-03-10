@@ -21,33 +21,80 @@
 
 设置live-pusher组件的推流地址，推流视频模式等。
 
-属性|类型 |默认值|必填|说明:--|:--|:--|:--|:--|
-url|string| |是|推流地址，支持RTMP协议。
-mode |string|SD|否|推流视频模式，可取值：SD（标清）, HD（高清）, FHD（超清）。
-aspect |string|3:2|否|视频宽高比例
-muted|Boolean|false|否|是否静音。
-enable-camera|Boolean|true|否|开启摄像头。
-auto-focus|Boolean|true|否|自动聚集。
-beauty|Number|0|否|美颜，取值范围 0-9（iOS取值范围为1） ，0 表示关闭。
-whiteness|Number|0|否|美白，取值范围 0-9（iOS取值范围为1） ，0 表示关闭。
+属性|类型 |默认值|必填|说明|平台差异说明|:--|:--|:--|:--|:--|:--|
+url|string| |是|推流地址，支持RTMP协议。|
+mode |string|SD|否|推流视频模式，可取值：SD（标清）, HD（高清）, FHD（超清）。|
+aspect |string|3:2|否|视频宽高比例|
+muted|Boolean|false|否|是否静音。|
+enable-camera|Boolean|true|否|开启摄像头。|
+auto-focus|Boolean|true|否|自动聚集。|
+beauty|Number|0|否|美颜，取值范围 0-9（iOS取值范围为1） ，0 表示关闭。|
+whiteness|Number|0|否|美白，取值范围 0-9（iOS取值范围为1） ，0 表示关闭。|
+orientation|String|"vertical"|否|画面方向|
+beauty|number|0|否|美颜，取值范围 0-9 ，0 表示关闭|
+whiteness|number|0|否|美白，取值范围 0-9 ，0 表示关闭|
+min-bitrate|Number|200|否|最小码率。|
+max-bitrate|Number|1000|否|最大码率。|
+@statechange|EventHandle|||状态变化事件，detail = {code}|
+@netstatus|EventHandle|||网络状态通知，detail = {info}|
+
+
+
+orientation 的合法值
+
+|值|说明|
+|:-|:-|
+vertical|竖直|
+|horizontal|水平|
+
+
+local-mirror 的合法值
+
+|值|说明|
+|:-|:-|
+|auto|前置摄像头镜像，后置摄像头不镜像|
+|enable|前后置摄像头均镜像|
+|disable|前后置摄像头均不镜像|
+
+
+audio-reverb-type 的合法值
+
+|值|说明|
+|:-|:-|
+|0|关闭|
+|1|KTV|
+|2|小房间|
+|3|大会堂|
+|4|低沉|
+|5|洪亮|
+|6|金属声|
+|7|磁性|
+
+
+audio-volume-type 的合法值
+
+|值|说明|
+|:-|:-|
+|media|媒体音量|
+|voicecall|通话音量|
 
 
 ```html
 <template>
-		<view>
-			<live-pusher id='livePusher1' ref="livePusher" class="livePusher" url=""
-			mode="SD" :muted="true" :enable-camera="true" :auto-focus="true" :beauty="1" whiteness="2"
-			aspect="9:16" @statechange="statechange" @netstatus="netstatus" @error = "error"
-			></live-pusher>
-			<button class="btn" @click="start">开始推流</button>
-			<button class="btn" @click="pause">暂停推流</button>
-			<button class="btn" @click="resume">resume</button>
-			<button class="btn" @click="stop">停止推流</button>
-			<button class="btn" @click="snapshot">快照</button>
-			<button class="btn" @click="startPreview">开启摄像头预览</button>
-			<button class="btn" @click="stopPreview">关闭摄像头预览</button>
-			<button class="btn" @click="switchCamera">切换摄像头</button>
-		</view>
+    <view>
+        <live-pusher id='livePusher1' ref="livePusher" class="livePusher" url=""
+        mode="SD" :muted="true" :enable-camera="true" :auto-focus="true" :beauty="1" whiteness="2"
+        aspect="9:16" @statechange="statechange" @netstatus="netstatus" @error = "error"
+        ></live-pusher>
+        <button class="btn" @click="start">开始推流</button>
+        <button class="btn" @click="pause">暂停推流</button>
+        <button class="btn" @click="resume">resume</button>
+        <button class="btn" @click="stop">停止推流</button>
+        <button class="btn" @click="snapshot">快照</button>
+        <button class="btn" @click="startPreview">开启摄像头预览</button>
+        <button class="btn" @click="stopPreview">关闭摄像头预览</button>
+        <button class="btn" @click="switchCamera">切换摄像头</button>
+    </view>
 </template>
 ```
 
