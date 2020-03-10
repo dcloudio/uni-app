@@ -8,6 +8,12 @@
     "url": "git+https://github.com/dcloudio/uni-app.git",
     "directory": "packages/uni-quickapp"
   },
+  "files": [
+    "bin",
+    "components",
+    "dist",
+    "lib"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
