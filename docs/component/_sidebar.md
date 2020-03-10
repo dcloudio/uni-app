@@ -82,7 +82,7 @@
   * [navigation-bar](component/navigation-bar.md)
 * 页面属性配置节点
   * [page-meta](component/page-meta.md)
-* [配置微信小程序插件](component/mp-weixin-plugin.md)
+* [配置小程序插件](component/mp-weixin-plugin.md)
 * [原生组件说明](component/native-component.md)
 <div class="contact-box">
   <a href="//ask.dcloud.net.cn/explore/" target="_blank" class="contact-item">
