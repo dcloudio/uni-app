@@ -10,6 +10,8 @@ const NotifyPlugin = require('@hap-toolkit/packager/lib/plugin/notify-plugin')
 const Css2jsonPlugin = require('@hap-toolkit/dsl-vue/lib/plugin/css2json-plugin')
 const InstVuePlugin = require('@hap-toolkit/dsl-vue/lib/plugin/instvue-plugin')
 
+const InstMainPlugin = require('./plugin/main-plugin')
+
 const parseManifest = require('./manifest/index')
 
 const env = {
@@ -46,6 +48,15 @@ module.exports = {
   externals: {
     vue: 'Vue'
   },
+  module: {
+    rules: [{
+      //暂不考虑ts
+      test: path.resolve(process.env.UNI_INPUT_DIR, 'main.js'),
+      use: [{
+        loader: path.resolve(__dirname, 'loader/main-loader')
+      }]
+    }]
+  },
   plugins: [
     new webpack.DefinePlugin({
       // 平台：na
@@ -63,6 +74,7 @@ module.exports = {
     new HandlerPlugin({}),
     new Css2jsonPlugin(),
     new InstVuePlugin(),
+    new InstMainPlugin(),
     new ZipPlugin({
       name: manifest.package,
       icon: manifest.icon,
