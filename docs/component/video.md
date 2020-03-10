@@ -40,6 +40,7 @@
 |vslide-gesture-in-fullscreen|Boolean|true|在全屏模式下，是否开启亮度与音量调节手势|微信小程序|
 |ad-unit-id|String||视频前贴广告单元ID，更多详情可参考开放能力[视频前贴广告](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/ad/video-patch-ad.html)|微信小程序|
 |poster-for-crawler|String||用于给搜索等场景作为视频封面展示，建议使用无播放 icon 的视频封面图，只支持网络地址|微信小程序|
+|ad-unit-id|string||视频前贴广告单元ID，更多详情可参考开放能力[视频前贴广告]|微信小程序2.8.1|
 |@play|EventHandle||当开始/继续播放时触发play事件|头条小程序不支持|
 |@pause|EventHandle||当暂停播放时触发 pause 事件|头条小程序不支持|
 |@ended|EventHandle||当播放到末尾时触发 ended 事件|头条小程序不支持|
@@ -50,8 +51,35 @@
 |@progress|EventHandle||加载进度变化时触发，只支持一段加载。event.detail = {buffered}，百分比|微信小程序、H5|
 |@loadedmetadata|EventHandle||视频元数据加载完成时触发。event.detail = {width, height, duration}|微信小程序、H5|
 |@fullscreenclick|EventHandle||视频播放全屏播放时点击事件。event.detail = { screenX:"Number类型，点击点相对于屏幕左侧边缘的 X 轴坐标", screenY:"Number类型，点击点相对于屏幕顶部边缘的 Y 轴坐标", screenWidth:"Number类型，屏幕总宽度", screenHeight:"Number类型，屏幕总高度"}|App 2.6.3+|
+|@controlstoggle|eventhandle||切换 controls 显示隐藏时触发。event.detail = {show}|微信小程序2.9.5|
 
 `<video>` 默认宽度 300px、高度 225px，可通过 css 设置宽高。
+
+
+##### direction 的合法值
+
+|值|说明|
+|:-|:-|
+|0|正常竖向|
+|90|屏幕逆时针90度|
+|-90|屏幕顺时针90度|
+
+
+##### object-fit 的合法值
+
+|值|说明|
+|:-|:-|
+|contain|包含|
+|fill|填充|
+|cover|覆盖|
+
+
+##### play-btn-position 的合法值
+
+|值|说明|
+|:-|:-|
+|bottom|controls bar上|
+|center|视频中间|
 
 
 **示例** [查看示例](https://uniapp.dcloud.io/h5/pages/component/video/video)
