@@ -17,7 +17,15 @@ Vue.prototype.$mount = function () {}
 Vue.config = {}
 
 Vue.use = function (plugin) {
-  plugins.push(plugin)
+  const isVuex = plugin.Store && plugin.mapState
+  if (isVuex) {
+    const exports = {}
+    /* eslint-disable no-undef */
+    context.VueFactory(exports, {} /* document */, {} /* quickappHelper */)
+    plugin.install(exports.Vue)
+  } else {
+    plugins.push(plugin)
+  }
 }
 
 Vue.mixin = function (mixin) {
