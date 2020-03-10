@@ -195,3 +195,36 @@ export function share (params, callbackId, method = 'share') {
     }
   )
 }
+
+export function shareWithSystem (params, callbackId, method = 'shareWithSystem') {
+  let {
+    type,
+    imageUrl,
+    summary: content,
+    href
+  } = params
+  type = type || 'text'
+  const allowedTypes = ['text', 'image']
+  if (allowedTypes.indexOf(type) < 0) {
+    invoke(callbackId, {
+      errMsg: method + ':fail:分享参数 type 不正确'
+    })
+  }
+  if (typeof imageUrl === 'string' && imageUrl) {
+    imageUrl = getRealPath(imageUrl)
+  }
+  plus.share.sendWithSystem({
+    type,
+    pictures: imageUrl ? [imageUrl] : void 0,
+    content,
+    href
+  }, function (res) {
+    invoke(callbackId, {
+      errMsg: method + ':ok'
+    })
+  }, function (err) {
+    invoke(callbackId, {
+      errMsg: method + ':fail:' + err.message
+    })
+  })
+}

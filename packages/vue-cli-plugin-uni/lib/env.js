@@ -120,6 +120,9 @@ if (Array.isArray(pagesJsonObj.subPackages)) {
 const manifestJsonObj = getManifestJson()
 const platformOptions = manifestJsonObj[process.env.UNI_PLATFORM] || {}
 
+process.UNI_PAGES = pagesJsonObj
+process.UNI_MANIFEST = manifestJsonObj
+
 if (manifestJsonObj.debug) {
   process.env.VUE_APP_DEBUG = true
 }

@@ -6,14 +6,18 @@ const {
   done
 } = require('@vue/cli-shared-utils')
 
+let nvueCompiled = true
 let serviceCompiled = true
 let viewCompiled = true
 
 
+const nvueChangedFiles = []
 const serviceChangedFiles = []
 const viewChangedFiles = []
 
 let isFirst = true
+
+let compiling = false
 class WebpackAppPlusPlugin {
   apply(compiler) {
     if (process.env.UNI_USING_V3) {
@@ -21,20 +25,27 @@ class WebpackAppPlusPlugin {
       const chunkVersions = {}
 
       const entry = compiler.options.entry()
-      const isAppService = entry['app-service']
-      const isAppView = entry['app-view']
+      const isAppService = !!entry['app-service']
+      const isAppView = !!entry['app-view']
+
+      const isAppNVue = !isAppService && !isAppView
+
+
+      compiler.hooks.invalid.tap('WebpackAppPlusPlugin', (fileName, changeTime) => {
+        if (!compiling) {
+          compiling = true
+          console.log('开始差量编译...')
+        }
+      })
 
       compiler.hooks.beforeCompile.tapAsync('WebpackAppPlusPlugin', (params, callback) => {
+        isAppNVue && (nvueCompiled = false)
         isAppService && (serviceCompiled = false)
         isAppView && (viewCompiled = false)
         callback()
       })
 
       compiler.hooks.emit.tapAsync('WebpackAppPlusPlugin', (compilation, callback) => {
-
-        isAppService && (serviceChangedFiles.length = 0)
-        isAppView && (viewChangedFiles.length = 0)
-
         const changedChunks = compilation.chunks.filter(chunk => {
           const oldVersion = chunkVersions[chunk.name]
           chunkVersions[chunk.name] = chunk.hash
@@ -47,6 +58,8 @@ class WebpackAppPlusPlugin {
                 !serviceChangedFiles.includes(file) && (serviceChangedFiles.push(file))
               } else if (isAppView) {
                 !viewChangedFiles.includes(file) && (viewChangedFiles.push(file))
+              } else if (isAppNVue) {
+                !nvueChangedFiles.includes(file) && (nvueChangedFiles.push(file))
               }
             })
           }
@@ -56,14 +69,23 @@ class WebpackAppPlusPlugin {
 
       compiler.hooks.done.tapPromise('WebpackAppPlusPlugin', compilation => {
         return new Promise((resolve, reject) => {
+          isAppNVue && (nvueCompiled = true)
           isAppService && (serviceCompiled = true)
           isAppView && (viewCompiled = true)
-
-          if (serviceCompiled && viewCompiled) {
-            const changedFiles = [...new Set([...serviceChangedFiles, ...viewChangedFiles])]
+          if (serviceCompiled && viewCompiled && nvueCompiled) {
             if (process.env.NODE_ENV === 'development') {
+              const changedFiles = [...new Set([
+                ...serviceChangedFiles,
+                ...viewChangedFiles,
+                ...nvueChangedFiles
+              ])]
               if (!isFirst && changedFiles.length > 0) {
-                done(`Build complete. FILES:` + JSON.stringify(changedFiles))
+                if (serviceChangedFiles.length === 0 && viewChangedFiles.length === 0) {
+                  // 仅 nvue 页面发生变化
+                  done(`Build complete. PAGES:` + JSON.stringify(changedFiles))
+                } else {
+                  done(`Build complete. FILES:` + JSON.stringify(changedFiles))
+                }
               } else {
                 done(`Build complete. Watching for changes...`)
               }
@@ -71,8 +93,11 @@ class WebpackAppPlusPlugin {
             } else {
               done(`Build complete. `)
             }
+            nvueChangedFiles.length = 0
+            serviceChangedFiles.length = 0
+            viewChangedFiles.length = 0
+            compiling = false
           }
-
           resolve()
         })
       })

@@ -72,9 +72,12 @@ module.exports = {
         console.error(source)
         throw e
       }
+    } else if (options.quickapp) {
+      // 后续改版，应统一由具体包实现
+      (options.modules || (options.modules = [])).push(require('@dcloudio/uni-quickapp/lib/compiler-module'))
     }
 
-    if (!options.mp) { // h5
+    if (!options.mp) { // h5,quickapp
       return compileTemplate(source, options, compile)
     }
 

@@ -12,7 +12,7 @@ export default function formatLog () {
   for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
     args[_key] = arguments[_key]
   }
-  const type = args.shift()
+  var type = args.shift()
   if (isDebugMode()) {
     args.push(args.pop().replace('at ', 'uni-app:///'))
     return console[type]['apply'](console, args)

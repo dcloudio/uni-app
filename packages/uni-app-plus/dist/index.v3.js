@@ -199,6 +199,7 @@ var serviceContext = (function () {
     'checkSession',
     'getUserInfo',
     'share',
+    'shareWithSystem',
     'showShareMenu',
     'hideShareMenu',
     'requestPayment',
@@ -307,6 +308,17 @@ var serviceContext = (function () {
     }
   }
 
+  const encodeReserveRE = /[!'()*]/g;
+  const encodeReserveReplacer = c => '%' + c.charCodeAt(0).toString(16);
+  const commaRE = /%2C/g;
+
+  // fixed encodeURIComponent which is more conformant to RFC3986:
+  // - escapes [!'()*]
+  // - preserve commas
+  const encode = str => encodeURIComponent(str)
+    .replace(encodeReserveRE, encodeReserveReplacer)
+    .replace(commaRE, ',');
+
   const decode = decodeURIComponent;
 
   function parseQuery (query) {
@@ -335,6 +347,38 @@ var serviceContext = (function () {
     });
 
     return res
+  }
+
+  function stringifyQuery (obj, encodeStr = encode) {
+    const res = obj ? Object.keys(obj).map(key => {
+      const val = obj[key];
+
+      if (val === undefined) {
+        return ''
+      }
+
+      if (val === null) {
+        return encodeStr(key)
+      }
+
+      if (Array.isArray(val)) {
+        const result = [];
+        val.forEach(val2 => {
+          if (val2 === undefined) {
+            return
+          }
+          if (val2 === null) {
+            result.push(encodeStr(key));
+          } else {
+            result.push(encodeStr(key) + '=' + encodeStr(val2));
+          }
+        });
+        return result.join('&')
+      }
+
+      return encodeStr(key) + '=' + encodeStr(val)
+    }).filter(x => x.length > 0).join('&') : null;
+    return res ? `?${res}` : ''
   }
 
   let id = 0;
@@ -1284,9 +1328,9 @@ var serviceContext = (function () {
     ARRAYBUFFER: 'arraybuffer'
   };
 
-  const encode = encodeURIComponent;
+  const encode$1 = encodeURIComponent;
 
-  function stringifyQuery (url, data) {
+  function stringifyQuery$1 (url, data) {
     let str = url.split('#');
     const hash = str[1] || '';
     str = str[0].split('?');
@@ -1301,9 +1345,9 @@ var serviceContext = (function () {
     for (let key in data) {
       if (data.hasOwnProperty(key)) {
         if (isPlainObject(data[key])) {
-          query[encode(key)] = encode(JSON.stringify(data[key]));
+          query[encode$1(key)] = encode$1(JSON.stringify(data[key]));
         } else {
-          query[encode(key)] = encode(data[key]);
+          query[encode$1(key)] = encode$1(data[key]);
         }
       }
     }
@@ -1334,7 +1378,7 @@ var serviceContext = (function () {
           isPlainObject(params.data) &&
           Object.keys(params.data).length
         ) { // 将 method,data 校验提前,保证 url 校验时,method,data 已被格式化
-          params.url = stringifyQuery(value, params.data);
+          params.url = stringifyQuery$1(value, params.data);
         }
       }
     },
@@ -7127,6 +7171,39 @@ var serviceContext = (function () {
     );
   }
 
+  function shareWithSystem (params, callbackId, method = 'shareWithSystem') {
+    let {
+      type,
+      imageUrl,
+      summary: content,
+      href
+    } = params;
+    type = type || 'text';
+    const allowedTypes = ['text', 'image'];
+    if (allowedTypes.indexOf(type) < 0) {
+      invoke$1(callbackId, {
+        errMsg: method + ':fail:分享参数 type 不正确'
+      });
+    }
+    if (typeof imageUrl === 'string' && imageUrl) {
+      imageUrl = getRealPath$1(imageUrl);
+    }
+    plus.share.sendWithSystem({
+      type,
+      pictures: imageUrl ? [imageUrl] : [],
+      content,
+      href
+    }, function (res) {
+      invoke$1(callbackId, {
+        errMsg: method + ':ok'
+      });
+    }, function (err) {
+      invoke$1(callbackId, {
+        errMsg: method + ':fail:' + err.message
+      });
+    });
+  }
+
   function restoreGlobal (
     newWeex,
     newPlus,
@@ -7802,7 +7879,22 @@ var serviceContext = (function () {
     preloadWebview = webview;
   }
 
-  function createWebview (path, routeOptions) {
+  function noop$1 (str) {
+    return str
+  }
+
+  function getDebugRefresh (path, query, routeOptions) {
+    const queryString = query ? stringifyQuery(query, noop$1) : '';
+    return {
+      isTab: routeOptions.meta.isTabBar,
+      arguments: JSON.stringify({
+        path: path.substr(1),
+        query: queryString ? queryString.substr(1) : queryString
+      })
+    }
+  }
+
+  function createWebview (path, routeOptions, query) {
     if (routeOptions.meta.isNVue) {
       const webviewId = id$1++;
       const webviewStyle = parseWebviewStyle(
@@ -7810,6 +7902,7 @@ var serviceContext = (function () {
         path,
         routeOptions
       );
+      webviewStyle.debugRefresh = getDebugRefresh(path, query, routeOptions);
       if (process.env.NODE_ENV !== 'production') {
         console.log(`[uni-app] createWebview`, webviewId, path, webviewStyle);
       }
@@ -7824,7 +7917,7 @@ var serviceContext = (function () {
     return webview
   }
 
-  function initWebview (webview, routeOptions, url = '') {
+  function initWebview (webview, routeOptions, path, query) {
     // 首页或非 nvue 页面
     if (webview.id === '1' || !routeOptions.meta.isNVue) {
       const webviewStyle = parseWebviewStyle(
@@ -7832,17 +7925,7 @@ var serviceContext = (function () {
         '',
         routeOptions
       );
-      if (url) {
-        const part = url.split('?');
-        webviewStyle.debugRefresh = {
-          isTab: routeOptions.meta.isTabBar,
-          arguments: JSON.stringify({
-            path: part[0].substr(1),
-            query: part[1] || ''
-          })
-        };
-      }
-
+      webviewStyle.debugRefresh = getDebugRefresh(path, query, routeOptions);
       if (process.env.NODE_ENV !== 'production') {
         console.log(`[uni-app] updateWebview`, webviewStyle);
       }
@@ -8060,7 +8143,7 @@ var serviceContext = (function () {
     }
 
     if (!webview) {
-      webview = createWebview(path, routeOptions);
+      webview = createWebview(path, routeOptions, query);
     } else {
       webview = plus.webview.getWebviewById(webview.id);
       webview.nvue = routeOptions.meta.isNVue;
@@ -8078,7 +8161,7 @@ var serviceContext = (function () {
       console.log(`[uni-app] registerPage`, path, webview.id);
     }
 
-    initWebview(webview, routeOptions, url);
+    initWebview(webview, routeOptions, path, query);
 
     const route = path.slice(1);
 
@@ -9095,6 +9178,7 @@ var serviceContext = (function () {
     requireNativePlugin: requireNativePlugin$1,
     shareAppMessageDirectly: shareAppMessageDirectly,
     share: share,
+    shareWithSystem: shareWithSystem,
     restoreGlobal: restoreGlobal,
     getSubNVueById: getSubNVueById,
     getCurrentSubNVue: getCurrentSubNVue,
@@ -10911,7 +10995,14 @@ var serviceContext = (function () {
   }
 
   function request$1 (args, callbackId) {
-    if (args.method !== 'GET' && args.header['Content-Type'].indexOf('application/json') === 0 && isPlainObject(args.data)) {
+    let contentType;
+    for (const name in args.header) {
+      if (name.toLowerCase() === 'content-type') {
+        contentType = args.header[name];
+        break
+      }
+    }
+    if (args.method !== 'GET' && contentType.indexOf('application/json') === 0 && isPlainObject(args.data)) {
       args.data = JSON.stringify(args.data);
     }
     const {
