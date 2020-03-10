@@ -19,10 +19,13 @@
 |属性名|类型|默认值|说明|平台差异说明|
 |:-|:-|:-|:-|:-|
 |mode|String|normal	|有效值为 normal, scanCode	|微信小程序|
+|resolution|string|medium|分辨率，不支持动态修改|微信小程序2.10.0|
 |device-position|String			|back		|前置或后置，值为front, back|													|
 |flash			|String			|auto		|闪光灯，值为auto, on, off|													|
+|frame-size|string|medium|指定期望的相机帧数据尺寸|微信小程序2.7.0|
 |@stop		|EventHandle	|			|摄像头在非正常终止时触发，如退出后台等情况|													|
 |@error		|EventHandle	|			|用户不允许使用摄像头时触发|													|
+|@initdone|eventhandle||相机初始化完成时触发，e.detail = {maxZoom}|微信小程序2.7.0|
 |@scancode		|EventHandle	|			|在扫码识别成功时触发，仅在 mode="scanCode" 时生效|微信小程序											|
 
 **Tips：**
