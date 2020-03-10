@@ -8,9 +8,8 @@ const ZipPlugin = require('@hap-toolkit/packager/lib/plugin/zip-plugin')
 const NotifyPlugin = require('@hap-toolkit/packager/lib/plugin/notify-plugin')
 
 const Css2jsonPlugin = require('@hap-toolkit/dsl-vue/lib/plugin/css2json-plugin')
-const InstVuePlugin = require('@hap-toolkit/dsl-vue/lib/plugin/instvue-plugin')
 
-const InstMainPlugin = require('./plugin/main-plugin')
+const InstVuePlugin = require('./plugin/instvue-plugin')
 
 const parseManifest = require('./manifest/index')
 
@@ -74,7 +73,6 @@ module.exports = {
     new HandlerPlugin({}),
     new Css2jsonPlugin(),
     new InstVuePlugin(),
-    new InstMainPlugin(),
     new ZipPlugin({
       name: manifest.package,
       icon: manifest.icon,
