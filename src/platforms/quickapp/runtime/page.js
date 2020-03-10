@@ -1,1 +1,16 @@
-// 快应用vue组件样式需要被合并到独立的css.json中,目前采用easycom实时编译
+/* eslint-disable no-undef */
+if (typeof __VueOptions !== 'undefined') {
+  // 将 main.js 中的 store，use，mixin 同步到 page
+  const {
+    uses,
+    mixins,
+    store
+  } = __VueOptions
+  uses && uses.forEach(use => {
+    Vue.use(use)
+  })
+  mixins && mixins.forEach(mixin => {
+    Vue.mixin(mixin)
+  })
+  store && (Vue.prototype.$store = store)
+}

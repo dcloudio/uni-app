@@ -43,6 +43,9 @@ module.exports = {
   entry() {
     return process.UNI_ENTRY
   },
+  externals: {
+    vue: 'Vue'
+  },
   plugins: [
     new webpack.DefinePlugin({
       // 平台：na

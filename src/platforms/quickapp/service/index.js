@@ -6,6 +6,8 @@ import {
   invokeCallbackHandler
 } from 'uni-helpers/api'
 
+import Vue from './framework/vue'
+
 import {
   getApp
 } from './framework/app'
@@ -20,6 +22,7 @@ global.UniServiceJSBridge.invokeCallbackHandler = invokeCallbackHandler
 
 export default {
   uni,
+  Vue,
   getApp,
   getCurrentPages
 }

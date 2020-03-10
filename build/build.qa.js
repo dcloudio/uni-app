@@ -36,26 +36,26 @@ dsl.onInitApp(function({
 });`
   })
   const appCode = appOutput[0].code
-  //   const pageBundle = await rollup.rollup(genConfig('page'))
-  //   const {
-  //     output: pageOutput
-  //   } = await pageBundle.generate({
-  //     format: 'iife',
-  //     banner: `
-  // dsl.onInitPage(function({
-  //   $app_require$,
-  //   Vue
-  // }) {
-  // `,
-  //     footer: `
-  // });`
-  //   })
-  //   const pageCode = pageOutput[0].code
+  const pageBundle = await rollup.rollup(genConfig('page'))
+  const {
+    output: pageOutput
+  } = await pageBundle.generate({
+    format: 'iife',
+    banner: `
+  dsl.onInitPage(function({
+    $app_require$,
+    Vue
+  }) {
+  `,
+    footer: `
+  });`
+  })
+  const pageCode = pageOutput[0].code
   const vueCode = fs.readFileSync(path.resolve(__dirname, '../packages/uni-quickapp/assets/' + filename))
 
   fs.writeFileSync(
     path.resolve(__dirname, '../packages/uni-quickapp/dist/' + filename),
-    vueCode + bridgeCode + appCode, {
+    vueCode + bridgeCode + appCode + pageCode, {
       encoding: 'utf8'
     }
   )
