@@ -1,25 +1,52 @@
-const injectRef = Object.getPrototypeOf(global) || global
+// 目前仅支持 store, use, mixin, component
 
-const vueOptions = Object.create(null)
+let store
+const mixins = []
+const plugins = []
+const components = []
 
 function Vue (options) {
   if (options && options.store) {
-    vueOptions.store = options.store
+    store = options.store
   }
 }
 
 Vue.use = function (plugin) {
-  (vueOptions.uses || (vueOptions.uses = [])).push(plugin)
+  plugins.push(plugin)
 }
 
 Vue.mixin = function (mixin) {
-  (vueOptions.mixins || (vueOptions.mixins = [])).push(mixin)
+  mixins.push(mixin)
 }
 
-Vue.component = function () {}
+Vue.component = function (id, definition) {
+  components.push({
+    id,
+    definition
+  })
+}
 
-injectRef.__VueOptions = vueOptions
+const injectRef = Object.getPrototypeOf(global) || global
 
-// 目前仅支持 store, use, mixin
+injectRef.__VuePlugin = {
+  install (Vue, options) {
+    mixins.forEach(mixin => {
+      Vue.mixin(mixin)
+    })
+
+    plugins.forEach(plugin => {
+      Vue.use(plugin)
+    })
+
+    components.forEach(({
+      id,
+      definition
+    }) => {
+      Vue.component(id, definition)
+    })
+
+    store && (Vue.prototype.$store = store)
+  }
+}
 
 export default Vue
