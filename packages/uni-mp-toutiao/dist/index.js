@@ -1538,7 +1538,8 @@ function parseBaseComponent (vueComponentOptions, {
 
   const options = {
     multipleSlots: true,
-    addGlobalClass: true
+    addGlobalClass: true,
+    ...(vueOptions.options || {})
   };
 
   const componentOptions = {

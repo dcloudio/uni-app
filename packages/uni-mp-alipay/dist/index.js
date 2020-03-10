@@ -442,17 +442,30 @@ const protocols = { // 需要做转换的 API 列表
       if (!fromArgs.header) { // 默认增加 header 参数，方便格式化 content-type
         fromArgs.header = {};
       }
+      const headers = {
+        'content-type': 'application/json'
+      };
+      Object.keys(fromArgs.header).forEach(key => {
+        headers[key.toLocaleLowerCase()] = fromArgs.header[key];
+      });
       return {
         header (header = {}, toArgs) {
-          const headers = {
-            'content-type': 'application/json'
-          };
-          Object.keys(header).forEach(key => {
-            headers[key.toLocaleLowerCase()] = header[key];
-          });
           return {
             name: 'headers',
             value: headers
+          }
+        },
+        data (data) {
+          // 钉钉在content-type为application/json时，不会自动序列化
+          if (my.dd && headers['content-type'].indexOf('application/json') === 0) {
+            return {
+              name: 'data',
+              value: JSON.stringify(data)
+            }
+          }
+          return {
+            name: 'data',
+            value: data
           }
         },
         method: 'method', // TODO 支付宝小程序仅支持 get,post
@@ -686,8 +699,16 @@ const protocols = { // 需要做转换的 API 列表
     }
   },
   getUserInfo: {
-    name: 'getAuthUserInfo',
+    name: my.canIUse('getOpenUserInfo') ? 'getOpenUserInfo' : 'getAuthUserInfo',
     returnValue (result) {
+      if (my.canIUse('getOpenUserInfo')) {
+        let response = {};
+        try {
+          response = JSON.parse(result.response).response;
+        } catch (e) {}
+        result.nickName = response.nickName;
+        result.avatar = response.avatar;
+      }
       result.userInfo = {
         nickName: result.nickName,
         avatarUrl: result.avatar
