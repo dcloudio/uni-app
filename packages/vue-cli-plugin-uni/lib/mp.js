@@ -17,11 +17,7 @@ const {
 } = require('./cache-loader')
 
 function createUniMPPlugin () {
-  if (process.env.UNI_USING_COMPONENTS) {
-    const WebpackUniMPPlugin = require('@dcloudio/webpack-uni-mp-loader/lib/plugin/index-new')
-    return new WebpackUniMPPlugin()
-  }
-  const WebpackUniMPPlugin = require('@dcloudio/webpack-uni-mp-loader/lib/plugin')
+  const WebpackUniMPPlugin = require('@dcloudio/webpack-uni-mp-loader/lib/plugin/index-new')
   return new WebpackUniMPPlugin()
 }
 
@@ -181,7 +177,7 @@ module.exports = {
 
     const compilerOptions = process.env.UNI_USING_COMPONENTS ? {} : require('./mp-compiler-options')
 
-    modifyVueLoader(webpackConfig, compilerOptions, api)
+    modifyVueLoader(webpackConfig, {}, compilerOptions, api)
 
     const styleExt = getPlatformExts().style
 

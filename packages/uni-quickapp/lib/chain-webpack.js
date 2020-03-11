@@ -1,20 +1,15 @@
+const vueLoader = require('@dcloudio/uni-cli-shared/lib/vue-loader')
+
 module.exports = config => {
 
   config.module
     .rule('vue')
-    .test([/\.vue$/, /\.nvue$/])
+    .test(vueLoader.test)
     .use('vue-loader')
-    .loader(require.resolve('@dcloudio/vue-cli-plugin-uni/packages/vue-loader'))
-    .tap(options => Object.assign(options, {
-      compiler: require('@dcloudio/uni-template-compiler'),
-      compilerOptions: {
-        quickapp: true,
-        preserveWhitespace: false
-      },
-      hotReload: false,
-      cacheDirectory: false,
-      cacheIdentifier: false
-    }))
+    .loader(vueLoader.loader)
+    .tap(options => Object.assign(options, vueLoader.options({}, {
+      quickapp: true,
+    })))
 
   config.module
     .rule('vue')
