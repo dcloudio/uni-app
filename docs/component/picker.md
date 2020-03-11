@@ -89,7 +89,7 @@
 |value|String|0|表示选中的日期，格式为"YYYY-MM-DD"||
 |start|String||表示有效日期范围的开始，字符串格式为"YYYY-MM-DD"||
 |end|String||表示有效日期范围的结束，字符串格式为"YYYY-MM-DD"||
-|fields|String|day|有效值 year,month,day，表示选择器的粒度|H5、微信小程序、百度小程序、头条小程序|
+|fields|String|day|有效值 year,month,day，表示选择器的粒度|H5、App 2.6.3+、微信小程序、百度小程序、头条小程序|
 |@change|EventHandle||value 改变时触发 change 事件，event.detail = {value: value}||
 |@cancel|EventHandle||取消选择时触发||
 |disabled|Boolean|false|是否禁用|&nbsp;|
