@@ -27,14 +27,14 @@ describe('codegen', () => {
   it('generate filters', () => {
     assertCodegen(
       '<div :id="a | b | c">{{ d | e | f }}</div>',
-      `with(this){return _c('div',{attrs:{"id":_$s(0,'a-id',_f("c")(_f("b")(a))),"_i":0}},[_v((_$s(0,'t0',_s(_f("f")(_f("e")(d))))))])}`
+      `with(this){return _c('div',{attrs:{"id":_$s(0,'a-id',_f("c")(_f("b")(a))),"_i":0}},[_v((_$s(0,'t0-0',_s(_f("f")(_f("e")(d))))))])}`
     )
   })
 
   it('generate filters with no arguments', () => {
     assertCodegen(
       '<div>{{ d | e() }}</div>',
-      `with(this){return _c('div',[_v((_$s(0,'t0',_s(_f("e")(d)))))])}`
+      `with(this){return _c('div',[_v((_$s(0,'t0-0',_s(_f("e")(d)))))])}`
     )
   })
 
@@ -162,7 +162,7 @@ describe('codegen', () => {
   it('generate template tag', () => {
     assertCodegen(
       '<div><template><p>{{hello}}</p></template></div>',
-      `with(this){return _c('div',[[_c('p',[_v((_$s(2,'t0',_s(hello))))])]],2)}`
+      `with(this){return _c('div',[[_c('p',[_v((_$s(2,'t0-0',_s(hello))))])]],2)}`
     )
   })
 
@@ -197,47 +197,47 @@ describe('codegen', () => {
   it('generate scoped slot', () => {
     assertCodegen(
       '<foo><template slot-scope="bar">{{ bar }}</template></foo>',
-      `with(this){return _c('foo',{attrs:{"_i":0},scopedSlots:_u([{key:"default",fn:function(bar, _svm, _si){return [_v((_svm._$s(("1-"+_si),'t0',_s(bar))))]}}])})}`
+      `with(this){return _c('foo',{attrs:{"_i":0},scopedSlots:_u([{key:"default",fn:function(bar, _svm, _si){return [_v((_svm._$s(("1-"+_si),'t0-0',_s(bar))))]}}])})}`
     )
     assertCodegen(
       '<foo><div slot-scope="bar">{{ bar }}</div></foo>',
-      `with(this){return _c('foo',{attrs:{"_i":0},scopedSlots:_u([{key:"default",fn:function(bar, _svm, _si){return _c('div',{attrs:{"_i":("1-"+_si)}},[_v((_svm._$s(("1-"+_si),'t0',_s(bar))))])}}])})}`
+      `with(this){return _c('foo',{attrs:{"_i":0},scopedSlots:_u([{key:"default",fn:function(bar, _svm, _si){return _c('div',{attrs:{"_i":("1-"+_si)}},[_v((_svm._$s(("1-"+_si),'t0-0',_s(bar))))])}}])})}`
     )
   })
 
   it('generate named scoped slot', () => {
     assertCodegen(
       '<foo><template slot="foo" slot-scope="bar">{{ bar }}</template></foo>',
-      `with(this){return _c('foo',{attrs:{"_i":0},scopedSlots:_u([{key:"foo",fn:function(bar, _svm, _si){return [_v((_svm._$s(("1-"+_si),'t0',_s(bar))))]}}])})}`
+      `with(this){return _c('foo',{attrs:{"_i":0},scopedSlots:_u([{key:"foo",fn:function(bar, _svm, _si){return [_v((_svm._$s(("1-"+_si),'t0-0',_s(bar))))]}}])})}`
     )
     assertCodegen(
       '<foo><div slot="foo" slot-scope="bar">{{ bar }}</div></foo>',
-      `with(this){return _c('foo',{attrs:{"_i":0},scopedSlots:_u([{key:"foo",fn:function(bar, _svm, _si){return _c('div',{attrs:{"_i":("1-"+_si)}},[_v((_svm._$s(("1-"+_si),'t0',_s(bar))))])}}])})}`
+      `with(this){return _c('foo',{attrs:{"_i":0},scopedSlots:_u([{key:"foo",fn:function(bar, _svm, _si){return _c('div',{attrs:{"_i":("1-"+_si)}},[_v((_svm._$s(("1-"+_si),'t0-0',_s(bar))))])}}])})}`
     )
   })
 
   it('generate dynamic scoped slot', () => {
     assertCodegen(
       '<foo><template :slot="foo" slot-scope="bar">{{ bar }}</template></foo>',
-      `with(this){return _c('foo',{attrs:{"_i":0},scopedSlots:_u([{key:foo,fn:function(bar, _svm, _si){return [_v((_svm._$s(("1-"+_si),'t0',_s(bar))))]}}],null,true)})}`
+      `with(this){return _c('foo',{attrs:{"_i":0},scopedSlots:_u([{key:foo,fn:function(bar, _svm, _si){return [_v((_svm._$s(("1-"+_si),'t0-0',_s(bar))))]}}],null,true)})}`
     )
   })
 
   it('generate scoped slot with multiline v-if', () => {
     assertCodegen(
       '<foo><template v-if="\nshow\n" slot-scope="bar">{{ bar }}</template></foo>',
-      `with(this){return _c('foo',{attrs:{"_i":0},scopedSlots:_u([{key:"default",fn:function(bar, _svm, _si){return (_svm._$s(("1-"+_si),'i',\nshow\n))?[_v((_svm._$s(("1-"+_si),'t0',_s(bar))))]:undefined}}],null,true)})}`
+      `with(this){return _c('foo',{attrs:{"_i":0},scopedSlots:_u([{key:"default",fn:function(bar, _svm, _si){return (_svm._$s(("1-"+_si),'i',\nshow\n))?[_v((_svm._$s(("1-"+_si),'t0-0',_s(bar))))]:undefined}}],null,true)})}`
     )
     assertCodegen(
       '<foo><div v-if="\nshow\n" slot="foo" slot-scope="bar">{{ bar }}</div></foo>',
-      `with(this){return _c('foo',{attrs:{"_i":0},scopedSlots:_u([{key:"foo",fn:function(bar, _svm, _si){return (_svm._$s(("1-"+_si),'i',\nshow\n))?_c('div',{attrs:{"_i":("1-"+_si)}},[_v((_svm._$s(("1-"+_si),'t0',_s(bar))))]):_e()}}],null,true)})}`
+      `with(this){return _c('foo',{attrs:{"_i":0},scopedSlots:_u([{key:"foo",fn:function(bar, _svm, _si){return (_svm._$s(("1-"+_si),'i',\nshow\n))?_c('div',{attrs:{"_i":("1-"+_si)}},[_v((_svm._$s(("1-"+_si),'t0-0',_s(bar))))]):_e()}}],null,true)})}`
     )
   })
 
   it('generate scoped slot with new slot syntax', () => {
     assertCodegen(
       '<foo><template v-if="show" #default="bar">{{ bar }}</template></foo>',
-      `with(this){return _c('foo',{attrs:{"_i":0},scopedSlots:_u([(_$s(1,'i',show))?{key:"default",fn:function(bar, _svm, _si){return [_v((_svm._$s(("1-"+_si),'t0',_s(bar))))]}}:null],null,true)})}`
+      `with(this){return _c('foo',{attrs:{"_i":0},scopedSlots:_u([(_$s(1,'i',show))?{key:"default",fn:function(bar, _svm, _si){return [_v((_svm._$s(("1-"+_si),'t0-0',_s(bar))))]}}:null],null,true)})}`
     )
   })
 
@@ -625,7 +625,7 @@ describe('codegen', () => {
     // normalize type: 2
     assertCodegen(
       '<div><child></child><template v-for="item in list">{{ item }}</template></div>',
-      `with(this){return _c('div',[_c('child',{attrs:{"_i":1}}),_l((_$s(2,'f',{forItems:list,fill:true})),function(item,$10,$20,$30){return [_v((_$s(("2-"+$30),'t0',_s(item))))]})],2)}`
+      `with(this){return _c('div',[_c('child',{attrs:{"_i":1}}),_l((_$s(2,'f',{forItems:list,fill:true})),function(item,$10,$20,$30){return [_v((_$s(("2-"+$30),'t0-0',_s(item))))]})],2)}`
     )
   })
 

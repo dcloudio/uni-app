@@ -4,6 +4,7 @@ export * from './context/background-audio'
 export * from './context/canvas'
 export * from './context/operate-map-player'
 export * from './context/operate-video-player'
+export * from './context/live-pusher'
 
 export * from './device/accelerometer'
 export * from './device/add-phone-contact'
@@ -69,3 +70,5 @@ export {
 export * from './ui/tab-bar'
 
 export * from './ui/request-component-info'
+
+export * from './ad/rewarded-video-ad'

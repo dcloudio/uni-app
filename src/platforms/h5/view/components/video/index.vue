@@ -787,6 +787,7 @@ uni-video[hidden] {
   background-size: 50%;
   background-repeat: no-repeat;
   background-position: 50% 50%;
+  cursor: pointer;
 }
 
 .uni-video-cover-duration {
@@ -831,6 +832,7 @@ uni-video[hidden] {
   padding: 14.5px 12.5px 14.5px 12.5px;
   margin-left: -8.5px;
   box-sizing: content-box;
+  cursor: pointer;
 }
 
 .uni-video-control-button::after {
@@ -873,6 +875,7 @@ uni-video[hidden] {
   margin: 21px 12px;
   background-color: rgba(255, 255, 255, 0.4);
   position: relative;
+  cursor: pointer;
 }
 
 .uni-video-progress-buffered {
@@ -912,6 +915,7 @@ uni-video[hidden] {
   font-size: 13px;
   color: #fff;
   margin: 0 8.5px;
+  cursor: pointer;
 }
 
 .uni-video-danmu-button.uni-video-danmu-button-active {
@@ -928,6 +932,7 @@ uni-video[hidden] {
   background-size: 50%;
   background-position: 50% 50%;
   background-repeat: no-repeat;
+  cursor: pointer;
 }
 
 .uni-video-fullscreen.uni-video-type-fullscreen {

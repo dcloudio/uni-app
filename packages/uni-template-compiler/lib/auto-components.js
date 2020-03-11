@@ -1,6 +1,7 @@
 const path = require('path')
 
 const {
+  hyphenate,
   isComponent
 } = require('./util')
 
@@ -47,7 +48,8 @@ function updateMPUsingAutoImportComponents (autoComponents, options) {
     name,
     source
   }) => {
-    usingAutoImportComponents[name] = '/' + formatSource(source)
+    // 自定义组件统一格式化为 kebab-case
+    usingAutoImportComponents[hyphenate(name)] = '/' + formatSource(source)
   })
   updateUsingAutoImportComponents(resourcePath, usingAutoImportComponents) // 更新json
 }

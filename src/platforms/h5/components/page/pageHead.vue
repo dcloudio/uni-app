@@ -109,6 +109,7 @@ uni-page-head {
 uni-page-head .uni-page-head {
   position: fixed;
   left: 0;
+  top: 0;
   width: 100%;
   height: 44px;
   height: calc(44px + constant(safe-area-inset-top));
@@ -175,6 +176,7 @@ uni-page-head .uni-page-head-bd {
   margin: 0 2px;
   word-break: keep-all;
   white-space: pre;
+  cursor: pointer;
 }
 
 .uni-page-head-transparent .uni-page-head-btn {

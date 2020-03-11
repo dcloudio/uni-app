@@ -3,6 +3,56 @@ const path = require('path')
 const mkdirp = require('mkdirp')
 const loaderUtils = require('loader-utils')
 
+process.UNI_CLOUD = false
+process.UNI_CLOUD_TCB = false
+process.UNI_CLOUD_ALIYUN = false
+process.env.UNI_CLOUD_PROVIDER = JSON.stringify([])
+
+if (process.env.UNI_CLOUD_SPACES) {
+  try {
+    const spaces = JSON.parse(process.env.UNI_CLOUD_SPACES)
+    if (Array.isArray(spaces)) {
+      process.UNI_CLOUD = spaces.length > 0
+      process.UNI_CLOUD_TCB = !!spaces.find(space => !space.clientSecret)
+      process.UNI_CLOUD_ALIYUN = !!spaces.find(space => space.clientSecret)
+      if (spaces.length === 1) {
+        const space = spaces[0]
+        console.log(`本项目的uniCloud使用的默认服务空间spaceId为：${space.id}`)
+      }
+      process.env.UNI_CLOUD_PROVIDER = JSON.stringify(spaces.map(space => {
+        if (space.clientSecret) {
+          return {
+            provider: 'aliyun',
+            spaceName: space.name,
+            spaceId: space.id,
+            clientSecret: space.clientSecret,
+            endpoint: space.apiEndpoint
+          }
+        } else {
+          return {
+            provider: 'tencent',
+            spaceName: space.name,
+            spaceId: space.id
+          }
+        }
+      }))
+    }
+  } catch (e) {}
+}
+
+if (
+  process.UNI_CLOUD &&
+  process.env.UNI_PLATFORM === 'h5' &&
+  process.env.NODE_ENV === 'production'
+) {
+  console.warn(`发布H5，需要在uniCloud后台操作，绑定安全域名，否则会因为跨域问题而无法访问。教程参考：https://uniapp.dcloud.io/uniCloud/quickstart-H5`)
+}
+
+if (process.env.UNI_PLATFORM === 'mp-360') {
+  process.env.UNI_PLATFORM = 'h5'
+  process.env.UNI_SUB_PLATFORM = 'mp-360'
+}
+
 // 初始化环境变量
 const defaultInputDir = '../../../../src'
 const defaultOutputDir = '../../../../dist/' +
@@ -21,6 +71,11 @@ process.env.VUE_APP_PLATFORM = process.env.UNI_PLATFORM
 process.env.UNI_INPUT_DIR = process.env.UNI_INPUT_DIR || path.resolve(__dirname, defaultInputDir)
 process.env.UNI_OUTPUT_DIR = process.env.UNI_OUTPUT_DIR || path.resolve(__dirname, defaultOutputDir)
 
+if (process.env.UNI_SUB_PLATFORM === 'mp-360') {
+  const outputDir = process.env.UNI_OUTPUT_DIR
+  process.env.UNI_OUTPUT_DIR = path.resolve(outputDir.substr(0, outputDir.lastIndexOf('h5')), 'mp-360/dist')
+}
+
 if (process.env.UNI_PLATFORM === 'app-plus') {
   process.env.UNI_OUTPUT_TMP_DIR = path.resolve(process.env.UNI_OUTPUT_DIR, '../.tmp/app-plus')
 }
@@ -34,6 +89,7 @@ if (process.env.NODE_ENV === 'production') { // 发行模式,不启用 cache
 }
 
 const {
+  normalizePath,
   isSupportSubPackages,
   runByHBuilderX,
   // isInHBuilderXAlpha,
@@ -142,6 +198,21 @@ if (process.env.UNI_PLATFORM === 'app-plus') {
     process.env.UNI_USING_V8 = true
     process.env.UNI_OUTPUT_TMP_DIR = ''
   }
+  // v3 支持指定 js 混淆（仅发行模式）
+  if (
+    process.env.NODE_ENV === 'production' &&
+    process.env.UNI_USING_V3
+  ) {
+    const resources = platformOptions.confusion &&
+      platformOptions.confusion.resources
+    const resourcesKeys = resources &&
+      Object.keys(resources).filter(filepath => path.extname(filepath) === '.js')
+    if (resourcesKeys && resourcesKeys.length) {
+      process.UNI_CONFUSION = resourcesKeys.map(filepath =>
+        normalizePath(path.resolve(process.env.UNI_INPUT_DIR, filepath))
+      )
+    }
+  }
 } else { // 其他平台，待确认配置方案
   if (
     manifestJsonObj['app-plus'] &&
@@ -197,8 +268,8 @@ if (process.env.UNI_USING_COMPONENTS) { // 是否启用分包优化
 
 const warningMsg =
   usingComponentsAbsent
-    ? `该应用之前可能是非自定义组件模式，目前以自定义组件模式运行。非自定义组件将于2019年11月1日起停止支持。详见：https://ask.dcloud.net.cn/article/36385`
-    : `uni-app将于2019年11月1日起停止支持非自定义组件模式 [详情](https://ask.dcloud.net.cn/article/36385)`
+    ? `该应用之前可能是非自定义组件模式，目前以自定义组件模式运行。非自定义组件已于2019年11月1日起停止支持。详见：https://ask.dcloud.net.cn/article/36385`
+    : `uni-app已于2019年11月1日起停止支持非自定义组件模式 [详情](https://ask.dcloud.net.cn/article/36385)`
 
 const needWarning = !platformOptions.usingComponents || usingComponentsAbsent
 let hasNVue = false

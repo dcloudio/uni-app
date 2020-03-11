@@ -1,3 +1,4 @@
+// App端可以只使用files不传filePath和name
 import getRealPath from 'uni-platform/helpers/get-real-path'
 
 export const uploadFile = {
@@ -5,16 +6,19 @@ export const uploadFile = {
     type: String,
     required: true
   },
+  files: {
+    type: Array
+  },
   filePath: {
     type: String,
-    required: true,
     validator (value, params) {
-      params.type = getRealPath(value)
+      if (value) {
+        params.type = getRealPath(value)
+      }
     }
   },
   name: {
-    type: String,
-    required: true
+    type: String
   },
   header: {
     type: Object,

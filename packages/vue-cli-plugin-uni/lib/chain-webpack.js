@@ -94,7 +94,9 @@ module.exports = function chainWebpack (platformOptions, vueOptions, api) {
     webpackConfig
       .plugin('uni-define')
       .use(require.resolve('webpack/lib/DefinePlugin'), [{
-        'process.env.UNI_ENV': JSON.stringify(process.env.UNI_PLATFORM)
+        'process.env.UNI_ENV': JSON.stringify(process.env.UNI_PLATFORM),
+        'process.env.UNI_CLOUD_PROVIDER': process.env.UNI_CLOUD_PROVIDER,
+        'process.env.HBX_USER_TOKEN': JSON.stringify(process.env.HBX_USER_TOKEN || '')
       }])
 
     if (runByHBuilderX) { // 由 HBuilderX 运行时，移除进度，错误

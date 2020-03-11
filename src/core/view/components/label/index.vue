@@ -1,5 +1,6 @@
 <template>
   <uni-label
+    :class="{'uni-label-pointer':pointer}"
     v-on="$listeners"
     @click="_onClick">
     <slot />
@@ -16,6 +17,11 @@ export default {
     for: {
       type: String,
       default: ''
+    }
+  },
+  computed: {
+    pointer () {
+      return this.for || (this.$slots.default && this.$slots.default.length)
     }
   },
   methods: {
@@ -38,5 +44,7 @@ export default {
 }
 </script>
 <style>
-
+.uni-label-pointer {
+  cursor: pointer;
+}
 </style>

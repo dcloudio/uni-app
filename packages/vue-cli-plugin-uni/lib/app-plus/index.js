@@ -24,6 +24,8 @@ const {
 
 const runtimePath = '@dcloudio/uni-mp-weixin/dist/mp.js'
 const wxsPath = '@dcloudio/uni-mp-weixin/dist/wxs.js'
+const uniCloudPath = path.resolve(__dirname, '../../packages/uni-cloud/dist/index.js')
+const cryptoPath = path.resolve(__dirname, '../crypto.js')
 
 function getProvides (isAppService) {
   if (isAppService) {
@@ -35,7 +37,11 @@ function getProvides (isAppService) {
       'Component': [runtimePath, 'Component'],
       'Behavior': [runtimePath, 'Behavior'],
       'getDate': [wxsPath, 'getDate'],
-      'getRegExp': [wxsPath, 'getRegExp']
+      'getRegExp': [wxsPath, 'getRegExp'],
+      'uniCloud': [uniCloudPath, 'default'],
+      'crypto': [cryptoPath, 'default'],
+      'window.crypto': [cryptoPath, 'default'],
+      'global.crypto': [cryptoPath, 'default']
     }
   }
   return { // app-view
@@ -71,11 +77,11 @@ const v3 = {
       webpackConfig.optimization.runtimeChunk = {
         name: 'app-config'
       }
+      webpackConfig.optimization.splitChunks = require('../split-chunks')()
     } else if (isAppView) {
       webpackConfig.optimization.runtimeChunk = false
+      webpackConfig.optimization.splitChunks = false
     }
-
-    webpackConfig.optimization.splitChunks = false
 
     let devtool = false
 
@@ -108,6 +114,15 @@ const v3 = {
       }]
     })
 
+    if (isAppService) {
+      rules.push({
+        test: [/\.css$/, /\.p(ost)?css$/, /\.scss$/, /\.sass$/, /\.less$/, /\.styl(us)?$/],
+        use: [{
+          loader: path.resolve(__dirname, '../../packages/webpack-uni-app-loader/service/style.js')
+        }]
+      })
+    }
+
     const entry = {}
     if (isAppService) {
       entry['app-service'] = path.resolve(process.env.UNI_INPUT_DIR, getMainEntry())
@@ -117,7 +132,7 @@ const v3 = {
 
     return {
       devtool,
-      mode: process.env.NODE_ENV,
+      mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
       externals: {
         vue: 'Vue'
       },
@@ -277,6 +292,12 @@ const v3 = {
       if (process.env.NODE_ENV === 'production') {
         require('../h5/cssnano-options')(webpackConfig)
       }
+    }
+
+    if (isAppService) { // service 层移除 css 相关
+      ['css', 'postcss', 'scss', 'sass', 'less', 'stylus'].forEach(cssLang => {
+        webpackConfig.module.rules.delete(cssLang)
+      })
     }
 
     webpackConfig.plugins.delete('hmr')

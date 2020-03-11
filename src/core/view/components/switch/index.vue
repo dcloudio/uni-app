@@ -1,5 +1,6 @@
 <template>
   <uni-switch
+    :disabled="disabled"
     v-on="$listeners"
     @click="_onClick">
     <div class="uni-switch-wrapper">
@@ -105,10 +106,15 @@ export default {
 	uni-switch {
 		-webkit-tap-highlight-color: transparent;
 		display: inline-block;
+		cursor: pointer;
 	}
 
 	uni-switch[hidden] {
 		display: none;
+	}
+
+	uni-switch[disabled] {
+		cursor: not-allowed;
 	}
 
 	uni-switch .uni-switch-wrapper {
@@ -132,6 +138,10 @@ export default {
 		box-sizing: border-box;
 		background-color: #DFDFDF;
 		transition: background-color 0.1s, border 0.1s;
+	}
+
+	uni-switch[disabled] .uni-switch-input {
+		opacity: .7;
 	}
 
 	uni-switch .uni-switch-input:before {
@@ -190,6 +200,10 @@ export default {
 		height: 22px;
 		position: relative;
 		color: #007aff;
+	}
+
+	uni-switch:not([disabled]) .uni-checkbox-input:hover {
+		border-color: #007aff;
 	}
 
 	uni-switch .uni-checkbox-input.uni-checkbox-input-checked:before {

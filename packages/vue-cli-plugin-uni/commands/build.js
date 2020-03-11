@@ -64,6 +64,9 @@ function getWebpackConfig (api, args, options) {
     })
   } else {
     modifyConfig(webpackConfig, config => {
+      if (!config.optimization) {
+        config.optimization = {}
+      }
       config.optimization.namedModules = false
     })
   }
@@ -104,7 +107,7 @@ async function build (args, api, options) {
   log()
 
   if (!runByHBuilderX && !runByAliIde) {
-    logWithSpinner(`开始编译当前项目至 ${process.env.UNI_PLATFORM} 平台...`)
+    logWithSpinner(`开始编译当前项目至 ${process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM} 平台...`)
   }
 
   const targetDir = api.resolve(options.outputDir)

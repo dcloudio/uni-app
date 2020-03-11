@@ -46,7 +46,7 @@ export function registerPage ({
   }
 
   if (!webview) {
-    webview = createWebview(path, routeOptions)
+    webview = createWebview(path, routeOptions, query)
   } else {
     webview = plus.webview.getWebviewById(webview.id)
     webview.nvue = routeOptions.meta.isNVue
@@ -64,7 +64,7 @@ export function registerPage ({
     console.log(`[uni-app] registerPage`, path, webview.id)
   }
 
-  initWebview(webview, routeOptions, url)
+  initWebview(webview, routeOptions, path, query)
 
   const route = path.slice(1)
 

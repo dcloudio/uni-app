@@ -119,10 +119,6 @@ function initTabBar () {
   __uniConfig.tabBar.selected = 0
 
   const selected = __uniConfig.tabBar.list.findIndex(page => page.pagePath === __uniConfig.entryPagePath)
-  if (selected !== -1) {
-    // 取当前 tab 索引值
-    __uniConfig.tabBar.selected = selected
-  }
 
   tabBar.init(__uniConfig.tabBar, (item, index) => {
     uni.switchTab({
@@ -138,22 +134,36 @@ function initTabBar () {
       }
     })
   })
+
+  if (selected !== -1) {
+    // 取当前 tab 索引值
+    __uniConfig.tabBar.selected = selected
+    selected !== 0 && tabBar.switchTab(__uniConfig.entryPagePath)
+  }
 }
 
 function initEntryPage () {
-  const argsJsonStr = plus.runtime.arguments
-  if (!argsJsonStr) {
-    return
-  }
-
   let entryPagePath
   let entryPageQuery
 
-  try {
-    const args = JSON.parse(argsJsonStr)
-    entryPagePath = args.path || args.pathName
-    entryPageQuery = (args.query ? ('?' + args.query) : '')
-  } catch (e) {}
+  const weexPlus = weex.requireModule('plus')
+
+  if (weexPlus.getRedirectInfo) {
+    const info = weexPlus.getRedirectInfo() || {}
+    entryPagePath = info.path
+    entryPageQuery = info.query ? ('?' + info.query) : ''
+  } else {
+    const argsJsonStr = plus.runtime.arguments
+    if (!argsJsonStr) {
+      return
+    }
+    try {
+      const args = JSON.parse(argsJsonStr)
+      entryPagePath = args.path || args.pathName
+      entryPageQuery = args.query ? ('?' + args.query) : ''
+    } catch (e) {}
+  }
+
   if (!entryPagePath || entryPagePath === __uniConfig.entryPagePath) {
     return
   }

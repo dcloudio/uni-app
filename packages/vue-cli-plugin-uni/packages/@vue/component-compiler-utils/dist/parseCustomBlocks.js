@@ -45,6 +45,8 @@ module.exports = function parseCustomBlocks(descriptor, options) {
         block.attrs.lang === 'renderjs'
       )
     ) {
+      block.type = 'renderjs'
+      block.attrs.lang = 'js'
       descriptor.renderjs = preprocessBlock(block)
       modules[block.attrs.module] = Object.assign({}, block, {
         content: ''

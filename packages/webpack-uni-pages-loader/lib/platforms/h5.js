@@ -5,7 +5,8 @@ const {
   getPlatforms,
   getH5Options,
   getFlexDirection,
-  getNetworkTimeout
+  getNetworkTimeout,
+  normalizePath
 } = require('@dcloudio/uni-cli-shared')
 
 const {
@@ -13,9 +14,6 @@ const {
 } = require('@dcloudio/uni-cli-shared/lib/pages')
 
 const PLATFORMS = getPlatforms()
-
-const isWin = /^win/.test(process.platform)
-const normalizePath = path => (isWin ? path.replace(/\\/g, '/') : path)
 
 const removePlatformStyle = function (style) {
   Object.keys(style).forEach(name => {
@@ -60,11 +58,21 @@ const getPageComponents = function (inputDir, pagesJson) {
     pagesJson.tabBar.borderStyle = pagesJson.tabBar.borderStyle || 'black'
   }
 
-  const globalStyle = pagesJson.globalStyle || {}
+  const globalStyle = Object.assign({}, pagesJson.globalStyle || {})
+
+  Object.assign(
+    globalStyle,
+    globalStyle['app-plus'] || {},
+    globalStyle['h5'] || {}
+  )
+
+  if (process.env.UNI_SUB_PLATFORM === 'mp-360') {
+    Object.assign(globalStyle, globalStyle['mp-360'] || {})
+  }
 
   process.UNI_H5_PAGES_JSON = {
     pages: {},
-    globalStyle: Object.assign({}, globalStyle, globalStyle['app-plus'] || {}, globalStyle['h5'] || {})
+    globalStyle
   }
 
   removePlatformStyle(process.UNI_H5_PAGES_JSON.globalStyle)
@@ -86,6 +94,10 @@ const getPageComponents = function (inputDir, pagesJson) {
     // 解析 titleNView，pullToRefresh
     const h5Options = Object.assign({}, props['app-plus'] || {}, props['h5'] || {})
 
+    if (process.env.UNI_SUB_PLATFORM === 'mp-360') {
+      Object.assign(h5Options, props['mp-360'] || {})
+      Object.assign(props, props['mp-360'] || {})
+    }
     removePlatformStyle(h5Options)
 
     if (h5Options.hasOwnProperty('titleNView')) {
@@ -118,6 +130,7 @@ const getPageComponents = function (inputDir, pagesJson) {
     // 删除 app-plus 平台配置
     delete props['app-plus']
     delete props['h5']
+    delete props['mp-360']
 
     process.UNI_H5_PAGES_JSON.pages[page.path] = props
 

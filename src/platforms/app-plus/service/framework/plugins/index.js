@@ -54,16 +54,18 @@ export default {
 
     Vue.prototype.$nextTick = function nextTick (cb) {
       const renderWatcher = this._watcher
+      const callback = typeof cb === 'function'
       if (
         renderWatcher &&
         this._$queue.find(watcher => renderWatcher === watcher)
       ) {
-        vdSyncCallbacks.push(cb.bind(this))
+        const result = new Promise((resolve) => {
+          vdSyncCallbacks.push(callback ? cb.bind(this) : resolve)
+        })
+        return callback ? result : undefined
       } else {
         // $nextTick bind vm context
-        Vue.nextTick(() => {
-          cb.call(this)
-        })
+        return Vue.nextTick(callback ? () => cb.call(this) : undefined)
       }
     }
   }

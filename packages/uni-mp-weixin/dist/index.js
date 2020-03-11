@@ -1319,7 +1319,8 @@ function parseBaseComponent (vueComponentOptions, {
 
   const options = {
     multipleSlots: true,
-    addGlobalClass: true
+    addGlobalClass: true,
+    ...(vueOptions.options || {})
   };
 
   {
@@ -1371,7 +1372,7 @@ function parseBaseComponent (vueComponentOptions, {
         }
       },
       detached () {
-        this.$vm.$destroy();
+        this.$vm && this.$vm.$destroy();
       }
     },
     pageLifetimes: {

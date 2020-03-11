@@ -18,9 +18,23 @@ function setNavigationBar (type, args) {
 
         if (frontColor) {
           page.navigationBar.textColor = frontColor === '#000000' ? 'black' : 'white'
+          if (__PLATFORM__ === 'h5') {
+            if (typeof qh !== 'undefined') {
+              qh.setNavigationBarTextStyle({
+                textStyle: page.navigationBar.textColor
+              })
+            }
+          }
         }
         if (backgroundColor) {
           page.navigationBar.backgroundColor = backgroundColor
+          if (__PLATFORM__ === 'h5') {
+            if (typeof qh !== 'undefined') {
+              qh.setNavigationBarColor({
+                backgroundColor
+              })
+            }
+          }
         }
         page.navigationBar.duration = duration + 'ms'
         page.navigationBar.timingFunc = timingFunc
@@ -38,6 +52,11 @@ function setNavigationBar (type, args) {
         page.navigationBar.titleText = title
         if (__PLATFORM__ === 'h5') {
           document.title = title
+          if (typeof qh !== 'undefined') {
+            qh.setNavigationBarTitle({
+              title: document.title
+            })
+          }
         }
         break
     }

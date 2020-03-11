@@ -5,7 +5,7 @@ const request = require('request')
 
 const registry = 'https://registry.npmjs.org/@dcloudio/'
 
-const pkgs = fs.readdirSync(path.resolve(__dirname, 'packages'))
+const pkgs = fs.readdirSync(path.resolve(__dirname, 'packages')).filter(pkg => pkg.indexOf('.') !== 0)
 
 const tag = process.argv[2] || 'alpha'
 

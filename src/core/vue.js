@@ -7,7 +7,7 @@ import {
 
 export default function initVue (Vue) {
   Vue.config.errorHandler = function (err) {
-    const app = getApp()
+    const app = typeof getApp === 'function' && getApp()
     if (app && hasLifecycleHook(app.$options, 'onError')) {
       app.__call_hook('onError', err)
     } else {

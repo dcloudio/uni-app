@@ -14,14 +14,14 @@ const defaultAsync = {
   loading: 'AsyncLoading',
   error: 'AsyncError',
   delay: 200,
-  timeout: 3000
+  timeout: 60000
 }
 
 const networkTimeout = {
-  request: 6000,
-  connectSocket: 6000,
-  uploadFile: 6000,
-  downloadFile: 6000
+  request: 60000,
+  connectSocket: 60000,
+  uploadFile: 60000,
+  downloadFile: 60000
 }
 
 function getManifestJson () {
@@ -50,7 +50,11 @@ function getH5Options (manifestJson) {
 
   h5.title = h5.title || manifestJson.name || ''
 
-  h5.router = Object.assign({}, defaultRouter, h5.router || {})
+  if (process.env.UNI_SUB_PLATFORM === 'mp-360') { // 360 小程序仅支持 hash 模式
+    h5.router = Object.assign({}, defaultRouter)
+  } else {
+    h5.router = Object.assign({}, defaultRouter, h5.router || {})
+  }
 
   h5['async'] = Object.assign({}, defaultAsync, h5['async'] || {})
 
@@ -59,7 +63,6 @@ function getH5Options (manifestJson) {
   if (base.indexOf('/') !== 0) {
     base = '/' + base
   }
-
   if (base.substr(-1) !== '/') {
     base = base + '/'
   }
@@ -74,6 +77,11 @@ function getH5Options (manifestJson) {
     }
   } else { // 其他模式，启用 base
     h5.publicPath = base
+  }
+
+  if (process.env.UNI_SUB_PLATFORM === 'mp-360') {
+    h5.router.base = '/'
+    h5.publicPath = '/'
   }
 
   /* eslint-disable no-mixed-operators */

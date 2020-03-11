@@ -71,7 +71,8 @@ var serviceContext = (function () {
     'saveVideoToPhotosAlbum',
     'createVideoContext',
     'createCameraContext',
-    'createLivePlayerContext'
+    'createLivePlayerContext',
+    'createLivePusherContext'
   ];
 
   const device = [
@@ -198,6 +199,7 @@ var serviceContext = (function () {
     'checkSession',
     'getUserInfo',
     'share',
+    'shareWithSystem',
     'showShareMenu',
     'hideShareMenu',
     'requestPayment',
@@ -213,6 +215,10 @@ var serviceContext = (function () {
     'setPageMeta'
   ];
 
+  const ad = [
+    'createRewardedVideoAd'
+  ];
+
   const apis = [
     ...base,
     ...network,
@@ -226,7 +232,8 @@ var serviceContext = (function () {
     ...event,
     ...file,
     ...canvas,
-    ...third
+    ...third,
+    ...ad
   ];
 
   var apis_1 = apis;
@@ -292,10 +299,6 @@ var serviceContext = (function () {
     return ('' + str).replace(/[^\x00-\xff]/g, '**').length
   }
 
-  function guid () {
-    return Math.floor(4294967296 * (1 + Math.random())).toString(16).slice(1)
-  }
-
   function debounce (fn, delay) {
     let timeout;
     return function () {
@@ -304,6 +307,17 @@ var serviceContext = (function () {
       timeout = setTimeout(timerFn, delay);
     }
   }
+
+  const encodeReserveRE = /[!'()*]/g;
+  const encodeReserveReplacer = c => '%' + c.charCodeAt(0).toString(16);
+  const commaRE = /%2C/g;
+
+  // fixed encodeURIComponent which is more conformant to RFC3986:
+  // - escapes [!'()*]
+  // - preserve commas
+  const encode = str => encodeURIComponent(str)
+    .replace(encodeReserveRE, encodeReserveReplacer)
+    .replace(commaRE, ',');
 
   const decode = decodeURIComponent;
 
@@ -333,6 +347,38 @@ var serviceContext = (function () {
     });
 
     return res
+  }
+
+  function stringifyQuery (obj, encodeStr = encode) {
+    const res = obj ? Object.keys(obj).map(key => {
+      const val = obj[key];
+
+      if (val === undefined) {
+        return ''
+      }
+
+      if (val === null) {
+        return encodeStr(key)
+      }
+
+      if (Array.isArray(val)) {
+        const result = [];
+        val.forEach(val2 => {
+          if (val2 === undefined) {
+            return
+          }
+          if (val2 === null) {
+            result.push(encodeStr(key));
+          } else {
+            result.push(encodeStr(key) + '=' + encodeStr(val2));
+          }
+        });
+        return result.join('&')
+      }
+
+      return encodeStr(key) + '=' + encodeStr(val)
+    }).filter(x => x.length > 0).join('&') : null;
+    return res ? `?${res}` : ''
   }
 
   let id = 0;
@@ -1282,9 +1328,9 @@ var serviceContext = (function () {
     ARRAYBUFFER: 'arraybuffer'
   };
 
-  const encode = encodeURIComponent;
+  const encode$1 = encodeURIComponent;
 
-  function stringifyQuery (url, data) {
+  function stringifyQuery$1 (url, data) {
     let str = url.split('#');
     const hash = str[1] || '';
     str = str[0].split('?');
@@ -1299,9 +1345,9 @@ var serviceContext = (function () {
     for (let key in data) {
       if (data.hasOwnProperty(key)) {
         if (isPlainObject(data[key])) {
-          query[encode(key)] = encode(JSON.stringify(data[key]));
+          query[encode$1(key)] = encode$1(JSON.stringify(data[key]));
         } else {
-          query[encode(key)] = encode(data[key]);
+          query[encode$1(key)] = encode$1(data[key]);
         }
       }
     }
@@ -1332,7 +1378,7 @@ var serviceContext = (function () {
           isPlainObject(params.data) &&
           Object.keys(params.data).length
         ) { // 将 method,data 校验提前,保证 url 校验时,method,data 已被格式化
-          params.url = stringifyQuery(value, params.data);
+          params.url = stringifyQuery$1(value, params.data);
         }
       }
     },
@@ -1423,21 +1469,26 @@ var serviceContext = (function () {
     closeSocket: closeSocket
   });
 
+  // App端可以只使用files不传filePath和name
+
   const uploadFile = {
     url: {
       type: String,
       required: true
     },
+    files: {
+      type: Array
+    },
     filePath: {
       type: String,
-      required: true,
       validator (value, params) {
-        params.type = getRealPath(value);
+        if (value) {
+          params.type = getRealPath(value);
+        }
       }
     },
     name: {
-      type: String,
-      required: true
+      type: String
     },
     header: {
       type: Object,
@@ -2328,7 +2379,12 @@ var serviceContext = (function () {
       } else if (res.errMsg.indexOf(':cancel') !== -1) {
         res.errMsg = apiName + ':cancel';
       } else if (res.errMsg.indexOf(':fail') !== -1) {
-        res.errMsg = apiName + ':fail' + res.errMsg.substr(res.errMsg.indexOf(' '));
+        let errDetail = '';
+        let spaceIndex = res.errMsg.indexOf(' ');
+        if (spaceIndex > -1) {
+          errDetail = res.errMsg.substr(spaceIndex);
+        }
+        res.errMsg = apiName + ':fail' + errDetail;
       }
 
       const errMsg = res.errMsg;
@@ -3529,6 +3585,84 @@ var serviceContext = (function () {
     pageVm.$page.meta.isNVue
       ? operateVideoPlayer$1(videoId, pageVm, type, data)
       : operateVideoPlayer(videoId, pageVm, type, data);
+  }
+
+  class LivePusherContext {
+    constructor (id, ctx) {
+      this.id = id;
+      this.ctx = ctx;
+    }
+
+    start (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'start', cbs)
+    }
+
+    stop (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'stop', cbs)
+    }
+
+    pause (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'pause', cbs)
+    }
+
+    resume (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'resume', cbs)
+    }
+
+    switchCamera (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'switchCamera', cbs)
+    }
+
+    snapshot (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'snapshot', cbs)
+    }
+
+    toggleTorch (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'toggleTorch', cbs)
+    }
+
+    playBGM (args) {
+      return invokeVmMethod(this.ctx, 'playBGM', args)
+    }
+
+    stopBGM (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'stopBGM', cbs)
+    }
+
+    pauseBGM (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'pauseBGM', cbs)
+    }
+
+    resumeBGM (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'resumeBGM', cbs)
+    }
+
+    setBGMVolume (cbs) {
+      return invokeVmMethod(this.ctx, 'setBGMVolume', cbs)
+    }
+
+    startPreview (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'startPreview', cbs)
+    }
+
+    stopPreview (args) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'stopPreview', args)
+    }
+  }
+
+  function createLivePusherContext (id, vm) {
+    if (!vm) {
+      return console.warn('uni.createLivePusherContext 必须传入第二个参数，即当前 vm 对象(this)')
+    }
+    const elm = findElmById(id, vm);
+    if (!elm) {
+      return console.warn('Can not find `' + id + '`')
+    }
+    return new LivePusherContext(id, elm)
+  }
+
+  function createLivePusherContext$1 (id, vm) {
+    return createLivePusherContext(id, vm)
   }
 
   let watchAccelerationId = false;
@@ -4874,6 +5008,8 @@ var serviceContext = (function () {
     });
   }
 
+  let maskClickCallback = [];
+
   var tabBar$1 = {
     id: '0',
     init (options, clickCallback) {
@@ -4885,6 +5021,11 @@ var serviceContext = (function () {
       } catch (error) {
         console.log(`uni.requireNativePlugin("uni-tabview") error ${error}`);
       }
+      tabBar.onMaskClick(() => {
+        maskClickCallback.forEach((callback) => {
+          callback();
+        });
+      });
       tabBar && tabBar.onClick(({ index }) => {
         clickCallback(config.list[index], index);
       });
@@ -4951,7 +5092,11 @@ var serviceContext = (function () {
       });
     },
     addEventListener (name, callback) {
-      tabBar.onMaskClick(callback);
+      maskClickCallback.push(callback);
+    },
+    removeEventListener (name, callback) {
+      let callbackIndex = maskClickCallback.indexOf(callback);
+      maskClickCallback.splice(callbackIndex, 1);
     }
   };
 
@@ -6232,7 +6377,7 @@ var serviceContext = (function () {
           statusCode: 0,
           errMsg: 'timeout'
         });
-      }, timeout);
+      }, (timeout + 200));// TODO +200 发消息到原生层有时间开销，以后考虑由原生层回调超时
     }
     const options = {
       method,
@@ -6483,7 +6628,7 @@ var serviceContext = (function () {
     }
     for (const name in formData) {
       if (formData.hasOwnProperty(name)) {
-        uploader.addData(name, formData[name]);
+        uploader.addData(name, String(formData[name]));
       }
     }
     if (files && files.length) {
@@ -7026,6 +7171,39 @@ var serviceContext = (function () {
     );
   }
 
+  function shareWithSystem (params, callbackId, method = 'shareWithSystem') {
+    let {
+      type,
+      imageUrl,
+      summary: content,
+      href
+    } = params;
+    type = type || 'text';
+    const allowedTypes = ['text', 'image'];
+    if (allowedTypes.indexOf(type) < 0) {
+      invoke$1(callbackId, {
+        errMsg: method + ':fail:分享参数 type 不正确'
+      });
+    }
+    if (typeof imageUrl === 'string' && imageUrl) {
+      imageUrl = getRealPath$1(imageUrl);
+    }
+    plus.share.sendWithSystem({
+      type,
+      pictures: imageUrl ? [imageUrl] : [],
+      content,
+      href
+    }, function (res) {
+      invoke$1(callbackId, {
+        errMsg: method + ':ok'
+      });
+    }, function (err) {
+      invoke$1(callbackId, {
+        errMsg: method + ':fail:' + err.message
+      });
+    });
+  }
+
   function restoreGlobal (
     newWeex,
     newPlus,
@@ -7429,6 +7607,10 @@ var serviceContext = (function () {
       delete webviewStyle.popGesture;
     }
 
+    if (routeOptions.meta.isQuit) { // 退出
+      webviewStyle.popGesture = plus.os.name === 'iOS' ? 'appback' : 'none';
+    }
+
     // TODO 下拉刷新
 
     if (path && routeOptions.meta.isNVue) {
@@ -7697,7 +7879,22 @@ var serviceContext = (function () {
     preloadWebview = webview;
   }
 
-  function createWebview (path, routeOptions) {
+  function noop$1 (str) {
+    return str
+  }
+
+  function getDebugRefresh (path, query, routeOptions) {
+    const queryString = query ? stringifyQuery(query, noop$1) : '';
+    return {
+      isTab: routeOptions.meta.isTabBar,
+      arguments: JSON.stringify({
+        path: path.substr(1),
+        query: queryString ? queryString.substr(1) : queryString
+      })
+    }
+  }
+
+  function createWebview (path, routeOptions, query) {
     if (routeOptions.meta.isNVue) {
       const webviewId = id$1++;
       const webviewStyle = parseWebviewStyle(
@@ -7705,6 +7902,7 @@ var serviceContext = (function () {
         path,
         routeOptions
       );
+      webviewStyle.debugRefresh = getDebugRefresh(path, query, routeOptions);
       if (process.env.NODE_ENV !== 'production') {
         console.log(`[uni-app] createWebview`, webviewId, path, webviewStyle);
       }
@@ -7719,7 +7917,7 @@ var serviceContext = (function () {
     return webview
   }
 
-  function initWebview (webview, routeOptions, url = '') {
+  function initWebview (webview, routeOptions, path, query) {
     // 首页或非 nvue 页面
     if (webview.id === '1' || !routeOptions.meta.isNVue) {
       const webviewStyle = parseWebviewStyle(
@@ -7727,17 +7925,7 @@ var serviceContext = (function () {
         '',
         routeOptions
       );
-      if (url) {
-        const part = url.split('?');
-        webviewStyle.debugRefresh = {
-          isTab: routeOptions.meta.isTabBar,
-          arguments: JSON.stringify({
-            path: part[0].substr(1),
-            query: part[1] || ''
-          })
-        };
-      }
-
+      webviewStyle.debugRefresh = getDebugRefresh(path, query, routeOptions);
       if (process.env.NODE_ENV !== 'production') {
         console.log(`[uni-app] updateWebview`, webviewStyle);
       }
@@ -7955,7 +8143,7 @@ var serviceContext = (function () {
     }
 
     if (!webview) {
-      webview = createWebview(path, routeOptions);
+      webview = createWebview(path, routeOptions, query);
     } else {
       webview = plus.webview.getWebviewById(webview.id);
       webview.nvue = routeOptions.meta.isNVue;
@@ -7973,7 +8161,7 @@ var serviceContext = (function () {
       console.log(`[uni-app] registerPage`, path, webview.id);
     }
 
-    initWebview(webview, routeOptions, url);
+    initWebview(webview, routeOptions, path, query);
 
     const route = path.slice(1);
 
@@ -8229,6 +8417,9 @@ var serviceContext = (function () {
     // 查找当前 tabBarPage，且设置 visible
     getCurrentPages(true).forEach(page => {
       if (('/' + page.route) === path) {
+        if (!page.$page.meta.visible) {
+          page.$vm.__call_hook('onShow');
+        }
         page.$page.meta.visible = true;
         tabBarPage = page;
       } else {
@@ -8239,7 +8430,6 @@ var serviceContext = (function () {
     });
 
     if (tabBarPage) {
-      tabBarPage.$vm.__call_hook('onShow');
       tabBarPage.$getAppWebview().show('none');
     } else {
       return showWebview(registerPage({
@@ -8791,6 +8981,98 @@ var serviceContext = (function () {
       : requestComponentInfo(pageVm, queue, callback);
   }
 
+  const eventNames = [
+    'load',
+    'close',
+    'error'
+  ];
+
+  const ERROR_CODE_LIST = [-5001, -5002, -5003, -5004, -5005, -5006];
+
+  class RewardedVideoAd {
+    constructor (adpid) {
+      this._options = {
+        adpid: adpid
+      };
+
+      const _callbacks = this._callbacks = {};
+      eventNames.forEach(item => {
+        _callbacks[item] = [];
+        const name = item[0].toUpperCase() + item.substr(1);
+        this[`on${name}`] = function (callback) {
+          _callbacks[item].push(callback);
+        };
+      });
+
+      this._isLoad = false;
+      this._adError = '';
+      this._loadPromiseResolve = null;
+      this._loadPromiseReject = null;
+      const rewardAd = this._rewardAd = plus.ad.createRewardedVideoAd(this._options);
+      rewardAd.onLoad((e) => {
+        this._isLoad = true;
+        this._dispatchEvent('load', {});
+        if (this._loadPromiseResolve != null) {
+          this._loadPromiseResolve();
+          this._loadPromiseResolve = null;
+        }
+      });
+      rewardAd.onClose((e) => {
+        this._loadAd();
+        this._dispatchEvent('close', { isEnded: e.isEnded });
+      });
+      rewardAd.onError((e) => {
+        const { code, message } = e;
+        const data = { code: code, errMsg: message };
+        this._adError = message;
+        this._dispatchEvent('error', data);
+        if ((code === -5005 || ERROR_CODE_LIST.index(code) === -1) && this._loadPromiseReject != null) {
+          this._loadPromiseReject(data);
+          this._loadPromiseReject = null;
+        }
+      });
+      this._loadAd();
+    }
+    load () {
+      return new Promise((resolve, reject) => {
+        if (this._isLoad) {
+          resolve();
+          return
+        }
+        this._loadPromiseResolve = resolve;
+        this._loadPromiseReject = reject;
+        this._loadAd();
+      })
+    }
+    show () {
+      return new Promise((resolve, reject) => {
+        if (this._isLoad) {
+          this._rewardAd.show();
+          resolve();
+        } else {
+          reject(new Error(this._adError));
+        }
+      })
+    }
+    _loadAd () {
+      this._isLoad = false;
+      this._rewardAd.load();
+    }
+    _dispatchEvent (name, data) {
+      this._callbacks[name].forEach(callback => {
+        if (typeof callback === 'function') {
+          callback(data || {});
+        }
+      });
+    }
+  }
+
+  function createRewardedVideoAd ({
+    adpid = ''
+  } = {}) {
+    return new RewardedVideoAd(adpid)
+  }
+
 
 
   var api = /*#__PURE__*/Object.freeze({
@@ -8814,6 +9096,7 @@ var serviceContext = (function () {
     base64ToTempFilePath: base64ToTempFilePath,
     operateMapPlayer: operateMapPlayer$2,
     operateVideoPlayer: operateVideoPlayer$2,
+    createLivePusherContext: createLivePusherContext$1,
     enableAccelerometer: enableAccelerometer,
     addPhoneContact: addPhoneContact,
     openBluetoothAdapter: openBluetoothAdapter,
@@ -8895,6 +9178,7 @@ var serviceContext = (function () {
     requireNativePlugin: requireNativePlugin$1,
     shareAppMessageDirectly: shareAppMessageDirectly,
     share: share,
+    shareWithSystem: shareWithSystem,
     restoreGlobal: restoreGlobal,
     getSubNVueById: getSubNVueById,
     getCurrentSubNVue: getCurrentSubNVue,
@@ -8920,7 +9204,8 @@ var serviceContext = (function () {
     setTabBarStyle: setTabBarStyle$2,
     hideTabBar: hideTabBar$2,
     showTabBar: showTabBar$2,
-    requestComponentInfo: requestComponentInfo$2
+    requestComponentInfo: requestComponentInfo$2,
+    createRewardedVideoAd: createRewardedVideoAd
   });
 
   var platformApi = Object.assign(Object.create(null), api, eventApis);
@@ -8956,7 +9241,7 @@ var serviceContext = (function () {
     return page && page.$page.id
   }
 
-  const eventNames = [
+  const eventNames$1 = [
     'canplay',
     'play',
     'pause',
@@ -9021,7 +9306,7 @@ var serviceContext = (function () {
       this.id = id;
       this._callbacks = {};
       this._options = {};
-      eventNames.forEach(name => {
+      eventNames$1.forEach(name => {
         this._callbacks[name.toLowerCase()] = [];
       });
       props.forEach(item => {
@@ -9075,7 +9360,7 @@ var serviceContext = (function () {
     }
   }
 
-  eventNames.forEach(item => {
+  eventNames$1.forEach(item => {
     const name = item[0].toUpperCase() + item.substr(1);
     item = item.toLowerCase();
     InnerAudioContext.prototype[`on${name}`] = function (callback) {
@@ -9140,7 +9425,7 @@ var serviceContext = (function () {
     createInnerAudioContext: createInnerAudioContext
   });
 
-  const eventNames$1 = [
+  const eventNames$2 = [
     'canplay',
     'play',
     'pause',
@@ -9153,7 +9438,7 @@ var serviceContext = (function () {
     'waiting'
   ];
   const callbacks$4 = {};
-  eventNames$1.forEach(name => {
+  eventNames$2.forEach(name => {
     callbacks$4[name] = [];
   });
 
@@ -9256,7 +9541,7 @@ var serviceContext = (function () {
       this._operate('stop');
     }
     seek (position) {
-      this._operate('play', {
+      this._operate('seek', {
         currentTime: position
       });
     }
@@ -9267,7 +9552,7 @@ var serviceContext = (function () {
     }
   }
 
-  eventNames$1.forEach(item => {
+  eventNames$2.forEach(item => {
     const name = item[0].toUpperCase() + item.substr(1);
     BackgroundAudioManager.prototype[`on${name}`] = function (callback) {
       callbacks$4[item].push(callback);
@@ -10161,7 +10446,7 @@ var serviceContext = (function () {
     callback.invoke(callbackId, data);
   });
 
-  const methods = ['getCenterLocation', 'translateMarker', 'getScale', 'getRegion'];
+  const methods = ['getCenterLocation', 'getScale', 'getRegion'];
 
   class MapContext {
     constructor (id, pageVm) {
@@ -10176,10 +10461,14 @@ var serviceContext = (function () {
     includePoints (args) {
       operateMapPlayer$3(this.id, this.pageVm, 'includePoints', args);
     }
+
+    translateMarker (args) {
+      operateMapPlayer$3(this.id, this.pageVm, 'translateMarker', args);
+    }
   }
 
-  MapContext.prototype.$getAppMap = function() {
-    return plus.maps.getMapById(this.pageVm.$page.id + '-map-' + this.id);
+  MapContext.prototype.$getAppMap = function () {
+    return plus.maps.getMapById(this.pageVm.$page.id + '-map-' + this.id)
   };
 
   methods.forEach(function (method) {
@@ -10706,6 +10995,16 @@ var serviceContext = (function () {
   }
 
   function request$1 (args, callbackId) {
+    let contentType;
+    for (const name in args.header) {
+      if (name.toLowerCase() === 'content-type') {
+        contentType = args.header[name];
+        break
+      }
+    }
+    if (args.method !== 'GET' && contentType.indexOf('application/json') === 0 && isPlainObject(args.data)) {
+      args.data = JSON.stringify(args.data);
+    }
     const {
       requestTaskId
     } = invokeMethod('createRequestTask', args);
@@ -10996,6 +11295,23 @@ var serviceContext = (function () {
   const STORAGE_DATA_TYPE = '__TYPE';
   const STORAGE_KEYS = 'uni-storage-keys';
 
+  function parseValue (value) {
+    const types = ['object', 'string', 'number', 'boolean', 'undefined'];
+    try {
+      const object = typeof value === 'string' ? JSON.parse(value) : value;
+      const type = object.type;
+      if (types.indexOf(type) >= 0) {
+        const keys = Object.keys(object);
+        // eslint-disable-next-line valid-typeof
+        if (keys.length === 2 && 'data' in object && typeof object.data === type) {
+          return object.data
+        } else if (keys.length === 1) {
+          return ''
+        }
+      }
+    } catch (error) { }
+  }
+
   function setStorage$1 ({
     key,
     data
@@ -11006,6 +11322,11 @@ var serviceContext = (function () {
       data: data
     });
     try {
+      if (type === 'string' && parseValue(value) !== undefined) {
+        localStorage.setItem(key + STORAGE_DATA_TYPE, type);
+      } else {
+        localStorage.removeItem(key + STORAGE_DATA_TYPE);
+      }
       localStorage.setItem(key, value);
     } catch (error) {
       return {
@@ -11035,22 +11356,26 @@ var serviceContext = (function () {
       }
     }
     let data = value;
-    try {
-      const object = JSON.parse(value);
-      // 兼容App端历史格式
-      const type = localStorage.getItem(key + STORAGE_DATA_TYPE);
-      if (!type) {
-        const keys = Object.keys(object);
-        if (keys.length === 2 && 'type' in object && 'data' in object) {
-          data = object.data;
-        } else if (keys.length === 1 && 'type' in object) {
-          data = '';
+    const typeOrigin = localStorage.getItem(key + STORAGE_DATA_TYPE) || '';
+    const type = typeOrigin.toLowerCase();
+    if (type !== 'string' || (typeOrigin === 'String' && value === '{"type":"undefined"}')) {
+      try {
+        // 兼容H5和V3初期历史格式
+        let object = JSON.parse(value);
+        const result = parseValue(object);
+        if (result !== undefined) {
+          data = result;
+        } else if (type) {
+          // 兼容App端历史格式
+          data = object;
+          if (typeof object === 'string') {
+            object = JSON.parse(object);
+            // eslint-disable-next-line valid-typeof
+            data = typeof object === (type === 'null' ? 'object' : type) ? object : data;
+          }
         }
-      } else if (type !== 'String') {
-        data = object;
-        data = typeof data === 'string' ? JSON.parse(data) : data;
-      }
-    } catch (error) { }
+      } catch (error) { }
+    }
     return {
       data,
       errMsg: 'getStorage:ok'
@@ -12074,10 +12399,6 @@ var serviceContext = (function () {
     __uniConfig.tabBar.selected = 0;
 
     const selected = __uniConfig.tabBar.list.findIndex(page => page.pagePath === __uniConfig.entryPagePath);
-    if (selected !== -1) {
-      // 取当前 tab 索引值
-      __uniConfig.tabBar.selected = selected;
-    }
 
     tabBar$1.init(__uniConfig.tabBar, (item, index) => {
       uni.switchTab({
@@ -12093,22 +12414,36 @@ var serviceContext = (function () {
         }
       });
     });
+
+    if (selected !== -1) {
+      // 取当前 tab 索引值
+      __uniConfig.tabBar.selected = selected;
+      selected !== 0 && tabBar$1.switchTab(__uniConfig.entryPagePath);
+    }
   }
 
   function initEntryPage () {
-    const argsJsonStr = plus.runtime.arguments;
-    if (!argsJsonStr) {
-      return
-    }
-
     let entryPagePath;
     let entryPageQuery;
 
-    try {
-      const args = JSON.parse(argsJsonStr);
-      entryPagePath = args.path || args.pathName;
-      entryPageQuery = (args.query ? ('?' + args.query) : '');
-    } catch (e) {}
+    const weexPlus = weex.requireModule('plus');
+
+    if (weexPlus.getRedirectInfo) {
+      const info = weexPlus.getRedirectInfo() || {};
+      entryPagePath = info.path;
+      entryPageQuery = info.query ? ('?' + info.query) : '';
+    } else {
+      const argsJsonStr = plus.runtime.arguments;
+      if (!argsJsonStr) {
+        return
+      }
+      try {
+        const args = JSON.parse(argsJsonStr);
+        entryPagePath = args.path || args.pathName;
+        entryPageQuery = args.query ? ('?' + args.query) : '';
+      } catch (e) {}
+    }
+
     if (!entryPagePath || entryPagePath === __uniConfig.entryPagePath) {
       return
     }
@@ -12230,7 +12565,7 @@ var serviceContext = (function () {
 
   function initVue (Vue) {
     Vue.config.errorHandler = function (err) {
-      const app = getApp();
+      const app = typeof getApp === 'function' && getApp();
       if (app && hasLifecycleHook(app.$options, 'onError')) {
         app.__call_hook('onError', err);
       } else {
@@ -12750,7 +13085,11 @@ var serviceContext = (function () {
           this._$vdomSync = new VDomSync(this.$options.pageId, this.$options.pagePath, this);
         }
         if (this._$vd) {
-          this._$id = guid();
+          if (!this.$parent) {
+            this._$id = '-1';
+          } else {
+            this._$id = this.$parent._$id + ',' + this.$vnode.data.attrs._i;
+          }
           this._$vd.addVm(this);
           this._$vdMountedData = Object.create(null);
           this._$setData(MOUNTED_DATA, this._$vdMountedData);
@@ -12986,7 +13325,8 @@ var serviceContext = (function () {
       onPageReachBottom,
       onReachBottomDistance,
       statusbarHeight,
-      windowTop: windowOptions.titleNView && windowOptions.titleNView.type === 'float' ? (statusbarHeight + TITLEBAR_HEIGHT) : 0,
+      windowTop: windowOptions.titleNView && windowOptions.titleNView.type === 'float' ? (statusbarHeight +
+        TITLEBAR_HEIGHT) : 0,
       windowBottom: (tabBar$1.indexOf(route) >= 0 && tabBar$1.cover) ? tabBar$1.height : 0
     }
   }
@@ -12998,6 +13338,11 @@ var serviceContext = (function () {
       beforeCreate () {
         // TODO 临时解决方案,service 层也注入 wxs (适用于工具类)
         const options = this.$options;
+
+        // 自动挂载 $store
+        if (options.store && !Vue.prototype.$store) {
+          Vue.prototype.$store = options.store;
+        }
 
         const wxs = options.wxs;
         if (wxs) {
@@ -13070,16 +13415,18 @@ var serviceContext = (function () {
 
       Vue.prototype.$nextTick = function nextTick (cb) {
         const renderWatcher = this._watcher;
+        const callback = typeof cb === 'function';
         if (
           renderWatcher &&
           this._$queue.find(watcher => renderWatcher === watcher)
         ) {
-          vdSyncCallbacks.push(cb.bind(this));
+          const result = new Promise((resolve) => {
+            vdSyncCallbacks.push(callback ? cb.bind(this) : resolve);
+          });
+          return callback ? result : undefined
         } else {
           // $nextTick bind vm context
-          Vue.nextTick(() => {
-            cb.call(this);
-          });
+          return Vue.nextTick(callback ? () => cb.call(this) : undefined)
         }
       };
     }

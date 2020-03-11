@@ -30,9 +30,11 @@ const {
 
 const runtimePath = '@dcloudio/uni-mp-weixin/dist/mp.js'
 const wxsPath = '@dcloudio/uni-mp-weixin/dist/wxs.js'
+const uniCloudPath = path.resolve(__dirname, '../../packages/uni-cloud/dist/index.js')
 
 function getProvides () {
   return {
+    'uniCloud': [uniCloudPath, 'default'],
     'wx.nextTick': [runtimePath, 'nextTick'],
     'Page': [runtimePath, 'Page'],
     'Component': [runtimePath, 'Component'],
@@ -102,13 +104,23 @@ module.exports = {
     const beforeCode = (useBuiltIns === 'entry' ? `import '@babel/polyfill';` : '') +
       `import 'uni-pages';import 'uni-${process.env.UNI_PLATFORM}';`
 
+    const qihooCode = process.env.UNI_SUB_PLATFORM === 'mp-360'
+      ? `
+import 'uni-touch-emulator';
+import qh from 'uni-qh';
+global.qh = qh;
+global.onAppShow = function(){};
+` : ''
+
     return {
-      devtool: process.env.NODE_ENV === 'production' ? false : 'source-map',
+      devtool: process.env.NODE_ENV === 'production' ? false : 'cheap-module-eval-source-map',
       resolve: {
         extensions: ['.nvue'],
         alias: {
           'vue-router': resolve('packages/h5-vue-router'),
-          'uni-h5': require.resolve('@dcloudio/uni-h5')
+          'uni-h5': require.resolve('@dcloudio/uni-h5'),
+          'uni-qh': path.resolve(__dirname, 'qh-api.js'),
+          'uni-touch-emulator': path.resolve(__dirname, 'touch-emulator.js')
         }
       },
       module: {
@@ -118,7 +130,7 @@ module.exports = {
             loader: 'wrap-loader',
             options: {
               before: [
-                beforeCode + statCode + getGlobalUsingComponentsCode()
+                qihooCode + beforeCode + statCode + getGlobalUsingComponentsCode()
               ]
             }
           }]
