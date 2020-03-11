@@ -3,8 +3,7 @@ const webpack = require('webpack')
 
 const {
   getMainEntry,
-  isInHBuilderX,
-  getPlatformCompiler
+  isInHBuilderX
 } = require('@dcloudio/uni-cli-shared')
 
 const vueLoader = require('@dcloudio/uni-cli-shared/lib/vue-loader')
@@ -163,7 +162,7 @@ const v3 = {
             loader: isAppService ? 'wrap-loader' : path.resolve(__dirname,
               '../../packages/webpack-uni-app-loader/view/main.js'),
             options: {
-              compiler: getPlatformCompiler(),
+              compiler: vueLoader.compiler,
               before: [
                 beforeCode + statCode + getGlobalUsingComponentsCode()
               ]

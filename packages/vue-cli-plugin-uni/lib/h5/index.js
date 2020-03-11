@@ -182,11 +182,7 @@ global.onAppShow = function(){};
 
     modifyVueLoader(webpackConfig, {
       isH5: true,
-      hotReload: true,
-      transformAssetUrls: {
-        'v-uni-image': ['src'],
-        'v-uni-cover-image': ['src']
-      }
+      hotReload: true
     }, require('./compiler-options'), api)
 
     if (process.env.NODE_ENV === 'production') {
