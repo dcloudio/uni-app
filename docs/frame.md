@@ -53,6 +53,15 @@
 
 ### 模板内引入静态资源
 
+> `template`内引入静态资源，如`image`、`video`等标签的`src`属性时，可以使用相对路径或者绝对路径，形式如下
+
+```html
+<!-- 绝对路径，/static指根目录下的static目录，在cli项目中/static指src目录下的static目录 -->
+<image class="logo" src="/static/logo.png"></image>
+<!-- 相对路径 -->
+<image class="logo" src="../../static/logo.png"></image>
+```
+
 ### js文件引入
 
 > `js`文件或`script`标签内（包括renderjs等）引入`js`文件时，可以使用相对路径和绝对路径，形式如下
@@ -62,15 +71,6 @@
 import add from '@/common/add.js'
 // 相对路径
 import add from '../../common/add.js'
-```
-
-> `template`内引入静态资源，如`image`、`video`等标签的`src`属性时，可以使用相对路径或者绝对路径，形式如下
-
-```html
-<!-- 绝对路径，/static指根目录下的static目录，在cli项目中/static指src目录下的static目录 -->
-<image class="logo" src="/static/logo.png"></image>
-<!-- 相对路径 -->
-<image class="logo" src="../../static/logo.png"></image>
 ```
 
 ### css引入静态资源
