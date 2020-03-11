@@ -9,7 +9,6 @@ export default [
   'getSavedFileList',
   'getSavedFileInfo',
   'removeSavedFileInfo',
-  'getFileInfo',
   'onMemoryWarning',
   'onGyroscopeChange',
   'startGyroscope',
