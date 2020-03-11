@@ -76,8 +76,6 @@
   + iOS平台 新增 应用使用Push（消息推送）模块后启动时不弹出“发送通知”系统授权框的配置方法 [详情](https://ask.dcloud.net.cn/article/36955#push)
   + iOS平台 修复 视频播放控件 VideoPlayer 设置 objectFit 属性不生效的bug [详情](https://ask.dcloud.net.cn/question/88221)
   + iOS平台 修复 使用WKWebview内核 plus.orientation.getCurrentOrientation 无法获取设备方向信息的Bug
-  + Hello H5+ 新增 标题栏自定义返回按钮、标题居左、背景图、背景渐变色等示例
-  + Hello H5+ 修复 iOS平台 使用WKWebview导致微信和支付宝支付示例总是提示获取订单失败的Bug
 * 【uni小程序SDK】
   + 新增 启动小程序支持传入参数及直达指定页面 [详情](https://ask.dcloud.net.cn/docs/#https://ask.dcloud.net.cn/article/37010)
   + 新增 关闭当前小程序方法及小程序关闭回调方法 [详情](https://ask.dcloud.net.cn/docs/#https://ask.dcloud.net.cn/article/37014)
@@ -165,8 +163,6 @@
   + iOS平台 修复 在非刘海屏手机获取应用的安全区域 plus.navigator.getSafeAreaInsets 返回 deviceTop 数据可能不正确的Bug
   + iOS平台 修复 调用 plus.gallery.pick 选择相册中的照片后, 连续快速点击完成按钮可能会引起应用崩溃的Bug [详情](https://ask.dcloud.net.cn/question/87123)
   + iOS平台 修复 视频播放控件 VideoPlayer 暂停播放后手势快进或后退操作时，没有更新进度条上显示时间的Bug
-  + Hello H5+ 新增 应用内广告示例 uni-AD 页面
-  + Hello H5+ 修复 iOS平台 使用WKWebview导致微信和支付宝支付示例总是提示获取订单失败的Bug
 
 #### 2.5.11.20200212-alpha
 * 【uni-app插件】
@@ -177,7 +173,6 @@
   + 新增 uni-AD 支持激励视频广告 [文档](https://www.html5plus.org/doc/zh_cn/ad.html#plus.ad.createRewardedVideoAd)
   + 新增 推送 支持异步获取客户端推送标识接口 plus.push.getClientInfoAsync，解决同步接口可能返回空数据的问题 [文档](https://www.html5plus.org/doc/zh_cn/push.html#plus.push.getClientInfoAsync)
   + iOS平台 修复 HBuilderX2.5.8引出的视频播放控件无法播放直播地址的Bug [详情](https://ask.dcloud.net.cn/question/88393)
-  + Hello H5+ 新增 激励视频广告演示示例
 
 #### 2.5.10.20200205-alpha
 * 【uni-app插件】
@@ -287,9 +282,8 @@
   + 【重要】Android平台 新增 腾讯X5内核。可解决rom自定义主题字体适配、低端机浏览器兼容性等问题 [详情](https://ask.dcloud.net.cn/article/36806)
   + Android平台 修复 Webview窗口创建并显示后立即关闭可能出现闪退的Bug [详情](https://ask.dcloud.net.cn/question/86918)
   + iOS平台 修复 在非刘海屏手机获取应用的安全区域 plus.navigator.getSafeAreaInsets 返回 deviceTop 数据可能不正确的Bug
-  + Hello H5+ 新增 应用内广告示例 uni-AD 页面
 
-#### 2.5.1.20190103
+#### 2.5.1.20200103
 * 【uni-app插件】
   + 【重要】App端重大架构升级 `v3编译器`，更快的启动速度、更好的性能、更多vue语法支持、可webview调试视图层。新项目默认开启v3，可通过【manifest.json-App其他设置】开启关闭v3 [详情](https://ask.dcloud.net.cn/article/36599)
   + 【重要】H5平台、QQ小程序 支持运行微信小程序组件 [详情](https://uniapp.dcloud.io/h5/pages/template/vant-button/vant-button)
@@ -597,6 +591,8 @@
   + iOS平台 修复 用户拒绝访问相机后，调用摄像头拍照或录像时不会触发错误回调的Bug
   + iOS平台 修复 配置使用高德或百度地图后，定位默认没有使用gcj02坐标的Bug
   + iOS平台 修复 系统日期（plus.nativeUI.pickDate）、时间（plus.nativeUI.pickTime）选择框与系统提示框遮罩颜色不一致的Bug
+* 【mui】
+  + iOS平台 wkwebview下，plusready未触发时调用mui.ajax，在控制台输出正确的告警提醒
 
 #### 2.4.2.20191115
 * 【uni-app插件】
@@ -1117,7 +1113,6 @@
   + iOS平台 修复 Webview窗口背景设置为深色时，Tab栏上面会出现白条的Bug [详情](https://ask.dcloud.net.cn/question/77442)
   + iOS平台 修复 Webview窗口使用WKWebview内核时overrideUrlLoading方法无效的Bug [详情](https://ask.dcloud.net.cn/question/78173)
   + iOS平台 修复 蓝牙（Bluetooth）开始搜索后不停止直接关闭页面可能会引起应用崩溃的Bug
-  + Hello H5+ 适配iOS平台二维码扫描控件在WKWebview中显示高度可能不正确的Bug（position属性值由fixed调整为absolute）
 
 #### 2.3.0.20190919-alpha
 * 【uni-app插件】
@@ -1236,7 +1231,6 @@
   + iOS平台 修复 nvue页面中video标签设置封面图片（poster）后动态修改src属性可能引起应用崩溃的Bug [详情](https://ask.dcloud.net.cn/question/77353)
   + iOS平台 修复 nvue页面中video标签中退出全屏后覆盖元素显示不正常的Bug
   + iOS平台 修复 uni原生插件实现代理方法（application:handleOpenURL:）不触发，导致无法获取第三方应用返回数据的Bug
-  + Hello H5+ 适配iOS平台二维码扫描页面在WKWebview中position定位问题（fixed调整为absolute）
 
 #### 2.2.4.20190823-alpha
 * 【uni-app插件】
