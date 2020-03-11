@@ -8,6 +8,23 @@
 
 上传文件到云存储，**阿里云单文件大小限制为100M，腾讯云单文件最大为5G**
 
+**阿里云支持的文件类型**
+
+```js
+{
+  jpg: 'image/jpeg',
+  jpeg: 'image/jpeg',
+  png: 'image/png',
+  gif: 'image/gif',
+  webp: 'image/webp',
+  svg: 'image/svg+xml',
+  mp3: 'audio/mp3',
+  mp4: 'video/mp4',
+  ogg: 'audio/ogg',
+  webm: 'video/webm'
+}
+```
+
 #### 请求参数
 **Object object**
 
