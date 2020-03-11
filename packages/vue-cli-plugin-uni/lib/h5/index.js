@@ -180,7 +180,14 @@ global.onAppShow = function(){};
       webpackConfig.plugins.delete('preload-index')
     }
 
-    modifyVueLoader(webpackConfig, require('./compiler-options'), api)
+    modifyVueLoader(webpackConfig, {
+      isH5: true,
+      hotReload: true,
+      transformAssetUrls: {
+        'v-uni-image': ['src'],
+        'v-uni-cover-image': ['src']
+      }
+    }, require('./compiler-options'), api)
 
     if (process.env.NODE_ENV === 'production') {
       require('./cssnano-options')(webpackConfig)
