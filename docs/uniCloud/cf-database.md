@@ -779,6 +779,20 @@ let res = await db.collection('user').where({
 }
 ```
 
+请注意并没有提供减法操作，如果要实现减法，也需通过inc实现。比如上述字段减1，
+
+```js
+const dbCmd = db.command
+
+let res = await db.collection('user').where({
+  _id: 'my-doc-id'
+}).update({
+  count: {
+    fav: dbCmd.inc(-1)
+  }
+})
+```
+
 #### mul
 
 更新指令。用于指示字段自乘某个值。
@@ -817,6 +831,20 @@ let res = await db.collection('user').where({
     "follow": 0
   }
 }
+```
+
+请注意并没有提供除法操作，如果要实现除法，也需通过mul实现。比如上述字段除以10，
+
+```js
+const dbCmd = db.command
+
+let res = await db.collection('user').where({
+  _id: 'my-doc-id'
+}).update({
+  count: {
+    fav: dbCmd.mul(0.1)
+  }
+})
 ```
 
 #### remove
