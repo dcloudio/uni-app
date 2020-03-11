@@ -52,9 +52,13 @@ export function getSystemInfo () {
   }
   const windowTop = titleNView.cover ? titleNView.height : 0
   const windowBottom = tabBarView.cover ? tabBarView.height : 0
-  const windowHeight = screenHeight - titleNView.height - tabBarView.height
-  const windowHeightReal = screenHeight - (titleNView.cover ? 0 : titleNView.height) - (tabBarView.cover ? 0 : tabBarView.height)
+  let windowHeight = screenHeight - titleNView.height - tabBarView.height
+  let windowHeightReal = screenHeight - (titleNView.cover ? 0 : titleNView.height) - (tabBarView.cover ? 0 : tabBarView.height)
   const windowWidth = screenWidth
+  if ((!tabBarView.height || tabBarView.cover) && !safeAreaInsets.bottom && safeAreaInsets.deviceBottom) {
+    windowHeight -= safeAreaInsets.deviceBottom
+    windowHeightReal -= safeAreaInsets.deviceBottom
+  }
   safeAreaInsets = ios ? safeAreaInsets : {
     left: 0,
     right: 0,
