@@ -27,9 +27,9 @@
 |enable-traffic|Boolean|false|是否开启实时路况|App-nvue 2.1.5+、微信小程序2.7.0|
 |show-location|Boolean||显示带有方向的当前定位点|微信小程序、H5、百度小程序、支付宝小程序|
 |polygons|Array.`<polygon>`||多边形|App-nvue 2.1.5+、微信小程序、百度小程序、支付宝小程序|
-|@markertap|EventHandle||点击标记点时触发|App-nvue 2.3.3+, App平台需要指定 marker 对象属性 id|
-|@callouttap|EventHandle||点击标记点对应的气泡时触发||
-|@controltap|EventHandle||点击控件时触发||
+|@markertap|EventHandle||点击标记点时触发，点击标记点时触发，e.detail = {markerId}|App-nvue 2.3.3+, App平台需要指定 marker 对象属性 id|
+|@callouttap|EventHandle||点击标记点对应的气泡时触发，e.detail = {markerId}||
+|@controltap|EventHandle||点击控件时触发，e.detail = {controlId}||
 |@regionchange|EventHandle||视野发生变化时触发|微信小程序、H5、百度小程序、支付宝小程序|
 |@tap|EventHandle||点击地图时触发; App-nuve、微信小程序2.9支持返回经纬度||
 |@updated|EventHandle||在地图渲染更新完成时触发|微信小程序、H5、百度小程序|
