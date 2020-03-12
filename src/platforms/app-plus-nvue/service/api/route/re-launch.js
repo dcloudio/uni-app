@@ -41,7 +41,8 @@ export function reLaunch ({
       invoke(callbackId, {
         errMsg: 'reLaunch:ok'
       })
-    }
+    },
+    0
   )
 
   pages.forEach(page => {

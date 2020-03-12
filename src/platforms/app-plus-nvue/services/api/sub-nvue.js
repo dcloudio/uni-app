@@ -29,7 +29,11 @@ export function initSubNVue (nvue, plus, BroadcastChannel) {
     }
   })
 
-  const webviewId = plus.webview.currentWebview().id
+  let webviewId = ''
+  // native模式下去除此setTimeout会导致uni.relaunch报错
+  setTimeout(() => {
+    webviewId = plus.webview.currentWebview().id
+  })
 
   const channel = new BroadcastChannel('UNI-APP-SUBNVUE')
   channel.onmessage = function (event) {
