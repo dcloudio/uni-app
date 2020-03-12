@@ -17,7 +17,6 @@ module.exports = (api, options, rootOptions) => {
         'dev:mp-alipay': 'cross-env NODE_ENV=development UNI_PLATFORM=mp-alipay vue-cli-service uni-build --watch',
         'dev:mp-toutiao': 'cross-env NODE_ENV=development UNI_PLATFORM=mp-toutiao vue-cli-service uni-build --watch',
         'dev:quickapp': 'cross-env NODE_ENV=development UNI_PLATFORM=quickapp vue-cli-service uni-build --watch',
-        'dev:mp-360': 'cross-env NODE_ENV=development UNI_PLATFORM=mp-360 vue-cli-service uni-build --watch',
         'build:h5': 'cross-env NODE_ENV=production UNI_PLATFORM=h5 vue-cli-service uni-build',
         'build:mp-qq': 'cross-env NODE_ENV=production UNI_PLATFORM=mp-qq vue-cli-service uni-build',
         'build:mp-weixin': 'cross-env NODE_ENV=production UNI_PLATFORM=mp-weixin vue-cli-service uni-build',
@@ -25,7 +24,6 @@ module.exports = (api, options, rootOptions) => {
         'build:mp-alipay': 'cross-env NODE_ENV=production UNI_PLATFORM=mp-alipay vue-cli-service uni-build',
         'build:mp-toutiao': 'cross-env NODE_ENV=production UNI_PLATFORM=mp-toutiao vue-cli-service uni-build',
         'build:quickapp': 'cross-env NODE_ENV=production UNI_PLATFORM=quickapp vue-cli-service uni-build',
-        'build:mp-360': 'cross-env NODE_ENV=production UNI_PLATFORM=mp-360 vue-cli-service uni-build',
         'dev:custom': 'cross-env NODE_ENV=development uniapp-cli custom',
         'build:custom': 'cross-env NODE_ENV=production uniapp-cli custom'
       },

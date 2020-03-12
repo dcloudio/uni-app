@@ -332,10 +332,6 @@ const PLATFORMS = {
   }
 }
 // 解决 vue-cli-service lint 时 UNI_PLATFORM 不存在
-if (process.env.UNI_PLATFORM === 'mp-360') {
-  process.env.UNI_PLATFORM = 'h5'
-  process.env.UNI_SUB_PLATFORM = 'mp-360'
-}
 process.env.UNI_PLATFORM = process.env.UNI_PLATFORM || 'h5'
 
 const platform = PLATFORMS[process.env.UNI_PLATFORM]
@@ -369,14 +365,6 @@ if (process.env.UNI_PLATFORM.indexOf('mp-') === 0) {
 
 if (process.env.UNI_PLATFORM.indexOf('app-') === 0) {
   preprocessContext['APP'] = true
-}
-
-preprocessContext['MP-360'] = false
-preprocessContext['MP_360'] = false
-if (process.env.UNI_SUB_PLATFORM === 'mp-360') {
-  preprocessContext['H5'] = false
-  preprocessContext['MP-360'] = true
-  preprocessContext['MP_360'] = true
 }
 
 if (process.UNI_SCRIPT_DEFINE && Object.keys(process.UNI_SCRIPT_DEFINE).length) {
