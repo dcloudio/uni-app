@@ -84,6 +84,12 @@ function initGlobalListeners () {
     })
   })
 
+  plus.globalEvent.addEventListener('uistylechange', function (event) {
+    publish('onUIStyleChange', {
+      style: event.uistyle
+    })
+  })
+
   plus.globalEvent.addEventListener('plusMessage', onPlusMessage)
 
   // nvue webview post message
