@@ -137,15 +137,16 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
       }
     }
   }
-
+  const babelLoaderRe = /^babel-loader|(\/|\\)babel-loader/
+  const cacheLoaderRe = /^cache-loader|(\/|\\)cache-loader/
   return function (webpackConfig) {
     // disable js cache-loader
     const rawRules = webpackConfig.module.rules
     for (let i = rawRules.length - 1; i >= 0; i--) {
       const uses = rawRules[i].use
       if (Array.isArray(uses)) {
-        if (uses.find(use => use.loader === 'babel-loader')) {
-          const index = uses.findIndex(use => use.loader === 'cache-loader')
+        if (uses.find(use => babelLoaderRe.test(use.loader))) {
+          const index = uses.findIndex(use => cacheLoaderRe.test(use.loader))
           if (process.env.UNI_USING_CACHE) {
             Object.assign(uses[index].options, api.genCacheConfig(
               'babel-loader/' + process.env.UNI_PLATFORM,
@@ -159,7 +160,7 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
     }
 
     // js preprocess
-    updateJsLoader(rawRules, 'foo.js', /^(.*[/\\])?babel-loader/, {
+    updateJsLoader(rawRules, 'foo.js', babelLoaderRe, {
       loader: resolve('packages/webpack-preprocess-loader'),
       options: jsPreprocessOptions
     })
