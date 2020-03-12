@@ -255,7 +255,7 @@ export default {
       })
     },
     controlclick (e) {
-      this.$trigger('controltap', {}, { id: e.id })
+      this.$trigger('controltap', {}, { controlId: e.id })
     },
     _publishHandler (callbackId, data) {
       UniViewJSBridge.publishHandler('onMapMethodCallback', {
@@ -299,13 +299,13 @@ export default {
         if (id || id === 0) {
           nativeMarker.onclick = (e) => {
             this.$trigger('markertap', {}, {
-              id
+              markerId: id
             })
           }
           if (nativeBubble) {
             nativeBubble.onclick = () => {
               this.$trigger('callouttap', {}, {
-                id
+                markerId: id
               })
             }
           }

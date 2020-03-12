@@ -11,12 +11,6 @@ const {
 } = require('./scss')
 
 const uniRuntime = '@dcloudio/vue-cli-plugin-uni/packages/mp-vue'
-const mpvueRuntime = '@dcloudio/vue-cli-plugin-uni/packages/mpvue'
-const megaloRuntime = '@dcloudio/vue-cli-plugin-uni/packages/megalo'
-
-const uniCompiler = '@dcloudio/uni-template-compiler'
-const mpvueCompiler = '@dcloudio/vue-cli-plugin-uni/packages/mpvue-template-compiler'
-const megaloCompiler = '@megalo/template-compiler'
 
 function getShadowCss () {
   let tagName = 'page'
@@ -94,7 +88,6 @@ const PLATFORMS = {
     exts: false,
     vue: '@dcloudio/vue-cli-plugin-uni/packages/h5-vue',
     compiler: false,
-    megalo: false,
     filterTag: 'wxs',
     subPackages: false,
     cssVars: {
@@ -149,9 +142,6 @@ const PLATFORMS = {
       template: '.wxml',
       filter: '.wxs'
     },
-    vue: mpvueRuntime,
-    compiler: mpvueCompiler,
-    megalo: false,
     filterTag: 'wxs',
     subPackages: false,
     cssVars: {},
@@ -203,9 +193,6 @@ const PLATFORMS = {
       template: '.qml',
       filter: '.wxs'
     },
-    vue: mpvueRuntime,
-    compiler: mpvueCompiler,
-    megalo: false,
     filterTag: 'wxs',
     subPackages: true,
     cssVars: {
@@ -230,9 +217,6 @@ const PLATFORMS = {
       template: '.wxml',
       filter: '.wxs'
     },
-    vue: mpvueRuntime,
-    compiler: mpvueCompiler,
-    megalo: false,
     filterTag: 'wxs',
     subPackages: true,
     cssVars: {
@@ -267,9 +251,6 @@ const PLATFORMS = {
       template: '.swan',
       filter: '.filter.js'
     },
-    vue: megaloRuntime,
-    compiler: megaloCompiler,
-    megalo: 'swan',
     filterTag: 'filter',
     subPackages: true,
     cssVars: {
@@ -294,9 +275,6 @@ const PLATFORMS = {
       template: '.axml',
       filter: '.sjs'
     },
-    vue: megaloRuntime,
-    compiler: megaloCompiler,
-    megalo: 'alipay',
     filterTag: 'sjs',
     subPackages: true,
     cssVars: {
@@ -319,9 +297,6 @@ const PLATFORMS = {
       style: '.ttss',
       template: '.ttml'
     },
-    vue: megaloRuntime,
-    compiler: megaloCompiler,
-    megalo: 'tt',
     subPackages: false,
     cssVars: {
       '--status-bar-height': '25px',
@@ -357,10 +332,6 @@ const PLATFORMS = {
   }
 }
 // 解决 vue-cli-service lint 时 UNI_PLATFORM 不存在
-if (process.env.UNI_PLATFORM === 'mp-360') {
-  process.env.UNI_PLATFORM = 'h5'
-  process.env.UNI_SUB_PLATFORM = 'mp-360'
-}
 process.env.UNI_PLATFORM = process.env.UNI_PLATFORM || 'h5'
 
 const platform = PLATFORMS[process.env.UNI_PLATFORM]
@@ -394,14 +365,6 @@ if (process.env.UNI_PLATFORM.indexOf('mp-') === 0) {
 
 if (process.env.UNI_PLATFORM.indexOf('app-') === 0) {
   preprocessContext['APP'] = true
-}
-
-preprocessContext['MP-360'] = false
-preprocessContext['MP_360'] = false
-if (process.env.UNI_SUB_PLATFORM === 'mp-360') {
-  preprocessContext['H5'] = false
-  preprocessContext['MP-360'] = true
-  preprocessContext['MP_360'] = true
 }
 
 if (process.UNI_SCRIPT_DEFINE && Object.keys(process.UNI_SCRIPT_DEFINE).length) {
@@ -579,16 +542,6 @@ module.exports = {
       return uniRuntime
     }
     return platform.vue
-  },
-  getPlatformCompiler () {
-    if (
-      process.env.UNI_USING_COMPONENTS ||
-      process.env.UNI_PLATFORM === 'h5' ||
-      process.env.UNI_PLATFORM === 'quickapp'
-    ) {
-      return require(uniCompiler)
-    }
-    return require(platform.compiler)
   },
   getPlatformCssVars () {
     return platform.cssVars

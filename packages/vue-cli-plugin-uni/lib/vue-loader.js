@@ -1,13 +1,10 @@
-const {
-  getPlatformCompiler
-} = require('@dcloudio/uni-cli-shared')
+const vueLoader = require('@dcloudio/uni-cli-shared/lib/vue-loader')
 
 const {
-  isUnaryTag,
   getPartialIdentifier
 } = require('./util')
 
-module.exports = function modifyVueLoader (webpackConfig, compilerOptions, api) {
+module.exports = function modifyVueLoader (webpackConfig, loaderOptions, compilerOptions, api) {
   // vue-loader options
 
   const cacheConfig = {
@@ -24,23 +21,11 @@ module.exports = function modifyVueLoader (webpackConfig, compilerOptions, api) 
 
   webpackConfig.module
     .rule('vue')
-    .test([/\.vue$/, /\.nvue$/])
+    .test(vueLoader.test)
     .use('vue-loader')
-    .loader(require.resolve('@dcloudio/vue-cli-plugin-uni/packages/vue-loader'))
-    .tap(options => Object.assign(options, {
-      isH5: process.env.UNI_PLATFORM === 'h5',
-      compiler: getPlatformCompiler(),
-      compilerOptions: Object.assign({
-        isUnaryTag,
-        preserveWhitespace: false
-      }, compilerOptions)
-    }, cacheConfig))
+    .loader(vueLoader.loader)
+    .tap(options => Object.assign(options, vueLoader.options(loaderOptions, compilerOptions), cacheConfig))
     .end()
-  // .use('uniapp-custom-block-loader')
-  // .loader(require.resolve('@dcloudio/vue-cli-plugin-uni/packages/webpack-custom-block-loader'))
-  // .options({
-  //   compiler: getPlatformCompiler()
-  // })
 
   // h5 框架需要使用 scoped 样式,其他平台编译时识别是否 nvue 文件且注入 flex 相关样式
   if (process.env.UNI_PLATFORM === 'h5') {

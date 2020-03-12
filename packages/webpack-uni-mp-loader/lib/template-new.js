@@ -29,6 +29,13 @@ const {
 const templateExt = getPlatformExts().template
 const filterTagName = getPlatformFilterTag() || ''
 
+function parseFilterModules (filterModules) {
+  if (filterModules) {
+    return JSON.parse(Buffer.from(filterModules, 'base64').toString('ascii'))
+  }
+  return {}
+}
+
 module.exports = function (content) {
   this.cacheable && this.cacheable()
 
@@ -41,7 +48,7 @@ module.exports = function (content) {
 
     const params = loaderUtils.parseQuery(this.resourceQuery)
     /* eslint-disable no-mixed-operators */
-    const filterModules = JSON.parse(params && params['filter-modules'] || '{}')
+    const filterModules = parseFilterModules(params && params['filter-modules'])
     Object.assign(vueLoaderOptions.options.compilerOptions, {
       mp: {
         platform: process.env.UNI_PLATFORM

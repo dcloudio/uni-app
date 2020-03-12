@@ -118,7 +118,8 @@
     "uni.onBeaconUpdate": true,
     "uni.getBeacons": true,
     "uni.startBeaconDiscovery": true,
-    "uni.stopBeaconDiscovery": true
+    "uni.stopBeaconDiscovery": true,
+    "uni.onUIStyleChange": true
   }
 }, {
   "name": "ui",
@@ -154,7 +155,7 @@
     "uni.createSelectorQuery": true,
     "uni.createIntersectionObserver": true,
     "uni.hideKeyboard": true,
-	"uni.onKeyboardHeightChange": true
+    "uni.onKeyboardHeightChange": true
   }
 }, {
   "name": "event",

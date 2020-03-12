@@ -104,14 +104,6 @@ module.exports = {
     const beforeCode = (useBuiltIns === 'entry' ? `import '@babel/polyfill';` : '') +
       `import 'uni-pages';import 'uni-${process.env.UNI_PLATFORM}';`
 
-    const qihooCode = process.env.UNI_SUB_PLATFORM === 'mp-360'
-      ? `
-import 'uni-touch-emulator';
-import qh from 'uni-qh';
-global.qh = qh;
-global.onAppShow = function(){};
-` : ''
-
     return {
       devtool: process.env.NODE_ENV === 'production' ? false : 'cheap-module-eval-source-map',
       resolve: {
@@ -119,8 +111,7 @@ global.onAppShow = function(){};
         alias: {
           'vue-router': resolve('packages/h5-vue-router'),
           'uni-h5': require.resolve('@dcloudio/uni-h5'),
-          'uni-qh': path.resolve(__dirname, 'qh-api.js'),
-          'uni-touch-emulator': path.resolve(__dirname, 'touch-emulator.js')
+          'uni-qh': path.resolve(__dirname, 'qh-api.js')
         }
       },
       module: {
@@ -130,7 +121,7 @@ global.onAppShow = function(){};
             loader: 'wrap-loader',
             options: {
               before: [
-                qihooCode + beforeCode + statCode + getGlobalUsingComponentsCode()
+                beforeCode + statCode + getGlobalUsingComponentsCode()
               ]
             }
           }]
@@ -180,7 +171,10 @@ global.onAppShow = function(){};
       webpackConfig.plugins.delete('preload-index')
     }
 
-    modifyVueLoader(webpackConfig, require('./compiler-options'), api)
+    modifyVueLoader(webpackConfig, {
+      isH5: true,
+      hotReload: true
+    }, require('./compiler-options'), api)
 
     if (process.env.NODE_ENV === 'production') {
       require('./cssnano-options')(webpackConfig)

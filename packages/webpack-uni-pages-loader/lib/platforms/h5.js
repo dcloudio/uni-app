@@ -66,10 +66,6 @@ const getPageComponents = function (inputDir, pagesJson) {
     globalStyle['h5'] || {}
   )
 
-  if (process.env.UNI_SUB_PLATFORM === 'mp-360') {
-    Object.assign(globalStyle, globalStyle['mp-360'] || {})
-  }
-
   process.UNI_H5_PAGES_JSON = {
     pages: {},
     globalStyle
@@ -94,10 +90,6 @@ const getPageComponents = function (inputDir, pagesJson) {
     // 解析 titleNView，pullToRefresh
     const h5Options = Object.assign({}, props['app-plus'] || {}, props['h5'] || {})
 
-    if (process.env.UNI_SUB_PLATFORM === 'mp-360') {
-      Object.assign(h5Options, props['mp-360'] || {})
-      Object.assign(props, props['mp-360'] || {})
-    }
     removePlatformStyle(h5Options)
 
     if (h5Options.hasOwnProperty('titleNView')) {
@@ -130,7 +122,6 @@ const getPageComponents = function (inputDir, pagesJson) {
     // 删除 app-plus 平台配置
     delete props['app-plus']
     delete props['h5']
-    delete props['mp-360']
 
     process.UNI_H5_PAGES_JSON.pages[page.path] = props
 
