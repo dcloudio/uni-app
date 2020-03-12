@@ -106,7 +106,6 @@ module.exports = {
 
     const qihooCode = process.env.UNI_SUB_PLATFORM === 'mp-360'
       ? `
-import 'uni-touch-emulator';
 import qh from 'uni-qh';
 global.qh = qh;
 global.onAppShow = function(){};
@@ -119,8 +118,7 @@ global.onAppShow = function(){};
         alias: {
           'vue-router': resolve('packages/h5-vue-router'),
           'uni-h5': require.resolve('@dcloudio/uni-h5'),
-          'uni-qh': path.resolve(__dirname, 'qh-api.js'),
-          'uni-touch-emulator': path.resolve(__dirname, 'touch-emulator.js')
+          'uni-qh': path.resolve(__dirname, 'qh-api.js')
         }
       },
       module: {
