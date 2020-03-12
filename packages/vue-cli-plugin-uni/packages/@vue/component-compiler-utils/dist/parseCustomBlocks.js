@@ -62,7 +62,7 @@ module.exports = function parseCustomBlocks(descriptor, options) {
         filterModule.attrs.src = normalizeNodeModules(filterModule.attrs.src)
       }
     })
-    descriptor.template.attrs['filter-modules'] = JSON.stringify(filterModules)
+    descriptor.template.attrs['filter-modules'] = Buffer.from(JSON.stringify(filterModules)).toString('base64')
   }
 
   return descriptor
