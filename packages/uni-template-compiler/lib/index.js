@@ -33,6 +33,10 @@ const {
   compileTemplate
 } = require('./auto-components')
 
+const isWin = /^win/.test(process.platform)
+
+const normalizePath = path => (isWin ? path.replace(/\\/g, '/') : path)
+
 module.exports = {
   compile (source, options = {}) {
     if ( // 启用摇树优化后,需要过滤内置组件
@@ -192,10 +196,20 @@ at ${resourcePath}.vue:1`)
       options.mp.filterModules.forEach(name => {
         const filterModule = options.filterModules[name]
         if (filterModule.type !== 'renderjs' && filterModule.attrs.lang !== 'renderjs') {
+          if (
+            filterModule.attrs &&
+            filterModule.attrs.src &&
+            filterModule.attrs.src.indexOf('@/') === 0
+          ) {
+            const src = filterModule.attrs.src
+            filterModule.attrs.src = normalizePath(path.relative(
+              path.dirname(resourcePath), src.replace('@/', '')
+            ))
+          }
           filterTemplate.push(
             options.mp.platform.createFilterTag(
               options.filterTagName,
-              options.filterModules[name]
+              filterModule
             )
           )
         }
