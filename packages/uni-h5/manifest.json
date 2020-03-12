@@ -438,6 +438,10 @@
         "/core/service/api/device/bluetooth.js",
         []
     ],
+    "onUIStyleChange": [
+        "/core/service/api/device/theme.js",
+        []
+    ],
     "hideKeyboard": [
         "/platforms/h5/service/api/device/hide-keyboard.js",
         []
@@ -746,6 +750,10 @@
                 "$off"
             ]
         ]
+    ],
+    "getFileInfo": [
+        "/platforms/h5/service/api/file/file.js",
+        []
     ],
     "openDocument": [
         "/platforms/h5/service/api/file/open-document.js",
