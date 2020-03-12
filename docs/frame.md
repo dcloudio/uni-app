@@ -531,6 +531,16 @@ uni-app 提供内置 CSS 变量
         }
    ```
 
+`nvue`中不可直接使用css的方式引入字体文件，需要使用以下方式在js内引入。nvue内不支持本地路径引入字体，请使用网络链接或者`base64`形式。**`src`字段的`url`的括号内一定要使用单引号。**
+
+```js
+var domModule = weex.requireModule('dom');
+domModule.addRule('fontFace', {
+  'fontFamily': "fontFamilyName",
+  'src': "url('https://...')"
+})
+```
+
 
 **示例：**
 
