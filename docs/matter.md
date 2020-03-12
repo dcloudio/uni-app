@@ -15,7 +15,7 @@ vue页面在App端，默认是被系统的webview渲染的（不是手机自带�
 
 从 uni-app 2.5.3 起，Android端支持引入腾讯x5浏览器内核，可以抹平低端Android的浏览器兼容性问题，[详见x5使用指南](https://ask.dcloud.net.cn/article/36806)
 
-小程序不存在此情况。所以如果你的H5和小程序界面正常，而App界面异常，大多是因为css兼容性。解决这类问题，可以在caniuse查询，也可以使用一个较低版本的chrome浏览器在H5端测试。
+小程序不存在浏览器兼容问题，它自带了一个很大的Webview。所以如果你的H5和小程序界面正常，而Android低端机App界面异常，且App没有使用x5引擎，那基本就可以判定是因为css兼容性。
 
 app端nvue页面，不存在浏览器兼容问题，它自带一个统一的原生渲染引擎，不依赖webview。
 
@@ -24,7 +24,13 @@ Android4.4对应的webview是chrome37。各端浏览器内核的详情查阅，�
 - 原生组件层级问题
 H5没有原生组件概念问题，非H5端有原生组件并引发了原生组件层级高于前端组件的概念，要遮挡video、map等原生组件，请使用cover-view组件。
 
-2. 使用了非H5端不支持的API，比如document、xmlhttp、cookie、window、location、navigator、localstorage、websql、indexdb、webgl等对象。如果你的代码没有直接使用这些，那很可能是引入的三方库使用了这些。如果是后者，去[插件市场](https://ext.dcloud.net.cn/)搜索替代方案。要知道非H5端的js是运行在一个独立的js core或v8下，并不是运行在浏览器里。
+2. 使用了非H5端不支持的API
+小程序和App的js运行在jscore下而不是浏览器里，没有浏览器专用的js对象，比如document、xmlhttp、cookie、window、location、navigator、localstorage、websql、indexdb、webgl等对象。
+
+如果你的代码没有直接使用这些，那很可能是引入的三方库使用了这些。如果是后者，去[插件市场](https://ext.dcloud.net.cn/)搜索替代方案。要知道非H5端的js是运行在一个独立的js core或v8下，并不是运行在浏览器里。
+
+从HBuilderX 2.6起，App端新增了renderjs，这是一种运行在视图层的js，vue页面通过renderjs可以操作浏览器对象，进而可以让基于浏览器的库直接在uni-app的App端运行，诸如echart、threejs，详见：[https://uniapp.dcloud.io/frame?id=renderjs](https://uniapp.dcloud.io/frame?id=renderjs)
+
 3. 使用了非H5端不支持的vue语法，受小程序自定义组件限制的写法，[详见](/use)
 4. 不要在引用组件的地方在组件属性上直接写 style="xx"，要在组件内部写样式
 5. `url(//alicdn.net)`等路径，改为`url(https://alicdn.net)`，因为在App端//是file协议
@@ -32,7 +38,7 @@ H5没有原生组件概念问题，非H5端有原生组件并引发了原生组�
 
 ### H5正常但小程序异常的可能性
 1. 同上
-2. v-html在h5和app-vue均支持，但小程序不支持
+2. v-html在h5和app-vue(v3编译模式)均支持，但小程序不支持
 3. 小程序要求连接的网址都要配白名单
 
 ### 小程序正常但App异常的可能性
@@ -48,7 +54,7 @@ vue页面在App端的渲染引擎默认是系统webview（不是手机自带浏�
 ### 小程序或App正常，但H5异常的可能性
 1. 在 uni-app 2.4.7 以前，H5端不支持微信小程序自定义组件，即wxcomponets下的组件，此时可能产生兼容问题。从 2.4.7 起，H5也支持微信自定义组件，不再存在这这方面兼容问题。
 2. App端使用了App特有的API和功能，比如plus、Native.js、subNVue、原生插件等
-3. 小程序端使用了小程序专用的功能，比如微信登录、小程序插件、微信小程序云开发。对于云开发，建议使用uniCloud。
+3. 使用了小程序专用的功能，比如微信卡卷、小程序插件、微信小程序云开发。对于云开发，建议使用可跨端的uniCloud。
 
 
 ### App正常，小程序、H5异常的可能性
@@ -90,6 +96,7 @@ vue页面在App端的渲染引擎默认是系统webview（不是手机自带浏�
 	- 非H5端，不能使用浏览器自带对象，比如document、window、localstorage、cookie等，更不能使用jquery等依赖这些浏览器对象的框架。因为各家小程序快应用都不支持这些对象。
 	- 没有这些浏览器自带对象并不影响业务开发，uni提供的api足够完成业务。
 	- uni的api在编译到web平台运行时，其实也会转为浏览器的js api。
+  - App端若要使用操作window、document的库，需要通过renderjs来实现。
 	- uni的api是多端可用的。在条件编译区，每个平台的专有api也可以使用，比如wx.、plus.等api可以分别在微信下和app下使用。
 	- 出于降低小程序向uni-app迁移成本的考虑，wx的api在app里也可以直接运行，比如写wx.requst和uni.requst是一样的，但仍然建议仅在微信的条件编译区使用wx的api。
 2. Tag注意
@@ -149,10 +156,7 @@ vue页面在App端的渲染引擎默认是系统webview（不是手机自带浏�
 
 * 编译为 H5 版后生成的是单页应用（SPA）。
 
-* 如果遇到跨域造成js无法联网，注意网络请求（request、uploadFile、downloadFile等）在浏览器存在跨域限制，解决方案有3种：
-  1. 服务器打开跨域限制
-  2. 本地浏览器安装跨域插件，参考：[Chrome 跨域插件免翻墙安装](http://ask.dcloud.net.cn/article/35267) 或 [firefox跨域插件](https://addons.mozilla.org/zh-CN/firefox/addon/access-control-allow-origin/)
-  3. 使用HBuilderX的内置浏览器，这个浏览器定制过，可以跨域。
+* 如果遇到跨域造成js无法联网，注意网络请求（request、uploadFile、downloadFile等）在浏览器存在跨域限制，解决方案有详见：[https://ask.dcloud.net.cn/article/35267](https://ask.dcloud.net.cn/article/35267)
 
 * APP 和小程序的导航栏和 ``tabbar`` 均是原生控件，元素区域坐标是不包含原生导航栏和 ``tabbar`` 的；而 H5 里导航栏和 ``tabbar`` 是 div 模拟实现的，所以元素坐标会包含导航栏和tabbar的高度。为了优雅的解决多端高度定位问题，``uni-app`` 新增了2个css变量：``--window-top`` 和 ``--window-bottom``，这代表了页面的内容区域距离顶部和底部的距离。举个实例，如果你想在原生``tabbar`` 上方悬浮一个菜单，之前写 ``bottom:0``。这样的写法编译到 h5 后，这个菜单会和 ``tabbar`` 重叠，位于屏幕底部。而改为使用 ``bottom:var(--window-bottom)``，则不管在 app 下还是在h5下，这个菜单都是悬浮在 ``tabbar`` 上浮的。这就避免了写条件编译代码。当然仍然也可以使用 H5 的条件编译处理界面的不同。
 
