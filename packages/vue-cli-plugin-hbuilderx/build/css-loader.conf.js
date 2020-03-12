@@ -60,12 +60,20 @@ const sassLoader = {
 
 if (sassLoaderVersion < 8) {
   scssLoader.options.data = sassData
+  scssLoader.options.outputStyle = 'nested'
+
   sassLoader.options.data = sassData
+  sassLoader.options.outputStyle = 'nested'
   sassLoader.options.indentedSyntax = true
 } else {
   scssLoader.options.prependData = sassData
+  scssLoader.options.sassOptions = {
+    outputStyle: 'nested'
+  }
+
   sassLoader.options.prependData = sassData
   sassLoader.options.sassOptions = {
+    outputStyle: 'nested',
     indentedSyntax: true
   }
 }
