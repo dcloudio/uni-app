@@ -316,7 +316,6 @@
 |type|String|none|按钮样式，可取值见：[buttons 样式](/collocation/pages?id=app-titlenview-buttons-type)|
 |color|String|默认与标题文字颜色一致|按钮上文字颜色|
 |background|String|默认值为灰色半透明|按钮的背景颜色，仅在标题栏type=transparent时生效|
-|badgeText|String||按钮上显示的角标文本，最多显示3个字符，超过则显示为...|
 |colorPressed|String|默认值为 color 属性值自动调整透明度为 0.3|按下状态按钮文字颜色|
 |float|String|right|按钮在标题栏上的显示位置，可取值"left"、"right"|
 |fontWeight|String|normal|按钮上文字的粗细。可取值"normal"-标准字体、"bold"-加粗字体。|
