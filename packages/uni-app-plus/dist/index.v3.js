@@ -127,7 +127,8 @@ var serviceContext = (function () {
     'stopBeaconDiscovery',
     'checkIsSupportSoterAuthentication',
     'checkIsSoterEnrolledInDevice',
-    'startSoterAuthentication'
+    'startSoterAuthentication',
+    'onUIStyleChange'
   ];
 
   const keyboard = [
@@ -393,9 +394,10 @@ var serviceContext = (function () {
         complete: options.complete
       };
       const data = Object.assign({}, options);
-      delete data.success;
-      delete data.fail;
-      delete data.complete;
+      // TODO 下版重构 nvue h5 callback
+      // delete data.success
+      // delete data.fail
+      // delete data.complete
       const res = fn.bind(this)(data, callbackId);
       if (res) {
         invoke(callbackId, res);
@@ -644,13 +646,15 @@ var serviceContext = (function () {
 
   const TASK_APIS = ['request', 'downloadFile', 'uploadFile', 'connectSocket'];
 
+  const ASYNC_API = ['createBLEConnection'];
+
   const CALLBACK_API_RE = /^on/;
 
   function isContextApi (name) {
     return CONTEXT_API_RE.test(name)
   }
   function isSyncApi (name) {
-    return SYNC_API_RE.test(name)
+    return SYNC_API_RE.test(name) && ASYNC_API.indexOf(name) === -1
   }
 
   function isCallbackApi (name) {
@@ -2165,7 +2169,8 @@ var serviceContext = (function () {
     } else if (expectedType === 'Array') {
       valid = Array.isArray(value);
     } else {
-      valid = value instanceof type;
+      // TODO 页面传入的ArrayBuffer使用instanceof ArrayBuffer返回false，暂做此修改
+      valid = value instanceof type || toRawType(value) === getType(type);
     }
     return {
       valid,
@@ -5140,9 +5145,13 @@ var serviceContext = (function () {
     }
     const windowTop = titleNView.cover ? titleNView.height : 0;
     const windowBottom = tabBarView.cover ? tabBarView.height : 0;
-    const windowHeight = screenHeight - titleNView.height - tabBarView.height;
-    const windowHeightReal = screenHeight - (titleNView.cover ? 0 : titleNView.height) - (tabBarView.cover ? 0 : tabBarView.height);
+    let windowHeight = screenHeight - titleNView.height - tabBarView.height;
+    let windowHeightReal = screenHeight - (titleNView.cover ? 0 : titleNView.height) - (tabBarView.cover ? 0 : tabBarView.height);
     const windowWidth = screenWidth;
+    if ((!tabBarView.height || tabBarView.cover) && !safeAreaInsets.bottom && safeAreaInsets.deviceBottom) {
+      windowHeight -= safeAreaInsets.deviceBottom;
+      windowHeightReal -= safeAreaInsets.deviceBottom;
+    }
     safeAreaInsets = ios ? safeAreaInsets : {
       left: 0,
       right: 0,
@@ -6064,7 +6073,7 @@ var serviceContext = (function () {
     });
   }
 
-  function previewImage$1 ({
+  function previewImagePlus ({
     current = 0,
     background = '#000000',
     indicator = 'number',
@@ -7190,7 +7199,7 @@ var serviceContext = (function () {
     }
     plus.share.sendWithSystem({
       type,
-      pictures: imageUrl ? [imageUrl] : [],
+      pictures: imageUrl ? [imageUrl] : void 0,
       content,
       href
     }, function (res) {
@@ -9153,7 +9162,7 @@ var serviceContext = (function () {
     chooseVideo: chooseVideo$1,
     compressImage: compressImage,
     getImageInfo: getImageInfo$1,
-    previewImage: previewImage$1,
+    previewImagePlus: previewImagePlus,
     operateRecorder: operateRecorder,
     saveImageToPhotosAlbum: saveImageToPhotosAlbum,
     saveVideoToPhotosAlbum: saveVideoToPhotosAlbum,
@@ -9753,6 +9762,8 @@ var serviceContext = (function () {
   };
 
   function checkColor (e) {
+    // 其他开发者适配的echarts会传入一个undefined到这里
+    e = e || '#000000';
     var t = null;
     if ((t = /^#([0-9|A-F|a-f]{6})$/.exec(e)) != null) {
       let n = parseInt(t[1].slice(0, 2), 16);
@@ -10446,7 +10457,7 @@ var serviceContext = (function () {
     callback.invoke(callbackId, data);
   });
 
-  const methods = ['getCenterLocation', 'getScale', 'getRegion'];
+  const methods = ['getCenterLocation', 'getScale', 'getRegion', 'includePoints', 'translateMarker'];
 
   class MapContext {
     constructor (id, pageVm) {
@@ -10457,14 +10468,6 @@ var serviceContext = (function () {
     moveToLocation () {
       operateMapPlayer$3(this.id, this.pageVm, 'moveToLocation');
     }
-
-    includePoints (args) {
-      operateMapPlayer$3(this.id, this.pageVm, 'includePoints', args);
-    }
-
-    translateMarker (args) {
-      operateMapPlayer$3(this.id, this.pageVm, 'translateMarker', args);
-    }
   }
 
   MapContext.prototype.$getAppMap = function () {
@@ -10473,10 +10476,8 @@ var serviceContext = (function () {
 
   methods.forEach(function (method) {
     MapContext.prototype[method] = callback.warp(function (options, callbackId) {
-      operateMapPlayer$3(this.id, this.pageVm, method, {
-        options,
-        callbackId
-      });
+      options.callbackId = callbackId;
+      operateMapPlayer$3(this.id, this.pageVm, method, options);
     });
   });
 
@@ -10739,7 +10740,52 @@ var serviceContext = (function () {
     onNetworkStatusChange: onNetworkStatusChange
   });
 
-  const callbacks$8 = {
+  const callbacks$8 = [];
+
+  onMethod('onUIStyleChange', function (res) {
+    callbacks$8.forEach(callbackId => {
+      invoke$1(callbackId, res);
+    });
+  });
+
+  function onUIStyleChange (callbackId) {
+    callbacks$8.push(callbackId);
+  }
+
+  var require_context_module_1_14 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    onUIStyleChange: onUIStyleChange
+  });
+
+  const longPressActionsCallbackId = 'longPressActionsCallback';
+
+  let longPressActions = {};
+
+  onMethod(longPressActionsCallbackId, function (res) {
+    const errMsg = res.errMsg || '';
+    if (new RegExp('\\:\\s*fail').test(errMsg)) {
+      longPressActions.fail && longPressActions.fail(res);
+    } else {
+      longPressActions.success && longPressActions.success(res);
+    }
+    longPressActions.complete && longPressActions.complete(res);
+  });
+
+  function previewImage$1 (args = {}) {
+    longPressActions = args.longPressActions || {};
+    if (longPressActions.success || longPressActions.fail || longPressActions.complete) {
+      longPressActions.callbackId = longPressActionsCallbackId;
+    }
+
+    return invokeMethod('previewImagePlus', args)
+  }
+
+  var require_context_module_1_15 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    previewImage: previewImage$1
+  });
+
+  const callbacks$9 = {
     pause: [],
     resume: [],
     start: [],
@@ -10753,7 +10799,7 @@ var serviceContext = (function () {
         const state = res.state;
         delete res.state;
         delete res.errMsg;
-        callbacks$8[state].forEach(callback => {
+        callbacks$9[state].forEach(callback => {
           if (typeof callback === 'function') {
             callback(res);
           }
@@ -10761,7 +10807,7 @@ var serviceContext = (function () {
       });
     }
     onError (callback) {
-      callbacks$8.error.push(callback);
+      callbacks$9.error.push(callback);
     }
     onFrameRecorded (callback) {
 
@@ -10773,16 +10819,16 @@ var serviceContext = (function () {
 
     }
     onPause (callback) {
-      callbacks$8.pause.push(callback);
+      callbacks$9.pause.push(callback);
     }
     onResume (callback) {
-      callbacks$8.resume.push(callback);
+      callbacks$9.resume.push(callback);
     }
     onStart (callback) {
-      callbacks$8.start.push(callback);
+      callbacks$9.start.push(callback);
     }
     onStop (callback) {
-      callbacks$8.stop.push(callback);
+      callbacks$9.stop.push(callback);
     }
     pause () {
       invokeMethod('operateRecorder', {
@@ -10812,7 +10858,7 @@ var serviceContext = (function () {
     return recorderManager || (recorderManager = new RecorderManager())
   }
 
-  var require_context_module_1_14 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_16 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getRecorderManager: getRecorderManager
   });
@@ -10901,7 +10947,7 @@ var serviceContext = (function () {
     return task
   }
 
-  var require_context_module_1_15 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_17 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     downloadFile: downloadFile$1
   });
@@ -11017,7 +11063,7 @@ var serviceContext = (function () {
     return new RequestTask(requestTaskId)
   }
 
-  var require_context_module_1_16 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_18 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     request: request$1
   });
@@ -11096,7 +11142,7 @@ var serviceContext = (function () {
 
   const socketTasks$1 = Object.create(null);
   const socketTasksArray = [];
-  const callbacks$9 = Object.create(null);
+  const callbacks$a = Object.create(null);
   onMethod('onSocketTaskStateChange', ({
     socketTaskId,
     state,
@@ -11117,8 +11163,8 @@ var serviceContext = (function () {
     if (state === 'open') {
       socketTask.readyState = socketTask.OPEN;
     }
-    if (socketTask === socketTasksArray[0] && callbacks$9[state]) {
-      invoke$1(callbacks$9[state], state === 'message' ? {
+    if (socketTask === socketTasksArray[0] && callbacks$a[state]) {
+      invoke$1(callbacks$a[state], state === 'message' ? {
         data
       } : {});
     }
@@ -11177,22 +11223,22 @@ var serviceContext = (function () {
   }
 
   function onSocketOpen (callbackId) {
-    callbacks$9.open = callbackId;
+    callbacks$a.open = callbackId;
   }
 
   function onSocketError (callbackId) {
-    callbacks$9.error = callbackId;
+    callbacks$a.error = callbackId;
   }
 
   function onSocketMessage (callbackId) {
-    callbacks$9.message = callbackId;
+    callbacks$a.message = callbackId;
   }
 
   function onSocketClose (callbackId) {
-    callbacks$9.close = callbackId;
+    callbacks$a.close = callbackId;
   }
 
-  var require_context_module_1_17 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_19 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     connectSocket: connectSocket$1,
     sendSocketMessage: sendSocketMessage$1,
@@ -11287,7 +11333,7 @@ var serviceContext = (function () {
     return task
   }
 
-  var require_context_module_1_18 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_20 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     uploadFile: uploadFile$1
   });
@@ -11445,7 +11491,7 @@ var serviceContext = (function () {
     return res
   }
 
-  var require_context_module_1_19 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_21 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     setStorage: setStorage$1,
     setStorageSync: setStorageSync$1,
@@ -11537,7 +11583,7 @@ var serviceContext = (function () {
     return new MPAnimation(option)
   }
 
-  var require_context_module_1_20 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_22 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     createAnimation: createAnimation
   });
@@ -11602,7 +11648,7 @@ var serviceContext = (function () {
     return new ServiceIntersectionObserver(getCurrentPageVm('createIntersectionObserver'), options)
   }
 
-  var require_context_module_1_21 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_23 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     createIntersectionObserver: createIntersectionObserver
   });
@@ -11743,24 +11789,24 @@ var serviceContext = (function () {
     return new SelectorQuery(getCurrentPageVm('createSelectorQuery'))
   }
 
-  var require_context_module_1_22 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_24 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     createSelectorQuery: createSelectorQuery
   });
 
-  const callbacks$a = [];
+  const callbacks$b = [];
 
   onMethod('onKeyboardHeightChange', res => {
-    callbacks$a.forEach(callbackId => {
+    callbacks$b.forEach(callbackId => {
       invoke$1(callbackId, res);
     });
   });
 
   function onKeyboardHeightChange (callbackId) {
-    callbacks$a.push(callbackId);
+    callbacks$b.push(callbackId);
   }
 
-  var require_context_module_1_23 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_25 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     onKeyboardHeightChange: onKeyboardHeightChange
   });
@@ -11785,7 +11831,7 @@ var serviceContext = (function () {
     }, pageId);
   }
 
-  var require_context_module_1_24 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_26 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     loadFontFace: loadFontFace$1
   });
@@ -11798,7 +11844,7 @@ var serviceContext = (function () {
     return {}
   }
 
-  var require_context_module_1_25 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_27 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     pageScrollTo: pageScrollTo$1
   });
@@ -11811,7 +11857,7 @@ var serviceContext = (function () {
     return {}
   }
 
-  var require_context_module_1_26 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_28 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     setPageMeta: setPageMeta
   });
@@ -11836,19 +11882,19 @@ var serviceContext = (function () {
 
   const hideTabBarRedDot$1 = removeTabBarBadge$1;
 
-  const callbacks$b = [];
+  const callbacks$c = [];
 
   onMethod('onTabBarMidButtonTap', res => {
-    callbacks$b.forEach(callbackId => {
+    callbacks$c.forEach(callbackId => {
       invoke$1(callbackId, res);
     });
   });
 
   function onTabBarMidButtonTap (callbackId) {
-    callbacks$b.push(callbackId);
+    callbacks$c.push(callbackId);
   }
 
-  var require_context_module_1_27 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_29 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     removeTabBarBadge: removeTabBarBadge$1,
     showTabBarRedDot: showTabBarRedDot$1,
@@ -11856,25 +11902,25 @@ var serviceContext = (function () {
     onTabBarMidButtonTap: onTabBarMidButtonTap
   });
 
-  const callbacks$c = [];
+  const callbacks$d = [];
   onMethod('onViewDidResize', res => {
-    callbacks$c.forEach(callbackId => {
+    callbacks$d.forEach(callbackId => {
       invoke$1(callbackId, res);
     });
   });
 
   function onWindowResize (callbackId) {
-    callbacks$c.push(callbackId);
+    callbacks$d.push(callbackId);
   }
 
   function offWindowResize (callbackId) {
     // TODO 目前 on 和 off 即使传入同一个 function，获取到的 callbackId 也不会一致，导致不能 off 掉指定
     // 后续修复
     // 此处和微信平台一致查询不到去掉最后一个
-    callbacks$c.splice(callbacks$c.indexOf(callbackId), 1);
+    callbacks$d.splice(callbacks$d.indexOf(callbackId), 1);
   }
 
-  var require_context_module_1_28 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_30 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     onWindowResize: onWindowResize,
     offWindowResize: offWindowResize
@@ -11899,21 +11945,23 @@ var serviceContext = (function () {
   './device/bluetooth.js': require_context_module_1_11,
   './device/compass.js': require_context_module_1_12,
   './device/network.js': require_context_module_1_13,
-  './media/recorder.js': require_context_module_1_14,
-  './network/download-file.js': require_context_module_1_15,
-  './network/request.js': require_context_module_1_16,
-  './network/socket.js': require_context_module_1_17,
-  './network/upload-file.js': require_context_module_1_18,
-  './storage/storage.js': require_context_module_1_19,
-  './ui/create-animation.js': require_context_module_1_20,
-  './ui/create-intersection-observer.js': require_context_module_1_21,
-  './ui/create-selector-query.js': require_context_module_1_22,
-  './ui/keyboard.js': require_context_module_1_23,
-  './ui/load-font-face.js': require_context_module_1_24,
-  './ui/page-scroll-to.js': require_context_module_1_25,
-  './ui/set-page-meta.js': require_context_module_1_26,
-  './ui/tab-bar.js': require_context_module_1_27,
-  './ui/window.js': require_context_module_1_28,
+  './device/theme.js': require_context_module_1_14,
+  './media/preview-image.js': require_context_module_1_15,
+  './media/recorder.js': require_context_module_1_16,
+  './network/download-file.js': require_context_module_1_17,
+  './network/request.js': require_context_module_1_18,
+  './network/socket.js': require_context_module_1_19,
+  './network/upload-file.js': require_context_module_1_20,
+  './storage/storage.js': require_context_module_1_21,
+  './ui/create-animation.js': require_context_module_1_22,
+  './ui/create-intersection-observer.js': require_context_module_1_23,
+  './ui/create-selector-query.js': require_context_module_1_24,
+  './ui/keyboard.js': require_context_module_1_25,
+  './ui/load-font-face.js': require_context_module_1_26,
+  './ui/page-scroll-to.js': require_context_module_1_27,
+  './ui/set-page-meta.js': require_context_module_1_28,
+  './ui/tab-bar.js': require_context_module_1_29,
+  './ui/window.js': require_context_module_1_30,
 
       };
       var req = function req(key) {
@@ -12335,6 +12383,7 @@ var serviceContext = (function () {
   }
 
   function initGlobalListeners () {
+    const globalEvent = requireNativePlugin('globalEvent');
     const emit = UniServiceJSBridge.emit;
 
     // splashclosed 时开始监听 backbutton
@@ -12361,6 +12410,12 @@ var serviceContext = (function () {
     plus.globalEvent.addEventListener('KeyboardHeightChange', function (event) {
       publish('onKeyboardHeightChange', {
         height: event.height
+      });
+    });
+
+    globalEvent.addEventListener('uistylechange', function (event) {
+      publish('onUIStyleChange', {
+        style: event.uistyle
       });
     });
 
@@ -13416,18 +13471,19 @@ var serviceContext = (function () {
       Vue.prototype.$nextTick = function nextTick (cb) {
         const renderWatcher = this._watcher;
         const callback = typeof cb === 'function';
-        if (
-          renderWatcher &&
-          this._$queue.find(watcher => renderWatcher === watcher)
-        ) {
-          const result = new Promise((resolve) => {
+        const result = new Promise((resolve) => {
+          if (
+            renderWatcher &&
+            this._$queue.find(watcher => renderWatcher === watcher)
+          ) {
             vdSyncCallbacks.push(callback ? cb.bind(this) : resolve);
-          });
-          return callback ? result : undefined
-        } else {
-          // $nextTick bind vm context
-          return Vue.nextTick(callback ? () => cb.call(this) : undefined)
-        }
+          } else {
+            // $nextTick bind vm context
+            Vue.nextTick(callback ? () => cb.call(this) : resolve);
+          }
+          callback && resolve();
+        });
+        return callback ? undefined : result
       };
     }
   };
