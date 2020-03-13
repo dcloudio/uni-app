@@ -76,7 +76,6 @@ function getH5Options (manifestJson) {
       h5.publicPath = h5.publicPath + '/'
     }
   } else { // 其他模式，启用 base
-
     if (base.startsWith('./')) {
       // 在开发模式, publicPath 如果为 './' webpack-dev-server 匹配文件时会失败
       h5.publicPath = base.substr(1)

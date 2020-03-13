@@ -48,7 +48,6 @@ if (
   console.warn(`发布H5，需要在uniCloud后台操作，绑定安全域名，否则会因为跨域问题而无法访问。教程参考：https://uniapp.dcloud.io/uniCloud/quickstart-H5`)
 }
 
-
 // 初始化环境变量
 const defaultInputDir = '../../../../src'
 const defaultOutputDir = '../../../../dist/' +

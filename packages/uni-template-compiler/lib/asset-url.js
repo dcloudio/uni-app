@@ -4,10 +4,14 @@ const transformAssetUrls = {
   'img': 'src',
   'image': 'src',
   'cover-image': 'src',
+  // h5
   'v-uni-audio': 'src',
   'v-uni-video': ['src', 'poster'],
   'v-uni-image': 'src',
-  'v-uni-cover-image': 'src'
+  'v-uni-cover-image': 'src',
+  // nvue
+  'u-image': 'src',
+  'u-video': ['src', 'poster']
 }
 
 function rewrite (attr, name) {

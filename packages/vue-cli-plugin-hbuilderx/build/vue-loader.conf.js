@@ -104,6 +104,9 @@ const compiler = require('weex-template-compiler')
 const oldCompile = compiler.compile
 compiler.compile = function (source, options = {}) {
   (options.modules || (options.modules = [])).push(autoComponentsModule)
+
+  options.modules.push(require('@dcloudio/uni-template-compiler/lib/asset-url'))
+
   options.isUnaryTag = isUnaryTag
   // 将 autoComponents 挂在 isUnaryTag 上边
   options.isUnaryTag.autoComponents = new Set()

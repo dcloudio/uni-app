@@ -150,6 +150,7 @@ if (process.env.UNI_USING_V3) {
     'background-attachment'
   ]
 
+  let rewriteUrl
   /**
    * 转换 upx
    * 转换 px
@@ -160,6 +161,11 @@ if (process.env.UNI_USING_V3) {
       ...opts
     }
     return function (root, result) {
+      if (!rewriteUrl) {
+        rewriteUrl = require('@dcloudio/uni-cli-shared/lib/url-loader').rewriteUrl
+      }
+      rewriteUrl(root)
+
       if (process.env.UNI_PLATFORM === 'h5') {
         // Transform CSS AST here
 

@@ -6,6 +6,8 @@ import initOn from 'uni-core/service/bridge/on'
 
 import {
   requireNativePlugin
+  ,
+  publish
 } from '../bridge'
 
 import {
@@ -21,10 +23,6 @@ import {
 } from './plus-message'
 
 import tabBar from './tab-bar'
-
-import {
-  publish
-} from '../bridge'
 
 import {
   initSubscribeHandlers
