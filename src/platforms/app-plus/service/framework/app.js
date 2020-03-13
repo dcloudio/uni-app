@@ -5,12 +5,6 @@ import {
 import initOn from 'uni-core/service/bridge/on'
 
 import {
-  requireNativePlugin
-  ,
-  publish
-} from '../bridge'
-
-import {
   NETWORK_TYPES
 } from '../api/constants'
 
@@ -23,6 +17,11 @@ import {
 } from './plus-message'
 
 import tabBar from './tab-bar'
+
+import {
+  publish,
+  requireNativePlugin
+} from '../bridge'
 
 import {
   initSubscribeHandlers
