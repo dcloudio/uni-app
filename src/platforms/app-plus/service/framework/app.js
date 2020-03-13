@@ -5,10 +5,6 @@ import {
 import initOn from 'uni-core/service/bridge/on'
 
 import {
-  requireNativePlugin
-} from '../bridge'
-
-import {
   NETWORK_TYPES
 } from '../api/constants'
 
@@ -23,7 +19,8 @@ import {
 import tabBar from './tab-bar'
 
 import {
-  publish
+  publish,
+  requireNativePlugin
 } from '../bridge'
 
 import {
