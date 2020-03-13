@@ -83,6 +83,7 @@ export function request ({
         let bodyArray = []
         for (let key in data) {
           if (data.hasOwnProperty(key)) {
+            if(Object.prototype.toString.call(data[key])==='[object Null]') data[key]=''
             bodyArray.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
           }
         }
