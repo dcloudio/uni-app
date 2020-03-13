@@ -60,7 +60,7 @@ orientation 的合法值
 
 |值|说明|
 |:-|:-|
-vertical|竖直|
+|vertical|竖直|
 |horizontal|水平|
 
 
