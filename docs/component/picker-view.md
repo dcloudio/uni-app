@@ -12,6 +12,8 @@
 |mask-style|String|设置蒙层的样式||
 |mask-class|String|设置蒙层的类名|app-nvue和头条小程序不支持|
 |@change|EventHandle|当滚动选择，value 改变时触发 change 事件，event.detail = {value: value}；value为数组，表示 picker-view 内的 picker-view-column 当前选择的是第几项（下标从 0 开始）|&nbsp;|
+|@pickstart|eventhandle||当滚动选择开始时候触发事件|微信小程序2.3.1|
+|@pickend|eventhandle||当滚动选择结束时候触发事件|微信小程序2.3.1|
 
 **注意：**其中只可放置 `<picker-view-column/>` 组件，其他节点不会显示。
 

@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-h5",
-  "version": "2.0.0-alpha-24720191216006",
+  "version": "2.0.0-alpha-26420200309002",
   "description": "uni-app h5",
   "main": "dist/index.umd.min.js",
   "repository": {
@@ -18,5 +18,5 @@
     "intersection-observer": "^0.7.0",
     "safe-area-insets": "^1.4.1"
   },
-  "gitHead": "110501ffb0313e417858dec92acf07522d4ded00"
+  "gitHead": "84e9cb1ca1898054d161f1514efadd1ab24fd804"
 }

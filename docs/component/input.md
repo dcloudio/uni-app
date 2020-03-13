@@ -22,10 +22,12 @@
 |selection-start|Number|-1|光标起始位置，自动聚集时有效，需与selection-end搭配使用||
 |selection-end|Number|-1|光标结束位置，自动聚集时有效，需与selection-start搭配使用||
 |adjust-position|Boolean|true|键盘弹起时，是否自动上推页面|App（softinputMode 为 adjustResize 时无效）、微信小程序、百度小程序、QQ小程序|
+|hold-keyboard|boolean|false|focus时，点击页面的时候不收起键盘|微信小程序2.8.2|
 |@input|EventHandle||当键盘输入时，触发input事件，event.detail = {value}|差异见下方 Tips|
 |@focus|EventHandle||输入框聚焦时触发，event.detail = { value, height }，height 为键盘高度|仅微信小程序、App（2.2.3+） 、QQ小程序支持 height|
 |@blur|EventHandle||输入框失去焦点时触发，event.detail = {value: value}||
 |@confirm|EventHandle||点击完成按钮时触发，event.detail = {value: value}|&nbsp;|
+|@keyboardheightchange|eventhandle||键盘高度发生变化的时候触发此事件，event.detail = {height: height, duration: duration}|微信小程序2.7.0|
 
 **Tips**
 

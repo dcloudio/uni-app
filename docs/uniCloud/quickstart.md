@@ -8,7 +8,7 @@
   - 对于老的uni-app项目，也可以对项目点右键，菜单中选择“创建uniCloud云开发环境”
   - 新建uni-app项目的模板中，有一个`Hello uniCloud`项目模板，演示了各种云函数的使用。
   
-  uniCloud云开发环境创建成功后，项目下会有一个带有云图标的特殊目录，名为“cloudfunctions”。
+  uniCloud云开发环境创建成功后，项目根目录下会有一个带有云图标的特殊目录，名为“cloudfunctions”。（即便是cli创建的项目，云函数目录也在项目的根目录下，而不是src下）
 
 ## 创建和绑定服务空间
 
@@ -68,9 +68,13 @@ exports.main = async (event, context) => {
 
 前者仅完成部署，后者会在部署后同时运行，并打印日志出来。
 
+在云函数对应的目录右键可以配置运行测试参数，如下图，选择之后会生成一个形如`${函数名}.param.json`的文件，此文件内容会在云函数`上传并运行`时作为参数传入云函数内。
+
 在云函数编辑器里，按`Ctrl+r`运行快捷键，或点工具栏的运行，还会直接看到上传并运行云函数的快捷指令。`Ctrl+r`然后回车或选`0`，即可高效的在控制台看到运行结果和日志输出。
 
 云函数目前无法断点debug，只能打印`console.log`看日志。
+
+![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/uniCloud-run-function-1.png)
 
 ![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/uniCloud-run-function.png)
 
