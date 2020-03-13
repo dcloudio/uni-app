@@ -66,6 +66,10 @@ function getH5Options (manifestJson) {
   if (!base.endsWith('/')) {
     base = base + '/'
   }
+  // 相对路径仅支持 hash 模式
+  if (base.startsWith('./')) {
+    h5.router.mode = defaultRouter.mode
+  }
 
   h5.router.base = base
 
@@ -77,8 +81,8 @@ function getH5Options (manifestJson) {
     }
   } else { // 其他模式，启用 base
 
-    if(base.startsWith('./')) {
-       // 在开发模式, publicPath 如果为 './' webpack-dev-server 匹配文件时会失败
+    if (base.startsWith('./')) {
+      // 在开发模式, publicPath 如果为 './' webpack-dev-server 匹配文件时会失败
       h5.publicPath = base.substr(1)
     } else {
       h5.publicPath = base
