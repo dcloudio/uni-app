@@ -104,14 +104,6 @@ module.exports = {
     const beforeCode = (useBuiltIns === 'entry' ? `import '@babel/polyfill';` : '') +
       `import 'uni-pages';import 'uni-${process.env.UNI_PLATFORM}';`
 
-    const qihooCode = process.env.UNI_SUB_PLATFORM === 'mp-360'
-      ? `
-import 'uni-touch-emulator';
-import qh from 'uni-qh';
-global.qh = qh;
-global.onAppShow = function(){};
-` : ''
-
     return {
       devtool: process.env.NODE_ENV === 'production' ? false : 'cheap-module-eval-source-map',
       resolve: {
@@ -130,7 +122,7 @@ global.onAppShow = function(){};
             loader: 'wrap-loader',
             options: {
               before: [
-                qihooCode + beforeCode + statCode + getGlobalUsingComponentsCode()
+                beforeCode + statCode + getGlobalUsingComponentsCode()
               ]
             }
           }]
