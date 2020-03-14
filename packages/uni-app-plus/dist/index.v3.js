@@ -1446,8 +1446,12 @@ var serviceContext = (function () {
       }
     },
     protocols: {
-      type: Array,
+      // 微信文档虽然写的是数组，但是可以正常传递字符串
+      type: [Array, String],
       validator (value, params) {
+        if (typeof value === 'string') {
+          value = [value];
+        }
         params.protocols = (value || []).filter(str => typeof str === 'string');
       }
     }
@@ -8543,6 +8547,10 @@ var serviceContext = (function () {
       plus.navigator.setStatusBarStyle(frontColor === '#000000' ? 'dark' : 'light');
       const style = webview.getStyle();
       if (style && style.titleNView) {
+        if (style.titleNView.autoBackButton) {
+          styles.backButton = styles.backButton || {};
+          styles.backButton.color = frontColor;
+        }
         webview.setStyle({
           titleNView: styles
         });
@@ -8708,7 +8716,8 @@ var serviceContext = (function () {
   }, callbackId) {
     const options = {
       buttons: itemList.map(item => ({
-        title: item
+        title: item,
+        color: itemColor
       }))
     };
     if (title) {
@@ -12006,6 +12015,16 @@ var serviceContext = (function () {
     });
   }
 
+  const wx = Object.create(null);
+
+  apis_1.forEach(name => {
+    if (api$2[name]) {
+      wx[name] = wrapper(name, api$2[name]);
+    } else {
+      wx[name] = wrapperUnimplemented(name);
+    }
+  });
+
   function callHook (vm, hook, params) {
     vm = vm.$vm || vm;
     return vm.__call_hook && vm.__call_hook(hook, params)
@@ -13487,6 +13506,9 @@ var serviceContext = (function () {
       };
     }
   };
+
+  // 挂靠在uni上，暂不做全局导出
+  uni$1.__$wx__ = wx;
 
   UniServiceJSBridge.publishHandler = publishHandler;
   UniServiceJSBridge.invokeCallbackHandler = invokeCallbackHandler;
