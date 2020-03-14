@@ -123,10 +123,14 @@ export default {
     },
     _resize () {
       var canvas = this.$refs.canvas
-      var context = canvas.getContext('2d')
-      var imageData = context.getImageData(0, 0, canvas.width, canvas.height)
-      wrapper(this.$refs.canvas)
-      context.putImageData(imageData, 0, 0)
+      if (canvas.width > 0 && canvas.height > 0) {
+        var context = canvas.getContext('2d')
+        var imageData = context.getImageData(0, 0, canvas.width, canvas.height)
+        wrapper(this.$refs.canvas)
+        context.putImageData(imageData, 0, 0)
+      } else {
+        wrapper(this.$refs.canvas)
+      }
     },
     _touchmove (event) {
       event.preventDefault()
