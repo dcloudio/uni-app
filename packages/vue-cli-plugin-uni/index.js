@@ -52,7 +52,7 @@ module.exports = (api, options) => {
   Object.assign(options, { // TODO 考虑非 HBuilderX 运行时，可以支持自定义输出目录
     outputDir: process.env.UNI_OUTPUT_TMP_DIR || process.env.UNI_OUTPUT_DIR,
     assetsDir
-  }, vueConfig)
+  }, vueConfig) // 注意，此处目前是覆盖关系，后续考虑改为webpack merge逻辑
 
   require('./lib/options')(options)
 

@@ -52,11 +52,7 @@ function getProvides (isAppService) {
 
 const v3 = {
   vueConfig: {
-    parallel: false,
-    transpileDependencies: [
-      wxsPath,
-      runtimePath
-    ]
+    parallel: false
   },
   webpackConfig (webpackConfig, vueOptions, api) {
     const isAppService = !!vueOptions.pluginOptions['uni-app-plus']['service']

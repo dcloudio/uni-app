@@ -62,10 +62,6 @@ if (process.env.NODE_ENV !== 'production') {
 const vueConfig = {
   parallel: false, // 因为传入了自定义 compiler，避免参数丢失，禁用parallel
   publicPath,
-  transpileDependencies: [
-    wxsPath,
-    runtimePath
-  ],
   pages: {
     index: {
       // page 的入口
