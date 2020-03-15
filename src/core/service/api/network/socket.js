@@ -92,13 +92,6 @@ onMethod('onSocketTaskStateChange', ({
   if (!socketTask) {
     return
   }
-  socketTask._callbacks[state].forEach(callback => {
-    if (typeof callback === 'function') {
-      callback(state === 'message' ? {
-        data
-      } : {})
-    }
-  })
   if (state === 'open') {
     socketTask.readyState = socketTask.OPEN
   }
@@ -115,6 +108,13 @@ onMethod('onSocketTaskStateChange', ({
       socketTasksArray.splice(index, 1)
     }
   }
+  socketTask._callbacks[state].forEach(callback => {
+    if (typeof callback === 'function') {
+      callback(state === 'message' ? {
+        data
+      } : {})
+    }
+  })
 })
 
 export function connectSocket (args, callbackId) {
