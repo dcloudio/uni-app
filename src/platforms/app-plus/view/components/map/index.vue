@@ -177,7 +177,7 @@ export default {
       })
     },
     markers (val) {
-      this.map && this._addMarkers(val)
+      this.map && this._addMarkers(val, true)
     },
     polyline (val) {
       this.map && this._addMapLines(val)
@@ -318,6 +318,7 @@ export default {
       if (this.map) {
         if (clear) {
           this.map.clearOverlays()
+          this.map.__markers__ = {}
         }
         markers.forEach(marker => {
           this._addMarker(this.map, marker)
