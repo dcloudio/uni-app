@@ -134,6 +134,7 @@ export function notifyBLECharacteristicValueChanged (data, callbackId) {
 }
 
 export function readBLECharacteristicValue (data, callbackId) {
+  onBLECharacteristicValueChange = onBLECharacteristicValueChange || bluetoothOn('onBLECharacteristicValueChange')
   bluetoothExec('readBLECharacteristicValue', callbackId, data)
 }
 
