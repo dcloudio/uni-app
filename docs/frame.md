@@ -95,7 +95,7 @@ background-image: url(../../static/logo.png);
 
 **Tips**
 
-- 引入字体图标请参考，[自体图标](frame?id=字体图标)
+- 引入字体图标请参考，[字体图标](frame?id=字体图标)
 
 ## 生命周期
 
