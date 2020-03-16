@@ -672,6 +672,8 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 
 **京暖通：**专业的暖通供应和服务平台，[App和小程序通用链接](https://m3w.cn/jnt)
 
+**大丰收农资优选:**优质农资商品购物。[安卓](https://www.dfs168.com/market/viewapp.html?id=503)、[iOS](https://apps.apple.com/cn/app/id1489907205)、[H5](http://wechat.dfs168.com)、微信小程序搜索：大丰收农资优选
+
 
 
 #### 更多小程序案例（可在微信小程序中搜索）@wx-more
