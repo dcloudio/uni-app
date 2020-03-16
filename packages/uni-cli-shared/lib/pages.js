@@ -122,7 +122,7 @@ function isValidPage (page, root = '') {
     process.env.UNI_PLATFORM === 'app-plus' &&
     page.style
   ) {
-    const subNVues = page.style.subNVues || (page.style['app-plus'] && page.style['app-plus']['subNVues'])
+    const subNVues = page.style.subNVues || (page.style['app-plus'] && page.style['app-plus'].subNVues)
     if (Array.isArray(subNVues)) {
       subNVues.forEach(subNVue => {
         let subNVuePath = subNVue.path
@@ -155,8 +155,8 @@ function isValidPage (page, root = '') {
       return true
     } else {
       uniNVuePages.push({
-        'path': pagePath + '.html',
-        'style': page.style || {}
+        path: pagePath + '.html',
+        style: page.style || {}
       })
       return false
     }
@@ -342,9 +342,11 @@ function getAutoComponentsByDir (componentsPath, absolute = false) {
     fs.readdirSync(componentsPath).forEach(name => {
       const folder = path.resolve(componentsPath, name)
       const importDir = absolute ? normalizePath(folder) : `@/components/${name}`
-      if (fs.existsSync(path.resolve(folder, name + '.vue'))) {
+      // 读取文件夹文件列表，比对文件名（fs.existsSync在大小写不敏感的系统会匹配不准确）
+      const files = fs.readdirSync(folder)
+      if (files.includes(name + '.vue')) {
         components[`^${name}$`] = `${importDir}/${name}.vue`
-      } else if (fs.existsSync(path.resolve(folder, name + '.nvue'))) {
+      } else if (files.includes(name + '.nvue')) {
         components[`^${name}$`] = `${importDir}/${name}.nvue`
       }
     })
