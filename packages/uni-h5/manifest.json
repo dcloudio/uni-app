@@ -156,7 +156,7 @@
         true
     ],
     "setStorage": [
-        "/core/service/api/storage/storage.js",
+        "/platforms/h5/service/api/storage/storage.js",
         [
             [
                 "/core/helpers/protocol/storage/storage.js",
@@ -165,7 +165,7 @@
         ]
     ],
     "setStorageSync": [
-        "/core/service/api/storage/storage.js",
+        "/platforms/h5/service/api/storage/storage.js",
         [
             [
                 "/core/helpers/protocol/storage/storage.js",
@@ -174,7 +174,7 @@
         ]
     ],
     "getStorage": [
-        "/core/service/api/storage/storage.js",
+        "/platforms/h5/service/api/storage/storage.js",
         [
             [
                 "/core/helpers/protocol/storage/storage.js",
@@ -183,7 +183,7 @@
         ]
     ],
     "getStorageSync": [
-        "/core/service/api/storage/storage.js",
+        "/platforms/h5/service/api/storage/storage.js",
         [
             [
                 "/core/helpers/protocol/storage/storage.js",
@@ -192,15 +192,15 @@
         ]
     ],
     "getStorageInfo": [
-        "/core/service/api/storage/storage.js",
+        "/platforms/h5/service/api/storage/storage.js",
         []
     ],
     "getStorageInfoSync": [
-        "/core/service/api/storage/storage.js",
+        "/platforms/h5/service/api/storage/storage.js",
         []
     ],
     "removeStorage": [
-        "/core/service/api/storage/storage.js",
+        "/platforms/h5/service/api/storage/storage.js",
         [
             [
                 "/core/helpers/protocol/storage/storage.js",
@@ -209,7 +209,7 @@
         ]
     ],
     "removeStorageSync": [
-        "/core/service/api/storage/storage.js",
+        "/platforms/h5/service/api/storage/storage.js",
         [
             [
                 "/core/helpers/protocol/storage/storage.js",
@@ -218,11 +218,11 @@
         ]
     ],
     "clearStorage": [
-        "/core/service/api/storage/storage.js",
+        "/platforms/h5/service/api/storage/storage.js",
         []
     ],
     "clearStorageSync": [
-        "/core/service/api/storage/storage.js",
+        "/platforms/h5/service/api/storage/storage.js",
         []
     ],
     "getLocation": [
