@@ -201,7 +201,7 @@ map 组件相关操作的 JS API：[uni.createMapContext](api/location/map?id=cr
 - H5 端获取定位信息，需要部署在 **https** 服务上，本地预览（localhost）仍然可以使用 http 协议。
 - 无 GPS 模块的 PC 设备使用 Chrome 浏览器的时候，位置信息是连接谷歌服务器获取的，国内用户可能获取位置信息失败。
 - App 端使用地图组件需要向高德或百度等三方服务商申请SDK资质，获取AppKey，打包时需要在manifest文件中勾选相应模块，在SDK配置中填写Appkey。注意申请包名和打包时的包名需匹配一致，证书信息匹配。在manifest可视化界面有详细申请指南。
-
+- ios nvue Color 不支持 ARGB 十六进制，使用 rgba(r,g,b,a) 代替
 
 ##### FAQ
 
