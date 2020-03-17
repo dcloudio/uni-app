@@ -865,9 +865,10 @@ var serviceContext = (function () {
     }
   };
 
-  const fileType = {
+  const fileTypes = {
     PNG: 'png',
-    JPG: 'jpeg'
+    JPG: 'jpg',
+    JPEG: 'jpg'
   };
 
   const canvasToTempFilePath = {
@@ -905,7 +906,7 @@ var serviceContext = (function () {
       type: String,
       validator (value, params) {
         value = (value || '').toUpperCase();
-        params.fileType = value in fileType ? fileType[value] : fileType.PNG;
+        params.fileType = value in fileTypes ? fileTypes[value] : fileTypes.PNG;
       }
     },
     quality: {
@@ -12935,9 +12936,12 @@ var serviceContext = (function () {
 
     removeVm (vm) {
       const cid = vm._$id;
-      // 移除尚未同步的data
-      this.batchData = this.batchData.filter(data => data[1][0] !== cid);
-      delete this.vms[cid];
+      if (vm === this.vms[cid]) { // 仅相同vm的才移除，否则保留
+        // 目前同一位置的vm，cid均一样
+        // 移除尚未同步的data
+        this.batchData = this.batchData.filter(data => data[1][0] !== cid);
+        delete this.vms[cid];
+      }
     }
 
     addElement (elm) {
