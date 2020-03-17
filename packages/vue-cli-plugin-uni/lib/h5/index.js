@@ -34,6 +34,7 @@ const uniCloudPath = path.resolve(__dirname, '../../packages/uni-cloud/dist/inde
 
 function getProvides () {
   return {
+    '__f__': [path.resolve(__dirname, '../format-log.js'), 'default'],
     'uniCloud': [uniCloudPath, 'default'],
     'wx.nextTick': [runtimePath, 'nextTick'],
     'Page': [runtimePath, 'Page'],
@@ -62,10 +63,6 @@ if (process.env.NODE_ENV !== 'production') {
 const vueConfig = {
   parallel: false, // 因为传入了自定义 compiler，避免参数丢失，禁用parallel
   publicPath,
-  transpileDependencies: [
-    wxsPath,
-    runtimePath
-  ],
   pages: {
     index: {
       // page 的入口

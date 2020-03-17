@@ -19,7 +19,8 @@ import {
 import tabBar from './tab-bar'
 
 import {
-  publish
+  publish,
+  requireNativePlugin
 } from '../bridge'
 
 import {
@@ -55,6 +56,7 @@ export function getApp ({
 }
 
 function initGlobalListeners () {
+  const globalEvent = requireNativePlugin('globalEvent')
   const emit = UniServiceJSBridge.emit
 
   // splashclosed 时开始监听 backbutton
@@ -84,7 +86,7 @@ function initGlobalListeners () {
     })
   })
 
-  plus.globalEvent.addEventListener('uistylechange', function (event) {
+  globalEvent.addEventListener('uistylechange', function (event) {
     publish('onUIStyleChange', {
       style: event.uistyle
     })

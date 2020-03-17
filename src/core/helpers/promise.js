@@ -14,13 +14,15 @@ const CONTEXT_API_RE = /^create|Manager$/
 
 const TASK_APIS = ['request', 'downloadFile', 'uploadFile', 'connectSocket']
 
+const ASYNC_API = ['createBLEConnection']
+
 const CALLBACK_API_RE = /^on/
 
 export function isContextApi (name) {
   return CONTEXT_API_RE.test(name)
 }
 export function isSyncApi (name) {
-  return SYNC_API_RE.test(name)
+  return SYNC_API_RE.test(name) && ASYNC_API.indexOf(name) === -1
 }
 
 export function isCallbackApi (name) {
@@ -49,6 +51,19 @@ export function shouldPromise (name) {
   return true
 }
 
+/* eslint-disable no-extend-native */
+if (!Promise.prototype.finally) {
+  Promise.prototype.finally = function (callback) {
+    const promise = this.constructor
+    return this.then(
+      value => promise.resolve(callback()).then(() => value),
+      reason => promise.resolve(callback()).then(() => {
+        throw reason
+      })
+    )
+  }
+}
+
 export function promisify (name, api) {
   if (!shouldPromise(name)) {
     return api
@@ -62,18 +77,6 @@ export function promisify (name, api) {
         success: resolve,
         fail: reject
       }), ...params)
-      /* eslint-disable no-extend-native */
-      if (!Promise.prototype.finally) {
-        Promise.prototype.finally = function (callback) {
-          const promise = this.constructor
-          return this.then(
-            value => promise.resolve(callback()).then(() => value),
-            reason => promise.resolve(callback()).then(() => {
-              throw reason
-            })
-          )
-        }
-      }
     })))
   }
 }

@@ -1,5 +1,9 @@
 <template>
-  <uni-web-view v-on="$listeners" />
+  <uni-web-view v-on="$listeners">
+    <v-uni-resize-sensor
+      ref="sensor"
+      @resize="_resize" />
+  </uni-web-view>
 </template>
 <script>
 export default {
@@ -16,24 +20,10 @@ export default {
     }
   },
   mounted () {
-    const {
-      top,
-      bottom,
-      width,
-      height
-    } = this.$el.getBoundingClientRect()
-
     this.iframe = document.createElement('iframe')
-    this.iframe.style.position = 'absolute'
-    this.iframe.style.display = 'block'
-    this.iframe.style.border = 0
-    this.iframe.style.top = top + 'px'
-    this.iframe.style.bottom = bottom + 'px'
-    this.iframe.style.width = width + 'px'
-    this.iframe.style.height = height + 'px'
     this.iframe.src = this.$getRealPath(this.src)
-
     document.body.appendChild(this.iframe)
+    this._resize()
   },
   activated () {
     this.iframe.style.display = 'block'
@@ -43,6 +33,24 @@ export default {
   },
   beforeDestroy () {
     document.body.removeChild(this.iframe)
+  },
+  methods: {
+    _resize () {
+      const {
+        top,
+        bottom,
+        width,
+        height
+      } = this.$el.getBoundingClientRect()
+
+      this.iframe.style.position = 'absolute'
+      this.iframe.style.display = 'block'
+      this.iframe.style.border = 0
+      this.iframe.style.top = top + 'px'
+      this.iframe.style.bottom = bottom + 'px'
+      this.iframe.style.width = width + 'px'
+      this.iframe.style.height = height + 'px'
+    }
   }
 }
 </script>

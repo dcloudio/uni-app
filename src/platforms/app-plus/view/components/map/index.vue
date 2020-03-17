@@ -177,7 +177,7 @@ export default {
       })
     },
     markers (val) {
-      this.map && this._addMarkers(val)
+      this.map && this._addMarkers(val, true)
     },
     polyline (val) {
       this.map && this._addMapLines(val)
@@ -208,9 +208,9 @@ export default {
     map.onclick = (e) => {
       this.$trigger('click', {}, e)
     }
-    map.onstatuschanged((data = {}) => {
-      this.$trigger('end', {}, data)
-    })
+    map.onstatuschanged = (e) => {
+      this.$trigger('regionchange', {}, e)
+    }
     this._addMarkers(this.markers)
     this._addMapLines(this.polyline)
     this._addMapCircles(this.circles)
@@ -318,6 +318,7 @@ export default {
       if (this.map) {
         if (clear) {
           this.map.clearOverlays()
+          this.map.__markers__ = {}
         }
         markers.forEach(marker => {
           this._addMarker(this.map, marker)

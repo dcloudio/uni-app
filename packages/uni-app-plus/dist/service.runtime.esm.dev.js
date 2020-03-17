@@ -6792,7 +6792,7 @@ function updateDOMListeners (oldVnode, vnode) {
   target$1._$vd = vnode.context._$vd;
   var context = vnode.context;
   // 存储事件标记
-  target$1.setAttribute('nid', String(vnode.data.attrs['_i']));
+  target$1.setAttribute('nid', String((vnode.data.attrs || {})['_i']));
   target$1.setAttribute('cid', context._$id);
 
   normalizeEvents(on);

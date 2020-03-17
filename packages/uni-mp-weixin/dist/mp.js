@@ -26,7 +26,7 @@ function hasOwn (obj, key) {
   return hasOwnProperty.call(obj, key)
 }
 
-function noop () { }
+function noop () {}
 
 /**
  * Create a cached version of a pure function.
@@ -807,5 +807,7 @@ function Behavior (options) {
 
 const nextTick = Vue.nextTick;
 
-export default uni;
+var index = uni.__$wx__;
+
+export default index;
 export { Behavior, Component, Page, nextTick };

@@ -56,12 +56,15 @@ function getH5Options (manifestJson) {
 
   let base = h5.router.base
 
-  if (base.indexOf('/') !== 0 && base.indexOf('./') !== 0) {
+  if (!base.startsWith('/') && !base.startsWith('./')) {
     base = '/' + base
   }
-
-  if (base.substr(-1) !== '/') {
+  if (!base.endsWith('/')) {
     base = base + '/'
+  }
+  // 相对路径仅支持 hash 模式
+  if (base.startsWith('./')) {
+    h5.router.mode = defaultRouter.mode
   }
 
   h5.router.base = base
@@ -69,11 +72,16 @@ function getH5Options (manifestJson) {
   if (process.env.NODE_ENV === 'production') { // 生产模式，启用 publicPath
     h5.publicPath = h5.publicPath || base
 
-    if (h5.publicPath.substr(-1) !== '/') {
+    if (!h5.publicPath.endsWith('/')) {
       h5.publicPath = h5.publicPath + '/'
     }
   } else { // 其他模式，启用 base
-    h5.publicPath = base
+    if (base.startsWith('./')) {
+      // 在开发模式, publicPath 如果为 './' webpack-dev-server 匹配文件时会失败
+      h5.publicPath = base.substr(1)
+    } else {
+      h5.publicPath = base
+    }
   }
 
   /* eslint-disable no-mixed-operators */

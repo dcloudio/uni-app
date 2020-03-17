@@ -44,6 +44,14 @@ module.exports = {
   entry() {
     return process.UNI_ENTRY
   },
+  output: {
+      filename: '[name].js',
+      chunkFilename: '[name].js'
+  },
+  optimization: {
+      splitChunks: false,
+      runtimeChunk: false
+  },
   externals: {
     vue: 'Vue'
   },

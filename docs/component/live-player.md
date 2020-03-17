@@ -32,6 +32,39 @@
 |@netstatus|EventHandle||网络状态通知，detail = {info}||
 |@fullscreenchange|EventHandle||全屏变化事件，detail = {direction, fullScreen}。|&nbsp;|
 
+
+mode 的合法值
+
+|值|说明|
+|:-|:-|
+|live|直播|
+|RTC|实时通话，该模式时延更低|
+
+
+orientation 的合法值
+
+|值|说明|
+|:-|:-|
+|vertical|竖直|
+|horizontal|水平|
+
+
+object-fit 的合法值
+
+|值|说明|
+|:-|:-|
+|contain|图像长边填满屏幕，短边区域会被填充⿊⾊|
+|fillCrop|图像铺满屏幕，超出显示区域的部分将被截掉|
+
+
+sound-mode 的合法值
+
+|值|说明|
+|:-|:-|
+|speaker|扬声器|
+|ear|听筒|
+
+
 **Tips**
 
 * 百度小程序 iOS 端不支持设置 orientation 属性；

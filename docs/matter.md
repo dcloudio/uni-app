@@ -18,29 +18,41 @@ vue页面在App端，默认是被系统的webview渲染的（不是手机自带�
 小程序不存在此情况。所以如果你的H5和小程序界面正常，而App界面异常，大多是因为css兼容性。解决这类问题，可以在caniuse查询，也可以使用一个较低版本的chrome浏览器在H5端测试。
 
 app端nvue页面，不存在浏览器兼容问题，它自带一个统一的原生渲染引擎，不依赖webview。
+
 Android4.4对应的webview是chrome37。各端浏览器内核的详情查阅，参考：[关于手机webview内核、默认浏览器、各家小程序的渲染层浏览器的区别和兼容性](https://ask.dcloud.net.cn/article/1318)
 
 - 原生组件层级问题
 H5没有原生组件概念问题，非H5端有原生组件并引发了原生组件层级高于前端组件的概念，要遮挡video、map等原生组件，请使用cover-view组件。
 
 2. 使用了非H5端不支持的API，比如document、xmlhttp、cookie、window、location、navigator、localstorage、websql、indexdb、webgl等对象。如果你的代码没有直接使用这些，那很可能是引入的三方库使用了这些。如果是后者，去[插件市场](https://ext.dcloud.net.cn/)搜索替代方案。要知道非H5端的js是运行在一个独立的js core或v8下，并不是运行在浏览器里。
-3. 使用了非H5端不支持的vue语法，比如v-html指令、受小程序自定义组件限制的写法，[详见](/use)
+3. 使用了非H5端不支持的vue语法，受小程序自定义组件限制的写法，[详见](/use)
 4. 不要在引用组件的地方在组件属性上直接写 style="xx"，要在组件内部写样式
 5. `url(//alicdn.net)`等路径，改为`url(https://alicdn.net)`，因为在App端//是file协议
-6. 很多人在H5端联网时使用本地测试服务地址(localhost或127.0.0.1)，这样的联网地址手机端必然无法访问，请使用手机可访问的IP进行联网
+6. 很多人在H5端联网时使用本地测试服务地址(localhost或127.0.0.1)，这样的联网地址手机App端是无法访问的，请使用手机可访问的IP进行联网
 
 ### H5正常但小程序异常的可能性
 1. 同上
-2. 小程序要求连接的网址都要配白名单
+2. v-html在h5和app-vue均支持，但小程序不支持
+3. 小程序要求连接的网址都要配白名单
 
 ### 小程序正常但App异常的可能性
-1. vue页面在App端是被系统的webview渲染的（不是手机自带浏览器，是rom的webview），在较老的手机上，比如Android4.4、5.0或iOS8，很多css是不支持的，所以不要使用太新的css，会导致界面异常。注意这不意味着不能使用flex，Android4.4也支持flex，只是不要使用太新的css。可以找Android4.4手机或使用pc模拟器实际测试下，大多数国产Android模拟器都是4.4或5.0。小程序不存在此情况。所以如果你的H5和小程序界面正常，而App界面异常，大多是因为css兼容性。解决这类问题，可以在caniuse查询，也可以使用一个较低版本的chrome浏览器在H5端测试。Android4.4对应的webview是chrome37，如找不到老版chrome，也可以下载老版HBuilder（在HBuilderX下载页面底部有“上一代HBuilder下载”），在老HBuilder的右上角边改边看模式里是chrome37内核，可以把uni-app的H5版运行起来，将url粘贴到边改边看的浏览器中，点右键可以审查元素，排查不支持的css。
+vue页面在App端的渲染引擎默认是系统webview（不是手机自带浏览器，是rom的webview），在较老的手机上，比如Android4.4、5.0或iOS8，一些新出的css语法是不支持的。注意这不意味着不能使用flex，Android4.4也支持flex，只是不要使用太新的css。可以找Android4.4手机或使用pc模拟器实际测试下，大多数国产Android模拟器都是4.4或5.0。
+
+小程序不存在浏览器兼容问题，它内置了几十M自己的定制webview。所以如果你的H5和小程序界面正常，而App界面异常，大多是因为css兼容性。
+
+解决这类问题：
+1. 放弃老款手机支持
+2. 不用使用太新的css语法，可以在caniuse查询
+3. 从 uni-app 2.5.3 起，Android端支持引入腾讯x5浏览器内核，可以抹平低端Android的浏览器兼容性问题，[详见x5使用指南](https://ask.dcloud.net.cn/article/36806)
 
 ### 小程序或App正常，但H5异常的可能性
-1. 使用了小程序原生组件，而没有使用vue标准的跨端组件。wxcomponets只有小程序和App才支持。
+1. 在 uni-app 2.4.7 以前，H5端不支持微信小程序自定义组件，即wxcomponets下的组件，此时可能产生兼容问题。从 2.4.7 起，H5也支持微信自定义组件，不再存在这这方面兼容问题。
+2. App端使用了App特有的API和功能，比如plus、Native.js、subNVue、原生插件等
+3. 小程序端使用了小程序专用的功能，比如微信登录、小程序插件、微信小程序云开发。对于云开发，建议使用uniCloud。
+
 
 ### App正常，小程序、H5异常的可能性
-1. 使用了App端特有的plus、Native.js、subNVue、原生插件等功能
+1. 代码中使用了App端特有的plus、Native.js、subNVue、原生插件等功能
 
 ### 使用 Vue.js 的注意
 
@@ -131,17 +143,16 @@ H5没有原生组件概念问题，非H5端有原生组件并引发了原生组�
 ...
 ```
 
-* 组件方面：支持 ``mpvue`` 组件、支持普通 ``vue`` 组件、不支持小程序自定义组件、不支持 ``nvue``。
-
 * H5 版 ``uni-app`` 全支持 ``vue`` 语法，所以可能造成部分写法在 H5 端生效，在小程序或 App 端不生效。
 
 * H5 校验了更严格的 ``vue`` 语法，有些写法不规范会报警，比如： ``data`` 后面写对象会报警，必须写 ``function``；不能修改 ``props`` 的值；组件最外层 ``template`` 节点下不允许包含多个节点等。
 
 * 编译为 H5 版后生成的是单页应用（SPA）。
 
-* 如果遇到了白屏或网络不给力的提示，一般是跨域问题，网络请求（request、uploadFile、downloadFile等）在浏览器存在跨域限制，需服务端配合才能跨域。解决方案有2种：
-  1. 服务器打开跨域限制；
-  2. 本地浏览器安装跨域插件，参考：[Chrome 跨域插件免翻墙安装](http://ask.dcloud.net.cn/article/35267) 或 [firefox跨域插件](https://addons.mozilla.org/zh-CN/firefox/addon/access-control-allow-origin/)。
+* 如果遇到跨域造成js无法联网，注意网络请求（request、uploadFile、downloadFile等）在浏览器存在跨域限制，解决方案有3种：
+  1. 服务器打开跨域限制
+  2. 本地浏览器安装跨域插件，参考：[Chrome 跨域插件免翻墙安装](http://ask.dcloud.net.cn/article/35267) 或 [firefox跨域插件](https://addons.mozilla.org/zh-CN/firefox/addon/access-control-allow-origin/)
+  3. 使用HBuilderX的内置浏览器，这个浏览器定制过，可以跨域。
 
 * APP 和小程序的导航栏和 ``tabbar`` 均是原生控件，元素区域坐标是不包含原生导航栏和 ``tabbar`` 的；而 H5 里导航栏和 ``tabbar`` 是 div 模拟实现的，所以元素坐标会包含导航栏和tabbar的高度。为了优雅的解决多端高度定位问题，``uni-app`` 新增了2个css变量：``--window-top`` 和 ``--window-bottom``，这代表了页面的内容区域距离顶部和底部的距离。举个实例，如果你想在原生``tabbar`` 上方悬浮一个菜单，之前写 ``bottom:0``。这样的写法编译到 h5 后，这个菜单会和 ``tabbar`` 重叠，位于屏幕底部。而改为使用 ``bottom:var(--window-bottom)``，则不管在 app 下还是在h5下，这个菜单都是悬浮在 ``tabbar`` 上浮的。这就避免了写条件编译代码。当然仍然也可以使用 H5 的条件编译处理界面的不同。
 

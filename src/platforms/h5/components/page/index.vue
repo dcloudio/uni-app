@@ -7,13 +7,15 @@
       v-if="enablePullDownRefresh"
       ref="refresh"
       :color="refreshOptions.color"
-      :offset="refreshOptions.offset" />
+      :offset="refreshOptions.offset"
+    />
     <page-body
       v-if="enablePullDownRefresh"
       @touchstart.native="_touchstart"
       @touchmove.native="_touchmove"
       @touchend.native="_touchend"
-      @touchcancel.native="_touchend">
+      @touchcancel.native="_touchend"
+    >
       <slot name="page" />
     </page-body>
     <page-body v-else>
@@ -22,11 +24,11 @@
   </uni-page>
 </template>
 <style>
-  uni-page {
-    display: block;
-    width: 100%;
-    height: 100%;
-  }
+uni-page {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
 </style>
 <script>
 import {
@@ -146,6 +148,12 @@ export default {
     titlePenetrate: {
       type: String,
       default: 'NO'
+    },
+    navigationBarShadow: {
+      type: Object,
+      default () {
+        return {}
+      }
     }
   },
   data () {
@@ -180,6 +188,7 @@ export default {
       timingFunc: '',
       titlePenetrate: yesNoParseList[this.titlePenetrate]
     }, titleNView)
+    navigationBar.shadow = this.navigationBarShadow
 
     const refreshOptions = Object.assign({
       support: true,

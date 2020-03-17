@@ -10,9 +10,10 @@ function warp (fn) {
       complete: options.complete
     }
     const data = Object.assign({}, options)
-    delete data.success
-    delete data.fail
-    delete data.complete
+    // TODO 下版重构 nvue h5 callback
+    // delete data.success
+    // delete data.fail
+    // delete data.complete
     const res = fn.bind(this)(data, callbackId)
     if (res) {
       invoke(callbackId, res)

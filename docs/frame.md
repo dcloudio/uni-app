@@ -49,6 +49,54 @@
 |mp-alipay|支付宝小程序|
 |mp-baidu|百度小程序|
 
+## 资源路径说明
+
+### 模板内引入静态资源
+
+> `template`内引入静态资源，如`image`、`video`等标签的`src`属性时，可以使用相对路径或者绝对路径，形式如下
+
+```html
+<!-- 绝对路径，/static指根目录下的static目录，在cli项目中/static指src目录下的static目录 -->
+<image class="logo" src="/static/logo.png"></image>
+<!-- 相对路径 -->
+<image class="logo" src="../../static/logo.png"></image>
+```
+
+### js文件引入
+
+> `js`文件或`script`标签内（包括renderjs等）引入`js`文件时，可以使用相对路径和绝对路径，形式如下
+
+```js
+// 绝对路径，@指向项目根目录，在cli项目中@指向src目录
+import add from '@/common/add.js'
+// 相对路径
+import add from '../../common/add.js'
+```
+
+### css引入静态资源
+
+> `css`文件或`style标签`内引入`css`文件时（scss、less文件同理），只能使用相对路径
+
+```css
+/* 相对路径 */
+@import "../../common/base.css";
+/* 或者 */
+@import url("../../common/base.css");
+```
+
+> `css`文件或`style标签`内引用的图片路径可以使用相对路径也可以使用绝对路径，需要注意的是，小程序端css文件不允许引用本地文件。
+
+```css
+/* 绝对路径 */
+background-image: url(/static/logo.png);
+/* 相对路径 */
+background-image: url(../../static/logo.png);
+```
+
+**Tips**
+
+- 引入字体图标请参考，[自体图标](frame?id=字体图标)
+
 ## 生命周期
 
 
@@ -371,6 +419,10 @@ uni-app 提供内置 CSS 变量
 
 ```html
 <template>
+    <!-- HBuilderX 2.6.3+ 新增 page-meta, 详情：https://uniapp.dcloud.io/component/page-meta -->
+    <page-meta>
+        <navigation-bar />
+    </page-meta>
 	<view>
 		<view class="status_bar">
 			<!-- 这里是状态栏 -->
@@ -467,6 +519,7 @@ uni-app 提供内置 CSS 变量
 - 小程序不支持在css中使用本地文件，包括本地的背景图和字体文件。需以base64方式方可使用。App端在v3模式以前，也有相同限制。v3编译模式起支持直接使用本地背景图和字体。
 - 网络路径必须加协议头 ``https``。
 - 从 [http://www.iconfont.cn](http://www.iconfont.cn) 上拷贝的代码，默认是没加协议头的。 
+- 从 [http://www.iconfont.cn](http://www.iconfont.cn) 上下载的字体文件，都是同名字体（字体名都叫iconfont，安装字体文件时可以看到），在nvue内使用时需要注意，此字体名重复可能会显示不正常，可以使用工具修改。
 - 使用本地路径图标字体需注意：
     1. 为方便开发者，在字体文件小于 40kb 时，``uni-app`` 会自动将其转化为 base64 格式；
     2. 字体文件大于等于 40kb，仍转换为 base64 方式使用的话可能有性能问题，如开发者必须使用，则需自己将其转换为 base64 格式使用，或将其挪到服务器上，从网络地址引用；

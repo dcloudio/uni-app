@@ -158,7 +158,8 @@ export function showActionSheet ({
 }, callbackId) {
   const options = {
     buttons: itemList.map(item => ({
-      title: item
+      title: item,
+      color: itemColor
     }))
   }
   if (title) {

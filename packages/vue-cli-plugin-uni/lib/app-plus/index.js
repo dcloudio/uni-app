@@ -2,8 +2,7 @@ const path = require('path')
 const webpack = require('webpack')
 
 const {
-  getMainEntry,
-  isInHBuilderX
+  getMainEntry
 } = require('@dcloudio/uni-cli-shared')
 
 const vueLoader = require('@dcloudio/uni-cli-shared/lib/vue-loader')
@@ -53,11 +52,7 @@ function getProvides (isAppService) {
 
 const v3 = {
   vueConfig: {
-    parallel: false,
-    transpileDependencies: [
-      wxsPath,
-      runtimePath
-    ]
+    parallel: false
   },
   webpackConfig (webpackConfig, vueOptions, api) {
     const isAppService = !!vueOptions.pluginOptions['uni-app-plus']['service']
@@ -199,38 +194,6 @@ const v3 = {
 
     const isAppService = !!vueOptions.pluginOptions['uni-app-plus']['service']
     const isAppView = !!vueOptions.pluginOptions['uni-app-plus']['view']
-
-    const fileLoaderOptions = isInHBuilderX ? {
-      emitFile: isAppView,
-      name: '[path][name].[ext]',
-      context: process.env.UNI_INPUT_DIR
-    } : {
-      emitFile: isAppView,
-      outputPath (url, resourcePath, context) {
-        return path.relative(process.env.UNI_INPUT_DIR, resourcePath)
-      }
-    }
-
-    // 处理静态资源
-    webpackConfig.module
-      .rule('svg')
-      .use('file-loader')
-      .options(fileLoaderOptions)
-
-    const staticTypes = ['images', 'media', 'fonts']
-    staticTypes.forEach(staticType => {
-      webpackConfig.module
-        .rule(staticType)
-        .use('url-loader')
-        .loader('url-loader')
-        .tap(options => Object.assign(options, {
-          limit: 1,
-          fallback: {
-            loader: 'file-loader',
-            options: fileLoaderOptions
-          }
-        }))
-    })
 
     const cacheConfig = {
       cacheDirectory: false,
