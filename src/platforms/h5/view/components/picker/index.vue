@@ -390,14 +390,21 @@ export default {
     _getDateValueArray (valueStr, defaultValue) {
       const splitStr = this.mode === mode.DATE ? '-' : ':'
       const array = this.mode === mode.DATE ? this.dateArray : this.timeArray
-      let max = 3
-      switch (this.fields) {
-        case fields.YEAR:
-          max = 1
-          break
-        case fields.MONTH:
-          max = 2
-          break
+      let max
+      if (this.mode === mode.TIME) {
+        max = 2
+      } else {
+        switch (this.fields) {
+          case fields.YEAR:
+            max = 1
+            break
+          case fields.MONTH:
+            max = 2
+            break
+          default:
+            max = 3
+            break
+        }
       }
       const inputArray = String(valueStr).split(splitStr)
       let value = []
