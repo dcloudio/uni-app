@@ -57,6 +57,8 @@ export * from './route/re-launch'
 export * from './route/redirect-to'
 export * from './route/switch-tab'
 
+export * from './storage/storage'
+
 export * from './ui/keyboard'
 export * from './ui/navigation-bar'
 export * from './ui/popup'
