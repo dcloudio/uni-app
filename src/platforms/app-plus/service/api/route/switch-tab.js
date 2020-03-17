@@ -32,7 +32,7 @@ function _switchTab ({
   const pages = getCurrentPages()
   const len = pages.length
 
-  let callonShow = false
+  let callOnShow = false
 
   if (len >= 1) { // 前一个页面是非 tabBar 页面
     const currentPage = pages[len - 1]
@@ -41,7 +41,7 @@ function _switchTab ({
       // 该情况下目标页tabBarPage的visible是不对的
       // 除非每次路由跳转都处理一遍tabBarPage的visible，目前仅switchTab会处理
       // 简单起见，暂时直接判断该情况，执行onShow
-      callonShow = true
+      callOnShow = true
       pages.reverse().forEach(page => {
         if (!page.$page.meta.isTabBar && page !== currentPage) {
           page.$remove()
@@ -67,8 +67,8 @@ function _switchTab ({
   // 查找当前 tabBarPage，且设置 visible
   getCurrentPages(true).forEach(page => {
     if (('/' + page.route) === path) {
-      if (!page.$page.meta.visible || callonShow) {
-        page.$vm.__call_hook('onShow')
+      if (!page.$page.meta.visible) { // 之前未显示
+        callOnShow = true
       }
       page.$page.meta.visible = true
       tabBarPage = page
@@ -81,6 +81,8 @@ function _switchTab ({
 
   if (tabBarPage) {
     tabBarPage.$getAppWebview().show('none')
+    // 等visible状态都切换完之后，再触发onShow，否则开发者在onShow里边 getCurrentPages 会不准确
+    callOnShow && tabBarPage.$vm.__call_hook('onShow')
   } else {
     return showWebview(registerPage({
       url,
