@@ -15,3 +15,6 @@ uni.onUIStyleChange(function (res) {
 	console.log(res.style);
 });
 ```
+
+**注意**
+- 仅 V3 编译支持，参考 manifest.json 配置
