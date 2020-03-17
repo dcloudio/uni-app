@@ -549,7 +549,8 @@ export default {
       const img = new Image()
       img.onload = () => {
         const canvas = getTempCanvas(destWidth, destHeight)
-        if (fileType === 'jpeg') {
+        if (fileType === 'jpeg' || fileType === 'jpg') {
+          fileType = 'jpeg'
           c2d.fillStyle = '#fff'
           c2d.fillRect(0, 0, destWidth, destHeight)
         }
