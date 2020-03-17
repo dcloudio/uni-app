@@ -683,6 +683,19 @@ var serviceContext = (function () {
     return true
   }
 
+  /* eslint-disable no-extend-native */
+  if (!Promise.prototype.finally) {
+    Promise.prototype.finally = function (callback) {
+      const promise = this.constructor;
+      return this.then(
+        value => promise.resolve(callback()).then(() => value),
+        reason => promise.resolve(callback()).then(() => {
+          throw reason
+        })
+      )
+    };
+  }
+
   function promisify (name, api) {
     if (!shouldPromise(name)) {
       return api
@@ -696,18 +709,6 @@ var serviceContext = (function () {
           success: resolve,
           fail: reject
         }), ...params);
-        /* eslint-disable no-extend-native */
-        if (!Promise.prototype.finally) {
-          Promise.prototype.finally = function (callback) {
-            const promise = this.constructor;
-            return this.then(
-              value => promise.resolve(callback()).then(() => value),
-              reason => promise.resolve(callback()).then(() => {
-                throw reason
-              })
-            )
-          };
-        }
       })))
     }
   }
@@ -1347,12 +1348,14 @@ var serviceContext = (function () {
       query[item[0]] = item[1];
     });
     for (let key in data) {
-      if (data.hasOwnProperty(key)) {
-        if (isPlainObject(data[key])) {
-          query[encode$1(key)] = encode$1(JSON.stringify(data[key]));
-        } else {
-          query[encode$1(key)] = encode$1(data[key]);
+      if (hasOwn(data, key)) {
+        let v = data[key];
+        if (typeof v === 'undefined' || v === null) {
+          v = '';
+        } else if (isPlainObject(v)) {
+          v = JSON.stringify(v);
         }
+        query[encode$1(key)] = encode$1(v);
       }
     }
     query = Object.keys(query).map(item => `${item}=${query[item]}`).join('&');
@@ -4063,11 +4066,14 @@ var serviceContext = (function () {
   }
 
   function readBLECharacteristicValue (data, callbackId) {
+    onBLECharacteristicValueChange = onBLECharacteristicValueChange || bluetoothOn('onBLECharacteristicValueChange');
     bluetoothExec('readBLECharacteristicValue', callbackId, data);
   }
 
   function writeBLECharacteristicValue (data, callbackId) {
-    data.value = base64ToArrayBuffer$2(data.value);
+    if (typeof data.value === 'string') {
+      data.value = base64ToArrayBuffer$2(data.value);
+    }
     bluetoothExec('writeBLECharacteristicValue', callbackId, data);
   }
 
@@ -8402,7 +8408,7 @@ var serviceContext = (function () {
     const pages = getCurrentPages();
     const len = pages.length;
 
-    let callonShow = false;
+    let callOnShow = false;
 
     if (len >= 1) { // 前一个页面是非 tabBar 页面
       const currentPage = pages[len - 1];
@@ -8411,7 +8417,7 @@ var serviceContext = (function () {
         // 该情况下目标页tabBarPage的visible是不对的
         // 除非每次路由跳转都处理一遍tabBarPage的visible，目前仅switchTab会处理
         // 简单起见，暂时直接判断该情况，执行onShow
-        callonShow = true;
+        callOnShow = true;
         pages.reverse().forEach(page => {
           if (!page.$page.meta.isTabBar && page !== currentPage) {
             page.$remove();
@@ -8437,8 +8443,8 @@ var serviceContext = (function () {
     // 查找当前 tabBarPage，且设置 visible
     getCurrentPages(true).forEach(page => {
       if (('/' + page.route) === path) {
-        if (!page.$page.meta.visible || callonShow) {
-          page.$vm.__call_hook('onShow');
+        if (!page.$page.meta.visible) { // 之前未显示
+          callOnShow = true;
         }
         page.$page.meta.visible = true;
         tabBarPage = page;
@@ -8451,6 +8457,8 @@ var serviceContext = (function () {
 
     if (tabBarPage) {
       tabBarPage.$getAppWebview().show('none');
+      // 等visible状态都切换完之后，再触发onShow，否则开发者在onShow里边 getCurrentPages 会不准确
+      callOnShow && tabBarPage.$vm.__call_hook('onShow');
     } else {
       return showWebview(registerPage({
         url,
@@ -11169,13 +11177,6 @@ var serviceContext = (function () {
     if (!socketTask) {
       return
     }
-    socketTask._callbacks[state].forEach(callback => {
-      if (typeof callback === 'function') {
-        callback(state === 'message' ? {
-          data
-        } : {});
-      }
-    });
     if (state === 'open') {
       socketTask.readyState = socketTask.OPEN;
     }
@@ -11192,6 +11193,13 @@ var serviceContext = (function () {
         socketTasksArray.splice(index, 1);
       }
     }
+    socketTask._callbacks[state].forEach(callback => {
+      if (typeof callback === 'function') {
+        callback(state === 'message' ? {
+          data
+        } : {});
+      }
+    });
   });
 
   function connectSocket$1 (args, callbackId) {
