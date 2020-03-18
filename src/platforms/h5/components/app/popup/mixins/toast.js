@@ -23,6 +23,9 @@ export default {
 
     const createOnHide = (type) => {
       return () => {
+        if (!showType) {
+          return
+        }
         let warnMsg = ''
         if (type === 'onHideToast' && showType !== 'onShowToast') {
           warnMsg = '请注意 showToast 与 hideToast 必须配对使用'
