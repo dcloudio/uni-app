@@ -40,6 +40,10 @@ import {
 } from 'uni-helpers/constants'
 
 import {
+  isPlainObject
+} from 'uni-shared'
+
+import {
   mergeTitleNView
 } from 'uni-helpers/patch'
 
@@ -164,13 +168,27 @@ export default {
     }
     // 将 navigationStyle 和 transparentTitle 都合并到 titleNView
     let titleNView = this.titleNView
-    titleNView = Object.assign({}, {
-      type: this.navigationStyle === 'custom' ? 'none' : 'default'
-    }, this.transparentTitle in titleNViewTypeList ? {
-      type: titleNViewTypeList[this.transparentTitle]
-    } : null, typeof titleNView === 'object' ? titleNView : (typeof titleNView === 'boolean' ? {
-      type: titleNView ? 'default' : 'none'
-    } : null))
+    if ( // 无头
+      titleNView === false ||
+      titleNView === 'false' ||
+      (
+        this.navigationStyle === 'custom' &&
+        !isPlainObject(titleNView)
+      ) || (
+        this.transparentTitle === 'always' &&
+        !isPlainObject(titleNView)
+      )
+    ) {
+      titleNView = { type: 'none' }
+    } else {
+      titleNView = Object.assign({}, {
+        type: this.navigationStyle === 'custom' ? 'none' : 'default'
+      }, this.transparentTitle in titleNViewTypeList ? {
+        type: titleNViewTypeList[this.transparentTitle]
+      } : null, typeof titleNView === 'object' ? titleNView : (typeof titleNView === 'boolean' ? {
+        type: titleNView ? 'default' : 'none'
+      } : null))
+    }
 
     const yesNoParseList = {
       'YES': true,
