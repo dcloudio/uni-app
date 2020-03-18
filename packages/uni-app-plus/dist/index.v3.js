@@ -1,5 +1,4 @@
 export function createServiceContext(Vue, weex, plus, UniServiceJSBridge,instanceContext){
-var localStorage = plus.storage
 var setTimeout = instanceContext.setTimeout
 var clearTimeout = instanceContext.clearTimeout
 var setInterval = instanceContext.setInterval
@@ -3460,7 +3459,7 @@ var serviceContext = (function () {
     if (!id || !elm) {
       return
     }
-    if (elm.attr.id === id) {
+    if (elm.attr && elm.attr.id === id) {
       return elm
     }
     const children = elm.children;
@@ -7315,6 +7314,17 @@ var serviceContext = (function () {
     if (webview && !webview.$processed) {
       wrapper$1(webview);
     }
+    let oldSetStyle = webview.setStyle;
+    var parentWebview = plus.webview.getWebviewById(webview.__uniapp_mask_id);
+    webview.setStyle = function (style) {
+      if (style && style.mask) {
+        parentWebview.setStyle({
+          mask: style.mask
+        });
+        delete style.mask;
+      }
+      oldSetStyle.call(this, style);
+    };
     return webview
   }
 
@@ -7755,6 +7765,7 @@ var serviceContext = (function () {
         `UNIAPP[webview][${webview.id}]:create[${subNVue.id}]:${JSON.stringify(style)}`
       );
     }
+    delete style.mask;
     const subNVueWebview = plus.webview.create('', subNVue.id, style, extras);
 
     if (isPopup) {
@@ -8409,10 +8420,12 @@ var serviceContext = (function () {
     const pages = getCurrentPages();
     const len = pages.length;
 
+    let callOnHide = false;
     let callOnShow = false;
 
+    let currentPage;
     if (len >= 1) { // 前一个页面是非 tabBar 页面
-      const currentPage = pages[len - 1];
+      currentPage = pages[len - 1];
       if (!currentPage.$page.meta.isTabBar) {
         // 前一个页面为非 tabBar 页面时，目标tabBar需要强制触发onShow
         // 该情况下目标页tabBarPage的visible是不对的
@@ -8435,8 +8448,7 @@ var serviceContext = (function () {
           }
         }, 100);
       } else {
-        // 前一个 tabBar 触发 onHide
-        currentPage.$vm.__call_hook('onHide');
+        callOnHide = true;
       }
     }
 
@@ -8455,7 +8467,13 @@ var serviceContext = (function () {
         }
       }
     });
-
+    // 相同tabBar页面
+    if (currentPage === tabBarPage) {
+      callOnHide = false;
+    }
+    if (currentPage && callOnHide) {
+      currentPage.$vm.__call_hook('onHide');
+    }
     if (tabBarPage) {
       tabBarPage.$getAppWebview().show('none');
       // 等visible状态都切换完之后，再触发onShow，否则开发者在onShow里边 getCurrentPages 会不准确
@@ -8493,6 +8511,198 @@ var serviceContext = (function () {
         from
       }, callbackId);
     }, openType === 'appLaunch');
+  }
+
+  const STORAGE_DATA_TYPE = '__TYPE';
+  const STORAGE_KEYS = 'uni-storage-keys';
+
+  function parseValue (value) {
+    const types = ['object', 'string', 'number', 'boolean', 'undefined'];
+    try {
+      const object = typeof value === 'string' ? JSON.parse(value) : value;
+      const type = object.type;
+      if (types.indexOf(type) >= 0) {
+        const keys = Object.keys(object);
+        // eslint-disable-next-line valid-typeof
+        if (keys.length === 2 && 'data' in object && typeof object.data === type) {
+          return object.data
+        } else if (keys.length === 1) {
+          return ''
+        }
+      }
+    } catch (error) {}
+  }
+
+  function setStorage$1 ({
+    key,
+    data,
+    isSync
+  } = {}, callbackId) {
+    const type = typeof data;
+    const value = type === 'string' ? data : JSON.stringify({
+      type,
+      data: data
+    });
+    try {
+      if (type === 'string' && parseValue(value) !== undefined) {
+        plus.storage.setItemAsync(key + STORAGE_DATA_TYPE, type);
+      } else {
+        plus.storage.removeItemAsync(key + STORAGE_DATA_TYPE);
+      }
+      plus.storage.setItemAsync(key, value, function () {
+        invoke$1(callbackId, {
+          errMsg: 'setStorage:ok'
+        });
+      }, function (err) {
+        invoke$1(callbackId, {
+          errMsg: `setStorage:fail ${err.message}`
+        });
+      });
+    } catch (error) {
+      invoke$1(callbackId, {
+        errMsg: `setStorage:fail ${error}`
+      });
+    }
+  }
+
+  function setStorageSync$1 (key, data) {
+    const type = typeof data;
+    const value = type === 'string' ? data : JSON.stringify({
+      type,
+      data: data
+    });
+    try {
+      if (type === 'string' && parseValue(value) !== undefined) {
+        plus.storage.setItem(key + STORAGE_DATA_TYPE, type);
+      } else {
+        plus.storage.removeItem(key + STORAGE_DATA_TYPE);
+      }
+      plus.storage.setItem(key, value);
+    } catch (error) {
+
+    }
+  }
+
+  function parseGetStorage (type, value) {
+    let data = value;
+    if (type !== 'string' || (type === 'string' && value === '{"type":"undefined"}')) {
+      try {
+        // 兼容H5和V3初期历史格式
+        let object = JSON.parse(value);
+        const result = parseValue(object);
+        if (result !== undefined) {
+          data = result;
+        } else if (type) {
+          // 兼容App端历史格式
+          data = object;
+          if (typeof object === 'string') {
+            object = JSON.parse(object);
+            // eslint-disable-next-line valid-typeof
+            data = typeof object === (type === 'null' ? 'object' : type) ? object : data;
+          }
+        }
+      } catch (error) {}
+    }
+    return data
+  }
+
+  function getStorage$1 ({
+    key
+  } = {}, callbackId) {
+    plus.storage.getItemAsync(key, function (res) {
+      plus.storage.getItemAsync(key + STORAGE_DATA_TYPE, function (typeRes) {
+        const typeOrigin = typeRes.data || '';
+        const type = typeOrigin.toLowerCase();
+        invoke$1(callbackId, {
+          data: parseGetStorage(type, res.data),
+          errMsg: 'getStorage:ok'
+        });
+      }, function () {
+        const type = '';
+        invoke$1(callbackId, {
+          data: parseGetStorage(type, res.data),
+          errMsg: 'getStorage:ok'
+        });
+      });
+    }, function (err) {
+      invoke$1(callbackId, {
+        data: '',
+        errMsg: `getStorage:fail ${err.message}`
+      });
+    });
+  }
+
+  function getStorageSync$1 (key) {
+    const value = plus.storage.getItem(key);
+    const typeOrigin = plus.storage.getItem(key + STORAGE_DATA_TYPE) || '';
+    const type = typeOrigin.toLowerCase();
+    if (typeof value !== 'string') {
+      return ''
+    }
+    return parseGetStorage(type, value)
+  }
+
+  function removeStorage$1 ({
+    key
+  } = {}, callbackId) {
+    // 兼容App端历史格式
+    plus.storage.removeItemAsync(key + STORAGE_DATA_TYPE);
+    plus.storage.removeItemAsync(key, function (res) {
+      invoke$1(callbackId, {
+        errMsg: 'removeStorage:ok'
+      });
+    }, function (err) {
+      invoke$1(callbackId, {
+        errMsg: `removeStorage:fail ${err.message}`
+      });
+    });
+  }
+
+  function removeStorageSync$1 (key) {
+    plus.storage.removeItem(key + STORAGE_DATA_TYPE);
+    plus.storage.removeItem(key);
+  }
+
+  function clearStorage (args, callbackId) {
+    plus.storage.clearAsync(function (res) {
+      invoke$1(callbackId, {
+        errMsg: 'clearStorage:ok'
+      });
+    }, function (err) {
+      invoke$1(callbackId, {
+        errMsg: `clearStorage:fail ${err.message}`
+      });
+    });
+  }
+
+  function clearStorageSync () {
+    plus.storage.clear();
+  }
+
+  function getStorageInfo () {
+    const length = (plus.storage.length || plus.storage.getLength()) || 0;
+    const keys = [];
+    let currentSize = 0;
+    for (let index = 0; index < length; index++) {
+      const key = plus.storage.key(index);
+      if (key !== STORAGE_KEYS && key.indexOf(STORAGE_DATA_TYPE) + STORAGE_DATA_TYPE.length !== key.length) {
+        const value = plus.storage.getItem(key);
+        currentSize += key.length + value.length;
+        keys.push(key);
+      }
+    }
+    return {
+      keys,
+      currentSize: Math.ceil(currentSize * 2 / 1024),
+      limitSize: Number.MAX_VALUE,
+      errMsg: 'getStorageInfo:ok'
+    }
+  }
+
+  function getStorageInfoSync () {
+    const res = getStorageInfo();
+    delete res.errMsg;
+    return res
   }
 
   function showKeyboard () {
@@ -9221,6 +9431,16 @@ var serviceContext = (function () {
     reLaunch: reLaunch$1,
     redirectTo: redirectTo$1,
     switchTab: switchTab$1,
+    setStorage: setStorage$1,
+    setStorageSync: setStorageSync$1,
+    getStorage: getStorage$1,
+    getStorageSync: getStorageSync$1,
+    removeStorage: removeStorage$1,
+    removeStorageSync: removeStorageSync$1,
+    clearStorage: clearStorage,
+    clearStorageSync: clearStorageSync,
+    getStorageInfo: getStorageInfo,
+    getStorageInfoSync: getStorageInfoSync,
     showKeyboard: showKeyboard,
     hideKeyboard: hideKeyboard,
     setNavigationBarTitle: setNavigationBarTitle$1,
@@ -11363,173 +11583,6 @@ var serviceContext = (function () {
     uploadFile: uploadFile$1
   });
 
-  const STORAGE_DATA_TYPE = '__TYPE';
-  const STORAGE_KEYS = 'uni-storage-keys';
-
-  function parseValue (value) {
-    const types = ['object', 'string', 'number', 'boolean', 'undefined'];
-    try {
-      const object = typeof value === 'string' ? JSON.parse(value) : value;
-      const type = object.type;
-      if (types.indexOf(type) >= 0) {
-        const keys = Object.keys(object);
-        // eslint-disable-next-line valid-typeof
-        if (keys.length === 2 && 'data' in object && typeof object.data === type) {
-          return object.data
-        } else if (keys.length === 1) {
-          return ''
-        }
-      }
-    } catch (error) { }
-  }
-
-  function setStorage$1 ({
-    key,
-    data
-  } = {}) {
-    const type = typeof data;
-    const value = type === 'string' ? data : JSON.stringify({
-      type,
-      data: data
-    });
-    try {
-      if (type === 'string' && parseValue(value) !== undefined) {
-        localStorage.setItem(key + STORAGE_DATA_TYPE, type);
-      } else {
-        localStorage.removeItem(key + STORAGE_DATA_TYPE);
-      }
-      localStorage.setItem(key, value);
-    } catch (error) {
-      return {
-        errMsg: `setStorage:fail ${error}`
-      }
-    }
-    return {
-      errMsg: 'setStorage:ok'
-    }
-  }
-
-  function setStorageSync$1 (key, data) {
-    setStorage$1({
-      key,
-      data
-    });
-  }
-
-  function getStorage$1 ({
-    key
-  } = {}) {
-    const value = localStorage && localStorage.getItem(key);
-    if (typeof value !== 'string') {
-      return {
-        data: '',
-        errMsg: 'getStorage:fail'
-      }
-    }
-    let data = value;
-    const typeOrigin = localStorage.getItem(key + STORAGE_DATA_TYPE) || '';
-    const type = typeOrigin.toLowerCase();
-    if (type !== 'string' || (typeOrigin === 'String' && value === '{"type":"undefined"}')) {
-      try {
-        // 兼容H5和V3初期历史格式
-        let object = JSON.parse(value);
-        const result = parseValue(object);
-        if (result !== undefined) {
-          data = result;
-        } else if (type) {
-          // 兼容App端历史格式
-          data = object;
-          if (typeof object === 'string') {
-            object = JSON.parse(object);
-            // eslint-disable-next-line valid-typeof
-            data = typeof object === (type === 'null' ? 'object' : type) ? object : data;
-          }
-        }
-      } catch (error) { }
-    }
-    return {
-      data,
-      errMsg: 'getStorage:ok'
-    }
-  }
-
-  function getStorageSync$1 (key) {
-    const res = getStorage$1({
-      key
-    });
-    return res.data
-  }
-
-  function removeStorage$1 ({
-    key
-  } = {}) {
-    if (localStorage) {
-      // 兼容App端历史格式
-      localStorage.removeItem(key + STORAGE_DATA_TYPE);
-      localStorage.removeItem(key);
-    }
-    return {
-      errMsg: 'removeStorage:ok'
-    }
-  }
-
-  function removeStorageSync$1 (key) {
-    removeStorage$1({
-      key
-    });
-  }
-
-  function clearStorage () {
-    localStorage && localStorage.clear();
-    return {
-      errMsg: 'clearStorage:ok'
-    }
-  }
-
-  function clearStorageSync () {
-    clearStorage();
-  }
-
-  function getStorageInfo () {
-    const length = (localStorage && (localStorage.length || localStorage.getLength())) || 0;
-    const keys = [];
-    let currentSize = 0;
-    for (let index = 0; index < length; index++) {
-      const key = localStorage.key(index);
-      if (key !== STORAGE_KEYS && key.indexOf(STORAGE_DATA_TYPE) + STORAGE_DATA_TYPE.length !== key.length) {
-        const value = localStorage.getItem(key);
-        currentSize += key.length + value.length;
-        keys.push(key);
-      }
-    }
-    return {
-      keys,
-      currentSize: Math.ceil(currentSize * 2 / 1024),
-      limitSize: Number.MAX_VALUE,
-      errMsg: 'getStorageInfo:ok'
-    }
-  }
-
-  function getStorageInfoSync () {
-    const res = getStorageInfo();
-    delete res.errMsg;
-    return res
-  }
-
-  var require_context_module_1_21 = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    setStorage: setStorage$1,
-    setStorageSync: setStorageSync$1,
-    getStorage: getStorage$1,
-    getStorageSync: getStorageSync$1,
-    removeStorage: removeStorage$1,
-    removeStorageSync: removeStorageSync$1,
-    clearStorage: clearStorage,
-    clearStorageSync: clearStorageSync,
-    getStorageInfo: getStorageInfo,
-    getStorageInfoSync: getStorageInfoSync
-  });
-
   const defaultOption = {
     duration: 400,
     timingFunction: 'linear',
@@ -11608,7 +11661,7 @@ var serviceContext = (function () {
     return new MPAnimation(option)
   }
 
-  var require_context_module_1_22 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_21 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     createAnimation: createAnimation
   });
@@ -11673,7 +11726,7 @@ var serviceContext = (function () {
     return new ServiceIntersectionObserver(getCurrentPageVm('createIntersectionObserver'), options)
   }
 
-  var require_context_module_1_23 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_22 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     createIntersectionObserver: createIntersectionObserver
   });
@@ -11814,7 +11867,7 @@ var serviceContext = (function () {
     return new SelectorQuery(getCurrentPageVm('createSelectorQuery'))
   }
 
-  var require_context_module_1_24 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_23 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     createSelectorQuery: createSelectorQuery
   });
@@ -11831,7 +11884,7 @@ var serviceContext = (function () {
     callbacks$b.push(callbackId);
   }
 
-  var require_context_module_1_25 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_24 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     onKeyboardHeightChange: onKeyboardHeightChange
   });
@@ -11856,7 +11909,7 @@ var serviceContext = (function () {
     }, pageId);
   }
 
-  var require_context_module_1_26 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_25 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     loadFontFace: loadFontFace$1
   });
@@ -11869,7 +11922,7 @@ var serviceContext = (function () {
     return {}
   }
 
-  var require_context_module_1_27 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_26 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     pageScrollTo: pageScrollTo$1
   });
@@ -11882,7 +11935,7 @@ var serviceContext = (function () {
     return {}
   }
 
-  var require_context_module_1_28 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_27 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     setPageMeta: setPageMeta
   });
@@ -11919,7 +11972,7 @@ var serviceContext = (function () {
     callbacks$c.push(callbackId);
   }
 
-  var require_context_module_1_29 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_28 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     removeTabBarBadge: removeTabBarBadge$1,
     showTabBarRedDot: showTabBarRedDot$1,
@@ -11945,7 +11998,7 @@ var serviceContext = (function () {
     callbacks$d.splice(callbacks$d.indexOf(callbackId), 1);
   }
 
-  var require_context_module_1_30 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_29 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     onWindowResize: onWindowResize,
     offWindowResize: offWindowResize
@@ -11977,16 +12030,15 @@ var serviceContext = (function () {
   './network/request.js': require_context_module_1_18,
   './network/socket.js': require_context_module_1_19,
   './network/upload-file.js': require_context_module_1_20,
-  './storage/storage.js': require_context_module_1_21,
-  './ui/create-animation.js': require_context_module_1_22,
-  './ui/create-intersection-observer.js': require_context_module_1_23,
-  './ui/create-selector-query.js': require_context_module_1_24,
-  './ui/keyboard.js': require_context_module_1_25,
-  './ui/load-font-face.js': require_context_module_1_26,
-  './ui/page-scroll-to.js': require_context_module_1_27,
-  './ui/set-page-meta.js': require_context_module_1_28,
-  './ui/tab-bar.js': require_context_module_1_29,
-  './ui/window.js': require_context_module_1_30,
+  './ui/create-animation.js': require_context_module_1_21,
+  './ui/create-intersection-observer.js': require_context_module_1_22,
+  './ui/create-selector-query.js': require_context_module_1_23,
+  './ui/keyboard.js': require_context_module_1_24,
+  './ui/load-font-face.js': require_context_module_1_25,
+  './ui/page-scroll-to.js': require_context_module_1_26,
+  './ui/set-page-meta.js': require_context_module_1_27,
+  './ui/tab-bar.js': require_context_module_1_28,
+  './ui/window.js': require_context_module_1_29,
 
       };
       var req = function req(key) {
@@ -12954,6 +13006,13 @@ var serviceContext = (function () {
         return console.error(`removeElement[${elm.cid}][${elm.nid}] not found`)
       }
       this.elements.splice(elmIndex, 1);
+    }
+
+    removeElementByCid (cid) {
+      if (!cid) {
+        return
+      }
+      this.elements = this.elements.filter(elm => elm.cid !== cid);
     }
 
     push (type, cid, data, options) {

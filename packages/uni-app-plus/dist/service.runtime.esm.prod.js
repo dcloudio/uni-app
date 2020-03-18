@@ -4874,9 +4874,14 @@ function insertBefore() {
 }
 
 function removeChild(node, child) {
-  if (child && child._$vd) {
-    child._$vd.removeElement(child);
+  if (!child) {
+    return
   }
+  if (child.__vue__ && child.__vue__._$vd) {
+    // 根据组件cid删除所有相关element,后续应该建立一套完整的DOM逻辑
+    child.__vue__._$vd.removeElementByCid(child.__vue__._$id);
+  }
+  child._$vd && child._$vd.removeElement(child);
 }
 
 function appendChild() {
@@ -5302,6 +5307,7 @@ function createPatchFunction (backend) {
       if (isDef(i = vnode.componentInstance) && isDef(i = i._vnode) && isDef(i.data)) {
         removeAndInvokeRemoveHook(i, rm);
       } else if (isDef(children = vnode.children)) {
+        // fixed by xxxxxx
         // app-plus service 层 elm 暂未实现父子关系维护，移除父 elm 时，导致子 elm 还存留(影响了事件查找)
         // 暂时使用 vnode 的 children 递归 rm 掉子 elm
         for (i = 0; i < children.length; i++) {
