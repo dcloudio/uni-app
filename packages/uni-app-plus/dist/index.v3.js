@@ -7314,6 +7314,17 @@ var serviceContext = (function () {
     if (webview && !webview.$processed) {
       wrapper$1(webview);
     }
+    let oldSetStyle = webview.setStyle;
+    var parentWebview = plus.webview.getWebviewById(webview.__uniapp_mask_id);
+    webview.setStyle = function (style) {
+      if (style && style.mask) {
+        parentWebview.setStyle({
+          mask: style.mask
+        });
+        delete style.mask;
+      }
+      oldSetStyle.call(this, style);
+    };
     return webview
   }
 
@@ -7754,6 +7765,7 @@ var serviceContext = (function () {
         `UNIAPP[webview][${webview.id}]:create[${subNVue.id}]:${JSON.stringify(style)}`
       );
     }
+    delete style.mask;
     const subNVueWebview = plus.webview.create('', subNVue.id, style, extras);
 
     if (isPopup) {
@@ -12994,6 +13006,13 @@ var serviceContext = (function () {
         return console.error(`removeElement[${elm.cid}][${elm.nid}] not found`)
       }
       this.elements.splice(elmIndex, 1);
+    }
+
+    removeElementByCid (cid) {
+      if (!cid) {
+        return
+      }
+      this.elements = this.elements.filter(elm => elm.cid !== cid);
     }
 
     push (type, cid, data, options) {
