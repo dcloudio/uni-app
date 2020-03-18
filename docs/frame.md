@@ -51,6 +51,8 @@
 
 ## 资源路径说明
 
+
+
 ### 模板内引入静态资源
 
 > `template`内引入静态资源，如`image`、`video`等标签的`src`属性时，可以使用相对路径或者绝对路径，形式如下
@@ -58,9 +60,16 @@
 ```html
 <!-- 绝对路径，/static指根目录下的static目录，在cli项目中/static指src目录下的static目录 -->
 <image class="logo" src="/static/logo.png"></image>
+<image class="logo" src="@/static/logo.png"></image>
 <!-- 相对路径 -->
 <image class="logo" src="../../static/logo.png"></image>
 ```
+
+**注意**
+
+- `@`开头的绝对路径以及相对路径会经过base64转换规则校验
+- 引入的静态资源在非h5平台，均不转为base64。在H5平台，小于4kb的资源会被转换成base64，其余不转。
+- 自`HBuilderX 2.6.6-alpha`起`template`内支持`@`开头路径引入静态资源，旧版本不支持此方式
 
 ### js文件引入
 
@@ -73,22 +82,34 @@ import add from '@/common/add.js'
 import add from '../../common/add.js'
 ```
 
+**注意**
+
+- js文件不支持使用`/`开头的方式引入
+
 ### css引入静态资源
 
 > `css`文件或`style标签`内引入`css`文件时（scss、less文件同理），只能使用相对路径
 
 ```css
+/* 绝对路径 */
+@import url('/common/uni.css');
+@import url('@/common/uni.css');
 /* 相对路径 */
-@import "../../common/base.css";
-/* 或者 */
-@import url("../../common/base.css");
+@import url('../../common/uni.css');
 ```
+
+**注意**
+
+- `@`开头的绝对路径以及相对路径会经过base64转换规则校验
+- 不支持本地图片的平台，小于40kb，一定会转base64。（共四个平台mp-weixin, mp-qq, mp-toutiao, app v2）
+- 自`HBuilderX 2.6.6-alpha`起支持绝对路径引入静态资源，旧版本不支持此方式
 
 > `css`文件或`style标签`内引用的图片路径可以使用相对路径也可以使用绝对路径，需要注意的是，小程序端css文件不允许引用本地文件。
 
 ```css
 /* 绝对路径 */
 background-image: url(/static/logo.png);
+background-image: url(@/static/logo.png);
 /* 相对路径 */
 background-image: url(../../static/logo.png);
 ```
