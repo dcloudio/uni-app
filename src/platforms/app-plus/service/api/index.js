@@ -50,6 +50,8 @@ export * from './plugin/require-native-plugin'
 export * from './plugin/share'
 export * from './plugin/restore-global'
 export * from './plugin/sub-nvue'
+export * from './plugin/on-native-event-receive'
+export * from './plugin/send-native-event'
 
 export * from './route/navigate-back'
 export * from './route/navigate-to'
