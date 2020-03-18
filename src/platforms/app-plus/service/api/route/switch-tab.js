@@ -32,10 +32,12 @@ function _switchTab ({
   const pages = getCurrentPages()
   const len = pages.length
 
+  let callOnHide = false
   let callOnShow = false
 
+  let currentPage
   if (len >= 1) { // 前一个页面是非 tabBar 页面
-    const currentPage = pages[len - 1]
+    currentPage = pages[len - 1]
     if (!currentPage.$page.meta.isTabBar) {
       // 前一个页面为非 tabBar 页面时，目标tabBar需要强制触发onShow
       // 该情况下目标页tabBarPage的visible是不对的
@@ -58,8 +60,7 @@ function _switchTab ({
         }
       }, 100)
     } else {
-      // 前一个 tabBar 触发 onHide
-      currentPage.$vm.__call_hook('onHide')
+      callOnHide = true
     }
   }
 
@@ -78,7 +79,13 @@ function _switchTab ({
       }
     }
   })
-
+  // 相同tabBar页面
+  if (currentPage === tabBarPage) {
+    callOnHide = false
+  }
+  if (currentPage && callOnHide) {
+    currentPage.$vm.__call_hook('onHide')
+  }
   if (tabBarPage) {
     tabBarPage.$getAppWebview().show('none')
     // 等visible状态都切换完之后，再触发onShow，否则开发者在onShow里边 getCurrentPages 会不准确

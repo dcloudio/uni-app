@@ -154,7 +154,8 @@ export function showModal ({
 export function showActionSheet ({
   itemList = [],
   itemColor = '#000000',
-  title = ''
+  title = '',
+  popover
 }, callbackId) {
   const options = {
     buttons: itemList.map(item => ({
@@ -170,7 +171,7 @@ export function showActionSheet ({
     options.cancel = '取消'
   }
 
-  plus.nativeUI.actionSheet(options, (e) => {
+  plus.nativeUI.actionSheet(Object.assign(options, { popover }), (e) => {
     if (e.index > 0) {
       invoke(callbackId, {
         errMsg: 'showActionSheet:ok',

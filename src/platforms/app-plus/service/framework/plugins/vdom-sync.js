@@ -158,6 +158,13 @@ export class VDomSync {
     this.elements.splice(elmIndex, 1)
   }
 
+  removeElementByCid (cid) {
+    if (!cid) {
+      return
+    }
+    this.elements = this.elements.filter(elm => elm.cid !== cid)
+  }
+
   push (type, cid, data, options) {
     const typeData = [cid, data]
     if (options) {
