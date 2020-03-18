@@ -102,7 +102,7 @@ export default {
 
 Tips：
 
-* H5端调用之后虽然之前页面栈会销毁，但是无法清空浏览器之前的历史记录，此时`navigateBack`不能返回，但如果存在历史记录的话点击浏览器的返回按钮或者调用`history.back()`仍然可以导航到浏览器的其他历史记录。
+* H5端调用`uni.reLaunch`之后之前页面栈会销毁，但是无法清空浏览器之前的历史记录，此时`navigateBack`不能返回，如果存在历史记录的话点击浏览器的返回按钮或者调用`history.back()`仍然可以导航到浏览器的其他历史记录。
 
 #### uni.switchTab(OBJECT)
 
