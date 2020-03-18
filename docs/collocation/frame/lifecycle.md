@@ -131,6 +131,7 @@ export default {
 **注意**
 
 - nvue 页面weex编译模式支持的生命周期同weex，具体参考：[weex生命周期介绍](/use-weex?id=生命周期)。
+- 支付宝小程序真机可以监听到非`navigateBack`引发的返回事件（使用小程序开发工具时不会触发`onBackPress`），不可以阻止默认返回行为
 
 ### 组件生命周期
 
