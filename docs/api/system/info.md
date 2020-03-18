@@ -13,7 +13,7 @@
 
 |参数|说明|平台差异说明|
 |:-|:-|:-|
-|brand|手机品牌|App、微信小程序、百度小程序、头条小程序、QQ小程序|
+|brand|手机品牌|App、微信小程序、百度小程序、字节跳动小程序、QQ小程序|
 |model|手机型号||
 |pixelRatio|设备像素比||
 |screenWidth|屏幕宽度||
@@ -22,14 +22,14 @@
 |windowHeight|可使用窗口高度||
 |windowTop|可使用窗口的顶部位置|App、H5|
 |windowBottom|可使用窗口的底部位置|App、H5|
-|statusBarHeight|状态栏的高度|头条小程序不支持|
+|statusBarHeight|状态栏的高度|字节跳动小程序不支持|
 |navigationBarHeight|导航栏的高度|百度小程序|
 |titleBarHeight|标题栏高度|支付宝小程序|
-|language|应用设置的语言|头条小程序不支持|
+|language|应用设置的语言|字节跳动小程序不支持|
 |version|引擎版本号|H5不支持|
 |storage|设备磁盘容量|支付宝小程序|
 |currentBattery|当前电量百分比|支付宝小程序|
-|appName|宿主APP名称|头条小程序|
+|appName|宿主APP名称|字节跳动小程序|
 |AppPlatform|App平台|QQ小程序|
 |host|宿主平台|百度小程序|
 |app|当前运行的客户端|支付宝小程序|
@@ -102,7 +102,7 @@ uni.getSystemInfo({
 
 |参数|说明|平台差异说明|
 |:-|:-|:-|
-|brand|手机品牌|App、微信小程序、百度小程序、头条小程序、QQ小程序|
+|brand|手机品牌|App、微信小程序、百度小程序、字节跳动小程序、QQ小程序|
 |model|手机型号||
 |pixelRatio|设备像素比||
 |screenWidth|屏幕宽度||
@@ -111,14 +111,14 @@ uni.getSystemInfo({
 |windowHeight|可使用窗口高度||
 |windowTop|可使用窗口的顶部位置|App、H5|
 |windowBottom|可使用窗口的底部位置|App、H5|
-|statusBarHeight|状态栏的高度|头条小程序不支持|
+|statusBarHeight|状态栏的高度|字节跳动小程序不支持|
 |navigationBarHeight|导航栏的高度|百度小程序|
 |titleBarHeight|标题栏高度|支付宝小程序|
-|language|应用设置的语言|头条小程序不支持|
+|language|应用设置的语言|字节跳动小程序不支持|
 |version|引擎版本号|H5不支持|
 |storage|设备磁盘容量|支付宝小程序|
 |currentBattery|当前电量百分比|支付宝小程序|
-|appName|宿主APP名称|头条小程序|
+|appName|宿主APP名称|字节跳动小程序|
 |AppPlatform|App平台|QQ小程序|
 |host|宿主平台|百度小程序|
 |app|当前运行的客户端|支付宝小程序|
@@ -211,7 +211,7 @@ Android10以上，部分国产手机支持OAID，详见[匿名设备标识符（
 
 平台差异说明
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ程序|
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |√|x|√|√|√|√|√|
 

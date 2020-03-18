@@ -2,7 +2,7 @@
 
 **平台差异说明**
 
-支付宝小程序、头条小程序，没有明确的文档来具体说明这个对象，而是指向了 [Web Websocket](https://developer.mozilla.org/zh-CN/docs/Web/API/WebSocket) 对象。
+支付宝小程序、字节跳动小程序，没有明确的文档来具体说明这个对象，而是指向了 [Web Websocket](https://developer.mozilla.org/zh-CN/docs/Web/API/WebSocket) 对象。
 
 ### SocketTask.onMessage(CALLBACK)
 监听 WebSocket 接受到服务器的消息事件

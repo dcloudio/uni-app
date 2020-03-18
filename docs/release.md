@@ -185,7 +185,7 @@
   + 【重要】App平台 优化 v3版本 真机运行时修改 vue 文件，手机端重启直达修改页面，无需手动配置 condition
   + 优化 非 scoped 样式支持 >>>、/deep/、::v-deep 语法 [详情](https://github.com/dcloudio/uni-app/issues/1143)
   + App平台、H5平台、微信小程序 新增 uni.getSystemInfo 返回数据支持属性 safeAreaInsets
-  + App平台、H5平台、头条小程序平台 新增 swiper 组件支持 disable-touch 属性
+  + App平台、H5平台、字节跳动小程序平台 新增 swiper 组件支持 disable-touch 属性
   + APP平台、H5平台 调整 默认请求超时时间（request、connectSocket、uploadFile、downloadFile）对齐微信小程序由6秒改为60秒
   + App平台 优化 支持 CSS 变量 --window-top
   + App平台 优化 调试控制台日志输出
@@ -317,7 +317,7 @@
 * 【uni-app插件】
   + 【重要】easycom 支持自动扫描组件，符合目录规则的组件，无需在pages.json配置即可直接使用 [详情](https://uniapp.dcloud.io/collocation/pages?id=easycom)
   + 【重要】App平台、H5平台 新增 支持 renderjs，替代 wxs ，以 vue 组件的写法运行在视图层 [详情](https://uniapp.dcloud.io/frame?id=renderjs)
-  + App平台、H5平台、头条小程序平台 新增 swiper 组件支持 disable-touch 属性
+  + App平台、H5平台、字节跳动小程序平台 新增 swiper 组件支持 disable-touch 属性
   + App平台 修复 自定义组件模式 vue 文件不包含 script 节点时运行报错的Bug [详情](https://ask.dcloud.net.cn/question/87323)
   + APP平台 修复 nvue 页面 picker 组件时间、日期类型使用默认值报错的Bug [详情](https://ask.dcloud.net.cn/question/87203)
   + APP平台 修复 nvue 页面 appear、disappear 事件不返回 direction 的Bug
@@ -572,7 +572,7 @@
   + 小程序平台 修复 不能直接在模版内使用 $emit 的 Bug [详情](https://ask.dcloud.net.cn/question/82865)
   + 微信小程序平台 修复在发行模式使用 lodash@4.17.15 ，运行报错的 Bug[#994](https://github.com/dcloudio/uni-app/issues/994)
   + 支付宝小程序平台 修复 for 循环中 ref 生成的多个组件数组长度不准确的Bug [#930](https://github.com/dcloudio/uni-app/issues/930)
-  + 头条小程序平台 修复 当 rpx 后跟着 !important 时，发行模式下 rpx 未被编译成px的Bug [#1014](https://github.com/dcloudio/uni-app/issues/1014)
+  + 字节跳动小程序平台 修复 当 rpx 后跟着 !important 时，发行模式下 rpx 未被编译成px的Bug [#1014](https://github.com/dcloudio/uni-app/issues/1014)
   + 百度小程序平台 修复 页面 onShow 只能触发一次的Bug
   + uni-ui 新增 uni-transition 过渡动画组件
   + uni-ui 新增 uni-fab 悬浮按钮支持nvue
@@ -648,7 +648,7 @@
   + 小程序平台 修复 不能直接在模版内使用 $emit 的 Bug [详情](https://ask.dcloud.net.cn/question/82865)
   + 微信小程序平台 修复在发行模式使用 lodash@4.17.15 ，运行报错的 Bug[#994](https://github.com/dcloudio/uni-app/issues/994)
   + 支付宝小程序平台 修复 for 循环中 ref 生成的多个组件数组长度不准确的Bug [#930](https://github.com/dcloudio/uni-app/issues/930)
-  + 头条小程序平台 修复 当 rpx 后跟着 !important 时，发行模式下 rpx 未被编译成px的Bug [#1014](https://github.com/dcloudio/uni-app/issues/1014)
+  + 字节跳动小程序平台 修复 当 rpx 后跟着 !important 时，发行模式下 rpx 未被编译成px的Bug [#1014](https://github.com/dcloudio/uni-app/issues/1014)
   + 百度小程序平台 修复 页面 onShow 只能触发一次的Bug
   + uni-ui 新增 uni-transition 过渡动画组件
   + uni-ui 新增 uni-fab 悬浮按钮支持nvue
@@ -1068,14 +1068,14 @@
 * 【uni-app插件】
   + App平台 修复 vue页面 scroll-view 组件在 iOS13 无法滚动的 Bug [详情](https://ask.dcloud.net.cn/question/78627)
   + H5平台 修复 uni.request 方法发起 GET 请求之前出现 OPTIONS 预检请求的 Bug
-  + 头条小程序 修复 this.$refs 部分场景无法获取组件引用的 Bug [#791](https://github.com/dcloudio/uni-app/issues/791)
+  + 字节跳动小程序 修复 this.$refs 部分场景无法获取组件引用的 Bug [#791](https://github.com/dcloudio/uni-app/issues/791)
   + uni统计 修复 小程序端发行后所有页面都添加 onShareAppMessage 的 Bug [#792](https://github.com/dcloudio/uni-app/issues/792)
 
 #### 2.3.1.20190920-alpha
 * 【uni-app插件】
   + App平台 修复 vue页面 scroll-view 组件在 iOS13 无法滚动的 Bug [详情](https://ask.dcloud.net.cn/question/78627)
   + H5平台 修复 uni.request 方法发起 GET 请求之前出现 OPTIONS 预检请求的 Bug
-  + 头条小程序 修复 this.$refs 部分场景无法获取组件引用的 Bug [#791](https://github.com/dcloudio/uni-app/issues/791)
+  + 字节跳动小程序 修复 this.$refs 部分场景无法获取组件引用的 Bug [#791](https://github.com/dcloudio/uni-app/issues/791)
   + uni统计 修复 小程序端发行后所有页面都添加 onShareAppMessage 的 Bug [#792](https://github.com/dcloudio/uni-app/issues/792)
 
 #### 2.3.0.20190919
@@ -1156,7 +1156,7 @@
   + 微信小程序平台 修复 当使用小程序插件后，调用数组方法修改数组未触发界面渲染的 Bug [#694](https://github.com/dcloudio/uni-app/issues/694)
   + 支付宝小程序平台 新增 支持分包加载功能
   + 支付宝小程序 新增 button 组件 open-type 属性支持 getPhoneNumber
-  + 百度/头条小程序平台 修复 开发工具 sourcemap 无效的Bug [#724](https://github.com/dcloudio/uni-app/issues/724)
+  + 百度/字节跳动小程序平台 修复 开发工具 sourcemap 无效的Bug [#724](https://github.com/dcloudio/uni-app/issues/724)
   + hello uni-app 新增 nvue地图 组件及API示例
   + hello uni-app 新增 全屏视频上下滑动的示例模板
   + hello uni-app 新增 globalData和vuex的示例模板
@@ -1282,7 +1282,7 @@
   + H5平台 修复 svg 或非base64格式的 Data URI 无法使用的Bug [#668](https://github.com/dcloudio/uni-app/issues/668)
   + 小程序平台 新增 uni.getMenuButtonBoundingClientRect 接口，可获取导航栏右上角胶囊按钮的布局位置信息 [详情](https://uniapp.dcloud.io/api/ui/menuButton?id=getmenubuttonboundingclientrect)
   + 小程序平台 优化 发行时压缩 css 代码
-  + 百度/头条小程序平台 修复 开发工具 sourcemap 无效的Bug [#724](https://github.com/dcloudio/uni-app/issues/724)
+  + 百度/字节跳动小程序平台 修复 开发工具 sourcemap 无效的Bug [#724](https://github.com/dcloudio/uni-app/issues/724)
   + 支付宝小程序 新增 button 组件 open-type 属性支持 getPhoneNumber
   + hello uni-app 新增 nvue地图 组件及API示例
   + hello uni-app 新增 全屏视频上下滑动 示例模板
@@ -1529,12 +1529,12 @@
   + 支付宝小程序平台 修复 web-view 组件中 postMessage 不能正常触发 @message 事件的 Bug [#389](https://github.com/dcloudio/uni-app/issues/389)
   + 百度小程序平台 修复 页面直达时，onLoad生命周期不触发的Bug
   + 百度小程序平台 修复 App.vue中onShow不触发的Bug [详情](https://ask.dcloud.net.cn/question/71446)
-  + 头条小程序平台 修复 getCurrentPages 接口返回的页面对象中route属性缺失的Bug [详情](https://ask.dcloud.net.cn/question/72603)
+  + 字节跳动小程序平台 修复 getCurrentPages 接口返回的页面对象中route属性缺失的Bug [详情](https://ask.dcloud.net.cn/question/72603)
   + uni-ui 修复 LoadMore 加载更多组件不显示加载中动画的 Bug
   + hello uni-app 小程序平台 当用户拒绝定位权限后，再次点击获取定位时，引导用户去设置中开启
   + 新闻/资讯App模板 nvue页面使用新的uni-app编译模式，用uni基础组件重写，实现了nvue页面直接跨多端，App端新增了自定义的下拉刷新
   + 登录模板 修复 在支付宝平台页面高度设置 100% 未生效的Bug
-  + 登录模板 修复 在头条小程序上自定义组件编译模式下输入框样式错乱的 Bug
+  + 登录模板 修复 在字节跳动小程序上自定义组件编译模式下输入框样式错乱的 Bug
 * 【5+App插件】
   + 【重要】新增 5+App添加UniPush功能，替代之前的个推和小米推送。[详情](https://ask.dcloud.net.cn/article/35622)
   + 【重要】新增 获取设备信息方法（plus.device.getInfo），不再推荐使用plus.device.imei。把属性改为方法可以避免Android平台在应用启动时被某些手机提示需要电话权限的问题。[详情](https://ask.dcloud.net.cn/article/36075)
@@ -1585,7 +1585,7 @@
 #### 2.0.0.20190610
 * 【uni-app插件】
   + 【重要】App平台 新增 subNVue ，支持使用原生组件绘制自定义导航栏、全屏遮罩等 [详情](https://uniapp.dcloud.io/api/window/subNVues)
-  + 【重要】支付宝/百度/头条小程序平台 新增 支持自定义组件模式，提升性能和增强vue语法支持，[详见](https://ask.dcloud.net.cn/article/35843)
+  + 【重要】支付宝/百度/字节跳动小程序平台 新增 支持自定义组件模式，提升性能和增强vue语法支持，[详见](https://ask.dcloud.net.cn/article/35843)
   + 新增 uni.$on,uni.$once,uni.$off,uni.$emit 方法，提供更优雅的页面间通信解决方案 [详情](https://uniapp.dcloud.io/api/window/communication)
   + 新增 组件 editor 富文本编辑器组件，包括微信和App平台 [详情](https://uniapp.dcloud.io/component/editor)
   + 新增 pages.json支持配置导航栏下方的阴影线navigationbarshadow [详情](https://uniapp.dcloud.io/collocation/pages?id=navigationbarshadow)
@@ -1621,7 +1621,7 @@
   + hello uni-app 新增 原生子窗体（subNVue）示例
   + hello uni-app 新增 iBeacon 示例
   + hello uni-app 新增 editor 富文本编辑器示例
-  + hello uni-app 在支付宝/百度/头条小程序平台，开启[自定义组件模式](https://ask.dcloud.net.cn/article/35843)
+  + hello uni-app 在支付宝/百度/字节跳动小程序平台，开启[自定义组件模式](https://ask.dcloud.net.cn/article/35843)
 * 【5+App插件】
   + 新增 Webview窗口标题栏（titleNView）支持获取输入搜索内容功能（getTitleNViewSearchInputText） [文档](https://www.html5plus.org/doc/zh_cn/webview.html#plus.webview.WebviewObject.getTitleNViewSearchInputText)
   + 新增 Webview窗口标题栏（titleNView）支持监听搜索输入框焦点变化事件（titleNViewSearchInputFocusChanged） [文档](https://www.html5plus.org/doc/zh_cn/webview.html#plus.webview.WebviewEvent)
@@ -1793,7 +1793,7 @@
 
 #### 1.7.0.20190314
 * 【重要】支持App资源在线热更新 [详情](https://ask.dcloud.net.cn/article/35667)
-* 修复 uni.webview.js 在头条小程序真机环境无效的问题 [v1.5.0](https://js.cdn.aliyun.dcloud.net.cn/dev/uni-app/uni.webview.1.5.0.js)
+* 修复 uni.webview.js 在字节跳动小程序真机环境无效的问题 [v1.5.0](https://js.cdn.aliyun.dcloud.net.cn/dev/uni-app/uni.webview.1.5.0.js)
 * 修复 rich-text 组件 ins 标签嵌套在 span 标签中无法渲染的问题 [详情](https://ask.dcloud.net.cn/question/65382)
 * 修复 uni.getProvider 获取 push 服务供应商的信息始终为 igexin 的bug
 * 【重要】App平台 新增 转场动画配置，详见[pages.json](https://uniapp.dcloud.io/collocation/pages?id=app-plus)、[navigator](https://uniapp.dcloud.io/component/navigator)、[uni.navigateTo](https://uniapp.dcloud.io/api/router?id=navigateto)
@@ -1844,10 +1844,10 @@
 
 
 #### 1.6.2.20190220
-* 【重要】新增 uni-app 支持发行到头条小程序 [详情](https://ask.dcloud.net.cn/article/35563)
+* 【重要】新增 uni-app 支持发行到字节跳动小程序 [详情](https://ask.dcloud.net.cn/article/35563)
 * 新增 窗口大小变化监听接口 uni.onWindowResize、uni.offWindowResize [详情](https://uniapp.dcloud.io/api/ui/window?id=onwindowresize)
 * 修复 upx 负数转换和正数不一致的问题 [#180](https://github.com/dcloudio/uni-app/issues/180)
-* 新增 uni.webview.js 支持头条小程序 [v1.4.9](https://js.cdn.aliyun.dcloud.net.cn/dev/uni-app/uni.webview.1.4.9.js)
+* 新增 uni.webview.js 支持字节跳动小程序 [v1.4.9](https://js.cdn.aliyun.dcloud.net.cn/dev/uni-app/uni.webview.1.4.9.js)
 * App平台 新增 picker 组件支持多列选择器（mode: multiSelector）
 * App平台 新增 manifest的启动图配置增加白屏时不关闭splash启动图 [详情](https://ask.dcloud.net.cn/article/35565)
 * App平台 修复 uni.notifyBLECharacteristicValueChange 方法调用无效的bug

@@ -4,7 +4,7 @@
 
 **平台差异说明**
 
-|App|H5|[微信小程序](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/miniprogram-navigate/wx.navigateToMiniProgram.html)|[支付宝小程序](https://docs.alipay.com/mini/api/open-miniprogram)|[百度小程序](https://smartprogram.baidu.com/docs/develop/api/open_smartprogram/#swan-navigateToSmartProgram/)|[头条小程序](https://developer.toutiao.com/dev/cn/mini-app/develop/open-capacity/mini-app-forward/navigatetominiprogram)|[QQ小程序](https://q.qq.com/wiki/develop/miniprogram/API/open_port/port_change.html#qq-navigatetominiprogram)|
+|App|H5|[微信小程序](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/miniprogram-navigate/wx.navigateToMiniProgram.html)|[支付宝小程序](https://docs.alipay.com/mini/api/open-miniprogram)|[百度小程序](https://smartprogram.baidu.com/docs/develop/api/open_smartprogram/#swan-navigateToSmartProgram/)|[字节跳动小程序](https://developer.toutiao.com/dev/cn/mini-app/develop/open-capacity/mini-app-forward/navigatetominiprogram)|[QQ小程序](https://q.qq.com/wiki/develop/miniprogram/API/open_port/port_change.html#qq-navigatetominiprogram)|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |x(见下)|x|√|√|√|√(1.15.0+)|√|
 
@@ -46,7 +46,7 @@ uni.navigateToMiniProgram({
 
 **平台差异说明**
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |x|x|√|√|√|√|√|
 

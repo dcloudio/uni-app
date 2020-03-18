@@ -152,8 +152,8 @@ uni.showModal({
 
 |参数|类型|必填|说明|平台差异说明|
 |:-|:-|:-|:-|:-|
-|itemList|Array&lt;String&gt;|是|按钮的文字数组|微信、百度、头条小程序数组长度最大为6个|
-|itemColor|HexColor|否|按钮的文字颜色，字符串格式，默认为"#000000"|头条小程序不支持|
+|itemList|Array&lt;String&gt;|是|按钮的文字数组|微信、百度、字节跳动小程序数组长度最大为6个|
+|itemColor|HexColor|否|按钮的文字颜色，字符串格式，默认为"#000000"|字节跳动小程序不支持|
 |success|Function|否|接口调用成功的回调函数，详见返回参数说明||
 |fail|Function|否|接口调用失败的回调函数||
 |complete|Function|否|接口调用结束的回调函数（调用成功、失败都会执行）|&nbsp;|

@@ -129,7 +129,7 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 	</a>
     <a href="#" class="clear-style barcode-view">
 		<img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/wastesep-mp-toutiao.png" width="200"/>
-		<span style="margin-top:15px;">头条小程序码</span>
+		<span style="margin-top:15px;">字节跳动小程序码</span>
 	</a>
 </div> -->
 

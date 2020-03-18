@@ -43,7 +43,7 @@
 			<div class="barcode-img-box">
 				<img src="https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/mp-toutiao.png" width="160"/>
 			</div>
-        	<b>头条小程序版</b>
+        	<b>字节跳动小程序版</b>
         </a>
         <a href="//m3w.cn/uniapp" target="_blank" class="clear-style barcode-view">
 			<div class="barcode-img-box">

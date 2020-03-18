@@ -132,7 +132,7 @@ background-image: url(../../static/logo.png);
 |onPullDownRefresh|监听用户下拉动作，一般用于下拉刷新，参考[示例](api/ui/pulldown)|||
 |onReachBottom|页面上拉触底事件的处理函数|||
 |onTabItemTap|点击 tab 时触发，参数为Object，具体见下方注意事项|微信小程序、百度小程序、H5、App（自定义组件模式）||
-|onShareAppMessage|用户点击右上角分享|微信小程序、百度小程序、头条小程序、支付宝小程序||
+|onShareAppMessage|用户点击右上角分享|微信小程序、百度小程序、字节跳动小程序、支付宝小程序||
 |onPageScroll|监听页面滚动，参数为Object|||
 |onNavigationBarButtonTap|监听原生标题栏按钮点击事件，参数为Object|5+ App、H5||
 |onBackPress|监听页面返回，返回 event = {from:backbutton、 navigateBack} ，backbutton 表示来源是左上角返回按钮或 android 返回键；navigateBack表示来源是 uni.navigateBack ；详细说明及使用：[onBackPress 详解](http://ask.dcloud.net.cn/article/35120)|App、H5||
@@ -283,7 +283,7 @@ switch(uni.getSystemInfoSync().platform){
 - rpx 即响应式px，一种根据屏幕宽度自适应的动态单位。以750宽的屏幕为基准，750rpx恰好为屏幕宽度。屏幕变宽，rpx 实际显示效果会等比放大。
 
 vue页面支持普通H5单位，但在nvue里不支持：
-- rem 默认根字体大小为 屏幕宽度/20（微信小程序、头条小程序、App、H5）<span style="display:none">百度小程序16px、支付宝小程序50px</span>
+- rem 默认根字体大小为 屏幕宽度/20（微信小程序、字节跳动小程序、App、H5）<span style="display:none">百度小程序16px、支付宝小程序50px</span>
 - vh viewpoint height，视窗高度，1vh等于视窗高度的1%
 - vw viewpoint width，视窗宽度，1vw等于视窗宽度的1%
 
@@ -608,7 +608,7 @@ ES6 API 的支持，详见如下表格部分（`x` 表示不支持，无特殊�
 * 微信小程序[详见](https://developers.weixin.qq.com/miniprogram/dev/framework/runtime/js-support.html#%E5%AE%A2%E6%88%B7%E7%AB%AF%20ES6%20API%20%E6%94%AF%E6%8C%81%E6%83%85%E5%86%B5)
 * 阿里小程序[详见](https://docs.alipay.com/mini/framework/implementation-detail)
 * 百度小程序[详见](https://smartprogram.baidu.com/docs/develop/framework/operating-environment/)
-* 头条小程序[详见](https://developer.toutiao.com/dev/cn/mini-app/develop/framework/mini-app-runtime/javascript-support)
+* 字节跳动小程序[详见](https://developer.toutiao.com/dev/cn/mini-app/develop/framework/mini-app-runtime/javascript-support)
 * QQ小程序[详见](https://q.qq.com/wiki/develop/miniprogram/frame/useful/useful_env.html#es6%E6%94%AF%E6%8C%81%E6%83%85%E5%86%B5)
 
 |String|iOS8|iOS9|iOS10|Android|
@@ -806,7 +806,7 @@ const package = require('packageName')
 |微信小程序|支持微信小程序组件|wxcomponents|
 |支付宝小程序|支持支付宝小程序组件|mycomponents|
 |百度小程序|支持百度小程序组件|swancomponents|
-|头条小程序|支持头条小程序组件|ttcomponents|
+|字节跳动小程序|支持字节跳动小程序组件|ttcomponents|
 |QQ小程序|支持QQ小程序组件|wxcomponents|
 
 此文档要求开发者对各端小程序的**自定义组件**有一定了解，没接触过小程序**自定义组件**的可以参考：
@@ -814,7 +814,7 @@ const package = require('packageName')
 - [微信小程序自定义组件](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/)
 - [百度小程序自定义组件](https://smartprogram.baidu.com/docs/develop/framework/custom-component/)
 - [支付宝小程序自定义组件](https://docs.alipay.com/mini/framework/custom-component-overview)
-- [头条小程序自定义组件](https://developer.toutiao.com/docs/framework/custom_component_intro.html)
+- [字节跳动小程序自定义组件](https://developer.toutiao.com/docs/framework/custom_component_intro.html)
 - [QQ小程序自定义组件](https://q.qq.com/wiki/develop/miniprogram/frame/diy_components/)
 
 **目录结构**
@@ -1034,7 +1034,7 @@ uni-app可以将wxs代码编译到微信小程序、QQ小程序、app-vue、H5�
 
 **平台差异说明**
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |√(不支持nvue)|√|√|SJS|Filter|x|√|
 
@@ -1252,7 +1252,7 @@ export default {
 
 **平台差异说明**
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |√(2.5.5+，仅支持vue，并要求v3编译器)|√|x|x|x|x|x|
 
