@@ -212,7 +212,9 @@ var serviceContext = (function () {
     'restoreGlobal',
     'getSubNVueById',
     'getCurrentSubNVue',
-    'setPageMeta'
+    'setPageMeta',
+    'onNativeEventReceive',
+    'sendNativeEvent'
   ];
 
   const ad = [
@@ -639,7 +641,7 @@ var serviceContext = (function () {
   };
 
   const SYNC_API_RE =
-    /^\$|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
+    /^\$|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
 
   const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -1948,6 +1950,9 @@ var serviceContext = (function () {
     visible: {
       type: Boolean,
       default: true
+    },
+    popover: {
+      type: Object
     }
   };
 
@@ -7332,6 +7337,23 @@ var serviceContext = (function () {
     return getSubNVueById(plus.webview.currentWebview().id)
   }
 
+  const callbacks$3 = [];
+
+  function onNativeEventReceive (callback) {
+    isFn(callback) &&
+      callbacks$3.indexOf(callback) === -1 &&
+      callbacks$3.push(callback);
+  }
+
+  function consumeNativeEvent (event, data) {
+    callbacks$3.forEach(callback => callback(event, data));
+  }
+
+  function sendNativeEvent (event, data, callback) {
+    // 实时获取weex module（weex可能会变化，比如首页nvue加速显示时）
+    return weex.requireModule('plus').sendNativeEvent(event, data, callback)
+  }
+
   let firstBackTime = 0;
 
   function quit () {
@@ -7477,6 +7499,9 @@ var serviceContext = (function () {
       (
         windowOptions.navigationStyle === 'custom' &&
         !isPlainObject(titleNView)
+      ) || (
+        windowOptions.transparentTitle === 'always' &&
+        !isPlainObject(titleNView)
       )
     ) {
       return false
@@ -7495,7 +7520,7 @@ var serviceContext = (function () {
       titleText: titleImage === '' ? windowOptions.navigationBarTitleText || '' : '',
       titleColor: windowOptions.navigationBarTextStyle === 'black' ? '#000000' : '#ffffff',
       type: titleNViewTypeList[transparentTitle],
-      backgroundColor: transparentTitle !== 'always' ? windowOptions.navigationBarBackgroundColor || '#000000' : 'rgba(0,0,0,0)',
+      backgroundColor: windowOptions.navigationBarBackgroundColor || '#f8f8f8',
       tags: titleImage === '' ? [] : [{
         'tag': 'img',
         'src': titleImage,
@@ -8938,7 +8963,8 @@ var serviceContext = (function () {
   function showActionSheet$1 ({
     itemList = [],
     itemColor = '#000000',
-    title = ''
+    title = '',
+    popover
   }, callbackId) {
     const options = {
       buttons: itemList.map(item => ({
@@ -8954,7 +8980,7 @@ var serviceContext = (function () {
       options.cancel = '取消';
     }
 
-    plus.nativeUI.actionSheet(options, (e) => {
+    plus.nativeUI.actionSheet(Object.assign(options, { popover }), (e) => {
       if (e.index > 0) {
         invoke$1(callbackId, {
           errMsg: 'showActionSheet:ok',
@@ -9103,16 +9129,16 @@ var serviceContext = (function () {
     }
   }
 
-  const callbacks$3 = {};
+  const callbacks$4 = {};
 
   function createCallbacks (namespace) {
-    let scopedCallbacks = callbacks$3[namespace];
+    let scopedCallbacks = callbacks$4[namespace];
     if (!scopedCallbacks) {
       scopedCallbacks = {
         id: 1,
         callbacks: Object.create(null)
       };
-      callbacks$3[namespace] = scopedCallbacks;
+      callbacks$4[namespace] = scopedCallbacks;
     }
     return {
       get (id) {
@@ -9426,6 +9452,9 @@ var serviceContext = (function () {
     restoreGlobal: restoreGlobal,
     getSubNVueById: getSubNVueById,
     getCurrentSubNVue: getCurrentSubNVue,
+    onNativeEventReceive: onNativeEventReceive,
+    consumeNativeEvent: consumeNativeEvent,
+    sendNativeEvent: sendNativeEvent,
     navigateBack: navigateBack$1,
     navigateTo: navigateTo$1,
     reLaunch: reLaunch$1,
@@ -9691,9 +9720,9 @@ var serviceContext = (function () {
     'error',
     'waiting'
   ];
-  const callbacks$4 = {};
+  const callbacks$5 = {};
   eventNames$2.forEach(name => {
-    callbacks$4[name] = [];
+    callbacks$5[name] = [];
   });
 
   const props$1 = [
@@ -9757,7 +9786,7 @@ var serviceContext = (function () {
         errMsg,
         errCode
       }) => {
-        callbacks$4[state].forEach(callback => {
+        callbacks$5[state].forEach(callback => {
           if (typeof callback === 'function') {
             callback(state === 'error' ? {
               errMsg,
@@ -9809,7 +9838,7 @@ var serviceContext = (function () {
   eventNames$2.forEach(item => {
     const name = item[0].toUpperCase() + item.substr(1);
     BackgroundAudioManager.prototype[`on${name}`] = function (callback) {
-      callbacks$4[item].push(callback);
+      callbacks$5[item].push(callback);
     };
   });
 
@@ -10849,10 +10878,10 @@ var serviceContext = (function () {
     EditorContext: EditorContext
   });
 
-  const callbacks$5 = [];
+  const callbacks$6 = [];
 
   onMethod('onAccelerometerChange', function (res) {
-    callbacks$5.forEach(callbackId => {
+    callbacks$6.forEach(callbackId => {
       invoke$1(callbackId, res);
     });
   });
@@ -10864,7 +10893,7 @@ var serviceContext = (function () {
    */
   function onAccelerometerChange (callbackId) {
     // TODO 当没有 start 时，添加 on 需要主动 start?
-    callbacks$5.push(callbackId);
+    callbacks$6.push(callbackId);
     if (!isEnable) {
       startAccelerometer();
     }
@@ -10921,10 +10950,10 @@ var serviceContext = (function () {
     onBLECharacteristicValueChange: onBLECharacteristicValueChange$1
   });
 
-  const callbacks$6 = [];
+  const callbacks$7 = [];
 
   onMethod('onCompassChange', function (res) {
-    callbacks$6.forEach(callbackId => {
+    callbacks$7.forEach(callbackId => {
       invoke$1(callbackId, res);
     });
   });
@@ -10936,7 +10965,7 @@ var serviceContext = (function () {
    */
   function onCompassChange (callbackId) {
     // TODO 当没有 start 时，添加 on 需要主动 start?
-    callbacks$6.push(callbackId);
+    callbacks$7.push(callbackId);
     if (!isEnable$1) {
       startCompass();
     }
@@ -10968,16 +10997,16 @@ var serviceContext = (function () {
     stopCompass: stopCompass
   });
 
-  const callbacks$7 = [];
+  const callbacks$8 = [];
 
   onMethod('onNetworkStatusChange', res => {
-    callbacks$7.forEach(callbackId => {
+    callbacks$8.forEach(callbackId => {
       invoke$1(callbackId, res);
     });
   });
 
   function onNetworkStatusChange (callbackId) {
-    callbacks$7.push(callbackId);
+    callbacks$8.push(callbackId);
   }
 
   var require_context_module_1_13 = /*#__PURE__*/Object.freeze({
@@ -10985,16 +11014,16 @@ var serviceContext = (function () {
     onNetworkStatusChange: onNetworkStatusChange
   });
 
-  const callbacks$8 = [];
+  const callbacks$9 = [];
 
   onMethod('onUIStyleChange', function (res) {
-    callbacks$8.forEach(callbackId => {
+    callbacks$9.forEach(callbackId => {
       invoke$1(callbackId, res);
     });
   });
 
   function onUIStyleChange (callbackId) {
-    callbacks$8.push(callbackId);
+    callbacks$9.push(callbackId);
   }
 
   var require_context_module_1_14 = /*#__PURE__*/Object.freeze({
@@ -11030,7 +11059,7 @@ var serviceContext = (function () {
     previewImage: previewImage$1
   });
 
-  const callbacks$9 = {
+  const callbacks$a = {
     pause: [],
     resume: [],
     start: [],
@@ -11044,7 +11073,7 @@ var serviceContext = (function () {
         const state = res.state;
         delete res.state;
         delete res.errMsg;
-        callbacks$9[state].forEach(callback => {
+        callbacks$a[state].forEach(callback => {
           if (typeof callback === 'function') {
             callback(res);
           }
@@ -11052,7 +11081,7 @@ var serviceContext = (function () {
       });
     }
     onError (callback) {
-      callbacks$9.error.push(callback);
+      callbacks$a.error.push(callback);
     }
     onFrameRecorded (callback) {
 
@@ -11064,16 +11093,16 @@ var serviceContext = (function () {
 
     }
     onPause (callback) {
-      callbacks$9.pause.push(callback);
+      callbacks$a.pause.push(callback);
     }
     onResume (callback) {
-      callbacks$9.resume.push(callback);
+      callbacks$a.resume.push(callback);
     }
     onStart (callback) {
-      callbacks$9.start.push(callback);
+      callbacks$a.start.push(callback);
     }
     onStop (callback) {
-      callbacks$9.stop.push(callback);
+      callbacks$a.stop.push(callback);
     }
     pause () {
       invokeMethod('operateRecorder', {
@@ -11387,7 +11416,7 @@ var serviceContext = (function () {
 
   const socketTasks$1 = Object.create(null);
   const socketTasksArray = [];
-  const callbacks$a = Object.create(null);
+  const callbacks$b = Object.create(null);
   onMethod('onSocketTaskStateChange', ({
     socketTaskId,
     state,
@@ -11401,8 +11430,8 @@ var serviceContext = (function () {
     if (state === 'open') {
       socketTask.readyState = socketTask.OPEN;
     }
-    if (socketTask === socketTasksArray[0] && callbacks$a[state]) {
-      invoke$1(callbacks$a[state], state === 'message' ? {
+    if (socketTask === socketTasksArray[0] && callbacks$b[state]) {
+      invoke$1(callbacks$b[state], state === 'message' ? {
         data
       } : {});
     }
@@ -11468,19 +11497,19 @@ var serviceContext = (function () {
   }
 
   function onSocketOpen (callbackId) {
-    callbacks$a.open = callbackId;
+    callbacks$b.open = callbackId;
   }
 
   function onSocketError (callbackId) {
-    callbacks$a.error = callbackId;
+    callbacks$b.error = callbackId;
   }
 
   function onSocketMessage (callbackId) {
-    callbacks$a.message = callbackId;
+    callbacks$b.message = callbackId;
   }
 
   function onSocketClose (callbackId) {
-    callbacks$a.close = callbackId;
+    callbacks$b.close = callbackId;
   }
 
   var require_context_module_1_19 = /*#__PURE__*/Object.freeze({
@@ -11872,16 +11901,16 @@ var serviceContext = (function () {
     createSelectorQuery: createSelectorQuery
   });
 
-  const callbacks$b = [];
+  const callbacks$c = [];
 
   onMethod('onKeyboardHeightChange', res => {
-    callbacks$b.forEach(callbackId => {
+    callbacks$c.forEach(callbackId => {
       invoke$1(callbackId, res);
     });
   });
 
   function onKeyboardHeightChange (callbackId) {
-    callbacks$b.push(callbackId);
+    callbacks$c.push(callbackId);
   }
 
   var require_context_module_1_24 = /*#__PURE__*/Object.freeze({
@@ -11960,16 +11989,16 @@ var serviceContext = (function () {
 
   const hideTabBarRedDot$1 = removeTabBarBadge$1;
 
-  const callbacks$c = [];
+  const callbacks$d = [];
 
   onMethod('onTabBarMidButtonTap', res => {
-    callbacks$c.forEach(callbackId => {
+    callbacks$d.forEach(callbackId => {
       invoke$1(callbackId, res);
     });
   });
 
   function onTabBarMidButtonTap (callbackId) {
-    callbacks$c.push(callbackId);
+    callbacks$d.push(callbackId);
   }
 
   var require_context_module_1_28 = /*#__PURE__*/Object.freeze({
@@ -11980,22 +12009,22 @@ var serviceContext = (function () {
     onTabBarMidButtonTap: onTabBarMidButtonTap
   });
 
-  const callbacks$d = [];
+  const callbacks$e = [];
   onMethod('onViewDidResize', res => {
-    callbacks$d.forEach(callbackId => {
+    callbacks$e.forEach(callbackId => {
       invoke$1(callbackId, res);
     });
   });
 
   function onWindowResize (callbackId) {
-    callbacks$d.push(callbackId);
+    callbacks$e.push(callbackId);
   }
 
   function offWindowResize (callbackId) {
     // TODO 目前 on 和 off 即使传入同一个 function，获取到的 callbackId 也不会一致，导致不能 off 掉指定
     // 后续修复
     // 此处和微信平台一致查询不到去掉最后一个
-    callbacks$d.splice(callbacks$d.indexOf(callbackId), 1);
+    callbacks$e.splice(callbacks$e.indexOf(callbackId), 1);
   }
 
   var require_context_module_1_29 = /*#__PURE__*/Object.freeze({
@@ -12504,6 +12533,13 @@ var serviceContext = (function () {
       publish('onUIStyleChange', {
         style: event.uistyle
       });
+    });
+
+    globalEvent.addEventListener('uniMPNativeEvent', function ({
+      event,
+      data
+    }) {
+      consumeNativeEvent(event, data);
     });
 
     plus.globalEvent.addEventListener('plusMessage', onPlusMessage$1);

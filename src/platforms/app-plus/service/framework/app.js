@@ -35,6 +35,10 @@ import {
   backbuttonListener
 } from './backbutton'
 
+import {
+  consumeNativeEvent
+} from '../api/plugin/on-native-event-receive'
+
 let appCtx
 
 const defaultApp = {
@@ -90,6 +94,13 @@ function initGlobalListeners () {
     publish('onUIStyleChange', {
       style: event.uistyle
     })
+  })
+
+  globalEvent.addEventListener('uniMPNativeEvent', function ({
+    event,
+    data
+  }) {
+    consumeNativeEvent(event, data)
   })
 
   plus.globalEvent.addEventListener('plusMessage', onPlusMessage)
