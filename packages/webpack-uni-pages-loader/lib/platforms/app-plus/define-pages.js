@@ -11,7 +11,7 @@ module.exports = function definePages (appJson) {
   return {
     name: 'define-pages.js',
     content: `
-if (!Promise.prototype.finally) {
+if (typeof Promise !== 'undefined' && !Promise.prototype.finally) {
   Promise.prototype.finally = function(callback) {
     const promise = this.constructor
     return this.then(
