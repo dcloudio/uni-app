@@ -1,5 +1,9 @@
 const path = require('path')
 
+const isWin = /^win/.test(process.platform)
+
+const normalizePath = path => (isWin ? path.replace(/\\/g, '/') : path)
+
 const defaultOptions = {
   limit: -1,
   fallback: {
@@ -10,12 +14,12 @@ const defaultOptions = {
           process.env.UNI_PLATFORM === 'app-plus' &&
           process.env.UNI_USING_V3
         ) { // app-plus v3 下路径不能以/开头
-          return path.relative(process.env.UNI_INPUT_DIR, resourcePath)
+          return normalizePath(path.relative(process.env.UNI_INPUT_DIR, resourcePath))
         }
-        return '/' + path.relative(process.env.UNI_INPUT_DIR, resourcePath)
+        return '/' + normalizePath(path.relative(process.env.UNI_INPUT_DIR, resourcePath))
       },
       outputPath (url, resourcePath, context) {
-        return path.relative(process.env.UNI_INPUT_DIR, resourcePath)
+        return normalizePath(path.relative(process.env.UNI_INPUT_DIR, resourcePath))
       }
     }
   }
