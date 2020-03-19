@@ -60,7 +60,7 @@ function getDebugRefresh (path, query, routeOptions) {
   }
 }
 
-export function createWebview (path, routeOptions, query) {
+export function createWebview (path, routeOptions) {
   if (routeOptions.meta.isNVue) {
     const webviewId = id++
     const webviewStyle = parseWebviewStyle(
@@ -68,7 +68,6 @@ export function createWebview (path, routeOptions, query) {
       path,
       routeOptions
     )
-    webviewStyle.debugRefresh = getDebugRefresh(path, query, routeOptions)
     if (process.env.NODE_ENV !== 'production') {
       console.log(`[uni-app] createWebview`, webviewId, path, webviewStyle)
     }
@@ -91,7 +90,9 @@ export function initWebview (webview, routeOptions, path, query) {
       '',
       routeOptions
     )
-    webviewStyle.debugRefresh = getDebugRefresh(path, query, routeOptions)
+    if (!routeOptions.meta.isNVue) {
+      webviewStyle.debugRefresh = getDebugRefresh(path, query, routeOptions)
+    }
     if (process.env.NODE_ENV !== 'production') {
       console.log(`[uni-app] updateWebview`, webviewStyle)
     }
