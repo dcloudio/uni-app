@@ -336,11 +336,16 @@ let uniAutoImportScanComponents = []
 
 let uniQuickAppAutoImportScanComponents = false
 
+const isDirectory = source => fs.lstatSync(source).isDirectory()
+
 function getAutoComponentsByDir (componentsPath, absolute = false) {
   const components = {}
   try {
     fs.readdirSync(componentsPath).forEach(name => {
       const folder = path.resolve(componentsPath, name)
+      if (!isDirectory(folder)) {
+        return
+      }
       const importDir = absolute ? normalizePath(folder) : `@/components/${name}`
       // 读取文件夹文件列表，比对文件名（fs.existsSync在大小写不敏感的系统会匹配不准确）
       const files = fs.readdirSync(folder)
@@ -350,7 +355,9 @@ function getAutoComponentsByDir (componentsPath, absolute = false) {
         components[`^${name}$`] = `${importDir}/${name}.nvue`
       }
     })
-  } catch (e) {}
+  } catch (e) {
+    console.log(e)
+  }
   return components
 }
 
