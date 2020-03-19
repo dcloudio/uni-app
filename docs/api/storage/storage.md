@@ -228,3 +228,5 @@ uni-app的Storage在不同端的实现不同：
 除此之外，其他数据存储方案：
 - H5端还支持websql、indexedDB、sessionStorage
 - App端还支持[SQLite](https://www.html5plus.org/doc/zh_cn/sqlite.html)、[IO文件](https://www.html5plus.org/doc/zh_cn/io.html)等本地存储方案。
+
+从HBuilderX2.6.6+起，App-Android平台对本地storage数据存储进行了性能优化，它的具体优化方式和升级注意事项，详见：[https://ask.dcloud.net.cn/article/37071](https://ask.dcloud.net.cn/article/37071)
