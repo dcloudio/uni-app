@@ -123,7 +123,29 @@ exports.main = async (event, context) => {
 }
 ```
 
+如果仅需要导出一个function还可以使用以下写法
+
+```js
+// common/hello-common/index.js
+module.exports = function(e){
+  return e
+}
+```
+
+```js
+// useCommon/index.js
+'use strict';
+const echo = require('hello-common')
+exports.main = async (event, context) => {
+  let eventEcho = echo(event)
+  return {
+    eventEcho
+  }
+}
+```
+
 ## 运行和调试云函数
+
 编写云函数后，在项目管理器里右键点击该云函数的目录，在弹出菜单中可选择“上传部署云函数”、“上传并运行测试云函数”。如下图所示：
 
 
