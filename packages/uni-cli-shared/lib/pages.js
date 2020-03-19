@@ -341,7 +341,7 @@ const isDirectory = source => fs.lstatSync(source).isDirectory()
 function getAutoComponentsByDir (componentsPath, absolute = false) {
   const components = {}
   try {
-    fs.readdirSync(componentsPath).forEach(name => {
+    fs.existsSync(componentsPath) && fs.readdirSync(componentsPath).forEach(name => {
       const folder = path.resolve(componentsPath, name)
       if (!isDirectory(folder)) {
         return
