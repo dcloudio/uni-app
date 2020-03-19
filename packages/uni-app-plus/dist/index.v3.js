@@ -7939,6 +7939,14 @@ var serviceContext = (function () {
     return str
   }
 
+  function getUniPageUrl (path, query) {
+    const queryString = query ? stringifyQuery(query, noop$1) : '';
+    return {
+      path: path.substr(1),
+      query: queryString ? queryString.substr(1) : queryString
+    }
+  }
+
   function getDebugRefresh (path, query, routeOptions) {
     const queryString = query ? stringifyQuery(query, noop$1) : '';
     return {
@@ -7958,7 +7966,7 @@ var serviceContext = (function () {
         path,
         routeOptions
       );
-      webviewStyle.debugRefresh = getDebugRefresh(path, query, routeOptions);
+      webviewStyle.uniPageUrl = getUniPageUrl(path, query);
       if (process.env.NODE_ENV !== 'production') {
         console.log(`[uni-app] createWebview`, webviewId, path, webviewStyle);
       }
@@ -7981,7 +7989,12 @@ var serviceContext = (function () {
         '',
         routeOptions
       );
-      webviewStyle.debugRefresh = getDebugRefresh(path, query, routeOptions);
+
+      webviewStyle.uniPageUrl = getUniPageUrl(path, query);
+
+      if (!routeOptions.meta.isNVue) {
+        webviewStyle.debugRefresh = getDebugRefresh(path, query, routeOptions);
+      }
       if (process.env.NODE_ENV !== 'production') {
         console.log(`[uni-app] updateWebview`, webviewStyle);
       }
