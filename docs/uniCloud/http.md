@@ -2,14 +2,14 @@
 
 ## 操作场景
 
-设置HTTP访问地址 是 uniCloud 为开发者提供的 HTTP 访问服务，让开发者可以通过 HTTP 访问到自己的云函数。
+云函数URL化 是 uniCloud 为开发者提供的 HTTP 访问服务，让开发者可以通过 HTTP 访问到自己的云函数。
 
-- 当开启某一函数的 HTTP 访问后，只要根据 HTTP 即可访问到函数，开发者需要关注业务和资源安全。
+- 当对某一函数开启URL化后，只要根据 HTTP 即可访问到函数，开发者需要关注业务和资源安全。
 - 安全：为了保障业务安全性，开发者需在代码中做好权限控制和安全防护，避免未授权访问触发敏感操作。
-- 计费：云函数开启了 HTTP 访问后，如果遇到大量恶意访问，消耗云函数资源，开发者可以将云函数访问地址设置为空即可停止 HTTP 访问支持。
+- 计费：云函数开启了URL化后，如果遇到大量恶意访问，消耗云函数资源，开发者可以将云函数访问地址设置为空即可停止 HTTP 访问支持。
 
 
-本文档主要指导您如何在uniCloud web控制台管理和使用云函数 HTTP 访问。
+本文档主要指导您如何在uniCloud web控制台管理和使用云函数URL化。
 
 ## 操作步骤
 
@@ -17,19 +17,19 @@
 
 1. 登录[uniCloud后台](https://unicloud.dcloud.net.cn/)，选择需要管理的服务空间。
 2. 单击左侧菜单栏【云函数】，进入云函数页面。
-3. 选中需要配置的函数，编辑【函数配置】，配置访问路径。
+3. 点击需要配置的云函数的【详情】按钮，配置访问路径。
 
-![](https://dcloud-img.oss-cn-hangzhou.aliyuncs.com/uni-app/uniCloud/edit-function-config.png)
+![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/edit-function-config.png)
 
 ### 绑定自定义域名
 
 1. 单击左侧菜单栏【云函数】，进入云函数页面。
-2. 单击【HTTP 触发】，在 HTTP 触发配置窗口中进行配置。
-![](https://main.qcloudimg.com/raw/d57783a65d625708f45f628eddbe9139.jpg)
+2. 单击【云函数URL化】，在弹出的配置窗口中进行配置。
+![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/cloud-function-urlify.png)
 >!
 >- 每个服务空间最多绑定1个自定义域名。
->- 云开发提供默认域名供体验和测试该特性，域名规范如：`${spaceId}.service.tcloudbase.com`。
->- 绑定自定义域名之前，请先设置您默认域名的 CNAME 记录值为`${spaceId}.service.tcloudbase.com`，CNAME 记录不存在时会导致域名绑定失败。
+>- uniCloud提供默认域名供体验和测试该特性，域名规范如：`${spaceId}.service.tcloudbase.com`。
+>- 绑定自定义域名之前，请先设置您默认域名的 CNAME 记录值为`${spaceId}.service.tcloudbase.com`，CNAME 记录不存在时会导致域名绑定失败，另外需要注意的是此域名必须已经备案。
 >- 单个服务空间可支持被访问的最大 QPS 为5000，单个云函数可支持被访问的最大 QPS 为2000（具体频次受函数并发限制）。
 >- 默认域名可支持被访问的最大 QPS 为200，推荐您绑定自定义域名以获取更大的访问频次。
 
