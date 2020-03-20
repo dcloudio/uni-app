@@ -11,8 +11,16 @@ const isInsideKeyframes = function (rule) {
     rule.parent && rule.parent.type === 'atrule' && /^(-\w+-)?keyframes$/.test(rule.parent.name)
   )
 }
+
+let rewriteUrl
+
 module.exports = postcss.plugin('postcss-uniapp-plugin', function (opts) {
   return function (root, result) {
+    if (!rewriteUrl) {
+      rewriteUrl = require('@dcloudio/uni-cli-shared/lib/url-loader').rewriteUrl
+    }
+    rewriteUrl(root)
+
     root.walkRules(rule => {
       // Transform each rule here
       if (!isInsideKeyframes(rule)) {
@@ -27,7 +35,7 @@ module.exports = postcss.plugin('postcss-uniapp-plugin', function (opts) {
               if (tag.value === 'page') {
                 tag.value = 'body'
               } else if (~TAGS.indexOf(tag.value) && tag.value.substring(
-                  0, 4) !== 'uni-') {
+                0, 4) !== 'uni-') {
                 tag.value = 'uni-' + tag.value
               }
             })

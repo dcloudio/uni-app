@@ -85,7 +85,8 @@ function assertType (value, type) {
   } else if (expectedType === 'Array') {
     valid = Array.isArray(value)
   } else {
-    valid = value instanceof type
+    // TODO 页面传入的ArrayBuffer使用instanceof ArrayBuffer返回false，暂做此修改
+    valid = value instanceof type || toRawType(value) === getType(type)
   }
   return {
     valid,

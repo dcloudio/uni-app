@@ -35,7 +35,6 @@ if (process.env.UNI_SERVICE === 'legacy') {
   output.name = 'serviceContext'
   output.banner =
     `export function createServiceContext(Vue, weex, plus, UniServiceJSBridge,instanceContext){
-var localStorage = plus.storage
 var setTimeout = instanceContext.setTimeout
 var clearTimeout = instanceContext.clearTimeout
 var setInterval = instanceContext.setInterval

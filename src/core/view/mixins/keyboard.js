@@ -60,12 +60,9 @@ export default {
       plusReady(() => {
         const currentWebview = plus.webview.currentWebview()
         const style = currentWebview.getStyle() || {}
-        if (style.softinputMode === 'adjustResize') {
-          return
-        }
         const rect = this.$el.getBoundingClientRect()
         currentWebview.setSoftinputTemporary && currentWebview.setSoftinputTemporary({
-          mode: this.adjustPosition ? 'adjustPan' : 'nothing',
+          mode: style.softinputMode === 'adjustResize' ? 'adjustResize' : (this.adjustPosition ? 'adjustPan' : 'nothing'),
           position: {
             top: rect.top,
             height: rect.height + (Number(this.cursorSpacing) || 0)

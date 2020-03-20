@@ -27,8 +27,12 @@ export const connectSocket = {
     }
   },
   protocols: {
-    type: Array,
+    // 微信文档虽然写的是数组，但是可以正常传递字符串
+    type: [Array, String],
     validator (value, params) {
+      if (typeof value === 'string') {
+        value = [value]
+      }
       params.protocols = (value || []).filter(str => typeof str === 'string')
     }
   }

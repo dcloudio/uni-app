@@ -11,6 +11,10 @@ import {
 } from 'uni-platform/service/publish-handler'
 
 import {
+  wx
+} from './wx'
+
+import {
   definePage
 } from '../page-factory'
 
@@ -25,6 +29,9 @@ import {
 } from './framework/page'
 
 import vuePlugin from './framework/plugins'
+
+// 挂靠在uni上，暂不做全局导出
+uni.__$wx__ = wx
 
 UniServiceJSBridge.publishHandler = publishHandler
 UniServiceJSBridge.invokeCallbackHandler = invokeCallbackHandler

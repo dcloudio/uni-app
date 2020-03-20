@@ -2,10 +2,10 @@ const path = require('path')
 const webpack = require('webpack')
 
 const {
-  getMainEntry,
-  isInHBuilderX,
-  getPlatformCompiler
+  getMainEntry
 } = require('@dcloudio/uni-cli-shared')
+
+const vueLoader = require('@dcloudio/uni-cli-shared/lib/vue-loader')
 
 const {
   getGlobalUsingComponentsCode
@@ -14,7 +14,6 @@ const {
 const WebpackUniAppPlugin = require('../../packages/webpack-uni-app-loader/plugin/index')
 
 const {
-  isUnaryTag,
   getPartialIdentifier
 } = require('../util')
 
@@ -53,11 +52,7 @@ function getProvides (isAppService) {
 
 const v3 = {
   vueConfig: {
-    parallel: false,
-    transpileDependencies: [
-      wxsPath,
-      runtimePath
-    ]
+    parallel: false
   },
   webpackConfig (webpackConfig, vueOptions, api) {
     const isAppService = !!vueOptions.pluginOptions['uni-app-plus']['service']
@@ -162,7 +157,7 @@ const v3 = {
             loader: isAppService ? 'wrap-loader' : path.resolve(__dirname,
               '../../packages/webpack-uni-app-loader/view/main.js'),
             options: {
-              compiler: getPlatformCompiler(),
+              compiler: vueLoader.compiler,
               before: [
                 beforeCode + statCode + getGlobalUsingComponentsCode()
               ]
@@ -200,38 +195,6 @@ const v3 = {
     const isAppService = !!vueOptions.pluginOptions['uni-app-plus']['service']
     const isAppView = !!vueOptions.pluginOptions['uni-app-plus']['view']
 
-    const fileLoaderOptions = isInHBuilderX ? {
-      emitFile: isAppView,
-      name: '[path][name].[ext]',
-      context: process.env.UNI_INPUT_DIR
-    } : {
-      emitFile: isAppView,
-      outputPath (url, resourcePath, context) {
-        return path.relative(process.env.UNI_INPUT_DIR, resourcePath)
-      }
-    }
-
-    // 处理静态资源
-    webpackConfig.module
-      .rule('svg')
-      .use('file-loader')
-      .options(fileLoaderOptions)
-
-    const staticTypes = ['images', 'media', 'fonts']
-    staticTypes.forEach(staticType => {
-      webpackConfig.module
-        .rule(staticType)
-        .use('url-loader')
-        .loader('url-loader')
-        .tap(options => Object.assign(options, {
-          limit: 1,
-          fallback: {
-            loader: 'file-loader',
-            options: fileLoaderOptions
-          }
-        }))
-    })
-
     const cacheConfig = {
       cacheDirectory: false,
       cacheIdentifier: false
@@ -245,7 +208,6 @@ const v3 = {
     }
 
     const compilerOptions = {
-      isUnaryTag,
       preserveWhitespace: false,
       service: isAppService,
       view: isAppView
@@ -254,23 +216,14 @@ const v3 = {
     // disable vue cache-loader
     webpackConfig.module
       .rule('vue')
-      .test([/\.vue$/, /\.nvue$/])
+      .test(vueLoader.test)
       .use('vue-loader') //  service 层移除 style 节点，view 层返回固定 script
-      .loader(require.resolve('@dcloudio/vue-cli-plugin-uni/packages/vue-loader'))
-      .tap(options => Object.assign(options, {
+      .loader(vueLoader.loader)
+      .tap(options => Object.assign(options, vueLoader.options({
         isAppService,
-        isAppView,
-        compiler: getPlatformCompiler(),
-        compilerOptions
-      }, cacheConfig))
+        isAppView
+      }, compilerOptions), cacheConfig))
       .end()
-    // .use('uniapp-custom-block-loader')
-    // .loader(require.resolve('@dcloudio/vue-cli-plugin-uni/packages/webpack-custom-block-loader'))
-    // .options({
-    //   isAppService,
-    //   isAppView,
-    //   compiler: getPlatformCompiler()
-    // })
 
     // 是否启用 cache
     if (process.env.UNI_USING_CACHE) {

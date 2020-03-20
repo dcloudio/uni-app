@@ -63,9 +63,10 @@ export const canvasPutImageData = {
   }
 }
 
-const fileType = {
+const fileTypes = {
   PNG: 'png',
-  JPG: 'jpeg'
+  JPG: 'jpg',
+  JPEG: 'jpg'
 }
 
 export const canvasToTempFilePath = {
@@ -103,7 +104,7 @@ export const canvasToTempFilePath = {
     type: String,
     validator (value, params) {
       value = (value || '').toUpperCase()
-      params.fileType = value in fileType ? fileType[value] : fileType.PNG
+      params.fileType = value in fileTypes ? fileTypes[value] : fileTypes.PNG
     }
   },
   quality: {

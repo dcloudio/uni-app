@@ -6,7 +6,7 @@ import {
   publish
 } from '../../bridge'
 
-export function previewImage ({
+export function previewImagePlus ({
   current = 0,
   background = '#000000',
   indicator = 'number',

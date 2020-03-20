@@ -150,6 +150,7 @@ if (process.env.UNI_USING_V3) {
     'background-attachment'
   ]
 
+  let rewriteUrl
   /**
    * 转换 upx
    * 转换 px
@@ -160,6 +161,11 @@ if (process.env.UNI_USING_V3) {
       ...opts
     }
     return function (root, result) {
+      if (!rewriteUrl) {
+        rewriteUrl = require('@dcloudio/uni-cli-shared/lib/url-loader').rewriteUrl
+      }
+      rewriteUrl(root)
+
       if (process.env.UNI_PLATFORM === 'h5') {
         // Transform CSS AST here
 
@@ -235,19 +241,20 @@ if (process.env.UNI_USING_V3) {
             // Transform each property declaration here
             decl.value = tranformValue(decl, opts)
           })
-
-          rule.selectors = rule.selectors.map(complexSelector => {
-            return transformSelector(complexSelector, simpleSelectors => {
-              return simpleSelectors.walkTags(tag => {
-                const k = tag.value
-                const v = CSS_TAGS[k]
-                if (v) {
-                  tag.value = v === 'r'
-                    ? `._${k}` : v
-                }
+          if (process.env.UNI_PLATFORM !== 'quickapp') {
+            rule.selectors = rule.selectors.map(complexSelector => {
+              return transformSelector(complexSelector, simpleSelectors => {
+                return simpleSelectors.walkTags(tag => {
+                  const k = tag.value
+                  const v = CSS_TAGS[k]
+                  if (v) {
+                    tag.value = v === 'r'
+                      ? `._${k}` : v
+                  }
+                })
               })
             })
-          })
+          }
         })
       }
     }
