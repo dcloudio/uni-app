@@ -4,4 +4,3 @@ build/rollup-plugin-require-context
 packages/*/packages
 packages/*/template/**/*
 qh-api.js
-touch-emulator.js

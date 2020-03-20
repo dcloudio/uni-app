@@ -110,6 +110,9 @@ if (Array.isArray(pagesJsonObj.subPackages)) {
 const manifestJsonObj = getManifestJson()
 const platformOptions = manifestJsonObj[process.env.UNI_PLATFORM] || {}
 
+process.UNI_PAGES = pagesJsonObj
+process.UNI_MANIFEST = manifestJsonObj
+
 if (manifestJsonObj.debug) {
   process.env.VUE_APP_DEBUG = true
 }
@@ -267,7 +270,7 @@ let hasNVue = false
 if (process.env.UNI_USING_NATIVE) {
   console.log('当前nvue编译模式：' + (isNVueCompiler ? 'uni-app' : 'weex') +
     ' 。编译模式差异见：https://ask.dcloud.net.cn/article/36074')
-} else if (process.env.UNI_PLATFORM !== 'h5') {
+} else if (process.env.UNI_PLATFORM !== 'h5' && process.env.UNI_PLATFORM !== 'quickapp') {
   try {
     let info = ''
     if (process.env.UNI_PLATFORM === 'app-plus') {

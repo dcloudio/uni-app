@@ -19,7 +19,7 @@ function converType (type) {
 function getStyle (action) {
   const animateTypes1 = ['matrix', 'matrix3d', 'scale', 'scale3d', 'rotate3d', 'skew', 'translate', 'translate3d']
   const animateTypes2 = ['scaleX', 'scaleY', 'scaleZ', 'rotate', 'rotateX', 'rotateY', 'rotateZ', 'skewX', 'skewY', 'translateX', 'translateY', 'translateZ']
-  const animateTypes3 = ['opacity', 'backgroundColor']
+  const animateTypes3 = ['opacity', 'background-color']
   const animateTypes4 = ['width', 'height', 'left', 'right', 'top', 'bottom']
   const animates = action.animates
   const option = action.option

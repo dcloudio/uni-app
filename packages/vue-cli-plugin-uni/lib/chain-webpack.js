@@ -20,15 +20,14 @@ module.exports = function chainWebpack (platformOptions, vueOptions, api) {
 
   return function (webpackConfig) {
     // 处理静态资源 limit
+    const urlLoader = require('@dcloudio/uni-cli-shared/lib/url-loader')
     const staticTypes = ['images', 'media', 'fonts']
     staticTypes.forEach(staticType => {
       webpackConfig.module
         .rule(staticType)
         .use('url-loader')
-        .loader('url-loader')
-        .tap(options => Object.assign(options, {
-          limit: 40960
-        }))
+        .loader(urlLoader.loader)
+        .tap(options => Object.assign(options, urlLoader.options()))
     })
     // 条件编译 vue 文件统一直接过滤html,js,css三种类型,单独资源文件引用各自过滤
 

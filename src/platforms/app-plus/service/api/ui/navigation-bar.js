@@ -56,6 +56,10 @@ export function setNavigationBarColor ({
     plus.navigator.setStatusBarStyle(frontColor === '#000000' ? 'dark' : 'light')
     const style = webview.getStyle()
     if (style && style.titleNView) {
+      if (style.titleNView.autoBackButton) {
+        styles.backButton = styles.backButton || {}
+        styles.backButton.color = frontColor
+      }
       webview.setStyle({
         titleNView: styles
       })

@@ -122,7 +122,7 @@ function isValidPage (page, root = '') {
     process.env.UNI_PLATFORM === 'app-plus' &&
     page.style
   ) {
-    const subNVues = page.style.subNVues || (page.style['app-plus'] && page.style['app-plus']['subNVues'])
+    const subNVues = page.style.subNVues || (page.style['app-plus'] && page.style['app-plus'].subNVues)
     if (Array.isArray(subNVues)) {
       subNVues.forEach(subNVue => {
         let subNVuePath = subNVue.path
@@ -155,8 +155,8 @@ function isValidPage (page, root = '') {
       return true
     } else {
       uniNVuePages.push({
-        'path': pagePath + '.html',
-        'style': page.style || {}
+        path: pagePath + '.html',
+        style: page.style || {}
       })
       return false
     }
@@ -334,21 +334,50 @@ let uniAutoImportComponents = []
 
 let uniAutoImportScanComponents = []
 
-function initAutoImportScanComponents () {
-  const componentsPath = path.resolve(process.env.UNI_INPUT_DIR, 'components')
+let uniQuickAppAutoImportScanComponents = false
+
+const isDirectory = source => fs.lstatSync(source).isDirectory()
+
+function getAutoComponentsByDir (componentsPath, absolute = false) {
   const components = {}
   try {
-    fs.readdirSync(componentsPath).forEach(name => {
-      if (fs.existsSync(path.resolve(componentsPath, name, name + '.vue'))) {
-        components[`^${name}$`] = `@/components/${name}/${name}.vue`
-      } else if (fs.existsSync(path.resolve(componentsPath, name, name + '.nvue'))) {
-        components[`^${name}$`] = `@/components/${name}/${name}.nvue`
+    fs.existsSync(componentsPath) && fs.readdirSync(componentsPath).forEach(name => {
+      const folder = path.resolve(componentsPath, name)
+      if (!isDirectory(folder)) {
+        return
+      }
+      const importDir = absolute ? normalizePath(folder) : `@/components/${name}`
+      // 读取文件夹文件列表，比对文件名（fs.existsSync在大小写不敏感的系统会匹配不准确）
+      const files = fs.readdirSync(folder)
+      if (files.includes(name + '.vue')) {
+        components[`^${name}$`] = `${importDir}/${name}.vue`
+      } else if (files.includes(name + '.nvue')) {
+        components[`^${name}$`] = `${importDir}/${name}.nvue`
       }
     })
-  } catch (e) {}
+  } catch (e) {
+    console.log(e)
+  }
+  return components
+}
+
+function initAutoImportScanComponents () {
+  const componentsPath = path.resolve(process.env.UNI_INPUT_DIR, 'components')
+
+  const components = getAutoComponentsByDir(componentsPath)
+
+  if (process.env.UNI_PLATFORM === 'quickapp') {
+    if (!uniQuickAppAutoImportScanComponents) {
+      uniQuickAppAutoImportScanComponents = getAutoComponentsByDir(
+        path.resolve(require.resolve('@dcloudio/uni-quickapp'), '../../components'),
+        true
+      )
+    }
+    // 平台内置组件优先级高
+    Object.assign(components, uniQuickAppAutoImportScanComponents)
+  }
 
   uniAutoImportScanComponents = parseUsingAutoImportComponents(components)
-
   refreshAutoComponentMap()
 }
 

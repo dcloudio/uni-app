@@ -18,6 +18,19 @@ function preprocessBlock(block) {
 }
 
 module.exports = function parseCustomBlocks(descriptor, options) {
+  if (
+    process.env.UNI_PLATFORM &&
+    process.env.UNI_PLATFORM.indexOf('mp-') === 0 &&
+    !descriptor.script
+  ) { // 临时方案：小程序平台，无script节点时，自动补充（激活componentSet，否则没法正常追加入口js，后续优化）
+    descriptor.script = {
+      type: 'script',
+      content: 'export default {}',
+      start: 100,
+      attrs: {},
+      end: 125
+    }
+  }
 
   if (!descriptor.template || !FILTER_TAG || options.isAppNVue) {
     // delete customBlocks
@@ -62,7 +75,7 @@ module.exports = function parseCustomBlocks(descriptor, options) {
         filterModule.attrs.src = normalizeNodeModules(filterModule.attrs.src)
       }
     })
-    descriptor.template.attrs['filter-modules'] = JSON.stringify(filterModules)
+    descriptor.template.attrs['filter-modules'] = Buffer.from(JSON.stringify(filterModules)).toString('base64')
   }
 
   return descriptor

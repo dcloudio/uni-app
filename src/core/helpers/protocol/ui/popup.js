@@ -110,5 +110,8 @@ export const showActionSheet = {
   visible: {
     type: Boolean,
     default: true
+  },
+  popover: {
+    type: Object
   }
 }

@@ -38,6 +38,9 @@ export function parseTitleNView (routeOptions) {
     (
       windowOptions.navigationStyle === 'custom' &&
       !isPlainObject(titleNView)
+    ) || (
+      windowOptions.transparentTitle === 'always' &&
+      !isPlainObject(titleNView)
     )
   ) {
     return false
@@ -56,7 +59,7 @@ export function parseTitleNView (routeOptions) {
     titleText: titleImage === '' ? windowOptions.navigationBarTitleText || '' : '',
     titleColor: windowOptions.navigationBarTextStyle === 'black' ? '#000000' : '#ffffff',
     type: titleNViewTypeList[transparentTitle],
-    backgroundColor: transparentTitle !== 'always' ? windowOptions.navigationBarBackgroundColor || '#000000' : 'rgba(0,0,0,0)',
+    backgroundColor: windowOptions.navigationBarBackgroundColor || '#f8f8f8',
     tags: titleImage === '' ? [] : [{
       'tag': 'img',
       'src': titleImage,

@@ -34,6 +34,7 @@ const uniCloudPath = path.resolve(__dirname, '../../packages/uni-cloud/dist/inde
 
 function getProvides () {
   return {
+    '__f__': [path.resolve(__dirname, '../format-log.js'), 'default'],
     'uniCloud': [uniCloudPath, 'default'],
     'wx.nextTick': [runtimePath, 'nextTick'],
     'Page': [runtimePath, 'Page'],
@@ -62,10 +63,6 @@ if (process.env.NODE_ENV !== 'production') {
 const vueConfig = {
   parallel: false, // 因为传入了自定义 compiler，避免参数丢失，禁用parallel
   publicPath,
-  transpileDependencies: [
-    wxsPath,
-    runtimePath
-  ],
   pages: {
     index: {
       // page 的入口
@@ -111,8 +108,7 @@ module.exports = {
         alias: {
           'vue-router': resolve('packages/h5-vue-router'),
           'uni-h5': require.resolve('@dcloudio/uni-h5'),
-          'uni-qh': path.resolve(__dirname, 'qh-api.js'),
-          'uni-touch-emulator': path.resolve(__dirname, 'touch-emulator.js')
+          'uni-qh': path.resolve(__dirname, 'qh-api.js')
         }
       },
       module: {
@@ -172,7 +168,10 @@ module.exports = {
       webpackConfig.plugins.delete('preload-index')
     }
 
-    modifyVueLoader(webpackConfig, require('./compiler-options'), api)
+    modifyVueLoader(webpackConfig, {
+      isH5: true,
+      hotReload: true
+    }, require('./compiler-options'), api)
 
     if (process.env.NODE_ENV === 'production') {
       require('./cssnano-options')(webpackConfig)

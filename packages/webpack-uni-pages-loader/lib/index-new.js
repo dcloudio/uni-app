@@ -69,6 +69,9 @@ module.exports = function (content) {
   if (process.env.UNI_PLATFORM === 'h5') {
     return require('./platforms/h5')(pagesJson, manifestJson)
   }
+  if (process.env.UNI_PLATFORM === 'quickapp') {
+    return require('./platforms/quickapp')(pagesJson, manifestJson, this)
+  }
 
   if (!process.env.UNI_USING_V3) {
     parsePages(pagesJson, function (page) {

@@ -7,13 +7,15 @@
       v-if="enablePullDownRefresh"
       ref="refresh"
       :color="refreshOptions.color"
-      :offset="refreshOptions.offset" />
+      :offset="refreshOptions.offset"
+    />
     <page-body
       v-if="enablePullDownRefresh"
       @touchstart.native="_touchstart"
       @touchmove.native="_touchmove"
       @touchend.native="_touchend"
-      @touchcancel.native="_touchend">
+      @touchcancel.native="_touchend"
+    >
       <slot name="page" />
     </page-body>
     <page-body v-else>
@@ -22,11 +24,11 @@
   </uni-page>
 </template>
 <style>
-  uni-page {
-    display: block;
-    width: 100%;
-    height: 100%;
-  }
+uni-page {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
 </style>
 <script>
 import {
@@ -36,6 +38,10 @@ import {
 import {
   NAVBAR_HEIGHT
 } from 'uni-helpers/constants'
+
+import {
+  isPlainObject
+} from 'uni-shared'
 
 import {
   mergeTitleNView
@@ -146,6 +152,12 @@ export default {
     titlePenetrate: {
       type: String,
       default: 'NO'
+    },
+    navigationBarShadow: {
+      type: Object,
+      default () {
+        return {}
+      }
     }
   },
   data () {
@@ -156,13 +168,27 @@ export default {
     }
     // 将 navigationStyle 和 transparentTitle 都合并到 titleNView
     let titleNView = this.titleNView
-    titleNView = Object.assign({}, {
-      type: this.navigationStyle === 'custom' ? 'none' : 'default'
-    }, this.transparentTitle in titleNViewTypeList ? {
-      type: titleNViewTypeList[this.transparentTitle]
-    } : null, typeof titleNView === 'object' ? titleNView : (typeof titleNView === 'boolean' ? {
-      type: titleNView ? 'default' : 'none'
-    } : null))
+    if ( // 无头
+      titleNView === false ||
+      titleNView === 'false' ||
+      (
+        this.navigationStyle === 'custom' &&
+        !isPlainObject(titleNView)
+      ) || (
+        this.transparentTitle === 'always' &&
+        !isPlainObject(titleNView)
+      )
+    ) {
+      titleNView = { type: 'none' }
+    } else {
+      titleNView = Object.assign({}, {
+        type: this.navigationStyle === 'custom' ? 'none' : 'default'
+      }, this.transparentTitle in titleNViewTypeList ? {
+        type: titleNViewTypeList[this.transparentTitle]
+      } : null, typeof titleNView === 'object' ? titleNView : (typeof titleNView === 'boolean' ? {
+        type: titleNView ? 'default' : 'none'
+      } : null))
+    }
 
     const yesNoParseList = {
       'YES': true,
@@ -180,6 +206,7 @@ export default {
       timingFunc: '',
       titlePenetrate: yesNoParseList[this.titlePenetrate]
     }, titleNView)
+    navigationBar.shadow = this.navigationBarShadow
 
     const refreshOptions = Object.assign({
       support: true,

@@ -138,9 +138,12 @@ export class VDomSync {
 
   removeVm (vm) {
     const cid = vm._$id
-    // 移除尚未同步的data
-    this.batchData = this.batchData.filter(data => data[1][0] !== cid)
-    delete this.vms[cid]
+    if (vm === this.vms[cid]) { // 仅相同vm的才移除，否则保留
+      // 目前同一位置的vm，cid均一样
+      // 移除尚未同步的data
+      this.batchData = this.batchData.filter(data => data[1][0] !== cid)
+      delete this.vms[cid]
+    }
   }
 
   addElement (elm) {
@@ -153,6 +156,13 @@ export class VDomSync {
       return console.error(`removeElement[${elm.cid}][${elm.nid}] not found`)
     }
     this.elements.splice(elmIndex, 1)
+  }
+
+  removeElementByCid (cid) {
+    if (!cid) {
+      return
+    }
+    this.elements = this.elements.filter(elm => elm.cid !== cid)
   }
 
   push (type, cid, data, options) {
