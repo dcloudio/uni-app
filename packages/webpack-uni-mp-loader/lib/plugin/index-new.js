@@ -67,7 +67,7 @@ function addSubPackagesRequire (compilation) {
 
 class WebpackUniMPPlugin {
   apply (compiler) {
-    if (!process.env.UNI_USING_NATIVE) {
+    if (!process.env.UNI_USING_NATIVE && !process.env.UNI_USING_V3_NATIVE) {
       compiler.hooks.emit.tapPromise('webpack-uni-mp-emit', compilation => {
         return new Promise((resolve, reject) => {
           addSubPackagesRequire(compilation)

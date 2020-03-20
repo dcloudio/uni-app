@@ -150,7 +150,7 @@ function isValidPage (page, root = '') {
 
     process.UNI_NVUE_ENTRY[pagePath] = getNVueMainJsPath(pagePath)
 
-    if (process.env.UNI_USING_V3) { // 不移除
+    if (process.env.UNI_USING_V3 || process.env.UNI_USING_V3_NATIVE) { // 不移除
       page.nvue = true
       return true
     } else {
@@ -214,7 +214,7 @@ function parseEntry (pagesJson) {
 
   process.UNI_NVUE_ENTRY = {}
 
-  if (process.env.UNI_USING_NATIVE) {
+  if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
     process.UNI_NVUE_ENTRY['app-config'] = path.resolve(process.env.UNI_INPUT_DIR, 'pages.json')
     process.UNI_NVUE_ENTRY['app-service'] = path.resolve(process.env.UNI_INPUT_DIR, getMainEntry())
   }

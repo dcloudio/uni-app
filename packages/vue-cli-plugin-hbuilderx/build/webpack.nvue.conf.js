@@ -45,14 +45,18 @@ const provide = {
   'uniCloud': [uniCloudPath, 'default']
 }
 
-if (process.env.UNI_USING_V3 || process.env.UNI_USING_NATIVE) {
+if (
+  process.env.UNI_USING_V3 ||
+  process.env.UNI_USING_NATIVE ||
+  process.env.UNI_USING_V3_NATIVE
+) {
   provide['uni.getCurrentSubNVue'] = [path.resolve(__dirname,
     '../packages/uni-app-plus-nvue/dist/get-current-sub-nvue.js'), 'default']
   provide['uni.requireNativePlugin'] = [path.resolve(__dirname,
     '../packages/uni-app-plus-nvue/dist/require-native-plugin.js'), 'default']
 }
 
-if (!process.env.UNI_USING_V3) {
+if (!process.env.UNI_USING_V3 && !process.env.UNI_USING_V3_NATIVE) {
   if (!process.env.UNI_USING_NATIVE) {
     provide['uni'] = [path.resolve(__dirname, uniPath), 'default']
   }
@@ -171,7 +175,7 @@ rules.unshift({
   }]
 })
 
-if (process.env.UNI_USING_NATIVE) {
+if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
   plugins.push(new WebpackUniMPPlugin())
   const array = [{
     from: path.resolve(process.env.UNI_INPUT_DIR, 'static'),
@@ -181,21 +185,6 @@ if (process.env.UNI_USING_NATIVE) {
     array.push({
       from: path.resolve(getTemplatePath(), 'common'),
       to: process.env.UNI_OUTPUT_DIR
-    }, {
-      from: path.resolve(
-        process.env.UNI_HBUILDERX_PLUGINS,
-        'weapp-tools/template/common'
-      ),
-      to: process.env.UNI_OUTPUT_DIR,
-      ignore: [
-        '*.js',
-        '*.json',
-        '__uniapppicker.html',
-        '__uniappview.html',
-        '__uniappmarker@3x.png',
-        '__uniappopenlocation.html',
-        '__uniapppicker.html'
-      ]
     })
   } else {
     let nativeTemplatePath = path.resolve(process.env.UNI_HBUILDERX_PLUGINS, 'weapp-tools/template/v8-native')

@@ -61,7 +61,7 @@ export function registerPage ({
   }
 
   if (process.env.NODE_ENV !== 'production') {
-    console.log(`[uni-app] registerPage`, path, webview.id)
+    console.log(`[uni-app] registerPage(${path},${webview.id})`)
   }
 
   initWebview(webview, routeOptions, path, query)
