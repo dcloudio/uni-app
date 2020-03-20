@@ -105,7 +105,7 @@ class WebpackAppPlusPlugin {
       compiler.hooks.done.tapPromise('WebpackAppPlusPlugin', compilation => {
         return new Promise((resolve, reject) => {
 
-          if (process.env.UNI_USING_NATIVE) {
+          if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
             return resolve()
           }
 
