@@ -1,4 +1,4 @@
-### uni.createCameraContext()
+## uni.createCameraContext()
 创建并返回 camera 组件的上下文 cameraContext 对象。
 
 **平台差异说明**
@@ -14,19 +14,32 @@
 |方法|参数|说明|
 |:-|:-|:-|
 |takePhoto|Object|拍照，可指定质量，成功则返回图片路径。|
+|setZoom|Object|设置缩放级别 **微信小程序 2.10.0+ 支持**|
 |startRecord|Object|开始录像|
 |stopRecord|Object|结束录像，成功则返回封面与视频。|
 |onCameraFrame|Function|获取 Camera 实时帧数据。仅`微信小程序平台`支持，[规范详情](https://developers.weixin.qq.com/miniprogram/dev/api/CameraContext.onCameraFrame.html)|
 
+## cameraContext.takePhoto
 **takePhoto 的 Object 参数列表：**
 
 |参数|类型|必填|说明|
 |:-|:-|:-|:-|
-|quality|String|否|成像质量，值为high（高质量）、normal（普通质量）、low（低质量），默认normal。|
-|success|Function|否|接口调用成功的回调函数 ，返回照片文件的临时路径，res = { tempImagePath }。|
+|quality|String|否|成像质量，值为high（高质量）、normal（普通质量）、low（低质量），默认normal|
+|success|Function|否|接口调用成功的回调函数 ，返回照片文件的临时路径，res = { tempImagePath }|
 |fail|Function|否|接口调用失败的回调函数|
 |complete|Function|否|接口调用结束的回调函数（调用成功、失败都会执行）|
 
+## cameraContext.setZoom
+**setZoom 的 Object 参数列表：**
+
+|参数|类型|必填|说明|
+|:-|:-|:-|:-|
+|zoom|String|是|缩放级别，范围[1, maxZoom]。zoom 可取小数，精确到小数后一位。maxZoom 可在 @initdone 返回值中获取。|
+|success|Function|否|接口调用成功的回调函数|
+|fail|Function|否|接口调用失败的回调函数|
+|complete|Function|否|接口调用结束的回调函数（调用成功、失败都会执行）|
+
+## cameraContext.startRecord
 **startRecord 的 Object 参数列表：**
 
 |参数|类型|必填|说明|
@@ -36,6 +49,7 @@
 |fail|Function|否|接口调用失败的回调函数|
 |complete|Function|否|接口调用结束的回调函数（调用成功、失败都会执行）|
 
+## cameraContext.stopRecord
 **stopRecord 的 Object 参数列表：**
 
 |参数|类型|必填|说明|
