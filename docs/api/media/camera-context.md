@@ -1,4 +1,4 @@
-## uni.createCameraContext()
+### uni.createCameraContext()
 创建并返回 camera 组件的上下文 cameraContext 对象。
 
 **平台差异说明**
@@ -19,7 +19,7 @@
 |stopRecord|Object|结束录像，成功则返回封面与视频。|
 |onCameraFrame|Function|获取 Camera 实时帧数据。仅`微信小程序平台`支持，[规范详情](https://developers.weixin.qq.com/miniprogram/dev/api/CameraContext.onCameraFrame.html)|
 
-## cameraContext.takePhoto
+### cameraContext.takePhoto
 **takePhoto 的 Object 参数列表：**
 
 |参数|类型|必填|说明|
@@ -29,7 +29,7 @@
 |fail|Function|否|接口调用失败的回调函数|
 |complete|Function|否|接口调用结束的回调函数（调用成功、失败都会执行）|
 
-## cameraContext.setZoom
+### cameraContext.setZoom
 **setZoom 的 Object 参数列表：**
 
 |参数|类型|必填|说明|
@@ -39,7 +39,7 @@
 |fail|Function|否|接口调用失败的回调函数|
 |complete|Function|否|接口调用结束的回调函数（调用成功、失败都会执行）|
 
-## cameraContext.startRecord
+### cameraContext.startRecord
 **startRecord 的 Object 参数列表：**
 
 |参数|类型|必填|说明|
@@ -49,7 +49,7 @@
 |fail|Function|否|接口调用失败的回调函数|
 |complete|Function|否|接口调用结束的回调函数（调用成功、失败都会执行）|
 
-## cameraContext.stopRecord
+### cameraContext.stopRecord
 **stopRecord 的 Object 参数列表：**
 
 |参数|类型|必填|说明|
