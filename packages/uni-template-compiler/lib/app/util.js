@@ -207,6 +207,9 @@ function traverseNode (el, parent, state, isScopedSlot) {
   el.scopedSlots && Object.values(el.scopedSlots).forEach((slot, index) => {
     state.childIndex = index
     slot.slotScope = `${slot.slotScope}, _svm, _si`
+    if (slot.slotTargetDynamic && slot.slotTarget) {
+      slot.slotTarget = state.createGenVar(slot.attrsMap[ID])('st', slot.slotTarget)
+    }
     traverseNode(slot, el, state, true)
   })
 }

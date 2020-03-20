@@ -147,5 +147,11 @@ describe('codegen', () => {
       `with(this){return (_$s(0,'i',a))?_c('text'):(_$s(1,'e',b))?_c('text'):(_$s(2,'e',c))?_c('text'):_c('text')}`
     )
   })
+  it('generate dynamic slot', () => {
+    assertCodegen(
+      '<base-layout><template v-slot:[dynamicSlotName]></template></base-layout>',
+      `with(this){return _c('base-layout',{attrs:{"_i":0},scopedSlots:_u([{key:_$s(1,'st',dynamicSlotName),fn:function(_empty_, _svm, _si){return undefined}}],null,true)})}`
+    )
+  })
 })
 /* eslint-enable quotes */

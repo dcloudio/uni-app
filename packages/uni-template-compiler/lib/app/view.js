@@ -162,6 +162,7 @@ function postTransformNode (el, options) {
       options.root = el
     }
     traverseNode(el, false, {
+      createGenVar,
       forIteratorId: 0,
       transformNode,
       filterModules: options.filterModules
