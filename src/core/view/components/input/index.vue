@@ -71,7 +71,7 @@ export default {
     },
     placeholderClass: {
       type: String,
-      default: ''
+      default: 'input-placeholder'
     },
     disabled: {
       type: [Boolean, String],
