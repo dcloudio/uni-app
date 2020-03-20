@@ -111,3 +111,31 @@ headerHeight|吸顶距离|Number|是|子list吸顶距离最外层滚动容器顶
     - `x {number}`：x轴上的偏移量
     - `y {number}`：y轴上的偏移量
   - `isDragging {boolean}`: 用户是否正在拖动列表
+
+
+
+####  list.setSpecialEffects(args)
+
+设置嵌套父容器信息
+
+#####参数:
+
+args 为要设置的参数为json类型可以包含下列元素
+
+属性|类型 |默认值|必填|说明
+:--|:--|:--|:--|:--|
+kind|string| xianyu|是|要实现的效果目前只支持闲鱼吸顶效果
+id|string|无|是|和list同时滚动的组件id，应为外层的scroller
+headerHeight|float|0|是|要吸顶的header顶部距离scroller顶部的距离
+
+#####返回值：无
+
+#####示例:
+
+```
+  //设置
+  const list = this.$refs["list0"];
+  list.setSpecialEffects({id:"scroller", headerHeight:150});
+  //清除
+  list.setSpecialEffects({});
+```
