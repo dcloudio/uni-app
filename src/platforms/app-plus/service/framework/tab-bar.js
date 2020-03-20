@@ -7,8 +7,6 @@ import {
   requireNativePlugin
 } from '../bridge'
 
-import safeAreaInsets from './safe-area-insets'
-
 const TABBAR_HEIGHT = 50
 const isIOS = plus.os.name === 'iOS'
 let config
@@ -157,7 +155,7 @@ export default {
     return visible
   },
   get height () {
-    return (config && config.height ? parseFloat(config.height) : TABBAR_HEIGHT) + safeAreaInsets.bottom
+    return (config && config.height ? parseFloat(config.height) : TABBAR_HEIGHT) + plus.navigator.getSafeAreaInsets().deviceBottom
   },
   // tabBar是否遮挡内容区域
   get cover () {
