@@ -52,11 +52,12 @@
 ### cameraContext.stopRecord
 **stopRecord 的 Object 参数列表：**
 
-|参数|类型|必填|说明|
+|参数|类型|默认值|必填|说明|
 |:-|:-|:-|:-|
-|success|Function|否|接口调用成功的回调函数 ，返回封面与视频的临时路径，res = { tempThumbPath, tempVideoPath }。|
-|fail|Function|否|接口调用失败的回调函数|
-|complete|Function|否|接口调用结束的回调函数（调用成功、失败都会执行）|
+|compressed|Boolean|false|否｜启动视频压缩，压缩效果同 `chooseVideo` ,**微信小程序 2.10.0+ 支持**｜
+|success|Function||否|接口调用成功的回调函数 ，返回封面与视频的临时路径，res = { tempThumbPath, tempVideoPath }。|
+|fail|Function||否|接口调用失败的回调函数|
+|complete|Function||否|接口调用结束的回调函数（调用成功、失败都会执行）|
 
 **注意**
 
