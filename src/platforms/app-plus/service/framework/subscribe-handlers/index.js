@@ -45,23 +45,26 @@ export function initSubscribeHandlers () {
     subscribeHandler(data.type, data.data, data.pageId)
   })
 
-  subscribe(WEBVIEW_READY, onWebviewReady)
+  if (__uniConfig.renderer !== 'native') {
+    subscribe(WEBVIEW_READY, onWebviewReady)
 
-  const entryPagePath = '/' + __uniConfig.entryPagePath
-  const routeOptions = __uniRoutes.find(route => route.path === entryPagePath)
-  if (!routeOptions.meta.isNVue) { // 首页是 vue
-    // 防止首页 webview 初始化过早， service 还未开始监听
-    publishHandler(WEBVIEW_READY, Object.create(null), [1])
+    subscribe(VD_SYNC, onVdSync)
+    subscribe(VD_SYNC_CALLBACK, onVdSyncCallback)
+
+    const entryPagePath = '/' + __uniConfig.entryPagePath
+    const routeOptions = __uniRoutes.find(route => route.path === entryPagePath)
+    if (!routeOptions.meta.isNVue) { // 首页是 vue
+      // 防止首页 webview 初始化过早， service 还未开始监听
+      publishHandler(WEBVIEW_READY, Object.create(null), [1])
+    }
   }
+
   // 应该使用subscribe，兼容老版本先用 on api 吧
   on('api.' + WEB_INVOKE_APPSERVICE, function (data, webviewIds) {
     emit('onWebInvokeAppService', data, webviewIds)
   })
 
   subscribe('onWxsInvokeCallMethod', onWxsInvokeCallMethod)
-
-  subscribe(VD_SYNC, onVdSync)
-  subscribe(VD_SYNC_CALLBACK, onVdSyncCallback)
 
   subscribe(INVOKE_API, onInvokeApi)
 

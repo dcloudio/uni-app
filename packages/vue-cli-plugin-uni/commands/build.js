@@ -124,11 +124,15 @@ async function build (args, api, options) {
     await fs.emptyDir(targetDir)
   }
 
-  if (process.env.UNI_USING_NATIVE) {
+  if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
     webpackConfigs.length = 0
   }
 
-  if (process.env.UNI_USING_NATIVE || (process.UNI_NVUE_ENTRY && Object.keys(process.UNI_NVUE_ENTRY).length)) {
+  if (
+    process.env.UNI_USING_NATIVE ||
+    process.env.UNI_USING_V3_NATIVE ||
+    (process.UNI_NVUE_ENTRY && Object.keys(process.UNI_NVUE_ENTRY).length)
+  ) {
     webpackConfigs.push(require('@dcloudio/vue-cli-plugin-hbuilderx/build/webpack.nvue.conf.js')(process.UNI_NVUE_ENTRY))
   }
 

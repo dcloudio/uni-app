@@ -7939,6 +7939,14 @@ var serviceContext = (function () {
     return str
   }
 
+  function getUniPageUrl (path, query) {
+    const queryString = query ? stringifyQuery(query, noop$1) : '';
+    return {
+      path: path.substr(1),
+      query: queryString ? queryString.substr(1) : queryString
+    }
+  }
+
   function getDebugRefresh (path, query, routeOptions) {
     const queryString = query ? stringifyQuery(query, noop$1) : '';
     return {
@@ -7958,7 +7966,7 @@ var serviceContext = (function () {
         path,
         routeOptions
       );
-      webviewStyle.debugRefresh = getDebugRefresh(path, query, routeOptions);
+      webviewStyle.uniPageUrl = getUniPageUrl(path, query);
       if (process.env.NODE_ENV !== 'production') {
         console.log(`[uni-app] createWebview`, webviewId, path, webviewStyle);
       }
@@ -7981,7 +7989,12 @@ var serviceContext = (function () {
         '',
         routeOptions
       );
-      webviewStyle.debugRefresh = getDebugRefresh(path, query, routeOptions);
+
+      webviewStyle.uniPageUrl = getUniPageUrl(path, query);
+
+      if (!routeOptions.meta.isNVue) {
+        webviewStyle.debugRefresh = getDebugRefresh(path, query, routeOptions);
+      }
       if (process.env.NODE_ENV !== 'production') {
         console.log(`[uni-app] updateWebview`, webviewStyle);
       }
@@ -8045,6 +8058,17 @@ var serviceContext = (function () {
 
   let todoNavigator = false;
 
+  function setTodoNavigator (path, callback, msg) {
+    todoNavigator = {
+      path: path,
+      nvue: __uniRoutes.find(route => route.path === path).meta.isNVue,
+      navigate: callback
+    };
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`todoNavigator:${todoNavigator.path} ${msg}`);
+    }
+  }
+
   function navigate (path, callback, isAppLaunch) {
     {
       if (isAppLaunch && __uniConfig.splashscreen && __uniConfig.splashscreen.autoclose && (!__uniConfig.splashscreen.alwaysShowBeforeRender)) {
@@ -8053,20 +8077,20 @@ var serviceContext = (function () {
       if (!isAppLaunch && todoNavigator) {
         return console.error(`已存在待跳转页面${todoNavigator.path},请不要连续多次跳转页面${path}`)
       }
+      if (__uniConfig.renderer === 'native') { // 纯原生无需wait逻辑
+        // 如果是首页还未初始化，需要等一等，其他无需等待
+        if (getCurrentPages().length === 0) {
+          return setTodoNavigator(path, callback, 'waitForReady')
+        }
+        return callback()
+      }
       // 未创建 preloadWebview 或 preloadWebview 已被使用
       const waitPreloadWebview = !preloadWebview || (preloadWebview && preloadWebview.__uniapp_route);
       // 已创建未 loaded
       const waitPreloadWebviewReady = preloadWebview && !preloadWebview.loaded;
 
       if (waitPreloadWebview || waitPreloadWebviewReady) {
-        todoNavigator = {
-          path: path,
-          nvue: __uniRoutes.find(route => route.path === path).meta.isNVue,
-          navigate: callback
-        };
-        if (process.env.NODE_ENV !== 'production') {
-          console.log(`todoNavigator:${todoNavigator.path} ${waitPreloadWebview ? 'waitForCreate' : 'waitForReady'}`);
-        }
+        setTodoNavigator(path, callback, waitPreloadWebview ? 'waitForCreate' : 'waitForReady');
       } else {
         callback();
       }
@@ -8092,6 +8116,15 @@ var serviceContext = (function () {
 
   function navigateFinish () {
     {
+      if (__uniConfig.renderer === 'native') {
+        if (!todoNavigator) {
+          return
+        }
+        if (todoNavigator.nvue) {
+          return todoNavigate()
+        }
+        return
+      }
       // 创建预加载
       const preloadWebview = createPreloadWebview();
       if (process.env.NODE_ENV !== 'production') {
@@ -8214,7 +8247,7 @@ var serviceContext = (function () {
     }
 
     if (process.env.NODE_ENV !== 'production') {
-      console.log(`[uni-app] registerPage`, path, webview.id);
+      console.log(`[uni-app] registerPage(${path},${webview.id})`);
     }
 
     initWebview(webview, routeOptions, path, query);
@@ -12454,23 +12487,26 @@ var serviceContext = (function () {
       subscribeHandler(data.type, data.data, data.pageId);
     });
 
-    subscribe(WEBVIEW_READY, onWebviewReady);
+    if (__uniConfig.renderer !== 'native') {
+      subscribe(WEBVIEW_READY, onWebviewReady);
 
-    const entryPagePath = '/' + __uniConfig.entryPagePath;
-    const routeOptions = __uniRoutes.find(route => route.path === entryPagePath);
-    if (!routeOptions.meta.isNVue) { // 首页是 vue
-      // 防止首页 webview 初始化过早， service 还未开始监听
-      publishHandler(WEBVIEW_READY, Object.create(null), [1]);
+      subscribe(VD_SYNC, onVdSync);
+      subscribe(VD_SYNC_CALLBACK, onVdSyncCallback);
+
+      const entryPagePath = '/' + __uniConfig.entryPagePath;
+      const routeOptions = __uniRoutes.find(route => route.path === entryPagePath);
+      if (!routeOptions.meta.isNVue) { // 首页是 vue
+        // 防止首页 webview 初始化过早， service 还未开始监听
+        publishHandler(WEBVIEW_READY, Object.create(null), [1]);
+      }
     }
+
     // 应该使用subscribe，兼容老版本先用 on api 吧
     on('api.' + WEB_INVOKE_APPSERVICE$1, function (data, webviewIds) {
       emit('onWebInvokeAppService', data, webviewIds);
     });
 
     subscribe('onWxsInvokeCallMethod', onWxsInvokeCallMethod);
-
-    subscribe(VD_SYNC, onVdSync);
-    subscribe(VD_SYNC_CALLBACK, onVdSyncCallback);
 
     subscribe(INVOKE_API, onInvokeApi);
 

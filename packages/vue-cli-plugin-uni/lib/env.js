@@ -172,19 +172,20 @@ if (process.env.UNI_PLATFORM === 'app-plus') {
   if (platformOptions.nvueCompiler === 'weex') {
     isNVueCompiler = false
   }
-  if (platformOptions.renderer !== 'native' && // 非 native
-    (
-      platformOptions.compilerVersion === '3' ||
-      platformOptions.compilerVersion === 3
-    )
+  if (
+    platformOptions.compilerVersion === '3' ||
+    platformOptions.compilerVersion === 3
   ) {
     delete process.env.UNI_USING_CACHE
-    process.env.UNI_USING_V3 = true
-    platformOptions.usingComponents = true
+    if (platformOptions.renderer === 'native') {
+      process.env.UNI_USING_V3_NATIVE = true
+    } else {
+      process.env.UNI_USING_V3 = true
+      platformOptions.usingComponents = true
+    }
     process.env.UNI_OUTPUT_TMP_DIR = ''
     isNVueCompiler = true // v3 目前仅支持 uni-app 模式
-  }
-  if (platformOptions.renderer === 'native') {
+  } else if (platformOptions.renderer === 'native') {
     // 纯原生目前不提供 cache
     delete process.env.UNI_USING_CACHE
     process.env.UNI_USING_NATIVE = true
@@ -267,8 +268,8 @@ const warningMsg =
 const needWarning = !platformOptions.usingComponents || usingComponentsAbsent
 let hasNVue = false
 // 输出编译器版本等信息
-if (process.env.UNI_USING_NATIVE) {
-  console.log('当前nvue编译模式：' + (isNVueCompiler ? 'uni-app' : 'weex') +
+if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
+  console.log('当前nvue编译模式' + (process.env.UNI_USING_V3_NATIVE ? '（v3）' : '') + '：' + (isNVueCompiler ? 'uni-app' : 'weex') +
     ' 。编译模式差异见：https://ask.dcloud.net.cn/article/36074')
 } else if (process.env.UNI_PLATFORM !== 'h5' && process.env.UNI_PLATFORM !== 'quickapp') {
   try {
@@ -362,7 +363,8 @@ if (
   process.env.UNI_USING_CACHE &&
   process.env.UNI_PLATFORM !== 'h5' &&
   !process.env.UNI_USING_V3 &&
-  !process.env.UNI_USING_NATIVE
+  !process.env.UNI_USING_NATIVE &&
+  !process.env.UNI_USING_V3_NATIVE
 ) { // 使用 cache, 拷贝 cache 的 json
   const cacheJsonDir = path.resolve(
     process.env.UNI_CLI_CONTEXT,
