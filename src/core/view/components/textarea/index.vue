@@ -91,7 +91,7 @@ export default {
     },
     placeholderClass: {
       type: String,
-      default: ''
+      default: 'textarea-placeholder'
     },
     placeholderStyle: {
       type: String,
@@ -210,6 +210,15 @@ export default {
     this._resize({
       height: this.$refs.sensor.$el.offsetHeight
     })
+
+    let $vm = this
+    while ($vm) {
+      const scopeId = $vm.$options._scopeId
+      if (scopeId) {
+        this.$refs.placeholder.setAttribute(scopeId, '')
+      }
+      $vm = $vm.$parent
+    }
   },
   beforeDestroy () {
     this.$dispatch('Form', 'uni-form-group-update', {
