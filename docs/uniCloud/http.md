@@ -83,6 +83,43 @@ $ curl https://${spaceId}.service.tcloudbase.com/${path}
 ```
 
 
+**示例**
+
+使用GET请求`https://${spaceId}.service.tcloudbase.com/${functionPath}?a=1&b=2`，云函数接收到的`event`为
+
+```
+{
+    path: '/',
+    httpMethod: 'GET',
+    headers: {HTTP请求头},
+    queryStringParameters: {a: "1", b: "2"},
+    requestContext: {云开发相关信息},
+    isBase64Encoded: false
+}
+```
+
+
+使用POST请求`https://${spaceId}.service.tcloudbase.com/${functionPath}`，云函数接收到的`event`为请求发送的数据
+
+```
+// 以uni.request为例
+uni.request({
+  method: 'POST',
+  url: 'https://${spaceId}.service.tcloudbase.com/${functionPath}',
+  data: {
+    a: 1,
+    b: 2
+  },
+  success(res) {
+    console.log(res);
+  }
+})
+
+// 云函数收到的event为
+{a: 1, b: 2}
+```
+
+
 ### 云函数的返回值
 
 云函数可以返回`string`、`object`、`number`等类型的数据，或者返回 [集成响应](#Integrationresponse)，随后云接入会将返回值转化为正常的 HTTP 响应。
