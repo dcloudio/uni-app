@@ -122,7 +122,15 @@ export default {
       }
     },
     _resize () {
-      wrapper(this.$refs.canvas)
+      var canvas = this.$refs.canvas
+      if (canvas.width > 0 && canvas.height > 0) {
+        var context = canvas.getContext('2d')
+        var imageData = context.getImageData(0, 0, canvas.width, canvas.height)
+        wrapper(this.$refs.canvas)
+        context.putImageData(imageData, 0, 0)
+      } else {
+        wrapper(this.$refs.canvas)
+      }
     },
     _touchmove (event) {
       event.preventDefault()
@@ -541,7 +549,8 @@ export default {
       const img = new Image()
       img.onload = () => {
         const canvas = getTempCanvas(destWidth, destHeight)
-        if (fileType === 'jpeg') {
+        if (fileType === 'jpeg' || fileType === 'jpg') {
+          fileType = 'jpeg'
           c2d.fillStyle = '#fff'
           c2d.fillRect(0, 0, destWidth, destHeight)
         }

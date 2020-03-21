@@ -93,7 +93,7 @@ export default {
     },
     scale: {
       type: [String, Number],
-      default: 1
+      default: 16
     },
     markers: {
       type: Array,
@@ -163,6 +163,9 @@ export default {
     hidden (val) {
       this.map && this.map[val ? 'hide' : 'show']()
     },
+    scale (val) {
+      this.map && this.map.setZoom(val)
+    },
     latitude (val) {
       this.map && this.map.setStyles({
         center: new plus.maps.Point(this.longitude, this.latitude)
@@ -174,7 +177,7 @@ export default {
       })
     },
     markers (val) {
-      this.map && this._addMarkers(val)
+      this.map && this._addMarkers(val, true)
     },
     polyline (val) {
       this.map && this._addMapLines(val)
@@ -192,6 +195,7 @@ export default {
     map.__markers__ = {}
     map.__lines__ = []
     map.__circles__ = []
+    map.setZoom(this.scale)
     plus.webview.currentWebview().append(map)
     if (this.hidden) {
       map.hide()
@@ -201,17 +205,18 @@ export default {
     }, {
       deep: true
     })
-    map.onclick((data = {}) => {
-      this.$trigger('tap', {}, data)
-    })
-    map.onstatuschanged((data = {}) => {
-      this.$trigger('end', {}, data)
-    })
+    map.onclick = (e) => {
+      this.$trigger('click', {}, e)
+    }
+    map.onstatuschanged = (e) => {
+      this.$trigger('regionchange', {}, e)
+    }
     this._addMarkers(this.markers)
     this._addMapLines(this.polyline)
     this._addMapCircles(this.circles)
   },
   beforeDestroy () {
+    this.map && this.map.close()
     delete this.map
   },
   methods: {
@@ -250,7 +255,7 @@ export default {
       })
     },
     controlclick (e) {
-      this.$trigger('controltap', {}, { id: e.id })
+      this.$trigger('controltap', {}, { controlId: e.id })
     },
     _publishHandler (callbackId, data) {
       UniViewJSBridge.publishHandler('onMapMethodCallback', {
@@ -294,13 +299,13 @@ export default {
         if (id || id === 0) {
           nativeMarker.onclick = (e) => {
             this.$trigger('markertap', {}, {
-              id
+              markerId: id
             })
           }
           if (nativeBubble) {
             nativeBubble.onclick = () => {
               this.$trigger('callouttap', {}, {
-                id
+                markerId: id
               })
             }
           }
@@ -313,6 +318,7 @@ export default {
       if (this.map) {
         if (clear) {
           this.map.clearOverlays()
+          this.map.__markers__ = {}
         }
         markers.forEach(marker => {
           this._addMarker(this.map, marker)

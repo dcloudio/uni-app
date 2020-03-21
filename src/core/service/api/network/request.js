@@ -100,6 +100,16 @@ class RequestTask {
 }
 
 export function request (args, callbackId) {
+  let contentType
+  for (const name in args.header) {
+    if (name.toLowerCase() === 'content-type') {
+      contentType = args.header[name]
+      break
+    }
+  }
+  if (args.method !== 'GET' && contentType.indexOf('application/json') === 0 && isPlainObject(args.data)) {
+    args.data = JSON.stringify(args.data)
+  }
   const {
     requestTaskId
   } = invokeMethod('createRequestTask', args)

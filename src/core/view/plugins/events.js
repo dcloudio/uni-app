@@ -95,6 +95,8 @@ export function processEvent (name, $event = {}, detail = {}, target = {}, curre
     ret.options = {
       nid
     }
+    // 保留原始 currentTarget 方便后续对比
+    ret.$origCurrentTarget = currentTarget
   }
 
   return ret

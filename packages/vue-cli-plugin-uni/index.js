@@ -19,6 +19,28 @@ module.exports = (api, options) => {
 
   initBuildCommand(api, options)
 
+  if (process.env.UNI_PLATFORM === 'quickapp') {
+    process.env.UNI_OUTPUT_DIR = path.resolve(process.env.UNI_OUTPUT_DIR, 'build')
+    Object.assign(options, {
+      assetsDir,
+      parallel: false,
+      outputDir: process.env.UNI_OUTPUT_DIR
+    })
+    require('./lib/options')(options)
+    const platformOptions = {
+      webpackConfig: {},
+      chainWebpack () {}
+    }
+    const manifestPlatformOptions = {}
+    api.configureWebpack(require('./lib/configure-webpack')(platformOptions, manifestPlatformOptions, options, api))
+    api.chainWebpack(require('./lib/chain-webpack')(platformOptions, options, api))
+
+    const vueConfig = require('@dcloudio/uni-quickapp/lib/vue.config.js')
+    api.configureWebpack(vueConfig.configureWebpack)
+    api.chainWebpack(vueConfig.chainWebpack)
+    return
+  }
+
   const platformOptions = require('./lib/' + process.env.UNI_PLATFORM)
 
   let vueConfig = platformOptions.vueConfig
@@ -30,7 +52,7 @@ module.exports = (api, options) => {
   Object.assign(options, { // TODO 考虑非 HBuilderX 运行时，可以支持自定义输出目录
     outputDir: process.env.UNI_OUTPUT_TMP_DIR || process.env.UNI_OUTPUT_DIR,
     assetsDir
-  }, vueConfig)
+  }, vueConfig) // 注意，此处目前是覆盖关系，后续考虑改为webpack merge逻辑
 
   require('./lib/options')(options)
 

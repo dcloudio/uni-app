@@ -1,11 +1,3 @@
-<template>
-  <uni-cover-view
-    v-on="$listeners">
-    <div
-      ref="container"
-      class="uni-cover-view"/>
-  </uni-cover-view>
-</template>
 <script>
 import native from '../../mixins/native'
 import cover from '../../mixins/cover'
@@ -20,20 +12,23 @@ export default {
       coverContent: ''
     }
   },
-  watch: {},
-  mounted () {
-    this._updateContent()
-    this.$watch('$slot', this._updateContent)
-  },
-  methods: {
-    _updateContent (val) {
-      const $slots = this.$slots.default || []
-      $slots.forEach(node => {
-        if (!node.tag) {
-          this.coverContent += node.text || ''
-        }
-      })
-    }
+  render (createElement) {
+    let coverContent = ''
+    const $slots = this.$slots.default || []
+    $slots.forEach(node => {
+      if (!node.tag) {
+        coverContent += node.text || ''
+      }
+    })
+    this.coverContent = coverContent
+    return createElement('uni-cover-view', {
+      on: {
+        on: this.$listeners
+      }
+    }, [createElement('div', {
+      ref: 'container',
+      staticClass: 'uni-cover-view'
+    }, [coverContent])])
   }
 }
 </script>

@@ -40,6 +40,10 @@ import {
 } from 'uni-helpers/constants'
 
 import {
+  isPlainObject
+} from 'uni-shared'
+
+import {
   mergeTitleNView
 } from 'uni-helpers/patch'
 
@@ -148,6 +152,12 @@ export default {
     titlePenetrate: {
       type: String,
       default: 'NO'
+    },
+    navigationBarShadow: {
+      type: Object,
+      default () {
+        return {}
+      }
     }
   },
   data () {
@@ -158,14 +168,27 @@ export default {
     }
     // 将 navigationStyle 和 transparentTitle 都合并到 titleNView
     let titleNView = this.titleNView
-    titleNView = Object.assign({}, {
-      type: this.navigationStyle === 'custom' ? 'none' : 'default'
-    }, this.transparentTitle in titleNViewTypeList ? {
-      type: titleNViewTypeList[this.transparentTitle],
-      backgroundColor: 'rgba(0,0,0,0)'
-    } : null, typeof titleNView === 'object' ? titleNView : (typeof titleNView === 'boolean' ? {
-      type: titleNView ? 'default' : 'none'
-    } : null))
+    if ( // 无头
+      titleNView === false ||
+      titleNView === 'false' ||
+      (
+        this.navigationStyle === 'custom' &&
+        !isPlainObject(titleNView)
+      ) || (
+        this.transparentTitle === 'always' &&
+        !isPlainObject(titleNView)
+      )
+    ) {
+      titleNView = { type: 'none' }
+    } else {
+      titleNView = Object.assign({}, {
+        type: this.navigationStyle === 'custom' ? 'none' : 'default'
+      }, this.transparentTitle in titleNViewTypeList ? {
+        type: titleNViewTypeList[this.transparentTitle]
+      } : null, typeof titleNView === 'object' ? titleNView : (typeof titleNView === 'boolean' ? {
+        type: titleNView ? 'default' : 'none'
+      } : null))
+    }
 
     const yesNoParseList = {
       'YES': true,
@@ -183,6 +206,7 @@ export default {
       timingFunc: '',
       titlePenetrate: yesNoParseList[this.titlePenetrate]
     }, titleNView)
+    navigationBar.shadow = this.navigationBarShadow
 
     const refreshOptions = Object.assign({
       support: true,
@@ -210,7 +234,19 @@ export default {
   },
   created () {
     if (__PLATFORM__ === 'h5') {
-      document.title = this.navigationBar.titleText
+      const navigationBar = this.navigationBar
+      document.title = navigationBar.titleText
+      if (typeof qh !== 'undefined') {
+        qh.setNavigationBarTitle({
+          title: document.title
+        })
+        qh.setNavigationBarColor({
+          backgroundColor: navigationBar.backgroundColor
+        })
+        qh.setNavigationBarTextStyle({
+          textStyle: navigationBar.textColor === '#000' ? 'black' : 'white'
+        })
+      }
     }
   }
 }

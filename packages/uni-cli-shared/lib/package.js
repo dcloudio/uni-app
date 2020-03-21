@@ -30,7 +30,7 @@ module.exports = {
     }
 
     if (PLATFORMS.indexOf(scriptOptions.env.UNI_PLATFORM) === -1) {
-      console.error(`UNI_PLATFORM 支持一下平台 ${JSON.stringify(PLATFORMS)}`)
+      console.error(`UNI_PLATFORM 支持以下平台 ${JSON.stringify(PLATFORMS)}`)
       process.exit(0)
     }
 

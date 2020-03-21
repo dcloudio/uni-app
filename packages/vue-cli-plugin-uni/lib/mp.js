@@ -17,18 +17,16 @@ const {
 } = require('./cache-loader')
 
 function createUniMPPlugin () {
-  if (process.env.UNI_USING_COMPONENTS) {
-    const WebpackUniMPPlugin = require('@dcloudio/webpack-uni-mp-loader/lib/plugin/index-new')
-    return new WebpackUniMPPlugin()
-  }
-  const WebpackUniMPPlugin = require('@dcloudio/webpack-uni-mp-loader/lib/plugin')
+  const WebpackUniMPPlugin = require('@dcloudio/webpack-uni-mp-loader/lib/plugin/index-new')
   return new WebpackUniMPPlugin()
 }
 
 function getProvides () {
   const uniPath = require.resolve('@dcloudio/uni-' + process.env.UNI_PLATFORM)
+  const uniCloudPath = path.resolve(__dirname, '../packages/uni-cloud/dist/index.js')
   const provides = {
-    'uni': [uniPath, 'default']
+    'uni': [uniPath, 'default'],
+    'uniCloud': [uniCloudPath, 'default']
   }
 
   if (process.env.UNI_USING_COMPONENTS) {
@@ -42,7 +40,11 @@ function getProvides () {
     process.env.UNI_USING_V8
   ) {
     provides['__f__'] = [path.resolve(__dirname, 'format-log.js'), 'default']
-    provides['crypto'] = [path.resolve(__dirname, 'crypto.js'), 'default']
+
+    const cryptoProvide = [path.resolve(__dirname, 'crypto.js'), 'default']
+    provides['crypto'] = cryptoProvide
+    provides['window.crypto'] = cryptoProvide
+    provides['global.crypto'] = cryptoProvide
   }
 
   // TODO 目前依赖库 megalo 通过判断 wx 对象是否存在来识别平台做不同处理
@@ -98,7 +100,7 @@ module.exports = {
 
     return {
       devtool,
-      mode: process.env.NODE_ENV,
+      mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
       entry () {
         return process.UNI_ENTRY
       },
@@ -175,7 +177,7 @@ module.exports = {
 
     const compilerOptions = process.env.UNI_USING_COMPONENTS ? {} : require('./mp-compiler-options')
 
-    modifyVueLoader(webpackConfig, compilerOptions, api)
+    modifyVueLoader(webpackConfig, {}, compilerOptions, api)
 
     const styleExt = getPlatformExts().style
 

@@ -30,9 +30,12 @@ const {
 
 const runtimePath = '@dcloudio/uni-mp-weixin/dist/mp.js'
 const wxsPath = '@dcloudio/uni-mp-weixin/dist/wxs.js'
+const uniCloudPath = path.resolve(__dirname, '../../packages/uni-cloud/dist/index.js')
 
 function getProvides () {
   return {
+    '__f__': [path.resolve(__dirname, '../format-log.js'), 'default'],
+    'uniCloud': [uniCloudPath, 'default'],
     'wx.nextTick': [runtimePath, 'nextTick'],
     'Page': [runtimePath, 'Page'],
     'Component': [runtimePath, 'Component'],
@@ -60,10 +63,6 @@ if (process.env.NODE_ENV !== 'production') {
 const vueConfig = {
   parallel: false, // 因为传入了自定义 compiler，避免参数丢失，禁用parallel
   publicPath,
-  transpileDependencies: [
-    wxsPath,
-    runtimePath
-  ],
   pages: {
     index: {
       // page 的入口
@@ -103,12 +102,13 @@ module.exports = {
       `import 'uni-pages';import 'uni-${process.env.UNI_PLATFORM}';`
 
     return {
-      devtool: process.env.NODE_ENV === 'production' ? false : 'source-map',
+      devtool: process.env.NODE_ENV === 'production' ? false : 'cheap-module-eval-source-map',
       resolve: {
         extensions: ['.nvue'],
         alias: {
           'vue-router': resolve('packages/h5-vue-router'),
-          'uni-h5': require.resolve('@dcloudio/uni-h5')
+          'uni-h5': require.resolve('@dcloudio/uni-h5'),
+          'uni-qh': path.resolve(__dirname, 'qh-api.js')
         }
       },
       module: {
@@ -168,7 +168,10 @@ module.exports = {
       webpackConfig.plugins.delete('preload-index')
     }
 
-    modifyVueLoader(webpackConfig, require('./compiler-options'), api)
+    modifyVueLoader(webpackConfig, {
+      isH5: true,
+      hotReload: true
+    }, require('./compiler-options'), api)
 
     if (process.env.NODE_ENV === 'production') {
       require('./cssnano-options')(webpackConfig)

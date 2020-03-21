@@ -9,9 +9,9 @@
 |:-|:-|:-|:-|:-|:-|
 |url|String|是||开发者服务器接口地址||
 |data|Object/String/ArrayBuffer|否||请求的参数|App（自定义组件编译模式）不支持ArrayBuffer类型|
-|header|Object|否||设置请求的 header，header 中不能设置 Referer。||
+|header|Object|否||设置请求的 header，header 中不能设置 Referer。|H5端会自动带上cookie不可手动覆盖|
 |method|String|否|GET|有效值详见下方说明||
-|timeout|Number|否|30000|超时时间，单位 ms|支付宝小程序|
+|timeout|Number|否|30000|超时时间，单位 ms|微信小程序（2.10.0）、支付宝小程序|
 |dataType|String|否|json	|如果设为 json，会尝试对返回的数据做一次 JSON.parse||
 |responseType|String|否|text	|设置响应的数据类型。合法值：text、arraybuffer|App和支付宝小程序不支持|
 |sslVerify|Boolean|否|true|验证 ssl 证书|仅App安卓端支持（HBuilderX 2.3.3+）|
@@ -23,7 +23,7 @@
 
 必须大写，有效值在不同平台差异说明不同。
 
-|method|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|
+|method|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |GET|√|√|√|√|√|√|
 |POST|√|√|√|√|√|√|
@@ -116,8 +116,9 @@ requestTask.abort();
 - 网络请求的 ``超时时间`` 可以统一在 ``manifest.json`` 中配置 [networkTimeout](/collocation/manifest?id=networktimeout)。
 - H5 端本地调试需注意跨域问题，参考：[调试跨域问题解决方案](https://ask.dcloud.net.cn/article/35267)
 - 注意由于百度小程序iOS客户端，请求失败时会进入fail回调，需要针对百度增加相应的处理以解决该问题。
-- 注意非 H5 端不支持 cookie，服务器应避免验证 cookie。如果服务器无法修改，也可以使用一些模拟手段，比如这样的工具[https://github.com/charleslo1/weapp-cookie](https://github.com/charleslo1/weapp-cookie)
-- 按照 W3C 规范，H5 端无法获取 response header 中 Set-Cookie、Set-Cookie2 这2个字段，对于跨域请求，允许获取的 response header 字段只限于“simple response header”和“Access-Control-Expose-Headers”（[详情](https://www.w3.org/TR/cors/#access-control-allow-credentials-response-header)）
+- 注意非 H5 端不支持自动保持 cookie，服务器应避免验证 cookie。如果服务器无法修改，也可以使用一些模拟手段，比如这样的工具[https://github.com/charleslo1/weapp-cookie](https://github.com/charleslo1/weapp-cookie) 可以请求时带上 cookie 并将响应的 cookie 保存在本地。
+- H5端 cookie 受跨域限制（和平时开发网站时一样），但 uni.request 目前未支持 withCredentials 配置，可以直接使用 xhr 对象或者其他类库。
+- 根据 W3C 规范，H5 端无法获取 response header 中 Set-Cookie、Set-Cookie2 这2个字段，对于跨域请求，允许获取的 response header 字段只限于“simple response header”和“Access-Control-Expose-Headers”（[详情](https://www.w3.org/TR/cors/#access-control-allow-credentials-response-header)）
 - [uni-app 插件市场](https://ext.dcloud.net.cn/search?q=%E6%8B%A6%E6%88%AA%E5%99%A8)有flyio、axios等三方封装的拦截器可用
 - 低版本手机自身不支持 ipv6，如果服务器仅允许 ipv6，会导致老手机无法正常运行或访问速度非常慢
 - localhost、127.0.0.1等服务器地址，只能在电脑端运行，手机端连接时不能访问。请使用标准IP并保证手机能连接电脑网络

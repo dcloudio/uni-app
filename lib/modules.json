@@ -66,7 +66,8 @@
     "uni.saveVideoToPhotosAlbum": true,
     "uni.createVideoContext": true,
     "uni.createCameraContext": true,
-    "uni.createLivePlayerContext": true
+    "uni.createLivePlayerContext": true,
+    "uni.createLivePusherContext": true
   }
 }, {
   "name": "device",
@@ -117,7 +118,8 @@
     "uni.onBeaconUpdate": true,
     "uni.getBeacons": true,
     "uni.startBeaconDiscovery": true,
-    "uni.stopBeaconDiscovery": true
+    "uni.stopBeaconDiscovery": true,
+    "uni.onUIStyleChange": true
   }
 }, {
   "name": "ui",
@@ -153,7 +155,7 @@
     "uni.createSelectorQuery": true,
     "uni.createIntersectionObserver": true,
     "uni.hideKeyboard": true,
-	"uni.onKeyboardHeightChange": true
+    "uni.onKeyboardHeightChange": true
   }
 }, {
   "name": "event",
@@ -205,5 +207,11 @@
     "uni.requireNativePlugin": true,
     "uni.base64ToArrayBuffer": true,
     "uni.arrayBufferToBase64": true
+  }
+}, {
+  "name": "ad",
+  "title": "广告",
+  "apiList": {
+    "uni.createRewardedVideoAd": true
   }
 }]

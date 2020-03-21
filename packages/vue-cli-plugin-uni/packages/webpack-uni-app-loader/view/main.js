@@ -103,7 +103,7 @@ module.exports = function(source, map) {
 import 'uni-pages?${JSON.stringify({type:'view'})}'
 function initView(){
     ${getStylesCode(this)}
-    injectStyles()
+    typeof injectStyles ==='function' && injectStyles()
     ${getDefineComponents(parseComponents(source, traverse)).join('\n')}
     UniViewJSBridge.publishHandler('webviewReady')
 }

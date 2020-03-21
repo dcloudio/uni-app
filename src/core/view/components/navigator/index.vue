@@ -97,18 +97,19 @@ export default {
 }
 </script>
 <style>
-  .navigator-hover {
-    background-color: rgba(0, 0, 0, 0.1);
-    opacity: 0.7;
-  }
-
   uni-navigator {
     height: auto;
     width: auto;
     display: block;
+    cursor: pointer;
   }
 
   uni-navigator[hidden] {
     display: none;
+  }
+
+  .navigator-hover {
+    background-color: rgba(0, 0, 0, 0.1);
+    opacity: 0.7;
   }
 </style>

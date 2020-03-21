@@ -16,6 +16,14 @@
 |hover-class|String|button-hover|指定按钮按下去的样式类。当 hover-class="none" 时，没有点击态效果||App-nvue 平台暂不支持|
 |hover-start-time|Number|20|按住后多久出现点击态，单位毫秒|||
 |hover-stay-time|Number|70|手指松开后点击态保留时间，单位毫秒|||
+|app-parameter|String||打开 APP 时，向 APP 传递的参数，open-type=launchApp时有效||微信小程序、QQ小程序|
+|hover-stop-propagation|boolean|false|指定是否阻止本节点的祖先节点出现点击态||微信小程序|
+|lang|string|'en'|指定返回用户信息的语言，zh_CN 简体中文，zh_TW 繁体中文，en 英文。||微信小程序|
+|session-from|string||会话来源，open-type="contact"时有效||微信小程序|
+|send-message-title|string|当前标题|会话内消息卡片标题，open-type="contact"时有效||微信小程序|
+|send-message-path|string|当前分享路径|会话内消息卡片点击跳转小程序路径，open-type="contact"时有效||微信小程序|
+|send-message-img|string|截图|会话内消息卡片图片，open-type="contact"时有效||微信小程序|
+|show-message-card|boolean|false|是否显示会话内消息卡片，设置此参数为 true，用户进入客服会话会在右下角显示"可能要发送的小程序"提示，用户点击后可以快速发送小程序消息，open-type="contact"时有效||微信小程序|
 |@getphonenumber|Handler||获取用户手机号回调|open-type="getPhoneNumber"|微信小程序|
 |@getuserinfo|Handler||用户点击该按钮时，会返回获取到的用户信息，从返回参数的detail中获取到的值同uni.getUserInfo|open-type="getUserInfo"|微信小程序|
 |@error|Handler||当使用开放能力时，发生错误的回调|open-type="launchApp"|微信小程序|
@@ -36,7 +44,7 @@
 
 |值|说明|
 |:-|:-|
-|primary|微信小程序为绿色，App、H5、百度小程序、支付宝小程序为蓝色，头条小程序为红色，QQ小程序为浅蓝色|
+|primary|微信小程序为绿色，App、H5、百度小程序、支付宝小程序为蓝色，字节跳动小程序为红色，QQ小程序为浅蓝色|
 |default|白色|
 |warn|红色|
 
@@ -52,10 +60,10 @@
 |值|说明|平台差异说明|
 |:-|:-|:-|
 |feedback|打开“意见反馈”页面，用户可提交反馈内容并上传日志|App、微信小程序、QQ小程序|
-|share|触发用户转发|微信小程序、百度小程序、支付宝小程序、头条小程序、QQ小程序|
+|share|触发用户转发|微信小程序、百度小程序、支付宝小程序、字节跳动小程序、QQ小程序|
 |getUserInfo|获取用户信息，可以从@getuserinfo回调中获取到用户信息，包括手机号、头像、昵称等信息|微信小程序、百度小程序、QQ小程序|
 |contact | 打开客服会话，如果用户在会话中点击消息卡片后返回应用，可以从 @contact 回调中获得具体信息 |微信小程序、百度小程序|
-|getPhoneNumber | 获取用户手机号，可以从@getphonenumber回调中获取到用户信息|微信小程序、百度小程序、头条小程序 |
+|getPhoneNumber | 获取用户手机号，可以从@getphonenumber回调中获取到用户信息|微信小程序、百度小程序、字节跳动小程序 |
 |launchApp | 打开APP，可以通过app-parameter属性设定向APP传的参数|[微信小程序](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/launchApp.html)、[QQ小程序](https://q.qq.com/wiki/develop/miniprogram/frame/open_ability/open_app.html)|
 |openSetting | 打开授权设置页 |微信小程序、百度小程序|
 |getAuthorize | 支持小程序授权 | 支付宝小程序 |

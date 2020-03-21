@@ -49,4 +49,4 @@ export function Behavior (options) {
 
 export const nextTick = Vue.nextTick
 
-export default uni
+export default uni.__$wx__

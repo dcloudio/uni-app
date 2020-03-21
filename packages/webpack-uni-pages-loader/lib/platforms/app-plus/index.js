@@ -34,23 +34,23 @@ function isPlainObject (obj) {
 function normalizeNetworkTimeout (appJson) {
   if (!isPlainObject(appJson.networkTimeout)) {
     appJson.networkTimeout = {
-      request: 6000,
-      connectSocket: 6000,
-      uploadFile: 6000,
-      downloadFile: 6000
+      request: 60000,
+      connectSocket: 60000,
+      uploadFile: 60000,
+      downloadFile: 60000
     }
   } else {
     if (typeof appJson.networkTimeout.request === 'undefined') {
-      appJson.networkTimeout.request = 6000
+      appJson.networkTimeout.request = 60000
     }
     if (typeof appJson.networkTimeout.connectSocket === 'undefined') {
-      appJson.networkTimeout.connectSocket = 6000
+      appJson.networkTimeout.connectSocket = 60000
     }
     if (typeof appJson.networkTimeout.uploadFile === 'undefined') {
-      appJson.networkTimeout.uploadFile = 6000
+      appJson.networkTimeout.uploadFile = 60000
     }
     if (typeof appJson.networkTimeout.downloadFile === 'undefined') {
-      appJson.networkTimeout.downloadFile = 6000
+      appJson.networkTimeout.downloadFile = 60000
     }
   }
 }
@@ -322,14 +322,18 @@ module.exports = function (pagesJson, userManifestJson) {
   const confusion = manifestJson.plus.confusion
   if (confusion && confusion.resources) {
     const resources = {}
+    const nvuePages = (appJson.nvue && appJson.nvue.pages) || {}
     for (const key in confusion.resources) {
+      if (path.extname(key) === '.js') { // 支持 js 混淆，过滤掉
+        continue
+      }
       if (!/\.nvue$/.test(key)) {
         throw new Error(`原生混淆仅支持 nvue 页面，错误的页面路径：${key}`)
       } else {
         resources[key.replace(/\.nvue$/, '.js')] = confusion.resources[key]
       }
-      if (!Object.keys(appJson.nvue.pages).find(path => {
-        const subNVues = appJson.nvue.pages[path].window.subNVues || []
+      if (!Object.keys(nvuePages).find(path => {
+        const subNVues = nvuePages[path].window.subNVues || []
         return path.replace(/\.html$/, '.nvue') === key || subNVues.find(({
           path
         }) => path === key.replace(/\.nvue$/, ''))

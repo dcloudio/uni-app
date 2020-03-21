@@ -43,7 +43,7 @@
 			<div class="barcode-img-box">
 				<img src="https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/mp-toutiao.png" width="160"/>
 			</div>
-        	<b>头条小程序版</b>
+        	<b>字节跳动小程序版</b>
         </a>
         <a href="//m3w.cn/uniapp" target="_blank" class="clear-style barcode-view">
 			<div class="barcode-img-box">
@@ -61,7 +61,7 @@
 
 我们精心准备了一个简单的十分钟介绍视频，方便你快速了解```uni-app```的主要特征：
 
-<video id="video" onplay="videoPlay()" preload="none" controls="controls" width="100%" poster="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/poster.png" src="https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/%E7%AC%AC1%E8%AE%B2%EF%BC%88uni-app%E4%BA%A7%E5%93%81%E4%BB%8B%E7%BB%8D%EF%BC%89-%20DCloud%E5%AE%98%E6%96%B9%E8%A7%86%E9%A2%91%E6%95%99%E7%A8%8B@20181126.mp4"></video>
+<video id="video" onplay="videoPlay()" preload="none" controls="controls" width="100%" poster="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/poster.png" src="https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/%E7%AC%AC1%E8%AE%B2%EF%BC%88uni-app%E4%BA%A7%E5%93%81%E4%BB%8B%E7%BB%8D%EF%BC%89-%20DCloud%E5%AE%98%E6%96%B9%E8%A7%86%E9%A2%91%E6%95%99%E7%A8%8B@20200317.mp4"></video>
 
 ### 为什么要选择uni-app？
 
@@ -150,7 +150,7 @@
 
 从下面```uni-app```功能框架图可看出，```uni-app```在跨平台的过程中，不牺牲平台特色，可优雅的调用平台专有能力，真正做到海纳百川、各取所长。
 
-![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/doc/uni0124.png)
+![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/doc/uni-app-frame-0310.png)
 
 ### 一套代码，运行到多个平台
 

@@ -134,10 +134,13 @@ export function notifyBLECharacteristicValueChanged (data, callbackId) {
 }
 
 export function readBLECharacteristicValue (data, callbackId) {
+  onBLECharacteristicValueChange = onBLECharacteristicValueChange || bluetoothOn('onBLECharacteristicValueChange')
   bluetoothExec('readBLECharacteristicValue', callbackId, data)
 }
 
 export function writeBLECharacteristicValue (data, callbackId) {
-  data.value = base64ToArrayBuffer(data.value)
+  if (typeof data.value === 'string') {
+    data.value = base64ToArrayBuffer(data.value)
+  }
   bluetoothExec('writeBLECharacteristicValue', callbackId, data)
 }

@@ -1,6 +1,7 @@
 const path = require('path')
 
 const {
+  hyphenate,
   isComponent
 } = require('./util')
 
@@ -47,7 +48,8 @@ function updateMPUsingAutoImportComponents (autoComponents, options) {
     name,
     source
   }) => {
-    usingAutoImportComponents[name] = '/' + formatSource(source)
+    // 自定义组件统一格式化为 kebab-case
+    usingAutoImportComponents[hyphenate(name)] = '/' + formatSource(source)
   })
   updateUsingAutoImportComponents(resourcePath, usingAutoImportComponents) // 更新json
 }
@@ -84,7 +86,10 @@ function compileTemplate (source, options, compile) {
 
 const compilerModule = {
   preTransformNode (el, options) {
-    if (isComponent(el.tag) && el.tag !== 'App') { // App.vue
+    if (process.env.UNI_PLATFORM === 'quickapp') {
+      // 排查所有标签
+      (options.isUnaryTag.autoComponents || (options.isUnaryTag.autoComponents = new Set())).add(el.tag)
+    } else if (isComponent(el.tag) && el.tag !== 'App') { // App.vue
       // 挂在 isUnaryTag 上边,可以保证外部访问到
       (options.isUnaryTag.autoComponents || (options.isUnaryTag.autoComponents = new Set())).add(el.tag)
     }

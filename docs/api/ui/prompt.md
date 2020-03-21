@@ -152,11 +152,21 @@ uni.showModal({
 
 |参数|类型|必填|说明|平台差异说明|
 |:-|:-|:-|:-|:-|
-|itemList|Array&lt;String&gt;|是|按钮的文字数组|微信、百度、头条小程序数组长度最大为6个|
-|itemColor|HexColor|否|按钮的文字颜色，字符串格式，默认为"#000000"|头条小程序不支持|
+|itemList|Array&lt;String&gt;|是|按钮的文字数组|微信、百度、字节跳动小程序数组长度最大为6个|
+|itemColor|HexColor|否|按钮的文字颜色，字符串格式，默认为"#000000"|字节跳动小程序不支持|
+|popover|Object|否|iPad 上弹出原生选择按钮框的指示区域，默认指向屏幕底部水平居中位置|仅 App 2.6.6+ 支持|
 |success|Function|否|接口调用成功的回调函数，详见返回参数说明||
 |fail|Function|否|接口调用失败的回调函数||
 |complete|Function|否|接口调用结束的回调函数（调用成功、失败都会执行）|&nbsp;|
+
+**popover 值说明（仅App生效）**
+
+|值|类型|说明|
+|:-|:-|:-|
+|top|Number|指示区域坐标|
+|left|Number|指示区域坐标|
+|width|Number|指示区域宽度|
+|height|Number|指示区域高度|
 
 **success返回参数说明**
 
@@ -180,10 +190,11 @@ uni.showActionSheet({
 
 **Tips**
 
-App端实现原生的、复杂的底部图文菜单，例如分享菜单，可参考[https://ext.dcloud.net.cn/plugin?id=69](https://ext.dcloud.net.cn/plugin?id=69)
+- App平台，iPad设备支持设置弹出框的位置，详见 [plus.nativeUI的文档](https://www.html5plus.org/doc/zh_cn/nativeui.html#plus.nativeUI.ActionSheetStyles)
+- App平台，实现原生的、复杂的底部图文菜单，例如分享菜单，可参考[https://ext.dcloud.net.cn/plugin?id=69](https://ext.dcloud.net.cn/plugin?id=69)
 
 **注意**
 
-- 本章的所有弹出控件都是原生控件，层级最高，可覆盖video、map、tabbar等原生控件。
+- 在非H5端，本章的所有弹出控件都是原生控件，层级最高，可覆盖video、map、tabbar等原生控件。
 - [uni-app插件市场](https://ext.dcloud.net.cn/)有很多封装好的前端组件，但注意前端组件层级不是最高，无法覆盖原生组件，除非使用cover-view或nvue。
 - App端还有原生的[prompt API](https://www.html5plus.org/doc/zh_cn/nativeui.html#plus.nativeUI.prompt)

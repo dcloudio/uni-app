@@ -231,9 +231,11 @@ const promiseInterceptor = {
 };
 
 const SYNC_API_RE =
-  /^\$|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
+  /^\$|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
+
+const ASYNC_API = ['createBLEConnection'];
 
 const CALLBACK_API_RE = /^on/;
 
@@ -241,7 +243,7 @@ function isContextApi (name) {
   return CONTEXT_API_RE.test(name)
 }
 function isSyncApi (name) {
-  return SYNC_API_RE.test(name)
+  return SYNC_API_RE.test(name) && ASYNC_API.indexOf(name) === -1
 }
 
 function isCallbackApi (name) {
@@ -266,6 +268,19 @@ function shouldPromise (name) {
   return true
 }
 
+/* eslint-disable no-extend-native */
+if (!Promise.prototype.finally) {
+  Promise.prototype.finally = function (callback) {
+    const promise = this.constructor;
+    return this.then(
+      value => promise.resolve(callback()).then(() => value),
+      reason => promise.resolve(callback()).then(() => {
+        throw reason
+      })
+    )
+  };
+}
+
 function promisify (name, api) {
   if (!shouldPromise(name)) {
     return api
@@ -279,18 +294,6 @@ function promisify (name, api) {
         success: resolve,
         fail: reject
       }), ...params);
-      /* eslint-disable no-extend-native */
-      if (!Promise.prototype.finally) {
-        Promise.prototype.finally = function (callback) {
-          const promise = this.constructor;
-          return this.then(
-            value => promise.resolve(callback()).then(() => value),
-            reason => promise.resolve(callback()).then(() => {
-              throw reason
-            })
-          )
-        };
-      }
     })))
   }
 }
@@ -442,17 +445,30 @@ const protocols = { // 需要做转换的 API 列表
       if (!fromArgs.header) { // 默认增加 header 参数，方便格式化 content-type
         fromArgs.header = {};
       }
+      const headers = {
+        'content-type': 'application/json'
+      };
+      Object.keys(fromArgs.header).forEach(key => {
+        headers[key.toLocaleLowerCase()] = fromArgs.header[key];
+      });
       return {
         header (header = {}, toArgs) {
-          const headers = {
-            'content-type': 'application/json'
-          };
-          Object.keys(header).forEach(key => {
-            headers[key.toLocaleLowerCase()] = header[key];
-          });
           return {
             name: 'headers',
             value: headers
+          }
+        },
+        data (data) {
+          // 钉钉在content-type为application/json时，不会自动序列化
+          if (my.dd && headers['content-type'].indexOf('application/json') === 0) {
+            return {
+              name: 'data',
+              value: JSON.stringify(data)
+            }
+          }
+          return {
+            name: 'data',
+            value: data
           }
         },
         method: 'method', // TODO 支付宝小程序仅支持 get,post
@@ -686,8 +702,16 @@ const protocols = { // 需要做转换的 API 列表
     }
   },
   getUserInfo: {
-    name: 'getAuthUserInfo',
+    name: my.canIUse('getOpenUserInfo') ? 'getOpenUserInfo' : 'getAuthUserInfo',
     returnValue (result) {
+      if (my.canIUse('getOpenUserInfo')) {
+        let response = {};
+        try {
+          response = JSON.parse(result.response).response;
+        } catch (e) {}
+        result.nickName = response.nickName;
+        result.avatar = response.avatar;
+      }
       result.userInfo = {
         nickName: result.nickName,
         avatarUrl: result.avatar
@@ -2113,7 +2137,7 @@ function parseComponent (vueComponentOptions) {
       }
     },
     didUnmount () {
-      this.$vm.$destroy();
+      this.$vm && this.$vm.$destroy();
     },
     methods: {
       __r: handleRef,

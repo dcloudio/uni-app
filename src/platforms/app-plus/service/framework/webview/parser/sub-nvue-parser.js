@@ -121,6 +121,7 @@ function initSubNVue (subNVue, routeOptions, webview) {
       `UNIAPP[webview][${webview.id}]:create[${subNVue.id}]:${JSON.stringify(style)}`
     )
   }
+  delete style.mask
   const subNVueWebview = plus.webview.create('', subNVue.id, style, extras)
 
   if (isPopup) {

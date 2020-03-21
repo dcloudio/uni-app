@@ -6,7 +6,7 @@
 
 **平台差异说明**
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序
 |:-:		|:-:|:-:|:-:|:-:|:-:|:-:|
 |x(见下)|x	|√	|x	|√	|√(基础库版本>=1.52.0)	|√	|
 
@@ -31,6 +31,39 @@
 |@statechange|EventHandle||播放状态变化事件，detail = {code}||
 |@netstatus|EventHandle||网络状态通知，detail = {info}||
 |@fullscreenchange|EventHandle||全屏变化事件，detail = {direction, fullScreen}。|&nbsp;|
+
+
+mode 的合法值
+
+|值|说明|
+|:-|:-|
+|live|直播|
+|RTC|实时通话，该模式时延更低|
+
+
+orientation 的合法值
+
+|值|说明|
+|:-|:-|
+|vertical|竖直|
+|horizontal|水平|
+
+
+object-fit 的合法值
+
+|值|说明|
+|:-|:-|
+|contain|图像长边填满屏幕，短边区域会被填充⿊⾊|
+|fillCrop|图像铺满屏幕，超出显示区域的部分将被截掉|
+
+
+sound-mode 的合法值
+
+|值|说明|
+|:-|:-|
+|speaker|扬声器|
+|ear|听筒|
+
 
 **Tips**
 

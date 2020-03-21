@@ -2,7 +2,7 @@
  * wxs getRegExp
  */
 export function getRegExp () {
-  const args = Array.prototype.slice.call(arguments)
+  var args = Array.prototype.slice.call(arguments)
   args.unshift(RegExp)
   return new (Function.prototype.bind.apply(RegExp, args))()
 }
@@ -11,7 +11,7 @@ export function getRegExp () {
  * wxs getDate
  */
 export function getDate () {
-  const args = Array.prototype.slice.call(arguments)
+  var args = Array.prototype.slice.call(arguments)
   args.unshift(Date)
   return new (Function.prototype.bind.apply(Date, args))()
 }

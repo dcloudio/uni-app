@@ -19,6 +19,10 @@ module.exports = function initOptions (options) {
   options.transpileDependencies.push(path.resolve(process.env.UNI_INPUT_DIR, 'node_modules'))
   options.transpileDependencies.push('@dcloudio/uni-' + process.env.UNI_PLATFORM)
   options.transpileDependencies.push('@dcloudio/uni-stat')
+  // mp runtime
+  options.transpileDependencies.push('@dcloudio/uni-mp-weixin/dist/mp.js')
+  // wxs
+  options.transpileDependencies.push('@dcloudio/uni-mp-weixin/dist/wxs.js')
 
   if (process.env.UNI_PLATFORM === 'app-plus') {
     options.transpileDependencies.push('format-log.js')

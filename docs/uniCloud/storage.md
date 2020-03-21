@@ -8,19 +8,36 @@
 
 上传文件到云存储，**阿里云单文件大小限制为100M，腾讯云单文件最大为5G**
 
+**阿里云支持的文件类型**
+
+```js
+{
+  jpg: 'image/jpeg',
+  jpeg: 'image/jpeg',
+  png: 'image/png',
+  gif: 'image/gif',
+  webp: 'image/webp',
+  svg: 'image/svg+xml',
+  mp3: 'audio/mp3',
+  mp4: 'video/mp4',
+  ogg: 'audio/ogg',
+  webm: 'video/webm'
+}
+```
+
 #### 请求参数
 **Object object**
 
 |参数名						|类型			|必填	|默认值	|说明												|平台差异说明		|
 |:-:							|:-:			|:-:	|:-:		|:-:												|:-:						|
 |filePath					|String		|是		|-			|要上传的文件对象						|-							|
+|cloudPath				|String		|-		|-			|文件的绝对路径，包含文件名	|阿里云非必填，腾讯云必填	|
+|onUploadProgress	|Function	|否		|-			|上传进度回调								|-	|
 
-<!-- |cloudPath				|String		|是		|-			|文件的绝对路径，包含文件名	|仅腾讯云侧支持	| -->
-<!-- |onUploadProgress	|Function	|否		|-			|上传进度回调								|仅腾讯云侧支持	| -->
+**注意**
 
-<!-- **注意**
-
-- `cloudPath` 为文件的绝对路径，包含文件名 foo/bar.jpg、foo/bar/baz.jpg 等，不能包含除[0-9 , a-z , A-Z]、/、!、-、\_、.、、\*和中文以外的字符，使用 / 字符来实现类似传统文件系统的层级结构。[查看详情](https://cloud.tencent.com/document/product/436/13324) -->
+- 使用阿里云时，`cloudPath`为云端文件名，请勿使用非法字符
+<!-- - `cloudPath` 为文件的绝对路径，包含文件名 foo/bar.jpg、foo/bar/baz.jpg 等，不能包含除[0-9 , a-z , A-Z]、/、!、-、\_、.、、\*和中文以外的字符，使用 / 字符来实现类似传统文件系统的层级结构。[查看详情](https://cloud.tencent.com/document/product/436/13324) -->
 
 #### 响应参数
 

@@ -49,6 +49,78 @@
 |mp-alipay|支付宝小程序|
 |mp-baidu|百度小程序|
 
+## 资源路径说明
+
+
+
+### 模板内引入静态资源
+
+> `template`内引入静态资源，如`image`、`video`等标签的`src`属性时，可以使用相对路径或者绝对路径，形式如下
+
+```html
+<!-- 绝对路径，/static指根目录下的static目录，在cli项目中/static指src目录下的static目录 -->
+<image class="logo" src="/static/logo.png"></image>
+<image class="logo" src="@/static/logo.png"></image>
+<!-- 相对路径 -->
+<image class="logo" src="../../static/logo.png"></image>
+```
+
+**注意**
+
+- `@`开头的绝对路径以及相对路径会经过base64转换规则校验
+- 引入的静态资源在非h5平台，均不转为base64。
+- H5平台，小于4kb的资源会被转换成base64，其余不转。
+- 自`HBuilderX 2.6.6-alpha`起`template`内支持`@`开头路径引入静态资源，旧版本不支持此方式
+
+### js文件引入
+
+> `js`文件或`script`标签内（包括renderjs等）引入`js`文件时，可以使用相对路径和绝对路径，形式如下
+
+```js
+// 绝对路径，@指向项目根目录，在cli项目中@指向src目录
+import add from '@/common/add.js'
+// 相对路径
+import add from '../../common/add.js'
+```
+
+**注意**
+
+- js文件不支持使用`/`开头的方式引入
+
+### css引入静态资源
+
+> `css`文件或`style标签`内引入`css`文件时（scss、less文件同理），只能使用相对路径
+
+```css
+/* 绝对路径 */
+@import url('/common/uni.css');
+@import url('@/common/uni.css');
+/* 相对路径 */
+@import url('../../common/uni.css');
+```
+
+**注意**
+
+- 自`HBuilderX 2.6.6-alpha`起支持绝对路径引入静态资源，旧版本不支持此方式
+
+> `css`文件或`style标签`内引用的图片路径可以使用相对路径也可以使用绝对路径，需要注意的是，有些小程序端css文件不允许引用本地文件（请看注意事项）。
+
+```css
+/* 绝对路径 */
+background-image: url(/static/logo.png);
+background-image: url(@/static/logo.png);
+/* 相对路径 */
+background-image: url(../../static/logo.png);
+```
+
+**Tips**
+
+- 引入字体图标请参考，[字体图标](frame?id=字体图标)
+- `@`开头的绝对路径以及相对路径会经过base64转换规则校验
+- 不支持本地图片的平台，小于40kb，一定会转base64。（共四个平台mp-weixin, mp-qq, mp-toutiao, app v2）
+- h5平台，小于4kb会转base64，超出4kb时不转。
+- 其余平台不会转base64
+
 ## 生命周期
 
 
@@ -84,7 +156,7 @@
 |onPullDownRefresh|监听用户下拉动作，一般用于下拉刷新，参考[示例](api/ui/pulldown)|||
 |onReachBottom|页面上拉触底事件的处理函数|||
 |onTabItemTap|点击 tab 时触发，参数为Object，具体见下方注意事项|微信小程序、百度小程序、H5、App（自定义组件模式）||
-|onShareAppMessage|用户点击右上角分享|微信小程序、百度小程序、头条小程序、支付宝小程序||
+|onShareAppMessage|用户点击右上角分享|微信小程序、百度小程序、字节跳动小程序、支付宝小程序||
 |onPageScroll|监听页面滚动，参数为Object|||
 |onNavigationBarButtonTap|监听原生标题栏按钮点击事件，参数为Object|5+ App、H5||
 |onBackPress|监听页面返回，返回 event = {from:backbutton、 navigateBack} ，backbutton 表示来源是左上角返回按钮或 android 返回键；navigateBack表示来源是 uni.navigateBack ；详细说明及使用：[onBackPress 详解](http://ask.dcloud.net.cn/article/35120)|App、H5||
@@ -235,7 +307,7 @@ switch(uni.getSystemInfoSync().platform){
 - rpx 即响应式px，一种根据屏幕宽度自适应的动态单位。以750宽的屏幕为基准，750rpx恰好为屏幕宽度。屏幕变宽，rpx 实际显示效果会等比放大。
 
 vue页面支持普通H5单位，但在nvue里不支持：
-- rem 默认根字体大小为 屏幕宽度/20（微信小程序、头条小程序、App、H5）<span style="display:none">百度小程序16px、支付宝小程序50px</span>
+- rem 默认根字体大小为 屏幕宽度/20（微信小程序、字节跳动小程序、App、H5）<span style="display:none">百度小程序16px、支付宝小程序50px</span>
 - vh viewpoint height，视窗高度，1vh等于视窗高度的1%
 - vw viewpoint width，视窗宽度，1vw等于视窗宽度的1%
 
@@ -471,6 +543,7 @@ uni-app 提供内置 CSS 变量
 - 小程序不支持在css中使用本地文件，包括本地的背景图和字体文件。需以base64方式方可使用。App端在v3模式以前，也有相同限制。v3编译模式起支持直接使用本地背景图和字体。
 - 网络路径必须加协议头 ``https``。
 - 从 [http://www.iconfont.cn](http://www.iconfont.cn) 上拷贝的代码，默认是没加协议头的。 
+- 从 [http://www.iconfont.cn](http://www.iconfont.cn) 上下载的字体文件，都是同名字体（字体名都叫iconfont，安装字体文件时可以看到），在nvue内使用时需要注意，此字体名重复可能会显示不正常，可以使用工具修改。
 - 使用本地路径图标字体需注意：
     1. 为方便开发者，在字体文件小于 40kb 时，``uni-app`` 会自动将其转化为 base64 格式；
     2. 字体文件大于等于 40kb，仍转换为 base64 方式使用的话可能有性能问题，如开发者必须使用，则需自己将其转换为 base64 格式使用，或将其挪到服务器上，从网络地址引用；
@@ -481,6 +554,16 @@ uni-app 提供内置 CSS 变量
             src: url('~@/static/iconfont.ttf');
         }
    ```
+
+`nvue`中不可直接使用css的方式引入字体文件，需要使用以下方式在js内引入。nvue内不支持本地路径引入字体，请使用网络链接或者`base64`形式。**`src`字段的`url`的括号内一定要使用单引号。**
+
+```js
+var domModule = weex.requireModule('dom');
+domModule.addRule('fontFace', {
+  'fontFamily': "fontFamilyName",
+  'src': "url('https://...')"
+})
+```
 
 
 **示例：**
@@ -549,7 +632,7 @@ ES6 API 的支持，详见如下表格部分（`x` 表示不支持，无特殊�
 * 微信小程序[详见](https://developers.weixin.qq.com/miniprogram/dev/framework/runtime/js-support.html#%E5%AE%A2%E6%88%B7%E7%AB%AF%20ES6%20API%20%E6%94%AF%E6%8C%81%E6%83%85%E5%86%B5)
 * 阿里小程序[详见](https://docs.alipay.com/mini/framework/implementation-detail)
 * 百度小程序[详见](https://smartprogram.baidu.com/docs/develop/framework/operating-environment/)
-* 头条小程序[详见](https://developer.toutiao.com/dev/cn/mini-app/develop/framework/mini-app-runtime/javascript-support)
+* 字节跳动小程序[详见](https://developer.toutiao.com/dev/cn/mini-app/develop/framework/mini-app-runtime/javascript-support)
 * QQ小程序[详见](https://q.qq.com/wiki/develop/miniprogram/frame/useful/useful_env.html#es6%E6%94%AF%E6%8C%81%E6%83%85%E5%86%B5)
 
 |String|iOS8|iOS9|iOS10|Android|
@@ -747,7 +830,7 @@ const package = require('packageName')
 |微信小程序|支持微信小程序组件|wxcomponents|
 |支付宝小程序|支持支付宝小程序组件|mycomponents|
 |百度小程序|支持百度小程序组件|swancomponents|
-|头条小程序|支持头条小程序组件|ttcomponents|
+|字节跳动小程序|支持字节跳动小程序组件|ttcomponents|
 |QQ小程序|支持QQ小程序组件|wxcomponents|
 
 此文档要求开发者对各端小程序的**自定义组件**有一定了解，没接触过小程序**自定义组件**的可以参考：
@@ -755,7 +838,7 @@ const package = require('packageName')
 - [微信小程序自定义组件](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/)
 - [百度小程序自定义组件](https://smartprogram.baidu.com/docs/develop/framework/custom-component/)
 - [支付宝小程序自定义组件](https://docs.alipay.com/mini/framework/custom-component-overview)
-- [头条小程序自定义组件](https://developer.toutiao.com/docs/framework/custom_component_intro.html)
+- [字节跳动小程序自定义组件](https://developer.toutiao.com/docs/framework/custom_component_intro.html)
 - [QQ小程序自定义组件](https://q.qq.com/wiki/develop/miniprogram/frame/diy_components/)
 
 **目录结构**
@@ -975,7 +1058,7 @@ uni-app可以将wxs代码编译到微信小程序、QQ小程序、app-vue、H5�
 
 **平台差异说明**
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |√(不支持nvue)|√|√|SJS|Filter|x|√|
 
@@ -1193,7 +1276,7 @@ export default {
 
 **平台差异说明**
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |√(2.5.5+，仅支持vue，并要求v3编译器)|√|x|x|x|x|x|
 

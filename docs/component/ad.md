@@ -7,7 +7,7 @@
 
 **平台差异说明**
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |√（2.5.2+）|x|√|x|√|√|√|
 
@@ -30,7 +30,7 @@
 |:-|:-|:-|:-|:-|
 |data|Object|可选|广告数据，通过 plus.ad.getAds (参考示例代码)，设置后adpid将无效|App|
 |adpid|String||uni-AD App广告位id，在[uni-AD官网](https://uniad.dcloud.net.cn/)申请广告位|App|
-|unit-id|String||广告单元id，可在小程序管理后台的流量主模块新建|微信小程序、头条小程序(最低版本1.19.0+)、QQ小程序|
+|unit-id|String||广告单元id，可在小程序管理后台的流量主模块新建|微信小程序、字节跳动小程序(最低版本1.19.0+)、QQ小程序|
 |ad-intervals|number||广告自动刷新的间隔时间，单位为秒，参数值必须大于等于30（该参数不传入时 Banner 广告不会自动刷新）|微信小程序(基础库2.3.1+)|
 |appid|String||小程序应用 ID|百度小程序|
 |apid|String||小程序广告位 ID|百度小程序|
@@ -38,7 +38,7 @@
 |ad-top|Number||type为feeds时广告上边距（px），必须大于0|QQ小程序|
 |ad-width|Number||type为feeds时广告宽度（px），默认100%，最大值为屏幕宽度，最小值为265|QQ小程序|
 |ad-height|Number||type为feeds时广告高度（px），最小85，最大160|QQ小程序|
-|type|String|feed||QQ小程序、百度小程序、头条小程序|
+|type|String|feed||QQ小程序、百度小程序、字节跳动小程序|
 |@load|EventHandle||广告加载成功的回调||
 |@error|EventHandle||广告加载失败的回调，event.detail = {errCode: }||
 |@close|EventHandle||广告关闭的回调||

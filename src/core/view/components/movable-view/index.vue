@@ -1,7 +1,7 @@
 <template>
   <uni-movable-view v-on="$listeners">
-    <v-uni-resize-sensor @resize="setParent"/>
-    <slot/>
+    <v-uni-resize-sensor @resize="setParent" />
+    <slot />
   </uni-movable-view>
 </template>
 <script>
@@ -317,28 +317,16 @@ export default {
           x = event.detail.dx + this.__baseX
           this.__touchInfo.historyX.shift()
           this.__touchInfo.historyX.push(x)
-          if (!this.yMove) {
-            if (!null !== this._checkCanMove) {
-              if (Math.abs(event.detail.dx / event.detail.dy) > 1) {
-                this._checkCanMove = false
-              } else {
-                this._checkCanMove = true
-              }
-            }
+          if (!this.yMove && this._checkCanMove === null) {
+            this._checkCanMove = Math.abs(event.detail.dx / event.detail.dy) < 1
           }
         }
         if (this.yMove) {
           y = event.detail.dy + this.__baseY
           this.__touchInfo.historyY.shift()
           this.__touchInfo.historyY.push(y)
-          if (!this.xMove) {
-            if (!null !== this._checkCanMove) {
-              if (Math.abs(event.detail.dy / event.detail.dx) > 1) {
-                this._checkCanMove = false
-              } else {
-                this._checkCanMove = true
-              }
-            }
+          if (!this.xMove && this._checkCanMove === null) {
+            this._checkCanMove = Math.abs(event.detail.dy / event.detail.dx) < 1
           }
         }
         this.__touchInfo.historyT.shift()
@@ -658,6 +646,7 @@ uni-movable-view {
   top: 0px;
   left: 0px;
   position: absolute;
+  cursor: grab;
 }
 
 uni-movable-view[hidden] {

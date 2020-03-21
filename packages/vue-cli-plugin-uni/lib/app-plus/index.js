@@ -2,10 +2,10 @@ const path = require('path')
 const webpack = require('webpack')
 
 const {
-  getMainEntry,
-  isInHBuilderX,
-  getPlatformCompiler
+  getMainEntry
 } = require('@dcloudio/uni-cli-shared')
+
+const vueLoader = require('@dcloudio/uni-cli-shared/lib/vue-loader')
 
 const {
   getGlobalUsingComponentsCode
@@ -14,7 +14,6 @@ const {
 const WebpackUniAppPlugin = require('../../packages/webpack-uni-app-loader/plugin/index')
 
 const {
-  isUnaryTag,
   getPartialIdentifier
 } = require('../util')
 
@@ -24,6 +23,8 @@ const {
 
 const runtimePath = '@dcloudio/uni-mp-weixin/dist/mp.js'
 const wxsPath = '@dcloudio/uni-mp-weixin/dist/wxs.js'
+const uniCloudPath = path.resolve(__dirname, '../../packages/uni-cloud/dist/index.js')
+const cryptoPath = path.resolve(__dirname, '../crypto.js')
 
 function getProvides (isAppService) {
   if (isAppService) {
@@ -35,7 +36,11 @@ function getProvides (isAppService) {
       'Component': [runtimePath, 'Component'],
       'Behavior': [runtimePath, 'Behavior'],
       'getDate': [wxsPath, 'getDate'],
-      'getRegExp': [wxsPath, 'getRegExp']
+      'getRegExp': [wxsPath, 'getRegExp'],
+      'uniCloud': [uniCloudPath, 'default'],
+      'crypto': [cryptoPath, 'default'],
+      'window.crypto': [cryptoPath, 'default'],
+      'global.crypto': [cryptoPath, 'default']
     }
   }
   return { // app-view
@@ -47,11 +52,7 @@ function getProvides (isAppService) {
 
 const v3 = {
   vueConfig: {
-    parallel: false,
-    transpileDependencies: [
-      wxsPath,
-      runtimePath
-    ]
+    parallel: false
   },
   webpackConfig (webpackConfig, vueOptions, api) {
     const isAppService = !!vueOptions.pluginOptions['uni-app-plus']['service']
@@ -71,11 +72,11 @@ const v3 = {
       webpackConfig.optimization.runtimeChunk = {
         name: 'app-config'
       }
+      webpackConfig.optimization.splitChunks = require('../split-chunks')()
     } else if (isAppView) {
       webpackConfig.optimization.runtimeChunk = false
+      webpackConfig.optimization.splitChunks = false
     }
-
-    webpackConfig.optimization.splitChunks = false
 
     let devtool = false
 
@@ -108,6 +109,15 @@ const v3 = {
       }]
     })
 
+    if (isAppService) {
+      rules.push({
+        test: [/\.css$/, /\.p(ost)?css$/, /\.scss$/, /\.sass$/, /\.less$/, /\.styl(us)?$/],
+        use: [{
+          loader: path.resolve(__dirname, '../../packages/webpack-uni-app-loader/service/style.js')
+        }]
+      })
+    }
+
     const entry = {}
     if (isAppService) {
       entry['app-service'] = path.resolve(process.env.UNI_INPUT_DIR, getMainEntry())
@@ -117,7 +127,7 @@ const v3 = {
 
     return {
       devtool,
-      mode: process.env.NODE_ENV,
+      mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
       externals: {
         vue: 'Vue'
       },
@@ -147,7 +157,7 @@ const v3 = {
             loader: isAppService ? 'wrap-loader' : path.resolve(__dirname,
               '../../packages/webpack-uni-app-loader/view/main.js'),
             options: {
-              compiler: getPlatformCompiler(),
+              compiler: vueLoader.compiler,
               before: [
                 beforeCode + statCode + getGlobalUsingComponentsCode()
               ]
@@ -185,38 +195,6 @@ const v3 = {
     const isAppService = !!vueOptions.pluginOptions['uni-app-plus']['service']
     const isAppView = !!vueOptions.pluginOptions['uni-app-plus']['view']
 
-    const fileLoaderOptions = isInHBuilderX ? {
-      emitFile: isAppView,
-      name: '[path][name].[ext]',
-      context: process.env.UNI_INPUT_DIR
-    } : {
-      emitFile: isAppView,
-      outputPath (url, resourcePath, context) {
-        return path.relative(process.env.UNI_INPUT_DIR, resourcePath)
-      }
-    }
-
-    // 处理静态资源
-    webpackConfig.module
-      .rule('svg')
-      .use('file-loader')
-      .options(fileLoaderOptions)
-
-    const staticTypes = ['images', 'media', 'fonts']
-    staticTypes.forEach(staticType => {
-      webpackConfig.module
-        .rule(staticType)
-        .use('url-loader')
-        .loader('url-loader')
-        .tap(options => Object.assign(options, {
-          limit: 1,
-          fallback: {
-            loader: 'file-loader',
-            options: fileLoaderOptions
-          }
-        }))
-    })
-
     const cacheConfig = {
       cacheDirectory: false,
       cacheIdentifier: false
@@ -230,7 +208,6 @@ const v3 = {
     }
 
     const compilerOptions = {
-      isUnaryTag,
       preserveWhitespace: false,
       service: isAppService,
       view: isAppView
@@ -239,23 +216,14 @@ const v3 = {
     // disable vue cache-loader
     webpackConfig.module
       .rule('vue')
-      .test([/\.vue$/, /\.nvue$/])
+      .test(vueLoader.test)
       .use('vue-loader') //  service 层移除 style 节点，view 层返回固定 script
-      .loader(require.resolve('@dcloudio/vue-cli-plugin-uni/packages/vue-loader'))
-      .tap(options => Object.assign(options, {
+      .loader(vueLoader.loader)
+      .tap(options => Object.assign(options, vueLoader.options({
         isAppService,
-        isAppView,
-        compiler: getPlatformCompiler(),
-        compilerOptions
-      }, cacheConfig))
+        isAppView
+      }, compilerOptions), cacheConfig))
       .end()
-    // .use('uniapp-custom-block-loader')
-    // .loader(require.resolve('@dcloudio/vue-cli-plugin-uni/packages/webpack-custom-block-loader'))
-    // .options({
-    //   isAppService,
-    //   isAppView,
-    //   compiler: getPlatformCompiler()
-    // })
 
     // 是否启用 cache
     if (process.env.UNI_USING_CACHE) {
@@ -277,6 +245,12 @@ const v3 = {
       if (process.env.NODE_ENV === 'production') {
         require('../h5/cssnano-options')(webpackConfig)
       }
+    }
+
+    if (isAppService) { // service 层移除 css 相关
+      ['css', 'postcss', 'scss', 'sass', 'less', 'stylus'].forEach(cssLang => {
+        webpackConfig.module.rules.delete(cssLang)
+      })
     }
 
     webpackConfig.plugins.delete('hmr')

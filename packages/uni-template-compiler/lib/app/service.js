@@ -92,7 +92,11 @@ function checkAutoFill (el) {
       el.tag === 'template' ||
       el.tag === 'block'
     ) &&
-    !el.children.find(child => child.type === 1)
+    !el.children.find(child =>
+      child.type === 1 &&
+      child.tag !== 'template' &&
+      child.tag !== 'block'
+    )
   ) {
     return true
   }
@@ -115,6 +119,7 @@ function transformNode (el, parent, state, isScopedSlot) {
       pid = getNewId(pid, '_si')
     }
     return parseText(el, parent, {
+      childIndex: state.childIndex || 0,
       index: 0,
       service: true,
       // <uni-popup>{{content}}</uni-popup>
@@ -152,6 +157,11 @@ function transformNode (el, parent, state, isScopedSlot) {
 
 function postTransformNode (el, options) {
   if (!el.parent) { // 从根节点开始递归处理
+    if (options.root) { // 当根节点是由if,elseif,else组成
+      parseIf(options.root, createGenVar)
+    } else {
+      options.root = el
+    }
     traverseNode(el, false, {
       forIteratorId: 0,
       transformNode,

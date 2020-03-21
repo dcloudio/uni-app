@@ -9,23 +9,26 @@
 |value|String||输入框的内容||
 |placeholder|String||输入框为空时占位符||
 |placeholder-style|String||指定 placeholder 的样式||
-|placeholder-class|String|textarea-placeholder|指定 placeholder 的样式类|头条小程序不支持|
+|placeholder-class|String|textarea-placeholder|指定 placeholder 的样式类|字节跳动小程序不支持|
 |disabled|Boolean|false|是否禁用||
 |maxlength|Number|140|最大输入长度，设置为 -1 的时候不限制最大长度||
 |focus|Boolean|false|获取焦点|在 H5 平台能否聚焦以及软键盘是否跟随弹出，取决于当前浏览器本身的实现。|
 |auto-height|Boolean|false|是否自动增高，设置auto-height时，style.height不生效||
-|fixed|Boolean|false|如果 textarea 是在一个 position:fixed 的区域，需要显示指定属性 fixed 为 true|微信小程序、百度小程序、头条小程序、QQ小程序|
-|cursor-spacing|Number|0|指定光标与键盘的距离，单位 px 。取 textarea 距离底部的距离和 cursor-spacing 指定的距离的最小值作为光标与键盘的距离|App、微信小程序、百度小程序、头条小程序、QQ小程序|
-|cursor|Number||指定focus时的光标位置|微信小程序、App、H5、百度小程序、头条小程序、QQ小程序|
+|fixed|Boolean|false|如果 textarea 是在一个 position:fixed 的区域，需要显示指定属性 fixed 为 true|微信小程序、百度小程序、字节跳动小程序、QQ小程序|
+|cursor-spacing|Number|0|指定光标与键盘的距离，单位 px 。取 textarea 距离底部的距离和 cursor-spacing 指定的距离的最小值作为光标与键盘的距离|App、微信小程序、百度小程序、字节跳动小程序、QQ小程序|
+|cursor|Number||指定focus时的光标位置|微信小程序、App、H5、百度小程序、字节跳动小程序、QQ小程序|
 |show-confirm-bar|Boolean|true|是否显示键盘上方带有”完成“按钮那一栏|微信小程序、百度小程序、QQ小程序|
-|selection-start|Number|-1|光标起始位置，自动聚焦时有效，需与selection-end搭配使用|微信小程序、App、H5、百度小程序、头条小程序、QQ小程序|
-|selection-end|Number|-1|光标结束位置，自动聚焦时有效，需与selection-start搭配使用|微信小程序、App、H5、百度小程序、头条小程序、QQ小程序|
+|selection-start|Number|-1|光标起始位置，自动聚焦时有效，需与selection-end搭配使用|微信小程序、App、H5、百度小程序、字节跳动小程序、QQ小程序|
+|selection-end|Number|-1|光标结束位置，自动聚焦时有效，需与selection-start搭配使用|微信小程序、App、H5、百度小程序、字节跳动小程序、QQ小程序|
 |adjust-position|Boolean|true|键盘弹起时，是否自动上推页面|App、微信小程序、百度小程序、QQ小程序|
+|disable-default-padding|boolean|false|是否去掉 iOS 下的默认内边距|微信小程序2.10.0|
+|hold-keyboard|boolean|false|focus时，点击页面的时候不收起键盘|微信小程序2.8.2|
 |@focus|EventHandle||输入框聚焦时触发，event.detail = { value, height }，height 为键盘高度|仅微信小程序、App（HBuilderX 2.0+ [nvue uni-app模式](http://ask.dcloud.net.cn/article/36074)） 、QQ小程序支持 height|
 |@blur|EventHandle||输入框失去焦点时触发，event.detail = {value, cursor}||
-|@linechange|EventHandle||输入框行数变化时调用，event.detail = {height: 0, heightRpx: 0, lineCount: 0}|头条小程序不支持|
+|@linechange|EventHandle||输入框行数变化时调用，event.detail = {height: 0, heightRpx: 0, lineCount: 0}|字节跳动小程序不支持|
 |@input|EventHandle||当键盘输入时，触发 input 事件，event.detail = {value, cursor}， @input 处理函数的返回值并不会反映到 textarea 上||
 |@confirm|EventHandle||点击完成时， 触发 confirm 事件，event.detail = {value: value}|微信小程序、百度小程序、QQ小程序|
+|@keyboardheightchange|eventhandle||键盘高度发生变化的时候触发此事件，event.detail = {height: height, duration: duration}|微信小程序2.7.0|
 
 **示例** [查看示例](https://uniapp.dcloud.io/h5/pages/component/textarea/textarea)
  
@@ -63,7 +66,7 @@ export default {
 
 - textarea 的 blur 事件会晚于页面上的 tap 事件，如果需要在 button 的点击事件获取 textarea，可以使用 form 的 @submit。
 - `input` 事件处理函数内实时修改当前值不生效，可以延迟设置，例如：``setTimeout(() => { this.value = 100 }, 0)``。
-- 微信小程序、百度小程序、头条小程序中，textarea是原生组件，层级高于前端组件，请勿在 scroll-view、swiper、picker-view、movable-view 中使用 textarea 组件。覆盖textarea需要使用cover-view。[详见](/component/native-component)
+- 微信小程序、百度小程序、字节跳动小程序中，textarea是原生组件，层级高于前端组件，请勿在 scroll-view、swiper、picker-view、movable-view 中使用 textarea 组件。覆盖textarea需要使用cover-view。[详见](/component/native-component)
 - 小程序端 css 动画对 textarea 组件无效。
 - H5 平台只能在用户交互时修改 focus 生效。
 - 如果遇到 focus 属性设置不生效的问题参考：[组件属性设置不生效解决办法](/use?id=%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98)

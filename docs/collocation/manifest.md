@@ -19,7 +19,7 @@
 |mp-weixin|Object||[微信小程序特有配置](/collocation/manifest?id=mp-weixin)||
 |mp-alipay|Object||[支付宝小程序未提供可配置项](/collocation/manifest?id=mp-alipay)|
 |mp-baidu|Object||[百度小程序特有配置](/collocation/manifest?id=mp-baidu)||
-|mp-toutiao|Object||[头条小程序特有配置](/collocation/manifest?id=mp-toutiao)|1.6.0|
+|mp-toutiao|Object||[字节跳动小程序特有配置](/collocation/manifest?id=mp-toutiao)|1.6.0|
 |mp-qq|Object||[qq 小程序特有配置](/collocation/manifest?id=mp-qq)|2.1.0|
 **Tips**
 
@@ -223,7 +223,7 @@ H5平台是SPA单页应用，普通的SEO信息即加meta字段只能在，自�
 |loading|String|AsyncLoading|页面 js 加载时使用的组件（需注册为全局组件）|
 |error|String|AsyncError|页面 js 加载失败时使用的组件（需注册为全局组件）|
 |delay|Number|200|展示 loading 加载组件的延时时间（页面 js 若在 delay 时间内加载完成，则不会显示 loading 组件）|
-|timeout|Number|3000|页面 js 加载超时时间（超时后展示 error 对应的组件）|
+|timeout|Number|60000|页面 js 加载超时时间（超时后展示 error 对应的组件）|
 
 #### devServer
 |属性|类型|默认值|说明|
@@ -407,13 +407,13 @@ Tips：关于摇树优化（treeShaking）原理及优化结果，参考：[http
 
 |属性|类型|说明|
 |:-|:-|:-|
-|appid|String|头条小程序的 AppID，登录 [https://developer.toutiao.com/](https://developer.toutiao.com/) 申请|
-|setting|Object|头条小程序项目设置，参考[头条小程序项目设置](/collocation/manifest?id=mp-toutiao-setting)|
+|appid|String|字节跳动小程序的 AppID，登录 [https://developer.toutiao.com/](https://developer.toutiao.com/) 申请|
+|setting|Object|字节跳动小程序项目设置，参考[字节跳动小程序项目设置](/collocation/manifest?id=mp-toutiao-setting)|
 |usingComponents|Boolean| 是否启用自定义组件模式，`v2.0+`，默认为false，[编译模式区别详情](https://ask.dcloud.net.cn/article/35843)|
 |navigateToMiniProgramAppIdList	|Array|需要跳转的小程序列表，[详见](https://developer.toutiao.com/dev/cn/mini-app/develop/framework/basic-reference/general-configuration)	|
-|uniStatistics|Object|[头条小程序是否开启 uni 统计，配置方法同全局配置](/collocation/manifest?id=uniStatistics)|
+|uniStatistics|Object|[字节跳动小程序是否开启 uni 统计，配置方法同全局配置](/collocation/manifest?id=uniStatistics)|
 
-#### 头条小程序项目设置@mp-toutiao-setting
+#### 字节跳动小程序项目设置@mp-toutiao-setting
 
 |属性|类型|说明|
 |:-|:-|:-|
@@ -768,9 +768,9 @@ mp-qq只支持自定义组件模式，不存在usingComponents配置
 	"mp-baidu": {
 		"appid": "百度小程序appid"
 	},
-	// 头条小程序特有配置
+	// 字节跳动小程序特有配置
 	"mp-toutiao": {
-		"appid": "头条小程序appid"
+		"appid": "字节跳动小程序appid"
 	},
 	"h5": {
 		"title": "演示", //页面标题，默认使用 manifest.json 的 name

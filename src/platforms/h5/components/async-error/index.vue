@@ -2,7 +2,7 @@
   <div
     class="uni-async-error"
     @click="_onClick">
-    网络不给力，点击屏幕重试
+    连接服务器超时，点击屏幕重试
   </div>
 </template>
 <style>

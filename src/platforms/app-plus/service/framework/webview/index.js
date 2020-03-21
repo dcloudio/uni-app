@@ -1,4 +1,8 @@
 import {
+  stringifyQuery
+} from 'uni-shared'
+
+import {
   parseWebviewStyle
 } from './parser/webview-style-parser'
 
@@ -41,6 +45,21 @@ export function setPreloadWebview (webview) {
   preloadWebview = webview
 }
 
+function noop (str) {
+  return str
+}
+
+function getDebugRefresh (path, query, routeOptions) {
+  const queryString = query ? stringifyQuery(query, noop) : ''
+  return {
+    isTab: routeOptions.meta.isTabBar,
+    arguments: JSON.stringify({
+      path: path.substr(1),
+      query: queryString ? queryString.substr(1) : queryString
+    })
+  }
+}
+
 export function createWebview (path, routeOptions) {
   if (routeOptions.meta.isNVue) {
     const webviewId = id++
@@ -63,7 +82,7 @@ export function createWebview (path, routeOptions) {
   return webview
 }
 
-export function initWebview (webview, routeOptions, url = '') {
+export function initWebview (webview, routeOptions, path, query) {
   // 首页或非 nvue 页面
   if (webview.id === '1' || !routeOptions.meta.isNVue) {
     const webviewStyle = parseWebviewStyle(
@@ -71,17 +90,9 @@ export function initWebview (webview, routeOptions, url = '') {
       '',
       routeOptions
     )
-    if (url) {
-      const part = url.split('?')
-      webviewStyle.debugRefresh = {
-        isTab: routeOptions.meta.isTabBar,
-        arguments: JSON.stringify({
-          path: part[0].substr(1),
-          query: part[1] || ''
-        })
-      }
+    if (!routeOptions.meta.isNVue) {
+      webviewStyle.debugRefresh = getDebugRefresh(path, query, routeOptions)
     }
-
     if (process.env.NODE_ENV !== 'production') {
       console.log(`[uni-app] updateWebview`, webviewStyle)
     }

@@ -1,5 +1,4 @@
 export function createServiceContext(Vue, weex, plus, UniServiceJSBridge,instanceContext){
-var localStorage = plus.storage
 var setTimeout = instanceContext.setTimeout
 var clearTimeout = instanceContext.clearTimeout
 var setInterval = instanceContext.setInterval
@@ -71,7 +70,8 @@ var serviceContext = (function () {
     'saveVideoToPhotosAlbum',
     'createVideoContext',
     'createCameraContext',
-    'createLivePlayerContext'
+    'createLivePlayerContext',
+    'createLivePusherContext'
   ];
 
   const device = [
@@ -126,7 +126,8 @@ var serviceContext = (function () {
     'stopBeaconDiscovery',
     'checkIsSupportSoterAuthentication',
     'checkIsSoterEnrolledInDevice',
-    'startSoterAuthentication'
+    'startSoterAuthentication',
+    'onUIStyleChange'
   ];
 
   const keyboard = [
@@ -198,6 +199,7 @@ var serviceContext = (function () {
     'checkSession',
     'getUserInfo',
     'share',
+    'shareWithSystem',
     'showShareMenu',
     'hideShareMenu',
     'requestPayment',
@@ -210,7 +212,13 @@ var serviceContext = (function () {
     'restoreGlobal',
     'getSubNVueById',
     'getCurrentSubNVue',
-    'setPageMeta'
+    'setPageMeta',
+    'onNativeEventReceive',
+    'sendNativeEvent'
+  ];
+
+  const ad = [
+    'createRewardedVideoAd'
   ];
 
   const apis = [
@@ -226,7 +234,8 @@ var serviceContext = (function () {
     ...event,
     ...file,
     ...canvas,
-    ...third
+    ...third,
+    ...ad
   ];
 
   var apis_1 = apis;
@@ -292,10 +301,6 @@ var serviceContext = (function () {
     return ('' + str).replace(/[^\x00-\xff]/g, '**').length
   }
 
-  function guid () {
-    return Math.floor(4294967296 * (1 + Math.random())).toString(16).slice(1)
-  }
-
   function debounce (fn, delay) {
     let timeout;
     return function () {
@@ -304,6 +309,17 @@ var serviceContext = (function () {
       timeout = setTimeout(timerFn, delay);
     }
   }
+
+  const encodeReserveRE = /[!'()*]/g;
+  const encodeReserveReplacer = c => '%' + c.charCodeAt(0).toString(16);
+  const commaRE = /%2C/g;
+
+  // fixed encodeURIComponent which is more conformant to RFC3986:
+  // - escapes [!'()*]
+  // - preserve commas
+  const encode = str => encodeURIComponent(str)
+    .replace(encodeReserveRE, encodeReserveReplacer)
+    .replace(commaRE, ',');
 
   const decode = decodeURIComponent;
 
@@ -335,6 +351,38 @@ var serviceContext = (function () {
     return res
   }
 
+  function stringifyQuery (obj, encodeStr = encode) {
+    const res = obj ? Object.keys(obj).map(key => {
+      const val = obj[key];
+
+      if (val === undefined) {
+        return ''
+      }
+
+      if (val === null) {
+        return encodeStr(key)
+      }
+
+      if (Array.isArray(val)) {
+        const result = [];
+        val.forEach(val2 => {
+          if (val2 === undefined) {
+            return
+          }
+          if (val2 === null) {
+            result.push(encodeStr(key));
+          } else {
+            result.push(encodeStr(key) + '=' + encodeStr(val2));
+          }
+        });
+        return result.join('&')
+      }
+
+      return encodeStr(key) + '=' + encodeStr(val)
+    }).filter(x => x.length > 0).join('&') : null;
+    return res ? `?${res}` : ''
+  }
+
   let id = 0;
   const callbacks = {};
 
@@ -347,9 +395,10 @@ var serviceContext = (function () {
         complete: options.complete
       };
       const data = Object.assign({}, options);
-      delete data.success;
-      delete data.fail;
-      delete data.complete;
+      // TODO 下版重构 nvue h5 callback
+      // delete data.success
+      // delete data.fail
+      // delete data.complete
       const res = fn.bind(this)(data, callbackId);
       if (res) {
         invoke(callbackId, res);
@@ -592,11 +641,13 @@ var serviceContext = (function () {
   };
 
   const SYNC_API_RE =
-    /^\$|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
+    /^\$|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
 
   const CONTEXT_API_RE = /^create|Manager$/;
 
   const TASK_APIS = ['request', 'downloadFile', 'uploadFile', 'connectSocket'];
+
+  const ASYNC_API = ['createBLEConnection'];
 
   const CALLBACK_API_RE = /^on/;
 
@@ -604,7 +655,7 @@ var serviceContext = (function () {
     return CONTEXT_API_RE.test(name)
   }
   function isSyncApi (name) {
-    return SYNC_API_RE.test(name)
+    return SYNC_API_RE.test(name) && ASYNC_API.indexOf(name) === -1
   }
 
   function isCallbackApi (name) {
@@ -633,6 +684,19 @@ var serviceContext = (function () {
     return true
   }
 
+  /* eslint-disable no-extend-native */
+  if (!Promise.prototype.finally) {
+    Promise.prototype.finally = function (callback) {
+      const promise = this.constructor;
+      return this.then(
+        value => promise.resolve(callback()).then(() => value),
+        reason => promise.resolve(callback()).then(() => {
+          throw reason
+        })
+      )
+    };
+  }
+
   function promisify (name, api) {
     if (!shouldPromise(name)) {
       return api
@@ -646,18 +710,6 @@ var serviceContext = (function () {
           success: resolve,
           fail: reject
         }), ...params);
-        /* eslint-disable no-extend-native */
-        if (!Promise.prototype.finally) {
-          Promise.prototype.finally = function (callback) {
-            const promise = this.constructor;
-            return this.then(
-              value => promise.resolve(callback()).then(() => value),
-              reason => promise.resolve(callback()).then(() => {
-                throw reason
-              })
-            )
-          };
-        }
       })))
     }
   }
@@ -814,9 +866,10 @@ var serviceContext = (function () {
     }
   };
 
-  const fileType = {
+  const fileTypes = {
     PNG: 'png',
-    JPG: 'jpeg'
+    JPG: 'jpg',
+    JPEG: 'jpg'
   };
 
   const canvasToTempFilePath = {
@@ -854,7 +907,7 @@ var serviceContext = (function () {
       type: String,
       validator (value, params) {
         value = (value || '').toUpperCase();
-        params.fileType = value in fileType ? fileType[value] : fileType.PNG;
+        params.fileType = value in fileTypes ? fileTypes[value] : fileTypes.PNG;
       }
     },
     quality: {
@@ -1282,9 +1335,9 @@ var serviceContext = (function () {
     ARRAYBUFFER: 'arraybuffer'
   };
 
-  const encode = encodeURIComponent;
+  const encode$1 = encodeURIComponent;
 
-  function stringifyQuery (url, data) {
+  function stringifyQuery$1 (url, data) {
     let str = url.split('#');
     const hash = str[1] || '';
     str = str[0].split('?');
@@ -1297,12 +1350,14 @@ var serviceContext = (function () {
       query[item[0]] = item[1];
     });
     for (let key in data) {
-      if (data.hasOwnProperty(key)) {
-        if (isPlainObject(data[key])) {
-          query[encode(key)] = encode(JSON.stringify(data[key]));
-        } else {
-          query[encode(key)] = encode(data[key]);
+      if (hasOwn(data, key)) {
+        let v = data[key];
+        if (typeof v === 'undefined' || v === null) {
+          v = '';
+        } else if (isPlainObject(v)) {
+          v = JSON.stringify(v);
         }
+        query[encode$1(key)] = encode$1(v);
       }
     }
     query = Object.keys(query).map(item => `${item}=${query[item]}`).join('&');
@@ -1332,7 +1387,7 @@ var serviceContext = (function () {
           isPlainObject(params.data) &&
           Object.keys(params.data).length
         ) { // 将 method,data 校验提前,保证 url 校验时,method,data 已被格式化
-          params.url = stringifyQuery(value, params.data);
+          params.url = stringifyQuery$1(value, params.data);
         }
       }
     },
@@ -1396,8 +1451,12 @@ var serviceContext = (function () {
       }
     },
     protocols: {
-      type: Array,
+      // 微信文档虽然写的是数组，但是可以正常传递字符串
+      type: [Array, String],
       validator (value, params) {
+        if (typeof value === 'string') {
+          value = [value];
+        }
         params.protocols = (value || []).filter(str => typeof str === 'string');
       }
     }
@@ -1423,21 +1482,26 @@ var serviceContext = (function () {
     closeSocket: closeSocket
   });
 
+  // App端可以只使用files不传filePath和name
+
   const uploadFile = {
     url: {
       type: String,
       required: true
     },
+    files: {
+      type: Array
+    },
     filePath: {
       type: String,
-      required: true,
       validator (value, params) {
-        params.type = getRealPath(value);
+        if (value) {
+          params.type = getRealPath(value);
+        }
       }
     },
     name: {
-      type: String,
-      required: true
+      type: String
     },
     header: {
       type: Object,
@@ -1886,6 +1950,9 @@ var serviceContext = (function () {
     visible: {
       type: Boolean,
       default: true
+    },
+    popover: {
+      type: Object
     }
   };
 
@@ -2114,7 +2181,8 @@ var serviceContext = (function () {
     } else if (expectedType === 'Array') {
       valid = Array.isArray(value);
     } else {
-      valid = value instanceof type;
+      // TODO 页面传入的ArrayBuffer使用instanceof ArrayBuffer返回false，暂做此修改
+      valid = value instanceof type || toRawType(value) === getType(type);
     }
     return {
       valid,
@@ -2328,7 +2396,12 @@ var serviceContext = (function () {
       } else if (res.errMsg.indexOf(':cancel') !== -1) {
         res.errMsg = apiName + ':cancel';
       } else if (res.errMsg.indexOf(':fail') !== -1) {
-        res.errMsg = apiName + ':fail' + res.errMsg.substr(res.errMsg.indexOf(' '));
+        let errDetail = '';
+        let spaceIndex = res.errMsg.indexOf(' ');
+        if (spaceIndex > -1) {
+          errDetail = res.errMsg.substr(spaceIndex);
+        }
+        res.errMsg = apiName + ':fail' + errDetail;
       }
 
       const errMsg = res.errMsg;
@@ -3391,7 +3464,7 @@ var serviceContext = (function () {
     if (!id || !elm) {
       return
     }
-    if (elm.attr.id === id) {
+    if (elm.attr && elm.attr.id === id) {
       return elm
     }
     const children = elm.children;
@@ -3529,6 +3602,84 @@ var serviceContext = (function () {
     pageVm.$page.meta.isNVue
       ? operateVideoPlayer$1(videoId, pageVm, type, data)
       : operateVideoPlayer(videoId, pageVm, type, data);
+  }
+
+  class LivePusherContext {
+    constructor (id, ctx) {
+      this.id = id;
+      this.ctx = ctx;
+    }
+
+    start (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'start', cbs)
+    }
+
+    stop (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'stop', cbs)
+    }
+
+    pause (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'pause', cbs)
+    }
+
+    resume (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'resume', cbs)
+    }
+
+    switchCamera (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'switchCamera', cbs)
+    }
+
+    snapshot (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'snapshot', cbs)
+    }
+
+    toggleTorch (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'toggleTorch', cbs)
+    }
+
+    playBGM (args) {
+      return invokeVmMethod(this.ctx, 'playBGM', args)
+    }
+
+    stopBGM (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'stopBGM', cbs)
+    }
+
+    pauseBGM (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'pauseBGM', cbs)
+    }
+
+    resumeBGM (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'resumeBGM', cbs)
+    }
+
+    setBGMVolume (cbs) {
+      return invokeVmMethod(this.ctx, 'setBGMVolume', cbs)
+    }
+
+    startPreview (cbs) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'startPreview', cbs)
+    }
+
+    stopPreview (args) {
+      return invokeVmMethodWithoutArgs(this.ctx, 'stopPreview', args)
+    }
+  }
+
+  function createLivePusherContext (id, vm) {
+    if (!vm) {
+      return console.warn('uni.createLivePusherContext 必须传入第二个参数，即当前 vm 对象(this)')
+    }
+    const elm = findElmById(id, vm);
+    if (!elm) {
+      return console.warn('Can not find `' + id + '`')
+    }
+    return new LivePusherContext(id, elm)
+  }
+
+  function createLivePusherContext$1 (id, vm) {
+    return createLivePusherContext(id, vm)
   }
 
   let watchAccelerationId = false;
@@ -3920,11 +4071,14 @@ var serviceContext = (function () {
   }
 
   function readBLECharacteristicValue (data, callbackId) {
+    onBLECharacteristicValueChange = onBLECharacteristicValueChange || bluetoothOn('onBLECharacteristicValueChange');
     bluetoothExec('readBLECharacteristicValue', callbackId, data);
   }
 
   function writeBLECharacteristicValue (data, callbackId) {
-    data.value = base64ToArrayBuffer$2(data.value);
+    if (typeof data.value === 'string') {
+      data.value = base64ToArrayBuffer$2(data.value);
+    }
     bluetoothExec('writeBLECharacteristicValue', callbackId, data);
   }
 
@@ -4874,6 +5028,8 @@ var serviceContext = (function () {
     });
   }
 
+  let maskClickCallback = [];
+
   var tabBar$1 = {
     id: '0',
     init (options, clickCallback) {
@@ -4885,6 +5041,11 @@ var serviceContext = (function () {
       } catch (error) {
         console.log(`uni.requireNativePlugin("uni-tabview") error ${error}`);
       }
+      tabBar.onMaskClick(() => {
+        maskClickCallback.forEach((callback) => {
+          callback();
+        });
+      });
       tabBar && tabBar.onClick(({ index }) => {
         clickCallback(config.list[index], index);
       });
@@ -4951,7 +5112,11 @@ var serviceContext = (function () {
       });
     },
     addEventListener (name, callback) {
-      tabBar.onMaskClick(callback);
+      maskClickCallback.push(callback);
+    },
+    removeEventListener (name, callback) {
+      let callbackIndex = maskClickCallback.indexOf(callback);
+      maskClickCallback.splice(callbackIndex, 1);
     }
   };
 
@@ -4995,9 +5160,13 @@ var serviceContext = (function () {
     }
     const windowTop = titleNView.cover ? titleNView.height : 0;
     const windowBottom = tabBarView.cover ? tabBarView.height : 0;
-    const windowHeight = screenHeight - titleNView.height - tabBarView.height;
-    const windowHeightReal = screenHeight - (titleNView.cover ? 0 : titleNView.height) - (tabBarView.cover ? 0 : tabBarView.height);
+    let windowHeight = screenHeight - titleNView.height - tabBarView.height;
+    let windowHeightReal = screenHeight - (titleNView.cover ? 0 : titleNView.height) - (tabBarView.cover ? 0 : tabBarView.height);
     const windowWidth = screenWidth;
+    if ((!tabBarView.height || tabBarView.cover) && !safeAreaInsets.bottom && safeAreaInsets.deviceBottom) {
+      windowHeight -= safeAreaInsets.deviceBottom;
+      windowHeightReal -= safeAreaInsets.deviceBottom;
+    }
     safeAreaInsets = ios ? safeAreaInsets : {
       left: 0,
       right: 0,
@@ -5919,7 +6088,7 @@ var serviceContext = (function () {
     });
   }
 
-  function previewImage$1 ({
+  function previewImagePlus ({
     current = 0,
     background = '#000000',
     indicator = 'number',
@@ -6232,7 +6401,7 @@ var serviceContext = (function () {
           statusCode: 0,
           errMsg: 'timeout'
         });
-      }, timeout);
+      }, (timeout + 200));// TODO +200 发消息到原生层有时间开销，以后考虑由原生层回调超时
     }
     const options = {
       method,
@@ -6483,7 +6652,7 @@ var serviceContext = (function () {
     }
     for (const name in formData) {
       if (formData.hasOwnProperty(name)) {
-        uploader.addData(name, formData[name]);
+        uploader.addData(name, String(formData[name]));
       }
     }
     if (files && files.length) {
@@ -7026,6 +7195,39 @@ var serviceContext = (function () {
     );
   }
 
+  function shareWithSystem (params, callbackId, method = 'shareWithSystem') {
+    let {
+      type,
+      imageUrl,
+      summary: content,
+      href
+    } = params;
+    type = type || 'text';
+    const allowedTypes = ['text', 'image'];
+    if (allowedTypes.indexOf(type) < 0) {
+      invoke$1(callbackId, {
+        errMsg: method + ':fail:分享参数 type 不正确'
+      });
+    }
+    if (typeof imageUrl === 'string' && imageUrl) {
+      imageUrl = getRealPath$1(imageUrl);
+    }
+    plus.share.sendWithSystem({
+      type,
+      pictures: imageUrl ? [imageUrl] : void 0,
+      content,
+      href
+    }, function (res) {
+      invoke$1(callbackId, {
+        errMsg: method + ':ok'
+      });
+    }, function (err) {
+      invoke$1(callbackId, {
+        errMsg: method + ':fail:' + err.message
+      });
+    });
+  }
+
   function restoreGlobal (
     newWeex,
     newPlus,
@@ -7117,11 +7319,39 @@ var serviceContext = (function () {
     if (webview && !webview.$processed) {
       wrapper$1(webview);
     }
+    let oldSetStyle = webview.setStyle;
+    var parentWebview = plus.webview.getWebviewById(webview.__uniapp_mask_id);
+    webview.setStyle = function (style) {
+      if (style && style.mask) {
+        parentWebview.setStyle({
+          mask: style.mask
+        });
+        delete style.mask;
+      }
+      oldSetStyle.call(this, style);
+    };
     return webview
   }
 
   function getCurrentSubNVue () {
     return getSubNVueById(plus.webview.currentWebview().id)
+  }
+
+  const callbacks$3 = [];
+
+  function onNativeEventReceive (callback) {
+    isFn(callback) &&
+      callbacks$3.indexOf(callback) === -1 &&
+      callbacks$3.push(callback);
+  }
+
+  function consumeNativeEvent (event, data) {
+    callbacks$3.forEach(callback => callback(event, data));
+  }
+
+  function sendNativeEvent (event, data, callback) {
+    // 实时获取weex module（weex可能会变化，比如首页nvue加速显示时）
+    return weex.requireModule('plus').sendNativeEvent(event, data, callback)
   }
 
   let firstBackTime = 0;
@@ -7269,6 +7499,9 @@ var serviceContext = (function () {
       (
         windowOptions.navigationStyle === 'custom' &&
         !isPlainObject(titleNView)
+      ) || (
+        windowOptions.transparentTitle === 'always' &&
+        !isPlainObject(titleNView)
       )
     ) {
       return false
@@ -7287,7 +7520,7 @@ var serviceContext = (function () {
       titleText: titleImage === '' ? windowOptions.navigationBarTitleText || '' : '',
       titleColor: windowOptions.navigationBarTextStyle === 'black' ? '#000000' : '#ffffff',
       type: titleNViewTypeList[transparentTitle],
-      backgroundColor: transparentTitle !== 'always' ? windowOptions.navigationBarBackgroundColor || '#000000' : 'rgba(0,0,0,0)',
+      backgroundColor: windowOptions.navigationBarBackgroundColor || '#f8f8f8',
       tags: titleImage === '' ? [] : [{
         'tag': 'img',
         'src': titleImage,
@@ -7429,6 +7662,10 @@ var serviceContext = (function () {
       delete webviewStyle.popGesture;
     }
 
+    if (routeOptions.meta.isQuit) { // 退出
+      webviewStyle.popGesture = plus.os.name === 'iOS' ? 'appback' : 'none';
+    }
+
     // TODO 下拉刷新
 
     if (path && routeOptions.meta.isNVue) {
@@ -7553,6 +7790,7 @@ var serviceContext = (function () {
         `UNIAPP[webview][${webview.id}]:create[${subNVue.id}]:${JSON.stringify(style)}`
       );
     }
+    delete style.mask;
     const subNVueWebview = plus.webview.create('', subNVue.id, style, extras);
 
     if (isPopup) {
@@ -7697,7 +7935,22 @@ var serviceContext = (function () {
     preloadWebview = webview;
   }
 
-  function createWebview (path, routeOptions) {
+  function noop$1 (str) {
+    return str
+  }
+
+  function getDebugRefresh (path, query, routeOptions) {
+    const queryString = query ? stringifyQuery(query, noop$1) : '';
+    return {
+      isTab: routeOptions.meta.isTabBar,
+      arguments: JSON.stringify({
+        path: path.substr(1),
+        query: queryString ? queryString.substr(1) : queryString
+      })
+    }
+  }
+
+  function createWebview (path, routeOptions, query) {
     if (routeOptions.meta.isNVue) {
       const webviewId = id$1++;
       const webviewStyle = parseWebviewStyle(
@@ -7705,6 +7958,7 @@ var serviceContext = (function () {
         path,
         routeOptions
       );
+      webviewStyle.debugRefresh = getDebugRefresh(path, query, routeOptions);
       if (process.env.NODE_ENV !== 'production') {
         console.log(`[uni-app] createWebview`, webviewId, path, webviewStyle);
       }
@@ -7719,7 +7973,7 @@ var serviceContext = (function () {
     return webview
   }
 
-  function initWebview (webview, routeOptions, url = '') {
+  function initWebview (webview, routeOptions, path, query) {
     // 首页或非 nvue 页面
     if (webview.id === '1' || !routeOptions.meta.isNVue) {
       const webviewStyle = parseWebviewStyle(
@@ -7727,17 +7981,7 @@ var serviceContext = (function () {
         '',
         routeOptions
       );
-      if (url) {
-        const part = url.split('?');
-        webviewStyle.debugRefresh = {
-          isTab: routeOptions.meta.isTabBar,
-          arguments: JSON.stringify({
-            path: part[0].substr(1),
-            query: part[1] || ''
-          })
-        };
-      }
-
+      webviewStyle.debugRefresh = getDebugRefresh(path, query, routeOptions);
       if (process.env.NODE_ENV !== 'production') {
         console.log(`[uni-app] updateWebview`, webviewStyle);
       }
@@ -7955,7 +8199,7 @@ var serviceContext = (function () {
     }
 
     if (!webview) {
-      webview = createWebview(path, routeOptions);
+      webview = createWebview(path, routeOptions, query);
     } else {
       webview = plus.webview.getWebviewById(webview.id);
       webview.nvue = routeOptions.meta.isNVue;
@@ -7973,7 +8217,7 @@ var serviceContext = (function () {
       console.log(`[uni-app] registerPage`, path, webview.id);
     }
 
-    initWebview(webview, routeOptions, url);
+    initWebview(webview, routeOptions, path, query);
 
     const route = path.slice(1);
 
@@ -8201,9 +8445,18 @@ var serviceContext = (function () {
     const pages = getCurrentPages();
     const len = pages.length;
 
+    let callOnHide = false;
+    let callOnShow = false;
+
+    let currentPage;
     if (len >= 1) { // 前一个页面是非 tabBar 页面
-      const currentPage = pages[len - 1];
+      currentPage = pages[len - 1];
       if (!currentPage.$page.meta.isTabBar) {
+        // 前一个页面为非 tabBar 页面时，目标tabBar需要强制触发onShow
+        // 该情况下目标页tabBarPage的visible是不对的
+        // 除非每次路由跳转都处理一遍tabBarPage的visible，目前仅switchTab会处理
+        // 简单起见，暂时直接判断该情况，执行onShow
+        callOnShow = true;
         pages.reverse().forEach(page => {
           if (!page.$page.meta.isTabBar && page !== currentPage) {
             page.$remove();
@@ -8220,8 +8473,7 @@ var serviceContext = (function () {
           }
         }, 100);
       } else {
-        // 前一个 tabBar 触发 onHide
-        currentPage.$vm.__call_hook('onHide');
+        callOnHide = true;
       }
     }
 
@@ -8229,6 +8481,9 @@ var serviceContext = (function () {
     // 查找当前 tabBarPage，且设置 visible
     getCurrentPages(true).forEach(page => {
       if (('/' + page.route) === path) {
+        if (!page.$page.meta.visible) { // 之前未显示
+          callOnShow = true;
+        }
         page.$page.meta.visible = true;
         tabBarPage = page;
       } else {
@@ -8237,10 +8492,17 @@ var serviceContext = (function () {
         }
       }
     });
-
+    // 相同tabBar页面
+    if (currentPage === tabBarPage) {
+      callOnHide = false;
+    }
+    if (currentPage && callOnHide) {
+      currentPage.$vm.__call_hook('onHide');
+    }
     if (tabBarPage) {
-      tabBarPage.$vm.__call_hook('onShow');
       tabBarPage.$getAppWebview().show('none');
+      // 等visible状态都切换完之后，再触发onShow，否则开发者在onShow里边 getCurrentPages 会不准确
+      callOnShow && tabBarPage.$vm.__call_hook('onShow');
     } else {
       return showWebview(registerPage({
         url,
@@ -8274,6 +8536,198 @@ var serviceContext = (function () {
         from
       }, callbackId);
     }, openType === 'appLaunch');
+  }
+
+  const STORAGE_DATA_TYPE = '__TYPE';
+  const STORAGE_KEYS = 'uni-storage-keys';
+
+  function parseValue (value) {
+    const types = ['object', 'string', 'number', 'boolean', 'undefined'];
+    try {
+      const object = typeof value === 'string' ? JSON.parse(value) : value;
+      const type = object.type;
+      if (types.indexOf(type) >= 0) {
+        const keys = Object.keys(object);
+        // eslint-disable-next-line valid-typeof
+        if (keys.length === 2 && 'data' in object && typeof object.data === type) {
+          return object.data
+        } else if (keys.length === 1) {
+          return ''
+        }
+      }
+    } catch (error) {}
+  }
+
+  function setStorage$1 ({
+    key,
+    data,
+    isSync
+  } = {}, callbackId) {
+    const type = typeof data;
+    const value = type === 'string' ? data : JSON.stringify({
+      type,
+      data: data
+    });
+    try {
+      if (type === 'string' && parseValue(value) !== undefined) {
+        plus.storage.setItemAsync(key + STORAGE_DATA_TYPE, type);
+      } else {
+        plus.storage.removeItemAsync(key + STORAGE_DATA_TYPE);
+      }
+      plus.storage.setItemAsync(key, value, function () {
+        invoke$1(callbackId, {
+          errMsg: 'setStorage:ok'
+        });
+      }, function (err) {
+        invoke$1(callbackId, {
+          errMsg: `setStorage:fail ${err.message}`
+        });
+      });
+    } catch (error) {
+      invoke$1(callbackId, {
+        errMsg: `setStorage:fail ${error}`
+      });
+    }
+  }
+
+  function setStorageSync$1 (key, data) {
+    const type = typeof data;
+    const value = type === 'string' ? data : JSON.stringify({
+      type,
+      data: data
+    });
+    try {
+      if (type === 'string' && parseValue(value) !== undefined) {
+        plus.storage.setItem(key + STORAGE_DATA_TYPE, type);
+      } else {
+        plus.storage.removeItem(key + STORAGE_DATA_TYPE);
+      }
+      plus.storage.setItem(key, value);
+    } catch (error) {
+
+    }
+  }
+
+  function parseGetStorage (type, value) {
+    let data = value;
+    if (type !== 'string' || (type === 'string' && value === '{"type":"undefined"}')) {
+      try {
+        // 兼容H5和V3初期历史格式
+        let object = JSON.parse(value);
+        const result = parseValue(object);
+        if (result !== undefined) {
+          data = result;
+        } else if (type) {
+          // 兼容App端历史格式
+          data = object;
+          if (typeof object === 'string') {
+            object = JSON.parse(object);
+            // eslint-disable-next-line valid-typeof
+            data = typeof object === (type === 'null' ? 'object' : type) ? object : data;
+          }
+        }
+      } catch (error) {}
+    }
+    return data
+  }
+
+  function getStorage$1 ({
+    key
+  } = {}, callbackId) {
+    plus.storage.getItemAsync(key, function (res) {
+      plus.storage.getItemAsync(key + STORAGE_DATA_TYPE, function (typeRes) {
+        const typeOrigin = typeRes.data || '';
+        const type = typeOrigin.toLowerCase();
+        invoke$1(callbackId, {
+          data: parseGetStorage(type, res.data),
+          errMsg: 'getStorage:ok'
+        });
+      }, function () {
+        const type = '';
+        invoke$1(callbackId, {
+          data: parseGetStorage(type, res.data),
+          errMsg: 'getStorage:ok'
+        });
+      });
+    }, function (err) {
+      invoke$1(callbackId, {
+        data: '',
+        errMsg: `getStorage:fail ${err.message}`
+      });
+    });
+  }
+
+  function getStorageSync$1 (key) {
+    const value = plus.storage.getItem(key);
+    const typeOrigin = plus.storage.getItem(key + STORAGE_DATA_TYPE) || '';
+    const type = typeOrigin.toLowerCase();
+    if (typeof value !== 'string') {
+      return ''
+    }
+    return parseGetStorage(type, value)
+  }
+
+  function removeStorage$1 ({
+    key
+  } = {}, callbackId) {
+    // 兼容App端历史格式
+    plus.storage.removeItemAsync(key + STORAGE_DATA_TYPE);
+    plus.storage.removeItemAsync(key, function (res) {
+      invoke$1(callbackId, {
+        errMsg: 'removeStorage:ok'
+      });
+    }, function (err) {
+      invoke$1(callbackId, {
+        errMsg: `removeStorage:fail ${err.message}`
+      });
+    });
+  }
+
+  function removeStorageSync$1 (key) {
+    plus.storage.removeItem(key + STORAGE_DATA_TYPE);
+    plus.storage.removeItem(key);
+  }
+
+  function clearStorage (args, callbackId) {
+    plus.storage.clearAsync(function (res) {
+      invoke$1(callbackId, {
+        errMsg: 'clearStorage:ok'
+      });
+    }, function (err) {
+      invoke$1(callbackId, {
+        errMsg: `clearStorage:fail ${err.message}`
+      });
+    });
+  }
+
+  function clearStorageSync () {
+    plus.storage.clear();
+  }
+
+  function getStorageInfo () {
+    const length = (plus.storage.length || plus.storage.getLength()) || 0;
+    const keys = [];
+    let currentSize = 0;
+    for (let index = 0; index < length; index++) {
+      const key = plus.storage.key(index);
+      if (key !== STORAGE_KEYS && key.indexOf(STORAGE_DATA_TYPE) + STORAGE_DATA_TYPE.length !== key.length) {
+        const value = plus.storage.getItem(key);
+        currentSize += key.length + value.length;
+        keys.push(key);
+      }
+    }
+    return {
+      keys,
+      currentSize: Math.ceil(currentSize * 2 / 1024),
+      limitSize: Number.MAX_VALUE,
+      errMsg: 'getStorageInfo:ok'
+    }
+  }
+
+  function getStorageInfoSync () {
+    const res = getStorageInfo();
+    delete res.errMsg;
+    return res
   }
 
   function showKeyboard () {
@@ -8344,6 +8798,10 @@ var serviceContext = (function () {
       plus.navigator.setStatusBarStyle(frontColor === '#000000' ? 'dark' : 'light');
       const style = webview.getStyle();
       if (style && style.titleNView) {
+        if (style.titleNView.autoBackButton) {
+          styles.backButton = styles.backButton || {};
+          styles.backButton.color = frontColor;
+        }
         webview.setStyle({
           titleNView: styles
         });
@@ -8505,11 +8963,13 @@ var serviceContext = (function () {
   function showActionSheet$1 ({
     itemList = [],
     itemColor = '#000000',
-    title = ''
+    title = '',
+    popover
   }, callbackId) {
     const options = {
       buttons: itemList.map(item => ({
-        title: item
+        title: item,
+        color: itemColor
       }))
     };
     if (title) {
@@ -8520,7 +8980,7 @@ var serviceContext = (function () {
       options.cancel = '取消';
     }
 
-    plus.nativeUI.actionSheet(options, (e) => {
+    plus.nativeUI.actionSheet(Object.assign(options, { popover }), (e) => {
       if (e.index > 0) {
         invoke$1(callbackId, {
           errMsg: 'showActionSheet:ok',
@@ -8669,16 +9129,16 @@ var serviceContext = (function () {
     }
   }
 
-  const callbacks$3 = {};
+  const callbacks$4 = {};
 
   function createCallbacks (namespace) {
-    let scopedCallbacks = callbacks$3[namespace];
+    let scopedCallbacks = callbacks$4[namespace];
     if (!scopedCallbacks) {
       scopedCallbacks = {
         id: 1,
         callbacks: Object.create(null)
       };
-      callbacks$3[namespace] = scopedCallbacks;
+      callbacks$4[namespace] = scopedCallbacks;
     }
     return {
       get (id) {
@@ -8791,6 +9251,98 @@ var serviceContext = (function () {
       : requestComponentInfo(pageVm, queue, callback);
   }
 
+  const eventNames = [
+    'load',
+    'close',
+    'error'
+  ];
+
+  const ERROR_CODE_LIST = [-5001, -5002, -5003, -5004, -5005, -5006];
+
+  class RewardedVideoAd {
+    constructor (adpid) {
+      this._options = {
+        adpid: adpid
+      };
+
+      const _callbacks = this._callbacks = {};
+      eventNames.forEach(item => {
+        _callbacks[item] = [];
+        const name = item[0].toUpperCase() + item.substr(1);
+        this[`on${name}`] = function (callback) {
+          _callbacks[item].push(callback);
+        };
+      });
+
+      this._isLoad = false;
+      this._adError = '';
+      this._loadPromiseResolve = null;
+      this._loadPromiseReject = null;
+      const rewardAd = this._rewardAd = plus.ad.createRewardedVideoAd(this._options);
+      rewardAd.onLoad((e) => {
+        this._isLoad = true;
+        this._dispatchEvent('load', {});
+        if (this._loadPromiseResolve != null) {
+          this._loadPromiseResolve();
+          this._loadPromiseResolve = null;
+        }
+      });
+      rewardAd.onClose((e) => {
+        this._loadAd();
+        this._dispatchEvent('close', { isEnded: e.isEnded });
+      });
+      rewardAd.onError((e) => {
+        const { code, message } = e;
+        const data = { code: code, errMsg: message };
+        this._adError = message;
+        this._dispatchEvent('error', data);
+        if ((code === -5005 || ERROR_CODE_LIST.index(code) === -1) && this._loadPromiseReject != null) {
+          this._loadPromiseReject(data);
+          this._loadPromiseReject = null;
+        }
+      });
+      this._loadAd();
+    }
+    load () {
+      return new Promise((resolve, reject) => {
+        if (this._isLoad) {
+          resolve();
+          return
+        }
+        this._loadPromiseResolve = resolve;
+        this._loadPromiseReject = reject;
+        this._loadAd();
+      })
+    }
+    show () {
+      return new Promise((resolve, reject) => {
+        if (this._isLoad) {
+          this._rewardAd.show();
+          resolve();
+        } else {
+          reject(new Error(this._adError));
+        }
+      })
+    }
+    _loadAd () {
+      this._isLoad = false;
+      this._rewardAd.load();
+    }
+    _dispatchEvent (name, data) {
+      this._callbacks[name].forEach(callback => {
+        if (typeof callback === 'function') {
+          callback(data || {});
+        }
+      });
+    }
+  }
+
+  function createRewardedVideoAd ({
+    adpid = ''
+  } = {}) {
+    return new RewardedVideoAd(adpid)
+  }
+
 
 
   var api = /*#__PURE__*/Object.freeze({
@@ -8814,6 +9366,7 @@ var serviceContext = (function () {
     base64ToTempFilePath: base64ToTempFilePath,
     operateMapPlayer: operateMapPlayer$2,
     operateVideoPlayer: operateVideoPlayer$2,
+    createLivePusherContext: createLivePusherContext$1,
     enableAccelerometer: enableAccelerometer,
     addPhoneContact: addPhoneContact,
     openBluetoothAdapter: openBluetoothAdapter,
@@ -8870,7 +9423,7 @@ var serviceContext = (function () {
     chooseVideo: chooseVideo$1,
     compressImage: compressImage,
     getImageInfo: getImageInfo$1,
-    previewImage: previewImage$1,
+    previewImagePlus: previewImagePlus,
     operateRecorder: operateRecorder,
     saveImageToPhotosAlbum: saveImageToPhotosAlbum,
     saveVideoToPhotosAlbum: saveVideoToPhotosAlbum,
@@ -8895,14 +9448,28 @@ var serviceContext = (function () {
     requireNativePlugin: requireNativePlugin$1,
     shareAppMessageDirectly: shareAppMessageDirectly,
     share: share,
+    shareWithSystem: shareWithSystem,
     restoreGlobal: restoreGlobal,
     getSubNVueById: getSubNVueById,
     getCurrentSubNVue: getCurrentSubNVue,
+    onNativeEventReceive: onNativeEventReceive,
+    consumeNativeEvent: consumeNativeEvent,
+    sendNativeEvent: sendNativeEvent,
     navigateBack: navigateBack$1,
     navigateTo: navigateTo$1,
     reLaunch: reLaunch$1,
     redirectTo: redirectTo$1,
     switchTab: switchTab$1,
+    setStorage: setStorage$1,
+    setStorageSync: setStorageSync$1,
+    getStorage: getStorage$1,
+    getStorageSync: getStorageSync$1,
+    removeStorage: removeStorage$1,
+    removeStorageSync: removeStorageSync$1,
+    clearStorage: clearStorage,
+    clearStorageSync: clearStorageSync,
+    getStorageInfo: getStorageInfo,
+    getStorageInfoSync: getStorageInfoSync,
     showKeyboard: showKeyboard,
     hideKeyboard: hideKeyboard,
     setNavigationBarTitle: setNavigationBarTitle$1,
@@ -8920,7 +9487,8 @@ var serviceContext = (function () {
     setTabBarStyle: setTabBarStyle$2,
     hideTabBar: hideTabBar$2,
     showTabBar: showTabBar$2,
-    requestComponentInfo: requestComponentInfo$2
+    requestComponentInfo: requestComponentInfo$2,
+    createRewardedVideoAd: createRewardedVideoAd
   });
 
   var platformApi = Object.assign(Object.create(null), api, eventApis);
@@ -8956,7 +9524,7 @@ var serviceContext = (function () {
     return page && page.$page.id
   }
 
-  const eventNames = [
+  const eventNames$1 = [
     'canplay',
     'play',
     'pause',
@@ -9021,7 +9589,7 @@ var serviceContext = (function () {
       this.id = id;
       this._callbacks = {};
       this._options = {};
-      eventNames.forEach(name => {
+      eventNames$1.forEach(name => {
         this._callbacks[name.toLowerCase()] = [];
       });
       props.forEach(item => {
@@ -9075,7 +9643,7 @@ var serviceContext = (function () {
     }
   }
 
-  eventNames.forEach(item => {
+  eventNames$1.forEach(item => {
     const name = item[0].toUpperCase() + item.substr(1);
     item = item.toLowerCase();
     InnerAudioContext.prototype[`on${name}`] = function (callback) {
@@ -9140,7 +9708,7 @@ var serviceContext = (function () {
     createInnerAudioContext: createInnerAudioContext
   });
 
-  const eventNames$1 = [
+  const eventNames$2 = [
     'canplay',
     'play',
     'pause',
@@ -9152,9 +9720,9 @@ var serviceContext = (function () {
     'error',
     'waiting'
   ];
-  const callbacks$4 = {};
-  eventNames$1.forEach(name => {
-    callbacks$4[name] = [];
+  const callbacks$5 = {};
+  eventNames$2.forEach(name => {
+    callbacks$5[name] = [];
   });
 
   const props$1 = [
@@ -9218,7 +9786,7 @@ var serviceContext = (function () {
         errMsg,
         errCode
       }) => {
-        callbacks$4[state].forEach(callback => {
+        callbacks$5[state].forEach(callback => {
           if (typeof callback === 'function') {
             callback(state === 'error' ? {
               errMsg,
@@ -9256,7 +9824,7 @@ var serviceContext = (function () {
       this._operate('stop');
     }
     seek (position) {
-      this._operate('play', {
+      this._operate('seek', {
         currentTime: position
       });
     }
@@ -9267,10 +9835,10 @@ var serviceContext = (function () {
     }
   }
 
-  eventNames$1.forEach(item => {
+  eventNames$2.forEach(item => {
     const name = item[0].toUpperCase() + item.substr(1);
     BackgroundAudioManager.prototype[`on${name}`] = function (callback) {
-      callbacks$4[item].push(callback);
+      callbacks$5[item].push(callback);
     };
   });
 
@@ -9468,6 +10036,8 @@ var serviceContext = (function () {
   };
 
   function checkColor (e) {
+    // 其他开发者适配的echarts会传入一个undefined到这里
+    e = e || '#000000';
     var t = null;
     if ((t = /^#([0-9|A-F|a-f]{6})$/.exec(e)) != null) {
       let n = parseInt(t[1].slice(0, 2), 16);
@@ -10161,7 +10731,7 @@ var serviceContext = (function () {
     callback.invoke(callbackId, data);
   });
 
-  const methods = ['getCenterLocation', 'translateMarker', 'getScale', 'getRegion'];
+  const methods = ['getCenterLocation', 'getScale', 'getRegion', 'includePoints', 'translateMarker'];
 
   class MapContext {
     constructor (id, pageVm) {
@@ -10172,22 +10742,16 @@ var serviceContext = (function () {
     moveToLocation () {
       operateMapPlayer$3(this.id, this.pageVm, 'moveToLocation');
     }
-
-    includePoints (args) {
-      operateMapPlayer$3(this.id, this.pageVm, 'includePoints', args);
-    }
   }
 
-  MapContext.prototype.$getAppMap = function() {
-    return plus.maps.getMapById(this.pageVm.$page.id + '-map-' + this.id);
+  MapContext.prototype.$getAppMap = function () {
+    return plus.maps.getMapById(this.pageVm.$page.id + '-map-' + this.id)
   };
 
   methods.forEach(function (method) {
     MapContext.prototype[method] = callback.warp(function (options, callbackId) {
-      operateMapPlayer$3(this.id, this.pageVm, method, {
-        options,
-        callbackId
-      });
+      options.callbackId = callbackId;
+      operateMapPlayer$3(this.id, this.pageVm, method, options);
     });
   });
 
@@ -10314,10 +10878,10 @@ var serviceContext = (function () {
     EditorContext: EditorContext
   });
 
-  const callbacks$5 = [];
+  const callbacks$6 = [];
 
   onMethod('onAccelerometerChange', function (res) {
-    callbacks$5.forEach(callbackId => {
+    callbacks$6.forEach(callbackId => {
       invoke$1(callbackId, res);
     });
   });
@@ -10329,7 +10893,7 @@ var serviceContext = (function () {
    */
   function onAccelerometerChange (callbackId) {
     // TODO 当没有 start 时，添加 on 需要主动 start?
-    callbacks$5.push(callbackId);
+    callbacks$6.push(callbackId);
     if (!isEnable) {
       startAccelerometer();
     }
@@ -10386,10 +10950,10 @@ var serviceContext = (function () {
     onBLECharacteristicValueChange: onBLECharacteristicValueChange$1
   });
 
-  const callbacks$6 = [];
+  const callbacks$7 = [];
 
   onMethod('onCompassChange', function (res) {
-    callbacks$6.forEach(callbackId => {
+    callbacks$7.forEach(callbackId => {
       invoke$1(callbackId, res);
     });
   });
@@ -10401,7 +10965,7 @@ var serviceContext = (function () {
    */
   function onCompassChange (callbackId) {
     // TODO 当没有 start 时，添加 on 需要主动 start?
-    callbacks$6.push(callbackId);
+    callbacks$7.push(callbackId);
     if (!isEnable$1) {
       startCompass();
     }
@@ -10433,16 +10997,16 @@ var serviceContext = (function () {
     stopCompass: stopCompass
   });
 
-  const callbacks$7 = [];
+  const callbacks$8 = [];
 
   onMethod('onNetworkStatusChange', res => {
-    callbacks$7.forEach(callbackId => {
+    callbacks$8.forEach(callbackId => {
       invoke$1(callbackId, res);
     });
   });
 
   function onNetworkStatusChange (callbackId) {
-    callbacks$7.push(callbackId);
+    callbacks$8.push(callbackId);
   }
 
   var require_context_module_1_13 = /*#__PURE__*/Object.freeze({
@@ -10450,7 +11014,52 @@ var serviceContext = (function () {
     onNetworkStatusChange: onNetworkStatusChange
   });
 
-  const callbacks$8 = {
+  const callbacks$9 = [];
+
+  onMethod('onUIStyleChange', function (res) {
+    callbacks$9.forEach(callbackId => {
+      invoke$1(callbackId, res);
+    });
+  });
+
+  function onUIStyleChange (callbackId) {
+    callbacks$9.push(callbackId);
+  }
+
+  var require_context_module_1_14 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    onUIStyleChange: onUIStyleChange
+  });
+
+  const longPressActionsCallbackId = 'longPressActionsCallback';
+
+  let longPressActions = {};
+
+  onMethod(longPressActionsCallbackId, function (res) {
+    const errMsg = res.errMsg || '';
+    if (new RegExp('\\:\\s*fail').test(errMsg)) {
+      longPressActions.fail && longPressActions.fail(res);
+    } else {
+      longPressActions.success && longPressActions.success(res);
+    }
+    longPressActions.complete && longPressActions.complete(res);
+  });
+
+  function previewImage$1 (args = {}) {
+    longPressActions = args.longPressActions || {};
+    if (longPressActions.success || longPressActions.fail || longPressActions.complete) {
+      longPressActions.callbackId = longPressActionsCallbackId;
+    }
+
+    return invokeMethod('previewImagePlus', args)
+  }
+
+  var require_context_module_1_15 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    previewImage: previewImage$1
+  });
+
+  const callbacks$a = {
     pause: [],
     resume: [],
     start: [],
@@ -10464,7 +11073,7 @@ var serviceContext = (function () {
         const state = res.state;
         delete res.state;
         delete res.errMsg;
-        callbacks$8[state].forEach(callback => {
+        callbacks$a[state].forEach(callback => {
           if (typeof callback === 'function') {
             callback(res);
           }
@@ -10472,7 +11081,7 @@ var serviceContext = (function () {
       });
     }
     onError (callback) {
-      callbacks$8.error.push(callback);
+      callbacks$a.error.push(callback);
     }
     onFrameRecorded (callback) {
 
@@ -10484,16 +11093,16 @@ var serviceContext = (function () {
 
     }
     onPause (callback) {
-      callbacks$8.pause.push(callback);
+      callbacks$a.pause.push(callback);
     }
     onResume (callback) {
-      callbacks$8.resume.push(callback);
+      callbacks$a.resume.push(callback);
     }
     onStart (callback) {
-      callbacks$8.start.push(callback);
+      callbacks$a.start.push(callback);
     }
     onStop (callback) {
-      callbacks$8.stop.push(callback);
+      callbacks$a.stop.push(callback);
     }
     pause () {
       invokeMethod('operateRecorder', {
@@ -10523,7 +11132,7 @@ var serviceContext = (function () {
     return recorderManager || (recorderManager = new RecorderManager())
   }
 
-  var require_context_module_1_14 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_16 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getRecorderManager: getRecorderManager
   });
@@ -10612,7 +11221,7 @@ var serviceContext = (function () {
     return task
   }
 
-  var require_context_module_1_15 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_17 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     downloadFile: downloadFile$1
   });
@@ -10706,6 +11315,16 @@ var serviceContext = (function () {
   }
 
   function request$1 (args, callbackId) {
+    let contentType;
+    for (const name in args.header) {
+      if (name.toLowerCase() === 'content-type') {
+        contentType = args.header[name];
+        break
+      }
+    }
+    if (args.method !== 'GET' && contentType.indexOf('application/json') === 0 && isPlainObject(args.data)) {
+      args.data = JSON.stringify(args.data);
+    }
     const {
       requestTaskId
     } = invokeMethod('createRequestTask', args);
@@ -10718,7 +11337,7 @@ var serviceContext = (function () {
     return new RequestTask(requestTaskId)
   }
 
-  var require_context_module_1_16 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_18 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     request: request$1
   });
@@ -10797,7 +11416,7 @@ var serviceContext = (function () {
 
   const socketTasks$1 = Object.create(null);
   const socketTasksArray = [];
-  const callbacks$9 = Object.create(null);
+  const callbacks$b = Object.create(null);
   onMethod('onSocketTaskStateChange', ({
     socketTaskId,
     state,
@@ -10808,18 +11427,11 @@ var serviceContext = (function () {
     if (!socketTask) {
       return
     }
-    socketTask._callbacks[state].forEach(callback => {
-      if (typeof callback === 'function') {
-        callback(state === 'message' ? {
-          data
-        } : {});
-      }
-    });
     if (state === 'open') {
       socketTask.readyState = socketTask.OPEN;
     }
-    if (socketTask === socketTasksArray[0] && callbacks$9[state]) {
-      invoke$1(callbacks$9[state], state === 'message' ? {
+    if (socketTask === socketTasksArray[0] && callbacks$b[state]) {
+      invoke$1(callbacks$b[state], state === 'message' ? {
         data
       } : {});
     }
@@ -10831,6 +11443,13 @@ var serviceContext = (function () {
         socketTasksArray.splice(index, 1);
       }
     }
+    socketTask._callbacks[state].forEach(callback => {
+      if (typeof callback === 'function') {
+        callback(state === 'message' ? {
+          data
+        } : {});
+      }
+    });
   });
 
   function connectSocket$1 (args, callbackId) {
@@ -10878,22 +11497,22 @@ var serviceContext = (function () {
   }
 
   function onSocketOpen (callbackId) {
-    callbacks$9.open = callbackId;
+    callbacks$b.open = callbackId;
   }
 
   function onSocketError (callbackId) {
-    callbacks$9.error = callbackId;
+    callbacks$b.error = callbackId;
   }
 
   function onSocketMessage (callbackId) {
-    callbacks$9.message = callbackId;
+    callbacks$b.message = callbackId;
   }
 
   function onSocketClose (callbackId) {
-    callbacks$9.close = callbackId;
+    callbacks$b.close = callbackId;
   }
 
-  var require_context_module_1_17 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_19 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     connectSocket: connectSocket$1,
     sendSocketMessage: sendSocketMessage$1,
@@ -10988,150 +11607,9 @@ var serviceContext = (function () {
     return task
   }
 
-  var require_context_module_1_18 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_20 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     uploadFile: uploadFile$1
-  });
-
-  const STORAGE_DATA_TYPE = '__TYPE';
-  const STORAGE_KEYS = 'uni-storage-keys';
-
-  function setStorage$1 ({
-    key,
-    data
-  } = {}) {
-    const type = typeof data;
-    const value = type === 'string' ? data : JSON.stringify({
-      type,
-      data: data
-    });
-    try {
-      localStorage.setItem(key, value);
-    } catch (error) {
-      return {
-        errMsg: `setStorage:fail ${error}`
-      }
-    }
-    return {
-      errMsg: 'setStorage:ok'
-    }
-  }
-
-  function setStorageSync$1 (key, data) {
-    setStorage$1({
-      key,
-      data
-    });
-  }
-
-  function getStorage$1 ({
-    key
-  } = {}) {
-    const value = localStorage && localStorage.getItem(key);
-    if (typeof value !== 'string') {
-      return {
-        data: '',
-        errMsg: 'getStorage:fail'
-      }
-    }
-    let data = value;
-    try {
-      const object = JSON.parse(value);
-      // 兼容App端历史格式
-      const type = localStorage.getItem(key + STORAGE_DATA_TYPE);
-      if (!type) {
-        const keys = Object.keys(object);
-        if (keys.length === 2 && 'type' in object && 'data' in object) {
-          data = object.data;
-        } else if (keys.length === 1 && 'type' in object) {
-          data = '';
-        }
-      } else if (type !== 'String') {
-        data = object;
-        data = typeof data === 'string' ? JSON.parse(data) : data;
-      }
-    } catch (error) { }
-    return {
-      data,
-      errMsg: 'getStorage:ok'
-    }
-  }
-
-  function getStorageSync$1 (key) {
-    const res = getStorage$1({
-      key
-    });
-    return res.data
-  }
-
-  function removeStorage$1 ({
-    key
-  } = {}) {
-    if (localStorage) {
-      // 兼容App端历史格式
-      localStorage.removeItem(key + STORAGE_DATA_TYPE);
-      localStorage.removeItem(key);
-    }
-    return {
-      errMsg: 'removeStorage:ok'
-    }
-  }
-
-  function removeStorageSync$1 (key) {
-    removeStorage$1({
-      key
-    });
-  }
-
-  function clearStorage () {
-    localStorage && localStorage.clear();
-    return {
-      errMsg: 'clearStorage:ok'
-    }
-  }
-
-  function clearStorageSync () {
-    clearStorage();
-  }
-
-  function getStorageInfo () {
-    const length = (localStorage && (localStorage.length || localStorage.getLength())) || 0;
-    const keys = [];
-    let currentSize = 0;
-    for (let index = 0; index < length; index++) {
-      const key = localStorage.key(index);
-      if (key !== STORAGE_KEYS && key.indexOf(STORAGE_DATA_TYPE) + STORAGE_DATA_TYPE.length !== key.length) {
-        const value = localStorage.getItem(key);
-        currentSize += key.length + value.length;
-        keys.push(key);
-      }
-    }
-    return {
-      keys,
-      currentSize: Math.ceil(currentSize * 2 / 1024),
-      limitSize: Number.MAX_VALUE,
-      errMsg: 'getStorageInfo:ok'
-    }
-  }
-
-  function getStorageInfoSync () {
-    const res = getStorageInfo();
-    delete res.errMsg;
-    return res
-  }
-
-  var require_context_module_1_19 = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    setStorage: setStorage$1,
-    setStorageSync: setStorageSync$1,
-    getStorage: getStorage$1,
-    getStorageSync: getStorageSync$1,
-    removeStorage: removeStorage$1,
-    removeStorageSync: removeStorageSync$1,
-    clearStorage: clearStorage,
-    clearStorageSync: clearStorageSync,
-    getStorageInfo: getStorageInfo,
-    getStorageInfoSync: getStorageInfoSync
   });
 
   const defaultOption = {
@@ -11212,7 +11690,7 @@ var serviceContext = (function () {
     return new MPAnimation(option)
   }
 
-  var require_context_module_1_20 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_21 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     createAnimation: createAnimation
   });
@@ -11277,7 +11755,7 @@ var serviceContext = (function () {
     return new ServiceIntersectionObserver(getCurrentPageVm('createIntersectionObserver'), options)
   }
 
-  var require_context_module_1_21 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_22 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     createIntersectionObserver: createIntersectionObserver
   });
@@ -11418,24 +11896,24 @@ var serviceContext = (function () {
     return new SelectorQuery(getCurrentPageVm('createSelectorQuery'))
   }
 
-  var require_context_module_1_22 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_23 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     createSelectorQuery: createSelectorQuery
   });
 
-  const callbacks$a = [];
+  const callbacks$c = [];
 
   onMethod('onKeyboardHeightChange', res => {
-    callbacks$a.forEach(callbackId => {
+    callbacks$c.forEach(callbackId => {
       invoke$1(callbackId, res);
     });
   });
 
   function onKeyboardHeightChange (callbackId) {
-    callbacks$a.push(callbackId);
+    callbacks$c.push(callbackId);
   }
 
-  var require_context_module_1_23 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_24 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     onKeyboardHeightChange: onKeyboardHeightChange
   });
@@ -11460,7 +11938,7 @@ var serviceContext = (function () {
     }, pageId);
   }
 
-  var require_context_module_1_24 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_25 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     loadFontFace: loadFontFace$1
   });
@@ -11473,7 +11951,7 @@ var serviceContext = (function () {
     return {}
   }
 
-  var require_context_module_1_25 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_26 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     pageScrollTo: pageScrollTo$1
   });
@@ -11486,7 +11964,7 @@ var serviceContext = (function () {
     return {}
   }
 
-  var require_context_module_1_26 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_27 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     setPageMeta: setPageMeta
   });
@@ -11511,19 +11989,19 @@ var serviceContext = (function () {
 
   const hideTabBarRedDot$1 = removeTabBarBadge$1;
 
-  const callbacks$b = [];
+  const callbacks$d = [];
 
   onMethod('onTabBarMidButtonTap', res => {
-    callbacks$b.forEach(callbackId => {
+    callbacks$d.forEach(callbackId => {
       invoke$1(callbackId, res);
     });
   });
 
   function onTabBarMidButtonTap (callbackId) {
-    callbacks$b.push(callbackId);
+    callbacks$d.push(callbackId);
   }
 
-  var require_context_module_1_27 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_28 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     removeTabBarBadge: removeTabBarBadge$1,
     showTabBarRedDot: showTabBarRedDot$1,
@@ -11531,25 +12009,25 @@ var serviceContext = (function () {
     onTabBarMidButtonTap: onTabBarMidButtonTap
   });
 
-  const callbacks$c = [];
+  const callbacks$e = [];
   onMethod('onViewDidResize', res => {
-    callbacks$c.forEach(callbackId => {
+    callbacks$e.forEach(callbackId => {
       invoke$1(callbackId, res);
     });
   });
 
   function onWindowResize (callbackId) {
-    callbacks$c.push(callbackId);
+    callbacks$e.push(callbackId);
   }
 
   function offWindowResize (callbackId) {
     // TODO 目前 on 和 off 即使传入同一个 function，获取到的 callbackId 也不会一致，导致不能 off 掉指定
     // 后续修复
     // 此处和微信平台一致查询不到去掉最后一个
-    callbacks$c.splice(callbacks$c.indexOf(callbackId), 1);
+    callbacks$e.splice(callbacks$e.indexOf(callbackId), 1);
   }
 
-  var require_context_module_1_28 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_29 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     onWindowResize: onWindowResize,
     offWindowResize: offWindowResize
@@ -11574,21 +12052,22 @@ var serviceContext = (function () {
   './device/bluetooth.js': require_context_module_1_11,
   './device/compass.js': require_context_module_1_12,
   './device/network.js': require_context_module_1_13,
-  './media/recorder.js': require_context_module_1_14,
-  './network/download-file.js': require_context_module_1_15,
-  './network/request.js': require_context_module_1_16,
-  './network/socket.js': require_context_module_1_17,
-  './network/upload-file.js': require_context_module_1_18,
-  './storage/storage.js': require_context_module_1_19,
-  './ui/create-animation.js': require_context_module_1_20,
-  './ui/create-intersection-observer.js': require_context_module_1_21,
-  './ui/create-selector-query.js': require_context_module_1_22,
-  './ui/keyboard.js': require_context_module_1_23,
-  './ui/load-font-face.js': require_context_module_1_24,
-  './ui/page-scroll-to.js': require_context_module_1_25,
-  './ui/set-page-meta.js': require_context_module_1_26,
-  './ui/tab-bar.js': require_context_module_1_27,
-  './ui/window.js': require_context_module_1_28,
+  './device/theme.js': require_context_module_1_14,
+  './media/preview-image.js': require_context_module_1_15,
+  './media/recorder.js': require_context_module_1_16,
+  './network/download-file.js': require_context_module_1_17,
+  './network/request.js': require_context_module_1_18,
+  './network/socket.js': require_context_module_1_19,
+  './network/upload-file.js': require_context_module_1_20,
+  './ui/create-animation.js': require_context_module_1_21,
+  './ui/create-intersection-observer.js': require_context_module_1_22,
+  './ui/create-selector-query.js': require_context_module_1_23,
+  './ui/keyboard.js': require_context_module_1_24,
+  './ui/load-font-face.js': require_context_module_1_25,
+  './ui/page-scroll-to.js': require_context_module_1_26,
+  './ui/set-page-meta.js': require_context_module_1_27,
+  './ui/tab-bar.js': require_context_module_1_28,
+  './ui/window.js': require_context_module_1_29,
 
       };
       var req = function req(key) {
@@ -11632,6 +12111,16 @@ var serviceContext = (function () {
       webview && webview.evalJS(evalJSCode.replace('__PAGE_ID__', id));
     });
   }
+
+  const wx = Object.create(null);
+
+  apis_1.forEach(name => {
+    if (api$2[name]) {
+      wx[name] = wrapper(name, api$2[name]);
+    } else {
+      wx[name] = wrapperUnimplemented(name);
+    }
+  });
 
   function callHook (vm, hook, params) {
     vm = vm.$vm || vm;
@@ -12010,6 +12499,7 @@ var serviceContext = (function () {
   }
 
   function initGlobalListeners () {
+    const globalEvent = requireNativePlugin('globalEvent');
     const emit = UniServiceJSBridge.emit;
 
     // splashclosed 时开始监听 backbutton
@@ -12037,6 +12527,19 @@ var serviceContext = (function () {
       publish('onKeyboardHeightChange', {
         height: event.height
       });
+    });
+
+    globalEvent.addEventListener('uistylechange', function (event) {
+      publish('onUIStyleChange', {
+        style: event.uistyle
+      });
+    });
+
+    globalEvent.addEventListener('uniMPNativeEvent', function ({
+      event,
+      data
+    }) {
+      consumeNativeEvent(event, data);
     });
 
     plus.globalEvent.addEventListener('plusMessage', onPlusMessage$1);
@@ -12074,10 +12577,6 @@ var serviceContext = (function () {
     __uniConfig.tabBar.selected = 0;
 
     const selected = __uniConfig.tabBar.list.findIndex(page => page.pagePath === __uniConfig.entryPagePath);
-    if (selected !== -1) {
-      // 取当前 tab 索引值
-      __uniConfig.tabBar.selected = selected;
-    }
 
     tabBar$1.init(__uniConfig.tabBar, (item, index) => {
       uni.switchTab({
@@ -12093,22 +12592,36 @@ var serviceContext = (function () {
         }
       });
     });
+
+    if (selected !== -1) {
+      // 取当前 tab 索引值
+      __uniConfig.tabBar.selected = selected;
+      selected !== 0 && tabBar$1.switchTab(__uniConfig.entryPagePath);
+    }
   }
 
   function initEntryPage () {
-    const argsJsonStr = plus.runtime.arguments;
-    if (!argsJsonStr) {
-      return
-    }
-
     let entryPagePath;
     let entryPageQuery;
 
-    try {
-      const args = JSON.parse(argsJsonStr);
-      entryPagePath = args.path || args.pathName;
-      entryPageQuery = (args.query ? ('?' + args.query) : '');
-    } catch (e) {}
+    const weexPlus = weex.requireModule('plus');
+
+    if (weexPlus.getRedirectInfo) {
+      const info = weexPlus.getRedirectInfo() || {};
+      entryPagePath = info.path;
+      entryPageQuery = info.query ? ('?' + info.query) : '';
+    } else {
+      const argsJsonStr = plus.runtime.arguments;
+      if (!argsJsonStr) {
+        return
+      }
+      try {
+        const args = JSON.parse(argsJsonStr);
+        entryPagePath = args.path || args.pathName;
+        entryPageQuery = args.query ? ('?' + args.query) : '';
+      } catch (e) {}
+    }
+
     if (!entryPagePath || entryPagePath === __uniConfig.entryPagePath) {
       return
     }
@@ -12230,7 +12743,7 @@ var serviceContext = (function () {
 
   function initVue (Vue) {
     Vue.config.errorHandler = function (err) {
-      const app = getApp();
+      const app = typeof getApp === 'function' && getApp();
       if (app && hasLifecycleHook(app.$options, 'onError')) {
         app.__call_hook('onError', err);
       } else {
@@ -12511,9 +13024,12 @@ var serviceContext = (function () {
 
     removeVm (vm) {
       const cid = vm._$id;
-      // 移除尚未同步的data
-      this.batchData = this.batchData.filter(data => data[1][0] !== cid);
-      delete this.vms[cid];
+      if (vm === this.vms[cid]) { // 仅相同vm的才移除，否则保留
+        // 目前同一位置的vm，cid均一样
+        // 移除尚未同步的data
+        this.batchData = this.batchData.filter(data => data[1][0] !== cid);
+        delete this.vms[cid];
+      }
     }
 
     addElement (elm) {
@@ -12526,6 +13042,13 @@ var serviceContext = (function () {
         return console.error(`removeElement[${elm.cid}][${elm.nid}] not found`)
       }
       this.elements.splice(elmIndex, 1);
+    }
+
+    removeElementByCid (cid) {
+      if (!cid) {
+        return
+      }
+      this.elements = this.elements.filter(elm => elm.cid !== cid);
     }
 
     push (type, cid, data, options) {
@@ -12750,7 +13273,11 @@ var serviceContext = (function () {
           this._$vdomSync = new VDomSync(this.$options.pageId, this.$options.pagePath, this);
         }
         if (this._$vd) {
-          this._$id = guid();
+          if (!this.$parent) {
+            this._$id = '-1';
+          } else {
+            this._$id = this.$parent._$id + ',' + this.$vnode.data.attrs._i;
+          }
           this._$vd.addVm(this);
           this._$vdMountedData = Object.create(null);
           this._$setData(MOUNTED_DATA, this._$vdMountedData);
@@ -12986,7 +13513,8 @@ var serviceContext = (function () {
       onPageReachBottom,
       onReachBottomDistance,
       statusbarHeight,
-      windowTop: windowOptions.titleNView && windowOptions.titleNView.type === 'float' ? (statusbarHeight + TITLEBAR_HEIGHT) : 0,
+      windowTop: windowOptions.titleNView && windowOptions.titleNView.type === 'float' ? (statusbarHeight +
+        TITLEBAR_HEIGHT) : 0,
       windowBottom: (tabBar$1.indexOf(route) >= 0 && tabBar$1.cover) ? tabBar$1.height : 0
     }
   }
@@ -12998,6 +13526,11 @@ var serviceContext = (function () {
       beforeCreate () {
         // TODO 临时解决方案,service 层也注入 wxs (适用于工具类)
         const options = this.$options;
+
+        // 自动挂载 $store
+        if (options.store && !Vue.prototype.$store) {
+          Vue.prototype.$store = options.store;
+        }
 
         const wxs = options.wxs;
         if (wxs) {
@@ -13070,20 +13603,26 @@ var serviceContext = (function () {
 
       Vue.prototype.$nextTick = function nextTick (cb) {
         const renderWatcher = this._watcher;
-        if (
-          renderWatcher &&
-          this._$queue.find(watcher => renderWatcher === watcher)
-        ) {
-          vdSyncCallbacks.push(cb.bind(this));
-        } else {
-          // $nextTick bind vm context
-          Vue.nextTick(() => {
-            cb.call(this);
-          });
-        }
+        const callback = typeof cb === 'function';
+        const result = new Promise((resolve) => {
+          if (
+            renderWatcher &&
+            this._$queue.find(watcher => renderWatcher === watcher)
+          ) {
+            vdSyncCallbacks.push(callback ? cb.bind(this) : resolve);
+          } else {
+            // $nextTick bind vm context
+            Vue.nextTick(callback ? () => cb.call(this) : resolve);
+          }
+          callback && resolve();
+        });
+        return callback ? undefined : result
       };
     }
   };
+
+  // 挂靠在uni上，暂不做全局导出
+  uni$1.__$wx__ = wx;
 
   UniServiceJSBridge.publishHandler = publishHandler;
   UniServiceJSBridge.invokeCallbackHandler = invokeCallbackHandler;

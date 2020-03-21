@@ -31,7 +31,8 @@ export function initEvent (Vue) {
     const $event = this.$handleEvent($vueEvent)
     const cid = this._$id
     // 当自定义组件根节点触发事件时，nid 始终为 0
-    const nid = $vueEvent.currentTarget === this.$el ? 0 : $event.options.nid
+    const currentTarget = $vueEvent.$origCurrentTarget || $vueEvent.currentTarget
+    const nid = currentTarget === this.$el ? 0 : $event.options.nid
     if (typeof nid === 'undefined') {
       return console.error(`[${cid}] nid not found`)
     }
@@ -42,6 +43,7 @@ export function initEvent (Vue) {
     delete $event.preventDefault
     delete $event.stopPropagation
     delete $event.options
+    delete $event.$origCurrentTarget
     // 实时发送，延迟的话，会导致 touch 类事件被合并，影响实际业务逻辑，比如 touchstart 中修改变量为 true,touchend 修改为 false
     vd.sendUIEvent(cid, nid, $event)
   }
