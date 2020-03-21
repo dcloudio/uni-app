@@ -72,10 +72,10 @@ export function initVueComponent (Vue, vueOptions) {
   let VueComponent
   if (isFn(vueOptions)) {
     VueComponent = vueOptions
-    vueOptions = VueComponent.extendOptions
   } else {
     VueComponent = Vue.extend(vueOptions)
   }
+  vueOptions = VueComponent.options
   return [VueComponent, vueOptions]
 }
 

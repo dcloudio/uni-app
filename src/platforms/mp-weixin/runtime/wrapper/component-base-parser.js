@@ -20,7 +20,6 @@ export default function parseBaseComponent (vueComponentOptions, {
   initRelation
 } = {}) {
   let [VueComponent, vueOptions] = initVueComponent(Vue, vueComponentOptions)
-  vueOptions = VueComponent.options || vueOptions
 
   const options = {
     multipleSlots: true,
