@@ -26,7 +26,7 @@
 1. 单击左侧菜单栏【云函数】，进入云函数页面。
 2. 单击【云函数URL化】，在弹出的配置窗口中进行配置。
 ![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/cloud-function-urlify.png)
->!
+
 >- 每个服务空间最多绑定1个自定义域名。
 >- uniCloud提供默认域名供体验和测试该特性，域名规范如：`${spaceId}.service.tcloudbase.com`。
 >- 绑定自定义域名之前，请先设置您默认域名的 CNAME 记录值为`${spaceId}.service.tcloudbase.com`，CNAME 记录不存在时会导致域名绑定失败，另外需要注意的是此域名必须已经备案。
