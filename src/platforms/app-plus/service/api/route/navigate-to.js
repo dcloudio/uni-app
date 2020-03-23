@@ -24,8 +24,6 @@ import {
   navigate
 } from '../../framework/navigator'
 
-let isNavigating = false
-
 function _navigateTo ({
   url,
   path,
@@ -48,7 +46,6 @@ function _navigateTo ({
     animationType,
     animationDuration,
     () => {
-      isNavigating = false
       invoke(callbackId, {
         errMsg: 'navigateTo:ok'
       })
@@ -63,10 +60,6 @@ export function navigateTo ({
   animationType,
   animationDuration
 }, callbackId) {
-  if(isNavigating) {
-    return
-  }
-  isNavigating = true
   const urls = url.split('?')
   const path = urls[0]
   const routeStyles = __uniRoutes.find(route => route.path === path).window
