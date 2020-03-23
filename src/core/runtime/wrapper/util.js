@@ -4,7 +4,8 @@ import {
   isFn,
   noop,
   hasOwn,
-  isPlainObject
+  isPlainObject,
+  deepClone
 } from 'uni-shared'
 
 export const PAGE_EVENT_HOOKS = [
@@ -116,7 +117,7 @@ export function initData (vueOptions, context) {
   } else {
     try {
       // 对 data 格式化
-      data = JSON.parse(JSON.stringify(data))
+      data = deepClone(data)
     } catch (e) {}
   }
 
@@ -279,7 +280,7 @@ export function initProperties (props, isBehavior = false, file = '') {
 function wrapper (event) {
   // TODO 又得兼容 mpvue 的 mp 对象
   try {
-    event.mp = JSON.parse(JSON.stringify(event))
+    event.mp = deepClone(event)
   } catch (e) {}
 
   event.stopPropagation = noop

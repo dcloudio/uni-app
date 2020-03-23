@@ -96,3 +96,17 @@ export function debounce (fn, delay) {
 export function kebabCase (string) {
   return string.replace(/[A-Z]/g, str => '-' + str.toLowerCase())
 }
+/* deepclone */
+export function deepClone (val) {
+  if (isPlainObject(val)) {
+    const res = {}
+    for (const key in val) {
+      res[key] = deepClone(val[key])
+    }
+    return res
+  } else if (Array.isArray(val)) {
+    return val.slice()
+  } else {
+    return val
+  }
+}
