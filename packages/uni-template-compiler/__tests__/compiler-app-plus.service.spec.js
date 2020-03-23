@@ -219,7 +219,7 @@ describe('codegen', () => {
   it('generate dynamic scoped slot', () => {
     assertCodegen(
       '<foo><template :slot="foo" slot-scope="bar">{{ bar }}</template></foo>',
-      `with(this){return _c('foo',{attrs:{"_i":0},scopedSlots:_u([{key:foo,fn:function(bar, _svm, _si){return [_v((_svm._$s(("1-"+_si),'t0-0',_s(bar))))]}}],null,true)})}`
+      `with(this){return _c('foo',{attrs:{"_i":0},scopedSlots:_u([{key:_$s(1,'st',foo),fn:function(bar, _svm, _si){return [_v((_svm._$s(("1-"+_si),'t0-0',_s(bar))))]}}],null,true)})}`
     )
   })
 
