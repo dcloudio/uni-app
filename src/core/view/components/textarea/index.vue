@@ -83,7 +83,7 @@ export default {
     },
     placeholderClass: {
       type: String,
-      default: ''
+      default: 'textarea-placeholder'
     },
     placeholderStyle: {
       type: String,
