@@ -94,5 +94,11 @@ describe('codegen', () => {
       `with(this){return _c('base-layout',{attrs:{"_i":0},scopedSlots:_u([{key:_$g(1,'st'),fn:function(_empty_, _svm, _si){return undefined}}],null,true)})}`
     )
   })
+  it('generate ref', () => {
+    assertCodegen(
+      '<p :ref="component1"></p>',
+      `with(this){return _c('p',{ref:_$g(0,'ref'),attrs:{"_i":0}})}`
+    )
+  })
 })
 /* eslint-enable quotes */

@@ -13,6 +13,8 @@ const SET_MP_CLASS = '_$smc'
 const GET_CHANGE_DATA = '_$gc' // wxs
 
 const C_IS = 'is'
+const C_SLOT_TARGET = 'st'
+const C_REF = 'ref'
 
 const V_FOR = 'f'
 const V_IF = 'i'
@@ -208,7 +210,7 @@ function traverseNode (el, parent, state, isScopedSlot) {
     state.childIndex = index
     slot.slotScope = `${slot.slotScope}, _svm, _si`
     if (slot.slotTargetDynamic && slot.slotTarget) {
-      slot.slotTarget = state.createGenVar(slot.attrsMap[ID])('st', slot.slotTarget)
+      slot.slotTarget = state.createGenVar(slot.attrsMap[ID])(C_SLOT_TARGET, slot.slotTarget)
     }
     traverseNode(slot, el, state, true)
   })
@@ -256,6 +258,7 @@ function addHandler (el, name, value, important) {
 
 module.exports = {
   C_IS,
+  C_REF,
   V_FOR,
   V_IF,
   V_ELSE_IF,

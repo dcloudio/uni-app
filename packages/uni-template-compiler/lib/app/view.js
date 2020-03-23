@@ -12,6 +12,7 @@ const {
 
 const {
   parseIs,
+  parseRef,
   parseIf,
   parseFor,
   parseText,
@@ -126,7 +127,7 @@ function transformNode (el, parent, state, isScopedSlot) {
   const genVar = createGenVar(el.attrsMap[ID], isScopedSlot)
 
   parseIs(el, genVar)
-
+  parseRef(el, genVar)
   if (parseFor(el, createGenVar, isScopedSlot)) {
     if (el.alias[0] === '{') { // <div><li v-for=" { a, b }  in items"></li></div>
       el.alias = '$item'

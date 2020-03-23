@@ -153,5 +153,12 @@ describe('codegen', () => {
       `with(this){return _c('base-layout',{attrs:{"_i":0},scopedSlots:_u([{key:_$s(1,'st',dynamicSlotName),fn:function(_empty_, _svm, _si){return undefined}}],null,true)})}`
     )
   })
+
+  it('generate ref', () => {
+    assertCodegen(
+      '<p :ref="component1"></p>',
+      `with(this){return _c('p',{ref:_$s(0,'ref',component1)})}`
+    )
+  })
 })
 /* eslint-enable quotes */
