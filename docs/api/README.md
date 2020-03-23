@@ -348,7 +348,7 @@ function async request () {
 |API|说明|
 |:-|:-|
 |[uni.setBackgroundColor](/api/ui/bgcolor?id=setbackgroundcolor)|动态设置窗口的背景色。|
-|[uni.setBackgroundColor](/api/ui/bgcolor?id=setbackgroundcolor-1)|动态设置下拉背景字体、loading 图的样式。|
+|[uni.setBackgroundTextStyle](/api/ui/bgcolor?id=setbackgroundtextstyle)|动态设置下拉背景字体、loading 图的样式。|
 
 ##### 动画
 
