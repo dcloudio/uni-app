@@ -67,6 +67,86 @@ export default {
 }
 ```
 
+
+### uni.chooseMedia(OBJECT)
+拍摄或从手机相册中选择图片或视频。
+
+**平台差异说明**
+
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|x|x|2.10.0+|x|x|x|x|
+
+**OBJECT 参数说明**
+
+|参数名|类型|默认值|必填|说明|
+|:-|:-|:-|:-|:-|
+|count|Number|9|否|最多可以选择的文件个数|
+|mediaType|Array.&lt;string&gt;|['image', 'video']|否|文件类型|
+|sourceType|Array.&lt;string&gt;|['album', 'camera']|否|图片和视频选择的来源|
+|maxDuration|Number|10|否|拍摄视频最长拍摄时间，单位秒。时间范围为 3s 至 30s 之间|
+|sizeType|Array.&lt;string&gt;|['original', 'compressed']|否|仅对 mediaType 为 image 时有效，是否压缩所选文件|
+|camera|String|'back'|否|仅在 sourceType 为 camera 时生效，使用前置或后置摄像头|
+|success|function||否|接口调用成功的回调函数|
+|fail|function||否|接口调用失败的回调函数|
+|complete|function||否|接口调用结束的回调函数（调用成功、失败都会执行）|
+
+**OBJECT.mediaType 合法值**
+
+|值|说明|
+|:-|:-|
+|image|只能拍摄图片或从相册选择图片|
+|video|只能拍摄视频或从相册选择视频	|
+
+**OBJECT.sourceType 合法值**
+
+|值|说明|
+|:-|:-|
+|album|从相册选择|
+|camera|使用相机拍摄	|
+
+**OBJECT.camera 合法值**
+
+|值|说明|
+|:-|:-|
+|back|使用后置摄像头|
+|front|使用前置摄像头	|
+
+**success 返回参数说明**
+
+|参数名|类型|说明|
+|:-|:-|:-|
+|tempFiles|Array.&lt;string&gt;|本地临时文件列表|
+|type|String|文件类型，有效值有 image 、video|
+
+**res.tempFiles 的结构**
+
+|参数名						|类型		|说明												|
+|:-								|:-			|:-													|
+|tempFilePath			|String	|本地临时文件路径 (本地路径)|
+|size							|Number	|本地临时文件大小，单位 B		|
+|duration					|Number	|视频的时间长度							|
+|height						|Number	|视频的高度									|
+|width						|Number	|视频的宽度									|
+|thumbTempFilePath|String	|视频缩略图临时文件路径			|
+
+
+**示例**
+
+```javascript
+uni.chooseMedia({
+  count: 9,
+  mediaType: ['image','video'],
+  sourceType: ['album', 'camera'],
+  maxDuration: 30,
+  camera: 'back',
+  success(res) {
+    console.log(res.tempFilest)
+  }
+})
+
+```
+
 ### uni.saveVideoToPhotosAlbum(OBJECT)
 保存视频到系统相册。
 

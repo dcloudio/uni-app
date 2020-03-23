@@ -134,8 +134,10 @@ function async request () {
 |API|说明|
 |:-|:-|
 |[uni.chooseVideo](api/media/video?id=choosevideo)|从相册选择视频，或者拍摄|
+|[uni.chooseMedia](api/media/video?id=choosemedia)|拍摄或从手机相册中选择图片或视频。|
 |[uni.saveVideoToPhotosAlbum](api/media/video?id=savevideotophotosalbum)|保存视频到系统相册|
 |[uni.createVideoContext](/api/media/video-context?id=createvideocontext)|视频组件管理|
+
 ##### 相机组件管理
 
 |API|说明|
