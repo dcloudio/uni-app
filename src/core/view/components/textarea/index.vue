@@ -205,6 +205,16 @@ export default {
     this._resize({
       height: this.$refs.sensor.$el.offsetHeight
     })
+
+    let $vm = this
+    while ($vm) {
+      const scopeId = $vm.$options._scopeId
+      if (scopeId) {
+        this.$refs.placeholder.setAttribute(scopeId, '')
+      }
+      $vm = $vm.$parent
+    }
+
     this.initKeyboard(this.$refs.textarea)
   },
   beforeDestroy () {
