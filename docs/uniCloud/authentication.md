@@ -30,7 +30,7 @@ auth.signInAnonymously()
 <span id="signinwithticket"></span>
 ## auth.signInWithTicket()
 
-使用，详细描述参考[自定义登录](#自定义登录)
+使用，详细描述参考[登录流程](#cloudtoken)
 
 **示例代码**
 
@@ -69,7 +69,7 @@ auth.getLoginState().then(loginState => {
 |字段					|类型		|是否必备	|说明														|
 |:-:					|:-:		|:-:			|:-:														|
 |uid					|string	|是				|用户在云开发的唯一ID						|
-<!-- |customUserId	|string	|否				|用户使用自定义登录传入的用户Id	| -->
+<!-- |customUserId	|string	|否				|用户使用云Token传入的用户Id	| -->
 
 **示例代码**
 
@@ -129,10 +129,10 @@ uniCloud允许开发者使用匿名登录的方式进行静默授权，可以避
 
 匿名用户如果要重新使用开发者提供的身份登录，可以调用`auth.signInWithTicket`来进行。[参考](#signinwithticket)
 
-#### 匿名用户转化为自定义用户
-目前uniCloud支持将匿名用户转化为自定义登录用户，此转正用户将会继承匿名用户在云端创建的资源，流程如下：
-1. 首先需要按照[登录流程](#cloudtoken)搭建获取自定义登录凭证`ticket`的服务；
-2. 客户端请求接口获取自定义登录凭证`ticket`。**请注意**，此`ticket`必须未注册过uniCloud，换句话说，匿名用户只能转化为新的uniCloud用户；
+#### 匿名用户转化为正式用户
+目前uniCloud支持将匿名用户转化为正式用户，此转正用户将会继承匿名用户在云端创建的资源，流程如下：
+1. 首先需要按照[登录流程](#cloudtoken)搭建获取云Token凭证`ticket`的服务；
+2. 客户端请求接口获取云Token凭证`ticket`。**请注意**，此`ticket`必须未注册过uniCloud，换句话说，匿名用户只能转化为新的uniCloud用户；
 3. 客户端调用`auth.linkAndRetrieveDataWithTicket`API，如下：
 ```js
 // 调用此API之前需先请求接口获取到ticket
