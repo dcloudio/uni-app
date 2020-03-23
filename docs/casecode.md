@@ -10,6 +10,8 @@
 
 - [uni-template-news](https://github.com/dcloudio/uni-template-news)：基于uni-app开发的新闻/资讯类App模板 -- by DCloud
 
+- [仿抖音短视频示例](https://ext.dcloud.net.cn/plugin?id=860)：基于uni-app的nvue编译的高性能原生项目 -- by 林举
+
 - [uni-app 开发资源汇总](https://github.com/aben1188/awesome-uni-app/blob/master/README.md)：uni-app 一站式学习资源/开发资源汇总 -- aben1188
 
 - [colorUI for uni-app](https://ext.dcloud.net.cn/plugin?id=239)：colorUI官方维护的uni-app版本，酷炫漂亮的css库 -- by 文晓港
