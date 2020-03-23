@@ -119,7 +119,7 @@ message|string| 具体的网络状态信息
 ```html
 <template>
     <view>
-        <live-pusher id='livePusher1' ref="livePusher" class="livePusher" url=""
+        <live-pusher id='livePusher' ref="livePusher" class="livePusher" url=""
         mode="SD" :muted="true" :enable-camera="true" :auto-focus="true" :beauty="1" whiteness="2"
         aspect="9:16" @statechange="statechange" @netstatus="netstatus" @error = "error"
         ></live-pusher>
