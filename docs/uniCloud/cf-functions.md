@@ -42,18 +42,46 @@ exports.main = async (event, context) => {
 
 **requestOptions参数说明**
 
-|参数名						|类型																																																				|是否必填	|默认值	|说明																																																																												|
-|----							|----																																																				|----			|----		|----																																																																												|
-|method						|String																																																			| -				|GET		|HTTP 请求方法, 默认为：GET. 可选值： GET, POST, DELETE, PUT																																																|
-|data							|Object																																																			| -				|-			|发送的数据																																																																									|
-|dataAsQueryString|Boolean																																																		| -				|true		|是否强制转换data为queryString																																																															|
-|content					|String &#124; Buffer																																												| -				|-			|手动设置请求的payload，设置后会忽略data																																																										|
-|files						|Array&lt;ReadStream&#124;Buffer&#124;String&gt; &#124; Object &#124; ReadStream &#124; Buffer &#124; String| -				|-			|上传的文件，设置后将会使用 multipart/form-data 格式。如果未设置method，将会自动将method设置为POST																													|
-|contentType			|String																																																			| -				|-			|上传数据的格式，设为`json`会自动在`header`内设置`Content-Type: application/json`																																						|
-|nestedQuerystring|Boolean																																																		| -				|-			|转换data为queryString时默认不支持嵌套Object，此选项设置为true则支持转换嵌套Object																																					|
-|dataType					|String																																																			| -				|-			|返回的数据格式，可选值为 'json'（返回数据转为JSON），'text'（返回数据转为字符串）， ''（返回数据不做处理，默认值）																																																																							|
-|headers					|Object																																																			| -				|-			|请求头																																																																											|
-|timeout					|Number &#124; Array																																												| -				|-			|超时时间设置。设置为数组时第一项为请求超时，第二项为返回超时。设置为数字时相当于同时设置请求超时和返回超时，即`timeout:3000`效果等于`timeouut:[3000,3000]`	|
+|参数名							|类型																																																				|是否必填	|默认值	|说明																																																																																			|
+|----								|----																																																				|----			|----		|----																																																																																			|
+|method							|String																																																			| -				|GET		|HTTP 请求方法, 默认为：GET. 可选值： GET, POST, DELETE, PUT																																																							|
+|data								|Object																																																			| -				|-			|发送的数据																																																																																|
+|dataAsQueryString	|Boolean																																																		| -				|true		|是否强制转换data为queryString																																																																						|
+|content						|String &#124; Buffer																																												| -				|-			|手动设置请求的payload，设置后会忽略data																																																																	|
+|stream							|ReadStream																																																	|-				|-			|发送请求正文的可读数据流																																																																									|
+|writeStream				|WriteStream																																																|-				|-			|接受响应数据的可写数据流																																																																									|
+|consumeWriteStream	|Boolean																																																		|-				|true		|是否等待 writeStream 完全写完才算响应全部接收完毕																																																												|
+|files							|Array&lt;ReadStream&#124;Buffer&#124;String&gt; &#124; Object &#124; ReadStream &#124; Buffer &#124; String| -				|-			|上传的文件，设置后将会使用 multipart/form-data 格式。如果未设置method，将会自动将method设置为POST																																				|
+|contentType				|String																																																			| -				|-			|上传数据的格式，设为`json`会自动在`header`内设置`Content-Type: application/json`																																													|
+|nestedQuerystring	|Boolean																																																		| -				|-			|转换data为queryString时默认不支持嵌套Object，此选项设置为true则支持转换嵌套Object																																												|
+|dataType						|String																																																			| -				|-			|返回的数据格式，可选值为 'json'（返回数据转为JSON），'text'（返回数据转为字符串）， ''（返回数据不做处理，默认值）																												|
+|fixJSONCtlChars		|Boolean																																																		|-				|false	|在JSON.parse之前处理响应结果中的控制字符（Control Character）																																																						|
+|headers						|Object																																																			| -				|-			|请求头																																																																																		|
+|timeout						|Number &#124; Array																																												| -				|-			|超时时间设置。设置为数组时第一项为请求超时，第二项为返回超时。设置为数字时相当于同时设置请求超时和返回超时，即`timeout:3000`效果等于`timeouut:[3000,3000]`								|
+|auth								|String																																																			|-				|-			|简单登录授权（Basic Authentication）参数，必须按照 `user:password` 格式设置																																															|
+|digestAuth					|String																																																			|-				|-			|摘要登录授权（Digest Authentication）参数，必须按照 `user:password` 格式设置																																															|
+|agent							|[http.Agent](https://nodejs.org/api/http.html#http_class_http_agent)																				|-				|-			|http代理，如不使用可设为false																																																																						|
+|httpsAgent					|[https.Agent](https://nodejs.org/api/https.html#https_class_https_agent)																		|-				|-			|https代理，如不使用可设为false																																																																						|
+|ca									|String&#124;Buffer&#124;Array																																							|-				|-			|证书内容																																																																																	|
+|rejectUnauthorized	|Boolean																																																		|-				|true		|是否在证书不受信任时返回错误																																																																							|
+|pfx								|String&#124;Buffer																																													|-				|-			|包含了私钥, 证书和CA certs, 一般是 PFX 或者 PKCS12 格式																																																									|
+|key								|String&#124;Buffer																																													|-				|-			|PEF格式的服务器的私钥																																																																										|
+|cert								|String&#124;Buffer																																													|-				|-			|PEM格式的服务器证书密钥																																																																									|
+|passphrase					|String																																																			|-				|-			|私钥或pfx密码的字符串																																																																										|
+|ciphers						|String																																																			|-				|-			|使用或排除的cipher																																																																												|
+|secureProtocol			|String																																																			|-				|-			|SSL 使用的方法，例如，`SSLv3_method` 强制 SSL 版本为3。																																																									|
+|followRedirect			|Boolean																																																		|-				|false	|收到3xx响应时是否自动重定向																																																																							|
+|maxRedirects				|Number																																																			|-				|10			|最高重定向次数																																																																														|
+|formatRedirectUrl	|Function																																																		|-				|-			|手动格式化url																																																																														|
+|beforeRequest			|Function																																																		|-				|-			|请求发送前的钩子																																																																													|
+|streaming					|Boolean																																																		|-				|false	|是否直接返回响应流，开启 streaming 之后，HttpClient 会在拿到响应对象 res 之后马上返回， 此时 result.headers 和 result.status 已经可以读取到，只是没有读取 data 数据而已。|
+|gzip								|Boolean																																																		|-				|false	|是否支持 gzip 响应格式。开启 gzip 之后，HttpClient 将自动设置 Accept-Encoding: gzip 请求头， 并且会自动解压带 Content-Encoding: gzip 响应头的数据。											|
+|timing							|Boolean																																																		|-				|false	|是否开启请求各阶段的时间测量																																																																							|
+|enableProxy				|Boolean																																																		|-				|false	|是否启用代理																																																																															|
+|proxy							|String																																																			|-				|null		| 代理地址																																																																																|
+|lookup							|Function																																																		|-				|-			|自定义DNS查询函数																																																																												|
+|checkAddress				|Function																																																		|-				|-			|校验请求地址																																																																															|
+|trace							|Boolean																																																		|-				|false	|是否启用捕获堆栈																																																																													|
 
 
 **示例代码**
