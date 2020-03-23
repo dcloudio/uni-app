@@ -190,7 +190,6 @@ uniCloud.callFunction({
 
 以如下代码为例，`count`作为全局变量，当多次调用该云函数时，可能会出现变量累加的情况（实例未复用时，每次返回0，若实例被复用，则可能返回1、2、3等各种意外情况）
 
-**云函数中使用的时区是 `UTC+0`，而不是 `UTC+8`，在云函数中使用时间时需特别注意。**
 
 ```javascript
 let count = 0;
@@ -201,6 +200,11 @@ module.exports = async (event) => {
   //若实例被复用，则可能返回1、2、3等各种意外情况
 }
 ```
+
+**Tips**
+
+- 云函数中使用的时区是 `UTC+0`，而不是 `UTC+8`，在云函数中使用时间时需特别注意。
+- 使用阿里云作为服务商时，暂时无法使用相对路径读取文件，如：`fs.readFileSync('./info')`，可以替换为`fs.readFileSync(path.resolve(__dirname,'./info'))`
 
 
 <span id="callbyfunction"></span>
