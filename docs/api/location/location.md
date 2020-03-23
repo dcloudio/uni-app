@@ -80,6 +80,8 @@ uni.getLocation({
 
 |参数名|类型|必填|说明|
 |:-|:-|:-|:-|
+|latitude|String|否|目标地纬度，仅微信小程序2.9.0+支持|
+|longitude|String|否|目标地经度，仅微信小程序2.9.0+支持|
 |keyword|String|否|搜索关键字，仅App平台支持|
 |success|Function|是|接口调用成功的回调函数，返回内容详见返回参数说明。|
 |fail|Function|否|接口调用失败的回调函数（获取定位失败、用户取消等情况下触发）|
