@@ -156,14 +156,9 @@ export function getStatusbarHeight () {
 }
 
 export function getScreenInfo () {
-  const orientation = plus.navigator.getOrientation()
-  const landscape = Math.abs(orientation) === 90
-  // 安卓 plus 接口获取的屏幕大小值不为整数
-  const width = plus.screen.resolutionWidth
-  const height = plus.screen.resolutionHeight
-  // 根据方向纠正宽高
+  const { resolutionWidth, resolutionHeight } = plus.screen.getCureentSize()
   return {
-    screenWidth: Math[landscape ? 'max' : 'min'](width, height),
-    screenHeight: Math[landscape ? 'min' : 'max'](width, height)
+    screenWidth: Math.round(resolutionWidth),
+    screenHeight: Math.round(resolutionHeight)
   }
 }
