@@ -87,8 +87,8 @@ function createKeepAliveApiCallback (apiName, callback) {
   const callbackId = invokeCallbackId++
   const invokeCallbackName = 'api.' + apiName + '.' + callbackId
 
-  const invokeCallback = function (res) {
-    callback(res)
+  const invokeCallback = function (res, extras) {
+    callback(res, extras)
   }
 
   invokeCallbacks[callbackId] = {
@@ -232,15 +232,15 @@ function createInvokeCallback (apiName, params = {}, extras = {}) {
     callbackId
   }
 }
-
-export function invokeCallbackHandler (invokeCallbackId, res) {
+// onNativeEventReceive((event,data)=>{}) 需要两个参数，写死最多两个参数，避免改动太大，影响已有逻辑
+export function invokeCallbackHandler (invokeCallbackId, res, extras) {
   if (typeof invokeCallbackId === 'number') {
     const invokeCallback = invokeCallbacks[invokeCallbackId]
     if (invokeCallback) {
       if (!invokeCallback.keepAlive) {
         delete invokeCallbacks[invokeCallbackId]
       }
-      return invokeCallback.callback(res)
+      return invokeCallback.callback(res, extras)
     }
   }
   return res

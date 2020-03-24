@@ -1,16 +1,19 @@
 import {
-  isFn
-}
-  from 'uni-shared'
+  invoke
+} from 'uni-core/service/bridge'
+
+import {
+  onMethod
+} from 'uni-core/service/platform'
 
 const callbacks = []
 
-export function onNativeEventReceive (callback) {
-  isFn(callback) &&
-    callbacks.indexOf(callback) === -1 &&
-    callbacks.push(callback)
-}
+onMethod('uniMPNativeEvent', function (res) {
+  callbacks.forEach(callbackId => {
+    invoke(callbackId, res.event, res.data)
+  })
+})
 
-export function consumeNativeEvent (event, data) {
-  callbacks.forEach(callback => callback(event, data))
+export function onNativeEventReceive (callbackId) {
+  callbacks.push(callbackId)
 }
