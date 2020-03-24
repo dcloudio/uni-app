@@ -27,6 +27,7 @@ const {
 const IP = auth.getClientIP()
 ```
 
+<span id="createticket"></span>
 ### auth.createTicket(String customUserId, Object createTicketOptions)
 
 开发者可以使用云函数创建登录凭证，提供给客户端进行登录操作。[详见](uniCloud/authentication.md#自定义登录)
@@ -43,5 +44,5 @@ let customUserId = '123456';
 const ticket = auth.createTicket(customUserId, {
   refresh: 10 * 60 * 1000 // 每十分钟刷新一次登录态， 默认为一小时
 });
-// 然后把 ticket 发送给客户端
+// 然后把 ticket 发送给客户端，由客户端调用auth.signInWithTicket()使用
 ```

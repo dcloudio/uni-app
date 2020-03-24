@@ -99,7 +99,7 @@ $ curl https://${spaceId}.service.tcloudbase.com/${path}
 ```
 
 
-使用POST请求`https://${spaceId}.service.tcloudbase.com/${functionPath}`，云函数接收到的`event`为请求发送的数据
+使用POST请求`https://${spaceId}.service.tcloudbase.com/${functionPath}`，云函数接收到的`event`为请求发送的数据，**uni.request默认content-type为application/json**
 
 ```
 // 以uni.request为例
@@ -115,8 +115,21 @@ uni.request({
   }
 })
 
-// 云函数收到的event为
-{a: 1, b: 2}
+// 云函数收到的event为, 注意如果直接return此格式数据可能会被作为集成响应处理，参考下面的集成响应文档
+```
+{
+    path: '/',
+    httpMethod: 'GET',
+    headers: {
+    	...
+    	"content-type": 'application/json'
+    },
+    queryStringParameters: {a: "1", b: "2"},
+    requestContext: {云开发相关信息},
+    isBase64Encoded: false,
+    body: '{"a":1,"b":2}',
+}
+```
 ```
 
 

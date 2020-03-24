@@ -1,6 +1,10 @@
 **本章内容仅针对腾讯云开发，阿里侧暂不支持**
 
-**腾讯云侧必须以任意登录方式登录之后才可以访问云端资源。开发者在控制台开启匿名登录之后，可以在客户端调用匿名登录来获取访问云端资源的权限**
+## 名词解释
+
+- Ticket（票据）：由云函数调用`createTicket`返回的票据，用于客户端使用票据进行登录操作
+- 匿名登录：用户未进行登录操作的状态
+- 短期访问令牌：用户身份的凭证（access token），调用`signInWithTicket`或者`linkAndRetrieveDataWithTicket`之后会自动进行存储
 
 ## uniCloud.auth()
 
@@ -12,7 +16,7 @@
 const auth = uniCloud.auth()
 ```
 
-## auth.signInAnonymously()
+<!-- ## auth.signInAnonymously()
 
 进行匿名登录，详细描述参考[匿名登录](#匿名登录)
 
@@ -21,8 +25,9 @@ const auth = uniCloud.auth()
 ```js
 const auth = uniCloud.auth()
 auth.signInAnonymously()
-```
+``` -->
 
+<span id="signinwithticket"></span>
 ## auth.signInWithTicket()
 
 使用，详细描述参考[登录流程](#cloudtoken)
@@ -78,21 +83,22 @@ auth.signInWithTicket('YourTicket').then(() => {
   })
 ```
 
-## 自定义登录
+<span id="cloudtoken"></span>
+## 登录流程
 
-`uniCloud`允许开发者使用特定的登录凭据`Ticket`对用户进行身份认证。开发者可以使用`服务端 SDK`来创建`Ticket`，并且将`token`传入到应用内，然后调用`signInWithTicket()`获得登录态。
+`uniCloud`允许开发者使用特定的登录凭据`Ticket`对用户进行身份认证。开发者可以使用`服务端 SDK`来创建`Ticket`，并且将`Ticket`传入到应用内，然后调用`signInWithTicket()`获得登录态。
 
-### 获取私钥文件
+### 第一步：获取私钥文件
 
 登录uniCloud控制台[uniCloud控制台](http://unicloud.dcloud.net.cn/)，在`用户管理页面`中，点击“登录设置”，然后**生成并下载私钥**：
 
 ![uniCloud下载私钥](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/auth-custom.png)
 
-### 使用云函数创建登录凭据
+### 第二步：使用云函数创建登录凭据
 
-获取私钥文件之后，重命名为`credentials.json`放在云函数同级目录即可
+获取私钥文件（`credentials.json`）之后，放在需要生成`Ticket`的云函数内`index.js`同级即可
 
-`服务端 SDK`内置了生成`Ticket`的接口，开发者需要提供一个自定义的`customUserId`作为用户的唯一身份标识。`Ticket`有效期为**5分钟**，过期则失效。
+`服务端 SDK`内置了生成`Ticket`的接口，开发者需要提供一个自定义的`customUserId`作为用户的**唯一身份标识**。`Ticket`有效期为**5分钟**，过期则失效。
 
 每个用户的`customUserId`不能相同，每次用户重新登录时，原有的登录态将会失效。
 
@@ -132,7 +138,7 @@ tcb.init({
 });
 ``` -->
 
-### 客户端上使用Ticket登录
+### 第三步：客户端上使用Ticket登录
 
 创建`Ticket`之后，开发者应将`Ticket`发送至客户端，然后使用`客户端SDK`提供的 `signInWithTicket()` 登录`uniCloud`：
 
@@ -146,24 +152,9 @@ auth.signInWithTicket(ticket).then(() => {
 ## 匿名登录
 uniCloud允许开发者使用匿名登录的方式进行静默授权，可以避免强制登录。在匿名状态下可正常的调用uniCloud的资源，开发者同时可以配合安全规则针对匿名用户制定对应的访问限制。
 
-### 开启匿名登录授权
-登录uniCloud控制台[uniCloud控制台](http://unicloud.dcloud.net.cn/)，在`用户管理页面`中，点击“登录设置”，点击“登录设置”，然后在“匿名登录”一栏打开/关闭可用状态。
-
-![uniCloud匿名登录](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/auth-anonymously.png)
-
-### 客户端进行匿名登录
-```js
-await auth.signInAnonymously().catch(err=>{
-  // 登录失败会抛出错误
-});
-// 匿名登录成功检测登录状态isAnonymous字段为true
-const loginState = await auth.getLoginState();
-console.log(loginState.isAnonymous) // true
-```
-
 #### 匿名用户重新登录
 
-匿名用户如果要重新使用开发者提供的身份登录，可以调用`auth.signInWithTicket`来进行。[参考](#客户端上使用Ticket登录)
+匿名用户如果要重新使用开发者提供的身份登录，可以调用`auth.signInWithTicket`来进行。[参考](#signinwithticket)
 
 #### 匿名用户转化为正式用户
 目前uniCloud支持将匿名用户转化为正式用户，此转正用户将会继承匿名用户在云端创建的资源，流程如下：
@@ -195,7 +186,7 @@ uniCloud.on('loginStateExpire', () => {
 
 JS SDK 会在登录态生效期间，自动刷新和维护短期访问令牌（access token），每次成功刷新时会触发此事件。
 
-对于两种登录态并存（uniCloud、自身业务登录态）的 Web 应用，这个事件可以用于同步登录态之间的状态。
+对于两种登录态并存（uniCloud、自身业务登录态）的应用，这个事件可以用于同步登录态之间的状态。
 
 ```js
 uniCloud.on('refreshAccessToken', () => {
@@ -207,7 +198,7 @@ uniCloud.on('refreshAccessToken', () => {
 
 `shouldRefreshAccessToken` 接收一个 `callback` 函数，并且会在刷新短期访问令牌前调用此 `callback` 函数，根据返回值决定是否要刷新短期访问令牌。
 
-对于两种登录态并存（uniCloud、自身业务登录态）的 Web 应用，可以在 `callback` 内判断自身业务登录态是否失效，从而决定是否续期 uniCloud 的短期访问令牌。
+对于两种登录态并存（uniCloud、自身业务登录态）的应用，可以在 `callback` 内判断自身业务登录态是否失效，从而决定是否续期 uniCloud 的短期访问令牌。
 
 ```js
 auth.shouldRefreshAccessToken(() => {
