@@ -241,10 +241,14 @@ export default {
       }
       const quill = this.quill = new Quill(this.$el, options)
       const $el = quill.root
-      const events = ['focus', 'blur']
+      const events = ['focus', 'blur', 'input']
       events.forEach(name => {
         $el.addEventListener(name, ($event) => {
-          this.$trigger(name, $event, this.getContents())
+          if (name === 'input') {
+            $event.stopPropagation()
+          } else {
+            this.$trigger(name, $event, this.getContents())
+          }
         })
       })
       quill.on(Quill.events.TEXT_CHANGE, () => {
