@@ -188,6 +188,7 @@ export default {
           default:
             break
         }
+        this.updateStatus(range)
       } else {
         errMsg = 'not ready'
       }
@@ -231,7 +232,7 @@ export default {
         toolbar: false,
         readOnly: this.readOnly,
         placeholder: this.placeholder,
-        modules: { }
+        modules: {}
       }
       if (imageResizeModules.length) {
         Quill.register('modules/ImageResize', window.ImageResize.default)
@@ -253,6 +254,11 @@ export default {
       })
       quill.on(Quill.events.TEXT_CHANGE, () => {
         this.$trigger('input', {}, this.getContents())
+      })
+      quill.on(Quill.events.SELECTION_CHANGE, this.updateStatus.bind(this))
+      quill.on(Quill.events.SCROLL_OPTIMIZE, () => {
+        const range = quill.selection.getRange()[0]
+        this.updateStatus(range)
       })
       quill.clipboard.addMatcher(Node.ELEMENT_NODE, (node, delta) => {
         if (this.skipMatcher) {
@@ -307,6 +313,14 @@ export default {
       const delta = this.quill.clipboard.convert(content)
       this.skipMatcher = false
       return delta
+    },
+    updateStatus (range) {
+      const status = range ? this.quill.getFormat(range) : {}
+      const keys = Object.keys(status)
+      if (keys.length !== Object.keys(this.__status || {}).length || keys.find(key => status[key] !== this.__status[key])) {
+        this.__status = status
+        this.$trigger('statuschange', {}, status)
+      }
     }
   }
 }
