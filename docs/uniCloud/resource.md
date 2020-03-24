@@ -6,3 +6,4 @@
 - [GraceAdmin](https://ext.dcloud.net.cn/plugin?id=1347)： uniCloud 的 pc 端管理后台框架，快速搭建pc管理界面。
 - [uniCloud微信支付示例](https://ext.dcloud.net.cn/plugin?id=1369)： 微信支付demo之unicloud版。
 - [uniCloud留言板示例](https://ext.dcloud.net.cn/plugin?id=1267)： 微信登陆，数据库的增删查；（项目支持微信小程序和app）
+- [uniCloud微信发红包-企业付款到零钱](https://ext.dcloud.net.cn/plugin?id=1489)：知识点：uniCloud.httpclient携证书发起请求
