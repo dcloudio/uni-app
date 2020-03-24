@@ -2,13 +2,9 @@ import {
   invoke
 } from 'uni-core/service/bridge'
 
-import {
-  onMethod
-} from 'uni-core/service/platform'
-
 const callbacks = []
-
-onMethod('uniMPNativeEvent', function (res) {
+// 不使用uni-core/service/platform中的onMethod，避免循环引用
+UniServiceJSBridge.on('api.uniMPNativeEvent', function (res) {
   callbacks.forEach(callbackId => {
     invoke(callbackId, res.event, res.data)
   })
