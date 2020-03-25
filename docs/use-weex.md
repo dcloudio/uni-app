@@ -17,7 +17,7 @@ nvue 解决了这个问题，让前端工程师可以直接开发完整 App，�
 
 ## 适用场景
 
-nvue的原生排版，其组件和API写法与vue一致，其组件还比vue的组件增加了更多，[详见](https://uniapp.dcloud.io/component/list)。但nvue在css的写法限制较多，具体如下：
+nvue的组件和API写法与vue页面一致，其内置组件还比vue页面内置组件增加了更多，[详见](https://uniapp.dcloud.io/component/list)。但nvue在css的写法限制较多，具体如下：
 - nvue的css仅支持flex布局，是webview的css语法的子集。这是因为操作系统原生排版不支持非flex之外的web布局。当然flex足以排布出各种页面，只是写法需要适应。
 - nvue的css，在选择器方面支持的较少，只支持简单的class="classA"。
 - class 进行绑定时只支持数组语法。
@@ -571,6 +571,7 @@ canvas API使用，详见canvas文档。
 - Android端在一个页面内使用大量圆角边框会造成性能问题，尤其是多个角的样式还不一样的话更耗费性能。应避免这类使用。
 - nvue 的各组件在安卓端默认是透明的，如果不设置background-color，可能会导致出现重影的问题。
 - 在 App.vue 中定义的全局js变量不会在 nvue 页面生效。globalData和vuex是生效的。
+- App.vue 中定义的全局css，对nvue和vue页面同时生效。如果全局css中有些css在nvue下不支持，编译时控制台会报警，建议把这些不支持的css包裹在条件编译里，`APP-PLUS-NVUE`
 - nvue 切换横竖屏时可能导致样式出现问题，建议有 nvue 的页面锁定手机方向。
 - 不能在 style 中引入字体文件，nvue 中字体图标的使用参考：[weex 加载自定义字体](https://weex.apache.org/zh/docs/modules/dom.html#addrule)。如果是本地字体，可以用plus.io的API转换路径。
 - 目前不支持在 nvue 页面使用 typescript/ts。
