@@ -3,11 +3,15 @@ import {
   UI_EVENT
 } from '../../../constants'
 
-function findParentCid (vm) {
+import {
+  generateId
+} from '../../../helpers/util'
+
+function findParent (vm) {
   let parent = vm.$parent
   while (parent) {
     if (parent._$id) {
-      return parent._$id
+      return parent
     }
     parent = parent.$parent
   }
@@ -30,11 +34,7 @@ export class VDomSync {
   }
 
   initVm (vm) {
-    if (!vm.$parent) {
-      vm._$id = '-1'
-    } else {
-      vm._$id = findParentCid(vm) + ',' + vm.$vnode.data.attrs._i
-    }
+    vm._$id = generateId(vm, findParent(vm))
     let vData = this.addBatchVData[vm._$id]
     if (!vData) {
       console.error('cid unmatched', vm)

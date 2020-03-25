@@ -24,6 +24,10 @@ import {
 } from '../../constants'
 
 import {
+  generateId
+} from '../../../helpers/util'
+
+import {
   diff
 } from './diff'
 
@@ -57,10 +61,7 @@ export function initData (Vue) {
     if (!this._$vd) {
       return
     }
-    // TODO 自定义组件中的 slot 数据采集是在组件内部，导致所在 context 中无法获取到差量数据
-    // 如何保证每个 vm 数据有变动，就加入 diff 中呢？
-    // 每次变化，可能触发多次 beforeUpdate，updated
-    // 子组件 updated 时，可能会增加父组件的 diffData，如 slot 等情况
+
     diff(this._$newData, this._$data, this._$vdUpdatedData)
     this._$data = JSON.parse(JSON.stringify(this._$newData))
     // setTimeout 一下再 nextTick（ 直接 nextTick 的话，会紧接着该 updated 做 flush，导致父组件 updated 数据被丢弃）
@@ -87,11 +88,7 @@ export function initData (Vue) {
         this._$vdomSync = new VDomSync(this.$options.pageId, this.$options.pagePath, this)
       }
       if (this._$vd) {
-        if (!this.$parent) {
-          this._$id = '-1'
-        } else {
-          this._$id = this.$parent._$id + ',' + this.$vnode.data.attrs._i
-        }
+        this._$id = generateId(this, this.$parent)
         this._$vd.addVm(this)
         this._$vdMountedData = Object.create(null)
         this._$setData(MOUNTED_DATA, this._$vdMountedData)
