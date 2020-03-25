@@ -13,26 +13,26 @@
 |:-|:-|:-|:-|:-|
 |src|String||要播放视频的资源地址||
 |autoplay|Boolean|false|是否自动播放||
-|loop|Boolean|false|是否循环播放|字节跳动小程序不支持|
+|loop|Boolean|false|是否循环播放||
 |muted|Boolean|false|是否静音播放|字节跳动小程序不支持|
 |initial-time|Number||指定视频初始播放位置，单位为秒（s）。|字节跳动小程序不支持|
 |duration|Number||指定视频时长，单位为秒（s）。|字节跳动小程序不支持|
-|controls|Boolean|true|是否显示默认播放控件（播放/暂停按钮、播放进度、时间）|字节跳动小程序不支持|
+|controls|Boolean|true|是否显示默认播放控件（播放/暂停按钮、播放进度、时间）||
 |danmu-list|Object Array||弹幕列表|字节跳动小程序不支持|
 |danmu-btn|Boolean|false|是否显示弹幕按钮，只在初始化时有效，不能动态变更|字节跳动小程序不支持|
 |enable-danmu|Boolean|false|是否展示弹幕，只在初始化时有效，不能动态变更|字节跳动小程序不支持|
 |page-gesture|Boolean|false|在非全屏模式下，是否开启亮度与音量调节手势|微信小程序、H5|
 |direction|Number||设置全屏时视频的方向，不指定则根据宽高比自动判断。有效值为 0（正常竖向）, 90（屏幕逆时针90度）, -90（屏幕顺时针90度）|H5和字节跳动小程序不支持|
 |show-progress|Boolean|true|若不设置，宽度大于240时才会显示|字节跳动小程序不支持|
-|show-fullscreen-btn|Boolean|true|是否显示全屏按钮|字节跳动小程序不支持|
-|show-play-btn|Boolean|true|是否显示视频底部控制栏的播放按钮|字节跳动小程序不支持|
+|show-fullscreen-btn|Boolean|true|是否显示全屏按钮||
+|show-play-btn|Boolean|true|是否显示视频底部控制栏的播放按钮||
 |show-center-play-btn|Boolean|true|是否显示视频中间的播放按钮|字节跳动小程序不支持|
 |enable-progress-gesture|Boolean|true|是否开启控制进度的手势|字节跳动小程序不支持|
-|objectFit|String|contain|当视频大小与 video 容器大小不一致时，视频的表现形式。contain：包含，fill：填充，cover：覆盖|微信小程序、H5|
-|poster|String||视频封面的图片网络资源地址，如果 controls 属性值为 false 则设置 poster 无效|字节跳动小程序不支持|
+|object-fit|String|contain|当视频大小与 video 容器大小不一致时，视频的表现形式。contain：包含，fill：填充，cover：覆盖|微信小程序、字节跳动小程序、H5|
+|poster|String||视频封面的图片网络资源地址，如果 controls 属性值为 false 则设置 poster 无效||
 |show-mute-btn|Boolean|false|是否显示静音按钮|微信小程序|
 |title|String||视频的标题，全屏时在顶部展示|微信小程序|
-|play-btn-position|String|bottom|播放按钮的位置|微信小程序|
+|play-btn-position|String|bottom|播放按钮的位置|微信小程序、字节跳动小程序|
 |enable-play-gesture|Boolean|false|是否开启播放手势，即双击切换播放/暂停|微信小程序|
 |auto-pause-if-navigate|Boolean|true|当跳转到其它小程序页面时，是否自动暂停本页面的视频|微信小程序|
 |auto-pause-if-open-native|Boolean|true|当跳转到其它微信原生页面时，是否自动暂停本页面的视频|微信小程序|
