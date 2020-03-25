@@ -2319,8 +2319,8 @@ var serviceContext = (function () {
     const callbackId = invokeCallbackId++;
     const invokeCallbackName = 'api.' + apiName + '.' + callbackId;
 
-    const invokeCallback = function (res) {
-      callback(res);
+    const invokeCallback = function (res, extras) {
+      callback(res, extras);
     };
 
     invokeCallbacks[callbackId] = {
@@ -2464,15 +2464,15 @@ var serviceContext = (function () {
       callbackId
     }
   }
-
-  function invokeCallbackHandler (invokeCallbackId, res) {
+  // onNativeEventReceive((event,data)=>{}) 需要两个参数，写死最多两个参数，避免改动太大，影响已有逻辑
+  function invokeCallbackHandler (invokeCallbackId, res, extras) {
     if (typeof invokeCallbackId === 'number') {
       const invokeCallback = invokeCallbacks[invokeCallbackId];
       if (invokeCallback) {
         if (!invokeCallback.keepAlive) {
           delete invokeCallbacks[invokeCallbackId];
         }
-        return invokeCallback.callback(res)
+        return invokeCallback.callback(res, extras)
       }
     }
     return res
@@ -2970,15 +2970,10 @@ var serviceContext = (function () {
   }
 
   function getScreenInfo () {
-    const orientation = plus.navigator.getOrientation();
-    const landscape = Math.abs(orientation) === 90;
-    // 安卓 plus 接口获取的屏幕大小值不为整数
-    const width = plus.screen.resolutionWidth;
-    const height = plus.screen.resolutionHeight;
-    // 根据方向纠正宽高
+    const { resolutionWidth, resolutionHeight } = plus.screen.getCureentSize();
     return {
-      screenWidth: Math[landscape ? 'max' : 'min'](width, height),
-      screenHeight: Math[landscape ? 'min' : 'max'](width, height)
+      screenWidth: Math.round(resolutionWidth),
+      screenHeight: Math.round(resolutionHeight)
     }
   }
 
@@ -3990,16 +3985,6 @@ var serviceContext = (function () {
     return true
   }
 
-  function checkDevices (data) {
-    data.devices = data.devices.map(device => {
-      var advertisData = device.advertisData;
-      if (advertisData && typeof advertisData !== 'string') {
-        device.advertisData = arrayBufferToBase64$2(advertisData);
-      }
-      return device
-    });
-  }
-
   var onBluetoothAdapterStateChange;
   var onBluetoothDeviceFound;
   var onBLEConnectionStateChange;
@@ -4020,7 +4005,7 @@ var serviceContext = (function () {
   }
 
   function startBluetoothDevicesDiscovery (data, callbackId) {
-    onBluetoothDeviceFound = onBluetoothDeviceFound || bluetoothOn('onBluetoothDeviceFound', checkDevices);
+    onBluetoothDeviceFound = onBluetoothDeviceFound || bluetoothOn('onBluetoothDeviceFound');
     bluetoothExec('startBluetoothDevicesDiscovery', callbackId, data);
   }
 
@@ -4029,7 +4014,7 @@ var serviceContext = (function () {
   }
 
   function getBluetoothDevices (data, callbackId) {
-    bluetoothExec('getBluetoothDevices', callbackId, {}, checkDevices);
+    bluetoothExec('getBluetoothDevices', callbackId, {});
   }
 
   function getConnectedBluetoothDevices (data, callbackId) {
@@ -4055,18 +4040,12 @@ var serviceContext = (function () {
   }
 
   function notifyBLECharacteristicValueChange (data, callbackId) {
-    onBLECharacteristicValueChange = onBLECharacteristicValueChange || bluetoothOn('onBLECharacteristicValueChange',
-      data => {
-        data.value = arrayBufferToBase64$2(data.value);
-      });
+    onBLECharacteristicValueChange = onBLECharacteristicValueChange || bluetoothOn('onBLECharacteristicValueChange');
     bluetoothExec('notifyBLECharacteristicValueChange', callbackId, data);
   }
 
   function notifyBLECharacteristicValueChanged (data, callbackId) {
-    onBLECharacteristicValueChange = onBLECharacteristicValueChange || bluetoothOn('onBLECharacteristicValueChange',
-      data => {
-        data.value = arrayBufferToBase64$2(data.value);
-      });
+    onBLECharacteristicValueChange = onBLECharacteristicValueChange || bluetoothOn('onBLECharacteristicValueChange');
     bluetoothExec('notifyBLECharacteristicValueChanged', callbackId, data);
   }
 
@@ -4076,9 +4055,6 @@ var serviceContext = (function () {
   }
 
   function writeBLECharacteristicValue (data, callbackId) {
-    if (typeof data.value === 'string') {
-      data.value = base64ToArrayBuffer$2(data.value);
-    }
     bluetoothExec('writeBLECharacteristicValue', callbackId, data);
   }
 
@@ -4933,16 +4909,6 @@ var serviceContext = (function () {
     }
   }
 
-  var safeAreaInsets = {
-    get bottom () {
-      if (plus.os.name === 'iOS') {
-        const safeArea = plus.navigator.getSafeAreaInsets();
-        return safeArea ? safeArea.bottom : 0
-      }
-      return 0
-    }
-  };
-
   const TABBAR_HEIGHT = 50;
   const isIOS$1 = plus.os.name === 'iOS';
   let config;
@@ -5098,7 +5064,7 @@ var serviceContext = (function () {
       return visible
     },
     get height () {
-      return (config && config.height ? parseFloat(config.height) : TABBAR_HEIGHT) + safeAreaInsets.bottom
+      return (config && config.height ? parseFloat(config.height) : TABBAR_HEIGHT) + plus.navigator.getSafeAreaInsets().deviceBottom
     },
     // tabBar是否遮挡内容区域
     get cover () {
@@ -7338,15 +7304,15 @@ var serviceContext = (function () {
   }
 
   const callbacks$3 = [];
+  // 不使用uni-core/service/platform中的onMethod，避免循环引用
+  UniServiceJSBridge.on('api.uniMPNativeEvent', function (res) {
+    callbacks$3.forEach(callbackId => {
+      invoke$1(callbackId, res.event, res.data);
+    });
+  });
 
-  function onNativeEventReceive (callback) {
-    isFn(callback) &&
-      callbacks$3.indexOf(callback) === -1 &&
-      callbacks$3.push(callback);
-  }
-
-  function consumeNativeEvent (event, data) {
-    callbacks$3.forEach(callback => callback(event, data));
+  function onNativeEventReceive (callbackId) {
+    callbacks$3.push(callbackId);
   }
 
   function sendNativeEvent (event, data, callback) {
@@ -9486,7 +9452,6 @@ var serviceContext = (function () {
     getSubNVueById: getSubNVueById,
     getCurrentSubNVue: getCurrentSubNVue,
     onNativeEventReceive: onNativeEventReceive,
-    consumeNativeEvent: consumeNativeEvent,
     sendNativeEvent: sendNativeEvent,
     navigateBack: navigateBack$1,
     navigateTo: navigateTo$1,
@@ -12571,11 +12536,8 @@ var serviceContext = (function () {
       });
     });
 
-    globalEvent.addEventListener('uniMPNativeEvent', function ({
-      event,
-      data
-    }) {
-      consumeNativeEvent(event, data);
+    globalEvent.addEventListener('uniMPNativeEvent', function (event) {
+      publish('uniMPNativeEvent', event);
     });
 
     plus.globalEvent.addEventListener('plusMessage', onPlusMessage$1);
@@ -12890,7 +12852,7 @@ var serviceContext = (function () {
 
   const isAndroid = plus.os.name.toLowerCase() === 'android';
   const FOCUS_TIMEOUT = isAndroid ? 300 : 700;
-  const HIDE_TIMEOUT = 800;
+  const HIDE_TIMEOUT = isAndroid ? 800 : 300;
   let keyboardHeight = 0;
   let onKeyboardShow;
   let focusTimer;
@@ -13075,16 +13037,12 @@ var serviceContext = (function () {
     removeElement (elm) {
       const elmIndex = this.elements.indexOf(elm);
       if (elmIndex === -1) {
-        return console.error(`removeElement[${elm.cid}][${elm.nid}] not found`)
-      }
-      this.elements.splice(elmIndex, 1);
-    }
-
-    removeElementByCid (cid) {
-      if (!cid) {
+        if (process.env.NODE_ENV !== 'production') {
+          console.error(`removeElement[${elm.cid}][${elm.nid}] not found`);
+        }
         return
       }
-      this.elements = this.elements.filter(elm => elm.cid !== cid);
+      this.elements.splice(elmIndex, 1);
     }
 
     push (type, cid, data, options) {
@@ -13170,6 +13128,22 @@ var serviceContext = (function () {
       this.elements.length = 0;
       removeVdSync(this.pageId);
     }
+  }
+
+  function generateId (vm, parent) {
+    if (!vm.$parent) {
+      return '-1'
+    }
+    const vnode = vm.$vnode;
+    const context = vnode.context;
+    // slot 内的组件，需要补充 context 的 id，否则可能与内部组件索引值一致，导致 id 冲突
+    if (context && context !== parent && context._$id) {
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('generateId:' + context._$id + ';' + parent._$id + ',' + vnode.data.attrs._i);
+      }
+      return context._$id + ';' + parent._$id + ',' + vnode.data.attrs._i
+    }
+    return parent._$id + ',' + vnode.data.attrs._i
   }
 
   function setResult (data, k, v) {
@@ -13279,10 +13253,7 @@ var serviceContext = (function () {
       if (!this._$vd) {
         return
       }
-      // TODO 自定义组件中的 slot 数据采集是在组件内部，导致所在 context 中无法获取到差量数据
-      // 如何保证每个 vm 数据有变动，就加入 diff 中呢？
-      // 每次变化，可能触发多次 beforeUpdate，updated
-      // 子组件 updated 时，可能会增加父组件的 diffData，如 slot 等情况
+
       diff(this._$newData, this._$data, this._$vdUpdatedData);
       this._$data = JSON.parse(JSON.stringify(this._$newData));
       // setTimeout 一下再 nextTick（ 直接 nextTick 的话，会紧接着该 updated 做 flush，导致父组件 updated 数据被丢弃）
@@ -13309,11 +13280,7 @@ var serviceContext = (function () {
           this._$vdomSync = new VDomSync(this.$options.pageId, this.$options.pagePath, this);
         }
         if (this._$vd) {
-          if (!this.$parent) {
-            this._$id = '-1';
-          } else {
-            this._$id = this.$parent._$id + ',' + this.$vnode.data.attrs._i;
-          }
+          this._$id = generateId(this, this.$parent);
           this._$vd.addVm(this);
           this._$vdMountedData = Object.create(null);
           this._$setData(MOUNTED_DATA, this._$vdMountedData);

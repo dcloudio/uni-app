@@ -103,7 +103,7 @@ export default {
     this._webview = page.$getAppWebview()
     attrs.forEach(key => {
       let titleNView = {}
-      if (this[key] || this[key].length > 0){
+      if (this[key] || this[key].length > 0) {
         titleNView[key] = this[key]
       }
       this.setTitleNView(titleNView)
