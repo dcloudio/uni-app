@@ -178,8 +178,8 @@ export default {
       }
     })
     events.forEach(key => {
-      video.addEventListener(key, (data = {}) => {
-        this.$trigger(key, {}, data)
+      video.addEventListener(key, (e) => {
+        this.$trigger(key, {}, { ...e.detail })
       })
     })
   },
