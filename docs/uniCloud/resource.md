@@ -7,3 +7,4 @@
 - [uniCloud微信支付示例](https://ext.dcloud.net.cn/plugin?id=1369)： 微信支付demo之unicloud版。
 - [微信发红包（企业付款到零钱）demo](https://ext.dcloud.net.cn/plugin?id=1489)：演示了在云函数中发送带证书的https请求的处理方式。
 - [uniCloud留言板示例](https://ext.dcloud.net.cn/plugin?id=1267)： 微信登陆，数据库的增删查；（项目支持微信小程序和app）
+- [uniCloud微信发红包-企业付款到零钱](https://ext.dcloud.net.cn/plugin?id=1489)：知识点：uniCloud.httpclient携证书发起请求
