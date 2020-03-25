@@ -5,4 +5,5 @@
 - [uni抗疫开源项目汇总](https://gitee.com/dcloud/xinguan2020)：这是一个项目集合汇总，里面有大量与抗疫项目的开源项目，均基于uniCloud。包括外来人员登记系统、学生健康报备系统、员工疫情筛查工具、消毒检查登记系统、物资管理系统等。这些项目具备一定通用性，可以稍加改造用于其他行业应用。
 - [GraceAdmin](https://ext.dcloud.net.cn/plugin?id=1347)： uniCloud 的 pc 端管理后台框架，快速搭建pc管理界面。
 - [uniCloud微信支付示例](https://ext.dcloud.net.cn/plugin?id=1369)： 微信支付demo之unicloud版。
+- [微信发红包（企业付款到零钱）demo](https://ext.dcloud.net.cn/plugin?id=1489)：演示了在云函数中发送带证书的https请求的处理方式。
 - [uniCloud留言板示例](https://ext.dcloud.net.cn/plugin?id=1267)： 微信登陆，数据库的增删查；（项目支持微信小程序和app）
