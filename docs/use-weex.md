@@ -65,7 +65,7 @@ uni-app在App端，支持vue页面和nvue页面混搭、互相跳转。也支持
 
 ## weex编译模式和uni-app编译模式
 
-**如你之前是weex开发者，可以继续查阅本章节，否则可以跳过看下一节[快速上手](?id=%e5%bf%ab%e9%80%9f%e4%b8%8a%e6%89%8b)。**
+**如你之前是weex开发者，可以继续查阅本章节，否则可以跳过看下一节[快速上手](use-weex?id=%e5%bf%ab%e9%80%9f%e4%b8%8a%e6%89%8b)。**
 
 weex的组件和jsapi，与uni-app不同。uni-app与微信小程序相同。
 
