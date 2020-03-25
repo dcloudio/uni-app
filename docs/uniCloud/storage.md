@@ -123,7 +123,7 @@ uni.chooseImage({
 |:-:		|:-:						|:-:	|:-:	|:-:								|:-:			|
 |fileList	|&lt;Array&gt;.String,Object|是		|-		|要获取下载链接的文件 ID 组成的数组	|仅腾讯云支持	|
 
-**fileList**
+**请求参数中的fileList**
 
 |字段	|类型	|必填	|说明					|
 |:-:	|:-:	|:-:	|:-:					|
@@ -139,7 +139,7 @@ uni.chooseImage({
 |fileList	|&lt;Array&gt;.Object	|存储下载链接的数组				|
 |requestId	|String					|请求序列号，用于错误排查		|
 
-**fileList**
+**响应参数中的fileList**
 
 |字段		|类型	|说明			|
 |:-:		|:-:	|:-:			|
