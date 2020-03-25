@@ -563,20 +563,94 @@ canvas API使用，详见canvas文档。
 - nvue 页面只能使用 flex 布局，不支持其他布局方式。页面开发前，首先想清楚这个页面的纵向内容有什么，哪些是要滚动的，然后每个纵向内容的横轴排布有什么，按 flex 布局设计好界面。
 - 原生开发没有页面滚动的概念，页面内容高过屏幕高度并不会自动滚动，只有部分组件可滚动（list、waterfall、scroll-view/scroller），要滚得内容需要套在可滚动组件下。这不符合前端开发的习惯，所以在 nvue 编译为 uni-app模式时，给页面外层自动套了一个 scroller，页面内容过高会自动滚动。（组件不会套，页面有recycle-list时也不会套）。后续会提供配置，可以设置不自动套。
 - 文字内容，必须、只能在`<text>`组件下。不能在`<div>`、`<view>`的text区域里直接写文字。否则即使渲染了，也无法绑定js里的变量。
+- 只有text标签可以设置字体大小，字体颜色。
+- 布局不能使用百分比、没有媒体查询。
+- nvue 切换横竖屏时可能导致样式出现问题，建议有 nvue 的页面锁定手机方向。
 - 支持的css有限，不过并不影响布局出你需要的界面，flex还是非常强大的。[详见](https://weex.apache.org/zh/docs/styles/common-styles.html#%E7%9B%92%E6%A8%A1%E5%9E%8B)
 - 不支持背景图。但可以使用image组件和层级来实现类似web中的背景效果。因为原生开发本身也没有web这种背景图概念
-- css选择器支持的比较少，没有web丰富。详见weex的样式文档
+- css选择器支持的比较少，只能使用 class 选择器。详见weex的样式文档
 - class 进行绑定时只支持数组语法。
 - nvue页面没有bounce回弹效果，只有几个列表组件有bounce效果，包括 list、recycle-list、waterfall。
 - Android端在一个页面内使用大量圆角边框会造成性能问题，尤其是多个角的样式还不一样的话更耗费性能。应避免这类使用。
 - nvue 的各组件在安卓端默认是透明的，如果不设置background-color，可能会导致出现重影的问题。
 - 在 App.vue 中定义的全局js变量不会在 nvue 页面生效。globalData和vuex是生效的。
 - App.vue 中定义的全局css，对nvue和vue页面同时生效。如果全局css中有些css在nvue下不支持，编译时控制台会报警，建议把这些不支持的css包裹在条件编译里，`APP-PLUS-NVUE`
-- nvue 切换横竖屏时可能导致样式出现问题，建议有 nvue 的页面锁定手机方向。
 - 不能在 style 中引入字体文件，nvue 中字体图标的使用参考：[weex 加载自定义字体](https://weex.apache.org/zh/docs/modules/dom.html#addrule)。如果是本地字体，可以用plus.io的API转换路径。
 - 目前不支持在 nvue 页面使用 typescript/ts。
 - nvue 页面关闭原生导航栏时，想要模拟状态栏，可以参考：[https://ask.dcloud.net.cn/article/35111](https://ask.dcloud.net.cn/article/35111)。但是，仍然强烈建议在nvue页面使用原生导航栏。nvue的渲染速度再快，也没有原生导航栏快。原生排版引擎解析json绘制原生导航栏耗时很少，而解析nvue的js绘制整个页面的耗时要大的多，尤其在新页面进入动画期间，对于复杂页面，没有原生导航栏会在动画期间产生整个屏幕的白屏或闪屏。
+- nvue 页面的布局排列方向默认为竖排（`column`），如需改变布局方向，可以在 `manifest.json` -> `app-plus` -> `nvue` -> `flex-direction` 节点下修改，仅在 `uni-app`  模式下生效。[详情](https://uniapp.dcloud.io/collocation/manifest?id=nvue)。
+- nvue页面编译为H5、小程序时，会做一件css默认值对齐的工作。因为weex渲染引擎只支持flex，并且默认flex方向是垂直。而H5和小程序端，使用web渲染，默认不是flex，并且设置display:flex后，它的flex方向默认是水平而不是垂直的。所以nvue编译为H5、小程序时，会自动把页面默认布局设为flex、方向为垂直。当然开发者手动设置后会覆盖默认设置。
 
+下面有些正确和错误的写法示例对比：
+
+- 选择器仅支持class 选择器
+```css
+
+/* 错误 */
+#id {}
+.a .b .c {}
+.a > .b {}
+
+/* 正确 */
+.class {}
+
+```
+
+- border 不支持简写
+
+```css
+
+/* 错误 */
+.class {
+	border: 1px red solid;
+}
+
+/* 正确 */
+.class {
+	border-width: 1px;
+	border-style: solid;
+	border-color: red;
+}
+
+```
+
+- background 不支持简写
+
+```css
+/* 错误 */
+.class {
+	background: red;
+}
+
+/* 正确 */
+.class {
+	background-color: red;
+}
+```
+
+- nvue的`uni-app`编译模式下，`App.vue` 中的样式，会编译到每个 `nvue文件`。对于共享样式，如果有不合法属性控制台会给出警告，可以通过条件编译`APP-PLUS-NVUE`屏蔽 `App` 中的警告。
+```css
+/* 错误 */
+/*  控制台警告：
+WARNING: `border` is not a standard property name (may not be supported)  
+WARNING: `-webkit-transform` is not a standard property name (may not be supported)
+*/
+.class {
+	border: 1px red solid;
+  -webkit-transform: scaleY(.5);
+}
+
+/* 正确 */
+.class {
+	border-width: 1px;
+	border-style: solid;
+	border-color: red;
+  /* #ifndef APP-PLUS-NVUE */
+  -webkit-transform: scaleY(.5);
+  /* #endif*/
+}
+
+```
 ## Android平台阴影(box-shadow)问题
 
 Android平台weex对阴影样式(`box-shadow`)支持不完善，如设置圆角边框时阴影样式显示不正常、设置动画时在`Android7`上显示不正常等。为解决这些问题，从HBuilderX 2.4.7起，新增`elevation`属性（组件的属性，不是css样式）设置组件的层级，`Number`类型，层级值越大阴影越明显，阴影效果也与组件位置有关，越靠近页面底部阴影效果越明显
