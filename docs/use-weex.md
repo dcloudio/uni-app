@@ -31,23 +31,23 @@ nvue的组件和API写法与vue页面一致，其内置组件还比vue页面内�
 - 左右拖动的长列表。在webview里，通过swiper+scroll-view实现左右拖动的长列表，前端模拟下拉刷新，这套方案的性能不好。此时推荐使用nvue，比如新建uni-app项目时的新闻示例模板，就采用了nvue，切换很流畅。
 - 实现区域滚动长列表+左右拖动列表+吸顶的复杂排版效果，效果可参考hello uni-app模板里的swiper-list
 - 如需要将软键盘右下角按钮文字改为“发送”，则需要使用nvue
-- 解决前端控件无法覆盖原生控件的层级问题。当你使用map、video等原生组件时，会发现前端写的view等组件无法覆盖原生组件，层级问题处理比较麻烦，此时使用nvue更好。或者在vue页面上也可以覆盖一个subnvue（一种非全屏的nvue页面覆盖在webview上），以解决App上的原生控件层级问题。[详见](https://ask.dcloud.net.cn/article/35948)
+- 解决前端控件无法覆盖原生控件的层级问题。当你使用map、video、live-pusher等原生组件时，会发现前端写的view等组件无法覆盖原生组件，层级问题处理比较麻烦，此时使用nvue更好。或者在vue页面上也可以覆盖一个subnvue（一种非全屏的nvue页面覆盖在webview上），以解决App上的原生控件层级问题。[详见](https://ask.dcloud.net.cn/article/35948)
 - 如深度使用map组件，建议使用nvue。除了层级问题，App端nvue文件的map功能更完善，和小程序拉齐度更高，多端一致性更好。
 - 如深度使用video，建议使用nvue。比如如下2个场景：video内嵌到swiper中，以实现抖音式视频滑动切换，例子见[插件市场](https://ext.dcloud.net.cn/plugin?id=664)；nvue的视频全屏后，通过cover-view实现内容覆盖，比如增加文字标题、分享按钮。
-- 直播推流：nvue下有live-pusher组件，和小程序对齐。而vue页面下使用直播，需在条件编译里单独调用plus.video.LivePusher的API。
+- 直播推流：nvue下有live-pusher组件，和小程序对齐，功能更完善，也没有层级问题。
 - 对App启动速度要求极致化。App端v3编译器模式下，如果首页使用nvue且在manifest里配置fast模式，那么App的启动速度可以控制在1秒左右。而使用vue页面的话，App的启动速度一般是3秒起，取决于你的代码性能和体积。
 
 但注意，在某些场景下，nvue不如vue页面，如下：
-- canvas。nvue的canvas性能不高，尤其是Android App平台，所以这个组件干脆没有内置，而是需要单独引入。操作canvas动画，最高性能的方式是使用vue页面+renderjs，在hello uni-app里的canvas示例就是如此。
-- 动态横竖屏。nvue页面的css不支持媒体查询，横竖屏动态切换、动态适配屏幕是很困难的。
+- canvas。nvue的canvas性能不高，尤其是Android App平台，所以这个组件干脆没有内置，而是需要单独引入。操作canvas动画，最高性能的方式是使用vue页面的renderjs技术，在hello uni-app里的canvas示例就是如此。
+- 动态横竖屏。nvue页面的css不支持媒体查询，所以横竖屏动态切换、动态适配屏幕是很困难的。
 
 
-## 项目渲染模式
-uni-app在App端，支持vue页面和nvue页面混搭、互相跳转。也支持纯nvue项目。
-
-在manifest.json源码视图的`"app-plus"`下配置`"renderer":"native"`，即代表App端启用纯原生渲染模式。此时pages.json注册的vue页面将被忽略，vue组件也将被原生渲染引擎来渲染。
+## 纯原生渲染模式
+uni-app在App端，支持vue页面和nvue页面混搭、互相跳转。也支持纯nvue原生渲染。
 
 启动纯原生渲染，可以减少App端的包体积、减少使用时的内存占用。因为webview渲染模式的相关模块将被移除。
+
+在manifest.json源码视图的`"app-plus"`下配置`"renderer":"native"`，即代表App端启用纯原生渲染模式。此时pages.json注册的vue页面将被忽略，vue组件也将被原生渲染引擎来渲染。
 
 如果不指定该值，默认是不启动纯原生渲染的。
 
