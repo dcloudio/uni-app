@@ -10646,8 +10646,9 @@ var serviceContext = (function () {
     var cId = canvasEventCallbacks.push(function (data) {
       invoke$1(callbackId, data);
     });
+    // fix ...
     operateCanvas(canvasId, pageId, 'putImageData', {
-      data: [...data],
+      data: Array.prototype.slice.call(data),
       x,
       y,
       width,
