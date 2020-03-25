@@ -19,7 +19,7 @@
 **示例代码**
 
 ```javascript
-const data = new Uint8ClampedArray([255, 0, 0, 1])
+const data = new Uint8ClampedArray([255, 0, 0, 255])
 uni.canvasPutImageData({
   canvasId: 'myCanvas',
   x: 0,
