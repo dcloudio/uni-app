@@ -45,7 +45,7 @@ nvue的组件和API写法与vue页面一致，其内置组件还比vue页面内�
 ## 纯原生渲染模式
 uni-app在App端，支持vue页面和nvue页面混搭、互相跳转。也支持纯nvue原生渲染。
 
-启动纯原生渲染，可以减少App端的包体积、减少使用时的内存占用。因为webview渲染模式的相关模块将被移除。
+启用纯原生渲染模式，可以减少App端的包体积、减少使用时的内存占用。因为webview渲染模式的相关模块将被移除。
 
 在manifest.json源码视图的`"app-plus"`下配置`"renderer":"native"`，即代表App端启用纯原生渲染模式。此时pages.json注册的vue页面将被忽略，vue组件也将被原生渲染引擎来渲染。
 
