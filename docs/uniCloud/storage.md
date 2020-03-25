@@ -284,7 +284,7 @@ let result = await uniCloud.uploadFile({
 });
 ```
 
-### uniCloud.getTempFileURL(Object getTempFileURLOptions)
+## uniCloud.getTempFileURL(Object getTempFileURLOptions)
 
 获取文件下载链接。
 
