@@ -24,17 +24,17 @@ uni-app 已将常用的组件、JS API 封装到框架中，开发者按照 uni-
 
 <b style="color:#268BD2"> %PLATFORM%</b> **可取值如下：**
 
-|值|平台|参考文档|
-|:-|:-|:-|
-|APP-PLUS|App|[HTML5+ 规范](http://www.html5plus.org/doc/)|
-|APP-PLUS-NVUE|App nvue|[Weex 规范](https://weex.apache.org/cn/guide/)|
-|H5|H5||
-|MP-WEIXIN|微信小程序|[微信小程序](https://developers.weixin.qq.com/miniprogram/dev/api/)|
-|MP-ALIPAY|支付宝小程序|[支付宝小程序](https://docs.alipay.com/mini/developer/getting-started)|
-|MP-BAIDU|百度小程序|[百度小程序](https://smartprogram.baidu.com/docs/develop/tutorial/codedir/)|
-|MP-TOUTIAO|字节跳动小程序|[字节跳动小程序](https://developer.toutiao.com/dev/cn/mini-app/develop/framework/basic-reference/introduction)|
-|MP-QQ|QQ小程序|	（目前仅cli版支持）|
-|MP|微信小程序/支付宝小程序/百度小程序/字节跳动小程序/QQ小程序|&nbsp;|
+|值|平台|
+|:-|:-|
+|APP-PLUS|App|
+|APP-PLUS-NVUE|App nvue|
+|H5|H5|
+|MP-WEIXIN|微信小程序|
+|MP-ALIPAY|支付宝小程序|
+|MP-BAIDU|百度小程序|
+|MP-TOUTIAO|字节跳动小程序|
+|MP-QQ|QQ小程序|
+|MP|微信小程序/支付宝小程序/百度小程序/字节跳动小程序/QQ小程序|
 
 **支持的文件**
 
@@ -154,6 +154,6 @@ HBuilderX 为 ``uni-app`` 的条件编译提供了丰富的支持:
 
 
 ### 注意
-* Android 和 iOS 平台不支持通过条件编译来区分，如果需要区分 Android、iOS 平台，请通过调用 uni.getSystemInfo 来获取平台信息。在HBuilderX1.9.10起，支持`ifios`、`ifAndroid`代码块，可方便编写判断。
+* Android 和 iOS 平台不支持通过条件编译来区分，如果需要区分 Android、iOS 平台，请通过调用 uni.getSystemInfo 来获取平台信息。支持`ifios`、`ifAndroid`代码块，可方便编写判断。
 * 有些跨端工具可以提供js的条件编译或多态，但这对于实际开发远远不够。uni-app不止是处理js，任何代码都可以多端条件编译，才能真正解决实际项目的跨端问题。另外所谓多态在实际开发中会造成大量冗余代码，很不利于复用和维护。举例，微信小程序主题色是绿色，而百度支付宝小程序是蓝色，你的应用想分平台适配颜色，只有条件编译是代码量最低、最容易维护的。
 * 有些公司的产品运营总是给不同平台提不同需求，但这不是拒绝uni-app的理由。关键在于项目里，复用的代码多还是个性的代码多，正常都是复用的代码多，所以仍然应该多端。而个性的代码放到不同平台的目录下，差异化维护。
