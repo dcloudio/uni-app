@@ -19,7 +19,7 @@ const scopedPath = path.resolve(__dirname, '../../')
 const compiler = require('../lib')
 const res = compiler.compile(
   `
-<view>{{obj.param1}}123123{{obj.param1}}123123{{obj.param1}}<text> -{{obj.param3}}---{{obj.param3}} </text>{{obj.param2}}aaaa{{obj.param2}}aaaa{{obj.param2}}</view>
+<base-layout><template v-slot:[dynamicSlotName]></template></base-layout>
 `, {
     miniprogram: true,
     resourcePath: '/User/fxy/Documents/test.wxml',

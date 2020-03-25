@@ -107,8 +107,7 @@ module.exports = {
         extensions: ['.nvue'],
         alias: {
           'vue-router': resolve('packages/h5-vue-router'),
-          'uni-h5': require.resolve('@dcloudio/uni-h5'),
-          'uni-qh': path.resolve(__dirname, 'qh-api.js')
+          'uni-h5': require.resolve('@dcloudio/uni-h5')
         }
       },
       module: {

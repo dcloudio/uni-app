@@ -13,7 +13,7 @@ module.exports = function migrate(input, out, options = {}) {
   options.platform = options.platform || 'mp-weixin'
   const migrater = migraters[options.platform]
   if (!migrater) {
-    return console.error(`错误: 目前支持 Object.keys(migraters).join(',') 转换`)
+    return console.error(`错误: 目前支持 ${Object.keys(migraters).join(',')} 转换`)
   }
   input = path.resolve(input)
   out = path.resolve(out || input)

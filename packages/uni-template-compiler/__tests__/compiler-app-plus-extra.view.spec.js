@@ -88,5 +88,17 @@ describe('codegen', () => {
       `with(this){return (_$g(0,'i'))?_c('v-uni-text',{attrs:{"_i":0}},[_v("1")]):(_$g(1,'e'))?_c('v-uni-text',{attrs:{"_i":1}},[_v("2")]):(_$g(2,'e'))?_c('v-uni-text',{attrs:{"_i":2}},[_v("3")]):_c('v-uni-text',{attrs:{"_i":3}},[_v("d")])}`
     )
   })
+  it('generate dynamic slot', () => {
+    assertCodegen(
+      '<base-layout><template v-slot:[dynamicSlotName]></template></base-layout>',
+      `with(this){return _c('base-layout',{attrs:{"_i":0},scopedSlots:_u([{key:_$g(1,'st'),fn:function(_empty_, _svm, _si){return undefined}}],null,true)})}`
+    )
+  })
+  it('generate ref', () => {
+    assertCodegen(
+      '<p :ref="component1"></p>',
+      `with(this){return _c('p',{ref:_$g(0,'ref'),attrs:{"_i":0}})}`
+    )
+  })
 })
 /* eslint-enable quotes */

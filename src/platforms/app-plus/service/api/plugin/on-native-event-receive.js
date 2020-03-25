@@ -1,16 +1,15 @@
 import {
-  isFn
-}
-  from 'uni-shared'
+  invoke
+} from 'uni-core/service/bridge'
 
 const callbacks = []
+// 不使用uni-core/service/platform中的onMethod，避免循环引用
+UniServiceJSBridge.on('api.uniMPNativeEvent', function (res) {
+  callbacks.forEach(callbackId => {
+    invoke(callbackId, res.event, res.data)
+  })
+})
 
-export function onNativeEventReceive (callback) {
-  isFn(callback) &&
-    callbacks.indexOf(callback) === -1 &&
-    callbacks.push(callback)
-}
-
-export function consumeNativeEvent (event, data) {
-  callbacks.forEach(callback => callback(event, data))
+export function onNativeEventReceive (callbackId) {
+  callbacks.push(callbackId)
 }

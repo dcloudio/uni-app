@@ -54,6 +54,10 @@ export default {
       type: String,
       default: ''
     },
+    enablePullDownRefresh: {
+      type: [Boolean, String],
+      default: false
+    },
     rootFontSize: {
       type: String,
       default: ''
@@ -78,6 +82,16 @@ export default {
     this.$pageVm.$on('hook:onPageScroll', evt => {
       this.$emit('scroll', evt)
     })
+
+    // #ifdef APP-PLUS
+    this._currentWebview = page.$getAppWebview()
+    if (this.enablePullDownRefresh) {
+      this.setPullDownRefresh(this._currentWebview, true)
+    }
+    this.$watch('enablePullDownRefresh', (val) => {
+      this.setPullDownRefresh(this._currentWebview, val)
+    })
+    // #endif
 
     // props
 
@@ -113,6 +127,14 @@ export default {
     this.scrollTop && this.pageScrollTo()
   },
   methods: {
+    setPullDownRefresh (webview, enabled) {
+      webview.setStyle({
+        pullToRefresh: {
+          support: enabled,
+          style: plus.os.name === 'Android' ? 'circle' : 'default'
+        }
+      })
+    },
     setPageMeta () {
       // h5 和 app-plus 设置 rootFontSize
       // #ifdef H5 || APP-PLUS
