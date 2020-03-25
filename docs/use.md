@@ -20,11 +20,8 @@
 详见Vue官方文档：[模板语法](https://cn.vuejs.org/v2/guide/syntax.html)。
 
 **注意**
-如果使用**老版**的非自定义组件模式，即manifest中`"usingComponents":false`，部分模版语法不支持，但此模式已不再推荐使用，[详见](https://ask.dcloud.net.cn/article/35699)。  
+如果使用**老版**的非自定义组件模式，即manifest中`"usingComponents":false`，部分模版语法不支持，但此模式已于2019年11月起下线。
 
-**老版**非自定义组件模式不支持情况（**新版自定义组件模式已不存在此情况**）：
-- 不支持部分复杂的 JavaScript 渲染表达式
-- 不支持过滤器
 
 ## data 属性
 
