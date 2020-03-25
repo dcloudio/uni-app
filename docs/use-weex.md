@@ -2,7 +2,7 @@
 
 ```uni-app``` App端内置了一个基于 [weex](https://weex.apache.org/) 改进的原生渲染引擎，提供了原生渲染能力。
 
-在App端，如果使用vue页面，则使用webview渲染；如果使用nvue页面(native vue的缩写)，则使用原生渲染。1个App中可以同时使用两种页面，比如首页使用nvue，二级页使用vue，hello uni-app示例就是如此。
+在App端，如果使用vue页面，则使用webview渲染；如果使用nvue页面(native vue的缩写)，则使用原生渲染。一个App中可以同时使用两种页面，比如首页使用nvue，二级页使用vue页面，hello uni-app示例就是如此。
 
 虽然nvue也可以多端编译，输出H5和小程序，但nvue的css写法受限，所以如果你不开发App，那么不需要使用nvue。
 
