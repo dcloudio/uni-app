@@ -5489,6 +5489,466 @@ Object.defineProperty(Vue, 'FunctionalRenderContext', {
 
 Vue.version = '2.6.11';
 
+var nextNodeRef = 1;
+
+function uniqueId() {
+  return (nextNodeRef++).toString()
+}
+
+var Node = function Node() {
+  this.nodeId = uniqueId();
+  this.ref = this.nodeId;
+  this.children = [];
+  this.pureChildren = [];
+  this.parentNode = null;
+  this.nextSibling = null;
+  this.previousSibling = null;
+};
+
+Node.prototype.destroy = function destroy () {
+  this._$vd && this._$vd.removeElement(this);
+  this.children.forEach(function (child) {
+    child.destroy();
+  });
+};
+
+var Comment = /*@__PURE__*/(function (Node$$1) {
+  function Comment(value) {
+    Node$$1.call(this);
+
+    this.nodeType = 8;
+    this.nodeId = uniqueId();
+    this.ref = this.nodeId;
+    this.type = 'comment';
+    this.value = value;
+    this.children = [];
+    this.pureChildren = [];
+  }
+
+  if ( Node$$1 ) Comment.__proto__ = Node$$1;
+  Comment.prototype = Object.create( Node$$1 && Node$$1.prototype );
+  Comment.prototype.constructor = Comment;
+
+  Comment.prototype.toString = function toString () {
+    return '<!-- ' + this.value + ' -->'
+  };
+
+  return Comment;
+}(Node));
+
+function appendBody(doc, node, before) {
+  var documentElement = doc.documentElement;
+
+  if (documentElement.pureChildren.length > 0 || node.parentNode) {
+    return
+  }
+  var children = documentElement.children;
+  var beforeIndex = children.indexOf(before);
+  if (beforeIndex < 0) {
+    children.push(node);
+  } else {
+    children.splice(beforeIndex, 0, node);
+  }
+
+  if (node.nodeType === 1) {
+    if (node.role === 'body') {
+      node.docId = doc.id;
+      node.ownerDocument = doc;
+      node.parentNode = documentElement;
+      linkParent(node, documentElement);
+    } else {
+      node.children.forEach(function (child) {
+        child.parentNode = node;
+      });
+      setBody(doc, node);
+      node.docId = doc.id;
+      node.ownerDocument = doc;
+      linkParent(node, documentElement);
+    }
+    documentElement.pureChildren.push(node);
+  } else {
+    node.parentNode = documentElement;
+  }
+}
+
+function setBody(doc, el) {
+  el.role = 'body';
+  el.depth = 1;
+  el.ref = '_root';
+  doc.body = el;
+}
+
+function linkParent(node, parent) {
+  node.parentNode = parent;
+  if (parent.docId) {
+    node.docId = parent.docId;
+    node.ownerDocument = parent.ownerDocument;
+    node.depth = parent.depth + 1;
+  }
+  node.children.forEach(function (child) {
+    linkParent(child, node);
+  });
+}
+
+function nextElement(node) {
+  while (node) {
+    if (node.nodeType === 1) {
+      return node
+    }
+    node = node.nextSibling;
+  }
+}
+
+function previousElement(node) {
+  while (node) {
+    if (node.nodeType === 1) {
+      return node
+    }
+    node = node.previousSibling;
+  }
+}
+
+function insertIndex(target, list, newIndex, changeSibling) {
+  if (newIndex < 0) {
+    newIndex = 0;
+  }
+  var before = list[newIndex - 1];
+  var after = list[newIndex];
+  list.splice(newIndex, 0, target);
+  if (changeSibling) {
+    before && (before.nextSibling = target);
+    target.previousSibling = before;
+    target.nextSibling = after;
+    after && (after.previousSibling = target);
+  }
+  return newIndex
+}
+
+function moveIndex(target, list, newIndex, changeSibling) {
+  var index = list.indexOf(target);
+  if (index < 0) {
+    return -1
+  }
+  if (changeSibling) {
+    var before = list[index - 1];
+    var after = list[index + 1];
+    before && (before.nextSibling = after);
+    after && (after.previousSibling = before);
+  }
+  list.splice(index, 1);
+  var newIndexAfter = newIndex;
+  if (index <= newIndex) {
+    newIndexAfter = newIndex - 1;
+  }
+  var beforeNew = list[newIndexAfter - 1];
+  var afterNew = list[newIndexAfter];
+  list.splice(newIndexAfter, 0, target);
+  if (changeSibling) {
+    beforeNew && (beforeNew.nextSibling = target);
+    target.previousSibling = beforeNew;
+    target.nextSibling = afterNew;
+    afterNew && (afterNew.previousSibling = target);
+  }
+  if (index === newIndexAfter) {
+    return -1
+  }
+  return newIndex
+}
+
+function removeIndex(target, list, changeSibling) {
+  var index = list.indexOf(target);
+  if (index < 0) {
+    return
+  }
+  if (changeSibling) {
+    var before = list[index - 1];
+    var after = list[index + 1];
+    before && (before.nextSibling = after);
+    after && (after.previousSibling = before);
+  }
+  list.splice(index, 1);
+}
+
+var DEFAULT_TAG_NAME = 'view';
+
+
+var Element = /*@__PURE__*/(function (Node$$1) {
+  function Element(type) {
+    if ( type === void 0 ) type = DEFAULT_TAG_NAME;
+
+    Node$$1.call(this);
+
+    this.nodeType = 1;
+    this.nodeId = uniqueId();
+    this.ref = this.nodeId;
+    this.type = type;
+    this.attr = {};
+    this.events = {};
+    this.children = [];
+    this.pureChildren = [];
+  }
+
+  if ( Node$$1 ) Element.__proto__ = Node$$1;
+  Element.prototype = Object.create( Node$$1 && Node$$1.prototype );
+  Element.prototype.constructor = Element;
+
+  Element.prototype.setAttribute = function setAttribute (key, value) {
+    if (key === 'cid') {
+      this.cid = value;
+    } else if (key === 'nid') {
+      this.nid = value;
+    }
+  };
+
+  Element.prototype.dispatchEvent = function dispatchEvent (name, target) {
+    var handlers = this.events[name];
+    if (!handlers) {
+      return
+    }
+    handlers.forEach(function (handler) {
+      handler(target);
+    });
+  };
+
+  Element.prototype.addEventListener = function addEventListener (name, handler) {
+    if (this.cid === '' || this.nid === '') {
+      return console.error(("cid=" + (this.cid) + ",nid=" + (this.nid) + " addEventListener(" + name + ") not found"))
+    }
+    (this.events[name] || (this.events[name] = [])).push(handler);
+    this._$vd.addElement(this);
+  };
+
+  Element.prototype.removeEventListener = function removeEventListener (name, handler) {
+    var this$1 = this;
+
+    if (this.cid === '' || this.nid === '') {
+      return console.error(("cid=" + (this.cid) + ",nid=" + (this.nid) + " removeEventListener(" + name + ") not found"))
+    }
+    var isRemoved = false;
+    if (this.events[name]) {
+      var handlerIndex = this.events[name].indexOf(handler);
+      if (handlerIndex !== -1) {
+        this.events[name].splice(handlerIndex, 1);
+        isRemoved = true;
+      }
+    }
+    if (!isRemoved) {
+      console.error(("cid=" + (this.cid) + ",nid=" + (this.nid) + " removeEventListener(" + name + ") handler not found"));
+    }
+
+    Object.keys(this.events).every(function (eventType) { return this$1.events[eventType].length === 0; }) &&
+      this._$vd.removeElement(this);
+  };
+
+  Element.prototype.appendChild = function appendChild (node) {
+    if (node.parentNode && node.parentNode !== this) {
+      return
+    }
+    if (!node.parentNode) {
+      // if ("development" !== 'production') {
+      //   console.log(`[appendChild](${this.docId},${node.type},${node.ref}) ` +
+      //     `Append <${node.type}> to <${this.type}> (${this.ref}).`)
+      // }
+      linkParent(node, this);
+      insertIndex(node, this.children, this.children.length, true);
+      if (node.nodeType === 1) {
+        insertIndex(node, this.pureChildren, this.pureChildren.length);
+      }
+    } else {
+      // if ("development" !== 'production') {
+      //   console.log(`[appendChild](${this.docId},${node.type},${node.ref}) ` +
+      //     `Move <${node.type}> to ${this.children.length} of <${this.type}> (${this.ref}).`)
+      // }
+      moveIndex(node, this.children, this.children.length, true);
+      if (node.nodeType === 1) {
+        moveIndex(node, this.pureChildren, this.pureChildren.length);
+      }
+    }
+  };
+
+  Element.prototype.insertBefore = function insertBefore (node, before) {
+    if (node.parentNode && node.parentNode !== this) {
+      return
+    }
+    if (node === before || (node.nextSibling && node.nextSibling === before)) {
+      return
+    }
+    if (!node.parentNode) {
+      // if ("development" !== 'production') {
+      //   console.log(`[insertBefore](${this.docId},${node.type},${node.ref}) ` +
+      //     `Insert <${node.type}> to <${this.type}> (${this.ref}), before (${before.ref}).`)
+      // }
+      linkParent(node, this);
+      insertIndex(node, this.children, this.children.indexOf(before), true);
+      if (node.nodeType === 1) {
+        var pureBefore = nextElement(before);
+        insertIndex(
+          node,
+          this.pureChildren,
+          pureBefore ?
+          this.pureChildren.indexOf(pureBefore) :
+          this.pureChildren.length
+        );
+      }
+    } else {
+      moveIndex(node, this.children, this.children.indexOf(before), true);
+      if (node.nodeType === 1) {
+        var pureBefore$1 = nextElement(before);
+        moveIndex(
+          node,
+          this.pureChildren,
+          pureBefore$1 ?
+          this.pureChildren.indexOf(pureBefore$1) :
+          this.pureChildren.length
+        );
+      }
+    }
+  };
+
+  Element.prototype.insertAfter = function insertAfter (node, after) {
+    if (node.parentNode && node.parentNode !== this) {
+      return
+    }
+    if (node === after || (node.previousSibling && node.previousSibling === after)) {
+      return
+    }
+    if (!node.parentNode) {
+      // if ("development" !== 'production') {
+      //   console.log(`[insertAfter](${this.docId},${node.type},${node.ref}) ` +
+      //     `Insert <${node.type}> to <${this.type}> (${this.ref}), after (${after.ref}).`)
+      // }
+      linkParent(node, this);
+      insertIndex(node, this.children, this.children.indexOf(after) + 1, true);
+      if (node.nodeType === 1) {
+        insertIndex(
+          node,
+          this.pureChildren,
+          this.pureChildren.indexOf(previousElement(after)) + 1
+        );
+      }
+    } else {
+      moveIndex(node, this.children, this.children.indexOf(after) + 1, true);
+      if (node.nodeType === 1) {
+        moveIndex(
+          node,
+          this.pureChildren,
+          this.pureChildren.indexOf(previousElement(after)) + 1
+        );
+      }
+    }
+  };
+
+  Element.prototype.removeChild = function removeChild (node, preserved) {
+    if (node.parentNode) {
+      removeIndex(node, this.children, true);
+      if (node.nodeType === 1) {
+        // if ("development" !== 'production') {
+        //   console.log(`[removeChild](${this.docId},${node.type},${node.ref}) ` +
+        //     `Remove <${node.type}> from <${this.type}> (${this.ref}).`)
+        // }
+        removeIndex(node, this.pureChildren);
+      }
+    }
+    if (!preserved) {
+      node.destroy();
+    }
+  };
+
+  Element.prototype.clear = function clear () {
+    this.children.forEach(function (node) {
+      node.destroy();
+    });
+    this.children.length = 0;
+    this.pureChildren.length = 0;
+  };
+
+
+  Element.prototype.toString = function toString () {
+    return '<' + this.type +
+      ' attr=' + JSON.stringify(this.attr) +
+      ' style=' + JSON.stringify(this.toStyle()) + '>' +
+      this.pureChildren.map(function (child) { return child.toString(); }).join('') +
+      '</' + this.type + '>'
+  };
+
+  return Element;
+}(Node));
+
+var Document = function Document(id, url) {
+  this.id = id ? id.toString() : '';
+  this.URL = url;
+
+  this.createDocumentElement();
+};
+
+Document.prototype.createDocumentElement = function createDocumentElement () {
+    var this$1 = this;
+
+  if (!this.documentElement) {
+    var el = new Element('document');
+    el.docId = this.id;
+    el.ownerDocument = this;
+    el.role = 'documentElement';
+    el.depth = 0;
+    el.ref = '_documentElement';
+    this.documentElement = el;
+
+    Object.defineProperty(el, 'appendChild', {
+      configurable: true,
+      enumerable: true,
+      writable: true,
+      value: function (node) {
+        appendBody(this$1, node);
+      }
+    });
+
+    Object.defineProperty(el, 'insertBefore', {
+      configurable: true,
+      enumerable: true,
+      writable: true,
+      value: function (node, before) {
+        appendBody(this$1, node, before);
+      }
+    });
+    // if ("development" !== 'production') {
+    // console.log(`Create document element (id: "${el.docId}", ref: "${el.ref}")`)
+    // }
+  }
+  return this.documentElement
+};
+
+Document.prototype.createBody = function createBody (type) {
+  if (!this.body) {
+    var el = new Element(type);
+    setBody(this, el);
+    // if ("development" !== 'production') {
+    // console.log(`[createBody](${this.id},${el.type},${el.ref}) ` +
+    //   `(${JSON.stringify(el.toJSON(true))}).`)
+    // }
+  }
+  return this.body
+};
+
+Document.prototype.createElement = function createElement (tagName) {
+  var el = new Element(tagName);
+  // if ("development" !== 'production') {
+  // console.log(`[createElement](${this.id},${el.type},${el.ref}) ` +
+  //   `(${JSON.stringify(el.toJSON(true))}).`)
+  // }
+  return el
+};
+
+Document.prototype.createComment = function createComment (text) {
+  return new Comment(text)
+};
+
+Document.prototype.destroy = function destroy () {
+  // if ("development" !== 'production') {
+  // console.log(`[destroy](${this.id},document,${this.ref}) ` +
+  //   `Destroy document (id: "${this.id}", URL: "${this.URL}")`)
+  // }
+};
+
 /*  */
 
 // these are reserved for web because they are directly compiled away
@@ -5539,109 +5999,44 @@ function isUnknownElement () {
 
 /*  */
 
-var noop$1 = {};
-
-var UniElement = function UniElement(tagName) {
-  this.tagName = tagName;
-  this.cid = '';
-  this.nid = '';
-
-  this.events = Object.create(null);
-};
-
-UniElement.prototype.setAttribute = function setAttribute (key, value) {
-  if (key === 'cid') {
-    this.cid = value;
-  } else if (key === 'nid') {
-    this.nid = value;
-  }
-};
-
-UniElement.prototype.dispatchEvent = function dispatchEvent (name, target) {
-  var handlers = this.events[name];
-  if (!handlers) {
-    console.error(("cid=" + (this.cid) + ",nid=" + (this.nid) + " dispatchEvent(" + name + ") not found"));
-  }
-  handlers.forEach(function (handler) {
-    handler(target);
-  });
-};
-
-UniElement.prototype.addEventListener = function addEventListener (name, handler) {
-  if (this.cid === '' || this.nid === '') {
-    return console.error(("cid=" + (this.cid) + ",nid=" + (this.nid) + " addEventListener(" + name + ") not found"))
-  }
-  (this.events[name] || (this.events[name] = [])).push(handler);
-  this._$vd.addElement(this);
-};
-
-UniElement.prototype.removeEventListener = function removeEventListener (name, handler) {
-    var this$1 = this;
-
-  if (this.cid === '' || this.nid === '') {
-    return console.error(("cid=" + (this.cid) + ",nid=" + (this.nid) + " removeEventListener(" + name + ") not found"))
-  }
-  var isRemoved = false;
-  if (this.events[name]) {
-    var handlerIndex = this.events[name].indexOf(handler);
-    if (handlerIndex !== -1) {
-      this.events[name].splice(handlerIndex, 1);
-      isRemoved = true;
-    }
-  }
-  if (!isRemoved) {
-    console.error(("cid=" + (this.cid) + ",nid=" + (this.nid) + " removeEventListener(" + name + ") handler not found"));
-  }
-
-  Object.keys(this.events).every(function (eventType) { return this$1.events[eventType].length === 0; }) &&
-    this._$vd.removeElement(this);
-};
-
 function createElement$1(tagName) {
-  return new UniElement(tagName)
+  return new Element(tagName)
 }
 
 function createElementNS(namespace, tagName) {
-  return new UniElement(tagName)
+  return new Element(namespace + ':' + tagName)
 }
 
 function createTextNode() {
-  return noop$1
+  return new Element('text')
 }
 
-function createComment() {
-  return noop$1
+function createComment(text) {
+  return new Comment(text)
 }
 
-function insertBefore() {
-
+function insertBefore(node, target, before) {
+  node.insertBefore(target, before);
 }
 
 function removeChild(node, child) {
-  if (!child) {
-    return
-  }
-  if (child.__vue__ && child.__vue__._$vd) {
-    // 根据组件cid删除所有相关element,后续应该建立一套完整的DOM逻辑
-    child.__vue__._$vd.removeElementByCid(child.__vue__._$id);
-  }
-  child._$vd && child._$vd.removeElement(child);
+  node.removeChild(child);
 }
 
-function appendChild() {
-
+function appendChild(node, child) {
+  node.appendChild(child);
 }
 
-function parentNode() {
-  return noop$1
+function parentNode(node) {
+  return node.parentNode
 }
 
-function nextSibling() {
-  return noop$1
+function nextSibling(node) {
+  return node.nextSibling
 }
 
-function tagName() {
-  return 'view'
+function tagName(node) {
+  return node.type
 }
 
 function setTextContent() {}
@@ -6793,12 +7188,21 @@ function updateDOMListeners (oldVnode, vnode) {
   var on = vnode.data.on || {};
   var oldOn = oldVnode.data.on || {};
   target$1 = vnode.elm;
-  
+
   // fixed by xxxxxx 存储 vd
   target$1._$vd = vnode.context._$vd;
   var context = vnode.context;
   // 存储事件标记
-  target$1.setAttribute('nid', String((vnode.data.attrs || {})['_i']));
+  var nid = (vnode.data.attrs || {})['_i'];
+
+  var parent = vnode.parent;
+  while (parent && parent.componentInstance) { // 使用组件外壳节点id
+    var parentId = parent.data.attrs && parent.data.attrs['_i'];
+    isDef(parentId) && (nid = 'r-' + parentId);
+    parent = parent.parent;
+  }
+
+  target$1.setAttribute('nid', String(nid));
   target$1.setAttribute('cid', context._$id);
 
   normalizeEvents(on);
@@ -6953,6 +7357,12 @@ Vue.prototype.$mount = function (
   el,
   hydrating
 ) {
+  if (this.$options.mpType === 'page') {
+    var doc = new Document(this.$options.pageId, this.$options.pagePath);
+    el = doc.createComment('root');
+    el.hasAttribute = el.removeAttribute = function(){}; // hack for patch
+    doc.documentElement.appendChild(el);
+  }
   return mountComponent(this, el, hydrating)
 };
 Vue.use(plugin);
