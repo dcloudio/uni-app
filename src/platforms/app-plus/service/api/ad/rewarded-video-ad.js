@@ -8,11 +8,7 @@ const eventNames = [
 const ERROR_CODE_LIST = [-5001, -5002, -5003, -5004, -5005, -5006]
 
 class RewardedVideoAd {
-  constructor (adpid) {
-    this._options = {
-      adpid: adpid
-    }
-
+  constructor (options = {}) {
     const _callbacks = this._callbacks = {}
     eventNames.forEach(item => {
       _callbacks[item] = []
@@ -26,7 +22,7 @@ class RewardedVideoAd {
     this._adError = ''
     this._loadPromiseResolve = null
     this._loadPromiseReject = null
-    const rewardAd = this._rewardAd = plus.ad.createRewardedVideoAd(this._options)
+    const rewardAd = this._rewardAd = plus.ad.createRewardedVideoAd(options)
     rewardAd.onLoad((e) => {
       this._isLoad = true
       this._dispatchEvent('load', {})
@@ -85,8 +81,6 @@ class RewardedVideoAd {
   }
 }
 
-export function createRewardedVideoAd ({
-  adpid = ''
-} = {}) {
-  return new RewardedVideoAd(adpid)
+export function createRewardedVideoAd (options) {
+  return new RewardedVideoAd(options)
 }
