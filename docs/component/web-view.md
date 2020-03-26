@@ -11,6 +11,7 @@
 |src|String|webview 指向网页的链接|&nbsp;|
 |webview-styles|Object|webview 的样式|App|
 |@message|EventHandler|网页向应用 `postMessage` 时，会在特定时机（后退、组件销毁、分享）触发并收到消息。|H5 暂不支持|
+|@onPostMessage|EventHandler|网页向应用实时 `postMessage`|App-nvue|
 
 **src**
 
@@ -62,7 +63,7 @@
 - 小程序端 web-view 组件一定有原生导航栏，下面一定是全屏的 web-view 组件，navigationStyle: custom 对 web-view 组件无效。
 - App 端使用 `自定义组件模式` 时，uni.web-view.js 的最低版为 [uni.webview.1.5.2.js](https://js.cdn.aliyun.dcloud.net.cn/dev/uni-app/uni.webview.1.5.2.js)
 - App 平台同时支持网络网页和本地网页，但本地网页及相关资源（js、css等文件）必须放在 `uni-app 项目根目录->hybrid->html` 文件夹下，如下为一个加载本地网页的`uni-app`项目文件目录示例：
-- nvue `web-view` 必须指定样式宽高, @message 暂时写成 @onPostMessage，示例: <web-view @message="onmessage" @onPostMessage="onmessage"></web-view>
+- nvue `web-view` 必须指定样式宽高
 - V3 编译模式，网页向应用 `postMessage` 为实时消息
 
 <pre v-pre="" data-lang="">
