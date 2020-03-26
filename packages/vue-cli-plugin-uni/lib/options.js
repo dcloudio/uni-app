@@ -5,6 +5,14 @@ const {
   sassLoaderVersion
 } = require('@dcloudio/uni-cli-shared/lib/scss')
 
+const isWin = /^win/.test(process.platform)
+
+function genTranspileDepRegex (depPath) {
+  return new RegExp(isWin
+    ? depPath.replace(/\\/g, '\\\\') // double escape for windows style path
+    : depPath)
+}
+
 module.exports = function initOptions (options) {
   const {
     getPlatformScss,
@@ -16,17 +24,11 @@ module.exports = function initOptions (options) {
   }
 
   // 增加 src/node_modules 解析
-  options.transpileDependencies.push(path.resolve(process.env.UNI_INPUT_DIR, 'node_modules'))
+  options.transpileDependencies.push(genTranspileDepRegex(path.resolve(process.env.UNI_INPUT_DIR, 'node_modules')))
   options.transpileDependencies.push('@dcloudio/uni-' + process.env.UNI_PLATFORM)
   options.transpileDependencies.push('@dcloudio/uni-stat')
   // mp runtime
   options.transpileDependencies.push('@dcloudio/uni-mp-weixin/dist/mp.js')
-  // wxs
-  options.transpileDependencies.push('@dcloudio/uni-mp-weixin/dist/wxs.js')
-
-  if (process.env.UNI_PLATFORM === 'app-plus') {
-    options.transpileDependencies.push('format-log.js')
-  }
 
   if (process.env.UNI_PLATFORM === 'h5') { // h5 dev 用到了这两个，需要 babel
     options.transpileDependencies.push('ansi-regex')
