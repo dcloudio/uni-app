@@ -31,7 +31,7 @@
 
 ## 配置说明
 
-开发者可以在uniCloud控制台设置云存储权限。如下图所示，点击`编辑`按钮，使用默认的四条规则，点击`切换到安全规则`可以自行配置JSON格式的权限规则。
+开发者可以在uniCloud控制台设置云存储权限。如下图所示，可以使用默认的四条规则，也可以点击`切换到安全规则`自行配置JSON格式的权限规则。
 
 ![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/uniCloud-tcb-storage-policy.png)
 
