@@ -90,9 +90,11 @@ auth.signInWithTicket('YourTicket').then(() => {
 
 ### 第一步：获取私钥文件
 
-登录uniCloud控制台[uniCloud控制台](http://unicloud.dcloud.net.cn/)，在`用户管理页面`中，点击“登录设置”，然后**生成并下载私钥**：
+登录uniCloud控制台[uniCloud控制台](http://unicloud.dcloud.net.cn/)，在`云token`中，点击“生成并下载”
 
-![uniCloud下载私钥](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/auth-custom.png)
+**注意：重复生成私钥会使之前生成的私钥失效，并导致用户登录状态失效**
+
+![uniCloud下载私钥](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/cloud-token-web.png)
 
 ### 第二步：使用云函数创建登录凭据
 
