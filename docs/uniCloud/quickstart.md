@@ -1,7 +1,7 @@
 ## 创建uniCloud项目
   
   - 在 [HBuilderX 2.5.8+](https://www.dcloud.io/hbuilderx.html) 新建项目，选择uni-app项目，并勾选`启用uniCloud`
-  - 在右侧选择服务供应商（自`HBuilderX 2.6.7+`起开放腾讯云）
+  - 在右侧选择服务供应商（自`HBuilderX 2.6.7+`起开放腾讯云，目前腾讯云处于邀请试用阶段，如需试用可以发送邮件到`service@dcloud.io`，邮件内容需包括要试用腾讯云的DCloud账号）
 
 ![创建uniCloud项目](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/create-project.png)
 
