@@ -185,19 +185,21 @@ uni统计是优秀的多端统计平台，见[tongji.dcloud.net.cn](https://tong
 
 uni ui的默认风格是中型的，与uni-app基础组件风格一致。但它支持[uni.scss](https://uniapp.dcloud.io/collocation/uni-scss)，可以方便的扩展和切换App的风格。
 
-ui是一种需求非常发散的产品，DCloud官方也无意用uni ui压制第三方ui插件的空间，但官方有义务在性能和多端方面提供一个开源的标杆给大家。
+ui是一种需求非常发散的产品，DCloud官方也无意用uni ui压制第三方ui插件的空间，但官方有义务在性能和跨端方面提供一个开源的标杆给大家。
 
 我们欢迎更多优秀的ui组件出现，也欢迎更多人贡献uni ui的主题风格，满足更多用户的需求。
 
-uni-ui支持npm安装和zip下载安装2种方式。
-
 #### uni ui的使用方式
 
-uni ui支持npm安装，和HBuilderX单独导入个别组件等多种使用方式
+uni ui支持 HBuilderX直接新建项目模板、npm安装和单独导入个别组件等多种使用方式
+1. 在HBuilderX新建uni-app项目的模板中，选择uni ui模板
+由于uni-app独特的[easycom](https://uniapp.dcloud.io/collocation/pages?id=easycom)技术，可以免引用、注册，直接使用各种符合规则的vue组件。
 
-1. npm安装参考：[https://ext.dcloud.net.cn/plugin?id=55](https://ext.dcloud.net.cn/plugin?id=55)
+在代码区键入`u`，拉出各种内置或uni ui的组件列表，选择其中一个，即可使用该组件。
 
-2. 下表为uni-ui的扩展组件清单，点击每个组件可单独安装。
+2. npm安装参考：[https://ext.dcloud.net.cn/plugin?id=55](https://ext.dcloud.net.cn/plugin?id=55)
+
+3. 下表为uni-ui的扩展组件清单，点击每个组件可单独安装。
 
 |组件名|说明|
 |:-|:-|
@@ -205,7 +207,7 @@ uni ui支持npm安装，和HBuilderX单独导入个别组件等多种使用方�
 |[Calendar](https://ext.dcloud.net.cn/plugin?id=56)| 日历|
 |[Card](https://ext.dcloud.net.cn/plugin?id=22)| 卡片|
 |[Collapse](https://ext.dcloud.net.cn/plugin?id=23)| 折叠面板|
-|[Combox](https://ext.dcloud.net.cn/plugin?id=1261)| 可选择输入框|
+|[Combox](https://ext.dcloud.net.cn/plugin?id=1261)| 可下拉选择的输入框|
 |[CountDown](https://ext.dcloud.net.cn/plugin?id=25)| 倒计时|
 |[Drawer](https://ext.dcloud.net.cn/plugin?id=26)| 抽屉|
 |[Fab](https://ext.dcloud.net.cn/plugin?id=144)| 悬浮按钮|
@@ -213,7 +215,7 @@ uni ui支持npm安装，和HBuilderX单独导入个别组件等多种使用方�
 |[GoodsNav](https://ext.dcloud.net.cn/plugin?id=865)| 底部购物导航|
 |[Grid](https://ext.dcloud.net.cn/plugin?id=27)| 宫格|
 |[Icons](https://ext.dcloud.net.cn/plugin?id=28)| 图标|
-|[IndexedList](https://ext.dcloud.net.cn/plugin?id=375)| 索引列表|
+|[IndexedList](https://ext.dcloud.net.cn/plugin?id=375)| 字母索引列表|
 |[List](https://ext.dcloud.net.cn/plugin?id=24)| 列表|
 |[LoadMore](https://ext.dcloud.net.cn/plugin?id=29)| 加载更多|
 |[NavBar](https://ext.dcloud.net.cn/plugin?id=52)| 自定义导航栏|
