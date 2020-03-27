@@ -16,6 +16,7 @@ vue.config.js 是一个可选的配置文件，如果项目的根目录中存在
 * productionSourceMap 固定 false
 * css.extract  H5 平台固定 false，其他平台固定 true
 * parallel 固定 false
+* 使用cli项目时，默认情况下 babel-loader 会忽略所有 node_modules 中的文件。如果你想要通过 Babel 显式转译一个依赖，可以在transpileDependencies中列出来。[详情参考](https://cli.vuejs.org/zh/config/#transpiledependencies)
 
 **使用示例**
 
