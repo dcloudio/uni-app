@@ -11,8 +11,9 @@ app端nvue专用组件。在app-nvue下，如果是长列表，使用list组件�
 ```
 <template>
   <list>
-    <cell v-for="num in lists">
-      <text>{{num}}</text>
+    <!-- 注意事项: 不能使用 index 作为 key 的唯一标识 -->
+    <cell v-for="(item, index) in dataList" :key="item.id">
+      <text>{{item.name}}</text>
     </cell>
   </list>
 </template>
@@ -21,7 +22,7 @@ app端nvue专用组件。在app-nvue下，如果是长列表，使用list组件�
   export default {
     data () {
       return {
-        lists: ['A', 'B', 'C', 'D', 'E']
+        dataList: [{id: "1", name: 'A'}, {id: "2", name: 'B'}, {id: "3", name: 'C'}]
       }
     }
   }
