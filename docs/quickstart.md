@@ -24,7 +24,9 @@ HBuilderX是通用的前端开发工具，但为`uni-app`做了特别强化。
   <img src="//img-cdn-qiniu.dcloud.net.cn/uniapp/doc/create1.png"/>
 </div>
 
-选择uni-app，输入工程名，如：hello-uniapp，点击创建，即可成功创建 uni-app。点击模板里的 Hello uni-app 即可体验官方示例。
+选择`uni-app`类型，输入工程名，选择模板，点击创建，即可成功创建。
+
+uni-app自带的模板有 Hello uni-app ，是官方的组件和API示例。还有一个重要模板是 uni ui项目模板，日常开发推荐使用该模板，已内置大量常用组件。
 
 <div align=center>
   <img src="//img-cdn-qiniu.dcloud.net.cn/uniapp/doc/create2.png"/>
