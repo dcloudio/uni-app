@@ -19,7 +19,7 @@ function setNavigationBar (type, args) {
         if (frontColor) {
           page.navigationBar.textColor = frontColor === '#000000' ? 'black' : 'white'
           UniServiceJSBridge.emit('onNavigationBarChange', {
-            textColor: page.navigationBar.textColor
+            textColor: frontColor === '#000000' ? '#000' : '#fff'
           })
         }
         if (backgroundColor) {
