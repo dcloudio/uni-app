@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 
-module.exports = function() {
+module.exports = function () {
   const manifest = global.framework.manifest
 
   if (manifest.package === 'Bundle') {

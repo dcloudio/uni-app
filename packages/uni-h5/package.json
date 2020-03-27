@@ -18,5 +18,10 @@
     "intersection-observer": "^0.7.0",
     "safe-area-insets": "^1.4.1"
   },
+  "uni-app": {
+    "name": "h5",
+    "title": "H5",
+    "main": "lib/h5/uni.config.js"
+  },
   "gitHead": "84e9cb1ca1898054d161f1514efadd1ab24fd804"
 }

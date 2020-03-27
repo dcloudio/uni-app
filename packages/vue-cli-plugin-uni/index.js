@@ -59,6 +59,13 @@ module.exports = (api, options) => {
   api.configureWebpack(require('./lib/configure-webpack')(platformOptions, manifestPlatformOptions, options, api))
   api.chainWebpack(require('./lib/chain-webpack')(platformOptions, options, api))
 
+  global.uniPlugin.configureWebpack.forEach(configureWebpack => {
+    api.configureWebpack(configureWebpack)
+  })
+  global.uniPlugin.chainWebpack.forEach(chainWebpack => {
+    api.chainWebpack(chainWebpack)
+  })
+
   if (
     process.env.UNI_PLATFORM === 'h5' ||
     (

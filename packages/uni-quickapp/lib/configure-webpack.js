@@ -27,37 +27,35 @@ const env = {
 
 const dslFilename = ('vue.' + (process.env.NODE_ENV === 'production' ? 'prod' : 'dev') + '.js')
 
-
 const manifest = global.framework.manifest
 
-
-function genPriorities(entryPagePath) {
-  const o = [/^i18n\/.+\.json$/i, 'manifest.json', 'app.js', /^common\//i];
+function genPriorities (entryPagePath) {
+  const o = [/^i18n\/.+\.json$/i, 'manifest.json', 'app.js', /^common\//i]
   if (entryPagePath) {
     o.splice(3, 0, new RegExp(`^${entryPagePath}/$`), new RegExp(`^${entryPagePath}/.+`))
-  } else console.error('未配置入口页面');
+  } else console.error('未配置入口页面')
   return o
 }
 
 module.exports = {
   devtool: false,
-  entry() {
+  entry () {
     return process.UNI_ENTRY
   },
   output: {
-      filename: '[name].js',
-      chunkFilename: '[name].js'
+    filename: '[name].js',
+    chunkFilename: '[name].js'
   },
   optimization: {
-      splitChunks: false,
-      runtimeChunk: false
+    splitChunks: false,
+    runtimeChunk: false
   },
   externals: {
     vue: 'Vue'
   },
   module: {
     rules: [{
-      //暂不考虑ts
+      // 暂不考虑ts
       test: path.resolve(process.env.UNI_INPUT_DIR, 'main.js'),
       use: [{
         loader: path.resolve(__dirname, 'loader/main-loader')

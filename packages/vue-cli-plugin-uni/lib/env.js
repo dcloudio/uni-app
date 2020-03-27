@@ -3,6 +3,24 @@ const path = require('path')
 const mkdirp = require('mkdirp')
 const loaderUtils = require('loader-utils')
 
+const defaultInputDir = 'src'
+if (process.env.UNI_INPUT_DIR && process.env.UNI_INPUT_DIR.indexOf('./') === 0) {
+  process.env.UNI_INPUT_DIR = path.resolve(process.cwd(), process.env.UNI_INPUT_DIR)
+}
+process.env.UNI_INPUT_DIR = process.env.UNI_INPUT_DIR || path.resolve(process.cwd(), defaultInputDir)
+
+// 初始化全局插件对象
+global.uniPlugin = require('@dcloudio/uni-cli-shared/lib/plugin').init()
+console.log('debug:::', global.uniPlugin)
+const manifestJsonObj = require('@dcloudio/uni-cli-shared/lib/manifest').getManifestJson()
+const platformOptions = manifestJsonObj[process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM] || {}
+// 插件校验环境
+global.uniPlugin.validate.forEach(validate => {
+  validate(platformOptions, manifestJsonObj)
+})
+
+process.UNI_MANIFEST = manifestJsonObj
+
 process.UNI_CLOUD = false
 process.UNI_CLOUD_TCB = false
 process.UNI_CLOUD_ALIYUN = false
@@ -49,21 +67,16 @@ if (
 }
 
 // 初始化环境变量
-const defaultInputDir = '../../../../src'
 const defaultOutputDir = '../../../../dist/' +
   (process.env.NODE_ENV === 'production' ? 'build' : 'dev') + '/' +
-  process.env.UNI_PLATFORM
+  (process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM)
 
-if (process.env.UNI_INPUT_DIR && process.env.UNI_INPUT_DIR.indexOf('./') === 0) {
-  process.env.UNI_INPUT_DIR = path.resolve(process.cwd(), process.env.UNI_INPUT_DIR)
-}
 if (process.env.UNI_OUTPUT_DIR && process.env.UNI_OUTPUT_DIR.indexOf('./') === 0) {
   process.env.UNI_OUTPUT_DIR = path.resolve(process.cwd(), process.env.UNI_OUTPUT_DIR)
 }
 
 process.env.UNI_PLATFORM = process.env.UNI_PLATFORM || 'h5'
 process.env.VUE_APP_PLATFORM = process.env.UNI_PLATFORM
-process.env.UNI_INPUT_DIR = process.env.UNI_INPUT_DIR || path.resolve(__dirname, defaultInputDir)
 process.env.UNI_OUTPUT_DIR = process.env.UNI_OUTPUT_DIR || path.resolve(__dirname, defaultOutputDir)
 
 if (process.env.UNI_PLATFORM === 'app-plus') {
@@ -82,9 +95,7 @@ const {
   normalizePath,
   isSupportSubPackages,
   runByHBuilderX,
-  // isInHBuilderXAlpha,
-  getPagesJson,
-  getManifestJson
+  getPagesJson
 } = require('@dcloudio/uni-cli-shared')
 
 const pagesJsonObj = getPagesJson()
@@ -107,11 +118,7 @@ if (Array.isArray(pagesJsonObj.subPackages)) {
   })
 }
 
-const manifestJsonObj = getManifestJson()
-const platformOptions = manifestJsonObj[process.env.UNI_PLATFORM] || {}
-
 process.UNI_PAGES = pagesJsonObj
-process.UNI_MANIFEST = manifestJsonObj
 
 if (manifestJsonObj.debug) {
   process.env.VUE_APP_DEBUG = true
@@ -269,7 +276,8 @@ const needWarning = !platformOptions.usingComponents || usingComponentsAbsent
 let hasNVue = false
 // 输出编译器版本等信息
 if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
-  console.log('当前nvue编译模式' + (process.env.UNI_USING_V3_NATIVE ? '（v3）' : '') + '：' + (isNVueCompiler ? 'uni-app' : 'weex') +
+  console.log('当前nvue编译模式' + (process.env.UNI_USING_V3_NATIVE ? '（v3）' : '') + '：' + (isNVueCompiler ? 'uni-app'
+    : 'weex') +
     ' 。编译模式差异见：https://ask.dcloud.net.cn/article/36074')
 } else if (process.env.UNI_PLATFORM !== 'h5' && process.env.UNI_PLATFORM !== 'quickapp') {
   try {

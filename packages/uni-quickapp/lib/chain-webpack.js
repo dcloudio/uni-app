@@ -1,14 +1,13 @@
 const vueLoader = require('@dcloudio/uni-cli-shared/lib/vue-loader')
 
 module.exports = config => {
-
   config.module
     .rule('vue')
     .test(vueLoader.test)
     .use('vue-loader')
     .loader(vueLoader.loader)
     .tap(options => Object.assign(options, vueLoader.options({}, {
-      quickapp: true,
+      quickapp: true
     })))
 
   config.module

@@ -8,9 +8,12 @@ const {
   getNVueMainEntry,
   nvueJsPreprocessOptions,
   nvueHtmlPreprocessOptions,
-  devtoolModuleFilenameTemplate,
   getTemplatePath
 } = require('@dcloudio/uni-cli-shared')
+
+const {
+  devtoolModuleFilenameTemplate
+} = require('../util')
 
 const WebpackAppPlusNVuePlugin = process.env.UNI_USING_V3
   ? require('../packages/webpack-app-plus-plugin')

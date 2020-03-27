@@ -90,6 +90,11 @@ function getH5Options (manifestJson) {
 
   h5.devServer = h5.devServer || {}
 
+  // 插件修改 h5Options
+  global.uniPlugin.configureH5.forEach(configureH5 => {
+    configureH5(h5)
+  })
+
   return h5
 }
 

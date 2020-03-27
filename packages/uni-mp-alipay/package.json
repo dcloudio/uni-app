@@ -13,5 +13,9 @@
   },
   "author": "fxy060608",
   "license": "Apache-2.0",
+  "uni-app": {
+    "name": "mp-alipay",
+    "title": "支付宝小程序"
+  },
   "gitHead": "84e9cb1ca1898054d161f1514efadd1ab24fd804"
 }

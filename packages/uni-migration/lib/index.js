@@ -9,7 +9,7 @@ const migraters = {
   'mp-weixin': require('./mp-weixin')
 }
 
-module.exports = function migrate(input, out, options = {}) {
+module.exports = function migrate (input, out, options = {}) {
   options.platform = options.platform || 'mp-weixin'
   const migrater = migraters[options.platform]
   if (!migrater) {
@@ -42,7 +42,7 @@ module.exports = function migrate(input, out, options = {}) {
         try {
           fs.copySync(src, dest)
         } catch (e) {
-          //ignore Source and destination must not be the same
+          // ignore Source and destination must not be the same
         }
       }
     } else {
