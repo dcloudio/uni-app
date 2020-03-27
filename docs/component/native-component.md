@@ -70,9 +70,7 @@ plus.nativeObj.view的API比较原生，可以画出任何界面，但plus.nativ
 
 - [subNVue](https://ask.dcloud.net.cn/article/35948)
 
-subNVue是把weex渲染的原生子窗体，覆盖在vue页面上，它解决了plus.nativeObj.view的不足，提供了强大的层级问题解决方案。subNVue的详细介绍见：[https://ask.dcloud.net.cn/article/35948](https://ask.dcloud.net.cn/article/35948)
-
-注意App的非自定义组件编译模式不支持subNVue。
+subNVue是原生渲染的nvue子窗体，把一个nvue页面以半屏的方式覆盖在vue页面上。它解决了plus.nativeObj.view的不足，提供了强大的层级问题解决方案。subNVue的详细介绍见：[https://ask.dcloud.net.cn/article/35948](https://ask.dcloud.net.cn/article/35948)
 
 - [弹出部分区域透明的nvue页面](https://ext.dcloud.net.cn/plugin?id=953)
 
