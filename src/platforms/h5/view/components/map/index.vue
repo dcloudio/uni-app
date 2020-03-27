@@ -349,9 +349,11 @@ export default {
           })
           break
         case 'moveToLocation':
-          var locationPosition = this._locationPosition
+          const { latitude, longitude } = data
+          var locationPosition = (latitude && longitude) ? new maps.LatLng(latitude, longitude) : this._locationPosition
           if (locationPosition) {
             this._map.setCenter(locationPosition)
+            callback({})
           }
           break
         case 'translateMarker':
