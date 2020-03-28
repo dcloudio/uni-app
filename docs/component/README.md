@@ -192,12 +192,17 @@ ui是一种需求非常发散的产品，DCloud官方也无意用uni ui压制第
 #### uni ui的使用方式
 
 uni ui支持 HBuilderX直接新建项目模板、npm安装和单独导入个别组件等多种使用方式
+
+![HBuilderX内创建uni ui项目](http://img.cdn.aliyun.dcloud.net.cn/uni-app/doc/create-uni-ui-project.jpg)
+
 1. 在HBuilderX新建uni-app项目的模板中，选择uni ui模板
 由于uni-app独特的[easycom](https://uniapp.dcloud.io/collocation/pages?id=easycom)技术，可以免引用、注册，直接使用各种符合规则的vue组件。
 
 在代码区键入`u`，拉出各种内置或uni ui的组件列表，选择其中一个，即可使用该组件。
 
 光标放在组件名称上，按F1，可以查阅组件的文档。
+
+![uni ui代码块](http://img.cdn.aliyun.dcloud.net.cn/uni-app/doc/uni-ui-snippet.jpg)
 
 2. npm安装参考：[https://ext.dcloud.net.cn/plugin?id=55](https://ext.dcloud.net.cn/plugin?id=55)
 
