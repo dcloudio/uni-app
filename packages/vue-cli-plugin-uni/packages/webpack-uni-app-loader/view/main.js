@@ -92,7 +92,7 @@ function getStylesCode(loaderContext) {
       'app-vue'
     )
   }
-  return stylesCode.replace(/main\.js/g, 'App.vue')
+  return stylesCode.replace(/main\.[jt]s/g, 'App.vue')
 }
 
 module.exports = function(source, map) {
