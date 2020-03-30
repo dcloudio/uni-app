@@ -312,7 +312,13 @@ function async request () {
 |[uni.startBeaconDiscovery](/api/system/ibeacon?id=startbeacondiscovery)|停止搜索附近的 iBeacon 设备|
 |[uni.stopBeaconDiscovery](/api/system/ibeacon?id=stopbeacondiscovery)|开始搜索附近的 iBeacon 设备|
 
+##### 生物认证
 
+|API|说明|
+|:-|:-|
+|[uni.startSoterAuthentication](/api/system/authentication?id=startsoterauthentication)|开始生物认证|
+|[uni.checkIsSupportSoterAuthentication](/api/system/authentication?id=checkissupportsoterauthentication)|获取本机支持的生物认证方式|
+|[uni.checkIsSoterEnrolledInDevice](/api/system/authentication?id=checkissoterenrolledindevice)|获取设备内是否录入如指纹等生物信息的接口|
 
 #### 界面
 ##### 交互反馈
@@ -422,6 +428,7 @@ function async request () {
 |[uni.login](api/plugins/login?id=login)|登录|
 |[uni.getUserInfo](api/plugins/login?id=getuserinfo)|获取用户信息|
 |[uni.share](api/plugins/share?id=share)|分享|
+|[uni.shareWithSystem](api/plugins/share?id=sharewithsystem)|使用系统分享|
 |[uni.requestPayment](api/plugins/payment?id=requestpayment)|支付|
 |[uni.subscribePush](api/plugins/push?id=subscribepush)|开启推送|
 |[uni.unsubscribePush](api/plugins/push?id=unsubscribepush)|关闭推送|
