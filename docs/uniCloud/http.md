@@ -21,6 +21,8 @@
 
 ### 绑定自定义域名
 
+**目前阿里云不支持绑定自定义域名，但是需要手动在【云函数URL化】处开启云函数Url化开关**
+
 1. 单击左侧菜单栏【云函数】，进入云函数页面。
 2. 单击【云函数URL化】，在弹出的配置窗口中进行配置。
 ![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/cloud-function-urlify.png)
