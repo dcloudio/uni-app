@@ -25,8 +25,8 @@ if (!pluginDir) {
   process.exit(0)
 }
 
-if(pluginDir.indexOf('/') === -1){
-pluginDir = path.resolve(__dirname,'../packages/uni-'+pluginDir)
+if (pluginDir.indexOf('/') === -1) {
+  pluginDir = path.resolve(__dirname, '../packages/uni-' + pluginDir)
 }
 
 const pkg = require(path.join(pluginDir, 'package.json'))

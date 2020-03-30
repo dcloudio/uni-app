@@ -6,6 +6,7 @@ const Plugin = {
   options: {},
   // 初步校验相关配置是否正确
   validate: [], // (platformOptions, manifestJson) {},
+  configureEnv: [], // (){},
   // 以 H5 为基准的平台特殊配置
   configureH5: [], // (h5Options) {},
   // 链式修改 webpack config
@@ -42,6 +43,7 @@ const pluginRE = /^(uni-|@[\w-]+(\.)?[\w-]+\/uni-)/
 const officialPlugins = [
   '@dcloudio/uni-app-plus',
   '@dcloudio/uni-h5',
+  '@dcloudio/uni-mp-360',
   '@dcloudio/uni-mp-alipay',
   '@dcloudio/uni-mp-baidu',
   '@dcloudio/uni-mp-qq',

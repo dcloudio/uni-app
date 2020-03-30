@@ -396,6 +396,10 @@ if (process.UNI_AUTO_SCAN_COMPONENTS) {
   initAutoImportScanComponents()
 }
 
+global.uniPlugin.configureEnv.forEach(configureEnv => {
+  configureEnv()
+})
+
 runByHBuilderX && console.log(`正在编译中...`)
 
 module.exports = {
