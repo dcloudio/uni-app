@@ -18,16 +18,14 @@ function setNavigationBar (type, args) {
 
         if (frontColor) {
           page.navigationBar.textColor = frontColor === '#000000' ? 'black' : 'white'
-          UniServiceJSBridge.emit('onNavigationBarChange', {
-            textColor: frontColor === '#000000' ? '#000' : '#fff'
-          })
         }
         if (backgroundColor) {
           page.navigationBar.backgroundColor = backgroundColor
-          UniServiceJSBridge.emit('onNavigationBarChange', {
-            backgroundColor
-          })
         }
+        UniServiceJSBridge.emit('onNavigationBarChange', {
+          textColor: frontColor === '#000000' ? '#000' : '#fff',
+          backgroundColor: page.navigationBar.backgroundColor
+        })
         page.navigationBar.duration = duration + 'ms'
         page.navigationBar.timingFunc = timingFunc
         break
