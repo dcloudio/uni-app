@@ -172,6 +172,16 @@ rewardedVideoAd = uni.createRewardedVideoAd({
 });
 ```
 
+### 服务器回调事件
+- HBuilderX 2.6.8+
+
+```
+rewardedVideoAd.onVerify(e => {
+  // 广告商调用开发者服务器返回结果
+  console.log(e.isValid);
+})
+```
+
 ### 服务器回调数据说明
 
 当最终用户观看激励视频广告完成后，广告服务器会议GET方式请求业务服务器的回调链接，并拼接以下参数回传：
@@ -217,6 +227,16 @@ if __name__ == "__main__":
 }
 ```
 
+#### 获取广告商名称
+- HBuilderX 2.6.8+
+
+```
+var rewardedVideoAd = uni.createRewardedVideoAd({
+  adpid: ''
+});
+var provider = rewardedVideoAd.getProvider();
+// csj gdt
+```
 
 
 ### app平台错误码
