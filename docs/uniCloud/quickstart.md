@@ -321,6 +321,4 @@ H5前端js访问云函数，涉及跨域问题，导致前端js无法连接云�
 - 早期阿里云的云函数的初次冷启动较慢，表现为某个云函数第一次被调用时联网时间较长，可能要5秒左右。第二次即可正常。此问题阿里云已优化，重新上传部署云函数后生效。
 - web控制台网址：[http://unicloud.dcloud.net.cn](http://unicloud.dcloud.net.cn)，在HX中对云函数目录点右键，或者在帮助菜单中，均有入口链接。
 
-对 uniCloud 使用有疑问，欢迎加入 uniCloud 开发交流群讨论：1012245137 <a href="//shang.qq.com/wpa/qunwpa?idkey=36ff837111d79a4e90e5fcd6185ec684be4fc276eb57259e08339512709d39fe">点此加入</a>
-
 
