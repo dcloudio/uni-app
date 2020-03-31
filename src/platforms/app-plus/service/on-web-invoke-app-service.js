@@ -5,7 +5,7 @@ function onMessage (pageId, arg) {
     return
   }
   if (!page.$page.meta.isNVue) {
-    const target = page.$vm._$vd.elements.find(target => target.tagName === 'web-view' && target.events['message'])
+    const target = page.$vm._$vd.elements.find(target => target.type === 'web-view' && target.events['message'])
     if (!target) {
       return
     }
