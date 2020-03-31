@@ -2,6 +2,7 @@
 const eventNames = [
   'load',
   'close',
+  'verify',
   'error'
 ]
 
