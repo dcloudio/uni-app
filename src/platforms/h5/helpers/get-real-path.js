@@ -4,10 +4,17 @@ const SCHEME_RE = /^([a-z-]+:)?\/\//i
 const DATA_RE = /^data:.*,.*/
 
 function addBase (filePath) {
-  if (__uniConfig.router.base) {
-    return __uniConfig.router.base + filePath
+  const base = __uniConfig.router.base
+  if (!base) {
+    return filePath
   }
-  return filePath
+  if (base !== '/') {
+    // 部分地址已经带了base(如被webpack处理过的资源自动带了publicPath)
+    if (('/' + filePath).indexOf(base) === 0) {
+      return '/' + filePath
+    }
+  }
+  return base + filePath
 }
 
 export default function getRealPath (filePath) {
