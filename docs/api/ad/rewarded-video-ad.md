@@ -184,17 +184,17 @@ rewardedVideoAd.onVerify(e => {
 
 ### 服务器回调数据说明
 
-当最终用户观看激励视频广告完成后，广告服务器会议GET方式请求业务服务器的回调链接，并拼接以下参数回传：
+当最终用户观看激励视频广告完成后，广告服务器会以GET方式请求业务服务器的回调链接，并拼接以下参数回传：
 `user_id=%s&trans_id=%s&reward_name=%s&reward_amount=%d&extra=%s&sign=%s`
 
-|字段名称|说明|字段类型|备注|
+字段名称|说明|字段类型|备注|
 :-|:-|:-|:-|
-|sign|签名|String|签名信息|
-|user_id|用户id|String	|调用API传入的userId|
-|trans_id|交易id|String	|广告平台生成的唯一交易ID|
-|reward_amount|奖励数量|String	|广告后台配置或调用API传入的amount|
-|reward_name|奖励名称|String|广告后台配置或调用API传入的name|
-|extra|自定义数据，可以为空|String|透传给回调服务器的数据，调用API传入的extra|
+sign|签名|String|签名信息|
+user_id|用户id|String	|调用API传入的userId|
+trans_id|交易id|String	|广告平台生成的唯一交易ID|
+reward_amount|奖励数量|String	|广告后台配置或调用API传入的amount|
+reward_name|奖励名称|String|广告后台配置或调用API传入的name|
+extra|自定义数据，可以为空|String|透传给回调服务器的数据，调用API传入的extra|
 
 #### 签名信息
 
@@ -216,9 +216,9 @@ if __name__ == "__main__":
 
 返回json数据，字段如下：
 
-|字段名称|说明|字段类型|备注|
+字段名称|说明|字段类型|备注|
 :-|:-|:-|:-|
-|isValid|校验结果|Blean|判定结果，是否发放奖励|
+isValid|校验结果|Blean|判定结果，是否发放奖励|
 
 示例
 ```
