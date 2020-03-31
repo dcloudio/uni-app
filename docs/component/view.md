@@ -46,3 +46,4 @@
 
 - 如果需要使用滚动视图，请使用 [scroll-view](/component/scroll-view)
 - 如果使用 `<div>` 组件编译时会被转换为 `<view>`。
+- 如果粘贴代码至本地项目没有生效，需要去 `https://github.com/dcloudio/hello-uniapp/blob/master/common/uni.css` 导入样式至本地项目,然后全局引用
