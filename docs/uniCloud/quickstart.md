@@ -249,8 +249,11 @@ exports.main = async (event, context) => {
 |服务提供商	|request合法域名|uploadFile合法域名									|
 |:-:				|:-:						|:-:																|
 |阿里云			|api.bspapp.com	|bsppub.oss-cn-shanghai.aliyuncs.com|
+|腾讯云			|tcb-api.tencentcloudapi.com	|cos.ap-shanghai.myqcloud.com|
 
 小程序开发工具的真机预览功能，必须添加上述域名白名单，否则无法调用云函数。模拟器的PC端预览、真机调试不受此影响。
+
+使用腾讯云时，开发期间会使用dcloud的服务器访问云函数来时时返回云函数运行日志，最好在开发期间忽略域名检查。
 
 ## H5中使用uniCloud
 
