@@ -196,6 +196,9 @@ module.exports = (api, options) => {
     }
 
     return new Promise((resolve, reject) => {
+      const {
+        runByHBuilderX
+      } = require('@dcloudio/uni-cli-shared')
       // log instructions & open browser on first compilation complete
       let isFirstCompile = true
       compiler.hooks.done.tap('vue-cli-service uni-serve', stats => {
@@ -212,14 +215,17 @@ module.exports = (api, options) => {
         const networkUrl = publicUrl
           ? publicUrl.replace(/([^/])$/, '$1/')
           : urls.lanUrlForTerminal
-
-        console.log()
-        console.log(`  App running at:`)
-        console.log(
+        const printRunningAt = !runByHBuilderX || (runByHBuilderX && isFirstCompile)
+        printRunningAt && console.log()
+        printRunningAt && console.log(`  App running at:`)
+        printRunningAt && console.log(
           `  - Local:   ${chalk.cyan(urls.localUrlForTerminal)} ${copied}`
         )
+        if (!printRunningAt) {
+          console.log(`Build complete. Watching for changes...`)
+        }
         if (!isInContainer) {
-          console.log(`  - Network: ${chalk.cyan(networkUrl)}`)
+          printRunningAt && console.log(`  - Network: ${chalk.cyan(networkUrl)}`)
         } else {
           console.log()
           console.log(chalk.yellow(
