@@ -373,7 +373,11 @@ module.exports = function (pagesJson, userManifestJson) {
 
   manifestJson.plus['uni-app'].control = control
   manifestJson.plus['uni-app'].nvueCompiler = appJson.nvueCompiler
-  manifestJson.plus['uni-app'].renderer = appJson.renderer
+  // v3 + native 时强制 auto
+  manifestJson.plus['uni-app'].renderer = process.env.UNI_USING_V3_NATIVE
+    ? 'auto'
+    : appJson.renderer
+
   if (flexDir) {
     manifestJson.plus['uni-app'].nvue = {
       'flex-direction': flexDir
