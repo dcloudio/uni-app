@@ -41,6 +41,21 @@ npm run serve:quickapp
 6.修改代码后，会主动通知调试器更新，或者手动点击在线更新（调试可以点击右下角开始调试）
 
 
+#### 开发调试代码
+
+1.Fork 仓库 `uni-app` [https://github.com/dcloudio/uni-app](https://github.com/dcloudio/uni-app)，切换到 dev 分支
+
+2.编译 (输出目录`packages/uni-quickapp`)
+
+```
+npm run build:quickapp
+```
+
+3.手动替换编译输出目录 `packages/uni-quickapp` 到测试工程 `node_modules/@dcloudio/uni-quickapp`，也可以考虑自己npm link本地`uni-quickapp`包（需要考虑三方依赖）
+
+4.使用 pull request 提交代码
+
+
 #### `uni-app` 目录说明
 
 ```
@@ -60,20 +75,6 @@ src
  │          └─components 平台的组件实现（easycom格式，目录名与文件名一致）
  │              └─button
 ```
-
-#### 开发调试代码
-
-1.Fork 仓库 `uni-app` [https://github.com/dcloudio/uni-app](https://github.com/dcloudio/uni-app)，切换到 dev 分支
-
-2.编译 (输出目录`packages/uni-quickapp`)
-
-```
-npm run build:quickapp
-```
-
-3.手动替换编译输出目录 `packages/uni-quickapp` 到测试工程 `node_modules/@dcloudio/uni-quickapp`，也可以考虑自己npm link本地`uni-quickapp`包（需要考虑三方依赖）
-
-4.使用 pull request 提交代码
 
 
 #### 开发示例
