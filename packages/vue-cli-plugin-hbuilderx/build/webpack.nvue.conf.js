@@ -97,7 +97,7 @@ const plugins = [
   new WebpackAppPlusNVuePlugin()
 ]
 
-const excludeModuleReg = /node_modules(?!(\/|\\).*(weex).*)/
+// const excludeModuleReg = /node_modules(?!(\/|\\).*(weex).*)/
 
 const rules = [{
   test: path.resolve(process.env.UNI_INPUT_DIR, 'pages.json'),
@@ -119,10 +119,10 @@ const rules = [{
     }
   },
   jsPreprocessorLoader
-  ],
-  exclude (modulePath) {
-    return excludeModuleReg.test(modulePath) && modulePath.indexOf('@dcloudio') === -1
-  }
+  ]
+  // exclude (modulePath) { // nvue js均提供babel，否则还得提供transpileDependencies配置
+  //   return excludeModuleReg.test(modulePath) && modulePath.indexOf('@dcloudio') === -1
+  // }
 },
 {
   test: [/\.nvue(\?[^?]+)?$/, /\.vue(\?[^?]+)?$/],

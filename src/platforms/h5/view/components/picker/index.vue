@@ -353,7 +353,9 @@ export default {
           }
           const length = this.valueSync.length = Math.max(val.length, this.range.length)
           for (let index = 0; index < length; index++) {
-            this.valueSync.splice(index, 1, Number(val[index]) || Number(this.valueSync[index]) || 0)
+            const val0 = Number(val[index])
+            const val1 = Number(this.valueSync[index])
+            this.valueSync.splice(index, 1, isNaN(val0) ? (isNaN(val1) ? 0 : val1) : val0)
           }
           break
         case mode.TIME:
