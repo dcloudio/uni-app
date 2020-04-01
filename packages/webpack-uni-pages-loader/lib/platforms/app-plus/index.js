@@ -268,7 +268,10 @@ module.exports = function (pagesJson, userManifestJson) {
     appJson.nvueCompiler = 'weex'
   }
 
-  if (manifestJson.plus.renderer === 'native') {
+  if (
+    manifestJson.plus.renderer === 'native' &&
+    !process.env.UNI_USING_V3_NATIVE // v3+native时，renderer为'auto'
+  ) {
     appJson.renderer = 'native'
   } else {
     appJson.renderer = 'auto'
