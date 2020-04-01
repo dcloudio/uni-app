@@ -3,6 +3,12 @@ const path = require('path')
 const mkdirp = require('mkdirp')
 const loaderUtils = require('loader-utils')
 
+const hasOwnProperty = Object.prototype.hasOwnProperty
+
+function hasOwn (obj, key) {
+  return hasOwnProperty.call(obj, key)
+}
+
 process.UNI_CLOUD = false
 process.UNI_CLOUD_TCB = false
 process.UNI_CLOUD_ALIYUN = false
@@ -124,7 +130,7 @@ process.UNI_STAT_CONFIG = {
 // 默认启用 自定义组件模式
 // if (isInHBuilderXAlpha) {
 let usingComponentsAbsent = false
-if (!platformOptions.hasOwnProperty('usingComponents')) {
+if (!hasOwn(platformOptions, 'usingComponents')) {
   usingComponentsAbsent = true
 }
 platformOptions.usingComponents = true
@@ -173,8 +179,11 @@ if (process.env.UNI_PLATFORM === 'app-plus') {
     isNVueCompiler = false
   }
   if (
-    platformOptions.compilerVersion === '3' ||
-    platformOptions.compilerVersion === 3
+    !hasOwn(platformOptions, 'compilerVersion') || // 默认v3
+    (
+      platformOptions.compilerVersion === '3' ||
+      platformOptions.compilerVersion === 3
+    )
   ) {
     delete process.env.UNI_USING_CACHE
     if (platformOptions.renderer === 'native') {
@@ -269,7 +278,8 @@ const needWarning = !platformOptions.usingComponents || usingComponentsAbsent
 let hasNVue = false
 // 输出编译器版本等信息
 if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
-  console.log('当前nvue编译模式' + (process.env.UNI_USING_V3_NATIVE ? '（v3）' : '') + '：' + (isNVueCompiler ? 'uni-app' : 'weex') +
+  console.log('当前nvue编译模式' + (process.env.UNI_USING_V3_NATIVE ? '（v3）' : '') + '：' + (isNVueCompiler ? 'uni-app'
+    : 'weex') +
     ' 。编译模式差异见：https://ask.dcloud.net.cn/article/36074')
 } else if (process.env.UNI_PLATFORM !== 'h5' && process.env.UNI_PLATFORM !== 'quickapp') {
   try {

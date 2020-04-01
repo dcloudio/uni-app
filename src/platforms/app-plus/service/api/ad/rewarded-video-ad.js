@@ -37,7 +37,7 @@ class RewardedVideoAd {
       this._dispatchEvent('close', { isEnded: e.isEnded })
     })
     rewardAd.onVerify((e) => {
-      this._dispatchEvent('verify', { isValid: e.valid })
+      this._dispatchEvent('verify', { isValid: e.isValid })
     })
     rewardAd.onError((e) => {
       const { code, message } = e
@@ -74,6 +74,9 @@ class RewardedVideoAd {
   }
   getProvider () {
     return this._rewardAd.getProvider()
+  }
+  destroy () {
+    this._rewardAd.destroy()
   }
   _loadAd () {
     this._isLoad = false
