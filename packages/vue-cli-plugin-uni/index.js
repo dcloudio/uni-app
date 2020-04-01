@@ -64,10 +64,14 @@ module.exports = (api, options) => {
   api.chainWebpack(require('./lib/chain-webpack')(platformOptions, options, api))
 
   global.uniPlugin.configureWebpack.forEach(configureWebpack => {
-    api.configureWebpack(configureWebpack)
+    api.configureWebpack(function (webpackConfig) {
+      return configureWebpack(webpackConfig, options)
+    })
   })
   global.uniPlugin.chainWebpack.forEach(chainWebpack => {
-    api.chainWebpack(chainWebpack)
+    api.chainWebpack(function (webpackConfig) {
+      return chainWebpack(webpackConfig, options)
+    })
   })
 
   if (

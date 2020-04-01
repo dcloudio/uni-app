@@ -77,29 +77,11 @@ module.exports = {
 
     parseEntry()
 
-    let devtool = false
-    if (process.env.NODE_ENV !== 'production') {
-      if (process.env.UNI_PLATFORM === 'app-plus') {
-        if (process.env.UNI_USING_V8) {
-          devtool = 'eval-source-map'
-        } else {
-          devtool = 'eval'
-        }
-      } else if (
-        process.env.UNI_PLATFORM === 'mp-baidu' ||
-        process.env.UNI_PLATFORM === 'mp-toutiao'
-      ) {
-        devtool = 'inline-source-map'
-      } else {
-        devtool = 'sourcemap'
-      }
-    }
     const statCode = process.env.UNI_USING_STAT ? `import '@dcloudio/uni-stat';` : ''
 
     const beforeCode = `import 'uni-pages';`
 
     return {
-      devtool,
       mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
       entry () {
         return process.UNI_ENTRY

@@ -102,7 +102,6 @@ module.exports = {
       `import 'uni-pages';import 'uni-${process.env.UNI_PLATFORM}';`
 
     return {
-      devtool: process.env.NODE_ENV === 'production' ? false : 'cheap-module-eval-source-map',
       resolve: {
         extensions: ['.nvue'],
         alias: {

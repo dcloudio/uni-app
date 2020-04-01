@@ -62,7 +62,6 @@ function getCopyWebpackPluginOptions (platformOptions, vueOptions) {
       copyOption && copyOptions.push(copyOption)
     })
   })
-  console.log('debug:::', copyOptions)
   return copyOptions
 }
 
