@@ -44,7 +44,10 @@ export default {
   methods: {
     initKeyboard (el) {
       el.addEventListener('focus', () => {
-        UniViewJSBridge.subscribe('hideKeyboard', hideKeyboard)
+        this.hideKeyboardTemp = function () {
+          hideKeyboard()
+        }
+        UniViewJSBridge.subscribe('hideKeyboard', this.hideKeyboardTemp)
         document.addEventListener('click', iosHideKeyboard, false)
         this.setSoftinputNavBar()
         this.setSoftinputTemporary()
@@ -101,7 +104,7 @@ export default {
       }
     },
     onKeyboardHide () {
-      UniViewJSBridge.unsubscribe('hideKeyboard', hideKeyboard)
+      UniViewJSBridge.unsubscribe('hideKeyboard', this.hideKeyboardTemp)
       document.removeEventListener('click', iosHideKeyboard, false)
       this.resetSoftinputNavBar()
     }
