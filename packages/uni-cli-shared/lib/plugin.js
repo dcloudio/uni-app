@@ -24,7 +24,7 @@ function initPlugin (plugin) {
   try {
     pluginApi = require(path.join(plugin.id, (plugin.config.main || '/lib/uni.config.js')))
   } catch (e) {
-    console.warn(`缺少 uni.config.js `)
+    console.warn(`${plugin.id} 缺少 uni.config.js `)
   }
 
   pluginApi && PLUGIN_KEYS.forEach(name => {
@@ -47,6 +47,7 @@ const officialPlugins = [
   '@dcloudio/uni-mp-alipay',
   '@dcloudio/uni-mp-baidu',
   '@dcloudio/uni-mp-qq',
+  '@dcloudio/uni-mp-quickapp',
   '@dcloudio/uni-mp-toutiao',
   '@dcloudio/uni-mp-welink',
   '@dcloudio/uni-mp-weixin'
@@ -120,6 +121,7 @@ module.exports = {
     initPlugin(plugin)
 
     Plugin.name = name
+    Plugin.id = plugin.id
     Plugin.config = plugin.config
     Plugin.platforms = plugins.map(plugin => plugin.name)
     Plugin.preprocess = initPreprocessContext(name, Plugin.platforms, process.UNI_SCRIPT_DEFINE)

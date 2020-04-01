@@ -50,7 +50,7 @@ const tags = [
   'editor'
 ]
 
-module.exports = {
+const baseCompiler = {
   ref: 'data-ref',
   refInFor: 'data-ref-in-for',
   specialEvents: {},
@@ -114,4 +114,17 @@ ${content}
       children: []
     }
   }
+}
+
+module.exports = function getCompilerOptions (platform) {
+  let id = '@dcloudio/uni-' + platform
+  if (global.uniPlugin) {
+    id = global.uniPlugin.id
+  }
+  return Object.assign({
+    name: platform
+  },
+  baseCompiler,
+  require(id + '/lib/uni.compiler.js')
+  )
 }

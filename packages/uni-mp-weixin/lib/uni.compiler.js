@@ -13,7 +13,7 @@ wx.createComponent({
 }
 
 module.exports = {
-  prefix: 'wx:',
+  directive: 'wx:',
   createScopedSlots (slotName, props, state) {
     const componentName = 'scoped-slots-' + slotName
     if (!state.componentGenerics) {

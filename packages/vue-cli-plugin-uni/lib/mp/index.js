@@ -8,13 +8,13 @@ const {
   getPlatformCssnano
 } = require('@dcloudio/uni-cli-shared')
 
-const WebpackUniAppPlugin = require('../packages/webpack-uni-app-loader/plugin/index')
+const WebpackUniAppPlugin = require('../../packages/webpack-uni-app-loader/plugin/index')
 
-const modifyVueLoader = require('./vue-loader')
+const modifyVueLoader = require('../vue-loader')
 
 const {
   createTemplateCacheLoader
-} = require('./cache-loader')
+} = require('../cache-loader')
 
 function createUniMPPlugin () {
   const WebpackUniMPPlugin = require('@dcloudio/webpack-uni-mp-loader/lib/plugin/index-new')
@@ -23,7 +23,7 @@ function createUniMPPlugin () {
 
 function getProvides () {
   const uniPath = require.resolve('@dcloudio/uni-' + process.env.UNI_PLATFORM)
-  const uniCloudPath = path.resolve(__dirname, '../packages/uni-cloud/dist/index.js')
+  const uniCloudPath = path.resolve(__dirname, '../../packages/uni-cloud/dist/index.js')
   const provides = {
     'uni': [uniPath, 'default'],
     'uniCloud': [uniCloudPath, 'default']
@@ -39,9 +39,9 @@ function getProvides () {
     process.env.UNI_PLATFORM === 'app-plus' &&
     process.env.UNI_USING_V8
   ) {
-    provides['__f__'] = [path.resolve(__dirname, 'format-log.js'), 'default']
+    provides['__f__'] = [path.resolve(__dirname, '../format-log.js'), 'default']
 
-    const cryptoProvide = [path.resolve(__dirname, 'crypto.js'), 'default']
+    const cryptoProvide = [path.resolve(__dirname, '../crypto.js'), 'default']
     provides['crypto'] = cryptoProvide
     provides['window.crypto'] = cryptoProvide
     provides['global.crypto'] = cryptoProvide
@@ -73,7 +73,7 @@ module.exports = {
       name: 'common/runtime'
     }
 
-    webpackConfig.optimization.splitChunks = require('./split-chunks')()
+    webpackConfig.optimization.splitChunks = require('../split-chunks')()
 
     parseEntry()
 
@@ -175,7 +175,7 @@ module.exports = {
         .add(/\.filter\.js$/)
     }
 
-    const compilerOptions = process.env.UNI_USING_COMPONENTS ? {} : require('./mp-compiler-options')
+    const compilerOptions = process.env.UNI_USING_COMPONENTS ? {} : require('../mp-compiler-options')
 
     modifyVueLoader(webpackConfig, {}, compilerOptions, api)
 
@@ -190,7 +190,7 @@ module.exports = {
       process.env.NODE_ENV === 'production' &&
       process.env.UNI_PLATFORM !== 'app-plus'
     ) {
-      const OptimizeCssnanoPlugin = require('../packages/@intervolga/optimize-cssnano-plugin/index.js')
+      const OptimizeCssnanoPlugin = require('../../packages/@intervolga/optimize-cssnano-plugin/index.js')
       webpackConfig.plugin('optimize-css')
         .init((Plugin, args) => new OptimizeCssnanoPlugin({
           sourceMap: false,

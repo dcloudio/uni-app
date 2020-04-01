@@ -41,7 +41,11 @@ module.exports = (api, options) => {
     return
   }
 
-  const platformOptions = require('./lib/' + process.env.UNI_PLATFORM)
+  const type = ['app-plus', 'h5'].includes(process.env.UNI_PLATFORM)
+    ? process.env.UNI_PLATFORM
+    : 'mp'
+
+  const platformOptions = require('./lib/' + type)
 
   let vueConfig = platformOptions.vueConfig
 

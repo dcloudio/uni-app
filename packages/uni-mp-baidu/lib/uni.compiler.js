@@ -1,7 +1,5 @@
-const t = require('@babel/types')
-
 module.exports = {
-  prefix: 's-',
+  directive: 's-',
   createScopedSlots (slotName, props, state) {
     const node = {
       type: 'slot',
@@ -28,7 +26,7 @@ module.exports = {
       },
       children: normalizeChildren(traverseExpr(returnExprNodes, state))
     }
-    if (t.isIdentifier(paramExprNode)) {
+    if (paramExprNode && paramExprNode.type === 'Identifier') {
       node.scoped = paramExprNode.name
     }
     return node

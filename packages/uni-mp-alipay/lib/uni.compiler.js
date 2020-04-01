@@ -1,8 +1,14 @@
-const t = require('@babel/types')
+function cached (fn) {
+  const cache = Object.create(null)
+  return function cachedFn (str) {
+    const hit = cache[str]
+    return hit || (cache[str] = fn(str))
+  }
+}
 
-const {
-  capitalize
-} = require('../util')
+const capitalize = cached(str => {
+  return str.charAt(0).toUpperCase() + str.slice(1)
+})
 
 const EVENTS = {
   'click': 'tap',
@@ -30,7 +36,7 @@ const EVENTS = {
 }
 
 module.exports = {
-  prefix: 'a:',
+  directive: 'a:',
   specialEvents: {
     'form': {
       'reset': 'onReset'
@@ -79,7 +85,7 @@ module.exports = {
       },
       children: normalizeChildren(traverseExpr(returnExprNodes, state))
     }
-    if (t.isIdentifier(paramExprNode)) {
+    if (paramExprNode && paramExprNode.type === 'Identifier') {
       node.scoped = paramExprNode.name
     }
     return node

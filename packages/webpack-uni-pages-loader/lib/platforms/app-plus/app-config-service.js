@@ -46,4 +46,3 @@ service.register("uni-app-config",{create(a,b,c){if(!__uniConfig.viewport){var d
 `
   }
 }
-

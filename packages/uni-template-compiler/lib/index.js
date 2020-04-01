@@ -10,7 +10,6 @@ const {
   ssrCompileToFunctions
 } = require('@dcloudio/vue-cli-plugin-uni/packages/vue-template-compiler')
 
-const platforms = require('./platforms')
 const traverseScript = require('./script/traverse')
 const generateScript = require('./script/generate')
 const traverseTemplate = require('./template/traverse')
@@ -102,7 +101,7 @@ module.exports = {
       optimize: false
     }), compile)
 
-    options.mp.platform = platforms[options.mp.platform]
+    options.mp.platform = require('./mp')(options.mp.platform)
 
     options.mp.scopeId = options.scopeId
 
