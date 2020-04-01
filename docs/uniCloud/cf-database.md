@@ -588,6 +588,12 @@ const dbCmd = db.command
 let res = await collection.where({
   a: dbCmd.gt(2)
 }).remove()
+
+// 清理全部数据
+const dbCmd = db.command
+let res = await collection.where({
+  _id: dbCmd.exists(true)
+}).remove()
 ```
 
 ## 更新文档
