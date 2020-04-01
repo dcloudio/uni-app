@@ -40,34 +40,12 @@ function initPlugin (plugin) {
 
 const pluginRE = /^(uni-|@[\w-]+(\.)?[\w-]+\/uni-)/
 
-const officialPlugins = [
-  '@dcloudio/uni-app-plus',
-  '@dcloudio/uni-h5',
-  '@dcloudio/uni-mp-360',
-  '@dcloudio/uni-mp-alipay',
-  '@dcloudio/uni-mp-baidu',
-  '@dcloudio/uni-mp-qq',
-  '@dcloudio/uni-mp-quickapp',
-  '@dcloudio/uni-mp-toutiao',
-  '@dcloudio/uni-mp-welink',
-  '@dcloudio/uni-mp-weixin'
-]
-
 function resolvePlugins () {
   const pkg = require(path.resolve(process.env.UNI_CLI_CONTEXT, 'package.json'))
   return Object.keys(pkg.devDependencies || {})
     .concat(Object.keys(pkg.dependencies || {}))
     .map(id => {
-      let isPlatformPlugin = false
-      if (id.startsWith('@dcloudio/')) {
-        if (!officialPlugins.includes(id)) {
-          return
-        }
-        isPlatformPlugin = true
-      } else {
-        isPlatformPlugin = pluginRE.test(id)
-      }
-      if (!isPlatformPlugin) {
+      if (!pluginRE.test(id)) {
         return
       }
       try {
