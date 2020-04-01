@@ -2970,7 +2970,7 @@ var serviceContext = (function () {
   }
 
   function getScreenInfo () {
-    const { resolutionWidth, resolutionHeight } = plus.screen.getCureentSize();
+    const { resolutionWidth, resolutionHeight } = plus.screen.getCurrentSize();
     return {
       screenWidth: Math.round(resolutionWidth),
       screenHeight: Math.round(resolutionHeight)
