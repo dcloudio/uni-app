@@ -3,6 +3,12 @@ const path = require('path')
 const mkdirp = require('mkdirp')
 const loaderUtils = require('loader-utils')
 
+const hasOwnProperty = Object.prototype.hasOwnProperty
+
+function hasOwn (obj, key) {
+  return hasOwnProperty.call(obj, key)
+}
+
 const defaultInputDir = 'src'
 if (process.env.UNI_INPUT_DIR && process.env.UNI_INPUT_DIR.indexOf('./') === 0) {
   process.env.UNI_INPUT_DIR = path.resolve(process.cwd(), process.env.UNI_INPUT_DIR)
@@ -131,7 +137,7 @@ process.UNI_STAT_CONFIG = {
 // 默认启用 自定义组件模式
 // if (isInHBuilderXAlpha) {
 let usingComponentsAbsent = false
-if (!platformOptions.hasOwnProperty('usingComponents')) {
+if (!hasOwn(platformOptions, 'usingComponents')) {
   usingComponentsAbsent = true
 }
 platformOptions.usingComponents = true
@@ -180,8 +186,11 @@ if (process.env.UNI_PLATFORM === 'app-plus') {
     isNVueCompiler = false
   }
   if (
-    platformOptions.compilerVersion === '3' ||
-    platformOptions.compilerVersion === 3
+    !hasOwn(platformOptions, 'compilerVersion') ||
+    (
+      platformOptions.compilerVersion === '3' ||
+      platformOptions.compilerVersion === 3
+    )
   ) {
     delete process.env.UNI_USING_CACHE
     if (platformOptions.renderer === 'native') {
