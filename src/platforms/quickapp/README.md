@@ -7,12 +7,18 @@
 
 2.打开快应用调试器，下载平台（快应用预览版：版本号1060）
 
+3.安装 openssl(windows系统)
+
 
 #### 搭建
 
-1.创建 `hello uni-app` 工程
+1.创建 `hello uni-app` 测试工程
 ```
 vue create -p dcloudio/uni-preset-vue#alpha my-qa-project -n
+```
+目前手动安装依赖库: 根目录执行
+```
+yarn add @dcloudio/uni-quickapp@alpha -D
 ```
 
 2.生成证书 `certificate.pem` 和 `private.pem`：到目录 `src/sign/debug/`
@@ -35,34 +41,56 @@ npm run serve:quickapp
 6.修改代码后，会主动通知调试器更新，或者手动点击在线更新（调试可以点击右下角开始调试）
 
 
+#### `uni-app` 目录说明
+
+```
+packages
+ ├─uni-quickapp
+ │  └─lib
+ │      ├─compiler-module (编译阶段标签转换之类逻辑)
+ │      ├─polyfill.css (全局样式差异代码)
+ │      └─manifest (manifest.json的生成逻辑)
+src
+ ├─platforms
+ │  └─quickapp
+ │      ├─...
+ │      ├─service
+ │      │   └─api 平台的接口实现（方案同h5，app-plus）
+ │      └─view
+ │          └─components 平台的组件实现（easycom格式，目录名与文件名一致）
+ │              └─button
+```
+
 #### 开发调试代码
 
-1.仓库 `uni-app(quickapp branch)` [https://github.com/dcloudio/uni-app/tree/quickapp](https://github.com/dcloudio/uni-app/tree/quickapp)
+1.Fork 仓库 `uni-app` [https://github.com/dcloudio/uni-app](https://github.com/dcloudio/uni-app)，切换到 dev 分支
 
-2.目录说明：
-```
-`src/platforms/quickapp/service/api` 平台的接口实现（方案同h5，app-plus）
-`src/platforms/quickapp/view/components` 平台的组件实现（easycom格式，目录名与文件名一致）
-`packages/uni-quickapp/lib/compiler-module` 编译阶段标签转换之类逻辑
-`packages/uni-quickapp/lib/polyfill.css` 全局样式差异代码
-`packages/uni-quickapp/lib/manifest` manifest.json的生成逻辑
-```
+2.编译 (输出目录`packages/uni-quickapp`)
 
-3.编译 (输出目录`packages/uni-quickapp`)
 ```
 npm run build:quickapp
 ```
 
-4.可以选择手动替换到自己测试工程的`@dcloudio/uni-quickapp`里边,也可以考虑自己npm link本地`uni-quickapp`包（需要考虑三方依赖）
+3.手动替换编译输出目录 `packages/uni-quickapp` 到测试工程 `node_modules/@dcloudio/uni-quickapp`，也可以考虑自己npm link本地`uni-quickapp`包（需要考虑三方依赖）
+
+4.使用 pull request 提交代码
+
+
+#### 开发示例
+- button 组件 [https://github.com/dcloudio/uni-app/tree/master/src/platforms/quickapp/view/components/button](https://github.com/dcloudio/uni-app/tree/master/src/platforms/quickapp/view/components/button)
+
 
 
 #### 包名配置
 ```
 项目 manifest.json
 {
-    "quickapp" : {
-        "package": "com.example.demo"
+  "quickapp" : {
+    "config": {
+      "package": "com.example.demo",
+      "designWidth": 360
     }
+  }
 }
 ```
 
