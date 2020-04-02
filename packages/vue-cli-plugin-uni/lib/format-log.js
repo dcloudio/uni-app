@@ -19,9 +19,9 @@ export default function formatLog () {
   }
 
   var msgs = args.map(function (v) {
-    var type = Object.prototype.toString.call(v)
+    var type = Object.prototype.toString.call(v).toLowerCase()
 
-    if (type.toLowerCase() === '[object object]') {
+    if (type === '[object object]' || type === '[object array]') {
       try {
         v = '---BEGIN:JSON---' + JSON.stringify(v) + '---END:JSON---'
       } catch (e) {
