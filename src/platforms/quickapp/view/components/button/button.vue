@@ -1,6 +1,11 @@
 <template>
-  <div class="uni-button" :class="viewClass" v-on="$listeners">
-    <text class="uni-button-t" :class="textClass">
+  <div
+    :class="viewClass"
+    class="uni-button"
+    v-on="$listeners">
+    <text
+      :class="textClass"
+      class="uni-button-t">
       <slot />
     </text>
   </div>
