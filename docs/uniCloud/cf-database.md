@@ -555,7 +555,7 @@ db.collection('articles').where({
   version: /^\ds/i
 })
 
-// 或者
+// 或者，这种方式阿里云不支持
 db.collection('articles').where({
   version: new db.RegExp({
     regex: '^\\ds'   // 正则表达式为 /^\ds/，转义后变成 '^\\ds'
