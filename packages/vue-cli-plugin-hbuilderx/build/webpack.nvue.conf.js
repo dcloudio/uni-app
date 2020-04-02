@@ -154,7 +154,7 @@ const rules = [{
 }
 ].concat(cssLoaders)
 
-if (process.env.UNI_USING_NVUE_COMPILER) {
+if (process.env.UNI_USING_NVUE_COMPILER || process.env.UNI_USING_V3_NATIVE) {
   rules.unshift({
     resourceQuery: function (query) {
       return query.indexOf('vue&type=template') !== -1 && query.indexOf('mpType=page') !== -1

@@ -16,7 +16,7 @@ const TASK_APIS = ['request', 'downloadFile', 'uploadFile', 'connectSocket']
 
 const ASYNC_API = ['createBLEConnection']
 
-const CALLBACK_API_RE = /^on/
+const CALLBACK_API_RE = /^on|^off/
 
 export function isContextApi (name) {
   return CONTEXT_API_RE.test(name)

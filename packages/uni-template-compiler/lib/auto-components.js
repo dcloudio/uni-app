@@ -61,7 +61,7 @@ function generateAutoComponentsCode (autoComponents, dynamic = false) {
     source
   }) => {
     if (dynamic) {
-      components.push(`'${name}': ()=>import(/* webpackChunkName: "${getWebpackChunkName(source)}" */'${source}')`)
+      components.push(`'${name}': function(){return import(/* webpackChunkName: "${getWebpackChunkName(source)}" */'${source}')}`)
     } else {
       components.push(`'${name}': require('${source}').default`)
     }
