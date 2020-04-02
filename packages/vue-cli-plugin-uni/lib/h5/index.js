@@ -34,7 +34,7 @@ const uniCloudPath = path.resolve(__dirname, '../../packages/uni-cloud/dist/inde
 
 function getProvides () {
   return {
-    '__f__': [path.resolve(__dirname, '../format-log.js'), 'default'],
+    '__f__': [path.resolve(__dirname, '../format-log.js'), 'log'],
     'uniCloud': [uniCloudPath, 'default'],
     'wx.nextTick': [runtimePath, 'nextTick'],
     'Page': [runtimePath, 'Page'],
