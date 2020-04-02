@@ -22,7 +22,7 @@
 |next-margin|String|0px|后边距，可用于露出后一项的一小部分，接受 px 和 rpx 值|app-nvue、字节跳动小程序不支持|
 |acceleration|Boolean|false|当开启时，会根据滑动速度，连续滑动多屏|支付宝小程序|
 |disable-programmatic-animation|Boolean|false|是否禁用代码变动触发 swiper 切换时使用动画。|支付宝小程序|
-|display-multiple-items|Number|1|同时显示的滑块数量|支付宝小程序不支持|
+|display-multiple-items|Number|1|同时显示的滑块数量|app-nvue、支付宝小程序不支持|
 |skip-hidden-item-layout|Boolean|false|是否跳过未显示的滑块布局，设为 true 可优化复杂情况下的滑动性能，但会丢失隐藏状态滑块的布局信息|App、微信小程序|
 |disable-touch|Boolean|false|是否禁止用户 touch 操作|App 2.5.5+、H5 2.5.5+、支付宝小程序、字节跳动小程序（只在初始化时有效，不能动态变更）|
 |touchable|Boolean|true|是否监听用户的触摸事件，只在初始化时有效，不能动态变更|字节跳动小程序（uni-app 2.5.5+ 推荐统一使用 disable-touch）|
