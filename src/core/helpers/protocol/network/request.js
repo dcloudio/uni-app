@@ -100,5 +100,8 @@ export const request = {
       value = (value || '').toLowerCase()
       params.responseType = Object.values(responseType).indexOf(value) < 0 ? responseType.TEXT : value
     }
+  },
+  withCredentials: {
+    type: Boolean
   }
 }
