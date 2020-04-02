@@ -447,8 +447,9 @@ export default {
         return
       }
       if (!callbackId) {
+        // fix [...]展开TypedArray在低版本手机报错的问题，使用Array.prototype.slice
         return {
-          data: [...imgData.data],
+          data: Array.prototype.slice.call(imgData.data),
           width: destWidth,
           height: destHeight
         }
