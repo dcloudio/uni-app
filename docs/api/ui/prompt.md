@@ -94,6 +94,13 @@ setTimeout(function () {
 }, 2000);
 ```
 
+**注意**
+
+- `showToast` 和 `showLoading` 是底层同一个（按的小程序的设计），所以 `showToast` 和 `showLoading` 会相互覆盖，而 `hideLoading` 也会关闭 `showToast` 。
+- 冲突解决方案：
+  + App：使用 `plus` 接口或者 `uni.showToast` 配置 `position` 参数
+  + 非App：其中一个使用自定义组件实现。
+
 ### uni.showModal(OBJECT)
 
 显示模态弹窗，类似于标准 html 的消息框：alert、confirm。
