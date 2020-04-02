@@ -9,7 +9,7 @@
 |参数名|类型|必填|说明|平台差异说明|
 |:-|:-|:-|:-|:-|
 |url|String|是|开发者服务器 url||
-|files|Array|否|需要上传的文件列表。**使用 files 时，filePath 和 name 不生效。**|App|
+|files|Array|否|需要上传的文件列表。**使用 files 时，filePath 和 name 不生效。**|App、H5（ 2.7.0+）|
 |fileType|String|见平台差异说明|文件类型，image/video/audio|仅支付宝小程序，且必填。|
 |filePath|String|是|要上传文件资源的路径。||
 |name|String|是|文件对应的 key , 开发者在服务器端通过这个 key 可以获取到文件二进制内容||
