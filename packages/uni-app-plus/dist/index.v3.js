@@ -9294,7 +9294,7 @@ var serviceContext = (function () {
         this._loadAd();
         this._dispatchEvent('close', { isEnded: e.isEnded });
       });
-      rewardAd.onVerify((e) => {
+      rewardAd.onVerify && rewardAd.onVerify((e) => {
         this._dispatchEvent('verify', { isValid: e.isValid });
       });
       rewardAd.onError((e) => {
