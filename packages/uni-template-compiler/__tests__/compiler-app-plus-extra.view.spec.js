@@ -100,5 +100,27 @@ describe('codegen', () => {
       `with(this){return _c('p',{ref:_$g(0,'ref'),attrs:{"_i":0}})}`
     )
   })
+  it('generate image', () => {
+    assertCodegen(
+      '<image :src="src"/>',
+      `with(this){return _c('v-uni-image',{attrs:{"src":_$g(0,'a-src'),"_i":0}})}`
+    )
+    assertCodegen(
+      '<image src="/static/logo.png"/>',
+      `with(this){return _c('v-uni-image',{attrs:{"src":"/static/logo.png","_i":0}})}`
+    )
+    assertCodegen(
+      '<image src="../static/logo.png"/>',
+      `with(this){return _c('v-uni-image',{attrs:{"src":_$g(0,'a-src'),"_i":0}})}`
+    )
+    assertCodegen(
+      '<image src="@/static/logo.png"/>',
+      `with(this){return _c('v-uni-image',{attrs:{"src":"/static/logo.png","_i":0}})}`
+    )
+    assertCodegen(
+      '<image src="~@/static/logo.png"/>',
+      `with(this){return _c('v-uni-image',{attrs:{"src":"/static/logo.png","_i":0}})}`
+    )
+  })
 })
 /* eslint-enable quotes */
