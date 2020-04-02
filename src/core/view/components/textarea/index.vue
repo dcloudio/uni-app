@@ -27,7 +27,7 @@
         :disabled="disabled"
         :maxlength="maxlengthNumber"
         :autofocus="autoFocus"
-        :class="{'uni-textarea-textarea-ios': isIOS}"
+        :class="{'uni-textarea-textarea-fix-margin': fixMargin}"
         :style="{'overflow-y': autoHeight? 'hidden':'auto'}"
         class="uni-textarea-textarea"
         @compositionstart="_compositionstart"
@@ -45,6 +45,7 @@ import {
   emitter,
   keyboard
 } from 'uni-mixins'
+const DARK_TEST_STRING = '(prefers-color-scheme: dark)'
 export default {
   name: 'Textarea',
   mixins: [emitter, keyboard],
@@ -114,7 +115,8 @@ export default {
       focusSync: this.focus,
       height: 0,
       focusChangeSource: '',
-      isIOS: String(navigator.platform).indexOf('iP') === 0 && String(navigator.vendor).indexOf('Apple') === 0 && String(navigator.appVersion).split('OS ')[1].split('_')[0] < 13
+      // iOS 13 以下版本需要修正边距
+      fixMargin: String(navigator.platform).indexOf('iP') === 0 && String(navigator.vendor).indexOf('Apple') === 0 && window.matchMedia(DARK_TEST_STRING).media !== DARK_TEST_STRING
     }
   },
   computed: {
@@ -357,7 +359,7 @@ uni-textarea[hidden] {
   text-shadow: inherit;
 }
 /* 用于解决 iOS textarea 内部默认边距 */
-.uni-textarea-textarea-ios {
+.uni-textarea-textarea-fix-margin {
   width: auto;
   right: 0;
   margin: 0 -3px;
