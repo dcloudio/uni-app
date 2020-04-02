@@ -237,7 +237,7 @@ const CONTEXT_API_RE = /^create|Manager$/;
 
 const ASYNC_API = ['createBLEConnection'];
 
-const CALLBACK_API_RE = /^on/;
+const CALLBACK_API_RE = /^on|^off/;
 
 function isContextApi (name) {
   return CONTEXT_API_RE.test(name)
