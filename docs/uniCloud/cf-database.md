@@ -1928,7 +1928,7 @@ let res = await db.collection('attractions').aggregate()
   .geoNear({
     distanceField: 'distance', // 输出的每个记录中 distance 即是与给定点的距离
     spherical: true,
-    near: db.Geo.Point(113.3089506, 23.0968251),
+    near: new db.Geo.Point(113.3089506, 23.0968251),
     query: {
       docType: 'geoNear',
     },
@@ -3981,7 +3981,7 @@ let res = await db.collection('todos').where({
 const dbCmd = db.command
 let res = await db.collection('restaurants').where({
   location: dbCmd.geoNear({
-    geometry: db.Geo.Point(113.323809, 23.097732),
+    geometry: new db.Geo.Point(113.323809, 23.097732),
     minDistance: 1000,
     maxDistance: 5000,
   })
