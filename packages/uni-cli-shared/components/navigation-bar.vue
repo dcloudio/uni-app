@@ -83,7 +83,8 @@ export default {
     }
   },
   created () {
-    const page = getCurrentPages()[0]
+    let pages = getCurrentPages()
+    let page = pages[pages.length - 1]
     this.$watch('title', () => {
       this.setNavigationBarTitle()
     })
