@@ -60,7 +60,7 @@ class SocketTask {
     success,
     fail,
     complete
-  }, errMsg) {
+  } = {}, errMsg) {
     var data = {
       errMsg
     }
