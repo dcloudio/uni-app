@@ -78,7 +78,8 @@ src
 
 
 #### 开发示例
-- button 组件 [https://github.com/dcloudio/uni-app/tree/master/src/platforms/quickapp/view/components/button](https://github.com/dcloudio/uni-app/tree/master/src/platforms/quickapp/view/components/button)
+- button 组件 `src/platforms/quickapp/view/components/button`
+- clipboard API `src/platforms/quickapp/service/api/device/clipboard`
 
 
 
