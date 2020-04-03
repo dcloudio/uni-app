@@ -45,6 +45,7 @@ class UploadTask {
  */
 export function uploadFile ({
   url,
+  file,
   filePath,
   name,
   files,
@@ -59,6 +60,7 @@ export function uploadFile ({
   if (!Array.isArray(files) || !files.length) {
     files = [{
       name,
+      file,
       uri: filePath
     }]
   }
@@ -128,7 +130,7 @@ export function uploadFile ({
   }
 
   Promise
-    .all(files.map(({ name, uri }) => urlToFile(uri)))
+    .all(files.map(({ file, uri }) => file instanceof File ? Promise.resolve(file) : urlToFile(uri)))
     .then(upload)
     .catch(() => {
       setTimeout(() => {
