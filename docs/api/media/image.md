@@ -29,7 +29,7 @@ App端如需要更丰富的相机拍照API（如直接调用前置摄像头）�
 |参数|类型|说明|
 |:-|:-|:-|
 |tempFilePaths|Array&lt;String&gt;|图片的本地文件路径列表|
-|tempFiles|Array&lt;Object&gt;|图片的本地文件列表，每一项是一个 File 对象|
+|tempFiles|Array&lt;Object&gt;、Array&lt;File&gt;|图片的本地文件列表，每一项是一个 File 对象|
 
 **File 对象结构如下**
 
@@ -38,6 +38,7 @@ App端如需要更丰富的相机拍照API（如直接调用前置摄像头）�
 |path|String|本地文件路径|
 |size|Number|本地文件大小，单位：B|
 |name|String|包含扩展名的文件名称，仅H5支持|
+|type|String|文件类型，仅H5支持|
 
 **示例**
 
