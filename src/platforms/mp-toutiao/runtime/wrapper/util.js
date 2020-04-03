@@ -51,7 +51,7 @@ export function initRefs (vm) {
   }
 }
 
-const instances = Object.create(null)
+export const instances = Object.create(null)
 
 export function initRelation ({
   vuePid,
