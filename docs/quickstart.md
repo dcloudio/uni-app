@@ -222,6 +222,7 @@ npm run build:%PLATFORM%
 
 |值|平台|
 |---|---|
+|app-plus|app平台生成打包资源（仅支持npm run build:app-plus）|
 |h5|H5|
 |mp-alipay|支付宝小程序|
 |mp-baidu|百度小程序|
@@ -233,6 +234,7 @@ npm run build:%PLATFORM%
 
 **其他：**
 
+* 目前使用`npm run build:app-plus`会在`/dist/build/app-plus`下生成app打包资源。如需制作wgt包，需要手动压缩成zip包修改后缀为wgt。
 * dev 模式编译出的各平台代码存放于根目录下的 ``/dist/dev/``目录，打开各平台开发工具选择对应平台目录即可进行预览（h5 平台不会在此目录，存在于缓存中）；
 * build 模式编译出的各平台代码存放于根目录下的 ``/dist/build/`` 目录，发布时选择此目录进行发布；
 * dev 和 build 模式的区别：
