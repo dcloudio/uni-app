@@ -165,7 +165,8 @@ var serviceContext = (function () {
     'startPullDownRefresh',
     'stopPullDownRefresh',
     'createSelectorQuery',
-    'createIntersectionObserver'
+    'createIntersectionObserver',
+    'getMenuButtonBoundingClientRect'
   ];
 
   const event = [
@@ -649,7 +650,7 @@ var serviceContext = (function () {
 
   const ASYNC_API = ['createBLEConnection'];
 
-  const CALLBACK_API_RE = /^on/;
+  const CALLBACK_API_RE = /^on|^off/;
 
   function isContextApi (name) {
     return CONTEXT_API_RE.test(name)
@@ -2970,7 +2971,7 @@ var serviceContext = (function () {
   }
 
   function getScreenInfo () {
-    const { resolutionWidth, resolutionHeight } = plus.screen.getCureentSize();
+    const { resolutionWidth, resolutionHeight } = plus.screen.getCurrentSize();
     return {
       screenWidth: Math.round(resolutionWidth),
       screenHeight: Math.round(resolutionHeight)
@@ -5651,14 +5652,21 @@ var serviceContext = (function () {
     openLocation: openLocation$1
   });
 
-  function openLocation$2 (data) {
+  function openLocation$2 (data, callbackId) {
     showPage({
       url: '__uniappopenlocation',
       data,
       style: {
         titleNView: {
           type: 'transparent'
-        }
+        },
+        popGesture: 'close',
+        backButtonAutoControl: 'close'
+      },
+      onClose () {
+        invoke$1(callbackId, {
+          errMsg: 'openLocation:fail cancel'
+        });
       }
     });
     return {
@@ -9253,17 +9261,14 @@ var serviceContext = (function () {
   const eventNames = [
     'load',
     'close',
+    'verify',
     'error'
   ];
 
   const ERROR_CODE_LIST = [-5001, -5002, -5003, -5004, -5005, -5006];
 
   class RewardedVideoAd {
-    constructor (adpid) {
-      this._options = {
-        adpid: adpid
-      };
-
+    constructor (options = {}) {
       const _callbacks = this._callbacks = {};
       eventNames.forEach(item => {
         _callbacks[item] = [];
@@ -9277,7 +9282,7 @@ var serviceContext = (function () {
       this._adError = '';
       this._loadPromiseResolve = null;
       this._loadPromiseReject = null;
-      const rewardAd = this._rewardAd = plus.ad.createRewardedVideoAd(this._options);
+      const rewardAd = this._rewardAd = plus.ad.createRewardedVideoAd(options);
       rewardAd.onLoad((e) => {
         this._isLoad = true;
         this._dispatchEvent('load', {});
@@ -9289,6 +9294,9 @@ var serviceContext = (function () {
       rewardAd.onClose((e) => {
         this._loadAd();
         this._dispatchEvent('close', { isEnded: e.isEnded });
+      });
+      rewardAd.onVerify && rewardAd.onVerify((e) => {
+        this._dispatchEvent('verify', { isValid: e.isValid });
       });
       rewardAd.onError((e) => {
         const { code, message } = e;
@@ -9323,6 +9331,12 @@ var serviceContext = (function () {
         }
       })
     }
+    getProvider () {
+      return this._rewardAd.getProvider()
+    }
+    destroy () {
+      this._rewardAd.destroy();
+    }
     _loadAd () {
       this._isLoad = false;
       this._rewardAd.load();
@@ -9336,10 +9350,8 @@ var serviceContext = (function () {
     }
   }
 
-  function createRewardedVideoAd ({
-    adpid = ''
-  } = {}) {
-    return new RewardedVideoAd(adpid)
+  function createRewardedVideoAd (options) {
+    return new RewardedVideoAd(options)
   }
 
 
@@ -10646,8 +10658,9 @@ var serviceContext = (function () {
     var cId = canvasEventCallbacks.push(function (data) {
       invoke$1(callbackId, data);
     });
+    // fix ...
     operateCanvas(canvasId, pageId, 'putImageData', {
-      data: [...data],
+      data: Array.prototype.slice.call(data),
       x,
       y,
       width,
@@ -10729,16 +10742,12 @@ var serviceContext = (function () {
     callback.invoke(callbackId, data);
   });
 
-  const methods = ['getCenterLocation', 'getScale', 'getRegion', 'includePoints', 'translateMarker'];
+  const methods = ['getCenterLocation', 'moveToLocation', 'getScale', 'getRegion', 'includePoints', 'translateMarker'];
 
   class MapContext {
     constructor (id, pageVm) {
       this.id = id;
       this.pageVm = pageVm;
-    }
-
-    moveToLocation () {
-      operateMapPlayer$3(this.id, this.pageVm, 'moveToLocation');
     }
   }
 
@@ -12146,7 +12155,7 @@ var serviceContext = (function () {
       return
     }
     if (!page.$page.meta.isNVue) {
-      const target = page.$vm._$vd.elements.find(target => target.tagName === 'web-view' && target.events['message']);
+      const target = page.$vm._$vd.elements.find(target => target.type === 'web-view' && target.events['message']);
       if (!target) {
         return
       }
@@ -13191,8 +13200,7 @@ var serviceContext = (function () {
       cur = newObj[key];
       old = oldObj[key];
       if (old !== cur) {
-        // 全量同步 style (因为 style 可能会动态删除部分样式)
-        if (key === B_STYLE && isPlainObject(cur) && isPlainObject(old)) {
+        if (key === B_STYLE && isPlainObject(cur) && isPlainObject(old)) { // 全量同步 style (因为 style 可能会动态删除部分样式)
           if (Object.keys(cur).length !== Object.keys(old).length) { // 长度不等
             setResult(result || (result = Object.create(null)), B_STYLE, cur);
           } else {
@@ -13203,6 +13211,14 @@ var serviceContext = (function () {
           const vFor = diffArray(cur, old);
           vFor && setResult(result || (result = Object.create(null)), V_FOR, vFor);
         } else {
+          if (key.indexOf('change:') === 0) { // wxs change:prop
+            try {
+              // 先简单的用 stringify 判断
+              if (JSON.stringify(cur) === JSON.stringify(old)) {
+                continue
+              }
+            } catch (e) {}
+          }
           setResult(result || (result = Object.create(null)), key, cur);
         }
       }

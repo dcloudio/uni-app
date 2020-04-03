@@ -23,7 +23,7 @@ const PLATFORMS = {
     prefix: 'tt',
     title: '头条小程序'
   },
-  'mp-quickapp': {
+  'quickapp-light': {
     prefix: 'qa',
     title: '快应用(Light)版'
   },
