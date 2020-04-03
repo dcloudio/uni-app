@@ -6,6 +6,7 @@
   * [云函数](uniCloud/concepts/cloudfunction.md)
 * 云函数
   * [开发云函数](uniCloud/cf-functions.md)
+  * [云函数公共模块](uniCloud/cf-common.md)
   * [日志输出](uniCloud/cf-logger.md)
   * [身份认证](uniCloud/cf-authentication.md)
   * [定时触发](uniCloud/trigger.md)
