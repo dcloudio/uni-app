@@ -18,16 +18,12 @@ UniServiceJSBridge.subscribe('onMapMethodCallback', ({
   callback.invoke(callbackId, data)
 })
 
-const methods = ['getCenterLocation', 'getScale', 'getRegion', 'includePoints', 'translateMarker']
+const methods = ['getCenterLocation', 'moveToLocation', 'getScale', 'getRegion', 'includePoints', 'translateMarker']
 
 export class MapContext {
   constructor (id, pageVm) {
     this.id = id
     this.pageVm = pageVm
-  }
-
-  moveToLocation () {
-    operateMapPlayer(this.id, this.pageVm, 'moveToLocation')
   }
 }
 

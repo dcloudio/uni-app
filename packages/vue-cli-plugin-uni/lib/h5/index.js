@@ -34,7 +34,7 @@ const uniCloudPath = path.resolve(__dirname, '../../packages/uni-cloud/dist/inde
 
 function getProvides () {
   return {
-    '__f__': [path.resolve(__dirname, '../format-log.js'), 'default'],
+    '__f__': [path.resolve(__dirname, '../format-log.js'), 'log'],
     'uniCloud': [uniCloudPath, 'default'],
     'wx.nextTick': [runtimePath, 'nextTick'],
     'Page': [runtimePath, 'Page'],
@@ -107,8 +107,7 @@ module.exports = {
         extensions: ['.nvue'],
         alias: {
           'vue-router': resolve('packages/h5-vue-router'),
-          'uni-h5': require.resolve('@dcloudio/uni-h5'),
-          'uni-qh': path.resolve(__dirname, 'qh-api.js')
+          'uni-h5': require.resolve('@dcloudio/uni-h5')
         }
       },
       module: {

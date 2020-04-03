@@ -17,12 +17,12 @@ export default {
       for (const key in this.position) {
         let val = this.position[key]
         let valNumber = parseFloat(val)
-        let parentValNumber = parseFloat(this.$parent.position[key])
+        let parentValNumber = parseFloat(this._nativeParent.position[key])
         if (key === 'top' || key === 'left') {
           val = Math.max(valNumber, parentValNumber) + 'px'
         } else if (key === 'width' || key === 'height') {
           const base = key === 'width' ? 'left' : 'left'
-          const parentStart = parseFloat(this.$parent.position[base])
+          const parentStart = parseFloat(this._nativeParent.position[base])
           const viewStart = parseFloat(this.position[base])
           const diff1 = Math.max(parentStart - viewStart, 0)
           const diff2 = Math.max((viewStart + valNumber) - (parentStart + parentValNumber), 0)
@@ -83,14 +83,21 @@ export default {
       return tags
     }
   },
+  created () {
+    let $parent = this.$parent
+    while (!$parent.isNative && $parent !== this.$root) {
+      $parent = $parent.$parent
+    }
+    this._nativeParent = $parent
+  },
   mounted () {
     this._updateStyle()
-    const $parent = this.$parent
-    if ($parent.isNative) {
-      if ($parent._isMounted) {
+    const $nativeParent = this._nativeParent
+    if ($nativeParent.isNative) {
+      if ($nativeParent._isMounted) {
         this._onCanInsert()
       } else {
-        $parent.onCanInsertCallbacks.push(() => {
+        $nativeParent.onCanInsertCallbacks.push(() => {
           this._onCanInsert()
         })
       }
@@ -111,7 +118,7 @@ export default {
     }
   },
   beforeDestroy () {
-    if (this.$parent.isNative) {
+    if (this._nativeParent.isNative) {
       this.cover && this.cover.close()
       delete this.cover
     }
@@ -132,7 +139,7 @@ export default {
       for (const key in this.position) {
         let val = this.position[key]
         if (key === 'top' || key === 'left') {
-          val = Math.min((parseFloat(val) - parseFloat(this.$parent.position[key])), 0) + 'px'
+          val = Math.min((parseFloat(val) - parseFloat(this._nativeParent.position[key])), 0) + 'px'
         }
         position[key] = val
       }

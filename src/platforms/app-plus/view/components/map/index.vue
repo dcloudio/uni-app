@@ -229,8 +229,11 @@ export default {
       }
       this.map && this[type](data)
     },
-    moveToLocation (data) {
-      this.map.setCenter(new plus.maps.Point(this.longitude, this.latitude))
+    moveToLocation ({ callbackId, longitude, latitude }) {
+      this.map.setCenter(new plus.maps.Point(longitude || this.longitude, latitude || this.latitude))
+      this._publishHandler(callbackId, {
+        errMsg: 'moveToLocation:ok'
+      })
     },
     getCenterLocation ({ callbackId }) {
       const center = this.map.getCenter()

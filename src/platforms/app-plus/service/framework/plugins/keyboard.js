@@ -5,7 +5,7 @@ import {
 
 const isAndroid = plus.os.name.toLowerCase() === 'android'
 const FOCUS_TIMEOUT = isAndroid ? 300 : 700
-const HIDE_TIMEOUT = 800
+const HIDE_TIMEOUT = isAndroid ? 800 : 300
 let keyboardHeight = 0
 let onKeyboardShow
 let focusTimer

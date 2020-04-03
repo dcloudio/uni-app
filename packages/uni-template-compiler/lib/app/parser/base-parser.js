@@ -1,6 +1,7 @@
 const {
   ID,
   C_IS,
+  C_REF,
   V_IF,
   V_FOR,
   V_ELSE_IF,
@@ -8,6 +9,12 @@ const {
 } = require('../util')
 
 const parseTextExpr = require('./text-parser')
+
+function parseRef (el, genVar) {
+  if (el.ref && isVar(el.ref)) {
+    el.ref = genVar(C_REF, el.ref)
+  }
+}
 
 function parseIs (el, genVar) {
   if (!el.component) {
@@ -98,6 +105,7 @@ function parseText (el, parent, state) {
 
 module.exports = {
   parseIs,
+  parseRef,
   parseIf,
   parseFor,
   parseText,

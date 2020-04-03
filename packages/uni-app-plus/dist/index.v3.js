@@ -649,7 +649,7 @@ var serviceContext = (function () {
 
   const ASYNC_API = ['createBLEConnection'];
 
-  const CALLBACK_API_RE = /^on/;
+  const CALLBACK_API_RE = /^on|^off/;
 
   function isContextApi (name) {
     return CONTEXT_API_RE.test(name)
@@ -2319,8 +2319,8 @@ var serviceContext = (function () {
     const callbackId = invokeCallbackId++;
     const invokeCallbackName = 'api.' + apiName + '.' + callbackId;
 
-    const invokeCallback = function (res) {
-      callback(res);
+    const invokeCallback = function (res, extras) {
+      callback(res, extras);
     };
 
     invokeCallbacks[callbackId] = {
@@ -2464,15 +2464,15 @@ var serviceContext = (function () {
       callbackId
     }
   }
-
-  function invokeCallbackHandler (invokeCallbackId, res) {
+  // onNativeEventReceive((event,data)=>{}) 需要两个参数，写死最多两个参数，避免改动太大，影响已有逻辑
+  function invokeCallbackHandler (invokeCallbackId, res, extras) {
     if (typeof invokeCallbackId === 'number') {
       const invokeCallback = invokeCallbacks[invokeCallbackId];
       if (invokeCallback) {
         if (!invokeCallback.keepAlive) {
           delete invokeCallbacks[invokeCallbackId];
         }
-        return invokeCallback.callback(res)
+        return invokeCallback.callback(res, extras)
       }
     }
     return res
@@ -2970,15 +2970,10 @@ var serviceContext = (function () {
   }
 
   function getScreenInfo () {
-    const orientation = plus.navigator.getOrientation();
-    const landscape = Math.abs(orientation) === 90;
-    // 安卓 plus 接口获取的屏幕大小值不为整数
-    const width = plus.screen.resolutionWidth;
-    const height = plus.screen.resolutionHeight;
-    // 根据方向纠正宽高
+    const { resolutionWidth, resolutionHeight } = plus.screen.getCurrentSize();
     return {
-      screenWidth: Math[landscape ? 'max' : 'min'](width, height),
-      screenHeight: Math[landscape ? 'min' : 'max'](width, height)
+      screenWidth: Math.round(resolutionWidth),
+      screenHeight: Math.round(resolutionHeight)
     }
   }
 
@@ -3990,16 +3985,6 @@ var serviceContext = (function () {
     return true
   }
 
-  function checkDevices (data) {
-    data.devices = data.devices.map(device => {
-      var advertisData = device.advertisData;
-      if (advertisData && typeof advertisData !== 'string') {
-        device.advertisData = arrayBufferToBase64$2(advertisData);
-      }
-      return device
-    });
-  }
-
   var onBluetoothAdapterStateChange;
   var onBluetoothDeviceFound;
   var onBLEConnectionStateChange;
@@ -4020,7 +4005,7 @@ var serviceContext = (function () {
   }
 
   function startBluetoothDevicesDiscovery (data, callbackId) {
-    onBluetoothDeviceFound = onBluetoothDeviceFound || bluetoothOn('onBluetoothDeviceFound', checkDevices);
+    onBluetoothDeviceFound = onBluetoothDeviceFound || bluetoothOn('onBluetoothDeviceFound');
     bluetoothExec('startBluetoothDevicesDiscovery', callbackId, data);
   }
 
@@ -4029,7 +4014,7 @@ var serviceContext = (function () {
   }
 
   function getBluetoothDevices (data, callbackId) {
-    bluetoothExec('getBluetoothDevices', callbackId, {}, checkDevices);
+    bluetoothExec('getBluetoothDevices', callbackId, {});
   }
 
   function getConnectedBluetoothDevices (data, callbackId) {
@@ -4055,18 +4040,12 @@ var serviceContext = (function () {
   }
 
   function notifyBLECharacteristicValueChange (data, callbackId) {
-    onBLECharacteristicValueChange = onBLECharacteristicValueChange || bluetoothOn('onBLECharacteristicValueChange',
-      data => {
-        data.value = arrayBufferToBase64$2(data.value);
-      });
+    onBLECharacteristicValueChange = onBLECharacteristicValueChange || bluetoothOn('onBLECharacteristicValueChange');
     bluetoothExec('notifyBLECharacteristicValueChange', callbackId, data);
   }
 
   function notifyBLECharacteristicValueChanged (data, callbackId) {
-    onBLECharacteristicValueChange = onBLECharacteristicValueChange || bluetoothOn('onBLECharacteristicValueChange',
-      data => {
-        data.value = arrayBufferToBase64$2(data.value);
-      });
+    onBLECharacteristicValueChange = onBLECharacteristicValueChange || bluetoothOn('onBLECharacteristicValueChange');
     bluetoothExec('notifyBLECharacteristicValueChanged', callbackId, data);
   }
 
@@ -4076,9 +4055,6 @@ var serviceContext = (function () {
   }
 
   function writeBLECharacteristicValue (data, callbackId) {
-    if (typeof data.value === 'string') {
-      data.value = base64ToArrayBuffer$2(data.value);
-    }
     bluetoothExec('writeBLECharacteristicValue', callbackId, data);
   }
 
@@ -4933,16 +4909,6 @@ var serviceContext = (function () {
     }
   }
 
-  var safeAreaInsets = {
-    get bottom () {
-      if (plus.os.name === 'iOS') {
-        const safeArea = plus.navigator.getSafeAreaInsets();
-        return safeArea ? safeArea.bottom : 0
-      }
-      return 0
-    }
-  };
-
   const TABBAR_HEIGHT = 50;
   const isIOS$1 = plus.os.name === 'iOS';
   let config;
@@ -5098,7 +5064,7 @@ var serviceContext = (function () {
       return visible
     },
     get height () {
-      return (config && config.height ? parseFloat(config.height) : TABBAR_HEIGHT) + safeAreaInsets.bottom
+      return (config && config.height ? parseFloat(config.height) : TABBAR_HEIGHT) + plus.navigator.getSafeAreaInsets().deviceBottom
     },
     // tabBar是否遮挡内容区域
     get cover () {
@@ -5685,14 +5651,21 @@ var serviceContext = (function () {
     openLocation: openLocation$1
   });
 
-  function openLocation$2 (data) {
+  function openLocation$2 (data, callbackId) {
     showPage({
       url: '__uniappopenlocation',
       data,
       style: {
         titleNView: {
           type: 'transparent'
-        }
+        },
+        popGesture: 'close',
+        backButtonAutoControl: 'close'
+      },
+      onClose () {
+        invoke$1(callbackId, {
+          errMsg: 'openLocation:fail cancel'
+        });
       }
     });
     return {
@@ -7338,15 +7311,15 @@ var serviceContext = (function () {
   }
 
   const callbacks$3 = [];
+  // 不使用uni-core/service/platform中的onMethod，避免循环引用
+  UniServiceJSBridge.on('api.uniMPNativeEvent', function (res) {
+    callbacks$3.forEach(callbackId => {
+      invoke$1(callbackId, res.event, res.data);
+    });
+  });
 
-  function onNativeEventReceive (callback) {
-    isFn(callback) &&
-      callbacks$3.indexOf(callback) === -1 &&
-      callbacks$3.push(callback);
-  }
-
-  function consumeNativeEvent (event, data) {
-    callbacks$3.forEach(callback => callback(event, data));
+  function onNativeEventReceive (callbackId) {
+    callbacks$3.push(callbackId);
   }
 
   function sendNativeEvent (event, data, callback) {
@@ -7939,6 +7912,14 @@ var serviceContext = (function () {
     return str
   }
 
+  function getUniPageUrl (path, query) {
+    const queryString = query ? stringifyQuery(query, noop$1) : '';
+    return {
+      path: path.substr(1),
+      query: queryString ? queryString.substr(1) : queryString
+    }
+  }
+
   function getDebugRefresh (path, query, routeOptions) {
     const queryString = query ? stringifyQuery(query, noop$1) : '';
     return {
@@ -7958,7 +7939,7 @@ var serviceContext = (function () {
         path,
         routeOptions
       );
-      webviewStyle.debugRefresh = getDebugRefresh(path, query, routeOptions);
+      webviewStyle.uniPageUrl = getUniPageUrl(path, query);
       if (process.env.NODE_ENV !== 'production') {
         console.log(`[uni-app] createWebview`, webviewId, path, webviewStyle);
       }
@@ -7981,7 +7962,12 @@ var serviceContext = (function () {
         '',
         routeOptions
       );
-      webviewStyle.debugRefresh = getDebugRefresh(path, query, routeOptions);
+
+      webviewStyle.uniPageUrl = getUniPageUrl(path, query);
+
+      if (!routeOptions.meta.isNVue) {
+        webviewStyle.debugRefresh = getDebugRefresh(path, query, routeOptions);
+      }
       if (process.env.NODE_ENV !== 'production') {
         console.log(`[uni-app] updateWebview`, webviewStyle);
       }
@@ -8045,6 +8031,17 @@ var serviceContext = (function () {
 
   let todoNavigator = false;
 
+  function setTodoNavigator (path, callback, msg) {
+    todoNavigator = {
+      path: path,
+      nvue: __uniRoutes.find(route => route.path === path).meta.isNVue,
+      navigate: callback
+    };
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`todoNavigator:${todoNavigator.path} ${msg}`);
+    }
+  }
+
   function navigate (path, callback, isAppLaunch) {
     {
       if (isAppLaunch && __uniConfig.splashscreen && __uniConfig.splashscreen.autoclose && (!__uniConfig.splashscreen.alwaysShowBeforeRender)) {
@@ -8053,20 +8050,20 @@ var serviceContext = (function () {
       if (!isAppLaunch && todoNavigator) {
         return console.error(`已存在待跳转页面${todoNavigator.path},请不要连续多次跳转页面${path}`)
       }
+      if (__uniConfig.renderer === 'native') { // 纯原生无需wait逻辑
+        // 如果是首页还未初始化，需要等一等，其他无需等待
+        if (getCurrentPages().length === 0) {
+          return setTodoNavigator(path, callback, 'waitForReady')
+        }
+        return callback()
+      }
       // 未创建 preloadWebview 或 preloadWebview 已被使用
       const waitPreloadWebview = !preloadWebview || (preloadWebview && preloadWebview.__uniapp_route);
       // 已创建未 loaded
       const waitPreloadWebviewReady = preloadWebview && !preloadWebview.loaded;
 
       if (waitPreloadWebview || waitPreloadWebviewReady) {
-        todoNavigator = {
-          path: path,
-          nvue: __uniRoutes.find(route => route.path === path).meta.isNVue,
-          navigate: callback
-        };
-        if (process.env.NODE_ENV !== 'production') {
-          console.log(`todoNavigator:${todoNavigator.path} ${waitPreloadWebview ? 'waitForCreate' : 'waitForReady'}`);
-        }
+        setTodoNavigator(path, callback, waitPreloadWebview ? 'waitForCreate' : 'waitForReady');
       } else {
         callback();
       }
@@ -8092,6 +8089,15 @@ var serviceContext = (function () {
 
   function navigateFinish () {
     {
+      if (__uniConfig.renderer === 'native') {
+        if (!todoNavigator) {
+          return
+        }
+        if (todoNavigator.nvue) {
+          return todoNavigate()
+        }
+        return
+      }
       // 创建预加载
       const preloadWebview = createPreloadWebview();
       if (process.env.NODE_ENV !== 'production') {
@@ -8214,7 +8220,7 @@ var serviceContext = (function () {
     }
 
     if (process.env.NODE_ENV !== 'production') {
-      console.log(`[uni-app] registerPage`, path, webview.id);
+      console.log(`[uni-app] registerPage(${path},${webview.id})`);
     }
 
     initWebview(webview, routeOptions, path, query);
@@ -9254,17 +9260,14 @@ var serviceContext = (function () {
   const eventNames = [
     'load',
     'close',
+    'verify',
     'error'
   ];
 
   const ERROR_CODE_LIST = [-5001, -5002, -5003, -5004, -5005, -5006];
 
   class RewardedVideoAd {
-    constructor (adpid) {
-      this._options = {
-        adpid: adpid
-      };
-
+    constructor (options = {}) {
       const _callbacks = this._callbacks = {};
       eventNames.forEach(item => {
         _callbacks[item] = [];
@@ -9278,7 +9281,7 @@ var serviceContext = (function () {
       this._adError = '';
       this._loadPromiseResolve = null;
       this._loadPromiseReject = null;
-      const rewardAd = this._rewardAd = plus.ad.createRewardedVideoAd(this._options);
+      const rewardAd = this._rewardAd = plus.ad.createRewardedVideoAd(options);
       rewardAd.onLoad((e) => {
         this._isLoad = true;
         this._dispatchEvent('load', {});
@@ -9290,6 +9293,9 @@ var serviceContext = (function () {
       rewardAd.onClose((e) => {
         this._loadAd();
         this._dispatchEvent('close', { isEnded: e.isEnded });
+      });
+      rewardAd.onVerify && rewardAd.onVerify((e) => {
+        this._dispatchEvent('verify', { isValid: e.isValid });
       });
       rewardAd.onError((e) => {
         const { code, message } = e;
@@ -9324,6 +9330,12 @@ var serviceContext = (function () {
         }
       })
     }
+    getProvider () {
+      return this._rewardAd.getProvider()
+    }
+    destroy () {
+      this._rewardAd.destroy();
+    }
     _loadAd () {
       this._isLoad = false;
       this._rewardAd.load();
@@ -9337,10 +9349,8 @@ var serviceContext = (function () {
     }
   }
 
-  function createRewardedVideoAd ({
-    adpid = ''
-  } = {}) {
-    return new RewardedVideoAd(adpid)
+  function createRewardedVideoAd (options) {
+    return new RewardedVideoAd(options)
   }
 
 
@@ -9453,7 +9463,6 @@ var serviceContext = (function () {
     getSubNVueById: getSubNVueById,
     getCurrentSubNVue: getCurrentSubNVue,
     onNativeEventReceive: onNativeEventReceive,
-    consumeNativeEvent: consumeNativeEvent,
     sendNativeEvent: sendNativeEvent,
     navigateBack: navigateBack$1,
     navigateTo: navigateTo$1,
@@ -10648,8 +10657,9 @@ var serviceContext = (function () {
     var cId = canvasEventCallbacks.push(function (data) {
       invoke$1(callbackId, data);
     });
+    // fix ...
     operateCanvas(canvasId, pageId, 'putImageData', {
-      data: [...data],
+      data: Array.prototype.slice.call(data),
       x,
       y,
       width,
@@ -10731,16 +10741,12 @@ var serviceContext = (function () {
     callback.invoke(callbackId, data);
   });
 
-  const methods = ['getCenterLocation', 'getScale', 'getRegion', 'includePoints', 'translateMarker'];
+  const methods = ['getCenterLocation', 'moveToLocation', 'getScale', 'getRegion', 'includePoints', 'translateMarker'];
 
   class MapContext {
     constructor (id, pageVm) {
       this.id = id;
       this.pageVm = pageVm;
-    }
-
-    moveToLocation () {
-      operateMapPlayer$3(this.id, this.pageVm, 'moveToLocation');
     }
   }
 
@@ -12148,7 +12154,7 @@ var serviceContext = (function () {
       return
     }
     if (!page.$page.meta.isNVue) {
-      const target = page.$vm._$vd.elements.find(target => target.tagName === 'web-view' && target.events['message']);
+      const target = page.$vm._$vd.elements.find(target => target.type === 'web-view' && target.events['message']);
       if (!target) {
         return
       }
@@ -12454,23 +12460,26 @@ var serviceContext = (function () {
       subscribeHandler(data.type, data.data, data.pageId);
     });
 
-    subscribe(WEBVIEW_READY, onWebviewReady);
+    if (__uniConfig.renderer !== 'native') {
+      subscribe(WEBVIEW_READY, onWebviewReady);
 
-    const entryPagePath = '/' + __uniConfig.entryPagePath;
-    const routeOptions = __uniRoutes.find(route => route.path === entryPagePath);
-    if (!routeOptions.meta.isNVue) { // 首页是 vue
-      // 防止首页 webview 初始化过早， service 还未开始监听
-      publishHandler(WEBVIEW_READY, Object.create(null), [1]);
+      subscribe(VD_SYNC, onVdSync);
+      subscribe(VD_SYNC_CALLBACK, onVdSyncCallback);
+
+      const entryPagePath = '/' + __uniConfig.entryPagePath;
+      const routeOptions = __uniRoutes.find(route => route.path === entryPagePath);
+      if (!routeOptions.meta.isNVue) { // 首页是 vue
+        // 防止首页 webview 初始化过早， service 还未开始监听
+        publishHandler(WEBVIEW_READY, Object.create(null), [1]);
+      }
     }
+
     // 应该使用subscribe，兼容老版本先用 on api 吧
     on('api.' + WEB_INVOKE_APPSERVICE$1, function (data, webviewIds) {
       emit('onWebInvokeAppService', data, webviewIds);
     });
 
     subscribe('onWxsInvokeCallMethod', onWxsInvokeCallMethod);
-
-    subscribe(VD_SYNC, onVdSync);
-    subscribe(VD_SYNC_CALLBACK, onVdSyncCallback);
 
     subscribe(INVOKE_API, onInvokeApi);
 
@@ -12535,11 +12544,8 @@ var serviceContext = (function () {
       });
     });
 
-    globalEvent.addEventListener('uniMPNativeEvent', function ({
-      event,
-      data
-    }) {
-      consumeNativeEvent(event, data);
+    globalEvent.addEventListener('uniMPNativeEvent', function (event) {
+      publish('uniMPNativeEvent', event);
     });
 
     plus.globalEvent.addEventListener('plusMessage', onPlusMessage$1);
@@ -12854,7 +12860,7 @@ var serviceContext = (function () {
 
   const isAndroid = plus.os.name.toLowerCase() === 'android';
   const FOCUS_TIMEOUT = isAndroid ? 300 : 700;
-  const HIDE_TIMEOUT = 800;
+  const HIDE_TIMEOUT = isAndroid ? 800 : 300;
   let keyboardHeight = 0;
   let onKeyboardShow;
   let focusTimer;
@@ -13039,16 +13045,12 @@ var serviceContext = (function () {
     removeElement (elm) {
       const elmIndex = this.elements.indexOf(elm);
       if (elmIndex === -1) {
-        return console.error(`removeElement[${elm.cid}][${elm.nid}] not found`)
-      }
-      this.elements.splice(elmIndex, 1);
-    }
-
-    removeElementByCid (cid) {
-      if (!cid) {
+        if (process.env.NODE_ENV !== 'production') {
+          console.error(`removeElement[${elm.cid}][${elm.nid}] not found`);
+        }
         return
       }
-      this.elements = this.elements.filter(elm => elm.cid !== cid);
+      this.elements.splice(elmIndex, 1);
     }
 
     push (type, cid, data, options) {
@@ -13134,6 +13136,22 @@ var serviceContext = (function () {
       this.elements.length = 0;
       removeVdSync(this.pageId);
     }
+  }
+
+  function generateId (vm, parent) {
+    if (!vm.$parent) {
+      return '-1'
+    }
+    const vnode = vm.$vnode;
+    const context = vnode.context;
+    // slot 内的组件，需要补充 context 的 id，否则可能与内部组件索引值一致，导致 id 冲突
+    if (context && context !== parent && context._$id) {
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('generateId:' + context._$id + ';' + parent._$id + ',' + vnode.data.attrs._i);
+      }
+      return context._$id + ';' + parent._$id + ',' + vnode.data.attrs._i
+    }
+    return parent._$id + ',' + vnode.data.attrs._i
   }
 
   function setResult (data, k, v) {
@@ -13243,10 +13261,7 @@ var serviceContext = (function () {
       if (!this._$vd) {
         return
       }
-      // TODO 自定义组件中的 slot 数据采集是在组件内部，导致所在 context 中无法获取到差量数据
-      // 如何保证每个 vm 数据有变动，就加入 diff 中呢？
-      // 每次变化，可能触发多次 beforeUpdate，updated
-      // 子组件 updated 时，可能会增加父组件的 diffData，如 slot 等情况
+
       diff(this._$newData, this._$data, this._$vdUpdatedData);
       this._$data = JSON.parse(JSON.stringify(this._$newData));
       // setTimeout 一下再 nextTick（ 直接 nextTick 的话，会紧接着该 updated 做 flush，导致父组件 updated 数据被丢弃）
@@ -13273,11 +13288,7 @@ var serviceContext = (function () {
           this._$vdomSync = new VDomSync(this.$options.pageId, this.$options.pagePath, this);
         }
         if (this._$vd) {
-          if (!this.$parent) {
-            this._$id = '-1';
-          } else {
-            this._$id = this.$parent._$id + ',' + this.$vnode.data.attrs._i;
-          }
+          this._$id = generateId(this, this.$parent);
           this._$vd.addVm(this);
           this._$vdMountedData = Object.create(null);
           this._$setData(MOUNTED_DATA, this._$vdMountedData);

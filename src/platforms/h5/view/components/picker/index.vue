@@ -156,7 +156,7 @@ export default {
   },
   data () {
     return {
-      valueSync: this.value || 0,
+      valueSync: null,
       visible: false,
       valueChangeSource: '',
       timeArray: [],
@@ -207,20 +207,17 @@ export default {
     }
   },
   watch: {
-    value (val) {
-      if (Array.isArray(val)) {
-        if (!Array.isArray(this.valueSync)) {
-          this.valueSync = []
-        }
-        this.valueSync.length = val.length
-        val.forEach((val, index) => {
-          if (val !== this.valueSync[index]) {
-            this.$set(this.valueSync, index, val)
-          }
-        })
-      } else if (typeof val !== 'object') {
-        this.valueSync = val
-      }
+    value () {
+      this._setValueSync()
+    },
+    mode () {
+      this._setValueSync()
+    },
+    range () {
+      this._setValueSync()
+    },
+    valueSync () {
+      this._setValueArray()
     },
     valueArray (val) {
       if (this.mode === mode.TIME || this.mode === mode.DATE) {
@@ -269,8 +266,7 @@ export default {
     })
     this._createTime()
     this._createDate()
-    this.$watch('valueSync', this._setValue)
-    this.$watch('mode', this._setValue)
+    this._setValueSync()
   },
   beforeDestroy () {
     this.$refs.picker.remove()
@@ -285,7 +281,6 @@ export default {
         return
       }
       this.valueChangeSource = ''
-      this._setValue()
       var $picker = this.$refs.picker
       $picker.remove();
       (document.querySelector('uni-app') || document.body).appendChild($picker)
@@ -346,13 +341,36 @@ export default {
         val1[i] = val2[i]
       }
     },
-    _setValue () {
+    _setValueSync () {
+      let val = this.value
+      switch (this.mode) {
+        case mode.MULTISELECTOR:
+          if (!Array.isArray(val)) {
+            val = []
+          }
+          if (!Array.isArray(this.valueSync)) {
+            this.valueSync = []
+          }
+          const length = this.valueSync.length = Math.max(val.length, this.range.length)
+          for (let index = 0; index < length; index++) {
+            const val0 = Number(val[index])
+            const val1 = Number(this.valueSync[index])
+            this.valueSync.splice(index, 1, isNaN(val0) ? (isNaN(val1) ? 0 : val1) : val0)
+          }
+          break
+        case mode.TIME:
+        case mode.DATE:
+          this.valueSync = String(val)
+          break
+        default:
+          this.valueSync = Number(val) || 0
+          break
+      }
+    },
+    _setValueArray () {
       var val = this.valueSync
       var valueArray
       switch (this.mode) {
-        case mode.SELECTOR:
-          valueArray = [val]
-          break
         case mode.MULTISELECTOR:
           valueArray = [...val]
           break
@@ -365,6 +383,9 @@ export default {
           valueArray = this._getDateValueArray(val, formatDateTime({
             mode: mode.DATE
           }))
+          break
+        default:
+          valueArray = [val]
           break
       }
       this.oldValueArray = [...valueArray]

@@ -30,9 +30,10 @@ export function initEvent (Vue) {
 
     const $event = this.$handleEvent($vueEvent)
     const cid = this._$id
-    // 当自定义组件根节点触发事件时，nid 始终为 0
+
     const currentTarget = $vueEvent.$origCurrentTarget || $vueEvent.currentTarget
-    const nid = currentTarget === this.$el ? 0 : $event.options.nid
+    // 当自定义组件根节点触发事件时，nid 补充前缀，避免与组件内部 nid 冲突(根组件page不需要)
+    const nid = ((currentTarget === this.$el && this.$options.mpType !== 'page') ? 'r-' : '') + $event.options.nid
     if (typeof nid === 'undefined') {
       return console.error(`[${cid}] nid not found`)
     }

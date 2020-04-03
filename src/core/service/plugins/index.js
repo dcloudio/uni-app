@@ -60,6 +60,16 @@ export default {
   install (Vue, {
     routes
   } = {}) {
+    if (
+      __PLATFORM__ === 'h5' &&
+      Vue.config.devtools &&
+      typeof window !== 'undefined' &&
+      window.navigator.userAgent.toLowerCase().indexOf('hbuilderx') !== -1
+    ) {
+      // HBuilderX 内置浏览器禁用 devtools 提示
+      Vue.config.devtools = false
+    }
+
     initPolyfill(Vue)
 
     lifecycleMixin(Vue)

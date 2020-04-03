@@ -147,5 +147,41 @@ describe('codegen', () => {
       `with(this){return (_$s(0,'i',a))?_c('text'):(_$s(1,'e',b))?_c('text'):(_$s(2,'e',c))?_c('text'):_c('text')}`
     )
   })
+  it('generate dynamic slot', () => {
+    assertCodegen(
+      '<base-layout><template v-slot:[dynamicSlotName]></template></base-layout>',
+      `with(this){return _c('base-layout',{attrs:{"_i":0},scopedSlots:_u([{key:_$s(1,'st',dynamicSlotName),fn:function(_empty_, _svm, _si){return undefined}}],null,true)})}`
+    )
+  })
+
+  it('generate ref', () => {
+    assertCodegen(
+      '<p :ref="component1"></p>',
+      `with(this){return _c('p',{ref:_$s(0,'ref',component1)})}`
+    )
+  })
+
+  it('generate image', () => {
+    assertCodegen(
+      '<image :src="src"/>',
+      `with(this){return _c('image',{attrs:{"src":_$s(0,'a-src',src),"_i":0}})}`
+    )
+    assertCodegen(
+      '<image src="/static/logo.png"/>',
+      `with(this){return _c('image',{attrs:{"_i":0}})}`
+    )
+    assertCodegen(
+      '<image src="../static/logo.png"/>',
+      `with(this){return _c('image',{attrs:{"src":_$s(0,'a-src',"/"+require("../static/logo.png")),"_i":0}})}`
+    )
+    assertCodegen(
+      '<image src="@/static/logo.png"/>',
+      `with(this){return _c('image',{attrs:{"_i":0}})}`
+    )
+    assertCodegen(
+      '<image src="~@/static/logo.png"/>',
+      `with(this){return _c('image',{attrs:{"_i":0}})}`
+    )
+  })
 })
 /* eslint-enable quotes */

@@ -804,8 +804,9 @@ export function canvasPutImageData ({
   var cId = canvasEventCallbacks.push(function (data) {
     invoke(callbackId, data)
   })
+  // fix ...
   operateCanvas(canvasId, pageId, 'putImageData', {
-    data: [...data],
+    data: Array.prototype.slice.call(data),
     x,
     y,
     width,
