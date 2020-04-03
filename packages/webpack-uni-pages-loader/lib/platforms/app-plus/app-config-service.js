@@ -28,6 +28,7 @@ function parseRoutes (config) {
 }
 
 const GLOBALS = [
+  'global',
   'window',
   'document',
   'frames',
