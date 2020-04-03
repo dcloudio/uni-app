@@ -61,3 +61,8 @@ export function fileToUrl (file) {
   files[url] = file
   return url
 }
+
+export function revokeObjectURL (url) {
+  (window.URL || window.webkitURL).revokeObjectURL(url)
+  delete files[url]
+}
