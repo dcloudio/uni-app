@@ -89,6 +89,14 @@ exports.main = async (event, context) => {
 
 ![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/uniCloud-run-function-1.png)
 
+在云函数目录右键运行云函数，也可以在云函数编辑器里，按`Ctrl+r`运行快捷键，或点工具栏的运行
+
+![](http://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/run-function-with-param-1.jpg)
+
+此时云函数运行会携带所配置的运行参数
+
+![](http://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/run-function-with-param-2.jpg)
+
 ## 手机端调用云函数
 在uni-app的前端代码中，通过`uniCloud.callFunction`方法调用云函数。详见[callFunction文档](https://uniapp.dcloud.io/uniCloud/functions?id=callfunction)
 
