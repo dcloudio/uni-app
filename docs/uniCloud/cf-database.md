@@ -17,7 +17,7 @@
 
 **阿里云使用的mongoDB数据库版本为3.4，腾讯云使用的版本是4.0。此差异可能会导致本文档内的部分功能不能在阿里云使用，我们会进行标注，如果发现有遗漏欢迎向我们反馈**
 
-**如果不想使用此数据库，可以自行连接其他数据库，用法可以参考nodejs连接数据库**
+**如果不想使用此数据库，可以自行连接其他数据库，如mysql，用法可以参考nodejs连接数据库**
 
 ## 获取数据库的引用
 
@@ -44,6 +44,44 @@ const db = uniCloud.database();
 ```
 db.createCollection(collectionName)
 ```
+
+阿里云的集合需提前在web控制台创建。
+
+## 使用db_init.json初始化项目数据库[](#db_init)
+
+自`HBuilderX 2.5.11`起`uniCloud`提供了`db_init.json`来方便开发者快速进行数据库的初始化操作，即在HBuilderX工具中，将本地数据直接同步到云数据库中。
+
+这个功能尤其适合插件作者，可以快速初始化集合和数据。
+
+**使用方式**
+- 在`cloudfucntions`目录右键即可创建`db_init.json`，
+- 编写好json内容，在`db_init.json`上右键初始化数据库。
+
+**db_init.json形式如下**
+
+```
+{
+    "collection_test": { // 集合（表名）
+        "data": [ // 数据
+           {
+                "_id": "da51bd8c5e37ac14099ea43a2505a1a5",
+               "name": "tom"
+           }
+        ],
+        "index": [{ // 索引
+            "IndexName": "index_a", // 索引名称
+            "MgoKeySchema": { // 索引规则
+                "MgoIndexKeys": [{
+                    "Name": "index", // 索引字段
+                    "Direction": "1" // 索引方向，1：ASC-升序，-1：DESC-降序，2dsphere：地理位置
+                }],
+                "MgoIsUnique": false // 索引是否唯一
+            }
+        }]
+    }
+}
+```
+
 
 ## 获取集合的引用
 
