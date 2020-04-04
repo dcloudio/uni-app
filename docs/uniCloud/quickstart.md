@@ -165,6 +165,7 @@ uniCloud的[web控制台](https://unicloud.dcloud.net.cn/)可以查看线上云�
 
 使用腾讯云时，开发期间会使用dcloud的服务器访问云函数来时时返回云函数运行日志，最好在开发期间忽略域名检查。
 
+<span id="useinh5"></span>
 ## H5中使用uniCloud
 
 H5前端js访问云函数，涉及跨域问题，导致前端js无法连接云函数服务器。处理方式如下：。
