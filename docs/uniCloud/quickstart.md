@@ -148,6 +148,16 @@ exports.main = async (event, context) => {
 
 uniCloud的[web控制台](https://unicloud.dcloud.net.cn/)可以查看线上云函数的所有运行日志，而不仅仅是开发时的运行日志。
 
+<span id="common"></span>
+## 云函数公用模块
+
+文档已迁移至 [云函数公用模块](https://uniapp.dcloud.io/uniCloud/cf-common)
+
+<span id="db-init"></span>
+## 使用db_init.json初始化项目数据库
+
+文档已迁移至 [使用db_init.json初始化项目数据库](https://uniapp.dcloud.io/uniCloud/cf-database?id=db_init)
+
 ## 小程序中使用uniCloud
 
 各家小程序平台，均要求在小程序管理后台配置小程序应用的联网服务器域名，否则无法联网。
