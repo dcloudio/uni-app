@@ -8,17 +8,17 @@
 
 ### 开发
 
-1.Fork 仓库 `uni-app` [https://github.com/dcloudio/uni-app](https://github.com/dcloudio/uni-app)，切换到 dev 分支
+1.Fork 仓库 `uni-app` [https://github.com/dcloudio/uni-app](https://github.com/dcloudio/uni-app)，切换到 dev-quickapp 分支
 
 2.使用 Vue 规范开发组件，参考 `Button` 组件及 `clipboard` 示例
 ```
-- button `src/platforms/quickapp/view/components/button`
-- clipboard `src/platforms/quickapp/service/api/device/clipboard`
+- button `src/platforms/quickapp-vue/view/components/button`
+- clipboard `src/platforms/quickapp-vue/service/api/device/clipboard`
 ```
 
-2.编译 (输出目录`packages/uni-quickapp`)
+2.编译 (输出目录`packages/uni-quickapp-vue`)
 ```
-npm run build:quickapp
+npm run build:quickapp-vue
 ```
 
 #### `uni-app` 目录说明
@@ -32,7 +32,7 @@ packages
  │      └─manifest (manifest.json的生成逻辑)
 src
  ├─platforms
- │  └─quickapp
+ │  └─quickapp-vue
  │      ├─...
  │      ├─service
  │      │   └─api 平台的接口实现（方案同h5，app-plus）
@@ -51,50 +51,31 @@ src
 
 #### 搭建测试工程
 
-1.创建测试工程 (推荐使用空项目，可选 `hello uni-app` 工程，包含组件及API示例，工程较复杂编译比较耗时)
-```
-vue create -p dcloudio/uni-preset-vue#alpha my-qa-project -n
-```
-```
-<!--button 示例-->
-<template>
-  <view>
-    <button>Button</button>
-  </view>
-</template>
+1.测试工程 [https://github.com/dcloudio/test-quickapp-vue](https://github.com/dcloudio/test-quickapp-vue)
 
-<script>
-  export default {
-    data() {
-      return {
-      }
-    },
-    onLoad() {
-    },
-    methods: {
-    }
-  }
-</script>
-
-<style>
-</style>
+使用 git clone(需要配置 git 命令行支持) 或下载 zip 解压
 ```
+git clone https://github.com/dcloudio/test-quickapp-vue.git
+cd ./test-quickapp-vue
+yarn install
+```
+
 
 2.编译快应用 `rpk`
 ```
-npm run dev:quickapp
+npm run dev:quickapp-vue
 ```
 
 3.开启debug在线更新服务
 ```
-npm run serve:quickapp
+npm run serve:quickapp-vue
 ```
 
 4.打开快应用调试器，扫码安装或右上角设置服务器地址(注意带上`http://`，关闭USB调试可看到扫码)
 
 5.修改代码后，会主动通知调试器更新，或者手动点击在线更新（调试可以点击右下角开始调试）
 
-6.手动替换编译输出目录 `packages/uni-quickapp` 到测试工程 `node_modules/@dcloudio/uni-quickapp`, 可以考虑 `npm link`
+6.手动替换 `uni-app` 编译输出目录 `packages/uni-quickapp-vue` 到测试工程 `node_modules/@dcloudio/uni-quickapp-vue`, 可以考虑 `npm link`
 
 ### 提交代码
 使用 `pull request` 提交代码
