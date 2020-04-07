@@ -8,7 +8,7 @@ const genConfig = require('./rollup.config.qa')
 
 const filename = 'vue.' + (process.env.NODE_ENV === 'production' ? 'prod' : 'dev') + '.js'
 
-async function build() {
+async function build () {
   const bridgeBundle = await rollup.rollup(genConfig('bridge'))
   const {
     output: bridgeOutput
@@ -66,7 +66,7 @@ dsl.onInitApp(function({
 
     del.sync([componentsDest])
 
-    copy(componentsSrc, componentsDest, function(err, file) {
+    copy(componentsSrc, componentsDest, function (err, file) {
       if (err) {
         throw err
       }

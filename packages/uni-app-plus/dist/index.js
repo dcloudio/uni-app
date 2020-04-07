@@ -231,13 +231,13 @@ const promiseInterceptor = {
 };
 
 const SYNC_API_RE =
-  /^\$|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
+  /^\$|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
 const ASYNC_API = ['createBLEConnection'];
 
-const CALLBACK_API_RE = /^on/;
+const CALLBACK_API_RE = /^on|^off/;
 
 function isContextApi (name) {
   return CONTEXT_API_RE.test(name)

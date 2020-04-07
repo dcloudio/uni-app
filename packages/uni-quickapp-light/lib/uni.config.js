@@ -20,7 +20,7 @@ module.exports = {
       console.warn('manifest.json->quickapp-light 缺少 package 配置')
     }
     if (!platformOptions.icon) {
-      console.error('manifest.json->quickapp-light 缺少 icon 配置')
+      console.warn('manifest.json->quickapp-light 缺少 icon 配置')
     }
   },
   copyWebpackOptions (platformOptions, vueOptions) {

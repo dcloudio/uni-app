@@ -12,7 +12,7 @@ const external = []
 
 const resolve = dir => path.resolve(__dirname, '../', dir)
 
-function replaceModuleImport(str) {
+function replaceModuleImport (str) {
   return str.replace(
     /require\s*\(\s*(['"])@([\w$_][\w$-.]*?)\1\)/gm,
     (e, r, p) => `$app_require$(${r}@app-module/${p}${r})`
@@ -23,37 +23,37 @@ function replaceModuleImport(str) {
 }
 
 const plugins = [{
-    name: 'replaceModuleImport',
-    transform(source) {
-      return {
-        code: replaceModuleImport(source)
-      }
+  name: 'replaceModuleImport',
+  transform (source) {
+    return {
+      code: replaceModuleImport(source)
     }
-  },
-  alias({
-    'uni-core': resolve('src/core'),
-    'uni-platform': resolve('src/platforms/quickapp-vue'),
-    'uni-platforms': resolve('src/platforms'),
-    'uni-shared': resolve('src/shared/index.js'),
-    'uni-helpers': resolve('src/core/helpers'),
-    'uni-invoke-api': resolve('src/platforms/quickapp-vue/service/invoke-api'),
-    'uni-service-api': resolve('src/platforms/quickapp-vue/service/api'),
-    'uni-api-protocol': resolve('src/core/helpers/protocol')
-  }),
-  nodeResolve(),
-  requireContext(),
-  commonjs(),
-  replace({
-    __PLATFORM__: JSON.stringify(process.env.UNI_PLATFORM),
-    __PLATFORM_TITLE__: '快应用(Vue)版'
-  })
+  }
+},
+alias({
+  'uni-core': resolve('src/core'),
+  'uni-platform': resolve('src/platforms/quickapp-vue'),
+  'uni-platforms': resolve('src/platforms'),
+  'uni-shared': resolve('src/shared/index.js'),
+  'uni-helpers': resolve('src/core/helpers'),
+  'uni-invoke-api': resolve('src/platforms/quickapp-vue/service/invoke-api'),
+  'uni-service-api': resolve('src/platforms/quickapp-vue/service/api'),
+  'uni-api-protocol': resolve('src/core/helpers/protocol')
+}),
+nodeResolve(),
+requireContext(),
+commonjs(),
+replace({
+  __PLATFORM__: JSON.stringify(process.env.UNI_PLATFORM),
+  __PLATFORM_TITLE__: '快应用(Vue)版'
+})
 ]
 
 // if (process.env.NODE_ENV === 'production') {
 plugins.push(terser.terser())
 // }
 
-module.exports = function(type) {
+module.exports = function (type) {
   let input = ''
 
   if (type === 'bridge') {

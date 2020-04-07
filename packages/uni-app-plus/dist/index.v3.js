@@ -1415,6 +1415,9 @@ var serviceContext = (function () {
         value = (value || '').toLowerCase();
         params.responseType = Object.values(responseType).indexOf(value) < 0 ? responseType.TEXT : value;
       }
+    },
+    withCredentials: {
+      type: Boolean
     }
   };
 
@@ -3094,7 +3097,7 @@ var serviceContext = (function () {
       errMsg: 'getAudioState:ok',
       duration: 1e3 * (audio.getDuration() || 0),
       currentTime: audio.isStopped ? 0 : 1e3 * audio.getPosition(),
-      paused: audio.isPaused,
+      paused: audio.isPaused(),
       src,
       volume,
       startTime: 1e3 * startTime,
@@ -3110,7 +3113,7 @@ var serviceContext = (function () {
     const audio = audios[audioId];
     const operationTypes = ['play', 'pause', 'stop'];
     if (operationTypes.indexOf(operationType) >= 0) {
-      audio[operationType === operationTypes[0] && audio.isPaused ? 'resume' : operationType]();
+      audio[operationType === operationTypes[0] && audio.isPaused() ? 'resume' : operationType]();
     } else if (operationType === 'seek') {
       audio.seekTo(currentTime / 1e3);
     }
@@ -3226,7 +3229,7 @@ var serviceContext = (function () {
         dataUrl: audio.src,
         duration: audio.getDuration() || 0,
         currentPosition: audio.getPosition(),
-        status: audio.isPaused ? 0 : 1,
+        status: audio.isPaused() ? 0 : 1,
         downloadPercent: Math.round(100 * audio.getBuffered() / audio.getDuration()),
         errMsg: `getMusicPlayerState:ok`
       }
@@ -3302,7 +3305,7 @@ var serviceContext = (function () {
       let newData = {
         duration: audio.getDuration() || 0,
         currentTime: audio.isStopped ? 0 : audio.getPosition(),
-        paused: audio.isPaused,
+        paused: audio.isPaused(),
         src: audio.src,
         buffered: audio.getBuffered(),
         title: audio.title,
@@ -11402,7 +11405,7 @@ var serviceContext = (function () {
       success,
       fail,
       complete
-    }, errMsg) {
+    } = {}, errMsg) {
       var data = {
         errMsg
       };
@@ -12280,7 +12283,7 @@ var serviceContext = (function () {
         const page = pages.find(page => page.$page.id === pageId);
         if (page) {
           callPageHook(page, eventType, args);
-        } else {
+        } else if (process.env.NODE_ENV !== 'production') {
           console.error(`Not Found：Page[${pageId}]`);
         }
       }
