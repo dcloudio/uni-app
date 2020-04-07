@@ -45,8 +45,10 @@ class UploadTask {
  */
 export function uploadFile ({
   url,
+  file,
   filePath,
   name,
+  files,
   header,
   formData
 }, callbackId) {
@@ -55,15 +57,24 @@ export function uploadFile ({
     invokeCallbackHandler: invoke
   } = UniServiceJSBridge
   var uploadTask = new UploadTask(null, callbackId)
-
-  function upload (file) {
+  if (!Array.isArray(files) || !files.length) {
+    files = [{
+      name,
+      file,
+      uri: filePath
+    }]
+  }
+  function upload (realFiles) {
     var xhr = new XMLHttpRequest()
     var form = new FormData()
     var timer
     Object.keys(formData).forEach(key => {
       form.append(key, formData[key])
     })
-    form.append(name, file, file.name || `file-${Date.now()}`)
+    Object.values(files).forEach(({ name }, index) => {
+      const file = realFiles[index]
+      form.append(name || 'file', file, file.name || `file-${Date.now()}`)
+    })
     xhr.open('POST', url)
     Object.keys(header).forEach(key => {
       xhr.setRequestHeader(key, header[key])
@@ -118,13 +129,16 @@ export function uploadFile ({
     }
   }
 
-  urlToFile(filePath).then(upload).catch(() => {
-    setTimeout(() => {
-      invoke(callbackId, {
-        errMsg: 'uploadFile:fail file error'
-      })
-    }, 0)
-  })
+  Promise
+    .all(files.map(({ file, uri }) => file instanceof File ? Promise.resolve(file) : urlToFile(uri)))
+    .then(upload)
+    .catch(() => {
+      setTimeout(() => {
+        invoke(callbackId, {
+          errMsg: 'uploadFile:fail file error'
+        })
+      }, 0)
+    })
 
   return uploadTask
 }

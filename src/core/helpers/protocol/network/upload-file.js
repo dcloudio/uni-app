@@ -9,6 +9,9 @@ export const uploadFile = {
   files: {
     type: Array
   },
+  file: {
+    type: File
+  },
   filePath: {
     type: String,
     validator (value, params) {

@@ -75,7 +75,10 @@ module.exports = function initOptions (options) {
     options.css.loaderOptions.sass.sassOptions = {}
   }
   // 指定 outputStyle, 否则 production 模式下会被默认成 compressed
-  options.css.loaderOptions.sass.sassOptions.outputStyle = 'nested'
+  const outputStyle = options.css.loaderOptions.sass.sassOptions.outputStyle
+  if (!outputStyle || outputStyle === 'compressed') {
+    options.css.loaderOptions.sass.sassOptions.outputStyle = 'expanded'
+  }
 
   if (sassLoaderVersion < 8) {
     options.css.loaderOptions.sass.data = sassData

@@ -50,26 +50,27 @@ export function chooseImage ({
   document.body.appendChild(imageInput)
 
   imageInput.addEventListener('change', function (event) {
-    const tempFilePaths = []
     const tempFiles = []
     const fileCount = event.target.files.length
     for (let i = 0; i < fileCount; i++) {
       const file = event.target.files[i]
-      const filePath = fileToUrl(file)
-
-      tempFilePaths.push(filePath)
-      tempFiles.push({
-        path: filePath,
-        size: file.size,
-        name: file.name
+      let filePath
+      Object.defineProperty(file, 'filePath', {
+        get () {
+          filePath = filePath || fileToUrl(file)
+          return filePath
+        }
       })
+      tempFiles.push(file)
     }
-
-    invoke(callbackId, {
+    const res = {
       errMsg: 'chooseImage:ok',
-      tempFilePaths: tempFilePaths,
+      get tempFilePaths () {
+        return tempFiles.map(({ filePath }) => filePath)
+      },
       tempFiles: tempFiles
-    })
+    }
+    invoke(callbackId, res)
 
     // TODO 用户取消选择时，触发 fail，目前尚未找到合适的方法。
   })

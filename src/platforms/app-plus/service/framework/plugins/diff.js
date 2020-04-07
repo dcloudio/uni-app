@@ -52,8 +52,7 @@ function diffElmData (newObj, oldObj) {
     cur = newObj[key]
     old = oldObj[key]
     if (old !== cur) {
-      // 全量同步 style (因为 style 可能会动态删除部分样式)
-      if (key === B_STYLE && isPlainObject(cur) && isPlainObject(old)) {
+      if (key === B_STYLE && isPlainObject(cur) && isPlainObject(old)) { // 全量同步 style (因为 style 可能会动态删除部分样式)
         if (Object.keys(cur).length !== Object.keys(old).length) { // 长度不等
           setResult(result || (result = Object.create(null)), B_STYLE, cur)
         } else {
@@ -64,6 +63,14 @@ function diffElmData (newObj, oldObj) {
         const vFor = diffArray(cur, old)
         vFor && setResult(result || (result = Object.create(null)), V_FOR, vFor)
       } else {
+        if (key.indexOf('change:') === 0) { // wxs change:prop
+          try {
+            // 先简单的用 stringify 判断
+            if (JSON.stringify(cur) === JSON.stringify(old)) {
+              continue
+            }
+          } catch (e) {}
+        }
         setResult(result || (result = Object.create(null)), key, cur)
       }
     }

@@ -356,6 +356,7 @@ global['____${h5.appid}____'] = true;
 delete global['____${h5.appid}____'];
 global.__uniConfig = ${JSON.stringify(pagesJson)};
 global.__uniConfig.router = ${JSON.stringify(h5.router)};
+global.__uniConfig.publicPath = ${JSON.stringify(h5.publicPath)};
 global.__uniConfig['async'] = ${JSON.stringify(h5['async'])};
 global.__uniConfig.debug = ${manifestJson.debug === true};
 global.__uniConfig.networkTimeout = ${JSON.stringify(networkTimeoutConfig)};

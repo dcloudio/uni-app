@@ -45,7 +45,8 @@ export function request ({
   header,
   method,
   dataType,
-  responseType
+  responseType,
+  withCredentials
 }, callbackId) {
   const {
     invokeCallbackHandler: invoke
@@ -143,6 +144,7 @@ export function request ({
       errMsg: 'request:fail'
     })
   }
+  xhr.withCredentials = withCredentials
   xhr.send(body)
   return requestTask
 }
