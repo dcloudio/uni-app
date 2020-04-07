@@ -21,7 +21,7 @@
   "license": "Apache-2.0",
   "gitHead": "110501ffb0313e417858dec92acf07522d4ded00",
   "uni-app": {
-    "name": "quickapp",
+    "name": "quickapp-vue",
     "title": "快应用(Vue)版"
   },
   "dependencies": {
