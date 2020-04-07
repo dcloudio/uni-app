@@ -7,7 +7,7 @@ const parseEntry = require('./entry-parser')
 function getPages(pagesJson) {
   const ret = pagesJson.pages
   const subPackages = pagesJson.subPackages
-  if (!subPackages.length) {
+  if (!subPackages || !subPackages.length) {
     return ret
   }
   subPackages.forEach(({
