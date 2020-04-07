@@ -1,9 +1,15 @@
 ### H5正常但App异常的可能性
 1. css异常：
+
 - 不支持的选择器
+
 非H5端不支持*选择器；
 
 body的元素选择器请改为page，同样，div和ul和li等改为view、span和font改为text、a改为navigator、img改为image...
+
+- 组件和页面样式相互影响
+
+非H5端默认并未启用 scoped，如需要隔离组件样式可以在 style 标签增加 scoped 属性，H5端为了隔离页面间的样式默认启用了 scoped
 
 - webview浏览器兼容性
 
