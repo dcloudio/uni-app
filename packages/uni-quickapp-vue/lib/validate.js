@@ -5,7 +5,7 @@ module.exports = function () {
   const manifest = global.framework.manifest
 
   if (manifest.package === 'Bundle') {
-    console.error(`> 建议配置 manifest.json->quickapp->package 应用包名`)
+    console.error(`> 建议配置 manifest.json->quickapp-vue->package 应用包名`)
   }
 
   const signPath = './sign/' + (process.env.NODE_ENV === 'production' ? 'release' : 'debug')

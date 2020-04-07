@@ -7,7 +7,7 @@ module.exports = config => {
     .use('vue-loader')
     .loader(vueLoader.loader)
     .tap(options => Object.assign(options, vueLoader.options({}, {
-      quickapp: true
+      'quickapp-vue': true
     })))
 
   config.module

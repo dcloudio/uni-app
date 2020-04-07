@@ -24,7 +24,7 @@ function getProjectName(e, t) {
     const stripJsonComments = require('strip-json-comments');
     const r = _path.default.join(e, t, "manifest.json");
     const s = JSON.parse(stripJsonComments(_fs.default.readFileSync(r).toString()))
-    return s && s.quickapp && s.quickapp.package || s.name || "Bundle"
+    return s && s['quickapp-vue'] && s['quickapp-vue']['package'] || s.name || "Bundle"
   } catch (e) {
     _sharedUtils.colorconsole.error(`### App Server ### 获取项目名称出错：${e.message}`)
   }
@@ -50,7 +50,7 @@ function getDistFilePath(e, t, r) {
   let s;
   if (!process.env.UNI_OUTPUT_DIR) {
     const mode = process.env.NODE_ENV === 'production' ? 'build' : 'dev'
-    process.env.UNI_OUTPUT_DIR = _path.default.join(process.cwd(), 'dist/' + mode + '/quickapp')
+    process.env.UNI_OUTPUT_DIR = _path.default.join(process.cwd(), 'dist/' + mode + '/quickapp-vue')
   }
   return s = _path.default.join(process.env.UNI_OUTPUT_DIR, `${t}.debug.${r}`), _fs.default.existsSync(s) ? s : (s =
     _path.default.join(e,

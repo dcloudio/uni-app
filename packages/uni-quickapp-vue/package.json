@@ -1,12 +1,12 @@
 {
-  "name": "@dcloudio/uni-quickapp",
+  "name": "@dcloudio/uni-quickapp-vue",
   "version": "2.0.0-alpha-24720191216006",
-  "description": "uni-app quickapp",
+  "description": "uni-app quickapp-vue",
   "main": "dist/vue.prod.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dcloudio/uni-app.git",
-    "directory": "packages/uni-quickapp"
+    "directory": "packages/uni-quickapp-vue"
   },
   "files": [
     "bin",
@@ -22,7 +22,7 @@
   "gitHead": "110501ffb0313e417858dec92acf07522d4ded00",
   "uni-app": {
     "name": "quickapp",
-    "title": "快应用"
+    "title": "快应用(Vue)版"
   },
   "dependencies": {
     "@hap-toolkit/dsl-vue": "0.6.13",

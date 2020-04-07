@@ -27,7 +27,7 @@ function getPages(pagesJson) {
 
 module.exports = function(pagesJson, manifestJson, loader) {
 
-  const manifest = manifestJson.quickapp || {}
+  const manifest = manifestJson['quickapp-vue'] || {}
 
   parseBase(manifest, manifestJson)
 
