@@ -59,6 +59,8 @@ module.exports = {
 
 **发布时删除console**
 
+`HBuilderX 2.6.8+`支持
+
 ```js
 module.exports = {
 	chainWebpack: (config) => {
