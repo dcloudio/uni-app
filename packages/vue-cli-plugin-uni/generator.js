@@ -40,6 +40,8 @@ module.exports = (api, options, rootOptions) => {
         '@dcloudio/uni-mp-baidu': version,
         '@dcloudio/uni-mp-alipay': version,
         '@dcloudio/uni-mp-toutiao': version,
+        '@dcloudio/uni-quickapp-light': version,
+        '@dcloudio/uni-quickapp-vue': version,
         '@dcloudio/uni-stat': version,
         'flyio': '^0.6.2',
         'vuex': '^3.0.1'
