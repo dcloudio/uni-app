@@ -6,13 +6,13 @@ const commonjs = require('rollup-plugin-commonjs')
 const terser = require('rollup-plugin-terser')
 const requireContext = require('../lib/rollup-plugin-require-context')
 
-process.env.UNI_PLATFORM = 'quickapp'
+process.env.UNI_PLATFORM = 'quickapp-vue'
 
 const external = []
 
 const resolve = dir => path.resolve(__dirname, '../', dir)
 
-function replaceModuleImport (str) {
+function replaceModuleImport(str) {
   return str.replace(
     /require\s*\(\s*(['"])@([\w$_][\w$-.]*?)\1\)/gm,
     (e, r, p) => `$app_require$(${r}@app-module/${p}${r})`
@@ -23,45 +23,45 @@ function replaceModuleImport (str) {
 }
 
 const plugins = [{
-  name: 'replaceModuleImport',
-  transform (source) {
-    return {
-      code: replaceModuleImport(source)
+    name: 'replaceModuleImport',
+    transform(source) {
+      return {
+        code: replaceModuleImport(source)
+      }
     }
-  }
-},
-alias({
-  'uni-core': resolve('src/core'),
-  'uni-platform': resolve('src/platforms/' + process.env.UNI_PLATFORM),
-  'uni-platforms': resolve('src/platforms'),
-  'uni-shared': resolve('src/shared/index.js'),
-  'uni-helpers': resolve('src/core/helpers'),
-  'uni-invoke-api': resolve('src/platforms/quickapp/service/invoke-api'),
-  'uni-service-api': resolve('src/platforms/quickapp/service/api'),
-  'uni-api-protocol': resolve('src/core/helpers/protocol')
-}),
-nodeResolve(),
-requireContext(),
-commonjs(),
-replace({
-  __PLATFORM__: JSON.stringify(process.env.UNI_PLATFORM),
-  __PLATFORM_TITLE__: '快应用'
-})
+  },
+  alias({
+    'uni-core': resolve('src/core'),
+    'uni-platform': resolve('src/platforms/quickapp-vue'),
+    'uni-platforms': resolve('src/platforms'),
+    'uni-shared': resolve('src/shared/index.js'),
+    'uni-helpers': resolve('src/core/helpers'),
+    'uni-invoke-api': resolve('src/platforms/quickapp-vue/service/invoke-api'),
+    'uni-service-api': resolve('src/platforms/quickapp-vue/service/api'),
+    'uni-api-protocol': resolve('src/core/helpers/protocol')
+  }),
+  nodeResolve(),
+  requireContext(),
+  commonjs(),
+  replace({
+    __PLATFORM__: JSON.stringify(process.env.UNI_PLATFORM),
+    __PLATFORM_TITLE__: '快应用(Vue)版'
+  })
 ]
 
 // if (process.env.NODE_ENV === 'production') {
 plugins.push(terser.terser())
 // }
 
-module.exports = function (type) {
+module.exports = function(type) {
   let input = ''
 
   if (type === 'bridge') {
-    input = 'src/platforms/quickapp/runtime/bridge.js'
+    input = 'src/platforms/quickapp-vue/runtime/bridge.js'
   } else if (type === 'app') {
-    input = 'src/platforms/quickapp/runtime/app.js'
+    input = 'src/platforms/quickapp-vue/runtime/app.js'
   } else if (type === 'page') {
-    input = 'src/platforms/quickapp/runtime/page.js'
+    input = 'src/platforms/quickapp-vue/runtime/page.js'
   }
 
   return {

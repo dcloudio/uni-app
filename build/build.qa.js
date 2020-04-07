@@ -8,7 +8,7 @@ const genConfig = require('./rollup.config.qa')
 
 const filename = 'vue.' + (process.env.NODE_ENV === 'production' ? 'prod' : 'dev') + '.js'
 
-async function build () {
+async function build() {
   const bridgeBundle = await rollup.rollup(genConfig('bridge'))
   const {
     output: bridgeOutput
@@ -51,22 +51,22 @@ dsl.onInitApp(function({
   });`
   })
   const pageCode = pageOutput[0].code
-  const vueCode = fs.readFileSync(path.resolve(__dirname, '../packages/uni-quickapp/assets/' + filename))
+  const vueCode = fs.readFileSync(path.resolve(__dirname, '../packages/uni-quickapp-vue/assets/' + filename))
 
   fs.writeFileSync(
-    path.resolve(__dirname, '../packages/uni-quickapp/dist/' + filename),
+    path.resolve(__dirname, '../packages/uni-quickapp-vue/dist/' + filename),
     vueCode + bridgeCode + appCode + pageCode, {
       encoding: 'utf8'
     }
   )
 
   if (process.env.NODE_ENV === 'production') { // 命令会执行dev,prod两次,仅prod时执行copy
-    const componentsSrc = path.resolve(__dirname, '../src/platforms/quickapp/view/components/**/*')
-    const componentsDest = path.resolve(__dirname, '../packages/uni-quickapp/components')
+    const componentsSrc = path.resolve(__dirname, '../src/platforms/quickapp-vue/view/components/**/*')
+    const componentsDest = path.resolve(__dirname, '../packages/uni-quickapp-vue/components')
 
     del.sync([componentsDest])
 
-    copy(componentsSrc, componentsDest, function (err, file) {
+    copy(componentsSrc, componentsDest, function(err, file) {
       if (err) {
         throw err
       }
