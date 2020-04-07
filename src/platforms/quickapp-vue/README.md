@@ -25,7 +25,7 @@ npm run build:quickapp-vue
 
 ```
 packages
- ├─uni-quickapp
+ ├─uni-quickapp-vue
  │  └─lib
  │      ├─compiler-module (编译阶段标签转换之类逻辑)
  │      ├─polyfill.css (全局样式差异代码)
