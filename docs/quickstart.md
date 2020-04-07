@@ -234,7 +234,7 @@ npm run build:%PLATFORM%
 
 **其他：**
 
-* 目前使用`npm run build:app-plus`会在`/dist/build/app-plus`下生成app打包资源。如需制作wgt包，需要手动压缩成zip包修改后缀为wgt。
+* 目前使用`npm run build:app-plus`会在`/dist/build/app-plus`下生成app打包资源。如需制作wgt包，请以 uniapp id 命名新建文件夹，将app-plus中的文件 copy 到文件夹中，然后压缩成zip，在修改后缀为wgt。
 * dev 模式编译出的各平台代码存放于根目录下的 ``/dist/dev/``目录，打开各平台开发工具选择对应平台目录即可进行预览（h5 平台不会在此目录，存在于缓存中）；
 * build 模式编译出的各平台代码存放于根目录下的 ``/dist/build/`` 目录，发布时选择此目录进行发布；
 * dev 和 build 模式的区别：
