@@ -4,11 +4,11 @@ import {
 } from '../../platform'
 
 const callbacks = {
-  pause: [],
-  resume: [],
-  start: [],
-  stop: [],
-  error: []
+  pause: null,
+  resume: null,
+  start: null,
+  stop: null,
+  error: null
 }
 
 class RecorderManager {
@@ -17,15 +17,13 @@ class RecorderManager {
       const state = res.state
       delete res.state
       delete res.errMsg
-      callbacks[state].forEach(callback => {
-        if (typeof callback === 'function') {
-          callback(res)
-        }
-      })
+      if (typeof callbacks[state] === 'function') {
+        callbacks[state](res)
+      }
     })
   }
   onError (callback) {
-    callbacks.error.push(callback)
+    callbacks.error = callback
   }
   onFrameRecorded (callback) {
 
@@ -37,16 +35,16 @@ class RecorderManager {
 
   }
   onPause (callback) {
-    callbacks.pause.push(callback)
+    callbacks.pause = callback
   }
   onResume (callback) {
-    callbacks.resume.push(callback)
+    callbacks.resume = callback
   }
   onStart (callback) {
-    callbacks.start.push(callback)
+    callbacks.start = callback
   }
   onStop (callback) {
-    callbacks.stop.push(callback)
+    callbacks.stop = callback
   }
   pause () {
     invokeMethod('operateRecorder', {
