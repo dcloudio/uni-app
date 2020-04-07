@@ -16,7 +16,7 @@
 - clipboard `src/platforms/quickapp-vue/service/api/device/clipboard`
 ```
 
-2.编译 (输出目录`packages/uni-quickapp-vue`)
+3.编译 (输出目录`packages/uni-quickapp-vue`)
 ```
 npm run build:quickapp-vue
 ```
