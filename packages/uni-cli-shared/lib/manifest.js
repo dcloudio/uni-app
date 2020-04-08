@@ -44,7 +44,7 @@ function getH5Options (manifestJson) {
     manifestJson = getManifestJson()
   }
 
-  const h5 = manifestJson.h5 || {}
+  const h5 = manifestJson[process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM] || {}
 
   h5.appid = (manifestJson.appid || '').replace('__UNI__', '')
 
