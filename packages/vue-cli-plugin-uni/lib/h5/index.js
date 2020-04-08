@@ -166,7 +166,7 @@ module.exports = {
       webpackConfig.plugins.delete('preload-index')
     }
 
-    const compilerOptions = require('./compiler-opitons')
+    const compilerOptions = require('./compiler-options')
     if (publicPath === './') {
       compilerOptions.publicPath = publicPath
     }
