@@ -1374,7 +1374,7 @@ var serviceContext = (function () {
       }
     },
     data: {
-      type: [Object, String, ArrayBuffer],
+      type: [Object, String, Array, ArrayBuffer],
       validator (value, params) {
         params.data = value || '';
       }
@@ -2180,6 +2180,8 @@ var serviceContext = (function () {
       if (!valid && t === 'object') {
         valid = value instanceof type;
       }
+    } else if (value.byteLength >= 0) {
+      valid = true;
     } else if (expectedType === 'Object') {
       valid = isPlainObject(value);
     } else if (expectedType === 'Array') {
@@ -11070,11 +11072,11 @@ var serviceContext = (function () {
   });
 
   const callbacks$a = {
-    pause: [],
-    resume: [],
-    start: [],
-    stop: [],
-    error: []
+    pause: null,
+    resume: null,
+    start: null,
+    stop: null,
+    error: null
   };
 
   class RecorderManager {
@@ -11083,15 +11085,13 @@ var serviceContext = (function () {
         const state = res.state;
         delete res.state;
         delete res.errMsg;
-        callbacks$a[state].forEach(callback => {
-          if (typeof callback === 'function') {
-            callback(res);
-          }
-        });
+        if (typeof callbacks$a[state] === 'function') {
+          callbacks$a[state](res);
+        }
       });
     }
     onError (callback) {
-      callbacks$a.error.push(callback);
+      callbacks$a.error = callback;
     }
     onFrameRecorded (callback) {
 
@@ -11103,16 +11103,16 @@ var serviceContext = (function () {
 
     }
     onPause (callback) {
-      callbacks$a.pause.push(callback);
+      callbacks$a.pause = callback;
     }
     onResume (callback) {
-      callbacks$a.resume.push(callback);
+      callbacks$a.resume = callback;
     }
     onStart (callback) {
-      callbacks$a.start.push(callback);
+      callbacks$a.start = callback;
     }
     onStop (callback) {
-      callbacks$a.stop.push(callback);
+      callbacks$a.stop = callback;
     }
     pause () {
       invokeMethod('operateRecorder', {
