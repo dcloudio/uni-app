@@ -59,7 +59,7 @@ export const request = {
     }
   },
   data: {
-    type: [Object, String, ArrayBuffer],
+    type: [Object, String, Array, ArrayBuffer],
     validator (value, params) {
       params.data = value || ''
     }
