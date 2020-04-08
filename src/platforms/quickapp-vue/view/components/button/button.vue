@@ -125,21 +125,21 @@ export default {
   align-items: center;
   justify-content: center;
   position: relative;
-  padding-left: 5px;
-  padding-right: 5px;
+  padding-left: 30rpx;
+  padding-right: 30rpx;
   overflow: hidden;
   color: #000000;
   background-color: #f8f8f8;
-  border-radius: 5px;
+  border-radius: 5rpx;
   border-style: solid;
   border-width: 1px;
   border-color: #dbdbdb;
 }
 .uni-button-t {
   color: #000000;
-  font-size: 18px;
+  font-size: 32rpx;
   text-decoration: none;
-  line-height: 46px;
+  line-height: 88rpx;
 }
 .uni-button-d {
   background-color: #f8f8f8;
@@ -224,12 +224,12 @@ export default {
   color: rgba(0,0,0,0.2);
 }
 .uni-button-mini {
-  line-height: 30px;
-  font-size: 13px;
+  line-height: 50rpx;
+  font-size: 28rpx;
   padding-top: 0;
-  padding-right: 17.5px;
+  padding-right: 30rpx;
   padding-bottom: 0;
-  padding-left: 17.5px;
+  padding-left: 30rpx;
 }
 .uni-button-loading {
   width: 18px;
