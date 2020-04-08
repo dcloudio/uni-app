@@ -45,10 +45,8 @@ module.exports = {
       (options.modules || (options.modules = [])).push(autoComponentsModule)
     }
 
-    // 非h5平台，transformAssetUrls
-    if (process.env.UNI_PLATFORM !== 'h5') {
-      (options.modules || (options.modules = [])).push(require('./asset-url'))
-    }
+    // transformAssetUrls
+    (options.modules || (options.modules = [])).push(require('./asset-url'))
 
     options.isUnaryTag = isUnaryTag
     // 将 autoComponents 挂在 isUnaryTag 上边

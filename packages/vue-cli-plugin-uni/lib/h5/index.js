@@ -166,10 +166,14 @@ module.exports = {
       webpackConfig.plugins.delete('preload-index')
     }
 
+    const compilerOptions = require('./compiler-opitons')
+    if (publicPath === './') {
+      compilerOptions.publicPath = publicPath
+    }
     modifyVueLoader(webpackConfig, {
       isH5: true,
       hotReload: true
-    }, require('./compiler-options'), api)
+    }, compilerOptions, api)
 
     if (process.env.NODE_ENV === 'production') {
       require('./cssnano-options')(webpackConfig)
