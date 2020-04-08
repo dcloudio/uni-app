@@ -86,7 +86,7 @@ npm run serve:quickapp-vue
 ```
 项目 manifest.json
 {
-  "quickapp" : {
+  "quickapp-vue" : {
     "config": {
       "package": "com.example.demo",
       "designWidth": 360
