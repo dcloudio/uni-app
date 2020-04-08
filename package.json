@@ -27,7 +27,7 @@
     "build:mp-weixin:mp": "npm run lint && cross-env UNI_PLATFORM=mp-weixin UNI_MP=true rollup -c build/rollup.config.mp.js",
     "build:mp-weixin:wxs": "rollup -c build/rollup.config.wxs.js",
     "build:quickapp-vue": "cross-env NODE_ENV=development node build/build.qa.js && cross-env NODE_ENV=production node build/build.qa.js",
-    "build:runtime": "npm run lint && npm run build:mp-weixin && npm run build:mp-qq && npm run build:mp-alipay && npm run build:mp-baidu && npm run build:mp-toutiao && npm run build:app-plus && npm run build:quickapp-light",
+    "build:runtime": "npm run lint && npm run build:mp-weixin && npm run build:mp-qq && npm run build:mp-alipay && npm run build:mp-baidu && npm run build:mp-toutiao && npm run build:app-plus && npm run build:quickapp-light && npm run build:quickapp-vue",
     "build:stat": "npm run lint && rollup -c build/rollup.config.stat.js",
     "build:web-view": "npm run lint && rollup -c build/rollup.config.web-view.js",
     "test:cli": "cross-env NODE_ENV=test jest",
