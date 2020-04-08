@@ -27,13 +27,13 @@ function urlToRequire (url) {
     }
     const uriParts = parseUriParts(url)
     if (!uriParts.hash) { // fixed by xxxxxx (v3 template中需要加/)
-      return `"/"+require("${url}")`
+      return `require("${url}")`
     } else { // fixed by xxxxxx (v3 template中需要加/)
       // support uri fragment case by excluding it from
       // the require and instead appending it as string;
       // assuming that the path part is sufficient according to
       // the above caseing(t.i. no protocol-auth-host parts expected)
-      return `"/"+require("${uriParts.path}") + "${uriParts.hash}"`
+      return `require("${uriParts.path}") + "${uriParts.hash}"`
     }
   }
   return returnValue
@@ -66,14 +66,18 @@ function rewrite (attr, name, options) {
           .replace('"@/', '"/')
           .replace('"~@/', '"/')
       }
-      if (options.service || options.view || options.h5) { // v3,h5
+      // v3,h5
+      const needRequire = options.service || options.view || options.h5
+      if (needRequire) {
         attr.value = urlToRequire(attr.value.slice(1, -1))
-        // h5 且 publicPath 为 ./ (仅生产模式可能为./)
-        if (
-          options.h5 &&
-          options.publicPath === './'
-        ) {
-          attr.value = `(${attr.value}).substr(1)`
+        if (attr.value.startsWith('require("')) { // require
+          // v3 需要增加前缀 /
+          if (options.service || options.view) {
+            attr.value = `"/"+${attr.value}`
+          } else if (options.h5 && options.publicPath === './') {
+            // h5 且 publicPath 为 ./ (仅生产模式可能为./)
+            attr.value = `(${attr.value}).substr(1)`
+          }
         }
       }
       return true
