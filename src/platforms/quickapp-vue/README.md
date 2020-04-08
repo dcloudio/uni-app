@@ -82,20 +82,6 @@ npm run serve:quickapp-vue
 
 
 
-#### 包名配置
-```
-项目 manifest.json
-{
-  "quickapp-vue" : {
-    "config": {
-      "package": "com.example.demo",
-      "designWidth": 360
-    }
-  }
-}
-```
-
-
 ### 生成证书 `certificate.pem` 和 `private.pem`
 安装 openssl(windows系统)
 ```
