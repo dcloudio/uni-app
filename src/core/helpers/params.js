@@ -80,6 +80,8 @@ function assertType (value, type) {
     if (!valid && t === 'object') {
       valid = value instanceof type
     }
+  } else if (value.byteLength >= 0) {
+    valid = true
   } else if (expectedType === 'Object') {
     valid = isPlainObject(value)
   } else if (expectedType === 'Array') {
