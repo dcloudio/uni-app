@@ -33,6 +33,14 @@ const handleData = {
   [PAGE_CREATE]: function onPageCreate (data) {
     const [pageId, pagePath, pageOptions] = data
     document.title = `${pagePath}[${pageId}]`
+
+    // 页面存在横竖屏切换时，预加载的 webview 的 fontSize 需要再次校正一下
+    const oldFontSize = document.documentElement.style.fontSize
+    const newFontSize = document.documentElement.clientWidth / 20 + 'px'
+    if (oldFontSize !== newFontSize) {
+      document.documentElement.style.fontSize = newFontSize
+    }
+
     // 设置当前页面伪对象，方便其他地方使用 getCurrentPages 获取当前页面 id，route
     setCurrentPage(pageId, pagePath)
     // 通知页面创建，根据当前页面配置信息，初始化部分事件
