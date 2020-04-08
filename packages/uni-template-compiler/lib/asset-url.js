@@ -61,11 +61,20 @@ function rewrite (attr, name, options) {
     const value = attr.value
     // only transform static URLs
     if (value.charAt(0) === '"' && value.charAt(value.length - 1) === '"') {
-      attr.value = attr.value
-        .replace('"@/', '"/')
-        .replace('"~@/', '"/')
-      if (options.service || options.view) { // v3
+      if (!options.h5) { // 非 H5 平台
+        attr.value = attr.value
+          .replace('"@/', '"/')
+          .replace('"~@/', '"/')
+      }
+      if (options.service || options.view || options.h5) { // v3,h5
         attr.value = urlToRequire(attr.value.slice(1, -1))
+        // h5 且 publicPath 为 ./ (仅生产模式可能为./)
+        if (
+          options.h5 &&
+          options.publicPath === './'
+        ) {
+          attr.value = `(${attr.value}).substr(1)`
+        }
       }
       return true
     }
