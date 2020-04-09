@@ -34,12 +34,7 @@ const handleData = {
     const [pageId, pagePath, pageOptions] = data
     document.title = `${pagePath}[${pageId}]`
 
-    // 页面存在横竖屏切换时，预加载的 webview 的 fontSize 需要再次校正一下
-    const oldFontSize = document.documentElement.style.fontSize
-    const newFontSize = document.documentElement.clientWidth / 20 + 'px'
-    if (oldFontSize !== newFontSize) {
-      document.documentElement.style.fontSize = newFontSize
-    }
+    updateRootFontSize()
 
     // 设置当前页面伪对象，方便其他地方使用 getCurrentPages 获取当前页面 id，route
     setCurrentPage(pageId, pagePath)
@@ -89,7 +84,23 @@ function updateView () {
   )
 }
 
-window.addEventListener('resize', updateView)
+function updateRootFontSize () {
+  // 页面存在横竖屏切换时，预加载的 webview 的 fontSize 需要再次校正一下
+  const oldFontSize = document.documentElement.style.fontSize
+  const newFontSize = document.documentElement.clientWidth / 20 + 'px'
+  if (oldFontSize !== newFontSize) {
+    document.documentElement.style.fontSize = newFontSize
+  }
+}
+
+window.addEventListener('resize', () => {
+  // TODO 与之前逻辑保持一致，仅当前 webview 未被使用时，校准 fontSize，后续考虑动态旋转，调整rootfontSize
+  if (!getCurrentPages().length) {
+    updateRootFontSize()
+  }
+  updateView()
+})
+
 window.addEventListener('updateview', updateView)
 
 function vdSync ({
