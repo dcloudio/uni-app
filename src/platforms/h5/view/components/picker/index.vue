@@ -296,7 +296,20 @@ export default {
       }
     },
     _resetFormData () {
-      this.valueSync = 0
+      switch (this.mode) {
+        case mode.SELECTOR:
+          this.valueSync = -1
+          break
+        case mode.MULTISELECTOR:
+          this.valueSync = this.value.map(val => 0)
+          break
+        case mode.DATE:
+        case mode.TIME:
+          this.valueSync = ''
+          break
+        default:
+          break
+      }
     },
     _createTime () {
       var hours = []
