@@ -1,3 +1,24 @@
+#### 2.6.9.20200403
+* 【uni-app插件】
+  + 【重要】 App平台 调整 manifest中默认的编译模式为v3模式。如需要切换为老版自定义组件模式，需要在 manifest可视化界面 - App其他常用设置 中，去掉v3编译模式
+  + 【重要】 App平台 新增 v3版本 支持纯 nvue 编译模式。两种模式不再互斥
+  + 【重要】 App平台 调整 v3版本 template 节点中引用静态资源文件时（如：图片），调整查找策略为【基于当前文件的路径搜索】，与其他平台保持一致
+  + App平台、H5平台 优化 v3版本 uni.moveToLocation 支持 latitude、longitude 参数
+  + App平台、H5平台 修复 多列 picker 组件部分情况修改 value 不生效的Bug
+  + App平台 修复 自定义组件编译模式使用 easycom 后在低版本设备白屏的Bug [详情](https://ask.dcloud.net.cn/question/92473)
+  + App平台 修复 v3版本 uni.openLocation 点击导航栏返回后退2次的Bug [详情](https://github.com/dcloudio/uni-app/issues/1465)
+  + App平台 修复 v3版本 uni.moveToLocation 不执行回调的Bug
+  + App平台 修复 v3版本 webview 组件无法收到 @message 的Bug [详情](https://ask.dcloud.net.cn/question/92296)
+  + App-iOS平台 修复 textarea 组件在 iOS13.4 系统报错的Bug
+  + App-iOS平台 修复 锁定横屏后打开 nvue 页面使用 plus.screen 获取屏幕宽高值不对的Bug
+  + H5平台 修复 image 组件 某些情况下相对路径无法显示的Bug [详情](https://ask.dcloud.net.cn/question/92366)
+  + 小程序平台 修复 调用取消事件监听类接口报错的Bug [#1511](https://github.com/dcloudio/uni-app/issues/1511)
+* 【uniCloud】
+  + 修复 使用阿里云时运行到App端不输出运行日志的Bug
+* 【App插件(含5+App和uni-app的App端)】
+  + 新增 获取当前屏幕宽高信息接口 plus.screen.getCurrentSize [文档](https://www.html5plus.org/doc/zh_cn/device.html#plus.screen.getCurrentSize)
+  + iOS平台 修复 Webview窗口标题栏 titleNView 动态设置 titleText 在某些情况下可能不生效的Bug [详情](https://ask.dcloud.net.cn/question/92494)
+
 #### 2.6.8.20200330
 * 【uni-app插件】
   + 优化 静态资源引入方式 [详情](https://uniapp.dcloud.io/frame?id=resource)
