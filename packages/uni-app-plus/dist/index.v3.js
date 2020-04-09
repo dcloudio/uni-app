@@ -311,6 +311,45 @@ var serviceContext = (function () {
     }
   }
 
+  /**
+   * Check if two values are loosely equal - that is,
+   * if they are plain objects, do they have the same shape?
+   */
+  function looseEqual (a, b) {
+    if (a === b) return true
+    const isObjectA = isObject(a);
+    const isObjectB = isObject(b);
+    if (isObjectA && isObjectB) {
+      try {
+        const isArrayA = Array.isArray(a);
+        const isArrayB = Array.isArray(b);
+        if (isArrayA && isArrayB) {
+          return a.length === b.length && a.every((e, i) => {
+            return looseEqual(e, b[i])
+          })
+        } else if (a instanceof Date && b instanceof Date) {
+          return a.getTime() === b.getTime()
+        } else if (!isArrayA && !isArrayB) {
+          const keysA = Object.keys(a);
+          const keysB = Object.keys(b);
+          return keysA.length === keysB.length && keysA.every(key => {
+            return looseEqual(a[key], b[key])
+          })
+        } else {
+          /* istanbul ignore next */
+          return false
+        }
+      } catch (e) {
+        /* istanbul ignore next */
+        return false
+      }
+    } else if (!isObjectA && !isObjectB) {
+      return String(a) === String(b)
+    } else {
+      return false
+    }
+  }
+
   const encodeReserveRE = /[!'()*]/g;
   const encodeReserveReplacer = c => '%' + c.charCodeAt(0).toString(16);
   const commaRE = /%2C/g;
@@ -13162,68 +13201,13 @@ var serviceContext = (function () {
     data[k] = v;
   }
 
-  function diffObject (newObj, oldObj, every = true) {
-    let result, key, cur, old;
-    for (key in newObj) {
-      cur = newObj[key];
-      old = oldObj[key];
-      if (old !== cur) {
-        if (!every) {
-          return newObj
-        }
-        setResult(result || (result = Object.create(null)), key, cur);
-      }
-    }
-    return result
-  }
-
-  function diffArray (newArr, oldArr) {
-    const newLen = newArr.length;
-    if (newLen !== oldArr.length) {
-      return newArr
-    }
-    if (isPlainObject(newArr[0])) {
-      for (let i = 0; i < newLen; i++) {
-        if (diffObject(newArr[i], oldArr[i], false)) {
-          return newArr
-        }
-      }
-    } else {
-      for (let i = 0; i < newLen; i++) {
-        if (newArr[i] !== oldArr[i]) {
-          return newArr
-        }
-      }
-    }
-  }
-
   function diffElmData (newObj, oldObj) {
     let result, key, cur, old;
     for (key in newObj) {
       cur = newObj[key];
       old = oldObj[key];
-      if (old !== cur) {
-        if (key === B_STYLE && isPlainObject(cur) && isPlainObject(old)) { // 全量同步 style (因为 style 可能会动态删除部分样式)
-          if (Object.keys(cur).length !== Object.keys(old).length) { // 长度不等
-            setResult(result || (result = Object.create(null)), B_STYLE, cur);
-          } else {
-            const style = diffObject(cur, old, false);
-            style && setResult(result || (result = Object.create(null)), B_STYLE, style);
-          }
-        } else if (key === V_FOR && Array.isArray(cur) && Array.isArray(old)) {
-          const vFor = diffArray(cur, old);
-          vFor && setResult(result || (result = Object.create(null)), V_FOR, vFor);
-        } else {
-          if (key.indexOf('change:') === 0) { // wxs change:prop
-            try {
-              // 先简单的用 stringify 判断
-              if (JSON.stringify(cur) === JSON.stringify(old)) {
-                continue
-              }
-            } catch (e) {}
-          }
-          setResult(result || (result = Object.create(null)), key, cur);
-        }
+      if (!looseEqual(old, cur)) {
+        setResult(result || (result = Object.create(null)), key, cur);
       }
     }
     return result
