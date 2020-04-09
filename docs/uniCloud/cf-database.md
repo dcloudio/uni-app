@@ -252,7 +252,7 @@ let res = await collection.add([{
 如果文档不存在，`set` 方法会创建一个新文档。
 
 ```js
-let res = await collection.doc().set({
+let res = await collection.doc('doc-id').set({
   name: "Hey"
 });
 ```
