@@ -377,7 +377,7 @@ export default {
       var self = this
       if (!this._isScaling && !this.disabled && this._isTouching) {
         disableScrollBounce({
-          disable: true
+          disable: false
         })
         this.$el.style.willChange = 'auto'
         this._isTouching = false
