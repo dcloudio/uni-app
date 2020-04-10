@@ -6,6 +6,8 @@ vue.config.js 是一个可选的配置文件，如果项目的根目录中存在
 
 **注意事项**
 
+仅vue页面生效
+
 部分配置项会被编译配置覆盖，例如：
 
 * publicPath  不支持，如果需要配置，请在 manifest.json->h5->router->base 中配置，参考文档：[h5-router](collocation/manifest?id=h5-router)
