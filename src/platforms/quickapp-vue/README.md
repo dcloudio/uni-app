@@ -9,8 +9,40 @@ uni-app对快应用的适配，现状如下：
 -  [快应用官网](https://doc.quickapp.cn/)，[使用 Vue开发快应用](https://doc.quickapp.cn/tutorial/others/vue.html)
 
 
-### 开发
+### 仓库介绍
+[uni-app](https://github.com/dcloudio/uni-app)
 uni-app 是一个使用 Vue.js 开发小程序、H5、App的统一前端框架。
+
+[hello quickapp](https://github.com/dcloudio/hello-quickapp-vue)
+测试uni-app快应用组件及 API，已包含 button 组件、剪切板、及平台调用示例
+
+
+### 快速体验
+1. 安装 [快应用调试器](https://statres.quickapp.cn/quickapp/quickapp/201806/file/quickapp_debugger.apk)
+
+2. 打开快应用调试器，下载平台（快应用预览版：版本号1060）
+
+3. 拉取 [hello quickapp](https://github.com/dcloudio/hello-quickapp-vue)
+```
+git clone https://github.com/dcloudio/hello-quickapp-vue.git
+cd ./hello-quickapp-vue
+yarn install
+```
+
+4. 编译快应用 `rpk`
+```
+npm run dev:quickapp-vue
+```
+5. 开启debug在线更新服务
+```
+npm run serve:quickapp-vue
+```
+
+6. 打开快应用调试器，扫码安装或右上角设置服务器地址(注意带上`http://`，关闭USB调试可看到扫码)
+- 修改代码后，会主动通知调试器更新，或者手动点击在线更新（调试可以点击右下角开始调试）
+
+
+### 开发
 
 1. Fork 仓库 `uni-app` [https://github.com/dcloudio/uni-app](https://github.com/dcloudio/uni-app)，切换到 dev-quickapp 分支
 
@@ -24,6 +56,9 @@ uni-app 是一个使用 Vue.js 开发小程序、H5、App的统一前端框架�
 ```
 npm run build:quickapp-vue
 ```
+
+手动替换 `uni-app` 编译输出目录 `packages/uni-quickapp-vue` 到 `hello quickapp` 工程 `node_modules/@dcloudio/uni-quickapp-vue`, 可以考虑 `npm link`
+
 
 #### `uni-app` 目录说明
 
@@ -45,35 +80,6 @@ src
  │              └─button
 ```
 
-### 测试
-
-#### 搭建测试环境
-
-1. 安装 [快应用调试器](https://statres.quickapp.cn/quickapp/quickapp/201806/file/quickapp_debugger.apk)
-
-2. 打开快应用调试器，下载平台（快应用预览版：版本号1060）
-
-#### 搭建测试工程
-用于测试 uni-app 框架及 API，包含 button 组件和剪切板示例
-
-1. 测试工程 `hello quickapp` [https://github.com/dcloudio/hello-quickapp-vue](https://github.com/dcloudio/hello-quickapp-vue)
-使用 git clone(需要配置 git 命令行支持) 或下载 zip 解压
-```
-git clone https://github.com/dcloudio/hello-quickapp-vue.git
-cd ./hello-quickapp-vue
-yarn install
-```
-2. 编译快应用 `rpk`
-```
-npm run dev:quickapp-vue
-```
-3. 开启debug在线更新服务
-```
-npm run serve:quickapp-vue
-```
-4. 打开快应用调试器，扫码安装或右上角设置服务器地址(注意带上`http://`，关闭USB调试可看到扫码)
-5. 修改代码后，会主动通知调试器更新，或者手动点击在线更新（调试可以点击右下角开始调试）
-6. 手动替换 `uni-app` 编译输出目录 `packages/uni-quickapp-vue` 到测试工程 `node_modules/@dcloudio/uni-quickapp-vue`, 可以考虑 `npm link`
 
 ### 提交代码
 使用 `pull request` 提交代码
