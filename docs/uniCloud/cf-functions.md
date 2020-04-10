@@ -30,6 +30,8 @@ exports.main = async (event, context) => {
 }
 ```
 
+云函数中如果要使用其他服务（比如mysql数据库、redis等），可以按照nodejs的写法即可。
+
 ### 访问数据库
 
 云函数中支持访问本服务空间下的数据库，调用方式详见[规范](uniCloud/cf-database.md)
