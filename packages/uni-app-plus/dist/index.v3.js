@@ -685,14 +685,18 @@ var serviceContext = (function () {
 
   const CONTEXT_API_RE = /^create|Manager$/;
 
+  // Context例外情况
+  const CONTEXT_API_RE_EXC = ['createBLEConnection'];
+
   const TASK_APIS = ['request', 'downloadFile', 'uploadFile', 'connectSocket'];
 
+  // 同步例外情况
   const ASYNC_API = ['createBLEConnection'];
 
   const CALLBACK_API_RE = /^on|^off/;
 
   function isContextApi (name) {
-    return CONTEXT_API_RE.test(name)
+    return CONTEXT_API_RE.test(name) && CONTEXT_API_RE_EXC.indexOf(name) === -1
   }
   function isSyncApi (name) {
     return SYNC_API_RE.test(name) && ASYNC_API.indexOf(name) === -1
