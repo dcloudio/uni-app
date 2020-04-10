@@ -66,6 +66,10 @@ const getPageComponents = function (inputDir, pagesJson) {
     globalStyle['h5'] || {}
   )
 
+  if (process.env.UNI_SUB_PLATFORM) {
+    Object.assign(globalStyle, globalStyle[process.env.UNI_SUB_PLATFORM] || {})
+  }
+
   process.UNI_H5_PAGES_JSON = {
     pages: {},
     globalStyle
@@ -89,6 +93,11 @@ const getPageComponents = function (inputDir, pagesJson) {
     }
     // 解析 titleNView，pullToRefresh
     const h5Options = Object.assign({}, props['app-plus'] || {}, props['h5'] || {})
+
+    if (process.env.UNI_SUB_PLATFORM) {
+      Object.assign(h5Options, props[process.env.UNI_SUB_PLATFORM] || {})
+      Object.assign(props, props[process.env.UNI_SUB_PLATFORM] || {})
+    }
 
     removePlatformStyle(h5Options)
 
@@ -122,6 +131,10 @@ const getPageComponents = function (inputDir, pagesJson) {
     // 删除 app-plus 平台配置
     delete props['app-plus']
     delete props['h5']
+
+    if (process.env.UNI_SUB_PLATFORM) {
+      delete props[process.env.UNI_SUB_PLATFORM]
+    }
 
     process.UNI_H5_PAGES_JSON.pages[page.path] = props
 
@@ -343,6 +356,7 @@ global['____${h5.appid}____'] = true;
 delete global['____${h5.appid}____'];
 global.__uniConfig = ${JSON.stringify(pagesJson)};
 global.__uniConfig.router = ${JSON.stringify(h5.router)};
+global.__uniConfig.publicPath = ${JSON.stringify(h5.publicPath)};
 global.__uniConfig['async'] = ${JSON.stringify(h5['async'])};
 global.__uniConfig.debug = ${manifestJson.debug === true};
 global.__uniConfig.networkTimeout = ${JSON.stringify(networkTimeoutConfig)};

@@ -7,10 +7,6 @@ process.env.UNI_HBUILDERX_PLUGINS = process.env.UNI_HBUILDERX_PLUGINS || path.re
 
 require('./module-alias')
 
-const {
-  devtoolModuleFilenameTemplate
-} = require('@dcloudio/uni-cli-shared')
-
 module.exports = (api, options) => { // 仅处理 app-plus 相关逻辑
   if (process.env.UNI_PLATFORM !== 'app-plus') {
     return
@@ -39,6 +35,10 @@ module.exports = (api, options) => { // 仅处理 app-plus 相关逻辑
   const WebpackAppPlusPlugin = require('./packages/webpack-app-plus-plugin')
 
   plugins.push(new WebpackAppPlusPlugin())
+
+  const {
+    devtoolModuleFilenameTemplate
+  } = require('./util')
 
   // sourcemap 输出相对路径
   output.devtoolModuleFilenameTemplate = devtoolModuleFilenameTemplate

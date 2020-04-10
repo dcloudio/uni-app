@@ -165,7 +165,8 @@ var serviceContext = (function () {
     'startPullDownRefresh',
     'stopPullDownRefresh',
     'createSelectorQuery',
-    'createIntersectionObserver'
+    'createIntersectionObserver',
+    'getMenuButtonBoundingClientRect'
   ];
 
   const event = [
@@ -307,6 +308,45 @@ var serviceContext = (function () {
       clearTimeout(timeout);
       const timerFn = () => fn.apply(this, arguments);
       timeout = setTimeout(timerFn, delay);
+    }
+  }
+
+  /**
+   * Check if two values are loosely equal - that is,
+   * if they are plain objects, do they have the same shape?
+   */
+  function looseEqual (a, b) {
+    if (a === b) return true
+    const isObjectA = isObject(a);
+    const isObjectB = isObject(b);
+    if (isObjectA && isObjectB) {
+      try {
+        const isArrayA = Array.isArray(a);
+        const isArrayB = Array.isArray(b);
+        if (isArrayA && isArrayB) {
+          return a.length === b.length && a.every((e, i) => {
+            return looseEqual(e, b[i])
+          })
+        } else if (a instanceof Date && b instanceof Date) {
+          return a.getTime() === b.getTime()
+        } else if (!isArrayA && !isArrayB) {
+          const keysA = Object.keys(a);
+          const keysB = Object.keys(b);
+          return keysA.length === keysB.length && keysA.every(key => {
+            return looseEqual(a[key], b[key])
+          })
+        } else {
+          /* istanbul ignore next */
+          return false
+        }
+      } catch (e) {
+        /* istanbul ignore next */
+        return false
+      }
+    } else if (!isObjectA && !isObjectB) {
+      return String(a) === String(b)
+    } else {
+      return false
     }
   }
 
@@ -645,14 +685,18 @@ var serviceContext = (function () {
 
   const CONTEXT_API_RE = /^create|Manager$/;
 
+  // Context例外情况
+  const CONTEXT_API_RE_EXC = ['createBLEConnection'];
+
   const TASK_APIS = ['request', 'downloadFile', 'uploadFile', 'connectSocket'];
 
+  // 同步例外情况
   const ASYNC_API = ['createBLEConnection'];
 
   const CALLBACK_API_RE = /^on|^off/;
 
   function isContextApi (name) {
-    return CONTEXT_API_RE.test(name)
+    return CONTEXT_API_RE.test(name) && CONTEXT_API_RE_EXC.indexOf(name) === -1
   }
   function isSyncApi (name) {
     return SYNC_API_RE.test(name) && ASYNC_API.indexOf(name) === -1
@@ -1373,7 +1417,7 @@ var serviceContext = (function () {
       }
     },
     data: {
-      type: [Object, String, ArrayBuffer],
+      type: [Object, String, Array, ArrayBuffer],
       validator (value, params) {
         params.data = value || '';
       }
@@ -1414,6 +1458,9 @@ var serviceContext = (function () {
         value = (value || '').toLowerCase();
         params.responseType = Object.values(responseType).indexOf(value) < 0 ? responseType.TEXT : value;
       }
+    },
+    withCredentials: {
+      type: Boolean
     }
   };
 
@@ -2176,6 +2223,8 @@ var serviceContext = (function () {
       if (!valid && t === 'object') {
         valid = value instanceof type;
       }
+    } else if (value.byteLength >= 0) {
+      valid = true;
     } else if (expectedType === 'Object') {
       valid = isPlainObject(value);
     } else if (expectedType === 'Array') {
@@ -3093,7 +3142,7 @@ var serviceContext = (function () {
       errMsg: 'getAudioState:ok',
       duration: 1e3 * (audio.getDuration() || 0),
       currentTime: audio.isStopped ? 0 : 1e3 * audio.getPosition(),
-      paused: audio.isPaused,
+      paused: audio.isPaused(),
       src,
       volume,
       startTime: 1e3 * startTime,
@@ -3109,7 +3158,7 @@ var serviceContext = (function () {
     const audio = audios[audioId];
     const operationTypes = ['play', 'pause', 'stop'];
     if (operationTypes.indexOf(operationType) >= 0) {
-      audio[operationType === operationTypes[0] && audio.isPaused ? 'resume' : operationType]();
+      audio[operationType === operationTypes[0] && audio.isPaused() ? 'resume' : operationType]();
     } else if (operationType === 'seek') {
       audio.seekTo(currentTime / 1e3);
     }
@@ -3225,7 +3274,7 @@ var serviceContext = (function () {
         dataUrl: audio.src,
         duration: audio.getDuration() || 0,
         currentPosition: audio.getPosition(),
-        status: audio.isPaused ? 0 : 1,
+        status: audio.isPaused() ? 0 : 1,
         downloadPercent: Math.round(100 * audio.getBuffered() / audio.getDuration()),
         errMsg: `getMusicPlayerState:ok`
       }
@@ -3301,7 +3350,7 @@ var serviceContext = (function () {
       let newData = {
         duration: audio.getDuration() || 0,
         currentTime: audio.isStopped ? 0 : audio.getPosition(),
-        paused: audio.isPaused,
+        paused: audio.isPaused(),
         src: audio.src,
         buffered: audio.getBuffered(),
         title: audio.title,
@@ -11066,11 +11115,11 @@ var serviceContext = (function () {
   });
 
   const callbacks$a = {
-    pause: [],
-    resume: [],
-    start: [],
-    stop: [],
-    error: []
+    pause: null,
+    resume: null,
+    start: null,
+    stop: null,
+    error: null
   };
 
   class RecorderManager {
@@ -11079,15 +11128,13 @@ var serviceContext = (function () {
         const state = res.state;
         delete res.state;
         delete res.errMsg;
-        callbacks$a[state].forEach(callback => {
-          if (typeof callback === 'function') {
-            callback(res);
-          }
-        });
+        if (typeof callbacks$a[state] === 'function') {
+          callbacks$a[state](res);
+        }
       });
     }
     onError (callback) {
-      callbacks$a.error.push(callback);
+      callbacks$a.error = callback;
     }
     onFrameRecorded (callback) {
 
@@ -11099,16 +11146,16 @@ var serviceContext = (function () {
 
     }
     onPause (callback) {
-      callbacks$a.pause.push(callback);
+      callbacks$a.pause = callback;
     }
     onResume (callback) {
-      callbacks$a.resume.push(callback);
+      callbacks$a.resume = callback;
     }
     onStart (callback) {
-      callbacks$a.start.push(callback);
+      callbacks$a.start = callback;
     }
     onStop (callback) {
-      callbacks$a.stop.push(callback);
+      callbacks$a.stop = callback;
     }
     pause () {
       invokeMethod('operateRecorder', {
@@ -11401,7 +11448,7 @@ var serviceContext = (function () {
       success,
       fail,
       complete
-    }, errMsg) {
+    } = {}, errMsg) {
       var data = {
         errMsg
       };
@@ -12279,7 +12326,7 @@ var serviceContext = (function () {
         const page = pages.find(page => page.$page.id === pageId);
         if (page) {
           callPageHook(page, eventType, args);
-        } else {
+        } else if (process.env.NODE_ENV !== 'production') {
           console.error(`Not Found：Page[${pageId}]`);
         }
       }
@@ -13158,61 +13205,13 @@ var serviceContext = (function () {
     data[k] = v;
   }
 
-  function diffObject (newObj, oldObj, every = true) {
-    let result, key, cur, old;
-    for (key in newObj) {
-      cur = newObj[key];
-      old = oldObj[key];
-      if (old !== cur) {
-        if (!every) {
-          return newObj
-        }
-        setResult(result || (result = Object.create(null)), key, cur);
-      }
-    }
-    return result
-  }
-
-  function diffArray (newArr, oldArr) {
-    const newLen = newArr.length;
-    if (newLen !== oldArr.length) {
-      return newArr
-    }
-    if (isPlainObject(newArr[0])) {
-      for (let i = 0; i < newLen; i++) {
-        if (diffObject(newArr[i], oldArr[i], false)) {
-          return newArr
-        }
-      }
-    } else {
-      for (let i = 0; i < newLen; i++) {
-        if (newArr[i] !== oldArr[i]) {
-          return newArr
-        }
-      }
-    }
-  }
-
   function diffElmData (newObj, oldObj) {
     let result, key, cur, old;
     for (key in newObj) {
       cur = newObj[key];
       old = oldObj[key];
-      if (old !== cur) {
-        // 全量同步 style (因为 style 可能会动态删除部分样式)
-        if (key === B_STYLE && isPlainObject(cur) && isPlainObject(old)) {
-          if (Object.keys(cur).length !== Object.keys(old).length) { // 长度不等
-            setResult(result || (result = Object.create(null)), B_STYLE, cur);
-          } else {
-            const style = diffObject(cur, old, false);
-            style && setResult(result || (result = Object.create(null)), B_STYLE, style);
-          }
-        } else if (key === V_FOR && Array.isArray(cur) && Array.isArray(old)) {
-          const vFor = diffArray(cur, old);
-          vFor && setResult(result || (result = Object.create(null)), V_FOR, vFor);
-        } else {
-          setResult(result || (result = Object.create(null)), key, cur);
-        }
+      if (!looseEqual(old, cur)) {
+        setResult(result || (result = Object.create(null)), key, cur);
       }
     }
     return result

@@ -10,7 +10,6 @@ const {
   ssrCompileToFunctions
 } = require('@dcloudio/vue-cli-plugin-uni/packages/vue-template-compiler')
 
-const platforms = require('./platforms')
 const traverseScript = require('./script/traverse')
 const generateScript = require('./script/generate')
 const traverseTemplate = require('./template/traverse')
@@ -46,10 +45,8 @@ module.exports = {
       (options.modules || (options.modules = [])).push(autoComponentsModule)
     }
 
-    // 非h5平台，transformAssetUrls
-    if (process.env.UNI_PLATFORM !== 'h5') {
-      (options.modules || (options.modules = [])).push(require('./asset-url'))
-    }
+    // transformAssetUrls
+    (options.modules || (options.modules = [])).push(require('./asset-url'))
 
     options.isUnaryTag = isUnaryTag
     // 将 autoComponents 挂在 isUnaryTag 上边
@@ -81,12 +78,12 @@ module.exports = {
         console.error(source)
         throw e
       }
-    } else if (options.quickapp) {
+    } else if (options['quickapp-vue']) {
       // 后续改版，应统一由具体包实现
-      (options.modules || (options.modules = [])).push(require('@dcloudio/uni-quickapp/lib/compiler-module'))
+      (options.modules || (options.modules = [])).push(require('@dcloudio/uni-quickapp-vue/lib/compiler-module'))
     }
 
-    if (!options.mp) { // h5,quickapp
+    if (!options.mp) { // h5,quickapp-vue
       return compileTemplate(source, options, compile)
     }
 
@@ -102,7 +99,7 @@ module.exports = {
       optimize: false
     }), compile)
 
-    options.mp.platform = platforms[options.mp.platform]
+    options.mp.platform = require('./mp')(options.mp.platform)
 
     options.mp.scopeId = options.scopeId
 

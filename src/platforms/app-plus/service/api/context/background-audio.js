@@ -113,7 +113,7 @@ export function getMusicPlayerState () {
       dataUrl: audio.src,
       duration: audio.getDuration() || 0,
       currentPosition: audio.getPosition(),
-      status: audio.isPaused ? 0 : 1,
+      status: audio.isPaused() ? 0 : 1,
       downloadPercent: Math.round(100 * audio.getBuffered() / audio.getDuration()),
       errMsg: `getMusicPlayerState:ok`
     }
@@ -189,7 +189,7 @@ export function getBackgroundAudioState () {
     let newData = {
       duration: audio.getDuration() || 0,
       currentTime: audio.isStopped ? 0 : audio.getPosition(),
-      paused: audio.isPaused,
+      paused: audio.isPaused(),
       src: audio.src,
       buffered: audio.getBuffered(),
       title: audio.title,

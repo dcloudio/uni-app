@@ -2,20 +2,17 @@ const path = require('path')
 const hash = require('hash-sum')
 const crypto = require('crypto')
 
-const PLATFORMS = [
-  'h5',
-  'app-plus',
-  'mp-qq',
-  'mp-weixin',
-  'mp-baidu',
-  'mp-alipay',
-  'mp-toutiao',
-  'quickapp'
-]
-
 const isWin = /^win/.test(process.platform)
 
 const normalizePath = path => (isWin ? path.replace(/\\/g, '/') : path)
+
+let aboutPkg
+try {
+  aboutPkg = require(path.resolve(__dirname, '../../../../../about/package.json'))
+} catch (e) {}
+
+const isInHBuilderX = !!aboutPkg
+const isInHBuilderXAlpha = !!(isInHBuilderX && aboutPkg.alpha)
 
 function removeExt (str, ext) {
   if (ext) {
@@ -91,7 +88,20 @@ function hasModule (name) {
   return false
 }
 
+const NODE_MODULES_REGEX = /(\.\.\/)?node_modules/g
+
+function normalizeNodeModules (str) {
+  str = str.replace(NODE_MODULES_REGEX, 'node-modules')
+  if (process.env.UNI_PLATFORM === 'mp-alipay') {
+    str = str.replace('node-modules/@', 'node-modules/npm-scope-')
+  }
+  return str
+}
+
 module.exports = {
+  isInHBuilderX,
+  isInHBuilderXAlpha,
+  normalizeNodeModules,
   md5,
   hasOwn (obj, key) {
     return hasOwnProperty.call(obj, key)
@@ -99,7 +109,7 @@ module.exports = {
   hasModule,
   parseStyle (style = {}) {
     Object.keys(style).forEach(name => {
-      if (PLATFORMS.includes(name)) {
+      if (global.uniPlugin.platforms.includes(name)) {
         if (name === process.env.UNI_PLATFORM) {
           Object.assign(style, style[name] || {})
         }

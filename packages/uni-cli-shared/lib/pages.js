@@ -366,10 +366,10 @@ function initAutoImportScanComponents () {
 
   const components = getAutoComponentsByDir(componentsPath)
 
-  if (process.env.UNI_PLATFORM === 'quickapp') {
+  if (process.env.UNI_PLATFORM === 'quickapp-vue') {
     if (!uniQuickAppAutoImportScanComponents) {
       uniQuickAppAutoImportScanComponents = getAutoComponentsByDir(
-        path.resolve(require.resolve('@dcloudio/uni-quickapp'), '../../components'),
+        path.resolve(require.resolve('@dcloudio/uni-quickapp-vue'), '../../components'),
         true
       )
     }

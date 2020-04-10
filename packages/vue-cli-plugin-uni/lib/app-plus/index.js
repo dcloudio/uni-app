@@ -78,12 +78,6 @@ const v3 = {
       webpackConfig.optimization.splitChunks = false
     }
 
-    let devtool = false
-
-    if (isAppService && process.env.NODE_ENV !== 'production') {
-      devtool = 'eval-source-map'
-    }
-
     const rules = []
 
     const scriptLoaders = []
@@ -126,7 +120,6 @@ const v3 = {
     }
 
     return {
-      devtool,
       mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
       externals: {
         vue: 'Vue'

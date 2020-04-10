@@ -3,4 +3,5 @@ src/platforms/app-plus-nvue/runtime
 build/rollup-plugin-require-context
 packages/*/packages
 packages/*/template/**/*
-qh-api.js
+packages/uni-h5/src
+packages/uni-stat

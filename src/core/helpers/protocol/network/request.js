@@ -59,7 +59,7 @@ export const request = {
     }
   },
   data: {
-    type: [Object, String, ArrayBuffer],
+    type: [Object, String, Array, ArrayBuffer],
     validator (value, params) {
       params.data = value || ''
     }
@@ -100,5 +100,8 @@ export const request = {
       value = (value || '').toLowerCase()
       params.responseType = Object.values(responseType).indexOf(value) < 0 ? responseType.TEXT : value
     }
+  },
+  withCredentials: {
+    type: Boolean
   }
 }

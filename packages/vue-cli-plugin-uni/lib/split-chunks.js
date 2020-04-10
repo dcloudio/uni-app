@@ -133,7 +133,7 @@ module.exports = function getSplitChunks () {
     return chunks.find(item => !subPackageRoots.find(root => item.name.indexOf(root) === 0))
   }
 
-  const subPackageRoots = Object.keys(process.UNI_SUBPACKAGES)
+  const subPackageRoots = Object.keys(process.UNI_SUBPACKAGES).map(root => root + '/')
 
   Object.keys(process.UNI_SUBPACKAGES).forEach(root => {
     (function (root) {
@@ -145,7 +145,7 @@ module.exports = function getSplitChunks () {
           const matchSubPackages = findSubPackages(chunks)
           if (
             matchSubPackages.size === 1 &&
-            matchSubPackages.has(root) &&
+            matchSubPackages.has(root + '/') &&
             !hasMainPackage(chunks)
           ) {
             if (process.env.UNI_OPT_TRACE) {

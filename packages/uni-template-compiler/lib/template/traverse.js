@@ -101,7 +101,7 @@ function traverseCallExpr (callExprNode, state) {
 }
 
 function traverseConditionalExpr (conditionalExprNode, state) {
-  const prefix = state.options.platform.prefix
+  const prefix = state.options.platform.directive
   const ret = [{
     type: 'block',
     attr: {
@@ -258,7 +258,7 @@ function genSlotNode (slotName, slotNode, fallbackNodes, state) {
   if (!fallbackNodes || t.isNullLiteral(fallbackNodes)) {
     return slotNode
   }
-  const prefix = state.options.platform.prefix
+  const prefix = state.options.platform.directive
   return [{
     type: 'block',
     attr: {
@@ -381,7 +381,7 @@ function traverseRenderList (callExprNode, state) {
 
   const forKey = traverseKey(forReturnStatementArgument, state)
 
-  const prefix = state.options.platform.prefix
+  const prefix = state.options.platform.directive
 
   const attr = {
     [prefix + 'for']: genCode(callExprNode.arguments[0]),

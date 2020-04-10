@@ -235,12 +235,16 @@ const SYNC_API_RE =
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
+// Context例外情况
+const CONTEXT_API_RE_EXC = ['createBLEConnection'];
+
+// 同步例外情况
 const ASYNC_API = ['createBLEConnection'];
 
 const CALLBACK_API_RE = /^on|^off/;
 
 function isContextApi (name) {
-  return CONTEXT_API_RE.test(name)
+  return CONTEXT_API_RE.test(name) && CONTEXT_API_RE_EXC.indexOf(name) === -1
 }
 function isSyncApi (name) {
   return SYNC_API_RE.test(name) && ASYNC_API.indexOf(name) === -1
@@ -1699,6 +1703,17 @@ function parsePage (vuePageOptions) {
     } else {
       this.is && console.warn(this.is + ' is not ready');
     }
+  };
+
+  pageOptions.lifetimes.detached = function detached () {
+    this.$vm && this.$vm.$destroy();
+    // 清理
+    const webviewId = this.__webviewId__;
+    webviewId && Object.keys(instances).forEach(key => {
+      if (key.indexOf(webviewId + '_') === 0) {
+        delete instances[key];
+      }
+    });
   };
 
   return pageOptions

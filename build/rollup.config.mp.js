@@ -23,6 +23,10 @@ const PLATFORMS = {
     prefix: 'tt',
     title: '头条小程序'
   },
+  'quickapp-light': {
+    prefix: 'qa',
+    title: '快应用(Light)版'
+  },
   'app-plus': {
     prefix: 'wx',
     title: 'app-plus'

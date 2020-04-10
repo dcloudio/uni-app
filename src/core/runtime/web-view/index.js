@@ -19,6 +19,9 @@ import {
 import {
   initWebviewApi as initWeixinWebviewApi
 } from 'uni-platforms/mp-weixin/runtime/web-view'
+import {
+  initWebviewApi as initQuickappWebviewApi
+} from 'uni-platforms/quickapp-light/runtime/web-view'
 
 const UniAppJSBridgeReady = function () {
   window.UniAppJSBridge = true
@@ -35,6 +38,7 @@ const initWebviewApis = [
   initAlipayWebviewApi,
   initBaiduWebviewApi,
   initToutiaoWebviewApi,
+  initQuickappWebviewApi,
   initH5WebviewApi
 ]
 

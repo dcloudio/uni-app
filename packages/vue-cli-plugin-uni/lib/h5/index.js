@@ -102,7 +102,6 @@ module.exports = {
       `import 'uni-pages';import 'uni-${process.env.UNI_PLATFORM}';`
 
     return {
-      devtool: process.env.NODE_ENV === 'production' ? false : 'cheap-module-eval-source-map',
       resolve: {
         extensions: ['.nvue'],
         alias: {
@@ -167,10 +166,14 @@ module.exports = {
       webpackConfig.plugins.delete('preload-index')
     }
 
+    const compilerOptions = require('./compiler-options')
+    if (publicPath === './') {
+      compilerOptions.publicPath = publicPath
+    }
     modifyVueLoader(webpackConfig, {
       isH5: true,
       hotReload: true
-    }, require('./compiler-options'), api)
+    }, compilerOptions, api)
 
     if (process.env.NODE_ENV === 'production') {
       require('./cssnano-options')(webpackConfig)

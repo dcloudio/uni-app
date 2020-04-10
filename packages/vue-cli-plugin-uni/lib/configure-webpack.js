@@ -23,10 +23,13 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
     runByHBuilderX, // 使用 HBuilderX 运行
     isInHBuilderX, // 在 HBuilderX 的插件中
     hasModule,
-    getPlatformVue,
     jsPreprocessOptions,
     htmlPreprocessOptions
   } = require('@dcloudio/uni-cli-shared')
+
+  const {
+    getPlatformVue
+  } = require('@dcloudio/uni-cli-shared/lib/platform')
 
   const {
     getCopyWebpackPluginOptions
@@ -184,9 +187,16 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
     webpackConfig.resolve.modules = webpackConfig.resolve.modules.filter(module => module !==
       'node_modules')
 
-    const plugins = [
-      new CopyWebpackPlugin(getCopyWebpackPluginOptions(manifestPlatformOptions))
-    ]
+    const plugins = []
+
+    const isAppView = process.env.UNI_PLATFORM === 'app-plus' &&
+      vueOptions.pluginOptions &&
+      vueOptions.pluginOptions['uni-app-plus'] &&
+      vueOptions.pluginOptions['uni-app-plus']['view']
+
+    if (!isAppView) { // app-plus view不需要copy
+      plugins.push(new CopyWebpackPlugin(getCopyWebpackPluginOptions(manifestPlatformOptions, vueOptions)))
+    }
 
     if (process.UNI_SCRIPT_ENV && Object.keys(process.UNI_SCRIPT_ENV).length) {
       // custom define

@@ -60,9 +60,9 @@ module.exports = function chainWebpack (platformOptions, vueOptions, api) {
           .use(`uniapp-preprocss`)
           .loader(resolve('packages/webpack-preprocess-loader'))
           .options(cssPreprocessOptions)
-          .before('css-loader') // 在 css-loader 之后条件编译一次，避免 import 进来的 css 没有走条件编译
+          .after('css-loader') // 在 css-loader 之前条件编译一次
 
-        if (loader) { // 在 scss,less,stylus 之前先条件编译一次
+        if (loader) { // 在 scss,less,stylus 之前先条件编译一次（似乎没有必要了，保证css-loader处理一次即可，前提是条件编译注释都还存在）
           langRule.oneOf(type)
             .use(`uniapp-preprocss-` + lang)
             .loader(resolve('packages/webpack-preprocess-loader'))

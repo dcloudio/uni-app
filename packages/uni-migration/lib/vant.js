@@ -5,7 +5,7 @@ const {
   normalizePath
 } = require('./util')
 
-module.exports = function patchVant(files, assets, out) {
+module.exports = function patchVant (files, assets, out) {
   files.forEach(file => {
     const filepath = normalizePath(file.path)
     let changed = false
