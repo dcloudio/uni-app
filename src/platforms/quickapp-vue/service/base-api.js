@@ -6,4 +6,5 @@ export * from 'uni-core/service/api/base/upx2px'
 
 export * from 'uni-core/service/api/context/audio'
 export * from 'uni-core/service/api/context/background-audio'
+export * from 'uni-core/service/api/network/request'
 // TODO
