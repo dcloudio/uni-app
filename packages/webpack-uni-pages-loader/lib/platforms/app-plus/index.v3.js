@@ -83,6 +83,12 @@ module.exports = function (appJson, manifestJson, {
   delete manifestJson.plus.launchwebview['uni-app']
 
   const entryPagePath = appJson.entryPagePath
+  if (!appJson.page[entryPagePath]) {
+    console.error(
+      `pages.json condition['list'][current]['path']: ${entryPagePath} 需在 pages 数组中`
+    )
+    process.exit(0)
+  }
   if (appJson.page[entryPagePath].nvue) { // 首页是 nvue
     manifestJson.launch_path = '' // 首页地址为空
     manifestJson.plus.launchwebview.uniNView = {
