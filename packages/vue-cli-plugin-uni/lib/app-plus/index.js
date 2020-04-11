@@ -147,8 +147,9 @@ const v3 = {
         rules: [{
           test: path.resolve(process.env.UNI_INPUT_DIR, getMainEntry()),
           use: [{
-            loader: isAppService ? 'wrap-loader' : path.resolve(__dirname,
-              '../../packages/webpack-uni-app-loader/view/main.js'),
+            loader: isAppService
+              ? path.resolve(__dirname, '../../packages/wrap-loader') : path.resolve(__dirname,
+                '../../packages/webpack-uni-app-loader/view/main.js'),
             options: {
               compiler: vueLoader.compiler,
               before: [
