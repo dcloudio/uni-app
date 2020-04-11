@@ -106,7 +106,7 @@ module.exports = {
         rules: [{
           test: path.resolve(process.env.UNI_INPUT_DIR, getMainEntry()),
           use: [{
-            loader: 'wrap-loader',
+            loader: path.resolve(__dirname, '../../packages/wrap-loader'),
             options: {
               before: [
                 beforeCode + statCode
