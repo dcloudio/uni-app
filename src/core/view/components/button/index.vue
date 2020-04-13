@@ -74,35 +74,22 @@ export default {
               titleText: '问题反馈',
               autoBackButton: true,
               backgroundColor: '#F7F7F7',
-              titleColor: '#007aff'
+              titleColor: '#007aff',
+              buttons: [{
+                text: '发送',
+                color: '#007aff',
+                fontSize: '16px',
+                fontWeight: 'bold',
+                onclick: function (e) {
+                  feedback.evalJS(
+                    'mui&&mui.trigger(document.getElementById("submit"),"tap")'
+                  )
+                }
+              }]
             }
           }
         )
         feedback.show('slide-in-right')
-        feedback.getTitleNView &&
-          setTimeout(function () {
-            const title = feedback.getTitleNView()
-            if (title) {
-              title.drawText(
-                '发送',
-                {
-                  top: 0,
-                  left: window.innerWidth - 60,
-                  width: 60,
-                  height: 44
-                },
-                {
-                  color: '#007aff',
-                  weight: 'bold'
-                }
-              )
-              title.addEventListener('click', function (e) {
-                feedback.evalJS(
-                  'mui&&mui.trigger(document.getElementById("submit"),"tap")'
-                )
-              })
-            }
-          }, 100)
       }
     },
     _bindObjectListeners (data, value) {
