@@ -9,7 +9,10 @@
         :style="{'overflow-x': scrollX?'auto':'hidden','overflow-y': scrollY?'auto':'hidden'}"
         class="uni-scroll-view"
       >
-        <div ref="content">
+        <div
+          ref="content"
+          class="uni-scroll-view-content"
+        >
           <div
             v-if="refresherEnabled"
             ref="refresherinner"
@@ -527,6 +530,11 @@ uni-scroll-view[hidden] {
   /* display: flex; 时在安卓下会导致scrollWidth和offsetWidth一样 */
   height: 100%;
   max-height: inherit;
+}
+
+.uni-scroll-view-content {
+  width: 100%;
+  height: 100%;
 }
 
 .uni-scroll-view-refresher {
