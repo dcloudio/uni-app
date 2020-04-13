@@ -17,12 +17,12 @@ export function compressImage ({
     quality
   }, () => {
     invoke(callbackId, {
-      errMsg: `compressImage:ok`,
+      errMsg: 'compressImage:ok',
       tempFilePath: dst
     })
   }, () => {
     invoke(callbackId, {
-      errMsg: `compressImage:fail`
+      errMsg: 'compressImage:fail'
     })
   })
 }

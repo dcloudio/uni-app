@@ -4,29 +4,38 @@
       <div
         v-show="visible"
         class="uni-mask"
-        @click="_close(-1)" />
+        @click="_close(-1)"
+      />
     </transition>
     <div
       :class="{'uni-actionsheet_toggle':visible}"
-      class="uni-actionsheet">
-
+      class="uni-actionsheet"
+    >
       <div class="uni-actionsheet__menu">
         <div
           v-if="title"
           class="uni-actionsheet__title"
-        >{{ title }}</div>
+        >
+          {{ title }}
+        </div>
         <div
-          v-for="(title,index) in itemList"
+          v-for="(itemTitle,index) in itemList"
           :key="index"
           :style="{color:itemColor}"
           class="uni-actionsheet__cell"
-          @click="_close(index)">{{ title }}</div>
+          @click="_close(index)"
+        >
+          {{ itemTitle }}
+        </div>
       </div>
       <div class="uni-actionsheet__action">
         <div
           :style="{color:itemColor}"
           class="uni-actionsheet__cell"
-          @click="_close(-1)">取消</div>
+          @click="_close(-1)"
+        >
+          取消
+        </div>
       </div>
     </div>
   </uni-actionsheet>

@@ -1,4 +1,8 @@
 import {
+  hasOwn
+} from 'uni-shared'
+
+import {
   publish,
   requireNativePlugin,
   base64ToArrayBuffer
@@ -31,10 +35,11 @@ export function createRequestTaskById (requestTaskId, {
       hasContentType = true
       headers['Content-Type'] = header[name]
       // TODO 需要重构
-      if (method !== 'GET' && header[name].indexOf('application/x-www-form-urlencoded') === 0 && typeof data !== 'string' && !(data instanceof ArrayBuffer)) {
-        let bodyArray = []
-        for (let key in data) {
-          if (data.hasOwnProperty(key)) {
+      if (method !== 'GET' && header[name].indexOf('application/x-www-form-urlencoded') === 0 && typeof data !==
+        'string' && !(data instanceof ArrayBuffer)) {
+        const bodyArray = []
+        for (const key in data) {
+          if (hasOwn(data, key)) {
             bodyArray.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
           }
         }
@@ -59,7 +64,7 @@ export function createRequestTaskById (requestTaskId, {
         statusCode: 0,
         errMsg: 'timeout'
       })
-    }, (timeout + 200))// TODO +200 发消息到原生层有时间开销，以后考虑由原生层回调超时
+    }, (timeout + 200)) // TODO +200 发消息到原生层有时间开销，以后考虑由原生层回调超时
   }
   const options = {
     method,

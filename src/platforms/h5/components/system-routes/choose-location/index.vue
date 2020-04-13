@@ -3,14 +3,18 @@
     <system-header
       :confirm="!!data"
       @back="_back"
-      @confirm="_choose">选择位置</system-header>
+      @confirm="_choose"
+    >
+      选择位置
+    </system-header>
     <div class="map-content">
       <iframe
         :src="src"
         allow="geolocation"
         seamless
         sandbox="allow-scripts allow-same-origin allow-forms"
-        frameborder="0" />
+        frameborder="0"
+      />
     </div>
   </div>
 </template>

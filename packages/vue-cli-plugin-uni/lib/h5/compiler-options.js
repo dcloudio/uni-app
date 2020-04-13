@@ -28,8 +28,8 @@ function hasOwn (obj, key) {
 
 const deprecated = {
   events: {
-    'tap': 'click',
-    'longtap': 'longpress'
+    tap: 'click',
+    longtap: 'longpress'
   }
 }
 

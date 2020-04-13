@@ -71,7 +71,7 @@ export function initSubNVue (nvue, plus, BroadcastChannel) {
 
     const maskColor = webview.__uniapp_mask
 
-    let maskWebview = webview.__uniapp_mask_id === '0' ? {
+    const maskWebview = webview.__uniapp_mask_id === '0' ? {
       setStyle ({ mask }) {
         nvue.requireModule('uni-tabview').setMask({
           color: mask

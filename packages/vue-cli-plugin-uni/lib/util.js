@@ -3,7 +3,7 @@ module.exports = {
   getPartialIdentifier () {
     if (!partialIdentifier) {
       partialIdentifier = {
-        'UNI_COMPILER_VERSION': require('../package.json').version
+        UNI_COMPILER_VERSION: require('../package.json').version
       }
       Object.keys(process.env).forEach(name => {
         if (name.indexOf('UNI_') === 0) {

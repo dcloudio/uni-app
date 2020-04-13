@@ -12,27 +12,27 @@ import {
 
 // 0:图文，1:纯文字，2:纯图片，3:音乐，4:视频，5:小程序
 const TYPES = {
-  '0': {
+  0: {
     name: 'web',
     title: '图文'
   },
-  '1': {
+  1: {
     name: 'text',
     title: '纯文字'
   },
-  '2': {
+  2: {
     name: 'image',
     title: '纯图片'
   },
-  '3': {
+  3: {
     name: 'music',
     title: '音乐'
   },
-  '4': {
+  4: {
     name: 'video',
     title: '视频'
   },
-  '5': {
+  5: {
     name: 'miniProgram',
     title: '小程序'
   }
@@ -59,7 +59,7 @@ const parseParams = (args, callbackId, method) => {
 
   const shareType = TYPES[type + '']
   if (shareType) {
-    let sendMsg = {
+    const sendMsg = {
       provider,
       type: shareType.name,
       title,
@@ -215,7 +215,7 @@ export function shareWithSystem (params, callbackId, method = 'shareWithSystem')
   }
   plus.share.sendWithSystem({
     type,
-    pictures: imageUrl ? [imageUrl] : void 0,
+    pictures: imageUrl && [imageUrl],
     content,
     href
   }, function (res) {

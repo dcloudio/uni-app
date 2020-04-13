@@ -49,7 +49,7 @@ const isScss = fs.existsSync(path.resolve(process.env.UNI_INPUT_DIR, 'uni.scss')
 let sassData = isSass ? getPlatformSass() : getPlatformScss()
 
 if (isSass) {
-  sassData = `@import "@/uni.sass"`
+  sassData = '@import "@/uni.sass"'
 } else if (isScss) {
   sassData = `${sassData}
   @import "@/uni.scss";`

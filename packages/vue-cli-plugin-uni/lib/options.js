@@ -67,7 +67,7 @@ module.exports = function initOptions (options) {
   let sassData = isSass ? getPlatformSass() : getPlatformScss()
 
   if (isSass) {
-    sassData = `@import "@/uni.sass"`
+    sassData = '@import "@/uni.sass"'
   } else if (isScss) {
     sassData = `${sassData}
   @import "@/uni.scss";`
@@ -88,7 +88,7 @@ module.exports = function initOptions (options) {
     options.css.loaderOptions.sass.prependData = sassData
   }
 
-  let userPostcssConfigPath = path.resolve(process.env.UNI_INPUT_DIR, 'postcss.config.js')
+  const userPostcssConfigPath = path.resolve(process.env.UNI_INPUT_DIR, 'postcss.config.js')
   if (fs.existsSync(userPostcssConfigPath)) {
     options.css.loaderOptions.postcss.config.path = userPostcssConfigPath
   } else {

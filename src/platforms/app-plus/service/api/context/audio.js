@@ -6,7 +6,7 @@ import {
   publish
 } from '../../bridge'
 
-let audios = {}
+const audios = {}
 
 const evts = ['play', 'canplay', 'ended', 'stop', 'waiting', 'seeking', 'seeked', 'pause']
 
@@ -82,7 +82,7 @@ export function setAudioState ({
 }) {
   const audio = audios[audioId]
   if (audio) {
-    let style = {
+    const style = {
       loop,
       autoplay
     }
@@ -112,7 +112,7 @@ export function getAudioState ({
       errMsg: 'getAudioState:fail'
     }
   }
-  let {
+  const {
     src,
     startTime,
     volume

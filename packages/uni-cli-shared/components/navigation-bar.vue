@@ -83,8 +83,8 @@ export default {
     }
   },
   created () {
-    let pages = getCurrentPages()
-    let page = pages[pages.length - 1]
+    const pages = getCurrentPages()
+    const page = pages[pages.length - 1]
     this.$watch('title', () => {
       this.setNavigationBarTitle()
     })
@@ -103,13 +103,13 @@ export default {
     // #ifdef APP-PLUS
     this._webview = page.$getAppWebview()
     attrs.forEach(key => {
-      let titleNView = {}
+      const titleNView = {}
       if (this[key] || this[key].length > 0) {
         titleNView[key] = this[key]
       }
       this.setTitleNView(titleNView)
       this.$watch(key, (val) => {
-        let titleStyle = {}
+        const titleStyle = {}
         titleStyle[key] = val
         this.setTitleNView(titleStyle)
       })

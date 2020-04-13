@@ -1,5 +1,5 @@
 export const getStorage = {
-  'key': {
+  key: {
     type: String,
     required: true
   }
@@ -12,11 +12,11 @@ export const getStorageSync = [{
 }]
 
 export const setStorage = {
-  'key': {
+  key: {
     type: String,
     required: true
   },
-  'data': {
+  data: {
     required: true
   }
 }

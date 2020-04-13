@@ -92,7 +92,7 @@ function showTabBar (animation) {
   })
 }
 
-let maskClickCallback = []
+const maskClickCallback = []
 
 export default {
   id: '0',
@@ -179,7 +179,7 @@ export default {
     maskClickCallback.push(callback)
   },
   removeEventListener (name, callback) {
-    let callbackIndex = maskClickCallback.indexOf(callback)
+    const callbackIndex = maskClickCallback.indexOf(callback)
     maskClickCallback.splice(callbackIndex, 1)
   }
 }

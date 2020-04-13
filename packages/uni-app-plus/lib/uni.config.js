@@ -45,7 +45,7 @@ module.exports = {
     let devtool = false
     if (process.env.NODE_ENV !== 'production') {
       if (process.env.UNI_USING_V3) {
-        if (vueOptions.pluginOptions['uni-app-plus']['service']) {
+        if (vueOptions.pluginOptions['uni-app-plus'].service) {
           devtool = 'eval-source-map'
         }
       } else {

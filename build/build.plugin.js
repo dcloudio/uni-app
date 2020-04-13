@@ -21,7 +21,7 @@ del.sync(['node_modules/.cache'])
 
 let pluginDir = process.argv[2]
 if (!pluginDir) {
-  console.error(`缺少参数`)
+  console.error('缺少参数')
   process.exit(0)
 }
 
@@ -31,7 +31,7 @@ if (pluginDir.indexOf('/') === -1) {
 
 const pkg = require(path.join(pluginDir, 'package.json'))
 if (!pkg['uni-app']) {
-  console.error(`缺少 uni-app 配置`)
+  console.error('缺少 uni-app 配置')
   process.exit(0)
 }
 
@@ -51,8 +51,8 @@ service.webpackRawConfigFns.push(function () {
         use: [{
           loader: path.resolve(__dirname, '../lib/extends-loader'),
           options: {
-            'extends': path.resolve(pluginDir, 'src/service/api'),
-            'base': path.resolve(__dirname, '../src/platforms/h5/service/api')
+            extends: path.resolve(pluginDir, 'src/service/api'),
+            base: path.resolve(__dirname, '../src/platforms/h5/service/api')
           }
         }]
       }]

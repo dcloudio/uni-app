@@ -118,8 +118,8 @@ function generateGetStyle (stylePath, styleValuePath, staticStylePath, state) {
 }
 
 module.exports = function processStyle (paths, path, state) {
-  const stylePath = paths['style']
-  const staticStylePath = paths['staticStyle']
+  const stylePath = paths.style
+  const staticStylePath = paths.staticStyle
   if (stylePath) {
     const styleValuePath = stylePath.get('value')
     if (styleValuePath.isObjectExpression()) {

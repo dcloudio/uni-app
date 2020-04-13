@@ -28,19 +28,19 @@ module.exports = function initPreprocess (name, platforms, userDefines = {}) {
   vueContext[normalize(name)] = true
 
   if (name === 'app-plus') {
-    vueContext['APP_VUE'] = true
+    vueContext.APP_VUE = true
 
-    nvueContext['APP_PLUS'] = true
-    nvueContext['APP_NVUE'] = true
-    nvueContext['APP_PLUS_NVUE'] = true
+    nvueContext.APP_PLUS = true
+    nvueContext.APP_NVUE = true
+    nvueContext.APP_PLUS_NVUE = true
   }
 
   if (name.startsWith('mp-')) {
-    vueContext['MP'] = true
+    vueContext.MP = true
   }
 
   if (name.startsWith('app-')) {
-    vueContext['APP'] = true
+    vueContext.APP = true
   }
 
   userDefineKeys.forEach(name => {

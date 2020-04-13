@@ -9,6 +9,7 @@ const {
 } = require('@dcloudio/uni-cli-shared')
 
 const {
+  hasOwn,
   parseStyle
 } = require('../../util')
 
@@ -104,7 +105,7 @@ module.exports = function (pagesJson, userManifestJson) {
   const {
     navigationBarTextStyle = 'white',
     navigationBarBackgroundColor = '#000000'
-  } = appJson['window'] || {}
+  } = appJson.window || {}
 
   const TABBAR_HEIGHT = 50
 
@@ -132,10 +133,9 @@ module.exports = function (pagesJson, userManifestJson) {
     }
   )
 
-  const splashscreenOptions = userManifestJson['app-plus'] && userManifestJson['app-plus']['splashscreen']
+  const splashscreenOptions = userManifestJson['app-plus'] && userManifestJson['app-plus'].splashscreen
 
-  const hasAlwaysShowBeforeRender = splashscreenOptions && splashscreenOptions.hasOwnProperty(
-    'alwaysShowBeforeRender')
+  const hasAlwaysShowBeforeRender = splashscreenOptions && hasOwn(splashscreenOptions, 'alwaysShowBeforeRender')
 
   // 转换为老版本配置
   if (manifestJson.plus.modules) {
@@ -189,8 +189,8 @@ module.exports = function (pagesJson, userManifestJson) {
       style
     }) => {
       pages[path] = {
-        'window': parseStyle(style),
-        'nvue': true
+        window: parseStyle(style),
+        nvue: true
       }
     })
 
@@ -203,12 +203,12 @@ module.exports = function (pagesJson, userManifestJson) {
     }
     // nvue 权限
     manifestJson.permissions.UniNView = {
-      'description': 'UniNView原生渲染'
+      description: 'UniNView原生渲染'
     }
   } else if (process.env.UNI_USING_V8) {
     // nvue 权限
     manifestJson.permissions.UniNView = {
-      'description': 'UniNView原生渲染'
+      description: 'UniNView原生渲染'
     }
   }
 
@@ -235,7 +235,7 @@ module.exports = function (pagesJson, userManifestJson) {
     // "render": "always"
     if (!manifestJson.plus.launchwebview) {
       manifestJson.plus.launchwebview = {
-        'render': 'always'
+        render: 'always'
       }
     } else if (!manifestJson.plus.launchwebview.render) {
       manifestJson.plus.launchwebview.render = 'always'

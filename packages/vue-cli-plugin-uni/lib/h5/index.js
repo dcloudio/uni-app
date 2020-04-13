@@ -34,14 +34,14 @@ const uniCloudPath = path.resolve(__dirname, '../../packages/uni-cloud/dist/inde
 
 function getProvides () {
   return {
-    '__f__': [path.resolve(__dirname, '../format-log.js'), 'log'],
-    'uniCloud': [uniCloudPath, 'default'],
+    __f__: [path.resolve(__dirname, '../format-log.js'), 'log'],
+    uniCloud: [uniCloudPath, 'default'],
     'wx.nextTick': [runtimePath, 'nextTick'],
-    'Page': [runtimePath, 'Page'],
-    'Component': [runtimePath, 'Component'],
-    'Behavior': [runtimePath, 'Behavior'],
-    'getDate': [wxsPath, 'getDate'],
-    'getRegExp': [wxsPath, 'getRegExp']
+    Page: [runtimePath, 'Page'],
+    Component: [runtimePath, 'Component'],
+    Behavior: [runtimePath, 'Behavior'],
+    getDate: [wxsPath, 'getDate'],
+    getRegExp: [wxsPath, 'getRegExp']
   }
 }
 
@@ -91,14 +91,14 @@ module.exports = {
   webpackConfig (webpackConfig) {
     let useBuiltIns = 'usage'
 
-    const statCode = process.env.UNI_USING_STAT ? `import '@dcloudio/uni-stat';` : ''
+    const statCode = process.env.UNI_USING_STAT ? 'import \'@dcloudio/uni-stat\';' : ''
 
     try {
       const babelConfig = require(path.resolve(process.env.UNI_CLI_CONTEXT, 'babel.config.js'))
       useBuiltIns = babelConfig.presets[0][1].useBuiltIns
     } catch (e) {}
 
-    const beforeCode = (useBuiltIns === 'entry' ? `import '@babel/polyfill';` : '') +
+    const beforeCode = (useBuiltIns === 'entry' ? 'import \'@babel/polyfill\';' : '') +
       `import 'uni-pages';import 'uni-${process.env.UNI_PLATFORM}';`
 
     return {
@@ -125,7 +125,7 @@ module.exports = {
           use: {
             loader: path.resolve(__dirname, '../../packages/wrap-loader'),
             options: {
-              before: [`<template><App :keepAliveInclude="keepAliveInclude"/></template>`]
+              before: ['<template><App :keepAliveInclude="keepAliveInclude"/></template>']
             }
           }
         }, { // 解析组件，css 等

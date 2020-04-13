@@ -127,7 +127,7 @@ function processMemberProperty (node, state) {
     if (t.isNumericLiteral(property)) {
       node.property = t.identifier('__$n' + property.value)
     } else if (!t.isStringLiteral(property)) {
-      if (!state.options.hasOwnProperty('__m__')) {
+      if (!hasOwn(state.options, '__m__')) {
         state.options.__m__ = 0
         state.options.replaceCodes = {}
       }
@@ -173,7 +173,7 @@ function processMemberExpression (element, state) {
 }
 
 function hasOwn (obj, key) {
-  return hasOwnProperty.call(obj, key)
+  return Object.prototype.hasOwnProperty.call(obj, key)
 }
 
 const tags = require('@dcloudio/uni-cli-shared/lib/tags')
@@ -211,6 +211,7 @@ function makeMap (str, expectsLowerCase) {
     : val => map[val]
 }
 module.exports = {
+  hasOwn,
   isUnaryTag: makeMap(
     'image,area,base,br,col,embed,frame,hr,img,input,isindex,keygen,' +
     'link,meta,param,source,track,wbr'

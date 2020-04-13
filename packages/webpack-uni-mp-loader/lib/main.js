@@ -56,7 +56,7 @@ module.exports = function (content) {
       plugins.push([
         '@babel/plugin-proposal-decorators',
         {
-          'legacy': true
+          legacy: true
         }
       ])
     }

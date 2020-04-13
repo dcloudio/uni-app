@@ -91,14 +91,14 @@ export default {
       Object.assign(vm.constructor.options.methods, emitter.methods)
       Object.assign(options.methods, emitter.methods)
 
-      const createdHooks = options['created']
-      vm.constructor.options['created'] = options['created'] =
+      const createdHooks = options.created
+      vm.constructor.options.created = options.created =
                 createdHooks ? [].concat(created, createdHooks) : [
                   created
                 ]
 
-      const beforeDestroyHooks = options['beforeDestroy']
-      vm.constructor.options['beforeDestroy'] = options['beforeDestroy'] =
+      const beforeDestroyHooks = options.beforeDestroy
+      vm.constructor.options.beforeDestroy = options.beforeDestroy =
                 beforeDestroyHooks ? [].concat(beforeDestroy, beforeDestroyHooks) : [
                   beforeDestroy
                 ]

@@ -8,16 +8,16 @@ const {
 let imageInput = null
 
 const _createInput = function (options) {
-  let inputEl = document.createElement('input')
+  const inputEl = document.createElement('input')
   inputEl.type = 'file'
   updateElementStyle(inputEl, {
-    'position': 'absolute',
-    'visibility': 'hidden',
+    position: 'absolute',
+    visibility: 'hidden',
     'z-index': -999,
-    'width': 0,
-    'height': 0,
-    'top': 0,
-    'left': 0
+    width: 0,
+    height: 0,
+    top: 0,
+    left: 0
   })
   inputEl.accept = 'image/*'
   if (options.count > 1) {

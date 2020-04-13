@@ -2,18 +2,21 @@
   <uni-switch
     :disabled="disabled"
     v-on="$listeners"
-    @click="_onClick">
+    @click="_onClick"
+  >
     <div class="uni-switch-wrapper">
       <div
         v-show="type === 'switch'"
         :class="[switchChecked ? 'uni-switch-input-checked' : '']"
         :style="{backgroundColor: switchChecked ? color : '#DFDFDF',borderColor:switchChecked ? color : '#DFDFDF'}"
-        class="uni-switch-input" />
+        class="uni-switch-input"
+      />
       <div
         v-show="type === 'checkbox'"
         :class="[switchChecked ? 'uni-checkbox-input-checked' : '']"
         :style="{color: color}"
-        class="uni-checkbox-input" />
+        class="uni-checkbox-input"
+      />
     </div>
   </uni-switch>
 </template>
@@ -92,10 +95,10 @@ export default {
       this.switchChecked = false
     },
     _getFormData () {
-      let data = {}
+      const data = {}
       if (this.name !== '') {
-        data['value'] = this.switchChecked
-        data['key'] = this.name
+        data.value = this.switchChecked
+        data.key = this.name
       }
       return data
     }

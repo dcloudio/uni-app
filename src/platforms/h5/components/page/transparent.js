@@ -17,7 +17,7 @@ export default {
       const oldColors = []
       const borderRadiusElemsStyles = []
       for (let i = 0; i < borderRadiusElems.length; i++) {
-        let borderRadiusElem = borderRadiusElems[i]
+        const borderRadiusElem = borderRadiusElems[i]
         oldColors.push(getComputedStyle(borderRadiusElem).backgroundColor)
         borderRadiusElemsStyles.push(borderRadiusElem.style)
       }
@@ -45,7 +45,7 @@ export default {
         }
         transparentElemStyle.backgroundColor = `rgba(${this._R},${this._G},${this._B},${alpha})`
         borderRadiusElemsStyles.forEach(function (borderRadiusElemStyle, index) {
-          let oldColor = oldColors[index]
+          const oldColor = oldColors[index]
           // eslint-disable-next-line
           let rgba = oldColor.match(/[\d+\.]+/g)
           rgba[3] = (1 - alpha) * (rgba.length === 4 ? rgba[3] : 1)
@@ -62,7 +62,7 @@ export default {
       const oldColors = []
       const borderRadiusElemsStyles = []
       for (let i = 0; i < borderRadiusElems.length; i++) {
-        let borderRadiusElem = borderRadiusElems[i]
+        const borderRadiusElem = borderRadiusElems[i]
         oldColors.push(getComputedStyle(borderRadiusElem).backgroundColor)
         borderRadiusElemsStyles.push(borderRadiusElem.style)
       }

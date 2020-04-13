@@ -1,18 +1,22 @@
 <template>
   <div
     class="uni-system-preview-image"
-    @click="_click">
+    @click="_click"
+  >
     <v-uni-swiper
       :current.sync="index"
       :indicator-dots="false"
       :autoplay="false"
-      class="uni-swiper">
+      class="uni-swiper"
+    >
       <v-uni-swiper-item
-        v-for="(src,index) in urls"
-        :key="index">
+        v-for="(src,key) in urls"
+        :key="key"
+      >
         <img
           :src="src"
-          class="uni-preview-image">
+          class="uni-preview-image"
+        >
       </v-uni-swiper-item>
     </v-uni-swiper>
   </div>

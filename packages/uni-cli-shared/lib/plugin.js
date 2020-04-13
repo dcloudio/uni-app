@@ -67,10 +67,10 @@ function resolvePlugins () {
 }
 
 function initExtends (name, plugin, plugins) {
-  const extendsPlatform = plugin.config['extends']
+  const extendsPlatform = plugin.config.extends
   if (extendsPlatform) {
     if (extendsPlatform !== 'h5') {
-      console.error(`目前仅支持基于 h5 平台做扩展`)
+      console.error('目前仅支持基于 h5 平台做扩展')
       process.exit(0)
     }
     const extendsPlugin = plugins.find(plugin => plugin.name === extendsPlatform)

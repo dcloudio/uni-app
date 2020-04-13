@@ -108,7 +108,7 @@ function createApiCallback (apiName, params = {}, extras = {}) {
   params = Object.assign({}, params)
 
   const apiCallbacks = {}
-  for (let name in params) {
+  for (const name in params) {
     const param = params[name]
     if (isFn(param)) {
       apiCallbacks[name] = tryCatch(param)
@@ -135,7 +135,7 @@ function createApiCallback (apiName, params = {}, extras = {}) {
   }
 
   const wrapperCallbacks = {}
-  for (let name in extras) {
+  for (const name in extras) {
     const extra = extras[name]
     if (isFn(extra)) {
       wrapperCallbacks[name] = tryCatchFramework(extra)
@@ -165,7 +165,7 @@ function createApiCallback (apiName, params = {}, extras = {}) {
       res.errMsg = apiName + ':cancel'
     } else if (res.errMsg.indexOf(':fail') !== -1) {
       let errDetail = ''
-      let spaceIndex = res.errMsg.indexOf(' ')
+      const spaceIndex = res.errMsg.indexOf(' ')
       if (spaceIndex > -1) {
         errDetail = res.errMsg.substr(spaceIndex)
       }

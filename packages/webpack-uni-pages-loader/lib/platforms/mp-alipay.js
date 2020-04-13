@@ -13,15 +13,15 @@ const {
 } = require('../util')
 
 const pagesJson2AppJson = {
-  'globalStyle': function (name, value, json) {
-    json['window'] = parseStyle(value)
-    if (json['window'].usingComponents) {
-      json['usingComponents'] = json['window'].usingComponents
-      delete json['window']['usingComponents']
+  globalStyle: function (name, value, json) {
+    json.window = parseStyle(value)
+    if (json.window.usingComponents) {
+      json.usingComponents = json.window.usingComponents
+      delete json.window.usingComponents
     }
   },
-  'tabBar': function (name, value, json) {
-    json['tabBar'] = parseTabBar(value)
+  tabBar: function (name, value, json) {
+    json.tabBar = parseTabBar(value)
   }
 }
 

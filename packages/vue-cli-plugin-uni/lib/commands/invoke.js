@@ -4,18 +4,18 @@ const path = require('path')
 module.exports = async function add (argv) {
   const pluginName = argv._[1]
   if (!pluginName) {
-    console.error(`请指定插件名称`)
+    console.error('请指定插件名称')
     process.exit(0)
   }
   const pluginPkg = require(pluginName + '/package.json')
   const options = pluginPkg['uni-app']
   if (!options) {
-    console.error(`插件不合法`)
+    console.error('插件不合法')
     process.exit(0)
   }
   const name = options.name
   if (!name) {
-    console.error(`插件名称不存在`)
+    console.error('插件名称不存在')
     process.exit(0)
   }
   const scripts = options.scripts || {

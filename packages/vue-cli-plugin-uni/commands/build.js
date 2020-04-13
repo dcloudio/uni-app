@@ -23,8 +23,8 @@ module.exports = (api, options) => {
     description: 'build for production',
     usage: 'vue-cli-service uni-build [options]',
     options: {
-      '--watch': `watch for changes`,
-      '--minimize': `Tell webpack to minimize the bundle using the TerserPlugin.`
+      '--watch': 'watch for changes',
+      '--minimize': 'Tell webpack to minimize the bundle using the TerserPlugin.'
     }
   }, async (args) => {
     for (const key in defaults) {
@@ -83,8 +83,8 @@ function getWebpackConfigs (api, args, options) {
   }
   options.publicPath = '/'
   const serviceWebpackConfig = getWebpackConfig(api, args, options)
-  delete pluginOptions['uni-app-plus']['service']
-  pluginOptions['uni-app-plus']['view'] = true
+  delete pluginOptions['uni-app-plus'].service
+  pluginOptions['uni-app-plus'].view = true
   options.publicPath = './'
   const viewWebpackConfig = getWebpackConfig(api, args, options)
   return [serviceWebpackConfig, viewWebpackConfig]
@@ -147,7 +147,7 @@ async function build (args, api, options) {
 
       if (stats.hasErrors()) {
         /* eslint-disable prefer-promise-reject-errors */
-        return reject(`Build failed with errors.`)
+        return reject('Build failed with errors.')
       }
 
       if (!args.silent && process.env.UNI_PLATFORM !== 'app-plus') {

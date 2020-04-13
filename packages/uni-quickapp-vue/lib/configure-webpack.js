@@ -37,6 +37,8 @@ function genPriorities (entryPagePath) {
   return o
 }
 
+const uniCloudPath = require.resolve('@dcloudio/vue-cli-plugin-uni/packages/uni-cloud/dist/index.js')
+
 module.exports = {
   devtool: false,
   entry () {
@@ -71,6 +73,9 @@ module.exports = {
       ENV_PHASE_DV: env.NODE_PHASE === 'dev',
       ENV_PHASE_QA: env.NODE_PHASE === 'test',
       ENV_PHASE_OL: env.NODE_PHASE === 'prod'
+    }),
+    new webpack.ProvidePlugin({
+      uniCloud: [uniCloudPath, 'default']
     }),
     new CopyPlugin([{
       from: path.resolve(__dirname, '../dist/' + dslFilename),

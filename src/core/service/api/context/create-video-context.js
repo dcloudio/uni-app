@@ -18,20 +18,25 @@ export class VideoContext {
   play () {
     operateVideoPlayer(this.id, this.pageVm, 'play')
   }
+
   pause () {
     operateVideoPlayer(this.id, this.pageVm, 'pause')
   }
+
   stop () {
     operateVideoPlayer(this.id, this.pageVm, 'stop')
   }
+
   seek (position) {
     operateVideoPlayer(this.id, this.pageVm, 'seek', {
       position
     })
   }
+
   sendDanmu (args) {
     operateVideoPlayer(this.id, this.pageVm, 'sendDanmu', args)
   }
+
   playbackRate (rate) {
     if (!~RATES.indexOf(rate)) {
       rate = 1.0
@@ -40,15 +45,19 @@ export class VideoContext {
       rate
     })
   }
+
   requestFullScreen (args = {}) {
     operateVideoPlayer(this.id, this.pageVm, 'requestFullScreen', args)
   }
+
   exitFullScreen () {
     operateVideoPlayer(this.id, this.pageVm, 'exitFullScreen')
   }
+
   showStatusBar () {
     operateVideoPlayer(this.id, this.pageVm, 'showStatusBar')
   }
+
   hideStatusBar () {
     operateVideoPlayer(this.id, this.pageVm, 'hideStatusBar')
   }

@@ -2,7 +2,8 @@
   <uni-video v-on="$listeners">
     <div
       ref="container"
-      class="uni-video-container" />
+      class="uni-video-container"
+    />
     <div class="uni-video-slot">
       <slot />
     </div>
