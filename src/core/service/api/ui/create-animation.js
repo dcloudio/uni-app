@@ -12,28 +12,33 @@ class MPAnimation {
     this.currentStepAnimates = []
     this.option = Object.assign({}, defaultOption, option)
   }
+
   _getOption (option) {
-    let _option = {
+    const _option = {
       transition: Object.assign({}, this.option, option)
     }
     _option.transformOrigin = _option.transition.transformOrigin
     delete _option.transition.transformOrigin
     return _option
   }
+
   _pushAnimates (type, args) {
     this.currentStepAnimates.push({
       type: type,
       args: args
     })
   }
+
   _converType (type) {
     return type.replace(/[A-Z]/g, text => {
       return `-${text.toLowerCase()}`
     })
   }
+
   _getValue (value) {
     return typeof value === 'number' ? `${value}px` : value
   }
+
   export () {
     const actions = this.actions
     this.actions = []
@@ -41,6 +46,7 @@ class MPAnimation {
       actions
     }
   }
+
   step (option) {
     this.currentStepAnimates.forEach(animate => {
       if (animate.type !== 'style') {

@@ -22,45 +22,57 @@ class RecorderManager {
       }
     })
   }
+
   onError (callback) {
     callbacks.error = callback
   }
+
   onFrameRecorded (callback) {
 
   }
+
   onInterruptionBegin (callback) {
 
   }
+
   onInterruptionEnd (callback) {
 
   }
+
   onPause (callback) {
     callbacks.pause = callback
   }
+
   onResume (callback) {
     callbacks.resume = callback
   }
+
   onStart (callback) {
     callbacks.start = callback
   }
+
   onStop (callback) {
     callbacks.stop = callback
   }
+
   pause () {
     invokeMethod('operateRecorder', {
       operationType: 'pause'
     })
   }
+
   resume () {
     invokeMethod('operateRecorder', {
       operationType: 'resume'
     })
   }
+
   start (options) {
     invokeMethod('operateRecorder', Object.assign({}, options, {
       operationType: 'start'
     }))
   }
+
   stop () {
     invokeMethod('operateRecorder', {
       operationType: 'stop'

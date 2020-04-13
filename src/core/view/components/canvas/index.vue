@@ -2,17 +2,20 @@
   <uni-canvas
     :canvas-id="canvasId"
     :disable-scroll="disableScroll"
-    v-on="_listeners">
+    v-on="_listeners"
+  >
     <canvas
       ref="canvas"
       width="300"
-      height="150" />
+      height="150"
+    />
     <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden;">
       <slot />
     </div>
     <v-uni-resize-sensor
       ref="sensor"
-      @resize="_resize" />
+      @resize="_resize"
+    />
   </uni-canvas>
 </template>
 <script>
@@ -162,36 +165,36 @@ export default {
       }
       this.preloadImage(actions)
       for (let index = 0; index < actions.length; index++) {
-        let action = actions[index]
+        const action = actions[index]
         let method = action.method
-        let data = action.data
+        const data = action.data
         if (/^set/.test(method) && method !== 'setTransform') {
-          let method1 = method[3].toLowerCase() + method.slice(4)
+          const method1 = method[3].toLowerCase() + method.slice(4)
           let color
           if (method1 === 'fillStyle' || method1 === 'strokeStyle') {
             if (data[0] === 'normal') {
               color = resolveColor(data[1])
             } else if (data[0] === 'linear') {
-              let LinearGradient = c2d.createLinearGradient(...data[1])
+              const LinearGradient = c2d.createLinearGradient(...data[1])
               data[2].forEach(function (data2) {
-                let offset = data2[0]
-                let color = resolveColor(data2[1])
+                const offset = data2[0]
+                const color = resolveColor(data2[1])
                 LinearGradient.addColorStop(offset, color)
               })
               color = LinearGradient
             } else if (data[0] === 'radial') {
-              let x = data[1][0]
-              let y = data[1][1]
-              let r = data[1][2]
-              let LinearGradient = c2d.createRadialGradient(x, y, 0, x, y, r)
+              const x = data[1][0]
+              const y = data[1][1]
+              const r = data[1][2]
+              const LinearGradient = c2d.createRadialGradient(x, y, 0, x, y, r)
               data[2].forEach(function (data2) {
-                let offset = data2[0]
-                let color = resolveColor(data2[1])
+                const offset = data2[0]
+                const color = resolveColor(data2[1])
                 LinearGradient.addColorStop(offset, color)
               })
               color = LinearGradient
             } else if (data[0] === 'pattern') {
-              let loaded = this.checkImageLoaded(data[1], actions.slice(index + 1), callbackId,
+              const loaded = this.checkImageLoaded(data[1], actions.slice(index + 1), callbackId,
                 function (image) {
                   if (image) {
                     c2d[method1] = c2d.createPattern(image, data[2])
@@ -510,7 +513,7 @@ export default {
       qualit,
       callbackId
     }) {
-      let res = this.getImageData({
+      const res = this.getImageData({
         x,
         y,
         width,

@@ -35,10 +35,10 @@ export let preloadWebview
 let id = 2
 
 const WEBVIEW_LISTENERS = {
-  'pullToRefresh': 'onPullDownRefresh',
-  'titleNViewSearchInputChanged': 'onNavigationBarSearchInputChanged',
-  'titleNViewSearchInputConfirmed': 'onNavigationBarSearchInputConfirmed',
-  'titleNViewSearchInputClicked': 'onNavigationBarSearchInputClicked'
+  pullToRefresh: 'onPullDownRefresh',
+  titleNViewSearchInputChanged: 'onNavigationBarSearchInputChanged',
+  titleNViewSearchInputConfirmed: 'onNavigationBarSearchInputConfirmed',
+  titleNViewSearchInputClicked: 'onNavigationBarSearchInputClicked'
 }
 
 export function setPreloadWebview (webview) {
@@ -78,7 +78,7 @@ export function createWebview (path, routeOptions, query) {
     )
     webviewStyle.uniPageUrl = getUniPageUrl(path, query)
     if (process.env.NODE_ENV !== 'production') {
-      console.log(`[uni-app] createWebview`, webviewId, path, webviewStyle)
+      console.log('[uni-app] createWebview', webviewId, path, webviewStyle)
     }
     return plus.webview.create('', String(webviewId), webviewStyle, {
       nvue: true
@@ -106,7 +106,7 @@ export function initWebview (webview, routeOptions, path, query) {
       webviewStyle.debugRefresh = getDebugRefresh(path, query, routeOptions)
     }
     if (process.env.NODE_ENV !== 'production') {
-      console.log(`[uni-app] updateWebview`, webviewStyle)
+      console.log('[uni-app] updateWebview', webviewStyle)
     }
 
     webview.setStyle(webviewStyle)

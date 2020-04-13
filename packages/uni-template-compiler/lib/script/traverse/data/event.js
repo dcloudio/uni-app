@@ -211,7 +211,7 @@ function parseEvent (keyPath, valuePath, state, isComponent, isNativeOn = false,
   let isPassive = false
   let isOnce = false
 
-  let methods = []
+  const methods = []
 
   if (type) {
     isPassive = type.charAt(0) === VUE_EVENT_MODIFIERS.passive
@@ -416,8 +416,8 @@ function _processEvent (path, state, isComponent, isNativeOn = false, tagName, r
   return opts
 }
 module.exports = function processEvent (paths, path, state, isComponent, tagName) {
-  const onPath = paths['on']
-  const nativeOnPath = paths['nativeOn']
+  const onPath = paths.on
+  const nativeOnPath = paths.nativeOn
 
   const ret = []
 

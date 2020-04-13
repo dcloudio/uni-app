@@ -7,7 +7,7 @@ import {
 } from '../../bridge'
 
 const invokeChooseVideo = function (callbackId, type, tempFilePath = '') {
-  let callbackResult = {
+  const callbackResult = {
     errMsg: `chooseVideo:${type}`,
     tempFilePath: tempFilePath,
     duration: 0,
@@ -62,7 +62,7 @@ export function chooseVideo ({
   camera = 'back'
 } = {}, callbackId) {
   let fallback = true
-  let cameraIndex = (camera === 'front') ? 2 : 1
+  const cameraIndex = (camera === 'front') ? 2 : 1
   if (sourceType.length === 1) {
     if (sourceType[0] === 'album') {
       fallback = false

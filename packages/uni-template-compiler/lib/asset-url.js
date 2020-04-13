@@ -1,10 +1,10 @@
 const url = require('url')
 
 const transformAssetUrls = {
-  'audio': 'src',
-  'video': ['src', 'poster'],
-  'img': 'src',
-  'image': 'src',
+  audio: 'src',
+  video: ['src', 'poster'],
+  img: 'src',
+  image: 'src',
   'cover-image': 'src',
   // h5
   'v-uni-audio': 'src',
@@ -44,12 +44,14 @@ function urlToRequire (url) {
  */
 function parseUriParts (urlString) {
   // initialize return value
+  /* eslint-disable node/no-deprecated-api */
   const returnValue = url.parse('')
   if (urlString) {
     // A TypeError is thrown if urlString is not a string
     // @see https://nodejs.org/api/url.html#url_url_parse_urlstring_parsequerystring_slashesdenotehost
     if (typeof urlString === 'string') {
       // check is an uri
+      /* eslint-disable node/no-deprecated-api */
       return url.parse(urlString) // take apart the uri
     }
   }

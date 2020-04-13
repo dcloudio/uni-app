@@ -30,7 +30,7 @@ module.exports = function (content, map) {
     plugins.push([
       '@babel/plugin-proposal-decorators',
       {
-        'legacy': true
+        legacy: true
       }
     ])
   }

@@ -1,11 +1,13 @@
 <template>
   <uni-cover-view
     :scroll-top="scrollTop"
-    v-on="$listeners">
+    v-on="$listeners"
+  >
     <div
       ref="content"
-      class="uni-cover-view">
-      <slot/>
+      class="uni-cover-view"
+    >
+      <slot />
     </div>
   </uni-cover-view>
 </template>

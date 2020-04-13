@@ -52,7 +52,7 @@ function getH5Options (manifestJson) {
 
   h5.router = Object.assign({}, defaultRouter, h5.router || {})
 
-  h5['async'] = Object.assign({}, defaultAsync, h5['async'] || {})
+  h5.async = Object.assign({}, defaultAsync, h5.async || {})
 
   let base = h5.router.base
 

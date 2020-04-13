@@ -27,12 +27,12 @@ export function scanCode ({
 }, callbackId) {
   const barcode = plus.barcode
   const SCAN_TYPES = {
-    'qrCode': [
+    qrCode: [
       barcode.QR,
       barcode.AZTEC,
       barcode.MAXICODE
     ],
-    'barCode': [
+    barCode: [
       barcode.EAN13,
       barcode.EAN8,
       barcode.UPCA,
@@ -45,8 +45,8 @@ export function scanCode ({
       barcode.RSS14,
       barcode.RSSEXPANDED
     ],
-    'datamatrix': [barcode.DATAMATRIX],
-    'pdf417': [barcode.PDF417]
+    datamatrix: [barcode.DATAMATRIX],
+    pdf417: [barcode.PDF417]
   }
 
   const SCAN_MAPS = {
@@ -82,8 +82,8 @@ export function scanCode ({
     })
   }
   if (!filters.length) {
-    filters = filters.concat(SCAN_TYPES['qrCode']).concat(SCAN_TYPES['barCode']).concat(SCAN_TYPES['datamatrix']).concat(
-      SCAN_TYPES['pdf417'])
+    filters = filters.concat(SCAN_TYPES.qrCode).concat(SCAN_TYPES.barCode).concat(SCAN_TYPES.datamatrix).concat(
+      SCAN_TYPES.pdf417)
   }
 
   const buttons = []

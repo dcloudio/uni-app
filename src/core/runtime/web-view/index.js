@@ -1,4 +1,8 @@
 import {
+  hasOwn
+} from 'uni-shared'
+
+import {
   initWebviewApi as initAppplusWebviewApi
 } from 'uni-platforms/app-plus/runtime/web-view'
 import {
@@ -58,7 +62,7 @@ const api = typeof uni !== 'undefined' ? uni : {}
 
 if (!api.navigateTo) {
   for (const key in webViewApi) {
-    if (webViewApi.hasOwnProperty(key)) {
+    if (hasOwn(webViewApi, key)) {
       api[key] = webViewApi[key]
     }
   }

@@ -30,7 +30,7 @@ const hooks = [
 hooks.push(...PAGE_EVENT_HOOKS)
 
 export default function parsePage (vuePageOptions) {
-  let [VueComponent, vueOptions] = initVueComponent(Vue, vuePageOptions)
+  const [VueComponent, vueOptions] = initVueComponent(Vue, vuePageOptions)
 
   const pageOptions = {
     mixins: initBehaviors(vueOptions, initBehavior),

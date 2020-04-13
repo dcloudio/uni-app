@@ -9,10 +9,12 @@
         <div
           v-show="backButton"
           class="uni-page-head-btn"
-          @click="_back">
+          @click="_back"
+        >
           <i
             :style="{color:color,fontSize:'27px'}"
-            class="uni-btn-icon">&#xe601;</i>
+            class="uni-btn-icon"
+          >&#xe601;</i>
         </div>
         <template v-for="(btn,index) in btns">
           <div
@@ -34,19 +36,24 @@
       </div>
       <div
         v-if="!searchInput"
-        class="uni-page-head-bd">
+        class="uni-page-head-bd"
+      >
         <div
           :style="{fontSize:titleSize,opacity:type==='transparent'?0:1}"
           class="uni-page-head__title"
         >
           <i
             v-if="loading"
-            class="uni-loading" />
+            class="uni-loading"
+          />
           <img
             v-if="titleImage!==''"
             :src="titleImage"
-            class="uni-page-head__title_image" >
-          <template v-else>{{ titleText }}</template>
+            class="uni-page-head__title_image"
+          >
+          <template v-else>
+            {{ titleText }}
+          </template>
         </div>
       </div>
       <div
@@ -58,7 +65,9 @@
           :style="{color:searchInput.placeholderColor}"
           :class="[`uni-page-head-search-placeholder-${focus || text ? 'left' : searchInput.align}`]"
           class="uni-page-head-search-placeholder"
-        >{{ text || composing ? '' : searchInput.placeholder }}</div>
+        >
+          {{ text || composing ? '' : searchInput.placeholder }}
+        </div>
         <v-uni-input
           ref="input"
           v-model="text"
@@ -444,9 +453,9 @@ export default {
       const fonts = {}
       if (this.buttons.length) {
         this.buttons.forEach(button => {
-          let btn = Object.assign({}, button)
+          const btn = Object.assign({}, button)
           if (btn.fontSrc && !btn.fontFamily) {
-            let fontSrc = btn.fontSrc = getRealPath(btn.fontSrc)
+            const fontSrc = btn.fontSrc = getRealPath(btn.fontSrc)
             let fontFamily
             if (fontSrc in fonts) {
               fontFamily = fonts[fontSrc]

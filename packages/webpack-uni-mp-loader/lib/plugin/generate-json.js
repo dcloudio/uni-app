@@ -11,7 +11,7 @@ const {
 } = require('@dcloudio/uni-cli-shared/lib/cache')
 
 // 主要解决 extends 且未实际引用的组件
-const EMPTY_COMPONENT = `Component({})`
+const EMPTY_COMPONENT = 'Component({})'
 
 const usingComponentsMap = {}
 
@@ -23,7 +23,7 @@ function analyzeUsingComponents () {
   const jsonFileMap = getJsonFileMap()
 
   // 生成所有组件引用关系
-  for (let name of jsonFileMap.keys()) {
+  for (const name of jsonFileMap.keys()) {
     const jsonObj = JSON.parse(jsonFileMap.get(name))
     const usingComponents = jsonObj.usingComponents
     if (!usingComponents || !pageSet.has(name)) {
@@ -89,7 +89,7 @@ module.exports = function generateJson (compilation) {
   analyzeUsingComponents()
 
   const jsonFileMap = getChangedJsonFileMap()
-  for (let name of jsonFileMap.keys()) {
+  for (const name of jsonFileMap.keys()) {
     const jsonObj = JSON.parse(jsonFileMap.get(name))
     if (process.env.UNI_PLATFORM === 'app-plus') { // App平台默认增加usingComponents,激活__wxAppCode__
       jsonObj.usingComponents = jsonObj.usingComponents || {}

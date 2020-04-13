@@ -3,7 +3,7 @@ export function parseMethods (methods, vueComponentOptions) {
     return
   }
   if (methods.$emit) {
-    console.warn(`Method "$emit" conflicts with an existing Vue instance method`)
+    console.warn('Method "$emit" conflicts with an existing Vue instance method')
     delete methods.$emit
   }
   vueComponentOptions.methods = methods

@@ -55,7 +55,7 @@ export default {
         } else {
           this.changeSource = ''
           // 避免外部直接对此值进行修改
-          let value = val.map(val => val)
+          const value = val.map(val => val)
           this.$emit('update:value', value)
           this.$trigger('change', {}, {
             value
@@ -114,7 +114,7 @@ export default {
       }),
       createElement('div', {
         ref: 'wrapper',
-        'class': 'uni-picker-view-wrapper'
+        class: 'uni-picker-view-wrapper'
       }, items)
       ])
   }

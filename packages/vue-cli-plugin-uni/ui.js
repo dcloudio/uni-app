@@ -38,7 +38,7 @@ module.exports = api => {
           default: '/',
           value: h5.router && h5.router.base,
           message: 'Base Url',
-          description: `应用的部署地址，如 '/my-app/'。如果留空，所有资源将使用相对路径。`,
+          description: '应用的部署地址，如 \'/my-app/\'。如果留空，所有资源将使用相对路径。',
           group: '基础设置',
           link: 'https://uniapp.dcloud.io/collocation/manifest?id=h5'
         }, {
@@ -64,7 +64,7 @@ module.exports = api => {
           name: 'loading',
           type: 'input',
           default: 'AsyncLoading',
-          value: h5['async'] && h5['async'].loading,
+          value: h5.async && h5.async.loading,
           message: '加载组件',
           description: '页面按需加载时显示的组件（需注册为全局组件）',
           group: '页面按需加载配置',
@@ -74,7 +74,7 @@ module.exports = api => {
           name: 'error',
           type: 'input',
           default: 'AsyncError',
-          value: h5['async'] && h5['async'].error,
+          value: h5.async && h5.async.error,
           message: '错误组件',
           description: '页面按需加载失败时显示的组件（需注册为全局组件）',
           group: '页面按需加载配置',
@@ -84,7 +84,7 @@ module.exports = api => {
           name: 'delay',
           type: 'input',
           default: 200,
-          value: h5['async'] && h5['async'].delay,
+          value: h5.async && h5.async.delay,
           message: '延迟时间',
           description: '页面按需加载展示 loading 组件的延迟时间（页面 js 若在 delay 时间内加载完成，则不会显示 loading 组件）',
           group: '页面按需加载配置',
@@ -94,7 +94,7 @@ module.exports = api => {
           name: 'timeout',
           type: 'input',
           default: 3000,
-          value: h5['async'] && h5['async'].timeout,
+          value: h5.async && h5.async.timeout,
           message: '超时时间',
           description: '页面按需加载超时时间（超时后展示 error 对应的组件）',
           group: '页面按需加载配置',
@@ -132,18 +132,18 @@ module.exports = api => {
       const delay = await api.getAnswer('delay')
       const timeout = await api.getAnswer('timeout')
       if (isDef(loading) || isDef(error) || isDef(delay) || isDef(timeout)) {
-        h5['async'] = {}
+        h5.async = {}
         if (isDef(loading)) {
-          h5['async'].loading = loading
+          h5.async.loading = loading
         }
         if (isDef(error)) {
-          h5['async'].error = error
+          h5.async.error = error
         }
         if (isDef(delay)) {
-          h5['async'].delay = delay
+          h5.async.delay = delay
         }
         if (isDef(timeout)) {
-          h5['async'].timeout = timeout
+          h5.async.timeout = timeout
         }
       }
 

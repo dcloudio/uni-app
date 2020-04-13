@@ -27,18 +27,18 @@ const getRealRoute = (e, t) => {
   if (t.indexOf('./') === 0) return getRealRoute(e, t.substr(2), !1)
   let n
   let i
-  let o = t.split('/')
+  const o = t.split('/')
   for (n = 0, i = o.length; n < i && o[n] === '..'; n++);
   o.splice(0, n)
   t = o.join('/')
-  let r = e.length > 0 ? e.split('/') : []
+  const r = e.length > 0 ? e.split('/') : []
   r.splice(r.length - n - 1, n + 1)
   return r.concat(o).join('/')
 }
 
 // 处理 Android 平台解压与非解压模式下获取的路径不一致的情况
 const _handleLocalPath = filePath => {
-  let localUrl = plus.io.convertLocalFileSystemURL(filePath)
+  const localUrl = plus.io.convertLocalFileSystemURL(filePath)
   return localUrl.replace(/^\/?apps\//, '/android_asset/apps/').replace(/\/$/, '')
 }
 

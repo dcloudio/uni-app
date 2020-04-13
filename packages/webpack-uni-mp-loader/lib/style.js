@@ -21,7 +21,7 @@ module.exports = function (content) {
   if (path.extname(this.resourcePath) !== '.nvue') {
     return content
   }
-  let resourcePath = normalizeNodeModules(
+  const resourcePath = normalizeNodeModules(
     removeExt(
       normalizePath(path.relative(process.env.UNI_INPUT_DIR, this.resourcePath))
     )

@@ -2,14 +2,16 @@
   <uni-map v-on="$listeners">
     <div
       ref="container"
-      class="uni-map-container" />
+      class="uni-map-container"
+    />
     <v-uni-cover-image
       v-for="(control, index) in mapControls"
       :key="index"
       :src="control.iconPath"
       :style="control.position"
       auto-size
-      @click="controlclick(control)"/>
+      @click="controlclick(control)"
+    />
     <div class="uni-map-slot">
       <slot />
     </div>
@@ -144,7 +146,7 @@ export default {
     },
     mapControls () {
       const list = this.controls.map((control) => {
-        let position = { position: 'absolute' };
+        const position = { position: 'absolute' };
         ['top', 'left', 'width', 'height'].forEach(key => {
           if (control.position[key]) {
             position[key] = control.position[key] + 'px'
@@ -187,7 +189,7 @@ export default {
     }
   },
   mounted () {
-    let mapStyle = Object.assign({}, this.attrs, this.position)
+    const mapStyle = Object.assign({}, this.attrs, this.position)
     if (this.latitude && this.longitude) {
       mapStyle.center = new plus.maps.Point(this.longitude, this.latitude)
     }

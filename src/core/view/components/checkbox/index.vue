@@ -2,12 +2,14 @@
   <uni-checkbox
     :disabled="disabled"
     v-on="$listeners"
-    @click="_onClick">
+    @click="_onClick"
+  >
     <div class="uni-checkbox-wrapper">
       <div
         :class="[checkboxChecked ? 'uni-checkbox-input-checked' : '']"
         :style="{color:color}"
-        class="uni-checkbox-input" />
+        class="uni-checkbox-input"
+      />
       <slot />
     </div>
   </uni-checkbox>

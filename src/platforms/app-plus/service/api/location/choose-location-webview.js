@@ -62,7 +62,7 @@ export function chooseLocation (params, callbackId) {
     })
   }
   let index = 0
-  let onShow = function () {
+  const onShow = function () {
     index++
     if (index === 2) {
       webview.evalJS(`__chooseLocation__(${JSON.stringify(params)})`)

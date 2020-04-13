@@ -2,18 +2,21 @@
   <uni-page :data-page="$route.meta.pagePath">
     <page-head
       v-if="navigationBar.type!=='none'"
-      v-bind="navigationBar" />
+      v-bind="navigationBar"
+    />
     <page-refresh
       v-if="enablePullDownRefresh"
       ref="refresh"
       :color="refreshOptions.color"
-      :offset="refreshOptions.offset" />
+      :offset="refreshOptions.offset"
+    />
     <page-body
       v-if="enablePullDownRefresh"
       @touchstart.native="_touchstart"
       @touchmove.native="_touchmove"
       @touchend.native="_touchend"
-      @touchcancel.native="_touchend">
+      @touchcancel.native="_touchend"
+    >
       <slot name="page" />
     </page-body>
     <page-body v-else>
@@ -160,9 +163,9 @@ export default {
   },
   data () {
     const titleNViewTypeList = {
-      'none': 'default',
-      'auto': 'transparent',
-      'always': 'float'
+      none: 'default',
+      auto: 'transparent',
+      always: 'float'
     }
     // 将 navigationStyle 和 transparentTitle 都合并到 titleNView
     let titleNView = this.titleNView
@@ -191,8 +194,8 @@ export default {
     }
 
     const yesNoParseList = {
-      'YES': true,
-      'NO': false
+      YES: true,
+      NO: false
     }
 
     const navigationBar = mergeTitleNView({

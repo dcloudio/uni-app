@@ -29,24 +29,24 @@ const cryptoPath = path.resolve(__dirname, '../crypto.js')
 function getProvides (isAppService) {
   if (isAppService) {
     return { // app-service
-      '__f__': [path.resolve(__dirname, '../format-log.js'), 'default'],
-      'wx': [runtimePath, 'default'],
+      __f__: [path.resolve(__dirname, '../format-log.js'), 'default'],
+      wx: [runtimePath, 'default'],
       'wx.nextTick': [runtimePath, 'nextTick'],
-      'Page': [runtimePath, 'Page'],
-      'Component': [runtimePath, 'Component'],
-      'Behavior': [runtimePath, 'Behavior'],
-      'getDate': [wxsPath, 'getDate'],
-      'getRegExp': [wxsPath, 'getRegExp'],
-      'uniCloud': [uniCloudPath, 'default'],
-      'crypto': [cryptoPath, 'default'],
+      Page: [runtimePath, 'Page'],
+      Component: [runtimePath, 'Component'],
+      Behavior: [runtimePath, 'Behavior'],
+      getDate: [wxsPath, 'getDate'],
+      getRegExp: [wxsPath, 'getRegExp'],
+      uniCloud: [uniCloudPath, 'default'],
+      crypto: [cryptoPath, 'default'],
       'window.crypto': [cryptoPath, 'default'],
       'global.crypto': [cryptoPath, 'default']
     }
   }
   return { // app-view
-    '__f__': [path.resolve(__dirname, '../format-log.js'), 'default'],
-    'getDate': [wxsPath, 'getDate'],
-    'getRegExp': [wxsPath, 'getRegExp']
+    __f__: [path.resolve(__dirname, '../format-log.js'), 'default'],
+    getDate: [wxsPath, 'getDate'],
+    getRegExp: [wxsPath, 'getRegExp']
   }
 }
 
@@ -55,12 +55,12 @@ const v3 = {
     parallel: false
   },
   webpackConfig (webpackConfig, vueOptions, api) {
-    const isAppService = !!vueOptions.pluginOptions['uni-app-plus']['service']
-    const isAppView = !!vueOptions.pluginOptions['uni-app-plus']['view']
+    const isAppService = !!vueOptions.pluginOptions['uni-app-plus'].service
+    const isAppView = !!vueOptions.pluginOptions['uni-app-plus'].view
 
-    const statCode = process.env.UNI_USING_STAT ? `import '@dcloudio/uni-stat';` : ''
+    const statCode = process.env.UNI_USING_STAT ? 'import \'@dcloudio/uni-stat\';' : ''
 
-    const beforeCode = `import 'uni-pages';`
+    const beforeCode = 'import \'uni-pages\';'
 
     if (!webpackConfig.optimization) {
       webpackConfig.optimization = {}
@@ -186,8 +186,8 @@ const v3 = {
   chainWebpack (webpackConfig, vueOptions, api) {
     webpackConfig.entryPoints.delete('app')
 
-    const isAppService = !!vueOptions.pluginOptions['uni-app-plus']['service']
-    const isAppView = !!vueOptions.pluginOptions['uni-app-plus']['view']
+    const isAppService = !!vueOptions.pluginOptions['uni-app-plus'].service
+    const isAppView = !!vueOptions.pluginOptions['uni-app-plus'].view
 
     const cacheConfig = {
       cacheDirectory: false,

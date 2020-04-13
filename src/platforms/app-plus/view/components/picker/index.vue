@@ -1,7 +1,8 @@
 <template>
   <uni-picker
     @click.stop="_show"
-    v-on="$listeners">
+    v-on="$listeners"
+  >
     <slot />
   </uni-picker>
 </template>
@@ -48,7 +49,7 @@ function getDefaultStartValue () {
     return '00:00'
   }
   if (this.mode === mode.DATE) {
-    let year = new Date().getFullYear() - 100
+    const year = new Date().getFullYear() - 100
     switch (this.fields) {
       case fields.YEAR:
         return year
@@ -66,7 +67,7 @@ function getDefaultEndValue () {
     return '23:59'
   }
   if (this.mode === mode.DATE) {
-    let year = new Date().getFullYear() + 100
+    const year = new Date().getFullYear() + 100
     switch (this.fields) {
       case fields.YEAR:
         return year
@@ -162,17 +163,19 @@ export default {
       let val = this.value
       switch (this.mode) {
         case mode.MULTISELECTOR:
-          if (!Array.isArray(val)) {
-            val = []
-          }
-          if (!Array.isArray(this.valueSync)) {
-            this.valueSync = []
-          }
-          const length = this.valueSync.length = Math.max(val.length, this.range.length)
-          for (let index = 0; index < length; index++) {
-            const val0 = Number(val[index])
-            const val1 = Number(this.valueSync[index])
-            this.valueSync.splice(index, 1, isNaN(val0) ? (isNaN(val1) ? 0 : val1) : val0)
+          {
+            if (!Array.isArray(val)) {
+              val = []
+            }
+            if (!Array.isArray(this.valueSync)) {
+              this.valueSync = []
+            }
+            const length = this.valueSync.length = Math.max(val.length, this.range.length)
+            for (let index = 0; index < length; index++) {
+              const val0 = Number(val[index])
+              const val1 = Number(this.valueSync[index])
+              this.valueSync.splice(index, 1, isNaN(val0) ? (isNaN(val1) ? 0 : val1) : val0)
+            }
           }
           break
         case mode.TIME:

@@ -24,33 +24,33 @@ const TOAST_DEPS = [
 
 // TODO 暂不考虑 head,tabBar 的动态拆分
 const DEPS = {
-  'chooseLocation': [
+  chooseLocation: [
     ['/platforms/h5/components/system-routes/choose-location/index.vue', 'ChooseLocation']
   ],
-  'openLocation': [
+  openLocation: [
     ['/platforms/h5/components/system-routes/open-location/index.vue', 'OpenLocation']
   ],
-  'previewImage': [
+  previewImage: [
     ['/core/view/components/swiper/index.vue', 'Swiper'],
     ['/core/view/components/swiper-item/index.vue', 'SwiperItem'],
     ['/platforms/h5/components/system-routes/preview-image/index.vue', 'PreviewImage']
   ],
-  'showToast': TOAST_DEPS,
-  'hideToast': TOAST_DEPS,
-  'showLoading': TOAST_DEPS,
-  'hideLoading': TOAST_DEPS,
-  'showModal': [
+  showToast: TOAST_DEPS,
+  hideToast: TOAST_DEPS,
+  showLoading: TOAST_DEPS,
+  hideLoading: TOAST_DEPS,
+  showModal: [
     ['/platforms/h5/components/app/popup/modal.vue', 'Modal'],
     ['/platforms/h5/components/app/popup/mixins/modal.js', 'ModalMixin']
   ],
-  'showActionSheet': [
+  showActionSheet: [
     ['/platforms/h5/components/app/popup/actionSheet.vue', 'ActionSheet'],
     ['/platforms/h5/components/app/popup/mixins/action-sheet.js', 'ActionSheetMixin']
   ],
-  'createSelectorQuery': [
+  createSelectorQuery: [
     ['/core/view/bridge/subscribe/api/request-component-info.js', 'requestComponentInfo']
   ],
-  'createIntersectionObserver': [
+  createIntersectionObserver: [
     ['/core/view/bridge/subscribe/api/request-component-observer.js', 'requestComponentObserver'],
     ['/core/view/bridge/subscribe/api/request-component-observer.js', 'destroyComponentObserver']
   ]

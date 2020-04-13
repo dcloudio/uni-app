@@ -1,6 +1,6 @@
 const FRONT_COLORS = ['#ffffff', '#000000']
 export const setNavigationBarColor = {
-  'frontColor': {
+  frontColor: {
     type: String,
     required: true,
     validator (frontColor, params) {
@@ -9,11 +9,11 @@ export const setNavigationBarColor = {
       }
     }
   },
-  'backgroundColor': {
+  backgroundColor: {
     type: String,
     required: true
   },
-  'animation': {
+  animation: {
     type: Object,
     default () {
       return {
@@ -30,7 +30,7 @@ export const setNavigationBarColor = {
   }
 }
 export const setNavigationBarTitle = {
-  'title': {
+  title: {
     type: String,
     required: true
   }

@@ -13,14 +13,14 @@ function parseDataset (attr) {
 }
 
 function findAttrs (ids, elm, result) {
-  let nodes = elm.children
+  const nodes = elm.children
   if (!Array.isArray(nodes)) {
     return false
   }
   for (let i = 0; i < nodes.length; i++) {
-    let node = nodes[i]
+    const node = nodes[i]
     if (node.attr) {
-      let index = ids.indexOf(node.attr.id)
+      const index = ids.indexOf(node.attr.id)
       if (index >= 0) {
         result[index] = {
           id: ids[index],
@@ -39,7 +39,7 @@ function findAttrs (ids, elm, result) {
 }
 
 function getSelectors (queue) {
-  let ids = []
+  const ids = []
   for (let i = 0; i < queue.length; i++) {
     const selector = queue[i].selector
     if (selector.indexOf('#') === 0) {
@@ -68,7 +68,7 @@ export function requestComponentInfo (pageVm, queue, callback) {
   // TODO 重构，逻辑不对，queue 里的每一项可能有单独的作用域查找（即 component）
   const dom = pageVm._$weex.requireModule('dom')
   const selectors = getSelectors(queue)
-  let outAttrs = new Array(selectors.length)
+  const outAttrs = new Array(selectors.length)
   findAttrs(selectors, pageVm.$el, outAttrs)
   getComponentRectAll(dom, outAttrs, 0, [], (result) => {
     callback(result)

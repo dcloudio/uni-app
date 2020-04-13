@@ -5,8 +5,8 @@ export default function (Quill) {
 
   class List extends Container {
     static create (value) {
-      let tagName = value === 'ordered' ? 'OL' : 'UL'
-      let node = super.create(tagName)
+      const tagName = value === 'ordered' ? 'OL' : 'UL'
+      const node = super.create(tagName)
       if (value === 'checked' || value === 'unchecked') {
         node.setAttribute('data-checked', value === 'checked')
       }
@@ -29,8 +29,8 @@ export default function (Quill) {
       super(domNode)
       const listEventHandler = (e) => {
         if (e.target.parentNode !== domNode) return
-        let format = this.statics.formats(domNode)
-        let blot = Parchment.find(e.target)
+        const format = this.statics.formats(domNode)
+        const blot = Parchment.find(e.target)
         if (format === 'checked') {
           blot.format('list', 'unchecked')
         } else if (format === 'unchecked') {
@@ -56,15 +56,15 @@ export default function (Quill) {
       if (blot instanceof ListItem) {
         super.insertBefore(blot, ref)
       } else {
-        let index = ref == null ? this.length() : ref.offset(this)
-        let after = this.split(index)
+        const index = ref == null ? this.length() : ref.offset(this)
+        const after = this.split(index)
         after.parent.insertBefore(blot, after)
       }
     }
 
     optimize (context) {
       super.optimize(context)
-      let next = this.next
+      const next = this.next
       if (next != null && next.prev === this &&
         next.statics.blotName === this.statics.blotName &&
         next.domNode.tagName === this.domNode.tagName &&
@@ -76,7 +76,7 @@ export default function (Quill) {
 
     replace (target) {
       if (target.statics.blotName !== this.statics.blotName) {
-        let item = Parchment.create(this.statics.defaultChild)
+        const item = Parchment.create(this.statics.defaultChild)
         target.moveChildren(item)
         this.appendChild(item)
       }

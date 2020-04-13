@@ -47,6 +47,7 @@ class Page {
   constructor (webview) {
     this.webview = webview
   }
+
   sendMessage (data) {
     const message = {
       __message: {
@@ -61,6 +62,7 @@ class Page {
       plus_.webview.postMessageToUniNView(message, id)
     }
   }
+
   close () {
     this.webview.close()
   }

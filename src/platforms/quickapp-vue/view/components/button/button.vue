@@ -2,10 +2,12 @@
   <div
     :class="viewClass"
     class="uni-button"
-    v-on="$listeners">
+    v-on="$listeners"
+  >
     <text
       :class="textClass"
-      class="uni-button-t">
+      class="uni-button-t"
+    >
       <slot />
     </text>
   </div>

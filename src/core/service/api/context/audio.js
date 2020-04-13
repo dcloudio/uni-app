@@ -93,20 +93,25 @@ class InnerAudioContext {
       Object.defineProperty(this, name, data)
     })
   }
+
   play () {
     this._operate('play')
   }
+
   pause () {
     this._operate('pause')
   }
+
   stop () {
     this._operate('stop')
   }
+
   seek (position) {
     this._operate('seek', {
       currentTime: position * 1e3
     })
   }
+
   destroy () {
     clearInterval(this.__timing)
     invokeMethod('destroyAudioInstance', {
@@ -114,6 +119,7 @@ class InnerAudioContext {
     })
     delete innerAudioContexts[this.id]
   }
+
   _operate (type, options) {
     invokeMethod('operateAudio', Object.assign({}, options, {
       audioId: this.id,

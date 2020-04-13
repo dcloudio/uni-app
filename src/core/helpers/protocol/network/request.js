@@ -35,7 +35,7 @@ function stringifyQuery (url, data) {
     item = item.split('=')
     query[item[0]] = item[1]
   })
-  for (let key in data) {
+  for (const key in data) {
     if (hasOwn(data, key)) {
       let v = data[key]
       if (typeof v === 'undefined' || v === null) {

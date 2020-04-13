@@ -8,16 +8,16 @@ const {
 let videoInput = null
 
 const _createInput = function (options) {
-  let inputEl = document.createElement('input')
+  const inputEl = document.createElement('input')
   inputEl.type = 'file'
   updateElementStyle(inputEl, {
-    'position': 'absolute',
-    'visibility': 'hidden',
+    position: 'absolute',
+    visibility: 'hidden',
     'z-index': -999,
-    'width': 0,
-    'height': 0,
-    'top': 0,
-    'left': 0
+    width: 0,
+    height: 0,
+    top: 0,
+    left: 0
   })
   inputEl.accept = 'video/*'
   // 经过测试，仅能限制只通过相机拍摄，不能限制只允许从相册选择。

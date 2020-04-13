@@ -2,12 +2,14 @@
   <uni-image v-on="$listeners">
     <div
       ref="content"
-      :style="modeStyle" />
+      :style="modeStyle"
+    />
     <img :src="realImagePath">
     <v-uni-resize-sensor
       v-if="mode === 'widthFix'"
       ref="sensor"
-      @resize="_resize" />
+      @resize="_resize"
+    />
   </uni-image>
 </template>
 <script>
@@ -46,7 +48,7 @@ export default {
     modeStyle () {
       let size = 'auto'
       let position = ''
-      let repeat = 'no-repeat'
+      const repeat = 'no-repeat'
 
       switch (this.mode) {
         case 'aspectFit':

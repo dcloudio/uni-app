@@ -36,13 +36,13 @@ export default {
 }
 `,
       [{
-        'name': 'mediaList',
-        'value': 'mediaList',
-        'source': '@/components/tab-nvue/mediaList.vue'
+        name: 'mediaList',
+        value: 'mediaList',
+        source: '@/components/tab-nvue/mediaList.vue'
       }, {
-        'name': 'uniLoadMore',
-        'value': 'uniLoadMore',
-        'source': '@/components/uni-load-more.vue'
+        name: 'uniLoadMore',
+        value: 'uniLoadMore',
+        source: '@/components/uni-load-more.vue'
       }])
 
     assertCodegen(
@@ -56,13 +56,13 @@ export default {
             }
             `,
       [{
-        'name': 'uni-badge',
-        'value': 'uniBadge',
-        'source': '@dcloudio/uni-ui/lib/uni-badge/uni-badge'
+        name: 'uni-badge',
+        value: 'uniBadge',
+        source: '@dcloudio/uni-ui/lib/uni-badge/uni-badge'
       }, {
-        'name': 'uni-card',
-        'value': 'uniCard',
-        'source': '@dcloudio/uni-ui/lib/uni-card/uni-card'
+        name: 'uni-card',
+        value: 'uniCard',
+        source: '@dcloudio/uni-ui/lib/uni-card/uni-card'
       }])
 
     assertCodegen(
@@ -134,17 +134,17 @@ global['__wxVueOptions'] = {
             Vue.component('media-list',mediaList)
             `,
       [{
-        'name': 'uni-badge',
-        'value': 'uniBadge',
-        'source': '@dcloudio/uni-ui/lib/uni-badge/uni-badge'
+        name: 'uni-badge',
+        value: 'uniBadge',
+        source: '@dcloudio/uni-ui/lib/uni-badge/uni-badge'
       }, {
-        'name': 'uni-card',
-        'value': 'uniCard',
-        'source': '@dcloudio/uni-ui/lib/uni-card/uni-card'
+        name: 'uni-card',
+        value: 'uniCard',
+        source: '@dcloudio/uni-ui/lib/uni-card/uni-card'
       }, {
-        'name': 'media-list',
-        'value': 'mediaList',
-        'source': '@/components/tab-nvue/mediaList.vue'
+        name: 'media-list',
+        value: 'mediaList',
+        source: '@/components/tab-nvue/mediaList.vue'
       }], false)
   })
 })

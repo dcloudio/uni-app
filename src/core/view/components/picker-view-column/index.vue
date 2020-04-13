@@ -23,7 +23,7 @@ function initClick (dom) {
   dom.addEventListener('touchend', (event) => {
     const info = event.changedTouches[0]
     if (Math.abs(info.clientX - x) < MAX_MOVE && Math.abs(info.clientY - y) < MAX_MOVE) {
-      let customEvent = new CustomEvent('click', {
+      const customEvent = new CustomEvent('click', {
         bubbles: true,
         cancelable: true,
         target: event.target,

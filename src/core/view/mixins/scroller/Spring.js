@@ -21,9 +21,9 @@ Spring.prototype._solve = function (e, t) {
   var r = this._k
   var o = n * n - 4 * i * r
   if (o === 0) {
-    let a = -n / (2 * i)
-    let s = e
-    let l = t / (a * e)
+    const a = -n / (2 * i)
+    const s = e
+    const l = t / (a * e)
     return {
       x: function (e) {
         return (s + l * e) * Math.pow(Math.E, a * e)
@@ -35,10 +35,10 @@ Spring.prototype._solve = function (e, t) {
     }
   }
   if (o > 0) {
-    let c = (-n - Math.sqrt(o)) / (2 * i)
-    let u = (-n + Math.sqrt(o)) / (2 * i)
-    let l = (t - c * e) / (u - c)
-    let s = e - l
+    const c = (-n - Math.sqrt(o)) / (2 * i)
+    const u = (-n + Math.sqrt(o)) / (2 * i)
+    const l = (t - c * e) / (u - c)
+    const s = e - l
     return {
       x: function (e) {
         let t
