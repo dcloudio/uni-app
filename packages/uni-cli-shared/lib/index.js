@@ -56,7 +56,8 @@ const {
   htmlPreprocessOptions,
   nvueJsPreprocessOptions,
   nvueCssPreprocessOptions,
-  nvueHtmlPreprocessOptions
+  nvueHtmlPreprocessOptions,
+  getPlatformGlobal
 } = require('./platform')
 
 module.exports = {
@@ -104,5 +105,6 @@ module.exports = {
   htmlPreprocessOptions,
   nvueJsPreprocessOptions,
   nvueCssPreprocessOptions,
-  nvueHtmlPreprocessOptions
+  nvueHtmlPreprocessOptions,
+  getPlatformGlobal
 }
