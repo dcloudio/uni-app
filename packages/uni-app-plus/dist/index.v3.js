@@ -1013,12 +1013,12 @@ var serviceContext = (function () {
   });
 
   const makePhoneCall = {
-    'phoneNumber': {
+    phoneNumber: {
       type: String,
       required: true,
       validator (phoneNumber) {
         if (!phoneNumber) {
-          return `makePhoneCall:fail parameter error: parameter.phoneNumber should not be empty String;`
+          return 'makePhoneCall:fail parameter error: parameter.phoneNumber should not be empty String;'
         }
       }
     }
@@ -1128,7 +1128,7 @@ var serviceContext = (function () {
   const SOURCE_TYPES = ['album', 'camera'];
 
   const chooseImage = {
-    'count': {
+    count: {
       type: Number,
       required: false,
       default: 9,
@@ -1138,7 +1138,7 @@ var serviceContext = (function () {
         }
       }
     },
-    'sizeType': {
+    sizeType: {
       type: [Array, String],
       required: false,
       default: SIZE_TYPES,
@@ -1161,7 +1161,7 @@ var serviceContext = (function () {
         }
       }
     },
-    'sourceType': {
+    sourceType: {
       type: Array,
       required: false,
       default: SOURCE_TYPES,
@@ -1189,7 +1189,7 @@ var serviceContext = (function () {
   const SOURCE_TYPES$1 = ['album', 'camera'];
 
   const chooseVideo = {
-    'sourceType': {
+    sourceType: {
       type: Array,
       required: false,
       default: SOURCE_TYPES$1,
@@ -1293,7 +1293,7 @@ var serviceContext = (function () {
   }
 
   const getImageInfo = {
-    'src': {
+    src: {
       type: String,
       required: true,
       validator (src, params) {
@@ -1393,7 +1393,7 @@ var serviceContext = (function () {
       item = item.split('=');
       query[item[0]] = item[1];
     });
-    for (let key in data) {
+    for (const key in data) {
       if (hasOwn(data, key)) {
         let v = data[key];
         if (typeof v === 'undefined' || v === null) {
@@ -1748,7 +1748,7 @@ var serviceContext = (function () {
   });
 
   const getStorage = {
-    'key': {
+    key: {
       type: String,
       required: true
     }
@@ -1761,11 +1761,11 @@ var serviceContext = (function () {
   }];
 
   const setStorage = {
-    'key': {
+    key: {
       type: String,
       required: true
     },
-    'data': {
+    data: {
       required: true
     }
   };
@@ -1826,7 +1826,7 @@ var serviceContext = (function () {
 
   const FRONT_COLORS = ['#ffffff', '#000000'];
   const setNavigationBarColor = {
-    'frontColor': {
+    frontColor: {
       type: String,
       required: true,
       validator (frontColor, params) {
@@ -1835,11 +1835,11 @@ var serviceContext = (function () {
         }
       }
     },
-    'backgroundColor': {
+    backgroundColor: {
       type: String,
       required: true
     },
-    'animation': {
+    animation: {
       type: Object,
       default () {
         return {
@@ -1856,7 +1856,7 @@ var serviceContext = (function () {
     }
   };
   const setNavigationBarTitle = {
-    'title': {
+    title: {
       type: String,
       required: true
     }
@@ -2161,7 +2161,7 @@ var serviceContext = (function () {
     }
     if (value === undefined) {
       if (hasOwn(paramOptions, 'default')) {
-        const paramDefault = paramOptions['default'];
+        const paramDefault = paramOptions.default;
         value = isFn(paramDefault) ? paramDefault() : paramDefault;
         paramsData[key] = value; // 默认值
       }
@@ -2389,7 +2389,7 @@ var serviceContext = (function () {
     params = Object.assign({}, params);
 
     const apiCallbacks = {};
-    for (let name in params) {
+    for (const name in params) {
       const param = params[name];
       if (isFn(param)) {
         apiCallbacks[name] = tryCatch(param);
@@ -2416,7 +2416,7 @@ var serviceContext = (function () {
     }
 
     const wrapperCallbacks = {};
-    for (let name in extras) {
+    for (const name in extras) {
       const extra = extras[name];
       if (isFn(extra)) {
         wrapperCallbacks[name] = tryCatchFramework(extra);
@@ -2446,7 +2446,7 @@ var serviceContext = (function () {
         res.errMsg = apiName + ':cancel';
       } else if (res.errMsg.indexOf(':fail') !== -1) {
         let errDetail = '';
-        let spaceIndex = res.errMsg.indexOf(' ');
+        const spaceIndex = res.errMsg.indexOf(' ');
         if (spaceIndex > -1) {
           errDetail = res.errMsg.substr(spaceIndex);
         }
@@ -2820,7 +2820,7 @@ var serviceContext = (function () {
       return
     }
     if (process.env.NODE_ENV !== 'production') {
-      console.log(`[uni-app] setStatusBarStyle`, statusBarStyle);
+      console.log('[uni-app] setStatusBarStyle', statusBarStyle);
     }
 
     lastStatusBarStyle = statusBarStyle;
@@ -2890,18 +2890,18 @@ var serviceContext = (function () {
     if (t.indexOf('./') === 0) return getRealRoute$1(e, t.substr(2))
     let n;
     let i;
-    let o = t.split('/');
+    const o = t.split('/');
     for (n = 0, i = o.length; n < i && o[n] === '..'; n++);
     o.splice(0, n);
     t = o.join('/');
-    let r = e.length > 0 ? e.split('/') : [];
+    const r = e.length > 0 ? e.split('/') : [];
     r.splice(r.length - n - 1, n + 1);
     return r.concat(o).join('/')
   };
 
   // 处理 Android 平台解压与非解压模式下获取的路径不一致的情况
   const _handleLocalPath = filePath => {
-    let localUrl = plus.io.convertLocalFileSystemURL(filePath);
+    const localUrl = plus.io.convertLocalFileSystemURL(filePath);
     return localUrl.replace(/^\/?apps\//, '/android_asset/apps/').replace(/\/$/, '')
   };
 
@@ -3026,7 +3026,7 @@ var serviceContext = (function () {
     }
   }
 
-  let audios = {};
+  const audios = {};
 
   const evts = ['play', 'canplay', 'ended', 'stop', 'waiting', 'seeking', 'seeked', 'pause'];
 
@@ -3102,7 +3102,7 @@ var serviceContext = (function () {
   }) {
     const audio = audios[audioId];
     if (audio) {
-      let style = {
+      const style = {
         loop,
         autoplay
       };
@@ -3132,7 +3132,7 @@ var serviceContext = (function () {
         errMsg: 'getAudioState:fail'
       }
     }
-    let {
+    const {
       src,
       startTime,
       volume
@@ -3276,12 +3276,12 @@ var serviceContext = (function () {
         currentPosition: audio.getPosition(),
         status: audio.isPaused() ? 0 : 1,
         downloadPercent: Math.round(100 * audio.getBuffered() / audio.getDuration()),
-        errMsg: `getMusicPlayerState:ok`
+        errMsg: 'getMusicPlayerState:ok'
       }
     }
     return {
       status: 2,
-      errMsg: `getMusicPlayerState:ok`
+      errMsg: 'getMusicPlayerState:ok'
     }
   }
   function operateMusicPlayer ({
@@ -3314,7 +3314,7 @@ var serviceContext = (function () {
   function setBackgroundAudioState (args) {
     setMusicState(args);
     return {
-      errMsg: `setBackgroundAudioState:ok`
+      errMsg: 'setBackgroundAudioState:ok'
     }
   }
   function operateBackgroundAudio ({
@@ -3343,11 +3343,11 @@ var serviceContext = (function () {
       coverImgUrl: '',
       webUrl: '',
       startTime: 0,
-      errMsg: `getBackgroundAudioState:ok`
+      errMsg: 'getBackgroundAudioState:ok'
     };
     const audio = getAudio();
     if (audio) {
-      let newData = {
+      const newData = {
         duration: audio.getDuration() || 0,
         currentTime: audio.isStopped ? 0 : audio.getPosition(),
         paused: audio.isPaused(),
@@ -3559,7 +3559,7 @@ var serviceContext = (function () {
       isFn(callback) && callback(ret);
 
       if (type === SUCCESS || type === FAIL) {
-        const complete = callbacks['complete'];
+        const complete = callbacks.complete;
         isFn(complete) && complete(ret);
       }
     }
@@ -4361,12 +4361,12 @@ var serviceContext = (function () {
   }, callbackId) {
     const barcode = plus.barcode;
     const SCAN_TYPES = {
-      'qrCode': [
+      qrCode: [
         barcode.QR,
         barcode.AZTEC,
         barcode.MAXICODE
       ],
-      'barCode': [
+      barCode: [
         barcode.EAN13,
         barcode.EAN8,
         barcode.UPCA,
@@ -4379,8 +4379,8 @@ var serviceContext = (function () {
         barcode.RSS14,
         barcode.RSSEXPANDED
       ],
-      'datamatrix': [barcode.DATAMATRIX],
-      'pdf417': [barcode.PDF417]
+      datamatrix: [barcode.DATAMATRIX],
+      pdf417: [barcode.PDF417]
     };
 
     const SCAN_MAPS = {
@@ -4416,8 +4416,8 @@ var serviceContext = (function () {
       });
     }
     if (!filters.length) {
-      filters = filters.concat(SCAN_TYPES['qrCode']).concat(SCAN_TYPES['barCode']).concat(SCAN_TYPES['datamatrix']).concat(
-        SCAN_TYPES['pdf417']);
+      filters = filters.concat(SCAN_TYPES.qrCode).concat(SCAN_TYPES.barCode).concat(SCAN_TYPES.datamatrix).concat(
+        SCAN_TYPES.pdf417);
     }
 
     const buttons = [];
@@ -4570,6 +4570,7 @@ var serviceContext = (function () {
     constructor (webview) {
       this.webview = webview;
     }
+
     sendMessage (data) {
       const message = {
         __message: {
@@ -4584,6 +4585,7 @@ var serviceContext = (function () {
         plus_.webview.postMessageToUniNView(message, id);
       }
     }
+
     close () {
       this.webview.close();
     }
@@ -4750,7 +4752,7 @@ var serviceContext = (function () {
   }
 
   function checkIsSupportSoterAuthentication () {
-    let supportMode = [];
+    const supportMode = [];
     if (checkIsSupportFingerPrint()) {
       supportMode.push('fingerPrint');
     }
@@ -4829,7 +4831,7 @@ var serviceContext = (function () {
         errMsg: 'startSoterAuthentication:fail'
       }
     }
-    let supportRequestAuthMode = [];
+    const supportRequestAuthMode = [];
     requestAuthModes.map((item, index) => {
       if (supportMode.indexOf(item) > -1) {
         supportRequestAuthMode.push(item);
@@ -4842,7 +4844,7 @@ var serviceContext = (function () {
         errMsg: 'startSoterAuthentication:fail no corresponding mode'
       }
     }
-    let enrolledRequestAuthMode = [];
+    const enrolledRequestAuthMode = [];
     supportRequestAuthMode.map((item, index) => {
       const checked = checkIsSoterEnrolledInDevice({
         checkAuthMode: item
@@ -5043,7 +5045,7 @@ var serviceContext = (function () {
     });
   }
 
-  let maskClickCallback = [];
+  const maskClickCallback = [];
 
   var tabBar$1 = {
     id: '0',
@@ -5130,7 +5132,7 @@ var serviceContext = (function () {
       maskClickCallback.push(callback);
     },
     removeEventListener (name, callback) {
-      let callbackIndex = maskClickCallback.indexOf(callback);
+      const callbackIndex = maskClickCallback.indexOf(callback);
       maskClickCallback.splice(callbackIndex, 1);
     }
   };
@@ -5475,7 +5477,7 @@ var serviceContext = (function () {
       });
     }
     let index = 0;
-    let onShow = function () {
+    const onShow = function () {
       index++;
       if (index === 2) {
         webview.evalJS(`__chooseLocation__(${JSON.stringify(params)})`);
@@ -5980,7 +5982,7 @@ var serviceContext = (function () {
   }
 
   const invokeChooseVideo = function (callbackId, type, tempFilePath = '') {
-    let callbackResult = {
+    const callbackResult = {
       errMsg: `chooseVideo:${type}`,
       tempFilePath: tempFilePath,
       duration: 0,
@@ -6035,7 +6037,7 @@ var serviceContext = (function () {
     camera = 'back'
   } = {}, callbackId) {
     let fallback = true;
-    let cameraIndex = (camera === 'front') ? 2 : 1;
+    const cameraIndex = (camera === 'front') ? 2 : 1;
     if (sourceType.length === 1) {
       if (sourceType[0] === 'album') {
         fallback = false;
@@ -6080,12 +6082,12 @@ var serviceContext = (function () {
       quality
     }, () => {
       invoke$1(callbackId, {
-        errMsg: `compressImage:ok`,
+        errMsg: 'compressImage:ok',
         tempFilePath: dst
       });
     }, () => {
       invoke$1(callbackId, {
-        errMsg: `compressImage:fail`
+        errMsg: 'compressImage:fail'
       });
     });
   }
@@ -6137,7 +6139,7 @@ var serviceContext = (function () {
         let itemList = [];
         let itemColor = '';
         let title = '';
-        let hasLongPressActions = longPressActions && longPressActions.callbackId;
+        const hasLongPressActions = longPressActions && longPressActions.callbackId;
         if (!hasLongPressActions) {
           itemList = ['保存相册'];
           itemColor = '#000000';
@@ -6319,7 +6321,7 @@ var serviceContext = (function () {
       }
     });
     for (const name in header) {
-      if (header.hasOwnProperty(name)) {
+      if (hasOwn(header, name)) {
         downloader.setRequestHeader(name, header[name]);
       }
     }
@@ -6395,10 +6397,11 @@ var serviceContext = (function () {
         hasContentType = true;
         headers['Content-Type'] = header[name];
         // TODO 需要重构
-        if (method !== 'GET' && header[name].indexOf('application/x-www-form-urlencoded') === 0 && typeof data !== 'string' && !(data instanceof ArrayBuffer)) {
-          let bodyArray = [];
-          for (let key in data) {
-            if (data.hasOwnProperty(key)) {
+        if (method !== 'GET' && header[name].indexOf('application/x-www-form-urlencoded') === 0 && typeof data !==
+          'string' && !(data instanceof ArrayBuffer)) {
+          const bodyArray = [];
+          for (const key in data) {
+            if (hasOwn(data, key)) {
               bodyArray.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
             }
           }
@@ -6423,7 +6426,7 @@ var serviceContext = (function () {
           statusCode: 0,
           errMsg: 'timeout'
         });
-      }, (timeout + 200));// TODO +200 发消息到原生层有时间开销，以后考虑由原生层回调超时
+      }, (timeout + 200)); // TODO +200 发消息到原生层有时间开销，以后考虑由原生层回调超时
     }
     const options = {
       method,
@@ -6668,12 +6671,12 @@ var serviceContext = (function () {
     });
 
     for (const name in header) {
-      if (header.hasOwnProperty(name)) {
+      if (hasOwn(header, name)) {
         uploader.setRequestHeader(name, header[name]);
       }
     }
     for (const name in formData) {
-      if (formData.hasOwnProperty(name)) {
+      if (hasOwn(formData, name)) {
         uploader.addData(name, String(formData[name]));
       }
     }
@@ -7033,27 +7036,27 @@ var serviceContext = (function () {
 
   // 0:图文，1:纯文字，2:纯图片，3:音乐，4:视频，5:小程序
   const TYPES = {
-    '0': {
+    0: {
       name: 'web',
       title: '图文'
     },
-    '1': {
+    1: {
       name: 'text',
       title: '纯文字'
     },
-    '2': {
+    2: {
       name: 'image',
       title: '纯图片'
     },
-    '3': {
+    3: {
       name: 'music',
       title: '音乐'
     },
-    '4': {
+    4: {
       name: 'video',
       title: '视频'
     },
-    '5': {
+    5: {
       name: 'miniProgram',
       title: '小程序'
     }
@@ -7080,7 +7083,7 @@ var serviceContext = (function () {
 
     const shareType = TYPES[type + ''];
     if (shareType) {
-      let sendMsg = {
+      const sendMsg = {
         provider,
         type: shareType.name,
         title,
@@ -7236,7 +7239,7 @@ var serviceContext = (function () {
     }
     plus.share.sendWithSystem({
       type,
-      pictures: imageUrl ? [imageUrl] : void 0,
+      pictures: imageUrl && [imageUrl],
       content,
       href
     }, function (res) {
@@ -7298,7 +7301,7 @@ var serviceContext = (function () {
       return
     }
     const maskColor = webview.__uniapp_mask;
-    let maskWebview = webview.__uniapp_mask_id === '0' ? {
+    const maskWebview = webview.__uniapp_mask_id === '0' ? {
       setStyle ({
         mask
       }) {
@@ -7341,7 +7344,7 @@ var serviceContext = (function () {
     if (webview && !webview.$processed) {
       wrapper$1(webview);
     }
-    let oldSetStyle = webview.setStyle;
+    const oldSetStyle = webview.setStyle;
     var parentWebview = plus.webview.getWebviewById(webview.__uniapp_mask_id);
     webview.setStyle = function (style) {
       if (style && style.mask) {
@@ -7532,9 +7535,9 @@ var serviceContext = (function () {
     const titleImage = windowOptions.titleImage || '';
     const transparentTitle = windowOptions.transparentTitle || 'none';
     const titleNViewTypeList = {
-      'none': 'default',
-      'auto': 'transparent',
-      'always': 'float'
+      none: 'default',
+      auto: 'transparent',
+      always: 'float'
     };
 
     const ret = {
@@ -7544,13 +7547,13 @@ var serviceContext = (function () {
       type: titleNViewTypeList[transparentTitle],
       backgroundColor: windowOptions.navigationBarBackgroundColor || '#f8f8f8',
       tags: titleImage === '' ? [] : [{
-        'tag': 'img',
-        'src': titleImage,
-        'position': {
-          'left': 'auto',
-          'top': 'auto',
-          'width': 'auto',
-          'height': '26px'
+        tag: 'img',
+        src: titleImage,
+        position: {
+          left: 'auto',
+          top: 'auto',
+          width: 'auto',
+          height: '26px'
         }
       }]
     };
@@ -7947,10 +7950,10 @@ var serviceContext = (function () {
   let id$1 = 2;
 
   const WEBVIEW_LISTENERS = {
-    'pullToRefresh': 'onPullDownRefresh',
-    'titleNViewSearchInputChanged': 'onNavigationBarSearchInputChanged',
-    'titleNViewSearchInputConfirmed': 'onNavigationBarSearchInputConfirmed',
-    'titleNViewSearchInputClicked': 'onNavigationBarSearchInputClicked'
+    pullToRefresh: 'onPullDownRefresh',
+    titleNViewSearchInputChanged: 'onNavigationBarSearchInputChanged',
+    titleNViewSearchInputConfirmed: 'onNavigationBarSearchInputConfirmed',
+    titleNViewSearchInputClicked: 'onNavigationBarSearchInputClicked'
   };
 
   function setPreloadWebview (webview) {
@@ -7990,7 +7993,7 @@ var serviceContext = (function () {
       );
       webviewStyle.uniPageUrl = getUniPageUrl(path, query);
       if (process.env.NODE_ENV !== 'production') {
-        console.log(`[uni-app] createWebview`, webviewId, path, webviewStyle);
+        console.log('[uni-app] createWebview', webviewId, path, webviewStyle);
       }
       return plus.webview.create('', String(webviewId), webviewStyle, {
         nvue: true
@@ -8018,7 +8021,7 @@ var serviceContext = (function () {
         webviewStyle.debugRefresh = getDebugRefresh(path, query, routeOptions);
       }
       if (process.env.NODE_ENV !== 'production') {
-        console.log(`[uni-app] updateWebview`, webviewStyle);
+        console.log('[uni-app] updateWebview', webviewStyle);
       }
 
       webview.setStyle(webviewStyle);
@@ -8207,7 +8210,7 @@ var serviceContext = (function () {
     if (!pageFactory[pagePath]) {
       console.error(`${pagePath} not found`);
     }
-    let startTime = Date.now();
+    const startTime = Date.now();
     const pageVm = new (getPageVueComponent(pagePath))({
       mpType: 'page',
       pageId,
@@ -8301,7 +8304,7 @@ var serviceContext = (function () {
             this.$vm.$destroy();
           }
           if (process.env.NODE_ENV !== 'production') {
-            console.log(`[uni-app] removePage`, path, webview.id);
+            console.log('[uni-app] removePage', path, webview.id);
           }
         }
       },
@@ -8901,7 +8904,7 @@ var serviceContext = (function () {
         waiting.close();
       }
       if (~['top', 'center', 'bottom'].indexOf(position)) {
-        let richText = `<span>${title}</span>`;
+        const richText = `<span>${title}</span>`;
         plus.nativeUI.toast(richText, {
           verticalAlign: position,
           type: 'richtext'
@@ -9238,14 +9241,14 @@ var serviceContext = (function () {
   }
 
   function findAttrs (ids, elm, result) {
-    let nodes = elm.children;
+    const nodes = elm.children;
     if (!Array.isArray(nodes)) {
       return false
     }
     for (let i = 0; i < nodes.length; i++) {
-      let node = nodes[i];
+      const node = nodes[i];
       if (node.attr) {
-        let index = ids.indexOf(node.attr.id);
+        const index = ids.indexOf(node.attr.id);
         if (index >= 0) {
           result[index] = {
             id: ids[index],
@@ -9264,7 +9267,7 @@ var serviceContext = (function () {
   }
 
   function getSelectors (queue) {
-    let ids = [];
+    const ids = [];
     for (let i = 0; i < queue.length; i++) {
       const selector = queue[i].selector;
       if (selector.indexOf('#') === 0) {
@@ -9293,7 +9296,7 @@ var serviceContext = (function () {
     // TODO 重构，逻辑不对，queue 里的每一项可能有单独的作用域查找（即 component）
     const dom = pageVm._$weex.requireModule('dom');
     const selectors = getSelectors(queue);
-    let outAttrs = new Array(selectors.length);
+    const outAttrs = new Array(selectors.length);
     findAttrs(selectors, pageVm.$el, outAttrs);
     getComponentRectAll(dom, outAttrs, 0, [], (result) => {
       callback(result);
@@ -9358,6 +9361,7 @@ var serviceContext = (function () {
       });
       this._loadAd();
     }
+
     load () {
       return new Promise((resolve, reject) => {
         if (this._isLoad) {
@@ -9369,6 +9373,7 @@ var serviceContext = (function () {
         this._loadAd();
       })
     }
+
     show () {
       return new Promise((resolve, reject) => {
         if (this._isLoad) {
@@ -9379,16 +9384,20 @@ var serviceContext = (function () {
         }
       })
     }
+
     getProvider () {
       return this._rewardAd.getProvider()
     }
+
     destroy () {
       this._rewardAd.destroy();
     }
+
     _loadAd () {
       this._isLoad = false;
       this._rewardAd.load();
     }
+
     _dispatchEvent (name, data) {
       this._callbacks[name].forEach(callback => {
         if (typeof callback === 'function') {
@@ -9401,8 +9410,6 @@ var serviceContext = (function () {
   function createRewardedVideoAd (options) {
     return new RewardedVideoAd(options)
   }
-
-
 
   var api = /*#__PURE__*/Object.freeze({
     __proto__: null,
@@ -9672,20 +9679,25 @@ var serviceContext = (function () {
         Object.defineProperty(this, name, data);
       });
     }
+
     play () {
       this._operate('play');
     }
+
     pause () {
       this._operate('pause');
     }
+
     stop () {
       this._operate('stop');
     }
+
     seek (position) {
       this._operate('seek', {
         currentTime: position * 1e3
       });
     }
+
     destroy () {
       clearInterval(this.__timing);
       invokeMethod('destroyAudioInstance', {
@@ -9693,6 +9705,7 @@ var serviceContext = (function () {
       });
       delete innerAudioContexts[this.id];
     }
+
     _operate (type, options) {
       invokeMethod('operateAudio', Object.assign({}, options, {
         audioId: this.id,
@@ -9872,20 +9885,25 @@ var serviceContext = (function () {
         Object.defineProperty(this, name, data);
       });
     }
+
     play () {
       this._operate('play');
     }
+
     pause () {
       this._operate('pause');
     }
+
     stop () {
       this._operate('stop');
     }
+
     seek (position) {
       this._operate('seek', {
         currentTime: position
       });
     }
+
     _operate (type, options) {
       invokeMethod('operateBackgroundAudio', Object.assign({}, options, {
         operationType: type
@@ -10098,9 +10116,9 @@ var serviceContext = (function () {
     e = e || '#000000';
     var t = null;
     if ((t = /^#([0-9|A-F|a-f]{6})$/.exec(e)) != null) {
-      let n = parseInt(t[1].slice(0, 2), 16);
-      let o = parseInt(t[1].slice(2, 4), 16);
-      let r = parseInt(t[1].slice(4), 16);
+      const n = parseInt(t[1].slice(0, 2), 16);
+      const o = parseInt(t[1].slice(2, 4), 16);
+      const r = parseInt(t[1].slice(4), 16);
       return [n, o, r, 255]
     }
     if ((t = /^#([0-9|A-F|a-f]{3})$/.exec(e)) != null) {
@@ -10123,11 +10141,11 @@ var serviceContext = (function () {
       })
     }
     var i = e.toLowerCase();
-    if (predefinedColor.hasOwnProperty(i)) {
+    if (hasOwn(predefinedColor, i)) {
       t = /^#([0-9|A-F|a-f]{6,8})$/.exec(predefinedColor[i]);
-      let n = parseInt(t[1].slice(0, 2), 16);
-      let o = parseInt(t[1].slice(2, 4), 16);
-      let r = parseInt(t[1].slice(4, 6), 16);
+      const n = parseInt(t[1].slice(0, 2), 16);
+      const o = parseInt(t[1].slice(2, 4), 16);
+      const r = parseInt(t[1].slice(4, 6), 16);
       let a = parseInt(t[1].slice(6, 8), 16);
       a = a >= 0 ? a : 255;
       return [n, o, r, a]
@@ -10149,6 +10167,7 @@ var serviceContext = (function () {
       this.data = data;
       this.colorStop = [];
     }
+
     addColorStop (position, color) {
       this.colorStop.push([position, checkColor(color)]);
     }
@@ -10163,6 +10182,7 @@ var serviceContext = (function () {
   ];
 
   var tempCanvas;
+
   function getTempCanvas (width = 0, height = 0) {
     if (!tempCanvas) {
       tempCanvas = document.createElement('canvas');
@@ -10199,6 +10219,7 @@ var serviceContext = (function () {
         fontFamily: 'sans-serif'
       };
     }
+
     draw (reserve = false, callback) {
       var actions = [...this.actions];
       this.actions = [];
@@ -10215,21 +10236,26 @@ var serviceContext = (function () {
         callbackId
       });
     }
+
     createLinearGradient (x0, y0, x1, y1) {
       return new CanvasGradient('linear', [x0, y0, x1, y1])
     }
+
     createCircularGradient (x, y, r) {
       return new CanvasGradient('radial', [x, y, r])
     }
+
     createPattern (image, repetition) {
       if (undefined === repetition) {
         console.error("Failed to execute 'createPattern' on 'CanvasContext': 2 arguments required, but only 1 present.");
       } else if (['repeat', 'repeat-x', 'repeat-y', 'no-repeat'].indexOf(repetition) < 0) {
-        console.error("Failed to execute 'createPattern' on 'CanvasContext': The provided type ('" + repetition + "') is not one of 'repeat', 'no-repeat', 'repeat-x', or 'repeat-y'.");
+        console.error("Failed to execute 'createPattern' on 'CanvasContext': The provided type ('" + repetition +
+          "') is not one of 'repeat', 'no-repeat', 'repeat-x', or 'repeat-y'.");
       } else {
         return new Pattern(image, repetition)
       }
     }
+
     // TODO
     measureText (text) {
       if (typeof document === 'object') {
@@ -10240,6 +10266,7 @@ var serviceContext = (function () {
         return new TextMetrics(0)
       }
     }
+
     save () {
       this.actions.push({
         method: 'save',
@@ -10247,6 +10274,7 @@ var serviceContext = (function () {
       });
       this.drawingState.push(this.state);
     }
+
     restore () {
       this.actions.push({
         method: 'restore',
@@ -10265,10 +10293,12 @@ var serviceContext = (function () {
         fontFamily: 'sans-serif'
       };
     }
+
     beginPath () {
       this.path = [];
       this.subpath = [];
     }
+
     moveTo (x, y) {
       this.path.push({
         method: 'moveTo',
@@ -10278,6 +10308,7 @@ var serviceContext = (function () {
         [x, y]
       ];
     }
+
     lineTo (x, y) {
       if (this.path.length === 0 && this.subpath.length === 0) {
         this.path.push({
@@ -10292,6 +10323,7 @@ var serviceContext = (function () {
       }
       this.subpath.push([x, y]);
     }
+
     quadraticCurveTo (cpx, cpy, x, y) {
       this.path.push({
         method: 'quadraticCurveTo',
@@ -10299,6 +10331,7 @@ var serviceContext = (function () {
       });
       this.subpath.push([x, y]);
     }
+
     bezierCurveTo (cp1x, cp1y, cp2x, cp2y, x, y) {
       this.path.push({
         method: 'bezierCurveTo',
@@ -10306,6 +10339,7 @@ var serviceContext = (function () {
       });
       this.subpath.push([x, y]);
     }
+
     arc (x, y, r, sAngle, eAngle, counterclockwise = false) {
       this.path.push({
         method: 'arc',
@@ -10313,6 +10347,7 @@ var serviceContext = (function () {
       });
       this.subpath.push([x, y]);
     }
+
     rect (x, y, width, height) {
       this.path.push({
         method: 'rect',
@@ -10322,6 +10357,7 @@ var serviceContext = (function () {
         [x, y]
       ];
     }
+
     arcTo (x1, y1, x2, y2, radius) {
       this.path.push({
         method: 'arcTo',
@@ -10329,12 +10365,14 @@ var serviceContext = (function () {
       });
       this.subpath.push([x2, y2]);
     }
+
     clip () {
       this.actions.push({
         method: 'clip',
         data: [...this.path]
       });
     }
+
     closePath () {
       this.path.push({
         method: 'closePath',
@@ -10344,52 +10382,61 @@ var serviceContext = (function () {
         this.subpath = [this.subpath.shift()];
       }
     }
+
     clearActions () {
       this.actions = [];
       this.path = [];
       this.subpath = [];
     }
+
     getActions () {
       var actions = [...this.actions];
       this.clearActions();
       return actions
     }
+
     set lineDashOffset (value) {
       this.actions.push({
         method: 'setLineDashOffset',
         data: [value]
       });
     }
+
     set globalCompositeOperation (type) {
       this.actions.push({
         method: 'setGlobalCompositeOperation',
         data: [type]
       });
     }
+
     set shadowBlur (level) {
       this.actions.push({
         method: 'setShadowBlur',
         data: [level]
       });
     }
+
     set shadowColor (color) {
       this.actions.push({
         method: 'setShadowColor',
         data: [color]
       });
     }
+
     set shadowOffsetX (x) {
       this.actions.push({
         method: 'setShadowOffsetX',
         data: [x]
       });
     }
+
     set shadowOffsetY (y) {
       this.actions.push({
         method: 'setShadowOffsetY',
         data: [y]
       });
     }
+
     set font (value) {
       var self = this;
       this.state.font = value;
@@ -10438,6 +10485,7 @@ var serviceContext = (function () {
       } else {
         console.warn("Failed to set 'font' on 'CanvasContext': invalid format.");
       }
+
       function pushAction () {
         actions.push({
           method: 'setFontWeight',
@@ -10446,15 +10494,19 @@ var serviceContext = (function () {
         self.state.fontWeight = 'normal';
       }
     }
+
     get font () {
       return this.state.font
     }
+
     set fillStyle (color) {
       this.setFillStyle(color);
     }
+
     set strokeStyle (color) {
       this.setStrokeStyle(color);
     }
+
     set globalAlpha (value) {
       value = Math.floor(255 * parseFloat(value));
       this.actions.push({
@@ -10462,36 +10514,42 @@ var serviceContext = (function () {
         data: [value]
       });
     }
+
     set textAlign (align) {
       this.actions.push({
         method: 'setTextAlign',
         data: [align]
       });
     }
+
     set lineCap (type) {
       this.actions.push({
         method: 'setLineCap',
         data: [type]
       });
     }
+
     set lineJoin (type) {
       this.actions.push({
         method: 'setLineJoin',
         data: [type]
       });
     }
+
     set lineWidth (value) {
       this.actions.push({
         method: 'setLineWidth',
         data: [value]
       });
     }
+
     set miterLimit (value) {
       this.actions.push({
         method: 'setMiterLimit',
         data: [value]
       });
     }
+
     set textBaseline (type) {
       this.actions.push({
         method: 'setTextBaseline',
@@ -10556,10 +10614,13 @@ var serviceContext = (function () {
               dHeight = undefined;
             }
             var data;
+
             function isNumber (e) {
               return typeof e === 'number'
             }
-            data = isNumber(dx) && isNumber(dy) && isNumber(dWidth) && isNumber(dHeight) ? [imageResource, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight] : isNumber(sWidth) && isNumber(
+            data = isNumber(dx) && isNumber(dy) && isNumber(dWidth) && isNumber(dHeight) ? [imageResource, sx, sy,
+              sWidth, sHeight, dx, dy, dWidth, dHeight
+            ] : isNumber(sWidth) && isNumber(
               sHeight) ? [imageResource, sx, sy, sWidth, sHeight] : [imageResource, sx, sy];
             this.actions.push({
               method,
@@ -10838,20 +10899,25 @@ var serviceContext = (function () {
     play () {
       operateVideoPlayer$3(this.id, this.pageVm, 'play');
     }
+
     pause () {
       operateVideoPlayer$3(this.id, this.pageVm, 'pause');
     }
+
     stop () {
       operateVideoPlayer$3(this.id, this.pageVm, 'stop');
     }
+
     seek (position) {
       operateVideoPlayer$3(this.id, this.pageVm, 'seek', {
         position
       });
     }
+
     sendDanmu (args) {
       operateVideoPlayer$3(this.id, this.pageVm, 'sendDanmu', args);
     }
+
     playbackRate (rate) {
       if (!~RATES.indexOf(rate)) {
         rate = 1.0;
@@ -10860,15 +10926,19 @@ var serviceContext = (function () {
         rate
       });
     }
+
     requestFullScreen (args = {}) {
       operateVideoPlayer$3(this.id, this.pageVm, 'requestFullScreen', args);
     }
+
     exitFullScreen () {
       operateVideoPlayer$3(this.id, this.pageVm, 'exitFullScreen');
     }
+
     showStatusBar () {
       operateVideoPlayer$3(this.id, this.pageVm, 'showStatusBar');
     }
+
     hideStatusBar () {
       operateVideoPlayer$3(this.id, this.pageVm, 'hideStatusBar');
     }
@@ -10909,6 +10979,7 @@ var serviceContext = (function () {
       this.id = id;
       this.pageId = pageId;
     }
+
     format (name, value) {
       operateEditor(this.id, this.pageId, 'format', {
         options: {
@@ -11133,45 +11204,57 @@ var serviceContext = (function () {
         }
       });
     }
+
     onError (callback) {
       callbacks$a.error = callback;
     }
+
     onFrameRecorded (callback) {
 
     }
+
     onInterruptionBegin (callback) {
 
     }
+
     onInterruptionEnd (callback) {
 
     }
+
     onPause (callback) {
       callbacks$a.pause = callback;
     }
+
     onResume (callback) {
       callbacks$a.resume = callback;
     }
+
     onStart (callback) {
       callbacks$a.start = callback;
     }
+
     onStop (callback) {
       callbacks$a.stop = callback;
     }
+
     pause () {
       invokeMethod('operateRecorder', {
         operationType: 'pause'
       });
     }
+
     resume () {
       invokeMethod('operateRecorder', {
         operationType: 'resume'
       });
     }
+
     start (options) {
       invokeMethod('operateRecorder', Object.assign({}, options, {
         operationType: 'start'
       }));
     }
+
     stop () {
       invokeMethod('operateRecorder', {
         operationType: 'stop'
@@ -11196,27 +11279,32 @@ var serviceContext = (function () {
       this._callbackId = callbackId;
       this._callbacks = [];
     }
+
     abort () {
       invokeMethod('operateRequestTask', {
         downloadTaskId: this.id,
         operationType: 'abort'
       });
     }
+
     onProgressUpdate (callback) {
       if (typeof callback !== 'function') {
         return
       }
       this._callbacks.push(callback);
     }
+
     onHeadersReceived () {
 
     }
+
     offProgressUpdate (callback) {
       const index = this._callbacks.indexOf(callback);
       if (index >= 0) {
         this._callbacks.splice(index, 1);
       }
     }
+
     offHeadersReceived () {
 
     }
@@ -11410,6 +11498,7 @@ var serviceContext = (function () {
       this.OPEN = 1;
       this.readyState = this.CLOSED;
     }
+
     send (args) {
       if (this.readyState !== this.OPEN) {
         this._callback(args, 'sendSocketMessage:fail WebSocket is not connected');
@@ -11422,6 +11511,7 @@ var serviceContext = (function () {
       }));
       this._callback(args, errMsg.replace('operateSocketTask', 'sendSocketMessage'));
     }
+
     close (args) {
       this.readyState = this.CLOSING;
       const {
@@ -11432,18 +11522,23 @@ var serviceContext = (function () {
       }));
       this._callback(args, errMsg.replace('operateSocketTask', 'closeSocket'));
     }
+
     onOpen (callback) {
       this._callbacks.open.push(callback);
     }
+
     onClose (callback) {
       this._callbacks.close.push(callback);
     }
+
     onError (callback) {
       this._callbacks.error.push(callback);
     }
+
     onMessage (callback) {
       this._callbacks.message.push(callback);
     }
+
     _callback ({
       success,
       fail,
@@ -11582,27 +11677,32 @@ var serviceContext = (function () {
       this._callbackId = callbackId;
       this._callbacks = [];
     }
+
     abort () {
       invokeMethod('operateRequestTask', {
         uploadTaskId: this.id,
         operationType: 'abort'
       });
     }
+
     onProgressUpdate (callback) {
       if (typeof callback !== 'function') {
         return
       }
       this._callbacks.push(callback);
     }
+
     onHeadersReceived () {
 
     }
+
     offProgressUpdate (callback) {
       const index = this._callbacks.indexOf(callback);
       if (index >= 0) {
         this._callbacks.splice(index, 1);
       }
     }
+
     offHeadersReceived () {
 
     }
@@ -11679,28 +11779,33 @@ var serviceContext = (function () {
       this.currentStepAnimates = [];
       this.option = Object.assign({}, defaultOption, option);
     }
+
     _getOption (option) {
-      let _option = {
+      const _option = {
         transition: Object.assign({}, this.option, option)
       };
       _option.transformOrigin = _option.transition.transformOrigin;
       delete _option.transition.transformOrigin;
       return _option
     }
+
     _pushAnimates (type, args) {
       this.currentStepAnimates.push({
         type: type,
         args: args
       });
     }
+
     _converType (type) {
       return type.replace(/[A-Z]/g, text => {
         return `-${text.toLowerCase()}`
       })
     }
+
     _getValue (value) {
       return typeof value === 'number' ? `${value}px` : value
     }
+
     export () {
       const actions = this.actions;
       this.actions = [];
@@ -11708,6 +11813,7 @@ var serviceContext = (function () {
         actions
       }
     }
+
     step (option) {
       this.currentStepAnimates.forEach(animate => {
         if (animate.type !== 'style') {
@@ -11762,20 +11868,24 @@ var serviceContext = (function () {
       this.component = component._$id || component; // app-plus 平台传输_$id
       this.options = Object.assign({}, defaultOptions, options);
     }
+
     _makeRootMargin (margins = {}) {
       this.options.rootMargin = ['top', 'right', 'bottom', 'left'].map(name => `${Number(margins[name]) || 0}px`).join(
         ' ');
     }
+
     relativeTo (selector, margins) {
       this.options.relativeToSelector = selector;
       this._makeRootMargin(margins);
       return this
     }
+
     relativeToViewport (margins) {
       this.options.relativeToSelector = null;
       this._makeRootMargin(margins);
       return this
     }
+
     observe (selector, callback) {
       if (typeof callback !== 'function') {
         return
@@ -11790,6 +11900,7 @@ var serviceContext = (function () {
         options: this.options
       }, this.pageId);
     }
+
     disconnect () {
       UniServiceJSBridge.publishHandler('destroyComponentObserver', {
         reqId: this.reqId
@@ -12201,7 +12312,7 @@ var serviceContext = (function () {
       return
     }
     if (!page.$page.meta.isNVue) {
-      const target = page.$vm._$vd.elements.find(target => target.type === 'web-view' && target.events['message']);
+      const target = page.$vm._$vd.elements.find(target => target.type === 'web-view' && target.events.message);
       if (!target) {
         return
       }
@@ -12699,7 +12810,7 @@ var serviceContext = (function () {
 
   function registerApp (appVm) {
     if (process.env.NODE_ENV !== 'production') {
-      console.log(`[uni-app] registerApp`);
+      console.log('[uni-app] registerApp');
     }
 
     appCtx = appVm;

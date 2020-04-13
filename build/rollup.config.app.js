@@ -90,8 +90,8 @@ module.exports = {
       }]
     }),
     nodeResolve(),
-    commonjs(),
     requireContext(),
+    commonjs(),
     replace({
       __GLOBAL__: 'getGlobalUni()',
       __PLATFORM__: JSON.stringify(process.env.UNI_PLATFORM),
