@@ -1,7 +1,8 @@
 <template>
   <uni-textarea
     @change.stop
-    v-on="$listeners">
+    v-on="$listeners"
+  >
     <div class="uni-textarea-wrapper">
       <div
         v-show="!(composition||valueSync.length)"
@@ -9,17 +10,26 @@
         :style="placeholderStyle"
         :class="placeholderClass"
         class="uni-textarea-placeholder"
-      >{{ placeholder }}</div>
+      >
+        {{ placeholder }}
+      </div>
       <div
         ref="line"
-        class="uni-textarea-line">&nbsp;</div>
+        class="uni-textarea-line"
+      >
+&nbsp;
+      </div>
       <div class="uni-textarea-compute">
         <div
           v-for="(item,index) in valueCompute"
-          :key="index">{{ item.trim() ? item : '.' }}</div>
+          :key="index"
+        >
+          {{ item.trim() ? item : '.' }}
+        </div>
         <v-uni-resize-sensor
           ref="sensor"
-          @resize="_resize" />
+          @resize="_resize"
+        />
       </div>
       <textarea
         ref="textarea"

@@ -93,7 +93,7 @@ export function registerPage ({
           this.$vm.$destroy()
         }
         if (process.env.NODE_ENV !== 'production') {
-          console.log(`[uni-app] removePage`, path, webview.id)
+          console.log('[uni-app] removePage', path, webview.id)
         }
       }
     },

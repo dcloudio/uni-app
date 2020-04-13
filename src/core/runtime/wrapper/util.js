@@ -144,14 +144,14 @@ function createObserver (name) {
 }
 
 export function initBehaviors (vueOptions, initBehavior) {
-  const vueBehaviors = vueOptions['behaviors']
-  const vueExtends = vueOptions['extends']
-  const vueMixins = vueOptions['mixins']
+  const vueBehaviors = vueOptions.behaviors
+  const vueExtends = vueOptions.extends
+  const vueMixins = vueOptions.mixins
 
-  let vueProps = vueOptions['props']
+  let vueProps = vueOptions.props
 
   if (!vueProps) {
-    vueOptions['props'] = vueProps = []
+    vueOptions.props = vueProps = []
   }
 
   const behaviors = []
@@ -163,11 +163,11 @@ export function initBehaviors (vueOptions, initBehavior) {
           vueProps.push('name')
           vueProps.push('value')
         } else {
-          vueProps['name'] = {
+          vueProps.name = {
             type: String,
             default: ''
           }
-          vueProps['value'] = {
+          vueProps.value = {
             type: [String, Number, Boolean, Array, Object, Date],
             default: ''
           }
@@ -252,7 +252,7 @@ export function initProperties (props, isBehavior = false, file = '') {
     Object.keys(props).forEach(key => {
       const opts = props[key]
       if (isPlainObject(opts)) { // title:{type:String,default:''}
-        let value = opts['default']
+        let value = opts.default
         if (isFn(value)) {
           value = value()
         }
@@ -453,11 +453,11 @@ export function handleEvent (event) {
   // [['tap',[['handle',[1,2,a]],['handle1',[1,2,a]]]]]
   const dataset = (event.currentTarget || event.target).dataset
   if (!dataset) {
-    return console.warn(`事件信息不存在`)
+    return console.warn('事件信息不存在')
   }
   const eventOpts = dataset.eventOpts || dataset['event-opts'] // 支付宝 web-view 组件 dataset 非驼峰
   if (!eventOpts) {
-    return console.warn(`事件信息不存在`)
+    return console.warn('事件信息不存在')
   }
 
   // [['handle',[1,2,a]],['handle1',[1,2,a]]]

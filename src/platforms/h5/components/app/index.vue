@@ -9,18 +9,22 @@
     <tab-bar
       v-if="hasTabBar"
       v-show="showTabBar"
-      v-bind="tabBar" />
+      v-bind="tabBar"
+    />
     <toast
       v-if="$options.components.Toast"
-      v-bind="showToast"/>
+      v-bind="showToast"
+    />
     <action-sheet
       v-if="$options.components.ActionSheet"
       v-bind="showActionSheet"
-      @close="_onActionSheetClose" />
+      @close="_onActionSheetClose"
+    />
     <modal
       v-if="$options.components.Modal"
       v-bind="showModal"
-      @close="_onModalClose" />
+      @close="_onModalClose"
+    />
   </uni-app>
 </template>
 <script>

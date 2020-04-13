@@ -10,6 +10,7 @@ class UploadTask {
     this._xhr = xhr
     this._callbackId = callbackId
   }
+
   /**
    * 监听上传进度
    * @param callback 回调
@@ -20,12 +21,14 @@ class UploadTask {
     }
     this._callbacks.push(callback)
   }
+
   offProgressUpdate (callback) {
     const index = this._callbacks.indexOf(callback)
     if (index >= 0) {
       this._callbacks.splice(index, 1)
     }
   }
+
   /**
    * 中断上传任务
    */
@@ -105,7 +108,7 @@ export function uploadFile ({
     }
     xhr.onload = function () {
       clearTimeout(timer)
-      let statusCode = xhr.status
+      const statusCode = xhr.status
       invoke(callbackId, {
         errMsg: 'uploadFile:ok',
         statusCode,

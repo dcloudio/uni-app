@@ -24,6 +24,7 @@ export class EditorContext {
     this.id = id
     this.pageId = pageId
   }
+
   format (name, value) {
     operateEditor(this.id, this.pageId, 'format', {
       options: {

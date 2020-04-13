@@ -24,7 +24,7 @@ export default {
   },
   methods: {
     _onSubmit ($event) {
-      let data = {}
+      const data = {}
       this.childrenList.forEach(vm => {
         if (vm._getFormData && vm._getFormData().key) {
           data[vm._getFormData().key] = vm._getFormData().value

@@ -75,7 +75,7 @@ export function formatDateTime ({
 }
 
 export function updateElementStyle (element, styles) {
-  for (let attrName in styles) {
+  for (const attrName in styles) {
     element.style[attrName] = styles[attrName]
   }
 }

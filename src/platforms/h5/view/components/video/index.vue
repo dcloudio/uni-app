@@ -1,7 +1,8 @@
 <template>
   <uni-video
     :id="id"
-    v-on="$listeners">
+    v-on="$listeners"
+  >
     <div
       ref="container"
       class="uni-video-container"
@@ -41,7 +42,8 @@
       <div
         v-show="controlsShow"
         class="uni-video-bar uni-video-bar-full"
-        @click.stop>
+        @click.stop
+      >
         <div class="uni-video-controls">
           <div
             v-show="showPlayBtn"
@@ -49,7 +51,9 @@
             class="uni-video-control-button"
             @click.stop="trigger"
           />
-          <div class="uni-video-current-time">{{ currentTime|time }}</div>
+          <div class="uni-video-current-time">
+            {{ currentTime|time }}
+          </div>
           <div
             ref="progress"
             class="uni-video-progress-container"
@@ -58,23 +62,29 @@
             <div class="uni-video-progress">
               <div
                 :style="{width:buffered+'%'}"
-                class="uni-video-progress-buffered" />
+                class="uni-video-progress-buffered"
+              />
               <div
                 ref="ball"
                 :style="{left:progress+'%'}"
-                class="uni-video-ball">
+                class="uni-video-ball"
+              >
                 <div class="uni-video-inner" />
               </div>
             </div>
           </div>
-          <div class="uni-video-duration">{{ (duration||durationTime)|time }}</div>
+          <div class="uni-video-duration">
+            {{ (duration||durationTime)|time }}
+          </div>
         </div>
         <div
           v-if="danmuBtn"
           :class="{'uni-video-danmu-button-active':enableDanmuSync}"
           class="uni-video-danmu-button"
           @click.stop="triggerDanmu"
-        >弹幕</div>
+        >
+          弹幕
+        </div>
         <div
           v-show="showFullscreenBtn"
           :class="{'uni-video-type-fullscreen':fullscreen}"
@@ -86,20 +96,28 @@
         v-show="start&&enableDanmuSync"
         ref="danmu"
         style="z-index: 0;"
-        class="uni-video-danmu" />
+        class="uni-video-danmu"
+      />
       <div
         v-if="!start"
         class="uni-video-cover"
-        @click.stop>
+        @click.stop
+      >
         <div
           class="uni-video-cover-play-button"
-          @click.stop="play" />
-        <p class="uni-video-cover-duration">{{ (duration||durationTime)|time }}</p>
+          @click.stop="play"
+        />
+        <p class="uni-video-cover-duration">
+          {{ (duration||durationTime)|time }}
+        </p>
       </div>
       <div
         :class="{'uni-video-toast-volume':gestureType==='volume'}"
-        class="uni-video-toast">
-        <div class="uni-video-toast-title">音量</div>
+        class="uni-video-toast"
+      >
+        <div class="uni-video-toast-title">
+          音量
+        </div>
         <svg
           class="uni-video-toast-icon"
           width="200px"
@@ -115,7 +133,8 @@
         <div class="uni-video-toast-value">
           <div
             :style="{width:volumeNew*100+'%'}"
-            class="uni-video-toast-value-content">
+            class="uni-video-toast-value-content"
+          >
             <div class="uni-video-toast-volume-grids">
               <div
                 v-for="(item,index) in 10"
@@ -128,8 +147,11 @@
       </div>
       <div
         :class="{'uni-video-toast-progress':gestureType=='progress'}"
-        class="uni-video-toast">
-        <div class="uni-video-toast-title">{{ currentTimeNew|time }} / {{ durationTime|time }}</div>
+        class="uni-video-toast"
+      >
+        <div class="uni-video-toast-title">
+          {{ currentTimeNew|time }} / {{ durationTime|time }}
+        </div>
       </div>
     </div>
     <div
@@ -590,7 +612,7 @@ export default {
       const danmuList = otherData.danmuList
       if (currentTime > oldDanmuIndex.time) {
         for (let index = oldDanmuIndex.index + 1; index < danmuList.length; index++) {
-          let element = danmuList[index]
+          const element = danmuList[index]
           if (currentTime >= (element.time || 0)) {
             danmuIndex.index = index
             if (this.playing && this.enableDanmuSync) {
@@ -602,7 +624,7 @@ export default {
         }
       } else if (currentTime < oldDanmuIndex.time) {
         for (let index = oldDanmuIndex.index - 1; index > -1; index--) {
-          let element = danmuList[index]
+          const element = danmuList[index]
           if (currentTime <= (element.time || 0)) {
             danmuIndex.index = index - 1
           } else {

@@ -18,7 +18,7 @@ export default function validateParam (key, paramTypes, paramsData) {
   }
   if (value === undefined) {
     if (hasOwn(paramOptions, 'default')) {
-      const paramDefault = paramOptions['default']
+      const paramDefault = paramOptions.default
       value = isFn(paramDefault) ? paramDefault() : paramDefault
       paramsData[key] = value // 默认值
     }

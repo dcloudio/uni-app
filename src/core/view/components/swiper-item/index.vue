@@ -1,6 +1,6 @@
 <template>
   <uni-swiper-item v-on="$listeners">
-    <slot/>
+    <slot />
   </uni-swiper-item>
 </template>
 <script>

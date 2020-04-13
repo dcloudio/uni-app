@@ -55,9 +55,9 @@ export default function parseComponent (vueOptions) {
   }
 
   componentOptions.messages = {
-    '__l': componentOptions.methods['__l']
+    __l: componentOptions.methods.__l
   }
-  delete componentOptions.methods['__l']
+  delete componentOptions.methods.__l
 
   return componentOptions
 }

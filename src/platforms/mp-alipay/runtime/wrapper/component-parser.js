@@ -73,7 +73,7 @@ function initVm (VueComponent) {
 }
 
 export default function parseComponent (vueComponentOptions) {
-  let [VueComponent, vueOptions] = initVueComponent(Vue, vueComponentOptions)
+  const [VueComponent, vueOptions] = initVueComponent(Vue, vueComponentOptions)
 
   const properties = initProperties(vueOptions.props, false, vueOptions.__file)
 

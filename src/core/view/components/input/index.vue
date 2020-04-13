@@ -1,17 +1,21 @@
 <template>
   <uni-input
     @change.stop
-    v-on="$listeners">
+    v-on="$listeners"
+  >
     <div
       ref="wrapper"
-      class="uni-input-wrapper">
+      class="uni-input-wrapper"
+    >
       <div
         v-show="!(composing || inputValue.length)"
         ref="placeholder"
         :style="placeholderStyle"
         :class="placeholderClass"
         class="uni-input-placeholder"
-      >{{ placeholder }}</div>
+      >
+        {{ placeholder }}
+      </div>
       <input
         ref="input"
         v-model="inputValue"

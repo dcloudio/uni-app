@@ -63,9 +63,9 @@ export default {
     },
     _bindObjectListeners (data, value) {
       if (value) {
-        for (let key in value) {
-          let existing = data.on[key]
-          let ours = value[key]
+        for (const key in value) {
+          const existing = data.on[key]
+          const ours = value[key]
           data.on[key] = existing ? [].concat(existing, ours) : ours
         }
       }
@@ -73,7 +73,7 @@ export default {
     }
   },
   render (createElement) {
-    let $listeners = Object.create(null)
+    const $listeners = Object.create(null)
     if (this.$listeners) {
       Object.keys(this.$listeners).forEach(e => {
         if (this.disabled && (e === 'click' || e === 'tap')) {
@@ -86,7 +86,7 @@ export default {
       return createElement('uni-button', this._bindObjectListeners({
         class: [this.hovering ? this.hoverClass : ''],
         attrs: {
-          'disabled': this.disabled
+          disabled: this.disabled
         },
         on: {
           touchstart: this._hoverTouchStart,
@@ -99,7 +99,7 @@ export default {
       return createElement('uni-button', this._bindObjectListeners({
         class: [this.hovering ? this.hoverClass : ''],
         attrs: {
-          'disabled': this.disabled
+          disabled: this.disabled
         },
         on: {
           click: this._onClick

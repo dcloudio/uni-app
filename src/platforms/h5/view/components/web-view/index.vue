@@ -2,7 +2,8 @@
   <uni-web-view v-on="$listeners">
     <v-uni-resize-sensor
       ref="sensor"
-      @resize="_resize" />
+      @resize="_resize"
+    />
   </uni-web-view>
 </template>
 <script>

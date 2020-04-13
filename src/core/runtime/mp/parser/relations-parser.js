@@ -25,7 +25,7 @@ export function parseRelations (relations, vueComponentOptions) {
   Object.keys(relations).forEach(name => {
     const relation = relations[name]
     relation.name = name
-    relation.target = relation.target ? String(relation.target) : relative(global['__wxRoute'], name)
+    relation.target = relation.target ? String(relation.target) : relative(global.__wxRoute, name)
   })
   vueComponentOptions.mpOptions.relations = relations
 }

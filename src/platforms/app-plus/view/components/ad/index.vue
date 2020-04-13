@@ -1,10 +1,12 @@
 <template>
   <uni-ad
     v-bind="attrs"
-    v-on="$listeners">
+    v-on="$listeners"
+  >
     <div
       ref="container"
-      class="uni-ad-container" />
+      class="uni-ad-container"
+    />
   </uni-ad>
 </template>
 <script>
@@ -96,10 +98,10 @@ export default {
     }
   },
   mounted () {
-    let adStyle = Object.assign({
+    const adStyle = Object.assign({
       id: 'AdView' + Date.now()
     }, this.position)
-    let adView = this.adView = plus.ad.createAdView(adStyle)
+    const adView = this.adView = plus.ad.createAdView(adStyle)
     adView.interceptTouchEvent(false)
     plus.webview.currentWebview().append(adView)
     if (this.hidden) {

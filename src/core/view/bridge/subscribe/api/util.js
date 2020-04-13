@@ -14,7 +14,7 @@ function findVmById (id, vm) {
 
 export function findElm (component, pageVm) {
   if (!pageVm) {
-    return console.error(`page is not ready`)
+    return console.error('page is not ready')
   }
   if (!component) {
     return pageVm.$el

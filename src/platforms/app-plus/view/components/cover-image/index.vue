@@ -2,10 +2,12 @@
   <uni-cover-image
     :src="src"
     :style="imageInfo"
-    v-on="$listeners">
+    v-on="$listeners"
+  >
     <div
       ref="container"
-      class="uni-cover-image" />
+      class="uni-cover-image"
+    />
   </uni-cover-image>
 </template>
 <script>

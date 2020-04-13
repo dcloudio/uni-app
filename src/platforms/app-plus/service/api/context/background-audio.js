@@ -115,12 +115,12 @@ export function getMusicPlayerState () {
       currentPosition: audio.getPosition(),
       status: audio.isPaused() ? 0 : 1,
       downloadPercent: Math.round(100 * audio.getBuffered() / audio.getDuration()),
-      errMsg: `getMusicPlayerState:ok`
+      errMsg: 'getMusicPlayerState:ok'
     }
   }
   return {
     status: 2,
-    errMsg: `getMusicPlayerState:ok`
+    errMsg: 'getMusicPlayerState:ok'
   }
 }
 export function operateMusicPlayer ({
@@ -153,7 +153,7 @@ export function operateMusicPlayer ({
 export function setBackgroundAudioState (args) {
   setMusicState(args)
   return {
-    errMsg: `setBackgroundAudioState:ok`
+    errMsg: 'setBackgroundAudioState:ok'
   }
 }
 export function operateBackgroundAudio ({
@@ -182,11 +182,11 @@ export function getBackgroundAudioState () {
     coverImgUrl: '',
     webUrl: '',
     startTime: 0,
-    errMsg: `getBackgroundAudioState:ok`
+    errMsg: 'getBackgroundAudioState:ok'
   }
   const audio = getAudio()
   if (audio) {
-    let newData = {
+    const newData = {
       duration: audio.getDuration() || 0,
       currentTime: audio.isStopped ? 0 : audio.getPosition(),
       paused: audio.isPaused(),

@@ -1,8 +1,8 @@
 <script>
 const SPACE_UNICODE = {
-  'ensp': '\u2002',
-  'emsp': '\u2003',
-  'nbsp': '\u00a0'
+  ensp: '\u2002',
+  emsp: '\u2003',
+  nbsp: '\u00a0'
 }
 
 export default {

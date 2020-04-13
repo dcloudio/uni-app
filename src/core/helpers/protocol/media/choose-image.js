@@ -2,7 +2,7 @@ const SIZE_TYPES = ['original', 'compressed']
 const SOURCE_TYPES = ['album', 'camera']
 
 export const chooseImage = {
-  'count': {
+  count: {
     type: Number,
     required: false,
     default: 9,
@@ -12,7 +12,7 @@ export const chooseImage = {
       }
     }
   },
-  'sizeType': {
+  sizeType: {
     type: [Array, String],
     required: false,
     default: SIZE_TYPES,
@@ -35,7 +35,7 @@ export const chooseImage = {
       }
     }
   },
-  'sourceType': {
+  sourceType: {
     type: Array,
     required: false,
     default: SOURCE_TYPES,
