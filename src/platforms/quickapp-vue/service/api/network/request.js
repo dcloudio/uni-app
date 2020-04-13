@@ -43,7 +43,7 @@ export function createRequestTaskById (requestTaskId, {
     timeout: timeout || 6e5
   }
   if (method !== 'GET') {
-    options.body = data
+    options.data = data
   }
   try {
     stream.fetch({
