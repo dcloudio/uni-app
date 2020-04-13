@@ -5,3 +5,4 @@ packages/*/packages
 packages/*/template/**/*
 packages/uni-h5/src
 packages/uni-stat
+node_modules
