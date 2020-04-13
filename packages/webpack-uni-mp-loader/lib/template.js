@@ -31,7 +31,7 @@ const filterTagName = getPlatformFilterTag() || ''
 
 function parseFilterModules (filterModules) {
   if (filterModules) {
-    return JSON.parse(Buffer.from(filterModules, 'base64').toString('ascii'))
+    return JSON.parse(Buffer.from(filterModules, 'base64').toString('utf8'))
   }
   return {}
 }
