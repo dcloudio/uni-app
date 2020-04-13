@@ -22,7 +22,7 @@ const modules = []
 
 const deprecated = {
   events: {
-    'tap': 'click'
+    tap: 'click'
   }
 }
 

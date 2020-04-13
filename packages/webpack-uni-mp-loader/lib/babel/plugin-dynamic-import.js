@@ -23,7 +23,7 @@ const babelTemplate = require('@babel/template').default
 // }
 // var test = function(resolve) {require.ensure([], () => resolve(require('../../components/test')),'components/test')}
 const buildRequireEnsure = babelTemplate(
-  `var IMPORT_NAME = function(){require.ensure([],()=>resolve(require(IMPORT_SOURCE)),CHUNK_NAME)}`
+  'var IMPORT_NAME = function(){require.ensure([],()=>resolve(require(IMPORT_SOURCE)),CHUNK_NAME)}'
 )
 
 function getRequireEnsure (name, source, chunkName) {

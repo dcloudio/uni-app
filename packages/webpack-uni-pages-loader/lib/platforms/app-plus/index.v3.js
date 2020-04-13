@@ -75,7 +75,7 @@ module.exports = function (appJson, manifestJson, {
   })
   // nvue 权限
   manifestJson.permissions.UniNView = {
-    'description': 'UniNView原生渲染'
+    description: 'UniNView原生渲染'
   }
 
   manifestJson.plus.launchwebview.id = '1' // 首页 id 固定 为 1

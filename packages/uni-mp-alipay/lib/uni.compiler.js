@@ -11,41 +11,41 @@ const capitalize = cached(str => {
 })
 
 const EVENTS = {
-  'click': 'tap',
-  'touchstart': 'touchStart',
-  'touchmove': 'touchMove',
-  'touchend': 'touchEnd',
-  'touchcancel': 'touchCancel',
-  'longtap': 'longTap',
-  'longpress': 'longTap',
-  'transitionend': 'transitionEnd',
-  'animationstart': 'animationStart',
-  'animationiteration': 'animationIteration',
-  'animationend': 'animationEnd',
-  'firstappear': 'firstAppear',
+  click: 'tap',
+  touchstart: 'touchStart',
+  touchmove: 'touchMove',
+  touchend: 'touchEnd',
+  touchcancel: 'touchCancel',
+  longtap: 'longTap',
+  longpress: 'longTap',
+  transitionend: 'transitionEnd',
+  animationstart: 'animationStart',
+  animationiteration: 'animationIteration',
+  animationend: 'animationEnd',
+  firstappear: 'firstAppear',
   // map
-  'markertap': 'markerTap',
-  'callouttap': 'calloutTap',
-  'controltap': 'controlTap',
-  'regionchange': 'regionChange',
+  markertap: 'markerTap',
+  callouttap: 'calloutTap',
+  controltap: 'controlTap',
+  regionchange: 'regionChange',
   // scroll-view
-  'scrolltoupper': 'scrollToUpper',
-  'scrolltolower': 'scrollToLower',
+  scrolltoupper: 'scrollToUpper',
+  scrolltolower: 'scrollToLower',
   // movable-view
-  'changeend': 'changeEnd'
+  changeend: 'changeEnd'
 }
 
 module.exports = {
   directive: 'a:',
   specialEvents: {
-    'form': {
-      'reset': 'onReset'
+    form: {
+      reset: 'onReset'
     },
-    'map': {
-      'markertap': 'onMarkerTap',
-      'controltap': 'onControlTap',
-      'callouttap': 'onCalloutTap',
-      'regionchange': 'onRegionChange'
+    map: {
+      markertap: 'onMarkerTap',
+      controltap: 'onControlTap',
+      callouttap: 'onCalloutTap',
+      regionchange: 'onRegionChange'
     }
   },
   createFilterTag (filterTag, {

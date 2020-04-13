@@ -15,11 +15,11 @@ module.exports = {
       value: '"phoneNumber"'
     })
 
-    delete el.events['getphonenumber']
-    el.events['getAuthorize'] = {
+    delete el.events.getphonenumber
+    el.events.getAuthorize = {
       value: '$onAliGetAuthorize(\'' + getPhoneNumberValue + '\',$event)'
     }
-    el.events['error'] = {
+    el.events.error = {
       value: '$onAliAuthError(\'' + getPhoneNumberValue + '\',$event)'
     }
   }

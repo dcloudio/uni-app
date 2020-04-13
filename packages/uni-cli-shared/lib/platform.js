@@ -37,8 +37,8 @@ module.exports = {
   runByHBuilderX: isInHBuilderX || fs.existsSync(path.resolve(process.env.UNI_HBUILDERX_PLUGINS || '', 'weapp-tools')),
   getFlexDirection (json) {
     let flexDir = 'column'
-    if (json && json['nvue'] && json['nvue']['flex-direction']) {
-      flexDir = json['nvue']['flex-direction']
+    if (json && json.nvue && json.nvue['flex-direction']) {
+      flexDir = json.nvue['flex-direction']
       const flexDirs = ['row', 'row-reverse', 'column', 'column-reverse']
       if (flexDirs.indexOf(flexDir) === -1) {
         flexDir = 'column'

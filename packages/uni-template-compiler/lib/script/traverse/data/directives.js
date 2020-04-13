@@ -5,7 +5,7 @@ const {
 } = require('./util')
 
 module.exports = function processDir (paths, path, state) {
-  const directivesPath = paths['directives']
+  const directivesPath = paths.directives
   if (directivesPath) {
     /**
          * directives: [{
@@ -30,7 +30,7 @@ module.exports = function processDir (paths, path, state) {
         return property.key.name === 'modifiers'
       })
       if (exprProperty) {
-        const onPath = paths['on']
+        const onPath = paths.on
 
         const existingInput = onPath.node.value.properties.find(
           property => property.key.value === 'input'

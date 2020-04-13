@@ -75,6 +75,7 @@ function parseFilters (exp) {
       }
       if (c === 0x2f) { // /
         var j = i - 1
+        /* eslint-disable no-void */
         var p = (void 0)
         // find first non-whitespace prev char
         for (; j >= 0; j--) {

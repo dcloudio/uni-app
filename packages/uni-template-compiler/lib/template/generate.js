@@ -1,4 +1,8 @@
 const {
+  hasOwn
+} = require('../util')
+
+const {
   SELF_CLOSING_TAGS,
   INTERNAL_EVENT_LINK
 } = require('../constants')
@@ -6,27 +10,27 @@ const {
 function processElement (ast, state, isRoot) {
   const platformName = state.options.platform.name
   // <template slot="f"></template>
-  if (ast.type === 'template' && ast.attr.hasOwnProperty('slot')) {
+  if (ast.type === 'template' && hasOwn(ast.attr, 'slot')) {
     ast.type = 'view'
   }
 
-  if (ast.attr.hasOwnProperty('textContent')) {
-    ast.children = [ast.attr['textContent']]
-    delete ast.attr['textContent']
+  if (hasOwn(ast.attr, 'textContent')) {
+    ast.children = [ast.attr.textContent]
+    delete ast.attr.textContent
   }
-  if (ast.attr.hasOwnProperty('innerHTML')) {
+  if (hasOwn(ast.attr, 'innerHTML')) {
     ast.children = [{
       type: 'rich-text',
       attr: {
-        nodes: ast.attr['innerHTML']
+        nodes: ast.attr.innerHTML
       },
       children: []
     }]
-    delete ast.attr['innerHTML']
+    delete ast.attr.innerHTML
   }
   if (state.options.platform.isComponent(ast.type)) {
     if (platformName === 'mp-alipay') {
-      ast.attr['onVueInit'] = INTERNAL_EVENT_LINK
+      ast.attr.onVueInit = INTERNAL_EVENT_LINK
     } else if (platformName !== 'mp-baidu') {
       ast.attr['bind:' + INTERNAL_EVENT_LINK] = INTERNAL_EVENT_LINK
     }
@@ -59,10 +63,10 @@ function processElement (ast, state, isRoot) {
     if (slots.length && platformName !== 'mp-alipay') { // 标记 slots
       ast.attr['vue-slots'] = '{{[' + slots.reverse().map(slotName => `'${slotName}'`).join(',') + ']}}'
     }
-    if (ast.attr['id'] && ast.attr['id'].indexOf('{{') === 0) {
+    if (ast.attr.id && ast.attr.id.indexOf('{{') === 0) {
       state.tips.add(`id 作为属性保留名,不允许在自定义组件 ${ast.type} 中定义为 props`)
     }
-    if (ast.attr.hasOwnProperty('data')) { // 百度中会出现异常情况
+    if (hasOwn(ast.attr, 'data')) { // 百度中会出现异常情况
       state.tips.add(`data 作为属性保留名,不允许在自定义组件 ${ast.type} 中定义为 props`)
     }
   }

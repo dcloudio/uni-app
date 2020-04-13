@@ -16,7 +16,7 @@ function write (key, data, callback) {
     data.remainingRequest.indexOf('vue&type=template') !== -1 &&
     process.UNI_CACHE_TEMPLATES
   ) {
-    data['mpTemplates'] = process.UNI_CACHE_TEMPLATES
+    data.mpTemplates = process.UNI_CACHE_TEMPLATES
     delete process.UNI_CACHE_TEMPLATES
   }
 
@@ -48,7 +48,7 @@ function read (key, callback) {
 
     try {
       const data = BJSON.parse(content)
-      const mpTemplates = data['mpTemplates']
+      const mpTemplates = data.mpTemplates
       if (mpTemplates) {
         Object.keys(mpTemplates).forEach(name => {
           fs.writeFileSync(name, mpTemplates[name], 'utf-8')

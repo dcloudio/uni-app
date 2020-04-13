@@ -9,7 +9,7 @@ const {
 module.exports = function custom (argv) {
   const script = argv._[1]
   if (!script) {
-    console.error(`请指定 package.json->uni-app->scripts 下的 script 名称`)
+    console.error('请指定 package.json->uni-app->scripts 下的 script 名称')
     process.exit(0)
   }
 

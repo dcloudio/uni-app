@@ -98,13 +98,15 @@ function normalizeNodeModules (str) {
   return str
 }
 
+const _hasOwnProperty = Object.prototype.hasOwnProperty
+
 module.exports = {
   isInHBuilderX,
   isInHBuilderXAlpha,
   normalizeNodeModules,
   md5,
   hasOwn (obj, key) {
-    return hasOwnProperty.call(obj, key)
+    return _hasOwnProperty.call(obj, key)
   },
   hasModule,
   parseStyle (style = {}) {

@@ -5,7 +5,7 @@ const {
 } = require('./util')
 
 module.exports = function processRef (paths, path, state) {
-  const modelPath = paths['model']
+  const modelPath = paths.model
   if (modelPath) {
     const callbackProperty = modelPath.node.value.properties.find(property => {
       return property.key.name === 'callback'
@@ -17,7 +17,7 @@ module.exports = function processRef (paths, path, state) {
 
     const prop = exprProperty.value.value.trim()
 
-    const onPath = paths['on']
+    const onPath = paths.on
 
     // on:{'input':__m('msg',$event)}
     if (!onPath) {
@@ -32,7 +32,7 @@ module.exports = function processRef (paths, path, state) {
           )
         ]))
       )
-      paths['on'] = path.get('properties').find(
+      paths.on = path.get('properties').find(
         propertyPath => propertyPath.node.key.name === 'on'
       )
     } else {

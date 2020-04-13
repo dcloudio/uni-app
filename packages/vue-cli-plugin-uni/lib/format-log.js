@@ -22,7 +22,7 @@ export default function formatLog () {
   var type = args.shift()
   if (isDebugMode()) {
     args.push(args.pop().replace('at ', 'uni-app:///'))
-    return console[type]['apply'](console, args)
+    return console[type].apply(console, args)
   }
 
   var msgs = args.map(function (v) {

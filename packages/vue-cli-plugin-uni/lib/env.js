@@ -68,7 +68,7 @@ if (
   process.env.UNI_PLATFORM === 'h5' &&
   process.env.NODE_ENV === 'production'
 ) {
-  console.warn(`发布H5，需要在uniCloud后台操作，绑定安全域名，否则会因为跨域问题而无法访问。教程参考：https://uniapp.dcloud.io/uniCloud/quickstart-H5`)
+  console.warn('发布H5，需要在uniCloud后台操作，绑定安全域名，否则会因为跨域问题而无法访问。教程参考：https://uniapp.dcloud.io/uniCloud/quickstart-H5')
 }
 
 // 初始化环境变量
@@ -225,7 +225,7 @@ if (process.env.UNI_PLATFORM === 'app-plus') {
 } else { // 其他平台，待确认配置方案
   if (
     manifestJsonObj['app-plus'] &&
-    manifestJsonObj['app-plus']['nvueCompiler'] === 'weex'
+    manifestJsonObj['app-plus'].nvueCompiler === 'weex'
   ) {
     isNVueCompiler = false
   }
@@ -257,7 +257,7 @@ if (
     process.env.UNI_USING_STAT = true
     if (!process.UNI_STAT_CONFIG.appid && process.env.NODE_ENV === 'production') {
       console.log()
-      console.warn(`当前应用未配置Appid，无法使用uni统计，详情参考：https://ask.dcloud.net.cn/article/36303`)
+      console.warn('当前应用未配置Appid，无法使用uni统计，详情参考：https://ask.dcloud.net.cn/article/36303')
       console.log()
     }
   }
@@ -277,8 +277,8 @@ if (process.env.UNI_USING_COMPONENTS) { // 是否启用分包优化
 
 const warningMsg =
   usingComponentsAbsent
-    ? `该应用之前可能是非自定义组件模式，目前以自定义组件模式运行。非自定义组件已于2019年11月1日起停止支持。详见：https://ask.dcloud.net.cn/article/36385`
-    : `uni-app已于2019年11月1日起停止支持非自定义组件模式 [详情](https://ask.dcloud.net.cn/article/36385)`
+    ? '该应用之前可能是非自定义组件模式，目前以自定义组件模式运行。非自定义组件已于2019年11月1日起停止支持。详见：https://ask.dcloud.net.cn/article/36385'
+    : 'uni-app已于2019年11月1日起停止支持非自定义组件模式 [详情](https://ask.dcloud.net.cn/article/36385)'
 
 const needWarning = !platformOptions.usingComponents || usingComponentsAbsent
 let hasNVue = false
@@ -293,8 +293,8 @@ if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
     if (process.env.UNI_PLATFORM === 'app-plus') {
       const pagesPkg = require('@dcloudio/webpack-uni-pages-loader/package.json')
       if (pagesPkg) {
-        const v3Tips = `（v3）详见：https://ask.dcloud.net.cn/article/36599。`
-        info = '编译器版本：' + pagesPkg['uni-app']['compilerVersion'] + (process.env.UNI_USING_V3 ? v3Tips : '')
+        const v3Tips = '（v3）详见：https://ask.dcloud.net.cn/article/36599。'
+        info = '编译器版本：' + pagesPkg['uni-app'].compilerVersion + (process.env.UNI_USING_V3 ? v3Tips : '')
       }
       if (process.env.UNI_USING_V3) {
         console.log(info)
@@ -325,11 +325,11 @@ if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
   } catch (e) {}
 }
 if (process.env.NODE_ENV !== 'production') { // 运行模式性能提示
-  let perfMsg = `请注意运行模式下，因日志输出、sourcemap以及未压缩源码等原因，性能和包体积，均不及发行模式。`
+  let perfMsg = '请注意运行模式下，因日志输出、sourcemap以及未压缩源码等原因，性能和包体积，均不及发行模式。'
   if (hasNVue) { // app-nvue
-    perfMsg = perfMsg + `尤其是app-nvue的sourcemap影响较大`
+    perfMsg = perfMsg + '尤其是app-nvue的sourcemap影响较大'
   } else if (process.env.UNI_PLATFORM.indexOf('mp-') === 0) { // 小程序
-    perfMsg = perfMsg + `若要正式发布，请点击发行菜单或使用cli发布命令进行发布`
+    perfMsg = perfMsg + '若要正式发布，请点击发行菜单或使用cli发布命令进行发布'
   }
   console.log(perfMsg)
 }
@@ -408,7 +408,7 @@ global.uniPlugin.configureEnv.forEach(configureEnv => {
   configureEnv()
 })
 
-runByHBuilderX && console.log(`正在编译中...`)
+runByHBuilderX && console.log('正在编译中...')
 
 module.exports = {
   manifestPlatformOptions: platformOptions

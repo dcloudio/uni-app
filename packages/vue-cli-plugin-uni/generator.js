@@ -6,9 +6,9 @@ module.exports = (api, options, rootOptions) => {
     delete pkg.browserslist
     return {
       scripts: {
-        'info': 'node node_modules/@dcloudio/vue-cli-plugin-uni/commands/info.js',
-        'serve': 'npm run dev:h5',
-        'build': 'npm run build:h5',
+        info: 'node node_modules/@dcloudio/vue-cli-plugin-uni/commands/info.js',
+        serve: 'npm run dev:h5',
+        build: 'npm run build:h5',
         'serve:quickapp-vue': 'node node_modules/@dcloudio/uni-quickapp-vue/bin/serve.js',
         'dev:h5': 'cross-env NODE_ENV=development UNI_PLATFORM=h5 vue-cli-service uni-serve',
         'dev:mp-qq': 'cross-env NODE_ENV=development UNI_PLATFORM=mp-qq vue-cli-service uni-build --watch',
@@ -30,7 +30,7 @@ module.exports = (api, options, rootOptions) => {
         'build:custom': 'cross-env NODE_ENV=production uniapp-cli custom'
       },
       'uni-app': {
-        'scripts': {}
+        scripts: {}
       },
       dependencies: {
         '@dcloudio/uni-app-plus': version,
@@ -43,8 +43,8 @@ module.exports = (api, options, rootOptions) => {
         '@dcloudio/uni-quickapp-light': version,
         '@dcloudio/uni-quickapp-vue': version,
         '@dcloudio/uni-stat': version,
-        'flyio': '^0.6.2',
-        'vuex': '^3.0.1'
+        flyio: '^0.6.2',
+        vuex: '^3.0.1'
       },
       devDependencies: {
         '@dcloudio/uni-cli-shared': version,

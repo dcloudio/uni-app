@@ -6,7 +6,7 @@ const {
 } = require('../../../constants')
 
 module.exports = function processRef (paths, path, state) {
-  const refPath = paths['ref']
+  const refPath = paths.ref
   if (refPath) {
     if (state.options.platform.name === 'mp-alipay') {
       return [
@@ -21,14 +21,14 @@ module.exports = function processRef (paths, path, state) {
       ]
     }
     const refClass = state.inFor ? CLASS_REF_IN_FOR : CLASS_REF
-    const staticClassPath = paths['staticClass']
+    const staticClassPath = paths.staticClass
     if (staticClassPath) { // append
       staticClassPath.node.value.value = staticClassPath.node.value.value + ' ' + refClass
     } else { // add staticClass
       path.node.properties.unshift(
         t.objectProperty(t.identifier('staticClass'), t.stringLiteral(refClass))
       )
-      paths['staticClass'] = path.get('properties').find(
+      paths.staticClass = path.get('properties').find(
         propertyPath => propertyPath.node.key.name === 'staticClass'
       )
     }

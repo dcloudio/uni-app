@@ -12,6 +12,10 @@ wx.createComponent({
 `
 }
 
+function hasOwn (obj, key) {
+  return Object.prototype.hasOwnProperty.call(obj, key)
+}
+
 module.exports = {
   directive: 'wx:',
   createScopedSlots (slotName, props, state) {
@@ -43,7 +47,7 @@ module.exports = {
       state.scopedSlots = {}
     }
     let componentName = `${ownerName}-${parentName}-${slotName}`
-    if (!state.scopedSlots.hasOwnProperty(componentName)) {
+    if (!hasOwn(state.scopedSlots, componentName)) {
       state.scopedSlots[componentName] = 0
     }
     if (state.scopedSlots[componentName]) {

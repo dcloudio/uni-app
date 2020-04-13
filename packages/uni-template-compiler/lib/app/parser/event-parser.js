@@ -1,7 +1,7 @@
 const deprecated = {
   events: {
-    'tap': 'click',
-    'longtap': 'longpress'
+    tap: 'click',
+    longtap: 'longpress'
   }
 }
 module.exports = function parseEvent (el) {

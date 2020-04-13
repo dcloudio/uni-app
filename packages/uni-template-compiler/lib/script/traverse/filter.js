@@ -16,7 +16,7 @@ const GLOBAL_METHODS = [
 ]
 
 const GLOBAL_OBJECTS = {
-  'Math': [
+  Math: [
     'abs',
     'acos',
     'asin',
@@ -36,7 +36,7 @@ const GLOBAL_OBJECTS = {
     'sqrt',
     'tan'
   ],
-  'JSON': [
+  JSON: [
     'stringify',
     'parse'
   ]

@@ -25,24 +25,24 @@ function getProvides () {
   const uniPath = require.resolve('@dcloudio/uni-' + process.env.UNI_PLATFORM)
   const uniCloudPath = path.resolve(__dirname, '../../packages/uni-cloud/dist/index.js')
   const provides = {
-    'uni': [uniPath, 'default'],
-    'uniCloud': [uniCloudPath, 'default']
+    uni: [uniPath, 'default'],
+    uniCloud: [uniCloudPath, 'default']
   }
 
   if (process.env.UNI_USING_COMPONENTS) {
-    provides['createApp'] = [uniPath, 'createApp']
-    provides['createPage'] = [uniPath, 'createPage']
-    provides['createComponent'] = [uniPath, 'createComponent']
+    provides.createApp = [uniPath, 'createApp']
+    provides.createPage = [uniPath, 'createPage']
+    provides.createComponent = [uniPath, 'createComponent']
   }
 
   if (
     process.env.UNI_PLATFORM === 'app-plus' &&
     process.env.UNI_USING_V8
   ) {
-    provides['__f__'] = [path.resolve(__dirname, '../format-log.js'), 'default']
+    provides.__f__ = [path.resolve(__dirname, '../format-log.js'), 'default']
 
     const cryptoProvide = [path.resolve(__dirname, '../crypto.js'), 'default']
-    provides['crypto'] = cryptoProvide
+    provides.crypto = cryptoProvide
     provides['window.crypto'] = cryptoProvide
     provides['global.crypto'] = cryptoProvide
   }
@@ -53,7 +53,7 @@ function getProvides () {
     process.env.UNI_PLATFORM !== 'mp-weixin' &&
     process.env.UNI_PLATFORM !== 'app-plus'
   ) { // 非微信小程序，自动注入 wx 对象
-    provides['wx'] = provides['uni']
+    provides.wx = provides.uni
   }
   return provides
 }
@@ -77,9 +77,9 @@ module.exports = {
 
     parseEntry()
 
-    const statCode = process.env.UNI_USING_STAT ? `import '@dcloudio/uni-stat';` : ''
+    const statCode = process.env.UNI_USING_STAT ? 'import \'@dcloudio/uni-stat\';' : ''
 
-    const beforeCode = `import 'uni-pages';`
+    const beforeCode = 'import \'uni-pages\';'
 
     return {
       mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
