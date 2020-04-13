@@ -49,9 +49,9 @@ config.plugins = config.plugins.concat([
     __PLATFORM__: JSON.stringify(process.env.UNI_PLATFORM)
   }),
   new webpack.ProvidePlugin({
-    'console': [resolve('src/core/helpers/console'), 'default'],
-    'UniViewJSBridge': [resolve('src/core/view/bridge/index')],
-    'UniServiceJSBridge': [resolve('src/core/service/bridge/index')]
+    console: [resolve('src/core/helpers/console'), 'default'],
+    UniViewJSBridge: [resolve('src/core/view/bridge/index')],
+    UniServiceJSBridge: [resolve('src/core/service/bridge/index')]
   })
 ])
 module.exports = config

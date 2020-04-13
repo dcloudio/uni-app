@@ -1,8 +1,8 @@
 const path = require('path')
-const alias = require('rollup-plugin-alias')
-const replace = require('rollup-plugin-replace')
-const nodeResolve = require('rollup-plugin-node-resolve')
-const commonjs = require('rollup-plugin-commonjs')
+const alias = require('@rollup/plugin-alias')
+const replace = require('@rollup/plugin-replace')
+const nodeResolve = require('@rollup/plugin-node-resolve')
+const commonjs = require('@rollup/plugin-commonjs')
 const requireContext = require('../lib/rollup-plugin-require-context')
 
 let input = 'src/platforms/app-plus/service/framework/create-instance-context.js'
@@ -27,9 +27,9 @@ if (process.env.UNI_SERVICE === 'legacy') {
 } else {
   input = 'src/platforms/app-plus/service/index.js'
   if (process.env.UNI_PLATFORM === 'app-plus') {
-    output.file = `packages/uni-app-plus/dist/index.v3.js`
+    output.file = 'packages/uni-app-plus/dist/index.v3.js'
   } else {
-    output.file = `packages/uni-app-plus-nvue/dist/index.js`
+    output.file = 'packages/uni-app-plus-nvue/dist/index.js'
   }
   output.format = 'iife'
   output.name = 'serviceContext'
@@ -63,15 +63,31 @@ module.exports = {
   output,
   plugins: [
     alias({
-      // 'vue': resolve('packages/uni-app-plus/dist/service.runtime.esm.js'),
-      'uni-core': resolve('src/core'),
-      'uni-platform': resolve('src/platforms/' + process.env.UNI_PLATFORM),
-      'uni-platforms': resolve('src/platforms'),
-      'uni-shared': resolve('src/shared/index.js'),
-      'uni-helpers': resolve('src/core/helpers'),
-      'uni-invoke-api': resolve('src/platforms/app-plus/service/api'),
-      'uni-service-api': resolve('src/core/service/platform-api'),
-      'uni-api-protocol': resolve('src/core/helpers/protocol')
+      entries: [{
+        find: 'uni-core',
+        replacement: resolve('src/core')
+      }, {
+        find: 'uni-platform',
+        replacement: resolve('src/platforms/' + process.env.UNI_PLATFORM)
+      }, {
+        find: 'uni-platforms',
+        replacement: resolve('src/platforms')
+      }, {
+        find: 'uni-shared',
+        replacement: resolve('src/shared/index.js')
+      }, {
+        find: 'uni-helpers',
+        replacement: resolve('src/core/helpers')
+      }, {
+        find: 'uni-invoke-api',
+        replacement: resolve('src/platforms/app-plus/service/api')
+      }, {
+        find: 'uni-service-api',
+        replacement: resolve('src/core/service/platform-api')
+      }, {
+        find: 'uni-api-protocol',
+        replacement: resolve('src/core/helpers/protocol')
+      }]
     }),
     nodeResolve(),
     commonjs(),
