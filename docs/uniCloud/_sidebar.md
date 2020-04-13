@@ -8,12 +8,12 @@
   * [开发云函数](uniCloud/cf-functions.md)
   * [云函数公共模块](uniCloud/cf-common.md)
   * [日志输出](uniCloud/cf-logger.md)
-  * [身份认证](uniCloud/cf-authentication.md)
+  <!-- * [身份认证](uniCloud/cf-authentication.md) -->
   * [定时触发](uniCloud/trigger.md)
   * [云函数URL化](uniCloud/http.md)
 * [云数据库](uniCloud/cf-database.md)
 * [云存储](uniCloud/storage.md)
-* [云Token](uniCloud/authentication.md)
+<!-- * [云Token](uniCloud/authentication.md) -->
 * [日志输出](uniCloud/cf-logger.md)
 * [同时连多服务空间](uniCloud/init.md)
 * [示例及源码](uniCloud/resource.md)
