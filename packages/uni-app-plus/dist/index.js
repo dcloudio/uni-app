@@ -901,6 +901,10 @@ function wrapper$2 (event) {
     event.detail = {};
   }
 
+  if (!('markerId' in event.detail) && 'markerId' in event) {
+    event.detail.markerId = event.markerId;
+  }
+
   if (isPlainObject(event.detail)) {
     event.target = Object.assign({}, event.target, event.detail);
   }

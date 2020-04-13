@@ -1363,6 +1363,10 @@ function wrapper$1 (event) {
     event.detail = {};
   }
 
+  if (!('markerId' in event.detail) && 'markerId' in event) {
+    event.detail.markerId = event.markerId;
+  }
+
   if (isPlainObject(event.detail)) {
     event.target = Object.assign({}, event.target, event.detail);
   }
@@ -1807,6 +1811,12 @@ function initSpecialMethods (mpInstance) {
     specialMethods.forEach(method => {
       if (isFn(mpInstance.$vm[method])) {
         mpInstance[method] = function (event) {
+          if (!hasOwn(event, 'detail')) {
+            event.detail = {};
+          }
+          if (!('markerId' in event.detail) && 'markerId' in event) {
+            event.detail.markerId = event.markerId;
+          }
           // TODO normalizeEvent
           mpInstance.$vm[method](event);
         };

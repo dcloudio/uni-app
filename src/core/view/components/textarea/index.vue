@@ -17,7 +17,7 @@
         ref="line"
         class="uni-textarea-line"
       >
-&nbsp;
+        &nbsp;
       </div>
       <div class="uni-textarea-compute">
         <div

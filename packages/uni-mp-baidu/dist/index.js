@@ -1031,6 +1031,10 @@ function wrapper$1 (event) {
     event.detail = {};
   }
 
+  if (!('markerId' in event.detail) && 'markerId' in event) {
+    event.detail.markerId = event.markerId;
+  }
+
   { // mp-baidu，checked=>value
     if (
       isPlainObject(event.detail) &&
