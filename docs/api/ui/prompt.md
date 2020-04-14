@@ -43,7 +43,10 @@ uni.showToast({
 
 **Tips**
 
-App端可通过[plus.nativeUI.toast API](https://www.html5plus.org/doc/zh_cn/nativeui.html#plus.nativeUI.toast)实现更多功能。
+- App端可通过[plus.nativeUI.toast API](https://www.html5plus.org/doc/zh_cn/nativeui.html#plus.nativeUI.toast)实现更多功能。
+- `showToast` 和 `showLoading` 是底层同一个（按的小程序的设计），所以 `showToast` 和 `showLoading` 会相互覆盖，而 `hideLoading` 也会关闭 `showToast` 。冲突解决方案：
+  + App：使用 [plus.nativeUI.toast](http://www.html5plus.org/doc/zh_cn/nativeui.html#plus.nativeUI.toast) 接口
+  + 非App：其中一个使用自定义组件实现。
 
 ### uni.hideToast()
 
@@ -96,8 +99,7 @@ setTimeout(function () {
 
 **注意**
 
-- `showToast` 和 `showLoading` 是底层同一个（按的小程序的设计），所以 `showToast` 和 `showLoading` 会相互覆盖，而 `hideLoading` 也会关闭 `showToast` 。
-- 冲突解决方案：
+- `showToast` 和 `showLoading` 是底层同一个（按的小程序的设计），所以 `showToast` 和 `showLoading` 会相互覆盖，而 `hideLoading` 也会关闭 `showToast` 。冲突解决方案：
   + App：使用 [plus.nativeUI.toast](http://www.html5plus.org/doc/zh_cn/nativeui.html#plus.nativeUI.toast) 接口
   + 非App：其中一个使用自定义组件实现。
 
