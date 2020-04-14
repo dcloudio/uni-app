@@ -166,7 +166,7 @@ export default {
       this.map && this.map[val ? 'hide' : 'show']()
     },
     scale (val) {
-      this.map && this.map.setZoom(val)
+      this.map && this.map.setZoom(parseInt(val))
     },
     latitude (val) {
       this.map && this.map.setStyles({
@@ -197,7 +197,7 @@ export default {
     map.__markers__ = {}
     map.__lines__ = []
     map.__circles__ = []
-    map.setZoom(this.scale)
+    map.setZoom(parseInt(this.scale))
     plus.webview.currentWebview().append(map)
     if (this.hidden) {
       map.hide()
@@ -238,11 +238,12 @@ export default {
       })
     },
     getCenterLocation ({ callbackId }) {
-      const center = this.map.getCenter()
-      this._publishHandler(callbackId, {
-        longitude: center.longitude,
-        latitude: center.latitude,
-        errMsg: 'getCenterLocation:ok'
+      this.map.getCurrentCenter((state, point) => {
+        this._publishHandler(callbackId, {
+          longitude: point.longitude,
+          latitude: point.latitude,
+          errMsg: 'getCenterLocation:ok'
+        })
       })
     },
     getRegion ({ callbackId }) {
