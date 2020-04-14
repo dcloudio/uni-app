@@ -4,6 +4,10 @@ import {
 } from 'uni-shared'
 
 import {
+  wrapperMPEvent
+} from 'uni-helpers/patch'
+
+import {
   VD_SYNC,
   UI_EVENT,
   PAGE_CREATE,
@@ -55,10 +59,7 @@ function wrapperEvent (event) {
   parseTargets(event)
   event.preventDefault = noop
   event.stopPropagation = noop
-  event.mp = event
-  return Object.assign({
-    mp: event // mpvue
-  }, event)
+  return wrapperMPEvent(event)
 }
 
 const handleVdData = {
