@@ -6,10 +6,11 @@ import {
  * mpvue event
  */
 export function wrapperMPEvent (event) {
-  return Object.assign({
-    mp: event,
-    _processed: true
+  event.mp = Object.assign({
+    '@warning': 'mp is deprecated'
   }, event)
+  event._processed = true
+  return event
 }
 /**
  * app-plus titleNView
