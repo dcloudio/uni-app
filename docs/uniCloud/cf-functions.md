@@ -32,6 +32,10 @@ exports.main = async (event, context) => {
 
 云函数中如果要使用其他服务（比如mysql数据库、redis等），可以按照nodejs的写法即可。
 
+**注意事项**
+
+- 服务商为阿里云时，暂不可使用相对路径读取文件（比如`fs.readFileSync('./info.txt')`），可以使用绝对路径`fs.readFileSync(path.resolve(__dirname,'./info.txt'))`
+
 ### 访问数据库
 
 云函数中支持访问本服务空间下的数据库，调用方式详见[规范](uniCloud/cf-database.md)
