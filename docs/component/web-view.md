@@ -276,3 +276,6 @@ A：调用 uni 相关的 API，就可以实现页面切换及发送消息。参�
 
 Q：web-view 加载的 HTML 中，能够调用 5+ 的能力么？
 A：加载的 HTML 中是有 5+ 环境的，在 plusready 后调用即可。参考：[一个简单实用的 plusready 方法](https://ask.dcloud.net.cn/article/34922)
+
+Q: web-view 加载 uni-app H5，内部跳转冲突如何解决
+A：使用 uni.webView.navigateTo...
