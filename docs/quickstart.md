@@ -232,6 +232,10 @@ npm run build:%PLATFORM%
 
 可以自定义更多条件编译平台，比如钉钉小程序，参考[package.json文档](https://uniapp.dcloud.io/collocation/package)。
 
+### 运行并发布快应用@quickapp
+参考 [https://ask.dcloud.net.cn/article/37145](https://ask.dcloud.net.cn/article/37145)
+
+
 **其他：**
 
 * 目前使用`npm run build:app-plus`会在`/dist/build/app-plus`下生成app打包资源。如需制作wgt包，需要手动压缩成zip包修改后缀为wgt。
