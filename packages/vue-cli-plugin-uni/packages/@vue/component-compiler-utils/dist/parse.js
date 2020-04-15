@@ -7,11 +7,12 @@ const splitRE = /\r?\n/g;
 const emptyRE = /^(?:\/\/)?\s*$/;
 function parse(options) {
     const { source, filename = '', compiler, compilerParseOptions = { pad: 'line' }, sourceRoot = '', needMap = true } = options;
-    const cacheKey = hash(filename + source);
+    // fixed by xxxxxx (添加isAppNVue标记，防止nvue与vue引用相同组件时，走了相同的cache)
+    const cacheKey = hash(String(options.isAppNVue) + filename + source);
     let output = cache.get(cacheKey);
     if (output)
         return output;
-    // fixed by xxxxxx    
+    // fixed by xxxxxx
     output = require('./parseCustomBlocks')(compiler.parseComponent(source, compilerParseOptions), options);
     if (needMap) {
         if (output.script && !output.script.src) {
