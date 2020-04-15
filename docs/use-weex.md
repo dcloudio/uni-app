@@ -593,6 +593,7 @@ canvas API使用，详见canvas文档。
 下面有些正确和错误的写法示例对比：
 
 - 选择器仅支持class 选择器
+
 ```css
 
 /* 错误 */
@@ -638,6 +639,7 @@ canvas API使用，详见canvas文档。
 ```
 
 - nvue的`uni-app`编译模式下，`App.vue` 中的样式，会编译到每个 `nvue文件`。对于共享样式，如果有不合法属性控制台会给出警告，可以通过条件编译`APP-PLUS-NVUE`屏蔽 `App` 中的警告。
+
 ```css
 /* 错误 */
 /*  控制台警告：
@@ -660,6 +662,7 @@ WARNING: `-webkit-transform` is not a standard property name (may not be support
 }
 
 ```
+
 ## Android平台阴影(box-shadow)问题
 
 Android平台weex对阴影样式(`box-shadow`)支持不完善，如设置圆角边框时阴影样式显示不正常、设置动画时在`Android7`上显示不正常等。为解决这些问题，从HBuilderX 2.4.7起，新增`elevation`属性（组件的属性，不是css样式）设置组件的层级，`Number`类型，层级值越大阴影越明显，阴影效果也与组件位置有关，越靠近页面底部阴影效果越明显
