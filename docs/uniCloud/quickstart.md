@@ -171,9 +171,15 @@ uniCloud的[web控制台](https://unicloud.dcloud.net.cn/)可以查看线上云�
 |阿里云		|api.bspapp.com				|bsppub.oss-cn-shanghai.aliyuncs.com|
 |腾讯云		|tcb-api.tencentcloudapi.com|cos.ap-shanghai.myqcloud.com		|
 
+
 小程序开发工具的真机预览功能，必须添加上述域名白名单，否则无法调用云函数。模拟器的PC端预览、真机调试不受此影响。
 
-使用腾讯云时，开发期间会使用dcloud的服务器访问云函数来时时返回云函数运行日志，最好在开发期间忽略域名检查。
+使用腾讯云作为服务供应商时，开发调试期间（在HBuilderX内点击运行）会访问DCloud服务器获取云函数运行日志，可以在开发调试期间忽略域名检查。发行（在HBuilderX内点击发行）之后会直接请求腾讯云服务器访问云函数。使用腾讯云运行期间访问云函数速度会慢于发行，原因有以下两点：
+
+- 获取日志需要从管理端调用云函数，速度比sdk直接调用慢。
+- 访问DCloud服务器也有时间损耗。
+
+后续会对此流程进行优化
 
 <span id="useinh5"></span>
 ## H5中使用uniCloud

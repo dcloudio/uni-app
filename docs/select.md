@@ -1,7 +1,7 @@
 #### uni-app选型评估23问
 
 如果你关心竞品对比，这里有几份详尽对比：
-1. 多端开发框架对比横评，参考：[https://juejin.im/post/5ca1736af265da30ae314248](https://juejin.im/post/5ca1736af265da30ae314248)
+1. 多端开发框架对比横评，参考：[https://juejin.im/post/5e8e8d5a6fb9a03c6d3d9f42](https://juejin.im/post/5e8e8d5a6fb9a03c6d3d9f42)
 2. 只做App，flutter、react native等App跨平台框架对比，参考：[https://ask.dcloud.net.cn/article/36083](https://ask.dcloud.net.cn/article/36083)
 3. 只做小程序，原生wxml开发、wepy、mpvue、taro的对比，[https://ask.dcloud.net.cn/article/35867](https://ask.dcloud.net.cn/article/35867)
 4. uni-app和微信原生开发的详细比较评测，参考：[https://ask.dcloud.net.cn/article/36484](https://ask.dcloud.net.cn/article/36484)
@@ -129,7 +129,7 @@ plus api的结合解决了这个问题，大多数App的开发不再需要原生
 
 **uni-app 支持的手机版本最低到多少？**
 
-Android4.4、iOS8是官方会保障兼容的。
+Android4.4、iOS9是官方会保障兼容的。
 要知道Android4.4已经是2013年发布的手机了，正常用户不会还在用这么久远的手机。
 
 **uni-app成熟度高吗？**

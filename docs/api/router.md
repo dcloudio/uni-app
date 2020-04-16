@@ -251,4 +251,4 @@ pages.json 中配置的是窗口显示的动画
 **注意**
 - 纯nvue项目（render为native），窗体动画默认进入动画为popin，返回为pop-out。如果想修改动画类型，只能通过uni.navigateTo API修改，在组件或pages.json里配置动画类型无效
 - 非纯nvue项目，App端窗体动画，默认进入动画为slider-in-right，默认返回动画为pop-out
-
+- webview 中嵌入 uni-app H5时，使用 uni.webView.navigateTo... 跳转页面

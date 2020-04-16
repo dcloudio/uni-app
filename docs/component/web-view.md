@@ -194,7 +194,7 @@ var wv;//计划创建的webview
 export default {
 	onReady() {
 		// #ifdef APP-PLUS
-		var currentWebview = this.$mp.page.$getAppWebview() //获取当前页面的webview对象
+		var currentWebview = this.$scope.$getAppWebview() //此对象相当于html5plus里的plus.webview.currentWebview()。在uni-app里vue页面直接使用plus.webview.currentWebview()无效，非v3编译模式使用this.$mp.page.$getAppWebview()
 		setTimeout(function() {
 			wv = currentWebview.children()[0]
 			wv.setStyle({top:150,height:300})
@@ -222,7 +222,7 @@ export default {
 			top:uni.getSystemInfoSync().statusBarHeight+44 //放置在titleNView下方。如果还想在webview上方加个地址栏的什么的，可以继续降低TOP值
 		})
 		wv.loadURL("https://www.baidu.com")
-		var currentWebview = this.$mp.page.$getAppWebview() //获取当前页面的webview对象
+		var currentWebview = this.$scope.$getAppWebview(); //此对象相当于html5plus里的plus.webview.currentWebview()。在uni-app里vue页面直接使用plus.webview.currentWebview()无效，非v3编译模式使用this.$mp.page.$getAppWebview()
 		currentWebview.append(wv);//一定要append到当前的页面里！！！才能跟随当前页面一起做动画，一起关闭
 		setTimeout(function() {
 			console.log(wv.getStyle())
@@ -276,3 +276,6 @@ A：调用 uni 相关的 API，就可以实现页面切换及发送消息。参�
 
 Q：web-view 加载的 HTML 中，能够调用 5+ 的能力么？
 A：加载的 HTML 中是有 5+ 环境的，在 plusready 后调用即可。参考：[一个简单实用的 plusready 方法](https://ask.dcloud.net.cn/article/34922)
+
+Q: web-view 加载 uni-app H5，内部跳转冲突如何解决
+A：使用 uni.webView.navigateTo...

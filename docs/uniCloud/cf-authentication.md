@@ -30,6 +30,24 @@ const IP = auth.getClientIP()
 <span id="createticket"></span>
 ### auth.createTicket(String customUserId, Object createTicketOptions)
 
+此Api现在直接调用有问题，正在修复。可以先使用下面的方式调用
+
+```js
+const app = uniCloud.init({
+  spaceId: 'your-space-id',
+  credentials: require('./credentials.json')
+})
+
+const auth = app.auth();
+
+let customUserId = '123456';
+
+const ticket = auth.createTicket(customUserId, {
+  refresh: 10 * 60 * 1000 // 每十分钟刷新一次登录态， 默认为一小时
+});
+```
+
+
 开发者可以使用云函数创建登录凭证，提供给客户端进行登录操作。[详见](uniCloud/authentication.md#自定义登录)
 
 **createTicketOptions参数说明**

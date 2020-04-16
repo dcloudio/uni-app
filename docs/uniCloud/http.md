@@ -105,7 +105,7 @@ $ curl https://${spaceId}.service.tcloudbase.com/${path}
 
 使用POST请求`https://${spaceId}.service.tcloudbase.com/${functionPath}`，云函数接收到的`event`为请求发送的数据，**uni.request默认content-type为application/json**
 
-```
+```js
 // 以uni.request为例
 uni.request({
   method: 'POST',
@@ -121,6 +121,8 @@ uni.request({
 
 // 云函数收到的event为, 注意如果直接return此格式数据可能会被作为集成响应处理，参考下面的集成响应文档
 ```
+
+```js
 {
     path: '/',
     httpMethod: 'GET',
@@ -134,7 +136,12 @@ uni.request({
     body: '{"a":1,"b":2}',
 }
 ```
-```
+
+**注意**
+
+- 阿里云目前请求与响应有如下限制
+  + 请求Body大小限制，不能超过4K。
+  + 响应Body大小限制，不能超过4K。
 
 
 ### 云函数的返回值

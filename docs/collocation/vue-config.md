@@ -6,6 +6,8 @@ vue.config.js 是一个可选的配置文件，如果项目的根目录中存在
 
 **注意事项**
 
+- 仅vue页面生效
+
 部分配置项会被编译配置覆盖，例如：
 
 * publicPath  不支持，如果需要配置，请在 manifest.json->h5->router->base 中配置，参考文档：[h5-router](collocation/manifest?id=h5-router)
@@ -59,12 +61,14 @@ module.exports = {
 
 **发布时删除console**
 
+`HBuilderX 2.6.8+`支持
+
 ```js
 module.exports = {
 	chainWebpack: (config) => {
 		// 发行或运行时启用了压缩时会生效
 		config.optimization.minimizer('terser').tap((args) => {
-			const compress = args[0].terserOptions
+			const compress = args[0].terserOptions.compress
 			// 非 App 平台移除 console 代码(包含所有 console 方法，如 log,debug,info...)
 			compress.drop_console = true
 			compress.pure_funcs = [
@@ -76,3 +80,7 @@ module.exports = {
 	}
 }
 ```
+
+启用压缩的方法：
+- HBuilderX创建的项目勾选运行-->运行到小程序模拟器-->运行时是否压缩代码
+- cli创建的项目可以在`pacakge.json`中添加参数`--minimize`，示例：`"dev:mp-weixin": "cross-env NODE_ENV=development UNI_PLATFORM=mp-weixin vue-cli-service uni-build --watch --minimize"`

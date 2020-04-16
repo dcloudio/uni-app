@@ -28,7 +28,7 @@
 |touchable|Boolean|true|是否监听用户的触摸事件，只在初始化时有效，不能动态变更|字节跳动小程序（uni-app 2.5.5+ 推荐统一使用 disable-touch）|
 |easing-function|String|default|指定 swiper 切换缓动动画类型，有效值：default、linear、easeInCubic、easeOutCubic、easeInOutCubic|微信小程序|
 |@change|EventHandle||current 改变时会触发 change 事件，event.detail = {current: current, source: source}||
-|@transition|EventHandle||swiper-item 的位置发生改变时会触发 transition 事件，event.detail = {dx: dx, dy: dy}|App、H5、微信小程序、支付宝小程序、字节跳动小程序、QQ小程序|
+|@transition|EventHandle||swiper-item 的位置发生改变时会触发 transition 事件，event.detail = {dx: dx, dy: dy}，支付宝小程序暂不支持dx, dy|App、H5、微信小程序、支付宝小程序、字节跳动小程序、QQ小程序|
 |@animationfinish|EventHandle||动画结束时会触发 animationfinish 事件，event.detail = {current: current, source: source}|字节跳动小程序不支持|
 
 change 事件返回 detail 中包含一个 source 字段，表示导致变更的原因，可能值如下：

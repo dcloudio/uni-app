@@ -677,7 +677,7 @@ export default {
 |vm.$children		|支持	|支持			|支持		|支持			|-																																					|
 |vm.$slots			|支持	|支持			|不支持	|支持			|App端旧版获取值为`{'slotName':true/false}`比如：`{"footer":true}`					|
 |vm.$scopedSlots|支持	|支持			|支持		|支持			|App端旧版获取值为`{'slotName':true/false}`比如：`{"footer":true}`					|
-|vm.$refs				|支持	|支持			|支持		|支持			|-																																					|
+|vm.$refs				|支持	|支持			|支持		|支持			|非H5端只能用于获取自定义组件，不能用于获取内置组件实例（如：view、text）|
 |vm.$isServer		|支持	|不支持		|支持		|不支持		|App端V3总是返回false																												|
 |vm.$attrs			|支持	|不支持		|支持		|不支持		|-																																					|
 |vm.$listeners	|支持	|不支持		|支持		|不支持		|-																																					|

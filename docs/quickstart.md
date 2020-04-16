@@ -77,7 +77,9 @@ uni-app自带的模板有 Hello uni-app ，是官方的组件和API示例。还�
     <div align=center>
     	<img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/uni20190222-4.png"/>
     </div>
-    
+
+7. 在QQ小程序开发工具里运行：内容同上，不再重复。
+
 **Tips**
 
 * 如果是第一次使用，需要配置开发工具的相关路径。点击工具栏的运行 -> 运行到小程序模拟器 -> 运行设置，配置相应小程序开发者工具的路径。
@@ -168,7 +170,7 @@ HBuilderX 还提供了快捷运行菜单，可以按数字快速选择要运行�
 </div>
 3. 在字节跳动小程序开发者工具中，导入生成的字节跳动小程序项目，测试项目代码运行正常后，点击“上传”按钮上传代码，在 [字节跳动小程序后台](https://developer.toutiao.com/app/applist)，选择刚提交的版本点击提交审核，详见：[字节跳动小程序文档](https://developer.toutiao.com/dev/cn/mini-app/introduction/plug-in/verification)。
 
-*发布为QQ小程序：*
+**发布为QQ小程序：**
 内容同上，不再重复。
 
 发布的快捷键是`Ctrl+u`。同样可拉下快速发布菜单并按数字键选择。
@@ -229,12 +231,17 @@ npm run build:%PLATFORM%
 |mp-weixin|微信小程序|
 |mp-toutiao|字节跳动小程序|
 |mp-qq|qq 小程序|
+|quickapp-vue|快应用|
 
 可以自定义更多条件编译平台，比如钉钉小程序，参考[package.json文档](https://uniapp.dcloud.io/collocation/package)。
 
+### 运行并发布快应用@quickapp
+另行参考 [https://ask.dcloud.net.cn/article/37145](https://ask.dcloud.net.cn/article/37145)
+
+
 **其他：**
 
-* 目前使用`npm run build:app-plus`会在`/dist/build/app-plus`下生成app打包资源。如需制作wgt包，请以 uniapp id 命名新建文件夹，将app-plus中的文件 copy 到文件夹中，然后压缩成zip，在修改后缀为wgt。
+* 目前使用`npm run build:app-plus`会在`/dist/build/app-plus`下生成app打包资源。如需制作wgt包，请以该项目的`appid`（参见`manifest.json`文件中的`appid`）命名新建文件夹，将`app-plus`中的文件复制到文件夹中，然后压缩成zip，再修改后缀为`wgt`。
 * dev 模式编译出的各平台代码存放于根目录下的 ``/dist/dev/``目录，打开各平台开发工具选择对应平台目录即可进行预览（h5 平台不会在此目录，存在于缓存中）；
 * build 模式编译出的各平台代码存放于根目录下的 ``/dist/build/`` 目录，发布时选择此目录进行发布；
 * dev 和 build 模式的区别：

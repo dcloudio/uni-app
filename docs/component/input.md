@@ -83,9 +83,10 @@ App平台在iOS上，webview中的软键盘弹出时，默认在软键盘上方�
 
 - 如需使用js动态设置softinputNavBar
 ```javascript
-this.$mp.page.$getAppWebview().setStyle({
+this.$scope.$getAppWebview().setStyle({
 	softinputNavBar: 'none'
 })
+//this.$scope.$getAppWebview()相当于html5plus里的plus.webview.currentWebview()。在uni-app里vue页面直接使用plus.webview.currentWebview()无效，非v3编译模式使用this.$mp.page.$getAppWebview()
 ```
 
 如果是nvue页面，默认就没有键盘上方的横条，无需任何设置。
