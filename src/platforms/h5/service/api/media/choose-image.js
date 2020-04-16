@@ -55,7 +55,7 @@ export function chooseImage ({
     for (let i = 0; i < fileCount; i++) {
       const file = event.target.files[i]
       let filePath
-      Object.defineProperty(file, 'filePath', {
+      Object.defineProperty(file, 'path', {
         get () {
           filePath = filePath || fileToUrl(file)
           return filePath
