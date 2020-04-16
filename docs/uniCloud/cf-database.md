@@ -268,10 +268,10 @@ let res = await collection.doc('doc-id').set({
 ### 添加查询条件
 
 collection.where()
-参数
 
-设置过滤条件
-where 可接收对象作为参数，表示筛选出拥有和传入对象相同的 key-value 的文档。比如筛选出所有类型为计算机的、内存为 8g 的商品：
+**在聚合操作中请使用match**
+
+设置过滤条件，where 可接收对象作为参数，表示筛选出拥有和传入对象相同的 key-value 的文档。比如筛选出所有类型为计算机的、内存为 8g 的商品：
 
 ```js
 let res = await db.collection('goods').where({
@@ -304,13 +304,23 @@ db.collection('user').where({
 
 collection.count()
 
-参数
 ```js
 let res = await db.collection('goods').where({
   category: 'computer',
   type: {
     memory: 8,
   }
+}).count()
+```
+
+**注意**
+
+使用阿里云时，count必须搭配where使用，此问题阿里云正在修复。如果要count所有记录可以使用一个必然满足的条件，比如下面这样：
+
+```js
+const dbCmd = db.command
+let res = await db.collection('goods').where({
+  _db: dbCmd.exists(true)
 }).count()
 ```
 
