@@ -279,37 +279,37 @@ export default {
       }
     },
     preloadImage: function (actions) {
-      var sefl = this
+      var self = this
       actions.forEach(function (action) {
         var method = action.method
         var data = action.data
         var src = ''
         if (method === 'drawImage') {
           src = data[0]
-          src = sefl.$getRealPath(src)
+          src = self.$getRealPath(src)
           data[0] = src
         } else if (method === 'setFillStyle' && data[0] === 'pattern') {
           src = data[1]
-          src = sefl.$getRealPath(src)
+          src = self.$getRealPath(src)
           data[1] = src
         }
-        if (src && !sefl._images[src]) {
+        if (src && !self._images[src]) {
           loadImage()
         }
         /**
          * 加载图像
          */
         function loadImage () {
-          sefl._images[src] = new Image()
-          sefl._images[src].onload = function () {
-            sefl._images[src].ready = true
+          self._images[src] = new Image()
+          self._images[src].onload = function () {
+            self._images[src].ready = true
           }
           /**
            * 从Blob加载
            * @param {Blob} blob
            */
           function loadBlob (blob) {
-            sefl._images[src].src = (window.URL || window.webkitURL).createObjectURL(blob)
+            self._images[src].src = (window.URL || window.webkitURL).createObjectURL(blob)
           }
           /**
            * 从本地文件加载
@@ -318,7 +318,7 @@ export default {
           function loadFile (path) {
             var bitmap = new plus.nativeObj.Bitmap('bitmap' + Date.now())
             bitmap.load(path, function () {
-              sefl._images[src].src = bitmap.toBase64Data()
+              self._images[src].src = bitmap.toBase64Data()
               bitmap.clear()
             }, function () {
               bitmap.clear()
@@ -337,7 +337,7 @@ export default {
                 if (status === 200) {
                   loadFile(d.filename)
                 } else {
-                  sefl._images[src].src = src
+                  self._images[src].src = src
                 }
               }).start()
             }
@@ -350,20 +350,20 @@ export default {
               }
             }
             xhr.onerror = window.plus ? plusDownload : function () {
-              sefl._images[src].src = src
+              self._images[src].src = src
             }
             xhr.send()
           }
 
           if (window.plus && (!window.webkit || !window.webkit.messageHandlers)) {
-            sefl._images[src].src = src
+            self._images[src].src = src
           } else {
             // 解决 PLUS-APP（wkwebview）以及 H5 图像跨域问题（H5图像响应头需包含access-control-allow-origin）
             if (window.plus && src.indexOf('http://') !== 0 && src.indexOf('https://') !==
               0) {
               loadFile(src)
             } else if (/^data:.*,.*/.test(src)) {
-              sefl._images[src].src = src
+              self._images[src].src = src
             } else {
               loadUrl(src)
             }
