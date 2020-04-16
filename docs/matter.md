@@ -189,7 +189,6 @@ vue页面在App端的渲染引擎默认是系统webview（不是手机自带浏�
 
 * [支付宝小程序更新日志](https://docs.alipay.com/mini/ide/framework-changelog)
 * 支付宝小程序开发工具：[https://docs.alipay.com/mini/ide/download](https://docs.alipay.com/mini/ide/download)
-* 目前无分包的配置，并且包体积限制在 3M。
 * showLoading 是不透传的，也就是说 loading 显示的时候无法点击页面内容。
 * 文件名或文件夹名中不允许出现 @ 符号。
 * 网络请求返回的数据会严格按照 ``dataType`` 进行处理，如果不符合规范则会抛出错误，而不是按照原格式返回。
