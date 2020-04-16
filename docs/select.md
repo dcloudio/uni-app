@@ -10,7 +10,7 @@
 
 ```uni-app``` 是免费并且属于Apache2.0开源协议的产品。DCloud官方承诺永远不会变更开源协议。无论HBuilderX、uni-app、App，面向中国人永久免费。大家可以放心使用。
 
-DCloud的盈利方式在帮助开发者进行推广和流量变现上，而不在开发工具收费上。
+DCloud的盈利方式在帮助开发者进行流量变现（uni-AD）和提供可选的、有价值的云服务（uniCloud）上，而不在开发工具收费上。
 
 **跨端会造成功能受限制吗？**
 
@@ -35,7 +35,7 @@ DCloud的盈利方式在帮助开发者进行推广和流量变现上，而不�
 ```uni-app```打包成App后，支持webview渲染和weex原生渲染这2种引擎，可以任由开发者切换使用。
 
 - webview渲染方式，架构和微信小程序一样。微信小程序的Hybrid应用框架是业内体验上的标杆，实践证明这种体验足以承载一线互联网开发商获得上亿用户。uni-app的App端体验同微信小程序，超过其他平台的小程序，超过一般的hybrid框架。
-- 原生渲染方式，是DCloud改造了weex引擎，在weex上实现了uni-app的组件和API。达到更优秀的用户体验。
+- 原生渲染方式，是DCloud改造了weex引擎，在原生渲染引擎上实现了uni-app的组件和API。达到更优秀的用户体验。
 
 由于有丰富的插件市场，以及支持所有小程序SDK在App端的使用，使得```uni-app```拥有更庞大的应用生态。
 
@@ -45,13 +45,13 @@ DCloud的盈利方式在帮助开发者进行推广和流量变现上，而不�
 1. uni-app无需追随微信升级，可不受限在条件编译里使用wx的现在或未来的所有api
 2. uni-app的性能比一般人手写的微信原生代码性能更高。就像vue操作比一般人写js操作dom性能更高一样。底层自动diff差量更新数据，比手动setData性能更高。评测数据见下文
 3. uni-app是纯vue语法，不必另学一种dsl。开发不同项目时，思维不用切换
-4. uni-app的组件、模板非常丰富，插件市场数千款插件。如富文本解析、图表等组件，uni-app版插件性能均超过了wxparse、wx-echart等微信小程序组件
+4. uni-app的组件、模板非常丰富，插件市场数千款插件。如富文本解析、图表、自定义下拉刷新等组件，uni-app版插件性能均超过了wxparse、wx-echart等微信小程序组件
 5. HBuilderX比微信工具更强大，开发效率更高。哪怕使用vscode等工具，由于这些工具对vue的支持强于对wxml的支持，所以开发效果也会更高
 6. 微信原生开发对webpack、预编译语言、工程流程管理很多功能都不支持，大公司很少用微信原生开发，都是在用框架来提升开发效率
 7. uni-app支持双向数据绑定、vuex状态管理，比小程序原生开发方便的多
 8. 迟早会有多端需求，使用`uni-app`再无后续顾虑
-9. uni-app并非仅用于做跨端的，只用uni-app做小程序、只做H5、只做App的，案例是一样多的，详见：https://uniapp.dcloud.io/case
-关于uni-app和微信开发的详细比较评测，参考：https://ask.dcloud.net.cn/article/36484
+9. uni-app并非仅用于做跨端的，只用uni-app做小程序、只做H5、只做App的，案例是一样多的，详见：[https://uniapp.dcloud.io/case](https://uniapp.dcloud.io/case)
+关于uni-app和微信开发的详细比较评测，参考：[https://ask.dcloud.net.cn/article/36484](https://ask.dcloud.net.cn/article/36484)
 
 - 评测1、uni-app和原生wxml开发、wepy、mpvue、taro的对比，[https://ask.dcloud.net.cn/article/35867](https://ask.dcloud.net.cn/article/35867)
 - 评测2、uni-app和微信原生开发的详细比较评测，参考：[https://ask.dcloud.net.cn/article/36484](https://ask.dcloud.net.cn/article/36484)
@@ -76,7 +76,7 @@ plus api的结合解决了这个问题，大多数App的开发不再需要原生
 
 相比纯原生开发，```uni-app```体验可商用，也不会限制功能调用，但开发效率和开发成本更优于原生开发。
 
-如果你已经有了原生App，那么可以局部使用```uni-app```，内嵌SDK，让工程逐步跨平台化。
+如果你已经有了原生App，那么可以局部使用```uni-app```，内嵌uni小程序SDK，把部分栏目小程序化，或者直接打造自己的小程序平台。
 
 **uni-app是多端写在一个项目统一升级维护，还是每个端不同的项目，只复用部分代码**
 
@@ -85,9 +85,6 @@ plus api的结合解决了这个问题，大多数App的开发不再需要原生
 这有个巨大的好处是一套工程代码，升级时可多端同时更新。
 
 如果把不同端的项目分开，那么维护升级时非常麻烦，无法方便同步升级。
-
-所以```uni-app```开发微信小程序时，不止编码，包括域名校验等配置均在HBuilderX里完成，不需要在微信开发者工具里二次调整。
-
 
 **uni-app 学习成本高吗？基于什么技术栈？**
 
@@ -119,13 +116,13 @@ plus api的结合解决了这个问题，大多数App的开发不再需要原生
 
 - 丰富的插件市场为开发者提供数千款现成的轮子，[https://ext.dcloud.net.cn](https://ext.dcloud.net.cn)
 - 兼容微信小程序 JS SDK，丰富的小程序生态内容可直接引入uni-app，并且在App侧通用，[参考](http://ask.dcloud.net.cn/article/35070)
-- 兼容微信小程序自定义组件，并且App侧通用，[参考](http://uniapp.dcloud.io/frame?id=小程序组件支持)
+- 兼容微信小程序自定义组件，并且App、H5侧通用，[参考](http://uniapp.dcloud.io/frame?id=小程序组件支持)
+- App和H5提供了renderjs，使得浏览器专用的库也可以在App和H5里使用，[参考](https://uniapp.dcloud.io/frame?id=renderjs)
 - 支持 NPM 包管理系统，[参考](http://uniapp.dcloud.io/frame?id=npm%E6%94%AF%E6%8C%81)
 - 支持 mpvue 项目及组件，[参考](http://ask.dcloud.net.cn/article/34945)
 - 支持原生插件，见插件市场：[https://ext.dcloud.net.cn](https://ext.dcloud.net.cn)
-- 支持App原生工程里嵌入uni-app的sdk。
+- 支持App原生工程里嵌入uni小程序sdk。
 
-需要注意的是，```uni-app``` 采用```Vue.js```方案，限制了dom操作，因此所有基于dom的前端库都无法直接使用；所幸的是目前基于微信小程序的库已经非常多了，这个生态也很完善，所有微信小程序的库在```uni-app``` 里都能用，不止是在微信里能用，在App下也能用。
 
 **uni-app 支持的手机版本最低到多少？**
 
@@ -153,7 +150,7 @@ Android4.4、iOS9是官方会保障兼容的。
 
 **DCloud是家什么公司，是否可信赖**
 
-```DCloud```从2013年开始做HBuilder，目前380万前端开发者在使用```DCloud```的开发工具，HBuilder百度指数与sublime、webstorm等全球知名工具相同。是中国唯一一家成功的开发工具厂商。
+```DCloud```从2013年开始做HBuilder，目前470万前端开发者在使用```DCloud```的开发工具，HBuilder百度指数与sublime、webstorm等全球知名工具相同。是中国唯一一家成功的开发工具厂商。
 
 ```DCloud```是明星创业公司，融资已经过了B2轮，且均为知名VC或战略投资人。
 
@@ -163,9 +160,7 @@ Android4.4、iOS9是官方会保障兼容的。
 
 ```DCloud```的产品技术一直引领业内，2015年就上线业内第一个"小程序"：DCloud流应用。随后DCloud广泛推动业内各大公司上线"小程序"，普及该技术广泛应用。
 
-数年来只有其他公司侵权DCloud，这些作恶公司已被法院判决给DCloud赔款道歉，DCloud从未有劣迹，诚信立足于行业。
-
-阿里小程序IDE官方内嵌`uni-app`，uni-app没有让阿里巴巴失望，也不会让你失望。详见：[https://ask.dcloud.net.cn/article/36485](https://ask.dcloud.net.cn/article/36485)
+阿里小程序IDE官方内嵌`uni-app`、腾讯课堂官方录制`uni-app`培训视频、华为腾讯阿里字节跳动京东等众多一线公司使用uni-app，uni-app没有让他们失望，也不会让你失望。
 
 **App打包必须上传DCloud云端吗？代码会泄露吗？**
 
@@ -178,7 +173,7 @@ Android4.4、iOS9是官方会保障兼容的。
 **DCloud提供哪些技术支持？碰到框架bug影响业务怎么办？**
 
 ```uni-app``` 是DCloud全力打造的重点产品，不是非专业公司的KPI项目。不会因为某些负责人的流动导致框架烂尾。
-```uni-app``` 的github上的dev分支是日更的，可随时修复bug。并且作为开源产品，开发者也可以修改源码。
+```uni-app``` 的github上的dev分支是频繁更新的，可随时修复bug。并且作为开源产品，开发者也可以修改源码。
 ```uni-app``` 的app引擎，支持原生扩展，只要你会原生扩展，就不怕app引擎有限制，大不了自己补一个原生插件进去。
 ```uni-app``` 开发小程序，无需依赖微信等平台升级。它们升级后，uni-app是可以直接使用的，不需要等待uni-app升级才能使用微信的新功能。
 
