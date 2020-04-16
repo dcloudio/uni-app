@@ -27,8 +27,7 @@ const auth = uniCloud.auth()
 auth.signInAnonymously()
 ``` -->
 
-<span id="signinwithticket"></span>
-## auth.signInWithTicket()
+## auth.signInWithTicket()@signinwithticket
 
 使用，详细描述参考[登录流程](#cloudtoken)
 
@@ -83,8 +82,7 @@ auth.signInWithTicket('YourTicket').then(() => {
   })
 ```
 
-<span id="cloudtoken"></span>
-## 登录流程
+## 登录流程@cloudtoken
 
 `uniCloud`允许开发者使用特定的登录凭据`Ticket`对用户进行身份认证。开发者可以使用`服务端 SDK`来创建`Ticket`，并且将`Ticket`传入到应用内，然后调用`signInWithTicket()`获得登录态。
 

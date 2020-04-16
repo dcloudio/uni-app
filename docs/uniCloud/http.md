@@ -189,8 +189,7 @@ content-length: 13
 {"foo":"bar"}
 ```
 
-<span id="Integrationresponse"></span>
-#### 返回集成响应
+#### 返回集成响应@Integrationresponse
 
 云函数可以返回如下这样特殊结构的**集成响应**，来自由地控制响应体：
 

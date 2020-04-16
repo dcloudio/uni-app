@@ -241,8 +241,7 @@ module.exports = async (event) => {
 - 使用阿里云作为服务商时，暂时无法使用相对路径读取文件，如：`fs.readFileSync('./info')`，可以替换为`fs.readFileSync(path.resolve(__dirname,'./info'))`
 
 
-<span id="callbyfunction"></span>
-## 云函数中调用云函数
+## 云函数中调用云函数@callbyfunction
 
 用法同客户端调用云函数，不支持callback形式
 

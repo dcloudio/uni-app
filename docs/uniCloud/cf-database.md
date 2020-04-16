@@ -47,8 +47,7 @@ db.createCollection(collectionName)
 
 阿里云的集合需提前在web控制台创建。
 
-<span id="db_init"></span>
-## 使用db_init.json初始化项目数据库
+## 使用`db_init.json`初始化项目数据库@db_init
 
 自`HBuilderX 2.5.11`起`uniCloud`提供了`db_init.json`来方便开发者快速进行数据库的初始化操作，即在HBuilderX工具中，将本地数据直接同步到云数据库中。
 
@@ -212,8 +211,7 @@ const collection = db.collection('user');
 
   Null 相当于一个占位符，表示一个字段存在但是值为空。
 
-<span id="add"></span>
-## 新增文档
+## 新增文档@add
 
 方法1： collection.add(data)
 
@@ -3384,8 +3382,7 @@ let res = await db.collection('books').aggregate()
   .end()
 ```
 
-<span id="dbcmd"></span>
-## 数据库操作符
+## 数据库操作符@dbcmd
 
 ### 查询·逻辑操作符
 

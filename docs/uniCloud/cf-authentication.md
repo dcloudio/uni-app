@@ -27,8 +27,7 @@ const {
 const IP = auth.getClientIP()
 ```
 
-<span id="createticket"></span>
-### auth.createTicket(String customUserId, Object createTicketOptions)
+### auth.createTicket(String customUserId, Object createTicketOptions)@createticket
 
 此Api现在直接调用有问题，正在修复。可以先使用下面的方式调用
 

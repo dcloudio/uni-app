@@ -64,8 +64,7 @@ exports.main = async (event, context) => {
 
 ```
 
-<span id="rundebug"></span>
-## 运行和调试云函数
+## 运行和调试云函数@rundebug
 
 编写云函数后，在项目管理器里右键点击该云函数的目录，在弹出菜单中可选择“上传部署云函数”、“上传并运行测试云函数”。如下图所示：
 
@@ -148,13 +147,11 @@ exports.main = async (event, context) => {
 
 uniCloud的[web控制台](https://unicloud.dcloud.net.cn/)可以查看线上云函数的所有运行日志，而不仅仅是开发时的运行日志。
 
-<span id="common"></span>
-## 云函数公用模块
+## 云函数公用模块@common
 
 文档已迁移至 [云函数公用模块](https://uniapp.dcloud.io/uniCloud/cf-common)
 
-<span id="db-init"></span>
-## 使用db_init.json初始化项目数据库
+## 使用db_init.json初始化项目数据库@db-init
 
 文档已迁移至 [使用db_init.json初始化项目数据库](https://uniapp.dcloud.io/uniCloud/cf-database?id=db_init)
 
@@ -181,8 +178,7 @@ uniCloud的[web控制台](https://unicloud.dcloud.net.cn/)可以查看线上云�
 
 后续会对此流程进行优化
 
-<span id="useinh5"></span>
-## H5中使用uniCloud
+## H5中使用uniCloud@useinh5
 
 H5前端js访问云函数，涉及跨域问题，导致前端js无法连接云函数服务器。处理方式如下：。
 
