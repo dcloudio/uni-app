@@ -142,9 +142,15 @@ export default {
           case 'insertImage':
             {
               range = quill.getSelection(true)
-              const { src = '', alt = '', data = {} } = options
-              quill.insertEmbed(range.index, 'image', this.$getRealPath(src), Quill.sources.USER)
+              const { src = '', alt = '', width = '', height = '', extClass = '', data = {} } = options
+              const path = this.$getRealPath(src)
+              quill.insertEmbed(range.index, 'image', path, Quill.sources.USER)
+              const local = /^(file|blob):/.test(path) ? path : false
+              quill.formatText(range.index, 1, 'data-local', local)
               quill.formatText(range.index, 1, 'alt', alt)
+              quill.formatText(range.index, 1, 'width', width)
+              quill.formatText(range.index, 1, 'height', height)
+              quill.formatText(range.index, 1, 'class', extClass)
               quill.formatText(range.index, 1, 'data-custom', Object.keys(data).map(key => `${key}=${data[key]}`).join('&'))
               quill.setSelection(range.index + 1, Quill.sources.SILENT)
             }
