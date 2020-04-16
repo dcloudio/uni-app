@@ -26,6 +26,8 @@ global.uniPlugin.validate.forEach(validate => {
 
 process.UNI_MANIFEST = manifestJsonObj
 
+process.env.UNI_USING_V3_SCOPED = true
+
 process.UNI_CLOUD = false
 process.UNI_CLOUD_TCB = false
 process.UNI_CLOUD_ALIYUN = false
