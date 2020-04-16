@@ -410,6 +410,10 @@ global.uniPlugin.configureEnv.forEach(configureEnv => {
   configureEnv()
 })
 
+if (process.env.UNI_PLATFORM.startsWith('mp-')) {
+  console.log('小程序各家浏览器内核及自定义组件实现机制存在差异，可能存在样式布局兼容问题，参考：https://uniapp.dcloud.io/matter?id=mp')
+}
+
 runByHBuilderX && console.log('正在编译中...')
 
 module.exports = {
