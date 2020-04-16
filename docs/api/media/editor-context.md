@@ -61,18 +61,24 @@ editor 组件对应的 editorContext 实例，可通过 [uni.createSelectorQuery
 
 ## editorContext.insertImage(OBJECT)
 
-插入图片
+插入图片。
+
+微信小程序平台地址为临时文件时，获取的编辑器html格式内容中 `<img>` 标签增加属性 data-local，delta 格式内容中图片 attributes 属性增加 data-local 字段，该值为传入的临时文件地址。
+开发者可选择在提交阶段上传图片到服务器，获取到网络地址后进行替换。替换时对于html内容应替换掉 `<img>` 的 src 值，对于 delta 内容应替换掉 `insert { image: abc }` 值。
 
 **OBJECT 参数说明**
 
-| 属性 | 类型 | 默认值 | 必填 | 说明 |
-| --- | --- | --- | --- | --- |
-| src | String |  | 是 | 图片地址 |
-| alt | String |  | 否 | 图像无法显示时的替代文本 |
-| data | Object |  | 否 | data 被序列化为 name=value;name1=value2 的格式挂在属性 data-custom 上 |
-| success | Function |  | 否 | 接口调用成功的回调函数 |
-| fail | Function |  | 否 | 接口调用失败的回调函数 |
-| complete | Function |  | 否 | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| 属性 | 类型 | 默认值 | 必填 | 说明 |平台差异说明|
+| --- | --- | --- | --- | --- | --- |
+| src | String |  | 是 | 图片地址 | |
+| alt | String |  | 否 | 图像无法显示时的替代文本 | |
+| width | String |  | 否 | 图片宽度（pixels/百分比) |仅微信小程序支持|
+| height | String |  | 否 | 图片高度 (pixels/百分比) |仅微信小程序支持|
+| extClass | String |  | 否 | 添加到图片 img 标签上的类名 |仅微信小程序支持|
+| data | Object |  | 否 | data 被序列化为 name=value;name1=value2 的格式挂在属性 data-custom 上 |仅微信小程序支持|
+| success | Function |  | 否 | 接口调用成功的回调函数 | |
+| fail | Function |  | 否 | 接口调用失败的回调函数 | |
+| complete | Function |  | 否 | 接口调用结束的回调函数（调用成功、失败都会执行） | |
 
 ## editorContext.insertText(OBJECT)
 

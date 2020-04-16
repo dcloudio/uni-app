@@ -14,6 +14,8 @@
 
 - [colorUI for uni-app](https://ext.dcloud.net.cn/plugin?id=239)：colorUI官方维护的uni-app版本，酷炫漂亮的css库 -- by 文晓港
 
+- [仿抖音短视频示例](https://ext.dcloud.net.cn/plugin?id=860)：基于uni-app的nvue编译的高性能原生项目 -- by 林举
+
 - [得推B2C商城](https://ext.dcloud.net.cn/plugin?id=187)：一套简洁的B2C商城，全部功能完善，用户、下单、注册 -- by 得推网络科技
 
 - [商城类项目模版](https://ext.dcloud.net.cn/plugin?id=200)：漂亮的商城前端模板，可变背景导航栏、购物车、详情模板 -- by  MixR 
