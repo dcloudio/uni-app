@@ -5,8 +5,9 @@
  */
 module.exports = function (pagesJson, manifestJson) {
   const {
-    app
-  } = require('../mp')(pagesJson, manifestJson)
+    app,
+    project
+  } = require('../mp')(pagesJson, manifestJson, require('./project.config.json'))
 
   const baseJson = {
     minPlatformVersion: 1053
@@ -20,5 +21,11 @@ module.exports = function (pagesJson, manifestJson) {
   if (!app.content.package) {
     app.content.package = manifestJson.name
   }
-  return [app]
+
+  project.name = 'quickapp.config'
+
+  return [
+    app,
+    project
+  ]
 }
