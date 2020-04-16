@@ -95,9 +95,9 @@
  
 ![uniapp](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/img/form.png?t=201857)
 
-**微信小程序注意事项**
+**小程序端注意事项**
 
-微信小程序端在`from`内的自定义组件内有`input`等表单控件时，无法在`form`的`submit`事件内获取组件内表单控件值，此时可以使用微信提供的[behaviors](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/behaviors.html)来做一下兼容。参考以下示例：
+小程序端在`from`内的自定义组件内有`input`等表单控件时，无法在`form`的`submit`事件内获取组件内表单控件值，此时可以使用`behaviors`，示例如下：
 
 ```html
 <!-- /pages/index/index.vue -->
@@ -141,13 +141,7 @@
 <script>  
     export default {  
         name: 'compInput',  
-        behaviors: ['wx://form-field'],  
-        props: {  
-            value: {  
-                type: String,  
-                default: ''  
-            }  
-        },  
+        behaviors: ['uni://form-field'],
         methods: {  
             onInput(e) {  
                 this.$emit('input', e.detail.value)  
