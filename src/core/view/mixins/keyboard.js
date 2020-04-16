@@ -107,6 +107,10 @@ export default {
       UniViewJSBridge.unsubscribe('hideKeyboard', this.hideKeyboardTemp)
       document.removeEventListener('click', iosHideKeyboard, false)
       this.resetSoftinputNavBar()
+      // 修复ios端显示与点击位置错位的Bug by:wyq
+      if (document.body.scrollIntoView) {
+        document.body.scrollIntoView()
+      }
     }
   }
 }
