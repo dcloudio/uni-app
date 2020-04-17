@@ -212,3 +212,4 @@ uniCloud暂未支持H5前端页面部署，需开发者自行准备web服务器�
 
 **Tips**
 - web控制台网址：[https://unicloud.dcloud.net.cn](https://unicloud.dcloud.net.cn)，在HX中对云函数目录点右键，或者在帮助菜单中，均有入口链接。
+- 虽然uni-app支持vscode等其他ide开发，但因为uniCloud对安全性要求极高，仅支持使用HBuilderX开发。
