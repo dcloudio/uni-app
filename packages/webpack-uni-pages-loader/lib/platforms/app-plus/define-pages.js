@@ -3,7 +3,7 @@ function generatePageCode (pages, pageOptions) {
     if (pageOptions[pagePath].nvue) {
       return ''
     }
-    return `__definePage('${pagePath}',function(){return Vue.extend(require('${pagePath}.vue').default)})`
+    return `__definePage('${pagePath}',function(){return Vue.extend(require('${pagePath}.vue?mpType=page').default)})`
   }).join('\n')
 }
 

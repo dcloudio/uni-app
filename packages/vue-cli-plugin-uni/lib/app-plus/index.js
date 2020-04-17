@@ -236,6 +236,14 @@ const v3 = {
     }
 
     if (isAppView) {
+      if (process.env.UNI_USING_V3_SCOPED) {
+        webpackConfig.module
+          .rule('vue')
+          .use('uniapp-app-style-scoped')
+          .loader(path.resolve(__dirname,
+            '../../packages/webpack-uni-app-loader/view/style'))
+      }
+
       if (process.env.NODE_ENV === 'production') {
         require('../h5/cssnano-options')(webpackConfig)
       }

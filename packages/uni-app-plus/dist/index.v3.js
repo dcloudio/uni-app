@@ -4037,7 +4037,6 @@ var serviceContext = (function () {
   var onBluetoothAdapterStateChange;
   var onBluetoothDeviceFound;
   var onBLEConnectionStateChange;
-  var onBLEConnectionStateChanged;
   var onBLECharacteristicValueChange;
 
   function openBluetoothAdapter (data, callbackId) {
@@ -4072,7 +4071,6 @@ var serviceContext = (function () {
 
   function createBLEConnection (data, callbackId) {
     onBLEConnectionStateChange = onBLEConnectionStateChange || bluetoothOn('onBLEConnectionStateChange');
-    onBLEConnectionStateChanged = onBLEConnectionStateChanged || bluetoothOn('onBLEConnectionStateChanged');
     bluetoothExec('createBLEConnection', callbackId, data);
   }
 
@@ -5925,7 +5923,8 @@ var serviceContext = (function () {
     const camera = plus.camera.getCamera();
     camera.captureImage(e => invokeChooseImage(callbackId, 'ok', sizeType, [e]),
       e => invokeChooseImage(callbackId, 'fail', 1), {
-        filename: TEMP_PATH + '/camera/'
+        filename: TEMP_PATH + '/camera/',
+        resolution: 'high'
       });
   };
   const openAlbum = function (callbackId, sizeType, count) {
@@ -13016,6 +13015,17 @@ var serviceContext = (function () {
     };
   }
 
+  /**
+   * mpvue event
+   */
+  function wrapperMPEvent (event) {
+    event.mp = Object.assign({
+      '@warning': 'mp is deprecated'
+    }, event);
+    event._processed = true;
+    return event
+  }
+
   const isAndroid = plus.os.name.toLowerCase() === 'android';
   const FOCUS_TIMEOUT = isAndroid ? 300 : 700;
   const HIDE_TIMEOUT = isAndroid ? 800 : 300;
@@ -13105,10 +13115,7 @@ var serviceContext = (function () {
     parseTargets(event);
     event.preventDefault = noop;
     event.stopPropagation = noop;
-    event.mp = event;
-    return Object.assign({
-      mp: event // mpvue
-    }, event)
+    return wrapperMPEvent(event)
   }
 
   const handleVdData = {

@@ -1,4 +1,6 @@
 <script>
+import { deepClone } from 'uni-shared'
+
 export default {
   name: 'PickerView',
   props: {
@@ -93,7 +95,7 @@ export default {
   render (createElement) {
     var items = []
     if (this.$slots.default) {
-      this.$slots.default.forEach(vnode => {
+      deepClone(this.$slots.default, createElement).forEach(vnode => {
         if (vnode.componentOptions && vnode.componentOptions.tag === 'v-uni-picker-view-column') {
           items.push(vnode)
         }

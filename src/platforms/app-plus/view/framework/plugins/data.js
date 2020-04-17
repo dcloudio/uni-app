@@ -127,7 +127,7 @@ function getData (id, name) {
   try {
     return this.$r[id][name]
   } catch (e) {
-    console.error(this.$options.__file + `:[${this._$id}]$r[${id}][${name}] is undefined`)
+    // console.error(this.$options.__file + `:[${this._$id}]$r[${id}][${name}] is undefined`)
   }
 }
 /**
@@ -143,7 +143,7 @@ function getChangeData (id, name) {
     this.$set(this.wxsProps, wxsPropName, value)
     return value
   } catch (e) {
-    console.error(this.$options.__file + `:[${this._$id}]$r[${id}][${name}] is undefined`)
+    // console.error(this.$options.__file + `:[${this._$id}]$r[${id}][${name}] is undefined`)
   }
 }
 
