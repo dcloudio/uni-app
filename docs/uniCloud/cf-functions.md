@@ -270,4 +270,30 @@ let callFunctionResult = await uniCloud.callFunction({
 })
 ```
 
+### 注意事项
 
+书写云函数时应注意`async`、`await`的使用，`nodejs`有内置模块`util`可以将符合`error-first`形式`callback`的函数转换为`promise`形式，[详情参考](https://nodejs.org/api/util.html#util_util_promisify_original)，比如以下示例：
+
+```js
+const {
+	promisify
+} = require('util')
+
+let testCallback = {
+	value: 'testCallbackValue',
+  // 第一个function类型的参数作为callback
+	echo: function(num, callback) {
+		setTimeout(() => {
+      // 第一个参数为error，第二个为返回值
+			callback(null, `${this.value}:${num}`)
+		}, 2000)
+	}
+}
+
+exports.main = async function() {
+	let val = await promisify(testCallback.echo).call(testCallback, 2)
+	console.log(val)
+	return val
+}
+
+```
