@@ -66,9 +66,14 @@ vue页面在App端的渲染引擎默认是系统webview（不是手机自带浏�
 ### App正常，小程序、H5异常的可能性
 1. 代码中使用了App端特有的plus、Native.js、subNVue、原生插件等功能
 
+### App(v2)与App(v3)差异说明
+
+1. App(v2)默认template中使用了未定义或未初始化的数据，运行不会报错，且不影响后续节点渲染。App(v3)运行时，会直接告警，并报错（标准的vue渲染逻辑，同H5），且影响后续节点数据的渲染，错误信息通常显示为`undefined is not an object, evaluating(xxx.xxx.xxx)`
+2. App(v2)默认隔离组件样式（组件间样式不会互相影响），App(v3)版本默认不隔离。目前发现开发者v2升级v3反馈的样式问题大多由此导致，v3版本将于`2.6.14-alpha`进行调整默认隔离组件间样式。
+
 ### 使用 Vue.js 的注意
 
-1. ```uni-app``` 基于```Vue 2.0```实现，开发者需注意Vue 1.0 -> 2.0 的使用差异，详见[从 Vue 1.x 迁移](https://cn.vuejs.org/v2/guide/migration.html)
+1. `uni-app` 基于`Vue 2.0`实现，开发者需注意Vue 1.0 -> 2.0 的使用差异，详见[从 Vue 1.x 迁移](https://cn.vuejs.org/v2/guide/migration.html)
 2. data 属性必须声明为返回一个初始数据对象的函数；否则页面关闭时，数据不会自动销毁，再次打开该页面时，会显示上次数据
   	
     ```javascript
@@ -83,7 +88,7 @@ vue页面在App端的渲染引擎默认是系统webview（不是手机自带浏�
   		title: 'Hello'
   	}
   	```
-3. 在微信小程序端，```uni-app``` 将数据绑定功能委托给```Vue```，开发者需按```Vue 2.0```的写法实现数据绑定，不支持微信小程序的数据绑定写法，故如下写法不支持：
+3. 在微信小程序端，`uni-app` 将数据绑定功能委托给`Vue`，开发者需按`Vue 2.0`的写法实现数据绑定，不支持微信小程序的数据绑定写法，故如下写法不支持：
 	
 	```javascript
 	  <view id="item-{{id}}"></view>	
@@ -125,7 +130,7 @@ vue页面在App端的渲染引擎默认是系统webview（不是手机自带浏�
 ### H5 开发注意
 
 * H5 发布到服务器注意：
-    1. 配置发行后的路径（发行在网站根目录可不配置），比如发行网站路径是 www.xxx.com/html5，在 ``manifest.json`` 文件内编辑 h5 节点，router 下增加 base 属性为 html5
+    1. 配置发行后的路径（发行在网站根目录可不配置），比如发行网站路径是 www.xxx.com/html5，在 `manifest.json` 文件内编辑 h5 节点，router 下增加 base 属性为 html5
 <div>
 <img src="https://img-cdn-qiniu.dcloud.net.cn/uploads/article/20181116/6ab94f68e109bb07e4f422c95a2c9015.png" width="500">
 </div>
@@ -134,7 +139,7 @@ vue页面在App端的渲染引擎默认是系统webview（不是手机自带浏�
 
 * 引用第三方 js 的方式：
     1. 通过 npm 引入（通过条件编译，只有是 h5 平台才 import 相应的库）
-    2. 在 ``manifest.json`` 文件编辑 h5 节点的 template 属性，填写 html 模版路径，在 html 模版里面可以使用 script 的方式引入三方的 js，如下示例是加了百度统计的 html 模板部分代码，模版全部代码可参考：[自定义模板](/collocation/manifest?id=h5-template)
+    2. 在 `manifest.json` 文件编辑 h5 节点的 template 属性，填写 html 模版路径，在 html 模版里面可以使用 script 的方式引入三方的 js，如下示例是加了百度统计的 html 模板部分代码，模版全部代码可参考：[自定义模板](/collocation/manifest?id=h5-template)
 ```
 ...
 <body>
@@ -156,27 +161,27 @@ vue页面在App端的渲染引擎默认是系统webview（不是手机自带浏�
 ...
 ```
 
-* H5 版 ``uni-app`` 全支持 ``vue`` 语法，所以可能造成部分写法在 H5 端生效，在小程序或 App 端不生效。
+* H5 版 `uni-app` 全支持 `vue` 语法，所以可能造成部分写法在 H5 端生效，在小程序或 App 端不生效。
 
-* H5 校验了更严格的 ``vue`` 语法，有些写法不规范会报警，比如： ``data`` 后面写对象会报警，必须写 ``function``；不能修改 ``props`` 的值；组件最外层 ``template`` 节点下不允许包含多个节点等。
+* H5 校验了更严格的 ``vue`` 语法，有些写法不规范会报警，比如： `data` 后面写对象会报警，必须写 `function`；不能修改 `props` 的值；组件最外层 `template` 节点下不允许包含多个节点等。
 
 * 编译为 H5 版后生成的是单页应用（SPA）。
 
 * 如果遇到跨域造成js无法联网，注意网络请求（request、uploadFile、downloadFile等）在浏览器存在跨域限制，解决方案有详见：[https://ask.dcloud.net.cn/article/35267](https://ask.dcloud.net.cn/article/35267)
 
-* APP 和小程序的导航栏和 ``tabbar`` 均是原生控件，元素区域坐标是不包含原生导航栏和 ``tabbar`` 的；而 H5 里导航栏和 ``tabbar`` 是 div 模拟实现的，所以元素坐标会包含导航栏和tabbar的高度。为了优雅的解决多端高度定位问题，``uni-app`` 新增了2个css变量：``--window-top`` 和 ``--window-bottom``，这代表了页面的内容区域距离顶部和底部的距离。举个实例，如果你想在原生``tabbar`` 上方悬浮一个菜单，之前写 ``bottom:0``。这样的写法编译到 h5 后，这个菜单会和 ``tabbar`` 重叠，位于屏幕底部。而改为使用 ``bottom:var(--window-bottom)``，则不管在 app 下还是在h5下，这个菜单都是悬浮在 ``tabbar`` 上浮的。这就避免了写条件编译代码。当然仍然也可以使用 H5 的条件编译处理界面的不同。
+* APP 和小程序的导航栏和 `tabbar` 均是原生控件，元素区域坐标是不包含原生导航栏和 `tabbar` 的；而 H5 里导航栏和 `tabbar` 是 div 模拟实现的，所以元素坐标会包含导航栏和tabbar的高度。为了优雅的解决多端高度定位问题，`uni-app` 新增了2个css变量：`--window-top` 和 `--window-bottom`，这代表了页面的内容区域距离顶部和底部的距离。举个实例，如果你想在原生`tabbar` 上方悬浮一个菜单，之前写 `bottom:0`。这样的写法编译到 h5 后，这个菜单会和 `tabbar` 重叠，位于屏幕底部。而改为使用 `bottom:var(--window-bottom)`，则不管在 app 下还是在h5下，这个菜单都是悬浮在 `tabbar` 上浮的。这就避免了写条件编译代码。当然仍然也可以使用 H5 的条件编译处理界面的不同。
 
-* CSS 內使用 ``vh`` 单位的时候注意 ``100vh`` 包含导航栏，使用时需要减去导航栏和 ``tabBar`` 高度，部分浏览器还包含浏览器操作栏高度，使用时请注意。
+* CSS 內使用 `vh` 单位的时候注意 `100vh` 包含导航栏，使用时需要减去导航栏和 `tabBar` 高度，部分浏览器还包含浏览器操作栏高度，使用时请注意。
 
-* 正常支持 ``rpx``，``px`` 是真实物理像素。暂不支持通过设 ``manifest.json`` 的 ``"transformPx" : true``，把 px 当动态单位使用。
+* 正常支持 `rpx`，`px` 是真实物理像素。暂不支持通过设 `manifest.json` 的 `"transformPx" : true`，把 px 当动态单位使用。
 
 * 使用罗盘、地理位置、加速计等相关接口需要使用 https 协议，本地预览（localhost）可以使用 http 协议。
 
 * PC 端 Chrome 浏览器模拟器设备测试的时候，获取位置 API 需要连接谷歌服务器。
 
-* 组件内（页面除外）不支持 ``onLoad``、``onShow`` 等页面生命周期。
+* 组件内（页面除外）不支持 `onLoad`、`onShow` 等页面生命周期。
 
-* 为避免和内置组件冲突，自定义组件请加上前缀（但不能是 u 和 uni）。比如可使用的自定义组件名称：``my-view``、``m-input``、``we-icon``，例如不可使用的自定义组件名称：``u-view``、``uni-input``，如果已有项目使用了可能造成冲突的名称，请修改名称，另外微信小程序下自定义组件名称不能以 wx 开头。
+* 为避免和内置组件冲突，自定义组件请加上前缀（但不能是 u 和 uni）。比如可使用的自定义组件名称：`my-view`、`m-input`、`we-icon`，例如不可使用的自定义组件名称：`u-view`、`uni-input`，如果已有项目使用了可能造成冲突的名称，请修改名称，另外微信小程序下自定义组件名称不能以 wx 开头。
 
 ### 小程序开发注意@mp
 
