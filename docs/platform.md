@@ -73,9 +73,17 @@ uni-app 已将常用的组件、JS API 封装到框架中，开发者按照 uni-
 平台特有的组件
 <span class="token comment">&lt;!-- <span style="color:#859900;"> #endif</span> --&gt;</span></code></pre>
 
-示例，如下广告组件仅会在微信小程序中出现：
+示例，如下公众号关注组件仅会在微信小程序中出现：
 
-![uniapp](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/img/platform-1.1.png)
+````html
+<view>
+    <view>微信公众号关注组件</view>
+    <view>
+        <!-- uni-app未封装，但可直接使用微信原生的official-account组件-->
+        <official-account></official-account>
+    </view>
+</view>
+````
 
 ### 样式的条件编译
 <pre v-pre="" data-lang="css"><code class="lang-css code"><span class="token comment">/* <span style="color:#859900;"> #ifdef</span><b style="color:#268BD2">  %PLATFORM% </b> */</span>
