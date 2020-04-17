@@ -2614,7 +2614,7 @@ let res = await db.collection('orders').aggregate()
 以下操作连接 `orders` 和 `books` 集合，要求两个条件：
 
 - orders 的 book 字段与 books 的 title 字段相等
-- orders 的 quantity 字段大于或等于 books 的 stock 字段
+- books 的 stock 字段 大于或等于 orders 的 quantityorders 字段
 ```js
 const db = cloud.database()
 const $ = db.command.aggregate
