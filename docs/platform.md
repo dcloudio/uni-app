@@ -80,7 +80,9 @@ uni-app 已将常用的组件、JS API 封装到框架中，开发者按照 uni-
     <view>微信公众号关注组件</view>
     <view>
         <!-- uni-app未封装，但可直接使用微信原生的official-account组件-->
-        <official-account></official-account>
+        <!-- #ifdef MP-WEIXIN -->
+		        <official-account></official-account>
+		    <!-- #endif -->
     </view>
 </view>
 ````
