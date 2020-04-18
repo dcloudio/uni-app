@@ -197,6 +197,23 @@ const collection = db.collection('user');
   })
   ```
   
+如果需要对日期进行比较操作，可以使用聚合操作符将日期进行转化，比如以下示例查询所有time字段在`2020-02-02`以后的记录
+  
+```js
+'use strict';
+const db = uniCloud.database()
+exports.main = async (event, context) => {
+	const dbCmd = db.command
+	const $ = dbCmd.aggregate
+	let res = await db.collection('unicloud-test').where(dbCmd.expr(
+		$.gte(['$time',$.dateFromString({
+			dateString: new Date('2020-02-02').toISOString()
+		})])
+	)).get()
+	return res
+};
+```
+  
 **Tips**
 
 - 使用阿里云作为服务提供商时，如需存入日期类型，需要`2020-02-10T04:59:05.579Z`形式，即可以在云函数中使用`new Date().toISOString()`得到。
