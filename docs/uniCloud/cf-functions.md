@@ -294,7 +294,6 @@ const {
 
 let testCallback = {
 	value: 'testCallbackValue',
-  // 第一个function类型的参数作为callback
 	echo: function(num, callback) {
 		setTimeout(() => {
       // 第一个参数为error，第二个为返回值
@@ -304,12 +303,26 @@ let testCallback = {
 }
 
 exports.main = async function() {
+  // num=2，不传入callback参数，callback会自动作为回调函数处理
 	let val = await promisify(testCallback.echo).call(testCallback, 2)
 	console.log(val)
 	return val
 }
 
 ```
+
+如果想在云函数内使用回调形式可以让云函数返回一个promise，如以下示例：
+
+```js
+exports.main = async function() {
+	return new Promise((resolve, reject) => {
+		setTimeout(() => {
+			resolve('some return value')
+		}, 1000)
+	})
+}
+```
+
 
 
 ###  其它
