@@ -1,6 +1,7 @@
 <script>
 import {
-  disableScrollBounce
+  disableScrollBounce,
+  deepClone
 } from 'uni-shared'
 
 function calc (e) {
@@ -142,8 +143,9 @@ export default {
   },
   render (createElement) {
     var items = []
-    if (this.$slots.default) {
-      this.$slots.default.forEach(vnode => {
+    const $slots = this.$slots.default && deepClone(this.$slots.default, createElement)
+    if ($slots) {
+      $slots.forEach(vnode => {
         if (vnode.componentOptions && vnode.componentOptions.tag === 'v-uni-movable-view') {
           items.push(vnode)
         }
@@ -163,7 +165,7 @@ export default {
       on: {
         resize: this._resize
       }
-    }), this.$slots.default])
+    }), $slots])
   }
 }
 </script>

@@ -6,7 +6,7 @@ import {
 export default {
   methods: {
     $getRealPath (src) {
-      return getRealPath(src)
+      return src ? getRealPath(src) : src
     },
     $trigger (name, $event, detail) {
       this.$emit(name, processEvent.call(this, name, $event, detail, this.$el, this.$el))

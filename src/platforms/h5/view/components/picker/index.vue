@@ -385,7 +385,9 @@ export default {
             for (let index = 0; index < length; index++) {
               const val0 = Number(val[index])
               const val1 = Number(this.valueSync[index])
-              this.valueSync.splice(index, 1, isNaN(val0) ? (isNaN(val1) ? 0 : val1) : val0)
+              const val2 = isNaN(val0) ? (isNaN(val1) ? 0 : val1) : val0
+              const maxVal = this.range[index] ? this.range[index].length - 1 : 0
+              this.valueSync.splice(index, 1, val2 > maxVal ? 0 : val2)
             }
           }
           break

@@ -320,11 +320,18 @@ export default {
         nativeMap.__markers__[id + ''] = nativeMarker
       })
     },
+    _clearMarkers () {
+      const map = this.map
+      const data = map.__markers__
+      for (const key in data) {
+        map.removeOverlay(data[key])
+      }
+      map.__markers__ = {}
+    },
     _addMarkers (markers, clear) {
       if (this.map) {
         if (clear) {
-          this.map.clearOverlays()
-          this.map.__markers__ = {}
+          this._clearMarkers()
         }
         markers.forEach(marker => {
           this._addMarker(this.map, marker)

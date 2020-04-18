@@ -92,7 +92,7 @@ module.exports = {
     return uniPluginOptions.vue || '@dcloudio/vue-cli-plugin-uni/packages/mp-vue'
   },
   getPlatformCssVars () {
-    return uniPluginOptions.cssVars
+    return uniPluginOptions.cssVars || {}
   },
   getPlatformCssnano () {
     return {

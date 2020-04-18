@@ -119,7 +119,7 @@ export default {
   },
   data () {
     return {
-      valueSync: String(this.value),
+      valueSync: this._getValueString(this.value),
       valueComposition: '',
       composition: false,
       focusSync: this.focus,
@@ -152,7 +152,7 @@ export default {
   },
   watch: {
     value (val) {
-      this.valueSync = String(val)
+      this.valueSync = this._getValueString(val)
     },
     valueSync (val) {
       if (val !== this._oldValue) {
@@ -296,6 +296,9 @@ export default {
     },
     _resetFormData () {
       this.valueSync = ''
+    },
+    _getValueString (value) {
+      return value === null ? '' : String(value)
     }
   }
 }

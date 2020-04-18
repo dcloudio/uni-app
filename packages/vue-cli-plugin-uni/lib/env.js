@@ -26,6 +26,8 @@ global.uniPlugin.validate.forEach(validate => {
 
 process.UNI_MANIFEST = manifestJsonObj
 
+process.env.UNI_USING_V3_SCOPED = true
+
 process.UNI_CLOUD = false
 process.UNI_CLOUD_TCB = false
 process.UNI_CLOUD_ALIYUN = false
@@ -407,6 +409,10 @@ if (process.UNI_AUTO_SCAN_COMPONENTS) {
 global.uniPlugin.configureEnv.forEach(configureEnv => {
   configureEnv()
 })
+
+if (process.env.UNI_PLATFORM.startsWith('mp-')) {
+  console.log('小程序各家浏览器内核及自定义组件实现机制存在差异，可能存在样式布局兼容问题，参考：https://uniapp.dcloud.io/matter?id=mp')
+}
 
 runByHBuilderX && console.log('正在编译中...')
 
