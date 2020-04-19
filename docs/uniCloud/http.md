@@ -195,6 +195,7 @@ content-length: 13
 
 ```json
 {
+    "mpserverlessComposedResponse": true, // 使用阿里云返回集成响应是需要此字段为true
     "isBase64Encoded": true|false,
     "statusCode": httpStatusCode,
     "headers": { "headerName": "headerValue", ... },
@@ -209,6 +210,7 @@ content-length: 13
 ```js
 module.exports.main = function() {
     return {
+        mpserverlessComposedResponse: true, // 使用阿里云返回集成响应是需要此字段为true
         statusCode: 200,
         headers: {
             'content-type': 'text/html'
@@ -235,6 +237,7 @@ content-length: 14
 ```js
 module.exports.main = function() {
     return {
+        mpserverlessComposedResponse: true, // 使用阿里云返回集成响应是需要此字段为true
         statusCode: 200,
         headers: {
             'content-type': 'application/javascript'
@@ -261,6 +264,7 @@ console.log("Hello!")
 ```js
 module.exports.main = function() {
     return {
+        mpserverlessComposedResponse: true, // 使用阿里云返回集成响应是需要此字段为true
         isBase64Encoded: true,
         statusCode: 200,
         headers: {
