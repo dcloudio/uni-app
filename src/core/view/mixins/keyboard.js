@@ -108,8 +108,8 @@ export default {
       document.removeEventListener('click', iosHideKeyboard, false)
       this.resetSoftinputNavBar()
       // 修复ios端显示与点击位置错位的Bug by:wyq
-      if (document.body.scrollIntoView) {
-        document.body.scrollIntoView()
+      if (String(navigator.vendor).indexOf('Apple') === 0) {
+        document.documentElement.scrollTo(document.documentElement.scrollLeft, document.documentElement.scrollTop)
       }
     }
   }
