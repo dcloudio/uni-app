@@ -63,7 +63,7 @@ export function navigateTo ({
   const urls = url.split('?')
   const path = urls[0]
   const routeStyles = __uniRoutes.find(route => route.path === path).window
-  const globalStyle = __uniConfig.window
+  const globalStyle = __uniConfig.window || {}
   if (!animationType) {
     animationType = routeStyles.animationType || globalStyle.animationType || ANI_SHOW
   }
