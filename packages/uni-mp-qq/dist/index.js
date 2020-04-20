@@ -952,7 +952,7 @@ function wrapper$1 (event) {
 
   event.target = event.target || {};
 
-  if (!hasOwn(event, 'detail')) {
+  if (!hasOwn(event, 'detail') || !event.detail) {
     event.detail = {};
   }
 

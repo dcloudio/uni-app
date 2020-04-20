@@ -1359,7 +1359,7 @@ function wrapper$1 (event) {
 
   event.target = event.target || {};
 
-  if (!hasOwn(event, 'detail')) {
+  if (!hasOwn(event, 'detail') || !event.detail) {
     event.detail = {};
   }
 
@@ -1811,7 +1811,7 @@ function initSpecialMethods (mpInstance) {
     specialMethods.forEach(method => {
       if (isFn(mpInstance.$vm[method])) {
         mpInstance[method] = function (event) {
-          if (!hasOwn(event, 'detail')) {
+          if (!hasOwn(event, 'detail') || !event.detail) {
             event.detail = {};
           }
           if (!('markerId' in event.detail) && 'markerId' in event) {
