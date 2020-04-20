@@ -1,6 +1,6 @@
-`push` 是指从服务器主动给手机端发送消息。
+`push` 是指从服务器主动给手机端发送消息。App平台和小程序平台机制不太一样，小程序平台的概念叫模板消息。
 
-- App平台
+### App平台
 
 `uni-app` 提供了 uni push 服务，这是一个包括客户端和服务器的统一服务，整合了苹果APNs、华为、小米、OPPO、VIVO、魅族等多家厂商的推送和个推的独立推送，不管客户端还是服务器，一套代码多端推送。
 
@@ -10,10 +10,10 @@
 因本文档内容有限，另行开贴，介绍业务、开通流程，请务必仔细阅读 [https://ask.dcloud.net.cn/article/35622](https://ask.dcloud.net.cn/article/35622)。
 
 - 客户端调用的js API见：[https://www.html5plus.org/doc/zh_cn/push.html](https://www.html5plus.org/doc/zh_cn/push.html)
-- 服务器调用接口文档，仍然是个推的服务器文档[http://docs.getui.com/](http://docs.getui.com/)
-- web发送界面，在DCloud的开发者后台：[https://dev.dcloud.net.cn/](https://dev.dcloud.net.cn/)
+- 服务器调用接口发送push消息：文档仍然是个推的服务器文档[http://docs.getui.com/](http://docs.getui.com/)。如果在uniCloud中使用push，还可以使用三方封装好的插件，更简单：[https://ext.dcloud.net.cn/plugin?id=1680](https://ext.dcloud.net.cn/plugin?id=1680)
+- web自助发送界面：在DCloud的开发者后台：[https://dev.dcloud.net.cn/](https://dev.dcloud.net.cn/)
 
-## 其他相关资源
+**其他相关资源**
 - 检查应用是否被授予推送权限：[https://ext.dcloud.net.cn/plugin?id=594](https://ext.dcloud.net.cn/plugin?id=594)
 - 开启关闭推送服务：[https://ext.dcloud.net.cn/plugin?id=727](https://ext.dcloud.net.cn/plugin?id=727)
 - 自定义iOS推送铃声：[https://ext.dcloud.net.cn/plugin?id=690](https://ext.dcloud.net.cn/plugin?id=690)
@@ -25,11 +25,13 @@
 - 常见误解1：“uniPush的专业性，和专业的个推、极光等服务可相比吗？”
 答：uniPush是由个推将其本来收费的vip push产品，免费提供给了DCloud的开发者。它与个推vip push的只有2个区别：1、免费；2、账户使用的是DCloud开发者账户，而无需再重新注册个推账户。个推是A股上市公司，专业性在推送领域领先。
 - 常见误解2：“uniPush好麻烦，我就喜欢个推、极光这种简单sdk，不想去各个rom厂商去申请一圈”
-答：有此误解的开发者，根本不知道推送行业的现状。不集成rom厂商的推送，就无法在App离线时发送push。开发者可以只使用uniPush里面的个推服务，不去各个rom厂商申请推送，但你要知道这样做的后果就是在华为、小米、OPPO、VIVO、魅族上发不了离线消息。
+答：uniPush不建立在申请手机厂商授权的基础上，如果你不申请那些，使用起来和用普通的个推是一样的。但是要特别注意，推送行业的现状就是：**不集成rom厂商的推送，就无法在App离线时发送push。**。按照普通个推模式使用，后果就是在华为、小米、OPPO、VIVO、魅族上发不了离线消息。
 - 常见误解3：“uniPush的送达率还是不够，是否可以付费来提升送达率，个推是有付费提升送达率的方法的”
 答：前文已经说了。个推的付费提升送达率的产品就是vip push，而uniPush就是个推的vip Push。DCloud通过谈判免费给DCloud的开发者使用了。
+- 常见误解4：开通uniPush要实名认证，还得传身份证，开通普通个推不用这么麻烦。
+答：此问题之前曾存在，后来已经处理，保持和个推需要的身份信息相同，不再需要身份证。
 
-- 小程序平台
+### 小程序平台
 
 小程序平台的类似概念叫做`模板消息`。
 
