@@ -42,9 +42,9 @@ export default {
       if (vnode.text) {
         // 处理可能出现的多余的转义字符
         const nodeText = vnode.text.replace(/\\n/g, '\n')
-        const texts = this._decodeHtml(nodeText).trim().split('\n')
+        const texts = nodeText.split('\n')
         texts.forEach((text, index) => {
-          nodeList.push(text)
+          nodeList.push(this._decodeHtml(text))
           if (index !== (texts.length - 1)) {
             nodeList.push(createElement('br'))
           }
