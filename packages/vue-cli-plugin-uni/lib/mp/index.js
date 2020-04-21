@@ -81,6 +81,9 @@ module.exports = {
 
     const beforeCode = 'import \'uni-pages\';'
 
+    const automator = `@dcloudio/uni-${process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM}/dist/automator`
+    const automatorCode = process.env.UNI_AUTOMATOR_WS_ENDPOINT ? `import '${automator}';` : ''
+
     return {
       mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
       entry () {
@@ -109,7 +112,7 @@ module.exports = {
             loader: path.resolve(__dirname, '../../packages/wrap-loader'),
             options: {
               before: [
-                beforeCode + statCode
+                beforeCode + automatorCode + statCode
               ]
             }
           }, {

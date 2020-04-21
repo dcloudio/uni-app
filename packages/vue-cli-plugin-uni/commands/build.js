@@ -24,12 +24,26 @@ module.exports = (api, options) => {
     usage: 'vue-cli-service uni-build [options]',
     options: {
       '--watch': 'watch for changes',
-      '--minimize': 'Tell webpack to minimize the bundle using the TerserPlugin.'
+      '--minimize': 'Tell webpack to minimize the bundle using the TerserPlugin.',
+      '--auto-host': 'specify automator host',
+      '--auto-port': 'specify automator port'
     }
   }, async (args) => {
     for (const key in defaults) {
       if (args[key] == null) {
         args[key] = defaults[key]
+      }
+    }
+
+    const port = args['auto-port'] || process.env.UNI_AUTOMATOR_PORT
+    if (port) {
+      const host = args['auto-host'] || process.env.UNI_AUTOMATOR_HOST || '0.0.0.0'
+      const prepareURLs = require('@vue/cli-service/lib/util/prepareURLs')
+      const urls = prepareURLs('ws', host, port, '')
+      if (urls.lanUrlForConfig) {
+        process.env.UNI_AUTOMATOR_WS_ENDPOINT = 'ws://' + urls.lanUrlForConfig + ':' + port
+      } else {
+        process.env.UNI_AUTOMATOR_WS_ENDPOINT = urls.localUrlForBrowser
       }
     }
 

@@ -27,7 +27,9 @@ module.exports = (api, options, rootOptions) => {
         'build:quickapp-vue': 'cross-env NODE_ENV=production UNI_PLATFORM=quickapp-vue vue-cli-service uni-build',
         'build:quickapp-light': 'cross-env NODE_ENV=production UNI_PLATFORM=quickapp-light vue-cli-service uni-build',
         'dev:custom': 'cross-env NODE_ENV=development uniapp-cli custom',
-        'build:custom': 'cross-env NODE_ENV=production uniapp-cli custom'
+        'build:custom': 'cross-env NODE_ENV=production uniapp-cli custom',
+        'test:mp-weixin': 'cross-env UNI_PLATFORM=mp-weixin jest -i',
+        'test:mp-baidu': 'cross-env UNI_PLATFORM=mp-baidu jest -i'
       },
       'uni-app': {
         scripts: {}
@@ -56,7 +58,8 @@ module.exports = (api, options, rootOptions) => {
         '@dcloudio/webpack-uni-mp-loader': version,
         '@dcloudio/webpack-uni-pages-loader': version,
         'babel-plugin-import': '^1.11.0',
-        'cross-env': '^7.0.2'
+        'cross-env': '^7.0.2',
+        jest: '^25.4.0'
       },
       browserslist: [
         'Android >= 4',
