@@ -22,7 +22,6 @@ export default {
       type: String,
       default: 'scaleToFill'
     },
-    // TODO 懒加载
     lazyLoad: {
       type: [Boolean, String],
       default: false
@@ -98,8 +97,7 @@ export default {
   },
   watch: {
     src (newValue, oldValue) {
-      this._setContentImage()
-      this._loadImage()
+      this._lazyLoad()
     },
     mode (newValue, oldValue) {
       if (oldValue === 'widthFix') {
@@ -113,13 +111,39 @@ export default {
   },
   mounted () {
     this.availHeight = this.$el.style.height || ''
-    this._setContentImage()
-    if (!this.realImagePath) {
-      return
-    }
-    this._loadImage()
+    this._lazyLoad(true)
+  },
+  beforeDestroy () {
+	  if(this._observer)
+		  this._observer.disconnect()
   },
   methods: {
+    _lazyLoad (init) {
+      if(this.lazyLoad && IntersectionObserver) {
+        if(!this._observer) {
+          const _self = this
+          this._observer = new IntersectionObserver(function (entries) {
+            if(entries[0].isIntersecting) {
+              _self._setContentImage()
+              
+              if(!init || _self.realImagePath)
+                _self._loadImage()
+              
+              _self._observer.disconnect()
+              _self._observer = void 0
+            }
+          }, {
+            rootMargin: '500px 0px 500px 0px'
+          })
+          this._observer.observe(this.$el)
+        }
+      } else {
+        this._setContentImage()
+        
+        if(!init || this.realImagePath)
+          this._loadImage()
+      }
+    },
     _resize () {
       if (this.mode === 'widthFix' && !this.sizeFixed) {
         this._fixSize()
