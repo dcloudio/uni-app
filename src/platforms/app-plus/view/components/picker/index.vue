@@ -55,7 +55,7 @@ function getDefaultStartValue () {
         return year
       case fields.MONTH:
         return year + '-01'
-      case fields.DAY:
+      default:
         return year + '-01-01'
     }
   }
@@ -73,7 +73,7 @@ function getDefaultEndValue () {
         return year
       case fields.MONTH:
         return year + '-12'
-      case fields.DAY:
+      default:
         return year + '-12-31'
     }
   }
