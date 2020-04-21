@@ -286,6 +286,14 @@ module.exports = function (pagesJson, manifestJson, project = {}) {
       }
     }
 
+    if (process.env.UNI_AUTOMATOR_WS_ENDPOINT) {
+      if (!project.setting) {
+        project.setting = {}
+      }
+      // automator时，强制不检测域名
+      project.setting.urlCheck = false
+    }
+
     if (!project.appid) {
       project.appid = 'touristappid'
     }

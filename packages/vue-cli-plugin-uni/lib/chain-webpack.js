@@ -90,13 +90,16 @@ module.exports = function chainWebpack (platformOptions, vueOptions, api) {
 
     platformOptions.chainWebpack(webpackConfig, vueOptions, api)
     // define
+    const defines = {
+      'process.env.UNI_ENV': JSON.stringify(process.env.UNI_PLATFORM),
+      'process.env.UNI_CLOUD_PROVIDER': process.env.UNI_CLOUD_PROVIDER,
+      'process.env.HBX_USER_TOKEN': JSON.stringify(process.env.HBX_USER_TOKEN || ''),
+      'process.env.UNI_AUTOMATOR_WS_ENDPOINT': JSON.stringify(process.env.UNI_AUTOMATOR_WS_ENDPOINT)
+    }
+
     webpackConfig
       .plugin('uni-define')
-      .use(require.resolve('webpack/lib/DefinePlugin'), [{
-        'process.env.UNI_ENV': JSON.stringify(process.env.UNI_PLATFORM),
-        'process.env.UNI_CLOUD_PROVIDER': process.env.UNI_CLOUD_PROVIDER,
-        'process.env.HBX_USER_TOKEN': JSON.stringify(process.env.HBX_USER_TOKEN || '')
-      }])
+      .use(require.resolve('webpack/lib/DefinePlugin'), [defines])
 
     if (runByHBuilderX) { // 由 HBuilderX 运行时，移除进度，错误
       webpackConfig.plugins.delete('progress')
