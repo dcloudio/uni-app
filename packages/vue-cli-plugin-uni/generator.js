@@ -49,6 +49,7 @@ module.exports = (api, options, rootOptions) => {
         vuex: '^3.2.0'
       },
       devDependencies: {
+        '@dcloudio/uni-automator': version,
         '@dcloudio/uni-cli-shared': version,
         '@dcloudio/uni-migration': version,
         '@dcloudio/uni-template-compiler': version,
