@@ -1,7 +1,7 @@
 const SOURCE_TYPES = ['album', 'camera']
 
 export const chooseVideo = {
-  'sourceType': {
+  sourceType: {
     type: Array,
     required: false,
     default: SOURCE_TYPES,

@@ -1,3 +1,7 @@
+import {
+  hasOwn
+} from 'uni-shared'
+
 /**
  * 暂存的文件对象
  */
@@ -50,7 +54,7 @@ export function base64ToFile (base64) {
  */
 export function fileToUrl (file) {
   for (const key in files) {
-    if (files.hasOwnProperty(key)) {
+    if (hasOwn(files, key)) {
       const oldFile = files[key]
       if (oldFile === file) {
         return key
@@ -60,4 +64,9 @@ export function fileToUrl (file) {
   var url = (window.URL || window.webkitURL).createObjectURL(file)
   files[url] = file
   return url
+}
+
+export function revokeObjectURL (url) {
+  (window.URL || window.webkitURL).revokeObjectURL(url)
+  delete files[url]
 }

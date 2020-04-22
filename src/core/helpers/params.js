@@ -18,7 +18,7 @@ export default function validateParam (key, paramTypes, paramsData) {
   }
   if (value === undefined) {
     if (hasOwn(paramOptions, 'default')) {
-      const paramDefault = paramOptions['default']
+      const paramDefault = paramOptions.default
       value = isFn(paramDefault) ? paramDefault() : paramDefault
       paramsData[key] = value // 默认值
     }
@@ -80,6 +80,8 @@ function assertType (value, type) {
     if (!valid && t === 'object') {
       valid = value instanceof type
     }
+  } else if (value.byteLength >= 0) {
+    valid = true
   } else if (expectedType === 'Object') {
     valid = isPlainObject(value)
   } else if (expectedType === 'Array') {

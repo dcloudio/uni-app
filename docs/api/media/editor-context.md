@@ -68,17 +68,17 @@ editor 组件对应的 editorContext 实例，可通过 [uni.createSelectorQuery
 
 **OBJECT 参数说明**
 
-| 属性 | 类型 | 默认值 | 必填 | 说明 |平台差异说明|
-| --- | --- | --- | --- | --- | --- |
-| src | String |  | 是 | 图片地址 | |
-| alt | String |  | 否 | 图像无法显示时的替代文本 | |
-| width | String |  | 否 | 图片宽度（pixels/百分比) |仅微信小程序支持|
-| height | String |  | 否 | 图片高度 (pixels/百分比) |仅微信小程序支持|
-| extClass | String |  | 否 | 添加到图片 img 标签上的类名 |仅微信小程序支持|
-| data | Object |  | 否 | data 被序列化为 name=value;name1=value2 的格式挂在属性 data-custom 上 |仅微信小程序支持|
-| success | Function |  | 否 | 接口调用成功的回调函数 | |
-| fail | Function |  | 否 | 接口调用失败的回调函数 | |
-| complete | Function |  | 否 | 接口调用结束的回调函数（调用成功、失败都会执行） | |
+| 属性 | 类型 | 默认值 | 必填 | 说明 |
+| --- | --- | --- | --- | --- |
+| src | String |  | 是 | 图片地址 |
+| alt | String |  | 否 | 图像无法显示时的替代文本 |
+| width | String |  | 否 | 图片宽度（pixels/百分比），2.6.5+ 支持 |
+| height | String |  | 否 | 图片高度 (pixels/百分比），2.6.5+ 支持|
+| extClass | String |  | 否 | 添加到图片 img 标签上的类名，2.6.5+ 支持 |
+| data | Object |  | 否 | data 被序列化为 name=value;name1=value2 的格式挂在属性 data-custom 上，2.6.5+ 支持 |
+| success | Function |  | 否 | 接口调用成功的回调函数 |
+| fail | Function |  | 否 | 接口调用失败的回调函数 |
+| complete | Function |  | 否 | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ## editorContext.insertText(OBJECT)
 

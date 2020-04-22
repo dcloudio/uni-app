@@ -1,14 +1,17 @@
 <template>
   <uni-cover-image
     :src="src"
-    v-on="$listeners">
+    v-on="$listeners"
+  >
     <div
-      class="uni-cover-image">
+      class="uni-cover-image"
+    >
       <img
         v-if="src"
         :src="$getRealPath(src)"
         @load="_load"
-        @error="_error">
+        @error="_error"
+      >
     </div>
   </uni-cover-image>
 </template>

@@ -17,7 +17,7 @@ function checkIsSupportFingerPrint () {
 }
 
 export function checkIsSupportSoterAuthentication () {
-  let supportMode = []
+  const supportMode = []
   if (checkIsSupportFingerPrint()) {
     supportMode.push('fingerPrint')
   }
@@ -96,7 +96,7 @@ export function startSoterAuthentication ({
       errMsg: 'startSoterAuthentication:fail'
     }
   }
-  let supportRequestAuthMode = []
+  const supportRequestAuthMode = []
   requestAuthModes.map((item, index) => {
     if (supportMode.indexOf(item) > -1) {
       supportRequestAuthMode.push(item)
@@ -109,7 +109,7 @@ export function startSoterAuthentication ({
       errMsg: 'startSoterAuthentication:fail no corresponding mode'
     }
   }
-  let enrolledRequestAuthMode = []
+  const enrolledRequestAuthMode = []
   supportRequestAuthMode.map((item, index) => {
     const checked = checkIsSoterEnrolledInDevice({
       checkAuthMode: item

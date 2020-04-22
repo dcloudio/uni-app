@@ -34,14 +34,14 @@ const uniCloudPath = path.resolve(__dirname, '../../packages/uni-cloud/dist/inde
 
 function getProvides () {
   return {
-    '__f__': [path.resolve(__dirname, '../format-log.js'), 'log'],
-    'uniCloud': [uniCloudPath, 'default'],
+    __f__: [path.resolve(__dirname, '../format-log.js'), 'log'],
+    uniCloud: [uniCloudPath, 'default'],
     'wx.nextTick': [runtimePath, 'nextTick'],
-    'Page': [runtimePath, 'Page'],
-    'Component': [runtimePath, 'Component'],
-    'Behavior': [runtimePath, 'Behavior'],
-    'getDate': [wxsPath, 'getDate'],
-    'getRegExp': [wxsPath, 'getRegExp']
+    Page: [runtimePath, 'Page'],
+    Component: [runtimePath, 'Component'],
+    Behavior: [runtimePath, 'Behavior'],
+    getDate: [wxsPath, 'getDate'],
+    getRegExp: [wxsPath, 'getRegExp']
   }
 }
 
@@ -91,18 +91,17 @@ module.exports = {
   webpackConfig (webpackConfig) {
     let useBuiltIns = 'usage'
 
-    const statCode = process.env.UNI_USING_STAT ? `import '@dcloudio/uni-stat';` : ''
+    const statCode = process.env.UNI_USING_STAT ? 'import \'@dcloudio/uni-stat\';' : ''
 
     try {
       const babelConfig = require(path.resolve(process.env.UNI_CLI_CONTEXT, 'babel.config.js'))
       useBuiltIns = babelConfig.presets[0][1].useBuiltIns
     } catch (e) {}
 
-    const beforeCode = (useBuiltIns === 'entry' ? `import '@babel/polyfill';` : '') +
+    const beforeCode = (useBuiltIns === 'entry' ? 'import \'@babel/polyfill\';' : '') +
       `import 'uni-pages';import 'uni-${process.env.UNI_PLATFORM}';`
 
     return {
-      devtool: process.env.NODE_ENV === 'production' ? false : 'cheap-module-eval-source-map',
       resolve: {
         extensions: ['.nvue'],
         alias: {
@@ -114,7 +113,7 @@ module.exports = {
         rules: [{
           test: path.resolve(process.env.UNI_INPUT_DIR, getMainEntry()),
           use: [{
-            loader: 'wrap-loader',
+            loader: path.resolve(__dirname, '../../packages/wrap-loader'),
             options: {
               before: [
                 beforeCode + statCode + getGlobalUsingComponentsCode()
@@ -124,9 +123,9 @@ module.exports = {
         }, {
           test: /App\.vue$/,
           use: {
-            loader: 'wrap-loader',
+            loader: path.resolve(__dirname, '../../packages/wrap-loader'),
             options: {
-              before: [`<template><App :keepAliveInclude="keepAliveInclude"/></template>`]
+              before: ['<template><App :keepAliveInclude="keepAliveInclude"/></template>']
             }
           }
         }, { // 解析组件，css 等
@@ -167,10 +166,14 @@ module.exports = {
       webpackConfig.plugins.delete('preload-index')
     }
 
+    const compilerOptions = require('./compiler-options')
+    if (publicPath === './') {
+      compilerOptions.publicPath = publicPath
+    }
     modifyVueLoader(webpackConfig, {
       isH5: true,
       hotReload: true
-    }, require('./compiler-options'), api)
+    }, compilerOptions, api)
 
     if (process.env.NODE_ENV === 'production') {
       require('./cssnano-options')(webpackConfig)

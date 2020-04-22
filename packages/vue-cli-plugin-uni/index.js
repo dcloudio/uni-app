@@ -19,7 +19,7 @@ module.exports = (api, options) => {
 
   initBuildCommand(api, options)
 
-  if (process.env.UNI_PLATFORM === 'quickapp') {
+  if (process.env.UNI_PLATFORM === 'quickapp-vue') {
     process.env.UNI_OUTPUT_DIR = path.resolve(process.env.UNI_OUTPUT_DIR, 'build')
     Object.assign(options, {
       assetsDir,
@@ -35,13 +35,17 @@ module.exports = (api, options) => {
     api.configureWebpack(require('./lib/configure-webpack')(platformOptions, manifestPlatformOptions, options, api))
     api.chainWebpack(require('./lib/chain-webpack')(platformOptions, options, api))
 
-    const vueConfig = require('@dcloudio/uni-quickapp/lib/vue.config.js')
+    const vueConfig = require('@dcloudio/uni-quickapp-vue/lib/vue.config.js')
     api.configureWebpack(vueConfig.configureWebpack)
     api.chainWebpack(vueConfig.chainWebpack)
     return
   }
 
-  const platformOptions = require('./lib/' + process.env.UNI_PLATFORM)
+  const type = ['app-plus', 'h5'].includes(process.env.UNI_PLATFORM)
+    ? process.env.UNI_PLATFORM
+    : 'mp'
+
+  const platformOptions = require('./lib/' + type)
 
   let vueConfig = platformOptions.vueConfig
 
@@ -58,6 +62,17 @@ module.exports = (api, options) => {
 
   api.configureWebpack(require('./lib/configure-webpack')(platformOptions, manifestPlatformOptions, options, api))
   api.chainWebpack(require('./lib/chain-webpack')(platformOptions, options, api))
+
+  global.uniPlugin.configureWebpack.forEach(configureWebpack => {
+    api.configureWebpack(function (webpackConfig) {
+      return configureWebpack(webpackConfig, options)
+    })
+  })
+  global.uniPlugin.chainWebpack.forEach(chainWebpack => {
+    api.chainWebpack(function (webpackConfig) {
+      return chainWebpack(webpackConfig, options)
+    })
+  })
 
   if (
     process.env.UNI_PLATFORM === 'h5' ||

@@ -13,7 +13,7 @@ export function loadFontFace ({
         UniViewJSBridge.publishHandler('onLoadFontFaceCallback', {
           callbackId,
           data: {
-            errMsg: `loadFontFace:ok`
+            errMsg: 'loadFontFace:ok'
           }
         })
       })
@@ -32,7 +32,7 @@ export function loadFontFace ({
     UniViewJSBridge.publishHandler('onLoadFontFaceCallback', {
       callbackId,
       data: {
-        errMsg: `loadFontFace:ok`
+        errMsg: 'loadFontFace:ok'
       }
     })
   }

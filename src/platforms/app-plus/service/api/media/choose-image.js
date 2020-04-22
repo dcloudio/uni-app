@@ -97,7 +97,8 @@ const openCamera = function (callbackId, sizeType) {
   const camera = plus.camera.getCamera()
   camera.captureImage(e => invokeChooseImage(callbackId, 'ok', sizeType, [e]),
     e => invokeChooseImage(callbackId, 'fail', 1), {
-      filename: TEMP_PATH + '/camera/'
+      filename: TEMP_PATH + '/camera/',
+      resolution: 'high'
     })
 }
 const openAlbum = function (callbackId, sizeType, count) {

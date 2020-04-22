@@ -13,27 +13,32 @@ class UploadTask {
     this._callbackId = callbackId
     this._callbacks = []
   }
+
   abort () {
     invokeMethod('operateRequestTask', {
       uploadTaskId: this.id,
       operationType: 'abort'
     })
   }
+
   onProgressUpdate (callback) {
     if (typeof callback !== 'function') {
       return
     }
     this._callbacks.push(callback)
   }
+
   onHeadersReceived () {
 
   }
+
   offProgressUpdate (callback) {
     const index = this._callbacks.indexOf(callback)
     if (index >= 0) {
       this._callbacks.splice(index, 1)
     }
   }
+
   offHeadersReceived () {
 
   }

@@ -2,20 +2,27 @@
   <uni-scroll-view v-on="$listeners">
     <div
       ref="wrap"
-      class="uni-scroll-view">
+      class="uni-scroll-view"
+    >
       <div
         ref="main"
         :style="{'overflow-x': scrollX?'auto':'hidden','overflow-y': scrollY?'auto':'hidden'}"
-        class="uni-scroll-view">
-        <div ref="content">
+        class="uni-scroll-view"
+      >
+        <div
+          ref="content"
+          class="uni-scroll-view-content"
+        >
           <div
             v-if="refresherEnabled"
             ref="refresherinner"
             :style="{'background-color': refresherBackground, 'height': refresherHeight + 'px'}"
-            class="uni-scroll-view-refresher">
+            class="uni-scroll-view-refresher"
+          >
             <div
               v-if="refresherDefaultStyle !== 'none'"
-              class="uni-scroll-view-refresh">
+              class="uni-scroll-view-refresh"
+            >
               <div class="uni-scroll-view-refresh-inner">
                 <svg
                   v-if="refreshState=='pulling'"
@@ -24,33 +31,38 @@
                   class="uni-scroll-view-refresh__icon"
                   width="24"
                   height="24"
-                  viewBox="0 0 24 24">
+                  viewBox="0 0 24 24"
+                >
                   <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" />
                   <path
                     d="M0 0h24v24H0z"
-                    fill="none" />
+                    fill="none"
+                  />
                 </svg>
                 <svg
                   v-if="refreshState=='refreshing'"
                   class="uni-scroll-view-refresh__spinner"
                   width="24"
                   height="24"
-                  viewBox="25 25 50 50">
+                  viewBox="25 25 50 50"
+                >
                   <circle
                     cx="50"
                     cy="50"
                     r="20"
                     fill="none"
                     style="color: #2BD009;"
-                    stroke-width="3"/>
+                    stroke-width="3"
+                  />
                 </svg>
               </div>
             </div>
             <slot
               v-if="refresherDefaultStyle=='none'"
-              name="refresher"/>
+              name="refresher"
+            />
           </div>
-          <slot/>
+          <slot />
         </div>
       </div>
     </div>
@@ -230,7 +242,7 @@ export default {
       }
 
       if (self.refresherEnabled && self.refreshState === 'pulling') {
-        let dy = y - touchStart.y
+        const dy = y - touchStart.y
         self.refresherHeight = dy
 
         let rotate = dy / self.refresherThreshold
@@ -360,7 +372,7 @@ export default {
     _handleScroll: function ($event) {
       if (!($event.timeStamp - this._lastScrollTime < 20)) {
         this._lastScrollTime = $event.timeStamp
-        let target = $event.target
+        const target = $event.target
         this.$trigger('scroll', $event, {
           scrollLeft: target.scrollLeft,
           scrollTop: target.scrollTop,
@@ -518,6 +530,11 @@ uni-scroll-view[hidden] {
   /* display: flex; 时在安卓下会导致scrollWidth和offsetWidth一样 */
   height: 100%;
   max-height: inherit;
+}
+
+.uni-scroll-view-content {
+  width: 100%;
+  height: 100%;
 }
 
 .uni-scroll-view-refresher {

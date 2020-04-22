@@ -1,4 +1,6 @@
 <script>
+import { deepClone } from 'uni-shared'
+
 export default {
   name: 'PickerView',
   props: {
@@ -55,7 +57,7 @@ export default {
         } else {
           this.changeSource = ''
           // 避免外部直接对此值进行修改
-          let value = val.map(val => val)
+          const value = val.map(val => val)
           this.$emit('update:value', value)
           this.$trigger('change', {}, {
             value
@@ -93,7 +95,7 @@ export default {
   render (createElement) {
     var items = []
     if (this.$slots.default) {
-      this.$slots.default.forEach(vnode => {
+      deepClone(this.$slots.default, createElement).forEach(vnode => {
         if (vnode.componentOptions && vnode.componentOptions.tag === 'v-uni-picker-view-column') {
           items.push(vnode)
         }
@@ -114,7 +116,7 @@ export default {
       }),
       createElement('div', {
         ref: 'wrapper',
-        'class': 'uni-picker-view-wrapper'
+        class: 'uni-picker-view-wrapper'
       }, items)
       ])
   }

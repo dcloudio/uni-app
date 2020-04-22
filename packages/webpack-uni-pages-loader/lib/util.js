@@ -8,35 +8,37 @@ const {
 const PLATFORMS = getPlatforms()
 
 const alipayWindowMap = {
-  'defaultTitle': 'navigationBarTitleText',
-  'pullRefresh': 'enablePullDownRefresh',
-  'allowsBounceVertical': 'allowsBounceVertical',
-  'titleBarColor': 'navigationBarBackgroundColor',
-  'optionMenu': 'optionMenu',
-  'backgroundColor': 'backgroundColor',
-  'usingComponents': 'usingComponents',
-  'navigationBarShadow': 'navigationBarShadow',
-  'titleImage': 'titleImage',
-  'transparentTitle': 'transparentTitle',
-  'titlePenetrate': 'titlePenetrate'
+  defaultTitle: 'navigationBarTitleText',
+  pullRefresh: 'enablePullDownRefresh',
+  allowsBounceVertical: 'allowsBounceVertical',
+  titleBarColor: 'navigationBarBackgroundColor',
+  optionMenu: 'optionMenu',
+  backgroundColor: 'backgroundColor',
+  usingComponents: 'usingComponents',
+  navigationBarShadow: 'navigationBarShadow',
+  titleImage: 'titleImage',
+  transparentTitle: 'transparentTitle',
+  titlePenetrate: 'titlePenetrate'
 }
 
 const alipayTabBarMap = {
-  'textColor': 'color',
-  'selectedColor': 'selectedColor',
-  'backgroundColor': 'backgroundColor',
-  'items': 'list'
+  textColor: 'color',
+  selectedColor: 'selectedColor',
+  backgroundColor: 'backgroundColor',
+  items: 'list'
 }
 
 const alipayTabBarItemMap = {
-  'pagePath': 'pagePath',
-  'name': 'text',
-  'icon': 'iconPath',
-  'activeIcon': 'selectedIconPath'
+  pagePath: 'pagePath',
+  name: 'text',
+  icon: 'iconPath',
+  activeIcon: 'selectedIconPath'
 }
 
+const _hasOwnProperty = Object.prototype.hasOwnProperty
+
 function hasOwn (obj, key) {
-  return hasOwnProperty.call(obj, key)
+  return _hasOwnProperty.call(obj, key)
 }
 
 function parseStyle (style = {}, root = '') {

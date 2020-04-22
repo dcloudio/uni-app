@@ -25,7 +25,7 @@ function getStyle (action) {
   const option = action.option
   const transition = option.transition
   const style = {}
-  let transform = []
+  const transform = []
   animates.forEach(animate => {
     let type = animate.type
     let args = [...animate.args]

@@ -8,7 +8,7 @@ function parseData (data, vueComponentOptions) {
 }
 
 function parseComponents (vueComponentOptions) {
-  vueComponentOptions.components = global['__wxVueOptions'].components;
+  vueComponentOptions.components = global.__wxVueOptions.components;
 }
 
 const _toString = Object.prototype.toString;
@@ -50,11 +50,11 @@ const camelize = cached((str) => {
 const SOURCE_KEY = '__data__';
 
 const COMPONENT_LIFECYCLE = {
-  'created': 'onServiceCreated',
-  'attached': 'onServiceAttached',
-  'ready': 'mounted',
-  'moved': 'moved',
-  'detached': 'destroyed'
+  created: 'onServiceCreated',
+  attached: 'onServiceAttached',
+  ready: 'mounted',
+  moved: 'moved',
+  detached: 'destroyed'
 };
 
 const COMPONENT_LIFECYCLE_KEYS = Object.keys(COMPONENT_LIFECYCLE);
@@ -135,7 +135,7 @@ function parseMethods (methods, vueComponentOptions) {
     return
   }
   if (methods.$emit) {
-    console.warn(`Method "$emit" conflicts with an existing Vue instance method`);
+    console.warn('Method "$emit" conflicts with an existing Vue instance method');
     delete methods.$emit;
   }
   vueComponentOptions.methods = methods;
@@ -299,7 +299,7 @@ function parseRelations (relations, vueComponentOptions) {
   Object.keys(relations).forEach(name => {
     const relation = relations[name];
     relation.name = name;
-    relation.target = relation.target ? String(relation.target) : relative(global['__wxRoute'], name);
+    relation.target = relation.target ? String(relation.target) : relative(global.__wxRoute, name);
   });
   vueComponentOptions.mpOptions.relations = relations;
 }
@@ -772,23 +772,23 @@ var polyfill = {
   }
 };
 
-global['__wxRoute'] = '';
-global['__wxComponents'] = Object.create(null);
-global['__wxVueOptions'] = Object.create(null);
+global.__wxRoute = '';
+global.__wxComponents = Object.create(null);
+global.__wxVueOptions = Object.create(null);
 
 function Page (options) {
   const pageOptions = parsePage(options);
   pageOptions.mixins.unshift(polyfill);
-  pageOptions.mpOptions.path = global['__wxRoute'];
-  global['__wxComponents'][global['__wxRoute']] = pageOptions;
+  pageOptions.mpOptions.path = global.__wxRoute;
+  global.__wxComponents[global.__wxRoute] = pageOptions;
 }
 
 function initRelationsHandler (vueComponentOptions) {
   // linked 需要在当前组件 attached 之后再执行
-  if (!vueComponentOptions['onServiceAttached']) {
-    vueComponentOptions['onServiceAttached'] = [];
+  if (!vueComponentOptions.onServiceAttached) {
+    vueComponentOptions.onServiceAttached = [];
   }
-  vueComponentOptions['onServiceAttached'].push(function onServiceAttached () {
+  vueComponentOptions.onServiceAttached.push(function onServiceAttached () {
     handleRelations(this, 'linked');
   });
 }
@@ -796,9 +796,9 @@ function initRelationsHandler (vueComponentOptions) {
 function Component (options) {
   const componentOptions = parseComponent(options);
   componentOptions.mixins.unshift(polyfill);
-  componentOptions.mpOptions.path = global['__wxRoute'];
+  componentOptions.mpOptions.path = global.__wxRoute;
   initRelationsHandler(componentOptions);
-  global['__wxComponents'][global['__wxRoute']] = componentOptions;
+  global.__wxComponents[global.__wxRoute] = componentOptions;
 }
 
 function Behavior (options) {

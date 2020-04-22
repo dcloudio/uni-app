@@ -5,7 +5,7 @@ const migraters = {
   'mp-weixin': require('./mp-weixin')
 }
 
-module.exports = function validate(input, out, options) {
+module.exports = function validate (input, out, options) {
   if (!fs.existsSync(input)) {
     return console.error(`错误: '${input}' 不存在`)
   }

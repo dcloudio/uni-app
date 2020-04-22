@@ -6,13 +6,15 @@
     @touchend="_hoverTouchEnd"
     @touchcancel="_hoverTouchCancel"
     @click="_onClick"
-    v-on="$listeners">
+    v-on="$listeners"
+  >
     <slot />
   </uni-navigator>
   <uni-navigator
     v-else
     @click="_onClick"
-    v-on="$listeners">
+    v-on="$listeners"
+  >
     <slot />
   </uni-navigator>
 </template>
@@ -59,7 +61,7 @@ export default {
   methods: {
     _onClick ($event) {
       if (this.openType !== 'navigateBack' && !this.url) {
-        console.error(`<navigator/> should have url attribute when using navigateTo, redirectTo, reLaunch or switchTab`)
+        console.error('<navigator/> should have url attribute when using navigateTo, redirectTo, reLaunch or switchTab')
         return
       }
 

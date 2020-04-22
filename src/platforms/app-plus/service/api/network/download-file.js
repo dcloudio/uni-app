@@ -1,4 +1,8 @@
 import {
+  hasOwn
+} from 'uni-shared'
+
+import {
   TEMP_PATH
 } from '../constants'
 
@@ -40,7 +44,7 @@ const createDownloadTaskById = function (downloadTaskId, {
     }
   })
   for (const name in header) {
-    if (header.hasOwnProperty(name)) {
+    if (hasOwn(header, name)) {
       downloader.setRequestHeader(name, header[name])
     }
   }

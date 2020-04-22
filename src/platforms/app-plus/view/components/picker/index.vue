@@ -1,7 +1,8 @@
 <template>
   <uni-picker
     @click.stop="_show"
-    v-on="$listeners">
+    v-on="$listeners"
+  >
     <slot />
   </uni-picker>
 </template>
@@ -42,6 +43,43 @@ function getDate (str, mode_) {
   }
   return date
 }
+
+function getDefaultStartValue () {
+  if (this.mode === mode.TIME) {
+    return '00:00'
+  }
+  if (this.mode === mode.DATE) {
+    const year = new Date().getFullYear() - 100
+    switch (this.fields) {
+      case fields.YEAR:
+        return year
+      case fields.MONTH:
+        return year + '-01'
+      case fields.DAY:
+        return year + '-01-01'
+    }
+  }
+  return ''
+}
+
+function getDefaultEndValue () {
+  if (this.mode === mode.TIME) {
+    return '23:59'
+  }
+  if (this.mode === mode.DATE) {
+    const year = new Date().getFullYear() + 100
+    switch (this.fields) {
+      case fields.YEAR:
+        return year
+      case fields.MONTH:
+        return year + '-12'
+      case fields.DAY:
+        return year + '-12-31'
+    }
+  }
+  return ''
+}
+
 export default {
   name: 'Picker',
   mixins: [emitter],
@@ -77,47 +115,25 @@ export default {
     },
     start: {
       type: String,
-      default () {
-        if (this.mode === mode.TIME) {
-          return '00:00'
-        }
-        if (this.mode === mode.DATE) {
-          let year = new Date().getFullYear() - 60
-          switch (this.fields) {
-            case fields.YEAR:
-              return year
-            case fields.MONTH:
-              return year + '-01'
-            default:
-              return year + '-01-01'
-          }
-        }
-        return ''
-      }
+      default: getDefaultStartValue
     },
     end: {
       type: String,
-      default () {
-        if (this.mode === mode.TIME) {
-          return '23:59'
-        }
-        if (this.mode === mode.DATE) {
-          let year = new Date().getFullYear() + 60
-          switch (this.fields) {
-            case fields.YEAR:
-              return year
-            case fields.MONTH:
-              return year + '-12'
-            default:
-              return year + '-12-31'
-          }
-        }
-        return ''
-      }
+      default: getDefaultEndValue
     },
     disabled: {
       type: [Boolean, String],
       default: false
+    }
+  },
+  data () {
+    return {
+      valueSync: null
+    }
+  },
+  watch: {
+    value () {
+      this._setValueSync()
     }
   },
   created () {
@@ -134,6 +150,7 @@ export default {
         })
       }
     })
+    this._setValueSync()
   },
   beforeDestroy () {
     this.$dispatch('Form', 'uni-form-group-update', {
@@ -142,6 +159,34 @@ export default {
     })
   },
   methods: {
+    _setValueSync () {
+      let val = this.value
+      switch (this.mode) {
+        case mode.MULTISELECTOR:
+          {
+            if (!Array.isArray(val)) {
+              val = []
+            }
+            if (!Array.isArray(this.valueSync)) {
+              this.valueSync = []
+            }
+            const length = this.valueSync.length = Math.max(val.length, this.range.length)
+            for (let index = 0; index < length; index++) {
+              const val0 = Number(val[index])
+              const val1 = Number(this.valueSync[index])
+              this.valueSync.splice(index, 1, isNaN(val0) ? (isNaN(val1) ? 0 : val1) : val0)
+            }
+          }
+          break
+        case mode.TIME:
+        case mode.DATE:
+          this.valueSync = String(val)
+          break
+        default:
+          this.valueSync = Number(val) || 0
+          break
+      }
+    },
     _show () {
       if (this.disabled) {
         return
@@ -197,6 +242,28 @@ export default {
             this.$trigger(event, {}, res)
           }
         })
+      }
+    },
+    _getFormData () {
+      return {
+        value: this.valueSync,
+        key: this.name
+      }
+    },
+    _resetFormData () {
+      switch (this.mode) {
+        case mode.SELECTOR:
+          this.valueSync = -1
+          break
+        case mode.MULTISELECTOR:
+          this.valueSync = this.value.map(val => 0)
+          break
+        case mode.DATE:
+        case mode.TIME:
+          this.valueSync = ''
+          break
+        default:
+          break
       }
     },
     _updatePicker (data) {

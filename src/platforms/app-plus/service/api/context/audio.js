@@ -6,7 +6,7 @@ import {
   publish
 } from '../../bridge'
 
-let audios = {}
+const audios = {}
 
 const evts = ['play', 'canplay', 'ended', 'stop', 'waiting', 'seeking', 'seeked', 'pause']
 
@@ -82,7 +82,7 @@ export function setAudioState ({
 }) {
   const audio = audios[audioId]
   if (audio) {
-    let style = {
+    const style = {
       loop,
       autoplay
     }
@@ -112,7 +112,7 @@ export function getAudioState ({
       errMsg: 'getAudioState:fail'
     }
   }
-  let {
+  const {
     src,
     startTime,
     volume
@@ -122,7 +122,7 @@ export function getAudioState ({
     errMsg: 'getAudioState:ok',
     duration: 1e3 * (audio.getDuration() || 0),
     currentTime: audio.isStopped ? 0 : 1e3 * audio.getPosition(),
-    paused: audio.isPaused,
+    paused: audio.isPaused(),
     src,
     volume,
     startTime: 1e3 * startTime,
@@ -138,7 +138,7 @@ export function operateAudio ({
   const audio = audios[audioId]
   const operationTypes = ['play', 'pause', 'stop']
   if (operationTypes.indexOf(operationType) >= 0) {
-    audio[operationType === operationTypes[0] && audio.isPaused ? 'resume' : operationType]()
+    audio[operationType === operationTypes[0] && audio.isPaused() ? 'resume' : operationType]()
   } else if (operationType === 'seek') {
     audio.seekTo(currentTime / 1e3)
   }

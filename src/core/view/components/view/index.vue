@@ -7,12 +7,13 @@
     @touchcancel="_hoverTouchCancel"
     v-on="$listeners"
   >
-    <slot/>
+    <slot />
   </uni-view>
   <uni-view
     v-else
-    v-on="$listeners">
-    <slot/>
+    v-on="$listeners"
+  >
+    <slot />
   </uni-view>
 </template>
 

@@ -8,7 +8,7 @@ const pkg = require('../package.json')
 const externals = {}
 
 if (process.env.UNI_VIEW !== 'true') {
-  externals['vue'] = {
+  externals.vue = {
     commonjs: 'vue',
     commonjs2: 'vue',
     root: 'Vue'
@@ -41,34 +41,33 @@ const alias = {
 }
 
 const provides = {
-  'console': [resolve('src/core/helpers/console'), 'default'],
-  'UniViewJSBridge': [resolve('src/core/view/bridge/index')],
-  'UniServiceJSBridge': [resolve('src/core/service/bridge/index')]
+  console: [resolve('src/core/helpers/console'), 'default'],
+  UniViewJSBridge: [resolve('src/core/view/bridge/index')],
+  UniServiceJSBridge: [resolve('src/core/service/bridge/index')]
 }
 if (process.env.UNI_VIEW) { // 方便调试
-  delete provides['console']
+  delete provides.console
 }
-module.exports = function configureWebpack (config) {
-  if (process.env.UNI_VIEW === 'true') {
-    alias['vue$'] = resolve('packages/vue-cli-plugin-uni/packages/h5-vue/dist/vue.runtime.esm.js')
-  }
 
-  return {
-    mode: 'production',
-    devtool: false,
-    externals,
-    resolve: {
-      alias
-    },
-    module: {
-      rules: []
-    },
-    plugins: [
-      new webpack.DefinePlugin({
-        __VERSION__: JSON.stringify(pkg.version),
-        __PLATFORM__: JSON.stringify(process.env.UNI_PLATFORM)
-      }),
-      new webpack.ProvidePlugin(provides)
-    ]
-  }
+if (process.env.UNI_VIEW === 'true') {
+  alias.vue$ = resolve('packages/vue-cli-plugin-uni/packages/h5-vue/dist/vue.runtime.esm.js')
+}
+
+module.exports = {
+  mode: 'production',
+  devtool: false,
+  externals,
+  resolve: {
+    alias
+  },
+  module: {
+    rules: []
+  },
+  plugins: [
+    new webpack.DefinePlugin({
+      __VERSION__: JSON.stringify(pkg.version),
+      __PLATFORM__: JSON.stringify(process.env.UNI_PLATFORM)
+    }),
+    new webpack.ProvidePlugin(provides)
+  ]
 }

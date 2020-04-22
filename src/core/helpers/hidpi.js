@@ -1,3 +1,8 @@
+import {
+  hasOwn
+}
+  from 'uni-shared'
+
 export const pixelRatio = (function () {
   const canvas = document.createElement('canvas')
   canvas.height = canvas.width = 0
@@ -12,29 +17,29 @@ export const pixelRatio = (function () {
 })()
 
 const forEach = function (obj, func) {
-  for (let key in obj) {
-    if (obj.hasOwnProperty(key)) {
+  for (const key in obj) {
+    if (hasOwn(obj, key)) {
       func(obj[key], key)
     }
   }
 }
 const ratioArgs = {
-  'fillRect': 'all',
-  'clearRect': 'all',
-  'strokeRect': 'all',
-  'moveTo': 'all',
-  'lineTo': 'all',
-  'arc': [0, 1, 2],
-  'arcTo': 'all',
-  'bezierCurveTo': 'all',
-  'isPointinPath': 'all',
-  'isPointinStroke': 'all',
-  'quadraticCurveTo': 'all',
-  'rect': 'all',
-  'translate': 'all',
-  'createRadialGradient': 'all',
-  'createLinearGradient': 'all',
-  'setTransform': [4, 5]
+  fillRect: 'all',
+  clearRect: 'all',
+  strokeRect: 'all',
+  moveTo: 'all',
+  lineTo: 'all',
+  arc: [0, 1, 2],
+  arcTo: 'all',
+  bezierCurveTo: 'all',
+  isPointinPath: 'all',
+  isPointinStroke: 'all',
+  quadraticCurveTo: 'all',
+  rect: 'all',
+  translate: 'all',
+  createRadialGradient: 'all',
+  createLinearGradient: 'all',
+  setTransform: [4, 5]
 }
 
 const proto = CanvasRenderingContext2D.prototype

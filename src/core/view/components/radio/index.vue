@@ -2,12 +2,14 @@
   <uni-radio
     :disabled="disabled"
     v-on="$listeners"
-    @click="_onClick">
+    @click="_onClick"
+  >
     <div class="uni-radio-wrapper">
       <div
         :class="radioChecked ? 'uni-radio-input-checked' : ''"
         :style="radioChecked ? checkedStyle : ''"
-        class="uni-radio-input" />
+        class="uni-radio-input"
+      />
       <slot />
     </div>
   </uni-radio>

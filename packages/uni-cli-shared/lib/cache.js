@@ -24,13 +24,13 @@ function getPagesJson () {
   const pagesJson = {
     pages: {}
   }
-  for (let name of pageSet.values()) {
+  for (const name of pageSet.values()) {
     const style = JSON.parse(getJsonFile(name) || '{}')
     delete style.customUsingComponents
     pagesJson.pages[name] = style
   }
   const appJson = JSON.parse(getJsonFile('app') || '{}')
-  pagesJson.globalStyle = appJson['window'] || {}
+  pagesJson.globalStyle = appJson.window || {}
   return pagesJson
 }
 
@@ -48,7 +48,7 @@ function getJsonFile (name) {
 
 function getChangedJsonFileMap (clear = true) {
   const changedJsonFileMap = new Map()
-  for (let name of changedJsonFileSet.values()) {
+  for (const name of changedJsonFileSet.values()) {
     changedJsonFileMap.set(name + '.json', jsonFileMap.get(name))
   }
   clear && changedJsonFileSet.clear()
@@ -328,7 +328,7 @@ module.exports = {
     globalUsingComponents = jsonCache.globalUsingComponents
     appJsonUsingComponents = jsonCache.appJsonUsingComponents
     // restore 时,所有 file 均触发 change
-    for (let name of jsonFileMap.keys()) {
+    for (const name of jsonFileMap.keys()) {
       changedJsonFileSet.add(name)
     }
     return true

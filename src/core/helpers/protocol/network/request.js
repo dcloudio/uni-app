@@ -35,7 +35,7 @@ function stringifyQuery (url, data) {
     item = item.split('=')
     query[item[0]] = item[1]
   })
-  for (let key in data) {
+  for (const key in data) {
     if (hasOwn(data, key)) {
       let v = data[key]
       if (typeof v === 'undefined' || v === null) {
@@ -59,7 +59,7 @@ export const request = {
     }
   },
   data: {
-    type: [Object, String, ArrayBuffer],
+    type: [Object, String, Array, ArrayBuffer],
     validator (value, params) {
       params.data = value || ''
     }
@@ -100,5 +100,8 @@ export const request = {
       value = (value || '').toLowerCase()
       params.responseType = Object.values(responseType).indexOf(value) < 0 ? responseType.TEXT : value
     }
+  },
+  withCredentials: {
+    type: Boolean
   }
 }

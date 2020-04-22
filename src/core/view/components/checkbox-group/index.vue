@@ -41,7 +41,7 @@ export default {
   },
   methods: {
     _changeHandler ($event) {
-      let value = []
+      const value = []
       this.checkboxList.forEach(vm => {
         if (vm.checkboxChecked) {
           value.push(vm.value)
@@ -55,21 +55,21 @@ export default {
       if ($event.type === 'add') {
         this.checkboxList.push($event.vm)
       } else {
-        let index = this.checkboxList.indexOf($event.vm)
+        const index = this.checkboxList.indexOf($event.vm)
         this.checkboxList.splice(index, 1)
       }
     },
     _getFormData () {
-      let data = {}
+      const data = {}
       if (this.name !== '') {
-        let value = []
+        const value = []
         this.checkboxList.forEach(vm => {
           if (vm.checkboxChecked) {
             value.push(vm.value)
           }
         })
-        data['value'] = value
-        data['key'] = this.name
+        data.value = value
+        data.key = this.name
       }
       return data
     }

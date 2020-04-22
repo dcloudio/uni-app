@@ -51,7 +51,7 @@ function markStatic (node) {
     ) {
       node.plain = true
     }
-    if (!node.attrsMap || !node.attrsMap['id']) { // 保留 id 属性, selectComponent 需要使用
+    if (!node.attrsMap || !node.attrsMap.id) { // 保留 id 属性, selectComponent 需要使用
       delete node.attrs
     }
   }

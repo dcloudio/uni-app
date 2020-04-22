@@ -2,7 +2,8 @@
   <uni-page :data-page="$route.meta.pagePath">
     <page-head
       v-if="navigationBar.type!=='none'"
-      v-bind="navigationBar" />
+      v-bind="navigationBar"
+    />
     <page-refresh
       v-if="enablePullDownRefresh"
       ref="refresh"
@@ -24,11 +25,11 @@
   </uni-page>
 </template>
 <style>
-uni-page {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
+  uni-page {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
 </style>
 <script>
 import {
@@ -162,24 +163,26 @@ export default {
   },
   data () {
     const titleNViewTypeList = {
-      'none': 'default',
-      'auto': 'transparent',
-      'always': 'float'
+      none: 'default',
+      auto: 'transparent',
+      always: 'float'
     }
     // 将 navigationStyle 和 transparentTitle 都合并到 titleNView
     let titleNView = this.titleNView
     if ( // 无头
       titleNView === false ||
-      titleNView === 'false' ||
-      (
-        this.navigationStyle === 'custom' &&
-        !isPlainObject(titleNView)
-      ) || (
+        titleNView === 'false' ||
+        (
+          this.navigationStyle === 'custom' &&
+          !isPlainObject(titleNView)
+        ) || (
         this.transparentTitle === 'always' &&
-        !isPlainObject(titleNView)
+          !isPlainObject(titleNView)
       )
     ) {
-      titleNView = { type: 'none' }
+      titleNView = {
+        type: 'none'
+      }
     } else {
       titleNView = Object.assign({}, {
         type: this.navigationStyle === 'custom' ? 'none' : 'default'
@@ -191,8 +194,8 @@ export default {
     }
 
     const yesNoParseList = {
-      'YES': true,
-      'NO': false
+      YES: true,
+      NO: false
     }
 
     const navigationBar = mergeTitleNView({
@@ -233,21 +236,9 @@ export default {
     }
   },
   created () {
-    if (__PLATFORM__ === 'h5') {
-      const navigationBar = this.navigationBar
-      document.title = navigationBar.titleText
-      if (typeof qh !== 'undefined') {
-        qh.setNavigationBarTitle({
-          title: document.title
-        })
-        qh.setNavigationBarColor({
-          backgroundColor: navigationBar.backgroundColor
-        })
-        qh.setNavigationBarTextStyle({
-          textStyle: navigationBar.textColor === '#000' ? 'black' : 'white'
-        })
-      }
-    }
+    const navigationBar = this.navigationBar
+    document.title = navigationBar.titleText
+    UniServiceJSBridge.emit('onNavigationBarChange', navigationBar)
   }
 }
 </script>

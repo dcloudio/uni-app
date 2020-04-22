@@ -5,39 +5,31 @@ function setNavigationBar (type, args) {
 
     switch (type) {
       case 'setNavigationBarColor':
-        const {
-          frontColor,
-          backgroundColor,
-          animation
-        } = args
+        {
+          const {
+            frontColor,
+            backgroundColor,
+            animation
+          } = args
 
-        const {
-          duration,
-          timingFunc
-        } = animation
+          const {
+            duration,
+            timingFunc
+          } = animation
 
-        if (frontColor) {
-          page.navigationBar.textColor = frontColor === '#000000' ? 'black' : 'white'
-          if (__PLATFORM__ === 'h5') {
-            if (typeof qh !== 'undefined') {
-              qh.setNavigationBarTextStyle({
-                textStyle: page.navigationBar.textColor
-              })
-            }
+          if (frontColor) {
+            page.navigationBar.textColor = frontColor === '#000000' ? 'black' : 'white'
           }
-        }
-        if (backgroundColor) {
-          page.navigationBar.backgroundColor = backgroundColor
-          if (__PLATFORM__ === 'h5') {
-            if (typeof qh !== 'undefined') {
-              qh.setNavigationBarColor({
-                backgroundColor
-              })
-            }
+          if (backgroundColor) {
+            page.navigationBar.backgroundColor = backgroundColor
           }
+          UniServiceJSBridge.emit('onNavigationBarChange', {
+            textColor: frontColor === '#000000' ? '#000' : '#fff',
+            backgroundColor: page.navigationBar.backgroundColor
+          })
+          page.navigationBar.duration = duration + 'ms'
+          page.navigationBar.timingFunc = timingFunc
         }
-        page.navigationBar.duration = duration + 'ms'
-        page.navigationBar.timingFunc = timingFunc
         break
       case 'showNavigationBarLoading':
         page.navigationBar.loading = true
@@ -46,17 +38,15 @@ function setNavigationBar (type, args) {
         page.navigationBar.loading = false
         break
       case 'setNavigationBarTitle':
-        const {
-          title
-        } = args
-        page.navigationBar.titleText = title
-        if (__PLATFORM__ === 'h5') {
+        {
+          const {
+            title
+          } = args
+          page.navigationBar.titleText = title
           document.title = title
-          if (typeof qh !== 'undefined') {
-            qh.setNavigationBarTitle({
-              title: document.title
-            })
-          }
+          UniServiceJSBridge.emit('onNavigationBarChange', {
+            titleText: title
+          })
         }
         break
     }

@@ -8,9 +8,12 @@ const {
   getNVueMainEntry,
   nvueJsPreprocessOptions,
   nvueHtmlPreprocessOptions,
-  devtoolModuleFilenameTemplate,
   getTemplatePath
 } = require('@dcloudio/uni-cli-shared')
+
+const {
+  devtoolModuleFilenameTemplate
+} = require('../util')
 
 const WebpackAppPlusNVuePlugin = process.env.UNI_USING_V3
   ? require('../packages/webpack-app-plus-plugin')
@@ -42,7 +45,7 @@ const uniPath = process.env.UNI_USING_V8
 const uniCloudPath = require.resolve('@dcloudio/vue-cli-plugin-uni/packages/uni-cloud/dist/index.js')
 
 const provide = {
-  'uniCloud': [uniCloudPath, 'default']
+  uniCloud: [uniCloudPath, 'default']
 }
 
 if (
@@ -58,11 +61,11 @@ if (
 
 if (!process.env.UNI_USING_V3 && !process.env.UNI_USING_V3_NATIVE) {
   if (!process.env.UNI_USING_NATIVE) {
-    provide['uni'] = [path.resolve(__dirname, uniPath), 'default']
+    provide.uni = [path.resolve(__dirname, uniPath), 'default']
   }
 
   if (process.env.UNI_USING_V8) {
-    provide['plus'] = [path.resolve(__dirname, uniPath), 'weexPlus']
+    provide.plus = [path.resolve(__dirname, uniPath), 'weexPlus']
   }
 }
 
@@ -70,18 +73,18 @@ if (
   process.env.UNI_PLATFORM === 'app-plus' &&
   process.env.UNI_USING_V8
 ) {
-  provide['__f__'] = [require.resolve('@dcloudio/vue-cli-plugin-uni/lib/format-log.js'), 'default']
-  provide['crypto'] = [require.resolve('@dcloudio/vue-cli-plugin-uni/lib/crypto.js'), 'default']
+  provide.__f__ = [require.resolve('@dcloudio/vue-cli-plugin-uni/lib/format-log.js'), 'default']
+  provide.crypto = [require.resolve('@dcloudio/vue-cli-plugin-uni/lib/crypto.js'), 'default']
 }
 
 const plugins = [
   new VueLoaderPlugin(),
   new webpack.DefinePlugin({
     'process.env': {
-      'NODE_ENV': JSON.stringify(process.env.NODE_ENV),
-      'VUE_APP_PLATFORM': JSON.stringify(process.env.UNI_PLATFORM),
-      'UNI_CLOUD_PROVIDER': process.env.UNI_CLOUD_PROVIDER,
-      'HBX_USER_TOKEN': JSON.stringify(process.env.HBX_USER_TOKEN || '')
+      NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+      VUE_APP_PLATFORM: JSON.stringify(process.env.UNI_PLATFORM),
+      UNI_CLOUD_PROVIDER: process.env.UNI_CLOUD_PROVIDER,
+      HBX_USER_TOKEN: JSON.stringify(process.env.HBX_USER_TOKEN || '')
     }
   }),
   new webpack.BannerPlugin({
@@ -224,7 +227,7 @@ module.exports = function () {
       return process.UNI_NVUE_ENTRY
     },
     externals: {
-      'vue': 'Vue'
+      vue: 'Vue'
     },
     performance: {
       hints: false

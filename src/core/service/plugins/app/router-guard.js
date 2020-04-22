@@ -203,18 +203,7 @@ function afterEach (to, from) {
       // 延迟执行 onShow，防止与 UniServiceJSBridge.emit('onHidePopup') 冲突。
       setTimeout(function () {
         if (__PLATFORM__ === 'h5') {
-          const navigationBar = toVm.$parent.$parent.navigationBar
-          if (typeof qh !== 'undefined') {
-            qh.setNavigationBarTitle({
-              title: document.title
-            })
-            qh.setNavigationBarColor({
-              backgroundColor: navigationBar.backgroundColor
-            })
-            qh.setNavigationBarTextStyle({
-              textStyle: navigationBar.textColor === '#000' ? 'black' : 'white'
-            })
-          }
+          UniServiceJSBridge.emit('onNavigationBarChange', toVm.$parent.$parent.navigationBar)
         }
         callPageHook(toVm, 'onShow')
       }, 0)

@@ -76,7 +76,7 @@ module.exports = function generateComponent (compilation) {
         }
 
         const origSource = assets[name].source()
-        if (origSource.length !== `Component({})`.length) { // 不是空组件
+        if (origSource.length !== 'Component({})'.length) { // 不是空组件
           const globalVar = process.env.UNI_PLATFORM === 'mp-alipay' ? 'my' : 'global'
           // 主要是为了解决支付宝旧版本， Component 方法只在组件 js 里有，需要挂在 my.defineComponent
           let beforeCode = ''

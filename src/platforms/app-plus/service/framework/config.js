@@ -33,6 +33,6 @@ export function registerConfig (config, Vue) {
   parseRoutes(__uniConfig)
 
   if (process.env.NODE_ENV !== 'production') {
-    console.log(`[uni-app] registerConfig`, __uniConfig)
+    console.log('[uni-app] registerConfig', __uniConfig)
   }
 }

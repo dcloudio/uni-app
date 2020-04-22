@@ -208,7 +208,7 @@ function handleViewEvents (events) {
       }
     } else {
       events[name] = {
-        value: `$handleViewEvent($event)`
+        value: '$handleViewEvent($event)'
       }
     }
   })
@@ -220,7 +220,7 @@ function genVModel (el, isScopedSlot) {
     if ((el.tag === 'v-uni-input' || el.tag === 'v-uni-textarea') && !(el.events && el.events.input)) {
       el.model.callback = `function($$v){$handleVModelEvent(${el.attrsMap[ID]},$$v)}`
     } else {
-      el.model.callback = `function(){}`
+      el.model.callback = 'function(){}'
     }
   }
 }

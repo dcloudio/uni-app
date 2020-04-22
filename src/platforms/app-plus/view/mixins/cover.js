@@ -16,8 +16,8 @@ export default {
       const position = {}
       for (const key in this.position) {
         let val = this.position[key]
-        let valNumber = parseFloat(val)
-        let parentValNumber = parseFloat(this._nativeParent.position[key])
+        const valNumber = parseFloat(val)
+        const parentValNumber = parseFloat(this._nativeParent.position[key])
         if (key === 'top' || key === 'left') {
           val = Math.max(valNumber, parentValNumber) + 'px'
         } else if (key === 'width' || key === 'height') {

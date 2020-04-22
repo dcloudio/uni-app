@@ -1,69 +1,73 @@
 const path = require('path')
 
-const qs = require('querystring')
+const loaderUtils = require('loader-utils')
 
 const {
-  md5,
   removeExt,
-  getPlatformExts
+  getPlatformExts,
+  getShadowTemplate
 } = require('@dcloudio/uni-cli-shared')
 
 const {
-  cacheTemplate,
-  cacheCompilerOptions,
-  getPlatformTarget
+  getJsonFile,
+  getWXComponents,
+  updateSpecialMethods,
+  getGlobalUsingComponents,
+  updateGenericComponents, // resolve
+  updateComponentGenerics, // define
+  updateUsingGlobalComponents
+} = require('@dcloudio/uni-cli-shared/lib/cache')
+
+const {
+  getPlatformFilterTag
+} = require('@dcloudio/uni-cli-shared/lib/platform')
+
+const {
+  normalizeNodeModules
 } = require('./shared')
 
 const templateExt = getPlatformExts().template
-module.exports = function (content) {
-  if (process.env.UNI_USING_COMPONENTS) {
-    return require('./template-new').call(this, content)
+const filterTagName = getPlatformFilterTag() || ''
+
+function parseFilterModules (filterModules) {
+  if (filterModules) {
+    return JSON.parse(Buffer.from(filterModules, 'base64').toString('utf8'))
   }
+  return {}
+}
+
+module.exports = function (content) {
   this.cacheable && this.cacheable()
 
-  const realResourcePath = path.relative(process.env.UNI_INPUT_DIR, this.resourcePath)
+  const vueLoaderOptions = this.loaders.find(loader => loader.ident === 'vue-loader-options')
+  if (vueLoaderOptions) {
+    const globalUsingComponents = getGlobalUsingComponents()
+    const realResourcePath = path.relative(process.env.UNI_INPUT_DIR, this.resourcePath)
+    const resourcePath = normalizeNodeModules(removeExt(realResourcePath) + templateExt)
+    const wxComponents = getWXComponents(resourcePath.replace(path.extname(resourcePath), ''))
 
-  if (process.env.UNI_USING_COMPONENTS) {
-    // 向 uni-template-compier 传递 emitFile
-    const vueLoaderOptions = this.loaders.find(loader => loader.ident === 'vue-loader-options')
-    if (vueLoaderOptions) {
-      Object.assign(vueLoaderOptions.options.compilerOptions, {
-        resourcePath: removeExt(realResourcePath) + templateExt,
-        emitFile: this.emitFile
-      })
-    } else {
-      throw new Error('vue-loader-options parse error')
-    }
+    const params = loaderUtils.parseQuery(this.resourceQuery)
+    /* eslint-disable no-mixed-operators */
+    const filterModules = parseFilterModules(params && params['filter-modules'])
+    Object.assign(vueLoaderOptions.options.compilerOptions, {
+      mp: {
+        platform: process.env.UNI_PLATFORM
+      },
+      filterModules,
+      filterTagName,
+      resourcePath,
+      emitFile: this.emitFile,
+      wxComponents,
+      getJsonFile,
+      getShadowTemplate,
+      updateSpecialMethods,
+      globalUsingComponents,
+      updateGenericComponents,
+      updateComponentGenerics,
+      updateUsingGlobalComponents
+    })
   } else {
-    if (!content.trim()) {
-      content = '<view></view>'
-    }
-
-    cacheTemplate(realResourcePath, content)
-
-    const query = qs.parse(this.resourceQuery.slice(1))
-
-    const {
-      id
-    } = query
-
-    const compilerOptions = {
-      scopeId: query.scoped ? `data-v-${id}` : null,
-      target: getPlatformTarget(),
-      md5: md5(content.trim() + process.env.UNI_PLATFORM),
-      realResourcePath
-    }
-
-    cacheCompilerOptions(realResourcePath, compilerOptions)
-
-    // 向 vue-loader templateLoader 传递 compilerOptions
-    const vueLoaderOptions = this.loaders.find(loader => loader.ident === 'vue-loader-options')
-    if (vueLoaderOptions) {
-      Object.assign(vueLoaderOptions.options.compilerOptions, compilerOptions)
-    } else {
-      throw new Error('vue-loader-options parse error')
-    }
+    throw new Error('vue-loader-options parse error')
   }
-
   return content
 }

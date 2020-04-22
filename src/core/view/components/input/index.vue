@@ -1,17 +1,21 @@
 <template>
   <uni-input
     @change.stop
-    v-on="$listeners">
+    v-on="$listeners"
+  >
     <div
       ref="wrapper"
-      class="uni-input-wrapper">
+      class="uni-input-wrapper"
+    >
       <div
         v-show="!(composing || inputValue.length)"
         ref="placeholder"
         :style="placeholderStyle"
         :class="placeholderClass"
         class="uni-input-placeholder"
-      >{{ placeholder }}</div>
+      >
+        {{ placeholder }}
+      </div>
       <input
         ref="input"
         v-model="inputValue"
@@ -93,7 +97,7 @@ export default {
   },
   data () {
     return {
-      inputValue: this.value + '',
+      inputValue: this._getValueString(this.value),
       composing: false,
       wrapperHeight: 0,
       cachedValue: ''
@@ -129,7 +133,7 @@ export default {
       value && this._focusInput()
     },
     value (value) {
-      this.inputValue = value + ''
+      this.inputValue = this._getValueString(value)
     },
     inputValue (value) {
       this.$emit('update:value', value)
@@ -251,6 +255,9 @@ export default {
         value: this.inputValue,
         key: this.name
       } : {}
+    },
+    _getValueString (value) {
+      return value === null ? '' : String(value)
     }
   }
 }
@@ -291,7 +298,7 @@ uni-input[hidden] {
 }
 
 .uni-input-placeholder,
-.uni-input-input{
+.uni-input-input {
   width: 100%;
 }
 

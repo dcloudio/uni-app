@@ -51,6 +51,7 @@ class RewardedVideoAd {
     })
     this._loadAd()
   }
+
   load () {
     return new Promise((resolve, reject) => {
       if (this._isLoad) {
@@ -62,6 +63,7 @@ class RewardedVideoAd {
       this._loadAd()
     })
   }
+
   show () {
     return new Promise((resolve, reject) => {
       if (this._isLoad) {
@@ -72,16 +74,20 @@ class RewardedVideoAd {
       }
     })
   }
+
   getProvider () {
     return this._rewardAd.getProvider()
   }
+
   destroy () {
     this._rewardAd.destroy()
   }
+
   _loadAd () {
     this._isLoad = false
     this._rewardAd.load()
   }
+
   _dispatchEvent (name, data) {
     this._callbacks[name].forEach(callback => {
       if (typeof callback === 'function') {

@@ -27,24 +27,26 @@ function onAppRoute (type, {
       })
       break
     case 'navigateBack':
-      let canBack = true
-      const pages = getCurrentPages()
-      if (pages.length) {
-        const page = pages[pages.length - 1]
-        if (hasLifecycleHook(page.$options, 'onBackPress') && page.__call_hook('onBackPress', {
-          from
-        }) === true) {
-          canBack = false
+      {
+        let canBack = true
+        const pages = getCurrentPages()
+        if (pages.length) {
+          const page = pages[pages.length - 1]
+          if (hasLifecycleHook(page.$options, 'onBackPress') && page.__call_hook('onBackPress', {
+            from
+          }) === true) {
+            canBack = false
+          }
         }
-      }
-      if (canBack) {
-        if (delta > 1) {
-          router._$delta = delta
+        if (canBack) {
+          if (delta > 1) {
+            router._$delta = delta
+          }
+          router.go(-delta, {
+            animationType,
+            animationDuration
+          })
         }
-        router.go(-delta, {
-          animationType,
-          animationDuration
-        })
       }
       break
     case 'reLaunch':

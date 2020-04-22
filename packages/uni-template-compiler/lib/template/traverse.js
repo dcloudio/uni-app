@@ -101,7 +101,7 @@ function traverseCallExpr (callExprNode, state) {
 }
 
 function traverseConditionalExpr (conditionalExprNode, state) {
-  const prefix = state.options.platform.prefix
+  const prefix = state.options.platform.directive
   const ret = [{
     type: 'block',
     attr: {
@@ -176,7 +176,7 @@ function traverseDataNode (dataNode, state, node) {
   dataNode.properties.forEach(property => {
     switch (property.key.name) {
       case 'slot':
-        ret['slot'] = genCode(property.value)
+        ret.slot = genCode(property.value)
         break
       case 'scopedSlots': // Vue 2.6
         property.value.$node = node
@@ -203,11 +203,11 @@ function traverseDataNode (dataNode, state, node) {
         break
       case 'class':
       case 'staticClass':
-        ret['class'] = genCode(property.value)
+        ret.class = genCode(property.value)
         break
       case 'style':
       case 'staticStyle':
-        ret['style'] = genCode(property.value)
+        ret.style = genCode(property.value)
         break
       case 'directives':
         property.value.elements.find(objectExpression => {
@@ -222,7 +222,7 @@ function traverseDataNode (dataNode, state, node) {
               objectExpression.properties.find(valueProperty => {
                 const isValue = valueProperty.key.name === 'value'
                 if (isValue) {
-                  ret['hidden'] = genCode(valueProperty.value, false, true)
+                  ret.hidden = genCode(valueProperty.value, false, true)
                 }
                 return isValue
               })
@@ -258,7 +258,7 @@ function genSlotNode (slotName, slotNode, fallbackNodes, state) {
   if (!fallbackNodes || t.isNullLiteral(fallbackNodes)) {
     return slotNode
   }
-  const prefix = state.options.platform.prefix
+  const prefix = state.options.platform.directive
   return [{
     type: 'block',
     attr: {
@@ -278,7 +278,7 @@ function genSlotNode (slotName, slotNode, fallbackNodes, state) {
 
 function traverseRenderSlot (callExprNode, state) {
   if (!t.isStringLiteral(callExprNode.arguments[0])) {
-    state.errors.add(`v-slot 不支持动态插槽名`)
+    state.errors.add('v-slot 不支持动态插槽名')
     return
   }
 
@@ -290,9 +290,9 @@ function traverseRenderSlot (callExprNode, state) {
     callExprNode.arguments[2].properties.forEach(property => {
       props[property.key.value] = genCode(property.value)
     })
-    deleteSlotName = props['SLOT_DEFAULT'] && Object.keys(props).length === 1
+    deleteSlotName = props.SLOT_DEFAULT && Object.keys(props).length === 1
     if (!deleteSlotName) {
-      delete props['SLOT_DEFAULT']
+      delete props.SLOT_DEFAULT
       return genSlotNode(
         slotName,
         state.options.platform.createScopedSlots(slotName, props, state),
@@ -381,7 +381,7 @@ function traverseRenderList (callExprNode, state) {
 
   const forKey = traverseKey(forReturnStatementArgument, state)
 
-  const prefix = state.options.platform.prefix
+  const prefix = state.options.platform.directive
 
   const attr = {
     [prefix + 'for']: genCode(callExprNode.arguments[0]),

@@ -49,9 +49,9 @@ export function parseTitleNView (routeOptions) {
   const titleImage = windowOptions.titleImage || ''
   const transparentTitle = windowOptions.transparentTitle || 'none'
   const titleNViewTypeList = {
-    'none': 'default',
-    'auto': 'transparent',
-    'always': 'float'
+    none: 'default',
+    auto: 'transparent',
+    always: 'float'
   }
 
   const ret = {
@@ -61,13 +61,13 @@ export function parseTitleNView (routeOptions) {
     type: titleNViewTypeList[transparentTitle],
     backgroundColor: windowOptions.navigationBarBackgroundColor || '#f8f8f8',
     tags: titleImage === '' ? [] : [{
-      'tag': 'img',
-      'src': titleImage,
-      'position': {
-        'left': 'auto',
-        'top': 'auto',
-        'width': 'auto',
-        'height': '26px'
+      tag: 'img',
+      src: titleImage,
+      position: {
+        left: 'auto',
+        top: 'auto',
+        width: 'auto',
+        height: '26px'
       }
     }]
   }
