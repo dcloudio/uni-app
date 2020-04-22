@@ -46,7 +46,7 @@ module.exports = (api, options, rootOptions) => {
         '@dcloudio/uni-quickapp-vue': version,
         '@dcloudio/uni-stat': version,
         flyio: '^0.6.2',
-        vuex: '^3.0.1'
+        vuex: '^3.2.0'
       },
       devDependencies: {
         '@dcloudio/uni-cli-shared': version,
