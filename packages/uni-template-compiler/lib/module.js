@@ -1,7 +1,11 @@
+const {
+  hasOwn
+} = require('./util')
+
 const onRE = /^@|^v-on:/
 
 function removeAttr (el, name) {
-  if (el.attrsMap.hasOwnProperty(name)) {
+  if (hasOwn(el.attrsMap, name)) {
     delete el.attrsMap[name]
     el.attrsList.splice(el.attrsList.findIndex(attr => attr.name === name), 1)
     return true
@@ -14,18 +18,18 @@ module.exports = {
     if (process.env.UNI_PLATFORM === 'app-plus' && el.tag === 'ad') {
       warn('app-vue平台, <ad> 组件暂不支持非 V3 编译, 详见: https://ask.dcloud.net.cn/article/36599')
     }
-    if (el.tag === 'slot' && !el.attrsMap['name']) {
+    if (el.tag === 'slot' && !el.attrsMap.name) {
       el.attrsList.push({
         name: 'SLOT_DEFAULT',
         value: true
       })
-      el.attrsMap['SLOT_DEFAULT'] = true
+      el.attrsMap.SLOT_DEFAULT = true
     }
     // 处理 attr
     el.attrsList.forEach(attr => {
       if (
         attr.name.indexOf('v-model') === 0 &&
-                attr.name.indexOf('.lazy') !== -1
+        attr.name.indexOf('.lazy') !== -1
       ) {
         const origName = attr.name
         const newName = origName.replace('.lazy', '')

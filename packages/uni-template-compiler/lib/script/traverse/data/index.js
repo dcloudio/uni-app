@@ -47,7 +47,7 @@ module.exports = function traverseData (path, state, tagName) {
   }
 
   if (addAttrProperties.length) {
-    const attrsPath = paths['attrs']
+    const attrsPath = paths.attrs
     if (attrsPath) {
       attrsPath.node.value.properties = attrsPath.node.value.properties.concat(addAttrProperties)
     } else {

@@ -40,7 +40,7 @@ export function requestComponentObserver ({
 
   const root = options.relativeToSelector ? $el.querySelector(options.relativeToSelector) : null
 
-  let intersectionObserver = intersectionObservers[reqId] = new IntersectionObserver((entries, observer) => {
+  const intersectionObserver = intersectionObservers[reqId] = new IntersectionObserver((entries, observer) => {
     entries.forEach(entrie => {
       UniViewJSBridge.publishHandler('onRequestComponentObserver', {
         reqId,

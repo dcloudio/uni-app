@@ -2,10 +2,12 @@
   <uni-tabbar>
     <div
       :style="{backgroundColor:backgroundColor}"
-      class="uni-tabbar">
+      class="uni-tabbar"
+    >
       <div
         :style="{backgroundColor:borderColor}"
-        class="uni-tabbar-border" />
+        class="uni-tabbar-border"
+      />
       <div
         v-for="(item,index) in list"
         :key="item.pagePath"
@@ -25,7 +27,9 @@
               v-if="item.redDot"
               :class="{'uni-tabbar__badge':!!item.badge}"
               class="uni-tabbar__reddot"
-            >{{ item.badge }}</div>
+            >
+              {{ item.badge }}
+            </div>
           </div>
           <div
             v-if="item.text"
@@ -37,7 +41,9 @@
               v-if="item.redDot&&!item.iconPath"
               :class="{'uni-tabbar__badge':!!item.badge}"
               class="uni-tabbar__reddot"
-            >{{ item.badge }}</div>
+            >
+              {{ item.badge }}
+            </div>
           </div>
         </div>
       </div>

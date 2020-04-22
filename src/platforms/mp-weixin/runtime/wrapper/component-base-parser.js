@@ -19,7 +19,7 @@ export default function parseBaseComponent (vueComponentOptions, {
   isPage,
   initRelation
 } = {}) {
-  let [VueComponent, vueOptions] = initVueComponent(Vue, vueComponentOptions)
+  const [VueComponent, vueOptions] = initVueComponent(Vue, vueComponentOptions)
 
   const options = {
     multipleSlots: true,
@@ -29,8 +29,8 @@ export default function parseBaseComponent (vueComponentOptions, {
 
   if (__PLATFORM__ === 'mp-weixin' || __PLATFORM__ === 'mp-qq') {
     // 微信 multipleSlots 部分情况有 bug，导致内容顺序错乱 如 u-list，提供覆盖选项
-    if (vueOptions['mp-weixin'] && vueOptions['mp-weixin']['options']) {
-      Object.assign(options, vueOptions['mp-weixin']['options'])
+    if (vueOptions['mp-weixin'] && vueOptions['mp-weixin'].options) {
+      Object.assign(options, vueOptions['mp-weixin'].options)
     }
   }
 

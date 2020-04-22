@@ -101,6 +101,7 @@ class InnerAudioContext {
       }, false)
     })
   }
+
   /**
    * 播放
    */
@@ -108,12 +109,14 @@ class InnerAudioContext {
     this._stoping = false
     this._audio.play()
   }
+
   /**
    * 暂停
    */
   pause () {
     this._audio.pause()
   }
+
   /**
    * 停止
    */
@@ -125,6 +128,7 @@ class InnerAudioContext {
       callback()
     })
   }
+
   /**
    * 跳转到
    * @param {number} position
@@ -136,6 +140,7 @@ class InnerAudioContext {
       this._audio.currentTime = position
     }
   }
+
   /**
    * 销毁
    */

@@ -8,6 +8,7 @@ class DownloadTask {
   constructor (xhr) {
     this._xhr = xhr
   }
+
   /**
    * 监听下载进度
    * @param {Function} callback 回调
@@ -18,12 +19,14 @@ class DownloadTask {
     }
     this._callbacks.push(callback)
   }
+
   offProgressUpdate (callback) {
     const index = this._callbacks.indexOf(callback)
     if (index >= 0) {
       this._callbacks.splice(index, 1)
     }
   }
+
   /**
    * 停止任务
    */
@@ -58,8 +61,8 @@ export function downloadFile ({
   xhr.responseType = 'blob'
   xhr.onload = function () {
     clearTimeout(timer)
-    let statusCode = xhr.status
-    let blob = this.response
+    const statusCode = xhr.status
+    const blob = this.response
     invoke(callbackId, {
       errMsg: 'downloadFile:ok',
       statusCode,

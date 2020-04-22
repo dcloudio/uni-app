@@ -1,24 +1,7 @@
 
 <script>
 import touchtrack from 'uni-mixins/touchtrack'
-
-function deepClone (vnodes, createElement) {
-  function cloneVNode (vnode) {
-    var clonedChildren = vnode.children && vnode.children.map(cloneVNode)
-    var cloned = createElement(vnode.tag, vnode.data, clonedChildren)
-    cloned.text = vnode.text
-    cloned.isComment = vnode.isComment
-    cloned.componentOptions = vnode.componentOptions
-    cloned.elm = vnode.elm
-    cloned.context = vnode.context
-    cloned.ns = vnode.ns
-    cloned.isStatic = vnode.isStatic
-    cloned.key = vnode.key
-    return cloned
-  }
-
-  return vnodes.map(cloneVNode)
-}
+import { deepClone } from 'uni-shared'
 
 export default {
   name: 'Swiper',
@@ -205,7 +188,7 @@ export default {
       var current = -1
       if (this.currentItemId) {
         for (let i = 0, items = this.items; i < items.length; i++) {
-          let componentInstance = items[i].componentInstance
+          const componentInstance = items[i].componentInstance
           if (componentInstance && componentInstance.itemId === this.currentItemId) {
             current = i
             break
@@ -612,7 +595,7 @@ export default {
       })
     }
     for (let index = 0, length = swiperItems.length; index < length; index++) {
-      let currentSync = this.currentSync
+      const currentSync = this.currentSync
       slidesDots.push(createElement('div', {
         on: {
           click: () => {
@@ -624,7 +607,7 @@ export default {
           'uni-swiper-dot-active': (index < currentSync + this.displayMultipleItemsNumber && index >= currentSync) || (index < currentSync + this.displayMultipleItemsNumber - length)
         },
         style: {
-          'background': index === currentSync ? this.indicatorActiveColor : this.indicatorColor
+          background: index === currentSync ? this.indicatorActiveColor : this.indicatorColor
         }
       }))
     }
@@ -632,7 +615,7 @@ export default {
     var slidesWrapperChild = [createElement('div', {
       ref: 'slides',
       style: this.slidesStyle,
-      'class': 'uni-swiper-slides'
+      class: 'uni-swiper-slides'
     }, [
       createElement('div', {
         ref: 'slideFrame',
@@ -643,7 +626,7 @@ export default {
     if (this.indicatorDots) {
       slidesWrapperChild.push(createElement('div', {
         ref: 'slidesDots',
-        'class': ['uni-swiper-dots', this.vertical ? 'uni-swiper-dots-vertical' : 'uni-swiper-dots-horizontal']
+        class: ['uni-swiper-dots', this.vertical ? 'uni-swiper-dots-vertical' : 'uni-swiper-dots-horizontal']
       }, slidesDots))
     }
 
@@ -652,7 +635,7 @@ export default {
         on: this.$listeners
       }, [createElement('div', {
         ref: 'slidesWrapper',
-        'class': 'uni-swiper-wrapper'
+        class: 'uni-swiper-wrapper'
       }, slidesWrapperChild)]
     )
   }

@@ -15,7 +15,7 @@ export default function initSubscribe (subscribe, {
       const page = pages.find(page => page.$page.id === pageId)
       if (page) {
         callPageHook(page, eventType, args)
-      } else {
+      } else if (process.env.NODE_ENV !== 'production') {
         console.error(`Not Found：Page[${pageId}]`)
       }
     }

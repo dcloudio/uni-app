@@ -5,7 +5,7 @@ const {
   normalizePath
 } = require('./util')
 
-module.exports = function patchVant(files, assets, out) {
+module.exports = function patchVant (files, assets, out) {
   files.forEach(file => {
     const filepath = normalizePath(file.path)
     let changed = false
@@ -19,7 +19,7 @@ module.exports = function patchVant(files, assets, out) {
     } else if (filepath.indexOf('/notify/index.vue') !== -1) {
       changed = true
       // notify show方法与show属性冲突
-      file.content = file.content.replace(`show()`, 'showNotify()')
+      file.content = file.content.replace('show()', 'showNotify()')
     }
     changed && fs.outputFileSync(file.path, file.content)
   })
@@ -29,13 +29,13 @@ module.exports = function patchVant(files, assets, out) {
       if (dest.indexOf('array.wxs') !== -1) {
         // 兼容 Array.isArray
         const content = fs.readFileSync(dest, 'utf8').toString()
-          .replace(`array && array.constructor === 'Array'`,
-            `array && (array.constructor === 'Array' || (typeof Array !== 'undefined' && Array.isArray(array)))`)
+          .replace('array && array.constructor === \'Array\'',
+            'array && (array.constructor === \'Array\' || (typeof Array !== \'undefined\' && Array.isArray(array)))')
         fs.outputFileSync(dest, content)
       } else if (dest.indexOf('notify/notify.js') !== -1) {
         // notify.js show 方法与 show 属性冲突
         const content = fs.readFileSync(dest, 'utf8').toString()
-          .replace(`show()`, 'showNotify()')
+          .replace('show()', 'showNotify()')
         fs.outputFileSync(dest, content)
       }
     }

@@ -27,8 +27,10 @@ module.exports = function initOptions (options) {
   options.transpileDependencies.push(genTranspileDepRegex(path.resolve(process.env.UNI_INPUT_DIR, 'node_modules')))
   options.transpileDependencies.push('@dcloudio/uni-' + process.env.UNI_PLATFORM)
   options.transpileDependencies.push('@dcloudio/uni-stat')
-  // mp runtime
-  options.transpileDependencies.push('@dcloudio/uni-mp-weixin/dist/mp.js')
+
+  if (process.env.UNI_PLATFORM !== 'mp-weixin') { // mp runtime
+    options.transpileDependencies.push('@dcloudio/uni-mp-weixin')
+  }
 
   if (process.env.UNI_PLATFORM === 'h5') { // h5 dev 用到了这两个，需要 babel
     options.transpileDependencies.push('ansi-regex')
@@ -65,7 +67,7 @@ module.exports = function initOptions (options) {
   let sassData = isSass ? getPlatformSass() : getPlatformScss()
 
   if (isSass) {
-    sassData = `@import "@/uni.sass"`
+    sassData = '@import "@/uni.sass"'
   } else if (isScss) {
     sassData = `${sassData}
   @import "@/uni.scss";`
@@ -75,7 +77,10 @@ module.exports = function initOptions (options) {
     options.css.loaderOptions.sass.sassOptions = {}
   }
   // 指定 outputStyle, 否则 production 模式下会被默认成 compressed
-  options.css.loaderOptions.sass.sassOptions.outputStyle = 'nested'
+  const outputStyle = options.css.loaderOptions.sass.sassOptions.outputStyle
+  if (!outputStyle || outputStyle === 'compressed') {
+    options.css.loaderOptions.sass.sassOptions.outputStyle = 'expanded'
+  }
 
   if (sassLoaderVersion < 8) {
     options.css.loaderOptions.sass.data = sassData
@@ -83,7 +88,7 @@ module.exports = function initOptions (options) {
     options.css.loaderOptions.sass.prependData = sassData
   }
 
-  let userPostcssConfigPath = path.resolve(process.env.UNI_INPUT_DIR, 'postcss.config.js')
+  const userPostcssConfigPath = path.resolve(process.env.UNI_INPUT_DIR, 'postcss.config.js')
   if (fs.existsSync(userPostcssConfigPath)) {
     options.css.loaderOptions.postcss.config.path = userPostcssConfigPath
   } else {

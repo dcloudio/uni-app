@@ -1,0 +1,69 @@
+{
+  "_args": [
+    [
+      "wrap-loader@0.2.0",
+      "/Users/fxy/Documents/DCloud/HBuilderX/uniapp-cli"
+    ]
+  ],
+  "_development": true,
+  "_from": "wrap-loader@0.2.0",
+  "_id": "wrap-loader@0.2.0",
+  "_inBundle": false,
+  "_integrity": "sha512-Qdhdu7vr2H8dLE2sKySQznOBHXIHbKg7PZ5aqkeBOQHGqxLfcJw/ZlB40j67b1tks9OYqSBCHc+uHtGRCmQYlg==",
+  "_location": "/wrap-loader",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "version",
+    "registry": true,
+    "raw": "wrap-loader@0.2.0",
+    "name": "wrap-loader",
+    "escapedName": "wrap-loader",
+    "rawSpec": "0.2.0",
+    "saveSpec": null,
+    "fetchSpec": "0.2.0"
+  },
+  "_requiredBy": [
+    "/@dcloudio/vue-cli-plugin-uni"
+  ],
+  "_resolved": "https://registry.npmjs.org/wrap-loader/-/wrap-loader-0.2.0.tgz",
+  "_spec": "0.2.0",
+  "_where": "/Users/fxy/Documents/DCloud/HBuilderX/uniapp-cli",
+  "author": {
+    "name": "Daniel Perez Alvarez",
+    "email": "unindented@gmail.com",
+    "url": "http://unindented.org/"
+  },
+  "bugs": {
+    "url": "https://github.com/unindented/wrap-loader/issues"
+  },
+  "dependencies": {
+    "loader-utils": "^1.1.0"
+  },
+  "description": "Add custom content before and after the loaded source.",
+  "devDependencies": {
+    "eslint": "^3.19.0",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-import": "^2.3.0",
+    "eslint-plugin-node": "^5.0.0",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "nodeunit": "^0.11.1",
+    "npm-run-all": "^4.0.2"
+  },
+  "homepage": "https://github.com/unindented/wrap-loader#readme",
+  "keywords": [
+    "wrap",
+    "webpack"
+  ],
+  "name": "wrap-loader",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/unindented/wrap-loader.git"
+  },
+  "scripts": {
+    "test": "run-s test:*",
+    "test:lint": "eslint .",
+    "test:unit": "nodeunit test/loader.js"
+  },
+  "version": "0.2.0"
+}

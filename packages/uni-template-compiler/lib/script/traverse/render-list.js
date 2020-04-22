@@ -11,6 +11,7 @@ const {
 } = require('./statements')
 
 const {
+  hasOwn,
   genCode,
   traverseKey,
   processMemberExpression,
@@ -63,7 +64,7 @@ function getForExtra (forItem, forIndex, path, state) {
   let forCode = genCode(processMemberExpression(path.node.arguments[0], state), true)
 
   const forKey = traverseKey(path.node)
-  let origForKeyCode = t.isIdentifier(forKey) && forKey.name
+  const origForKeyCode = t.isIdentifier(forKey) && forKey.name
   let forKeyCode = ''
   if (forKey) {
     forKeyCode = genCode(processMemberExpression(forKey, state), true)
@@ -110,7 +111,7 @@ module.exports = function traverseRenderList (path, state) {
   let forIndex = params.length > 1 && params[1].name
 
   if (!forIndex) {
-    if (!state.options.hasOwnProperty('$forIndexId')) {
+    if (!hasOwn(state.options, '$forIndexId')) {
       state.options.$forIndexId = 0
     }
     forIndex = getForIndexIdentifier(state.options.$forIndexId++)

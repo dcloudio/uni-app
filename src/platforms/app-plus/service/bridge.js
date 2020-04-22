@@ -47,7 +47,7 @@ export function setStatusBarStyle (statusBarStyle) {
     return
   }
   if (process.env.NODE_ENV !== 'production') {
-    console.log(`[uni-app] setStatusBarStyle`, statusBarStyle)
+    console.log('[uni-app] setStatusBarStyle', statusBarStyle)
   }
 
   lastStatusBarStyle = statusBarStyle

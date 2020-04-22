@@ -6,6 +6,7 @@ function generateCodeFrame (
   end
 ) {
   source = source.replace(/\r\n/g, '\n') // 替换\r\n 为 \n
+  /* eslint-disable no-void */
   if (start === void 0) start = 0
   if (end === void 0) end = source.length
 

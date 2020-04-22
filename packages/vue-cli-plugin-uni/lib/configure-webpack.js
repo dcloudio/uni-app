@@ -23,10 +23,13 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
     runByHBuilderX, // 使用 HBuilderX 运行
     isInHBuilderX, // 在 HBuilderX 的插件中
     hasModule,
-    getPlatformVue,
     jsPreprocessOptions,
     htmlPreprocessOptions
   } = require('@dcloudio/uni-cli-shared')
+
+  const {
+    getPlatformVue
+  } = require('@dcloudio/uni-cli-shared/lib/platform')
 
   const {
     getCopyWebpackPluginOptions
@@ -81,10 +84,10 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
         '@/*': [
           path.join(process.env.UNI_INPUT_DIR, '*')
         ],
-        'vue': [
+        vue: [
           resolveModule('vue')
         ],
-        'vuex': [
+        vuex: [
           resolveModule('vuex')
         ],
         'vue-class-component': [
@@ -93,7 +96,7 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
         'vue-property-decorator': [
           resolveModule('vue-property-decorator')
         ],
-        'tslib': [
+        tslib: [
           resolveModule('tslib')
         ],
         'mpvue-page-factory': [
@@ -106,7 +109,7 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
       const filePath = path.relative(process.env.UNI_INPUT_DIR, error.file).replace('.vue.ts', '.vue')
       if (error.code === 2307 && error.content.includes('.vue')) {
         error.content = error.content.replace('Cannot find module ', '') +
-          ` script 节点必须使用 lang="ts",文档参考地址:https://uniapp.dcloud.io/frame?id=vue-ts`
+          ' script 节点必须使用 lang="ts",文档参考地址:https://uniapp.dcloud.io/frame?id=vue-ts'
       }
       return messageColor(
         `[tsl] ERROR at ${filePath}:${error.line}
@@ -184,9 +187,16 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
     webpackConfig.resolve.modules = webpackConfig.resolve.modules.filter(module => module !==
       'node_modules')
 
-    const plugins = [
-      new CopyWebpackPlugin(getCopyWebpackPluginOptions(manifestPlatformOptions))
-    ]
+    const plugins = []
+
+    const isAppView = process.env.UNI_PLATFORM === 'app-plus' &&
+      vueOptions.pluginOptions &&
+      vueOptions.pluginOptions['uni-app-plus'] &&
+      vueOptions.pluginOptions['uni-app-plus'].view
+
+    if (!isAppView) { // app-plus view不需要copy
+      plugins.push(new CopyWebpackPlugin(getCopyWebpackPluginOptions(manifestPlatformOptions, vueOptions)))
+    }
 
     if (process.UNI_SCRIPT_ENV && Object.keys(process.UNI_SCRIPT_ENV).length) {
       // custom define
@@ -240,7 +250,7 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
         alias: {
           '@': path.resolve(process.env.UNI_INPUT_DIR),
           './@': path.resolve(process.env.UNI_INPUT_DIR), // css中的'@/static/logo.png'会被转换成'./@/static/logo.png'加载
-          'vue$': getPlatformVue(vueOptions),
+          vue$: getPlatformVue(vueOptions),
           'uni-pages': path.resolve(process.env.UNI_INPUT_DIR, 'pages.json'),
           '@dcloudio/uni-stat': require.resolve('@dcloudio/uni-stat'),
           'uni-stat-config': path.resolve(process.env.UNI_INPUT_DIR, 'pages.json') +

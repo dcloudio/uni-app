@@ -4,7 +4,7 @@ const {
   transform
 } = require('@babel/core')
 
-transform(`console.log('123')`, {
+transform('console.log(\'123\')', {
   filename: '/index.vue',
   configFile: false,
   minified: true,

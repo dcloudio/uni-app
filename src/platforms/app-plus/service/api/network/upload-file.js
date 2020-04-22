@@ -1,4 +1,8 @@
 import {
+  hasOwn
+} from 'uni-shared'
+
+import {
   getRealPath
 } from '../util'
 
@@ -46,12 +50,12 @@ const createUploadTaskById = function (uploadTaskId, {
   })
 
   for (const name in header) {
-    if (header.hasOwnProperty(name)) {
+    if (hasOwn(header, name)) {
       uploader.setRequestHeader(name, header[name])
     }
   }
   for (const name in formData) {
-    if (formData.hasOwnProperty(name)) {
+    if (hasOwn(formData, name)) {
       uploader.addData(name, String(formData[name]))
     }
   }

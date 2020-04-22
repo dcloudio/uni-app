@@ -5,7 +5,7 @@ const {
 const getMemberExpr = require('../member-expr')
 
 module.exports = function processAttrs (paths, path, state, isComponent, tagName) {
-  const attrsPath = paths['attrs']
+  const attrsPath = paths.attrs
   if (attrsPath) {
     attrsPath.get('value.properties').forEach(propertyPath => {
       const valuePath = propertyPath.get('value')

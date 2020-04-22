@@ -1,4 +1,8 @@
 import {
+  hasOwn
+} from 'uni-shared'
+
+import {
   initWebviewApi as initAppplusWebviewApi
 } from 'uni-platforms/app-plus/runtime/web-view'
 import {
@@ -19,6 +23,9 @@ import {
 import {
   initWebviewApi as initWeixinWebviewApi
 } from 'uni-platforms/mp-weixin/runtime/web-view'
+import {
+  initWebviewApi as initQuickappWebviewApi
+} from 'uni-platforms/quickapp-light/runtime/web-view'
 
 const UniAppJSBridgeReady = function () {
   window.UniAppJSBridge = true
@@ -35,6 +42,7 @@ const initWebviewApis = [
   initAlipayWebviewApi,
   initBaiduWebviewApi,
   initToutiaoWebviewApi,
+  initQuickappWebviewApi,
   initH5WebviewApi
 ]
 
@@ -54,7 +62,7 @@ const api = typeof uni !== 'undefined' ? uni : {}
 
 if (!api.navigateTo) {
   for (const key in webViewApi) {
-    if (webViewApi.hasOwnProperty(key)) {
+    if (hasOwn(webViewApi, key)) {
       api[key] = webViewApi[key]
     }
   }

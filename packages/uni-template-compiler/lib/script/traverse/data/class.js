@@ -70,8 +70,8 @@ function processClassArrayExpression (classValuePath) {
 }
 
 module.exports = function processClass (paths, path, state) {
-  const classPath = paths['class']
-  const staticClassPath = paths['staticClass']
+  const classPath = paths.class
+  const staticClassPath = paths.staticClass
   if (classPath) {
     const classValuePath = classPath.get('value')
     if (classValuePath.isObjectExpression()) { // object

@@ -54,7 +54,6 @@ function bluetoothOn (method, beforeSuccess) {
 var onBluetoothAdapterStateChange
 var onBluetoothDeviceFound
 var onBLEConnectionStateChange
-var onBLEConnectionStateChanged
 var onBLECharacteristicValueChange
 
 export function openBluetoothAdapter (data, callbackId) {
@@ -89,7 +88,6 @@ export function getConnectedBluetoothDevices (data, callbackId) {
 
 export function createBLEConnection (data, callbackId) {
   onBLEConnectionStateChange = onBLEConnectionStateChange || bluetoothOn('onBLEConnectionStateChange')
-  onBLEConnectionStateChanged = onBLEConnectionStateChanged || bluetoothOn('onBLEConnectionStateChanged')
   bluetoothExec('createBLEConnection', callbackId, data)
 }
 

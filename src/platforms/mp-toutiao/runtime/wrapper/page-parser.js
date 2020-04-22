@@ -1,5 +1,6 @@
 import {
   isPage,
+  instances,
   initRelation
 } from './util'
 
@@ -21,6 +22,17 @@ export default function parsePage (vuePageOptions) {
     } else {
       this.is && console.warn(this.is + ' is not ready')
     }
+  }
+
+  pageOptions.lifetimes.detached = function detached () {
+    this.$vm && this.$vm.$destroy()
+    // 清理
+    const webviewId = this.__webviewId__
+    webviewId && Object.keys(instances).forEach(key => {
+      if (key.indexOf(webviewId + '_') === 0) {
+        delete instances[key]
+      }
+    })
   }
 
   return pageOptions

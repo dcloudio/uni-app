@@ -1,12 +1,12 @@
 const path = require('path')
-const alias = require('rollup-plugin-alias')
-const replace = require('rollup-plugin-replace')
-const nodeResolve = require('rollup-plugin-node-resolve')
-const commonjs = require('rollup-plugin-commonjs')
+const alias = require('@rollup/plugin-alias')
+const replace = require('@rollup/plugin-replace')
+const nodeResolve = require('@rollup/plugin-node-resolve')
+const commonjs = require('@rollup/plugin-commonjs')
 const terser = require('rollup-plugin-terser')
 const requireContext = require('../lib/rollup-plugin-require-context')
 
-process.env.UNI_PLATFORM = 'quickapp'
+process.env.UNI_PLATFORM = 'quickapp-vue'
 
 const external = []
 
@@ -31,21 +31,38 @@ const plugins = [{
   }
 },
 alias({
-  'uni-core': resolve('src/core'),
-  'uni-platform': resolve('src/platforms/' + process.env.UNI_PLATFORM),
-  'uni-platforms': resolve('src/platforms'),
-  'uni-shared': resolve('src/shared/index.js'),
-  'uni-helpers': resolve('src/core/helpers'),
-  'uni-invoke-api': resolve('src/platforms/quickapp/service/invoke-api'),
-  'uni-service-api': resolve('src/platforms/quickapp/service/api'),
-  'uni-api-protocol': resolve('src/core/helpers/protocol')
+  entries: [{
+    find: 'uni-core',
+    replacement: resolve('src/core')
+  }, {
+    find: 'uni-platform',
+    replacement: resolve('src/platforms/quickapp-vue')
+  }, {
+    find: 'uni-platforms',
+    replacement: resolve('src/platforms')
+  }, {
+    find: 'uni-shared',
+    replacement: resolve('src/shared/index.js')
+  }, {
+    find: 'uni-helpers',
+    replacement: resolve('src/core/helpers')
+  }, {
+    find: 'uni-invoke-api',
+    replacement: resolve('src/platforms/quickapp-vue/service/invoke-api')
+  }, {
+    find: 'uni-service-api',
+    replacement: resolve('src/platforms/quickapp-vue/service/api')
+  }, {
+    find: 'uni-api-protocol',
+    replacement: resolve('src/core/helpers/protocol')
+  }]
 }),
 nodeResolve(),
 requireContext(),
 commonjs(),
 replace({
   __PLATFORM__: JSON.stringify(process.env.UNI_PLATFORM),
-  __PLATFORM_TITLE__: '快应用'
+  __PLATFORM_TITLE__: '快应用(Vue)版'
 })
 ]
 
@@ -57,11 +74,11 @@ module.exports = function (type) {
   let input = ''
 
   if (type === 'bridge') {
-    input = 'src/platforms/quickapp/runtime/bridge.js'
+    input = 'src/platforms/quickapp-vue/runtime/bridge.js'
   } else if (type === 'app') {
-    input = 'src/platforms/quickapp/runtime/app.js'
+    input = 'src/platforms/quickapp-vue/runtime/app.js'
   } else if (type === 'page') {
-    input = 'src/platforms/quickapp/runtime/page.js'
+    input = 'src/platforms/quickapp-vue/runtime/page.js'
   }
 
   return {

@@ -29,24 +29,24 @@ const cryptoPath = path.resolve(__dirname, '../crypto.js')
 function getProvides (isAppService) {
   if (isAppService) {
     return { // app-service
-      '__f__': [path.resolve(__dirname, '../format-log.js'), 'default'],
-      'wx': [runtimePath, 'default'],
+      __f__: [path.resolve(__dirname, '../format-log.js'), 'default'],
+      wx: [runtimePath, 'default'],
       'wx.nextTick': [runtimePath, 'nextTick'],
-      'Page': [runtimePath, 'Page'],
-      'Component': [runtimePath, 'Component'],
-      'Behavior': [runtimePath, 'Behavior'],
-      'getDate': [wxsPath, 'getDate'],
-      'getRegExp': [wxsPath, 'getRegExp'],
-      'uniCloud': [uniCloudPath, 'default'],
-      'crypto': [cryptoPath, 'default'],
+      Page: [runtimePath, 'Page'],
+      Component: [runtimePath, 'Component'],
+      Behavior: [runtimePath, 'Behavior'],
+      getDate: [wxsPath, 'getDate'],
+      getRegExp: [wxsPath, 'getRegExp'],
+      uniCloud: [uniCloudPath, 'default'],
+      crypto: [cryptoPath, 'default'],
       'window.crypto': [cryptoPath, 'default'],
       'global.crypto': [cryptoPath, 'default']
     }
   }
   return { // app-view
-    '__f__': [path.resolve(__dirname, '../format-log.js'), 'default'],
-    'getDate': [wxsPath, 'getDate'],
-    'getRegExp': [wxsPath, 'getRegExp']
+    __f__: [path.resolve(__dirname, '../format-log.js'), 'default'],
+    getDate: [wxsPath, 'getDate'],
+    getRegExp: [wxsPath, 'getRegExp']
   }
 }
 
@@ -55,12 +55,12 @@ const v3 = {
     parallel: false
   },
   webpackConfig (webpackConfig, vueOptions, api) {
-    const isAppService = !!vueOptions.pluginOptions['uni-app-plus']['service']
-    const isAppView = !!vueOptions.pluginOptions['uni-app-plus']['view']
+    const isAppService = !!vueOptions.pluginOptions['uni-app-plus'].service
+    const isAppView = !!vueOptions.pluginOptions['uni-app-plus'].view
 
-    const statCode = process.env.UNI_USING_STAT ? `import '@dcloudio/uni-stat';` : ''
+    const statCode = process.env.UNI_USING_STAT ? 'import \'@dcloudio/uni-stat\';' : ''
 
-    const beforeCode = `import 'uni-pages';`
+    const beforeCode = 'import \'uni-pages\';'
 
     if (!webpackConfig.optimization) {
       webpackConfig.optimization = {}
@@ -76,12 +76,6 @@ const v3 = {
     } else if (isAppView) {
       webpackConfig.optimization.runtimeChunk = false
       webpackConfig.optimization.splitChunks = false
-    }
-
-    let devtool = false
-
-    if (isAppService && process.env.NODE_ENV !== 'production') {
-      devtool = 'eval-source-map'
     }
 
     const rules = []
@@ -126,7 +120,6 @@ const v3 = {
     }
 
     return {
-      devtool,
       mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
       externals: {
         vue: 'Vue'
@@ -154,8 +147,9 @@ const v3 = {
         rules: [{
           test: path.resolve(process.env.UNI_INPUT_DIR, getMainEntry()),
           use: [{
-            loader: isAppService ? 'wrap-loader' : path.resolve(__dirname,
-              '../../packages/webpack-uni-app-loader/view/main.js'),
+            loader: isAppService
+              ? path.resolve(__dirname, '../../packages/wrap-loader') : path.resolve(__dirname,
+                '../../packages/webpack-uni-app-loader/view/main.js'),
             options: {
               compiler: vueLoader.compiler,
               before: [
@@ -192,8 +186,8 @@ const v3 = {
   chainWebpack (webpackConfig, vueOptions, api) {
     webpackConfig.entryPoints.delete('app')
 
-    const isAppService = !!vueOptions.pluginOptions['uni-app-plus']['service']
-    const isAppView = !!vueOptions.pluginOptions['uni-app-plus']['view']
+    const isAppService = !!vueOptions.pluginOptions['uni-app-plus'].service
+    const isAppView = !!vueOptions.pluginOptions['uni-app-plus'].view
 
     const cacheConfig = {
       cacheDirectory: false,
@@ -242,6 +236,14 @@ const v3 = {
     }
 
     if (isAppView) {
+      if (process.env.UNI_USING_V3_SCOPED) {
+        webpackConfig.module
+          .rule('vue')
+          .use('uniapp-app-style-scoped')
+          .loader(path.resolve(__dirname,
+            '../../packages/webpack-uni-app-loader/view/style'))
+      }
+
       if (process.env.NODE_ENV === 'production') {
         require('../h5/cssnano-options')(webpackConfig)
       }

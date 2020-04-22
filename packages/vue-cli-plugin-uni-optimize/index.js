@@ -67,9 +67,9 @@ module.exports = (api, options) => {
           __PLATFORM__: JSON.stringify(process.env.UNI_PLATFORM)
         }),
         new webpack.ProvidePlugin({
-          'console': [path.join(src, 'core/helpers/console'), 'default'],
-          'UniViewJSBridge': [path.join(src, 'core/view/bridge/index')],
-          'UniServiceJSBridge': [path.join(src, 'core/service/bridge/index')]
+          console: [path.join(src, 'core/helpers/console'), 'default'],
+          UniViewJSBridge: [path.join(src, 'core/view/bridge/index')],
+          UniServiceJSBridge: [path.join(src, 'core/service/bridge/index')]
         })
       ]
     }

@@ -40,7 +40,6 @@ const {
   getPlatformProject,
   isSupportSubPackages,
   getPlatforms,
-  getPlatformGlobal,
   getPlatformScss,
   getPlatformSass,
   runByHBuilderX,
@@ -48,7 +47,6 @@ const {
   isInHBuilderXAlpha,
   getPlatformExts,
   getPlatformTarget,
-  getPlatformVue,
   getShadowCss,
   getPlatformCssVars,
   getPlatformCssnano,
@@ -59,7 +57,7 @@ const {
   nvueJsPreprocessOptions,
   nvueCssPreprocessOptions,
   nvueHtmlPreprocessOptions,
-  devtoolModuleFilenameTemplate
+  getPlatformGlobal
 } = require('./platform')
 
 module.exports = {
@@ -93,8 +91,6 @@ module.exports = {
   getPlatformExts,
   getPlatformTarget,
   getPlatformProject,
-  getPlatformVue,
-  getPlatformGlobal,
   getShadowCss,
   getPlatformCssVars,
   getPlatformCssnano,
@@ -110,5 +106,5 @@ module.exports = {
   nvueJsPreprocessOptions,
   nvueCssPreprocessOptions,
   nvueHtmlPreprocessOptions,
-  devtoolModuleFilenameTemplate
+  getPlatformGlobal
 }

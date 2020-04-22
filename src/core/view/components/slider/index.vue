@@ -2,27 +2,33 @@
   <uni-slider
     ref="uni-slider"
     v-on="$listeners"
-    @click="_onClick">
+    @click="_onClick"
+  >
     <div class="uni-slider-wrapper">
       <div class="uni-slider-tap-area">
         <div
           :style="setBgColor"
-          class="uni-slider-handle-wrapper">
+          class="uni-slider-handle-wrapper"
+        >
           <div
             ref="uni-slider-handle"
             :style="setBlockBg"
-            class="uni-slider-handle" />
+            class="uni-slider-handle"
+          />
           <div
             :style="setBlockStyle"
-            class="uni-slider-thumb" />
+            class="uni-slider-thumb"
+          />
           <div
             :style="setActiveColor"
-            class="uni-slider-track" />
+            class="uni-slider-track"
+          />
         </div>
       </div>
       <span
         v-show="showValue"
-        class="uni-slider-value">{{ sliderValue }}</span>
+        class="uni-slider-value"
+      >{{ sliderValue }}</span>
     </div>
     <slot />
   </uni-slider>
@@ -145,10 +151,10 @@ export default {
   },
   methods: {
     _onUserChangedValue (e) {
-      let slider = this.$refs['uni-slider']
-      let offsetWidth = slider.offsetWidth
-      let boxLeft = slider.getBoundingClientRect().left
-      let value = (e.x - boxLeft) * (this.max - this.min) / offsetWidth + Number(this.min)
+      const slider = this.$refs['uni-slider']
+      const offsetWidth = slider.offsetWidth
+      const boxLeft = slider.getBoundingClientRect().left
+      const value = (e.x - boxLeft) * (this.max - this.min) / offsetWidth + Number(this.min)
       this.sliderValue = this._filterValue(value)
     },
     _filterValue (e) {
@@ -172,7 +178,7 @@ export default {
           x: e.detail.x0
         }), this.$trigger('changing', e, {
           value: this.sliderValue
-        }), !1) : void (e.detail.state === 'end' && this.$trigger('change', e, {
+        }), !1) : (e.detail.state === 'end' && this.$trigger('change', e, {
           value: this.sliderValue
         }))
       }
@@ -190,10 +196,10 @@ export default {
       this.sliderValue = this.min
     },
     _getFormData () {
-      let data = {}
+      const data = {}
       if (this.name !== '') {
-        data['value'] = this.sliderValue
-        data['key'] = this.name
+        data.value = this.sliderValue
+        data.key = this.name
       }
       return data
     }

@@ -44,7 +44,7 @@ export default {
   },
   methods: {
     _changeHandler ($event, vm) {
-      let index = this.radioList.indexOf(vm)
+      const index = this.radioList.indexOf(vm)
       this._resetRadioGroupValue(index, true)
       this.$trigger('change', $event, {
         value: vm.radioValue
@@ -78,7 +78,7 @@ export default {
       })
     },
     _getFormData () {
-      let data = {}
+      const data = {}
       if (this.name !== '') {
         let value = ''
         this.radioList.forEach(vm => {
@@ -86,8 +86,8 @@ export default {
             value = vm.value
           }
         })
-        data['value'] = value
-        data['key'] = this.name
+        data.value = value
+        data.key = this.name
       }
       return data
     }

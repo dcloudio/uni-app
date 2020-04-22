@@ -28,8 +28,8 @@ function hasOwn (obj, key) {
 
 const deprecated = {
   events: {
-    'tap': 'click',
-    'longtap': 'longpress'
+    tap: 'click',
+    longtap: 'longpress'
   }
 }
 
@@ -62,6 +62,7 @@ function fixBooleanAttribute (el) {
 }
 
 module.exports = {
+  h5: true,
   modules: [require('../format-text'), {
     preTransformNode (el, options) {
       fixBooleanAttribute(el)

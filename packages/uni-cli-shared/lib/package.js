@@ -15,8 +15,8 @@ module.exports = {
 
     let scriptOptions = false
 
-    if (uniAppOptions && uniAppOptions['scripts']) {
-      scriptOptions = uniAppOptions['scripts'][name]
+    if (uniAppOptions && uniAppOptions.scripts) {
+      scriptOptions = uniAppOptions.scripts[name]
     }
 
     if (!scriptOptions) {

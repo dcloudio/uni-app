@@ -1,5 +1,5 @@
 <template>
-  <uni-web-view v-on="$listeners"/>
+  <uni-web-view v-on="$listeners" />
 </template>
 <script>
 import {
@@ -27,7 +27,7 @@ const insertHTMLWebView = ({
   webview = plus.webview.create('', htmlId, styles)
   if (parentTitleNView) {
     webview.addEventListener('titleUpdate', function () {
-      let title = webview.getTitle()
+      const title = webview.getTitle()
       parentWebview.setStyle({
         titleNView: {
           titleText: (!title || title === 'null') ? '' : title

@@ -109,20 +109,25 @@ class BackgroundAudioManager {
       Object.defineProperty(this, name, data)
     })
   }
+
   play () {
     this._operate('play')
   }
+
   pause () {
     this._operate('pause')
   }
+
   stop () {
     this._operate('stop')
   }
+
   seek (position) {
     this._operate('seek', {
       currentTime: position
     })
   }
+
   _operate (type, options) {
     invokeMethod('operateBackgroundAudio', Object.assign({}, options, {
       operationType: type

@@ -16,7 +16,7 @@ export function createPage (pagePath, pageId, pageQuery, pageInstance) {
   if (!pageFactory[pagePath]) {
     console.error(`${pagePath} not found`)
   }
-  let startTime = Date.now()
+  const startTime = Date.now()
   const pageVm = new (getPageVueComponent(pagePath))({
     mpType: 'page',
     pageId,

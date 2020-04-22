@@ -1,10 +1,12 @@
 <template>
   <uni-map
     :id="id"
-    v-on="$listeners">
+    v-on="$listeners"
+  >
     <div
       ref="map"
-      style="width: 100%; height: 100%; position: relative; overflow: hidden;" />
+      style="width: 100%; height: 100%; position: relative; overflow: hidden;"
+    />
     <div style="position: absolute; top: 0; width: 100%; height: 100%; overflow: hidden; pointer-events: none;">
       <slot />
     </div>
@@ -32,8 +34,8 @@ function loadMap (callback) {
     callbacks.push(callback)
   } else {
     callbacks = [callback]
-    let key = __uniConfig.qqMapKey
-    let callbackName = '_callback' + Date.now()
+    const key = __uniConfig.qqMapKey
+    const callbackName = '_callback' + Date.now()
     window[callbackName] = function () {
       delete window[callbackName]
       maps = window.qq.maps
@@ -127,7 +129,7 @@ function loadMap (callback) {
       callbacks.forEach(callback => callback())
       callbacks = null
     }
-    let script = document.createElement('script')
+    const script = document.createElement('script')
     script.src = `https://map.qq.com/api/js?v=2.exp&key=${key}&callback=${callbackName}&libraries=geometry`
     document.body.appendChild(script)
   }
@@ -349,11 +351,13 @@ export default {
           })
           break
         case 'moveToLocation':
-          const { latitude, longitude } = data
-          var locationPosition = (latitude && longitude) ? new maps.LatLng(latitude, longitude) : this._locationPosition
-          if (locationPosition) {
-            this._map.setCenter(locationPosition)
-            callback({})
+          {
+            const { latitude, longitude } = data
+            var locationPosition = (latitude && longitude) ? new maps.LatLng(latitude, longitude) : this._locationPosition
+            if (locationPosition) {
+              this._map.setCenter(locationPosition)
+              callback({})
+            }
           }
           break
         case 'translateMarker':

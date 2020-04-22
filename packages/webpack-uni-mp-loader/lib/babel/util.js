@@ -51,7 +51,7 @@ function parseComponents (names, bindings, path) {
   })
 
   const importDeclarations = dynamicImportMap.keys()
-  for (let importDeclaration of importDeclarations) {
+  for (const importDeclaration of importDeclarations) {
     const dynamicImportArray = dynamicImportMap.get(importDeclaration)
     dynamicImportArray.forEach((dynamicImport) => {
       components.push(dynamicImport)

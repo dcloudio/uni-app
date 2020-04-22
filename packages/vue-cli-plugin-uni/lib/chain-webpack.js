@@ -32,10 +32,10 @@ module.exports = function chainWebpack (platformOptions, vueOptions, api) {
     // 条件编译 vue 文件统一直接过滤html,js,css三种类型,单独资源文件引用各自过滤
 
     const loaders = {
-      'scss': 'sass-loader',
-      'sass': 'sass-loader',
-      'less': 'less-loader',
-      'stylus': 'stylus-loader'
+      scss: 'sass-loader',
+      sass: 'sass-loader',
+      less: 'less-loader',
+      stylus: 'stylus-loader'
     }
     // 独立css,postcss,scss,sass,less,stylus
     const cssLang = ['css', 'postcss', 'scss', 'sass', 'less', 'stylus']
@@ -48,7 +48,7 @@ module.exports = function chainWebpack (platformOptions, vueOptions, api) {
       cssTypes.forEach(type => {
         if (process.env.UNI_USING_CACHE) {
           langRule.oneOf(type)
-            .use(`uniapp-cache-css`)
+            .use('uniapp-cache-css')
             .loader('cache-loader')
             .options(api.genCacheConfig(
               'css-loader/' + process.env.UNI_PLATFORM,
@@ -57,14 +57,14 @@ module.exports = function chainWebpack (platformOptions, vueOptions, api) {
             .before('css-loader')
         }
         langRule.oneOf(type)
-          .use(`uniapp-preprocss`)
+          .use('uniapp-preprocss')
           .loader(resolve('packages/webpack-preprocess-loader'))
           .options(cssPreprocessOptions)
-          .before('css-loader') // 在 css-loader 之后条件编译一次，避免 import 进来的 css 没有走条件编译
+          .after('css-loader') // 在 css-loader 之前条件编译一次
 
-        if (loader) { // 在 scss,less,stylus 之前先条件编译一次
+        if (loader) { // 在 scss,less,stylus 之前先条件编译一次（似乎没有必要了，保证css-loader处理一次即可，前提是条件编译注释都还存在）
           langRule.oneOf(type)
-            .use(`uniapp-preprocss-` + lang)
+            .use('uniapp-preprocss-' + lang)
             .loader(resolve('packages/webpack-preprocess-loader'))
             .options(cssPreprocessOptions)
             .after(loader)
