@@ -753,11 +753,14 @@ h5 平台下拉刷新动画，只有 circle 类型。
 
 **自定义easycom配置的示例**
 
+如果需要匹配node_modules内的vue文件，需要使用`packageName/path/to/vue-file-$1.vue`形式的匹配规则，其中`packageName`为安装的包名，`/path/to/vue-file-$1.vue`为vue文件在包内的路径。
+
 ```
 "easycom": {
   "autoscan": true,
   "custom": {
-    "uni-(.*)": "@/components/uni-$1.vue"
+    "uni-(.*)": "@/components/uni-$1.vue", // 匹配components目录内的vue文件
+    "vue-file-(.*)": "packageName/path/to/vue-file-$1.vue" // 匹配node_modules内的vue文件
   }
 }
 ```
