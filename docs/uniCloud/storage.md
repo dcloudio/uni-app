@@ -5,6 +5,7 @@
 即将支持云函数中使用云存储功能。
 
 # 客户端API
+
 ## uploadFile(Object object)
 
 上传文件到云存储，**阿里云单文件大小限制为100M，腾讯云单文件最大为5G**
@@ -111,6 +112,7 @@ uni.chooseImage({
 ## getTempFileURL(Object object)
 
 获取文件临时下载链接。
+
 **平台兼容性**
 
 |阿里云	|腾讯云	|
@@ -248,9 +250,11 @@ let result = await tcb.downloadFile({
 
 ## uniCloud.uploadFile(Object uploadFileOptions)
 
-上传文件至云开发存储服务。
+**云函数**内上传文件至云开发存储服务。
 
 **平台兼容性**
+
+客户端上传文件没有此兼容性差异
 
 |阿里云	|腾讯云	|
 |----		|----		|
@@ -286,7 +290,7 @@ let result = await uniCloud.uploadFile({
 
 ## uniCloud.getTempFileURL(Object getTempFileURLOptions)
 
-获取文件下载链接。
+**云函数**获取文件下载链接。
 
 **平台兼容性**
 
@@ -336,7 +340,7 @@ let result = await uniCloud.getTempFileURL({
 
 ## uniCloud.deleteFile(Object deleteFileOptions)
 
-删除云端文件。
+**云函数**删除云端文件。
 
 #### 请求参数
 
@@ -374,7 +378,7 @@ let result = await uniCloud.deleteFile({
 
 ## uniCloud.downloadFile(Object downloadFileOptions)
 
-下载已上传至云开发的文件至本地（默认本地根目录/root）。
+**云函数**下载已上传至云开发的文件至本地（默认本地根目录/root）。
 
 **平台兼容性**
 
