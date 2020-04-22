@@ -15,10 +15,10 @@
   + App平台 修复 uni.openLocation 显示位置错误的Bug [详情](https://ask.dcloud.net.cn/question/85402)
   + App-Android平台 修复 nvue rich-text 组件 img 标签可能不显示的Bug [详情](https://ask.dcloud.net.cn/question/93388)
   + App-Android平台 修复 nvue input 组件 font-size 值设置过大时光标可能不显示的Bug [详情](https://ask.dcloud.net.cn/question/93283)
-  + Android平台 修复 nvue 页面跳转到 vue 页面后，input 组件获得焦点时可能无法弹出软键盘的Bug [详情](https://ask.dcloud.net.cn/question/89769)
+  + App-Android平台 修复 vue map 组件 marker 属性打包后图片不显示的Bug [详情](https://ask.dcloud.net.cn/question/92358)
+  + App-Android平台 修复 nvue 页面跳转到 vue 页面后，input 组件获得焦点时可能无法弹出软键盘的Bug [详情](https://ask.dcloud.net.cn/question/89769)
   + App-iOS 修复 uni.onBLEConnectionStateChange 不触发的bug
   + App-iOS 修复 uni.chooseImage 从相机选择图片分辨率过低的Bug [详情](https://ask.dcloud.net.cn/question/91502)
-  + App-Android 修复 vue map 组件 marker 属性打包后图片不显示的Bug [详情](https://ask.dcloud.net.cn/question/92358)
   + 小程序平台 修复 map 组件 @markertap 事件获取不到 markerId 的Bug
 * 【App插件(含5+App和uni-app的App端)】
   + iOS平台 更新 uni-AD 腾讯广点通SDK版本为4.11.6
@@ -31,7 +31,7 @@
 
 #### 2.6.13.20200414-alpha
 * 【uni-app插件】
-  + 支付宝小程序 修复 部分情况下编译失败的Bug
+  + 支付宝小程序平台 修复 部分情况下编译失败的Bug
   + App-Android平台 修复 v2版本apk使用wgt升级资源后，用v3版本apk覆盖安装无法进入应用的Bug [详情](https://ask.dcloud.net.cn/question/93426)
 * 【App插件(含5+App和uni-app的App端)】
   + 修复 打包模块勾选 iOS UIWebview/Android X5 Webview 后，wgt升级更新失败触发错误回调的Bug [详情](https://ask.dcloud.net.cn/question/93447)
