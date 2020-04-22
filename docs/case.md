@@ -129,7 +129,7 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 	</a>
     <a href="#" class="clear-style barcode-view">
 		<img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/wastesep-mp-toutiao.png" width="200"/>
-		<span style="margin-top:15px;">头条小程序码</span>
+		<span style="margin-top:15px;">字节跳动小程序码</span>
 	</a>
 </div> -->
 
@@ -155,15 +155,9 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 
 **腾讯：** 微信小程序搜索“腾讯全民模拟炒股大赛”
 
+**华为：** 微信小程序搜索“荣耀亲选商城”、[H5](https://m.qinxuan.honor.cn/)
+
 **京东：** 京东开发的新冠抗疫服务平台。[H5](http://yingji-h5.chanye.jdcloud.com/)
-
-**CSDN：** 微信小程序搜索“CSDN”
-
-**开源中国：** 微信小程序搜索“osc+”、百度小程序搜索“开源中国社区”
-
-**中华英才网：** 百度小程序搜索“中华英才网”
-
-**当当网：** [H5](https://dh5.dangdang.com/)
 
 <div class="scan-code">
  <strong>vivo商城官方小程序：</strong> 支付宝搜索 "vivo"，或鼠标移此查看[支付宝小程序码]
@@ -184,6 +178,14 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 </div>
 
 **联想集团官方小程序：** 微信小程序搜索 “联想集团”
+
+**中华英才网：** 百度小程序搜索“中华英才网”
+
+**CSDN：** 微信小程序搜索“CSDN”
+
+**开源中国：** 微信小程序搜索“osc+”、百度小程序搜索“开源中国社区”
+
+**当当网：** [H5](https://dh5.dangdang.com/)
 
 **太平洋汽车网：** H5，VR看车。需特定入口。
   
@@ -669,6 +671,8 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 **军优会：**为军人谋福利，[App](https://m3w.cn/__uni__a8f4fdd)
 
 **京暖通：**专业的暖通供应和服务平台，[App和小程序通用链接](https://m3w.cn/jnt)
+
+**大丰收农资优选:**优质农资商品购物。[安卓](https://www.dfs168.com/market/viewapp.html?id=503)、[iOS](https://apps.apple.com/cn/app/id1489907205)、[H5](http://wechat.dfs168.com)、微信小程序搜索：大丰收农资优选
 
 
 

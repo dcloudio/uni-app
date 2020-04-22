@@ -18,18 +18,18 @@
 |duration|Number|500|滑动动画时长|app-nvue不支持|
 |circular|Boolean|false|是否采用衔接滑动||
 |vertical|Boolean|false|滑动方向是否为纵向||
-|previous-margin|String|0px|前边距，可用于露出前一项的一小部分，接受 px 和 rpx 值|app-nvue、头条小程序不支持|
-|next-margin|String|0px|后边距，可用于露出后一项的一小部分，接受 px 和 rpx 值|app-nvue、头条小程序不支持|
+|previous-margin|String|0px|前边距，可用于露出前一项的一小部分，接受 px 和 rpx 值|app-nvue、字节跳动小程序不支持|
+|next-margin|String|0px|后边距，可用于露出后一项的一小部分，接受 px 和 rpx 值|app-nvue、字节跳动小程序不支持|
 |acceleration|Boolean|false|当开启时，会根据滑动速度，连续滑动多屏|支付宝小程序|
 |disable-programmatic-animation|Boolean|false|是否禁用代码变动触发 swiper 切换时使用动画。|支付宝小程序|
 |display-multiple-items|Number|1|同时显示的滑块数量|支付宝小程序不支持|
 |skip-hidden-item-layout|Boolean|false|是否跳过未显示的滑块布局，设为 true 可优化复杂情况下的滑动性能，但会丢失隐藏状态滑块的布局信息|App、微信小程序|
-|disable-touch|Boolean|false|是否禁止用户 touch 操作|App 2.5.5+、H5 2.5.5+、支付宝小程序、头条小程序（只在初始化时有效，不能动态变更）|
-|touchable|Boolean|true|是否监听用户的触摸事件，只在初始化时有效，不能动态变更|头条小程序（uni-app 2.5.5+ 推荐统一使用 disable-touch）|
+|disable-touch|Boolean|false|是否禁止用户 touch 操作|App 2.5.5+、H5 2.5.5+、支付宝小程序、字节跳动小程序（只在初始化时有效，不能动态变更）|
+|touchable|Boolean|true|是否监听用户的触摸事件，只在初始化时有效，不能动态变更|字节跳动小程序（uni-app 2.5.5+ 推荐统一使用 disable-touch）|
 |easing-function|String|default|指定 swiper 切换缓动动画类型，有效值：default、linear、easeInCubic、easeOutCubic、easeInOutCubic|微信小程序|
 |@change|EventHandle||current 改变时会触发 change 事件，event.detail = {current: current, source: source}||
-|@transition|EventHandle||swiper-item 的位置发生改变时会触发 transition 事件，event.detail = {dx: dx, dy: dy}|App、H5、微信小程序、支付宝小程序、头条小程序、QQ小程序|
-|@animationfinish|EventHandle||动画结束时会触发 animationfinish 事件，event.detail = {current: current, source: source}|头条小程序不支持|
+|@transition|EventHandle||swiper-item 的位置发生改变时会触发 transition 事件，event.detail = {dx: dx, dy: dy}|App、H5、微信小程序、支付宝小程序、字节跳动小程序、QQ小程序|
+|@animationfinish|EventHandle||动画结束时会触发 animationfinish 事件，event.detail = {current: current, source: source}|字节跳动小程序不支持|
 
 change 事件返回 detail 中包含一个 source 字段，表示导致变更的原因，可能值如下：
 

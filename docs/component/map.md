@@ -4,9 +4,9 @@
 
 **平台差异说明**
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|√|√|√|√|√|x|x|
+|√|√|√|√|√|x|1.9.0+|
 
 **属性说明**
 
@@ -27,7 +27,8 @@
 |enable-traffic|Boolean|false|是否开启实时路况|App-nvue 2.1.5+、微信小程序2.7.0|
 |show-location|Boolean||显示带有方向的当前定位点|微信小程序、H5、百度小程序、支付宝小程序|
 |polygons|Array.`<polygon>`||多边形|App-nvue 2.1.5+、微信小程序、百度小程序、支付宝小程序|
-|@markertap|EventHandle||点击标记点时触发，点击标记点时触发，e.detail = {markerId}|App-nvue 2.3.3+, App平台需要指定 marker 对象属性 id|
+|@markertap|EventHandle||点击标记点时触发，e.detail = {markerId}|App-nvue 2.3.3+, App平台需要指定 marker 对象属性 id|
+|@labeltap|EventHandle||点击label时触发，e.detail = {markerId} |微信小程序2.9.0|
 |@callouttap|EventHandle||点击标记点对应的气泡时触发，e.detail = {markerId}||
 |@controltap|EventHandle||点击控件时触发，e.detail = {controlId}||
 |@regionchange|EventHandle||视野发生变化时触发|微信小程序、H5、百度小程序、支付宝小程序|
@@ -167,6 +168,7 @@ zIndex|设置多边形 Z 轴数值|Number|否|
 export default {
 	data() {
 		return {
+      id:0, // 使用 marker点击事件 需要填写id
 			title: 'map',
 			latitude: 39.909,
 			longitude: 116.39742,
@@ -201,7 +203,7 @@ map 组件相关操作的 JS API：[uni.createMapContext](api/location/map?id=cr
 - H5 端获取定位信息，需要部署在 **https** 服务上，本地预览（localhost）仍然可以使用 http 协议。
 - 无 GPS 模块的 PC 设备使用 Chrome 浏览器的时候，位置信息是连接谷歌服务器获取的，国内用户可能获取位置信息失败。
 - App 端使用地图组件需要向高德或百度等三方服务商申请SDK资质，获取AppKey，打包时需要在manifest文件中勾选相应模块，在SDK配置中填写Appkey。注意申请包名和打包时的包名需匹配一致，证书信息匹配。在manifest可视化界面有详细申请指南。
-
+- ios nvue Color 不支持 ARGB 十六进制，使用 rgba(r,g,b,a) 代替
 
 ##### FAQ
 

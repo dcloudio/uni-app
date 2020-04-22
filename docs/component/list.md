@@ -58,6 +58,15 @@ app端nvue专用组件。在app-nvue下，如果是长列表，使用list组件�
 
 <img src="https://img-cdn-qiniu.dcloud.net.cn/app-nvue-component-list.png" />
 
+#### setSpecialEffects(object)
+设置嵌套list父容器支持swiper-list吸顶滚动效果
+
+###### Object object
+属性|说明|类型|必填|备注
+:--|:--|:--|:--|:--|
+id|list父容器滚动组件id|String|是|应为最外层滚动容器，必须是list组件
+headerHeight|吸顶距离|Number|是|子list吸顶距离最外层滚动容器顶部的距离
+
 #### 事件
 
 
@@ -102,3 +111,31 @@ app端nvue专用组件。在app-nvue下，如果是长列表，使用list组件�
     - `x {number}`：x轴上的偏移量
     - `y {number}`：y轴上的偏移量
   - `isDragging {boolean}`: 用户是否正在拖动列表
+
+
+
+####  list.setSpecialEffects(args)
+
+设置嵌套父容器信息
+
+#####参数:
+
+args 为要设置的参数为json类型可以包含下列元素
+
+属性|类型 |默认值|必填|说明
+:--|:--|:--|:--|:--|
+kind|string| xianyu|是|要实现的效果目前只支持闲鱼吸顶效果
+id|string|无|是|和list同时滚动的组件id，应为外层的scroller
+headerHeight|float|0|是|要吸顶的header顶部距离scroller顶部的距离
+
+#####返回值：无
+
+#####示例:
+
+```
+  //设置
+  const list = this.$refs["list0"];
+  list.setSpecialEffects({id:"scroller", headerHeight:150});
+  //清除
+  list.setSpecialEffects({});
+```

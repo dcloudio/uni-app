@@ -3,7 +3,7 @@
 
 **平台差异说明**
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |√|x|√|√|√|√|√|
 
@@ -35,7 +35,7 @@ H5平台登陆注意事项：
 * [微信小程序登录](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/login.html)
 * [支付宝小程序用户授权](https://docs.alipay.com/mini/introduce/authcode)
 * [百度小程序登录](https://smartprogram.baidu.com/docs/develop/api/open_log/#%E6%8E%88%E6%9D%83%E6%B5%81%E7%A8%8B%E8%AF%B4%E6%98%8E/)
-* [头条小程序登录](https://developer.toutiao.com/dev/cn/mini-app/develop/open-capacity/log-in/login)
+* [字节跳动小程序登录](https://developer.toutiao.com/dev/cn/mini-app/develop/open-capacity/log-in/login)
 * [Apple登录、苹果登录、Sign in with Apple](https://ask.dcloud.net.cn/article/36651)
 
 
@@ -58,7 +58,7 @@ uni.login({
 
 **平台差异说明**
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |x|x|√|x|√|√|√|
 
@@ -75,7 +75,7 @@ uni.login({
 
 **平台差异说明**
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |√|x|√|√|√|√|√|
 
@@ -86,7 +86,7 @@ uni.login({
 |参数名|类型|必填|说明|平台差异说明|
 |:-|:-|:-|:-|:-|:-|
 |provider|String|否|登录服务提供商，通过 uni.getProvider 获取||
-|withCredentials|Boolean|否|是否带上登录态信息。|微信小程序、头条小程序|
+|withCredentials|Boolean|否|是否带上登录态信息。|微信小程序、字节跳动小程序|
 |lang|String|否|指定返回用户信息的语言，默认为 en。更多值请参考下面的说明。|微信小程序|
 |timeout|Number|否|超时时间，单位 ms。|微信小程序|
 |success|Function|否|接口调用成功的回调||
@@ -109,9 +109,9 @@ uni.login({
 |:-|:-|:-||
 |userInfo|OBJECT|用户信息对象||
 |rawData|String|不包括敏感信息的原始数据字符串，用于计算签名。||
-|signature|String|使用 sha1( rawData + sessionkey ) 得到字符串，用于校验用户信息。|微信小程序、头条小程序|
-|encryptedData|String|包括敏感数据在内的完整用户信息的加密数据，详细见加密数据解密算法。|微信小程序、头条小程序|
-|iv|String|加密算法的初始向量，详细见加密数据解密算法。|微信小程序、头条小程序|
+|signature|String|使用 sha1( rawData + sessionkey ) 得到字符串，用于校验用户信息。|微信小程序、字节跳动小程序|
+|encryptedData|String|包括敏感数据在内的完整用户信息的加密数据，详细见加密数据解密算法。|微信小程序、字节跳动小程序|
+|iv|String|加密算法的初始向量，详细见加密数据解密算法。|微信小程序、字节跳动小程序|
 |errMsg|String|描述信息|&nbsp;|
 
 **userInfo 参数说明**

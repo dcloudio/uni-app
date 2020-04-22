@@ -132,5 +132,5 @@
 预览H5效果：使用浏览器的手机模式访问[https://uniapp.dcloud.io/h5/pages/component/checkbox/checkbox](https://uniapp.dcloud.io/h5/pages/component/checkbox/checkbox)
 
 **注意**
-- checkbox的默认颜色，在不同平台不一样。微信小程序是绿色的，头条小程序为红色，其他平台是蓝色的。更改颜色使用color属性。
+- checkbox的默认颜色，在不同平台不一样。微信小程序是绿色的，字节跳动小程序为红色，其他平台是蓝色的。更改颜色使用color属性。
 - 如需调节checkbox大小，可通过css的scale方法调节，如缩小到70%`style="transform:scale(0.7)"`

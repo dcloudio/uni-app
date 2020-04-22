@@ -14,7 +14,7 @@
 
 **src**
 
-|来源|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|来源|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
 |:-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |网络|√|√|√|√|√|√|√|
 |本地|√|暂不支持|x|x|x|x|x|
@@ -106,8 +106,8 @@
 |uni.reLaunch|[reLaunch](/api/router?id=relaunch)||
 |uni.switchTab|[switchTab](/api/router?id=switchtab)||
 |uni.navigateBack|[navigateBack](/api/router?id=navigateback)||
-|uni.postMessage|向应用发送消息|头条小程序不支持|
-|uni.getEnv|获取当前环境|头条小程序不支持|
+|uni.postMessage|向应用发送消息|字节跳动小程序不支持|
+|uni.getEnv|获取当前环境|字节跳动小程序不支持|
 
 ##### uni.postMessage(OBJECT)
 网页向应用发送消息，在 `<web-view>` 的 `message` 事件回调 `event.detail.data` 中接收消息。
@@ -145,7 +145,7 @@
     // 微信小程序 JS-SDK 如果不需要兼容微信小程序，则无需引用此 JS 文件。
     document.write('<script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.4.0.js"><\/script>');
   } else if (/toutiaomicroapp/i.test(userAgent)) {
-    // 头条小程序 JS-SDK 如果不需要兼容头条小程序，则无需引用此 JS 文件。
+    // 字节跳动小程序 JS-SDK 如果不需要兼容字节跳动小程序，则无需引用此 JS 文件。
     document.write('<script type="text/javascript" src="https://s3.pstatp.com/toutiao/tmajssdk/jssdk-1.0.1.js"><\/script>');
   } else if (/swan/i.test(userAgent)) {
     // 百度小程序 JS-SDK 如果不需要兼容百度小程序，则无需引用此 JS 文件。
