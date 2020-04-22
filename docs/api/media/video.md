@@ -24,7 +24,7 @@
 |参数|类型|说明|平台差异说明说明|
 |:-|:-|:-|:-|
 |tempFilePath|String|选定视频的临时文件路径||
-|tempFile|File|选定的视频文件|仅H5（2.7.0+）支持|
+|tempFile|File|选定的视频文件|仅H5（2.6.15+）支持|
 |duration|Number|选定视频的时间长度，单位为 s|APP 2.1.0+、H5、微信小程序|
 |size|Number|选定视频的数据量大小|APP 2.1.0+、H5、微信小程序|
 |height|Number|返回选定视频的高|APP 2.1.0+、H5、微信小程序|
