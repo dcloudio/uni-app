@@ -618,7 +618,12 @@ db.collection('articles').where({
   version: /^\ds/i
 })
 
-// 或者，这种方式阿里云不支持
+// 也可以使用new RegExp
+db.collection('user').where({
+  name: new RegExp('^\\ds', 'i')
+})
+
+// 或者使用new db.RegExp，这种方式阿里云不支持
 db.collection('articles').where({
   version: new db.RegExp({
     regex: '^\\ds'   // 正则表达式为 /^\ds/，转义后变成 '^\\ds'
