@@ -21,10 +21,14 @@ module.exports = (api, options) => {
       '--host': `specify host (default: ${defaults.host})`,
       '--port': `specify port (default: ${defaults.port})`,
       '--https': `use https (default: ${defaults.https})`,
-      '--public': 'specify the public network URL for the HMR client'
+      '--public': 'specify the public network URL for the HMR client',
+      '--auto-host': 'specify automator host',
+      '--auto-port': 'specify automator port'
     }
   }, async function serve (args) {
     info('Starting development server...')
+
+    require('./util').initAutomator(args)
 
     // although this is primarily a dev server, it is possible that we
     // are running it in a mode with a production env, e.g. in E2E tests.
