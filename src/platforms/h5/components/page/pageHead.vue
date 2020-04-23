@@ -65,9 +65,8 @@
           :style="{color:searchInput.placeholderColor}"
           :class="[`uni-page-head-search-placeholder-${focus || text ? 'left' : searchInput.align}`]"
           class="uni-page-head-search-placeholder"
-        >
-          {{ text || composing ? '' : searchInput.placeholder }}
-        </div>
+          v-text="text || composing ? '' : searchInput.placeholder"
+        />
         <v-uni-input
           ref="input"
           v-model="text"

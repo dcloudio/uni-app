@@ -13,9 +13,8 @@
         :style="placeholderStyle"
         :class="placeholderClass"
         class="uni-input-placeholder"
-      >
-        {{ placeholder }}
-      </div>
+        v-text="placeholder"
+      />
       <input
         ref="input"
         v-model="inputValue"
