@@ -41,7 +41,7 @@ module.exports = {
     const copyOptions = []
     let jsConfigPath = path.resolve(process.env.UNI_INPUT_DIR, 'jsconfig.json')
     if (!fs.existsSync(jsConfigPath)) {
-        jsConfigPath = path.resolve(__dirname, 'assets/jsconfig.json')
+      jsConfigPath = path.resolve(__dirname, 'assets/jsconfig.json')
     }
     copyOptions.push(jsConfigPath)
 
