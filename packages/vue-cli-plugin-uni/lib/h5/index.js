@@ -116,7 +116,8 @@ module.exports = {
             loader: path.resolve(__dirname, '../../packages/wrap-loader'),
             options: {
               before: [
-                beforeCode + statCode + getGlobalUsingComponentsCode()
+                beforeCode + require('../util').getAutomatorCode() + statCode +
+                getGlobalUsingComponentsCode()
               ]
             }
           }]
