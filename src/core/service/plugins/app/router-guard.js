@@ -78,7 +78,7 @@ function beforeEach (to, from, next, routes) {
   const fromId = from.params.__id__
   const toId = to.params.__id__
   const toName = to.meta.name + '-' + toId
-  if (toId === fromId) { // 相同页面阻止
+  if (toId === fromId && to.type !== 'reLaunch') { // 相同页面阻止
     // 处理外部修改 history 导致卡在当前页面的问题
     if (to.fullPath !== from.fullPath) {
       removeKeepAliveInclude.call(this, toName)
