@@ -60,8 +60,8 @@ function createValidator (type) {
       }
     }
 
-    // tabBar不允许传递参数
-    if (routeOptions.meta.isTabBar) {
+    // switchTab不允许传递参数,reLaunch到一个tabBar页面是可以的
+    if (type === 'switchTab' && routeOptions.meta.isTabBar) {
       url = pagePath
     }
 

@@ -24,7 +24,7 @@
 |navigate|对应 uni.navigateTo 的功能||
 |redirect|对应 uni.redirectTo 的功能||
 |switchTab|对应 uni.switchTab 的功能||
-|reLaunch|对应 uni.reLaunch 的功能|头条小程序不支持|
+|reLaunch|对应 uni.reLaunch 的功能|字节跳动小程序不支持|
 |navigateBack|对应 uni.navigateBack 的功能||
 |exit|退出小程序，target="miniProgram"时生效|微信2.1.0+、百度2.5.2+、QQ1.4.7+|
 

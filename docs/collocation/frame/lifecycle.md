@@ -47,10 +47,10 @@
 |onPullDownRefresh|监听用户下拉动作，一般用于下拉刷新，参考[示例](api/ui/pulldown)|||
 |onReachBottom|页面滚动到底部的事件（不是scroll-view滚到底），常用于下拉下一页数据。具体见下方注意事项|||
 |onTabItemTap|点击 tab 时触发，参数为Object，具体见下方注意事项|微信小程序、支付宝小程序、百度小程序、H5、App（自定义组件模式）||
-|onShareAppMessage|用户点击右上角分享|微信小程序、百度小程序、头条小程序、支付宝小程序||
+|onShareAppMessage|用户点击右上角分享|微信小程序、百度小程序、字节跳动小程序、支付宝小程序||
 |onPageScroll|监听页面滚动，参数为Object|nvue暂不支持||
 |onNavigationBarButtonTap|监听原生标题栏按钮点击事件，参数为Object|App、H5||
-|onBackPress|监听页面返回，返回 event = {from:backbutton、 navigateBack} ，backbutton 表示来源是左上角返回按钮或 android 返回键；navigateBack表示来源是 uni.navigateBack ；详细说明及使用：[onBackPress 详解](http://ask.dcloud.net.cn/article/35120)|app、H5、支付宝小程序||
+|onBackPress|监听页面返回，返回 event = {from:backbutton、 navigateBack} ，backbutton 表示来源是左上角返回按钮或 android 返回键；navigateBack表示来源是 uni.navigateBack ；详细说明及使用：[onBackPress 详解](http://ask.dcloud.net.cn/article/35120)。支付宝小程序只有真机能触发，只能监听非navigateBack引起的返回，不可阻止默认行为。|app、H5、支付宝小程序||
 |onNavigationBarSearchInputChanged|监听原生标题栏搜索输入框输入内容变化事件|App、H5|1.6.0|
 |onNavigationBarSearchInputConfirmed|监听原生标题栏搜索输入框搜索事件，用户点击软键盘上的“搜索”按钮时触发。|App、H5|1.6.0|
 |onNavigationBarSearchInputClicked|监听原生标题栏搜索输入框点击事件|App、H5|1.6.0|
@@ -131,6 +131,7 @@ export default {
 **注意**
 
 - nvue 页面weex编译模式支持的生命周期同weex，具体参考：[weex生命周期介绍](/use-weex?id=生命周期)。
+- 支付宝小程序真机可以监听到非`navigateBack`引发的返回事件（使用小程序开发工具时不会触发`onBackPress`），不可以阻止默认返回行为
 
 ### 组件生命周期
 

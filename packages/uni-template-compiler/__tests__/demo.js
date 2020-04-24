@@ -19,12 +19,7 @@ const scopedPath = path.resolve(__dirname, '../../')
 const compiler = require('../lib')
 const res = compiler.compile(
   `
-<text>
-
-123
-456
-
-</text>
+<view>  {{text}} text  text {{text}}  </view>
 `, {
     miniprogram: true,
     resourcePath: '/User/fxy/Documents/test.wxml',

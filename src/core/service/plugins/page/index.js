@@ -20,8 +20,9 @@ function getDecodedQuery (query = {}) {
 export function createPageMixin () {
   return {
     created: function pageCreated () {
-      createPage(this)
-      callPageHook(this, 'onLoad', getDecodedQuery(this.$route.query))
+      const options = getDecodedQuery(this.$route.query)
+      createPage(this, options)
+      callPageHook(this, 'onLoad', options)
       callPageHook(this, 'onShow')
     }
   }

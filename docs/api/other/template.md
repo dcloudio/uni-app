@@ -4,7 +4,7 @@
 
 **平台差异说明**
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |x|x|√|x|√|x|x|
 
@@ -66,7 +66,7 @@ POST https://openapi.baidu.com/rest/2.0/smartapp/template/templateadd?access_tok
 
 **平台差异说明**
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |x|x|√|x|√|x|x|
 
@@ -120,7 +120,7 @@ POST https://openapi.baidu.com/rest/2.0/smartapp/template/templatedel?access_tok
 
 **平台差异说明**
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |x|x|√|x|√|x|x|
 
@@ -229,7 +229,7 @@ POST https://openapi.baidu.com/rest/2.0/smartapp/template/libraryget?access_toke
 
 **平台差异说明**
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |x|x|√|x|√|x|x|
 
@@ -318,7 +318,7 @@ POST https://openapi.baidu.com/rest/2.0/smartapp/template/librarylist?access_tok
 
 **平台差异说明**
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |x|x|√|x|√|x|x|
 
@@ -416,7 +416,7 @@ POST https://openapi.baidu.com/rest/2.0/smartapp/template/templatelist?access_to
 
 **平台差异说明**
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |x|x|√|x|√|x|x|
 
@@ -549,7 +549,7 @@ POST https://openapi.baidu.com/rest/2.0/smartapp/template/templatedel?access_tok
 
 **平台差异说明**
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|头条小程序|QQ小程序|
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |x|x|x|√|x|x|x|
 

@@ -10,14 +10,16 @@
           v-if="title"
           class="uni-modal__hd"
         >
-          <strong class="uni-modal__title">{{ title }}</strong>
+          <strong
+            class="uni-modal__title"
+            v-text="title"
+          />
         </div>
         <div
           class="uni-modal__bd"
           @touchmove.stop
-        >
-          {{ content }}
-        </div>
+          v-text="content"
+        />
         <div class="uni-modal__ft">
           <div
             v-if="showCancel"

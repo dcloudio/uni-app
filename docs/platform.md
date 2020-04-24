@@ -32,9 +32,9 @@ uni-app 已将常用的组件、JS API 封装到框架中，开发者按照 uni-
 |MP-WEIXIN|微信小程序|[微信小程序](https://developers.weixin.qq.com/miniprogram/dev/api/)|
 |MP-ALIPAY|支付宝小程序|[支付宝小程序](https://docs.alipay.com/mini/developer/getting-started)|
 |MP-BAIDU|百度小程序|[百度小程序](https://smartprogram.baidu.com/docs/develop/tutorial/codedir/)|
-|MP-TOUTIAO|头条小程序|[头条小程序](https://developer.toutiao.com/dev/cn/mini-app/develop/framework/basic-reference/introduction)|
+|MP-TOUTIAO|字节跳动小程序|[字节跳动小程序](https://developer.toutiao.com/dev/cn/mini-app/develop/framework/basic-reference/introduction)|
 |MP-QQ|QQ小程序|	（目前仅cli版支持）|
-|MP|微信小程序/支付宝小程序/百度小程序/头条小程序/QQ小程序|&nbsp;|
+|MP|微信小程序/支付宝小程序/百度小程序/字节跳动小程序/QQ小程序|&nbsp;|
 
 **支持的文件**
 

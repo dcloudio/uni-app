@@ -66,7 +66,7 @@ export function chooseImage ({
     const res = {
       errMsg: 'chooseImage:ok',
       get tempFilePaths () {
-        return tempFiles.map(({ filePath }) => filePath)
+        return tempFiles.map(({ path }) => path)
       },
       tempFiles: tempFiles
     }

@@ -10,22 +10,19 @@
         :style="placeholderStyle"
         :class="placeholderClass"
         class="uni-textarea-placeholder"
-      >
-        {{ placeholder }}
-      </div>
+        v-text="placeholder"
+      />
       <div
         ref="line"
         class="uni-textarea-line"
-      >
-        &nbsp;
-      </div>
+        v-text="' '"
+      />
       <div class="uni-textarea-compute">
         <div
           v-for="(item,index) in valueCompute"
           :key="index"
-        >
-          {{ item.trim() ? item : '.' }}
-        </div>
+          v-text="item.trim() ? item : '.'"
+        />
         <v-uni-resize-sensor
           ref="sensor"
           @resize="_resize"

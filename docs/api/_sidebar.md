@@ -47,6 +47,7 @@
   * [系统信息](api/system/info.md)
   * [内存](api/system/memory.md)
   * [网络状态](api/system/network.md)
+  * [系统主题](api/system/theme.md)
   * [加速度计](api/system/accelerometer.md)
   * [罗盘](api/system/compass.md)
   * [陀螺仪](api/system/gyroscope.md)

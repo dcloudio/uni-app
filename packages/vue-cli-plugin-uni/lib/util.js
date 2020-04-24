@@ -12,5 +12,9 @@ module.exports = {
       })
     }
     return partialIdentifier
+  },
+  getAutomatorCode () {
+    const automator = `@dcloudio/uni-${process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM}/dist/automator`
+    return process.env.UNI_AUTOMATOR_WS_ENDPOINT ? `import '${automator}';` : ''
   }
 }

@@ -8,7 +8,7 @@
   - [微信小程序](https://developers.weixin.qq.com/miniprogram/dev/framework/)
   - [支付宝小程序](https://docs.alipay.com/mini/developer/getting-started)
   - [百度小程序](https://smartprogram.baidu.com/docs/develop/tutorial/codedir/)
-  - [头条小程序](https://developer.toutiao.com/dev/cn/mini-app/develop/component/introduction/basic-component)
+  - [字节跳动小程序](https://developer.toutiao.com/dev/cn/mini-app/develop/component/introduction/basic-component)
   - [QQ小程序](https://q.qq.com/wiki/develop/miniprogram/frame/)
   - [Weex](https://weex.apache.org/cn/guide/)
 
