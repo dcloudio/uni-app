@@ -29,7 +29,7 @@ HBuilderX是通用的前端开发工具，但为`uni-app`做了特别强化。
 uni-app自带的模板有 Hello uni-app ，是官方的组件和API示例。还有一个重要模板是 uni ui项目模板，日常开发推荐使用该模板，已内置大量常用组件。
 
 <div align=center>
-  <img src="//img.cdn.aliyun.dcloud.net.cn/uniapp/doc/create.png"/>
+  <img src="//img.cdn.aliyun.dcloud.net.cn/uni-app/doc/create.png"/>
 </div>
 
 ### 运行uni-app
@@ -89,7 +89,7 @@ uni-app自带的模板有 Hello uni-app ，是官方的组件和API示例。还�
 运行的快捷键是`Ctrl+r`。
 HBuilderX 还提供了快捷运行菜单，可以按数字快速选择要运行的设备：
 <div align=center>
-	<img src="//img.cdn.aliyun.dcloud.net.cn/uniapp/doc/runtool.png"/>
+	<img src="//img.cdn.aliyun.dcloud.net.cn/uni-app/doc/runtool.png"/>
 </div>
 
 如需调试，可参考：[uni-app调试](/snippet?id=使用-chrome-调试)
