@@ -28,6 +28,7 @@ module.exports = (api, options, rootOptions) => {
         'build:quickapp-light': 'cross-env NODE_ENV=production UNI_PLATFORM=quickapp-light vue-cli-service uni-build',
         'dev:custom': 'cross-env NODE_ENV=development uniapp-cli custom',
         'build:custom': 'cross-env NODE_ENV=production uniapp-cli custom',
+        'test:h5': 'cross-env UNI_PLATFORM=h5 jest -i',
         'test:mp-weixin': 'cross-env UNI_PLATFORM=mp-weixin jest -i',
         'test:mp-baidu': 'cross-env UNI_PLATFORM=mp-baidu jest -i'
       },
