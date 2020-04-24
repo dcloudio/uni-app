@@ -4,14 +4,13 @@
 为提升开发效率，HBuilderX将 ```uni-app``` 常用代码封装成了以 ```u``` 开头的代码块，如在 ```template``` 标签内输入 ```ulist``` 回车，会自动生成如下代码：
 
 ```
-<view class="uni-list">
-	<view class="uni-list-cell">
-		<view class="uni-list-cell-navigate uni-navigate-right" v-for="(item,index) in list" :key="index">
-			{{item.value}}
-		</view>
-	</view>
-</view>
+<uni-list>
+	<uni-list-item title="" note=""></uni-list-item>
+	<uni-list-item title="" note=""></uni-list-item>
+</uni-list>
 ```
+注意需保障uni-list组件在项目的components目录下。比较简单的方式，是新建项目时，选 uni ui项目模板，在里面即可随便敲所有u开头的代码块。如果不是 uni ui项目模板，那么需要去插件市场手动把[uni ui组件](https://ext.dcloud.net.cn/plugin?id=55)下载到工程里。
+
 
 代码块分为Tag代码块、JS代码块，如在 ```script``` 标签内输入 ```uShowToast``` 回车，会自动生成如下代码：
 
@@ -88,11 +87,15 @@ uni.showToast({
 
 预置代码块不满足需求的话，可以自定义代码块，教程参考[https://ask.dcloud.net.cn/article/35924](https://ask.dcloud.net.cn/article/35924)
 
-### 使用 Chrome 调试 H5
+### 使用HBuilderX内置浏览器调试H5
 
-进入 ``uni-app`` 项目，`点击工具栏的运行 -> 运行到浏览器 -> 选择 Chrome`，即可将 `uni-app`运行到 浏览器，可参考 [运行uni-app](/quickstart?id=运行uni-app)，运行到浏览器后，就能和普通 `web` 项目一样进行预览和调试了。
+打开 ``uni-app`` 项目的页面，点HBuilderX右上角的预览按钮，可以在内置浏览器里打开H5运行结果，也可以点右键打开控制台调试。
 
-点 `Chrome` 控制台的 `Sources` 栏，可以给 js 打断点调试。
+修改保存工程源码时，右边的浏览器内容可以自动刷新。
+
+在HBuilderX控制台里，可以直接看到内置浏览器打印的日志。
+
+打开内置浏览器的控制台的 `Sources` 栏，可以给 js 打断点调试。
 
 在 `Page` 下找到 `webpack` 里的工程目录，可直接找到对应的`vue`页面进行断点调试；或按 `Ctrl+P`搜文件名，进入页面调试；也可点击控制台的 `log` 信息，进入对应的页面进行调试。
 
@@ -100,7 +103,8 @@ uni.showToast({
 
 ![](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/chrome-debug2.png)
 
-点击HBuilderX的右上角的预览按钮，可以在内置浏览器里打开H5运行结果，也可以点右键打开控制台调试，方法同上。
+
+`点击工具栏的运行 -> 运行到浏览器 -> 选择 Chrome`，也可将 `uni-app`运行到 浏览器，可参考 [运行uni-app](/quickstart?id=运行uni-app)。
 
 ### 使用各家小程序开发工具调试
 
@@ -173,7 +177,7 @@ Tip
 - 常用的开发模式就是`pc`上使用内置浏览器预览调dom，运行到真机上看`console.log`。如果是很复杂的问题才使用`debug`。
 - vue页面也可以在微信开发者工具里调试，除了plus API，其他是一样的，微信开发者工具的查看`Dom`和网络和存储等调试工具相对而言更完善些。
 注意：即使不发布微信小程序、只发布`App`，也需要安装微信开发者工具。
-- uni-app的App端没有App那种webkit remote debug，因为uni-app的js不是运行在webview里，而是独立的jscore里。
+- uni-app的App端的webkit remote debug，只能调试视图层，不能调试逻辑层。因为uni-app的js不是运行在webview里，而是独立的jscore里。
 - 部分manifest配置，如三方sdk配置，需要打包后生效的，可以打包一个自定义运行基座。打包自定义基座后运行这个自定义基座，同样可以真机运行和debug。打包正式包将无法真机运行和debug。
 
 
@@ -181,8 +185,8 @@ Tip
 
 很多公司的开发人员提交代码后，需要自动打包或持续集成。
 
-此时需要在服务器安装uni-app的cli版本来发布小程序和H5版。
+此时需要在服务器安装uni-app的cli版本来发布。
 
 HBuilderX版与cli版互转指南参考：[https://ask.dcloud.net.cn/article/35750](https://ask.dcloud.net.cn/article/35750)
 
-如果是发布App，则需要使用[离线打包](https://ask.dcloud.net.cn/docs/#//ask.dcloud.net.cn/article/508)，配置原生环境，来实现持续集成。（目前HBuilderX还不支持命令行生成wgt资源和云打包，欢迎到需求墙投票：[https://dev.dcloud.net.cn/wish/](https://dev.dcloud.net.cn/wish/)）
+如果是发布App，还需要使用[离线打包](https://ask.dcloud.net.cn/docs/#//ask.dcloud.net.cn/article/508)，配置原生环境，来实现持续集成。
