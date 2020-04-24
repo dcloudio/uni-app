@@ -62,7 +62,7 @@ export function initSpecialMethods (mpInstance) {
           if (!hasOwn(event, 'detail') || !event.detail) {
             event.detail = {}
           }
-          if (!('markerId' in event.detail) && 'markerId' in event) {
+          if (hasOwn(event, 'markerId') && !hasOwn(event.detail, 'markerId')) {
             event.detail.markerId = event.markerId
           }
           // TODO normalizeEvent

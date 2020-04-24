@@ -291,7 +291,7 @@ function wrapper (event) {
     event.detail = {}
   }
 
-  if (!('markerId' in event.detail) && 'markerId' in event) {
+  if (hasOwn(event, 'markerId') && !hasOwn(event.detail, 'markerId')) {
     event.detail.markerId = event.markerId
   }
 
