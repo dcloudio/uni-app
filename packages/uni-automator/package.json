@@ -17,8 +17,12 @@
     "debug": "^4.1.1",
     "jimp": "^0.10.1",
     "licia": "^1.21.0",
+    "postcss-selector-parser": "^6.0.2",
     "qrcode-reader": "^1.0.4",
     "qrcode-terminal": "^0.12.0",
     "ws": "^7.2.3"
+  },
+  "peerDependencies": {
+    "puppeteer": "^3.0.1"
   }
 }
