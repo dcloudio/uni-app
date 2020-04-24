@@ -3,7 +3,7 @@
 
 为提升开发效率，HBuilderX将 ```uni-app``` 常用代码封装成了以 ```u``` 开头的代码块，如在 ```template``` 标签内输入 ```ulist``` 回车，会自动生成如下代码：
 
-```
+```html
 <uni-list>
 	<uni-list-item title="" note=""></uni-list-item>
 	<uni-list-item title="" note=""></uni-list-item>
@@ -14,7 +14,7 @@
 
 代码块分为Tag代码块、JS代码块，如在 ```script``` 标签内输入 ```uShowToast``` 回车，会自动生成如下代码：
 
-```
+```js
 uni.showToast({
 	title: '',
 	mask: false
