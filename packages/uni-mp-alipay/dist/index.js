@@ -1167,10 +1167,10 @@ function initVueComponent (Vue, vueOptions) {
   let VueComponent;
   if (isFn(vueOptions)) {
     VueComponent = vueOptions;
-    vueOptions = VueComponent.extendOptions;
   } else {
     VueComponent = Vue.extend(vueOptions);
   }
+  vueOptions = VueComponent.options;
   return [VueComponent, vueOptions]
 }
 
@@ -1356,11 +1356,12 @@ function wrapper$1 (event) {
 
   event.target = event.target || {};
 
-  if (!hasOwn(event, 'detail') || !event.detail) {
+  if (!hasOwn(event, 'detail')) {
     event.detail = {};
   }
 
-  if (!('markerId' in event.detail) && 'markerId' in event) {
+  if (hasOwn(event, 'markerId')) {
+    event.detail = typeof event.detail === 'object' ? event.detail : {};
     event.detail.markerId = event.markerId;
   }
 
@@ -1808,10 +1809,8 @@ function initSpecialMethods (mpInstance) {
     specialMethods.forEach(method => {
       if (isFn(mpInstance.$vm[method])) {
         mpInstance[method] = function (event) {
-          if (!hasOwn(event, 'detail') || !event.detail) {
-            event.detail = {};
-          }
-          if (!('markerId' in event.detail) && 'markerId' in event) {
+          if (hasOwn(event, 'markerId')) {
+            event.detail = typeof event.detail === 'object' ? event.detail : {};
             event.detail.markerId = event.markerId;
           }
           // TODO normalizeEvent
