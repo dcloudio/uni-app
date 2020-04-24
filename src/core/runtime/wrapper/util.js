@@ -287,11 +287,12 @@ function wrapper (event) {
 
   event.target = event.target || {}
 
-  if (!hasOwn(event, 'detail') || !event.detail) {
+  if (!hasOwn(event, 'detail')) {
     event.detail = {}
   }
 
-  if (hasOwn(event, 'markerId') && !hasOwn(event.detail, 'markerId')) {
+  if (hasOwn(event, 'markerId')) {
+    event.detail = typeof event.detail === 'object' ? event.detail : {}
     event.detail.markerId = event.markerId
   }
 

@@ -59,10 +59,8 @@ export function initSpecialMethods (mpInstance) {
     specialMethods.forEach(method => {
       if (isFn(mpInstance.$vm[method])) {
         mpInstance[method] = function (event) {
-          if (!hasOwn(event, 'detail') || !event.detail) {
-            event.detail = {}
-          }
-          if (hasOwn(event, 'markerId') && !hasOwn(event.detail, 'markerId')) {
+          if (hasOwn(event, 'markerId')) {
+            event.detail = typeof event.detail === 'object' ? event.detail : {}
             event.detail.markerId = event.markerId
           }
           // TODO normalizeEvent
