@@ -1654,8 +1654,8 @@ var serviceContext = (function () {
         }
       }
 
-      // tabBar不允许传递参数
-      if (routeOptions.meta.isTabBar) {
+      // switchTab不允许传递参数,reLaunch到一个tabBar页面是可以的
+      if (type === 'switchTab' && routeOptions.meta.isTabBar) {
         url = pagePath;
       }
 
@@ -8378,7 +8378,7 @@ var serviceContext = (function () {
     const urls = url.split('?');
     const path = urls[0];
     const routeStyles = __uniRoutes.find(route => route.path === path).window;
-    const globalStyle = __uniConfig.window;
+    const globalStyle = __uniConfig.window || {};
     if (!animationType) {
       animationType = routeStyles.animationType || globalStyle.animationType || ANI_SHOW;
     }
@@ -9034,7 +9034,7 @@ var serviceContext = (function () {
     }
 
     if (plus.os.name === 'iOS') {
-      options.cancel = '取消';
+      options.cancel = '';
     }
 
     plus.nativeUI.actionSheet(Object.assign(options, { popover }), (e) => {
@@ -12064,16 +12064,16 @@ var serviceContext = (function () {
     createSelectorQuery: createSelectorQuery
   });
 
-  const callbacks$c = [];
+  let callback$1;
 
   onMethod('onKeyboardHeightChange', res => {
-    callbacks$c.forEach(callbackId => {
-      invoke$1(callbackId, res);
-    });
+    if (callback$1) {
+      invoke$1(callback$1, res);
+    }
   });
 
   function onKeyboardHeightChange (callbackId) {
-    callbacks$c.push(callbackId);
+    callback$1 = callbackId;
   }
 
   var require_context_module_1_24 = /*#__PURE__*/Object.freeze({
@@ -12152,16 +12152,16 @@ var serviceContext = (function () {
 
   const hideTabBarRedDot$1 = removeTabBarBadge$1;
 
-  const callbacks$d = [];
+  const callbacks$c = [];
 
   onMethod('onTabBarMidButtonTap', res => {
-    callbacks$d.forEach(callbackId => {
+    callbacks$c.forEach(callbackId => {
       invoke$1(callbackId, res);
     });
   });
 
   function onTabBarMidButtonTap (callbackId) {
-    callbacks$d.push(callbackId);
+    callbacks$c.push(callbackId);
   }
 
   var require_context_module_1_28 = /*#__PURE__*/Object.freeze({
@@ -12172,22 +12172,22 @@ var serviceContext = (function () {
     onTabBarMidButtonTap: onTabBarMidButtonTap
   });
 
-  const callbacks$e = [];
+  const callbacks$d = [];
   onMethod('onViewDidResize', res => {
-    callbacks$e.forEach(callbackId => {
+    callbacks$d.forEach(callbackId => {
       invoke$1(callbackId, res);
     });
   });
 
   function onWindowResize (callbackId) {
-    callbacks$e.push(callbackId);
+    callbacks$d.push(callbackId);
   }
 
   function offWindowResize (callbackId) {
     // TODO 目前 on 和 off 即使传入同一个 function，获取到的 callbackId 也不会一致，导致不能 off 掉指定
     // 后续修复
     // 此处和微信平台一致查询不到去掉最后一个
-    callbacks$e.splice(callbacks$e.indexOf(callbackId), 1);
+    callbacks$d.splice(callbacks$d.indexOf(callbackId), 1);
   }
 
   var require_context_module_1_29 = /*#__PURE__*/Object.freeze({
