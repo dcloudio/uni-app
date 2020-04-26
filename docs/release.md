@@ -1,3 +1,14 @@
+#### 2.6.16.20200424
+* 【uni-app插件】
+  + App平台、H5平台 修复 部分组件文本前后出现多余空格或换行的Bug [详情](https://ask.dcloud.net.cn/question/94802)
+  + App平台 修复 v3版本 text 组件首尾换行表现与旧版不一致的Bug
+  + H5平台 修复 manifes.json 内 template 配置的模板文件不存在时框架样式错误的Bug
+  + H5平台 修复 uni.chooseImage 返回的 tempFilePaths 为空Bug [详情](https://ask.dcloud.net.cn/question/94805)
+  + 小程序平台 修复 使用小程序组件时部分事件返回信息不正确的Bug
+* 【App插件(含5+App和uni-app的App端)】
+  + Android平台 修复 使用 X5 Webview 内核渲染 plus.navigator.getUserAgent 获取 UA 不正确的Bug
+  + Android平台 修复 新浪微博登录时选择不授权，返回后无法再次调用登录授权的Bug [详情](https://ask.dcloud.net.cn/question/93971)
+
 #### 2.6.15.20200421
 * 【uni-app插件】
   + 【重要】App平台 修复 v3版本 组件之间样式隔离，解决历史项目升级v3后，部分样式错乱问题 [详情](https://ask.dcloud.net.cn/question/91501)
@@ -8,7 +19,7 @@
   + App平台、H5平台 修复 iOS设备键盘收起可能引起页面显示与点击位置错位的Bug [详情](https://ask.dcloud.net.cn/question/93818)
   + App平台 优化 v3版本 事件对象，支持 json 序列化输出 [详情](https://github.com/dcloudio/uni-app/issues/1559)
   + App平台 修复 无法获取音频暂停状态的Bug [详情](https://ask.dcloud.net.cn/question/92714)
-  + App平台 修复 renderjs 中未绑定到 :change:prop 的数据变更也会触发 change 事件的Bug [详情](https://ask.dcloud.net.cn/question/91887)
+  + App平台 修复 renderjs 中未绑定到 change:prop 的数据变更也会触发 change 事件的Bug [详情](https://ask.dcloud.net.cn/question/91887)
   + App平台 修复 vue 页面与 nvue 页面引用相同组件，条件编译失效的Bug
   + App平台 修复 v3版本 使用小程序组件在低版本系统报错的Bug [详情](https://ask.dcloud.net.cn/question/92561)
   + App平台 修复 v3版本 text 组件首尾换行解析不正确的Bug
