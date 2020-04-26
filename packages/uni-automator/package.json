@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-automator",
-  "version": "2.0.0-alpha-26920200424002",
+  "version": "2.0.0-alpha-26920200407011",
   "description": "uni-app automator",
   "main": "dist/index.js",
   "repository": {
@@ -14,6 +14,7 @@
   "author": "fxy060608",
   "license": "Apache-2.0",
   "dependencies": {
+    "adbkit": "^2.11.1",
     "debug": "^4.1.1",
     "jimp": "^0.10.1",
     "licia": "^1.21.0",
