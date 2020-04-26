@@ -154,7 +154,7 @@ async function build (args, api, options) {
         return reject('Build failed with errors.')
       }
 
-      if (!args.silent && process.env.UNI_PLATFORM !== 'app-plus') {
+      if (!args.silent && (process.env.UNI_PLATFORM !== 'app-plus' || process.env.UNI_AUTOMATOR_WS_ENDPOINT)) {
         const targetDirShort = path.relative(
           api.service.context,
           process.env.UNI_OUTPUT_DIR
