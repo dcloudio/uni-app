@@ -1420,7 +1420,7 @@ function handleLink (event) {
   vueOptions.parent = parentVm;
 }
 
-const mocks = ['nodeId', 'componentName'];
+const mocks = ['nodeId', 'componentName', '_componentId'];
 
 function isPage () {
   return !this.ownerId
