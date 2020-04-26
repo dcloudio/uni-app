@@ -87,7 +87,7 @@ class WebpackAppPlusPlugin {
                   done(`Build complete. FILES:` + JSON.stringify(changedFiles))
                 }
               } else {
-                done(`Build complete. Watching for changes...`)
+                !process.env.UNI_AUTOMATOR_WS_ENDPOINT && done(`Build complete. Watching for changes...`)
               }
               isFirst = false
             } else {

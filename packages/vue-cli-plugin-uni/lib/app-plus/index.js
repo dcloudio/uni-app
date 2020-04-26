@@ -153,7 +153,8 @@ const v3 = {
             options: {
               compiler: vueLoader.compiler,
               before: [
-                beforeCode + statCode + getGlobalUsingComponentsCode()
+                beforeCode + require('../util').getAutomatorCode() + statCode +
+                  getGlobalUsingComponentsCode()
               ]
             }
           }]
