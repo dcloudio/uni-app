@@ -29,6 +29,7 @@ module.exports = (api, options, rootOptions) => {
         'dev:custom': 'cross-env NODE_ENV=development uniapp-cli custom',
         'build:custom': 'cross-env NODE_ENV=production uniapp-cli custom',
         'test:h5': 'cross-env UNI_PLATFORM=h5 jest -i',
+        'test:android': 'cross-env UNI_PLATFORM=app-plus UNI_OS_NAME=android jest -i',
         'test:mp-weixin': 'cross-env UNI_PLATFORM=mp-weixin jest -i',
         'test:mp-baidu': 'cross-env UNI_PLATFORM=mp-baidu jest -i'
       },
