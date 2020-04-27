@@ -9,6 +9,7 @@ const Plugin = {
   configureEnv: [], // (){},
   // 以 H5 为基准的平台特殊配置
   configureH5: [], // (h5Options) {},
+  configurePages: [], // (pagesJson,manifestJson,loader) {},
   // 链式修改 webpack config
   chainWebpack: [], // (config, vueOptions, api) {},
   // 修改 webpack config

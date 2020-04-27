@@ -128,7 +128,7 @@ export function hideToast () {
 }
 export function showModal ({
   title = '',
-  content = '',
+  content = ' ',
   showCancel = true,
   cancelText = '取消',
   cancelColor = '#000000',

@@ -327,8 +327,12 @@ meta:{
   ]
 }
 
-module.exports = function (pagesJson, manifestJson) {
+module.exports = function (pagesJson, manifestJson, loader) {
   const inputDir = process.env.UNI_INPUT_DIR
+
+  global.uniPlugin.configurePages.forEach(configurePages => {
+    configurePages(pagesJson, manifestJson, loader)
+  })
 
   const pageComponents = getPageComponents(inputDir, pagesJson)
 
