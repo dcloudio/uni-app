@@ -54,7 +54,7 @@ function getAssetsCopyOptions (assetsDir) {
 function getCopyWebpackPluginOptions (platformOptions, vueOptions) {
   const copyOptions = getAssetsCopyOptions(assetsDir)
   global.uniPlugin.copyWebpackOptions.forEach(copyWebpackOptions => {
-    const platformCopyOptions = copyWebpackOptions(platformOptions, vueOptions) || []
+    const platformCopyOptions = copyWebpackOptions(platformOptions, vueOptions, copyOptions) || []
     platformCopyOptions.forEach(copyOption => {
       if (typeof copyOption === 'string') {
         copyOption = getAssetsCopyOption(copyOption)
