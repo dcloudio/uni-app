@@ -27,6 +27,7 @@ module.exports = function initOptions (options) {
   options.transpileDependencies.push(genTranspileDepRegex(path.resolve(process.env.UNI_INPUT_DIR, 'node_modules')))
   options.transpileDependencies.push('@dcloudio/uni-' + process.env.UNI_PLATFORM)
   options.transpileDependencies.push('@dcloudio/uni-stat')
+  options.transpileDependencies.push('@dcloudio/vue-cli-plugin-uni/packages/uni-cloud')
 
   if (process.env.UNI_PLATFORM !== 'mp-weixin') { // mp runtime
     options.transpileDependencies.push('@dcloudio/uni-mp-weixin')
