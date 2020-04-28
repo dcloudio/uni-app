@@ -8330,6 +8330,13 @@ var serviceContext = (function () {
 
     // 首页是 nvue 时，在 registerPage 时，执行路由堆栈
     if (webview.id === '1' && webview.nvue) {
+      if (
+        __uniConfig.splashscreen &&
+        __uniConfig.splashscreen.autoclose &&
+        !__uniConfig.splashscreen.alwaysShowBeforeRender
+      ) {
+        plus.navigator.closeSplashscreen();
+      }
       __uniConfig.onReady(function () {
         navigateFinish();
       });
