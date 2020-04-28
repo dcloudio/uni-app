@@ -201,7 +201,7 @@ if (process.env.UNI_PLATFORM === 'app-plus') {
       platformOptions.usingComponents = true
     }
     process.env.UNI_OUTPUT_TMP_DIR = ''
-    isNVueCompiler = true // v3 目前仅支持 uni-app 模式
+    // isNVueCompiler = true // v3 目前仅支持 uni-app 模式
   } else if (platformOptions.renderer === 'native') {
     // 纯原生目前不提供 cache
     delete process.env.UNI_USING_CACHE
@@ -255,7 +255,7 @@ if (
     platformOptions.uniStatistics || {}
   )
 
-  if (uniStatistics.enable !== false) {
+  if (uniStatistics.enable === true) {
     process.env.UNI_USING_STAT = true
     if (!process.UNI_STAT_CONFIG.appid && process.env.NODE_ENV === 'production') {
       console.log()

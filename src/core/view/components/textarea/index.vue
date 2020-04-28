@@ -309,6 +309,8 @@ uni-textarea {
   position: relative;
   font-size: 16px;
   line-height: normal;
+  white-space: pre-wrap;
+  word-break: break-all;
 }
 uni-textarea[hidden] {
   display: none;
@@ -339,8 +341,8 @@ uni-textarea[hidden] {
   height: 100%;
   left: 0;
   top: 0;
-  white-space: pre-wrap;
-  word-break: break-all;
+  white-space: inherit;
+  word-break: inherit;
 }
 .uni-textarea-placeholder {
   color: grey;

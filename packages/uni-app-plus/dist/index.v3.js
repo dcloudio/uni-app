@@ -7661,6 +7661,16 @@ var serviceContext = (function () {
       }
     });
 
+    const backgroundColor = routeOptions.window.backgroundColor;
+    if (backgroundColor) {
+      if (!webviewStyle.background) {
+        webviewStyle.background = backgroundColor;
+      }
+      if (!webviewStyle.backgroundColorTop) {
+        webviewStyle.backgroundColorTop = backgroundColor;
+      }
+    }
+
     const titleNView = parseTitleNView(routeOptions);
     if (titleNView) {
       if (
@@ -9001,6 +9011,7 @@ var serviceContext = (function () {
     confirmText = '确定',
     confirmColor = '#3CC51F'
   } = {}, callbackId) {
+    content = content || ' ';
     plus.nativeUI.confirm(content, (e) => {
       if (showCancel) {
         invoke$1(callbackId, {
@@ -11280,7 +11291,7 @@ var serviceContext = (function () {
     }
 
     abort () {
-      invokeMethod('operateRequestTask', {
+      invokeMethod('operateDownloadTask', {
         downloadTaskId: this.id,
         operationType: 'abort'
       });

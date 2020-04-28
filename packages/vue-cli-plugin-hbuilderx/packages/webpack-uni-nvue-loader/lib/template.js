@@ -75,5 +75,5 @@ module.exports = function(content) {
     return content
   }
 
-  return `<scroll-view :scroll-y="true" :enableBackToTop="true" bubble="true" style="flex-direction:column">${content}</scroll-view>`
+  return `<scroll-view :scroll-y="true" :show-scrollbar="${pageJsonStyle.scrollIndicator==='none'?'false':'true'}" :enableBackToTop="true" bubble="true" style="flex-direction:column">${content}</scroll-view>`
 }
