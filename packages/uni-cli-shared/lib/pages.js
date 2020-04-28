@@ -129,14 +129,7 @@ function isValidPage (page, root = '') {
         if (subNVuePath) {
           subNVuePath = subNVue.path.split('?')[0]
           const subNVuePagePath = removeExt(path.join(root, subNVuePath))
-
-          // if (process.env.UNI_USING_NVUE_COMPILER) {
           process.UNI_NVUE_ENTRY[subNVuePagePath] = getNVueMainJsPath(subNVuePagePath)
-          // } else {
-          //   process.UNI_NVUE_ENTRY[subNVuePagePath] = path.resolve(process.env.UNI_INPUT_DIR,
-          //     subNVuePagePath +
-          //                   '.nvue') + '?entry'
-          // }
         }
       })
     }

@@ -13,15 +13,9 @@ module.exports = (api, options) => { // 仅处理 app-plus 相关逻辑
   }
 
   if (
-    (
-      !process.env.UNI_USING_V3 &&
-      !process.env.UNI_USING_NATIVE &&
-      !process.env.UNI_USING_V3_NATIVE
-    ) ||
-    (
-      process.env.UNI_USING_NATIVE &&
-      !process.env.UNI_USING_NVUE_COMPILER
-    )
+    !process.env.UNI_USING_V3 &&
+    !process.env.UNI_USING_NATIVE &&
+    !process.env.UNI_USING_V3_NATIVE
   ) {
     if (!fs.existsSync(path.resolve(process.env.UNI_HBUILDERX_PLUGINS, 'weapp-tools/lib/index.js'))) {
       console.error('请使用 HBuilderX 编译运行至 app-plus 平台')

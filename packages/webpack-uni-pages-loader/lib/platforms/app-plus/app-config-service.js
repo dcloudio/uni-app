@@ -56,7 +56,8 @@ module.exports = function definePages (appJson) {
 
   delete appJson.page
   delete appJson.usingComponents
-  delete appJson.nvueCompiler
+  // 保留nvueCompiler
+  // delete appJson.nvueCompiler
   // 保留renderer
   // delete appJson.renderer
 
