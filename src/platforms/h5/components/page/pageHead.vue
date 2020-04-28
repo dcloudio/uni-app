@@ -509,6 +509,16 @@ export default {
             })
           }
         })
+        input.$refs.input.addEventListener('focus', () => {
+          UniServiceJSBridge.emit('onNavigationBarSearchInputFocusChanged', {
+            focus: true
+          })
+        })
+        input.$refs.input.addEventListener('blur', () => {
+          UniServiceJSBridge.emit('onNavigationBarSearchInputFocusChanged', {
+            focus: false
+          })
+        })
       }
     }
   },

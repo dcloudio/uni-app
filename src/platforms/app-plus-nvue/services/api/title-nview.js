@@ -5,7 +5,8 @@ export function initTitleNView (nvue) {
     onNavigationBarButtonTap: noop,
     onNavigationBarSearchInputChanged: noop,
     onNavigationBarSearchInputConfirmed: noop,
-    onNavigationBarSearchInputClicked: noop
+    onNavigationBarSearchInputClicked: noop,
+    onNavigationBarSearchInputFocusChanged: noop
   }
   nvue.requireModule('globalEvent').addEventListener('plusMessage', e => {
     if (eventMaps[e.data.type]) {
