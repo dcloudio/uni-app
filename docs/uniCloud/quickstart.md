@@ -194,6 +194,19 @@ H5前端js访问云函数，涉及跨域问题，导致前端js无法连接云�
   * 方式1：在uniCloud web控制台绑定测试期的地址为安全域名，如配置：localhost:8080、192.168.0.1:8080（腾讯云不支持此方式配置）
   * 方式2：在外部浏览器安装跨域插件，详见：[https://ask.dcloud.net.cn/article/35267](https://ask.dcloud.net.cn/article/35267)。要跨域的地址，详见上述文档中小程序配置安全域名章节。
 
+## cli项目中使用uniCloud
+
+如果要在cli项目中使用uniCloud，可以参考以下步骤
+
+1. 将cli项目导入`HBuilderX`
+2. 在项目根目录（src同级）创建`cloudfunctions-aliyun`或者`cloudfunctions-tencent`目录
+3. 打开`src/manifest.json`，在`基础配置-->uni-app应用标示`处点击`重新获取`
+4. 在步骤2创建的目录右键关联服务空间
+5. 完成
+
+**注意**
+
+- 运行与发行只能使用HBuilderX的菜单，不可使用`package.json`内的命令
 
 **H5前端页面部署问题**
 
