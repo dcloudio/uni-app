@@ -22,7 +22,8 @@ import {
   getPageRoute,
   getRoute,
   getPageTypes,
-  calibration
+  calibration,
+  isReportData
 } from './parameter';
 
 import {
@@ -84,7 +85,11 @@ class Util {
     }
 
   }
-
+  
+  getIsReportData(){
+     return isReportData()
+  }
+  
   _applicationShow() {
     if (this.__licationHide) {
       getLastTime();
@@ -374,26 +379,28 @@ class Util {
     this._sendRequest(optionsData)
   }
   _sendRequest(optionsData) {
-    uni.request({
-      url: STAT_URL,
-      method: 'POST',
-      // header: {
-      //   'content-type': 'application/json' // 默认值
-      // },
-      data: optionsData,
-      success: () => {
-        // if (process.env.NODE_ENV === 'development') {
-        //   console.log('stat request success');
-        // }
-      },
-      fail: (e) => {
-        if (++this._retry < 3) {
-          setTimeout(() => {
-            this._sendRequest(optionsData);
-          }, 1000);
-        }
-      }
-    });
+		this.getIsReportData().then(()=>{
+			uni.request({
+			  url: STAT_URL,
+			  method: 'POST',
+			  // header: {
+			  //   'content-type': 'application/json' // 默认值
+			  // },
+			  data: optionsData,
+			  success: () => {
+			    // if (process.env.NODE_ENV === 'development') {
+			    //   console.log('stat request success');
+			    // }
+			  },
+			  fail: (e) => {
+			    if (++this._retry < 3) {
+			      setTimeout(() => {
+			        this._sendRequest(optionsData);
+			      }, 1000);
+			    }
+			  }
+			});
+		})
   }
   /**
    * h5 请求

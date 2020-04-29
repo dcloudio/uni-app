@@ -1,8 +1,10 @@
 import {
   PAGE_PVER_TIME,
-  APP_PVER_TIME
+  APP_PVER_TIME,
+  STAT_URL,
+  STAT_VERSION
 } from './config';
-
+const statConfig = require('uni-stat-config').default || require('uni-stat-config');
 const UUID_KEY = '__DC_STAT_UUID';
 const UUID_VALUE = '__DC_UUID_VALUE';
 
@@ -81,7 +83,7 @@ export const getPackName = () => {
   let packName = ''
   if (getPlatformName() === 'wx' || getPlatformName() === 'qq') {
     // 兼容微信小程序低版本基础库
-    if(uni.canIUse('getAccountInfoSync')){
+    if (uni.canIUse('getAccountInfoSync')) {
       packName = uni.getAccountInfoSync().miniProgram.appId || '';
     }
   }
@@ -254,7 +256,7 @@ export const getPageRoute = (self) => {
   if (getPlatformName() === 'bd') {
     return _self.$mp && _self.$mp.page.is + str;
   } else {
-    return (_self.$scope && _self.$scope.route + str )|| (_self.$mp && _self.$mp.page.route + str);
+    return (_self.$scope && _self.$scope.route + str) || (_self.$mp && _self.$mp.page.route + str);
   }
 };
 
@@ -267,7 +269,7 @@ export const getPageTypes = (self) => {
 
 export const calibration = (eventName, options) => {
   //  login 、 share 、pay_success 、pay_fail 、register 、title
-  if(!eventName){
+  if (!eventName) {
     console.error(`uni.report 缺少 [eventName] 参数`);
     return true
   }
@@ -294,4 +296,71 @@ export const calibration = (eventName, options) => {
     console.error('uni.report [eventName] 参数为 title 时，[options] 参数只能为 String 类型');
     return true
   }
+}
+
+const Report_Data_Time = 'Report_Data_Time'
+
+export const isReportData = () => {
+  return new Promise((resolve, reject) => {
+    let start_time = ''
+    let end_time = new Date().getTime()
+    let diff_time = 60 * 1000 * 60 * 24
+    try {
+      start_time = uni.getStorageSync(Report_Data_Time)
+    } catch (e) {
+      start_time = ''
+    }
+
+    if (!start_time) {
+      uni.setStorageSync(Report_Data_Time, end_time)
+      start_time = end_time
+    }
+    if ((end_time - start_time) > diff_time) {
+      requestData(({
+        enable
+      }) => {
+        uni.setStorageSync(Report_Data_Time, end_time)
+        if (enable === 1) {
+          resolve();
+        }
+      });
+    }
+  })
+}
+
+const Report_Status = 'Report_Status'
+const requestData = (done) => {
+  let formData = {
+    usv: STAT_VERSION,
+    conf: encodeURIComponent({
+      ak: statConfig.appid
+    })
+  }
+  uni.request({
+    url: STAT_URL,
+    method: 'GET',
+    data: formData,
+    success: (res) => {
+      const {data} = res
+      if (data.ret === 0) {
+        typeof done === 'function' && done({
+          enable: data.enable
+        })
+      }
+    },
+    fail: (e) => {
+      let report_status_code = 1
+      try {
+        report_status_code = uni.getStorageSync(Report_Status)
+      } catch (e) {
+        report_status_code = 1
+      }
+      if (report_status_code === 1) {
+        typeof done === 'function' && done({
+          enable: res.enable
+        })
+      }
+      // console.error('统计请求错误');
+    }
+  });
 }
