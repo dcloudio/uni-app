@@ -42,7 +42,7 @@ const lifecycle = {
 function main() {
   if (process.env.NODE_ENV === 'development') {
     uni.report = function(type, options) {};
-  }else{
+  } else {
     const Vue = require('vue');
     (Vue.default || Vue).mixin(lifecycle);
     uni.report = function(type, options) {
