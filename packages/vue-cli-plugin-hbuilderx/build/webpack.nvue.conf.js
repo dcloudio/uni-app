@@ -189,6 +189,11 @@ if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
       from: path.resolve(getTemplatePath(), 'common'),
       to: process.env.UNI_OUTPUT_DIR
     })
+  } else if (process.env.UNI_USING_V3_NATIVE) {
+    array.push({
+      from: path.resolve(getTemplatePath(), 'weex'),
+      to: process.env.UNI_OUTPUT_DIR
+    })
   } else {
     let nativeTemplatePath = path.resolve(process.env.UNI_HBUILDERX_PLUGINS, 'weapp-tools/template/v8-native')
     if (!fs.existsSync(nativeTemplatePath)) { // 兼容旧版本

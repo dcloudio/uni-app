@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+    <head>
+        <meta charset="UTF-8" />
+        <script>
+            var coverSupport = 'CSS' in window && typeof CSS.supports === 'function' && (CSS.supports('top: env(a)') ||
+                CSS.supports(
+                    'top: constant(a)'))
+            document.write(
+                '<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
+                (coverSupport ? ', viewport-fit=cover' : '') + '" />')
+        </script>
+        <title>扫码</title>
+        <style>
+            html,
+            body,
+            .container {
+                margin: 0;
+                padding: 0;
+                position: absolute;
+                left: 0;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                background: #000000;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="scan" class="container">
+        </div>
+        <script>
+            var scan;
+            var lightImg;
+            var lightView;
+            var back = function(cancel) {
+                if (cancel) {
+                    plus.webview.postMessageToUniNView({
+                        type: 'scanCode',
+                        args: {
+                            errMsg: 'cancel'
+                        }
+                    }, '__uniapp__service');
+                }
+                lightImg && lightImg.clear();
+                lightView && lightView.clear();
+                scan && scan.close();
+                var webview = plus.webview.currentWebview();
+                if (webview.__uniapp_dark) {
+                    plus.navigator.setStatusBarStyle('dark');
+                }
+                webview.close('auto');
+            }
+            /**
+             * 绘制照亮开关
+             */
+            function drawLight() {
+                var offImg =
+                    'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAABjklEQVRoQ+1ZbVHEQAx9TwE4ABTcOQAknANQAKcAUAAOAAXgAHAACsDCKQiTmbYDzJZtNt2bFrJ/m6+Xl2yyU2LmhzOPH/8PgIjcADirxNyapNoffMwMiMgzgMPBHmyCLySPLCoBwJKtAbJbYaBmD1yRvBwAtBMxl5DF+DZkiwCIyBLAzsgBbki+Wm2WAlCaL6zOMvKnJO+sNksB7ALQbO1ZHfbIv5FUVs2nCIB6EZETALdmj2mFY5I6X8ynGEADQllYmL1+VzBfnV/VvQB0aj45ARyQ/Ci14QLQsOBZLe5JaikWnzEA7AN4L4hgA2Dpyb76dANwsOCq/TZhASAYKGie0a7R1lDPI0ebtF0NUi+4yfdAtxr3PEMnD6BbD0QkNfACQO05EAwMuaBqDrIVycdmTpwDuP4R0OR7QFftVRP0g+49cwOQq4DJMxAAchmofY3m/EcJBQOZbTRKKJeBKKEoIePvpFRJ1VzmciUccyCa+C81cerBkuuB7sGTE/zt+yhN7AnAqxsAvBn06n8CkyPwMZKwm+UAAAAASUVORK5CYII=';
+                var onImg =
+                    'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAB4klEQVRoQ+1ZQU7CUBCdaWVBLFETqUtxB7iQG4hH4AZ4AvUE4gnkBuoJ9AbiDXAhZadby4IQICaS9psqJBVLy5/fkhKHbefPzPvzZv6bgLDmP1zz/OH/ARjZpSYAniVSORQXRt5qyviWrsDQLrUQ8FgmyLK2AsRTzrSqy9p7dgxA5raibFdSgSR7QAi4yu11GlFA/d+lKSTjfBW2JAAj+7Cio7MVZ4KO0AeG+dKW9UkCMHwvNxDhUjZYuL17apjdW1mfJACiX9gef2bbgLgvG3CB/bNhdioUXyQAXqCRXawDaDeUoPNnBLonuXy3RfFFBvADouxx9ogSeHaGMjpjm0LDXrGKQntUAaBn3IPsTveN6kOpAl5QNWkh7gzTqlOTJ0mJ+WAf/WLBmWivskkIEIONjKio3H4sAKhVUOX+7MKUKcQAZLk3Z88VWEQhr0kRYCoN/m5wqe8BvzQOkuDpB+CTB0EPHgOYNnNiTewXaFyBkFGbWAVQE7XNXevhW7X2Sucg8NqfR+p7AADaesateUk7E+0eAH4tLOsAIPSNZQBJT6EoicMV4Ar4OEJZK5lCTCGmkPy/MUGjOTEtxO9A1A1wE3MTp6iJgxaWKAr7F54o27DvsUwhlQRUzzIA1RtUPf8FRKRYQOI+9hQAAAAASUVORK5CYII=';
+                var onText = '轻触照亮';
+                var offText = '轻触关闭';
+                var on = false;
+                var viewWidth = 48;
+                var fontSize = 10;
+                var imgWidth = 26;
+
+                function changeType() {
+                    lightView.reset();
+                    lightImg.loadBase64Data(on ? onImg : offImg, function() {
+                        lightView.drawBitmap(lightImg, {}, {
+                            top: 0,
+                            left: (viewWidth - imgWidth) / 2 + 'px',
+                            width: imgWidth + 'px',
+                            height: imgWidth + 'px'
+                        });
+                    });
+                    lightView.drawText(on ? offText : onText, {
+                        top: imgWidth + 'px',
+                        left: '0px',
+                        width: '100%',
+                        height: (fontSize + 2) + 'px'
+                    }, {
+                        color: '#ffffff',
+                        size: fontSize + 'px'
+                    });
+                    scan.setFlash(on);
+                    on = !on;
+                }
+                lightImg = new plus.nativeObj.Bitmap('lightImg');
+                lightView = new plus.nativeObj.View('lightView', {
+                    width: viewWidth + 'px',
+                    height: viewWidth + 'px',
+                    top: window.innerHeight / 2 + 50 + 'px',
+                    left: (window.innerWidth - viewWidth) / 2 + 'px',
+                    position: 'static'
+                });
+                lightView.addEventListener('click', function() {
+                    changeType();
+                });
+                plus.webview.currentWebview().append(lightView);
+                changeType();
+            }
+            document.addEventListener('plusready', function() {
+                var serviceWebview = plus.webview.getWebviewById('__W2A_CONTEXT_') || plus.webview.getLaunchWebview();
+                plus.key.addEventListener('backbutton', function() {
+                    back(true);
+                });
+                setTimeout(function() {
+                    var webview = plus.webview.currentWebview();
+                    scan = new plus.barcode.Barcode('scan', webview.__uniapp_scan_type, {
+                        frameColor: '#118CE9',
+                        scanbarColor: '#118CE9'
+                    });
+                    scan.onmarked = function(type, code, file) {
+                        var res = {
+                            type: type,
+                            code: code
+                        };
+                        back()
+                        plus.webview.postMessageToUniNView({
+                            type: 'scanCode',
+                            args: res
+                        }, '__uniapp__service');
+                    };
+                    scan.onerror = function(error) {
+                        back()
+                        plus.webview.postMessageToUniNView({
+                            type: 'scanCode',
+                            args: {
+                                errMsg: error.message + '，错误码：' + error.code
+                            }
+                        }, '__uniapp__service');
+                    };
+
+                    scan.start();
+                    drawLight();
+                }, 500)
+            })
+        </script>
+    </body>
+
+</html>
