@@ -10,6 +10,7 @@
 <script>
 import { emitter } from 'uni-mixins'
 import { showPage } from './page'
+import * as webview from './webview'
 
 const mode = {
   SELECTOR: 'selector',
@@ -152,6 +153,13 @@ export default {
     })
     this._setValueSync()
   },
+  mounted () {
+    webview.exists((exists) => {
+      if (exists) {
+        webview.initPicker()
+      }
+    })
+  },
   beforeDestroy () {
     this.$dispatch('Form', 'uni-form-group-update', {
       type: 'remove',
@@ -195,54 +203,71 @@ export default {
     },
     _showPicker (data) {
       if ((data.mode === mode.TIME || data.mode === mode.DATE) && !data.fields) {
-        plus.nativeUI[this.mode === mode.TIME ? 'pickTime' : 'pickDate']((res) => {
-          const date = res.date
-          this.$trigger('change', {}, {
-            value: this.mode === mode.TIME ? `${padLeft(date.getHours())}:${padLeft(date.getMinutes())}` : `${date.getFullYear()}-${padLeft(date.getMonth() + 1)}-${padLeft(date.getDate())}`
-          })
-        }, () => {
-          this.$trigger('cancel', {}, {})
-        }, this.mode === mode.TIME ? {
-          time: getDate(this.value, mode.TIME)
-        } : {
-          date: getDate(this.value, mode.DATE),
-          minDate: getDate(this.start, mode.DATE),
-          maxDate: getDate(this.end, mode.DATE)
-        })
+        this._showNativePicker(data)
       } else {
         data.fields = Object.values(fields).includes(data.fields) ? data.fields : fields.DAY
-        let res = { event: 'cancel' }
-        this.page = showPage({
-          url: '__uniapppicker',
-          data,
-          style: {
-            titleNView: false,
-            animationType: 'none',
-            animationDuration: 0,
-            background: 'rgba(0,0,0,0)',
-            popGesture: 'none'
-          },
-          onMessage: (message) => {
-            const event = message.event
-            if (event === 'created') {
-              this._updatePicker(data)
-              return
-            }
-            if (event === 'columnchange') {
-              delete message.event
-              this.$trigger(event, {}, message)
-              return
-            }
-            res = message
-          },
-          onClose: () => {
-            this.page = null
-            const event = res.event
-            delete res.event
-            this.$trigger(event, {}, res)
-          }
+        webview.exists((exists) => {
+          this[exists ? '_showWebviewPicker' : '_showWeexPicker'](data)
         })
       }
+    },
+    _showNativePicker (data) {
+      plus.nativeUI[this.mode === mode.TIME ? 'pickTime' : 'pickDate']((res) => {
+        const date = res.date
+        this.$trigger('change', {}, {
+          value: this.mode === mode.TIME ? `${padLeft(date.getHours())}:${padLeft(date.getMinutes())}` : `${date.getFullYear()}-${padLeft(date.getMonth() + 1)}-${padLeft(date.getDate())}`
+        })
+      }, () => {
+        this.$trigger('cancel', {}, {})
+      }, this.mode === mode.TIME ? {
+        time: getDate(this.value, mode.TIME)
+      } : {
+        date: getDate(this.value, mode.DATE),
+        minDate: getDate(this.start, mode.DATE),
+        maxDate: getDate(this.end, mode.DATE)
+      })
+    },
+    _showWeexPicker (data) {
+      let res = { event: 'cancel' }
+      this.page = showPage({
+        url: '__uniapppicker',
+        data,
+        style: {
+          titleNView: false,
+          animationType: 'none',
+          animationDuration: 0,
+          background: 'rgba(0,0,0,0)',
+          popGesture: 'none'
+        },
+        onMessage: (message) => {
+          console.dir(message)
+          const event = message.event
+          if (event === 'created') {
+            this._updatePicker(data)
+            return
+          }
+          if (event === 'columnchange') {
+            delete message.event
+            this.$trigger(event, {}, message)
+            return
+          }
+          res = message
+        },
+        onClose: () => {
+          this.page = null
+          const event = res.event
+          delete res.event
+          this.$trigger(event, {}, res)
+        }
+      })
+    },
+    _showWebviewPicker (data) {
+      webview.showPicker(data, (res) => {
+        console.dir(res)
+        const event = res.event
+        delete res.event
+        this.$trigger(event, {}, res)
+      })
     },
     _getFormData () {
       return {
@@ -267,7 +292,13 @@ export default {
       }
     },
     _updatePicker (data) {
-      this.page && this.page.sendMessage(data)
+      webview.exists((exists) => {
+        if (exists) {
+          webview.updatePicker(data)
+        } else {
+          this.page && this.page.sendMessage(data)
+        }
+      })
     }
   }
 }
