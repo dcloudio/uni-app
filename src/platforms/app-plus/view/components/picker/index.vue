@@ -240,7 +240,6 @@ export default {
           popGesture: 'none'
         },
         onMessage: (message) => {
-          console.dir(message)
           const event = message.event
           if (event === 'created') {
             this._updatePicker(data)
@@ -263,7 +262,6 @@ export default {
     },
     _showWebviewPicker (data) {
       webview.showPicker(data, (res) => {
-        console.dir(res)
         const event = res.event
         delete res.event
         this.$trigger(event, {}, res)
