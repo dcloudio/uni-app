@@ -24,6 +24,11 @@ export {
   from './keyboard'
 
 export {
+  default as baseInput
+}
+  from './base-input'
+
+export {
   default as interact
 }
   from './interact'

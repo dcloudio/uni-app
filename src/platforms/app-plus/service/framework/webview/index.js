@@ -38,7 +38,8 @@ const WEBVIEW_LISTENERS = {
   pullToRefresh: 'onPullDownRefresh',
   titleNViewSearchInputChanged: 'onNavigationBarSearchInputChanged',
   titleNViewSearchInputConfirmed: 'onNavigationBarSearchInputConfirmed',
-  titleNViewSearchInputClicked: 'onNavigationBarSearchInputClicked'
+  titleNViewSearchInputClicked: 'onNavigationBarSearchInputClicked',
+  titleNViewSearchInputFocusChanged: 'onNavigationBarSearchInputFocusChanged'
 }
 
 export function setPreloadWebview (webview) {

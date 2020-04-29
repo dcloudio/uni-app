@@ -304,11 +304,15 @@ var serviceContext = (function () {
 
   function debounce (fn, delay) {
     let timeout;
-    return function () {
+    const newFn = function () {
       clearTimeout(timeout);
       const timerFn = () => fn.apply(this, arguments);
       timeout = setTimeout(timerFn, delay);
-    }
+    };
+    newFn.cancel = function () {
+      clearTimeout(timeout);
+    };
+    return newFn
   }
 
   /**
@@ -7962,7 +7966,8 @@ var serviceContext = (function () {
     pullToRefresh: 'onPullDownRefresh',
     titleNViewSearchInputChanged: 'onNavigationBarSearchInputChanged',
     titleNViewSearchInputConfirmed: 'onNavigationBarSearchInputConfirmed',
-    titleNViewSearchInputClicked: 'onNavigationBarSearchInputClicked'
+    titleNViewSearchInputClicked: 'onNavigationBarSearchInputClicked',
+    titleNViewSearchInputFocusChanged: 'onNavigationBarSearchInputFocusChanged'
   };
 
   function setPreloadWebview (webview) {
@@ -8330,6 +8335,13 @@ var serviceContext = (function () {
 
     // 首页是 nvue 时，在 registerPage 时，执行路由堆栈
     if (webview.id === '1' && webview.nvue) {
+      if (
+        __uniConfig.splashscreen &&
+        __uniConfig.splashscreen.autoclose &&
+        !__uniConfig.splashscreen.alwaysShowBeforeRender
+      ) {
+        plus.navigator.closeSplashscreen();
+      }
       __uniConfig.onReady(function () {
         navigateFinish();
       });
@@ -12432,6 +12444,7 @@ var serviceContext = (function () {
     on('onNavigationBarSearchInputChanged', createCallCurrentPageHook('onNavigationBarSearchInputChanged'));
     on('onNavigationBarSearchInputConfirmed', createCallCurrentPageHook('onNavigationBarSearchInputConfirmed'));
     on('onNavigationBarSearchInputClicked', createCallCurrentPageHook('onNavigationBarSearchInputClicked'));
+    on('onNavigationBarSearchInputFocusChanged', createCallCurrentPageHook('onNavigationBarSearchInputFocusChanged'));
 
     on('onWebInvokeAppService', onWebInvokeAppService);
   }
@@ -13558,6 +13571,7 @@ var serviceContext = (function () {
     'onNavigationBarSearchInputChanged',
     'onNavigationBarSearchInputConfirmed',
     'onNavigationBarSearchInputClicked',
+    'onNavigationBarSearchInputFocusChanged',
     // Component
     // 'onReady', // 兼容旧版本，应该移除该事件
     'onPageShow',
