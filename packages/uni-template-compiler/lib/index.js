@@ -78,12 +78,12 @@ module.exports = {
         console.error(source)
         throw e
       }
-    } else if (options['quickapp-vue']) {
+    } else if (options['quickapp-native']) {
       // 后续改版，应统一由具体包实现
-      (options.modules || (options.modules = [])).push(require('@dcloudio/uni-quickapp-vue/lib/compiler-module'))
+      (options.modules || (options.modules = [])).push(require('@dcloudio/uni-quickapp-native/lib/compiler-module'))
     }
 
-    if (!options.mp) { // h5,quickapp-vue
+    if (!options.mp) { // h5,quickapp-native
       return compileTemplate(source, options, compile)
     }
 

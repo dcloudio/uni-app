@@ -6,7 +6,7 @@ const PLATFORMS = [
   'mp-baidu',
   'mp-alipay',
   'mp-toutiao',
-  'quickapp-vue'
+  'quickapp-native'
 ]
 
 const DISPLAY = {
@@ -44,8 +44,8 @@ function parseStyle(style = {}) {
       }
     }
   })
-  if (style['quickapp-vue']) {
-    Object.assign(ret, style['quickapp-vue'])
+  if (style['quickapp-native']) {
+    Object.assign(ret, style['quickapp-native'])
   }
   return ret
 }

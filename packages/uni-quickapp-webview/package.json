@@ -1,0 +1,21 @@
+{
+  "name": "@dcloudio/uni-quickapp-webview",
+  "version": "2.0.0-alpha-26920200407011",
+  "description": "uni-app quickapp-webview",
+  "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/uni-quickapp-webview"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "fxy060608",
+  "license": "Apache-2.0",
+  "uni-app": {
+    "name": "quickapp-webview",
+    "title": "快应用(Webview)版"
+  },
+  "gitHead": "5ed6c58ef3a74a43b11bd65f8f6f488e470716c8"
+}
