@@ -31,10 +31,10 @@ module.exports = {
   },
   validate (platformOptions, manifestJson) {
     if (!platformOptions.package) {
-      console.warn('manifest.json->quickapp-light 缺少 package 配置')
+      console.warn('manifest.json->quickapp-webview 缺少 package 配置')
     }
     if (!platformOptions.icon) {
-      console.warn('manifest.json->quickapp-light 缺少 icon 配置')
+      console.warn('manifest.json->quickapp-webview 缺少 icon 配置')
     }
   },
   copyWebpackOptions (platformOptions, vueOptions) {

@@ -241,7 +241,7 @@ if (process.env.UNI_USING_V3) {
             // Transform each property declaration here
             decl.value = tranformValue(decl, opts)
           })
-          if (process.env.UNI_PLATFORM !== 'quickapp-vue') {
+          if (process.env.UNI_PLATFORM !== 'quickapp-native') {
             rule.selectors = rule.selectors.map(complexSelector => {
               return transformSelector(complexSelector, simpleSelectors => {
                 return simpleSelectors.walkTags(tag => {

@@ -812,10 +812,10 @@ function initVueComponent (Vue, vueOptions) {
   let VueComponent;
   if (isFn(vueOptions)) {
     VueComponent = vueOptions;
-    vueOptions = VueComponent.extendOptions;
   } else {
     VueComponent = Vue.extend(vueOptions);
   }
+  vueOptions = VueComponent.options;
   return [VueComponent, vueOptions]
 }
 
@@ -1029,6 +1029,11 @@ function wrapper$1 (event) {
 
   if (!hasOwn(event, 'detail')) {
     event.detail = {};
+  }
+
+  if (hasOwn(event, 'markerId')) {
+    event.detail = typeof event.detail === 'object' ? event.detail : {};
+    event.detail.markerId = event.markerId;
   }
 
   { // mp-baidu，checked=>value
@@ -1415,7 +1420,7 @@ function handleLink (event) {
   vueOptions.parent = parentVm;
 }
 
-const mocks = ['nodeId', 'componentName'];
+const mocks = ['nodeId', 'componentName', '_componentId'];
 
 function isPage () {
   return !this.ownerId
@@ -1518,6 +1523,10 @@ function parseBaseComponent (vueComponentOptions, {
       __e: handleEvent
     }
   };
+  // externalClasses
+  if (vueOptions.externalClasses) {
+    componentOptions.externalClasses = vueOptions.externalClasses;
+  }
 
   if (Array.isArray(vueOptions.wxsCallMethods)) {
     vueOptions.wxsCallMethods.forEach(callMethod => {

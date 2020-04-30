@@ -16,7 +16,7 @@ module.exports = function (pagesJson, manifestJson) {
   manifestJson.versionName && (baseJson.versionName = manifestJson.versionName)
   manifestJson.versionCode && (baseJson.versionCode = manifestJson.versionCode)
 
-  Object.assign(app.content, baseJson, manifestJson['quickapp-light'] || {})
+  Object.assign(app.content, baseJson, manifestJson['quickapp-webview'] || {})
 
   if (!app.content.package) {
     app.content.package = manifestJson.name

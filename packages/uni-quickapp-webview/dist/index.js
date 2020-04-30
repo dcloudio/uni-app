@@ -417,7 +417,7 @@ function processArgs (methodName, fromArgs, argsOption = {}, returnValue = {}, k
           keyOption = keyOption(fromArgs[key], fromArgs, toArgs);
         }
         if (!keyOption) { // 不支持的参数
-          console.warn(`快应用(Light)版 ${methodName}暂不支持${key}`);
+          console.warn(`快应用(Webview)版 ${methodName}暂不支持${key}`);
         } else if (isStr(keyOption)) { // 重写参数 key
           toArgs[keyOption] = fromArgs[key];
         } else if (isPlainObject(keyOption)) { // {name:newName,value:value}可重新指定参数 key:value
@@ -450,7 +450,7 @@ function wrapper (methodName, method) {
     const protocol = protocols[methodName];
     if (!protocol) { // 暂不支持的 api
       return function () {
-        console.error(`快应用(Light)版 暂不支持${methodName}`);
+        console.error(`快应用(Webview)版 暂不支持${methodName}`);
       }
     }
     return function (arg1, arg2) { // 目前 api 最多两个参数
@@ -694,10 +694,10 @@ function initVueComponent (Vue, vueOptions) {
   let VueComponent;
   if (isFn(vueOptions)) {
     VueComponent = vueOptions;
-    vueOptions = VueComponent.extendOptions;
   } else {
     VueComponent = Vue.extend(vueOptions);
   }
+  vueOptions = VueComponent.options;
   return [VueComponent, vueOptions]
 }
 
@@ -895,6 +895,11 @@ function wrapper$1 (event) {
 
   if (!hasOwn(event, 'detail')) {
     event.detail = {};
+  }
+
+  if (hasOwn(event, 'markerId')) {
+    event.detail = typeof event.detail === 'object' ? event.detail : {};
+    event.detail.markerId = event.markerId;
   }
 
   if (isPlainObject(event.detail)) {
@@ -1141,7 +1146,7 @@ function parseBaseApp (vm, {
     Vue.prototype.$store = vm.$options.store;
   }
 
-  Vue.prototype.mpHost = "quickapp-light";
+  Vue.prototype.mpHost = "quickapp-webview";
 
   Vue.mixin({
     beforeCreate () {
@@ -1206,7 +1211,7 @@ function parseBaseApp (vm, {
   return appOptions
 }
 
-const mocks = ['nodeId', 'componentName' ,'_componentId'];
+const mocks = ['nodeId', 'componentName', '_componentId'];
 
 function isPage () {
   return !this.ownerId
@@ -1436,6 +1441,10 @@ function parseBaseComponent (vueComponentOptions, {
       __e: handleEvent
     }
   };
+  // externalClasses
+  if (vueOptions.externalClasses) {
+    componentOptions.externalClasses = vueOptions.externalClasses;
+  }
 
   if (Array.isArray(vueOptions.wxsCallMethods)) {
     vueOptions.wxsCallMethods.forEach(callMethod => {
@@ -1571,7 +1580,7 @@ canIUses.forEach(canIUseApi => {
 
 let uni = {};
 
-if (typeof Proxy !== 'undefined' && "quickapp-light" !== 'app-plus') {
+if (typeof Proxy !== 'undefined' && "quickapp-webview" !== 'app-plus') {
   uni = new Proxy({}, {
     get (target, name) {
       if (target[name]) {

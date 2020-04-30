@@ -6,7 +6,7 @@ function assertCodegen (template, templateCode, renderCode = 'with(this){}', opt
     mp: Object.assign({
       minified: true,
       isTest: true,
-      platform: 'quickapp-light'
+      platform: 'quickapp-webview'
     }, options)
   })
 
@@ -14,7 +14,7 @@ function assertCodegen (template, templateCode, renderCode = 'with(this){}', opt
   expect(res.render).toBe(renderCode)
 }
 
-describe('mp:compiler-quickapp-light', () => {
+describe('mp:compiler-quickapp-webview', () => {
   it('generate v-for directive', () => {
     assertCodegen(
       '<view><view v-for="(item,index) in items" :key="index"></view></view>',

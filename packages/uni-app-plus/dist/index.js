@@ -698,10 +698,10 @@ function initVueComponent (Vue, vueOptions) {
   let VueComponent;
   if (isFn(vueOptions)) {
     VueComponent = vueOptions;
-    vueOptions = VueComponent.extendOptions;
   } else {
     VueComponent = Vue.extend(vueOptions);
   }
+  vueOptions = VueComponent.options;
   return [VueComponent, vueOptions]
 }
 
@@ -899,6 +899,11 @@ function wrapper$2 (event) {
 
   if (!hasOwn(event, 'detail')) {
     event.detail = {};
+  }
+
+  if (hasOwn(event, 'markerId')) {
+    event.detail = typeof event.detail === 'object' ? event.detail : {};
+    event.detail.markerId = event.markerId;
   }
 
   if (isPlainObject(event.detail)) {
@@ -1382,6 +1387,10 @@ function parseBaseComponent (vueComponentOptions, {
       __e: handleEvent
     }
   };
+  // externalClasses
+  if (vueOptions.externalClasses) {
+    componentOptions.externalClasses = vueOptions.externalClasses;
+  }
 
   if (Array.isArray(vueOptions.wxsCallMethods)) {
     vueOptions.wxsCallMethods.forEach(callMethod => {
@@ -1449,7 +1458,8 @@ const hooks$3 = [
   'onNavigationBarButtonTap',
   'onNavigationBarSearchInputChanged',
   'onNavigationBarSearchInputConfirmed',
-  'onNavigationBarSearchInputClicked'
+  'onNavigationBarSearchInputClicked',
+  'onNavigationBarSearchInputFocusChanged'
 ];
 
 function parsePage$1 (vuePageOptions) {

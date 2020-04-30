@@ -664,21 +664,18 @@ const protocols = { // 需要做转换的 API 列表
   scanCode: {
     name: 'scan',
     args (fromArgs) {
-      if (fromArgs.scanType === 'qrCode') {
-        fromArgs.type = 'qr';
-        return {
-          onlyFromCamera: 'hideAlbum'
+      if (fromArgs.scanType) {
+        switch (fromArgs.scanType[0]) {
+          case 'qrCode':
+            fromArgs.type = 'qr';
+            break
+          case 'barCode':
+            fromArgs.type = 'bar';
+            break
         }
-      } else if (fromArgs.scanType === 'barCode') {
-        fromArgs.type = 'bar';
-        return {
-          onlyFromCamera: 'hideAlbum'
-        }
-      } else {
-        return {
-          scanType: false,
-          onlyFromCamera: 'hideAlbum'
-        }
+      }
+      return {
+        onlyFromCamera: 'hideAlbum'
       }
     },
     returnValue: {
@@ -1170,10 +1167,10 @@ function initVueComponent (Vue, vueOptions) {
   let VueComponent;
   if (isFn(vueOptions)) {
     VueComponent = vueOptions;
-    vueOptions = VueComponent.extendOptions;
   } else {
     VueComponent = Vue.extend(vueOptions);
   }
+  vueOptions = VueComponent.options;
   return [VueComponent, vueOptions]
 }
 
@@ -1361,6 +1358,11 @@ function wrapper$1 (event) {
 
   if (!hasOwn(event, 'detail')) {
     event.detail = {};
+  }
+
+  if (hasOwn(event, 'markerId')) {
+    event.detail = typeof event.detail === 'object' ? event.detail : {};
+    event.detail.markerId = event.markerId;
   }
 
   if (isPlainObject(event.detail)) {
@@ -1807,6 +1809,10 @@ function initSpecialMethods (mpInstance) {
     specialMethods.forEach(method => {
       if (isFn(mpInstance.$vm[method])) {
         mpInstance[method] = function (event) {
+          if (hasOwn(event, 'markerId')) {
+            event.detail = typeof event.detail === 'object' ? event.detail : {};
+            event.detail.markerId = event.markerId;
+          }
           // TODO normalizeEvent
           mpInstance.$vm[method](event);
         };

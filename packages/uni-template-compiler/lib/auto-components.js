@@ -86,7 +86,7 @@ function compileTemplate (source, options, compile) {
 
 const compilerModule = {
   preTransformNode (el, options) {
-    if (process.env.UNI_PLATFORM === 'quickapp-vue') {
+    if (process.env.UNI_PLATFORM === 'quickapp-native') {
       // 排查所有标签
       (options.isUnaryTag.autoComponents || (options.isUnaryTag.autoComponents = new Set())).add(el.tag)
     } else if (isComponent(el.tag) && el.tag !== 'App') { // App.vue

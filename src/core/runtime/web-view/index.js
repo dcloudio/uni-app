@@ -25,7 +25,7 @@ import {
 } from 'uni-platforms/mp-weixin/runtime/web-view'
 import {
   initWebviewApi as initQuickappWebviewApi
-} from 'uni-platforms/quickapp-light/runtime/web-view'
+} from 'uni-platforms/quickapp-webview/runtime/web-view'
 
 const UniAppJSBridgeReady = function () {
   window.UniAppJSBridge = true
