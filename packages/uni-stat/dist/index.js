@@ -6,6 +6,7 @@ const STAT_H5_URL = 'https://tongji.dcloud.io/uni/stat.gif';
 const PAGE_PVER_TIME = 1800;
 const APP_PVER_TIME = 300;
 const OPERATING_TIME = 10;
+const DIFF_TIME = 60 * 1000 * 60 * 24;
 
 const statConfig = require('uni-stat-config').default || require('uni-stat-config');
 const UUID_KEY = '__DC_STAT_UUID';
@@ -299,12 +300,12 @@ const calibration = (eventName, options) => {
 };
 
 const Report_Data_Time = 'Report_Data_Time';
-
+const Report_Status = 'Report_Status';
 const isReportData = () => {
   return new Promise((resolve, reject) => {
     let start_time = '';
     let end_time = new Date().getTime();
-    let diff_time = 60 * 1000 * 60 * 24;
+    let diff_time = DIFF_TIME;
     try {
       start_time = uni.getStorageSync(Report_Data_Time);
     } catch (e) {
@@ -320,6 +321,7 @@ const isReportData = () => {
         enable
       }) => {
         uni.setStorageSync(Report_Data_Time, end_time);
+        uni.setStorageSync(Report_Status, enable);
         if (enable === 1) {
           resolve();
         }
@@ -328,11 +330,10 @@ const isReportData = () => {
   })
 };
 
-const Report_Status = 'Report_Status';
 const requestData = (done) => {
   let formData = {
     usv: STAT_VERSION,
-    conf: encodeURIComponent({
+    conf: JSON.stringify({
       ak: statConfig.appid
     })
   };
@@ -341,7 +342,9 @@ const requestData = (done) => {
     method: 'GET',
     data: formData,
     success: (res) => {
-      const {data} = res;
+      const {
+        data
+      } = res;
       if (data.ret === 0) {
         typeof done === 'function' && done({
           enable: data.enable
@@ -420,11 +423,11 @@ class Util {
     };
 
   }
-  
-  getIsReportData(){
-     return isReportData()
+
+  getIsReportData() {
+    return isReportData()
   }
-  
+
   _applicationShow() {
     if (this.__licationHide) {
       getLastTime();
@@ -714,36 +717,38 @@ class Util {
     this._sendRequest(optionsData);
   }
   _sendRequest(optionsData) {
-		this.getIsReportData().then(()=>{
-			uni.request({
-			  url: STAT_URL,
-			  method: 'POST',
-			  // header: {
-			  //   'content-type': 'application/json' // 默认值
-			  // },
-			  data: optionsData,
-			  success: () => {
-			    // if (process.env.NODE_ENV === 'development') {
-			    //   console.log('stat request success');
-			    // }
-			  },
-			  fail: (e) => {
-			    if (++this._retry < 3) {
-			      setTimeout(() => {
-			        this._sendRequest(optionsData);
-			      }, 1000);
-			    }
-			  }
-			});
-		});
+    this.getIsReportData().then(() => {
+      uni.request({
+        url: STAT_URL,
+        method: 'POST',
+        // header: {
+        //   'content-type': 'application/json' // 默认值
+        // },
+        data: optionsData,
+        success: () => {
+          // if (process.env.NODE_ENV === 'development') {
+          //   console.log('stat request success');
+          // }
+        },
+        fail: (e) => {
+          if (++this._retry < 3) {
+            setTimeout(() => {
+              this._sendRequest(optionsData);
+            }, 1000);
+          }
+        }
+      });
+    });
   }
   /**
    * h5 请求
    */
   imageRequest(data) {
-    let image = new Image();
-    let options = getSgin(GetEncodeURIComponentOptions(data)).options;
-    image.src = STAT_H5_URL + '?' + options;
+    this.getIsReportData().then(() => {
+      let image = new Image();
+      let options = getSgin(GetEncodeURIComponentOptions(data)).options;
+      image.src = STAT_H5_URL + '?' + options;
+    });
   }
 
   sendEvent(key, value) {
