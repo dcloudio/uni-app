@@ -158,7 +158,15 @@ module.exports = function generateJson (compilation) {
 
     const jsFile = name.replace('.json', '.js')
     if (
-      !['app.js', 'manifest.js', 'mini.project.js', 'project.config.js', 'project.swan.js'].includes(jsFile) &&
+      ![
+        'app.js',
+        'manifest.js',
+        'mini.project.js',
+        'quickapp.config.js',
+        'project.config.js',
+        'project.swan.js'
+      ].includes(
+        jsFile) &&
       !compilation.assets[jsFile]
     ) {
       const jsFileAsset = {
