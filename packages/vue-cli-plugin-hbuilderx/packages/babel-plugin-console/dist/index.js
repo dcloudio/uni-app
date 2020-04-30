@@ -1,3 +1,6 @@
+const isWin = /^win/.test(process.platform)
+const normalizePath = path => (isWin ? path.replace(/\\/g, '/') : path)
+
 const METHODS = ['error', 'warn', 'info', 'log', 'debug']
 const FORMAT_LOG = '__f__'
 module.exports = function({
@@ -33,7 +36,7 @@ module.exports = function({
               }
               args.push({
                 type: 'StringLiteral',
-                value: ` at ${file}:${path.node.loc.start.line}`
+                value: ` at ${normalizePath(file)}:${path.node.loc.start.line}`
               })
               args.unshift(t.stringLiteral(path.node.callee.property.name))
               path.replaceWith(t.callExpression(t.identifier(FORMAT_LOG), args))
