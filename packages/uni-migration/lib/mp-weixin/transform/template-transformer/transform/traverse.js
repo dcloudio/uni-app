@@ -127,7 +127,7 @@ function transformFor(attribs) {
   if (vKey) {
     if (vKey === '*this') {
       vKey = vItem
-    } else if (vKey !== vItem && vKey.indexOf('.')===-1) {// wx:for-key="{{item.value}}"
+    } else if (vKey !== vItem && vKey.indexOf('.') === -1) { // wx:for-key="{{item.value}}"
       vKey = vItem + '.' + vKey
     }
     attribs[':key'] = vKey
@@ -163,7 +163,11 @@ function transformEvent(name, value, attribs, state) {
     event = transformEventName(name.replace(captureCatchRE, ''), state) + '.stop.prevent.capture'
   }
   if (event !== name) {
-    attribs[event] = parseMustache(value, true)
+    let newValue = parseMustache(value, true)
+    if (newValue !== value) {
+      newValue = `_$self[(${newValue})||'_$noop']($event)`
+    }
+    attribs[event] = newValue
     return true
   }
 }

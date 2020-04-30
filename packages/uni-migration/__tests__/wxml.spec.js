@@ -9,11 +9,11 @@ describe('wxml:compiler', () => {
   it('generate event', () => {
     assertCodegen(
       `<view bindtouchstart="startDrag" catchtouchmove="{{ catchMove ? 'noop' : '' }}"/>`,
-      `<uni-shadow-root><view @touchstart="startDrag" @touchmove.stop.prevent="catchMove ? 'noop' : ''"></view></uni-shadow-root>`
+      `<uni-shadow-root><view @touchstart="startDrag" @touchmove.stop.prevent="_$self[(catchMove ? 'noop' : '')||'_$noop']($event)"></view></uni-shadow-root>`
     )
     assertCodegen(
       `<uni-transition bind:click="click" bindtouchstart="startDrag" catchtouchmove="{{ catchMove ? 'noop' : '' }}"/>`,
-      `<uni-shadow-root><uni-transition @click="click" @touchstart.native="startDrag" @touchmove.native.stop.prevent="catchMove ? 'noop' : ''"></uni-transition></uni-shadow-root>`
+      `<uni-shadow-root><uni-transition @click="click" @touchstart.native="startDrag" @touchmove.native.stop.prevent="_$self[(catchMove ? 'noop' : '')||'_$noop']($event)"></uni-transition></uni-shadow-root>`
     )
   })
   it('generate class', () => {
