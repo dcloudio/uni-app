@@ -87,6 +87,8 @@ function initExtends (name, plugin, plugins) {
 
 module.exports = {
   init () {
+    // compatible with vue-cli-service lint
+    process.env.UNI_PLATFORM = process.env.UNI_PLATFORM || 'h5'
     const plugins = resolvePlugins()
     const plugin = plugins.find(plugin => plugin.name === process.env.UNI_PLATFORM)
     if (!plugin) {
