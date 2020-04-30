@@ -22,7 +22,7 @@
   "gitHead": "5ed6c58ef3a74a43b11bd65f8f6f488e470716c8",
   "uni-app": {
     "name": "quickapp-native",
-    "title": "快应用(Vue)版"
+    "title": "快应用(Native)版"
   },
   "dependencies": {
     "@hap-toolkit/dsl-vue": "0.6.13",
