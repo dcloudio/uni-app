@@ -91,7 +91,7 @@ function hasModule (name) {
 const NODE_MODULES_REGEX = /(\.\.\/)?node_modules/g
 
 function normalizeNodeModules (str) {
-  str = str.replace(NODE_MODULES_REGEX, 'node-modules')
+  str = normalizePath(str).replace(NODE_MODULES_REGEX, 'node-modules')
   if (process.env.UNI_PLATFORM === 'mp-alipay') {
     str = str.replace('node-modules/@', 'node-modules/npm-scope-')
   }
