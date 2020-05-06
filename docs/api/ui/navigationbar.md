@@ -19,6 +19,10 @@ uni.setNavigationBarTitle({
 });
 ```
 
+**注意**
+
+- 如果需要在页面进入时设置标题，可以在`onReady`内执行，以避免被框架内的修改所覆盖。如果必须在`onShow`内执行需要延迟一小段时间
+
 
 ### uni.setNavigationBarColor(OBJECT)
 
@@ -43,6 +47,7 @@ uni.setNavigationBarTitle({
 
 **注意**
 - Android 上的 backgroundColor 参数有限制，黑色大于 rgb(30,30,30), 白色小于 rgb(235,235,235)
+- 如果需要在页面进入时设置标题，可以在`onReady`内执行，以避免被框架内的修改所覆盖。如果必须在`onShow`内执行需要延迟一小段时间
 
 **animation 结构**
 
