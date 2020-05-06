@@ -1,7 +1,7 @@
 <template>
   <uni-picker
     :disabled="disabled"
-    @click.stop="_show"
+    @click="_show"
     v-on="$listeners"
   >
     <div

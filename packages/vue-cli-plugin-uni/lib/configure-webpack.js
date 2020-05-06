@@ -207,6 +207,7 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
         transform (content) {
           if (process.env.UNI_AUTOMATOR_WS_ENDPOINT) {
             return JSON.stringify({
+              version: require('@dcloudio/uni-automator/package.json').version,
               wsEndpoint: process.env.UNI_AUTOMATOR_WS_ENDPOINT
             })
           }
