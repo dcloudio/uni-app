@@ -605,7 +605,7 @@ db.collection('goods').where(dbCmd.or(
 ))
 ```
 
-### 正则表达式查询
+### 正则表达式查询@regexp
 
 #### db.RegExp
 

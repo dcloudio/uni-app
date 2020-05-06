@@ -111,3 +111,7 @@ uniCloud提供了`云函数URL化`，来满足上述需求。[详见](https://un
 |云数据库	|容量							|2GB					|-																																								|
 |					|读操作数					|5万次/天			|-																																								|
 |					|写操作数					|3万次/天			|-																																								|
+
+### uniCloud云数据库如何实现全文检索
+
+查询数据时可以传入正则表达式进行查询，详情请参考[正则表达式查询](https://uniapp.dcloud.io/uniCloud/cf-database?id=regexp)
