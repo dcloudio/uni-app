@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-automator",
-  "version": "2.0.0-alpha-27020200430004",
+  "version": "2.0.0-alpha-26920200407011",
   "description": "uni-app automator",
   "main": "dist/index.js",
   "repository": {
@@ -14,7 +14,6 @@
   "author": "fxy060608",
   "license": "Apache-2.0",
   "dependencies": {
-    "adbkit": "^2.11.1",
     "address": "^1.1.2",
     "debug": "^4.1.1",
     "default-gateway": "^6.0.0",
@@ -26,6 +25,7 @@
     "ws": "^7.2.3"
   },
   "peerDependencies": {
+    "adbkit": "^2.11.1",
     "node-simctl": "^6.1.0",
     "puppeteer": "^3.0.1"
   }
