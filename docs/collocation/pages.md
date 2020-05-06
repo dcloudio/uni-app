@@ -403,6 +403,8 @@ searchInput的点击输入框onNavigationBarSearchInputClicked、文本变化onN
 
 **常见titleNView配置代码示例**
 
+以下列出部分配置。关于全面的导航栏配置，这里有一个完善的演示工程，演示了导航栏的各种效果，详见：[https://ext.dcloud.net.cn/plugin?id=1765](https://ext.dcloud.net.cn/plugin?id=1765)
+
 ```javascript
 {
 	"pages": [{
