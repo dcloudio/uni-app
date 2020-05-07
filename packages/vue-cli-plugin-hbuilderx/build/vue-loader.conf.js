@@ -106,6 +106,7 @@ compiler.compile = function (source, options = {}) {
   (options.modules || (options.modules = [])).push(autoComponentsModule)
 
   options.modules.push(require('@dcloudio/uni-template-compiler/lib/asset-url'))
+  options.modules.push(require('@dcloudio/uni-template-compiler/lib/bool-attr'))
 
   options.isUnaryTag = isUnaryTag
   // 将 autoComponents 挂在 isUnaryTag 上边
