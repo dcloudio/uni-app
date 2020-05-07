@@ -20,7 +20,7 @@
 |show-confirm-bar|Boolean|true|是否显示键盘上方带有”完成“按钮那一栏|微信小程序、百度小程序、QQ小程序|
 |selection-start|Number|-1|光标起始位置，自动聚焦时有效，需与selection-end搭配使用|微信小程序、App、H5、百度小程序、字节跳动小程序、QQ小程序|
 |selection-end|Number|-1|光标结束位置，自动聚焦时有效，需与selection-start搭配使用|微信小程序、App、H5、百度小程序、字节跳动小程序、QQ小程序|
-|adjust-position|Boolean|true|键盘弹起时，是否自动上推页面|App、微信小程序、百度小程序、QQ小程序|
+|adjust-position|Boolean|true|键盘弹起时，是否自动上推页面|App-Android（softinputMode 为 adjustResize 时无效）、微信小程序、百度小程序、QQ小程序|
 |disable-default-padding|boolean|false|是否去掉 iOS 下的默认内边距|微信小程序2.10.0|
 |hold-keyboard|boolean|false|focus时，点击页面的时候不收起键盘|微信小程序2.8.2|
 |@focus|EventHandle||输入框聚焦时触发，event.detail = { value, height }，height 为键盘高度|仅微信小程序、App（HBuilderX 2.0+ [nvue uni-app模式](http://ask.dcloud.net.cn/article/36074)） 、QQ小程序支持 height|
