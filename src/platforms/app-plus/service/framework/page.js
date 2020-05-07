@@ -88,10 +88,10 @@ export function registerPage ({
     $remove () {
       const index = pages.findIndex(page => page === this)
       if (index !== -1) {
-        pages.splice(index, 1)
         if (!webview.nvue) {
           this.$vm.$destroy()
         }
+        pages.splice(index, 1)
         if (process.env.NODE_ENV !== 'production') {
           console.log('[uni-app] removePage', path, webview.id)
         }
