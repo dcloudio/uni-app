@@ -72,8 +72,20 @@ function createValidator (type) {
 
     // 参数格式化
     params.url = encodeQueryString(url)
+
+    // 主要拦截目标为用户快速点击时触发的多次跳转，该情况，通常前后 url 是一样的
+    if (navigatorLock === url) {
+      return `${navigatorLock} locked`
+    }
+    // 至少 onLaunch 之后，再启用lock逻辑（onLaunch之前可能开发者手动调用路由API，来提前跳转）
+    // enableNavigatorLock 临时开关（不对外开放），避免该功能上线后，有部分情况异常，可以让开发者临时关闭 lock 功能
+    if (__uniConfig.ready && __uniConfig.enableNavigatorLock !== false) {
+      navigatorLock = url
+    }
   }
 }
+
+let navigatorLock
 
 function createProtocol (type, extras = {}) {
   return Object.assign({
@@ -81,6 +93,9 @@ function createProtocol (type, extras = {}) {
       type: String,
       required: true,
       validator: createValidator(type)
+    },
+    beforeAll () {
+      navigatorLock = ''
     }
   }, extras)
 }
