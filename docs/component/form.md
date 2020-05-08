@@ -97,7 +97,7 @@
 
 **小程序端注意事项**
 
-小程序端在`from`内的自定义组件内有`input`等表单控件时，无法在`form`的`submit`事件内获取组件内表单控件值，此时可以使用`behaviors`，示例如下：
+小程序端在`form`内的自定义组件内有`input`等表单控件时，无法在`form`的`submit`事件内获取组件内表单控件值，此时可以使用`behaviors`，示例如下：
 
 ```html
 <!-- /pages/index/index.vue -->
