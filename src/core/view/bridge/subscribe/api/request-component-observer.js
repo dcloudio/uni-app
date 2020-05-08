@@ -77,6 +77,7 @@ export function destroyComponentObserver ({
   const intersectionObserver = intersectionObservers[reqId]
   if (intersectionObserver) {
     intersectionObserver.disconnect()
+    delete intersectionObservers[reqId]
     UniViewJSBridge.publishHandler('onRequestComponentObserver', {
       reqId,
       reqEnd: true
