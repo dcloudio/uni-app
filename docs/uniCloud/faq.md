@@ -115,3 +115,26 @@ uniCloud提供了`云函数URL化`，来满足上述需求。[详见](https://un
 ### uniCloud云数据库如何实现全文检索
 
 查询数据时可以传入正则表达式进行查询，详情请参考[正则表达式查询](https://uniapp.dcloud.io/uniCloud/cf-database?id=regexp)
+
+### uniCloud内如何使用formdata
+
+nodejs本身不支持formdata，但是可以通过手动拼装formdata的方式来进行支持，[参考](https://www.npmjs.com/package/form-data)
+
+结合`uniCloud.httpclient.request`使用的示例
+
+```js
+const FormData = require('form-data');
+let form = new FormData();
+form.append('my_field', 'my value');
+form.append('my_buffer', new Buffer(10));
+
+form.append('img', new Buffer(10), {
+  filename: `${Date.now()}.png`,
+  contentType: 'image/png'
+})
+
+uniCloud.httpclient.request('https://example.com',{
+  content: form.getBuffer(),
+  headers: form.getHeaders()
+})
+```
