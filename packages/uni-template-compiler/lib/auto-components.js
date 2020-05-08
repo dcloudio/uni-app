@@ -60,6 +60,8 @@ function generateAutoComponentsCode (autoComponents, dynamic = false) {
     name,
     source
   }) => {
+    // 统一转换为驼峰命名
+    name = name.replace(/-(\w)/g, (_, str) => str.toUpperCase())
     if (dynamic) {
       components.push(`'${name}': function(){return import(/* webpackChunkName: "${getWebpackChunkName(source)}" */'${source}')}`)
     } else {
