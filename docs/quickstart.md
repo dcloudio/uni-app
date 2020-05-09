@@ -8,7 +8,7 @@
 
 开始之前，开发者需先下载安装如下工具：
 
-- HBuilderX：[官方IDE下载地址](http://www.dcloud.io/hbuilderx.html)
+- HBuilderX：[官方IDE下载地址](https://www.dcloud.io/hbuilderx.html)
 
 HBuilderX是通用的前端开发工具，但为`uni-app`做了特别强化。
 
@@ -110,7 +110,7 @@ HBuilderX 还提供了快捷运行菜单，可以按数字快速选择要运行�
 
 #### 打包为原生App（离线）
 
-``uni-app`` 支持离线打包，在 HBuilderX 生成离线打包资源，然后参考 [离线打包](http://ask.dcloud.net.cn/docs/#//ask.dcloud.net.cn/article/104)（或参考其他用户写的 [离线打包日记](https://ask.dcloud.net.cn/article/35302)），即可进行离线打包。
+``uni-app`` 支持离线打包，在 HBuilderX 发行菜单里生成离线打包资源，然后参考离线打包文档操作，可以从HBuilderX的发行菜单里找到文档链接，也可以直接访问：[https://nativesupport.dcloud.net.cn/AppDocs/README](https://nativesupport.dcloud.net.cn/AppDocs/README)。
 
 在HBuilderX工具栏，点击发行，选择本地打包，如下图，点击即可生成离线打包资源。
 
@@ -213,7 +213,7 @@ vue create -p dcloudio/uni-preset-vue#alpha my-alpha-project
 
 更多支持的下载方式，请参考这个插件的说明：[download-git-repo](https://github.com/flipxfx/download-git-repo)
 
-### 运行并发布uni-app
+### 运行、发布uni-app
 
 ```
 npm run dev:%PLATFORM%
@@ -224,19 +224,21 @@ npm run build:%PLATFORM%
 
 |值|平台|
 |---|---|
-|app-plus|app平台生成打包资源（仅支持npm run build:app-plus）|
+|app-plus|app平台生成打包资源（仅支持npm run build:app-plus，也就是App平台运行调试不支持cli方式，需在HBuilderX中运行调试）|
 |h5|H5|
 |mp-alipay|支付宝小程序|
 |mp-baidu|百度小程序|
 |mp-weixin|微信小程序|
 |mp-toutiao|字节跳动小程序|
 |mp-qq|qq 小程序|
-|quickapp-vue|快应用|
+|quickapp-webview|快应用|
 
 可以自定义更多条件编译平台，比如钉钉小程序，参考[package.json文档](https://uniapp.dcloud.io/collocation/package)。
 
 ### 运行并发布快应用@quickapp
-另行参考 [https://ask.dcloud.net.cn/article/37145](https://ask.dcloud.net.cn/article/37145)
+快应用有两种开发方式，uni-app均支持：
+- 类小程序webview渲染方式：[https://ask.dcloud.net.cn/article/37182](https://ask.dcloud.net.cn/article/37182)
+- 原生渲染方式：[https://ask.dcloud.net.cn/article/37145](https://ask.dcloud.net.cn/article/37145)
 
 
 **其他：**
