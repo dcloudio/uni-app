@@ -327,12 +327,51 @@ meta:{
   ]
 }
 
+function filterPages (pagesJson, includes) {
+  const pages = []
+  let subPackages = pagesJson.subPackages || []
+  if (!Array.isArray(subPackages)) {
+    subPackages = []
+  }
+  includes.forEach(includePagePath => {
+    let page = pagesJson.pages.find(page => page.path === includePagePath)
+    if (!page) {
+      for (let i = 0; i < subPackages.length; i++) {
+        const {
+          root,
+          pages: subPages
+        } = subPackages[i]
+        page = subPages.find(subPage => normalizePath(path.join(root, subPage.path)) === includePagePath)
+        if (page) {
+          break
+        }
+      }
+    }
+    if (!page) {
+      console.error(`${includePagePath} is not found`)
+    }
+    pages.push(page)
+  })
+  pagesJson.pages = pages
+}
+
 module.exports = function (pagesJson, manifestJson, loader) {
   const inputDir = process.env.UNI_INPUT_DIR
 
   global.uniPlugin.configurePages.forEach(configurePages => {
     configurePages(pagesJson, manifestJson, loader)
   })
+
+  const loaderUtils = require('loader-utils')
+  const params = loaderUtils.parseQuery(loader.resourceQuery)
+  if (params.pages) {
+    try {
+      const pages = JSON.parse(params.pages)
+      if (Array.isArray(pages)) {
+        filterPages(pagesJson, pages)
+      }
+    } catch (e) {}
+  }
 
   const pageComponents = getPageComponents(inputDir, pagesJson)
 
