@@ -80,7 +80,7 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 		<span style="margin-top:15px;">微信小程序码</span>
 	</a>
   <a href="javascript:;" target="_blank" class="clear-style barcode-view">
-		<img src="https://img.cdn.aliyun.dcloud.net.cn/uni-app/vivovip.jpg" width="200"/>
+		<img src="https://img.cdn.aliyun.dcloud.net.cn/uni-app/case/vivo-mall.png" width="200"/>
 		<span style="margin-top:15px;">支付宝小程序码</span>
 	</a>
 </div>
