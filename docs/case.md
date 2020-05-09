@@ -73,6 +73,18 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 	</a>
 </div>
 
+<a href="#" target="_blank" class="clear-style"><b>vivo官方商城：</b></a> vivo公司旗下的官方自营商城。
+<div style="display:flex;justify-content: space-around;">
+	<a href="javascript:;" target="_blank" class="clear-style barcode-view">
+		<img src="https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/vivo-weixin.jpg" width="200"/>
+		<span style="margin-top:15px;">微信小程序码</span>
+	</a>
+  <a href="javascript:;" target="_blank" class="clear-style barcode-view">
+		<img src="https://img.cdn.aliyun.dcloud.net.cn/uni-app/vivovip.jpg" width="200"/>
+		<span style="margin-top:15px;">支付宝小程序码</span>
+	</a>
+</div>
+
 <a href="http://ext.dcloud.net.cn/plugin?id=239" target="_blank" class="clear-style"><b>ColorUI：</b></a>ColorUI官方组件库for uni-app，高颜值示例。本项目插件市场地址：[https://ext.dcloud.net.cn/plugin?id=239](https://ext.dcloud.net.cn/plugin?id=239)
 <div style="display:flex;justify-content: space-around;">
 	<a href="http://demo.color-ui.com" target="_blank" class="clear-style barcode-view">
@@ -159,14 +171,7 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 
 **京东：** 京东开发的新冠抗疫服务平台。[H5](http://yingji-h5.chanye.jdcloud.com/)
 
-<div class="scan-code">
- <strong>vivo商城官方小程序：</strong> 支付宝搜索 "vivo"，或鼠标移此查看[支付宝小程序码]
- <div class="scan-code-hover">
-    <div class="scan-code-hover-box">
-      <img src="https://img.cdn.aliyun.dcloud.net.cn/uni-app/case/vivo-mall.png" alt="二维码获取失败" />
-    </div>
- </div>
-</div>
+**vivo官方商城：**微信小程序搜索"vivo"，支付宝搜索 "vivo"
 
 <div class="scan-code">
  <strong>vivo会员官方小程序：</strong> 微信小程序搜索 "vivo会员"，或鼠标移此查看[微信小程序码]
