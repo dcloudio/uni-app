@@ -3,6 +3,8 @@ const path = require('path')
 const mkdirp = require('mkdirp')
 const loaderUtils = require('loader-utils')
 
+require('./error-reporting')
+
 const hasOwnProperty = Object.prototype.hasOwnProperty
 
 function hasOwn (obj, key) {

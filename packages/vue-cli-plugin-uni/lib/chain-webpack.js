@@ -104,6 +104,20 @@ module.exports = function chainWebpack (platformOptions, vueOptions, api) {
     if (runByHBuilderX) { // 由 HBuilderX 运行时，移除进度，错误
       webpackConfig.plugins.delete('progress')
       webpackConfig.plugins.delete('friendly-errors')
+    } else {
+      webpackConfig.plugin('friendly-errors')
+        .tap(args => {
+          if (global.__error_reporting__) {
+            args[0].onErrors = function (severity, errors) {
+              if (severity !== 'error') {
+                return
+              }
+              const error = errors[0]
+              global.__error_reporting__ && global.__error_reporting__(error.name, error.message || '')
+            }
+          }
+          return args
+        })
     }
     if (process.env.BUILD_ENV === 'ali-ide') {
       webpackConfig.plugins.delete('progress')
