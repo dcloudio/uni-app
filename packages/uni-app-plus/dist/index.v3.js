@@ -1670,8 +1670,20 @@ var serviceContext = (function () {
 
       // 参数格式化
       params.url = encodeQueryString(url);
+
+      // 主要拦截目标为用户快速点击时触发的多次跳转，该情况，通常前后 url 是一样的
+      if (navigatorLock === url) {
+        return `${navigatorLock} locked`
+      }
+      // 至少 onLaunch 之后，再启用lock逻辑（onLaunch之前可能开发者手动调用路由API，来提前跳转）
+      // enableNavigatorLock 临时开关（不对外开放），避免该功能上线后，有部分情况异常，可以让开发者临时关闭 lock 功能
+      if (__uniConfig.ready && __uniConfig.enableNavigatorLock !== false) {
+        navigatorLock = url;
+      }
     }
   }
+
+  let navigatorLock;
 
   function createProtocol (type, extras = {}) {
     return Object.assign({
@@ -1679,6 +1691,9 @@ var serviceContext = (function () {
         type: String,
         required: true,
         validator: createValidator(type)
+      },
+      beforeAll () {
+        navigatorLock = '';
       }
     }, extras)
   }
@@ -2305,7 +2320,9 @@ var serviceContext = (function () {
 
   function invokeCallbackHandlerFail (err, apiName, callbackId) {
     const errMsg = `${apiName}:fail ${err}`;
-    console.error(errMsg);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error(errMsg);
+    }
     if (callbackId === -1) {
       throw new Error(errMsg)
     }
@@ -2322,6 +2339,23 @@ var serviceContext = (function () {
     type: Function,
     required: true
   }];
+
+  // 目前已用到的仅这三个
+  // 完整的可能包含：
+  // beforeValidate,
+  // beforeSuccess,
+  // afterSuccess,
+  // beforeFail,
+  // afterFail,
+  // beforeCancel,
+  // afterCancel,
+  // beforeAll,
+  // afterAll
+  const IGNORE_KEYS = [
+    'beforeValidate',
+    'beforeAll',
+    'beforeSuccess'
+  ];
 
   function validateParams (apiName, paramsData, callbackId) {
     let paramTypes = protocol[apiName];
@@ -2352,7 +2386,7 @@ var serviceContext = (function () {
 
       const keys = Object.keys(paramTypes);
       for (let i = 0; i < keys.length; i++) {
-        if (keys[i] === 'beforeValidate') {
+        if (IGNORE_KEYS.indexOf(keys[i]) !== -1) {
           continue
         }
         const err = validateParam(keys[i], paramTypes, paramsData);
@@ -2434,6 +2468,7 @@ var serviceContext = (function () {
       afterFail,
       beforeCancel,
       afterCancel,
+      beforeAll,
       afterAll
     } = wrapperCallbacks;
 
@@ -2456,6 +2491,8 @@ var serviceContext = (function () {
         }
         res.errMsg = apiName + ':fail' + errDetail;
       }
+
+      isFn(beforeAll) && beforeAll(res);
 
       const errMsg = res.errMsg;
 
@@ -2540,6 +2577,7 @@ var serviceContext = (function () {
   function wrapperExtras (name, extras) {
     const protocolOptions = protocol[name];
     if (protocolOptions) {
+      isFn(protocolOptions.beforeAll) && (extras.beforeAll = protocolOptions.beforeAll);
       isFn(protocolOptions.beforeSuccess) && (extras.beforeSuccess = protocolOptions.beforeSuccess);
     }
   }
@@ -8313,10 +8351,10 @@ var serviceContext = (function () {
       $remove () {
         const index = pages.findIndex(page => page === this);
         if (index !== -1) {
-          pages.splice(index, 1);
           if (!webview.nvue) {
             this.$vm.$destroy();
           }
+          pages.splice(index, 1);
           if (process.env.NODE_ENV !== 'production') {
             console.log('[uni-app] removePage', path, webview.id);
           }
@@ -12565,8 +12603,6 @@ var serviceContext = (function () {
       handlers.forEach(handler => {
         handler(data);
       });
-    } else {
-      console.error(`vdSync[${pageId}] not found`);
     }
   }
 

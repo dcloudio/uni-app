@@ -251,5 +251,15 @@ describe('codegen', () => {
         `with(this){return _c('view',[_v((_$s(0,'t0-0',_s(text)))+(_$s(0,'t0-1',_s(text))))])}`
     )
   })
+  it('generate bool attr', () => {
+    assertCodegen(
+      '<video controls/>',
+      `with(this){return _c('video',{attrs:{"_i":0}})}`
+    )
+    assertCodegen(
+      '<video controls=""/>',
+      `with(this){return _c('video',{})}`
+    )
+  })
 })
 /* eslint-enable quotes */

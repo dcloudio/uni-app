@@ -20,7 +20,9 @@ import validateParam from './params'
 
 function invokeCallbackHandlerFail (err, apiName, callbackId) {
   const errMsg = `${apiName}:fail ${err}`
-  console.error(errMsg)
+  if (process.env.NODE_ENV !== 'production') {
+    console.error(errMsg)
+  }
   if (callbackId === -1) {
     throw new Error(errMsg)
   }
@@ -37,6 +39,23 @@ const callbackApiParamTypes = [{
   type: Function,
   required: true
 }]
+
+// 目前已用到的仅这三个
+// 完整的可能包含：
+// beforeValidate,
+// beforeSuccess,
+// afterSuccess,
+// beforeFail,
+// afterFail,
+// beforeCancel,
+// afterCancel,
+// beforeAll,
+// afterAll
+const IGNORE_KEYS = [
+  'beforeValidate',
+  'beforeAll',
+  'beforeSuccess'
+]
 
 function validateParams (apiName, paramsData, callbackId) {
   let paramTypes = protocol[apiName]
@@ -67,7 +86,7 @@ function validateParams (apiName, paramsData, callbackId) {
 
     const keys = Object.keys(paramTypes)
     for (let i = 0; i < keys.length; i++) {
-      if (keys[i] === 'beforeValidate') {
+      if (IGNORE_KEYS.indexOf(keys[i]) !== -1) {
         continue
       }
       const err = validateParam(keys[i], paramTypes, paramsData)
@@ -149,6 +168,7 @@ function createApiCallback (apiName, params = {}, extras = {}) {
     afterFail,
     beforeCancel,
     afterCancel,
+    beforeAll,
     afterAll
   } = wrapperCallbacks
 
@@ -171,6 +191,8 @@ function createApiCallback (apiName, params = {}, extras = {}) {
       }
       res.errMsg = apiName + ':fail' + errDetail
     }
+
+    isFn(beforeAll) && beforeAll(res)
 
     const errMsg = res.errMsg
 
@@ -255,6 +277,7 @@ export function wrapperUnimplemented (name) {
 function wrapperExtras (name, extras) {
   const protocolOptions = protocol[name]
   if (protocolOptions) {
+    isFn(protocolOptions.beforeAll) && (extras.beforeAll = protocolOptions.beforeAll)
     isFn(protocolOptions.beforeSuccess) && (extras.beforeSuccess = protocolOptions.beforeSuccess)
   }
 }

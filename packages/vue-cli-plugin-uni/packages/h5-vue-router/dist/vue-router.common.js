@@ -2283,13 +2283,8 @@ var HTML5History = (function (History$$1) {
     if (getLocation(this.base) !== this.current.fullPath) {
       var current = cleanPath(this.base + this.current.fullPath);
       // fixed by xxxxxx
-      var location = {
-        path: current,
-        params: {
-          __id__: this.current.params.__id__
-        }
-      };
-      push ? pushState(location, location.params.__id__) : replaceState(location, location.params.__id__);
+      var id = this.current.params.__id__;
+      push ? pushState(current, id) : replaceState(current, id);
     }
   };
 

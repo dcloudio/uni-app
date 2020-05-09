@@ -40,32 +40,10 @@ function addTag (tag) {
   process.UNI_TAGS.add(tag)
 }
 
-const dirRE = /^v-|^@|^:/
-/**
- * 兼容小程序Boolean属性的怪异行为(<custom loading/>为true,<custom loading=""/>为false)
- * @param {Object} el
- */
-function fixBooleanAttribute (el) {
-  if (!el.attrsList) {
-    return
-  }
-  el.attrsList.forEach(attr => {
-    if (attr.bool) { // <custom loading/> => <custom :loading="true"/>
-      if (!dirRE.test(attr.name) && attr.name !== 'inline-template') {
-        delete el.attrsMap[attr.name]
-        attr.name = ':' + attr.name
-        attr.value = 'true'
-        el.attrsMap[attr.name] = attr.value
-      }
-    }
-  })
-}
-
 module.exports = {
   h5: true,
   modules: [require('../format-text'), {
     preTransformNode (el, options) {
-      fixBooleanAttribute(el)
       if (el.tag.indexOf('v-uni-') === 0) {
         addTag(el.tag.replace('v-uni-', ''))
       } else if (hasOwn(tags, el.tag)) {

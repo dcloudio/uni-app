@@ -44,9 +44,12 @@ module.exports = {
     ) {
       (options.modules || (options.modules = [])).push(autoComponentsModule)
     }
-
+    if (!options.modules) {
+      options.modules = []
+    }
     // transformAssetUrls
-    (options.modules || (options.modules = [])).push(require('./asset-url'))
+    options.modules.push(require('./asset-url'))
+    options.modules.push(require('./bool-attr'))
 
     options.isUnaryTag = isUnaryTag
     // 将 autoComponents 挂在 isUnaryTag 上边
@@ -54,7 +57,7 @@ module.exports = {
 
     options.preserveWhitespace = false
     if (options.service) {
-      (options.modules || (options.modules = [])).push(require('./app/service'))
+      options.modules.push(require('./app/service'))
       options.optimize = false // 启用 staticRenderFns
       // domProps => attrs
       options.mustUseProp = () => false
@@ -68,7 +71,7 @@ module.exports = {
         throw e
       }
     } else if (options.view) {
-      (options.modules || (options.modules = [])).push(require('./app/view'))
+      options.modules.push(require('./app/view'))
       options.optimize = false // 暂不启用 staticRenderFns
       options.isUnaryTag = isUnaryTag
       options.isReservedTag = (tagName) => false // 均为组件
@@ -80,14 +83,14 @@ module.exports = {
       }
     } else if (options['quickapp-native']) {
       // 后续改版，应统一由具体包实现
-      (options.modules || (options.modules = [])).push(require('@dcloudio/uni-quickapp-native/lib/compiler-module'))
+      options.modules.push(require('@dcloudio/uni-quickapp-native/lib/compiler-module'))
     }
 
     if (!options.mp) { // h5,quickapp-native
       return compileTemplate(source, options, compile)
     }
 
-    (options.modules || (options.modules = [])).push(compilerModule)
+    options.modules.push(compilerModule)
 
     if (options.mp.platform === 'mp-alipay') {
       options.modules.push(compilerAlipayModule)

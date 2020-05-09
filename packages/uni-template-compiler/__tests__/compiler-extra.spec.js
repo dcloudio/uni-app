@@ -647,4 +647,14 @@ describe('mp:compiler-extra', () => {
       '<block wx:for="{{list}}" wx:for-item="item" wx:for-index="__i0__"><view data-event-opts="{{[[\'tap\',[[\'test\',[\'$0\'],[[[\'list\',\'\',__i0__]]]]]]]}}" bindtap="__e">{{item}}</view></block>'
     )
   })
+  it('generate bool attr', () => {
+    assertCodegen(
+      '<video controls/>',
+      '<video controls="{{true}}"></video>'
+    )
+    assertCodegen(
+      '<video controls=""/>',
+      '<video controls></video>'
+    )
+  })
 })

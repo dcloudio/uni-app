@@ -190,5 +190,15 @@ describe('codegen', () => {
       `with(this){return _c('v-uni-view',{attrs:{"_i":0}},[_v((_$g(0,'t0-0'))+" text  text "+(_$g(0,'t0-1')))])}`
     )
   })
+  it('generate bool attr', () => {
+    assertCodegen(
+      '<video controls/>',
+      `with(this){return _c('v-uni-video',{attrs:{"controls":true,"_i":0}})}`
+    )
+    assertCodegen(
+      '<video controls=""/>',
+      `with(this){return _c('v-uni-video',{attrs:{"controls":"","_i":0}})}`
+    )
+  })
 })
 /* eslint-enable quotes */

@@ -1211,7 +1211,7 @@ function parseBaseApp (vm, {
   return appOptions
 }
 
-const mocks = ['nodeId', 'componentName', '_componentId'];
+const mocks = ['nodeId', 'componentName', '_componentId', 'uniquePrefix'];
 
 function isPage () {
   return !this.ownerId
