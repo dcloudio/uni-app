@@ -23,17 +23,13 @@ export default {
       valueSync: this._getValueString(this.value)
     }
   },
-  watch: {
-    valueSync (value) {
-      this.$emit('update:value', value)
-    }
-  },
   created () {
-    const valueChange = this.__valueChange = debounce((val, oldVal) => {
+    const valueChange = this.__valueChange = debounce((val) => {
       this.valueSync = this._getValueString(val)
     }, 100)
     this.$watch('value', valueChange)
     this.__triggerInput = throttle(($event, detail) => {
+      this.$emit('update:value', detail.value)
       this.$trigger('input', $event, detail)
     }, 100)
     this.$triggerInput = ($event, detail) => {
