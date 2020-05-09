@@ -125,7 +125,6 @@ args 为要设置的参数为json类型可以包含下列元素
 
 属性|类型 |默认值|必填|说明
 :--|:--|:--|:--|:--|
-kind|string| xianyu|是|要实现的效果目前只支持闲鱼吸顶效果
 id|string|无|是|和list同时滚动的组件id，应为外层的scroller
 headerHeight|float|0|是|要吸顶的header顶部距离scroller顶部的距离
 
@@ -134,6 +133,9 @@ headerHeight|float|0|是|要吸顶的header顶部距离scroller顶部的距离
 #####示例:
 
 ```
+  <list id="" fixFreezing="true"></list>
+  // ios 需要配置 fixFreezing="true"
+
   //设置
   const list = this.$refs["list0"];
   list.setSpecialEffects({id:"scroller", headerHeight:150});
