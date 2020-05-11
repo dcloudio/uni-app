@@ -172,7 +172,7 @@ describe('codegen', () => {
     )
     assertCodegen(
       '<image src="../static/logo.png"/>',
-      `with(this){return _c('image',{attrs:{"src":_$s(0,'a-src',"/"+require("../static/logo.png")),"_i":0}})}`
+      `with(this){return _c('image',{attrs:{"src":_$s(0,'a-src',require("../static/logo.png")),"_i":0}})}`
     )
     assertCodegen(
       '<image src="@/static/logo.png"/>',
