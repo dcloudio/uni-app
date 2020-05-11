@@ -46,14 +46,15 @@ module.exports = {
     if (!state.scopedSlots) {
       state.scopedSlots = {}
     }
-    let componentName = `${ownerName}-${parentName}-${slotName}`
-    if (!hasOwn(state.scopedSlots, componentName)) {
-      state.scopedSlots[componentName] = 0
+    const baseName = `${ownerName}-${parentName}-${slotName}`
+    let componentName = baseName
+    if (!hasOwn(state.scopedSlots, baseName)) {
+      state.scopedSlots[baseName] = 0
     }
-    if (state.scopedSlots[componentName]) {
-      componentName = componentName + state.scopedSlots[componentName]
+    if (state.scopedSlots[baseName]) {
+      componentName = baseName + state.scopedSlots[baseName]
     }
-    state.scopedSlots[componentName]++
+    state.scopedSlots[baseName]++
     parentNode.attr['generic:scoped-slots-' + slotName] = componentName
     if (!parentNode.attr.generic) {
       parentNode.attr.generic = {}
