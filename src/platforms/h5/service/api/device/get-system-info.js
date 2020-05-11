@@ -16,8 +16,10 @@ const isIOS = /iphone|ipad|ipod/i.test(ua)
 export function getSystemInfoSync () {
   var screen = window.screen
   var pixelRatio = window.devicePixelRatio
-  var screenWidth = screen.width
-  var screenHeight = screen.height
+  // 横屏时 iOS 获取的屏幕宽高颠倒，进行纠正
+  var landscape = Math.abs(window.orientation) === 90
+  var screenWidth = Math[landscape ? 'max' : 'min'](screen.width, screen.height)
+  var screenHeight = Math[landscape ? 'min' : 'max'](screen.height, screen.width)
   var windowWidth = Math.min(window.innerWidth, document.documentElement.clientWidth, screenWidth)
   var windowHeight = window.innerHeight
   var language = navigator.language
