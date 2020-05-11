@@ -31,6 +31,7 @@
 - [腾讯课堂的uni-app相关课程](https://ke.qq.com/course/list/uni-app?tuin=269fe6b)
 - [网易课堂的uni-app相关课程](https://study.163.com/courses-search?keyword=uni-app)
 - [bilibili的uni-app相关视频](https://search.bilibili.com/all?keyword=uni-app&from_source=nav_search_new)
+- [慕课网uni-app相关课程](https://www.imooc.com/search/?words=uni-app)
 
 <!-- * [《跟枫桥一起开发App》](https://www.lusita.cn)，出品人：唐枫桥，来源：源码商城（注：源码商城App、小程序本身就是基于```uni-app```开发的） -->
 <!-- * [《广州番禺职业技术学院 uni-app课程》](http://doc.zengqs.com/1143144)，出品人：曾教授 -->
