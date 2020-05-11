@@ -53,6 +53,10 @@ module.exports = (api, options) => {
     vueConfig = vueConfig(options, api)
   }
 
+  if (options.pages) { // 允许 vue.config.js pages 覆盖
+    delete vueConfig.pages
+  }
+
   Object.assign(options, { // TODO 考虑非 HBuilderX 运行时，可以支持自定义输出目录
     outputDir: process.env.UNI_OUTPUT_TMP_DIR || process.env.UNI_OUTPUT_DIR,
     assetsDir

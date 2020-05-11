@@ -362,15 +362,17 @@ module.exports = function (pagesJson, manifestJson, loader) {
     configurePages(pagesJson, manifestJson, loader)
   })
 
-  const loaderUtils = require('loader-utils')
-  const params = loaderUtils.parseQuery(loader.resourceQuery)
-  if (params.pages) {
-    try {
-      const pages = JSON.parse(params.pages)
-      if (Array.isArray(pages)) {
-        filterPages(pagesJson, pages)
-      }
-    } catch (e) {}
+  if (loader.resourceQuery) {
+    const loaderUtils = require('loader-utils')
+    const params = loaderUtils.parseQuery(loader.resourceQuery)
+    if (params.pages) {
+      try {
+        const pages = JSON.parse(params.pages)
+        if (Array.isArray(pages)) {
+          filterPages(pagesJson, pages)
+        }
+      } catch (e) {}
+    }
   }
 
   const pageComponents = getPageComponents(inputDir, pagesJson)
