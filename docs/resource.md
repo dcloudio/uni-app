@@ -25,6 +25,7 @@
 * [《uni-app多端调试环境配置》](https://study.163.com/course/courseMain.htm?courseId=1209401924&share=2&shareId=480000001892585)，出品人：帝莎IT学院。
 * [《uni-app实战仿微信app全栈开发》](https://study.163.com/course/courseMain.htm?courseId=1209487898&share=2&shareId=480000001892585)，出品人：帝莎IT学院。
 * [《uni-app实战视频点播app小程序》](https://study.163.com/course/courseMain.htm?courseId=1209644880&share=2&shareId=480000001892585)，出品人：帝莎IT学院。
+* [《0基础学unicloud开发，跨端serverless技术》](https://ke.qq.com/course/2409672?_bid=167&_wv=3&term_id=102513745&taid=8858395820213448&from=share&tuin=269fe6b)，出品人：林举
 
 目前各大视频学习网站都有不少uni-app的学习资源，更多资源请点击搜索链接：
 - [腾讯课堂的uni-app相关课程](https://ke.qq.com/course/list/uni-app?tuin=269fe6b)
