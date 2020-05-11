@@ -673,9 +673,9 @@ export default {
 |vm.$props			|支持	|支持			|支持		|支持			|-																																					|
 |vm.$el					|支持	|不支持		|不支持	|不支持		|-																																					|
 |vm.$options		|支持	|支持			|支持		|支持			|-																																					|
-|vm.$parent			|支持	|支持			|支持		|支持			|`uni-app`里面`view`等内置标签是以组件方式实现，`$parent`会获取这些内置组件	|
+|vm.$parent			|支持	|支持			|支持		|支持			|H5端 `view`、`text` 等内置标签是以 Vue 组件方式实现，`$parent` 会获取这些内置组件	|
 |vm.$root				|支持	|支持			|支持		|支持			|-																																					|
-|vm.$children		|支持	|支持			|支持		|支持			|-																																					|
+|vm.$children		|支持	|支持			|支持		|支持			|H5端 `view`、`text` 等内置标签是以 Vue 组件方式实现，`$children` 会获取这些内置组件|
 |vm.$slots			|支持	|支持			|不支持	|支持			|App端旧版获取值为`{'slotName':true/false}`比如：`{"footer":true}`					|
 |vm.$scopedSlots|支持	|支持			|支持		|支持			|App端旧版获取值为`{'slotName':true/false}`比如：`{"footer":true}`					|
 |vm.$refs				|支持	|支持			|支持		|支持			|非H5端只能用于获取自定义组件，不能用于获取内置组件实例（如：view、text）|
