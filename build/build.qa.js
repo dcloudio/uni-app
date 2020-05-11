@@ -51,18 +51,18 @@ dsl.onInitApp(function({
   });`
   })
   const pageCode = pageOutput[0].code
-  const vueCode = fs.readFileSync(path.resolve(__dirname, '../packages/uni-quickapp-vue/assets/' + filename))
+  const vueCode = fs.readFileSync(path.resolve(__dirname, '../packages/uni-quickapp-native/assets/' + filename))
 
   fs.writeFileSync(
-    path.resolve(__dirname, '../packages/uni-quickapp-vue/dist/' + filename),
+    path.resolve(__dirname, '../packages/uni-quickapp-native/dist/' + filename),
     vueCode + bridgeCode + appCode + pageCode, {
       encoding: 'utf8'
     }
   )
 
   if (process.env.NODE_ENV === 'production') { // 命令会执行dev,prod两次,仅prod时执行copy
-    const componentsSrc = path.resolve(__dirname, '../src/platforms/quickapp-vue/view/components/**/*')
-    const componentsDest = path.resolve(__dirname, '../packages/uni-quickapp-vue/components')
+    const componentsSrc = path.resolve(__dirname, '../src/platforms/quickapp-native/view/components/**/*')
+    const componentsDest = path.resolve(__dirname, '../packages/uni-quickapp-native/components')
 
     del.sync([componentsDest])
 

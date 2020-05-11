@@ -92,6 +92,7 @@ export default function initOn (on, {
   on('onNavigationBarSearchInputChanged', createCallCurrentPageHook('onNavigationBarSearchInputChanged'))
   on('onNavigationBarSearchInputConfirmed', createCallCurrentPageHook('onNavigationBarSearchInputConfirmed'))
   on('onNavigationBarSearchInputClicked', createCallCurrentPageHook('onNavigationBarSearchInputClicked'))
+  on('onNavigationBarSearchInputFocusChanged', createCallCurrentPageHook('onNavigationBarSearchInputFocusChanged'))
 
   on('onWebInvokeAppService', onWebInvokeAppService)
 }

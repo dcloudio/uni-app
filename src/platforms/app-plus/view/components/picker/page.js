@@ -49,11 +49,11 @@ class Page {
   }
 
   sendMessage (data) {
-    const message = {
+    const message = JSON.parse(JSON.stringify(({
       __message: {
         data
       }
-    }
+    })))
     const id = this.webview.id
     if (BroadcastChannel_) {
       const channel = new BroadcastChannel_(id)

@@ -19,7 +19,7 @@ const scopedPath = path.resolve(__dirname, '../../')
 const compiler = require('../lib')
 const res = compiler.compile(
   `
-<base-layout><template v-slot:[dynamicSlotName]></template></base-layout>
+<video controls=""/>
 `, {
     miniprogram: true,
     resourcePath: '/User/fxy/Documents/test.wxml',
@@ -32,9 +32,9 @@ const res = compiler.compile(
     mp: {
       platform: 'mp-weixin'
     },
-    filterModules: ['swipe'],
+    filterModules: ['swipe']
     // service: true,
-    view: true
+    // view: true
 
   })
 console.log(require('util').inspect(res, {

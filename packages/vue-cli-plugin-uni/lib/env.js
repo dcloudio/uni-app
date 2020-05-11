@@ -3,6 +3,8 @@ const path = require('path')
 const mkdirp = require('mkdirp')
 const loaderUtils = require('loader-utils')
 
+require('./error-reporting')
+
 const hasOwnProperty = Object.prototype.hasOwnProperty
 
 function hasOwn (obj, key) {
@@ -186,29 +188,17 @@ if (process.env.UNI_PLATFORM === 'app-plus') {
   if (platformOptions.nvueCompiler === 'weex') {
     isNVueCompiler = false
   }
-  if (
-    !hasOwn(platformOptions, 'compilerVersion') ||
-    (
-      platformOptions.compilerVersion === '3' ||
-      platformOptions.compilerVersion === 3
-    )
-  ) {
-    delete process.env.UNI_USING_CACHE
-    if (platformOptions.renderer === 'native') {
-      process.env.UNI_USING_V3_NATIVE = true
-    } else {
-      process.env.UNI_USING_V3 = true
-      platformOptions.usingComponents = true
-    }
-    process.env.UNI_OUTPUT_TMP_DIR = ''
-    isNVueCompiler = true // v3 目前仅支持 uni-app 模式
-  } else if (platformOptions.renderer === 'native') {
-    // 纯原生目前不提供 cache
-    delete process.env.UNI_USING_CACHE
-    process.env.UNI_USING_NATIVE = true
-    process.env.UNI_USING_V8 = true
-    process.env.UNI_OUTPUT_TMP_DIR = ''
+
+  delete process.env.UNI_USING_CACHE
+  if (platformOptions.renderer === 'native') {
+    process.env.UNI_USING_V3_NATIVE = true
+  } else {
+    process.env.UNI_USING_V3 = true
+    platformOptions.usingComponents = true
   }
+  process.env.UNI_OUTPUT_TMP_DIR = ''
+  // isNVueCompiler = true // v3 目前仅支持 uni-app 模式
+
   // v3 支持指定 js 混淆（仅发行模式）
   if (
     process.env.NODE_ENV === 'production' &&
@@ -255,7 +245,7 @@ if (
     platformOptions.uniStatistics || {}
   )
 
-  if (uniStatistics.enable !== false) {
+  if (uniStatistics.enable === true) {
     process.env.UNI_USING_STAT = true
     if (!process.UNI_STAT_CONFIG.appid && process.env.NODE_ENV === 'production') {
       console.log()
@@ -289,7 +279,7 @@ if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
   console.log('当前nvue编译模式' + (process.env.UNI_USING_V3_NATIVE ? '（v3）' : '') + '：' + (isNVueCompiler ? 'uni-app'
     : 'weex') +
     ' 。编译模式差异见：https://ask.dcloud.net.cn/article/36074')
-} else if (process.env.UNI_PLATFORM !== 'h5' && process.env.UNI_PLATFORM !== 'quickapp-vue') {
+} else if (process.env.UNI_PLATFORM !== 'h5' && process.env.UNI_PLATFORM !== 'quickapp-native') {
   try {
     let info = ''
     if (process.env.UNI_PLATFORM === 'app-plus') {

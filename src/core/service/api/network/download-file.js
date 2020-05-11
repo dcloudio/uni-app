@@ -15,7 +15,7 @@ class DownloadTask {
   }
 
   abort () {
-    invokeMethod('operateRequestTask', {
+    invokeMethod('operateDownloadTask', {
       downloadTaskId: this.id,
       operationType: 'abort'
     })

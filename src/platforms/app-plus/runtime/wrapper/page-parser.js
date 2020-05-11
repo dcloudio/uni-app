@@ -9,7 +9,8 @@ const hooks = [
   'onNavigationBarButtonTap',
   'onNavigationBarSearchInputChanged',
   'onNavigationBarSearchInputConfirmed',
-  'onNavigationBarSearchInputClicked'
+  'onNavigationBarSearchInputClicked',
+  'onNavigationBarSearchInputFocusChanged'
 ]
 
 export default function parsePage (vuePageOptions) {

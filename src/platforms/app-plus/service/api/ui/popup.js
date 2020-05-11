@@ -135,6 +135,7 @@ export function showModal ({
   confirmText = '确定',
   confirmColor = '#3CC51F'
 } = {}, callbackId) {
+  content = content || ' '
   plus.nativeUI.confirm(content, (e) => {
     if (showCancel) {
       invoke(callbackId, {

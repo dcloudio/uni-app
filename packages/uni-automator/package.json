@@ -1,0 +1,32 @@
+{
+  "name": "@dcloudio/uni-automator",
+  "version": "2.0.0-alpha-27120200510001",
+  "description": "uni-app automator",
+  "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/uni-automator"
+  },
+  "files": [
+    "dist"
+  ],
+  "author": "fxy060608",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "address": "^1.1.2",
+    "debug": "^4.1.1",
+    "default-gateway": "^6.0.0",
+    "licia": "^1.21.0",
+    "postcss-selector-parser": "^6.0.2",
+    "qrcode-reader": "^1.0.4",
+    "qrcode-terminal": "^0.12.0",
+    "ws": "^7.2.3"
+  },
+  "peerDependencies": {
+    "adbkit": "^2.11.1",
+    "jimp": "^0.10.1",
+    "node-simctl": "^6.1.0",
+    "puppeteer": "^3.0.1"
+  }
+}

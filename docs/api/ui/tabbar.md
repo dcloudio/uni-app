@@ -45,13 +45,30 @@ uni.setTabBarItem({
 
 |属性|类型|默认值|必填|说明|
 |:-|:-|:-|:-|:-|
-|color|String||是|tab 上的文字默认颜色，HexColor|
-|selectedColor|String||是|tab 上的文字选中时的颜色，HexColor|
-|backgroundColor|String||是|tab 的背景色，HexColor|
-|borderStyle|String||是|tabBar上边框的颜色， 仅支持 black/white|
+|color|String||否|tab 上的文字默认颜色，HexColor|
+|selectedColor|String||否|tab 上的文字选中时的颜色，HexColor|
+|backgroundColor|String||否|tab 的背景色，HexColor|
+|backgroundImage|String||否|图片背景。支持设置本地图片或创建线性渐变如，优先级高于 backgroundColor，仅 App 2.7.1+ 支持|
+|backgroundRepeat|String||否|背景图平铺方式。repeat：背景图片在垂直方向和水平方向平铺；repeat-x：背景图片在水平方向平铺，垂直方向拉伸；repeat-y：背景图片在垂直方向平铺，水平方向拉伸；no-repeat：背景图片在垂直方向和水平方向都拉伸。 默认使用 no-repeat。仅 App 2.7.1+ 支持|
+|borderStyle|String||否|tabBar上边框的颜色， 仅支持 black/white|
 |success|Funtion||否|接口调用成功的回调函数|
 |fail|Funtion||否|接口调用失败的回调函数|
 |complete|Funtion||否|接口调用结束的回调函数（调用成功、失败都会执行）|
+
+**backgroundImage创建线性渐变说明**
+
+`backgroundImage: linear-gradient(to top, #a80077, #66ff00);`
+
+目前暂不支持 radial-gradient（径向渐变）。
+
+目前只支持两种颜色的渐变，渐变方向如下：
+
+- to right：从左向右渐变
+- to left：从右向左渐变
+- to bottom：从上到下渐变
+- to top：从下到上渐变
+- to bottom right：从左上角到右下角
+- to top left：从右下角到左上角
 
 **示例代码**
 

@@ -60,6 +60,8 @@ function generateAutoComponentsCode (autoComponents, dynamic = false) {
     name,
     source
   }) => {
+    // 统一转换为驼峰命名
+    name = name.replace(/-(\w)/g, (_, str) => str.toUpperCase())
     if (dynamic) {
       components.push(`'${name}': function(){return import(/* webpackChunkName: "${getWebpackChunkName(source)}" */'${source}')}`)
     } else {
@@ -86,7 +88,7 @@ function compileTemplate (source, options, compile) {
 
 const compilerModule = {
   preTransformNode (el, options) {
-    if (process.env.UNI_PLATFORM === 'quickapp-vue') {
+    if (process.env.UNI_PLATFORM === 'quickapp-native') {
       // 排查所有标签
       (options.isUnaryTag.autoComponents || (options.isUnaryTag.autoComponents = new Set())).add(el.tag)
     } else if (isComponent(el.tag) && el.tag !== 'App') { // App.vue

@@ -98,9 +98,12 @@ function getStylesCode(loaderContext) {
 module.exports = function(source, map) {
   // 追加小程序全局自定义组件(仅v3)
   source = getGlobalUsingComponentsCode() + source
-
+  const automatorCode = process.env.UNI_AUTOMATOR_WS_ENDPOINT ?
+    `import '@dcloudio/uni-app-plus/dist/automator.view'` :
+    ''
   return `
 import 'uni-pages?${JSON.stringify({type:'view'})}'
+${automatorCode}
 function initView(){
     ${getStylesCode(this)}
     typeof injectStyles ==='function' && injectStyles()

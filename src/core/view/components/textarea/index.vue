@@ -10,22 +10,19 @@
         :style="placeholderStyle"
         :class="placeholderClass"
         class="uni-textarea-placeholder"
-      >
-        {{ placeholder }}
-      </div>
+        v-text="placeholder"
+      />
       <div
         ref="line"
         class="uni-textarea-line"
-      >
-        &nbsp;
-      </div>
+        v-text="' '"
+      />
       <div class="uni-textarea-compute">
         <div
           v-for="(item,index) in valueCompute"
           :key="index"
-        >
-          {{ item.trim() ? item : '.' }}
-        </div>
+          v-text="item.trim() ? item : '.'"
+        />
         <v-uni-resize-sensor
           ref="sensor"
           @resize="_resize"
@@ -52,24 +49,15 @@
 </template>
 <script>
 import {
-  emitter,
-  keyboard
+  baseInput
 } from 'uni-mixins'
 const DARK_TEST_STRING = '(prefers-color-scheme: dark)'
 export default {
   name: 'Textarea',
-  mixins: [emitter, keyboard],
-  model: {
-    prop: 'value',
-    event: 'update:value'
-  },
+  mixins: [baseInput],
   props: {
     name: {
       type: String,
-      default: ''
-    },
-    value: {
-      type: [String, Number],
       default: ''
     },
     maxlength: {
@@ -119,7 +107,6 @@ export default {
   },
   data () {
     return {
-      valueSync: this._getValueString(this.value),
       valueComposition: '',
       composition: false,
       focusSync: this.focus,
@@ -151,19 +138,6 @@ export default {
     }
   },
   watch: {
-    value (val) {
-      this.valueSync = this._getValueString(val)
-    },
-    valueSync (val) {
-      if (val !== this._oldValue) {
-        this._oldValue = val
-        this.$trigger('input', {}, {
-          value: val,
-          cursor: this.$refs.textarea.selectionEnd
-        })
-        this.$emit('update:value', val)
-      }
-    },
     focus (val) {
       if (val) {
         this.focusChangeSource = 'focus'
@@ -213,7 +187,6 @@ export default {
     })
   },
   mounted () {
-    this._oldValue = this.$refs.textarea.value = this.valueSync
     this._resize({
       height: this.$refs.sensor.$el.offsetHeight
     })
@@ -286,7 +259,12 @@ export default {
     _input ($event) {
       if (this.composition) {
         this.valueComposition = $event.target.value
+        return
       }
+      this.$triggerInput($event, {
+        value: this.valueSync,
+        cursor: this.$refs.textarea.selectionEnd
+      })
     },
     _getFormData () {
       return {
@@ -296,9 +274,6 @@ export default {
     },
     _resetFormData () {
       this.valueSync = ''
-    },
-    _getValueString (value) {
-      return value === null ? '' : String(value)
     }
   }
 }
@@ -312,6 +287,8 @@ uni-textarea {
   position: relative;
   font-size: 16px;
   line-height: normal;
+  white-space: pre-wrap;
+  word-break: break-all;
 }
 uni-textarea[hidden] {
   display: none;
@@ -342,8 +319,8 @@ uni-textarea[hidden] {
   height: 100%;
   left: 0;
   top: 0;
-  white-space: pre-wrap;
-  word-break: break-all;
+  white-space: inherit;
+  word-break: inherit;
 }
 .uni-textarea-placeholder {
   color: grey;

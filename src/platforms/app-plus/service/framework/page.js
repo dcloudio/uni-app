@@ -88,10 +88,10 @@ export function registerPage ({
     $remove () {
       const index = pages.findIndex(page => page === this)
       if (index !== -1) {
-        pages.splice(index, 1)
         if (!webview.nvue) {
           this.$vm.$destroy()
         }
+        pages.splice(index, 1)
         if (process.env.NODE_ENV !== 'production') {
           console.log('[uni-app] removePage', path, webview.id)
         }
@@ -110,6 +110,13 @@ export function registerPage ({
 
   // 首页是 nvue 时，在 registerPage 时，执行路由堆栈
   if (webview.id === '1' && webview.nvue) {
+    if (
+      __uniConfig.splashscreen &&
+      __uniConfig.splashscreen.autoclose &&
+      !__uniConfig.splashscreen.alwaysShowBeforeRender
+    ) {
+      plus.navigator.closeSplashscreen()
+    }
     __uniConfig.onReady(function () {
       navigateFinish(webview)
     })

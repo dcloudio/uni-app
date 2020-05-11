@@ -24,6 +24,7 @@ const LIFECYCLE_HOOKS = [
   'onNavigationBarSearchInputChanged',
   'onNavigationBarSearchInputConfirmed',
   'onNavigationBarSearchInputClicked',
+  'onNavigationBarSearchInputFocusChanged',
   // Component
   // 'onReady', // 兼容旧版本，应该移除该事件
   'onPageShow',

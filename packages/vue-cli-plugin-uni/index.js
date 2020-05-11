@@ -19,7 +19,7 @@ module.exports = (api, options) => {
 
   initBuildCommand(api, options)
 
-  if (process.env.UNI_PLATFORM === 'quickapp-vue') {
+  if (process.env.UNI_PLATFORM === 'quickapp-native') {
     process.env.UNI_OUTPUT_DIR = path.resolve(process.env.UNI_OUTPUT_DIR, 'build')
     Object.assign(options, {
       assetsDir,
@@ -35,7 +35,7 @@ module.exports = (api, options) => {
     api.configureWebpack(require('./lib/configure-webpack')(platformOptions, manifestPlatformOptions, options, api))
     api.chainWebpack(require('./lib/chain-webpack')(platformOptions, options, api))
 
-    const vueConfig = require('@dcloudio/uni-quickapp-vue/lib/vue.config.js')
+    const vueConfig = require('@dcloudio/uni-quickapp-native/lib/vue.config.js')
     api.configureWebpack(vueConfig.configureWebpack)
     api.chainWebpack(vueConfig.chainWebpack)
     return
@@ -51,6 +51,10 @@ module.exports = (api, options) => {
 
   if (typeof vueConfig === 'function') {
     vueConfig = vueConfig(options, api)
+  }
+
+  if (options.pages) { // 允许 vue.config.js pages 覆盖
+    delete vueConfig.pages
   }
 
   Object.assign(options, { // TODO 考虑非 HBuilderX 运行时，可以支持自定义输出目录

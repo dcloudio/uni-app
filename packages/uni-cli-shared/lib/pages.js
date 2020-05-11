@@ -129,14 +129,7 @@ function isValidPage (page, root = '') {
         if (subNVuePath) {
           subNVuePath = subNVue.path.split('?')[0]
           const subNVuePagePath = removeExt(path.join(root, subNVuePath))
-
-          // if (process.env.UNI_USING_NVUE_COMPILER) {
           process.UNI_NVUE_ENTRY[subNVuePagePath] = getNVueMainJsPath(subNVuePagePath)
-          // } else {
-          //   process.UNI_NVUE_ENTRY[subNVuePagePath] = path.resolve(process.env.UNI_INPUT_DIR,
-          //     subNVuePagePath +
-          //                   '.nvue') + '?entry'
-          // }
         }
       })
     }
@@ -366,10 +359,10 @@ function initAutoImportScanComponents () {
 
   const components = getAutoComponentsByDir(componentsPath)
 
-  if (process.env.UNI_PLATFORM === 'quickapp-vue') {
+  if (process.env.UNI_PLATFORM === 'quickapp-native') {
     if (!uniQuickAppAutoImportScanComponents) {
       uniQuickAppAutoImportScanComponents = getAutoComponentsByDir(
-        path.resolve(require.resolve('@dcloudio/uni-quickapp-vue'), '../../components'),
+        path.resolve(require.resolve('@dcloudio/uni-quickapp-native'), '../../components'),
         true
       )
     }

@@ -106,6 +106,8 @@ function checkAutoFill (el) {
 
 function transformNode (el, parent, state, isScopedSlot) {
   if (el.type === 3) {
+    // fixed by xxxxxx 注意：保持平台一致性，trim 一下，理论上service不需要，保险起见也处理一遍
+    el.text = el.text.trim()
     return
   }
   parseBlock(el, parent)

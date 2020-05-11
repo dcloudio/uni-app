@@ -42,6 +42,16 @@ export function parseWebviewStyle (id, path, routeOptions = {}) {
     }
   })
 
+  const backgroundColor = routeOptions.window.backgroundColor
+  if (backgroundColor) {
+    if (!webviewStyle.background) {
+      webviewStyle.background = backgroundColor
+    }
+    if (!webviewStyle.backgroundColorTop) {
+      webviewStyle.backgroundColorTop = backgroundColor
+    }
+  }
+
   const titleNView = parseTitleNView(routeOptions)
   if (titleNView) {
     if (

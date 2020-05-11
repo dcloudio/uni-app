@@ -9,6 +9,7 @@ const Plugin = {
   configureEnv: [], // (){},
   // 以 H5 为基准的平台特殊配置
   configureH5: [], // (h5Options) {},
+  configurePages: [], // (pagesJson,manifestJson,loader) {},
   // 链式修改 webpack config
   chainWebpack: [], // (config, vueOptions, api) {},
   // 修改 webpack config
@@ -86,6 +87,8 @@ function initExtends (name, plugin, plugins) {
 
 module.exports = {
   init () {
+    // compatible with vue-cli-service lint
+    process.env.UNI_PLATFORM = process.env.UNI_PLATFORM || 'h5'
     const plugins = resolvePlugins()
     const plugin = plugins.find(plugin => plugin.name === process.env.UNI_PLATFORM)
     if (!plugin) {

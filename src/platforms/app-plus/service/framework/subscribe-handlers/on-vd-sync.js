@@ -18,6 +18,7 @@ export default function onVdSync ({
       handler(data)
     })
   } else {
-    console.error(`vdSync[${pageId}] not found`)
+    // 页面关闭时可能会赶上触发同步，此时页面已销毁
+    // console.error(`vdSync[${pageId}] not found`)
   }
 }

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8" />
+    <script>
+        var coverSupport = 'CSS' in window && typeof CSS.supports === 'function' && (CSS.supports('top: env(a)') || CSS.supports('top: constant(a)'))
+        document.write('<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' + (coverSupport ? ', viewport-fit=cover' : '') + '" />')
+    </script>
+    <title></title>
+    <style>
+        html,
+        body,
+        .container {
+            margin: 0;
+            padding: 0;
+            position: absolute;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            background: #ffffff;
+        }
+
+        #map {
+            position: absolute;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 80px;
+            bottom: calc(80px + constant(safe-area-inset-bottom));
+            bottom: calc(80px + env(safe-area-inset-bottom));
+        }
+
+        #poi {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            bottom: constant(safe-area-inset-bottom);
+            bottom: env(safe-area-inset-bottom);
+            height: 80px;
+            background: #FFFFFF;
+        }
+
+        .poi-info {
+            width: 100%;
+            padding: 23px 16px 23px 18px;
+            box-sizing: border-box;
+            background: #FFFFFF;
+        }
+
+        .poi-name {
+            font-size: 17px;
+            line-height: 17px;
+            color: #111111;
+            display: block;
+            margin-right: 70px;
+            word-wrap: break-word;
+        }
+
+        .poi-addr {
+            font-size: 13px;
+            line-height: 13px;
+            color: #666666;
+            display: block;
+            margin-top: 4px;
+            margin-right: 70px;
+            word-wrap: break-word;
+        }
+
+        .poi-nav {
+            display: block;
+            position: absolute;
+            top: 10px;
+            right: 16px;
+            width: 60px;
+            height: 60px;
+            border-radius: 60px;
+            overflow: hidden;
+        }
+
+        .poi-nav i,
+        .poi-nav span {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            display: inline-block;
+            border-radius: 60px;
+        }
+
+        .poi-nav i {
+            background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAAB4CAMAAAAOusbgAAACnVBMVEUAAAA9avA+avA9avA/bPE8afA+avM9afA9avA9au9Ac/I+bPQ9avA8a/E8au8+avY9avA9avBAgP88avA9au9AbfFAgP89avA9avBJbf89au88afA8ae88afA8ae9AbO88afA/avE9ae88avBHcfFCcfY+a/H///89afE8afA8avA9afA8afA9a/E9afA9avA8avA8avA9ae////88ae8/a+/+/v77/P5Cbu9jh/I9au9Te/CIo/XY4fuasfbH1PpJc/Dl6/xHce9Cbe9Eb+9FcO/3+f5SevC0xfjh6PygtvdLdPD4+f7e5fytwPj9/f7y9f1agPG6yvlsjvNIcvC8y/lXfvFNdvBZf/HR3PtBbe+DoPTT3fvg5/xWffGyxPh/nPTo7f32+P65yfnBz/n6+/6xw/i+zfmwwvj5+v6Np/WetPdPd/BMdfBOd/BdgvGkufdGce9ghfKnu/deg/F4l/NqjPKAnfS3x/lAbO+KpfVPePBmifKqvviZsPait/fS3PtUe/F6mfT8/f7s8P2Xr/bX4PuWrvbI1fqdtPfq7/3t8f3E0vqCn/RRefCzxPjK1vpwkfPP2vtVfPHR2/tDbu+BnvTr8P3G0/qLpvXW3/uOqPXL1/rf5vyht/eDn/Rzk/OPqfWQqfXZ4vuGovX19/67y/nm7Pymuvc+au9hhfKluvfU3vt3lvO3yPlpjPJykvN2lfNQePB7mfSsv/ju8v18mvTO2fvv8/22x/nr7/2cs/aMpvXn7P3D0fp+nPR5mPTE0frj6fyftfdcgfFfhPHN2Prx9P1ihvJ2lvO/zvm9zPl0lPOHo/VsjvKovPeQqvX09v6TrPZ1lfOUrfZnivKVrfbM2PrAzvmuwfi1xvjC0Pri6fzz9v59m/T8d63OAAAAM3RSTlMA7GNUSf4p38bFFC3nN7Id75oI/eI4BIv7B9Kl9fnCQLs1ossSG2sBS/p7rJlYuLmYrcSkuUTkAAAGJElEQVR4XsWbVXvbShBAJbumJE0abp0mbdI23KS9M4YgM0ORmZmZmZkZLjMzMzPDb7m2NvJnx8p6pVjd86J18nA+raSFmVlBNXGRxtyMApvdIqamiha7rSAj1xgZJ+iLOTPPEo8KxFvyMs06SSMMKVFIJSrFEBFu6zBjdA4ykBNtHBZGbfq4IcjMkHHpYdKOGIkqGTkiDNpBNtSAbdAAtYNHoUZGDRa0MzrWhJoxxY7WqM0yiDggREOWFm9MGg6YtBj13mwRw4CYrVKblGzCsGBKTlLjHWPFsGEdw+41J2AYSWCePRJFDCtiIuNYNRzDzHCmcWzsUAw7Q8cy3C/xhtsc8p4T1fbz7TUXmXo7xHM2i6iSb2Hus8iAaKZ+vwmoXgzwYQnLV0X5npOsqEkM9QcdGBJr/2NYMmoUA9zswZAk9zsvmLSJCc+txBCYspW9MSIORAyd7xQjHVFxlsxKQ+1iwrUipJOmtDIw4IDF0PFKNVIxKKyvWDu68vbEQ2+5OnxAAAc2Iw0xeB0Wi0zsnb8f6NyYghRig9axJmSguHkhhGRh8zTKm9131cu0fq6uAAY6tyGFUX3mJGTAXQYMvLkSqQTOUzZk4GsGbdsmDMEjAfsyZGAbEFrbz253FMuUgh/zDjOM2f47Opb9YO1xIqjY3u93vKABGRgp+EhHBnYRQWMx9iN+/EVkI90nzkcG2iTBMw5UFi+85UZG8mXvMJb9/iQi2IHK4s+6kJkhcrTCyD4mlyn//fglVINRIEQjA29L4t1K4o72CaiKaOKNyEEGlkjibQriQ0WokpwIFfNhtyQOnnteXkaZ/umzY4pWsXZSJHHUwxdHeb1mfPhiNHvEmTzEmR7xeB7iPI/YwkNsEYS4eB7i+DghEnmIMVIw8hEbhVw+4lwhg484QyjkIy4UrHzEVsHOR2wXLHzEFkHkIxaFVD7iVG5i5q4u2ujlpfB1tQW5YBHsyAW7YEMu2IQC5EKBkIFcyBBykQu5ghG5YGRZ+qzasmUV+uFYhzJfrrmKmohkWexNAfAPmk17b+kHcns9fIQ+znf2ZSVlsSdY1IonnIP9pUjY4f+vWdCXyZTlrZBHCeQRugC6epuSYOt8gIO4eo6Hza2waI6XvUTcs8FDBVR4L99QxHnULcwmCOIplGiEN1YsB3+mS2Ji6oZulH9StjBmDeInZ3+K12fKuODyzI3E9HyXhytwxXt5gSI2U7epdUWEfQD7eptuDKbLCatVPuMosjFnerkUOLq8mAQp2lAWz3vUgwtc3ku9JKZszA0qxa894WEZ4kaAI5WILa1QTsTsz9ggB19UiWeDh6mIeM8F7xZhObhKVIpzIqjhpi0ze6kCqJLbpxHn7Nx5RhJjz6uwdNkBaEefuPyehzIo814+7lccTQ+wvQ4KnJEU04kYG8oAoH6V2gHESA8p/lwq0Q7QXOrjToAY3XsA7tcgYfJjhLkwt7dVTQ8p0oOoe4jk7NNICBAf7gCAG7XoQ37GNMYxhY3fJ4HTdU54ECSumQ8w9SjADHJnjl4mwkS5SQsb0wPllcdgsdRYBPWfBIpr71YBLK7BcoD7LYhYAsGUUALl9NTAYmidJDUuNkGb21+863MAkPq/GeDmCnbxCJZkyF3w9fAXLliChOLZ0LT1N3B+tU6elafWITom9XICTshNhb62saR/TjrhNBIcpxrB+R1pLgCAc5O/X40yP9Sxv1yDQie8HGuc8OPVn3YvWnChqRO8NEk5tFuwtLwKqn75taFyba17Wk1ddcupLqy8RyADiMxa5YQXPcW3AvyY9/i1iv2wHBF7OuABVl6AAI7hFFDifFCKjyWpeeT3PxrXl18/eaeoQXqv/oS/EHHD5QrvlHzp73/+dYJMN5bMUGI7JanJnsZt+Y8MjbNQZqu7du0ELzXIhDiakrjWEwMlVa8naVmU4gQdEWMo5Rg6YsqmFKDoSTKt5EZHrEnUIiPdSBjDUFalA6KZoZBMB4Yn8iqd41UsyKs8kldBKK8SWF5Fv7zKnHkVdvMvZedfvM//uAL/Axr8j6TwP4RDSM9Xc+woP53TQStOR8v0wZw5XvfDdPTjg4VW+figtVDb8cH/AZ+Eg+9jqX0NAAAAAElFTkSuQmCC) no-repeat;
+            background-size: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container" class="container">
+        <div id="map"></div>
+        <div id="poi">
+            <div class="poi-info">
+                <span class="poi-name"></span>
+                <span class="poi-addr"></span>
+                <div class="poi-nav">
+                    <i></i>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var loc;
+        var serviceWebview;
+        var back = function() {
+            var webview = plus.webview.currentWebview()
+            if (webview.__uniapp_statusbar_style === 'light') {
+                plus.navigator.setStatusBarStyle('light')
+            }
+            webview.close('auto');
+        };
+
+        var isIos = !!navigator.userAgent.match(/iPhone|iPad|iPod/i);
+
+        document.addEventListener('plusready', function() {
+            serviceWebview = plus.webview.getWebviewById('__W2A_CONTEXT_') || plus.webview.getLaunchWebview();
+            plus.key.addEventListener('backbutton', back);
+
+
+        })
+
+        /**
+         * 调用系统第三方程序进行导航
+         */
+        function openSysMap(lat, lng, title) {
+            /**
+             * 网页版地图源
+             */
+            var mapsSourceWeb = [
+                {
+                    title: '腾讯地图网页版',
+                    getUrl: function() {
+                        var url
+                        url = 'https://apis.map.qq.com/uri/v1/routeplan?type=drive' + '&to=' +
+                            encodeURIComponent(title) + '&tocoord=' + encodeURIComponent(lat + ',' + lng) +
+                            '&referer=APP'
+                        return url
+                    }
+                }
+            ]
+            /**
+             * APP版地图源
+             */
+            var mapsSource = [
+                {
+                    title: '高德地图',
+                    pname: 'com.autonavi.minimap',
+                    action: !isIos ? 'amapuri://' : 'iosamap://',
+                    getUrl: function() {
+                        var url
+                        if (!isIos) {
+                            url = 'amapuri://route/plan/'
+                        } else {
+                            url = 'iosamap://path'
+                        }
+                        url += '?sourceApplication=APP&dname=' + encodeURIComponent(title) + '&dlat=' + lat +
+                            '&dlon=' + lng + '&dev=0'
+                        return url
+                    }
+                },
+                {
+                    title: '百度地图',
+                    pname: 'com.baidu.BaiduMap',
+                    action: 'baidumap://',
+                    getUrl: function() {
+                        var url = 'baidumap://map/direction?destination=' + encodeURIComponent('latlng:' + lat +
+                            ',' + lng + '|name:' + title) + '&mode=driving&src=APP&coord_type=gcj02'
+                        return url
+                    }
+                },
+                {
+                    title: '腾讯地图',
+                    pname: 'com.tencent.map',
+                    action: 'qqmap://',
+                    getUrl: function() {
+                        var url
+                        url = 'qqmap://map/routeplan?type=drive' + (isIos ? ('&from=' + encodeURIComponent(
+                            '我的位置')) : '') + '&to=' + encodeURIComponent(title) + '&tocoord=' +
+                            encodeURIComponent(lat + ',' + lng) + '&referer=APP'
+                        return url
+                    }
+                }
+            ]
+            var maps = []
+            mapsSource.forEach(function(mapsSource) {
+                var installed = plus.runtime.isApplicationExist({
+                    pname: mapsSource.pname,
+                    action: mapsSource.action,
+                })
+                if (installed) {
+                    maps.push(mapsSource)
+                }
+            })
+            if (isIos) {
+                maps.unshift({
+                    title: 'Apple 地图',
+                    getUrl: function() {
+                        var url
+                        url = 'https://maps.apple.com/?daddr=' + encodeURIComponent(title) + '&sll=' +
+                            encodeURIComponent(lat + ',' + lng)
+                        return url
+                    }
+                })
+            }
+            if (maps.length === 0) {
+                maps = maps.concat(mapsSourceWeb)
+            }
+            plus.nativeUI.actionSheet({
+                title: '导航方式',
+                cancel: '取消',
+                buttons: maps,
+            }, function(res) {
+                var index = res.index
+                var map
+                if (index > 0) {
+                    map = maps[index - 1]
+                    plus.runtime.openURL(map.getUrl(), function() { }, map.pname)
+                }
+            })
+        }
+
+        var ZOOM = 13
+        window.__openLocation__ = function(params) {
+            var mapElem = document.getElementById('map');
+            var poiNameElem = document.querySelector('.poi-name');
+            var poiAddrElem = document.querySelector('.poi-addr');
+            var poiNavElem = document.querySelector('.poi-nav');
+            var latitude = params.latitude;
+            var longitude = params.longitude;
+            var scale = params.scale;
+            var name = params.name;
+            var address = params.address;
+            var point = new plus.maps.Point(longitude, latitude);
+            var map = plus.maps.create('map', {
+                center: point,
+                zoom: scale || ZOOM,
+                top: 0,
+                left: 0,
+                width: mapElem.offsetWidth,
+                height: mapElem.offsetHeight
+
+            });
+            var marker = new plus.maps.Marker(point);
+            marker.setIcon('__uniappmarker@3x.png');
+            if (name) {
+                poiNameElem.innerText = name;
+                // marker.setLabel(name);
+            }
+            if (address) {
+                poiAddrElem.innerText = address;
+                //                             var bubble = new plus.maps.Bubble(address);
+                //                             marker.setBubble(bubble);
+            }
+            map.addOverlay(marker);
+            plus.webview.currentWebview().append(map);
+            var userPoint = false
+            map.getUserLocation(function(state, point) {
+                if (state) {
+                    plus.nativeUI.toast('定位失败!');
+                } else {
+                    userPoint = point;
+                }
+            })
+
+            poiNavElem.addEventListener('click', function() {
+                openSysMap(latitude, longitude, name)
+            });
+        }
+    </script>
+</body>
+
+</html>

@@ -67,10 +67,10 @@ module.exports = function (content) {
   }
 
   if (process.env.UNI_PLATFORM === 'h5') {
-    return require('./platforms/h5')(pagesJson, manifestJson)
+    return require('./platforms/h5')(pagesJson, manifestJson, this)
   }
-  if (process.env.UNI_PLATFORM === 'quickapp-vue') {
-    return require('./platforms/quickapp-vue')(pagesJson, manifestJson, this)
+  if (process.env.UNI_PLATFORM === 'quickapp-native') {
+    return require('./platforms/quickapp-native')(pagesJson, manifestJson, this)
   }
 
   if (!process.env.UNI_USING_V3) {

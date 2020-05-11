@@ -23,9 +23,9 @@ const PLATFORMS = {
     prefix: 'tt',
     title: '头条小程序'
   },
-  'quickapp-light': {
+  'quickapp-webview': {
     prefix: 'qa',
-    title: '快应用(Light)版'
+    title: '快应用(Webview)版'
   },
   'app-plus': {
     prefix: 'wx',

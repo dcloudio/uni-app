@@ -6,14 +6,14 @@ import {
   onMethod
 } from '../../platform'
 
-const callbacks = []
+let callback
 
 onMethod('onKeyboardHeightChange', res => {
-  callbacks.forEach(callbackId => {
-    invoke(callbackId, res)
-  })
+  if (callback) {
+    invoke(callback, res)
+  }
 })
 
 export function onKeyboardHeightChange (callbackId) {
-  callbacks.push(callbackId)
+  callback = callbackId
 }

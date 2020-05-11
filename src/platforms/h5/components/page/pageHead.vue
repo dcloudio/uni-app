@@ -65,9 +65,8 @@
           :style="{color:searchInput.placeholderColor}"
           :class="[`uni-page-head-search-placeholder-${focus || text ? 'left' : searchInput.align}`]"
           class="uni-page-head-search-placeholder"
-        >
-          {{ text || composing ? '' : searchInput.placeholder }}
-        </div>
+          v-text="text || composing ? '' : searchInput.placeholder"
+        />
         <v-uni-input
           ref="input"
           v-model="text"
@@ -509,6 +508,16 @@ export default {
               text: this.text
             })
           }
+        })
+        input.$refs.input.addEventListener('focus', () => {
+          UniServiceJSBridge.emit('onNavigationBarSearchInputFocusChanged', {
+            focus: true
+          })
+        })
+        input.$refs.input.addEventListener('blur', () => {
+          UniServiceJSBridge.emit('onNavigationBarSearchInputFocusChanged', {
+            focus: false
+          })
         })
       }
     }

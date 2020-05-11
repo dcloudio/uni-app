@@ -2,7 +2,8 @@ import {
   PAGE_PVER_TIME,
   APP_PVER_TIME,
   STAT_URL,
-  STAT_VERSION
+  STAT_VERSION,
+  DIFF_TIME
 } from './config';
 const statConfig = require('uni-stat-config').default || require('uni-stat-config');
 const UUID_KEY = '__DC_STAT_UUID';
@@ -299,12 +300,12 @@ export const calibration = (eventName, options) => {
 }
 
 const Report_Data_Time = 'Report_Data_Time'
-
+const Report_Status = 'Report_Status'
 export const isReportData = () => {
   return new Promise((resolve, reject) => {
     let start_time = ''
     let end_time = new Date().getTime()
-    let diff_time = 60 * 1000 * 60 * 24
+    let diff_time = DIFF_TIME
     try {
       start_time = uni.getStorageSync(Report_Data_Time)
     } catch (e) {
@@ -320,6 +321,7 @@ export const isReportData = () => {
         enable
       }) => {
         uni.setStorageSync(Report_Data_Time, end_time)
+        uni.setStorageSync(Report_Status, enable)
         if (enable === 1) {
           resolve();
         }
@@ -328,11 +330,10 @@ export const isReportData = () => {
   })
 }
 
-const Report_Status = 'Report_Status'
 const requestData = (done) => {
   let formData = {
     usv: STAT_VERSION,
-    conf: encodeURIComponent({
+    conf: JSON.stringify({
       ak: statConfig.appid
     })
   }
@@ -341,7 +342,9 @@ const requestData = (done) => {
     method: 'GET',
     data: formData,
     success: (res) => {
-      const {data} = res
+      const {
+        data
+      } = res
       if (data.ret === 0) {
         typeof done === 'function' && done({
           enable: data.enable

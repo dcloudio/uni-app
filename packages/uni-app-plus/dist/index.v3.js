@@ -304,11 +304,15 @@ var serviceContext = (function () {
 
   function debounce (fn, delay) {
     let timeout;
-    return function () {
+    const newFn = function () {
       clearTimeout(timeout);
       const timerFn = () => fn.apply(this, arguments);
       timeout = setTimeout(timerFn, delay);
-    }
+    };
+    newFn.cancel = function () {
+      clearTimeout(timeout);
+    };
+    return newFn
   }
 
   /**
@@ -1654,8 +1658,8 @@ var serviceContext = (function () {
         }
       }
 
-      // tabBar不允许传递参数
-      if (routeOptions.meta.isTabBar) {
+      // switchTab不允许传递参数,reLaunch到一个tabBar页面是可以的
+      if (type === 'switchTab' && routeOptions.meta.isTabBar) {
         url = pagePath;
       }
 
@@ -1666,8 +1670,20 @@ var serviceContext = (function () {
 
       // 参数格式化
       params.url = encodeQueryString(url);
+
+      // 主要拦截目标为用户快速点击时触发的多次跳转，该情况，通常前后 url 是一样的
+      if (navigatorLock === url) {
+        return `${navigatorLock} locked`
+      }
+      // 至少 onLaunch 之后，再启用lock逻辑（onLaunch之前可能开发者手动调用路由API，来提前跳转）
+      // enableNavigatorLock 临时开关（不对外开放），避免该功能上线后，有部分情况异常，可以让开发者临时关闭 lock 功能
+      if (__uniConfig.ready && __uniConfig.enableNavigatorLock !== false) {
+        navigatorLock = url;
+      }
     }
   }
+
+  let navigatorLock;
 
   function createProtocol (type, extras = {}) {
     return Object.assign({
@@ -1675,6 +1691,9 @@ var serviceContext = (function () {
         type: String,
         required: true,
         validator: createValidator(type)
+      },
+      beforeAll () {
+        navigatorLock = '';
       }
     }, extras)
   }
@@ -2301,7 +2320,9 @@ var serviceContext = (function () {
 
   function invokeCallbackHandlerFail (err, apiName, callbackId) {
     const errMsg = `${apiName}:fail ${err}`;
-    console.error(errMsg);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error(errMsg);
+    }
     if (callbackId === -1) {
       throw new Error(errMsg)
     }
@@ -2318,6 +2339,23 @@ var serviceContext = (function () {
     type: Function,
     required: true
   }];
+
+  // 目前已用到的仅这三个
+  // 完整的可能包含：
+  // beforeValidate,
+  // beforeSuccess,
+  // afterSuccess,
+  // beforeFail,
+  // afterFail,
+  // beforeCancel,
+  // afterCancel,
+  // beforeAll,
+  // afterAll
+  const IGNORE_KEYS = [
+    'beforeValidate',
+    'beforeAll',
+    'beforeSuccess'
+  ];
 
   function validateParams (apiName, paramsData, callbackId) {
     let paramTypes = protocol[apiName];
@@ -2348,7 +2386,7 @@ var serviceContext = (function () {
 
       const keys = Object.keys(paramTypes);
       for (let i = 0; i < keys.length; i++) {
-        if (keys[i] === 'beforeValidate') {
+        if (IGNORE_KEYS.indexOf(keys[i]) !== -1) {
           continue
         }
         const err = validateParam(keys[i], paramTypes, paramsData);
@@ -2430,6 +2468,7 @@ var serviceContext = (function () {
       afterFail,
       beforeCancel,
       afterCancel,
+      beforeAll,
       afterAll
     } = wrapperCallbacks;
 
@@ -2452,6 +2491,8 @@ var serviceContext = (function () {
         }
         res.errMsg = apiName + ':fail' + errDetail;
       }
+
+      isFn(beforeAll) && beforeAll(res);
 
       const errMsg = res.errMsg;
 
@@ -2536,6 +2577,7 @@ var serviceContext = (function () {
   function wrapperExtras (name, extras) {
     const protocolOptions = protocol[name];
     if (protocolOptions) {
+      isFn(protocolOptions.beforeAll) && (extras.beforeAll = protocolOptions.beforeAll);
       isFn(protocolOptions.beforeSuccess) && (extras.beforeSuccess = protocolOptions.beforeSuccess);
     }
   }
@@ -7661,6 +7703,16 @@ var serviceContext = (function () {
       }
     });
 
+    const backgroundColor = routeOptions.window.backgroundColor;
+    if (backgroundColor) {
+      if (!webviewStyle.background) {
+        webviewStyle.background = backgroundColor;
+      }
+      if (!webviewStyle.backgroundColorTop) {
+        webviewStyle.backgroundColorTop = backgroundColor;
+      }
+    }
+
     const titleNView = parseTitleNView(routeOptions);
     if (titleNView) {
       if (
@@ -7952,7 +8004,8 @@ var serviceContext = (function () {
     pullToRefresh: 'onPullDownRefresh',
     titleNViewSearchInputChanged: 'onNavigationBarSearchInputChanged',
     titleNViewSearchInputConfirmed: 'onNavigationBarSearchInputConfirmed',
-    titleNViewSearchInputClicked: 'onNavigationBarSearchInputClicked'
+    titleNViewSearchInputClicked: 'onNavigationBarSearchInputClicked',
+    titleNViewSearchInputFocusChanged: 'onNavigationBarSearchInputFocusChanged'
   };
 
   function setPreloadWebview (webview) {
@@ -8298,10 +8351,10 @@ var serviceContext = (function () {
       $remove () {
         const index = pages.findIndex(page => page === this);
         if (index !== -1) {
-          pages.splice(index, 1);
           if (!webview.nvue) {
             this.$vm.$destroy();
           }
+          pages.splice(index, 1);
           if (process.env.NODE_ENV !== 'production') {
             console.log('[uni-app] removePage', path, webview.id);
           }
@@ -8320,6 +8373,13 @@ var serviceContext = (function () {
 
     // 首页是 nvue 时，在 registerPage 时，执行路由堆栈
     if (webview.id === '1' && webview.nvue) {
+      if (
+        __uniConfig.splashscreen &&
+        __uniConfig.splashscreen.autoclose &&
+        !__uniConfig.splashscreen.alwaysShowBeforeRender
+      ) {
+        plus.navigator.closeSplashscreen();
+      }
       __uniConfig.onReady(function () {
         navigateFinish();
       });
@@ -8378,7 +8438,7 @@ var serviceContext = (function () {
     const urls = url.split('?');
     const path = urls[0];
     const routeStyles = __uniRoutes.find(route => route.path === path).window;
-    const globalStyle = __uniConfig.window;
+    const globalStyle = __uniConfig.window || {};
     if (!animationType) {
       animationType = routeStyles.animationType || globalStyle.animationType || ANI_SHOW;
     }
@@ -9001,6 +9061,7 @@ var serviceContext = (function () {
     confirmText = '确定',
     confirmColor = '#3CC51F'
   } = {}, callbackId) {
+    content = content || ' ';
     plus.nativeUI.confirm(content, (e) => {
       if (showCancel) {
         invoke$1(callbackId, {
@@ -9121,36 +9182,19 @@ var serviceContext = (function () {
     }
   }
 
-  function setTabBarStyle$2 ({
-    color,
-    selectedColor,
-    backgroundColor,
-    borderStyle
-  }) {
+  function setTabBarStyle$2 (style = {}) {
     if (!isTabBarPage()) {
       return {
         errMsg: 'setTabBarStyle:fail not TabBar page'
       }
     }
-    const style = {};
     const borderStyles = {
       black: 'rgba(0,0,0,0.4)',
       white: 'rgba(255,255,255,0.4)'
     };
-    if (color) {
-      style.color = color;
-    }
-    if (selectedColor) {
-      style.selectedColor = selectedColor;
-    }
-    if (backgroundColor) {
-      style.backgroundColor = backgroundColor;
-    }
+    const borderStyle = style.borderStyle;
     if (borderStyle in borderStyles) {
-      borderStyle = borderStyles[borderStyle];
-    }
-    if (borderStyle) {
-      style.borderStyle = borderStyle;
+      style.borderStyle = borderStyles[borderStyle];
     }
     tabBar$1.setTabBarStyle(style);
     return {
@@ -11280,7 +11324,7 @@ var serviceContext = (function () {
     }
 
     abort () {
-      invokeMethod('operateRequestTask', {
+      invokeMethod('operateDownloadTask', {
         downloadTaskId: this.id,
         operationType: 'abort'
       });
@@ -12064,16 +12108,16 @@ var serviceContext = (function () {
     createSelectorQuery: createSelectorQuery
   });
 
-  const callbacks$c = [];
+  let callback$1;
 
   onMethod('onKeyboardHeightChange', res => {
-    callbacks$c.forEach(callbackId => {
-      invoke$1(callbackId, res);
-    });
+    if (callback$1) {
+      invoke$1(callback$1, res);
+    }
   });
 
   function onKeyboardHeightChange (callbackId) {
-    callbacks$c.push(callbackId);
+    callback$1 = callbackId;
   }
 
   var require_context_module_1_24 = /*#__PURE__*/Object.freeze({
@@ -12152,16 +12196,16 @@ var serviceContext = (function () {
 
   const hideTabBarRedDot$1 = removeTabBarBadge$1;
 
-  const callbacks$d = [];
+  const callbacks$c = [];
 
   onMethod('onTabBarMidButtonTap', res => {
-    callbacks$d.forEach(callbackId => {
+    callbacks$c.forEach(callbackId => {
       invoke$1(callbackId, res);
     });
   });
 
   function onTabBarMidButtonTap (callbackId) {
-    callbacks$d.push(callbackId);
+    callbacks$c.push(callbackId);
   }
 
   var require_context_module_1_28 = /*#__PURE__*/Object.freeze({
@@ -12172,22 +12216,22 @@ var serviceContext = (function () {
     onTabBarMidButtonTap: onTabBarMidButtonTap
   });
 
-  const callbacks$e = [];
+  const callbacks$d = [];
   onMethod('onViewDidResize', res => {
-    callbacks$e.forEach(callbackId => {
+    callbacks$d.forEach(callbackId => {
       invoke$1(callbackId, res);
     });
   });
 
   function onWindowResize (callbackId) {
-    callbacks$e.push(callbackId);
+    callbacks$d.push(callbackId);
   }
 
   function offWindowResize (callbackId) {
     // TODO 目前 on 和 off 即使传入同一个 function，获取到的 callbackId 也不会一致，导致不能 off 掉指定
     // 后续修复
     // 此处和微信平台一致查询不到去掉最后一个
-    callbacks$e.splice(callbacks$e.indexOf(callbackId), 1);
+    callbacks$d.splice(callbacks$d.indexOf(callbackId), 1);
   }
 
   var require_context_module_1_29 = /*#__PURE__*/Object.freeze({
@@ -12421,6 +12465,7 @@ var serviceContext = (function () {
     on('onNavigationBarSearchInputChanged', createCallCurrentPageHook('onNavigationBarSearchInputChanged'));
     on('onNavigationBarSearchInputConfirmed', createCallCurrentPageHook('onNavigationBarSearchInputConfirmed'));
     on('onNavigationBarSearchInputClicked', createCallCurrentPageHook('onNavigationBarSearchInputClicked'));
+    on('onNavigationBarSearchInputFocusChanged', createCallCurrentPageHook('onNavigationBarSearchInputFocusChanged'));
 
     on('onWebInvokeAppService', onWebInvokeAppService);
   }
@@ -12541,8 +12586,6 @@ var serviceContext = (function () {
       handlers.forEach(handler => {
         handler(data);
       });
-    } else {
-      console.error(`vdSync[${pageId}] not found`);
     }
   }
 
@@ -13547,6 +13590,7 @@ var serviceContext = (function () {
     'onNavigationBarSearchInputChanged',
     'onNavigationBarSearchInputConfirmed',
     'onNavigationBarSearchInputClicked',
+    'onNavigationBarSearchInputFocusChanged',
     // Component
     // 'onReady', // 兼容旧版本，应该移除该事件
     'onPageShow',

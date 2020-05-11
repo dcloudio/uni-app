@@ -97,6 +97,10 @@ export default function parseBaseComponent (vueComponentOptions, {
       __e: handleEvent
     }
   }
+  // externalClasses
+  if (vueOptions.externalClasses) {
+    componentOptions.externalClasses = vueOptions.externalClasses
+  }
 
   if (Array.isArray(vueOptions.wxsCallMethods)) {
     vueOptions.wxsCallMethods.forEach(callMethod => {

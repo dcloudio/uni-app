@@ -183,5 +183,83 @@ describe('codegen', () => {
       `with(this){return _c('image',{attrs:{"_i":0}})}`
     )
   })
+  it('generate text trim', () => {
+    assertCodegen(
+      '<view>text</view>',
+        `with(this){return _c('view')}`
+    )
+
+    assertCodegen(
+      '<view> text </view>',
+        `with(this){return _c('view')}`
+    )
+
+    assertCodegen(
+      '<text>{{line_one_cn+\' \'}}</text>',
+        `with(this){return _c('text',[_v((_$s(0,'t0-0',_s(line_one_cn+' '))))])}`
+    )
+
+    assertCodegen(
+      '<text>{{" "+line_one_cn}}</text>',
+        `with(this){return _c('text',[_v((_$s(0,'t0-0',_s(" "+line_one_cn))))])}`
+    )
+
+    assertCodegen(
+      '<text>\nN: {{title}}\n′</text>',
+        `with(this){return _c('text',[_v((_$s(0,'t0-0',_s(title))))])}`
+    )
+    assertCodegen(
+      '<text>我是第一行\n我的第二行</text>',
+        `with(this){return _c('text')}`
+    )
+    assertCodegen(
+      '<text>我是第一行\n我的第二行1{{title}}</text>',
+        `with(this){return _c('text',[_v((_$s(0,'t0-0',_s(title))))])}`
+    )
+    assertCodegen(
+        `<text>我是第一行
+  我的第二行2{{title}}</text>`,
+        `with(this){return _c('text',[_v((_$s(0,'t0-0',_s(title))))])}`
+    )
+
+    assertCodegen(
+      '<view> text text </view>',
+        `with(this){return _c('view')}`
+    )
+    assertCodegen(
+      '<view>text {{text}} text</view>',
+        `with(this){return _c('view',[_v((_$s(0,'t0-0',_s(text))))])}`
+    )
+    assertCodegen(
+      '<view> text {{text}} 文本 </view>',
+        `with(this){return _c('view',[_v((_$s(0,'t0-0',_s(text))))])}`
+    )
+    assertCodegen(
+      '<view>{{text}} text  text </view>',
+        `with(this){return _c('view',[_v((_$s(0,'t0-0',_s(text))))])}`
+    )
+    assertCodegen(
+      '<view>  {{text}} text  text </view>',
+        `with(this){return _c('view',[_v((_$s(0,'t0-0',_s(text))))])}`
+    )
+    assertCodegen(
+      '<view>{{text}} text  text {{text}}</view>',
+        `with(this){return _c('view',[_v((_$s(0,'t0-0',_s(text)))+(_$s(0,'t0-1',_s(text))))])}`
+    )
+    assertCodegen(
+      '<view>  {{text}} text  text {{text}}  </view>',
+        `with(this){return _c('view',[_v((_$s(0,'t0-0',_s(text)))+(_$s(0,'t0-1',_s(text))))])}`
+    )
+  })
+  it('generate bool attr', () => {
+    assertCodegen(
+      '<video controls/>',
+      `with(this){return _c('video',{attrs:{"_i":0}})}`
+    )
+    assertCodegen(
+      '<video controls=""/>',
+      `with(this){return _c('video',{})}`
+    )
+  })
 })
 /* eslint-enable quotes */

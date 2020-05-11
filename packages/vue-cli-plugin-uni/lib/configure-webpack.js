@@ -198,6 +198,24 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
       plugins.push(new CopyWebpackPlugin(getCopyWebpackPluginOptions(manifestPlatformOptions, vueOptions)))
     }
 
+    try {
+      const automatorJson = require.resolve('@dcloudio/uni-automator/dist/automator.json')
+      plugins.push(new CopyWebpackPlugin([{
+        from: automatorJson,
+        to: '../.automator/' + (process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM) +
+          '/.automator.json',
+        transform (content) {
+          if (process.env.UNI_AUTOMATOR_WS_ENDPOINT) {
+            return JSON.stringify({
+              version: require('@dcloudio/uni-automator/package.json').version,
+              wsEndpoint: process.env.UNI_AUTOMATOR_WS_ENDPOINT
+            })
+          }
+          return ''
+        }
+      }]))
+    } catch (e) {}
+
     if (process.UNI_SCRIPT_ENV && Object.keys(process.UNI_SCRIPT_ENV).length) {
       // custom define
       const envs = Object.create(null)

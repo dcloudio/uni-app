@@ -6,7 +6,7 @@ const commonjs = require('@rollup/plugin-commonjs')
 const terser = require('rollup-plugin-terser')
 const requireContext = require('../lib/rollup-plugin-require-context')
 
-process.env.UNI_PLATFORM = 'quickapp-vue'
+process.env.UNI_PLATFORM = 'quickapp-native'
 
 const external = []
 
@@ -36,7 +36,7 @@ alias({
     replacement: resolve('src/core')
   }, {
     find: 'uni-platform',
-    replacement: resolve('src/platforms/quickapp-vue')
+    replacement: resolve('src/platforms/quickapp-native')
   }, {
     find: 'uni-platforms',
     replacement: resolve('src/platforms')
@@ -48,10 +48,10 @@ alias({
     replacement: resolve('src/core/helpers')
   }, {
     find: 'uni-invoke-api',
-    replacement: resolve('src/platforms/quickapp-vue/service/invoke-api')
+    replacement: resolve('src/platforms/quickapp-native/service/invoke-api')
   }, {
     find: 'uni-service-api',
-    replacement: resolve('src/platforms/quickapp-vue/service/api')
+    replacement: resolve('src/platforms/quickapp-native/service/api')
   }, {
     find: 'uni-api-protocol',
     replacement: resolve('src/core/helpers/protocol')
@@ -62,7 +62,7 @@ requireContext(),
 commonjs(),
 replace({
   __PLATFORM__: JSON.stringify(process.env.UNI_PLATFORM),
-  __PLATFORM_TITLE__: '快应用(Vue)版'
+  __PLATFORM_TITLE__: '快应用(Native)版'
 })
 ]
 
@@ -74,11 +74,11 @@ module.exports = function (type) {
   let input = ''
 
   if (type === 'bridge') {
-    input = 'src/platforms/quickapp-vue/runtime/bridge.js'
+    input = 'src/platforms/quickapp-native/runtime/bridge.js'
   } else if (type === 'app') {
-    input = 'src/platforms/quickapp-vue/runtime/app.js'
+    input = 'src/platforms/quickapp-native/runtime/app.js'
   } else if (type === 'page') {
-    input = 'src/platforms/quickapp-vue/runtime/page.js'
+    input = 'src/platforms/quickapp-native/runtime/page.js'
   }
 
   return {

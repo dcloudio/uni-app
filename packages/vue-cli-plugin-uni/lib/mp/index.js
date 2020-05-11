@@ -109,7 +109,7 @@ module.exports = {
             loader: path.resolve(__dirname, '../../packages/wrap-loader'),
             options: {
               before: [
-                beforeCode + statCode
+                beforeCode + require('../util').getAutomatorCode() + statCode
               ]
             }
           }, {
