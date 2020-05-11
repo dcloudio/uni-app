@@ -53,8 +53,13 @@ module.exports = (api, options) => {
     vueConfig = vueConfig(options, api)
   }
 
-  if (options.pages) { // 允许 vue.config.js pages 覆盖
-    delete vueConfig.pages
+  if (options.pages) {
+    // h5平台 允许 vue.config.js pages 覆盖，其他平台移除 pages 配置
+    if (process.env.UNI_PLATFORM === 'h5') {
+      delete vueConfig.pages
+    } else {
+      delete options.pages
+    }
   }
 
   Object.assign(options, { // TODO 考虑非 HBuilderX 运行时，可以支持自定义输出目录

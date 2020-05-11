@@ -68,18 +68,12 @@ function rewrite (attr, name, options) {
           .replace('"@/', '"/')
           .replace('"~@/', '"/')
       }
-      // v3,h5
-      const needRequire = options.service || options.view || options.h5
-      if (needRequire) {
+      // h5
+      if (options.h5) {
         attr.value = urlToRequire(attr.value.slice(1, -1))
-        if (attr.value.startsWith('require("')) { // require
-          // v3 需要增加前缀 /
-          if (options.service || options.view) {
-            attr.value = `"/"+${attr.value}`
-          } else if (options.h5 && options.publicPath === './') {
-            // h5 且 publicPath 为 ./ (仅生产模式可能为./)
-            attr.value = `(${attr.value}).substr(1)`
-          }
+        if (attr.value.startsWith('require("') && options.publicPath === './') { // require
+          // h5 且 publicPath 为 ./ (仅生产模式可能为./)
+          attr.value = `(${attr.value}).substr(1)`
         }
       }
       return true
