@@ -93,8 +93,12 @@ function parseGetStorage (type, value) {
         data = object
         if (typeof object === 'string') {
           object = JSON.parse(object)
-          // eslint-disable-next-line valid-typeof
-          data = typeof object === (type === 'null' ? 'object' : type) ? object : data
+          const objectType = typeof object
+          if (objectType === 'number' && type === 'date') {
+            data = new Date(object)
+          } else if (objectType === (['null', 'array'].indexOf(type) < 0 ? type : 'object')) {
+            data = object
+          }
         }
       }
     } catch (error) {}
