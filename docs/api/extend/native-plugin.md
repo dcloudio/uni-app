@@ -16,12 +16,30 @@ const PluginName = uni.requireNativePlugin(PluginName); // PluginName 为原生�
 
 下面以原生插件 [DCloud-RichAlert](https://ext.dcloud.net.cn/plugin?id=36) 为例，介绍如何使用此API。
 
-1. 在 ``uni-app`` 项目工程中添加插件：从 [http://ext.dcloud.net.cn/plugin?id=36](http://ext.dcloud.net.cn/plugin?id=36) 下载 DCloud-RichAlert.zip ，解压到 ``uni-app`` 项目根目录下的 ``nativeplugins`` 目录（如不存在则创建），添加后目录结构为：![ uni-app](https://img-cdn-qiniu.dcloud.net.cn/uploads/article/20181226/10cd9e6a19769b9543e0a0eda2c66696.png)
+**注意**
+
+- 只有免费插件可以下载到本地（不推荐），
+
+1. 购买或下载uni-app原生插件
+ 
+在 ``uni-app`` 项目工程中添加插件：从 [http://ext.dcloud.net.cn/plugin?id=36](http://ext.dcloud.net.cn/plugin?id=36) 购买或下载原生增强提示框插件。
+
+- 选择购买时需选择需要使用原生插件的包名，只有免费插件支持下载到本地。如需云端打包，推荐直接购买。购买成功之后可以在项目内选择购买的插件，如下图：
+
+![选择原生插件](https://img-cdn-qiniu.dcloud.net.cn/uploads/article/20190416/1b5297e695ad1536ddafe3c834e9c297.png)
+
+- 如果选择下载，解压到 `uni-app` 项目根目录下的 `nativeplugins` 目录（如不存在则创建），添加后目录结构如下
+
+![uni-app](https://img-cdn-qiniu.dcloud.net.cn/uploads/article/20181226/10cd9e6a19769b9543e0a0eda2c66696.png)
+
 2. 在页面引入原生插件，``uni.requireNativePlugin`` 使用后返回一个对象：
+
 ```javascript
 const dcRichAlert = uni.requireNativePlugin('DCloud-RichAlert')
 ```
+
 3. 使用原生插件
+
 ```javascript
 dcRichAlert.show({
         position: 'bottom',
@@ -49,6 +67,6 @@ dcRichAlert.show({
 
 **注意事项：**
 
-1. 插件来源为 [插件市场](http://ext.dcloud.net.cn/?cat1=5)，或自己开发的插件，Android插件开发参考：[https://ask.dcloud.net.cn/article/35416](https://ask.dcloud.net.cn/article/35416)，iOS插件开发参考：[https://ask.dcloud.net.cn/article/35415](https://ask.dcloud.net.cn/article/35415)；
-2. 不支持真机运行原生插件，仅支持云端打包运行或使用自定义基座运行；
+1. 可以在 [插件市场](https://ext.dcloud.net.cn/?cat1=5&cat2=51) 查看更多插件，如需开发uni原生插件请参考 [uni原生插件开发文档](https://nativesupport.dcloud.net.cn/NativePlugin/README)。
+2. 集成原生插件后，需要提交云端打包或制作自定义基座运行才会生效，不支持直接在内置基座运行。
 3. 如果插件需要传递文件路径，则需要传手机文件的绝对路径，可使用 5+ [IO模块](http://www.html5plus.org/doc/zh_cn/io.html) 的相关 API 得到文件的绝对路径。
