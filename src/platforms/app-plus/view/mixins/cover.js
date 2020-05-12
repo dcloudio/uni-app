@@ -21,7 +21,7 @@ export default {
         if (key === 'top' || key === 'left') {
           val = Math.max(valNumber, parentValNumber) + 'px'
         } else if (key === 'width' || key === 'height') {
-          const base = key === 'width' ? 'left' : 'left'
+          const base = key === 'width' ? 'left' : 'top'
           const parentStart = parseFloat(this._nativeParent.position[base])
           const viewStart = parseFloat(this.position[base])
           const diff1 = Math.max(parentStart - viewStart, 0)
