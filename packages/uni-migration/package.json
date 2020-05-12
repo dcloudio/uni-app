@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-migration",
-  "version": "2.0.0-alpha-27120200510002",
+  "version": "2.0.0-alpha-27120200510003",
   "description": "uni-app migration",
   "main": "lib/index.js",
   "repository": {
