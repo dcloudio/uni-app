@@ -72,7 +72,7 @@ describe('mp:compiler-mp-weixin', () => {
   })
 
   it('generate scoped slot', () => {
-    assertCodegen(// TODO vue-id
+    assertCodegen( // TODO vue-id
       '<span><slot v-bind:user="user">{{ user.lastName }}</slot></span>',
       '<label class="_span"><block wx:if="{{$slots.default}}"><scoped-slots-default user="{{user}}" bind:__l="__l"></scoped-slots-default></block><block wx:else>{{user.lastName}}</block></label>',
       function (res) {
@@ -88,9 +88,29 @@ describe('mp:compiler-mp-weixin', () => {
     )
   })
   it('generate page-meta', () => {
-    assertCodegen(// TODO vue-id
+    assertCodegen( // TODO vue-id
       '<view><page-meta/><view><button></button></view></view>',
       '<page-meta vue-id="551070e6-1" bind:__l="__l"></page-meta><view><button></button></view>'
+    )
+  })
+
+  it('generate v-slot', () => {
+    assertCodegen(
+      `<view>
+		<slot-comp v-slot:test="{label}">
+			<view>{{label}}</view>
+		</slot-comp>
+		<slot-comp v-slot:test="{label}">
+			<view>{{label}}</view>
+		</slot-comp>
+		<slot-comp v-slot:test="{label}">
+			<view>{{label}}</view>
+		</slot-comp>
+		<slot-comp v-slot:test="{label}">
+			<view class="red">{{label}}</view>
+		</slot-comp>
+	</view>`,
+      '<view><slot-comp generic:scoped-slots-test="test-slot-comp-test" vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'test\']}}"></slot-comp><slot-comp generic:scoped-slots-test="test-slot-comp-test1" vue-id="551070e6-2" bind:__l="__l" vue-slots="{{[\'test\']}}"></slot-comp><slot-comp generic:scoped-slots-test="test-slot-comp-test2" vue-id="551070e6-3" bind:__l="__l" vue-slots="{{[\'test\']}}"></slot-comp><slot-comp generic:scoped-slots-test="test-slot-comp-test3" vue-id="551070e6-4" bind:__l="__l" vue-slots="{{[\'test\']}}"></slot-comp></view>'
     )
   })
 })

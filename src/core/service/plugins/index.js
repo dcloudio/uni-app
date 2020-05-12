@@ -74,6 +74,10 @@ export default {
 
     lifecycleMixin(Vue)
 
+    /* eslint-disable no-undef */
+    if (typeof __UNI_ROUTER_BASE__ !== 'undefined') {
+      __uniConfig.router.base = __UNI_ROUTER_BASE__
+    }
     const minId = getMinId(routes)
     const router = new VueRouter({
       id: minId,
@@ -107,6 +111,7 @@ export default {
     // 需跨平台，根据用户配置 hash 或 history 来调用
     const entryRoute = router.match(__uniConfig.router.mode === 'history' ? getLocation(__uniConfig.router.base)
       : getHash())
+
     if (entryRoute.meta.name) {
       if (entryRoute.meta.id) {
         keepAliveInclude.push(entryRoute.meta.name + '-' + entryRoute.meta.id)

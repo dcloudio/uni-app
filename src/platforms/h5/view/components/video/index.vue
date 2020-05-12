@@ -15,7 +15,7 @@
     >
       <video
         ref="video"
-        :style="{opacity:!start?0.8:1,objectFit:objectFit}"
+        :style="{objectFit:objectFit}"
         :muted="muted"
         :loop="loop"
         :src="srcSync"
@@ -99,7 +99,7 @@
         class="uni-video-danmu"
       />
       <div
-        v-if="!start"
+        v-if="centerPlayBtnShow"
         class="uni-video-cover"
         @click.stop
       >
@@ -278,6 +278,10 @@ export default {
     showPlayBtn: {
       type: [Boolean, String],
       default: true
+    },
+    showCenterPlayBtn: {
+      type: [Boolean, String],
+      default: true
     }
   },
   data () {
@@ -306,8 +310,11 @@ export default {
     }
   },
   computed: {
+    centerPlayBtnShow () {
+      return this.showCenterPlayBtn && !this.start
+    },
     controlsShow () {
-      return this.start && this.controls && this.controlsVisible
+      return !this.centerPlayBtnShow && this.controls && this.controlsVisible
     },
     autoHideContorls () {
       return this.controlsShow && this.playing && !this.controlsTouching
