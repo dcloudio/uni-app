@@ -169,7 +169,7 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 
 **华为：** 微信小程序搜索“荣耀亲选商城”、[H5](https://m.qinxuan.honor.cn/)
 
-**京东：** 京东开发的新冠抗疫服务平台。[H5](http://yingji-h5.chanye.jdcloud.com/)
+**京东：** 京东开发的新冠抗疫服务平台：[H5](http://yingji-h5.chanye.jdcloud.com/)、京东金融羊羊大作战：[H5](https://u.jr.jd.com/uc-fe-wxgrowing/sheep-fight/)
 
 **vivo官方商城：**微信小程序搜索"vivo"，支付宝搜索 "vivo"
 
