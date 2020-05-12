@@ -1,4 +1,3 @@
-const STORAGE_DATA_TYPE = '__TYPE'
 const STORAGE_KEYS = 'uni-storage-keys'
 
 function parseValue (value) {
@@ -28,11 +27,6 @@ export function setStorage ({
     data: data
   })
   try {
-    if (type === 'string' && parseValue(value) !== undefined) {
-      localStorage.setItem(key + STORAGE_DATA_TYPE, type)
-    } else {
-      localStorage.removeItem(key + STORAGE_DATA_TYPE)
-    }
     localStorage.setItem(key, value)
   } catch (error) {
     return {
@@ -62,26 +56,13 @@ export function getStorage ({
     }
   }
   let data = value
-  const typeOrigin = localStorage.getItem(key + STORAGE_DATA_TYPE) || ''
-  const type = typeOrigin.toLowerCase()
-  if (type !== 'string' || (typeOrigin === 'String' && value === '{"type":"undefined"}')) {
-    try {
-      // 兼容H5和V3初期历史格式
-      let object = JSON.parse(value)
-      const result = parseValue(object)
-      if (result !== undefined) {
-        data = result
-      } else if (type) {
-        // 兼容App端历史格式
-        data = object
-        if (typeof object === 'string') {
-          object = JSON.parse(object)
-          // eslint-disable-next-line valid-typeof
-          data = typeof object === (type === 'null' ? 'object' : type) ? object : data
-        }
-      }
-    } catch (error) { }
-  }
+  try {
+    const object = JSON.parse(value)
+    const result = parseValue(object)
+    if (result !== undefined) {
+      data = result
+    }
+  } catch (error) { }
   return {
     data,
     errMsg: 'getStorage:ok'
@@ -99,8 +80,6 @@ export function removeStorage ({
   key
 } = {}) {
   if (localStorage) {
-    // 兼容App端历史格式
-    localStorage.removeItem(key + STORAGE_DATA_TYPE)
     localStorage.removeItem(key)
   }
   return {
@@ -126,14 +105,14 @@ export function clearStorageSync () {
 }
 
 export function getStorageInfo () {
-  const length = (localStorage && (localStorage.length || localStorage.getLength())) || 0
+  const length = (localStorage && localStorage.length) || 0
   const keys = []
   let currentSize = 0
   for (let index = 0; index < length; index++) {
     const key = localStorage.key(index)
-    if (key !== STORAGE_KEYS && key.indexOf(STORAGE_DATA_TYPE) + STORAGE_DATA_TYPE.length !== key.length) {
-      const value = localStorage.getItem(key)
-      currentSize += key.length + value.length
+    const value = localStorage.getItem(key)
+    currentSize += key.length + value.length
+    if (key !== STORAGE_KEYS) {
       keys.push(key)
     }
   }
