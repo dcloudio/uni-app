@@ -16,7 +16,8 @@
 * [云Token](uniCloud/authentication.md)
 * [日志输出](uniCloud/cf-logger.md)
 * [同时连多服务空间](uniCloud/init.md)
-* [示例及源码](uniCloud/resource.md)
+* [示例源码](uniCloud/resource.md)
+* [学习资料](uniCloud/learning.md)
 * [常见问题](uniCloud/faq.md)
 <!--  * [云存储](uniCloud/cf-storage.md) -->
 * 权限管理
