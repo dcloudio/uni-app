@@ -10,5 +10,4 @@
 - [uniCloud微信发红包-企业付款到零钱](https://ext.dcloud.net.cn/plugin?id=1489)：知识点：uniCloud.httpclient携证书发起请求
 - [uniPush之unicloud版](https://ext.dcloud.net.cn/plugin?id=1680)： 封装好的云函数，直接在服务器端发送push消息。
 
-
-uniCloud培训视频：[腾讯课堂uniCloud 0基础视频](https://m.ke.qq.com/courseDetail.html?_bid=167&_wv=3&course_id=2409672&term_id=102513745&taid=8858395820213448&from=share#from=androidapp)
+更多项目源码，见插件市场：[https://ext.dcloud.net.cn/?cat1=7](https://ext.dcloud.net.cn/?cat1=7)
