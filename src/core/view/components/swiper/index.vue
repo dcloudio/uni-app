@@ -134,8 +134,8 @@ export default {
     current (val) {
       this._currentCheck()
     },
-    currentSync (val) {
-      this._currentChanged(val)
+    currentSync (val, oldVal) {
+      this._currentChanged(val, oldVal)
       this.$emit('update:current', val)
     },
     currentItemId (val) {
@@ -215,11 +215,12 @@ export default {
     /**
      * 当前页面变更
      */
-    _currentChanged (current) {
+    _currentChanged (current, history) {
       var source = this.currentChangeSource
       this.currentChangeSource = ''
       if (!source) {
-        this._animateViewport(current, '', 0)
+        const length = this.items.length
+        this._animateViewport(current, '', this.circularEnabled && history + (length - current) % length > length / 2 ? 1 : 0)
       }
       var item = this.items[current]
       if (item) {
