@@ -34,6 +34,7 @@
 |scope.invoiceTitle|[uni.chooseInvoiceTitle](/api/other/invoice-title)		|发票抬头|微信小程序、百度小程序、QQ小程序|
 |scope.werun	|[wx.getWeRunData](https://developers.weixin.qq.com/miniprogram/dev/api/wx.getWeRunData.html)	|微信运动步数	|微信小程序|
 
+注意：scope.userLocation 权限需要在 manifest.json 配置 permission， 详见：[https://uniapp.dcloud.io/collocation/manifest](https://uniapp.dcloud.io/collocation/manifest)
 
 **代码示例**
 
