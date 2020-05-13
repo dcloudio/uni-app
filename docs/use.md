@@ -574,6 +574,7 @@ export default {
 	},
 	methods: {
 		scroll: function(e) {
+			// 如果使用此方法，请自行增加防抖处理
 			this.scrollTop = e.detail.scrollTop
 		},
 		goTop: function(e) {

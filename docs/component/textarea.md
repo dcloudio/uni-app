@@ -65,7 +65,7 @@ export default {
 **Tips**
 
 - textarea 的 blur 事件会晚于页面上的 tap 事件，如果需要在 button 的点击事件获取 textarea，可以使用 form 的 @submit。
-- `input` 事件处理函数内实时修改当前值不生效，可以延迟设置，例如：``setTimeout(() => { this.value = 100 }, 0)``。
+- 如果遇到 value 属性设置不生效的问题参考：[组件属性设置不生效解决办法](/use?id=%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98)
 - 微信小程序、百度小程序、字节跳动小程序中，textarea是原生组件，层级高于前端组件，请勿在 scroll-view、swiper、picker-view、movable-view 中使用 textarea 组件。覆盖textarea需要使用cover-view。[详见](/component/native-component)
 - 小程序端 css 动画对 textarea 组件无效。
 - H5 平台只能在用户交互时修改 focus 生效。
