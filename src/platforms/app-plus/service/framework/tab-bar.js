@@ -167,8 +167,7 @@ export default {
   // tabBar是否遮挡内容区域
   get cover () {
     const array = ['extralight', 'light', 'dark']
-    // 设置背景颜色会失效
-    return isIOS && array.indexOf(config.blurEffect) >= 0 && !config.backgroundColor
+    return isIOS && array.indexOf(config.blurEffect) >= 0
   },
   setStyle ({ mask }) {
     tabBar.setMask({

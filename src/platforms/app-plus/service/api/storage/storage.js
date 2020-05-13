@@ -12,9 +12,16 @@ function parseValue (value) {
     const type = object.type
     if (types.indexOf(type) >= 0) {
       const keys = Object.keys(object)
-      // eslint-disable-next-line valid-typeof
-      if (keys.length === 2 && 'data' in object && typeof object.data === type) {
-        return object.data
+      if (keys.length === 2 && 'data' in object) {
+        // eslint-disable-next-line valid-typeof
+        if (typeof object.data === type) {
+          return object.data
+        }
+        // eslint-disable-next-line no-useless-escape
+        if (type === 'object' && /^\d{4}-\d{2}-\d{2}T\d{2}\:\d{2}\:\d{2}\.\d{3}Z$/.test(object.data)) {
+          // ISO 8601 格式返回 Date
+          return new Date(object.data)
+        }
       } else if (keys.length === 1) {
         return ''
       }
@@ -86,8 +93,12 @@ function parseGetStorage (type, value) {
         data = object
         if (typeof object === 'string') {
           object = JSON.parse(object)
-          // eslint-disable-next-line valid-typeof
-          data = typeof object === (type === 'null' ? 'object' : type) ? object : data
+          const objectType = typeof object
+          if (objectType === 'number' && type === 'date') {
+            data = new Date(object)
+          } else if (objectType === (['null', 'array'].indexOf(type) < 0 ? type : 'object')) {
+            data = object
+          }
         }
       }
     } catch (error) {}

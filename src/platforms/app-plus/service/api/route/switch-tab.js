@@ -1,4 +1,8 @@
 import {
+  parseQuery
+} from 'uni-shared'
+
+import {
   ANI_CLOSE,
   ANI_DURATION
 } from '../../constants'
@@ -25,6 +29,7 @@ import tabBar from '../../framework/tab-bar'
 function _switchTab ({
   url,
   path,
+  query,
   from
 }, callbackId) {
   tabBar.switchTab(path.slice(1))
@@ -94,7 +99,7 @@ function _switchTab ({
     return showWebview(registerPage({
       url,
       path,
-      query: {},
+      query,
       openType: 'switchTab'
     }), 'none', 0, () => {
       setStatusBarStyle()
@@ -115,11 +120,15 @@ export function switchTab ({
   from,
   openType
 }, callbackId) {
-  const path = url.split('?')[0]
+  // 直达时，允许 tabBar 带参数
+  const urls = url.split('?')
+  const path = urls[0]
+  const query = parseQuery(urls[1] || '')
   navigate(path, function () {
     _switchTab({
       url,
       path,
+      query,
       from
     }, callbackId)
   }, openType === 'appLaunch')

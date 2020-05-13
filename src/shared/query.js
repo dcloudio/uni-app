@@ -70,3 +70,15 @@ export function stringifyQuery (obj, encodeStr = encode) {
   }).filter(x => x.length > 0).join('&') : null
   return res ? `?${res}` : ''
 }
+
+export function decodedQuery (query = {}) {
+  const decodedQuery = {}
+  Object.keys(query).forEach(name => {
+    try {
+      decodedQuery[name] = decode(query[name])
+    } catch (e) {
+      decodedQuery[name] = query[name]
+    }
+  })
+  return decodedQuery
+}

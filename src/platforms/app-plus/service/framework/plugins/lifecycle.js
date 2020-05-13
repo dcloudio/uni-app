@@ -1,5 +1,6 @@
 import {
-  hasOwn
+  hasOwn,
+  decodedQuery
 } from 'uni-shared'
 
 import {
@@ -86,7 +87,8 @@ export function initLifecycle (Vue) {
     },
     created () {
       if (this.mpType === 'page') {
-        callPageHook(this.$scope, 'onLoad', this.$options.pageQuery)
+        // 理论上应该从最开始的 parseQuery 的地方直接 decode 两次，为了减少影响范围，先仅处理 onLoad 参数
+        callPageHook(this.$scope, 'onLoad', decodedQuery(this.$options.pageQuery))
         callPageHook(this.$scope, 'onShow')
       }
     },
