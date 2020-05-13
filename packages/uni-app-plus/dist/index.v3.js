@@ -5187,8 +5187,7 @@ var serviceContext = (function () {
     // tabBar是否遮挡内容区域
     get cover () {
       const array = ['extralight', 'light', 'dark'];
-      // 设置背景颜色会失效
-      return isIOS$1 && array.indexOf(config.blurEffect) >= 0 && !config.backgroundColor
+      return isIOS$1 && array.indexOf(config.blurEffect) >= 0
     },
     setStyle ({ mask }) {
       tabBar.setMask({
