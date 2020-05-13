@@ -61,7 +61,11 @@ function createValidator (type) {
     }
 
     // switchTab不允许传递参数,reLaunch到一个tabBar页面是可以的
-    if (type === 'switchTab' && routeOptions.meta.isTabBar) {
+    if (
+      type === 'switchTab' &&
+      routeOptions.meta.isTabBar &&
+      params.openType !== 'appLaunch'
+    ) {
       url = pagePath
     }
 

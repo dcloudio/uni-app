@@ -427,6 +427,18 @@ var serviceContext = (function () {
     return res ? `?${res}` : ''
   }
 
+  function decodedQuery (query = {}) {
+    const decodedQuery = {};
+    Object.keys(query).forEach(name => {
+      try {
+        decodedQuery[name] = decode(query[name]);
+      } catch (e) {
+        decodedQuery[name] = query[name];
+      }
+    });
+    return decodedQuery
+  }
+
   let id = 0;
   const callbacks = {};
 
@@ -1659,7 +1671,11 @@ var serviceContext = (function () {
       }
 
       // switchTab不允许传递参数,reLaunch到一个tabBar页面是可以的
-      if (type === 'switchTab' && routeOptions.meta.isTabBar) {
+      if (
+        type === 'switchTab' &&
+        routeOptions.meta.isTabBar &&
+        params.openType !== 'appLaunch'
+      ) {
         url = pagePath;
       }
 
@@ -2056,6 +2072,17 @@ var serviceContext = (function () {
       type: String
     },
     backgroundColor: {
+      type: String
+    },
+    backgroundImage: {
+      type: String,
+      validator (backgroundImage, params) {
+        if (backgroundImage && !(/^(linear|radial)-gradient\(.+?\);?$/.test(backgroundImage))) {
+          params.backgroundImage = getRealPath(backgroundImage);
+        }
+      }
+    },
+    backgroundRepeat: {
       type: String
     },
     borderStyle: {
@@ -8555,6 +8582,7 @@ var serviceContext = (function () {
   function _switchTab ({
     url,
     path,
+    query,
     from
   }, callbackId) {
     tabBar$1.switchTab(path.slice(1));
@@ -8624,7 +8652,7 @@ var serviceContext = (function () {
       return showWebview(registerPage({
         url,
         path,
-        query: {},
+        query,
         openType: 'switchTab'
       }), 'none', 0, () => {
         setStatusBarStyle();
@@ -8645,11 +8673,15 @@ var serviceContext = (function () {
     from,
     openType
   }, callbackId) {
-    const path = url.split('?')[0];
+    // 直达时，允许 tabBar 带参数
+    const urls = url.split('?');
+    const path = urls[0];
+    const query = parseQuery(urls[1] || '');
     navigate(path, function () {
       _switchTab({
         url,
         path,
+        query,
         from
       }, callbackId);
     }, openType === 'appLaunch');
@@ -8665,9 +8697,16 @@ var serviceContext = (function () {
       const type = object.type;
       if (types.indexOf(type) >= 0) {
         const keys = Object.keys(object);
-        // eslint-disable-next-line valid-typeof
-        if (keys.length === 2 && 'data' in object && typeof object.data === type) {
-          return object.data
+        if (keys.length === 2 && 'data' in object) {
+          // eslint-disable-next-line valid-typeof
+          if (typeof object.data === type) {
+            return object.data
+          }
+          // eslint-disable-next-line no-useless-escape
+          if (type === 'object' && /^\d{4}-\d{2}-\d{2}T\d{2}\:\d{2}\:\d{2}\.\d{3}Z$/.test(object.data)) {
+            // ISO 8601 格式返回 Date
+            return new Date(object.data)
+          }
         } else if (keys.length === 1) {
           return ''
         }
@@ -8739,8 +8778,12 @@ var serviceContext = (function () {
           data = object;
           if (typeof object === 'string') {
             object = JSON.parse(object);
-            // eslint-disable-next-line valid-typeof
-            data = typeof object === (type === 'null' ? 'object' : type) ? object : data;
+            const objectType = typeof object;
+            if (objectType === 'number' && type === 'date') {
+              data = new Date(object);
+            } else if (objectType === (['null', 'array'].indexOf(type) < 0 ? type : 'object')) {
+              data = object;
+            }
           }
         }
       } catch (error) {}
@@ -9182,36 +9225,19 @@ var serviceContext = (function () {
     }
   }
 
-  function setTabBarStyle$2 ({
-    color,
-    selectedColor,
-    backgroundColor,
-    borderStyle
-  }) {
+  function setTabBarStyle$2 (style = {}) {
     if (!isTabBarPage()) {
       return {
         errMsg: 'setTabBarStyle:fail not TabBar page'
       }
     }
-    const style = {};
     const borderStyles = {
       black: 'rgba(0,0,0,0.4)',
       white: 'rgba(255,255,255,0.4)'
     };
-    if (color) {
-      style.color = color;
-    }
-    if (selectedColor) {
-      style.selectedColor = selectedColor;
-    }
-    if (backgroundColor) {
-      style.backgroundColor = backgroundColor;
-    }
+    const borderStyle = style.borderStyle;
     if (borderStyle in borderStyles) {
-      borderStyle = borderStyles[borderStyle];
-    }
-    if (borderStyle) {
-      style.borderStyle = borderStyle;
+      style.borderStyle = borderStyles[borderStyle];
     }
     tabBar$1.setTabBarStyle(style);
     return {
@@ -13741,7 +13767,8 @@ var serviceContext = (function () {
       },
       created () {
         if (this.mpType === 'page') {
-          callPageHook(this.$scope, 'onLoad', this.$options.pageQuery);
+          // 理论上应该从最开始的 parseQuery 的地方直接 decode 两次，为了减少影响范围，先仅处理 onLoad 参数
+          callPageHook(this.$scope, 'onLoad', decodedQuery(this.$options.pageQuery));
           callPageHook(this.$scope, 'onShow');
         }
       },
