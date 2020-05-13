@@ -3,4 +3,4 @@
 
 uni-app结合云函数开发小程序博客教程：
 - [第一节](https://juejin.im/post/5ea78879e51d454dd60cf473)
-- [第二节]https://juejin.im/post/5eb21a12f265da7bf0283664
+- [第二节](https://juejin.im/post/5eb21a12f265da7bf0283664)
