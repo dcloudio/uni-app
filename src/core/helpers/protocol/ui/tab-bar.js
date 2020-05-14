@@ -1,6 +1,7 @@
 import {
   getLen
 } from 'uni-shared'
+import getRealPath from 'uni-platform/helpers/get-real-path'
 
 const indexValidator = {
   type: Number,
@@ -28,6 +29,17 @@ export const setTabBarStyle = {
     type: String
   },
   backgroundColor: {
+    type: String
+  },
+  backgroundImage: {
+    type: String,
+    validator (backgroundImage, params) {
+      if (backgroundImage && !(/^(linear|radial)-gradient\(.+?\);?$/.test(backgroundImage))) {
+        params.backgroundImage = getRealPath(backgroundImage)
+      }
+    }
+  },
+  backgroundRepeat: {
     type: String
   },
   borderStyle: {

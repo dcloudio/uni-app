@@ -19,7 +19,20 @@ const scopedPath = path.resolve(__dirname, '../../')
 const compiler = require('../lib')
 const res = compiler.compile(
   `
-<video controls=""/>
+<view>
+		<slot-comp v-slot:test="{label}">
+			<view>{{label}}</view>
+		</slot-comp>
+		<slot-comp v-slot:test="{label}">
+			<view>{{label}}</view>
+		</slot-comp>
+		<slot-comp v-slot:test="{label}">
+			<view>{{label}}</view>
+		</slot-comp>
+		<slot-comp v-slot:test="{label}">
+			<view class="red">{{label}}</view>
+		</slot-comp>
+	</view>
 `, {
     miniprogram: true,
     resourcePath: '/User/fxy/Documents/test.wxml',

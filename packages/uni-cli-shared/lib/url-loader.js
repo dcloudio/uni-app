@@ -10,12 +10,6 @@ const defaultOptions = {
     loader: 'file-loader',
     options: {
       publicPath (url, resourcePath, context) {
-        if (
-          process.env.UNI_PLATFORM === 'app-plus' &&
-          process.env.UNI_USING_V3
-        ) { // app-plus v3 下路径不能以/开头
-          return normalizePath(path.relative(process.env.UNI_INPUT_DIR, resourcePath))
-        }
         return '/' + normalizePath(path.relative(process.env.UNI_INPUT_DIR, resourcePath))
       },
       outputPath (url, resourcePath, context) {

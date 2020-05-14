@@ -68,6 +68,11 @@ function processPagesJson (pagesJson, loader = {
       console.error(`${pagesJsonJsFileName} 必须导出 function`)
     }
   }
+  // 将 subpackages 转换成 subPackages
+  if (pagesJson.subpackages && !pagesJson.subPackages) {
+    pagesJson.subPackages = pagesJson.subpackages
+    delete pagesJson.subpackages
+  }
 
   let uniNVueEntryPagePath
   if (pagesJson.pages && pagesJson.pages.length) { // 如果首页是 nvue

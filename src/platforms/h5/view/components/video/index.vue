@@ -311,7 +311,7 @@ export default {
   },
   computed: {
     centerPlayBtnShow () {
-      return this.controls && this.showCenterPlayBtn && !this.start
+      return this.showCenterPlayBtn && !this.start
     },
     controlsShow () {
       return !this.centerPlayBtnShow && this.controls && this.controlsVisible
