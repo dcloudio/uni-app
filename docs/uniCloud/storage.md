@@ -416,3 +416,20 @@ let result = await uniCloud.downloadFile({
     // tempFilePath: '/tmp/test/storage/my-photo.png'
 });
 ```
+
+# 数据处理
+
+**仅阿里云支持**
+
+使用阿里云作为服务商时，云存储支持直接使用restful api对资源进行处理，下表列出支持的操作类型。
+
+|功能			|操作参数	|参考文档																													|
+|:-:			|:-:		|:-:																														|
+|图片缩放		|resize		|[点击查看](https://help.aliyun.com/document_detail/44688.html?spm=a2c4g.11186623.2.10.274651b0YkQ5hE#concept-hxj-c4n-vdb)	|
+|图片裁剪		|crop		|[点击查看](https://help.aliyun.com/document_detail/44693.html?spm=a2c4g.11186623.2.11.274651b0YkQ5hE#concept-bbn-14s-vdb)	|
+|图片旋转		|rotate		|[点击查看](https://help.aliyun.com/document_detail/44690.html?spm=a2c4g.11186623.2.12.274651b0YkQ5hE#concept-yvv-25t-vdb)	|
+|图片锐化调节		|sharpen	|[点击查看](https://help.aliyun.com/document_detail/44700.html?spm=a2c4g.11186623.2.13.274651b0YkQ5hE#concept-cyw-zzt-vdb)	|
+|图片格式转换		|format		|[点击查看](https://help.aliyun.com/document_detail/44703.html?spm=a2c4g.11186623.2.14.274651b0YkQ5hE#concept-mf3-md5-vdb)	|
+|图片质量调节		|quality	|[点击查看](https://help.aliyun.com/document_detail/44705.html?spm=a2c4g.11186623.2.15.274651b0YkQ5hE#concept-exc-qp5-vdb)	|
+|图片水印		|watermark	|[点击查看](https://help.aliyun.com/document_detail/44957.html?spm=a2c4g.11186623.2.16.274651b0YkQ5hE#concept-hrt-sv5-vdb)	|
+|视频截帧		|snapshot	|[点击查看](https://help.aliyun.com/document_detail/64555.html?spm=a2c4g.11186623.2.17.274651b0YkQ5hE#concept-kz1-cwc-wdb)	|
