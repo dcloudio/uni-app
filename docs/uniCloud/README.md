@@ -1,4 +1,4 @@
-`uniCloud` 是 DCloud 联合阿里云、腾讯云，为 uni-app 的开发者提供的基于 serverless 模式和 js 编程的云开发平台。
+`uniCloud` 是 DCloud 联合阿里云、腾讯云，为开发者提供的基于 serverless 模式和 js 编程的云开发平台。
 
 `uniCloud` 的 web控制台地址：[https://unicloud.dcloud.net.cn](https://unicloud.dcloud.net.cn)
 
