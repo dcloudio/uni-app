@@ -1,6 +1,32 @@
+#### 2.7.3.20200514-alpha
+* 【uni-app插件】
+  + App平台 修复 css 中静态资源路径解析不正确的Bug
+  + App-iOS平台 修复 HBuilderX2.7.0 引出的配置底部安全区原生占位后，tabbar 动态更新 backgroundColor、backgroundImage 不生效的Bug
+* 【App插件(含5+App和uni-app的App端)】
+  + iOS平台 更新 uni-AD 腾讯广点通SDK版本为4.11.8，解决在部分设备可能出现启动时崩溃的Bug
+
+#### 2.7.2.20200513-alpha
+* 【uni-app插件】
+  + 优化 pages.json 兼容 subPackages 与 subpackages 写法
+  + App平台、H5平台 修复 swiper 组件设置 current 时滚动方向错误的Bug [详情](https://ask.dcloud.net.cn/question/94961)
+  + App平台 修复 页面 onLoad 参数部分情况不正确的Bug
+  + App平台 修复 cover-image 组件部分情况显示不全的Bug [详情](https://ask.dcloud.net.cn/question/94554)
+  + App平台 修复 storage 中读取 Array 类型数据解析不正确的Bug [详情](https://ask.dcloud.net.cn/question/96139)
+  + App-Android平台 修复 v3版本 真机运行修改代码保存后应用重启，可能无法直接显示应用重启前页面的Bug
+  + App-iOS平台 修复 nvue richtext 组件 lines、text-overflow 属性不生效的Bug [详情](https://ask.dcloud.net.cn/question/94667)
+  + App-iOS平台 修复 tabBar 同时设置 blurEffect 和 backgroundColor 时 uni.getSystemInfo 获取到 windowBottom 错误的Bug
+  + H5平台 优化 video 组件支持 show-center-play-btn 配置
+  + H5平台 修复 storage 中读取 Date 类型数据解析不正确的Bug [#1661](https://github.com/dcloudio/uni-app/issues/1661)
+  + H5平台 修复 Safari 浏览器横屏状态获取宽度错误的Bug [详情](https://ask.dcloud.net.cn/question/95997)
+  + 微信小程序平台 修复 页面中同一个组件多个实例相同作用域插槽异常的Bug [#1662](https://github.com/dcloudio/uni-app/issues/1662)
+* 【App插件(含5+App和uni-app的App端)】
+  + iOS平台 修复 音频 audio 播放网络音频资源缓冲时间过长的Bug [详情](https://ask.dcloud.net.cn/question/93427)
+* 【uni小程序SDK】
+  + iOS平台 修复 video 组件退出全屏后页面布局错位的Bug
+
 #### 2.7.1.20200510-alpha
 * 【uni-app插件】
-  + 修复 easy-com 组件优先级高于用户组件同名组件的Bug
+  + 修复 easycom 组件优先级高于用户组件同名组件的Bug
   + App平台 新增 tabbar 支持 backgroundImage 属性设置背景图片及渐变色
   + App平台 优化 短时间内调用 uni.navigateTo 避免重复跳转页面
   + App平台 修复 页面生命周期 onUnload 部分表现与旧版表现不一致的Bug [详情](https://ask.dcloud.net.cn/question/94649)
