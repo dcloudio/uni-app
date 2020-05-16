@@ -47,7 +47,7 @@ db.createCollection(collectionName)
 
 阿里云的集合需提前在web控制台创建。
 
-## 使用`db_init.json`初始化项目数据库@db_init
+## 使用db\_init.json初始化项目数据库@db_init
 
 自`HBuilderX 2.5.11`起`uniCloud`提供了`db_init.json`来方便开发者快速进行数据库的初始化操作，即在HBuilderX工具中，将本地数据直接同步到云数据库中。
 
@@ -56,6 +56,9 @@ db.createCollection(collectionName)
 **使用方式**
 - 在`cloudfucntions`目录右键即可创建`db_init.json`，
 - 编写好json内容，在`db_init.json`上右键初始化数据库。
+
+**注意事项**
+- 目前`db_init.json`为同步导入形式，无法导入大量数据，后续会实现异步导入方案。
 
 **db_init.json形式如下**
 
