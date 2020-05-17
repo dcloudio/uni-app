@@ -2,7 +2,7 @@
 
 `uniCloud` 的 web控制台地址：[https://unicloud.dcloud.net.cn](https://unicloud.dcloud.net.cn)
 
-从[HBuilderX 2.5.8](https://www.dcloud.io/hbuilderx.html)起支持。目前阿里云已开放，腾讯云在邀请内测中。
+从[HBuilderX 2.5.8](https://www.dcloud.io/hbuilderx.html)起支持。阿里云、腾讯云均已开放注册使用。
 
 ### uniCloud 的价值
 
