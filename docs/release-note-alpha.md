@@ -1,3 +1,9 @@
+#### 2.7.4.20200515-alpha
+* 【uni-app插件】
+  + App-Android平台 修复 真机运行时提示HBuilderX版本与手机端SDK版本不匹配的Bug
+* 【uniCloud】
+  + 阿里云 优化 云函数冷启动时间，经测试冷启动时间平均减少800ms
+
 #### 2.7.3.20200514-alpha
 * 【uni-app插件】
   + App平台 修复 css 中静态资源路径解析不正确的Bug
@@ -46,11 +52,11 @@
 
 #### 2.7.0.20200501-alpha
 * 【uni-app插件】
-  * 【重要】 调整 App平台 自定义组件编译模式下线，应用默认以v3编译模式运行。并在manifest去除相关概念。包体积减少3M [详情](https://ask.dcloud.net.cn/article/36988)
-  * 【重要】 调整 uni统计默认不再自动开启，需要此服务请手动在manifest中打开 [详情](https://ask.dcloud.net.cn/article/37234)
-  * uni-app cli版支持发行到快应用平台 [详情](https://ask.dcloud.net.cn/article/37182)
-  * App平台、H5平台 修复 textarea 组件 word-break 样式不生效的Bug [详情](https://ask.dcloud.net.cn/question/95172)
-  * App平台、H5平台 新增 支持 onNavigationBarSearchInputFocusChanged 生命周期
+  + 【重要】 调整 App平台 自定义组件编译模式下线，应用默认以v3编译模式运行。并在manifest去除相关概念。包体积减少3M [详情](https://ask.dcloud.net.cn/article/36988)
+  + 【重要】 调整 uni统计默认不再自动开启，需要此服务请手动在manifest中打开 [详情](https://ask.dcloud.net.cn/article/37234)
+  + uni-app cli版支持发行到快应用平台 [详情](https://ask.dcloud.net.cn/article/37182)
+  + App平台、H5平台 修复 textarea 组件 word-break 样式不生效的Bug [详情](https://ask.dcloud.net.cn/question/95172)
+  + App平台、H5平台 新增 支持 onNavigationBarSearchInputFocusChanged 生命周期
   + App平台 优化 在去掉自定义组件模式的情况下保证 weex 编译模式仍然可用（nvueCompiler：weex）。但推荐开发者尽快迁移到uni-app编译模式
   + App平台 修复 input、textarea 组件快速输入时光标抖动的Bug [详情](https://ask.dcloud.net.cn/question/90460)
   + App平台 修复 pages.json 缺少 globalStyle 节点白屏的Bug
