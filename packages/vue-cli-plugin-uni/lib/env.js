@@ -69,6 +69,7 @@ if (process.env.UNI_CLOUD_SPACES) {
 
 if (
   process.UNI_CLOUD &&
+  !process.env.UNI_SUB_PLATFORM &&
   process.env.UNI_PLATFORM === 'h5' &&
   process.env.NODE_ENV === 'production'
 ) {
