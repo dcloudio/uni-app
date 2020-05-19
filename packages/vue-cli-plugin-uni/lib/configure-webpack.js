@@ -263,7 +263,26 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
       })
     }
 
+    if (process.env.NODE_ENV === 'development') {
+      const sourceMap = require('@dcloudio/uni-cli-shared/lib/source-map')
+      let isAppService = false
+      if (process.env.UNI_PLATFORM === 'app-plus' && vueOptions.pluginOptions['uni-app-plus']) {
+        isAppService = !!vueOptions.pluginOptions['uni-app-plus'].service
+      }
+      if (process.env.UNI_PLATFORM === 'h5' || isAppService) {
+        plugins.push(sourceMap.createEvalSourceMapDevToolPlugin())
+      } else if (
+        process.env.UNI_PLATFORM.indexOf('mp-') === 0 &&
+        process.env.UNI_PLATFORM !== 'mp-baidu' &&
+        process.env.UNI_PLATFORM !== 'mp-alipay' &&
+        process.env.UNI_PLATFORM !== 'quickapp-webview' // 目前 ov 的开发工具支持 eval 模式
+      ) {
+        plugins.push(sourceMap.createSourceMapDevToolPlugin(process.env.UNI_PLATFORM === 'mp-weixin'))
+      }
+    }
+
     return merge({
+      devtool: false,
       resolve: {
         alias: {
           '@': path.resolve(process.env.UNI_INPUT_DIR),

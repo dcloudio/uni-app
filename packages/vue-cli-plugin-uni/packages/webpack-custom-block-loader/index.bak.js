@@ -14,7 +14,7 @@ const {
 
 const FILTER_TAG = getPlatformFilterTag()
 
-module.exports = function(source) {
+module.exports = function (source) {
   const loaderContext = this
 
   const {

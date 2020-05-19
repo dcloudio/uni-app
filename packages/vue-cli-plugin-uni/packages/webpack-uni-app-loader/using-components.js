@@ -8,7 +8,7 @@ const {
   getUsingComponentsCode
 } = require('@dcloudio/uni-cli-shared/lib/pages')
 
-module.exports = function(content, map) {
+module.exports = function (content, map) {
   this.cacheable && this.cacheable()
   const resourcePath = removeExt(
     normalizePath(path.relative(process.env.UNI_INPUT_DIR, this.resourcePath))
@@ -18,5 +18,5 @@ module.exports = function(content, map) {
   // 1. 需要 template-loader 解析出所有自定义组件()
   // 2. 根据自定义组件信息生成引用代码
   // 3. node-modules中的组件不提供自动导入
-  return content
+  this.callback(null, content, map)
 }

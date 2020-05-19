@@ -13,10 +13,5 @@ module.exports = {
   },
   copyWebpackOptions (platformOptions, vueOptions) {
     return ['ttcomponents']
-  },
-  configureWebpack () {
-    return {
-      devtool: process.env.NODE_ENV === 'production' ? false : 'inline-source-map'
-    }
   }
 }

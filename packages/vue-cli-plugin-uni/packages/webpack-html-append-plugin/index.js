@@ -1,10 +1,11 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 class WebpackHtmlAppendPlugin {
-  constructor(content) {
+  constructor (content) {
     this.content = content || ''
   }
-  apply(compiler) {
+
+  apply (compiler) {
     compiler.hooks.compilation.tap('WebpackHtmlAppendPlugin', (compilation) => {
       let beforeEmit = compilation.hooks.htmlWebpackPluginAfterHtmlProcessing
       if (!beforeEmit && HtmlWebpackPlugin.getHooks) {

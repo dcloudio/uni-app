@@ -1,6 +1,6 @@
 const parser = require('@babel/parser')
 
-function parseComponents(content, traverse) {
+function parseComponents (content, traverse) {
   const {
     state: {
       options,

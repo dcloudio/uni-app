@@ -16,10 +16,5 @@ module.exports = {
   },
   copyWebpackOptions (platformOptions, vueOptions) {
     return ['mycomponents']
-  },
-  configureWebpack () {
-    return {
-      devtool: process.env.NODE_ENV === 'production' ? false : 'source-map'
-    }
   }
 }

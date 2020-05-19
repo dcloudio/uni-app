@@ -36,9 +36,9 @@ function getMPVuePageFactoryMainJsCode (params) {
     Page(pageFactory(App))`
 }
 
-module.exports = function (content) {
+module.exports = function (content, map) {
   if (process.env.UNI_USING_COMPONENTS) {
-    return require('./main-new').call(this, content)
+    return require('./main-new').call(this, content, map)
   }
   this.cacheable && this.cacheable()
   if (this.resourceQuery) {
