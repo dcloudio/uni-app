@@ -30,13 +30,6 @@ module.exports = (api, options) => { // 仅处理 app-plus 相关逻辑
 
   plugins.push(new WebpackAppPlusPlugin())
 
-  const {
-    devtoolModuleFilenameTemplate
-  } = require('./util')
-
-  // sourcemap 输出相对路径
-  output.devtoolModuleFilenameTemplate = devtoolModuleFilenameTemplate
-
   api.configureWebpack(webpackConfig => {
     return {
       output,

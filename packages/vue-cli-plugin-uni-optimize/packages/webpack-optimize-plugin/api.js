@@ -4,24 +4,24 @@ const updateComponents = require('./component')
 
 const tmpDir = path.resolve(__dirname, '../../.tmp')
 
-function writeFileSync(filename, content) {
+function writeFileSync (filename, content) {
   fs.writeFileSync(path.resolve(tmpDir, filename), content, 'utf8')
 }
 
-function parseImportPath(filepath) {
-  if (filepath.indexOf('/platforms') === 0) { //api,appComponents(h5),appMixins(h5),systemRoutes(h5)
+function parseImportPath (filepath) {
+  if (filepath.indexOf('/platforms') === 0) { // api,appComponents(h5),appMixins(h5),systemRoutes(h5)
     return filepath.replace('/platforms/' + process.env.UNI_PLATFORM, 'uni-platform')
-  } else if (filepath.indexOf('/core/helpers') === 0) { //protocol
+  } else if (filepath.indexOf('/core/helpers') === 0) { // protocol
     return filepath.replace('/core/helpers', 'uni-helpers')
-  } else if (filepath.indexOf('/core/view') === 0) { //subscribe
+  } else if (filepath.indexOf('/core/view') === 0) { // subscribe
     return filepath.replace('/core/view', 'uni-view')
-  } else if (filepath.indexOf('/core') === 0) { //api
+  } else if (filepath.indexOf('/core') === 0) { // api
     return filepath.replace('/core', 'uni-core')
   }
   return filepath
 }
 
-function updateExportDefaultObject(paths, filename, isMulti = true, isExportArray = false) {
+function updateExportDefaultObject (paths, filename, isMulti = true, isExportArray = false) {
   const imports = []
   const exports = []
   Object.keys(paths).forEach(name => {
@@ -32,7 +32,7 @@ function updateExportDefaultObject(paths, filename, isMulti = true, isExportArra
     }
     exports.push(name)
   })
-  let content = isExportArray ? `export default []` : `export default {}`
+  let content = isExportArray ? 'export default []' : 'export default {}'
   if (exports.length) {
     if (isExportArray) {
       content = `
@@ -53,37 +53,37 @@ function updateExportDefaultObject(paths, filename, isMulti = true, isExportArra
   writeFileSync(filename, content)
 }
 
-function updateApi(paths) {
+function updateApi (paths) {
   return updateExportDefaultObject(paths, 'api.js')
 }
 
-function updateApiProtocol(paths) {
+function updateApiProtocol (paths) {
   return updateExportDefaultObject(paths, 'protocol.js')
 }
 
-function updateApiSubscribe(paths) {
+function updateApiSubscribe (paths) {
   return updateExportDefaultObject(paths, 'subscribe.js')
 }
 
-function updateInvokeApi(paths) {
+function updateInvokeApi (paths) {
   return updateExportDefaultObject(paths, 'invoke-api.js')
 }
 
-function updateAppComponents(paths) {
+function updateAppComponents (paths) {
   return updateExportDefaultObject(paths, 'app-components.js', false)
 }
 
-function updateCoreComponents(paths){
+function updateCoreComponents (paths) {
   const tags = process.UNI_TAGS || new Set()
   Object.keys(paths).forEach(tag => tags.add(tag.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()))
   updateComponents(tags)
 }
 
-function updateAppMixins(paths) {
+function updateAppMixins (paths) {
   return updateExportDefaultObject(paths, 'app-mixins.js', false, true)
 }
 
-function updateSystemRoutes(paths) {
+function updateSystemRoutes (paths) {
   return updateExportDefaultObject(paths, 'system-routes.js', false)
 }
 
@@ -118,9 +118,7 @@ const isApiSubscribe = filepath => {
   return filepath.indexOf('/core/view/bridge/subscribe/api') === 0
 }
 
-
-function parseDeps(apis, manifest) {
-
+function parseDeps (apis, manifest) {
   const apiPaths = Object.create(null)
   const apiProtocolPaths = Object.create(null)
   const invokeApiPaths = Object.create(null)
@@ -152,7 +150,7 @@ function parseDeps(apis, manifest) {
     test: isApiSubscribe,
     paths: apiSubscribePaths
   }]
-  for (let name of apis.values()) {
+  for (const name of apis.values()) {
     const options = manifest[name]
     if (Array.isArray(options)) {
       apiPaths[name] = options[0]
@@ -167,7 +165,7 @@ function parseDeps(apis, manifest) {
         const filepath = dep[0]
         const exports = dep[1]
 
-        if (isCoreApi && isPlatformApi(filepath)) { //invoke-api
+        if (isCoreApi && isPlatformApi(filepath)) { // invoke-api
           invokeApiPaths[exports] = filepath
         } else {
           const strategy = strategies.find(strategy => {
@@ -176,7 +174,7 @@ function parseDeps(apis, manifest) {
           if (strategy) {
             strategy.paths[exports] = filepath
           } else {
-            console.log('dep',name,dep)
+            console.log('dep', name, dep)
             console.warn(`${filepath} 未识别`)
           }
         }
@@ -198,8 +196,7 @@ function parseDeps(apis, manifest) {
   }
 }
 
-module.exports = function updateApis(apis = new Set(), userApis = new Set()) {
-
+module.exports = function updateApis (apis = new Set(), userApis = new Set()) {
   if (!fs.existsSync(tmpDir)) {
     fs.mkdirSync(tmpDir)
   }

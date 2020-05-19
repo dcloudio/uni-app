@@ -8259,16 +8259,36 @@ var serviceContext = (function () {
     if (process.env.NODE_ENV !== 'production') {
       console.log(`[show][${Date.now()}]`, delay);
     }
+    const duration = animationDuration || ANI_DURATION;
     setTimeout(() => {
+      const execShowCallback = function () {
+        if (execShowCallback._called) {
+          if (process.env.NODE_ENV !== 'production') {
+            console.log('execShowCallback.prevent');
+          }
+          return
+        }
+        execShowCallback._called = true;
+        showCallback && showCallback();
+        navigateFinish();
+      };
+      const timer = setTimeout(() => {
+        if (process.env.NODE_ENV !== 'production') {
+          console.log(`[show.callback.timer][${Date.now()}]`);
+        }
+        execShowCallback();
+      }, duration + 150);
       webview.show(
         animationType || ANI_SHOW,
-        animationDuration || ANI_DURATION,
+        duration,
         () => {
           if (process.env.NODE_ENV !== 'production') {
             console.log(`[show.callback][${Date.now()}]`);
           }
-          showCallback && showCallback();
-          navigateFinish();
+          if (!execShowCallback._called) {
+            clearTimeout(timer);
+          }
+          execShowCallback();
         }
       );
     }, delay);
@@ -8297,7 +8317,7 @@ var serviceContext = (function () {
       pageInstance
     });
     if (process.env.NODE_ENV !== 'production') {
-      console.log(`new ${pagePath}`, Date.now() - startTime);
+      console.log(`new ${pagePath}[${pageId}]:time(${Date.now() - startTime})`);
     }
     return pageVm
   }
@@ -8382,7 +8402,7 @@ var serviceContext = (function () {
           }
           pages.splice(index, 1);
           if (process.env.NODE_ENV !== 'production') {
-            console.log('[uni-app] removePage', path, webview.id);
+            console.log('[uni-app] removePage(' + path + ')[' + webview.id + ']');
           }
         }
       },

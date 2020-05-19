@@ -40,20 +40,5 @@ module.exports = {
       copyOptions.push(path.resolve(__dirname, '../template/v3'))
     }
     return copyOptions
-  },
-  configureWebpack (webpackConfig, vueOptions) {
-    let devtool = false
-    if (process.env.NODE_ENV !== 'production') {
-      if (process.env.UNI_USING_V3) {
-        if (vueOptions.pluginOptions['uni-app-plus'].service) {
-          devtool = 'eval-source-map'
-        }
-      } else {
-        devtool = 'eval-source-map'
-      }
-    }
-    return {
-      devtool
-    }
   }
 }

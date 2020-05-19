@@ -21,7 +21,7 @@ const {
   parseComponents
 } = require('./util')
 
-function getDefineComponents({
+function getDefineComponents ({
   components
 }) {
   return components.map(({
@@ -32,7 +32,7 @@ function getDefineComponents({
 
 const appVueFilePath = path.resolve(process.env.UNI_INPUT_DIR, 'app.vue')
 
-function getStylesCode(loaderContext) {
+function getStylesCode (loaderContext) {
   if (!fs.existsSync(appVueFilePath)) {
     return
   }
@@ -59,10 +59,8 @@ function getStylesCode(loaderContext) {
   })
 
   // styles
-  let stylesCode = ``
+  let stylesCode = ''
   if (descriptor.styles.length) {
-    const isServer = false
-    const isShadow = false
     const isProduction = options.productionMode || minimize || process.env.NODE_ENV === 'production'
 
     const stringifyRequest = r => loaderUtils.stringifyRequest(loaderContext, r)
@@ -77,9 +75,9 @@ function getStylesCode(loaderContext) {
     const needsHotReload = false
 
     const id = hash(
-      isProduction ?
-      (shortFilePath + '\n' + source) :
-      shortFilePath
+      isProduction
+        ? (shortFilePath + '\n' + source)
+        : shortFilePath
     )
     stylesCode = genStylesCode(
       loaderContext,
@@ -95,14 +93,15 @@ function getStylesCode(loaderContext) {
   return stylesCode.replace(/main\.[jt]s/g, 'App.vue')
 }
 
-module.exports = function(source, map) {
+module.exports = function (source, map) {
   // 追加小程序全局自定义组件(仅v3)
   source = getGlobalUsingComponentsCode() + source
-  const automatorCode = process.env.UNI_AUTOMATOR_WS_ENDPOINT ?
-    `import '@dcloudio/uni-app-plus/dist/automator.view'` :
-    ''
-  return `
-import 'uni-pages?${JSON.stringify({type:'view'})}'
+  const automatorCode = process.env.UNI_AUTOMATOR_WS_ENDPOINT
+    ? 'import \'@dcloudio/uni-app-plus/dist/automator.view\''
+    : ''
+  this.callback(null,
+    `
+import 'uni-pages?${JSON.stringify({ type: 'view' })}'
 ${automatorCode}
 function initView(){
     ${getStylesCode(this)}
@@ -115,5 +114,6 @@ if(typeof plus !== 'undefined'){
 } else {
   document.addEventListener('plusready',initView)
 }
-`
+`,
+    map)
 }

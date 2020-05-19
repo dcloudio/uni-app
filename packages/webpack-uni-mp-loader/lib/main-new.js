@@ -45,7 +45,7 @@ function addCreateApp (babelLoader) {
   babelLoader.options.plugins.push([babelPluginCreateApp])
 }
 
-module.exports = function (content) {
+module.exports = function (content, map) {
   this.cacheable && this.cacheable()
 
   if (this.resourceQuery) {
@@ -65,11 +65,12 @@ module.exports = function (content) {
           }
         }
       }
-      return `
+      return this.callback(null,
+        `
 import Vue from 'vue'
 import Page from './${normalizePath(params.page)}${ext}'
 createPage(Page)
-`
+`, map)
     }
   } else {
     content = preprocessor.preprocess(content, jsPreprocessOptions.context, {
@@ -96,7 +97,7 @@ createPage(Page)
     if (!components.length) {
       // 防止组件从有到无
       updateUsingComponents(resourcePath, Object.create(null), 'App')
-      return content
+      return this.callback(null, content, map)
     }
 
     const callback = this.async()
@@ -130,9 +131,9 @@ createPage(Page)
       addDynamicImport(babelLoader, resourcePath, dynamicImports)
 
       updateUsingComponents(resourcePath, usingComponents, 'App')
-      callback(null, content)
+      callback(null, content, map)
     }, err => {
-      callback(err, content)
+      callback(err, content, map)
     })
   }
 }

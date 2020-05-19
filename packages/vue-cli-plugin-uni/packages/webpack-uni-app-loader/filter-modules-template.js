@@ -1,13 +1,13 @@
 const loaderUtils = require('loader-utils')
 
-function parseFilterModules(filterModules) {
+function parseFilterModules (filterModules) {
   if (filterModules) {
     return JSON.parse(Buffer.from(filterModules, 'base64').toString('utf8'))
   }
   return {}
 }
 
-module.exports = function(content) {
+module.exports = function (content, map) {
   this.cacheable && this.cacheable()
 
   const vueLoaderOptions = this.loaders.find(loader => loader.ident === 'vue-loader-options')
@@ -21,5 +21,5 @@ module.exports = function(content) {
   } else {
     throw new Error('vue-loader-options parse error')
   }
-  return content
+  this.callback(null, content, map)
 }

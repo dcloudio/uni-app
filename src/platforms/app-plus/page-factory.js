@@ -25,7 +25,7 @@ export function createPage (pagePath, pageId, pageQuery, pageInstance) {
     pageInstance
   })
   if (process.env.NODE_ENV !== 'production') {
-    console.log(`new ${pagePath}`, Date.now() - startTime)
+    console.log(`new ${pagePath}[${pageId}]:time(${Date.now() - startTime})`)
   }
   return pageVm
 }

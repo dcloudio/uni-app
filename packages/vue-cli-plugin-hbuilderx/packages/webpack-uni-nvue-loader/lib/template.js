@@ -17,15 +17,15 @@ const SCROLLER_COMPONENTS = [
   'waterfall'
 ]
 
-module.exports = function(content) {
+module.exports = function (content, map) {
   this.cacheable && this.cacheable()
   const source = content.trim()
 
   if (SCROLLER_COMPONENTS.find(name => source.indexOf('<' + name) === 0)) {
-    return content
+    return this.callback(null, content, map)
   }
   if (source.indexOf('<recycle-list') !== -1) {
-    return content
+    return this.callback(null, content, map)
   }
 
   let resourcePath = normalizeNodeModules(
@@ -44,15 +44,15 @@ module.exports = function(content) {
   }
 
   if (!process.UNI_NVUE_ENTRY[resourcePath]) {
-    return content
+    return this.callback(null, content, map)
   }
   // 暂时实时读取配置信息,查找是否 disableScroll
   const appJson = getPagesJson()
 
   let pageJson
-  if (appJson.nvue) { //旧版本
+  if (appJson.nvue) { // 旧版本
     if (!appJson.nvue || !appJson.nvue.pages) {
-      return content
+      return this.callback(null, content, map)
     }
     const pagePath = resourcePath + '.html'
     pageJson = appJson.nvue.pages.find(page => page.path === pagePath)
@@ -61,7 +61,7 @@ module.exports = function(content) {
   }
 
   if (!pageJson) {
-    return content
+    return this.callback(null, content, map)
   }
 
   if (!appJson.globalStyle) {
@@ -72,8 +72,10 @@ module.exports = function(content) {
   Object.assign(pageJson.style, pageJson.style['app-plus'] || {})
   const pageJsonStyle = Object.assign(appJson.globalStyle, pageJson.style)
   if (pageJsonStyle.disableScroll === true) {
-    return content
+    return this.callback(null, content, map)
   }
 
-  return `<scroll-view :scroll-y="true" :show-scrollbar="${pageJsonStyle.scrollIndicator==='none'?'false':'true'}" :enableBackToTop="true" bubble="true" style="flex-direction:column">${content}</scroll-view>`
+  this.callback(null,
+    `<scroll-view :scroll-y="true" :show-scrollbar="${pageJsonStyle.scrollIndicator === 'none' ? 'false' : 'true'}" :enableBackToTop="true" bubble="true" style="flex-direction:column">${content}</scroll-view>`,
+    map)
 }

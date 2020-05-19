@@ -19,7 +19,7 @@ module.exports = function (content, map) {
     if (process.env.UNI_PLATFORM === 'app-plus') {
       return require('./script-new').call(this, content, map)
     }
-    return require('./script-new').call(this, content)
+    return require('./script-new').call(this, content, map)
   }
 
   this.cacheable && this.cacheable()
