@@ -2,6 +2,7 @@
   "npmClient": "yarn",
   "useWorkspaces": false,
   "packages": [
+    "../plugins/*",
     "packages/*"
   ],
   "publishConfig": {
@@ -12,5 +13,5 @@
       "message": "chore(release): publish %s"
     }
   },
-  "version": "2.0.0-alpha-27420200515001"
+  "version": "2.0.0-alpha-27420200515002"
 }
