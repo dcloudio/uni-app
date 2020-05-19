@@ -11,6 +11,9 @@
   * [身份认证](uniCloud/cf-authentication.md)
   * [定时触发](uniCloud/trigger.md)
   * [云函数URL化](uniCloud/http.md)
+* 扩展能力
+  * [uni-account](uniCloud/uni-account.md)
+  * [uni-pay](uniCloud/uni-pay.md)
 * [云数据库](uniCloud/cf-database.md)
 * [云存储](uniCloud/storage.md)
 * [云Token](uniCloud/authentication.md)
