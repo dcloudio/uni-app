@@ -28,7 +28,9 @@ const WEBVIEW_STYLE_BLACKLIST = [
 ]
 
 export function parseWebviewStyle (id, path, routeOptions = {}) {
-  const webviewStyle = Object.create(null)
+  const webviewStyle = {
+    bounce: 'vertical'
+  }
 
   // 合并
   routeOptions.window = parseStyleUnit(Object.assign(
