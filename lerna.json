@@ -2,7 +2,6 @@
   "npmClient": "yarn",
   "useWorkspaces": false,
   "packages": [
-    "../plugins/*",
     "packages/*"
   ],
   "publishConfig": {
