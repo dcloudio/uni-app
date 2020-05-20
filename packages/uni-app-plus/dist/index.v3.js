@@ -1359,6 +1359,21 @@ var serviceContext = (function () {
     previewImage: previewImage
   });
 
+  const saveImageToPhotosAlbum = {
+    filePath: {
+      type: String,
+      required: true,
+      validator (filePath, params) {
+        params.filePath = getRealPath(filePath);
+      }
+    }
+  };
+
+  var require_context_module_0_17 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    saveImageToPhotosAlbum: saveImageToPhotosAlbum
+  });
+
   const downloadFile = {
     url: {
       type: String,
@@ -1372,7 +1387,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_17 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_18 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     downloadFile: downloadFile
   });
@@ -1480,7 +1495,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_18 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_19 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     request: request
   });
@@ -1538,7 +1553,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_19 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_20 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     connectSocket: connectSocket,
     sendSocketMessage: sendSocketMessage,
@@ -1580,7 +1595,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_20 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_21 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     uploadFile: uploadFile
   });
@@ -1605,7 +1620,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_21 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_22 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getProvider: getProvider
   });
@@ -1773,7 +1788,7 @@ var serviceContext = (function () {
     ]
   ));
 
-  var require_context_module_0_22 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_23 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     redirectTo: redirectTo,
     reLaunch: reLaunch,
@@ -1817,7 +1832,7 @@ var serviceContext = (function () {
   const removeStorage = getStorage;
   const removeStorageSync = getStorageSync;
 
-  var require_context_module_0_23 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_24 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getStorage: getStorage,
     getStorageSync: getStorageSync,
@@ -1854,7 +1869,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_24 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_25 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     loadFontFace: loadFontFace
   });
@@ -1897,7 +1912,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_25 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_26 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     setNavigationBarColor: setNavigationBarColor,
     setNavigationBarTitle: setNavigationBarTitle
@@ -1917,7 +1932,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_26 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_27 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     pageScrollTo: pageScrollTo
   });
@@ -2038,7 +2053,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_27 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_28 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     showModal: showModal,
     showToast: showToast,
@@ -2134,7 +2149,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_28 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_29 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     setTabBarItem: setTabBarItem,
     setTabBarStyle: setTabBarStyle,
@@ -2167,18 +2182,19 @@ var serviceContext = (function () {
   './media/choose-video.js': require_context_module_0_14,
   './media/get-image-info.js': require_context_module_0_15,
   './media/preview-image.js': require_context_module_0_16,
-  './network/download-file.js': require_context_module_0_17,
-  './network/request.js': require_context_module_0_18,
-  './network/socket.js': require_context_module_0_19,
-  './network/upload-file.js': require_context_module_0_20,
-  './plugin/get-provider.js': require_context_module_0_21,
-  './route/route.js': require_context_module_0_22,
-  './storage/storage.js': require_context_module_0_23,
-  './ui/load-font-face.js': require_context_module_0_24,
-  './ui/navigation-bar.js': require_context_module_0_25,
-  './ui/page-scroll-to.js': require_context_module_0_26,
-  './ui/popup.js': require_context_module_0_27,
-  './ui/tab-bar.js': require_context_module_0_28,
+  './media/save-image-to-photos-album.js': require_context_module_0_17,
+  './network/download-file.js': require_context_module_0_18,
+  './network/request.js': require_context_module_0_19,
+  './network/socket.js': require_context_module_0_20,
+  './network/upload-file.js': require_context_module_0_21,
+  './plugin/get-provider.js': require_context_module_0_22,
+  './route/route.js': require_context_module_0_23,
+  './storage/storage.js': require_context_module_0_24,
+  './ui/load-font-face.js': require_context_module_0_25,
+  './ui/navigation-bar.js': require_context_module_0_26,
+  './ui/page-scroll-to.js': require_context_module_0_27,
+  './ui/popup.js': require_context_module_0_28,
+  './ui/tab-bar.js': require_context_module_0_29,
 
       };
       var req = function req(key) {
@@ -6326,7 +6342,7 @@ var serviceContext = (function () {
     }
   }
 
-  function saveImageToPhotosAlbum ({
+  function saveImageToPhotosAlbum$1 ({
     filePath
   } = {}, callbackId) {
     plus.gallery.save(getRealPath$1(filePath), e => {
@@ -7715,7 +7731,9 @@ var serviceContext = (function () {
   ];
 
   function parseWebviewStyle (id, path, routeOptions = {}) {
-    const webviewStyle = Object.create(null);
+    const webviewStyle = {
+      bounce: 'vertical'
+    };
 
     // 合并
     routeOptions.window = parseStyleUnit(Object.assign(
@@ -9596,7 +9614,7 @@ var serviceContext = (function () {
     getImageInfo: getImageInfo$1,
     previewImagePlus: previewImagePlus,
     operateRecorder: operateRecorder,
-    saveImageToPhotosAlbum: saveImageToPhotosAlbum,
+    saveImageToPhotosAlbum: saveImageToPhotosAlbum$1,
     saveVideoToPhotosAlbum: saveVideoToPhotosAlbum,
     operateDownloadTask: operateDownloadTask,
     createDownloadTask: createDownloadTask,
