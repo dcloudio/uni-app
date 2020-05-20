@@ -411,5 +411,6 @@ global.__uniConfig.qqMapKey = ${JSON.stringify(qqMapKey)};
 global.__uniConfig.nvue = ${JSON.stringify({ 'flex-direction': getFlexDirection(manifestJson['app-plus']) })}
 ${genRegisterPageVueComponentsCode(pageComponents)}
 global.__uniRoutes=[${genPageRoutes(pageComponents).concat(genSystemRoutes()).join(',')}]
+global.UniApp && new global.UniApp();
 `
 }
