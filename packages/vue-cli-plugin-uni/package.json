@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/vue-cli-plugin-uni",
-  "version": "2.0.0-alpha-27420200515002",
+  "version": "2.0.0-alpha-27420200515003",
   "description": "uni-app plugin for vue-cli 3",
   "main": "index.js",
   "repository": {
@@ -17,7 +17,7 @@
   "author": "fxy060608",
   "license": "Apache-2.0",
   "dependencies": {
-    "@dcloudio/uni-stat": "^2.0.0-alpha-27420200515002",
+    "@dcloudio/uni-stat": "^2.0.0-alpha-27420200515003",
     "buffer-json": "^2.0.0",
     "copy-webpack-plugin": "^5.1.1",
     "cross-env": "^5.2.0",
@@ -37,5 +37,5 @@
     "wrap-loader": "^0.2.0",
     "xregexp": "4.0.0"
   },
-  "gitHead": "713bdb315db616632b90efc579bf64637c3abf41"
+  "gitHead": "e62f0398362f2f9de0bf5726046d7951c88d6b1d"
 }
