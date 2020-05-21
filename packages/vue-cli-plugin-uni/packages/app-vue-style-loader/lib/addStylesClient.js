@@ -242,8 +242,7 @@ function processCss(css) {
 			.replace(VAR_WINDOW_TOP, offset.top + 'px')
 			.replace(VAR_WINDOW_BOTTOM, offset.bottom + 'px')
 	}
-	return css
-		.replace(UPX_RE, function(a, b) {
-			return uni.upx2px(b) + 'px'
-		})
+  return css.replace(/\{.+?\}/gs, css => css.replace(UPX_RE, function (a, b) {
+    return uni.upx2px(b) + 'px'
+  }))
 }
