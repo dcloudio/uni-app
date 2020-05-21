@@ -4026,7 +4026,7 @@ let res = await db.collection('todos').where({
 ```js
 const dbCmd = db.command
 let res = await db.collection('todos').where({
-  places: dbCmd.elemMatch(dbCmd.gt(80).lt(100))
+  scores: dbCmd.elemMatch(dbCmd.gt(80).lt(100))
 })
 .get()
 ```
@@ -4156,6 +4156,7 @@ let res = await db.collection('restaurants').where({
 
 查询操作符，用于在查询语句中使用聚合表达式，方法接收一个参数，该参数必须为聚合表达式  
 
+**阿里云暂不支持**
       
 ##### 使用说明
  
