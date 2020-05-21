@@ -250,9 +250,11 @@ function processCss(css) {
 		.replace(BODY_SCOPED_RE, page)
 		.replace(BODY_RE, '')
 		.replace(PAGE_SCOPED_RE, 'body.' + page + ' uni-page-body')
-		.replace(/\{.+?\}/gs, css => css.replace(UPX_RE, function (a, b) {
-			return uni.upx2px(b) + 'px'
-		}))
+		.replace(/\{.+?\}/gs, function (css) {
+			return css.replace(UPX_RE, function (a, b) {
+				return uni.upx2px(b) + 'px'
+			})
+		})
 }
 
 function getPage() {
