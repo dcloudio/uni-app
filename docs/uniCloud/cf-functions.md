@@ -34,7 +34,8 @@ exports.main = async (event, context) => {
 
 **关于CLIENTIP、CLIENTUA**
 
-- 通过管理端调用云函数（云函数上传并运行、腾讯云开发调试期间），使用腾讯云时想临时调试UA、IP等可以通过自行初始化`uniCloud`的方式传入`debugFunction: false`来实现客户端直连调用，需要注意的是此时控制台将不会打印云函数日志。
+- 通过管理端调用云函数（云函数上传并运行、腾讯云开发调试期间），使用腾讯云时想临时调试UA、IP等可以通过自行初始化`uniCloud`的方式（[同时连多服务空间](uniCloud/init.md)
+）传入`debugFunction: false`来实现客户端直连调用，需要注意的是此时控制台将不会打印云函数日志。
 
 
 云函数中如果要使用其他服务（比如mysql数据库、redis等），可以按照nodejs的写法即可。
