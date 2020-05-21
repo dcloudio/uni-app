@@ -26,9 +26,16 @@ exports.main = async (event, context) => {
   let os = context.OS //客户端操作系统，返回值：android、ios	等
   let platform = context.PLATFORM //运行平台，返回值为 mp-weixin、app-plus等
   let appid = context.APPID // manifest.json中配置的appid
+  let clientIP = context.CLIENTIP // 客户端ip信息
+  let clientUA = context.CLIENTUA // 客户端user-agent
 	... //其它业务代码
 }
 ```
+
+**关于CLIENTIP、CLIENTUA**
+
+- 通过管理端调用云函数（云函数上传并运行、腾讯云开发调试期间），使用腾讯云时想临时调试UA、IP等可以通过自行初始化`uniCloud`的方式传入`debugFunction: false`来实现客户端直连调用，需要注意的是此时控制台将不会打印云函数日志。
+
 
 云函数中如果要使用其他服务（比如mysql数据库、redis等），可以按照nodejs的写法即可。
 
