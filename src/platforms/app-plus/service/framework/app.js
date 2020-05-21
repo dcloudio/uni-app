@@ -124,7 +124,7 @@ function initAppLaunch (appVm) {
 }
 
 function initTabBar () {
-  if (!__uniConfig.tabBar || !__uniConfig.tabBar.list.length) {
+  if (!__uniConfig.tabBar || !__uniConfig.tabBar.list || !__uniConfig.tabBar.list.length) {
     return
   }
 
