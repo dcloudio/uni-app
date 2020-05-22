@@ -1,5 +1,7 @@
 const dirRE = /^v-|^@|^:|^#/
 
+const PROPS = ['id', 'class', 'style', 'inline-template']
+
 module.exports = {
   preTransformNode (el) {
     if (!el.attrsList) {
@@ -7,7 +9,7 @@ module.exports = {
     }
     el.attrsList.forEach(attr => {
       if (attr.bool) {
-        if (!dirRE.test(attr.name) && attr.name !== 'inline-template') {
+        if (!dirRE.test(attr.name) && !PROPS.includes(attr.name)) {
           delete el.attrsMap[attr.name]
           attr.name = ':' + attr.name
           attr.value = 'true'
