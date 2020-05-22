@@ -360,7 +360,7 @@ export default {
           } else {
             // 解决 PLUS-APP（wkwebview）以及 H5 图像跨域问题（H5图像响应头需包含access-control-allow-origin）
             if (window.plus && src.indexOf('http://') !== 0 && src.indexOf('https://') !==
-              0) {
+              0 && !/^data:.*,.*/.test(src)) {
               loadFile(src)
             } else if (/^data:.*,.*/.test(src)) {
               self._images[src].src = src
