@@ -4,6 +4,10 @@
 
 从[HBuilderX 2.5.8](https://www.dcloud.io/hbuilderx.html)起支持。阿里云、腾讯云均已开放注册使用。
 
+Tips：
+
+- uniCloud的腾讯云版本，由腾讯云云开发（CloudBase）提供存储和计算服务。
+
 ### uniCloud 的价值
 
 - 对于程序员，从此你又get一个新技能，用熟悉的js，轻松搞定前后台整体业务。
