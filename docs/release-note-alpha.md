@@ -1,3 +1,33 @@
+#### 2.7.6.20200521-alpha
+* 【uni-app插件】
+  + 【重要】支持运行和发布到 360小程序 [详情](https://uniapp.dcloud.io/matter?id=mp-360)
+  + App平台 修复  class 名称中含有 rpx、upx 时不生效的Bug [详情](https://ask.dcloud.net.cn/question/96981)
+  + App-Android平台 修复 HBuilderX2.7.0 引出的 uni.hideTabBar 隐藏 tabbar 后页面高度可能不正确的Bug [详情](https://ask.dcloud.net.cn/question/96244)
+  + App-Android平台 修复 nvue textarea 组件获取焦点后在部分手机可能会被软键盘遮挡的Bug [详情](https://ask.dcloud.net.cn/question/96914)
+  + App-Android平台 修复 nvue live-pusher 组件调用 pause 方法暂停推流后依然录音的Bug [详情](https://ask.dcloud.net.cn/question/96411)
+  + App-Android平台 修复 nvue web-view 组件中 input 标签设置 type 为 file 时无法选择文件的Bug [详情](https://ask.dcloud.net.cn/question/95220)
+  + App-iOS平台 修复 vue 页面回弹无效果的Bug [详情](https://ask.dcloud.net.cn/question/91356)
+  + App-iOS平台 修复 nvue ad 组件在 list 中使用可能引起滚动卡顿的Bug
+  + App-iOS平台 修复 nvue web-view 组件在页面关闭时可能引起应用崩溃的Bug [详情](https://ask.dcloud.net.cn/question/97064)
+  + H5平台 修复 配置基础路径为 ./ 打包后 image 组件显示异常的Bug [详情](https://ask.dcloud.net.cn/question/96767)
+* 【uniCloud】
+  + 【重要】 腾讯云开放，不再需要邮件申请
+* 【App插件(含5+App和uni-app的App端)】
+  + 新增 原生导航标题栏 titleNView 的 titleIconWidth 支持设置标题图标宽度
+  + 新增 原生导航标题栏 titleNView 的 searchInput 搜索框支持清除按钮
+  + 修复 原生导航标题栏 titleNView 的 titleIcon 设置 base64 图标无法支持 gif 格式图片的Bug
+  + Android平台 更新 uni-AD 腾讯广点通SDK版本为4.211.1081
+  + Android平台 更新 UniPush 使用的个推SDK版本为4.3.8.0
+  + Android平台 修复 软键盘状态变化事件 keyboardchange 监听后回调不触发的Bug [详情](https://ask.dcloud.net.cn/question/97070)
+  + Android平台 修复 uni-AD 腾讯广点通开屏广告可能拉伸变形显示的Bug
+  + Androad平台 修复 uni-AD 开屏广告在刘海屏手机上跳过按钮可能被遮挡的Bug
+  + Android平台 修复 视频播放 video 全屏时在刘海屏手机上控制栏可能被遮挡的Bug
+  + Android平台 修复 页面中 input 标签 type 为 file 点击打开的选择页面不支持国际化的Bug
+  + iOS平台 更新 uni-AD 今日头条穿山甲SDK版本为3.0.0.1
+  + iOS平台 修复 初始化蓝牙模块 openBluetoothAdapter 可能在没有打开蓝牙时也会返回成功回调的Bug
+  + iOS平台 修复 previewImage 预览图片连续快速滑动时可能显示不正常的Bug [详情](https://ask.dcloud.net.cn/question/96445)
+  + iOS平台 修复 原生导航标题栏 titleNView 动态设置 type 为 transparent 可能显示不正常的Bug [详情](https://ask.dcloud.net.cn/question/96556)
+
 #### 2.7.4.20200515-alpha
 * 【uni-app插件】
   + App-Android平台 修复 真机运行时提示HBuilderX版本与手机端SDK版本不匹配的Bug
