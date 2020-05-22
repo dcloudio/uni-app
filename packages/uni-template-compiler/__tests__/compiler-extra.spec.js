@@ -649,8 +649,8 @@ describe('mp:compiler-extra', () => {
   })
   it('generate bool attr', () => {
     assertCodegen(
-      '<video controls/>',
-      '<video controls="{{true}}"></video>'
+      '<video id class style inline-template controls/>',
+      '<video id controls="{{true}}"></video>'
     )
     assertCodegen(
       '<video controls=""/>',
