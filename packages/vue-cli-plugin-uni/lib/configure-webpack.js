@@ -266,7 +266,11 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
     if (process.env.NODE_ENV === 'development') {
       const sourceMap = require('@dcloudio/uni-cli-shared/lib/source-map')
       let isAppService = false
-      if (process.env.UNI_PLATFORM === 'app-plus' && vueOptions.pluginOptions['uni-app-plus']) {
+      if (
+        process.env.UNI_PLATFORM === 'app-plus' &&
+        vueOptions.pluginOptions &&
+        vueOptions.pluginOptions['uni-app-plus']
+      ) {
         isAppService = !!vueOptions.pluginOptions['uni-app-plus'].service
       }
       if (process.env.UNI_PLATFORM === 'h5' || isAppService) {
