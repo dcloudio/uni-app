@@ -13,7 +13,7 @@
   * [云函数URL化](uniCloud/http.md)
 * 扩展能力
   * [uni-account](uniCloud/uni-account.md)
-  * [uni-pay](uniCloud/uni-pay.md)
+  * [unipay](uniCloud/unipay.md)
 * [云数据库](uniCloud/cf-database.md)
 * [云存储](uniCloud/storage.md)
 * [云Token](uniCloud/authentication.md)

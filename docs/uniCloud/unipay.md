@@ -1,39 +1,39 @@
 ## 简介
 
-`uni-pay`为`uniCloud`开发者提供了简单、易用、统一的支付能力封装。让开发者无需研究支付宝、微信等支付平台的后端开发、无需为它们编写不同代码，拿来即用，屏蔽差异。
+`unipay`为`uniCloud`开发者提供了简单、易用、统一的支付能力封装。让开发者无需研究支付宝、微信等支付平台的后端开发、无需为它们编写不同代码，拿来即用，屏蔽差异。
 
-`uni-app`前端已经封装的全端支付 api `uni.requestPayment`，现在服务端也封装好了`uni-pay for uniCloud`，从此开发者可以极快的完成前后一体的支付业务。
+`uni-app`前端已经封装的全端支付 api `uni.requestPayment`，现在服务端也封装好了`unipay for uniCloud`，从此开发者可以极快的完成前后一体的支付业务。
 
 目前已封装 App 端（微信支付和支付宝支付）、微信小程序、支付宝小程序的支付能力。
 
-`uni-pay`是开源 sdk，可放心使用。本插件还包含示例工程，配置自己在微信和支付宝申请的相关配置后即可运行。
+`unipay`是开源 sdk，可放心使用。本插件还包含示例工程，配置自己在微信和支付宝申请的相关配置后即可运行。
 
-为了更好的体验支付流程可以在插件市场导入`uni-pay`的示例项目快速体验，[插件市场 uni-pay](https://ext.dcloud.net.cn/plugin?id=1835)
+为了更好的体验支付流程可以在插件市场导入`unipay`的示例项目快速体验，[插件市场 unipay](https://ext.dcloud.net.cn/plugin?id=1835)
 
 **须知**
 
-- uni-pay 对入参和返回值均做了驼峰转化，开发者在对照微信支付或者支付宝支付对应的文档时需要注意。
+- unipay 对入参和返回值均做了驼峰转化，开发者在对照微信支付或者支付宝支付对应的文档时需要注意。
 - 特殊参数`appId`、`mchId`需注意大小写
 - 所有金额被统一为以分为单位
 - 为避免无关参数干扰此文档仅列举必填参数，其余参数请参照[微信支付-小程序](https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_1)、[微信支付-App](https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=9_1)、[支付宝支付-小程序](https://opendocs.alipay.com/apis/api_1/alipay.trade.create)、[支付宝支付-App](https://opendocs.alipay.com/apis/api_1/alipay.trade.app.pay)
 - 微信支付沙箱环境不支持小程序支付，另外此沙箱环境只可以跑微信提供的测试用例不可以随意测试
 - 无论是微信还是支付宝，沙箱环境都不确保稳定，如果使用沙箱的过程中遇到疑难问题建议切换成正式环境测试
 
-## 引入 uni-pay
+## 引入 unipay
 
 开发者可以自行选择是从插件市场导入还是从 npm 安装，引入方式略有不同，请看下面示例
 
 ```js
 // 插件市场导入
-const uniPay = require('uni-pay')
+const unipay = require('unipay')
 
 // npm安装
-const uniPay = require('@dcloudio/uni-pay')
+const unipay = require('@dcloudio/unipay')
 ```
 
 ## 初始化
 
-进行初始化操作返回 uni-pay 实例
+进行初始化操作返回 unipay 实例
 
 ### 微信支付
 
@@ -51,7 +51,7 @@ const uniPay = require('@dcloudio/uni-pay')
 | clientType | String  |   否   | 默认自动获取客户端类型，同 `context` 内的 `PLATFORM` | 客户端类型，主要用于返回客户端支付参数 |
 
 ```js
-const uniPayIns = uniPay.initWeixin({
+const unipayIns = unipay.initWeixin({
   appId: 'your appId',
   mchId: 'your mchId',
   key: 'you parterner key',
@@ -75,7 +75,7 @@ const uniPayIns = uniPay.initWeixin({
 |   clientType    | String  |  否  | 默认自动获取客户端类型，同 `context` 内的 `PLATFORM` | 客户端类型，主要用于返回客户端支付参数 |
 
 ```js
-const uniPayIns = uniPay.initAlipay({
+const unipayIns = unipay.initAlipay({
   appId: 'your appId',
   privateKey: 'your privateKey',
   alipayPublicKey: 'you alipayPublicKey', // 使用支付时需传递此值做返回结果验签
@@ -86,13 +86,13 @@ const uniPayIns = uniPay.initAlipay({
 
 ### 获取支付参数
 
-`uniPayIns.getOrderInfo`，此接口仅支持微信小程序、支付宝小程序、App 平台
+`unipayIns.getOrderInfo`，此接口仅支持微信小程序、支付宝小程序、App 平台
 
 **入参说明**
 
 |   参数名   |  类型  |                必填                | 默认值 |                                    说明                                    |         支持平台         |
 | :--------: | :----: | :--------------------------------: | :----: | :------------------------------------------------------------------------: | :----------------------: |
-|   openid   | String |    支付宝小程序、微信小程序必填    |   -    |                  通过对应 uniAccount 的 code2Session 获取                  | 支付宝小程序、微信小程序 |
+|   openid   | String | 支付宝小程序、微信小程序必填，App端支付不需要    |   -    |                  通过对应 [uni-account](https://ext.dcloud.net.cn/plugin?id=1834) 的 code2Session 获取                  | 支付宝小程序、微信小程序 |
 |  subject   | String | 支付宝支付必填，微信支付时忽略此项 |   -    |                                  订单标题                                  |        支付宝支付        |
 |    body    | String |            微信支付必填            |   -    |                                  商品描述                                  |         微信支付         |
 | outTradeNo | String |                必填                |   -    | 商户订单号,64 个字符以内、只能包含字母、数字、下划线；需保证在商户端不重复 |                          |
@@ -110,7 +110,7 @@ const uniPayIns = uniPay.initAlipay({
 ```js
 // 云函数 - getOrderInfo
 exports.main = async function (event,context) {
-	let	orderInfo = await uniPayIns.getOrderInfo({
+	let	orderInfo = await unipayIns.getOrderInfo({
 		openid: 'user openid',
 		subject: '订单标题', // 微信支付时不可填写此项
 		body: '商品描述',
@@ -147,7 +147,7 @@ uniCloud.callFunction({
 
 ### 查询订单
 
-`uniPayIns.orderQuery`, 根据商户订单号或者平台订单号查询订单信息，主要用于未接收到支付通知时可以使用此接口进行支付结果验证
+`unipayIns.orderQuery`, 根据商户订单号或者平台订单号查询订单信息，主要用于未接收到支付通知时可以使用此接口进行支付结果验证
 
 **入参说明**
 
@@ -173,7 +173,7 @@ uniCloud.callFunction({
 
 ```js
 exports.main = async function (event) {
-  let res = await uniPayIns.orderQuery({
+  let res = await unipayIns.orderQuery({
     outTradeNo: 'outTradeNo',
   })
   return res
@@ -182,7 +182,7 @@ exports.main = async function (event) {
 
 ### 关闭订单
 
-`uniPayIns.closeOrder`，用于交易创建后，用户在一定时间内未进行支付，可调用该接口直接将未付款的交易进行关闭，避免重复支付。
+`unipayIns.closeOrder`，用于交易创建后，用户在一定时间内未进行支付，可调用该接口直接将未付款的交易进行关闭，避免重复支付。
 
 **注意**
 
@@ -208,7 +208,7 @@ exports.main = async function (event) {
 
 ```js
 exports.main = async function (event) {
-  let res = await uniPayIns.closeOrder({
+  let res = await unipayIns.closeOrder({
     outTradeNo: 'outTradeNo',
   })
   return res
@@ -217,7 +217,7 @@ exports.main = async function (event) {
 
 ### 撤销订单
 
-`uniPayIns.cancelOrder`，**此接口仅支付宝支持**，支付交易返回失败或支付系统超时，调用该接口撤销交易。如果此订单用户支付失败，支付宝系统会将此订单关闭；如果用户支付成功，支付宝系统会将此订单资金退还给用户。 注意：只有发生支付系统超时或者支付结果未知时可调用撤销，其他正常支付的单如需实现相同功能请调用申请退款 API。提交支付交易后调用【查询订单 API】，没有明确的支付结果再调用【撤销订单 API】。
+`unipayIns.cancelOrder`，**此接口仅支付宝支持**，支付交易返回失败或支付系统超时，调用该接口撤销交易。如果此订单用户支付失败，支付宝系统会将此订单关闭；如果用户支付成功，支付宝系统会将此订单资金退还给用户。 注意：只有发生支付系统超时或者支付结果未知时可调用撤销，其他正常支付的单如需实现相同功能请调用申请退款 API。提交支付交易后调用【查询订单 API】，没有明确的支付结果再调用【撤销订单 API】。
 
 **入参说明**
 
@@ -237,7 +237,7 @@ exports.main = async function (event) {
 
 ```js
 exports.main = async function (event) {
-  let res = await uniPayIns.cancelOrder({
+  let res = await unipayIns.cancelOrder({
     outTradeNo: 'outTradeNo',
   })
   return res
@@ -246,7 +246,7 @@ exports.main = async function (event) {
 
 ### 申请退款
 
-`uniPayIns.refund`,当交易发生之后一段时间内，由于买家或者卖家的原因需要退款时，卖家可以通过退款接口将支付款退还给买家。
+`unipayIns.refund`,当交易发生之后一段时间内，由于买家或者卖家的原因需要退款时，卖家可以通过退款接口将支付款退还给买家。
 
 **微信支付注意事项**
 
@@ -284,7 +284,7 @@ exports.main = async function (event) {
 
 ```js
 exports.main = async function (event) {
-  let res = await uniPayIns.refund({
+  let res = await unipayIns.refund({
     outTradeNo: '商户订单号',
     outRefundNo: '商户退款单号', // 支付宝可不填此项
     totalFee: 1, // 订单总金额，支付宝可不填此项
@@ -296,7 +296,7 @@ exports.main = async function (event) {
 
 ### 查询退款
 
-`uniPayIns.refundQuery`，提交退款申请后，通过调用该接口查询退款状态。
+`unipayIns.refundQuery`，提交退款申请后，通过调用该接口查询退款状态。
 
 **入参说明**
 
@@ -364,7 +364,7 @@ exports.main = async function (event) {
 
 ```js
 exports.main = async function (event) {
-  let res = await uniPayIns.refundQuery({
+  let res = await unipayIns.refundQuery({
     outTradeNo: '商户订单号',
     outRefundNo: '商户退款单号', // 支付宝必填
   })
@@ -374,7 +374,7 @@ exports.main = async function (event) {
 
 ### 下载交易账单
 
-`uniPayIns.downloadBill`，商户可以通过该接口下载历史交易清单。**仅微信支付支持**
+`unipayIns.downloadBill`，商户可以通过该接口下载历史交易清单。**仅微信支付支持**
 
 **注意：**
 
@@ -428,7 +428,7 @@ exports.main = async function (event) {
 
 ```js
 exports.main = async function (event) {
-  let res = await uniPayIns.downloadBill({
+  let res = await unipayIns.downloadBill({
     billDate: '20200202',
   })
   return res
@@ -437,7 +437,7 @@ exports.main = async function (event) {
 
 ### 下载资金账单
 
-`uniPayIns.downloadFundflow`,商户可以通过该接口下载自 2017 年 6 月 1 日起的历史资金流水账单。**仅微信支持**
+`unipayIns.downloadFundflow`,商户可以通过该接口下载自 2017 年 6 月 1 日起的历史资金流水账单。**仅微信支持**
 
 **说明：**
 
@@ -488,7 +488,7 @@ exports.main = async function (event) {
 
 ```js
 exports.main = async function (event) {
-  let res = await uniPayIns.downloadFundflow({
+  let res = await unipayIns.downloadFundflow({
     billDate: '20200202',
   })
   return res
@@ -497,7 +497,7 @@ exports.main = async function (event) {
 
 ### 支付结果通知处理
 
-`uniPayIns.verifyPaymentNotify`，用于在使用云函数 Url 化的云函数内检验并处理支付结果。
+`unipayIns.verifyPaymentNotify`，用于在使用云函数 Url 化的云函数内检验并处理支付结果。
 
 **入参说明**
 
@@ -520,14 +520,14 @@ exports.main = async function (event) {
 
 ```js
 exports.main = async function (event) {
-  let res = await uniPayIns.verifyPaymentNotify(event)
+  let res = await unipayIns.verifyPaymentNotify(event)
   return res
 }
 ```
 
 ### 退款结果通知
 
-`uniPayIns.verifyRefundNotify`，用于在使用云函数 Url 化的云函数内检验并处理支付结果。
+`unipayIns.verifyRefundNotify`，用于在使用云函数 Url 化的云函数内检验并处理支付结果。
 
 **入参说明**
 
@@ -553,7 +553,7 @@ exports.main = async function (event) {
 
 ```js
 exports.main = async function (event) {
-  let res = await uniPayIns.verifyRefundNotify(event)
+  let res = await unipayIns.verifyRefundNotify(event)
   return res
 }
 ```
