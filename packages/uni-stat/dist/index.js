@@ -306,17 +306,16 @@ const isReportData = () => {
     let start_time = '';
     let end_time = new Date().getTime();
     let diff_time = DIFF_TIME;
+    let report_status = 1;
     try {
       start_time = uni.getStorageSync(Report_Data_Time);
+      report_status = uni.getStorageSync(Report_Status);
     } catch (e) {
       start_time = '';
+      report_status = 1;
     }
 
-    if (!start_time) {
-      uni.setStorageSync(Report_Data_Time, end_time);
-      start_time = end_time;
-    }
-    if ((end_time - start_time) > diff_time) {
+    if (report_status === '') {
       requestData(({
         enable
       }) => {
@@ -326,7 +325,27 @@ const isReportData = () => {
           resolve();
         }
       });
+      return
     }
+
+    if (report_status === 1) {
+      resolve();
+    }
+
+    if (!start_time) {
+      uni.setStorageSync(Report_Data_Time, end_time);
+      start_time = end_time;
+    }
+
+    if ((end_time - start_time) > diff_time) {
+      requestData(({
+        enable
+      }) => {
+        uni.setStorageSync(Report_Data_Time, end_time);
+        uni.setStorageSync(Report_Status, enable);
+      });
+    }
+
   })
 };
 
@@ -356,6 +375,9 @@ const requestData = (done) => {
       try {
         report_status_code = uni.getStorageSync(Report_Status);
       } catch (e) {
+        report_status_code = 1;
+      }
+      if (report_status_code === '') {
         report_status_code = 1;
       }
       if (report_status_code === 1) {
