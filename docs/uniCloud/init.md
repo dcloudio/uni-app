@@ -29,6 +29,10 @@ function init(options):uniCloud
 <!-- |endpoint			|String	|否					|https://api.bspapp.com	|服务空间地址																			|仅阿里云侧支持																																	| -->
 <!-- |autoSignIn		|Boolean|否					|true										|是否自动匿名登录																	|仅腾讯云侧支持																																	| -->
 
+**关于debugFunction的说明**
+
+- 设置为`true`时，腾讯云访问云函数为通过管理端调用（即通过DCloud服务器调用）以便同步返回运行日志。阿里云访问云函数依然为直连。
+- 发行时此字段自动失效，变为false。
 
 **示例代码**
 
