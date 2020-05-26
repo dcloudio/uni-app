@@ -1,7 +1,7 @@
 ## 创建uniCloud项目
   
   - 在 [HBuilderX 2.5.8+](https://www.dcloud.io/hbuilderx.html) 新建项目，选择uni-app项目，并勾选`启用uniCloud`
-  - 在右侧选择服务供应商（自`HBuilderX 2.6.7+`起开放腾讯云，目前腾讯云处于邀请试用阶段，如需试用可以发送邮件到`service@dcloud.io`，邮件内容需包括要试用腾讯云的DCloud账号）
+  - 在右侧选择服务供应商
 
 ![创建uniCloud项目](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/create-project.png)
 
@@ -18,7 +18,7 @@
 
 一个开发者可以拥有多个服务空间，每个服务空间都是一个独立的serverless云环境，不同服务空间之间的云函数、数据库、存储都是隔离的。
 
-**注：公测期间，选择腾讯云作为服务商时，只可以创建一个服务空间，并且需要申请。阿里云无限制**
+**注：公测期间，腾讯云仅提供一个服务空间。阿里云无限制**
 
 服务空间和手机端项目是多对多绑定关系。同账号下，一个项目可以关联到多个服务空间。一个服务空间也可以被多个项目访问。
 
@@ -30,8 +30,8 @@
   
 **说明**
 
-- 如果未进行实名认证，会跳转至实名认证页面进行实名认证，等待实名认证审核之后可以开通服务空间
-- 创建服务空间可能需要几分钟的时间，可以在控制台查看是否创建完成
+- 如果未进行实名认证，会跳转至实名认证页面进行实名认证，等待实名认证审核之后可以开通服务空间。若腾讯云实名认证提示身份证下已创建过多账户，则需要在腾讯云官网注销不用的账户。
+- 创建服务空间可能需要几十秒的时间，可以在web控制台查看是否创建完成。
 - 一个应用，可以在[dev.dcloud.net.cn](https://dev.dcloud.net.cn)设置协作者（选择应用->设置项目成员），实现多人共同使用一个云服务空间。（需 HBuilderX 2.5.9+）
 
 ## 创建云函数
@@ -121,9 +121,9 @@ uniCloud.callFunction({
 
 ## 手机端看日志
 
-uni-app运行在各端，均可在查看手机端日志。额外的，在App真机运行模式下，在HBuilderX的真机运行控制台除了打印手机端日志，也会打印云函数输出的`console.log`。
+uni-app运行在HBuilderX内置浏览器和App环境时，在HBuilderX的控制台中，除了可以看普通手机端日志外，还可以直接看到云端的云函数里打印的console.log日志。
 
-**App端真机调试输出云函数日志，如下图所示**
+**示例**
 
 所执行云函数代码
 
@@ -139,24 +139,21 @@ exports.main = async (event, context) => {
 };
 ```
 
-日志输出
+H5端HBuilderX内置浏览器输出云函数日志，如下图所示：
+
+<!-- 这里缺少内置浏览器的截图 -->
+
+App端真机调试输出云函数日志，如下图所示：
 
 ![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/uniCloud-function-log.png)
 
-- 运行到H5，需要在浏览器的控制台查看日志，但仅包含前端日志，不包含云函数内部的console.log。
-- 运行到小程序，需要在小程序开发工具的控制台查看日志，但仅包含前端日志，不包含云函数内部的console.log。
+
+- 如运行到小程序开发工具或外部浏览器，仅能在这些软件的调试控制台查看本地日志，不包含云函数里的console.log。
 
 uniCloud的[web控制台](https://unicloud.dcloud.net.cn/)可以查看线上云函数的所有运行日志，而不仅仅是开发时的运行日志。
 
-## 云函数公用模块@common
 
-文档已迁移至 [云函数公用模块](https://uniapp.dcloud.io/uniCloud/cf-common)
-
-## 使用db_init.json初始化项目数据库@db-init
-
-文档已迁移至 [使用db_init.json初始化项目数据库](https://uniapp.dcloud.io/uniCloud/cf-database?id=db_init)
-
-## 小程序中使用uniCloud
+## 小程序中使用uniCloud的白名单配置
 
 各家小程序平台，均要求在小程序管理后台配置小程序应用的联网服务器域名，否则无法联网。
 
@@ -177,9 +174,9 @@ uniCloud的[web控制台](https://unicloud.dcloud.net.cn/)可以查看线上云�
 - 获取日志需要从管理端调用云函数，速度比sdk直接调用慢。
 - 访问DCloud服务器也有时间损耗。
 
-后续会对此流程进行优化
+后续会对此流程进行优化。
 
-## H5中使用uniCloud@useinh5
+## H5中使用uniCloud的跨域处理@useinh5
 
 H5前端js访问云函数，涉及跨域问题，导致前端js无法连接云函数服务器。处理方式如下：。
 
@@ -221,7 +218,7 @@ uniCloud暂未支持H5前端页面部署，需开发者自行准备web服务器�
 
 若为新冠抗疫需紧急上线H5，来不及注册域名，可申请使用DCloud提供的m3w.cn的二级域名，示例：[hellounicloud.m3w.cn](https://hellounicloud.m3w.cn) 。此时请使用你注册DCloud账户的邮箱向service@dcloud.io发邮件申请，提供你的appid、计划使用的二级域名名称、解析的ip地址、应用的使用用途。
 
-如果不发布H5，使用uniCloud不需要自己申请或准备域名。App和小程序里直接调用云函数即可。
+如果不发布H5，则不需要自己申请或准备域名。App和小程序里直接调用云函数即可，无需域名。
 
 
 **Tips**
