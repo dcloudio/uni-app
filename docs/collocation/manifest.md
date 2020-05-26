@@ -467,6 +467,28 @@ mp-qq只支持自定义组件模式，不存在usingComponents配置
 
 以上面的分包为例，放在每个分包root对应目录下的静态文件会被打包到此分包内。
 
+### 快应用-华为@quickapp-webview
+
+|属性							 |类型			|说明|
+|:-								 |:-			|:-|
+|icon							 |String	|应用图标 华为推荐 192x192|
+|package					 |String	|应用包名|
+|minPlatformVersion|Number	|最小平台运行支持(华为最低 1070)|
+|versionName			 |String	|版本名称|
+|versionCode			 |Number	|版本号|
+
+
+**manifest.json配置**
+```
+"quickapp-webview": {
+  "icon": "/static/logo.png",
+  "package": "com.example.demo",
+  "minPlatformVersion": 1070,
+  "versionName": "1.0.0",
+  "versionCode": 100
+}
+```
+
 ### 完整 manifest.json
 
 ```javascript
