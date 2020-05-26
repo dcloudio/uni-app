@@ -10,7 +10,7 @@ module.exports = function (pagesJson, manifestJson) {
   } = require('../mp')(pagesJson, manifestJson, require('./project.config.json'))
 
   const baseJson = {
-    minPlatformVersion: 1053
+    minPlatformVersion: 1070
   }
   manifestJson.name && (baseJson.name = manifestJson.name)
   manifestJson.versionName && (baseJson.versionName = manifestJson.versionName)

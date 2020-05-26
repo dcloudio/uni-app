@@ -14,7 +14,7 @@
 	"libVersion": "",
 	"appid": "touristappid",
 	"projectname": "",
-	"quickappRoot": "",
+	"quickappRoot": "./",
 	"condition": {
 		"search": {
 			"current": -1,
