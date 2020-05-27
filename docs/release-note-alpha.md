@@ -1,3 +1,9 @@
+## 2.7.8.20200525-alpha
+* 【uni-app插件】
+  + 小程序平台 修复 组件 class 属性无值时报错的Bug
+  + uni统计 修复 2.7.0.20200501-alpha 引出的统计数据上报不完整，导致uni统计日活偏少的Bug
+  + App-Android平台 修复 tabbar 页面在部分手机可能高度显示不正确的Bug
+
 #### 2.7.7.20200522-alpha
 * 【uni-app插件】
   + App平台 修复 HBuilderX 2.7.6 引出的纯nvue项目编译出错的Bug [详情](https://ask.dcloud.net.cn/question/97264)
