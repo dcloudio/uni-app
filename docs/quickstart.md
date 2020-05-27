@@ -78,12 +78,18 @@ uni-app自带的模板有 Hello uni-app ，是官方的组件和API示例。还�
     	<img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/uni20190222-4.png"/>
     </div>
 
-7. 在QQ小程序开发工具里运行：内容同上，不再重复。
+7. 在360开发工具中导入：进入hello-uniapp项目，点击工具栏的运行 -> 运行到小程序模拟器 -> 360开发工具，即可在360开发工具里面体验uni-app。
+    <br/>
+    <div align=center>
+      <img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/uni-app-debug-mp-360.png"/>
+    </div>
+
+8. 在QQ小程序开发工具里运行：内容同上，不再重复。
 
 **Tips**
 
 * 如果是第一次使用，需要配置开发工具的相关路径。点击工具栏的运行 -> 运行到小程序模拟器 -> 运行设置，配置相应小程序开发者工具的路径。
-* 支付宝/百度/字节跳动小程序工具，不支持直接指定项目启动并运行。因此开发工具启动后，请将 HBuilderX 控制台中提示的项目路径，在相应小程序开发者工具中打开。
+* 支付宝/百度/字节跳动/360小程序工具，不支持直接指定项目启动并运行。因此开发工具启动后，请将 HBuilderX 控制台中提示的项目路径，在相应小程序开发者工具中打开。
 * 如果自动启动小程序开发工具失败，请手动启动小程序开发工具并将 HBuilderX 控制台提示的项目路径，打开项目。
 
 运行的快捷键是`Ctrl+r`。
@@ -170,6 +176,18 @@ HBuilderX 还提供了快捷运行菜单，可以按数字快速选择要运行�
 </div>
 3. 在字节跳动小程序开发者工具中，导入生成的字节跳动小程序项目，测试项目代码运行正常后，点击“上传”按钮上传代码，在 [字节跳动小程序后台](https://developer.toutiao.com/app/applist)，选择刚提交的版本点击提交审核，详见：[字节跳动小程序文档](https://developer.toutiao.com/dev/cn/mini-app/introduction/plug-in/verification)。
 
+**发布为360小程序：**
+1. 入驻360小程序，参考：[360小程序教程](https://mp.360.cn/doc/miniprogram/dev/#/)。
+2. 在HBuilderX中顶部菜单依次点击 "发行" => "小程序-360"，即可在 ``/unpackage/dist/build/mp-360`` 生成360小程序项目代码。
+<div align=center>
+  <img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/uni-app-release-mp-360.png"/>
+</div>
+3. 在360浏览器中，导入生成的360小程序项目
+
+**注意**
+- 目前仅windows平台支持
+
+
 **发布为QQ小程序：**
 内容同上，不再重复。
 
@@ -231,6 +249,7 @@ npm run build:%PLATFORM%
 |mp-weixin|微信小程序|
 |mp-toutiao|字节跳动小程序|
 |mp-qq|qq 小程序|
+|mp-360|360 小程序|
 |quickapp-webview|快应用|
 
 可以自定义更多条件编译平台，比如钉钉小程序，参考[package.json文档](https://uniapp.dcloud.io/collocation/package)。
