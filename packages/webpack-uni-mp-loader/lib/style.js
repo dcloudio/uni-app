@@ -34,8 +34,7 @@ module.exports = function (content, map) {
   const manifestJson = parseManifestJson(fs.readFileSync(manifestJsonPath, 'utf8'))
 
   this.callback(null,
-    `${content}
-<style>
+    `<style>
   view,
   swiper-item,
   scroll-view {
@@ -63,6 +62,7 @@ module.exports = function (content, map) {
   swiper-item {
     position: absolute;
   }
-</style>`,
+</style>
+${content}`,
     map)
 }
