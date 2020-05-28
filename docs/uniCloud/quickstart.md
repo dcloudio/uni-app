@@ -139,9 +139,9 @@ exports.main = async (event, context) => {
 };
 ```
 
-H5端HBuilderX内置浏览器输出云函数日志，如下图所示：
+H5端HBuilderX内置浏览器输出云函数日志，如下图所示（注意：日志在HBuilderX控制台输出）：
 
-<!-- 这里缺少内置浏览器的截图 -->
+![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/uniCloud-function-log-h5.jpg)
 
 App端真机调试输出云函数日志，如下图所示：
 
