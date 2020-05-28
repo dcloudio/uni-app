@@ -16,6 +16,7 @@
   * [unipay](uniCloud/unipay.md)
 * [云数据库](uniCloud/cf-database.md)
 * [云存储](uniCloud/storage.md)
+* [前端网站部署](uniCloud/hosting.md)
 * [云Token](uniCloud/authentication.md)
 * [日志输出](uniCloud/cf-logger.md)
 * [同时连多服务空间](uniCloud/init.md)
