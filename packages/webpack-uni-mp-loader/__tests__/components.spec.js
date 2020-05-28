@@ -122,6 +122,37 @@ global['__wxVueOptions'] = {
         source: '../icon/loading.vue'
       }
       ])
+
+    assertCodegen(
+      `import myButton from '@/components/my-button/my-button.vue';
+      export default {
+          components: {
+            myButton
+          }
+      }
+      import VanButton from '../button/index.vue'
+      import VanSearch from '../search/index.vue'
+      exports.default.components = Object.assign({
+          'van-button': VanButton,
+          'van-search': VanSearch,
+        },exports.default.components || {})`,
+      [
+        {
+          name: 'van-button',
+          value: 'VanButton',
+          source: '../button/index.vue'
+        },
+        {
+          name: 'van-search',
+          value: 'VanSearch',
+          source: '../search/index.vue'
+        },
+        {
+          name: 'myButton',
+          value: 'myButton',
+          source: '@/components/my-button/my-button.vue'
+        }
+      ])
   })
 
   it('parse global component', () => {

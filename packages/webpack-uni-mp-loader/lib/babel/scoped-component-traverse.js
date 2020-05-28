@@ -34,15 +34,16 @@ function handleObjectExpression (declaration, path, state) {
   }
 }
 
-function handleComponentsObjectExpression (componentsObjExpr, path, state) {
+function handleComponentsObjectExpression (componentsObjExpr, path, state, prepend) {
   const properties = componentsObjExpr.properties
     .filter(prop => t.isObjectProperty(prop) && t.isIdentifier(prop.value))
-  state.components = parseComponents(properties.map(prop => {
+  const components = parseComponents(properties.map(prop => {
     return {
       name: prop.key.name || prop.key.value,
       value: prop.value.name
     }
   }), path.scope.bindings, path)
+  state.components = prepend ? components.concat(state.components) : components
 }
 
 module.exports = function (ast, state = {
@@ -74,7 +75,7 @@ module.exports = function (ast, state = {
         rightExpression.arguments.length === 2 &&
         t.isObjectExpression(rightExpression.arguments[0])
       ) {
-        handleComponentsObjectExpression(rightExpression.arguments[0], path, state)
+        handleComponentsObjectExpression(rightExpression.arguments[0], path, state, true)
       }
     },
     ExportDefaultDeclaration (path) {
