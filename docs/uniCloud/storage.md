@@ -32,11 +32,12 @@
 #### 请求参数
 **Object object**
 
-|参数名						|类型			|必填	|默认值	|说明												|平台差异说明		|
-|:-:							|:-:			|:-:	|:-:		|:-:												|:-:						|
-|filePath					|String		|是		|-			|要上传的文件对象						|-							|
-|cloudPath				|String		|-		|-			|文件的绝对路径，包含文件名	|阿里云非必填，腾讯云必填	|
-|onUploadProgress	|Function	|否		|-			|上传进度回调								|-	|
+|参数名						|类型			|必填	|默认值	|说明																														|平台差异说明							|
+|:-:							|:-:			|:-:	|:-:		|:-:																														|:-:											|
+|filePath					|String		|是		|-			|要上传的文件对象																								|-												|
+|cloudPath				|String		|-		|-			|文件的绝对路径，包含文件名																			|阿里云非必填，腾讯云必填	|
+|fileType					|String		|-		|-			|文件类型，支付宝小程序、钉钉小程序必填，可选image、video、audio|-												|
+|onUploadProgress	|Function	|否		|-			|上传进度回调																										|-												|
 
 **注意**
 
