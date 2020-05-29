@@ -163,6 +163,8 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 
 **极志愿：**专业高考志愿填报。**<span style="color:#42b983">多端获客典型案例，1个月获得400万用户</span>**，[详见报道](https://mp.weixin.qq.com/s?__biz=MzU3NTU5NDc0NA==&mid=2247491214&idx=1&sn=7e334d079146d9e31cea407f45bd8624)。体验方式：[App、微信小程序、百度小程序、H5 官网地址](https://www.jizhy.com/home/)
 
+**Crimaster犯罪大师：**火爆的全球推理侦探专属社区。[Android](https://android.myapp.com/myapp/detail.htm?apkName=com.ultron.crimaster)、[iOS](https://apps.apple.com/cn/app/crimaster%E7%8A%AF%E7%BD%AA%E5%A4%A7%E5%B8%88/id1501701702)
+
 #### 互联网公司
 
 **腾讯：** 微信小程序搜索“腾讯全民模拟炒股大赛”
@@ -422,6 +424,8 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 #### 创业公司
 
 **波比英语课堂：**幼儿英语启蒙，培养国际宝宝。[App、小程序通用链接](http://m3w.cn/bbyykt)
+
+**Crimaster犯罪大师：**火爆的全球推理侦探专属社区。[Android](https://android.myapp.com/myapp/detail.htm?apkName=com.ultron.crimaster)、[iOS](https://apps.apple.com/cn/app/crimaster%E7%8A%AF%E7%BD%AA%E5%A4%A7%E5%B8%88/id1501701702)
 
 **桂聘：**广西区域招聘。[Android和iOS](http://www.guipin.com/jihui/)
 
