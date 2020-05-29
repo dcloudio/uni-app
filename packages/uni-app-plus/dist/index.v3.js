@@ -8091,6 +8091,8 @@ var serviceContext = (function () {
       if (process.env.NODE_ENV !== 'production') {
         console.log('[uni-app] createWebview', webviewId, path, webviewStyle);
       }
+      // android 需要使用
+      webviewStyle.isTab = !!routeOptions.meta.isTabBar;
       return plus.webview.create('', String(webviewId), webviewStyle, {
         nvue: true
       })
@@ -12856,7 +12858,7 @@ var serviceContext = (function () {
   }
 
   function initTabBar () {
-    if (!__uniConfig.tabBar || !__uniConfig.tabBar.list.length) {
+    if (!__uniConfig.tabBar || !__uniConfig.tabBar.list || !__uniConfig.tabBar.list.length) {
       return
     }
 
