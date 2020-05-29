@@ -9,5 +9,6 @@
 - [uniCloud留言板示例](https://ext.dcloud.net.cn/plugin?id=1267)： 微信登陆，数据库的增删查；（项目支持微信小程序和app）
 - [uniCloud微信发红包-企业付款到零钱](https://ext.dcloud.net.cn/plugin?id=1489)：知识点：uniCloud.httpclient携证书发起请求
 - [uniPush之unicloud版](https://ext.dcloud.net.cn/plugin?id=1680)： 封装好的云函数，直接在服务器端发送push消息。
+- [uniLogin](https://ext.dcloud.net.cn/plugin?id=1918)： 跨h5、app、小程序统一登录，统一返回一样格式的userInfo，统一安全验证。
 
 更多项目源码，见插件市场：[https://ext.dcloud.net.cn/?cat1=7](https://ext.dcloud.net.cn/?cat1=7)
