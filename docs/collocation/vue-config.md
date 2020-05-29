@@ -26,7 +26,7 @@ vue.config.js 是一个可选的配置文件，如果项目的根目录中存在
 
 ```js
 const path = require('path')
-const CopyWebpackPlugin = require('copy-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin') //最新版本copy-webpack-plugin插件暂不兼容，推荐v5.0.0
 
 module.exports = {
 	configureWebpack: {
