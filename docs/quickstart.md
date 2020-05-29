@@ -84,7 +84,13 @@ uni-app自带的模板有 Hello uni-app ，是官方的组件和API示例。还�
       <img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/uni-app-debug-mp-360.png"/>
     </div>
 
-8. 在QQ小程序开发工具里运行：内容同上，不再重复。
+8. 在华为开发者工具里运行：进入hello-uniapp项目，点击工具栏的运行 -> 运行到小程序模拟器 -> 华为开发者工具，即可在华为开发者工具里面体验uni-app。
+    <br/>
+    <div align=center>
+      <img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/uni-app-run-debug-quickapp-webview-huawei.png"/>
+    </div>
+
+9. 在QQ小程序开发工具里运行：内容同上，不再重复。
 
 **Tips**
 
@@ -188,6 +194,15 @@ HBuilderX 还提供了快捷运行菜单，可以按数字快速选择要运行�
 - 目前仅windows平台支持
 
 
+**发布为华为快应用：**
+1. 入驻华为快应用，参考：[华为快应用教程](https://developer.huawei.com/consumer/cn/quickApp)。
+2. 在HBuilderX中顶部菜单依次点击 "发行" => "快应用-华为"，即可在 ``/unpackage/dist/build/quickapp-webview`` 生成华为快应用项目代码。
+<div align=center>
+  <img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/uni-app-run-release-quickapp-webview-huawei.png"/>
+</div>
+3. 在华为开发者工具中，导入生成的华为快应用项目，测试项目代码运行正常后，点击”构建“打包正式版，在[华为快应用后台](https://developer.huawei.com/consumer/cn/quickApp)上传
+
+
 **发布为QQ小程序：**
 内容同上，不再重复。
 
@@ -258,6 +273,10 @@ npm run build:%PLATFORM%
 快应用有两种开发方式，uni-app均支持：
 - 类小程序webview渲染方式：[https://ask.dcloud.net.cn/article/37182](https://ask.dcloud.net.cn/article/37182)
 - 原生渲染方式：[https://ask.dcloud.net.cn/article/37145](https://ask.dcloud.net.cn/article/37145)
+
+### 运行并发布快应用-华为@quickapp-webview-huawei
+HBuilderX 2.7.10+ alpha 版支持
+
 
 
 **其他：**
