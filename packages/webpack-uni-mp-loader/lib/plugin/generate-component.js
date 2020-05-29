@@ -115,16 +115,31 @@ module.exports = function generateComponent (compilation) {
     if (lastComponents.length) {
       for (const name of lastComponents) {
         if (!curComponents.includes(name)) {
-          removeUnusedComponent(name)
+          removeUnusedComponent(name) // 组件被移除
         }
+      }
+    }
+    for (const name of curComponents) {
+      if (!lastComponents.includes(name)) {
+        addComponent(name) // 新增组件
       }
     }
     lastComponents = curComponents
   }
 }
 
+function addComponent (name) {
+  const bakJson = path.join(process.env.UNI_OUTPUT_DIR, name + '.bak.json')
+  if (fs.existsSync(bakJson)) {
+    try {
+      fs.renameSync(bakJson, path.join(process.env.UNI_OUTPUT_DIR, name + '.json'))
+    } catch (e) {}
+  }
+}
+
 function removeUnusedComponent (name) {
   try {
-    fs.unlinkSync(path.join(process.env.UNI_OUTPUT_DIR, name + '.json'))
+    fs.renameSync(path.join(process.env.UNI_OUTPUT_DIR, name + '.json'), path.join(process.env.UNI_OUTPUT_DIR, name +
+      '.bak.json'))
   } catch (e) {}
 }
