@@ -277,6 +277,9 @@ npm run build:%PLATFORM%
 ### 运行并发布快应用-华为@quickapp-webview-huawei
 HBuilderX 2.7.10+ alpha 版支持
 
+注意事项
+- Huawei QuickApp IDE 最低版本 2.5.2
+- 最小平台版本支持需要 1070
 
 
 **其他：**
