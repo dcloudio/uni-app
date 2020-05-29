@@ -18,6 +18,7 @@ import native from '../../mixins/native'
 const methods = [
   'play',
   'pause',
+  'stop',
   'seek',
   'sendDanmu',
   'playbackRate',

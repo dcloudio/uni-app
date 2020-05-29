@@ -106,8 +106,9 @@ if (pixelRatio !== 1) {
       args[1] *= pixelRatio
       args[2] *= pixelRatio
 
-      this.font = this.font.replace(
-        /(\d+)(px|em|rem|pt)/g,
+      var font = this.font
+      this.font = font.replace(
+        /(\d+\.?\d*)(px|em|rem|pt)/g,
         function (w, m, u) {
           return (m * pixelRatio) + u
         }
@@ -115,12 +116,7 @@ if (pixelRatio !== 1) {
 
       _super.apply(this, args)
 
-      this.font = this.font.replace(
-        /(\d+)(px|em|rem|pt)/g,
-        function (w, m, u) {
-          return (m / pixelRatio) + u
-        }
-      )
+      this.font = font
     }
   })(proto.fillText)
 
@@ -134,21 +130,16 @@ if (pixelRatio !== 1) {
       args[1] *= pixelRatio // x
       args[2] *= pixelRatio // y
 
-      this.font = this.font.replace(
-        /(\d+)(px|em|rem|pt)/g,
+      var font = this.font
+      this.font = font.replace(
+        /(\d+\.?\d*)(px|em|rem|pt)/g,
         function (w, m, u) {
           return (m * pixelRatio) + u
         }
       )
-
       _super.apply(this, args)
 
-      this.font = this.font.replace(
-        /(\d+)(px|em|rem|pt)/g,
-        function (w, m, u) {
-          return (m / pixelRatio) + u
-        }
-      )
+      this.font = font
     }
   })(proto.strokeText)
 

@@ -1,3 +1,4 @@
+const fs = require('fs')
 const path = require('path')
 const {
   removeExt,
@@ -50,8 +51,10 @@ function findComponentModuleId (modules, concatenatedModules, resource, altResou
     resource
 }
 
+let lastComponents = []
 // TODO 解决方案不太理想
 module.exports = function generateComponent (compilation) {
+  const curComponents = []
   const components = getComponentSet()
   if (components.size) {
     const assets = compilation.assets
@@ -62,6 +65,7 @@ module.exports = function generateComponent (compilation) {
 
     Object.keys(assets).forEach(name => {
       if (components.has(name.replace('.js', ''))) {
+        curComponents.push(name.replace('.js', ''))
         const chunkName = name.replace('.js', '-create-component')
 
         let moduleId = ''
@@ -107,4 +111,35 @@ module.exports = function generateComponent (compilation) {
       }
     })
   }
+  if (process.env.UNI_FEATURE_OBSOLETE !== false) {
+    if (lastComponents.length) {
+      for (const name of lastComponents) {
+        if (!curComponents.includes(name)) {
+          removeUnusedComponent(name) // 组件被移除
+        }
+      }
+    }
+    for (const name of curComponents) {
+      if (!lastComponents.includes(name)) {
+        addComponent(name) // 新增组件
+      }
+    }
+    lastComponents = curComponents
+  }
+}
+
+function addComponent (name) {
+  const bakJson = path.join(process.env.UNI_OUTPUT_DIR, name + '.bak.json')
+  if (fs.existsSync(bakJson)) {
+    try {
+      fs.renameSync(bakJson, path.join(process.env.UNI_OUTPUT_DIR, name + '.json'))
+    } catch (e) {}
+  }
+}
+
+function removeUnusedComponent (name) {
+  try {
+    fs.renameSync(path.join(process.env.UNI_OUTPUT_DIR, name + '.json'), path.join(process.env.UNI_OUTPUT_DIR, name +
+      '.bak.json'))
+  } catch (e) {}
 }
