@@ -69,6 +69,7 @@ if (process.env.UNI_CLOUD_SPACES) {
 
 if (
   process.UNI_CLOUD &&
+  !process.env.UNI_SUB_PLATFORM &&
   process.env.UNI_PLATFORM === 'h5' &&
   process.env.NODE_ENV === 'production'
 ) {
@@ -336,6 +337,7 @@ moduleAlias.addAlias('mpvue-template-compiler', '@dcloudio/vue-cli-plugin-uni/pa
 moduleAlias.addAlias('vue-loader', '@dcloudio/vue-cli-plugin-uni/packages/vue-loader')
 
 if (process.env.UNI_USING_V3 && process.env.UNI_PLATFORM === 'app-plus') {
+  moduleAlias.addAlias('./runtime/getUrl.js', '@dcloudio/vue-cli-plugin-uni/lib/app-plus/getUrl.js')
   moduleAlias.addAlias('../runtime/getUrl.js', '@dcloudio/vue-cli-plugin-uni/lib/app-plus/getUrl.js')
   moduleAlias.addAlias('vue-style-loader', '@dcloudio/vue-cli-plugin-uni/packages/app-vue-style-loader')
 }

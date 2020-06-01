@@ -78,7 +78,7 @@ function rewrite (attr, name, options) {
           attr.value.startsWith('require("')
         ) { // require
           // h5 且 publicPath 为 ./ (仅生产模式可能为./)
-          attr.value = `(${attr.value}).substr(1)`
+          attr.value = `(${attr.value}).replace(/^\\./,'')`
         }
       }
       return true

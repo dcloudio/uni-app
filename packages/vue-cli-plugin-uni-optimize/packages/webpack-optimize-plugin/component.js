@@ -16,7 +16,7 @@ const autoloadTags = {
   }
 }
 
-module.exports = function updateComponents(tags) {
+module.exports = function updateComponents (tags) {
   autoloadTags.root.forEach(tagName => {
     tags.add(tagName)
   })
@@ -55,5 +55,4 @@ ${componentsStr}
   }
 
   fs.writeFileSync(path.resolve(dir, 'components.js'), content, 'utf8')
-
 }

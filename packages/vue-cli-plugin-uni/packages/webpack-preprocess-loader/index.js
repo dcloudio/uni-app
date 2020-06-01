@@ -8,17 +8,17 @@ const {
 const preprocessor = require('./preprocess/lib/preprocess')
 
 const ERRORS = {
-  'html': `条件编译失败,参考示例(注意 ifdef 与 endif 必须配对使用):
+  html: `条件编译失败,参考示例(注意 ifdef 与 endif 必须配对使用):
 <!--  #ifdef  %PLATFORM% -->
 模板代码
 <!--  #endif -->
 `,
-  'js': `条件编译失败,参考示例(注意 ifdef 与 endif 必须配对使用):
+  js: `条件编译失败,参考示例(注意 ifdef 与 endif 必须配对使用):
 // #ifdef  %PLATFORM%
 js代码
 // #endif
 `,
-  'css': `条件编译失败,参考示例(注意 ifdef 与 endif 必须配对使用):
+  css: `条件编译失败,参考示例(注意 ifdef 与 endif 必须配对使用):
 /*  #ifdef  %PLATFORM%  */
 css代码
 /*  #endif  */
@@ -26,9 +26,9 @@ css代码
 }
 
 const TAGS = {
-  'html': 'template',
-  'js': 'script',
-  'css': 'style'
+  html: 'template',
+  js: 'script',
+  css: 'style'
 }
 
 module.exports = function (content, map) {

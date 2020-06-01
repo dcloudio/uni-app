@@ -1,9 +1,3 @@
-const path = require('path')
-
-const {
-  normalizePath
-} = require('@dcloudio/uni-cli-shared')
-
 const {
   initAutoImportScanComponents
 } = require('@dcloudio/uni-cli-shared/lib/pages')
@@ -11,19 +5,19 @@ const {
 let compiling = false
 
 class WebpackUniAppPlugin {
-  apply(compiler) {
+  apply (compiler) {
     if (process.UNI_CONFUSION) {
       compiler.hooks.emit.tapPromise('webpack-uni-app-emit', compilation => {
         return new Promise((resolve, reject) => {
-          if (compilation.assets['app-confusion.js']) { //存在加密
+          if (compilation.assets['app-confusion.js']) { // 存在加密
             const manifestJson = JSON.parse(`${compilation.assets['manifest.json'].source()}`)
             manifestJson.plus.confusion.resources['app-confusion.js'] = {}
             const source = JSON.stringify(manifestJson)
             compilation.assets['manifest.json'] = {
-              size() {
+              size () {
                 return Buffer.byteLength(source, 'utf8')
               },
-              source() {
+              source () {
                 return source
               }
             }

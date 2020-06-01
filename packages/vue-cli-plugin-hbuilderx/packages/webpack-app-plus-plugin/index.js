@@ -10,7 +10,6 @@ let nvueCompiled = true
 let serviceCompiled = true
 let viewCompiled = true
 
-
 const nvueChangedFiles = []
 const serviceChangedFiles = []
 const viewChangedFiles = []
@@ -19,9 +18,8 @@ let isFirst = true
 
 let compiling = false
 class WebpackAppPlusPlugin {
-  apply(compiler) {
+  apply (compiler) {
     if (process.env.UNI_USING_V3) {
-
       const chunkVersions = {}
 
       const entry = compiler.options.entry()
@@ -29,7 +27,6 @@ class WebpackAppPlusPlugin {
       const isAppView = !!entry['app-view']
 
       const isAppNVue = !isAppService && !isAppView
-
 
       compiler.hooks.invalid.tap('WebpackAppPlusPlugin', (fileName, changeTime) => {
         if (!compiling) {
@@ -82,16 +79,16 @@ class WebpackAppPlusPlugin {
               if (!isFirst && changedFiles.length > 0) {
                 if (serviceChangedFiles.length === 0 && viewChangedFiles.length === 0) {
                   // 仅 nvue 页面发生变化
-                  done(`Build complete. PAGES:` + JSON.stringify(changedFiles))
+                  done('Build complete. PAGES:' + JSON.stringify(changedFiles))
                 } else {
-                  done(`Build complete. FILES:` + JSON.stringify(changedFiles))
+                  done('Build complete. FILES:' + JSON.stringify(changedFiles))
                 }
               } else {
-                !process.env.UNI_AUTOMATOR_WS_ENDPOINT && done(`Build complete. Watching for changes...`)
+                !process.env.UNI_AUTOMATOR_WS_ENDPOINT && done('Build complete. Watching for changes...')
               }
               isFirst = false
             } else {
-              done(`Build complete. `)
+              done('Build complete. ')
             }
             nvueChangedFiles.length = 0
             serviceChangedFiles.length = 0
@@ -104,20 +101,19 @@ class WebpackAppPlusPlugin {
     } else {
       compiler.hooks.done.tapPromise('WebpackAppPlusPlugin', compilation => {
         return new Promise((resolve, reject) => {
-
           if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
             return resolve()
           }
 
-          const callback = function() {
+          const callback = function () {
             fs.copyFileSync(path.resolve(process.env.UNI_OUTPUT_TMP_DIR,
-                'manifest.json'),
-              path.resolve(process.env.UNI_OUTPUT_DIR, 'manifest.json'))
+              'manifest.json'),
+            path.resolve(process.env.UNI_OUTPUT_DIR, 'manifest.json'))
             log()
             if (process.env.NODE_ENV === 'development') {
-              done(`Build complete. Watching for changes...`)
+              done('Build complete. Watching for changes...')
             } else {
-              done(`Build complete. `)
+              done('Build complete. ')
             }
             resolve()
           }

@@ -15,7 +15,7 @@ function shouldReport (err = '') {
 // err:string|Error
 function report (type, err) {
   if (shouldReport(err)) {
-    console.log('Error Reporting...')
+    // console.log('Error Reporting...')
     // const https = require('https')
     // const data = ...
     // const req = https.request({

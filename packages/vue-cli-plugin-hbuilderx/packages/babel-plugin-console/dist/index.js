@@ -3,19 +3,18 @@ const normalizePath = path => (isWin ? path.replace(/\\/g, '/') : path)
 
 const METHODS = ['error', 'warn', 'info', 'log', 'debug']
 const FORMAT_LOG = '__f__'
-module.exports = function({
+module.exports = function ({
   types: t
 }) {
-
   return {
     visitor: {
-      CallExpression(path, state) {
+      CallExpression (path, state) {
         const opts = state.opts
 
         if (path.node.callee.object &&
           path.node.callee.object.name === 'console' &&
           METHODS.includes(path.node.callee.property.name)) {
-          if (path.node.callee.property.name === 'debug') { //console.debug=>console.log
+          if (path.node.callee.property.name === 'debug') { // console.debug=>console.log
             path.node.callee.property.name = 'log'
           }
 
@@ -49,7 +48,6 @@ module.exports = function({
             }
           }
         }
-
       }
     }
   }

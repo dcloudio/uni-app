@@ -3,8 +3,7 @@ const {
 } = require('@vue/cli-shared-utils')
 
 class WebpackAppPlusNVuePlugin {
-  apply(compiler) {
-
+  apply (compiler) {
     let isFirst = !process.env.UNI_USING_NATIVE && !process.env.UNI_USING_V3_NATIVE
 
     const chunkVersions = {}
@@ -35,12 +34,12 @@ class WebpackAppPlusNVuePlugin {
               changedFiles.length > 0 &&
               !changedFiles.find(file => file === 'app-config.js' || file === 'app-service.js')
             ) {
-              done(`Build complete. PAGES:` + JSON.stringify(changedFiles))
+              done('Build complete. PAGES:' + JSON.stringify(changedFiles))
             } else {
-              done(`Build complete. Watching for changes...`)
+              done('Build complete. Watching for changes...')
             }
           } else {
-            done(`Build complete. `)
+            done('Build complete. ')
           }
         }
         resolve()

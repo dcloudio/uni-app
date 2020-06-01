@@ -81,6 +81,8 @@ export function createWebview (path, routeOptions, query) {
     if (process.env.NODE_ENV !== 'production') {
       console.log('[uni-app] createWebview', webviewId, path, webviewStyle)
     }
+    // android 需要使用
+    webviewStyle.isTab = !!routeOptions.meta.isTabBar
     return plus.webview.create('', String(webviewId), webviewStyle, {
       nvue: true
     })

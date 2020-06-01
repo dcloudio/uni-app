@@ -8,12 +8,12 @@ process.UNI_APIS = new Set()
 
 const sourcePath = normalizePath(path.join(require.resolve('@dcloudio/uni-h5'), '../../'))
 
-module.exports = function({
+module.exports = function ({
   types: t
 }) {
   return {
     visitor: {
-      MemberExpression(path, state) {
+      MemberExpression (path, state) {
         if (
           t.isIdentifier(path.node.object) &&
           (

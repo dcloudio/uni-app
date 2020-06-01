@@ -10,7 +10,7 @@ const {
   parseComponents
 } = require('./util')
 
-function genComponentCode(components) {
+function genComponentCode (components) {
   const importCode = []
   const componentsCode = []
   components.forEach(({
@@ -24,7 +24,7 @@ function genComponentCode(components) {
   return [importCode.join('\n'), componentsCode.join(',\n')]
 }
 
-function genCode({
+function genCode ({
   components,
   options
 }, css = []) {
@@ -37,7 +37,7 @@ function genCode({
   return `
 ${importComponentCode}
 export default {
-  ${optionsCode.length?(optionsCode.join(',')+','):''}
+  ${optionsCode.length ? (optionsCode.join(',') + ',') : ''}
   data(){
     return {
       wxsProps:{}
@@ -50,12 +50,12 @@ export default {
 `
 }
 
-module.exports = function(content, map) {
+module.exports = function (content, map) {
   this.cacheable && this.cacheable()
 
   content = preprocessor.preprocess(content, jsPreprocessOptions.context, {
     type: jsPreprocessOptions.type
   })
 
-  return genCode(parseComponents(content, traverse))
+  this.callback(null, genCode(parseComponents(content, traverse)), map)
 }

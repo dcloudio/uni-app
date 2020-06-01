@@ -36,7 +36,7 @@ function parseFilterModules (filterModules) {
   return {}
 }
 
-module.exports = function (content) {
+module.exports = function (content, map) {
   this.cacheable && this.cacheable()
 
   const vueLoaderOptions = this.loaders.find(loader => loader.ident === 'vue-loader-options')
@@ -69,5 +69,5 @@ module.exports = function (content) {
   } else {
     throw new Error('vue-loader-options parse error')
   }
-  return content
+  this.callback(null, content, map)
 }

@@ -32,7 +32,7 @@ function renameUsingComponents (jsonObj) {
   return jsonObj
 }
 
-module.exports = function (content) {
+module.exports = function (content, map) {
   this.cacheable && this.cacheable()
 
   let isAppView = false
@@ -67,10 +67,10 @@ module.exports = function (content) {
   }
 
   if (process.env.UNI_PLATFORM === 'h5') {
-    return require('./platforms/h5')(pagesJson, manifestJson, this)
+    return this.callback(null, require('./platforms/h5')(pagesJson, manifestJson, this), map)
   }
   if (process.env.UNI_PLATFORM === 'quickapp-native') {
-    return require('./platforms/quickapp-native')(pagesJson, manifestJson, this)
+    return this.callback(null, require('./platforms/quickapp-native')(pagesJson, manifestJson, this), map)
   }
 
   if (!process.env.UNI_USING_V3) {
@@ -104,7 +104,7 @@ module.exports = function (content) {
           }
         }
       })
-      return appConfigContent
+      return this.callback(null, appConfigContent, map)
     }
     if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
       let appConfigContent = ''
@@ -117,7 +117,7 @@ module.exports = function (content) {
           }
         }
       })
-      return appConfigContent
+      return this.callback(null, appConfigContent, map)
     }
 
     jsonFiles.forEach(jsonFile => {
@@ -131,5 +131,5 @@ module.exports = function (content) {
     })
   }
 
-  return ''
+  this.callback(null, '', map)
 }

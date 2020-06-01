@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-automator",
-  "version": "2.0.0-alpha-27220200513002",
+  "version": "2.0.0-alpha-27920200529001",
   "description": "uni-app automator",
   "main": "dist/index.js",
   "repository": {
@@ -28,5 +28,6 @@
     "jimp": "^0.10.1",
     "node-simctl": "^6.1.0",
     "puppeteer": "^3.0.1"
-  }
+  },
+  "gitHead": "e62f0398362f2f9de0bf5726046d7951c88d6b1d"
 }

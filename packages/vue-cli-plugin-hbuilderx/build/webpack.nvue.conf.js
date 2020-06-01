@@ -11,10 +11,6 @@ const {
   getTemplatePath
 } = require('@dcloudio/uni-cli-shared')
 
-const {
-  devtoolModuleFilenameTemplate
-} = require('../util')
-
 const WebpackAppPlusNVuePlugin = process.env.UNI_USING_V3
   ? require('../packages/webpack-app-plus-plugin')
   : require('../packages/webpack-app-plus-nvue-plugin')
@@ -99,6 +95,10 @@ const plugins = [
   }),
   new WebpackAppPlusNVuePlugin()
 ]
+
+if (process.env.NODE_ENV === 'development') {
+  plugins.push(require('@dcloudio/uni-cli-shared/lib/source-map').createEvalSourceMapDevToolPlugin())
+}
 
 // const excludeModuleReg = /node_modules(?!(\/|\\).*(weex).*)/
 
@@ -226,7 +226,7 @@ module.exports = function () {
   return {
     target: 'node', // 激活 vue-loader 的 isServer 逻辑
     mode: process.env.NODE_ENV,
-    devtool: process.env.NODE_ENV === 'development' ? 'inline-source-map' : false,
+    devtool: false,
     watch: process.env.NODE_ENV === 'development',
     entry () {
       return process.UNI_NVUE_ENTRY
@@ -242,8 +242,7 @@ module.exports = function () {
     },
     output: {
       path: process.env.UNI_OUTPUT_DIR,
-      filename: '[name].js',
-      devtoolModuleFilenameTemplate
+      filename: '[name].js'
     },
     resolve: {
       extensions: ['.js', '.nvue', '.vue', '.json'],

@@ -89,8 +89,8 @@ module.exports = {
       output: {
         filename: '[name].js',
         chunkFilename: '[id].js',
-        globalObject: process.env.UNI_PLATFORM === 'mp-alipay' ? 'my' : 'global',
-        sourceMapFilename: '../.sourcemap/' + process.env.UNI_PLATFORM + '/[name].js.map'
+        globalObject: process.env.UNI_PLATFORM === 'mp-alipay' ? 'my' : 'global'
+        // sourceMapFilename: '../.sourcemap/' + process.env.UNI_PLATFORM + '/[name].js.map'
       },
       performance: {
         hints: false
