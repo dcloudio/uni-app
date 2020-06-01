@@ -143,8 +143,6 @@ uni.chooseImage({
 
 |字段		|类型					|说明							|
 |:-:		|:-:					|:-:							|
-|code		|String					|状态码，操作成功则为 SUCCESS	|
-|message	|String					|错误描述						|
 |fileList	|&lt;Array&gt;.Object	|存储下载链接的数组				|
 |requestId	|String					|请求序列号，用于错误排查		|
 
