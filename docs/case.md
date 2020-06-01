@@ -176,7 +176,7 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 **vivo官方商城：**微信小程序搜索"vivo"，支付宝搜索 "vivo"
 
 <div class="scan-code">
- <strong>vivo会员官方小程序：</strong> 微信小程序搜索 "vivo会员"，或鼠标移此查看[微信小程序码]
+ <strong>vivo会员官方小程序：</strong> 微信小程序搜索 "vivo会员"，<scan-code-text class="scan-code-text">或鼠标移此查看[微信小程序码]</scan-code-text>
  <div class="scan-code-hover">
     <div class="scan-code-hover-box">
       <img src="https://img.cdn.aliyun.dcloud.net.cn/uni-app/vivovip.jpg" alt="二维码获取失败" />
