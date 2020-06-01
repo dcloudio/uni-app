@@ -95,7 +95,7 @@ onPageScroll : function(e) { //nvue暂不支持滚动监听，可用bindingx代�
 ```js
 onTabItemTap : function(e) {
 	console.log(e);
-	// e的返回格式为json对象： {"index":0,"text":"首页","pagePath":"pages/index/index.html"}
+	// e的返回格式为json对象： {"index":0,"text":"首页","pagePath":"pages/index/index"}
 },
 ```
 
