@@ -158,8 +158,6 @@ uniCloud.callFunction({
 });
 ```
 
-目前仅支持客户端调用云函数，即将支持云函数调用云函数。
-
 ## 云函数中调用云函数@callbyfunction
 
 用法同客户端调用云函数，不支持callback形式
