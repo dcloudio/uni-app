@@ -215,7 +215,8 @@ var serviceContext = (function () {
     'getCurrentSubNVue',
     'setPageMeta',
     'onNativeEventReceive',
-    'sendNativeEvent'
+    'sendNativeEvent',
+    'preloadPage'
   ];
 
   const ad = [
@@ -1625,7 +1626,7 @@ var serviceContext = (function () {
     getProvider: getProvider
   });
 
-  function encodeQueryString (url) {
+  function encodeQueryString(url) {
     if (typeof url !== 'string') {
       return url
     }
@@ -1648,9 +1649,9 @@ var serviceContext = (function () {
     query.split('&').forEach(param => {
       const parts = param.replace(/\+/g, ' ').split('=');
       const key = parts.shift();
-      const val = parts.length > 0
-        ? parts.join('=')
-        : '';
+      const val = parts.length > 0 ?
+        parts.join('=') :
+        '';
 
       params.push(key + '=' + encodeURIComponent(val));
     });
@@ -1658,8 +1659,8 @@ var serviceContext = (function () {
     return params.length ? url + '?' + params.join('&') : url
   }
 
-  function createValidator (type) {
-    return function validator (url, params) {
+  function createValidator(type) {
+    return function validator(url, params) {
       // 格式化为绝对路径路由
       url = getRealRoute(url);
 
@@ -1687,7 +1688,7 @@ var serviceContext = (function () {
 
       // switchTab不允许传递参数,reLaunch到一个tabBar页面是可以的
       if (
-        type === 'switchTab' &&
+        (type === 'switchTab' || type === 'preloadPage') &&
         routeOptions.meta.isTabBar &&
         params.openType !== 'appLaunch'
       ) {
@@ -1701,6 +1702,22 @@ var serviceContext = (function () {
 
       // 参数格式化
       params.url = encodeQueryString(url);
+
+      if (type === 'preloadPage') {
+        {
+          if (!routeOptions.meta.isNVue) {
+            return 'can not preload vue page'
+          }
+        }
+        if (routeOptions.meta.isTabBar) {
+          const pages = getCurrentPages(true);
+          const tabBarPagePath = (routeOptions.alias || routeOptions.path).substr(1);
+          if (pages.find(page => page.route === tabBarPagePath)) {
+            return 'tabBar page `' + tabBarPagePath + '` already exists'
+          }
+        }
+        return
+      }
 
       // 主要拦截目标为用户快速点击时触发的多次跳转，该情况，通常前后 url 是一样的
       if (navigatorLock === url) {
@@ -1716,24 +1733,24 @@ var serviceContext = (function () {
 
   let navigatorLock;
 
-  function createProtocol (type, extras = {}) {
+  function createProtocol(type, extras = {}) {
     return Object.assign({
       url: {
         type: String,
         required: true,
         validator: createValidator(type)
       },
-      beforeAll () {
+      beforeAll() {
         navigatorLock = '';
       }
     }, extras)
   }
 
-  function createAnimationProtocol (animationTypes) {
+  function createAnimationProtocol(animationTypes) {
     return {
       animationType: {
         type: String,
-        validator (type) {
+        validator(type) {
           if (type && animationTypes.indexOf(type) === -1) {
             return '`' + type + '` is not supported for `animationType` (supported values are: `' + animationTypes.join(
               '`|`') + '`)'
@@ -1769,7 +1786,7 @@ var serviceContext = (function () {
   const navigateBack = Object.assign({
     delta: {
       type: Number,
-      validator (delta, params) {
+      validator(delta, params) {
         delta = parseInt(delta) || 1;
         params.delta = Math.min(getCurrentPages().length - 1, delta);
       }
@@ -1788,13 +1805,22 @@ var serviceContext = (function () {
     ]
   ));
 
+  const preloadPage = {
+    url: {
+      type: String,
+      required: true,
+      validator: createValidator('preloadPage')
+    }
+  };
+
   var require_context_module_0_23 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     redirectTo: redirectTo,
     reLaunch: reLaunch,
     navigateTo: navigateTo,
     switchTab: switchTab,
-    navigateBack: navigateBack
+    navigateBack: navigateBack,
+    preloadPage: preloadPage
   });
 
   const getStorage = {
@@ -8079,7 +8105,7 @@ var serviceContext = (function () {
     }
   }
 
-  function createWebview (path, routeOptions, query) {
+  function createWebview (path, routeOptions, query, extras = {}) {
     if (routeOptions.meta.isNVue) {
       const webviewId = id$1++;
       const webviewStyle = parseWebviewStyle(
@@ -8093,9 +8119,9 @@ var serviceContext = (function () {
       }
       // android 需要使用
       webviewStyle.isTab = !!routeOptions.meta.isTabBar;
-      return plus.webview.create('', String(webviewId), webviewStyle, {
+      return plus.webview.create('', String(webviewId), webviewStyle, Object.assign({
         nvue: true
-      })
+      }, extras))
     }
     if (id$1 === 2) { // 如果首页非 nvue，则直接返回 Launch Webview
       return plus.webview.getLaunchWebview()
@@ -8347,22 +8373,43 @@ var serviceContext = (function () {
 
   const pages = [];
 
-  function getCurrentPages$1 (returnAll) {
+  function getCurrentPages$1(returnAll) {
     return returnAll ? pages.slice(0) : pages.filter(page => {
       return !page.$page.meta.isTabBar || page.$page.meta.visible
     })
   }
 
+  const preloadWebviews = {};
+
+  function preloadWebview$1({
+    url,
+    path,
+    query
+  }) {
+    if (!preloadWebviews[url]) {
+      const routeOptions = JSON.parse(JSON.stringify(__uniRoutes.find(route => route.path === path)));
+      preloadWebviews[url] = createWebview(path, routeOptions, query, {
+        __preload__: true,
+        __query__: JSON.stringify(query)
+      });
+    }
+    return preloadWebviews[url]
+  }
+
   /**
    * 首页需要主动registerPage，二级页面路由跳转时registerPage
    */
-  function registerPage ({
+  function registerPage({
     url,
     path,
     query,
     openType,
     webview
   }) {
+    if (preloadWebviews[url]) {
+      webview = preloadWebviews[url];
+      delete preloadWebviews[url];
+    }
     const routeOptions = JSON.parse(JSON.stringify(__uniRoutes.find(route => route.path === path)));
 
     if (
@@ -8405,7 +8452,7 @@ var serviceContext = (function () {
     const pageInstance = {
       route,
       options: Object.assign({}, query || {}),
-      $getAppWebview () {
+      $getAppWebview() {
         // 重要，不能直接返回 webview 对象，因为 plus 可能会被二次替换，返回的 webview 对象内部的 plus 不正确
         // 导致 webview.getStyle 等逻辑出错(旧的 webview 内部 plus 被释放)
         return plus.webview.getWebviewById(webview.id)
@@ -8417,7 +8464,7 @@ var serviceContext = (function () {
         route,
         openType
       },
-      $remove () {
+      $remove() {
         const index = pages.findIndex(page => page === this);
         if (index !== -1) {
           if (!webview.nvue) {
@@ -8430,15 +8477,19 @@ var serviceContext = (function () {
         }
       },
       // 兼容小程序框架
-      selectComponent (selector) {
+      selectComponent(selector) {
         return this.$vm.selectComponent(selector)
       },
-      selectAllComponents (selector) {
+      selectAllComponents(selector) {
         return this.$vm.selectAllComponents(selector)
       }
     };
 
     pages.push(pageInstance);
+
+    // if (webview.__preload__) {
+    //   // TODO 触发 onShow 以及绑定vm，page 关系
+    // }
 
     // 首页是 nvue 时，在 registerPage 时，执行路由堆栈
     if (webview.id === '1' && webview.nvue) {
@@ -8449,7 +8500,7 @@ var serviceContext = (function () {
       ) {
         plus.navigator.closeSplashscreen();
       }
-      __uniConfig.onReady(function () {
+      __uniConfig.onReady(function() {
         navigateFinish();
       });
     }
@@ -8727,6 +8778,24 @@ var serviceContext = (function () {
         from
       }, callbackId);
     }, openType === 'appLaunch');
+  }
+
+  function preloadPage$1({
+    url
+  }, callbackId) {
+    const urls = url.split('?');
+    const path = urls[0];
+    const query = parseQuery(urls[1] || '');
+    const webview = preloadWebview$1({
+      url,
+      path,
+      query
+    });
+    invoke$1(callbackId, {
+      id: webview.id,
+      url,
+      errMsg: 'preloadPage:ok'
+    });
   }
 
   const STORAGE_DATA_TYPE = '__TYPE';
@@ -9653,6 +9722,7 @@ var serviceContext = (function () {
     reLaunch: reLaunch$1,
     redirectTo: redirectTo$1,
     switchTab: switchTab$1,
+    preloadPage: preloadPage$1,
     setStorage: setStorage$1,
     setStorageSync: setStorageSync$1,
     getStorage: getStorage$1,

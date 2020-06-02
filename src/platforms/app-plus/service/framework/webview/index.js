@@ -69,7 +69,7 @@ function getDebugRefresh (path, query, routeOptions) {
   }
 }
 
-export function createWebview (path, routeOptions, query) {
+export function createWebview (path, routeOptions, query, extras = {}) {
   if (routeOptions.meta.isNVue) {
     const webviewId = id++
     const webviewStyle = parseWebviewStyle(
@@ -83,9 +83,9 @@ export function createWebview (path, routeOptions, query) {
     }
     // android 需要使用
     webviewStyle.isTab = !!routeOptions.meta.isTabBar
-    return plus.webview.create('', String(webviewId), webviewStyle, {
+    return plus.webview.create('', String(webviewId), webviewStyle, Object.assign({
       nvue: true
-    })
+    }, extras))
   }
   if (id === 2) { // 如果首页非 nvue，则直接返回 Launch Webview
     return plus.webview.getLaunchWebview()

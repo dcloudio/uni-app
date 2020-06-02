@@ -21,6 +21,23 @@ export function getCurrentPages (returnAll) {
   })
 }
 
+const preloadWebviews = {}
+
+export function preloadWebview ({
+  url,
+  path,
+  query
+}) {
+  if (!preloadWebviews[url]) {
+    const routeOptions = JSON.parse(JSON.stringify(__uniRoutes.find(route => route.path === path)))
+    preloadWebviews[url] = createWebview(path, routeOptions, query, {
+      __preload__: true,
+      __query__: JSON.stringify(query)
+    })
+  }
+  return preloadWebviews[url]
+}
+
 /**
  * 首页需要主动registerPage，二级页面路由跳转时registerPage
  */
@@ -31,6 +48,10 @@ export function registerPage ({
   openType,
   webview
 }) {
+  if (preloadWebviews[url]) {
+    webview = preloadWebviews[url]
+    delete preloadWebviews[url]
+  }
   const routeOptions = JSON.parse(JSON.stringify(__uniRoutes.find(route => route.path === path)))
 
   if (
@@ -107,6 +128,10 @@ export function registerPage ({
   }
 
   pages.push(pageInstance)
+
+  // if (webview.__preload__) {
+  //   // TODO 触发 onShow 以及绑定vm，page 关系
+  // }
 
   // 首页是 nvue 时，在 registerPage 时，执行路由堆栈
   if (webview.id === '1' && webview.nvue) {

@@ -58,6 +58,7 @@ export * from './route/navigate-to'
 export * from './route/re-launch'
 export * from './route/redirect-to'
 export * from './route/switch-tab'
+export * from './route/preload-page'
 
 export * from './storage/storage'
 

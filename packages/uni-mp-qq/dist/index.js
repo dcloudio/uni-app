@@ -394,6 +394,7 @@ const protocols = {
   previewImage
 };
 const todos = [
+  'preloadPage'
   // 'startBeaconDiscovery',
   // 'stopBeaconDiscovery',
   // 'getBeacons',
