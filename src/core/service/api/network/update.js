@@ -1,8 +1,4 @@
 class UpdateManager {
-  constructor () {
-
-  }
-
   onCheckForUpdate () {
 
   }
