@@ -107,6 +107,9 @@ export function initWebview (webview, routeOptions, path, query) {
 
     if (!routeOptions.meta.isNVue) {
       webviewStyle.debugRefresh = getDebugRefresh(path, query, routeOptions)
+    } else {
+      // android 需要使用
+      webviewStyle.isTab = !!routeOptions.meta.isTabBar
     }
     if (process.env.NODE_ENV !== 'production') {
       console.log('[uni-app] updateWebview', webviewStyle)
