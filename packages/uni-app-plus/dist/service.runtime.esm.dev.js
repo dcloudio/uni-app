@@ -624,7 +624,7 @@ var formatComponentName = (noop);
   formatComponentName = function (vm, includeFile) {
     if (vm.$root === vm) { // fixed by xxxxxx
       if (vm.$options && vm.$options.__file){
-        return ((vm.$options.__file) + ":1")
+        return ("at " + (vm.$options.__file) + ":1")
       }
       return '<Root>'
     }
@@ -676,12 +676,12 @@ var formatComponentName = (noop);
         vm = vm.$parent;
       }
       return '\n\nfound in\n\n' + tree
-        .map(function (vm, i) { return ("" + (i === 0 ? '---> ' : repeat(' ', 5 + i * 2)) + (Array.isArray(vm)
+        .map(function (vm, i) { return ("" + (i === 0 ? '---> ' : repeat('　', 3 + i * 1)) + (Array.isArray(vm)
             ? ((formatComponentName(vm[0])) + "... (" + (vm[1]) + " recursive calls)")
             : formatComponentName(vm))); })
         .join('\n')
     } else {
-      return ("\n\n(found at " + (formatComponentName(vm)) + ")")
+      return ("\n\n(found " + (formatComponentName(vm)) + ")")
     }
   };
 }
