@@ -622,7 +622,10 @@ var formatComponentName = (noop);
   };
 
   formatComponentName = function (vm, includeFile) {
-    if (vm.$root === vm) {
+    if (vm.$root === vm) { // fixed by xxxxxx
+      if (vm.$options && vm.$options.__file){
+        return ((vm.$options.__file) + ":1")
+      }
       return '<Root>'
     }
     var options = typeof vm === 'function' && vm.cid != null
@@ -639,7 +642,7 @@ var formatComponentName = (noop);
 
     return (
       (name ? ("<" + (classify(name)) + ">") : "<Anonymous>") +
-      (file && includeFile !== false ? (" at " + file) : '')
+      (file && includeFile !== false ? (" at " + file + ":1") : '')
     )
   };
 
@@ -678,7 +681,7 @@ var formatComponentName = (noop);
             : formatComponentName(vm))); })
         .join('\n')
     } else {
-      return ("\n\n(found in " + (formatComponentName(vm)) + ")")
+      return ("\n\n(found at " + (formatComponentName(vm)) + ")")
     }
   };
 }

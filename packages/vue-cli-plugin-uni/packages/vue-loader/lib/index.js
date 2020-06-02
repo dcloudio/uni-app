@@ -78,12 +78,12 @@ module.exports = function (source) {
   if (options.isH5TreeShaking) { // 摇树优化逻辑(框架组件移除样式,禁用 modules)
     const isWin = /^win/.test(process.platform)
     const normalizePath = path => (isWin ? path.replace(/\\/g, '/') : path)
-    
+
     if(!options.compilerOptions){
       options.compilerOptions = {}
     }
     options.compilerOptions.autoComponentResourcePath = normalizePath(resourcePath)
-    
+
     // fixed by xxxxxx
     if(!modules && options.compilerOptions && options.compilerOptions.modules){
         modules = options.compilerOptions.modules
@@ -110,8 +110,8 @@ module.exports = function (source) {
   }
 
   // module id for scoped CSS & hot-reload
-  const rawShortFilePath = path
-    .relative(context, resourcePath)
+  const rawShortFilePath = path // fixed by xxxxxx
+    .relative(process.env.UNI_INPUT_DIR || context, resourcePath)
     .replace(/^(\.\.[\/\\])+/, '')
 
   const shortFilePath = rawShortFilePath.replace(/\\/g, '/') + resourceQuery
