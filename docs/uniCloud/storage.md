@@ -35,7 +35,7 @@
 |参数名						|类型			|必填	|默认值	|说明																														|平台差异说明							|
 |:-:							|:-:			|:-:	|:-:		|:-:																														|:-:											|
 |filePath					|String		|是		|-			|要上传的文件对象																								|-												|
-|cloudPath				|String		|-		|-			|文件的绝对路径，包含文件名																			|阿里云非必填，腾讯云必填	|
+|cloudPath				|String		|是		|-			|文件的绝对路径，包含文件名																			|阿里云非必填，腾讯云必填	|
 |fileType					|String		|-		|-			|文件类型，支付宝小程序、钉钉小程序必填，可选image、video、audio|-												|
 |onUploadProgress	|Function	|否		|-			|上传进度回调																										|-												|
 
@@ -78,7 +78,8 @@ uni.chooseImage({
 
 			// promise
 			const result = await uniCloud.uploadFile({
-				filePath: filePath
+				filePath: filePath,
+        cloudPath: 'a.jpg',
 				onUploadProgress: function(progressEvent) {
 			          console.log(progressEvent);
 			          var percentCompleted = Math.round(
@@ -89,13 +90,13 @@ uni.chooseImage({
 
 			// callback
 			uniCloud.uploadFile({
-				filePath: filePath
-				},
-			        onUploadProgress: function(progressEvent) {
-			          console.log(progressEvent);
-			          var percentCompleted = Math.round(
-			            (progressEvent.loaded * 100) / progressEvent.total
-			          );
+				filePath: filePath,
+        cloudPath: 'a.jpg',
+        onUploadProgress: function(progressEvent) {
+          console.log(progressEvent);
+          var percentCompleted = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
 				},
 				success() {},
 				fail() {},
@@ -110,7 +111,7 @@ uni.chooseImage({
 
 **Tips**
 
-- 阿里云返回的fileID为链接形式
+- 阿里云返回的fileID为链接形式可以直接使用，腾讯云返回的为cloud://形式，如需展示需要调用getTempFileURL获取链接
 
 ## getTempFileURL(Object object)
 
