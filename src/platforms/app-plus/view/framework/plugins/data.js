@@ -52,12 +52,14 @@ const handleData = {
     vd.updateVData.apply(vd, data)
   },
   [PAGE_CREATED]: function onPageCreated (data) {
-    const [pageId, pagePath] = data
+    const [pageId, pagePath, pageQuery] = data
     const page = getCurrentPages()[0]
+    page.options = pageQuery || {}
     page.$vm = new PageVueComponent({
       mpType: 'page',
       pageId,
-      pagePath
+      pagePath,
+      pageQuery
     }).$mount('#app')
   }
 }

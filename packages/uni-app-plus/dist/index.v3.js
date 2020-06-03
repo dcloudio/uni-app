@@ -26,7 +26,8 @@ var serviceContext = (function () {
     'sendSocketMessage',
     'onSocketMessage',
     'closeSocket',
-    'onSocketClose'
+    'onSocketClose',
+    'getUpdateManager'
   ];
 
   const route = [
@@ -1626,7 +1627,7 @@ var serviceContext = (function () {
     getProvider: getProvider
   });
 
-  function encodeQueryString(url) {
+  function encodeQueryString (url) {
     if (typeof url !== 'string') {
       return url
     }
@@ -1649,9 +1650,9 @@ var serviceContext = (function () {
     query.split('&').forEach(param => {
       const parts = param.replace(/\+/g, ' ').split('=');
       const key = parts.shift();
-      const val = parts.length > 0 ?
-        parts.join('=') :
-        '';
+      const val = parts.length > 0
+        ? parts.join('=')
+        : '';
 
       params.push(key + '=' + encodeURIComponent(val));
     });
@@ -1659,8 +1660,8 @@ var serviceContext = (function () {
     return params.length ? url + '?' + params.join('&') : url
   }
 
-  function createValidator(type) {
-    return function validator(url, params) {
+  function createValidator (type) {
+    return function validator (url, params) {
       // 格式化为绝对路径路由
       url = getRealRoute(url);
 
@@ -1733,24 +1734,24 @@ var serviceContext = (function () {
 
   let navigatorLock;
 
-  function createProtocol(type, extras = {}) {
+  function createProtocol (type, extras = {}) {
     return Object.assign({
       url: {
         type: String,
         required: true,
         validator: createValidator(type)
       },
-      beforeAll() {
+      beforeAll () {
         navigatorLock = '';
       }
     }, extras)
   }
 
-  function createAnimationProtocol(animationTypes) {
+  function createAnimationProtocol (animationTypes) {
     return {
       animationType: {
         type: String,
-        validator(type) {
+        validator (type) {
           if (type && animationTypes.indexOf(type) === -1) {
             return '`' + type + '` is not supported for `animationType` (supported values are: `' + animationTypes.join(
               '`|`') + '`)'
@@ -1786,7 +1787,7 @@ var serviceContext = (function () {
   const navigateBack = Object.assign({
     delta: {
       type: Number,
-      validator(delta, params) {
+      validator (delta, params) {
         delta = parseInt(delta) || 1;
         params.delta = Math.min(getCurrentPages().length - 1, delta);
       }
@@ -8373,7 +8374,7 @@ var serviceContext = (function () {
 
   const pages = [];
 
-  function getCurrentPages$1(returnAll) {
+  function getCurrentPages$1 (returnAll) {
     return returnAll ? pages.slice(0) : pages.filter(page => {
       return !page.$page.meta.isTabBar || page.$page.meta.visible
     })
@@ -8381,7 +8382,7 @@ var serviceContext = (function () {
 
   const preloadWebviews = {};
 
-  function preloadWebview$1({
+  function preloadWebview$1 ({
     url,
     path,
     query
@@ -8399,7 +8400,7 @@ var serviceContext = (function () {
   /**
    * 首页需要主动registerPage，二级页面路由跳转时registerPage
    */
-  function registerPage({
+  function registerPage ({
     url,
     path,
     query,
@@ -8452,7 +8453,7 @@ var serviceContext = (function () {
     const pageInstance = {
       route,
       options: Object.assign({}, query || {}),
-      $getAppWebview() {
+      $getAppWebview () {
         // 重要，不能直接返回 webview 对象，因为 plus 可能会被二次替换，返回的 webview 对象内部的 plus 不正确
         // 导致 webview.getStyle 等逻辑出错(旧的 webview 内部 plus 被释放)
         return plus.webview.getWebviewById(webview.id)
@@ -8464,7 +8465,7 @@ var serviceContext = (function () {
         route,
         openType
       },
-      $remove() {
+      $remove () {
         const index = pages.findIndex(page => page === this);
         if (index !== -1) {
           if (!webview.nvue) {
@@ -8477,10 +8478,10 @@ var serviceContext = (function () {
         }
       },
       // 兼容小程序框架
-      selectComponent(selector) {
+      selectComponent (selector) {
         return this.$vm.selectComponent(selector)
       },
-      selectAllComponents(selector) {
+      selectAllComponents (selector) {
         return this.$vm.selectAllComponents(selector)
       }
     };
@@ -8500,7 +8501,7 @@ var serviceContext = (function () {
       ) {
         plus.navigator.closeSplashscreen();
       }
-      __uniConfig.onReady(function() {
+      __uniConfig.onReady(function () {
         navigateFinish();
       });
     }
@@ -8780,7 +8781,7 @@ var serviceContext = (function () {
     }, openType === 'appLaunch');
   }
 
-  function preloadPage$1({
+  function preloadPage$1 ({
     url
   }, callbackId) {
     const urls = url.split('?');
@@ -11869,6 +11870,35 @@ var serviceContext = (function () {
     onSocketClose: onSocketClose
   });
 
+  class UpdateManager {
+    onCheckForUpdate () {
+
+    }
+
+    onUpdateReady () {
+
+    }
+
+    onUpdateFailed () {
+
+    }
+
+    applyUpdate () {
+
+    }
+  }
+
+  let updateManager;
+
+  function getUpdateManager () {
+    return updateManager || (updateManager = new UpdateManager())
+  }
+
+  var require_context_module_1_20 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    getUpdateManager: getUpdateManager
+  });
+
   class UploadTask {
     constructor (uploadTaskId, callbackId) {
       this.id = uploadTaskId;
@@ -11958,7 +11988,7 @@ var serviceContext = (function () {
     return task
   }
 
-  var require_context_module_1_20 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_21 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     uploadFile: uploadFile$1
   });
@@ -12047,7 +12077,7 @@ var serviceContext = (function () {
     return new MPAnimation(option)
   }
 
-  var require_context_module_1_21 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_22 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     createAnimation: createAnimation
   });
@@ -12117,7 +12147,7 @@ var serviceContext = (function () {
     return new ServiceIntersectionObserver(getCurrentPageVm('createIntersectionObserver'), options)
   }
 
-  var require_context_module_1_22 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_23 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     createIntersectionObserver: createIntersectionObserver
   });
@@ -12258,7 +12288,7 @@ var serviceContext = (function () {
     return new SelectorQuery(getCurrentPageVm('createSelectorQuery'))
   }
 
-  var require_context_module_1_23 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_24 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     createSelectorQuery: createSelectorQuery
   });
@@ -12275,7 +12305,7 @@ var serviceContext = (function () {
     callback$1 = callbackId;
   }
 
-  var require_context_module_1_24 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_25 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     onKeyboardHeightChange: onKeyboardHeightChange
   });
@@ -12300,7 +12330,7 @@ var serviceContext = (function () {
     }, pageId);
   }
 
-  var require_context_module_1_25 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_26 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     loadFontFace: loadFontFace$1
   });
@@ -12313,7 +12343,7 @@ var serviceContext = (function () {
     return {}
   }
 
-  var require_context_module_1_26 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_27 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     pageScrollTo: pageScrollTo$1
   });
@@ -12326,7 +12356,7 @@ var serviceContext = (function () {
     return {}
   }
 
-  var require_context_module_1_27 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_28 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     setPageMeta: setPageMeta
   });
@@ -12363,7 +12393,7 @@ var serviceContext = (function () {
     callbacks$c.push(callbackId);
   }
 
-  var require_context_module_1_28 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_29 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     removeTabBarBadge: removeTabBarBadge$1,
     showTabBarRedDot: showTabBarRedDot$1,
@@ -12389,7 +12419,7 @@ var serviceContext = (function () {
     callbacks$d.splice(callbacks$d.indexOf(callbackId), 1);
   }
 
-  var require_context_module_1_29 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_30 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     onWindowResize: onWindowResize,
     offWindowResize: offWindowResize
@@ -12420,16 +12450,17 @@ var serviceContext = (function () {
   './network/download-file.js': require_context_module_1_17,
   './network/request.js': require_context_module_1_18,
   './network/socket.js': require_context_module_1_19,
-  './network/upload-file.js': require_context_module_1_20,
-  './ui/create-animation.js': require_context_module_1_21,
-  './ui/create-intersection-observer.js': require_context_module_1_22,
-  './ui/create-selector-query.js': require_context_module_1_23,
-  './ui/keyboard.js': require_context_module_1_24,
-  './ui/load-font-face.js': require_context_module_1_25,
-  './ui/page-scroll-to.js': require_context_module_1_26,
-  './ui/set-page-meta.js': require_context_module_1_27,
-  './ui/tab-bar.js': require_context_module_1_28,
-  './ui/window.js': require_context_module_1_29,
+  './network/update.js': require_context_module_1_20,
+  './network/upload-file.js': require_context_module_1_21,
+  './ui/create-animation.js': require_context_module_1_22,
+  './ui/create-intersection-observer.js': require_context_module_1_23,
+  './ui/create-selector-query.js': require_context_module_1_24,
+  './ui/keyboard.js': require_context_module_1_25,
+  './ui/load-font-face.js': require_context_module_1_26,
+  './ui/page-scroll-to.js': require_context_module_1_27,
+  './ui/set-page-meta.js': require_context_module_1_28,
+  './ui/tab-bar.js': require_context_module_1_29,
+  './ui/window.js': require_context_module_1_30,
 
       };
       var req = function req(key) {
@@ -13352,9 +13383,10 @@ var serviceContext = (function () {
   }
 
   class VDomSync {
-    constructor (pageId, pagePath, pageVm) {
+    constructor (pageId, pagePath, pageQuery, pageVm) {
       this.pageId = pageId;
       this.pagePath = pagePath;
+      this.pageQuery = pageQuery;
       this.pageVm = pageVm;
       this.batchData = [];
       this.vms = Object.create(null);
@@ -13451,7 +13483,7 @@ var serviceContext = (function () {
     flush () {
       if (!this.initialized) {
         this.initialized = true;
-        this.batchData.push([PAGE_CREATED, [this.pageId, this.pagePath]]);
+        this.batchData.push([PAGE_CREATED, [this.pageId, this.pagePath, this.pageQuery]]);
       }
       const batchData = this.batchData.filter(data => {
         if (data[0] === UPDATED_DATA && !Object.keys(data[1][1]).length) {
@@ -13486,7 +13518,7 @@ var serviceContext = (function () {
     }
 
     restorePageCreated () {
-      this.batchData.push([PAGE_CREATED, [this.pageId, this.pagePath]]);
+      this.batchData.push([PAGE_CREATED, [this.pageId, this.pagePath, this.pageQuery]]);
     }
 
     restore () {
@@ -13608,7 +13640,7 @@ var serviceContext = (function () {
           return
         }
         if (this.mpType === 'page') {
-          this._$vdomSync = new VDomSync(this.$options.pageId, this.$options.pagePath, this);
+          this._$vdomSync = new VDomSync(this.$options.pageId, this.$options.pagePath, this.$options.pageQuery, this);
         }
         if (this._$vd) {
           this._$id = generateId(this, this.$parent);

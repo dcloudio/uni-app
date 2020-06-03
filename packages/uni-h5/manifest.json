@@ -105,6 +105,10 @@
         "/platforms/h5/service/api/network/socket.js",
         []
     ],
+    "getUpdateManager": [
+        "/core/service/api/network/update.js",
+        []
+    ],
     "navigateTo": [
         "/platforms/h5/service/api/route/route.js",
         [
