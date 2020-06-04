@@ -3,6 +3,7 @@ const path = require('path')
 const webpack = require('webpack')
 const VueLoaderPlugin = require('@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib/plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
+const TerserPlugin = require('terser-webpack-plugin')
 
 const {
   getNVueMainEntry,
@@ -238,7 +239,16 @@ module.exports = function () {
       hints: false
     },
     optimization: {
-      namedModules: false
+      namedModules: false,
+      minimizer: [
+        new TerserPlugin({
+          terserOptions: {
+            output: {
+              ascii_only: true
+            }
+          }
+        })
+      ]
     },
     output: {
       path: process.env.UNI_OUTPUT_DIR,
