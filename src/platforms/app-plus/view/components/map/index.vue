@@ -211,7 +211,7 @@ export default {
       this.$trigger('click', {}, e)
     }
     map.onstatuschanged = (e) => {
-      this.$trigger('regionchange', {}, e)
+      this.$trigger('regionchange', {}, {})
     }
     this._addMarkers(this.markers)
     this._addMapLines(this.polyline)
