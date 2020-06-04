@@ -248,7 +248,7 @@ exports.main = async (event, context) => {
 let res = await collection.add({
   name: 'Ben'
 })
-// 批量插入数据，腾讯云暂不支持
+// 批量插入数据
 let res = await collection.add([{
   name: 'Alex'
 },{
@@ -257,7 +257,8 @@ let res = await collection.add([{
   name: 'John'
 }])
 // res.inserted // 插入成功条数
-// res.result // 阿里云特有，批量插入返回的所有记录 id
+// res.ids // 批量插入返回的所有记录 id
+// res.result // 阿里云特有，批量插入返回的所有记录 id，推荐使用ids
 ```
 
 <!-- // res.failIndexes // 腾讯云特有，插入失败的记录的下标 -->

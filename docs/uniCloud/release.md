@@ -1,5 +1,8 @@
 # uniCloud 更新日志
 ======================================
+#### 2020-06-04
+  + 腾讯云 新增 云数据库支持批量插入数据 [详情](https://uniapp.dcloud.io/uniCloud/cf-database?id=add)
+
 #### 2020-05-21
   + 新增 云函数内获取客户端ua、ip [详情](https://uniapp.dcloud.io/uniCloud/cf-functions)
 
