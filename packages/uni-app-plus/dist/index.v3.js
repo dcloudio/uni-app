@@ -6550,7 +6550,7 @@ var serviceContext = (function () {
       sslVerify: !sslVerify
     };
     if (method !== 'GET') {
-      options.body = data;
+      options.body = typeof data === 'string' ? data : JSON.stringify(data);
     }
     try {
       stream.fetch(options, ({
@@ -9120,10 +9120,8 @@ var serviceContext = (function () {
         waiting.close();
       }
       if (~['top', 'center', 'bottom'].indexOf(position)) {
-        const richText = `<span>${title}</span>`;
-        plus.nativeUI.toast(richText, {
-          verticalAlign: position,
-          type: 'richtext'
+        plus.nativeUI.toast(title, {
+          verticalAlign: position
         });
         toast = true;
         toastTimeout = setTimeout(() => {
@@ -13363,7 +13361,10 @@ var serviceContext = (function () {
         nid = String(nid);
         const target = vd.elements.find(target => target.cid === cid && target.nid === nid);
         if (!target) {
-          return console.error(`event handler[${cid}][${nid}] not found`)
+          if (process.env.NODE_ENV !== 'production') {
+            console.error(`event handler[${cid}][${nid}] not found`);
+          }
+          return
         }
         const type = event.type;
         const mpEvent = wrapperEvent(event);
