@@ -211,6 +211,15 @@ module.exports = function updateApis (apis = new Set(), userApis = new Set()) {
 
   apis = new Set([...apis, ...userApis])
 
+  if (process.UNI_TAGS) {
+    // TODO 临时硬编码
+    if (process.UNI_TAGS.has('map')) {
+      apis.add('getLocation')
+      apis.add('stopCompass')
+      apis.add('onCompassChange')
+    }
+  }
+
   const {
     apiPaths,
     apiProtocolPaths,
