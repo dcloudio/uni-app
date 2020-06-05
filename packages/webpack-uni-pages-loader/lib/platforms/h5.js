@@ -409,6 +409,7 @@ global.__uniConfig.networkTimeout = ${JSON.stringify(networkTimeoutConfig)};
 global.__uniConfig.sdkConfigs = ${JSON.stringify(sdkConfigs)};
 global.__uniConfig.qqMapKey = ${JSON.stringify(qqMapKey)};
 global.__uniConfig.nvue = ${JSON.stringify({ 'flex-direction': getFlexDirection(manifestJson['app-plus']) })}
+global.__uniConfig.__webpack_chunk_load__ = __webpack_chunk_load__
 ${genRegisterPageVueComponentsCode(pageComponents)}
 global.__uniRoutes=[${genPageRoutes(pageComponents).concat(genSystemRoutes()).join(',')}]
 global.UniApp && new global.UniApp();

@@ -18,11 +18,13 @@ function findParent (vm) {
 }
 
 export class VDomSync {
-  constructor (pageId) {
+  constructor (pageId, options = {}) {
     this.pageId = pageId
     this.addBatchVData = Object.create(null)
     this.updateBatchVData = []
     this.vms = Object.create(null)
+
+    this.version = options.version
   }
 
   addVData (cid, data = {}, options = {}) {
@@ -34,7 +36,7 @@ export class VDomSync {
   }
 
   initVm (vm) {
-    vm._$id = generateId(vm, findParent(vm))
+    vm._$id = generateId(vm, findParent(vm), this.version)
     let vData = this.addBatchVData[vm._$id]
     if (!vData) {
       console.error('cid unmatched', vm)

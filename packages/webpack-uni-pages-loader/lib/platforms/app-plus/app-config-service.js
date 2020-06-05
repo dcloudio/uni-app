@@ -61,6 +61,9 @@ module.exports = function definePages (appJson) {
   // 保留renderer
   // delete appJson.renderer
 
+  if (process.env.UNI_AUTOMATOR_WS_ENDPOINT) {
+    appJson.automator = true
+  }
   return {
     name: 'app-config-service.js',
     content: `

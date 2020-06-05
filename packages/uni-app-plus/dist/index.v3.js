@@ -26,7 +26,8 @@ var serviceContext = (function () {
     'sendSocketMessage',
     'onSocketMessage',
     'closeSocket',
-    'onSocketClose'
+    'onSocketClose',
+    'getUpdateManager'
   ];
 
   const route = [
@@ -215,7 +216,8 @@ var serviceContext = (function () {
     'getCurrentSubNVue',
     'setPageMeta',
     'onNativeEventReceive',
-    'sendNativeEvent'
+    'sendNativeEvent',
+    'preloadPage'
   ];
 
   const ad = [
@@ -1687,7 +1689,7 @@ var serviceContext = (function () {
 
       // switchTab不允许传递参数,reLaunch到一个tabBar页面是可以的
       if (
-        type === 'switchTab' &&
+        (type === 'switchTab' || type === 'preloadPage') &&
         routeOptions.meta.isTabBar &&
         params.openType !== 'appLaunch'
       ) {
@@ -1701,6 +1703,22 @@ var serviceContext = (function () {
 
       // 参数格式化
       params.url = encodeQueryString(url);
+
+      if (type === 'preloadPage') {
+        {
+          if (!routeOptions.meta.isNVue) {
+            return 'can not preload vue page'
+          }
+        }
+        if (routeOptions.meta.isTabBar) {
+          const pages = getCurrentPages(true);
+          const tabBarPagePath = (routeOptions.alias || routeOptions.path).substr(1);
+          if (pages.find(page => page.route === tabBarPagePath)) {
+            return 'tabBar page `' + tabBarPagePath + '` already exists'
+          }
+        }
+        return
+      }
 
       // 主要拦截目标为用户快速点击时触发的多次跳转，该情况，通常前后 url 是一样的
       if (navigatorLock === url) {
@@ -1788,13 +1806,22 @@ var serviceContext = (function () {
     ]
   ));
 
+  const preloadPage = {
+    url: {
+      type: String,
+      required: true,
+      validator: createValidator('preloadPage')
+    }
+  };
+
   var require_context_module_0_23 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     redirectTo: redirectTo,
     reLaunch: reLaunch,
     navigateTo: navigateTo,
     switchTab: switchTab,
-    navigateBack: navigateBack
+    navigateBack: navigateBack,
+    preloadPage: preloadPage
   });
 
   const getStorage = {
@@ -2817,9 +2844,9 @@ var serviceContext = (function () {
     result = Math.floor(result + EPS);
     if (result === 0) {
       if (deviceDPR === 1 || !isIOS) {
-        return 1
+        result = 1;
       } else {
-        return 0.5
+        result = 0.5;
       }
     }
     return number < 0 ? -result : result
@@ -7962,6 +7989,8 @@ var serviceContext = (function () {
     webview.addEventListener('resize', debounce(onResize, 50));
   }
 
+  const VD_SYNC_VERSION = 2;
+
   const PAGE_CREATE = 2;
   const MOUNTED_DATA = 4;
   const UPDATED_DATA = 6;
@@ -8079,7 +8108,7 @@ var serviceContext = (function () {
     }
   }
 
-  function createWebview (path, routeOptions, query) {
+  function createWebview (path, routeOptions, query, extras = {}) {
     if (routeOptions.meta.isNVue) {
       const webviewId = id$1++;
       const webviewStyle = parseWebviewStyle(
@@ -8093,9 +8122,9 @@ var serviceContext = (function () {
       }
       // android 需要使用
       webviewStyle.isTab = !!routeOptions.meta.isTabBar;
-      return plus.webview.create('', String(webviewId), webviewStyle, {
+      return plus.webview.create('', String(webviewId), webviewStyle, Object.assign({
         nvue: true
-      })
+      }, extras))
     }
     if (id$1 === 2) { // 如果首页非 nvue，则直接返回 Launch Webview
       return plus.webview.getLaunchWebview()
@@ -8117,6 +8146,9 @@ var serviceContext = (function () {
 
       if (!routeOptions.meta.isNVue) {
         webviewStyle.debugRefresh = getDebugRefresh(path, query, routeOptions);
+      } else {
+        // android 需要使用
+        webviewStyle.isTab = !!routeOptions.meta.isTabBar;
       }
       if (process.env.NODE_ENV !== 'production') {
         console.log('[uni-app] updateWebview', webviewStyle);
@@ -8350,6 +8382,23 @@ var serviceContext = (function () {
     })
   }
 
+  const preloadWebviews = {};
+
+  function preloadWebview$1 ({
+    url,
+    path,
+    query
+  }) {
+    if (!preloadWebviews[url]) {
+      const routeOptions = JSON.parse(JSON.stringify(__uniRoutes.find(route => route.path === path)));
+      preloadWebviews[url] = createWebview(path, routeOptions, query, {
+        __preload__: true,
+        __query__: JSON.stringify(query)
+      });
+    }
+    return preloadWebviews[url]
+  }
+
   /**
    * 首页需要主动registerPage，二级页面路由跳转时registerPage
    */
@@ -8360,6 +8409,10 @@ var serviceContext = (function () {
     openType,
     webview
   }) {
+    if (preloadWebviews[url]) {
+      webview = preloadWebviews[url];
+      delete preloadWebviews[url];
+    }
     const routeOptions = JSON.parse(JSON.stringify(__uniRoutes.find(route => route.path === path)));
 
     if (
@@ -8436,6 +8489,10 @@ var serviceContext = (function () {
     };
 
     pages.push(pageInstance);
+
+    // if (webview.__preload__) {
+    //   // TODO 触发 onShow 以及绑定vm，page 关系
+    // }
 
     // 首页是 nvue 时，在 registerPage 时，执行路由堆栈
     if (webview.id === '1' && webview.nvue) {
@@ -8724,6 +8781,24 @@ var serviceContext = (function () {
         from
       }, callbackId);
     }, openType === 'appLaunch');
+  }
+
+  function preloadPage$1 ({
+    url
+  }, callbackId) {
+    const urls = url.split('?');
+    const path = urls[0];
+    const query = parseQuery(urls[1] || '');
+    const webview = preloadWebview$1({
+      url,
+      path,
+      query
+    });
+    invoke$1(callbackId, {
+      id: webview.id,
+      url,
+      errMsg: 'preloadPage:ok'
+    });
   }
 
   const STORAGE_DATA_TYPE = '__TYPE';
@@ -9650,6 +9725,7 @@ var serviceContext = (function () {
     reLaunch: reLaunch$1,
     redirectTo: redirectTo$1,
     switchTab: switchTab$1,
+    preloadPage: preloadPage$1,
     setStorage: setStorage$1,
     setStorageSync: setStorageSync$1,
     getStorage: getStorage$1,
@@ -11796,6 +11872,35 @@ var serviceContext = (function () {
     onSocketClose: onSocketClose
   });
 
+  class UpdateManager {
+    onCheckForUpdate () {
+
+    }
+
+    onUpdateReady () {
+
+    }
+
+    onUpdateFailed () {
+
+    }
+
+    applyUpdate () {
+
+    }
+  }
+
+  let updateManager;
+
+  function getUpdateManager () {
+    return updateManager || (updateManager = new UpdateManager())
+  }
+
+  var require_context_module_1_20 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    getUpdateManager: getUpdateManager
+  });
+
   class UploadTask {
     constructor (uploadTaskId, callbackId) {
       this.id = uploadTaskId;
@@ -11885,7 +11990,7 @@ var serviceContext = (function () {
     return task
   }
 
-  var require_context_module_1_20 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_21 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     uploadFile: uploadFile$1
   });
@@ -11974,7 +12079,7 @@ var serviceContext = (function () {
     return new MPAnimation(option)
   }
 
-  var require_context_module_1_21 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_22 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     createAnimation: createAnimation
   });
@@ -12044,7 +12149,7 @@ var serviceContext = (function () {
     return new ServiceIntersectionObserver(getCurrentPageVm('createIntersectionObserver'), options)
   }
 
-  var require_context_module_1_22 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_23 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     createIntersectionObserver: createIntersectionObserver
   });
@@ -12185,7 +12290,7 @@ var serviceContext = (function () {
     return new SelectorQuery(getCurrentPageVm('createSelectorQuery'))
   }
 
-  var require_context_module_1_23 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_24 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     createSelectorQuery: createSelectorQuery
   });
@@ -12202,7 +12307,7 @@ var serviceContext = (function () {
     callback$1 = callbackId;
   }
 
-  var require_context_module_1_24 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_25 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     onKeyboardHeightChange: onKeyboardHeightChange
   });
@@ -12227,7 +12332,7 @@ var serviceContext = (function () {
     }, pageId);
   }
 
-  var require_context_module_1_25 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_26 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     loadFontFace: loadFontFace$1
   });
@@ -12240,7 +12345,7 @@ var serviceContext = (function () {
     return {}
   }
 
-  var require_context_module_1_26 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_27 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     pageScrollTo: pageScrollTo$1
   });
@@ -12253,7 +12358,7 @@ var serviceContext = (function () {
     return {}
   }
 
-  var require_context_module_1_27 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_28 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     setPageMeta: setPageMeta
   });
@@ -12290,7 +12395,7 @@ var serviceContext = (function () {
     callbacks$c.push(callbackId);
   }
 
-  var require_context_module_1_28 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_29 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     removeTabBarBadge: removeTabBarBadge$1,
     showTabBarRedDot: showTabBarRedDot$1,
@@ -12316,7 +12421,7 @@ var serviceContext = (function () {
     callbacks$d.splice(callbacks$d.indexOf(callbackId), 1);
   }
 
-  var require_context_module_1_29 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_30 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     onWindowResize: onWindowResize,
     offWindowResize: offWindowResize
@@ -12347,16 +12452,17 @@ var serviceContext = (function () {
   './network/download-file.js': require_context_module_1_17,
   './network/request.js': require_context_module_1_18,
   './network/socket.js': require_context_module_1_19,
-  './network/upload-file.js': require_context_module_1_20,
-  './ui/create-animation.js': require_context_module_1_21,
-  './ui/create-intersection-observer.js': require_context_module_1_22,
-  './ui/create-selector-query.js': require_context_module_1_23,
-  './ui/keyboard.js': require_context_module_1_24,
-  './ui/load-font-face.js': require_context_module_1_25,
-  './ui/page-scroll-to.js': require_context_module_1_26,
-  './ui/set-page-meta.js': require_context_module_1_27,
-  './ui/tab-bar.js': require_context_module_1_28,
-  './ui/window.js': require_context_module_1_29,
+  './network/update.js': require_context_module_1_20,
+  './network/upload-file.js': require_context_module_1_21,
+  './ui/create-animation.js': require_context_module_1_22,
+  './ui/create-intersection-observer.js': require_context_module_1_23,
+  './ui/create-selector-query.js': require_context_module_1_24,
+  './ui/keyboard.js': require_context_module_1_25,
+  './ui/load-font-face.js': require_context_module_1_26,
+  './ui/page-scroll-to.js': require_context_module_1_27,
+  './ui/set-page-meta.js': require_context_module_1_28,
+  './ui/tab-bar.js': require_context_module_1_29,
+  './ui/window.js': require_context_module_1_30,
 
       };
       var req = function req(key) {
@@ -13030,12 +13136,20 @@ var serviceContext = (function () {
   // 使用白名单过滤（前期有一批自定义组件使用了 uni-）
 
   function initVue (Vue) {
-    Vue.config.errorHandler = function (err) {
+    Vue.config.errorHandler = function (err, vm, info) {
+      Vue.util.warn(`Error in ${info}: "${err.toString()}"`, vm);
       const app = typeof getApp === 'function' && getApp();
       if (app && hasLifecycleHook(app.$options, 'onError')) {
         app.__call_hook('onError', err);
       } else {
-        console.error(err);
+        if ( process.env.NODE_ENV !== 'production') {
+          console.error(`
+  ${err.message}
+  ${err.stack}
+  `);
+        } else {
+          console.error(err);
+        }
       }
     };
 
@@ -13271,9 +13385,10 @@ var serviceContext = (function () {
   }
 
   class VDomSync {
-    constructor (pageId, pagePath, pageVm) {
+    constructor (pageId, pagePath, pageQuery, pageVm) {
       this.pageId = pageId;
       this.pagePath = pagePath;
+      this.pageQuery = pageQuery;
       this.pageVm = pageVm;
       this.batchData = [];
       this.vms = Object.create(null);
@@ -13370,7 +13485,7 @@ var serviceContext = (function () {
     flush () {
       if (!this.initialized) {
         this.initialized = true;
-        this.batchData.push([PAGE_CREATED, [this.pageId, this.pagePath]]);
+        this.batchData.push([PAGE_CREATED, [this.pageId, this.pagePath, this.pageQuery]]);
       }
       const batchData = this.batchData.filter(data => {
         if (data[0] === UPDATED_DATA && !Object.keys(data[1][1]).length) {
@@ -13405,7 +13520,7 @@ var serviceContext = (function () {
     }
 
     restorePageCreated () {
-      this.batchData.push([PAGE_CREATED, [this.pageId, this.pagePath]]);
+      this.batchData.push([PAGE_CREATED, [this.pageId, this.pagePath, this.pageQuery]]);
     }
 
     restore () {
@@ -13428,20 +13543,24 @@ var serviceContext = (function () {
     }
   }
 
-  function generateId (vm, parent) {
+  function generateId (vm, parent, version) {
     if (!vm.$parent) {
       return '-1'
     }
     const vnode = vm.$vnode;
     const context = vnode.context;
+    let id = vnode.data.attrs._i;
+    if (version && hasOwn(vnode.data, 'key')) { // 补充 key 值
+      id = id + ';' + vnode.data.key;
+    }
     // slot 内的组件，需要补充 context 的 id，否则可能与内部组件索引值一致，导致 id 冲突
     if (context && context !== parent && context._$id) {
       if (process.env.NODE_ENV !== 'production') {
-        console.log('generateId:' + context._$id + ';' + parent._$id + ',' + vnode.data.attrs._i);
+        console.log('generateId:' + context._$id + ';' + parent._$id + ',' + id);
       }
-      return context._$id + ';' + parent._$id + ',' + vnode.data.attrs._i
+      return context._$id + ';' + parent._$id + ',' + id
     }
-    return parent._$id + ',' + vnode.data.attrs._i
+    return parent._$id + ',' + id
   }
 
   function setResult (data, k, v) {
@@ -13527,10 +13646,10 @@ var serviceContext = (function () {
           return
         }
         if (this.mpType === 'page') {
-          this._$vdomSync = new VDomSync(this.$options.pageId, this.$options.pagePath, this);
+          this._$vdomSync = new VDomSync(this.$options.pageId, this.$options.pagePath, this.$options.pageQuery, this);
         }
         if (this._$vd) {
-          this._$id = generateId(this, this.$parent);
+          this._$id = generateId(this, this.$parent, VD_SYNC_VERSION);
           this._$vd.addVm(this);
           this._$vdMountedData = Object.create(null);
           this._$setData(MOUNTED_DATA, this._$vdMountedData);
@@ -13762,6 +13881,7 @@ var serviceContext = (function () {
     const statusbarHeight = getStatusbarHeight();
 
     return {
+      version: VD_SYNC_VERSION,
       disableScroll,
       onPageScroll,
       onPageReachBottom,

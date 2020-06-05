@@ -105,6 +105,10 @@
         "/platforms/h5/service/api/network/socket.js",
         []
     ],
+    "getUpdateManager": [
+        "/core/service/api/network/update.js",
+        []
+    ],
     "navigateTo": [
         "/platforms/h5/service/api/route/route.js",
         [
@@ -838,5 +842,14 @@
     "setPageMeta": [
         "/core/service/api/ui/set-page-meta.js",
         []
+    ],
+    "preloadPage": [
+        "/platforms/h5/service/api/route/route.js",
+        [
+            [
+                "/core/helpers/protocol/route/route.js",
+                "preloadPage"
+            ]
+        ]
     ]
 }

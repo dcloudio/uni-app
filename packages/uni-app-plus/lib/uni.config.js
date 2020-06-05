@@ -36,9 +36,21 @@ module.exports = {
       copyOptions.push(path.resolve(__dirname, '../dist/view.css'))
       copyOptions.push(path.resolve(__dirname, '../dist/view.umd.min.js'))
       // TODO 后续common与v3目录应该合并
-      copyOptions.push(path.resolve(__dirname, process.env.UNI_USING_NVUE_COMPILER ? '../template/common' : '../template/weex'))
+      copyOptions.push(path.resolve(__dirname, process.env.UNI_USING_NVUE_COMPILER ? '../template/common'
+        : '../template/weex'))
       copyOptions.push(path.resolve(__dirname, '../template/v3'))
     }
     return copyOptions
+  },
+  chainWebpack (config) {
+    if (process.env.NODE_ENV === 'production') {
+      config.optimization.minimizer('terser').tap((args) => {
+        if (!args[0].terserOptions.output) {
+          args[0].terserOptions.output = {}
+        }
+        args[0].terserOptions.output.ascii_only = true
+        return args
+      })
+    }
   }
 }

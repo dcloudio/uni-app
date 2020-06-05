@@ -80,7 +80,7 @@ function parseComponentAttrs (el, genVar) {
       name,
       value
     } = attr
-    if (name.indexOf('data-') === 0) {
+    if (isVar(value) && (name === 'id' || name.indexOf('data-') === 0)) {
       attr.value = genVar('a-' + name, value)
     }
   })

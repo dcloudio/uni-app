@@ -194,7 +194,8 @@ export default {
       mapStyle.center = new plus.maps.Point(this.longitude, this.latitude)
     }
     const map = this.map = plus.maps.create(this.$page.id + '-map-' + (this.id || Date.now()), mapStyle)
-    map.__markers__ = {}
+    map.__markers__ = []
+    map.__markers_map__ = {}
     map.__lines__ = []
     map.__circles__ = []
     map.setZoom(parseInt(this.scale))
@@ -211,7 +212,7 @@ export default {
       this.$trigger('click', {}, e)
     }
     map.onstatuschanged = (e) => {
-      this.$trigger('regionchange', {}, e)
+      this.$trigger('regionchange', {}, {})
     }
     this._addMarkers(this.markers)
     this._addMapLines(this.polyline)
@@ -317,16 +318,18 @@ export default {
           }
         }
         nativeMap.addOverlay(nativeMarker)
-        nativeMap.__markers__[id + ''] = nativeMarker
+        nativeMap.__markers__.push(nativeMarker)
+        nativeMap.__markers_map__[id + ''] = nativeMarker
       })
     },
     _clearMarkers () {
       const map = this.map
-      const data = map.__markers__
-      for (const key in data) {
-        map.removeOverlay(data[key])
-      }
-      map.__markers__ = {}
+      const markers = map.__markers__
+      markers.forEach(marker => {
+        map.removeOverlay(marker)
+      })
+      map.__markers__ = []
+      map.__markers_map__ = {}
     },
     _addMarkers (markers, clear) {
       if (this.map) {
@@ -352,7 +355,7 @@ export default {
       markerId
     }) {
       if (this.map) {
-        const nativeMarker = this.map.__markers__[markerId + '']
+        const nativeMarker = this.map.__markers_map__[markerId + '']
         if (nativeMarker) {
           nativeMarker.setPoint(new plus.maps.Point(destination.longitude, destination.latitude))
         }

@@ -411,7 +411,8 @@ const protocols = {
   }
 };
 const todos = [
-  'vibrate'
+  'vibrate',
+  'preloadPage'
 ];
 const canIUses = [];
 

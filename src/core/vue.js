@@ -6,12 +6,20 @@ import {
 } from 'uni-helpers/index'
 
 export default function initVue (Vue) {
-  Vue.config.errorHandler = function (err) {
+  Vue.config.errorHandler = function (err, vm, info) {
+    Vue.util.warn(`Error in ${info}: "${err.toString()}"`, vm)
     const app = typeof getApp === 'function' && getApp()
     if (app && hasLifecycleHook(app.$options, 'onError')) {
       app.__call_hook('onError', err)
     } else {
-      console.error(err)
+      if (__PLATFORM__ === 'app-plus' && process.env.NODE_ENV !== 'production') {
+        console.error(`
+  ${err.message}
+  ${err.stack}
+  `)
+      } else {
+        console.error(err)
+      }
     }
   }
 

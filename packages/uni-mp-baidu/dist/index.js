@@ -392,6 +392,7 @@ var previewImage = {
 
 // 不支持的 API 列表
 const todos = [
+  'preloadPage'
   // 'hideKeyboard',
   // 'onGyroscopeChange',
   // 'startGyroscope',

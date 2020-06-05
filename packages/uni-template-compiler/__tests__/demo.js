@@ -19,20 +19,7 @@ const scopedPath = path.resolve(__dirname, '../../')
 const compiler = require('../lib')
 const res = compiler.compile(
   `
-<view>
-		<slot-comp v-slot:test="{label}">
-			<view>{{label}}</view>
-		</slot-comp>
-		<slot-comp v-slot:test="{label}">
-			<view>{{label}}</view>
-		</slot-comp>
-		<slot-comp v-slot:test="{label}">
-			<view>{{label}}</view>
-		</slot-comp>
-		<slot-comp v-slot:test="{label}">
-			<view class="red">{{label}}</view>
-		</slot-comp>
-	</view>
+<custom data-a="1" :data-b="b"></custom>
 `, {
     miniprogram: true,
     resourcePath: '/User/fxy/Documents/test.wxml',
@@ -45,9 +32,9 @@ const res = compiler.compile(
     mp: {
       platform: 'mp-weixin'
     },
-    filterModules: ['swipe']
-    // service: true,
-    // view: true
+    filterModules: ['swipe'],
+    service: true,
+    view: true
 
   })
 console.log(require('util').inspect(res, {

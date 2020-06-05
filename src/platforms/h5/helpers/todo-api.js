@@ -1,7 +1,6 @@
 export default [
   'saveImageToPhotosAlbum',
   'getRecorderManager',
-  'getBackgroundAudioManager',
   'saveVideoToPhotosAlbum',
   'createCameraContext',
   'createLivePlayerContext',

@@ -33,7 +33,7 @@
         v-model="valueSync"
         :disabled="disabled"
         :maxlength="maxlengthNumber"
-        :autofocus="autoFocus"
+        :autofocus="autoFocus || focus"
         :class="{'uni-textarea-textarea-fix-margin': fixMargin}"
         :style="{'overflow-y': autoHeight? 'hidden':'auto'}"
         class="uni-textarea-textarea"

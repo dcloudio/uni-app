@@ -28,7 +28,7 @@ export default {
   },
   watch: {
     focus (val) {
-      if (val) {
+      if (val && __PLATFORM__ === 'app-plus') {
         this.showSoftKeybord()
       }
     }
@@ -49,8 +49,10 @@ export default {
         }
         UniViewJSBridge.subscribe('hideKeyboard', this.hideKeyboardTemp)
         document.addEventListener('click', iosHideKeyboard, false)
-        this.setSoftinputNavBar()
-        this.setSoftinputTemporary()
+        if (__PLATFORM__ === 'app-plus') {
+          this.setSoftinputNavBar()
+          this.setSoftinputTemporary()
+        }
       })
       el.addEventListener('blur', this.onKeyboardHide.bind(this))
     },
@@ -106,7 +108,9 @@ export default {
     onKeyboardHide () {
       UniViewJSBridge.unsubscribe('hideKeyboard', this.hideKeyboardTemp)
       document.removeEventListener('click', iosHideKeyboard, false)
-      this.resetSoftinputNavBar()
+      if (__PLATFORM__ === 'app-plus') {
+        this.resetSoftinputNavBar()
+      }
       // 修复ios端显示与点击位置错位的Bug by:wyq
       if (String(navigator.vendor).indexOf('Apple') === 0) {
         document.documentElement.scrollTo(document.documentElement.scrollLeft, document.documentElement.scrollTop)

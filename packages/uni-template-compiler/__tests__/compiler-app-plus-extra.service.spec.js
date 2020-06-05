@@ -127,6 +127,14 @@ describe('codegen', () => {
       '<view id="aaa" class="bbbb"></view>',
       `with(this){return _c('view',{staticClass:_$s(0,'sc',"bbbb"),attrs:{"id":"aaa","_i":0}})}`
     )
+    assertCodegen(
+      '<custom id="id"></custom>',
+      `with(this){return _c('custom',{attrs:{"id":"id","_i":0}})}`
+    )
+    assertCodegen(
+      '<custom :id="id"></custom>',
+      `with(this){return _c('custom',{attrs:{"id":_$s(0,'a-id',id),"_i":0}})}`
+    )
   })
   // TODO 后续优化 dataset
   // it('generate dataset', () => {
@@ -139,6 +147,10 @@ describe('codegen', () => {
     assertCodegen(
       '<view data-a="1" :data-b="b"></view>',
       `with(this){return _c('view',{attrs:{"data-b":_$s(0,'a-data-b',b),"_i":0}})}`
+    )
+    assertCodegen(
+      '<custom data-a="1" :data-b="b"></custom>',
+      `with(this){return _c('custom',{attrs:{"data-a":"1","data-b":_$s(0,'a-data-b',b),"_i":0}})}`
     )
   })
   it('generate v-if directive', () => {
