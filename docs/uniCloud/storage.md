@@ -134,11 +134,11 @@ uni.chooseImage({
 |字段	|类型	|必填	|说明					|
 |:-:	|:-:	|:-:	|:-:					|
 |fileID	|String	|是		|文件 ID				|
-|maxAge	|Number	|是		|文件链接有效期，单位：秒	|
+<!-- |maxAge	|Number	|是		|文件链接有效期，单位：秒	| -->
 
-**注意**
+<!-- **注意**
 
-- `maxAge`在配置所有人可读权限时不生效
+- `maxAge`在配置所有人可读权限时不生效 -->
 
 #### 响应参数
 
@@ -315,7 +315,7 @@ let result = await uniCloud.uploadFile({
 | 字段	| 类型		| 必填| 说明						|
 | ---		| ---			| ---	| ---							|
 | fileID| string	| 是	| 文件 ID。				|
-| maxAge| Integer	| 是	| 文件链接有效期。|
+<!-- | maxAge| Integer	| 是	| 文件链接有效期。| -->
 
 #### 响应参数
 
