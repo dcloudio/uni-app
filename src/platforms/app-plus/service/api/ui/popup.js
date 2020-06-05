@@ -37,10 +37,8 @@ export function showToast ({
       waiting.close()
     }
     if (~['top', 'center', 'bottom'].indexOf(position)) {
-      const richText = `<span>${title}</span>`
-      plus.nativeUI.toast(richText, {
+      plus.nativeUI.toast(title, {
         verticalAlign: position,
-        type: 'richtext'
       })
       toast = true
       toastTimeout = setTimeout(() => {
