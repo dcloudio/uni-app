@@ -102,6 +102,8 @@ auth.signInWithTicket('YourTicket').then(() => {
 
 每个用户的`customUserId`不能相同，每次用户重新登录时，原有的登录态将会失效。
 
+**Ticket一般在验证了用户名密码成功之后下发**
+
 ```js
 let customUserId = '123456';
 
@@ -110,33 +112,6 @@ const ticket = uniCloud.auth().createTicket(customUserId, {
 });
 // 然后把 ticket 发送给客户端
 ```
-
-<!-- ### 在开发者服务器创建登录凭据
-
-获取私钥文件之后，在服务端 SDK 初始化时，加入私钥文件的路径：
-
-```js
-// 开发者的服务端代码
-// 初始化示例
-const tcb = require('tcb-admin-node');
-
-// 1. 直接使用下载的私钥文件
-tcb.init({
-  // ...
-  spaceId: 'your-space-id',
-  credentials: require('/path/to/your/tcb_custom_login.json')
-});
-
-// 2. 也可以直接传入私钥的内容
-tcb.init({
-  // ...
-  spaceId: 'your-space-id',
-  credentials: {
-    private_key_id: 'xxxxxxxxxxxxx',
-    private_key: 'xxxxxxxxxxx'
-  }
-});
-``` -->
 
 ### 第三步：客户端上使用Ticket登录
 
