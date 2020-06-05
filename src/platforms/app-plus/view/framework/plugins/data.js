@@ -43,7 +43,9 @@ const handleData = {
     // 初始化当前页面 VueComponent（生成页面样式代码）
     PageVueComponent = getPageVueComponent(pagePath)
     // 生成当前页面 vd
-    vd = new VDomSync(pageId)
+    vd = new VDomSync(pageId, {
+      version: pageOptions.version
+    })
   },
   [MOUNTED_DATA]: function onMounted (data) {
     vd.addVData.apply(vd, data)

@@ -2844,9 +2844,9 @@ var serviceContext = (function () {
     result = Math.floor(result + EPS);
     if (result === 0) {
       if (deviceDPR === 1 || !isIOS) {
-        return 1
+        result = 1;
       } else {
-        return 0.5
+        result = 0.5;
       }
     }
     return number < 0 ? -result : result
@@ -7988,6 +7988,8 @@ var serviceContext = (function () {
     };
     webview.addEventListener('resize', debounce(onResize, 50));
   }
+
+  const VD_SYNC_VERSION = 2;
 
   const PAGE_CREATE = 2;
   const MOUNTED_DATA = 4;
@@ -13541,20 +13543,24 @@ var serviceContext = (function () {
     }
   }
 
-  function generateId (vm, parent) {
+  function generateId (vm, parent, version) {
     if (!vm.$parent) {
       return '-1'
     }
     const vnode = vm.$vnode;
     const context = vnode.context;
+    let id = vnode.data.attrs._i;
+    if (version && hasOwn(vnode.data, 'key')) { // 补充 key 值
+      id = id + ';' + vnode.data.key;
+    }
     // slot 内的组件，需要补充 context 的 id，否则可能与内部组件索引值一致，导致 id 冲突
     if (context && context !== parent && context._$id) {
       if (process.env.NODE_ENV !== 'production') {
-        console.log('generateId:' + context._$id + ';' + parent._$id + ',' + vnode.data.attrs._i);
+        console.log('generateId:' + context._$id + ';' + parent._$id + ',' + id);
       }
-      return context._$id + ';' + parent._$id + ',' + vnode.data.attrs._i
+      return context._$id + ';' + parent._$id + ',' + id
     }
-    return parent._$id + ',' + vnode.data.attrs._i
+    return parent._$id + ',' + id
   }
 
   function setResult (data, k, v) {
@@ -13643,7 +13649,7 @@ var serviceContext = (function () {
           this._$vdomSync = new VDomSync(this.$options.pageId, this.$options.pagePath, this.$options.pageQuery, this);
         }
         if (this._$vd) {
-          this._$id = generateId(this, this.$parent);
+          this._$id = generateId(this, this.$parent, VD_SYNC_VERSION);
           this._$vd.addVm(this);
           this._$vdMountedData = Object.create(null);
           this._$setData(MOUNTED_DATA, this._$vdMountedData);
@@ -13875,6 +13881,7 @@ var serviceContext = (function () {
     const statusbarHeight = getStatusbarHeight();
 
     return {
+      version: VD_SYNC_VERSION,
       disableScroll,
       onPageScroll,
       onPageReachBottom,

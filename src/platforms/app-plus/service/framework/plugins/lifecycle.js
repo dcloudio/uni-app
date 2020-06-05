@@ -17,6 +17,10 @@ import {
   from 'uni-core/service/plugins/lifecycle'
 
 import {
+  VD_SYNC_VERSION
+} from '../../../constants'
+
+import {
   ON_REACH_BOTTOM_DISTANCE,
   TITLEBAR_HEIGHT
 }
@@ -43,6 +47,7 @@ function parsePageCreateOptions (vm, route) {
   const statusbarHeight = getStatusbarHeight()
 
   return {
+    version: VD_SYNC_VERSION,
     disableScroll,
     onPageScroll,
     onPageReachBottom,
