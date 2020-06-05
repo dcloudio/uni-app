@@ -38,7 +38,7 @@ export function showToast ({
     }
     if (~['top', 'center', 'bottom'].indexOf(position)) {
       plus.nativeUI.toast(title, {
-        verticalAlign: position,
+        verticalAlign: position
       })
       toast = true
       toastTimeout = setTimeout(() => {
