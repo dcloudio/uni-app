@@ -68,7 +68,10 @@ const handleVdData = {
       nid = String(nid)
       const target = vd.elements.find(target => target.cid === cid && target.nid === nid)
       if (!target) {
-        return console.error(`event handler[${cid}][${nid}] not found`)
+        if (process.env.NODE_ENV !== 'production') {
+          console.error(`event handler[${cid}][${nid}] not found`)
+        }
+        return
       }
       const type = event.type
       const mpEvent = wrapperEvent(event)
