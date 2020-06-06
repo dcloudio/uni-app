@@ -38,13 +38,10 @@
 
 如果你是线下培训机构，想开课合作，联系bd@dcloud.io
 
-#### 网友学习笔记分享
-
-* WordPress搭配uni-app开发app和小程序的教程：[https://ask.dcloud.net.cn/article/35704](https://ask.dcloud.net.cn/article/35704)
-* uni-app官方教程学习手记：[https://segmentfault.com/a/1190000017020710](https://segmentfault.com/a/1190000017020710)
-
-
 欢迎更多人分享学习经验，可转载到[社区](http://ask.dcloud.net.cn/explore/)，优秀的文章我们会收录在本文中。
+
+#### uniCloud的学习资料
+详见：[https://uniapp.dcloud.io/uniCloud/learning](https://uniapp.dcloud.io/uniCloud/learning)
 
 #### 关于各端的管理规则需要耐心学习
 
@@ -57,6 +54,8 @@ uni-app并不难学，但我们注意到很多新人在适应各个平台的规�
 - 比如App端，iOS对隐私控制和虚拟支付控制非常严格；
 - 比如App端，Android、国产rom各种兼容性差异，尤其是因为谷歌服务被墙，导致的push、定位等开发混乱的坑；
 - 如果你的App要使用三方sdk，比如定位、地图、支付、推送...还要遵循他们的规则和限制；
+
+遇事耐心，不急不躁，虽然这不是成功的唯一要素，但它是你技术路上长远走下去的基础。
 
 #### uni-app的底层框架实现原理及优化策略（高级）
 通过[评测对比](https://juejin.im/post/5e8e8d5a6fb9a03c6d3d9f42)，我们知道uni-app的性能比其他小程序开发框架好，但底层原理是什么？
