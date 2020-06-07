@@ -34,7 +34,7 @@
           class="uni-actionsheet__cell"
           @click="_close(-1)"
         >
-          取消
+          {{cancelText}}
         </div>
       </div>
     </div>
@@ -61,6 +61,10 @@ export default {
     visible: {
       type: Boolean,
       default: false
+    },
+    cancelText: {
+      type: String,
+      default: '取消'
     }
   },
   methods: {
