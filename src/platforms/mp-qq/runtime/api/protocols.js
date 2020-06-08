@@ -3,7 +3,8 @@ export const protocols = {
   previewImage
 }
 export const todos = [
-  'preloadPage'
+  'preloadPage',
+  'loadSubPackage'
   // 'startBeaconDiscovery',
   // 'stopBeaconDiscovery',
   // 'getBeacons',

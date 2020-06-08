@@ -13,6 +13,10 @@ import {
   createPage
 } from '../../page-factory'
 
+import {
+  loadPage
+} from './load-sub-package'
+
 const pages = []
 
 export function getCurrentPages (returnAll) {
@@ -151,7 +155,9 @@ export function registerPage ({
     if (!webview.nvue) {
       const pageId = webview.id
       try {
-        createPage(route, pageId, query, pageInstance).$mount()
+        loadPage(route, () => {
+          createPage(route, pageId, query, pageInstance).$mount()
+        })
       } catch (e) {
         console.error(e)
       }

@@ -336,9 +336,9 @@ function upx2px (number, newDeviceWidth) {
   result = Math.floor(result + EPS);
   if (result === 0) {
     if (deviceDPR === 1 || !isIOS) {
-      return 1
+      result = 1;
     } else {
-      return 0.5
+      result = 0.5;
     }
   }
   return number < 0 ? -result : result
@@ -394,7 +394,8 @@ const protocols = {
   previewImage
 };
 const todos = [
-  'preloadPage'
+  'preloadPage',
+  'loadSubPackage'
   // 'startBeaconDiscovery',
   // 'stopBeaconDiscovery',
   // 'getBeacons',

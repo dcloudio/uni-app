@@ -23,7 +23,8 @@ module.exports = {
       template: '.wxml',
       filter: '.wxs'
     },
-    filterTag: 'wxs'
+    filterTag: 'wxs',
+    subPackages: true
   },
   copyWebpackOptions (platformOptions, vueOptions) {
     const copyOptions = []
@@ -42,7 +43,16 @@ module.exports = {
     }
     return copyOptions
   },
-  chainWebpack (config) {
+  chainWebpack (config, vueOptions) {
+    const isAppService = !!vueOptions.pluginOptions['uni-app-plus'].service
+    if (isAppService) {
+      const subPackages = Object.keys(process.UNI_SUBPACKAGES)
+      if (process.env.UNI_OPT_SUBPACKAGES && subPackages.length) {
+        config
+          .plugin('uni-app-plus-subpackages')
+          .use(require('./plugin/sub-packages-plugin'))
+      }
+    }
     if (process.env.NODE_ENV === 'production') {
       config.optimization.minimizer('terser').tap((args) => {
         if (!args[0].terserOptions.output) {

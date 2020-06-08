@@ -217,7 +217,8 @@ var serviceContext = (function () {
     'setPageMeta',
     'onNativeEventReceive',
     'sendNativeEvent',
-    'preloadPage'
+    'preloadPage',
+    'loadSubPackage'
   ];
 
   const ad = [
@@ -1627,6 +1628,27 @@ var serviceContext = (function () {
     getProvider: getProvider
   });
 
+  const loadSubPackage = {
+    root: {
+      type: String,
+      required: true,
+      validator (value, params) {
+        const subPackages = __uniConfig.subPackages;
+        if (!Array.isArray(subPackages) || subPackages.length === 0) {
+          return 'no subPackages'
+        }
+        if (!subPackages.find(subPackage => subPackage.root === value)) {
+          return 'root `' + value + '` is not found'
+        }
+      }
+    }
+  };
+
+  var require_context_module_0_23 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    loadSubPackage: loadSubPackage
+  });
+
   function encodeQueryString (url) {
     if (typeof url !== 'string') {
       return url
@@ -1814,7 +1836,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_23 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_24 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     redirectTo: redirectTo,
     reLaunch: reLaunch,
@@ -1859,7 +1881,7 @@ var serviceContext = (function () {
   const removeStorage = getStorage;
   const removeStorageSync = getStorageSync;
 
-  var require_context_module_0_24 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_25 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getStorage: getStorage,
     getStorageSync: getStorageSync,
@@ -1896,7 +1918,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_25 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_26 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     loadFontFace: loadFontFace
   });
@@ -1939,7 +1961,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_26 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_27 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     setNavigationBarColor: setNavigationBarColor,
     setNavigationBarTitle: setNavigationBarTitle
@@ -1959,7 +1981,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_27 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_28 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     pageScrollTo: pageScrollTo
   });
@@ -2080,7 +2102,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_28 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_29 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     showModal: showModal,
     showToast: showToast,
@@ -2176,7 +2198,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_29 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_30 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     setTabBarItem: setTabBarItem,
     setTabBarStyle: setTabBarStyle,
@@ -2215,13 +2237,14 @@ var serviceContext = (function () {
   './network/socket.js': require_context_module_0_20,
   './network/upload-file.js': require_context_module_0_21,
   './plugin/get-provider.js': require_context_module_0_22,
-  './route/route.js': require_context_module_0_23,
-  './storage/storage.js': require_context_module_0_24,
-  './ui/load-font-face.js': require_context_module_0_25,
-  './ui/navigation-bar.js': require_context_module_0_26,
-  './ui/page-scroll-to.js': require_context_module_0_27,
-  './ui/popup.js': require_context_module_0_28,
-  './ui/tab-bar.js': require_context_module_0_29,
+  './plugin/load-sub-package.js': require_context_module_0_23,
+  './route/route.js': require_context_module_0_24,
+  './storage/storage.js': require_context_module_0_25,
+  './ui/load-font-face.js': require_context_module_0_26,
+  './ui/navigation-bar.js': require_context_module_0_27,
+  './ui/page-scroll-to.js': require_context_module_0_28,
+  './ui/popup.js': require_context_module_0_29,
+  './ui/tab-bar.js': require_context_module_0_30,
 
       };
       var req = function req(key) {
@@ -6550,7 +6573,7 @@ var serviceContext = (function () {
       sslVerify: !sslVerify
     };
     if (method !== 'GET') {
-      options.body = data;
+      options.body = typeof data === 'string' ? data : JSON.stringify(data);
     }
     try {
       stream.fetch(options, ({
@@ -7489,6 +7512,24 @@ var serviceContext = (function () {
     return weex.requireModule('plus').sendNativeEvent(event, data, callback)
   }
 
+  const SUB_FILENAME = 'app-sub-service.js';
+
+  function evaluateScriptFile (file, callback) {
+    setTimeout(() => {
+      callback();
+    }, 2000);
+  }
+
+  function loadSubPackage$1 ({
+    root
+  }, callbackId) {
+    evaluateScriptFile(root + '/' + SUB_FILENAME, res => {
+      invoke$1(callbackId, {
+        errMsg: 'loadSubPackage:ok'
+      });
+    });
+  }
+
   let firstBackTime = 0;
 
   function quit () {
@@ -8374,6 +8415,92 @@ var serviceContext = (function () {
     return pageVm
   }
 
+  const loadedSubPackages = [];
+
+  /**
+   * 指定路由 ready 后，检查是否触发分包预加载
+   * @param {Object} route
+   */
+  function preloadSubPackages(route) {
+    if (!__uniConfig.preloadRule) {
+      return
+    }
+    const options = __uniConfig.preloadRule[route];
+    if (!options || !Array.isArray(options.packages)) {
+      return
+    }
+    const packages = options.packages.filter(root => loadedSubPackages.indexOf(root) === -1);
+    if (!packages.length) {
+      return
+    }
+    const network = options.network || 'wifi';
+    if (network === 'wifi') {
+      uni.getNetworkType({
+        success(res) {
+          if (process.env.NODE_ENV !== 'production') {
+            console.log('UNIAPP[preloadRule]:' + res.networkType + ':' + JSON.stringify(options));
+          }
+          if (res.networkType === 'wifi') {
+            loadSubPackages(options.packages);
+          }
+        }
+      });
+    } else {
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('UNIAPP[preloadRule]:' + JSON.stringify(options));
+      }
+      loadSubPackages(options.packages);
+    }
+  }
+
+  function loadPage(route, callback) {
+    let isInSubPackage = false;
+    const subPackages = __uniConfig.subPackages;
+    if (Array.isArray(subPackages)) {
+      const subPackage = subPackages.find(subPackage => route.indexOf(subPackage.root) === 0);
+      if (subPackage) {
+        isInSubPackage = true;
+        loadSubPackage$2(subPackage.root, callback);
+      }
+    }
+    if (!isInSubPackage) {
+      callback();
+    }
+  }
+
+  function loadSubPackage$2(root, callback) {
+    if (loadedSubPackages.indexOf(root) !== -1) {
+      return callback()
+    }
+    loadSubPackages([root], () => {
+      callback();
+    });
+  }
+
+  function loadSubPackages(packages, callback) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('UNIAPP[loadSubPackages]:' + JSON.stringify(packages));
+    }
+    const startTime = Date.now();
+    Promise.all(
+      packages.map(root => {
+        // 目前阶段：假定一定会加载成功
+        loadedSubPackages.push(root);
+        return uni.loadSubPackage({
+          root
+        })
+      })
+    ).then(res => {
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('UNIAPP[loadSubPackages]:' + (Date.now() - startTime));
+      }
+      callback && callback(true);
+    }).catch(err => {
+      console.log(err);
+      callback && callback(false);
+    });
+  }
+
   const pages = [];
 
   function getCurrentPages$1 (returnAll) {
@@ -8512,7 +8639,9 @@ var serviceContext = (function () {
       if (!webview.nvue) {
         const pageId = webview.id;
         try {
-          createPage(route, pageId, query, pageInstance).$mount();
+          loadPage(route, () => {
+            createPage(route, pageId, query, pageInstance).$mount();
+          });
         } catch (e) {
           console.error(e);
         }
@@ -9120,10 +9249,8 @@ var serviceContext = (function () {
         waiting.close();
       }
       if (~['top', 'center', 'bottom'].indexOf(position)) {
-        const richText = `<span>${title}</span>`;
-        plus.nativeUI.toast(richText, {
-          verticalAlign: position,
-          type: 'richtext'
+        plus.nativeUI.toast(title, {
+          verticalAlign: position
         });
         toast = true;
         toastTimeout = setTimeout(() => {
@@ -9720,6 +9847,7 @@ var serviceContext = (function () {
     getCurrentSubNVue: getCurrentSubNVue,
     onNativeEventReceive: onNativeEventReceive,
     sendNativeEvent: sendNativeEvent,
+    loadSubPackage: loadSubPackage$1,
     navigateBack: navigateBack$1,
     navigateTo: navigateTo$1,
     reLaunch: reLaunch$1,
@@ -13363,7 +13491,10 @@ var serviceContext = (function () {
         nid = String(nid);
         const target = vd.elements.find(target => target.cid === cid && target.nid === nid);
         if (!target) {
-          return console.error(`event handler[${cid}][${nid}] not found`)
+          if (process.env.NODE_ENV !== 'production') {
+            console.error(`event handler[${cid}][${nid}] not found`);
+          }
+          return
         }
         const type = event.type;
         const mpEvent = wrapperEvent(event);
@@ -13939,6 +14070,7 @@ var serviceContext = (function () {
       mounted () {
         if (this.mpType === 'page') {
           callPageHook(this.$scope, 'onReady');
+          preloadSubPackages(this.$scope.route);
         }
       }
     });
