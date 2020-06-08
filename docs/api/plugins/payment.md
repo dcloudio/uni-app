@@ -47,7 +47,8 @@ uni.requestPayment是一个统一各平台的客户端支付API，不管是在�
 2. 支付宝小程序的 orderInfo(支付宝的规范为 tradeNO) 为 String 类型，表示支付宝交易号。
 3. 字节跳动小程序的 orderInfo 为 Object 类型，详见：[发起头条支付](https://developer.toutiao.com/dev/cn/mini-app/develop/open-capacity/payment/pay)
 4. 由于头条新版支付接口要求版本较高，在不支持新版支付接口的情况下仍会对应旧版支付接口，此时 orderInfo 对应字节跳动小程序 data， 详见：[头条支付旧版接口](https://developer.toutiao.com/dev/cn/mini-app/develop/open-capacity/payment/requestpayment-deprecated)。用户可以使用 tt.pay 判断是否支持新版接口。另外需要注意字节跳动小程序在`1.35.0+`版本基础库支持了 canIUse ，在`1.19.4+`版本基础库支持了新版支付接口 tt.pay ，所以应避免使用 canIUse 判断是否为新版接口。
-5. App端，支付宝支付和微信支付 orderInfo 均为 String 类型。
+5. App端，支付宝支付 orderInfo 为 String 类型。
+6. App端，微信支付 orderInfo 为 Object 类型。
 6. App端，苹果应用内支付 orderInfo 为Object 类型，{productid: 'productid'}。
 
 #### H5 平台@h5-payment
