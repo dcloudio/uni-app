@@ -14,6 +14,10 @@ const uniAccount = require('uni-account')
 const uniAccount = require('@dcloudio/uni-account')
 ```
 
+**注意**
+
+- 插件市场导入的用法请参考[云函数公用模块](https://uniapp.dcloud.net.cn/uniCloud/cf-common)
+
 ## 初始化
 
 进行初始化操作返回 uni-account 实例

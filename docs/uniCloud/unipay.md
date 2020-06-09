@@ -31,6 +31,10 @@ const unipay = require('unipay')
 const unipay = require('@dcloudio/unipay')
 ```
 
+**注意**
+
+- 插件市场导入的用法请参考[云函数公用模块](https://uniapp.dcloud.net.cn/uniCloud/cf-common)
+
 ## 初始化
 
 进行初始化操作返回 unipay 实例
