@@ -56,7 +56,8 @@ const uniAccountIns = uniAccount.initAlipay({
 
 ### 获取 openid
 
-`uniAccountIns.code2Session`。传入`uni.login`返回的`code`来获取用户 openid 等信息
+`uniAccountIns.code2Session`。传入客户端上调用[uni.login](https://uniapp.dcloud.net.cn/api/plugins/login?id=login)返回的`code`来获取用户`openid`等信息
+
 
 **入参说明**
 
