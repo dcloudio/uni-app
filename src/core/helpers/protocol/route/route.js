@@ -76,8 +76,9 @@ function createValidator (type) {
 
     // 参数格式化
     params.url = encodeQueryString(url)
-
-    if (type === 'preloadPage') {
+    if (type === 'unPreloadPage') {
+      return
+    } else if (type === 'preloadPage') {
       if (__PLATFORM__ === 'app-plus') {
         if (!routeOptions.meta.isNVue) {
           return 'can not preload vue page'
@@ -184,5 +185,13 @@ export const preloadPage = {
     type: String,
     required: true,
     validator: createValidator('preloadPage')
+  }
+}
+
+export const unPreloadPage = {
+  url: {
+    type: String,
+    required: true,
+    validator: createValidator('unPreloadPage')
   }
 }

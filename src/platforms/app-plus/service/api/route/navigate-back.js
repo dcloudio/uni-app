@@ -7,6 +7,10 @@ import {
   setStatusBarStyle
 } from '../../bridge'
 
+import {
+  closeWebview
+} from './util'
+
 let firstBackTime = 0
 
 function quit () {
@@ -46,18 +50,19 @@ function back (delta, animationType, animationDuration) {
   if (delta > 1) {
     // 中间页隐藏
     pages.slice(len - delta, len - 1).reverse().forEach(deltaPage => {
-      deltaPage.$getAppWebview().close('none')
+      closeWebview(deltaPage.$getAppWebview(), 'none')
     })
   }
 
   const backPage = function (webview) {
     if (animationType) {
-      webview.close(animationType, animationDuration || ANI_DURATION)
+      closeWebview(webview, animationType, animationDuration || ANI_DURATION)
     } else {
       if (currentPage.$page.openType === 'redirect') { // 如果是 redirectTo 跳转的，需要制定 back 动画
-        webview.close(ANI_CLOSE, ANI_DURATION)
+        closeWebview(webview, ANI_CLOSE, ANI_DURATION)
+      } else {
+        closeWebview(webview, 'auto')
       }
-      webview.close('auto')
     }
 
     pages.slice(len - delta, len).forEach(page => page.$remove())

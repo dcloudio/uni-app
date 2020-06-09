@@ -12,7 +12,8 @@ import {
 } from '../../bridge'
 
 import {
-  registerPage
+  registerPage,
+  removePreloadWebview
 } from '../../framework/page'
 
 import {
@@ -39,7 +40,13 @@ function _redirectTo ({
     'none',
     0,
     () => {
-      lastPage && lastPage.$getAppWebview().close('none')
+      if (lastPage) {
+        const webview = lastPage.$getAppWebview()
+        if (webview.__preload__) {
+          removePreloadWebview(webview)
+        }
+        webview.close('none')
+      }
       invoke(callbackId, {
         errMsg: 'redirectTo:ok'
       })

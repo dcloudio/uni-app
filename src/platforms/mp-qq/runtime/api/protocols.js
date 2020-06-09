@@ -4,6 +4,7 @@ export const protocols = {
 }
 export const todos = [
   'preloadPage',
+  'unPreloadPage',
   'loadSubPackage'
   // 'startBeaconDiscovery',
   // 'stopBeaconDiscovery',

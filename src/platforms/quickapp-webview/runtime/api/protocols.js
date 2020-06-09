@@ -5,6 +5,7 @@ export const protocols = {
 }
 export const todos = [
   'preloadPage',
+  'unPreloadPage',
   'loadSubPackage'
 ]
 export const canIUses = []

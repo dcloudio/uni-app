@@ -4,6 +4,7 @@ import {
 // 不支持的 API 列表
 const todos = [
   'preloadPage',
+  'unPreloadPage',
   'loadSubPackage'
   // 'getRecorderManager',
   // 'getBackgroundAudioManager',

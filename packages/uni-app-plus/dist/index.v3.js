@@ -218,6 +218,7 @@ var serviceContext = (function () {
     'onNativeEventReceive',
     'sendNativeEvent',
     'preloadPage',
+    'unPreloadPage',
     'loadSubPackage'
   ];
 
@@ -1725,8 +1726,9 @@ var serviceContext = (function () {
 
       // 参数格式化
       params.url = encodeQueryString(url);
-
-      if (type === 'preloadPage') {
+      if (type === 'unPreloadPage') {
+        return
+      } else if (type === 'preloadPage') {
         {
           if (!routeOptions.meta.isNVue) {
             return 'can not preload vue page'
@@ -1836,6 +1838,14 @@ var serviceContext = (function () {
     }
   };
 
+  const unPreloadPage = {
+    url: {
+      type: String,
+      required: true,
+      validator: createValidator('unPreloadPage')
+    }
+  };
+
   var require_context_module_0_24 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     redirectTo: redirectTo,
@@ -1843,7 +1853,8 @@ var serviceContext = (function () {
     navigateTo: navigateTo,
     switchTab: switchTab,
     navigateBack: navigateBack,
-    preloadPage: preloadPage
+    preloadPage: preloadPage,
+    unPreloadPage: unPreloadPage
   });
 
   const getStorage = {
@@ -7530,116 +7541,6 @@ var serviceContext = (function () {
     });
   }
 
-  let firstBackTime = 0;
-
-  function quit () {
-    if (!firstBackTime) {
-      firstBackTime = Date.now();
-      plus.nativeUI.toast('再按一次退出应用');
-      setTimeout(() => {
-        firstBackTime = null;
-      }, 2000);
-    } else if (Date.now() - firstBackTime < 2000) {
-      plus.runtime.quit();
-    }
-  }
-
-  function backWebview (webview, callback) {
-    const children = webview.children();
-    if (!children || !children.length) { // 有子 webview
-      return callback()
-    }
-    const childWebview = children[0];
-    childWebview.canBack(({
-      canBack
-    }) => {
-      if (canBack) {
-        childWebview.back(); // webview 返回
-      } else {
-        callback();
-      }
-    });
-  }
-
-  function back (delta, animationType, animationDuration) {
-    const pages = getCurrentPages();
-    const len = pages.length;
-    const currentPage = pages[len - 1];
-
-    if (delta > 1) {
-      // 中间页隐藏
-      pages.slice(len - delta, len - 1).reverse().forEach(deltaPage => {
-        deltaPage.$getAppWebview().close('none');
-      });
-    }
-
-    const backPage = function (webview) {
-      if (animationType) {
-        webview.close(animationType, animationDuration || ANI_DURATION);
-      } else {
-        if (currentPage.$page.openType === 'redirect') { // 如果是 redirectTo 跳转的，需要制定 back 动画
-          webview.close(ANI_CLOSE, ANI_DURATION);
-        }
-        webview.close('auto');
-      }
-
-      pages.slice(len - delta, len).forEach(page => page.$remove());
-
-      setStatusBarStyle();
-
-      UniServiceJSBridge.emit('onAppRoute', {
-        type: 'navigateBack'
-      });
-    };
-
-    const webview = currentPage.$getAppWebview();
-    if (!currentPage.__uniapp_webview) {
-      return backPage(webview)
-    }
-    backWebview(webview, () => {
-      backPage(webview);
-    });
-  }
-
-  function navigateBack$1 ({
-    from = 'navigateBack',
-    delta,
-    animationType,
-    animationDuration
-  }) {
-    const pages = getCurrentPages();
-
-    const currentPage = pages[pages.length - 1];
-    if (
-      currentPage.$vm &&
-      currentPage.$vm.$options.onBackPress &&
-      currentPage.$vm.__call_hook &&
-      currentPage.$vm.__call_hook('onBackPress', {
-        from
-      })
-    ) {
-      return
-    }
-
-    uni.hideToast(); // 后退时，关闭 toast,loading
-
-    if (currentPage.$page.meta.isQuit) {
-      quit();
-    } else if (currentPage.$page.id === 1 && __uniConfig.realEntryPagePath) {
-      // condition
-      __uniConfig.entryPagePath = __uniConfig.realEntryPagePath;
-      delete __uniConfig.realEntryPagePath;
-      uni.reLaunch({
-        url: '/' + __uniConfig.entryPagePath
-      });
-    } else {
-      back(delta, animationType, animationDuration);
-    }
-    return {
-      errMsg: 'navigateBack:ok'
-    }
-  }
-
   function createButtonOnClick (index) {
     return function onClick (btn) {
       const pages = getCurrentPages();
@@ -8338,6 +8239,10 @@ var serviceContext = (function () {
     }
   }
 
+  function closeWebview (webview, animationType, animationDuration) {
+    webview[webview.__preload__ ? 'hide' : 'close'](animationType, animationDuration);
+  }
+
   function showWebview (webview, animationType, animationDuration, showCallback, delay) {
     if (typeof delay === 'undefined') {
       delay = webview.nvue ? 0 : 100;
@@ -8387,6 +8292,117 @@ var serviceContext = (function () {
     }, delay);
   }
 
+  let firstBackTime = 0;
+
+  function quit () {
+    if (!firstBackTime) {
+      firstBackTime = Date.now();
+      plus.nativeUI.toast('再按一次退出应用');
+      setTimeout(() => {
+        firstBackTime = null;
+      }, 2000);
+    } else if (Date.now() - firstBackTime < 2000) {
+      plus.runtime.quit();
+    }
+  }
+
+  function backWebview (webview, callback) {
+    const children = webview.children();
+    if (!children || !children.length) { // 有子 webview
+      return callback()
+    }
+    const childWebview = children[0];
+    childWebview.canBack(({
+      canBack
+    }) => {
+      if (canBack) {
+        childWebview.back(); // webview 返回
+      } else {
+        callback();
+      }
+    });
+  }
+
+  function back (delta, animationType, animationDuration) {
+    const pages = getCurrentPages();
+    const len = pages.length;
+    const currentPage = pages[len - 1];
+
+    if (delta > 1) {
+      // 中间页隐藏
+      pages.slice(len - delta, len - 1).reverse().forEach(deltaPage => {
+        closeWebview(deltaPage.$getAppWebview(), 'none');
+      });
+    }
+
+    const backPage = function (webview) {
+      if (animationType) {
+        closeWebview(webview, animationType, animationDuration || ANI_DURATION);
+      } else {
+        if (currentPage.$page.openType === 'redirect') { // 如果是 redirectTo 跳转的，需要制定 back 动画
+          closeWebview(webview, ANI_CLOSE, ANI_DURATION);
+        } else {
+          closeWebview(webview, 'auto');
+        }
+      }
+
+      pages.slice(len - delta, len).forEach(page => page.$remove());
+
+      setStatusBarStyle();
+
+      UniServiceJSBridge.emit('onAppRoute', {
+        type: 'navigateBack'
+      });
+    };
+
+    const webview = currentPage.$getAppWebview();
+    if (!currentPage.__uniapp_webview) {
+      return backPage(webview)
+    }
+    backWebview(webview, () => {
+      backPage(webview);
+    });
+  }
+
+  function navigateBack$1 ({
+    from = 'navigateBack',
+    delta,
+    animationType,
+    animationDuration
+  }) {
+    const pages = getCurrentPages();
+
+    const currentPage = pages[pages.length - 1];
+    if (
+      currentPage.$vm &&
+      currentPage.$vm.$options.onBackPress &&
+      currentPage.$vm.__call_hook &&
+      currentPage.$vm.__call_hook('onBackPress', {
+        from
+      })
+    ) {
+      return
+    }
+
+    uni.hideToast(); // 后退时，关闭 toast,loading
+
+    if (currentPage.$page.meta.isQuit) {
+      quit();
+    } else if (currentPage.$page.id === 1 && __uniConfig.realEntryPagePath) {
+      // condition
+      __uniConfig.entryPagePath = __uniConfig.realEntryPagePath;
+      delete __uniConfig.realEntryPagePath;
+      uni.reLaunch({
+        url: '/' + __uniConfig.entryPagePath
+      });
+    } else {
+      back(delta, animationType, animationDuration);
+    }
+    return {
+      errMsg: 'navigateBack:ok'
+    }
+  }
+
   const pageFactory = Object.create(null);
 
   function definePage (name, createPageVueComponent) {
@@ -8421,7 +8437,7 @@ var serviceContext = (function () {
    * 指定路由 ready 后，检查是否触发分包预加载
    * @param {Object} route
    */
-  function preloadSubPackages(route) {
+  function preloadSubPackages (route) {
     if (!__uniConfig.preloadRule) {
       return
     }
@@ -8436,7 +8452,7 @@ var serviceContext = (function () {
     const network = options.network || 'wifi';
     if (network === 'wifi') {
       uni.getNetworkType({
-        success(res) {
+        success (res) {
           if (process.env.NODE_ENV !== 'production') {
             console.log('UNIAPP[preloadRule]:' + res.networkType + ':' + JSON.stringify(options));
           }
@@ -8453,7 +8469,7 @@ var serviceContext = (function () {
     }
   }
 
-  function loadPage(route, callback) {
+  function loadPage (route, callback) {
     let isInSubPackage = false;
     const subPackages = __uniConfig.subPackages;
     if (Array.isArray(subPackages)) {
@@ -8468,7 +8484,7 @@ var serviceContext = (function () {
     }
   }
 
-  function loadSubPackage$2(root, callback) {
+  function loadSubPackage$2 (root, callback) {
     if (loadedSubPackages.indexOf(root) !== -1) {
       return callback()
     }
@@ -8477,27 +8493,27 @@ var serviceContext = (function () {
     });
   }
 
-  function loadSubPackages(packages, callback) {
+  const SUB_FILENAME$1 = 'app-sub-service.js';
+
+  function evaluateScriptFiles (files, callback) {
+    setTimeout(() => {
+      callback();
+    }, 2000);
+  }
+
+  function loadSubPackages (packages, callback) {
     if (process.env.NODE_ENV !== 'production') {
       console.log('UNIAPP[loadSubPackages]:' + JSON.stringify(packages));
     }
     const startTime = Date.now();
-    Promise.all(
-      packages.map(root => {
-        // 目前阶段：假定一定会加载成功
-        loadedSubPackages.push(root);
-        return uni.loadSubPackage({
-          root
-        })
-      })
-    ).then(res => {
+    evaluateScriptFiles(packages.map(root => {
+      loadedSubPackages.push(root);
+      return root + '/' + SUB_FILENAME$1
+    }), res => {
       if (process.env.NODE_ENV !== 'production') {
         console.log('UNIAPP[loadSubPackages]:' + (Date.now() - startTime));
       }
       callback && callback(true);
-    }).catch(err => {
-      console.log(err);
-      callback && callback(false);
     });
   }
 
@@ -8510,6 +8526,36 @@ var serviceContext = (function () {
   }
 
   const preloadWebviews = {};
+
+  function removePreloadWebview (webview) {
+    const url = Object.keys(preloadWebviews).find(url => preloadWebviews[url].id === webview.id);
+    if (url) {
+      if (process.env.NODE_ENV !== 'production') {
+        console.log(`[uni-app] removePreloadWebview(${webview.id})`);
+      }
+      delete preloadWebviews[url];
+    }
+  }
+
+  function closePreloadWebview ({
+    url
+  }) {
+    const webview = preloadWebviews[url];
+    if (webview) {
+      if (webview.__page__) {
+        if (!getCurrentPages$1(true).find(page => page === webview.__page__)) {
+          // 未使用
+          webview.close('none');
+        } else { // 被使用
+          webview.__preload__ = false;
+        }
+      } else { // 未使用
+        webview.close('none');
+      }
+      delete preloadWebviews[url];
+    }
+    return webview
+  }
 
   function preloadWebview$1 ({
     url,
@@ -8538,7 +8584,21 @@ var serviceContext = (function () {
   }) {
     if (preloadWebviews[url]) {
       webview = preloadWebviews[url];
-      delete preloadWebviews[url];
+      if (webview.__page__) {
+        // 该预载页面已处于显示状态,不再使用该预加载页面,直接新开
+        if (getCurrentPages$1(true).find(page => page === webview.__page__)) {
+          if (process.env.NODE_ENV !== 'production') {
+            console.log(`[uni-app] preloadWebview(${path},${webview.id}) already in use`);
+          }
+          webview = null;
+        } else {
+          pages.push(webview.__page__);
+          if (process.env.NODE_ENV !== 'production') {
+            console.log(`[uni-app] reuse preloadWebview(${path},${webview.id})`);
+          }
+          return webview
+        }
+      }
     }
     const routeOptions = JSON.parse(JSON.stringify(__uniRoutes.find(route => route.path === path)));
 
@@ -8617,9 +8677,9 @@ var serviceContext = (function () {
 
     pages.push(pageInstance);
 
-    // if (webview.__preload__) {
-    //   // TODO 触发 onShow 以及绑定vm，page 关系
-    // }
+    if (webview.__preload__) {
+      webview.__page__ = pageInstance;
+    }
 
     // 首页是 nvue 时，在 registerPage 时，执行路由堆栈
     if (webview.id === '1' && webview.nvue) {
@@ -8734,7 +8794,7 @@ var serviceContext = (function () {
       () => {
         pages.forEach(page => {
           page.$remove();
-          page.$getAppWebview().close('none');
+          closeWebview(page.$getAppWebview(), 'none');
         });
         invoke$1(callbackId, {
           errMsg: 'reLaunch:ok'
@@ -8780,7 +8840,13 @@ var serviceContext = (function () {
       'none',
       0,
       () => {
-        lastPage && lastPage.$getAppWebview().close('none');
+        if (lastPage) {
+          const webview = lastPage.$getAppWebview();
+          if (webview.__preload__) {
+            removePreloadWebview(webview);
+          }
+          webview.close('none');
+        }
         invoke$1(callbackId, {
           errMsg: 'redirectTo:ok'
         });
@@ -8830,16 +8896,16 @@ var serviceContext = (function () {
         pages.reverse().forEach(page => {
           if (!page.$page.meta.isTabBar && page !== currentPage) {
             page.$remove();
-            page.$getAppWebview().close('none');
+            closeWebview(page.$getAppWebview(), 'none');
           }
         });
         currentPage.$remove();
         // 延迟执行避免iOS应用退出
         setTimeout(() => {
           if (currentPage.$page.openType === 'redirect') {
-            currentPage.$getAppWebview().close(ANI_CLOSE, ANI_DURATION);
+            closeWebview(currentPage.$getAppWebview(), ANI_CLOSE, ANI_DURATION);
           } else {
-            currentPage.$getAppWebview().close('auto');
+            closeWebview(currentPage.$getAppWebview(), 'auto');
           }
         }, 100);
       } else {
@@ -8870,9 +8936,12 @@ var serviceContext = (function () {
       currentPage.$vm.__call_hook('onHide');
     }
     if (tabBarPage) {
-      tabBarPage.$getAppWebview().show('none');
+      const webview = tabBarPage.$getAppWebview();
+      webview.show('none');
       // 等visible状态都切换完之后，再触发onShow，否则开发者在onShow里边 getCurrentPages 会不准确
-      callOnShow && tabBarPage.$vm.__call_hook('onShow');
+      if (callOnShow && !webview.__preload__) {
+        tabBarPage.$vm.__call_hook('onShow');
+      }
     } else {
       return showWebview(registerPage({
         url,
@@ -8910,6 +8979,25 @@ var serviceContext = (function () {
         from
       }, callbackId);
     }, openType === 'appLaunch');
+  }
+
+  function unPreloadPage$1 ({
+    url
+  }) {
+    const webview = closePreloadWebview({
+      url
+    });
+    if (webview) {
+      return {
+        id: webview.id,
+        url,
+        errMsg: 'unPreloadPage:ok'
+      }
+    }
+    return {
+      url,
+      errMsg: 'unPreloadPage:fail not found'
+    }
   }
 
   function preloadPage$1 ({
@@ -9853,6 +9941,7 @@ var serviceContext = (function () {
     reLaunch: reLaunch$1,
     redirectTo: redirectTo$1,
     switchTab: switchTab$1,
+    unPreloadPage: unPreloadPage$1,
     preloadPage: preloadPage$1,
     setStorage: setStorage$1,
     setStorageSync: setStorageSync$1,

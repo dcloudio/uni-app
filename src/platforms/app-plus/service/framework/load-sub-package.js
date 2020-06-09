@@ -4,7 +4,7 @@ const loadedSubPackages = []
  * 指定路由 ready 后，检查是否触发分包预加载
  * @param {Object} route
  */
-export function preloadSubPackages(route) {
+export function preloadSubPackages (route) {
   if (!__uniConfig.preloadRule) {
     return
   }
@@ -19,7 +19,7 @@ export function preloadSubPackages(route) {
   const network = options.network || 'wifi'
   if (network === 'wifi') {
     uni.getNetworkType({
-      success(res) {
+      success (res) {
         if (process.env.NODE_ENV !== 'production') {
           console.log('UNIAPP[preloadRule]:' + res.networkType + ':' + JSON.stringify(options))
         }
@@ -36,7 +36,7 @@ export function preloadSubPackages(route) {
   }
 }
 
-export function loadPage(route, callback) {
+export function loadPage (route, callback) {
   let isInSubPackage = false
   const subPackages = __uniConfig.subPackages
   if (Array.isArray(subPackages)) {
@@ -51,7 +51,7 @@ export function loadPage(route, callback) {
   }
 }
 
-function loadSubPackage(root, callback) {
+function loadSubPackage (root, callback) {
   if (loadedSubPackages.indexOf(root) !== -1) {
     return callback()
   }
@@ -60,26 +60,26 @@ function loadSubPackage(root, callback) {
   })
 }
 
-function loadSubPackages(packages, callback) {
+const SUB_FILENAME = 'app-sub-service.js'
+
+function evaluateScriptFiles (files, callback) {
+  setTimeout(() => {
+    callback()
+  }, 2000)
+}
+
+function loadSubPackages (packages, callback) {
   if (process.env.NODE_ENV !== 'production') {
     console.log('UNIAPP[loadSubPackages]:' + JSON.stringify(packages))
   }
   const startTime = Date.now()
-  Promise.all(
-    packages.map(root => {
-      // 目前阶段：假定一定会加载成功
-      loadedSubPackages.push(root)
-      return uni.loadSubPackage({
-        root
-      })
-    })
-  ).then(res => {
+  evaluateScriptFiles(packages.map(root => {
+    loadedSubPackages.push(root)
+    return root + '/' + SUB_FILENAME
+  }), res => {
     if (process.env.NODE_ENV !== 'production') {
       console.log('UNIAPP[loadSubPackages]:' + (Date.now() - startTime))
     }
     callback && callback(true)
-  }).catch(err => {
-    console.log(err)
-    callback && callback(false)
   })
 }
