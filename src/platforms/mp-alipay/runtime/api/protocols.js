@@ -221,6 +221,20 @@ const protocols = { // 需要做转换的 API 列表
       filePath: 'apFilePath'
     }
   },
+  compressImage: {
+    args (fromArgs) {
+      fromArgs.compressLevel = 4
+      if (fromArgs && fromArgs.quality) {
+        fromArgs.compressLevel = Math.floor(fromArgs.quality / 26)
+      }
+      fromArgs.apFilePaths = [fromArgs.src]
+    },
+    returnValue (result) {
+      if (result.apFilePaths && result.apFilePaths.length) {
+        result.tempFilePath = result.apFilePaths[0]
+      }
+    }
+  },
   chooseVideo: {
     // 支付宝小程序文档中未找到（仅在getSetting处提及），但实际可用
     returnValue: {
