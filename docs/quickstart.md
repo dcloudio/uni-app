@@ -104,7 +104,7 @@ uni-app自带的模板有 Hello uni-app ，是官方的组件和API示例。还�
 * 支付宝/百度/字节跳动/360小程序工具，不支持直接指定项目启动并运行。因此开发工具启动后，请将 HBuilderX 控制台中提示的项目路径，在相应小程序开发者工具中打开。
 * 如果自动启动小程序开发工具失败，请手动启动小程序开发工具并将 HBuilderX 控制台提示的项目路径，打开项目。
 
-运行的快捷键是`Ctrl+r`。
+运行的快捷键是`Alt+r`。
 HBuilderX 还提供了快捷运行菜单，可以按数字快速选择要运行的设备：
 <div align=center>
 	<img src="//img.cdn.aliyun.dcloud.net.cn/uni-app/doc/runtool.png"/>
