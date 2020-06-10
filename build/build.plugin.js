@@ -47,9 +47,19 @@ service.webpackRawConfigFns.push(function () {
     },
     module: {
       rules: [{
+        test: path.resolve(__dirname, '../src/core/view/components/index.js'),
+        use: [{
+          loader: path.resolve(__dirname, '../lib/extends-component-loader'),
+          options: {
+            extends: path.resolve(pluginDir, 'src/view/components'),
+            base: path.resolve(__dirname, '../src/core/view/components'),
+            platform: path.resolve(__dirname, '../src/platforms/h5/view/components')
+          }
+        }]
+      }, {
         test: path.resolve(__dirname, '../src/platforms/h5/service/api/index.js'),
         use: [{
-          loader: path.resolve(__dirname, '../lib/extends-loader'),
+          loader: path.resolve(__dirname, '../lib/extends-api-loader'),
           options: {
             extends: path.resolve(pluginDir, 'src/service/api'),
             base: path.resolve(__dirname, '../src/platforms/h5/service/api')

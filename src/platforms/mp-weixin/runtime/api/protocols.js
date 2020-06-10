@@ -22,6 +22,8 @@ export const protocols = {
 }
 export const todos = [
   'vibrate',
-  'preloadPage'
+  'preloadPage',
+  'unPreloadPage',
+  'loadSubPackage'
 ]
 export const canIUses = []

@@ -32,6 +32,10 @@ import {
   getStatusbarHeight
 } from '../../api/util'
 
+import {
+  preloadSubPackages
+} from '../load-sub-package'
+
 function parsePageCreateOptions (vm, route) {
   const pagePath = '/' + route
   const routeOptions = __uniRoutes.find(route => route.path === pagePath)
@@ -105,6 +109,7 @@ export function initLifecycle (Vue) {
     mounted () {
       if (this.mpType === 'page') {
         callPageHook(this.$scope, 'onReady')
+        preloadSubPackages(this.$scope.route)
       }
     }
   })

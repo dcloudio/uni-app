@@ -7,8 +7,28 @@ import {
 } from '../../bridge'
 
 import {
-  preloadWebview
+  preloadWebview,
+  closePreloadWebview
 } from '../../framework/page'
+
+export function unPreloadPage ({
+  url
+}) {
+  const webview = closePreloadWebview({
+    url
+  })
+  if (webview) {
+    return {
+      id: webview.id,
+      url,
+      errMsg: 'unPreloadPage:ok'
+    }
+  }
+  return {
+    url,
+    errMsg: 'unPreloadPage:fail not found'
+  }
+}
 
 export function preloadPage ({
   url

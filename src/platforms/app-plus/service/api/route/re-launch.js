@@ -3,7 +3,8 @@ import {
 } from 'uni-shared'
 
 import {
-  showWebview
+  showWebview,
+  closeWebview
 } from './util'
 
 import {
@@ -46,7 +47,7 @@ function _reLaunch ({
     () => {
       pages.forEach(page => {
         page.$remove()
-        page.$getAppWebview().close('none')
+        closeWebview(page.$getAppWebview(), 'none')
       })
       invoke(callbackId, {
         errMsg: 'reLaunch:ok'

@@ -393,7 +393,10 @@ var previewImage = {
 const protocols = {
   previewImage
 };
-const todos = [];
+const todos = [
+  'preloadPage',
+  'loadSubPackage'
+];
 const canIUses = [];
 
 const CALLBACKS = ['success', 'fail', 'cancel', 'complete'];

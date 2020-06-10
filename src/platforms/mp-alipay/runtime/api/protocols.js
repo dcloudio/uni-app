@@ -3,7 +3,9 @@ import {
 } from 'uni-shared'
 // 不支持的 API 列表
 const todos = [
-  'preloadPage'
+  'preloadPage',
+  'unPreloadPage',
+  'loadSubPackage'
   // 'getRecorderManager',
   // 'getBackgroundAudioManager',
   // 'createInnerAudioContext',
@@ -220,6 +222,20 @@ const protocols = { // 需要做转换的 API 列表
   getFileInfo: {
     args: {
       filePath: 'apFilePath'
+    }
+  },
+  compressImage: {
+    args (fromArgs) {
+      fromArgs.compressLevel = 4
+      if (fromArgs && fromArgs.quality) {
+        fromArgs.compressLevel = Math.floor(fromArgs.quality / 26)
+      }
+      fromArgs.apFilePaths = [fromArgs.src]
+    },
+    returnValue (result) {
+      if (result.apFilePaths && result.apFilePaths.length) {
+        result.tempFilePath = result.apFilePaths[0]
+      }
     }
   },
   chooseVideo: {
