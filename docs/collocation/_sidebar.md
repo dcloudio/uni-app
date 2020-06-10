@@ -12,9 +12,6 @@
   * [生命周期](collocation/frame/lifecycle.md)
   * [页面](collocation/frame/window.md)
   * [页面通讯](collocation/frame/communication.md)
-* 自动化测试
-  * [快速开始](auto/quick-start.md)
-  * [API](auto/api.md)
 <li></li>
 <div class="contact-box">
   <a href="//ask.dcloud.net.cn/explore/" target="_blank" class="contact-item">
