@@ -395,6 +395,7 @@ const protocols = {
 };
 const todos = [
   'preloadPage',
+  'unPreloadPage',
   'loadSubPackage'
   // 'startBeaconDiscovery',
   // 'stopBeaconDiscovery',

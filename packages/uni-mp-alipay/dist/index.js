@@ -359,6 +359,7 @@ var baseApi = /*#__PURE__*/Object.freeze({
 // 不支持的 API 列表
 const todos = [
   'preloadPage',
+  'unPreloadPage',
   'loadSubPackage'
   // 'getRecorderManager',
   // 'getBackgroundAudioManager',
@@ -576,6 +577,20 @@ const protocols = { // 需要做转换的 API 列表
   getFileInfo: {
     args: {
       filePath: 'apFilePath'
+    }
+  },
+  compressImage: {
+    args (fromArgs) {
+      fromArgs.compressLevel = 4;
+      if (fromArgs && fromArgs.quality) {
+        fromArgs.compressLevel = Math.floor(fromArgs.quality / 26);
+      }
+      fromArgs.apFilePaths = [fromArgs.src];
+    },
+    returnValue (result) {
+      if (result.apFilePaths && result.apFilePaths.length) {
+        result.tempFilePath = result.apFilePaths[0];
+      }
     }
   },
   chooseVideo: {

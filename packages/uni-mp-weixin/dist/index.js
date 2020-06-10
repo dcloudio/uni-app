@@ -413,6 +413,7 @@ const protocols = {
 const todos = [
   'vibrate',
   'preloadPage',
+  'unPreloadPage',
   'loadSubPackage'
 ];
 const canIUses = [];
