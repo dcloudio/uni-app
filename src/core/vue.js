@@ -39,6 +39,6 @@ export default function initVue (Vue) {
     if (~conflictTags.indexOf(tag)) { // svg 部分标签名称与 uni 标签冲突
       return false
     }
-    return oldGetTagNamespace(tag) || false
+    return oldGetTagNamespace(tag)
   }
 }
