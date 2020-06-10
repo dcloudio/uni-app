@@ -30,6 +30,7 @@ module.exports = {
     filterTag: 'qjs'
   },
   validate (platformOptions, manifestJson) {
+    Object.assign(platformOptions, manifestJson['quickapp-webview'] || {}, platformOptions)
     if (!platformOptions.package) {
       console.warn('manifest.json->quickapp-webview 缺少 package 配置')
     }
