@@ -1,4 +1,4 @@
-const loadedSubPackages = []
+export const loadedSubPackages = []
 
 /**
  * 指定路由 ready 后，检查是否触发分包预加载
@@ -16,24 +16,26 @@ export function preloadSubPackages (route) {
   if (!packages.length) {
     return
   }
-  const network = options.network || 'wifi'
-  if (network === 'wifi') {
-    uni.getNetworkType({
-      success (res) {
-        if (process.env.NODE_ENV !== 'production') {
-          console.log('UNIAPP[preloadRule]:' + res.networkType + ':' + JSON.stringify(options))
-        }
-        if (res.networkType === 'wifi') {
-          loadSubPackages(options.packages)
-        }
-      }
-    })
-  } else {
-    if (process.env.NODE_ENV !== 'production') {
-      console.log('UNIAPP[preloadRule]:' + JSON.stringify(options))
-    }
-    loadSubPackages(options.packages)
-  }
+  loadSubPackages(options.packages)
+  // 暂不需要网络下载
+  // const network = options.network || 'wifi'
+  // if (network === 'wifi') {
+  //   uni.getNetworkType({
+  //     success (res) {
+  //       if (process.env.NODE_ENV !== 'production') {
+  //         console.log('UNIAPP[preloadRule]:' + res.networkType + ':' + JSON.stringify(options))
+  //       }
+  //       if (res.networkType === 'wifi') {
+  //         loadSubPackages(options.packages)
+  //       }
+  //     }
+  //   })
+  // } else {
+  //   if (process.env.NODE_ENV !== 'production') {
+  //     console.log('UNIAPP[preloadRule]:' + JSON.stringify(options))
+  //   }
+  //   loadSubPackages(options.packages)
+  // }
 }
 
 export function loadPage (route, callback) {
@@ -63,8 +65,9 @@ function loadSubPackage (root, callback) {
 const SUB_FILENAME = 'app-sub-service.js'
 
 function evaluateScriptFiles (files, callback) {
-  // TODO 有可能当前 instance 是非 app-service
-  weex.requireModule('plus').evalJSFiles(files, callback)
+  __uniConfig.onServiceReady(() => {
+    weex.requireModule('plus').evalJSFiles(files, callback)
+  })
 }
 
 function loadSubPackages (packages, callback) {
@@ -77,7 +80,7 @@ function loadSubPackages (packages, callback) {
     return root + '/' + SUB_FILENAME
   }), res => {
     if (process.env.NODE_ENV !== 'production') {
-      console.log('UNIAPP[loadSubPackages]:' + (Date.now() - startTime))
+      console.log('UNIAPP[loadSubPackages]:耗时(' + (Date.now() - startTime) + ')')
     }
     callback && callback(true)
   })

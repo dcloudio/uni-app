@@ -27,4 +27,5 @@ export function restoreGlobal (
     setInterval = newSetInterval
     clearInterval = newClearInterval
   }
+  __uniConfig.serviceReady = true
 }
