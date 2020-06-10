@@ -89,6 +89,16 @@ module.exports = {
   init () {
     // compatible with vue-cli-service lint
     process.env.UNI_PLATFORM = process.env.UNI_PLATFORM || 'h5'
+
+    // hack
+    if (
+      process.env.UNI_PLATFORM === 'quickapp-webview-huawei' ||
+      process.env.UNI_PLATFORM === 'quickapp-webview-union'
+    ) {
+      process.env.UNI_SUB_PLATFORM = process.env.UNI_PLATFORM
+      process.env.UNI_PLATFORM = 'quickapp-webview'
+    }
+
     const plugins = resolvePlugins()
     const plugin = plugins.find(plugin => plugin.name === process.env.UNI_PLATFORM)
     if (!plugin) {

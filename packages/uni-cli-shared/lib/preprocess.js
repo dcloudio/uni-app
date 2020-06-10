@@ -43,6 +43,16 @@ module.exports = function initPreprocess (name, platforms, userDefines = {}) {
     vueContext.APP = true
   }
 
+  if (name === 'quickapp-webview') {
+    vueContext.QUICKAPP_WEBVIEW_HUAWEI = true
+    vueContext.QUICKAPP_WEBVIEW_UNION = true
+    if (process.env.UNI_SUB_PLATFORM === 'quickapp-webview-huawei') {
+      vueContext.QUICKAPP_WEBVIEW_UNION = false
+    } else if (process.env.UNI_SUB_PLATFORM === 'quickapp-webview-union') {
+      vueContext.QUICKAPP_WEBVIEW_HUAWEI = false
+    }
+  }
+
   userDefineKeys.forEach(name => {
     if (userDefines[name]) {
       const key = normalize(name)
