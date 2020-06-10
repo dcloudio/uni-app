@@ -106,7 +106,7 @@ export function registerPage ({
     openType === 'reLaunch' ||
     (
       !__uniConfig.realEntryPagePath &&
-      pages.length === 0
+      getCurrentPages().length === 0 // redirectTo
     )
   ) {
     routeOptions.meta.isQuit = true
