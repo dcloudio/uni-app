@@ -45,7 +45,6 @@ export interface UniViewJSBridge {
      * 接收 Service 层事件(通常由 Service 层调用，并暴露至全局 UniViewJSBridge 对象中)
      * @param event
      * @param args
-     * @param pageId
      */
     subscribeHandler(event: string, args: any)
     /**
