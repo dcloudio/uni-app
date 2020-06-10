@@ -76,6 +76,9 @@ uni.redirectTo({
 
 关闭所有页面，打开到应用内的某个页面。
 
+**注意：**
+如果调用了 [uni.preloadPage(OBJECT)](https://uniapp.dcloud.net.cn/api/preload-page) 不会关闭，仅触发生命周期 `onHide`
+
 **OBJECT参数说明**
 
 |参数|类型|必填|说明|
@@ -107,6 +110,9 @@ Tips：
 #### uni.switchTab(OBJECT)
 
 跳转到 tabBar 页面，并关闭其他所有非 tabBar 页面。
+
+**注意：**
+如果调用了 [uni.preloadPage(OBJECT)](https://uniapp.dcloud.net.cn/api/preload-page) 不会关闭，仅触发生命周期 `onHide`
 
 **OBJECT参数说明**
 

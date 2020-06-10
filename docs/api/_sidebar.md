@@ -18,6 +18,7 @@
   * [uni.reLaunch](/api/router?id=relaunch)
   * [uni.switchTab](/api/router?id=switchtab)
   * [uni.navigateBack](/api/router?id=navigateback)
+  * [uni.preloadPage](/api/preload-page)
   * [窗口动画](/api/router?id=animation)
 * 数据缓存
   * [uni.setStorage](/api/storage/storage?id=setstorage)
