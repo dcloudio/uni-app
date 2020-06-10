@@ -5,9 +5,8 @@ import {
 const SUB_FILENAME = 'app-sub-service.js'
 
 function evaluateScriptFile (file, callback) {
-  setTimeout(() => {
-    callback()
-  }, 2000)
+  // TODO 有可能当前 instance 是非 app-service
+  weex.requireModule('plus').evalJSFiles([file], callback)
 }
 
 export function loadSubPackage ({

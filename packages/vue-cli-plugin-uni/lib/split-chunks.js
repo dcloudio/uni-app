@@ -4,13 +4,12 @@ const {
   normalizePath
 } = require('@dcloudio/uni-cli-shared')
 
-function createCacheGroups () {
+function createCacheGroups() {
   const cacheGroups = {}
   if (process.UNI_CONFUSION) { // 加密
     cacheGroups.confusion = {
-      minSize: 0,
-      minChunks: 1,
-      test: function (module) {
+      enforce: true,
+      test: function(module) {
         if (!module.resource) {
           return false
         }
@@ -26,9 +25,8 @@ function createCacheGroups () {
 
   process.env.UNI_OPT_SUBPACKAGES && Object.keys(process.UNI_SUBPACKAGES).forEach(root => {
     cacheGroups[root] = {
-      minSize: 0,
-      minChunks: 1,
-      test: function (module) {
+      enforce: true,
+      test: function(module) {
         if (!module.resource) {
           return false
         }
@@ -44,7 +42,7 @@ function createCacheGroups () {
   return cacheGroups
 }
 
-module.exports = function getSplitChunks () {
+module.exports = function getSplitChunks() {
   const {
     normalizePath
   } = require('@dcloudio/uni-cli-shared')
@@ -71,22 +69,22 @@ module.exports = function getSplitChunks () {
 
   if (!process.env.UNI_OPT_SUBPACKAGES) {
     return {
-      chunks (chunk) { // 防止 node_modules 内 vue 组件被 split
+      chunks(chunk) { // 防止 node_modules 内 vue 组件被 split
         return chunk.name.indexOf('node-modules') !== 0
       },
       cacheGroups: {
         default: false,
         vendors: false,
         commons: {
-          test (module) {
+          test(module) {
             if (module.type === 'css/mini-extract') {
               return false
             }
             if (module.resource && (
-              module.resource.indexOf('.vue') !== -1 ||
+                module.resource.indexOf('.vue') !== -1 ||
                 module.resource.indexOf('.nvue') !== -1 ||
                 normalizePath(module.resource).indexOf(mainPath) === 0 // main.js
-            )) {
+              )) {
               return false
             }
             return true
@@ -99,7 +97,7 @@ module.exports = function getSplitChunks () {
     }
   }
 
-  function baseTest (module) {
+  function baseTest(module) {
     if (module.type === 'css/mini-extract') {
       return false
     }
@@ -121,7 +119,7 @@ module.exports = function getSplitChunks () {
     default: false,
     vendors: false,
     commons: {
-      test (module, chunks) {
+      test(module, chunks) {
         if (!baseTest(module)) {
           return false
         }
@@ -146,7 +144,7 @@ module.exports = function getSplitChunks () {
     }
   }
 
-  const findSubPackages = function (chunks) {
+  const findSubPackages = function(chunks) {
     return chunks.reduce((pkgs, item) => {
       const name = normalizePath(item.name)
       const pkgRoot = subPackageRoots.find(root => name.indexOf(root) === 0)
@@ -155,16 +153,16 @@ module.exports = function getSplitChunks () {
     }, new Set())
   }
 
-  const hasMainPackage = function (chunks) {
+  const hasMainPackage = function(chunks) {
     return chunks.find(item => !subPackageRoots.find(root => item.name.indexOf(root) === 0))
   }
 
   const subPackageRoots = Object.keys(process.UNI_SUBPACKAGES).map(root => root + '/')
 
   Object.keys(process.UNI_SUBPACKAGES).forEach(root => {
-    (function (root) {
+    (function(root) {
       cacheGroups[root + '/commons'] = {
-        test (module, chunks) {
+        test(module, chunks) {
           if (!baseTest(module)) {
             return false
           }
@@ -189,7 +187,7 @@ module.exports = function getSplitChunks () {
   })
 
   return {
-    chunks (chunk) { // 防止 node_modules 内 vue 组件被 split
+    chunks(chunk) { // 防止 node_modules 内 vue 组件被 split
       return chunk.name.indexOf('node-modules') !== 0
     },
     cacheGroups

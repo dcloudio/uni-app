@@ -63,9 +63,8 @@ function loadSubPackage (root, callback) {
 const SUB_FILENAME = 'app-sub-service.js'
 
 function evaluateScriptFiles (files, callback) {
-  setTimeout(() => {
-    callback()
-  }, 2000)
+  // TODO 有可能当前 instance 是非 app-service
+  weex.requireModule('plus').evalJSFiles(files, callback)
 }
 
 function loadSubPackages (packages, callback) {
