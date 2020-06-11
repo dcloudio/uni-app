@@ -111,7 +111,7 @@ module.exports = function generateComponent (compilation) {
       }
     })
   }
-  if (process.env.UNI_FEATURE_OBSOLETE !== false) {
+  if (process.env.UNI_FEATURE_OBSOLETE !== 'false') {
     if (lastComponents.length) {
       for (const name of lastComponents) {
         if (!curComponents.includes(name)) {
