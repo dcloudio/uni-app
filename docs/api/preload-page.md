@@ -1,14 +1,12 @@
 #### uni.preloadPage(OBJECT)
 
-预加载页面
-
-HBuilderX 2.7.12+ 支持
+预加载页面，是一种性能优化技术。被预载的页面，在打开时速度更快。
 
 **平台差异说明**
 
 |App-nvue|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|√|√|x|x|x|x|x|
+|√(2.7.12+)|√(2.7.12+)|x|x|x|x|x|
 
 
 |属性|类型|必填|说明|
@@ -33,7 +31,7 @@ uni.preloadPage({url: "/pages/test/test"});
 ```
 
 注意事项
-1. App平台仅支持预加载 nvue 页面，执行页面预渲染，触发生命周期 `onLoad`，`onReady`，不触发 `onShow`
+1. App平台仅支持预加载 nvue 页面，执行页面预渲染，预载时触发生命周期 `onLoad`，`onReady`，不触发 `onShow`
 2. 打开新页面时，url 完全相同（包含参数）时，优先使用预加载页面，触发生命周期 onShow
 3. tabbar页面，仅支持预加载尚未显示过的页面，否者返回 fail，提示 already exists
 4. 同一时间，相同 url 仅 preloadPage 一次
@@ -49,6 +47,8 @@ uni.navigateTo({url: "/pages/test/test?a=b"}); // url不匹配，正常打开新
 ```
 
 #### uni.unPreloadPage(OBJECT)
+
+取消预载页面。
 
 1. 仅App-nvue支持
 2. 当预载页面未被打开时，使用 `unPreloadPage`时会销毁该页面，触发生命周期 `onUnload`
