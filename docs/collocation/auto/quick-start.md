@@ -37,12 +37,19 @@ $ vue create -p dcloudio/uni-preset-vue#alpha my-project
 ```
 
 已有 `cli` 工程
-1. 更新依赖包 `@dcloudio/*` >= `2.0.0-alpha-27920200605003`
+1. 更新依赖包 `@dcloudio/*` >= `2.0.0-alpha-27920200612001`
 2. 安装依赖包 `uni-automator`
 ```
 npm install uni-automator
 ```
-
+3. package.json script节点新增命令
+```
+"test:h5": "cross-env UNI_PLATFORM=h5 jest -i",
+"test:android": "cross-env UNI_PLATFORM=app-plus UNI_OS_NAME=android jest -i",
+"test:ios": "cross-env UNI_PLATFORM=app-plus UNI_OS_NAME=ios jest -i",
+"test:mp-weixin": "cross-env UNI_PLATFORM=mp-weixin jest -i",
+"test:mp-baidu": "cross-env UNI_PLATFORM=mp-baidu jest -i"
+```
 
 
 #### H5平台测试流程
