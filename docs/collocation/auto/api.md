@@ -1,4 +1,4 @@
-### uni-app自动化 API
+### uni-app自动化API
 
 
 ### Page
@@ -754,7 +754,7 @@ element.slideTo
 
 **平台差异**
 
-### program(全局对象)
+#### program(全局对象)
 
 |方法							|APP-NVUE	|APP-VUE|H5	|微信小程序	|百度小程序	|说明																																|
 |--								|--				|--			|--	|--					|--					|--																																	|
@@ -775,7 +775,7 @@ element.slideTo
 |evaluate					|x				|x			|x	|√					|x					|注入代码片段并返回执行结果																					|
 |exposeFunction		|x				|x			|x	|√					|x					|在全局暴露方法，供小程序侧调用测试脚本中的方法											|
 
-### Page
+#### Page
 
 |属性	|APP-NVUE	|APP-VUE|H5	|微信小程序	|百度小程序	|说明			|
 |--		|--				|--			|--	|--					|--					|--				|
@@ -793,7 +793,7 @@ element.slideTo
 |scrollTop	|√				|√			|√	|√					|√					|获取页面滚动位置						|
 |callMethod	|√				|√			|√	|√					|√					|调用页面指定方法						|
 
-### Element
+#### Element
 |属性		|APP-NVUE	|APP-VUE|H5	|微信小程序	|百度小程序	|说明					|
 |--			|--				|--			|--	|--					|--					|--						|
 |tagName|√				|√			|√	|√					|√					|标签名，小写	|
