@@ -1,22 +1,15 @@
 #### uni-app自动化
 
-自动化 SDK 为开发者提供了一套通过外部脚本操控uni-app的方案，从而实现uni-app自动化测试的目的。
+uni-app提供了一批API，这些API可以操控uni-app应用，包括运行、跳转页面、触发点击等，并可以获取页面元素状态、进行截图，从而实现对uni-app项目进行自动化测试的目的。
 
 #### 特性
-通过该 SDK，你可以做到以下事情：
+开发者可以利用API做以下事情：
 
-
-控制跳转到指定页面
-
-获取页面数据
-
-获取页面元素状态
-
-触发元素绑定事件
-
-调用 uni 对象上任意接口
-
-
+* 控制跳转到指定页面
+* 获取页面数据
+* 获取页面元素状态
+* 触发元素绑定事件
+* 调用 uni 对象上任意接口
 
 **平台差异说明**
 
@@ -25,8 +18,9 @@
 |√(ios仅支持模拟器)|√|√|x|x|x|x|
 
 
-目前仅 [cli](https://uniapp.dcloud.net.cn/quickstart?id=_2-通过vue-cli命令行) 工程支持
+目前仅 [cli](https://uniapp.dcloud.net.cn/quickstart?id=_2-通过vue-cli命令行) 工程支持。有利于持续集成。
 
+推荐使用方式：研发提交源码到版本库后，持续集成系统自动拉取源码，自动运行自动化测试。
 
 创建 `cli` 工程
 ```
@@ -35,6 +29,9 @@ $ npm install -g @vue/cli
 $ cd ... // 切换到工程保存目录
 $ vue create -p dcloudio/uni-preset-vue#alpha my-project
 ```
+
+如果之前是HBuilderX工程，则把HBuilderX工程内的文件（除 unpackage、node_modules 目录）拷贝至 vue-cli 工程的 src 目录。
+在 vue-cli 工程内重新安装 npm 依赖（如果之前使用了 npm 依赖的话）
 
 已有 `cli` 工程
 1. 更新依赖包 `@dcloudio/*` >= `2.0.0-alpha-27920200612001`
@@ -59,8 +56,8 @@ npm install uni-automator
 npm install puppeteer
 ```
 
-2. 编写测试代码，参考测试用例
-
+2. 根据API编写测试的js代码，参考测试用例
+API文档见：[https://uniapp.dcloud.io/collocation/auto/api](https://uniapp.dcloud.io/collocation/auto/api)
 
 3. 运行测试
 ```
