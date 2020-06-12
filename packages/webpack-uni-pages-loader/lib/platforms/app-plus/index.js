@@ -503,7 +503,7 @@ module.exports = function (pagesJson, userManifestJson) {
   }
 
   if (process.env.UNI_USING_V3 || process.env.UNI_USING_V3_NATIVE) {
-    if (process.env.UNI_USING_V3) {
+    if (process.env.UNI_USING_V3 && process.env.UNI_OPT_SUBPACKAGES) {
       appJson.subPackages = subPackages
     }
     return require('./index.v3')(appJson, manifestJson, {
