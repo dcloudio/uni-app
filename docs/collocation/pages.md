@@ -1012,6 +1012,8 @@ subPackages 节点接收一个数组，数组每一项都是应用的子包，�
 |packages|StringArray	|是|无|进入页面后预下载分包的 root 或 name。__APP__ 表示主包。|
 |network|String|否	|wifi|在指定网络下预下载，可选值为：all（不限网络）、wifi（仅wifi下预下载）|
 
+app的分包，同样支持preloadRule，但网络规则无效。
+
 # FAQ
 - Q：为什么在pages.json里配置小程序定位权限描述，无法编译到小程序端，运行后一直提示getLocation需要在app.json中声明
 - A：微信小程序的权限描述配置在manifest中，不在pages.json中，具体参考文档：[https://uniapp.dcloud.io/collocation/manifest?id=mp-weixin](https://uniapp.dcloud.io/collocation/manifest?id=mp-weixin)
