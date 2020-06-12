@@ -27,43 +27,40 @@
 
 目前仅 [cli](https://uniapp.dcloud.net.cn/quickstart?id=_2-通过vue-cli命令行) 工程支持
 
+
+创建 `cli` 工程
 ```
 # 全局安装vue-cli
 $ npm install -g @vue/cli
+$ cd ... // 切换到工程保存目录
+$ vue create -p dcloudio/uni-preset-vue#alpha my-project
 ```
+
+已有 `cli` 工程
+1. 更新依赖包 `@dcloudio/*` >= `2.0.0-alpha-27920200605003`
+2. 安装依赖包 `uni-automator`
+```
+npm install uni-automator
+```
+
 
 
 #### H5平台测试流程
 
-1. 创建项目
-```
-$ vue create -p dcloudio/uni-preset-vue#alpha my-project
-# 进入项目目录
-$ cd my-project
-```
-
-2. 安装依赖
+1. 工程目录下安装依赖
 ```
 npm install puppeteer
 ```
 
-3. 编译并启动调试服务
-```
-npm run dev:h5 -- --auto-port 9520
-```
-启动成功
-```
-  App running at:
-  - Local:   http://localhost:8080/h5/
-  - Network: http://192.168.x.x:8080/h5/
-```
+2. 编写测试代码，参考测试用例
 
-4. 运行测试(需要单独开启命令行)
+
+3. 运行测试
 ```
 npm run test:h5
 ```
 
-5. 测试结果
+4. 测试结果
 ```
 >> cross-env UNI_PLATFORM=h5 jest -i
 ...
@@ -73,7 +70,44 @@ Snapshots:   0 total
 Time:        14.995s, estimated 16s
 ```
 
-更多配置参考 `jest.config.js` 节点 `testEnvironmentOptions`
+更多配置参考 `jest.config.js`
+
+
+#### App-Android测试流程
+
+1. 配置全局 `adb` 环境变量
+
+2. 配置 `Hbuilder` 调试基座/自定义基座 `android_base.apk` 目录，参考 `jest.config.js`
+
+3. 创建 `cli` 工程/现有 `cli` 工程
+切换到工程目录，安装依赖包 `adbkit`
+```
+npm install adbkit
+```
+
+4. 编写测试代码，参考测试用例
+
+5. 运行测试
+```
+npm run test:android
+```
+
+
+#### App-iOS测试流程
+
+目前仅支持 iOS 模拟器
+
+1. 配置模拟器id，参考 `jest.config.js`
+
+2. 配置 `Hbuilder` 调试基座/自定义基座 `android_base.apk` 目录，参考 `jest.config.js`
+
+3. 编写测试代码，参考测试用例
+
+4. 运行测试
+```
+npm run test:ios
+```
+
 
 
 #### 微信小程序测试流程
@@ -93,6 +127,7 @@ Tests:       4 passed, 4 total
 Snapshots:   0 total
 Time:        14.995s, estimated 16s
 ```
+
 
 
 #### 测试示例
@@ -168,12 +203,7 @@ describe('pages/tabBar/component/component.nvue', () => {
 })
 ```
 
-4. 编译并开启调试服务
-```
-npm run dev:h5 -- --auto-port 9520
-```
-
-5. 运行测试(需要单独开启命令行)
+4. 运行测试
 ```
 npm run test:h5
 ```
@@ -206,6 +236,16 @@ module.exports = {
       options: {
         headless: false // 配置是否显示 puppeteer 测试窗口
       }
+    },
+    "app-plus": {
+      android: {
+        executablePath: "HBuilderX/plugins/launcher/base/android_base.apk" // apk 目录
+      },
+      ios: {
+        // uuid 必须配置，目前仅支持模拟器，可以（xcrun simctl list）查看要使用的模拟器 uuid
+        id: "",
+        executablePath: "HBuilderX/plugins/launcher/base/iPhone_base.ipa" // ipa 目录
+      }
     }
   },
   testTimeout: 15000,
@@ -222,9 +262,6 @@ module.exports = {
 ```
 
 
-#### 真机自动化
-
-
 
 #### 常用示例
 
@@ -234,14 +271,14 @@ module.exports = {
 
 1. 如果页面涉及到分包加载问题，`reLaunch` 获取的页面路径可能会出现问题 ，解决方案如下 ：
 ```javascript
-// 重新reLaunch至首页，并获取首页page对象（其中 program 是uni-automator自动注入的全局对象）
+// 重新 reLaunch至首页，并获取 page 对象（其中 program 是 uni-automator 自动注入的全局对象）
 page = await program.reLaunch('/pages/extUI/calendar/calendar')
 // 微信小程序如果是分包页面，需要延迟大概 7s 以上，保证可以正确获取page对象
 await page.waitFor(7000)
 page = await program.currentPage()
 ```
 
-2. 微信小程序 element 不能跨组件选择元素，首先要先获取到当前自组件对象，在往下继续查找
+2. 微信小程序 element 不能跨组件选择元素，首先要先获取当前组件，在继续查找
 
 ```html
 <uni-tag>
@@ -259,5 +296,7 @@ await tag.$('.test')
 ```
 
 3. 微信小程序不能使用父子选择器
-4. 百度小程序选择元素 必须 有事件的元素才能被选中，否则提示元素不存在
+4. 百度小程序选择元素必须有事件的元素才能被选中，否则提示元素不存在
 5. 分包中的页面，打开之后要延迟时间长一点，否者不能正确获取到页面信息
+
+
