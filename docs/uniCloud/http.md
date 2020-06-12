@@ -37,6 +37,10 @@
 
 如需要更高的QPS支持，请发邮件到service@dcloud.io申请。
 
+**关于证书内容与私钥**
+
+申请证书时通常会有下载选项，下载到证书之后找到对应Nginx的证书（包含一个crt文件和一个key文件），以文本形式打开crt文件即可看到证书内容，同样的key文件对应着私钥。
+
 ### 通过 HTTP URL 方式访问云函数
 
 - 方式一：通过`https://${spaceId}.service.tcloudbase.com/${path}`直接访问函数，其中`${spaceId}`是服务空间 ID，`${path}`是配置的函数触发路径。
