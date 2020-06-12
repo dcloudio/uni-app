@@ -143,9 +143,11 @@ splash（启动封面）是App必然存在的、不可取消的。
 
 #### optimization@app-vue-optimization
 
-对App-vue的优化配置
+小程序的分包，除了联网分段下载外，还可以减轻启动时加载的js数量，可以提升启动速度。
 
-HBuilderX 2.7.12+ 支持
+从uni-app 2.7.12+ 开始，App-vue平台也兼容了小程序的分包配置，但默认并不开启。
+
+在manifest配置以下节点，可以在App端启动分包。
 
 |属性|类型|说明|
 |:-|:-|:-|
@@ -159,7 +161,14 @@ HBuilderX 2.7.12+ 支持
 }
 ```
 
-注: 开启分包后，每个分包单独编译成一个js文件(都包含在app内，不会联网下载)，减小启动加载文件大小，提升启动速度
+在manifest中启动分包后，需要在pages.json中配置具体的分包规则，与小程序的配置相同，详见：[https://uniapp.dcloud.io/collocation/pages?id=subpackages](https://uniapp.dcloud.io/collocation/pages?id=subpackages)
+
+也就是一旦在pages.json里配置分包，小程序一定生效，而app是否生效，取决于manifest里是否开启。
+
+注意: 
+* App开启分包后，每个分包单独编译成一个js文件(都包含在app内，不会联网下载)，当App首页是vue时，可减小启动加载文件大小，提升启动速度。
+* 首页是nvue时，分包不会提升启动速度，nvue本身启动速度就快于vue，也快于开启分包后的首页为vue的应用。如果追求极致启动速度，还是应该使用nvue做首页并在manifest开启fast模式。
+* App页面较少时，分包对启动速度的优化不明显。
 
 
 #### nvue@nvue
