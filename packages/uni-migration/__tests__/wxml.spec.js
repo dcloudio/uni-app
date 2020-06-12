@@ -15,6 +15,11 @@ describe('wxml:compiler', () => {
       `<uni-transition bind:click="click" bindtouchstart="startDrag" catchtouchmove="{{ catchMove ? 'noop' : '' }}"/>`,
       `<uni-shadow-root><uni-transition @click="click" @touchstart.native="startDrag" @touchmove.native.stop.prevent="_$self[(catchMove ? 'noop' : '')||'_$noop']($event)"></uni-transition></uni-shadow-root>`
     )
+    assertCodegen(
+      '<template name="toolbar"><view bindtap="emit"></view></template>',
+      // `<view @click="_$self.$parent[(emit)||'_$noop']($event)"></view>`
+      `<uni-shadow-root><template v-if="wxTemplateName === 'toolbar'"><view @click="_$self.$parent[('emit')]($event)"></view></template></uni-shadow-root>`
+    )
   })
   it('generate class', () => {
     assertCodegen(
@@ -62,6 +67,28 @@ describe('wxml:compiler', () => {
     assertCodegen(
       '<slot></slot>',
       `<uni-shadow-root><slot></slot></uni-shadow-root>`
+    )
+
+    assertCodegen(
+      `<import src="./toolbar.wxml" /><view></view>
+<wxs></wxs>`,
+      `<uni-shadow-root><view></view></uni-shadow-root>`
+    )
+
+    assertCodegen(
+      '<view><template is="toolbar" data="{{ showToolbar, cancelButtonText, title, confirmButtonText }}"></template></view>',
+      `<uni-shadow-root><view><toolbar v-bind="{showToolbar, cancelButtonText, title, confirmButtonText}" wx-template-name="toolbar"></toolbar></view></uni-shadow-root>`
+    )
+
+    assertCodegen(
+      '<template name="toolbar"><view></view></template>',
+      // `<view></view>`
+      `<uni-shadow-root><template v-if="wxTemplateName === 'toolbar'"><view></view></template></uni-shadow-root>`
+    )
+
+    assertCodegen(
+      '<template name="toolbar1"><view></view></template><template name="toolbar2"><view></view></template>',
+      `<uni-shadow-root><template v-if="wxTemplateName === 'toolbar1'"><view></view></template><template v-if="wxTemplateName === 'toolbar2'"><view></view></template></uni-shadow-root>`
     )
   })
 })
