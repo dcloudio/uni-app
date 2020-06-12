@@ -92,6 +92,23 @@ npm install adbkit
 npm run test:android
 ```
 
+**注意**
+
+在 windows 系统下因 adb 同步问题，提供临时方案
+
+1-4 同上
+
+5.1 编译工程
+```
+npm run dev:app-plus  -- --auto-port 9520
+```
+将编译后的目录 `dist/dev/app-plus` 拖到 `HBuilderX` 中，运行到设备
+
+5.2 运行自动化测试
+```
+npm run test:android
+```
+
 
 #### App-iOS测试流程
 
@@ -176,7 +193,7 @@ describe('pages/tabBar/component/component.nvue', () => {
 
     it('.uni-panel', async () => {
       const lists = await page.$$('.uni-panel')
-      expect(lists.length).toBe(8)
+      expect(lists.length).toBe(9)
     })
 
     it('.uni-panel action', async () => {
@@ -224,6 +241,28 @@ Time:        14.995s, estimated 16s
 ```
 
 
+
+##### 屏幕截图示例
+```
+describe('pages/API/set-navigation-bar-title/set-navigation-bar-title.vue', () => {
+    let page
+    beforeAll(async () => {
+        // 重新reLaunch至首页，并获取首页page对象（其中 program 是uni-automator自动注入的全局对象）
+        page = await program.reLaunch('/pages/API/set-navigation-bar-title/set-navigation-bar-title')
+        await page.waitFor(3000)
+    })
+
+    it('.uni-hello-text', async () => {
+      var image = await program.screenshot({
+        path: "set-navigation-bar-title.png"  // 默认项目根目录
+      })
+      console.log(image)
+    })
+})
+```
+
+
+
 #### jest.config.js
 ```
 module.exports = {
@@ -263,10 +302,6 @@ module.exports = {
 
 
 
-#### 常用示例
-
-
-
 **注意事项**
 
 1. 如果页面涉及到分包加载问题，`reLaunch` 获取的页面路径可能会出现问题 ，解决方案如下 ：
@@ -295,7 +330,7 @@ let tag = await page.$('uni-tag')
 await tag.$('.test')
 ```
 
-3. 微信小程序不能使用父子选择器
+3. 微信小程序暂不支持父子选择器
 4. 百度小程序选择元素必须有事件的元素才能被选中，否则提示元素不存在
 5. 分包中的页面，打开之后要延迟时间长一点，否者不能正确获取到页面信息
 
