@@ -295,7 +295,6 @@ npm run build:%PLATFORM%
 HBuilderX 2.7.12+ alpha 版支持
 **注意**
 - 目前仅vivo oppo支持
-已知问题
 - 暂不支持 canvas 组件
 
 ### 运行并发布快应用-华为@quickapp-webview-huawei
@@ -304,7 +303,6 @@ HBuilderX 2.7.10+ alpha 版支持
 注意事项
 - Huawei QuickApp IDE 最低版本 2.5.2
 - 最小平台版本支持需要 1070
-已知问题
 - 暂不支持 `uni.login(OBJECT)`
 - 页面有滚动条时 canvas 组件不会跟随页面滚动
 - rich-text 组件某些情况下显示异常
