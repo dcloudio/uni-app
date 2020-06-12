@@ -65,6 +65,9 @@ function updateEleId (el, it, state) {
   el.ifConditions && el.ifConditions.forEach((con, index) => {
     index !== 0 && updateEleId(con.block, it, state)
   })
+  el.scopedSlots && Object.values(el.scopedSlots).forEach((slot, index) => {
+    updateEleId(slot, it, state)
+  })
 }
 
 function getBindingAttr (el, name) {
@@ -119,6 +122,9 @@ function getNewId (id, it) {
 function updateScopedSlotEleId (el, state) {
   // TODO 暂不考虑 scopedSlot 嵌套情况
   if (el.slotScope) {
+    const getNewId = function (id, it) {
+      return Number.isInteger(id) ? `("${id}-"+${it})` : `(${id}+"-"+${it})`
+    }
     const updateEleId = function (el) {
       if (el.type !== 1) {
         return
