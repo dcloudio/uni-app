@@ -280,7 +280,9 @@ npm run build:%PLATFORM%
 |mp-toutiao|字节跳动小程序|
 |mp-qq|qq 小程序|
 |mp-360|360 小程序|
-|quickapp-webview|快应用|
+|quickapp-webview|快应用通用|
+|quickapp-webview-union|快应用联盟|
+|quickapp-webview-huawei|快应用华为|
 
 可以自定义更多条件编译平台，比如钉钉小程序，参考[package.json文档](https://uniapp.dcloud.io/collocation/package)。
 
@@ -293,6 +295,8 @@ npm run build:%PLATFORM%
 HBuilderX 2.7.12+ alpha 版支持
 **注意**
 - 目前仅vivo oppo支持
+已知问题
+- 暂不支持 canvas 组件
 
 ### 运行并发布快应用-华为@quickapp-webview-huawei
 HBuilderX 2.7.10+ alpha 版支持
@@ -300,7 +304,10 @@ HBuilderX 2.7.10+ alpha 版支持
 注意事项
 - Huawei QuickApp IDE 最低版本 2.5.2
 - 最小平台版本支持需要 1070
-
+已知问题
+- 暂不支持 `uni.login(OBJECT)`
+- 页面有滚动条时 canvas 组件不会跟随页面滚动
+- rich-text 组件某些情况下显示异常
 
 **其他：**
 
