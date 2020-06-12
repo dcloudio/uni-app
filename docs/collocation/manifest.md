@@ -141,6 +141,24 @@ splash（启动封面）是App必然存在的、不可取消的。
 |speech|Object|语音识别配置，支持讯飞语音、百度语音，[详见](http://ask.dcloud.net.cn/article/35059)，在uni-app中只用 [plus.speech](http://www.html5plus.org/doc/zh_cn/speech.html) 进行调用。|
 |maps|Object|原生地图配置，目前仅支持 [高德地图](http://lbs.amap.com/)，申请方式可参考：[地图插件配置](http://ask.dcloud.net.cn/article/29)。|
 
+#### optimization@app-vue-optimization
+
+对App-vue的优化配置
+
+HBuilderX 2.7.12+ 支持
+
+|属性|类型|说明|
+|:-|:-|:-|
+|subPackages|Boolean|是否开启分包优化|
+
+```
+"app-plus": {
+  "optimization": {
+    "subPackages": true
+  }
+}
+```
+
 
 #### nvue@nvue
 `nvue` 页面布局初始设置
@@ -505,6 +523,9 @@ mp-qq只支持自定义组件模式，不存在usingComponents配置
 	// app-plus 节点是 App 特有配置，推荐在 HBuilderX 的 manifest.json 可视化界面操作完成配置。
 	"app-plus": {
 		// HBuilderX->manifest.json->模块权限配置
+    "optimization": {
+      "subPackages": true // HBuilderX 2.7.12+ 支持
+    },
 		"modules": {
 			"Contacts": {},
 			"Fingerprint": {},
