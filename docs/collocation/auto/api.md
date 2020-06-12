@@ -1,6 +1,3 @@
-### uni-app自动化API
-
-
 ### Page
 
 Page 模块提供了控制页面的方法。
