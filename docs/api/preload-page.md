@@ -46,6 +46,8 @@ uni.navigateTo({url: "/pages/test/test"}); // url匹配，跳转预加载页面�
 uni.navigateTo({url: "/pages/test/test?a=b"}); // url不匹配，正常打开新页面
 ```
 
+HBuilderX 2.7.12+的hello uni-app，在navigator示例和uni ui的日历示例中增加了页面预载示例。
+
 #### uni.unPreloadPage(OBJECT)
 
 取消预载页面。
