@@ -202,7 +202,7 @@ HBuilderX 还提供了快捷运行菜单，可以按数字快速选择要运行�
 
 **发布为快应用联盟：**
 1. 入驻快应用联盟，参考：[快应用联盟教程](https://www.quickapp.cn/)。
-2. 在HBuilderX中顶部菜单依次点击 "发行" => "快应用-华为"，即可在 ``/unpackage/dist/build/quickapp-webview`` 生成快应用联盟项目代码。
+2. 在HBuilderX中顶部菜单依次点击 "发行" => "快应用联盟"，即可在 ``/unpackage/dist/build/quickapp-webview`` 生成快应用联盟项目代码。
 <div align=center>
   <img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/uni-app-run-release-quickapp-webview.png"/>
 </div>
