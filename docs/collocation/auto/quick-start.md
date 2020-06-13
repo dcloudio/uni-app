@@ -265,6 +265,10 @@ describe('pages/API/set-navigation-bar-title/set-navigation-bar-title.vue', () =
 })
 ```
 
+更多测试示例见： hello uni-app
+
+GitHub： [https://github.com/dcloudio/hello-uniapp](https://github.com/dcloudio/hello-uniapp)
+
 
 
 #### jest.config.js
