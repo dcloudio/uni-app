@@ -60,6 +60,8 @@ npm install uni-automator
 ```
 npm install puppeteer
 ```
+注意： 从v3.0.0开始，`Puppeteer` 开始依赖于Node 10.18.1+
+
 
 2. 根据API编写测试的js代码，参考测试用例
 API文档见：[https://uniapp.dcloud.io/collocation/auto/api](https://uniapp.dcloud.io/collocation/auto/api)
