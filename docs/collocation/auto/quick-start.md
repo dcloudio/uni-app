@@ -2,6 +2,8 @@
 
 uni-app提供了一批API，这些API可以操控uni-app应用，包括运行、跳转页面、触发点击等，并可以获取页面元素状态、进行截图，从而实现对uni-app项目进行自动化测试的目的。
 
+本功能使用到了业内常见的测试库如jest（MIT协议）。
+
 #### 特性
 开发者可以利用API做以下事情：
 
@@ -13,9 +15,9 @@ uni-app提供了一批API，这些API可以操控uni-app应用，包括运行、
 
 **平台差异说明**
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|√(ios仅支持模拟器)|√|√|x|x|x|x|
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|快应用|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|√(ios仅支持模拟器)|√|√|x|x|x|x|x|
 
 
 目前仅 [cli](https://uniapp.dcloud.net.cn/quickstart?id=_2-通过vue-cli命令行) 工程支持。有利于持续集成。
@@ -33,6 +35,8 @@ $ vue create -p dcloudio/uni-preset-vue#alpha my-project
 如果之前是HBuilderX工程，则把HBuilderX工程内的文件（除 unpackage、node_modules 目录）拷贝至 vue-cli 工程的 src 目录。
 在 vue-cli 工程内重新安装 npm 依赖（如果之前使用了 npm 依赖的话）
 
+cli创建项目时若选择`hello uni-app`模板，可看到其中已经自带部分测试例。
+
 已有 `cli` 工程
 1. 更新依赖包 `@dcloudio/*` >= `2.0.0-alpha-27920200612001`
 2. 安装依赖包 `uni-automator`
@@ -48,10 +52,9 @@ npm install uni-automator
 "test:mp-baidu": "cross-env UNI_PLATFORM=mp-baidu jest -i"
 ```
 
-
 #### H5平台测试流程
 
-1. 工程目录下安装依赖
+1. 进入工程目录，安装依赖
 ```
 npm install puppeteer
 ```
@@ -74,7 +77,7 @@ Snapshots:   0 total
 Time:        14.995s, estimated 16s
 ```
 
-更多配置参考 `jest.config.js`
+更多配置参考 [jest.config.js](?id=jestconfigjs)
 
 
 #### App-Android测试流程
@@ -98,7 +101,7 @@ npm run test:android
 
 **注意**
 
-在 windows 系统下因 adb 同步问题，提供临时方案
+mac电脑通过上述步骤即可。但在 windows 系统下因 adb 同步问题，需要临时方案处理，见下：
 
 1-4 同上
 
@@ -116,7 +119,7 @@ npm run test:android
 
 #### App-iOS测试流程
 
-目前仅支持 iOS 模拟器
+目前仅支持 iOS 模拟器（需要mac电脑安装xcode）
 
 1. 配置模拟器id，参考 `jest.config.js`
 
@@ -272,6 +275,7 @@ GitHub： [https://github.com/dcloudio/hello-uniapp](https://github.com/dcloudio
 
 
 #### jest.config.js
+
 ```
 module.exports = {
   globalTeardown: '@dcloudio/uni-automator/dist/teardown.js',
