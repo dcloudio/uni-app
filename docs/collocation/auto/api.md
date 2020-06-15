@@ -829,8 +829,8 @@ element.slideTo
 
 #### 测试平台判断
 ```
-if (process.env.__PLATFORM__ === "h5") {}
-if (process.env.__PLATFORM__ === "app-plus") {}
-if (process.env.__PLATFORM__ === "mp-weixin") {}
-if (process.env.__PLATFORM__ === "mp-baidu") {}
+if (process.env.UNI_PLATFORM === "h5") {}
+if (process.env.UNI_PLATFORM === "app-plus") {}
+if (process.env.UNI_PLATFORM === "mp-weixin") {}
+if (process.env.UNI_PLATFORM === "mp-baidu") {}
 ```

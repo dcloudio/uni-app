@@ -41,9 +41,9 @@ cli创建项目时若选择`hello uni-app`模板，可看到其中已经自带�
 
 已有 `cli` 工程
 1. 更新依赖包 `@dcloudio/*` >= `2.0.0-alpha-27920200612001`
-2. 安装依赖包 `uni-automator`
+2. 安装依赖包 `@dcloudio/uni-automator`
 ```
-npm install uni-automator
+npm install @dcloudio/uni-automator --save-dev
 ```
 3. package.json script节点新增命令
 ```
@@ -58,7 +58,7 @@ npm install uni-automator
 
 1. 进入工程目录，安装依赖
 ```
-npm install puppeteer
+npm install puppeteer --save-dev
 ```
 注意： 从v3.0.0开始，`Puppeteer` 开始依赖于Node 10.18.1+
 
@@ -93,7 +93,7 @@ Time:        14.995s, estimated 16s
 3. 创建 `cli` 工程/现有 `cli` 工程
 切换到工程目录，安装依赖包 `adbkit`
 ```
-npm install adbkit
+npm install adbkit --save-dev
 ```
 
 4. 编写测试代码，参考测试用例
@@ -299,7 +299,7 @@ module.exports = {
       ios: {
         // uuid 必须配置，目前仅支持模拟器，可以（xcrun simctl list）查看要使用的模拟器 uuid
         id: "",
-        executablePath: "HBuilderX/plugins/launcher/base/iPhone_base.ipa" // ipa 目录
+        executablePath: "HBuilderX/plugins/launcher/base/Pandora_simulator.ipa" // ipa 目录
       }
     }
   },
