@@ -425,9 +425,11 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 
 #### 创业公司
 
-**波比英语课堂：**幼儿英语启蒙，培养国际宝宝。[App、小程序通用链接](http://m3w.cn/bbyykt)
-
 **Crimaster犯罪大师：**火爆的全球推理侦探专属社区。[Android](https://android.myapp.com/myapp/detail.htm?apkName=com.ultron.crimaster)、[iOS](https://apps.apple.com/cn/app/crimaster%E7%8A%AF%E7%BD%AA%E5%A4%A7%E5%B8%88/id1501701702)
+
+**仓鼠团：** 囤好货到仓鼠,仓鼠团您身边的购物助手。[App通用链接](http://m3w.cn/cst)
+
+**波比英语课堂：**幼儿英语启蒙，培养国际宝宝。[App、小程序通用链接](http://m3w.cn/bbyykt)
 
 **桂聘：**广西区域招聘。[Android和iOS](http://www.guipin.com/jihui/)
 
