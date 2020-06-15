@@ -44,7 +44,7 @@ module.exports = {
     return copyOptions
   },
   chainWebpack (config, vueOptions) {
-    const isAppService = !!vueOptions.pluginOptions['uni-app-plus'].service
+    const isAppService = vueOptions.pluginOptions && !!vueOptions.pluginOptions['uni-app-plus'].service
     if (isAppService) {
       const subPackages = Object.keys(process.UNI_SUBPACKAGES)
       if (process.env.UNI_OPT_SUBPACKAGES && subPackages.length) {
