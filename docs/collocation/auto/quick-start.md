@@ -158,7 +158,7 @@ $ cd my-hello-uni-app
 npm install puppeteer
 ```
 
-3. 创建测试文件 `src/__tests__/pages/tabBar/component/component.test.js`，复制下面代码
+3. 创建测试文件 `src/pages/tabBar/component/component.test.js`，复制下面代码
 ```
 describe('pages/tabBar/component/component.nvue', () => {
     let page
@@ -223,7 +223,7 @@ npm run test:h5
 5. 测试结果
 ```
 > cross-env UNI_PLATFORM=h5 jest -i
- PASS  src/__tests__/pages/tabBar/component/component.test.js (14.789s)
+ PASS  src/pages/tabBar/component/component.test.js (14.789s)
   pages/tabBar/component/component.nvue
     √ u-link (8ms)
     √ 视图容器 (518ms)
