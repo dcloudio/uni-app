@@ -22,7 +22,7 @@ DCloud的盈利方式在帮助开发者进行流量变现（uni-AD）和提供�
 
 下图是```uni-app```产品功能框架图，```uni-app```在保持uni规范跨平台的前提下，还可实现每个平台特有的平台能力(如微信小程序平台，可继续调用微信卡劵等微信特有业务API)。
 
-![](//img-cdn-qiniu.dcloud.net.cn/uniapp/doc/uni1222.png)
+![](//img.cdn.aliyun.dcloud.net.cn/uni-app/doc/uni-app-frame-0310.png)
 
 在做小程序时，小程序所有的api都可以使用；而输出到App时，原生渲染引擎、原生sdk集成和混写都支持，使得原生的所有api都可以使用。
 
