@@ -40,7 +40,7 @@ $ vue create -p dcloudio/uni-preset-vue#alpha my-project
 cli创建项目时若选择`hello uni-app`模板，可看到其中已经自带部分测试例。
 
 已有 `cli` 工程
-1. 更新依赖包 `@dcloudio/*` >= `2.0.0-alpha-27920200612001`
+1. 更新依赖包 `@dcloudio/*` >= `2.0.0-alpha-27920200613002`
 2. 安装依赖包 `@dcloudio/uni-automator`
 ```
 npm install @dcloudio/uni-automator --save-dev
@@ -103,23 +103,6 @@ npm install adbkit --save-dev
 npm run test:android
 ```
 
-**注意**
-
-mac电脑通过上述步骤即可。但在 windows 系统下因 adb 同步问题，需要临时方案处理，见下：
-
-1-4 同上
-
-5.1 编译工程
-```
-npm run dev:app-plus  -- --auto-port 9520
-```
-将编译后的目录 `dist/dev/app-plus` 拖到 `HBuilderX` 中，运行到设备
-
-5.2 运行自动化测试
-```
-npm run test:android
-```
-
 
 #### App-iOS测试流程
 
@@ -127,7 +110,7 @@ npm run test:android
 
 1. 配置模拟器id，参考 `jest.config.js`
 
-2. 配置 `Hbuilder` 调试基座/自定义基座 `android_base.apk` 目录，参考 `jest.config.js`
+2. 配置 `Hbuilder` 调试基座/自定义基座 `Pandora_simulator.ipa` 目录，参考 `jest.config.js`
 
 3. 编写测试代码，参考测试用例
 
@@ -292,7 +275,7 @@ module.exports = {
         headless: false // 配置是否显示 puppeteer 测试窗口
       }
     },
-    "app-plus": {
+    "app-plus": { // 需要安装 HBuilderX
       android: {
         executablePath: "HBuilderX/plugins/launcher/base/android_base.apk" // apk 目录
       },
@@ -310,7 +293,7 @@ module.exports = {
   watchPathIgnorePatterns: ['/node_modules/', '/dist/', '/.git/'],
   moduleFileExtensions: ['js', 'json'],
   rootDir: __dirname,
-  testMatch: ['<rootDir>/src/__tests__/**/*spec.[jt]s?(x)'],
+  testMatch: ['<rootDir>/src/__tests__/**/*spec.[jt]s?(x)'], // 测试文件目录
   testPathIgnorePatterns: ['/node_modules/']
 }
 
