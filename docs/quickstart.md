@@ -293,6 +293,7 @@ npm run build:%PLATFORM%
 
 ### 运行并发布快应用联盟@quickapp-webview
 HBuilderX 2.7.12+ alpha 版支持
+
 **注意**
 - 目前仅vivo oppo支持
 - 暂不支持 canvas 组件
