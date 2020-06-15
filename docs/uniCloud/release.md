@@ -1,5 +1,12 @@
 # uniCloud 更新日志
 ======================================
+#### 2020-06-13
+  + 阿里云 新增 前端网站部署功能 [详情](https://uniapp.dcloud.io/uniCloud/hosting)
+
+#### 2020-06-10
+  + 阿里云 调整 云函数运行超时时间上限可设置为600秒，仅定时触发支持60秒以上的超时时间
+  + 腾讯云 新增 前端网站部署功能 [详情](https://uniapp.dcloud.io/uniCloud/hosting)
+
 #### 2020-06-04
   + 腾讯云 新增 云数据库支持批量插入数据 [详情](https://uniapp.dcloud.io/uniCloud/cf-database?id=add)
 
