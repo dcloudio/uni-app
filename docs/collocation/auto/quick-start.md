@@ -65,6 +65,7 @@ npm install puppeteer --save-dev
 
 2. 根据API编写测试的js代码，参考测试用例
 API文档见：[https://uniapp.dcloud.io/collocation/auto/api](https://uniapp.dcloud.io/collocation/auto/api)
+测试文件目录配置见 [jest.config.js](?id=jestconfigjs)
 
 3. 运行测试
 ```
@@ -157,7 +158,7 @@ $ cd my-hello-uni-app
 npm install puppeteer
 ```
 
-3. 创建测试文件 `src/pages/tabBar/component/component.test.js`，复制下面代码
+3. 创建测试文件 `src/__tests__/pages/tabBar/component/component.test.js`，复制下面代码
 ```
 describe('pages/tabBar/component/component.nvue', () => {
     let page
@@ -222,7 +223,7 @@ npm run test:h5
 5. 测试结果
 ```
 > cross-env UNI_PLATFORM=h5 jest -i
- PASS  src/pages/tabBar/component/component.test.js (14.789s)
+ PASS  src/__tests__/pages/tabBar/component/component.test.js (14.789s)
   pages/tabBar/component/component.nvue
     √ u-link (8ms)
     √ 视图容器 (518ms)
@@ -293,7 +294,7 @@ module.exports = {
   watchPathIgnorePatterns: ['/node_modules/', '/dist/', '/.git/'],
   moduleFileExtensions: ['js', 'json'],
   rootDir: __dirname,
-  testMatch: ['<rootDir>/src/__tests__/**/*spec.[jt]s?(x)'], // 测试文件目录
+  testMatch: ['<rootDir>/src/**/*test.[jt]s?(x)'], // 测试文件目录
   testPathIgnorePatterns: ['/node_modules/']
 }
 
