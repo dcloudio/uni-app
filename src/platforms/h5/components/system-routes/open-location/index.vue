@@ -47,14 +47,8 @@ export default {
       scale,
       name,
       address,
-      src: '',
+      src: latitude && longitude ? `${poimarkerSrc}?type=0&marker=coord:${latitude},${longitude};title:${name};addr:${address};&key=${key}&referer=${referer}` : '',
       isPoimarkerSrc: false
-    }
-  },
-  mounted () {
-    if (this.latitude && this.longitude) {
-      this.src =
-					`${poimarkerSrc}?type=0&marker=coord:${this.latitude},${this.longitude};title:${this.name};addr:${this.address};&key=${key}&referer=${referer}`
     }
   },
   methods: {
