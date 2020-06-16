@@ -478,12 +478,16 @@ module.exports = function (pagesJson, userManifestJson) {
 
   manifest.content = manifestJson
 
+  const subPackages = []
   // 分包合并
   if (appJson.subPackages && appJson.subPackages.length) {
     appJson.subPackages.forEach(subPackage => {
       if (subPackage.pages && subPackage.pages.length) {
         subPackage.pages.forEach(page => {
           appJson.pages.push(normalizePath(path.join(subPackage.root, page)))
+        })
+        subPackages.push({
+          root: subPackage.root
         })
       }
     })
@@ -499,6 +503,9 @@ module.exports = function (pagesJson, userManifestJson) {
   }
 
   if (process.env.UNI_USING_V3 || process.env.UNI_USING_V3_NATIVE) {
+    if (process.env.UNI_USING_V3 && process.env.UNI_OPT_SUBPACKAGES) {
+      appJson.subPackages = subPackages
+    }
     return require('./index.v3')(appJson, manifestJson, {
       manifest,
       pagesJson,

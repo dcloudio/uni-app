@@ -22,6 +22,7 @@
         :type="inputType"
         :maxlength="maxlength"
         :step="step"
+        :autofocus="focus"
         class="uni-input-input"
         autocomplete="off"
         @focus="_onFocus"
@@ -118,8 +119,8 @@ export default {
     }
   },
   watch: {
-    focus (value) {
-      value && this._focusInput()
+    focus (val) {
+      this.$refs.input && this.$refs.input[val ? 'focus' : 'blur']()
     },
     maxlength (value) {
       const realValue = this.valueSync.slice(0, parseInt(value, 10))
@@ -154,8 +155,6 @@ export default {
     }
 
     this.initKeyboard(this.$refs.input)
-
-    this.focus && this._focusInput()
   },
   beforeDestroy () {
     this.$dispatch('Form', 'uni-form-group-update', {
@@ -211,16 +210,6 @@ export default {
       this.$trigger('blur', $event, {
         value: $event.target.value
       })
-    },
-    _focusInput () {
-      setTimeout(() => {
-        this.$refs.input.focus()
-      }, 350)
-    },
-    _blurInput () {
-      setTimeout(() => {
-        this.$refs.input.blur()
-      }, 350)
     },
     _onComposition ($event) {
       if ($event.type === 'compositionstart') {

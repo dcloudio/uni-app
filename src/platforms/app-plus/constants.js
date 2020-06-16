@@ -1,3 +1,5 @@
+export const VD_SYNC_VERSION = 2
+
 export const PAGE_CREATE = 2
 export const MOUNTED_DATA = 4
 export const UPDATED_DATA = 6

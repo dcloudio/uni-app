@@ -88,6 +88,10 @@ describe('codegen', () => {
 
   it('generate v-slot', () => {
     assertCodegen(
+      '<view><view v-for="(el, ind) in list" :key="ind"><test-component :list="el"><template #test="{ sendList }"><view v-for="(item, index) in sendList" :key="index"></view></template></test-component></view></view>',
+      `with(this){return _c('view',_l((_$s(1,'f',{forItems:list})),function(el,ind,$20,$30){return _c('view',{key:_$s(1,'f',{forIndex:$20,key:ind})},[_c('test-component',{attrs:{"list":el,"_i":("2-"+$30)},scopedSlots:_u([{key:"test",fn:function({ sendList }, _svm, _si){return _l((_svm._$s((4+'-'+$30+"-"+_si),'f',{forItems:sendList})),function(item,index,$21,$31){return _c('view',{key:_svm._$s((4+'-'+$30+"-"+_si),'f',{forIndex:$21,key:index}),attrs:{"_i":(("4-"+_si)+$30+'-'+$31)}})})}}],null,true)})],1)}),0)}`
+    )
+    assertCodegen(
       '<current-user v-slot="{ user }">{{ user.firstName }}</current-user>',
       `with(this){return _c('current-user',{attrs:{"_i":0},scopedSlots:_u([{key:"default",fn:function({ user }, _svm, _si){return [_v((_svm._$s(("0-"+_si),'t0-0',_s(user.firstName))))]}}])})}`
     )
@@ -127,6 +131,14 @@ describe('codegen', () => {
       '<view id="aaa" class="bbbb"></view>',
       `with(this){return _c('view',{staticClass:_$s(0,'sc',"bbbb"),attrs:{"id":"aaa","_i":0}})}`
     )
+    assertCodegen(
+      '<custom id="id"></custom>',
+      `with(this){return _c('custom',{attrs:{"id":"id","_i":0}})}`
+    )
+    assertCodegen(
+      '<custom :id="id"></custom>',
+      `with(this){return _c('custom',{attrs:{"id":_$s(0,'a-id',id),"_i":0}})}`
+    )
   })
   // TODO 后续优化 dataset
   // it('generate dataset', () => {
@@ -139,6 +151,10 @@ describe('codegen', () => {
     assertCodegen(
       '<view data-a="1" :data-b="b"></view>',
       `with(this){return _c('view',{attrs:{"data-b":_$s(0,'a-data-b',b),"_i":0}})}`
+    )
+    assertCodegen(
+      '<custom data-a="1" :data-b="b"></custom>',
+      `with(this){return _c('custom',{attrs:{"data-a":"1","data-b":_$s(0,'a-data-b',b),"_i":0}})}`
     )
   })
   it('generate v-if directive', () => {

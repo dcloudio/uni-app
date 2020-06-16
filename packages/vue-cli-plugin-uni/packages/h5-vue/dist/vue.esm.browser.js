@@ -638,6 +638,9 @@ let formatComponentName = (noop);
 
   formatComponentName = (vm, includeFile) => {
     if (vm.$root === vm) {
+      if (vm.$options && vm.$options.__file) { // fixed by xxxxxx
+        return ('at ') + vm.$options.__file
+      }
       return '<Root>'
     }
     const options = typeof vm === 'function' && vm.cid != null
@@ -672,7 +675,7 @@ let formatComponentName = (noop);
     if (vm._isVue && vm.$parent) {
       const tree = [];
       let currentRecursiveSequence = 0;
-      while (vm) {
+      while (vm && vm.$options.name !== 'PageBody') {
         if (tree.length > 0) {
           const last = tree[tree.length - 1];
           if (last.constructor === vm.constructor) {
@@ -684,7 +687,7 @@ let formatComponentName = (noop);
             currentRecursiveSequence = 0;
           }
         }
-        tree.push(vm);
+        !vm.$options.isReserved && tree.push(vm);
         vm = vm.$parent;
       }
       return '\n\nfound in\n\n' + tree
@@ -5090,10 +5093,10 @@ function initMixin (Vue) {
     initEvents(vm);
     initRender(vm);
     callHook(vm, 'beforeCreate');
-    vm.mpHost !== 'mp-toutiao' && initInjections(vm); // resolve injections before data/props  
+    !vm._$fallback && initInjections(vm); // resolve injections before data/props  
     initState(vm);
-    vm.mpHost !== 'mp-toutiao' && initProvide(vm); // resolve provide after data/props
-    vm.mpHost !== 'mp-toutiao' && callHook(vm, 'created');      
+    !vm._$fallback && initProvide(vm); // resolve provide after data/props
+    !vm._$fallback && callHook(vm, 'created');      
 
     /* istanbul ignore if */
     if (config.performance && mark) {
@@ -7512,7 +7515,7 @@ function model (
       );
     }
   }
-
+  
   if (el.component) {
     genComponentModel(el, value, modifiers);
     // component v-model doesn't need extra runtime
@@ -10721,7 +10724,7 @@ function preTransformNode (el, options) {
       return
     }
 
-    if(process.env.UNI_PLATFORM !== 'h5'){ // fixed by xxxxxx  非 h5 平台 type 不会是 checkbox,radio
+    if (process.env.UNI_PLATFORM !== 'h5') { // fixed by xxxxxx  非 h5 平台 type 不会是 checkbox,radio
       return
     }
 

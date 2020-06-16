@@ -78,7 +78,7 @@ export function createRequestTaskById (requestTaskId, {
     sslVerify: !sslVerify
   }
   if (method !== 'GET') {
-    options.body = data
+    options.body = typeof data === 'string' ? data : JSON.stringify(data)
   }
   try {
     stream.fetch(options, ({

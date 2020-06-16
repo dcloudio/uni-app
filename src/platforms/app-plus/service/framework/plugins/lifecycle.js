@@ -17,6 +17,10 @@ import {
   from 'uni-core/service/plugins/lifecycle'
 
 import {
+  VD_SYNC_VERSION
+} from '../../../constants'
+
+import {
   ON_REACH_BOTTOM_DISTANCE,
   TITLEBAR_HEIGHT
 }
@@ -27,6 +31,10 @@ import tabBar from '../tab-bar'
 import {
   getStatusbarHeight
 } from '../../api/util'
+
+import {
+  preloadSubPackages
+} from '../load-sub-package'
 
 function parsePageCreateOptions (vm, route) {
   const pagePath = '/' + route
@@ -43,6 +51,7 @@ function parsePageCreateOptions (vm, route) {
   const statusbarHeight = getStatusbarHeight()
 
   return {
+    version: VD_SYNC_VERSION,
     disableScroll,
     onPageScroll,
     onPageReachBottom,
@@ -100,6 +109,7 @@ export function initLifecycle (Vue) {
     mounted () {
       if (this.mpType === 'page') {
         callPageHook(this.$scope, 'onReady')
+        preloadSubPackages(this.$scope.route)
       }
     }
   })

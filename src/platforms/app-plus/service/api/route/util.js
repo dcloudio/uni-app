@@ -7,6 +7,10 @@ import {
   navigateFinish
 } from '../../framework/navigator'
 
+export function closeWebview (webview, animationType, animationDuration) {
+  webview[webview.__preload__ ? 'hide' : 'close'](animationType, animationDuration)
+}
+
 export function showWebview (webview, animationType, animationDuration, showCallback, delay) {
   if (typeof delay === 'undefined') {
     delay = webview.nvue ? 0 : 100

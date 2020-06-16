@@ -13,12 +13,63 @@ import {
   createPage
 } from '../../page-factory'
 
+import {
+  loadPage
+} from './load-sub-package'
+
 const pages = []
 
 export function getCurrentPages (returnAll) {
   return returnAll ? pages.slice(0) : pages.filter(page => {
     return !page.$page.meta.isTabBar || page.$page.meta.visible
   })
+}
+
+const preloadWebviews = {}
+
+export function removePreloadWebview (webview) {
+  const url = Object.keys(preloadWebviews).find(url => preloadWebviews[url].id === webview.id)
+  if (url) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`[uni-app] removePreloadWebview(${webview.id})`)
+    }
+    delete preloadWebviews[url]
+  }
+}
+
+export function closePreloadWebview ({
+  url
+}) {
+  const webview = preloadWebviews[url]
+  if (webview) {
+    if (webview.__page__) {
+      if (!getCurrentPages(true).find(page => page === webview.__page__)) {
+        // 未使用
+        webview.close('none')
+      } else { // 被使用
+        webview.__preload__ = false
+      }
+    } else { // 未使用
+      webview.close('none')
+    }
+    delete preloadWebviews[url]
+  }
+  return webview
+}
+
+export function preloadWebview ({
+  url,
+  path,
+  query
+}) {
+  if (!preloadWebviews[url]) {
+    const routeOptions = JSON.parse(JSON.stringify(__uniRoutes.find(route => route.path === path)))
+    preloadWebviews[url] = createWebview(path, routeOptions, query, {
+      __preload__: true,
+      __query__: JSON.stringify(query)
+    })
+  }
+  return preloadWebviews[url]
 }
 
 /**
@@ -31,13 +82,31 @@ export function registerPage ({
   openType,
   webview
 }) {
+  if (preloadWebviews[url]) {
+    webview = preloadWebviews[url]
+    if (webview.__page__) {
+      // 该预载页面已处于显示状态,不再使用该预加载页面,直接新开
+      if (getCurrentPages(true).find(page => page === webview.__page__)) {
+        if (process.env.NODE_ENV !== 'production') {
+          console.log(`[uni-app] preloadWebview(${path},${webview.id}) already in use`)
+        }
+        webview = null
+      } else {
+        pages.push(webview.__page__)
+        if (process.env.NODE_ENV !== 'production') {
+          console.log(`[uni-app] reuse preloadWebview(${path},${webview.id})`)
+        }
+        return webview
+      }
+    }
+  }
   const routeOptions = JSON.parse(JSON.stringify(__uniRoutes.find(route => route.path === path)))
 
   if (
     openType === 'reLaunch' ||
     (
       !__uniConfig.realEntryPagePath &&
-      pages.length === 0
+      getCurrentPages().length === 0 // redirectTo
     )
   ) {
     routeOptions.meta.isQuit = true
@@ -108,6 +177,10 @@ export function registerPage ({
 
   pages.push(pageInstance)
 
+  if (webview.__preload__) {
+    webview.__page__ = pageInstance
+  }
+
   // 首页是 nvue 时，在 registerPage 时，执行路由堆栈
   if (webview.id === '1' && webview.nvue) {
     if (
@@ -126,7 +199,9 @@ export function registerPage ({
     if (!webview.nvue) {
       const pageId = webview.id
       try {
-        createPage(route, pageId, query, pageInstance).$mount()
+        loadPage(route, () => {
+          createPage(route, pageId, query, pageInstance).$mount()
+        })
       } catch (e) {
         console.error(e)
       }

@@ -6,12 +6,20 @@ import {
 } from 'uni-helpers/index'
 
 export default function initVue (Vue) {
-  Vue.config.errorHandler = function (err) {
+  Vue.config.errorHandler = function (err, vm, info) {
+    Vue.util.warn(`Error in ${info}: "${err.toString()}"`, vm)
     const app = typeof getApp === 'function' && getApp()
     if (app && hasLifecycleHook(app.$options, 'onError')) {
       app.__call_hook('onError', err)
     } else {
-      console.error(err)
+      if (__PLATFORM__ === 'app-plus' && process.env.NODE_ENV !== 'production') {
+        console.error(`
+  ${err.message}
+  ${err.stack}
+  `)
+      } else {
+        console.error(err)
+      }
     }
   }
 
@@ -31,6 +39,6 @@ export default function initVue (Vue) {
     if (~conflictTags.indexOf(tag)) { // svg 部分标签名称与 uni 标签冲突
       return false
     }
-    return oldGetTagNamespace(tag) || false
+    return oldGetTagNamespace(tag)
   }
 }

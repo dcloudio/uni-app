@@ -47,7 +47,7 @@ export interface UniViewJSBridge {
      * @param args
      * @param pageId
      */
-    subscribeHandler(event: string, args: any)
+    subscribeHandler(event: string, args: any, pageId: number);
     /**
      * 向 Service 层发送事件
      * @param event

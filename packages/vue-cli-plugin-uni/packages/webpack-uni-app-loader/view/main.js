@@ -30,7 +30,7 @@ function getDefineComponents ({
   }) => `Vue.component('${name}',require('${source}').default)`)
 }
 
-const appVueFilePath = path.resolve(process.env.UNI_INPUT_DIR, 'app.vue')
+const appVueFilePath = path.resolve(process.env.UNI_INPUT_DIR, 'App.vue')
 
 function getStylesCode (loaderContext) {
   if (!fs.existsSync(appVueFilePath)) {

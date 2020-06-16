@@ -62,7 +62,7 @@ function createValidator (type) {
 
     // switchTab不允许传递参数,reLaunch到一个tabBar页面是可以的
     if (
-      type === 'switchTab' &&
+      (type === 'switchTab' || type === 'preloadPage') &&
       routeOptions.meta.isTabBar &&
       params.openType !== 'appLaunch'
     ) {
@@ -76,6 +76,23 @@ function createValidator (type) {
 
     // 参数格式化
     params.url = encodeQueryString(url)
+    if (type === 'unPreloadPage') {
+      return
+    } else if (type === 'preloadPage') {
+      if (__PLATFORM__ === 'app-plus') {
+        if (!routeOptions.meta.isNVue) {
+          return 'can not preload vue page'
+        }
+      }
+      if (routeOptions.meta.isTabBar) {
+        const pages = getCurrentPages(true)
+        const tabBarPagePath = (routeOptions.alias || routeOptions.path).substr(1)
+        if (pages.find(page => page.route === tabBarPagePath)) {
+          return 'tabBar page `' + tabBarPagePath + '` already exists'
+        }
+      }
+      return
+    }
 
     // 主要拦截目标为用户快速点击时触发的多次跳转，该情况，通常前后 url 是一样的
     if (navigatorLock === url) {
@@ -162,3 +179,19 @@ export const navigateBack = Object.assign({
     'none'
   ]
 ))
+
+export const preloadPage = {
+  url: {
+    type: String,
+    required: true,
+    validator: createValidator('preloadPage')
+  }
+}
+
+export const unPreloadPage = {
+  url: {
+    type: String,
+    required: true,
+    validator: createValidator('unPreloadPage')
+  }
+}

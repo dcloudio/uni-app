@@ -44,7 +44,7 @@ function addSubPackagesRequire (compilation) {
       assetsKeys.forEach(name => {
         if (
           path.extname(name) === '.js' &&
-          name.indexOf(root) === 0 &&
+          name.indexOf(root + '/') === 0 &&
           name !== subPackageVendorPath
         ) {
           const source =

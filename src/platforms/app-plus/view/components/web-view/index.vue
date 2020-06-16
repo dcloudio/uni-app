@@ -13,7 +13,8 @@ const insertHTMLWebView = ({
   const parentWebview = plus.webview.currentWebview()
   // fixed by hxy web-view 组件所在的 webview 不注入 uni-app 框架
   const styles = {
-    'uni-app': 'none'
+    'uni-app': 'none',
+    isUniH5: true
   }
   const parentTitleNView = parentWebview.getTitleNView()
   if (parentTitleNView) {

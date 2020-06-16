@@ -2,6 +2,10 @@ import {
   hasLifecycleHook
 } from 'uni-helpers/index'
 
+const {
+  invokeCallbackHandler: invoke
+} = UniServiceJSBridge
+
 function onAppRoute (type, {
   url,
   delta,
@@ -88,4 +92,21 @@ export function reLaunch (args) {
 
 export function switchTab (args) {
   return onAppRoute('switchTab', args)
+}
+
+export function preloadPage ({
+  url
+}, callbackId) {
+  const path = url.split('?')[0].replace(/\//g, '-')
+  __uniConfig.__webpack_chunk_load__(path.substr(1)).then(() => {
+    invoke(callbackId, {
+      url,
+      errMsg: 'preloadPage:ok'
+    })
+  }).catch(err => {
+    invoke(callbackId, {
+      url,
+      errMsg: 'preloadPage:fail ' + err
+    })
+  })
 }

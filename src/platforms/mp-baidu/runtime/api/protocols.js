@@ -1,6 +1,8 @@
 import previewImage from '../../../mp-weixin/helpers/normalize-preview-image'
 // 不支持的 API 列表
 const todos = [
+  'preloadPage',
+  'unPreloadPage'
   // 'hideKeyboard',
   // 'onGyroscopeChange',
   // 'startGyroscope',

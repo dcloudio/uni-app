@@ -23,7 +23,8 @@ module.exports = {
       template: '.wxml',
       filter: '.wxs'
     },
-    filterTag: 'wxs'
+    filterTag: 'wxs',
+    subPackages: true
   },
   copyWebpackOptions (platformOptions, vueOptions) {
     const copyOptions = []
@@ -36,9 +37,30 @@ module.exports = {
       copyOptions.push(path.resolve(__dirname, '../dist/view.css'))
       copyOptions.push(path.resolve(__dirname, '../dist/view.umd.min.js'))
       // TODO 后续common与v3目录应该合并
-      copyOptions.push(path.resolve(__dirname, process.env.UNI_USING_NVUE_COMPILER ? '../template/common' : '../template/weex'))
+      copyOptions.push(path.resolve(__dirname, process.env.UNI_USING_NVUE_COMPILER ? '../template/common'
+        : '../template/weex'))
       copyOptions.push(path.resolve(__dirname, '../template/v3'))
     }
     return copyOptions
+  },
+  chainWebpack (config, vueOptions) {
+    const isAppService = vueOptions.pluginOptions && !!vueOptions.pluginOptions['uni-app-plus'].service
+    if (isAppService) {
+      const subPackages = Object.keys(process.UNI_SUBPACKAGES)
+      if (process.env.UNI_OPT_SUBPACKAGES && subPackages.length) {
+        config
+          .plugin('uni-app-plus-subpackages')
+          .use(require('./plugin/sub-packages-plugin'))
+      }
+    }
+    if (process.env.NODE_ENV === 'production') {
+      config.optimization.minimizer('terser').tap((args) => {
+        if (!args[0].terserOptions.output) {
+          args[0].terserOptions.output = {}
+        }
+        args[0].terserOptions.output.ascii_only = true
+        return args
+      })
+    }
   }
 }

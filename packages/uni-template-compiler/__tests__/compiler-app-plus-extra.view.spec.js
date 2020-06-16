@@ -69,6 +69,18 @@ describe('codegen', () => {
       `with(this){return _c('p',{wxsProps:{"change:prop":"pos"},attrs:{"change:prop":swipe.sizeReady,"prop":_$gc(0,'change:pos'),"_i":0},on:{"touchstart":function($event){$event = $handleWxsEvent($event);swipe.touchstart($event, $getComponentDescriptor())},"touchmove":function($event){$event = $handleWxsEvent($event);swipe.touchmove($event, $getComponentDescriptor())},"touchend":function($event){$event = $handleWxsEvent($event);swipe.touchend($event, $getComponentDescriptor())},"change":function($event){return $handleViewEvent($event)}}})}`
     )
   })
+
+  it('generate staticClass and id', () => {
+    assertCodegen(
+      '<custom id="id"></custom>',
+      `with(this){return _c('custom',{attrs:{"id":"id","_i":0}})}`
+    )
+    assertCodegen(
+      '<custom :id="id"></custom>',
+      `with(this){return _c('custom',{attrs:{"id":_$g(0,'a-id'),"_i":0}})}`
+    )
+  })
+
   // TODO 后续优化dataset
   // it('generate dataset', () => {
   //   assertCodegen(
@@ -80,6 +92,10 @@ describe('codegen', () => {
     assertCodegen(
       '<view data-a="1" :data-b="b"></view>',
       `with(this){return _c('v-uni-view',{attrs:{"data-a":"1","data-b":_$g(0,'a-data-b'),"_i":0}})}`
+    )
+    assertCodegen(
+      '<custom data-a="1" :data-b="b"></custom>',
+      `with(this){return _c('custom',{attrs:{"data-a":"1","data-b":_$g(0,'a-data-b'),"_i":0}})}`
     )
   })
   it('generate v-if directive', () => {

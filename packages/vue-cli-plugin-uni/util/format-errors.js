@@ -60,20 +60,27 @@ function ModuleBuildError (err) {
     }
   } else if (~err.message.indexOf('Cannot find module')) {
     let builtinCompile = ''
+    let name = ''
     if (~err.message.indexOf('compile-less')) {
+      name = 'compile-less'
       builtinCompile = 'less'
     } else if (~err.message.indexOf('compile-node-sass')) {
+      name = 'compile-node-sass'
       builtinCompile = 'scss/sass'
     } else if (~err.message.indexOf('compile-stylus')) {
+      name = 'compile-stylus'
       builtinCompile = 'stylus'
     } else if (~err.message.indexOf('compile-typescript')) {
+      name = 'compile-typescript'
       builtinCompile = 'typescript'
     } else if (~err.message.indexOf('compile-pug-cli')) {
+      name = 'compile-pug-cli'
       builtinCompile = 'pug/jade'
     }
     if (builtinCompile) {
       return {
-        message: '预编译器错误：代码使用了' + builtinCompile + '语言，但未安装相应编译器，请在菜单工具-插件安装里安装相应编译插件'
+        message: '预编译器错误：代码使用了' + builtinCompile +
+          '语言，但未安装相应的编译器插件，请前往插件市场安装该插件:\nhttps://ext.dcloud.net.cn/plugin?name=' + name
       }
     }
   } else if (~firstLineMessage.indexOf('Module parse failed')) {
