@@ -27,6 +27,7 @@
 
 - 如需修改公用模块需要在`common`目录下修改，修改之后不需要重新执行`npm install`。
 - 如果要更新所有依赖某公用模块的云函数，可以在`common`目录下的公用模块目录（本例中为`hello-common`）右键选择`更新依赖本模块的云函数`
+- 公用模块命名不可与nodejs内置模块重名
 
 ![更新公用模块](http://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/update-common-module.jpg)
 
