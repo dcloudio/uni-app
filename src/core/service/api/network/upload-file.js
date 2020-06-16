@@ -15,7 +15,7 @@ class UploadTask {
   }
 
   abort () {
-    invokeMethod('operateRequestTask', {
+    invokeMethod('operateUploadTask', {
       uploadTaskId: this.id,
       operationType: 'abort'
     })
