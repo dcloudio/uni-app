@@ -25,6 +25,7 @@
     "commander": "^4.0.1",
     "fs-extra": "^8.1.0",
     "mustache": "^3.1.0",
-    "stricter-htmlparser2": "^3.9.6"
+    "stricter-htmlparser2": "^3.9.6",
+    "recast": "*"
   }
 }

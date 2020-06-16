@@ -12,6 +12,8 @@ const {
   restoreNodeModules
 } = require('../shared')
 
+const EMPTY_COMPONENT_LEN = 'Component({})'.length
+
 const uniPath = normalizePath(require.resolve('@dcloudio/uni-' + process.env.UNI_PLATFORM))
 
 function findModule (modules, resource, altResource) {
@@ -66,6 +68,11 @@ module.exports = function generateComponent (compilation) {
     Object.keys(assets).forEach(name => {
       if (components.has(name.replace('.js', ''))) {
         curComponents.push(name.replace('.js', ''))
+
+        if (assets[name].source.__$wrappered) {
+          return
+        }
+
         const chunkName = name.replace('.js', '-create-component')
 
         let moduleId = ''
@@ -80,7 +87,7 @@ module.exports = function generateComponent (compilation) {
         }
 
         const origSource = assets[name].source()
-        if (origSource.length !== 'Component({})'.length) { // 不是空组件
+        if (origSource.length !== EMPTY_COMPONENT_LEN) { // 不是空组件
           const globalVar = process.env.UNI_PLATFORM === 'mp-alipay' ? 'my' : 'global'
           // 主要是为了解决支付宝旧版本， Component 方法只在组件 js 里有，需要挂在 my.defineComponent
           let beforeCode = ''
@@ -99,14 +106,11 @@ module.exports = function generateComponent (compilation) {
     [['${chunkName}']]
 ]);
 `
-          assets[name] = {
-            size () {
-              return Buffer.byteLength(source, 'utf8')
-            },
-            source () {
-              return source
-            }
+          const newSource = function () {
+            return source
           }
+          newSource.__$wrappered = true
+          assets[name].source = newSource
         }
       }
     })
