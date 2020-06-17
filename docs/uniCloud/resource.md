@@ -15,7 +15,7 @@
 ### 商用案例
 - 登登多邻国：是登登教育公司为外语学习者提供的题库软件。其服务端整体基于uniCloud，前端包括PC和H5网站、微信小程序，均连接uniCloud。云函数日请求量百万级。
 
-web体验地址：[https://duolingo.91ddedu.com/](https://duolingo.91ddedu.com/))；
+web体验地址：[https://duolingo.91ddedu.com](https://duolingo.91ddedu.com)；
 
 微信小程序体验方式：微信搜索登登多邻国真题库，或扫描下方小程序码
 ![登登多邻国小程序码](https://duolingo.91ddedu.com/static/miniapp.4a4ddf6b.jpg)
