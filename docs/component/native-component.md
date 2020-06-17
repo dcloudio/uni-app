@@ -21,6 +21,7 @@ H5、App的nvue页面，不存在混合渲染的情况，它们或者全部是�
 * [live-pusher](/component/live-pusher)（仅微信小程序、百度小程序、app-nvue支持，app-vue使用plus.video.LivePusher可实现推流）
 * [cover-view](/component/cover-view)
 * [cover-image](/component/cover-view?id=cover-image)
+* [ad](/component/ad) (仅app、微信小程序、百度小程序、字节跳动小程序、QQ小程序支持)
 
 
 #### 混合渲染模式下原生组件的使用限制
