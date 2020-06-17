@@ -12142,7 +12142,7 @@ var serviceContext = (function () {
     }
 
     abort () {
-      invokeMethod('operateRequestTask', {
+      invokeMethod('operateUploadTask', {
         uploadTaskId: this.id,
         operationType: 'abort'
       });
@@ -14208,6 +14208,20 @@ var serviceContext = (function () {
       Vue.prototype.$mount = function mount (el, hydrating) {
         if (this.mpType === 'app') {
           this.$options.render = function () {};
+          if (weex.config.preload) { // preload
+            if (process.env.NODE_ENV !== 'production') {
+              console.log('[uni-app] preload app-service.js');
+            }
+            const globalEvent = weex.requireModule('globalEvent');
+            globalEvent.addEventListener('launchApp', () => {
+              if (process.env.NODE_ENV !== 'production') {
+                console.log('[uni-app] launchApp');
+              }
+              registerApp(this);
+              oldMount.call(this, el, hydrating);
+            });
+            return
+          }
           registerApp(this);
         }
         return oldMount.call(this, el, hydrating)
