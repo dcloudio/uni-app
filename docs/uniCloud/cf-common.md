@@ -8,8 +8,8 @@
     |--hello-common // 云函数公用模块
       |--package.json
       |--index.js // 公用模块代码，可以不使用index.js，修改 package.json 内的 main 字段可以指定此文件名
-  |--useCommon // 使用公用模块的云函数
-    |--package.json // 在 useCommon 目录执行 npm init -y 生成
+  |--use-common // 使用公用模块的云函数
+    |--package.json // 在 use-common 目录执行 npm init -y 生成
     |--index.js // 云函数入口文件
 ```
 
@@ -18,8 +18,8 @@
 1. 在`cloudfunctions`目录下创建`common`目录
 2. 在`common`目录右键创建公用模块目录（本例中为`hello-common`，见下方示例图），会自动创建入口`index.js`文件和`package.json`，**不要修改此package.json的name字段**
 3. 在`hello-common`右键上传公用模块
-4. 在要引入公用模块的云函数目录（本例中为`useCommon`）执行`npm init -y`生成`package.json`文件
-5. 在`useCommon`目录执行`npm install ../common/hello-common`引入`hello-common`模块
+4. 在要引入公用模块的云函数目录（本例中为`use-common`）执行`npm init -y`生成`package.json`文件
+5. 在`use-common`目录执行`npm install ../common/hello-common`引入`hello-common`模块
 
 ![创建公用模块](http://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/create-common-module.jpg)
 
@@ -47,7 +47,7 @@ module.exports = {
 ```
 
 ```js
-// useCommon/index.js
+// use-common/index.js
 'use strict';
 const {
   secret,
@@ -72,7 +72,7 @@ module.exports = function(e){
 ```
 
 ```js
-// useCommon/index.js
+// use-common/index.js
 'use strict';
 const echo = require('hello-common')
 exports.main = async (event, context) => {
