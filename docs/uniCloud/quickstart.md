@@ -174,7 +174,7 @@ uniCloud的[web控制台](https://unicloud.dcloud.net.cn/)可以查看线上云�
 - 获取日志需要从管理端调用云函数，速度比sdk直接调用慢。
 - 访问DCloud服务器也有时间损耗。
 
-后续会对此流程进行优化。
+**2.7.13-alpha已对此流程进行优化，和阿里云一样由客户端直接调用云函数。**
 
 ## H5中使用uniCloud的跨域处理@useinh5
 
@@ -189,7 +189,7 @@ H5前端js访问云函数，涉及跨域问题，导致前端js无法连接云�
 ![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/uniCloud-add-domain.png)
 
 - 如果运行时，想使用外部浏览器运行，方案如下：
-  * 方式1：在uniCloud web控制台绑定测试期的地址为安全域名，如配置：localhost:8080、192.168.0.1:8080（腾讯云不支持配置本地地址，建议使用内置浏览器测试）
+  * 方式1：在uniCloud web控制台绑定测试期的地址为安全域名，如配置：localhost:8080、192.168.0.1:8080（腾讯云不支持配置本地地址，建议使用内置浏览器测试，2.7.13-alpha及以上版本可以在外部浏览器打开localhost的地址访问云函数）
   * 方式2：在外部浏览器安装跨域插件，详见：[https://ask.dcloud.net.cn/article/35267](https://ask.dcloud.net.cn/article/35267)。要跨域的地址，详见上述文档中小程序配置安全域名章节。
 
 ## cli项目中使用uniCloud
@@ -208,11 +208,9 @@ H5前端js访问云函数，涉及跨域问题，导致前端js无法连接云�
 
 **H5前端页面部署问题**
 
-uniCloud暂未支持H5前端页面部署，需开发者自行准备web服务器，在HBuilderX中点发行菜单，生成H5，将生成的前端文件部署在Nginx等web服务器下。
+uniCloud已支持前端页面部署，在HBuilderX中点发行菜单，生成H5，将生成的前端文件部署在uniCloud的前端网页托管内即可[详情参考](uniCloud/hosting.md)。
 
-然后自行注册或使用已有域名，在域名服务商处处理好域名的解析，指向你的Nginx等服务器ip。
-
-最后将该域名通过[uniCloud web控制台](https://unicloud.dcloud.net.cn) 配置为安全域名，即可在浏览器中访问。
+需要注意的是你仍在[uniCloud web控制台](https://unicloud.dcloud.net.cn) 配置H5安全域名。
 
 **m3w.cn二级域名申请**
 
