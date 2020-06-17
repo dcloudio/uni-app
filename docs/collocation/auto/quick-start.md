@@ -111,7 +111,7 @@ npm run test:android
 
 1. 配置模拟器id，参考 `jest.config.js`
 
-2. 配置 `Hbuilder` 调试基座/自定义基座 `Pandora_simulator.ipa` 目录，参考 `jest.config.js`
+2. 配置 `Hbuilder` 调试基座/自定义基座 `Pandora_simulator.app` 目录，参考 `jest.config.js`
 
 3. 编写测试代码，参考测试用例
 
@@ -283,7 +283,7 @@ module.exports = {
       ios: {
         // uuid 必须配置，目前仅支持模拟器，可以（xcrun simctl list）查看要使用的模拟器 uuid
         id: "",
-        executablePath: "HBuilderX/plugins/launcher/base/Pandora_simulator.ipa" // ipa 目录
+        executablePath: "HBuilderX/plugins/launcher/base/Pandora_simulator.app" // ipa 目录
       }
     }
   },
