@@ -33,7 +33,7 @@
 - app-nvue 平台只有纯nvue项目（render为native）才支持 `<navigator>`。非render为native的情况下，nvue暂不支持navigator组件，请使用API跳转。
 - app下退出应用，Android平台可以使用[plus.runtime.quit](https://www.html5plus.org/doc/zh_cn/runtime.html#plus.runtime.quit)
 
-**示例** [查看示例](https://uniapp.dcloud.io/h5/pages/component/navigator/navigator)
+**示例** [查看示例](https://hellouniapp.dcloud.net.cn/pages/component/navigator/navigator)
  
 ```html
 <template>

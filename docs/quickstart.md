@@ -138,7 +138,7 @@ HBuilderX 还提供了快捷运行菜单，可以按数字快速选择要运行�
 
 #### 发布为H5
 
-1. 在 ``manifest.json`` 的可视化界面，进行如下配置（发行在网站根目录可不配置应用基本路径），此时发行网站路径是 www.xxx.com/h5，如：[https://uniapp.dcloud.io/h5](https://uniapp.dcloud.io/h5)。
+1. 在 ``manifest.json`` 的可视化界面，进行如下配置（发行在网站根目录可不配置应用基本路径），此时发行网站路径是 www.xxx.com/h5，如：[https://hellouniapp.dcloud.net.cn](https://hellouniapp.dcloud.net.cn)。
 <div align=center>
 	<img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/build-h5-1.png" style="max-width:600px;height:auto;"/>
 </div>

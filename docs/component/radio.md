@@ -21,7 +21,7 @@
 |disabled|Boolean|false|是否禁用|
 |color|Color||radio的颜色，同css的color|
 
-**示例** [查看演示](https://uniapp.dcloud.io/h5/pages/component/radio/radio)
+**示例** [查看演示](https://hellouniapp.dcloud.net.cn/pages/component/radio/radio)
  
 ```html
 <template>
@@ -97,7 +97,7 @@ export default {
 
 示例代码说明：以上示例代码从hello uni-app示例中复制，涉及的css样式在hello uni-app的app.vue和uni.css中
 
-预览H5效果：使用浏览器的手机模式访问[https://uniapp.dcloud.io/h5/pages/component/radio/radio](https://uniapp.dcloud.io/h5/pages/component/radio/radio)
+预览H5效果：使用浏览器的手机模式访问[https://hellouniapp.dcloud.net.cn/pages/component/radio/radio](https://hellouniapp.dcloud.net.cn/pages/component/radio/radio)
 
 **注意**
 - radio的默认颜色，在不同平台不一样。微信小程序是绿色的，字节跳动小程序为红色，其他平台是蓝色的。更改颜色使用color属性。

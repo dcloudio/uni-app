@@ -30,7 +30,7 @@
 |@confirm|EventHandle||点击完成时， 触发 confirm 事件，event.detail = {value: value}|微信小程序、百度小程序、QQ小程序|
 |@keyboardheightchange|eventhandle||键盘高度发生变化的时候触发此事件，event.detail = {height: height, duration: duration}|微信小程序2.7.0|
 
-**示例** [查看示例](https://uniapp.dcloud.io/h5/pages/component/textarea/textarea)
+**示例** [查看示例](https://hellouniapp.dcloud.net.cn/pages/component/textarea/textarea)
  
 ```html
 <template>

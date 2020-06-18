@@ -19,7 +19,7 @@
 |checked|Boolean|false|当前是否选中，可用来设置默认选中|
 |color|Color||checkbox的颜色，同css的color|
 
-**示例** [查看演示](https://uniapp.dcloud.io/h5/pages/component/checkbox/checkbox)
+**示例** [查看演示](https://hellouniapp.dcloud.net.cn/pages/component/checkbox/checkbox)
  
 ```html
 <template>
@@ -129,7 +129,7 @@
 
 示例代码说明：以上示例代码从hello uni-app示例中复制，涉及的css样式在hello uni-app的app.vue和uni.css中
 
-预览H5效果：使用浏览器的手机模式访问[https://uniapp.dcloud.io/h5/pages/component/checkbox/checkbox](https://uniapp.dcloud.io/h5/pages/component/checkbox/checkbox)
+预览H5效果：使用浏览器的手机模式访问[https://hellouniapp.dcloud.net.cn/pages/component/checkbox/checkbox](https://hellouniapp.dcloud.net.cn/pages/component/checkbox/checkbox)
 
 **注意**
 - checkbox的默认颜色，在不同平台不一样。微信小程序是绿色的，字节跳动小程序为红色，其他平台是蓝色的。更改颜色使用color属性。

@@ -91,7 +91,7 @@
 	</code>
 </pre>
 
-**示例** [查看示例](https://uniapp.dcloud.io/h5/pages/component/web-view/web-view)
+**示例** [查看示例](https://hellouniapp.dcloud.net.cn/pages/component/web-view/web-view)
 ```html
 <template>
 	<view>

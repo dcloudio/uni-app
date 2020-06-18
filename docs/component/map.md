@@ -149,7 +149,7 @@ zIndex|设置多边形 Z 轴数值|Number|否|
 
 地图组件的经纬度必填，如果不填经纬度则默认值是北京的经纬度。
 
-**示例** [查看示例](https://uniapp.dcloud.io/h5/pages/component/map/map)
+**示例** [查看示例](https://hellouniapp.dcloud.net.cn/pages/component/map/map)
 
 ```html
 <template>

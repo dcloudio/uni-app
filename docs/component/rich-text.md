@@ -89,7 +89,7 @@
 |tr||
 |ul|&nbsp;|
 
-**示例** [查看演示](https://uniapp.dcloud.io/h5/pages/component/rich-text/rich-text)
+**示例** [查看演示](https://hellouniapp.dcloud.net.cn/pages/component/rich-text/rich-text)
 ```html
 <template>
 	<view class="content">

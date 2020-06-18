@@ -17,7 +17,7 @@
 |duration|number|30|进度增加1%所需毫秒数|App-nvue2.6.1+、微信基础库2.8.2+|
 |@activeend		|EventHandle|			|动画完成事件											|微信小程序				|
 
-**示例** [查看演示](https://uniapp.dcloud.io/h5/pages/component/progress/progress)
+**示例** [查看演示](https://hellouniapp.dcloud.net.cn/pages/component/progress/progress)
 ```html
 <template>
 	<view>

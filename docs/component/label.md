@@ -15,7 +15,7 @@ for优先级高于内部控件，内部有多个控件的时候默认触发第�
 **注：**
 - app-nvue平台 暂不支持for属性
 
-**示例** [查看演示](https://uniapp.dcloud.io/h5/pages/component/label/label)
+**示例** [查看演示](https://hellouniapp.dcloud.net.cn/pages/component/label/label)
  
 ```html
 <template>

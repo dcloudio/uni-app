@@ -75,7 +75,7 @@
 - 默认设置的样式有：white-space: nowrap; line-height: 1.2; display: block;
 - 自定义组件嵌套 cover-view 时，自定义组件的 slot 及其父节点暂不支持通过 wx:if 控制显隐，否则会导致 cover-view 不显示
 
-**示例** [查看演示](https://uniapp.dcloud.io/h5/pages/component/cover-view/cover-view)
+**示例** [查看演示](https://hellouniapp.dcloud.net.cn/pages/component/cover-view/cover-view)
 
 ```html
 <template>

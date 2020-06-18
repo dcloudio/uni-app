@@ -81,7 +81,7 @@
 |center|视频中间|
 
 
-**示例** [查看示例](https://uniapp.dcloud.io/h5/pages/component/video/video)
+**示例** [查看示例](https://hellouniapp.dcloud.net.cn/pages/component/video/video)
  
 ```html
 <template>
