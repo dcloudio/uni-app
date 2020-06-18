@@ -50,8 +50,11 @@ uniCloud.callFunction({
 		if(res.result.code === 0) {
 			uni.setStorageSync('uniIdToken',res.result.token)
 			// 其他业务代码，如跳转到首页等
-			uni.showToast('注册成功')
-		}else {
+			uni.showToast({
+        title: '注册成功',
+        icon: 'none'
+      })
+		} else {
 			uni.showModal({
 				content: res.result.msg,
 				showCancel: false
@@ -117,7 +120,7 @@ uniCloud.callFunction({
 			uni.setStorageSync('uniIdToken',res.result.token)
 			// 其他业务代码，如跳转到首页等
 			uni.showToast('注册成功')
-		}else {
+		} else {
 			uni.showModal({
 				content: res.result.msg,
 				showCancel: false
@@ -155,7 +158,7 @@ uniCloud.callFunction({
 **示例代码**
 
 ```js
-// 云函数代码
+// 云函数update-pwd代码
 const uniID = require('uni-id')
 exports.main = async function(event,context) {
 	const {
@@ -174,7 +177,7 @@ exports.main = async function(event,context) {
 
 // 客户端代码
 uniCloud.callFunction({
-	name: 'updatePwd',
+	name: 'update-pwd',
 	data: {
 		oldPassword: 'oldPassword',
 		newPassword: 'newPassword',
@@ -183,7 +186,7 @@ uniCloud.callFunction({
 	success(res){
 		if(res.result.code === 0) {
 			// 修改成功跳转到登录页面
-		}else {
+		} else {
 			uni.showModal({
 				content: res.result.msg,
 				showCancel: false
@@ -196,5 +199,251 @@ uniCloud.callFunction({
 			showCancel: false
 		})
 	}
+})
+```
+
+## 设置头像
+
+用法：`uniID.setAvatar(Object avatarInfo)`
+
+**avatarInfo**参数说明
+
+| 字段	| 类型	| 必填| 说明			|
+| ---		| ---		| ---	| ---				|
+| avatar| String| 是	|用户头像URL|
+
+**响应参数**
+
+| 字段| 类型	| 必填| 说明						|
+| ---	| ---		| ---	| ---							|
+| code| Number| 是	|错误码，0表示成功|
+| msg	| String| 是	|详细信息					|
+
+**示例代码**
+
+```js
+// 云函数set-avatar代码
+const uniID = require('uni-id')
+exports.main = async function(event,context) {
+	const {
+		avatar
+	} = event
+	// 校验avatar链接合法性
+	const res = await uniID.setAvatar({
+		avatar
+	})
+	return res
+}
+
+// 客户端代码
+uniCloud.callFunction({
+	name: 'set-avatar',
+	data: {
+		avatar: 'avatar url'
+	},
+	success(res){
+		if(res.result.code === 0) {
+			// 修改成功
+			uni.showToast({
+        title: '头像修改成功',
+        icon: 'none'
+      })
+		} else {
+			uni.showModal({
+				content: res.result.msg,
+				showCancel: false
+			})
+		}
+	},
+	fail(){
+		uni.showModal({
+			content: '修改失败，请稍后再试',
+			showCancel: false
+		})
+	}
+})
+```
+
+## 绑定手机号
+
+用法：`uniID.bindMobile(Object mobileInfo)`
+
+**mobileInfo**参数说明
+
+| 字段	| 类型	| 必填| 说明			|
+| ---		| ---		| ---	| ---				|
+| mobile| String| 是	|用户手机号|
+
+**响应参数**
+
+| 字段| 类型	| 必填| 说明						|
+| ---	| ---		| ---	| ---							|
+| code| Number| 是	|错误码，0表示成功|
+| msg	| String| 是	|详细信息					|
+
+**示例代码**
+
+```js
+// 云函数bind-mobile代码
+const uniID = require('uni-id')
+exports.main = async function(event,context) {
+	const {
+		mobile
+	} = event
+	// 校验手机号合法性
+	const res = await uniID.bindMobile({
+		mobile
+	})
+	return res
+}
+
+// 客户端代码
+uniCloud.callFunction({
+	name: 'bind-mobile',
+	data: {
+		mobile: 'mobile phone number'
+	},
+	success(res){
+		if(res.result.code === 0) {
+			// 绑定成功
+			uni.showToast({
+        title: '手机号绑定成功',
+        icon: 'none'
+      })
+		} else {
+			uni.showModal({
+				content: res.result.msg,
+				showCancel: false
+			})
+		}
+	},
+	fail(){
+		uni.showModal({
+			content: '绑定失败，请稍后再试',
+			showCancel: false
+		})
+	}
+})
+```
+
+## 绑定邮箱
+
+用法：`uniID.bindEmail(Object emailInfo)`
+
+**emailInfo**参数说明
+
+| 字段	| 类型	| 必填| 说明		|
+| ---		| ---		| ---	| ---			|
+| email	| String| 是	|用户邮箱	|
+
+**响应参数**
+
+| 字段| 类型	| 必填| 说明						|
+| ---	| ---		| ---	| ---							|
+| code| Number| 是	|错误码，0表示成功|
+| msg	| String| 是	|详细信息					|
+
+**示例代码**
+
+```js
+// 云函数bind-email代码
+const uniID = require('uni-id')
+exports.main = async function(event,context) {
+	const {
+		email
+	} = event
+	// 校验手机号合法性
+	const res = await uniID.bindEmail({
+		email
+	})
+	return res
+}
+
+// 客户端代码
+uniCloud.callFunction({
+	name: 'bind-email',
+	data: {
+		email: 'user email'
+	},
+	success(res){
+		if(res.result.code === 0) {
+			// 绑定成功
+			uni.showToast({
+        title: '邮箱绑定成功',
+        icon: 'none'
+      })
+		} else {
+			uni.showModal({
+				content: res.result.msg,
+				showCancel: false
+			})
+		}
+	},
+	fail(){
+		uni.showModal({
+			content: '绑定失败，请稍后再试',
+			showCancel: false
+		})
+	}
+})
+```
+
+## 登出
+
+用法：`uniID.logout(String uid);`
+
+参数说明
+
+| 字段| 类型	| 必填| 说明	|
+| ---	| ---		| ---	| ---		|
+| uid	| String| 是	|用户uid|
+
+**响应参数**
+
+| 字段| 类型	| 必填| 说明						|
+| ---	| ---		| ---	| ---							|
+| code| Number| 是	|错误码，0表示成功|
+| msg	| String| 是	|详细信息					|
+
+**示例代码**
+
+```js
+// 云函数logout代码
+const uniID = require('uni-id')
+exports.main = async function(event,context) {
+	const {
+    uniIdToken
+	} = event
+  payload = await uniID.checkToken(uniIdToken)
+  if (payload.code && payload.code > 0) {
+      return payload
+  }
+	const res = await uniID.logout(payload.uid)
+	return res
+}
+
+// 客户端代码
+uniCloud.callFunction({
+  name: 'logout',
+  success(e) {
+    if(res.result.code === 0) {
+    	uni.showToast({
+        title: '登出成功',
+        icon: 'none'
+      })
+      uni.removeStorageSync('uniIdToken')
+    } else {
+    	uni.showModal({
+    		content: res.result.msg,
+    		showCancel: false
+    	})
+    }
+  },
+  fail(e) {
+    uni.showModal({
+    	content: '登出失败，请稍后再试',
+    	showCancel: false
+    })
+  }
 })
 ```
