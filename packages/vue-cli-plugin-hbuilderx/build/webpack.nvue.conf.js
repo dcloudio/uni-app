@@ -81,7 +81,8 @@ const plugins = [
       NODE_ENV: JSON.stringify(process.env.NODE_ENV),
       VUE_APP_PLATFORM: JSON.stringify(process.env.UNI_PLATFORM),
       UNI_CLOUD_PROVIDER: process.env.UNI_CLOUD_PROVIDER,
-      HBX_USER_TOKEN: JSON.stringify(process.env.HBX_USER_TOKEN || '')
+      HBX_USER_TOKEN: JSON.stringify(process.env.HBX_USER_TOKEN || ''),
+      UNI_AUTOMATOR_WS_ENDPOINT: JSON.stringify(process.env.UNI_AUTOMATOR_WS_ENDPOINT)
     }
   }),
   new webpack.BannerPlugin({
@@ -178,6 +179,26 @@ rules.unshift({
     loader: '@dcloudio/vue-cli-plugin-hbuilderx/packages/webpack-uni-nvue-loader/lib/template.recycle'
   }]
 })
+
+if (process.env.UNI_USING_V3_NATIVE) {
+  try {
+    const automatorJson = require.resolve('@dcloudio/uni-automator/dist/automator.json')
+    plugins.push(new CopyWebpackPlugin([{
+      from: automatorJson,
+      to: '../.automator/' + (process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM) +
+        '/.automator.json',
+      transform (content) {
+        if (process.env.UNI_AUTOMATOR_WS_ENDPOINT) {
+          return JSON.stringify({
+            version: require('@dcloudio/uni-automator/package.json').version,
+            wsEndpoint: process.env.UNI_AUTOMATOR_WS_ENDPOINT
+          })
+        }
+        return ''
+      }
+    }]))
+  } catch (e) {}
+}
 
 if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
   plugins.push(new WebpackUniMPPlugin())
