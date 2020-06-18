@@ -104,7 +104,7 @@ export function hide (type = 'toast') {
   toast = null
   toastType = null
   return {
-    errMsg: 'hideToast:ok'
+    errMsg: 'hide:ok'
   }
 }
 export function showModal ({
