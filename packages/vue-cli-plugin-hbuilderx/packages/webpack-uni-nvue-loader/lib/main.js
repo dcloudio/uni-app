@@ -70,5 +70,7 @@ module.exports = function (content, map) {
       }
     }
   }
-  return statCode + content
+  const automatorCode = process.env.UNI_AUTOMATOR_WS_ENDPOINT ? 'import \'@dcloudio/uni-app-plus/dist/automator\';'
+    : ''
+  return automatorCode + statCode + content
 }

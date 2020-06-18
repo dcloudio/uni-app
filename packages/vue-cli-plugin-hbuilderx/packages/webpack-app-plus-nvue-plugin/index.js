@@ -6,6 +6,10 @@ class WebpackAppPlusNVuePlugin {
   apply (compiler) {
     let isFirst = !process.env.UNI_USING_NATIVE && !process.env.UNI_USING_V3_NATIVE
 
+    if (process.env.UNI_AUTOMATOR_WS_ENDPOINT) {
+      isFirst = true
+    }
+
     const chunkVersions = {}
     const changedFiles = []
     compiler.hooks.emit.tapAsync('webpack-uni-nvue', (compilation, callback) => {
