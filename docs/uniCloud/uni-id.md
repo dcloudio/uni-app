@@ -107,33 +107,6 @@ exports.main = async function(event,context) {
 	})
 	return res
 }
-
-// 客户端代码
-uniCloud.callFunction({
-	name: 'login',
-	data: {
-		username: 'username',
-		password: 'user password'
-	},
-	success(res){
-		if(res.result.code === 0) {
-			uni.setStorageSync('uniIdToken',res.result.token)
-			// 其他业务代码，如跳转到首页等
-			uni.showToast('注册成功')
-		} else {
-			uni.showModal({
-				content: res.result.msg,
-				showCancel: false
-			})
-		}
-	},
-	fail(){
-		uni.showModal({
-			content: '登录失败，请稍后再试',
-			showCancel: false
-		})
-	}
-})
 ```
 
 ## 修改密码 @update-password
@@ -174,32 +147,6 @@ exports.main = async function(event,context) {
 	})
 	return res
 }
-
-// 客户端代码
-uniCloud.callFunction({
-	name: 'update-pwd',
-	data: {
-		oldPassword: 'oldPassword',
-		newPassword: 'newPassword',
-		passwordConfirmation: 'confirmed new password'
-	},
-	success(res){
-		if(res.result.code === 0) {
-			// 修改成功跳转到登录页面
-		} else {
-			uni.showModal({
-				content: res.result.msg,
-				showCancel: false
-			})
-		}
-	},
-	fail(){
-		uni.showModal({
-			content: '修改失败，请稍后再试',
-			showCancel: false
-		})
-	}
-})
 ```
 
 ## 设置头像
@@ -235,33 +182,6 @@ exports.main = async function(event,context) {
 	return res
 }
 
-// 客户端代码
-uniCloud.callFunction({
-	name: 'set-avatar',
-	data: {
-		avatar: 'avatar url'
-	},
-	success(res){
-		if(res.result.code === 0) {
-			// 修改成功
-			uni.showToast({
-        title: '头像修改成功',
-        icon: 'none'
-      })
-		} else {
-			uni.showModal({
-				content: res.result.msg,
-				showCancel: false
-			})
-		}
-	},
-	fail(){
-		uni.showModal({
-			content: '修改失败，请稍后再试',
-			showCancel: false
-		})
-	}
-})
 ```
 
 ## 绑定手机号
@@ -297,33 +217,6 @@ exports.main = async function(event,context) {
 	return res
 }
 
-// 客户端代码
-uniCloud.callFunction({
-	name: 'bind-mobile',
-	data: {
-		mobile: 'mobile phone number'
-	},
-	success(res){
-		if(res.result.code === 0) {
-			// 绑定成功
-			uni.showToast({
-        title: '手机号绑定成功',
-        icon: 'none'
-      })
-		} else {
-			uni.showModal({
-				content: res.result.msg,
-				showCancel: false
-			})
-		}
-	},
-	fail(){
-		uni.showModal({
-			content: '绑定失败，请稍后再试',
-			showCancel: false
-		})
-	}
-})
 ```
 
 ## 绑定邮箱
@@ -359,33 +252,7 @@ exports.main = async function(event,context) {
 	return res
 }
 
-// 客户端代码
-uniCloud.callFunction({
-	name: 'bind-email',
-	data: {
-		email: 'user email'
-	},
-	success(res){
-		if(res.result.code === 0) {
-			// 绑定成功
-			uni.showToast({
-        title: '邮箱绑定成功',
-        icon: 'none'
-      })
-		} else {
-			uni.showModal({
-				content: res.result.msg,
-				showCancel: false
-			})
-		}
-	},
-	fail(){
-		uni.showModal({
-			content: '绑定失败，请稍后再试',
-			showCancel: false
-		})
-	}
-})
+
 ```
 
 ## 登出
@@ -422,28 +289,4 @@ exports.main = async function(event,context) {
 	return res
 }
 
-// 客户端代码
-uniCloud.callFunction({
-  name: 'logout',
-  success(e) {
-    if(res.result.code === 0) {
-    	uni.showToast({
-        title: '登出成功',
-        icon: 'none'
-      })
-      uni.removeStorageSync('uniIdToken')
-    } else {
-    	uni.showModal({
-    		content: res.result.msg,
-    		showCancel: false
-    	})
-    }
-  },
-  fail(e) {
-    uni.showModal({
-    	content: '登出失败，请稍后再试',
-    	showCancel: false
-    })
-  }
-})
 ```
