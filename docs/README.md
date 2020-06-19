@@ -57,17 +57,19 @@
         <div class="barcode-img-box">
           <img src="https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/hello-uni-qa-union.png" width="160" />
         </div>
-        <b>快应用联盟</b>
+        <b>快应用</b>
       </a>
       <a href="//m3w.cn/uniapp" target="_blank" class="clear-style barcode-view">
         <div class="barcode-img-box">
-          <img src="https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/hello-uni-qa-huawei.png" width="160" />
+          <img src="https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/hello-uni-mp-360-qr.png" width="160" />
         </div>
-        <b>快应用-华为</b>
+        <b>360小程序</b>
       </a>
     </div>
     <p>
         <em>注：某些平台不能提交简单demo，故补充了一些其他功能；hello uni-app示例代码可从[github](https://github.com/dcloudio/hello-uniapp)获取</em></br>
+        <em>快应用仅支持 vivo 、oppo、华为</em></br>
+        <em>360小程序仅 windows平台支持，需要在360浏览器中打开</em></br>
     </p>
 </div>
 
