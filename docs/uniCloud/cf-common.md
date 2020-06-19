@@ -21,7 +21,7 @@
 4. 在要引入公用模块的云函数目录（本例中为`use-common`）执行`npm init -y`生成`package.json`文件
 5. 在`use-common`目录执行`npm install ../common/hello-common`引入`hello-common`模块
 
-![创建公用模块](http://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/create-common-module.jpg)
+![创建公用模块](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/create-common-module.jpg)
 
 **注意事项**
 
@@ -29,7 +29,7 @@
 - 如果要更新所有依赖某公用模块的云函数，可以在`common`目录下的公用模块目录（本例中为`hello-common`）右键选择`更新依赖本模块的云函数`
 - 公用模块命名不可与nodejs内置模块重名
 
-![更新公用模块](http://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/update-common-module.jpg)
+![更新公用模块](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/update-common-module.jpg)
 
 **使用公用模块**
 

@@ -105,7 +105,7 @@ uni.requestPayment是一个统一各平台的客户端支付API，不管是在�
 
 1. 在`manifest.json - App模块权限选择` 中勾选 payment(支付)
 2. 在 `manifest.json - App SDK配置` 中，勾选需要的支付平台，目前有微信支付、支付宝支付、苹果应用内支付(IAP)，其中微信支付需要填写从微信开放平台获取的AppID
-![](http://img-cdn-qiniu.dcloud.net.cn/uploads/article/20190520/4c674701c469a258aeb69b803d3c97db.png)
+![](https://img-cdn-qiniu.dcloud.net.cn/uploads/article/20190520/4c674701c469a258aeb69b803d3c97db.png)
 <!-- ![uniapp](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/pay1.png) -->
 <!-- 临时把老图注掉，替换正式地址时再把老图地址放开 -->
 3. 这些配置需要打包生效，真机运行仍然是HBuilder基座的设置，可使用自定义基座调试。离线打包请参考离线打包文档在原生工程中配置。

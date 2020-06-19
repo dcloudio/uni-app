@@ -4,7 +4,7 @@
 
 开发者可在 HBuilderX 中新建服务空间，如下：
 
-![](http://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/unicloud-01.png)
+![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/unicloud-01.png)
 
 或者在uniCloud的web控制台[https://unicloud.dcloud.net.cn](https://unicloud.dcloud.net.cn) 创建服务空间。
 
