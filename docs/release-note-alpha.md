@@ -189,7 +189,7 @@
   + uni-ui 优化 uni-drawer 组件废弃 visible 属性，改用 open()、close() 方法开关抽屉，避免在某些场景不能正常关闭的 Bug
   + uni-ui 优化 uni-popup 组件部分代码逻辑，可支持自定义扩展组件
   + uni-ui 修复 uni-drawer 组件 close 回调执行两遍的 Bug
-  + uni-ui 修复 uni-goods-nav 组件 buttonGroup 属性修改 color 颜色不生效的 Bug 
+  + uni-ui 修复 uni-goods-nav 组件 buttonGroup 属性修改 color 颜色不生效的 Bug 
   + uni-ui 修复 uni-popup 组件内放置 input/textarea 获取不到焦点的 Bug
   + uni-ui 修复 uni-swipe-action 组件在 iOS13 中按钮点击失效或点击错位的 Bug
 * 【uniCloud】
