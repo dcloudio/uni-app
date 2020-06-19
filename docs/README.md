@@ -36,7 +36,7 @@
         <b>支付宝小程序版</b>
       </a>
     </div>
-    <div class="flex-img-group-view">
+    <div class="flex-img-group-view" style="margin-top: 20px;">
       <a href="//m3w.cn/uniapp" target="_blank" class="clear-style barcode-view">
         <div class="barcode-img-box"><img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/baidu-uniapp.png" width="160" /></div>
         <b>百度小程序版</b>
