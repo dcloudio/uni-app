@@ -21,7 +21,7 @@
         </div>
         <b>iOS版</b>
       </a>
-      <a href="https://uniapp.dcloud.io/h5/" target="_blank" class="clear-style barcode-view">
+      <a href="https://hellouniapp.dcloud.net.cn/" target="_blank" class="clear-style barcode-view">
         <div class="barcode-img-box">
           <img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/uni-h5.png" width="160" />
         </div>
