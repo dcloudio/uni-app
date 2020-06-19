@@ -37,7 +37,7 @@
 ## 创建云函数
 
 `uniCloud`项目创建并绑定服务空间后，开发者可以在`cloudfunctions`目录右键创建云函数。
-![新建云函数](http://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/unicloud-02.png)
+![新建云函数](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/unicloud-02.png)
 
 创建后会以云函数名称为名生成一个特殊目录，该目录下自动生成index.js，是该云函数的入口文件，不可改名。如果该云函数还需要引入其他js，可在index.js入口文件中引用。
 
@@ -91,11 +91,11 @@ exports.main = async (event, context) => {
 
 在云函数目录右键运行云函数，也可以在云函数编辑器里，按`Ctrl+r`运行快捷键，或点工具栏的运行
 
-![](http://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/run-function-with-param-1.jpg)
+![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/run-function-with-param-1.jpg)
 
 此时云函数运行会携带所配置的运行参数
 
-![](http://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/run-function-with-param-2.jpg)
+![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/run-function-with-param-2.jpg)
 
 ## 手机端调用云函数
 在uni-app的前端代码中，通过`uniCloud.callFunction`方法调用云函数。详见[callFunction文档](https://uniapp.dcloud.io/uniCloud/functions?id=callfunction)
