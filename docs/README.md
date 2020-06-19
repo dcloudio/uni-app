@@ -59,7 +59,7 @@
         </div>
         <b>快应用</b>
       </a>
-      <a href="//m3w.cn/uniapp" target="_blank" class="clear-style barcode-view">
+      <a href="https://so.mp.360.cn/mp.html?appid=qh4j181qqtru354st6" target="_blank" class="clear-style barcode-view">
         <div class="barcode-img-box">
           <img src="https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/hello-uni-mp-360-qr.png" width="160" />
         </div>
