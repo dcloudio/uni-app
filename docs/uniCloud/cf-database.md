@@ -420,16 +420,18 @@ let res = await collection.orderBy("name", "asc").get()
 
 collection.field()
 
+从查询结果集中，过滤掉不需要的字段，或者指定要返回的字段。
+
 参数说明
 
 | 参数 | 类型   | 必填 | 说明                                    |
 | ---- | ------ | ---- | --------------------------------------- |
-| -    | object | 是   | 要过滤的字段，不返回传false，返回传true |
+| -    | object | 是   | 过滤字段对象，包含字段名和策略，不返回传false，返回传true |
 
 使用示例
 
 ```js
-collection.field({ 'age': true })
+collection.field({ 'age': true }) //只返回age字段，其他字段不返回
 ```
 备注：只能指定要返回的字段或者不要返回的字段。即{'a': true, 'b': false}是一种错误的参数格式
 
