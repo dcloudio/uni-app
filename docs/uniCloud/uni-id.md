@@ -179,7 +179,7 @@ exports.main = async function(event,context) {
 ```js
 const uniID = require('uni-id')
 exports.main = async function(event,context) {
-	const payload = await uniID.updatePwd(event.uniIdToken)
+	const payload = await uniID.checkToken(event.uniIdToken)
 	return payload
 }
 ```
