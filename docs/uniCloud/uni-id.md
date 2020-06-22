@@ -17,9 +17,11 @@
 1. 准备2.7.14或以上版本的HBuilderX
 2. 插件市场导入`uni-id`公用模块，[插件市场 uni-id](https://ext.dcloud.net.cn/plugin?id=2116)
 3. 修改公用模块`uni-id`下的`config.json`内所需参数
+
   + `passwordSecret`为用于加密密码入库的密钥
-	+ `tokenSecret`为生成token需要的密钥
-	+ `tokenExpiresIn`token有效期，以秒为单位
+  + `tokenSecret`为生成token需要的密钥
+  + `tokenExpiresIn`token有效期，以秒为单位
+
 4. 上传`cloudfunctions/common`下的`uni-id`模块
 5. 按照[公用模块使用说明](https://uniapp.dcloud.io/uniCloud/cf-common)在云函数下安装`uni-id`模块
 
