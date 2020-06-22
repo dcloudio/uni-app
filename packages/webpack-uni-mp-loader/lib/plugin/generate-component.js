@@ -78,8 +78,20 @@ module.exports = function generateComponent (compilation) {
         let moduleId = ''
         if (name.indexOf('node-modules') === 0) {
           const modulePath = removeExt(restoreNodeModules(name))
-          const resource = normalizePath(path.resolve(process.env.UNI_INPUT_DIR, '..', modulePath))
+          let resource = normalizePath(path.resolve(process.env.UNI_INPUT_DIR, '..', modulePath))
           const altResource = normalizePath(path.resolve(process.env.UNI_INPUT_DIR, modulePath))
+
+          if (
+            /^win/.test(process.platform) &&
+            modulePath.includes('@dcloudio') &&
+            (
+              modulePath.includes('page-meta') ||
+              modulePath.includes('navigation-bar')
+            )
+          ) {
+            resource = normalizePath(path.resolve(process.env.UNI_CLI_CONTEXT, modulePath))
+          }
+
           moduleId = findComponentModuleId(modules, concatenatedModules, resource, altResource)
         } else {
           const resource = removeExt(path.resolve(process.env.UNI_INPUT_DIR, name))
