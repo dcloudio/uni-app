@@ -23,6 +23,12 @@
 | username	| String| 是	|用户名，唯一	|
 | password	| String| 是	|密码			|
 
+username可以是字符串、可以是email、可以是手机号，本插件不约束，开发者可以自己定。
+
+比如要求username为手机号，则自行在前端界面上做好提示，在后台对格式进行校验。
+
+password入库时会自动转为md5，不明文存储密码。
+
 **响应参数**
 
 | 字段	| 类型	| 必填	| 说明						|
@@ -48,7 +54,9 @@ exports.main = async function(event,context) {
 	})
 	return res
 }
+```
 
+```js
 // 客户端代码
 uniCloud.callFunction({
 	name: 'register',
@@ -58,12 +66,13 @@ uniCloud.callFunction({
 	},
 	success(res){
 		if(res.result.code === 0) {
+      // 目前版本是驼峰形式uniIdToken，后面会调整为蛇形uni_id_token（调整后会在一段时间内兼容驼峰）
 			uni.setStorageSync('uniIdToken',res.result.token)
 			// 其他业务代码，如跳转到首页等
 			uni.showToast({
-        title: '注册成功',
-        icon: 'none'
-      })
+				title: '注册成功',
+				icon: 'none'
+			})
 		} else {
 			uni.showModal({
 				content: res.result.msg,
@@ -116,6 +125,39 @@ exports.main = async function(event,context) {
 		password
 	})
 	return res
+}
+```
+
+## token校验
+
+用法：`uniID.checkToken(String token)`
+
+**参数说明**
+
+| 字段	| 类型	| 必填| 说明												|
+| ---		| ---		| ---	| ---													|
+| token	| String| 是	|客户端callFunction带上的token|
+
+**响应参数**
+
+| 字段| 类型	| 必填| 说明											|
+| ---	| ---		| ---	| ---												|
+| code| Number| 是	|错误码，0表示成功					|
+| msg	| String| 是	|详细信息										|
+|uid	| String|否		|用户Id，校验成功之后会返回	|
+
+**注意：**
+
+- 2.7.14+ 客户端会自动查找storage内的token在callFunction时插入
+- 2.7.14 版本token存储在storage内使用的是驼峰形式的键值`uniIdToken`，下版会调整为蛇形`uni_id_token`，调整后会在一段时间内兼容驼峰形式
+
+**示例代码**
+
+```js
+const uniID = require('uni-id')
+exports.main = async function(event,context) {
+	const payload = await uniID.updatePwd(event.uniIdToken)
+	return payload
 }
 ```
 
@@ -289,12 +331,12 @@ exports.main = async function(event,context) {
 const uniID = require('uni-id')
 exports.main = async function(event,context) {
 	const {
-    uniIdToken
+		uniIdToken
 	} = event
-  payload = await uniID.checkToken(uniIdToken)
-  if (payload.code && payload.code > 0) {
-      return payload
-  }
+	payload = await uniID.checkToken(uniIdToken)
+	if (payload.code && payload.code > 0) {
+		return payload
+	}
 	const res = await uniID.logout(payload.uid)
 	return res
 }
@@ -327,7 +369,8 @@ exports.main = async function(event,context) {
 | last_login_date  | Timestamp | 否   | 最后登录时间                                |
 | last_login_ip    | String    | 否   | 最后登录时 IP 地址                          |
 
-**realNameAuth 字段定义**
+**realNameAuth 扩展字段定义**
+该字段存储实名认证信息。
 
 | 字段            | 类型      | 必填 | 描述                                                |
 | --------------- | --------- | ---- | --------------------------------------------------- |
@@ -344,7 +387,7 @@ exports.main = async function(event,context) {
 | contact_mobile  | String    | 否   | 联系人手机号码                                      |
 | contact_email   | String    | 否   | 联系人邮箱                                          |
 
-**job 字段定义**
+**job 扩展字段定义**
 
 | 字段    | 类型   | 必填 | 描述     |
 | ------- | ------ | ---- | -------- |

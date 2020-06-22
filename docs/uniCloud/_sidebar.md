@@ -15,6 +15,7 @@
 * [云存储](uniCloud/storage.md)
 * 扩展能力
   * [uni-account](uniCloud/uni-account.md)
+  * [uni-id](uniCloud/uni-id.md)
   * [unipay](uniCloud/unipay.md)
 * [前端网页托管](uniCloud/hosting.md)
 * [腾讯云自定义登录](uniCloud/authentication.md)
