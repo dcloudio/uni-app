@@ -56,6 +56,7 @@ export default {
             if (process.env.NODE_ENV !== 'production') {
               console.log('[uni-app] launchApp')
             }
+            plus.updateConfigInfo && plus.updateConfigInfo()
             registerApp(this)
             oldMount.call(this, el, hydrating)
           })

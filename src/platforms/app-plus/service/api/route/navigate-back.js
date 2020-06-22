@@ -104,7 +104,7 @@ export function navigateBack ({
   }
 
   // 后退时，关闭 toast,loading
-  uni.hideToast() 
+  uni.hideToast()
   uni.hideLoading()
 
   if (currentPage.$page.meta.isQuit) {
