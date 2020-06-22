@@ -264,3 +264,21 @@ pages 配置
 },
 ```
 [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/)
+
+
+
+#### 快应用开发注意@quickapp
+* HBuilderX 2.7.12+ alpha 版支持
+
+##### quickapp-webview
+- 目前仅vivo oppo支持
+- 最小平台版本支持需要 1063
+- 暂不支持 canvas 组件
+
+##### quickapp-webview-huawei
+- Huawei QuickApp IDE 最低版本 2.5.2
+- 最小平台版本支持需要 1070
+- 暂不支持 `uni.login(OBJECT)`
+- 暂不支持 支付，支付依赖`uni.login(OBJECT)`
+- 页面有滚动条时 canvas 组件不会跟随页面滚动，后期修复
+- rich-text 组件某些情况下显示异常
