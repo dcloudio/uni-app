@@ -31,6 +31,10 @@
 
 用法`uniID.register(Object user)`
 
+**注意**
+
+- 注册成功之后会返回token，在获取token之后应进行持久化存储，键值为：uniIdToken，`uni.setStorageSync('uniIdToken',res.result.token)`
+
 **user参数说明**
 
 | 字段		| 类型	| 必填	| 说明			|
@@ -108,6 +112,10 @@ uniCloud.callFunction({
 ## 用户登录 @login
 
 用法：`uniID.login(Object user)`
+
+**注意**
+
+- 登录成功之后会返回token，在获取token之后应进行持久化存储，键值为：uniIdToken，`uni.setStorageSync('uniIdToken',res.result.token)`
 
 **user参数说明**
 
@@ -325,6 +333,10 @@ exports.main = async function(event,context) {
 ## 登出
 
 用法：`uniID.logout(String uid);`
+
+**注意**
+
+- 登出成功之后应删除持久化存储的token，键值为：uniIdToken，`uni.removeStorageSync('uniIdToken')`
 
 参数说明
 
