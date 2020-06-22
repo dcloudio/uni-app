@@ -322,7 +322,18 @@ function getExtraValue (vm, dataPathsArray) {
       const propPath = dataPathArray[1]
       const valuePath = dataPathArray[3]
 
-      const vFor = dataPath ? vm.__get_value(dataPath, context) : context
+      let vFor
+      if (Number.isInteger(dataPath)) {
+        vFor = dataPath
+      } else if (!dataPath) {
+        vFor = context
+      } else if (typeof dataPath === 'string' && dataPath) {
+        if (dataPath.indexOf('#s#') === 0) {
+          vFor = dataPath.substr(3)
+        } else {
+          vFor = vm.__get_value(dataPath, context)
+        }
+      }
 
       if (Number.isInteger(vFor)) {
         context = value

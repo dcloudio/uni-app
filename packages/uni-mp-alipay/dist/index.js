@@ -359,6 +359,7 @@ var baseApi = /*#__PURE__*/Object.freeze({
 // 不支持的 API 列表
 const todos = [
   'preloadPage',
+  'unPreloadPage',
   'loadSubPackage'
   // 'getRecorderManager',
   // 'getBackgroundAudioManager',
@@ -576,6 +577,20 @@ const protocols = { // 需要做转换的 API 列表
   getFileInfo: {
     args: {
       filePath: 'apFilePath'
+    }
+  },
+  compressImage: {
+    args (fromArgs) {
+      fromArgs.compressLevel = 4;
+      if (fromArgs && fromArgs.quality) {
+        fromArgs.compressLevel = Math.floor(fromArgs.quality / 26);
+      }
+      fromArgs.apFilePaths = [fromArgs.src];
+    },
+    returnValue (result) {
+      if (result.apFilePaths && result.apFilePaths.length) {
+        result.tempFilePath = result.apFilePaths[0];
+      }
     }
   },
   chooseVideo: {
@@ -1384,7 +1399,18 @@ function getExtraValue (vm, dataPathsArray) {
       const propPath = dataPathArray[1];
       const valuePath = dataPathArray[3];
 
-      const vFor = dataPath ? vm.__get_value(dataPath, context) : context;
+      let vFor;
+      if (Number.isInteger(dataPath)) {
+        vFor = dataPath;
+      } else if (!dataPath) {
+        vFor = context;
+      } else if (typeof dataPath === 'string' && dataPath) {
+        if (dataPath.indexOf('#s#') === 0) {
+          vFor = dataPath.substr(3);
+        } else {
+          vFor = vm.__get_value(dataPath, context);
+        }
+      }
 
       if (Number.isInteger(vFor)) {
         context = value;
@@ -1434,6 +1460,12 @@ function processEventExtra (vm, extra, event) {
         } else {
           if (dataPath === '$event') { // $event
             extraObj['$' + index] = event;
+          } else if (dataPath === 'arguments') {
+            if (event.detail && event.detail.__args__) {
+              extraObj['$' + index] = event.detail.__args__;
+            } else {
+              extraObj['$' + index] = [event];
+            }
           } else if (dataPath.indexOf('$event.') === 0) { // $event.target.value
             extraObj['$' + index] = vm.__get_value(dataPath.replace('$event.', ''), event);
           } else {
