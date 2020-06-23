@@ -1,12 +1,32 @@
 # 简介
 
-`uni-id`为`uniCloud`开发者提供了简单、易用的用户管理能力封装。
+99%的应用，都要开发用户注册、登录、密码md5加密保存、修改密码、token管理等功能，从前端到后端都需要。
 
-`uni-id`定义了常用的数据表结构，前端开发者无需为没有后端数据库设计经验而烦恼。
+为什么不能有一个开源的通用项目，避免大家的重复开发呢？
 
-`uni-id`作为公用 SDK，封装了用户注册、登录、Token 校验、修改密码、设置头像等常见用户管理功能，以 API 方式调用，开发者将`uni-id`作为公用模块导入后，可在云函数中便捷调用。
+`uni-id`应需而生。
 
-`uni-id`是开源 sdk，可放心使用。
+`uni-id`为`uniCloud`开发者提供了统一、简单、可扩展的用户管理能力封装。推荐每个uniCloud开发者使用。
+
+# uni-id组成部分
+`uni-id`包括如下组成部分：
+1. 云数据库
+
+主表为 `uni-id-users` 表，保存用户的基本信息。
+
+扩展字段有很多，如实名认证数据、工作履历数据，开发者可以自由扩展。
+
+2. 云函数
+
+提供一个名为`uni-id`的公共模块，该模块封装了一系列API，包括注册、登录、修改密码、设置头像等。
+
+[插件市场](https://ext.dcloud.net.cn/plugin?id=2116)的示例工程中还提供了一个`user-center`的云函数，演示在云函数中如何调用`uni-id`公共模块。
+
+3. 前端调用
+
+前端示例通过callfunction调用云函数`user-center`，在注册和登录时保存token。
+
+uniCloud框架底层，会自动在callfunction时传递`uni-id`的token（uni-app 2.7.13+版本）。在云函数的event中可直接拿到`uni-id`的token。也就是说开发者无需自己管理token了。
 
 对于`uni-id`还未封装的能力，欢迎大家在开源项目上提交 pr，共同完善这个开源项目，[uni-id git仓库](https://gitee.com/dcloud/uni-id.git)。
 
@@ -24,6 +44,8 @@
 
 4. 上传`cloudfunctions/common`下的`uni-id`模块
 5. 按照[公用模块使用说明](https://uniapp.dcloud.io/uniCloud/cf-common)在云函数下安装`uni-id`模块
+
+或者直接导入[uni-id在插件市场的示例工程](https://ext.dcloud.net.cn/plugin?id=2116)
 
 # API列表
 
