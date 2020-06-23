@@ -157,7 +157,8 @@ splash（启动封面）是App必然存在的、不可取消的。
 "app-plus": {
   "optimization": {
     "subPackages": true
-  }
+  },
+  "runmode" : "liberate" // 开启分包优化后，必须配置资源释放模式
 }
 ```
 
