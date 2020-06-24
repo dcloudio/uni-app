@@ -1,12 +1,22 @@
 #### movable-area
 
-`movable-view` 的可移动区域
+可拖动区域组件。
+
+由于app和小程序的架构是逻辑层与视图层分离，使用js监听拖动时会引发逻辑层和视图层的频繁通讯，影响性能。为了方便高性能的实现拖动，平台特封装了`movable-area`组件。
+
+`movable-area`指代可拖动的范围，在其中内嵌`movable-view`组件用于指示可拖动的区域。
+
+即手指/鼠标按住`movable-view`拖动或双指缩放，但拖不出`movable-area`规定的范围。
+
+当然也可以不拖动，而使用代码来触发`movable-view`在`movable-area`里的移动缩放。
+
+`movable-view`的规范另见[下文](/component/movable-view?id=movable-view)。
 
 **平台差异说明**
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|√|√|√|√|√|x|√|
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|快应用|360小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|√|√|√|√|√|x|√|√|√|
 
 **属性说明**
 
@@ -16,17 +26,19 @@
 
 **注意：movable-area 必须设置 width 和 height 属性，不设置默认为 10px**
 - movable-area app-nvue平台 暂不支持手势缩放，并且和滚动冲突。
-- PC平台不支持 movable-area。
+
 
 #### movable-view
 
-可移动的视图容器，在页面中可以拖拽滑动
+可移动的视图容器，在页面中可以拖拽滑动或双指缩放。
+
+`movable-view`必须在`movable-area`组件中，并且必须是直接子节点，否则不能移动。
 
 **平台差异说明**
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|√|√|√|√|√|x|√|
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|快应用|360小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|√|√|√|√|√|x|√|√|√|
 
 **属性说明**
 
@@ -66,8 +78,11 @@
 - 如果遇到x、y、scale属性设置不生效的问题参考：[组件属性设置不生效解决办法](/use?id=%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98)
 - 除了H5端和app-nvue端，其他平台不支持内嵌video、map等原生组件。更新：微信基础库2.4.4起支持了原生组件在 scroll-view、swiper、movable-view 中的使用
 
-**示例** 
+**示例**[查看演示](https://hellouniapp.dcloud.net.cn/pages/component/movable-view/movable-view)
+
+以下示例代码，来自于[hello uni-app项目](https://github.com/dcloudio/hello-uniapp)，推荐使用HBuilderX，新建uni-app项目，选择hello uni-app模板，可快速体验完整示例。
 ```html
+<!-- 本示例未包含完整css，获取外链css请参考上文，在hello uni-app项目中查看 -->
 <template>
 	<view class="page-body">
 		<view class="uni-padding-wrap uni-common-mt">
