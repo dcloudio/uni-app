@@ -319,6 +319,14 @@ describe('mp:compiler-extra', () => {
         </view>`,
       '<view><block wx:for="{{list[idx]}}" wx:for-item="item" wx:for-index="__i0__" wx:key="id"><view data-event-opts="{{[[\'tap\',[[\'m1\',[\'$0\'],[[[\'list.\'+idx+\'\',\'id\',item.id]]]]]]]}}" class="mid-item-title" bindtap="__e"><view data-event-opts="{{[[\'tap\',[[\'m2\',[\'$0\'],[[[\'list.\'+idx+\'\',\'id\',item.id]]]]]]]}}" class="mid-item-icon" catchtap="__e"></view></view></block></view>'
     )
+    assertCodegen(
+      '<view><view class="item" v-for="i in \'abc\'" :key="i" @click="func(i)"></view></view>',
+      '<view><block wx:for="abc" wx:for-item="i" wx:for-index="__i0__" wx:key="*this"><view data-event-opts="{{[[\'tap\',[[\'func\',[\'$0\'],[[[\'#s#abc\',\'\',__i0__]]]]]]]}}" class="item" bindtap="__e"></view></block></view>'
+    )
+    assertCodegen(
+      '<view><view class="item" v-for="i in 5" :key="i" @click="func(i)"></view></view>',
+      '<view><block wx:for="{{5}}" wx:for-item="i" wx:for-index="__i0__" wx:key="*this"><view data-event-opts="{{[[\'tap\',[[\'func\',[\'$0\'],[[[5,\'\',__i0__]]]]]]]}}" class="item" bindtap="__e"></view></block></view>'
+    )
   })
 
   it('generate class binding', () => {

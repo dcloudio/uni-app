@@ -54,10 +54,8 @@ module.exports = function initPreprocess (name, platforms, userDefines = {}) {
   }
 
   userDefineKeys.forEach(name => {
-    if (userDefines[name]) {
-      const key = normalize(name)
-      vueContext[key] = nvueContext[key] = true
-    }
+    const key = normalize(name)
+    vueContext[key] = nvueContext[key] = !!userDefines[name]
   })
 
   return {
