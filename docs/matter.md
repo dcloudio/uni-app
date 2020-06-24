@@ -278,7 +278,7 @@ pages 配置
 ##### quickapp-webview-huawei
 - Huawei QuickApp IDE 最低版本 2.5.2
 - 最小平台版本支持需要 1070
-- 暂不支持 `uni.login(OBJECT)`
+- 暂不支持 `uni.login(OBJECT)`，暂时使用条件编译，参考文档 [https://developer.huawei.com/consumer/cn/doc/development/quickApp-References/webview-api-hwaccount](https://developer.huawei.com/consumer/cn/doc/development/quickApp-References/webview-api-hwaccount)
 - 暂不支持 支付，支付依赖`uni.login(OBJECT)`
 - 页面有滚动条时 canvas 组件不会跟随页面滚动，后期修复
 - rich-text 组件某些情况下显示异常
