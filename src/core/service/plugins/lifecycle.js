@@ -7,6 +7,7 @@ const LIFECYCLE_HOOKS = [
   'onHide',
   'onUniNViewMessage',
   'onPageNotFound',
+  'onThemeChange',
   'onError',
   // Page
   'onLoad',

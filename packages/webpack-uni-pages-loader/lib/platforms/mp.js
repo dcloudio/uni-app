@@ -13,6 +13,11 @@ const {
 } = require('@dcloudio/uni-cli-shared/lib/cache')
 
 const {
+  darkmode,
+  hasTheme
+} = require('@dcloudio/uni-cli-shared/lib/theme')
+
+const {
   hasOwn,
   parseStyle
 } = require('../util')
@@ -206,6 +211,11 @@ module.exports = function (pagesJson, manifestJson, project = {}) {
 
   if (app.usingComponents) {
     updateAppJsonUsingComponents(app.usingComponents)
+  }
+
+  if (darkmode() && hasTheme()) {
+    app.darkmode = true
+    app.themeLocation = 'theme.json'
   }
 
   const projectName = getPlatformProject()
