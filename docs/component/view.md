@@ -2,6 +2,10 @@
 
 视图容器。
 
+它类似于传统html中的div，用于包裹各种元素内容。
+
+如果使用[nvue](https://uniapp.dcloud.io/use-weex)，则需注意，包裹文字应该使用<text>组件。
+
 **属性说明**
 
 |属性名|类型|默认值|说明|
@@ -12,8 +16,10 @@
 |hover-stay-time|Number|400|手指松开后点击态保留时间，单位毫秒|
 
 **示例** [查看演示](https://hellouniapp.dcloud.net.cn/pages/component/view/view)
- 
+
+以下示例代码，来自于[hello uni-app项目](https://github.com/dcloudio/hello-uniapp)，推荐使用HBuilderX，新建uni-app项目，选择hello uni-app模板，可快速体验完整示例。
 ```html
+<!-- 本示例未包含完整css，获取外链css请参考上文，在hello uni-app项目中查看 -->
 <template>
     <view>
         <view class="uni-padding-wrap uni-common-mt">
@@ -44,5 +50,4 @@
  
 **Tips**
 
-- 如果需要使用滚动视图，请使用 [scroll-view](/component/scroll-view)
-- 如果使用 `<div>` 组件编译时会被转换为 `<view>`。
+- 如果使用 `<div>` ，编译时会被转换为 `<view>`。
