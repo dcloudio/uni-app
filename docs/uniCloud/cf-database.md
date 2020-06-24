@@ -88,6 +88,20 @@ db.createCollection(collectionName)
 }
 ```
 
+## 数据库回档@backup
+
+**此功能暂时只有腾讯云支持**
+
+uniCloud会在每天备份一次数据库，最多保留7天。
+
+**操作说明**
+
+1. 登录[uniCloud后台](https://unicloud-dev.dcloud.net.cn/)
+2. 点击左侧菜单`云数据库 --> 数据库回档`，点击`新建回档`
+3. 选择可回档时间
+4. 选择需要回档的集合（注意：回档后集合不能与现有集合重名，如需对集合重命名可以在集合列表处操作）
+
+![数据库回档](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/unicloud-db-backup.jpg)
 
 ## 获取集合的引用
 

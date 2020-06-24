@@ -1,5 +1,11 @@
 # uniCloud 更新日志
 ======================================
+#### 2020-06-24
+  + 腾讯云 新增 数据库回档功能 [详情](https://uniapp.dcloud.io/uniCloud/cf-database?id=backup)
+
+#### 2020-06-15
+  + 腾讯云 优化 开发期间客户端直连云函数
+
 #### 2020-06-13
   + 阿里云 新增 前端网站部署功能 [详情](https://uniapp.dcloud.io/uniCloud/hosting)
 
