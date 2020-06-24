@@ -1,6 +1,10 @@
 #### swiper
 
-滑块视图容器。一般用于左右滑动或上下滑动，比如banner轮播图，注意是滑动切换而不是滚动。swiper下的每个swiper-item是一个滑动切换区域，不能停留在2个滑动区域之间。
+滑块视图容器。
+
+一般用于左右滑动或上下滑动，比如banner轮播图。
+
+注意滑动切换和滚动的区别，滑动切换是一屏一屏的切换。swiper下的每个swiper-item是一个滑动切换区域，不能停留在2个滑动区域之间。
 
 **属性说明**
 
@@ -37,7 +41,7 @@ change 事件返回 detail 中包含一个 source 字段，表示导致变更的
 - touch 用户划动引起swiper变化。
 - 其他原因将用空字符串表示。
 
-**swiper做左右拖动的长列表问题**
+**swiper做左右拖动的长列表的专项问题**
 - swiper是单页组件，适合做banner图轮播和简单列表左右滑动。
 - 因为性能问题，用swiper做复杂长列表，需要较高的优化技巧以及接受一些限制。
 - 这是一个范例，[插件市场新闻模板示例](https://ext.dcloud.net.cn/plugin?id=103)，它在App端使用了nvue的原生渲染，实现高性能的左右拖动长列表；并支持可自定义的任何形式的下拉刷新。它在非App端使用的模式是只缓存左右一共3列的数据，dom中的数据过多时，它会自动释放。就是说App上，只要看过这一页，再进去时内容是还在的。而在非App上，只能做到缓存3页数据，其他页即便看过，再进去也会重新加载。并且非App的这种情况下，不再提供下拉刷新。虽然插件市场也有其他前端模拟的下拉刷新，但性能不佳。一般小程序的大厂案例里，提供左右拖长列表的，都是这种做法。
@@ -59,7 +63,10 @@ change 事件返回 detail 中包含一个 source 字段，表示导致变更的
 |item-id|String||该 swiper-item 的标识符|
 
 **示例** [查看演示](https://hellouniapp.dcloud.net.cn/pages/component/swiper/swiper)
+
+以下示例代码，来自于[hello uni-app项目](https://github.com/dcloudio/hello-uniapp)，推荐使用HBuilderX，新建uni-app项目，选择hello uni-app模板，可直接体验完整示例。
 ```html
+<!-- 本示例未包含完整css，获取外链css请参考上文，在hello uni-app项目中查看 -->
 <template>
 	<view>
 		<view class="uni-padding-wrap">
