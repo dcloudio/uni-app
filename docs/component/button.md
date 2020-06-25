@@ -44,7 +44,7 @@
 
 |值|说明|
 |:-|:-|
-|primary|微信小程序为绿色，App、H5、百度小程序、支付宝小程序为蓝色，字节跳动小程序为红色，QQ小程序为浅蓝色|
+|primary|微信小程序、360小程序为绿色，App、H5、百度小程序、支付宝小程序、快应用为蓝色，字节跳动小程序为红色，QQ小程序为浅蓝色。如想在多端统一颜色，请改用default，然后自行写样式|
 |default|白色|
 |warn|红色|
 
@@ -80,7 +80,9 @@
 
 **示例** [查看演示](https://hellouniapp.dcloud.net.cn/pages/component/button/button)
 
+以下示例代码，来自于[hello uni-app项目](https://github.com/dcloudio/hello-uniapp)，推荐使用HBuilderX，新建uni-app项目，选择hello uni-app模板，可直接体验完整示例。
 ```html
+<!-- 本示例未包含完整css，获取外链css请参考上文，在hello uni-app项目中查看 -->
 <template>
 	<view>
 		<view class="uni-padding-wrap uni-common-mt">
@@ -105,6 +107,9 @@
 </template>
 ```
 
+![uniapp](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/img/button.png?t=201857)
+
+
 **注意**
 
 事件务必使用vue语法，比如下面的获取手机号示例
@@ -112,5 +117,3 @@
 ```
 <button type="default" open-type="getPhoneNumber" @getphonenumber="decryptPhoneNumber">获取手机号</button>
 ```
-
-![uniapp](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/img/button.png?t=201857)
