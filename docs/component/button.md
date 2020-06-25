@@ -114,6 +114,6 @@
 
 事件务必使用vue语法，比如下面的获取手机号示例
 
-```
+```html
 <button type="default" open-type="getPhoneNumber" @getphonenumber="decryptPhoneNumber">获取手机号</button>
 ```
