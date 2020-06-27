@@ -1,6 +1,6 @@
 #### radio-group
 
-单项选择器，内部由多个 ``<radio>`` 组成。
+单项选择器，内部由多个 ``<radio>`` 组成。通过把多个`radio`包裹在一个`radio-group`下，实现这些`radio`的单选。
 
 **属性说明**
 
@@ -23,7 +23,9 @@
 
 **示例** [查看演示](https://hellouniapp.dcloud.net.cn/pages/component/radio/radio)
  
+以下示例代码，来自于[hello uni-app项目](https://github.com/dcloudio/hello-uniapp)，推荐使用HBuilderX，新建uni-app项目，选择hello uni-app模板，可直接体验完整示例。
 ```html
+<!-- 本示例未包含完整css，获取外链css请参考上文，在hello uni-app项目中查看 -->
 <template>
 	<view>
 		<view class="uni-padding-wrap">
@@ -95,9 +97,6 @@ export default {
  
 ![uniapp](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/img/radio.png?t=201857)
 
-示例代码说明：以上示例代码从hello uni-app示例中复制，涉及的css样式在hello uni-app的app.vue和uni.css中
-
-预览H5效果：使用浏览器的手机模式访问[https://hellouniapp.dcloud.net.cn/pages/component/radio/radio](https://hellouniapp.dcloud.net.cn/pages/component/radio/radio)
 
 **注意**
 - radio的默认颜色，在不同平台不一样。微信小程序是绿色的，字节跳动小程序为红色，其他平台是蓝色的。更改颜色使用color属性。
