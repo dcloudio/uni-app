@@ -2,6 +2,8 @@
 
 富文本编辑器，可以对图片、文字格式进行编辑和混排。
 
+在web开发时，可以使用`contenteditable`来实现内容编辑。但这是一个dom API，在非H5平台无法使用。于是微信小程序和uni-app的App-vue提供了`editor`组件来实现这个功能，并且在uni-app的H5平台也提供了兼容。从技术本质来讲，这个组件仍然运行在视图层webview中，利用的也是浏览器的`contenteditable`功能。
+
 编辑器导出内容支持带标签的 `html`和纯文本的 `text`，编辑器内部采用 `delta` 格式进行存储。
 
 通过`setContents`接口设置内容时，解析插入的 `html` 可能会由于一些非法标签导致解析错误，建议开发者在应用内使用时通过 delta 进行插入。
@@ -14,13 +16,11 @@
 
 **平台差异说明**
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|2.0.0+ [自定义组件编译模式](https://ask.dcloud.net.cn/article/35843)，不含nvue|2.4.5+|基础库 2.7.0+|x|x|x|x|
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|快应用|360小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|2.0+，app-vue|2.4.5+|基础库 2.7.0+|x|x|x|x|
 
-本功能自HBuilderX2.0起支持。运行到微信小程序工具时，注意在微信工具里选择最新的基础库。
-
-editor组件目前只有H5、App的vue页面和微信支持，其他端的富文本编辑解决方案，可使用web-view加载web页面，也可搜索[插件市场](https://ext.dcloud.net.cn/search?q=%E5%AF%8C%E6%96%87%E6%9C%AC%E7%BC%96%E8%BE%91) 获取简单的markdown富文本编辑器
+editor组件目前只有H5、App的vue页面和微信支持，其他端平台自身为提供editor组件，只能使用web-view加载web页面，也可搜索[插件市场](https://ext.dcloud.net.cn/search?q=%E5%AF%8C%E6%96%87%E6%9C%AC%E7%BC%96%E8%BE%91) 获取简单的markdown富文本编辑器
 
 | 属性 | 类型 | 默认值 | 必填 | 说明 |
 | --- | --- | --- | --- | --- |
@@ -63,7 +63,7 @@ editor组件目前只有H5、App的vue页面和微信支持，其他端的富文
 4. 插入 html 到编辑器内时，编辑器会删除一些不必要的标签，以保证内容的统一。例如`<p><span>xxx</span></p>`会改写为`<p>xxx</p>`
 5. 编辑器聚焦时页面会被上推，系统行为以保证编辑区可见
 
-**示例代码**
+**示例代码** [查看演示](https://hellouniapp.dcloud.net.cn/pages/component/editor/editor)
 
 ```html
 <template>
