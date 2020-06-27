@@ -28,7 +28,9 @@
 
 **示例** [查看演示](https://hellouniapp.dcloud.net.cn/pages/component/slider/slider)
  
+以下示例代码，来自于[hello uni-app项目](https://github.com/dcloudio/hello-uniapp)，推荐使用HBuilderX，新建uni-app项目，选择hello uni-app模板，可直接体验完整示例。
 ```html
+<!-- 本示例未包含完整css，获取外链css请参考上文，在hello uni-app项目中查看 -->
 <template>
     <view>
         <view class="uni-padding-wrap uni-common-mt">
@@ -72,9 +74,6 @@ export default {
  
 ![uniapp](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/img/slider.png?t=201857)
 
-示例代码说明：以上示例代码从hello uni-app示例中复制，涉及的css样式在hello uni-app的app.vue和uni.css中
-
-预览H5效果：使用浏览器的手机模式访问[https://hellouniapp.dcloud.net.cn/pages/component/slider/slider](https://hellouniapp.dcloud.net.cn/pages/component/slider/slider)
 
 **Tips**
-- 如果需要在PC端使用`slider`，可以配置[H5模版](https://uniapp.dcloud.io/collocation/manifest?id=h5-template)，并引入[touch-emulator.js](https://github.com/dcloudio/touchemulator)
+- 2.6.3以前，在PC端使用`slider`，需配置[H5模版](https://uniapp.dcloud.io/collocation/manifest?id=h5-template)，并引入[touch-emulator.js](https://github.com/dcloudio/touchemulator)
