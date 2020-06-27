@@ -32,7 +32,9 @@
 
 **示例** [查看示例](https://hellouniapp.dcloud.net.cn/pages/component/textarea/textarea)
  
+以下示例代码，来自于[hello uni-app项目](https://github.com/dcloudio/hello-uniapp)，推荐使用HBuilderX，新建uni-app项目，选择hello uni-app模板，可直接体验完整示例。
 ```html
+<!-- 本示例未包含完整css，获取外链css请参考上文，在hello uni-app项目中查看 -->
 <template>
 	<view>
 		<view class="uni-title uni-common-pl">输入区域高度自适应，不会出现滚动条</view>
@@ -77,4 +79,4 @@ export default {
 在输入框里图文混排内容，在web上该功能依赖document，而小程序和app的正常页面又没有document。
 - 方式一：使用uni-app自带的`editor`组件，该组件支持App、H5、微信小程序，其他家小程序自身未提供这类解决方案。
 - 方式二：采用markdown编辑器方案，输入区输入markdown语法，预览区提供预览。这种方式可以跨端。插件市场搜[富文本编辑](https://ext.dcloud.net.cn/search?q=%E5%AF%8C%E6%96%87%E6%9C%AC%E7%BC%96%E8%BE%91)，有不少插件。
-- 方式三：使用web-view组件，挂在html页面，此时可使用web中常见的各种富文本编辑器，插件市场也有这类插件。
+- 方式三：使用web-view组件，加载html页面，此时可使用web中常见的各种富文本编辑器，插件市场也有这类插件。
