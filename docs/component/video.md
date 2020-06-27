@@ -1,11 +1,5 @@
 #### video
-视频。
-
-**平台差异说明**
-
-|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|√|√|√|基础库1.10.0+|√|√|√|
+视频播放组件。
 
 **属性说明**
 
@@ -170,10 +164,10 @@ export default {
  
 - 视频播放格式说明：
 	* H5平台：支持支持的视频格式视浏览器而定，一般通用的都支持：mp4、webm 和 ogg。（``<video/>`` 组件编译到 H5 时会替换为标准 html 的 video 标签）。H5端也可以自行在条件编译里使用video.js等三方库，这些库可以自动判断环境兼容以决定使用标准video或flash来播放。
-	* 小程序平台：各小程序平台支持程度不同，详见各家文档：[微信小程序视频组件文档](https://developers.weixin.qq.com/miniprogram/dev/component/video.html)、[支付宝小程序video组件](https://docs.alipay.com/mini/component/video)、[百度小程序视频组件文档](https://smartprogram.baidu.com/docs/develop/component/media/#video/)、[字节跳动小程序视频组件文档](https://developer.toutiao.com/dev/cn/mini-app/develop/component/media-component/video)
+	* 小程序平台：各小程序平台支持程度不同，详见各家文档：[微信小程序视频组件文档](https://developers.weixin.qq.com/miniprogram/dev/component/video.html)、[支付宝小程序video组件](https://docs.alipay.com/mini/component/video)、[百度小程序视频组件文档](https://smartprogram.baidu.com/docs/develop/component/media/#video/)、[字节跳动小程序视频组件文档](https://developer.toutiao.com/dev/cn/mini-app/develop/component/media-component/video)、[QQ小程序视频组件文档](https://q.qq.com/wiki/develop/miniprogram/component/media/camera.html)、[华为快应用视频组件文档](https://developer.huawei.com/consumer/cn/doc/development/quickApp-References/webview-component-video)
 	* App平台： 支持本地视频(mp4/flv)、网络视频地址（mp4/flv/m3u8）及流媒体（rtmp/hls/rtsp）。
 
-- video全屏后，如何自行绘制界面？比如加个标题、加个分享按钮
+- video**全屏**后，如何自行绘制界面？比如加个标题、加个分享按钮
 	* 微信基础库 2.4.0 以上可通过cover-view来绘制界面覆盖元素
 	* app端 2.1.5 以上nvue页面的video也可以通过cover-view来绘制界面覆盖元素
 	* H5端可通过通用h5做法实现
@@ -182,10 +176,11 @@ export default {
 - 如何实现抖音、映客等全屏视频垂直滑动切换效果？
 	* 微信基础库 2.4.0 和 app端nvue 2.1.5 以上，可通过在垂直的swiper中内嵌video来实现。原生导航栏设置为custom，视频长宽设为手机屏幕大小，通过cover-view覆盖视频内容。插件市场有相关[示例](https://ext.dcloud.net.cn/search?q=%E6%8A%96%E9%9F%B3)
 
-- `<video/>` 组件在非H5端是原生组件，层级高于普通前端组件，覆盖其需要使用[cover-view](https://uniapp.dcloud.io/component/cover-view?id=cover-view)组件或plus.nativeObj.view、subNVue。微信基础库 2.4.0 起已支持 video 组件的同层渲染，也就是video在非全屏时，可以被前端元素通过调节z-index来遮挡，但video全屏时，仍需要cover-view覆盖。
-- 除微信基础库 2.4.0 和app端nvue页面 2.1.5 以上，其他情况下非H5的video不能放入scroll-view和swiper。注意参考 [原生组件使用限制](/component/native-component)。
+- `<video/>` 组件在非H5端是原生组件，层级高于普通前端组件，覆盖其需要使用[cover-view](https://uniapp.dcloud.io/component/cover-view?id=cover-view)组件或plus.nativeObj.view、subNVue。微信基础库 2.4.0+和字节跳动小程序 已支持 video 组件的同层渲染，也就是video在非全屏时，可以被前端元素通过调节z-index来遮挡，但video全屏时，仍需要cover-view覆盖。
+- 除微信基础库 2.4.0+ 和 字节跳动小程序 和 app-nvue 2.1.5+，其他情况下非H5的video不能放入scroll-view和swiper。注意参考 [原生组件使用限制](/component/native-component)。
 
-- App平台：使用 `<video/>` 组件，打包 App 时必须勾选 manifest.json->App 模块权限配置->VideoPlayer 模块。
+- App平台：使用 `<video/>` 组件，打包 App 时必须勾选 manifest.json->App 模块权限配置->VideoPlayer 模块。此模块体积较大，非默认内置。
 - App平台：如果使用的视频路径为本地路径，需要配置资源为释放模式：在 manifest.json 文件内 app-plus 节点下新增 runmode 配置，设置值为liberate。
 - App平台：如果想使用非原生的video，即原来普通的html5自带video，可使用web-view组件load html页面，在其中使用普通h5 video。
+- App平台：app-vue即使选择了使用x5内核，也不会使用x5的video播放，仍然使用uni-app的App引擎自带的原生视频播放。
 - H5平台： 在部分浏览器中会强制调用原生播放器播放（如：微信内置浏览器、UC浏览器等），在 x5 内核的浏览器中支持配置[同层播放器](https://x5.tencent.com/tbs/guide/video.html)。
