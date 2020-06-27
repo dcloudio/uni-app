@@ -17,7 +17,9 @@ for优先级高于内部控件，内部有多个控件的时候默认触发第�
 
 **示例** [查看演示](https://hellouniapp.dcloud.net.cn/pages/component/label/label)
  
+以下示例代码，来自于[hello uni-app项目](https://github.com/dcloudio/hello-uniapp)，推荐使用HBuilderX，新建uni-app项目，选择hello uni-app模板，可直接体验完整示例。
 ```html
+<!-- 本示例未包含完整css，获取外链css请参考上文，在hello uni-app项目中查看 -->
 <template>
 	<view>
 		<view class="uni-common-mt">
