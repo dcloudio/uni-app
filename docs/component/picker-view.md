@@ -1,6 +1,8 @@
 #### picker-view
 
-嵌入页面的滚动选择器
+嵌入页面的滚动选择器。
+
+相对于`picker`组件，`picker-view`拥有更强的灵活性。当需要对自定义选择的弹出方式和UI表现时，往往需要使用`picker-view`。
 
 **属性说明**
 
@@ -23,7 +25,9 @@
 
 **示例** [查看演示](https://hellouniapp.dcloud.net.cn/pages/component/picker-view/picker-view)
 
+以下示例代码，来自于[hello uni-app项目](https://github.com/dcloudio/hello-uniapp)，推荐使用HBuilderX，新建uni-app项目，选择hello uni-app模板，可直接体验完整示例。
 ```html
+<!-- 本示例未包含完整css，获取外链css请参考上文，在hello uni-app项目中查看 -->
 <template>
     <view>
         <view class="uni-padding-wrap">
@@ -91,4 +95,4 @@ export default {
 
 **Tips**
 - 微信小程序端，滚动时在iOS自带振动反馈，可在系统设置 -> 声音与触感 -> 系统触感反馈中关闭
-- 如果需要在PC端使用`picker-view`，可以配置[H5模版](https://uniapp.dcloud.io/collocation/manifest?id=h5-template)，并引入[touch-emulator.js](https://github.com/dcloudio/touchemulator)
+- 在2.6.3版本以前，如果需要在PC端使用`picker-view`，需配置[H5模版](https://uniapp.dcloud.io/collocation/manifest?id=h5-template)，并引入[touch-emulator.js](https://github.com/dcloudio/touchemulator)
