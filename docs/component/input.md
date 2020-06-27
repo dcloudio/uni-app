@@ -40,7 +40,7 @@
 |值|说明|平台差异说明|
 |:-|:-|:-|
 |text|文本输入键盘||
-|number|数字输入键盘|注意iOS的vue页面弹出的数字键盘并非9宫格方式|
+|number|数字输入键盘|均支持，注意iOS上app-vue弹出的数字键盘并非9宫格方式|
 |idcard|身份证输入键盘|微信、支付宝、百度、QQ小程序|
 |digit|带小数点的数字键盘|App的nvue页面、微信、支付宝、百度、头条、QQ小程序|
 
@@ -89,7 +89,7 @@ this.$scope.$getAppWebview().setStyle({
 //this.$scope.$getAppWebview()相当于html5plus里的plus.webview.currentWebview()。在uni-app里vue页面直接使用plus.webview.currentWebview()无效，非v3编译模式使用this.$mp.page.$getAppWebview()
 ```
 
-如果是nvue页面，默认就没有键盘上方的横条，无需任何设置。
+如果是nvue页面，iOS默认就没有键盘上方的横条，无需任何设置。
 
 #### 关于软键盘弹出的逻辑说明
 
@@ -127,7 +127,9 @@ App平台软键盘弹出有 adjustResize|adjustPan 两种模式，默认为 adju
 
 **input示例** [查看演示](https://hellouniapp.dcloud.net.cn/pages/component/input/input)
  
+以下示例代码，来自于[hello uni-app项目](https://github.com/dcloudio/hello-uniapp)，推荐使用HBuilderX，新建uni-app项目，选择hello uni-app模板，可直接体验完整示例。
 ```html
+<!-- 本示例未包含完整css，获取外链css请参考上文，在hello uni-app项目中查看 -->
 <template>
 	<view>
 		<view class="uni-common-mt">
