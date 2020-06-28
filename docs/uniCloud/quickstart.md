@@ -197,7 +197,7 @@ H5前端js访问云函数，涉及跨域问题，导致前端js无法连接云�
 如果要在cli项目中使用uniCloud，可以参考以下步骤
 
 1. 将cli项目导入`HBuilderX`
-2. 在项目根目录（src同级）创建`cloudfunctions-aliyun`或者`cloudfunctions-tencent`目录
+2. 在项目根目录（src同级）创建`cloudfunctions-aliyun`或者`cloudfunctions-tcb`目录
 3. 打开`src/manifest.json`，在`基础配置-->uni-app应用标示`处点击`重新获取`
 4. 在步骤2创建的目录右键关联服务空间
 5. 完成
