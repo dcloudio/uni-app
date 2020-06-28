@@ -71,20 +71,20 @@ const sassLoader = {
 
 if (sassLoaderVersion < 8) {
   scssLoader.options.data = sassData
-  scssLoader.options.outputStyle = 'nested'
+  scssLoader.options.outputStyle = 'expanded'
 
   sassLoader.options.data = sassData
-  sassLoader.options.outputStyle = 'nested'
+  sassLoader.options.outputStyle = 'expanded'
   sassLoader.options.indentedSyntax = true
 } else {
   scssLoader.options.prependData = sassData
   scssLoader.options.sassOptions = {
-    outputStyle: 'nested'
+    outputStyle: 'expanded'
   }
 
   sassLoader.options.prependData = sassData
   sassLoader.options.sassOptions = {
-    outputStyle: 'nested',
+    outputStyle: 'expanded',
     indentedSyntax: true
   }
 }
