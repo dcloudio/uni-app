@@ -6,7 +6,7 @@
 
 # uni-app的特点
 
-- 开发者和案例更多：HBuilder装机量470万台，开发者社区月活百万，70多个QQ微信群承载10万人。案例众多，uni统计月活8.4亿（[详见](https://uniapp.dcloud.io/case)）
+- 开发者和案例更多：HBuilder装机量500万台，开发者社区月活百万，70多个QQ微信群承载10万人。案例众多，uni统计月活10亿（[详见](https://uniapp.dcloud.io/case)）
 - 性能更高（见[评测](https://juejin.im/post/5ca1736af265da30ae314248)）
 - 更丰富的周边生态，[插件市场](https://ext.dcloud.net.cn/)数千款插件
 - 提供比小程序原生开发更好的开发体验、更高的工程化效率
@@ -15,9 +15,9 @@
 
 ## 扫码体验
 
-开发一次，编译到8个平台。依次扫描8个二维码，亲自体验最全面的跨平台效果！
+开发一次，编译到10个平台。依次扫描10个二维码，亲自体验最全面的跨平台效果！
 
-<img src="https://img-cdn-qiniu.dcloud.net.cn/uni-app-qr-all.jpg"/>
+<img src="https://img.cdn.aliyun.dcloud.net.cn/uni-app/uni-app-qr-all.jpg"/>
 
 *注： 某些平台不能提交简单demo，补充了一些其他功能。*
 
