@@ -19,7 +19,8 @@ function parseComponents (content, traverse) {
     components: [],
     options: {
       name: null,
-      inheritAttrs: null
+      inheritAttrs: null,
+      props: null
     }
   })
   return {

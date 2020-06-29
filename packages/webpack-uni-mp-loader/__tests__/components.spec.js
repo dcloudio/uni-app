@@ -22,6 +22,28 @@ function assertCodegen (content, expectedComponents, isScoped = true) {
   expect(JSON.stringify(components)).toBe(JSON.stringify(expectedComponents))
 }
 
+function assertCodegenOptions (content, expectedOptions, isScoped = true) {
+  const {
+    state: {
+      options
+    }
+  } = (isScoped ? scopedComponentTraverse : globalComponentTraverse)(parser.parse(content, {
+    sourceType: 'module',
+    plugins: [
+      'typescript'
+    ]
+  }), {
+    components: [],
+    options: {
+      name: null,
+      inheritAttrs: null,
+      props: null
+    }
+  })
+
+  expect(JSON.stringify(options)).toBe(JSON.stringify(expectedOptions))
+}
+
 describe('mp:loader', () => {
   it('parse scoped component', () => {
     assertCodegen(
@@ -153,6 +175,46 @@ global['__wxVueOptions'] = {
           source: '@/components/my-button/my-button.vue'
         }
       ])
+
+    assertCodegenOptions(
+      `export default {
+        name: 'test'
+      }`,
+      {
+        name: '"test"',
+        inheritAttrs: null,
+        props: null
+      }
+    )
+
+    assertCodegenOptions(
+      `export default {
+        props: ['id', 'test']
+      }`,
+      {
+        name: null,
+        inheritAttrs: null,
+        props: '["id","test"]'
+      }
+    )
+
+    assertCodegenOptions(
+      `export default {
+        props: {
+          id: {
+            type: String
+          },
+          'test': {
+            type: String
+          }
+        }
+      }`,
+      {
+        name: null,
+        inheritAttrs: null,
+        props: '["id","test"]'
+      }
+    )
   })
 
   it('parse global component', () => {
