@@ -259,7 +259,7 @@ vue create -p dcloudio/uni-preset-vue#alpha my-alpha-project
 #### 自定义模板
 选择自定义模板时，需要填写 uni-app 模板地址，这个地址其实就是托管在云端的仓库地址。以 GitHub 为例，地址格式为 `userName/repositoryName`，如 `dcloudio/uni-template-picture` 就是下载图片模板。
 
-更多支持的下载方式，请参考这个插件的说明：[download-git-repo](https://github.com/flipxfx/download-git-repo)
+更多支持的下载方式，请参考这个插件的说明：[download-git-repo](https://www.npmjs.com/package/download-git-repo)
 
 ### 运行、发布uni-app
 
