@@ -36,6 +36,9 @@ uni-app 已将常用的组件、JS API 封装到框架中，开发者按照 uni-
 |MP-QQ|QQ小程序|
 |MP-360|360小程序|
 |MP|微信小程序/支付宝小程序/百度小程序/字节跳动小程序/QQ小程序/360小程序|
+|quickapp-webview|快应用通用(包含联盟、华为)|
+|quickapp-webview-union|快应用联盟|
+|quickapp-webview-huawei|快应用华为|
 
 **支持的文件**
 
