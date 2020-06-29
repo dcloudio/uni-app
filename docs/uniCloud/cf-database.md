@@ -297,6 +297,21 @@ let res = await collection.add([{
 也可通过 `set` 方法新增一个文档，需先取得文档引用再调用 `set` 方法。
 如果文档不存在，`set` 方法会创建一个新文档。
 
+
+**参数说明**
+
+| 参数 | 类型   | 必填 | 说明                                     |
+| ---- | ------ | ---- | ---------------------------------------- |
+| data | object | 是   | 更新字段的Object，{'name': 'Ben'} _id 非必填|
+
+**响应参数**
+
+| 参数			| 类型	|  说明																				|
+| ----			| ------|  ----------------------------------------		|
+|updated		| Number| 更新成功条数，数据更新前后没变化时也会返回1	|
+|upsertedId	| String| 创建的文档id																|
+
+
 ```js
 let res = await collection.doc('doc-id').set({
   name: "Hey"
@@ -700,7 +715,20 @@ let res = await collection.where({
 
 ### 更新指定文档
 
-collection.doc().update()
+collection.doc().update(Object data)
+
+**参数说明**
+
+| 参数 | 类型   | 必填 | 说明                                     |
+| ---- | ------ | ---- | ---------------------------------------- |
+| data | object | 是   | 更新字段的Object，{'name': 'Ben'} _id 非必填|
+
+**响应参数**
+
+| 参数	| 类型	|  说明																			|
+| ----	| ------|  ----------------------------------------	|
+|updated| Number| 更新成功条数，数据更新前后没变化时会返回0	|
+
 
 ```js
 let res = await collection.doc('doc-id').update({
