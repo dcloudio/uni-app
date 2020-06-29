@@ -133,6 +133,9 @@ function processMemberProperty (node, state) {
       }
       const identifier = '__$m' + (state.options.__m__++) + '__'
       state.options.replaceCodes[identifier] = `'+${genCode(property, true)}+'`
+      if (state.computedProperty) {
+        state.computedProperty[identifier] = property
+      }
       node.property = t.identifier(identifier)
     }
     node.computed = false

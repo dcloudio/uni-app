@@ -586,6 +586,17 @@ describe('mp:compiler-extra', () => {
       '<block wx:for="{{$root.l0}}" wx:for-item="item" wx:for-index="i" wx:key="i"><text>{{item.g0}}</text></block>',
       'with(this){var l0=__map(list,function(item,i){var g0=item.split("").join(" ");return{$orig:__get_orig(item),g0:g0}});$mp.data=Object.assign({},{$root:{l0:l0}})}'
     )
+    assertCodegen(
+      `<view class="content">
+        <view v-for="(item, index) in tabList" :key="index">
+            <view v-for="(item2,index2) in list[item.key]" :key="index2" @click="show(item2.id, item2.id)">
+                {{formatIt(item2.id)}}
+            </view>
+        </view>
+    </view>`,
+      '<view class="content"><block wx:for="{{$root.l1}}" wx:for-item="item" wx:for-index="index" wx:key="index"><view><block wx:for="{{item.l0}}" wx:for-item="item2" wx:for-index="index2" wx:key="index2"><view data-event-opts="{{[[\'tap\',[[\'show\',[\'$0\',\'$1\'],[[[\'list.\'+item.$orig.key+\'\',\'\',index2,\'id\']],[[\'list.\'+item.$orig.key+\'\',\'\',index2,\'id\']]]]]]]}}" bindtap="__e">{{\'\'+item2.m0+\'\'}}</view></block></view></block></view>',
+      'with(this){var l1=__map(tabList,function(item,index){var l0=__map(list[item.key],function(item2,index2){var m0=formatIt(item2.id);return{$orig:__get_orig(item2),m0:m0}});return{$orig:__get_orig(item),l0:l0}});$mp.data=Object.assign({},{$root:{l1:l1}})}'
+    )
   })
 
   it('generate TemplateLiteral ', () => {

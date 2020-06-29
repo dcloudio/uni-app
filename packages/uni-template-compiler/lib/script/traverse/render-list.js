@@ -146,6 +146,7 @@ module.exports = function traverseRenderList (path, state) {
     identifierArray: state.identifierArray,
     propertyArray: [],
     declarationArray: [],
+    computedProperty: {},
     initExpressionStatementArray: state.initExpressionStatementArray
   }
 
@@ -173,6 +174,16 @@ module.exports = function traverseRenderList (path, state) {
     functionExpression.traverse(origVisitor, {
       forItem
     })
+    const keys = Object.keys(forState.computedProperty)
+    if (keys.length) {
+      keys.forEach(key => {
+        const property = forState.computedProperty[key]
+        if (t.isMemberExpression(property) && property.object.name === forItem) {
+          property.object = t.memberExpression(t.identifier(forItem), t.identifier(VAR_ORIGINAL))
+          forState.options.replaceCodes[key] = `'+${genCode(property, true)}+'`
+        }
+      })
+    }
   } else {
     forPath.traverse(require('./visitor'), forState)
   }
