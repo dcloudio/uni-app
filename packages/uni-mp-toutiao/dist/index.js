@@ -1306,7 +1306,8 @@ const hooks = [
   'onShow',
   'onHide',
   'onError',
-  'onPageNotFound'
+  'onPageNotFound',
+  'onThemeChange'
 ];
 
 function parseBaseApp (vm, {

@@ -125,6 +125,13 @@ class ComponentDescriptor {
     return this.$el && this.$el.classList.contains(cls)
   }
 
+  getComputedStyle () {
+    if (this.$el) {
+      return window.getComputedStyle(this.$el)
+    }
+    return {}
+  }
+
   getDataset () {
     return this.$el && this.$el.dataset
   }
