@@ -17,7 +17,7 @@ function parseJson (content, preprocess = false) {
     try {
       content = JSON.parse(stripJsonComments(content))
     } catch (e) {
-      throw new Error("uni-app-compiler: " + e.message)
+      throw new Error('uni-app-compiler: ' + e.message)
     }
   }
 

@@ -103,8 +103,8 @@ class ErrorReport {
   }
 }
 Object.assign(ErrorReport.prototype, {
-  HOST: "96f0e031-f37a-48ef-84c7-2023f6360c0a.bspapp.com",
-  PATH: "/http/uni-app-compiler",
+  HOST: '96f0e031-f37a-48ef-84c7-2023f6360c0a.bspapp.com',
+  PATH: '/http/uni-app-compiler',
   EXCLUDE_ERROR_LIST: ['uni-app-compiler']
 });
 
