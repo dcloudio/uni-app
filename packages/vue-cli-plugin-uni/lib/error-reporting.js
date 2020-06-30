@@ -40,7 +40,7 @@ class ErrorReport {
       cp: process.env.UNI_PLATFORM,
       hx: this.isInHBuilderX ? 1 : 0,
       et: type,
-      em: err
+      em: err.replace(/(\().+(node_modules[\/\\]@dcloudio)/g, '$1$2')
     });
 
     var hash = this._getMD5(data);
@@ -75,7 +75,7 @@ class ErrorReport {
     try {
       const errMsg = err.toString()
 
-      const errorIndex = this.EXCLUDE_ERROR_LIST.findIndex(item => errMsg.includes(item) >= 0)
+      const errorIndex = this.EXCLUDE_ERROR_LIST.findIndex(item => errMsg.includes(item))
       if (errorIndex >= 0) {
         return false
       }
