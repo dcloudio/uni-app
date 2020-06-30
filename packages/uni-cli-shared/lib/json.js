@@ -13,7 +13,12 @@ function parseJson (content, preprocess = false) {
         type: jsPreprocessOptions.type
       })
     }
-    content = JSON.parse(stripJsonComments(content))
+
+    try {
+      content = JSON.parse(stripJsonComments(content))
+    } catch (e) {
+      throw new Error("dcloud:parse-json-error")
+    }
   }
 
   content = JSON.stringify(content)
