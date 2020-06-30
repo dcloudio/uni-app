@@ -55,16 +55,27 @@ uniCloud框架底层，会自动在callfunction时传递`uni-id`的token（uni-a
 + `tokenExpiresIn`token有效期，以秒为单位
 + 另外可以按照客户端平台进行不同的配置，参考下面示例
 
-```
+```json
 {
 	"passwordSecret": "passwordSecret-demo",
 	"tokenSecret": "tokenSecret-demo",
-	"tokenExpiresIn": 3600,
+	"tokenExpiresIn": 7200,
 	"mp-weixin":{
-		"tokenExpiresIn": 7200
+    "oauth":{
+      "weixin": {
+        "appid": "your mp-weixin appid",
+        "appsecret": "your mp-weixin appsecret",
+      }
+    }
 	},
 	"app-plus": {
-		"tokenExpiresIn": 432000
+		"tokenExpiresIn": 2592000,
+    "oauth":{
+      "weixin": {
+        "appid": "your app-weixin appid",
+        "appsecret": "your app-weixin appsecret",
+      }
+    }
 	}
 }
 ```
@@ -167,6 +178,7 @@ uniCloud.callFunction({
 | ---		| ---	| ---	| ---	|
 | username	| String| 是	|用户名	|
 | password	| String| 是	|密码	|
+| queryField	| Array| 否	|指定从哪些字段中比对username，不填默认与数据库内的username字段对比, 可取值'username'、'email'、'mobile'|
 
 **响应参数**
 
@@ -189,7 +201,8 @@ exports.main = async function(event,context) {
 	// username、password验证是否合法的逻辑
 	const res = await uniID.login({
 		username,
-		password
+		password,
+    queryField: ['username', 'email', 'mobile']
 	})
 	return res
 }
@@ -234,11 +247,12 @@ exports.main = async function(event,context) {
 
 **passwordInfo参数说明**
 
-| 字段					| 类型	| 必填	| 说明		|
-| ---					| ---	| ---	| ---		|
-| oldPassword			| String| 是	|旧密码		|
-| newPassword			| String| 是	|新密码		|
-| passwordConfirmation	| String| 是	|确认新密码	|
+| 字段								| 类型	| 必填| 说明													|
+| ---									| ---		| ---	| ---														|
+| uid									| String| 是	|用户Id，可以通过checkToken返回	|
+| oldPassword					| String| 是	|旧密码													|
+| newPassword					| String| 是	|新密码													|
+| passwordConfirmation| String| 是	|确认新密码											|
 
 **响应参数**
 
@@ -259,7 +273,14 @@ exports.main = async function(event,context) {
 		passwordConfirmation
 	} = event
 	// 校验新密码与确认新密码是否一致
+  
+  const payload = await uniID.checkToken(event.uniIdToken)
+  if(payload.code > 0) {
+    return payload
+  }
+  
 	const res = await uniID.updatePwd({
+    uid: payload.uid,
 		oldPassword,
 		newPassword,
 		passwordConfirmation
@@ -274,9 +295,10 @@ exports.main = async function(event,context) {
 
 **avatarInfo**参数说明
 
-| 字段	| 类型	| 必填| 说明			|
-| ---		| ---		| ---	| ---				|
-| avatar| String| 是	|用户头像URL|
+| 字段	| 类型	| 必填| 说明													|
+| ---		| ---		| ---	| ---														|
+| uid		| String| 是	|用户Id，可以通过checkToken返回	|
+| avatar| String| 是	|用户头像URL										|
 
 **响应参数**
 
@@ -294,8 +316,12 @@ exports.main = async function(event,context) {
 	const {
 		avatar
 	} = event
-	// 校验avatar链接合法性
+  const payload = await uniID.checkToken(event.uniIdToken)
+  if(payload.code > 0) {
+    return payload
+  }
 	const res = await uniID.setAvatar({
+    uid: payload.uid,
 		avatar
 	})
 	return res
@@ -309,9 +335,10 @@ exports.main = async function(event,context) {
 
 **mobileInfo**参数说明
 
-| 字段	| 类型	| 必填| 说明			|
-| ---		| ---		| ---	| ---				|
-| mobile| String| 是	|用户手机号|
+| 字段	| 类型	| 必填| 说明													|
+| ---		| ---		| ---	| ---														|
+| uid		| String| 是	|用户Id，可以通过checkToken返回	|
+| mobile| String| 是	|用户手机号											|
 
 **响应参数**
 
@@ -329,8 +356,12 @@ exports.main = async function(event,context) {
 	const {
 		mobile
 	} = event
-	// 校验手机号合法性
+  const payload = await uniID.checkToken(event.uniIdToken)
+  if(payload.code > 0) {
+    return payload
+  }
 	const res = await uniID.bindMobile({
+    uid: payload.uid,
 		mobile
 	})
 	return res
@@ -344,9 +375,10 @@ exports.main = async function(event,context) {
 
 **emailInfo**参数说明
 
-| 字段	| 类型	| 必填| 说明		|
-| ---		| ---		| ---	| ---			|
-| email	| String| 是	|用户邮箱	|
+| 字段	| 类型	| 必填| 说明													|
+| ---		| ---		| ---	| ---														|
+| uid		| String| 是	|用户Id，可以通过checkToken返回	|
+| email	| String| 是	|用户邮箱												|
 
 **响应参数**
 
@@ -364,8 +396,12 @@ exports.main = async function(event,context) {
 	const {
 		email
 	} = event
-	// 校验手机号合法性
+  const payload = await uniID.checkToken(event.uniIdToken)
+  if(payload.code > 0) {
+    return payload
+  }
 	const res = await uniID.bindEmail({
+    uid: payload.uid,
 		email
 	})
 	return res
@@ -376,17 +412,17 @@ exports.main = async function(event,context) {
 
 ## 登出
 
-用法：`uniID.logout(String uid);`
+用法：`uniID.logout(String token);`
 
 **注意**
 
 - 登出成功之后应删除持久化存储的token，键值为：uniIdToken，`uni.removeStorageSync('uniIdToken')`
 
-参数说明
+**参数说明**
 
 | 字段| 类型	| 必填| 说明	|
 | ---	| ---		| ---	| ---		|
-| uid	| String| 是	|用户uid|
+| token	| String| 是	|用户token|
 
 **响应参数**
 
@@ -401,17 +437,183 @@ exports.main = async function(event,context) {
 // 云函数logout代码
 const uniID = require('uni-id')
 exports.main = async function(event,context) {
-	const {
-		uniIdToken
-	} = event
-	payload = await uniID.checkToken(uniIdToken)
-	if (payload.code && payload.code > 0) {
-		return payload
-	}
-	const res = await uniID.logout(payload.uid)
+	const res = await uniID.logout(uniIdToken)
 	return res
 }
 
+```
+
+## 微信登录
+
+用法：`uniID.loginByWeixin(String code);`
+
+**注意**
+
+- 需要在config.json内使用微信登录的平台下配置appid和appsecret
+- uniId会自动判断客户端平台
+- 登录成功之后应持久化存储token，键值为：uniIdToken，`uni.removeStorageSync('uniIdToken')`
+- App端获取code不可直接调用`uni.login`，详细用法可以看下面示例
+
+**参数说明**
+
+| 字段| 类型	| 必填| 说明							|
+| ---	| ---		| ---	| ---								|
+| code| String| 是	|微信登录返回的code	|
+
+**响应参数**
+
+| 字段| 类型	| 必填| 说明						|
+| ---	| ---		| ---	| ---							|
+| code| Number| 是	|错误码，0表示成功|
+| msg	| String| 是	|详细信息					|
+
+**示例代码**
+
+```js
+// 云函数login-by-weixin代码
+const uniID = require('uni-id')
+exports.main = async function(event,context) {
+	const res = await uniID.loginByWeixin(event.code)
+	return res
+}
+
+// 客户端代码
+// 代码较长建议直接参考插件市场示例项目：https://ext.dcloud.net.cn/plugin?id=2116
+let weixinAuthService
+export default {
+  data() {
+    return {
+      hasWeixinAuth: false
+    }
+  },
+  onLoad() {
+    // #ifdef APP-PLUS
+    plus.oauth.getServices((services) => {
+      weixinAuthService = services.find((service) => {
+        return service.id === 'weixin'
+      })
+      if (weixinAuthService) {
+        this.hasWeixinAuth = true
+      }
+    });
+    // #endif
+  },
+  methods: {
+    getWeixinCode() {
+      return new Promise((resolve, reject) => {
+        // #ifdef MP-WEIXIN
+        uni.login({
+          provider: 'weixin',
+          success(res) {
+            resolve(res.code)
+          },
+          fail(err) {
+            reject(new Error('微信登录失败'))
+          }
+        })
+        // #endif
+        // #ifdef APP-PLUS
+        weixinAuthService.authorize(function(res) {
+          resolve(res.code)
+        }, function(err) {
+          console.log(err)
+          reject(new Error('微信登录失败'))
+        });
+        // #endif
+      })
+    },
+    loginByWeixin() {
+      this.getWeixinCode().then((code) => {
+        return uniCloud.callFunction({
+          name: 'login-by-weixin',
+          data: {
+            code
+          }
+        })
+      }).then((res) => {
+        uni.showModal({
+          showCancel: false,
+          content: JSON.stringify(e.result)
+        })
+        if (res.result.code === 0) {
+          uni.setStorageSync('uniIdToken', e.result.token)
+        }
+      }).catch(() => {
+        uni.showModal({
+          showCancel: false,
+          content: '微信登录失败，请稍后再试'
+        })
+      })
+    }
+  }
+}
+
+```
+
+## 绑定微信
+
+用法：`uniID.bindWeixin(Object weixinInfo);`
+
+**weixinInfo 参数说明**
+
+**参数说明**
+
+| 字段| 类型	| 必填| 说明													|
+| ---	| ---		| ---	| ---														|
+| uid	| String| 是	|用户Id，可以通过checkToken返回	|
+| code| String| 是	|微信登录返回的code							|
+
+**响应参数**
+
+| 字段| 类型	| 必填| 说明						|
+| ---	| ---		| ---	| ---							|
+| code| Number| 是	|错误码，0表示成功|
+| msg	| String| 是	|详细信息					|
+
+```js
+// 云函数login-by-weixin代码
+const uniID = require('uni-id')
+exports.main = async function(event,context) {
+  payload = await uniID.checkToken(event.uniIdToken)
+  if (payload.code && payload.code > 0) {
+  	return payload
+  }
+	const res = await uniID.bindWeixin({
+    uid: payload.uid,
+    code: event.code
+  })
+	return res
+}
+```
+
+## 解绑微信
+
+用法：`uniID.unbindWeixin(String uid);`
+
+**参数说明**
+
+| 字段| 类型	| 必填| 说明													|
+| ---	| ---		| ---	| ---														|
+| uid	| String| 是	|用户Id，可以通过checkToken返回	|
+
+**响应参数**
+
+| 字段| 类型	| 必填| 说明						|
+| ---	| ---		| ---	| ---							|
+| code| Number| 是	|错误码，0表示成功|
+| msg	| String| 是	|详细信息					|
+
+```js
+// 云函数login-by-weixin代码
+const uniID = require('uni-id')
+exports.main = async function(event,context) {
+  payload = await uniID.checkToken(event.uniIdToken)
+  if (payload.code && payload.code > 0) {
+  	return payload
+  }
+	const res = await uniID.unbindWeixin(payload.uid)
+	return res
+}
 ```
 
 # 数据库结构
@@ -420,25 +622,34 @@ exports.main = async function(event,context) {
 
 表名：uni-id-users
 
-| 字段             | 类型      | 必填 | 描述                                        |
-| ---------------- | --------- | ---- | ------------------------------------------- |
-| \_id             | Object ID | 是   | 存储文档 ID（用户 ID），系统自动生成        |
-| username         | String    | 是   | 用户名，不允许重复                          |
-| password         | String    | 否   | 密码，加密存储                              |
-| nickname         | String    | 否   | 用户昵称                                    |
-| gender           | Integer   | 否   | 用户性别：0 未知 1 男性 2 女性              |
-| status           | Integer   | 是   | 用户状态：0 正常 1 禁用 2 审核中 3 审核拒绝 |
-| mobile           | String    | 否   | 手机号码                                    |
-| mobile_confirmed | Integer   | 否   | 手机号验证状态：0 未验证 1 已验证           |
-| email            | String    | 否   | 邮箱地址                                    |
-| email_confirmed  | Integer   | 否   | 邮箱验证状态：0 未验证 1 已验证             |
-| avatar           | String    | 否   | 头像地址                                    |
-| comment          | String    | 否   | 备注                                        |
-| realname_auth    | Object    | 否   | 实名认证信息                                |
-| register_date    | Timestamp | 否   | 注册时间                                    |
-| register_ip      | String    | 否   | 注册时 IP 地址                              |
-| last_login_date  | Timestamp | 否   | 最后登录时间                                |
-| last_login_ip    | String    | 否   | 最后登录时 IP 地址                          |
+| 字段						| 类型			| 必填| 描述																				|
+| ----------------| ---------	| ----| -------------------------------------------	|
+| \_id						| Object ID	| 是	| 存储文档 ID（用户 ID），系统自动生成				|
+| username				| String		| 是	| 用户名，不允许重复													|
+| password				| String		| 否	| 密码，加密存储															|
+| nickname				| String		| 否	| 用户昵称																		|
+| gender					| Integer		| 否	| 用户性别：0 未知 1 男性 2 女性							|
+| status					| Integer		| 是	| 用户状态：0 正常 1 禁用 2 审核中 3 审核拒绝	|
+| mobile					| String		| 否	| 手机号码																		|
+| mobile_confirmed| Integer		| 否	| 手机号验证状态：0 未验证 1 已验证						|
+| email						| String		| 否	| 邮箱地址																		|
+| email_confirmed	| Integer		| 否	| 邮箱验证状态：0 未验证 1 已验证							|
+| avatar					| String		| 否	| 头像地址																		|
+| comment					| String		| 否	| 备注																				|
+| wx_openid				| Object		| 否	| 微信平台openid															|
+| wx_unionid			| String		| 否	| 微信平台uniodid															|
+| realname_auth		| Object		| 否	| 实名认证信息																|
+| register_date		| Timestamp	| 否	| 注册时间																		|
+| register_ip			| String		| 否	| 注册时 IP 地址															|
+| last_login_date	| Timestamp	| 否	| 最后登录时间																|
+| last_login_ip		| String		| 否	| 最后登录时 IP 地址													|
+
+**wx_openid字段定义**
+
+| 字段    | 类型   | 必填 | 描述     |
+| ------- | ------ | ---- | -------- |
+| app-plus | String | 否   | app平台微信openid |
+| mp-weixin| String | 否   | 微信小程序平台openid  |
 
 **realNameAuth 扩展字段定义**
 该字段存储实名认证信息。
