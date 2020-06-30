@@ -36,6 +36,7 @@ html {
 
 body {
   overflow-x: hidden;
+  background-color: white;
 }
 
 [class^="uni-icon-"],
