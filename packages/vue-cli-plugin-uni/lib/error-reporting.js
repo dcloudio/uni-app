@@ -40,7 +40,7 @@ class ErrorReport {
       cp: process.env.UNI_PLATFORM,
       hx: this.isInHBuilderX ? 1 : 0,
       et: type,
-      em: err.replace(/(\().+(node_modules[\/\\]@dcloudio)/g, '$1$2')
+      em: err.replace(/(\().+?(node_modules[\/\\]@dcloudio)/g, '$1$2')
     });
 
     var hash = this._getMD5(data);
@@ -109,7 +109,7 @@ Object.assign(ErrorReport.prototype, {
 });
 
 function report(type, err) {
-  ErrorReport.instance.report(type, err);
+  //ErrorReport.instance.report(type, err);
 }
 
 global.__error_reporting__ = report
