@@ -1,37 +1,36 @@
 class ErrorReport {
-
-  static get instance() {
+  static get instance () {
     if (this._instance == null) {
-      this._instance = new ErrorReport();
+      this._instance = new ErrorReport()
     }
-    return this._instance;
+    return this._instance
   }
 
-  constructor() {
-    this._instance = null;
-    this._https = null;
-    this._crypto = null;
-    this._cacheList = [];
-    this._isReporting = false;
+  constructor () {
+    this._instance = null
+    this._https = null
+    this._crypto = null
+    this._cacheList = []
+    this._isReporting = false
   }
 
-  get https() {
+  get https () {
     if (this._https == null) {
-      this._https = require('https');
+      this._https = require('https')
     }
-    return this._https;
+    return this._https
   }
 
-  get isInHBuilderX() {
+  get isInHBuilderX () {
     const {
       isInHBuilderX
     } = require('@dcloudio/uni-cli-shared')
-    return isInHBuilderX;
+    return isInHBuilderX
   }
 
-  report(type, err) {
+  report (type, err) {
     if (!this._shouldReport(err)) {
-      return;
+      return
     }
 
     const data = JSON.stringify({
@@ -41,22 +40,22 @@ class ErrorReport {
       hx: this.isInHBuilderX ? 1 : 0,
       et: type,
       em: err
-    });
+    })
 
-    var hash = this._getMD5(data);
+    var hash = this._getMD5(data)
 
     if (this._cacheList.includes(hash)) {
-      return;
+      return
     }
 
-    this._cacheList.push(hash);
+    this._cacheList.push(hash)
 
     setTimeout(() => {
-      this._doReport(data);
-    }, 10);
+      this._doReport(data)
+    }, 10)
   }
 
-  _doReport(data) {
+  _doReport (data) {
     const req = this.https.request({
       hostname: this.HOST,
       port: 443,
@@ -66,12 +65,12 @@ class ErrorReport {
         'Content-Type': 'application/json',
         'Content-Length': data.length
       }
-    });
-    req.write(data);
-    req.end();
+    })
+    req.write(data)
+    req.end()
   }
 
-  _shouldReport(err = '') {
+  _shouldReport (err = '') {
     try {
       const errMsg = err.toString()
 
@@ -91,25 +90,25 @@ class ErrorReport {
     return false
   }
 
-  _getMD5(str) {
-    return this.crypto.createHash('md5').update(str).digest('hex');
+  _getMD5 (str) {
+    return this.crypto.createHash('md5').update(str).digest('hex')
   }
 
-  get crypto() {
+  get crypto () {
     if (this._crypto == null) {
-      this._crypto = require('crypto');
+      this._crypto = require('crypto')
     }
-    return this._crypto;
+    return this._crypto
   }
 }
 Object.assign(ErrorReport.prototype, {
-  HOST: "96f0e031-f37a-48ef-84c7-2023f6360c0a.bspapp.com",
-  PATH: "/http/uni-app-compiler",
+  HOST: '96f0e031-f37a-48ef-84c7-2023f6360c0a.bspapp.com',
+  PATH: '/http/uni-app-compiler',
   EXCLUDE_ERROR_LIST: ['uni-app-compiler']
-});
+})
 
-function report(type, err) {
-  ErrorReport.instance.report(type, err);
+function report (type, err) {
+  ErrorReport.instance.report(type, err)
 }
 
 global.__error_reporting__ = report
