@@ -7486,6 +7486,9 @@ var serviceContext = (function () {
 
   function getSubNVueById (id) {
     const webview = plus.webview.getWebviewById(id);
+    if (webview === null || webview === undefined) {
+      throw new Error('Unable to find SubNVue, id=' + id)
+    }
     if (webview && !webview.$processed) {
       wrapper$1(webview);
     }
@@ -14003,6 +14006,7 @@ var serviceContext = (function () {
     'onHide',
     'onUniNViewMessage',
     'onPageNotFound',
+    'onThemeChange',
     'onError',
     // Page
     'onLoad',
