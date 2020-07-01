@@ -19,6 +19,7 @@
 |success|Function|否||收到开发者服务器成功返回的回调函数||
 |fail|Function|否||接口调用失败的回调函数||
 |complete|Function|否||接口调用结束的回调函数（调用成功、失败都会执行）|&nbsp;|
+|firstIpv4|Boolean|否|false|DNS解析时优先使用ipv4|仅 App-Android 支持 (HBuilderX 2.8.0+)|
 
 **method 有效值**
 
