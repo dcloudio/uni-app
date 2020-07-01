@@ -65,7 +65,7 @@ npm install puppeteer --save-dev
 
 2. 根据API编写测试的js代码，参考测试用例
 API文档见：[https://uniapp.dcloud.io/collocation/auto/api](https://uniapp.dcloud.io/collocation/auto/api)
-测试文件目录配置见 [jest.config.js](?id=jestconfigjs)
+测试文件目录配置见 [jest.config.js](collocation/auto/api?id=jestconfigjs)
 
 3. 运行测试
 ```
@@ -82,7 +82,7 @@ Snapshots:   0 total
 Time:        14.995s, estimated 16s
 ```
 
-更多配置参考 [jest.config.js](?id=jestconfigjs)
+更多配置参考 [jest.config.js](collocation/auto/api?id=jestconfigjs)
 
 
 #### App-Android测试流程
