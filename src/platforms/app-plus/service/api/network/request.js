@@ -22,7 +22,8 @@ export function createRequestTaskById (requestTaskId, {
   header,
   method = 'GET',
   responseType,
-  sslVerify = true
+  sslVerify = true,
+  firstIpv4 = false
 } = {}) {
   const stream = requireNativePlugin('stream')
   const headers = {}
@@ -75,7 +76,8 @@ export function createRequestTaskById (requestTaskId, {
     // weex 官方文档未说明实际支持 timeout，单位：ms
     timeout: timeout || 6e5,
     // 配置和weex模块内相反
-    sslVerify: !sslVerify
+    sslVerify: !sslVerify,
+    firstIpv4: firstIpv4
   }
   if (method !== 'GET') {
     options.body = typeof data === 'string' ? data : JSON.stringify(data)
