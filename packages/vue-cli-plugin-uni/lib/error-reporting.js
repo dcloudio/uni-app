@@ -12,7 +12,8 @@ class ErrorReport {
     this._https = null;
     this._crypto = null;
     this._cacheList = [];
-    this._isReporting = false;
+    this._UNI_INPUT_DIR_REG = new RegExp(process.env.UNI_INPUT_DIR.replace(/\\/g, '\/'), 'g');
+    this._UNI_CLI_CONTEXT_REG = new RegExp(process.env.UNI_CLI_CONTEXT.replace(/\\/g, '\/'), 'g');
   }
 
   get https() {
@@ -34,13 +35,17 @@ class ErrorReport {
       return;
     }
 
+    err = err.replace(/\\/g, '\/')
+    err = err.replace(this._UNI_INPUT_DIR_REG, 'UNI_INPUT_DIR')
+    err = err.replace(this._UNI_CLI_CONTEXT_REG, 'UNI_CLI_CONTEXT')
+
     const data = JSON.stringify({
       np: process.platform,
       nv: process.version,
       cp: process.env.UNI_PLATFORM,
       hx: this.isInHBuilderX ? 1 : 0,
       et: type,
-      em: err.replace(/(\().+?(node_modules[\/\\]@dcloudio)/g, '$1$2')
+      em: err
     });
 
     var hash = this._getMD5(data);
@@ -109,7 +114,7 @@ Object.assign(ErrorReport.prototype, {
 });
 
 function report(type, err) {
-  //ErrorReport.instance.report(type, err);
+  ErrorReport.instance.report(type, err);
 }
 
 global.__error_reporting__ = report
