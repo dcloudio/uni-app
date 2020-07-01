@@ -1,3 +1,8 @@
+const {
+  normalizePath,
+  isInHBuilderX
+} = require('@dcloudio/uni-cli-shared/lib/util');
+
 class ErrorReport {
 
   static get instance() {
@@ -12,8 +17,8 @@ class ErrorReport {
     this._https = null;
     this._crypto = null;
     this._cacheList = [];
-    this._UNI_INPUT_DIR_REG = new RegExp(process.env.UNI_INPUT_DIR.replace(/\\/g, '\/'), 'g');
-    this._UNI_CLI_CONTEXT_REG = new RegExp(process.env.UNI_CLI_CONTEXT.replace(/\\/g, '\/'), 'g');
+    this._UNI_INPUT_DIR_REG = new RegExp(normalizePath(process.env.UNI_INPUT_DIR), 'g');
+    this._UNI_CLI_CONTEXT_REG = new RegExp(normalizePath(process.env.UNI_CLI_CONTEXT), 'g');
   }
 
   get https() {
@@ -23,19 +28,12 @@ class ErrorReport {
     return this._https;
   }
 
-  get isInHBuilderX() {
-    const {
-      isInHBuilderX
-    } = require('@dcloudio/uni-cli-shared')
-    return isInHBuilderX;
-  }
-
   report(type, err) {
     if (!this._shouldReport(err)) {
       return;
     }
 
-    err = err.replace(/\\/g, '\/')
+    err = normalizePath(err)
     err = err.replace(this._UNI_INPUT_DIR_REG, 'UNI_INPUT_DIR')
     err = err.replace(this._UNI_CLI_CONTEXT_REG, 'UNI_CLI_CONTEXT')
 
@@ -43,7 +41,7 @@ class ErrorReport {
       np: process.platform,
       nv: process.version,
       cp: process.env.UNI_PLATFORM,
-      hx: this.isInHBuilderX ? 1 : 0,
+      hx: isInHBuilderX ? 1 : 0,
       et: type,
       em: err
     });
