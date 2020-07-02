@@ -74,7 +74,13 @@ function parseStyle (style = {}, root = '') {
     return Object.assign(windowOptions, platformStyle)
   }
 
-  if (style.navigationBarTextStyle && style.navigationBarTextStyle !== 'black') {
+  if (
+    style.navigationBarTextStyle &&
+    (
+      style.navigationBarTextStyle !== 'black' &&
+      style.navigationBarTextStyle.indexOf('@') !== 0
+    )
+  ) {
     style.navigationBarTextStyle = 'white'
   }
 

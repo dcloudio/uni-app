@@ -25,8 +25,8 @@ const origVisitor = {
   Identifier (path) {
     if (
       !path.node.$mpProcessed &&
-            path.node.name === this.forItem &&
-            path.isReferencedIdentifier()
+      path.node.name === this.forItem &&
+      path.isReferencedIdentifier()
     ) {
       const forItemIdentifier = t.identifier(this.forItem)
       forItemIdentifier.$mpProcessed = true
@@ -61,7 +61,10 @@ function replaceRefrence (forItem, code) {
 }
 
 function getForExtra (forItem, forIndex, path, state) {
-  let forCode = genCode(processMemberExpression(path.node.arguments[0], state), true)
+  const arg0 = path.node.arguments[0]
+  const isNumeric = t.isNumericLiteral(arg0)
+  const isString = t.isStringLiteral(arg0)
+  let forCode = genCode(processMemberExpression(arg0, state), true)
 
   const forKey = traverseKey(path.node)
   const origForKeyCode = t.isIdentifier(forKey) && forKey.name
@@ -80,11 +83,17 @@ function getForExtra (forItem, forIndex, path, state) {
       forExtraElements.push(...scoped.forExtra)
     }
   }
+  let forCodeElem = t.stringLiteral(forCode)
+  if (isNumeric) {
+    forCodeElem = t.numericLiteral(arg0.value)
+  } else if (isString) {
+    forCodeElem = t.stringLiteral('#s#' + forCode)
+  }
   if (forItem === origForKeyCode) { // 以自身为 key，则依据 forIndex 查找 ['list','',__i0__],['list','',index]
     forExtraElements.push(
       t.arrayExpression(
         [
-          t.stringLiteral(forCode),
+          forCodeElem,
           t.stringLiteral(''),
           t.identifier(forIndex)
         ]
@@ -94,7 +103,7 @@ function getForExtra (forItem, forIndex, path, state) {
     forExtraElements.push(
       t.arrayExpression(
         [
-          t.stringLiteral(forCode),
+          forCodeElem,
           t.stringLiteral(forIndex === forKeyCode ? '' : forKeyCode),
           forKey || t.identifier(forIndex)
         ]
@@ -137,6 +146,7 @@ module.exports = function traverseRenderList (path, state) {
     identifierArray: state.identifierArray,
     propertyArray: [],
     declarationArray: [],
+    computedProperty: {},
     initExpressionStatementArray: state.initExpressionStatementArray
   }
 
@@ -164,6 +174,16 @@ module.exports = function traverseRenderList (path, state) {
     functionExpression.traverse(origVisitor, {
       forItem
     })
+    const keys = Object.keys(forState.computedProperty)
+    if (keys.length) {
+      keys.forEach(key => {
+        const property = forState.computedProperty[key]
+        if (t.isMemberExpression(property) && property.object.name === forItem) {
+          property.object = t.memberExpression(t.identifier(forItem), t.identifier(VAR_ORIGINAL))
+          forState.options.replaceCodes[key] = `'+${genCode(property, true)}+'`
+        }
+      })
+    }
   } else {
     forPath.traverse(require('./visitor'), forState)
   }

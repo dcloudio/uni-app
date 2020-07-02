@@ -59,10 +59,17 @@ function initGlobalListeners () {
   const globalEvent = requireNativePlugin('globalEvent')
   const emit = UniServiceJSBridge.emit
 
-  // splashclosed 时开始监听 backbutton
-  plus.globalEvent.addEventListener('splashclosed', () => {
+  if (weex.config.preload) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('[uni-app] preload.addEventListener.backbutton')
+    }
     plus.key.addEventListener('backbutton', backbuttonListener)
-  })
+  } else {
+    // splashclosed 时开始监听 backbutton
+    plus.globalEvent.addEventListener('splashclosed', () => {
+      plus.key.addEventListener('backbutton', backbuttonListener)
+    })
+  }
 
   plus.globalEvent.addEventListener('pause', () => {
     emit('onAppEnterBackground')

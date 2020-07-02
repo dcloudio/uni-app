@@ -17,10 +17,12 @@ module.exports = {
     },
     filterTag: 'wxs',
     project: 'project.config.json',
-    subPackages: true
+    subPackages: true,
+    darkmode: true
   },
   copyWebpackOptions (platformOptions, vueOptions) {
     const copyOptions = [
+      'theme.json',
       'sitemap.json',
       'ext.json',
       'custom-tab-bar'

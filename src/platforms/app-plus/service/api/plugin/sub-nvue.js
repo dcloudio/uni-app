@@ -63,6 +63,9 @@ function wrapper (webview) {
 
 export function getSubNVueById (id) {
   const webview = plus.webview.getWebviewById(id)
+  if (webview === null || webview === undefined) {
+    throw new Error('Unable to find SubNVue, id=' + id)
+  }
   if (webview && !webview.$processed) {
     wrapper(webview)
   }

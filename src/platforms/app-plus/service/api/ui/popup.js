@@ -6,17 +6,16 @@ import {
   invoke
 } from '../../bridge'
 
-let waiting
-let waitingTimeout
-let toast = false
-let toastTimeout
+let toast
+let toastType
+let timeout
 
 export function showLoading (args) {
-  return callApiSync(showToast, args, 'showToast', 'showLoading')
+  return callApiSync(showToast, Object.assign({}, args, { type: 'loading' }), 'showToast', 'showLoading')
 }
 
 export function hideLoading () {
-  return callApiSync(hideToast, Object.create(null), 'hideToast', 'hideLoading')
+  return callApiSync(hide, 'loading', 'hide', 'hideLoading')
 }
 
 export function showToast ({
@@ -25,41 +24,18 @@ export function showToast ({
   image = '',
   duration = 1500,
   mask = false,
-  position = ''
+  position = '',
+  type = 'toast'
 } = {}) {
-  if (position) {
-    if (toast) {
-      toastTimeout && clearTimeout(toastTimeout)
-      plus.nativeUI.closeToast()
-    }
-    if (waiting) {
-      waitingTimeout && clearTimeout(waitingTimeout)
-      waiting.close()
-    }
-    if (~['top', 'center', 'bottom'].indexOf(position)) {
-      plus.nativeUI.toast(title, {
-        verticalAlign: position
-      })
-      toast = true
-      toastTimeout = setTimeout(() => {
-        hideToast()
-      }, 2000)
-      return {
-        errMsg: 'showToast:ok'
-      }
-    }
-    console.warn('uni.showToast 传入的 "position" 值 "' + position + '" 无效')
-  }
-
-  if (duration) {
-    if (waiting) {
-      waitingTimeout && clearTimeout(waitingTimeout)
-      waiting.close()
-    }
-    if (toast) {
-      toastTimeout && clearTimeout(toastTimeout)
-      plus.nativeUI.closeToast()
-    }
+  hide(null)
+  toastType = type
+  if (['top', 'center', 'bottom'].includes(position)) {
+    // 仅可以关闭 richtext 类型，但 iOS 部分情况换行显示有问题
+    plus.nativeUI.toast(title, {
+      verticalAlign: position
+    })
+    toast = true
+  } else {
     if (icon && !~['success', 'loading', 'none'].indexOf(icon)) {
       icon = 'success'
     }
@@ -93,35 +69,42 @@ export function showToast ({
           height: '55px',
           icon: '__uniappsuccess.png',
           interval: duration
-
         }
       }
     }
 
-    waiting = plus.nativeUI.showWaiting(title, waitingOptions)
-    waitingTimeout = setTimeout(() => {
-      hideToast()
-    }, duration)
+    toast = plus.nativeUI.showWaiting(title, waitingOptions)
   }
+
+  timeout = setTimeout(() => {
+    hide(null)
+  }, duration)
   return {
     errMsg: 'showToast:ok'
   }
 }
 
 export function hideToast () {
-  if (toast) {
-    toastTimeout && clearTimeout(toastTimeout)
+  return callApiSync(hide, 'toast', 'hide', 'hideToast')
+}
+
+export function hide (type = 'toast') {
+  if (type && type !== toastType) {
+    return
+  }
+  if (timeout) {
+    clearTimeout(timeout)
+    timeout = null
+  }
+  if (toast === true) {
     plus.nativeUI.closeToast()
-    toast = false
+  } else if (toast && toast.close) {
+    toast.close()
   }
-  if (waiting) {
-    waitingTimeout && clearTimeout(waitingTimeout)
-    waiting.close()
-    waiting = null
-    waitingTimeout = null
-  }
+  toast = null
+  toastType = null
   return {
-    errMsg: 'hideToast:ok'
+    errMsg: 'hide:ok'
   }
 }
 export function showModal ({

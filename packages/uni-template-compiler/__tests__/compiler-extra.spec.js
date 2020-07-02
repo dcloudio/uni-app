@@ -319,6 +319,14 @@ describe('mp:compiler-extra', () => {
         </view>`,
       '<view><block wx:for="{{list[idx]}}" wx:for-item="item" wx:for-index="__i0__" wx:key="id"><view data-event-opts="{{[[\'tap\',[[\'m1\',[\'$0\'],[[[\'list.\'+idx+\'\',\'id\',item.id]]]]]]]}}" class="mid-item-title" bindtap="__e"><view data-event-opts="{{[[\'tap\',[[\'m2\',[\'$0\'],[[[\'list.\'+idx+\'\',\'id\',item.id]]]]]]]}}" class="mid-item-icon" catchtap="__e"></view></view></block></view>'
     )
+    assertCodegen(
+      '<view><view class="item" v-for="i in \'abc\'" :key="i" @click="func(i)"></view></view>',
+      '<view><block wx:for="abc" wx:for-item="i" wx:for-index="__i0__" wx:key="*this"><view data-event-opts="{{[[\'tap\',[[\'func\',[\'$0\'],[[[\'#s#abc\',\'\',__i0__]]]]]]]}}" class="item" bindtap="__e"></view></block></view>'
+    )
+    assertCodegen(
+      '<view><view class="item" v-for="i in 5" :key="i" @click="func(i)"></view></view>',
+      '<view><block wx:for="{{5}}" wx:for-item="i" wx:for-index="__i0__" wx:key="*this"><view data-event-opts="{{[[\'tap\',[[\'func\',[\'$0\'],[[[5,\'\',__i0__]]]]]]]}}" class="item" bindtap="__e"></view></block></view>'
+    )
   })
 
   it('generate class binding', () => {
@@ -577,6 +585,17 @@ describe('mp:compiler-extra', () => {
       '<text v-for="(item, i) in list" v-bind:key="i" >{{ item.split(\'\').join(\' \') }}</text>',
       '<block wx:for="{{$root.l0}}" wx:for-item="item" wx:for-index="i" wx:key="i"><text>{{item.g0}}</text></block>',
       'with(this){var l0=__map(list,function(item,i){var g0=item.split("").join(" ");return{$orig:__get_orig(item),g0:g0}});$mp.data=Object.assign({},{$root:{l0:l0}})}'
+    )
+    assertCodegen(
+      `<view class="content">
+        <view v-for="(item, index) in tabList" :key="index">
+            <view v-for="(item2,index2) in list[item.key]" :key="index2" @click="show(item2.id, item2.id)">
+                {{formatIt(item2.id)}}
+            </view>
+        </view>
+    </view>`,
+      '<view class="content"><block wx:for="{{$root.l1}}" wx:for-item="item" wx:for-index="index" wx:key="index"><view><block wx:for="{{item.l0}}" wx:for-item="item2" wx:for-index="index2" wx:key="index2"><view data-event-opts="{{[[\'tap\',[[\'show\',[\'$0\',\'$1\'],[[[\'list.\'+item.$orig.key+\'\',\'\',index2,\'id\']],[[\'list.\'+item.$orig.key+\'\',\'\',index2,\'id\']]]]]]]}}" bindtap="__e">{{\'\'+item2.m0+\'\'}}</view></block></view></block></view>',
+      'with(this){var l1=__map(tabList,function(item,index){var l0=__map(list[item.key],function(item2,index2){var m0=formatIt(item2.id);return{$orig:__get_orig(item2),m0:m0}});return{$orig:__get_orig(item),l0:l0}});$mp.data=Object.assign({},{$root:{l1:l1}})}'
     )
   })
 

@@ -7486,6 +7486,9 @@ var serviceContext = (function () {
 
   function getSubNVueById (id) {
     const webview = plus.webview.getWebviewById(id);
+    if (webview === null || webview === undefined) {
+      throw new Error('Unable to find SubNVue, id=' + id)
+    }
     if (webview && !webview.$processed) {
       wrapper$1(webview);
     }
@@ -8486,7 +8489,9 @@ var serviceContext = (function () {
       return
     }
 
-    uni.hideToast(); // 后退时，关闭 toast,loading
+    // 后退时，关闭 toast,loading
+    uni.hideToast();
+    uni.hideLoading();
 
     if (currentPage.$page.meta.isQuit) {
       quit();
@@ -9322,17 +9327,16 @@ var serviceContext = (function () {
     }
   }
 
-  let waiting;
-  let waitingTimeout;
-  let toast = false;
-  let toastTimeout;
+  let toast;
+  let toastType;
+  let timeout;
 
   function showLoading$1 (args) {
-    return callApiSync(showToast$1, args, 'showToast', 'showLoading')
+    return callApiSync(showToast$1, Object.assign({}, args, { type: 'loading' }), 'showToast', 'showLoading')
   }
 
   function hideLoading () {
-    return callApiSync(hideToast, Object.create(null), 'hideToast', 'hideLoading')
+    return callApiSync(hide, 'loading', 'hide', 'hideLoading')
   }
 
   function showToast$1 ({
@@ -9341,41 +9345,18 @@ var serviceContext = (function () {
     image = '',
     duration = 1500,
     mask = false,
-    position = ''
+    position = '',
+    type = 'toast'
   } = {}) {
-    if (position) {
-      if (toast) {
-        toastTimeout && clearTimeout(toastTimeout);
-        plus.nativeUI.closeToast();
-      }
-      if (waiting) {
-        waitingTimeout && clearTimeout(waitingTimeout);
-        waiting.close();
-      }
-      if (~['top', 'center', 'bottom'].indexOf(position)) {
-        plus.nativeUI.toast(title, {
-          verticalAlign: position
-        });
-        toast = true;
-        toastTimeout = setTimeout(() => {
-          hideToast();
-        }, 2000);
-        return {
-          errMsg: 'showToast:ok'
-        }
-      }
-      console.warn('uni.showToast 传入的 "position" 值 "' + position + '" 无效');
-    }
-
-    if (duration) {
-      if (waiting) {
-        waitingTimeout && clearTimeout(waitingTimeout);
-        waiting.close();
-      }
-      if (toast) {
-        toastTimeout && clearTimeout(toastTimeout);
-        plus.nativeUI.closeToast();
-      }
+    hide(null);
+    toastType = type;
+    if (['top', 'center', 'bottom'].includes(position)) {
+      // 仅可以关闭 richtext 类型，但 iOS 部分情况换行显示有问题
+      plus.nativeUI.toast(title, {
+        verticalAlign: position
+      });
+      toast = true;
+    } else {
       if (icon && !~['success', 'loading', 'none'].indexOf(icon)) {
         icon = 'success';
       }
@@ -9409,35 +9390,42 @@ var serviceContext = (function () {
             height: '55px',
             icon: '__uniappsuccess.png',
             interval: duration
-
           };
         }
       }
 
-      waiting = plus.nativeUI.showWaiting(title, waitingOptions);
-      waitingTimeout = setTimeout(() => {
-        hideToast();
-      }, duration);
+      toast = plus.nativeUI.showWaiting(title, waitingOptions);
     }
+
+    timeout = setTimeout(() => {
+      hide(null);
+    }, duration);
     return {
       errMsg: 'showToast:ok'
     }
   }
 
   function hideToast () {
-    if (toast) {
-      toastTimeout && clearTimeout(toastTimeout);
+    return callApiSync(hide, 'toast', 'hide', 'hideToast')
+  }
+
+  function hide (type = 'toast') {
+    if (type && type !== toastType) {
+      return
+    }
+    if (timeout) {
+      clearTimeout(timeout);
+      timeout = null;
+    }
+    if (toast === true) {
       plus.nativeUI.closeToast();
-      toast = false;
+    } else if (toast && toast.close) {
+      toast.close();
     }
-    if (waiting) {
-      waitingTimeout && clearTimeout(waitingTimeout);
-      waiting.close();
-      waiting = null;
-      waitingTimeout = null;
-    }
+    toast = null;
+    toastType = null;
     return {
-      errMsg: 'hideToast:ok'
+      errMsg: 'hide:ok'
     }
   }
   function showModal$1 ({
@@ -9979,6 +9967,7 @@ var serviceContext = (function () {
     hideLoading: hideLoading,
     showToast: showToast$1,
     hideToast: hideToast,
+    hide: hide,
     showModal: showModal$1,
     showActionSheet: showActionSheet$1,
     setTabBarBadge: setTabBarBadge$2,
@@ -12142,7 +12131,7 @@ var serviceContext = (function () {
     }
 
     abort () {
-      invokeMethod('operateRequestTask', {
+      invokeMethod('operateUploadTask', {
         uploadTaskId: this.id,
         operationType: 'abort'
       });
@@ -13132,10 +13121,17 @@ var serviceContext = (function () {
     const globalEvent = requireNativePlugin('globalEvent');
     const emit = UniServiceJSBridge.emit;
 
-    // splashclosed 时开始监听 backbutton
-    plus.globalEvent.addEventListener('splashclosed', () => {
+    if (weex.config.preload) {
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('[uni-app] preload.addEventListener.backbutton');
+      }
       plus.key.addEventListener('backbutton', backbuttonListener);
-    });
+    } else {
+      // splashclosed 时开始监听 backbutton
+      plus.globalEvent.addEventListener('splashclosed', () => {
+        plus.key.addEventListener('backbutton', backbuttonListener);
+      });
+    }
 
     plus.globalEvent.addEventListener('pause', () => {
       emit('onAppEnterBackground');
@@ -14009,6 +14005,8 @@ var serviceContext = (function () {
     'onShow',
     'onHide',
     'onUniNViewMessage',
+    'onPageNotFound',
+    'onThemeChange',
     'onError',
     // Page
     'onLoad',
@@ -14208,6 +14206,21 @@ var serviceContext = (function () {
       Vue.prototype.$mount = function mount (el, hydrating) {
         if (this.mpType === 'app') {
           this.$options.render = function () {};
+          if (weex.config.preload) { // preload
+            if (process.env.NODE_ENV !== 'production') {
+              console.log('[uni-app] preload app-service.js');
+            }
+            const globalEvent = weex.requireModule('globalEvent');
+            globalEvent.addEventListener('launchApp', () => {
+              if (process.env.NODE_ENV !== 'production') {
+                console.log('[uni-app] launchApp');
+              }
+              plus.updateConfigInfo && plus.updateConfigInfo();
+              registerApp(this);
+              oldMount.call(this, el, hydrating);
+            });
+            return
+          }
           registerApp(this);
         }
         return oldMount.call(this, el, hydrating)

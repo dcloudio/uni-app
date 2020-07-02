@@ -17,6 +17,11 @@ const {
 } = require('@dcloudio/uni-cli-shared/lib/cache')
 
 const {
+  initTheme,
+  parseTheme
+} = require('@dcloudio/uni-cli-shared/lib/theme')
+
+const {
   // pagesJsonJsFileName,
   initAutoImportComponents
 } = require('@dcloudio/uni-cli-shared/lib/pages')
@@ -35,6 +40,8 @@ function renameUsingComponents (jsonObj) {
 module.exports = function (content, map) {
   this.cacheable && this.cacheable()
 
+  initTheme()
+
   let isAppView = false
   if (this.resourceQuery) {
     const params = loaderUtils.parseQuery(this.resourceQuery)
@@ -48,12 +55,17 @@ module.exports = function (content, map) {
   // this.addDependency(pagesJsonJsPath)
   this.addDependency(manifestJsonPath)
 
-  const pagesJson = parsePagesJson(content, {
+  let pagesJson = parsePagesJson(content, {
     addDependency: (file) => {
       (process.UNI_PAGES_DEPS || (process.UNI_PAGES_DEPS = new Set())).add(normalizePath(file))
       this.addDependency(file)
     }
   })
+
+  if (global.uniPlugin.defaultTheme) {
+    pagesJson = parseTheme(pagesJson)
+    this.addDependency(path.resolve(process.env.UNI_INPUT_DIR, 'theme.json'))
+  }
 
   // 组件自动导入配置
   process.UNI_AUTO_SCAN_COMPONENTS = !(pagesJson.easycom && pagesJson.easycom.autoscan === false)

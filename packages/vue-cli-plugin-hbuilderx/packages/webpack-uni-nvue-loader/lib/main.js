@@ -59,6 +59,17 @@ module.exports = function (content, map) {
         ${statCode}
         import 'uni-app-style'
         import App from './${normalizePath(params.page)}.nvue?mpType=page'
+        if (typeof Promise !== 'undefined' && !Promise.prototype.finally) {
+          Promise.prototype.finally = function(callback) {
+            const promise = this.constructor
+            return this.then(
+              value => promise.resolve(callback()).then(() => value),
+              reason => promise.resolve(callback()).then(() => {
+                throw reason
+              })
+            )
+          }
+        }
         App.mpType = 'page'
         App.route = '${params.page}'
         App.el = '#root'
@@ -70,5 +81,7 @@ module.exports = function (content, map) {
       }
     }
   }
-  return statCode + content
+  const automatorCode = process.env.UNI_AUTOMATOR_WS_ENDPOINT ? 'import \'@dcloudio/uni-app-plus/dist/automator\';'
+    : ''
+  return automatorCode + statCode + content
 }
