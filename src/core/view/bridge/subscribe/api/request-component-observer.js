@@ -48,7 +48,7 @@ export function requestComponentObserver ({
           intersectionRatio: entrie.intersectionRatio,
           intersectionRect: getRect(entrie.intersectionRect),
           boundingClientRect: getRect(entrie.boundingClientRect),
-          relativeRect: getRect(entrie.rootBounds),
+          relativeRect: entrie.rootBounds ? getRect(entrie.rootBounds) : null,
           time: Date.now(),
           dataset: normalizeDataset(entrie.target.dataset || {}),
           id: entrie.target.id
