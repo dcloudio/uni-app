@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 
-process.env.UNI_CLI_CONTEXT = path.resolve(__dirname, '../../../')
+process.env.UNI_CLI_CONTEXT =  process.env.UNI_CLI_CONTEXT || path.resolve(__dirname, '../../../')
 
 process.env.UNI_HBUILDERX_PLUGINS = process.env.UNI_HBUILDERX_PLUGINS || path.resolve(__dirname, '../../../../')
 
