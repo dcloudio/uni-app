@@ -86,7 +86,8 @@ module.exports = function initOptions (options) {
   if (sassLoaderVersion < 8) {
     options.css.loaderOptions.sass.data = sassData
   } else {
-    options.css.loaderOptions.sass.prependData = sassData
+    const name = sassLoaderVersion >= 9 ? 'additionalData' : 'prependData'
+    options.css.loaderOptions.sass[name] = sassData
   }
 
   const userPostcssConfigPath = path.resolve(process.env.UNI_INPUT_DIR, 'postcss.config.js')
