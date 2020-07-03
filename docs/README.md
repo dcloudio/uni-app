@@ -11,13 +11,13 @@
     <div class="flex-img-group-view">
       <a href="//m3w.cn/uniapp" target="_blank" class="clear-style barcode-view">
         <div class="barcode-img-box">
-          <img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/uni-android.png" width="160" />
+          <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/7c946930-bcf2-11ea-b997-9918a5dda011.png" width="160" />
         </div>
         <b>Android版</b>
       </a>
       <a href="https://itunes.apple.com/cn/app/hello-uni-app/id1417078253?mt=8" target="_blank" class="clear-style barcode-view">
         <div class="barcode-img-box">
-          <img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/uni-ios.png" width="160" />
+          <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/7c910dd0-bcf2-11ea-b680-7980c8a877b8.png" width="160" />
         </div>
         <b>iOS版</b>
       </a>
@@ -32,7 +32,7 @@
         <b>微信小程序版</b>
       </a>
       <a href="//m3w.cn/uniapp" target="_blank" class="clear-style barcode-view">
-        <div class="barcode-img-box"><img src="https://img-cdn-qiniu.dcloud.net.cn/img/alipay1.png" width="160" /></div>
+        <div class="barcode-img-box"><img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/30112940-bcf2-11ea-a30b-e311646dfaf2.png" width="160" /></div>
         <b>支付宝小程序版</b>
       </a>
     </div>
