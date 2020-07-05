@@ -22,3 +22,4 @@ web体验地址：[https://duolingo.91ddedu.com](https://duolingo.91ddedu.com)�
 
 - 月嫂了不起：母婴护理师、育婴师的接单和学习平台。微信小程序搜索“月嫂了不起”
 - OYAN听书：外文书籍音频FM小程序。微信小程序搜索“OYAN听书”
+- 优悦学课堂：高效学习考证。支持iOS、Android App及小程序多端连接uniCloud，[详见](https://school.youyuexue.com/#/downLoad)
