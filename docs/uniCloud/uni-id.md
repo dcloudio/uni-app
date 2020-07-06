@@ -289,6 +289,72 @@ exports.main = async function(event,context) {
 }
 ```
 
+## 重置密码 @reset-password
+
+用法：`uniID.resetPwd(Object passwordInfo)`
+
+**passwordInfo参数说明**
+
+| 字段								| 类型	| 必填| 说明													|
+| ---									| ---		| ---	| ---														|
+| uid									| String| 是	|用户Id，可以通过checkToken返回	|
+| password					| String| 是	|重置后的密码													|
+
+**响应参数**
+
+| 字段	| 类型	| 必填	| 说明						|
+| ---	| ---	| ---	| ---						|
+| code	| Number| 是	|错误码，0表示成功			|
+| msg	| String| 是	|详细信息					|
+
+**示例代码**
+
+```js
+// 云函数代码
+const uniID = require('uni-id')
+exports.main = async function(event,context) {
+  const payload = await uniID.checkToken(event.uniIdToken)
+  if(payload.code > 0) {
+    return payload
+  }
+  
+	const res = await uniID.resetPwd({
+    uid: payload.uid,
+		password: '12345678'
+	})
+	return res
+}
+```
+
+## 加密密码 @encrypt-password
+
+用法：`uniID.encryptPwd(String password)`
+
+**passwordInfo参数说明**
+
+| 字段								| 类型	| 必填| 说明													|
+| ---									| ---		| ---	| ---														|
+| password					| String| 是	|要加密的字符串													|
+
+**响应参数**
+
+| 字段	| 类型	| 必填	| 说明						|
+| ---	| ---	| ---	| ---						|
+| password	| String| 是	|加密后的字符串		|
+
+**示例代码**
+
+```js
+// 云函数代码
+const uniID = require('uni-id')
+exports.main = async function(event,context) {
+	const encResult = await uniID.encryptPwd('123456')
+	return {
+    encResult
+  }
+}
+```
+
 ## 设置头像
 
 用法：`uniID.setAvatar(Object avatarInfo)`
