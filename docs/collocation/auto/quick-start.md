@@ -109,13 +109,18 @@ npm run test:android
 
 目前仅支持 iOS 模拟器（需要mac电脑安装xcode）
 
-1. 配置模拟器id，参考 `jest.config.js`
+1. 安装依赖 `node-simctl`
+```
+npm install node-simctl --save-dev
+```
 
-2. 配置 `Hbuilder` 调试基座/自定义基座 `Pandora_simulator.app` 目录，参考 `jest.config.js`
+2. 配置模拟器id，参考 `jest.config.js`
 
-3. 编写测试代码，参考测试用例
+3. 配置 `Hbuilder` 调试基座/自定义基座 `Pandora_simulator.app` 目录，参考 `jest.config.js`
 
-4. 运行测试
+4. 编写测试代码，参考测试用例
+
+5. 运行测试
 ```
 npm run test:ios
 ```
