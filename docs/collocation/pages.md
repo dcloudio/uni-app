@@ -85,7 +85,7 @@
   "easycom": {
     "autoscan": true, //是否自动扫描组件
     "custom": {//自定义扫描规则
-      "uni-(.*)": "@/components/uni-$1.vue"
+      "^uni-(.*)": "@/components/uni-$1.vue"
     }
   }
 }
@@ -763,8 +763,8 @@ h5 平台下拉刷新动画，只有 circle 类型。
 "easycom": {
   "autoscan": true,
   "custom": {
-    "uni-(.*)": "@/components/uni-$1.vue", // 匹配components目录内的vue文件
-    "vue-file-(.*)": "packageName/path/to/vue-file-$1.vue" // 匹配node_modules内的vue文件
+    "^uni-(.*)": "@/components/uni-$1.vue", // 匹配components目录内的vue文件
+    "^vue-file-(.*)": "packageName/path/to/vue-file-$1.vue" // 匹配node_modules内的vue文件
   }
 }
 ```
