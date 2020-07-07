@@ -75,6 +75,7 @@ App和微信小程序的ad组件没有type属性，可以用于banner，也可�
 - app-vue|QQ是客户端[原生组件](https://uniapp.dcloud.io/component/native-component)，层级最高无法被覆盖，app-nvue|微信|头条没有层级覆盖问题
 - app-vue 无法在 `<swiper>` 组件中使用`<ad>`
 - app-vue 不能在 `<scroll-view>` 组件中使用 `<ad>`，仅适用于页面级的滚动
+- HBuilderX2.8+版本Android平台更新穿山甲（今日头条）广告SDK后不再支持x86类型CPU，无法运行到x86类型cpu的模拟器。
 
 **@error 错误码**
 - App端聚合的穿山甲：[错误码](https://ad.oceanengine.com/union/media/doc?id=5de4cc6d78c8690012a90aa5)
