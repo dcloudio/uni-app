@@ -112,7 +112,7 @@ function isNVuePage (page, root = '') {
 
 function isValidPage (page, root = '') {
   if (typeof page === 'string') { // 不合法的配置
-    console.warn(`${page} 配置错误, 已被忽略, 查看文档: https://uniapp.dcloud.io/collocation/pages?id=pages`)
+    console.warn(`pages.json 页面配置错误, 已被忽略, 查看文档: https://uniapp.dcloud.io/collocation/pages?id=pages`)
     return false
   }
   let pagePath = page.path
