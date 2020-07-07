@@ -110,6 +110,7 @@ password入库时会自动进行一次sha1加密，不明文存储密码。
 | code	| Number| 是	|错误码，0表示成功			|
 | msg	| String| 是	|详细信息					|
 | token	| String| -	|注册完成自动登录之后返回的token信息|
+| tokenExpired	| String| -	|token过期时间|
 
 **示例代码**
 
@@ -187,6 +188,7 @@ uniCloud.callFunction({
 | code	| Number| 是	|错误码，0表示成功			|
 | msg	| String| 是	|详细信息					|
 | token	| String| -	|登录成功之后返回的token信息|
+| tokenExpired	| String| -	|token过期时间|
 
 **示例代码**
 
@@ -532,6 +534,8 @@ exports.main = async function(event,context) {
 | ---	| ---		| ---	| ---							|
 | code| Number| 是	|错误码，0表示成功|
 | msg	| String| 是	|详细信息					|
+| token	| String| -	|登录成功之后返回的token信息|
+| tokenExpired	| String| -	|token过期时间|
 
 **示例代码**
 
@@ -678,6 +682,43 @@ exports.main = async function(event,context) {
   	return payload
   }
 	const res = await uniID.unbindWeixin(payload.uid)
+	return res
+}
+```
+
+
+## 更新用户信息
+
+用法：`uniID.updateUser(Object userInfo);`
+
+此接口用于在其他接口不满足需求时使用
+
+**userInfo参数说明**
+
+| 字段| 类型	| 必填| 说明													|
+| ---	| ---		| ---	| ---														|
+| uid	| String| 是	|用户Id，可以通过checkToken返回	|
+| 其余参数	| Any| 是	|要设置的用户信息	|
+
+**响应参数**
+
+| 字段| 类型	| 必填| 说明						|
+| ---	| ---		| ---	| ---							|
+| code| Number| 是	|错误码，0表示成功|
+| msg	| String| 是	|详细信息					|
+
+```js
+// 云函数代码
+const uniID = require('uni-id')
+exports.main = async function(event,context) {
+  payload = await uniID.checkToken(event.uniIdToken)
+  if (payload.code && payload.code > 0) {
+  	return payload
+  }
+	const res = await uniID.updateUser({
+    uid: payload.uid,
+    nickname: 'user nickname'
+  })
 	return res
 }
 ```
