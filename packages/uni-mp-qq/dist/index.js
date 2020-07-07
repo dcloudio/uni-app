@@ -694,6 +694,8 @@ Component = function (options = {}) {
 const PAGE_EVENT_HOOKS = [
   'onPullDownRefresh',
   'onReachBottom',
+  'onAddToFavorites',
+  'onShareTimeline',
   'onShareAppMessage',
   'onPageScroll',
   'onResize',
@@ -1215,7 +1217,8 @@ const hooks = [
   'onHide',
   'onError',
   'onPageNotFound',
-  'onThemeChange'
+  'onThemeChange',
+  'onUnhandledRejection'
 ];
 
 function parseBaseApp (vm, {
