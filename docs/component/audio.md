@@ -11,6 +11,8 @@
 
 app-nvue也不支持此组件。
 
+如果需要带ui的样式，可以自己做，也可以在插件市场搜索相关[插件](https://ext.dcloud.net.cn/search?q=audio)
+
 **属性说明**
 
 |属性名|类型|默认值|说明|
