@@ -9,6 +9,7 @@ const LIFECYCLE_HOOKS = [
   'onPageNotFound',
   'onThemeChange',
   'onError',
+  'onUnhandledRejection',
   // Page
   'onLoad',
   // 'onShow',
@@ -18,6 +19,8 @@ const LIFECYCLE_HOOKS = [
   'onPullDownRefresh',
   'onReachBottom',
   'onTabItemTap',
+  'onAddToFavorites',
+  'onShareTimeline',
   'onShareAppMessage',
   'onResize',
   'onPageScroll',
