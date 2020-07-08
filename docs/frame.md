@@ -91,7 +91,7 @@ import add from '../../common/add.js'
 
 ### css引入静态资源
 
-> `css`文件或`style标签`内引入`css`文件时（scss、less文件同理），只能使用相对路径
+> `css`文件或`style标签`内引入`css`文件时（scss、less文件同理），可以使用相对路径或绝对路径（`HBuilderX 2.6.6-alpha`）
 
 ```css
 /* 绝对路径 */

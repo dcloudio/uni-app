@@ -266,6 +266,8 @@ Tips：`uni-app` 中 `manifest.json->h5->devServer` 实际上对应 `webpack` �
 #### publicPath
 配置 publicPath 为 cdn 资源地址前缀，这样编译出来的 html 文件，引用的 js，css 路径会自动变成 cdn 上的地址。
 
+注意：如果想对图片生效，image组件的图片地址需要使用相对路径
+
 **示例**
 
 以 hello-uniapp 发布 H5 时为例
