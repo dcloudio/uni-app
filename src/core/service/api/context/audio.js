@@ -26,10 +26,6 @@ class AudioContext {
     operateAudioPlayer(this.id, this.pageId, 'pause')
   }
 
-  stop () {
-    operateAudioPlayer(this.id, this.pageId, 'stop')
-  }
-
   seek (position) {
     operateAudioPlayer(this.id, this.pageId, 'seek', {
       position
