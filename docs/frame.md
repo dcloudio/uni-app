@@ -757,6 +757,9 @@ const package = require('packageName')
 ## TypeScript 支持
 在 uni-app 中使用 ts 开发，请参考 [Vue.js TypeScript 支持](https://cn.vuejs.org/v2/guide/typescript.html) 说明。
 
+
+类型定义文件由 @dcloudio/types 模块提供，安装后请注意配置 tsconfig.json 文件中的 compilerOptions > types 部分，如需其他小程序平台类型定义也可以安装，如：miniprogram-api-typings、mini-types。对于缺少或者错误的类型定义，可以自行在本地新增或修改并同时报告给官方请求更新。
+
 ### 注意事项
 在 uni-app 中使用 ts 需要注意以下事项。
 #### 在 vue 文件的 script 节点声明 lang="ts"@vue-ts
