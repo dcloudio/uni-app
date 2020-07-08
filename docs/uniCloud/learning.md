@@ -1,5 +1,8 @@
 
-林举的uniCloud培训视频：[腾讯课堂uniCloud 0基础视频](https://m.ke.qq.com/courseDetail.html?_bid=167&_wv=3&course_id=2409672&term_id=102513745&taid=8858395820213448)
+林举的uniCloud培训视频：[腾讯课堂uniCloud 0基础视频](https://study.163.com/course/introduction.htm?courseId=1209978085#/courseDetail?tab=1)
+
+  [![image](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-public-doc/f7a83f70-ba9a-11ea-b680-7980c8a877b8.png) ](https://study.163.com/course/introduction.htm?courseId=1209978085#/courseDetail?tab=1)
+
 
 uni-app结合云函数开发小程序博客教程：
 - [第一节](https://juejin.im/post/5ea78879e51d454dd60cf473)
