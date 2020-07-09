@@ -1331,8 +1331,9 @@ renderjs，以 vue 组件的写法运行在 view 层。
 
 ### 注意事项
 
-* 可以使用 dom、bom API 不可直接访问逻辑层数据
-* 视图层和逻辑层通讯方式与 [WXS](?id=wxs) 一致
+* 可以使用 vue 组件的声明周期不可以使用 App、Page 的声明周期
+* 可以使用 dom、bom API，不可直接访问逻辑层数据，不可以使用 uni 相关接口（如：uni.request）
+* 视图层和逻辑层通讯方式与 [WXS](frame?id=wxs) 一致，另外可以通过 this.$ownerInstance 获取当前组件的 ComponentDescriptor 实例
 * 观测更新的数据在 view 层可以直接访问到
 * 不要直接引用大型类库，推荐通过动态创建 script 方式引用
 * view 层的页面引用资源的路径相对于根目录计算，例如：./static/test.js
