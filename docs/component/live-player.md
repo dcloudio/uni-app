@@ -28,9 +28,13 @@
 |background-mute|Boolean|false|进入后台时是否静音||
 |min-cache|Number|1|最小缓冲区，单位s||
 |max-cache|Number|3|最大缓冲区，单位s||
+|picture-in-picture-mode|string/Array|3|设置小窗模式： push, pop，空字符串或通过数组形式设置多种模式（如： ["push", "pop"]）|微信小程序（2.10.3）|
 |@statechange|EventHandle||播放状态变化事件，detail = {code}||
-|@netstatus|EventHandle||网络状态通知，detail = {info}||
+|@netstatus|EventHandle||网络状态通知，detail = {info}|| 
 |@fullscreenchange|EventHandle||全屏变化事件，detail = {direction, fullScreen}。|&nbsp;|
+|@audiovolumenotify|EventHandle||播放音量大小通知，detail = {}|微信小程序（2.10.0）|
+|@enterpictureinpicture|EventHandle||播放器进入小窗|微信小程序（2.11.0）|
+|@leavepictureinpicture|EventHandle||播放器退出小窗|2.11.0|
 
 
 mode 的合法值
