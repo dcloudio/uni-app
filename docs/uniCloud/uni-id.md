@@ -757,7 +757,7 @@ exports.main = async function(event,context) {
 }
 ```
 
-## 解绑微信
+## 解绑支付宝
 
 用法：`uniID.unbindAlipay(String uid);`
 
