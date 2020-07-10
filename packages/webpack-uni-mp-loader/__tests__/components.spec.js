@@ -188,6 +188,68 @@ global['__wxVueOptions'] = {
     )
 
     assertCodegenOptions(
+      `const options = {
+        name: 'test'
+      }
+      export default options`,
+      {
+        name: '"test"',
+        inheritAttrs: null,
+        props: null
+      }
+    )
+
+    assertCodegenOptions(
+      `let options
+      options = {
+        name: 'test'
+      }
+      export default options`,
+      {
+        name: '"test"',
+        inheritAttrs: null,
+        props: null
+      }
+    )
+
+    assertCodegenOptions(
+      `const options = Vue.extend({
+        name: 'test'
+      })
+      export default options`,
+      {
+        name: '"test"',
+        inheritAttrs: null,
+        props: null
+      }
+    )
+
+    assertCodegenOptions(
+      `let  options
+      options = Vue.extend({
+        name: 'test'
+      })
+      export default options`,
+      {
+        name: '"test"',
+        inheritAttrs: null,
+        props: null
+      }
+    )
+
+    assertCodegenOptions(
+      `const options = {
+        name: 'test'
+      }
+      export default Vue.extend(options)`,
+      {
+        name: '"test"',
+        inheritAttrs: null,
+        props: null
+      }
+    )
+
+    assertCodegenOptions(
       `export default {
         props: ['id', 'test']
       }`,
