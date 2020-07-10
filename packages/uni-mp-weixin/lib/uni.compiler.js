@@ -12,6 +12,12 @@ wx.createComponent({
 `
 }
 
+function generateCssCode (ownerName) {
+  return `
+@import './${ownerName}.wxss'
+`
+}
+
 function hasOwn (obj, key) {
   return Object.prototype.hasOwnProperty.call(obj, key)
 }
@@ -61,7 +67,7 @@ module.exports = {
     }
     parentNode.attr.generic[slotName] = true
 
-    // 生成 scopedSlots 文件，包括 json,js,wxml,还需要更新 owner 的 usingComponents
+    // 生成 scopedSlots 文件，包括 json,js,wxml,wxss,还需要更新 owner 的 usingComponents
     if (!state.files) {
       state.files = {}
     }
@@ -99,6 +105,11 @@ module.exports = {
     }
     const jsContent = generateJsCode(genCode(t.objectExpression(objectProperties), true))
     state.files[jsFile] = jsContent
+
+    const cssFile = resourcePath.replace(ownerName + extname, componentName + '.wxss')
+    const cssContent = generateCssCode(ownerName)
+
+    state.files[cssFile] = cssContent
 
     if (!state.generic) {
       state.generic = []
