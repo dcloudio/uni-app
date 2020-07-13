@@ -13,7 +13,7 @@
 更多项目源码，见**插件市场**：[https://ext.dcloud.net.cn/?cat1=7](https://ext.dcloud.net.cn/?cat1=7)
 
 ### 商用案例
-- 登登多邻国：是登登教育公司为外语学习者提供的题库软件。其服务端整体基于uniCloud，前端包括PC和H5网站、微信小程序，均连接uniCloud。云函数日请求量百万级。
+- 登登多邻国：是登登教育公司为外语学习者提供的题库软件。其服务端整体基于uniCloud，前端包括PC和H5网站、微信小程序，均连接uniCloud。日请求量**百万级**。
 
 web体验地址：[https://duolingo.91ddedu.com](https://duolingo.91ddedu.com)；
 
@@ -24,3 +24,4 @@ web体验地址：[https://duolingo.91ddedu.com](https://duolingo.91ddedu.com)�
 - 月嫂了不起：母婴护理师、育婴师的接单和学习平台。微信小程序搜索“月嫂了不起”
 - OYAN听书：外文书籍音频FM小程序。微信小程序搜索“OYAN听书”
 - 优悦学课堂：高效学习考证。支持iOS、Android App及小程序多端连接uniCloud，[详见](https://school.youyuexue.com/#/downLoad)
+- 柠檬趣味测：心理性格测试。微信小程序搜索“柠檬趣味测”、QQ小程序搜索“柠檬测试”
