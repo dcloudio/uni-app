@@ -161,4 +161,4 @@ uniCloud免费期间，为避免资源滥用，有使用限制，见下。
 uniCloud服务商为阿里云时支持配置全球加速，步骤如下：
 
 1. 参考[阿里云全球加速](https://help.aliyun.com/document_detail/153198.html)文档，开通服务并对`api.bspapp.com`进行加速
-2. 自行初始化uniCloud传入endpoint参数，其值为开通全球加速的自有域名
+2. [自行初始化uniCloud](uniCloud/init.md)传入endpoint参数，其值为开通全球加速的自有域名
