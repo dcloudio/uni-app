@@ -1,10 +1,6 @@
 import Vue from 'vue'
 
 const getEmitter = (function () {
-  if (typeof getUniEmitter === 'function') {
-    /* eslint-disable no-undef */
-    return getUniEmitter
-  }
   let Emitter
   return function getUniEmitter () {
     if (!Emitter) {
