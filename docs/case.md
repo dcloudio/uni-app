@@ -60,7 +60,13 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 </div>
 
 
-<a href="https://discuz.chat/docs/" target="_blank" class="clear-style"><b>腾讯Discuz! Q：</b></a> 站长利器。微信小程序搜索“Discuz Q”
+<a href="https://discuz.chat/docs/" target="_blank" class="clear-style"><b>腾讯Discuz! Q：</b></a> 经典论坛新版版，站长利器。
+<div style="display:flex;justify-content: space-around;">
+  <a href="javascript:;" target="_self" class="clear-style barcode-view">
+		<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-alicdn/6f1a9a90-c5ad-11ea-81ea-f115fe74321c.png" width="200"/>
+		<span style="margin-top:15px;">微信小程序</span>
+	</a>
+</div>
 <div style="display:flex;justify-content: space-around;">
   <a href="https://discuz.chat/" target="_blank" class="clear-style barcode-view">
 		<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-alicdn/c7d1be20-c562-11ea-81ea-f115fe74321c.png" width="200"/>
