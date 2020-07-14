@@ -12,9 +12,9 @@ wx.createComponent({
 `
 }
 
-function generateCssCode (ownerName) {
+function generateCssCode (filename) {
   return `
-@import './${ownerName}.wxss'
+@import "./${filename}"
 `
 }
 
@@ -106,10 +106,15 @@ module.exports = {
     const jsContent = generateJsCode(genCode(t.objectExpression(objectProperties), true))
     state.files[jsFile] = jsContent
 
-    const cssFile = resourcePath.replace(ownerName + extname, componentName + '.wxss')
-    const cssContent = generateCssCode(ownerName)
+    try {
+      // TODO 使用 getPlatformExts 在单元测试报错，改从 state.options.platform 判断
+      const { getPlatformExts } = require('@dcloudio/uni-cli-shared')
+      let styleExtname = getPlatformExts().style
+      const styleFile = resourcePath.replace(ownerName + extname, componentName + styleExtname)
+      const styleContent = generateCssCode(ownerName + styleExtname)
 
-    state.files[cssFile] = cssContent
+      state.files[styleFile] = styleContent
+    } catch (error) {}
 
     if (!state.generic) {
       state.generic = []

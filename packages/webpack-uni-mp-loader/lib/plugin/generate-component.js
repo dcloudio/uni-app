@@ -2,7 +2,8 @@ const fs = require('fs')
 const path = require('path')
 const {
   removeExt,
-  normalizePath
+  normalizePath,
+  getPlatformExts
 } = require('@dcloudio/uni-cli-shared')
 const {
   getComponentSet
@@ -64,7 +65,7 @@ module.exports = function generateComponent (compilation) {
 
     const concatenatedModules = modules.filter(module => module.modules)
     const uniModuleId = modules.find(module => module.resource && normalizePath(module.resource) === uniPath).id
-    const wxssImports = {}
+    const styleImports = {}
 
     Object.keys(assets).forEach(name => {
       if (components.has(name.replace('.js', ''))) {
@@ -126,20 +127,21 @@ module.exports = function generateComponent (compilation) {
           assets[name].source = newSource
         }
       }
-      if (name.endsWith('.wxss')) {
+      const styleExtname = getPlatformExts().style
+      if (name.endsWith(styleExtname)) {
         // 移除部分含有错误引用的 wxss 文件
         let origSource = assets[name].source()
         origSource = origSource.trim ? origSource.trim() : ''
         const result = origSource.match(/^@import ["'](.+?)["']$/)
         if (result) {
-          const wxssPath = path.join(path.dirname(name), result[1])
-          if (Object.keys(assets).includes(wxssPath)) {
-            wxssImports[wxssPath] = wxssImports[wxssPath] || []
-            wxssImports[wxssPath].push(name)
+          const stylePath = path.join(path.dirname(name), result[1])
+          if (Object.keys(assets).includes(stylePath)) {
+            styleImports[stylePath] = styleImports[stylePath] || []
+            styleImports[stylePath].push(name)
           } else {
-            if (wxssImports[name]) {
-              wxssImports[name].forEach(name => delete assets[name])
-              delete wxssImports[name]
+            if (styleImports[name]) {
+              styleImports[name].forEach(name => delete assets[name])
+              delete styleImports[name]
             }
             delete assets[name]
           }
