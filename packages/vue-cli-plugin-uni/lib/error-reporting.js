@@ -2,6 +2,7 @@ const {
   normalizePath,
   isInHBuilderX
 } = require('@dcloudio/uni-cli-shared/lib/util')
+const plp = require('@dcloudio/webpack-uni-pages-loader/package.json')
 
 class ErrorReport {
   static get instance () {
@@ -13,11 +14,19 @@ class ErrorReport {
 
   constructor () {
     this._instance = null
+    this._os = null
     this._https = null
     this._crypto = null
     this._cacheList = []
     this._UNI_INPUT_DIR_REG = new RegExp(normalizePath(process.env.UNI_INPUT_DIR), 'g')
     this._UNI_CLI_CONTEXT_REG = new RegExp(normalizePath(process.env.UNI_CLI_CONTEXT), 'g')
+  }
+
+  get os () {
+    if (this._os == null) {
+      this._os = require('os')
+    }
+    return this._os
   }
 
   get https () {
@@ -37,9 +46,11 @@ class ErrorReport {
     err = err.replace(this._UNI_CLI_CONTEXT_REG, 'UNI_CLI_CONTEXT')
 
     const data = JSON.stringify({
+      di: this._getMD5(this._getMac()),
       np: process.platform,
       nv: process.version,
       cp: process.env.UNI_PLATFORM,
+      cv: plp['uni-app'].compilerVersion,
       hx: isInHBuilderX ? 1 : 0,
       et: type,
       em: err
@@ -97,6 +108,25 @@ class ErrorReport {
     return this.crypto.createHash('md5').update(str).digest('hex')
   }
 
+  _getMac () {
+    let mac
+    const network = this.os.networkInterfaces()
+    for (const key in network) {
+      const array = network[key]
+      for (let i = 0; i < array.length; i++) {
+        const item = array[i]
+        if (!item.family || (item.mac && item.mac === '00:00:00:00:00:00')) {
+          continue
+        }
+        if (item.family === 'IPv4' || item.family === 'IPv6') {
+          mac = item.mac
+          break
+        }
+      }
+    }
+    return mac
+  }
+
   get crypto () {
     if (this._crypto == null) {
       this._crypto = require('crypto')
@@ -107,7 +137,7 @@ class ErrorReport {
 Object.assign(ErrorReport.prototype, {
   HOST: '96f0e031-f37a-48ef-84c7-2023f6360c0a.bspapp.com',
   PATH: '/http/uni-app-compiler',
-  EXCLUDE_ERROR_LIST: ['uni-app-compiler']
+  EXCLUDE_ERROR_LIST: ['uni-app-compiler', 'Error: ENOENT: no such file or directory']
 })
 
 function report (type, err) {

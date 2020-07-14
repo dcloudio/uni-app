@@ -60,6 +60,41 @@ function handleComponentsObjectExpression (componentsObjExpr, path, state, prepe
   state.components = prepend ? components.concat(state.components) : components
 }
 
+function handleIdentifier ({ name }, path, state) {
+  // 仅做有限查找
+  for (let i = path.container.length; i > 0; i--) {
+    const node = path.container[i - 1]
+    let declarations = []
+    if (t.isExpressionStatement(node)) {
+      declarations = [node]
+    } else if (t.isVariableDeclaration(node)) {
+      declarations = node.declarations
+    }
+    for (let i = declarations.length; i > 0; i--) {
+      let declaration = declarations[i - 1]
+      let identifier
+      if (t.isVariableDeclarator(declaration)) {
+        identifier = declaration.id
+        declaration = declaration.init
+      } else if (t.isExpressionStatement(declaration)) {
+        identifier = declaration.expression.left
+        declaration = declaration.expression.right
+      }
+      if (identifier.name === name) {
+        if (t.isCallExpression(declaration) &&
+          t.isMemberExpression(declaration.callee) &&
+          declaration.arguments.length === 1) {
+          declaration = declaration.arguments[0]
+        }
+        if (t.isObjectExpression(declaration)) {
+          handleObjectExpression(declaration, path, state)
+        }
+        return
+      }
+    }
+  }
+}
+
 module.exports = function (ast, state = {
   type: 'Component',
   components: [],
@@ -96,12 +131,19 @@ module.exports = function (ast, state = {
       const declaration = path.node.declaration
       if (t.isObjectExpression(declaration)) { // export default {components:{}}
         handleObjectExpression(declaration, path, state)
+      } else if (t.isIdentifier(declaration)) {
+        handleIdentifier(declaration, path, state)
       } else if (t.isCallExpression(declaration) &&
         t.isMemberExpression(declaration.callee) &&
         declaration.arguments.length === 1) { // export default Vue.extend({components:{}})
         if (declaration.callee.object.name === 'Vue' && declaration.callee.property.name ===
           'extend') {
-          handleObjectExpression(declaration.arguments[0], path, state)
+          const argument = declaration.arguments[0]
+          if (t.isObjectExpression(argument)) {
+            handleObjectExpression(argument, path, state)
+          } else if (t.isIdentifier(argument)) {
+            handleIdentifier(argument, path, state)
+          }
         }
       } else if (t.isClassDeclaration(declaration) &&
         declaration.decorators &&

@@ -64,6 +64,7 @@ module.exports = function generateComponent (compilation) {
 
     const concatenatedModules = modules.filter(module => module.modules)
     const uniModuleId = modules.find(module => module.resource && normalizePath(module.resource) === uniPath).id
+    const wxssImports = {}
 
     Object.keys(assets).forEach(name => {
       if (components.has(name.replace('.js', ''))) {
@@ -123,6 +124,25 @@ module.exports = function generateComponent (compilation) {
           }
           newSource.__$wrappered = true
           assets[name].source = newSource
+        }
+      }
+      if (name.endsWith('.wxss')) {
+        // 移除部分含有错误引用的 wxss 文件
+        let origSource = assets[name].source()
+        origSource = origSource.trim ? origSource.trim() : ''
+        const result = origSource.match(/^@import ["'](.+?)["']$/)
+        if (result) {
+          const wxssPath = path.join(path.dirname(name), result[1])
+          if (Object.keys(assets).includes(wxssPath)) {
+            wxssImports[wxssPath] = wxssImports[wxssPath] || []
+            wxssImports[wxssPath].push(name)
+          } else {
+            if (wxssImports[name]) {
+              wxssImports[name].forEach(name => delete assets[name])
+              delete wxssImports[name]
+            }
+            delete assets[name]
+          }
         }
       }
     })

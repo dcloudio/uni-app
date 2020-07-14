@@ -180,7 +180,7 @@ module.exports = function (pagesJson, userManifestJson) {
     manifestJson.permissions = {}
   }
 
-  const nvuePages = pagesJson.nvue && pagesJson.nvue.pages
+  const nvuePages = process.env.UNI_USING_V3_NATIVE ? pagesJson.pages : (pagesJson.nvue && pagesJson.nvue.pages)
 
   if (nvuePages && nvuePages.length) {
     const pages = {}
@@ -198,9 +198,12 @@ module.exports = function (pagesJson, userManifestJson) {
       pages
     }
 
-    if (pagesJson.nvue.entryPagePath) {
+    if (process.env.UNI_USING_V3_NATIVE) {
+      appJson.nvue.entryPagePath = nvuePages[0]
+    } else if (pagesJson.nvue.entryPagePath) {
       appJson.nvue.entryPagePath = pagesJson.nvue.entryPagePath
     }
+
     // nvue 权限
     manifestJson.permissions.UniNView = {
       description: 'UniNView原生渲染'
@@ -345,7 +348,8 @@ module.exports = function (pagesJson, userManifestJson) {
       }
       if (!Object.keys(nvuePages).find(path => {
         const subNVues = nvuePages[path].window.subNVues || []
-        return path.replace(/\.html$/, '.nvue') === key || subNVues.find(({
+        // TODO
+        return (path.replace(/\.html$/, '.nvue') === key || path.replace(/\.html$/, '.nvue') + '.nvue' === key) || subNVues.find(({
           path
         }) => path === key.replace(/\.nvue$/, ''))
       }) && !pagesJson.pages.find(({
