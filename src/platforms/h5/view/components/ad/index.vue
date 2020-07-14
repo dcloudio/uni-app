@@ -6,6 +6,7 @@
     <div
       ref="container"
       class="uni-ad-container"
+      @click="onhandle"
     />
   </uni-ad>
 </template>
@@ -31,27 +32,47 @@ class AdConfig {
     this._callbacks = []
   }
 
-  get (adpid, callback) {
-    if (this._adConfig != null) {
-      callback(this._adConfig.adpids[adpid])
-      return
-    }
-
-    this._callbacks.push({ adpid: adpid, callback: callback })
-    this._loadAdConfig()
+  get adConfig () {
+    return this._adConfig
   }
 
   _init () {
     var config = this._getConfig()
-    if (config != null && config.last) {
-      var td = Math.abs(Date.now() - config.last)
-      if (td < this.CACHE_TIME) {
-        this._adConfig = config.data
-      }
+    if (config === null || !config.last) {
+      return
+    }
+
+    var td = Math.abs(Date.now() - config.last)
+    if (td < this.CACHE_TIME) {
+      this._adConfig = config.data
     }
   }
 
-  _loadAdConfig (adpid, callback) {
+  get (adpid, success, fail) {
+    if (this._adConfig != null) {
+      this._doCallback(adpid, success, fail)
+      return
+    }
+
+    this._callbacks.push({
+      adpid: adpid,
+      success: success,
+      fail: fail
+    })
+
+    this._loadAdConfig(adpid)
+  }
+
+  _doCallback (adpid, success, fail) {
+    var data = this._adConfig
+    if (data.adpids[adpid]) {
+      success(data.adpids[adpid])
+    } else {
+      fail(this.ERROR_INVALID_ADPID)
+    }
+  }
+
+  _loadAdConfig (adpid) {
     if (this._isLoading === true) {
       return
     }
@@ -60,22 +81,35 @@ class AdConfig {
 
     uni.request({
       url: this.URL,
-      timeout: 3000,
       method: 'GET',
+      timeout: 3000,
       data: {
-        appid: '__UNI__ADD1C32'
+        adpid: adpid
       },
       dataType: 'json',
       success: (res) => {
         const rd = res.data
         if (rd.ret === 0) {
           const data = rd.data
+
           this._adConfig = data
           this._setConfig(data)
+
+          this._callbacks.forEach(({ adpid, success, fail }) => {
+            this._doCallback(adpid, success, fail)
+          })
+        } else {
           this._callbacks.forEach((i) => {
-            i.callback(data.adpids[i.adpid])
+            i.fail(rd.message)
           })
         }
+        this._callbacks = []
+      },
+      fail: (err) => {
+        this._callbacks.forEach((i) => {
+          i.fail(err.errMsg)
+        })
+        this._callbacks = []
       },
       complete: (c) => {
         this._isLoading = false
@@ -103,8 +137,11 @@ class AdConfig {
 }
 Object.assign(AdConfig.prototype, {
   URL: '//stream.dcloud.net.cn/dcloud/H5Config',
-  KEY: 'UNI_APP_AD',
-  CACHE_TIME: 1000 * 60 * 10
+  KEY: 'uni_app_ad_config',
+  CACHE_TIME: 1000 * 60 * 10,
+  ERROR_INVALID_ADPID: {
+    '-5002': '无效adpid'
+  }
 })
 
 const adProvider = {
@@ -124,14 +161,7 @@ export default {
       default: ''
     }
   },
-  data () {
-    return {
-      hidden: false
-    }
-  },
   watch: {
-    hidden (val) {
-    },
     adpid (val) {
       if (val) {
         this._loadData(val)
@@ -142,25 +172,31 @@ export default {
     this._pl = []
     this._pd = {}
     this._pi = 0
-    this._loadData()
     this._checkTimer = null
     this._checkTimerCount = 0
+    this._loadData()
   },
   beforeDestroy () {
     this.$refs.container.innerHTML = ''
   },
   methods: {
+    onhandle (e) {
+      console.log('onhandle')
+    },
     _loadData (adpid) {
       AdConfig.instance.get(adpid || this.adpid, (data) => {
         this._pd = data
         this._pl = data.psp.split(',')
         this._renderAd()
+      }, (err) => {
+        this.$trigger('error', {}, { message: err })
       })
     },
     _renderAd () {
       if (this._pi > this._pl.length - 1) {
         return
       }
+
       var ap = this._pl[this._pi]
       var data = this._pd[ap]
       switch (ap) {
@@ -176,14 +212,10 @@ export default {
       var ad = document.createElement('script')
       ad.src = data.src || data.url
 
-      var adView = document.createElement('div')
-      adView.setAttribute('id', this._randomId())
-      adView.appendChild(ad)
-
       this.$refs.container.innerHTML = ''
-      this.$refs.container.append(adView)
+      this.$refs.container.append(ad)
 
-      // this._startCheckTimer()
+      this._startCheckTimer()
     },
     _renderKY (data) {
       var ad = document.createElement('script')
@@ -192,7 +224,7 @@ export default {
       this.$refs.container.innerHTML = ''
       this.$refs.container.append(ad)
 
-      // this._startCheckTimer()
+      this._startCheckTimer()
     },
     _renderNext () {
       if (this._pi >= this._pl.length - 1) {
@@ -203,7 +235,7 @@ export default {
       this._renderAd()
     },
     _checkRender () {
-      var hasContent = this.$refs.container.querySelector('a') || this.$refs.container.querySelector('iframe')
+      var hasContent = (this.$refs.container.clientHeight > 40)
       return hasContent
     },
     _startCheckTimer () {
@@ -213,7 +245,9 @@ export default {
           this._clearCheckTimer()
           return
         }
+
         this._checkTimerCount++
+
         if (this._checkTimerCount >= CHECK_RENDER_RETRY) {
           this._clearCheckTimer()
           this._renderNext()
@@ -224,10 +258,8 @@ export default {
       this._checkTimerCount = 0
       if (this._checkTimer != null) {
         window.clearInterval(this._checkTimer)
+        this._checkTimer = null
       }
-    },
-    _randomId () {
-      return 'ad' + Date.now() + '' + parseInt(Math.random() * 1000)
     }
   }
 }
@@ -241,9 +273,5 @@ export default {
 
   uni-ad[hidden] {
     display: none;
-  }
-
-  uni-ad .uni-ad-container {
-    min-height: 1px;
   }
 </style>
