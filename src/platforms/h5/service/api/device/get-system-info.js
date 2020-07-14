@@ -20,7 +20,7 @@ export function getSystemInfoSync () {
   var landscape = Math.abs(window.orientation) === 90
   var screenWidth = typeof window.orientation === 'number' ? Math[landscape ? 'max' : 'min'](screen.width, screen.height) : screen.width
   var screenHeight = typeof window.orientation === 'number' ? Math[landscape ? 'min' : 'max'](screen.height, screen.width) : screen.height
-  var windowWidth = Math.min(window.innerWidth, document.documentElement.clientWidth, screenWidth)
+  var windowWidth = Math.min(window.innerWidth, document.documentElement.clientWidth, screenWidth) || screenWidth
   var windowHeight = window.innerHeight
   var language = navigator.language
   var statusBarHeight = safeAreaInsets.top
