@@ -128,7 +128,8 @@ module.exports = function generateComponent (compilation) {
       }
       if (name.endsWith('.wxss')) {
         // 移除部分含有错误引用的 wxss 文件
-        const origSource = assets[name].source().trim()
+        let origSource = assets[name].source()
+        origSource = origSource.trim ? origSource.trim() : ''
         const result = origSource.match(/^@import ["'](.+?)["']$/)
         if (result) {
           const wxssPath = path.join(path.dirname(name), result[1])
