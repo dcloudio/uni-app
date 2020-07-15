@@ -108,13 +108,13 @@
 **polygon**<br>
 指定一系列坐标点，根据 points 坐标数据生成闭合多边形
 
-属性|说明|类型|必填|备注
-:--|:--|:--|:--|:--|
-points|经纬度数组|array|是|[{latitude: 0, longitude: 0}]
-strokeWidth|描边的宽度|Number|否|
-strokeColor|描边的颜色|String|否|十六进制|
-fillColor|填充颜色|String|否|十六进制|
-zIndex|设置多边形 Z 轴数值|Number|否|
+|属性|说明|类型|必填|备注
+|:--|:--|:--|:--|:--|
+|points|经纬度数组|array|是|[{latitude: 0, longitude: 0}]
+|strokeWidth|描边的宽度|Number|否||
+|strokeColor|描边的颜色|String|否|十六进制|
+|fillColor|填充颜色|String|否|十六进制|
+|zIndex|设置多边形 Z 轴数值|Number|否||
 
 **circles**
 
