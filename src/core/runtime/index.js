@@ -45,7 +45,7 @@ let uni = {}
 if (typeof Proxy !== 'undefined' && __PLATFORM__ !== 'app-plus') {
   uni = new Proxy({}, {
     get (target, name) {
-      if (target[name]) {
+      if (hasOwn(target, name)) {
         return target[name]
       }
       if (baseApi[name]) {
