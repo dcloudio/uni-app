@@ -60,6 +60,18 @@ describe('mp:compiler-mp-alipay', () => {
       '<component1 vue-id="551070e6-1" onVueInit="__l">text<view slot="right"></view></component1>'
     )
   })
+
+  it('generate scoped slot', () => {
+    assertCodegen(
+      '<component1 :text="\'text\'"><template v-slot="props"><view :class="{text:props.text}">{{props.text}}</view></template></component1>',
+      '<component1 vue-id="551070e6-1" text="text" onVueInit="__l"><view slot="default" slot-scope="props"><view class="{{((props.text)?\'text\':\'\')}}">{{props.text}}</view></view></component1>'
+    )
+    assertCodegen(
+      '<component1 :text="\'text\'"><template v-slot="{text}"><view :class="{text:text}">{{text}}</view></template></component1>',
+      '<component1 vue-id="551070e6-1" text="text" onVueInit="__l"><view slot="default" slot-scope="__SCOPED__"><view class="{{((__SCOPED__.text)?\'text\':\'\')}}">{{__SCOPED__.text}}</view></view></component1>'
+    )
+  })
+
   it('generate class binding', () => {
     assertCodegen(
       '<div :class="{ active: isActive }">1</div>',
