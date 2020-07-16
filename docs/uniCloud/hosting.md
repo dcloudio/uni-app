@@ -41,7 +41,7 @@ DCloud为开发者提供了`uni发布平台`，包括网站发布、App发布和
 
 目前提供了2种方式操作：
 
-1. 通过[uniCloud控制台](https://unicloud.dcloud.net.cn/)，在web界面上传。
+方式1. 通过[uniCloud控制台](https://unicloud.dcloud.net.cn/)，在web界面上传。
 
   上传时，可以按文件上传，也可以按文件夹上传。
 
@@ -49,9 +49,9 @@ DCloud为开发者提供了`uni发布平台`，包括网站发布、App发布和
 
 ![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/unicloud-web-hosting.jpg)
 
-2. 通过HBuilderX工具上传。
+方式2. 通过HBuilderX工具上传。
 
-  HBuilderX 2.8+，支持在HBuilderX中上传前端网页。
+  > HBuilderX 2.8+起，支持在HBuilderX中直接上传前端网页到uniCloud中。
 
   在菜单发行中，选择`上传网站到服务器`。
 
