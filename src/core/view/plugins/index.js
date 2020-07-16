@@ -64,9 +64,16 @@ export default {
         const instance = currentTarget &&
           currentTarget.__vue__ &&
           currentTarget.__vue__.$getComponentDescriptor(currentTarget.__vue__, false)
-        $event = processEvent.call(this, $event.type, $event, {}, findUniTarget($event, this.$el) || $event.target,
-          $event.currentTarget)
+        const $origEvent = $event
+        $event = processEvent.call(this, $origEvent.type, $origEvent, {}, findUniTarget($origEvent, this.$el) || $origEvent.target,
+          $origEvent.currentTarget)
         $event.instance = instance
+        $event.preventDefault = function () {
+          return $origEvent.preventDefault()
+        }
+        $event.stopPropagation = function () {
+          return $origEvent.stopPropagation()
+        }
       }
       return $event
     }
