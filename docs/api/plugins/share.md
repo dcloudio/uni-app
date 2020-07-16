@@ -43,8 +43,8 @@ uni-app的App引擎已经封装了微信、QQ、微博的分享SDK，开发者�
 |值|说明|provider 支持度|
 |:-|:-|:-|
 |0|图文|weixin、sinaweibo|
-|1|纯文字||
-|2|纯图片||
+|1|纯文字|weixin、qq|
+|2|纯图片|weixin、qq|
 |3|音乐|weixin、qq|
 |4|视频|weixin、sinaweibo|
 |5|小程序|weixin|
