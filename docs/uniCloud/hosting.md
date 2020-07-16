@@ -55,15 +55,9 @@ DCloud为开发者提供了`uni发布平台`，包括网站发布、App发布和
 
   在菜单发行中，选择`上传网站到服务器`。
 
-  - 对于uni-app项目，可以先编译为h5，然后直接把编译后的h5上传上去。
-  - 对于非uni-app项目，可以自己选择要上传的目录，包含html、js、css、图片等静态前端文件接口。
-
-**uni-app项目**
-
+  - 对于uni-app项目，可以先编译为h5，然后直接把编译后的h5上传上去。如下图
 ![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/unicloud-hx-hosting.jpg)
-
-**非uni-app项目**
-
+  - 对于非uni-app项目，可以自己选择要上传的目录，包含html、js、css、图片等静态前端文件接口。如下图
 ![](https://dcloud-img.oss-cn-hangzhou.aliyuncs.com/uni-app/uniCloud/unicloud-hx-hosting-h5.jpg)
 
 **注意事项**
