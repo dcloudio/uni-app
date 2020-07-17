@@ -830,6 +830,90 @@ let res = await collection.where({name: dbCmd.eq('hey')}).update({
 })
 ```
 
+### 更新数组内指定下标的元素
+
+```js
+const res = await db.collection('query').doc('1').update({
+  // 更新students[1]
+  ['students.' + 1]: {
+    name: 'wang'
+  }
+})
+```
+
+```js
+// 更新前
+{
+  "_id": "1",
+  "students": [
+    {
+      "name": "zhang"
+    },
+    {
+      "name": "li"
+    }
+  ]
+}
+
+// 更新后
+{
+  "_id": "1",
+  "students": [
+    {
+      "name": "zhang"
+    },
+    {
+      "name": "wang"
+    }
+  ]
+}
+```
+
+### 更新数组内匹配条件的元素
+
+```js
+const res = await db.collection('query').where({
+	'students.name': 'wang'
+}).update({
+  // 将students内第一个name为wang的name改为li
+	'students.$.name': 'li'
+})
+```
+
+
+```js
+// 更新前
+{
+  "_id": "1",
+  "students": [
+    {
+      "name": "zhang"
+    },
+    {
+      "name": "wang"
+    },
+    {
+      "name": "wang"
+    }
+  ]
+}
+
+// 更新后
+{
+  "_id": "1",
+  "students": [
+    {
+      "name": "zhang"
+    },
+    {
+      "name": "li"
+    },
+    {
+      "name": "wang"
+    }
+  ]
+}
+```
 
 ### 更新操作符
 
