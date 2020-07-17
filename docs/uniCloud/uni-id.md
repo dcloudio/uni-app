@@ -902,3 +902,8 @@ exports.main = async function(event,context) {
 
 }
 ```
+
+# FAQ
+
+- token数组为什么越来越长
+  + 每次登录成功都会新增一个token，并且检查所有token的有效期删除过期token。正常情况下客户端应该判断持久化存储的token是否还在有效期内，如果还有效就直接进入应用，不再执行登录。这样相当于用户的每个设备上都存在一个有效期内的token，云端也是。

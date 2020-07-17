@@ -52,7 +52,7 @@ const unipay = require('@dcloudio/unipay')
 |   appId    | String  |   是   |                          -                           |     当前应用在对应支付平台的 appId     |
 |   mchId    | String  |   是   |                          -                           |                 商户号                 |
 |    key     | String  |   是   |                          -                           |            支付商户 md5 key            |
-|    pfx     | String  | Buffer |                   使用退款功能必填                   |                   -                    | 微信支付商户 API 证书，主要用于退款 |
+|    pfx     | String  | Buffer |                   使用退款功能必填                   |       微信支付商户 API 证书，主要用于退款 |
 |  timeout   | Number  |   否   |                         5000                         |        请求超时时间，单位：毫秒        |
 |  signType  | String  |   否   |                         MD5                          |                签名类型                |
 |  sandbox   | Boolean |   否   |                        false                         |            是否启用沙箱环境            |
