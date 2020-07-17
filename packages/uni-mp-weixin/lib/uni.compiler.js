@@ -32,11 +32,21 @@ module.exports = {
 
     state.componentGenerics[componentName] = true
 
-    return {
-      type: componentName,
-      attr: props || {},
-      children: []
-    }
+    // 返回多个节点，支持作用域插槽当作普通插槽使用
+    return [
+      {
+        type: 'slot',
+        attr: {
+          name: slotName
+        },
+        children: []
+      },
+      {
+        type: componentName,
+        attr: props || {},
+        children: []
+      }
+    ]
   },
   resolveScopedSlots (slotName, {
     genCode,

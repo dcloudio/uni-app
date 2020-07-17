@@ -264,7 +264,7 @@ function genSlotNode (slotName, slotNode, fallbackNodes, state) {
     attr: {
       [prefix + 'if']: '{{$slots.' + slotName + '}}'
     },
-    children: [slotNode]
+    children: [].concat(slotNode)
   }, {
     type: 'block',
     attr: {
