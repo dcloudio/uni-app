@@ -97,6 +97,21 @@ exports.main = async (event, context) => {
 
 ![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/run-function-with-param-2.jpg)
 
+**模拟客户端类型**
+
+如果需要模拟客户端类型可以在运行参数内添加clientInfo字段
+
+```
+{
+  "otherParam": "***",
+  "clientInfo":{
+    CLIENT_SDK_VERSION: "1.0.0"
+    OS: "ios" // 系统类型 ios、android
+    PLATFORM: "h5" // 客户端类型 app-plus、h5、mp-weixin、mp-alipay等
+  }
+}
+```
+
 ## 手机端调用云函数
 在uni-app的前端代码中，通过`uniCloud.callFunction`方法调用云函数。详见[callFunction文档](https://uniapp.dcloud.io/uniCloud/functions?id=callfunction)
 
