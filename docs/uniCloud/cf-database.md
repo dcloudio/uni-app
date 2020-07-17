@@ -1501,23 +1501,28 @@ exports.main = async (event) => {
       const bbbRes = await transaction.collection('account').doc('bbb').get()
 
       if (aaaRes.data && bbbRes.data) {
-        const updateAAARes = await transaction.collection('account').doc('aaa').update({
-          data: {
-            amount: _.inc(-10)
+        try {
+          const updateAAARes = await transaction.collection('account').doc('aaa').update({
+            data: {
+              amount: _.inc(-10)
+            }
+          })
+
+          const updateBBBRes = await transaction.collection('account').doc('bbb').update({
+            data: {
+              amount: _.inc(10)
+            }
+          })
+
+          console.log(`transaction succeeded`)
+
+          // 会作为 runTransaction resolve 的结果返回
+          return {
+            aaaAccount: aaaRes.data.amount - 10,
           }
-        })
-
-        const updateBBBRes = await transaction.collection('account').doc('bbb').update({
-          data: {
-            amount: _.inc(10)
-          }
-        })
-
-        console.log(`transaction succeeded`)
-
-        // 会作为 runTransaction resolve 的结果返回
-        return {
-          aaaAccount: aaaRes.data.amount - 10,
+        } catch(e) {
+          // 会作为 runTransaction reject 的结果出去
+          await transaction.rollback(-100)
         }
       } else {
         // 会作为 runTransaction reject 的结果出去
@@ -1568,8 +1573,8 @@ const db = uniCloud.database()
 const _ = db.command
 
 exports.main = async (event) => {
+  const transaction = await db.startTransaction()
   try {
-    const transaction = await db.startTransaction()
 
     const aaaRes = await transaction.collection('account').doc('aaa').get()
     const bbbRes = await transaction.collection('account').doc('bbb').get()
@@ -1596,7 +1601,6 @@ exports.main = async (event) => {
         aaaAccount: aaaRes.data.amount - 10,
       }
     } else {
-      await transaction.rollback()
 
       return {
         success: false,
@@ -1605,6 +1609,7 @@ exports.main = async (event) => {
       }
     }
   } catch (e) {
+    await transaction.rollback()
     console.error(`transaction error`, e)
 
     return {
