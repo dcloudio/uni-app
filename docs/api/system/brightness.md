@@ -27,6 +27,8 @@ uni.setScreenBrightness({
 });
 ```
 
+>*Tips:* 避免 onshow() 里使用 setScreenBrightness() , 亮度变化会再次触发 onShow() 造成死循环
+
 ### uni.getScreenBrightness(OBJECT)
 获取屏幕亮度。
 

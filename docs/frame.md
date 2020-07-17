@@ -187,6 +187,7 @@ background-image: url(../../static/logo.png);
 - onTabItemTap常用于点击当前tabitem，滚动或刷新当前页面。如果是点击不同的tabitem，一定会触发页面切换。
 - 如果想在App端实现点击某个tabitem不跳转页面，不能使用onTabItemTap，可以使用[plus.nativeObj.view](http://www.html5plus.org/doc/zh_cn/nativeobj.html)放一个区块盖住原先的tabitem，并拦截点击事件。
 - onTabItemTap在App端，从HBuilderX 1.9 的自定义组件编译模式开始支持。
+- 避免在 onShow 里使用需要权限的 API（比如 setScreenBrightness() 等需要手机权限）, 可能会再次触发onShow造成死循环。
 
 ``onNavigationBarButtonTap`` 参数说明：
 
