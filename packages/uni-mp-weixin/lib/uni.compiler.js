@@ -109,7 +109,7 @@ module.exports = {
     try {
       // TODO 使用 getPlatformExts 在单元测试报错，改从 state.options.platform 判断
       const { getPlatformExts } = require('@dcloudio/uni-cli-shared')
-      let styleExtname = getPlatformExts().style
+      const styleExtname = getPlatformExts().style
       const styleFile = resourcePath.replace(ownerName + extname, componentName + styleExtname)
       const styleContent = generateCssCode(ownerName + styleExtname)
 
