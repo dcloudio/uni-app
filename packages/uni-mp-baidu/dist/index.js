@@ -134,7 +134,7 @@ function queue (hooks, data) {
   for (let i = 0; i < hooks.length; i++) {
     const hook = hooks[i];
     if (promise) {
-      promise = Promise.then(wrapperHook(hook));
+      promise = Promise.resolve(wrapperHook(hook));
     } else {
       const res = hook(data);
       if (isPromise(res)) {
@@ -1718,7 +1718,7 @@ let uni = {};
 if (typeof Proxy !== 'undefined' && "mp-baidu" !== 'app-plus') {
   uni = new Proxy({}, {
     get (target, name) {
-      if (target[name]) {
+      if (hasOwn(target, name)) {
         return target[name]
       }
       if (baseApi[name]) {
