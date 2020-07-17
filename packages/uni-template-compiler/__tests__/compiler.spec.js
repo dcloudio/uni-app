@@ -172,6 +172,7 @@ describe('mp:compiler', () => {
 
   it('generate single slot', () => {
     assertCodegen('<view><slot></slot></view>', '<view><slot></slot></view>')
+    assertCodegen('<view><slot name="default"></slot></view>', '<view><slot></slot></view>')
   })
 
   it('generate named slot', () => {
@@ -192,6 +193,10 @@ describe('mp:compiler', () => {
     assertCodegen(
       '<view slot="one">hello world</view>',
       '<view slot="one">hello world</view>'
+    )
+    assertCodegen(
+      '<view slot="default">hello world</view>',
+      '<view>hello world</view>'
     )
   })
 

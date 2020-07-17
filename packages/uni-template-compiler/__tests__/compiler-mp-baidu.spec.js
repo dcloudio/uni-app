@@ -24,11 +24,11 @@ describe('mp:compiler-mp-baidu', () => {
   it('generate scoped slot', () => {
     assertCodegen(
       '<foo><template slot-scope="bar">{{ bar.foo }}</template></foo>',
-      '<foo vue-id="551070e6-1" vue-slots="{{[\'default\']}}"><view slot="default">{{foo}}</view></foo>'
+      '<foo vue-id="551070e6-1" vue-slots="{{[\'default\']}}"><view>{{foo}}</view></foo>'
     )
     assertCodegen(
       '<foo><view slot-scope="bar">{{ bar.foo }}</view></foo>',
-      '<foo vue-id="551070e6-1" vue-slots="{{[\'default\']}}"><view slot="default"><view>{{foo}}</view></view></foo>'
+      '<foo vue-id="551070e6-1" vue-slots="{{[\'default\']}}"><view><view>{{foo}}</view></view></foo>'
     )
   })
 
@@ -46,7 +46,7 @@ describe('mp:compiler-mp-baidu', () => {
   it('generate scoped slot with multiline v-if', () => {
     assertCodegen(
       '<foo><template v-if="\nshow\n" slot-scope="bar">{{ bar.foo }}</template></foo>',
-      '<foo vue-id="551070e6-1" vue-slots="{{[\'default\']}}"><view slot="default"><block s-if="{{show}}">{{foo}}</block><block s-else><block></block></block></view></foo>'
+      '<foo vue-id="551070e6-1" vue-slots="{{[\'default\']}}"><view><block s-if="{{show}}">{{foo}}</block><block s-else><block></block></block></view></foo>'
     )
     assertCodegen(
       '<foo><view v-if="\nshow\n" slot="foo" slot-scope="bar">{{ bar.foo }}</view></foo>',
@@ -57,7 +57,7 @@ describe('mp:compiler-mp-baidu', () => {
   it('generate scoped slot', () => {
     assertCodegen(
       '<span><slot v-bind:user="user">{{ user.lastName }}</slot></span>',
-      '<label class="_span"><block s-if="{{$slots.default}}"><slot name="default" var-user="user"></slot></block><block s-else>{{user.lastName}}</block></label>'
+      '<label class="_span"><block s-if="{{$slots.default}}"><slot var-user="user"></slot></block><block s-else>{{user.lastName}}</block></label>'
     )
     assertCodegen(
       '<span><slot name="header" v-bind:user="user">{{ user.lastName }}</slot></span>',
