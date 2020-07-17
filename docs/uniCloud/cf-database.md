@@ -871,11 +871,13 @@ const res = await db.collection('query').doc('1').update({
 
 ### 更新数组内匹配条件的元素
 
+**注意：只可确定数组内只会被匹配到一个的时候使用**
+
 ```js
 const res = await db.collection('query').where({
-	'students.name': 'wang'
+	'students.id': '001'
 }).update({
-  // 将students内第一个name为wang的name改为li
+  // 将students内id为001的name改为li
 	'students.$.name': 'li'
 })
 ```
@@ -887,12 +889,11 @@ const res = await db.collection('query').where({
   "_id": "1",
   "students": [
     {
+      "id": "001",
       "name": "zhang"
     },
     {
-      "name": "wang"
-    },
-    {
+      "id": "002",
       "name": "wang"
     }
   ]
@@ -903,12 +904,11 @@ const res = await db.collection('query').where({
   "_id": "1",
   "students": [
     {
-      "name": "zhang"
-    },
-    {
+      "id": "001",
       "name": "li"
     },
     {
+      "id": "002",
       "name": "wang"
     }
   ]
