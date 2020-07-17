@@ -40,7 +40,7 @@
         },
         onReady() {
             if(uni.createRewardedVideoAd) {
-                rewardedVideoAd = uni.createRewardedVideoAd({ adpid: 'xxxx' })
+                rewardedVideoAd = uni.createRewardedVideoAd({ adpid: '1507000689' }) // 仅用于HBuilder基座调试 adpid: '1507000689'
                 rewardedVideoAd.onLoad(() => {
                     console.log('onLoad event')
                 })
@@ -253,6 +253,7 @@ code|message|
 
 
 **注意事项**
+- 测试期间请使用测试 `adpid`，参考测试代码，如果无法显示换个时间再试
 - 多次调用 `RewardedVideoAd.onLoad()`、`RewardedVideoAd.onError()`、`RewardedVideoAd.onClose()` 等方法监听广告事件会产生多次事件回调，建议在创建广告后监听一次即可，或者先取消原有的监听事件再重新监听。
 - 仅 V3 编译支持，参考 manifest.json 配置
 - 为避免滥用广告资源，目前每个用户每天可观看激励式视频广告的次数有限，建议展示广告按钮前先判断广告是否拉取成功。(微信小程序、广点通有限制，穿山甲无限制)
