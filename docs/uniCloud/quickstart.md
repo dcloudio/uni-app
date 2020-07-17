@@ -81,7 +81,7 @@ exports.main = async (event, context) => {
 
 ![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/uniCloud-run-function-2.png)
 
-**运行云函数时配置运行测试参数**
+## 运行云函数时配置运行测试参数@runparam
 
 在云函数的上传运行菜单或右键菜单中，有`配置运行测试参数`的功能。
 
