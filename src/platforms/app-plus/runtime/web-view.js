@@ -1,11 +1,12 @@
 import api from './web-view-api'
 
 const isAppPlus = /uni-app/i.test(navigator.userAgent)
+const isHtml5Plus = /Html5Plus/i.test(navigator.userAgent)
 
 const readyRE = /complete|loaded|interactive/
 
 export function initWebviewApi (readyCallback) {
-  if (!isAppPlus) {
+  if (!isAppPlus && !isHtml5Plus) {
     return
   }
   if (window.__dcloud_weex_postMessage || window.__dcloud_weex_) { // nvue web-view

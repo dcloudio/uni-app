@@ -172,6 +172,9 @@ describe('mp:compiler', () => {
 
   it('generate single slot', () => {
     assertCodegen('<view><slot></slot></view>', '<view><slot></slot></view>')
+    assertCodegen('<view><slot>default</slot></view>', '<view><block wx:if="{{$slots.default}}"><slot></slot></block><block wx:else>default</block></view>')
+    assertCodegen('<view><slot>{{hello}}</slot></view>', '<view><block wx:if="{{$slots.default}}"><slot></slot></block><block wx:else>{{hello}}</block></view>')
+    assertCodegen('<view><slot name="default"></slot></view>', '<view><slot></slot></view>')
   })
 
   it('generate named slot', () => {
@@ -192,6 +195,10 @@ describe('mp:compiler', () => {
     assertCodegen(
       '<view slot="one">hello world</view>',
       '<view slot="one">hello world</view>'
+    )
+    assertCodegen(
+      '<view slot="default">hello world</view>',
+      '<view>hello world</view>'
     )
   })
 

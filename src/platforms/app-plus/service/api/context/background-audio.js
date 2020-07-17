@@ -15,7 +15,7 @@ const publishBackgroundAudioStateChange = (state, res = {}) => publish('onBackgr
   state
 }, res))
 
-const events = ['play', 'pause', 'ended', 'stop']
+const events = ['play', 'pause', 'ended', 'stop', 'canplay']
 
 function initMusic () {
   if (audio) {

@@ -14,6 +14,13 @@ function processElement (ast, state, isRoot) {
     ast.type = 'view'
   }
 
+  // 由于小程序端 default 不等同于默认插槽，统一移除 default 命名
+  if (ast.type === 'slot' && hasOwn(ast.attr, 'name') && ast.attr.name === 'default') {
+    delete ast.attr.name
+  } else if (hasOwn(ast.attr, 'slot') && ast.attr.slot === 'default') {
+    delete ast.attr.slot
+  }
+
   if (hasOwn(ast.attr, 'textContent')) {
     ast.children = [ast.attr.textContent]
     delete ast.attr.textContent

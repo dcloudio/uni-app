@@ -226,12 +226,12 @@ describe('mp:compiler-extra', () => {
 
     assertCodegen(
       '<component1 v-slot>text</component1>',
-      '<component1 vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}"><view slot="default">text</view></component1>'
+      '<component1 vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}"><view>text</view></component1>'
     )
 
     assertCodegen(
       '<component1 v-slot:default>text<text>123213</text></component1>',
-      '<component1 vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}"><view slot="default">text<text>123213</text></view></component1>'
+      '<component1 vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}"><view>text<text>123213</text></view></component1>'
     )
     assertCodegen(
       '<component1><template v-slot:left><text></text></template><template v-slot:right><text></text></template></component1>',

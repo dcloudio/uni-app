@@ -72,16 +72,23 @@ describe('mp:compiler-mp-weixin', () => {
   })
 
   it('generate scoped slot', () => {
+    assertCodegen(
+      '<slot v-bind:user="user"></slot>',
+      '<slot></slot><scoped-slots-default user="{{user}}" bind:__l="__l"></scoped-slots-default>',
+      function (res) {
+        expect(res.componentGenerics['scoped-slots-default']).toBe(true)
+      }
+    )
     assertCodegen( // TODO vue-id
       '<span><slot v-bind:user="user">{{ user.lastName }}</slot></span>',
-      '<label class="_span"><block wx:if="{{$slots.default}}"><scoped-slots-default user="{{user}}" bind:__l="__l"></scoped-slots-default></block><block wx:else>{{user.lastName}}</block></label>',
+      '<label class="_span"><block wx:if="{{$slots.default}}"><slot></slot><scoped-slots-default user="{{user}}" bind:__l="__l"></scoped-slots-default></block><block wx:else>{{user.lastName}}</block></label>',
       function (res) {
         expect(res.componentGenerics['scoped-slots-default']).toBe(true)
       }
     )
     assertCodegen(
       '<span><slot name="header" v-bind:user="user">{{ user.lastName }}</slot></span>',
-      '<label class="_span"><block wx:if="{{$slots.header}}"><scoped-slots-header user="{{user}}" bind:__l="__l"></scoped-slots-header></block><block wx:else>{{user.lastName}}</block></label>',
+      '<label class="_span"><block wx:if="{{$slots.header}}"><slot name="header"></slot><scoped-slots-header user="{{user}}" bind:__l="__l"></scoped-slots-header></block><block wx:else>{{user.lastName}}</block></label>',
       function (res) {
         expect(res.componentGenerics['scoped-slots-header']).toBe(true)
       }
