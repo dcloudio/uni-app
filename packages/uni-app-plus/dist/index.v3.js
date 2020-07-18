@@ -605,7 +605,7 @@ var serviceContext = (function () {
     for (let i = 0; i < hooks.length; i++) {
       const hook = hooks[i];
       if (promise) {
-        promise = Promise.then(wrapperHook(hook));
+        promise = Promise.resolve(wrapperHook(hook));
       } else {
         const res = hook(data);
         if (isPromise(res)) {
@@ -3375,7 +3375,7 @@ var serviceContext = (function () {
     state
   }, res));
 
-  const events = ['play', 'pause', 'ended', 'stop'];
+  const events = ['play', 'pause', 'ended', 'stop', 'canplay'];
 
   function initMusic () {
     if (audio) {
@@ -9791,6 +9791,9 @@ var serviceContext = (function () {
   ];
 
   const ERROR_CODE_LIST = [-5001, -5002, -5003, -5004, -5005, -5006];
+  const EXPIRED_TIME = 1000 * 60 * 30;
+  const EXPIRED_TEXT = { code: -5008, errMsg: '广告数据已过期，请重新加载' };
+  const ProviderType = { CSJ: 'csj', GDT: 'gdt' };
 
   class RewardedVideoAd {
     constructor (options = {}) {
@@ -9807,10 +9810,14 @@ var serviceContext = (function () {
       this._adError = '';
       this._loadPromiseResolve = null;
       this._loadPromiseReject = null;
+      this._lastLoadTime = 0;
+
       const rewardAd = this._rewardAd = plus.ad.createRewardedVideoAd(options);
       rewardAd.onLoad((e) => {
         this._isLoad = true;
         this._dispatchEvent('load', {});
+        this._lastLoadTime = Date.now();
+
         if (this._loadPromiseResolve != null) {
           this._loadPromiseResolve();
           this._loadPromiseResolve = null;
@@ -9827,13 +9834,21 @@ var serviceContext = (function () {
         const { code, message } = e;
         const data = { code: code, errMsg: message };
         this._adError = message;
+        if (code === -5008) {
+          this._isLoad = false;
+        }
         this._dispatchEvent('error', data);
+        // TODO
         if ((code === -5005 || ERROR_CODE_LIST.index(code) === -1) && this._loadPromiseReject != null) {
           this._loadPromiseReject(data);
           this._loadPromiseReject = null;
         }
       });
       this._loadAd();
+    }
+
+    get isExpired () {
+      return (Math.abs(Date.now() - this._lastLoadTime) > EXPIRED_TIME)
     }
 
     load () {
@@ -9850,6 +9865,15 @@ var serviceContext = (function () {
 
     show () {
       return new Promise((resolve, reject) => {
+        const provider = this.getProvider();
+        if (provider === ProviderType.CSJ && this.isExpired) {
+          this._isLoad = false;
+          // TODO
+          this._dispatchEvent('error', EXPIRED_TEXT);
+          reject(new Error(EXPIRED_TEXT.errMsg));
+          return
+        }
+
         if (this._isLoad) {
           this._rewardAd.show();
           resolve();
