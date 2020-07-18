@@ -1,5 +1,3 @@
-## 发送短信
-
 接口形式：`uniCloud.sendSms`
 
 发送短信功能需要去DCloud开发者中心开通，详情参考[使用短信服务](https://ask.dcloud.net.cn/article/37534)

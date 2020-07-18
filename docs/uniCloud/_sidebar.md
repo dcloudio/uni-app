@@ -13,10 +13,12 @@
   * [云函数URL化](uniCloud/http.md)
 * [云数据库](uniCloud/cf-database.md)
 * [云存储](uniCloud/storage.md)
+* [开放接口](uniCloud/openapi.md)
 * 扩展能力
   * [uni-id](uniCloud/uni-id.md)
   * [uni-account](uniCloud/uni-account.md)
   * [unipay](uniCloud/unipay.md)
+  * [发送短信](uniCloud/send-sms.md)
 * [前端网页托管](uniCloud/hosting.md)
 * [腾讯云自定义登录](uniCloud/authentication.md)
 * [日志输出](uniCloud/cf-logger.md)

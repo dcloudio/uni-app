@@ -2,7 +2,7 @@
 
 `uni-account`是一个适用于微信小程序和支付宝小程序的平台账户登录的云函数模板。`uni-account`内部对不同平台的 api 进行了拉齐，有助于开发者更方便的调用相关功能。
 
-**后续uni-account会整合到uni-id内**
+**uni-account功能已整合到uni-id内，推荐使用uni-id**
 
 ## 引入 uni-account
 
