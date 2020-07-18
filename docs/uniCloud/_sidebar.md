@@ -13,7 +13,6 @@
   * [云函数URL化](uniCloud/http.md)
 * [云数据库](uniCloud/cf-database.md)
 * [云存储](uniCloud/storage.md)
-* [开放接口](uniCloud/openapi.md)
 * 扩展能力
   * [uni-id](uniCloud/uni-id.md)
   * [uni-account](uniCloud/uni-account.md)
