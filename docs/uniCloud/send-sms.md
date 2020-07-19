@@ -62,20 +62,52 @@
 ```js
 'use strict';
 exports.main = async (event, context) => {
-	const res = await uniCloud.sendSms({
-		smsKey: '****************',
-		smsSecret: '****************',
-		phone: '188********',
-		templateId: 'uniID_code',
-		data: {
-			name: 'DCloud',
-			code: '123456',
-			action: '注册',
-			expMinute: '3',
-		}
-	})
-	return res
+  try {
+    const res = await uniCloud.sendSms({
+      smsKey: '****************',
+      smsSecret: '****************',
+      phone: '188********',
+      templateId: 'uniID_code',
+      data: {
+        name: 'DCloud',
+        code: '123456',
+        action: '注册',
+        expMinute: '3',
+      }
+    })
+    // 调用成功，请注意这时不代表发送成功
+    return res
+  } catch(err) {
+    // 调用失败
+    console.log(err.message)
+    return {
+      success: false,
+      msg: err.message
+    }
+  }
 };
+
+
+// 如果不使用await
+uniCloud.sendSms({
+  smsKey: '****************',
+  smsSecret: '****************',
+  phone: '188********',
+  templateId: 'uniID_code',
+  data: {
+    name: 'DCloud',
+    code: '123456',
+    action: '注册',
+    expMinute: '3',
+  }
+}).then((res)=>{
+  // 调用成功，请注意这时不代表发送成功
+  console.log(res)
+}).catch((err)=>{
+  // 调用失败
+  console.log(err.message)
+})
+
 ```
 
 本示例发送的短信，在手机上将显示为：
