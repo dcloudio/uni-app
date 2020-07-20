@@ -84,7 +84,7 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 		<span style="margin-top:15px;">iOS App版</span>
 	</a>
 </div>
-
+<!-- 
 <a href="https://www.csdn.net/" target="_blank" class="clear-style"><b>CSDN：</b></a> 专业 IT 技术社区，致力于为中国软件开发者提供知识传播、在线学习、职业发展等全生命周期服务。
 <div style="display:flex;justify-content: space-around;">
 	<a href="javascript:;" target="_blank" class="clear-style barcode-view">
@@ -92,6 +92,7 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 		<span style="margin-top:15px;">微信小程序码</span>
 	</a>
 </div>
+-->
 
 <a href="https://www.oschina.net/" target="_blank" class="clear-style"><b>开源中国：</b></a> 中文开源技术交流社区，提供最新的开源软件资讯。
 <div style="display:flex;justify-content: space-around;">
@@ -222,7 +223,7 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 
 **中华英才网：** 百度小程序搜索“中华英才网”
 
-**CSDN：** 微信小程序搜索“CSDN”
+<!-- **CSDN：** 微信小程序搜索“CSDN” -->
 
 **开源中国：** 微信小程序搜索“osc+”、百度小程序搜索“开源中国社区”
 
