@@ -88,8 +88,20 @@ module.exports = {
   getPlatformFilterTag () {
     return uniPluginOptions.filterTag
   },
+  getMPRuntimePath () {
+    if (process.env.UNI_USING_VUE3) {
+      return require.resolve('@dcloudio/uni-' + process.env.UNI_PLATFORM + '/dist/uni.mp.esm.js')
+    }
+    return require.resolve('@dcloudio/uni-' + process.env.UNI_PLATFORM)
+  },
   getPlatformVue (vueOptions) {
-    return uniPluginOptions.vue || '@dcloudio/vue-cli-plugin-uni/packages/mp-vue'
+    if (uniPluginOptions.vue) {
+      return uniPluginOptions.vue
+    }
+    if (process.env.UNI_USING_VUE3) {
+      return '@dcloudio/uni-mp-vue'
+    }
+    return '@dcloudio/vue-cli-plugin-uni/packages/mp-vue'
   },
   getPlatformCssVars () {
     return uniPluginOptions.cssVars || {}

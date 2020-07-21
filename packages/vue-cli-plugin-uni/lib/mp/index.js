@@ -22,11 +22,16 @@ function createUniMPPlugin () {
 }
 
 function getProvides () {
-  const uniPath = require.resolve('@dcloudio/uni-' + process.env.UNI_PLATFORM)
+  const uniPath = require('@dcloudio/uni-cli-shared/lib/platform').getMPRuntimePath()
   const uniCloudPath = path.resolve(__dirname, '../../packages/uni-cloud/dist/index.js')
   const provides = {
     uni: [uniPath, 'default'],
     uniCloud: [uniCloudPath, 'default']
+  }
+
+  if (process.env.UNI_USING_VUE3) {
+    provides.uni = ['@dcloudio/uni-' + process.env.UNI_PLATFORM + '/dist/uni.api.esm.js', 'default']
+    provides.createMiniProgramApp = [uniPath, 'createApp']
   }
 
   if (process.env.UNI_USING_COMPONENTS) {
