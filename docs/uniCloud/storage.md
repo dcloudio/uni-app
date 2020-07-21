@@ -174,7 +174,7 @@ uniCloud.getTempFileURL({
 
 ## deleteFile(Object object)
 
-删除云端文件，**使用阿里云作为服务商时，不要使用客户端删除云端文件。**
+删除云端文件，**使用阿里云作为服务商时，不要使用客户端删除云端文件，为保障安全，应该在云函数中进行相关操作。**
 
 #### 请求参数
 
@@ -229,6 +229,8 @@ uniCloud.deleteFile(
 |阿里云	|腾讯云	|
 |----		|----		|
 |×			|√			|
+
+如使用阿里云，请在前端通过uni-app的上传api进行上传，详见：[https://uniapp.dcloud.io/api/request/network-file?id=uploadfile](https://uniapp.dcloud.io/api/request/network-file?id=uploadfile)
 
 #### 请求参数
 **uploadFileOptions参数说明**
