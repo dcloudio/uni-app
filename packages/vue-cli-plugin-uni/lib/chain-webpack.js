@@ -91,6 +91,7 @@ module.exports = function chainWebpack (platformOptions, vueOptions, api) {
     platformOptions.chainWebpack(webpackConfig, vueOptions, api)
     // define
     const defines = {
+      __FEATURE_OPTIONS__: JSON.stringify(process.env.UNI_USING_VUE3_OPTIONS === 'true'),
       'process.env.UNI_ENV': JSON.stringify(process.env.UNI_PLATFORM),
       'process.env.UNI_CLOUD_PROVIDER': process.env.UNI_CLOUD_PROVIDER,
       'process.env.HBX_USER_TOKEN': JSON.stringify(process.env.HBX_USER_TOKEN || ''),
