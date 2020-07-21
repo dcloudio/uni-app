@@ -1,6 +1,6 @@
-### 短信发送
+**短信发送**
 
-uniCloud内置了短信发送API。给开发者提供方便、便宜的短信发送能力。
+uniCloud内置了短信发送API。给开发者提供更方便、更便宜的短信发送能力。
 
 目前仅提供短信发送验证码能力，提供了2个模板可选，类似小程序的模板消息，在一个固定模板格式的文字里自定义某些字段，而不是所有文字都可以随便写。
 
@@ -20,7 +20,7 @@ uniCloud内置了短信发送API。给开发者提供方便、便宜的短信发
 |:-:		|:-:	|:-:	|:-:															|
 |smsKey		|String	|是		|调用短信接口的密钥key，从 dev.dcloud.net.cn/uniSms 后台获取		|
 |smsSecret	|String	|是		|调用短信接口的密钥secret，从 dev.dcloud.net.cn/uniSms 后台获取	|
-|phone		|String	|是		|发送目标手机号，仅支持中国大陆手机号，不能填写多个手机号|
+|phone		|String	|是		|发送目标手机号，暂仅支持中国大陆手机号，不能填写多个手机号|
 |templateId	|String	|是		|模版Id，短信内容为固定模板，详见下方说明						|
 |data		|Object	|是		|模版里的各个字段，json格式										|
 
