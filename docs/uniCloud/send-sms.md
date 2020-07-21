@@ -55,7 +55,16 @@ uniCloud内置了短信发送API。给开发者提供方便、便宜的短信发
 
 |参数名	|类型	|说明			|
 |:-:	|:-:	|:-:			|
-|success|Boolean|只会返回true	|
+|errCode|Number|成功返回0，调用失败错误码见下表	|
+|errMsg|String|错误描述，调用失败时返回	|
+
+**错误码说明**
+
+|错误码	|错误																	|
+|:-:		|:-:																	|
+|10001	|参数校验未通过,errMsg内会给出详细信息|
+|10002	|校验未通过,errMsg内会给出详细信息		|
+|10003	|其他错误															|
 
 **调用示例**
 
@@ -79,10 +88,11 @@ exports.main = async (event, context) => {
     return res
   } catch(err) {
     // 调用失败
-    console.log(err.message)
+    console.log(err.errCode)
+    console.log(err.errMsg)
     return {
-      success: false,
-      msg: err.message
+      code: err.errCode
+      msg: err.errMsg
     }
   }
 };
