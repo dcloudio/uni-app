@@ -6,7 +6,8 @@ const {
   getPlatformExts
 } = require('@dcloudio/uni-cli-shared')
 const {
-  getComponentSet
+  getComponentSet,
+  getJsonFile
 } = require('@dcloudio/uni-cli-shared/lib/cache')
 
 const {
@@ -66,6 +67,7 @@ module.exports = function generateComponent (compilation) {
     const concatenatedModules = modules.filter(module => module.modules)
     const uniModuleId = modules.find(module => module.resource && normalizePath(module.resource) === uniPath).id
     const styleImports = {}
+    const fixSlots = {}
 
     Object.keys(assets).forEach(name => {
       if (components.has(name.replace('.js', ''))) {
@@ -144,6 +146,57 @@ module.exports = function generateComponent (compilation) {
               delete styleImports[name]
             }
             delete assets[name]
+          }
+        }
+      }
+      // 处理字节跳动小程序作用域插槽
+      const fixExtname = '.fix'
+      if (name.endsWith(fixExtname)) {
+        const source = assets[name].source()
+        const [ownerName, parentName, componentName, slotName] = source.split(',')
+        const json = getJsonFile(ownerName)
+        if (json) {
+          const data = JSON.parse(json)
+          const usingComponents = data.usingComponents || {}
+          const componentPath = path.relative('/', usingComponents[parentName])
+          const slots = fixSlots[componentPath] = fixSlots[componentPath] || {}
+          const slot = slots[slotName] = slots[slotName] || {}
+          slot[componentName] = '/' + name.replace(fixExtname, '')
+          delete assets[name]
+
+          const jsonFile = assets[`${componentPath}.json`]
+          if (jsonFile) {
+            const oldSource = jsonFile.__$oldSource || jsonFile.source()
+            const sourceObj = JSON.parse(oldSource)
+            Object.values(slots).forEach(components => {
+              const usingComponents = sourceObj.usingComponents = sourceObj.usingComponents || {}
+              Object.assign(usingComponents, components)
+            })
+            delete sourceObj.componentGenerics
+            const source = JSON.stringify(sourceObj, null, 2)
+            jsonFile.source = function () {
+              return source
+            }
+            jsonFile.__$oldSource = oldSource
+          }
+
+          const templateFile = assets[`${componentPath}${getPlatformExts().template}`]
+          if (templateFile) {
+            const oldSource = templateFile.__$oldSource || templateFile.source()
+            let templateSource
+            Object.keys(slots).forEach(name => {
+              const reg = new RegExp(`<${name} (.+?)></${name}>`)
+              templateSource = oldSource.replace(reg, string => {
+                const props = string.match(reg)[1]
+                return Object.keys(slots[name]).map(key => {
+                  return `<block tt:if="{{generic['${name.replace(/^scoped-slots-/, '')}']==='${key}'}}"><${key} ${props}></${key}></block>`
+                }).join('')
+              })
+            })
+            templateFile.source = function () {
+              return templateSource
+            }
+            templateFile.__$oldSource = oldSource
           }
         }
       }
