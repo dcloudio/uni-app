@@ -235,11 +235,13 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 
 **达内在线：** 达内教育的在线培训App。[App官网下载](http://www.tmooc.cn/app/index.shtml)
 
-#### 托管服务商
+#### SaaS服务商
 
 **腾讯discuz! Q：** 经典论坛，站长利器。[https://discuz.chat/docs/](https://discuz.chat/docs/)
 
 **搜狐快站：** 可视化拖拽建站，例：[https://yiguob.kuaizhan.com/#/](https://yiguob.kuaizhan.com/#/)
+
+**人人商城：** 客户众多的分销商城 [https://www.rrsc.cn/V5introduce.html](https://www.rrsc.cn/V5introduce.html)
 
 **即速应用：** 微信小程序搜索“即速应用商家版”
 
