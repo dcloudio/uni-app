@@ -272,7 +272,7 @@ npm run build:%PLATFORM%
 
 |值|平台|
 |---|---|
-|app-plus|app平台生成打包资源（仅支持npm run build:app-plus，也就是App平台运行调试不支持cli方式，需在HBuilderX中运行调试）|
+|app-plus|app平台生成打包资源（支持npm run build:app-plus，可用于持续集成。不支持run，运行调试仍需在HBuilderX中操作）|
 |h5|H5|
 |mp-alipay|支付宝小程序|
 |mp-baidu|百度小程序|
