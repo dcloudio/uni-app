@@ -213,3 +213,114 @@ export default {
 	}
 }
 ```
+
+### uni.getVideoInfo(OBJECT)
+
+获取视频详细信息
+
+**平台差异说明**
+
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|x|x|2.11.0+|x|x|x|x|
+
+**OBJECT 参数说明**
+
+|属性			|类型			|默认值	|必填	|说明																									|
+|:-:			|:-:			|:-:		|:-:	|:-:																									|
+|src			|string		|-			|是		|视频文件路径，可以是临时文件路径也可以是永久文件路径	|
+|success	|function	|-			|否		|接口调用成功的回调函数																|
+|fail			|function	|-			|否		|接口调用失败的回调函数																|
+|complete	|function	|-			|否		|接口调用结束的回调函数（调用成功、失败都会执行）			|
+
+**success 返回参数说明**
+
+|参数名			|类型		|说明								|
+|:-					|:-			|:-									|
+|orientation|string	|画面方向						|
+|type				|string	|视频格式						|
+|duration		|number	|视频长度						|
+|size				|number	|视频大小，单位 kB	|
+|height			|number	|视频的长，单位 px	|
+|width			|number	|视频的宽，单位 px	|
+|fps				|number	|视频帧率						|
+|bitrate		|number	|视频码率，单位 kbps|
+
+**res.orientation参数说明**
+
+|值							|说明									|
+|:-							|:-										|
+|up							|默认									|
+|down						|180度旋转						|
+|left						|逆时针旋转90度				|
+|right					|顺时针旋转90度				|
+|up-mirrored		|同up，但水平翻转			|
+|down-mirrored	|同down，但水平翻转		|
+|left-mirrored	|同left，但垂直翻转		|
+|right-mirrored	|同right，但垂直翻转	|
+
+### uni.compressVideo(OBJECT)
+
+压缩视频接口。开发者可指定压缩质量 quality 进行压缩。当需要更精细的控制时，可指定 bitrate、fps、和 resolution，当 quality 传入时，这三个参数将被忽略。原视频的相关信息可通过 getVideoInfo 获取。
+
+**平台差异说明**
+
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|x|x|2.11.0+|x|x|x|x|
+
+**OBJECT 参数说明**
+
+|属性				|类型			|默认值	|必填	|说明																									|
+|:-:				|:-:			|:-:		|:-:	|:-:																									|
+|src				|string		|				|是		|视频文件路径，可以是临时文件路径也可以是永久文件路径	|
+|quality		|string		|				|是		|压缩质量																							|
+|bitrate		|number		|				|是		|码率，单位 kbps																			|
+|fps				|number		|				|是		|帧率																									|
+|resolution	|number		|				|是		|相对于原视频的分辨率比例，取值范围(0, 1]							|
+|success		|function	|				|否		|接口调用成功的回调函数																|
+|fail				|function	|				|否		|接口调用失败的回调函数																|
+|complete		|function	|				|否		|接口调用结束的回调函数（调用成功、失败都会执行）			|
+
+**quality可取值**
+
+|值			|说明	|
+|:-			|:-		|
+|low		|低		|
+|medium	|中		|
+|high		|高		|
+
+**success 返回参数说明**
+
+|参数名				|类型		|说明									|
+|:-						|:-			|:-										|
+|tempFilePath	|string	|压缩后的临时文件地址	|
+|size					|string	|压缩后的大小，单位 kB|
+
+### uni.openVideoEditor(OBJECT)
+
+打开视频编辑器
+
+**平台差异说明**
+
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|x|x|2.12.0+|x|x|x|x|
+
+**OBJECT 参数说明**
+
+|属性			|类型			|默认值	|必填	|说明																							|
+|:-:			|:-:			|:-:		|:-:	|:-:																							|
+|filePath	|string		|-			|是		|视频源的路径，只支持本地路径											|
+|success	|function	|-			|否		|接口调用成功的回调函数														|
+|fail			|function	|-			|否		|接口调用失败的回调函数														|
+|complete	|function	|-			|否		|接口调用结束的回调函数（调用成功、失败都会执行）	|
+
+**success 返回参数说明**
+
+|参数名				|类型		|说明																					|
+|:-						|:-			|:-																						|
+|duration			|number	|剪辑后生成的视频文件的时长，单位毫秒（ms）		|
+|size					|number	|剪辑后生成的视频文件大小，单位字节数（byte）	|
+|tempFilePath	|string	|编辑后生成的视频文件的临时路径								|
+|tempThumbPath|string	|编辑后生成的缩略图文件的临时路径							|
