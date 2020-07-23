@@ -9,7 +9,7 @@
 
 |App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|快应用|360小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|√（2.5.2+）|x|√|x|√|√|√|x|x|
+|√（2.5.2+）|√（2.8.3+）|√|x|√|√|√|x|x|
 
 
 **开通配置广告**
@@ -76,6 +76,7 @@ App和微信小程序的ad组件没有type属性，可以用于banner，也可�
 - app-vue 无法在 `<swiper>` 组件中使用`<ad>`
 - app-vue 不能在 `<scroll-view>` 组件中使用 `<ad>`，仅适用于页面级的滚动
 - HBuilderX2.8+版本Android平台更新穿山甲（今日头条）广告SDK后不再支持x86类型CPU，无法运行到x86类型cpu的模拟器。
+- `<ad>` 组件测试广告位是上图下文，uniAD后台申请的广告位默认左图右文
 
 **@error 错误码**
 - App端聚合的穿山甲：[错误码](https://ad.oceanengine.com/union/media/doc?id=5de4cc6d78c8690012a90aa5)
@@ -94,6 +95,37 @@ App和微信小程序的ad组件没有type属性，可以用于banner，也可�
 |4|下载失败|
 |5| 下载取消|
 |6|已安装|
+
+
+### H5平台 (2.8.3+)
+```html
+<template>
+  <view class="content">
+    <!-- H5平台 adpid在uniAD后台申请，支持复用 App 平台广告位-->
+    <view class="ad-view">
+      <ad adpid=""></ad>
+    </view>
+  </view>
+</template>
+```
+
+**注意:**
+- `H5` 广告需要校验域名，开发时不支持使用 localhost/ip，本机调试可配置 `host` 测试
+- 不支持 file 协议中使用
+
+
+### H5平台错误码
+
+|code|message|
+|:-|:-|
+|3001|非法请求|
+|3002|未找到此广告位|
+|3003|域名未校验，请先通过uniAD后台 [uniad.dcloud.net.cn](https://uniad.dcloud.net.cn/) 效验域名|
+|3004|遇到错误，请稍后重试|
+|3005|未找到H5广告配置信息|
+|3006|未找到任何广告位|
+|3007|域名未校验或包含端口号，请先通过 [uniad.dcloud.net.cn](https://uniad.dcloud.net.cn/) 效验域名|
+
 
 
 **示例：**
