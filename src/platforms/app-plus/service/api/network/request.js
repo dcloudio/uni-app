@@ -17,25 +17,25 @@ const publishStateChange = res => {
 }
 
 const cookiesPrase = header => {
-  let cookiesStr = header["Set-Cookie"]
-  let cookiesArr = [];
+  let cookiesStr = header['Set-Cookie']
+  let cookiesArr = []
   if (!cookiesStr) {
-    return [];
+    return []
   }
   if (cookiesStr[0] === '[' && cookiesStr[cookiesStr.length - 1] === ']') {
-    cookiesStr = cookiesStr.slice(1, -1);
+    cookiesStr = cookiesStr.slice(1, -1)
   }
-  let handleCookiesArr = cookiesStr.split(";");
-  for (let i=0; i<handleCookiesArr.length; i++) {
+  const handleCookiesArr = cookiesStr.split(';')
+  for (let i = 0; i < handleCookiesArr.length; i++) {
     if (handleCookiesArr[i].indexOf('Expires=') !== -1) {
       cookiesArr.push(handleCookiesArr[i].replace(',', ''))
     } else {
       cookiesArr.push(handleCookiesArr[i])
     }
   }
-  cookiesArr = cookiesArr.join(";").split(',');
-  
-	return cookiesArr;
+  cookiesArr = cookiesArr.join(';').split(',')
+
+  return cookiesArr
 }
 
 export function createRequestTaskById (requestTaskId, {

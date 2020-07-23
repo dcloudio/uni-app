@@ -287,7 +287,7 @@ const protocols = { // 需要做转换的 API 列表
       filePath: 'apFilePath'
     }
   },
-  getSavedFileList:{
+  getSavedFileList: {
     returnValue (result) {
       if (result.fileList && result.fileList.length) {
         result.fileList.forEach(file => {

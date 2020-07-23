@@ -1,5 +1,5 @@
 import {
-  invoke,
+  invoke
 } from '../../bridge'
 
 export function onBeaconUpdate (callbackId) {
