@@ -56,7 +56,7 @@ module.exports = (api, options, rootOptions) => {
         '@dcloudio/uni-quickapp-native': version,
         '@dcloudio/uni-quickapp-webview': version,
         '@dcloudio/uni-stat': version,
-        '@vue/shared': '*', // TODO
+        '@vue/shared': '^3.0.0-rc.4', // TODO
         flyio: '^0.6.2',
         vuex: '^3.2.0'
       },

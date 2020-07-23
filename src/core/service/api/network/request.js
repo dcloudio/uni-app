@@ -50,7 +50,8 @@ onMethod('onRequestTaskStateChange', function ({
   data,
   statusCode,
   header,
-  errMsg
+  errMsg,
+  cookies
 }) {
   const {
     args,
@@ -67,7 +68,8 @@ onMethod('onRequestTaskStateChange', function ({
         data,
         statusCode,
         header,
-        errMsg: 'request:ok'
+        errMsg: 'request:ok',
+        cookies
       }, args))
       break
     case 'fail':
