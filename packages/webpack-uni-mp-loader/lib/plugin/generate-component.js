@@ -16,7 +16,7 @@ const {
 
 const EMPTY_COMPONENT_LEN = 'Component({})'.length
 
-const uniPath = require('@dcloudio/uni-cli-shared/lib/platform').getMPRuntimePath()
+const uniPath = normalizePath(require('@dcloudio/uni-cli-shared/lib/platform').getMPRuntimePath())
 
 function findModule (modules, resource, altResource) {
   return modules.find(
