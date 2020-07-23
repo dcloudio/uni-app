@@ -969,6 +969,11 @@ function initProperties (props, isBehavior = false, file = '') {
       type: String,
       value: ''
     };
+    // 用于字节跳动小程序模拟抽象节点
+    properties.generic = {
+      type: Object,
+      value: null
+    };
     properties.vueSlots = { // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
       type: null,
       value: [],
@@ -1601,14 +1606,8 @@ function parseComponent (vueOptions) {
   };
 
   if (newLifecycle) {
+    componentOptions.methods.onReady = componentOptions.lifetimes.ready;
     delete componentOptions.lifetimes.ready;
-    componentOptions.methods.onReady = function () {
-      if (this.$vm) {
-        this.$vm._isMounted = true;
-        this.$vm.__call_hook('mounted');
-        this.$vm.__call_hook('onReady');
-      }
-    };
   }
 
   componentOptions.messages = {

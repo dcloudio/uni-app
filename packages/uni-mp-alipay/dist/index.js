@@ -640,7 +640,9 @@ const protocols = { // 需要做转换的 API 列表
   getSavedFileInfo: {
     args: {
       filePath: 'apFilePath'
-    },
+    }
+  },
+  getSavedFileList: {
     returnValue (result) {
       if (result.fileList && result.fileList.length) {
         result.fileList.forEach(file => {
@@ -1313,6 +1315,11 @@ function initProperties (props, isBehavior = false, file = '') {
     properties.vueId = {
       type: String,
       value: ''
+    };
+    // 用于字节跳动小程序模拟抽象节点
+    properties.generic = {
+      type: Object,
+      value: null
     };
     properties.vueSlots = { // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
       type: null,
