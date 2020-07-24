@@ -18,6 +18,7 @@
 web体验地址：[https://duolingo.91ddedu.com](https://duolingo.91ddedu.com)；
 
 微信小程序体验方式：微信搜索“登登多邻国真题库”，或扫描下方小程序码
+
 ![登登多邻国小程序码](https://duolingo.91ddedu.com/static/miniapp.4a4ddf6b.jpg)
 
 - 纸塘日记：简约而优雅的日记本。[iOS App](https://apps.apple.com/cn/app/id1442487677)、[Android App](https://android.myapp.com/myapp/detail.htm?apkName=com.ztdiary.piaoshi)
