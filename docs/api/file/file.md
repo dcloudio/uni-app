@@ -70,7 +70,7 @@ uni.chooseImage({
 |:-|:-|:-|
 |filePath|String|文件的本地路径|
 |createTime|Number|文件的保存时的时间戳，从 `1970/01/01 08:00:00` 到该时刻的秒数。|
-|size|String|文件大小，以字节为单位。|
+|size|Number|文件大小，以字节为单位。|
 
 **示例代码：**
 
