@@ -79,7 +79,7 @@ function getDefaultStartValue () {
     const year = new Date().getFullYear() - 100
     switch (this.fields) {
       case fields.YEAR:
-        return year
+        return year.toString()
       case fields.MONTH:
         return year + '-01'
       case fields.DAY:
@@ -97,7 +97,7 @@ function getDefaultEndValue () {
     const year = new Date().getFullYear() + 100
     switch (this.fields) {
       case fields.YEAR:
-        return year
+        return year.toString()
       case fields.MONTH:
         return year + '-12'
       case fields.DAY:
