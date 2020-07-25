@@ -21,7 +21,7 @@ const {
 
 ### auth.getClientIP()
 
-获取客户端IP地址
+获取客户端IP地址，上传并运行时返回空
 
 ```js
 const IP = auth.getClientIP()
