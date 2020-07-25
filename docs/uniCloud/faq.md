@@ -43,10 +43,7 @@ uni-app本来也可以开发web界面，只是内置组件对宽屏没有自动�
 uniCloud提供了`云函数URL化`，来满足上述需求。[详见](https://uniapp.dcloud.io/uniCloud/http)
 
 ### 微信云开发支持客户端直接操作数据库，uniCloud不支持？
-- 安全问题：客户端直接操作数据库，会有安全隐患。微信云开发利用了微信账户是强制登陆的特点，设计了一套基于微信账户的权限，可以让客户端直接操作数据库，但一旦离开微信环境这种方案就用不了。比如App和H5，大多是不需要登录账户也可以使用的。
-- 性能问题：客户端直接操作数据库，会造成客户端的sdk体积变大、启动初始化变慢、整体联网消耗流量变大、数据获取权限控制复杂，并不好用。
-
-综上，uni-app放弃了客户端直连数据库，所有数据库操作必须使用云函数。
+uniCloud提供了比微信云开发更优秀的前端操作数据库方案，见：[https://uniapp.dcloud.io/uniCloud/uni-clientDB](https://uniapp.dcloud.io/uniCloud/uni-clientDB)
 
 ### 云开发是nodejs+MongoDB组合，对比php+mysql的传统组合怎么样？
 nodejs的性能高于php，MongoDB的性能也优于mysql。
