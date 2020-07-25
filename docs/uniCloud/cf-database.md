@@ -4242,12 +4242,12 @@ const dbCmd = db.command
 const { Point, LineString, Polygon } = db.Geo
 let res = await .collection('restaurants').where({
   location: dbCmd.geoWithin({
-    geometry: Polygon([
-      LineString([
-        Point(0, 0),
-        Point(3, 2),
-        Point(2, 3),
-        Point(0, 0)
+    geometry: new Polygon([
+      new LineString([
+        new Point(0, 0),
+        new Point(3, 2),
+        new Point(2, 3),
+        new Point(0, 0)
       ])
     ]),
   })
@@ -4290,12 +4290,12 @@ const dbCmd = db.command
 const { Point, LineString, Polygon } = db.Geo
 let res = await db.collection('restaurants').where({
   location: dbCmd.geoIntersects({
-    geometry: Polygon([
-      LineString([
-        Point(0, 0),
-        Point(3, 2),
-        Point(2, 3),
-        Point(0, 0)
+    geometry: new Polygon([
+      new LineString([
+        new Point(0, 0),
+        new Point(3, 2),
+        new Point(2, 3),
+        new Point(0, 0)
       ])
     ]),
   })
