@@ -20,6 +20,8 @@
 
 本项目包括云函数和客户端两部分，需要搭配使用，具体请参考下面文档。
 
+插件地址：[https://ext.dcloud.net.cn/plugin?id=2314](https://ext.dcloud.net.cn/plugin?id=2314)
+
 **示例项目使用须知**
 
 1. 下载示例项目后选择服务空间

@@ -15,8 +15,7 @@
 * [云存储](uniCloud/storage.md)
 * 扩展能力
   * [uni-id](uniCloud/uni-id.md)
-  * [uni-curd](uniCloud/uni-curd.md)
-  * [uni-account](uniCloud/uni-account.md)
+  * [uni-clientDB](uniCloud/uni-curd.md)
   * [unipay](uniCloud/unipay.md)
   * [发送短信](uniCloud/send-sms.md)
 * [前端网页托管](uniCloud/hosting.md)
