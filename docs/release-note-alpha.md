@@ -1,3 +1,16 @@
+#### 2.8.2.20200724-alpha
+* 【uni-app插件】
+  + 支付宝小程序平台 修复 使用 await/async 报错的Bug [详情](https://ask.dcloud.net.cn/question/101714)
+  + App-iOS平台 修复 2.8.1版引出的 nvue video 组件中 cover-view 无法覆盖显示的Bug [详情](https://ask.dcloud.net.cn/question/102165)
+  + App-iOS平台 修复 nvue textarea 组件设置 auto-height 为 true 时传入初始值高度没有自适应的Bug [详情](https://github.com/dcloudio/uni-app/issues/992)
+  + App-iOS平台 修复 nvue textarea 组件 linechange 事件不触发的Bug [详情](https://ask.dcloud.net.cn/question/91477)
+* 【uniCloud】
+  + 阿里云 修复 本地运行时云函数互调报错的Bug
+* 【App插件(含5+App和uni-app的App端)】
+  + iOS平台 修复 previewImage 预览图片在 iOS14 上导致应用闪退的Bug [详情](https://ask.dcloud.net.cn/question/100379)
+* 【uni小程序SDK】
+  + Android平台 修复 2.8.1版引出的 通过 DCUniMPSDK.getInstance().startApp 运行小程序丢失启动参数的Bug
+
 #### 2.8.1.20200721-alpha
 * 【uni-app插件】
   + App平台 修复 audio 组件不显示的Bug
@@ -36,7 +49,7 @@
   + Android平台 修复 获取蓝牙设备指定服务特征值的 write 属性值可能不正确的Bug [详情](https://ask.dcloud.net.cn/question/99149) 
   + iOS平台 修复 uni-AD 开屏广告点击特定基础广告时可能引起应用卡死的Bug
   + iOS平台 修复 连接多个蓝牙设备时，特征值变化事件 onBLECharacteristicValueChange 回调触发异常的Bug [详情](https://ask.dcloud.net.cn/question/99858)
-  + iOS平台 修复 数据库执行查询SQL语句读取 big integer 类型数据不准确的Bug [详情](https://ask.dcloud.net.cn/question/100234)
+  + iOS平台 修复 sqlite 执行查询SQL语句读取 big integer 类型数据不准确的Bug [详情](https://ask.dcloud.net.cn/question/100234)
   + iOS平台 修复 音频 audio 连接 airpods 等外接设备时依然使用手机扬声器播放的Bug [详情](https://ask.dcloud.net.cn/question/100719)
 * 【uni小程序SDK】
   + Android平台 优化 小程序进程为应用私有进程，名称调整为`宿主包名:io.dcloud.unimp`，防止其他APP调用
@@ -88,7 +101,6 @@
   + 【重要】iOS平台 新增 云端打包支持配置自定义storyboard启动界面 [详情](https://ask.dcloud.net.cn/article/37475)
   + iOS平台 修复 uni-AD 同时并发调用多次获取信息流广告可能导致无法返回广告数据的Bug
   + iOS平台 修复 应用首页加载网络页面在启动时可能偶现白屏的Bug [详情](https://ask.dcloud.net.cn/question/99572)
-  + iOS平台 修复 视频控件上覆盖cover-image，全屏后再退出，cover-image不显示在上层的Bug [详情](https://ask.dcloud.net.cn/question/98498)
   + iOS平台 修复 Webview窗口直接加载mp4视频可能显示错误页面的Bug
   + iOS平台 修复 sqlite 执行查询SQL语句读取 blob 类型数据返回乱码的Bug [详情](https://ask.dcloud.net.cn/question/98721)
   + iOS平台 修复 连接蓝牙设备 createBLEConnection 超时不触发错误回调的Bug
