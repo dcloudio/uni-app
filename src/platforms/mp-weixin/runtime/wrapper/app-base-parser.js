@@ -85,7 +85,10 @@ export default function parseBaseApp (vm, {
       appOptions[name] = methods[name]
     })
   }
-
+  let shareHookName = 'onShareAppMessage'
+  if(vm.$options[shareHookName] && (hooks.indexOf(shareHookName) === -1)){
+    hooks.push(shareHookName)
+  }
   initHooks(appOptions, hooks)
 
   return appOptions
