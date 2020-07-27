@@ -21,7 +21,7 @@
     "strip-json-comments": "^2.0.1"
   },
   "uni-app": {
-    "compilerVersion": "2.8.1"
+    "compilerVersion": "2.8.2"
   },
   "gitHead": "e62f0398362f2f9de0bf5726046d7951c88d6b1d"
 }
