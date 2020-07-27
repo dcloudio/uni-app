@@ -33,20 +33,20 @@
 
 <pre v-pre="" data-lang="">
 	<code class="lang-" style="padding:0">
-┌─cloudfunctions		云函数
-│  ├─common				公共模块
-|  │  └─uni-curd		数据库查询通用公共模块
-|  ├─gateway			在云函数中控制权限，并调用uni-curd完成查询
-|  └─db_init.json		初始化数据库
-├─js_sdk				前端公共js目录
-|  └─uni-clientDB		前端的js库，封装了查询语法
-├─pages					业务页面文件存放的目录
+┌─cloudfunctions    云函数
+│  ├─common         公共模块
+|  │  └─uni-curd    数据库查询通用公共模块
+|  ├─uni-clientDB   在云函数中控制权限，并调用uni-curd完成查询
+|  └─db_init.json   初始化数据库
+├─js_sdk            前端公共js目录
+|  └─uni-clientDB   前端的js库，封装了查询语法
+├─pages             业务页面文件存放的目录
 │  ├─index
-│  │  └─index.vue		index示例页面
-├─main.js				Vue初始化入口文件
-├─App.vue				应用配置，用来配置App全局样式以及监听 <a href="/frame?id=应用生命周期">应用生命周期</a>
-├─manifest.json			配置应用名称、appid、logo、版本等打包信息，<a href="/collocation/manifest">详见</a>
-└─pages.json			配置页面路由、导航条、选项卡等页面类信息，<a href="/collocation/pages">详见</a>
+│  │  └─index.vue   index示例页面
+├─main.js           Vue初始化入口文件
+├─App.vue           应用配置，用来配置App全局样式以及监听 <a href="/frame?id=应用生命周期">应用生命周期</a>
+├─manifest.json     配置应用名称、appid、logo、版本等打包信息，<a href="/collocation/manifest">详见</a>
+└─pages.json        配置页面路由、导航条、选项卡等页面类信息，<a href="/collocation/pages">详见</a>
 	</code>
 </pre>
 
@@ -67,7 +67,7 @@ const dbCmd = db.command
 
 // 使用uni-clientDB
 uniCloud.callFunction({
-	name: 'gateway',
+	name: 'uni-clientDB',
 	data: {
 		command: db.collection('list').where({
 			name: new RegExp('龚','g'),
