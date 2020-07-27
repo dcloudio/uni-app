@@ -20,7 +20,7 @@
 |current-item-id|String||当前所在滑块的 item-id ，不能与 current 被同时指定|支付宝小程序不支持|
 |interval|Number|5000|自动切换时间间隔||
 |duration|Number|500|滑动动画时长|app-nvue不支持|
-|circular|Boolean|false|是否采用衔接滑动||
+|circular|Boolean|false|是否采用衔接滑动，即播放到末尾后重新回到开头||
 |vertical|Boolean|false|滑动方向是否为纵向||
 |previous-margin|String|0px|前边距，可用于露出前一项的一小部分，接受 px 和 rpx 值|app-nvue、字节跳动小程序不支持|
 |next-margin|String|0px|后边距，可用于露出后一项的一小部分，接受 px 和 rpx 值|app-nvue、字节跳动小程序不支持|
