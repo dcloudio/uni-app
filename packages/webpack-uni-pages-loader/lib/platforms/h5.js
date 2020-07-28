@@ -14,6 +14,8 @@ const {
   addPageUsingComponents
 } = require('@dcloudio/uni-cli-shared/lib/pages')
 
+const compilerVersion = require('@dcloudio/webpack-uni-pages-loader/package.json')['uni-app'].compilerVersion
+
 const PLATFORMS = getPlatforms()
 
 const removePlatformStyle = function (style) {
@@ -401,6 +403,7 @@ import Vue from 'vue'
 global['____${h5.appid}____'] = true;
 delete global['____${h5.appid}____'];
 global.__uniConfig = ${JSON.stringify(pagesJson)};
+global.__uniConfig.compilerVersion = '${compilerVersion}';
 global.__uniConfig.router = ${JSON.stringify(h5.router)};
 global.__uniConfig.publicPath = ${JSON.stringify(h5.publicPath)};
 global.__uniConfig['async'] = ${JSON.stringify(h5.async)};
