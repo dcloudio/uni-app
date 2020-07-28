@@ -1,0 +1,42 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "outDir": "dist",
+    "sourceMap": false,
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "allowJs": false,
+    "strict": true,
+    "noUnusedLocals": true,
+    "experimentalDecorators": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "removeComments": false,
+    "jsx": "preserve",
+    "lib": ["esnext", "dom"],
+    "types": [
+      "jest",
+      "puppeteer",
+      "node",
+      "@dcloudio/types",
+      "vue",
+      "miniprogram-api-typings"
+    ],
+    "rootDir": ".",
+    "paths": {
+      "@dcloudio/*": ["packages/*/src"],
+      "@dcloudio/uni-mp-polyfill": ["packages/uni-mp-core/src/runtime/polyfill"]
+    }
+  },
+  "include": [
+    "packages/global.d.ts",
+    "packages/*/src",
+    "packages/*/__tests__",
+    "test-dts",
+    "node_modules/mini-types/types/api/index.d.ts",
+    "node_modules/mini-types/types/page.d.ts",
+    "node_modules/mini-types/types/component.d.ts",
+    "node_modules/mini-types/types/event.d.ts"
+  ]
+}

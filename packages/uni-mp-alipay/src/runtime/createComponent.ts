@@ -1,0 +1,128 @@
+import { ComponentOptions, ComponentPublicInstance } from 'vue'
+import {
+  initProps,
+  initBehaviors,
+  initData,
+  handleEvent,
+  $destroyComponent,
+  initVueIds
+} from '@dcloudio/uni-mp-core'
+import {
+  initBehavior,
+  handleRef,
+  handleLink,
+  triggerEvent,
+  isComponent2,
+  initSpecialMethods,
+  MPComponentInstance,
+  initRelation,
+  initChildVues,
+  createVueComponent,
+  RelationOptions,
+  createObserver
+} from './util'
+
+declare function Component<P, D, M extends tinyapp.IComponentMethods>(
+  options: tinyapp.ComponentOptions<P, D, M>
+): void
+
+function initComponentProps(rawProps: Record<string, any>) {
+  const propertiesOptions = {
+    properties: {}
+  }
+  initProps(propertiesOptions, rawProps, false)
+  const properties = propertiesOptions.properties as Record<string, any>
+  const props: Record<string, any> = {
+    onVueInit: function() {}
+  }
+  Object.keys(properties).forEach(key => {
+    if (key !== 'vueSlots') {
+      props[key] = properties[key].value
+    }
+  })
+
+  return props
+}
+
+function initVm(
+  mpInstance: MPComponentInstance,
+  createComponent: (parent: ComponentPublicInstance) => ComponentPublicInstance
+) {
+  if (mpInstance.$vm) {
+    return
+  }
+  const properties = mpInstance.props
+  initVueIds(properties.vueId, mpInstance as any)
+  const relationOptions: RelationOptions = {
+    vuePid: mpInstance._$vuePid,
+    mpInstance,
+    createComponent
+  }
+  if (isComponent2) {
+    // 处理父子关系
+    initRelation(mpInstance, relationOptions)
+    // 初始化 vue 实例
+    mpInstance.$vm = createComponent(relationOptions.parent!)
+  } else {
+    // 处理父子关系
+    initRelation(mpInstance, relationOptions)
+    if (relationOptions.parent) {
+      // 父组件已经初始化，直接初始化子，否则放到父组件的 didMount 中处理
+      // 初始化 vue 实例
+      mpInstance.$vm = createComponent(relationOptions.parent)
+      handleRef.call(relationOptions.parent.$scope, mpInstance)
+      initChildVues(mpInstance)
+      mpInstance.$vm.$callHook('mounted')
+    }
+  }
+}
+
+export function createComponent(vueOptions: ComponentOptions) {
+  vueOptions = vueOptions.default || vueOptions
+  const mpComponentOptions: tinyapp.ComponentOptions = {
+    props: initComponentProps(vueOptions.props),
+    didMount() {
+      const createComponent = (parent?: ComponentPublicInstance) => {
+        return createVueComponent('component', this, vueOptions, parent)
+      }
+      if ((my as any).dd) {
+        // 钉钉小程序底层基础库有 bug,组件嵌套使用时,在 didMount 中无法及时调用 props 中的方法
+        setTimeout(() => {
+          initVm(this, createComponent)
+        }, 4)
+      } else {
+        initVm(this, createComponent)
+      }
+      initSpecialMethods(this)
+      if (isComponent2) {
+        this.$vm.$callHook('mounted')
+      }
+    },
+    didUnmount() {
+      $destroyComponent(this.$vm)
+    },
+    methods: {
+      __r: handleRef,
+      __e: handleEvent,
+      __l: handleLink,
+      triggerEvent
+    }
+  }
+  if (__VUE_OPTIONS_API__) {
+    mpComponentOptions.data = initData(vueOptions)
+    mpComponentOptions.mixins = initBehaviors(vueOptions, initBehavior)
+  }
+
+  if (isComponent2) {
+    mpComponentOptions.onInit = function onInit(this: MPComponentInstance) {
+      initVm(this, (parent?: ComponentPublicInstance) => {
+        return createVueComponent('component', this, vueOptions, parent)
+      })
+    }
+    mpComponentOptions.deriveDataFromProps = createObserver()
+  } else {
+    mpComponentOptions.didUpdate = createObserver(true)
+  }
+
+  return Component(mpComponentOptions)
+}

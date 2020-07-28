@@ -1,0 +1,11 @@
+{
+  "input": {
+    "src/runtime/index.ts": "dist/uni.mp.esm.js",
+    "src/api/index.ts": "dist/uni.api.esm.js"
+  },
+  "replacements": {
+    "__GLOBAL__": "tt",
+    "__PLATFORM__": "\"mp-toutiao\"",
+    "__PLATFORM_TITLE__": "字节跳动小程序"
+  }
+}

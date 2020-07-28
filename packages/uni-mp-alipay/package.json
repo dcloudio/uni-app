@@ -1,0 +1,19 @@
+{
+  "name": "@dcloudio/uni-mp-alipay",
+  "version": "3.0.0",
+  "description": "uni-app mp-alipay",
+  "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/uni-mp-alipay"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "Apache-2.0",
+  "uni-app": {
+    "name": "mp-alipay",
+    "title": "支付宝小程序"
+  }
+}
