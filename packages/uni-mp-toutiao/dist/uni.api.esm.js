@@ -6,7 +6,7 @@ let isIOS = false;
 let deviceWidth = 0;
 let deviceDPR = 0;
 function checkDeviceWidth() {
-    const { platform, pixelRatio, windowWidth } = wx.getSystemInfoSync();
+    const { platform, pixelRatio, windowWidth } = tt.getSystemInfoSync();
     deviceWidth = windowWidth;
     deviceDPR = pixelRatio;
     isIOS = platform === 'ios';
@@ -291,7 +291,7 @@ function initWrapper(protocols) {
                     }
                     if (!keyOption) {
                         // 不支持的参数
-                        console.warn(`微信小程序 ${methodName} 暂不支持 ${key}`);
+                        console.warn(`字节跳动小程序 ${methodName} 暂不支持 ${key}`);
                     }
                     else if (isString(keyOption)) {
                         // 重写参数 key
@@ -336,7 +336,7 @@ function initWrapper(protocols) {
         if (!protocol) {
             // 暂不支持的 api
             return function () {
-                console.error(`微信小程序 暂不支持${methodName}`);
+                console.error(`字节跳动小程序 暂不支持${methodName}`);
             };
         }
         return function (arg1, arg2) {
@@ -350,7 +350,7 @@ function initWrapper(protocols) {
             if (typeof arg2 !== 'undefined') {
                 args.push(arg2);
             }
-            const returnValue = wx[options.name || methodName].apply(wx, args);
+            const returnValue = tt[options.name || methodName].apply(tt, args);
             if (isSyncApi(methodName)) {
                 // 同步 api
                 return processReturnValue(methodName, returnValue, options.returnValue, isContextApi(methodName));
@@ -376,7 +376,7 @@ function initUni(api, protocols) {
             }
             // event-api
             // provider-api?
-            return promisify(key, wrapper(key, wx[key]));
+            return promisify(key, wrapper(key, tt[key]));
         }
     };
     return new Proxy({}, UniProxyHandlers);
@@ -436,27 +436,12 @@ const previewImage = {
         };
     }
 };
-function addSafeAreaInsets(fromRes, toRes) {
-    if (fromRes.safeArea) {
-        const safeArea = fromRes.safeArea;
-        toRes.safeAreaInsets = {
-            top: safeArea.top,
-            left: safeArea.left,
-            right: fromRes.windowWidth - safeArea.right,
-            bottom: fromRes.windowHeight - safeArea.bottom
-        };
-    }
-}
-const getSystemInfo = {
-    returnValue: addSafeAreaInsets
-};
-const getSystemInfoSync = getSystemInfo;
 
 const getProvider = initGetProvider({
-    oauth: ['weixin'],
-    share: ['weixin'],
-    payment: ['wxpay'],
-    push: ['weixin']
+    oauth: ['toutiao'],
+    share: ['toutiao'],
+    payment: ['toutiao'],
+    push: ['toutiao']
 });
 
 var shims = /*#__PURE__*/Object.freeze({
@@ -464,11 +449,94 @@ var shims = /*#__PURE__*/Object.freeze({
   getProvider: getProvider
 });
 
+const chooseImage = {
+    args: {
+        sizeType: false
+    }
+};
+const connectSocket = {
+    args: {
+        method: false
+    }
+};
+const chooseVideo = {
+    args: {
+        camera: false
+    }
+};
+const scanCode = {
+    args: {
+        onlyFromCamera: false,
+        scanType: false
+    }
+};
+const startAccelerometer = {
+    args: {
+        interval: false
+    }
+};
+const showToast = {
+    args: {
+        image: false,
+        mask: false
+    }
+};
+const showLoading = {
+    args: {
+        mask: false
+    }
+};
+const showModal = {
+    args: {
+        cancelColor: false,
+        confirmColor: false
+    }
+};
+const showActionSheet = {
+    args: {
+        itemColor: false
+    }
+};
+const login = {
+    args: {
+        scopes: false,
+        timeout: false
+    }
+};
+const getUserInfo = {
+    args: {
+        lang: false,
+        timeout: false
+    }
+};
+const requestPayment = {
+    name: tt.pay ? 'pay' : 'requestPayment',
+    args: {
+        orderInfo: tt.pay ? 'orderInfo' : 'data'
+    }
+};
+const getFileInfo = {
+    args: {
+        digestAlgorithm: false
+    }
+};
+
 var protocols = /*#__PURE__*/Object.freeze({
   __proto__: null,
-  previewImage: previewImage,
-  getSystemInfo: getSystemInfo,
-  getSystemInfoSync: getSystemInfoSync
+  chooseImage: chooseImage,
+  connectSocket: connectSocket,
+  chooseVideo: chooseVideo,
+  scanCode: scanCode,
+  startAccelerometer: startAccelerometer,
+  showToast: showToast,
+  showLoading: showLoading,
+  showModal: showModal,
+  showActionSheet: showActionSheet,
+  login: login,
+  getUserInfo: getUserInfo,
+  requestPayment: requestPayment,
+  getFileInfo: getFileInfo,
+  previewImage: previewImage
 });
 
 var index = initUni(shims, protocols);

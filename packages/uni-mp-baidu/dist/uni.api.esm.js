@@ -6,7 +6,7 @@ let isIOS = false;
 let deviceWidth = 0;
 let deviceDPR = 0;
 function checkDeviceWidth() {
-    const { platform, pixelRatio, windowWidth } = wx.getSystemInfoSync();
+    const { platform, pixelRatio, windowWidth } = swan.getSystemInfoSync();
     deviceWidth = windowWidth;
     deviceDPR = pixelRatio;
     isIOS = platform === 'ios';
@@ -291,7 +291,7 @@ function initWrapper(protocols) {
                     }
                     if (!keyOption) {
                         // 不支持的参数
-                        console.warn(`微信小程序 ${methodName} 暂不支持 ${key}`);
+                        console.warn(`百度小程序 ${methodName} 暂不支持 ${key}`);
                     }
                     else if (isString(keyOption)) {
                         // 重写参数 key
@@ -336,7 +336,7 @@ function initWrapper(protocols) {
         if (!protocol) {
             // 暂不支持的 api
             return function () {
-                console.error(`微信小程序 暂不支持${methodName}`);
+                console.error(`百度小程序 暂不支持${methodName}`);
             };
         }
         return function (arg1, arg2) {
@@ -350,7 +350,7 @@ function initWrapper(protocols) {
             if (typeof arg2 !== 'undefined') {
                 args.push(arg2);
             }
-            const returnValue = wx[options.name || methodName].apply(wx, args);
+            const returnValue = swan[options.name || methodName].apply(swan, args);
             if (isSyncApi(methodName)) {
                 // 同步 api
                 return processReturnValue(methodName, returnValue, options.returnValue, isContextApi(methodName));
@@ -376,7 +376,7 @@ function initUni(api, protocols) {
             }
             // event-api
             // provider-api?
-            return promisify(key, wrapper(key, wx[key]));
+            return promisify(key, wrapper(key, swan[key]));
         }
     };
     return new Proxy({}, UniProxyHandlers);
@@ -453,19 +453,118 @@ const getSystemInfo = {
 const getSystemInfoSync = getSystemInfo;
 
 const getProvider = initGetProvider({
-    oauth: ['weixin'],
-    share: ['weixin'],
-    payment: ['wxpay'],
-    push: ['weixin']
+    oauth: ['baidu'],
+    share: ['baidu'],
+    payment: ['baidu'],
+    push: ['baidu']
 });
+function requestPayment(params) {
+    let parseError = false;
+    if (typeof params.orderInfo === 'string') {
+        try {
+            params.orderInfo = JSON.parse(params.orderInfo);
+        }
+        catch (e) {
+            parseError = true;
+        }
+    }
+    if (parseError) {
+        params.fail &&
+            params.fail({
+                errMsg: 'requestPayment:fail: 参数 orderInfo 数据结构不正确，参考：https://uniapp.dcloud.io/api/plugins/payment?id=orderinfo'
+            });
+    }
+    else {
+        swan.requestPolymerPayment(params);
+    }
+}
 
 var shims = /*#__PURE__*/Object.freeze({
   __proto__: null,
-  getProvider: getProvider
+  getProvider: getProvider,
+  requestPayment: requestPayment
 });
+
+function createTodoMethod(contextName, methodName) {
+    return function unsupported() {
+        console.error(`百度小程序 ${contextName}暂不支持${methodName}`);
+    };
+}
+const request = {
+    args() {
+        // TODO
+        // data 不支持 ArrayBuffer
+        // method 不支持 TRACE, CONNECT
+        return {
+            method: 'method',
+            dataType(type) {
+                return {
+                    name: 'dataType',
+                    value: type === 'json' ? type : 'string'
+                };
+            }
+        };
+    }
+};
+const connectSocket = {
+    args: {
+        method: false
+    }
+};
+const getRecorderManager = {
+    returnValue(fromRes, toRes) {
+        toRes.onFrameRecorded = createTodoMethod('RecorderManager', 'onFrameRecorded');
+    }
+};
+const getBackgroundAudioManager = {
+    returnValue(fromRes, toRes) {
+        toRes.onPrev = createTodoMethod('BackgroundAudioManager', 'onPrev');
+        toRes.onNext = createTodoMethod('BackgroundAudioManager', 'onNext');
+    }
+};
+const scanCode = {
+    args: {
+        onlyFromCamera: false,
+        scanType: false
+    }
+};
+const navigateToMiniProgram = {
+    name: 'navigateToSmartProgram',
+    args: {
+        appId: 'appKey',
+        envVersion: false
+    }
+};
+const navigateBackMiniProgram = {
+    name: 'navigateBackSmartProgram'
+};
+const showShareMenu = {
+    name: 'openShare'
+};
+const getAccountInfoSync = {
+    name: 'getEnvInfoSync',
+    returnValue(fromRes, toRes) {
+        toRes.miniProgram = {
+            appId: fromRes.appKey
+        };
+        toRes.plugin = {
+            appId: '',
+            version: fromRes.sdkVersion
+        };
+    }
+};
 
 var protocols = /*#__PURE__*/Object.freeze({
   __proto__: null,
+  request: request,
+  connectSocket: connectSocket,
+  getRecorderManager: getRecorderManager,
+  getBackgroundAudioManager: getBackgroundAudioManager,
+  scanCode: scanCode,
+  navigateToMiniProgram: navigateToMiniProgram,
+  navigateBackMiniProgram: navigateBackMiniProgram,
+  showShareMenu: showShareMenu,
+  getAccountInfoSync: getAccountInfoSync,
   previewImage: previewImage,
   getSystemInfo: getSystemInfo,
   getSystemInfoSync: getSystemInfoSync

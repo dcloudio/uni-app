@@ -289,25 +289,6 @@ function initRefs(instance, mpInstance) {
         }
     });
 }
-function findVmByVueId(instance, vuePid) {
-    // TODO vue3 中 没有 $children
-    const $children = instance.$children;
-    // 优先查找直属(反向查找:https://github.com/dcloudio/uni-app/issues/1200)
-    for (let i = $children.length - 1; i >= 0; i--) {
-        const childVm = $children[i];
-        if (childVm.$scope._$vueId === vuePid) {
-            return childVm;
-        }
-    }
-    // 反向递归查找
-    let parentVm;
-    for (let i = $children.length - 1; i >= 0; i--) {
-        parentVm = findVmByVueId($children[i], vuePid);
-        if (parentVm) {
-            return parentVm;
-        }
-    }
-}
 
 const PROP_TYPES = [String, Number, Boolean, Object, Array, null];
 function createObserver(name) {
@@ -832,6 +813,84 @@ Component = function (options) {
     return MPComponent(options);
 };
 
+function provide(instance, key, value) {
+    if (!instance) {
+        if ((process.env.NODE_ENV !== 'production')) {
+            console.warn(`provide() can only be used inside setup().`);
+        }
+    }
+    else {
+        let provides = instance.provides;
+        // by default an instance inherits its parent's provides object
+        // but when it needs to provide values of its own, it creates its
+        // own provides object using parent provides object as prototype.
+        // this way in `inject` we can simply look up injections from direct
+        // parent and let the prototype chain do the work.
+        const parentProvides = instance.parent && instance.parent.provides;
+        if (parentProvides === provides) {
+            provides = instance.provides = Object.create(parentProvides);
+        }
+        // TS doesn't allow symbol as index type
+        provides[key] = value;
+    }
+}
+function initProvide(instance) {
+    const provideOptions = instance.$options.provide;
+    if (!provideOptions) {
+        return;
+    }
+    const provides = isFunction(provideOptions)
+        ? provideOptions.call(instance)
+        : provideOptions;
+    const internalInstance = instance.$;
+    for (const key in provides) {
+        provide(internalInstance, key, provides[key]);
+    }
+}
+function inject(instance, key, defaultValue) {
+    if (instance) {
+        const provides = instance.provides;
+        if (key in provides) {
+            // TS doesn't allow symbol as index type
+            return provides[key];
+        }
+        else if (arguments.length > 1) {
+            return defaultValue;
+        }
+        else if ((process.env.NODE_ENV !== 'production')) {
+            console.warn(`injection "${String(key)}" not found.`);
+        }
+    }
+    else if ((process.env.NODE_ENV !== 'production')) {
+        console.warn(`inject() can only be used inside setup() or functional components.`);
+    }
+}
+function initInjections(instance) {
+    const injectOptions = instance.$options.inject;
+    if (!injectOptions) {
+        return;
+    }
+    const internalInstance = instance.$;
+    const ctx = internalInstance.ctx;
+    if (isArray(injectOptions)) {
+        for (let i = 0; i < injectOptions.length; i++) {
+            const key = injectOptions[i];
+            ctx[key] = inject(internalInstance, key);
+        }
+    }
+    else {
+        for (const key in injectOptions) {
+            const opt = injectOptions[key];
+            if (isObject(opt)) {
+                ctx[key] = inject(internalInstance, opt.from, opt.default);
+            }
+            else {
+                ctx[key] = inject(internalInstance, opt);
+            }
+        }
+    }
+}
+
 function initLifetimes({ mocks, isPage, initRelation, vueOptions }) {
     return {
         attached() {
@@ -840,15 +899,17 @@ function initLifetimes({ mocks, isPage, initRelation, vueOptions }) {
             const relationOptions = {
                 vuePid: this._$vuePid
             };
-            // 处理父子关系
-            initRelation(this, relationOptions);
             // 初始化 vue 实例
             const mpInstance = this;
+            const mpType = isPage(mpInstance) ? 'page' : 'component';
+            if (mpType === 'page' && !mpInstance.route && mpInstance.__route__) {
+                mpInstance.route = mpInstance.__route__;
+            }
             this.$vm = $createComponent({
                 type: vueOptions,
                 props: properties
             }, {
-                mpType: isPage(mpInstance) ? 'page' : 'component',
+                mpType,
                 mpInstance,
                 slots: properties.vueSlots,
                 parentComponent: relationOptions.parent && relationOptions.parent.$,
@@ -858,14 +919,8 @@ function initLifetimes({ mocks, isPage, initRelation, vueOptions }) {
                     initComponentInstance(instance, options);
                 }
             });
-        },
-        ready() {
-            // 当组件 props 默认值为 true，初始化时传入 false 会导致 created,ready 触发, 但 attached 不触发
-            // https://developers.weixin.qq.com/community/develop/doc/00066ae2844cc0f8eb883e2a557800
-            if (this.$vm) {
-                this.$vm.$callHook('mounted');
-                this.$vm.$callHook('onReady');
-            }
+            // 处理父子关系
+            initRelation(this, relationOptions);
         },
         detached() {
             this.$vm && $destroyComponent(this.$vm);
@@ -873,39 +928,122 @@ function initLifetimes({ mocks, isPage, initRelation, vueOptions }) {
     };
 }
 
-const mocks = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__'];
+const instances = Object.create(null);
+function parse(componentOptions, { handleLink }) {
+    componentOptions.methods.__l = handleLink;
+}
+
+function initLifetimes$1(lifetimesOptions) {
+    return extend(initLifetimes(lifetimesOptions), {
+        ready() {
+            if (this.$vm && lifetimesOptions.isPage(this)) {
+                if ( this.pageinstance) {
+                    this.__webviewId__ = this.pageinstance.__pageId__;
+                }
+                this.$vm.$callSyncHook('created');
+                this.$vm.$callHook('mounted');
+                this.$vm.$callHook('onReady');
+            }
+            else {
+                this.is && console.warn(this.is + ' is not ready');
+            }
+        },
+        detached() {
+            this.$vm && $destroyComponent(this.$vm);
+            // 清理
+            const webviewId = this.__webviewId__;
+            webviewId &&
+                Object.keys(instances).forEach(key => {
+                    if (key.indexOf(webviewId + '_') === 0) {
+                        delete instances[key];
+                    }
+                });
+        }
+    });
+}
+
+const mocks = ['nodeId', 'componentName', '_componentId', 'uniquePrefix'];
 function isPage(mpInstance) {
-    return !!mpInstance.route;
+    return !mpInstance.ownerId;
 }
-function initRelation(mpInstance, detail) {
-    mpInstance.triggerEvent('__l', detail);
+
+function initRelation(mpInstance) {
+    // triggerEvent 后，接收事件时机特别晚，已经到了 ready 之后
+    const nodeId = mpInstance.nodeId + '';
+    const webviewId = mpInstance.pageinstance.__pageId__ + '';
+    instances[webviewId + '_' + nodeId] = mpInstance.$vm;
+    mpInstance.triggerEvent('__l', {
+        nodeId,
+        webviewId
+    });
 }
-function handleLink(event) {
-    // detail 是微信,value 是百度(dipatch)
-    const detail = (event.detail ||
-        event.value);
-    const vuePid = detail.vuePid;
-    let parentVm;
-    if (vuePid) {
-        parentVm = findVmByVueId(this.$vm, vuePid);
+function handleLink({ detail: { nodeId, webviewId } }) {
+    const vm = instances[webviewId + '_' + nodeId];
+    if (!vm) {
+        return;
     }
+    let parentVm = instances[webviewId + '_' + vm.$scope.ownerId];
     if (!parentVm) {
         parentVm = this.$vm;
     }
-    detail.parent = parentVm;
+    vm.$.parent = parentVm.$;
+    const createdVm = function () {
+        if (__VUE_OPTIONS_API__) {
+            parentVm.$children.push(vm);
+            const parent = parentVm.$;
+            vm.$.provides = parent
+                ? parent.provides
+                : Object.create(parent.appContext.provides);
+            initInjections(vm);
+            initProvide(vm);
+        }
+        vm.$callSyncHook('created');
+    };
+    const mountedVm = function () {
+        // 处理当前 vm 子
+        if (vm._$childVues) {
+            vm._$childVues.forEach(([createdVm]) => createdVm());
+            vm._$childVues.forEach(([, mountedVm]) => mountedVm());
+            delete vm._$childVues;
+        }
+        vm.$callHook('mounted');
+        vm.$callHook('onReady');
+    };
+    // 当 parentVm 已经 mounted 时，直接触发，否则延迟
+    if (!parentVm || parentVm.$.isMounted) {
+        createdVm();
+        mountedVm();
+    }
+    else {
+        (parentVm._$childVues || (parentVm._$childVues = [])).push([
+            createdVm,
+            mountedVm
+        ]);
+    }
 }
 
-var parseOptions = /*#__PURE__*/Object.freeze({
+var parseComponentOptions = /*#__PURE__*/Object.freeze({
+  __proto__: null,
+  initRelation: initRelation,
+  handleLink: handleLink,
+  mocks: mocks,
+  isPage: isPage,
+  parse: parse,
+  initLifetimes: initLifetimes
+});
+
+var parsePageOptions = /*#__PURE__*/Object.freeze({
   __proto__: null,
   mocks: mocks,
   isPage: isPage,
   initRelation: initRelation,
   handleLink: handleLink,
-  initLifetimes: initLifetimes
+  parse: parse,
+  initLifetimes: initLifetimes$1
 });
 
 const createApp = initCreateApp();
-const createPage = initCreatePage(parseOptions);
-const createComponent = initCreateComponent(parseOptions);
+const createPage = initCreatePage(parsePageOptions);
+const createComponent = initCreateComponent(parseComponentOptions);
 
 export { createApp, createComponent, createPage };

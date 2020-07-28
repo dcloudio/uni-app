@@ -322,6 +322,17 @@ function parsePropType(key, type, defaultValue) {
     if (isArray(type) && type.length === 1) {
         return type[0];
     }
+    {
+        if (
+        // [String,Boolean]=>Boolean
+        defaultValue === false &&
+            isArray(type) &&
+            type.length === 2 &&
+            type.indexOf(String) !== -1 &&
+            type.indexOf(Boolean) !== -1) {
+            return Boolean;
+        }
+    }
     return type;
 }
 function initDefaultProps(isBehavior = false) {
@@ -371,7 +382,7 @@ function initProps(mpComponentOptions, rawProps, isBehavior = false) {
                     value = value();
                 }
                 const type = opts.type;
-                opts.type = parsePropType(key, type);
+                opts.type = parsePropType(key, type, value);
                 properties[key] = createProperty(key, {
                     type: PROP_TYPES.indexOf(type) !== -1 ? type : null,
                     value
@@ -379,7 +390,7 @@ function initProps(mpComponentOptions, rawProps, isBehavior = false) {
             }
             else {
                 // content:String
-                const type = parsePropType(key, opts);
+                const type = parsePropType(key, opts, null);
                 properties[key] = createProperty(key, {
                     type: PROP_TYPES.indexOf(type) !== -1 ? type : null
                 });
@@ -646,6 +657,14 @@ function wrapper(event) {
         event.detail = typeof event.detail === 'object' ? event.detail : {};
         event.detail.markerId = event.markerId;
     }
+    {
+        // mp-baidu，checked=>value
+        if (isPlainObject(event.detail) &&
+            hasOwn(event.detail, 'checked') &&
+            !hasOwn(event.detail, 'value')) {
+            event.detail.value = event.detail.checked;
+        }
+    }
     if (isPlainObject(event.detail)) {
         event.target = Object.assign({}, event.target, event.detail);
     }
@@ -832,6 +851,21 @@ Component = function (options) {
     return MPComponent(options);
 };
 
+function parse(appOptions) {
+    // 百度 onShow 竟然会在 onLaunch 之前
+    appOptions.onShow = function onShow(args) {
+        if (!this.$vm) {
+            this.onLaunch(args);
+        }
+        this.$vm.$callHook('onShow', args);
+    };
+}
+
+var parseAppOptions = /*#__PURE__*/Object.freeze({
+  __proto__: null,
+  parse: parse
+});
+
 function initLifetimes({ mocks, isPage, initRelation, vueOptions }) {
     return {
         attached() {
@@ -873,13 +907,6 @@ function initLifetimes({ mocks, isPage, initRelation, vueOptions }) {
     };
 }
 
-const mocks = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__'];
-function isPage(mpInstance) {
-    return !!mpInstance.route;
-}
-function initRelation(mpInstance, detail) {
-    mpInstance.triggerEvent('__l', detail);
-}
 function handleLink(event) {
     // detail 是微信,value 是百度(dipatch)
     const detail = (event.detail ||
@@ -895,17 +922,95 @@ function handleLink(event) {
     detail.parent = parentVm;
 }
 
-var parseOptions = /*#__PURE__*/Object.freeze({
+const mocks = ['nodeId', 'componentName', '_componentId', 'uniquePrefix'];
+function isPage(mpInstance) {
+    return !mpInstance.ownerId;
+}
+function initRelation(mpInstance, detail) {
+    mpInstance.dispatch('__l', detail);
+}
+const newLifecycle = /*#__PURE__*/ swan.canIUse('lifecycle-2-0');
+function parse$1(componentOptions) {
+    const methods = componentOptions.methods;
+    const lifetimes = componentOptions.lifetimes;
+    // 关于百度小程序生命周期的说明(组件作为页面时):
+    // lifetimes:attached --> methods:onShow --> methods:onLoad --> methods:onReady
+    // 这里在强制将onShow挪到onLoad之后触发,另外一处修改在page-parser.js
+    const oldAttached = lifetimes.attached;
+    lifetimes.attached = function attached() {
+        oldAttached.call(this);
+        if (isPage(this) && this.$vm) {
+            // 百度 onLoad 在 attached 之前触发
+            // 百度 当组件作为页面时 pageinstance 不是原来组件的 instance
+            const pageInstance = this.pageinstance;
+            pageInstance.$vm = this.$vm;
+            if (hasOwn(pageInstance, '_$args')) {
+                this.$vm.$callHook('onLoad', pageInstance._$args);
+                this.$vm.$callHook('onShow');
+                delete pageInstance._$args;
+            }
+        }
+        else {
+            // 百度小程序组件不触发methods内的onReady
+            if (this.$vm) {
+                this.$vm.$callHook('mounted');
+            }
+        }
+    };
+    if (newLifecycle) {
+        methods.onReady = lifetimes.ready;
+        delete lifetimes.ready;
+    }
+    componentOptions.messages = {
+        __l: methods.__l
+    };
+    delete methods.__l;
+}
+
+var parseComponentOptions = /*#__PURE__*/Object.freeze({
   __proto__: null,
   mocks: mocks,
   isPage: isPage,
   initRelation: initRelation,
+  parse: parse$1,
   handleLink: handleLink,
   initLifetimes: initLifetimes
 });
 
-const createApp = initCreateApp();
-const createPage = initCreatePage(parseOptions);
-const createComponent = initCreateComponent(parseOptions);
+function parse$2(pageOptions) {
+    parse$1(pageOptions);
+    const methods = pageOptions.methods;
+    // 纠正百度小程序生命周期methods:onShow在methods:onLoad之前触发的问题
+    methods.onShow = function onShow() {
+        if (this.$vm && this._$loaded) {
+            this.$vm.$callHook('onShow');
+        }
+    };
+    methods.onLoad = function onLoad(args) {
+        // 百度 onLoad 在 attached 之前触发，先存储 args, 在 attached 里边触发 onLoad
+        if (this.$vm) {
+            this._$loaded = true;
+            this.$vm.$callHook('onLoad', args);
+            this.$vm.$callHook('onShow');
+        }
+        else {
+            this.pageinstance._$args = args;
+        }
+    };
+}
+
+var parsePageOptions = /*#__PURE__*/Object.freeze({
+  __proto__: null,
+  parse: parse$2,
+  handleLink: handleLink,
+  initLifetimes: initLifetimes,
+  mocks: mocks,
+  isPage: isPage,
+  initRelation: initRelation
+});
+
+const createApp = initCreateApp(parseAppOptions);
+const createPage = initCreatePage(parsePageOptions);
+const createComponent = initCreateComponent(parseComponentOptions);
 
 export { createApp, createComponent, createPage };

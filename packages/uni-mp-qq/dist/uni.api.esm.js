@@ -6,7 +6,7 @@ let isIOS = false;
 let deviceWidth = 0;
 let deviceDPR = 0;
 function checkDeviceWidth() {
-    const { platform, pixelRatio, windowWidth } = wx.getSystemInfoSync();
+    const { platform, pixelRatio, windowWidth } = qq.getSystemInfoSync();
     deviceWidth = windowWidth;
     deviceDPR = pixelRatio;
     isIOS = platform === 'ios';
@@ -291,7 +291,7 @@ function initWrapper(protocols) {
                     }
                     if (!keyOption) {
                         // 不支持的参数
-                        console.warn(`微信小程序 ${methodName} 暂不支持 ${key}`);
+                        console.warn(`QQ小程序 ${methodName} 暂不支持 ${key}`);
                     }
                     else if (isString(keyOption)) {
                         // 重写参数 key
@@ -336,7 +336,7 @@ function initWrapper(protocols) {
         if (!protocol) {
             // 暂不支持的 api
             return function () {
-                console.error(`微信小程序 暂不支持${methodName}`);
+                console.error(`QQ小程序 暂不支持${methodName}`);
             };
         }
         return function (arg1, arg2) {
@@ -350,7 +350,7 @@ function initWrapper(protocols) {
             if (typeof arg2 !== 'undefined') {
                 args.push(arg2);
             }
-            const returnValue = wx[options.name || methodName].apply(wx, args);
+            const returnValue = qq[options.name || methodName].apply(qq, args);
             if (isSyncApi(methodName)) {
                 // 同步 api
                 return processReturnValue(methodName, returnValue, options.returnValue, isContextApi(methodName));
@@ -376,7 +376,7 @@ function initUni(api, protocols) {
             }
             // event-api
             // provider-api?
-            return promisify(key, wrapper(key, wx[key]));
+            return promisify(key, wrapper(key, qq[key]));
         }
     };
     return new Proxy({}, UniProxyHandlers);
@@ -453,10 +453,10 @@ const getSystemInfo = {
 const getSystemInfoSync = getSystemInfo;
 
 const getProvider = initGetProvider({
-    oauth: ['weixin'],
-    share: ['weixin'],
-    payment: ['wxpay'],
-    push: ['weixin']
+    oauth: ['qq'],
+    share: ['qq'],
+    payment: ['qqpay'],
+    push: ['qq']
 });
 
 var shims = /*#__PURE__*/Object.freeze({
