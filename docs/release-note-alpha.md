@@ -1,3 +1,7 @@
+#### 2.8.3.20200727-alpha
+* 【uni-app插件】
+  + H5平台 修复 启用摇树优化后 audio 组件编译报错的Bug [#1943](https://github.com/dcloudio/uni-app/issues/1943)
+
 #### 2.8.2.20200724-alpha
 * 【uni-app插件】
   + 支付宝小程序平台 修复 使用 await/async 报错的Bug [详情](https://ask.dcloud.net.cn/question/101714)
