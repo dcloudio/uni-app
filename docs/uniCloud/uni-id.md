@@ -46,34 +46,48 @@ uniCloud框架底层，会自动在callfunction时传递`uni-id`的token（uni-a
 
 **config.json的说明**
 
-注意：config.json是一个标准json文件，不支持注释
+注意：**config.json是一个标准json文件，不支持注释**
 
 配置项：
 
 + `passwordSecret`为用于加密密码入库的密钥
 + `tokenSecret`为生成token需要的密钥
 + `tokenExpiresIn`token有效期，以秒为单位
++ `passwordErrorLimit`密码错误重试次数，分ip记录密码错误次数，达到重试次数之后等待`passwordErrorRetryTime`时间之后才可以重试
++ `passwordErrorRetryTime`单位为秒
++ 如果使用`sendSmsCode`接口发送短信需要配置service，如果使用其他方式发送短信可以参考`sendSmsCode`接口的实现[uni-id sendSmsCode](https://gitee.com/dcloud/uni-id/blob/master/src/lib/send-sms-code.js)
 + 另外可以按照客户端平台进行不同的配置，参考下面示例
 
 ```json
+// 如果拷贝此内容切记去除注释
 {
-	"passwordSecret": "passwordSecret-demo",
-	"tokenSecret": "tokenSecret-demo",
-	"tokenExpiresIn": 7200,
+	"passwordSecret": "passwordSecret-demo", // 用于加密用户密码
+	"tokenSecret": "tokenSecret-demo", // 用于生成token
+	"tokenExpiresIn": 7200, // token过期时间
+	"passwordErrorLimit": 6, // 同一个ip密码错误最大重试次数
+	"passwordErrorRetryTime": 3600, // 超过密码重试次数之后的等待时间
+	"service": {
+		"sms": {
+			"name": "DCloud", // 应用名称对应uniCloud.sendSms的data参数内的name
+			"codeExpiresIn": 180, // 验证码过期时间，单位：秒，只可取60的整数倍，不填此参数时会取默认值180秒
+			"smsKey": "your sms key", // 短信密钥key
+			"smsSecret": "your sms secret" // 短信密钥secret
+		}
+	},
 	"mp-weixin":{
     "oauth":{
       "weixin": {
-        "appid": "your mp-weixin appid",
-        "appsecret": "your mp-weixin appsecret",
+        "appid": "your mp-weixin appid", // 微信小程序appid
+        "appsecret": "your mp-weixin appsecret", // 微信小程序appsecret
       }
     }
 	},
 	"app-plus": {
-		"tokenExpiresIn": 2592000,
+		"tokenExpiresIn": 2592000, // App平台token过期时间
     "oauth":{
       "weixin": {
-        "appid": "your app-weixin appid",
-        "appsecret": "your app-weixin appsecret",
+        "appid": "your app-weixin appid", // app平台对应的微信开放平台appid
+        "appsecret": "your app-weixin appsecret", // app平台对应的微信开放平台appsecret
       }
     }
 	}
@@ -222,11 +236,12 @@ exports.main = async function(event,context) {
 
 **响应参数**
 
-| 字段| 类型	| 必填| 说明											|
-| ---	| ---		| ---	| ---												|
-| code| Number| 是	|错误码，0表示成功					|
-| msg	| String| 是	|详细信息										|
-|uid	| String|否		|用户Id，校验成功之后会返回	|
+| 字段		| 类型	| 说明															|
+| ---			| ---		| ---																|
+| code		| Number|错误码，0表示成功									|
+| msg			| String|详细信息														|
+| uid			| String|用户Id，校验成功之后会返回					|
+| userInfo| Object|用户信息，uid对应的uni-id-users全部字段|
 
 **注意：**
 
@@ -397,16 +412,17 @@ exports.main = async function(event,context) {
 
 ```
 
-## 绑定手机号
+## 发送短信验证码
 
-用法：`uniID.bindMobile(Object mobileInfo)`
+用法：`uniID.sendSmsCode(Object codeInfo)`
 
-**mobileInfo**参数说明
+**codeInfo**参数说明
 
 | 字段	| 类型	| 必填| 说明													|
 | ---		| ---		| ---	| ---														|
-| uid		| String| 是	|用户Id，可以通过checkToken返回	|
 | mobile| String| 是	|用户手机号											|
+| code		| String| 是	|验证码字符串	|
+| type		| String| 是	|类型，用于防止不同功能的验证码混用，目前支持的类型`login`登录、`bind`绑定手机、`unbind`解绑手机	|
 
 **响应参数**
 
@@ -424,13 +440,265 @@ exports.main = async function(event,context) {
 	const {
 		mobile
 	} = event
+  // 生成验证码可以按自己的需求来，这里以生成6位数字为例
+  const randomStr = '00000' + Math.floor(Math.random() * 1000000)
+  const code = randomStr.substring(randomStr.length - 6)
+	const res = await uniID.sendSmsCode({
+		mobile,
+    code,
+    type: 'login'
+	})
+	return res
+}
+
+```
+
+## 设置验证码
+
+如果你不想使用`uni-id`的sendSmsCode发送短信的话，可以使用此接口自行在库中创建验证码
+
+用法：`uniID.setVerifyCode(Object codeInfo)`
+
+**codeInfo**参数说明
+
+| 字段			| 类型	| 必填| 说明																																													|
+| ---				| ---		| ---	| ---																																														|
+| mobile		| String| 是	|用户手机号，和邮箱二选一																																										|
+| email		| String| 是	|用户邮箱，和手机号二选一																																										|
+| code			| String| 是	|验证码字符串																																										|
+| expiresIn	| Number| 是	|验证码过期时间，单位秒																																					|
+| type			| String| 是	|类型，用于防止不同功能的验证码混用，目前支持的类型`login`登录、`bind`绑定手机、`unbind`解绑手机|
+
+**响应参数**
+
+| 字段| 类型	| 必填| 说明						|
+| ---	| ---		| ---	| ---							|
+| code| Number| 是	|错误码，0表示成功|
+| msg	| String| 是	|详细信息					|
+
+**示例代码**
+
+```js
+// 云函数bind-mobile代码
+const uniID = require('uni-id')
+exports.main = async function(event,context) {
+	const {
+		mobile
+	} = event
+  // 生成验证码可以按自己的需求来，这里以生成6位数字为例
+  const randomStr = '00000' + Math.floor(Math.random() * 1000000)
+  const code = randomStr.substring(randomStr.length - 6)
+	const res = await uniID.setVerifyCode({
+		mobile,
+    code,
+    expiresIn: 180,
+    type: 'login'
+	})
+	return res
+}
+
+```
+
+## 校验验证码
+
+uni-id内置方法`loginBySms`、`bindMobile`、`unbindMobile`均已内置校验验证码方法，如果使用以上方法不需要再调用此接口，如需扩展类型请确保type和发送验证码/设置验证码时对应
+
+用法：`uniID.verifyCode(Object codeInfo)`
+
+**codeInfo**参数说明
+
+| 字段	| 类型	| 必填| 说明																																													|
+| ---		| ---		| ---	| ---																																														|
+| mobile| String| 是	|用户手机号，和邮箱二选一																																				|
+| email	| String| 是	|用户邮箱，和手机号二选一																																				|
+| code	| String| 是	|验证码字符串																																										|
+| type	| String| 是	|类型，用于防止不同功能的验证码混用，目前支持的类型`login`登录、`bind`绑定手机、`unbind`解绑手机|
+
+**响应参数**
+
+| 字段| 类型	| 必填| 说明						|
+| ---	| ---		| ---	| ---							|
+| code| Number| 是	|错误码，0表示成功|
+| msg	| String| 是	|详细信息					|
+
+**示例代码**
+
+```js
+// 云函数bind-mobile代码
+const uniID = require('uni-id')
+exports.main = async function(event,context) {
+	const {
+		mobile,
+    code
+	} = event
+	const res = await uniID.verifyCode({
+		mobile,
+    code,
+    type: 'login'
+	})
+	return res
+}
+
+```
+
+## 手机号验证码直接登录
+
+用法：`uniID.loginBySms(Object mobileInfo)`
+
+**mobileInfo**参数说明
+
+| 字段	| 类型	| 必填| 说明			|
+| ---		| ---		| ---	| ---				|
+| mobile| String| 是	|用户手机号	|
+| code	| String| 是	|验证码			|
+
+**响应参数**
+
+| 字段				| 类型	| 必填| 说明											|
+| ---					| ---		| ---	| ---												|
+| code				| Number| 是	|错误码，0表示成功					|
+| msg					| String| 是	|详细信息										|
+| token				| String| -		|登录成功之后返回的token信息|
+| tokenExpired| String| -		|token过期时间							|
+
+**示例代码**
+
+```js
+// 云函数bind-mobile代码
+const uniID = require('uni-id')
+exports.main = async function(event,context) {
+	const {
+		mobile,
+    code
+	} = event
+	const res = await uniID.loginBySms({
+		mobile,
+    code
+	})
+	return res
+}
+
+```
+
+## 绑定手机号
+
+用法：`uniID.bindMobile(Object mobileInfo)`
+
+**mobileInfo**参数说明
+
+| 字段	| 类型	| 必填| 说明																																			|
+| ---		| ---		| ---	| ---																																				|
+| uid		| String| 是	|用户Id，可以通过checkToken返回																							|
+| mobile| String| 是	|用户手机号																																	|
+| code	| String| 否	|验证码，为兼容旧版逻辑此参数不填写时不会进行验证码校验，而是直接绑定手机号	|
+
+**响应参数**
+
+| 字段| 类型	| 必填| 说明						|
+| ---	| ---		| ---	| ---							|
+| code| Number| 是	|错误码，0表示成功|
+| msg	| String| 是	|详细信息					|
+
+**示例代码**
+
+```js
+// 云函数bind-mobile代码
+const uniID = require('uni-id')
+exports.main = async function(event,context) {
+	const {
+		mobile,
+    code
+	} = event
   const payload = await uniID.checkToken(event.uniIdToken)
   if(payload.code > 0) {
     return payload
   }
 	const res = await uniID.bindMobile({
     uid: payload.uid,
-		mobile
+		mobile,
+    code
+	})
+	return res
+}
+
+```
+
+## 解绑手机
+
+用法：`uniID.unbindMobile(Object mobileInfo)`
+
+**mobileInfo**参数说明
+
+| 字段	| 类型	| 必填| 说明																																			|
+| ---		| ---		| ---	| ---																																				|
+| uid		| String| 是	|用户Id，可以通过checkToken返回																							|
+| mobile| String| 是	|用户手机号																																	|
+| code	| String| 否	|验证码，此参数不填写时不会进行验证码校验，而是直接绑定手机号	|
+
+**响应参数**
+
+| 字段| 类型	| 必填| 说明						|
+| ---	| ---		| ---	| ---							|
+| code| Number| 是	|错误码，0表示成功|
+| msg	| String| 是	|详细信息					|
+
+**示例代码**
+
+```js
+// 云函数bind-mobile代码
+const uniID = require('uni-id')
+exports.main = async function(event,context) {
+	const {
+		mobile,
+    code
+	} = event
+  const payload = await uniID.checkToken(event.uniIdToken)
+  if(payload.code > 0) {
+    return payload
+  }
+	const res = await uniID.unbindMobile({
+    uid: payload.uid,
+		mobile,
+    code
+	})
+	return res
+}
+
+```
+
+## 邮箱验证码直接登录
+
+用法：`uniID.loginByEmail(Object emailInfo)`
+
+**mobileInfo**参数说明
+
+| 字段	| 类型	| 必填| 说明		|
+| ---		| ---		| ---	| ---			|
+| email	| String| 是	|用户邮箱	|
+| code	| String| 是	|验证码		|
+
+**响应参数**
+
+| 字段				| 类型	| 必填| 说明											|
+| ---					| ---		| ---	| ---												|
+| code				| Number| 是	|错误码，0表示成功					|
+| msg					| String| 是	|详细信息										|
+| token				| String| -		|登录成功之后返回的token信息|
+| tokenExpired| String| -		|token过期时间							|
+
+**示例代码**
+
+```js
+// 云函数bind-mobile代码
+const uniID = require('uni-id')
+exports.main = async function(event,context) {
+	const {
+		email,
+    code
+	} = event
+	const res = await uniID.loginByEmail({
+		email,
+    code
 	})
 	return res
 }
@@ -443,10 +711,11 @@ exports.main = async function(event,context) {
 
 **emailInfo**参数说明
 
-| 字段	| 类型	| 必填| 说明													|
-| ---		| ---		| ---	| ---														|
-| uid		| String| 是	|用户Id，可以通过checkToken返回	|
-| email	| String| 是	|用户邮箱												|
+| 字段	| 类型	| 必填| 说明																									|
+| ---		| ---		| ---	| ---																										|
+| uid		| String| 是	|用户Id，可以通过checkToken返回													|
+| email	| String| 是	|用户邮箱																								|
+| code	| String| 否	|用户邮箱验证码，不填此字段或留空时直接绑定不校验验证码	|
 
 **响应参数**
 
@@ -462,7 +731,8 @@ exports.main = async function(event,context) {
 const uniID = require('uni-id')
 exports.main = async function(event,context) {
 	const {
-		email
+		email,
+    code
 	} = event
   const payload = await uniID.checkToken(event.uniIdToken)
   if(payload.code > 0) {
@@ -470,12 +740,55 @@ exports.main = async function(event,context) {
   }
 	const res = await uniID.bindEmail({
     uid: payload.uid,
-		email
+		email,
+    code
 	})
 	return res
 }
 
 
+```
+
+## 解绑邮箱
+
+用法：`uniID.unbindEmail(Object emailInfo)`
+
+**emailInfo**参数说明
+
+| 字段	| 类型	| 必填| 说明																									|
+| ---		| ---		| ---	| ---																										|
+| uid		| String| 是	|用户Id，可以通过checkToken返回													|
+| email	| String| 是	|用户邮箱																								|
+| code	| String| 否	|用户邮箱验证码，不填此字段或留空时直接绑定不校验验证码	|
+
+**响应参数**
+
+| 字段| 类型	| 必填| 说明						|
+| ---	| ---		| ---	| ---							|
+| code| Number| 是	|错误码，0表示成功|
+| msg	| String| 是	|详细信息					|
+
+**示例代码**
+
+```js
+// 云函数bind-email代码
+const uniID = require('uni-id')
+exports.main = async function(event,context) {
+	const {
+		email,
+    code
+	} = event
+  const payload = await uniID.checkToken(event.uniIdToken)
+  if(payload.code > 0) {
+    return payload
+  }
+	const res = await uniID.unbindEmail({
+    uid: payload.uid,
+		email,
+    code
+	})
+	return res
+}
 ```
 
 ## 登出
@@ -823,6 +1136,51 @@ exports.main = async function(event,context) {
 }
 ```
 
+## 自行初始化uni-id
+
+用法：`uniID.init(Object config);`
+
+此接口适用于不希望使用config.json初始化而是希望通过js的方式传入配置的情况
+
+**config参数说明**
+
+config格式与config.json完全相同
+
+**响应参数**
+
+无
+
+```js
+// 云函数代码
+const uniID = require('uni-id')
+uniID.init({
+	"passwordSecret": "passwordSecret-demo", // 用于加密用户密码
+	"tokenSecret": "tokenSecret-demo", // 用于生成token
+	"tokenExpiresIn": 7200, // token过期时间
+	"passwordErrorLimit": 6, // 同一个ip密码错误最大重试次数
+	"passwordErrorRetryTime": 3600, // 超过密码重试次数之后的等待时间
+	"service": {
+		"sms": {
+			"name": "DCloud", // 应用名称对应uniCloud.sendSms的data参数内的name
+			"codeExpiresIn": 180, // 验证码过期时间，单位：秒，只可取60的整数倍，不填此参数时会取默认值180秒
+			"smsKey": "your sms key", // 短信密钥key
+			"smsSecret": "your sms secret" // 短信密钥secret
+		}
+	}
+})
+exports.main = async function(event,context) {
+  payload = await uniID.checkToken(event.uniIdToken)
+  if (payload.code && payload.code > 0) {
+  	return payload
+  }
+	const res = await uniID.updateUser({
+    uid: payload.uid,
+    nickname: 'user nickname'
+  })
+	return res
+}
+```
+
 # 数据库结构
 
 ## 用户表
@@ -907,3 +1265,9 @@ exports.main = async function(event,context) {
 
 - token数组为什么越来越长
   + 每次登录成功都会新增一个token，并且检查所有token的有效期删除过期token。正常情况下客户端应该判断持久化存储的token是否还在有效期内，如果还有效就直接进入应用，不再执行登录。这样相当于用户的每个设备上都存在一个有效期内的token，云端也是。
+
+- 复制token到其他环境校验不通过
+  + uni-id内会校验客户端ua，如果是在本地调试可以在云函数内修改`context.CLIENTUA`为生成token的设备ua，切记上线删除此逻辑
+
+- username、email、mobile三个字段
+  + 三个字段均可能为空，但是建议限制一下插入数据库三个字段的格式，比如username不应是邮箱格式或手机号格式，因为登录时可以选择使用username或mobile或email+密码的方式
