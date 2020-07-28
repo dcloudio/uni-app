@@ -126,7 +126,7 @@ module.exports = {
           Identifier (path) {
             const node = path.node
             const name = node.name
-            if (names.includes(name) && path.key !== 'key' && path.key !== 'property' && !(path.scope && path.scope.hasBinding(name))) {
+            if (names.includes(name) && path.key !== 'key' && (path.key !== 'property' || path.parent.computed) && !(path.scope && path.scope.hasBinding(name))) {
               path.replaceWithSourceString(`${paramName}.${name}`)
             }
           }
