@@ -62,8 +62,8 @@ mapContext
 |:-|:-|:-|:-|
 |markerId|Number|是|指定 marker|
 |destination|Object|是|指定 marker 移动到的目标点|
-|autoRotate|Boolean|是|移动过程中是否自动旋转 marker|
-|rotate|Number|是|marker 的旋转角度|
+|autoRotate|Boolean|否|移动过程中是否自动旋转 marker|
+|rotate|Number|否|marker 的旋转角度|
 |duration|Number|否|动画持续时长，默认值1000ms，平移与旋转分别计算|
 |animationEnd|Function|否|	动画结束回调函数|
 |fail|Function|否|	接口调用失败的回调函数|
