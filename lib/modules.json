@@ -114,6 +114,8 @@
     "uni.getBLEDeviceCharacteristics": true,
     "uni.createBLEConnection": true,
     "uni.closeBLEConnection": true,
+    "uni.setBLEMTU": true,
+    "uni.getBLEDeviceRSSI": true,
     "uni.onBeaconServiceChange": true,
     "uni.onBeaconUpdate": true,
     "uni.getBeacons": true,
