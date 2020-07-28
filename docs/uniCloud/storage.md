@@ -174,7 +174,7 @@ uniCloud.getTempFileURL({
 
 ## deleteFile(Object object)
 
-删除云端文件，**使用阿里云作为服务商时，不要使用客户端删除云端文件，为保障安全，应该在云函数中进行相关操作。阿里云前端删除云文件会报权限错误**
+客户端删除云端文件，**使用阿里云作为服务商时，不要使用客户端删除云端文件，为保障安全，应该在云函数中进行相关操作。阿里云前端删除云文件会报权限错误**
 
 #### 请求参数
 
@@ -307,7 +307,7 @@ let result = await uniCloud.getTempFileURL({
 
 ## uniCloud.deleteFile(Object deleteFileOptions)
 
-**云函数**删除云端文件。
+**云函数**删除云端文件。**阿里云删除文件建议使用云函数进行，不要使用客户端的删除接口**
 
 #### 请求参数
 
