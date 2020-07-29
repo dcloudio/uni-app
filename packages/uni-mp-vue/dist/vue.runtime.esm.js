@@ -3043,6 +3043,11 @@ function getVueInstanceData(instance) {
             });
         }
     }
+    if (ctx.$mp) {
+        // TODO
+        extend(ret, ctx.$mp.data || {});
+    }
+    // TODO form-field
     // track
     return { keys, data: JSON.parse(JSON.stringify(ret)) };
 }
@@ -3169,9 +3174,11 @@ function setupRenderEffect(instance) {
     // create reactive effect for rendering
     instance.update = effect(function componentEffect() {
         if (!instance.isMounted) {
+            instance.render && instance.render.call(instance.proxy);
             patch(instance);
         }
         else {
+            instance.render && instance.render.call(instance.proxy);
             // updateComponent
             const { bu, u } = instance;
             // beforeUpdate hook

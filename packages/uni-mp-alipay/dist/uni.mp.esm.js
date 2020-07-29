@@ -98,6 +98,9 @@ function initBaseInstance(instance, options) {
     ctx.mpType = options.mpType; // @deprecated
     ctx.$mpType = options.mpType;
     ctx.$scope = options.mpInstance;
+    // TODO @deprecated
+    ctx.$mp = {};
+    ctx._self = {};
     // $vm
     ctx.$scope.$vm = instance.proxy;
     // slots
