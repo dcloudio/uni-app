@@ -1198,14 +1198,17 @@ function handleEvent (event) {
             }
             handler.once = true;
           }
-          ret.push(handler.apply(handlerCtx, processEventArgs(
+          const params = processEventArgs(
             this.$vm,
             event,
             eventArray[1],
             eventArray[2],
             isCustom,
             methodName
-          )));
+          ) || [];
+          // 参数尾部增加原始事件对象用于复杂表达式内获取额外数据
+          // eslint-disable-next-line no-sparse-arrays
+          ret.push(handler.apply(handlerCtx, params.concat([, , , , , , , , , , event])));
         }
       });
     }
