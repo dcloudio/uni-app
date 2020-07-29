@@ -132,7 +132,7 @@ function checkUsingGlobalComponents (name, globalUsingComponents, state) {
 }
 
 module.exports = {
-  noScope: true,
+  noScope: false,
   MemberExpression (path) {
     if ( // t.m(123)
       t.isIdentifier(path.node.object) &&

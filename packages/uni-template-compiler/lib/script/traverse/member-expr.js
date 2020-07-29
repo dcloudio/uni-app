@@ -4,15 +4,6 @@ function isMatch (name, forItem, forIndex) {
   return name === forItem || name === forIndex
 }
 
-function getIdentifierName (element) {
-  if (t.isMemberExpression(element)) {
-    return getIdentifierName(element.object)
-  } else if (t.isCallExpression(element)) {
-    return getIdentifierName(element.callee)
-  }
-  return element.name && element.name.split('.')[0]
-}
-
 function findScoped (path, state) {
   if (!path) {
     return state
@@ -23,30 +14,17 @@ function findScoped (path, state) {
       forIndex
     } = scoped
     let match = false
-    if (path.isIdentifier() || path.isMemberExpression()) {
-      match = isMatch(getIdentifierName(path.node), forItem, forIndex)
-    } else {
-      path.traverse({
-        noScope: true,
-        Identifier (path) {
-          if (!match) {
-            match = isMatch(path.node.name, forItem, forIndex)
-            if (match) {
-              path.stop()
-            }
-          }
-        },
-        MemberExpression (path) {
-          if (!match) {
-            match = isMatch(getIdentifierName(path.node), forItem, forIndex)
-            if (match) {
-              path.stop()
-            }
-            path.skip()
+    path.traverse({
+      noScope: true,
+      Identifier (path) {
+        if (!match && path.key !== 'key' && (path.key !== 'property' || path.parent.computed)) {
+          match = isMatch(path.node.name, forItem, forIndex)
+          if (match) {
+            path.stop()
           }
         }
-      })
-    }
+      }
+    })
     return match
   })
   if (!scoped && state.scoped.length > 1) {

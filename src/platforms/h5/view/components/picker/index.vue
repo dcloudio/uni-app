@@ -79,7 +79,7 @@ function getDefaultStartValue () {
     const year = new Date().getFullYear() - 100
     switch (this.fields) {
       case fields.YEAR:
-        return year
+        return year.toString()
       case fields.MONTH:
         return year + '-01'
       case fields.DAY:
@@ -97,7 +97,7 @@ function getDefaultEndValue () {
     const year = new Date().getFullYear() + 100
     switch (this.fields) {
       case fields.YEAR:
-        return year
+        return year.toString()
       case fields.MONTH:
         return year + '-12'
       case fields.DAY:
@@ -248,7 +248,7 @@ export default {
           const day = Number(dateArray[2][valueArray[2]]) || 1
           const realDay = new Date(
             `${dateArray[0][valueArray[0]]}/${
-              dateArray[1][valueArray[1]]
+            dateArray[1][valueArray[1]]
             }/${day}`
           ).getDate()
           if (realDay < day) {
@@ -314,7 +314,7 @@ export default {
     _resetFormData () {
       switch (this.mode) {
         case mode.SELECTOR:
-          this.valueSync = -1
+          this.valueSync = 0
           break
         case mode.MULTISELECTOR:
           this.valueSync = this.value.map(val => 0)
@@ -387,7 +387,7 @@ export default {
               const val1 = Number(this.valueSync[index])
               const val2 = isNaN(val0) ? (isNaN(val1) ? 0 : val1) : val0
               const maxVal = this.range[index] ? this.range[index].length - 1 : 0
-              this.valueSync.splice(index, 1, val2 > maxVal ? 0 : val2)
+              this.valueSync.splice(index, 1, (val2 < 0 || val2 > maxVal) ? 0 : val2)
             }
           }
           break
@@ -395,9 +395,11 @@ export default {
         case mode.DATE:
           this.valueSync = String(val)
           break
-        default:
-          this.valueSync = Number(val) || 0
+        default: {
+          const valueSync = Number(val)
+          this.valueSync = valueSync < 0 ? 0 : valueSync
           break
+        }
       }
     },
     _setValueArray () {

@@ -277,7 +277,9 @@ function deleteProperty(target, key) {
 }
 function has(target, key) {
     const result = Reflect.has(target, key);
-    track(target, "has" /* HAS */, key);
+    if (!isSymbol(key) || !builtInSymbols.has(key)) {
+        track(target, "has" /* HAS */, key);
+    }
     return result;
 }
 function ownKeys(target) {
@@ -608,17 +610,18 @@ function createReactiveObject(target, isReadonly, baseHandlers, collectionHandle
         return target;
     }
     // target already has corresponding Proxy
-    if (hasOwn(target, isReadonly ? "__v_readonly" /* READONLY */ : "__v_reactive" /* REACTIVE */)) {
-        return isReadonly
-            ? target["__v_readonly" /* READONLY */]
-            : target["__v_reactive" /* REACTIVE */];
+    const reactiveFlag = isReadonly
+        ? "__v_readonly" /* READONLY */
+        : "__v_reactive" /* REACTIVE */;
+    if (hasOwn(target, reactiveFlag)) {
+        return target[reactiveFlag];
     }
     // only a whitelist of value types can be observed.
     if (!canObserve(target)) {
         return target;
     }
     const observed = new Proxy(target, collectionTypes.has(target.constructor) ? collectionHandlers : baseHandlers);
-    def(target, isReadonly ? "__v_readonly" /* READONLY */ : "__v_reactive" /* REACTIVE */, observed);
+    def(target, reactiveFlag, observed);
     return observed;
 }
 function isReactive(value) {
@@ -742,6 +745,7 @@ function computed(getterOrOptions) {
     });
     computed = {
         __v_isRef: true,
+        ["__v_isReadonly" /* IS_READONLY */]: isFunction(getterOrOptions) || !getterOrOptions.set,
         // expose effect so computed can be stopped
         effect: runner,
         get value() {
@@ -1145,7 +1149,7 @@ function normalizeEmitsOptions(comp) {
     let normalized = {};
     // apply mixin/extends props
     let hasExtends = false;
-    if (__FEATURE_OPTIONS__ && !isFunction(comp)) {
+    if (__VUE_OPTIONS_API__ && !isFunction(comp)) {
         if (comp.extends) {
             hasExtends = true;
             extend(normalized, normalizeEmitsOptions(comp.extends));
@@ -1271,7 +1275,7 @@ function normalizePropsOptions(comp) {
     const needCastKeys = [];
     // apply mixin/extends props
     let hasExtends = false;
-    if (__FEATURE_OPTIONS__ && !isFunction(comp)) {
+    if (__VUE_OPTIONS_API__ && !isFunction(comp)) {
         const extendProps = (raw) => {
             const [props, keys] = normalizePropsOptions(raw);
             extend(normalized, props);
@@ -1611,9 +1615,9 @@ function validateDirectiveName(name) {
 
 function createAppContext() {
     return {
+        app: null,
         config: {
             isNativeTag: NO,
-            devtools: true,
             performance: false,
             globalProperties: {},
             optionMergeStrategies: {},
@@ -1638,7 +1642,7 @@ function createAppAPI() {
         const installedPlugins = new Set();
         // fixed by xxxxxx
         // let isMounted = false
-        const app = {
+        const app = (context.app = {
             _component: rootComponent,
             _props: rootProps,
             _container: null,
@@ -1671,7 +1675,7 @@ function createAppAPI() {
                 return app;
             },
             mixin(mixin) {
-                if (__FEATURE_OPTIONS__) {
+                if (__VUE_OPTIONS_API__) {
                     if (!context.mixins.includes(mixin)) {
                         context.mixins.push(mixin);
                     }
@@ -1725,26 +1729,8 @@ function createAppAPI() {
                 context.provides[key] = value;
                 return app;
             }
-        };
-        context.__app = app;
+        });
         return app;
-    };
-}
-
-var DevtoolsHooks;
-(function (DevtoolsHooks) {
-    DevtoolsHooks["APP_INIT"] = "app:init";
-    DevtoolsHooks["APP_UNMOUNT"] = "app:unmount";
-    DevtoolsHooks["COMPONENT_UPDATED"] = "component:updated";
-    DevtoolsHooks["COMPONENT_ADDED"] = "component:added";
-    DevtoolsHooks["COMPONENT_REMOVED"] = "component:removed";
-})(DevtoolsHooks || (DevtoolsHooks = {}));
-const componentAdded = createDevtoolsHook(DevtoolsHooks.COMPONENT_ADDED);
-const componentUpdated = createDevtoolsHook(DevtoolsHooks.COMPONENT_UPDATED);
-const componentRemoved = createDevtoolsHook(DevtoolsHooks.COMPONENT_REMOVED);
-function createDevtoolsHook(hook) {
-    return (component) => {
-        return;
     };
 }
 
@@ -1781,7 +1767,14 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = EM
             `a reactive object, or an array of these types.`);
     };
     let getter;
-    if (isArray(source)) {
+    if (isRef(source)) {
+        getter = () => source.value;
+    }
+    else if (isReactive(source)) {
+        getter = () => source;
+        deep = true;
+    }
+    else if (isArray(source)) {
         getter = () => source.map(s => {
             if (isRef(s)) {
                 return s.value;
@@ -1796,13 +1789,6 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = EM
                 (process.env.NODE_ENV !== 'production') && warnInvalidSource(s);
             }
         });
-    }
-    else if (isRef(source)) {
-        getter = () => source.value;
-    }
-    else if (isReactive(source)) {
-        getter = () => source;
-        deep = true;
     }
     else if (isFunction(source)) {
         if (cb) {
@@ -2007,8 +1993,6 @@ function applyOptions(instance, options, deferredData = [], deferredWatch = [], 
     mixins, extends: extendsOptions, 
     // state
     data: dataOptions, computed: computedOptions, methods, watch: watchOptions, provide: provideOptions, inject: injectOptions, 
-    // assets
-    components, directives, 
     // lifecycle
     beforeMount, mounted, beforeUpdate, updated, activated, deactivated, beforeUnmount, unmounted, renderTracked, renderTriggered, errorCaptured } = options;
     const publicThis = instance.proxy;
@@ -2045,7 +2029,8 @@ function applyOptions(instance, options, deferredData = [], deferredWatch = [], 
     // - data (deferred since it relies on `this` access)
     // - computed
     // - watch (deferred since it relies on `this` access)
-    if (injectOptions) {
+    // fixed by xxxxxx
+    if (!__VUE_CREATED_DEFERRED__ && injectOptions) {
         if (isArray(injectOptions)) {
             for (let i = 0; i < injectOptions.length; i++) {
                 const key = injectOptions[i];
@@ -2160,7 +2145,8 @@ function applyOptions(instance, options, deferredData = [], deferredWatch = [], 
             }
         });
     }
-    if (provideOptions) {
+    // fixed by xxxxxx
+    if (!__VUE_CREATED_DEFERRED__ && provideOptions) {
         const provides = isFunction(provideOptions)
             ? provideOptions.call(publicThis)
             : provideOptions;
@@ -2168,15 +2154,14 @@ function applyOptions(instance, options, deferredData = [], deferredWatch = [], 
             provide(key, provides[key]);
         }
     }
-    // asset options
-    if (components) {
-        extend(instance.components, components);
-    }
-    if (directives) {
-        extend(instance.directives, directives);
-    }
+    // fixed by xxxxxx
     // lifecycle options
-    if (!asMixin) {
+    if (__VUE_CREATED_DEFERRED__) {
+        ctx.$callSyncHook = function (name) {
+            return callSyncHook(name, options, publicThis, globalMixins);
+        };
+    }
+    else if (!asMixin) {
         callSyncHook('created', options, publicThis, globalMixins);
     }
     if (beforeMount) {
@@ -2323,14 +2308,14 @@ const publicPropertiesMap = extend(Object.create(null), {
     $props: i => ((process.env.NODE_ENV !== 'production') ? shallowReadonly(i.props) : i.props),
     $attrs: i => ((process.env.NODE_ENV !== 'production') ? shallowReadonly(i.attrs) : i.attrs),
     $slots: i => ((process.env.NODE_ENV !== 'production') ? shallowReadonly(i.slots) : i.slots),
-    // $refs: i => ((process.env.NODE_ENV !== 'production') ? shallowReadonly(i.refs) : i.refs), // fixed by xxxxxx
+    $refs: i => ((process.env.NODE_ENV !== 'production') ? shallowReadonly(i.refs) : i.refs),
     $parent: i => i.parent && i.parent.proxy,
     $root: i => i.root && i.root.proxy,
     $emit: i => i.emit,
-    $options: i => (__FEATURE_OPTIONS__ ? resolveMergedOptions(i) : i.type),
+    $options: i => (__VUE_OPTIONS_API__ ? resolveMergedOptions(i) : i.type),
     $forceUpdate: i => () => queueJob(i.update),
     // $nextTick: () => nextTick, // fixed by xxxxxx
-    $watch: __FEATURE_OPTIONS__ ? i => instanceWatch.bind(i) : NOOP
+    $watch: i => (__VUE_OPTIONS_API__ ? instanceWatch.bind(i) : NOOP)
 });
 const PublicInstanceProxyHandlers = {
     get({ _: instance }, key) {
@@ -2560,14 +2545,15 @@ function exposeSetupStateOnRenderContext(instance) {
 const emptyAppContext = createAppContext();
 let uid$1 = 0;
 function createComponentInstance(vnode, parent, suspense) {
+    const type = vnode.type;
     // inherit parent app context - or - if root, adopt from root vnode
     const appContext = (parent ? parent.appContext : vnode.appContext) || emptyAppContext;
     const instance = {
         uid: uid$1++,
         vnode,
+        type,
         parent,
         appContext,
-        type: vnode.type,
         root: null,
         next: null,
         subTree: null,
@@ -2588,9 +2574,6 @@ function createComponentInstance(vnode, parent, suspense) {
         refs: EMPTY_OBJ,
         setupState: EMPTY_OBJ,
         setupContext: null,
-        // per-instance asset storage (mutable during options resolution)
-        components: Object.create(appContext.components),
-        directives: Object.create(appContext.directives),
         // suspense related
         suspense,
         asyncDep: null,
@@ -2624,7 +2607,7 @@ function createComponentInstance(vnode, parent, suspense) {
     }
     instance.root = parent ? parent.root : instance;
     instance.emit = emit.bind(null, instance);
-    (process.env.NODE_ENV !== 'production') && componentAdded(instance);
+    if ((process.env.NODE_ENV !== 'production') || false) ;
     return instance;
 }
 let currentInstance = null;
@@ -2757,7 +2740,7 @@ function finishComponentSetup(instance, isSSR) {
         }
     }
     // support for 2.x options
-    if (__FEATURE_OPTIONS__) {
+    if (__VUE_OPTIONS_API__) {
         currentInstance = instance;
         applyOptions(instance, Component);
         currentInstance = null;
@@ -2822,14 +2805,16 @@ function formatComponentName(instance, Component, isRoot = false) {
         }
     }
     if (!name && instance && instance.parent) {
-        // try to infer the name based on local resolution
-        const registry = instance.parent.components;
-        for (const key in registry) {
-            if (registry[key] === Component) {
-                name = key;
-                break;
+        // try to infer the name based on reverse resolution
+        const inferFromRegistry = (registry) => {
+            for (const key in registry) {
+                if (registry[key] === Component) {
+                    return key;
+                }
             }
-        }
+        };
+        name =
+            inferFromRegistry(instance.parent.type.components) || inferFromRegistry(instance.appContext.components);
     }
     return name ? classify(name) : isRoot ? `App` : `Anonymous`;
 }
@@ -2841,7 +2826,7 @@ function computed$1(getterOrOptions) {
 }
 
 // Core API ------------------------------------------------------------------
-const version = "3.0.0-rc.2";
+const version = "3.0.0-rc.4";
 
 // import deepCopy from './deepCopy'
 /**
@@ -2994,7 +2979,7 @@ function nextTick$1(instance, fn) {
                 instance.uid +
                 ']:nextVueTick');
         }
-        return nextTick(fn);
+        return nextTick(fn && fn.bind(instance.proxy));
     }
     if (process.env.VUE_APP_DEBUG) {
         const mpInstance = ctx.$scope;
@@ -3012,7 +2997,7 @@ function nextTick$1(instance, fn) {
     }
     ctx.__next_tick_callbacks.push(() => {
         if (fn) {
-            callWithErrorHandling(fn, instance, 14 /* SCHEDULER */);
+            callWithErrorHandling(fn.bind(instance.proxy), instance, 14 /* SCHEDULER */);
         }
         else if (_resolve) {
             _resolve(instance.proxy);
@@ -3048,7 +3033,7 @@ function getVueInstanceData(instance) {
             }
         });
     }
-    if (__FEATURE_OPTIONS__) {
+    if (__VUE_OPTIONS_API__) {
         if (ctx.$computedKeys) {
             ctx.$computedKeys.forEach((key) => {
                 if (!keys.has(key)) {
@@ -3058,6 +3043,11 @@ function getVueInstanceData(instance) {
             });
         }
     }
+    if (ctx.$mp) {
+        // TODO
+        extend(ret, ctx.$mp.data || {});
+    }
+    // TODO form-field
     // track
     return { keys, data: JSON.parse(JSON.stringify(ret)) };
 }
@@ -3143,7 +3133,7 @@ var MPType;
 const queuePostRenderEffect$1 = queuePostFlushCb;
 function mountComponent(initialVNode, options) {
     const instance = (initialVNode.component = createComponentInstance(initialVNode, options.parentComponent, null));
-    if (__FEATURE_OPTIONS__) {
+    if (__VUE_OPTIONS_API__) {
         instance.ctx.$onApplyOptions = onApplyOptions;
         instance.ctx.$children = [];
     }
@@ -3157,7 +3147,7 @@ function mountComponent(initialVNode, options) {
         pushWarningContext(initialVNode);
     }
     setupComponent(instance);
-    if (__FEATURE_OPTIONS__) {
+    if (__VUE_OPTIONS_API__) {
         // $children
         if (options.parentComponent && instance.proxy) {
             options.parentComponent.ctx
@@ -3184,15 +3174,11 @@ function setupRenderEffect(instance) {
     // create reactive effect for rendering
     instance.update = effect(function componentEffect() {
         if (!instance.isMounted) {
-            const { bm } = instance;
-            // beforeMount hook
-            if (bm) {
-                invokeArrayFns(bm);
-            }
+            instance.render && instance.render.call(instance.proxy);
             patch(instance);
-            instance.isMounted = true;
         }
         else {
+            instance.render && instance.render.call(instance.proxy);
             // updateComponent
             const { bu, u } = instance;
             // beforeUpdate hook

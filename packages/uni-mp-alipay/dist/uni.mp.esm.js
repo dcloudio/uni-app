@@ -1,4 +1,4 @@
-import { isArray, hasOwn, toNumber, isPlainObject, isObject, isFunction, extend, NOOP, camelize } from '@vue/shared';
+import { capitalize, hasOwn, isArray, toNumber, isPlainObject, isObject, isFunction, extend, NOOP, EMPTY_OBJ, camelize } from '@vue/shared';
 
 function setModel(target, key, value, modifiers) {
     if (isArray(modifiers)) {
@@ -79,6 +79,13 @@ function createEmitFn(oldEmit, ctx) {
         if (ctx.$scope && event) {
             ctx.$scope.triggerEvent(event, { __args__: args });
         }
+        {
+            const vnode = this.$.vnode;
+            const props = vnode && vnode.props;
+            if (props && props[`on${capitalize(event)}`]) {
+                return;
+            }
+        }
         return oldEmit.apply(this, [event, ...args]);
     };
 }
@@ -98,12 +105,11 @@ function initBaseInstance(instance, options) {
     ctx.$scope.$vm = instance.proxy;
     // slots
     {
-        instance.slots = {};
-        if (isArray(options.slots) && options.slots.length) {
-            options.slots.forEach(name => {
-                instance.slots[name] = true;
-            });
-        }
+        Object.defineProperty(instance, 'slots', {
+            get() {
+                return this.$scope && this.$scope.props.$slots;
+            }
+        });
     }
     if (__VUE_OPTIONS_API__) {
         // $set
@@ -123,6 +129,9 @@ function initComponentInstance(instance, options) {
             const mpInstance = ctx.$scope;
             if (mpInstance && mpInstance[method]) {
                 return mpInstance[method].apply(mpInstance, args);
+            }
+            {
+                return my[method] && my[method].apply(my, args);
             }
         };
     });
@@ -236,9 +245,6 @@ function initCreateApp(parseAppOptions) {
     };
 }
 
-function initBehavior(options) {
-    return Behavior(options);
-}
 function initVueIds(vueIds, mpInstance) {
     if (!vueIds) {
         return;
@@ -252,45 +258,6 @@ function initVueIds(vueIds, mpInstance) {
         mpInstance._$vueId = ids[0];
         mpInstance._$vuePid = ids[1];
     }
-}
-const EXTRAS = ['externalClasses'];
-function initExtraOptions(miniProgramComponentOptions, vueOptions) {
-    EXTRAS.forEach(name => {
-        if (hasOwn(vueOptions, name)) {
-            miniProgramComponentOptions[name] = vueOptions[name];
-        }
-    });
-}
-function initWxsCallMethods(methods, wxsCallMethods) {
-    if (!isArray(wxsCallMethods)) {
-        return;
-    }
-    wxsCallMethods.forEach((callMethod) => {
-        methods[callMethod] = function (args) {
-            return this.$vm[callMethod](args);
-        };
-    });
-}
-function initRefs(instance, mpInstance) {
-    Object.defineProperty(instance, 'refs', {
-        get() {
-            const $refs = {};
-            const components = mpInstance.selectAllComponents('.vue-ref');
-            components.forEach(component => {
-                const ref = component.dataset.ref;
-                $refs[ref] = component.$vm || component;
-            });
-            const forComponents = mpInstance.selectAllComponents('.vue-ref-in-for');
-            forComponents.forEach(component => {
-                const ref = component.dataset.ref;
-                if (!$refs[ref]) {
-                    $refs[ref] = [];
-                }
-                $refs[ref].push(component.$vm || component);
-            });
-            return $refs;
-        }
-    });
 }
 function findVmByVueId(instance, vuePid) {
     // TODO vue3 中 没有 $children
@@ -313,13 +280,6 @@ function findVmByVueId(instance, vuePid) {
 }
 
 const PROP_TYPES = [String, Number, Boolean, Object, Array, null];
-function createObserver(name) {
-    return function observer(newVal) {
-        if (this.$vm) {
-            this.$vm.$.props[name] = newVal; // 为了触发其他非 render watcher
-        }
-    };
-}
 function parsePropType(key, type, defaultValue) {
     // [String]=>String
     if (isArray(type) && type.length === 1) {
@@ -352,8 +312,9 @@ function initDefaultProps(isBehavior = false) {
     return properties;
 }
 function createProperty(key, prop) {
-    prop.observer = createObserver(key);
-    return prop;
+    {
+        return prop;
+    }
 }
 function initProps(mpComponentOptions, rawProps, isBehavior = false) {
     const properties = initDefaultProps(isBehavior);
@@ -463,10 +424,6 @@ function initBehaviors(vueOptions, initBehavior) {
         });
     }
     return behaviors;
-}
-function applyOptions(componentOptions, vueOptions, initBehavior) {
-    componentOptions.data = initData(vueOptions);
-    componentOptions.behaviors = initBehaviors(vueOptions, initBehavior);
 }
 
 function getValue(obj, path) {
@@ -720,50 +677,6 @@ function handleEvent(event) {
     }
 }
 
-function parseComponent(vueOptions, { parse, mocks, isPage, initRelation, handleLink, initLifetimes }) {
-    vueOptions = vueOptions.default || vueOptions;
-    const options = {
-        multipleSlots: true,
-        addGlobalClass: true
-    };
-    if (vueOptions.options) {
-        extend(options, vueOptions.options);
-    }
-    const mpComponentOptions = {
-        options,
-        lifetimes: initLifetimes({ mocks, isPage, initRelation, vueOptions }),
-        pageLifetimes: {
-            show() {
-                this.$vm && this.$vm.$callHook('onPageShow');
-            },
-            hide() {
-                this.$vm && this.$vm.$callHook('onPageHide');
-            },
-            resize(size) {
-                this.$vm && this.$vm.$callHook('onPageResize', size);
-            }
-        },
-        methods: {
-            __l: handleLink,
-            __e: handleEvent
-        }
-    };
-    if (__VUE_OPTIONS_API__) {
-        applyOptions(mpComponentOptions, vueOptions, initBehavior);
-    }
-    initProps(mpComponentOptions, vueOptions.props, false);
-    initExtraOptions(mpComponentOptions, vueOptions);
-    initWxsCallMethods(mpComponentOptions.methods, vueOptions.wxsCallMethods);
-    if (parse) {
-        parse(mpComponentOptions, { handleLink });
-    }
-    return mpComponentOptions;
-}
-function initCreateComponent(parseOptions) {
-    return function createComponent(vueComponentOptions) {
-        return Component(parseComponent(vueComponentOptions, parseOptions));
-    };
-}
 let $createComponentFn;
 let $destroyComponentFn;
 function $createComponent(initialVNode, options) {
@@ -779,110 +692,54 @@ function $destroyComponent(instance) {
     return $destroyComponentFn(instance);
 }
 
-function parsePage(vueOptions, parseOptions) {
-    const { parse, mocks, isPage, initRelation, handleLink, initLifetimes } = parseOptions;
-    const miniProgramPageOptions = parseComponent(vueOptions, {
-        mocks,
-        isPage,
-        initRelation,
-        handleLink,
-        initLifetimes
-    });
-    const methods = miniProgramPageOptions.methods;
-    initHooks(methods, PAGE_HOOKS);
-    initUnknownHooks(methods, vueOptions);
-    parse && parse(miniProgramPageOptions, { handleLink });
-    return miniProgramPageOptions;
+function onAliAuthError(method, $event) {
+    $event.type = 'getphonenumber';
+    $event.detail.errMsg =
+        'getPhoneNumber:fail Error: ' +
+            $event.detail.errorMessage(this)[method]($event);
 }
-function initCreatePage(parseOptions) {
-    return function createPage(vuePageOptions) {
-        return Component(parsePage(vuePageOptions, parseOptions));
-    };
-}
-
-const MPPage = Page;
-const MPComponent = Component;
-const customizeRE = /:/g;
-function customize(str) {
-    return camelize(str.replace(customizeRE, '-'));
-}
-function initTriggerEvent(mpInstance) {
-    const oldTriggerEvent = mpInstance.triggerEvent;
-    mpInstance.triggerEvent = function (event, ...args) {
-        return oldTriggerEvent.apply(mpInstance, [customize(event), ...args]);
-    };
-}
-function initHook$1(name, options) {
-    const oldHook = options[name];
-    if (!oldHook) {
-        options[name] = function () {
-            initTriggerEvent(this);
-        };
-    }
-    else {
-        options[name] = function (...args) {
-            initTriggerEvent(this);
-            return oldHook.apply(this, args);
-        };
-    }
-}
-Page = function (options) {
-    initHook$1('onLoad', options);
-    return MPPage(options);
-};
-Component = function (options) {
-    initHook$1('created', options);
-    return MPComponent(options);
-};
-
-function initLifetimes({ mocks, isPage, initRelation, vueOptions }) {
-    return {
-        attached() {
-            const properties = this.properties;
-            initVueIds(properties.vueId, this);
-            const relationOptions = {
-                vuePid: this._$vuePid
-            };
-            // 处理父子关系
-            initRelation(this, relationOptions);
-            // 初始化 vue 实例
-            const mpInstance = this;
-            this.$vm = $createComponent({
-                type: vueOptions,
-                props: properties
-            }, {
-                mpType: isPage(mpInstance) ? 'page' : 'component',
-                mpInstance,
-                slots: properties.vueSlots,
-                parentComponent: relationOptions.parent && relationOptions.parent.$,
-                onBeforeSetup(instance, options) {
-                    initRefs(instance, mpInstance);
-                    initMocks(instance, mpInstance, mocks);
-                    initComponentInstance(instance, options);
-                }
-            });
-        },
-        ready() {
-            // 当组件 props 默认值为 true，初始化时传入 false 会导致 created,ready 触发, 但 attached 不触发
-            // https://developers.weixin.qq.com/community/develop/doc/00066ae2844cc0f8eb883e2a557800
-            if (this.$vm) {
-                this.$vm.$callHook('mounted');
-                this.$vm.$callHook('onReady');
+function onAliGetAuthorize(method, $event) {
+    my.getPhoneNumber({
+        success: (res) => {
+            $event.type = 'getphonenumber';
+            const response = JSON.parse(res.response).response;
+            if (response.code === '10000') {
+                // success
+                $event.detail.errMsg = 'getPhoneNumber:ok';
+                $event.detail.encryptedData = res.response;
             }
+            else {
+                $event.detail.errMsg = 'getPhoneNumber:fail Error: ' + res.response;
+            }
+            this[method]($event);
         },
-        detached() {
-            this.$vm && $destroyComponent(this.$vm);
+        fail: () => {
+            $event.type = 'getphonenumber';
+            $event.detail.errMsg = 'getPhoneNumber:fail';
+            this[method]($event);
+        }
+    });
+}
+function parse(appOptions) {
+    const oldOnLaunch = appOptions.onLaunch;
+    appOptions.onLaunch = function onLaunch(options) {
+        oldOnLaunch.call(this, options);
+        if (!this.$vm) {
+            return;
+        }
+        const globalProperties = this.$vm.$app.config.globalProperties;
+        if (!globalProperties.$onAliAuthError) {
+            globalProperties.$onAliAuthError = onAliAuthError;
+            globalProperties.$onAliGetAuthorize = onAliGetAuthorize;
         }
     };
 }
 
-const mocks = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__'];
-function isPage(mpInstance) {
-    return !!mpInstance.route;
-}
-function initRelation(mpInstance, detail) {
-    mpInstance.triggerEvent('__l', detail);
-}
+var parseAppOptions = /*#__PURE__*/Object.freeze({
+  __proto__: null,
+  parse: parse
+});
+
 function handleLink(event) {
     // detail 是微信,value 是百度(dipatch)
     const detail = (event.detail ||
@@ -898,17 +755,351 @@ function handleLink(event) {
     detail.parent = parentVm;
 }
 
-var parseOptions = /*#__PURE__*/Object.freeze({
-  __proto__: null,
-  mocks: mocks,
-  isPage: isPage,
-  initRelation: initRelation,
-  handleLink: handleLink,
-  initLifetimes: initLifetimes
-});
+function equal(a, b) {
+    if (a === b)
+        return true;
+    if (a && b && typeof a === 'object' && typeof b === 'object') {
+        const arrA = isArray(a);
+        const arrB = isArray(b);
+        let i, length, key;
+        if (arrA && arrB) {
+            length = a.length;
+            if (length !== b.length)
+                return false;
+            for (i = length; i-- !== 0;) {
+                if (!equal(a[i], b[i]))
+                    return false;
+            }
+            return true;
+        }
+        if (arrA !== arrB)
+            return false;
+        const dateA = a instanceof Date;
+        const dateB = b instanceof Date;
+        if (dateA !== dateB)
+            return false;
+        if (dateA && dateB)
+            return a.getTime() === b.getTime();
+        const regexpA = a instanceof RegExp;
+        const regexpB = b instanceof RegExp;
+        if (regexpA !== regexpB)
+            return false;
+        if (regexpA && regexpB)
+            return a.toString() === b.toString();
+        const keys = Object.keys(a);
+        length = keys.length;
+        if (length !== Object.keys(b).length) {
+            return false;
+        }
+        for (i = length; i-- !== 0;) {
+            if (!hasOwn(b, keys[i]))
+                return false;
+        }
+        for (i = length; i-- !== 0;) {
+            key = keys[i];
+            if (!equal(a[key], b[key]))
+                return false;
+        }
+        return true;
+    }
+    return false;
+}
 
-const createApp = initCreateApp();
-const createPage = initCreatePage(parseOptions);
-const createComponent = initCreateComponent(parseOptions);
+const isComponent2 = my.canIUse('component2');
+const mocks = ['$id'];
+const customizeRE = /:/g;
+function customize(str) {
+    return camelize(str.replace(customizeRE, '-'));
+}
+function initBehavior({ properties }) {
+    const props = {};
+    Object.keys(properties).forEach(key => {
+        props[key] = properties[key].value;
+    });
+    return {
+        props
+    };
+}
+function initRelation(mpInstance, detail) {
+    mpInstance.props.onVueInit(detail);
+}
+function initSpecialMethods(mpInstance) {
+    if (!mpInstance.$vm) {
+        return;
+    }
+    let path = mpInstance.is || mpInstance.route;
+    if (!path) {
+        return;
+    }
+    if (path.indexOf('/') === 0) {
+        path = path.substr(1);
+    }
+    const specialMethods = my.specialMethods && my.specialMethods[path];
+    if (specialMethods) {
+        specialMethods.forEach((method) => {
+            if (isFunction(mpInstance.$vm[method])) {
+                mpInstance[method] = function (event) {
+                    if (hasOwn(event, 'markerId')) {
+                        event.detail = typeof event.detail === 'object' ? event.detail : {};
+                        event.detail.markerId = event.markerId;
+                    }
+                    // TODO normalizeEvent
+                    mpInstance.$vm[method](event);
+                };
+            }
+        });
+    }
+}
+function initChildVues(mpInstance) {
+    // 此时需保证当前 mpInstance 已经存在 $vm
+    if (!mpInstance.$vm) {
+        return;
+    }
+    const childVues = mpInstance._$childVues;
+    if (childVues) {
+        childVues.forEach(relationOptions => {
+            // 父子关系
+            handleLink.call(mpInstance, {
+                detail: relationOptions
+            });
+            const { mpInstance: childMPInstance, createComponent } = relationOptions;
+            childMPInstance.$vm = createComponent(relationOptions.parent);
+            initSpecialMethods(childMPInstance);
+            if (relationOptions.parent) {
+                handleRef.call(relationOptions.parent.$scope, childMPInstance);
+            }
+            initChildVues(childMPInstance);
+            childMPInstance.$vm.$callHook('mounted');
+            childMPInstance.$vm.$callHook('onReady');
+        });
+    }
+    delete mpInstance._$childVues;
+}
+// TODO vue3
+function handleRef(ref) {
+    if (!ref) {
+        return;
+    }
+    const refName = ref.props['data-ref'];
+    const refInForName = ref.props['data-ref-in-for'];
+    if (!refName && !refInForName) {
+        return;
+    }
+    const instance = this.$vm.$;
+    const refs = instance.refs === EMPTY_OBJ ? (instance.refs = {}) : instance.refs;
+    if (refName) {
+        refs[refName] = ref.$vm || ref;
+    }
+    else if (refInForName) {
+        (refs[refInForName] || (refs[refInForName] = [])).push(ref.$vm || ref);
+    }
+}
+function triggerEvent(type, detail) {
+    const handler = this.props[customize('on-' + type)];
+    if (!handler) {
+        return;
+    }
+    const eventOpts = this.props['data-event-opts'];
+    const target = {
+        dataset: {
+            eventOpts
+        }
+    };
+    handler({
+        type: customize(type),
+        target,
+        currentTarget: target,
+        detail
+    });
+}
+const IGNORES = ['$slots', '$scopedSlots'];
+function createObserver(isDidUpdate = false) {
+    return function observe(props) {
+        const prevProps = isDidUpdate ? props : this.props;
+        const nextProps = isDidUpdate ? this.props : props;
+        if (equal(prevProps, nextProps)) {
+            return;
+        }
+        Object.keys(prevProps).forEach(name => {
+            if (IGNORES.indexOf(name) === -1) {
+                const prevValue = prevProps[name];
+                const nextValue = nextProps[name];
+                if (!isFunction(prevValue) &&
+                    !isFunction(nextValue) &&
+                    !equal(prevValue, nextValue)) {
+                    this.$vm.$.props[name] = nextProps[name];
+                }
+            }
+        });
+    };
+}
+const handleLink$1 = (function () {
+    if (isComponent2) {
+        return function handleLink$1(detail) {
+            return handleLink.call(this, {
+                detail
+            });
+        };
+    }
+    return function handleLink$1(detail) {
+        if (this.$vm && this.$vm.$.isMounted) {
+            // 父已初始化
+            return handleLink.call(this, {
+                detail
+            });
+        }
+        (this._$childVues || (this._$childVues = [])).unshift(detail);
+    };
+})();
+function createVueComponent(mpType, mpInstance, vueOptions, parent) {
+    return $createComponent({
+        type: vueOptions,
+        props: mpInstance.props
+    }, {
+        mpType,
+        mpInstance,
+        parentComponent: parent && parent.$,
+        onBeforeSetup(instance, options) {
+            initMocks(instance, mpInstance, mocks);
+            initComponentInstance(instance, options);
+        }
+    });
+}
+
+function createPage(vueOptions) {
+    vueOptions = vueOptions.default || vueOptions;
+    const pageOptions = {
+        onLoad(args) {
+            // 初始化 vue 实例
+            this.$vm = createVueComponent('page', this, vueOptions);
+            initSpecialMethods(this);
+            this.$vm.$callHook('onLoad', args);
+        },
+        onReady() {
+            initChildVues(this);
+            this.$vm.$callHook('mounted');
+            this.$vm.$callHook('onReady');
+        },
+        onUnload() {
+            if (this.$vm) {
+                this.$vm.$callHook('onUnload');
+                $destroyComponent(this.$vm);
+            }
+        },
+        events: {
+            // 支付宝小程序有些页面事件只能放在events下
+            onBack() {
+                this.$vm.$callHook('onBackPress');
+            }
+        },
+        __r: handleRef,
+        __e: handleEvent,
+        __l: handleLink$1
+    };
+    if (__VUE_OPTIONS_API__) {
+        pageOptions.data = initData(vueOptions);
+    }
+    initHooks(pageOptions, PAGE_HOOKS);
+    initUnknownHooks(pageOptions, vueOptions);
+    return Page(pageOptions);
+}
+
+function initComponentProps(rawProps) {
+    const propertiesOptions = {
+        properties: {}
+    };
+    initProps(propertiesOptions, rawProps, false);
+    const properties = propertiesOptions.properties;
+    const props = {
+        onVueInit: function () { }
+    };
+    Object.keys(properties).forEach(key => {
+        if (key !== 'vueSlots') {
+            props[key] = properties[key].value;
+        }
+    });
+    return props;
+}
+function initVm(mpInstance, createComponent) {
+    if (mpInstance.$vm) {
+        return;
+    }
+    const properties = mpInstance.props;
+    initVueIds(properties.vueId, mpInstance);
+    const relationOptions = {
+        vuePid: mpInstance._$vuePid,
+        mpInstance,
+        createComponent
+    };
+    if (isComponent2) {
+        // 处理父子关系
+        initRelation(mpInstance, relationOptions);
+        // 初始化 vue 实例
+        mpInstance.$vm = createComponent(relationOptions.parent);
+    }
+    else {
+        // 处理父子关系
+        initRelation(mpInstance, relationOptions);
+        if (relationOptions.parent) {
+            // 父组件已经初始化，直接初始化子，否则放到父组件的 didMount 中处理
+            // 初始化 vue 实例
+            mpInstance.$vm = createComponent(relationOptions.parent);
+            handleRef.call(relationOptions.parent.$scope, mpInstance);
+            initChildVues(mpInstance);
+            mpInstance.$vm.$callHook('mounted');
+        }
+    }
+}
+function createComponent(vueOptions) {
+    vueOptions = vueOptions.default || vueOptions;
+    const mpComponentOptions = {
+        props: initComponentProps(vueOptions.props),
+        didMount() {
+            const createComponent = (parent) => {
+                return createVueComponent('component', this, vueOptions, parent);
+            };
+            if (my.dd) {
+                // 钉钉小程序底层基础库有 bug,组件嵌套使用时,在 didMount 中无法及时调用 props 中的方法
+                setTimeout(() => {
+                    initVm(this, createComponent);
+                }, 4);
+            }
+            else {
+                initVm(this, createComponent);
+            }
+            initSpecialMethods(this);
+            if (isComponent2) {
+                this.$vm.$callHook('mounted');
+            }
+        },
+        didUnmount() {
+            $destroyComponent(this.$vm);
+        },
+        methods: {
+            __r: handleRef,
+            __e: handleEvent,
+            __l: handleLink$1,
+            triggerEvent
+        }
+    };
+    if (__VUE_OPTIONS_API__) {
+        mpComponentOptions.data = initData(vueOptions);
+        mpComponentOptions.mixins = initBehaviors(vueOptions, initBehavior);
+    }
+    if (isComponent2) {
+        mpComponentOptions.onInit = function onInit() {
+            initVm(this, (parent) => {
+                return createVueComponent('component', this, vueOptions, parent);
+            });
+        };
+        mpComponentOptions.deriveDataFromProps = createObserver();
+    }
+    else {
+        mpComponentOptions.didUpdate = createObserver(true);
+    }
+    return Component(mpComponentOptions);
+}
+
+const createApp = initCreateApp(parseAppOptions);
 
 export { createApp, createComponent, createPage };

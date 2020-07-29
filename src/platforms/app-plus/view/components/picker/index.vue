@@ -182,7 +182,8 @@ export default {
             for (let index = 0; index < length; index++) {
               const val0 = Number(val[index])
               const val1 = Number(this.valueSync[index])
-              this.valueSync.splice(index, 1, isNaN(val0) ? (isNaN(val1) ? 0 : val1) : val0)
+              const val2 = isNaN(val0) ? (isNaN(val1) ? 0 : val1) : val0
+              this.valueSync.splice(index, 1, val2 < 0 ? 0 : val2)
             }
           }
           break
@@ -190,16 +191,20 @@ export default {
         case mode.DATE:
           this.valueSync = String(val)
           break
-        default:
-          this.valueSync = Number(val) || 0
+        default: {
+          const valueSync = Number(val)
+          this.valueSync = valueSync < 0 ? 0 : valueSync
           break
+        }
       }
     },
     _show () {
       if (this.disabled) {
         return
       }
-      this._showPicker(Object.assign({}, this.$props))
+      this._showPicker(Object.assign({}, this.$props, {
+        value: this.valueSync
+      }))
     },
     _showPicker (data) {
       if ((data.mode === mode.TIME || data.mode === mode.DATE) && !data.fields) {
@@ -276,7 +281,7 @@ export default {
     _resetFormData () {
       switch (this.mode) {
         case mode.SELECTOR:
-          this.valueSync = -1
+          this.valueSync = 0
           break
         case mode.MULTISELECTOR:
           this.valueSync = this.value.map(val => 0)

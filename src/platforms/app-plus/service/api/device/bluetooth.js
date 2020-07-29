@@ -121,3 +121,11 @@ export function readBLECharacteristicValue (data, callbackId) {
 export function writeBLECharacteristicValue (data, callbackId) {
   bluetoothExec('writeBLECharacteristicValue', callbackId, data)
 }
+
+export function setBLEMTU (data, callbackId) {
+  bluetoothExec('setBLEMTU', callbackId, data)
+}
+
+export function getBLEDeviceRSSI (data, callbackId) {
+  bluetoothExec('getBLEDeviceRSSI', callbackId, data)
+}

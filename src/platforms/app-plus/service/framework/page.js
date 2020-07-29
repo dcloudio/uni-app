@@ -125,7 +125,7 @@ export function registerPage ({
     routeOptions.meta.visible = true
   }
 
-  if (routeOptions.meta.isTabBar && webview.id !== '1') {
+  if (routeOptions.meta.isTabBar) {
     tabBar.append(webview)
   }
 

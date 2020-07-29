@@ -6,7 +6,7 @@
     <div
       ref="container"
       class="uni-ad-container"
-      @click="onhandle"
+      @click="_onhandle"
     />
   </uni-ad>
 </template>
@@ -36,14 +36,20 @@ class AdConfig {
     return this._adConfig
   }
 
+  get isExpired () {
+    if (this._adConfig == null) {
+      return true
+    }
+    return (Math.abs(Date.now() - this._adConfig.last) > this.CACHE_TIME)
+  }
+
   _init () {
     var config = this._getConfig()
     if (config === null || !config.last) {
       return
     }
 
-    var td = Math.abs(Date.now() - config.last)
-    if (td < this.CACHE_TIME) {
+    if (!this.isExpired) {
       this._adConfig = config.data
     }
   }
@@ -51,6 +57,9 @@ class AdConfig {
   get (adpid, success, fail) {
     if (this._adConfig != null) {
       this._doCallback(adpid, success, fail)
+      if (this.isExpired) {
+        this._loadAdConfig(adpid)
+      }
       return
     }
 
@@ -65,8 +74,8 @@ class AdConfig {
 
   _doCallback (adpid, success, fail) {
     var data = this._adConfig
-    if (data.adpids[adpid]) {
-      success(data.adpids[adpid])
+    if (data[adpid]) {
+      success(data[adpid])
     } else {
       fail(this.ERROR_INVALID_ADPID)
     }
@@ -76,15 +85,15 @@ class AdConfig {
     if (this._isLoading === true) {
       return
     }
-
     this._isLoading = true
 
     uni.request({
       url: this.URL,
       method: 'GET',
-      timeout: 3000,
+      timeout: 5000,
       data: {
-        adpid: adpid
+        d: location.hostname,
+        a: adpid
       },
       dataType: 'json',
       success: (res) => {
@@ -100,14 +109,14 @@ class AdConfig {
           })
         } else {
           this._callbacks.forEach((i) => {
-            i.fail(rd.message)
+            i.fail({ errCode: rd.ret, errMsg: rd.msg })
           })
         }
         this._callbacks = []
       },
       fail: (err) => {
         this._callbacks.forEach((i) => {
-          i.fail(err.errMsg)
+          i.fail(err)
         })
         this._callbacks = []
       },
@@ -136,7 +145,7 @@ class AdConfig {
   }
 }
 Object.assign(AdConfig.prototype, {
-  URL: '//stream.dcloud.net.cn/dcloud/H5Config',
+  URL: '//qy5y9ee9ch8r87pg72w5.dcloud.net.cn/hcs',
   KEY: 'uni_app_ad_config',
   CACHE_TIME: 1000 * 60 * 10,
   ERROR_INVALID_ADPID: {
@@ -144,9 +153,89 @@ Object.assign(AdConfig.prototype, {
   }
 })
 
+class AdReport {
+  static get instance () {
+    if (this._instance == null) {
+      this._instance = new AdReport()
+      this._instance._init()
+    }
+    return this._instance
+  }
+
+  constructor () {
+    this._instance = null
+    this._adConfig = null
+    this._guid = null
+  }
+
+  _init () {
+    var config = this._getConfig()
+    if (config !== null && config.guid) {
+      this._guid = config.guid
+      return
+    }
+
+    this._guid = this._newGUID()
+    this._setConfig(this._guid)
+  }
+
+  get (data) {
+    this._process(Object.assign(data, {
+      d: location.hostname,
+      i: this._guid
+    }))
+  }
+
+  _process (data) {
+    uni.request({
+      url: this.URL,
+      method: 'GET',
+      data: data,
+      dataType: 'json',
+      success: () => {
+      }
+    })
+  }
+
+  _newGUID () {
+    let guid = ''
+    const format = 'xxxxxxxx-xxxx-4xxx-xxxx-xxxxxxxxxxxx'
+    for (let i = 0; i < format.length; i++) {
+      if (format[i] === 'x') {
+        guid += (Math.random() * 16 | 0).toString(16)
+      } else {
+        guid += format[i]
+      }
+    }
+    return guid.toUpperCase()
+  }
+
+  _getConfig () {
+    if (!navigator.cookieEnabled || !window.localStorage) {
+      return null
+    }
+    var data = localStorage.getItem(this.KEY)
+    return data ? JSON.parse(data) : null
+  }
+
+  _setConfig (guid) {
+    if (!navigator.cookieEnabled || !window.localStorage) {
+      return null
+    }
+    localStorage.setItem(this.KEY, JSON.stringify({
+      last: Date.now(),
+      guid: guid
+    }))
+  }
+}
+Object.assign(AdReport.prototype, {
+  URL: '//hp66hwpyev7yx2hfughh.dcloud.net.cn/ahl',
+  KEY: 'uni_app_ad_guid'
+})
+
 const adProvider = {
-  hx: 'hx',
-  ky: 'ky'
+  hx: 'zswx_hx',
+  ky: 'zswx_ky'
 }
 
 const CHECK_RENDER_DELAY = 1000
@@ -175,21 +264,35 @@ export default {
     this._checkTimer = null
     this._checkTimerCount = 0
     this._loadData()
+    AdReport.instance.get({
+      h: __uniConfig.compilerVersion,
+      a: this.adpid,
+      at: 30
+    })
   },
   beforeDestroy () {
+    this._clearCheckTimer()
     this.$refs.container.innerHTML = ''
   },
   methods: {
-    onhandle (e) {
-      console.log('onhandle')
+    _onhandle (e) {
+      this._report(41)
+    },
+    _reset () {
+      this._pl = []
+      this._pd = {}
+      this._pi = 0
+      this._clearCheckTimer()
+      this.$refs.container.innerHTML = ''
     },
     _loadData (adpid) {
+      this._reset()
       AdConfig.instance.get(adpid || this.adpid, (data) => {
         this._pd = data
         this._pl = data.psp.split(',')
         this._renderAd()
       }, (err) => {
-        this.$trigger('error', {}, { message: err })
+        this.$trigger('error', {}, err)
       })
     },
     _renderAd () {
@@ -208,12 +311,29 @@ export default {
           break
       }
     },
+    _renderNext () {
+      if (this._pi >= this._pl.length - 1) {
+        return
+      }
+
+      this._pi++
+      this._renderAd()
+    },
     _renderHX (data) {
+      if (document.querySelector('#' + adProvider.hx)) {
+        this._renderNext()
+        return
+      }
+
       var ad = document.createElement('script')
       ad.src = data.src || data.url
 
+      var adView = document.createElement('div')
+      adView.setAttribute('id', adProvider.hx)
+      adView.appendChild(ad)
+
       this.$refs.container.innerHTML = ''
-      this.$refs.container.append(ad)
+      this.$refs.container.append(adView)
 
       this._startCheckTimer()
     },
@@ -226,31 +346,25 @@ export default {
 
       this._startCheckTimer()
     },
-    _renderNext () {
-      if (this._pi >= this._pl.length - 1) {
-        return
-      }
-
-      this._pi++
-      this._renderAd()
-    },
     _checkRender () {
-      var hasContent = (this.$refs.container.clientHeight > 40)
+      var hasContent = (this.$refs.container.children.length > 0 && this.$refs.container.clientHeight > 40)
+      if (hasContent) {
+        this._report(40)
+      }
       return hasContent
     },
     _startCheckTimer () {
       this._clearCheckTimer()
       this._checkTimer = setInterval(() => {
-        if (this._checkRender()) {
-          this._clearCheckTimer()
-          return
-        }
-
         this._checkTimerCount++
-
         if (this._checkTimerCount >= CHECK_RENDER_RETRY) {
           this._clearCheckTimer()
           this._renderNext()
+          return
+        }
+
+        if (this._checkRender()) {
+          this._clearCheckTimer()
         }
       }, CHECK_RENDER_DELAY)
     },
@@ -260,6 +374,22 @@ export default {
         window.clearInterval(this._checkTimer)
         this._checkTimer = null
       }
+    },
+    _report (type) {
+      var taskId = ''
+      if (this._pl.length > 0 && this._pi < this._pl.length) {
+        var data = this._pd[this._pl[this._pi]]
+        if (data) {
+          taskId = data.task_id
+        }
+      }
+
+      AdReport.instance.get({
+        h: __uniConfig.compilerVersion,
+        a: this.adpid,
+        t: taskId,
+        at: type
+      })
     }
   }
 }
