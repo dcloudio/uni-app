@@ -130,5 +130,6 @@ describe('mp:compiler-mp-weixin', () => {
       '<template v-for="(item, key) in { list1, list2 }"></template>',
       '<block wx:for="{{({list1,list2})}}" wx:for-item="item" wx:for-index="key"></block>'
     )
+    assertCodegen('<test :obj="{x:0}"></test>', '<test vue-id="551070e6-1" obj="{{({x:0})}}" bind:__l="__l"></test>')
   })
 })
