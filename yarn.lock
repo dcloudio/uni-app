@@ -292,9 +292,9 @@
     minimist "^1.2.0"
 
 "@dcloudio/types@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.npmjs.org/@dcloudio/types/-/types-2.0.0.tgz#25e3d4f53293024695034cfb8f46a0ab94c4b2ed"
-  integrity sha512-Dxi2uOqrTg0TzjgapGRhazgtePgLVJ1X4UAvdfqXn/dlVZ4hTS6hiPORKmgaxak60sbZ8JEAba+JOy1I4R0FKw==
+  version "2.0.1"
+  resolved "https://registry.npmjs.org/@dcloudio/types/-/types-2.0.1.tgz#87550fe38f769764f40bbf5705eb11fb01830a63"
+  integrity sha512-gmIW8U1dQV+dNFKi+tBOonJ+RQOby8NwexJulwqVV3j4LS/99jmI0Exot8NssMfqf9tD6+jyQGrVKKlQMenE+g==
 
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"
