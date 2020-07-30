@@ -24,6 +24,9 @@ class AdConfig {
     return this._instance
   }
 
+  static IC = 0
+  static IS = 0
+
   constructor () {
     this._instance = null
     this._adConfig = null
@@ -55,6 +58,7 @@ class AdConfig {
   }
 
   get (adpid, success, fail) {
+    AdConfig.IC++
     if (this._adConfig != null) {
       this._doCallback(adpid, success, fail)
       if (this.isExpired) {
@@ -73,6 +77,7 @@ class AdConfig {
   }
 
   _doCallback (adpid, success, fail) {
+    AdConfig.IS++
     var data = this._adConfig
     if (data[adpid]) {
       success(data[adpid])
@@ -267,7 +272,9 @@ export default {
     AdReport.instance.get({
       h: __uniConfig.compilerVersion,
       a: this.adpid,
-      at: 30
+      at: 30,
+      ic: AdConfig.IC,
+      is: AdConfig.IS
     })
   },
   beforeDestroy () {
@@ -338,11 +345,16 @@ export default {
       this._startCheckTimer()
     },
     _renderKY (data) {
+      var randomId = this._randomId()
       var ad = document.createElement('script')
-      ad.src = data.src || data.url
+      ad.src = (data.src || data.url) + '&_ct=' + randomId
+
+      var adView = document.createElement('div')
+      adView.setAttribute('id', randomId)
+      adView.appendChild(ad)
 
       this.$refs.container.innerHTML = ''
-      this.$refs.container.append(ad)
+      this.$refs.container.append(adView)
 
       this._startCheckTimer()
     },
@@ -390,6 +402,13 @@ export default {
         t: taskId,
         at: type
       })
+    },
+    _randomId () {
+      var result = ''
+      for (let i = 0; i < 2; i++) {
+        result += (65536 * (1 + Math.random()) | 0).toString(16).substring(1)
+      }
+      return result
     }
   }
 }
