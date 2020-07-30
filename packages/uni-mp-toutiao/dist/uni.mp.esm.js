@@ -165,12 +165,14 @@ function findHooks(vueOptions, hooks = new Set()) {
                 hooks.add(name);
             }
         });
-        const { extends: extendsOptions, mixins } = vueOptions;
-        if (mixins) {
-            mixins.forEach(mixin => findHooks(mixin, hooks));
-        }
-        if (extendsOptions) {
-            findHooks(extendsOptions, hooks);
+        if (__VUE_OPTIONS_API__) {
+            const { extends: extendsOptions, mixins } = vueOptions;
+            if (mixins) {
+                mixins.forEach(mixin => findHooks(mixin, hooks));
+            }
+            if (extendsOptions) {
+                findHooks(extendsOptions, hooks);
+            }
         }
     }
     return hooks;

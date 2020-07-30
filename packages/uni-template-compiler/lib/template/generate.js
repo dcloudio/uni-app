@@ -105,7 +105,10 @@ function genElement (ast, state, isRoot = false) {
         if (ast.attr[name] === '' && name !== 'value') { // value属性需要保留=''
           return name
         }
-        return `${name}="${ast.attr[name]}"`
+        let value = ast.attr[name]
+        // 微信和QQ小程序解析 {{{}}} 报错，需要使用()包裹
+        value = value.replace(/(\{\{)(\{.+?\})(\}\})/, '$1($2)$3')
+        return `${name}="${value}"`
       })
       .join(' ')
     : ''

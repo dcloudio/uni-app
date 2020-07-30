@@ -128,10 +128,12 @@ export function triggerEvent (type, detail, options) {
   }
 
   const eventOpts = this.props['data-event-opts']
+  const eventParams = this.props['data-event-params']
 
   const target = {
     dataset: {
-      eventOpts
+      eventOpts,
+      eventParams
     }
   }
 

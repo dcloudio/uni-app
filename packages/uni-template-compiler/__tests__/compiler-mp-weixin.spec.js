@@ -120,4 +120,16 @@ describe('mp:compiler-mp-weixin', () => {
       '<view><slot-comp generic:scoped-slots-test="test-slot-comp-test" vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'test\']}}"></slot-comp><slot-comp generic:scoped-slots-test="test-slot-comp-test1" vue-id="551070e6-2" bind:__l="__l" vue-slots="{{[\'test\']}}"></slot-comp><slot-comp generic:scoped-slots-test="test-slot-comp-test2" vue-id="551070e6-3" bind:__l="__l" vue-slots="{{[\'test\']}}"></slot-comp><slot-comp generic:scoped-slots-test="test-slot-comp-test3" vue-id="551070e6-4" bind:__l="__l" vue-slots="{{[\'test\']}}"></slot-comp></view>'
     )
   })
+
+  it('generate ObjectExpression', () => {
+    assertCodegen(
+      '<view v-for="(item,key) in {x:0}" :key="key">{{item}}</view>',
+      '<block wx:for="{{({x:0})}}" wx:for-item="item" wx:for-index="key" wx:key="key"><view>{{item}}</view></block>'
+    )
+    assertCodegen(
+      '<template v-for="(item, key) in { list1, list2 }"></template>',
+      '<block wx:for="{{({list1,list2})}}" wx:for-item="item" wx:for-index="key"></block>'
+    )
+    assertCodegen('<test :obj="{x:0}"></test>', '<test vue-id="551070e6-1" obj="{{({x:0})}}" bind:__l="__l"></test>')
+  })
 })

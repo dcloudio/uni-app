@@ -347,7 +347,7 @@ function parseEvent (keyPath, valuePath, state, isComponent, isNativeOn = false,
             const datasetUid = funcPath.scope.generateDeclaredUidIdentifier().name
             const paramsUid = funcPath.scope.generateDeclaredUidIdentifier().name
             const dataset = ATTR_DATA_EVENT_PARAMS.substring(5)
-            const code = `var ${datasetUid}=arguments[arguments.length-1].currentTarget.dataset,${paramsUid}=(${datasetUid}.${dataset.replace(/-([a-z])/, (_, str) => str.toUpperCase())}||${datasetUid}['${dataset}'])[0],${params.map(item => `${item}=${paramsUid}.${item}`).join(',')}`
+            const code = `var ${datasetUid}=arguments[arguments.length-1].currentTarget.dataset,${paramsUid}=${datasetUid}.${dataset.replace(/-([a-z])/, (_, str) => str.toUpperCase())}||${datasetUid}['${dataset}'],${params.map(item => `${item}=${paramsUid}.${item}`).join(',')}`
             funcPath.node.body.body.unshift(parser.parse(code).program.body[0])
           }
           methods.push(addEventExpressionStatement(funcPath, state, isComponent, isNativeOn))
@@ -478,8 +478,8 @@ module.exports = function processEvent (paths, path, state, isComponent, tagName
     ret.push(
       t.objectProperty(
         t.stringLiteral(ATTR_DATA_EVENT_PARAMS),
-        // 使用数组格式，直接使用对象格式微信小程序编译会报错
-        t.stringLiteral(`{{[{${params.join(',')}}]}}`)
+        // 直接使用对象格式微信小程序编译会报错
+        t.stringLiteral(`{{({${params.join(',')}})}}`)
       )
     )
   }
