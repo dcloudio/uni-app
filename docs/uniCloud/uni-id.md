@@ -11,24 +11,26 @@
 `uni-id`可成为开发者应用的用户中心，在插件市场获取更多基于`uni-id`的业务模板，集成到你的应用中。
 
 # uni-id组成部分
+
 `uni-id`包括如下组成部分：
+
 1. 云数据库
 
-主表为 `uni-id-users` 表，保存用户的基本信息。
+  主表为 `uni-id-users` 表，保存用户的基本信息。
 
-扩展字段有很多，如实名认证数据、工作履历数据，开发者可以自由扩展。
+  扩展字段有很多，如实名认证数据、工作履历数据，开发者可以自由扩展。
 
 2. 云函数
 
-提供一个名为`uni-id`的公共模块，该模块封装了一系列API，包括注册、登录、修改密码、设置头像等。
+  提供一个名为`uni-id`的公共模块，该模块封装了一系列API，包括注册、登录、修改密码、设置头像等。
 
-[插件市场](https://ext.dcloud.net.cn/plugin?id=2116)的示例工程中还提供了一个`user-center`的云函数，演示在云函数中如何调用`uni-id`公共模块。
+  [插件市场](https://ext.dcloud.net.cn/plugin?id=2116)的示例工程中还提供了一个`user-center`的云函数，演示在云函数中如何调用`uni-id`公共模块。
 
 3. 前端调用
 
-前端示例通过callfunction调用云函数`user-center`，在注册和登录时保存token。
+  前端示例通过callfunction调用云函数`user-center`，在注册和登录时保存token。
 
-uniCloud框架底层，会自动在callfunction时传递`uni-id`的token（uni-app 2.7.13+版本）。在云函数的event中可直接拿到`uni-id`的token。也就是说开发者无需自己管理token了。
+  uniCloud框架底层，会自动在callfunction时传递`uni-id`的token（uni-app 2.7.13+版本）。在云函数的event中可直接拿到`uni-id`的token。也就是说开发者无需自己管理token了。
 
 对于`uni-id`还未封装的能力，欢迎大家在开源项目上提交 pr，共同完善这个开源项目，[uni-id git仓库](https://gitee.com/dcloud/uni-id.git)。
 
