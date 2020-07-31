@@ -23,6 +23,10 @@ const PLATFORMS = {
     prefix: 'tt',
     title: '头条小程序'
   },
+  'mp-kuaishou': {
+    prefix: 'ks',
+    title: '快手小程序'
+  },
   'app-plus': {
     prefix: 'wx',
     title: 'app-plus'

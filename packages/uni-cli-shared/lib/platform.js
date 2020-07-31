@@ -278,6 +278,31 @@ const PLATFORMS = {
         ...getCopyOptions(['ttcomponents'])
       ]
     }
+  },
+  'mp-kuaishou': {
+    global: 'ks',
+    exts: {
+      style: '.css',
+      template: '.ksml'
+    },
+    vue: megaloRuntime,
+    compiler: megaloCompiler,
+    megalo: 'ks',
+    subPackages: false,
+    cssVars: {
+      '--status-bar-height': '25px',
+      '--window-top': '0px',
+      '--window-bottom': '0px'
+    },
+    project: 'project.ks.json',
+    copyWebpackOptions ({
+      assetsDir
+    }) {
+      return [
+        ...getStaticCopyOptions(assetsDir),
+        ...getCopyOptions(['ttcomponents'])
+      ]
+    }
   }
 }
 // 解决 vue-cli-service lint 时 UNI_PLATFORM 不存在

@@ -3,6 +3,7 @@ const mpWeixin = require('./mp-weixin')
 const mpBaidu = require('./mp-baidu')
 const mpAlipay = require('./mp-alipay')
 const mpToutiao = require('./mp-toutiao')
+const mpKuaishou = require('./mp-kuaishou')
 
 module.exports = {
   'app-plus': Object.assign({
@@ -22,5 +23,8 @@ module.exports = {
   }, mpBase, mpAlipay),
   'mp-toutiao': Object.assign({
     name: 'mp-toutiao'
-  }, mpBase, mpToutiao)
+  }, mpBase, mpToutiao),
+  'mp-kuaishou': Object.assign({
+    name: 'mp-kuaishou'
+  }, mpBase, mpKuaishou)
 }
