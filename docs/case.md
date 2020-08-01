@@ -84,6 +84,13 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 		<span style="margin-top:15px;">iOS App版</span>
 	</a>
 </div>
+<b>星巴克：</b>全球最大的咖啡连锁店，世界领先的特种咖啡零售商
+<div style="display:flex;justify-content: space-around;">
+	<a href="javascript:;" target="_blank" class="clear-style barcode-view">
+		<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/734f5c50-d3df-11ea-81ea-f115fe74321c.jpg" width="200"/>
+		<span style="margin-top:15px;">微信小程序</span>
+	</a>
+</div>
 <!-- 
 <a href="https://www.csdn.net/" target="_blank" class="clear-style"><b>CSDN：</b></a> 专业 IT 技术社区，致力于为中国软件开发者提供知识传播、在线学习、职业发展等全生命周期服务。
 <div style="display:flex;justify-content: space-around;">
@@ -425,6 +432,8 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
  -->
 
 #### 传统品牌
+
+**星巴克：** 微信小程序搜索 “星巴克” 
 
 **同济医院官方App：** [App官网下载页](https://tjhapp.com.cn/app/appdown.html)
 
