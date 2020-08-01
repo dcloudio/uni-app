@@ -43,20 +43,24 @@ function getMapCallExpression (
   forIndex
 ) {
   const blockStatement = []
+  // var $orgi = __get_orig(forItem)
+  blockStatement.push(t.variableDeclaration('var', [
+    t.variableDeclarator(t.identifier(VAR_ORIGINAL), t.callExpression(t.identifier(INTERNAL_GET_ORIG), [
+      t.identifier(forItem)
+    ]))
+  ]))
 
   if (declarationArray.length) {
     declarationArray.forEach(declaration => {
       blockStatement.push(declaration)
     })
     blockStatement.push(t.returnStatement(
-      // return {$orgi:__get_orig(forItem)}
+      // return {$orgi:$orgi}
       t.objectExpression(
         [
           t.objectProperty(
             t.identifier(VAR_ORIGINAL),
-            t.callExpression(t.identifier(INTERNAL_GET_ORIG), [
-              t.identifier(forItem)
-            ])
+            t.identifier(VAR_ORIGINAL)
           )
         ].concat(objectPropertyArray)
       )
