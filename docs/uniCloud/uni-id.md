@@ -64,14 +64,15 @@
 ```json
 // 如果拷贝此内容切记去除注释
 {
-	"passwordSecret": "passwordSecret-demo",
-	"tokenSecret": "tokenSecret-demo",
-	"tokenExpiresIn": 7200,
-	"passwordErrorLimit": 6,
-	"passwordErrorRetryTime": 3600,
+	"passwordSecret": "passwordSecret-demo", // 加密密码所用的密钥，注意修改为自己的
+	"tokenSecret": "tokenSecret-demo", // 生成token所用的密钥，注意修改为自己的
+	"tokenExpiresIn": 7200, // 全平台token过期时间，未指定过期时间的平台会使用此值
+	"passwordErrorLimit": 6, // 密码错误最大重试次数
+	"passwordErrorRetryTime": 3600, // 密码错误重试次数超限之后的冻结时间
 	"app-plus": {
 		"tokenExpiresIn": 2592000,
 		"oauth": {
+      // App微信登录所用到的appid、appsecret需要在微信开放平台获取，注意：不是公众平台而是开放平台
 			"weixin": {
 				"appid": "weixin appid",
 				"appsecret": "weixin appsecret"
@@ -80,6 +81,7 @@
 	},
 	"mp-weixin": {
 		"oauth": {
+      // 微信小程序登录所用的appid、appsecret需要在对应的小程序管理控制台获取
 			"weixin": {
 				"appid": "weixin appid",
 				"appsecret": "weixin appsecret"
@@ -88,6 +90,7 @@
 	},
 	"mp-alipay": {
 		"oauth": {
+      // 支付宝小程序登录用到的appid、privateKey请参考支付宝小程序的文档进行设置或者获取，https://opendocs.alipay.com/open/291/105971#LDsXr
 			"alipay": {
 				"appid": "alipay appid",
 				"privateKey": "alipay privateKey"
