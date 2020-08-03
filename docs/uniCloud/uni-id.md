@@ -57,41 +57,50 @@
 + `tokenExpiresIn`token有效期，以秒为单位
 + `passwordErrorLimit`密码错误重试次数，分ip记录密码错误次数，达到重试次数之后等待`passwordErrorRetryTime`时间之后才可以重试
 + `passwordErrorRetryTime`单位为秒
-+ 如果使用`sendSmsCode`接口发送短信需要配置service，如果使用其他方式发送短信可以参考`sendSmsCode`接口的实现[uni-id sendSmsCode](https://gitee.com/dcloud/uni-id/blob/master/src/lib/send-sms-code.js)
++ 如果使用`sendSmsCode`接口发送短信需要前往[https://dev.dcloud.net.cn/uniSms](https://dev.dcloud.net.cn/uniSms)充值短信额度，配置`config.json`的`service`字段，字段说明见下方示例
++ 如果使用其他方式发送短信可以参考`sendSmsCode`接口的实现[uni-id sendSmsCode](https://gitee.com/dcloud/uni-id/blob/master/src/lib/send-sms-code.js)
 + 另外可以按照客户端平台进行不同的配置，参考下面示例
 
 ```json
 // 如果拷贝此内容切记去除注释
 {
-	"passwordSecret": "passwordSecret-demo", // 用于加密用户密码
-	"tokenSecret": "tokenSecret-demo", // 用于生成token
-	"tokenExpiresIn": 7200, // token过期时间
-	"passwordErrorLimit": 6, // 同一个ip密码错误最大重试次数
-	"passwordErrorRetryTime": 3600, // 超过密码重试次数之后的等待时间
-	"service": {
-		"sms": {
-			"name": "DCloud", // 应用名称对应uniCloud.sendSms的data参数内的name
-			"codeExpiresIn": 180, // 验证码过期时间，单位：秒，只可取60的整数倍，不填此参数时会取默认值180秒
-			"smsKey": "your sms key", // 短信密钥key
-			"smsSecret": "your sms secret" // 短信密钥secret
+	"passwordSecret": "passwordSecret-demo",
+	"tokenSecret": "tokenSecret-demo",
+	"tokenExpiresIn": 7200,
+	"passwordErrorLimit": 6,
+	"passwordErrorRetryTime": 3600,
+	"app-plus": {
+		"tokenExpiresIn": 2592000,
+		"oauth": {
+			"weixin": {
+				"appid": "weixin appid",
+				"appsecret": "weixin appsecret"
+			}
 		}
 	},
-	"mp-weixin":{
-    "oauth":{
-      "weixin": {
-        "appid": "your mp-weixin appid", // 微信小程序appid
-        "appsecret": "your mp-weixin appsecret", // 微信小程序appsecret
-      }
-    }
+	"mp-weixin": {
+		"oauth": {
+			"weixin": {
+				"appid": "weixin appid",
+				"appsecret": "weixin appsecret"
+			}
+		}
 	},
-	"app-plus": {
-		"tokenExpiresIn": 2592000, // App平台token过期时间
-    "oauth":{
-      "weixin": {
-        "appid": "your app-weixin appid", // app平台对应的微信开放平台appid
-        "appsecret": "your app-weixin appsecret", // app平台对应的微信开放平台appsecret
-      }
-    }
+	"mp-alipay": {
+		"oauth": {
+			"alipay": {
+				"appid": "alipay appid",
+				"privateKey": "alipay privateKey"
+			}
+		}
+	},
+	"service": {
+		"sms": {
+			"name": "your app name", // 应用名称，对应短信模版的name
+			"codeExpiresIn": 180, // 验证码过期时间，单位为秒，注意一定要是60的整数倍
+			"smsKey": "your sms key", // 短信密钥key，开通短信服务处可以看到
+			"smsSecret": "your sms secret" // 短信密钥secret，开通短信服务处可以看到
+		}
 	}
 }
 ```
