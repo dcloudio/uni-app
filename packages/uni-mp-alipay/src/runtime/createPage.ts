@@ -6,7 +6,8 @@ import {
   initData,
   initHooks,
   initUnknownHooks,
-  $destroyComponent
+  $destroyComponent,
+  initWxsCallMethods
 } from '@dcloudio/uni-mp-core'
 
 import {
@@ -54,5 +55,11 @@ export function createPage(vueOptions: ComponentOptions) {
   }
   initHooks(pageOptions, PAGE_HOOKS)
   initUnknownHooks(pageOptions, vueOptions)
+
+  initWxsCallMethods(
+    pageOptions as WechatMiniprogram.Component.MethodOption,
+    vueOptions.wxsCallMethods
+  )
+
   return Page(pageOptions)
 }

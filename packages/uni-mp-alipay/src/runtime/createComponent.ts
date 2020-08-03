@@ -5,7 +5,8 @@ import {
   initData,
   handleEvent,
   $destroyComponent,
-  initVueIds
+  initVueIds,
+  initWxsCallMethods
 } from '@dcloudio/uni-mp-core'
 import {
   initBehavior,
@@ -123,6 +124,11 @@ export function createComponent(vueOptions: ComponentOptions) {
   } else {
     mpComponentOptions.didUpdate = createObserver(true)
   }
+
+  initWxsCallMethods(
+    mpComponentOptions.methods as WechatMiniprogram.Component.MethodOption,
+    vueOptions.wxsCallMethods
+  )
 
   return Component(mpComponentOptions)
 }

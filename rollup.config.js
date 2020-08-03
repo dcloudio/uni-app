@@ -2,6 +2,7 @@ import path from 'path'
 import ts from 'rollup-plugin-typescript2'
 import replace from '@rollup/plugin-replace'
 import json from '@rollup/plugin-json'
+import { nodeResolve } from '@rollup/plugin-node-resolve'
 
 if (!process.env.TARGET) {
   throw new Error('TARGET package must be specified via --environment flag.')
@@ -9,7 +10,6 @@ if (!process.env.TARGET) {
 
 const packagesDir = path.resolve(__dirname, 'packages')
 const packageDir = path.resolve(packagesDir, process.env.TARGET)
-const name = path.basename(packageDir)
 const resolve = p => path.resolve(packageDir, p)
 const pkg = require(resolve(`package.json`))
 const buildOptions = require(resolve(`build.json`))
@@ -54,6 +54,7 @@ function createConfig(entryFile, output, plugins = []) {
     input: resolve(entryFile),
     external,
     plugins: [
+      nodeResolve(),
       json({
         namedExports: false
       }),
