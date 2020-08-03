@@ -48,7 +48,10 @@
 
 **config.json的说明**
 
-注意：**config.json是一个标准json文件，不支持注释**
+注意：
+
+- **config.json是一个标准json文件，不支持注释**
+- 如果不希望使用config.json初始化而是想自行传入参数，可以使用`init`方法[uniID.init](/uniCloud/uni-id?id=init)
 
 配置项：
 
@@ -72,7 +75,7 @@
 	"app-plus": {
 		"tokenExpiresIn": 2592000,
 		"oauth": {
-      // App微信登录所用到的appid、appsecret需要在微信开放平台获取，注意：不是公众平台而是开放平台
+			// App微信登录所用到的appid、appsecret需要在微信开放平台获取，注意：不是公众平台而是开放平台
 			"weixin": {
 				"appid": "weixin appid",
 				"appsecret": "weixin appsecret"
@@ -81,7 +84,7 @@
 	},
 	"mp-weixin": {
 		"oauth": {
-      // 微信小程序登录所用的appid、appsecret需要在对应的小程序管理控制台获取
+			// 微信小程序登录所用的appid、appsecret需要在对应的小程序管理控制台获取
 			"weixin": {
 				"appid": "weixin appid",
 				"appsecret": "weixin appsecret"
@@ -90,7 +93,7 @@
 	},
 	"mp-alipay": {
 		"oauth": {
-      // 支付宝小程序登录用到的appid、privateKey请参考支付宝小程序的文档进行设置或者获取，https://opendocs.alipay.com/open/291/105971#LDsXr
+			// 支付宝小程序登录用到的appid、privateKey请参考支付宝小程序的文档进行设置或者获取，https://opendocs.alipay.com/open/291/105971#LDsXr
 			"alipay": {
 				"appid": "alipay appid",
 				"privateKey": "alipay privateKey"
@@ -1150,7 +1153,7 @@ exports.main = async function(event,context) {
 }
 ```
 
-## 自行初始化uni-id
+## 自行初始化uni-id@init
 
 用法：`uniID.init(Object config);`
 
@@ -1175,7 +1178,7 @@ uniID.init({
 	"passwordErrorRetryTime": 3600, // 超过密码重试次数之后的等待时间
 	"service": {
 		"sms": {
-			"name": "DCloud", // 应用名称对应uniCloud.sendSms的data参数内的name
+			"name": "your app name", // 应用名称对应uniCloud.sendSms的data参数内的name
 			"codeExpiresIn": 180, // 验证码过期时间，单位：秒，只可取60的整数倍，不填此参数时会取默认值180秒
 			"smsKey": "your sms key", // 短信密钥key
 			"smsSecret": "your sms secret" // 短信密钥secret
