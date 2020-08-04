@@ -71,22 +71,30 @@ const unipayIns = unipay.initWeixin({
 
 **入参说明**
 
-|     参数名      |  类型   | 必填 |                        默认值                        |                  说明                  |
-| :-------------: | :-----: | :--: | :--------------------------------------------------: | :------------------------------------: |
-|      appId      | String  |  是  |                          -                           |     当前应用在对应支付平台的 appId     |
-|   privateKey    | String  |  是  |                          -                           |             应用私钥字符串             |
-| alipayPublicKey | String  |  是  |                          -                           |          支付宝公钥，验签使用          |
-|     keyType     | String  |  否  |                        PKCS8                         |           应用私钥字符串类型           |
-|     timeout     | Number  |  否  |                         5000                         |        请求超时时间，单位：毫秒        |
-|    signType     | String  |  否  |                         RSA2                         |                签名类型                |
-|     sandbox     | Boolean |  否  |                        false                         |            是否启用沙箱环境            |
-|   clientType    | String  |  否  | 默认自动获取客户端类型，同 `context` 内的 `PLATFORM` | 客户端类型，主要用于返回客户端支付参数 |
+|     参数名						|  类型		| 必填|                        默认值												|                  说明									|
+| :-------------:				| :-----:	| :--:| :--------------------------------------------------:| :------------------------------------:|
+|      appId						| String	|  是	|                          -													|     当前应用在对应支付平台的 appId		|
+|   privateKey					| String	|  是	|                          -													|             应用私钥字符串						|
+| alipayPublicKey				| String	|  否	|                          -													|          支付宝公钥，验签使用					|
+|     keyType						| String	|  否	|                        PKCS8												|           应用私钥字符串类型					|
+|     timeout						| Number	|  否	|                         5000												|        请求超时时间，单位：毫秒				|
+|    signType						| String	|  否	|                         RSA2												|                签名类型								|
+|     sandbox						| Boolean	|  否	|                        false												|            是否启用沙箱环境						|
+|   clientType					| String	|  否	| 默认自动获取客户端类型，同 `context` 内的 `PLATFORM`| 客户端类型，主要用于返回客户端支付参数|
+|   alipayRootCertPath	| String	|  否	| -																										| `1.0.6+`，支付宝根证书文件路径				|
+|   appCertPath					| String	|  否	| -																										| `1.0.6+`，应用公钥证书文件路径				|
+|   alipayPublicCertPath| String	|  否	| -																										| `1.0.6+`，支付宝公钥证书文件路径			|
 
 ```js
 const unipayIns = unipay.initAlipay({
   appId: 'your appId',
   privateKey: 'your privateKey',
+  // 如果不使用证书（普通公钥模式）需要alipayPublicKey
   alipayPublicKey: 'you alipayPublicKey', // 使用支付时需传递此值做返回结果验签
+  // 如果使用证书需要传alipayRootCertPath、appCertPath、alipayPublicCertPath
+  alipayRootCertPath: path.join(__dirname,'../fixtures/alipayRootCert.crt'),
+  appCertPath: path.join(__dirname,'../fixtures/appCertPublicKey.crt'),
+  alipayPublicCertPath: path.join(__dirname,'../fixtures/alipayCertPublicKey_RSA2.crt'),
 })
 ```
 
@@ -98,14 +106,15 @@ const unipayIns = unipay.initAlipay({
 
 **入参说明**
 
-|   参数名   |  类型  |                必填                | 默认值 |                                    说明                                    |         支持平台         |
-| :--------: | :----: | :--------------------------------: | :----: | :------------------------------------------------------------------------: | :----------------------: |
-|   openid   | String | 支付宝小程序、微信小程序必填，App端支付不需要    |   -    |                  通过对应 [uni-account](https://ext.dcloud.net.cn/plugin?id=1834) 的 code2Session 获取                  | 支付宝小程序、微信小程序 |
-|  subject   | String | 支付宝支付必填，微信支付时忽略此项 |   -    |                                  订单标题                                  |        支付宝支付        |
-|    body    | String |            微信支付必填            |   -    |                                  商品描述                                  |         微信支付         |
-| outTradeNo | String |                必填                |   -    | 商户订单号,64 个字符以内、只能包含字母、数字、下划线；需保证在商户端不重复 |                          |
-|  totalFee  | Number |                必填                |   -    |                             订单金额，单位：分                             | 支付宝小程序、微信小程序 |
-| notifyUrl  | String |                必填                |   -    |                              支付结果通知地址                              |                          |
+|   参数名	|  类型	|                必填														| 默认值|                                    说明																																						|         支持平台				|
+| :--------:| :----:| :--------------------------------:						| :----:| :------------------------------------------------------------------------:																				| :----------------------:|
+|   openid	| String| 支付宝小程序、微信小程序必填，App端支付不需要	|   -		|                  通过对应 [uni-account](https://ext.dcloud.net.cn/plugin?id=1834) 的 code2Session 获取						| 支付宝小程序、微信小程序|
+|  subject	| String| 支付宝支付必填，微信支付时忽略此项						|   -		|                                  订单标题																																					|        支付宝支付				|
+|    body		| String|            微信支付必填												|   -		|                                  商品描述																																					|         微信支付				|
+| outTradeNo| String|                必填														|   -		| 商户订单号,64 个字符以内、只能包含字母、数字、下划线；需保证在商户端不重复																				|													|
+|  totalFee	| Number|                必填														|   -		|                             订单金额，单位：分																																		| 支付宝小程序、微信小程序|
+| notifyUrl	| String|                必填														|   -		|                              支付结果通知地址																																			|													|
+| tradeType	| String|             微信H5支付时必填									|   -		| `1.0.6+`交易类型"JSAPI": "公众号支付、微信小程序支付、支付宝小程序支付"、"APP:"APP支付"、"NATIVE":"网站二维码支付"|													|
 
 **返回值说明**
 
@@ -149,6 +158,15 @@ uniCloud.callFunction({
 			success(){},
 			fail(){}
 		})
+	}
+})
+
+// 二维码支付
+uniCloud.callFunction({
+	name: 'getOrderInfo',
+	success(res) {
+    // 以二维码形式展示此内容
+		console.log(res.result.orderInfo.codeurl)
 	}
 })
 ```

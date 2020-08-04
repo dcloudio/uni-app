@@ -70,6 +70,7 @@
 	"passwordSecret": "passwordSecret-demo", // 加密密码所用的密钥，注意修改为自己的
 	"tokenSecret": "tokenSecret-demo", // 生成token所用的密钥，注意修改为自己的
 	"tokenExpiresIn": 7200, // 全平台token过期时间，未指定过期时间的平台会使用此值
+	"bindTokenToDevice": true, // 是否将token和设备绑定，设置为true会进行ua校验，默认为true
 	"passwordErrorLimit": 6, // 密码错误最大重试次数
 	"passwordErrorRetryTime": 3600, // 密码错误重试次数超限之后的冻结时间
 	"app-plus": {
