@@ -3,15 +3,15 @@
 `uniCloud`的云存储和cdn，免费提供给开发者使用！
 
 云存储的上传方式有3种：
-1. web界面，即在[https://unicloud.dcloud.net.cn/](https://unicloud.dcloud.net.cn/) web控制台，点击云存储，通过web界面进行文件上传。该管理界面同时提供了资源浏览、删除等操作界面。
-2. 客户端API上传，即在前端js中编写`uniCloud.uploadFile`
-3. 云函数上传文件到云存储，即在云函数js中编写`uniCloud.uploadFile`
+1. web界面：即在[https://unicloud.dcloud.net.cn/](https://unicloud.dcloud.net.cn/) web控制台，点击云存储，通过web界面进行文件上传。该管理界面同时提供了资源浏览、删除等操作界面。
+2. 客户端API上传：即在前端js中编写`uniCloud.uploadFile`
+3. 云函数上传文件到云存储：即在云函数js中编写`uniCloud.uploadFile`
 
 **注意：**
 - 前端和云函数端，均有一个相同名称的api：`uniCloud.uploadFile`。请不要混淆。
 - 前端还有一个`uni.uploadFile`的API，那个API用于连接非uniCloud的上传使用。请不要混淆。
 
-文件上传成功后，系统会自动生成一个资源链接，开发者应保存该文件地址供后续业务下载使用。
+文件上传成功后，系统会自动生成一个https链接或临时文件id，开发者应保存该文件地址供后续业务下载使用。
 
 # 客户端API
 
