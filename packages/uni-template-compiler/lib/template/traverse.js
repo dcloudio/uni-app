@@ -227,9 +227,17 @@ function traverseDataNode (dataNode, state, node) {
               objectExpression.properties.find(valueProperty => {
                 const isValue = valueProperty.key.name === 'value'
                 if (isValue) {
+                  let key
                   // 自定义组件不支持 hidden 属性
-                  const platforms = ['mp-weixin', 'mp-qq']
-                  ret[platforms.includes(state.options.platform.name) && isComponent(node.type) ? ATTE_DATA_CUSTOM_HIDDEN : 'hidden'] = genCode(valueProperty.value, false, true)
+                  const platform = state.options.platform.name
+                  const platforms = ['mp-weixin', 'mp-qq', 'mp-toutiao']
+                  if (isComponent(node.type) && platforms.includes(platform)) {
+                    // 字节跳动小程序自定义属性不会反应在DOM上，只能使用事件格式
+                    key = `${platform === 'mp-toutiao' ? 'bind:-' : ''}${ATTE_DATA_CUSTOM_HIDDEN}`
+                  } else {
+                    key = 'hidden'
+                  }
+                  ret[key] = genCode(valueProperty.value, false, true)
                 }
                 return isValue
               })

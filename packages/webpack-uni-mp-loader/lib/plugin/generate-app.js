@@ -46,8 +46,9 @@ module.exports = function generateApp (compilation) {
   }
 
   // 框架预设样式 用于隐藏自定义组件
-  const platforms = ['mp-weixin', 'mp-qq']
-  const presetStyle = platforms.includes(process.env.UNI_PLATFORM) ? '[data-custom-hidden="true"]{display: none !important;}' : ''
+  // TODO 分平台 import 不同 css
+  const platforms = ['mp-weixin', 'mp-qq', 'mp-toutiao']
+  const presetStyle = platforms.includes(process.env.UNI_PLATFORM) ? '[data-custom-hidden="true"],[bind-data-custom-hidden="true"]{display: none !important;}' : ''
 
   if (compilation.assets[`common/main${ext}`]) { // 是否存在 main.css
     importMainCss = `@import './common/main${ext}';`
