@@ -8,7 +8,6 @@
 - [GraceAdmin](https://ext.dcloud.net.cn/plugin?id=1347)： uniCloud 的 pc 端管理后台框架，快速搭建pc管理界面。
 - [uniCloud留言板示例](https://ext.dcloud.net.cn/plugin?id=1267)： 微信登录，数据库的增删查；（项目支持微信小程序和app）
 - [uniPush之unicloud版](https://ext.dcloud.net.cn/plugin?id=1680)： 封装好的云函数，直接在服务器端发送push消息。
-- [云上商城](https://ext.dcloud.net.cn/plugin?id=1989)：完整的线上生活超市，根据当前定位，就近匹配仓库。
 
 更多项目源码，见**插件市场**：[https://ext.dcloud.net.cn/?cat1=7](https://ext.dcloud.net.cn/?cat1=7)
 
@@ -21,6 +20,8 @@ web体验地址：[https://duolingo.91ddedu.com](https://duolingo.91ddedu.com)�
 
 ![登登多邻国小程序码](https://duolingo.91ddedu.com/static/miniapp.4a4ddf6b.jpg)
 
+- [国云商城](https://ext.dcloud.net.cn/plugin?id=1989)：优秀的电商系统，购买本系统，快速上线属于你自己的电商应用。
+- [云上商城](https://ext.dcloud.net.cn/plugin?id=1989)：完整的线上生活超市，根据当前定位，就近匹配仓库。
 - 纸塘日记：简约而优雅的日记本。[iOS App](https://apps.apple.com/cn/app/id1442487677)、[Android App](https://android.myapp.com/myapp/detail.htm?apkName=com.ztdiary.piaoshi)
 - 月嫂了不起：母婴护理师、育婴师的接单和学习平台。微信小程序搜索“月嫂了不起”
 - OYAN听书：外文书籍音频FM小程序。微信小程序搜索“OYAN听书”
