@@ -9,8 +9,13 @@ const {
   genCode,
   getCode,
   getForKey,
-  traverseKey
+  traverseKey,
+  isComponent
 } = require('../util')
+
+const {
+  ATTE_DATA_CUSTOM_HIDDEN
+} = require('../constants')
 
 module.exports = function traverse (ast, state = {}) {
   babelTraverse(ast, {
@@ -222,7 +227,9 @@ function traverseDataNode (dataNode, state, node) {
               objectExpression.properties.find(valueProperty => {
                 const isValue = valueProperty.key.name === 'value'
                 if (isValue) {
-                  ret.hidden = genCode(valueProperty.value, false, true)
+                  // 自定义组件不支持 hidden 属性
+                  const platforms = ['mp-weixin', 'mp-qq']
+                  ret[platforms.includes(state.options.platform.name) && isComponent(node.type) ? ATTE_DATA_CUSTOM_HIDDEN : 'hidden'] = genCode(valueProperty.value, false, true)
                 }
                 return isValue
               })

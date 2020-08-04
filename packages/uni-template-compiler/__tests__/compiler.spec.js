@@ -277,6 +277,10 @@ describe('mp:compiler', () => {
       '<view v-show="shown">hello world</view>',
       '<view hidden="{{!(shown)}}">hello world</view>'
     )
+    assertCodegen(
+      '<test v-show="shown">hello world</test>',
+      '<test data-custom-hidden="{{!(shown)}}" vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}">hello world</test>'
+    )
   })
 
   it('generate DOM props with v-bind directive', () => {
