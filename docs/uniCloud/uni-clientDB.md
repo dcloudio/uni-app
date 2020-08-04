@@ -233,6 +233,7 @@ afterStageAppend: function({
 - 关于blockedField
   + 使用聚合时blockField不会覆盖客户端的project，而是在聚合第一阶段插入project
   + 不使用聚合时会在最后阶段插入一个field（会覆盖客户端的field方法）
+  + blockedField仅对读操作生效
 
 - 关于mixinCondition
   + mixinCondition内可以使用数据库操作符
