@@ -269,6 +269,8 @@ export default {
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |x|x|2.11.0+|x|x|x|x|
 
+App端有很多插件支持视频压缩，详见[插件市场](https://ext.dcloud.net.cn/search?q=%E8%A7%86%E9%A2%91%E5%8E%8B%E7%BC%A9)
+
 **OBJECT 参数说明**
 
 |属性				|类型			|默认值	|必填	|说明																									|
