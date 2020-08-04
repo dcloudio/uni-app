@@ -109,3 +109,5 @@ exports.main = async (event, context) => {
 - data内如果有`测试`、`test`等字样，系统可能会被判定为测试用途，不会真正把短信下发到对应手机（此行为由运营商控制，可能真实发送，也可能不发送）
 - 在[DCloud开发者中心](https://dev.dcloud.net.cn/uniSms)绑定`uniCloud`服务空间后，将会只允许绑定的服务空间调用此接口，绑定列表为空时表示不限制服务空间
 - 短信内容不可包含★、 ※、 →、 ●等特殊符号，可能会导致短信乱码
+- 如果是用于用户注册的短信验证码，那么强烈推荐使用uni-id，这是一套云端一体的、完善的用户管理方案，已经内置封装好的短信验证码功能，详见：[https://ext.dcloud.net.cn/plugin?id=2116](https://ext.dcloud.net.cn/plugin?id=2116)
+- Android手机在App端获取短信验证码，参考：[https://ask.dcloud.net.cn/article/676](https://ask.dcloud.net.cn/article/676)
