@@ -30,9 +30,9 @@
 ```html
 <template>
 	<view>
-		<canvas style="width: 300px; height: 200px;" canvas-id="firstCanvas"></canvas>
-		<canvas style="width: 400px; height: 500px;" canvas-id="secondCanvas"></canvas>
-		<canvas style="width: 400px; height: 500px;" canvas-id="secondCanvas" @error="canvasIdErrorCallback"></canvas>
+		<canvas style="width: 300px; height: 200px;" canvas-id="firstCanvas" id="firstCanvas"></canvas>
+		<canvas style="width: 400px; height: 500px;" canvas-id="secondCanvas" id="secondCanvas"></canvas>
+		<canvas style="width: 400px; height: 500px;" canvas-id="secondCanvas" id="secondCanvas" @error="canvasIdErrorCallback"></canvas>
 	</view>
 </template>
 ```

@@ -292,7 +292,7 @@ ctx.draw()
 clearRect 并非画一个白色的矩形在地址区域，而是清空，为了有直观感受，对 canvas 加了一层背景色。
 
 ```javascript
-<canvas canvas-id="myCanvas" style="border: 1px solid; background: #123456;"/>
+<canvas canvas-id="myCanvas" id="myCanvas" style="border: 1px solid; background: #123456;"/>
 ```
 
 ```javascript
