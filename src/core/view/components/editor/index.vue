@@ -281,9 +281,8 @@ export default {
         if (this.skipMatcher) {
           return delta
         }
-        return {
-          ops: delta.ops.filter(({ insert }) => typeof insert === 'string').map(({ insert }) => ({ insert }))
-        }
+        delta.ops = delta.ops.filter(({ insert }) => typeof insert === 'string').map(({ insert }) => ({ insert }))
+        return delta
       })
       this.initKeyboard($el)
       this.quillReady = true
