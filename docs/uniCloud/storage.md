@@ -1,20 +1,33 @@
-开发者使用`uniCloud`的云存储，无需再像传统模式那样单独去购买存储空间、CDN映射、流量采购等；`uniCloud`云存储支持文本、图片和其他由用户生成的内容存储到云端，并提供CDN下载地址，
+开发者使用`uniCloud`的云存储，无需再像传统模式那样单独去购买存储空间、CDN映射、流量采购等；
 
-开发者可在客户端使用云存储API，文件上传成功后，系统会自动生成一个资源链接，开发者需保存该文件地址供后续业务下载使用。
+`uniCloud`的云存储和cdn，免费提供给开发者使用！
 
-即将支持云函数中使用云存储功能。
+云存储的上传方式有3种：
+1. web界面，即在[https://unicloud.dcloud.net.cn/](https://unicloud.dcloud.net.cn/) web控制台，点击云存储，通过web界面进行文件上传。该管理界面同时提供了资源浏览、删除等操作界面。
+2. 客户端API上传，即在前端js中编写`uniCloud.uploadFile`
+3. 云函数上传文件到云存储，即在云函数js中编写`uniCloud.uploadFile`
+
+**注意：**
+- 前端和云函数端，均有一个相同名称的api：`uniCloud.uploadFile`。请不要混淆。
+- 前端还有一个`uni.uploadFile`的API，那个API用于连接非uniCloud的上传使用。请不要混淆。
+
+文件上传成功后，系统会自动生成一个资源链接，开发者应保存该文件地址供后续业务下载使用。
 
 # 客户端API
 
-使用腾讯云作为服务商时，客户端文件操作最好是搭配权限设置和自定义登录使用。阿里云作为服务商时不要使用客户端删除文件。
+在uni-app前端进行云存储的操作（不是在云函数里操作），包括在前端上传、删除文件。
 
 ## uploadFile(Object object)
 
-上传文件到云存储，**阿里云单文件大小限制为100M，腾讯云单文件最大为5G**
+直接上传文件到云存储。
+
+客户端上传文件到云函数、云函数再上传文件到云存储，这样的过程会导致文件流量带宽耗费较大。所以一般上传文件都是客户端直传。
+
+**阿里云单文件大小限制为100M，腾讯云单文件最大为5G**
 
 **支付宝小程序开发工具上传文件到腾讯云时可能会返回失败，请以真机为准**
 
-阿里云uploadFile只允许上传以下文件类型（后续可能会调整），如果要上传其他类型可以通过web控制台上传。腾讯云没有文件类型限制。
+阿里云uploadFile API方式只允许上传以下文件类型（后续可能会调整），如果要上传其他类型可以通过web控制台上传。腾讯云没有文件类型限制。
 
 ```js
 {
@@ -68,6 +81,7 @@ onUploadProgress: function(progressEvent) {
  -->
 
 ```javascript
+//前端代码
 uni.chooseImage({
 	count: 1,
 	success(res) {
@@ -76,7 +90,7 @@ uni.chooseImage({
 			let filePath = res.tempFilePaths[0]
 			//进行上传操作
 
-			// promise
+			// promise方式
 			const result = await uniCloud.uploadFile({
 				filePath: filePath,
         cloudPath: 'a.jpg',
@@ -88,7 +102,7 @@ uni.chooseImage({
 			        }
 			});
 
-			// callback
+			// callback方式，与promise方式二选一即可
 			uniCloud.uploadFile({
 				filePath: filePath,
         cloudPath: 'a.jpg',
@@ -115,7 +129,7 @@ uni.chooseImage({
 
 ## getTempFileURL(Object object)
 
-获取文件临时下载链接。
+腾讯云获取文件临时下载链接。
 
 **平台兼容性**
 
@@ -157,13 +171,14 @@ uni.chooseImage({
 #### 示例代码
 
 ```javascript
-// promise
+// 客户端获取临时文件示例源码
+// promise方式
 uniCloud.getTempFileURL({
 		fileList: ['cloud://test-28farb/a.png']
 	})
 	.then(res => {});
 
-// callback
+// callback方式，与promise方式二选一即可
 uniCloud.getTempFileURL({
 	fileList: ['cloud://test-28farb/a.png'],
 	success() {},
@@ -174,7 +189,11 @@ uniCloud.getTempFileURL({
 
 ## deleteFile(Object object)
 
-客户端删除云端文件，**使用阿里云作为服务商时，不要使用客户端删除云端文件，为保障安全，应该在云函数中进行相关操作。阿里云前端删除云文件会报权限错误**
+客户端删除云存储文件。
+
+不建议使用此API。删除云存储文件是一个高危操作，应该由云函数进行权限校验后由云函数来删除云存储的文件。
+- 阿里云不支持此API，前端运行此API会报权限错误
+- 腾讯云支持此API，如若使用，需搭配腾讯云提供的自定义登录和权限设置使用
 
 #### 请求参数
 
@@ -200,6 +219,7 @@ uniCloud.getTempFileURL({
 #### 示例代码
 
 ```javascript
+// 客户端删除云文件示例源码
 // promise
 uniCloud
   .deleteFile({
@@ -220,9 +240,13 @@ uniCloud.deleteFile(
 
 # 云函数API
 
+在云函数中操作云存储文件（不是在前端），包括在云函数里上传、删除云存储文件。
+
 ## uniCloud.uploadFile(Object uploadFileOptions)
 
-**云函数**内上传文件至云开发存储服务。
+**云函数**内上传文件至云存储。
+
+如果是从客户端上传文件，一般不建议先把文件从客户端上传到云函数，再由云函数上传到云存储，而是建议客户端直传云存储。详见：[https://uniapp.dcloud.io/uniCloud/storage?id=uploadfile](https://uniapp.dcloud.io/uniCloud/storage?id=uploadfile)
 
 **平台兼容性**
 
@@ -230,7 +254,7 @@ uniCloud.deleteFile(
 |----		|----		|
 |×			|√			|
 
-如使用阿里云，请在前端通过uni-app的上传api进行上传，详见：[https://uniapp.dcloud.io/api/request/network-file?id=uploadfile](https://uniapp.dcloud.io/api/request/network-file?id=uploadfile)
+如使用阿里云，请在客户端通过上传api进行上传，详见：[https://uniapp.dcloud.io/uniCloud/storage?id=uploadfile](https://uniapp.dcloud.io/uniCloud/storage?id=uploadfile)
 
 #### 请求参数
 **uploadFileOptions参数说明**
@@ -250,6 +274,7 @@ uniCloud.deleteFile(
 #### 示例代码
 
 ```javascript
+// 云函数上传文件示例代码
 const fs = require("fs");
 
 let result = await uniCloud.uploadFile({
@@ -307,7 +332,9 @@ let result = await uniCloud.getTempFileURL({
 
 ## uniCloud.deleteFile(Object deleteFileOptions)
 
-**云函数**删除云端文件。**阿里云删除文件建议使用云函数进行，不要使用客户端的删除接口**
+**云函数**删除云存储文件。
+
+删除云存储文件是高危操作，不建议在客户端操作，而建议在云函数中操作。
 
 #### 请求参数
 
@@ -333,6 +360,7 @@ let result = await uniCloud.getTempFileURL({
 #### 示例代码
 
 ```javascript
+// 云函数删除文件示例代码
 let result = await uniCloud.deleteFile({
     fileList: [
         "cloud://test-28farb/a.png"
@@ -379,7 +407,7 @@ let result = await uniCloud.downloadFile({
 
 **仅阿里云支持**
 
-使用阿里云作为服务商时，云存储支持直接使用restful api对资源进行处理，下表列出支持的操作类型。
+使用阿里云作为服务商时，云存储支持直接使用**restful api**对资源进行处理，下表列出支持的操作类型。
 
 |功能			|操作参数	|参考文档																													|
 |:-:			|:-:		|:-:																														|
@@ -391,3 +419,7 @@ let result = await uniCloud.downloadFile({
 |图片质量调节		|quality	|[点击查看](https://help.aliyun.com/document_detail/44705.html?spm=a2c4g.11186623.2.15.274651b0YkQ5hE#concept-exc-qp5-vdb)	|
 |图片水印		|watermark	|[点击查看](https://help.aliyun.com/document_detail/44957.html?spm=a2c4g.11186623.2.16.274651b0YkQ5hE#concept-hrt-sv5-vdb)	|
 |视频截帧		|snapshot	|[点击查看](https://help.aliyun.com/document_detail/64555.html?spm=a2c4g.11186623.2.17.274651b0YkQ5hE#concept-kz1-cwc-wdb)	|
+
+**Tips**
+
+阿里云的云存储暂不支持分目录。阿里云的前端网页托管支持分目录。
