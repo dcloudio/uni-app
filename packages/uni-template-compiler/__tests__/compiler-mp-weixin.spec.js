@@ -132,4 +132,11 @@ describe('mp:compiler-mp-weixin', () => {
     )
     assertCodegen('<test :obj="{x:0}"></test>', '<test vue-id="551070e6-1" obj="{{({x:0})}}" bind:__l="__l"></test>')
   })
+
+  it('generate v-show directive', () => {
+    assertCodegen(
+      '<test v-show="shown">hello world</test>',
+      '<test data-custom-hidden="{{!(shown)}}" vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}">hello world</test>'
+    )
+  })
 })

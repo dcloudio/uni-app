@@ -72,4 +72,11 @@ describe('mp:compiler-mp-toutiao', () => {
       '<view class="{{((\'bg _p\')+\' \'+(classStr1||classStr2))}}">9</view>'
     )
   })
+
+  it('generate v-show directive', () => {
+    assertCodegen(
+      '<test v-show="shown">hello world</test>',
+      '<test bind:-data-custom-hidden="{{!(shown)}}" vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}">hello world</test>'
+    )
+  })
 })

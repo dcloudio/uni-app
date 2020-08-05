@@ -18,6 +18,9 @@ export const setTabBarItem = {
   },
   selectedIconPath: {
     type: String
+  },
+  pagePath: {
+    type: String
   }
 }
 

@@ -78,5 +78,13 @@ export default function parsePage (vuePageOptions) {
 
   initHooks(pageOptions, hooks, vuePageOptions)
 
+  if (Array.isArray(vueOptions.wxsCallMethods)) {
+    vueOptions.wxsCallMethods.forEach(callMethod => {
+      pageOptions[callMethod] = function (args) {
+        return this.$vm[callMethod](args)
+      }
+    })
+  }
+
   return pageOptions
 }
