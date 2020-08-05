@@ -2107,6 +2107,14 @@ function parsePage (vuePageOptions) {
 
   initHooks(pageOptions, hooks$1, vuePageOptions);
 
+  if (Array.isArray(vueOptions.wxsCallMethods)) {
+    vueOptions.wxsCallMethods.forEach(callMethod => {
+      pageOptions[callMethod] = function (args) {
+        return this.$vm[callMethod](args)
+      };
+    });
+  }
+
   return pageOptions
 }
 
@@ -2221,6 +2229,14 @@ function parseComponent (vueComponentOptions) {
     componentOptions.deriveDataFromProps = createObserver$1();
   } else {
     componentOptions.didUpdate = createObserver$1(true);
+  }
+
+  if (Array.isArray(vueOptions.wxsCallMethods)) {
+    vueOptions.wxsCallMethods.forEach(callMethod => {
+      componentOptions.methods[callMethod] = function (args) {
+        return this.$vm[callMethod](args)
+      };
+    });
   }
 
   return componentOptions
