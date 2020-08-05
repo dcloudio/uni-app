@@ -43,6 +43,7 @@
 3. 修改公用模块`uni-id`下的`config.json`内所需参数（请参考下面config.json的说明）
 4. 上传`cloudfunctions/common`下的`uni-id`模块
 5. 按照[公用模块使用说明](https://uniapp.dcloud.io/uniCloud/cf-common)在云函数下安装`uni-id`模块
+6. 创建`uni-id-users`、`uni-verify`集合（可以直接使用示例项目里面的db_init.json进行初始化）
 
 或者直接导入[uni-id在插件市场的示例工程](https://ext.dcloud.net.cn/plugin?id=2116)
 

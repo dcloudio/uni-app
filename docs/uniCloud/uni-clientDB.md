@@ -239,6 +239,8 @@ afterStageAppend: function({
   + mixinCondition内可以使用数据库操作符
   + 不使用聚合时mixinCondition会在没有where的时候在collection方法之后插入where，有where时会跟where条件进行合并，取原条件且mixinCondition。
   + 使用聚合时会在第一阶段插入match使用混入的条件，如果有blockedField会插入在blockedField对应的project之前
+  + mixinCondition会对除插入以外的所有操作生效
+  + 使用mixinCondition时客户端不可使用`collection('xxx').doc('xxx')`方法
 
 - 关于联表查询
   + 连接的集合也会受所配置的权限规则中对应集合规则限制，主要是read，目前连接的集合不会受blockedField限制
