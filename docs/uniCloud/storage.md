@@ -258,7 +258,7 @@ uniCloud.deleteFile(
 |----		|----		|
 |×			|√			|
 
-如使用阿里云，请在客户端通过上传api进行上传，详见：[https://uniapp.dcloud.io/uniCloud/storage?id=uploadfile](https://uniapp.dcloud.io/uniCloud/storage?id=uploadfile)
+如使用阿里云，请在客户端通过`uniCloud.uploadFile`进行上传
 
 #### 请求参数
 **uploadFileOptions参数说明**
