@@ -18,6 +18,7 @@
     "build:mp-baidu": "cross-env UNI_PLATFORM=mp-baidu rollup -c build/rollup.config.mp.js",
     "build:mp-alipay": "cross-env UNI_PLATFORM=mp-alipay rollup -c build/rollup.config.mp.js",
     "build:mp-toutiao": "cross-env UNI_PLATFORM=mp-toutiao rollup -c build/rollup.config.mp.js",
+    "build:mp-kuaishou": "cross-env UNI_PLATFORM=mp-kuaishou rollup -c build/rollup.config.mp.js",
     "build:quickapp-webview": "cross-env UNI_PLATFORM=quickapp-webview rollup -c build/rollup.config.mp.js",
     "build:mp-weixin:mp": "cross-env UNI_PLATFORM=mp-weixin UNI_MP=true rollup -c build/rollup.config.mp.js",
     "build:mp-weixin:wxs": "rollup -c build/rollup.config.wxs.js",

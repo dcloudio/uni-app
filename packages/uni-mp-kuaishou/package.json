@@ -1,0 +1,16 @@
+{
+  "name": "@dcloudio/uni-mp-kuaishou",
+  "version": "2.0.0-23320190923002",
+  "description": "uni-app mp-kuaishou",
+  "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aeroxy/uni-app.git",
+    "directory": "packages/uni-mp-kuaishou"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Aero Wang",
+  "license": "MIT"
+}
