@@ -1,7 +1,8 @@
 const path = require('path')
 
 const {
-  runByHBuilderX
+  runByHBuilderX,
+  isInHBuilderX
 } = require('@dcloudio/uni-cli-shared')
 
 const defaults = {
@@ -164,6 +165,12 @@ async function build (args, api, options) {
           const dirMsg = runByHBuilderX ? ''
             : `The ${chalk.cyan(targetDirShort)} directory is ready to be deployed.`
           done(`Build complete. ${dirMsg}`)
+
+          if (process.env.UNI_PLATFORM === 'h5' && !isInHBuilderX) {
+            console.log()
+            console.log('欢迎将H5站部署到uniCloud前端网页托管平台，高速、免费、安全、省心，详见：')
+            console.log('https://uniapp.dcloud.io/uniCloud/hosting')
+          }
         } else {
           const dirMsg = runByHBuilderX ? '' : `The ${chalk.cyan(targetDirShort)} directory is ready. `
           done(`Build complete. ${dirMsg}Watching for changes...`)
