@@ -742,7 +742,7 @@ if (inBrowser) {
     Object.defineProperty(opts, 'passive', ({
       get: function get () {
         /* istanbul ignore next */
-        
+
       }
     })); // https://github.com/facebook/flow/issues/285
     window.addEventListener('test-passive', null, opts);
@@ -781,10 +781,10 @@ var hasSymbol =
 /* istanbul ignore if */ // $flow-disable-line
 if (typeof Set !== 'undefined' && isNative(Set)) {
   // use native Set when available.
-  
+
 } else {
   // a non-standard Set polyfill that only works with primitive keys.
-  
+
 }
 
 var ASSET_TYPES = [
@@ -1636,19 +1636,19 @@ if (typeof MessageChannel !== 'undefined' && (
 )) {
   var channel = new MessageChannel();
   channel.port1.onmessage = flushCallbacks;
-  
+
 } else {
   /* istanbul ignore next */
-  
+
 }
 
 // Determine microtask defer implementation.
 /* istanbul ignore next, $flow-disable-line */
 if (typeof Promise !== 'undefined' && isNative(Promise)) {
-  
+
 } else {
   // fallback to macro
-  
+
 }
 
 /**
@@ -4748,11 +4748,47 @@ var swan$1 = mergePreset(basePrest, {
   }
 })
 
+var ks = mergePreset(basePrest, {
+  prefix: prefix,
+  ext: "ksml",
+  directives: {
+    if: (prefix + "if"),
+    elseif: (prefix + "elif"),
+    else: (prefix + "else"),
+    for: (prefix + "for"),
+    forItem: (prefix + "for-item"),
+    forIndex: (prefix + "for-index"),
+    forKey: (prefix + "key"),
+    on: "bind",
+    onStop: "catch",
+    capture: "capture"
+  },
+  eventTypeMap: eventTypeMap$1,
+  findEventType: findEventType,
+  genBind: function genBind (event, type, tag) {
+    var modifiers = event.modifiers; if ( modifiers === void 0 ) modifiers = {};
+    var isCapture = /!/.test(type);
+    var realType = type.replace(/^[~|!]/, '');
+    var stop = modifiers.stop;
+    var mpType = realType;
+    var binder = stop ? 'catch' : 'bind';
+    binder = isCapture ? ("capture-" + binder) : binder;
+
+    if (type === 'change' && (tag === 'input' || tag === 'textarea')) {
+      mpType = 'blur';
+    } else {
+      mpType = mpType === 'click' ? 'tap' : mpType;
+    }
+    return ("" + binder + mpType)
+  }
+})
+
 var presets = {
   wechat: wechat,
   alipay: alipay,
   swan: swan$1,
-  tt:tt//fixed by xxxxxx
+  tt: tt, //fixed by xxxxxx
+  ks: ks
 }
 
 var vbindReg = /^(v-bind:?|:)/;
@@ -4977,7 +5013,7 @@ function addAttr$1 (node, name, value) {
   attrsMap[name] = "" + value;
 
   Object.assign(node, { attrs: attrs, attrsMap: attrsMap });
-  
+
 }
 
 function isTag (node) {
@@ -5170,7 +5206,7 @@ function walk$1 (node, state) {
   } else if (
     node.type === TYPE$1.TEXT || node.type === TYPE$1.STATIC_TEXT
   ) {
-    
+
   }
 }
 
@@ -5423,7 +5459,7 @@ TemplateGenerator.prototype.genImports = function genImports () {
     var imports = ref.imports;
   var components = ref._components||new Set();//fixed by xxxxxx
   return Object.keys(imports)
-    .map(function (name) { 
+    .map(function (name) {
         //fixed by xxxxxx 过滤 import
         // if(process.env.UNI_PLATFORM === 'mp-alipay'){
             if(name==='_slots_'){
@@ -5447,14 +5483,14 @@ TemplateGenerator.prototype.genElement = function genElement (el) {
     return this.genVHtml(el)
   } else if (this.isSlot(el)) {
     //fixed by xxxxxx 记录是否定义slot
-    this._hasSlot = true;  
+    this._hasSlot = true;
     return this.genSlot(el)
   } else if (this.isComponent(el)) {
     //fixed by xxxxxx 记录自定义组件
     if(!this._components){
         this._components = new Set()
     }
-    this._components.add(el.tag.toLowerCase().replace(/-/g,'')) 
+    this._components.add(el.tag.toLowerCase().replace(/-/g,''))
     return this.genComponent(el)
   } else if (el.type === 1) {
     return this.genTag(el)

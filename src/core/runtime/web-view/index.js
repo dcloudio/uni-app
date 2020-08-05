@@ -26,6 +26,9 @@ import {
 import {
   initWebviewApi as initQuickappWebviewApi
 } from 'uni-platforms/quickapp-webview/runtime/web-view'
+import {
+  initWebviewApi as initKuaishouWebviewApi
+} from 'uni-platforms/mp-kuaishou/runtime/web-view'
 
 const UniAppJSBridgeReady = function () {
   window.UniAppJSBridge = true
@@ -43,6 +46,7 @@ const initWebviewApis = [
   initBaiduWebviewApi,
   initToutiaoWebviewApi,
   initQuickappWebviewApi,
+  initKuaishouWebviewApi,
   initH5WebviewApi
 ]
 
