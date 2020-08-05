@@ -121,6 +121,8 @@ var serviceContext = (function () {
     'getBLEDeviceCharacteristics',
     'createBLEConnection',
     'closeBLEConnection',
+    'setBLEMTU',
+    'getBLEDeviceRSSI',
     'onBeaconServiceChange',
     'onBeaconUpdate',
     'getBeacons',
@@ -2137,6 +2139,9 @@ var serviceContext = (function () {
     },
     selectedIconPath: {
       type: String
+    },
+    pagePath: {
+      type: String
     }
   };
 
@@ -2995,7 +3000,11 @@ var serviceContext = (function () {
 
   let lastStatusBarStyle;
 
-  const oldSetStatusBarStyle = plus.navigator.setStatusBarStyle;
+  let oldSetStatusBarStyle = plus.navigator.setStatusBarStyle;
+
+  function restoreOldSetStatusBarStyle (setStatusBarStyle) {
+    oldSetStatusBarStyle = setStatusBarStyle;
+  }
 
   function newSetStatusBarStyle (style) {
     lastStatusBarStyle = style;
@@ -3768,8 +3777,8 @@ var serviceContext = (function () {
     getCenterLocation (ctx, cbs) {
       return invokeVmMethodWithoutArgs(ctx, 'getCenterLocation', cbs)
     },
-    moveToLocation (ctx) {
-      return invokeVmMethodWithoutArgs(ctx, 'moveToLocation')
+    moveToLocation (ctx, args) {
+      return invokeVmMethod(ctx, 'moveToLocation', args)
     },
     translateMarker (ctx, args) {
       return invokeVmMethod(ctx, 'translateMarker', args, ['animationEnd'])
@@ -4304,6 +4313,14 @@ var serviceContext = (function () {
     bluetoothExec('writeBLECharacteristicValue', callbackId, data);
   }
 
+  function setBLEMTU (data, callbackId) {
+    bluetoothExec('setBLEMTU', callbackId, data);
+  }
+
+  function getBLEDeviceRSSI (data, callbackId) {
+    bluetoothExec('getBLEDeviceRSSI', callbackId, data);
+  }
+
   function getScreenBrightness () {
     return {
       errMsg: 'getScreenBrightness:ok',
@@ -4407,28 +4424,14 @@ var serviceContext = (function () {
     }
   }
 
-  let beaconUpdateState = false;
-
-  function onBeaconUpdate () {
-    if (!beaconUpdateState) {
-      plus.ibeacon.onBeaconUpdate(function (data) {
-        publish('onBeaconUpdated', data);
-      });
-      beaconUpdateState = true;
-    }
+  function onBeaconUpdate (callbackId) {
+    plus.ibeacon.onBeaconUpdate(data => invoke$1(callbackId, data));
   }
 
-  let beaconServiceChangeState = false;
-
-  function onBeaconServiceChange () {
-    if (!beaconServiceChangeState) {
-      plus.ibeacon.onBeaconServiceChange(function (data) {
-        publish('onBeaconServiceChange', data);
-        publish('onBeaconServiceChanged', data);
-      });
-      beaconServiceChangeState = true;
-    }
+  function onBeaconServiceChange (callbackId) {
+    plus.ibeacon.onBeaconServiceChange(data => invoke$1(callbackId, data));
   }
+  const onBeaconServiceChanged = onBeaconServiceChange;
 
   function getBeacons (params, callbackId) {
     plus.ibeacon.getBeacons({
@@ -6575,6 +6578,28 @@ var serviceContext = (function () {
     delete requestTasks[requestTaskId];
   };
 
+  const cookiesPrase = header => {
+    let cookiesStr = header['Set-Cookie'];
+    let cookiesArr = [];
+    if (!cookiesStr) {
+      return []
+    }
+    if (cookiesStr[0] === '[' && cookiesStr[cookiesStr.length - 1] === ']') {
+      cookiesStr = cookiesStr.slice(1, -1);
+    }
+    const handleCookiesArr = cookiesStr.split(';');
+    for (let i = 0; i < handleCookiesArr.length; i++) {
+      if (handleCookiesArr[i].indexOf('Expires=') !== -1) {
+        cookiesArr.push(handleCookiesArr[i].replace(',', ''));
+      } else {
+        cookiesArr.push(handleCookiesArr[i]);
+      }
+    }
+    cookiesArr = cookiesArr.join(';').split(',');
+
+    return cookiesArr
+  };
+
   function createRequestTaskById (requestTaskId, {
     url,
     data,
@@ -6661,7 +6686,8 @@ var serviceContext = (function () {
             state: 'success',
             data: ok && responseType === 'arraybuffer' ? base64ToArrayBuffer$2(data) : data,
             statusCode,
-            header: headers
+            header: headers,
+            cookies: cookiesPrase(headers)
           });
         } else {
           publishStateChange$1({
@@ -7470,6 +7496,7 @@ var serviceContext = (function () {
       }
       weex = newWeex;
       plus = newPlus;
+      restoreOldSetStatusBarStyle(plus.navigator.setStatusBarStyle);
       plus.navigator.setStatusBarStyle = newSetStatusBarStyle;
       /* eslint-disable no-global-assign */
       setTimeout = newSetTimeout;
@@ -8701,7 +8728,7 @@ var serviceContext = (function () {
       routeOptions.meta.visible = true;
     }
 
-    if (routeOptions.meta.isTabBar && webview.id !== '1') {
+    if (routeOptions.meta.isTabBar) {
       tabBar$1.append(webview);
     }
 
@@ -9600,14 +9627,21 @@ var serviceContext = (function () {
     index,
     text,
     iconPath,
-    selectedIconPath
+    selectedIconPath,
+    pagePath
   }) {
-    if (!isTabBarPage()) {
-      return {
-        errMsg: 'setTabBarItem:fail not TabBar page'
+    tabBar$1.setTabBarItem(index, text, iconPath, selectedIconPath);
+    const route = pagePath && __uniRoutes.find(({ path }) => path === pagePath);
+    if (route) {
+      const meta = route.meta;
+      meta.isTabBar = true;
+      meta.tabBarIndex = index;
+      meta.isQuit = true;
+      const tabBar = __uniConfig.tabBar;
+      if (tabBar && tabBar.list && tabBar.list[index]) {
+        tabBar.list[index].pagePath = pagePath.startsWith('/') ? pagePath.substring(1) : pagePath;
       }
     }
-    tabBar$1.setTabBarItem(index, text, iconPath, selectedIconPath);
     return {
       errMsg: 'setTabBarItem:ok'
     }
@@ -9948,6 +9982,8 @@ var serviceContext = (function () {
     notifyBLECharacteristicValueChanged: notifyBLECharacteristicValueChanged,
     readBLECharacteristicValue: readBLECharacteristicValue,
     writeBLECharacteristicValue: writeBLECharacteristicValue,
+    setBLEMTU: setBLEMTU,
+    getBLEDeviceRSSI: getBLEDeviceRSSI,
     getScreenBrightness: getScreenBrightness,
     setScreenBrightness: setScreenBrightness,
     setKeepScreenOn: setKeepScreenOn,
@@ -9957,6 +9993,7 @@ var serviceContext = (function () {
     getNetworkType: getNetworkType,
     onBeaconUpdate: onBeaconUpdate,
     onBeaconServiceChange: onBeaconServiceChange,
+    onBeaconServiceChanged: onBeaconServiceChanged,
     getBeacons: getBeacons,
     startBeaconDiscovery: startBeaconDiscovery,
     stopBeaconDiscovery: stopBeaconDiscovery,
@@ -11908,7 +11945,8 @@ var serviceContext = (function () {
     data,
     statusCode,
     header,
-    errMsg
+    errMsg,
+    cookies
   }) {
     const {
       args,
@@ -11925,7 +11963,8 @@ var serviceContext = (function () {
           data,
           statusCode,
           header,
-          errMsg: 'request:ok'
+          errMsg: 'request:ok',
+          cookies
         }, args));
         break
       case 'fail':
