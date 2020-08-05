@@ -17,7 +17,7 @@ const publishStateChange = res => {
 }
 
 const cookiesPrase = header => {
-  let cookiesStr = header['Set-Cookie']
+  let cookiesStr = header['Set-Cookie'] || header['set-cookie']
   let cookiesArr = []
   if (!cookiesStr) {
     return []
