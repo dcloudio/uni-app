@@ -114,7 +114,7 @@ const unipayIns = unipay.initAlipay({
 | outTradeNo| String|                必填														|   -		| 商户订单号,64 个字符以内、只能包含字母、数字、下划线；需保证在商户端不重复																				|													|
 |  totalFee	| Number|                必填														|   -		|                             订单金额，单位：分																																		| 支付宝小程序、微信小程序|
 | notifyUrl	| String|                必填														|   -		|                              支付结果通知地址																																			|													|
-| tradeType	| String|             微信H5支付时必填									|   -		| `1.0.6+`交易类型"JSAPI": "公众号支付、微信小程序支付、支付宝小程序支付"、"APP:"APP支付"、"NATIVE":"网站二维码支付"|													|
+| tradeType	| String|             非小程序支付、App支付时必填									|   -		| `1.0.6+`交易类型"JSAPI": "公众号支付、微信小程序支付、支付宝小程序支付"、"APP:"APP支付"、"NATIVE":"网站二维码支付"|	-												|
 
 **返回值说明**
 
