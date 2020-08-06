@@ -19,7 +19,7 @@ export default function parseBaseComponent (vueComponentOptions, {
   isPage,
   initRelation
 } = {}) {
-  let [VueComponent, vueOptions] = initVueComponent(Vue, vueComponentOptions)
+  const [VueComponent, vueOptions] = initVueComponent(Vue, vueComponentOptions)
 
   const options = {
     multipleSlots: true,
