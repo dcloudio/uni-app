@@ -4,13 +4,16 @@ import {
 import createCallbacks from 'uni-helpers/callbacks'
 
 import {
-  invokeMethod,
   getCurrentPageId
 } from '../../platform'
 
 import {
   invoke
 } from '../../bridge'
+
+import {
+  TEMP_PATH
+} from 'uni-platform/service/api/constants'
 
 const canvasEventCallbacks = createCallbacks('canvasEvent')
 
@@ -879,37 +882,20 @@ export function canvasToTempFilePath ({
     })
     return
   }
-  const cId = canvasEventCallbacks.push(function ({
-    base64
-  }) {
-    if (!base64 || !base64.length) {
-      invoke(callbackId, {
-        errMsg: 'canvasToTempFilePath:fail'
-      })
-    }
-    invokeMethod('base64ToTempFilePath', {
-      base64Data: base64,
-      x,
-      y,
-      width,
-      height,
-      destWidth,
-      destHeight,
-      canvasId,
-      fileType,
-      qualit
-    }, callbackId)
+  const cId = canvasEventCallbacks.push(function (res) {
+    invoke(callbackId, res)
   })
-  operateCanvas(canvasId, pageId, 'getDataUrl', {
+  const dirname = `${TEMP_PATH}/canvas`
+  operateCanvas(canvasId, pageId, 'toTempFilePath', {
     x,
     y,
     width,
     height,
     destWidth,
     destHeight,
-    hidpi: false,
     fileType,
     qualit,
+    dirname,
     callbackId: cId
   })
 }
