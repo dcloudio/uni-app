@@ -128,5 +128,13 @@ export default function parseComponent (vueComponentOptions) {
     componentOptions.didUpdate = createObserver(true)
   }
 
+  if (Array.isArray(vueOptions.wxsCallMethods)) {
+    vueOptions.wxsCallMethods.forEach(callMethod => {
+      componentOptions.methods[callMethod] = function (args) {
+        return this.$vm[callMethod](args)
+      }
+    })
+  }
+
   return componentOptions
 }

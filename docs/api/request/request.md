@@ -43,6 +43,7 @@
 |data|Object/String/ArrayBuffer|开发者服务器返回的数据|
 |statusCode|Number|开发者服务器返回的 HTTP 状态码|
 |header|Object|开发者服务器返回的 HTTP Response Header|
+|cookies|``Array.<string>``|开发者服务器返回的 cookies，格式为字符串数组|
 
 **data 数据说明**
 

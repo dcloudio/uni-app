@@ -1,3 +1,6 @@
+const t = require('@babel/types')
+const traverse = require('@babel/traverse').default
+
 function cached (fn) {
   const cache = Object.create(null)
   return function cachedFn (str) {
@@ -82,12 +85,55 @@ module.exports = {
       type: 'view',
       attr: {
         slot: slotName
-      },
-      children: normalizeChildren(traverseExpr(returnExprNodes, state))
+      }
     }
-    if (paramExprNode && paramExprNode.type === 'Identifier') {
-      node.scoped = paramExprNode.name
+    if (paramExprNode) {
+      if (t.isIdentifier(paramExprNode)) {
+        const scoped = paramExprNode.name
+        node.attr['slot-scope'] = scoped
+      } else if (t.isObjectPattern(paramExprNode)) {
+        const paramName = '__SCOPED__'
+        node.attr['slot-scope'] = paramName
+        const start = returnExprNodes.start
+        const end = returnExprNodes.end
+        const names = []
+        paramExprNode.properties.forEach(property => {
+          const key = property.key
+          const value = property.value
+          if (t.isIdentifier(value)) {
+            if (value.name !== key.name) {
+              state.errors.add(`解构插槽 Prop 时,不支持将${key.name}重命名为${value.name},重命名后会影响性能`)
+              return
+            }
+          } else if (t.isAssignmentPattern(value)) {
+            state.errors.add(`解构插槽 Prop 时,不支持为${key.name}设置默认值`)
+            return
+          }
+          names.push(key.name)
+        })
+        traverse({
+          type: 'Program',
+          start,
+          end,
+          body: [{
+            type: 'ExpressionStatement',
+            start,
+            end,
+            expression: returnExprNodes
+          }],
+          sourceType: 'module'
+        }, {
+          Identifier (path) {
+            const node = path.node
+            const name = node.name
+            if (names.includes(name) && path.key !== 'key' && (path.key !== 'property' || path.parent.computed) && !(path.scope && path.scope.hasBinding(name))) {
+              path.replaceWithSourceString(`${paramName}.${name}`)
+            }
+          }
+        })
+      }
     }
+    node.children = normalizeChildren(traverseExpr(returnExprNodes, state))
     return node
   }
 }

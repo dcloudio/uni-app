@@ -23,7 +23,11 @@ export function publish (name, ...args) {
 
 export let lastStatusBarStyle
 
-const oldSetStatusBarStyle = plus.navigator.setStatusBarStyle
+let oldSetStatusBarStyle = plus.navigator.setStatusBarStyle
+
+export function restoreOldSetStatusBarStyle (setStatusBarStyle) {
+  oldSetStatusBarStyle = setStatusBarStyle
+}
 
 export function newSetStatusBarStyle (style) {
   lastStatusBarStyle = style

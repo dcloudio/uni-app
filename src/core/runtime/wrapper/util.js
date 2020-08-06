@@ -10,6 +10,8 @@ import {
 export const PAGE_EVENT_HOOKS = [
   'onPullDownRefresh',
   'onReachBottom',
+  'onAddToFavorites',
+  'onShareTimeline',
   'onShareAppMessage',
   'onPageScroll',
   'onResize',
@@ -226,6 +228,11 @@ export function initProperties (props, isBehavior = false, file = '') {
     properties.vueId = {
       type: String,
       value: ''
+    }
+    // 用于字节跳动小程序模拟抽象节点
+    properties.generic = {
+      type: Object,
+      value: null
     }
     properties.vueSlots = { // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
       type: null,
@@ -469,6 +476,15 @@ function isMatchEventType (eventType, optType) {
     )
 }
 
+function getContextVm (vm) {
+  let $parent = vm.$parent
+  // 父组件是 scoped slots 或者其他自定义组件时继续查找
+  while ($parent && $parent.$parent && ($parent.$options.generic || $parent.$parent.$options.generic || $parent.$scope._$vuePid)) {
+    $parent = $parent.$parent
+  }
+  return $parent && $parent.$parent
+}
+
 export function handleEvent (event) {
   event = wrapper(event)
 
@@ -501,12 +517,8 @@ export function handleEvent (event) {
         const methodName = eventArray[0]
         if (methodName) {
           let handlerCtx = this.$vm
-          if (
-            handlerCtx.$options.generic &&
-            handlerCtx.$parent &&
-            handlerCtx.$parent.$parent
-          ) { // mp-weixin,mp-toutiao 抽象节点模拟 scoped slots
-            handlerCtx = handlerCtx.$parent.$parent
+          if (handlerCtx.$options.generic) { // mp-weixin,mp-toutiao 抽象节点模拟 scoped slots
+            handlerCtx = getContextVm(handlerCtx) || handlerCtx
           }
           if (methodName === '$emit') {
             handlerCtx.$emit.apply(handlerCtx,
@@ -530,14 +542,17 @@ export function handleEvent (event) {
             }
             handler.once = true
           }
-          ret.push(handler.apply(handlerCtx, processEventArgs(
+          const params = processEventArgs(
             this.$vm,
             event,
             eventArray[1],
             eventArray[2],
             isCustom,
             methodName
-          )))
+          ) || []
+          // 参数尾部增加原始事件对象用于复杂表达式内获取额外数据
+          // eslint-disable-next-line no-sparse-arrays
+          ret.push(handler.apply(handlerCtx, params.concat([, , , , , , , , , , event])))
         }
       })
     }

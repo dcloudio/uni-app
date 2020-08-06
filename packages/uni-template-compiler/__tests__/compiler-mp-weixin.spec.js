@@ -72,16 +72,23 @@ describe('mp:compiler-mp-weixin', () => {
   })
 
   it('generate scoped slot', () => {
+    assertCodegen(
+      '<slot v-bind:user="user"></slot>',
+      '<slot></slot><scoped-slots-default user="{{user}}" bind:__l="__l"></scoped-slots-default>',
+      function (res) {
+        expect(res.componentGenerics['scoped-slots-default']).toBe(true)
+      }
+    )
     assertCodegen( // TODO vue-id
       '<span><slot v-bind:user="user">{{ user.lastName }}</slot></span>',
-      '<label class="_span"><block wx:if="{{$slots.default}}"><scoped-slots-default user="{{user}}" bind:__l="__l"></scoped-slots-default></block><block wx:else>{{user.lastName}}</block></label>',
+      '<label class="_span"><block wx:if="{{$slots.default}}"><slot></slot><scoped-slots-default user="{{user}}" bind:__l="__l"></scoped-slots-default></block><block wx:else>{{user.lastName}}</block></label>',
       function (res) {
         expect(res.componentGenerics['scoped-slots-default']).toBe(true)
       }
     )
     assertCodegen(
       '<span><slot name="header" v-bind:user="user">{{ user.lastName }}</slot></span>',
-      '<label class="_span"><block wx:if="{{$slots.header}}"><scoped-slots-header user="{{user}}" bind:__l="__l"></scoped-slots-header></block><block wx:else>{{user.lastName}}</block></label>',
+      '<label class="_span"><block wx:if="{{$slots.header}}"><slot name="header"></slot><scoped-slots-header user="{{user}}" bind:__l="__l"></scoped-slots-header></block><block wx:else>{{user.lastName}}</block></label>',
       function (res) {
         expect(res.componentGenerics['scoped-slots-header']).toBe(true)
       }
@@ -111,6 +118,25 @@ describe('mp:compiler-mp-weixin', () => {
 		</slot-comp>
 	</view>`,
       '<view><slot-comp generic:scoped-slots-test="test-slot-comp-test" vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'test\']}}"></slot-comp><slot-comp generic:scoped-slots-test="test-slot-comp-test1" vue-id="551070e6-2" bind:__l="__l" vue-slots="{{[\'test\']}}"></slot-comp><slot-comp generic:scoped-slots-test="test-slot-comp-test2" vue-id="551070e6-3" bind:__l="__l" vue-slots="{{[\'test\']}}"></slot-comp><slot-comp generic:scoped-slots-test="test-slot-comp-test3" vue-id="551070e6-4" bind:__l="__l" vue-slots="{{[\'test\']}}"></slot-comp></view>'
+    )
+  })
+
+  it('generate ObjectExpression', () => {
+    assertCodegen(
+      '<view v-for="(item,key) in {x:0}" :key="key">{{item}}</view>',
+      '<block wx:for="{{({x:0})}}" wx:for-item="item" wx:for-index="key" wx:key="key"><view>{{item}}</view></block>'
+    )
+    assertCodegen(
+      '<template v-for="(item, key) in { list1, list2 }"></template>',
+      '<block wx:for="{{({list1,list2})}}" wx:for-item="item" wx:for-index="key"></block>'
+    )
+    assertCodegen('<test :obj="{x:0}"></test>', '<test vue-id="551070e6-1" obj="{{({x:0})}}" bind:__l="__l"></test>')
+  })
+
+  it('generate v-show directive', () => {
+    assertCodegen(
+      '<test v-show="shown">hello world</test>',
+      '<test data-custom-hidden="{{!(shown)}}" vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}">hello world</test>'
     )
   })
 })

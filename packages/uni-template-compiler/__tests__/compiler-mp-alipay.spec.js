@@ -18,7 +18,7 @@ describe('mp:compiler-mp-alipay', () => {
   it('generate v-for directive', () => {
     assertCodegen(
       '<view><view v-for="(item,index) in items" :key="index"></view></view>',
-      '<view><block a:for="{{items}}" a:for-item="item" a:for-index="index" a:key="index"><view></view></block></view>'
+      '<view><view a:for="{{items}}" a:for-item="item" a:for-index="index" a:key="index"></view></view>'
     )
   })
 
@@ -39,11 +39,11 @@ describe('mp:compiler-mp-alipay', () => {
     )
     assertCodegen(
       '<component1 v-for="item in items" ref="c3"></component1>',
-      '<block a:for="{{items}}" a:for-item="item" a:for-index="__i0__"><component1 vue-id="{{\'551070e6-1-\'+__i0__}}" ref="__r" data-ref-in-for="c3" onVueInit="__l"></component1></block>'
+      '<component1 vue-id="{{\'551070e6-1-\'+__i0__}}" ref="__r" data-ref-in-for="c3" a:for="{{items}}" a:for-item="item" a:for-index="__i0__" onVueInit="__l"></component1>'
     )
     assertCodegen(
       '<component1 v-for="item in items" :ref="c4"></component1>',
-      '<block a:for="{{items}}" a:for-item="item" a:for-index="__i0__"><component1 vue-id="{{\'551070e6-1-\'+__i0__}}" ref="__r" data-ref-in-for="{{c4}}" onVueInit="__l"></component1></block>'
+      '<component1 vue-id="{{\'551070e6-1-\'+__i0__}}" ref="__r" data-ref-in-for="{{c4}}" a:for="{{items}}" a:for-item="item" a:for-index="__i0__" onVueInit="__l"></component1>'
     )
   })
   it('generate default slot', () => {
@@ -60,6 +60,18 @@ describe('mp:compiler-mp-alipay', () => {
       '<component1 vue-id="551070e6-1" onVueInit="__l">text<view slot="right"></view></component1>'
     )
   })
+
+  it('generate scoped slot', () => {
+    assertCodegen(
+      '<component1 :text="\'text\'"><template v-slot="props"><view :class="{text:props.text}">{{props.text}}</view></template></component1>',
+      '<component1 vue-id="551070e6-1" text="text" onVueInit="__l"><view slot-scope="props"><view class="{{((props.text)?\'text\':\'\')}}">{{props.text}}</view></view></component1>'
+    )
+    assertCodegen(
+      '<component1 :text="\'text\'"><template v-slot="{text}"><view :class="{text:text}">{{text}}</view></template></component1>',
+      '<component1 vue-id="551070e6-1" text="text" onVueInit="__l"><view slot-scope="__SCOPED__"><view class="{{((__SCOPED__.text)?\'text\':\'\')}}">{{__SCOPED__.text}}</view></view></component1>'
+    )
+  })
+
   it('generate class binding', () => {
     assertCodegen(
       '<div :class="{ active: isActive }">1</div>',
@@ -114,8 +126,8 @@ describe('mp:compiler-mp-alipay', () => {
   it('generate events with v-on directive', () => {
     assertCodegen(
       '<uni-list-item title="标题文字" note="描述信息" show-extra-icon="true" :extra-icon="{color: \'#4cd964\',size: \'22\',type: \'spinner\'}"></uni-list-item>',
-      '<uni-list-item vue-id="551070e6-1" title="标题文字" note="描述信息" show-extra-icon="true" extra-icon="{{$root.a0}}" onVueInit="__l"></uni-list-item>',
-      'with(this){var a0={color:"#4cd964",size:"22",type:"spinner"};$mp.data=Object.assign({},{$root:{a0:a0}})}'
+      '<uni-list-item vue-id="551070e6-1" title="标题文字" note="描述信息" show-extra-icon="true" extra-icon="{{({color:\'#4cd964\',size:\'22\',type:\'spinner\'})}}" onVueInit="__l"></uni-list-item>',
+      'with(this){}'
     )
 
     assertCodegen(

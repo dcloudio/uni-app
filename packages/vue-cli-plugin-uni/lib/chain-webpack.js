@@ -90,7 +90,12 @@ module.exports = function chainWebpack (platformOptions, vueOptions, api) {
 
     platformOptions.chainWebpack(webpackConfig, vueOptions, api)
     // define
+    const deferredCreated = process.env.UNI_PLATFORM === 'mp-toutiao' ||
+      process.env.UNI_PLATFORM === 'quickapp-webview'
     const defines = {
+      __UNI_PROMISE_API__: JSON.stringify(process.env.UNI_USING_PROMISE_API === 'true'),
+      __VUE_OPTIONS_API__: JSON.stringify(process.env.UNI_USING_VUE3_OPTIONS_API === 'true'),
+      __VUE_CREATED_DEFERRED__: JSON.stringify(deferredCreated),
       'process.env.UNI_ENV': JSON.stringify(process.env.UNI_PLATFORM),
       'process.env.UNI_CLOUD_PROVIDER': process.env.UNI_CLOUD_PROVIDER,
       'process.env.HBX_USER_TOKEN': JSON.stringify(process.env.HBX_USER_TOKEN || ''),

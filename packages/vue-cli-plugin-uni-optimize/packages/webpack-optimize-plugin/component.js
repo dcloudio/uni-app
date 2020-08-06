@@ -6,7 +6,7 @@ const {
   capitalize
 } = require('./util')
 
-const platformTags = ['audio', 'map', 'video', 'web-view', 'cover-view', 'cover-image', 'picker']
+const platformTags = ['map', 'video', 'web-view', 'cover-view', 'cover-image', 'picker']
 
 const autoloadTags = {
   // input 在 pageHead 中有使用，resize-sensor 在很多组件中有使用，暂时直接加载

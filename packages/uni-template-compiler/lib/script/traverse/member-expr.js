@@ -1,16 +1,12 @@
 const t = require('@babel/types')
+const traverse = require('@babel/traverse').default
+
+const {
+  VAR_ROOT
+} = require('../../constants')
 
 function isMatch (name, forItem, forIndex) {
   return name === forItem || name === forIndex
-}
-
-function getIdentifierName (element) {
-  if (t.isMemberExpression(element)) {
-    return getIdentifierName(element.object)
-  } else if (t.isCallExpression(element)) {
-    return getIdentifierName(element.callee)
-  }
-  return element.name && element.name.split('.')[0]
 }
 
 function findScoped (path, state) {
@@ -23,30 +19,17 @@ function findScoped (path, state) {
       forIndex
     } = scoped
     let match = false
-    if (path.isIdentifier() || path.isMemberExpression()) {
-      match = isMatch(getIdentifierName(path.node), forItem, forIndex)
-    } else {
-      path.traverse({
-        noScope: true,
-        Identifier (path) {
-          if (!match) {
-            match = isMatch(path.node.name, forItem, forIndex)
-            if (match) {
-              path.stop()
-            }
-          }
-        },
-        MemberExpression (path) {
-          if (!match) {
-            match = isMatch(getIdentifierName(path.node), forItem, forIndex)
-            if (match) {
-              path.stop()
-            }
-            path.skip()
+    path.traverse({
+      noScope: true,
+      Identifier (path) {
+        if (!match && path.key !== 'key' && (path.key !== 'property' || path.parent.computed)) {
+          match = isMatch(path.node.name, forItem, forIndex)
+          if (match) {
+            path.stop()
           }
         }
-      })
-    }
+      }
+    })
     return match
   })
   if (!scoped && state.scoped.length > 1) {
@@ -55,8 +38,36 @@ function findScoped (path, state) {
   return scoped || state
 }
 
+function findTest (path, state) {
+  let tests
+  while (path.parentPath && path.key !== 'body') {
+    if (path.key === 'consequent' || path.key === 'alternate') {
+      let test = t.arrayExpression([t.clone(path.container.test)])
+      traverse(test, {
+        noScope: true,
+        MemberExpression (path) {
+          const names = state.scoped.map(scoped => scoped.forItem)
+          const node = path.node
+          const objectName = node.object.name
+          if (objectName === VAR_ROOT || names.includes(objectName)) {
+            path.replaceWith(node.property)
+          }
+        }
+      })
+      test = test.elements[0]
+      if (path.key === 'alternate') {
+        test = t.unaryExpression('!', test)
+      }
+      tests = tests ? t.logicalExpression('&&', test, tests) : test
+    }
+    path = path.parentPath
+  }
+  return tests
+}
+
 module.exports = function getMemberExpr (path, name, init, state, variableDeclaration = true) {
   const scoped = findScoped(path, state)
+  const test = findTest(path, state)
 
   if (!variableDeclaration) {
     scoped.declarationArray.push(t.expressionStatement(init))
@@ -67,7 +78,7 @@ module.exports = function getMemberExpr (path, name, init, state, variableDeclar
 
   scoped.propertyArray.push(t.objectProperty(identifier, identifier))
   scoped.declarationArray.push(
-    t.variableDeclaration('var', [t.variableDeclarator(identifier, init)])
+    t.variableDeclaration('var', [t.variableDeclarator(identifier, test ? t.conditionalExpression(test, init, t.nullLiteral()) : init)])
   )
 
   state.identifierArray.push(identifier)

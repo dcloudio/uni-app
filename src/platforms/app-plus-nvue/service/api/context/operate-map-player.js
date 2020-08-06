@@ -8,8 +8,8 @@ const METHODS = {
   getCenterLocation (ctx, cbs) {
     return invokeVmMethodWithoutArgs(ctx, 'getCenterLocation', cbs)
   },
-  moveToLocation (ctx) {
-    return invokeVmMethodWithoutArgs(ctx, 'moveToLocation')
+  moveToLocation (ctx, args) {
+    return invokeVmMethod(ctx, 'moveToLocation', args)
   },
   translateMarker (ctx, args) {
     return invokeVmMethod(ctx, 'translateMarker', args, ['animationEnd'])

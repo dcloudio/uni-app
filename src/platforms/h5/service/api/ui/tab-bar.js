@@ -43,9 +43,22 @@ function setTabBar (type, args = {}) {
       case 'hideTabBar':
         app.$children[0].hideTabBar = true
         break
-      case 'setTabBarItem':
+      case 'setTabBarItem': {
         setProperties(tabBar.list[index], setTabBarItemProps, args)
+        const pagePath = args.pagePath
+        const route = pagePath && __uniRoutes.find(({ path }) => path === pagePath)
+        if (route) {
+          const meta = route.meta
+          meta.isTabBar = true
+          meta.tabBarIndex = index
+          meta.isQuit = true
+          const tabBar = __uniConfig.tabBar
+          if (tabBar && tabBar.list && tabBar.list[index]) {
+            tabBar.list[index].pagePath = pagePath.startsWith('/') ? pagePath.substring(1) : pagePath
+          }
+        }
         break
+      }
       case 'setTabBarStyle':
         setProperties(tabBar, setTabBarStyleProps, args)
         break

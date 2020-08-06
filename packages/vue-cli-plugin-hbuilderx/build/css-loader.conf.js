@@ -77,12 +77,13 @@ if (sassLoaderVersion < 8) {
   sassLoader.options.outputStyle = 'expanded'
   sassLoader.options.indentedSyntax = true
 } else {
-  scssLoader.options.prependData = sassData
+  const name = sassLoaderVersion >= 9 ? 'additionalData' : 'prependData'
+  scssLoader.options[name] = sassData
   scssLoader.options.sassOptions = {
     outputStyle: 'expanded'
   }
 
-  sassLoader.options.prependData = sassData
+  sassLoader.options[name] = sassData
   sassLoader.options.sassOptions = {
     outputStyle: 'expanded',
     indentedSyntax: true

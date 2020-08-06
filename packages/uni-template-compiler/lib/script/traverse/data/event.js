@@ -1,10 +1,12 @@
 const t = require('@babel/types')
+const parser = require('@babel/parser')
 
 const {
   IDENTIFIER_EVENT,
   VUE_EVENT_MODIFIERS,
   INTERNAL_EVENT_PROXY,
   ATTR_DATA_EVENT_OPTS,
+  ATTR_DATA_EVENT_PARAMS,
   INTERNAL_SET_SYNC
 } = require('../../../constants')
 
@@ -212,6 +214,7 @@ function parseEvent (keyPath, valuePath, state, isComponent, isNativeOn = false,
   let isOnce = false
 
   const methods = []
+  const params = []
 
   if (type) {
     isPassive = type.charAt(0) === VUE_EVENT_MODIFIERS.passive
@@ -318,7 +321,7 @@ function parseEvent (keyPath, valuePath, state, isComponent, isNativeOn = false,
           ReturnStatement (path) {
             const argument = path.node.argument
             if (t.isCallExpression(argument)) {
-              if (t.isIdentifier(argument.callee)) {
+              if (t.isIdentifier(argument.callee)) { // || t.isMemberExpression(argument.callee)
                 anonymous = false
                 parseEventByCallExpression(argument, methods)
               }
@@ -326,6 +329,27 @@ function parseEvent (keyPath, valuePath, state, isComponent, isNativeOn = false,
           }
         })
         if (anonymous) {
+          // 处理复杂表达式中使用的局部变量（主要在v-for中定义）
+          funcPath.traverse({
+            Identifier (path) {
+              const scope = path.scope
+              const node = path.node
+              const name = node.name
+              if (path.key !== 'key' && (path.key !== 'property' || path.parent.computed) && scope && !scope.hasOwnBinding(name) && scope.hasBinding(name)) {
+                params.push(name)
+              }
+            }
+          })
+          params.forEach(name => {
+            funcPath.node.params.push(t.identifier(name))
+          })
+          if (params.length) {
+            const datasetUid = funcPath.scope.generateDeclaredUidIdentifier().name
+            const paramsUid = funcPath.scope.generateDeclaredUidIdentifier().name
+            const dataset = ATTR_DATA_EVENT_PARAMS.substring(5)
+            const code = `var ${datasetUid}=arguments[arguments.length-1].currentTarget.dataset,${paramsUid}=${datasetUid}.${dataset.replace(/-([a-z])/, (_, str) => str.toUpperCase())}||${datasetUid}['${dataset}'],${params.map(item => `${item}=${paramsUid}.${item}`).join(',')}`
+            funcPath.node.body.body.unshift(parser.parse(code).program.body[0])
+          }
           methods.push(addEventExpressionStatement(funcPath, state, isComponent, isNativeOn))
         }
       }
@@ -334,6 +358,7 @@ function parseEvent (keyPath, valuePath, state, isComponent, isNativeOn = false,
 
   return {
     type,
+    params,
     methods,
     modifiers: {
       isCatch,
@@ -358,6 +383,7 @@ function _processEvent (path, state, isComponent, isNativeOn = false, tagName, r
     const valuePath = propertyPath.get('value')
     const {
       type,
+      params,
       methods,
       modifiers: {
         isCatch,
@@ -393,12 +419,13 @@ function _processEvent (path, state, isComponent, isNativeOn = false, tagName, r
     if (isCustom) {
       optType = VUE_EVENT_MODIFIERS.custom + optType
     }
-    opts.push(
-      t.arrayExpression([
+    opts.push({
+      opt: t.arrayExpression([
         t.stringLiteral(optType),
         t.arrayExpression(methods)
-      ])
-    )
+      ]),
+      params
+    })
 
     keyPath.replaceWith(
       t.stringLiteral(
@@ -422,15 +449,18 @@ module.exports = function processEvent (paths, path, state, isComponent, tagName
   const ret = []
 
   const opts = []
+  const params = []
 
   if (onPath) {
-    _processEvent(onPath, state, isComponent, false, tagName, ret).forEach(opt => {
+    _processEvent(onPath, state, isComponent, false, tagName, ret).forEach(({ opt, params: array }) => {
       opts.push(opt)
+      params.push(...array)
     })
   }
   if (nativeOnPath) {
-    _processEvent(nativeOnPath, state, isComponent, true, tagName, ret).forEach(opt => {
+    _processEvent(nativeOnPath, state, isComponent, true, tagName, ret).forEach(({ opt, params: array }) => {
       opts.push(opt)
+      params.push(...array)
     })
   }
   if (!opts.length) {
@@ -443,6 +473,16 @@ module.exports = function processEvent (paths, path, state, isComponent, tagName
       t.arrayExpression(opts)
     )
   )
+
+  if (params.length) {
+    ret.push(
+      t.objectProperty(
+        t.stringLiteral(ATTR_DATA_EVENT_PARAMS),
+        // 直接使用对象格式微信小程序编译会报错
+        t.stringLiteral(`{{({${params.join(',')}})}}`)
+      )
+    )
+  }
 
   return ret
 }

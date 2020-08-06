@@ -9,8 +9,13 @@ const {
   genCode,
   getCode,
   getForKey,
-  traverseKey
+  traverseKey,
+  isComponent
 } = require('../util')
+
+const {
+  ATTE_DATA_CUSTOM_HIDDEN
+} = require('../constants')
 
 module.exports = function traverse (ast, state = {}) {
   babelTraverse(ast, {
@@ -222,7 +227,17 @@ function traverseDataNode (dataNode, state, node) {
               objectExpression.properties.find(valueProperty => {
                 const isValue = valueProperty.key.name === 'value'
                 if (isValue) {
-                  ret.hidden = genCode(valueProperty.value, false, true)
+                  let key
+                  // 自定义组件不支持 hidden 属性
+                  const platform = state.options.platform.name
+                  const platforms = ['mp-weixin', 'mp-qq', 'mp-toutiao']
+                  if (isComponent(node.type) && platforms.includes(platform)) {
+                    // 字节跳动小程序自定义属性不会反应在DOM上，只能使用事件格式
+                    key = `${platform === 'mp-toutiao' ? 'bind:-' : ''}${ATTE_DATA_CUSTOM_HIDDEN}`
+                  } else {
+                    key = 'hidden'
+                  }
+                  ret[key] = genCode(valueProperty.value, false, true)
                 }
                 return isValue
               })
@@ -264,7 +279,7 @@ function genSlotNode (slotName, slotNode, fallbackNodes, state) {
     attr: {
       [prefix + 'if']: '{{$slots.' + slotName + '}}'
     },
-    children: [slotNode]
+    children: [].concat(slotNode)
   }, {
     type: 'block',
     attr: {
@@ -399,10 +414,17 @@ function traverseRenderList (callExprNode, state) {
     }
   }
 
+  const children = traverseExpr(forReturnStatementArgument, state)
+  // 支付宝小程序在 block 标签上使用 key 时顺序不能保障
+  if (state.options.platform.name === 'mp-alipay' && t.isCallExpression(forReturnStatementArgument) && children && children.type) {
+    children.attr = children.attr || {}
+    Object.assign(children.attr, attr)
+    return children
+  }
   return {
     type: 'block',
     attr,
-    children: normalizeChildren(traverseExpr(forReturnStatementArgument, state))
+    children: normalizeChildren(children)
   }
 }
 

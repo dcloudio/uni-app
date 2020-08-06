@@ -40,7 +40,9 @@ function processArgs (methodName, fromArgs, argsOption = {}, returnValue = {}, k
           toArgs[keyOption.name ? keyOption.name : key] = keyOption.value
         }
       } else if (CALLBACKS.indexOf(key) !== -1) {
-        toArgs[key] = processCallback(methodName, fromArgs[key], returnValue)
+        if (isFn(fromArgs[key])) {
+          toArgs[key] = processCallback(methodName, fromArgs[key], returnValue)
+        }
       } else {
         if (!keepFromArgs) {
           toArgs[key] = fromArgs[key]

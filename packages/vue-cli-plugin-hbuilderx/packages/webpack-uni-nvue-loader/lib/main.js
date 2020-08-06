@@ -61,13 +61,16 @@ module.exports = function (content, map) {
         import App from './${normalizePath(params.page)}.nvue?mpType=page'
         if (typeof Promise !== 'undefined' && !Promise.prototype.finally) {
           Promise.prototype.finally = function(callback) {
-            const promise = this.constructor
-            return this.then(
-              value => promise.resolve(callback()).then(() => value),
-              reason => promise.resolve(callback()).then(() => {
+            var promise = this.constructor
+            return this.then(function(value) {
+              return promise.resolve(callback()).then(function() {
+                return value
+              })
+            }, function(reason) {
+              return promise.resolve(callback()).then(function() {
                 throw reason
               })
-            )
+            })
           }
         }
         App.mpType = 'page'

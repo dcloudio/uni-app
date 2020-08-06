@@ -1,30 +1,15 @@
 import {
-  invoke,
-  publish
+  invoke
 } from '../../bridge'
 
-let beaconUpdateState = false
-
-export function onBeaconUpdate () {
-  if (!beaconUpdateState) {
-    plus.ibeacon.onBeaconUpdate(function (data) {
-      publish('onBeaconUpdated', data)
-    })
-    beaconUpdateState = true
-  }
+export function onBeaconUpdate (callbackId) {
+  plus.ibeacon.onBeaconUpdate(data => invoke(callbackId, data))
 }
 
-let beaconServiceChangeState = false
-
-export function onBeaconServiceChange () {
-  if (!beaconServiceChangeState) {
-    plus.ibeacon.onBeaconServiceChange(function (data) {
-      publish('onBeaconServiceChange', data)
-      publish('onBeaconServiceChanged', data)
-    })
-    beaconServiceChangeState = true
-  }
+export function onBeaconServiceChange (callbackId) {
+  plus.ibeacon.onBeaconServiceChange(data => invoke(callbackId, data))
 }
+export const onBeaconServiceChanged = onBeaconServiceChange
 
 export function getBeacons (params, callbackId) {
   plus.ibeacon.getBeacons({

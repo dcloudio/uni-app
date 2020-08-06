@@ -66,6 +66,7 @@ var serviceContext = (function () {
     'compressImage',
     'getRecorderManager',
     'getBackgroundAudioManager',
+    'createAudioContext',
     'createInnerAudioContext',
     'chooseVideo',
     'saveVideoToPhotosAlbum',
@@ -120,6 +121,8 @@ var serviceContext = (function () {
     'getBLEDeviceCharacteristics',
     'createBLEConnection',
     'closeBLEConnection',
+    'setBLEMTU',
+    'getBLEDeviceRSSI',
     'onBeaconServiceChange',
     'onBeaconUpdate',
     'getBeacons',
@@ -604,7 +607,7 @@ var serviceContext = (function () {
     for (let i = 0; i < hooks.length; i++) {
       const hook = hooks[i];
       if (promise) {
-        promise = Promise.then(wrapperHook(hook));
+        promise = Promise.resolve(wrapperHook(hook));
       } else {
         const res = hook(data);
         if (isPromise(res)) {
@@ -2136,6 +2139,9 @@ var serviceContext = (function () {
     },
     selectedIconPath: {
       type: String
+    },
+    pagePath: {
+      type: String
     }
   };
 
@@ -2891,6 +2897,58 @@ var serviceContext = (function () {
     upx2px: upx2px$1
   });
 
+  function operateAudioPlayer (audioId, pageId, type, data) {
+    UniServiceJSBridge.publishHandler(pageId + '-audio-' + audioId, {
+      audioId,
+      type,
+      data
+    }, pageId);
+  }
+
+  class AudioContext {
+    constructor (id, pageId) {
+      this.id = id;
+      this.pageId = pageId;
+    }
+
+    setSrc (src) {
+      operateAudioPlayer(this.id, this.pageId, 'setSrc', {
+        src
+      });
+    }
+
+    play () {
+      operateAudioPlayer(this.id, this.pageId, 'play');
+    }
+
+    pause () {
+      operateAudioPlayer(this.id, this.pageId, 'pause');
+    }
+
+    seek (position) {
+      operateAudioPlayer(this.id, this.pageId, 'seek', {
+        position
+      });
+    }
+  }
+
+  function createAudioContext$1 (id, context) {
+    if (context) {
+      return new AudioContext(id, context.$page.id)
+    }
+    const app = getApp();
+    if (app.$route && app.$route.params.__id__) {
+      return new AudioContext(id, app.$route.params.__id__)
+    } else {
+      UniServiceJSBridge.emit('onError', 'createAudioContext:fail');
+    }
+  }
+
+  var require_context_module_1_4 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    createAudioContext: createAudioContext$1
+  });
+
   const Emitter = new Vue();
 
   function apply (ctx, method, args) {
@@ -2942,7 +3000,11 @@ var serviceContext = (function () {
 
   let lastStatusBarStyle;
 
-  const oldSetStatusBarStyle = plus.navigator.setStatusBarStyle;
+  let oldSetStatusBarStyle = plus.navigator.setStatusBarStyle;
+
+  function restoreOldSetStatusBarStyle (setStatusBarStyle) {
+    oldSetStatusBarStyle = setStatusBarStyle;
+  }
 
   function newSetStatusBarStyle (style) {
     lastStatusBarStyle = style;
@@ -3322,7 +3384,7 @@ var serviceContext = (function () {
     state
   }, res));
 
-  const events = ['play', 'pause', 'ended', 'stop'];
+  const events = ['play', 'pause', 'ended', 'stop', 'canplay'];
 
   function initMusic () {
     if (audio) {
@@ -3715,8 +3777,8 @@ var serviceContext = (function () {
     getCenterLocation (ctx, cbs) {
       return invokeVmMethodWithoutArgs(ctx, 'getCenterLocation', cbs)
     },
-    moveToLocation (ctx) {
-      return invokeVmMethodWithoutArgs(ctx, 'moveToLocation')
+    moveToLocation (ctx, args) {
+      return invokeVmMethod(ctx, 'moveToLocation', args)
     },
     translateMarker (ctx, args) {
       return invokeVmMethod(ctx, 'translateMarker', args, ['animationEnd'])
@@ -4251,6 +4313,14 @@ var serviceContext = (function () {
     bluetoothExec('writeBLECharacteristicValue', callbackId, data);
   }
 
+  function setBLEMTU (data, callbackId) {
+    bluetoothExec('setBLEMTU', callbackId, data);
+  }
+
+  function getBLEDeviceRSSI (data, callbackId) {
+    bluetoothExec('getBLEDeviceRSSI', callbackId, data);
+  }
+
   function getScreenBrightness () {
     return {
       errMsg: 'getScreenBrightness:ok',
@@ -4354,28 +4424,14 @@ var serviceContext = (function () {
     }
   }
 
-  let beaconUpdateState = false;
-
-  function onBeaconUpdate () {
-    if (!beaconUpdateState) {
-      plus.ibeacon.onBeaconUpdate(function (data) {
-        publish('onBeaconUpdated', data);
-      });
-      beaconUpdateState = true;
-    }
+  function onBeaconUpdate (callbackId) {
+    plus.ibeacon.onBeaconUpdate(data => invoke$1(callbackId, data));
   }
 
-  let beaconServiceChangeState = false;
-
-  function onBeaconServiceChange () {
-    if (!beaconServiceChangeState) {
-      plus.ibeacon.onBeaconServiceChange(function (data) {
-        publish('onBeaconServiceChange', data);
-        publish('onBeaconServiceChanged', data);
-      });
-      beaconServiceChangeState = true;
-    }
+  function onBeaconServiceChange (callbackId) {
+    plus.ibeacon.onBeaconServiceChange(data => invoke$1(callbackId, data));
   }
+  const onBeaconServiceChanged = onBeaconServiceChange;
 
   function getBeacons (params, callbackId) {
     plus.ibeacon.getBeacons({
@@ -6522,13 +6578,36 @@ var serviceContext = (function () {
     delete requestTasks[requestTaskId];
   };
 
+  const cookiesPrase = header => {
+    let cookiesStr = header['Set-Cookie'];
+    let cookiesArr = [];
+    if (!cookiesStr) {
+      return []
+    }
+    if (cookiesStr[0] === '[' && cookiesStr[cookiesStr.length - 1] === ']') {
+      cookiesStr = cookiesStr.slice(1, -1);
+    }
+    const handleCookiesArr = cookiesStr.split(';');
+    for (let i = 0; i < handleCookiesArr.length; i++) {
+      if (handleCookiesArr[i].indexOf('Expires=') !== -1) {
+        cookiesArr.push(handleCookiesArr[i].replace(',', ''));
+      } else {
+        cookiesArr.push(handleCookiesArr[i]);
+      }
+    }
+    cookiesArr = cookiesArr.join(';').split(',');
+
+    return cookiesArr
+  };
+
   function createRequestTaskById (requestTaskId, {
     url,
     data,
     header,
     method = 'GET',
     responseType,
-    sslVerify = true
+    sslVerify = true,
+    firstIpv4 = false
   } = {}) {
     const stream = requireNativePlugin('stream');
     const headers = {};
@@ -6581,7 +6660,8 @@ var serviceContext = (function () {
       // weex 官方文档未说明实际支持 timeout，单位：ms
       timeout: timeout || 6e5,
       // 配置和weex模块内相反
-      sslVerify: !sslVerify
+      sslVerify: !sslVerify,
+      firstIpv4: firstIpv4
     };
     if (method !== 'GET') {
       options.body = typeof data === 'string' ? data : JSON.stringify(data);
@@ -6606,7 +6686,8 @@ var serviceContext = (function () {
             state: 'success',
             data: ok && responseType === 'arraybuffer' ? base64ToArrayBuffer$2(data) : data,
             statusCode,
-            header: headers
+            header: headers,
+            cookies: cookiesPrase(headers)
           });
         } else {
           publishStateChange$1({
@@ -7415,6 +7496,7 @@ var serviceContext = (function () {
       }
       weex = newWeex;
       plus = newPlus;
+      restoreOldSetStatusBarStyle(plus.navigator.setStatusBarStyle);
       plus.navigator.setStatusBarStyle = newSetStatusBarStyle;
       /* eslint-disable no-global-assign */
       setTimeout = newSetTimeout;
@@ -8646,7 +8728,7 @@ var serviceContext = (function () {
       routeOptions.meta.visible = true;
     }
 
-    if (routeOptions.meta.isTabBar && webview.id !== '1') {
+    if (routeOptions.meta.isTabBar) {
       tabBar$1.append(webview);
     }
 
@@ -9545,14 +9627,21 @@ var serviceContext = (function () {
     index,
     text,
     iconPath,
-    selectedIconPath
+    selectedIconPath,
+    pagePath
   }) {
-    if (!isTabBarPage()) {
-      return {
-        errMsg: 'setTabBarItem:fail not TabBar page'
+    tabBar$1.setTabBarItem(index, text, iconPath, selectedIconPath);
+    const route = pagePath && __uniRoutes.find(({ path }) => path === pagePath);
+    if (route) {
+      const meta = route.meta;
+      meta.isTabBar = true;
+      meta.tabBarIndex = index;
+      meta.isQuit = true;
+      const tabBar = __uniConfig.tabBar;
+      if (tabBar && tabBar.list && tabBar.list[index]) {
+        tabBar.list[index].pagePath = pagePath.startsWith('/') ? pagePath.substring(1) : pagePath;
       }
     }
-    tabBar$1.setTabBarItem(index, text, iconPath, selectedIconPath);
     return {
       errMsg: 'setTabBarItem:ok'
     }
@@ -9736,6 +9825,9 @@ var serviceContext = (function () {
   ];
 
   const ERROR_CODE_LIST = [-5001, -5002, -5003, -5004, -5005, -5006];
+  const EXPIRED_TIME = 1000 * 60 * 30;
+  const EXPIRED_TEXT = { code: -5008, errMsg: '广告数据已过期，请重新加载' };
+  const ProviderType = { CSJ: 'csj', GDT: 'gdt' };
 
   class RewardedVideoAd {
     constructor (options = {}) {
@@ -9752,10 +9844,14 @@ var serviceContext = (function () {
       this._adError = '';
       this._loadPromiseResolve = null;
       this._loadPromiseReject = null;
+      this._lastLoadTime = 0;
+
       const rewardAd = this._rewardAd = plus.ad.createRewardedVideoAd(options);
       rewardAd.onLoad((e) => {
         this._isLoad = true;
         this._dispatchEvent('load', {});
+        this._lastLoadTime = Date.now();
+
         if (this._loadPromiseResolve != null) {
           this._loadPromiseResolve();
           this._loadPromiseResolve = null;
@@ -9772,13 +9868,21 @@ var serviceContext = (function () {
         const { code, message } = e;
         const data = { code: code, errMsg: message };
         this._adError = message;
+        if (code === -5008) {
+          this._isLoad = false;
+        }
         this._dispatchEvent('error', data);
+        // TODO
         if ((code === -5005 || ERROR_CODE_LIST.index(code) === -1) && this._loadPromiseReject != null) {
           this._loadPromiseReject(data);
           this._loadPromiseReject = null;
         }
       });
       this._loadAd();
+    }
+
+    get isExpired () {
+      return (Math.abs(Date.now() - this._lastLoadTime) > EXPIRED_TIME)
     }
 
     load () {
@@ -9795,6 +9899,15 @@ var serviceContext = (function () {
 
     show () {
       return new Promise((resolve, reject) => {
+        const provider = this.getProvider();
+        if (provider === ProviderType.CSJ && this.isExpired) {
+          this._isLoad = false;
+          // TODO
+          this._dispatchEvent('error', EXPIRED_TEXT);
+          reject(new Error(EXPIRED_TEXT.errMsg));
+          return
+        }
+
         if (this._isLoad) {
           this._rewardAd.show();
           resolve();
@@ -9869,6 +9982,8 @@ var serviceContext = (function () {
     notifyBLECharacteristicValueChanged: notifyBLECharacteristicValueChanged,
     readBLECharacteristicValue: readBLECharacteristicValue,
     writeBLECharacteristicValue: writeBLECharacteristicValue,
+    setBLEMTU: setBLEMTU,
+    getBLEDeviceRSSI: getBLEDeviceRSSI,
     getScreenBrightness: getScreenBrightness,
     setScreenBrightness: setScreenBrightness,
     setKeepScreenOn: setKeepScreenOn,
@@ -9878,6 +9993,7 @@ var serviceContext = (function () {
     getNetworkType: getNetworkType,
     onBeaconUpdate: onBeaconUpdate,
     onBeaconServiceChange: onBeaconServiceChange,
+    onBeaconServiceChanged: onBeaconServiceChanged,
     getBeacons: getBeacons,
     startBeaconDiscovery: startBeaconDiscovery,
     stopBeaconDiscovery: stopBeaconDiscovery,
@@ -10019,207 +10135,17 @@ var serviceContext = (function () {
     'stop',
     'ended',
     'timeUpdate',
-    'error',
-    'waiting',
-    'seeking',
-    'seeked'
-  ];
-
-  const props = [
-    {
-      name: 'src',
-      cache: true
-    },
-    {
-      name: 'startTime',
-      default: 0,
-      cache: true
-    },
-    {
-      name: 'autoplay',
-      default: false,
-      cache: true
-    },
-    {
-      name: 'loop',
-      default: false,
-      cache: true
-    },
-    {
-      name: 'obeyMuteSwitch',
-      default: true,
-      readonly: true,
-      cache: true
-    },
-    {
-      name: 'duration',
-      readonly: true
-    },
-    {
-      name: 'currentTime',
-      readonly: true
-    },
-    {
-      name: 'paused',
-      readonly: true
-    },
-    {
-      name: 'buffered',
-      readonly: true
-    },
-    {
-      name: 'volume'
-    }
-  ];
-
-  class InnerAudioContext {
-    constructor (id) {
-      this.id = id;
-      this._callbacks = {};
-      this._options = {};
-      eventNames$1.forEach(name => {
-        this._callbacks[name.toLowerCase()] = [];
-      });
-      props.forEach(item => {
-        const name = item.name;
-        const data = {
-          get () {
-            const result = item.cache ? this._options : invokeMethod('getAudioState', {
-              audioId: this.id
-            });
-            const value = name in result ? result[name] : item.default;
-            return typeof value === 'number' && name !== 'volume' ? value / 1e3 : value
-          }
-        };
-        if (!item.readonly) {
-          data.set = function (value) {
-            this._options[name] = value;
-            invokeMethod('setAudioState', Object.assign({}, this._options, {
-              audioId: this.id
-            }));
-          };
-        }
-        Object.defineProperty(this, name, data);
-      });
-    }
-
-    play () {
-      this._operate('play');
-    }
-
-    pause () {
-      this._operate('pause');
-    }
-
-    stop () {
-      this._operate('stop');
-    }
-
-    seek (position) {
-      this._operate('seek', {
-        currentTime: position * 1e3
-      });
-    }
-
-    destroy () {
-      clearInterval(this.__timing);
-      invokeMethod('destroyAudioInstance', {
-        audioId: this.id
-      });
-      delete innerAudioContexts[this.id];
-    }
-
-    _operate (type, options) {
-      invokeMethod('operateAudio', Object.assign({}, options, {
-        audioId: this.id,
-        operationType: type
-      }));
-    }
-  }
-
-  eventNames$1.forEach(item => {
-    const name = item[0].toUpperCase() + item.substr(1);
-    item = item.toLowerCase();
-    InnerAudioContext.prototype[`on${name}`] = function (callback) {
-      this._callbacks[item].push(callback);
-    };
-    InnerAudioContext.prototype[`off${name}`] = function (callback) {
-      const callbacks = this._callbacks[item];
-      const index = callbacks.indexOf(callback);
-      if (index >= 0) {
-        callbacks.splice(index, 1);
-      }
-    };
-  });
-
-  function emit (audio, state, errMsg, errCode) {
-    audio._callbacks[state].forEach(callback => {
-      if (typeof callback === 'function') {
-        callback(state === 'error' ? {
-          errMsg,
-          errCode
-        } : {});
-      }
-    });
-  }
-
-  onMethod('onAudioStateChange', ({
-    state,
-    audioId,
-    errMsg,
-    errCode
-  }) => {
-    const audio = innerAudioContexts[audioId];
-    if (audio) {
-      emit(audio, state, errMsg, errCode);
-      if (state === 'play') {
-        const oldCurrentTime = audio.currentTime;
-        audio.__timing = setInterval(() => {
-          const currentTime = audio.currentTime;
-          if (currentTime !== oldCurrentTime) {
-            emit(audio, 'timeupdate');
-          }
-        }, 200);
-      } else if (state === 'pause' || state === 'stop' || state === 'error') {
-        clearInterval(audio.__timing);
-      }
-    }
-  });
-
-  const innerAudioContexts = Object.create(null);
-
-  function createInnerAudioContext () {
-    const {
-      audioId
-    } = invokeMethod('createAudioInstance');
-    const innerAudioContext = new InnerAudioContext(audioId);
-    innerAudioContexts[audioId] = innerAudioContext;
-    return innerAudioContext
-  }
-
-  var require_context_module_1_4 = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    createInnerAudioContext: createInnerAudioContext
-  });
-
-  const eventNames$2 = [
-    'canplay',
-    'play',
-    'pause',
-    'stop',
-    'ended',
-    'timeUpdate',
     'prev',
     'next',
     'error',
     'waiting'
   ];
   const callbacks$5 = {};
-  eventNames$2.forEach(name => {
+  eventNames$1.forEach(name => {
     callbacks$5[name] = [];
   });
 
-  const props$1 = [
+  const props = [
     {
       name: 'duration',
       readonly: true
@@ -10289,7 +10215,7 @@ var serviceContext = (function () {
           }
         });
       });
-      props$1.forEach(item => {
+      props.forEach(item => {
         const name = item.name;
         const data = {
           get () {
@@ -10334,7 +10260,7 @@ var serviceContext = (function () {
     }
   }
 
-  eventNames$2.forEach(item => {
+  eventNames$1.forEach(item => {
     const name = item[0].toUpperCase() + item.substr(1);
     BackgroundAudioManager.prototype[`on${name}`] = function (callback) {
       callbacks$5[item].push(callback);
@@ -11427,6 +11353,196 @@ var serviceContext = (function () {
     EditorContext: EditorContext
   });
 
+  const eventNames$2 = [
+    'canplay',
+    'play',
+    'pause',
+    'stop',
+    'ended',
+    'timeUpdate',
+    'error',
+    'waiting',
+    'seeking',
+    'seeked'
+  ];
+
+  const props$1 = [
+    {
+      name: 'src',
+      cache: true
+    },
+    {
+      name: 'startTime',
+      default: 0,
+      cache: true
+    },
+    {
+      name: 'autoplay',
+      default: false,
+      cache: true
+    },
+    {
+      name: 'loop',
+      default: false,
+      cache: true
+    },
+    {
+      name: 'obeyMuteSwitch',
+      default: true,
+      readonly: true,
+      cache: true
+    },
+    {
+      name: 'duration',
+      readonly: true
+    },
+    {
+      name: 'currentTime',
+      readonly: true
+    },
+    {
+      name: 'paused',
+      readonly: true
+    },
+    {
+      name: 'buffered',
+      readonly: true
+    },
+    {
+      name: 'volume'
+    }
+  ];
+
+  class InnerAudioContext {
+    constructor (id) {
+      this.id = id;
+      this._callbacks = {};
+      this._options = {};
+      eventNames$2.forEach(name => {
+        this._callbacks[name.toLowerCase()] = [];
+      });
+      props$1.forEach(item => {
+        const name = item.name;
+        const data = {
+          get () {
+            const result = item.cache ? this._options : invokeMethod('getAudioState', {
+              audioId: this.id
+            });
+            const value = name in result ? result[name] : item.default;
+            return typeof value === 'number' && name !== 'volume' ? value / 1e3 : value
+          }
+        };
+        if (!item.readonly) {
+          data.set = function (value) {
+            this._options[name] = value;
+            invokeMethod('setAudioState', Object.assign({}, this._options, {
+              audioId: this.id
+            }));
+          };
+        }
+        Object.defineProperty(this, name, data);
+      });
+    }
+
+    play () {
+      this._operate('play');
+    }
+
+    pause () {
+      this._operate('pause');
+    }
+
+    stop () {
+      this._operate('stop');
+    }
+
+    seek (position) {
+      this._operate('seek', {
+        currentTime: position * 1e3
+      });
+    }
+
+    destroy () {
+      clearInterval(this.__timing);
+      invokeMethod('destroyAudioInstance', {
+        audioId: this.id
+      });
+      delete innerAudioContexts[this.id];
+    }
+
+    _operate (type, options) {
+      invokeMethod('operateAudio', Object.assign({}, options, {
+        audioId: this.id,
+        operationType: type
+      }));
+    }
+  }
+
+  eventNames$2.forEach(item => {
+    const name = item[0].toUpperCase() + item.substr(1);
+    item = item.toLowerCase();
+    InnerAudioContext.prototype[`on${name}`] = function (callback) {
+      this._callbacks[item].push(callback);
+    };
+    InnerAudioContext.prototype[`off${name}`] = function (callback) {
+      const callbacks = this._callbacks[item];
+      const index = callbacks.indexOf(callback);
+      if (index >= 0) {
+        callbacks.splice(index, 1);
+      }
+    };
+  });
+
+  function emit (audio, state, errMsg, errCode) {
+    audio._callbacks[state].forEach(callback => {
+      if (typeof callback === 'function') {
+        callback(state === 'error' ? {
+          errMsg,
+          errCode
+        } : {});
+      }
+    });
+  }
+
+  onMethod('onAudioStateChange', ({
+    state,
+    audioId,
+    errMsg,
+    errCode
+  }) => {
+    const audio = innerAudioContexts[audioId];
+    if (audio) {
+      emit(audio, state, errMsg, errCode);
+      if (state === 'play') {
+        const oldCurrentTime = audio.currentTime;
+        audio.__timing = setInterval(() => {
+          const currentTime = audio.currentTime;
+          if (currentTime !== oldCurrentTime) {
+            emit(audio, 'timeupdate');
+          }
+        }, 200);
+      } else if (state === 'pause' || state === 'stop' || state === 'error') {
+        clearInterval(audio.__timing);
+      }
+    }
+  });
+
+  const innerAudioContexts = Object.create(null);
+
+  function createInnerAudioContext () {
+    const {
+      audioId
+    } = invokeMethod('createAudioInstance');
+    const innerAudioContext = new InnerAudioContext(audioId);
+    innerAudioContexts[audioId] = innerAudioContext;
+    return innerAudioContext
+  }
+
+  var require_context_module_1_10 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    createInnerAudioContext: createInnerAudioContext
+  });
+
   const callbacks$6 = [];
 
   onMethod('onAccelerometerChange', function (res) {
@@ -11467,7 +11583,7 @@ var serviceContext = (function () {
     })
   }
 
-  var require_context_module_1_10 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_11 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     onAccelerometerChange: onAccelerometerChange,
     startAccelerometer: startAccelerometer,
@@ -11491,7 +11607,7 @@ var serviceContext = (function () {
   const onBLEConnectionStateChange$1 = on('onBLEConnectionStateChange');
   const onBLECharacteristicValueChange$1 = on('onBLECharacteristicValueChange');
 
-  var require_context_module_1_11 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_12 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     onBluetoothDeviceFound: onBluetoothDeviceFound$1,
     onBluetoothAdapterStateChange: onBluetoothAdapterStateChange$1,
@@ -11539,7 +11655,7 @@ var serviceContext = (function () {
     })
   }
 
-  var require_context_module_1_12 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_13 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     onCompassChange: onCompassChange,
     startCompass: startCompass,
@@ -11558,7 +11674,7 @@ var serviceContext = (function () {
     callbacks$8.push(callbackId);
   }
 
-  var require_context_module_1_13 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_14 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     onNetworkStatusChange: onNetworkStatusChange
   });
@@ -11575,7 +11691,7 @@ var serviceContext = (function () {
     callbacks$9.push(callbackId);
   }
 
-  var require_context_module_1_14 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_15 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     onUIStyleChange: onUIStyleChange
   });
@@ -11603,7 +11719,7 @@ var serviceContext = (function () {
     return invokeMethod('previewImagePlus', args)
   }
 
-  var require_context_module_1_15 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_16 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     previewImage: previewImage$1
   });
@@ -11691,7 +11807,7 @@ var serviceContext = (function () {
     return recorderManager || (recorderManager = new RecorderManager())
   }
 
-  var require_context_module_1_16 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_17 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getRecorderManager: getRecorderManager
   });
@@ -11785,7 +11901,7 @@ var serviceContext = (function () {
     return task
   }
 
-  var require_context_module_1_17 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_18 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     downloadFile: downloadFile$1
   });
@@ -11829,7 +11945,8 @@ var serviceContext = (function () {
     data,
     statusCode,
     header,
-    errMsg
+    errMsg,
+    cookies
   }) {
     const {
       args,
@@ -11846,7 +11963,8 @@ var serviceContext = (function () {
           data,
           statusCode,
           header,
-          errMsg: 'request:ok'
+          errMsg: 'request:ok',
+          cookies
         }, args));
         break
       case 'fail':
@@ -11901,7 +12019,7 @@ var serviceContext = (function () {
     return new RequestTask(requestTaskId)
   }
 
-  var require_context_module_1_18 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_19 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     request: request$1
   });
@@ -12083,7 +12201,7 @@ var serviceContext = (function () {
     callbacks$b.close = callbackId;
   }
 
-  var require_context_module_1_19 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_20 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     connectSocket: connectSocket$1,
     sendSocketMessage: sendSocketMessage$1,
@@ -12118,7 +12236,7 @@ var serviceContext = (function () {
     return updateManager || (updateManager = new UpdateManager())
   }
 
-  var require_context_module_1_20 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_21 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getUpdateManager: getUpdateManager
   });
@@ -12212,7 +12330,7 @@ var serviceContext = (function () {
     return task
   }
 
-  var require_context_module_1_21 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_22 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     uploadFile: uploadFile$1
   });
@@ -12301,7 +12419,7 @@ var serviceContext = (function () {
     return new MPAnimation(option)
   }
 
-  var require_context_module_1_22 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_23 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     createAnimation: createAnimation
   });
@@ -12371,7 +12489,7 @@ var serviceContext = (function () {
     return new ServiceIntersectionObserver(getCurrentPageVm('createIntersectionObserver'), options)
   }
 
-  var require_context_module_1_23 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_24 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     createIntersectionObserver: createIntersectionObserver
   });
@@ -12512,7 +12630,7 @@ var serviceContext = (function () {
     return new SelectorQuery(getCurrentPageVm('createSelectorQuery'))
   }
 
-  var require_context_module_1_24 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_25 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     createSelectorQuery: createSelectorQuery
   });
@@ -12529,7 +12647,7 @@ var serviceContext = (function () {
     callback$1 = callbackId;
   }
 
-  var require_context_module_1_25 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_26 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     onKeyboardHeightChange: onKeyboardHeightChange
   });
@@ -12554,7 +12672,7 @@ var serviceContext = (function () {
     }, pageId);
   }
 
-  var require_context_module_1_26 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_27 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     loadFontFace: loadFontFace$1
   });
@@ -12567,7 +12685,7 @@ var serviceContext = (function () {
     return {}
   }
 
-  var require_context_module_1_27 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_28 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     pageScrollTo: pageScrollTo$1
   });
@@ -12580,7 +12698,7 @@ var serviceContext = (function () {
     return {}
   }
 
-  var require_context_module_1_28 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_29 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     setPageMeta: setPageMeta
   });
@@ -12617,7 +12735,7 @@ var serviceContext = (function () {
     callbacks$c.push(callbackId);
   }
 
-  var require_context_module_1_29 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_30 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     removeTabBarBadge: removeTabBarBadge$1,
     showTabBarRedDot: showTabBarRedDot$1,
@@ -12643,7 +12761,7 @@ var serviceContext = (function () {
     callbacks$d.splice(callbacks$d.indexOf(callbackId), 1);
   }
 
-  var require_context_module_1_30 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_31 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     onWindowResize: onWindowResize,
     offWindowResize: offWindowResize
@@ -12664,27 +12782,28 @@ var serviceContext = (function () {
   './context/create-map-context.js': require_context_module_1_7,
   './context/create-video-context.js': require_context_module_1_8,
   './context/editor.js': require_context_module_1_9,
-  './device/accelerometer.js': require_context_module_1_10,
-  './device/bluetooth.js': require_context_module_1_11,
-  './device/compass.js': require_context_module_1_12,
-  './device/network.js': require_context_module_1_13,
-  './device/theme.js': require_context_module_1_14,
-  './media/preview-image.js': require_context_module_1_15,
-  './media/recorder.js': require_context_module_1_16,
-  './network/download-file.js': require_context_module_1_17,
-  './network/request.js': require_context_module_1_18,
-  './network/socket.js': require_context_module_1_19,
-  './network/update.js': require_context_module_1_20,
-  './network/upload-file.js': require_context_module_1_21,
-  './ui/create-animation.js': require_context_module_1_22,
-  './ui/create-intersection-observer.js': require_context_module_1_23,
-  './ui/create-selector-query.js': require_context_module_1_24,
-  './ui/keyboard.js': require_context_module_1_25,
-  './ui/load-font-face.js': require_context_module_1_26,
-  './ui/page-scroll-to.js': require_context_module_1_27,
-  './ui/set-page-meta.js': require_context_module_1_28,
-  './ui/tab-bar.js': require_context_module_1_29,
-  './ui/window.js': require_context_module_1_30,
+  './context/inner-audio.js': require_context_module_1_10,
+  './device/accelerometer.js': require_context_module_1_11,
+  './device/bluetooth.js': require_context_module_1_12,
+  './device/compass.js': require_context_module_1_13,
+  './device/network.js': require_context_module_1_14,
+  './device/theme.js': require_context_module_1_15,
+  './media/preview-image.js': require_context_module_1_16,
+  './media/recorder.js': require_context_module_1_17,
+  './network/download-file.js': require_context_module_1_18,
+  './network/request.js': require_context_module_1_19,
+  './network/socket.js': require_context_module_1_20,
+  './network/update.js': require_context_module_1_21,
+  './network/upload-file.js': require_context_module_1_22,
+  './ui/create-animation.js': require_context_module_1_23,
+  './ui/create-intersection-observer.js': require_context_module_1_24,
+  './ui/create-selector-query.js': require_context_module_1_25,
+  './ui/keyboard.js': require_context_module_1_26,
+  './ui/load-font-face.js': require_context_module_1_27,
+  './ui/page-scroll-to.js': require_context_module_1_28,
+  './ui/set-page-meta.js': require_context_module_1_29,
+  './ui/tab-bar.js': require_context_module_1_30,
+  './ui/window.js': require_context_module_1_31,
 
       };
       var req = function req(key) {
@@ -14008,6 +14127,7 @@ var serviceContext = (function () {
     'onPageNotFound',
     'onThemeChange',
     'onError',
+    'onUnhandledRejection',
     // Page
     'onLoad',
     // 'onShow',
@@ -14017,6 +14137,8 @@ var serviceContext = (function () {
     'onPullDownRefresh',
     'onReachBottom',
     'onTabItemTap',
+    'onAddToFavorites',
+    'onShareTimeline',
     'onShareAppMessage',
     'onResize',
     'onPageScroll',

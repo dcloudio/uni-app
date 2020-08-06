@@ -62,6 +62,8 @@ module.exports = {
   VAR_FILTER: 'F',
   ATTR_DATA_EVENT_OPTS: 'data-event-opts',
   ATTR_DATA_COM_TYPE: 'data-com-type',
+  ATTR_DATA_EVENT_PARAMS: 'data-event-params',
+  ATTE_DATA_CUSTOM_HIDDEN: 'data-custom-hidden',
   INTERNAL_GET_ORIG,
   INTERNAL_GET_CLASS,
   INTERNAL_GET_STYLE,

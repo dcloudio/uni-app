@@ -14,6 +14,13 @@ function processElement (ast, state, isRoot) {
     ast.type = 'view'
   }
 
+  // 由于小程序端 default 不等同于默认插槽，统一移除 default 命名
+  if (ast.type === 'slot' && hasOwn(ast.attr, 'name') && ast.attr.name === 'default') {
+    delete ast.attr.name
+  } else if (hasOwn(ast.attr, 'slot') && ast.attr.slot === 'default') {
+    delete ast.attr.slot
+  }
+
   if (hasOwn(ast.attr, 'textContent')) {
     ast.children = [ast.attr.textContent]
     delete ast.attr.textContent
@@ -58,7 +65,12 @@ function processElement (ast, state, isRoot) {
       Object.keys(ast.attr.generic).forEach(scopedSlotName => {
         slots.push(scopedSlotName)
       })
-      delete ast.attr.generic
+      if (platformName === 'mp-toutiao') {
+        // 用于字节跳动小程序模拟抽象节点
+        ast.attr.generic = `{{${JSON.stringify(ast.attr.generic)}}}`.replace(/"/g, '\'')
+      } else {
+        delete ast.attr.generic
+      }
     }
     if (slots.length && platformName !== 'mp-alipay') { // 标记 slots
       ast.attr['vue-slots'] = '{{[' + slots.reverse().map(slotName => `'${slotName}'`).join(',') + ']}}'
@@ -93,7 +105,10 @@ function genElement (ast, state, isRoot = false) {
         if (ast.attr[name] === '' && name !== 'value') { // value属性需要保留=''
           return name
         }
-        return `${name}="${ast.attr[name]}"`
+        let value = ast.attr[name]
+        // 微信和QQ小程序解析 {{{}}} 报错，需要使用()包裹
+        value = value.replace(/(\{\{)(\{.+?\})(\}\})/, '$1($2)$3')
+        return `${name}="${value}"`
       })
       .join(' ')
     : ''

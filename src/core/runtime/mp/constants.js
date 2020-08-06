@@ -17,7 +17,7 @@ export const PAGE_LIFETIMES = {
 }
 
 export const PAGE_LIFETIMES_KEYS = Object.keys(PAGE_LIFETIMES)
-
+// TODO 待整理，现在到处都是
 export const PAGE_LIFECYCLE = [
   'onLoad',
   'onShow',
@@ -26,6 +26,8 @@ export const PAGE_LIFECYCLE = [
   'onUnload',
   'onPullDownRefresh',
   'onReachBottom',
+  'onAddToFavorites',
+  'onShareTimeline',
   'onShareAppMessage',
   'onPageScroll',
   'onResize',

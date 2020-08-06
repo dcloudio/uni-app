@@ -16,6 +16,28 @@ const publishStateChange = res => {
   delete requestTasks[requestTaskId]
 }
 
+const cookiesPrase = header => {
+  let cookiesStr = header['Set-Cookie']
+  let cookiesArr = []
+  if (!cookiesStr) {
+    return []
+  }
+  if (cookiesStr[0] === '[' && cookiesStr[cookiesStr.length - 1] === ']') {
+    cookiesStr = cookiesStr.slice(1, -1)
+  }
+  const handleCookiesArr = cookiesStr.split(';')
+  for (let i = 0; i < handleCookiesArr.length; i++) {
+    if (handleCookiesArr[i].indexOf('Expires=') !== -1) {
+      cookiesArr.push(handleCookiesArr[i].replace(',', ''))
+    } else {
+      cookiesArr.push(handleCookiesArr[i])
+    }
+  }
+  cookiesArr = cookiesArr.join(';').split(',')
+
+  return cookiesArr
+}
+
 export function createRequestTaskById (requestTaskId, {
   url,
   data,
@@ -102,7 +124,8 @@ export function createRequestTaskById (requestTaskId, {
           state: 'success',
           data: ok && responseType === 'arraybuffer' ? base64ToArrayBuffer(data) : data,
           statusCode,
-          header: headers
+          header: headers,
+          cookies: cookiesPrase(headers)
         })
       } else {
         publishStateChange({

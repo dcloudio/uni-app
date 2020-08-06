@@ -172,6 +172,9 @@ describe('mp:compiler', () => {
 
   it('generate single slot', () => {
     assertCodegen('<view><slot></slot></view>', '<view><slot></slot></view>')
+    assertCodegen('<view><slot>default</slot></view>', '<view><block wx:if="{{$slots.default}}"><slot></slot></block><block wx:else>default</block></view>')
+    assertCodegen('<view><slot>{{hello}}</slot></view>', '<view><block wx:if="{{$slots.default}}"><slot></slot></block><block wx:else>{{hello}}</block></view>')
+    assertCodegen('<view><slot name="default"></slot></view>', '<view><slot></slot></view>')
   })
 
   it('generate named slot', () => {
@@ -192,6 +195,10 @@ describe('mp:compiler', () => {
     assertCodegen(
       '<view slot="one">hello world</view>',
       '<view slot="one">hello world</view>'
+    )
+    assertCodegen(
+      '<view slot="default">hello world</view>',
+      '<view>hello world</view>'
     )
   })
 
@@ -318,6 +325,12 @@ describe('mp:compiler', () => {
     assertCodegen(
       '<input @input="onInput($event, 2+2);">',
       '<input data-event-opts="{{[[\'input\',[[\'onInput\',[\'$event\',2+2]]]]]}}" bindinput="__e"/>'
+    )
+    // v-for
+    assertCodegen(
+      '<view v-for="(item,index) in list" :key="index"><view @click="$test.test(item)">test</view></view>',
+      '<block wx:for="{{list}}" wx:for-item="item" wx:for-index="index" wx:key="index"><view><view data-event-opts="{{[[\'tap\',[[\'e0\',[\'$event\']]]]]}}" data-event-params="{{({item})}}" bindtap="__e">test</view></view></block>',
+      'with(this){if(!_isMounted){e0=function($event,item){var _temp=arguments[arguments.length-1].currentTarget.dataset,_temp2=_temp.eventParams||_temp["event-params"],item=_temp2.item;var _temp,_temp2;return $test.test(item)}}}'
     )
     // tricky symbols in args
     //         assertCodegen(
