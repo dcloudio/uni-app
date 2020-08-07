@@ -123,7 +123,7 @@ HBuilderX 还提供了快捷运行菜单，可以按数字快速选择要运行�
 </div>
 出现如下界面，点击打包即可。
 <div align=center>
-  <img src="//img-cdn-qiniu.dcloud.net.cn/uniapp/doc/push.png"/>
+  <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/001a20b0-d85a-11ea-81ea-f115fe74321c.png"/>
 </div>
 
 #### 打包为原生App（离线）
