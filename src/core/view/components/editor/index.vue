@@ -226,7 +226,7 @@ export default {
         return
       }
       const script = document.createElement('script')
-      script.src = window.plus ? './__uniappquill.js' : 'https://unpkg.com/quill@1.3.7/dist/quill.min.js'
+      script.src = __PLATFORM__ === 'app-plus' ? './__uniappquill.js' : 'https://unpkg.com/quill@1.3.7/dist/quill.min.js'
       document.body.appendChild(script)
       script.onload = callback
     },
@@ -238,7 +238,7 @@ export default {
         return
       }
       const script = document.createElement('script')
-      script.src = window.plus ? './__uniappquillimageresize.js' : 'https://unpkg.com/quill-image-resize-mp@3.0.1/image-resize.min.js'
+      script.src = __PLATFORM__ === 'app-plus' ? './__uniappquillimageresize.js' : 'https://unpkg.com/quill-image-resize-mp@3.0.1/image-resize.min.js'
       document.body.appendChild(script)
       script.onload = callback
     },

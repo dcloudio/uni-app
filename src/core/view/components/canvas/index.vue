@@ -351,17 +351,17 @@ export default {
                 loadBlob(this.response)
               }
             }
-            xhr.onerror = window.plus ? plusDownload : function () {
+            xhr.onerror = __PLATFORM__ === 'app-plus' ? plusDownload : function () {
               self._images[src].src = src
             }
             xhr.send()
           }
 
-          if (window.plus && (!window.webkit || !window.webkit.messageHandlers)) {
+          if (__PLATFORM__ === 'app-plus' && (!window.webkit || !window.webkit.messageHandlers)) {
             self._images[src].src = src
           } else {
             // 解决 PLUS-APP（wkwebview）以及 H5 图像跨域问题（H5图像响应头需包含access-control-allow-origin）
-            if (window.plus && src.indexOf('http://') !== 0 && src.indexOf('https://') !==
+            if (__PLATFORM__ === 'app-plus' && src.indexOf('http://') !== 0 && src.indexOf('https://') !==
               0 && !/^data:.*,.*/.test(src)) {
               loadFile(src)
             } else if (/^data:.*,.*/.test(src)) {
