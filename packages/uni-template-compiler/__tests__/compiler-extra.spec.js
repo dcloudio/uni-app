@@ -692,5 +692,10 @@ describe('mp:compiler-extra', () => {
       '<block wx:for="{{$root.l0}}" wx:for-item="item" wx:for-index="index" wx:key="index"><view><block wx:if="{{item.$orig}}"><view>{{item.m0}}</view></block></view></block>',
       'with(this){var l0=__map(list,function(item,index){var $orig=__get_orig(item);var m0=item?getValue(item):null;return{$orig:$orig,m0:m0}});$mp.data=Object.assign({},{$root:{l0:l0}})}'
     )
+    assertCodegen(
+      '<view v-for="(item,index) in list" :key="index"><view v-if="item.length">{{getValue(item)}}</view></view>',
+      '<block wx:for="{{$root.l0}}" wx:for-item="item" wx:for-index="index" wx:key="index"><view><block wx:if="{{item.$orig.length}}"><view>{{item.m0}}</view></block></view></block>',
+      'with(this){var l0=__map(list,function(item,index){var $orig=__get_orig(item);var m0=item.length?getValue(item):null;return{$orig:$orig,m0:m0}});$mp.data=Object.assign({},{$root:{l0:l0}})}'
+    )
   })
 })

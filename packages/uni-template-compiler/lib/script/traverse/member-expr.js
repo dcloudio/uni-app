@@ -45,12 +45,12 @@ function findTest (path, state) {
       let test = t.arrayExpression([t.clone(path.container.test)])
       traverse(test, {
         noScope: true,
-        MemberExpression (path) {
+        MemberExpression (path_) {
           const names = state.scoped.map(scoped => scoped.forItem)
-          const node = path.node
+          const node = path_.node
           const objectName = node.object.name
-          if (objectName === VAR_ROOT || names.includes(objectName)) {
-            path.replaceWith(node.property)
+          if (objectName === VAR_ROOT || (names.includes(objectName) && path.scope.hasOwnBinding(node.property.name))) {
+            path_.replaceWith(node.property)
           }
         }
       })
