@@ -120,7 +120,7 @@ const unipayIns = unipay.initAlipay({
 
 |  参数名   |  类型  |  说明  |                                支持平台                                |
 | :-------: | :----: | :----: | :--------------------------------------------------------------------: |
-| orderInfo | Object | String | 客户端支付所需参数，直接返回给客户端即可，下面会介绍如何搭配客户端使用 |  |
+| orderInfo | Object | String | 客户端支付所需参数，直接返回给客户端即可，下面会介绍如何搭配客户端使用 |
 
 **使用示例**
 
@@ -179,8 +179,8 @@ uniCloud.callFunction({
 
 |    参数名     |  类型  |          必填           | 默认值 |    说明    | 支持平台 |
 | :-----------: | :----: | :---------------------: | :----: | :--------: | :------: |
-|  outTradeNo   | String | 和 transactionId 二选一 |   -    | 商户订单号 |          |
-| transactionId | String |  和 outTradeNo 二选一   |   -    | 平台订单号 |          |
+|  outTradeNo   | String | 和 transactionId 二选一 |   -    | 商户订单号 |     -     |
+| transactionId | String |  和 outTradeNo 二选一   |   -    | 平台订单号 |     -     |
 
 **返回值说明**
 
@@ -188,12 +188,12 @@ uniCloud.callFunction({
 | :----------------: | :----: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :------: |
 |       appId        | String |                                                                                                                                                                   平台分配的应用 ID                                                                                                                                                                    | 微信支付 |
 |       mchId        | String |                                                                                                                                                                         商户号                                                                                                                                                                         | 微信支付 |
-|     outTradeNo     | String |                                                                                                                                                                       商户订单号                                                                                                                                                                       |          |
-|   transactionId    | String |                                                                                                                                                                       平台订单号                                                                                                                                                                       |          |
+|     outTradeNo     | String |                                                                                                                                                                       商户订单号                                                                                                                                                                       |     -     |
+|   transactionId    | String |                                                                                                                                                                       平台订单号                                                                                                                                                                       |      -    |
 |     tradeState     | String | 订单状态 ，微信支付： SUCCESS—支付成功，REFUND—转入退款，NOTPAY—未支付，CLOSED—已关闭，REVOKED—已撤销（刷卡支付），USERPAYING--用户支付中，PAYERROR--支付失败(其他原因，如银行返回失败)。支付宝支付：USERPAYING（交易创建，等待买家付款）、CLOSED（未付款交易超时关闭，或支付完成后全额退款）、SUCCESS（交易支付成功）、FINISHED（交易结束，不可退款） |          |
-|      totalFee      | Number |                                                                                                                                                                  标价金额 ，单位：分                                                                                                                                                                   |          |
-| settlementTotalFee | Number |                                                                                                                                                                 应结订单金额，单位：分                                                                                                                                                                 |          |
-|      cashFee       | Number |                                                                                                                                                                 现金支付金额，单位：分                                                                                                                                                                 |          |
+|      totalFee      | Number |                                                                                                                                                                  标价金额 ，单位：分                                                                                                                                                                   |     -     |
+| settlementTotalFee | Number |                                                                                                                                                                 应结订单金额，单位：分                                                                                                                                                                 |     -     |
+|      cashFee       | Number |                                                                                                                                                                 现金支付金额，单位：分                                                                                                                                                                 |     -     |
 
 **使用示例**
 
@@ -218,7 +218,7 @@ exports.main = async function (event) {
 
 |    参数名     |  类型  |                        必填                         | 默认值 |    说明    |  支持平台  |
 | :-----------: | :----: | :-------------------------------------------------: | :----: | :--------: | :--------: |
-|  outTradeNo   | String | 使用微信时必填，使用支付宝时和 transactionId 二选一 |   -    | 商户订单号 |            |
+|  outTradeNo   | String | 使用微信时必填，使用支付宝时和 transactionId 二选一 |   -    | 商户订单号 |      -      |
 | transactionId | String |          使用支付宝时和 outTradeNo 二选一           |   -    | 平台订单号 | 支付宝支付 |
 
 **返回值说明**
@@ -286,25 +286,25 @@ exports.main = async function (event) {
 
 |    参数名     |  类型  |             必填             | 默认值 |     说明     | 支持平台 |
 | :-----------: | :----: | :--------------------------: | :----: | :----------: | :------: |
-|  outTradeNo   | String |   和 transactionId 二选一    |   -    |  商户订单号  |          |
-| transactionId | String |     和 outTradeNo 二选一     |   -    |  平台订单号  |          |
-|  outRefundNo  | String | 微信支付必填，支付宝支付选填 |   -    | 商户退款单号 |          |
+|  outTradeNo   | String |   和 transactionId 二选一    |   -    |  商户订单号  |     -     |
+| transactionId | String |     和 outTradeNo 二选一     |   -    |  平台订单号  |     -     |
+|  outRefundNo  | String | 微信支付必填，支付宝支付选填 |   -    | 商户退款单号 |      -    |
 |   totalFee    | Number |         微信支付必填         |   -    |  订单总金额  | 微信支付 |
 |   refundFee   | Number |             必填             |   -    |  退款总金额  | 微信支付 |
-| refundFeeType | String |             选填             |   -    |   货币种类   |          |
-|  refundDesc   | String |             选填             |   -    |   退款原因   |          |
+| refundFeeType | String |             选填             |   -    |   货币种类   |     -     |
+|  refundDesc   | String |             选填             |   -    |   退款原因   |     -     |
 |   notifyUrl   | String |  微信支付选填，支付宝不支持  |   -    | 退款通知 url | 微信支付 |
 
 **返回值说明**
 
 |    参数名     |  类型  |     说明     | 支持平台 |
 | :-----------: | :----: | :----------: | :------: |
-|  outTradeNo   | String |  商户订单号  |          |
-| transactionId | String |  平台订单号  |          |
+|  outTradeNo   | String |  商户订单号  |     -     |
+| transactionId | String |  平台订单号  |     -     |
 |  outRefundNo  | String | 商户退款单号 | 微信支付 |
-|   refundId    | String | 平台退款单号 |          |
-|   refundFee   | Number |  退款总金额  |          |
-| cashRefundFee | Number | 现金退款金额 |          |
+|   refundId    | String | 平台退款单号 |     -     |
+|   refundFee   | Number |  退款总金额  |     -     |
+| cashRefundFee | Number | 现金退款金额 |     -     |
 
 **使用示例**
 
@@ -328,11 +328,11 @@ exports.main = async function (event) {
 
 |    参数名     |  类型  |                     必填                      | 默认值 |                                        说明                                        | 支持平台 |
 | :-----------: | :----: | :-------------------------------------------: | :----: | :--------------------------------------------------------------------------------: | :------: |
-|  outTradeNo   | String | 微信支付四选一，支付宝和 transactionId 二选一 |   -    |                                     商户订单号                                     |          |
-| transactionId | String |  微信支付四选一，支付宝和 outTradeNo 二选一   |   -    |                                     平台订单号                                     |          |
-|  outRefundNo  | String |          微信支付四选一，支付宝必填           |   -    |                                    商户退款单号                                    |          |
+|  outTradeNo   | String | 微信支付四选一，支付宝和 transactionId 二选一 |   -    |                                     商户订单号                                     |     -     |
+| transactionId | String |  微信支付四选一，支付宝和 outTradeNo 二选一   |   -    |                                     平台订单号                                     |     -     |
+|  outRefundNo  | String |          微信支付四选一，支付宝必填           |   -    |                                    商户退款单号                                    |     -     |
 |   refundId    | String |                微信支付四选一                 |   -    |                                    平台退款单号                                    | 微信支付 |
-|    offset     | Number |                 微信支付选填                  |   -    | 偏移量，当部分退款次数超过 10 次时可使用，表示返回的查询结果从这个偏移量开始取记录 |          |
+|    offset     | Number |                 微信支付选填                  |   -    | 偏移量，当部分退款次数超过 10 次时可使用，表示返回的查询结果从这个偏移量开始取记录 |      -    |
 
 **注意**
 
@@ -342,12 +342,12 @@ exports.main = async function (event) {
 
 |     参数名     |              类型               |             说明             |  支持平台  |
 | :------------: | :-----------------------------: | :--------------------------: | :--------: |
-|   outTradeNo   |             String              |          商户订单号          |            |
-| transactionId  |             String              |          平台订单号          |            |
-|    totalFee    |             Number              |           订单金额           |            |
-|    refundId    |             String              |  平台退款单号，仅支付宝返回  |            |
-|   refundFee    |             Number              |          退款总金额          |            |
-|   refundDesc   |             String              |           退款理由           |            |
+|   outTradeNo   |             String              |          商户订单号          |      -      |
+| transactionId  |             String              |          平台订单号          |      -      |
+|    totalFee    |             Number              |           订单金额           |      -      |
+|    refundId    |             String              |  平台退款单号，仅支付宝返回  |       -     |
+|   refundFee    |             Number              |          退款总金额          |     -       |
+|   refundDesc   |             String              |           退款理由           |      -      |
 |   refundList   |     Array&lt;refundItem&gt;     | 分笔退款信息，仅微信支付返回 |  微信支付  |
 | refundRoyaltys | Array&lt;refundRoyaltysItem&gt; | 退分账明细信息，仅支付宝返回 | 支付宝支付 |
 
@@ -355,36 +355,36 @@ exports.main = async function (event) {
 
 |       参数名        |          类型           |                                                                                                           说明                                                                                                           | 支持平台 |
 | :-----------------: | :---------------------: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :------: |
-|     outRefundNo     |         String          |                                                                                                       商户退款单号                                                                                                       |          |
-|      refundId       |         String          |                                                                                                       平台退款单号                                                                                                       |          |
+|     outRefundNo     |         String          |                                                                                                       商户退款单号                                                                                                       |     -     |
+|      refundId       |         String          |                                                                                                       平台退款单号                                                                                                       |     -     |
 |    refundChannel    |         String          |                                           退款渠道，ORIGINAL—原路退款，BALANCE—退回到余额，OTHER_BALANCE—原账户异常退到其他余额账户，OTHER_BANKCARD—原银行卡异常退到其他银行卡                                           |          |
-|      refundFee      |         Number          |                                                                                                       申请退款金额                                                                                                       |          |
+|      refundFee      |         Number          |                                                                                                       申请退款金额                                                                                                       |     -     |
 | settlementRefundFee |         Number          |                                                                      退款金额,退款金额=申请退款金额-非充值代金券退款金额，退款金额&lt;=申请退款金额                                                                      |          |
 |    refundStatus     |         String          | 退款状态，SUCCESS—退款成功，REFUNDCLOSE—退款关闭，PROCESSING—退款处理中，CHANGE—退款异常，退款到银行发现用户的卡作废或者冻结了，导致原路退款银行卡失败，可前往商户平台（pay.weixin.qq.com）-交易中心，手动处理此笔退款。 |          |
-|   couponRefundFee   |         Number          |                                                                                                     总代金券退款金额                                                                                                     |          |
-|  couponRefundCount  |         Number          |                                                                                                    退款代金券使用数量                                                                                                    |          |
-|    refundAccount    |         String          |                                                                                                       退款资金来源                                                                                                       |          |
-|  refundRecvAccout   |         String          |                                                                                                       退款入账账户                                                                                                       |          |
-|  refundSuccessTime  |         String          |                                                                                                       退款成功时间                                                                                                       |          |
-|     couponList      | Array&lt;couponItem&gt; |                                                                                                       分笔退款信息                                                                                                       |          |
+|   couponRefundFee   |         Number          |                                                                                                     总代金券退款金额                                                                                                     |     -     |
+|  couponRefundCount  |         Number          |                                                                                                    退款代金券使用数量                                                                                                    |     -     |
+|    refundAccount    |         String          |                                                                                                       退款资金来源                                                                                                       |     -     |
+|  refundRecvAccout   |         String          |                                                                                                       退款入账账户                                                                                                       |     -     |
+|  refundSuccessTime  |         String          |                                                                                                       退款成功时间                                                                                                       |     -     |
+|     couponList      | Array&lt;couponItem&gt; |                                                                                                       分笔退款信息                                                                                                       |     -     |
 
 **couponItem 说明**
 
 |     参数名      |  类型  |        说明        | 支持平台 |
 | :-------------: | :----: | :----------------: | :------: |
-|   couponType    | String |     代金券类型     |          |
-| couponRefundId  | String |   退款代金券 ID    |          |
-| couponRefundFee | String | 单个代金券退款金额 |          |
+|   couponType    | String |     代金券类型     |     -     |
+| couponRefundId  | String |   退款代金券 ID    |     -     |
+| couponRefundFee | String | 单个代金券退款金额 |      -    |
 
 **refundRoyaltysItem 说明**
 
 |   参数名    |  类型  |                                                                           说明                                                                            | 支持平台 |
 | :---------: | :----: | :-------------------------------------------------------------------------------------------------------------------------------------------------------: | :------: |
-| fundChannel | String |                                                                    交易使用的资金渠道                                                                     |          |
-|  bankCode   | String |                                                                  银行卡支付时的银行代码                                                                   |          |
-|   amount    | Number |                                                                该支付工具类型所使用的金额                                                                 |          |
-| realAmount  | Number |                                                                     渠道实际付款金额                                                                      |          |
-|  fundType   | String | 渠道所使用的资金类型,目前只在资金渠道(fund_channel)是银行卡渠道(BANKCARD)的情况下才返回该信息(DEBIT_CARD:借记卡,CREDIT_CARD:信用卡,MIXED_CARD:借贷合一卡) |          |
+| fundChannel | String |                                                                    交易使用的资金渠道                                                                     |     -     |
+|  bankCode   | String |                                                                  银行卡支付时的银行代码                                                                   |     -     |
+|   amount    | Number |                                                                该支付工具类型所使用的金额                                                                 |     -     |
+| realAmount  | Number |                                                                     渠道实际付款金额                                                                      |     -     |
+|  fundType   | String | 渠道所使用的资金类型,目前只在资金渠道(fund_channel)是银行卡渠道(BANKCARD)的情况下才返回该信息(DEBIT_CARD:借记卡,CREDIT_CARD:信用卡,MIXED_CARD:借贷合一卡) |     -     |
 
 **使用示例**
 
@@ -414,14 +414,14 @@ exports.main = async function (event) {
 
 |  参数名  |  类型  | 必填 | 默认值 |                                                                                              说明                                                                                              | 支持平台 |
 | :------: | :----: | :--: | :----: | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :------: |
-| billDate | String | 必填 |   -    |                                                                                下载对账单的日期，格式：20140603                                                                                |          |
-| billType | String | 选填 |  ALL   | ALL（默认值），返回当日所有订单信息（不含充值退款订单）,SUCCESS，返回当日成功支付的订单（不含充值退款订单）,REFUND，返回当日退款订单（不含充值退款订单）,RECHARGE_REFUND，返回当日充值退款订单 |          |
+| billDate | String | 必填 |   -    |                                                                                下载对账单的日期，格式：20140603                                                                                |     -     |
+| billType | String | 选填 |  ALL   | ALL（默认值），返回当日所有订单信息（不含充值退款订单）,SUCCESS，返回当日成功支付的订单（不含充值退款订单）,REFUND，返回当日退款订单（不含充值退款订单）,RECHARGE_REFUND，返回当日充值退款订单 |     -     |
 
 **返回值说明**
 
 | 参数名  |  类型  |           说明           | 支持平台 |
 | :-----: | :----: | :----------------------: | :------: |
-| content | String | 文本表格的方式返回的数据 |          |
+| content | String | 文本表格的方式返回的数据 |     -     |
 
 `content`示例如下
 
@@ -475,14 +475,14 @@ exports.main = async function (event) {
 
 |   参数名    |  类型  | 必填 | 默认值 |                                  说明                                   | 支持平台 |
 | :---------: | :----: | :--: | :----: | :---------------------------------------------------------------------: | :------: |
-|  billDate   | String | 必填 |   -    |                    下载对账单的日期，格式：20140603                     |          |
-| accountType | String | 选填 | Basic  | 账单的资金来源账户：Basic 基本账户，Operation 运营账户，Fees 手续费账户 |          |
+|  billDate   | String | 必填 |   -    |                    下载对账单的日期，格式：20140603                     |    -     |
+| accountType | String | 选填 | Basic  | 账单的资金来源账户：Basic 基本账户，Operation 运营账户，Fees 手续费账户 |     -     |
 
 **返回值说明**
 
 | 参数名  |  类型  |           说明           | 支持平台 |
 | :-----: | :----: | :----------------------: | :------: |
-| content | String | 文本表格的方式返回的数据 |          |
+| content | String | 文本表格的方式返回的数据 |     -    |
 
 `content`示例如下
 
@@ -533,14 +533,14 @@ exports.main = async function (event) {
 
 |    参数名     |  类型  |                        说明                         | 支持平台 |
 | :-----------: | :----: | :-------------------------------------------------: | :------: |
-|   totalFee    | Number |                     订单总金额                      |          |
-|    cashFee    | Number |                    现金支付金额                     |          |
-|    feeType    | String |                      货币类别                       |          |
-|  outTradeNo   | String |                     商户订单号                      |          |
-| transactionId | String |                     平台订单号                      |          |
-|    timeEnd    | String |         支付完成时间，格式为 yyyyMMddHHmmss         |          |
-|    openid     | String |                       用户 id                       |          |
-|  returnCode   | String | 值 SUCCESS 时为支付成功，通常需要校验订单金额等参数 |          |
+|   totalFee    | Number |                     订单总金额                      |     -     |
+|    cashFee    | Number |                    现金支付金额                     |      -    |
+|    feeType    | String |                      货币类别                       |     -     |
+|  outTradeNo   | String |                     商户订单号                      |     -     |
+| transactionId | String |                     平台订单号                      |     -     |
+|    timeEnd    | String |         支付完成时间，格式为 yyyyMMddHHmmss         |      -    |
+|    openid     | String |                       用户 id                       |     -     |
+|  returnCode   | String | 值 SUCCESS 时为支付成功，通常需要校验订单金额等参数 |      -    |
 
 **使用示例**
 
@@ -563,17 +563,17 @@ exports.main = async function (event) {
 
 |       参数名        |  类型  |                         说明                          | 支持平台 |
 | :-----------------: | :----: | :---------------------------------------------------: | :------: |
-|      totalFee       | Number |                      订单总金额                       |          |
-|      refundFee      | Number |                     申请退款金额                      |          |
-| settlementTotalFee  | Number |                     应结订单金额                      |          |
-| settlementRefundFee | Number |                       退款金额                        |          |
-|     outTradeNo      | String |                      商户订单号                       |          |
-|    transactionId    | String |                      平台订单号                       |          |
-|      refundId       | String |                     平台退款单号                      |          |
-|     outRefundNo     | String |                     商户退款单号                      |          |
-|    refundStatus     | String | SUCCESS-退款成功,CHANGE-退款异常,REFUNDCLOSE—退款关闭 |          |
-|    refundAccount    | String |                     退款资金来源                      |          |
-|  refundRecvAccout   | String |                     退款入账账户                      |          |
+|      totalFee       | Number |                      订单总金额                       |    -      |
+|      refundFee      | Number |                     申请退款金额                      |    -      |
+| settlementTotalFee  | Number |                     应结订单金额                      |    -      |
+| settlementRefundFee | Number |                       退款金额                        |   -      |
+|     outTradeNo      | String |                      商户订单号                       |    -      |
+|    transactionId    | String |                      平台订单号                       |    -      |
+|      refundId       | String |                     平台退款单号                      |    -      |
+|     outRefundNo     | String |                     商户退款单号                      |    -      |
+|    refundStatus     | String | SUCCESS-退款成功,CHANGE-退款异常,REFUNDCLOSE—退款关闭 |      -    |
+|    refundAccount    | String |                     退款资金来源                      |    -      |
+|  refundRecvAccout   | String |                     退款入账账户                      |    -      |
 
 **使用示例**
 
