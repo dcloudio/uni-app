@@ -21,6 +21,7 @@ class RewardedVideoAd {
       }
     })
 
+    this._preload = options.preload !== undefined ? options.preload : true
     this._isLoad = false
     this._adError = ''
     this._loadPromiseResolve = null
@@ -30,8 +31,8 @@ class RewardedVideoAd {
     const rewardAd = this._rewardAd = plus.ad.createRewardedVideoAd(options)
     rewardAd.onLoad((e) => {
       this._isLoad = true
-      this._dispatchEvent('load', {})
       this._lastLoadTime = Date.now()
+      this._dispatchEvent('load', {})
 
       if (this._loadPromiseResolve != null) {
         this._loadPromiseResolve()
@@ -39,7 +40,9 @@ class RewardedVideoAd {
       }
     })
     rewardAd.onClose((e) => {
-      this._loadAd()
+      if (this._preload) {
+        this._loadAd()
+      }
       this._dispatchEvent('close', { isEnded: e.isEnded })
     })
     rewardAd.onVerify && rewardAd.onVerify((e) => {
@@ -59,11 +62,14 @@ class RewardedVideoAd {
         this._loadPromiseReject = null
       }
     })
-    this._loadAd()
+
+    if (this._preload) {
+      this._loadAd()
+    }
   }
 
   get isExpired () {
-    return (Math.abs(Date.now() - this._lastLoadTime) > EXPIRED_TIME)
+    return (this._lastLoadTime !== 0 && (Math.abs(Date.now() - this._lastLoadTime) > EXPIRED_TIME))
   }
 
   load () {
