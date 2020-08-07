@@ -1,8 +1,10 @@
 <script>
 import {
-  disableScrollBounce,
   deepClone
 } from 'uni-shared'
+import {
+  disableScrollBounce
+} from 'uni-platform/helpers/scroll'
 
 function calc (e) {
   return Math.sqrt(e.x * e.x + e.y * e.y)

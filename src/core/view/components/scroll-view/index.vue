@@ -71,9 +71,11 @@
 <script>
 import scroller from 'uni-mixins/scroller/index'
 import {
-  supportsPassive,
-  disableScrollBounce
+  supportsPassive
 } from 'uni-shared'
+import {
+  disableScrollBounce
+} from 'uni-platform/helpers/scroll'
 
 const passiveOptions = supportsPassive ? {
   passive: true

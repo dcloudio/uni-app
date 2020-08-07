@@ -13,7 +13,7 @@ import {
 } from './utils'
 import {
   disableScrollBounce
-} from 'uni-shared'
+} from 'uni-platform/helpers/scroll'
 var requesting = false
 
 function _requestAnimationFrame (e) {

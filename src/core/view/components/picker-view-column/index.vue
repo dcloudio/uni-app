@@ -9,7 +9,7 @@ import {
 } from 'uni-mixins/scroller/Spring'
 import {
   disableScrollBounce
-} from 'uni-shared'
+} from 'uni-platform/helpers/scroll'
 
 function initClick (dom) {
   const MAX_MOVE = 20
