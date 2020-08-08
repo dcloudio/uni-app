@@ -33,6 +33,13 @@ export default {
       }
     }
   },
+  directives: {
+    keyboard: {
+      inserted (el, binding, vnode) {
+        vnode.context.initKeyboard(el)
+      }
+    }
+  },
   mounted () {
     if (this.autoFocus || this.focus) {
       this.showSoftKeybord()
