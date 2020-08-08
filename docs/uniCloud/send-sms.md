@@ -32,20 +32,31 @@
 |:-:				|:-:																								|
 |`uniID_code`		|【uniID】“${name}”验证码：${code}，用于${action}，${expMinute}分钟内有效，请勿泄露并尽快验证。	|
 |`uni_verify_code`	|【uni验证】“${name}”验证码：${code}，用于${action}，${expMinute}分钟内有效，请勿泄露并尽快验证。	|
+|`uni_order_unpaid` |【uni订单通知】您在“${name}”的订单${orderNo}未支付，将在${minute}分钟后自动关闭，请及时完成订单|
+|`uni_booking` |【uni预约通知】您已成功预订“${name}”提供的${service}。预约时间${dateTime}。注意事项：${notice}|
+|`uni_order_shipped` |【uni订单通知】您在“${name}”的订单${orderNo}已发货，${expressCompany}单号${expressNo}，请注意签收|
 
 `uniID_code`模板为uni-ID业务专用。`uni_verify_code`模板为开发者自定义使用，比如在支付等高安全要求场景中使用。
 
 模板中`${}`中的内容为自定义字段，在data中填写每个自定义字段后拼接成完整的短信内容。
 
-**上述模版对应的data结构为**
+**上述模版对应的data内参数限制如下**
 
-|参数名		|类型		|必填	|长度限制		|说明																															|
-|:-:			|:-:		|:-:	|:-:			|:-:																															|
-|name			|String	|是		|长度最大15	|应用名称，不可包含“【“或”】”																												|
-|code			|String	|是		|长度最大6	|验证码串，注意一般需要自行提供随机数并在数据库中存储以方便校验，只允许使用字母或数字		|
-|action		|String	|是		|长度最大6	|验证码用途，不可包含“【“或”】”																												|
-|expMinute|String	|是		|长度最大2	|验证码过期时间，单位分钟，即不超过99分钟。过期校验逻辑需自行开发	|
+所有参数中均不可包含`【`或`】`
 
+|参数名					|类型		|长度限制		|说明																																									|
+|:-:						|:-:		|:-:				|:-:																																									|
+|name						|String	|长度最大15	|应用名称																																							|
+|code						|String	|长度最大6	|验证码串，注意一般需要自行提供随机数并在数据库中存储以方便校验，只允许使用字母或数字	|
+|action					|String	|长度最大6	|验证码用途																																						|
+|expMinute			|String	|长度最大2	|验证码过期时间，单位分钟，即不超过99分钟。过期校验逻辑需自行开发											|
+|orderNo				|String	|长度最大20	|订单号																																								|
+|minute					|String	|长度最大2	|单位分钟，即不超过99分钟。																														|
+|service				|String	|长度最大10	|-																																										|
+|dateTime				|String	|长度最大18	|-																																										|
+|notice					|String	|长度最大20	|-																																										|
+|expressCompany	|String	|长度最大12	|-																																										|
+|expressNo			|String	|长度最大20	|-																																										|
 
 **返回值**
 
@@ -111,3 +122,4 @@ exports.main = async (event, context) => {
 - 短信内容不可包含★、 ※、 →、 ●等特殊符号，可能会导致短信乱码
 - 如果是用于用户注册的短信验证码，那么强烈推荐使用uni-id，这是一套云端一体的、完善的用户管理方案，已经内置封装好的短信验证码功能，详见：[https://ext.dcloud.net.cn/plugin?id=2116](https://ext.dcloud.net.cn/plugin?id=2116)
 - Android手机在App端获取短信验证码，参考：[https://ask.dcloud.net.cn/article/676](https://ask.dcloud.net.cn/article/676)
+- 短信内容超过70个字符时为长短信，需分条发送，每67个字按一条短信计算
