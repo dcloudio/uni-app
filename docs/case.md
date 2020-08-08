@@ -46,7 +46,7 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 <a href="https://m.qinxuan.honor.cn/" target="_blank" class="clear-style"><b>华为荣耀亲选商城：</b></a> 华为公司旗下荣耀品牌精品电商平台。
 <div style="display:flex;justify-content: space-around;">
 	<a href="javascript:;" target="_self" class="clear-style barcode-view">
-		<img src="https://qinxuan.honor.cn/static/img/qrcode-app.e8d4126.png" width="200"/>
+		<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/60aa65e0-d95c-11ea-b244-a9f5e5565f30.png" width="200"/>
 		<span style="margin-top:15px;">微信小程序</span>
 	</a>
   <a href="https://m.qinxuan.honor.cn/" target="_blank" class="clear-style barcode-view">
