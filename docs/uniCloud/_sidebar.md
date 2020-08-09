@@ -22,7 +22,7 @@
 * [腾讯云自定义登录](uniCloud/authentication.md)
 * [日志输出](uniCloud/cf-logger.md)
 * [同时连多服务空间](uniCloud/init.md)
-* [示例源码](uniCloud/resource.md)
+* [案例源码](uniCloud/resource.md)
 * [学习资料](uniCloud/learning.md)
 * [常见问题](uniCloud/faq.md)
 <!--  * [云存储](uniCloud/cf-storage.md) -->
@@ -67,7 +67,7 @@
 	<div class="contact-item">
 	  <img src="//img-cdn-qiniu.dcloud.net.cn/uniapp/doc/qq@2x.png" width="20" height="20"/>
 	  <div class="contact-smg">
-	  <div>官方QQ交流群</div>
+	  <div>uniCloud QQ交流群</div>
 	  <div>群1：1012245137 &nbsp;<a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=36ff837111d79a4e90e5fcd6185ec684be4fc276eb57259e08339512709d39fe">点此加入</a></div>
 	  </div>
 	</div>
