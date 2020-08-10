@@ -11,13 +11,11 @@
 |行 row					|记录 record / doc|
 |列 column			|字段 field				|
 
-`uniCloud`云函数中可访问云数据库。
+**云数据库仅支持通过云函数可访问。如需要在客户端访问云数据库，需通过`clientDB`插件。该插件可以将所有数据库操作封装在一个云函数中，大幅提升开发效率，是uniCloud开发者的必备插件，详见：[https://uniapp.dcloud.io/uniCloud/uni-clientDB](https://uniapp.dcloud.io/uniCloud/uni-clientDB)**
 
-鉴于安全问题，暂不支持客户端直接访问数据库。
+**阿里云使用的mongoDB数据库版本为3.4，腾讯云使用的腾讯云自研的文档型数据库（兼容mongoDB 4.0版本）。请注意API的兼容性说明**
 
-**阿里云使用的mongoDB数据库版本为3.4，腾讯云使用的腾讯云自研的文档型数据库（兼容mongoDB 4.0版本）。此差异可能会导致本文档内的部分功能不能在阿里云使用，我们会进行标注，如果发现有遗漏欢迎向我们反馈**
-
-如果不想使用此数据库，可以自行连接其他数据库，如mysql/redis，用法可以参考：
+如果同时还想连接其他数据库，如mysql/redis，用法可以参考如下插件：
 
 - [云函数连接Mysql数据库示例](https://ext.dcloud.net.cn/plugin?id=1925)
 - [云函数连接Redis数据库示例](https://ext.dcloud.net.cn/plugin?id=1846)
