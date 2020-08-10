@@ -12,6 +12,7 @@ console.log('应用的 appid 为：' + appid);
 ```
 
 - `uni-app`不需要 `plus ready`
+
 在html中使用plus的api，需要等待plus ready。
 而`uni-app`不需要等，可以直接使用。而且如果你调用plus ready，反而不会触发。
 
