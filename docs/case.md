@@ -72,6 +72,13 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 	</a>
 </div>
 
+<b>星巴克：</b>全球最大的咖啡连锁店，世界领先的特种咖啡零售商
+<div style="display:flex;justify-content: space-around;">
+	<a href="javascript:;" target="_blank" class="clear-style barcode-view">
+		<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/734f5c50-d3df-11ea-81ea-f115fe74321c.jpg" width="200"/>
+		<span style="margin-top:15px;">微信小程序</span>
+	</a>
+</div>
 
 <b>Crimaster犯罪大师：</b>火爆的全球推理侦探专属社区。优秀App案例，Appstore娱乐分类排名曾排**第1位**。[报道](https://baijiahao.baidu.com/s?id=1667788917828125742&wfr=spider&for=pc)
 <div style="display:flex;justify-content: space-around;">
@@ -84,13 +91,7 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 		<span style="margin-top:15px;">iOS App版</span>
 	</a>
 </div>
-<b>星巴克：</b>全球最大的咖啡连锁店，世界领先的特种咖啡零售商
-<div style="display:flex;justify-content: space-around;">
-	<a href="javascript:;" target="_blank" class="clear-style barcode-view">
-		<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/734f5c50-d3df-11ea-81ea-f115fe74321c.jpg" width="200"/>
-		<span style="margin-top:15px;">微信小程序</span>
-	</a>
-</div>
+
 <!-- 
 <a href="https://www.csdn.net/" target="_blank" class="clear-style"><b>CSDN：</b></a> 专业 IT 技术社区，致力于为中国软件开发者提供知识传播、在线学习、职业发展等全生命周期服务。
 <div style="display:flex;justify-content: space-around;">
@@ -205,13 +206,13 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 
 #### 互联网公司
 
-**腾讯：** 微信小程序搜索“腾讯全民模拟炒股大赛”、[H5（需使用微信打开）](https://zqact.tenpay.com/chaogu/)
-
 **华为：** 微信小程序搜索“荣耀亲选商城”、[H5](https://m.qinxuan.honor.cn/)、[App部分栏目使用DCloud SDK](https://appgallery1.huawei.com/#/app/C100382765)
 
-**京东：** 京东开发的新冠抗疫服务平台：[H5](http://yingji-h5.chanye.jdcloud.com/)、京东金融羊羊大作战：[H5](https://u.jr.jd.com/uc-fe-wxgrowing/sheep-fight/)
+**腾讯：** 微信小程序搜索“腾讯全民模拟炒股大赛”、[H5（需使用微信打开）](https://zqact.tenpay.com/chaogu/)
 
 **字节跳动：** 抖音小游戏中心。
+
+**京东：** 京东开发的新冠抗疫服务平台：[H5](http://yingji-h5.chanye.jdcloud.com/)、京东金融羊羊大作战：[H5](https://u.jr.jd.com/uc-fe-wxgrowing/sheep-fight/)
 
 **vivo官方商城：**微信小程序搜索"vivo"，支付宝搜索 "vivo"
 
