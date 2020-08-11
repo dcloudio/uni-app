@@ -140,6 +140,7 @@ background-image: url(../../static/logo.png);
 |onUnhandledRejection|对未处理的 Promise 拒绝事件监听函数（2.8.1+）|
 |onPageNotFound|页面不存在监听函数|
 |onThemeChange|监听系统主题变化|
+
 **注意**
 
 - 应用生命周期仅可在``App.vue``中监听，在其它页面监听无效。
