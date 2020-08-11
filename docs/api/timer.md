@@ -15,7 +15,7 @@
 
 |返回值|类型|说明|
 |:-|:-|:-|
-|timeoutID|Number|定时器的编号，这个值可以传递给 [clearTimeout](/api/timer?id=cleartimeout) 来取消该定时|
+|timeoutID|Number|定时器的编号，这个值可以传递给 [clearTimeout](/api/timer?id=cleartimeout) 来取消该定时|为啥我返回的是string类型
 
 ## clearTimeout(timeoutID)
 
