@@ -171,7 +171,7 @@ background-image: url(../../static/logo.png);
 |onShareTimeline|监听用户点击右上角转发到朋友圈|微信小程序|2.8.1+|
 |onAddToFavorites|监听用户点击右上角收藏|微信小程序|2.8.1+|
 
-``onPageScroll`` 参数说明：f
+``onPageScroll`` 参数说明：
 
 |属性|类型|说明|
 |---|---|---|
