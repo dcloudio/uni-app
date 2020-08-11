@@ -38,6 +38,8 @@
 
 `uniID_code`模板为uni-ID业务专用。`uni_verify_code`模板为开发者自定义使用，比如在支付等高安全要求场景中使用。
 
+本地运行云函数时，需要`2.8.5+`版本的HBuilderX才可以使用`uni_order_unpaid`、`uni_booking`、`uni_order_shipped`三个模板，上传并运行不受HBuilderX版本影响。
+
 模板中`${}`中的内容为自定义字段，在data中填写每个自定义字段后拼接成完整的短信内容。
 
 **上述模版对应的data内参数限制如下**
