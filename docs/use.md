@@ -51,6 +51,9 @@ data() {
 }
 ```
 
+### 注意事项
+* 由于小程序端不支持更新属性值为 undefined，框架内部将替换 undefined 为 null，此时可能出现预期之外的情况（[相关反馈](https://github.com/dcloudio/uni-app/issues/1460)），需要自行判断一下。
+
 ## 全局变量
 
 实现全局变量的方式需要遵循 Vue 单文件模式的开发规范。详细参考：[uni-app全局变量的几种实现方式](https://ask.dcloud.net.cn/article/35021)
