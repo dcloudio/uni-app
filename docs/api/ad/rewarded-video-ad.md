@@ -25,13 +25,12 @@
 
 ### 广告创建
 
-开发者可以调用 uni.createRewardedVideoAd 创建激励视频广告组件。该方法返回的是一个单例，该实例仅对当前页面有效，不允许跨页面使用。
+开发者可以调用 uni.createRewardedVideoAd 创建激励视频广告组件。
 
 激励视频广告组件默认是隐藏的，因此可以提前创建，以提前初始化组件。开发者可以在页面的 `onReady` 事件回调中创建广告实例，并在该页面的生命周期内重复调用该广告实例。
 
 ```
 <script>
-    let rewardedVideoAd = null;
     export default {
         data() {
             return {
@@ -39,20 +38,26 @@
             }
         },
         onReady() {
-            if(uni.createRewardedVideoAd) {
-                rewardedVideoAd = uni.createRewardedVideoAd({ adpid: '1507000689' }) // 仅用于HBuilder基座调试 adpid: '1507000689'
-                rewardedVideoAd.onLoad(() => {
-                    console.log('onLoad event')
-                })
-                rewardedVideoAd.onError((err) => {
-                    console.log('onError event', err)
-                })
-                rewardedVideoAd.onClose((res) => {
-                    console.log('onClose event', res)
-                })
-            }
+          this._isLoaded = false
+          rewardedVideoAd = this._rewardedVideoAd = uni.createRewardedVideoAd({ adpid: '1507000689' }) // 仅用于HBuilder基座调试 adpid: '1507000689'
+          rewardedVideoAd.onLoad(() => {
+            this._isLoaded = true
+            console.log('onLoad event')
+            // 当激励视频被关闭时，默认预载下一条数据，加载完成时仍然触发 `onLoad` 事件
+          })
+          rewardedVideoAd.onError((err) => {
+            console.log('onError event', err)
+          })
+          rewardedVideoAd.onClose((res) => {
+            console.log('onClose event', res)
+          })
         },
         methods: {
+          show() {
+            if (this._isLoaded) {
+              this._rewardedVideoAd.show()
+            }
+          }
         }
     }
 </script>
@@ -253,11 +258,257 @@ code|message|
 -5100|其他错误，聚合广告商内部错误
 
 
+### 已封装好的示例，方便多个页面直接调用(仅适用于app平台)
+```
+<script>
+  import AdHelper from "ad.js"
+
+  export default {
+    data() {
+      return {
+        title: '激励视频广告'
+      }
+    },
+    onReady() {
+      this._adpid = 1507000689
+      // 可选预加载数据
+      AdHelper.instance.load(this._adpid)
+    },
+    methods: {
+      show() {
+        AdHelper.instance.show(this._adpid, (res) => {
+          console.log("onclose")
+          console.log(res)
+
+          // 用户点击了【关闭广告】按钮
+          if (res && res.isEnded) {
+            // 正常播放结束
+            console.log("onClose " + res.isEnded);
+          } else {
+            // 播放中途退出
+            console.log("onClose " + res.isEnded);
+          }
+
+          // 加载下一条
+          // AdHelper.instance.load(this._adpid)
+        }, (err) => {
+          console.log(err)
+        })
+      }
+    }
+  }
+</script>
+```
+
+```
+ad.js
+class AdHelper {
+  static get instance() {
+    if (this._instance == null) {
+      this._instance = new AdHelper()
+    }
+    return this._instance
+  }
+
+  constructor() {
+    this._instance = null
+    this._ads = {}
+  }
+
+  load(adpid) {
+    if (!adpid || this.isBusy(adpid)) {
+      return
+    }
+
+    this.get(adpid).load()
+  }
+
+  show(adpid, onsuccess, onfail) {
+    if (!adpid || this.isBusy(adpid)) {
+      return
+    }
+
+    var ad = this.get(adpid)
+
+    uni.showLoading({
+      mask: true
+    })
+
+    ad.load(() => {
+      uni.hideLoading()
+      ad.show((e) => {
+        onsuccess && onsuccess(e)
+        // 关闭视频
+      })
+    }, (err) => {
+      uni.hideLoading()
+      onfail && onfail(err)
+    })
+  }
+
+  isBusy(adpid) {
+    return (this._ads[adpid] && this._ads[adpid].isLoading)
+  }
+
+  get(adpid) {
+    if (!this._ads[adpid]) {
+      this._ads[adpid] = new RewardedVideo({
+        adpid: adpid
+      })
+    }
+
+    return this._ads[adpid]
+  }
+}
+
+const eventNames = [
+  'load',
+  'close',
+  'verify',
+  'error'
+]
+
+const EXPIRED_TIME = 1000 * 60 * 30
+const EXPIRED_TEXT = {
+  code: -5008,
+  errMsg: '广告数据已过期，请重新加载'
+}
+const ProviderType = {
+  CSJ: 'csj',
+  GDT: 'gdt'
+}
+
+class RewardedVideo {
+  constructor(options = {}) {
+    this._isLoad = false
+    this._isLoading = false
+    this._lastLoadTime = 0
+
+    this._loadCallback = null
+    this._closeCallback = null
+    this._errorCallback = null
+
+    const rewardAd = this._rewardAd = plus.ad.createRewardedVideoAd(options)
+    rewardAd.onLoad((e) => {
+      this._isLoading = false
+      this._isLoad = true
+      this._lastLoadTime = Date.now()
+
+      this.onLoad()
+    })
+    rewardAd.onClose((e) => {
+      this._isLoad = false
+      this.onClose(e)
+    })
+    rewardAd.onVerify && rewardAd.onVerify((e) => {
+      // this._dispatchEvent('verify', {
+      //   isValid: e.isValid
+      // })
+    })
+    rewardAd.onError(({
+      code,
+      message
+    }) => {
+      this._isLoading = false
+      const data = {
+        code: code,
+        errMsg: message
+      }
+
+      if (code === -5008) {
+        this._isLoad = false
+      }
+
+      this.onError(data)
+    })
+  }
+
+  get isExpired() {
+    return (this._lastLoadTime !== 0 && (Math.abs(Date.now() - this._lastLoadTime) > EXPIRED_TIME))
+  }
+
+  get isLoading() {
+    return this._isLoading
+  }
+
+  getProvider() {
+    return this._rewardAd.getProvider()
+  }
+
+  load(onload, onerror) {
+    this._loadCallback = onload
+    this._errorCallback = onerror
+
+    if (this._isLoading) {
+      return
+    }
+
+    if (this._isLoad) {
+      this.onLoad()
+      return
+    }
+
+    this._loadAd()
+  }
+
+  show(onclose) {
+    this._closeCallback = onclose
+
+    if (this._isLoading || !this._isLoad) {
+      return
+    }
+
+    const provider = this.getProvider()
+    if (provider === ProviderType.CSJ && this.isExpired) {
+      this._isLoad = false
+      this.onError(EXPIRED_TEXT)
+      return
+    }
+
+    this._rewardAd.show()
+  }
+
+  onLoad(e) {
+    if (this._loadCallback != null) {
+      this._loadCallback()
+    }
+  }
+
+  onClose(e) {
+    if (this._closeCallback != null) {
+      this._closeCallback({
+        isEnded: e.isEnded
+      })
+    }
+  }
+
+  onError(e) {
+    if (this._errorCallback != null) {
+      this._errorCallback(e)
+    }
+  }
+
+  destroy() {
+    this._rewardAd.destroy()
+  }
+
+  _loadAd() {
+    this._isLoad = false
+    this._isLoading = true
+    this._rewardAd.load()
+  }
+}
+
+export default AdHelper
+
+```
+
 **注意事项**
 - 测试期间请使用测试 `adpid`，参考测试代码，如果无法显示换个时间再试
 - 多次调用 `RewardedVideoAd.onLoad()`、`RewardedVideoAd.onError()`、`RewardedVideoAd.onClose()` 等方法监听广告事件会产生多次事件回调，建议在创建广告后监听一次即可。
 - 仅 V3 编译支持，参考 manifest.json 配置
 - 为避免滥用广告资源，目前每个用户每天可观看激励式视频广告的次数有限，建议展示广告按钮前先判断广告是否拉取成功。(微信小程序、广点通有限制，穿山甲无限制)
+- 微信小程序平台，uni.createRewardedVideoAd 创建激励视频广告组件。该方法返回的是一个单例，该实例仅对当前页面有效，不允许跨页面使用。
 
 **AD组件**
 文档地址：[https://uniapp.dcloud.io/component/ad](https://uniapp.dcloud.io/component/ad)
