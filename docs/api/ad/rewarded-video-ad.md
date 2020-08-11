@@ -301,7 +301,8 @@ code|message|
 ```
 
 ```
-ad.js
+// ad.js
+
 class AdHelper {
   static get instance() {
     if (this._instance == null) {
