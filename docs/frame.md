@@ -138,7 +138,8 @@ background-image: url(../../static/logo.png);
 |onError|当 `uni-app` 报错时触发	|
 |onUniNViewMessage|对 ``nvue`` 页面发送的数据进行监听，可参考 [nvue 向 vue 通讯](/use-weex?id=nvue-向-vue-通讯)|
 |onUnhandledRejection|对未处理的 Promise 拒绝事件监听函数（2.8.1+）|
-
+|onPageNotFound|页面不存在监听函数|
+|onThemeChange|监听系统主题变化|
 **注意**
 
 - 应用生命周期仅可在``App.vue``中监听，在其它页面监听无效。
@@ -166,8 +167,8 @@ background-image: url(../../static/logo.png);
 |onNavigationBarSearchInputChanged|监听原生标题栏搜索输入框输入内容变化事件|App、H5|1.6.0|
 |onNavigationBarSearchInputConfirmed|监听原生标题栏搜索输入框搜索事件，用户点击软键盘上的“搜索”按钮时触发。|App、H5|1.6.0|
 |onNavigationBarSearchInputClicked|监听原生标题栏搜索输入框点击事件|App、H5|1.6.0|
-|onShareTimeline|监听用户点击右上角转发到朋友圈|微信小程序|uni-app 2.8.1+|
-|onAddToFavorites|监听用户点击右上角收藏|微信小程序|uni-app 2.8.1+|
+|onShareTimeline|监听用户点击右上角转发到朋友圈|微信小程序|2.8.1+|
+|onAddToFavorites|监听用户点击右上角收藏|微信小程序|2.8.1+|
 
 ``onPageScroll`` 参数说明：f
 
