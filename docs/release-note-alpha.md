@@ -24,23 +24,23 @@
   + 支付宝小程序平台 修复 支持 uni.getSavedFileList 接口
   + 支付宝小程序平台 修复 sjs 中 callMethod 不能正确调用的Bug
   + 头条小程序平台 修复 修复解构插槽不显示的Bug [详情](https://ask.dcloud.net.cn/question/80187)
-  + uni-list 新增 clickable 属性，是否开启点击反馈
-  + uni-list 新增 link 属性，显示右侧箭头并开启点击反馈
-  + uni-list 新增 to 属性，直接跳转到指定页面
-  + uni-list 新增 border 属性，是否显示列表分割线
-  + uni-rate 新增 disabled 属性，可设置组件禁用状态（之前版本的不可点击状态）
-  + uni-rate 新增 disabledColor 属性，可设置禁用颜色
-  + uni-rate 新增 readonly 属性，可设置组件只读属性
-  + uni-rate 新增 allowHalf 属性，可设置组件是否开启半星选择
-  + uni-rate 新增 touchable 属性，可设置组件是否支持滑动手势
-  + uni-rate 修复 动态传值不更新的问题
-  + uni-rate 优化 value 属性可使用 v-model 双向绑定数据
-  + uni-popup 优化 扩展组件支持 easycom
-  + uni-swipe-action 新增 左侧滑动
-  + uni-swipe-action 新增 插槽使用方式
-  + uni-swipe-action 新增 threshold 属性，可以控制滑动缺省值
-  + uni-swipe-aciotn 修复 滚动页面时触发组件滑动的Bug
-  + uni-swipe-action 优化 长列表滚动性能
+  + uni-ui 新增 uni-list 组件的 clickable 属性，是否开启点击反馈
+  + uni-ui 新增 uni-list 组件的 link 属性，显示右侧箭头并开启点击反馈
+  + uni-ui 新增 uni-list 组件的 to 属性，直接跳转到指定页面
+  + uni-ui 新增 uni-list 组件的 border 属性，是否显示列表分割线
+  + uni-ui 新增 uni-rate 组件的 disabled 属性，可设置组件禁用状态（之前版本的不可点击状态）
+  + uni-ui 新增 uni-rate 组件的 disabledColor 属性，可设置禁用颜色
+  + uni-ui 新增 uni-rate 组件的 readonly 属性，可设置组件只读属性
+  + uni-ui 新增 uni-rate 组件的 allowHalf 属性，可设置组件是否开启半星选择
+  + uni-ui 新增 uni-rate 组件的 touchable 属性，可设置组件是否支持滑动手势
+  + uni-ui 修复 uni-rate 组件动态传值不更新的问题
+  + uni-ui 优化 uni-rate 组件的 value 属性可使用 v-model 双向绑定数据
+  + uni-ui 优化 uni-popup 组件的扩展组件支持 easycom
+  + uni-ui 新增 uni-swipe-action 组件的左侧滑动使用方式
+  + uni-ui 新增 uni-swipe-action 组件的插槽使用方式
+  + uni-ui 新增 uni-swipe-action 组件的 threshold 属性，可以控制滑动缺省值
+  + uni-ui 修复 uni-swipe-aciotn 组件的滚动页面时触发滑动的Bug
+  + uni-ui 优化 uni-swipe-action 组件的长列表滚动性能
 * 【uniCloud】
   + 阿里云 新增 支持协作者本地运行云函数
   + 修复 HBuilderX 2.8.0引出的 公共模块右键菜单 更新依赖本模块的云函数菜单丢失的Bug
