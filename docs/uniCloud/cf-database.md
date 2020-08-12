@@ -101,6 +101,46 @@ uniCloud会在每天备份一次数据库，最多保留7天。
 
 ![数据库回档](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/unicloud-db-backup.jpg)
 
+## 数据导出@export
+
+**此功能暂时只有阿里云支持**
+
+此功能主要用于导出整个集合的数据
+
+**用法**
+
+1. 进入[uniCloud web控制台](https://unicloud.dcloud.net.cn/home)，选择服务空间，或者直接在HBuilderX云函数目录`cloudfunctions`上右键打开uniCloud web控制台
+2. 进入云数据库选择希望导入数据的集合
+3. 点击导出按钮
+4. 选择导出格式，如果选择csv格式还需要选择导出字段
+5. 点击确定按钮等待下载开始即可
+
+**注意**
+
+- 导出的json文件并非一般情况下的json，而是每行一条json数据的文本文件
+- 导出为csv时必须填写字段选项。字段之间使用英文逗号隔开。例如：`_id, name, age, gender`
+- 数据量较大时可能需要等待一段时间才可以开始下载
+
+## 数据导入@import
+
+**此功能暂时只有阿里云支持**
+
+之前uniCloud提供的`db_init.json`主要是为了对数据库进行初始化，并不适合导入大量数据。与`db_init.json`不同，数据导入功能可以导入大量数据，目前支持导出 CSV、JSON 格式的文件数据。
+
+**用法**
+
+1. 进入[uniCloud web控制台](https://unicloud.dcloud.net.cn/home)，选择服务空间，或者直接在HBuilderX云函数目录`cloudfunctions`上右键打开uniCloud web控制台
+2. 进入云数据库选择希望导入数据的集合
+3. 点击导入，选择json文件或csv文件
+4. 选择处理冲突模式（关于处理冲突模式请看下方注意事项）
+5. 点击确定按钮等待导入完成即可
+
+**注意**
+
+- 目前导入文件最大限制为50MB
+- 导入csv时数据类型会丢失，即所有字段均会作为字符串导入
+- 冲突处理模式为设定记录_id冲突时的处理方式，`insert`表示冲突时依旧导入记录但是是新插入一条，`upsert`表示冲突时更新已存在的记录
+
 ## 获取集合的引用
 
 ```js
