@@ -1,5 +1,9 @@
 # uniCloud 更新日志
 ======================================
+#### 2020-08-12
+  + web控制台 阿里云 新增 数据库集合导入导出功能 [详情](https://uniapp.dcloud.net.cn/uniCloud/cf-database?id=export)
+  + web控制台 腾讯云 新增 资源概况页面
+
 #### 2020-08-04
   + 新增 3个内置短信模板 [详情](https://uniapp.dcloud.net.cn/uniCloud/send-sms)
 
