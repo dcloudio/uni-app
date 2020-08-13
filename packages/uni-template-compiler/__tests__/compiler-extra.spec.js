@@ -327,6 +327,11 @@ describe('mp:compiler-extra', () => {
       '<view><view class="item" v-for="i in 5" :key="i" @click="func(i)"></view></view>',
       '<view><block wx:for="{{5}}" wx:for-item="i" wx:for-index="__i0__" wx:key="*this"><view data-event-opts="{{[[\'tap\',[[\'func\',[\'$0\'],[[[5,\'\',__i0__]]]]]]]}}" class="item" bindtap="__e"></view></block></view>'
     )
+    assertCodegen(
+      '<view v-for="(item,index) in list" :key="index"><view @click="$test.test(item,item.length)"></view></view>',
+      '<block wx:for="{{list}}" wx:for-item="item" wx:for-index="index" wx:key="index"><view><view data-event-opts="{{[[\'tap\',[[\'e0\',[\'$event\']]]]]}}" data-event-params="{{({item})}}" bindtap="__e"></view></view></block>',
+      'with(this){if(!_isMounted){e0=function($event,item){var _temp=arguments[arguments.length-1].currentTarget.dataset,_temp2=_temp.eventParams||_temp["event-params"],item=_temp2.item;var _temp,_temp2;return $test.test(item,item.length)}}}'
+    )
   })
 
   it('generate class binding', () => {
