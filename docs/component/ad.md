@@ -77,6 +77,7 @@ App和微信小程序的ad组件没有type属性，可以用于banner，也可�
 - app-vue 不能在 `<scroll-view>` 组件中使用 `<ad>`，仅适用于页面级的滚动
 - HBuilderX2.8+版本Android平台更新穿山甲（今日头条）广告SDK后不再支持x86类型CPU，无法运行到x86类型cpu的模拟器。
 - `<ad>` 组件测试广告位是上图下文，uniAD后台申请的广告位默认左图右文
+- HBuilderX标准基座真机运行测试信息流广告位标识（adpid）为：1111111111
 
 **@error 错误码**
 - App端聚合的穿山甲(iOS)：[错误码](https://ad.oceanengine.com/union/media/union/download/detail?id=16&docId=5de8d574b1afac00129330d5&osType=ios)
@@ -136,6 +137,7 @@ App和微信小程序的ad组件没有type属性，可以用于banner，也可�
   <view class="content">
 
     <!-- App平台 示例 1 -->
+    <!-- adpid="1111111111" 此广告位标识仅在HBuilderX标准基座中有效，仅用于测试，替换为自己申请获取的广告位标识 -->
     <view class="ad-view">
       <ad adpid="1111111111" @load="onload" @close="onclose" @error="onerror" @downloadchange="ondownloadchange"></ad>
     </view>
@@ -195,7 +197,7 @@ export default {
     getAdData: function (e) {
       // 仅APP平台支持
       plus.ad.getAds({
-          adpid: '',  // dcloud 后台创建
+          adpid: '1111111111',  // 替换为自己申请获取的广告位标识，此广告位标识仅在HBuilderX标准基座中有效，仅用于测试
           count: 1,   // 广告数量，默认 3
           width: 300  // 根据宽度获取合适的广告(单位px)
         },
