@@ -28,6 +28,8 @@
 - 如需修改公用模块需要在`common`目录下修改，修改之后不需要重新执行`npm install`。
 - 如果要更新所有依赖某公用模块的云函数，可以在`common`目录下的公用模块目录（本例中为`hello-common`）右键选择`更新依赖本模块的云函数`
 - 公用模块命名不可与nodejs内置模块重名
+- 安装公用模块时不推荐使用yarn，与`npm install`表现不一样，yarn不会创建软链接而是直接拷贝文件到node_modules，这样会导致修改公用模块云函数内引用的公用模块不会同步修改
+- 从插件市场导入或者其他地方复制项目可能会导致`npm install`创建的软链接失效，如果遇到这种情况请删除`node_modules`和`package-lock.json`重新`npm install`
 
 ![更新公用模块](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/update-common-module.jpg)
 
