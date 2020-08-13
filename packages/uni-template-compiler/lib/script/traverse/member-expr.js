@@ -2,7 +2,9 @@ const t = require('@babel/types')
 const traverse = require('@babel/traverse').default
 
 const {
-  VAR_ROOT
+  VAR_ROOT,
+  IDENTIFIER_METHOD,
+  IDENTIFIER_FILTER
 } = require('../../constants')
 
 function isMatch (name, forItem, forIndex) {
@@ -42,15 +44,29 @@ function findTest (path, state) {
   let tests
   while (path.parentPath && path.key !== 'body') {
     if (path.key === 'consequent' || path.key === 'alternate') {
-      let test = t.arrayExpression([t.clone(path.container.test)])
+      const testOrig = path.container.test
+      let test = t.arrayExpression([t.cloneDeep(testOrig)])
       traverse(test, {
         noScope: true,
-        MemberExpression (path_) {
+        MemberExpression (memberExpressionPath) {
           const names = state.scoped.map(scoped => scoped.forItem)
-          const node = path_.node
+          const node = memberExpressionPath.node
           const objectName = node.object.name
-          if (objectName === VAR_ROOT || (names.includes(objectName) && path.scope.hasOwnBinding(node.property.name))) {
-            path_.replaceWith(node.property)
+          const property = node.property
+          const propertyName = property.name
+          if (objectName === VAR_ROOT || (names.includes(objectName) && (propertyName === IDENTIFIER_METHOD || propertyName === IDENTIFIER_FILTER))) {
+            let property
+            traverse(testOrig, {
+              noScope: true,
+              Identifier (identifierPath) {
+                const node = identifierPath.node
+                if (node.name === propertyName) {
+                  property = node
+                  identifierPath.stop()
+                }
+              }
+            })
+            memberExpressionPath.replaceWith(property)
           }
         }
       })
