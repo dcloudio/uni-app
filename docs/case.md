@@ -252,16 +252,16 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 **大商创：** 全渠道多用户商城解决方案，h5+小程序+app。[https://www.dscmall.cn](https://www.dscmall.cn)
 
 <div style="display:flex;justify-content: space-around;">
-    <a href="https://m3w.cn/dscmall" target="_blank" class="clear-style barcode-view">
-		<img src="http://download.dscmall.cn/qrcode/x-app.png" width="200"/><br>
+    <a href="https://m3w.cn/dscmall" target="_blank">
+		<img src="http://download.dscmall.cn/qrcode/x-app.png" width="200"/> 
 		<span style="margin-top:15px;">App</span>
-	</a>
-	<a href="javascript:;" target="_self" class="clear-style barcode-view">
-		<img src="http://download.dscmall.cn/qrcode/x-wxapp.jpg" width="200"/><br>
+	</a> 
+	<a href="javascript:;" target="_self">
+		<img src="http://download.dscmall.cn/qrcode/x-wxapp.jpg" width="200"/> 
 		<span style="margin-top:15px;">微信小程序</span>
-	</a>
-    <a href="https://x.dscmall.cn/mobile" target="_blank" class="clear-style barcode-view">
-		<img src="http://download.dscmall.cn/qrcode/x-h5.png" width="200"/><br>
+	</a> 
+    <a href="https://x.dscmall.cn/mobile" target="_blank">
+		<img src="http://download.dscmall.cn/qrcode/x-h5.png" width="200"/> 
 		<span style="margin-top:15px;">H5</span>
 	</a>
 </div>
