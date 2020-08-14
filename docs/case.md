@@ -220,7 +220,7 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
  <strong>vivo会员官方小程序：</strong> 微信小程序搜索 "vivo会员"，<scan-code-text class="scan-code-text">或鼠标移此查看[微信小程序码]</scan-code-text>
  <div class="scan-code-hover">
     <div class="scan-code-hover-box">
-      <img src="https://img.cdn.aliyun.dcloud.net.cn/uni-app/vivovip.jpg" alt="二维码获取失败" />
+      <img src="https://img.cdn.aliyun.dcloud.net.cn/uni-app/vivovip.jpg" width="200" alt="二维码获取失败" />
     </div>
  </div>
 </div>
@@ -248,6 +248,22 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 **腾讯discuz! Q：** 经典论坛，站长利器。[https://discuz.chat/docs/](https://discuz.chat/docs/)
 
 **搜狐快站：** 可视化拖拽建站，例：[https://yiguob.kuaizhan.com/#/](https://yiguob.kuaizhan.com/#/)
+
+<a href="https://www.dscmall.cn/" target="_blank" class="clear-style"><b>大商创：</b></a> 全渠道多用户商城解决方案，h5+小程序+app。
+<div style="display:flex;justify-content: space-around;">
+	<a href="javascript:;" target="_self" class="clear-style barcode-view">
+		<img src="http://download.dscmall.cn/qrcode/x-wxapp.jpg" width="200"/>
+		<span style="margin-top:15px;">微信小程序</span>
+	</a>
+    <a href="https://x.dscmall.cn/" target="_blank" class="clear-style barcode-view">
+		<img src="http://download.dscmall.cn/qrcode/x-h5.png" width="200"/>
+		<span style="margin-top:15px;">H5</span>
+	</a>
+  <a href="https://m3w.cn/dscmall" target="_blank" class="clear-style barcode-view">
+		<img src="http://download.dscmall.cn/qrcode/x-app.png" width="200"/>
+		<span style="margin-top:15px;">App</span>
+	</a>
+</div>
 
 **人人商城：** 客户众多的分销商城 [https://www.rrsc.cn/V5introduce.html](https://www.rrsc.cn/V5introduce.html)
 
