@@ -249,7 +249,7 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 
 **搜狐快站：** 可视化拖拽建站，例：[https://yiguob.kuaizhan.com/#/](https://yiguob.kuaizhan.com/#/)
 
-**大商创：** 全渠道多用户商城解决方案，h5+小程序+app。
+**大商创：** 全渠道多用户商城解决方案，h5+小程序+app。[https://www.dscmall.cn](https://www.dscmall.cn)
 
 <div style="display:flex;justify-content: space-around;">
     <a href="https://m3w.cn/dscmall" target="_blank" class="clear-style barcode-view">
