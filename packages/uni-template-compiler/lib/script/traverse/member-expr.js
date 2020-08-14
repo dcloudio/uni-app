@@ -11,7 +11,7 @@ function isMatch (name, forItem, forIndex) {
   return name === forItem || name === forIndex
 }
 
-function findScoped (path, state) {
+function findScoped (path, test, state) {
   if (!path) {
     return state
   }
@@ -21,17 +21,28 @@ function findScoped (path, state) {
       forIndex
     } = scoped
     let match = false
-    path.traverse({
-      noScope: true,
-      Identifier (path) {
-        if (!match && path.key !== 'key' && (path.key !== 'property' || path.parent.computed)) {
-          match = isMatch(path.node.name, forItem, forIndex)
-          if (match) {
-            path.stop()
-          }
+    function Identifier (path) {
+      if (!match && path.key !== 'key' && (path.key !== 'property' || path.parent.computed)) {
+        match = isMatch(path.node.name, forItem, forIndex)
+        if (match) {
+          path.stop()
         }
       }
+    }
+    path.traverse({
+      noScope: true,
+      Identifier
     })
+    if (!match) {
+      if (t.isIdentifier(test, { name: IDENTIFIER_METHOD }) || t.isIdentifier(test, { name: IDENTIFIER_FILTER })) {
+        match = scoped.declarationArray.find(({ declarations }) => declarations.find(({ id }) => id === test))
+      } else if (!match) {
+        traverse(test, {
+          noScope: true,
+          Identifier
+        })
+      }
+    }
     return match
   })
   if (!scoped && state.scoped.length > 1) {
@@ -84,8 +95,8 @@ function findTest (path, state) {
 }
 
 module.exports = function getMemberExpr (path, name, init, state, variableDeclaration = true) {
-  const scoped = findScoped(path, state)
   const test = findTest(path, state)
+  const scoped = findScoped(path, test, state)
 
   if (!variableDeclaration) {
     scoped.declarationArray.push(t.expressionStatement(init))
