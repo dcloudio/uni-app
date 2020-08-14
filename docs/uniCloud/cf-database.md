@@ -13,7 +13,7 @@
 
 **云数据库仅支持通过云函数可访问。如需要在客户端访问云数据库，需通过`clientDB`插件。该插件可以将所有数据库操作封装在一个云函数中，大幅提升开发效率，是uniCloud开发者的必备插件，详见：[https://uniapp.dcloud.io/uniCloud/uni-clientDB](https://uniapp.dcloud.io/uniCloud/uni-clientDB)**
 
-**阿里云使用的mongoDB数据库版本为3.4，腾讯云使用的腾讯云自研的文档型数据库（兼容mongoDB 4.0版本）。请注意API的兼容性说明**
+**阿里云使用的mongoDB数据库版本为4.0，腾讯云使用的腾讯云自研的文档型数据库（兼容mongoDB 4.0版本）。请注意API的兼容性说明**
 
 如果同时还想连接其他数据库，如mysql/redis，用法可以参考如下插件：
 
@@ -2535,7 +2535,7 @@ WHERE <output array field> IN (SELECT *
 
 #### 自定义连接条件、拼接子查询
 
-**此用法阿里云暂不支持**
+阿里云升级mongoDB版本为4.0后已支持此写法
 
 如果需要指定除相等匹配之外的连接条件，或指定多个相等匹配条件，或需要拼接被连接集合的子查询结果，那可以使用如下定义：
 ```js
@@ -4345,8 +4345,6 @@ let res = await db.collection('restaurants').where({
 #### expr
 
 查询操作符，用于在查询语句中使用聚合表达式，方法接收一个参数，该参数必须为聚合表达式  
-
-**阿里云暂不支持**
       
 ##### 使用说明
  
