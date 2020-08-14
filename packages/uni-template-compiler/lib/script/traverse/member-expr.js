@@ -42,41 +42,43 @@ function findScoped (path, state) {
 
 function findTest (path, state) {
   let tests
-  while (path.parentPath && path.key !== 'body') {
-    if (path.key === 'consequent' || path.key === 'alternate') {
-      const testOrig = path.container.test
-      let test = t.arrayExpression([t.cloneDeep(testOrig)])
-      traverse(test, {
-        noScope: true,
-        MemberExpression (memberExpressionPath) {
-          const names = state.scoped.map(scoped => scoped.forItem)
-          const node = memberExpressionPath.node
-          const objectName = node.object.name
-          const property = node.property
-          const propertyName = property.name
-          if (objectName === VAR_ROOT || (names.includes(objectName) && (propertyName === IDENTIFIER_METHOD || propertyName === IDENTIFIER_FILTER))) {
-            let property
-            traverse(testOrig, {
-              noScope: true,
-              Identifier (identifierPath) {
-                const node = identifierPath.node
-                if (node.name === propertyName) {
-                  property = node
-                  identifierPath.stop()
+  if (path) {
+    while (path.parentPath && path.key !== 'body') {
+      if (path.key === 'consequent' || path.key === 'alternate') {
+        const testOrig = path.container.test
+        let test = t.arrayExpression([t.cloneDeep(testOrig)])
+        traverse(test, {
+          noScope: true,
+          MemberExpression (memberExpressionPath) {
+            const names = state.scoped.map(scoped => scoped.forItem)
+            const node = memberExpressionPath.node
+            const objectName = node.object.name
+            const property = node.property
+            const propertyName = property.name
+            if (objectName === VAR_ROOT || (names.includes(objectName) && (propertyName === IDENTIFIER_METHOD || propertyName === IDENTIFIER_FILTER))) {
+              let property
+              traverse(testOrig, {
+                noScope: true,
+                Identifier (identifierPath) {
+                  const node = identifierPath.node
+                  if (node.name === propertyName) {
+                    property = node
+                    identifierPath.stop()
+                  }
                 }
-              }
-            })
-            memberExpressionPath.replaceWith(property)
+              })
+              memberExpressionPath.replaceWith(property)
+            }
           }
+        })
+        test = test.elements[0]
+        if (path.key === 'alternate') {
+          test = t.unaryExpression('!', test)
         }
-      })
-      test = test.elements[0]
-      if (path.key === 'alternate') {
-        test = t.unaryExpression('!', test)
+        tests = tests ? t.logicalExpression('&&', test, tests) : test
       }
-      tests = tests ? t.logicalExpression('&&', test, tests) : test
+      path = path.parentPath
     }
-    path = path.parentPath
   }
   return tests
 }
