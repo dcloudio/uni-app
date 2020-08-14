@@ -27,13 +27,21 @@
 ### uniCloud只支持uni-app，怎么开发web界面？
 
 uni-app本来也可以开发web界面，只是内置组件对宽屏没有自动适配而已。你可以：
-1. 新建uni-app项目，但不使用内置组件，而是直接用三方ui库，比如elementUI。这些基于vue的、适合宽屏使用的ui库可以直接用。至于js api，仍然使用uni的，比如uni.setStorage等。有多个可参考插件[GraceAdmin](https://ext.dcloud.net.cn/plugin?id=1347)、[基于elementUI的uniCloud示例](https://ext.dcloud.net.cn/plugin?id=1585)，均是基于uniCloud的pc端管理后台框架。
+1. 新建uni-app项目，但不使用内置组件，而是直接用三方ui库，比如elementUI。这些基于vue的、适合宽屏使用的ui库可以直接用。至于js api，仍然使用uni的，比如uni.setStorage等。
 2. 继续使用内置组件，自己处理pc适配：
     - 如果要多端适配界面，使用css的媒体查询处理适配。
     - 2.6.3起，uni内置组件支持了pc鼠标的滚动和drag。老版可以使用三方库替换touch的拖动为pc上的drag，比如touch-emulator.js。
     - uni-app的内置组件和api仅适配了webkit内核浏览器，ie和firefox可能有兼容问题。如有问题需自己写额外css或js适配。
 
 后续DCloud会进一步强化内置组件和uni-ui对PC浏览器的适配。
+
+如果是需要pc版admin的话，已经有很多现成插件了：
+- [baseCloud](https://ext.dcloud.net.cn/plugin?id=2481)
+- [coolAdmin](https://ext.dcloud.net.cn/plugin?id=2444)
+- [GraceAdmin](https://ext.dcloud.net.cn/plugin?id=1347)
+- [基于elementUI的uniCloud示例](https://ext.dcloud.net.cn/plugin?id=1585)，均是基于uniCloud的pc端管理后台框架。
+
+更多uniCloud Admin系统可搜索：[https://ext.dcloud.net.cn/search?q=admin&cat1=7&orderBy=UpdatedDate](https://ext.dcloud.net.cn/search?q=admin&cat1=7&orderBy=UpdatedDate)
 
 ### 可否通过http url方式访问云函数或云数据库？
 
@@ -56,12 +64,17 @@ nodejs的性能高于php，MongoDB的性能也优于mysql。
 php+mysql的优势在于生态，有很多现成的开源项目，可以大幅提高开发效率。而uniCloud将通过插件市场等一系列手段强化生态，给开发者提供更高效率的各种轮子。
 
 ### 支持websocket吗？
-websocket的实时特性导致serverless化比较复杂。还需要继续寻找合适方案。如果使用三方sdk服务，比如推送、腾讯或声网等实时音视频方案，由于是连接三方服务器，不是连接uniCloud，这些方案仍然可以继续使用。
+websocket的实时特性导致serverless化比较复杂。还需要继续寻找合适方案。
+
+如果使用三方sdk服务，比如推送、腾讯或声网等实时音视频方案，由于是连接三方服务器，不是连接uniCloud，这些方案仍然可以继续使用。
+
+同时一些三方专业的websocket服务也可以使用，比如：[https://ext.dcloud.net.cn/plugin?id=1334](https://ext.dcloud.net.cn/plugin?id=1334)
 
 ### 如何导入老数据库的数据？
 - 方式1：可以在HBuilderX里用db_init.json来批量创建云数据库和插入表内容，[详见](https://uniapp.dcloud.io/uniCloud/cf-database?id=%e4%bd%bf%e7%94%a8db_initjson%e5%88%9d%e5%a7%8b%e5%8c%96%e9%a1%b9%e7%9b%ae%e6%95%b0%e6%8d%ae%e5%ba%93)
-- 方式2：在云函数里，使用nodejs标准写法，连接老数据库，如使用mysql的[插件](https://ext.dcloud.net.cn/plugin?id=1925)，把数据读出来，再批量写入云数据库
-- 方式3：将一个云函数URL化，用其他语言读取老数据库，通过http方式提交到云函数，云函数将接收到的数据存入云数据库
+- 方式2：阿里云支持在uniCloud web控制台界面直接导入导出数据
+- 方式3：在云函数里，使用nodejs标准写法，连接老数据库，如使用mysql的[插件](https://ext.dcloud.net.cn/plugin?id=1925)，把数据读出来，再批量写入云数据库
+- 方式4：将一个云函数URL化，用其他语言读取老数据库，通过http方式提交到云函数，云函数将接收到的数据存入云数据库
 
 ### 云函数访问时快时慢怎么回事？
 
@@ -80,7 +93,7 @@ websocket的实时特性导致serverless化比较复杂。还需要继续寻找�
 
 ### 发布H5时还得自己找个服务器部署前端网页，可以不用自己再找服务器吗？
 
-uniCloud已支持[前端网页托管](https://uniapp.dcloud.io/uniCloud/hosting)。
+uniCloud支持[前端网页托管](https://uniapp.dcloud.io/uniCloud/hosting)，并且免费！
 
 - 如果你已经有备案过的域名，直接解析过来即可；
 - 如果你要新注册域名，目前通管局仍要求有固定ip才给域名备案，这个规定未考虑serverless模式，还得过些时候才可能更新。目前只能先买一个短期固定ip，通过备案后再解析到uniCloud。
