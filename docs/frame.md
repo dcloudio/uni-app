@@ -17,7 +17,8 @@
 
 <pre v-pre="" data-lang="">
 	<code class="lang-" style="padding:0">
-┌─components            uni-app组件目录
+┌─cloudfunctions        云函数目录（阿里云为aliyun，腾讯云为tcb，详见[uniCloud](https://uniapp.dcloud.io/uniCloud/)）
+│─components            符合vue组件规范的uni-app组件目录
 │  └─comp-a.vue         可复用的a组件
 ├─hybrid                存放本地网页的目录，<a href="/component/web-view">详见</a>
 ├─platforms             存放各平台专用页面的目录，<a href="/platform?id=%E6%95%B4%E4%BD%93%E7%9B%AE%E5%BD%95%E6%9D%A1%E4%BB%B6%E7%BC%96%E8%AF%91">详见</a>
