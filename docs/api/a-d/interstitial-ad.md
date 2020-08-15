@@ -17,30 +17,39 @@ uni.createInterstitialAd(Object object)
 
 #### 方法
 
-`Promise InterstitialAd.show()`  
+`Promise InterstitialAd.show()`
+
 显示插屏广告。
 
 
-`Promise InterstitialAd.load()`  
+`Promise InterstitialAd.load()`
+
 加载插屏广告。
 
-`InterstitialAd.destroy()`  
+`InterstitialAd.destroy()`
+
 销毁插屏广告实例。
 
-`InterstitialAd.onLoad(function callback)`  
+`InterstitialAd.onLoad(function callback)`
+
 监听插屏广告加载事件。
 
-`InterstitialAd.offLoad(function callback)`  
+`InterstitialAd.offLoad(function callback)`
+
 取消监听插屏广告加载事件
 
-`InterstitialAd.onError(function callback)`  
+`InterstitialAd.onError(function callback)`
+
 监听插屏错误事件。
 
-`InterstitialAd.offError(function callback)`  
+`InterstitialAd.offError(function callback)`
+
 取消监听插屏错误事件
 
-`InterstitialAd.onClose(function callback)`  
+`InterstitialAd.onClose(function callback)`
+
 监听插屏广告关闭事件。
 
-`InterstitialAd.offClose(function callback)`  
+`InterstitialAd.offClose(function callback)`
+
 取消监听插屏广告关闭事件
