@@ -707,5 +707,20 @@ describe('mp:compiler-extra', () => {
       '<block wx:for="{{$root.l0}}" wx:for-item="item" wx:for-index="index" wx:key="index"><view><block wx:if="{{item.$orig.length>0}}"><view>{{item.m0}}</view></block></view></block>',
       'with(this){var l0=__map(list,function(item,index){var $orig=__get_orig(item);var m0=item.length>0?getValue(item):null;return{$orig:$orig,m0:m0}});$mp.data=Object.assign({},{$root:{l0:l0}})}'
     )
+    assertCodegen(
+      '<view v-for="(item,index) in list" :key="index"><view v-if="item.length>0">{{test(\'item\')}}</view></view>',
+      '<block wx:for="{{$root.l0}}" wx:for-item="item" wx:for-index="index" wx:key="index"><view><block wx:if="{{item.$orig.length>0}}"><view>{{item.m0}}</view></block></view></block>',
+      'with(this){var l0=__map(list,function(item,index){var $orig=__get_orig(item);var m0=item.length>0?test("item"):null;return{$orig:$orig,m0:m0}});$mp.data=Object.assign({},{$root:{l0:l0}})}'
+    )
+    assertCodegen(
+      '<view v-for="(item,index) in list" :key="index"><view v-if="test(item)">{{test(\'item\')}}</view></view>',
+      '<block wx:for="{{$root.l0}}" wx:for-item="item" wx:for-index="index" wx:key="index"><view><block wx:if="{{item.m0}}"><view>{{item.m1}}</view></block></view></block>',
+      'with(this){var l0=__map(list,function(item,index){var $orig=__get_orig(item);var m0=test(item);var m1=m0?test("item"):null;return{$orig:$orig,m0:m0,m1:m1}});$mp.data=Object.assign({},{$root:{l0:l0}})}'
+    )
+    assertCodegen(
+      '<view v-for="(item,index) in list" :key="index"><view v-if="test(item.id)"><view v-if="test(item.type)">{{test(\'item\')}}</view></view></view>',
+      '<block wx:for="{{$root.l0}}" wx:for-item="item" wx:for-index="index" wx:key="index"><view><block wx:if="{{item.m0}}"><view><block wx:if="{{item.m1}}"><view>{{item.m2}}</view></block></view></block></view></block>',
+      'with(this){var l0=__map(list,function(item,index){var $orig=__get_orig(item);var m0=test(item.id);var m1=m0?test(item.type):null;var m2=m0&&m1?test("item"):null;return{$orig:$orig,m0:m0,m1:m1,m2:m2}});$mp.data=Object.assign({},{$root:{l0:l0}})}'
+    )
   })
 })

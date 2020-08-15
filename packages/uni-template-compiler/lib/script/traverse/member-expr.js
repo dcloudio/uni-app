@@ -21,27 +21,30 @@ function findScoped (path, test, state) {
       forIndex
     } = scoped
     let match = false
-    function Identifier (path) {
-      if (!match && path.key !== 'key' && (path.key !== 'property' || path.parent.computed)) {
-        match = isMatch(path.node.name, forItem, forIndex)
-        if (match) {
-          path.stop()
-        }
-      }
-    }
     path.traverse({
       noScope: true,
-      Identifier
-    })
-    if (!match) {
-      if (t.isIdentifier(test, { name: IDENTIFIER_METHOD }) || t.isIdentifier(test, { name: IDENTIFIER_FILTER })) {
-        match = scoped.declarationArray.find(({ declarations }) => declarations.find(({ id }) => id === test))
-      } else if (!match) {
-        traverse(test, {
-          noScope: true,
-          Identifier
-        })
+      Identifier (path) {
+        if (path.key !== 'key' && (path.key !== 'property' || path.parent.computed)) {
+          match = isMatch(path.node.name, forItem, forIndex)
+          if (match) {
+            path.stop()
+          }
+        }
       }
+    })
+    if (!match && test) {
+      traverse(t.arrayExpression([test]), {
+        noScope: true,
+        Identifier (path) {
+          if (path.key !== 'key' && (path.key !== 'property' || path.parent.computed)) {
+            const node = path.node
+            match = isMatch(node.name, forItem, forIndex) || scoped.declarationArray.find(({ declarations }) => declarations.find(({ id }) => id === node))
+            if (match) {
+              path.stop()
+            }
+          }
+        }
+      })
     }
     return match
   })
