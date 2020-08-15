@@ -108,7 +108,7 @@
 	* [CanvasContext](api/canvas/CanvasContext.md)
 	* [CanvasGradient](api/canvas/CanvasGradient.md)
 * 广告
-  * [激励视频广告](api/a-d/rewarded-video-ad.md)
+  * [激励视频广告](api/a-d/rewarded-video.md)
   * [插屏广告](api/ad/interstitial-ad.md)
 * 第三方服务
   * [获取服务供应商](api/plugins/provider.md)
