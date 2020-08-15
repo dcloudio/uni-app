@@ -213,6 +213,15 @@ function makeMap (str, expectsLowerCase) {
     ? val => map[val.toLowerCase()]
     : val => map[val]
 }
+
+/**
+ * 微信、QQ小程序模板支持的简单类型
+ * @param {*} node
+ */
+function isSimpleObjectExpression (node) {
+  return t.isObjectExpression(node) && !node.properties.find(({ key, value }) => !t.isIdentifier(key) || !(t.isIdentifier(value) || t.isStringLiteral(value) || t.isBooleanLiteral(value) || t.isNumericLiteral(value) || t.isNullLiteral(value)))
+}
+
 module.exports = {
   hasOwn,
   isUnaryTag: makeMap(
@@ -242,5 +251,6 @@ module.exports = {
     return str
   }),
   processMemberExpression,
-  getForIndexIdentifier
+  getForIndexIdentifier,
+  isSimpleObjectExpression
 }
