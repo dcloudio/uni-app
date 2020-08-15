@@ -109,7 +109,7 @@
 	* [CanvasGradient](api/canvas/CanvasGradient.md)
 * 广告
   * [激励视频广告](api/a-d/rewarded-video.md)
-  * [插屏广告](api/ad/interstitial-ad.md)
+  * [插屏广告](api/a-d/interstitial.md)
 * 第三方服务
   * [获取服务供应商](api/plugins/provider.md)
   * [登录](api/plugins/login.md)
