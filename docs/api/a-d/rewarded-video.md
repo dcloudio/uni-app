@@ -258,7 +258,15 @@ code|message|
 -5100|其他错误，聚合广告商内部错误
 
 
-### 已封装好的示例，方便多个页面直接调用(仅适用于app平台)
+**@error 详细错误码**
+
+- App端聚合的穿山甲(iOS)：[错误码](https://ad.oceanengine.com/union/media/union/download/detail?id=16&docId=5de8d574b1afac00129330d5&osType=ios)
+- App端聚合的穿山甲(Android)：[错误码](https://ad.oceanengine.com/union/media/union/download/detail?id=4&docId=5de8d9b925b16b00113af0ed&osType=android)
+- App端聚合的广点通(iOS)：[错误码](https://developers.adnet.qq.com/doc/ios/union/union_debug#%E9%94%99%E8%AF%AF%E7%A0%81)
+- App端聚合的广点通(Android)：[错误码](https://developers.adnet.qq.com/doc/android/union/union_debug#sdk%20%E9%94%99%E8%AF%AF%E7%A0%81)
+
+
+### 已封装好多页面调用示例(仅适用于app平台，注意看注释，根据自己业务需求修改)
 ```
 <script>
   import AdHelper from "ad.js"
