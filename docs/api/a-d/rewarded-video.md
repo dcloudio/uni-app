@@ -76,7 +76,11 @@
       }
     },
     onReady() {
+      // HBuilderX标准基座真机运行测试激励视频广告位标识（adpid）为：1507000689
+      // adpid: 1507000689 仅用于测试，发布时需要改为广告后台（https://uniad.dcloud.net.cn/）申请的 adpid
+      // 广告后台申请的广告位(adpid)需要自定义基座/云打包/本地打包后生效
       this._adpid = 1507000689
+
       // 可选预加载数据
       // AD.load(this._adpid)
     },
