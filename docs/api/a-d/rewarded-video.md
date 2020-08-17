@@ -65,6 +65,9 @@
 
 
 ### 完整调用示例
+
+支持多页面重复调用，可以传入不同广告位，默认处理了Loading状态及快速点击调用问题
+
 ```
 <script>
   import AD from "ad.js"
@@ -99,7 +102,7 @@
             console.log("onClose " + res.isEnded);
           }
 
-          // 可选预加载下一条，减少加载等待时间
+          // 可选预加载下一条广告数据，减少加载等待时间，调用此 API 不会显示loading，不影响业务
           // AD.load(this._adpid)
         }, (err) => {
           // 广告无法显示，输出错误信息，可以采集数据上报以便分析
