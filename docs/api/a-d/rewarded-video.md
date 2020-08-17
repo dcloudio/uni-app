@@ -302,7 +302,6 @@ code|message|
 
 ```
 // ad.js
-
 class AdHelper {
   static get instance() {
     if (this._instance == null) {
@@ -316,12 +315,12 @@ class AdHelper {
     this._ads = {}
   }
 
-  load(adpid) {
+  load(adpid, onload, onerror) {
     if (!adpid || this.isBusy(adpid)) {
       return
     }
 
-    this.get(adpid).load()
+    this.get(adpid).load(onload, onerror)
   }
 
   show(adpid, onsuccess, onfail) {
@@ -384,6 +383,7 @@ class RewardedVideo {
     this._isLoad = false
     this._isLoading = false
     this._lastLoadTime = 0
+    this._lastError = null
 
     this._loadCallback = null
     this._closeCallback = null
@@ -419,6 +419,8 @@ class RewardedVideo {
       if (code === -5008) {
         this._isLoad = false
       }
+
+      this._lastError = data
 
       this.onError(data)
     })
@@ -459,6 +461,11 @@ class RewardedVideo {
       return
     }
 
+    if (this._lastError !== null) {
+      this.onError(this._lastError)
+      return
+    }
+
     const provider = this.getProvider()
     if (provider === ProviderType.CSJ && this.isExpired) {
       this._isLoad = false
@@ -496,6 +503,7 @@ class RewardedVideo {
   _loadAd() {
     this._isLoad = false
     this._isLoading = true
+    this._lastError = null
     this._rewardAd.load()
   }
 }
