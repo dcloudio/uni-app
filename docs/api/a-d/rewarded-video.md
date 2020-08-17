@@ -85,7 +85,7 @@
       // AD.load(this._adpid)
     },
     methods: {
-      show() {
+      showAd() {
         AD.show(this._adpid, (res) => {
           console.log("onclose")
           console.log(res)
@@ -178,12 +178,15 @@ const ProviderType = {
   GDT: 'gdt'
 }
 
+const RETRY_COUNT = 1
+
 class RewardedVideo {
   constructor(options = {}) {
     this._isLoad = false
     this._isLoading = false
     this._lastLoadTime = 0
     this._lastError = null
+    this._retryCount = 0
 
     this._loadCallback = null
     this._closeCallback = null
@@ -201,10 +204,8 @@ class RewardedVideo {
       this._isLoad = false
       this.onClose(e)
     })
-    rewardAd.onVerify && rewardAd.onVerify((e) => {
-      // this._dispatchEvent('verify', {
-      //   isValid: e.isValid
-      // })
+    rewardAd.onVerify((e) => {
+      // e.isValid
     })
     rewardAd.onError(({
       code,
@@ -221,8 +222,13 @@ class RewardedVideo {
         return
       }
 
-      this._lastError = data
+      if (this._retryCount < RETRY_COUNT) {
+        this._retryCount += 1
+        this._loadAd()
+        return
+      }
 
+      this._lastError = data
       this.onError(data)
     })
   }
@@ -251,6 +257,8 @@ class RewardedVideo {
       this.onLoad()
       return
     }
+
+    this._retryCount = 0
 
     this._loadAd()
   }
