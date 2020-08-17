@@ -1540,15 +1540,11 @@ exports.main = async (event) => {
       if (aaaRes.data && bbbRes.data) {
         try {
           const updateAAARes = await transaction.collection('account').doc('aaa').update({
-            data: {
-              amount: _.inc(-10)
-            }
+            amount: _.inc(-10)
           })
 
           const updateBBBRes = await transaction.collection('account').doc('bbb').update({
-            data: {
-              amount: _.inc(10)
-            }
+            amount: _.inc(10)
           })
 
           console.log(`transaction succeeded`)
@@ -1618,15 +1614,11 @@ exports.main = async (event) => {
 
     if (aaaRes.data && bbbRes.data) {
       const updateAAARes = await transaction.collection('account').doc('aaa').update({
-        data: {
-          amount: _.inc(-10)
-        }
+        amount: _.inc(-10)
       })
 
       const updateBBBRes = await transaction.collection('account').doc('bbb').update({
-        data: {
-          amount: _.inc(10)
-        }
+        amount: _.inc(10)
       })
 
       await transaction.commit()
@@ -4408,21 +4400,17 @@ let res = await db.collection('items').where(dbCmd.expr(
 ```js
 // 以下方法只会更新 style.color 为 red，而不是将 style 更新为 { color: 'red' }，即不影响 style 中的其他字段
 let res = await db.collection('todos').doc('doc-id').update({
-  data: {
-    style: {
-      color: 'red'
-    }
+  style: {
+    color: 'red'
   }
 })
 
 // 以下方法更新 style 为 { color: 'red', size: 'large' }
 let res = await db.collection('todos').doc('doc-id').update({
-  data: {
-    style: dbCmd.set({
-      color: 'red',
-      size: 'large'
-    })
-  }
+  style: dbCmd.set({
+    color: 'red',
+    size: 'large'
+  })
 })
 ```
 
@@ -4438,9 +4426,7 @@ let res = await db.collection('todos').doc('doc-id').update({
 ```js
 const dbCmd = db.command
 let res = await db.collection('todos').doc('todo-id').update({
-  data: {
-    style: dbCmd.remove()
-  }
+  style: dbCmd.remove()
 })
 ```
 
@@ -4460,9 +4446,7 @@ let res = await db.collection('todos').doc('todo-id').update({
 ```js
 const dbCmd = db.command
 let res = await db.collection('todos').doc('todo-id').update({
-  data: {
-    progress: dbCmd.inc(10)
-  }
+  progress: dbCmd.inc(10)
 })
 ```
 
@@ -4482,9 +4466,7 @@ let res = await db.collection('todos').doc('todo-id').update({
 ```js
 const dbCmd = db.command
 let res = await db.collection('todos').doc('todo-id').update({
-  data: {
-    progress: dbCmd.mul(10)
-  }
+  progress: dbCmd.mul(10)
 })
 ```
 
@@ -4500,9 +4482,7 @@ let res = await db.collection('todos').doc('todo-id').update({
 ```js
 const dbCmd = db.command
 let res = await db.collection('todos').doc('doc-id').update({
-  data: {
-    progress: dbCmd.min(50)
-  }
+  progress: dbCmd.min(50)
 })
 ```
 
@@ -4518,9 +4498,7 @@ let res = await db.collection('todos').doc('doc-id').update({
 ```js
 const dbCmd = db.command
 let res = await db.collection('todos').doc('doc-id').update({
-  data: {
-    progress: dbCmd.max(50)
-  }
+  progress: dbCmd.max(50)
 })
 ```
 
@@ -4534,9 +4512,7 @@ let res = await db.collection('todos').doc('doc-id').update({
 ```js
 const dbCmd = db.command
 let res = await db.collection('todos').doc('doc-id').update({
-  data: {
-    progress: dbCmd.rename('totalProgress')
-  }
+  progress: dbCmd.rename('totalProgress')
 })
 ```
 
@@ -4545,22 +4521,18 @@ let res = await db.collection('todos').doc('doc-id').update({
 ```js
 const dbCmd = db.command
 let res = await db.collection('todos').doc('doc-id').update({
-  data: {
-    someObject: {
-      someField: dbCmd.rename('someObject.renamedField')
-    }
+  someObject: {
+    someField: dbCmd.rename('someObject.renamedField')
   }
 })
 ```
-或：  
 
+或：
  
 ```js
 const dbCmd = db.command
 let res = await db.collection('todos').doc('doc-id').update({
-  data: {
-    'someObject.someField': dbCmd.rename('someObject.renamedField')
-  }
+  'someObject.someField': dbCmd.rename('someObject.renamedField')
 })
 ```
 
@@ -4606,9 +4578,7 @@ let res = await db.collection('todos').doc('doc-id').update({
 ```js
 const dbCmd = db.command
 let res = await db.collection('todos').doc('doc-id').update({
-  data: {
-    tags: dbCmd.push(['mini-program', 'cloud'])
-  }
+  tags: dbCmd.push(['mini-program', 'cloud'])
 })
 ```
 
@@ -4617,42 +4587,37 @@ let res = await db.collection('todos').doc('doc-id').update({
 ```js
 const dbCmd = db.command
 let res = await db.collection('todos').doc('doc-id').update({
-  data: {
-    tags: dbCmd.push({
-      each: ['mini-program', 'cloud'],
-      position: 1,
-    })
-  }
+  tags: dbCmd.push({
+    each: ['mini-program', 'cloud'],
+    position: 1,
+  })
 })
 ```
 
 ##### 示例 3：排序
- 插入后对整个数组做排序  
+
+插入后对整个数组做排序  
 
  
 ```js
 const dbCmd = db.command
 let res = await db.collection('todos').doc('doc-id').update({
-  data: {
-    tags: dbCmd.push({
-      each: ['mini-program', 'cloud'],
-      sort: 1,
-    })
-  }
+  tags: dbCmd.push({
+    each: ['mini-program', 'cloud'],
+    sort: 1,
+  })
 })
 ```
-不插入，只对数组做排序  
 
+不插入，只对数组做排序  
  
 ```js
 const dbCmd = db.command
 let res = await db.collection('todos').doc('doc-id').update({
-  data: {
-    tags: dbCmd.push({
-      each: [],
-      sort: 1,
-    })
-  }
+  tags: dbCmd.push({
+    each: [],
+    sort: 1,
+  })
 })
 ```
 如果字段是对象数组，可以如下根据元素对象里的字段进行排序：  
@@ -4661,17 +4626,15 @@ let res = await db.collection('todos').doc('doc-id').update({
 ```js
 const dbCmd = db.command
 let res = await db.collection('todos').doc('doc-id').update({
-  data: {
-    tags: dbCmd.push({
-      each: [
-        { name: 'miniprogram', weight: 8 },
-        { name: 'cloud', weight: 6 },
-      ],
-      sort: {
-        weight: 1,
-      },
-    })
-  }
+  tags: dbCmd.push({
+    each: [
+      { name: 'miniprogram', weight: 8 },
+      { name: 'cloud', weight: 6 },
+    ],
+    sort: {
+      weight: 1,
+    },
+  })
 })
 ```
 
@@ -4682,12 +4645,10 @@ let res = await db.collection('todos').doc('doc-id').update({
 ```js
 const dbCmd = db.command
 let res = await db.collection('todos').doc('doc-id').update({
-  data: {
-    tags: dbCmd.push({
-      each: ['mini-program', 'cloud'],
-      slice: -2,
-    })
-  }
+  tags: dbCmd.push({
+    each: ['mini-program', 'cloud'],
+    slice: -2,
+  })
 })
 ```
 
@@ -4696,14 +4657,12 @@ let res = await db.collection('todos').doc('doc-id').update({
 ```js
 const dbCmd = db.command
 let res = await db.collection('todos').doc('doc-id').update({
-  data: {
-    tags: dbCmd.push({
-      each: ['mini-program', 'cloud'],
-      position: 1,
-      slice: 2,
-      sort: 1,
-    })
-  }
+  tags: dbCmd.push({
+    each: ['mini-program', 'cloud'],
+    position: 1,
+    slice: 2,
+    sort: 1,
+  })
 })
 ```
 
@@ -4717,9 +4676,7 @@ let res = await db.collection('todos').doc('doc-id').update({
 ```js
 const dbCmd = db.command
 let res = await db.collection('todos').doc('doc-id').update({
-  data: {
-    tags: dbCmd.pop()
-  }
+  tags: dbCmd.pop()
 })
 ```
 
@@ -4733,9 +4690,7 @@ let res = await db.collection('todos').doc('doc-id').update({
 ```js
 const dbCmd = db.command
 let res = await db.collection('todos').doc('doc-id').update({
-  data: {
-    tags: dbCmd.unshift(['mini-program', 'cloud'])
-  }
+  tags: dbCmd.unshift(['mini-program', 'cloud'])
 })
 ```
 
@@ -4749,9 +4704,7 @@ let res = await db.collection('todos').doc('doc-id').update({
 ```js
 const dbCmd = db.command
 let res = await db.collection('todos').doc('doc-id').update({
-  data: {
-    tags: dbCmd.shift()
-  }
+  tags: dbCmd.shift()
 })
 ```
 
@@ -4765,9 +4718,7 @@ let res = await db.collection('todos').doc('doc-id').update({
 ```js
 const dbCmd = db.command
 let res = await db.collection('todos').doc('doc-id').update({
-  data: {
-    tags: dbCmd.pull('database')
-  }
+  tags: dbCmd.pull('database')
 })
 ```
 
@@ -4776,9 +4727,7 @@ let res = await db.collection('todos').doc('doc-id').update({
 ```js
 const dbCmd = db.command
 let res = await db.collection('todos').doc('doc-id').update({
-  data: {
-    tags: dbCmd.pull(dbCmd.in(['database', 'cloud']))
-  }
+  tags: dbCmd.pull(dbCmd.in(['database', 'cloud']))
 })
 ```
 
@@ -4797,12 +4746,10 @@ let res = await db.collection('todos').doc('doc-id').update({
 ```js
 const dbCmd = db.command
 let res = await db.collection('todos').doc('doc-id').update({
-  data: {
-    places: dbCmd.pull({
-      area: dbCmd.gt(100),
-      age: dbCmd.lt(2),
-    })
-  }
+  places: dbCmd.pull({
+    area: dbCmd.gt(100),
+    age: dbCmd.lt(2),
+  })
 })
 ```
 
@@ -4832,14 +4779,12 @@ let res = await db.collection('todos').doc('doc-id').update({
 ```js
 const dbCmd = db.command
 let res = await db.collection('todos').doc('doc-id').update({
-  data: {
-    cities: dbCmd.pull({
-      places: dbCmd.elemMatch({
-        area: dbCmd.gt(100),
-        age: dbCmd.lt(2),
-      })
+  cities: dbCmd.pull({
+    places: dbCmd.elemMatch({
+      area: dbCmd.gt(100),
+      age: dbCmd.lt(2),
     })
-  }
+  })
 })
 ```
 
@@ -4855,9 +4800,7 @@ let res = await db.collection('todos').doc('doc-id').update({
 ```js
 const dbCmd = db.command
 let res = await db.collection('todos').doc('doc-id').update({
-  data: {
-    tags: dbCmd.pullAll(['database', 'cloud'])
-  }
+  tags: dbCmd.pullAll(['database', 'cloud'])
 })
 ```
 
@@ -4873,28 +4816,23 @@ let res = await db.collection('todos').doc('doc-id').update({
 ```js
 const dbCmd = db.command
 let res = await db.collection('todos').doc('doc-id').update({
-  data: {
-    tags: dbCmd.addToSet('database')
-  }
+  tags: dbCmd.addToSet('database')
 })
 ```
 
 ##### 示例代码 2：添加多个元素
- 需传入一个对象，其中有一个字段 `each`，其值为数组，每个元素就是要添加的元素  
+
+需传入一个对象，其中有一个字段 `each`，其值为数组，每个元素就是要添加的元素  
 
  
 ```js
 const dbCmd = db.command
 let res = await db.collection('todos').doc('doc-id').update({
-  data: {
-    tags: dbCmd.addToSet({
-      each: ['database', 'cloud']
-    })
-  }
+  tags: dbCmd.addToSet({
+    each: ['database', 'cloud']
+  })
 })
 ```
-
-
 
 ## 聚合操作符@aggregate-operator
 
@@ -4904,9 +4842,9 @@ let res = await db.collection('todos').doc('doc-id').update({
 
 聚合操作符。返回一个数字的绝对值。  
 
-      
-#####  API 说明
- 语法如下：  
+##### API 说明
+
+语法如下：  
 
  
 ```js
