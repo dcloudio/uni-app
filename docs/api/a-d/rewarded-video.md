@@ -23,6 +23,9 @@
 
 激励视频广告组件是由客户端原生的图片、文本、视频控件组成的，层级最高，会覆盖在普通组件上。
 
+播放开始后提供6秒关闭功能，请注意：这个会对CPM有负向影响。请用开发者帐号的邮箱，将应用名称和APP ID邮件发送到bd@dcloud.io。
+
+
 ### 广告创建
 
 开发者可以调用 uni.createRewardedVideoAd 创建激励视频广告组件。
@@ -106,7 +109,7 @@
           // AD.load(this._adpid)
         }, (err) => {
           // 广告无法显示，输出错误信息，可以采集数据上报以便分析
-          console.log(err)
+          console.log(err) // {code: code, errMsg: message}
         })
       }
     }
@@ -527,11 +530,11 @@ code|message|
 
 
 **注意事项**
+- 仅 V3 编译支持，参考项目 manifest.json 配置
 - 测试期间请使用测试 `adpid`，参考测试代码，如果无法显示换个时间再试
 - 多次调用 `RewardedVideoAd.onLoad()`、`RewardedVideoAd.onError()`、`RewardedVideoAd.onClose()` 等方法监听广告事件会产生多次事件回调，建议在创建广告后监听一次即可。
-- 仅 V3 编译支持，参考 manifest.json 配置
-- 为避免滥用广告资源，目前每个用户每天可观看激励式视频广告的次数有限，建议展示广告按钮前先判断广告是否拉取成功。(微信小程序、广点通有限制，穿山甲无限制)
-- 微信小程序平台，uni.createRewardedVideoAd 创建激励视频广告组件。该方法返回的是一个单例，该实例仅对当前页面有效，不允许跨页面使用。
+- 为避免滥用广告资源，目前每个用户每天可观看激励式视频广告的次数有限，建议展示广告按钮前先判断广告是否拉取成功。
+- App平台，建议每个广告商每个设备每天调用次数不超过`15`，中间要有间隔时间，否则可能触发系统策略导致流量收益下降
 
 **AD组件**
 文档地址：[https://uniapp.dcloud.io/component/ad](https://uniapp.dcloud.io/component/ad)
