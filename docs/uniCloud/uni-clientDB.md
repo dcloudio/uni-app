@@ -111,7 +111,7 @@ exports.main = async (event, context) => {
 			command: event.command,
 			pagination: event.pagination,
 			rules: {
-				list: {
+				list: { // 数据表名
 					// CRUD权限
 					create: false,
 					read: true,
@@ -119,7 +119,7 @@ exports.main = async (event, context) => {
 					delete: false,
 					// 是否允许使用聚合
 					aggregate: false,
-					// 是否允许使用联表查询，联表查询时blockedField不会对被连接的集合生效
+					// 是否允许使用联表查询，联表查询时blockedField不会对被连接的数据表生效
 					lookup: false,
 					// 使用聚合时blockField不会覆盖客户端的project，而是在聚合第一阶段插入project，不使用聚合时会在最后阶段插入一个field（会覆盖客户端的field方法）
 					blockedField: ['extra'],
@@ -160,7 +160,7 @@ exports.main = async (event, context) => {
 
 **rules参数说明**
 
-rules下可以对不同的集合配置不同的权限，比如以下规则代表”集合list允许插入，集合goods允许更新“
+rules下可以对不同的数据表配置不同的权限，比如以下规则代表”数据表list允许插入，数据表goods允许更新“
 
 ```js
 {
@@ -203,7 +203,7 @@ rules下可以对不同的集合配置不同的权限，比如以下规则代表
 		useAggregate, // 是否使用了聚合
 		useLookup, // 是否使用了联表查询
 		type, // 操作类型，可能的值为create、read、update、delete
-		collection, // 当前集合名
+		collection, // 当前数据表名
 		methodList // 使用到的方法列表
 	},
 	stage: {
@@ -243,4 +243,4 @@ afterStageAppend: function({
   + 使用mixinCondition时客户端不可使用`collection('xxx').doc('xxx')`方法
 
 - 关于联表查询
-  + 连接的集合也会受所配置的权限规则中对应集合规则限制，主要是read，目前连接的集合不会受blockedField限制
+  + 连接的数据表也会受所配置的权限规则中对应数据表规则限制，主要是read，目前连接的数据表不会受blockedField限制
