@@ -96,6 +96,14 @@ function initGlobalListeners () {
   })
 
   globalEvent.addEventListener('uistylechange', function (event) {
+    const args = {
+      theme: event.uistyle
+    }
+
+    callAppHook(appCtx, 'onThemeChange', args)
+    publish('onThemeChange', args)
+
+    // 兼容旧版本 API
     publish('onUIStyleChange', {
       style: event.uistyle
     })

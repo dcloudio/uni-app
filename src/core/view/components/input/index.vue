@@ -18,6 +18,7 @@
       <input
         ref="input"
         v-model="valueSync"
+        v-keyboard
         :disabled="disabled"
         :type="inputType"
         :maxlength="maxlength"
@@ -153,8 +154,6 @@ export default {
       }
       $vm = $vm.$parent
     }
-
-    this.initKeyboard(this.$refs.input)
   },
   beforeDestroy () {
     this.$dispatch('Form', 'uni-form-group-update', {

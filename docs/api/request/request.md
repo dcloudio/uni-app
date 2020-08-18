@@ -15,8 +15,9 @@
 |dataType|String|否|json	|如果设为 json，会尝试对返回的数据做一次 JSON.parse||
 |responseType|String|否|text	|设置响应的数据类型。合法值：text、arraybuffer|App和支付宝小程序不支持|
 |sslVerify|Boolean|否|true|验证 ssl 证书|仅App安卓端支持（HBuilderX 2.3.3+）|
-|withCredentials|Boolean|否|false|跨域请求时是否携带凭证（cookies）|仅H5支持（HBuilderX 2.7.0+）|
-|success|Function|否||收到开发者服务成功返回的回调函数||
+|withCredentials|Boolean|否|false|跨域请求时是否携带凭证（cookies）|仅H5支持（HBuilderX 2.6.15+）|
+|firstIpv4|Boolean|否|false|DNS解析时优先使用ipv4|仅 App-Android 支持 (HBuilderX 2.8.0+)|
+|success|Function|否||收到开发者服务器成功返回的回调函数||
 |fail|Function|否||接口调用失败的回调函数||
 |complete|Function|否||接口调用结束的回调函数（调用成功、失败都会执行）|&nbsp;|
 
@@ -115,6 +116,7 @@ requestTask.abort();
 **Tips**
 
 - 请求的 ``header`` 中 ``content-type`` 默认为 ``application/json``。
+- 避免在 ``header`` 中使用中文，或者使用 encodeURIComponent 进行编码，否则在百度小程序报错。（来自：[快狗打车前端团队](https://juejin.im/user/2612095359650712)）
 - 网络请求的 ``超时时间`` 可以统一在 ``manifest.json`` 中配置 [networkTimeout](/collocation/manifest?id=networktimeout)。
 - H5 端本地调试需注意跨域问题，参考：[调试跨域问题解决方案](https://ask.dcloud.net.cn/article/35267)
 - 注意由于百度小程序iOS客户端，请求失败时会进入fail回调，需要针对百度增加相应的处理以解决该问题。

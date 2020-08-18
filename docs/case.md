@@ -1,6 +1,6 @@
-DCloud有**420万**开发者，[uni统计](https://tongji.dcloud.net.cn/)手机端月活**6.5亿**。是开发者数量和案例最丰富的多端开发框架。
+DCloud有**500万**开发者，[uni统计](https://tongji.dcloud.net.cn/)手机端月活**10亿**。是开发者数量和案例最丰富的多端开发框架。
 
-欢迎知名开发商提交案例或接入uni统计，[项目案例征集](https://github.com/dcloudio/uni-app/issues/6)提交。
+欢迎知名开发商[提交案例](https://github.com/dcloudio/uni-app/issues/6)或接入[uni统计](https://tongji.dcloud.net.cn/)。
 
 ### 新冠抗疫专区案例
 
@@ -41,18 +41,58 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 
 ### 第三方开发者案例
 
-<a href="https://zqact.tenpay.com/chaogu/" target="_blank" class="clear-style"><b>腾讯全民模拟炒股大赛：</b></a> 由腾讯金融科技倾力打造的证券投资者教育平台。
+#### 推荐案例
+
+<a href="https://m.qinxuan.honor.cn/" target="_blank" class="clear-style"><b>华为荣耀亲选商城：</b></a> 华为公司旗下荣耀品牌精品电商平台。
 <div style="display:flex;justify-content: space-around;">
-	<a href="javascript:;" target="_blank" class="clear-style barcode-view">
-		<img src="https://img.cdn.aliyun.dcloud.net.cn/uni-app/case/tx-chaogu-mp-weixin.jpg" width="200"/>
-		<span style="margin-top:15px;">微信小程序码</span>
+	<a href="javascript:;" target="_self" class="clear-style barcode-view">
+		<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/60aa65e0-d95c-11ea-b244-a9f5e5565f30.png" width="200"/>
+		<span style="margin-top:15px;">微信小程序</span>
 	</a>
-    <a href="javascript:;" target="_blank" class="clear-style barcode-view">
-		<img src="https://img.cdn.aliyun.dcloud.net.cn/uni-app/case/tx-chaogu-h5.png" width="200"/>
-		<span style="margin-top:15px;">H5码（请使用微信扫码）</span>
+  <a href="https://m.qinxuan.honor.cn/" target="_blank" class="clear-style barcode-view">
+		<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-alicdn/1fa35320-c559-11ea-81ea-f115fe74321c.png" width="200"/>
+		<span style="margin-top:15px;">H5</span>
+	</a>
+  <a href="https://appgallery1.huawei.com/#/app/C100382765" target="_blank" class="clear-style barcode-view">
+		<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-alicdn/6933ea80-c55a-11ea-9dfb-6da8e309e0d8.png" width="200"/>
+		<span style="margin-top:15px;">App（部分栏目使用DCloud SDK）</span>
 	</a>
 </div>
 
+
+<a href="https://discuz.chat/docs/" target="_blank" class="clear-style"><b>腾讯Discuz! Q：</b></a> 经典论坛新版本，站长利器。
+<div style="display:flex;justify-content: space-around;">
+  <a href="javascript:;" target="_self" class="clear-style barcode-view">
+		<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-alicdn/6f1a9a90-c5ad-11ea-81ea-f115fe74321c.png" width="200"/>
+		<span style="margin-top:15px;">微信小程序</span>
+	</a>
+  <a href="https://discuz.chat/" target="_blank" class="clear-style barcode-view">
+		<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-alicdn/c7d1be20-c562-11ea-81ea-f115fe74321c.png" width="200"/>
+		<span style="margin-top:15px;">H5</span>
+	</a>
+</div>
+
+<b>星巴克：</b>全球最大的咖啡连锁店，世界领先的特种咖啡零售商
+<div style="display:flex;justify-content: space-around;">
+	<a href="javascript:;" target="_blank" class="clear-style barcode-view">
+		<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/734f5c50-d3df-11ea-81ea-f115fe74321c.jpg" width="200"/>
+		<span style="margin-top:15px;">微信小程序</span>
+	</a>
+</div>
+
+<b>Crimaster犯罪大师：</b>火爆的全球推理侦探专属社区。优秀App案例，Appstore娱乐分类排名曾排**第1位**。[报道](https://baijiahao.baidu.com/s?id=1667788917828125742&wfr=spider&for=pc)
+<div style="display:flex;justify-content: space-around;">
+	<a href="https://android.myapp.com/myapp/detail.htm?apkName=com.ultron.crimaster" target="_blank" class="clear-style barcode-view">
+		<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-alicdn/83bc24b0-c55c-11ea-b244-a9f5e5565f30.png" width="200"/>
+		<span style="margin-top:15px;">Android App版</span>
+	</a>
+	<a href="https://apps.apple.com/cn/app/crimaster%E7%8A%AF%E7%BD%AA%E5%A4%A7%E5%B8%88/id1501701702" target="_blank" class="clear-style barcode-view">
+		<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-alicdn/83bbd690-c55c-11ea-8bd0-2998ac5bbf7e.png" width="200"/>
+		<span style="margin-top:15px;">iOS App版</span>
+	</a>
+</div>
+
+<!-- 
 <a href="https://www.csdn.net/" target="_blank" class="clear-style"><b>CSDN：</b></a> 专业 IT 技术社区，致力于为中国软件开发者提供知识传播、在线学习、职业发展等全生命周期服务。
 <div style="display:flex;justify-content: space-around;">
 	<a href="javascript:;" target="_blank" class="clear-style barcode-view">
@@ -60,6 +100,7 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 		<span style="margin-top:15px;">微信小程序码</span>
 	</a>
 </div>
+-->
 
 <a href="https://www.oschina.net/" target="_blank" class="clear-style"><b>开源中国：</b></a> 中文开源技术交流社区，提供最新的开源软件资讯。
 <div style="display:flex;justify-content: space-around;">
@@ -70,6 +111,30 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
     <a href="javascript:;" target="_blank" class="clear-style barcode-view">
 		<img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/onchina.png" width="200"/>
 		<span style="margin-top:15px;">百度小程序码</span>
+	</a>
+</div>
+
+<b>vivo官方商城：</b> vivo公司旗下的官方自营商城。
+<div style="display:flex;justify-content: space-around;">
+	<a href="javascript:;" target="_blank" class="clear-style barcode-view">
+		<img src="https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/vivo-weixin.jpg" width="200"/>
+		<span style="margin-top:15px;">微信小程序码</span>
+	</a>
+  <a href="javascript:;" target="_blank" class="clear-style barcode-view">
+		<img src="https://img.cdn.aliyun.dcloud.net.cn/uni-app/case/vivo-mall.png" width="200"/>
+		<span style="margin-top:15px;">支付宝小程序码</span>
+	</a>
+</div>
+
+<a href="https://duolingo.91ddedu.com/" target="_blank" class="clear-style"><b>登登多邻国：</b></a> 外语学习者题库。其服务端整体基于[uniCloud](https://uniapp.dcloud.net.cn/uniCloud/README)，前端包括PC和H5网站、微信小程序，均连接uniCloud。日请求量百万级。
+<div style="display:flex;justify-content: space-around;">
+	<a href="https://duolingo.91ddedu.com/" target="_blank" class="clear-style barcode-view">
+		<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-alicdn/bda036a0-c55f-11ea-b997-9918a5dda011.png" width="200"/>
+		<span style="margin-top:15px;">Web及H5码</span>
+	</a>
+  <a href="javascript:;" target="_blank" class="clear-style barcode-view">
+		<img src="https://duolingo.91ddedu.com/static/miniapp.4a4ddf6b.jpg" width="200"/>
+		<span style="margin-top:15px;">微信小程序码</span>
 	</a>
 </div>
 
@@ -89,7 +154,7 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 	</a>
 </div>
 
-<a href="https://www.cyb520.com/" target="_blank" class="clear-style"><b>宠友帮：</b></a>您身边的宠物服务综合平台。
+<a href="https://www.cyb520.com/" target="_blank" class="clear-style"><b>宠友帮：</b></a>多端开发的创业公司案例。
 <div style="display:flex;justify-content: space-around;">
 	<a href="https://android.myapp.com/myapp/detail.htm?apkName=com.cyb520.app" target="_blank" class="clear-style barcode-view">
 		<img src="https://a.app.qq.com/o/image/microQr.png?pkgName=com.cyb520.app" width="200"/>
@@ -133,43 +198,26 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 	</a>
 </div> -->
 
-
-<!-- <a href="//m3w.cn/__uni__4c6db6e" target="_blank" class="clear-style"><b>UniApp视频教程：</b></a>视频教育App，帮助开发者学习了解uni-app、h5+、mui等DCloud产品。开发者枫桥。
-<div style="display:flex;justify-content: space-around;">
-	<a href="//m3w.cn/__uni__4c6db6e" target="_blank" class="clear-style barcode-view">
-		<img src="//img.cdn.aliyun.dcloud.net.cn/stream/qr/__UNI__4C6DB6E.png" width="200"/>
-		<span style="margin-top:15px;">App及H5的通用快码</span>
-	</a>
-	<a href="//m3w.cn/__uni__4c6db6e" target="_blank" class="clear-style barcode-view">
-		<img src="//img-cdn-qiniu.dcloud.net.cn/uniapp/doc/yuanma.jpg" width="200"/>
-		<span style="margin-top:15px;">微信小程序码</span>
-	</a>
-</div> -->
 <br>
 <br>
-
 
 **极志愿：**专业高考志愿填报。**<span style="color:#42b983">多端获客典型案例，1个月获得400万用户</span>**，[详见报道](https://mp.weixin.qq.com/s?__biz=MzU3NTU5NDc0NA==&mid=2247491214&idx=1&sn=7e334d079146d9e31cea407f45bd8624)。体验方式：[App、微信小程序、百度小程序、H5 官网地址](https://www.jizhy.com/home/)
 
+
 #### 互联网公司
 
-**腾讯：** 微信小程序搜索“腾讯全民模拟炒股大赛”
+**华为：** 微信小程序搜索“荣耀亲选商城”、[H5](https://m.qinxuan.honor.cn/)、[App部分栏目使用DCloud SDK](https://appgallery1.huawei.com/#/app/C100382765)
 
-**华为：** 微信小程序搜索“荣耀亲选商城”、[H5](https://m.qinxuan.honor.cn/)
+**腾讯：** 微信小程序搜索“腾讯全民模拟炒股大赛”、[H5（需使用微信打开）](https://zqact.tenpay.com/chaogu/)
 
-**京东：** 京东开发的新冠抗疫服务平台。[H5](http://yingji-h5.chanye.jdcloud.com/)
+**字节跳动：** 抖音小游戏中心。
 
-<div class="scan-code">
- <strong>vivo商城官方小程序：</strong> 支付宝搜索 "vivo"，或鼠标移此查看[支付宝小程序码]
- <div class="scan-code-hover">
-    <div class="scan-code-hover-box">
-      <img src="https://img.cdn.aliyun.dcloud.net.cn/uni-app/case/vivo-mall.png" alt="二维码获取失败" />
-    </div>
- </div>
-</div>
+**京东：** 京东开发的新冠抗疫服务平台：[H5](http://yingji-h5.chanye.jdcloud.com/)、京东金融羊羊大作战：[H5](https://u.jr.jd.com/uc-fe-wxgrowing/sheep-fight/)
+
+**vivo官方商城：**微信小程序搜索"vivo"，支付宝搜索 "vivo"
 
 <div class="scan-code">
- <strong>vivo会员官方小程序：</strong> 微信小程序搜索 "vivo会员"，或鼠标移此查看[微信小程序码]
+ <strong>vivo会员官方小程序：</strong> 微信小程序搜索 "vivo会员"，<scan-code-text class="scan-code-text">或鼠标移此查看[微信小程序码]</scan-code-text>
  <div class="scan-code-hover">
     <div class="scan-code-hover-box">
       <img src="https://img.cdn.aliyun.dcloud.net.cn/uni-app/vivovip.jpg" alt="二维码获取失败" />
@@ -177,11 +225,13 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
  </div>
 </div>
 
+**搜狐狐友圈：**微信、支付宝、百度、头条小程序均支持。
+
 **联想集团官方小程序：** 微信小程序搜索 “联想集团”
 
 **中华英才网：** 百度小程序搜索“中华英才网”
 
-**CSDN：** 微信小程序搜索“CSDN”
+<!-- **CSDN：** 微信小程序搜索“CSDN” -->
 
 **开源中国：** 微信小程序搜索“osc+”、百度小程序搜索“开源中国社区”
 
@@ -193,9 +243,13 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 
 **达内在线：** 达内教育的在线培训App。[App官网下载](http://www.tmooc.cn/app/index.shtml)
 
-#### 托管服务商
+#### SaaS服务商
+
+**腾讯discuz! Q：** 经典论坛，站长利器。[https://discuz.chat/docs/](https://discuz.chat/docs/)
 
 **搜狐快站：** 可视化拖拽建站，例：[https://yiguob.kuaizhan.com/#/](https://yiguob.kuaizhan.com/#/)
+
+**人人商城：** 客户众多的分销商城 [https://www.rrsc.cn/V5introduce.html](https://www.rrsc.cn/V5introduce.html)
 
 **即速应用：** 微信小程序搜索“即速应用商家版”
 
@@ -380,6 +434,8 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 
 #### 传统品牌
 
+**星巴克：** 微信小程序搜索 “星巴克” 
+
 **同济医院官方App：** [App官网下载页](https://tjhapp.com.cn/app/appdown.html)
 
 **张亮麻辣烫：** 百度小程序搜索 “张亮麻辣烫” 
@@ -415,6 +471,10 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 **出发吧！冒险家：** 曾Taptap首页推荐的冒险游戏。[Android](https://www.seagame.com/mxj/android1.apk)、[iOS](https://apps.apple.com/cn/app/id1367825240)
 
 #### 创业公司
+
+**Crimaster犯罪大师：**火爆的全球推理侦探专属社区。[Android](https://android.myapp.com/myapp/detail.htm?apkName=com.ultron.crimaster)、[iOS](https://apps.apple.com/cn/app/crimaster%E7%8A%AF%E7%BD%AA%E5%A4%A7%E5%B8%88/id1501701702)
+
+**仓鼠团：** 囤好货到仓鼠,仓鼠团您身边的购物助手。[App通用链接](http://m3w.cn/cst)
 
 **波比英语课堂：**幼儿英语启蒙，培养国际宝宝。[App、小程序通用链接](http://m3w.cn/bbyykt)
 

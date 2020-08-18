@@ -8,7 +8,7 @@
 
 开始之前，开发者需先下载安装如下工具：
 
-- HBuilderX：[官方IDE下载地址](http://www.dcloud.io/hbuilderx.html)
+- HBuilderX：[官方IDE下载地址](https://www.dcloud.io/hbuilderx.html)
 
 HBuilderX是通用的前端开发工具，但为`uni-app`做了特别强化。
 
@@ -24,10 +24,12 @@ HBuilderX是通用的前端开发工具，但为`uni-app`做了特别强化。
   <img src="//img-cdn-qiniu.dcloud.net.cn/uniapp/doc/create1.png"/>
 </div>
 
-选择uni-app，输入工程名，如：hello-uniapp，点击创建，即可成功创建 uni-app。点击模板里的 Hello uni-app 即可体验官方示例。
+选择`uni-app`类型，输入工程名，选择模板，点击创建，即可成功创建。
+
+uni-app自带的模板有 Hello uni-app ，是官方的组件和API示例。还有一个重要模板是 uni ui项目模板，日常开发推荐使用该模板，已内置大量常用组件。
 
 <div align=center>
-  <img src="//img-cdn-qiniu.dcloud.net.cn/uniapp/doc/create2.png"/>
+  <img src="//img.cdn.aliyun.dcloud.net.cn/uni-app/doc/create.png"/>
 </div>
 
 ### 运行uni-app
@@ -75,17 +77,37 @@ HBuilderX是通用的前端开发工具，但为`uni-app`做了特别强化。
     <div align=center>
     	<img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/uni20190222-4.png"/>
     </div>
-    
+
+7. 在360开发工具中导入：进入hello-uniapp项目，点击工具栏的运行 -> 运行到小程序模拟器 -> 360开发工具，即可在360开发工具里面体验uni-app。
+    <br/>
+    <div align=center>
+      <img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/uni-app-debug-mp-360.png"/>
+    </div>
+
+8. 在快应用联盟工具里运行：进入hello-uniapp项目，点击工具栏的运行 -> 运行到小程序模拟器 -> 快应用联盟工具，即可在快应用联盟工具里面体验uni-app。
+    <br/>
+    <div align=center>
+      <img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/uni-app-run-debug-quickapp-webview.png"/>
+    </div>
+
+9. 在华为开发者工具里运行：进入hello-uniapp项目，点击工具栏的运行 -> 运行到小程序模拟器 -> 华为开发者工具，即可在华为开发者工具里面体验uni-app。
+    <br/>
+    <div align=center>
+      <img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/uni-app-run-debug-quickapp-webview-huawei.png"/>
+    </div>
+
+10. 在QQ小程序开发工具里运行：内容同上，不再重复。
+
 **Tips**
 
 * 如果是第一次使用，需要配置开发工具的相关路径。点击工具栏的运行 -> 运行到小程序模拟器 -> 运行设置，配置相应小程序开发者工具的路径。
-* 支付宝/百度/字节跳动小程序工具，不支持直接指定项目启动并运行。因此开发工具启动后，请将 HBuilderX 控制台中提示的项目路径，在相应小程序开发者工具中打开。
+* 支付宝/百度/字节跳动/360小程序工具，不支持直接指定项目启动并运行。因此开发工具启动后，请将 HBuilderX 控制台中提示的项目路径，在相应小程序开发者工具中打开。
 * 如果自动启动小程序开发工具失败，请手动启动小程序开发工具并将 HBuilderX 控制台提示的项目路径，打开项目。
 
 运行的快捷键是`Ctrl+r`。
 HBuilderX 还提供了快捷运行菜单，可以按数字快速选择要运行的设备：
 <div align=center>
-	<img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/uni20190222-5.png"/>
+	<img src="//img.cdn.aliyun.dcloud.net.cn/uni-app/doc/runtool.png"/>
 </div>
 
 如需调试，可参考：[uni-app调试](/snippet?id=使用-chrome-调试)
@@ -101,12 +123,12 @@ HBuilderX 还提供了快捷运行菜单，可以按数字快速选择要运行�
 </div>
 出现如下界面，点击打包即可。
 <div align=center>
-  <img src="//img-cdn-qiniu.dcloud.net.cn/uniapp/doc/push.png"/>
+  <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/001a20b0-d85a-11ea-81ea-f115fe74321c.png"/>
 </div>
 
 #### 打包为原生App（离线）
 
-``uni-app`` 支持离线打包，在 HBuilderX 生成离线打包资源，然后参考 [离线打包](http://ask.dcloud.net.cn/docs/#//ask.dcloud.net.cn/article/104)（或参考其他用户写的 [离线打包日记](https://ask.dcloud.net.cn/article/35302)），即可进行离线打包。
+``uni-app`` 支持离线打包，在 HBuilderX 发行菜单里生成离线打包资源，然后参考离线打包文档操作，可以从HBuilderX的发行菜单里找到文档链接，也可以直接访问：[https://nativesupport.dcloud.net.cn/AppDocs/README](https://nativesupport.dcloud.net.cn/AppDocs/README)。
 
 在HBuilderX工具栏，点击发行，选择本地打包，如下图，点击即可生成离线打包资源。
 
@@ -116,7 +138,7 @@ HBuilderX 还提供了快捷运行菜单，可以按数字快速选择要运行�
 
 #### 发布为H5
 
-1. 在 ``manifest.json`` 的可视化界面，进行如下配置（发行在网站根目录可不配置应用基本路径），此时发行网站路径是 www.xxx.com/h5，如：[https://uniapp.dcloud.io/h5](https://uniapp.dcloud.io/h5)。
+1. 在 ``manifest.json`` 的可视化界面，进行如下配置（发行在网站根目录可不配置应用基本路径），此时发行网站路径是 www.xxx.com/h5，如：[https://hellouniapp.dcloud.net.cn](https://hellouniapp.dcloud.net.cn)。
 <div align=center>
 	<img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/build-h5-1.png" style="max-width:600px;height:auto;"/>
 </div>
@@ -166,7 +188,37 @@ HBuilderX 还提供了快捷运行菜单，可以按数字快速选择要运行�
 </div>
 3. 在字节跳动小程序开发者工具中，导入生成的字节跳动小程序项目，测试项目代码运行正常后，点击“上传”按钮上传代码，在 [字节跳动小程序后台](https://developer.toutiao.com/app/applist)，选择刚提交的版本点击提交审核，详见：[字节跳动小程序文档](https://developer.toutiao.com/dev/cn/mini-app/introduction/plug-in/verification)。
 
-*发布为QQ小程序：*
+**发布为360小程序：**
+1. 入驻360小程序，参考：[360小程序教程](https://mp.360.cn/doc/miniprogram/dev/#/)。
+2. 在HBuilderX中顶部菜单依次点击 "发行" => "小程序-360"，即可在 ``/unpackage/dist/build/mp-360`` 生成360小程序项目代码。
+<div align=center>
+  <img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/uni-app-release-mp-360.png"/>
+</div>
+3. 在360浏览器中，导入生成的360小程序项目
+
+**注意**
+- 目前仅windows平台支持。360浏览器自身不支持mac平台。
+
+
+**发布为快应用联盟：**
+1. 入驻快应用联盟，参考：[快应用联盟教程](https://www.quickapp.cn/)。
+2. 在HBuilderX中顶部菜单依次点击 "发行" => "快应用联盟"，即可在 ``/unpackage/dist/build/quickapp-webview`` 生成快应用联盟项目代码。
+<div align=center>
+  <img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/uni-app-run-release-quickapp-webview.png"/>
+</div>
+3. 在快应用联盟工具中，导入生成的快应用联盟项目，测试项目代码运行正常后，点击”构建“打包正式版，在[快应用联盟后台](https://www.quickapp.cn/)上传
+
+
+**发布为华为快应用：**
+1. 入驻华为快应用，参考：[华为快应用教程](https://developer.huawei.com/consumer/cn/quickApp)。
+2. 在HBuilderX中顶部菜单依次点击 "发行" => "快应用-华为"，即可在 ``/unpackage/dist/build/quickapp-webview`` 生成华为快应用项目代码。
+<div align=center>
+  <img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/uni-app-run-release-quickapp-webview-huawei.png"/>
+</div>
+3. 在华为开发者工具中，导入生成的华为快应用项目，测试项目代码运行正常后，点击”构建“打包正式版，在[华为快应用后台](https://developer.huawei.com/consumer/cn/quickApp)上传
+
+
+**发布为QQ小程序：**
 内容同上，不再重复。
 
 发布的快捷键是`Ctrl+u`。同样可拉下快速发布菜单并按数字键选择。
@@ -207,9 +259,9 @@ vue create -p dcloudio/uni-preset-vue#alpha my-alpha-project
 #### 自定义模板
 选择自定义模板时，需要填写 uni-app 模板地址，这个地址其实就是托管在云端的仓库地址。以 GitHub 为例，地址格式为 `userName/repositoryName`，如 `dcloudio/uni-template-picture` 就是下载图片模板。
 
-更多支持的下载方式，请参考这个插件的说明：[download-git-repo](https://github.com/flipxfx/download-git-repo)
+更多支持的下载方式，请参考这个插件的说明：[download-git-repo](https://www.npmjs.com/package/download-git-repo)
 
-### 运行并发布uni-app
+### 运行、发布uni-app
 
 ```
 npm run dev:%PLATFORM%
@@ -220,17 +272,39 @@ npm run build:%PLATFORM%
 
 |值|平台|
 |---|---|
+|app-plus|app平台生成打包资源（支持npm run build:app-plus，可用于持续集成。不支持run，运行调试仍需在HBuilderX中操作）|
 |h5|H5|
 |mp-alipay|支付宝小程序|
 |mp-baidu|百度小程序|
 |mp-weixin|微信小程序|
 |mp-toutiao|字节跳动小程序|
 |mp-qq|qq 小程序|
+|mp-360|360 小程序|
+|quickapp-webview|快应用通用|
+|quickapp-webview-union|快应用联盟|
+|quickapp-webview-huawei|快应用华为|
 
 可以自定义更多条件编译平台，比如钉钉小程序，参考[package.json文档](https://uniapp.dcloud.io/collocation/package)。
 
+### 运行并发布快应用@quickapp
+快应用有两种开发方式，uni-app均支持：
+- 类小程序webview渲染方式：[https://ask.dcloud.net.cn/article/37182](https://ask.dcloud.net.cn/article/37182)
+- 原生渲染方式：[https://ask.dcloud.net.cn/article/37145](https://ask.dcloud.net.cn/article/37145)
+
+
+### 运行并发布快应用联盟@quickapp-webview
+HBuilderX 2.7.12+ 版支持
+
+
+### 运行并发布快应用-华为@quickapp-webview-huawei
+HBuilderX 2.7.10+ 版支持
+
+华为快应用文档-小程序转快应用 [https://developer.huawei.com/consumer/cn/doc/development/quickApp-References/quickapp-filestructure](https://developer.huawei.com/consumer/cn/doc/development/quickApp-References/quickapp-filestructure)
+
+
 **其他：**
 
+* 目前使用`npm run build:app-plus`会在`/dist/build/app-plus`下生成app打包资源。如需制作wgt包，将`app-plus`中的文件压缩成zip（注意：不要包含`app-plus目录`），再重命名为`${appid}.wgt`， `appid`为`manifest.json`文件中的`appid`。
 * dev 模式编译出的各平台代码存放于根目录下的 ``/dist/dev/``目录，打开各平台开发工具选择对应平台目录即可进行预览（h5 平台不会在此目录，存在于缓存中）；
 * build 模式编译出的各平台代码存放于根目录下的 ``/dist/build/`` 目录，发布时选择此目录进行发布；
 * dev 和 build 模式的区别：
@@ -242,7 +316,7 @@ npm run build:%PLATFORM%
 
 #### 编译器的区别
 
-* ``cli``创建的项目，编译器安装在项目下。并且不会跟随HBuilderX升级。如需升级编译器，执行``npm update``。
+* ``cli`` 创建的项目，编译器安装在项目下。并且不会跟随HBuilderX升级。如需升级编译器，执行 ``npm update``，或者手动修改 package.json 中的 uni 相关依赖版本后执行 ``npm install``。更新后可能会有新增的依赖并不会自动安装，手动安装缺少的依赖即可。
 * HBuilderX可视化界面创建的项目，编译器在HBuilderX的安装目录下的plugin目录，随着HBuilderX的升级会自动升级编译器。
 * 已经使用``cli``创建的项目，如果想继续在HBuilderX里使用，可以把工程拖到HBuilderX中。注意如果是把整个项目拖入HBuilderX，则编译时走的是项目下的编译器。如果是把src目录拖入到HBuilderX中，则走的是HBuilderX安装目录下plugin目录下的编译器。
 * ``cli``版如果想安装less、scss、ts等编译器，需自己手动npm安装。在HBuilderX的插件管理界面安装无效，那个只作用于HBuilderX创建的项目。

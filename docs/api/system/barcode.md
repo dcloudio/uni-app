@@ -48,7 +48,7 @@ uni.scanCode({
 
 // 调起条码扫描
 uni.scanCode({
-	scanType: 'barCode',
+	scanType: ['barCode'],
 	success: function (res) {
 		console.log('条码类型：' + res.scanType);
 		console.log('条码内容：' + res.result);

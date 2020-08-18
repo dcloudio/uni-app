@@ -10,11 +10,11 @@ App-nvue下如需使用canvas，暂未封装为uni API，可参考[文档](https
 
 ### CanvasContext.fillStyle string
 
-填充颜色。用法同 [CanvasContext.setFillStyle()](./CanvasContext?id=canvascontextsetfillstyle)。
+填充颜色。用法同 [CanvasContext.setFillStyle()](#canvascontextsetfillstyle)。
 
 ### CanvasContext.strokeStyle string
 
-边框颜色。用法同 [CanvasContext.setStrokeStyle()](./CanvasContext?id=canvascontextsetstrokestyle)。
+边框颜色。用法同 [CanvasContext.setStrokeStyle()](#canvascontextsetstrokestyle)。
 
 ### CanvasContext.shadowOffsetX number
 
@@ -34,19 +34,19 @@ App-nvue下如需使用canvas，暂未封装为uni API，可参考[文档](https
 
 ### CanvasContext.lineWidth number
 
-线条的宽度。用法同 [CanvasContext.setLineWidth()](./CanvasContext?id=canvascontextsetlinewidth)。
+线条的宽度。用法同 [CanvasContext.setLineWidth()](#canvascontextsetlinewidth)。
 
 ### CanvasContext.lineCap number
 
-线条的端点样式。用法同 [CanvasContext.setLineCap()](./CanvasContext?id=canvascontextsetlinecap)。
+线条的端点样式。用法同 [CanvasContext.setLineCap()](#canvascontextsetlinecap)。
 
 ### CanvasContext.lineJoin number
 
-线条的交点样式。用法同 [CanvasContext.setLineJoin()](./CanvasContext?id=canvascontextsetlinejoin)。
+线条的交点样式。用法同 [CanvasContext.setLineJoin()](#canvascontextsetlinejoin)。
 
 ### CanvasContext.miterLimit number
 
-最大斜接长度。用法同 [CanvasContext.setMiterLimit()](./CanvasContext?id=canvascontextsetmiterlimit)。
+最大斜接长度。用法同 [CanvasContext.setMiterLimit()](#canvascontextsetmiterlimit)。
 
 ### CanvasContext.lineDashOffset number
 
@@ -292,7 +292,7 @@ ctx.draw()
 clearRect 并非画一个白色的矩形在地址区域，而是清空，为了有直观感受，对 canvas 加了一层背景色。
 
 ```javascript
-<canvas canvas-id="myCanvas" style="border: 1px solid; background: #123456;"/>
+<canvas canvas-id="myCanvas" id="myCanvas" style="border: 1px solid; background: #123456;"/>
 ```
 
 ```javascript

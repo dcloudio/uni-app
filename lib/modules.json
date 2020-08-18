@@ -121,6 +121,7 @@
     "uni.getBeacons": true,
     "uni.startBeaconDiscovery": true,
     "uni.stopBeaconDiscovery": true,
+    "uni.onThemeChange": true,
     "uni.onUIStyleChange": true
   }
 }, {

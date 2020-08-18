@@ -24,17 +24,21 @@ uni-app 已将常用的组件、JS API 封装到框架中，开发者按照 uni-
 
 <b style="color:#268BD2"> %PLATFORM%</b> **可取值如下：**
 
-|值|平台|参考文档|
-|:-|:-|:-|
-|APP-PLUS|App|[HTML5+ 规范](http://www.html5plus.org/doc/)|
-|APP-PLUS-NVUE|App nvue|[Weex 规范](https://weex.apache.org/cn/guide/)|
-|H5|H5||
-|MP-WEIXIN|微信小程序|[微信小程序](https://developers.weixin.qq.com/miniprogram/dev/api/)|
-|MP-ALIPAY|支付宝小程序|[支付宝小程序](https://docs.alipay.com/mini/developer/getting-started)|
-|MP-BAIDU|百度小程序|[百度小程序](https://smartprogram.baidu.com/docs/develop/tutorial/codedir/)|
-|MP-TOUTIAO|字节跳动小程序|[字节跳动小程序](https://developer.toutiao.com/dev/cn/mini-app/develop/framework/basic-reference/introduction)|
-|MP-QQ|QQ小程序|	（目前仅cli版支持）|
-|MP|微信小程序/支付宝小程序/百度小程序/字节跳动小程序/QQ小程序|&nbsp;|
+|值|平台|
+|:-|:-|
+|APP-PLUS|App|
+|APP-PLUS-NVUE|App nvue|
+|H5|H5|
+|MP-WEIXIN|微信小程序|
+|MP-ALIPAY|支付宝小程序|
+|MP-BAIDU|百度小程序|
+|MP-TOUTIAO|字节跳动小程序|
+|MP-QQ|QQ小程序|
+|MP-360|360小程序|
+|MP|微信小程序/支付宝小程序/百度小程序/字节跳动小程序/QQ小程序/360小程序|
+|quickapp-webview|快应用通用(包含联盟、华为)|
+|quickapp-webview-union|快应用联盟|
+|quickapp-webview-huawei|快应用华为|
 
 **支持的文件**
 
@@ -73,9 +77,19 @@ uni-app 已将常用的组件、JS API 封装到框架中，开发者按照 uni-
 平台特有的组件
 <span class="token comment">&lt;!-- <span style="color:#859900;"> #endif</span> --&gt;</span></code></pre>
 
-示例，如下广告组件仅会在微信小程序中出现：
+示例，如下公众号关注组件仅会在微信小程序中出现：
 
-![uniapp](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/img/platform-1.1.png)
+````html
+<view>
+    <view>微信公众号关注组件</view>
+    <view>
+        <!-- uni-app未封装，但可直接使用微信原生的official-account组件-->
+        <!-- #ifdef MP-WEIXIN -->
+		        <official-account></official-account>
+		    <!-- #endif -->
+    </view>
+</view>
+````
 
 ### 样式的条件编译
 <pre v-pre="" data-lang="css"><code class="lang-css code"><span class="token comment">/* <span style="color:#859900;"> #ifdef</span><b style="color:#268BD2">  %PLATFORM% </b> */</span>
@@ -122,7 +136,11 @@ json的条件编译，如不同平台的key名称相同，cli项目下开发者�
 
 ### 整体目录条件编译
 
-如果想把各平台的页面文件更彻底的分开，也可以在uni-app项目根目录创建`platforms`目录，然后在下面进一步创建APP-PLUS、MP-WEIXIN等子目录，存放不同平台的文件。
+如果想把各平台的页面文件更彻底的分开，也可以在uni-app项目根目录创建`platforms`目录，然后在下面进一步创建`app-plus`、`mp-weixin`等子目录，存放不同平台的文件。
+
+**注意**
+
+- `platforms`目录下只支持放置页面文件（即页面vue文件），如果需要对其他资源条件编译建议使用[static 目录的条件编译](https://uniapp.dcloud.io/platform?id=static-%e7%9b%ae%e5%bd%95%e7%9a%84%e6%9d%a1%e4%bb%b6%e7%bc%96%e8%af%91)
 
 ### HBuilderX 支持
 
@@ -154,6 +172,6 @@ HBuilderX 为 ``uni-app`` 的条件编译提供了丰富的支持:
 
 
 ### 注意
-* Android 和 iOS 平台不支持通过条件编译来区分，如果需要区分 Android、iOS 平台，请通过调用 uni.getSystemInfo 来获取平台信息。在HBuilderX1.9.10起，支持`ifios`、`ifAndroid`代码块，可方便编写判断。
+* Android 和 iOS 平台不支持通过条件编译来区分，如果需要区分 Android、iOS 平台，请通过调用 uni.getSystemInfo 来获取平台信息。支持`ifios`、`ifAndroid`代码块，可方便编写判断。
 * 有些跨端工具可以提供js的条件编译或多态，但这对于实际开发远远不够。uni-app不止是处理js，任何代码都可以多端条件编译，才能真正解决实际项目的跨端问题。另外所谓多态在实际开发中会造成大量冗余代码，很不利于复用和维护。举例，微信小程序主题色是绿色，而百度支付宝小程序是蓝色，你的应用想分平台适配颜色，只有条件编译是代码量最低、最容易维护的。
 * 有些公司的产品运营总是给不同平台提不同需求，但这不是拒绝uni-app的理由。关键在于项目里，复用的代码多还是个性的代码多，正常都是复用的代码多，所以仍然应该多端。而个性的代码放到不同平台的目录下，差异化维护。

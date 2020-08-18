@@ -11,8 +11,6 @@ Cell 支持添加任意类型的组件作为自己的子组件，但是请不要
 
 #### 属性
 
-- keep-scroll-position boolean. 控制当 Cell 被添加到列表中时，列表的滚动位置是否要保持不变。
-
 - insert-animation string, cell 的插入动画。当前只支持 `none` 和 `default`。
 
 - delete-animation string, cell 的删除动画。当前只支持 `none` 和 `default`。

@@ -12,8 +12,8 @@
 |方法|参数|说明|平台差异说明|
 |:-|:-|:-|:-|
 |start|options|开始录音||
-|pause||暂停录音||
-|resume||继续录音||
+|pause||暂停录音|App 暂不支持|
+|resume||继续录音|App 暂不支持|
 |stop||停止录音||
 |onStart|callback|录音开始事件||
 |onPause|callback|录音暂停事件||
