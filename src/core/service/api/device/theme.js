@@ -8,6 +8,17 @@ import {
 
 const callbacks = []
 
+onMethod('onThemeChange', function (res) {
+  callbacks.forEach(callbackId => {
+    invoke(callbackId, res)
+  })
+})
+
+export function onThemeChange (callbackId) {
+  callbacks.push(callbackId)
+}
+
+// 旧版本 API，后期文档更新后考虑移除
 onMethod('onUIStyleChange', function (res) {
   callbacks.forEach(callbackId => {
     invoke(callbackId, res)
