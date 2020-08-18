@@ -357,6 +357,31 @@ function filterPages (pagesJson, includes) {
   pagesJson.pages = pages
 }
 
+function genLayoutComponentsCode (pagesJson) {
+  const code = []
+  const {
+    leftWindow,
+    rightWindow
+  } = pagesJson
+  if (leftWindow && leftWindow.path) {
+    code.push(
+      `import LeftWindow from './${leftWindow.path}';
+${leftWindow.style ? ('LeftWindow.style=' + JSON.stringify(leftWindow.style)) : ''}
+Vue.component('VUniLeftWindow',LeftWindow);`
+    )
+  }
+
+  if (rightWindow && rightWindow.path) {
+    code.push(
+      `
+import RightWindow from './${rightWindow.path}';
+${rightWindow.style ? ('RightWindow.style=' + JSON.stringify(rightWindow.style)) : ''}
+Vue.component('VUniRightWindow',RightWindow);`
+    )
+  }
+  return code.join('\n')
+}
+
 module.exports = function (pagesJson, manifestJson, loader) {
   const inputDir = process.env.UNI_INPUT_DIR
 
@@ -398,12 +423,25 @@ module.exports = function (pagesJson, manifestJson, loader) {
     qqMapKey = sdkConfigs.maps.qqmap.key
   }
 
+  let minWidth = 768
+
+  if (
+    manifestJson &&
+    manifestJson.h5 &&
+    manifestJson.h5.responsive &&
+    manifestJson.h5.responsive.minWidth
+  ) {
+    minWidth = parseInt(manifestJson.h5.responsive.minWidth) || minWidth
+  }
+
   return `
 import Vue from 'vue'
+${genLayoutComponentsCode(pagesJson)}
 global['____${h5.appid}____'] = true;
 delete global['____${h5.appid}____'];
 global.__uniConfig = ${JSON.stringify(pagesJson)};
 global.__uniConfig.compilerVersion = '${compilerVersion}';
+global.__uniConfig.responsive = { minWidth: ${minWidth} };
 global.__uniConfig.router = ${JSON.stringify(h5.router)};
 global.__uniConfig.publicPath = ${JSON.stringify(h5.publicPath)};
 global.__uniConfig['async'] = ${JSON.stringify(h5.async)};

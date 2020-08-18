@@ -236,7 +236,8 @@ var PAGE_SCOPED_RE = /uni-page-body\[data-v-[a-z0-9]{8}\]/g
 var VAR_STATUS_BAR_HEIGHT = /var\(--status-bar-height\)/gi
 var VAR_WINDOW_TOP = /var\(--window-top\)/gi
 var VAR_WINDOW_BOTTOM = /var\(--window-bottom\)/gi
-
+var VAR_WINDOW_LEFT = /var\(--window-left\)/gi
+var VAR_WINDOW_RIGHT = /var\(--window-right\)/gi
 
 function processCss(css) {
 	var page = getPage()
@@ -245,6 +246,8 @@ function processCss(css) {
 		css = css.replace(VAR_STATUS_BAR_HEIGHT, '0px')
 			.replace(VAR_WINDOW_TOP, offset.top + 'px')
 			.replace(VAR_WINDOW_BOTTOM, offset.bottom + 'px')
+            .replace(VAR_WINDOW_LEFT, '0px')
+            .replace(VAR_WINDOW_RIGHT, '0px')
 	}
 	return css
 		.replace(BODY_SCOPED_RE, page)
