@@ -4,7 +4,8 @@ const traverse = require('@babel/traverse').default
 const {
   VAR_ROOT,
   IDENTIFIER_METHOD,
-  IDENTIFIER_FILTER
+  IDENTIFIER_FILTER,
+  IDENTIFIER_GLOBAL
 } = require('../../constants')
 
 function isMatch (name, forItem, forIndex) {
@@ -69,7 +70,7 @@ function findTest (path, state) {
             const objectName = node.object.name
             const property = node.property
             const propertyName = property.name
-            if (objectName === VAR_ROOT || (names.includes(objectName) && (propertyName === IDENTIFIER_METHOD || propertyName === IDENTIFIER_FILTER))) {
+            if (objectName === VAR_ROOT || (names.includes(objectName) && (propertyName === IDENTIFIER_METHOD || propertyName === IDENTIFIER_FILTER || propertyName === IDENTIFIER_GLOBAL))) {
               let property
               traverse(testOrig, {
                 noScope: true,

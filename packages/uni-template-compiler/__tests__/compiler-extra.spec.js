@@ -722,5 +722,10 @@ describe('mp:compiler-extra', () => {
       '<block wx:for="{{$root.l0}}" wx:for-item="item" wx:for-index="index" wx:key="index"><view><block wx:if="{{item.m0}}"><view><block wx:if="{{item.m1}}"><view>{{item.m2}}</view></block></view></block></view></block>',
       'with(this){var l0=__map(list,function(item,index){var $orig=__get_orig(item);var m0=test(item.id);var m1=m0?test(item.type):null;var m2=m0&&m1?test("item"):null;return{$orig:$orig,m0:m0,m1:m1,m2:m2}});$mp.data=Object.assign({},{$root:{l0:l0}})}'
     )
+    assertCodegen(
+      '<view v-for="(item,index) in list" :key="index"><view v-if="Object.values(item.list).length">{{test(item.list)}}</view></view>',
+      '<block wx:for="{{$root.l0}}" wx:for-item="item" wx:for-index="index" wx:key="index"><view><block wx:if="{{item.g0.length}}"><view>{{item.m0}}</view></block></view></block>',
+      'with(this){var l0=__map(list,function(item,index){var $orig=__get_orig(item);var g0=Object.values(item.list);var m0=g0.length?test(item.list):null;return{$orig:$orig,g0:g0,m0:m0}});$mp.data=Object.assign({},{$root:{l0:l0}})}'
+    )
   })
 })
