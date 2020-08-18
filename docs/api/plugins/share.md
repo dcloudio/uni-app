@@ -43,8 +43,8 @@ uni-app的App引擎已经封装了微信、QQ、微博的分享SDK，开发者�
 |值|说明|provider 支持度|
 |:-|:-|:-|
 |0|图文|weixin、sinaweibo|
-|1|纯文字||
-|2|纯图片||
+|1|纯文字|weixin、qq|
+|2|纯图片|weixin、qq|
 |3|音乐|weixin、qq|
 |4|视频|weixin、sinaweibo|
 |5|小程序|weixin|
@@ -254,7 +254,7 @@ uni.share({
 
 ##### FAQ
 - Q：App端如何集成其他分享SDK，如facebook分享、twitter分享
-- A：插件市场已有相关插件，[详见](https://ext.dcloud.net.cn/search?q=%E5%88%86%E4%BA%AB)；也可以根据原生插件教程自行开发，原生插件开发文档见[https://ask.dcloud.net.cn/article/35428](https://ask.dcloud.net.cn/article/35428)
+- A：插件市场已有相关插件，[详见](https://ext.dcloud.net.cn/search?q=share)；也可以根据原生插件教程自行开发，原生插件开发文档见[https://ask.dcloud.net.cn/article/35428](https://ask.dcloud.net.cn/article/35428)
 
 - Q：弹出分享菜单，是否有已经写好的插件？
 - A：插件市场有很多封装好的分享菜单插件，[底部图标菜单](https://ext.dcloud.net.cn/search?q=%E5%BA%95%E9%83%A8%E5%9B%BE%E6%A0%87%E8%8F%9C%E5%8D%95)，可直接弹出菜单，并且没有遮挡层级问题，推荐使用。

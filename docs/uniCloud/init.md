@@ -24,10 +24,16 @@ function init(options):uniCloud
 |:-:					|:-:		|:-:				|:-:		|:-:																								|
 |provider			|String	|是					|-			|目前仅支持aliyun					|
 |spaceId			|String	|是					|-			|服务空间ID，**注意是服务空间ID，不是服务空间名称**	|
-|clientSecret	|String	|是	|-			|可以在[uniCloud控制台](https://unicloud.dcloud.net.cn)服务空间列表中查看				|
-<!-- |endpoint			|String	|否					|https://api.bspapp.com	|服务空间地址																			|仅阿里云侧支持																																	| -->
-<!-- |autoSignIn		|Boolean|否					|true										|是否自动匿名登录																	|仅腾讯云侧支持																																	|
-|debugFunction|Boolean|否					|true										|是否启用云函数日志输出														|仅开发阶段生效，平台支持：APP、H5(使用`HBuilderX`内置浏览器获得更好的调试体验)	| -->
+|clientSecret	|String	|是	|-			|仅阿里云支持，可以在[uniCloud控制台](https://unicloud.dcloud.net.cn)服务空间列表中查看				|
+|debugFunction|Boolean|否					|true										|是否启用云函数日志输出，仅开发阶段生效，平台支持：APP、H5(使用`HBuilderX`内置浏览器获得更好的调试体验)	|
+|endpoint			|String	|否					|`https://api.bspapp.com`	|服务空间地址，仅阿里云侧支持																			|	
+
+<!-- |autoSignIn		|Boolean|否					|true										|是否自动匿名登录																	|仅腾讯云侧支持																																	| -->
+
+**关于debugFunction的说明**
+
+- 设置为`true`时，腾讯云访问云函数为通过管理端调用（即通过DCloud服务器调用）以便同步返回运行日志。阿里云访问云函数依然为直连。
+- 发行时此字段自动失效，变为false。
 
 **示例代码**
 
@@ -46,8 +52,3 @@ myCloud.uploadFile()
 
 **Tips：**
 - 云函数会自动识别自己所属的服务空间，无需初始化。
-- `HBuilderX 2.5.8`版本在`main.js`使用`uniCloud`时，运行到H5端会报错，可以先使用其他平台进行调试。此问题会在`HBuilderX 2.5.9`修复
-
-<!-- **注意**
-
-- 服务提供商为腾讯云时，需要开发者手动去管理控制台开启匿名登录才可以操作云函数[详情](/uniCloud/authentication#匿名登录) -->

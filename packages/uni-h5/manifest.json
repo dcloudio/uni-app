@@ -316,6 +316,15 @@
             ]
         ]
     ],
+    "createAudioContext": [
+        "/core/service/api/context/audio.js",
+        [
+            [
+                "/core/helpers/protocol/context/context.js",
+                "createAudioContext"
+            ]
+        ]
+    ],
     "createInnerAudioContext": [
         "/platforms/h5/service/api/context/inner-audio.js",
         []

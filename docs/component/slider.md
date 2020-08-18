@@ -26,9 +26,11 @@
 - activeColor默认值在不同平台不一样，微信是绿色(#1aad19)，头条是红色，其他平台是蓝色
 - 如需要区间滑块，即一根横条上使用2个滑块选择一段范围，可见[插件市场](https://ext.dcloud.net.cn/search?q=%E5%8C%BA%E9%97%B4%E6%BB%91%E5%9D%97)
 
-**示例** [查看演示](https://uniapp.dcloud.io/h5/pages/component/slider/slider)
+**示例** [查看演示](https://hellouniapp.dcloud.net.cn/pages/component/slider/slider)
  
+以下示例代码，来自于[hello uni-app项目](https://github.com/dcloudio/hello-uniapp)，推荐使用HBuilderX，新建uni-app项目，选择hello uni-app模板，可直接体验完整示例。
 ```html
+<!-- 本示例未包含完整css，获取外链css请参考上文，在hello uni-app项目中查看 -->
 <template>
     <view>
         <view class="uni-padding-wrap uni-common-mt">
@@ -72,9 +74,6 @@ export default {
  
 ![uniapp](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/img/slider.png?t=201857)
 
-示例代码说明：以上示例代码从hello uni-app示例中复制，涉及的css样式在hello uni-app的app.vue和uni.css中
-
-预览H5效果：使用浏览器的手机模式访问[https://uniapp.dcloud.io/h5/pages/component/slider/slider](https://uniapp.dcloud.io/h5/pages/component/slider/slider)
 
 **Tips**
-- 如果需要在PC端使用`slider`，可以配置[H5模版](https://uniapp.dcloud.io/collocation/manifest?id=h5-template)，并引入[touch-emulator.js](https://github.com/dcloudio/touchemulator)
+- 2.6.3以前，在PC端使用`slider`，需配置[H5模版](https://uniapp.dcloud.io/collocation/manifest?id=h5-template)，并引入[touch-emulator.js](https://github.com/dcloudio/touchemulator)

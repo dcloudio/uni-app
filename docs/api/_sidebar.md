@@ -4,6 +4,7 @@
   * [uni.base64ToArrayBuffer](api/base64ToArrayBuffer?id=base64toarraybuffer)
   * [uni.arrayBufferToBase64](api/arrayBufferToBase64?id=arraybuffertobase64)
   * [生命周期](api/lifecycle.md)
+  * [应用级事件](api/application.md)
 * 网络
   * [发起请求](api/request/request.md)
   * [上传、下载](api/request/network-file.md)
@@ -17,6 +18,7 @@
   * [uni.reLaunch](/api/router?id=relaunch)
   * [uni.switchTab](/api/router?id=switchtab)
   * [uni.navigateBack](/api/router?id=navigateback)
+  * [uni.preloadPage](/api/preload-page)
   * [窗口动画](/api/router?id=animation)
 * 数据缓存
   * [uni.setStorage](/api/storage/storage?id=setstorage)
@@ -43,6 +45,7 @@
   * [相机组件控制](api/media/camera-context.md)
   * [直播组件控制](api/media/live-player-context.md)
   * [富文本](api/media/editor-context.md)
+  * [音视频合成](api/media/media-container.md)
 * 设备
   * [系统信息](api/system/info.md)
   * [内存](api/system/memory.md)
@@ -105,7 +108,8 @@
 	* [CanvasContext](api/canvas/CanvasContext.md)
 	* [CanvasGradient](api/canvas/CanvasGradient.md)
 * 广告
-  * [激励视频广告](api/ad/rewarded-video-ad.md)
+  * [激励视频广告](api/a-d/rewarded-video.md)
+  * [插屏广告](api/a-d/interstitial.md)
 * 第三方服务
   * [获取服务供应商](api/plugins/provider.md)
   * [登录](api/plugins/login.md)
@@ -130,8 +134,6 @@
   * [小程序更新](api/other/update.md)
   * [调试](api/other/set-enable-debug.md)
   * [获取第三方平台数据](api/other/get-extconfig.md)
-  * [广告](api/other/advertisement.md)
-
 <li></li>
 <div class="contact-box">
   <a href="//unicloud.dcloud.net.cn" target="_blank" class="contact-item">
@@ -146,6 +148,18 @@
   		<div>论坛</div>
   	</div>
   </a>
+  <a href="https://uniad.dcloud.net.cn" target="_blank" class="contact-item">
+    <img src="//img.cdn.aliyun.dcloud.net.cn/uni-app/uniad-520.png" width="20" height="20"/>
+    <div class="contact-smg">
+      <div>uniAD</div>
+    </div>
+  </a>
+  <a href="https://tongji.dcloud.net.cn/" target="_blank" class="contact-item">
+    <img src="//img-cdn-qiniu.dcloud.net.cn/uniapp/doc/uni-tongji-icon.png" width="20" height="20"/>
+    <div class="contact-smg">
+      <div>uni统计</div>
+    </div>
+  </a>
 	<div class="contact-item">
 		<img src="//img-cdn-qiniu.dcloud.net.cn/uniapp/doc/git-1.png" width="20" height="20"/>
 		<div class="contact-smg">
@@ -155,48 +169,47 @@
 		</div>
 	</div>
 	<div class="contact-item">
-    <img src="//img-cdn-qiniu.dcloud.net.cn/uniapp/doc/qq@2x.png" width="20" height="20"/>
-    <div class="contact-smg">
-       <div>官方QQ交流群</div>
-    <div>群26：147867597 &nbsp;<a target="_blank" href="//shang.qq.com/wpa/qunwpa?id
-      =28a1a9a3e8f1866ee6a5f2b1caba05039e30d3ae1461e64b2ec31c095fcab951">点此加入</a></div>
+	  <img src="//img-cdn-qiniu.dcloud.net.cn/uniapp/doc/qq@2x.png" width="20" height="20"/>
+	  <div class="contact-smg">
+	     <div>官方QQ交流群</div>
+	  <div>群16：719211033 &nbsp;<a target="_blank" href="https://qm.qq.com/cgi-bin/qm/qr?k=0SG97jRMTnKLEqkK2qIO7mfxia2zwJoA&jump_from=webapi">点此加入</a></div>
 		<div>群35：713420817（2000人已满）</div>
 		<div>群34：530305531（2000人已满）</div>
 		<div>群33：498071674（2000人已满）</div>
-		<div>群32：166188631（500人已满）</div>
-		<div>群31：567471669（500人已满）</div>
-		<div>群30：371046920（500人已满）</div>
-		<div>群29：202965481（500人已满）</div>
-		<div>群28：166188776（2000人已满 </div>
-		<div>群27：811363410（2000人已满 </div>
-		<!-- <div>群26：147867597（2000人已满）</div> -->
-		<div>群25：165297000（500人已满）</div>
-		<div>群24：672494800（500人已满）</div>
-		<div>群23：599958679（500人已满）</div>
-		<div>群22：687186952（1000人已满）</div>
+		<div>群32：166188631（2000人已满）</div>
+		<div>群31：567471669（2000人已满）</div>
+		<div>群30：371046920（2000人已满）</div>
+		<div>群29：202965481（2000人已满）</div>
+		<div>群28：166188776（2000人已满）</div>
+		<div>群27：811363410（2000人已满）</div>
+		<div>群26：147867597（2000人已满）</div>
+		<div>群25：165297000（2000人已满）</div>
+		<div>群24：672494800（2000人已满）</div>
+		<div>群23：599958679（2000人已满）</div>
+		<div>群22：687186952（2000人已满）</div>
 		<div>群21：717019120（2000人已满）</div>
-		<div>群20：165796402（500人已满）</div>
-		<div>群19：165657124（1000人已满）</div>
-		<div>群18：698592271（500人已满）</div>
-		<div>群17：951348804（1000人已满）</div>
-		<div>群16：719211033（1000人已满）</div>
-		<div>群15：516984120（500人已满）</div>
-		<div>群14：465953250（500人已满）</div>
-		<div>群13：699478442（500人已满）</div>
-		<div>群12：884860657（500人已满）</div>
-		<div>群11：296811328（1000人已满）</div>
+		<div>群20：165796402（2000人已满）</div>
+		<div>群19：165657124（2000人已满）</div>
+		<div>群18：698592271（2000人已满）</div>
+		<div>群17：951348804（2000人已满）</div>
+		<!-- <div>群16：719211033（2000人已满）</div> -->
+		<div>群15：516984120（2000人已满）</div>
+		<div>群14：465953250（2000人已满）</div>
+		<div>群13：699478442（2000人已满）</div>
+		<div>群12：884860657（2000人已满）</div>
+		<div>群11：296811328（2000人已满）</div>
 		<div>群10：959059626（2000人已满）</div>
-		<div>群9：775128777（500人已满）</div>
-		<div>群8：695442854（500人已满）</div>
-		<div>群7：942061423（500人已满）</div>
+		<div>群9：775128777（2000人已满）</div>
+		<div>群8：695442854（2000人已满）</div>
+		<div>群7：942061423（2000人已满）</div>
 		<div>群6：697264024（2000人已满）</div>
-		<div>群5：731951419（500人已满）</div>
-		<div>群4：942702595（1000人已满）</div>
-		<div>群3：773794803（1000人已满） </div>
-		<div>群2：901474938（1000人已满） </div>
-		<div>群1：531031261（1000人已满）</div>
-    </div>
-  </div>
+		<div>群5：731951419（2000人已满）</div>
+		<div>群4：942702595（2000人已满）</div>
+		<div>群3：773794803（2000人已满） </div>
+		<div>群2：901474938（2000人已满） </div>
+		<div>群1：531031261（2000人已满）</div>
+	  </div>
+	</div>
   <div class="contact-item">
   	<img src="//img-cdn-qiniu.dcloud.net.cn/uniapp/doc/weixin@2x.png" width="20" height="20"/>
   	<div class="contact-smg">

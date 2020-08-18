@@ -10,6 +10,8 @@
   - [百度小程序](https://smartprogram.baidu.com/docs/develop/tutorial/codedir/)
   - [字节跳动小程序](https://developer.toutiao.com/dev/cn/mini-app/develop/component/introduction/basic-component)
   - [QQ小程序](https://q.qq.com/wiki/develop/miniprogram/frame/)
+  - [华为快应用](https://developer.huawei.com/consumer/cn/doc/development/quickApp-References/webview-component-view)
+  - [360小程序](https://mp.360.cn/doc/miniprogram/dev/#/view)
   - [Weex](https://weex.apache.org/cn/guide/)
 
 <ul class="nav-href">

@@ -21,7 +21,7 @@ mapContext
 |方法|参数|说明|平台差异说明|最低版本|
 |:-|:-|:-|:-|:-|
 |getCenterLocation|OBJECT|获取当前地图中心的经纬度，返回的是 gcj02 坐标系，可以用于 [uni.openLocation](api/location/location?id=getlocation)|||
-|moveToLocation||将地图中心移动到当前定位点，需要配合map组件的show-location使用|||
+|moveToLocation|OBJECT|将地图中心移动到当前定位点，需要配合map组件的show-location使用|||
 |translateMarker|OBJECT|平移marker，带动画|app-nvue 2.1.5+、微信小程序带动画||
 |includePoints|OBJECT|缩放视野展示所有经纬度|app-nvue 2.1.5+||
 |getRegion|OBJECT|获取当前地图的视野范围|||
@@ -43,14 +43,27 @@ mapContext
 |fail|Function|否|接口调用失败的回调函数|
 |complete|Function|否|接口调用结束的回调函数（调用成功、失败都会执行）|
 
+
+**moveToLocation 的 OBJECT 参数列表**
+
+|参数			|类型			|必填	|说明																																	|
+|:-				|:-				|:-		|:-																																		|
+|longitude|Number		|否		|经度 ，App 2.6.8、H5、仅微信小程序 2.8.0+ 支持																			|
+|latitude	|Number		|否		|纬度 ，App 2.6.8、H5、仅微信小程序 2.8.0+ 支持																			|
+|success	|Function	|否		|接口调用成功的回调函数 ，res = { longitude: "经度", latitude: "纬度"}|
+|success	|Function	|否		|接口调用成功的回调函数 ，res = { longitude: "经度", latitude: "纬度"}|
+|fail			|Function	|否		|接口调用失败的回调函数																								|
+|complete	|Function	|否		|接口调用结束的回调函数（调用成功、失败都会执行）											|
+
+
 **translateMarker 的 OBJECT 参数列表**
 
 |参数|类型|必填|说明|
 |:-|:-|:-|:-|
 |markerId|Number|是|指定 marker|
 |destination|Object|是|指定 marker 移动到的目标点|
-|autoRotate|Boolean|是|移动过程中是否自动旋转 marker|
-|rotate|Number|是|marker 的旋转角度|
+|autoRotate|Boolean|否|移动过程中是否自动旋转 marker|
+|rotate|Number|否|marker 的旋转角度|
 |duration|Number|否|动画持续时长，默认值1000ms，平移与旋转分别计算|
 |animationEnd|Function|否|	动画结束回调函数|
 |fail|Function|否|	接口调用失败的回调函数|

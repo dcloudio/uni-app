@@ -169,3 +169,4 @@ subNvue.onMessage(function(data){
 - 在hello uni-app的接口-界面-原生子窗体中，有完整的subNVue示例，包括带渐变色的原生导航栏、可遮盖地图的侧滑菜单、可从顶部弹出的popup、可在视频上滚动的消息列表
 - 每个 `subNVue` 页面都要在 pages.json 中注册
 - `subNVue` 比cover-view和plus.nativeObj.view更强大，也占用更多内存，为了保证更好的性能体验，一个vue页面不要加载太多 `subNVue` 子窗体，建议控制在三个以内
+- `getSubNVueById` 需要在页面生命周期 `onReady` 中调用

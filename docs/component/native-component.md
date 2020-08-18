@@ -21,6 +21,7 @@ H5、App的nvue页面，不存在混合渲染的情况，它们或者全部是�
 * [live-pusher](/component/live-pusher)（仅微信小程序、百度小程序、app-nvue支持，app-vue使用plus.video.LivePusher可实现推流）
 * [cover-view](/component/cover-view)
 * [cover-image](/component/cover-view?id=cover-image)
+* [ad](/component/ad) (仅app、微信小程序、百度小程序、字节跳动小程序、QQ小程序支持)
 
 
 #### 混合渲染模式下原生组件的使用限制
@@ -70,9 +71,7 @@ plus.nativeObj.view的API比较原生，可以画出任何界面，但plus.nativ
 
 - [subNVue](https://ask.dcloud.net.cn/article/35948)
 
-subNVue是把weex渲染的原生子窗体，覆盖在vue页面上，它解决了plus.nativeObj.view的不足，提供了强大的层级问题解决方案。subNVue的详细介绍见：[https://ask.dcloud.net.cn/article/35948](https://ask.dcloud.net.cn/article/35948)
-
-注意App的非自定义组件编译模式不支持subNVue。
+subNVue是原生渲染的nvue子窗体，把一个nvue页面以半屏的方式覆盖在vue页面上。它解决了plus.nativeObj.view的不足，提供了强大的层级问题解决方案。subNVue的详细介绍见：[https://ask.dcloud.net.cn/article/35948](https://ask.dcloud.net.cn/article/35948)
 
 - [弹出部分区域透明的nvue页面](https://ext.dcloud.net.cn/plugin?id=953)
 

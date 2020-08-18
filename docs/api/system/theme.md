@@ -17,4 +17,5 @@ uni.onUIStyleChange(function (res) {
 ```
 
 **注意**
+- 自定义基座生效
 - 仅 V3 编译支持，参考 manifest.json 配置

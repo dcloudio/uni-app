@@ -20,15 +20,12 @@
 详见Vue官方文档：[模板语法](https://cn.vuejs.org/v2/guide/syntax.html)。
 
 **注意**
-如果使用**老版**的非自定义组件模式，即manifest中`"usingComponents":false`，部分模版语法不支持，但此模式已不再推荐使用，[详见](https://ask.dcloud.net.cn/article/35699)。  
+如果使用**老版**的非自定义组件模式，即manifest中`"usingComponents":false`，部分模版语法不支持，但此模式已于2019年11月起下线。
 
-**老版**非自定义组件模式不支持情况（**新版自定义组件模式已不存在此情况**）：
-- 不支持部分复杂的 JavaScript 渲染表达式
-- 不支持过滤器
 
 ## data 属性
 
-``data`` 必须声明为返回一个初始数据对象的函数；否则页面关闭时，数据不会自动销毁，再次打开该页面时，会显示上次数据。
+``data`` 必须声明为返回一个初始数据对象的函数（注意函数内返回的数据对象不要直接引用函数外的对象）；否则页面关闭时，数据不会自动销毁，再次打开该页面时，会显示上次数据。
 
 ```javascript
 //正确用法，使用函数返回对象
@@ -42,11 +39,38 @@ data() {
 data: {
 	title: 'Hello'
 }
+
+//错误写法，同样会导致多个组件实例对象数据相互影响
+const obj = {
+  title: 'Hello'
+}
+data() {
+	return {
+    obj
+  }
+}
 ```
+
+### 注意事项
+* 由于小程序端不支持更新属性值为 undefined，框架内部将替换 undefined 为 null，此时可能出现预期之外的情况（[相关反馈](https://github.com/dcloudio/uni-app/issues/1460)），需要自行判断一下。
 
 ## 全局变量
 
 实现全局变量的方式需要遵循 Vue 单文件模式的开发规范。详细参考：[uni-app全局变量的几种实现方式](https://ask.dcloud.net.cn/article/35021)
+
+## 其他配置
+
+Vue 组件编译到小程序平台的时候会编译为对应平台的组件，部分小程序平台支持 options 选项（具体选项参考对应小程序平台文档的自定义组件部分），一般情况默认即可，如有特殊需求可在 Vue 组件中增加 options 属性。
+
+```js
+export default {
+  props: ['data'],
+  options: {
+    multipleSlots: false,// 在微信小程序中关闭当前组件的多slot支持，默认启用
+    virtualHost: true // 在微信小程序中将组件节点渲染为虚拟节点，更加接近Vue组件的表现
+  }
+}
+```
 
 ## Class 与 Style 绑定
 
@@ -133,7 +157,7 @@ style 支持的语法:
 
 **用在组件上**
 
-非H5端暂不支持在自定义组件上使用 ``Class`` 与 ``Style`` 绑定
+非H5端（非自定义组件编译模式）暂不支持在自定义组件上使用 ``Class`` 与 ``Style`` 绑定
 
 ## 计算属性
 
@@ -197,6 +221,7 @@ export default {
 ### 注意事项
 * 在H5平台 使用 v-for 循环整数时和其他平台存在差异，如 `v-for="(item, index) in 10"` 中，在H5平台 item 从 1 开始，其他平台 item 从 0 开始，可使用第二个参数 index 来保持一致。
 * 在非H5平台 循环对象时不支持第三个参数，如 `v-for="(value, name, index) in object"` 中，index 参数是不支持的。
+* 小程序端数据为差量更新方式，由于小程序不支持删除对象属性，使用的设置值为 null 的方式替代，导致遍历时可能出现不符合预期的情况，需要自行过滤一下值为 null 的数据（[相关反馈](https://ask.dcloud.net.cn/question/103269)）。
 
 ## 事件处理器
 
@@ -360,9 +385,9 @@ export default {
 - **uni-app只支持vue单文件组件（.vue 组件）**。其他的诸如：动态组件，自定义 ``render``，和``<script type="text/x-template">`` 字符串模版等，在非H5端不支持。
 
 
-详细的非H5端不支持列表：
+详细的小程序端不支持列表：
 
-* ``Slot``（``scoped`` 暂时还没做支持）
+* 作用域插槽（字节小程序不支持、除支付宝小程序外仅支持解构插槽、不可使用作用域外数据）
 * 动态组件
 * 异步组件
 * ``inline-template``
@@ -467,6 +492,7 @@ index.vue 里可直接使用组件
 
 - 除以上列表中的名称外，标准的 HTML 及 SVG 标签名也不能作为组件名。
 - 在百度小程序中使用时，不要在 data 内使用 hidden ，可能会导致渲染错误
+- `methods`中不可使用与生命周期同名的方法名
 
 
 ## 常见问题
@@ -576,6 +602,7 @@ export default {
 	},
 	methods: {
 		scroll: function(e) {
+			// 如果使用此方法，请自行增加防抖处理
 			this.scrollTop = e.detail.scrollTop
 		},
 		goTop: function(e) {
@@ -675,12 +702,12 @@ export default {
 |vm.$props			|支持	|支持			|支持		|支持			|-																																					|
 |vm.$el					|支持	|不支持		|不支持	|不支持		|-																																					|
 |vm.$options		|支持	|支持			|支持		|支持			|-																																					|
-|vm.$parent			|支持	|支持			|支持		|支持			|`uni-app`里面`view`等内置标签是以组件方式实现，`$parent`会获取这些内置组件	|
+|vm.$parent			|支持	|支持			|支持		|支持			|H5端 `view`、`text` 等内置标签是以 Vue 组件方式实现，`$parent` 会获取这些内置组件	|
 |vm.$root				|支持	|支持			|支持		|支持			|-																																					|
-|vm.$children		|支持	|支持			|支持		|支持			|-																																					|
+|vm.$children		|支持	|支持			|支持		|支持			|H5端 `view`、`text` 等内置标签是以 Vue 组件方式实现，`$children` 会获取这些内置组件|
 |vm.$slots			|支持	|支持			|不支持	|支持			|App端旧版获取值为`{'slotName':true/false}`比如：`{"footer":true}`					|
 |vm.$scopedSlots|支持	|支持			|支持		|支持			|App端旧版获取值为`{'slotName':true/false}`比如：`{"footer":true}`					|
-|vm.$refs				|支持	|支持			|支持		|支持			|-																																					|
+|vm.$refs				|支持	|支持			|支持		|支持			|非H5端只能用于获取自定义组件，不能用于获取内置组件实例（如：view、text）|
 |vm.$isServer		|支持	|不支持		|支持		|不支持		|App端V3总是返回false																												|
 |vm.$attrs			|支持	|不支持		|支持		|不支持		|-																																					|
 |vm.$listeners	|支持	|不支持		|支持		|不支持		|-																																					|

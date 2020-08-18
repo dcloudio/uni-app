@@ -20,6 +20,7 @@
 - 页面结构复杂，css样式太多的情况，使用 image 可能导致样式生效较慢，出现 “闪一下” 的情况，此时设置 `image{will-change: transform}` ,可优化此问题。
 - 自定义组件里面使用 `<image>`时，若 `src` 使用相对路径可能出现路径查找失败的情况，故建议使用绝对路径。
 - webp格式的图片在Android上是内置支持的。iOS上不同平台不一样，具体如下：app-vue下，iOS不支持；app-nvue下，iOS支持；微信小程序2.9.0起，iOS支持。
+- svg 格式的图片在不同的平台支持情况不同。具体为：app-nvue 不支持 svg 格式的图片，小程序上只支持网络地址。
 
 
 **mode 有效值：**
@@ -43,7 +44,7 @@ mode 有 13 种模式，其中 4 种是缩放模式，9 种是裁剪模式。
 |裁剪|bottom left|不缩放图片，只显示图片的左下边区域|
 |裁剪|bottom right|不缩放图片，只显示图片的右下边区域|
 
-**示例：** [查看示例](https://uniapp.dcloud.io/h5/pages/component/image/image)
+**示例：** [查看示例](https://hellouniapp.dcloud.net.cn/pages/component/image/image)
  
 ```html
 <template>

@@ -11,8 +11,9 @@ app端nvue专用组件。在app-nvue下，如果是长列表，使用list组件�
 ```
 <template>
   <list>
-    <cell v-for="num in lists">
-      <text>{{num}}</text>
+    <!-- 注意事项: 不能使用 index 作为 key 的唯一标识 -->
+    <cell v-for="(item, index) in dataList" :key="item.id">
+      <text>{{item.name}}</text>
     </cell>
   </list>
 </template>
@@ -21,7 +22,7 @@ app端nvue专用组件。在app-nvue下，如果是长列表，使用list组件�
   export default {
     data () {
       return {
-        lists: ['A', 'B', 'C', 'D', 'E']
+        dataList: [{id: "1", name: 'A'}, {id: "2", name: 'B'}, {id: "3", name: 'C'}]
       }
     }
   }
@@ -49,6 +50,7 @@ app端nvue专用组件。在app-nvue下，如果是长列表，使用list组件�
 |属性名|说明|类型|默认值|
 |:-|:-|:-|:-|
 |show-scrollbar|控制是否出现滚动条|boolean|true|
+|bounce|控制是否回弹效果|boolean|true|
 |loadmoreoffset|触发 loadmore 事件所需要的垂直偏移距离（设备屏幕底部与 list 底部之间的距离），建议手动设置此值，设置大于0的值即可|number|0|
 |offset-accuracy|控制 onscroll 事件触发的频率：表示两次onscroll事件之间列表至少滚动了10px。注意，将该值设置为较小的数值会提高滚动事件采样的精度，但同时也会降低页面的性能|number|10|
 |pagingEnabled|是否按分页模式显示List，默认值false|boolean|true/false|
@@ -124,7 +126,6 @@ args 为要设置的参数为json类型可以包含下列元素
 
 属性|类型 |默认值|必填|说明
 :--|:--|:--|:--|:--|
-kind|string| xianyu|是|要实现的效果目前只支持闲鱼吸顶效果
 id|string|无|是|和list同时滚动的组件id，应为外层的scroller
 headerHeight|float|0|是|要吸顶的header顶部距离scroller顶部的距离
 
@@ -133,6 +134,9 @@ headerHeight|float|0|是|要吸顶的header顶部距离scroller顶部的距离
 #####示例:
 
 ```
+  <list id="" fixFreezing="true"></list>
+  // ios 需要配置 fixFreezing="true"
+
   //设置
   const list = this.$refs["list0"];
   list.setSpecialEffects({id:"scroller", headerHeight:150});

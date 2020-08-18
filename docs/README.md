@@ -1,59 +1,75 @@
 
-```uni-app``` 是一个使用 [Vue.js](https://vuejs.org/) 开发所有前端应用的框架，开发者编写一套代码，可发布到iOS、Android、H5、以及各种小程序（微信/支付宝/百度/头条/QQ/钉钉）等多个平台。
+```uni-app``` 是一个使用 [Vue.js](https://vuejs.org/) 开发所有前端应用的框架，开发者编写一套代码，可发布到iOS、Android、H5、以及各种小程序（微信/支付宝/百度/头条/QQ/钉钉/淘宝）、快应用等多个平台。
 
-`DCloud`公司拥有420万开发者，几十万应用案例、6.5亿手机端月活用户，数千款uni-app插件、70+微信/qq群。阿里小程序工具官方内置uni-app（[详见](https://docs.alipay.com/mini/ide/0.70-stable)），腾讯课堂官方为uni-app录制培训课程（[详见](https://ask.dcloud.net.cn/article/35640)），开发者可以放心选择。
+`DCloud`公司拥有500万开发者用户，几十万应用案例、10亿手机端月活用户，数千款uni-app插件、70+微信/qq群。阿里小程序工具官方内置uni-app（[详见](https://docs.alipay.com/mini/ide/0.70-stable)），腾讯课堂官方为uni-app录制培训课程（[详见](https://ask.dcloud.net.cn/article/35640)），开发者可以放心选择。
 
 `uni-app`在手，做啥都不愁。即使不跨端，```uni-app```也是更好的小程序开发框架（[详见](https://ask.dcloud.net.cn/article/35947)）、更好的App跨平台框架、更方便的H5开发框架。不管领导安排什么样的项目，你都可以快速交付，不需要转换开发思维、不需要更改开发习惯。
 
 <div class="quick">
     <h3 id="快速体验"><a href="/README?id=%e5%bf%ab%e9%80%9f%e4%bd%93%e9%aa%8c" data-id="快速体验" class="anchor"><span>快速体验</span></a></h3>
-    <p>一套代码编到8个平台，这不是梦想。眼见为实，扫描8个二维码，亲自体验最全面的跨平台效果！</p>
+    <p>一套代码编到10个平台，这不是梦想。眼见为实，扫描10个二维码，亲自体验最全面的跨平台效果！</p>
     <div class="flex-img-group-view">
-        <a href="//m3w.cn/uniapp" target="_blank" class="clear-style barcode-view">
-			<div class="barcode-img-box">
-				<img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/uni-android.png" width="160"/>
-			</div>
-        	<b>Android版</b>
-        </a>
-        <a href="https://itunes.apple.com/cn/app/hello-uni-app/id1417078253?mt=8" target="_blank" class="clear-style barcode-view">
-			<div class="barcode-img-box">
-				<img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/uni-ios.png" width="160"/>
-			</div>
-        	<b>iOS版</b>
-        </a>
-        <a href="https://uniapp.dcloud.io/h5/" target="_blank" class="clear-style barcode-view">
-			<div class="barcode-img-box">
-				<img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/uni-h5.png" width="160"/>
-			</div>
-        	<b>H5版</b>
-        </a>
-        <a href="//m3w.cn/uniapp" target="_blank" class="clear-style barcode-view">
-			<div class="barcode-img-box"><img src="//img.cdn.aliyun.dcloud.net.cn/guide/uniapp/gh_33446d7f7a26_430.jpg" width="160"/></div>
-        	<b>微信小程序版</b>
-        </a>
-        <a href="//m3w.cn/uniapp" target="_blank" class="clear-style barcode-view">
-			<div class="barcode-img-box"><img src="https://img-cdn-qiniu.dcloud.net.cn/img/alipay1.png" width="160"/></div>
-        	<b>支付宝小程序版</b>
-        </a>
-        <a href="//m3w.cn/uniapp" target="_blank" class="clear-style barcode-view">
-			<div class="barcode-img-box"><img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/baidu-uniapp.png" width="160"/></div>
-        	<b>百度小程序版</b>
-        </a>
-        <a href="//m3w.cn/uniapp" target="_blank" class="clear-style barcode-view">
-			<div class="barcode-img-box">
-				<img src="https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/mp-toutiao.png" width="160"/>
-			</div>
-        	<b>字节跳动小程序版</b>
-        </a>
-        <a href="//m3w.cn/uniapp" target="_blank" class="clear-style barcode-view">
-			<div class="barcode-img-box">
-				<img src="https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/hello-uni-qq.png" width="160"/>
-			</div>
-        	<b>QQ小程序版</b>
-        </a>
+      <a href="//m3w.cn/uniapp" target="_blank" class="clear-style barcode-view">
+        <div class="barcode-img-box">
+          <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/7c946930-bcf2-11ea-b997-9918a5dda011.png" width="160" />
+        </div>
+        <b>Android版</b>
+      </a>
+      <a href="https://itunes.apple.com/cn/app/hello-uni-app/id1417078253?mt=8" target="_blank" class="clear-style barcode-view">
+        <div class="barcode-img-box">
+          <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/7c910dd0-bcf2-11ea-b680-7980c8a877b8.png" width="160" />
+        </div>
+        <b>iOS版</b>
+      </a>
+      <a href="https://hellouniapp.dcloud.net.cn/" target="_blank" class="clear-style barcode-view">
+        <div class="barcode-img-box">
+          <img src="https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/uni-h5-hosting-qr.png" width="160" />
+        </div>
+        <b>H5版</b>
+      </a>
+      <a href="//m3w.cn/uniapp" target="_blank" class="clear-style barcode-view">
+        <div class="barcode-img-box"><img src="//img.cdn.aliyun.dcloud.net.cn/guide/uniapp/gh_33446d7f7a26_430.jpg" width="160" /></div>
+        <b>微信小程序版</b>
+      </a>
+      <a href="//m3w.cn/uniapp" target="_blank" class="clear-style barcode-view">
+        <div class="barcode-img-box"><img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/30112940-bcf2-11ea-a30b-e311646dfaf2.png" width="160" /></div>
+        <b>支付宝小程序版</b>
+      </a>
     </div>
-    <p>
-        <em>注：某些平台不能提交简单demo，故补充了一些其他功能；hello uni-app示例代码可从[github](https://github.com/dcloudio/hello-uniapp)获取</em></br>
+    <div class="flex-img-group-view" style="margin-top: 20px;">
+      <a href="//m3w.cn/uniapp" target="_blank" class="clear-style barcode-view">
+        <div class="barcode-img-box"><img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/e7fc6700-bcf1-11ea-b680-7980c8a877b8.png" width="160" /></div>
+        <b>百度小程序版</b>
+      </a>
+      <a href="//m3w.cn/uniapp" target="_blank" class="clear-style barcode-view">
+        <div class="barcode-img-box">
+          <img src="https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/mp-toutiao.png" width="160" />
+        </div>
+        <b>字节跳动小程序版</b>
+      </a>
+      <a href="//m3w.cn/uniapp" target="_blank" class="clear-style barcode-view">
+        <div class="barcode-img-box">
+          <img src="https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/hello-uni-qq.png" width="160" />
+        </div>
+        <b>QQ小程序版</b>
+      </a>
+      <a href="//m3w.cn/uniapp" target="_blank" class="clear-style barcode-view">
+        <div class="barcode-img-box">
+          <img src="https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/hello-uni-qa-union.png" width="160" />
+        </div>
+        <b>快应用</b>
+      </a>
+      <a href="https://so.mp.360.cn/mp.html?appid=qh4j181qqtru354st6" target="_blank" class="clear-style barcode-view">
+        <div class="barcode-img-box">
+          <img src="https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/hello-uni-mp-360-qr.png" width="160" />
+        </div>
+        <b>360小程序</b>
+      </a>
+    </div>
+    <p>注：<br/>
+        <em>- 某些平台不能提交简单demo，故补充了一些其他功能；hello uni-app示例代码可从[github](https://github.com/dcloudio/hello-uniapp)获取</em></br>
+        <em>- 快应用仅支持 vivo 、oppo、华为</em></br>
+        <em>- 360小程序仅 windows平台支持，需要在360浏览器中打开</em></br>
     </p>
 </div>
 
@@ -74,7 +90,7 @@
       </div>
       <div class="uniapp-home-content-item-header">
         <h5 class="uniapp-home-content-item-title">开发者/案例数量更多</h5>
-        <p class="uniapp-home-content-item-text">几十万应用、uni统计月活6.5亿、70+微信/qq群、更高的百度指数</p>
+        <p class="uniapp-home-content-item-text">几十万应用、uni统计月活10亿、70+微信/qq群、更高的百度指数</p>
         <p class="uniapp-home-content-item-text">跨端完善度更高，真正落地的提高生产力</p>
       </div>
     </div>

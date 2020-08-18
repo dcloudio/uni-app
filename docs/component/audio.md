@@ -11,6 +11,8 @@
 
 app-nvue也不支持此组件。
 
+如果需要带ui的样式，可以自己做，也可以在插件市场搜索相关[插件](https://ext.dcloud.net.cn/search?q=audio)
+
 **属性说明**
 
 |属性名|类型|默认值|说明|
@@ -37,7 +39,7 @@ app-nvue也不支持此组件。
 |3|解码错误|
 |4|不合适资源|
 
-**示例：** [查看示例](https://uniapp.dcloud.io/h5/pages/component/audio/audio)
+**示例：** [查看示例](https://hellouniapp.dcloud.net.cn/pages/component/audio/audio)
  
 ```html
 <template>

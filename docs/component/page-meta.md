@@ -28,6 +28,7 @@
 |scroll-duration|number|300|否|滚动动画时长|微信基础库 2.9.0|
 |page-style|string|""|否|页面根节点样式，页面根节点是所有页面节点的祖先节点，相当于 HTML 中的 body 节点|微信基础库 2.9.0|
 |root-font-size|string|""|否|页面的根字体大小，页面中的所有 rem 单位，将使用这个字体大小作为参考值，即 1rem 等于这个字体大小|微信基础库 2.9.0|
+|enable-pull-down-refresh|Boolean|""|否|是否开启下拉刷新|App 2.6.7|
 |@resize|eventhandle||否|页面尺寸变化时会触发 resize 事件， event.detail = { size: { windowWidth, windowHeight } }|微信基础库 2.9.0|
 |@scroll|eventhandle||否|页面滚动时会触发 scroll 事件， event.detail = { scrollTop }|微信基础库 2.9.0|
 |@scrolldone|eventhandle||否|如果通过改变 scroll-top 属性来使页面滚动，页面滚动结束后会触发 scrolldone 事件|微信基础库 2.9.0|

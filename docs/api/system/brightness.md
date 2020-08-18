@@ -27,6 +27,8 @@ uni.setScreenBrightness({
 });
 ```
 
+>*Tips:* 避免 onshow() 里使用 setScreenBrightness() , 亮度变化会再次触发 onShow() 造成死循环
+
 ### uni.getScreenBrightness(OBJECT)
 获取屏幕亮度。
 
@@ -73,7 +75,7 @@ uni.getScreenBrightness({
 
 |参数名|类型|必填|说明|
 |:-|:-|:-|:-|
-|keepScreenOn|Boolean|是|接口调用成功的回调|
+|keepScreenOn|Boolean|是|是否保持屏幕常亮|
 |success|Function|否|接口调用成功的回调|
 |fail|Function|否|接口调用失败的回调函数|
 |complete|Function|否|接口调用结束的回调函数（调用成功、失败都会执行）|

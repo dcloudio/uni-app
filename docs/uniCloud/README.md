@@ -1,6 +1,8 @@
-`uniCloud` 是 DCloud 联合阿里云、腾讯云，为 uni-app 的开发者提供的基于 serverless 模式和 js 编程的云开发平台。
+`uniCloud` 是 DCloud 联合阿里云、腾讯云，为开发者提供的基于 serverless 模式和 js 编程的云开发平台。
 
-> 从[HBuilderX 2.5.8](https://www.dcloud.io/hbuilderx.html)起支持。目前仅支持阿里云，近期会开放腾讯云。
+`uniCloud` 的 web控制台地址：[https://unicloud.dcloud.net.cn](https://unicloud.dcloud.net.cn)
+
+从[HBuilderX 2.5.8](https://www.dcloud.io/hbuilderx.html)起支持。阿里云、腾讯云均已开放注册使用。
 
 ### uniCloud 的价值
 
@@ -20,7 +22,7 @@
 
 开发过程，连接DCloud服务器；运行过程是手机端直连阿里云或腾讯云 serverless 环境，不通过DCloud服务器中转。
 
-uniCloud 的底层环境，和微信小程序云开发、支付宝小程序云开发的基建环境相同。功能、性能、稳定性有足够的保障。腾讯云提供基础 serverless 能力，微信团队基于该能力封装了微信云开发，而DCloud团队基于该能力封装了 uniCloud。阿里云类似。
+uniCloud 的底层环境，和微信小程序云开发、支付宝小程序云开发的基建环境相同。功能、性能、稳定性有足够的保障。腾讯云云开发（CloudBase）提供基础 serverless 能力，微信团队基于该能力封装了微信云开发，而DCloud团队基于该能力封装了 uniCloud。阿里云类似。
 
 小程序云开发已蔚然成风，微信小程序、支付宝小程序、百度小程序均提供了云开发。微信公布已有50万以上的开发者在使用云开发了，微信自己的生活缴费、乘车码等大日活应用均使用云开发。不过这个流行技术一直无法跨端，它们都只支持各自的小程序。`uniCloud`解决了跨端问题，让uni-app的所有端应用，都可以使用云开发这个利器。
 
@@ -29,7 +31,7 @@ uniCloud 的底层环境，和微信小程序云开发、支付宝小程序云�
 - 数据库：可在云函数中读写的、基于 NoSQL 的 JSON 数据库。这种数据库对于前端工程师更自然，不需要学习SQL、不需要理解关系型和设计主键。
 - 存储和CDN：不管在前端还是云函数中，都可以操作存储和CDN。在`uniCloud`提供的安全机制下，可以实现应用前端直传CDN，避免服务器中转的耗时和带宽占用，且不会发生盗传。
 
-`uniCloud` 目前处于公测阶段，公测期间免费使用。公测结束后的收费也会低于传统云主机租用费用。
+`uniCloud` 目前计费系统还未开发完毕，暂时免费。计费系统上线后，收费标准也会低于传统云主机租用费用。
 
 ### serverless和云的发展趋势
 serverless是目前很火的概念，它是下一代云技术，是真正的“云”。

@@ -6,7 +6,7 @@
 
 |参数|类型|必填|说明|最低版本|
 |---|---|---|---|--|
-|canvasId|String|是|画布标识，传入 ```<canvas />``` 的 canvas-id||
+|canvasId|String|是|画布标识，传入 ```<canvas />``` 的 canvas-id（支付宝小程序是id、其他平台是canvas-id）||
 |data|Uint8ClampedArray|是|图像像素点数据，一维数组，每四项表示一个像素点的rgba||
 |x|Number|是|源图像数据在目标画布中的位置偏移量（x 轴方向的偏移量）||
 |y|Number|是|源图像数据在目标画布中的位置偏移量（y 轴方向的偏移量）||
@@ -19,7 +19,7 @@
 **示例代码**
 
 ```javascript
-const data = new Uint8ClampedArray([255, 0, 0, 1])
+const data = new Uint8ClampedArray([255, 0, 0, 255])
 uni.canvasPutImageData({
   canvasId: 'myCanvas',
   x: 0,
