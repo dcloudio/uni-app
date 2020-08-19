@@ -71,18 +71,14 @@ function findTest (path, state) {
             const property = node.property
             const propertyName = property.name
             if (objectName === VAR_ROOT || (names.includes(objectName) && (propertyName === IDENTIFIER_METHOD || propertyName === IDENTIFIER_FILTER || propertyName === IDENTIFIER_GLOBAL))) {
-              let property
-              traverse(testOrig, {
-                noScope: true,
-                Identifier (identifierPath) {
-                  const node = identifierPath.node
-                  if (node.name === propertyName) {
-                    property = node
-                    identifierPath.stop()
-                  }
-                }
-              })
-              memberExpressionPath.replaceWith(property)
+              const array = []
+              let tempPath = memberExpressionPath
+              while (tempPath.parentPath) {
+                const key = tempPath.key
+                array.unshift(typeof key === 'number' ? `[${key}]` : `.${key}`)
+                tempPath = tempPath.parentPath
+              }
+              memberExpressionPath.replaceWith(path.parentPath.get('test' + array.join('')).node.property)
             }
           }
         })
