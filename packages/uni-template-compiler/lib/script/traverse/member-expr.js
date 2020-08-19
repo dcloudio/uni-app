@@ -25,7 +25,7 @@ function findScoped (path, test, state) {
     path.traverse({
       noScope: true,
       Identifier (path) {
-        if (path.key !== 'key' && (path.key !== 'property' || path.parent.computed)) {
+        if (!match && path.key !== 'key' && (path.key !== 'property' || path.parent.computed)) {
           match = isMatch(path.node.name, forItem, forIndex)
           if (match) {
             path.stop()
@@ -37,7 +37,7 @@ function findScoped (path, test, state) {
       traverse(t.arrayExpression([test]), {
         noScope: true,
         Identifier (path) {
-          if (path.key !== 'key' && (path.key !== 'property' || path.parent.computed)) {
+          if (!match && path.key !== 'key' && (path.key !== 'property' || path.parent.computed)) {
             const node = path.node
             match = isMatch(node.name, forItem, forIndex) || scoped.declarationArray.find(({ declarations }) => declarations.find(({ id }) => id === node))
             if (match) {
