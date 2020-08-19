@@ -434,7 +434,6 @@ let res = await db.collection('goods').where({
 | 字段      | 类型    | 必填 | 说明                     |
 | --------- | ------- | ---- | ------------------------ |
 | total     | Integer | 否   | 计数结果                 |
-| requestId | string  | 否   | 请求序列号，用于错误排查 |
 
 
 
@@ -754,6 +753,13 @@ let res = await collection.where({
   _id: dbCmd.exists(true)
 }).remove()
 ```
+
+响应参数
+
+| 字段      | 类型    | 必填 | 说明                     |
+| --------- | ------- | ---- | ------------------------ |
+| deleted   | Integer | 否   | 删除的记录数量              |
+
 
 ## 更新文档
 
