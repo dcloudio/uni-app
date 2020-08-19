@@ -56,6 +56,9 @@ module.exports = {
   plugins: [
     alias({
       entries: [{
+        find: 'uni-shared/query',
+        replacement: path.resolve(__dirname, '../src/shared/query.js')
+      }, {
         find: 'uni-shared',
         replacement: path.resolve(__dirname, '../src/shared/util.js')
       }, {

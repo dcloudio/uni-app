@@ -1,4 +1,8 @@
 import {
+  stringifyQuery
+} from 'uni-shared/query'
+
+import {
   initHooks,
   PAGE_EVENT_HOOKS
 } from 'uni-wrapper/util'
@@ -24,9 +28,13 @@ export default function parseBasePage (vuePageOptions, {
 
   initHooks(pageOptions.methods, hooks, vuePageOptions)
 
-  pageOptions.methods.onLoad = function (args) {
-    this.$vm.$mp.query = args // 兼容 mpvue
-    this.$vm.__call_hook('onLoad', args)
+  pageOptions.methods.onLoad = function (query) {
+    this.options = query
+    this.$page = {
+      fullPath: '/' + this.route + stringifyQuery(query)
+    }
+    this.$vm.$mp.query = query // 兼容 mpvue
+    this.$vm.__call_hook('onLoad', query)
   }
 
   return pageOptions

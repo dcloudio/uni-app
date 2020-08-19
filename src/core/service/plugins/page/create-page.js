@@ -14,6 +14,7 @@ export default function createPage (pageVm, options) {
     id,
     path: $route.path,
     route: $route.meta.pagePath,
+    fullPath: $route.meta.isEntry ? $route.meta.pagePath : $route.fullPath,
     options: options,
     meta: Object.assign({}, $route.meta)
   }

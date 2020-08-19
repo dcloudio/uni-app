@@ -356,6 +356,38 @@ var baseApi = /*#__PURE__*/Object.freeze({
   interceptors: interceptors
 });
 
+function findExistsPageIndex (url) {
+  const pages = getCurrentPages();
+  let len = pages.length;
+  while (len--) {
+    const page = pages[len];
+    if (page.$page && page.$page.fullPath === url) {
+      return len
+    }
+  }
+  return -1
+}
+
+var redirectTo = {
+  name (fromArgs) {
+    if (fromArgs.exists === 'back' && fromArgs.delta) {
+      return 'navigateBack'
+    }
+    return 'redirectTo'
+  },
+  args (fromArgs) {
+    if (fromArgs.exists === 'back' && fromArgs.url) {
+      const existsPageIndex = findExistsPageIndex(fromArgs.url);
+      if (existsPageIndex !== -1) {
+        const delta = getCurrentPages().length - 1 - existsPageIndex;
+        if (delta > 0) {
+          fromArgs.delta = delta;
+        }
+      }
+    }
+  }
+};
+
 // 不支持的 API 列表
 const todos = [
   'preloadPage',
@@ -434,6 +466,7 @@ function _handleSystemInfo (result) {
 }
 
 const protocols = { // 需要做转换的 API 列表
+  redirectTo,
   returnValue (methodName, res = {}) { // 通用 returnValue 解析
     if (res.error || res.errorMessage) {
       res.errMsg = `${methodName}:fail ${res.errorMessage || res.error}`;
@@ -466,7 +499,8 @@ const protocols = { // 需要做转换的 API 列表
         },
         data (data) {
           // 钉钉小程序在content-type为application/json时需上传字符串形式data，使用my.dd在真机运行钉钉小程序时不能正确判断
-          if (my.canIUse('saveFileToDingTalk') && method.toUpperCase() === 'POST' && headers['content-type'].indexOf('application/json') === 0 && isPlainObject(data)) {
+          if (my.canIUse('saveFileToDingTalk') && method.toUpperCase() === 'POST' && headers['content-type'].indexOf(
+            'application/json') === 0 && isPlainObject(data)) {
             return {
               name: 'data',
               value: JSON.stringify(data)
@@ -900,7 +934,12 @@ function wrapper (methodName, method) {
       if (typeof arg2 !== 'undefined') {
         args.push(arg2);
       }
-      const returnValue = my[options.name || methodName].apply(my, args);
+      if (isFn(options.name)) {
+        methodName = options.name(arg1);
+      } else if (isStr(options.name)) {
+        methodName = options.name;
+      }
+      const returnValue = my[methodName].apply(my, args);
       if (isSyncApi(methodName)) { // 同步 api
         return processReturnValue(methodName, returnValue, options.returnValue, isContextApi(methodName))
       }
@@ -1626,10 +1665,10 @@ function handleEvent (event) {
             eventArray[2],
             isCustom,
             methodName
-          ) || [];
+          );
           // 参数尾部增加原始事件对象用于复杂表达式内获取额外数据
           // eslint-disable-next-line no-sparse-arrays
-          ret.push(handler.apply(handlerCtx, params.concat([, , , , , , , , , , event])));
+          ret.push(handler.apply(handlerCtx, (Array.isArray(params) ? params : []).concat([, , , , , , , , , , event])));
         }
       });
     }
@@ -2046,6 +2085,49 @@ function createApp (vm) {
   return vm
 }
 
+const encodeReserveRE = /[!'()*]/g;
+const encodeReserveReplacer = c => '%' + c.charCodeAt(0).toString(16);
+const commaRE = /%2C/g;
+
+// fixed encodeURIComponent which is more conformant to RFC3986:
+// - escapes [!'()*]
+// - preserve commas
+const encode = str => encodeURIComponent(str)
+  .replace(encodeReserveRE, encodeReserveReplacer)
+  .replace(commaRE, ',');
+
+function stringifyQuery (obj, encodeStr = encode) {
+  const res = obj ? Object.keys(obj).map(key => {
+    const val = obj[key];
+
+    if (val === undefined) {
+      return ''
+    }
+
+    if (val === null) {
+      return encodeStr(key)
+    }
+
+    if (Array.isArray(val)) {
+      const result = [];
+      val.forEach(val2 => {
+        if (val2 === undefined) {
+          return
+        }
+        if (val2 === null) {
+          result.push(encodeStr(key));
+        } else {
+          result.push(encodeStr(key) + '=' + encodeStr(val2));
+        }
+      });
+      return result.join('&')
+    }
+
+    return encodeStr(key) + '=' + encodeStr(val)
+  }).filter(x => x.length > 0).join('&') : null;
+  return res ? `?${res}` : ''
+}
+
 const hooks$1 = [
   'onShow',
   'onHide',
@@ -2064,7 +2146,7 @@ function parsePage (vuePageOptions) {
   const pageOptions = {
     mixins: initBehaviors(vueOptions, initBehavior),
     data: initData(vueOptions, Vue.prototype),
-    onLoad (args) {
+    onLoad (query) {
       const properties = this.props;
 
       const options = {
@@ -2081,8 +2163,13 @@ function parsePage (vuePageOptions) {
       // 触发首次 setData
       this.$vm.$mount();
 
-      this.$vm.$mp.query = args; // 兼容 mpvue
-      this.$vm.__call_hook('onLoad', args);
+      this.$page = {
+        fullPath: '/' + this.route + stringifyQuery(query)
+      };
+
+      this.options = query;
+      this.$vm.$mp.query = query; // 兼容 mpvue
+      this.$vm.__call_hook('onLoad', query);
     },
     onReady () {
       initChildVues(this);

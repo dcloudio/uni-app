@@ -152,6 +152,7 @@ export function registerPage ({
       meta: routeOptions.meta,
       path,
       route,
+      fullPath: url,
       openType
     },
     $remove () {

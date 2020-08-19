@@ -1,3 +1,4 @@
+import redirectTo from '../../helpers/redirect-to'
 import previewImage from '../../helpers/normalize-preview-image'
 
 function addSafeAreaInsets (result) {
@@ -12,6 +13,7 @@ function addSafeAreaInsets (result) {
   }
 }
 export const protocols = {
+  redirectTo,
   previewImage,
   getSystemInfo: {
     returnValue: addSafeAreaInsets

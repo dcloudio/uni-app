@@ -1,5 +1,6 @@
 import {
-  hasLifecycleHook
+  hasLifecycleHook,
+  findExistsPageIndex
 } from 'uni-helpers/index'
 
 const {
@@ -9,6 +10,7 @@ const {
 function onAppRoute (type, {
   url,
   delta,
+  exists,
   animationType,
   animationDuration,
   from = 'navigateBack',
@@ -17,6 +19,17 @@ function onAppRoute (type, {
   const router = getApp().$router
   switch (type) {
     case 'redirectTo':
+      if (exists === 'back') {
+        const existsPageIndex = findExistsPageIndex(url)
+        if (existsPageIndex !== -1) {
+          const delta = (getCurrentPages().length - 1) - existsPageIndex
+          if (delta > 0) {
+            return onAppRoute('navigateBack', {
+              delta
+            })
+          }
+        }
+      }
       router.replace({
         type,
         path: url
