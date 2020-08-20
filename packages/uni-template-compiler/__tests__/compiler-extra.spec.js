@@ -327,6 +327,16 @@ describe('mp:compiler-extra', () => {
       '<view><view class="item" v-for="i in 5" :key="i" @click="func(i)"></view></view>',
       '<view><block wx:for="{{5}}" wx:for-item="i" wx:for-index="__i0__" wx:key="*this"><view data-event-opts="{{[[\'tap\',[[\'func\',[\'$0\'],[[[5,\'\',__i0__]]]]]]]}}" class="item" bindtap="__e"></view></block></view>'
     )
+    assertCodegen(
+      '<view v-for="(item,index) in list" :key="index"><view @click="$test.test(item,item.length)"></view></view>',
+      '<block wx:for="{{list}}" wx:for-item="item" wx:for-index="index" wx:key="index"><view><view data-event-opts="{{[[\'tap\',[[\'e0\',[\'$event\']]]]]}}" data-event-params="{{({item})}}" bindtap="__e"></view></view></block>',
+      'with(this){if(!_isMounted){e0=function($event,item){var _temp=arguments[arguments.length-1].currentTarget.dataset,_temp2=_temp.eventParams||_temp["event-params"],item=_temp2.item;var _temp,_temp2;return $test.test(item,item.length)}}}'
+    )
+    assertCodegen(
+      '<view v-for="(item,index) in list" :key="index"><view @click="$test.test(item,item.length,undefined)"></view></view>',
+      '<block wx:for="{{list}}" wx:for-item="item" wx:for-index="index" wx:key="index"><view><view data-event-opts="{{[[\'tap\',[[\'e0\',[\'$event\']]]]]}}" data-event-params="{{({item})}}" bindtap="__e"></view></view></block>',
+      'with(this){if(!_isMounted){e0=function($event,item){var _temp=arguments[arguments.length-1].currentTarget.dataset,_temp2=_temp.eventParams||_temp["event-params"],item=_temp2.item;var _temp,_temp2;return $test.test(item,item.length,undefined)}}}'
+    )
   })
 
   it('generate class binding', () => {
@@ -688,9 +698,44 @@ describe('mp:compiler-extra', () => {
       'with(this){var m0=getValue(key);var m1=m0?getValue(key):null;$mp.data=Object.assign({},{$root:{m0:m0,m1:m1}})}'
     )
     assertCodegen(
+      '<view v-if="test1(key)&&test2(key)">{{getValue(key)}}</view>',
+      '<block wx:if="{{$root.m0&&$root.m1}}"><view>{{$root.m2}}</view></block>',
+      'with(this){var m0=test1(key);var m1=test2(key);var m2=m0&&m1?getValue(key):null;$mp.data=Object.assign({},{$root:{m0:m0,m1:m1,m2:m2}})}'
+    )
+    assertCodegen(
       '<view v-for="(item,index) in list" :key="index"><view v-if="item">{{getValue(item)}}</view></view>',
       '<block wx:for="{{$root.l0}}" wx:for-item="item" wx:for-index="index" wx:key="index"><view><block wx:if="{{item.$orig}}"><view>{{item.m0}}</view></block></view></block>',
       'with(this){var l0=__map(list,function(item,index){var $orig=__get_orig(item);var m0=item?getValue(item):null;return{$orig:$orig,m0:m0}});$mp.data=Object.assign({},{$root:{l0:l0}})}'
+    )
+    assertCodegen(
+      '<view v-for="(item,index) in list" :key="index"><view v-if="item.length">{{getValue(item)}}</view></view>',
+      '<block wx:for="{{$root.l0}}" wx:for-item="item" wx:for-index="index" wx:key="index"><view><block wx:if="{{item.$orig.length}}"><view>{{item.m0}}</view></block></view></block>',
+      'with(this){var l0=__map(list,function(item,index){var $orig=__get_orig(item);var m0=item.length?getValue(item):null;return{$orig:$orig,m0:m0}});$mp.data=Object.assign({},{$root:{l0:l0}})}'
+    )
+    assertCodegen(
+      '<view v-for="(item,index) in list" :key="index"><view v-if="item.length>0">{{getValue(item)}}</view></view>',
+      '<block wx:for="{{$root.l0}}" wx:for-item="item" wx:for-index="index" wx:key="index"><view><block wx:if="{{item.$orig.length>0}}"><view>{{item.m0}}</view></block></view></block>',
+      'with(this){var l0=__map(list,function(item,index){var $orig=__get_orig(item);var m0=item.length>0?getValue(item):null;return{$orig:$orig,m0:m0}});$mp.data=Object.assign({},{$root:{l0:l0}})}'
+    )
+    assertCodegen(
+      '<view v-for="(item,index) in list" :key="index"><view v-if="item.length>0">{{test(\'item\')}}</view></view>',
+      '<block wx:for="{{$root.l0}}" wx:for-item="item" wx:for-index="index" wx:key="index"><view><block wx:if="{{item.$orig.length>0}}"><view>{{item.m0}}</view></block></view></block>',
+      'with(this){var l0=__map(list,function(item,index){var $orig=__get_orig(item);var m0=item.length>0?test("item"):null;return{$orig:$orig,m0:m0}});$mp.data=Object.assign({},{$root:{l0:l0}})}'
+    )
+    assertCodegen(
+      '<view v-for="(item,index) in list" :key="index"><view v-if="test(item)">{{test(\'item\')}}</view></view>',
+      '<block wx:for="{{$root.l0}}" wx:for-item="item" wx:for-index="index" wx:key="index"><view><block wx:if="{{item.m0}}"><view>{{item.m1}}</view></block></view></block>',
+      'with(this){var l0=__map(list,function(item,index){var $orig=__get_orig(item);var m0=test(item);var m1=m0?test("item"):null;return{$orig:$orig,m0:m0,m1:m1}});$mp.data=Object.assign({},{$root:{l0:l0}})}'
+    )
+    assertCodegen(
+      '<view v-for="(item,index) in list" :key="index"><view v-if="test(item.id)"><view v-if="test(item.type)">{{test(\'item\')}}</view></view></view>',
+      '<block wx:for="{{$root.l0}}" wx:for-item="item" wx:for-index="index" wx:key="index"><view><block wx:if="{{item.m0}}"><view><block wx:if="{{item.m1}}"><view>{{item.m2}}</view></block></view></block></view></block>',
+      'with(this){var l0=__map(list,function(item,index){var $orig=__get_orig(item);var m0=test(item.id);var m1=m0?test(item.type):null;var m2=m0&&m1?test("item"):null;return{$orig:$orig,m0:m0,m1:m1,m2:m2}});$mp.data=Object.assign({},{$root:{l0:l0}})}'
+    )
+    assertCodegen(
+      '<view v-for="(item,index) in list" :key="index"><view v-if="Object.values(item.list).length">{{test(item.list)}}</view></view>',
+      '<block wx:for="{{$root.l0}}" wx:for-item="item" wx:for-index="index" wx:key="index"><view><block wx:if="{{item.g0.length}}"><view>{{item.m0}}</view></block></view></block>',
+      'with(this){var l0=__map(list,function(item,index){var $orig=__get_orig(item);var g0=Object.values(item.list);var m0=g0.length?test(item.list):null;return{$orig:$orig,g0:g0,m0:m0}});$mp.data=Object.assign({},{$root:{l0:l0}})}'
     )
   })
 })

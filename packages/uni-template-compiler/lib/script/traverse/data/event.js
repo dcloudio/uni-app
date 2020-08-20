@@ -335,7 +335,7 @@ function parseEvent (keyPath, valuePath, state, isComponent, isNativeOn = false,
               const scope = path.scope
               const node = path.node
               const name = node.name
-              if (path.key !== 'key' && (path.key !== 'property' || path.parent.computed) && scope && !scope.hasOwnBinding(name) && scope.hasBinding(name)) {
+              if (path.key !== 'key' && (path.key !== 'property' || path.parent.computed) && scope && !scope.hasOwnBinding(name) && scope.hasBinding(name) && !params.includes(name) && name !== 'undefined') {
                 params.push(name)
               }
             }

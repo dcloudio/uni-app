@@ -131,6 +131,11 @@ describe('mp:compiler-mp-weixin', () => {
       '<block wx:for="{{({list1,list2})}}" wx:for-item="item" wx:for-index="key"></block>'
     )
     assertCodegen('<test :obj="{x:0}"></test>', '<test vue-id="551070e6-1" obj="{{({x:0})}}" bind:__l="__l"></test>')
+    assertCodegen('<test :obj="{\'x\':0}"></test>', '<test vue-id="551070e6-1" obj="{{$root.a0}}" bind:__l="__l"></test>', 'with(this){var a0={"x":0};$mp.data=Object.assign({},{$root:{a0:a0}})}')
+    assertCodegen(
+      '<test :obj="{x:{x:0}}"></test>', '<test vue-id="551070e6-1" obj="{{$root.a0}}" bind:__l="__l"></test>',
+      'with(this){var a0={x:{x:0}};$mp.data=Object.assign({},{$root:{a0:a0}})}'
+    )
   })
 
   it('generate v-show directive', () => {
