@@ -74,7 +74,9 @@
 	"bindTokenToDevice": true, // 是否将token和设备绑定，设置为true会进行ua校验，默认为true
 	"passwordErrorLimit": 6, // 密码错误最大重试次数
 	"passwordErrorRetryTime": 3600, // 密码错误重试次数超限之后的冻结时间
-	"app-plus": {
+  "autoSetInviteCode": false, // 是否在用户注册时自动设置邀请码，默认不自动设置
+  "forceInviteCode": false, // 是否强制用户注册时必填邀请码，默认为false（需要注意的是目前只有短信验证码注册才可以填写邀请码）
+  "app-plus": {
 		"tokenExpiresIn": 2592000,
 		"oauth": {
 			// App微信登录所用到的appid、appsecret需要在微信开放平台获取，注意：不是公众平台而是开放平台
@@ -125,10 +127,11 @@
 
 **user参数说明**
 
-| 字段		| 类型	| 必填	| 说明			|
-| ---		| ---	| ---	| ---			|
-| username	| String| 是	|用户名，唯一	|
-| password	| String| 是	|密码			|
+| 字段					| 类型	| 必填| 说明								|
+| ---						| ---		| ---	| ---									|
+| username			| String| 是	|用户名，唯一					|
+| password			| String| 是	|密码									|
+| myInviteCode	| String| 否	|自行设置用户的邀请码	|
 
 username可以是字符串、可以是email、可以是手机号，本插件不约束，开发者可以自己定。
 
@@ -441,7 +444,7 @@ exports.main = async function(event,context) {
 | ---		| ---		| ---	| ---														|
 | mobile| String| 是	|用户手机号											|
 | code		| String| 是	|验证码字符串	|
-| type		| String| 是	|类型，用于防止不同功能的验证码混用，目前支持的类型`login`登录、`bind`绑定手机、`unbind`解绑手机	|
+| type		| String| 是	|类型，用于防止不同功能的验证码混用，目前支持的类型`login`登录、`register`注册、`bind`绑定手机、`unbind`解绑手机	|
 
 **响应参数**
 
@@ -486,7 +489,7 @@ exports.main = async function(event,context) {
 | email		| String| 是	|用户邮箱，和手机号二选一																																										|
 | code			| String| 是	|验证码字符串																																										|
 | expiresIn	| Number| 是	|验证码过期时间，单位秒																																					|
-| type			| String| 是	|类型，用于防止不同功能的验证码混用，目前支持的类型`login`登录、`bind`绑定手机、`unbind`解绑手机|
+| type			| String| 是	|类型，用于防止不同功能的验证码混用，目前支持的类型`login`登录、`register`注册、`bind`绑定手机、`unbind`解绑手机|
 
 **响应参数**
 
@@ -531,7 +534,7 @@ uni-id内置方法`loginBySms`、`bindMobile`、`unbindMobile`均已内置校验
 | mobile| String| 是	|用户手机号，和邮箱二选一																																				|
 | email	| String| 是	|用户邮箱，和手机号二选一																																				|
 | code	| String| 是	|验证码字符串																																										|
-| type	| String| 是	|类型，用于防止不同功能的验证码混用，目前支持的类型`login`登录、`bind`绑定手机、`unbind`解绑手机|
+| type	| String| 是	|类型，用于防止不同功能的验证码混用，目前支持的类型`login`登录、`register`注册、`bind`绑定手机、`unbind`解绑手机|
 
 **响应参数**
 
@@ -566,10 +569,14 @@ exports.main = async function(event,context) {
 
 **mobileInfo**参数说明
 
-| 字段	| 类型	| 必填| 说明			|
-| ---		| ---		| ---	| ---				|
-| mobile| String| 是	|用户手机号	|
-| code	| String| 是	|验证码			|
+| 字段				| 类型	| 必填| 说明																																					|
+| ---					| ---		| ---	| ---																																						|
+| mobile			| String| 是	|用户手机号																																			|
+| code				| String| 是	|验证码																																					|
+| type				| String| 否	|指定操作类型，覆盖存在则登录不存在则注册的默认行为，可选值为`login`、`register`|
+| password		|String	| 否	|密码，type为`register`时生效																										|
+| inviteCode	|String	| 否	|邀请人的邀请码，type为`register`时生效																					|
+| myInviteCode|String	| 否	|设置当前注册用户自己的邀请码，type为`register`时生效														|
 
 **响应参数**
 
@@ -691,10 +698,13 @@ exports.main = async function(event,context) {
 
 **mobileInfo**参数说明
 
-| 字段	| 类型	| 必填| 说明		|
-| ---		| ---		| ---	| ---			|
-| email	| String| 是	|用户邮箱	|
-| code	| String| 是	|验证码		|
+| 字段					| 类型	| 必填| 说明																																					|
+| ---						| ---		| ---	| ---																																						|
+| email					| String| 是	|用户邮箱																																				|
+| code					| String| 是	|验证码																																					|
+| type					| String| 否	|指定操作类型，覆盖存在则登录不存在则注册的默认行为，可选值为`login`、`register`|
+| password			|String	| 否	|密码，type为`register`时生效																										|
+| myInviteCode	|String	| 否	|设置当前注册用户自己的邀请码，type为`register`时生效														|
 
 **响应参数**
 
@@ -845,7 +855,7 @@ exports.main = async function(event,context) {
 
 ## 微信登录
 
-用法：`uniID.loginByWeixin(String code);`
+用法：`uniID.loginByWeixin(Object loginByWexinParams);`
 
 **注意**
 
@@ -856,9 +866,11 @@ exports.main = async function(event,context) {
 
 **参数说明**
 
-| 字段| 类型	| 必填| 说明							|
-| ---	| ---		| ---	| ---								|
-| code| String| 是	|微信登录返回的code	|
+| 字段				| 类型	| 必填| 说明																																																														|
+| ---					| ---		| ---	| ---																																																															|
+| code				| String| 是	|微信登录返回的code																																																								|
+| platform		|String	| 否	|客户端类型：`mp-weixin`、`app-plus`，默认uni-id会自动取客户端类型，但是在云函数url化等场景无法取到客户端类型，可以使用此参数指定	|
+| myInviteCode|String	| 否	|设置当前注册用户自己的邀请码，type为`register`时生效																																							|
 
 **响应参数**
 
@@ -875,7 +887,11 @@ exports.main = async function(event,context) {
 // 云函数login-by-weixin代码
 const uniID = require('uni-id')
 exports.main = async function(event,context) {
-	const res = await uniID.loginByWeixin(event.code)
+  // 如下旧写法依然支持
+	// const res = await uniID.loginByWeixin(event.code)
+	const res = await uniID.loginByWeixin({
+    code: event.code
+  })
 	return res
 }
 
@@ -960,10 +976,11 @@ export default {
 
 **参数说明**
 
-| 字段| 类型	| 必填| 说明													|
-| ---	| ---		| ---	| ---														|
-| uid	| String| 是	|用户Id，可以通过checkToken返回	|
-| code| String| 是	|微信登录返回的code							|
+| 字段		| 类型	| 必填| 说明																																																														|
+| ---			| ---		| ---	| ---																																																															|
+| uid			| String| 是	|用户Id，可以通过checkToken返回																																																		|
+| code		| String| 是	|微信登录返回的code																																																								|
+|platform	|String	|否		|客户端类型：`mp-weixin`、`app-plus`，默认uni-id会自动取客户端类型，但是在云函数url化等场景无法取到客户端类型，可以使用此参数指定	|
 
 **响应参数**
 
@@ -1020,7 +1037,7 @@ exports.main = async function(event,context) {
 
 ## 支付宝登录
 
-用法：`uniID.loginByAlipay(String code);`
+用法：`uniID.loginByAlipay(Object loginByAlipayParams);`
 
 **注意**
 
@@ -1029,9 +1046,11 @@ exports.main = async function(event,context) {
 
 **参数说明**
 
-| 字段| 类型	| 必填| 说明							|
-| ---	| ---		| ---	| ---								|
-| code| String| 是	|支付宝登录返回的code	|
+| 字段				| 类型	| 必填| 说明																																																														|
+| ---					| ---		| ---	| ---																																																															|
+| code				| String| 是	|支付宝登录返回的code																																																							|
+| platform		| String| 否	|客户端类型：`mp-weixin`、`app-plus`，默认uni-id会自动取客户端类型，但是在云函数url化等场景无法取到客户端类型，可以使用此参数指定	|
+| myInviteCode| String| 否	|设置当前注册用户自己的邀请码，type为`register`时生效																																							|
 
 **响应参数**
 
@@ -1048,7 +1067,11 @@ exports.main = async function(event,context) {
 // 云函数代码
 const uniID = require('uni-id')
 exports.main = async function(event,context) {
-	const res = await uniID.loginByAlipay(event.code)
+  // 如下旧写法依然支持
+	// const res = await uniID.loginByAlipay(event.code)
+	const res = await uniID.loginByAlipay({
+    code: event.code
+  })
 	return res
 }
 ```
@@ -1155,6 +1178,136 @@ exports.main = async function(event,context) {
 }
 ```
 
+## 获取用户信息
+
+用法：`uniID.getUserInfo(Object GetUserInfoParams);`
+
+此接口用于在其他接口不满足需求时使用
+
+**参数说明**
+
+| 字段	| 类型	| 必填| 说明													|
+| ---		| ---		| ---	| ---														|
+| uid		| String| 是	|用户Id，可以通过checkToken返回	|
+| field	| Array	| 否	|指定返回的字段，不传则返回所有	|
+
+**响应参数**
+
+| 字段		| 类型	| 必填| 说明						|
+| ---			| ---		| ---	| ---							|
+| code		| Number| 是	|错误码，0表示成功|
+| msg			| String| 是	|详细信息					|
+|userInfo	|Object	| 是	|获取的用户信息		|
+
+```js
+// 云函数代码
+const uniID = require('uni-id')
+exports.main = async function(event,context) {
+  payload = await uniID.checkToken(event.uniIdToken)
+  if (payload.code && payload.code > 0) {
+  	return payload
+  }
+	const res = await uniID.getUserInfo({
+    uid: payload.uid,
+    field: ['mobile']
+  })
+	return res
+}
+```
+
+## 设置用户邀请码
+
+针对未生成邀请码的用户使用此方法生成邀请码
+
+用法：`uniID.setUserInviteCode(Object SetUserInviteCodeParams);`
+
+此接口用于在其他接口不满足需求时使用
+
+**参数说明**
+
+| 字段				| 类型	| 必填| 说明																																								|
+| ---					| ---		| ---	| ---																																									|
+| uid					| String| 是	|用户Id																																								|
+| myInviteCode| String| 否	|自行指定邀请码（不可与其他账号邀请码重复），如果不传此字段则自动生成不重复的6位邀请码|
+
+**响应参数**
+
+| 字段				  | 类型	  | 必填 | 说明						|
+| ---					| ---		| ---	| ---							|
+| code				| Number| 是	  |错误码，0表示成功|
+| msg					| String| 是	  |详细信息					|
+| myInviteCode| String| 是	  |最终设置的邀请码	|
+
+## 用户接受邀请
+
+此接口用于在注册之后再填写邀请码的场景，多数情况下不会用到此接口而是在注册时填写邀请码
+
+用法：`uniID.acceptInvite(Object AcceptInviteParams);`
+
+**参数说明**
+
+| 字段			| 类型	| 必填| 说明					|
+| ---				| ---		| ---	| ---						|
+| uid				| String| 是	|用户Id					|
+| inviteCode| String| 是	|邀请人的邀请码	|
+
+**响应参数**
+
+| 字段				  | 类型	  | 必填 | 说明						|
+| ---					| ---		| ---	| ---							|
+| code				| Number| 是	  |错误码，0表示成功|
+| msg					| String| 是	  |详细信息					|
+
+## 获取接受邀请的用户清单
+
+用法：`uniID.getInvitedUser(Object GetInvitedUserParams);`
+
+此接口用于在其他接口不满足需求时使用
+
+**参数说明**
+
+| 字段			| 类型		| 必填| 说明												|
+| ---				| ---			| ---	| ---													|
+| uid				| String	| 是	|用户Id												|
+| level			| Number	| 否	|指定获取第几级邀请用户，默认1|
+| limit			| Number	| 否	|指定返回列表长度，默认20			|
+| offset		| Number	| 否	|指定列表偏移量，默认0				|
+| needTotal	| Boolean	| 否	|是否需要返回总数，默认false	|
+
+**响应参数**
+
+| 字段				| 类型	| 必填| 说明						|
+| ---					| ---		| ---	| ---							|
+| code				| Number| 是	|错误码，0表示成功|
+| msg					| String| 是	|详细信息					|
+| invitedUser	| Array	| 是	|邀请的用户列表		|
+
+**invitedUser每项结构**
+
+| 字段				| 类型	| 必填| 说明															|
+| ---					| ---		| ---	| ---																|
+| username		|String	|-		|被邀请者用户名											|
+| mobile			|String	|-		|被邀请者手机号											|
+| invite_time	|String	|-		|被邀请者注册时间，以时间戳形式返回	|
+
+```js
+// 云函数代码
+const uniID = require('uni-id')
+exports.main = async function(event,context) {
+  payload = await uniID.checkToken(event.uniIdToken)
+  if (payload.code && payload.code > 0) {
+  	return payload
+  }
+	const res = await uniID.getUserInfo({
+    uid: payload.uid,
+    limit: 10,
+    offset: 0,
+    needTotal: true
+  })
+	return res
+}
+```
+
 ## 自行初始化uni-id@init
 
 用法：`uniID.init(Object config);`
@@ -1200,34 +1353,53 @@ exports.main = async function(event,context) {
 }
 ```
 
+# 裂变@fission
+
+自`1.1.2`版本起uni-id支持裂变功能，目前仅适用手机号+验证码方式注册可以填写邀请码（inviteCode）接受邀请。
+
+在`config.json`内配置了`autoSetInviteCode: true`则在用户注册时会自动给设置不重复的6位邀请码，如果不希望使用自动设置的邀请码可以自行传入`myInviteCode`参数来设置邀请码，需要注意的是要保证邀请码唯一。
+
+在`config.json`内配置了`forceInviteCode: true`则只有使用邀请码才可以注册（仅手机号+验证码注册方式支持）。
+
+针对之前使用了旧版本（不支持裂变）的uni-id，现在想增加裂变功能，可以调用`setUserInviteCode`接口给已注册用户设置邀请码。
+
+如果希望用户注册完成之后再填写邀请人的邀请码，可以调用`acceptInvite`接口来使用户接受邀请。
+
+`getInvitedUser`接口可以用于获取接受邀请的用户列表，其中level参数可以用来设置要获取哪一级的邀请用户，不填写level参数则默认获取第一级。
+
+如果想详细的体验一下裂变流程，可以在插件市场导入[前后一体登录模板](https://ext.dcloud.net.cn/plugin?id=13)
+
 # 数据库结构
 
 ## 用户表
 
 表名：uni-id-users
 
-| 字段						| 类型			| 必填| 描述																				|
-| ----------------| ---------	| ----| -------------------------------------------	|
-| \_id						| Object ID	| 是	| 存储文档 ID（用户 ID），系统自动生成				|
-| username				| String		| 是	| 用户名，不允许重复													|
-| password				| String		| 否	| 密码，加密存储															|
-| nickname				| String		| 否	| 用户昵称																		|
-| gender					| Integer		| 否	| 用户性别：0 未知 1 男性 2 女性							|
-| status					| Integer		| 是	| 用户状态：0 正常 1 禁用 2 审核中 3 审核拒绝	|
-| mobile					| String		| 否	| 手机号码																		|
-| mobile_confirmed| Integer		| 否	| 手机号验证状态：0 未验证 1 已验证						|
-| email						| String		| 否	| 邮箱地址																		|
-| email_confirmed	| Integer		| 否	| 邮箱验证状态：0 未验证 1 已验证							|
-| avatar					| String		| 否	| 头像地址																		|
-| comment					| String		| 否	| 备注																				|
-| wx_openid				| Object		| 否	| 微信平台openid															|
-| wx_unionid			| String		| 否	| 微信平台uniodid															|
-| ali_openid			| String		| 否	| 支付宝平台openid															|
-| realname_auth		| Object		| 否	| 实名认证信息																|
-| register_date		| Timestamp	| 否	| 注册时间																		|
-| register_ip			| String		| 否	| 注册时 IP 地址															|
-| last_login_date	| Timestamp	| 否	| 最后登录时间																|
-| last_login_ip		| String		| 否	| 最后登录时 IP 地址													|
+| 字段						| 类型			| 必填| 描述																											|
+| ----------------| ---------	| ----| -------------------------------------------								|
+| \_id						| Object ID	| 是	| 存储文档 ID（用户 ID），系统自动生成											|
+| username				| String		| 是	| 用户名，不允许重复																				|
+| password				| String		| 否	| 密码，加密存储																						|
+| nickname				| String		| 否	| 用户昵称																									|
+| gender					| Integer		| 否	| 用户性别：0 未知 1 男性 2 女性														|
+| status					| Integer		| 是	| 用户状态：0 正常 1 禁用 2 审核中 3 审核拒绝								|
+| mobile					| String		| 否	| 手机号码																									|
+| mobile_confirmed| Integer		| 否	| 手机号验证状态：0 未验证 1 已验证													|
+| email						| String		| 否	| 邮箱地址																									|
+| email_confirmed	| Integer		| 否	| 邮箱验证状态：0 未验证 1 已验证														|
+| avatar					| String		| 否	| 头像地址																									|
+| wx_unionid			| String		| 否	| 微信unionid																								|
+| wx_openid				| Object		| 否	| 微信各个平台openid																				|
+| ali_openid			| String		| 否	| 支付宝平台openid																					|
+| comment					| String		| 否	| 备注																											|
+| realname_auth		| Object		| 否	| 实名认证信息																							|
+| register_date		| Timestamp	| 否	| 注册时间																									|
+| register_ip			| String		| 否	| 注册时 IP 地址																						|
+| last_login_date	| Timestamp	| 否	| 最后登录时间																							|
+| last_login_ip		| String		| 否	| 最后登录时 IP 地址																				|
+| login_ip_limit	| Array			| 否	| 登录 IP 限制																							|
+| inviter_uid			| Array			| 否	| 邀请人uid，按层级从下往上排列的uid数组，即第一个是直接上级|
+| my_invite_code	| String		| 否	| 用户自己的邀请码																					|
 
 **wx_openid字段定义**
 
@@ -1306,8 +1478,11 @@ exports.main = async function(event,context) {
 |账号、邮箱、手机+密码登录	|101	|01			|用户不存在								|
 |							|		|02			|密码错误								|
 |							|		|03			|密码错误次数过多						|
-|手机号验证码登录/注册		|102	|-			|-										|
-|邮箱验证码登录/注册		|103	|-			|-										|
+|手机号验证码登录/注册		|102	|01			|手机号已存在（传入type='register'且手机号已注册时触发）|
+|               		|102	|02			|此手机号尚未注册（传入type='login'且手机号未注册时触发）		|
+|               		|102	|03			|邀请码无效（邀请码存在且唯一时才算有效）		|  
+|邮箱验证码登录/注册		|103	|01			|此邮箱已注册（传入type='register'且邮箱已注册时触发）|
+|               		|103	|02			|此邮箱尚未注册（传入type='login'且邮箱未注册时触发）		|
 |微信登录/注册				|104	|01			|获取openid失败							|
 |支付宝登录/注册			|105	|01			|获取openid失败							|
 |注册通用模块				|200	|-			|-										|
@@ -1342,8 +1517,14 @@ exports.main = async function(event,context) {
 |解绑微信					|703	|01			|解绑失败，可能已经解绑					|
 |解绑支付宝					|704	|01			|解绑失败，可能已经解绑					|
 |基础功能					|800	|-			|-										|
-|更新用户信息				|801	|-			|-										|
+|更新用户信息				|801	|01			|参数错误								|
 |设置头像					|802	|-			|-										|
+|获取用户信息				|803	|01			|未查询到用户信息	|
+|设置用户自己的邀请码			|804	|01			|邀请码设置失败，验证码重复或自动设置重试多次依然重复	|
+|       					|	    |02		|邀请码重试多次依然重复	|
+|填写邀请人邀请码			|805	|01			|邀请码无效（邀请码存在且唯一时才算有效）	|
+|               			|   	|02			|uid错误，用户不存在	|
+|               			|   	|03			|邀请码不可修改	|
 |公用码						|900	|01			|数据库读写异常							|
 
 # FAQ
@@ -1356,3 +1537,6 @@ exports.main = async function(event,context) {
 
 - username、email、mobile三个字段
   + 三个字段均可能为空，但是建议限制一下插入数据库三个字段的格式，比如username不应是邮箱格式或手机号格式，因为登录时可以选择使用username或mobile或email+密码的方式
+
+- 关于邀请码
+  + 目前仅手机号+验证码的注册方式支持填写邀请码
