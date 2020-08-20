@@ -1,7 +1,8 @@
 # uniCloud 更新日志
 ======================================
-#### 2020-08-18
-  + 阿里云 新增 数据库支持地理位置
+#### 2020-08-20
+  + 阿里云 升级mongoDB到4.0版本，现已支持地理位置
+  + 优化 云函数插件支持写入components、js_sdk、static目录
 
 #### 2020-08-12
   + web控制台 阿里云 新增 数据库集合导入导出功能 [详情](https://uniapp.dcloud.net.cn/uniCloud/cf-database?id=export)
