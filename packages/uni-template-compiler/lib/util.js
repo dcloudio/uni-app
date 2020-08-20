@@ -182,6 +182,10 @@ function hasOwn (obj, key) {
 const tags = require('@dcloudio/uni-cli-shared/lib/tags')
 
 const {
+  isBuiltInComponent
+} = require('@dcloudio/uni-cli-shared/lib/pages')
+
+const {
   getTagName
 } = require('./h5')
 
@@ -196,7 +200,7 @@ function isComponent (tagName) {
   }
   // mp-weixin 底层支持 page-meta,navigation-bar
   if (process.env.UNI_PLATFORM === 'mp-weixin') {
-    if (tagName === 'page-meta' || tagName === 'navigation-bar') {
+    if (isBuiltInComponent(tagName)) {
       return false
     }
   }
@@ -219,7 +223,11 @@ function makeMap (str, expectsLowerCase) {
  * @param {*} node
  */
 function isSimpleObjectExpression (node) {
-  return t.isObjectExpression(node) && !node.properties.find(({ key, value }) => !t.isIdentifier(key) || !(t.isIdentifier(value) || t.isStringLiteral(value) || t.isBooleanLiteral(value) || t.isNumericLiteral(value) || t.isNullLiteral(value)))
+  return t.isObjectExpression(node) && !node.properties.find(({
+    key,
+    value
+  }) => !t.isIdentifier(key) || !(t.isIdentifier(value) || t.isStringLiteral(value) || t.isBooleanLiteral(value) ||
+    t.isNumericLiteral(value) || t.isNullLiteral(value)))
 }
 
 module.exports = {

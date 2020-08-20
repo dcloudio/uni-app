@@ -392,14 +392,13 @@ function initAutoImportComponents (easycom = {}) {
   }
   // 目前仅 mp-weixin 内置支持 page-meta 等组件
   if (process.env.UNI_PLATFORM !== 'mp-weixin') {
-    if (!usingAutoImportComponents['^page-meta$']) {
-      usingAutoImportComponents['^page-meta$'] =
-        '@dcloudio/uni-cli-shared/components/page-meta.vue'
-    }
-    if (!usingAutoImportComponents['^navigation-bar$']) {
-      usingAutoImportComponents['^navigation-bar$'] =
-        '@dcloudio/uni-cli-shared/components/navigation-bar.vue'
-    }
+    BUILT_IN_COMPONENTS.forEach(name => {
+      const easycomName = `^${name}$`
+      if (!usingAutoImportComponents[easycomName]) {
+        usingAutoImportComponents[easycomName] =
+          '@dcloudio/uni-cli-shared/components/' + name + '.vue'
+      }
+    })
   }
 
   const newUsingAutoImportComponentsJson = JSON.stringify(usingAutoImportComponents)
@@ -463,7 +462,20 @@ function parseUsingAutoImportComponents (usingAutoImportComponents) {
   }
   return autoImportComponents
 }
+
+const BUILT_IN_COMPONENTS = ['page-meta', 'navigation-bar', 'match-media']
+
+function isBuiltInComponent (name) {
+  return BUILT_IN_COMPONENTS.includes(name)
+}
+
+function isBuiltInComponentPath (modulePath) {
+  return !!BUILT_IN_COMPONENTS.find(name => modulePath.includes(name))
+}
+
 module.exports = {
+  isBuiltInComponent,
+  isBuiltInComponentPath,
   getMainEntry,
   getNVueMainEntry,
   parsePages,
