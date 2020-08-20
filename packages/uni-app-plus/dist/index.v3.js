@@ -8522,6 +8522,82 @@ var serviceContext = (function () {
     }
   }
 
+  class EventChannel {
+    constructor (id, events) {
+      this.id = id;
+      this.listener = {};
+      this.emitCache = {};
+      if (events) {
+        Object.keys(events).forEach(name => {
+          this.on(name, events[name]);
+        });
+      }
+    }
+
+    emit (eventName, ...args) {
+      const fns = this.listener[eventName];
+      if (!fns) {
+        return (this.emitCache[eventName] || (this.emitCache[eventName] = [])).push(args)
+      }
+      fns.forEach(opt => {
+        opt.fn.apply(opt.fn, args);
+      });
+      this.listener[eventName] = fns.filter(opt => opt.type !== 'once');
+    }
+
+    on (eventName, fn) {
+      this._addListener(eventName, 'on', fn);
+      this._clearCache(eventName);
+    }
+
+    once (eventName, fn) {
+      this._addListener(eventName, 'once', fn);
+      this._clearCache(eventName);
+    }
+
+    off (eventName, fn) {
+      const fns = this.listener[eventName];
+      if (!fns) {
+        return
+      }
+      if (fn) {
+        for (let i = 0; i < fns.length;) {
+          if (fns[i].fn === fn) {
+            fns.splice(i, 1);
+            i--;
+          }
+          i++;
+        }
+      } else {
+        delete this.listener[eventName];
+      }
+    }
+
+    _clearCache (eventName) {
+      const cacheArgs = this.emitCache[eventName];
+      if (cacheArgs) {
+        for (; cacheArgs.length > 0;) {
+          this.emit.apply(this, [eventName].concat(cacheArgs.shift()));
+        }
+      }
+    }
+
+    _addListener (eventName, type, fn) {
+      (this.listener[eventName] || (this.listener[eventName] = [])).push({
+        fn,
+        type
+      });
+    }
+  }
+
+  let id$2 = 0;
+
+  function initEventChannel (events, cache = true) {
+    id$2++;
+    const eventChannel = new EventChannel(id$2, events);
+    return eventChannel
+  }
+
   const pageFactory = Object.create(null);
 
   function definePage (name, createPageVueComponent) {
@@ -8613,7 +8689,8 @@ var serviceContext = (function () {
     path,
     query,
     openType,
-    webview
+    webview,
+    eventChannel
   }) {
     if (preloadWebviews[url]) {
       webview = preloadWebviews[url];
@@ -8625,6 +8702,9 @@ var serviceContext = (function () {
           }
           webview = null;
         } else {
+          if (eventChannel) {
+            webview.__page__.eventChannel = eventChannel;
+          }
           pages.push(webview.__page__);
           if (process.env.NODE_ENV !== 'production') {
             console.log(`[uni-app] reuse preloadWebview(${path},${webview.id})`);
@@ -8680,6 +8760,7 @@ var serviceContext = (function () {
         // 导致 webview.getStyle 等逻辑出错(旧的 webview 内部 plus 被释放)
         return plus.webview.getWebviewById(webview.id)
       },
+      eventChannel,
       $page: {
         id: parseInt(webview.id),
         meta: routeOptions.meta,
@@ -8745,10 +8826,11 @@ var serviceContext = (function () {
     return webview
   }
 
-  function _navigateTo ({
+  function _navigateTo({
     url,
     path,
     query,
+    events,
     animationType,
     animationDuration
   }, callbackId) {
@@ -8757,26 +8839,30 @@ var serviceContext = (function () {
       path
     });
 
+    const eventChannel = initEventChannel(events, false);
     showWebview(
       registerPage({
         url,
         path,
         query,
-        openType: 'navigate'
+        openType: 'navigate',
+        eventChannel
       }),
       animationType,
       animationDuration,
       () => {
         invoke$1(callbackId, {
-          errMsg: 'navigateTo:ok'
+          errMsg: 'navigateTo:ok',
+          eventChannel
         });
       }
     );
     setStatusBarStyle();
   }
 
-  function navigateTo$1 ({
+  function navigateTo$1({
     url,
+    events,
     openType,
     animationType,
     animationDuration
@@ -8792,11 +8878,12 @@ var serviceContext = (function () {
       animationDuration = routeStyles.animationDuration || globalStyle.animationDuration || ANI_DURATION;
     }
     const query = parseQuery(urls[1] || '');
-    navigate(path, function () {
+    navigate(path, function() {
       _navigateTo({
         url,
         path,
         query,
+        events,
         animationType,
         animationDuration
       }, callbackId);
@@ -14304,7 +14391,7 @@ var serviceContext = (function () {
   }
 
   var vuePlugin = {
-    install (Vue, options) {
+    install(Vue, options) {
       initVue(Vue);
 
       initData(Vue);
@@ -14312,14 +14399,18 @@ var serviceContext = (function () {
 
       initPolyfill(Vue);
 
+      Vue.prototype.getOpenerEventChannel = function() {
+        return this.$root.$scope.eventChannel || new EventChannel()
+      };
+
       Object.defineProperty(Vue.prototype, '$page', {
-        get () {
+        get() {
           return this.$root.$scope.$page
         }
       });
       // 兼容旧版本
       Object.defineProperty(Vue.prototype, '$mp', {
-        get () {
+        get() {
           return {
             page: this.$root.$scope
           }
@@ -14327,9 +14418,9 @@ var serviceContext = (function () {
       });
 
       const oldMount = Vue.prototype.$mount;
-      Vue.prototype.$mount = function mount (el, hydrating) {
+      Vue.prototype.$mount = function mount(el, hydrating) {
         if (this.mpType === 'app') {
-          this.$options.render = function () {};
+          this.$options.render = function() {};
           if (weex.config.preload) { // preload
             if (process.env.NODE_ENV !== 'production') {
               console.log('[uni-app] preload app-service.js');
@@ -14350,7 +14441,7 @@ var serviceContext = (function () {
         return oldMount.call(this, el, hydrating)
       };
 
-      Vue.prototype.$nextTick = function nextTick (cb) {
+      Vue.prototype.$nextTick = function nextTick(cb) {
         const renderWatcher = this._watcher;
         const callback = typeof cb === 'function';
         const result = new Promise((resolve) => {

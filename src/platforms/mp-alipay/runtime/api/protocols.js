@@ -1,6 +1,7 @@
 import {
   isPlainObject
 } from 'uni-shared'
+import navigateTo from 'uni-helpers/navigate-to'
 import redirectTo from '../../../mp-weixin/helpers/redirect-to'
 // 不支持的 API 列表
 const todos = [
@@ -80,6 +81,7 @@ function _handleSystemInfo (result) {
 }
 
 const protocols = { // 需要做转换的 API 列表
+  navigateTo,
   redirectTo,
   returnValue (methodName, res = {}) { // 通用 returnValue 解析
     if (res.error || res.errorMessage) {

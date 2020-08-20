@@ -356,6 +356,109 @@ var baseApi = /*#__PURE__*/Object.freeze({
   interceptors: interceptors
 });
 
+class EventChannel {
+  constructor (id, events) {
+    this.id = id;
+    this.listener = {};
+    this.emitCache = {};
+    if (events) {
+      Object.keys(events).forEach(name => {
+        this.on(name, events[name]);
+      });
+    }
+  }
+
+  emit (eventName, ...args) {
+    const fns = this.listener[eventName];
+    if (!fns) {
+      return (this.emitCache[eventName] || (this.emitCache[eventName] = [])).push(args)
+    }
+    fns.forEach(opt => {
+      opt.fn.apply(opt.fn, args);
+    });
+    this.listener[eventName] = fns.filter(opt => opt.type !== 'once');
+  }
+
+  on (eventName, fn) {
+    this._addListener(eventName, 'on', fn);
+    this._clearCache(eventName);
+  }
+
+  once (eventName, fn) {
+    this._addListener(eventName, 'once', fn);
+    this._clearCache(eventName);
+  }
+
+  off (eventName, fn) {
+    const fns = this.listener[eventName];
+    if (!fns) {
+      return
+    }
+    if (fn) {
+      for (let i = 0; i < fns.length;) {
+        if (fns[i].fn === fn) {
+          fns.splice(i, 1);
+          i--;
+        }
+        i++;
+      }
+    } else {
+      delete this.listener[eventName];
+    }
+  }
+
+  _clearCache (eventName) {
+    const cacheArgs = this.emitCache[eventName];
+    if (cacheArgs) {
+      for (; cacheArgs.length > 0;) {
+        this.emit.apply(this, [eventName].concat(cacheArgs.shift()));
+      }
+    }
+  }
+
+  _addListener (eventName, type, fn) {
+    (this.listener[eventName] || (this.listener[eventName] = [])).push({
+      fn,
+      type
+    });
+  }
+}
+
+const eventChannels = {};
+
+const eventChannelStack = [];
+
+let id = 0;
+
+function initEventChannel (events) {
+  id++;
+  const eventChannel = new EventChannel(id, events);
+  eventChannels[id] = eventChannel;
+  eventChannelStack.push(eventChannel);
+  return eventChannel
+}
+
+function getEventChannel (id) {
+  if (id) {
+    const eventChannel = eventChannels[id];
+    delete eventChannels[id];
+    return eventChannel
+  }
+  return eventChannelStack.shift()
+}
+
+var navigateTo = {
+  args (fromArgs, toArgs) {
+    const id = initEventChannel(fromArgs.events).id;
+    if (fromArgs.url) {
+      fromArgs.url = fromArgs.url + (fromArgs.url.indexOf('?') === -1 ? '?' : '&') + '__id__=' + id;
+    }
+  },
+  returnValue (fromRes, toRes) {
+    fromRes.eventChannel = getEventChannel();
+  }
+};
+
 function findExistsPageIndex (url) {
   const pages = getCurrentPages();
   let len = pages.length;
@@ -423,6 +526,7 @@ var previewImage = {
 };
 
 const protocols = {
+  navigateTo,
   redirectTo,
   previewImage
 };
@@ -1438,6 +1542,17 @@ function parseApp (vm) {
 }
 
 function createApp (vm) {
+  Vue.prototype.getOpenerEventChannel = function () {
+    return this.__eventChannel__ || new EventChannel()
+  };
+  const callHook = Vue.prototype.__call_hook;
+  Vue.prototype.__call_hook = function (hook, args) {
+    if (hook === 'onLoad' && args && args.__id__) {
+      this.__eventChannel__ = getEventChannel(args.__id__);
+      delete args.__id__;
+    }
+    return callHook.call(this, hook, args)
+  };
   App(parseApp(vm));
   return vm
 }
@@ -1633,8 +1748,10 @@ function parseBasePage (vuePageOptions, {
 
   pageOptions.methods.onLoad = function (query) {
     this.options = query;
+    const copyQuery = Object.assign({}, query);
+    delete copyQuery.__id__;
     this.$page = {
-      fullPath: '/' + this.route + stringifyQuery(query)
+      fullPath: '/' + (this.route || this.is) + stringifyQuery(copyQuery)
     };
     this.$vm.$mp.query = query; // 兼容 mpvue
     this.$vm.__call_hook('onLoad', query);

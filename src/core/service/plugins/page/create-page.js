@@ -2,6 +2,8 @@ import {
   hasOwn
 } from 'uni-shared'
 
+import EventChannel from 'uni-helpers/EventChannel'
+
 export default function createPage (pageVm, options) {
   const $route = pageVm.$route
   pageVm.route = $route.meta.pagePath
@@ -17,6 +19,10 @@ export default function createPage (pageVm, options) {
     fullPath: $route.meta.isEntry ? $route.meta.pagePath : $route.fullPath,
     options: options,
     meta: Object.assign({}, $route.meta)
+  }
+  const eventChannel = pageVm.$router.$eventChannel || new EventChannel()
+  pageVm.getOpenerEventChannel = function () {
+    return eventChannel
   }
   // 兼容 mpvue
   pageVm.$vm = pageVm

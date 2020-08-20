@@ -56,8 +56,11 @@ export default function parsePage (vuePageOptions) {
       // 触发首次 setData
       this.$vm.$mount()
 
+      const copyQuery = Object.assign({}, query)
+      delete copyQuery.__id__
+
       this.$page = {
-        fullPath: '/' + this.route + stringifyQuery(query)
+        fullPath: '/' + this.route + stringifyQuery(copyQuery)
       }
 
       this.options = query

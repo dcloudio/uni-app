@@ -30,8 +30,10 @@ export default function parseBasePage (vuePageOptions, {
 
   pageOptions.methods.onLoad = function (query) {
     this.options = query
+    const copyQuery = Object.assign({}, query)
+    delete copyQuery.__id__
     this.$page = {
-      fullPath: '/' + this.route + stringifyQuery(query)
+      fullPath: '/' + (this.route || this.is) + stringifyQuery(copyQuery)
     }
     this.$vm.$mp.query = query // 兼容 mpvue
     this.$vm.__call_hook('onLoad', query)
