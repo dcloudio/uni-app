@@ -202,6 +202,8 @@ export default {
     }
     var touchStart = null
     var needStop = null
+    //滑动是在横向开启的？
+    var startOnX=null
     this.__handleTouchMove = function (event) {
       var x = event.touches[0].pageX
       var y = event.touches[0].pageY
@@ -209,6 +211,8 @@ export default {
       if (needStop === null) {
         if (Math.abs(x - touchStart.x) > Math.abs(y - touchStart.y)) {
           // 横向滑动
+          //滑动是在横向开启的
+          startOnX=true
           if (self.scrollX) {
             if (main.scrollLeft === 0 && x > touchStart.x) {
               needStop = false
@@ -240,8 +244,8 @@ export default {
       if (needStop) {
         event.stopPropagation()
       }
-
-      if (self.refresherEnabled && self.refreshState === 'pulling') {
+      //滑动是在横向开启的时候不再触发下拉
+      if (!startOnX&&self.refresherEnabled && self.refreshState === 'pulling') {
         const dy = y - touchStart.y
         self.refresherHeight = dy
 
@@ -265,6 +269,8 @@ export default {
           disable: true
         })
         needStop = null
+        //初始化滑动是f否
+        startOnX=null
         touchStart = {
           x: event.touches[0].pageX,
           y: event.touches[0].pageY
