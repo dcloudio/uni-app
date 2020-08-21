@@ -28,6 +28,8 @@ import {
   wrapper
 } from 'uni-helpers/hidpi'
 
+import saveImage from 'uni-platform/helpers/save-image'
+
 function resolveColor (color) {
   color = color.slice(0)
   color[3] = color[3] / 255
@@ -349,17 +351,17 @@ export default {
                 loadBlob(this.response)
               }
             }
-            xhr.onerror = window.plus ? plusDownload : function () {
+            xhr.onerror = __PLATFORM__ === 'app-plus' ? plusDownload : function () {
               self._images[src].src = src
             }
             xhr.send()
           }
 
-          if (window.plus && (!window.webkit || !window.webkit.messageHandlers)) {
+          if (__PLATFORM__ === 'app-plus' && (!window.webkit || !window.webkit.messageHandlers)) {
             self._images[src].src = src
           } else {
             // 解决 PLUS-APP（wkwebview）以及 H5 图像跨域问题（H5图像响应头需包含access-control-allow-origin）
-            if (window.plus && src.indexOf('http://') !== 0 && src.indexOf('https://') !==
+            if (__PLATFORM__ === 'app-plus' && src.indexOf('http://') !== 0 && src.indexOf('https://') !==
               0 && !/^data:.*,.*/.test(src)) {
               loadFile(src)
             } else if (/^data:.*,.*/.test(src)) {
@@ -406,10 +408,13 @@ export default {
       destWidth,
       destHeight,
       hidpi = true,
+      dataType,
+      qualit = 1,
+      type = 'png',
       callbackId
     }) {
-      var imgData
-      var canvas = this.$refs.canvas
+      const canvas = this.$refs.canvas
+      let data
       if (!width) {
         width = canvas.offsetWidth - x
       }
@@ -432,9 +437,20 @@ export default {
         }
         const newCanvas = getTempCanvas(destWidth, destHeight)
         const context = newCanvas.getContext('2d')
+        if (type === 'jpeg' || type === 'jpg') {
+          type = 'jpeg'
+          context.fillStyle = '#fff'
+          context.fillRect(0, 0, destWidth, destHeight)
+        }
         context.__hidpi__ = true
         context.drawImageByCanvas(canvas, x, y, width, height, 0, 0, destWidth, destHeight, false)
-        imgData = context.getImageData(0, 0, destWidth, destHeight)
+        if (dataType === 'base64') {
+          data = newCanvas.toDataURL(`image/${type}`, qualit)
+        } else {
+          const imgData = context.getImageData(0, 0, destWidth, destHeight)
+          // fix [...]展开TypedArray在低版本手机报错的问题，使用Array.prototype.slice
+          data = Array.prototype.slice.call(imgData.data)
+        }
         newCanvas.height = newCanvas.width = 0
         context.__hidpi__ = false
       } catch (error) {
@@ -450,9 +466,8 @@ export default {
         return
       }
       if (!callbackId) {
-        // fix [...]展开TypedArray在低版本手机报错的问题，使用Array.prototype.slice
         return {
-          data: Array.prototype.slice.call(imgData.data),
+          data,
           width: destWidth,
           height: destHeight
         }
@@ -461,7 +476,7 @@ export default {
           callbackId,
           data: {
             errMsg: 'canvasGetImageData:ok',
-            data: [...imgData.data],
+            data,
             width: destWidth,
             height: destHeight
           }
@@ -501,16 +516,16 @@ export default {
         }
       }, this.$page.id)
     },
-    getDataUrl ({
+    toTempFilePath ({
       x = 0,
       y = 0,
       width,
       height,
       destWidth,
       destHeight,
-      hidpi = true,
       fileType,
       qualit,
+      dirname,
       callbackId
     }) {
       const res = this.getImageData({
@@ -520,56 +535,33 @@ export default {
         height,
         destWidth,
         destHeight,
-        hidpi
+        hidpi: false,
+        dataType: 'base64',
+        type: fileType,
+        qualit
       })
       if (!res.data || !res.data.length) {
         UniViewJSBridge.publishHandler('onCanvasMethodCallback', {
           callbackId,
           data: {
-            errMsg: 'canvasGetDataUrl:fail'
+            errMsg: 'toTempFilePath:fail'
           }
         }, this.$page.id)
         return
       }
-      let imgData
-      try {
-        imgData = new ImageData(new Uint8ClampedArray(res.data), res.width, res.height)
-      } catch (error) {
-        UniViewJSBridge.publishHandler('onCanvasMethodCallback', {
-          callbackId,
-          data: {
-            errMsg: 'canvasGetDataUrl:fail'
-          }
-        }, this.$page.id)
-        return
-      }
-      destWidth = res.width
-      destHeight = res.height
-      const canvas = getTempCanvas(destWidth, destHeight)
-      const c2d = canvas.getContext('2d')
-      c2d.putImageData(imgData, 0, 0)
-      let base64 = canvas.toDataURL('image/png')
-      canvas.height = canvas.width = 0
-      const img = new Image()
-      img.onload = () => {
-        const canvas = getTempCanvas(destWidth, destHeight)
-        if (fileType === 'jpeg' || fileType === 'jpg') {
-          fileType = 'jpeg'
-          c2d.fillStyle = '#fff'
-          c2d.fillRect(0, 0, destWidth, destHeight)
+      saveImage(res.data, dirname, (error, tempFilePath) => {
+        let errMsg = `toTempFilePath:${error ? 'fail' : 'ok'}`
+        if (error) {
+          errMsg += ` ${error.message}`
         }
-        c2d.drawImage(img, 0, 0)
-        base64 = canvas.toDataURL(`image/${fileType}`, qualit)
-        canvas.height = canvas.width = 0
         UniViewJSBridge.publishHandler('onCanvasMethodCallback', {
           callbackId,
           data: {
-            errMsg: 'canvasGetDataUrl:ok',
-            base64: base64
+            errMsg,
+            tempFilePath: tempFilePath
           }
         }, this.$page.id)
-      }
-      img.src = base64
+      })
     }
   }
 }

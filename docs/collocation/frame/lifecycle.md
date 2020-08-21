@@ -9,6 +9,9 @@
 |onHide|当 ``uni-app`` 从前台进入后台|
 |onError|当 ``uni-app`` 报错时触发|
 |onUniNViewMessage|对 ``nvue`` 页面发送的数据进行监听，可参考 [nvue 向 vue 通讯](/use-weex?id=nvue-向-vue-通讯)|
+|onUnhandledRejection|对未处理的 Promise 拒绝事件监听函数（2.8.1+）|
+|onPageNotFound|页面不存在监听函数|
+|onThemeChange|监听系统主题变化|
 
 **注意**
 
@@ -54,6 +57,8 @@
 |onNavigationBarSearchInputChanged|监听原生标题栏搜索输入框输入内容变化事件|App、H5|1.6.0|
 |onNavigationBarSearchInputConfirmed|监听原生标题栏搜索输入框搜索事件，用户点击软键盘上的“搜索”按钮时触发。|App、H5|1.6.0|
 |onNavigationBarSearchInputClicked|监听原生标题栏搜索输入框点击事件|App、H5|1.6.0|
+|onShareTimeline|监听用户点击右上角转发到朋友圈|微信小程序|2.8.1+|
+|onAddToFavorites|监听用户点击右上角收藏|微信小程序|2.8.1+|
 
 ``onReachBottom``使用注意
 可在pages.json里定义具体页面底部的触发距离[onReachBottomDistance](/collocation/pages)，比如设为50，那么滚动页面到距离底部50px时，就会触发onReachBottom事件。
@@ -72,6 +77,7 @@
 - 如果想实现滚动时标题栏透明渐变，在App和H5下，可在pages.json中配置titleNView下的type为transparent，[参考](https://uniapp.dcloud.io/collocation/pages?id=app-titlenview)。
 - 如果需要滚动吸顶固定某些元素，推荐使用css的粘性布局，参考[插件市场](https://ext.dcloud.net.cn/plugin?id=715)。插件市场也有其他js实现的吸顶插件，但性能不佳，需要时可自行搜索。
 - 在App、微信小程序、H5中，也可以使用wxs监听滚动，[参考](https://uniapp.dcloud.io/frame?id=wxs)；在app-nvue中，可以使用bindingx监听滚动，[参考](https://uniapp.dcloud.io/use-weex?id=nvue-%e9%87%8c%e4%bd%bf%e7%94%a8-bindingx)。
+- `onBackPress`上不可使用`async`，会导致无法阻止默认返回
 
 ```js
 onPageScroll : function(e) { //nvue暂不支持滚动监听，可用bindingx代替
@@ -95,7 +101,7 @@ onPageScroll : function(e) { //nvue暂不支持滚动监听，可用bindingx代�
 ```js
 onTabItemTap : function(e) {
 	console.log(e);
-	// e的返回格式为json对象： {"index":0,"text":"首页","pagePath":"pages/index/index.html"}
+	// e的返回格式为json对象： {"index":0,"text":"首页","pagePath":"pages/index/index"}
 },
 ```
 

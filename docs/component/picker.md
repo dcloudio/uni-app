@@ -122,9 +122,11 @@
 |@cancel|EventHandle||取消选择时触发|
 |disabled|Boolean|false|是否禁用|
 
-**示例** [查看演示](https://uniapp.dcloud.io/h5/pages/component/picker/picker)
+**示例** [查看演示](https://hellouniapp.dcloud.net.cn/pages/component/picker/picker)
  
+以下示例代码，来自于[hello uni-app项目](https://github.com/dcloudio/hello-uniapp)，推荐使用HBuilderX，新建uni-app项目，选择hello uni-app模板，可直接体验完整示例。
 ```html
+<!-- 本示例未包含完整css，获取外链css请参考上文，在hello uni-app项目中查看 -->
 <template>
 	<view>
 		<view class="uni-title uni-common-pl">地区选择器</view>
@@ -227,7 +229,7 @@ export default {
 
 示例代码说明：以上示例代码从hello uni-app示例中复制，涉及的css样式在hello uni-app的app.vue和uni.css中
 
-预览H5效果：使用浏览器的手机模式访问[https://uniapp.dcloud.io/h5/pages/component/picker/picker](https://uniapp.dcloud.io/h5/pages/component/picker/picker)
+预览H5效果：使用浏览器的手机模式访问[https://hellouniapp.dcloud.net.cn/pages/component/picker/picker](https://hellouniapp.dcloud.net.cn/pages/component/picker/picker)
 
 **注意**
 - 在picker内容还在滚动时或滚动回弹动画还未结束时，点确定关闭弹出的picker，数据无法及时更新。需等待一下，或手动触停滚动再点确定。所有平台均如此

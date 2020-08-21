@@ -75,7 +75,8 @@ export const getPlatformName = () => {
     'mp-alipay': 'ali',
     'mp-baidu': 'bd',
     'mp-toutiao': 'tt',
-    'mp-qq': 'qq'
+    'mp-qq': 'qq',
+    'mp-kuaishou': 'ks'
   }
   return platformList[process.env.VUE_APP_PLATFORM];
 }

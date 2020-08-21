@@ -105,6 +105,12 @@ module.exports = function generateJson (compilation) {
     }
     delete jsonObj.usingGlobalComponents
 
+    // usingAutoImportComponents
+    if (jsonObj.usingAutoImportComponents && Object.keys(jsonObj.usingAutoImportComponents).length) {
+      jsonObj.usingComponents = Object.assign(jsonObj.usingAutoImportComponents, jsonObj.usingComponents)
+    }
+    delete jsonObj.usingAutoImportComponents
+
     if (jsonObj.genericComponents && jsonObj.genericComponents.length) { // scoped slots
       // 生成genericComponents json
       const genericComponents = Object.create(null)
@@ -143,12 +149,6 @@ module.exports = function generateJson (compilation) {
     }
 
     delete jsonObj.genericComponents
-
-    // usingAutoImportComponents
-    if (jsonObj.usingAutoImportComponents && Object.keys(jsonObj.usingAutoImportComponents).length) {
-      jsonObj.usingComponents = Object.assign(jsonObj.usingAutoImportComponents, jsonObj.usingComponents)
-    }
-    delete jsonObj.usingAutoImportComponents
 
     if (process.env.UNI_PLATFORM !== 'app-plus' && process.env.UNI_PLATFORM !== 'h5') {
       delete jsonObj.navigationBarShadow

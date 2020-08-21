@@ -53,7 +53,14 @@ export default function initOn (on, {
   }
 
   function onAppEnterForeground () {
-    callAppHook(getApp(), 'onShow')
+    const pages = getCurrentPages()
+    const page = pages[pages.length - 1]
+    const args = {
+      path: page.route,
+      query: page.options
+    }
+
+    callAppHook(getApp(), 'onShow', args)
     callCurrentPageHook('onShow')
   }
 

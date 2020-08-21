@@ -18,7 +18,7 @@
 |height	|Number		|否			|画布高度（默认为canvas高度-y）|					
 |destWidth	|Number		|否			|输出图片宽度（默认为 width * 屏幕像素密度）|					
 |destHeight	|Number		|否			|输出图片高度（默认为 height * 屏幕像素密度）|					
-|canvasId	|String		|是			|画布标识，传入 ``<canvas/>`` 的 canvas-id|						
+|canvasId	|String		|是			|画布标识，传入 ``<canvas/>`` 的 canvas-id（支付宝小程序是id、其他平台是canvas-id）|						
 |fileType	|String		|否			|目标文件的类型，只支持 'jpg' 或 'png'。默认为 'png'|		
 |quality	|Number		|否			|图片的质量，取值范围为 (0, 1]，不在范围内时当作1.0处理|		
 |success	|Function	|否			|接口调用成功的回调函数|						

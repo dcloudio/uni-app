@@ -5,7 +5,9 @@ import {
 import initOn from 'uni-core/service/bridge/on'
 
 import {
-  NETWORK_TYPES
+  NETWORK_TYPES,
+  TEMP_PATH,
+  TEMP_PATH_BASE
 } from '../api/constants'
 
 import {
@@ -94,6 +96,14 @@ function initGlobalListeners () {
   })
 
   globalEvent.addEventListener('uistylechange', function (event) {
+    const args = {
+      theme: event.uistyle
+    }
+
+    callAppHook(appCtx, 'onThemeChange', args)
+    publish('onThemeChange', args)
+
+    // 兼容旧版本 API
     publish('onUIStyleChange', {
       style: event.uistyle
     })
@@ -205,6 +215,33 @@ function initEntryPage () {
   }
 }
 
+export function clearTempFile () {
+  // 统一处理路径
+  function getPath (path) {
+    path = path.replace(/\/$/, '')
+    return path.indexOf('_') === 0 ? plus.io.convertLocalFileSystemURL(path) : path
+  }
+  var basePath = getPath(TEMP_PATH_BASE)
+  var tempPath = getPath(TEMP_PATH)
+  // 获取父目录
+  var dirPath = tempPath.split('/')
+  dirPath.pop()
+  dirPath = dirPath.join('/')
+  plus.io.resolveLocalFileSystemURL(plus.io.convertAbsoluteFileSystem(dirPath), entry => {
+    var reader = entry.createReader()
+    reader.readEntries(function (entries) {
+      if (entries && entries.length) {
+        entries.forEach(function (entry) {
+          if (entry.isDirectory && entry.fullPath.indexOf(basePath) === 0 && entry.fullPath
+            .indexOf(tempPath) !== 0) {
+            entry.removeRecursively()
+          }
+        })
+      }
+    })
+  })
+}
+
 export function registerApp (appVm) {
   if (process.env.NODE_ENV !== 'production') {
     console.log('[uni-app] registerApp')
@@ -233,6 +270,9 @@ export function registerApp (appVm) {
   initSubscribeHandlers()
 
   initAppLaunch(appVm)
+
+  // 10s后清理临时文件
+  setTimeout(clearTempFile, 10000)
 
   __uniConfig.ready = true
 

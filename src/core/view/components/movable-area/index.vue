@@ -1,8 +1,11 @@
 <script>
 import {
-  disableScrollBounce,
   deepClone
 } from 'uni-shared'
+import {
+  initScrollBounce,
+  disableScrollBounce
+} from 'uni-platform/helpers/scroll'
 
 function calc (e) {
   return Math.sqrt(e.x * e.x + e.y * e.y)
@@ -32,6 +35,7 @@ export default {
   },
   mounted: function () {
     this._resize()
+    initScrollBounce()
   },
   methods: {
     _resize () {

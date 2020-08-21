@@ -7,7 +7,7 @@
 开发者可以如在 `Node.js` 环境中使用 `JavaScript` 一样在云函数中进行网络请求等操作，而且还可以通过云函数服务端 SDK 搭配使用多种服务，比如使用云函数 SDK 中提供的数据库和存储 API 进行数据库和存储的操作，这部分可参考数据库和存储后端 API 文档。
 
 开发者可在HBuiderX中，在`cloudfunctions`目录上右键、新建云函数，如下：
-![](http://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/unicloud-02.png)
+![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/unicloud-02.png)
 
 云函数修改后，需上传到云端，方可生效。
 

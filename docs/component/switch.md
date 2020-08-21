@@ -12,7 +12,7 @@
 |@change|EventHandle||checked 改变时触发 change 事件，event.detail={ value:checked}||
 |color|Color||switch 的颜色，同 css 的 color|&nbsp;|
 
-**示例** [查看演示](https://uniapp.dcloud.io/h5/pages/component/switch/switch)
+**示例** [查看演示](https://hellouniapp.dcloud.net.cn/pages/component/switch/switch)
  
 ```html
 <template>
@@ -59,7 +59,7 @@ export default {
 
 示例代码说明：以上示例代码从hello uni-app示例中复制，涉及的css样式在hello uni-app的app.vue和uni.css中
 
-预览H5效果：使用浏览器的手机模式访问[https://uniapp.dcloud.io/h5/pages/component/switch/switch](https://uniapp.dcloud.io/h5/pages/component/switch/switch)
+预览H5效果：使用浏览器的手机模式访问[https://hellouniapp.dcloud.net.cn/pages/component/switch/switch](https://hellouniapp.dcloud.net.cn/pages/component/switch/switch)
 
 **注意**
 - switch的默认颜色，在不同平台不一样。微信小程序是绿色的，字节跳动小程序为红色，其他平台是蓝色的。更改颜色使用color属性。

@@ -54,9 +54,10 @@
 |safeAreaInsets|在竖屏正方向下的安全区域插入位置（2.5.3+）|App、H5、微信小程序|
 
 **Tips**
-- 屏幕高度=状态栏高度+原生导航栏高度+可使用窗口高度+原生tabbar高度
-- H5端，windowHeight不包含NavigationBar和TabBar的高度，windowTop等于NavigationBar高度，windowBottom等于TabBar高度，statusBarHeight为0
-- APP端windowTop和windowBottom都是0，注意区分与H5端的差异
+- 屏幕高度 = 原生NavigationBar高度（含状态栏高度）+ 可使用窗口高度 + 原生TabBar高度
+- windowHeight不包含NavigationBar和TabBar的高度
+- H5端，windowTop等于NavigationBar高度，windowBottom等于TabBar高度
+- App端，windowTop等于透明状态NavigationBar高度，windowBottom等于透明状态TabBar高度
 
 **safeArea 的结构**
 

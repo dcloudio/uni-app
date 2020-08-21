@@ -607,6 +607,25 @@ describe('mp:compiler-extra', () => {
       '<view class="content"><block wx:for="{{$root.l1}}" wx:for-item="item" wx:for-index="index" wx:key="index"><view><block wx:for="{{item.l0}}" wx:for-item="item2" wx:for-index="index2" wx:key="index2"><view data-event-opts="{{[[\'tap\',[[\'show\',[\'$0\',\'$1\'],[[[\'list.\'+item.$orig.key+\'\',\'\',index2,\'id\']],[[\'list.\'+item.$orig.key+\'\',\'\',index2,\'id\']]]]]]]}}" bindtap="__e">{{\'\'+item2.m0+\'\'}}</view></block></view></block></view>',
       'with(this){var l1=__map(tabList,function(item,index){var $orig=__get_orig(item);var l0=__map(list[item.key],function(item2,index2){var $orig=__get_orig(item2);var m0=formatIt(item2.id);return{$orig:$orig,m0:m0}});return{$orig:$orig,l0:l0}});$mp.data=Object.assign({},{$root:{l1:l1}})}'
     )
+    assertCodegen(
+      '<view><view v-for="(item, key) in {x:\'x\'}"><view>{{item}}</view></view></view>',
+      '<view><block wx:for="{{({x:\'x\'})}}" wx:for-item="item" wx:for-index="key"><view><view>{{item}}</view></view></block></view>'
+    )
+    assertCodegen(
+      '<view><view v-for="(item, key) in {\'x-x\':\'x\'}"><view>{{item}}</view></view></view>',
+      '<view><block wx:for="{{$root.l0}}" wx:for-item="item" wx:for-index="key"><view><view>{{item}}</view></view></block></view>',
+      'with(this){var l0={"x-x":"x"};$mp.data=Object.assign({},{$root:{l0:l0}})}'
+    )
+    assertCodegen(
+      '<view><view v-for="(item, index) in getList(test)"><view>{{item}}</view></view></view>',
+      '<view><block wx:for="{{$root.l0}}" wx:for-item="item" wx:for-index="index"><view><view>{{item}}</view></view></block></view>',
+      'with(this){var l0=getList(test);$mp.data=Object.assign({},{$root:{l0:l0}})}'
+    )
+    assertCodegen(
+      '<view><view v-for="(item, index) in list[get(test)]"><view>{{item}}</view></view></view>',
+      '<view><block wx:for="{{list[$root.m0]}}" wx:for-item="item" wx:for-index="index"><view><view>{{item}}</view></view></block></view>',
+      'with(this){var m0=get(test);$mp.data=Object.assign({},{$root:{m0:m0}})}'
+    )
   })
 
   it('generate TemplateLiteral ', () => {

@@ -15,9 +15,11 @@ uni统计官网地址：[https://tongji.dcloud.net.cn/](https://tongji.dcloud.ne
 
 ### 广告变现
 
-```uni-app``` 支持DCloud的广告联盟，开发者在打包界面简单打几个勾，就可开通开屏、悬浮红包、推送等广告形式，快速实现App变现。
+```uni-app``` 支持接入`uni-AD`广告联盟，开发者可实现**一次开发，多端变现**。
 
-更多广告联盟的介绍，参考 [广告联盟DAD](http://www.dcloud.io/dad.html)
+`uni-AD`支持开屏、信息流、激励视频、悬浮红包、推送等丰富的广告形式，且聚合了腾讯广点通、今日头条穿山甲、360联盟等主流广告源，有更高的广告填充率。
+
+更多信息参考 [uni-AD 广告联盟](https://uniad.dcloud.net.cn)
 
 ### 制作统一发行页面
 

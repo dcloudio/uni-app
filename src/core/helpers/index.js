@@ -42,3 +42,15 @@ export function upx2px (str) {
   }
   return parseInt(str) || 0
 }
+
+export function findExistsPageIndex (url) {
+  const pages = getCurrentPages()
+  let len = pages.length
+  while (len--) {
+    const page = pages[len]
+    if (page.$page && page.$page.fullPath === url) {
+      return len
+    }
+  }
+  return -1
+}

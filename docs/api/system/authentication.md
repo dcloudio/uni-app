@@ -104,6 +104,7 @@ App端在2.3.8版以前，可在插件市场获取[指纹相关插件](https://e
 **OBJECT参数说明**
 
 |属性					|类型			|默认值	|必填	|说明																							|
+|:-:					|:-:			|:-:		|:-:	|:-:																							|
 |checkAuthMode|string		|				|是		|认证方式																					|
 |success			|function	|				|否		|接口调用成功的回调函数														|
 |fail					|function	|				|否		|接口调用失败的回调函数														|

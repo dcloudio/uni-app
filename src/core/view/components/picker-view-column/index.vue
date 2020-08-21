@@ -8,8 +8,9 @@ import {
   Spring
 } from 'uni-mixins/scroller/Spring'
 import {
+  initScrollBounce,
   disableScrollBounce
-} from 'uni-shared'
+} from 'uni-platform/helpers/scroll'
 
 function initClick (dom) {
   const MAX_MOVE = 20
@@ -93,6 +94,7 @@ export default {
       this.update()
     })
     initClick(this.$el)
+    initScrollBounce()
   },
   methods: {
     _setItemHeight (height) {

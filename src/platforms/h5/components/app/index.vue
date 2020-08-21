@@ -1,11 +1,9 @@
 <template>
   <uni-app :class="{'uni-app--showtabbar':showTabBar}">
-    <!-- <transition :name="transitionName"> -->
-    <!-- TODO -->
-    <keep-alive :include="keepAliveInclude">
-      <router-view :key="key" />
-    </keep-alive>
-    <!-- </transition> -->
+    <layout
+      :router-key="key"
+      :keep-alive-include="keepAliveInclude"
+    />
     <tab-bar
       v-if="hasTabBar"
       v-show="showTabBar"

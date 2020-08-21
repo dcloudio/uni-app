@@ -4,6 +4,22 @@
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |√|x|√|√|x|x|x|
 
+### uni.setBLEMTU(OBJECT)
+
+2.8.4+
+
+设置蓝牙最大传输单元。需在 uni.createBLEConnection调用成功后调用，mtu 设置范围 (22,512)。安卓5.1以上有效。
+
+**OBJECT 参数说明**
+
+|属性|类型|默认值|必填|说明|
+|---|---|---|---|---|
+|deviceId|string||是|用于区分设备的 id|
+|mtu|number||是|最大传输单元(22,512) 区间内，单位 bytes|
+|success|function||否|接口调用成功的回调函数|
+|fail|function||否|接口调用失败的回调函数|
+|complete|function||否|接口调用结束的回调函数（调用成功、失败都会执行）|
+
 ### uni.writeBLECharacteristicValue(OBJECT)
 
 向低功耗蓝牙设备特征值中写入二进制数据。注意：必须设备的特征值支持 write 才可以成功调用。
@@ -281,6 +297,23 @@ uni.getBLEDeviceServices({
   }
 })
 ```
+
+
+### uni.getBLEDeviceRSSI(OBJECT)
+
+2.8.4+
+
+获取蓝牙设备的信号强度。
+
+**OBJECT 参数说明**
+
+|属性|类型|默认值|必填|说明|
+|---|---|---|---|---|
+|deviceId|string||是|蓝牙设备 id|
+|success|function||否|接口调用成功的回调函数|
+|fail|function||否|接口调用失败的回调函数|
+|complete|function||否|接口调用结束的回调函数（调用成功、失败都会执行）|
+
 
 ### uni.getBLEDeviceCharacteristics(OBJECT)
 

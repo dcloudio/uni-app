@@ -134,8 +134,10 @@ function async request () {
 |API|说明|
 |:-|:-|
 |[uni.chooseVideo](api/media/video?id=choosevideo)|从相册选择视频，或者拍摄|
+|[uni.chooseMedia](api/media/video?id=choosemedia)|拍摄或从手机相册中选择图片或视频。|
 |[uni.saveVideoToPhotosAlbum](api/media/video?id=savevideotophotosalbum)|保存视频到系统相册|
 |[uni.createVideoContext](/api/media/video-context?id=createvideocontext)|视频组件管理|
+
 ##### 相机组件管理
 
 |API|说明|
@@ -310,7 +312,13 @@ function async request () {
 |[uni.startBeaconDiscovery](/api/system/ibeacon?id=startbeacondiscovery)|停止搜索附近的 iBeacon 设备|
 |[uni.stopBeaconDiscovery](/api/system/ibeacon?id=stopbeacondiscovery)|开始搜索附近的 iBeacon 设备|
 
+##### 生物认证
 
+|API|说明|
+|:-|:-|
+|[uni.startSoterAuthentication](/api/system/authentication?id=startsoterauthentication)|开始生物认证|
+|[uni.checkIsSupportSoterAuthentication](/api/system/authentication?id=checkissupportsoterauthentication)|获取本机支持的生物认证方式|
+|[uni.checkIsSoterEnrolledInDevice](/api/system/authentication?id=checkissoterenrolledindevice)|获取设备内是否录入如指纹等生物信息的接口|
 
 #### 界面
 ##### 交互反馈
@@ -348,7 +356,7 @@ function async request () {
 |API|说明|
 |:-|:-|
 |[uni.setBackgroundColor](/api/ui/bgcolor?id=setbackgroundcolor)|动态设置窗口的背景色。|
-|[uni.setBackgroundColor](/api/ui/bgcolor?id=setbackgroundcolor-1)|动态设置下拉背景字体、loading 图的样式。|
+|[uni.setBackgroundTextStyle](/api/ui/bgcolor?id=setbackgroundtextstyle)|动态设置下拉背景字体、loading 图的样式。|
 
 ##### 动画
 
@@ -420,6 +428,7 @@ function async request () {
 |[uni.login](api/plugins/login?id=login)|登录|
 |[uni.getUserInfo](api/plugins/login?id=getuserinfo)|获取用户信息|
 |[uni.share](api/plugins/share?id=share)|分享|
+|[uni.shareWithSystem](api/plugins/share?id=sharewithsystem)|使用系统分享|
 |[uni.requestPayment](api/plugins/payment?id=requestpayment)|支付|
 |[uni.subscribePush](api/plugins/push?id=subscribepush)|开启推送|
 |[uni.unsubscribePush](api/plugins/push?id=unsubscribepush)|关闭推送|

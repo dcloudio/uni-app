@@ -1,4 +1,8 @@
 import {
+  stringifyQuery
+} from 'uni-shared/query'
+
+import {
   isPage,
   initRelation
 } from './util'
@@ -32,14 +36,19 @@ export default function parsePage (vuePageOptions) {
     }
   }
 
-  pageOptions.methods.onLoad = function onLoad (args) {
+  pageOptions.methods.onLoad = function onLoad (query) {
     // 百度 onLoad 在 attached 之前触发，先存储 args, 在 attached 里边触发 onLoad
     if (this.$vm) {
-      this.$vm.$mp.query = args
-      this.$vm.__call_hook('onLoad', args)
+      const copyQuery = Object.assign({}, query)
+      delete copyQuery.__id__
+      this.pageinstance.$page = this.$page = {
+        fullPath: '/' + this.pageinstance.route + stringifyQuery(copyQuery)
+      }
+      this.$vm.$mp.query = query
+      this.$vm.__call_hook('onLoad', query)
       this.$vm.__call_hook('onShow')
     } else {
-      this.pageinstance._$args = args
+      this.pageinstance._$args = query
     }
   }
 

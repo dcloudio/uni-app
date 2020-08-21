@@ -1,3 +1,5 @@
+import navigateTo from 'uni-helpers/navigate-to'
+import redirectTo from '../../../mp-weixin/helpers/redirect-to'
 import previewImage from '../../../mp-weixin/helpers/normalize-preview-image'
 // 不支持的 API 列表
 const todos = [
@@ -56,6 +58,9 @@ function _handleEnvInfo (result) {
 
 // 需要做转换的 API 列表
 const protocols = {
+  returnValue (methodName, res = {}) { // 通用 returnValue 解析，部分 API 的 res 为 undefined，比如 navigateTo
+    return res
+  },
   request: {
     args (fromArgs) {
       // TODO
@@ -77,6 +82,8 @@ const protocols = {
       method: false
     }
   },
+  navigateTo,
+  redirectTo,
   previewImage,
   getRecorderManager: {
     returnValue (fromRet) {
