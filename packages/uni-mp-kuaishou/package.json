@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-mp-kuaishou",
-  "version": "2.0.0-alpha-28920200821001",
+  "version": "2.0.0-alpha-28920200821002",
   "description": "uni-app mp-kuaishou",
   "main": "dist/index.js",
   "repository": {
@@ -12,5 +12,6 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Aero Wang",
-  "license": "MIT"
+  "license": "MIT",
+  "gitHead": "e51484a49748f7bff86bb833763e5dff1522d380"
 }
