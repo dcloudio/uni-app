@@ -261,12 +261,12 @@ function processCss(css) {
 }
 
 function getPage() {
-	var app = getApp()
+	var app = typeof getApp === 'function' && getApp()
 	return app && app.$route && app.$route.meta && app.$route.meta.name || ''
 }
 
 function getWindowOffset() {
-	var app = getApp()
+	var app = typeof getApp === 'function' && getApp()
 	if (app && app.$route && app.$route.meta && app.$route.meta.name) {
 		return {
 			top: app.$route.meta.windowTop,
