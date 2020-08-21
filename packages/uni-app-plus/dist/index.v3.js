@@ -8826,7 +8826,7 @@ var serviceContext = (function () {
     return webview
   }
 
-  function _navigateTo({
+  function _navigateTo ({
     url,
     path,
     query,
@@ -8860,7 +8860,7 @@ var serviceContext = (function () {
     setStatusBarStyle();
   }
 
-  function navigateTo$1({
+  function navigateTo$1 ({
     url,
     events,
     openType,
@@ -8878,7 +8878,7 @@ var serviceContext = (function () {
       animationDuration = routeStyles.animationDuration || globalStyle.animationDuration || ANI_DURATION;
     }
     const query = parseQuery(urls[1] || '');
-    navigate(path, function() {
+    navigate(path, function () {
       _navigateTo({
         url,
         path,
@@ -14391,7 +14391,7 @@ var serviceContext = (function () {
   }
 
   var vuePlugin = {
-    install(Vue, options) {
+    install (Vue, options) {
       initVue(Vue);
 
       initData(Vue);
@@ -14399,18 +14399,21 @@ var serviceContext = (function () {
 
       initPolyfill(Vue);
 
-      Vue.prototype.getOpenerEventChannel = function() {
-        return this.$root.$scope.eventChannel || new EventChannel()
+      Vue.prototype.getOpenerEventChannel = function () {
+        if (!this.$root.$scope.eventChannel) {
+          this.$root.$scope.eventChannel = new EventChannel();
+        }
+        return this.$root.$scope.eventChannel
       };
 
       Object.defineProperty(Vue.prototype, '$page', {
-        get() {
+        get () {
           return this.$root.$scope.$page
         }
       });
       // 兼容旧版本
       Object.defineProperty(Vue.prototype, '$mp', {
-        get() {
+        get () {
           return {
             page: this.$root.$scope
           }
@@ -14418,9 +14421,9 @@ var serviceContext = (function () {
       });
 
       const oldMount = Vue.prototype.$mount;
-      Vue.prototype.$mount = function mount(el, hydrating) {
+      Vue.prototype.$mount = function mount (el, hydrating) {
         if (this.mpType === 'app') {
-          this.$options.render = function() {};
+          this.$options.render = function () {};
           if (weex.config.preload) { // preload
             if (process.env.NODE_ENV !== 'production') {
               console.log('[uni-app] preload app-service.js');
@@ -14441,7 +14444,7 @@ var serviceContext = (function () {
         return oldMount.call(this, el, hydrating)
       };
 
-      Vue.prototype.$nextTick = function nextTick(cb) {
+      Vue.prototype.$nextTick = function nextTick (cb) {
         const renderWatcher = this._watcher;
         const callback = typeof cb === 'function';
         const result = new Promise((resolve) => {
