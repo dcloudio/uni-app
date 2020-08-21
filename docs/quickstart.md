@@ -261,6 +261,14 @@ vue create -p dcloudio/uni-preset-vue#alpha my-alpha-project
 
 更多支持的下载方式，请参考这个插件的说明：[download-git-repo](https://www.npmjs.com/package/download-git-repo)
 
+#### 修改依赖为指定版本
+
+1. 查看 HBuilderX 对应的 NPM 依赖版本: 打开 [NPM版本记录](https://www.npmjs.com/package/@dcloudio/vue-cli-plugin-hbuilderx)，版本号 2.0.0- 后面是与 HBuilderX 对应的版本号且小版本不会超过9，比如 HBuilderX 2.7.5.20200518 对应的版本号 2.0.0-27520200518001，2.0.0-271420200618 对应的为 2.0.0-27920200618002。
+
+2. 批量修改 package.json 中 uni 相关依赖为指定的版本号（去掉版本号前面 ^）。
+
+3. 对于有变化的依赖进行增删，提示不存指定版本的依赖可以保留原始版本或者删除，运行时提示缺少的依赖自行安装。
+
 ### 运行、发布uni-app
 
 ```
