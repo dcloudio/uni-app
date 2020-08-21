@@ -245,7 +245,7 @@ export default {
         event.stopPropagation()
       }
       //滑动是在横向开启的时候不再触发下拉
-      if (!startOnX&&self.refresherEnabled && self.refreshState === 'pulling') {
+      if (!startOnX && self.refresherEnabled && self.refreshState === 'pulling') {
         const dy = y - touchStart.y
         self.refresherHeight = dy
 
