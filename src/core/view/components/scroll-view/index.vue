@@ -74,6 +74,7 @@ import {
   supportsPassive
 } from 'uni-shared'
 import {
+  initScrollBounce,
   disableScrollBounce
 } from 'uni-platform/helpers/scroll'
 
@@ -294,6 +295,7 @@ export default {
       passive: false
     } : false)
     this.$refs.main.addEventListener('touchend', this.__handleTouchEnd, passiveOptions)
+    initScrollBounce()
   },
   activated () {
     // 还原 scroll-view 滚动位置

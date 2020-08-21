@@ -12,6 +12,7 @@ import {
   STD
 } from './utils'
 import {
+  initScrollBounce,
   disableScrollBounce
 } from 'uni-platform/helpers/scroll'
 var requesting = false
@@ -227,6 +228,7 @@ export default {
     this._friction.reconfigure(1, this.frictionNumber)
     this._STD.reconfigure(1, 9 * Math.pow(this.dampingNumber, 2) / 40, this.dampingNumber)
     this.$el.style.transformOrigin = 'center'
+    initScrollBounce()
   },
   methods: {
     _getPx (val) {

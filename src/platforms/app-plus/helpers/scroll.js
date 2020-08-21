@@ -2,40 +2,26 @@ import {
   plusReady
 } from 'uni-shared'
 
-let view
+let webview
 let pullToRefreshStyle
-let disabled
-const lastAction = {}
+
+export function initScrollBounce () {
+  plusReady(() => {
+    if (!webview) {
+      webview = plus.webview.currentWebview()
+    }
+    if (!pullToRefreshStyle) {
+      pullToRefreshStyle = (webview.getStyle() || {}).pullToRefresh || {}
+    }
+  })
+}
 
 export function disableScrollBounce ({
   disable
 }) {
-  function exec () {
-    if (!view) {
-      view = plus.webview.currentWebview()
-    }
-    if (!disabled) {
-      pullToRefreshStyle = (view.getStyle() || {}).pullToRefresh || {}
-    }
-    disabled = disable
-    if (pullToRefreshStyle.support) {
-      view.setPullToRefresh(Object.assign({}, pullToRefreshStyle, {
-        support: !disable
-      }))
-    }
+  if (pullToRefreshStyle && pullToRefreshStyle.support) {
+    webview.setPullToRefresh(Object.assign({}, pullToRefreshStyle, {
+      support: !disable
+    }))
   }
-  const time = Date.now()
-  if (disable === lastAction.disable && time - lastAction.time < 20) {
-    return
-  }
-  lastAction.disable = disable
-  lastAction.time = time
-  plusReady(() => {
-    if (plus.os.name === 'iOS') {
-      // 延迟执行避免iOS13触摸卡死
-      setTimeout(exec, 20)
-    } else {
-      exec()
-    }
-  })
 }

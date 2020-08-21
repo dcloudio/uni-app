@@ -3,6 +3,7 @@ import {
   deepClone
 } from 'uni-shared'
 import {
+  initScrollBounce,
   disableScrollBounce
 } from 'uni-platform/helpers/scroll'
 
@@ -34,6 +35,7 @@ export default {
   },
   mounted: function () {
     this._resize()
+    initScrollBounce()
   },
   methods: {
     _resize () {
