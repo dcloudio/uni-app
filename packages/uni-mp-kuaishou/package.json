@@ -5,13 +5,16 @@
   "main": "dist/index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/aeroxy/uni-app.git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
     "directory": "packages/uni-mp-kuaishou"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Aero Wang",
-  "license": "MIT",
-  "gitHead": "e51484a49748f7bff86bb833763e5dff1522d380"
+  "license": "Apache-2.0",
+  "uni-app": {
+    "name": "mp-alipay",
+    "title": "支付宝小程序"
+  }
 }
