@@ -241,7 +241,7 @@ var VAR_WINDOW_RIGHT = /var\(--window-right\)/gi
 
 function processCss(css) {
 	var page = getPage()
-	if (!uni.canIUse('css.var')) { //不支持 css 变量
+	if (typeof uni !== 'undefined' && !uni.canIUse('css.var')) { //不支持 css 变量
 		var offset = getWindowOffset()
 		css = css.replace(VAR_STATUS_BAR_HEIGHT, '0px')
 			.replace(VAR_WINDOW_TOP, offset.top + 'px')
@@ -254,6 +254,9 @@ function processCss(css) {
 		.replace(BODY_RE, '')
 		.replace(PAGE_SCOPED_RE, 'body.' + page + ' uni-page-body')
 		.replace(/\{[\s\S]+?\}/g, function (css) {
+      if(typeof uni === 'undefined'){
+        return css
+      }
 			return css.replace(UPX_RE, function (a, b) {
 				return uni.upx2px(b) + 'px'
 			})
