@@ -9,9 +9,21 @@
 |url|String|是||需要跳转的应用内非 tabBar 的页面的路径 , 路径后可以带参数。参数与路径之间使用?分隔，参数键与参数值用=相连，不同参数用&分隔；如 'path?key=value&key2=value2'，path为下一个页面的路径，下一个页面的onLoad函数可得到传递的参数|:-|
 |animationType|String|否|pop-in|窗口显示的动画效果，详见：[窗口动画](api/router?id=animation)|App|
 |animationDuration|Number|否|300|窗口动画持续时间，单位为 ms|App|
+|events|Object|否||页面间通信接口，用于监听被打开页面发送到当前页面的数据。2.8.8+ 开始支持。||
 |success|Function|否||接口调用成功的回调函数||
 |fail|Function|否||接口调用失败的回调函数||
 |complete|Function|否||接口调用结束的回调函数（调用成功、失败都会执行）|&nbsp;|
+
+**object.success 回调函数**
+
+**参数**
+
+**Object res**
+
+|属性|类型|说明|
+|:-|:-|:-|
+|eventChannel|[EventChannel](api/router?id=event-channel)|和被打开页面进行通信|
+
 
 **示例**
 
@@ -28,6 +40,40 @@ export default {
 		console.log(option.id); //打印出上个页面传递的参数。
 		console.log(option.name); //打印出上个页面传递的参数。
 	}
+}
+```
+
+```
+uni.navigateTo({
+  url: 'pages/test?id=1',
+  events: {
+    // 为指定事件添加一个监听器，获取被打开页面传送到当前页面的数据
+    acceptDataFromOpenedPage: function(data) {
+      console.log(data)
+    },
+    someEvent: function(data) {
+      console.log(data)
+    }
+    ...
+  },
+  success: function(res) {
+    // 通过eventChannel向被打开页面传送数据
+    res.eventChannel.emit('acceptDataFromOpenerPage', { data: 'test' })
+  }
+})
+```
+
+```
+// test.js
+onLoad: function(option) {
+  console.log(option.query)
+  const eventChannel = this.getOpenerEventChannel()
+  eventChannel.emit('acceptDataFromOpenedPage', {data: 'test'});
+  eventChannel.emit('someEvent', {data: 'test'});
+  // 监听acceptDataFromOpenerPage事件，获取上一页面通过eventChannel传送到当前页面的数据
+  eventChannel.on('acceptDataFromOpenerPage', function(data) {
+    console.log(data)
+  })
 }
 ```
 
@@ -178,6 +224,69 @@ uni.navigateBack({
 	delta: 2
 });
 ```
+
+
+#### EventChannel@event-channel
+2.8.8+ 支持
+页面间事件通信通道
+
+**方法**
+
+#### EventChannel.emit(string eventName, any args)
+
+触发一个事件
+
+string eventName
+事件名称
+
+any args
+事件参数
+
+
+#### EventChannel.off(string eventName, function fn)
+
+取消监听一个事件。给出第二个参数时，只取消给出的监听函数，否则取消所有监听函数
+
+string eventName
+事件名称
+
+function fn
+事件监听函数
+
+参数
+any args
+触发事件参数
+
+
+#### EventChannel.on(string eventName, function fn)
+
+持续监听一个事件
+
+string eventName
+事件名称
+
+function fn
+事件监听函数
+
+参数
+any args
+触发事件参数
+
+
+#### EventChannel.once(string eventName, function fn)
+
+监听一个事件一次，触发后失效
+
+string eventName
+事件名称
+
+function fn
+事件监听函数
+
+参数
+any args
+触发事件参数
+
 
 Tips：
 * ``navigateTo``, ``redirectTo`` 只能打开非 tabBar 页面。
