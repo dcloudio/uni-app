@@ -140,7 +140,7 @@ export default {
     },
     onRightWindowInit () {
       if (this.rightWindowStyle && this.rightWindowStyle.width) {
-        updateCssVar('--window-left', this.$refs.rightWindow.offsetWidth + 'px')
+        updateCssVar('--window-right', this.$refs.rightWindow.offsetWidth + 'px')
       } else {
         updateCssVar('--window-right', this.$refs.right.$el.offsetWidth + 'px')
       }
