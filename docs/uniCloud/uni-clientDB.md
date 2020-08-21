@@ -240,7 +240,11 @@ afterStageAppend: function({
   + 不使用聚合时mixinCondition会在没有where的时候在collection方法之后插入where，有where时会跟where条件进行合并，取原条件且mixinCondition。
   + 使用聚合时会在第一阶段插入match使用混入的条件，如果有blockedField会插入在blockedField对应的project之前
   + mixinCondition会对除插入以外的所有操作生效
-  + 使用mixinCondition时客户端不可使用`collection('xxx').doc('xxx')`方法
+  + 使用mixinCondition时客户端不可使用`collection('xxx').doc('xxx')`方法（1.0.8版本起即使有mixinCondition客户端也可以使用doc方法）
 
 - 关于联表查询
   + 连接的数据表也会受所配置的权限规则中对应数据表规则限制，主要是read，目前连接的数据表不会受blockedField限制
+
+## 参考
+
+在线通讯录项目，完整的演示了如何基于clientDB在客户端代码里实现数据的增删改查，是学习clientDB的重要示例项目。该项目插件地址：[https://ext.dcloud.net.cn/plugin?id=2574](https://ext.dcloud.net.cn/plugin?id=2574)
