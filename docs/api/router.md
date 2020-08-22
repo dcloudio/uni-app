@@ -44,6 +44,7 @@ export default {
 ```
 
 ```
+// 2.8.9+ 支持
 uni.navigateTo({
   url: 'pages/test?id=1',
   events: {
@@ -64,6 +65,7 @@ uni.navigateTo({
 ```
 
 ```
+// 2.8.9+ 支持
 // test.js
 onLoad: function(option) {
   console.log(option.query)
