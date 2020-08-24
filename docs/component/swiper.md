@@ -48,6 +48,7 @@ change 事件返回 detail 中包含一个 source 字段，表示导致变更的
 
 **Tips**
 
+- 如果要使``@animationfinish``返回正确的数据，必须监听``@change``事件。
 - 使用竖向滚动时，需要给 ``<scroll-view>`` 一个固定高度，通过 css 设置 height。
 - 注意：其中只可放置 ``<swiper-item>`` 组件，否则会导致未定义的行为。 
 - 如果遇到current、current-item-id属性设置不生效的问题参考：[组件属性设置不生效解决办法](/use?id=%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98)
