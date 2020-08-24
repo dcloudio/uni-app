@@ -13013,6 +13013,9 @@ var serviceContext = (function () {
 
     function onAppEnterForeground () {
       const pages = getCurrentPages();
+      if (pages.length === 0) {
+        return
+      }
       const page = pages[pages.length - 1];
       const args = {
         path: page.route,
