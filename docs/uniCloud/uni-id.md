@@ -569,23 +569,25 @@ exports.main = async function(event,context) {
 
 **mobileInfo**参数说明
 
-| 字段				| 类型	| 必填| 说明																																					|
-| ---					| ---		| ---	| ---																																						|
-| mobile			| String| 是	|用户手机号																																			|
-| code				| String| 是	|验证码																																					|
-| type				| String| 否	|指定操作类型，覆盖存在则登录不存在则注册的默认行为，可选值为`login`、`register`|
-| password		|String	| 否	|密码，type为`register`时生效																										|
-| inviteCode	|String	| 否	|邀请人的邀请码，type为`register`时生效																					|
-| myInviteCode|String	| 否	|设置当前注册用户自己的邀请码，type为`register`时生效														|
+| 字段				| 类型	| 必填| 说明																																																	|
+| ---					| ---		| ---	| ---																																																		|
+| mobile			| String| 是	|用户手机号																																															|
+| code				| String| 是	|验证码																																																	|
+| type				| String| 否	|指定操作类型，可选值为`login`、`register`，不传此参数时表现为手机号已注册则登录，手机号未注册则进行注册|
+| password		|String	| 否	|密码，type为`register`时生效																																						|
+| inviteCode	|String	| 否	|邀请人的邀请码，type为`register`时生效																																	|
+| myInviteCode|String	| 否	|设置当前注册用户自己的邀请码，type为`register`时生效																										|
 
 **响应参数**
 
-| 字段				| 类型	| 必填| 说明											|
-| ---					| ---		| ---	| ---												|
-| code				| Number| 是	|错误码，0表示成功					|
-| msg					| String| 是	|详细信息										|
-| token				| String| -		|登录成功之后返回的token信息|
-| tokenExpired| String| -		|token过期时间							|
+| 字段				| 类型	| 必填| 说明																		|
+| ---					| ---		| ---	| ---																			|
+| code				| Number| 是	|错误码，0表示成功												|
+| msg					| String| 是	|详细信息																	|
+| uid					| String| 是	|用户uid																	|
+| type				| String| 是	|操作类型，`login`为登录、`register`为注册|
+| token				| String| -		|登录成功之后返回的token信息							|
+| tokenExpired| String| -		|token过期时间														|
 
 **示例代码**
 
@@ -712,6 +714,8 @@ exports.main = async function(event,context) {
 | ---					| ---		| ---	| ---												|
 | code				| Number| 是	|错误码，0表示成功					|
 | msg					| String| 是	|详细信息										|
+| uid					| String| 是	|用户uid																	|
+| type				| String| 是	|操作类型，`login`为登录、`register`为注册|
 | token				| String| -		|登录成功之后返回的token信息|
 | tokenExpired| String| -		|token过期时间							|
 
@@ -874,12 +878,16 @@ exports.main = async function(event,context) {
 
 **响应参数**
 
-| 字段| 类型	| 必填| 说明						|
-| ---	| ---		| ---	| ---							|
-| code| Number| 是	|错误码，0表示成功|
-| msg	| String| 是	|详细信息					|
-| token	| String| -	|登录成功之后返回的token信息|
-| tokenExpired	| String| -	|token过期时间|
+| 字段				| 类型	| 必填| 说明																		|
+| ---					| ---		| ---	| ---																			|
+| code				| Number| 是	|错误码，0表示成功												|
+| msg					| String| 是	|详细信息																	|
+| uid					| String| 是	|用户uid																	|
+| type				| String| 是	|操作类型，`login`为登录、`register`为注册|
+| openid			| String| 是	|用户openid																|
+| unionid			| String| 否	|用户unionid，能取到此参数时会返回				|
+| token				| String| -		|登录成功之后返回的token信息							|
+| tokenExpired| String| -		|token过期时间														|
 
 **示例代码**
 
@@ -1054,12 +1062,15 @@ exports.main = async function(event,context) {
 
 **响应参数**
 
-| 字段| 类型	| 必填| 说明						|
-| ---	| ---		| ---	| ---							|
-| code| Number| 是	|错误码，0表示成功|
-| msg	| String| 是	|详细信息					|
-| token	| String| -	|登录成功之后返回的token信息|
-| tokenExpired	| String| -	|token过期时间|
+| 字段				| 类型	| 必填| 说明																		|
+| ---					| ---		| ---	| ---																			|
+| code				| Number| 是	|错误码，0表示成功												|
+| msg					| String| 是	|详细信息																	|
+| uid					| String| 是	|用户uid																	|
+| type				| String| 是	|操作类型，`login`为登录、`register`为注册|
+| openid			| String| 是	|用户openid																|
+| token				| String| -		|登录成功之后返回的token信息							|
+| tokenExpired| String| -		|token过期时间														|
 
 **示例代码**
 
