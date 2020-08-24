@@ -1,4 +1,16 @@
+<template>
+  <uni-resize-sensor @animationstart.once="update">
+    <div @scroll="update">
+      <div />
+    </div>
+    <div @scroll="update">
+      <div />
+    </div>
+  </uni-resize-sensor>
+</template>
 <script>
+const MAX = 100000
+
 export default {
   name: 'ResizeSensor',
   props: {
@@ -36,42 +48,23 @@ export default {
       this.reset()
     }
   },
+  activated () {
+    this.reset()
+  },
   methods: {
     reset: function () {
-      var expand = this.$el.firstChild
-      var shrink = this.$el.lastChild
-      expand.scrollLeft = 100000
-      expand.scrollTop = 100000
-      shrink.scrollLeft = 100000
-      shrink.scrollTop = 100000
+      const expand = this.$el.firstChild
+      expand.scrollLeft = MAX
+      expand.scrollTop = MAX
+      const shrink = this.$el.lastChild
+      shrink.scrollLeft = MAX
+      shrink.scrollTop = MAX
     },
     update: function () {
       this.size.width = this.$el.offsetWidth
       this.size.height = this.$el.offsetHeight
       this.reset()
     }
-  },
-  render: function (create) {
-    return create('uni-resize-sensor', {
-      on: {
-        '~animationstart': this.update
-      }
-    }, [
-      create('div', {
-        on: {
-          scroll: this.update
-        }
-      }, [
-        create('div')
-      ]),
-      create('div', {
-        on: {
-          scroll: this.update
-        }
-      }, [
-        create('div')
-      ])
-    ])
   }
 }
 
