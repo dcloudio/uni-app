@@ -1536,7 +1536,7 @@ db.runTransaction(callback: function, times: number)
 
 ```javascript
 const db = uniCloud.database()
-const _ = db.command
+const dbCmd = db.command
 exports.main = async (event) => {
   try {
     const result = await db.runTransaction(async transaction => {
@@ -1546,11 +1546,11 @@ exports.main = async (event) => {
       if (aaaRes.data && bbbRes.data) {
         try {
           const updateAAARes = await transaction.collection('account').doc('aaa').update({
-            amount: _.inc(-10)
+            amount: dbCmd.inc(-10)
           })
 
           const updateBBBRes = await transaction.collection('account').doc('bbb').update({
-            amount: _.inc(10)
+            amount: dbCmd.inc(10)
           })
 
           console.log(`transaction succeeded`)
@@ -1609,7 +1609,7 @@ db.startTransaction()
 
 ```javascript
 const db = uniCloud.database()
-const _ = db.command
+const dbCmd = db.command
 
 exports.main = async (event) => {
   const transaction = await db.startTransaction()
@@ -1620,11 +1620,11 @@ exports.main = async (event) => {
 
     if (aaaRes.data && bbbRes.data) {
       const updateAAARes = await transaction.collection('account').doc('aaa').update({
-        amount: _.inc(-10)
+        amount: dbCmd.inc(-10)
       })
 
       const updateBBBRes = await transaction.collection('account').doc('bbb').update({
-        amount: _.inc(10)
+        amount: dbCmd.inc(10)
       })
 
       await transaction.commit()
@@ -2838,7 +2838,8 @@ let res = await db.collection('orders').aggregate()
 - books 的 stock 字段 大于或等于 orders 的 quantityorders 字段
 ```js
 const db = cloud.database()
-const $ = db.command.aggregate
+const dbCmd = db.command
+const $ = dbCmd.aggregate
 let res = await db.collection('orders').aggregate()
   .lookup({
     from: 'books',
@@ -2847,7 +2848,7 @@ let res = await db.collection('orders').aggregate()
       order_quantity: '$quantity'
     },
     pipeline: $.pipeline()
-      .match(_.expr($.and([
+      .match(dbCmd.expr($.and([
         $.eq(['$title', '$$order_book']),
         $.gte(['$stock', '$$order_quantity'])
       ])))
@@ -2993,9 +2994,9 @@ match({
 ```
 ```js
 // 使用操作符
-const _ = db.command
+const dbCmd = db.command
 match({
-  age: _.gt(18)
+  age: dbCmd.gt(18)
 })
 ```
 
@@ -3035,12 +3036,12 @@ match 过滤出文档后，还可以与其他流水线阶段配合使用。
 
 比如下面这个例子，我们使用 group 进行搭配，计算 score 字段大于 80 的文档数量：
 ```js
-const _ = db.command
-const $ = _.aggregate
+const dbCmd = db.command
+const $ = dbCmd.aggregate
 let res = await db.collection('articles')
   .aggregate()
   .match({
-    score: _.gt(80)
+    score: dbCmd.gt(80)
   })
   .group({
       _id: null,
