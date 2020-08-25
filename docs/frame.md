@@ -602,7 +602,7 @@ domModule.addRule('fontFace', {
 
 ## ``<template/>`` 和 ``<block/>`` @template-block
 
-``uni-app`` 支持在 template 模板中嵌套 ``<template/>`` 和 ``<block/>``，用来进行 [列表渲染](/use?id=列表渲染) 和 [条件渲染](/use?id=条件渲染)。
+``uni-app`` 支持在 template 模板中嵌套 ``<template/>`` 和 ``<block/>``，用来进行 [条件渲染](/use?id=条件渲染) 和 [列表渲染](/use?id=列表渲染)。
 
  ``<template/>`` 和 ``<block/>`` 并不是一个组件，它们仅仅是一个包装元素，不会在页面中做任何渲染，只接受控制属性。
  
