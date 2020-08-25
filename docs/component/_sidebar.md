@@ -6,6 +6,7 @@
   * [movable-view](component/movable-view.md?id=movable-view)
   * [cover-view](/component/cover-view?id=cover-view)
   * [cover-image](/component/cover-view?id=cover-image)
+  * [match-media](/component/match-media.md)
 * 基础内容
   * [icon](component/icon.md)
   * [text](component/text.md)
