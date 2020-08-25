@@ -516,7 +516,6 @@ export default {
     },
     _setScale: function (scale) {
       if (this.scale) {
-        scale = this._adjustScale(scale)
         scale = this._oldScale * scale
         this._beginScale()
         this._updateScale(scale)
