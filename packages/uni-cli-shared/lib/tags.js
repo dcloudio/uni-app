@@ -40,5 +40,6 @@ module.exports = {
   textarea: ['app-plus', 'mp-weixin', 'h5'],
   video: ['app-plus', 'mp-weixin', 'h5'],
   view: ['app-plus', 'mp-weixin', 'h5'],
-  'web-view': ['app-plus', 'mp-weixin']
+  'web-view': ['app-plus', 'mp-weixin'],
+  'match-media':['app-plus', 'mp-weixin', 'h5']
 }
