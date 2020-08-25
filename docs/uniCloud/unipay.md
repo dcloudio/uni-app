@@ -100,6 +100,10 @@ const unipayIns = unipay.initAlipay({
 })
 ```
 
+**常见问题**
+
+- 支付宝支付时遇到`error:0D0680A8:asn1 encoding routines:ASN1_CHECK_TLEN:wrong tag`类似的错误时请确认一下自己的私钥格式，如果不是PKCS8需要在初始化时传入keyType参数，值为对应的私钥格式
+
 ## Api 列表
 
 ### 获取支付参数
