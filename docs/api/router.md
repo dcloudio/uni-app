@@ -62,11 +62,8 @@ uni.navigateTo({
     res.eventChannel.emit('acceptDataFromOpenerPage', { data: 'test' })
   }
 })
-```
 
-```
-// 2.8.9+ 支持
-// test.js
+// uni.navigateTo 目标页面 pages/test.vue
 onLoad: function(option) {
   console.log(option.query)
   const eventChannel = this.getOpenerEventChannel()
@@ -78,6 +75,7 @@ onLoad: function(option) {
   })
 }
 ```
+
 
 url有长度限制，太长的字符串会传递失败，可使用[窗体通信](https://uniapp.dcloud.io/collocation/frame/communication)、[全局变量](https://ask.dcloud.net.cn/article/35021)，或`encodeURIComponent`等多种方式解决，如下为`encodeURIComponent`示例。
 ```html
