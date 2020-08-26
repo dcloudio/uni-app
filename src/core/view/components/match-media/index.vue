@@ -12,28 +12,28 @@ export default {
   name: 'MatchMedia',
   props: {
     width: {
-      type: Number,
-      default: 0
+      type: [Number, String],
+      default: ''
     },
     minWidth: {
-      type: Number,
-      default: 0
+      type: [Number, String],
+      default: ''
     },
     maxWidth: {
-      type: Number,
-      default: 0
+      type: [Number, String],
+      default: ''
     },
     height: {
-      default: 0,
-      type: Number
+      type: [Number, String],
+      default: ''
     },
     minHeight: {
-      type: Number,
-      default: 0
+      type: [Number, String],
+      default: ''
     },
     maxHeight: {
-      type: Number,
-      default: 0
+      type: [Number, String],
+      default: ''
     },
     orientation: {
       type: String,
@@ -52,12 +52,21 @@ export default {
     handleMediaQueryStr () {
       let mediaQueryStr = []
       const { $props } = this
-      for (const item in $props) {
-        if (item !== ('orientation' || 'animations') && $props[item] > 0) {
-          mediaQueryStr.push(`(${this.humpToLine(item)}: ${this[item]}px)`)
+      const propsMenu = [
+        'width',
+        'minWidth',
+        'maxWidth',
+        'height',
+        'minHeight',
+        'maxHeight',
+        'orientation'
+      ]
+      for (const item of propsMenu) {
+        if (item !== 'orientation' && $props[item] !== '' && Number($props[item]) >= 0) {
+          mediaQueryStr.push(`(${this.humpToLine(item)}: ${Number($props[item])}px)`)
         }
         if (item === 'orientation' && $props[item]) {
-          mediaQueryStr.push(`(${this.humpToLine(item)}: ${this[item]})`)
+          mediaQueryStr.push(`(${this.humpToLine(item)}: ${$props[item]})`)
         }
       }
       mediaQueryStr = mediaQueryStr.join(' and ')
@@ -88,15 +97,15 @@ export default {
       }
     },
 
-    humpToLine (name) {
-      return name.replace(/([A-Z])/g, '-$1').toLowerCase()
-    },
-
     replaceListener () {
       this.mql.removeListener(this.handleMediaQuery)
       this.mql = window.matchMedia(this.handleMediaQueryStr)
       this.handleMediaQuery(this.mql)
       this.mql.addListener(this.handleMediaQuery)
+    },
+
+    humpToLine (name) {
+      return name.replace(/([A-Z])/g, '-$1').toLowerCase()
     }
   }
 }
