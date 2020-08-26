@@ -19,6 +19,7 @@ web体验地址：[https://duolingo.91ddedu.com](https://duolingo.91ddedu.com)�
 
 - [国云商城](https://ext.dcloud.net.cn/plugin?id=1989)：优秀的电商系统，购买本系统，快速上线属于你自己的电商应用。
 - [云上商城](https://ext.dcloud.net.cn/plugin?id=1989)：完整的线上生活超市，根据当前定位，就近匹配仓库。
+- 纸塘壁纸：精美壁纸小程序。微信小程序搜索“纸塘壁纸PRO”
 - 纸塘日记：简约而优雅的日记本。[iOS App](https://apps.apple.com/cn/app/id1442487677)、[Android App](https://android.myapp.com/myapp/detail.htm?apkName=com.ztdiary.piaoshi)
 - 开步运动：安徽本地体育赛事App。[iOS App](https://apps.apple.com/cn/app/id1518760851)、[Android App](https://android.myapp.com/myapp/detail.htm?apkName=uni.UNIBE1CDD0)
 - 月嫂了不起：母婴护理师、育婴师的接单和学习平台。微信小程序搜索“月嫂了不起”

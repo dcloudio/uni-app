@@ -99,37 +99,6 @@ App和微信小程序的ad组件没有type属性，可以用于banner，也可�
 |6|已安装|
 
 
-### H5平台 (2.8.5+)
-```html
-<template>
-  <view class="content">
-    <!-- H5平台 adpid在uniAD后台申请，支持复用 App 平台广告位-->
-    <view class="ad-view">
-      <ad adpid=""></ad>
-    </view>
-  </view>
-</template>
-```
-
-**注意:**
-- `H5` 广告需要校验域名，开发时不支持使用 localhost/ip，本机调试可配置 `host` 测试
-- 不支持 file 协议中使用
-
-
-### H5平台错误码
-
-|code|message|
-|:-|:-|
-|3001|非法请求|
-|3002|未找到此广告位|
-|3003|域名未校验，请先通过uniAD后台 [uniad.dcloud.net.cn](https://uniad.dcloud.net.cn/) 效验域名|
-|3004|遇到错误，请稍后重试|
-|3005|未找到H5广告配置信息|
-|3006|未找到任何广告位|
-|3007|域名未校验或包含端口号，请先通过 [uniad.dcloud.net.cn](https://uniad.dcloud.net.cn/) 效验域名|
-
-
-
 **示例：**
 
 ```html

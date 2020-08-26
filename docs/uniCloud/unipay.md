@@ -74,6 +74,7 @@ const unipayIns = unipay.initWeixin({
 |     参数名						|  类型		| 必填|                        默认值												|                  说明									|
 | :-------------:				| :-----:	| :--:| :--------------------------------------------------:| :------------------------------------:|
 |      appId						| String	|  是	|                          -													|     当前应用在对应支付平台的 appId		|
+|   mchId    | String  |   是   |                          -                           |                 商户号                 |
 |   privateKey					| String	|  是	|                          -													|             应用私钥字符串						|
 | alipayPublicKey				| String	|  否	|                          -													|          支付宝公钥，验签使用					|
 |     keyType						| String	|  否	|                        PKCS8												|           应用私钥字符串类型					|
@@ -88,6 +89,7 @@ const unipayIns = unipay.initWeixin({
 ```js
 const unipayIns = unipay.initAlipay({
   appId: 'your appId',
+  mchId: 'your mchId',
   privateKey: 'your privateKey',
   // 如果不使用证书（普通公钥模式）需要alipayPublicKey
   alipayPublicKey: 'you alipayPublicKey', // 使用支付时需传递此值做返回结果验签
@@ -97,6 +99,10 @@ const unipayIns = unipay.initAlipay({
   alipayPublicCertPath: path.join(__dirname,'../fixtures/alipayCertPublicKey_RSA2.crt'),
 })
 ```
+
+**常见问题**
+
+- 支付宝支付时遇到`error:0D0680A8:asn1 encoding routines:ASN1_CHECK_TLEN:wrong tag`类似的错误时请确认一下自己的私钥格式，如果不是PKCS8需要在初始化时传入keyType参数，值为对应的私钥格式
 
 ## Api 列表
 

@@ -117,3 +117,8 @@ uni.startBeaconDiscovery({
 |proximity|number|表示设备距离的枚举值|
 |accuracy|number|iBeacon 设备的距离|
 |rssi|number|表示设备的信号强度|
+
+
+### 注意事项
+
+* 未启用定位将影响 iBeacon 的正常使用。（相关反馈：[#2027](https://github.com/dcloudio/uni-app/issues/2027)）

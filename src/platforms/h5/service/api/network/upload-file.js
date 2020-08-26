@@ -133,7 +133,7 @@ export function uploadFile ({
   }
 
   Promise
-    .all(files.map(({ file, uri }) => file instanceof File ? Promise.resolve(file) : urlToFile(uri)))
+    .all(files.map(({ file, uri }) => file instanceof Blob ? Promise.resolve(file) : urlToFile(uri)))
     .then(upload)
     .catch(() => {
       setTimeout(() => {

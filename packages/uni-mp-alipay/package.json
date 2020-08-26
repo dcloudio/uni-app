@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-mp-alipay",
-  "version": "2.0.0-alpha-28420200805004",
+  "version": "2.0.0-28720200819002",
   "description": "uni-app mp-alipay",
   "main": "dist/index.js",
   "repository": {
