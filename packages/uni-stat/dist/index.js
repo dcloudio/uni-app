@@ -78,7 +78,8 @@ const getPlatformName = () => {
     'mp-alipay': 'ali',
     'mp-baidu': 'bd',
     'mp-toutiao': 'tt',
-    'mp-qq': 'qq'
+    'mp-qq': 'qq',
+    'mp-kuaishou': 'ks'
   };
   return platformList[process.env.VUE_APP_PLATFORM];
 };
@@ -380,12 +381,9 @@ const requestData = (done) => {
       if (report_status_code === '') {
         report_status_code = 1;
       }
-      if (report_status_code === 1) {
-        typeof done === 'function' && done({
-          enable: res.enable
-        });
-      }
-      // console.error('统计请求错误');
+      typeof done === 'function' && done({
+        enable: report_status_code
+      });
     }
   });
 };
