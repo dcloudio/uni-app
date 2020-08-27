@@ -1,38 +1,79 @@
-# 简介
+# 需求背景
 
-99%的应用，都要开发用户注册、登录、密码加密保存、修改密码、token管理等功能，从前端到后端都需要。
+99%的应用，都要开发用户注册、登录、发送短信验证码、密码加密保存、修改密码、token管理等功能，从前端到后端都需要。
 
 为什么不能有一个开源的通用项目，避免大家的重复开发呢？
 
 `uni-id`应需而生。
 
-`uni-id`为`uniCloud`开发者提供了统一、简单、可扩展的用户管理能力封装。推荐每个`uniCloud`开发者使用。
+`uni-id`为`uniCloud`开发者提供了简单、统一、可扩展的用户管理能力封装。
 
-`uni-id`可成为开发者应用的用户中心，在插件市场获取更多基于`uni-id`的业务模板，集成到你的应用中。
-
-# uni-id组成部分
-
+# 组成部分
 `uni-id`包括如下组成部分：
-
 1. 云数据库
 
-  主表为 `uni-id-users` 表，保存用户的基本信息。
+主表为 `uni-id-users` 表，保存用户的基本信息。
 
-  扩展字段有很多，如实名认证数据、工作履历数据，开发者可以自由扩展。
+扩展字段有很多，如实名认证数据、工作履历数据，开发者可以自由扩展。
 
 2. 云函数
 
-  提供一个名为`uni-id`的公共模块，该模块封装了一系列API，包括注册、登录、修改密码、设置头像等。
+提供一个名为`uni-id`的公共模块，该模块封装了一系列API，包括注册、登录、修改密码、设置头像等。
 
-  [插件市场](https://ext.dcloud.net.cn/plugin?id=2116)的示例工程中还提供了一个`user-center`的云函数，演示在云函数中如何调用`uni-id`公共模块。
+示例工程中还提供了一个`user-center`的云函数，演示在云函数中如何调用`uni-id`公共模块。
 
 3. 前端调用
 
-  前端示例通过callfunction调用云函数`user-center`，在注册和登录时保存token。
+前端示例通过callfunction调用云函数`user-center`，在注册和登录时保存token。
 
-  uniCloud框架底层，会自动在callfunction时传递`uni-id`的token（uni-app 2.7.13+版本）。在云函数的event中可直接拿到`uni-id`的token。也就是说开发者无需自己管理token了。
+uniCloud框架底层，会自动在callfunction时传递`uni-id`的token（uni-app 2.7.13+版本）。在云函数的event中可直接拿到`uni-id`的token。也就是说开发者无需自己管理token了。
 
-对于`uni-id`还未封装的能力，欢迎大家在开源项目上提交 pr，共同完善这个开源项目，[uni-id git仓库](https://gitee.com/dcloud/uni-id.git)。
+# uni-id 对开发者的价值
+1. 节省了大量重复劳动
+2. 降低门槛，前端开发者无需纠结怎样设计数据库设计才更合理
+3. 多系统打通用户和上下游协同
+
+关于第三点，着重强调下。
+
+一个应用，往往需要集成多个功能模块。比如一个电商应用，需要一个基本电商模板，还需要客服聊天模板，甚至还需要用户交流社区。
+
+在插件市场，每类模板插件都能找到，但他们如果不是基于同一套用户体系设计，就很难整合。
+
+DCloud推荐所有uniCloud的应用，都基于`uni-id`来做。
+
+有了统一的账户规范，并且围绕这套账户规范，有各种各样插件，那么开发者可以随意整合这些插件，让数据连同。
+
+规范，还可以让上下游充分协同。插件市场会出现各种数据迁移插件，比如把从discuz里把用户迁移到`uni-id`中的插件，相信围绕这套规范的产业链会非常活跃。
+
+# 现状和未来
+
+`uni-id`已完整的内容：
+
+- 注册、登录、发送短信验证码、密码加密保存、修改密码、token管理（短信验证码功能需要HBuilderX 2.8.3+）
+- 三方登录：App中的微信登录、微信小程序中的微信登录、支付宝小程序中的支付宝账户登录 
+
+关于还缺少的部分，哪些DCloud在完善，哪些希望开发者给共同完善开源项目，计划与边界公布如下：
+
+1. 部分社交账户登录
+
+DCloud暂无计划开发百度、头条、QQ等小程序的登录，以及Apple ID、微博、QQ等App端的登录。欢迎其他开发者在开源项目上提交pr，共同完善`uni-id`。
+
+2. 邮箱验证和手机号一键认证sdk集成
+
+手机号一键认证sdk，目前插件市场里已经有不少相关插件，未来DCloud会整合到`uni-id`中。邮箱验证，DCloud暂无计划开发，有需求的开发者欢迎提供pr。
+
+3. 实名认证、活体检测
+
+目前插件市场里已经有不少相关插件，未来DCloud会整合到`uni-id`中。
+
+4. 权限管理ACL
+
+这部分欢迎开发者参与完善。
+
+其他方面，各种常见开源项目如discuz、wordPress、ecshop的用户导入插件，不属于`uni-id`主工程，欢迎开发者单独提交插件到插件市场。
+
+`uni-id`的git仓库：[https://gitee.com/dcloud/uni-id.git](https://gitee.com/dcloud/uni-id.git)
+
 
 # 快速上手
 
@@ -46,6 +87,8 @@
 6. 创建`uni-id-users`、`uni-verify`集合（可以直接使用示例项目里面的db_init.json进行初始化）
 
 或者直接导入[uni-id在插件市场的示例工程](https://ext.dcloud.net.cn/plugin?id=2116)
+
+导入示例项目时，如果选择腾讯云，在HBuilderX2.7及以下版本中，需要进入项目目录，手动将目录`cloudfunctions-aliyun`改名为`cloudfunctions-tcb`，然后在HBuilderX中右键cloudfunctions绑定服务空间。
 
 **config.json的说明**
 
@@ -1382,11 +1425,12 @@ exports.main = async function(event,context) {
 
 **分享邀请码/邀请链接**
 
-![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/1b181d40-e377-11ea-b680-7980c8a877b8.jpeg)
+<img width="375" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/1b181d40-e377-11ea-b680-7980c8a877b8.jpeg" />
+
 
 **受邀者注册**
 
-![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/1b12c610-e377-11ea-b997-9918a5dda011.jpeg)
+<img width="375" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/1b12c610-e377-11ea-b997-9918a5dda011.jpeg" />
 
 # 数据库结构
 
