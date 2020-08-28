@@ -908,7 +908,7 @@ exports.main = async function(event,context) {
 
 - 需要在config.json内使用微信登录的平台下配置appid和appsecret
 - uniId会自动判断客户端平台
-- 登录成功之后应持久化存储token，键值为：uniIdToken，`uni.removeStorageSync('uniIdToken')`
+- 登录成功之后应持久化存储token，键值为：uniIdToken，`uni.setStorageSync('uniIdToken', res.result.token)`
 - App端获取code不可直接调用`uni.login`，详细用法可以看下面示例
 
 **参数说明**
@@ -921,16 +921,18 @@ exports.main = async function(event,context) {
 
 **响应参数**
 
-| 字段				| 类型	| 必填| 说明																		|
-| ---					| ---		| ---	| ---																			|
-| code				| Number| 是	|错误码，0表示成功												|
-| msg					| String| 是	|详细信息																	|
-| uid					| String| 是	|用户uid																	|
-| type				| String| 是	|操作类型，`login`为登录、`register`为注册|
-| openid			| String| 是	|用户openid																|
-| unionid			| String| 否	|用户unionid，能取到此参数时会返回				|
-| token				| String| -		|登录成功之后返回的token信息							|
-| tokenExpired| String| -		|token过期时间														|
+| 字段						| 类型		| 必填| 说明																		|
+| ---							| ---			| ---	| ---																			|
+| code						| Number	| 是	|错误码，0表示成功												|
+| msg							| String	| 是	|详细信息																	|
+| uid							| String	| 是	|用户uid																	|
+| type						| String	| 是	|操作类型，`login`为登录、`register`为注册|
+| openid					| String	| 是	|用户openid																|
+| unionid					| String	| 否	|用户unionid，能取到此参数时会返回				|
+| token						| String	| 是	|登录成功之后返回的token信息							|
+| tokenExpired		| String	| 是	|token过期时间														|
+| mobileConfirmed	| Boolean	| 是	|是否已验证手机号													|
+| emailConfirmed	| Boolean	| 是	|是否已验证邮箱														|
 
 **示例代码**
 
@@ -1019,6 +1021,41 @@ export default {
 
 ```
 
+## 获取微信openid
+
+用法：`uniID.code2SessionWeixin(Object Code2SessionWeixinParams);`
+
+**参数说明**
+
+| 字段		| 类型	| 必填| 说明																																																														|
+| ---			| ---		| ---	| ---																																																															|
+| code		| String| 是	|微信登录返回的code																																																								|
+|platform	|String	|否		|客户端类型：`mp-weixin`、`app-plus`，默认uni-id会自动取客户端类型，但是在云函数url化等场景无法取到客户端类型，可以使用此参数指定	|
+
+**响应参数**
+
+| 字段				| 类型	| 必填| 说明																													|
+| ---					| ---		| ---	| ---																														|
+| code				| Number| 是	|错误码，0表示成功																							|
+| msg					| String| 是	|详细信息																												|
+| openid			| String| -		|用户openid																											|
+| unionid			| String| -		|用户unionid，可以取到此值时返回																|
+| sessionKey	| String| -		|客户端为微信小程序时返回																				|
+| accessToken	| String| -		|客户端为APP时返回																							|
+| expiresIn		| String| -		|客户端为APP时返回，accessToken 接口调用凭证超时时间，单位（秒）|
+| refreshToken| String| -		|客户端为APP时返回，用于刷新accessToken																					|
+
+```js
+// 云函数代码
+const uniID = require('uni-id')
+exports.main = async function(event,context) {
+	const res = await uniID.code2SessionWeixin({
+    code: event.code
+  })
+	return res
+}
+```
+
 ## 绑定微信
 
 用法：`uniID.bindWeixin(Object weixinInfo);`
@@ -1093,7 +1130,7 @@ exports.main = async function(event,context) {
 **注意**
 
 - 需要在config.json内支付宝平台下配置appid和privateKey（应用私钥）
-- 登录成功之后应持久化存储token，键值为：uniIdToken，`uni.removeStorageSync('uniIdToken')`
+- 登录成功之后应持久化存储token，键值为：uniIdToken，`uni.setStorageSync('uniIdToken', res.result.token)`
 
 **参数说明**
 
@@ -1105,15 +1142,17 @@ exports.main = async function(event,context) {
 
 **响应参数**
 
-| 字段				| 类型	| 必填| 说明																		|
-| ---					| ---		| ---	| ---																			|
-| code				| Number| 是	|错误码，0表示成功												|
-| msg					| String| 是	|详细信息																	|
-| uid					| String| 是	|用户uid																	|
-| type				| String| 是	|操作类型，`login`为登录、`register`为注册|
-| openid			| String| 是	|用户openid																|
-| token				| String| -		|登录成功之后返回的token信息							|
-| tokenExpired| String| -		|token过期时间														|
+| 字段						| 类型		| 必填| 说明																		|
+| ---							| ---			| ---	| ---																			|
+| code						| Number	| 是	|错误码，0表示成功												|
+| msg							| String	| 是	|详细信息																	|
+| uid							| String	| 是	|用户uid																	|
+| type						| String	| 是	|操作类型，`login`为登录、`register`为注册|
+| openid					| String	| 是	|用户openid																|
+| token						| String	| 是	|登录成功之后返回的token信息							|
+| tokenExpired		| String	| 是	|token过期时间														|
+| mobileConfirmed	| Boolean	| 是	|是否已验证手机号													|
+| emailConfirmed	| Boolean	| 是	|是否已验证邮箱														|
 
 **示例代码**
 
@@ -1124,6 +1163,41 @@ exports.main = async function(event,context) {
   // 如下旧写法依然支持
 	// const res = await uniID.loginByAlipay(event.code)
 	const res = await uniID.loginByAlipay({
+    code: event.code
+  })
+	return res
+}
+```
+
+
+## 获取微信openid
+
+用法：`uniID.code2SessionWeixin(Object Code2SessionWeixinParams);`
+
+**参数说明**
+
+| 字段		| 类型	| 必填| 说明																																																														|
+| ---			| ---		| ---	| ---																																																															|
+| code		| String| 是	|微信登录返回的code																																																								|
+|platform	|String	|否		|客户端类型：`mp-weixin`、`app-plus`，默认uni-id会自动取客户端类型，但是在云函数url化等场景无法取到客户端类型，可以使用此参数指定	|
+
+**响应参数**
+
+| 字段				| 类型	| 必填| 说明																													|
+| ---					| ---		| ---	| ---																														|
+| code				| Number| 是	|错误码，0表示成功																							|
+| msg					| String| 是	|详细信息																												|
+| openid			| String| -		|用户openid																											|
+| accessToken	| String| -		|客户端为APP时返回																							|
+| expiresIn		| String| -		|客户端为APP时返回，accessToken 接口调用凭证超时时间，单位（秒）|
+| refreshToken| String| -		|客户端为APP时返回，用于刷新accessToken													|
+| reExpiresIn	| String| -		|refreshToken超时时间，单位（秒）																|
+
+```js
+// 云函数代码
+const uniID = require('uni-id')
+exports.main = async function(event,context) {
+	const res = await uniID.code2SessionWeixin({
     code: event.code
   })
 	return res
@@ -1588,6 +1662,10 @@ exports.main = async function(event,context) {
 |填写邀请人邀请码			|805	|01			|邀请码无效（邀请码存在且唯一时才算有效）	|
 |               			|   	|02			|uid错误，用户不存在	|
 |               			|   	|03			|邀请码不可修改	|
+|获取微信openid			        |806	|01			|未能获取openid	|
+|               			|   	|02			|调用获取openid接口失败	|
+|获取支付宝openid			        |807	|01			|未能获取openid	|
+|               			|   	|02			|调用获取openid接口失败	|
 |公用码						|900	|01			|数据库读写异常							|
 
 # FAQ
