@@ -31,6 +31,7 @@
   },
   "include": [
     "packages/global.d.ts",
+    "packages/shims-vue.d.ts",
     "packages/*/src",
     "packages/*/__tests__",
     "test-dts",

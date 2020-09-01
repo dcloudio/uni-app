@@ -1,0 +1,68 @@
+{
+  "name": "preprocess",
+  "description": "Preprocess directives in HTML, JavaScript, etc directives based off variable context",
+  "version": "3.1.0",
+  "homepage": "https://github.com/jsoverson/preprocess",
+  "author": {
+    "name": "Jarrod Overson",
+    "email": "jsoverson@gmail.com",
+    "url": "http://jarrodoverson.com/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jsoverson/preprocess.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jsoverson/preprocess/issues"
+  },
+  "licenses": [
+    {
+      "type": "Apache 2.0",
+      "url": "https://github.com/jsoverson/preprocess/blob/master/LICENSE"
+    }
+  ],
+  "main": "lib/preprocess.js",
+  "engines": {
+    "node": ">= 0.10.0"
+  },
+  "scripts": {
+    "test": "grunt test",
+    "ci": "grunt ci"
+  },
+  "dependencies": {
+    "xregexp": "3.1.0"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "chai-spies": "^0.7.0",
+    "grunt": "^0.4.5",
+    "grunt-benchmark": "^0.3.0",
+    "grunt-cli": "^0.1.13",
+    "grunt-contrib-clean": "^1.0.0",
+    "grunt-contrib-copy": "^0.8.0",
+    "grunt-contrib-jshint": "^1.0.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-coveralls": "^1.0.0",
+    "grunt-deps-ok": "^0.9.0",
+    "grunt-mocha-istanbul": "^3.0.1",
+    "grunt-mocha-test": "^0.12.7",
+    "istanbul": "^0.4.2",
+    "load-grunt-tasks": "^3.4.0",
+    "mocha": "^2.4.5",
+    "time-grunt": "^1.3.0",
+    "travis-cov": "^0.2.5"
+  },
+  "keywords": [
+    "directive",
+    "ENV",
+    "environment",
+    "ifdef",
+    "ifndef",
+    "echo",
+    "include",
+    "exclude",
+    "process",
+    "preprocess",
+    "pragma"
+  ]
+}

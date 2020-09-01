@@ -2,6 +2,8 @@ import { isPlainObject, isArray } from '@vue/shared'
 
 import { addSafeAreaInsets } from '@dcloudio/uni-mp-core'
 
+export { redirectTo } from '@dcloudio/uni-mp-core'
+
 function handleNetworkInfo(
   fromRes: my.IGetNetworkTypeSuccessResult,
   toRes: UniApp.GetNetworkTypeSuccess

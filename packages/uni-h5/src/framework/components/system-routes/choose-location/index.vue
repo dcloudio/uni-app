@@ -1,0 +1,92 @@
+<template>
+  <div class="uni-system-choose-location">
+    <system-header
+      :confirm="!!data"
+      @back="_back"
+      @confirm="_choose"
+    >
+      选择位置
+    </system-header>
+    <div class="map-content">
+      <iframe
+        :src="src"
+        allow="geolocation"
+        seamless
+        sandbox="allow-scripts allow-same-origin allow-forms"
+        frameborder="0"
+      />
+    </div>
+  </div>
+</template>
+<script>
+import SystemHeader from '../system-header'
+
+export default {
+  name: 'SystemChooseLocation',
+  components: {
+    SystemHeader
+  },
+  data () {
+    const key = __uniConfig.qqMapKey
+    return {
+      src: `https://apis.map.qq.com/tools/locpicker?search=1&type=1&key=${key}&referer=uniapp`,
+      data: null
+    }
+  },
+  mounted () {
+    function handler (event) {
+      var loc = event.data
+      if (loc && loc.module === 'locationPicker') {
+        this.data = {
+          name: loc.poiname,
+          address: loc.poiaddress,
+          latitude: loc.latlng.lat,
+          longitude: loc.latlng.lng
+        }
+      }
+    }
+    this.__messageHandle = handler.bind(this)
+    window.addEventListener('message', this.__messageHandle, false)
+  },
+  beforeDestroy () {
+    window.removeEventListener('message', this.__messageHandle, false)
+  },
+  methods: {
+    _choose () {
+      if (this.data) {
+        UniViewJSBridge.publishHandler('onChooseLocation', Object.assign({}, this.data))
+        getApp().$router.back()
+      }
+    },
+    _back () {
+      UniViewJSBridge.publishHandler('onChooseLocation', null)
+      getApp().$router.back()
+    }
+  }
+}
+</script>
+<style>
+	.uni-system-choose-location {
+		display: block;
+		position: fixed;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		background: #f8f8f8;
+	}
+
+	.map-content {
+		position: absolute;
+		left: 0;
+		top: 44px;
+		width: 100%;
+		bottom: 0;
+		overflow: hidden;
+	}
+
+	.map-content>iframe {
+		width: 100%;
+		height: 100%;
+	}
+</style>

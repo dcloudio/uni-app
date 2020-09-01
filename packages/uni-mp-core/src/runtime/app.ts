@@ -36,7 +36,7 @@ function parseApp(
     $vm: instance, // mp-alipay 组件 data 初始化比 onLaunch 早，提前挂载
     onLaunch(options: App.LaunchShowOption) {
       const ctx = (internalInstance as any).ctx as Record<string, any>
-      if (this.$vm && ctx.$callHook) {
+      if (this.$vm && ctx.$scope) {
         // 已经初始化过了，主要是为了百度，百度 onShow 在 onLaunch 之前
         return
       }

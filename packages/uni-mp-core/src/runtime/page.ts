@@ -1,5 +1,12 @@
 import { ComponentOptions } from 'vue'
-import { ParseComponentOptions, parseComponent } from './component'
+
+import { stringifyQuery } from '@dcloudio/uni-shared'
+
+import {
+  ParseComponentOptions,
+  parseComponent,
+  CustomComponentInstanceProperty
+} from './component'
 import { PAGE_HOOKS, initHooks, initUnknownHooks } from './componentHooks'
 
 function parsePage(
@@ -23,6 +30,15 @@ function parsePage(
   })
 
   const methods = miniProgramPageOptions.methods as WechatMiniprogram.Component.MethodOption
+
+  methods.onLoad = function(this: CustomComponentInstanceProperty, query) {
+    ;(this as any).options = query
+    ;(this as any).$page = {
+      fullPath: '/' + (this as any).route + stringifyQuery(query)
+    }
+    return this.$vm && this.$vm.$callHook('onLoad', query)
+  }
+
   initHooks(methods, PAGE_HOOKS)
   initUnknownHooks(methods, vueOptions)
 

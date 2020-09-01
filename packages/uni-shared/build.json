@@ -1,0 +1,5 @@
+{
+  "input": {
+    "src/index.ts": "dist/uni.shared.esm.js"
+  }
+}

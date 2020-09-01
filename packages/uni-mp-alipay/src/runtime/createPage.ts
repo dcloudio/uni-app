@@ -10,6 +10,8 @@ import {
   initWxsCallMethods
 } from '@dcloudio/uni-mp-core'
 
+import { stringifyQuery } from '@dcloudio/uni-shared'
+
 import {
   handleRef,
   handleLink,
@@ -23,11 +25,15 @@ declare function Page<D>(options: tinyapp.PageOptions<D>): void
 export function createPage(vueOptions: ComponentOptions) {
   vueOptions = vueOptions.default || vueOptions
   const pageOptions: tinyapp.PageOptions = {
-    onLoad(args) {
+    onLoad(query) {
+      this.options = query
+      this.$page = {
+        fullPath: '/' + this.route + stringifyQuery(query)
+      }
       // 初始化 vue 实例
       this.$vm = createVueComponent('page', this, vueOptions)
       initSpecialMethods(this)
-      this.$vm.$callHook('onLoad', args)
+      this.$vm.$callHook('onLoad', query)
     },
     onReady() {
       initChildVues(this)

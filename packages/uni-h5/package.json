@@ -1,0 +1,29 @@
+{
+  "name": "@dcloudio/uni-h5",
+  "version": "3.0.0",
+  "description": "@dcloudio/uni-h5",
+  "main": "dist/uni-h5.esm.js",
+  "module": "dist/uni-h5.esm.js",
+  "files": [
+    "dist"
+  ],
+  "sideEffects": [
+    "dist/uni-h5.css"
+  ],
+  "buildOptions": {
+    "bundler": "vite"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/uni-h5"
+  },
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/dcloudio/uni-app/issues"
+  },
+  "dependencies": {
+    "safe-area-insets": "^1.4.1",
+    "vue-router": "^4.0.0-beta.6"
+  }
+}

@@ -1,4 +1,4 @@
-export { previewImage } from '@dcloudio/uni-mp-core'
+export { redirectTo, previewImage } from '@dcloudio/uni-mp-core'
 export const chooseImage = {
   args: {
     sizeType: false

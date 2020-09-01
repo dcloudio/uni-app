@@ -1,0 +1,111 @@
+<template>
+  <div class="uni-system-open-location">
+    <system-header @back="_back">
+      位置
+    </system-header>
+    <div class="map-content">
+      <iframe
+        ref="map"
+        :src="src"
+        allow="geolocation"
+        sandbox="allow-scripts allow-same-origin allow-forms allow-top-navigation allow-modals allow-popups"
+        frameborder="0"
+        @load="_load"
+      />
+      <!-- 去这里 -->
+      <div
+        v-if="isPoimarkerSrc"
+        class="actTonav"
+        @click="_nav"
+      />
+    </div>
+  </div>
+</template>
+<script>
+import SystemHeader from '../system-header'
+
+const key = __uniConfig.qqMapKey
+const referer = 'uniapp'
+const poimarkerSrc = 'https://apis.map.qq.com/tools/poimarker'
+
+export default {
+  name: 'SystemOpenLocation',
+  components: {
+    SystemHeader
+  },
+  data () {
+    const {
+      latitude,
+      longitude,
+      scale = 18,
+      name = '',
+      address = ''
+    } = this.$route.query
+    return {
+      latitude,
+      longitude,
+      scale,
+      name,
+      address,
+      src: latitude && longitude ? `${poimarkerSrc}?type=0&marker=coord:${latitude},${longitude};title:${name};addr:${address};&key=${key}&referer=${referer}` : '',
+      isPoimarkerSrc: false
+    }
+  },
+  methods: {
+    _back () {
+      if (this.$refs.map.src.indexOf(poimarkerSrc) !== 0) {
+        this.$refs.map.src = this.src
+      } else {
+        getApp().$router.back()
+      }
+    },
+    _load () {
+      if (this.$refs.map.src.indexOf(poimarkerSrc) === 0) {
+        this.isPoimarkerSrc = true
+      } else {
+        this.isPoimarkerSrc = false
+      }
+    },
+    _nav () {
+      var url =
+          `https://map.qq.com/nav/drive#routes/page?transport=2&epointy=${this.latitude}&epointx=${this.longitude}&eword=${encodeURIComponent(this.name || '目的地')}&referer=${referer}`
+      this.$refs.map.src = url
+    }
+  }
+}
+</script>
+<style>
+	.uni-system-open-location {
+		display: block;
+		position: fixed;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		background: #f8f8f8;
+	}
+
+	.map-content {
+		position: absolute;
+		left: 0;
+		top: 44px;
+		width: 100%;
+		bottom: 0;
+		overflow: hidden;
+	}
+
+	.map-content>iframe {
+		width: 100%;
+		height: 100%;
+		border: none;
+	}
+
+	.actTonav {
+		position: absolute;
+		right: 16px;
+		bottom: 56px;
+		width: 60px;
+		height: 60px;
+		border-radius: 60px;
+	}
+</style>

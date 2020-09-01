@@ -1,0 +1,19 @@
+{
+  "private": true,
+  "name": "@dcloudio/uni-view",
+  "version": "3.0.0",
+  "description": "@dcloudio/uni-view",
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/uni-view"
+  },
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/dcloudio/uni-app/issues"
+  },
+  "dependencies": {
+    "mitt": "^2.1.0"
+  }
+}

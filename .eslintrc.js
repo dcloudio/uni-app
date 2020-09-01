@@ -34,7 +34,9 @@ module.exports = {
     },
     // Packages targeting DOM
     {
-      files: ['packages/{uni-h5,uni-h5-vue}/**'],
+      files: [
+        'packages/{uni-components,uni-h5,uni-h5-vue,uni-shared,uni-core}/**'
+      ],
       rules: {
         'no-restricted-globals': ['error', ...NodeGlobals]
       }

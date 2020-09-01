@@ -5,3 +5,5 @@ ls:
     .d.ts: camelCase
     .spec.ts: camelCase | PascalCase
     .mock.ts: camelCase
+ignore:
+  - packages/uni-components/src/mixins/scroller

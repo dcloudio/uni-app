@@ -1,6 +1,6 @@
 import { isFunction, isString, hasOwn, isPlainObject } from '@vue/shared'
 
-import { isSyncApi, isContextApi } from '@dcloudio/uni-api-core'
+import { isSyncApi, isContextApi } from '@dcloudio/uni-api'
 
 import {
   MPProtocols,

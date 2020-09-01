@@ -2,7 +2,9 @@ import path from 'path'
 import ts from 'rollup-plugin-typescript2'
 import replace from '@rollup/plugin-replace'
 import json from '@rollup/plugin-json'
-import { nodeResolve } from '@rollup/plugin-node-resolve'
+import alias from '@rollup/plugin-alias'
+import nodeResolve from '@rollup/plugin-node-resolve'
+import commonjs from '@rollup/plugin-commonjs'
 
 if (!process.env.TARGET) {
   throw new Error('TARGET package must be specified via --environment flag.')
@@ -12,10 +14,9 @@ const packagesDir = path.resolve(__dirname, 'packages')
 const packageDir = path.resolve(packagesDir, process.env.TARGET)
 const resolve = p => path.resolve(packageDir, p)
 const pkg = require(resolve(`package.json`))
-const buildOptions = require(resolve(`build.json`))
 
 const configs = []
-
+const buildOptions = require(resolve(`build.json`))
 Object.keys(buildOptions.input).forEach(name => {
   configs.push(
     createConfig(name, {
@@ -24,7 +25,6 @@ Object.keys(buildOptions.input).forEach(name => {
     })
   )
 })
-
 export default configs
 
 function createConfig(entryFile, output, plugins = []) {
@@ -54,7 +54,9 @@ function createConfig(entryFile, output, plugins = []) {
     input: resolve(entryFile),
     external,
     plugins: [
+      createAliasPlugin(buildOptions),
       nodeResolve(),
+      commonjs(),
       json({
         namedExports: false
       }),
@@ -68,16 +70,23 @@ function createConfig(entryFile, output, plugins = []) {
       warn(msg)
       // }
     },
-    treeshake: {
-      moduleSideEffects(id) {
-        if (id.endsWith('polyfill.ts')) {
-          console.log('[WARN]:sideEffects[' + id + ']')
-          return true
-        }
-        return false
-      }
-    }
+    treeshake:
+      buildOptions.treeshake === false
+        ? false
+        : {
+            moduleSideEffects(id) {
+              if (id.endsWith('polyfill.ts')) {
+                console.log('[WARN]:sideEffects[' + id + ']')
+                return true
+              }
+              return false
+            }
+          }
   }
+}
+
+function createAliasPlugin(buildOptions) {
+  return alias(buildOptions.alias || {})
 }
 
 function createReplacePlugin(buildOptions) {

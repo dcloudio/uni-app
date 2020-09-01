@@ -41,12 +41,30 @@ async function build(target) {
     return
   }
 
+  const bundler = pkg.buildOptions && pkg.buildOptions.bundler
+
   // if building a specific format, do not remove dist.
-  if (!formats) {
+  if (!formats && bundler !== 'vite') {
     await fs.remove(`${pkgDir}/dist`)
   }
 
   const env = devOnly ? 'development' : 'production'
+
+  if (bundler === 'vite') {
+    await execa(
+      'vite',
+      ['build', '--config', path.resolve(pkgDir, 'vite.config.ts')],
+      {
+        stdio: 'inherit'
+      }
+    )
+    return require('./renameStyle').renameStyle(target, pkgDir)
+  } else if (bundler === 'tsc') {
+    return await execa('tsc', ['--listEmittedFiles', '-p', pkgDir], {
+      stdio: 'inherit'
+    })
+  }
+
   await execa(
     'rollup',
     [
@@ -71,7 +89,11 @@ function checkAllSizes(targets) {
 
 function checkSize(target) {
   const pkgDir = path.resolve(`packages/${target}`)
+  if (require(path.join(pkgDir, 'package.json')).buildOptions) {
+    return
+  }
   console.log(`${chalk.blueBright(target)}:`)
+  checkFileSize(`${pkgDir}/dist/vue.runtime.esm.js`)
   checkFileSize(`${pkgDir}/dist/uni.api.esm.js`)
   checkFileSize(`${pkgDir}/dist/uni.mp.esm.js`)
 }

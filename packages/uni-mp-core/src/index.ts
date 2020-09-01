@@ -34,10 +34,11 @@ export {
 
 // protocols
 export {
-  addSafeAreaInsets,
+  redirectTo,
   previewImage,
   getSystemInfo,
-  getSystemInfoSync
+  getSystemInfoSync,
+  addSafeAreaInsets
 } from './api/protocols'
 // types
 export { MiniProgramAppOptions, MiniProgramAppInstance } from './runtime/app'

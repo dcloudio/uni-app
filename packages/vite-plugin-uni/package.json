@@ -1,0 +1,30 @@
+{
+  "name": "@dcloudio/vite-plugin-uni",
+  "version": "3.0.0",
+  "description": "uni-app vite plugin",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*.js",
+    "dist/**/*.d.ts"
+  ],
+  "buildOptions": {
+    "bundler": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/vite-plugin-uni"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@rollup/plugin-inject": "^4.0.2",
+    "slash": "^3.0.0"
+  },
+  "peerDependencies": {
+    "vite": "^1.0.0-rc.4"
+  }
+}

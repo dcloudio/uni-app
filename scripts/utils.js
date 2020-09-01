@@ -1,4 +1,5 @@
 const fs = require('fs')
+const path = require('path')
 const chalk = require('chalk')
 
 const targets = (exports.targets = fs.readdirSync('packages').filter(f => {
@@ -6,7 +7,10 @@ const targets = (exports.targets = fs.readdirSync('packages').filter(f => {
     return false
   }
   try {
-    return !!require(`../packages/${f}/build.json`)
+    return (
+      fs.existsSync(path.resolve(__dirname, `../packages/${f}/build.json`)) ||
+      fs.existsSync(path.resolve(__dirname, `../packages/${f}/build.js`))
+    )
   } catch (e) {}
   return false
 }))

@@ -5,7 +5,7 @@ import {
   addInterceptor,
   removeInterceptor,
   promisify
-} from '@dcloudio/uni-api-core'
+} from '@dcloudio/uni-api'
 
 import { initWrapper } from './wrapper'
 import { MPProtocols } from './protocols'

@@ -1,0 +1,13 @@
+{
+  "input": {
+    "src/index.ts": "dist/vue.runtime.esm.js"
+  },
+  "alias": {
+    "entries": [
+      {
+        "find": "vue",
+        "replacement": "@dcloudio/uni-mp-vue/lib/vue.runtime.esm.js"
+      }
+    ]
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "private": true,
+  "name": "@dcloudio/uni-components",
+  "version": "3.0.0",
+  "main": "dist/uni-components.esm.js",
+  "module": "dist/uni-components.esm.js",
+  "description": "@dcloudio/uni-components",
+  "sideEffects": [
+    "dist/uni-components.css"
+  ],
+  "buildOptions": {
+    "bundler": "vite"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/uni-components"
+  },
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/dcloudio/uni-app/issues"
+  }
+}

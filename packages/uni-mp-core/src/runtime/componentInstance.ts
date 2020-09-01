@@ -77,30 +77,6 @@ const MP_METHODS = [
   'selectComponent'
 ]
 
-function hasHook(this: ComponentPublicInstance, name: string) {
-  const hooks = (this.$ as any)[name]
-  if (hooks && hooks.length) {
-    return true
-  }
-  return false
-}
-
-function callHook(this: ComponentPublicInstance, name: string, args?: unknown) {
-  if (name === 'mounted') {
-    callHook.call(this, 'bm') // beforeMount
-    this.$.isMounted = true
-    name = 'm'
-  }
-  const hooks = (this.$ as any)[name]
-  let ret
-  if (hooks) {
-    for (let i = 0; i < hooks.length; i++) {
-      ret = hooks[i](args)
-    }
-  }
-  return ret
-}
-
 function createEmitFn(oldEmit: Function, ctx: Record<string, any>) {
   return function emit(
     this: ComponentPublicInstance,
@@ -119,10 +95,6 @@ function createEmitFn(oldEmit: Function, ctx: Record<string, any>) {
     }
     return oldEmit.apply(this, [event, ...args])
   }
-}
-
-function set(target: any, key: string | number, val: unknown) {
-  return (target[key] = val)
 }
 
 export interface CreateComponentOptions {
@@ -146,10 +118,12 @@ export function initBaseInstance(
 
   // TODO @deprecated
   ctx.$mp = {}
-  ctx._self = {}
+  if (__VUE_OPTIONS_API__) {
+    ctx._self = {}
+  }
 
   // $vm
-  ctx.$scope.$vm = instance.proxy!
+  ctx.$scope.$vm = (instance as any).proxy!
 
   // slots
   if (__PLATFORM__ === 'mp-alipay') {
@@ -166,16 +140,9 @@ export function initBaseInstance(
       })
     }
   }
-  if (__VUE_OPTIONS_API__) {
-    // $set
-    ctx.$set = set
-  }
 
   // $emit
   instance.emit = createEmitFn(instance.emit, ctx)
-  // $callHook
-  ctx.$hasHook = hasHook
-  ctx.$callHook = callHook
 }
 
 export function initComponentInstance(

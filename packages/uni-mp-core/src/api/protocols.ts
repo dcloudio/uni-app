@@ -100,3 +100,5 @@ export const getSystemInfo = {
 }
 
 export const getSystemInfoSync = getSystemInfo
+
+export const redirectTo = {}

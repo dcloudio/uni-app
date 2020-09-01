@@ -1,0 +1,20 @@
+{
+  "name": "@dcloudio/uni-shared",
+  "version": "3.0.0",
+  "description": "@dcloudio/uni-shared",
+  "main": "dist/uni.shared.esm.js",
+  "module": "dist/uni.shared.esm.js",
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/uni-shared"
+  },
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/dcloudio/uni-app/issues"
+  }
+}
