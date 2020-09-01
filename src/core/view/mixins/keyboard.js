@@ -138,10 +138,17 @@ export default {
 
       if (__PLATFORM__ === 'app-plus') {
         el.addEventListener('click', () => {
-          if (focus && keyboardHeight === 0) {
+          if (!this.disabled && focus && keyboardHeight === 0) {
             setSoftinputTemporary(this)
           }
         })
+        if (!isAndroid && parseInt(osVersion) < 12) {
+          el.addEventListener('touchstart', () => {
+            if (!this.disabled && !focus) {
+              setSoftinputTemporary(this)
+            }
+          })
+        }
       }
 
       const onKeyboardHide = () => {
