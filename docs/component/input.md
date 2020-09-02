@@ -7,7 +7,7 @@
 |属性名|类型|默认值|说明|平台差异说明|
 |:-|:-|:-|:-|:-|
 |value|String||输入框的初始内容||
-|type|String|text|input 的类型||
+|type|String|text|input 的类型|H5 暂未支持动态切换请使用 v-if 进行整体切换|
 |password|Boolean|false|是否是密码类型||
 |placeholder|String||输入框为空时占位符||
 |placeholder-style|String||指定 placeholder 的样式||
