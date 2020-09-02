@@ -97,9 +97,26 @@
  
 ![uniapp](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/img/form.png?t=201857)
 
-**小程序端注意事项**
+**使用内置 behaviors**
 
-小程序端在`form`内的自定义组件内有`input`等表单控件时，无法在`form`的`submit`事件内获取组件内表单控件值，此时可以使用`behaviors`，示例如下：
+小程序端在`form`内的自定义组件内有`input`表单控件时，或者用普通标签实现表单控件，例如``评分``等，无法在`form`的`submit`事件内获取组件内表单控件值，此时可以使用`behaviors`。
+
+对于 form 组件，目前可以自动识别下列内置 behaviors:
+
+uni://form-field
+
+> 目前仅支持 微信小程序、QQ小程序、百度小程序、h5。
+
+**uni://form-field**
+
+使自定义组件有类似于表单控件的行为。 form 组件可以识别这些自定义组件，并在 submit 事件中返回组件的字段名及其对应字段值。这将为它添加以下两个属性。
+
+|属性名|类型|描述|
+|:-|:-|:-|
+|name|String|在表单中的字段名|
+|value|任意|在表单中的字段值|
+
+示例如下：
 
 ```html
 <!-- /pages/index/index.vue -->
