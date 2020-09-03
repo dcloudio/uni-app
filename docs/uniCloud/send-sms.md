@@ -2,9 +2,9 @@
 
 从HBuilderX 2.8.1起，uniCloud内置了短信发送API。给开发者提供更方便、更便宜的短信发送能力。
 
-目前仅提供短信发送验证码能力，提供了2个模板可选，类似小程序的模板消息，在一个固定模板格式的文字里自定义某些字段，而不是所有文字都可以随便写。
+该服务类似小程序的模板消息，在一个固定模板格式的文字里自定义某些字段，而不是所有文字都可以随便写。
 
-后续视需求提供自助申请更多短信模板。
+后续视需求提供自定义短信模板功能。
 
 使用本功能需要在[DCloud开发者中心](https://dev.dcloud.net.cn/uniSms)开通并充值，教程参考[短信服务开通指南](https://ask.dcloud.net.cn/article/37534)
 
@@ -36,9 +36,15 @@
 |`uni_booking` |【uni预约通知】您已成功预订“${name}”提供的${service}。预约时间${dateTime}。注意事项：${notice}|
 |`uni_order_shipped` |【uni订单通知】您在“${name}”的订单${orderNo}已发货，${expressCompany}单号${expressNo}，请注意签收|
 
-`uniID_code`模板为uni-ID业务专用。`uni_verify_code`模板为开发者自定义使用，比如在支付等高安全要求场景中使用。
+`uniID_code`模板为uni-ID业务专用。如使用uniCloud的uni-id账户服务，无需自行开发代码调用本API，直接用uni-id即可，内置了注册和忘记密码的短信验证码服务。[详见](https://uniapp.dcloud.io/uniCloud/uni-id)
+
+`uni_verify_code`模板为开发者自定义使用，如未使用uni-id，则可以使用本模板发送短信验证码，也可以在支付等需要再次验证身份的场景中使用。
 
 本地运行云函数时，需要`2.8.5+`版本的HBuilderX才可以使用`uni_order_unpaid`、`uni_booking`、`uni_order_shipped`三个模板，上传并运行不受HBuilderX版本影响。
+
+每个短信模板的商用均必须在通管局备案。上述模板之所以带有uni前缀，是因为它们是DCloud已经在通管局备案过的模板，这些模板开发者可以直接使用。
+
+开发者若需自定义短信模板（包括去掉前面的uni前缀），则需要人工处理，再次向通管局备案。如有相关需求的开发者，可以发送申请邮件到service@dcloud.io，说明账户、预计发送量和新模板格式。由于涉及人工，充值额低于1百元的开发者的申请暂时不会被处理。
 
 模板中`${}`中的内容为自定义字段，在data中填写每个自定义字段后拼接成完整的短信内容。
 
