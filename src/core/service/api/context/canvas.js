@@ -17,16 +17,6 @@ import {
 
 const canvasEventCallbacks = createCallbacks('canvasEvent')
 
-UniServiceJSBridge.subscribe('onDrawCanvas', ({
-  callbackId,
-  data
-}) => {
-  const callback = canvasEventCallbacks.pop(callbackId)
-  if (callback) {
-    callback(data)
-  }
-})
-
 UniServiceJSBridge.subscribe('onCanvasMethodCallback', ({
   callbackId,
   data
@@ -342,14 +332,32 @@ export class CanvasContext {
     }
   }
 
-  // TODO
-  measureText (text) {
-    if (typeof document === 'object') {
-      var c2d = getTempCanvas().getContext('2d')
-      c2d.font = this.state.font
-      return new TextMetrics(c2d.measureText(text).width || 0)
+  measureText (text, callback) {
+    const font = this.state.font
+    if (__PLATFORM__ === 'h5') {
+      const canvas = getTempCanvas()
+      const c2d = canvas.getContext('2d')
+      c2d.font = font
+      const textMetrics = new TextMetrics(c2d.measureText(text).width || 0)
+      if (typeof callback === 'function') {
+        setTimeout(() => callback(textMetrics), 0)
+      }
+      return textMetrics
     } else {
-      return new TextMetrics(0)
+      const textMetrics = new TextMetrics(0)
+      if (typeof callback === 'function') {
+        const callbackId = canvasEventCallbacks.push(function ({ width }) {
+          callback(new TextMetrics(width))
+        })
+        operateCanvas(this.id, this.pageId, 'measureText', {
+          text,
+          font,
+          callbackId
+        })
+      } else {
+        console.error('warning: measureText missing required arguments: callback')
+      }
+      return textMetrics
     }
   }
 
