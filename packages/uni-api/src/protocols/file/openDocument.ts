@@ -1,4 +1,6 @@
-export const openDocument = {
+import { ApiProtocol } from '../type'
+
+export const OpenDocumentProtocol: ApiProtocol = {
   filePath: {
     type: String,
     required: true

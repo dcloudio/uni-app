@@ -46,6 +46,7 @@ function createConfig(entryFile, output, plugins = []) {
 
   const external = [
     '@vue/shared',
+    '@dcloudio/uni-shared',
     ...Object.keys(pkg.dependencies || {}),
     ...Object.keys(pkg.peerDependencies || {})
   ]

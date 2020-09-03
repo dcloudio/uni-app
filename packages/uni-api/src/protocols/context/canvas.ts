@@ -10,7 +10,7 @@ function getInt(name: string) {
   }
 }
 
-export const CanvasGetImageDataOptions = {
+export const CanvasGetImageDataOptions: ApiOptions = {
   formatArgs: {
     x: getInt('x'),
     y: getInt('y'),
@@ -19,7 +19,7 @@ export const CanvasGetImageDataOptions = {
   }
 }
 
-export const CanvasGetImageDataProtocol = {
+export const CanvasGetImageDataProtocol: ApiProtocol = {
   canvasId: {
     type: String,
     required: true
@@ -44,7 +44,7 @@ export const CanvasGetImageDataProtocol = {
 
 export const CanvasPutImageDataOptions = CanvasGetImageDataOptions
 
-export const CanvasPutImageDataProtocol = {
+export const CanvasPutImageDataProtocol: ApiProtocol = {
   canvasId: {
     type: String,
     required: true
@@ -98,7 +98,7 @@ export const CanvasToTempFilePathOptions: ApiOptions = {
   )
 }
 
-export const CanvasToTempFilePathProtocol = {
+export const CanvasToTempFilePathProtocol: ApiProtocol = {
   x: {
     type: Number,
     default: 0
@@ -121,11 +121,10 @@ export const CanvasToTempFilePathProtocol = {
   },
   canvasId: {
     type: String,
-    require: true
+    required: true
   },
   fileType: {
-    type: String,
-    require: true
+    type: String
   },
   quality: {
     type: Number

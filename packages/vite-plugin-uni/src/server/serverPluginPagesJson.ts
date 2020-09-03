@@ -2,7 +2,9 @@ import { ServerPlugin } from 'vite'
 import { readBody } from 'vite'
 import { parsePagesJson } from '../utils'
 
-const uniCode = `import {uni} from '@dcloudio/uni-h5'
+const uniCode = `import {uni,getCurrentPages,getApp} from '@dcloudio/uni-h5'
+window.getApp = getApp
+window.getCurrentPages = getCurrentPages
 window.uni = window.__GLOBAL__ = uni
 `
 

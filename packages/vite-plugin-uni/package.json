@@ -21,7 +21,9 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "@rollup/plugin-inject": "^4.0.2",
+    "@rollup/pluginutils": "^4.0.0",
+    "estree-walker": "^2.0.1",
+    "magic-string": "^0.25.7",
     "slash": "^3.0.0"
   },
   "peerDependencies": {
