@@ -658,13 +658,14 @@ ctx.draw()
 ![uniapp](//img-cdn-qiniu.dcloud.net.cn/uniapp/images/line-to.png?t=201859)
 
 ### CanvasContext.measureText
-测量文本尺寸信息，目前仅返回文本宽度。同步接口。(App端自定义组件编译模式暂时不可用)
+测量文本尺寸信息，目前仅返回文本宽度。同步接口。
 
 **参数**
 
 |参数	|类型	|说明			|
 |---	|---	|---			|
 |text	|String	|要测量的文本	|
+|callback	|Function	|测量完成回调（2.8.10+ 支持）	|
 
 **返回**
 
@@ -679,8 +680,9 @@ ctx.draw()
 ```javascript
 const ctx = uni.createCanvasContext('myCanvas')
 ctx.font = 'italic bold 20px cursive'
-const metrics = ctx.measureText('Hello World')
-console.log(metrics.width)
+ctx.measureText('Hello World', function(metrics){
+	console.log(metrics.width)
+})
 ```
 
 ### CanvasContext.moveTo
