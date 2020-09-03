@@ -1,6 +1,8 @@
 import navigateTo from 'uni-helpers/navigate-to'
 import redirectTo from '../../../mp-weixin/helpers/redirect-to'
 import previewImage from '../../../mp-weixin/helpers/normalize-preview-image'
+import createCanvasContext from '../../../mp-weixin/helpers/create-canvas-context'
+
 // 不支持的 API 列表
 const todos = [
   'preloadPage',
@@ -118,7 +120,8 @@ const protocols = {
   getAccountInfoSync: {
     name: 'getEnvInfoSync',
     returnValue: _handleEnvInfo
-  }
+  },
+  createCanvasContext
 }
 
 export {
