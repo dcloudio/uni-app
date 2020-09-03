@@ -98,7 +98,7 @@ export const canvasToTempFilePath = {
   },
   canvasId: {
     type: String,
-    require: true
+    required: true
   },
   fileType: {
     type: String,
