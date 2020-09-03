@@ -8,13 +8,15 @@
 
 `unipay`是开源 sdk，可放心使用。本插件还包含示例工程，配置自己在微信和支付宝申请的相关配置后即可运行。
 
-为了更好的体验支付流程可以在插件市场导入`unipay`的示例项目快速体验，[插件市场 unipay](https://ext.dcloud.net.cn/plugin?id=1835)
+为了更好的体验支付流程可以在插件市场导入`unipay`的示例项目快速体验，[插件市场 unipay](https://ext.dcloud.net.cn/plugin?id=1835)。
+
+插件市场还有基于uniPay再次封装的模板，前端支付、管理端订单管理均已写好，拿去就用，见：[BaseCloud - 统一下单支付业务模块](https://ext.dcloud.net.cn/plugin?id=2668)
 
 **须知**
 
 - unipay 对入参和返回值均做了驼峰转化，开发者在对照微信支付或者支付宝支付对应的文档时需要注意。
 - 特殊参数`appId`、`mchId`需注意大小写
-- 所有金额被统一为以分为单位
+- 所有金额被统一为以分为单位（避免浮点误差）
 - 为避免无关参数干扰此文档仅列举必填参数，其余参数请参照[微信支付-小程序](https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_1)、[微信支付-App](https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=9_1)、[支付宝支付-小程序](https://opendocs.alipay.com/apis/api_1/alipay.trade.create)、[支付宝支付-App](https://opendocs.alipay.com/apis/api_1/alipay.trade.app.pay)
 - 微信支付沙箱环境不支持小程序支付，另外此沙箱环境只可以跑微信提供的测试用例不可以随意测试
 - 无论是微信还是支付宝，沙箱环境都不确保稳定，如果使用沙箱的过程中遇到疑难问题建议切换成正式环境测试
