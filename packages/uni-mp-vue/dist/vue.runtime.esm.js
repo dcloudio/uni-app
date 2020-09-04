@@ -1,32 +1,33 @@
 import {
-  EMPTY_OBJ,
-  isArray,
-  isIntegerKey,
   isSymbol,
   extend,
-  hasOwn,
   isObject,
-  hasChanged,
-  capitalize,
   toRawType,
   def,
-  isFunction,
-  NOOP,
+  isArray,
   isString,
+  isFunction,
   isPromise,
-  hyphenate,
-  isOn,
-  isReservedProp,
-  camelize,
-  EMPTY_ARR,
-  makeMap,
+  capitalize,
   remove,
-  NO,
+  EMPTY_OBJ,
+  NOOP,
   isGloballyWhitelisted,
+  isIntegerKey,
+  hasOwn,
+  hasChanged,
+  NO,
+  invokeArrayFns,
+  EMPTY_ARR,
+  camelize,
+  makeMap,
+  hyphenate,
+  isReservedProp,
   toTypeString,
-  invokeArrayFns
+  isOn
 } from '@vue/shared'
 export { camelize } from '@vue/shared'
+import { isCustomElement } from '@dcloudio/uni-shared'
 
 const targetMap = new WeakMap()
 const effectStack = []
@@ -329,6 +330,8 @@ const mutableHandlers = {
 }
 const readonlyHandlers = {
   get: readonlyGet,
+  has,
+  ownKeys,
   set(target, key) {
     if (process.env.NODE_ENV !== 'production') {
       console.warn(
@@ -1319,12 +1322,10 @@ function markAttrsAccessed() {}
 function emit(instance, event, ...args) {
   const props = instance.vnode.props || EMPTY_OBJ
   if (process.env.NODE_ENV !== 'production') {
-    const {
-      emitsOptions,
-      propsOptions: [propsOptions]
-    } = instance
-    if (emitsOptions) {
-      if (!(event in emitsOptions)) {
+    const options = normalizeEmitsOptions(instance.type)
+    if (options) {
+      if (!(event in options)) {
+        const propsOptions = normalizePropsOptions(instance.type)[0]
         if (!propsOptions || !(`on` + capitalize(event) in propsOptions)) {
           warn(
             `Component emitted event "${event}" but it is neither declared in ` +
@@ -1332,7 +1333,7 @@ function emit(instance, event, ...args) {
           )
         }
       } else {
-        const validator = emitsOptions[event]
+        const validator = options[event]
         if (isFunction(validator)) {
           const isValid = validator(...args)
           if (!isValid) {
@@ -1370,53 +1371,46 @@ function emit(instance, event, ...args) {
     )
   }
 }
-function normalizeEmitsOptions(comp, appContext, asMixin = false) {
-  const appId = appContext.app ? appContext.app._uid : -1
-  const cache = comp.__emits || (comp.__emits = {})
-  const cached = cache[appId]
-  if (cached !== undefined) {
-    return cached
+function normalizeEmitsOptions(comp) {
+  if (hasOwn(comp, '__emits')) {
+    return comp.__emits
   }
   const raw = comp.emits
   let normalized = {}
   // apply mixin/extends props
   let hasExtends = false
   if (__VUE_OPTIONS_API__ && !isFunction(comp)) {
-    const extendEmits = raw => {
-      hasExtends = true
-      extend(normalized, normalizeEmitsOptions(raw, appContext, true))
-    }
-    if (!asMixin && appContext.mixins.length) {
-      appContext.mixins.forEach(extendEmits)
-    }
     if (comp.extends) {
-      extendEmits(comp.extends)
+      hasExtends = true
+      extend(normalized, normalizeEmitsOptions(comp.extends))
     }
     if (comp.mixins) {
-      comp.mixins.forEach(extendEmits)
+      hasExtends = true
+      comp.mixins.forEach(m => extend(normalized, normalizeEmitsOptions(m)))
     }
   }
   if (!raw && !hasExtends) {
-    return (cache[appId] = null)
+    return (comp.__emits = undefined)
   }
   if (isArray(raw)) {
     raw.forEach(key => (normalized[key] = null))
   } else {
     extend(normalized, raw)
   }
-  return (cache[appId] = normalized)
+  return (comp.__emits = normalized)
 }
 // Check if an incoming prop key is a declared emit event listener.
 // e.g. With `emits: { click: null }`, props named `onClick` and `onclick` are
 // both considered matched listeners.
-function isEmitListener(options, key) {
-  if (!options || !isOn(key)) {
+function isEmitListener(comp, key) {
+  let emits
+  if (!isOn(key) || !(emits = normalizeEmitsOptions(comp))) {
     return false
   }
   key = key.replace(/Once$/, '')
   return (
-    hasOwn(options, key[2].toLowerCase() + key.slice(3)) ||
-    hasOwn(options, key.slice(2))
+    hasOwn(emits, key[2].toLowerCase() + key.slice(3)) ||
+    hasOwn(emits, key.slice(2))
   )
 }
 
@@ -1428,12 +1422,12 @@ function initProps(
 ) {
   const props = {}
   const attrs = {}
-  // def(attrs, InternalObjectKey, 1) // fixed by xxxxxx
+  // def(attrs, InternalObjectKey, 1) // fixed by xxxxx
   def(attrs, '__vInternal', 1)
   setFullProps(instance, rawProps, props, attrs)
   // validation
   if (process.env.NODE_ENV !== 'production') {
-    validateProps(props, instance)
+    validateProps(props, instance.type)
   }
   if (isStateful) {
     // stateful
@@ -1450,7 +1444,7 @@ function initProps(
   instance.attrs = attrs
 }
 function setFullProps(instance, rawProps, props, attrs) {
-  const [options, needCastKeys] = instance.propsOptions
+  const [options, needCastKeys] = normalizePropsOptions(instance.type)
   if (rawProps) {
     for (const key in rawProps) {
       const value = rawProps[key]
@@ -1463,7 +1457,7 @@ function setFullProps(instance, rawProps, props, attrs) {
       let camelKey
       if (options && hasOwn(options, (camelKey = camelize(key)))) {
         props[camelKey] = value
-      } else if (!isEmitListener(instance.emitsOptions, key)) {
+      } else if (!isEmitListener(instance.type, key)) {
         // Any non-declared (either as a prop or an emitted event) props are put
         // into a separate `attrs` object for spreading. Make sure to preserve
         // original key casing
@@ -1510,12 +1504,9 @@ function resolvePropValue(options, props, key, value) {
   }
   return value
 }
-function normalizePropsOptions(comp, appContext, asMixin = false) {
-  const appId = appContext.app ? appContext.app._uid : -1
-  const cache = comp.__props || (comp.__props = {})
-  const cached = cache[appId]
-  if (cached) {
-    return cached
+function normalizePropsOptions(comp) {
+  if (comp.__props) {
+    return comp.__props
   }
   const raw = comp.props
   const normalized = {}
@@ -1524,23 +1515,21 @@ function normalizePropsOptions(comp, appContext, asMixin = false) {
   let hasExtends = false
   if (__VUE_OPTIONS_API__ && !isFunction(comp)) {
     const extendProps = raw => {
-      hasExtends = true
-      const [props, keys] = normalizePropsOptions(raw, appContext, true)
+      const [props, keys] = normalizePropsOptions(raw)
       extend(normalized, props)
       if (keys) needCastKeys.push(...keys)
     }
-    if (!asMixin && appContext.mixins.length) {
-      appContext.mixins.forEach(extendProps)
-    }
     if (comp.extends) {
+      hasExtends = true
       extendProps(comp.extends)
     }
     if (comp.mixins) {
+      hasExtends = true
       comp.mixins.forEach(extendProps)
     }
   }
   if (!raw && !hasExtends) {
-    return (cache[appId] = EMPTY_ARR)
+    return (comp.__props = EMPTY_ARR)
   }
   if (isArray(raw)) {
     for (let i = 0; i < raw.length; i++) {
@@ -1576,7 +1565,9 @@ function normalizePropsOptions(comp, appContext, asMixin = false) {
       }
     }
   }
-  return (cache[appId] = [normalized, needCastKeys])
+  const normalizedEntry = [normalized, needCastKeys]
+  comp.__props = normalizedEntry
+  return normalizedEntry
 }
 // use function string name to check type constructors
 // so that it works across vms / iframes.
@@ -1602,9 +1593,9 @@ function getTypeIndex(type, expectedTypes) {
 /**
  * dev only
  */
-function validateProps(props, instance) {
+function validateProps(props, comp) {
   const rawValues = toRaw(props)
-  const options = instance.propsOptions[0]
+  const options = normalizePropsOptions(comp)[0]
   for (const key in options) {
     let opt = options[key]
     if (opt == null) continue
@@ -1882,9 +1873,10 @@ function createAppContext() {
     provides: Object.create(null)
   }
 }
-let uid$1 = 0
 // fixed by xxxxxx
 function createAppAPI() {
+  // render: RootRenderFunction,
+  // hydrate?: RootHydrateFunction
   return function createApp(rootComponent, rootProps = null) {
     if (rootProps != null && !isObject(rootProps)) {
       process.env.NODE_ENV !== 'production' &&
@@ -1896,7 +1888,6 @@ function createAppAPI() {
     // fixed by xxxxxx
     // let isMounted = false
     const app = (context.app = {
-      _uid: uid$1++,
       _component: rootComponent,
       _props: rootProps,
       _container: null,
@@ -2310,7 +2301,7 @@ function applyOptions(
   const checkDuplicateProperties =
     process.env.NODE_ENV !== 'production' ? createDuplicateChecker() : null
   if (process.env.NODE_ENV !== 'production') {
-    const [propsOptions] = instance.propsOptions
+    const propsOptions = normalizePropsOptions(options)[0]
     if (propsOptions) {
       for (const key in propsOptions) {
         checkDuplicateProperties('Props' /* PROPS */, key)
@@ -2611,18 +2602,17 @@ function resolveMergedOptions(instance) {
   if (!globalMixins.length && !mixins && !extendsOptions) return raw
   const options = {}
   globalMixins.forEach(m => mergeOptions(options, m, instance))
+  extendsOptions && mergeOptions(options, extendsOptions, instance)
+  mixins && mixins.forEach(m => mergeOptions(options, m, instance))
   mergeOptions(options, raw, instance)
   return (raw.__merged = options)
 }
 function mergeOptions(to, from, instance) {
   const strats = instance.appContext.config.optionMergeStrategies
-  const { mixins, extends: extendsOptions } = from
-  extendsOptions && mergeOptions(to, extendsOptions, instance)
-  mixins && mixins.forEach(m => mergeOptions(to, m, instance))
   for (const key in from) {
     if (strats && hasOwn(strats, key)) {
       to[key] = strats[key](to[key], from[key], instance.proxy, key)
-    } else {
+    } else if (!hasOwn(to, key)) {
       to[key] = from[key]
     }
   }
@@ -2693,7 +2683,7 @@ const PublicInstanceProxyHandlers = {
       } else if (
         // only cache other properties when instance has declared (thus stable)
         // props
-        (normalizedProps = instance.propsOptions[0]) &&
+        (normalizedProps = normalizePropsOptions(type)[0]) &&
         hasOwn(normalizedProps, key)
       ) {
         accessCache[key] = 2 /* PROPS */
@@ -2738,16 +2728,12 @@ const PublicInstanceProxyHandlers = {
         // to infinite warning loop
         key.indexOf('__v') !== 0)
     ) {
-      if (
-        data !== EMPTY_OBJ &&
-        (key[0] === '$' || key[0] === '_') &&
-        hasOwn(data, key)
-      ) {
+      if (data !== EMPTY_OBJ && key[0] === '$' && hasOwn(data, key)) {
         warn(
           `Property ${JSON.stringify(
             key
           )} must be accessed via $data because it starts with a reserved ` +
-            `character ("$" or "_") and is not proxied on the render context.`
+            `character and is not proxied on the render context.`
         )
       } else {
         warn(
@@ -2797,7 +2783,7 @@ const PublicInstanceProxyHandlers = {
   },
   has(
     {
-      _: { data, setupState, accessCache, ctx, appContext, propsOptions }
+      _: { data, setupState, accessCache, ctx, type, appContext }
     },
     key
   ) {
@@ -2806,7 +2792,8 @@ const PublicInstanceProxyHandlers = {
       accessCache[key] !== undefined ||
       (data !== EMPTY_OBJ && hasOwn(data, key)) ||
       (setupState !== EMPTY_OBJ && hasOwn(setupState, key)) ||
-      ((normalizedProps = propsOptions[0]) && hasOwn(normalizedProps, key)) ||
+      ((normalizedProps = normalizePropsOptions(type)[0]) &&
+        hasOwn(normalizedProps, key)) ||
       hasOwn(ctx, key) ||
       hasOwn(publicPropertiesMap, key) ||
       hasOwn(appContext.config.globalProperties, key)
@@ -2886,10 +2873,8 @@ function createRenderContext(instance) {
 }
 // dev only
 function exposePropsOnRenderContext(instance) {
-  const {
-    ctx,
-    propsOptions: [propsOptions]
-  } = instance
+  const { ctx, type } = instance
+  const propsOptions = normalizePropsOptions(type)[0]
   if (propsOptions) {
     Object.keys(propsOptions).forEach(key => {
       Object.defineProperty(ctx, key, {
@@ -2905,15 +2890,6 @@ function exposePropsOnRenderContext(instance) {
 function exposeSetupStateOnRenderContext(instance) {
   const { ctx, setupState } = instance
   Object.keys(toRaw(setupState)).forEach(key => {
-    if (key[0] === '$' || key[0] === '_') {
-      warn(
-        `setup() return property ${JSON.stringify(
-          key
-        )} should not start with "$" or "_" ` +
-          `which are reserved prefixes for Vue internals.`
-      )
-      return
-    }
     Object.defineProperty(ctx, key, {
       enumerable: true,
       configurable: true,
@@ -2924,14 +2900,14 @@ function exposeSetupStateOnRenderContext(instance) {
 }
 
 const emptyAppContext = createAppContext()
-let uid$2 = 0
+let uid$1 = 0
 function createComponentInstance(vnode, parent, suspense) {
   const type = vnode.type
   // inherit parent app context - or - if root, adopt from root vnode
   const appContext =
     (parent ? parent.appContext : vnode.appContext) || emptyAppContext
   const instance = {
-    uid: uid$2++,
+    uid: uid$1++,
     vnode,
     type,
     parent,
@@ -2950,12 +2926,6 @@ function createComponentInstance(vnode, parent, suspense) {
     // local resovled assets
     components: null,
     directives: null,
-    // resolved props and emits options
-    propsOptions: normalizePropsOptions(type, appContext),
-    emitsOptions: normalizeEmitsOptions(type, appContext),
-    // emit
-    emit: null,
-    emitted: null,
     // state
     ctx: EMPTY_OBJ,
     data: EMPTY_OBJ,
@@ -2986,7 +2956,9 @@ function createComponentInstance(vnode, parent, suspense) {
     a: null,
     rtg: null,
     rtc: null,
-    ec: null
+    ec: null,
+    emit: null,
+    emitted: null
   }
   if (process.env.NODE_ENV !== 'production') {
     instance.ctx = createRenderContext(instance)
@@ -3243,7 +3215,7 @@ function computed$1(getterOrOptions) {
 }
 
 // Core API ------------------------------------------------------------------
-const version = '3.0.0-rc.10'
+const version = '3.0.0-rc.9'
 
 // import deepCopy from './deepCopy'
 /**
@@ -3689,10 +3661,158 @@ function createVueApp(rootComponent, rootProps = null) {
   return app
 }
 
+function applyOptions$1(options, instance, publicThis) {
+  Object.keys(options).forEach(name => {
+    if (name.indexOf('on') === 0) {
+      const hook = options[name]
+      if (isFunction(hook)) {
+        injectHook(name, hook.bind(publicThis), instance)
+      }
+    }
+  })
+}
+
+function set$2(target, key, val) {
+  return (target[key] = val)
+}
+function hasHook(name) {
+  const hooks = this.$[name]
+  if (hooks && hooks.length) {
+    return true
+  }
+  return false
+}
+function callHook(name, args) {
+  const hooks = this.$[name]
+  let ret
+  if (hooks) {
+    for (let i = 0; i < hooks.length; i++) {
+      ret = hooks[i](args)
+    }
+  }
+  return ret
+}
+
+function errorHandler(err, instance, info) {
+  if (!instance) {
+    throw err
+  }
+  const appInstance = instance.$.appContext.$appInstance
+  if (!appInstance) {
+    throw err
+  }
+  appInstance.$callHook('onError', err, info)
+}
+
+function initApp(app) {
+  const appConfig = app._context.config
+  if (isFunction(app._component.onError)) {
+    appConfig.errorHandler = errorHandler
+  }
+  appConfig.isCustomElement = isCustomElement
+  const globalProperties = appConfig.globalProperties
+  globalProperties.$hasHook = hasHook
+  globalProperties.$callHook = callHook
+  if (__VUE_OPTIONS_API__) {
+    globalProperties.$set = set$2
+    globalProperties.$applyOptions = applyOptions$1
+  }
+}
+
+var plugin = {
+  install(app) {
+    initApp(app)
+    const globalProperties = app._context.config.globalProperties
+    const oldCallHook = globalProperties.$callHook
+    globalProperties.$callHook = function callHook(name, args) {
+      if (name === 'mounted') {
+        oldCallHook.call(this, 'bm') // beforeMount
+        this.$.isMounted = true
+        name = 'm'
+      }
+      return oldCallHook.call(this, name, args)
+    }
+    const oldMount = app.mount
+    app.mount = function mount(rootContainer) {
+      const instance = oldMount.call(app, rootContainer)
+      // @ts-ignore
+      createMiniProgramApp(instance)
+      return instance
+    }
+  }
+}
+
+// @ts-ignore
+const createHook$1 = lifecycle => (hook, target) =>
+  // post-create lifecycle registrations are noops during SSR
+  !isInSSRComponentSetup && injectHook(lifecycle, hook, target)
+const onShow = /*#__PURE__*/ createHook$1('onShow' /* ON_SHOW */)
+const onHide = /*#__PURE__*/ createHook$1('onHide' /* ON_HIDE */)
+const onLaunch = /*#__PURE__*/ createHook$1('onLaunch' /* ON_LAUCH */)
+const onError = /*#__PURE__*/ createHook$1('onError' /* ON_ERROR */)
+const onThemeChange = /*#__PURE__*/ createHook$1(
+  'onThemeChange' /* ON_THEME_CHANGE */
+)
+const onPageNotFound = /*#__PURE__*/ createHook$1(
+  'onPageNotFound' /* ON_PAGE_NOT_FOUND */
+)
+const onUnhandledRejection = /*#__PURE__*/ createHook$1(
+  'onUnhandledRejection' /* ON_UNHANDLE_REJECTION */
+)
+const onLoad = /*#__PURE__*/ createHook$1('onLoad' /* ON_LOAD */)
+const onReady = /*#__PURE__*/ createHook$1('onReady' /* ON_READY */)
+const onUnload = /*#__PURE__*/ createHook$1('onUnload' /* ON_UNLOAD */)
+const onResize = /*#__PURE__*/ createHook$1('onResize' /* ON_RESIZE */)
+const onBackPress = /*#__PURE__*/ createHook$1(
+  'onBackPress' /* ON_BACK_PRESS */
+)
+const onPageScroll = /*#__PURE__*/ createHook$1(
+  'onPageScroll' /* ON_PAGE_SCROLL */
+)
+const onTabItemTap = /*#__PURE__*/ createHook$1(
+  'onTabItemTap' /* ON_TAB_ITEM_TAP */
+)
+const onReachBottom = /*#__PURE__*/ createHook$1(
+  'onReachBottom' /* ON_REACH_BOTTOM */
+)
+const onPullDownRefresh = /*#__PURE__*/ createHook$1(
+  'onPullDownRefresh' /* ON_PULL_DOWN_REFRESH */
+)
+const onShareTimeline = /*#__PURE__*/ createHook$1(
+  'onShareTimeline' /* ON_SHARE_TIMELINE */
+)
+const onAddToFavorites = /*#__PURE__*/ createHook$1(
+  'onAddToFavorites' /* ON_ADD_TO_FAVORITES */
+)
+const onShareAppMessage = /*#__PURE__*/ createHook$1(
+  'onShareAppMessage' /* ON_SHARE_APP_MESSAGE */
+)
+const onNavigationBarButtonTap = /*#__PURE__*/ createHook$1(
+  'onNavigationBarButtonTap' /* ON_NAVIGATION_BAR_BUTTON_TAP */
+)
+const onNavigationBarSearchInputChanged = /*#__PURE__*/ createHook$1(
+  'onNavigationBarSearchInputChanged' /* ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED */
+)
+const onNavigationBarSearchInputClicked = /*#__PURE__*/ createHook$1(
+  'onNavigationBarSearchInputClicked' /* ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED */
+)
+const onNavigationBarSearchInputConfirmed = /*#__PURE__*/ createHook$1(
+  'onNavigationBarSearchInputConfirmed' /* ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED */
+)
+const onNavigationBarSearchInputFocusChanged = /*#__PURE__*/ createHook$1(
+  'onNavigationBarSearchInputFocusChanged' /* ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED */
+)
+
+function createApp(rootComponent, rootProps = null) {
+  return createVueApp(rootComponent, rootProps).use(plugin)
+}
+
 export {
   callWithAsyncErrorHandling,
   callWithErrorHandling,
   computed$1 as computed,
+  createApp,
+  createHook$1 as createHook,
   createVueApp,
   customRef,
   inject,
@@ -3706,14 +3826,38 @@ export {
   markRaw,
   nextTick,
   onActivated,
+  onAddToFavorites,
+  onBackPress,
   onBeforeMount,
   onBeforeUnmount,
   onBeforeUpdate,
   onDeactivated,
+  onError,
   onErrorCaptured,
+  onHide,
+  onLaunch,
+  onLoad,
   onMounted,
+  onNavigationBarButtonTap,
+  onNavigationBarSearchInputChanged,
+  onNavigationBarSearchInputClicked,
+  onNavigationBarSearchInputConfirmed,
+  onNavigationBarSearchInputFocusChanged,
+  onPageNotFound,
+  onPageScroll,
+  onPullDownRefresh,
+  onReachBottom,
+  onReady,
   onRenderTracked,
   onRenderTriggered,
+  onResize,
+  onShareAppMessage,
+  onShareTimeline,
+  onShow,
+  onTabItemTap,
+  onThemeChange,
+  onUnhandledRejection,
+  onUnload,
   onUnmounted,
   onUpdated,
   provide,

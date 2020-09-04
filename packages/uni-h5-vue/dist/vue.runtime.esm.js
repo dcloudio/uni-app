@@ -1,39 +1,39 @@
 import {
-  EMPTY_OBJ,
-  isArray,
-  isIntegerKey,
   isSymbol,
   extend,
-  hasOwn,
   isObject,
-  hasChanged,
-  capitalize,
   toRawType,
   def,
-  isFunction,
-  NOOP,
+  isArray,
   isString,
+  isFunction,
   isPromise,
-  isModelListener,
-  isOn,
-  camelize,
+  capitalize,
   EMPTY_ARR,
   normalizeClass,
   normalizeStyle,
-  hyphenate,
-  isReservedProp,
-  makeMap,
+  isOn,
   remove,
-  invokeArrayFns,
-  NO,
-  getGlobalThis,
+  EMPTY_OBJ,
+  NOOP,
   isGloballyWhitelisted,
-  isSpecialBooleanAttr,
   toNumber,
+  invokeArrayFns,
   looseIndexOf,
   looseEqual,
+  hyphenate,
   isHTMLTag,
-  isSVGTag
+  isSVGTag,
+  isIntegerKey,
+  hasOwn,
+  hasChanged,
+  camelize,
+  getGlobalThis,
+  isReservedProp,
+  NO,
+  isModelListener,
+  makeMap,
+  isSpecialBooleanAttr
 } from '@vue/shared'
 export { camelize, capitalize, toDisplayString } from '@vue/shared'
 
@@ -9768,6 +9768,67 @@ const compile$1 = () => {
   }
 }
 
+// @ts-ignore
+const createHook$1 = lifecycle => (hook, target) =>
+  // post-create lifecycle registrations are noops during SSR
+  !isInSSRComponentSetup && injectHook(lifecycle, hook, target)
+const onShow = /*#__PURE__*/ createHook$1('onShow' /* ON_SHOW */)
+const onHide = /*#__PURE__*/ createHook$1('onHide' /* ON_HIDE */)
+const onLaunch = /*#__PURE__*/ createHook$1('onLaunch' /* ON_LAUCH */)
+const onError = /*#__PURE__*/ createHook$1('onError' /* ON_ERROR */)
+const onThemeChange = /*#__PURE__*/ createHook$1(
+  'onThemeChange' /* ON_THEME_CHANGE */
+)
+const onPageNotFound = /*#__PURE__*/ createHook$1(
+  'onPageNotFound' /* ON_PAGE_NOT_FOUND */
+)
+const onUnhandledRejection = /*#__PURE__*/ createHook$1(
+  'onUnhandledRejection' /* ON_UNHANDLE_REJECTION */
+)
+const onLoad = /*#__PURE__*/ createHook$1('onLoad' /* ON_LOAD */)
+const onReady = /*#__PURE__*/ createHook$1('onReady' /* ON_READY */)
+const onUnload = /*#__PURE__*/ createHook$1('onUnload' /* ON_UNLOAD */)
+const onResize = /*#__PURE__*/ createHook$1('onResize' /* ON_RESIZE */)
+const onBackPress = /*#__PURE__*/ createHook$1(
+  'onBackPress' /* ON_BACK_PRESS */
+)
+const onPageScroll = /*#__PURE__*/ createHook$1(
+  'onPageScroll' /* ON_PAGE_SCROLL */
+)
+const onTabItemTap = /*#__PURE__*/ createHook$1(
+  'onTabItemTap' /* ON_TAB_ITEM_TAP */
+)
+const onReachBottom = /*#__PURE__*/ createHook$1(
+  'onReachBottom' /* ON_REACH_BOTTOM */
+)
+const onPullDownRefresh = /*#__PURE__*/ createHook$1(
+  'onPullDownRefresh' /* ON_PULL_DOWN_REFRESH */
+)
+const onShareTimeline = /*#__PURE__*/ createHook$1(
+  'onShareTimeline' /* ON_SHARE_TIMELINE */
+)
+const onAddToFavorites = /*#__PURE__*/ createHook$1(
+  'onAddToFavorites' /* ON_ADD_TO_FAVORITES */
+)
+const onShareAppMessage = /*#__PURE__*/ createHook$1(
+  'onShareAppMessage' /* ON_SHARE_APP_MESSAGE */
+)
+const onNavigationBarButtonTap = /*#__PURE__*/ createHook$1(
+  'onNavigationBarButtonTap' /* ON_NAVIGATION_BAR_BUTTON_TAP */
+)
+const onNavigationBarSearchInputChanged = /*#__PURE__*/ createHook$1(
+  'onNavigationBarSearchInputChanged' /* ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED */
+)
+const onNavigationBarSearchInputClicked = /*#__PURE__*/ createHook$1(
+  'onNavigationBarSearchInputClicked' /* ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED */
+)
+const onNavigationBarSearchInputConfirmed = /*#__PURE__*/ createHook$1(
+  'onNavigationBarSearchInputConfirmed' /* ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED */
+)
+const onNavigationBarSearchInputFocusChanged = /*#__PURE__*/ createHook$1(
+  'onNavigationBarSearchInputFocusChanged' /* ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED */
+)
+
 export {
   BaseTransition,
   Comment,
@@ -9787,6 +9848,7 @@ export {
   createApp,
   createBlock,
   createCommentVNode,
+  createHook$1 as createHook,
   createHydrationRenderer,
   createRenderer,
   createSSRApp,
@@ -9815,14 +9877,38 @@ export {
   mergeProps,
   nextTick,
   onActivated,
+  onAddToFavorites,
+  onBackPress,
   onBeforeMount,
   onBeforeUnmount,
   onBeforeUpdate,
   onDeactivated,
+  onError,
   onErrorCaptured,
+  onHide,
+  onLaunch,
+  onLoad,
   onMounted,
+  onNavigationBarButtonTap,
+  onNavigationBarSearchInputChanged,
+  onNavigationBarSearchInputClicked,
+  onNavigationBarSearchInputConfirmed,
+  onNavigationBarSearchInputFocusChanged,
+  onPageNotFound,
+  onPageScroll,
+  onPullDownRefresh,
+  onReachBottom,
+  onReady,
   onRenderTracked,
   onRenderTriggered,
+  onResize,
+  onShareAppMessage,
+  onShareTimeline,
+  onShow,
+  onTabItemTap,
+  onThemeChange,
+  onUnhandledRejection,
+  onUnload,
   onUnmounted,
   onUpdated,
   openBlock,
