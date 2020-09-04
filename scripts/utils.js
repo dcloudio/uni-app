@@ -13,7 +13,7 @@ const targets = (exports.targets = fs.readdirSync('packages').filter(f => {
     )
   } catch (e) {}
   return false
-}))
+})).sort((a, b) => (a === 'uni-shared' ? -1 : 0))
 
 exports.fuzzyMatchTarget = (partialTargets, includeAllMatching) => {
   const matched = []

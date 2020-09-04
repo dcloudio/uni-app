@@ -130,7 +130,7 @@ function inject(options: InjectOptions) {
   const sourceMap = options.sourceMap !== false
 
   return {
-    name: 'inject',
+    name: 'uni:inject',
 
     transform(code, id) {
       if (!filter(id)) return null
@@ -271,5 +271,7 @@ function inject(options: InjectOptions) {
 export const buildPluginInject: Plugin = inject({
   exclude: /\.[n]?vue$/,
   '__GLOBAL__.': '@dcloudio/uni-h5',
-  'uni.': '@dcloudio/uni-h5'
+  'uni.': '@dcloudio/uni-h5',
+  getApp: ['@dcloudio/uni-h5', 'getApp'],
+  getCurrentPages: ['@dcloudio/uni-h5', 'getCurrentPages']
 })
