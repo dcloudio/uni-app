@@ -2,5 +2,6 @@ export {
   redirectTo,
   previewImage,
   getSystemInfo,
-  getSystemInfoSync
+  getSystemInfoSync,
+  createCanvasContext
 } from '@dcloudio/uni-mp-core'

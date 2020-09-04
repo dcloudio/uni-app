@@ -38,7 +38,8 @@ export {
   previewImage,
   getSystemInfo,
   getSystemInfoSync,
-  addSafeAreaInsets
+  addSafeAreaInsets,
+  createCanvasContext
 } from './api/protocols'
 // types
 export { MiniProgramAppOptions, MiniProgramAppInstance } from './runtime/app'
