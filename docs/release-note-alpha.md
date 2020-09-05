@@ -1,3 +1,16 @@
+#### 2.8.11.20200904-alpha
+* 【uni-app插件】
+  + App-Android 修复 2.8.9版引出的 uni-AD 小概率出现获取广告配置数据失败导致无法显示开屏广告的Bug
+* 【App插件(含5+App和uni-app的App端)】
+  + iOS平台 修复 2.8.9版升级 QQ SDK引出的 在部分手机上无法正常分享到 QQ 的Bug [详情](https://ask.dcloud.net.cn/question/103383)
+
+#### 2.8.10.20200903-alpha
+* 【uni-app插件】
+  + App-Android平台 修复 2.8.4版引出的 uni.request 请求默认超时时间过长的Bug
+* 【uniCloud】
+  + 修复 某些情况下，上传公共模块，UI卡顿的Bug
+  + 调整 阿里云放开文件上传类型限制
+
 #### 2.8.9.20200829-alpha
 * 【uni-app插件】
   + 新增 uni.navigateTo 增加参数 events 支持页面间通信 [详情](https://uniapp.dcloud.net.cn/api/router?id=navigateto)
