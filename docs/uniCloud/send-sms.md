@@ -24,7 +24,7 @@
 |templateId	|String	|是		|模版Id，短信内容为固定模板，详见下方说明						|
 |data		|Object	|是		|模版里的各个变量字段，json格式										|
 
-**参数templateId说明**
+**参数templateId说明**@smstemplate
 
 按照国家法律和运营商要求，每个要发送短信的应用，需要备案其短信模板，并且经过运营商的审核。通过审核的模板，会得到一个templateId。
 
