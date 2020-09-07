@@ -133,7 +133,7 @@ function beforeEach (to, from, next, routes) {
         break
     }
 
-    if (to.type !== 'reLaunch' && from.meta.id) { // 如果不是 reLaunch，且 meta 指定了 id
+    if (to.type !== 'reLaunch' && to.type !== 'redirectTo' && from.meta.id) { // 如果不是 reLaunch、redirectTo，且 meta 指定了 id
       addKeepAliveInclude.call(this, fromName)
     }
     // if (to.type !== 'reLaunch') { // TODO 如果 reLaunch，1.keepAlive的话，无法触发页面生命周期，并刷新页面，2.不 keepAlive 的话，页面状态无法再次保留,且 routeView 的 cache 有问题

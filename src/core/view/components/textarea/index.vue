@@ -31,6 +31,7 @@
       <textarea
         ref="textarea"
         v-model="valueSync"
+        v-keyboard
         :disabled="disabled"
         :maxlength="maxlengthNumber"
         :autofocus="autoFocus || focus"
@@ -199,8 +200,6 @@ export default {
       }
       $vm = $vm.$parent
     }
-
-    this.initKeyboard(this.$refs.textarea)
   },
   beforeDestroy () {
     this.$dispatch('Form', 'uni-form-group-update', {

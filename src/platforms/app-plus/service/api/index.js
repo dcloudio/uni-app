@@ -1,7 +1,6 @@
 export * from './base/event-bus'
 export * from './context/inner-audio'
 export * from './context/background-audio'
-export * from './context/canvas'
 export * from './context/operate-map-player'
 export * from './context/operate-video-player'
 export * from './context/live-pusher'

@@ -15,6 +15,10 @@ const {
 } = require('@dcloudio/uni-cli-shared/lib/platform')
 
 const {
+  isBuiltInComponentPath
+} = require('@dcloudio/uni-cli-shared/lib/pages')
+
+const {
   updateUsingComponents
 } = require('@dcloudio/uni-cli-shared/lib/cache')
 
@@ -62,10 +66,7 @@ module.exports = function (content, map) {
   if ( // windows 上 page-meta, navigation-bar 可能在不同盘上
     /^win/.test(process.platform) &&
     path.isAbsolute(resourcePath) &&
-    (
-      resourcePath.indexOf('page-meta') !== -1 ||
-      resourcePath.indexOf('navigation-bar') !== -1
-    )
+    isBuiltInComponentPath(resourcePath)
   ) {
     resourcePath = normalizePath(path.relative(process.env.UNI_CLI_CONTEXT, resourcePath))
   }

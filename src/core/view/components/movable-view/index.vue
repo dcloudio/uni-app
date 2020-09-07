@@ -12,8 +12,9 @@ import {
   STD
 } from './utils'
 import {
+  initScrollBounce,
   disableScrollBounce
-} from 'uni-shared'
+} from 'uni-platform/helpers/scroll'
 var requesting = false
 
 function _requestAnimationFrame (e) {
@@ -227,6 +228,7 @@ export default {
     this._friction.reconfigure(1, this.frictionNumber)
     this._STD.reconfigure(1, 9 * Math.pow(this.dampingNumber, 2) / 40, this.dampingNumber)
     this.$el.style.transformOrigin = 'center'
+    initScrollBounce()
   },
   methods: {
     _getPx (val) {
@@ -514,7 +516,6 @@ export default {
     },
     _setScale: function (scale) {
       if (this.scale) {
-        scale = this._adjustScale(scale)
         scale = this._oldScale * scale
         this._beginScale()
         this._updateScale(scale)

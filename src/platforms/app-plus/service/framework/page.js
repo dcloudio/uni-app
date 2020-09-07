@@ -80,7 +80,8 @@ export function registerPage ({
   path,
   query,
   openType,
-  webview
+  webview,
+  eventChannel
 }) {
   if (preloadWebviews[url]) {
     webview = preloadWebviews[url]
@@ -92,6 +93,9 @@ export function registerPage ({
         }
         webview = null
       } else {
+        if (eventChannel) {
+          webview.__page__.eventChannel = eventChannel
+        }
         pages.push(webview.__page__)
         if (process.env.NODE_ENV !== 'production') {
           console.log(`[uni-app] reuse preloadWebview(${path},${webview.id})`)
@@ -147,11 +151,13 @@ export function registerPage ({
       // 导致 webview.getStyle 等逻辑出错(旧的 webview 内部 plus 被释放)
       return plus.webview.getWebviewById(webview.id)
     },
+    eventChannel,
     $page: {
       id: parseInt(webview.id),
       meta: routeOptions.meta,
       path,
       route,
+      fullPath: url,
       openType
     },
     $remove () {

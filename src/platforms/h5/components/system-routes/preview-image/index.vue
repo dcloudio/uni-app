@@ -7,24 +7,26 @@
       :current.sync="index"
       :indicator-dots="false"
       :autoplay="false"
-      class="uni-swiper"
+      class="uni-system-preview-image-swiper"
     >
       <v-uni-swiper-item
         v-for="(src,key) in urls"
         :key="key"
       >
-        <img
-          :src="src"
-          class="uni-preview-image"
-        >
+        <image-view :src="src" />
       </v-uni-swiper-item>
     </v-uni-swiper>
   </div>
 </template>
 
 <script>
+import imageView from './image-view'
+
 export default {
   name: 'SystemPreviewImage',
+  components: {
+    imageView
+  },
   data () {
     const {
       urls,
@@ -74,19 +76,11 @@ export default {
   height: 100%;
   background: black;
 }
-.uni-swiper {
+.uni-system-preview-image-swiper {
   position: absolute;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
-}
-.uni-preview-image {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  max-height: 100%;
-  max-width: 100%;
 }
 </style>

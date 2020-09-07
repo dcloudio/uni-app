@@ -3,6 +3,10 @@ import {
 } from 'uni-shared'
 
 import {
+  findExistsPageIndex
+} from 'uni-helpers/index'
+
+import {
   showWebview
 } from './util'
 
@@ -20,13 +24,35 @@ import {
   navigate
 } from '../../framework/navigator'
 
+import {
+  navigateBack
+} from './navigate-back'
+
 function _redirectTo ({
   url,
   path,
-  query
+  query,
+  exists
 }, callbackId) {
   const pages = getCurrentPages()
-  const lastPage = pages[pages.length - 1]
+  const len = pages.length - 1
+  if (exists === 'back') {
+    const existsPageIndex = findExistsPageIndex(url)
+    if (existsPageIndex !== -1) {
+      const delta = len - existsPageIndex
+      if (delta > 0) {
+        navigateBack({
+          delta
+        })
+        invoke(callbackId, {
+          errMsg: 'redirectTo:ok'
+        })
+        return
+      }
+    }
+  }
+
+  const lastPage = pages[len]
 
   lastPage && lastPage.$remove()
 
@@ -56,7 +82,8 @@ function _redirectTo ({
   setStatusBarStyle()
 }
 export function redirectTo ({
-  url
+  url,
+  exists
 }, callbackId) {
   const urls = url.split('?')
   const path = urls[0]
@@ -65,7 +92,8 @@ export function redirectTo ({
     _redirectTo({
       url,
       path,
-      query
+      query,
+      exists
     }, callbackId)
   })
 }

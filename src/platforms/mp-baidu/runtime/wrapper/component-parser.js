@@ -3,6 +3,10 @@ import {
 } from 'uni-shared'
 
 import {
+  stringifyQuery
+} from 'uni-shared/query'
+
+import {
   isPage,
   initRelation
 } from './util'
@@ -27,8 +31,14 @@ export default function parseComponent (vueOptions) {
       // 百度 当组件作为页面时 pageinstancce 不是原来组件的 instance
       this.pageinstance.$vm = this.$vm
       if (hasOwn(this.pageinstance, '_$args')) {
-        this.$vm.$mp.query = this.pageinstance._$args
-        this.$vm.__call_hook('onLoad', this.pageinstance._$args)
+        const query = this.pageinstance._$args
+        const copyQuery = Object.assign({}, query)
+        delete copyQuery.__id__
+        this.pageinstance.$page = this.$page = {
+          fullPath: '/' + this.pageinstance.route + stringifyQuery(copyQuery)
+        }
+        this.$vm.$mp.query = query
+        this.$vm.__call_hook('onLoad', query)
         this.$vm.__call_hook('onShow')
         delete this.pageinstance._$args
       }

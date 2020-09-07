@@ -131,6 +131,7 @@ var serviceContext = (function () {
     'checkIsSupportSoterAuthentication',
     'checkIsSoterEnrolledInDevice',
     'startSoterAuthentication',
+    'onThemeChange',
     'onUIStyleChange'
   ];
 
@@ -3573,85 +3574,6 @@ var serviceContext = (function () {
     return data
   }
 
-  const DEVICE_FREQUENCY = 200;
-  const NETWORK_TYPES = ['unknown', 'none', 'ethernet', 'wifi', '2g', '3g', '4g'];
-
-  const MAP_ID = '__UNIAPP_MAP';
-
-  const TEMP_PATH_BASE = '_doc/uniapp_temp';
-  const TEMP_PATH = `${TEMP_PATH_BASE}_${Date.now()}`;
-
-  /**
-   * 5+错误对象转换为错误消息
-   * @param {*} error 5+错误对象
-   */
-  function toErrMsg (error) {
-    var msg = 'base64ToTempFilePath:fail';
-    if (error && error.message) {
-      msg += ` ${error.message}`;
-    } else if (error) {
-      msg += ` ${error}`;
-    }
-    return msg
-  }
-
-  function base64ToTempFilePath ({
-    base64Data,
-    x,
-    y,
-    width,
-    height,
-    destWidth,
-    destHeight,
-    canvasId,
-    fileType,
-    quality
-  } = {}, callbackId) {
-    var id = Date.now();
-    var bitmap = new plus.nativeObj.Bitmap(`bitmap${id}`);
-    bitmap.loadBase64Data(base64Data, function () {
-      var formats = ['jpg', 'png'];
-      var format = String(fileType).toLowerCase();
-      if (formats.indexOf(format) < 0) {
-        format = 'png';
-      }
-      /**
-           * 保存配置
-           */
-      var saveOption = {
-        overwrite: true,
-        quality: typeof quality === 'number' ? quality * 100 : 100,
-        format
-      };
-      /**
-           * 保存文件路径
-           */
-      var tempFilePath = `${TEMP_PATH}/canvas/${id}.${format}`;
-
-      bitmap.save(tempFilePath, saveOption, function () {
-        clear();
-        invoke$1(callbackId, {
-          tempFilePath,
-          errMsg: 'base64ToTempFilePath:ok'
-        });
-      }, function (error) {
-        clear();
-        invoke$1(callbackId, {
-          errMsg: toErrMsg(error)
-        });
-      });
-    }, function (error) {
-      clear();
-      invoke$1(callbackId, {
-        errMsg: toErrMsg(error)
-      });
-    });
-
-    function clear () {
-      bitmap.clear();
-    }
-  }
-
   function operateMapPlayer (mapId, pageVm, type, data) {
     const pageId = pageVm.$page.id;
     UniServiceJSBridge.publishHandler(pageId + '-map-' + mapId, {
@@ -3933,6 +3855,14 @@ var serviceContext = (function () {
   function createLivePusherContext$1 (id, vm) {
     return createLivePusherContext(id, vm)
   }
+
+  const DEVICE_FREQUENCY = 200;
+  const NETWORK_TYPES = ['unknown', 'none', 'ethernet', 'wifi', '2g', '3g', '4g'];
+
+  const MAP_ID = '__UNIAPP_MAP';
+
+  const TEMP_PATH_BASE = '_doc/uniapp_temp';
+  const TEMP_PATH = `${TEMP_PATH_BASE}_${Date.now()}`;
 
   let watchAccelerationId = false;
   let isWatchAcceleration = false;
@@ -6579,7 +6509,7 @@ var serviceContext = (function () {
   };
 
   const cookiesPrase = header => {
-    let cookiesStr = header['Set-Cookie'];
+    let cookiesStr = header['Set-Cookie'] || header['set-cookie'];
     let cookiesArr = [];
     if (!cookiesStr) {
       return []
@@ -8592,6 +8522,82 @@ var serviceContext = (function () {
     }
   }
 
+  class EventChannel {
+    constructor (id, events) {
+      this.id = id;
+      this.listener = {};
+      this.emitCache = {};
+      if (events) {
+        Object.keys(events).forEach(name => {
+          this.on(name, events[name]);
+        });
+      }
+    }
+
+    emit (eventName, ...args) {
+      const fns = this.listener[eventName];
+      if (!fns) {
+        return (this.emitCache[eventName] || (this.emitCache[eventName] = [])).push(args)
+      }
+      fns.forEach(opt => {
+        opt.fn.apply(opt.fn, args);
+      });
+      this.listener[eventName] = fns.filter(opt => opt.type !== 'once');
+    }
+
+    on (eventName, fn) {
+      this._addListener(eventName, 'on', fn);
+      this._clearCache(eventName);
+    }
+
+    once (eventName, fn) {
+      this._addListener(eventName, 'once', fn);
+      this._clearCache(eventName);
+    }
+
+    off (eventName, fn) {
+      const fns = this.listener[eventName];
+      if (!fns) {
+        return
+      }
+      if (fn) {
+        for (let i = 0; i < fns.length;) {
+          if (fns[i].fn === fn) {
+            fns.splice(i, 1);
+            i--;
+          }
+          i++;
+        }
+      } else {
+        delete this.listener[eventName];
+      }
+    }
+
+    _clearCache (eventName) {
+      const cacheArgs = this.emitCache[eventName];
+      if (cacheArgs) {
+        for (; cacheArgs.length > 0;) {
+          this.emit.apply(this, [eventName].concat(cacheArgs.shift()));
+        }
+      }
+    }
+
+    _addListener (eventName, type, fn) {
+      (this.listener[eventName] || (this.listener[eventName] = [])).push({
+        fn,
+        type
+      });
+    }
+  }
+
+  let id$2 = 0;
+
+  function initEventChannel (events, cache = true) {
+    id$2++;
+    const eventChannel = new EventChannel(id$2, events);
+    return eventChannel
+  }
+
   const pageFactory = Object.create(null);
 
   function definePage (name, createPageVueComponent) {
@@ -8683,7 +8689,8 @@ var serviceContext = (function () {
     path,
     query,
     openType,
-    webview
+    webview,
+    eventChannel
   }) {
     if (preloadWebviews[url]) {
       webview = preloadWebviews[url];
@@ -8695,6 +8702,9 @@ var serviceContext = (function () {
           }
           webview = null;
         } else {
+          if (eventChannel) {
+            webview.__page__.eventChannel = eventChannel;
+          }
           pages.push(webview.__page__);
           if (process.env.NODE_ENV !== 'production') {
             console.log(`[uni-app] reuse preloadWebview(${path},${webview.id})`);
@@ -8750,11 +8760,13 @@ var serviceContext = (function () {
         // 导致 webview.getStyle 等逻辑出错(旧的 webview 内部 plus 被释放)
         return plus.webview.getWebviewById(webview.id)
       },
+      eventChannel,
       $page: {
         id: parseInt(webview.id),
         meta: routeOptions.meta,
         path,
         route,
+        fullPath: url,
         openType
       },
       $remove () {
@@ -8818,6 +8830,7 @@ var serviceContext = (function () {
     url,
     path,
     query,
+    events,
     animationType,
     animationDuration
   }, callbackId) {
@@ -8826,18 +8839,21 @@ var serviceContext = (function () {
       path
     });
 
+    const eventChannel = initEventChannel(events, false);
     showWebview(
       registerPage({
         url,
         path,
         query,
-        openType: 'navigate'
+        openType: 'navigate',
+        eventChannel
       }),
       animationType,
       animationDuration,
       () => {
         invoke$1(callbackId, {
-          errMsg: 'navigateTo:ok'
+          errMsg: 'navigateTo:ok',
+          eventChannel
         });
       }
     );
@@ -8846,6 +8862,7 @@ var serviceContext = (function () {
 
   function navigateTo$1 ({
     url,
+    events,
     openType,
     animationType,
     animationDuration
@@ -8866,6 +8883,7 @@ var serviceContext = (function () {
         url,
         path,
         query,
+        events,
         animationType,
         animationDuration
       }, callbackId);
@@ -8923,13 +8941,47 @@ var serviceContext = (function () {
     });
   }
 
+  function hasLifecycleHook (vueOptions = {}, hook) {
+    return Array.isArray(vueOptions[hook]) && vueOptions[hook].length
+  }
+
+  function findExistsPageIndex (url) {
+    const pages = getCurrentPages();
+    let len = pages.length;
+    while (len--) {
+      const page = pages[len];
+      if (page.$page && page.$page.fullPath === url) {
+        return len
+      }
+    }
+    return -1
+  }
+
   function _redirectTo ({
     url,
     path,
-    query
+    query,
+    exists
   }, callbackId) {
     const pages = getCurrentPages();
-    const lastPage = pages[pages.length - 1];
+    const len = pages.length - 1;
+    if (exists === 'back') {
+      const existsPageIndex = findExistsPageIndex(url);
+      if (existsPageIndex !== -1) {
+        const delta = len - existsPageIndex;
+        if (delta > 0) {
+          navigateBack$1({
+            delta
+          });
+          invoke$1(callbackId, {
+            errMsg: 'redirectTo:ok'
+          });
+          return
+        }
+      }
+    }
+
+    const lastPage = pages[len];
 
     lastPage && lastPage.$remove();
 
@@ -8959,7 +9011,8 @@ var serviceContext = (function () {
     setStatusBarStyle();
   }
   function redirectTo$1 ({
-    url
+    url,
+    exists
   }, callbackId) {
     const urls = url.split('?');
     const path = urls[0];
@@ -8968,7 +9021,8 @@ var serviceContext = (function () {
       _redirectTo({
         url,
         path,
-        query
+        query,
+        exists
       }, callbackId);
     });
   }
@@ -9840,6 +9894,7 @@ var serviceContext = (function () {
         };
       });
 
+      this._preload = options.preload !== undefined ? options.preload : true;
       this._isLoad = false;
       this._adError = '';
       this._loadPromiseResolve = null;
@@ -9849,8 +9904,8 @@ var serviceContext = (function () {
       const rewardAd = this._rewardAd = plus.ad.createRewardedVideoAd(options);
       rewardAd.onLoad((e) => {
         this._isLoad = true;
-        this._dispatchEvent('load', {});
         this._lastLoadTime = Date.now();
+        this._dispatchEvent('load', {});
 
         if (this._loadPromiseResolve != null) {
           this._loadPromiseResolve();
@@ -9858,7 +9913,9 @@ var serviceContext = (function () {
         }
       });
       rewardAd.onClose((e) => {
-        this._loadAd();
+        if (this._preload) {
+          this._loadAd();
+        }
         this._dispatchEvent('close', { isEnded: e.isEnded });
       });
       rewardAd.onVerify && rewardAd.onVerify((e) => {
@@ -9878,11 +9935,14 @@ var serviceContext = (function () {
           this._loadPromiseReject = null;
         }
       });
-      this._loadAd();
+
+      if (this._preload) {
+        this._loadAd();
+      }
     }
 
     get isExpired () {
-      return (Math.abs(Date.now() - this._lastLoadTime) > EXPIRED_TIME)
+      return (this._lastLoadTime !== 0 && (Math.abs(Date.now() - this._lastLoadTime) > EXPIRED_TIME))
     }
 
     load () {
@@ -9961,7 +10021,6 @@ var serviceContext = (function () {
     setBackgroundAudioState: setBackgroundAudioState,
     operateBackgroundAudio: operateBackgroundAudio,
     getBackgroundAudioState: getBackgroundAudioState,
-    base64ToTempFilePath: base64ToTempFilePath,
     operateMapPlayer: operateMapPlayer$2,
     operateVideoPlayer: operateVideoPlayer$2,
     createLivePusherContext: createLivePusherContext$1,
@@ -11145,37 +11204,20 @@ var serviceContext = (function () {
       });
       return
     }
-    const cId = canvasEventCallbacks.push(function ({
-      base64
-    }) {
-      if (!base64 || !base64.length) {
-        invoke$1(callbackId, {
-          errMsg: 'canvasToTempFilePath:fail'
-        });
-      }
-      invokeMethod('base64ToTempFilePath', {
-        base64Data: base64,
-        x,
-        y,
-        width,
-        height,
-        destWidth,
-        destHeight,
-        canvasId,
-        fileType,
-        qualit
-      }, callbackId);
+    const cId = canvasEventCallbacks.push(function (res) {
+      invoke$1(callbackId, res);
     });
-    operateCanvas(canvasId, pageId, 'getDataUrl', {
+    const dirname = `${TEMP_PATH}/canvas`;
+    operateCanvas(canvasId, pageId, 'toTempFilePath', {
       x,
       y,
       width,
       height,
       destWidth,
       destHeight,
-      hidpi: false,
       fileType,
       qualit,
+      dirname,
       callbackId: cId
     });
   }
@@ -11210,7 +11252,9 @@ var serviceContext = (function () {
   }
 
   MapContext.prototype.$getAppMap = function () {
-    return plus.maps.getMapById(this.pageVm.$page.id + '-map-' + this.id)
+    {
+      return plus.maps.getMapById(this.pageVm.$page.id + '-map-' + this.id)
+    }
   };
 
   methods.forEach(function (method) {
@@ -11681,6 +11725,17 @@ var serviceContext = (function () {
 
   const callbacks$9 = [];
 
+  onMethod('onThemeChange', function (res) {
+    callbacks$9.forEach(callbackId => {
+      invoke$1(callbackId, res);
+    });
+  });
+
+  function onThemeChange (callbackId) {
+    callbacks$9.push(callbackId);
+  }
+
+  // 旧版本 API，后期文档更新后考虑移除
   onMethod('onUIStyleChange', function (res) {
     callbacks$9.forEach(callbackId => {
       invoke$1(callbackId, res);
@@ -11689,10 +11744,12 @@ var serviceContext = (function () {
 
   function onUIStyleChange (callbackId) {
     callbacks$9.push(callbackId);
+    console.log('API uni.onUIStyleChange 已过时，请使用 uni.onThemeChange，详情：https://uniapp.dcloud.net.cn/api/system/theme');
   }
 
   var require_context_module_1_15 = /*#__PURE__*/Object.freeze({
     __proto__: null,
+    onThemeChange: onThemeChange,
     onUIStyleChange: onUIStyleChange
   });
 
@@ -12955,7 +13012,17 @@ var serviceContext = (function () {
     }
 
     function onAppEnterForeground () {
-      callAppHook(getApp(), 'onShow');
+      const pages = getCurrentPages();
+      if (pages.length === 0) {
+        return
+      }
+      const page = pages[pages.length - 1];
+      const args = {
+        path: page.route,
+        query: page.options
+      };
+
+      callAppHook(getApp(), 'onShow', args);
       callCurrentPageHook('onShow');
     }
 
@@ -13275,6 +13342,14 @@ var serviceContext = (function () {
     });
 
     globalEvent.addEventListener('uistylechange', function (event) {
+      const args = {
+        theme: event.uistyle
+      };
+
+      callAppHook(appCtx, 'onThemeChange', args);
+      publish('onThemeChange', args);
+
+      // 兼容旧版本 API
       publish('onUIStyleChange', {
         style: event.uistyle
       });
@@ -13386,6 +13461,33 @@ var serviceContext = (function () {
     }
   }
 
+  function clearTempFile () {
+    // 统一处理路径
+    function getPath (path) {
+      path = path.replace(/\/$/, '');
+      return path.indexOf('_') === 0 ? plus.io.convertLocalFileSystemURL(path) : path
+    }
+    var basePath = getPath(TEMP_PATH_BASE);
+    var tempPath = getPath(TEMP_PATH);
+    // 获取父目录
+    var dirPath = tempPath.split('/');
+    dirPath.pop();
+    dirPath = dirPath.join('/');
+    plus.io.resolveLocalFileSystemURL(plus.io.convertAbsoluteFileSystem(dirPath), entry => {
+      var reader = entry.createReader();
+      reader.readEntries(function (entries) {
+        if (entries && entries.length) {
+          entries.forEach(function (entry) {
+            if (entry.isDirectory && entry.fullPath.indexOf(basePath) === 0 && entry.fullPath
+              .indexOf(tempPath) !== 0) {
+              entry.removeRecursively();
+            }
+          });
+        }
+      });
+    });
+  }
+
   function registerApp (appVm) {
     if (process.env.NODE_ENV !== 'production') {
       console.log('[uni-app] registerApp');
@@ -13415,6 +13517,9 @@ var serviceContext = (function () {
 
     initAppLaunch(appVm);
 
+    // 10s后清理临时文件
+    setTimeout(clearTempFile, 10000);
+
     __uniConfig.ready = true;
 
     process.env.NODE_ENV !== 'production' && perf('registerApp');
@@ -13422,6 +13527,11 @@ var serviceContext = (function () {
 
   var tags = [
     'uni-app',
+    'uni-layout',
+    'uni-content',
+    'uni-main',
+    'uni-left-window',
+    'uni-right-window',
     'uni-tabbar',
     'uni-page',
     'uni-page-head',
@@ -13477,20 +13587,17 @@ var serviceContext = (function () {
     'uni-web-view'
   ];
 
-  function hasLifecycleHook (vueOptions = {}, hook) {
-    return Array.isArray(vueOptions[hook]) && vueOptions[hook].length
-  }
-
   // 使用白名单过滤（前期有一批自定义组件使用了 uni-）
 
   function initVue (Vue) {
     Vue.config.errorHandler = function (err, vm, info) {
-      Vue.util.warn(`Error in ${info}: "${err.toString()}"`, vm);
+      const errType = toRawType(err);
+      Vue.util.warn(`Error in ${info}: "${errType === 'Error' ? err.toString() : err}"`, vm);
       const app = typeof getApp === 'function' && getApp();
       if (app && hasLifecycleHook(app.$options, 'onError')) {
         app.__call_hook('onError', err);
       } else {
-        if ( process.env.NODE_ENV !== 'production') {
+        if ( process.env.NODE_ENV !== 'production' && errType === 'Error') {
           console.error(`
   ${err.message}
   ${err.stack}
@@ -13615,11 +13722,9 @@ var serviceContext = (function () {
 
   const isAndroid = plus.os.name.toLowerCase() === 'android';
   const FOCUS_TIMEOUT = isAndroid ? 300 : 700;
-  const HIDE_TIMEOUT = isAndroid ? 800 : 300;
   let keyboardHeight = 0;
   let onKeyboardShow;
   let focusTimer;
-  let hideKeyboardTimeout;
 
   function hookKeyboardEvent (event, callback) {
     onKeyboardShow = null;
@@ -13647,19 +13752,6 @@ var serviceContext = (function () {
     keyboardHeight = res.height;
     if (keyboardHeight > 0) {
       onKeyboardShow && onKeyboardShow();
-      if (hideKeyboardTimeout) {
-        clearTimeout(hideKeyboardTimeout);
-        hideKeyboardTimeout = null;
-      }
-    } else {
-      // 安卓/iOS13收起键盘时通知view层失去焦点
-      if (isAndroid || parseInt(plus.os.version) >= 13) {
-        hideKeyboardTimeout = setTimeout(function () {
-          hideKeyboardTimeout = null;
-          var pageId = getCurrentPageId();
-          UniServiceJSBridge.publishHandler('hideKeyboard', {}, pageId);
-        }, HIDE_TIMEOUT);
-      }
     }
   });
 
@@ -14309,6 +14401,13 @@ var serviceContext = (function () {
       initLifecycle(Vue);
 
       initPolyfill(Vue);
+
+      Vue.prototype.getOpenerEventChannel = function () {
+        if (!this.$root.$scope.eventChannel) {
+          this.$root.$scope.eventChannel = new EventChannel();
+        }
+        return this.$root.$scope.eventChannel
+      };
 
       Object.defineProperty(Vue.prototype, '$page', {
         get () {

@@ -11,6 +11,10 @@ const {
 } = require('@dcloudio/uni-cli-shared/lib/cache')
 
 const {
+  isBuiltInComponentPath
+} = require('@dcloudio/uni-cli-shared/lib/pages')
+
+const {
   restoreNodeModules
 } = require('../shared')
 
@@ -88,10 +92,7 @@ module.exports = function generateComponent (compilation) {
           if (
             /^win/.test(process.platform) &&
             modulePath.includes('@dcloudio') &&
-            (
-              modulePath.includes('page-meta') ||
-              modulePath.includes('navigation-bar')
-            )
+            isBuiltInComponentPath(modulePath)
           ) {
             resource = normalizePath(path.resolve(process.env.UNI_CLI_CONTEXT, modulePath))
           }

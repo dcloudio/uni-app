@@ -1,6 +1,10 @@
 import Vue from 'vue'
 
 import {
+  stringifyQuery
+} from 'uni-shared/query'
+
+import {
   initData,
   initHooks,
   handleEvent,
@@ -35,7 +39,7 @@ export default function parsePage (vuePageOptions) {
   const pageOptions = {
     mixins: initBehaviors(vueOptions, initBehavior),
     data: initData(vueOptions, Vue.prototype),
-    onLoad (args) {
+    onLoad (query) {
       const properties = this.props
 
       const options = {
@@ -52,8 +56,16 @@ export default function parsePage (vuePageOptions) {
       // 触发首次 setData
       this.$vm.$mount()
 
-      this.$vm.$mp.query = args // 兼容 mpvue
-      this.$vm.__call_hook('onLoad', args)
+      const copyQuery = Object.assign({}, query)
+      delete copyQuery.__id__
+
+      this.$page = {
+        fullPath: '/' + this.route + stringifyQuery(copyQuery)
+      }
+
+      this.options = query
+      this.$vm.$mp.query = query // 兼容 mpvue
+      this.$vm.__call_hook('onLoad', query)
     },
     onReady () {
       initChildVues(this)

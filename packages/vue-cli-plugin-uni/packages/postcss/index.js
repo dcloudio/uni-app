@@ -105,6 +105,7 @@ if (process.env.UNI_USING_V3) {
     'checkbox-group',
     'cover-image',
     'cover-view',
+    'editor',
     'form',
     'functional-page-navigator',
     'icon',

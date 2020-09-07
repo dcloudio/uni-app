@@ -5,14 +5,19 @@ import {
   hasLifecycleHook
 } from 'uni-helpers/index'
 
+import {
+  toRawType
+} from 'uni-shared'
+
 export default function initVue (Vue) {
   Vue.config.errorHandler = function (err, vm, info) {
-    Vue.util.warn(`Error in ${info}: "${err.toString()}"`, vm)
+    const errType = toRawType(err)
+    Vue.util.warn(`Error in ${info}: "${errType === 'Error' ? err.toString() : err}"`, vm)
     const app = typeof getApp === 'function' && getApp()
     if (app && hasLifecycleHook(app.$options, 'onError')) {
       app.__call_hook('onError', err)
     } else {
-      if (__PLATFORM__ === 'app-plus' && process.env.NODE_ENV !== 'production') {
+      if (__PLATFORM__ === 'app-plus' && process.env.NODE_ENV !== 'production' && errType === 'Error') {
         console.error(`
   ${err.message}
   ${err.stack}

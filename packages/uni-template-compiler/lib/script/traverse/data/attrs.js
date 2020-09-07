@@ -1,8 +1,10 @@
-const t = require('@babel/types')
-
 const {
   IDENTIFIER_ATTR
 } = require('../../../constants')
+
+const {
+  isSimpleObjectExpression
+} = require('../../../util')
 
 const getMemberExpr = require('../member-expr')
 
@@ -11,8 +13,8 @@ module.exports = function processAttrs (paths, path, state, isComponent, tagName
   if (attrsPath) {
     attrsPath.get('value.properties').forEach(propertyPath => {
       const valuePath = propertyPath.get('value')
-      // 对于普通的ObjectExpression不再单独处理，改为在转换temlplte时用()包裹（微信、QQ）
-      if (valuePath.isObjectExpression() && valuePath.node.properties.find(({ key, value }) => !t.isIdentifier(key) || !(t.isIdentifier(value) || t.isStringLiteral(value) || t.isBooleanLiteral(value) || t.isNumericLiteral(value) || t.isNullLiteral(value)))) {
+      // 对于简单的ObjectExpression不再单独处理，改为在转换temlplte时用()包裹（微信、QQ）
+      if (valuePath.isObjectExpression() && !isSimpleObjectExpression(valuePath.node)) {
         valuePath.replaceWith(getMemberExpr(path, IDENTIFIER_ATTR, valuePath.node, state))
       }
     })

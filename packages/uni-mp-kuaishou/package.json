@@ -1,0 +1,20 @@
+{
+  "name": "@dcloudio/uni-mp-kuaishou",
+  "version": "2.0.0-28920200907001",
+  "description": "uni-app mp-kuaishou",
+  "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/uni-mp-kuaishou"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Aero Wang",
+  "license": "Apache-2.0",
+  "uni-app": {
+    "name": "mp-alipay",
+    "title": "支付宝小程序"
+  }
+}

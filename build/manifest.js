@@ -33,6 +33,8 @@ const DEPS = {
   previewImage: [
     ['/core/view/components/swiper/index.vue', 'Swiper'],
     ['/core/view/components/swiper-item/index.vue', 'SwiperItem'],
+    ['/core/view/components/movable-area/index.vue', 'MovableArea'],
+    ['/core/view/components/movable-view/index.vue', 'MovableView'],
     ['/platforms/h5/components/system-routes/preview-image/index.vue', 'PreviewImage']
   ],
   showToast: TOAST_DEPS,

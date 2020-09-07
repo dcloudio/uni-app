@@ -14,6 +14,7 @@ import {
 } from 'uni-mixins'
 import HTMLParser from 'uni-helpers/html-parser'
 import * as formats from './formats'
+import loadScript from './load-script'
 
 export default {
   name: 'Editor',
@@ -78,9 +79,11 @@ export default {
     if (this.showImgResize) {
       imageResizeModules.push('Resize')
     }
-    this.loadQuill(() => {
+    const quillSrc = __PLATFORM__ === 'app-plus' ? './__uniappquill.js' : 'https://unpkg.com/quill@1.3.7/dist/quill.min.js'
+    loadScript(window.Quill, quillSrc, () => {
       if (imageResizeModules.length) {
-        this.loadImageResizeModule(() => {
+        const imageResizeSrc = __PLATFORM__ === 'app-plus' ? './__uniappquillimageresize.js' : 'https://unpkg.com/quill-image-resize-mp@3.0.1/image-resize.min.js'
+        loadScript(window.ImageResize, imageResizeSrc, () => {
           this.initQuill(imageResizeModules)
         })
       } else {
@@ -217,30 +220,6 @@ export default {
           })
         }, this.$page.id)
       }
-    },
-    loadQuill (callback) {
-      if (typeof window.Quill === 'function') {
-        if (typeof callback === 'function') {
-          callback()
-        }
-        return
-      }
-      const script = document.createElement('script')
-      script.src = window.plus ? './__uniappquill.js' : 'https://unpkg.com/quill@1.3.7/dist/quill.min.js'
-      document.body.appendChild(script)
-      script.onload = callback
-    },
-    loadImageResizeModule (callback) {
-      if (typeof window.ImageResize === 'function') {
-        if (typeof callback === 'function') {
-          callback()
-        }
-        return
-      }
-      const script = document.createElement('script')
-      script.src = window.plus ? './__uniappquillimageresize.js' : 'https://unpkg.com/quill-image-resize-mp@3.0.1/image-resize.min.js'
-      document.body.appendChild(script)
-      script.onload = callback
     },
     initQuill (imageResizeModules) {
       const Quill = window.Quill
