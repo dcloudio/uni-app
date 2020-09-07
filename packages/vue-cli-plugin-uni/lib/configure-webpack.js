@@ -140,8 +140,8 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
       }
     }
   }
-  const babelLoaderRe = /^babel-loader|(\/|\\)babel-loader/
-  const cacheLoaderRe = /^cache-loader|(\/|\\)cache-loader/
+  const babelLoaderRe = /^babel-loader|(\/|\\)_?babel-loader/
+  const cacheLoaderRe = /^cache-loader|(\/|\\)_?cache-loader/
   return function (webpackConfig) {
     // disable js cache-loader
     const rawRules = webpackConfig.module.rules
