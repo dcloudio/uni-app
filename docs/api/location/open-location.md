@@ -14,8 +14,8 @@
 |latitude|Float|是|纬度，范围为-90~90，负数表示南纬，使用 gcj02 国测局坐标系||
 |longitude|Float|是|经度，范围为-180~180，负数表示西经，使用 gcj02 国测局坐标系||
 |scale|Int|否|缩放比例，范围5~18，默认为18|微信小程序|
-|name|String|否|位置名||
-|address|String|否|地址的详细说明||
+|name|String|否|位置名||支付宝必填
+|address|String|否|地址的详细说明|| 支付宝必填
 |success|Function|否|接口调用成功的回调函数||
 |fail|Function|否|接口调用失败的回调函数||
 |complete|Function|否|接口调用结束的回调函数（调用成功、失败都会执行）|&nbsp;|
