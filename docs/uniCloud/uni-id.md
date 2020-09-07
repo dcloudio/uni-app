@@ -262,12 +262,14 @@ uniCloud.callFunction({
 
 **响应参数**
 
-| 字段	| 类型	| 必填	| 说明						|
-| ---	| ---	| ---	| ---						|
-| code	| Number| 是	|错误码，0表示成功			|
-| msg	| String| 是	|详细信息					|
-| token	| String| -	|登录成功之后返回的token信息|
-| tokenExpired	| String| -	|token过期时间|
+| 字段				| 类型	| 必填| 说明											|
+| ---					| ---		| ---	| ---												|
+| uid					| String| 是	|用户Id											|
+| userInfo		| Object| 是	|用户全部信息								|
+| code				| Number| 是	|错误码，0表示成功					|
+| msg					| String| 是	|详细信息										|
+| token				| String| -		|登录成功之后返回的token信息|
+| tokenExpired| String| -		|token过期时间							|
 
 **示例代码**
 
@@ -629,6 +631,7 @@ exports.main = async function(event,context) {
 | msg					| String| 是	|详细信息																	|
 | uid					| String| 是	|用户uid																	|
 | type				| String| 是	|操作类型，`login`为登录、`register`为注册|
+| userInfo		| Object| 是	|用户全部信息								|
 | token				| String| -		|登录成功之后返回的token信息							|
 | tokenExpired| String| -		|token过期时间														|
 
@@ -758,6 +761,7 @@ exports.main = async function(event,context) {
 | code				| Number| 是	|错误码，0表示成功					|
 | msg					| String| 是	|详细信息										|
 | uid					| String| 是	|用户uid																	|
+| userInfo		| Object| 是	|用户全部信息								|
 | type				| String| 是	|操作类型，`login`为登录、`register`为注册|
 | token				| String| -		|登录成功之后返回的token信息|
 | tokenExpired| String| -		|token过期时间							|
@@ -930,6 +934,7 @@ exports.main = async function(event,context) {
 | openid					| String	| 是	|用户openid																|
 | unionid					| String	| 否	|用户unionid，能取到此参数时会返回				|
 | token						| String	| 是	|登录成功之后返回的token信息							|
+| userInfo		| Object| 是	|用户全部信息								|
 | tokenExpired		| String	| 是	|token过期时间														|
 | mobileConfirmed	| Boolean	| 是	|是否已验证手机号													|
 | emailConfirmed	| Boolean	| 是	|是否已验证邮箱														|
@@ -1150,6 +1155,7 @@ exports.main = async function(event,context) {
 | type						| String	| 是	|操作类型，`login`为登录、`register`为注册|
 | openid					| String	| 是	|用户openid																|
 | token						| String	| 是	|登录成功之后返回的token信息							|
+| userInfo		| Object| 是	|用户全部信息								|
 | tokenExpired		| String	| 是	|token过期时间														|
 | mobileConfirmed	| Boolean	| 是	|是否已验证手机号													|
 | emailConfirmed	| Boolean	| 是	|是否已验证邮箱														|
@@ -1674,7 +1680,7 @@ exports.main = async function(event,context) {
   + 每次登录成功都会新增一个token，并且检查所有token的有效期删除过期token。正常情况下客户端应该判断持久化存储的token是否还在有效期内，如果还有效就直接进入应用，不再执行登录。这样相当于用户的每个设备上都存在一个有效期内的token，云端也是。
 
 - 复制token到其他环境校验不通过
-  + uni-id内会校验客户端ua，如果是在本地调试可以在云函数内修改`context.CLIENTUA`为生成token的设备ua，切记上线删除此逻辑
+  + uni-id内会校验客户端ua，如果是在本地调试可以在云函数内修改`context.CLIENTUA`为生成token的设备ua，切记上线删除此逻辑。如果不需要设备和token绑定，可以在config内配置`bindTokenToDevice: false`来关闭绑定
 
 - username、email、mobile三个字段
   + 三个字段均可能为空，但是建议限制一下插入数据库三个字段的格式，比如username不应是邮箱格式或手机号格式，因为登录时可以选择使用username或mobile或email+密码的方式
