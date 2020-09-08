@@ -1,38 +1,79 @@
-# 简介
+# 需求背景
 
-99%的应用，都要开发用户注册、登录、密码加密保存、修改密码、token管理等功能，从前端到后端都需要。
+99%的应用，都要开发用户注册、登录、发送短信验证码、密码加密保存、修改密码、token管理等功能，从前端到后端都需要。
 
 为什么不能有一个开源的通用项目，避免大家的重复开发呢？
 
 `uni-id`应需而生。
 
-`uni-id`为`uniCloud`开发者提供了统一、简单、可扩展的用户管理能力封装。推荐每个`uniCloud`开发者使用。
+`uni-id`为`uniCloud`开发者提供了简单、统一、可扩展的用户管理能力封装。
 
-`uni-id`可成为开发者应用的用户中心，在插件市场获取更多基于`uni-id`的业务模板，集成到你的应用中。
-
-# uni-id组成部分
-
+# 组成部分
 `uni-id`包括如下组成部分：
-
 1. 云数据库
 
-  主表为 `uni-id-users` 表，保存用户的基本信息。
+主表为 `uni-id-users` 表，保存用户的基本信息。
 
-  扩展字段有很多，如实名认证数据、工作履历数据，开发者可以自由扩展。
+扩展字段有很多，如实名认证数据、工作履历数据，开发者可以自由扩展。
 
 2. 云函数
 
-  提供一个名为`uni-id`的公共模块，该模块封装了一系列API，包括注册、登录、修改密码、设置头像等。
+提供一个名为`uni-id`的公共模块，该模块封装了一系列API，包括注册、登录、修改密码、设置头像等。
 
-  [插件市场](https://ext.dcloud.net.cn/plugin?id=2116)的示例工程中还提供了一个`user-center`的云函数，演示在云函数中如何调用`uni-id`公共模块。
+示例工程中还提供了一个`user-center`的云函数，演示在云函数中如何调用`uni-id`公共模块。
 
 3. 前端调用
 
-  前端示例通过callfunction调用云函数`user-center`，在注册和登录时保存token。
+前端示例通过callfunction调用云函数`user-center`，在注册和登录时保存token。
 
-  uniCloud框架底层，会自动在callfunction时传递`uni-id`的token（uni-app 2.7.13+版本）。在云函数的event中可直接拿到`uni-id`的token。也就是说开发者无需自己管理token了。
+uniCloud框架底层，会自动在callfunction时传递`uni-id`的token（uni-app 2.7.13+版本）。在云函数的event中可直接拿到`uni-id`的token。也就是说开发者无需自己管理token了。
 
-对于`uni-id`还未封装的能力，欢迎大家在开源项目上提交 pr，共同完善这个开源项目，[uni-id git仓库](https://gitee.com/dcloud/uni-id.git)。
+# uni-id 对开发者的价值
+1. 节省了大量重复劳动
+2. 降低门槛，前端开发者无需纠结怎样设计数据库设计才更合理
+3. 多系统打通用户和上下游协同
+
+关于第三点，着重强调下。
+
+一个应用，往往需要集成多个功能模块。比如一个电商应用，需要一个基本电商模板，还需要客服聊天模板，甚至还需要用户交流社区。
+
+在插件市场，每类模板插件都能找到，但他们如果不是基于同一套用户体系设计，就很难整合。
+
+DCloud推荐所有uniCloud的应用，都基于`uni-id`来做。
+
+有了统一的账户规范，并且围绕这套账户规范，有各种各样插件，那么开发者可以随意整合这些插件，让数据连同。
+
+规范，还可以让上下游充分协同。插件市场会出现各种数据迁移插件，比如把从discuz里把用户迁移到`uni-id`中的插件，相信围绕这套规范的产业链会非常活跃。
+
+# 现状和未来
+
+`uni-id`已完整的内容：
+
+- 注册、登录、发送短信验证码、密码加密保存、修改密码、token管理（短信验证码功能需要HBuilderX 2.8.3+）
+- 三方登录：App中的微信登录、微信小程序中的微信登录、支付宝小程序中的支付宝账户登录 
+
+关于还缺少的部分，哪些DCloud在完善，哪些希望开发者给共同完善开源项目，计划与边界公布如下：
+
+1. 部分社交账户登录
+
+DCloud暂无计划开发百度、头条、QQ等小程序的登录，以及Apple ID、微博、QQ等App端的登录。欢迎其他开发者在开源项目上提交pr，共同完善`uni-id`。
+
+2. 邮箱验证和手机号一键认证sdk集成
+
+手机号一键认证sdk，目前插件市场里已经有不少相关插件，未来DCloud会整合到`uni-id`中。邮箱验证，DCloud暂无计划开发，有需求的开发者欢迎提供pr。
+
+3. 实名认证、活体检测
+
+目前插件市场里已经有不少相关插件，未来DCloud会整合到`uni-id`中。
+
+4. 权限管理ACL
+
+这部分欢迎开发者参与完善。
+
+其他方面，各种常见开源项目如discuz、wordPress、ecshop的用户导入插件，不属于`uni-id`主工程，欢迎开发者单独提交插件到插件市场。
+
+`uni-id`的git仓库：[https://gitee.com/dcloud/uni-id.git](https://gitee.com/dcloud/uni-id.git)
+
 
 # 快速上手
 
@@ -46,6 +87,8 @@
 6. 创建`uni-id-users`、`uni-verify`集合（可以直接使用示例项目里面的db_init.json进行初始化）
 
 或者直接导入[uni-id在插件市场的示例工程](https://ext.dcloud.net.cn/plugin?id=2116)
+
+导入示例项目时，如果选择腾讯云，在HBuilderX2.7及以下版本中，需要进入项目目录，手动将目录`cloudfunctions-aliyun`改名为`cloudfunctions-tcb`，然后在HBuilderX中右键cloudfunctions绑定服务空间。
 
 **config.json的说明**
 
@@ -219,12 +262,14 @@ uniCloud.callFunction({
 
 **响应参数**
 
-| 字段	| 类型	| 必填	| 说明						|
-| ---	| ---	| ---	| ---						|
-| code	| Number| 是	|错误码，0表示成功			|
-| msg	| String| 是	|详细信息					|
-| token	| String| -	|登录成功之后返回的token信息|
-| tokenExpired	| String| -	|token过期时间|
+| 字段				| 类型	| 必填| 说明											|
+| ---					| ---		| ---	| ---												|
+| uid					| String| 是	|用户Id											|
+| userInfo		| Object| 是	|用户全部信息								|
+| code				| Number| 是	|错误码，0表示成功					|
+| msg					| String| 是	|详细信息										|
+| token				| String| -		|登录成功之后返回的token信息|
+| tokenExpired| String| -		|token过期时间							|
 
 **示例代码**
 
@@ -586,6 +631,7 @@ exports.main = async function(event,context) {
 | msg					| String| 是	|详细信息																	|
 | uid					| String| 是	|用户uid																	|
 | type				| String| 是	|操作类型，`login`为登录、`register`为注册|
+| userInfo		| Object| 是	|用户全部信息								|
 | token				| String| -		|登录成功之后返回的token信息							|
 | tokenExpired| String| -		|token过期时间														|
 
@@ -715,6 +761,7 @@ exports.main = async function(event,context) {
 | code				| Number| 是	|错误码，0表示成功					|
 | msg					| String| 是	|详细信息										|
 | uid					| String| 是	|用户uid																	|
+| userInfo		| Object| 是	|用户全部信息								|
 | type				| String| 是	|操作类型，`login`为登录、`register`为注册|
 | token				| String| -		|登录成功之后返回的token信息|
 | tokenExpired| String| -		|token过期时间							|
@@ -865,7 +912,7 @@ exports.main = async function(event,context) {
 
 - 需要在config.json内使用微信登录的平台下配置appid和appsecret
 - uniId会自动判断客户端平台
-- 登录成功之后应持久化存储token，键值为：uniIdToken，`uni.removeStorageSync('uniIdToken')`
+- 登录成功之后应持久化存储token，键值为：uniIdToken，`uni.setStorageSync('uniIdToken', res.result.token)`
 - App端获取code不可直接调用`uni.login`，详细用法可以看下面示例
 
 **参数说明**
@@ -878,16 +925,19 @@ exports.main = async function(event,context) {
 
 **响应参数**
 
-| 字段				| 类型	| 必填| 说明																		|
-| ---					| ---		| ---	| ---																			|
-| code				| Number| 是	|错误码，0表示成功												|
-| msg					| String| 是	|详细信息																	|
-| uid					| String| 是	|用户uid																	|
-| type				| String| 是	|操作类型，`login`为登录、`register`为注册|
-| openid			| String| 是	|用户openid																|
-| unionid			| String| 否	|用户unionid，能取到此参数时会返回				|
-| token				| String| -		|登录成功之后返回的token信息							|
-| tokenExpired| String| -		|token过期时间														|
+| 字段						| 类型		| 必填| 说明																		|
+| ---							| ---			| ---	| ---																			|
+| code						| Number	| 是	|错误码，0表示成功												|
+| msg							| String	| 是	|详细信息																	|
+| uid							| String	| 是	|用户uid																	|
+| type						| String	| 是	|操作类型，`login`为登录、`register`为注册|
+| openid					| String	| 是	|用户openid																|
+| unionid					| String	| 否	|用户unionid，能取到此参数时会返回				|
+| token						| String	| 是	|登录成功之后返回的token信息							|
+| userInfo		| Object| 是	|用户全部信息								|
+| tokenExpired		| String	| 是	|token过期时间														|
+| mobileConfirmed	| Boolean	| 是	|是否已验证手机号													|
+| emailConfirmed	| Boolean	| 是	|是否已验证邮箱														|
 
 **示例代码**
 
@@ -976,6 +1026,41 @@ export default {
 
 ```
 
+## 获取微信openid
+
+用法：`uniID.code2SessionWeixin(Object Code2SessionWeixinParams);`
+
+**参数说明**
+
+| 字段		| 类型	| 必填| 说明																																																														|
+| ---			| ---		| ---	| ---																																																															|
+| code		| String| 是	|微信登录返回的code																																																								|
+|platform	|String	|否		|客户端类型：`mp-weixin`、`app-plus`，默认uni-id会自动取客户端类型，但是在云函数url化等场景无法取到客户端类型，可以使用此参数指定	|
+
+**响应参数**
+
+| 字段				| 类型	| 必填| 说明																													|
+| ---					| ---		| ---	| ---																														|
+| code				| Number| 是	|错误码，0表示成功																							|
+| msg					| String| 是	|详细信息																												|
+| openid			| String| -		|用户openid																											|
+| unionid			| String| -		|用户unionid，可以取到此值时返回																|
+| sessionKey	| String| -		|客户端为微信小程序时返回																				|
+| accessToken	| String| -		|客户端为APP时返回																							|
+| expiresIn		| String| -		|客户端为APP时返回，accessToken 接口调用凭证超时时间，单位（秒）|
+| refreshToken| String| -		|客户端为APP时返回，用于刷新accessToken																					|
+
+```js
+// 云函数代码
+const uniID = require('uni-id')
+exports.main = async function(event,context) {
+	const res = await uniID.code2SessionWeixin({
+    code: event.code
+  })
+	return res
+}
+```
+
 ## 绑定微信
 
 用法：`uniID.bindWeixin(Object weixinInfo);`
@@ -1050,7 +1135,7 @@ exports.main = async function(event,context) {
 **注意**
 
 - 需要在config.json内支付宝平台下配置appid和privateKey（应用私钥）
-- 登录成功之后应持久化存储token，键值为：uniIdToken，`uni.removeStorageSync('uniIdToken')`
+- 登录成功之后应持久化存储token，键值为：uniIdToken，`uni.setStorageSync('uniIdToken', res.result.token)`
 
 **参数说明**
 
@@ -1062,15 +1147,18 @@ exports.main = async function(event,context) {
 
 **响应参数**
 
-| 字段				| 类型	| 必填| 说明																		|
-| ---					| ---		| ---	| ---																			|
-| code				| Number| 是	|错误码，0表示成功												|
-| msg					| String| 是	|详细信息																	|
-| uid					| String| 是	|用户uid																	|
-| type				| String| 是	|操作类型，`login`为登录、`register`为注册|
-| openid			| String| 是	|用户openid																|
-| token				| String| -		|登录成功之后返回的token信息							|
-| tokenExpired| String| -		|token过期时间														|
+| 字段						| 类型		| 必填| 说明																		|
+| ---							| ---			| ---	| ---																			|
+| code						| Number	| 是	|错误码，0表示成功												|
+| msg							| String	| 是	|详细信息																	|
+| uid							| String	| 是	|用户uid																	|
+| type						| String	| 是	|操作类型，`login`为登录、`register`为注册|
+| openid					| String	| 是	|用户openid																|
+| token						| String	| 是	|登录成功之后返回的token信息							|
+| userInfo		| Object| 是	|用户全部信息								|
+| tokenExpired		| String	| 是	|token过期时间														|
+| mobileConfirmed	| Boolean	| 是	|是否已验证手机号													|
+| emailConfirmed	| Boolean	| 是	|是否已验证邮箱														|
 
 **示例代码**
 
@@ -1081,6 +1169,41 @@ exports.main = async function(event,context) {
   // 如下旧写法依然支持
 	// const res = await uniID.loginByAlipay(event.code)
 	const res = await uniID.loginByAlipay({
+    code: event.code
+  })
+	return res
+}
+```
+
+
+## 获取微信openid
+
+用法：`uniID.code2SessionWeixin(Object Code2SessionWeixinParams);`
+
+**参数说明**
+
+| 字段		| 类型	| 必填| 说明																																																														|
+| ---			| ---		| ---	| ---																																																															|
+| code		| String| 是	|微信登录返回的code																																																								|
+|platform	|String	|否		|客户端类型：`mp-weixin`、`app-plus`，默认uni-id会自动取客户端类型，但是在云函数url化等场景无法取到客户端类型，可以使用此参数指定	|
+
+**响应参数**
+
+| 字段				| 类型	| 必填| 说明																													|
+| ---					| ---		| ---	| ---																														|
+| code				| Number| 是	|错误码，0表示成功																							|
+| msg					| String| 是	|详细信息																												|
+| openid			| String| -		|用户openid																											|
+| accessToken	| String| -		|客户端为APP时返回																							|
+| expiresIn		| String| -		|客户端为APP时返回，accessToken 接口调用凭证超时时间，单位（秒）|
+| refreshToken| String| -		|客户端为APP时返回，用于刷新accessToken													|
+| reExpiresIn	| String| -		|refreshToken超时时间，单位（秒）																|
+
+```js
+// 云函数代码
+const uniID = require('uni-id')
+exports.main = async function(event,context) {
+	const res = await uniID.code2SessionWeixin({
     code: event.code
   })
 	return res
@@ -1382,11 +1505,12 @@ exports.main = async function(event,context) {
 
 **分享邀请码/邀请链接**
 
-![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/1b181d40-e377-11ea-b680-7980c8a877b8.jpeg)
+<img width="375" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/1b181d40-e377-11ea-b680-7980c8a877b8.jpeg" />
+
 
 **受邀者注册**
 
-![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/1b12c610-e377-11ea-b997-9918a5dda011.jpeg)
+<img width="375" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/1b12c610-e377-11ea-b997-9918a5dda011.jpeg" />
 
 # 数据库结构
 
@@ -1544,6 +1668,10 @@ exports.main = async function(event,context) {
 |填写邀请人邀请码			|805	|01			|邀请码无效（邀请码存在且唯一时才算有效）	|
 |               			|   	|02			|uid错误，用户不存在	|
 |               			|   	|03			|邀请码不可修改	|
+|获取微信openid			        |806	|01			|未能获取openid	|
+|               			|   	|02			|调用获取openid接口失败	|
+|获取支付宝openid			        |807	|01			|未能获取openid	|
+|               			|   	|02			|调用获取openid接口失败	|
 |公用码						|900	|01			|数据库读写异常							|
 
 # FAQ
@@ -1552,7 +1680,7 @@ exports.main = async function(event,context) {
   + 每次登录成功都会新增一个token，并且检查所有token的有效期删除过期token。正常情况下客户端应该判断持久化存储的token是否还在有效期内，如果还有效就直接进入应用，不再执行登录。这样相当于用户的每个设备上都存在一个有效期内的token，云端也是。
 
 - 复制token到其他环境校验不通过
-  + uni-id内会校验客户端ua，如果是在本地调试可以在云函数内修改`context.CLIENTUA`为生成token的设备ua，切记上线删除此逻辑
+  + uni-id内会校验客户端ua，如果是在本地调试可以在云函数内修改`context.CLIENTUA`为生成token的设备ua，切记上线删除此逻辑。如果不需要设备和token绑定，可以在config内配置`bindTokenToDevice: false`来关闭绑定
 
 - username、email、mobile三个字段
   + 三个字段均可能为空，但是建议限制一下插入数据库三个字段的格式，比如username不应是邮箱格式或手机号格式，因为登录时可以选择使用username或mobile或email+密码的方式

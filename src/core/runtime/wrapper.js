@@ -10,7 +10,9 @@ import {
   isContextApi
 } from '../helpers/promise'
 
-import { protocols } from 'uni-platform/runtime/api/protocols'
+import {
+  protocols
+} from 'uni-platform/runtime/api/protocols'
 
 const CALLBACKS = ['success', 'fail', 'cancel', 'complete']
 
@@ -83,7 +85,12 @@ export default function wrapper (methodName, method) {
       if (typeof arg2 !== 'undefined') {
         args.push(arg2)
       }
-      const returnValue = __GLOBAL__[options.name || methodName].apply(__GLOBAL__, args)
+      if (isFn(options.name)) {
+        methodName = options.name(arg1)
+      } else if (isStr(options.name)) {
+        methodName = options.name
+      }
+      const returnValue = __GLOBAL__[methodName].apply(__GLOBAL__, args)
       if (isSyncApi(methodName)) { // 同步 api
         return processReturnValue(methodName, returnValue, options.returnValue, isContextApi(methodName))
       }

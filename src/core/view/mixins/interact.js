@@ -26,6 +26,7 @@ function addInteractListener (vm) {
         })
       }, passiveOptions)
     })
+    inited = true
   }
   vms.push(vm)
 }

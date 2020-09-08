@@ -93,13 +93,23 @@ module.exports = function chainWebpack (platformOptions, vueOptions, api) {
     const deferredCreated = process.env.UNI_PLATFORM === 'mp-toutiao' ||
       process.env.UNI_PLATFORM === 'quickapp-webview'
     const defines = {
-      __UNI_PROMISE_API__: JSON.stringify(process.env.UNI_USING_PROMISE_API === 'true'),
-      __VUE_OPTIONS_API__: JSON.stringify(process.env.UNI_USING_VUE3_OPTIONS_API === 'true'),
-      __VUE_CREATED_DEFERRED__: JSON.stringify(deferredCreated),
       'process.env.UNI_ENV': JSON.stringify(process.env.UNI_PLATFORM),
       'process.env.UNI_CLOUD_PROVIDER': process.env.UNI_CLOUD_PROVIDER,
       'process.env.HBX_USER_TOKEN': JSON.stringify(process.env.HBX_USER_TOKEN || ''),
       'process.env.UNI_AUTOMATOR_WS_ENDPOINT': JSON.stringify(process.env.UNI_AUTOMATOR_WS_ENDPOINT)
+    }
+    if (process.env.UNI_USING_VUE3) {
+      Object.assign(defines, {
+        __UNI_WX_API__: JSON.stringify(process.env.UNI_USING_WX_API === 'true'),
+        __UNI_WXS_API__: JSON.stringify(process.env.UNI_USING_WXS_API === 'true'),
+        __UNI_PROMISE_API__: JSON.stringify(process.env.UNI_USING_PROMISE_API === 'true'),
+        __VUE_OPTIONS_API__: JSON.stringify(process.env.UNI_USING_VUE3_OPTIONS_API === 'true'),
+        __VUE_CREATED_DEFERRED__: JSON.stringify(deferredCreated)
+      })
+    }
+    if (process.env.UNI_PLATFORM === 'h5') {
+      // TODO manifest.json
+      defines.__UNI_ROUTER_MODE__ = JSON.stringify('hash')
     }
 
     webpackConfig

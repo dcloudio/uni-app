@@ -236,21 +236,27 @@ var PAGE_SCOPED_RE = /uni-page-body\[data-v-[a-z0-9]{8}\]/g
 var VAR_STATUS_BAR_HEIGHT = /var\(--status-bar-height\)/gi
 var VAR_WINDOW_TOP = /var\(--window-top\)/gi
 var VAR_WINDOW_BOTTOM = /var\(--window-bottom\)/gi
-
+var VAR_WINDOW_LEFT = /var\(--window-left\)/gi
+var VAR_WINDOW_RIGHT = /var\(--window-right\)/gi
 
 function processCss(css) {
 	var page = getPage()
-	if (!uni.canIUse('css.var')) { //不支持 css 变量
+	if (typeof uni !== 'undefined' && !uni.canIUse('css.var')) { //不支持 css 变量
 		var offset = getWindowOffset()
 		css = css.replace(VAR_STATUS_BAR_HEIGHT, '0px')
 			.replace(VAR_WINDOW_TOP, offset.top + 'px')
 			.replace(VAR_WINDOW_BOTTOM, offset.bottom + 'px')
+            .replace(VAR_WINDOW_LEFT, '0px')
+            .replace(VAR_WINDOW_RIGHT, '0px')
 	}
 	return css
 		.replace(BODY_SCOPED_RE, page)
 		.replace(BODY_RE, '')
 		.replace(PAGE_SCOPED_RE, 'body.' + page + ' uni-page-body')
 		.replace(/\{[\s\S]+?\}/g, function (css) {
+      if(typeof uni === 'undefined'){
+        return css
+      }
 			return css.replace(UPX_RE, function (a, b) {
 				return uni.upx2px(b) + 'px'
 			})
@@ -258,12 +264,12 @@ function processCss(css) {
 }
 
 function getPage() {
-	var app = getApp()
+	var app = typeof getApp === 'function' && getApp()
 	return app && app.$route && app.$route.meta && app.$route.meta.name || ''
 }
 
 function getWindowOffset() {
-	var app = getApp()
+	var app = typeof getApp === 'function' && getApp()
 	if (app && app.$route && app.$route.meta && app.$route.meta.name) {
 		return {
 			top: app.$route.meta.windowTop,

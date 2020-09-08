@@ -1,5 +1,6 @@
 * [什么是uniCloud](uniCloud/README.md)
 * [快速上手](uniCloud/quickstart.md)
+* [购买指南](uniCloud/price.md)
 * 基本概念
   * [服务空间](uniCloud/concepts/space.md)
   * [数据库](uniCloud/concepts/database.md)

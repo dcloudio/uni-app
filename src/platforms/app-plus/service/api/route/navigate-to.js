@@ -1,6 +1,9 @@
 import {
   parseQuery
 } from 'uni-shared'
+import {
+  initEventChannel
+} from 'uni-helpers/navigate-to'
 
 import {
   ANI_SHOW,
@@ -28,6 +31,7 @@ function _navigateTo ({
   url,
   path,
   query,
+  events,
   animationType,
   animationDuration
 }, callbackId) {
@@ -36,18 +40,21 @@ function _navigateTo ({
     path
   })
 
+  const eventChannel = initEventChannel(events, false)
   showWebview(
     registerPage({
       url,
       path,
       query,
-      openType: 'navigate'
+      openType: 'navigate',
+      eventChannel
     }),
     animationType,
     animationDuration,
     () => {
       invoke(callbackId, {
-        errMsg: 'navigateTo:ok'
+        errMsg: 'navigateTo:ok',
+        eventChannel
       })
     }
   )
@@ -56,6 +63,7 @@ function _navigateTo ({
 
 export function navigateTo ({
   url,
+  events,
   openType,
   animationType,
   animationDuration
@@ -76,6 +84,7 @@ export function navigateTo ({
       url,
       path,
       query,
+      events,
       animationType,
       animationDuration
     }, callbackId)

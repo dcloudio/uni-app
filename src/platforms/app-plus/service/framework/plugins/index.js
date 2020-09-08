@@ -4,6 +4,8 @@ import {
   initPolyfill
 } from 'uni-core/service/plugins/polyfill'
 
+import EventChannel from 'uni-helpers/EventChannel'
+
 import {
   registerApp
 } from '../app'
@@ -28,6 +30,13 @@ export default {
     initLifecycle(Vue)
 
     initPolyfill(Vue)
+
+    Vue.prototype.getOpenerEventChannel = function () {
+      if (!this.$root.$scope.eventChannel) {
+        this.$root.$scope.eventChannel = new EventChannel()
+      }
+      return this.$root.$scope.eventChannel
+    }
 
     Object.defineProperty(Vue.prototype, '$page', {
       get () {

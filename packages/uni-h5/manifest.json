@@ -302,6 +302,14 @@
                 "SwiperItem"
             ],
             [
+                "/core/view/components/movable-area/index.vue",
+                "MovableArea"
+            ],
+            [
+                "/core/view/components/movable-view/index.vue",
+                "MovableView"
+            ],
+            [
                 "/platforms/h5/components/system-routes/preview-image/index.vue",
                 "PreviewImage"
             ]
@@ -449,6 +457,10 @@
     ],
     "onBLECharacteristicValueChange": [
         "/core/service/api/device/bluetooth.js",
+        []
+    ],
+    "onThemeChange": [
+        "/core/service/api/device/theme.js",
         []
     ],
     "onUIStyleChange": [
@@ -781,10 +793,6 @@
         "/core/service/api/context/canvas.js",
         [
             [
-                "/platforms/h5/service/api/context/canvas.js",
-                "base64ToTempFilePath"
-            ],
-            [
                 "/core/helpers/protocol/context/context.js",
                 "createCanvasContext"
             ]
@@ -793,10 +801,6 @@
     "canvasToTempFilePath": [
         "/core/service/api/context/canvas.js",
         [
-            [
-                "/platforms/h5/service/api/context/canvas.js",
-                "base64ToTempFilePath"
-            ],
             [
                 "/core/helpers/protocol/context/canvas.js",
                 "canvasToTempFilePath"
@@ -807,10 +811,6 @@
         "/core/service/api/context/canvas.js",
         [
             [
-                "/platforms/h5/service/api/context/canvas.js",
-                "base64ToTempFilePath"
-            ],
-            [
                 "/core/helpers/protocol/context/canvas.js",
                 "canvasPutImageData"
             ]
@@ -819,10 +819,6 @@
     "canvasGetImageData": [
         "/core/service/api/context/canvas.js",
         [
-            [
-                "/platforms/h5/service/api/context/canvas.js",
-                "base64ToTempFilePath"
-            ],
             [
                 "/core/helpers/protocol/context/canvas.js",
                 "canvasGetImageData"

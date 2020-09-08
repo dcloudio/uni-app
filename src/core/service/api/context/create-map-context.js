@@ -28,7 +28,9 @@ export class MapContext {
 }
 
 MapContext.prototype.$getAppMap = function () {
-  return plus.maps.getMapById(this.pageVm.$page.id + '-map-' + this.id)
+  if (__PLATFORM__ === 'app-plus') {
+    return plus.maps.getMapById(this.pageVm.$page.id + '-map-' + this.id)
+  }
 }
 
 methods.forEach(function (method) {

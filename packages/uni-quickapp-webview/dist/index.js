@@ -356,6 +356,143 @@ var baseApi = /*#__PURE__*/Object.freeze({
   interceptors: interceptors
 });
 
+class EventChannel {
+  constructor (id, events) {
+    this.id = id;
+    this.listener = {};
+    this.emitCache = {};
+    if (events) {
+      Object.keys(events).forEach(name => {
+        this.on(name, events[name]);
+      });
+    }
+  }
+
+  emit (eventName, ...args) {
+    const fns = this.listener[eventName];
+    if (!fns) {
+      return (this.emitCache[eventName] || (this.emitCache[eventName] = [])).push(args)
+    }
+    fns.forEach(opt => {
+      opt.fn.apply(opt.fn, args);
+    });
+    this.listener[eventName] = fns.filter(opt => opt.type !== 'once');
+  }
+
+  on (eventName, fn) {
+    this._addListener(eventName, 'on', fn);
+    this._clearCache(eventName);
+  }
+
+  once (eventName, fn) {
+    this._addListener(eventName, 'once', fn);
+    this._clearCache(eventName);
+  }
+
+  off (eventName, fn) {
+    const fns = this.listener[eventName];
+    if (!fns) {
+      return
+    }
+    if (fn) {
+      for (let i = 0; i < fns.length;) {
+        if (fns[i].fn === fn) {
+          fns.splice(i, 1);
+          i--;
+        }
+        i++;
+      }
+    } else {
+      delete this.listener[eventName];
+    }
+  }
+
+  _clearCache (eventName) {
+    const cacheArgs = this.emitCache[eventName];
+    if (cacheArgs) {
+      for (; cacheArgs.length > 0;) {
+        this.emit.apply(this, [eventName].concat(cacheArgs.shift()));
+      }
+    }
+  }
+
+  _addListener (eventName, type, fn) {
+    (this.listener[eventName] || (this.listener[eventName] = [])).push({
+      fn,
+      type
+    });
+  }
+}
+
+const eventChannels = {};
+
+const eventChannelStack = [];
+
+let id = 0;
+
+function initEventChannel (events, cache = true) {
+  id++;
+  const eventChannel = new EventChannel(id, events);
+  if (cache) {
+    eventChannels[id] = eventChannel;
+    eventChannelStack.push(eventChannel);
+  }
+  return eventChannel
+}
+
+function getEventChannel (id) {
+  if (id) {
+    const eventChannel = eventChannels[id];
+    delete eventChannels[id];
+    return eventChannel
+  }
+  return eventChannelStack.shift()
+}
+
+var navigateTo = {
+  args (fromArgs, toArgs) {
+    const id = initEventChannel(fromArgs.events).id;
+    if (fromArgs.url) {
+      fromArgs.url = fromArgs.url + (fromArgs.url.indexOf('?') === -1 ? '?' : '&') + '__id__=' + id;
+    }
+  },
+  returnValue (fromRes, toRes) {
+    fromRes.eventChannel = getEventChannel();
+  }
+};
+
+function findExistsPageIndex (url) {
+  const pages = getCurrentPages();
+  let len = pages.length;
+  while (len--) {
+    const page = pages[len];
+    if (page.$page && page.$page.fullPath === url) {
+      return len
+    }
+  }
+  return -1
+}
+
+var redirectTo = {
+  name (fromArgs) {
+    if (fromArgs.exists === 'back' && fromArgs.delta) {
+      return 'navigateBack'
+    }
+    return 'redirectTo'
+  },
+  args (fromArgs) {
+    if (fromArgs.exists === 'back' && fromArgs.url) {
+      const existsPageIndex = findExistsPageIndex(fromArgs.url);
+      if (existsPageIndex !== -1) {
+        const delta = getCurrentPages().length - 1 - existsPageIndex;
+        if (delta > 0) {
+          fromArgs.delta = delta;
+        }
+      }
+    }
+  }
+};
+
 var previewImage = {
   args (fromArgs) {
     let currentIndex = parseInt(fromArgs.current);
@@ -391,6 +528,8 @@ var previewImage = {
 };
 
 const protocols = {
+  navigateTo,
+  redirectTo,
   previewImage
 };
 const todos = [
@@ -471,7 +610,12 @@ function wrapper (methodName, method) {
       if (typeof arg2 !== 'undefined') {
         args.push(arg2);
       }
-      const returnValue = qa[options.name || methodName].apply(qa, args);
+      if (isFn(options.name)) {
+        methodName = options.name(arg1);
+      } else if (isStr(options.name)) {
+        methodName = options.name;
+      }
+      const returnValue = qa[methodName].apply(qa, args);
       if (isSyncApi(methodName)) { // 同步 api
         return processReturnValue(methodName, returnValue, options.returnValue, isContextApi(methodName))
       }
@@ -1400,8 +1544,65 @@ function parseApp (vm) {
 }
 
 function createApp (vm) {
+  Vue.prototype.getOpenerEventChannel = function () {
+    if (!this.__eventChannel__) {
+      this.__eventChannel__ = new EventChannel();
+    }
+    return this.__eventChannel__
+  };
+  const callHook = Vue.prototype.__call_hook;
+  Vue.prototype.__call_hook = function (hook, args) {
+    if (hook === 'onLoad' && args && args.__id__) {
+      this.__eventChannel__ = getEventChannel(args.__id__);
+      delete args.__id__;
+    }
+    return callHook.call(this, hook, args)
+  };
   App(parseApp(vm));
   return vm
+}
+
+const encodeReserveRE = /[!'()*]/g;
+const encodeReserveReplacer = c => '%' + c.charCodeAt(0).toString(16);
+const commaRE = /%2C/g;
+
+// fixed encodeURIComponent which is more conformant to RFC3986:
+// - escapes [!'()*]
+// - preserve commas
+const encode = str => encodeURIComponent(str)
+  .replace(encodeReserveRE, encodeReserveReplacer)
+  .replace(commaRE, ',');
+
+function stringifyQuery (obj, encodeStr = encode) {
+  const res = obj ? Object.keys(obj).map(key => {
+    const val = obj[key];
+
+    if (val === undefined) {
+      return ''
+    }
+
+    if (val === null) {
+      return encodeStr(key)
+    }
+
+    if (Array.isArray(val)) {
+      const result = [];
+      val.forEach(val2 => {
+        if (val2 === undefined) {
+          return
+        }
+        if (val2 === null) {
+          result.push(encodeStr(key));
+        } else {
+          result.push(encodeStr(key) + '=' + encodeStr(val2));
+        }
+      });
+      return result.join('&')
+    }
+
+    return encodeStr(key) + '=' + encodeStr(val)
+  }).filter(x => x.length > 0).join('&') : null;
+  return res ? `?${res}` : ''
 }
 
 function parseBaseComponent (vueComponentOptions, {
@@ -1550,9 +1751,15 @@ function parseBasePage (vuePageOptions, {
 
   initHooks(pageOptions.methods, hooks$1, vuePageOptions);
 
-  pageOptions.methods.onLoad = function (args) {
-    this.$vm.$mp.query = args; // 兼容 mpvue
-    this.$vm.__call_hook('onLoad', args);
+  pageOptions.methods.onLoad = function (query) {
+    this.options = query;
+    const copyQuery = Object.assign({}, query);
+    delete copyQuery.__id__;
+    this.$page = {
+      fullPath: '/' + (this.route || this.is) + stringifyQuery(copyQuery)
+    };
+    this.$vm.$mp.query = query; // 兼容 mpvue
+    this.$vm.__call_hook('onLoad', query);
   };
 
   return pageOptions
