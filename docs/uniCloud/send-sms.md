@@ -22,6 +22,7 @@
 |smsSecret	|String	|是		|调用短信接口的密钥secret，从 dev.dcloud.net.cn/uniSms 后台获取	|
 |phone		|String	|是		|发送目标手机号，暂仅支持中国大陆手机号，不能填写多个手机号|
 |templateId	|String	|是		|模版Id，短信内容为固定模板，详见下方说明						|
+|name 	|String	|-		|使用自行申请的模板是必填此字段，值为报备时填写的`应用名称`				|
 |data		|Object	|是		|模版里的各个变量字段，json格式										|
 
 #### 参数templateId说明@smstemplate
@@ -131,6 +132,7 @@ DCloud公司：
 'use strict';
 exports.main = async (event, context) => {
   try {
+    // 请注意使用自行申请的模板时必须传name字段，值为报备时填写的应用名称
     const res = await uniCloud.sendSms({
       smsKey: '****************',
       smsSecret: '****************',
@@ -156,6 +158,11 @@ exports.main = async (event, context) => {
   }
 };
 
+```
+
+本示例使用的模板为：
+```
+【uniID】“${name}”验证码：${code}，用于${action}，${expMinute}分钟内有效，请勿泄露并尽快验证。
 ```
 
 本示例发送的短信，在手机上将显示为：
