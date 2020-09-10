@@ -29,7 +29,7 @@
 |sampleRate|Number|否|采样率，有效值 8000/16000/44100|
 |numberOfChannels|Number|否|录音通道数，有效值 1/2|
 |encodeBitRate|Number|否|编码码率，有效值见下表格|
-|format|String|否|音频格式，有效值 aac/mp3|
+|format|String|否|音频格式，有效值 aac/mp3/wav/PCM|
 |frameSize|String|否|指定帧大小，单位 KB。传入 frameSize 后，每录制指定帧大小的内容后，会回调录制的文件内容，不指定则不会回调。暂仅支持 mp3 格式。|
 
 其中，采样率和码率有一定要求，具体有效值如下：
