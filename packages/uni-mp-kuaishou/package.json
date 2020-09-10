@@ -11,6 +11,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "uni-app": {
+    "name": "mp-kuaishou",
+    "title": "快手小程序"
+  },
   "author": "Aero Wang",
   "license": "MIT"
 }
