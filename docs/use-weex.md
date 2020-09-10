@@ -413,7 +413,8 @@ BindingX类似一种强化版的css，运行性能高，但没有js那样足够�
 				}, function(res) {
 					if (res.state === 'exit') {
 						Binding.unbind({
-							token: main_binding
+							token: main_binding.token,
+  						eventType: 'timing'
 						})
 					}
 				});
@@ -436,7 +437,8 @@ BindingX类似一种强化版的css，运行性能高，但没有js那样足够�
 				}, function(res) {
 					if (res.state === 'exit') {
 						Binding.unbind({
-							token: btn_binding
+							token: btn_binding.token,
+  						eventType: 'timing'
 						})
 					}
 				})
@@ -462,7 +464,8 @@ BindingX类似一种强化版的css，运行性能高，但没有js那样足够�
 				}, function(res) {
 					if (res.state === 'exit') {
 						Binding.unbind({
-							token: main_binding
+							token: main_binding.token,
+  						eventType: 'timing'
 						})
 					}
 				});
@@ -485,7 +488,8 @@ BindingX类似一种强化版的css，运行性能高，但没有js那样足够�
 				}, function(res) {
 					if (res.state === 'exit') {
 						Binding.unbind({
-							token: btn_binding
+							token: btn_binding.token,
+  						eventType: 'timing'
 						})
 					}
 				})
