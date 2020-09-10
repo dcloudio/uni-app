@@ -22,6 +22,8 @@
 
 - [直播模板](https://ext.dcloud.net.cn/plugin?id=226)：直播推流、拉流、镜头切换、美颜等常用功能 -- by 1262880469
 
+- [仿豆瓣影视项目示例](https://ext.dcloud.net.cn/plugin?id=1839)：基于uni-app的风格简约的影视项目，功能齐全完善 -- by Tz张无忌
+
 - [得推B2C商城](https://ext.dcloud.net.cn/plugin?id=187)：一套简洁的B2C商城，全部功能完善，用户、下单、注册 -- by 得推网络科技
 
 - [商城类项目模版](https://ext.dcloud.net.cn/plugin?id=200)：漂亮的商城前端模板，可变背景导航栏、购物车、详情模板 -- by  MixR 
