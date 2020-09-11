@@ -527,10 +527,24 @@ var previewImage = {
   }
 };
 
+var createCanvasContext = {
+  returnValue (fromRes, toRes) {
+    const measureText = fromRes.measureText;
+    toRes.measureText = function (text, callback) {
+      const textMetrics = measureText.call(this, text);
+      if (typeof callback === 'function') {
+        setTimeout(() => callback(textMetrics), 0);
+      }
+      return textMetrics
+    };
+  }
+};
+
 const protocols = {
   navigateTo,
   redirectTo,
-  previewImage
+  previewImage,
+  createCanvasContext
 };
 const todos = [
   'preloadPage',
@@ -1394,7 +1408,9 @@ function parseBaseApp (vm, {
 const mocks = ['nodeId', 'componentName', '_componentId', 'uniquePrefix'];
 
 function isPage () {
-  return !this.ownerId
+  // 百度小程序组件的id，某些情况下可能是number类型的0，不能直接return !this.ownerId 判断当前组件是否是Page
+  // 否则会导致mounted不执行
+  return typeof this.ownerId === 'undefined'
 }
 
 function findVmByVueId (vm, vuePid) {
