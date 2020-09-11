@@ -316,7 +316,7 @@ switch(uni.getSystemInfoSync().platform){
 - rpx 即响应式px，一种根据屏幕宽度自适应的动态单位。以750宽的屏幕为基准，750rpx恰好为屏幕宽度。屏幕变宽，rpx 实际显示效果会等比放大。
 
 vue页面支持普通H5单位，但在nvue里不支持：
-- rem 默认根字体大小为 屏幕宽度/20（微信小程序、字节跳动小程序、App、H5）<span style="display:none">百度小程序16px、支付宝小程序50px</span>
+- rem 根字体大小可以通过 [page-meta](/component/page-meta?id=page-meta) 配置<span style="display:none">字节跳动小程序：屏幕宽度/20、百度小程序：16px、支付宝小程序：50px</span>
 - vh viewpoint height，视窗高度，1vh等于视窗高度的1%
 - vw viewpoint width，视窗宽度，1vw等于视窗宽度的1%
 
