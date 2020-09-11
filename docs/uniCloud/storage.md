@@ -31,7 +31,7 @@
 
 **各个小程序平台运行时，网络相关的 API 在使用前需要配置域名白名单。[参考](https://uniapp.dcloud.io/uniCloud/quickstart?id=%e5%b0%8f%e7%a8%8b%e5%ba%8f%e4%b8%ad%e4%bd%bf%e7%94%a8unicloud%e7%9a%84%e7%99%bd%e5%90%8d%e5%8d%95%e9%85%8d%e7%bd%ae)**
 
-阿里云uploadFile API方式只允许上传以下文件类型（后续可能会调整），如果要上传其他类型可以通过web控制台上传。腾讯云没有文件类型限制。
+阿里云uploadFile API方式只允许上传以下文件类型（后续可能会调整），如果要上传其他类型可以通过web控制台上传（HBuilderX 2.8.10-alpha及以后版本已去除此限制）。腾讯云没有文件类型限制。
 
 ```js
 {

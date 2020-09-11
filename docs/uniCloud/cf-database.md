@@ -4133,7 +4133,7 @@ let res = await db.collection('todos').where({
       age: dbCmd.lt(2),
     }),
     dbCmd.elemMatch({
-      name: 'mall',
+      type: 'mall',
       age: dbCmd.gt(5),
     }),
   ]),

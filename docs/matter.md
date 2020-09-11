@@ -282,3 +282,7 @@ pages 配置
 - 暂不支持 支付，支付依赖`uni.login(OBJECT)`
 - 页面有滚动条时 canvas 组件不会跟随页面滚动
 - rich-text 组件某些情况下显示异常
+
+
+##### sign 证书配置
+sign放到项目根目录，编译后自动拷贝到 .quickapp/sign，每次编译完成时会删除.quickapp，避免证书丢失
