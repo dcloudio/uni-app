@@ -5596,13 +5596,14 @@ function cloneWithData(vm) {
   }, ret);
 
   // vue-composition-api
-  var rawBindings = vm.__secret_vfa_state__ && vm.__secret_vfa_state__.rawBindings;
+  var compositionApiState = vm.__composition_api_state__ || vm.__secret_vfa_state__;
+  var rawBindings = compositionApiState && compositionApiState.rawBindings;
   if (rawBindings) {
     Object.keys(rawBindings).forEach(function (key) {
       ret[key] = vm[key];
     });
   }
-  
+
   //TODO 需要把无用数据处理掉，比如 list=>l0 则 list 需要移除，否则多传输一份数据
   Object.assign(ret, vm.$mp.data || {});
   if (
@@ -5925,7 +5926,7 @@ function internalMixin(Vue) {
   };
 
   Vue.prototype.__map = function(val, iteratee) {
-    //TODO 暂不考虑 string
+    //TODO 暂不考虑 string,number
     var ret, i, l, keys, key;
     if (Array.isArray(val)) {
       ret = new Array(val.length);
@@ -5939,13 +5940,6 @@ function internalMixin(Vue) {
       for (i = 0, l = keys.length; i < l; i++) {
         key = keys[i];
         ret[key] = iteratee(val[key], key, i);
-      }
-      return ret
-    } else if (typeof val === 'number') {
-      ret = new Array(val);
-      for (i = 0, l = val; i < l; i++) {
-        // 第一个参数暂时仍和小程序一致
-        ret[i] = iteratee(i, i);
       }
       return ret
     }
