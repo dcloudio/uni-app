@@ -3,6 +3,7 @@ module.exports = [
   'uni-layout',
   'uni-content',
   'uni-main',
+  'uni-top-window',
   'uni-left-window',
   'uni-right-window',
   'uni-tabbar',

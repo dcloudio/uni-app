@@ -3,15 +3,26 @@
     v-if="responsive"
     :class="{'uni-app--showlayout':showLayout}"
   >
-    <!--TODO header-->
     <uni-content>
       <uni-main>
+        <uni-top-window
+          v-if="topWindow"
+          v-show="showLayout&&showTopWindow"
+          ref="topWindow"
+          :style="topWindowStyle"
+        >
+          <v-uni-top-window
+            ref="top"
+            @hook:mounted="onTopWindowInit"
+          />
+        </uni-top-window>
         <keep-alive :include="keepAliveInclude">
           <router-view :key="routerKey" />
         </keep-alive>
       </uni-main>
       <uni-left-window
         v-if="leftWindow"
+        v-show="showLayout&&showLeftWindow"
         ref="leftWindow"
         :style="leftWindowStyle"
       >
@@ -22,6 +33,7 @@
       </uni-left-window>
       <uni-right-window
         v-if="rightWindow"
+        v-show="showLayout&&showRightWindow"
         ref="rightWindow"
         :style="rightWindowStyle"
       >
@@ -89,14 +101,46 @@ export default {
     return {
       showLayout: true,
       leftWindowStyle: '',
-      rightWindowStyle: ''
+      rightWindowStyle: '',
+      topWindowStyle: '',
+      showTopWindow: true,
+      showLeftWindow: true,
+      showRightWindow: true
+    }
+  },
+  watch: {
+    $route (newRoute, oldRoute) {
+      this.initShowWindow(newRoute)
+    },
+    showTopWindow (newVal, val) {
+      if (newVal) {
+        this.$nextTick(this.onTopWindowInit)
+      } else {
+        updateCssVar('--window-top', '0px')
+      }
+    },
+    showLeftWindow (newVal, val) {
+      if (newVal) {
+        this.$nextTick(this.onLeftWindowInit)
+      } else {
+        updateCssVar('--window-left', '0px')
+      }
+    },
+    showRightWindow (newVal, val) {
+      if (newVal) {
+        this.$nextTick(this.onRightWindowInit)
+      } else {
+        updateCssVar('--window-right', '0px')
+      }
     }
   },
   beforeCreate () {
+    updateCssVar('--window-top', '0px')
     updateCssVar('--window-left', '0px')
     updateCssVar('--window-right', '0px')
   },
   created () {
+    this.topWindow = Vue.component('VUniTopWindow')
     this.leftWindow = Vue.component('VUniLeftWindow')
     this.rightWindow = Vue.component('VUniRightWindow')
     if ( // 低版本不提供 responsive 支持
@@ -104,7 +148,8 @@ export default {
         uni.canIUse('css.var') &&
         window.matchMedia
     ) {
-      this.responsive = Math.max.apply(null, sizes) > minWidth
+      // 存在 topWindow 时，视为始终要支持 responsive （如 pc-admin 的情况，需要在 top 中切换 left 或 right）
+      this.responsive = this.topWindow || Math.max.apply(null, sizes) > minWidth
       if (this.responsive) {
         if (this.leftWindow && this.leftWindow.options.style) {
           this.leftWindowStyle = this.leftWindow.options.style
@@ -115,8 +160,23 @@ export default {
         this.initMediaQuery()
       }
     }
+    this.initShowWindow(this.$route)
   },
   methods: {
+    initShowWindow (newRoute) {
+      if (!this.responsive) {
+        return
+      }
+      if (this.topWindow) {
+        this.showTopWindow = newRoute.meta.topWindow !== false
+      }
+      if (this.leftWindow) {
+        this.showLeftWindow = newRoute.meta.leftWindow !== false
+      }
+      if (this.rightWindow) {
+        this.showRightWindow = newRoute.meta.rightWindow !== false
+      }
+    },
     initMediaQuery () {
       if (!window.matchMedia) {
         return
@@ -125,11 +185,20 @@ export default {
       mediaQueryList.addListener((e) => {
         this.showLayout = e.matches
         this.$nextTick(() => {
+          this.topWindow && this.onTopWindowInit()
           this.leftWindow && this.onLeftWindowInit()
           this.rightWindow && this.onRightWindowInit()
         })
       })
       this.showLayout = mediaQueryList.matches
+    },
+    onTopWindowInit () {
+      // TODO page header
+      if (this.topWindowStyle && this.topWindowStyle.width) {
+        updateCssVar('--window-top', this.$refs.topWindow.offsetHeight + 'px')
+      } else {
+        updateCssVar('--window-top', this.$refs.top.$el.offsetHeight + 'px')
+      }
     },
     onLeftWindowInit () {
       if (this.leftWindowStyle && this.leftWindowStyle.width) {
@@ -158,7 +227,6 @@ export default {
 
   uni-main {
     flex: 1;
-    overflow: auto;
   }
 
   uni-left-window {

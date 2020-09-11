@@ -137,7 +137,8 @@ var serviceContext = (function () {
 
   const keyboard = [
     'hideKeyboard',
-    'onKeyboardHeightChange'
+    'onKeyboardHeightChange',
+    'getSelectedTextRange'
   ];
 
   const ui = [
@@ -171,6 +172,7 @@ var serviceContext = (function () {
     'stopPullDownRefresh',
     'createSelectorQuery',
     'createIntersectionObserver',
+    'createMediaQueryObserver',
     'getMenuButtonBoundingClientRect'
   ];
 
@@ -969,7 +971,7 @@ var serviceContext = (function () {
     },
     canvasId: {
       type: String,
-      require: true
+      required: true
     },
     fileType: {
       type: String,
@@ -990,11 +992,11 @@ var serviceContext = (function () {
   const drawCanvas = {
     canvasId: {
       type: String,
-      require: true
+      required: true
     },
     actions: {
       type: Array,
-      require: true
+      required: true
     },
     reserve: {
       type: Boolean,
@@ -1108,7 +1110,7 @@ var serviceContext = (function () {
       default: type.WGS84
     },
     altitude: {
-      altitude: Boolean,
+      type: Boolean,
       default: false
     }
   };
@@ -8826,7 +8828,7 @@ var serviceContext = (function () {
     return webview
   }
 
-  function _navigateTo({
+  function _navigateTo ({
     url,
     path,
     query,
@@ -8860,7 +8862,7 @@ var serviceContext = (function () {
     setStatusBarStyle();
   }
 
-  function navigateTo$1({
+  function navigateTo$1 ({
     url,
     events,
     openType,
@@ -8878,7 +8880,7 @@ var serviceContext = (function () {
       animationDuration = routeStyles.animationDuration || globalStyle.animationDuration || ANI_DURATION;
     }
     const query = parseQuery(urls[1] || '');
-    navigate(path, function() {
+    navigate(path, function () {
       _navigateTo({
         url,
         path,
@@ -10339,16 +10341,6 @@ var serviceContext = (function () {
 
   const canvasEventCallbacks = createCallbacks('canvasEvent');
 
-  UniServiceJSBridge.subscribe('onDrawCanvas', ({
-    callbackId,
-    data
-  }) => {
-    const callback = canvasEventCallbacks.pop(callbackId);
-    if (callback) {
-      callback(data);
-    }
-  });
-
   UniServiceJSBridge.subscribe('onCanvasMethodCallback', ({
     callbackId,
     data
@@ -10589,17 +10581,6 @@ var serviceContext = (function () {
     'setTextBaseline', 'setLineDash'
   ];
 
-  var tempCanvas;
-
-  function getTempCanvas (width = 0, height = 0) {
-    if (!tempCanvas) {
-      tempCanvas = document.createElement('canvas');
-    }
-    tempCanvas.width = width;
-    tempCanvas.height = height;
-    return tempCanvas
-  }
-
   function TextMetrics (width) {
     this.width = width;
   }
@@ -10664,14 +10645,23 @@ var serviceContext = (function () {
       }
     }
 
-    // TODO
-    measureText (text) {
-      if (typeof document === 'object') {
-        var c2d = getTempCanvas().getContext('2d');
-        c2d.font = this.state.font;
-        return new TextMetrics(c2d.measureText(text).width || 0)
-      } else {
-        return new TextMetrics(0)
+    measureText (text, callback) {
+      const font = this.state.font;
+      {
+        const textMetrics = new TextMetrics(0);
+        if (typeof callback === 'function') {
+          const callbackId = canvasEventCallbacks.push(function ({ width }) {
+            callback(new TextMetrics(width));
+          });
+          operateCanvas(this.id, this.pageId, 'measureText', {
+            text,
+            font,
+            callbackId
+          });
+        } else {
+          console.error('warning: measureText missing required arguments: callback');
+        }
+        return textMetrics
       }
     }
 
@@ -11753,6 +11743,51 @@ var serviceContext = (function () {
     onUIStyleChange: onUIStyleChange
   });
 
+  const getSelectedTextRangeEventCallbacks = createCallbacks('getSelectedTextRangeEvent');
+
+  UniServiceJSBridge.subscribe('onGetSelectedTextRange', ({
+    callbackId,
+    data
+  }) => {
+    console.log('onGetSelectedTextRange');
+    const callback = getSelectedTextRangeEventCallbacks.pop(callbackId);
+    if (callback) {
+      callback(data);
+    }
+  });
+
+  function getSelectedTextRange (_, callbackId) {
+    const pageId = getCurrentPageId();
+    UniServiceJSBridge.publishHandler('getSelectedTextRange', {
+      pageId,
+      callbackId: getSelectedTextRangeEventCallbacks.push(function (res) {
+        invoke$1(callbackId, res);
+      })
+    }, pageId);
+  }
+
+  var require_context_module_1_16 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    getSelectedTextRange: getSelectedTextRange
+  });
+
+  let callback$1;
+
+  onMethod('onKeyboardHeightChange', res => {
+    if (callback$1) {
+      invoke$1(callback$1, res);
+    }
+  });
+
+  function onKeyboardHeightChange (callbackId) {
+    callback$1 = callbackId;
+  }
+
+  var require_context_module_1_17 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    onKeyboardHeightChange: onKeyboardHeightChange
+  });
+
   const longPressActionsCallbackId = 'longPressActionsCallback';
 
   let longPressActions = {};
@@ -11776,7 +11811,7 @@ var serviceContext = (function () {
     return invokeMethod('previewImagePlus', args)
   }
 
-  var require_context_module_1_16 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_18 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     previewImage: previewImage$1
   });
@@ -11864,7 +11899,7 @@ var serviceContext = (function () {
     return recorderManager || (recorderManager = new RecorderManager())
   }
 
-  var require_context_module_1_17 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_19 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getRecorderManager: getRecorderManager
   });
@@ -11958,7 +11993,7 @@ var serviceContext = (function () {
     return task
   }
 
-  var require_context_module_1_18 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_20 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     downloadFile: downloadFile$1
   });
@@ -12076,7 +12111,7 @@ var serviceContext = (function () {
     return new RequestTask(requestTaskId)
   }
 
-  var require_context_module_1_19 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_21 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     request: request$1
   });
@@ -12258,7 +12293,7 @@ var serviceContext = (function () {
     callbacks$b.close = callbackId;
   }
 
-  var require_context_module_1_20 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_22 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     connectSocket: connectSocket$1,
     sendSocketMessage: sendSocketMessage$1,
@@ -12293,7 +12328,7 @@ var serviceContext = (function () {
     return updateManager || (updateManager = new UpdateManager())
   }
 
-  var require_context_module_1_21 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_23 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getUpdateManager: getUpdateManager
   });
@@ -12387,7 +12422,7 @@ var serviceContext = (function () {
     return task
   }
 
-  var require_context_module_1_22 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_24 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     uploadFile: uploadFile$1
   });
@@ -12476,7 +12511,7 @@ var serviceContext = (function () {
     return new MPAnimation(option)
   }
 
-  var require_context_module_1_23 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_25 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     createAnimation: createAnimation
   });
@@ -12546,9 +12581,56 @@ var serviceContext = (function () {
     return new ServiceIntersectionObserver(getCurrentPageVm('createIntersectionObserver'), options)
   }
 
-  var require_context_module_1_24 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_26 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     createIntersectionObserver: createIntersectionObserver
+  });
+
+  const createMediaQueryObserverCallbacks = createCallbacks('requestMediaQueryObserver');
+
+  class ServiceMediaQueryObserver {
+    constructor (component, options) {
+      this.pageId = component.$page.id;
+      this.component = component._$id || component; // app-plus 平台传输_$id
+      this.options = options;
+    }
+
+    observe (options, callback) {
+      if (typeof callback !== 'function') {
+        return
+      }
+      this.options = options;
+
+      this.reqId = createMediaQueryObserverCallbacks.push(callback);
+
+      UniServiceJSBridge.publishHandler('requestMediaQueryObserver', {
+        reqId: this.reqId,
+        component: this.component,
+        options: this.options
+      }, this.pageId);
+    }
+
+    disconnect () {
+      UniServiceJSBridge.publishHandler('destroyMediaQueryObserver', {
+        reqId: this.reqId
+      }, this.pageId);
+    }
+  }
+
+  function createMediaQueryObserver (context, options) {
+    if (!context._isVue) {
+      options = context;
+      context = null;
+    }
+    if (context) {
+      return new ServiceMediaQueryObserver(context, options)
+    }
+    return new ServiceMediaQueryObserver(getCurrentPageVm('createMediaQueryObserver'), options)
+  }
+
+  var require_context_module_1_27 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    createMediaQueryObserver: createMediaQueryObserver
   });
 
   const ContextClasss = {
@@ -12687,26 +12769,9 @@ var serviceContext = (function () {
     return new SelectorQuery(getCurrentPageVm('createSelectorQuery'))
   }
 
-  var require_context_module_1_25 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_28 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     createSelectorQuery: createSelectorQuery
-  });
-
-  let callback$1;
-
-  onMethod('onKeyboardHeightChange', res => {
-    if (callback$1) {
-      invoke$1(callback$1, res);
-    }
-  });
-
-  function onKeyboardHeightChange (callbackId) {
-    callback$1 = callbackId;
-  }
-
-  var require_context_module_1_26 = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    onKeyboardHeightChange: onKeyboardHeightChange
   });
 
   UniServiceJSBridge.subscribe('onLoadFontFaceCallback', ({
@@ -12729,7 +12794,7 @@ var serviceContext = (function () {
     }, pageId);
   }
 
-  var require_context_module_1_27 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_29 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     loadFontFace: loadFontFace$1
   });
@@ -12742,7 +12807,7 @@ var serviceContext = (function () {
     return {}
   }
 
-  var require_context_module_1_28 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_30 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     pageScrollTo: pageScrollTo$1
   });
@@ -12755,7 +12820,7 @@ var serviceContext = (function () {
     return {}
   }
 
-  var require_context_module_1_29 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_31 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     setPageMeta: setPageMeta
   });
@@ -12792,7 +12857,7 @@ var serviceContext = (function () {
     callbacks$c.push(callbackId);
   }
 
-  var require_context_module_1_30 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_32 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     removeTabBarBadge: removeTabBarBadge$1,
     showTabBarRedDot: showTabBarRedDot$1,
@@ -12818,7 +12883,7 @@ var serviceContext = (function () {
     callbacks$d.splice(callbacks$d.indexOf(callbackId), 1);
   }
 
-  var require_context_module_1_31 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_33 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     onWindowResize: onWindowResize,
     offWindowResize: offWindowResize
@@ -12845,22 +12910,24 @@ var serviceContext = (function () {
   './device/compass.js': require_context_module_1_13,
   './device/network.js': require_context_module_1_14,
   './device/theme.js': require_context_module_1_15,
-  './media/preview-image.js': require_context_module_1_16,
-  './media/recorder.js': require_context_module_1_17,
-  './network/download-file.js': require_context_module_1_18,
-  './network/request.js': require_context_module_1_19,
-  './network/socket.js': require_context_module_1_20,
-  './network/update.js': require_context_module_1_21,
-  './network/upload-file.js': require_context_module_1_22,
-  './ui/create-animation.js': require_context_module_1_23,
-  './ui/create-intersection-observer.js': require_context_module_1_24,
-  './ui/create-selector-query.js': require_context_module_1_25,
-  './ui/keyboard.js': require_context_module_1_26,
-  './ui/load-font-face.js': require_context_module_1_27,
-  './ui/page-scroll-to.js': require_context_module_1_28,
-  './ui/set-page-meta.js': require_context_module_1_29,
-  './ui/tab-bar.js': require_context_module_1_30,
-  './ui/window.js': require_context_module_1_31,
+  './keyboard/get-selected-text-range.js': require_context_module_1_16,
+  './keyboard/keyboard.js': require_context_module_1_17,
+  './media/preview-image.js': require_context_module_1_18,
+  './media/recorder.js': require_context_module_1_19,
+  './network/download-file.js': require_context_module_1_20,
+  './network/request.js': require_context_module_1_21,
+  './network/socket.js': require_context_module_1_22,
+  './network/update.js': require_context_module_1_23,
+  './network/upload-file.js': require_context_module_1_24,
+  './ui/create-animation.js': require_context_module_1_25,
+  './ui/create-intersection-observer.js': require_context_module_1_26,
+  './ui/create-media-query-observer.js': require_context_module_1_27,
+  './ui/create-selector-query.js': require_context_module_1_28,
+  './ui/load-font-face.js': require_context_module_1_29,
+  './ui/page-scroll-to.js': require_context_module_1_30,
+  './ui/set-page-meta.js': require_context_module_1_31,
+  './ui/tab-bar.js': require_context_module_1_32,
+  './ui/window.js': require_context_module_1_33,
 
       };
       var req = function req(key) {
@@ -13013,6 +13080,9 @@ var serviceContext = (function () {
 
     function onAppEnterForeground () {
       const pages = getCurrentPages();
+      if (pages.length === 0) {
+        return
+      }
       const page = pages[pages.length - 1];
       const args = {
         path: page.route,
@@ -13109,11 +13179,29 @@ var serviceContext = (function () {
       }
     }
 
+    const requestMediaQueryObserverCallbacks = createCallbacks('requestMediaQueryObserver');
+
+    function onRequestMediaQueryObserver ({
+      reqId,
+      reqEnd,
+      res
+    }) {
+      const callback = requestMediaQueryObserverCallbacks.get(reqId);
+      if (callback) {
+        if (reqEnd) {
+          requestMediaQueryObserverCallbacks.pop(reqId);
+          return
+        }
+        callback(res);
+      }
+    }
+
     subscribe('onPageScroll', createPageEvent('onPageScroll'));
     subscribe('onReachBottom', createPageEvent('onReachBottom'));
 
     subscribe('onRequestComponentInfo', onRequestComponentInfo);
     subscribe('onRequestComponentObserver', onRequestComponentObserver);
+    subscribe('onRequestMediaQueryObserver', onRequestMediaQueryObserver);
   }
 
   function perf (type, startTime) {
@@ -13581,7 +13669,8 @@ var serviceContext = (function () {
     'uni-textarea',
     'uni-video',
     'uni-view',
-    'uni-web-view'
+    'uni-web-view',
+    'uni-match-media'
   ];
 
   // 使用白名单过滤（前期有一批自定义组件使用了 uni-）
@@ -13695,6 +13784,10 @@ var serviceContext = (function () {
   function initPolyfill (Vue) {
     Vue.prototype.createIntersectionObserver = function createIntersectionObserver (options) {
       return uni.createIntersectionObserver(this, options)
+    };
+
+    Vue.prototype.createMediaQueryObserver = function createMediaQueryObserver (options) {
+      return uni.createMediaQueryObserver(this, options)
     };
 
     Vue.prototype.selectComponent = function selectComponent (selector) {
@@ -14391,7 +14484,7 @@ var serviceContext = (function () {
   }
 
   var vuePlugin = {
-    install(Vue, options) {
+    install (Vue, options) {
       initVue(Vue);
 
       initData(Vue);
@@ -14399,18 +14492,21 @@ var serviceContext = (function () {
 
       initPolyfill(Vue);
 
-      Vue.prototype.getOpenerEventChannel = function() {
-        return this.$root.$scope.eventChannel || new EventChannel()
+      Vue.prototype.getOpenerEventChannel = function () {
+        if (!this.$root.$scope.eventChannel) {
+          this.$root.$scope.eventChannel = new EventChannel();
+        }
+        return this.$root.$scope.eventChannel
       };
 
       Object.defineProperty(Vue.prototype, '$page', {
-        get() {
+        get () {
           return this.$root.$scope.$page
         }
       });
       // 兼容旧版本
       Object.defineProperty(Vue.prototype, '$mp', {
-        get() {
+        get () {
           return {
             page: this.$root.$scope
           }
@@ -14418,9 +14514,9 @@ var serviceContext = (function () {
       });
 
       const oldMount = Vue.prototype.$mount;
-      Vue.prototype.$mount = function mount(el, hydrating) {
+      Vue.prototype.$mount = function mount (el, hydrating) {
         if (this.mpType === 'app') {
-          this.$options.render = function() {};
+          this.$options.render = function () {};
           if (weex.config.preload) { // preload
             if (process.env.NODE_ENV !== 'production') {
               console.log('[uni-app] preload app-service.js');
@@ -14441,7 +14537,7 @@ var serviceContext = (function () {
         return oldMount.call(this, el, hydrating)
       };
 
-      Vue.prototype.$nextTick = function nextTick(cb) {
+      Vue.prototype.$nextTick = function nextTick (cb) {
         const renderWatcher = this._watcher;
         const callback = typeof cb === 'function';
         const result = new Promise((resolve) => {

@@ -302,6 +302,14 @@
                 "SwiperItem"
             ],
             [
+                "/core/view/components/movable-area/index.vue",
+                "MovableArea"
+            ],
+            [
+                "/core/view/components/movable-view/index.vue",
+                "MovableView"
+            ],
+            [
                 "/platforms/h5/components/system-routes/preview-image/index.vue",
                 "PreviewImage"
             ]
@@ -460,11 +468,15 @@
         []
     ],
     "hideKeyboard": [
-        "/platforms/h5/service/api/device/hide-keyboard.js",
+        "/platforms/h5/service/api/keyboard/keyboard.js",
         []
     ],
     "onKeyboardHeightChange": [
-        "/core/service/api/ui/keyboard.js",
+        "/core/service/api/keyboard/keyboard.js",
+        []
+    ],
+    "getSelectedTextRange": [
+        "/core/service/api/keyboard/get-selected-text-range.js",
         []
     ],
     "showToast": [
@@ -731,6 +743,10 @@
                 "destroyComponentObserver"
             ]
         ]
+    ],
+    "createMediaQueryObserver": [
+        "/core/service/api/ui/create-media-query-observer.js",
+        []
     ],
     "$emit": [
         "/platforms/h5/service/api/base/event-bus.js",
