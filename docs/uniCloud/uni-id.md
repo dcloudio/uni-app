@@ -111,8 +111,8 @@ DCloud暂无计划开发百度、头条、QQ等小程序的登录，以及Apple 
 ```json
 // 如果拷贝此内容切记去除注释
 {
-	"passwordSecret": "passwordSecret-demo", // 加密密码所用的密钥，注意修改为自己的
-	"tokenSecret": "tokenSecret-demo", // 生成token所用的密钥，注意修改为自己的
+	"passwordSecret": "passwordSecret-demo", // 加密密码所用的密钥，注意修改为自己的，使用一个较长的字符串即可
+	"tokenSecret": "tokenSecret-demo", // 生成token所用的密钥，注意修改为自己的，使用一个较长的字符串即可
 	"tokenExpiresIn": 7200, // 全平台token过期时间，未指定过期时间的平台会使用此值
 	"bindTokenToDevice": true, // 是否将token和设备绑定，设置为true会进行ua校验，默认为true
 	"passwordErrorLimit": 6, // 密码错误最大重试次数

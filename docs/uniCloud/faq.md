@@ -70,6 +70,8 @@ websocket的实时特性导致serverless化比较复杂。还需要继续寻找�
 
 同时一些三方专业的websocket服务也可以使用，比如：[https://ext.dcloud.net.cn/plugin?id=1334](https://ext.dcloud.net.cn/plugin?id=1334)
 
+如果是im方面的需求，那么基于uniPush的im服务是非常推荐的选择：[https://ext.dcloud.net.cn/plugin?id=2670](https://ext.dcloud.net.cn/plugin?id=2670)
+
 ### 如何导入老数据库的数据？
 - 方式1：可以在HBuilderX里用db_init.json来批量创建云数据库和插入表内容，[详见](https://uniapp.dcloud.io/uniCloud/cf-database?id=%e4%bd%bf%e7%94%a8db_initjson%e5%88%9d%e5%a7%8b%e5%8c%96%e9%a1%b9%e7%9b%ae%e6%95%b0%e6%8d%ae%e5%ba%93)
 - 方式2：阿里云支持在uniCloud web控制台界面直接导入导出数据
@@ -132,15 +134,10 @@ uniCloud.httpclient.request('https://example.com',{
 
 ### uniCloud费用贵不贵？
 
-目前uniCloud计费系统还未开发完毕，开发者目前可以免费使用uniCloud。未来uniCloud的商用定价，也会低于租用传统云主机的费用。
+uniCloud的阿里云目前是完全免费的。
+uniCloud的腾讯云免费提供一个服务空间，更多服务空间或更多资源消耗需要付费。付费价格同微信云开发定价。整体成本远低于传统服务器租用成本。详见：[https://uniapp.dcloud.io/uniCloud/price](https://uniapp.dcloud.io/uniCloud/price)
 
-开发者无需顾忌DCloud会先免费后收割：
-1. DCloud提供uniCloud的目标，就是给开发者更低门槛、更便宜的云开发能力，未来商用时的定价一定比传统云主机便宜，否则就失去做这个产品的意义；
-2. serverLess的成本天然低于传统云主机；
-3. DCloud是有信誉的大厂，拥有500万开发者和十亿手机活跃用户，多年来一直给开发者提供良心产品，从不失信。
-4. 即便uniCloud计费后，也会长期给开发者提供2个免费的服务空间。
-
-uniCloud免费期间，为避免资源滥用，有使用限制，见下。
+uniCloud的免费服务空间，为避免资源滥用，有使用限制，见下。
 
 **阿里云免费版限制如下**
 
@@ -168,9 +165,8 @@ uniCloud免费期间，为避免资源滥用，有使用限制，见下。
 
 **关于数据库读写次数：**修改或读取条数为0时也计算一次读写，即只要调用接口就计算一次。
 
-无论阿里云或腾讯云，如有需求突破资源限制，请发邮件到service@dcloud.io请求协助。如果属于标杆案例，可以申请特批免费；其他情况，可以手工付费。
+阿里云如有需求突破资源限制，请发邮件到service@dcloud.io请求协助。如果属于标杆案例，可以特批扩大免费资源。
 
-腾讯云目前已经可以在uniCloud web控制台查看资源用量，需要注意的是资源用量并非是从当月月初到月末进行统计的，而是由服务空间创建日期往后推算的
 
 ### 如何控制云函数数量？云函数是否可以按多级目录整理@merge-functions
 
