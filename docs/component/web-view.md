@@ -11,7 +11,7 @@
 |src|String|webview 指向网页的链接|&nbsp;|
 |allow|String|用于为 [iframe](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/iframe) 指定其[特征策略](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/策略特征)|H5|
 |sandbox|String|该属性对呈现在 [iframe](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/iframe) 框架中的内容启用一些额外的限制条件。|H5|
-|webview-styles|Object|webview 的样式|App|
+|webview-styles|Object|webview 的样式|App-vue|
 |@message|EventHandler|网页向应用 `postMessage` 时，会在特定时机（后退、组件销毁、分享）触发并收到消息。|H5 暂不支持|
 |@onPostMessage|EventHandler|网页向应用实时 `postMessage`|App-nvue|
 

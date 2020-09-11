@@ -1,6 +1,6 @@
 `uni-app` App 端内置 [HTML5+](https://www.html5plus.org/doc/) 引擎，让 js 可以直接调用丰富的原生能力。
 
-- 条件编译调用 HTML5+
+#### 条件编译调用 HTML5+
 
 小程序及 H5 等平台是没有 HTML5+ 扩展规范的，因此在 `uni-app` 调用 HTML5+ 的扩展规范时，需要注意使用条件编译。否则运行到h5、小程序等平台会出现 `plus is not defined`错误。
 
@@ -11,12 +11,12 @@ console.log('应用的 appid 为：' + appid);
 // #endif
 ```
 
-- `uni-app`不需要 `plus ready`
+#### `uni-app`不需要 `plus ready`
 在html中使用plus的api，需要等待plus ready。
 而`uni-app`不需要等，可以直接使用。而且如果你调用plus ready，反而不会触发。
 
 
-- `uni-app` 中的事件监听
+#### `uni-app` 中的事件监听
 
 在普通的 H5+ 项目中，需要使用 `document.addEventListener` 监听原生扩展的事件。
 

@@ -1429,7 +1429,10 @@ function getEventChannel (id) {
 
 function createApp (vm) {
   Vue.prototype.getOpenerEventChannel = function () {
-    return this.__eventChannel__ || new EventChannel()
+    if (!this.__eventChannel__) {
+      this.__eventChannel__ = new EventChannel();
+    }
+    return this.__eventChannel__
   };
   const callHook = Vue.prototype.__call_hook;
   Vue.prototype.__call_hook = function (hook, args) {

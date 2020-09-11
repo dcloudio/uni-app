@@ -430,11 +430,13 @@ const eventChannelStack = [];
 
 let id = 0;
 
-function initEventChannel (events) {
+function initEventChannel (events, cache = true) {
   id++;
   const eventChannel = new EventChannel(id, events);
-  eventChannels[id] = eventChannel;
-  eventChannelStack.push(eventChannel);
+  if (cache) {
+    eventChannels[id] = eventChannel;
+    eventChannelStack.push(eventChannel);
+  }
   return eventChannel
 }
 
@@ -2186,7 +2188,10 @@ function parseApp (vm) {
 
 function createApp (vm) {
   Vue.prototype.getOpenerEventChannel = function () {
-    return this.__eventChannel__ || new EventChannel()
+    if (!this.__eventChannel__) {
+      this.__eventChannel__ = new EventChannel();
+    }
+    return this.__eventChannel__
   };
   const callHook = Vue.prototype.__call_hook;
   Vue.prototype.__call_hook = function (hook, args) {
