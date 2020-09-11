@@ -18,11 +18,14 @@ interface PageRouteOptions {
   path: string
   props: Record<string, any>
   meta: {
-    isQuit: boolean
-    isEntry: boolean
-    isTabBar: boolean
-    tabBarIndex: boolean
+    isQuit: boolean | undefined
+    isEntry: boolean | undefined
+    isTabBar: boolean | undefined
+    tabBarIndex: number
     windowTop: number
+    topWindow: boolean | undefined
+    leftWindow: boolean | undefined
+    rightWindow: boolean | undefined
   }
 }
 
@@ -121,20 +124,23 @@ function formatPagesRoute(pagesJson: Record<string, any>): PageRouteOptions[] {
   return (pagesJson.pages as PageOptions[]).map(pageOptions => {
     const path = pageOptions.path
     const name = formatPageIdentifier(path)
-    const isEntry = firstPagePath === path
+    const isEntry = firstPagePath === path ? true : undefined
     const tabBarIndex = tabBarList.findIndex(
       (tabBarPage: { pagePath: string }) => tabBarPage.pagePath === path
     )
-    const isTabBar = tabBarIndex !== -1
+    const isTabBar = tabBarIndex !== -1 ? true : undefined
     const props = formatPageStyle(pageOptions.style) || {}
 
     let windowTop = 0
     const meta = {
-      isQuit: isEntry || isTabBar,
+      isQuit: isEntry || isTabBar ? true : undefined,
       isEntry,
       isTabBar,
       tabBarIndex,
-      windowTop
+      windowTop,
+      topWindow: props.topWindow,
+      leftWindow: props.leftWindow,
+      rightWindow: props.rightWindow
     }
     Object.assign(props, meta)
     return {
@@ -155,7 +161,8 @@ function generatePageRoute({ name, path, props, meta }: PageRouteOptions) {
         props
       )}), {page: withCtx(() => [createVNode(${name})]), _: 1}, 16))
     }
-  }
+  },
+  meta: ${JSON.stringify(meta)}
 }`
 }
 
