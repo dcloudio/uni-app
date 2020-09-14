@@ -1,3 +1,7 @@
+import {
+  invoke
+} from '../bridge'
+
 export {
   isTabBarPage
 } from '../bridge'
@@ -160,5 +164,40 @@ export function getScreenInfo () {
   return {
     screenWidth: Math.round(resolutionWidth),
     screenHeight: Math.round(resolutionHeight)
+  }
+}
+
+export function warpPlusEvent (origin, name) {
+  return function (callbackId) {
+    origin[name](function (data) {
+      if (data) {
+        delete data.code
+        delete data.message
+      }
+      invoke(callbackId, data)
+    })
+  }
+}
+
+export function warpPlusMethod (origin, name, before) {
+  return function (options, callbackId) {
+    if (typeof before === 'function') {
+      options = before(options)
+    }
+    origin[name](Object.assign(options, {
+      success (data = {}) {
+        delete data.code
+        delete data.message
+        invoke(callbackId, Object.assign({}, data, {
+          errMsg: `${name}:ok`
+        }))
+      },
+      fail (error = {}) {
+        invoke(callbackId, {
+          errMsg: `${name}:fail ${error.message || ''}`,
+          errCode: error.code || 0
+        })
+      }
+    }))
   }
 }
