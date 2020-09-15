@@ -8,9 +8,9 @@
 
 ### uniCloud稳定吗？DCloud服务器异常会影响我的线上业务吗？
 
-`uniCloud`是 DCloud 和阿里云、腾讯云等成熟云厂商合作推出的云服务产品，阿里云、腾讯云等提供云端基础资源，DCloud提供API设计、前端框架、IDE工具支持、管理控制台、插件生态等服务，开发者的云函数直接托管在阿里云等服务商平台。
+`uniCloud`是 DCloud 和阿里云、腾讯云等成熟云厂商合作推出的云服务产品，阿里云、腾讯云等提供云端基础资源，DCloud提供API设计、前端框架、IDE工具支持、管理控制台、插件生态等服务，开发者的云函数直接托管在阿里云等服务商的serverless平台。
 
-用户终端上的应用在运行时，直连云服务商平台，不会经过DCloud服务器，开发者无需担心因DCloud服务器负载而影响自己业务的问题。
+用户终端上的应用在运行时，直连云服务商serverless平台，不会经过DCloud服务器，开发者无需担心因DCloud服务器负载而影响自己业务的问题。
 
 ### 云函数 和 传统 Node.js 开发有何区别？
 
@@ -64,13 +64,11 @@ nodejs的性能高于php，MongoDB的性能也优于mysql。
 php+mysql的优势在于生态，有很多现成的开源项目，可以大幅提高开发效率。而uniCloud将通过插件市场等一系列手段强化生态，给开发者提供更高效率的各种轮子。
 
 ### 支持websocket吗？
-websocket的实时特性导致serverless化比较复杂。还需要继续寻找合适方案。
-
-如果使用三方sdk服务，比如推送、腾讯或声网等实时音视频方案，由于是连接三方服务器，不是连接uniCloud，这些方案仍然可以继续使用。
-
-同时一些三方专业的websocket服务也可以使用，比如：[https://ext.dcloud.net.cn/plugin?id=1334](https://ext.dcloud.net.cn/plugin?id=1334)
-
-如果是im方面的需求，那么基于uniPush的im服务是非常推荐的选择：[https://ext.dcloud.net.cn/plugin?id=2670](https://ext.dcloud.net.cn/plugin?id=2670)
+websocket的实时特性导致serverless化比较复杂，目前曲线方案有：
+1. 如果使用三方sdk服务，比如推送、腾讯或声网等实时音视频方案，由于是连接三方服务器，不是连接uniCloud，这些方案仍然可以继续使用。
+2. 一些三方专业的websocket服务也可以使用，比如：[https://ext.dcloud.net.cn/plugin?id=1334](https://ext.dcloud.net.cn/plugin?id=1334)
+3. 如果是im方面的需求，那么基于uniPush的im服务是非常推荐的选择：[https://ext.dcloud.net.cn/plugin?id=2670](https://ext.dcloud.net.cn/plugin?id=2670)
+4. 前端轮询获取服务器数据：[https://ext.dcloud.net.cn/plugin?id=2740](https://ext.dcloud.net.cn/plugin?id=2740)
 
 ### 如何导入老数据库的数据？
 - 方式1：可以在HBuilderX里用db_init.json来批量创建云数据库和插入表内容，[详见](https://uniapp.dcloud.io/uniCloud/cf-database?id=%e4%bd%bf%e7%94%a8db_initjson%e5%88%9d%e5%a7%8b%e5%8c%96%e9%a1%b9%e7%9b%ae%e6%95%b0%e6%8d%ae%e5%ba%93)
@@ -193,9 +191,11 @@ uniCloud服务商为阿里云时支持配置全球加速，步骤如下：
 
 ### 腾讯云提示当前实名主体已经有三个账号怎么办
 
-开通腾讯云服务空间时实名认证提示实名主体已有三个账号时可以参考以下流程注销不用的账号：
+开通腾讯云服务空间时实名认证提示实名主体已有三个账号，这往往是开发者在微信小程序开发工具里不小心开通了多个免费的小程序云，此时可以参考以下流程注销不用的账号：
 
 1. 打开[腾讯云找回账号](https://cloud.tencent.com/services/forgotAccount)页面
 2. 选择找回账号方式为实名信息
 3. 操作完成之后可以看到自己实名信息对应的全部腾讯云账号
 4. 选择不使用的账号登录之后注销即可，参考文档：[注销腾讯云账号](https://cloud.tencent.com/document/product/378/30253)
+
+同时，如果付费购买腾讯云服务空间，不受3个免费服务空间的限制。
