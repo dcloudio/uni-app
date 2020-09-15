@@ -1414,9 +1414,76 @@ const promiseInterceptor = {
     });
   }
 };
-const createIntersectionObserver$1 = /* @__PURE__ */ createApi(() => {
+function getCurrentPageVm() {
+  const pages = getCurrentPages();
+  const len = pages.length;
+  const page = pages[len - 1];
+  return page && page.$vm;
+}
+const defaultOptions = {
+  thresholds: [0],
+  initialRatio: 0,
+  observeAll: false
+};
+let reqComponentObserverId = 1;
+const reqComponentObserverCallbacks = {};
+UniServiceJSBridge.subscribe("requestComponentObserver", ({reqId, reqEnd, res}) => {
+  const callback = reqComponentObserverCallbacks[reqId];
+  if (callback) {
+    if (reqEnd) {
+      return delete reqComponentObserverCallbacks[reqId];
+    }
+    callback(res);
+  }
 });
-const createSelectorQuery$1 = /* @__PURE__ */ createApi(() => {
+class ServiceIntersectionObserver {
+  constructor(component, options) {
+    this._pageId = component.$page.id;
+    this._component = component._$id || component;
+    this._options = extend({}, defaultOptions, options || {});
+    this._relativeInfo = [];
+  }
+  relativeTo(selector, margins) {
+    if (this._reqId) {
+      throw new Error('Relative nodes cannot be added after "observe" call in IntersectionObserver');
+    }
+    this._relativeInfo.push({
+      selector,
+      margins
+    });
+    return this;
+  }
+  relativeToViewport(margins) {
+    return this.relativeTo(null, margins);
+  }
+  observe(selector, callback) {
+    if (typeof callback !== "function") {
+      return;
+    }
+    if (this._reqId) {
+      throw new Error('"observe" call can be only called once in IntersectionObserver');
+    }
+    this._reqId = reqComponentObserverId++;
+    reqComponentObserverCallbacks[this._reqId] = callback;
+    UniServiceJSBridge.publishHandler("addIntersectionObserver", {
+      selector,
+      reqId: this._reqId,
+      component: this._component,
+      options: this._options,
+      relativeInfo: this._relativeInfo
+    }, this._pageId);
+  }
+  disconnect() {
+    UniServiceJSBridge.publishHandler("removeIntersectionObserver", {
+      reqId: this._reqId
+    }, this._pageId);
+  }
+}
+const createIntersectionObserver$1 = /* @__PURE__ */ createApi((context, options) => {
+  if (!context) {
+    context = getCurrentPageVm();
+  }
+  return new ServiceIntersectionObserver(context, options);
 });
 const CanIUseProtocol = [
   {
@@ -1459,11 +1526,8 @@ const canIUse = /* @__PURE__ */ createApi((schema) => {
   }
   return true;
 }, CanIUseProtocol);
-const makePhoneCall = /* @__PURE__ */ createApi(({phoneNumber}) => {
-  window.location.href = `tel:${phoneNumber}`;
-  return {
-    errMsg: "makePhoneCall:ok"
-  };
+const makePhoneCall = /* @__PURE__ */ createApi((option) => {
+  window.location.href = `tel:${option.phoneNumber}`;
 }, MakePhoneCallProtocol);
 const ua = navigator.userAgent;
 const isAndroid = /android/i.test(ua);
@@ -1574,7 +1638,6 @@ const getSystemInfo = /* @__PURE__ */ createApi(() => {
 });
 const openDocument = /* @__PURE__ */ createApi((option) => {
   window.open(option.filePath);
-  return true;
 }, OpenDocumentProtocol);
 const navigateBack = /* @__PURE__ */ createApi(() => {
 });
@@ -1594,7 +1657,6 @@ var api = /* @__PURE__ */ Object.freeze({
   promiseInterceptor,
   arrayBufferToBase64,
   base64ToArrayBuffer,
-  createSelectorQuery: createSelectorQuery$1,
   createIntersectionObserver: createIntersectionObserver$1,
   canIUse,
   makePhoneCall,
@@ -2730,4 +2792,4 @@ function render$a(_ctx, _cache, $props, $setup, $data, $options) {
 ;
 script$a.render = render$a;
 script$a.__file = "packages/uni-h5/src/framework/components/async-loading/index.vue";
-export {script$9 as AsyncErrorComponent, script$a as AsyncLoadingComponent, script$8 as PageComponent, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, createIntersectionObserver$1 as createIntersectionObserver, createSelectorQuery$1 as createSelectorQuery, getApp, getCurrentPages$1 as getCurrentPages, getSystemInfo, getSystemInfoSync, makePhoneCall, navigateBack, navigateTo, openDocument, index as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, switchTab, uni$1 as uni, upx2px};
+export {script$9 as AsyncErrorComponent, script$a as AsyncLoadingComponent, script$8 as PageComponent, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, createIntersectionObserver$1 as createIntersectionObserver, getApp, getCurrentPages$1 as getCurrentPages, getSystemInfo, getSystemInfoSync, makePhoneCall, navigateBack, navigateTo, openDocument, index as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, switchTab, uni$1 as uni, upx2px};

@@ -3,7 +3,6 @@ export * from './service/base/upx2px'
 export * from './service/base/interceptor'
 
 export * from './service/ui/createIntersectionObserver'
-export * from './service/ui/createSelectorQuery'
 
 // protocols
 export * from './protocols/base/canIUse'

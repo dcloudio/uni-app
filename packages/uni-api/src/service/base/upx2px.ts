@@ -14,8 +14,8 @@ function checkDeviceWidth() {
   isIOS = platform === 'ios'
 }
 
-export const upx2px = createApi(
-  (number: number, newDeviceWidth: number | undefined) => {
+export const upx2px = createApi<typeof uni.upx2px>(
+  (number, newDeviceWidth?: number) => {
     if (deviceWidth === 0) {
       checkDeviceWidth()
     }

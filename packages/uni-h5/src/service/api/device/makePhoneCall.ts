@@ -1,11 +1,5 @@
 import { createApi, MakePhoneCallProtocol } from '@dcloudio/uni-api'
 
-export const makePhoneCall = createApi(
-  ({ phoneNumber }: { phoneNumber: string }) => {
-    window.location.href = `tel:${phoneNumber}`
-    return {
-      errMsg: 'makePhoneCall:ok'
-    }
-  },
-  MakePhoneCallProtocol
-)
+export const makePhoneCall = createApi<typeof uni.makePhoneCall>(option => {
+  window.location.href = `tel:${option.phoneNumber}`
+}, MakePhoneCallProtocol)

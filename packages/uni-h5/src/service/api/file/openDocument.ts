@@ -1,9 +1,5 @@
 import { createApi, OpenDocumentProtocol } from '@dcloudio/uni-api'
 
-interface OpenDocumentOption {
-  filePath: string
-}
-export const openDocument = createApi((option: OpenDocumentOption) => {
+export const openDocument = createApi<typeof uni.openDocument>(option => {
   window.open(option.filePath)
-  return true
 }, OpenDocumentProtocol)

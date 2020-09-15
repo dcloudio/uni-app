@@ -12,7 +12,7 @@ const SCHEMA_CSS = {
   'css.constant': cssSupports('top:constant(a)')
 }
 
-export const canIUse = createApi((schema: string) => {
+export const canIUse = createApi<typeof uni.canIUse>((schema: string) => {
   if (hasOwn(SCHEMA_CSS, schema)) {
     return SCHEMA_CSS[schema]
   }

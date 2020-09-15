@@ -16,7 +16,7 @@ const isIOS = /iphone|ipad|ipod/i.test(ua)
 /**
  * 获取系统信息-同步
  */
-export const getSystemInfoSync = createApi(() => {
+export const getSystemInfoSync = createApi<typeof uni.getSystemInfoSync>(() => {
   var screen = window.screen
   var pixelRatio = window.devicePixelRatio
   // 横屏时 iOS 获取的屏幕宽高颠倒，进行纠正
@@ -133,5 +133,5 @@ export const getSystemInfoSync = createApi(() => {
       bottom: safeAreaInsets.bottom,
       left: safeAreaInsets.left
     }
-  }
+  } as UniApp.GetSystemInfoResult
 })

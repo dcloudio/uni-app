@@ -1,6 +1,6 @@
 import { ProtocolOptions } from '../protocols/type'
 
-export function createApi<T extends Function = () => any>(
+export function createApi<T extends Function>(
   fn: T,
   validate?: ProtocolOptions | ProtocolOptions[]
 ) {
