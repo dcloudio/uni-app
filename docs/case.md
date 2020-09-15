@@ -212,6 +212,8 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 
 **字节跳动：** 抖音小游戏中心。
 
+**美团：** App内充电宝扫码栏目
+
 **快手：** App中搜索“快手每日一答”
 
 **京东：** 京东开发的新冠抗疫服务平台：[H5](http://yingji-h5.chanye.jdcloud.com/)、京东金融羊羊大作战：[H5](https://u.jr.jd.com/uc-fe-wxgrowing/sheep-fight/)
@@ -257,11 +259,13 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 
 **香橙：** 餐馆SaaS服务，为餐馆提供多端的手机点餐、下单、排队叫号、营销推广解决方案。[官网](http://ivcvc.com)
 
-**大商创：** 全渠道多用户商城解决方案。[https://www.dscmall.cn](https://www.dscmall.cn)
+**大商创：** 全渠道多用户商城解决方案。[官网](https://www.dscmall.cn)
 
 #### 国企
 
 **中国移动咪咕商城：**[H5](https://mgmall.migudm.cn/)
+
+**中国移动微信平台个人中心**
 
 **北京移动：**App部分页面使用uni-app制作
 
@@ -270,6 +274,8 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 **广东汕头公交：** 广东移动出品。[Android](https://android.myapp.com/myapp/detail.htm?apkName=com.gmcc.stgj)、[iOS](https://apps.apple.com/cn/app/%E6%B1%95%E5%A4%B4%E5%85%AC%E4%BA%A4/id1091442840)、微信小程序搜索“汕头智慧公交”
 
 **广东联通粉丝卡：**[H5（特定UA）](https://wxv.gd10010.cn/)
+
+**云南移动微店系统：**[H5](http://wx.10086.cn/yunnan/qrcodeyn/uniapph5/h5/index.html)
 
 **贵州联通沃扫码：**[H5，需扫码访问](http://www.gz10010.shop/wsm-h5/#/)
 
@@ -293,6 +299,8 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 **中国银联云闪付：** App部分页面使用uni-app制作
 
 **招商银行：** App部分页面使用uni-app制作
+
+**建设银行：** App部分页面使用uni-app制作
 
 **湖北银行（5+App）：**[Android](https://android.myapp.com/myapp/detail.htm?apkName=cn.com.yusys.app.HuBeiBank)、[iOS](https://apps.apple.com/cn/app/%E6%B9%96%E5%8C%97%E9%93%B6%E8%A1%8C%E4%B8%AA%E4%BA%BA%E6%89%8B%E6%9C%BA%E9%93%B6%E8%A1%8C%E5%AE%A2%E6%88%B7%E7%AB%AF/id718080432)
 
