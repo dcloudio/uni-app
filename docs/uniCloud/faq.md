@@ -190,3 +190,12 @@ uniCloud服务商为阿里云时支持配置全球加速，步骤如下：
 
 1. 参考[阿里云全球加速](https://help.aliyun.com/document_detail/153198.html)文档，开通服务并对`api.bspapp.com`进行加速
 2. [自行初始化uniCloud](uniCloud/init.md)传入endpoint参数，其值为开通全球加速的自有域名
+
+### 腾讯云提示当前实名主体已经有三个账号怎么办
+
+开通腾讯云服务空间时实名认证提示实名主体已有三个账号时可以参考以下流程注销不用的账号：
+
+1. 打开[腾讯云找回账号](https://cloud.tencent.com/services/forgotAccount)页面
+2. 选择找回账号方式为实名信息
+3. 操作完成之后可以看到自己实名信息对应的全部腾讯云账号
+4. 选择不使用的账号登录之后注销即可，参考文档：[注销腾讯云账号](https://cloud.tencent.com/document/product/378/30253)
