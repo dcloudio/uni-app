@@ -171,7 +171,7 @@ class ComponentDescriptor {
   }
 
   requestAnimationFrame(callback: FrameRequestCallback) {
-    return global.requestAnimationFrame(callback), this
+    return window.requestAnimationFrame(callback), this
   }
 
   getState() {

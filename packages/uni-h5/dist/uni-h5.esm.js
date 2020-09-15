@@ -682,20 +682,6 @@ function initAppConfig$1(appConfig) {
 function initService(app) {
   initAppConfig$1(app._context.config);
 }
-var UniServiceJSBridge$1 = extend(ServiceJSBridge, {
-  publishHandler(event, args, pageId) {
-    window.UniViewJSBridge.subscribeHandler(event, args, pageId);
-  }
-});
-var UniViewJSBridge$1 = extend(ViewJSBridge, {
-  publishHandler(event, args, pageId) {
-    window.UniServiceJSBridge.subscribeHandler(event, args, pageId);
-  }
-});
-function initBridge$1() {
-  window.UniServiceJSBridge = UniServiceJSBridge$1;
-  window.UniViewJSBridge = UniViewJSBridge$1;
-}
 function initRouter(app) {
   const history = __UNI_ROUTER_MODE__ === "history" ? createWebHistory() : createWebHashHistory();
   app.use(createRouter({
@@ -1262,9 +1248,11 @@ var decode = function(base64) {
   }
   return arraybuffer;
 };
-function createApi(fn, validate) {
-  if (process.env.NODE_ENV !== "production" && validate)
+function createApi(fn, protocol, options) {
+  if (process.env.NODE_ENV !== "production" && protocol)
     ;
+  if (options) {
+  }
   return fn;
 }
 const Base64ToArrayBufferProtocol = [
@@ -1427,7 +1415,7 @@ const defaultOptions = {
 };
 let reqComponentObserverId = 1;
 const reqComponentObserverCallbacks = {};
-UniServiceJSBridge.subscribe("requestComponentObserver", ({reqId, reqEnd, res}) => {
+ServiceJSBridge.subscribe("requestComponentObserver", ({reqId, reqEnd, res}) => {
   const callback = reqComponentObserverCallbacks[reqId];
   if (callback) {
     if (reqEnd) {
@@ -1510,6 +1498,19 @@ const OpenDocumentProtocol = {
   },
   fileType: {
     type: String
+  }
+};
+const GetImageInfoOptions = {
+  formatArgs: {
+    src(src, params) {
+      params.src = uni.getRealPath(src);
+    }
+  }
+};
+const GetImageInfoProtocol = {
+  src: {
+    type: String,
+    required: true
   }
 };
 function cssSupports(css) {
@@ -1639,15 +1640,42 @@ const getSystemInfo = /* @__PURE__ */ createApi(() => {
 const openDocument = /* @__PURE__ */ createApi((option) => {
   window.open(option.filePath);
 }, OpenDocumentProtocol);
+function _getServiceAddress() {
+  return window.location.protocol + "//" + window.location.host;
+}
+const getImageInfo = /* @__PURE__ */ createApi(({src}, callbackId) => {
+  const {invokeCallbackHandler: invoke} = UniServiceJSBridge;
+  const img = new Image();
+  const realPath = src;
+  img.onload = function() {
+    invoke(callbackId, {
+      errMsg: "getImageInfo:ok",
+      width: img.naturalWidth,
+      height: img.naturalHeight,
+      path: realPath.indexOf("/") === 0 ? _getServiceAddress() + realPath : realPath
+    });
+  };
+  img.onerror = function() {
+    invoke(callbackId, {
+      errMsg: "getImageInfo:fail"
+    });
+  };
+  img.src = src;
+}, GetImageInfoProtocol, GetImageInfoOptions);
 const navigateBack = /* @__PURE__ */ createApi(() => {
 });
-const navigateTo = /* @__PURE__ */ createApi(() => {
+const navigateTo = /* @__PURE__ */ createApi((options) => {
+  const router = getApp().$router;
+  router.push(options.url);
 });
 const redirectTo = /* @__PURE__ */ createApi(() => {
 });
 const reLaunch = /* @__PURE__ */ createApi(() => {
 });
 const switchTab = /* @__PURE__ */ createApi(() => {
+});
+const getRealPath = /* @__PURE__ */ createApi((path) => {
+  return path;
 });
 var api = /* @__PURE__ */ Object.freeze({
   __proto__: null,
@@ -1663,11 +1691,13 @@ var api = /* @__PURE__ */ Object.freeze({
   getSystemInfo,
   getSystemInfoSync,
   openDocument,
+  getImageInfo,
   navigateBack,
   navigateTo,
   redirectTo,
   reLaunch,
-  switchTab
+  switchTab,
+  getRealPath
 });
 var script$4 = {
   name: "App",
@@ -1775,7 +1805,6 @@ function initSystemComponents(app2) {
 }
 var index = {
   install(app) {
-    initBridge$1();
     initApp(app);
     initView(app);
     initService(app);
@@ -1783,9 +1812,19 @@ var index = {
     initRouter(app);
   }
 };
+const UniViewJSBridge$1 = extend(ViewJSBridge, {
+  publishHandler(event, args, pageId) {
+    window.UniServiceJSBridge.subscribeHandler(event, args, pageId);
+  }
+});
 const uni$1 = api;
+const UniServiceJSBridge$1 = extend(ServiceJSBridge, {
+  publishHandler(event, args, pageId) {
+    window.UniViewJSBridge.subscribeHandler(event, args, pageId);
+  }
+});
 let appVm;
-function getApp() {
+function getApp$1() {
   return appVm;
 }
 function getCurrentPages$1() {
@@ -2792,4 +2831,4 @@ function render$a(_ctx, _cache, $props, $setup, $data, $options) {
 ;
 script$a.render = render$a;
 script$a.__file = "packages/uni-h5/src/framework/components/async-loading/index.vue";
-export {script$9 as AsyncErrorComponent, script$a as AsyncLoadingComponent, script$8 as PageComponent, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, createIntersectionObserver$1 as createIntersectionObserver, getApp, getCurrentPages$1 as getCurrentPages, getSystemInfo, getSystemInfoSync, makePhoneCall, navigateBack, navigateTo, openDocument, index as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, switchTab, uni$1 as uni, upx2px};
+export {script$9 as AsyncErrorComponent, script$a as AsyncLoadingComponent, script$8 as PageComponent, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, createIntersectionObserver$1 as createIntersectionObserver, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getImageInfo, getRealPath, getSystemInfo, getSystemInfoSync, makePhoneCall, navigateBack, navigateTo, openDocument, index as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, switchTab, uni$1 as uni, upx2px};

@@ -1,5 +1,7 @@
 import { extend } from '@vue/shared'
 
+import { ServiceJSBridge } from '@dcloudio/uni-core'
+
 import { createApi } from '../../helpers/api'
 import { getCurrentPageVm } from '../utils'
 
@@ -33,7 +35,7 @@ let reqComponentObserverId = 1
 
 const reqComponentObserverCallbacks: Record<number, ObserveResultCallback> = {}
 
-UniServiceJSBridge.subscribe(
+ServiceJSBridge.subscribe(
   'requestComponentObserver',
   ({ reqId, reqEnd, res }: requestComponentObserver) => {
     const callback = reqComponentObserverCallbacks[reqId]

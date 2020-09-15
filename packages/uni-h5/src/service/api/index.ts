@@ -6,11 +6,15 @@ export * from './device/getSystemInfoSync'
 
 export * from './file/openDocument'
 
+export * from './media/getImageInfo'
+
 export * from './route/navigateBack'
 export * from './route/navigateTo'
 export * from './route/redirectTo'
 export * from './route/reLaunch'
 export * from './route/switchTab'
+
+export * from './util/getRealPath'
 
 export {
   upx2px,

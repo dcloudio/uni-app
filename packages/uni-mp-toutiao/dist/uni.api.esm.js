@@ -1,7 +1,7 @@
 import { isArray, isPromise, isFunction, isPlainObject, hasOwn, isString } from '@vue/shared';
 
-function createApi(fn, validate) {
-    if ((process.env.NODE_ENV !== 'production') && validate) ;
+function createApi(fn, protocol, options) {
+    if ((process.env.NODE_ENV !== 'production') && protocol) ;
     return fn;
 }
 

@@ -10,6 +10,7 @@ type ProtocolMethod<T, TConstructor = any> = T extends (...args: any) => any
   : never
 type ProtocolType<T> = ProtocolConstructor<T> | ProtocolConstructor<T>[]
 
+type Validator = (value: any, params: Record<string, any>) => void
 export interface ApiProtocol {
   [name: string]: ProtocolOptions
 }
@@ -18,7 +19,7 @@ export interface ApiOptions {
   beforeAll?: () => void
   beforeSuccess?: () => void
   formatArgs?: {
-    [name: string]: (value: any, params: Record<string, any>) => void
+    [name: string]: Validator
   }
 }
 
@@ -27,5 +28,5 @@ export interface ProtocolOptions<T = any, D = T> {
   type?: ProtocolType<T> | true | null
   required?: boolean
   default?: D | DefaultFactory<D> | null | undefined | object
-  validator?(value: unknown): boolean | undefined | string
+  validator?(value: any): boolean | undefined | string
 }

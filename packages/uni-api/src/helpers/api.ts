@@ -1,10 +1,14 @@
-import { ProtocolOptions } from '../protocols/type'
+import { ApiOptions, ApiProtocol, ProtocolOptions } from '../protocols/type'
 
 export function createApi<T extends Function>(
   fn: T,
-  validate?: ProtocolOptions | ProtocolOptions[]
+  protocol?: ApiProtocol | ProtocolOptions[],
+  options?: ApiOptions
 ) {
-  if (__DEV__ && validate) {
+  if (__DEV__ && protocol) {
+  }
+  if (options) {
+    console.log(options)
   }
   return fn
 }

@@ -273,5 +273,6 @@ export const buildPluginInject: Plugin = inject({
   '__GLOBAL__.': '@dcloudio/uni-h5',
   'uni.': '@dcloudio/uni-h5',
   getApp: ['@dcloudio/uni-h5', 'getApp'],
-  getCurrentPages: ['@dcloudio/uni-h5', 'getCurrentPages']
+  getCurrentPages: ['@dcloudio/uni-h5', 'getCurrentPages'],
+  UniServiceJSBridge: ['@dcloudio/uni-h5', 'UniServiceJSBridge']
 })

@@ -1,8 +1,10 @@
-export const loadSubPackage = {
+import { ApiProtocol } from '../type'
+
+export const LoadSubPackageProtocol: ApiProtocol = {
   root: {
     type: String,
     required: true,
-    validator(value, params) {
+    validator(value) {
       const subPackages = __uniConfig.subPackages
       if (!Array.isArray(subPackages) || subPackages.length === 0) {
         return 'no subPackages'

@@ -16,6 +16,10 @@ export * from './protocols/location/chooseLocation'
 export * from './protocols/location/getLocation'
 export * from './protocols/location/openLocation'
 
+export * from './protocols/media/chooseImage'
+export * from './protocols/media/chooseVideo'
+export * from './protocols/media/getImageInfo'
+
 // helpers
 export { createApi } from './helpers/api'
 export { isSyncApi, isContextApi, promisify } from './helpers/promise'

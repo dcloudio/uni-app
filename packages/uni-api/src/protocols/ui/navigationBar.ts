@@ -1,9 +1,23 @@
+import { ApiOptions, ApiProtocol } from '../type'
+
 const FRONT_COLORS = ['#ffffff', '#000000']
-export const setNavigationBarColor = {
+
+export const SetNavigationBarColorOptions: ApiOptions = {
+  formatArgs: {
+    animation(animation = {}, params) {
+      params.animation = {
+        duration: animation.duration || 0,
+        timingFunc: animation.timingFunc || 'linear'
+      }
+    }
+  }
+}
+
+export const SetNavigationBarColorProtocol: ApiProtocol = {
   frontColor: {
     type: String,
     required: true,
-    validator(frontColor, params) {
+    validator(frontColor) {
       if (FRONT_COLORS.indexOf(frontColor) === -1) {
         return `invalid frontColor "${frontColor}"`
       }
@@ -20,16 +34,11 @@ export const setNavigationBarColor = {
         duration: 0,
         timingFunc: 'linear'
       }
-    },
-    validator(animation = {}, params) {
-      params.animation = {
-        duration: animation.duration || 0,
-        timingFunc: animation.timingFunc || 'linear'
-      }
     }
   }
 }
-export const setNavigationBarTitle = {
+
+export const SetNavigationBarTitleProtocol: ApiProtocol = {
   title: {
     type: String,
     required: true
