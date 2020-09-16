@@ -107,10 +107,7 @@ export default {
     this._images = {}
   },
   mounted () {
-    this._resize({
-      width: this.$refs.sensor.$el.offsetWidth,
-      height: this.$refs.sensor.$el.offsetHeight
-    })
+    this._resize()
   },
   beforeDestroy () {
     const canvas = this.$refs.canvas
@@ -131,10 +128,10 @@ export default {
       if (canvas.width > 0 && canvas.height > 0) {
         var context = canvas.getContext('2d')
         var imageData = context.getImageData(0, 0, canvas.width, canvas.height)
-        wrapper(this.$refs.canvas)
+        wrapper(canvas)
         context.putImageData(imageData, 0, 0)
       } else {
-        wrapper(this.$refs.canvas)
+        wrapper(canvas)
       }
     },
     _touchmove (event) {
