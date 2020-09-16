@@ -46,15 +46,15 @@ export function initPicker () {
       bounce: 'none',
       cachemode: 'noCache'
     })
-    pickerWebview.addEventListener('hide', () => {
-      _pickerHideCallback && _pickerHideCallback()
-      _pickerHideCallback = null
-    })
     window.__pickerCallback = function () {
       delete window.__pickerCallback
       pickerWebviewCreated = true
     }
   }
+  pickerWebview.addEventListener('hide', () => {
+    _pickerHideCallback && _pickerHideCallback()
+    _pickerHideCallback = null
+  })
 }
 
 export function showPicker (data = {}, callback) {
