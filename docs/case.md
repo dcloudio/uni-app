@@ -208,13 +208,13 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 
 **华为：** 微信小程序搜索“荣耀亲选商城”、[H5](https://m.qinxuan.honor.cn/)、[App部分栏目使用DCloud SDK](https://appgallery1.huawei.com/#/app/C100382765)
 
-**腾讯：** 微信小程序搜索“腾讯全民模拟炒股大赛”、[H5（需使用微信打开）](https://zqact.tenpay.com/chaogu/)
-
 **字节跳动：** 抖音小游戏中心。
 
-**美团：** App内充电宝扫码栏目
+**美团：** 微信小程序搜索“美团充电宝”、App内充电宝栏目
 
 **快手：** App中搜索“快手每日一答”
+
+**腾讯：** 微信小程序搜索“腾讯全民模拟炒股大赛”、[H5（需使用微信打开）](https://zqact.tenpay.com/chaogu/)
 
 **京东：** 京东开发的新冠抗疫服务平台：[H5](http://yingji-h5.chanye.jdcloud.com/)、京东金融羊羊大作战：[H5](https://u.jr.jd.com/uc-fe-wxgrowing/sheep-fight/)
 
