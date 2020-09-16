@@ -15,6 +15,10 @@ module.exports = {
   preTransformNode (el, {
     warn
   }) {
+    if (el.tag === 'match-media' && process.env.UNI_PLATFORM !== 'mp-weixin') {
+      el.tag = 'uni-match-media'
+    }
+
     if (process.env.UNI_PLATFORM === 'app-plus' && el.tag === 'ad') {
       warn('app-vue平台, <ad> 组件暂不支持非 V3 编译, 详见: https://ask.dcloud.net.cn/article/36599')
     }
