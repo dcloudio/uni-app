@@ -1248,12 +1248,26 @@ var decode = function(base64) {
   }
   return arraybuffer;
 };
-function createApi(fn, protocol, options) {
-  if (process.env.NODE_ENV !== "production" && protocol)
-    ;
-  if (options) {
+const API_TYPE_SYNC = 1;
+const API_TYPE_ASYNC = 2;
+const API_TYPE_RETURN = 3;
+function validateProtocol(name, args, protocol) {
+  console.log(name, args, protocol);
+  return true;
+}
+function formatApiArgs(args, options) {
+  if (!options) {
+    return args;
   }
-  return fn;
+}
+function createApi({type: type2, name, options}, fn, protocol) {
+  return function(...args) {
+    if (type2 === API_TYPE_SYNC) {
+      if (!(process.env.NODE_ENV !== "production" && protocol && !validateProtocol(name, args, protocol))) {
+        return fn.apply(null, formatApiArgs(args, options));
+      }
+    }
+  };
 }
 const Base64ToArrayBufferProtocol = [
   {
@@ -1269,10 +1283,10 @@ const ArrayBufferToBase64Protocol = [
     required: true
   }
 ];
-const base64ToArrayBuffer = /* @__PURE__ */ createApi((base642) => {
+const base64ToArrayBuffer = /* @__PURE__ */ createApi({type: API_TYPE_SYNC, name: "base64ToArrayBuffer"}, (base642) => {
   return decode(base642);
 }, Base64ToArrayBufferProtocol);
-const arrayBufferToBase64 = /* @__PURE__ */ createApi((arrayBuffer) => {
+const arrayBufferToBase64 = /* @__PURE__ */ createApi({type: API_TYPE_SYNC, name: "arrayBufferToBase64"}, (arrayBuffer) => {
   return encode(arrayBuffer);
 }, ArrayBufferToBase64Protocol);
 const Upx2pxProtocol = [
@@ -1293,7 +1307,7 @@ function checkDeviceWidth() {
   deviceDPR = pixelRatio;
   isIOS = platform === "ios";
 }
-const upx2px = /* @__PURE__ */ createApi((number, newDeviceWidth) => {
+const upx2px = /* @__PURE__ */ createApi({type: API_TYPE_SYNC, name: "upx2px"}, (number, newDeviceWidth) => {
   if (deviceWidth === 0) {
     checkDeviceWidth();
   }
@@ -1372,14 +1386,14 @@ function removeHook(hooks, hook) {
     hooks.splice(index2, 1);
   }
 }
-const addInterceptor = /* @__PURE__ */ createApi((method, interceptor3) => {
+const addInterceptor = /* @__PURE__ */ createApi({type: API_TYPE_SYNC, name: "addInterceptor"}, (method, interceptor3) => {
   if (typeof method === "string" && isPlainObject(interceptor3)) {
     mergeInterceptorHook(scopedInterceptors[method] || (scopedInterceptors[method] = {}), interceptor3);
   } else if (isPlainObject(method)) {
     mergeInterceptorHook(globalInterceptors, method);
   }
 }, AddInterceptorProtocol);
-const removeInterceptor = /* @__PURE__ */ createApi((method, interceptor3) => {
+const removeInterceptor = /* @__PURE__ */ createApi({type: API_TYPE_SYNC, name: "removeInterceptor"}, (method, interceptor3) => {
   if (typeof method === "string") {
     if (isPlainObject(interceptor3)) {
       removeInterceptorHook(scopedInterceptors[method], interceptor3);
@@ -1467,12 +1481,14 @@ class ServiceIntersectionObserver {
     }, this._pageId);
   }
 }
-const createIntersectionObserver$1 = /* @__PURE__ */ createApi((context, options) => {
+const createIntersectionObserver$1 = /* @__PURE__ */ createApi({type: API_TYPE_RETURN}, (context, options) => {
   if (!context) {
     context = getCurrentPageVm();
   }
   return new ServiceIntersectionObserver(context, options);
 });
+const createSelectorQuery$1 = () => {
+};
 const CanIUseProtocol = [
   {
     name: "schema",
@@ -1521,19 +1537,19 @@ const SCHEMA_CSS = {
   "css.env": cssSupports("top:env(a)"),
   "css.constant": cssSupports("top:constant(a)")
 };
-const canIUse = /* @__PURE__ */ createApi((schema) => {
+const canIUse = /* @__PURE__ */ createApi({type: API_TYPE_SYNC, name: "canIUse"}, (schema) => {
   if (hasOwn(SCHEMA_CSS, schema)) {
     return SCHEMA_CSS[schema];
   }
   return true;
 }, CanIUseProtocol);
-const makePhoneCall = /* @__PURE__ */ createApi((option) => {
+const makePhoneCall = /* @__PURE__ */ createApi({type: API_TYPE_ASYNC, name: "makePhoneCall"}, (option) => {
   window.location.href = `tel:${option.phoneNumber}`;
 }, MakePhoneCallProtocol);
 const ua = navigator.userAgent;
 const isAndroid = /android/i.test(ua);
 const isIOS$1 = /iphone|ipad|ipod/i.test(ua);
-const getSystemInfoSync = /* @__PURE__ */ createApi(() => {
+const getSystemInfoSync = /* @__PURE__ */ createApi({type: API_TYPE_SYNC}, () => {
   var screen = window.screen;
   var pixelRatio = window.devicePixelRatio;
   const screenFix = /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
@@ -1634,47 +1650,45 @@ const getSystemInfoSync = /* @__PURE__ */ createApi(() => {
     }
   };
 });
-const getSystemInfo = /* @__PURE__ */ createApi(() => {
+const getSystemInfo = /* @__PURE__ */ createApi({type: API_TYPE_ASYNC, name: "getSystemInfo"}, () => {
   return getSystemInfoSync();
 });
-const openDocument = /* @__PURE__ */ createApi((option) => {
+const openDocument = /* @__PURE__ */ createApi({type: API_TYPE_ASYNC, name: "openDocument"}, (option) => {
   window.open(option.filePath);
 }, OpenDocumentProtocol);
 function _getServiceAddress() {
   return window.location.protocol + "//" + window.location.host;
 }
-const getImageInfo = /* @__PURE__ */ createApi(({src}, callbackId) => {
-  const {invokeCallbackHandler: invoke} = UniServiceJSBridge;
+const getImageInfo = /* @__PURE__ */ createApi({type: API_TYPE_ASYNC, name: "getImageInfo", options: GetImageInfoOptions}, ({src}, callback) => {
   const img = new Image();
-  const realPath = src;
   img.onload = function() {
-    invoke(callbackId, {
+    callback({
       errMsg: "getImageInfo:ok",
       width: img.naturalWidth,
       height: img.naturalHeight,
-      path: realPath.indexOf("/") === 0 ? _getServiceAddress() + realPath : realPath
+      path: src.indexOf("/") === 0 ? _getServiceAddress() + src : src
     });
   };
   img.onerror = function() {
-    invoke(callbackId, {
+    callback({
       errMsg: "getImageInfo:fail"
     });
   };
   img.src = src;
-}, GetImageInfoProtocol, GetImageInfoOptions);
-const navigateBack = /* @__PURE__ */ createApi(() => {
+}, GetImageInfoProtocol);
+const navigateBack = /* @__PURE__ */ createApi({type: API_TYPE_ASYNC}, () => {
 });
-const navigateTo = /* @__PURE__ */ createApi((options) => {
+const navigateTo = /* @__PURE__ */ createApi({type: API_TYPE_ASYNC}, (options) => {
   const router = getApp().$router;
   router.push(options.url);
 });
-const redirectTo = /* @__PURE__ */ createApi(() => {
+const redirectTo = /* @__PURE__ */ createApi({type: API_TYPE_ASYNC}, () => {
 });
-const reLaunch = /* @__PURE__ */ createApi(() => {
+const reLaunch = /* @__PURE__ */ createApi({type: API_TYPE_ASYNC}, () => {
 });
-const switchTab = /* @__PURE__ */ createApi(() => {
+const switchTab = /* @__PURE__ */ createApi({type: API_TYPE_ASYNC}, () => {
 });
-const getRealPath = /* @__PURE__ */ createApi((path) => {
+const getRealPath = /* @__PURE__ */ createApi({type: API_TYPE_SYNC}, (path) => {
   return path;
 });
 var api = /* @__PURE__ */ Object.freeze({
@@ -1686,6 +1700,7 @@ var api = /* @__PURE__ */ Object.freeze({
   arrayBufferToBase64,
   base64ToArrayBuffer,
   createIntersectionObserver: createIntersectionObserver$1,
+  createSelectorQuery: createSelectorQuery$1,
   canIUse,
   makePhoneCall,
   getSystemInfo,
@@ -2831,4 +2846,4 @@ function render$a(_ctx, _cache, $props, $setup, $data, $options) {
 ;
 script$a.render = render$a;
 script$a.__file = "packages/uni-h5/src/framework/components/async-loading/index.vue";
-export {script$9 as AsyncErrorComponent, script$a as AsyncLoadingComponent, script$8 as PageComponent, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, createIntersectionObserver$1 as createIntersectionObserver, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getImageInfo, getRealPath, getSystemInfo, getSystemInfoSync, makePhoneCall, navigateBack, navigateTo, openDocument, index as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, switchTab, uni$1 as uni, upx2px};
+export {script$9 as AsyncErrorComponent, script$a as AsyncLoadingComponent, script$8 as PageComponent, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, createIntersectionObserver$1 as createIntersectionObserver, createSelectorQuery$1 as createSelectorQuery, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getImageInfo, getRealPath, getSystemInfo, getSystemInfoSync, makePhoneCall, navigateBack, navigateTo, openDocument, index as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, switchTab, uni$1 as uni, upx2px};

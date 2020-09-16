@@ -2,7 +2,7 @@ import { extend } from '@vue/shared'
 
 import { ServiceJSBridge } from '@dcloudio/uni-core'
 
-import { createApi } from '../../helpers/api'
+import { API_TYPE_RETURN, createApi } from '../../helpers/api'
 import { getCurrentPageVm } from '../utils'
 
 const defaultOptions = {
@@ -122,7 +122,7 @@ class ServiceIntersectionObserver {
 
 export const createIntersectionObserver = createApi<
   typeof uni.createIntersectionObserver
->((context?, options?) => {
+>({ type: API_TYPE_RETURN }, (context?, options?) => {
   if (!context) {
     context = getCurrentPageVm()
   }

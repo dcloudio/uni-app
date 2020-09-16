@@ -23,5 +23,6 @@ export {
   promiseInterceptor,
   arrayBufferToBase64,
   base64ToArrayBuffer,
-  createIntersectionObserver
+  createIntersectionObserver,
+  createSelectorQuery
 } from '@dcloudio/uni-api'

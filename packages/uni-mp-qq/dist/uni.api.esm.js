@@ -1,8 +1,23 @@
 import { isArray, isPromise, isFunction, isPlainObject, hasOwn, isString } from '@vue/shared';
 
-function createApi(fn, protocol, options) {
-    if ((process.env.NODE_ENV !== 'production') && protocol) ;
-    return fn;
+const API_TYPE_SYNC = 1;
+function validateProtocol(name, args, protocol) {
+    console.log(name, args, protocol);
+    return true;
+}
+function formatApiArgs(args, options) {
+    if (!options) {
+        return args;
+    }
+}
+function createApi({ type, name, options }, fn, protocol) {
+    return function (...args) {
+        if (type === API_TYPE_SYNC) {
+            if (!((process.env.NODE_ENV !== 'production') && protocol && !validateProtocol(name, args, protocol))) {
+                return fn.apply(null, formatApiArgs(args, options));
+            }
+        }
+    };
 }
 
 const Upx2pxProtocol = [
@@ -24,7 +39,7 @@ function checkDeviceWidth() {
     deviceDPR = pixelRatio;
     isIOS = platform === 'ios';
 }
-const upx2px = createApi((number, newDeviceWidth) => {
+const upx2px = createApi({ type: API_TYPE_SYNC, name: 'upx2px' }, (number, newDeviceWidth) => {
     if (deviceWidth === 0) {
         checkDeviceWidth();
     }
@@ -206,7 +221,7 @@ function removeHook(hooks, hook) {
         hooks.splice(index, 1);
     }
 }
-const addInterceptor = createApi((method, interceptor) => {
+const addInterceptor = createApi({ type: API_TYPE_SYNC, name: 'addInterceptor' }, (method, interceptor) => {
     if (typeof method === 'string' && isPlainObject(interceptor)) {
         mergeInterceptorHook(scopedInterceptors[method] || (scopedInterceptors[method] = {}), interceptor);
     }
@@ -214,7 +229,7 @@ const addInterceptor = createApi((method, interceptor) => {
         mergeInterceptorHook(globalInterceptors, method);
     }
 }, AddInterceptorProtocol);
-const removeInterceptor = createApi((method, interceptor) => {
+const removeInterceptor = createApi({ type: API_TYPE_SYNC, name: 'removeInterceptor' }, (method, interceptor) => {
     if (typeof method === 'string') {
         if (isPlainObject(interceptor)) {
             removeInterceptorHook(scopedInterceptors[method], interceptor);

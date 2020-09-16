@@ -1,4 +1,5 @@
 import {
+  API_TYPE_ASYNC,
   createApi,
   GetImageInfoOptions,
   GetImageInfoProtocol
@@ -9,28 +10,23 @@ function _getServiceAddress() {
 }
 
 export const getImageInfo = createApi<typeof uni.getImageInfo>(
-  ({ src }, callbackId?: number) => {
-    const { invokeCallbackHandler: invoke } = UniServiceJSBridge
+  { type: API_TYPE_ASYNC, name: 'getImageInfo', options: GetImageInfoOptions },
+  ({ src }, callback?: Function) => {
     const img = new Image()
-    const realPath = src
     img.onload = function() {
-      invoke(callbackId, {
+      callback!({
         errMsg: 'getImageInfo:ok',
         width: img.naturalWidth,
         height: img.naturalHeight,
-        path:
-          realPath.indexOf('/') === 0
-            ? _getServiceAddress() + realPath
-            : realPath
+        path: src.indexOf('/') === 0 ? _getServiceAddress() + src : src
       })
     }
     img.onerror = function() {
-      invoke(callbackId, {
+      callback!({
         errMsg: 'getImageInfo:fail'
       })
     }
     img.src = src
   },
-  GetImageInfoProtocol,
-  GetImageInfoOptions
+  GetImageInfoProtocol
 )
