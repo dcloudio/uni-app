@@ -179,6 +179,16 @@ export function warpPlusEvent (origin, name) {
   }
 }
 
+export function warpPlusErrorCallback (callbackId, neme, errMsg) {
+  return function errorCallback (error) {
+    error = error || {}
+    invoke(callbackId, {
+      errMsg: `${neme}:fail ${error.message || errMsg || ''}`,
+      errCode: error.code || 0
+    })
+  }
+}
+
 export function warpPlusMethod (origin, name, before) {
   return function (options, callbackId) {
     if (typeof before === 'function') {
@@ -192,12 +202,7 @@ export function warpPlusMethod (origin, name, before) {
           errMsg: `${name}:ok`
         }))
       },
-      fail (error = {}) {
-        invoke(callbackId, {
-          errMsg: `${name}:fail ${error.message || ''}`,
-          errCode: error.code || 0
-        })
-      }
+      fail: warpPlusErrorCallback(callbackId, name)
     }))
   }
 }

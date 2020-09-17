@@ -6,17 +6,16 @@ import {
   invoke
 } from '../../bridge'
 
+import {
+  warpPlusErrorCallback
+} from '../util'
+
 export function chooseVideo ({
   sourceType = ['album', 'camera'],
   maxDuration = 60,
   camera = 'back'
 } = {}, callbackId) {
-  function errorCallback (error) {
-    error = error || {}
-    invoke(callbackId, {
-      errMsg: `chooseVideo:fail ${error.message || 'cancel'}`
-    })
-  }
+  const errorCallback = warpPlusErrorCallback(callbackId, 'chooseVideo', 'cancel')
 
   function successCallback (tempFilePath = '') {
     plus.io.getVideoInfo({
