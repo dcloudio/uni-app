@@ -200,6 +200,39 @@ let callFunctionResult = await uniCloud.callFunction({
 - 同一个服务空间内所有开启固定出口IP的云函数使用的是同一个IP。
 - 如果你是免费版升配到付费版，开启之后会导致付费版到期之后无法自动降级到免费版，请注意续费
 
+## 使用cloudfunctions_init初始化云函数@init
+
+自`HBuilderX 2.8.12`起`uniCloud`提供了`cloudfunctions_init.json`来方便开发者快速进行云函数的初始化操作，即在HBuilderX工具中，一次性完成所有云函数的配置。
+
+这个功能尤其适合插件作者，不用再使用说明文档一步一步引到用户去配置云函数定时触发器、内存、url化路径等。
+
+**使用方式**
+- 在`cloudfucntions`目录右键即可创建`cloudfunctions_init.json`，
+- 编写好json内容，在`cloudfunctions_init.json`上右键初始化云函数配置。
+
+**cloudfunctions_init.json形式如下**
+
+```json
+{
+    "fun-name": { // 云函数名称
+        "memorySize": 256, // 函数的最大可用内存，单位MB，可选值： 128|256|512|1024|2048，默认值256
+        "timeout": 5, // 函数的超时时间，单位秒，默认值5。最长为60秒，阿里云在定时触发时最长可以是600秒
+        // triggers 字段是触发器数组，目前仅支持一个触发器，即数组只能填写一个，不可添加多个
+        "triggers": [{
+            // name: 触发器的名字，规则见https://uniapp.dcloud.net.cn/uniCloud/trigger，name不对阿里云生效
+            "name": "myTrigger",
+            // type: 触发器类型，目前仅支持 timer (即 定时触发器)，type不对阿里云生效
+            "type": "timer",
+            // config: 触发器配置，在定时触发器下，config 格式为 cron 表达式，规则见https://uniapp.dcloud.net.cn/uniCloud/trigger。使用阿里云时会自动忽略最后一位，即代表年份的一位
+            "config": "0 0 2 1 * * *"
+        }],
+        // 云函数Url化path部分，阿里云需要以/http/开头
+        "path": ""
+    }
+}
+
+```
+
 ## 注意事项
 
 ### 云函数的启动模式（冷启动、热启动）
