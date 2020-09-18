@@ -1,23 +1,5 @@
 import {
-  invoke
-} from '../../bridge'
+  warpPlusMethod
+} from '../util'
 
-export function getImageInfo ({
-  src
-} = {}, callbackId) {
-  // fixed by hxy
-  plus.io.getImageInfo({
-    src,
-    success (imageInfo) {
-      invoke(callbackId, {
-        errMsg: 'getImageInfo:ok',
-        ...imageInfo
-      })
-    },
-    fail () {
-      invoke(callbackId, {
-        errMsg: 'getImageInfo:fail'
-      })
-    }
-  })
-}
+export const getImageInfo = warpPlusMethod(plus.io, 'getImageInfo')

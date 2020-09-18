@@ -1,3 +1,7 @@
+import {
+  invoke
+} from '../bridge'
+
 export {
   isTabBarPage
 } from '../bridge'
@@ -161,4 +165,49 @@ export function getScreenInfo () {
     screenWidth: Math.round(resolutionWidth),
     screenHeight: Math.round(resolutionHeight)
   }
+}
+
+export function warpPlusEvent (origin, name) {
+  return function (callbackId) {
+    origin[name](function (data) {
+      if (data) {
+        delete data.code
+        delete data.message
+      }
+      invoke(callbackId, data)
+    })
+  }
+}
+
+export function warpPlusErrorCallback (callbackId, neme, errMsg) {
+  return function errorCallback (error) {
+    error = error || {}
+    invoke(callbackId, {
+      errMsg: `${neme}:fail ${error.message || errMsg || ''}`,
+      errCode: error.code || 0
+    })
+  }
+}
+
+export function warpPlusMethod (origin, name, before) {
+  return function (options, callbackId) {
+    if (typeof before === 'function') {
+      options = before(options)
+    }
+    origin[name](Object.assign(options, {
+      success (data = {}) {
+        delete data.code
+        delete data.message
+        invoke(callbackId, Object.assign({}, data, {
+          errMsg: `${name}:ok`
+        }))
+      },
+      fail: warpPlusErrorCallback(callbackId, name)
+    }))
+  }
+}
+
+export function getFileName (path) {
+  const array = path.split('/')
+  return array[array.length - 1]
 }

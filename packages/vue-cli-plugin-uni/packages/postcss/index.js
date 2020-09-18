@@ -136,8 +136,7 @@ if (process.env.UNI_USING_V3) {
     'textarea',
     'video',
     'view',
-    'web-view',
-    'match-media'
+    'web-view'
   ]
 
   const BG_PROPS = [

@@ -257,15 +257,11 @@ var methods3 = ['setFillStyle', 'setTextAlign', 'setStrokeStyle', 'setGlobalAlph
   'setTextBaseline', 'setLineDash'
 ]
 
-var tempCanvas
-
-function getTempCanvas (width = 0, height = 0) {
-  if (!tempCanvas) {
-    tempCanvas = document.createElement('canvas')
-  }
-  tempCanvas.width = width
-  tempCanvas.height = height
-  return tempCanvas
+function measureText (text, font) {
+  const canvas = document.createElement('canvas')
+  const c2d = canvas.getContext('2d')
+  c2d.font = font
+  return c2d.measureText(text).width || 0
 }
 
 function TextMetrics (width) {
@@ -335,16 +331,14 @@ export class CanvasContext {
   measureText (text, callback) {
     const font = this.state.font
     if (__PLATFORM__ === 'h5') {
-      const canvas = getTempCanvas()
-      const c2d = canvas.getContext('2d')
-      c2d.font = font
-      const textMetrics = new TextMetrics(c2d.measureText(text).width || 0)
+      const width = measureText(text, font)
+      const textMetrics = new TextMetrics(width)
       if (typeof callback === 'function') {
         setTimeout(() => callback(textMetrics), 0)
       }
       return textMetrics
     } else {
-      const textMetrics = new TextMetrics(0)
+      let textMetrics = new TextMetrics(0)
       if (typeof callback === 'function') {
         const callbackId = canvasEventCallbacks.push(function ({ width }) {
           callback(new TextMetrics(width))
@@ -355,7 +349,14 @@ export class CanvasContext {
           callbackId
         })
       } else {
-        console.error('warning: measureText missing required arguments: callback')
+        const webview = plus.webview.getWebviewById(String(this.pageId))
+        if (webview && webview.evalJSSync) {
+          const js = `(${measureText.toString()})(${JSON.stringify(text)},${JSON.stringify(font)})`
+          const width = webview.evalJSSync(js) || 0
+          textMetrics = new TextMetrics(width)
+        } else {
+          console.error('warning: measureText missing required arguments: callback')
+        }
       }
       return textMetrics
     }

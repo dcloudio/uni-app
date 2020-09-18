@@ -41,7 +41,7 @@ export function requestMediaQueryObserver ({
     throw new Error(`Not Found：Page[${pageId}]`)
   }
 
-  const pageVm = page.$vm
+  // const pageVm = page.$vm
 
   // 创建一个媒体查询对象
   const mediaQueryObserver = mediaQueryObservers[reqId] = window.matchMedia(handleMediaQueryStr(options))
@@ -51,7 +51,7 @@ export function requestMediaQueryObserver ({
     UniViewJSBridge.publishHandler('onRequestMediaQueryObserver', {
       reqId,
       res: e.matches
-    }, pageVm.$page.id)
+    }, pages[pages.length - 1].$page.id)
   }
 
   listener(mediaQueryObserver) // 监听前执行一次媒体查询

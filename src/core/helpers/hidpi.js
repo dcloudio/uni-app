@@ -158,5 +158,8 @@ if (pixelRatio !== 1) {
 export function wrapper (canvas) {
   canvas.width = canvas.offsetWidth * pixelRatio
   canvas.height = canvas.offsetHeight * pixelRatio
-  canvas.getContext('2d').__hidpi__ = true
+  canvas.__hidpi__ = true
+  // 避免低版本安卓上 context 实例被回收
+  canvas.__context2d__ = canvas.getContext('2d')
+  canvas.__context2d__.__hidpi__ = true
 }

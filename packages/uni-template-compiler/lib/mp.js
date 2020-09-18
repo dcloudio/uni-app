@@ -48,7 +48,6 @@ const tags = [
   'view',
   'web-view',
   'editor',
-  'match-media'
 ]
 
 const baseCompiler = {

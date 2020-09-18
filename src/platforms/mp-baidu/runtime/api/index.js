@@ -1,3 +1,5 @@
+import createMediaQueryObserver from '../../../mp-weixin/helpers/create-media-query-observer'
+
 export function requestPayment (params) {
   let parseError = false
   if (typeof params.orderInfo === 'string') {
@@ -15,3 +17,5 @@ export function requestPayment (params) {
     swan.requestPolymerPayment(params)
   }
 }
+
+export { createMediaQueryObserver }
