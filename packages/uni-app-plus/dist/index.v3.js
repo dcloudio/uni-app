@@ -1070,176 +1070,6 @@ var serviceContext = (function () {
     setClipboardData: setClipboardData
   });
 
-  const openDocument = {
-    filePath: {
-      type: String,
-      required: true
-    },
-    fileType: {
-      type: String
-    }
-  };
-
-  var require_context_module_0_9 = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    openDocument: openDocument
-  });
-
-  const chooseLocation = {
-    keyword: {
-      type: String
-    }
-  };
-
-  var require_context_module_0_10 = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    chooseLocation: chooseLocation
-  });
-
-  const type = {
-    WGS84: 'WGS84',
-    GCJ02: 'GCJ02'
-  };
-  const getLocation = {
-    type: {
-      type: String,
-      validator (value, params) {
-        value = (value || '').toUpperCase();
-        params.type = Object.values(type).indexOf(value) < 0 ? type.WGS84 : value;
-      },
-      default: type.WGS84
-    },
-    altitude: {
-      type: Boolean,
-      default: false
-    }
-  };
-
-  var require_context_module_0_11 = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    getLocation: getLocation
-  });
-
-  const openLocation = {
-    latitude: {
-      type: Number,
-      required: true
-    },
-    longitude: {
-      type: Number,
-      required: true
-    },
-    scale: {
-      type: Number,
-      validator (value, params) {
-        value = Math.floor(value);
-        params.scale = value >= 5 && value <= 18 ? value : 18;
-      },
-      default: 18
-    },
-    name: {
-      type: String
-    },
-    address: {
-      type: String
-    }
-  };
-
-  var require_context_module_0_12 = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    openLocation: openLocation
-  });
-
-  const SIZE_TYPES = ['original', 'compressed'];
-  const SOURCE_TYPES = ['album', 'camera'];
-
-  const chooseImage = {
-    count: {
-      type: Number,
-      required: false,
-      default: 9,
-      validator (count, params) {
-        if (count <= 0) {
-          params.count = 9;
-        }
-      }
-    },
-    sizeType: {
-      type: [Array, String],
-      required: false,
-      default: SIZE_TYPES,
-      validator (sizeType, params) {
-        // 非必传的参数，不符合预期时处理为默认值。
-        const length = sizeType.length;
-        if (!length) {
-          params.sizeType = SIZE_TYPES;
-        } else if (typeof sizeType === 'string') {
-          if (!~SIZE_TYPES.indexOf(sizeType)) {
-            params.sizeType = SIZE_TYPES;
-          }
-        } else {
-          for (let i = 0; i < length; i++) {
-            if (typeof sizeType[i] !== 'string' || !~SIZE_TYPES.indexOf(sizeType[i])) {
-              params.sizeType = SIZE_TYPES;
-              break
-            }
-          }
-        }
-      }
-    },
-    sourceType: {
-      type: Array,
-      required: false,
-      default: SOURCE_TYPES,
-      validator (sourceType, params) {
-        const length = sourceType.length;
-        if (!length) {
-          params.sourceType = SOURCE_TYPES;
-        } else {
-          for (let i = 0; i < length; i++) {
-            if (typeof sourceType[i] !== 'string' || !~SOURCE_TYPES.indexOf(sourceType[i])) {
-              params.sourceType = SOURCE_TYPES;
-              break
-            }
-          }
-        }
-      }
-    }
-  };
-
-  var require_context_module_0_13 = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    chooseImage: chooseImage
-  });
-
-  const SOURCE_TYPES$1 = ['album', 'camera'];
-
-  const chooseVideo = {
-    sourceType: {
-      type: Array,
-      required: false,
-      default: SOURCE_TYPES$1,
-      validator (sourceType, params) {
-        const length = sourceType.length;
-        if (!length) {
-          params.sourceType = SOURCE_TYPES$1;
-        } else {
-          for (let i = 0; i < length; i++) {
-            if (typeof sourceType[i] !== 'string' || !~SOURCE_TYPES$1.indexOf(sourceType[i])) {
-              params.sourceType = SOURCE_TYPES$1;
-              break
-            }
-          }
-        }
-      }
-    }
-  };
-
-  var require_context_module_0_14 = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    chooseVideo: chooseVideo
-  });
-
   function getRealRoute (fromRoute, toRoute) {
     if (!toRoute) {
       toRoute = fromRoute;
@@ -1318,6 +1148,210 @@ var serviceContext = (function () {
     return filePath
   }
 
+  const saveFile = {
+    tempFilePath: {
+      type: String,
+      required: true,
+      validator (value, params) {
+        params.tempFilePath = getRealPath(value);
+      }
+    }
+  };
+
+  const TYPES = ['md5', 'sha1'];
+
+  const getFileInfo = {
+    filePath: {
+      type: String,
+      required: true,
+      validator (value, params) {
+        params.filePath = getRealPath(value);
+      }
+    },
+    digestAlgorithm: {
+      type: String,
+      validator (value, params) {
+        params.digestAlgorithm = TYPES.includes(value) ? value : TYPES[0];
+      },
+      default: TYPES[0]
+    }
+  };
+
+  const getSavedFileInfo = {
+    filePath: {
+      type: String,
+      required: true,
+      validator (value, params) {
+        params.filePath = getRealPath(value);
+      }
+    }
+  };
+
+  const removeSavedFile = {
+    filePath: {
+      type: String,
+      required: true,
+      validator (value, params) {
+        params.filePath = getRealPath(value);
+      }
+    }
+  };
+
+  var require_context_module_0_9 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    saveFile: saveFile,
+    getFileInfo: getFileInfo,
+    getSavedFileInfo: getSavedFileInfo,
+    removeSavedFile: removeSavedFile
+  });
+
+  const openDocument = {
+    filePath: {
+      type: String,
+      required: true
+    },
+    fileType: {
+      type: String
+    }
+  };
+
+  var require_context_module_0_10 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    openDocument: openDocument
+  });
+
+  const chooseLocation = {
+    keyword: {
+      type: String
+    }
+  };
+
+  var require_context_module_0_11 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    chooseLocation: chooseLocation
+  });
+
+  const type = {
+    WGS84: 'WGS84',
+    GCJ02: 'GCJ02'
+  };
+  const getLocation = {
+    type: {
+      type: String,
+      validator (value, params) {
+        value = (value || '').toUpperCase();
+        params.type = Object.values(type).indexOf(value) < 0 ? type.WGS84 : value;
+      },
+      default: type.WGS84
+    },
+    altitude: {
+      type: Boolean,
+      default: false
+    }
+  };
+
+  var require_context_module_0_12 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    getLocation: getLocation
+  });
+
+  const openLocation = {
+    latitude: {
+      type: Number,
+      required: true
+    },
+    longitude: {
+      type: Number,
+      required: true
+    },
+    scale: {
+      type: Number,
+      validator (value, params) {
+        value = Math.floor(value);
+        params.scale = value >= 5 && value <= 18 ? value : 18;
+      },
+      default: 18
+    },
+    name: {
+      type: String
+    },
+    address: {
+      type: String
+    }
+  };
+
+  var require_context_module_0_13 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    openLocation: openLocation
+  });
+
+  const SIZE_TYPES = ['original', 'compressed'];
+  const SOURCE_TYPES = ['album', 'camera'];
+
+  const chooseImage = {
+    count: {
+      type: Number,
+      required: false,
+      default: 9,
+      validator (count, params) {
+        if (count <= 0) {
+          params.count = 9;
+        }
+      }
+    },
+    sizeType: {
+      type: [Array, String],
+      required: false,
+      default: SIZE_TYPES,
+      validator (sizeType, params) {
+        sizeType = typeof sizeType === 'string' ? [sizeType] : sizeType;
+        sizeType = sizeType.filter(sizeType => SIZE_TYPES.includes(sizeType));
+        params.sizeType = sizeType.length ? sizeType : SIZE_TYPES;
+      }
+    },
+    sourceType: {
+      type: Array,
+      required: false,
+      default: SOURCE_TYPES,
+      validator (sourceType, params) {
+        sourceType = sourceType.filter(sourceType => SOURCE_TYPES.includes(sourceType));
+        params.sourceType = sourceType.length ? sourceType : SOURCE_TYPES;
+      }
+    }
+  };
+
+  var require_context_module_0_14 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    chooseImage: chooseImage
+  });
+
+  const SOURCE_TYPES$1 = ['album', 'camera'];
+
+  const chooseVideo = {
+    sourceType: {
+      type: Array,
+      required: false,
+      default: SOURCE_TYPES$1,
+      validator (sourceType, params) {
+        sourceType = sourceType.filter(sourceType => SOURCE_TYPES$1.includes(sourceType));
+        params.sourceType = sourceType.length ? sourceType : SOURCE_TYPES$1;
+      }
+    },
+    maxDuration: {
+      type: Number,
+      default: 60
+    },
+    camera: {
+      type: String,
+      default: 'back'
+    }
+  };
+
+  var require_context_module_0_15 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    chooseVideo: chooseVideo
+  });
+
   const getImageInfo = {
     src: {
       type: String,
@@ -1328,7 +1362,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_15 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_16 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getImageInfo: getImageInfo
   });
@@ -1364,7 +1398,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_16 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_17 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     previewImage: previewImage
   });
@@ -1379,7 +1413,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_17 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_18 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     saveImageToPhotosAlbum: saveImageToPhotosAlbum
   });
@@ -1397,7 +1431,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_18 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_19 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     downloadFile: downloadFile
   });
@@ -1505,7 +1539,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_19 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_20 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     request: request
   });
@@ -1563,7 +1597,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_20 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_21 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     connectSocket: connectSocket,
     sendSocketMessage: sendSocketMessage,
@@ -1605,7 +1639,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_21 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_22 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     uploadFile: uploadFile
   });
@@ -1630,7 +1664,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_22 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_23 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getProvider: getProvider
   });
@@ -1651,7 +1685,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_23 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_24 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     loadSubPackage: loadSubPackage
   });
@@ -1852,7 +1886,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_24 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_25 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     redirectTo: redirectTo,
     reLaunch: reLaunch,
@@ -1898,7 +1932,7 @@ var serviceContext = (function () {
   const removeStorage = getStorage;
   const removeStorageSync = getStorageSync;
 
-  var require_context_module_0_25 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_26 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getStorage: getStorage,
     getStorageSync: getStorageSync,
@@ -1935,7 +1969,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_26 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_27 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     loadFontFace: loadFontFace
   });
@@ -1978,7 +2012,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_27 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_28 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     setNavigationBarColor: setNavigationBarColor,
     setNavigationBarTitle: setNavigationBarTitle
@@ -1998,7 +2032,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_28 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_29 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     pageScrollTo: pageScrollTo
   });
@@ -2119,7 +2153,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_29 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_30 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     showModal: showModal,
     showToast: showToast,
@@ -2218,7 +2252,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_30 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_31 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     setTabBarItem: setTabBarItem,
     setTabBarStyle: setTabBarStyle,
@@ -2243,28 +2277,29 @@ var serviceContext = (function () {
   './context/context.js': require_context_module_0_6,
   './device/make-phone-call.js': require_context_module_0_7,
   './device/set-clipboard-data.js': require_context_module_0_8,
-  './file/open-document.js': require_context_module_0_9,
-  './location/choose-location.js': require_context_module_0_10,
-  './location/get-location.js': require_context_module_0_11,
-  './location/open-location.js': require_context_module_0_12,
-  './media/choose-image.js': require_context_module_0_13,
-  './media/choose-video.js': require_context_module_0_14,
-  './media/get-image-info.js': require_context_module_0_15,
-  './media/preview-image.js': require_context_module_0_16,
-  './media/save-image-to-photos-album.js': require_context_module_0_17,
-  './network/download-file.js': require_context_module_0_18,
-  './network/request.js': require_context_module_0_19,
-  './network/socket.js': require_context_module_0_20,
-  './network/upload-file.js': require_context_module_0_21,
-  './plugin/get-provider.js': require_context_module_0_22,
-  './plugin/load-sub-package.js': require_context_module_0_23,
-  './route/route.js': require_context_module_0_24,
-  './storage/storage.js': require_context_module_0_25,
-  './ui/load-font-face.js': require_context_module_0_26,
-  './ui/navigation-bar.js': require_context_module_0_27,
-  './ui/page-scroll-to.js': require_context_module_0_28,
-  './ui/popup.js': require_context_module_0_29,
-  './ui/tab-bar.js': require_context_module_0_30,
+  './file/file.js': require_context_module_0_9,
+  './file/open-document.js': require_context_module_0_10,
+  './location/choose-location.js': require_context_module_0_11,
+  './location/get-location.js': require_context_module_0_12,
+  './location/open-location.js': require_context_module_0_13,
+  './media/choose-image.js': require_context_module_0_14,
+  './media/choose-video.js': require_context_module_0_15,
+  './media/get-image-info.js': require_context_module_0_16,
+  './media/preview-image.js': require_context_module_0_17,
+  './media/save-image-to-photos-album.js': require_context_module_0_18,
+  './network/download-file.js': require_context_module_0_19,
+  './network/request.js': require_context_module_0_20,
+  './network/socket.js': require_context_module_0_21,
+  './network/upload-file.js': require_context_module_0_22,
+  './plugin/get-provider.js': require_context_module_0_23,
+  './plugin/load-sub-package.js': require_context_module_0_24,
+  './route/route.js': require_context_module_0_25,
+  './storage/storage.js': require_context_module_0_26,
+  './ui/load-font-face.js': require_context_module_0_27,
+  './ui/navigation-bar.js': require_context_module_0_28,
+  './ui/page-scroll-to.js': require_context_module_0_29,
+  './ui/popup.js': require_context_module_0_30,
+  './ui/tab-bar.js': require_context_module_0_31,
 
       };
       var req = function req(key) {
@@ -3237,6 +3272,51 @@ var serviceContext = (function () {
     }
   }
 
+  function warpPlusEvent (origin, name) {
+    return function (callbackId) {
+      origin[name](function (data) {
+        if (data) {
+          delete data.code;
+          delete data.message;
+        }
+        invoke$1(callbackId, data);
+      });
+    }
+  }
+
+  function warpPlusErrorCallback (callbackId, neme, errMsg) {
+    return function errorCallback (error) {
+      error = error || {};
+      invoke$1(callbackId, {
+        errMsg: `${neme}:fail ${error.message || errMsg || ''}`,
+        errCode: error.code || 0
+      });
+    }
+  }
+
+  function warpPlusMethod (origin, name, before) {
+    return function (options, callbackId) {
+      if (typeof before === 'function') {
+        options = before(options);
+      }
+      origin[name](Object.assign(options, {
+        success (data = {}) {
+          delete data.code;
+          delete data.message;
+          invoke$1(callbackId, Object.assign({}, data, {
+            errMsg: `${name}:ok`
+          }));
+        },
+        fail: warpPlusErrorCallback(callbackId, name)
+      }));
+    }
+  }
+
+  function getFileName (path) {
+    const array = path.split('/');
+    return array[array.length - 1]
+  }
+
   const audios = {};
 
   const evts = ['play', 'canplay', 'ended', 'stop', 'waiting', 'seeking', 'seeked', 'pause'];
@@ -4126,132 +4206,39 @@ var serviceContext = (function () {
     });
   }
 
-  /**
-   * 执行蓝牙相关方法
-   */
-  function bluetoothExec (method, callbackId, data = {}, beforeSuccess) {
-    var deviceId = data.deviceId;
+  const onBluetoothDeviceFound = warpPlusEvent(plus.bluetooth, 'onBluetoothDeviceFound');
+  const onBluetoothAdapterStateChange = warpPlusEvent(plus.bluetooth, 'onBluetoothAdapterStateChange');
+  const onBLEConnectionStateChange = warpPlusEvent(plus.bluetooth, 'onBLEConnectionStateChange');
+  const onBLECharacteristicValueChange = warpPlusEvent(plus.bluetooth, 'onBLECharacteristicValueChange');
+
+  function toUpperCase (options = {}) {
+    const deviceId = options.deviceId;
     if (deviceId) {
-      data.deviceId = deviceId.toUpperCase();
+      options.deviceId = deviceId.toUpperCase();
     }
-    var serviceId = data.serviceId;
+    const serviceId = options.serviceId;
     if (serviceId) {
-      data.serviceId = serviceId.toUpperCase();
+      options.serviceId = serviceId.toUpperCase();
     }
-
-    plus.bluetooth[method.replace('Changed', 'Change')](Object.assign(data, {
-      success (data) {
-        if (typeof beforeSuccess === 'function') {
-          beforeSuccess(data);
-        }
-        invoke$1(callbackId, Object.assign({}, data, {
-          errMsg: `${method}:ok`,
-          code: undefined,
-          message: undefined
-        }));
-      },
-      fail (error = {}) {
-        invoke$1(callbackId, {
-          errMsg: `${method}:fail ${error.message || ''}`,
-          errCode: error.code || 0
-        });
-      }
-    }));
-  }
-  /**
-   * 监听蓝牙相关事件
-   */
-  function bluetoothOn (method, beforeSuccess) {
-    plus.bluetooth[method.replace('Changed', 'Change')](function (data) {
-      if (typeof beforeSuccess === 'function') {
-        beforeSuccess(data);
-      }
-      publish(method, Object.assign({}, data, {
-        code: undefined,
-        message: undefined
-      }));
-    });
-    return true
+    return options
   }
 
-  var onBluetoothAdapterStateChange;
-  var onBluetoothDeviceFound;
-  var onBLEConnectionStateChange;
-  var onBLECharacteristicValueChange;
-
-  function openBluetoothAdapter (data, callbackId) {
-    onBluetoothAdapterStateChange = onBluetoothAdapterStateChange || bluetoothOn('onBluetoothAdapterStateChange');
-    bluetoothExec('openBluetoothAdapter', callbackId);
-  }
-
-  function closeBluetoothAdapter (data, callbackId) {
-    bluetoothExec('closeBluetoothAdapter', callbackId);
-  }
-
-  function getBluetoothAdapterState (data, callbackId) {
-    bluetoothExec('getBluetoothAdapterState', callbackId);
-  }
-
-  function startBluetoothDevicesDiscovery (data, callbackId) {
-    onBluetoothDeviceFound = onBluetoothDeviceFound || bluetoothOn('onBluetoothDeviceFound');
-    bluetoothExec('startBluetoothDevicesDiscovery', callbackId, data);
-  }
-
-  function stopBluetoothDevicesDiscovery (data, callbackId) {
-    bluetoothExec('stopBluetoothDevicesDiscovery', callbackId);
-  }
-
-  function getBluetoothDevices (data, callbackId) {
-    bluetoothExec('getBluetoothDevices', callbackId, {});
-  }
-
-  function getConnectedBluetoothDevices (data, callbackId) {
-    bluetoothExec('getConnectedBluetoothDevices', callbackId, data);
-  }
-
-  function createBLEConnection (data, callbackId) {
-    onBLEConnectionStateChange = onBLEConnectionStateChange || bluetoothOn('onBLEConnectionStateChange');
-    bluetoothExec('createBLEConnection', callbackId, data);
-  }
-
-  function closeBLEConnection (data, callbackId) {
-    bluetoothExec('closeBLEConnection', callbackId, data);
-  }
-
-  function getBLEDeviceServices (data, callbackId) {
-    bluetoothExec('getBLEDeviceServices', callbackId, data);
-  }
-
-  function getBLEDeviceCharacteristics (data, callbackId) {
-    bluetoothExec('getBLEDeviceCharacteristics', callbackId, data);
-  }
-
-  function notifyBLECharacteristicValueChange (data, callbackId) {
-    onBLECharacteristicValueChange = onBLECharacteristicValueChange || bluetoothOn('onBLECharacteristicValueChange');
-    bluetoothExec('notifyBLECharacteristicValueChange', callbackId, data);
-  }
-
-  function notifyBLECharacteristicValueChanged (data, callbackId) {
-    onBLECharacteristicValueChange = onBLECharacteristicValueChange || bluetoothOn('onBLECharacteristicValueChange');
-    bluetoothExec('notifyBLECharacteristicValueChanged', callbackId, data);
-  }
-
-  function readBLECharacteristicValue (data, callbackId) {
-    onBLECharacteristicValueChange = onBLECharacteristicValueChange || bluetoothOn('onBLECharacteristicValueChange');
-    bluetoothExec('readBLECharacteristicValue', callbackId, data);
-  }
-
-  function writeBLECharacteristicValue (data, callbackId) {
-    bluetoothExec('writeBLECharacteristicValue', callbackId, data);
-  }
-
-  function setBLEMTU (data, callbackId) {
-    bluetoothExec('setBLEMTU', callbackId, data);
-  }
-
-  function getBLEDeviceRSSI (data, callbackId) {
-    bluetoothExec('getBLEDeviceRSSI', callbackId, data);
-  }
+  const openBluetoothAdapter = warpPlusMethod(plus.bluetooth, 'openBluetoothAdapter');
+  const closeBluetoothAdapter = warpPlusMethod(plus.bluetooth, 'closeBluetoothAdapter');
+  const getBluetoothAdapterState = warpPlusMethod(plus.bluetooth, 'getBluetoothAdapterState');
+  const startBluetoothDevicesDiscovery = warpPlusMethod(plus.bluetooth, 'startBluetoothDevicesDiscovery', toUpperCase);
+  const stopBluetoothDevicesDiscovery = warpPlusMethod(plus.bluetooth, 'stopBluetoothDevicesDiscovery');
+  const getBluetoothDevices = warpPlusMethod(plus.bluetooth, 'getBluetoothDevices');
+  const getConnectedBluetoothDevices = warpPlusMethod(plus.bluetooth, 'getConnectedBluetoothDevices', toUpperCase);
+  const createBLEConnection = warpPlusMethod(plus.bluetooth, 'createBLEConnection', toUpperCase);
+  const closeBLEConnection = warpPlusMethod(plus.bluetooth, 'closeBLEConnection', toUpperCase);
+  const getBLEDeviceServices = warpPlusMethod(plus.bluetooth, 'getBLEDeviceServices', toUpperCase);
+  const getBLEDeviceCharacteristics = warpPlusMethod(plus.bluetooth, 'getBLEDeviceCharacteristics', toUpperCase);
+  const notifyBLECharacteristicValueChange = warpPlusMethod(plus.bluetooth, 'notifyBLECharacteristicValueChange', toUpperCase);
+  const readBLECharacteristicValue = warpPlusMethod(plus.bluetooth, 'readBLECharacteristicValue', toUpperCase);
+  const writeBLECharacteristicValue = warpPlusMethod(plus.bluetooth, 'writeBLECharacteristicValue', toUpperCase);
+  const setBLEMTU = warpPlusMethod(plus.bluetooth, 'setBLEMTU', toUpperCase);
+  const getBLEDeviceRSSI = warpPlusMethod(plus.bluetooth, 'getBLEDeviceRSSI', toUpperCase);
 
   function getScreenBrightness () {
     return {
@@ -4356,66 +4343,12 @@ var serviceContext = (function () {
     }
   }
 
-  function onBeaconUpdate (callbackId) {
-    plus.ibeacon.onBeaconUpdate(data => invoke$1(callbackId, data));
-  }
+  const onBeaconUpdate = warpPlusEvent(plus.ibeacon, 'onBeaconUpdate');
+  const onBeaconServiceChange = warpPlusEvent(plus.ibeacon, 'onBeaconServiceChange');
 
-  function onBeaconServiceChange (callbackId) {
-    plus.ibeacon.onBeaconServiceChange(data => invoke$1(callbackId, data));
-  }
-  const onBeaconServiceChanged = onBeaconServiceChange;
-
-  function getBeacons (params, callbackId) {
-    plus.ibeacon.getBeacons({
-      success: (result) => {
-        invoke$1(callbackId, {
-          errMsg: 'getBeacons:ok',
-          beacons: result.beacons
-        });
-      },
-      fail: (error) => {
-        invoke$1(callbackId, {
-          errMsg: 'getBeacons:fail:' + error.message
-        });
-      }
-    });
-  }
-
-  function startBeaconDiscovery ({
-    uuids,
-    ignoreBluetoothAvailable = false
-  }, callbackId) {
-    plus.ibeacon.startBeaconDiscovery({
-      uuids,
-      ignoreBluetoothAvailable,
-      success: (result) => {
-        invoke$1(callbackId, {
-          errMsg: 'startBeaconDiscovery:ok',
-          beacons: result.beacons
-        });
-      },
-      fail: (error) => {
-        invoke$1(callbackId, {
-          errMsg: 'startBeaconDiscovery:fail:' + error.message
-        });
-      }
-    });
-  }
-
-  function stopBeaconDiscovery (params, callbackId) {
-    plus.ibeacon.stopBeaconDiscovery({
-      success: (result) => {
-        invoke$1(callbackId, Object.assign(result, {
-          errMsg: 'stopBeaconDiscovery:ok'
-        }));
-      },
-      fail: (error) => {
-        invoke$1(callbackId, {
-          errMsg: 'stopBeaconDiscovery:fail:' + error.message
-        });
-      }
-    });
-  }
+  const getBeacons = warpPlusMethod(plus.ibeacon, 'getBeacons');
+  const startBeaconDiscovery = warpPlusMethod(plus.ibeacon, 'startBeaconDiscovery');
+  const stopBeaconDiscovery = warpPlusMethod(plus.ibeacon, 'stopBeaconDiscovery');
 
   function makePhoneCall$1 ({
     phoneNumber
@@ -5373,67 +5306,39 @@ var serviceContext = (function () {
 
   const SAVED_DIR = 'uniapp_save';
   const SAVE_PATH = `_doc/${SAVED_DIR}`;
-  const REGEX_FILENAME = /^.*[/]/;
 
   function getSavedFileDir (success, fail) {
-    fail = fail || function () {};
+    fail = fail || function () { };
     plus.io.requestFileSystem(plus.io.PRIVATE_DOC, fs => { // 请求_doc fs
       fs.root.getDirectory(SAVED_DIR, { // 获取文件保存目录对象
         create: true
-      }, dir => {
-        success(dir);
-      }, err => {
-        fail('目录[' + SAVED_DIR + ']创建失败' + err.message);
-      });
-    }, err => {
-      fail('目录[_doc]读取失败' + err.message);
-    });
+      }, success, fail);
+    }, fail);
   }
 
-  function saveFile ({
+  function saveFile$1 ({
     tempFilePath
   } = {}, callbackId) {
-    let fileName = tempFilePath.replace(REGEX_FILENAME, '');
-    if (fileName) {
-      let extName = '';
-      if (~fileName.indexOf('.')) {
-        extName = '.' + fileName.split('.').pop();
-      }
+    const errorCallback = warpPlusErrorCallback(callbackId, 'saveFile');
+    let fileName = getFileName(tempFilePath);
+    fileName = `${Date.now()}_${fileName}`;
 
-      fileName = (+new Date()) + '' + extName;
-
-      plus.io.resolveLocalFileSystemURL(getRealPath$1(tempFilePath), entry => { // 读取临时文件 FileEntry
-        getSavedFileDir(dir => {
-          entry.copyTo(dir, fileName, () => { // 复制临时文件 FileEntry，为了避免把相册里的文件删除，使用 copy，微信中是要删除临时文件的
-            const savedFilePath = SAVE_PATH + '/' + fileName;
-            invoke$1(callbackId, {
-              errMsg: 'saveFile:ok',
-              savedFilePath
-            });
-          }, err => {
-            invoke$1(callbackId, {
-              errMsg: 'saveFile:fail 保存文件[' + tempFilePath +
-                '] copyTo 失败:' + err.message
-            });
-          });
-        }, message => {
+    plus.io.resolveLocalFileSystemURL(tempFilePath, entry => { // 读取临时文件 FileEntry
+      getSavedFileDir(dir => {
+        entry.copyTo(dir, fileName, () => { // 复制临时文件 FileEntry，为了避免把相册里的文件删除，使用 copy，微信中是要删除临时文件的
+          const savedFilePath = SAVE_PATH + '/' + fileName;
           invoke$1(callbackId, {
-            errMsg: 'saveFile:fail ' + message
+            errMsg: 'saveFile:ok',
+            savedFilePath
           });
-        });
-      }, err => {
-        invoke$1(callbackId, {
-          errMsg: 'saveFile:fail 文件[' + tempFilePath + ']读取失败' + err.message
-        });
-      });
-    } else {
-      return {
-        errMsg: 'saveFile:fail 文件名[' + tempFilePath + ']不存在'
-      }
-    }
+        }, errorCallback);
+      }, errorCallback);
+    }, errorCallback);
   }
 
   function getSavedFileList (options, callbackId) {
+    const errorCallback = warpPlusErrorCallback(callbackId, 'getSavedFileList');
+
     getSavedFileDir(entry => {
       var reader = entry.createReader();
 
@@ -5453,11 +5358,7 @@ var serviceContext = (function () {
                   fileList
                 });
               }
-            }, error => {
-              invoke$1(callbackId, {
-                errMsg: 'getSavedFileList:fail ' + error.message
-              });
-            }, false);
+            }, errorCallback, false);
           });
         } else {
           invoke$1(callbackId, {
@@ -5465,84 +5366,40 @@ var serviceContext = (function () {
             fileList
           });
         }
-      }, error => {
-        invoke$1(callbackId, {
-          errMsg: 'getSavedFileList:fail ' + error.message
-        });
-      });
-    }, message => {
-      invoke$1(callbackId, {
-        errMsg: 'getSavedFileList:fail ' + message
-      });
-    });
+      }, errorCallback);
+    }, errorCallback);
   }
 
-  function getFileInfo ({
-    filePath,
-    digestAlgorithm = 'md5'
-  } = {}, callbackId) {
-    // TODO 计算文件摘要
-    plus.io.resolveLocalFileSystemURL(getRealPath$1(filePath), entry => {
-      entry.getMetadata(meta => {
-        invoke$1(callbackId, {
-          errMsg: 'getFileInfo:ok',
-          size: meta.size,
-          digestAlgorithm: ''
-        });
-      }, err => {
-        invoke$1(callbackId, {
-          errMsg: 'getFileInfo:fail 文件[' +
-            filePath +
-            '] getMetadata 失败:' + err.message
-        });
-      });
-    }, err => {
-      invoke$1(callbackId, {
-        errMsg: 'getFileInfo:fail 文件[' + filePath + ']读取失败:' + err.message
-      });
-    });
-  }
+  const getFileInfo$1 = warpPlusMethod(plus.io, 'getFileInfo');
 
-  function getSavedFileInfo ({
+  function getSavedFileInfo$1 ({
     filePath
   } = {}, callbackId) {
-    plus.io.resolveLocalFileSystemURL(getRealPath$1(filePath), entry => {
+    const errorCallback = warpPlusErrorCallback(callbackId, 'getSavedFileInfo');
+
+    plus.io.resolveLocalFileSystemURL(filePath, entry => {
       entry.getMetadata(meta => {
         invoke$1(callbackId, {
           createTime: meta.modificationTime.getTime(),
           size: meta.size,
           errMsg: 'getSavedFileInfo:ok'
         });
-      }, error => {
-        invoke$1(callbackId, {
-          errMsg: 'getSavedFileInfo:fail ' + error.message
-        });
-      }, false);
-    }, () => {
-      invoke$1(callbackId, {
-        errMsg: 'getSavedFileInfo:fail file not find'
-      });
-    });
+      }, errorCallback, false);
+    }, errorCallback);
   }
 
-  function removeSavedFile ({
+  function removeSavedFile$1 ({
     filePath
   } = {}, callbackId) {
-    plus.io.resolveLocalFileSystemURL(getRealPath$1(filePath), entry => {
+    const errorCallback = warpPlusErrorCallback(callbackId, 'removeSavedFile');
+
+    plus.io.resolveLocalFileSystemURL(filePath, entry => {
       entry.remove(() => {
         invoke$1(callbackId, {
           errMsg: 'removeSavedFile:ok'
         });
-      }, err => {
-        invoke$1(callbackId, {
-          errMsg: 'removeSavedFile:fail 文件[' + filePath + ']删除失败:' + err.message
-        });
-      });
-    }, () => {
-      invoke$1(callbackId, {
-        errMsg: 'removeSavedFile:fail file not find'
-      });
-    });
+      }, errorCallback);
+    }, errorCallback);
   }
 
   function openDocument$1 ({
@@ -5970,240 +5827,197 @@ var serviceContext = (function () {
    * @param {string} filePath 文件路径
    * @returns {Promise} 文件信息Promise
    */
-  function getFileInfo$1 (filePath) {
+  function getFileInfo$2 (filePath) {
     return new Promise((resolve, reject) => {
       plus.io.resolveLocalFileSystemURL(filePath, function (entry) {
-        entry.getMetadata(function (meta) {
-          resolve({
-            size: meta.size
-          });
-        }, reject, false);
+        entry.getMetadata(resolve, reject, false);
       }, reject);
     })
   }
 
-  const invokeChooseImage = function (callbackId, type, sizeType, tempFilePaths = []) {
-    if (!tempFilePaths.length) {
-      invoke$1(callbackId, {
-        code: sizeType,
-        errMsg: `chooseImage:${type}`
-      });
-      return
-    }
-    var tempFiles = [];
-    // plus.zip.compressImage 压缩文件并发调用在iOS端容易出现问题（图像错误、闪退），改为队列执行
-    tempFilePaths.reduce((promise, tempFilePath, index, array) => {
-      return promise
-        .then(() => {
-          return getFileInfo$1(tempFilePath)
-        })
-        .then(fileInfo => {
-          var size = fileInfo.size;
-          // 压缩阈值 0.5 兆
-          var threshold = 1024 * 1024 * 0.5;
-          // 判断是否需要压缩
-          if ((sizeType.indexOf('compressed') >= 0 && sizeType.indexOf('original') < 0) || (((
-            sizeType.indexOf(
-              'compressed') < 0 && sizeType.indexOf('original') < 0) || (sizeType
-            .indexOf('compressed') >= 0 && sizeType.indexOf(
-            'original') >= 0)) && size > threshold)) {
-            return new Promise((resolve, reject) => {
-              var dstPath = TEMP_PATH + '/compressed/' + Date.now() + (
-                tempFilePath.match(/\.\S+$/) || [''])[0];
-              plus.nativeUI.showWaiting();
-              plus.zip.compressImage({
-                src: tempFilePath,
-                dst: dstPath,
-                overwrite: true
-              }, () => {
-                resolve(dstPath);
-              }, (error) => {
-                reject(error);
-              });
-            })
-              .then(dstPath => {
-                array[index] = tempFilePath = dstPath;
-                return getFileInfo$1(tempFilePath)
-              })
-              .then(fileInfo => {
-                return tempFiles.push({
-                  path: tempFilePath,
-                  size: fileInfo.size
-                })
-              })
-          }
-          return tempFiles.push({
-            path: tempFilePath,
-            size: size
-          })
-        })
-    }, Promise.resolve())
-      .then(() => {
+  function compressImage (tempFilePath) {
+    const dstPath = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(tempFilePath)}`;
+    return new Promise((resolve, reject) => {
+      plus.nativeUI.showWaiting();
+      plus.zip.compressImage({
+        src: tempFilePath,
+        dst: dstPath,
+        overwrite: true
+      }, () => {
         plus.nativeUI.closeWaiting();
+        resolve(dstPath);
+      }, (error) => {
+        plus.nativeUI.closeWaiting();
+        reject(error);
+      });
+    })
+  }
+
+  function chooseImage$1 ({
+    count,
+    sizeType,
+    sourceType
+  } = {}, callbackId) {
+    const errorCallback = warpPlusErrorCallback(callbackId, 'chooseImage', 'cancel');
+
+    function successCallback (paths) {
+      const tempFiles = [];
+      const tempFilePaths = [];
+      // plus.zip.compressImage 压缩文件并发调用在iOS端容易出现问题（图像错误、闪退），改为队列执行
+      paths.reduce((promise, path) => {
+        return promise.then(() => {
+          return getFileInfo$2(path)
+        }).then(fileInfo => {
+          const size = fileInfo.size;
+          // 压缩阈值 0.5 兆
+          const THRESHOLD = 1024 * 1024 * 0.5;
+          // 判断是否需要压缩
+          if (sizeType.includes('compressed') && size > THRESHOLD) {
+            return compressImage(path).then(dstPath => {
+              path = dstPath;
+              return getFileInfo$2(path)
+            })
+          }
+          return fileInfo
+        }).then(({ size }) => {
+          tempFilePaths.push(path);
+          tempFiles.push({
+            path,
+            size
+          });
+        })
+      }, Promise.resolve()).then(() => {
         invoke$1(callbackId, {
-          errMsg: `chooseImage:${type}`,
+          errMsg: 'chooseImage:ok',
           tempFilePaths,
           tempFiles
         });
-      }).catch(() => {
-        plus.nativeUI.closeWaiting();
-        invoke$1(callbackId, {
-          errMsg: `chooseImage:${type}`
+      }).catch(errorCallback);
+    }
+
+    function openCamera () {
+      const camera = plus.camera.getCamera();
+      camera.captureImage(path => successCallback([path]),
+        errorCallback, {
+          filename: TEMP_PATH + '/camera/',
+          resolution: 'high'
         });
-      });
-  };
-  const openCamera = function (callbackId, sizeType) {
-    const camera = plus.camera.getCamera();
-    camera.captureImage(e => invokeChooseImage(callbackId, 'ok', sizeType, [e]),
-      e => invokeChooseImage(callbackId, 'fail', 1), {
-        filename: TEMP_PATH + '/camera/',
-        resolution: 'high'
-      });
-  };
-  const openAlbum = function (callbackId, sizeType, count) {
-    // TODO Android 需要拷贝到 temp 目录
-    plus.gallery.pick(e => invokeChooseImage(callbackId, 'ok', sizeType, e.files.map(file => {
-      return file
-    })), e => {
-      invokeChooseImage(callbackId, 'fail', 2);
-    }, {
-      maximum: count,
-      multiple: true,
-      system: false,
-      filename: TEMP_PATH + '/gallery/'
-    });
-  };
+    }
 
-  function chooseImage$1 ({
-    count = 9,
-    sizeType = ['original', 'compressed'],
-    sourceType = ['album', 'camera']
-  } = {}, callbackId) {
-    let fallback = true;
+    function openAlbum () {
+      plus.gallery.pick(({ files }) => successCallback(files), errorCallback, {
+        maximum: count,
+        multiple: true,
+        system: false,
+        filename: TEMP_PATH + '/gallery/'
+      });
+    }
+
     if (sourceType.length === 1) {
-      if (sourceType[0] === 'album') {
-        fallback = false;
-        openAlbum(callbackId, sizeType, count);
-      } else if (sourceType[0] === 'camera') {
-        fallback = false;
-        openCamera(callbackId, sizeType);
+      if (sourceType.includes('album')) {
+        openAlbum();
+        return
+      } else if (sourceType.includes('camera')) {
+        openCamera();
+        return
       }
     }
-    if (fallback) {
-      plus.nativeUI.actionSheet({
-        cancel: '取消',
-        buttons: [{
-          title: '拍摄'
-        }, {
-          title: '从手机相册选择'
-        }]
-      }, (e) => {
-        switch (e.index) {
-          case 0:
-            invokeChooseImage(callbackId, 'fail', 0);
-            break
-          case 1:
-            openCamera(callbackId, sizeType);
-            break
-          case 2:
-            openAlbum(callbackId, sizeType, count);
-            break
-        }
-      });
-    }
+    plus.nativeUI.actionSheet({
+      cancel: '取消',
+      buttons: [{
+        title: '拍摄'
+      }, {
+        title: '从手机相册选择'
+      }]
+    }, (e) => {
+      switch (e.index) {
+        case 1:
+          openCamera();
+          break
+        case 2:
+          openAlbum();
+          break
+        default:
+          errorCallback();
+          break
+      }
+    });
   }
 
-  const invokeChooseVideo = function (callbackId, type, tempFilePath = '') {
-    const callbackResult = {
-      errMsg: `chooseVideo:${type}`,
-      tempFilePath: tempFilePath,
-      duration: 0,
-      size: 0,
-      height: 0,
-      width: 0
-    };
-
-    if (type !== 'ok') {
-      invoke$1(callbackId, callbackResult);
-      return
-    }
-
-    plus.io.getVideoInfo({
-      filePath: tempFilePath,
-      success (videoInfo) {
-        callbackResult.size = videoInfo.size;
-        callbackResult.duration = videoInfo.duration;
-        callbackResult.width = videoInfo.width;
-        callbackResult.height = videoInfo.height;
-        invoke$1(callbackId, callbackResult);
-      },
-      fail () {
-        invoke$1(callbackId, callbackResult);
-      },
-      complete () {
-        invoke$1(callbackId, callbackResult);
-      }
-    });
-  };
-  const openCamera$1 = function (callbackId, maxDuration, cameraIndex) {
-    const camera = plus.camera.getCamera();
-    camera.startVideoCapture(e => invokeChooseVideo(callbackId, 'ok', e), e => invokeChooseVideo(
-      callbackId, 'fail'), {
-      index: cameraIndex,
-      videoMaximumDuration: maxDuration,
-      filename: TEMP_PATH + '/camera/'
-    });
-  };
-  const openAlbum$1 = function (callbackId) {
-    plus.gallery.pick(e => {
-      invokeChooseVideo(callbackId, 'ok', e);
-    }, e => invokeChooseVideo(callbackId, 'fail'), {
-      filter: 'video',
-      system: false,
-      filename: TEMP_PATH + '/gallery/'
-    });
-  };
   function chooseVideo$1 ({
-    sourceType = ['album', 'camera'],
-    maxDuration = 60,
-    camera = 'back'
+    sourceType,
+    maxDuration,
+    camera
   } = {}, callbackId) {
-    let fallback = true;
-    const cameraIndex = (camera === 'front') ? 2 : 1;
-    if (sourceType.length === 1) {
-      if (sourceType[0] === 'album') {
-        fallback = false;
-        openAlbum$1(callbackId);
-      } else if (sourceType[0] === 'camera') {
-        fallback = false;
-        openCamera$1(callbackId, maxDuration, cameraIndex);
-      }
-    }
-    if (fallback) {
-      plus.nativeUI.actionSheet({
-        cancel: '取消',
-        buttons: [{
-          title: '拍摄'
-        }, {
-          title: '从手机相册选择'
-        }]
-      }, e => {
-        switch (e.index) {
-          case 0:
-            invokeChooseVideo(callbackId, 'fail');
-            break
-          case 1:
-            openCamera$1(callbackId, maxDuration, cameraIndex);
-            break
-          case 2:
-            openAlbum$1(callbackId);
-            break
-        }
+    const errorCallback = warpPlusErrorCallback(callbackId, 'chooseVideo', 'cancel');
+
+    function successCallback (tempFilePath = '') {
+      plus.io.getVideoInfo({
+        filePath: tempFilePath,
+        success (videoInfo) {
+          const result = {
+            errMsg: 'chooseVideo:ok',
+            tempFilePath: tempFilePath
+          };
+          result.size = videoInfo.size;
+          result.duration = videoInfo.duration;
+          result.width = videoInfo.width;
+          result.height = videoInfo.height;
+          invoke$1(callbackId, result);
+        },
+        errorCallback
       });
     }
+
+    function openAlbum () {
+      plus.gallery.pick(successCallback, errorCallback, {
+        filter: 'video',
+        system: false,
+        filename: TEMP_PATH + '/gallery/'
+      });
+    }
+
+    function openCamera () {
+      const plusCamera = plus.camera.getCamera();
+      plusCamera.startVideoCapture(successCallback, errorCallback, {
+        index: camera === 'front' ? 2 : 1,
+        videoMaximumDuration: maxDuration,
+        filename: TEMP_PATH + '/camera/'
+      });
+    }
+
+    if (sourceType.length === 1) {
+      if (sourceType.includes('album')) {
+        openAlbum();
+        return
+      } else if (sourceType.includes('camera')) {
+        openCamera();
+        return
+      }
+    }
+    plus.nativeUI.actionSheet({
+      cancel: '取消',
+      buttons: [{
+        title: '拍摄'
+      }, {
+        title: '从手机相册选择'
+      }]
+    }, e => {
+      switch (e.index) {
+        case 1:
+          openCamera();
+          break
+        case 2:
+          openAlbum();
+          break
+        default:
+          errorCallback();
+          break
+      }
+    });
   }
 
-  function compressImage ({
+  function compressImage$1 ({
     src,
     quality
   }, callbackId) {
@@ -6224,25 +6038,7 @@ var serviceContext = (function () {
     });
   }
 
-  function getImageInfo$1 ({
-    src
-  } = {}, callbackId) {
-    // fixed by hxy
-    plus.io.getImageInfo({
-      src,
-      success (imageInfo) {
-        invoke$1(callbackId, {
-          errMsg: 'getImageInfo:ok',
-          ...imageInfo
-        });
-      },
-      fail () {
-        invoke$1(callbackId, {
-          errMsg: 'getImageInfo:fail'
-        });
-      }
-    });
-  }
+  const getImageInfo$1 = warpPlusMethod(plus.io, 'getImageInfo');
 
   function previewImagePlus ({
     current = 0,
@@ -7192,7 +6988,7 @@ var serviceContext = (function () {
   }
 
   // 0:图文，1:纯文字，2:纯图片，3:音乐，4:视频，5:小程序
-  const TYPES = {
+  const TYPES$1 = {
     0: {
       name: 'web',
       title: '图文'
@@ -7238,7 +7034,7 @@ var serviceContext = (function () {
       imageUrl = getRealPath$1(imageUrl);
     }
 
-    const shareType = TYPES[type + ''];
+    const shareType = TYPES$1[type + ''];
     if (shareType) {
       const sendMsg = {
         provider,
@@ -9608,9 +9404,7 @@ var serviceContext = (function () {
       options.title = title;
     }
 
-    if (plus.os.name === 'iOS') {
-      options.cancel = '';
-    }
+    options.cancel = '';
 
     plus.nativeUI.actionSheet(Object.assign(options, { popover }), (e) => {
       if (e.index > 0) {
@@ -10028,6 +9822,10 @@ var serviceContext = (function () {
     createLivePusherContext: createLivePusherContext$1,
     enableAccelerometer: enableAccelerometer,
     addPhoneContact: addPhoneContact,
+    onBluetoothDeviceFound: onBluetoothDeviceFound,
+    onBluetoothAdapterStateChange: onBluetoothAdapterStateChange,
+    onBLEConnectionStateChange: onBLEConnectionStateChange,
+    onBLECharacteristicValueChange: onBLECharacteristicValueChange,
     openBluetoothAdapter: openBluetoothAdapter,
     closeBluetoothAdapter: closeBluetoothAdapter,
     getBluetoothAdapterState: getBluetoothAdapterState,
@@ -10040,7 +9838,6 @@ var serviceContext = (function () {
     getBLEDeviceServices: getBLEDeviceServices,
     getBLEDeviceCharacteristics: getBLEDeviceCharacteristics,
     notifyBLECharacteristicValueChange: notifyBLECharacteristicValueChange,
-    notifyBLECharacteristicValueChanged: notifyBLECharacteristicValueChanged,
     readBLECharacteristicValue: readBLECharacteristicValue,
     writeBLECharacteristicValue: writeBLECharacteristicValue,
     setBLEMTU: setBLEMTU,
@@ -10054,7 +9851,6 @@ var serviceContext = (function () {
     getNetworkType: getNetworkType,
     onBeaconUpdate: onBeaconUpdate,
     onBeaconServiceChange: onBeaconServiceChange,
-    onBeaconServiceChanged: onBeaconServiceChanged,
     getBeacons: getBeacons,
     startBeaconDiscovery: startBeaconDiscovery,
     stopBeaconDiscovery: stopBeaconDiscovery,
@@ -10067,11 +9863,11 @@ var serviceContext = (function () {
     getSystemInfo: getSystemInfo,
     vibrateLong: vibrateLong,
     vibrateShort: vibrateShort,
-    saveFile: saveFile,
+    saveFile: saveFile$1,
     getSavedFileList: getSavedFileList,
-    getFileInfo: getFileInfo,
-    getSavedFileInfo: getSavedFileInfo,
-    removeSavedFile: removeSavedFile,
+    getFileInfo: getFileInfo$1,
+    getSavedFileInfo: getSavedFileInfo$1,
+    removeSavedFile: removeSavedFile$1,
     openDocument: openDocument$1,
     chooseLocation: chooseLocation$3,
     getLocation: getLocation$1,
@@ -10083,7 +9879,7 @@ var serviceContext = (function () {
     stopVoice: stopVoice,
     chooseImage: chooseImage$1,
     chooseVideo: chooseVideo$1,
-    compressImage: compressImage,
+    compressImage: compressImage$1,
     getImageInfo: getImageInfo$1,
     previewImagePlus: previewImagePlus,
     operateRecorder: operateRecorder,
@@ -10581,6 +10377,13 @@ var serviceContext = (function () {
     'setTextBaseline', 'setLineDash'
   ];
 
+  function measureText (text, font) {
+    const canvas = document.createElement('canvas');
+    const c2d = canvas.getContext('2d');
+    c2d.font = font;
+    return c2d.measureText(text).width || 0
+  }
+
   function TextMetrics (width) {
     this.width = width;
   }
@@ -10648,7 +10451,7 @@ var serviceContext = (function () {
     measureText (text, callback) {
       const font = this.state.font;
       {
-        const textMetrics = new TextMetrics(0);
+        let textMetrics = new TextMetrics(0);
         if (typeof callback === 'function') {
           const callbackId = canvasEventCallbacks.push(function ({ width }) {
             callback(new TextMetrics(width));
@@ -10659,7 +10462,14 @@ var serviceContext = (function () {
             callbackId
           });
         } else {
-          console.error('warning: measureText missing required arguments: callback');
+          const webview = plus.webview.getWebviewById(String(this.pageId));
+          if (webview && webview.evalJSSync) {
+            const js = `(${measureText.toString()})(${JSON.stringify(text)},${JSON.stringify(font)})`;
+            const width = webview.evalJSSync(js) || 0;
+            textMetrics = new TextMetrics(width);
+          } else {
+            console.error('warning: measureText missing required arguments: callback');
+          }
         }
         return textMetrics
       }
@@ -11624,31 +11434,6 @@ var serviceContext = (function () {
     stopAccelerometer: stopAccelerometer
   });
 
-  function on (method) {
-    const callbacks = [];
-    onMethod(method, data => {
-      callbacks.forEach(callbackId => {
-        invoke$1(callbackId, data);
-      });
-    });
-    return function (callbackId) {
-      callbacks.push(callbackId);
-    }
-  }
-
-  const onBluetoothDeviceFound$1 = on('onBluetoothDeviceFound');
-  const onBluetoothAdapterStateChange$1 = on('onBluetoothAdapterStateChange');
-  const onBLEConnectionStateChange$1 = on('onBLEConnectionStateChange');
-  const onBLECharacteristicValueChange$1 = on('onBLECharacteristicValueChange');
-
-  var require_context_module_1_12 = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    onBluetoothDeviceFound: onBluetoothDeviceFound$1,
-    onBluetoothAdapterStateChange: onBluetoothAdapterStateChange$1,
-    onBLEConnectionStateChange: onBLEConnectionStateChange$1,
-    onBLECharacteristicValueChange: onBLECharacteristicValueChange$1
-  });
-
   const callbacks$7 = [];
 
   onMethod('onCompassChange', function (res) {
@@ -11689,7 +11474,7 @@ var serviceContext = (function () {
     })
   }
 
-  var require_context_module_1_13 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_12 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     onCompassChange: onCompassChange,
     startCompass: startCompass,
@@ -11708,7 +11493,7 @@ var serviceContext = (function () {
     callbacks$8.push(callbackId);
   }
 
-  var require_context_module_1_14 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_13 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     onNetworkStatusChange: onNetworkStatusChange
   });
@@ -11737,7 +11522,7 @@ var serviceContext = (function () {
     console.log('API uni.onUIStyleChange 已过时，请使用 uni.onThemeChange，详情：https://uniapp.dcloud.net.cn/api/system/theme');
   }
 
-  var require_context_module_1_15 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_14 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     onThemeChange: onThemeChange,
     onUIStyleChange: onUIStyleChange
@@ -11766,7 +11551,7 @@ var serviceContext = (function () {
     }, pageId);
   }
 
-  var require_context_module_1_16 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_15 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getSelectedTextRange: getSelectedTextRange
   });
@@ -11783,7 +11568,7 @@ var serviceContext = (function () {
     callback$1 = callbackId;
   }
 
-  var require_context_module_1_17 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_16 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     onKeyboardHeightChange: onKeyboardHeightChange
   });
@@ -11811,7 +11596,7 @@ var serviceContext = (function () {
     return invokeMethod('previewImagePlus', args)
   }
 
-  var require_context_module_1_18 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_17 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     previewImage: previewImage$1
   });
@@ -11899,7 +11684,7 @@ var serviceContext = (function () {
     return recorderManager || (recorderManager = new RecorderManager())
   }
 
-  var require_context_module_1_19 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_18 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getRecorderManager: getRecorderManager
   });
@@ -11993,7 +11778,7 @@ var serviceContext = (function () {
     return task
   }
 
-  var require_context_module_1_20 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_19 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     downloadFile: downloadFile$1
   });
@@ -12111,7 +11896,7 @@ var serviceContext = (function () {
     return new RequestTask(requestTaskId)
   }
 
-  var require_context_module_1_21 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_20 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     request: request$1
   });
@@ -12293,7 +12078,7 @@ var serviceContext = (function () {
     callbacks$b.close = callbackId;
   }
 
-  var require_context_module_1_22 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_21 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     connectSocket: connectSocket$1,
     sendSocketMessage: sendSocketMessage$1,
@@ -12328,7 +12113,7 @@ var serviceContext = (function () {
     return updateManager || (updateManager = new UpdateManager())
   }
 
-  var require_context_module_1_23 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_22 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getUpdateManager: getUpdateManager
   });
@@ -12422,7 +12207,7 @@ var serviceContext = (function () {
     return task
   }
 
-  var require_context_module_1_24 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_23 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     uploadFile: uploadFile$1
   });
@@ -12511,7 +12296,7 @@ var serviceContext = (function () {
     return new MPAnimation(option)
   }
 
-  var require_context_module_1_25 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_24 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     createAnimation: createAnimation
   });
@@ -12581,7 +12366,7 @@ var serviceContext = (function () {
     return new ServiceIntersectionObserver(getCurrentPageVm('createIntersectionObserver'), options)
   }
 
-  var require_context_module_1_26 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_25 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     createIntersectionObserver: createIntersectionObserver
   });
@@ -12628,7 +12413,7 @@ var serviceContext = (function () {
     return new ServiceMediaQueryObserver(getCurrentPageVm('createMediaQueryObserver'), options)
   }
 
-  var require_context_module_1_27 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_26 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     createMediaQueryObserver: createMediaQueryObserver
   });
@@ -12769,7 +12554,7 @@ var serviceContext = (function () {
     return new SelectorQuery(getCurrentPageVm('createSelectorQuery'))
   }
 
-  var require_context_module_1_28 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_27 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     createSelectorQuery: createSelectorQuery
   });
@@ -12794,7 +12579,7 @@ var serviceContext = (function () {
     }, pageId);
   }
 
-  var require_context_module_1_29 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_28 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     loadFontFace: loadFontFace$1
   });
@@ -12807,7 +12592,7 @@ var serviceContext = (function () {
     return {}
   }
 
-  var require_context_module_1_30 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_29 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     pageScrollTo: pageScrollTo$1
   });
@@ -12820,7 +12605,7 @@ var serviceContext = (function () {
     return {}
   }
 
-  var require_context_module_1_31 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_30 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     setPageMeta: setPageMeta
   });
@@ -12857,7 +12642,7 @@ var serviceContext = (function () {
     callbacks$c.push(callbackId);
   }
 
-  var require_context_module_1_32 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_31 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     removeTabBarBadge: removeTabBarBadge$1,
     showTabBarRedDot: showTabBarRedDot$1,
@@ -12883,7 +12668,7 @@ var serviceContext = (function () {
     callbacks$d.splice(callbacks$d.indexOf(callbackId), 1);
   }
 
-  var require_context_module_1_33 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_32 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     onWindowResize: onWindowResize,
     offWindowResize: offWindowResize
@@ -12906,28 +12691,27 @@ var serviceContext = (function () {
   './context/editor.js': require_context_module_1_9,
   './context/inner-audio.js': require_context_module_1_10,
   './device/accelerometer.js': require_context_module_1_11,
-  './device/bluetooth.js': require_context_module_1_12,
-  './device/compass.js': require_context_module_1_13,
-  './device/network.js': require_context_module_1_14,
-  './device/theme.js': require_context_module_1_15,
-  './keyboard/get-selected-text-range.js': require_context_module_1_16,
-  './keyboard/keyboard.js': require_context_module_1_17,
-  './media/preview-image.js': require_context_module_1_18,
-  './media/recorder.js': require_context_module_1_19,
-  './network/download-file.js': require_context_module_1_20,
-  './network/request.js': require_context_module_1_21,
-  './network/socket.js': require_context_module_1_22,
-  './network/update.js': require_context_module_1_23,
-  './network/upload-file.js': require_context_module_1_24,
-  './ui/create-animation.js': require_context_module_1_25,
-  './ui/create-intersection-observer.js': require_context_module_1_26,
-  './ui/create-media-query-observer.js': require_context_module_1_27,
-  './ui/create-selector-query.js': require_context_module_1_28,
-  './ui/load-font-face.js': require_context_module_1_29,
-  './ui/page-scroll-to.js': require_context_module_1_30,
-  './ui/set-page-meta.js': require_context_module_1_31,
-  './ui/tab-bar.js': require_context_module_1_32,
-  './ui/window.js': require_context_module_1_33,
+  './device/compass.js': require_context_module_1_12,
+  './device/network.js': require_context_module_1_13,
+  './device/theme.js': require_context_module_1_14,
+  './keyboard/get-selected-text-range.js': require_context_module_1_15,
+  './keyboard/keyboard.js': require_context_module_1_16,
+  './media/preview-image.js': require_context_module_1_17,
+  './media/recorder.js': require_context_module_1_18,
+  './network/download-file.js': require_context_module_1_19,
+  './network/request.js': require_context_module_1_20,
+  './network/socket.js': require_context_module_1_21,
+  './network/update.js': require_context_module_1_22,
+  './network/upload-file.js': require_context_module_1_23,
+  './ui/create-animation.js': require_context_module_1_24,
+  './ui/create-intersection-observer.js': require_context_module_1_25,
+  './ui/create-media-query-observer.js': require_context_module_1_26,
+  './ui/create-selector-query.js': require_context_module_1_27,
+  './ui/load-font-face.js': require_context_module_1_28,
+  './ui/page-scroll-to.js': require_context_module_1_29,
+  './ui/set-page-meta.js': require_context_module_1_30,
+  './ui/tab-bar.js': require_context_module_1_31,
+  './ui/window.js': require_context_module_1_32,
 
       };
       var req = function req(key) {
@@ -13615,6 +13399,7 @@ var serviceContext = (function () {
     'uni-layout',
     'uni-content',
     'uni-main',
+    'uni-top-window',
     'uni-left-window',
     'uni-right-window',
     'uni-tabbar',
@@ -13669,8 +13454,7 @@ var serviceContext = (function () {
     'uni-textarea',
     'uni-video',
     'uni-view',
-    'uni-web-view',
-    'uni-match-media'
+    'uni-web-view'
   ];
 
   // 使用白名单过滤（前期有一批自定义组件使用了 uni-）
@@ -14230,6 +14014,10 @@ var serviceContext = (function () {
     return clazz
   }
 
+  function isNotSafeString (value) {
+    return value === 'null' || value === 'true' || value === 'false' || !isNaN(Number(value)) || (value.startsWith('[') && value.endsWith(']')) || (value.startsWith('{') && value.endsWith('}'))
+  }
+
   function setData (id, name, value) {
     switch (name) {
       case B_CLASS:
@@ -14250,7 +14038,7 @@ var serviceContext = (function () {
         return setForData.call(this, id, value)
     }
     // TODO 暂时先传递 dataset 至 view 层(理论上不需要)
-    if (name.indexOf('a-data-') === 0) {
+    if (name.indexOf('a-data-') === 0 && (typeof value !== 'string' || isNotSafeString(value))) {
       try {
         value = JSON.stringify(value);
       } catch (e) {}
