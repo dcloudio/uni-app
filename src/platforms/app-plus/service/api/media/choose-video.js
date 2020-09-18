@@ -11,9 +11,9 @@ import {
 } from '../util'
 
 export function chooseVideo ({
-  sourceType = ['album', 'camera'],
-  maxDuration = 60,
-  camera = 'back'
+  sourceType,
+  maxDuration,
+  camera
 } = {}, callbackId) {
   const errorCallback = warpPlusErrorCallback(callbackId, 'chooseVideo', 'cancel')
 
@@ -53,10 +53,10 @@ export function chooseVideo ({
   }
 
   if (sourceType.length === 1) {
-    if (sourceType[0] === 'album') {
+    if (sourceType.includes('album')) {
       openAlbum()
       return
-    } else if (sourceType[0] === 'camera') {
+    } else if (sourceType.includes('camera')) {
       openCamera()
       return
     }
