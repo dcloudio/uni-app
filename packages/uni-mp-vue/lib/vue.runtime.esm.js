@@ -3077,7 +3077,7 @@ function computed$1(getterOrOptions) {
 }
 
 // Core API ------------------------------------------------------------------
-const version = "3.0.0-rc.12";
+const version = "3.0.0-rc.13";
 
 // import deepCopy from './deepCopy'
 /**

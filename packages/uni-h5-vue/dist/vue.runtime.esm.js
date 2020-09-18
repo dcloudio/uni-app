@@ -7461,7 +7461,7 @@ function createSlots(slots, dynamicSlots) {
 }
 
 // Core API ------------------------------------------------------------------
-const version = "3.0.0-rc.12";
+const version = "3.0.0-rc.13";
 /**
  * SSR utils for \@vue/server-renderer. Only exposed in cjs builds.
  * @internal
