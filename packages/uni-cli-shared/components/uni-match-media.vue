@@ -1,12 +1,11 @@
 <template>
-  <view
-    v-show="matches"
-  > 
-    <slot />
-  </view>
+ <view v-show="matches">
+	<slot />
+ </view>
 </template>
 
 <script>
+let mediaQueryObserver
 export default {
   name: 'UniMatchMedia',
   props: {
@@ -42,13 +41,13 @@ export default {
 
   data () {
     return {
-      matches: false
+      matches: true,
     }
   },
 
   mounted() {
-    const mediaQ = uni.createMediaQueryObserver()
-    mediaQ.observe({
+    mediaQueryObserver = uni.createMediaQueryObserver(this)
+    mediaQueryObserver.observe({
         width: this.width,
         maxWidth: this.maxWidth,
         minWidth: this.minWidth,
@@ -61,15 +60,14 @@ export default {
       })
   },
 
+  destroyed() {
+    mediaQueryObserver.disconnect()
+  }
 }
 </script>
 
 <style>
-  view {
-    display: block;
-  }
-
-  view[hidden] {
-    display: none;
-  }
+	view {
+		display: block;
+	}
 </style>

@@ -45,7 +45,6 @@ const TAGS = [
   'video',
   'view',
   'web-view',
-  'match-media'
 ]
 
 const EVENTS = {
