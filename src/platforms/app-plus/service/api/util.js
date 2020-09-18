@@ -206,3 +206,8 @@ export function warpPlusMethod (origin, name, before) {
     }))
   }
 }
+
+export function getFileName (path) {
+  const array = path.split('/')
+  return array[array.length - 1]
+}

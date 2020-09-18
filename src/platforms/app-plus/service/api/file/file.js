@@ -1,6 +1,7 @@
 import {
   warpPlusMethod,
-  warpPlusErrorCallback
+  warpPlusErrorCallback,
+  getFileName
 } from '../util'
 
 import {
@@ -17,11 +18,6 @@ function getSavedFileDir (success, fail) {
       create: true
     }, success, fail)
   }, fail)
-}
-
-function getFileName (path) {
-  const array = path.split('/')
-  return array[array.length - 1]
 }
 
 export function saveFile ({
