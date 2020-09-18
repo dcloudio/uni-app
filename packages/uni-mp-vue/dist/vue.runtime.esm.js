@@ -1,4 +1,4 @@
-import { isSymbol, extend, isObject, toRawType, def, isArray, isString, isFunction, isPromise, capitalize, remove, EMPTY_OBJ, NOOP, isGloballyWhitelisted, isIntegerKey, hasOwn, hasChanged, NO, invokeArrayFns, makeMap, hyphenate, isReservedProp, camelize, EMPTY_ARR, toTypeString, isOn } from '@vue/shared';
+import { isSymbol, extend, isMap, isObject, toRawType, def, isArray, isString, isFunction, isPromise, capitalize, remove, EMPTY_OBJ, NOOP, isGloballyWhitelisted, isIntegerKey, hasOwn, hasChanged, NO, invokeArrayFns, isSet, makeMap, hyphenate, isReservedProp, camelize, EMPTY_ARR, toTypeString, isOn } from '@vue/shared';
 export { camelize } from '@vue/shared';
 import { isCustomElement } from '@dcloudio/uni-shared';
 
@@ -116,7 +116,7 @@ function trigger(target, type, key, newValue, oldValue, oldTarget) {
     const add = (effectsToAdd) => {
         if (effectsToAdd) {
             effectsToAdd.forEach(effect => {
-                if (effect !== activeEffect) {
+                if (effect !== activeEffect || effect.options.allowRecurse) {
                     effects.add(effect);
                 }
             });
@@ -140,15 +140,32 @@ function trigger(target, type, key, newValue, oldValue, oldTarget) {
             add(depsMap.get(key));
         }
         // also run for iteration key on ADD | DELETE | Map.SET
-        const shouldTriggerIteration = (type === "add" /* ADD */ &&
-            (!isArray(target) || isIntegerKey(key))) ||
-            (type === "delete" /* DELETE */ && !isArray(target));
-        if (shouldTriggerIteration ||
-            (type === "set" /* SET */ && target instanceof Map)) {
-            add(depsMap.get(isArray(target) ? 'length' : ITERATE_KEY));
-        }
-        if (shouldTriggerIteration && target instanceof Map) {
-            add(depsMap.get(MAP_KEY_ITERATE_KEY));
+        switch (type) {
+            case "add" /* ADD */:
+                if (!isArray(target)) {
+                    add(depsMap.get(ITERATE_KEY));
+                    if (isMap(target)) {
+                        add(depsMap.get(MAP_KEY_ITERATE_KEY));
+                    }
+                }
+                else if (isIntegerKey(key)) {
+                    // new index added to array -> length changes
+                    add(depsMap.get('length'));
+                }
+                break;
+            case "delete" /* DELETE */:
+                if (!isArray(target)) {
+                    add(depsMap.get(ITERATE_KEY));
+                    if (isMap(target)) {
+                        add(depsMap.get(MAP_KEY_ITERATE_KEY));
+                    }
+                }
+                break;
+            case "set" /* SET */:
+                if (isMap(target)) {
+                    add(depsMap.get(ITERATE_KEY));
+                }
+                break;
         }
     }
     const run = (effect) => {
@@ -182,20 +199,30 @@ const readonlyGet = /*#__PURE__*/ createGetter(true);
 const shallowReadonlyGet = /*#__PURE__*/ createGetter(true, true);
 const arrayInstrumentations = {};
 ['includes', 'indexOf', 'lastIndexOf'].forEach(key => {
+    const method = Array.prototype[key];
     arrayInstrumentations[key] = function (...args) {
         const arr = toRaw(this);
         for (let i = 0, l = this.length; i < l; i++) {
             track(arr, "get" /* GET */, i + '');
         }
         // we run the method using the original args first (which may be reactive)
-        const res = arr[key](...args);
+        const res = method.apply(arr, args);
         if (res === -1 || res === false) {
             // if that didn't work, run it again using raw values.
-            return arr[key](...args.map(toRaw));
+            return method.apply(arr, args.map(toRaw));
         }
         else {
             return res;
         }
+    };
+});
+['push', 'pop', 'shift', 'unshift', 'splice'].forEach(key => {
+    const method = Array.prototype[key];
+    arrayInstrumentations[key] = function (...args) {
+        pauseTracking();
+        const res = method.apply(this, args);
+        enableTracking();
+        return res;
     };
 });
 function createGetter(isReadonly = false, shallow = false) {
@@ -367,7 +394,7 @@ function add(value) {
     const target = toRaw(this);
     const proto = getProto(target);
     const hadKey = proto.has.call(target, value);
-    const result = proto.add.call(target, value);
+    const result = target.add(value);
     if (!hadKey) {
         trigger(target, "add" /* ADD */, value, value);
     }
@@ -376,7 +403,7 @@ function add(value) {
 function set$1(key, value) {
     value = toRaw(value);
     const target = toRaw(this);
-    const { has, get, set } = getProto(target);
+    const { has, get } = getProto(target);
     let hadKey = has.call(target, key);
     if (!hadKey) {
         key = toRaw(key);
@@ -386,7 +413,7 @@ function set$1(key, value) {
         checkIdentityKeys(target, has, key);
     }
     const oldValue = get.call(target, key);
-    const result = set.call(target, key, value);
+    const result = target.set(key, value);
     if (!hadKey) {
         trigger(target, "add" /* ADD */, key, value);
     }
@@ -397,7 +424,7 @@ function set$1(key, value) {
 }
 function deleteEntry(key) {
     const target = toRaw(this);
-    const { has, get, delete: del } = getProto(target);
+    const { has, get } = getProto(target);
     let hadKey = has.call(target, key);
     if (!hadKey) {
         key = toRaw(key);
@@ -408,7 +435,7 @@ function deleteEntry(key) {
     }
     const oldValue = get ? get.call(target, key) : undefined;
     // forward the operation before queueing reactions
-    const result = del.call(target, key);
+    const result = target.delete(key);
     if (hadKey) {
         trigger(target, "delete" /* DELETE */, key, undefined, oldValue);
     }
@@ -418,12 +445,12 @@ function clear() {
     const target = toRaw(this);
     const hadItems = target.size !== 0;
     const oldTarget = (process.env.NODE_ENV !== 'production')
-        ? target instanceof Map
+        ? isMap(target)
             ? new Map(target)
             : new Set(target)
         : undefined;
     // forward the operation before queueing reactions
-    const result = getProto(target).clear.call(target);
+    const result = target.clear();
     if (hadItems) {
         trigger(target, "clear" /* CLEAR */, undefined, undefined, oldTarget);
     }
@@ -448,9 +475,9 @@ function createIterableMethod(method, isReadonly, isShallow) {
     return function (...args) {
         const target = this["__v_raw" /* RAW */];
         const rawTarget = toRaw(target);
-        const isMap = rawTarget instanceof Map;
-        const isPair = method === 'entries' || (method === Symbol.iterator && isMap);
-        const isKeyOnly = method === 'keys' && isMap;
+        const targetIsMap = isMap(rawTarget);
+        const isPair = method === 'entries' || (method === Symbol.iterator && targetIsMap);
+        const isKeyOnly = method === 'keys' && targetIsMap;
         const innerIterator = target[method](...args);
         const wrap = isReadonly ? toReadonly : isShallow ? toShallow : toReactive;
         !isReadonly &&
@@ -768,7 +795,9 @@ class ObjectRefImpl {
     }
 }
 function toRef(object, key) {
-    return new ObjectRefImpl(object, key);
+    return isRef(object[key])
+        ? object[key]
+        : new ObjectRefImpl(object, key);
 }
 
 class ComputedRefImpl {
@@ -988,7 +1017,7 @@ function callWithAsyncErrorHandling(fn, instance, type, args) {
     }
     return values;
 }
-function handleError(err, instance, type) {
+function handleError(err, instance, type, throwInDev = true) {
     const contextVNode = instance ? instance.vnode : null;
     if (instance) {
         let cur = instance.parent;
@@ -1014,10 +1043,10 @@ function handleError(err, instance, type) {
             return;
         }
     }
-    logError(err, type, contextVNode);
+    logError(err, type, contextVNode, throwInDev);
 }
 // fixed by xxxxxx
-function logError(err, type, contextVNode) {
+function logError(err, type, contextVNode, throwInDev = true) {
     if ((process.env.NODE_ENV !== 'production')) {
         const info = ErrorTypeStrings[type] || type; // fixed by xxxxxx
         if (contextVNode) {
@@ -1027,8 +1056,13 @@ function logError(err, type, contextVNode) {
         if (contextVNode) {
             popWarningContext();
         }
-        // crash in dev so it's more noticeable
-        throw err;
+        // crash in dev by default so it's more noticeable
+        if (throwInDev) {
+            throw err;
+        }
+        else {
+            console.error(err);
+        }
     }
     else {
         // recover in prod to reduce the impact on end-user
@@ -1202,12 +1236,6 @@ function checkRecursiveUpdates(seen, fn) {
     }
 }
 
-// mark the current rendering instance for asset resolution (e.g.
-// resolveComponent, resolveDirective) during render
-let currentRenderingInstance = null;
-function markAttrsAccessed() {
-}
-
 function emit(instance, event, ...args) {
     const props = instance.vnode.props || EMPTY_OBJ;
     if ((process.env.NODE_ENV !== 'production')) {
@@ -1301,6 +1329,12 @@ function isEmitListener(options, key) {
         hasOwn(options, key.slice(2)));
 }
 
+// mark the current rendering instance for asset resolution (e.g.
+// resolveComponent, resolveDirective) during render
+let currentRenderingInstance = null;
+function markAttrsAccessed() {
+}
+
 function initProps(instance, rawProps, isStateful, // result of bitwise flag comparison
 isSSR = false) {
     const props = {};
@@ -1355,21 +1389,25 @@ function setFullProps(instance, rawProps, props, attrs) {
         const rawCurrentProps = toRaw(props);
         for (let i = 0; i < needCastKeys.length; i++) {
             const key = needCastKeys[i];
-            props[key] = resolvePropValue(options, rawCurrentProps, key, rawCurrentProps[key]);
+            props[key] = resolvePropValue(options, rawCurrentProps, key, rawCurrentProps[key], instance);
         }
     }
 }
-function resolvePropValue(options, props, key, value) {
+function resolvePropValue(options, props, key, value, instance) {
     const opt = options[key];
     if (opt != null) {
         const hasDefault = hasOwn(opt, 'default');
         // default values
         if (hasDefault && value === undefined) {
             const defaultValue = opt.default;
-            value =
-                opt.type !== Function && isFunction(defaultValue)
-                    ? defaultValue(props)
-                    : defaultValue;
+            if (opt.type !== Function && isFunction(defaultValue)) {
+                setCurrentInstance(instance);
+                value = defaultValue(props);
+                setCurrentInstance(null);
+            }
+            else {
+                value = defaultValue;
+            }
         }
         // boolean casting
         if (opt[0 /* shouldCast */]) {
@@ -1983,9 +2021,11 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = EM
     if (flush === 'sync') {
         scheduler = job;
     }
-    else if (flush === 'pre') {
-        // ensure it's queued before component updates (which have positive ids)
-        job.id = -1;
+    else if (flush === 'post') {
+        scheduler = () => queuePostRenderEffect(job, instance && instance.suspense);
+    }
+    else {
+        // default: 'pre'
         scheduler = () => {
             if (!instance || instance.isMounted) {
                 queuePreFlushCb(job);
@@ -1996,9 +2036,6 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = EM
                 job();
             }
         };
-    }
-    else {
-        scheduler = () => queuePostRenderEffect(job, instance && instance.suspense);
     }
     const runner = effect(getter, {
         lazy: true,
@@ -2015,6 +2052,9 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = EM
         else {
             oldValue = runner();
         }
+    }
+    else if (flush === 'post') {
+        queuePostRenderEffect(runner, instance && instance.suspense);
     }
     else {
         runner();
@@ -2047,13 +2087,13 @@ function traverse(value, seen = new Set()) {
             traverse(value[i], seen);
         }
     }
-    else if (value instanceof Map) {
-        value.forEach((v, key) => {
+    else if (isMap(value)) {
+        value.forEach((_, key) => {
             // to register mutation dep for existing keys
             traverse(value.get(key), seen);
         });
     }
-    else if (value instanceof Set) {
+    else if (isSet(value)) {
         value.forEach(v => {
             traverse(v, seen);
         });
@@ -2087,7 +2127,7 @@ function provide(key, value) {
         provides[key] = value;
     }
 }
-function inject(key, defaultValue) {
+function inject(key, defaultValue, treatDefaultAsFactory = false) {
     // fallback to `currentRenderingInstance` so that this can be called in
     // a functional component
     const instance = currentInstance || currentRenderingInstance;
@@ -2098,7 +2138,9 @@ function inject(key, defaultValue) {
             return provides[key];
         }
         else if (arguments.length > 1) {
-            return defaultValue;
+            return treatDefaultAsFactory && isFunction(defaultValue)
+                ? defaultValue()
+                : defaultValue;
         }
         else if ((process.env.NODE_ENV !== 'production')) {
             warn(`injection "${String(key)}" not found.`);
@@ -2130,7 +2172,7 @@ function applyOptions(instance, options, deferredData = [], deferredWatch = [], 
     // assets
     components, directives, 
     // lifecycle
-    beforeMount, mounted, beforeUpdate, updated, activated, deactivated, beforeUnmount, unmounted, render, renderTracked, renderTriggered, errorCaptured } = options;
+    beforeMount, mounted, beforeUpdate, updated, activated, deactivated, beforeDestroy, beforeUnmount, destroyed, unmounted, render, renderTracked, renderTriggered, errorCaptured } = options;
     const publicThis = instance.proxy;
     const ctx = instance.ctx;
     const globalMixins = instance.appContext.mixins;
@@ -2184,7 +2226,7 @@ function applyOptions(instance, options, deferredData = [], deferredWatch = [], 
             for (const key in injectOptions) {
                 const opt = injectOptions[key];
                 if (isObject(opt)) {
-                    ctx[key] = inject(opt.from, opt.default);
+                    ctx[key] = inject(opt.from || key, opt.default, true /* treat default function as factory */);
                 }
                 else {
                     ctx[key] = inject(opt);
@@ -2338,8 +2380,14 @@ function applyOptions(instance, options, deferredData = [], deferredWatch = [], 
     if (renderTriggered) {
         onRenderTriggered(renderTriggered.bind(publicThis));
     }
+    if ((process.env.NODE_ENV !== 'production') && beforeDestroy) {
+        warn(`\`beforeDestroy\` has been renamed to \`beforeUnmount\`.`);
+    }
     if (beforeUnmount) {
         onBeforeUnmount(beforeUnmount.bind(publicThis));
+    }
+    if ((process.env.NODE_ENV !== 'production') && destroyed) {
+        warn(`\`destroyed\` has been renamed to \`unmounted\`.`);
     }
     if (unmounted) {
         onUnmounted(unmounted.bind(publicThis));
@@ -2412,7 +2460,9 @@ function resolveData(instance, dataFn, publicThis) {
     }
 }
 function createWatcher(raw, ctx, publicThis, key) {
-    const getter = () => publicThis[key];
+    const getter = key.includes('.')
+        ? createPathGetter(publicThis, key)
+        : () => publicThis[key];
     if (isString(raw)) {
         const handler = ctx[raw];
         if (isFunction(handler)) {
@@ -2442,8 +2492,18 @@ function createWatcher(raw, ctx, publicThis, key) {
         }
     }
     else if ((process.env.NODE_ENV !== 'production')) {
-        warn(`Invalid watch option: "${key}"`);
+        warn(`Invalid watch option: "${key}"`, raw);
     }
+}
+function createPathGetter(ctx, path) {
+    const segments = path.split('.');
+    return () => {
+        let cur = ctx;
+        for (let i = 0; i < segments.length && cur; i++) {
+            cur = cur[segments[i]];
+        }
+        return cur;
+    };
 }
 function resolveMergedOptions(instance) {
     const raw = instance.type;
@@ -2764,6 +2824,7 @@ function createComponentInstance(vnode, parent, suspense) {
         setupContext: null,
         // suspense related
         suspense,
+        suspenseId: suspense ? suspense.pendingId : 0,
         asyncDep: null,
         asyncResolved: false,
         // lifecycle hooks
@@ -3017,7 +3078,7 @@ function computed$1(getterOrOptions) {
 }
 
 // Core API ------------------------------------------------------------------
-const version = "3.0.0-rc.10";
+const version = "3.0.0-rc.12";
 
 // import deepCopy from './deepCopy'
 /**
