@@ -29,6 +29,11 @@ export default function parsePage (vuePageOptions) {
     initRelation
   })
 
+  const onInit = (vuePageOptions.default || vuePageOptions).onInit
+  if (onInit) {
+    pageOptions.methods.onInit = onInit
+  }
+
   // 纠正百度小程序生命周期methods:onShow在methods:onLoad之前触发的问题
   pageOptions.methods.onShow = function onShow () {
     if (this.$vm && this.$vm.$mp.query) {
