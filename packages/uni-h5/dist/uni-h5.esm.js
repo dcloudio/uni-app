@@ -1,8 +1,8 @@
 import {isFunction, extend, isPlainObject, isPromise, isArray, hasOwn} from "@vue/shared";
 import {injectHook, openBlock, createBlock, createVNode, Fragment, renderList, toDisplayString, createCommentVNode, createTextVNode, Transition, withCtx, withModifiers, withDirectives, vShow, resolveComponent, KeepAlive, resolveDynamicComponent, mergeProps, renderSlot} from "vue";
-import {isCustomElement, TABBAR_HEIGHT, COMPONENT_NAME_PREFIX, NAVBAR_HEIGHT} from "@dcloudio/uni-shared";
 import {passiveOptions, Input} from "@dcloudio/uni-components";
 export * from "@dcloudio/uni-components";
+import {TABBAR_HEIGHT, COMPONENT_NAME_PREFIX, isCustomElement, NAVBAR_HEIGHT} from "@dcloudio/uni-shared";
 import {createWebHistory, createWebHashHistory, createRouter} from "vue-router";
 function applyOptions(options, instance2, publicThis) {
   Object.keys(options).forEach((name) => {
@@ -49,7 +49,6 @@ function initApp(app) {
   if (isFunction(app._component.onError)) {
     appConfig2.errorHandler = errorHandler;
   }
-  appConfig2.isCustomElement = isCustomElement;
   const globalProperties = appConfig2.globalProperties;
   globalProperties.$hasHook = hasHook;
   globalProperties.$callHook = callHook;
@@ -1820,6 +1819,7 @@ function initSystemComponents(app2) {
 }
 var index = {
   install(app) {
+    app._context.config.isCustomElement = isCustomElement;
     initApp(app);
     initView(app);
     initService(app);

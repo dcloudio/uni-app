@@ -1,6 +1,5 @@
 import { isSymbol, extend, isMap, isObject, toRawType, def, isArray, isString, isFunction, isPromise, capitalize, remove, EMPTY_OBJ, NOOP, isGloballyWhitelisted, isIntegerKey, hasOwn, hasChanged, NO, invokeArrayFns, isSet, makeMap, hyphenate, isReservedProp, camelize, EMPTY_ARR, toTypeString, isOn } from '@vue/shared';
 export { camelize } from '@vue/shared';
-import { isCustomElement } from '@dcloudio/uni-shared';
 
 const targetMap = new WeakMap();
 const effectStack = [];
@@ -3537,7 +3536,6 @@ function initApp(app) {
     if (isFunction(app._component.onError)) {
         appConfig.errorHandler = errorHandler;
     }
-    appConfig.isCustomElement = isCustomElement;
     const globalProperties = appConfig.globalProperties;
     globalProperties.$hasHook = hasHook;
     globalProperties.$callHook = callHook;

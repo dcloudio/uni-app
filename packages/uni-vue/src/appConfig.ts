@@ -1,7 +1,5 @@
 import { ComponentPublicInstance } from '@vue/runtime-core'
 
-export { isCustomElement } from '@dcloudio/uni-shared'
-
 export function errorHandler(
   err: unknown,
   instance: ComponentPublicInstance | null,
