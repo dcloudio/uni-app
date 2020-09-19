@@ -47,7 +47,7 @@ const tags = [
   'video',
   'view',
   'web-view',
-  'editor',
+  'editor'
 ]
 
 const baseCompiler = {
