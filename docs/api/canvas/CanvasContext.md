@@ -679,9 +679,8 @@ ctx.draw()
 ```javascript
 const ctx = uni.createCanvasContext('myCanvas')
 ctx.font = 'italic bold 20px cursive'
-ctx.measureText('Hello World', function(metrics){
-	console.log(metrics.width)
-})
+const metrics = ctx.measureText('Hello World')
+console.log(metrics.width)
 ```
 
 ### CanvasContext.moveTo
