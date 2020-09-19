@@ -1,8 +1,7 @@
 import { isArray, isPromise, isFunction, isPlainObject, hasOwn, isString } from '@vue/shared';
 
 const API_TYPE_SYNC = 1;
-function validateProtocol(name, args, protocol) {
-    console.log(name, args, protocol);
+function validateProtocol(_name, _args, _protocol) {
     return true;
 }
 function formatApiArgs(args, options) {
@@ -13,7 +12,7 @@ function formatApiArgs(args, options) {
 function createApi({ type, name, options }, fn, protocol) {
     return function (...args) {
         if (type === API_TYPE_SYNC) {
-            if (!((process.env.NODE_ENV !== 'production') && protocol && !validateProtocol(name, args, protocol))) {
+            if (!((process.env.NODE_ENV !== 'production') && protocol && !validateProtocol())) {
                 return fn.apply(null, formatApiArgs(args, options));
             }
         }

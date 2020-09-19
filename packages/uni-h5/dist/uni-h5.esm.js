@@ -1250,8 +1250,7 @@ var decode = function(base64) {
 const API_TYPE_SYNC = 1;
 const API_TYPE_ASYNC = 2;
 const API_TYPE_RETURN = 3;
-function validateProtocol(name, args, protocol) {
-  console.log(name, args, protocol);
+function validateProtocol(_name, _args, _protocol) {
   return true;
 }
 function formatApiArgs(args, options) {
@@ -1262,7 +1261,7 @@ function formatApiArgs(args, options) {
 function createApi({type: type2, name, options}, fn, protocol) {
   return function(...args) {
     if (type2 === API_TYPE_SYNC) {
-      if (!(process.env.NODE_ENV !== "production" && protocol && !validateProtocol(name, args, protocol))) {
+      if (!(process.env.NODE_ENV !== "production" && protocol && !validateProtocol())) {
         return fn.apply(null, formatApiArgs(args, options));
       }
     }

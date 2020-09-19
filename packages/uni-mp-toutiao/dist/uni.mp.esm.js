@@ -1,5 +1,4 @@
 import { isArray, hasOwn, toNumber, isPlainObject, isObject, isFunction, extend, NOOP, camelize } from '@vue/shared';
-import { stringifyQuery } from '@dcloudio/uni-shared';
 
 function setModel(target, key, value, modifiers) {
     if (isArray(modifiers)) {
@@ -210,6 +209,26 @@ function initCreateApp(parseAppOptions) {
     return function createApp(vm) {
         return App(parseApp(vm, parseAppOptions));
     };
+}
+
+const encode = encodeURIComponent;
+function stringifyQuery(obj, encodeStr = encode) {
+    const res = obj
+        ? Object.keys(obj)
+            .map(key => {
+            let val = obj[key];
+            if (typeof val === undefined || val === null) {
+                val = '';
+            }
+            else if (isPlainObject(val)) {
+                val = JSON.stringify(val);
+            }
+            return encodeStr(key) + '=' + encodeStr(val);
+        })
+            .filter(x => x.length > 0)
+            .join('&')
+        : null;
+    return res ? `?${res}` : '';
 }
 
 function initBehavior(options) {

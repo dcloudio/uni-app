@@ -19,8 +19,11 @@ type API_TYPES =
   | typeof API_TYPE_ASYNC
   | typeof API_TYPE_RETURN
 
-function validateProtocol(name: string, args: any[], protocol: ApiProtocols) {
-  console.log(name, args, protocol)
+function validateProtocol(
+  _name: string,
+  _args: any[],
+  _protocol: ApiProtocols
+) {
   return true
 }
 
