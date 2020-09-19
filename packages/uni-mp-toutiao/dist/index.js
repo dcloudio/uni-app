@@ -905,7 +905,7 @@ function createMediaQueryObserver () {
   const orientation = windowWidth < windowHeight ? 'portrait' : 'landscape';
 
   mediaQueryObserver.observe = (options, callback) => {
-    let matches = false;
+    let matches = true;
     for (const item in options) {
       const itemValue = item === 'orientation' ? options[item] : Number(options[item]);
       if (options[item] !== '') {
