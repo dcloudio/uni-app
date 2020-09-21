@@ -108,12 +108,15 @@ DCloud暂无计划开发百度、头条、QQ等小程序的登录，以及Apple 
 + 如果使用其他方式发送短信可以参考`sendSmsCode`接口的实现[uni-id sendSmsCode](https://gitee.com/dcloud/uni-id/blob/master/src/lib/send-sms-code.js)
 + 另外可以按照客户端平台进行不同的配置，参考下面示例
 
+**下面的配置文件中所有时间的单位都是秒**
+
 ```json
 // 如果拷贝此内容切记去除注释
 {
 	"passwordSecret": "passwordSecret-demo", // 加密密码所用的密钥，注意修改为自己的，使用一个较长的字符串即可
 	"tokenSecret": "tokenSecret-demo", // 生成token所用的密钥，注意修改为自己的，使用一个较长的字符串即可
 	"tokenExpiresIn": 7200, // 全平台token过期时间，未指定过期时间的平台会使用此值
+	"tokenExpiresThreshold": 600, // checkToken时如果token有效期小于此值则自动获取新token，请注意将新token返回给前端保存，如果不配置此参数则不开启自动获取新token功能
 	"bindTokenToDevice": true, // 是否将token和设备绑定，设置为true会进行ua校验，默认为true
 	"passwordErrorLimit": 6, // 密码错误最大重试次数
 	"passwordErrorRetryTime": 3600, // 密码错误重试次数超限之后的冻结时间
