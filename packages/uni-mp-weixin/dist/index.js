@@ -527,19 +527,6 @@ var previewImage = {
   }
 };
 
-var createCanvasContext = {
-  returnValue (fromRes, toRes) {
-    const measureText = fromRes.measureText;
-    toRes.measureText = function (text, callback) {
-      const textMetrics = measureText.call(this, text);
-      if (typeof callback === 'function') {
-        setTimeout(() => callback(textMetrics), 0);
-      }
-      return textMetrics
-    };
-  }
-};
-
 function addSafeAreaInsets (result) {
   if (result.safeArea) {
     const safeArea = result.safeArea;
@@ -560,8 +547,7 @@ const protocols = {
   },
   getSystemInfoSync: {
     returnValue: addSafeAreaInsets
-  },
-  createCanvasContext
+  }
 };
 const todos = [
   'vibrate',

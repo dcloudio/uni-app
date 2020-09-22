@@ -527,19 +527,6 @@ var previewImage = {
   }
 };
 
-var createCanvasContext = {
-  returnValue (fromRes, toRes) {
-    const measureText = fromRes.measureText;
-    toRes.measureText = function (text, callback) {
-      const textMetrics = measureText.call(this, text);
-      if (typeof callback === 'function') {
-        setTimeout(() => callback(textMetrics), 0);
-      }
-      return textMetrics
-    };
-  }
-};
-
 // 不支持的 API 列表
 const todos = [
   'preloadPage',
@@ -657,8 +644,7 @@ const protocols = {
   getAccountInfoSync: {
     name: 'getEnvInfoSync',
     returnValue: _handleEnvInfo
-  },
-  createCanvasContext
+  }
 };
 
 const CALLBACKS = ['success', 'fail', 'cancel', 'complete'];
