@@ -95,7 +95,7 @@ function createValidator (type) {
     }
 
     // 主要拦截目标为用户快速点击时触发的多次跳转，该情况，通常前后 url 是一样的
-    if (navigatorLock === url) {
+    if (navigatorLock === url && params.openType !== 'appLaunch') {
       return `${navigatorLock} locked`
     }
     // 至少 onLaunch 之后，再启用lock逻辑（onLaunch之前可能开发者手动调用路由API，来提前跳转）
