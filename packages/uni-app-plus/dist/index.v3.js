@@ -1785,7 +1785,7 @@ var serviceContext = (function () {
       }
 
       // 主要拦截目标为用户快速点击时触发的多次跳转，该情况，通常前后 url 是一样的
-      if (navigatorLock === url) {
+      if (navigatorLock === url && params.openType !== 'appLaunch') {
         return `${navigatorLock} locked`
       }
       // 至少 onLaunch 之后，再启用lock逻辑（onLaunch之前可能开发者手动调用路由API，来提前跳转）
@@ -10448,31 +10448,14 @@ var serviceContext = (function () {
       }
     }
 
-    measureText (text, callback) {
+    measureText (text) {
       const font = this.state.font;
+      let width;
       {
-        let textMetrics = new TextMetrics(0);
-        if (typeof callback === 'function') {
-          const callbackId = canvasEventCallbacks.push(function ({ width }) {
-            callback(new TextMetrics(width));
-          });
-          operateCanvas(this.id, this.pageId, 'measureText', {
-            text,
-            font,
-            callbackId
-          });
-        } else {
-          const webview = plus.webview.getWebviewById(String(this.pageId));
-          if (webview && webview.evalJSSync) {
-            const js = `(${measureText.toString()})(${JSON.stringify(text)},${JSON.stringify(font)})`;
-            const width = webview.evalJSSync(js) || 0;
-            textMetrics = new TextMetrics(width);
-          } else {
-            console.error('warning: measureText missing required arguments: callback');
-          }
-        }
-        return textMetrics
+        const webview = plus.webview.getWebviewById(String(this.pageId));
+        width = webview.evalJSSync(`(${measureText.toString()})(${JSON.stringify(text)},${JSON.stringify(font)})`);
       }
+      return new TextMetrics(width)
     }
 
     save () {
