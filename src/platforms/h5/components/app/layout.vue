@@ -3,26 +3,32 @@
     v-if="responsive"
     :class="{'uni-app--showlayout':showLayout}"
   >
+    <uni-top-window
+      v-if="topWindow"
+      v-show="showTopWindow && topWindowMediaQuery"
+      ref="topWindow"
+      :style="topWindowStyle"
+    >
+      <div class="uni-top-window">
+        <v-uni-top-window
+          ref="top"
+          @hook:mounted="onTopWindowInit"
+        />
+      </div>
+      <div
+        class="uni-top-window--placeholder"
+        :style="{height:topWindowHeight}"
+      />
+    </uni-top-window>
     <uni-content>
       <uni-main>
-        <uni-top-window
-          v-if="topWindow"
-          v-show="showLayout&&showTopWindow"
-          ref="topWindow"
-          :style="topWindowStyle"
-        >
-          <v-uni-top-window
-            ref="top"
-            @hook:mounted="onTopWindowInit"
-          />
-        </uni-top-window>
         <keep-alive :include="keepAliveInclude">
           <router-view :key="routerKey" />
         </keep-alive>
       </uni-main>
       <uni-left-window
         v-if="leftWindow"
-        v-show="showLayout&&showLeftWindow"
+        v-show="showLeftWindow && leftWindowMediaQuery"
         ref="leftWindow"
         :style="leftWindowStyle"
       >
@@ -33,7 +39,7 @@
       </uni-left-window>
       <uni-right-window
         v-if="rightWindow"
-        v-show="showLayout&&showRightWindow"
+        v-show="showRightWindow && rightWindowMediaQuery"
         ref="rightWindow"
         :style="rightWindowStyle"
       >
@@ -60,10 +66,8 @@ import {
   RESPONSIVE_MIN_WIDTH
 } from 'uni-helpers/constants'
 
-const screen = window.screen
+const windowTypes = ['top', 'left', 'right']
 const documentElement = document.documentElement
-
-const minWidth = parseInt(__uniConfig.responsive && __uniConfig.responsive.minWidth) || RESPONSIVE_MIN_WIDTH
 
 let styleObj
 
@@ -74,14 +78,18 @@ function updateCssVar (name, value) {
   styleObj.setProperty(name, value)
 }
 
-const sizes = [
-  window.outerWidth,
-  window.outerHeight,
-  screen.width,
-  screen.height,
-  documentElement.clientWidth,
-  documentElement.clientHeight
-]
+function checkMinWidth (minWidth) {
+  const screen = window.screen
+  const sizes = [
+    window.outerWidth,
+    window.outerHeight,
+    screen.width,
+    screen.height,
+    documentElement.clientWidth,
+    documentElement.clientHeight
+  ]
+  return Math.max.apply(null, sizes) > minWidth
+}
 
 export default {
   name: 'Layout',
@@ -99,19 +107,30 @@ export default {
   },
   data () {
     return {
-      showLayout: true,
       leftWindowStyle: '',
       rightWindowStyle: '',
       topWindowStyle: '',
-      showTopWindow: true,
-      showLeftWindow: true,
-      showRightWindow: true
+      topWindowMediaQuery: false,
+      leftWindowMediaQuery: false,
+      rightWindowMediaQuery: false,
+      topWindowHeight: '0px'
+    }
+  },
+  computed: {
+    showLayout () {
+      return this.showTopWindow || this.showLeftWindow || this.showRightWindow
+    },
+    showTopWindow () {
+      return this.$route.meta.topWindow !== false
+    },
+    showLeftWindow () {
+      return this.$route.meta.leftWindow !== false
+    },
+    showRightWindow () {
+      return this.$route.meta.rightWindow !== false
     }
   },
   watch: {
-    $route (newRoute, oldRoute) {
-      this.initShowWindow(newRoute)
-    },
     showTopWindow (newVal, val) {
       if (newVal) {
         this.$nextTick(this.onTopWindowInit)
@@ -144,61 +163,64 @@ export default {
     this.leftWindow = Vue.component('VUniLeftWindow')
     this.rightWindow = Vue.component('VUniRightWindow')
     if ( // 低版本不提供 responsive 支持
-      (this.leftWindow || this.rightWindow) &&
+      (this.topWindow || this.leftWindow || this.rightWindow) &&
         uni.canIUse('css.var') &&
         window.matchMedia
     ) {
-      // 存在 topWindow 时，视为始终要支持 responsive （如 pc-admin 的情况，需要在 top 中切换 left 或 right）
-      this.responsive = this.topWindow || Math.max.apply(null, sizes) > minWidth
+      windowTypes.forEach(type => this.initWindowMinWidth(type))
+      this.responsive = checkMinWidth(this.minWidth)
       if (this.responsive) {
+        if (this.topWindow && this.topWindow.options.style) {
+          this.topWindowStyle = this.topWindow.options.style
+        }
         if (this.leftWindow && this.leftWindow.options.style) {
           this.leftWindowStyle = this.leftWindow.options.style
         }
         if (this.rightWindow && this.rightWindow.options.style) {
           this.rightWindowStyle = this.rightWindow.options.style
         }
-        this.initMediaQuery()
+        windowTypes.forEach(type => this.initMediaQuery(type))
       }
     }
-    this.initShowWindow(this.$route)
   },
   methods: {
-    initShowWindow (newRoute) {
-      if (!this.responsive) {
-        return
-      }
-      if (this.topWindow) {
-        this.showTopWindow = newRoute.meta.topWindow !== false
-      }
-      if (this.leftWindow) {
-        this.showLeftWindow = newRoute.meta.leftWindow !== false
-      }
-      if (this.rightWindow) {
-        this.showRightWindow = newRoute.meta.rightWindow !== false
+    initWindowMinWidth (type) {
+      const name = type + 'Window'
+      if (this[name]) {
+        const minWidthName = type + 'WindowMinWidth'
+        this[minWidthName] = RESPONSIVE_MIN_WIDTH
+        const windowOptions = __uniConfig[name]
+        if (windowOptions && windowOptions.matchMedia && windowOptions.matchMedia.minWidth) {
+          this[minWidthName] = windowOptions.matchMedia.minWidth
+        }
+        if (!this.minWidth || this.minWidth > this[minWidthName]) {
+          this.minWidth = this[minWidthName]
+        }
       }
     },
-    initMediaQuery () {
-      if (!window.matchMedia) {
-        return
-      }
-      const mediaQueryList = window.matchMedia('(min-width: ' + minWidth + 'px)')
-      mediaQueryList.addListener((e) => {
-        this.showLayout = e.matches
-        this.$nextTick(() => {
-          this.topWindow && this.onTopWindowInit()
-          this.leftWindow && this.onLeftWindowInit()
-          this.rightWindow && this.onRightWindowInit()
+    initMediaQuery (type) {
+      if (this[type + 'Window']) {
+        const name = type + 'WindowMediaQuery'
+        const mediaQueryList = window.matchMedia('(min-width: ' + this[type + 'WindowMinWidth'] + 'px)')
+        mediaQueryList.addListener((e) => {
+          this[name] = e.matches
+          this.$nextTick(() => {
+            this['on' + (type.substr(0, 1).toUpperCase() + type.substr(1)) + 'WindowInit']()
+          })
         })
-      })
-      this.showLayout = mediaQueryList.matches
+        this[name] = mediaQueryList.matches
+      }
     },
     onTopWindowInit () {
       // TODO page header
+      let windowTopHeight = '0px'
       if (this.topWindowStyle && this.topWindowStyle.width) {
-        updateCssVar('--window-top', this.$refs.topWindow.offsetHeight + 'px')
+        windowTopHeight = this.$refs.topWindow.offsetHeight + 'px'
       } else {
-        updateCssVar('--window-top', this.$refs.top.$el.offsetHeight + 'px')
+        windowTopHeight = this.$refs.top.$el.offsetHeight + 'px'
       }
+      this.topWindowHeight = windowTopHeight
+      updateCssVar('--window-top', windowTopHeight)
     },
     onLeftWindowInit () {
       if (this.leftWindowStyle && this.leftWindowStyle.width) {
@@ -230,7 +252,6 @@ export default {
   }
 
   uni-left-window {
-    display: none;
     position: relative;
     width: var(--window-left);
     order: -1;
@@ -238,18 +259,20 @@ export default {
   }
 
   uni-right-window {
-    display: none;
     position: relative;
     width: var(--window-right);
     overflow-x: hidden;
   }
 
-  .uni-app--showlayout uni-left-window,
-  .uni-app--showlayout uni-right-window {
-    display: block;
-  }
-
   .uni-app--showlayout+uni-tabbar {
     display: none;
+  }
+
+  .uni-top-window {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    z-index: 998;
   }
 </style>

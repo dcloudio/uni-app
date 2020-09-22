@@ -436,17 +436,6 @@ module.exports = function (pagesJson, manifestJson, loader) {
     qqMapKey = sdkConfigs.maps.qqmap.key
   }
 
-  let minWidth = 768
-
-  if (
-    manifestJson &&
-    manifestJson.h5 &&
-    manifestJson.h5.responsive &&
-    manifestJson.h5.responsive.minWidth
-  ) {
-    minWidth = parseInt(manifestJson.h5.responsive.minWidth) || minWidth
-  }
-
   return `
 import Vue from 'vue'
 ${genLayoutComponentsCode(pagesJson)}
@@ -454,7 +443,6 @@ global['____${h5.appid}____'] = true;
 delete global['____${h5.appid}____'];
 global.__uniConfig = ${JSON.stringify(pagesJson)};
 global.__uniConfig.compilerVersion = '${compilerVersion}';
-global.__uniConfig.responsive = { minWidth: ${minWidth} };
 global.__uniConfig.router = ${JSON.stringify(h5.router)};
 global.__uniConfig.publicPath = ${JSON.stringify(h5.publicPath)};
 global.__uniConfig['async'] = ${JSON.stringify(h5.async)};
