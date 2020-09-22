@@ -498,7 +498,8 @@ exports.main = async function(event,context) {
 | type			| String| 是	|类型，用于防止不同功能的验证码混用，目前支持的类型`login`登录、`register`注册、`bind`绑定手机、`unbind`解绑手机|
 
 ```
-【自定义签名】验证码：${code}，用于${action}，${expMinute}分钟内有效，请勿泄露并尽快验证。
+// 短信模板示例，请在https://dev.dcloud.net.cn/uniSms申请签名（短信开头中括号内部分）及模板
+验证码：${code}，用于${action}，${expMinute}分钟内有效，请勿泄露并尽快验证。
 ```
 
 **响应参数**
