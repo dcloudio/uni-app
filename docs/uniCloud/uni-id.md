@@ -116,7 +116,7 @@ DCloud暂无计划开发百度、头条、QQ等小程序的登录，以及Apple 
 	"passwordSecret": "passwordSecret-demo", // 加密密码所用的密钥，注意修改为自己的，使用一个较长的字符串即可
 	"tokenSecret": "tokenSecret-demo", // 生成token所用的密钥，注意修改为自己的，使用一个较长的字符串即可
 	"tokenExpiresIn": 7200, // 全平台token过期时间，未指定过期时间的平台会使用此值
-	"tokenExpiresThreshold": 600, // checkToken时如果token有效期小于此值则自动获取新token，请注意将新token返回给前端保存，如果不配置此参数则不开启自动获取新token功能
+	"tokenExpiresThreshold": 600, // 新增于uni-id 1.1.7版本，checkToken时如果token有效期小于此值则自动获取新token，请注意将新token返回给前端保存，如果不配置此参数则不开启自动获取新token功能
 	"bindTokenToDevice": true, // 是否将token和设备绑定，设置为true会进行ua校验，默认为true
 	"passwordErrorLimit": 6, // 密码错误最大重试次数
 	"passwordErrorRetryTime": 3600, // 密码错误重试次数超限之后的冻结时间
@@ -306,12 +306,14 @@ exports.main = async function(event,context) {
 
 **响应参数**
 
-| 字段		| 类型	| 说明															|
-| ---			| ---		| ---																|
-| code		| Number|错误码，0表示成功									|
-| msg			| String|详细信息														|
-| uid			| String|用户Id，校验成功之后会返回					|
-| userInfo| Object|用户信息，uid对应的uni-id-users全部字段|
+| 字段				| 类型			| 说明																																													|
+| ---					| ---				| ---																																														|
+| code				| Number		|错误码，0表示成功																																							|
+| msg					| String		|详细信息																																												|
+| uid					| String		|用户Id，校验成功之后会返回																																			|
+| token				| String		|新增于uni-id 1.1.7版本，用户token快要过期时，新生成的token，只有在config内配置了`tokenExpiresThreshold`的值时才会有此行为|
+| tokenExpired| TimeStamp	|新增于uni-id 1.1.7版本，新token的过期时间																																							|
+| userInfo		| Object		|用户信息，uid对应的uni-id-users全部字段																												|
 
 **注意：**
 
