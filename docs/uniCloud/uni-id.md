@@ -490,11 +490,16 @@ exports.main = async function(event,context) {
 
 **codeInfo**参数说明
 
-| 字段	| 类型	| 必填| 说明													|
-| ---		| ---		| ---	| ---														|
-| mobile| String| 是	|用户手机号											|
-| code		| String| 是	|验证码字符串	|
-| type		| String| 是	|类型，用于防止不同功能的验证码混用，目前支持的类型`login`登录、`register`注册、`bind`绑定手机、`unbind`解绑手机	|
+| 字段			| 类型	| 必填| 说明																																																					|
+| ---				| ---		| ---	| ---																																																						|
+| mobile		| String| 是	|用户手机号																																																			|
+| templateId| String| 否	|用户自定义模板Id，不传则使用uniID_code，如果要使用自定义模板请使用类似下面模板示例的参数												|
+| code			| String| 是	|验证码字符串																																																		|
+| type			| String| 是	|类型，用于防止不同功能的验证码混用，目前支持的类型`login`登录、`register`注册、`bind`绑定手机、`unbind`解绑手机|
+
+```
+【自定义签名】验证码：${code}，用于${action}，${expMinute}分钟内有效，请勿泄露并尽快验证。
+```
 
 **响应参数**
 
