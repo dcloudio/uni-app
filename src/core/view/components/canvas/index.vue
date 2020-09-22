@@ -277,22 +277,6 @@ export default {
         }, this.$page.id)
       }
     },
-    measureText ({
-      text,
-      font,
-      callbackId
-    }) {
-      const canvas = getTempCanvas()
-      const c2d = canvas.getContext('2d')
-      c2d.font = font
-      UniViewJSBridge.publishHandler('onCanvasMethodCallback', {
-        callbackId,
-        data: {
-          errMsg: 'measureText:ok',
-          width: c2d.measureText(text).width || 0
-        }
-      }, this.$page.id)
-    },
     preloadImage: function (actions) {
       var self = this
       actions.forEach(function (action) {

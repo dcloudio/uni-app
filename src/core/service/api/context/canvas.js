@@ -328,38 +328,16 @@ export class CanvasContext {
     }
   }
 
-  measureText (text, callback) {
+  measureText (text) {
     const font = this.state.font
+    let width
     if (__PLATFORM__ === 'h5') {
-      const width = measureText(text, font)
-      const textMetrics = new TextMetrics(width)
-      if (typeof callback === 'function') {
-        setTimeout(() => callback(textMetrics), 0)
-      }
-      return textMetrics
+      width = measureText(text, font)
     } else {
-      let textMetrics = new TextMetrics(0)
-      if (typeof callback === 'function') {
-        const callbackId = canvasEventCallbacks.push(function ({ width }) {
-          callback(new TextMetrics(width))
-        })
-        operateCanvas(this.id, this.pageId, 'measureText', {
-          text,
-          font,
-          callbackId
-        })
-      } else {
-        const webview = plus.webview.getWebviewById(String(this.pageId))
-        if (webview && webview.evalJSSync) {
-          const js = `(${measureText.toString()})(${JSON.stringify(text)},${JSON.stringify(font)})`
-          const width = webview.evalJSSync(js) || 0
-          textMetrics = new TextMetrics(width)
-        } else {
-          console.error('warning: measureText missing required arguments: callback')
-        }
-      }
-      return textMetrics
+      const webview = plus.webview.getWebviewById(String(this.pageId))
+      width = webview.evalJSSync(`(${measureText.toString()})(${JSON.stringify(text)},${JSON.stringify(font)})`)
     }
+    return new TextMetrics(width)
   }
 
   save () {
