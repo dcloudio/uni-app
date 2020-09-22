@@ -1,7 +1,6 @@
 import navigateTo from 'uni-helpers/navigate-to'
 import redirectTo from '../../helpers/redirect-to'
 import previewImage from '../../helpers/normalize-preview-image'
-import createCanvasContext from '../../helpers/create-canvas-context'
 
 function addSafeAreaInsets (result) {
   if (result.safeArea) {
@@ -23,8 +22,7 @@ export const protocols = {
   },
   getSystemInfoSync: {
     returnValue: addSafeAreaInsets
-  },
-  createCanvasContext
+  }
 }
 export const todos = [
   'vibrate',

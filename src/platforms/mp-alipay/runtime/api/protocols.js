@@ -3,7 +3,6 @@ import {
 } from 'uni-shared'
 import navigateTo from 'uni-helpers/navigate-to'
 import redirectTo from '../../../mp-weixin/helpers/redirect-to'
-import createCanvasContext from '../../../mp-weixin/helpers/create-canvas-context'
 
 // 不支持的 API 列表
 const todos = [
@@ -478,8 +477,7 @@ const protocols = { // 需要做转换的 API 列表
       result.telNumber = info.mobilePhone
       result.errMsg = result.resultStatus
     }
-  },
-  createCanvasContext
+  }
 }
 
 export {
