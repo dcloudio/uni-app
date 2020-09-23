@@ -105,15 +105,27 @@ MongoDB支持JSON Schema的草案4，包括核心规范和验证规范，但有�
 |component|Object|组件信息||
 
 
-### defaultValue
+### defaultValue/forceDefaultValue
+
+defaultValue指定新增时当前字段默认值，客户端可以修改此值。forceDefaultValue也是指定新增时当前字段的默认值，与defaultValue不一样，forceDefaultValue不可被客户端修改。
 
 ```json
-"defaultValue": {
+// 指定默认值为true
+"defaultValue": true
+
+// 指定强制默认值为当前时间戳
+"forceDefaultValue": {
   "$env": "now"
 }
 
-"defaultValue": {
-  "$env": "ip"
+// 指定强制默认值为当前客户端IP
+"forceDefaultValue": {
+  "$env": "clientIP"
+}
+
+// 指定强制默认值为当前客户id
+"forceDefaultValue": {
+  "$env": "uid"
 }
 ```
 
@@ -142,8 +154,8 @@ MongoDB支持JSON Schema的草案4，包括核心规范和验证规范，但有�
       "maxLength": 8,
       "message": {
         "required": "{label}必填",
-        "minLength": "{label}不能小于{{minLength}}个字符",
-        "maxLength": "{label}不能大于{{maxLength}}个字符"
+        "minLength": "{label}不能小于{minLength}个字符",
+        "maxLength": "{label}不能大于{maxLength}个字符"
       },
       ...
     },
@@ -186,7 +198,7 @@ MongoDB支持JSON Schema的草案4，包括核心规范和验证规范，但有�
       "maxLength": 8,
       "message": {
         "required": "{label}必填",
-        "minLength": "{label}不能小于{{minLength}}个字符"
+        "minLength": "{label}不能小于{minLength}个字符"
       },
       "component": {
         "name": "uni-field",
