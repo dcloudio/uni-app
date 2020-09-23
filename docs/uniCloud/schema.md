@@ -99,7 +99,7 @@ MongoDB支持JSON Schema的草案4，包括核心规范和验证规范，但有�
 |format|'url'&#124;'email'||
 |defaultValue|string&#124;Object|默认值||
 |forceDefaultValue|string&#124;Object|覆盖默认值，参考defaultValue|
-|message|string&#124;Object |验证提示||
+|errorMessage|string&#124;Object |验证提示||
 |order|int|表单排序||
 |group|string|分组名称||
 |component|Object|组件信息||
@@ -130,15 +130,15 @@ defaultValue指定新增时当前字段默认值，客户端可以修改此值�
 ```
 
 
-### message属性
+### errorMessage属性
 
 类型为对象时可定义多个
 {} 为占位符，可定义已有属性
 
 |属性|类型|描述|
 |:-|:-|:-|
-|minLength|string|message|
-|maxLength|string|message|
+|minLength|string|消息|
+|maxLength|string|消息|
 |...|...|...|
 
 示例
@@ -152,7 +152,7 @@ defaultValue指定新增时当前字段默认值，客户端可以修改此值�
       "label": "姓名",
       "minLength": 2,
       "maxLength": 8,
-      "message": {
+      "errorMessage": {
         "required": "{label}必填",
         "minLength": "{label}不能小于{minLength}个字符",
         "maxLength": "{label}不能大于{maxLength}个字符"
@@ -164,7 +164,7 @@ defaultValue指定新增时当前字段默认值，客户端可以修改此值�
       "label": "年龄",
       "minimum": 1,
       "maximum": 150,
-      "message": "{label}应该大于 {minimum} 岁，小于 {maximum} 岁"
+      "errorMessage": "{label}应该大于 {minimum} 岁，小于 {maximum} 岁"
     }
   }
 }
@@ -196,7 +196,7 @@ defaultValue指定新增时当前字段默认值，客户端可以修改此值�
       "label": "姓名",
       "minLength": 2,
       "maxLength": 8,
-      "message": {
+      "errorMessage": {
         "required": "{label}必填",
         "minLength": "{label}不能小于{minLength}个字符"
       },
@@ -216,7 +216,7 @@ defaultValue指定新增时当前字段默认值，客户端可以修改此值�
       "label": "年龄",
       "minimum": 1,
       "maximum": 150,
-      "message": "{label}应该大于 {minimum} 岁，小于 {maximum} 岁",
+      "errorMessage": "{label}应该大于 {minimum} 岁，小于 {maximum} 岁",
       "component": {
         "name": "uni-field",
         "props": {
@@ -228,7 +228,7 @@ defaultValue指定新增时当前字段默认值，客户端可以修改此值�
       "bsonType": "int",
       "label": "选项",
       "enum": [1, 2, 3],
-      "message": "{label}无效",
+      "errorMessage": "{label}无效",
       "component": {
         "name": "select",
         "props": {
@@ -273,7 +273,7 @@ defaultValue指定新增时当前字段默认值，客户端可以修改此值�
       "group": "基本信息",
       "minLength": 2,
       "maxLength": 8,
-      "message": {
+      "errorMessage": {
         "required": "{label}必填",
         "minLength": "{label}不能小于{{minLength}}个字符",
         "maxLength": "{label}不能大于{{maxLength}}个字符"
@@ -296,7 +296,7 @@ defaultValue指定新增时当前字段默认值，客户端可以修改此值�
       "group": "基本信息",
       "minimum": 0,
       "maximum": 150,
-      "message": "{label}应该大于 {minimum} 岁，小于 {maximum} 岁",
+      "errorMessage": "{label}应该大于 {minimum} 岁，小于 {maximum} 岁",
       "component": {
         "name": "uni-field",
         "props": {
@@ -335,7 +335,7 @@ defaultValue指定新增时当前字段默认值，客户端可以修改此值�
     "name": {
       "bsonType": "string",
       "label": "姓名",
-      "message": "{label}不能为空"
+      "errorMessage": "{label}不能为空"
     }
   }
 }
@@ -353,7 +353,7 @@ defaultValue指定新增时当前字段默认值，客户端可以修改此值�
       "bsonType": "string",
       "label": "姓名",
       "minLength": 2,
-      "message": {
+      "errorMessage": {
         "required": "{label}不能为空",
         "minLength": "{label}不能小于 {minLength} 个字符"
       }
@@ -373,7 +373,7 @@ defaultValue指定新增时当前字段默认值，客户端可以修改此值�
     "name": {
       "bsonType": "string",
       "label": "姓名",
-      "message": '类型无效'
+      "errorMessage": "类型无效"
     }
   }
 }
@@ -391,7 +391,7 @@ defaultValue指定新增时当前字段默认值，客户端可以修改此值�
       "bsonType": "string",
       "label": "邮箱",
       "format": "email",
-      "message": {
+      "errorMessage": {
         "required": "{label}不能为空",
         "format": "{label}格式无效"
       }
@@ -412,7 +412,7 @@ defaultValue指定新增时当前字段默认值，客户端可以修改此值�
       "bsonType": "string",
       "label": "姓名",
       "pattern": "",
-      "message": {
+      "errorMessage": {
         "required": "{label}不能为空",
         "pattern": "{label}格式无效"
       }
