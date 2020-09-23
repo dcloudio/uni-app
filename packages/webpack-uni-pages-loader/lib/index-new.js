@@ -95,7 +95,7 @@ module.exports = function (content, map) {
     })
   }
 
-  const jsonFiles = require('./platforms/' + process.env.UNI_PLATFORM)(pagesJson, manifestJson)
+  const jsonFiles = require('./platforms/' + process.env.UNI_PLATFORM)(pagesJson, manifestJson, isAppView)
 
   if (jsonFiles && jsonFiles.length) {
     if (process.env.UNI_USING_V3) {
