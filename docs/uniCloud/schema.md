@@ -14,8 +14,8 @@ MongoDB支持JSON Schema的草案4，包括核心规范和验证规范，但有�
 |属性|类型|描述|备注|
 |:-|:-|:-|:-|
 |required|array|必填字段|JSON Schema standard 4 draft|
-|bsonType|any|字符串别名||
-|enum|Array|数组至少要有一个元素，且数组内的每一个元素都是唯一的。|
+|bsonType|any|字符串别名|JSON Schema standard 4 draft|
+|enum|Array|数组至少要有一个元素，且数组内的每一个元素都是唯一的。|JSON Schema standard 4 draft|
 |maximum|number|校验最大值(大于)|JSON Schema standard 4 draft|
 |exclusiveMaximum|boolean|是否排除 maximum|JSON Schema standard 4 draft|
 |minimum|number|校验最小值(小于)|JSON Schema standard 4 draft|
@@ -24,7 +24,7 @@ MongoDB支持JSON Schema的草案4，包括核心规范和验证规范，但有�
 |maxLength|number|校验最大长度|JSON Schema standard 4 draft|
 |foramat|string|数据格式||
 |title|string|标题，一般用来进行简单的描述，可以省略||
-|description|string|描述|
+|description|string|描述|JSON Schema standard 4 draft|
 
 
 ### 示例
@@ -96,13 +96,13 @@ MongoDB支持JSON Schema的草案4，包括核心规范和验证规范，但有�
 |属性|类型|描述|备注|
 |:-|:-|:-|:-|
 |label|string|字段标题||
-|format|'url' \| 'email'||
-|defaultValue|string \| Object|默认值||
-|forceDefaultValue|string \| Object|覆盖默认值，参考defaultValue||
-|message|string \| Object |验证提示||
+|format|'url'&#124;'email'||
+|defaultValue|string&#124;Object|默认值||
+|forceDefaultValue|string&#124;Object|覆盖默认值，参考defaultValue|
+|message|string&#124;Object |验证提示||
 |order|int|表单排序||
 |group|string|分组名称||
-|component|Object|组件信息|
+|component|Object|组件信息||
 
 
 ### defaultValue
