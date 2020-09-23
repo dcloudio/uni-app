@@ -52,7 +52,7 @@ module.exports = function (appJson, manifestJson, {
   pagesJson,
   manifest,
   normalizeNetworkTimeout
-}) {
+}, isAppView) {
   parseEntryPagePath(appJson, manifestJson)
 
   // timeout
@@ -109,5 +109,5 @@ module.exports = function (appJson, manifestJson, {
   manifest.name = 'manifest.json'
   manifest.content = JSON.stringify(manifest.content)
   delete appJson.nvue
-  return [manifest, definePages(appJson), appConfigService(appJson)]
+  return [manifest, definePages(appJson, isAppView), appConfigService(appJson)]
 }
