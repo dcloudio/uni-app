@@ -3,7 +3,7 @@ MediaQueryObserver 对象，用于监听页面 media query 状态的变化，如
 ### uni.createMediaQueryObserver([this])
 创建并返回一个 ``MediaQueryObserver`` 对象实例。
 
-> 从 HbuilderX 2.8.12 版本开始支持
+> 从 HbuilderX 2.9 版本开始支持
 
 **this说明：**
 
