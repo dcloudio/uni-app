@@ -2906,6 +2906,11 @@ var serviceContext = (function () {
     isIOS = platform === 'ios';
   }
 
+  function checkValue (value, defaultValue) {
+    value = Number(value);
+    return isNaN(value) ? defaultValue : value
+  }
+
   function upx2px$1 (number, newDeviceWidth) {
     if (deviceWidth === 0) {
       checkDeviceWidth();
@@ -2915,7 +2920,13 @@ var serviceContext = (function () {
     if (number === 0) {
       return 0
     }
-    let result = (number / BASE_DEVICE_WIDTH) * (newDeviceWidth || deviceWidth);
+    const config = __uniConfig.globalStyle || __uniConfig.window || {};
+    const maxWidth = checkValue(config.rpxCalcMaxDeviceWidth, 960);
+    const baseWidth = checkValue(config.rpxCalcBaseDeviceWidth, 375);
+    const includeWidth = checkValue(config.rpxCalcIncludeWidth, 750);
+    let width = newDeviceWidth || deviceWidth;
+    width = number === includeWidth || width <= maxWidth ? width : baseWidth;
+    let result = (number / BASE_DEVICE_WIDTH) * width;
     if (result < 0) {
       result = -result;
     }
