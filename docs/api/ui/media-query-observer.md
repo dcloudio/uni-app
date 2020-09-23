@@ -3,22 +3,24 @@ MediaQueryObserver 对象，用于监听页面 media query 状态的变化，如
 ### uni.createMediaQueryObserver([this])
 创建并返回一个 ``MediaQueryObserver`` 对象实例。
 
+> 从 HbuilderX 2.8.12 版本开始支持
+
 **this说明：**
 
-自定义组件实例。**支付宝小程序不支持此参数，传入仅为抹平写法差异**
+自定义组件实例。**小程序端不支持此参数，传入仅为抹平写法差异**
 
 ### MediaQueryObserver 对象的方法列表
 
-|方法|说明|
-|:-|:-|
-|MediaQueryObserver.observe(Object descriptor, function callback)|开始监听页面 media query 变化情况|
-|MediaQueryObserver.disconnect()|停止监听，回调函数将不再触发|
+|方法|说明|平台差异|
+|:-|:-|:-|
+|MediaQueryObserver.observe(Object descriptor, function callback)|开始监听页面 media query 变化情况|小程序非微信端，只查询一次，不支持监听|
+|MediaQueryObserver.disconnect()|停止监听，回调函数将不再触发||
 
 **observe 回调函数包含一个参数**
 
-||类型|说明|
+|参数|类型|说明|
 |:-|:-|:-|
-|intersectionRatio|boolean|页面的当前状态是否满足所指定的 media query|
+|matches|boolean|页面的当前状态是否满足所指定的 media query|
 
 ### 代码示例
 
@@ -75,7 +77,6 @@ MediaQueryObserver 对象，用于监听页面 media query 状态的变化，如
                     console.log('######### matches #########', matches)
                     this.matches = matches;
                 })
-                console.log('########## create mediaQueryOb ###########', this.mediaQueryOb)
             },
             landscapeObserver() {
                 // console.log('--------- this----------', this)
@@ -90,7 +91,6 @@ MediaQueryObserver 对象，用于监听页面 media query 状态的变化，如
             remove() {
                 this.mediaQueryOb.disconnect()
                 landscapeObs.disconnect()
-                console.log('########## destroy mediaQueryOb ###########', this.mediaQueryOb)
             }
         }
     }

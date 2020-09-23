@@ -2,6 +2,7 @@
   * [view](component/view.md)
   * [scroll-view](component/scroll-view.md)
   * [swiper](component/swiper.md)
+  * [match-media](component/match-media.md)
   * [movable-area](component/movable-view.md?id=movable-area)
   * [movable-view](component/movable-view.md?id=movable-view)
   * [cover-view](/component/cover-view?id=cover-view)
