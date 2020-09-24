@@ -1,6 +1,8 @@
 ## 简介
 
-每个数据库操作，都要写一个云函数接口给前端，工作量很大，也占用云函数的总数量。
+**重要：uni-clientDB 2.0.0版本不兼容旧版，如果你依然需要使用旧版本请在此链接下载 [uni-clientDB 1.0.8](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/839b6a50-fe54-11ea-81ea-f115fe74321c.zip)**
+
+每个查询业务，都要写一个云函数，很麻烦，也占用云函数的总数量。
 
 本插件提供了一个通用的数据库查询云函数，由前端向云函数传递要查询的条件，比如查询哪个表、查询哪些字段、where条件和排序是什么。
 
@@ -18,8 +20,6 @@
 3. 安全，可控制权限
 4. 性能好
 
-注意：`clientDB`，不是操作客户端的数据库，而是操作uniCloud的云数据库；不是在客户端直接操作云数据库，而是在客户端写操作代码，在云端进行真正的数据库操作。
-
 本项目包括云函数和客户端两部分，需要搭配使用，具体请参考下面文档。
 
 插件地址：[https://ext.dcloud.net.cn/plugin?id=2314](https://ext.dcloud.net.cn/plugin?id=2314)
@@ -35,42 +35,43 @@
 
 <pre v-pre="" data-lang="">
 	<code class="lang-" style="padding:0">
-┌─cloudfunctions    云函数
-│  ├─common         公共模块
-|  │  └─uni-curd    数据库查询通用公共模块
-|  ├─uni-clientDB   在云函数中控制权限，并调用uni-curd完成查询
-|  └─db_init.json   初始化数据库
-├─js_sdk            前端公共js目录
-|  └─uni-clientDB   前端的js库，封装了查询语法
-├─pages             业务页面文件存放的目录
-│  ├─index
-│  │  └─index.vue   index示例页面
-├─main.js           Vue初始化入口文件
-├─App.vue           应用配置，用来配置App全局样式以及监听 <a href="/frame?id=应用生命周期">应用生命周期</a>
-├─manifest.json     配置应用名称、appid、logo、版本等打包信息，<a href="/collocation/manifest">详见</a>
-└─pages.json        配置页面路由、导航条、选项卡等页面类信息，<a href="/collocation/pages">详见</a>
+┌─cloudfunctions              云函数
+│  ├─common                   公共模块
+|  │  └─uni-id	              uni-id公共模块
+|  ├─uni-clientDB             在云函数中控制权限
+|  |   ├─action               调用数据库查询前后执行的操作
+|  |   |  └─action-name.js    action逻辑
+|  |   ├─permission           数据库权限规则
+|  |   |  └─table-name.js     表名作为文件名设置不同表的权限规则
+|  |   ├─index.js             clientDB云函数入口
+|  |   └─package.json         clientDB云函数package.json
+|  └─db_init.json             初始化数据库
+├─js_sdk                      前端公共js目录
+|  └─uni-clientDB             前端的js库，封装了查询语法
+├─pages                       业务页面文件存放的目录
+├─main.js                     Vue初始化入口文件
+├─App.vue                     应用配置，用来配置App全局样式以及监听 <a href="/frame?id=应用生命周期">应用生命周期</a>
+├─manifest.json               配置应用名称、appid、logo、版本等打包信息，<a href="/collocation/manifest">详见</a>
+└─pages.json                  配置页面路由、导航条、选项卡等页面类信息，<a href="/collocation/pages">详见</a>
 	</code>
 </pre>
 
-- 云函数里包括一个公共模块`uni-curd`和一个云函数`uni-clientDB`
-- 前端包括一个js sdk`uni-clientDB`，然后就是index.vue里的示例调用
-- index示例页面，里面包含两个示例一个简单查询一个分页查询
+## 客户端js-sdk
 
-## 客户端公共模块
-
-客户端js-sdk主要负责组装查询逻辑
+客户端js-sdk主要负责组装查询逻辑，以及处理一些客户端不太方便表示的字段，比如用户ID（详情看下面语法扩展部分）
 
 **示例代码**
 
 ```js
 // 引入公共模块
-import db from '@/common/uni-clientDB/index.js'
+import db from '@/js_sdk/uni-clientDB/index.js'
 const dbCmd = db.command
 
 // 使用uni-clientDB
 uniCloud.callFunction({
 	name: 'uni-clientDB',
 	data: {
+    // 写法同云函数内数据库指令
 		command: db.collection('list').where({
 			name: new RegExp('龚','g'),
 			time: dbCmd.gt(1105885393581)
@@ -94,159 +95,312 @@ uniCloud.callFunction({
 - 不可使用db.serverDate、db.Geo、db.RegExp
 - 上传时会对query进行序列化，除Date类型、RegExp之外的所有不可序列化的参数类型均不支持（例如：undefined）
 - 为方便控制禁止前端使用set方法，一般情况下也不需要前端使用set
+- 更新数据库时不可使用更新操作符`db.command.inc`等
+- 新数据时键值不可使用`{'a.b.c': 1}`的形式（后续会对此进行优化）
 
-## 云函数公共模块
+### 语法扩展
 
-云函数公共模块`uni-curd`主要负责解析客户端查询逻辑，对客户端行为做简单的限制
+clientDB目前内置了3个变量可以供客户端使用，客户端并非直接获得这三个变量的值，而是需要传递给clientDB云函数，云函数解析之后给赋予真正的值。
 
-**使用示例**
+|参数名					|说明					|
+|:-:						|:-:					|
+|db.env.uid			|用户uid			|
+|db.env.now			|服务器时间戳	|
+|db.env.clientIP|当前客户端IP	|
+
+## 云函数clientDB
+
+云函数uni-clientDB主要负责解析客户端查询逻辑，对客户端行为做权限以及数据格式上的限制。除了`uni-curd`之外还有以下三部分:
+
+1. permission目录的权限规则。permission下每个文件对应一个表的权限，文件名为对应的表名。
+2. action目录下的预处理后处理逻辑。action下每个目录对应一个操作，前端页面在callFunction时传入action参数指明当前操作需要使用哪个action（可以在权限规则内指定某些操作必须使用指定的action，比如`"action in ['action-a','action-b']"`）
+3. validator目录下的数据校验规则。和permission一样，validator目录下每个文件的文件名对应一个表名。
+
+**云函数内部执行顺序**
+
+1. permission权限校验，校验未通过则流程终止
+2. validator数据校验，校验未通过则流程终止。如果是新增会在这一步之前执行defaultValue的逻辑
+3. 执行action.before，内部可以对数据进行修改，开启事务等操作
+4. 执行command数据库操作
+5. 执行action.after，可以对错误处理、对结果调整
+
+**我们推荐试用web控制台的数据库表结构来统一管理permission和validator，uniCloud web控制台可以通过表结构一键生成前端页面和clientDB权限及验证规则，后续HBuilderX也会内置此功能**
+
+为了更好的控制客户端行文，客户端在permission不为公有读（并非true时）时写法有以下限制：
+
+- 不使用聚合时collection方法之后需紧跟一个where方法，这个where方法内传入的条件必须满足权限控制规则
+- 使用聚合时aggregate方法之后需紧跟一个match方法，这个match方法内的条件需满足权限控制规则
+- 使用lookup时只可以使用拼接子查询的写法（let+pipeline模式），做这个限制主要是因为需要确保访问需要lookup的表时也会传入查询条件，即pipeline参数里面`db.command.pipeline()`之后的match方法也需要像上一条里面的match一样限制
+- 上面用于校验权限的match和where后的project和field是用来确定本次查询需要访问什么字段的（如果没有将会认为是在访问所有字段），访问的字段列表会用来确认使用那些字段权限校验。这个位置的project和field只能使用白名单模式
+- 上面用于校验权限的match和where内如果有使用`db.command.expr`，那么在进行权限校验时expr方法内部的条件会被忽略，整个expr方法转化成一个不与任何条件产生交集的特别表达式，具体表现请看下面示例
+
+可以参考permission内的使用示例说明
+
+### permission
+
+使用permission之前需要先了解以下permission的原理。permission会对客户端上传的数据库指令进行校验，即客户端的查询条件应该满足permission内规定的条件。比如permission内规定doc.a > 1,那么查询条件里面就必须有a且条件内的a也满足a>1，`{a:2}`、`{a:db.command.gt(3)}`都是满足条件的查询。
+
+**permission配置示例**
 
 ```js
-'use strict';
-const uniCurd = require('uni-curd')
-const db = uniCloud.database()
+// permission/order.js
+module.exports = {
+  // 关于权限中用到的auth对象及doc对象请看下方说明
+  // 新增数据时的权限
+  '.create': false,
+  // 读取数据时的权限
+  '.read': 'doc.uid == auth.uid',
+  // 更新数据时的权限
+  '.update': false,
+  // 删除数据时的权限
+  '.delete': false,
+  // secret_field字段的权限，需要注意的是字段只有读写权限
+  // 访问一个子节点时会使用所有上级权限，所有上级权限及字段本身权限都满足时才可以操作
+  'secret_field': {
+    // secret_field字段的读权限
+    '.read': false,
+    // secret_field字段的写权限
+    '.write': false
+  }
+}
+
+// permission/book.js
+module.exports = {
+  // 未配置的权限默认为false
+  // 读取数据时的权限
+  '.read': 'doc.status == "OnSell"'
+}
+```
+
+**请求示例**
+
+```js
+import db from '@/js_sdk/uni-clientDB/index.js'
 const dbCmd = db.command
-exports.main = async (event, context) => {
-	// 这里可以判断用户身份给予不同权限，例如：可以从event里拿到uni-id的token，根据token和客户端参数决定查询权限限制
-	try {
-		const res = await uniCurd({
-			command: event.command,
-			pagination: event.pagination,
-			rules: {
-				list: { // 数据表名
-					// CRUD权限
-					create: false,
-					read: true,
-					update: false,
-					delete: false,
-					// 是否允许使用聚合
-					aggregate: false,
-					// 是否允许使用联表查询，联表查询时blockedField不会对被连接的数据表生效
-					lookup: false,
-					// 使用聚合时blockField不会覆盖客户端的project，而是在聚合第一阶段插入project，不使用聚合时会在最后阶段插入一个field（会覆盖客户端的field方法）
-					blockedField: ['extra'],
-					// 不使用聚合时mixinCondition会在没有where的时候在collection方法之后插入where，有where时会跟where条件进行合并，取原条件且mixinCondition。使用聚合时会在第一阶段插入match使用混入的条件，如果有blockedField会插入在blockedField对应的project之前
-					mixinCondition: {
-						time: dbCmd.gt(1000000000000)
-					},
-					// 更多用法请参考下方参数说明文档
-				}
-			}
-		})
-		return res
+const $ = dbCmd.aggregate
+uniCloud.callFunction({
+  name: 'uni-clientDB',
+  data: {
+    command: db.collection('order').aggregate()
+    // 此match方法内的条件会和order表对应的权限规则进行校验
+    .match({
+      uid: db.env.uid
+    })
+    // 此project方法是为了确定查询需要访问order表的哪些字段
+    .project({
+      _id: true,
+      book_id: true
+    })
+    .lookup({
+      from: 'book',
+      let: {
+        book_id: '$book_id'
+      },
+      pipeline: $.pipeline()
+      // 此match方法内的条件会和book表对应的权限规则进行校验，{status: 'OnSell'}会参与校验。这里如果将dbCmd.and换成dbCmd.or会校验不通过
+      .match(dbCmd.and([ 
+        {
+          status: 'OnSell'
+        },
+        // 指定book表的_id等于order表的book_id
+        dbCmd.expr(
+          $.eq(['$_id', '$$book_id'])
+        )
+      ]))
+      // 此project方法是为了确定查询需要访问book表的哪些字段
+      .project({
+        book_name: true
+      })
+      .done()
+    })
+    .end()
+  }
+})
 
-	} catch (e) {
-		return {
-			code: 10001,
-			msg: e.message
+```
+
+**权限规则内可以使用的全局变量**
+
+|变量名					|说明																																																																												|
+|:-:						|:-:																																																																												|
+|auth.uid				|用户id																																																																											|
+|auth.role			|用户角色数组，参考[uni-id 角色权限](/uniCloud/uni-id?id=rbac)，注意`admin`为clientDB内置的角色，如果用户角色列表里包含`admin`则认为此用户有完全数据访问权限|
+|auth.permission|用户权限数组，参考[uni-id 角色权限](/uniCloud/uni-id?id=rbac)																																															|
+|doc						|记录内容，用于匹配记录内容/查询条件（需要注意的是，规则内的doc对象并不是直接去校验存在于数据库的数据，而是校验客户端的查询条件）														|
+|now						|当前时间戳（单位：毫秒），时间戳可以进行额外运算，如doc.publish\_date > now - 60000表示publish\_date在最近一分钟																						|
+|action					|当前客户端指定的action																																																																			|
+
+**权限规则内可以使用的运算符**
+
+|运算符	|说明						|示例																|示例解释(集合查询)																	|
+|:-:		|:-:						|:-:																|:-:																								|
+|==			|等于						|auth.uid == 'abc'									|用户id为abc																				|
+|!=			|不等于					|auth.uid != 'abc'									|用户id不为abc																			|
+|>			|大于						|doc.age>10													|查询条件的 age 属性大于 10													|
+|>=			|大于等于				|doc.age>=10												|查询条件的 age 属性大于等于 10											|
+|<			|小于						|doc.age<10													|查询条件的 age 属性小于 10													|
+|<=			|小于等于				|doc.age<=10												|查询条件的 age 属性小于等于 10											|
+|in			|存在在数组中		|doc.status in ['a','b']						|查询条件的 status 是['a','b']中的一个，数组中所有元素类型需一致							|
+|nin		|不存在在数组中	|doc.status nin ['a','b']						|查询条件的 status 不是['a','b']中的任何一个，数组中所有元素类型需一致				|
+|&&			|与							|auth.uid == 'abc' && doc.age>10	|用户id 为 abc 并且查询条件的 age 属性大于 10|
+|&#124;&#124;|或	|auth.uid == 'abc'&#124;&#124;doc.age>10												|用户Id为abc或者查询条件的 age 属性大于 10|
+
+**权限规则内可以使用的方法**
+
+目前权限规则内仅可使用get方法，作用是根据id获取数据库中的数据。get方法接收一个字符串作为参数字符串形式为`database.表名.记录ID`
+
+用法示例: 
+
+```js
+"get(`database.shop.${doc.shop_id}`).owner == auth.uid"
+```
+
+使用get方法时需要注意get方法的参数必须是唯一确定值，以上述示例为例
+
+```js
+// 可以使用的查询条件，此条件内doc.shop_id只能是'123123'
+db.collection('street').where({
+  shop_id: '123123'
+}).get()
+
+// 不可使用的查询条件，此条件内doc.shop_id可能是'123123'也可能是'456456'
+const dbCmd = db.command
+db.collection('street').where(dbCmd.or([
+  {
+    shop_id: '123123'
+  },
+  {
+    shop_id: '456456'
+  }
+])).get()
+```
+
+### action
+
+```js
+// 客户端指定action
+import db from '@/js_sdk/uni-clientDB/index.js'
+const dbCmd = db.command
+uniCloud.callFunctin({
+  name:'uni-clientDB',
+  data: {
+    action: 'add-todo', // 传入云函数内action目录下对应的文件名即可
+    command: db.collection('todo')
+    .add({
+    	title: 'todo title'
+    })
+  }
+}).then(res => {
+  console.log(res)
+}).catch(err => {
+  console.error(err)
+})
+
+// 一个云函数内action文件示例 action/add-todo.js
+module.exports = {
+  // 在数据库操作之前执行
+  before: async(state,event)=>{
+    // state为当前clientDB操作状态其格式见下方说明
+    // event为传入云函数的event对象
+    
+    // before内可以操作state上的newData对象对数据进行修改，比如：
+    state.newData.create_time = Date.now()
+    // 指定插入或修改的数据内的create_time为Date.now()
+    // 执行了此操作之后实际插入的数据会变成 {title: 'todo title', create_time: xxxx}
+    // 如果是执行插入操作时指定当前时间为创建时间的场景，有更简单的实现方案：在validator内配置defaultValue
+  },
+  // 在数据库操作之后执行
+  after:async (state,event,error,result)=>{
+    // state为当前clientDB操作状态其格式见下方说明
+    // event为传入云函数的event对象
+    // error为执行操作的错误对象，如果没有错误error的值为null
+    // result为执行command返回的结果
+    
+    // after内可以对result进行额外处理并返回，如果有after方法，则云函数返回值会是after方法的返回值
+    result.msg = 'hello'
+    return result
+  }
+}
+```
+
+**state**参数说明
+
+```js
+// state参数格式如下
+{
+  command: {
+    getMethod,
+    getParam,
+    setParam
+  },
+  // 需要注意的是clientDB可能尚未获取用户信息，如果权限规则内没使用auth对象且数据库指令里面没使用db.env.uid则clientDB不会自动取获取用户信息
+  auth: {
+    uid, // 用户ID，如果未获取或者获取失败uid值为null
+    role, // role暂时没有在uni-id支持，如果未获取或者获取失败uid值为[]
+    checked // 是否已经获取了用户信息
+  },
+  // 事务对象，如果需要用到事务可以在action的before内使用state.transaction = await db.startTransaction()传入
+  transaction,
+  // 更新或新增的数据
+  newData,
+  // 访问的集合
+  collection,
+  // 操作类型，可能的值'read'、'create'、'update'、'delete'
+  type
+}
+```
+
+### validator
+
+validator主要是用于数据校验以及在新增数据时指定默认值，validator下的文件可以由web控制台数据库表结构生成。
+
+一个典型的validator文件形式如下
+
+```js
+// validator/article.js
+module.exports = {
+  "title": {
+    label: '标题',
+    rules: [{
+      // 校验title字段为string类型，更多校验规则详见https://xxx
+      format: 'string'
+    }]
+  },
+  "user_id": {
+    // 新增数据时将user_id指定为当前用户Id，客户端不可修改
+		forceDefaultValue: {
+			$env: 'uid'
 		}
-	}
-};
-
-```
-
-**参数说明**
-
-|参数名		|类型	|是否必填	|默认值	|说明						|
-|:-:		|:-:	|:-:		|:-:	|:-:						|
-|command	|Object	|是			|-		|客户端上传的查询条件		|
-|pagination	|Object	|否			|-		|如需分页，请在此字段内配置	|
-|rules		|Object	|是			|-		|权限规则					|
-
-**pagination参数说明**
-
-|参数名		|类型	|是否必填	|默认值	|说明		|
-|:-:		|:-:	|:-:		|:-:	|:-:		|
-|pageSize	|Object	|是			|-		|每页数量	|
-|current	|Object	|是			|-		|当前页码	|
-
-**rules参数说明**
-
-rules下可以对不同的数据表配置不同的权限，比如以下规则代表”数据表list允许插入，数据表goods允许更新“
-
-```js
-{
-	list: {
-		create: true,
 	},
-	goods: {
-		update: true
+  "is_public": {
+    // 新增数据时默认is_public指定为true，客户端可以修改
+		defaultValue: true
 	}
 }
 ```
 
-|参数名			|类型	|是否必填	|默认值	|说明								|
-|:-:			|:-:	|:-:		|:-:	|:-:								|
-|create			|Boolean|否			|false	|是否开启插入权限					|
-|read			|Boolean|否			|true	|是否开启读权限						|
-|update			|Boolean|否			|false	|是否开启更新权限					|
-|delete			|Boolean|否			|false	|是否开启删除权限					|
-|aggregate		|Boolean|否			|false	|是否允许聚合						|
-|lookup			|Boolean|否			|false	|是否允许联表查询					|
-|blockedField	|Array	|否			|-		|屏蔽的数据库字段，请阅读注意事项	|
-|mixinCondition	|Object	|否			|-		|混入条件，请阅读注意事项			|
-|hooks			|Object	|否			|-		|回调方法							|
+defaultValue和forceDefaultValue均为字段默认值，区别在于defaultValue会被客户端传值覆盖，而forceDefaultValue不允许被客户端覆盖（如果客户端传递了与forceDefaultValue不一样的值会无法通过校验）
 
-**hooks参数说明**
-
-|参数名				|类型		|是否必填	|默认值	|说明																							|
-|:-:				|:-:		|:-:		|:-:	|:-:																							|
-|beforeStageAppend	|Function	|否			|-		|每个阶段被添加之前执行																			|
-|afterStageAppend	|Function	|否			|-		|每个阶段被添加之后执行																			|
-|beforeSend			|Function	|否			|-		|最终阶段'get', 'end', 'count', 'add', 'remove', 'update'添加之前执行，在beforeStageAppend之后	|
-
-**回调方法的使用**
-
-回调参数如下：
+defaultValue/forceDefaultValue内除了直接指定值之外，还可以通过`{$env: "变量名"}`的形式指定默认值为一些特殊变量，目前有以下可选变量名
 
 ```js
-{
-	state: {
-		useAggregate, // 是否使用了聚合
-		useLookup, // 是否使用了联表查询
-		type, // 操作类型，可能的值为create、read、update、delete
-		collection, // 当前数据表名
-		methodList // 使用到的方法列表
-	},
-	stage: {
-		method, // 当前阶段方法名
-		args // 当前阶段方法参数
-	},
-	exec // 已经组装的查询指令
+// 指定默认值为当前时间戳
+forceDefaultValue: {
+  $env: 'now'
+}
+
+// 指定默认值为当前用户ID
+forceDefaultValue: {
+  $env: 'uid'
+}
+
+// 指定默认值为当前客户端IP地址
+forceDefaultValue: {
+  $env: 'clientIP'
 }
 ```
 
-回调方法中可以通过返回结果修改数据库指令，例如以下示例在skip之后插入一个limit
 
-```js
-afterStageAppend: function({
-	state,
-	stage,
-	exec
-}) {
-	if(stage.method === 'skip') {
-		return exec.limit(1)
-	}
-},
-```
+<!-- ## 参考
 
-**注意事项**
-
-- 关于blockedField
-  + 使用聚合时blockField不会覆盖客户端的project，而是在聚合第一阶段插入project
-  + 不使用聚合时会在最后阶段插入一个field（会覆盖客户端的field方法）
-  + blockedField仅对读操作生效
-
-- 关于mixinCondition
-  + mixinCondition内可以使用数据库操作符
-  + 不使用聚合时mixinCondition会在没有where的时候在collection方法之后插入where，有where时会跟where条件进行合并，取原条件且mixinCondition。
-  + 使用聚合时会在第一阶段插入match使用混入的条件，如果有blockedField会插入在blockedField对应的project之前
-  + mixinCondition会对除插入以外的所有操作生效
-  + 使用mixinCondition时客户端不可使用`collection('xxx').doc('xxx')`方法（1.0.8版本起即使有mixinCondition客户端也可以使用doc方法）
-
-- 关于联表查询
-  + 连接的数据表也会受所配置的权限规则中对应数据表规则限制，主要是read，目前连接的数据表不会受blockedField限制
-
-## 参考
-
-在线通讯录项目，完整的演示了如何基于clientDB在客户端代码里实现数据的增删改查，是学习clientDB的重要示例项目。该项目插件地址：[https://ext.dcloud.net.cn/plugin?id=2574](https://ext.dcloud.net.cn/plugin?id=2574)
+在线通讯录项目，完整的演示了如何基于clientDB在客户端代码里实现数据的增删改查，是学习clientDB的重要示例项目。该项目插件地址：[https://ext.dcloud.net.cn/plugin?id=2574](https://ext.dcloud.net.cn/plugin?id=2574) -->
