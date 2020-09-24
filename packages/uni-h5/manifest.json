@@ -730,7 +730,16 @@
     ],
     "createMediaQueryObserver": [
         "/core/service/api/ui/create-media-query-observer.js",
-        []
+        [
+            [
+                "/core/view/bridge/subscribe/api/request-media-query-observer.js",
+                "requestMediaQueryObserver"
+            ],
+            [
+                "/core/view/bridge/subscribe/api/request-media-query-observer.js",
+                "destroyMediaQueryObserver"
+            ]
+        ]
     ],
     "$emit": [
         "/platforms/h5/service/api/base/event-bus.js",
