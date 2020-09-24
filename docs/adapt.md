@@ -13,15 +13,19 @@ uni-app提供的屏幕适配方案，包括3部分：
 
 各个window之间可以交互通信。
 
-这里有一个例子，分栏式的DCloud社区：[https://static-1afcc27f-ce2f-4a6d-9416-c65a6f87d24e.bspapp.com/#/](https://static-1afcc27f-ce2f-4a6d-9416-c65a6f87d24e.bspapp.com/#/)
+这里有2个例子：
+- 分栏式的新闻模块：[https://static-7d133019-9a7e-474a-b7c2-c01751f00ca5.bspapp.com/#/](https://static-7d133019-9a7e-474a-b7c2-c01751f00ca5.bspapp.com/#/)，这个示例对应的源码在：[https://github.com/dcloudio/uni-template-news](https://github.com/dcloudio/uni-template-news)
+- 分栏式的DCloud社区：[https://static-1afcc27f-ce2f-4a6d-9416-c65a6f87d24e.bspapp.com/#/](https://static-1afcc27f-ce2f-4a6d-9416-c65a6f87d24e.bspapp.com/#/)。这个示例只适配了首页。
 
-该例子有如下特点：
+以上示例建议使用最新版的chrome、Safari、或firefox访问。示例源码的运行需使用HBuilderX 2.9+
+
+这些例子特点如下：
 - 在宽屏下会新增rightWindow区域，用于显示详情页面，点击左边的列表在右边显示详情内容。而窄屏下仍然是点击列表后新开一个页面显示详情内容。
 - rightWindow里的页面是复用的，支持把已有详情页面当组件放到 rightWindow 页面中。
 
 这套方案是已知的、最便捷的分栏式宽屏应用适配方案。
 
-leftWindow方案尤其适用于分栏式应用和PC Admin管理控制台。
+一般情况下，leftWindow方案适用于PC Admin管理控制台。rightWindow适用于分栏式应用，或在右侧填充相关内容和广告区域。
 
 目前的leftWindow、rightWindow、topWindow 只支持H5端。计划后续在Pad App上实现该配置。小程序无法支持该配置。
 
