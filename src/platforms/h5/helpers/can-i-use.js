@@ -1,5 +1,5 @@
 function cssSupports (css) {
-  return window.CSS && window.CSS.supports && window.CSS.supports(css)
+  return window.CSS && window.CSS.supports && (window.CSS.supports(css) || window.CSS.supports('--a', 0))
 }
 
 export default {
