@@ -16,14 +16,15 @@ function isFunction (expr) {
 
 function processEvent (expr, filterModules) {
   const isMethodPath = simplePathRE.test(expr)
+  expr = `(${expr})`
   if (isMethodPath || isFunction(expr)) {
     if (filterModules.find(name => expr.indexOf(name + '.') === 0)) {
       return `
 $event = $handleWxsEvent($event);
-(${expr})($event, $getComponentDescriptor())
+${expr}($event, $getComponentDescriptor())
 `
     } else {
-      expr = `(${expr})(...arguments)`
+      expr = `${expr}(...arguments)`
     }
   }
   return `
