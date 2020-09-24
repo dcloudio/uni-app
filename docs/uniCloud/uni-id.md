@@ -173,11 +173,12 @@ DCloud暂无计划开发百度、头条、QQ等小程序的登录，以及Apple 
 
 **user参数说明**
 
-| 字段					| 类型	| 必填| 说明								|
-| ---						| ---		| ---	| ---									|
-| username			| String| 是	|用户名，唯一					|
-| password			| String| 是	|密码									|
-| myInviteCode	| String| 否	|自行设置用户的邀请码	|
+| 字段					| 类型		| 必填| 说明																																					|
+| ---						| ---			| ---	| ---																																						|
+| username			| String	| 是	|用户名，唯一																																		|
+| password			| String	| 是	|密码																																						|
+| needPermission| Boolean	| 否	|设置为true时会在checkToken时返回用户权限（permission），建议在管理控制台中使用	|
+| myInviteCode	| String	| 否	|自行设置用户的邀请码																														|
 
 username可以是字符串、可以是email、可以是手机号，本插件不约束，开发者可以自己定。
 
@@ -261,6 +262,7 @@ uniCloud.callFunction({
 | ---		| ---	| ---	| ---	|
 | username	| String| 是	|用户名	|
 | password	| String| 是	|密码	|
+| needPermission| Boolean	| 否	|设置为true时会在checkToken时返回用户权限（permission），建议在管理控制台中使用	|
 | queryField	| Array| 否	|指定从哪些字段中比对username，不填默认与数据库内的username字段对比, 可取值'username'、'email'、'mobile'|
 
 **响应参数**
@@ -306,14 +308,16 @@ exports.main = async function(event,context) {
 
 **响应参数**
 
-| 字段				| 类型			| 说明																																													|
-| ---					| ---				| ---																																														|
-| code				| Number		|错误码，0表示成功																																							|
-| msg					| String		|详细信息																																												|
-| uid					| String		|用户Id，校验成功之后会返回																																			|
+| 字段				| 类型			| 说明																																																										|
+| ---					| ---				| ---																																																											|
+| code				| Number		|错误码，0表示成功																																																				|
+| msg					| String		|详细信息																																																									|
+| uid					| String		|用户Id，校验成功之后会返回																																																|
 | token				| String		|新增于uni-id 1.1.7版本，用户token快要过期时，新生成的token，只有在config内配置了`tokenExpiresThreshold`的值时才会有此行为|
-| tokenExpired| TimeStamp	|新增于uni-id 1.1.7版本，新token的过期时间																																							|
-| userInfo		| Object		|用户信息，uid对应的uni-id-users全部字段																												|
+| tokenExpired| TimeStamp	|新增于uni-id 1.1.7版本，新token的过期时间																																								|
+| role				| Array			|新增于uni-id 1.1.9版本，用户角色列表																																											|
+| permission	| Array			|新增于uni-id 1.1.9版本，用户权限列表，只有登录操作时传入needPermission才会返回，否则为空数组															|
+| userInfo		| Object		|用户信息，uid对应的uni-id-users全部字段																																									|
 
 **注意：**
 
@@ -633,6 +637,7 @@ exports.main = async function(event,context) {
 | password		|String	| 否	|密码，type为`register`时生效																																						|
 | inviteCode	|String	| 否	|邀请人的邀请码，type为`register`时生效																																	|
 | myInviteCode|String	| 否	|设置当前注册用户自己的邀请码，type为`register`时生效																										|
+| needPermission| Boolean	| 否	|设置为true时会在checkToken时返回用户权限（permission），建议在管理控制台中使用	|
 
 **响应参数**
 
@@ -764,6 +769,7 @@ exports.main = async function(event,context) {
 | type					| String| 否	|指定操作类型，覆盖存在则登录不存在则注册的默认行为，可选值为`login`、`register`|
 | password			|String	| 否	|密码，type为`register`时生效																										|
 | myInviteCode	|String	| 否	|设置当前注册用户自己的邀请码，type为`register`时生效														|
+| needPermission| Boolean	| 否	|设置为true时会在checkToken时返回用户权限（permission），建议在管理控制台中使用	|
 
 **响应参数**
 
@@ -933,6 +939,7 @@ exports.main = async function(event,context) {
 | code				| String| 是	|微信登录返回的code																																																								|
 | platform		|String	| 否	|客户端类型：`mp-weixin`、`app-plus`，默认uni-id会自动取客户端类型，但是在云函数url化等场景无法取到客户端类型，可以使用此参数指定	|
 | myInviteCode|String	| 否	|设置当前注册用户自己的邀请码，type为`register`时生效																																							|
+| needPermission| Boolean	| 否	|设置为true时会在checkToken时返回用户权限（permission），建议在管理控制台中使用	|
 
 **响应参数**
 
@@ -1155,6 +1162,7 @@ exports.main = async function(event,context) {
 | code				| String| 是	|支付宝登录返回的code																																																							|
 | platform		| String| 否	|客户端类型：`mp-weixin`、`app-plus`，默认uni-id会自动取客户端类型，但是在云函数url化等场景无法取到客户端类型，可以使用此参数指定	|
 | myInviteCode| String| 否	|设置当前注册用户自己的邀请码，type为`register`时生效																																							|
+| needPermission| Boolean	| 否	|设置为true时会在checkToken时返回用户权限（permission），建议在管理控制台中使用	|
 
 **响应参数**
 
@@ -1187,7 +1195,7 @@ exports.main = async function(event,context) {
 ```
 
 
-## 获取微信openid
+## 获取支付宝用户ID
 
 用法：`uniID.code2SessionWeixin(Object Code2SessionWeixinParams);`
 
@@ -1360,6 +1368,298 @@ exports.main = async function(event,context) {
 }
 ```
 
+## 获取用户角色
+
+根据uid获取用户角色
+
+用法：`uniID.getRoleByUid(Object GetRoleByUidParams)`
+
+**参数说明**
+
+| 字段	| 类型	| 必填| 说明													|
+| ---		| ---		| ---	| ---														|
+| uid		| String| 是	|用户Id，可以通过checkToken返回	|
+
+**响应参数**
+
+| 字段| 类型	| 必填| 说明						|
+| ---	| ---		| ---	| ---							|
+| code| Number| 是	|错误码，0表示成功|
+| msg	| String| 是	|详细信息					|
+| role	| Array	| 是	|用户拥有的角色列表|
+
+## 获取角色内的权限
+
+根据roleID获取角色权限
+
+用法：`uniID.getPermissionByRole(Object GetPermissionByRoleParams)`
+
+**参数说明**
+
+| 字段	| 类型	| 必填| 说明	|
+| ---		| ---		| ---	| ---		|
+| roleID| String| 是	|角色Id	|
+
+**响应参数**
+
+| 字段			| 类型	| 必填| 说明							|
+| ---				| ---		| ---	| ---								|
+| code			| Number| 是	|错误码，0表示成功	|
+| msg				| String| 是	|详细信息						|
+| permission| Array	| 是	|用户拥有的角色列表	|
+
+## 获取用户的权限
+
+根据uid获取用户权限
+
+用法：`uniID.getPermissionByUid(Object GetPermissionByUidParams)`
+
+**参数说明**
+
+| 字段| 类型	| 必填| 说明	|
+| ---	| ---		| ---	| ---		|
+| uid	| String| 是	|用户Id	|
+
+**响应参数**
+
+| 字段			| 类型	| 必填| 说明							|
+| ---				| ---		| ---	| ---								|
+| code			| Number| 是	|错误码，0表示成功	|
+| msg				| String| 是	|详细信息						|
+| permission| Array	| 是	|用户拥有的角色列表	|
+
+## 为用户绑定角色
+
+用法：`uniID.bindRole(Object BindRoleParams)`
+
+**参数说明**
+
+| 字段		| 类型		| 必填| 说明																																										|
+| ---			| ---			| ---	| ---																																											|
+| uid			| String	| 是	|用户Id																																										|
+| roleList| Array		| 是	|角色Id（role_id）列表																																		|
+| reset		| Boolean	| 否	|是否直接覆盖用户角色，true：直接将roleList设置为用户角色，false：在用户已有角色后追加角色|
+
+**响应参数**
+
+| 字段			| 类型	| 必填| 说明							|
+| ---				| ---		| ---	| ---								|
+| code			| Number| 是	|错误码，0表示成功	|
+| msg				| String| 是	|详细信息						|
+
+## 为角色绑定权限
+
+用法：`uniID.bindPermission(Object BindPermissionParams)`
+
+**参数说明**
+
+| 字段					| 类型		| 必填| 说明																																													|
+| ---						| ---			| ---	| ---																																														|
+| roleID				| String	| 是	|用户Id																																													|
+| permissionList| Array		| 是	|权限Id（permission_id）列表																																													|
+| reset					| Boolean	| 否	|是否直接覆盖角色权限，true：直接将permissionList设置为角色权限，false：在角色已有权限后追加权限|
+
+**响应参数**
+
+| 字段			| 类型	| 必填| 说明							|
+| ---				| ---		| ---	| ---								|
+| code			| Number| 是	|错误码，0表示成功	|
+| msg				| String| 是	|详细信息						|
+
+## 为用户解绑角色
+
+用法：`uniID.unbindRole(Object UnbindRoleParams)`
+
+**参数说明**
+
+| 字段		| 类型		| 必填| 说明																																										|
+| ---			| ---			| ---	| ---																																											|
+| uid			| String	| 是	|用户Id																																										|
+| roleList| Array		| 是	|角色Id（role_id）列表																																		|
+
+**响应参数**
+
+| 字段			| 类型	| 必填| 说明							|
+| ---				| ---		| ---	| ---								|
+| code			| Number| 是	|错误码，0表示成功	|
+| msg				| String| 是	|详细信息						|
+
+## 为角色解绑权限
+
+用法：`uniID.unbindPermission(Object UnbindPermissionParams)`
+
+**参数说明**
+
+| 字段					| 类型	| 必填| 说明											|
+| ---						| ---		| ---	| ---												|
+| roleID				| String| 是	|角色Id											|
+| permissionList| Array	| 是	|权限Id（permission_id）列表|
+
+**响应参数**
+
+| 字段			| 类型	| 必填| 说明							|
+| ---				| ---		| ---	| ---								|
+| code			| Number| 是	|错误码，0表示成功	|
+| msg				| String| 是	|详细信息						|
+
+## 新增角色
+
+用法：`uniID.addRole(Object AddRoleParams)`
+
+**参数说明**
+
+| 字段			| 类型	| 必填| 说明											|
+| ---				| ---		| ---	| ---												|
+| roleID		| String| 是	|角色Id，唯一标识											|
+| roleName	| String| 否	|角色名称，展示用						|
+| comment		| String| 否	|备注												|
+| permission| Array	| 否	|权限Id（permission_id）列表|
+
+**响应参数**
+
+| 字段			| 类型	| 必填| 说明							|
+| ---				| ---		| ---	| ---								|
+| code			| Number| 是	|错误码，0表示成功	|
+| msg				| String| 是	|详细信息						|
+
+## 获取角色列表
+
+用法：`uniID.getRoleList(Object GetRoleListParams)`
+
+**参数说明**
+
+| 字段			| 类型		| 必填| 说明						|
+| ---				| ---			| ---	| ---							|
+| limit			| Number	| 是	|限制返回数量			|
+| offset		| Number	| 是	|偏移量						|
+| needTotal	| Boolean	| 否	|是否需要返回总数	|
+
+**响应参数**
+
+| 字段		| 类型	|  说明																			|
+| ---			| ---		|  ---																			|
+| code		| Number| 错误码，0表示成功													|
+| msg			| String| 详细信息																	|
+| roleList| Array	|roles表记录数组（包含role_name、comment等）|
+| total		| Number|总数量																			|
+
+## 更新角色信息
+
+**注意不可修改role_id**
+
+用法：`uniID.updateRole(Object UpdateRoleParams)`
+
+**参数说明**
+
+| 字段			| 类型	| 必填| 说明											|
+| ---				| ---		| ---	| ---												|
+| roleID		| String| 是	|角色Id，唯一标识						|
+| roleName	| String| 否	|角色名称，展示用						|
+| comment		| String| 否	|备注												|
+| permission| Array	| 否	|权限Id（permission_id）列表|
+
+**响应参数**
+
+| 字段			| 类型	| 必填| 说明							|
+| ---				| ---		| ---	| ---								|
+| code			| Number| 是	|错误码，0表示成功	|
+| msg				| String| 是	|详细信息						|
+
+## 删除角色
+
+用法：`uniID.deleteRole(Object DeleteRoleParams)`
+
+**参数说明**
+
+| 字段	| 类型	| 必填| 说明						|
+| ---		| ---		| ---	| ---							|
+| roleID| String| 是	|角色Id，唯一标识	|
+
+**响应参数**
+
+| 字段			| 类型	| 必填| 说明							|
+| ---				| ---		| ---	| ---								|
+| code			| Number| 是	|错误码，0表示成功	|
+| msg				| String| 是	|详细信息						|
+
+## 新增权限
+
+用法：`uniID.addPermission(Object AddPermissionParams)`
+
+**参数说明**
+
+| 字段					| 类型	| 必填| 说明						|
+| ---						| ---		| ---	| ---							|
+| permissionID	| String| 是	|权限Id，唯一标识	|
+| permissionName| String| 否	|权限名称，展示用	|
+| comment				| String| 否	|备注							|
+
+**响应参数**
+
+| 字段			| 类型	| 必填| 说明							|
+| ---				| ---		| ---	| ---								|
+| code			| Number| 是	|错误码，0表示成功	|
+| msg				| String| 是	|详细信息						|
+
+## 获取权限列表
+
+用法：`uniID.getPermissionList(Object GetPermissionListParams)`
+
+**参数说明**
+
+| 字段			| 类型		| 必填| 说明						|
+| ---				| ---			| ---	| ---							|
+| limit			| Number	| 是	|限制返回数量			|
+| offset		| Number	| 是	|偏移量						|
+| needTotal	| Boolean	| 否	|是否需要返回总数	|
+
+**响应参数**
+
+| 字段					| 类型	|  说明																									|
+| ---						| ---		|  ---																									|
+| code					| Number| 错误码，0表示成功																			|
+| msg						| String| 详细信息																							|
+| permissionList| Array	|permissions表记录数组（包含permission_name、comment等）|
+| total					| Number|总数量																									|
+
+## 修改权限
+
+**注意：不可修改permissionID**
+
+用法：`uniID.updatePermission(Object UpdatePermissionParams)`
+
+**参数说明**
+
+| 字段					| 类型	| 必填| 说明						|
+| ---						| ---		| ---	| ---							|
+| permissionID	| String| 是	|权限Id，唯一标识	|
+| permissionName| String| 否	|权限名称，展示用	|
+| comment				| String| 否	|备注							|
+
+**响应参数**
+
+| 字段			| 类型	| 必填| 说明							|
+| ---				| ---		| ---	| ---								|
+| code			| Number| 是	|错误码，0表示成功	|
+| msg				| String| 是	|详细信息						|
+
+## 删除权限
+
+用法：`uniID.deletePermission(Object DeletePermissionParams)`
+
+**参数说明**
+
+| 字段					| 类型	| 必填| 说明						|
+| ---						| ---		| ---	| ---							|
+| permissionID	| String| 是	|权限Id，唯一标识	|
+
+**响应参数**
+
+| 字段			| 类型	| 必填| 说明							|
+| ---				| ---		| ---	| ---								|
+| code			| Number| 是	|错误码，0表示成功	|
+| msg				| String| 是	|详细信息						|
+
 ## 设置用户邀请码
 
 针对未生成邀请码的用户使用此方法生成邀请码
@@ -1498,6 +1798,18 @@ exports.main = async function(event,context) {
 }
 ```
 
+# 角色权限@rbac
+
+自`1.1.9`版本起uni-id支持角色权限（通常情况下管理后台会需要角色权限）。除API列表内列出的角色权限相关的接口外，还有以下调整：
+
+1. 所有登录注册接口可以接收`needPermission`参数，配置为true时会在`checkToken`接口返回用户权限（permission），否则permission字段会是一个空数组。开发者可以在用户登录管理后台时，传入此参数表示当前登录的用户需要返回permission。
+
+2. 新增两个数据表`uni-id-roles`、`uni-id-permissions`，可以使用示例项目里面的db_init.json创建，也可以直接使用opendb中的这两个数据表
+
+**注意**
+
+- 我们推荐以`admin`角色作为超级管理员（即role内包含admin即可有所有接口访问权限）。clientDB内就做了这种实现，如果用户角色包含`admin`就拥有所有数据表的全部权限。
+
 # 裂变@fission
 
 自`1.1.2`版本起uni-id支持裂变功能，目前仅适用手机号+验证码方式注册可以填写邀请码（inviteCode）接受邀请。
@@ -1554,6 +1866,7 @@ exports.main = async function(event,context) {
 | login_ip_limit	| Array			| 否	| 登录 IP 限制																							|
 | inviter_uid			| Array			| 否	| 邀请人uid，按层级从下往上排列的uid数组，即第一个是直接上级|
 | my_invite_code	| String		| 否	| 用户自己的邀请码																					|
+| role						| Array			| 否	| 用户角色列表，由role_id组成的数组													|
 
 **wx_openid字段定义**
 
@@ -1622,6 +1935,31 @@ exports.main = async function(event,context) {
 | created_at | Timestamp | 是   | 创建时间                               |
 | expired_at | Timestamp | 是   | 验证码过期时间                         |
 
+## 角色表
+
+表名：`uni-id-roles`
+
+| 字段				| 类型			| 必填| 描述																	|
+| ----------	| ---------	| ----| --------------------------------------|
+| \_id				| Object ID	| 是	| 系统自动生成的Id											|
+| role_id			| String		| 是	| 角色唯一标识													|
+| role_name		| String		| 否	| 角色名，展示用												|
+| permission	| Array			| 是	| 角色拥有的权限列表										|
+| comment			| String		| 否	| 备注																	|
+| created_date| Timestamp	| 是	| 角色创建时间													|
+
+## 权限表
+
+表名：`uni-id-permissions`
+
+| 字段						| 类型			| 必填| 描述																	|
+| ----------			| ---------	| ----| --------------------------------------|
+| \_id						| Object ID	| 是	| 系统自动生成的Id											|
+| permission_id		| String		| 是	| 权限唯一标识													|
+| permission_name	| String		| 否	| 权限名，展示用												|
+| comment					| String		| 否	| 备注																	|
+| created_date		| Timestamp	| 是	| 权限创建时间													|
+
 # 错误码
 
 自`1.1.0`版本使用此错误码规范
@@ -1684,6 +2022,8 @@ exports.main = async function(event,context) {
 |获取支付宝openid			        |807	|01			|未能获取openid	|
 |               			|   	|02			|调用获取openid接口失败	|
 |公用码						|900	|01			|数据库读写异常							|
+
+**另外还有一些字符串类型的扩展错误码在各自接口的文档中展示，请不要直接使用`code>0`这种方式来判断是否有错误**
 
 # FAQ
 
