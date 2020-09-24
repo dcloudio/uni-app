@@ -71,7 +71,7 @@ MongoDB支持JSON Schema的草案4，包括核心规范和验证规范，但有�
 ```
 
 
-### 可用类型
+### bsonType可用类型
 
 |Type										|Number	|Alias					|Notes								|
 |:-|:-|:-|:-|
@@ -80,8 +80,6 @@ MongoDB支持JSON Schema的草案4，包括核心规范和验证规范，但有�
 |Object									|3			|“object”				|											|
 |Array									|4			|“array”				|											|
 |Boolean								|8			|“bool”					|											|
-|Date										|9			|“date”					|											|
-|Null										|10			|“null”					|											|
 |32-bit integer					|16			|“int”					|											|
 |Timestamp							|17			|“timestamp”		|											|
 |64-bit integer					|18			|“long”					|											|
