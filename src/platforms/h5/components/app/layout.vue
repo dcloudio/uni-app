@@ -6,10 +6,12 @@
     <uni-top-window
       v-if="topWindow"
       v-show="showTopWindow && topWindowMediaQuery"
-      ref="topWindow"
-      :style="topWindowStyle"
     >
-      <div class="uni-top-window">
+      <div
+        ref="topWindow"
+        class="uni-top-window"
+        :style="topWindowStyle"
+      >
         <v-uni-top-window
           ref="top"
           @hook:mounted="onTopWindowInit"
@@ -214,7 +216,7 @@ export default {
     onTopWindowInit () {
       // TODO page header
       let windowTopHeight = '0px'
-      if (this.topWindowStyle && this.topWindowStyle.width) {
+      if (this.topWindowStyle && this.topWindowStyle.height) {
         windowTopHeight = this.$refs.topWindow.offsetHeight + 'px'
       } else {
         windowTopHeight = this.$refs.top.$el.offsetHeight + 'px'
@@ -274,5 +276,6 @@ export default {
     right: 0;
     top: 0;
     z-index: 998;
+    overflow: hidden;
   }
 </style>
