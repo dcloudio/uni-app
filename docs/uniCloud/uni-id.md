@@ -1983,7 +1983,7 @@ exports.main = async function(event,context) {
 |Token类					|300	|-			|-										|
 |生成Token					|301	|-			|-										|
 |验证Token					|302	|01			|设备特征校验未通过						|
-|							|		|02			|云端以不包含此token					|
+|							|		|02			|云端已不包含此token					|
 |							|		|03			|token已过期							|
 |							|		|04			|token校验未通过						|
 |账号安全类					|400	|-			|-										|

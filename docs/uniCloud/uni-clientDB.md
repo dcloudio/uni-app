@@ -126,6 +126,29 @@ clientDB目前内置了3个变量可以供客户端使用，客户端并非直�
 4. 执行command数据库操作
 5. 执行action.after，可以对错误处理、对结果调整
 
+云函数默认返回值形式如下，开发者可以在action的after内修改返回结果，传入after内的result不带code和message。
+
+```js
+{
+  code: "", // 错误码
+  message: "" // 错误信息
+  ... // 数据库指令执行结果
+}
+```
+
+**错误码列表**
+
+|错误码													|描述																		|
+|:-:														|:-:																		|
+|TOKEN_INVALID_INVALID_CLIENTID	|token校验未通过（设备特征校验未通过）	|
+|TOKEN_INVALID									|token校验未通过（云端已不包含此token）	|
+|TOKEN_INVALID_TOKEN_EXPIRED		|token校验未通过（token已过期）					|
+|TOKEN_INVALID_WRONG_TOKEN			|token校验未通过（token校验未通过）			|
+|SYNTAX_ERROR										|db-permission语法错误									|
+|PERMISSION_ERROR								|权限校验未通过													|
+|VALIDATION_ERROR								|数据校验未通过													|
+|SYSTEM_ERROR										|系统错误																|
+
 **我们推荐试用web控制台的数据库表结构来统一管理permission和validator，uniCloud web控制台可以通过表结构一键生成前端页面和clientDB权限及验证规则，后续HBuilderX也会内置此功能**
 
 为了更好的控制客户端行文，客户端在permission不为公有读（并非true时）时写法有以下限制：
@@ -364,7 +387,7 @@ module.exports = {
   "title": {
     label: '标题',
     rules: [{
-      // 校验title字段为string类型，更多校验规则详见https://xxx
+      // 校验title字段为string类型，更多校验规则详见https://uniapp.dcloud.net.cn/uniCloud/schema
       format: 'string'
     }]
   },
