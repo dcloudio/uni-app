@@ -1,20 +1,44 @@
-MediaQueryObserver 对象，用于监听页面 media query 状态的变化，如界面的长宽是不是在某个指定的范围内。
+MediaQueryObserver 对象，用于监听页面 media query 状态的变化，如界面的宽高是不是在某个指定的范围内。
 
 ### uni.createMediaQueryObserver([this])
 创建并返回一个 ``MediaQueryObserver`` 对象实例。
-
-> 从 HbuilderX 2.9 版本开始支持
 
 **this说明：**
 
 自定义组件实例。**小程序端不支持此参数，传入仅为抹平写法差异**
 
+**平台兼容性**
+
+|app-vue|app-nvue|微信小程序|支付宝小程序|qq小程序|百度小程序|字节小程序|
+|:-|:-|:-|:-|:-|:-|:-|
+|√|×|√|√|√|√|√|√|
+
+注意：支付宝小程序、qq小程序、百度小程序、字节小程序，暂不支持监听屏幕动态改变，即只执行一次媒体查询。
+
+**版本差异**
+
+|app-vue|app-nvue|微信小程序|支付宝小程序|qq小程序|百度小程序|字节小程序|
+|:-|:-|:-|:-|:-|:-|:-|
+|2.8.12+|不支持|2.11.1+|无|无|无|无|无|
+
 ### MediaQueryObserver 对象的方法列表
 
 |方法|说明|平台差异|
 |:-|:-|:-|
-|MediaQueryObserver.observe(Object descriptor, function callback)|开始监听页面 media query 变化情况|小程序非微信端，只查询一次，不支持监听|
-|MediaQueryObserver.disconnect()|停止监听，回调函数将不再触发||
+|MediaQueryObserver.observe(Object descriptor, function callback)|开始监听页面 media query 变化情况|
+|MediaQueryObserver.disconnect()|停止监听，回调函数将不再触发|
+
+**Object descriptor**
+
+|属性名|类型|默认值|必填|说明|
+|:-|:-|:-|:-|:-|
+|min-width|number||否|页面最小宽度（ px 为单位）|
+|max-width|number||否|页面最大宽度（ px 为单位）|
+|width|number||否|页面宽度（ px 为单位）|
+|min-height|number||否|页面最小高度（ px 为单位）|
+|max-height|number||否|页面最大高度（ px 为单位）|
+|height|number||否|页面高度（ px 为单位）|
+|orientation|string||否|屏幕方向（ landscape 或 portrait ）|
 
 **observe 回调函数包含一个参数**
 
@@ -24,16 +48,18 @@ MediaQueryObserver 对象，用于监听页面 media query 状态的变化，如
 
 ### 代码示例
 
+以下示例代码，推荐使用HBuilderX，新建uni-app项目，可直接体验完整示例。
+
 ```
 <template>
     <view class="content">
         <view class="">
-            matches: {{matches}}
+            是否匹配: 页面最小宽度 375px， 页面宽度最大 500px: {{matches}}
         </view>
         <view>
-            landscape: {{landscape}}
+            是否匹配: 屏幕方向为纵向: {{landscape}}
         </view>
-            <button type="success" @click="remove">destroy</button>
+            <button type="success" @click="remove">停止监听</button>
         </view>
     </view>
 </template>
@@ -57,36 +83,23 @@ MediaQueryObserver 对象，用于监听页面 media query 状态的变化，如
         },
 
         methods: {
-            changeMinWidth() {
-                console.log("======= changeMinWidth ======")
-                var that = this
-                setTimeout(() => {
-                    that.minWidth =  420
-                    console.log("that.minwidth", that.minWidth)
-                }, 1000)
-
-            },
             testMediaQueryObserver() {
                 this.mediaQueryOb = uni.createMediaQueryObserver(this)
 
                 this.mediaQueryOb.observe({
-                    minWidth: 305,
-                    maxWidth: 400,
-                    orientation: 'portrait'  
+                    minWidth: 305,  //页面最小宽度 375px
+                    maxWidth: 500  //页面宽度最大 500px
                 }, matches => {
-                    console.log('######### matches #########', matches)
                     this.matches = matches;
                 })
             },
             landscapeObserver() {
-                // console.log('--------- this----------', this)
                 landscapeObs = uni.createMediaQueryObserver(this)
                 landscapeObs.observe({
-                    }, matches => {
+                    orientation: 'landscape'  //屏幕方向为纵向
+                }, matches => {
                         this.landscape = matches
                 })
-                console.log('--------- landscapeObs -------', landscapeObs)
-                return landscapeObs
             },
             remove() {
                 this.mediaQueryOb.disconnect()

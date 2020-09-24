@@ -6,7 +6,20 @@ media query 匹配检测节点。
 
 例如在match-media组件中放置一个侧边栏，媒体查询规则设置为宽屏才显示，就可以实现在PC宽屏显示该侧边栏，而在手机窄屏中不显示侧边栏的效果。
 
-> 从 HBuilderX 2.9+ 版本开始支持
+**平台兼容性**
+
+|app-vue|app-nvue|微信小程序|支付宝小程序|qq小程序|百度小程序|字节小程序|
+|:-|:-|:-|:-|:-|:-|:-|
+|√|×|√|√|√|√|√|√|
+
+注意：支付宝小程序、qq小程序、百度小程序、字节小程序，暂不支持监听屏幕动态改变，即只执行一次媒体查询。
+
+**版本差异**
+
+|app-vue|app-nvue|微信小程序|支付宝小程序|qq小程序|百度小程序|字节小程序|
+|:-|:-|:-|:-|:-|:-|:-|
+|2.8.12+|不支持|2.11.1+|无|无|无|无|无|
+
 
 **属性说明**
 
@@ -20,8 +33,6 @@ media query 匹配检测节点。
 |height|number||否|页面高度（ px 为单位）|
 |orientation|string||否|屏幕方向（ landscape 或 portrait ）|
 
-> 平台差异说明: 小程序非微信端，不支持屏幕动态改变
-
 **match-media 示例**
 
 以下示例代码，推荐使用HBuilderX，新建uni-app项目，可直接体验完整示例。
@@ -29,12 +40,12 @@ media query 匹配检测节点。
 
 <template>
     <view>
-        <match-media :min-width="375" :max-width="800" orientation="portrait">
-            <view>当页面最小宽度 375， 页面宽度最大 800，且屏幕方向时显示</view>
+        <match-media :min-width="375" :max-width="800" >
+            <view>当页面最小宽度 375px， 页面宽度最大 800px 时显示</view>
         </match-media>
 
         <match-media :min-height="400" :orientation="landscape">
-            <view>当页面高度不小于 400 px 且屏幕方向为纵向时展示这里</view>
+            <view>当页面高度不小于 400px 且屏幕方向为纵向时展示这里</view>
         </match-media>
     </view>
 </template>
