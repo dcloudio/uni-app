@@ -41,8 +41,10 @@
 |  ├─uni-clientDB             在云函数中控制权限
 |  |   ├─action               调用数据库查询前后执行的操作
 |  |   |  └─action-name.js    action逻辑
-|  |   ├─permission           数据库权限规则
+|  |   ├─db-permission        数据库权限规则
 |  |   |  └─table-name.js     表名作为文件名设置不同表的权限规则
+|  |   ├─validator            数据校验规则
+|  |   |  └─table-name.js     表名作为文件名设置不同表的数据校验规则
 |  |   ├─index.js             clientDB云函数入口
 |  |   └─package.json         clientDB云函数package.json
 |  └─db_init.json             初始化数据库
