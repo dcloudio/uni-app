@@ -14,9 +14,9 @@
 |[subPackages](/collocation/pages?id=subPackages)|Object Array|否|分包加载配置||
 |[preloadRule](/collocation/pages?id=preloadrule)|Object|否|分包预下载规则|微信小程序|
 |[workers](https://developers.weixin.qq.com/miniprogram/dev/framework/workers.html)|String|否|```Worker``` 代码放置的目录|微信小程序|
-|[topWindow](/collocation/pages?id=topwindowleftwindowrightwindow)|Object|否|大屏顶部窗口|H5|
-|[leftWindow](/collocation/pages?id=topwindowleftwindowrightwindow)|Object|否|大屏左侧窗口|H5|
-|[rightWindow](/collocation/pages?id=topwindowleftwindowrightwindow)|Object|否|大屏右侧窗口|H5|
+|[topWindow](/collocation/pages?id=leftwindow)|Object|否|大屏顶部窗口|H5|
+|[leftWindow](/collocation/pages?id=leftwindow)|Object|否|大屏左侧窗口|H5|
+|[rightWindow](/collocation/pages?id=leftwindow)|Object|否|大屏右侧窗口|H5|
 
 以下是一个包含了所有配置选项的 `pages.json` ：
 
@@ -155,7 +155,7 @@
 - 支付宝小程序使用`titleImage`时必须使用`https`的图片链接地址，需要真机调试才能看到效果，支付宝开发者工具内无效果
 - `globalStyle`中设置的`titleImage`也会覆盖掉`pages`->`style`内的设置文字标题
 
-# topWindow，leftWindow，rightWindow
+# topWindow，leftWindow，rightWindow@leftwindow
 
 2.9+ 新增 topWindow, leftWindow, rightWindow 配置, 参考[大屏幕适配指南](/collocation/pages?id=style)
 
