@@ -109,31 +109,6 @@ MongoDB支持JSON Schema的草案4，包括核心规范和验证规范，但有�
 ```
 
 
-### defaultValue/forceDefaultValue
-
-defaultValue指定新增时当前字段默认值，客户端可以修改此值。forceDefaultValue也是指定新增时当前字段的默认值，与defaultValue不一样，forceDefaultValue不可被客户端修改。
-
-```json
-// 指定默认值为true
-"defaultValue": true
-
-// 指定强制默认值为当前时间戳
-"forceDefaultValue": {
-  "$env": "now"
-}
-
-// 指定强制默认值为当前客户端IP
-"forceDefaultValue": {
-  "$env": "clientIP"
-}
-
-// 指定强制默认值为当前客户id
-"forceDefaultValue": {
-  "$env": "uid"
-}
-```
-
-
 ### errorMessage属性
 
 类型为对象时可定义多个
@@ -323,6 +298,31 @@ defaultValue指定新增时当前字段默认值，客户端可以修改此值�
     <uni-field label="年龄" placeholder="请输入年龄" />
   </uni-group>
 ...
+```
+
+
+### defaultValue/forceDefaultValue
+
+defaultValue指定新增时当前字段默认值，客户端可以修改此值。forceDefaultValue也是指定新增时当前字段的默认值，与defaultValue不一样，forceDefaultValue不可被客户端修改。
+
+```json
+// 指定默认值为true
+"defaultValue": true
+
+// 指定强制默认值为当前时间戳
+"forceDefaultValue": {
+  "$env": "now"
+}
+
+// 指定强制默认值为当前客户端IP
+"forceDefaultValue": {
+  "$env": "clientIP"
+}
+
+// 指定强制默认值为当前客户id
+"forceDefaultValue": {
+  "$env": "uid"
+}
 ```
 
 
