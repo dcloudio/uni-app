@@ -129,6 +129,47 @@
 - 支付宝小程序使用`titleImage`时必须使用`https`的图片链接地址，需要真机调试才能看到效果，支付宝开发者工具内无效果
 - `globalStyle`中设置的`titleImage`也会覆盖掉`pages`->`style`内的设置文字标题
 
+# leftWindow
+
+2.9+ 新增 topWindow, leftWindow, rightWindow 配置, 参考[大屏幕适配指南](/collocation/pages?id=style)
+
+
+```json
+{
+  "pages": [
+    {
+      "path": "pages/index/index",
+      "style": {
+        "topWindow": true // 指定页面不显示 topWindow
+        "leftWindow": true // 指定页面不显示 leftWindow
+        "rightWindow": true // 指定页面不显示 rightWindow
+      }
+    }
+  ],
+  "topWindow": {
+    "path": "responsive/top-window.vue", // 指定 topWindow 页面文件
+    "style": {
+      "height": "44px"
+    }
+  },
+  "leftWindow": {
+    "path": "responsive/left-window.vue", // 指定 leftWindow 页面文件
+    "style": {
+      "width": 300
+    }
+  },
+  "rightWindow": {
+    "path": "responsive/right-window.vue", // 指定 rightWindow 页面文件
+    "style": {
+      "width": "calc(100vw - 400px)" // 页面宽度
+    },
+    "matchMedia": {
+      "minWidth": 768 //生效条件，当窗口宽度大于768px时显示
+    }
+  }
+}
+```
+
 # pages
 
 `uni-app` 通过 pages 节点配置应用由哪些页面组成，pages 节点接收一个数组，数组每个项都是一个对象，其属性值如下：
