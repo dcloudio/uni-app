@@ -179,7 +179,7 @@
 #### matchMedia
 |属性|类型|默认值|描述|
 |:-|:-|:-|:-|
-|minWidth|Number|768|显示当前窗口的最小宽度|
+|minWidth|Number|768|当设备可见区域宽度>=minWidth时，显示该window|
 
 ```javascript
 {
