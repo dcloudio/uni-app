@@ -1,6 +1,6 @@
-# JSON Schema
+# DB Schema
 
-JSON Schema是一种基于 JSON 格式定义的数据结构的规范
+DB Schema是一种基于 JSON 格式定义的数据结构的规范
 
 * 描述现有的数据格式。
 * 提供清晰的人类和机器可读文档。
@@ -11,20 +11,58 @@ JSON Schema是一种基于 JSON 格式定义的数据结构的规范
 MongoDB支持JSON Schema的草案4，包括核心规范和验证规范，但有所不同。
 
 
-|属性|类型|描述|备注|
-|:-|:-|:-|:-|
-|required|array|必填字段|JSON Schema standard 4 draft|
-|bsonType|any|字符串别名|JSON Schema standard 4 draft|
-|enum|Array|数组至少要有一个元素，且数组内的每一个元素都是唯一的。|JSON Schema standard 4 draft|
-|maximum|number|校验最大值(大于)|JSON Schema standard 4 draft|
-|exclusiveMaximum|boolean|是否排除 maximum|JSON Schema standard 4 draft|
-|minimum|number|校验最小值(小于)|JSON Schema standard 4 draft|
-|exclusiveMinimum|boolean|是否排除 minimum|JSON Schema standard 4 draft|
-|minLength|number|校验最小长度|JSON Schema standard 4 draft|
-|maxLength|number|校验最大长度|JSON Schema standard 4 draft|
-|foramat|string|数据格式||
-|title|string|标题，一般用来进行简单的描述，可以省略||
-|description|string|描述|JSON Schema standard 4 draft|
+使用 DB Schema 表结构来统一管理permission和validator，可以通过表结构一键生成前端页面和clientDB权限及验证规则
+
+
+#### 如何体验
+
+1. 登录 uniCloud控制台 [https://unicloud.dcloud.net.cn](https://unicloud.dcloud.net.cn)
+2. 选择 “服务空间/创建服务空间”，然后在左侧栏选择 “云数据库”
+3. 选择 已有表或新建表，点击表右侧页签 “表结构”
+4. 点击 “编辑” 按钮，在编辑区域编写 Schema，详情参考下面的示例
+5. 点击 “导出表单页面”，将导出clientDB工程，[详情](https://uniapp.dcloud.net.cn/uniCloud/uni-clientDB?id=structure)
+6. 解压导出的zip包，拷贝到已有工程
+
+
+
+#### Schema字段
+
+|属性|类型|描述|
+|:-|:-|:-|
+|required|array|必填字段|
+|bsonType|any|字符类型|
+|enum|Array|值范围，数组至少要有一个元素，且数组内的每一个元素都是唯一的。|
+|maximum|number|校验最大值(大于)|
+|exclusiveMaximum|boolean|是否排除 maximum|
+|minimum|number|校验最小值(小于)|
+|exclusiveMinimum|boolean|是否排除 minimum|
+|minLength|number|校验最小长度|
+|maxLength|number|校验最大长度|
+|foramat|string|数据格式|
+|title|string|标题，一般用来进行简单的描述，可以省略|
+|description|string|描述|
+|label|string|字段标题|
+|format|'url'&#124;'email'|数据格式|
+|defaultValue|string&#124;Object|默认值|
+|forceDefaultValue|string&#124;Object|覆盖默认值，参考defaultValue|
+|errorMessage|string&#124;Object |验证提示|
+|order|int|表单排序|
+|group|string|分组名称|
+|component|Object|组件信息|
+
+
+### bsonType可用类型
+
+|类型										|长度	|别名					|
+|:-|:-|:-|
+|Double									|1			|“double”				|
+|String									|2			|“string”				|
+|Object									|3			|“object”				|
+|Array									|4			|“array”				|
+|Boolean								|8			|“bool”					|
+|32-bit integer					|16			|“int”					|
+|Timestamp							|17			|“timestamp”		|
+
 
 
 ### 示例
@@ -69,38 +107,6 @@ MongoDB支持JSON Schema的草案4，包括核心规范和验证规范，但有�
   }
 }
 ```
-
-
-### bsonType可用类型
-
-|Type										|Number	|Alias					|Notes								|
-|:-|:-|:-|:-|
-|Double									|1			|“double”				|											|
-|String									|2			|“string”				|											|
-|Object									|3			|“object”				|											|
-|Array									|4			|“array”				|											|
-|Boolean								|8			|“bool”					|											|
-|32-bit integer					|16			|“int”					|											|
-|Timestamp							|17			|“timestamp”		|											|
-|64-bit integer					|18			|“long”					|											|
-
-
-
-### schema扩展属性
-
-根据schema扩展属性生成表单页面，包含前后端一体的验证规则
-
-
-|属性|类型|描述|备注|
-|:-|:-|:-|:-|
-|label|string|字段标题||
-|format|'url'&#124;'email'||
-|defaultValue|string&#124;Object|默认值||
-|forceDefaultValue|string&#124;Object|覆盖默认值，参考defaultValue|
-|errorMessage|string&#124;Object |验证提示||
-|order|int|表单排序||
-|group|string|分组名称||
-|component|Object|组件信息||
 
 
 ### defaultValue/forceDefaultValue
@@ -456,5 +462,4 @@ defaultValue指定新增时当前字段默认值，客户端可以修改此值�
   }
 }
 ```
-
 
