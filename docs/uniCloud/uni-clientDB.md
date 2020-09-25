@@ -82,7 +82,7 @@ clientDB的目标，就是让上述无聊的服务端代码开发，从此消失
 	</code>
 </pre>
 
-## 客户端js-sdk
+## 客户端js-sdk@jssdk
 
 客户端js-sdk主要负责组装查询逻辑，以及处理一些客户端不太方便表示的字段，比如用户ID（详情看下面语法扩展部分）
 
@@ -94,24 +94,19 @@ import db from '@/js_sdk/uni-clientDB/index.js'
 const dbCmd = db.command
 
 // 使用uni-clientDB
-uniCloud.callFunction({
-	name: 'uni-clientDB',
-	data: {
-    // 写法同云函数内数据库指令
-		command: db.collection('list').where({
-			name: new RegExp('龚','g'),
-			time: dbCmd.gt(1105885393581)
-		}).field({
-			extra: false
-		}).get()
-	},
-	success(res) {
-		// ...
-	},
-	fail(err) {
-		// ...
-	}
-})
+db.action('get-info') // 不使用action时可以不调用action方法
+  .collection('list')
+  .where({
+    name: new RegExp('龚','g'),
+    time: dbCmd.gt(1105885393581)
+  }).field({
+    extra: false
+  }).get()
+  .then((res)=>{
+    
+  }).catch((err)=>{
+    
+  })
 ```
 
 **使用说明**
