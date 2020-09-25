@@ -155,7 +155,7 @@
 - 支付宝小程序使用`titleImage`时必须使用`https`的图片链接地址，需要真机调试才能看到效果，支付宝开发者工具内无效果
 - `globalStyle`中设置的`titleImage`也会覆盖掉`pages`->`style`内的设置文字标题
 
-# leftWindow，topWindow，rightWindow@leftwindow
+# topWindow@topwindow
 
 2.9+ 新增 leftWindow, topWindow, rightWindow 配置, 参考[大屏幕适配指南](/collocation/pages?id=style)
 
@@ -168,7 +168,15 @@
 **注意**
 - 目前 style 节点仅支持配置 width，height 等 css 样式相关属性
 
-## matchMedia
+# leftWindow
+
+参考[topWindow](/collocation/pages?id=topwindow)
+
+# rightWindow
+
+参考[topWindow](/collocation/pages?id=topwindow)
+
+#### matchMedia
 |属性|类型|默认值|描述|
 |:-|:-|:-|:-|
 |minWidth|Number|768|显示当前窗口的最小宽度|
