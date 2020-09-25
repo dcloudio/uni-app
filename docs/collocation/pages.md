@@ -157,7 +157,11 @@
 
 # topWindow@topwindow
 
-2.9+ 新增 leftWindow, topWindow, rightWindow 配置, 参考[大屏幕适配指南](https://uniapp.dcloud.net.cn/adapt)
+uni-app 2.9+ 新增 leftWindow, topWindow, rightWindow 配置。用于解决宽屏适配问题。
+
+以现有的手机应用为mainWindow，在左、上、右，可以追加新的页面显示窗体。
+
+整体的宽屏适配思路，参考单独的[宽屏适配指南](https://uniapp.dcloud.net.cn/adapt)
 
 |属性|类型|默认值|描述|
 |:-|:-|:-|:-|
@@ -169,9 +173,12 @@
 - 目前 style 节点仅支持配置 width，height 等 css 样式相关属性
 
 #### matchMedia
+
 |属性|类型|默认值|描述|
 |:-|:-|:-|:-|
 |minWidth|Number|768|当设备可见区域宽度 >= minWidth 时，显示该 window|
+
+通过matchMedia的调节，可以自适应在不同屏幕上显示指定的window。
 
 ```javascript
 {
@@ -209,6 +216,7 @@
 }
 ```
 
+案例演示：HBuilderX 2.9+，新建项目选择新闻模块，或直接浏览：[https://static-7d133019-9a7e-474a-b7c2-c01751f00ca5.bspapp.com/#/](https://static-7d133019-9a7e-474a-b7c2-c01751f00ca5.bspapp.com/#/)
 
 # leftWindow
 
