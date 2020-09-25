@@ -146,9 +146,9 @@
 |mp-qq|Object||设置编译到 mp-qq 平台的特定样式|QQ小程序|
 |usingComponents|Object| |引用小程序组件，参考 [小程序组件](/frame?id=小程序组件支持)||
 |renderingMode|String| |同层渲染，webrtc(实时音视频) 无法正常时尝试配置 seperated 强制关掉同层|微信小程序|
-|topWindow|Boolean|true|当应用存在topWindow时，默认是否显示topWindow|H5|
-|leftWindow|Boolean|true|当应用存在leftWindow时，默认是否显示leftWindow|H5|
-|rightWindow|Boolean|true|当应用存在rightWindow时，默认是否显示rightWindow|H5|
+|topWindow|Boolean|true|当存在 topWindow 时，默认是否显示 topWindow|H5|
+|leftWindow|Boolean|true|当存在 leftWindow 时，默认是否显示 leftWindow|H5|
+|rightWindow|Boolean|true|当存在 rightWindow 时，默认是否显示 rightWindow|H5|
 
 **注意**
 
@@ -159,6 +159,19 @@
 
 2.9+ 新增 topWindow, leftWindow, rightWindow 配置, 参考[大屏幕适配指南](/collocation/pages?id=style)
 
+|属性|类型|默认值|描述|
+|:-|:-|:-|:-|
+|path|String||配置页面路径|
+|style|Object||配置页面窗口表现，配置项参考下方 [pageStyle](/collocation/pages?id=style)||
+|matchMedia|Object||配置显示该窗口的规则，配置项参考下方 [matchMedia](/collocation/pages?id=matchMedia)||
+
+**注意**
+- 目前 style 节点仅支持配置width,height等css样式相关属性
+
+## matchMedia
+|属性|类型|默认值|描述|
+|:-|:-|:-|:-|
+|minWidth|Number|768|显示当前窗口的最小宽度|
 
 ```javascript
 {
@@ -276,9 +289,9 @@
 |mp-toutiao|Object||设置编译到 mp-toutiao 平台的特定样式|字节跳动小程序|
 |mp-qq|Object||设置编译到 mp-qq 平台的特定样式|QQ小程序|
 |usingComponents|Object||引用小程序组件，参考 [小程序组件](/frame?id=小程序组件支持)|App、微信小程序、支付宝小程序、百度小程序|
-|topWindow|Boolean|true|当应用存在topWindow时，当前页面是否显示topWindow|H5|
-|leftWindow|Boolean|true|当应用存在leftWindow时，当前页面是否显示leftWindow|H5|
-|rightWindow|Boolean|true|当应用存在rightWindow时，当前页面是否显示rightWindow|H5|
+|topWindow|Boolean|true|当存在 topWindow 时，当前页面是否显示 topWindow|H5|
+|leftWindow|Boolean|true|当存在 leftWindow时，当前页面是否显示 leftWindow|H5|
+|rightWindow|Boolean|true|当存在 rightWindow时，当前页面是否显示 rightWindow|H5|
 
 **代码示例：**
 
