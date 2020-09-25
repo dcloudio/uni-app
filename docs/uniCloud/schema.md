@@ -19,8 +19,10 @@ MongoDB支持JSON Schema的草案4，包括核心规范和验证规范，但有�
 1. 登录 uniCloud控制台 [https://unicloud.dcloud.net.cn](https://unicloud.dcloud.net.cn)
 2. 选择 “服务空间/创建服务空间”，然后在左侧栏选择 “云数据库”
 3. 选择 已有表或新建表，点击表右侧页签 “表结构”
-4. 点击 “编辑” 按钮，在编辑区域编写 Schema，详情参考下面的示例
+4. 点击 “编辑” 按钮，在编辑区域编写 Schema
+  ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/e237cb60-ff2d-11ea-8a36-ebb87efcf8c0.png)
 5. 点击 “导出表单页面”，将导出clientDB工程，[详情](https://uniapp.dcloud.net.cn/uniCloud/uni-clientDB?id=structure)
+  ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/38cdc790-ff2e-11ea-9dfb-6da8e309e0d8.png)
 6. 解压导出的zip包，拷贝到已有工程(以后支持直接导入到HBuilderX)
 
 
