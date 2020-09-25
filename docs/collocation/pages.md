@@ -166,7 +166,7 @@
 |matchMedia|Object||配置显示该窗口的规则，配置项参考下方 [matchMedia](/collocation/pages?id=matchmedia)||
 
 **注意**
-- 目前 style 节点仅支持配置width,height等css样式相关属性
+- 目前 style 节点仅支持配置 width，height 等 css 样式相关属性
 
 ## matchMedia
 |属性|类型|默认值|描述|
