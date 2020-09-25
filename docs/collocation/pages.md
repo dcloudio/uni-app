@@ -17,7 +17,6 @@
 |[topWindow](/collocation/pages?id=leftWindow)|Object|否|大屏顶部窗口|H5|
 |[leftWindow](/collocation/pages?id=leftWindow)|Object|否|大屏左侧窗口|H5|
 |[rightWindow](/collocation/pages?id=leftWindow)|Object|否|大屏右侧窗口|H5|
-|[workers](https://developers.weixin.qq.com/miniprogram/dev/framework/workers.html)|String|否|```Worker``` 代码放置的目录|微信小程序|
 
 以下是一个包含了所有配置选项的 `pages.json` ：
 
