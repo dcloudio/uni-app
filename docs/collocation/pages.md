@@ -157,7 +157,7 @@
 
 # topWindow@topwindow
 
-2.9+ 新增 leftWindow, topWindow, rightWindow 配置, 参考[大屏幕适配指南](/collocation/pages?id=style)
+2.9+ 新增 leftWindow, topWindow, rightWindow 配置, 参考[大屏幕适配指南](https://uniapp.dcloud.net.cn/adapt)
 
 |属性|类型|默认值|描述|
 |:-|:-|:-|:-|
