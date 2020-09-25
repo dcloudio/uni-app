@@ -171,3 +171,6 @@ module.exports = {
 ```
 
 
+### 适配示例
+
+- 新闻模板 [https://github.com/dcloudio/uni-template-news](https://github.com/dcloudio/uni-template-news)
