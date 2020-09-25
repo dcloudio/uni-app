@@ -14,6 +14,10 @@
 |[subPackages](/collocation/pages?id=subPackages)|Object Array|否|分包加载配置||
 |[preloadRule](/collocation/pages?id=preloadrule)|Object|否|分包预下载规则|微信小程序|
 |[workers](https://developers.weixin.qq.com/miniprogram/dev/framework/workers.html)|String|否|```Worker``` 代码放置的目录|微信小程序|
+|[topWindow](/collocation/pages?id=leftWindow)|Object|否|大屏顶部窗口|H5|
+|[leftWindow](/collocation/pages?id=leftWindow)|Object|否|大屏左侧窗口|H5|
+|[rightWindow](/collocation/pages?id=leftWindow)|Object|否|大屏右侧窗口|H5|
+|[workers](https://developers.weixin.qq.com/miniprogram/dev/framework/workers.html)|String|否|```Worker``` 代码放置的目录|微信小程序|
 
 以下是一个包含了所有配置选项的 `pages.json` ：
 
@@ -87,6 +91,27 @@
     "custom": {//自定义扫描规则
       "^uni-(.*)": "@/components/uni-$1.vue"
     }
+  },
+  "topWindow": {
+    "path": "responsive/top-window.vue",
+    "style": {
+      "height": "44px"
+    }
+  },
+  "leftWindow": {
+    "path": "responsive/left-window.vue",
+    "style": {
+      "width": "300px"
+    }
+  },
+  "rightWindow": {
+    "path": "responsive/right-window.vue",
+    "style": {
+      "width": "300px"
+    },
+    "matchMedia": {
+      "minWidth": 768
+    }
   }
 }
 ```
@@ -122,14 +147,16 @@
 |mp-qq|Object||设置编译到 mp-qq 平台的特定样式|QQ小程序|
 |usingComponents|Object| |引用小程序组件，参考 [小程序组件](/frame?id=小程序组件支持)||
 |renderingMode|String| |同层渲染，webrtc(实时音视频) 无法正常时尝试配置 seperated 强制关掉同层|微信小程序|
-
+|topWindow|Boolean|true|当应用存在topWindow时，默认是否显示topWindow|H5|
+|leftWindow|Boolean|true|当应用存在leftWindow时，默认是否显示leftWindow|H5|
+|rightWindow|Boolean|true|当应用存在rightWindow时，默认是否显示rightWindow|H5|
 
 **注意**
 
 - 支付宝小程序使用`titleImage`时必须使用`https`的图片链接地址，需要真机调试才能看到效果，支付宝开发者工具内无效果
 - `globalStyle`中设置的`titleImage`也会覆盖掉`pages`->`style`内的设置文字标题
 
-# leftWindow
+# topWindow，leftWindow，rightWindow
 
 2.9+ 新增 topWindow, leftWindow, rightWindow 配置, 参考[大屏幕适配指南](/collocation/pages?id=style)
 
@@ -138,11 +165,11 @@
 {
   "pages": [
     {
-      "path": "pages/index/index",
+      "path": "pages/login/login",
       "style": {
-        "topWindow": true // 指定页面不显示 topWindow
-        "leftWindow": true // 指定页面不显示 leftWindow
-        "rightWindow": true // 指定页面不显示 rightWindow
+        "topWindow": false // 当前页面不显示 topWindow
+        "leftWindow": false // 当前页面不显示 leftWindow
+        "rightWindow": false // 当前页面不显示 rightWindow
       }
     }
   ],
@@ -155,13 +182,13 @@
   "leftWindow": {
     "path": "responsive/left-window.vue", // 指定 leftWindow 页面文件
     "style": {
-      "width": 300
+      "width": "300px"
     }
   },
   "rightWindow": {
     "path": "responsive/right-window.vue", // 指定 rightWindow 页面文件
     "style": {
-      "width": "calc(100vw - 400px)" // 页面宽度
+      "width": "300px" // 页面宽度
     },
     "matchMedia": {
       "minWidth": 768 //生效条件，当窗口宽度大于768px时显示
@@ -250,6 +277,9 @@
 |mp-toutiao|Object||设置编译到 mp-toutiao 平台的特定样式|字节跳动小程序|
 |mp-qq|Object||设置编译到 mp-qq 平台的特定样式|QQ小程序|
 |usingComponents|Object||引用小程序组件，参考 [小程序组件](/frame?id=小程序组件支持)|App、微信小程序、支付宝小程序、百度小程序|
+|topWindow|Boolean|true|当应用存在topWindow时，当前页面是否显示topWindow|H5|
+|leftWindow|Boolean|true|当应用存在leftWindow时，当前页面是否显示leftWindow|H5|
+|rightWindow|Boolean|true|当应用存在rightWindow时，当前页面是否显示rightWindow|H5|
 
 **代码示例：**
 
