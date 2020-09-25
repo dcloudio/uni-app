@@ -98,6 +98,8 @@ uniCloud支持[前端网页托管](https://uniapp.dcloud.io/uniCloud/hosting)，
 - 如果你已经有备案过的域名，直接解析过来即可；
 - 如果你要新注册域名，目前通管局仍要求有固定ip才给域名备案，这个规定未考虑serverless模式，还得过些时候才可能更新。目前只能先买一个短期固定ip，通过备案后再解析到uniCloud。
 
+如果是因为微信js sdk等服务要求配置固定ip白名单，那么腾讯云收费空间已经支持固定ip，[详见](https://uniapp.dcloud.io/uniCloud/cf-functions?id=eip)
+
 ### uniCloud云数据库如何实现全文检索
 
 查询数据时可以传入正则表达式进行查询，详情请参考[正则表达式查询](https://uniapp.dcloud.io/uniCloud/cf-database?id=regexp)
