@@ -163,7 +163,7 @@
 |:-|:-|:-|:-|
 |path|String||配置页面路径|
 |style|Object||配置页面窗口表现，配置项参考下方 [pageStyle](/collocation/pages?id=style)||
-|matchMedia|Object||配置显示该窗口的规则，配置项参考下方 [matchMedia](/collocation/pages?id=matchMedia)||
+|matchMedia|Object||配置显示该窗口的规则，配置项参考下方 [matchMedia](/collocation/pages?id=matchmedia)||
 
 **注意**
 - 目前 style 节点仅支持配置width,height等css样式相关属性
