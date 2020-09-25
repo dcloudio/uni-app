@@ -55,7 +55,9 @@ clientDB的目标，就是让上述无聊的服务端代码开发，从此消失
 3. 上传公共模块及云函数，公共模块用法参考[使用公共模块](https://uniapp.dcloud.net.cn/uniCloud/cf-common)
 4. 运行项目即可
 
-示例项目文件介绍：
+## 目录结构@structure
+
+uni-clientDB项目目录结构如下
 
 <pre v-pre="" data-lang="">
 	<code class="lang-" style="padding:0">
