@@ -15,8 +15,8 @@
 |[preloadRule](/collocation/pages?id=preloadrule)|Object|否|分包预下载规则|微信小程序|
 |[workers](https://developers.weixin.qq.com/miniprogram/dev/framework/workers.html)|String|否|```Worker``` 代码放置的目录|微信小程序|
 |[leftWindow](/collocation/pages?id=leftwindow)|Object|否|大屏左侧窗口|H5|
-|[topWindow](/collocation/pages?id=leftwindow)|Object|否|大屏顶部窗口|H5|
-|[rightWindow](/collocation/pages?id=leftwindow)|Object|否|大屏右侧窗口|H5|
+|[topWindow](/collocation/pages?id=topwindow)|Object|否|大屏顶部窗口|H5|
+|[rightWindow](/collocation/pages?id=rightwindow)|Object|否|大屏右侧窗口|H5|
 
 以下是一个包含了所有配置选项的 `pages.json` ：
 
