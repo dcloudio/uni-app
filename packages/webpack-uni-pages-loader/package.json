@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/webpack-uni-pages-loader",
-  "version": "2.0.0-alpha-29020200924001",
+  "version": "2.0.0-alpha-29020200925001",
   "description": "uni-app pages.json loader",
   "main": "lib/index.js",
   "repository": {
