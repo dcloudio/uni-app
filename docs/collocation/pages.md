@@ -14,8 +14,8 @@
 |[subPackages](/collocation/pages?id=subPackages)|Object Array|否|分包加载配置||
 |[preloadRule](/collocation/pages?id=preloadrule)|Object|否|分包预下载规则|微信小程序|
 |[workers](https://developers.weixin.qq.com/miniprogram/dev/framework/workers.html)|String|否|```Worker``` 代码放置的目录|微信小程序|
-|[topWindow](/collocation/pages?id=leftwindow)|Object|否|大屏顶部窗口|H5|
 |[leftWindow](/collocation/pages?id=leftwindow)|Object|否|大屏左侧窗口|H5|
+|[topWindow](/collocation/pages?id=leftwindow)|Object|否|大屏顶部窗口|H5|
 |[rightWindow](/collocation/pages?id=leftwindow)|Object|否|大屏右侧窗口|H5|
 
 以下是一个包含了所有配置选项的 `pages.json` ：
@@ -146,8 +146,8 @@
 |mp-qq|Object||设置编译到 mp-qq 平台的特定样式|QQ小程序|
 |usingComponents|Object| |引用小程序组件，参考 [小程序组件](/frame?id=小程序组件支持)||
 |renderingMode|String| |同层渲染，webrtc(实时音视频) 无法正常时尝试配置 seperated 强制关掉同层|微信小程序|
-|topWindow|Boolean|true|当存在 topWindow 时，默认是否显示 topWindow|H5|
 |leftWindow|Boolean|true|当存在 leftWindow 时，默认是否显示 leftWindow|H5|
+|topWindow|Boolean|true|当存在 topWindow 时，默认是否显示 topWindow|H5|
 |rightWindow|Boolean|true|当存在 rightWindow 时，默认是否显示 rightWindow|H5|
 
 **注意**
@@ -155,9 +155,9 @@
 - 支付宝小程序使用`titleImage`时必须使用`https`的图片链接地址，需要真机调试才能看到效果，支付宝开发者工具内无效果
 - `globalStyle`中设置的`titleImage`也会覆盖掉`pages`->`style`内的设置文字标题
 
-# topWindow，leftWindow，rightWindow@leftwindow
+# leftWindow，topWindow，rightWindow@leftwindow
 
-2.9+ 新增 topWindow, leftWindow, rightWindow 配置, 参考[大屏幕适配指南](/collocation/pages?id=style)
+2.9+ 新增 leftWindow, topWindow, rightWindow 配置, 参考[大屏幕适配指南](/collocation/pages?id=style)
 
 |属性|类型|默认值|描述|
 |:-|:-|:-|:-|
@@ -289,8 +289,8 @@
 |mp-toutiao|Object||设置编译到 mp-toutiao 平台的特定样式|字节跳动小程序|
 |mp-qq|Object||设置编译到 mp-qq 平台的特定样式|QQ小程序|
 |usingComponents|Object||引用小程序组件，参考 [小程序组件](/frame?id=小程序组件支持)|App、微信小程序、支付宝小程序、百度小程序|
-|topWindow|Boolean|true|当存在 topWindow 时，当前页面是否显示 topWindow|H5|
 |leftWindow|Boolean|true|当存在 leftWindow时，当前页面是否显示 leftWindow|H5|
+|topWindow|Boolean|true|当存在 topWindow 时，当前页面是否显示 topWindow|H5|
 |rightWindow|Boolean|true|当存在 rightWindow时，当前页面是否显示 rightWindow|H5|
 
 **代码示例：**
