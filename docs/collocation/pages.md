@@ -168,14 +168,6 @@
 **注意**
 - 目前 style 节点仅支持配置 width，height 等 css 样式相关属性
 
-# leftWindow
-
-参考[topWindow](/collocation/pages?id=topwindow)
-
-# rightWindow
-
-参考[topWindow](/collocation/pages?id=topwindow)
-
 #### matchMedia
 |属性|类型|默认值|描述|
 |:-|:-|:-|:-|
@@ -216,6 +208,15 @@
   }
 }
 ```
+
+
+# leftWindow
+
+与[topWindow](/collocation/pages?id=topwindow)相同
+
+# rightWindow
+
+与[topWindow](/collocation/pages?id=topwindow)相同
 
 # pages
 
