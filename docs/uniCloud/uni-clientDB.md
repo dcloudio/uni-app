@@ -229,44 +229,40 @@ module.exports = {
 import db from '@/js_sdk/uni-clientDB/index.js'
 const dbCmd = db.command
 const $ = dbCmd.aggregate
-uniCloud.callFunction({
-  name: 'uni-clientDB',
-  data: {
-    command: db.collection('order').aggregate()
-    // 此match方法内的条件会和order表对应的权限规则进行校验
-    .match({
-      uid: db.env.uid
-    })
-    // 此project方法是为了确定查询需要访问order表的哪些字段
-    .project({
-      _id: true,
-      book_id: true
-    })
-    .lookup({
-      from: 'book',
-      let: {
-        book_id: '$book_id'
+db.collection('order')
+  .aggregate()
+  // 此match方法内的条件会和order表对应的权限规则进行校验
+  .match({
+    uid: db.env.uid
+  })
+  // 此project方法是为了确定查询需要访问order表的哪些字段
+  .project({
+    _id: true,
+    book_id: true
+  })
+  .lookup({
+    from: 'book',
+    let: {
+      book_id: '$book_id'
+    },
+    pipeline: $.pipeline()
+    // 此match方法内的条件会和book表对应的权限规则进行校验，{status: 'OnSell'}会参与校验，整个expr方法转化成一个不与任何条件产生交集的特别表达式。这里如果将dbCmd.and换成dbCmd.or会校验不通过
+    .match(dbCmd.and([ 
+      {
+        status: 'OnSell'
       },
-      pipeline: $.pipeline()
-      // 此match方法内的条件会和book表对应的权限规则进行校验，{status: 'OnSell'}会参与校验，整个expr方法转化成一个不与任何条件产生交集的特别表达式。这里如果将dbCmd.and换成dbCmd.or会校验不通过
-      .match(dbCmd.and([ 
-        {
-          status: 'OnSell'
-        },
-        // 指定book表的_id等于order表的book_id
-        dbCmd.expr(
-          $.eq(['$_id', '$$book_id'])
-        )
-      ]))
-      // 此project方法是为了确定查询需要访问book表的哪些字段
-      .project({
-        book_name: true
-      })
-      .done()
+      // 指定book表的_id等于order表的book_id
+      dbCmd.expr(
+        $.eq(['$_id', '$$book_id'])
+      )
+    ]))
+    // 此project方法是为了确定查询需要访问book表的哪些字段
+    .project({
+      book_name: true
     })
-    .end()
-  }
-})
+    .done()
+  })
+  .end()
 
 ```
 
