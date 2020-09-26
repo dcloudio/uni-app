@@ -59,7 +59,7 @@ pages.json 配置样例
 ```
 
 
-**leftWindow等方案的使用教程**
+- leftWindow等方案的使用教程
 
 如果已经有了一个为小屏设计的uni-app，在使用leftWindow等窗体适配大屏时，需理清一个思路：现有的小屏内容，放在哪个window里？
 
