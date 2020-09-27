@@ -48,10 +48,10 @@ MediaQueryObserver 对象，用于监听页面 media query 状态的变化，如
 <template>
     <view class="content">
         <view class="">
-            是否匹配: 页面最小宽度 375px， 页面宽度最大 500px: {{matches}}
+            要求页面最小宽度 375px， 且页面宽度最大 500px，是否匹配: {{matches}}
         </view>
         <view>
-            是否匹配: 屏幕方向为纵向: {{landscape}}
+            要求屏幕方向为纵向，是否匹配: {{landscape}}
         </view>
             <button type="success" @click="remove">停止监听</button>
         </view>
@@ -81,7 +81,7 @@ MediaQueryObserver 对象，用于监听页面 media query 状态的变化，如
                 this.mediaQueryOb = uni.createMediaQueryObserver(this)
 
                 this.mediaQueryOb.observe({
-                    minWidth: 305,  //页面最小宽度 375px
+                    minWidth: 375,  //页面最小宽度 375px
                     maxWidth: 500  //页面宽度最大 500px
                 }, matches => {
                     this.matches = matches;
