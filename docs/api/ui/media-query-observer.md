@@ -17,7 +17,7 @@ MediaQueryObserver 对象，用于监听页面 media query 状态的变化，如
 
 ### MediaQueryObserver 对象的方法列表
 
-|方法|说明|平台差异|
+|方法|说明|
 |:-|:-|:-|
 |MediaQueryObserver.observe(Object descriptor, function callback)|开始监听页面 media query 变化情况|
 |MediaQueryObserver.disconnect()|停止监听，回调函数将不再触发|
@@ -59,12 +59,13 @@ MediaQueryObserver 对象，用于监听页面 media query 状态的变化，如
 </template>
 
 <script>
-    let landscapeObs, interObs
+    let landscapeObs
     export default {
         data() {
             return {
                 matches: false,
                 landscape: false,
+                mediaQueryOb: null
             }
         },
         onLoad() {
@@ -95,8 +96,8 @@ MediaQueryObserver 对象，用于监听页面 media query 状态的变化，如
                         this.landscape = matches
                 })
             },
-            remove() {
-                this.mediaQueryOb.disconnect()
+            destroyed () {
+                this.mediaQueryOb.disconnect()  //组件销毁时停止监听
                 landscapeObs.disconnect()
             }
         }
