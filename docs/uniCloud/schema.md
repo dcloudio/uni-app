@@ -215,7 +215,7 @@ clientDB的工程目录结构见：[详情](https://uniapp.dcloud.net.cn/uniClou
 ```
 
 
-数据是否有效， `"required": []` 不包含 `name` 字段，当传入的数据无`name`时不校验，否者校验数据是否符合规则
+`required`包含`name`时，要求必须传入`name`。`required`不包含`name`时，如果传入的数据包含`name`会对name进行校验，否则忽略name的校验规则。以下面的代码为例，如果不传name能通过校验，如果传了name则要求name最小长度为2.
 
 ```json
 {
