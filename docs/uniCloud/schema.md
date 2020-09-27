@@ -215,7 +215,7 @@ clientDB的工程目录结构见：[详情](https://uniapp.dcloud.net.cn/uniClou
 ```
 
 
-数据是否有效， `"required": []` 不包含 `name` 字段，当`name`无值时不校验，有值时校验
+数据是否有效， `"required": []` 不包含 `name` 字段，当传入的数据无`name`时不校验，否者校验数据是否符合规则
 
 ```json
 {
@@ -246,7 +246,7 @@ clientDB的工程目录结构见：[详情](https://uniapp.dcloud.net.cn/uniClou
     "name": {
       "bsonType": "string",
       "label": "姓名",
-      "errorMessage": "类型无效"
+      "errorMessage": "{label}类型无效"
     }
   }
 }
@@ -275,6 +275,9 @@ clientDB的工程目录结构见：[详情](https://uniapp.dcloud.net.cn/uniClou
 
 
 正则 `"pattern": ""`
+
+例如: 验证手机号 `"pattern": "^\\+?[0-9-]{3,20}$"`
+
 
 ```json
 {
