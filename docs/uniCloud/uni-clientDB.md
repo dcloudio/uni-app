@@ -346,7 +346,6 @@ db.collection('street').where(dbCmd.or([
 ])).get()
 ```
 
-
 db-permission的配置文件是js，虽然主要配置方式为json，但可以编程，实现批处理等操作。
 
 ### validator
@@ -487,34 +486,6 @@ module.exports = {
     // getMethod('where') 获取所有的where方法，返回结果为[{$method:'where',$param: [{a:1}]}]
     getMethod,
     // getMethod({name:'where',index: 0}) 获取第1个where方法的参数，结果为数组形式，例：[{a:1}]
-    getParam,
-    // setParam({name:'where',index: 0, param: [{a:1}]}) 设置第1个where方法的参数，调用之后where方法实际形式为：where({a:1})
-    setParam
-  },
-  // 需要注意的是clientDB可能尚未获取用户信息，如果权限规则内没使用auth对象且数据库指令里面没使用db.env.uid则clientDB不会自动取获取用户信息
-  auth: {
-    uid, // 用户ID，如果未获取或者获取失败uid值为null
-    role, // 通过uni-id获取的用户角色，需要使用1.1.9以上版本的uni-id，如果未获取或者获取失败role值为[]
-    permission, // 通过uni-id获取的用户权限，需要使用1.1.9以上版本的uni-id，如果未获取或者获取失败permission值为[]，注意登录时传入needPermission才可以获取permission，请参考 https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=rbac
-    checked // 是否已经获取了用户信息
-  },
-  // 事务对象，如果需要用到事务可以在action的before内使用state.transaction = await db.startTransaction()传入
-  transaction,
-  // 更新或新增的数据
-  newData,
-  // 访问的集合
-  collection,
-  // 操作类型，可能的值'read'、'create'、'update'、'delete'
-  type
-}
-```
-
-
-
-<!-- ## 参考
-
-在线通讯录项目，完整的演示了如何基于clientDB在客户端代码里实现数据的增删改查，是学习clientDB的重要示例项目。该项目插件地址：[https://ext.dcloud.net.cn/plugin?id=2574](https://ext.dcloud.net.cn/plugin?id=2574) -->
-// getMethod({name:'where',index: 0}) 获取第1个where方法的参数，结果为数组形式，例：[{a:1}]
     getParam,
     // setParam({name:'where',index: 0, param: [{a:1}]}) 设置第1个where方法的参数，调用之后where方法实际形式为：where({a:1})
     setParam
