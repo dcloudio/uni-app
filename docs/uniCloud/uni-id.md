@@ -1808,7 +1808,7 @@ exports.main = async function(event,context) {
 
 **注意**
 
-- 我们推荐以`admin`角色作为超级管理员（即role内包含admin即可有所有接口访问权限）。clientDB内就做了这种实现，如果用户角色包含`admin`就拥有所有数据表的全部权限。
+- uni-id内`admin`角色为超级管理员（即role内包含admin即可拥有所有权限）。uni-clientDB内也做了这种实现，如果用户角色包含`admin`就拥有所有数据表的全部权限。
 
 # 裂变@fission
 
