@@ -237,6 +237,8 @@ export default {
     },
     _compositionend ($event) {
       this.composition = false
+      // 部分输入法 compositionend 事件可能晚于 input
+      this._input($event)
     },
     // 暂无完成按钮，此功能未实现
     _confirm ($event) {

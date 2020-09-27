@@ -89,11 +89,7 @@ module.exports = function generateComponent (compilation) {
           let resource = normalizePath(path.resolve(process.env.UNI_INPUT_DIR, '..', modulePath))
           const altResource = normalizePath(path.resolve(process.env.UNI_INPUT_DIR, modulePath))
 
-          if (
-            /^win/.test(process.platform) &&
-            modulePath.includes('@dcloudio') &&
-            isBuiltInComponentPath(modulePath)
-          ) {
+          if (modulePath.includes('@dcloudio') && isBuiltInComponentPath(modulePath)) {
             resource = normalizePath(path.resolve(process.env.UNI_CLI_CONTEXT, modulePath))
           }
 

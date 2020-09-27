@@ -215,6 +215,8 @@ export default {
         this.composing = true
       } else {
         this.composing = false
+        // 部分输入法 compositionend 事件可能晚于 input
+        this._onInput($event)
       }
     },
     _resetFormData () {

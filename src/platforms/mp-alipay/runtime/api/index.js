@@ -1,3 +1,4 @@
+import createMediaQueryObserver from '../../../mp-weixin/helpers/create-media-query-observer'
 import {
   isFn,
   hasOwn
@@ -104,3 +105,5 @@ export function createIntersectionObserver (component, options) {
   }
   return my.createIntersectionObserver(options)
 }
+
+export { createMediaQueryObserver }

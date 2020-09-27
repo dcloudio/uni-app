@@ -6,17 +6,16 @@ export const chooseVideo = {
     required: false,
     default: SOURCE_TYPES,
     validator (sourceType, params) {
-      const length = sourceType.length
-      if (!length) {
-        params.sourceType = SOURCE_TYPES
-      } else {
-        for (let i = 0; i < length; i++) {
-          if (typeof sourceType[i] !== 'string' || !~SOURCE_TYPES.indexOf(sourceType[i])) {
-            params.sourceType = SOURCE_TYPES
-            break
-          }
-        }
-      }
+      sourceType = sourceType.filter(sourceType => SOURCE_TYPES.includes(sourceType))
+      params.sourceType = sourceType.length ? sourceType : SOURCE_TYPES
     }
+  },
+  maxDuration: {
+    type: Number,
+    default: 60
+  },
+  camera: {
+    type: String,
+    default: 'back'
   }
 }

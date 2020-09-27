@@ -137,6 +137,10 @@ function parseExternalClasses (clazz, vm) {
   return clazz
 }
 
+function isNotSafeString (value) {
+  return value === 'null' || value === 'true' || value === 'false' || !isNaN(Number(value)) || (value.startsWith('[') && value.endsWith(']')) || (value.startsWith('{') && value.endsWith('}'))
+}
+
 function setData (id, name, value) {
   switch (name) {
     case B_CLASS:
@@ -157,7 +161,7 @@ function setData (id, name, value) {
       return setForData.call(this, id, value)
   }
   // TODO 暂时先传递 dataset 至 view 层(理论上不需要)
-  if (name.indexOf('a-data-') === 0) {
+  if (name.indexOf('a-data-') === 0 && (typeof value !== 'string' || isNotSafeString(value))) {
     try {
       value = JSON.stringify(value)
     } catch (e) {}

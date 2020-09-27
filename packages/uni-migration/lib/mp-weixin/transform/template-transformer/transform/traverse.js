@@ -44,7 +44,7 @@ const TAGS = [
   'textarea',
   'video',
   'view',
-  'web-view'
+  'web-view',
 ]
 
 const EVENTS = {

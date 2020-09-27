@@ -28,7 +28,14 @@ function getSourceRoot () {
 }
 
 function moduleFilenameTemplate (info) {
-  if (!info.allLoaders && info.resourcePath) {
+  if (
+    info.resourcePath &&
+    (
+      !info.allLoaders ||
+      info.query.includes('type=script&lang=ts') ||
+      info.resourcePath.endsWith('.ts')
+    )
+  ) {
     const filepath = normalizePath(path.relative(getSourceRoot(), info.absoluteResourcePath))
     if (filepath.indexOf('../') === 0) {
       return

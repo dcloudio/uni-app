@@ -1394,7 +1394,9 @@ function parseBaseApp (vm, {
 const mocks = ['nodeId', 'componentName', '_componentId', 'uniquePrefix'];
 
 function isPage () {
-  return !this.ownerId
+  // 百度小程序组件的id，某些情况下可能是number类型的0，不能直接return !this.ownerId 判断当前组件是否是Page
+  // 否则会导致mounted不执行
+  return typeof this.ownerId === 'undefined'
 }
 
 function findVmByVueId (vm, vuePid) {

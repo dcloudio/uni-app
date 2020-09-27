@@ -17,16 +17,6 @@ import {
 
 const canvasEventCallbacks = createCallbacks('canvasEvent')
 
-UniServiceJSBridge.subscribe('onDrawCanvas', ({
-  callbackId,
-  data
-}) => {
-  const callback = canvasEventCallbacks.pop(callbackId)
-  if (callback) {
-    callback(data)
-  }
-})
-
 UniServiceJSBridge.subscribe('onCanvasMethodCallback', ({
   callbackId,
   data
@@ -267,15 +257,11 @@ var methods3 = ['setFillStyle', 'setTextAlign', 'setStrokeStyle', 'setGlobalAlph
   'setTextBaseline', 'setLineDash'
 ]
 
-var tempCanvas
-
-function getTempCanvas (width = 0, height = 0) {
-  if (!tempCanvas) {
-    tempCanvas = document.createElement('canvas')
-  }
-  tempCanvas.width = width
-  tempCanvas.height = height
-  return tempCanvas
+function measureText (text, font) {
+  const canvas = document.createElement('canvas')
+  const c2d = canvas.getContext('2d')
+  c2d.font = font
+  return c2d.measureText(text).width || 0
 }
 
 function TextMetrics (width) {
@@ -342,15 +328,16 @@ export class CanvasContext {
     }
   }
 
-  // TODO
   measureText (text) {
-    if (typeof document === 'object') {
-      var c2d = getTempCanvas().getContext('2d')
-      c2d.font = this.state.font
-      return new TextMetrics(c2d.measureText(text).width || 0)
+    const font = this.state.font
+    let width
+    if (__PLATFORM__ === 'h5') {
+      width = measureText(text, font)
     } else {
-      return new TextMetrics(0)
+      const webview = plus.webview.getWebviewById(String(this.pageId))
+      width = webview.evalJSSync(`(${measureText.toString()})(${JSON.stringify(text)},${JSON.stringify(font)})`)
     }
+    return new TextMetrics(width)
   }
 
   save () {

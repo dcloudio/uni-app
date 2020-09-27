@@ -831,6 +831,98 @@ var eventApi = /*#__PURE__*/Object.freeze({
   $emit: $emit
 });
 
+function createMediaQueryObserver () {
+  const mediaQueryObserver = {};
+  const {
+    windowWidth,
+    windowHeight
+  } = swan.getSystemInfoSync();
+
+  const orientation = windowWidth < windowHeight ? 'portrait' : 'landscape';
+
+  mediaQueryObserver.observe = (options, callback) => {
+    let matches = true;
+    for (const item in options) {
+      const itemValue = item === 'orientation' ? options[item] : Number(options[item]);
+      if (options[item] !== '') {
+        if (item === 'width') {
+          if (itemValue === windowWidth) {
+            matches = true;
+          } else {
+            matches = false;
+            callback(matches);
+            return matches
+          }
+        }
+        if (item === 'minWidth') {
+          if (windowWidth >= itemValue) {
+            matches = true;
+          } else {
+            matches = false;
+            callback(matches);
+            return matches
+          }
+        }
+        if (item === 'maxWidth') {
+          if (windowWidth <= itemValue) {
+            matches = true;
+          } else {
+            matches = false;
+            callback(matches);
+            return matches
+          }
+        }
+
+        if (item === 'height') {
+          if (itemValue === windowHeight) {
+            matches = true;
+          } else {
+            matches = false;
+            callback(matches);
+            return matches
+          }
+        }
+        if (item === 'minHeight') {
+          if (windowHeight >= itemValue) {
+            matches = true;
+          } else {
+            matches = false;
+            callback(matches);
+            return matches
+          }
+        }
+        if (item === 'maxHeight') {
+          if (windowHeight <= itemValue) {
+            matches = true;
+          } else {
+            matches = false;
+            callback(matches);
+            return matches
+          }
+        }
+
+        if (item === 'orientation') {
+          if (options[item] === orientation) {
+            matches = true;
+          } else {
+            matches = false;
+            callback(matches);
+            return matches
+          }
+        }
+      }
+    }
+    callback(matches);
+
+    return matches
+  };
+
+  mediaQueryObserver.disconnect = () => {
+  };
+
+  return mediaQueryObserver
+}
+
 function requestPayment (params) {
   let parseError = false;
   if (typeof params.orderInfo === 'string') {
@@ -851,7 +943,8 @@ function requestPayment (params) {
 
 var api = /*#__PURE__*/Object.freeze({
   __proto__: null,
-  requestPayment: requestPayment
+  requestPayment: requestPayment,
+  createMediaQueryObserver: createMediaQueryObserver
 });
 
 const MPPage = Page;
@@ -1604,7 +1697,9 @@ function handleLink (event) {
 const mocks = ['nodeId', 'componentName', '_componentId', 'uniquePrefix'];
 
 function isPage () {
-  return !this.ownerId
+  // 百度小程序组件的id，某些情况下可能是number类型的0，不能直接return !this.ownerId 判断当前组件是否是Page
+  // 否则会导致mounted不执行
+  return typeof this.ownerId === 'undefined'
 }
 
 function initRelation (detail) {
@@ -1880,6 +1975,11 @@ function parsePage (vuePageOptions) {
     isPage,
     initRelation
   });
+
+  const onInit = (vuePageOptions.default || vuePageOptions).onInit;
+  if (onInit) {
+    pageOptions.methods.onInit = onInit;
+  }
 
   // 纠正百度小程序生命周期methods:onShow在methods:onLoad之前触发的问题
   pageOptions.methods.onShow = function onShow () {

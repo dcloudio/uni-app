@@ -5,6 +5,24 @@ import {
 import emitter from './emitter'
 import keyboard from './keyboard'
 
+UniViewJSBridge.subscribe('getSelectedTextRange', function ({ pageId, callbackId }) {
+  const activeElement = document.activeElement
+  const tagName = activeElement.tagName.toLowerCase()
+  const tagNames = ['input', 'textarea']
+  const data = {}
+  if (tagNames.includes(tagName)) {
+    data.errMsg = 'getSelectedTextRange:ok'
+    data.start = activeElement.selectionStart
+    data.end = activeElement.selectionEnd
+  } else {
+    data.errMsg = 'getSelectedTextRange:fail:no focused'
+  }
+  UniViewJSBridge.publishHandler('onGetSelectedTextRange', {
+    callbackId,
+    data
+  }, pageId)
+})
+
 export default {
   name: 'BaseInput',
   mixins: [emitter, keyboard],

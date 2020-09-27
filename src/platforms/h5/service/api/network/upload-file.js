@@ -1,4 +1,7 @@
-import { urlToFile } from 'uni-platform/helpers/file'
+import {
+  urlToFile,
+  blobToFile
+} from 'uni-platform/helpers/file'
 /**
  * 上传任务
  */
@@ -133,7 +136,7 @@ export function uploadFile ({
   }
 
   Promise
-    .all(files.map(({ file, uri }) => file instanceof File ? Promise.resolve(file) : urlToFile(uri)))
+    .all(files.map(({ file, uri }) => file instanceof Blob ? Promise.resolve(blobToFile(file)) : urlToFile(uri)))
     .then(upload)
     .catch(() => {
       setTimeout(() => {

@@ -50,6 +50,23 @@ export default function initSubscribe (subscribe, {
     }
   }
 
+  const requestMediaQueryObserverCallbacks = createCallbacks('requestMediaQueryObserver')
+
+  function onRequestMediaQueryObserver ({
+    reqId,
+    reqEnd,
+    res
+  }) {
+    const callback = requestMediaQueryObserverCallbacks.get(reqId)
+    if (callback) {
+      if (reqEnd) {
+        requestMediaQueryObserverCallbacks.pop(reqId)
+        return
+      }
+      callback(res)
+    }
+  }
+
   if (__PLATFORM__ === 'h5') {
     subscribe('onPageReady', createPageEvent('onReady'))
   }
@@ -59,4 +76,5 @@ export default function initSubscribe (subscribe, {
 
   subscribe('onRequestComponentInfo', onRequestComponentInfo)
   subscribe('onRequestComponentObserver', onRequestComponentObserver)
+  subscribe('onRequestMediaQueryObserver', onRequestMediaQueryObserver)
 }

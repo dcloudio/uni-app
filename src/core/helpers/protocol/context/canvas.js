@@ -98,7 +98,7 @@ export const canvasToTempFilePath = {
   },
   canvasId: {
     type: String,
-    require: true
+    required: true
   },
   fileType: {
     type: String,
@@ -119,11 +119,11 @@ export const canvasToTempFilePath = {
 export const drawCanvas = {
   canvasId: {
     type: String,
-    require: true
+    required: true
   },
   actions: {
     type: Array,
-    require: true
+    required: true
   },
   reserve: {
     type: Boolean,

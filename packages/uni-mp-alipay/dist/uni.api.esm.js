@@ -1,5 +1,32 @@
 import { isArray, isPromise, isFunction, isPlainObject, hasOwn, isString } from '@vue/shared';
 
+const API_TYPE_SYNC = 1;
+function validateProtocol(_name, _args, _protocol) {
+    return true;
+}
+function formatApiArgs(args, options) {
+    if (!options) {
+        return args;
+    }
+}
+function createApi({ type, name, options }, fn, protocol) {
+    return function (...args) {
+        if (type === API_TYPE_SYNC) {
+            if (!((process.env.NODE_ENV !== 'production') && protocol && !validateProtocol())) {
+                return fn.apply(null, formatApiArgs(args, options));
+            }
+        }
+    };
+}
+
+const Upx2pxProtocol = [
+    {
+        name: 'upx',
+        type: [Number, String],
+        required: true
+    }
+];
+
 const EPS = 1e-4;
 const BASE_DEVICE_WIDTH = 750;
 let isIOS = false;
@@ -11,7 +38,7 @@ function checkDeviceWidth() {
     deviceDPR = pixelRatio;
     isIOS = platform === 'ios';
 }
-function upx2px(number, newDeviceWidth) {
+const upx2px = createApi({ type: API_TYPE_SYNC, name: 'upx2px' }, (number, newDeviceWidth) => {
     if (deviceWidth === 0) {
         checkDeviceWidth();
     }
@@ -33,7 +60,7 @@ function upx2px(number, newDeviceWidth) {
         }
     }
     return number < 0 ? -result : result;
-}
+}, Upx2pxProtocol);
 
 var HOOKS;
 (function (HOOKS) {
@@ -139,6 +166,15 @@ function invokeApi(method, api, options, ...params) {
     return api(options, ...params);
 }
 
+const AddInterceptorProtocol = [
+    {
+        name: 'method',
+        type: [String, Object],
+        required: true
+    }
+];
+const RemoveInterceptorProtocol = AddInterceptorProtocol;
+
 function mergeInterceptorHook(interceptors, interceptor) {
     Object.keys(interceptor).forEach(hook => {
         if (isFunction(interceptor[hook])) {
@@ -184,15 +220,15 @@ function removeHook(hooks, hook) {
         hooks.splice(index, 1);
     }
 }
-function addInterceptor(method, interceptor) {
+const addInterceptor = createApi({ type: API_TYPE_SYNC, name: 'addInterceptor' }, (method, interceptor) => {
     if (typeof method === 'string' && isPlainObject(interceptor)) {
         mergeInterceptorHook(scopedInterceptors[method] || (scopedInterceptors[method] = {}), interceptor);
     }
     else if (isPlainObject(method)) {
         mergeInterceptorHook(globalInterceptors, method);
     }
-}
-function removeInterceptor(method, interceptor) {
+}, AddInterceptorProtocol);
+const removeInterceptor = createApi({ type: API_TYPE_SYNC, name: 'removeInterceptor' }, (method, interceptor) => {
     if (typeof method === 'string') {
         if (isPlainObject(interceptor)) {
             removeInterceptorHook(scopedInterceptors[method], interceptor);
@@ -204,7 +240,7 @@ function removeInterceptor(method, interceptor) {
     else if (isPlainObject(method)) {
         removeInterceptorHook(globalInterceptors, method);
     }
-}
+}, RemoveInterceptorProtocol);
 
 const SYNC_API_RE = /^\$|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
 const CONTEXT_API_RE = /^create|Manager$/;
@@ -414,6 +450,19 @@ function addSafeAreaInsets(fromRes, toRes) {
         };
     }
 }
+const redirectTo = {};
+const createCanvasContext = {
+    returnValue(fromRes, toRes) {
+        const measureText = fromRes.measureText;
+        toRes.measureText = function (text, callback) {
+            const textMetrics = measureText.call(this, text);
+            if (typeof callback === 'function') {
+                setTimeout(() => callback(textMetrics), 0);
+            }
+            return textMetrics;
+        };
+    }
+};
 
 const getProvider = initGetProvider({
     oauth: ['alipay'],
@@ -1000,7 +1049,9 @@ var protocols = /*#__PURE__*/Object.freeze({
   hideHomeButton: hideHomeButton,
   saveImageToPhotosAlbum: saveImageToPhotosAlbum,
   saveVideoToPhotosAlbum: saveVideoToPhotosAlbum,
-  chooseAddress: chooseAddress
+  chooseAddress: chooseAddress,
+  redirectTo: redirectTo,
+  createCanvasContext: createCanvasContext
 });
 
 var index = initUni(shims, protocols);

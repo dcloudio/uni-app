@@ -70,6 +70,10 @@ export function initPolyfill (Vue) {
     return uni.createIntersectionObserver(this, options)
   }
 
+  Vue.prototype.createMediaQueryObserver = function createMediaQueryObserver (options) {
+    return uni.createMediaQueryObserver(this, options)
+  }
+
   Vue.prototype.selectComponent = function selectComponent (selector) {
     return querySelector(this, parseSelector(selector))
   }

@@ -107,10 +107,7 @@ export default {
     this._images = {}
   },
   mounted () {
-    this._resize({
-      width: this.$refs.sensor.$el.offsetWidth,
-      height: this.$refs.sensor.$el.offsetHeight
-    })
+    this._resize()
   },
   beforeDestroy () {
     const canvas = this.$refs.canvas
@@ -131,10 +128,10 @@ export default {
       if (canvas.width > 0 && canvas.height > 0) {
         var context = canvas.getContext('2d')
         var imageData = context.getImageData(0, 0, canvas.width, canvas.height)
-        wrapper(this.$refs.canvas)
+        wrapper(canvas)
         context.putImageData(imageData, 0, 0)
       } else {
-        wrapper(this.$refs.canvas)
+        wrapper(canvas)
       }
     },
     _touchmove (event) {
@@ -272,7 +269,7 @@ export default {
         }
       }
       if (!this.actionsWaiting && callbackId) {
-        UniViewJSBridge.publishHandler('onDrawCanvas', {
+        UniViewJSBridge.publishHandler('onCanvasMethodCallback', {
           callbackId,
           data: {
             errMsg: 'drawCanvas:ok'
@@ -302,74 +299,63 @@ export default {
          * 加载图像
          */
         function loadImage () {
-          self._images[src] = new Image()
-          self._images[src].onload = function () {
-            self._images[src].ready = true
-          }
-          /**
-           * 从Blob加载
-           * @param {Blob} blob
-           */
-          function loadBlob (blob) {
-            self._images[src].src = (window.URL || window.webkitURL).createObjectURL(blob)
+          const image = self._images[src] = new Image()
+          image.onload = function () {
+            image.ready = true
           }
           /**
            * 从本地文件加载
            * @param {string} path 文件路径
            */
           function loadFile (path) {
-            var bitmap = new plus.nativeObj.Bitmap('bitmap' + Date.now())
-            bitmap.load(path, function () {
-              self._images[src].src = bitmap.toBase64Data()
-              bitmap.clear()
-            }, function () {
-              bitmap.clear()
-              console.error('preloadImage error')
-            })
+            function onError () {
+              image.src = src
+            }
+            plus.io.resolveLocalFileSystemURL(path, function (entry) {
+              entry.file(function (file) {
+                var fileReader = new plus.io.FileReader()
+                fileReader.onload = function (data) {
+                  image.src = data.target.result
+                }
+                fileReader.onerror = onError
+                fileReader.readAsDataURL(file)
+              }, onError)
+            }, onError)
           }
           /**
            * 从网络加载
            * @param {string} url 文件地址
            */
           function loadUrl (url) {
-            function plusDownload () {
-              plus.downloader.createDownload(url, {
-                filename: '_doc/uniapp_temp/download/'
-              }, function (d, status) {
-                if (status === 200) {
-                  loadFile(d.filename)
-                } else {
-                  self._images[src].src = src
-                }
-              }).start()
-            }
-            var xhr = new XMLHttpRequest()
-            xhr.open('GET', url, true)
-            xhr.responseType = 'blob'
-            xhr.onload = function () {
-              if (this.status === 200) {
-                loadBlob(this.response)
+            plus.downloader.createDownload(url, {
+              filename: '_doc/uniapp_temp/download/'
+            }, function (d, status) {
+              if (status === 200) {
+                loadFile(d.filename)
+              } else {
+                image.src = src
               }
-            }
-            xhr.onerror = __PLATFORM__ === 'app-plus' ? plusDownload : function () {
-              self._images[src].src = src
-            }
-            xhr.send()
+            }).start()
           }
 
-          if (__PLATFORM__ === 'app-plus' && (!window.webkit || !window.webkit.messageHandlers)) {
-            self._images[src].src = src
-          } else {
-            // 解决 PLUS-APP（wkwebview）以及 H5 图像跨域问题（H5图像响应头需包含access-control-allow-origin）
-            if (__PLATFORM__ === 'app-plus' && src.indexOf('http://') !== 0 && src.indexOf('https://') !==
-              0 && !/^data:.*,.*/.test(src)) {
-              loadFile(src)
-            } else if (/^data:.*,.*/.test(src)) {
-              self._images[src].src = src
-            } else {
-              loadUrl(src)
+          if (__PLATFORM__ === 'app-plus') {
+            // WKWebView
+            if (window.webkit && window.webkit.messageHandlers) {
+              if (src.indexOf('file://') === 0) {
+                loadFile(src)
+                return
+              } else if (src.indexOf('http://') === 0 || src.indexOf('https://') === 0) {
+                loadUrl(src)
+                return
+              }
+            }
+            // Chrome85+ 本地路径
+            if (src.indexOf('file://') === 0 && navigator.vendor === 'Google Inc.' && Promise.any) {
+              image.crossOrigin = 'anonymous'
             }
           }
+
+          image.src = src
         }
       })
     },
@@ -421,29 +407,30 @@ export default {
       if (!height) {
         height = canvas.offsetHeight - y
       }
+      if (!hidpi) {
+        if (!destWidth && !destHeight) {
+          destWidth = Math.round(width * pixelRatio)
+          destHeight = Math.round(height * pixelRatio)
+        } else if (!destWidth) {
+          destWidth = Math.round(width / height * destHeight)
+        } else if (!destHeight) {
+          destHeight = Math.round(height / width * destWidth)
+        }
+      } else {
+        destWidth = width
+        destHeight = height
+      }
+      const newCanvas = getTempCanvas(destWidth, destHeight)
+      const context = newCanvas.getContext('2d')
+      if (type === 'jpeg' || type === 'jpg') {
+        type = 'jpeg'
+        context.fillStyle = '#fff'
+        context.fillRect(0, 0, destWidth, destHeight)
+      }
+      context.__hidpi__ = true
+      context.drawImageByCanvas(canvas, x, y, width, height, 0, 0, destWidth, destHeight, false)
+      let result
       try {
-        if (!hidpi) {
-          if (!destWidth && !destHeight) {
-            destWidth = Math.round(width * pixelRatio)
-            destHeight = Math.round(height * pixelRatio)
-          } else if (!destWidth) {
-            destWidth = Math.round(width / height * destHeight)
-          } else if (!destHeight) {
-            destHeight = Math.round(height / width * destWidth)
-          }
-        } else {
-          destWidth = width
-          destHeight = height
-        }
-        const newCanvas = getTempCanvas(destWidth, destHeight)
-        const context = newCanvas.getContext('2d')
-        if (type === 'jpeg' || type === 'jpg') {
-          type = 'jpeg'
-          context.fillStyle = '#fff'
-          context.fillRect(0, 0, destWidth, destHeight)
-        }
-        context.__hidpi__ = true
-        context.drawImageByCanvas(canvas, x, y, width, height, 0, 0, destWidth, destHeight, false)
         if (dataType === 'base64') {
           data = newCanvas.toDataURL(`image/${type}`, qualit)
         } else {
@@ -451,35 +438,25 @@ export default {
           // fix [...]展开TypedArray在低版本手机报错的问题，使用Array.prototype.slice
           data = Array.prototype.slice.call(imgData.data)
         }
-        newCanvas.height = newCanvas.width = 0
-        context.__hidpi__ = false
-      } catch (error) {
-        if (!callbackId) {
-          return
-        }
-        UniViewJSBridge.publishHandler('onCanvasMethodCallback', {
-          callbackId,
-          data: {
-            errMsg: 'canvasGetImageData:fail'
-          }
-        }, this.$page.id)
-        return
-      }
-      if (!callbackId) {
-        return {
+        result = {
+          errMsg: 'canvasGetImageData:ok',
           data,
           width: destWidth,
           height: destHeight
         }
+      } catch (error) {
+        result = {
+          errMsg: `canvasGetImageData:fail ${error}`
+        }
+      }
+      newCanvas.height = newCanvas.width = 0
+      context.__hidpi__ = false
+      if (!callbackId) {
+        return result
       } else {
         UniViewJSBridge.publishHandler('onCanvasMethodCallback', {
           callbackId,
-          data: {
-            errMsg: 'canvasGetImageData:ok',
-            data,
-            width: destWidth,
-            height: destHeight
-          }
+          data: result
         }, this.$page.id)
       }
     },
@@ -544,7 +521,7 @@ export default {
         UniViewJSBridge.publishHandler('onCanvasMethodCallback', {
           callbackId,
           data: {
-            errMsg: 'toTempFilePath:fail'
+            errMsg: res.errMsg.replace('canvasPutImageData', 'toTempFilePath')
           }
         }, this.$page.id)
         return

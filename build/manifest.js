@@ -55,6 +55,10 @@ const DEPS = {
   createIntersectionObserver: [
     ['/core/view/bridge/subscribe/api/request-component-observer.js', 'requestComponentObserver'],
     ['/core/view/bridge/subscribe/api/request-component-observer.js', 'destroyComponentObserver']
+  ],
+  createMediaQueryObserver: [
+    ['/core/view/bridge/subscribe/api/request-media-query-observer.js', 'requestMediaQueryObserver'],
+    ['/core/view/bridge/subscribe/api/request-media-query-observer.js', 'destroyMediaQueryObserver']
   ]
 }
 

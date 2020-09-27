@@ -2233,8 +2233,14 @@ var HTML5History = (function (History$$1) {
     var this$1 = this;
 
     if (typeof location === 'object') { // fixed by xxxxxx
+      location.params = location.params || {};
+      var hasId = location.params.__id__;
       switch (location.type) {
         case 'navigateTo':
+          if (!hasId) {
+            this.router.id++;
+          }
+          break
         case 'redirectTo':
         case 'reLaunch':
           this.router.id++;
@@ -2242,8 +2248,9 @@ var HTML5History = (function (History$$1) {
         case 'switchTab':
           break
       }
-      location.params = location.params || {};
-      location.params.__id__ = this.router.id;
+      if (!hasId) {
+        location.params.__id__ = this.router.id;
+      }
     }
 
     var ref = this;
@@ -2374,8 +2381,14 @@ var HashHistory = (function (History$$1) {
     var this$1 = this;
 
     if (typeof location === 'object') { // fixed by xxxxxx
+      location.params = location.params || {};
+      var hasId = location.params.__id__;
       switch (location.type) {
         case 'navigateTo':
+          if (!hasId) {
+            this.router.id++;
+          }
+          break
         case 'redirectTo':
         case 'reLaunch':
           this.router.id++;
@@ -2383,8 +2396,10 @@ var HashHistory = (function (History$$1) {
         case 'switchTab':
           break
       }
-      location.params = location.params || {};
-      location.params.__id__ = this.router.id;
+
+      if (!hasId) {
+        location.params.__id__ = this.router.id;
+      }
     }
 
     var ref = this;

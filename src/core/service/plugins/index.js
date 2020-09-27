@@ -194,6 +194,10 @@ export default {
       return uni.createIntersectionObserver(this, args)
     }
 
+    Vue.prototype.createMediaQueryObserver = function createMediaQueryObserver (args) {
+      return uni.createMediaQueryObserver(this, args)
+    }
+
     Vue.use(VueRouter)
   }
 

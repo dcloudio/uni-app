@@ -658,7 +658,7 @@ ctx.draw()
 ![uniapp](//img-cdn-qiniu.dcloud.net.cn/uniapp/images/line-to.png?t=201859)
 
 ### CanvasContext.measureText
-测量文本尺寸信息，目前仅返回文本宽度。同步接口。(App端自定义组件编译模式暂时不可用)
+测量文本尺寸信息，目前仅返回文本宽度。同步接口。（App 端 2.8.12+ 支持）
 
 **参数**
 

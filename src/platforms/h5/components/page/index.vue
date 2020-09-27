@@ -1,7 +1,7 @@
 <template>
   <uni-page :data-page="$route.meta.pagePath">
     <page-head
-      v-if="navigationBar.type!=='none'"
+      v-if="!hasTopWindow && navigationBar.type!=='none'"
       v-bind="navigationBar"
     />
     <page-refresh
@@ -32,6 +32,8 @@
   }
 </style>
 <script>
+import Vue from 'vue'
+
 import {
   upx2px
 } from 'uni-helpers/index'
@@ -159,9 +161,16 @@ export default {
       default () {
         return {}
       }
+    },
+    topWindow: {
+      type: Boolean,
+      default: true
     }
   },
   data () {
+    // 目前简单处理，存在topWindow时，始终不显示page head
+    const hasTopWindow = this.topWindow !== false && !!Vue.component('VUniTopWindow')
+    let navigationBar = {}
     const titleNViewTypeList = {
       none: 'default',
       auto: 'transparent',
@@ -198,7 +207,7 @@ export default {
       NO: false
     }
 
-    const navigationBar = mergeTitleNView({
+    navigationBar = mergeTitleNView({
       loading: false,
       backButton: !this.isQuit && !this.$route.meta.isQuit, // redirectTo,reLaunch时可能动态修改 meta.isQuit
       backgroundColor: this.navigationBarBackgroundColor,
@@ -231,6 +240,7 @@ export default {
     refreshOptions.range = upx2px(refreshOptions.range)
 
     return {
+      hasTopWindow,
       navigationBar,
       refreshOptions
     }

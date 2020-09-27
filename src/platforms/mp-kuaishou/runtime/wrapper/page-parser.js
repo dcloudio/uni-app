@@ -1,13 +1,5 @@
-import parseBasePage from './page-base-parser'
-
-import {
-  isPage,
-  initRelation
-} from './util'
+import parseBasePage from '../../../mp-weixin/runtime/wrapper/page-parser'
 
 export default function parsePage (vuePageOptions) {
-  return parseBasePage(vuePageOptions, {
-    isPage,
-    initRelation
-  })
+  return parseBasePage(vuePageOptions)
 }

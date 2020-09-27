@@ -6,7 +6,6 @@
     <div
       ref="container"
       class="uni-video-container"
-      @click="triggerControls"
       @touchstart="touchstart"
       @touchend="touchend"
       @touchmove="touchmove"
@@ -25,6 +24,7 @@
         class="uni-video-video"
         webkit-playsinline
         playsinline
+        @click="triggerControls"
         @durationchange="onDurationChange"
         @loadedmetadata="onLoadedMetadata"
         @progress="onProgress"
@@ -153,11 +153,9 @@
           {{ currentTimeNew|time }} / {{ durationTime|time }}
         </div>
       </div>
-    </div>
-    <div
-      style="position: absolute; top: 0; width: 100%; height: 100%; overflow: hidden; pointer-events: none;"
-    >
-      <slot />
+      <div class="uni-video-slots">
+        <slot />
+      </div>
     </div>
   </uni-video>
 </template>
@@ -808,6 +806,16 @@ uni-video[hidden] {
   align-items: center;
   background-color: rgba(1, 1, 1, 0.5);
   z-index: 1;
+}
+
+.uni-video-slots {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
 }
 
 .uni-video-cover-play-button {

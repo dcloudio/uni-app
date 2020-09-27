@@ -12,7 +12,7 @@ export const getLocation = {
     default: type.WGS84
   },
   altitude: {
-    altitude: Boolean,
+    type: Boolean,
     default: false
   }
 }

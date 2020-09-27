@@ -719,13 +719,7 @@ class Dep {
   
 
   constructor () {
-    // fixed by xxxxxx (nvue vuex)
-    /* eslint-disable no-undef */
-    if(typeof SharedObject !== 'undefined'){
-      this.id = SharedObject.uid++;
-    } else {
-      this.id = uid++;
-    }
+    this.id = uid++;
     this.subs = [];
   }
 
@@ -763,18 +757,20 @@ class Dep {
 // can be evaluated at a time.
 // fixed by xxxxxx (nvue shared vuex)
 /* eslint-disable no-undef */
-Dep.SharedObject = typeof SharedObject !== 'undefined' ? SharedObject : {};
+Dep.SharedObject = {};
 Dep.SharedObject.target = null;
 Dep.SharedObject.targetStack = [];
 
 function pushTarget (target) {
   Dep.SharedObject.targetStack.push(target);
   Dep.SharedObject.target = target;
+  Dep.target = target;
 }
 
 function popTarget () {
   Dep.SharedObject.targetStack.pop();
   Dep.SharedObject.target = Dep.SharedObject.targetStack[Dep.SharedObject.targetStack.length - 1];
+  Dep.target = Dep.SharedObject.target;
 }
 
 /*  */
@@ -7961,7 +7957,7 @@ const cssVarRE = /^--/;
 const importantRE = /\s*!important$/;
 
 // upx,rpx 正则匹配
-const unitRE = /([+-]?\d+(\.\d+)?)[r|u]px/g;
+const unitRE = /\b([+-]?\d+(\.\d+)?)[r|u]px\b/g;
 
 const transformUnit = (val) => {
   if (typeof val === 'string') {

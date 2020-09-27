@@ -91,7 +91,7 @@ function updateFileFlag (appJson) {
   }
 }
 
-module.exports = function (pagesJson, userManifestJson) {
+module.exports = function (pagesJson, userManifestJson, isAppView) {
   const {
     app
   } = require('../mp')(pagesJson, userManifestJson)
@@ -514,7 +514,7 @@ module.exports = function (pagesJson, userManifestJson) {
       manifest,
       pagesJson,
       normalizeNetworkTimeout
-    })
+    }, isAppView)
   }
   return [app, manifest]
 }
