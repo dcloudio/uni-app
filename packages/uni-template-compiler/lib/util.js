@@ -223,7 +223,7 @@ function makeMap (str, expectsLowerCase) {
  * @param {*} node
  */
 function isSimpleObjectExpression (node) {
-  return t.isObjectExpression(node) && !node.properties.find(({
+  return t.isObjectExpression(node) && node.properties.length && !node.properties.find(({
     key,
     value
   }) => !t.isIdentifier(key) || !(t.isIdentifier(value) || t.isStringLiteral(value) || t.isBooleanLiteral(value) ||
