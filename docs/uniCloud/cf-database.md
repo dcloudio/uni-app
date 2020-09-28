@@ -359,7 +359,7 @@ let res = await collection.doc('doc-id').set({
 
 支持 `where()`、`limit()`、`skip()`、`orderBy()`、`get()`、`update()`、`field()`、`count()` 等操作。
 
-只有当调用`get()` `update()`时才会真正发送请求。
+只有当调用`get()`、`update()`时才会真正发送查询请求。
 注：默认取前100条数据，最大取前100条数据。
 
 **get响应参数**
@@ -396,7 +396,12 @@ db.collection('goods').where({
 })
 ```
 
-`where` 可以使用正则表达式来查询文档，比如一下示例查询所有`name`字段以ABC开头的用户
+在SQL里使用字符串表达式操作。但在NOSQL中使用json操作。这使得 等于 的表达，从 `=` 变成了 `:`；而大于的表达，从 `>` 变成了 `dbCmd.gt()`
+
+所有的比较符，详见[表格](https://uniapp.dcloud.io/uniCloud/cf-database?id=%e6%9f%a5%e8%af%a2%e7%ad%9b%e9%80%89%e6%8c%87%e4%bb%a4-query-command)
+
+
+`where` 还可以使用正则表达式来查询文档，比如一下示例查询所有`name`字段以ABC开头的用户
 ```js
 db.collection('user').where({
   name: new RegExp('^ABC')
@@ -443,12 +448,12 @@ collection.limit()
 
 | 参数  | 类型    | 必填 | 说明           |
 | ----- | ------- | ---- | -------------- |
-| value | Integer | 是   | 限制展示的数值 |
+| value | Integer | 是   | 返回的数据条数 |
 
 使用示例
 
 ```js
-let res = await collection.limit(1).get()
+let res = await collection.limit(1).get() // 只返回第一条记录
 ```
 
 ### 设置起始位置
@@ -459,7 +464,7 @@ collection.skip()
 
 | 参数  | 类型    | 必填 | 说明           |
 | ----- | ------- | ---- | -------------- |
-| value | Integer | 是   | 跳过展示的数据 |
+| value | Integer | 是   | 跳过指定的位置，从位置之后返回数据 |
 
 使用示例
 
@@ -493,7 +498,7 @@ let res = await collection.orderBy("name", "asc").get()
 
 collection.field()
 
-从查询结果集中，过滤掉不需要的字段，或者指定要返回的字段。
+从查询结果中，过滤掉不需要的字段，或者指定要返回的字段。
 
 参数说明
 
@@ -509,11 +514,18 @@ collection.field({ 'age': true }) //只返回age字段，其他字段不返回
 备注：只能指定要返回的字段或者不要返回的字段。即{'a': true, 'b': false}是一种错误的参数格式
 
 ### 查询指令
-#### eq
+
+查询指令以dbCmd.开头，包括等于、不等于、大于、大于等于、小于、小于等于、in、nin、and、or。
+
+#### eq 等于
 
 表示字段等于某个值。`eq` 指令接受一个字面量 (literal)，可以是 `number`, `boolean`, `string`, `object`, `array`。
 
-比如筛选出所有自己发表的文章，除了用传对象的方式：
+事实上在uniCloud的数据库中，`等于`有两种写法。
+
+比如筛选出所有自己发表的文章，
+
+写法1：使用`:`来比较
 
 ```js
 const myOpenID = "xxx"
@@ -522,7 +534,7 @@ let res = await db.collection('articles').where({
 }).get()
 ```
 
-还可以用指令：
+写法2：使用指令`dbcmd.eq()`
 
 ```js
 const dbCmd = db.command
@@ -532,7 +544,7 @@ let res = await db.collection('articles').where({
 }).get()
 ```
 
-注意 `eq` 指令比对象的方式有更大的灵活性，可以用于表示字段等于某个对象的情况，比如：
+注意 `eq` 指令有更大的灵活性，可以用于表示字段等于某个对象的情况，比如：
 
 ```js
 // 这种写法表示匹配 stat.publishYear == 2018 且 stat.language == 'zh-CN'
@@ -1013,11 +1025,11 @@ let res = await db.collection('photo').doc('doc-id').update({
 更新指令。用于指示字段自增某个值，这是个原子操作，使用这个操作指令而不是先读数据、再加、再写回的好处是：
 
 1. 原子性：多个用户同时写，对数据库来说都是将字段加一，不会有后来者覆写前者的情况
-2. 减少一次网络请求：不需先读再写
+2. 减少一次请求：不需先读再写
 
 之后的 mul 指令同理。
 
-如给收藏的商品数量加一：
+在文章阅读数+1、收藏+1等很多场景会用到它。如给收藏的商品数量加一：
 
 ```js
 const dbCmd = db.command
@@ -1053,7 +1065,7 @@ let res = await db.collection('user').where({
 }
 ```
 
-请注意并没有提供减法操作，如果要实现减法，也需通过inc实现。比如上述字段减1，
+请注意并没有直接提供减法操作符，如果要实现减法，仍通过inc实现。比如上述字段减1，
 
 ```js
 const dbCmd = db.command
@@ -1107,7 +1119,7 @@ let res = await db.collection('user').where({
 }
 ```
 
-请注意并没有提供除法操作，如果要实现除法，也需通过mul实现。比如上述字段除以10，
+请注意没有直接提供除法操作符，如果要实现除法，仍通过mul实现。比如上述字段除以10，
 
 ```js
 const dbCmd = db.command
