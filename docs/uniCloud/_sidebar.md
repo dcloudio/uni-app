@@ -27,6 +27,7 @@
 * [案例源码](uniCloud/resource.md)
 * [学习资料](uniCloud/learning.md)
 * [常见问题](uniCloud/faq.md)
+* [uniCloud产品服务协议](uniCloud/agreement.md)
 <!--  * [云存储](uniCloud/cf-storage.md) -->
 * 权限管理
   * [腾讯云](uniCloud/policy-tcb.md)
