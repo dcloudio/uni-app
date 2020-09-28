@@ -99,7 +99,7 @@ clientDB的前端js-sdk主要负责提供API，允许前端编写数据库操作
 
 **示例代码**
 
-这段示例代码，在一个前端页面，直接查询了云数据库的list表，并且指定了name和time的where条件，then的res即为返回的查询结果。
+这段示例代码，在一个前端页面，直接查询了云数据库的`list`表，并且指定了`name`和`time`的`where`查询条件，then的res即为返回的查询结果。
 
 ```js
 // 引入公共模块
@@ -118,7 +118,7 @@ db.action('get-info') // 不使用action时可以不调用action方法
     content: true
   }).get()
   .then((res)=>{
-    
+    // res 为数据库查询结果
   }).catch((err)=>{
     
   })
