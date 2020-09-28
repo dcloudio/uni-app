@@ -480,6 +480,11 @@ collection.orderBy()
 | field     | string | 是   | 排序的字段                          |
 | orderType | string | 是   | 排序的顺序，升序(asc) 或 降序(desc) |
 
+如果需要对嵌套字段排序，需要用 "点表示法" 连接嵌套字段，比如 style.color 表示字段 style 里的嵌套字段 color。
+
+同时也支持按多个字段排序，多次调用 orderBy 即可，多字段排序时的顺序会按照 orderBy 调用顺序先后对多个字段排序
+
+
 使用示例
 
 ```js
