@@ -113,7 +113,9 @@ db.action('get-info') // 不使用action时可以不调用action方法
     name: new RegExp('龚','g'),
     time: dbCmd.gt(1105885393581)
   }).field({
-    extra: false
+    name: true,
+    time: true,
+    content: true
   }).get()
   .then((res)=>{
     
