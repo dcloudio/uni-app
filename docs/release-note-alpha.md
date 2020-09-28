@@ -1,3 +1,17 @@
+#### 2.9.1.20200927-alpha
+* 【uni-app插件】
+  + App平台 修复 tabbar 动态显示或隐藏时可能出现闪白的Bug [详情](https://ask.dcloud.net.cn/question/80898)
+  + App-iOS平台 修复 2.9.0版引出的 nvue image 组件动态设置样式在 iOS14 以下设备图片不显示的Bug [详情](https://ask.dcloud.net.cn/question/107884)
+  + App-iOS平台 修复 tabbar 中的文本在 iOS14 上无法完整显示的Bug [#2146](https://github.com/dcloudio/uni-app/issues/2146)
+  + H5平台 修复 2.9.0 版本引出的内置 css 变量 --window-bottom 在 部分浏览器中失效的Bug [详情](https://ask.dcloud.net.cn/question/107976)
+  + H5平台 修复 2.9.0 版本引出的部分事件写法编译报错的Bug [详情](https://ask.dcloud.net.cn/question/107940)
+  + 小程序平台 修复 属性值为空的对象表达式时编译报错的Bug
+* 【App插件(含5+App和uni-app的App端)】
+  + Android平台 更新 高德定位SDK版本为5.2.0
+  + iOS平台 更新 高德地图SDK版本为7.6.0、高德定位SDK版本为2.6.7，解决 iOS14 上显示地图时申请 `连接到本地网络上的设备` 权限的问题
+  + iOS平台 修复 uni-AD 腾讯广点通的信息流广告样式可能不正确的Bug
+  + iOS平台 修复 获取通讯录 plus.contacts.getAddressBook 在 iOS14 上导致应用闪退的Bug [详情](https://ask.dcloud.net.cn/question/107339)
+
 #### 2.9.0.20200926-alpha
 * 【uni-app插件】
   + 【重要】新增 大屏适配指南 [详情](https://uniapp.dcloud.net.cn/adapt)
