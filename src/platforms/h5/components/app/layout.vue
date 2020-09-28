@@ -253,6 +253,10 @@ export default {
     flex: 1;
   }
 
+  uni-top-window+uni-content {
+    height: calc(100vh - var(--window-top));
+  }
+
   uni-left-window {
     position: relative;
     width: var(--window-left);
