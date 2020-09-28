@@ -275,8 +275,6 @@ exports.main = async (event, context) => {
 
 ### 地理位置
 
-**阿里云升级mongoDB为4.0版本后已支持地理位置**
-
 参考：[GEO地理位置](#GEO地理位置)
 
 ### Null
