@@ -1,5 +1,8 @@
 # uniCloud 更新日志
 ======================================
+#### 2020-09-29
+  + 腾讯云 开放包年包月套餐购买 [详情](https://uniapp.dcloud.net.cn/uniCloud/price?id=price-month)
+
 #### 2020-09-16
   + 腾讯云 支持云函数固定出口IP，支持微信公众号开发 [详情](https://uniapp.dcloud.net.cn/uniCloud/cf-functions?id=eip)
 
