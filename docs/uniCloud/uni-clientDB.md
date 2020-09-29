@@ -128,7 +128,7 @@ db.action('get-info') // 不使用action时可以不调用action方法
 
 语法与云函数写查询数据库一致，目前有以下限制：
 
-- 不可使用db.serverDate、db.Geo、db.RegExp
+- 不可使用db.serverDate、db.Geo、db.RegExp(`2.0.3`版本已支持这些用法)
 - 上传时会对query进行序列化，除Date类型、RegExp之外的所有不可序列化的参数类型均不支持（例如：undefined）
 - 为方便控制禁止前端使用set方法，一般情况下也不需要前端使用set
 - 更新数据库时不可使用更新操作符`db.command.inc`等
