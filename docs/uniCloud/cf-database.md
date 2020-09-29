@@ -357,9 +357,10 @@ let res = await collection.doc('doc-id').set({
 
 ## 查询文档
 
-支持 `where()`、`limit()`、`skip()`、`orderBy()`、`get()`、`update()`、`field()`、`count()` 等操作。
+支持 `where()`、`limit()`、`skip()`、`orderBy()`、`get()`、`field()`、`count()` 等操作。
 
-只有当调用`get()`、`update()`时才会真正发送查询请求。
+只有当调用`get()`时才会真正发送查询请求。
+
 注：默认取前100条数据，最大取前100条数据。
 
 **get响应参数**
@@ -458,7 +459,7 @@ let res = await collection.limit(1).get() // 只返回第一条记录
 
 ### 设置起始位置
 
-collection.skip()
+collection.skip(value)
 
 参数说明
 
@@ -474,7 +475,7 @@ let res = await collection.skip(4).get()
 
 ### 对结果排序
 
-collection.orderBy()
+collection.orderBy(field, orderType)
 
 参数说明
 
@@ -2804,8 +2805,6 @@ WHERE <output array field> IN (SELECT *
 - 组合 mergeObjects 应用相等匹配
 
 #### 自定义连接条件、拼接子查询
-
-阿里云升级mongoDB版本为4.0后已支持此写法
 
 如果需要指定除相等匹配之外的连接条件，或指定多个相等匹配条件，或需要拼接被连接集合的子查询结果，那可以使用如下定义：
 ```js
