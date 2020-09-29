@@ -14,6 +14,9 @@
 |[subPackages](/collocation/pages?id=subPackages)|Object Array|否|分包加载配置||
 |[preloadRule](/collocation/pages?id=preloadrule)|Object|否|分包预下载规则|微信小程序|
 |[workers](https://developers.weixin.qq.com/miniprogram/dev/framework/workers.html)|String|否|```Worker``` 代码放置的目录|微信小程序|
+|[leftWindow](/collocation/pages?id=leftwindow)|Object|否|大屏左侧窗口|H5|
+|[topWindow](/collocation/pages?id=topwindow)|Object|否|大屏顶部窗口|H5|
+|[rightWindow](/collocation/pages?id=rightwindow)|Object|否|大屏右侧窗口|H5|
 
 以下是一个包含了所有配置选项的 `pages.json` ：
 
@@ -51,7 +54,10 @@
 			"collapse-tree-item":"/components/collapse-tree-item"
 		},
 		"renderingMode": "seperated", // 仅微信小程序，webrtc 无法正常时尝试强制关闭同层渲染
-		"pageOrientation": "portrait"//横屏配置，全局屏幕旋转设置(仅 APP/微信/QQ小程序)，支持 auto / portrait / landscape
+		"pageOrientation": "portrait", //横屏配置，全局屏幕旋转设置(仅 APP/微信/QQ小程序)，支持 auto / portrait / landscape
+		"rpxCalcMaxDeviceWidth": 960,
+		"rpxCalcBaseDeviceWidth": 375,
+		"rpxCalcIncludeWidth": 750
 	},
 	"tabBar": {
 		"color": "#7A7E83",
@@ -86,6 +92,27 @@
     "autoscan": true, //是否自动扫描组件
     "custom": {//自定义扫描规则
       "^uni-(.*)": "@/components/uni-$1.vue"
+    }
+  },
+  "topWindow": {
+    "path": "responsive/top-window.vue",
+    "style": {
+      "height": "44px"
+    }
+  },
+  "leftWindow": {
+    "path": "responsive/left-window.vue",
+    "style": {
+      "width": "300px"
+    }
+  },
+  "rightWindow": {
+    "path": "responsive/right-window.vue",
+    "style": {
+      "width": "300px"
+    },
+    "matchMedia": {
+      "minWidth": 768
     }
   }
 }
@@ -122,12 +149,92 @@
 |mp-qq|Object||设置编译到 mp-qq 平台的特定样式|QQ小程序|
 |usingComponents|Object| |引用小程序组件，参考 [小程序组件](/frame?id=小程序组件支持)||
 |renderingMode|String| |同层渲染，webrtc(实时音视频) 无法正常时尝试配置 seperated 强制关掉同层|微信小程序|
+|leftWindow|Boolean|true|当存在 leftWindow 时，默认是否显示 leftWindow|H5|
+|topWindow|Boolean|true|当存在 topWindow 时，默认是否显示 topWindow|H5|
+|rightWindow|Boolean|true|当存在 rightWindow 时，默认是否显示 rightWindow|H5|
+|rpxCalcMaxDeviceWidth|Number|960|rpx 计算所支持的最大设备宽度，单位 px|App、H5（2.8.12+）|
+|rpxCalcBaseDeviceWidth|Number|375|rpx 计算使用的基准设备宽度，设备实际宽度超出 rpx 计算所支持的最大设备宽度时将按基准宽度计算，单位 px|App、H5（2.8.12+）|
+|rpxCalcIncludeWidth|Number|750|rpx 计算特殊处理的值，始终按实际的设备宽度计算，单位 rpx|App、H5（2.8.12+）|
 
 
 **注意**
 
 - 支付宝小程序使用`titleImage`时必须使用`https`的图片链接地址，需要真机调试才能看到效果，支付宝开发者工具内无效果
 - `globalStyle`中设置的`titleImage`也会覆盖掉`pages`->`style`内的设置文字标题
+
+# topWindow@topwindow
+
+uni-app 2.9+ 新增 leftWindow, topWindow, rightWindow 配置。用于解决宽屏适配问题。
+
+以现有的手机应用为mainWindow，在左、上、右，可以追加新的页面显示窗体。
+
+整体的宽屏适配思路，参考单独的[宽屏适配指南](https://uniapp.dcloud.net.cn/adapt)
+
+|属性|类型|默认值|描述|
+|:-|:-|:-|:-|
+|path|String||配置页面路径|
+|style|Object||配置页面窗口表现，配置项参考下方 [pageStyle](/collocation/pages?id=style)|
+|matchMedia|Object||配置显示该窗口的规则，配置项参考下方 [matchMedia](/collocation/pages?id=matchmedia)|
+
+**注意**
+- 目前 style 节点仅支持配置 width，height 等 css 样式相关属性
+
+#### matchMedia
+
+|属性|类型|默认值|描述|
+|:-|:-|:-|:-|
+|minWidth|Number|768|当设备可见区域宽度 >= minWidth 时，显示该 window|
+
+通过matchMedia的调节，可以自适应在不同屏幕上显示指定的window。
+
+```javascript
+{
+  "pages": [
+    {
+      "path": "pages/login/login",
+      "style": {
+        "topWindow": false // 当前页面不显示 topWindow
+        "leftWindow": false // 当前页面不显示 leftWindow
+        "rightWindow": false // 当前页面不显示 rightWindow
+      }
+    }
+  ],
+  "topWindow": {
+    "path": "responsive/top-window.vue", // 指定 topWindow 页面文件
+    "style": {
+      "height": "44px"
+    }
+  },
+  "leftWindow": {
+    "path": "responsive/left-window.vue", // 指定 leftWindow 页面文件
+    "style": {
+      "width": "300px"
+    }
+  },
+  "rightWindow": {
+    "path": "responsive/right-window.vue", // 指定 rightWindow 页面文件
+    "style": {
+      "width": "300px" // 页面宽度
+    },
+    "matchMedia": {
+      "minWidth": 768 //生效条件，当窗口宽度大于768px时显示
+    }
+  }
+}
+```
+
+案例演示：HBuilderX 2.9+，新建项目选择新闻模块，或直接浏览：[https://static-7d133019-9a7e-474a-b7c2-c01751f00ca5.bspapp.com/#/](https://static-7d133019-9a7e-474a-b7c2-c01751f00ca5.bspapp.com/#/)
+
+# leftWindow
+
+与[topWindow](/collocation/pages?id=topwindow)相同
+
+# rightWindow
+
+与[topWindow](/collocation/pages?id=topwindow)相同
+
+窗口通信参考：[https://uniapp.dcloud.net.cn/api/window/communication](https://uniapp.dcloud.net.cn/api/window/communication)
+
 
 # pages
 
@@ -209,6 +316,9 @@
 |mp-toutiao|Object||设置编译到 mp-toutiao 平台的特定样式|字节跳动小程序|
 |mp-qq|Object||设置编译到 mp-qq 平台的特定样式|QQ小程序|
 |usingComponents|Object||引用小程序组件，参考 [小程序组件](/frame?id=小程序组件支持)|App、微信小程序、支付宝小程序、百度小程序|
+|leftWindow|Boolean|true|当存在 leftWindow时，当前页面是否显示 leftWindow|H5|
+|topWindow|Boolean|true|当存在 topWindow 时，当前页面是否显示 topWindow|H5|
+|rightWindow|Boolean|true|当存在 rightWindow时，当前页面是否显示 rightWindow|H5|
 
 **代码示例：**
 

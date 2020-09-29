@@ -17,6 +17,7 @@
 * 扩展能力
   * [uni-id](uniCloud/uni-id.md)
   * [uni-clientDB](uniCloud/uni-clientDB.md)
+  * [DB-Schema](uniCloud/schema.md)
   * [unipay](uniCloud/unipay.md)
   * [发送短信](uniCloud/send-sms.md)
 * [前端网页托管](uniCloud/hosting.md)
@@ -26,6 +27,7 @@
 * [案例源码](uniCloud/resource.md)
 * [学习资料](uniCloud/learning.md)
 * [常见问题](uniCloud/faq.md)
+* [uniCloud产品服务协议](uniCloud/agreement.md)
 <!--  * [云存储](uniCloud/cf-storage.md) -->
 * 权限管理
   * [腾讯云](uniCloud/policy-tcb.md)

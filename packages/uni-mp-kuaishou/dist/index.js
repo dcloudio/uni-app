@@ -1303,7 +1303,9 @@ const hooks = [
   'onShow',
   'onHide',
   'onError',
-  'onPageNotFound'
+  'onPageNotFound',
+  'onThemeChange',
+  'onUnhandledRejection'
 ];
 
 function parseBaseApp (vm, {
@@ -1379,17 +1381,19 @@ function parseBaseApp (vm, {
   return appOptions
 }
 
-/* 快手也使用__wxExparserNodeId__和__wxWebviewId__ */
 const mocks = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__'];
 
 function findVmByVueId (vm, vuePid) {
   const $children = vm.$children;
-  // 优先查找直属
-  let parentVm = $children.find(childVm => childVm.$scope._$vueId === vuePid);
-  if (parentVm) {
-    return parentVm
+  // 优先查找直属(反向查找:https://github.com/dcloudio/uni-app/issues/1200)
+  for (let i = $children.length - 1; i >= 0; i--) {
+    const childVm = $children[i];
+    if (childVm.$scope._$vueId === vuePid) {
+      return childVm
+    }
   }
   // 反向递归查找
+  let parentVm;
   for (let i = $children.length - 1; i >= 0; i--) {
     parentVm = findVmByVueId($children[i], vuePid);
     if (parentVm) {
@@ -1459,6 +1463,10 @@ function parseApp (vm) {
   })
 }
 
+function parseApp$1 (vm) {
+  return parseApp(vm)
+}
+
 function createApp (vm) {
   Vue.prototype.getOpenerEventChannel = function () {
     if (!this.__eventChannel__) {
@@ -1474,8 +1482,51 @@ function createApp (vm) {
     }
     return callHook.call(this, hook, args)
   };
-  App(parseApp(vm));
+  App(parseApp$1(vm));
   return vm
+}
+
+const encodeReserveRE = /[!'()*]/g;
+const encodeReserveReplacer = c => '%' + c.charCodeAt(0).toString(16);
+const commaRE = /%2C/g;
+
+// fixed encodeURIComponent which is more conformant to RFC3986:
+// - escapes [!'()*]
+// - preserve commas
+const encode = str => encodeURIComponent(str)
+  .replace(encodeReserveRE, encodeReserveReplacer)
+  .replace(commaRE, ',');
+
+function stringifyQuery (obj, encodeStr = encode) {
+  const res = obj ? Object.keys(obj).map(key => {
+    const val = obj[key];
+
+    if (val === undefined) {
+      return ''
+    }
+
+    if (val === null) {
+      return encodeStr(key)
+    }
+
+    if (Array.isArray(val)) {
+      const result = [];
+      val.forEach(val2 => {
+        if (val2 === undefined) {
+          return
+        }
+        if (val2 === null) {
+          result.push(encodeStr(key));
+        } else {
+          result.push(encodeStr(key) + '=' + encodeStr(val2));
+        }
+      });
+      return result.join('&')
+    }
+
+    return encodeStr(key) + '=' + encodeStr(val)
+  }).filter(x => x.length > 0).join('&') : null;
+  return res ? `?${res}` : ''
 }
 
 function parseBaseComponent (vueComponentOptions, {
@@ -1486,7 +1537,8 @@ function parseBaseComponent (vueComponentOptions, {
 
   const options = {
     multipleSlots: true,
-    addGlobalClass: true
+    addGlobalClass: true,
+    ...(vueOptions.options || {})
   };
 
   const componentOptions = {
@@ -1531,7 +1583,7 @@ function parseBaseComponent (vueComponentOptions, {
         }
       },
       detached () {
-        this.$vm.$destroy();
+        this.$vm && this.$vm.$destroy();
       }
     },
     pageLifetimes: {
@@ -1550,6 +1602,10 @@ function parseBaseComponent (vueComponentOptions, {
       __e: handleEvent
     }
   };
+  // externalClasses
+  if (vueOptions.externalClasses) {
+    componentOptions.externalClasses = vueOptions.externalClasses;
+  }
 
   if (Array.isArray(vueOptions.wxsCallMethods)) {
     vueOptions.wxsCallMethods.forEach(callMethod => {
@@ -1572,6 +1628,10 @@ function parseComponent (vueComponentOptions) {
   })
 }
 
+function parseComponent$1 (vueComponentOptions) {
+  return parseComponent(vueComponentOptions)
+}
+
 const hooks$1 = [
   'onShow',
   'onHide',
@@ -1584,13 +1644,19 @@ function parseBasePage (vuePageOptions, {
   isPage,
   initRelation
 }) {
-  const pageOptions = parseComponent(vuePageOptions);
+  const pageOptions = parseComponent$1(vuePageOptions);
 
   initHooks(pageOptions.methods, hooks$1, vuePageOptions);
 
-  pageOptions.methods.onLoad = function (args) {
-    this.$vm.$mp.query = args; // 兼容 mpvue
-    this.$vm.__call_hook('onLoad', args);
+  pageOptions.methods.onLoad = function (query) {
+    this.options = query;
+    const copyQuery = Object.assign({}, query);
+    delete copyQuery.__id__;
+    this.$page = {
+      fullPath: '/' + (this.route || this.is) + stringifyQuery(copyQuery)
+    };
+    this.$vm.$mp.query = query; // 兼容 mpvue
+    this.$vm.__call_hook('onLoad', query);
   };
 
   return pageOptions
@@ -1603,15 +1669,19 @@ function parsePage (vuePageOptions) {
   })
 }
 
+function parsePage$1 (vuePageOptions) {
+  return parsePage(vuePageOptions)
+}
+
 function createPage (vuePageOptions) {
   {
-    return Component(parsePage(vuePageOptions))
+    return Component(parsePage$1(vuePageOptions))
   }
 }
 
 function createComponent (vueOptions) {
   {
-    return Component(parseComponent(vueOptions))
+    return Component(parseComponent$1(vueOptions))
   }
 }
 

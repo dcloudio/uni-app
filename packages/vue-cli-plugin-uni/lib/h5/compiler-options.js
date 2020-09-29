@@ -1,19 +1,29 @@
 const {
   tags
 } = require('@dcloudio/uni-cli-shared')
+const parser = require('@babel/parser')
+const t = require('@babel/types')
 
 const simplePathRE = /^[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*|\['[^']*?']|\["[^"]*?"]|\[\d+]|\[[A-Za-z_$][\w$]*])*$/
 
+function isFunction (expr) {
+  try {
+    const body = parser.parse(`(${expr})`).program.body[0]
+    const expression = body.expression
+    return t.isFunctionDeclaration(body) || t.isArrowFunctionExpression(expression) || t.isFunctionExpression(expression)
+  } catch (error) { }
+}
+
 function processEvent (expr, filterModules) {
   const isMethodPath = simplePathRE.test(expr)
-  if (isMethodPath) {
+  if (isMethodPath || isFunction(expr)) {
     if (filterModules.find(name => expr.indexOf(name + '.') === 0)) {
       return `
 $event = $handleWxsEvent($event);
-${expr}($event, $getComponentDescriptor())
+(${expr})($event, $getComponentDescriptor())
 `
     } else {
-      expr = expr + '(...arguments)'
+      expr = `(${expr})(...arguments)`
     }
   }
   return `

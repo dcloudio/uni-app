@@ -108,12 +108,15 @@ DCloud暂无计划开发百度、头条、QQ等小程序的登录，以及Apple 
 + 如果使用其他方式发送短信可以参考`sendSmsCode`接口的实现[uni-id sendSmsCode](https://gitee.com/dcloud/uni-id/blob/master/src/lib/send-sms-code.js)
 + 另外可以按照客户端平台进行不同的配置，参考下面示例
 
+**下面的配置文件中所有时间的单位都是秒**
+
 ```json
 // 如果拷贝此内容切记去除注释
 {
 	"passwordSecret": "passwordSecret-demo", // 加密密码所用的密钥，注意修改为自己的，使用一个较长的字符串即可
 	"tokenSecret": "tokenSecret-demo", // 生成token所用的密钥，注意修改为自己的，使用一个较长的字符串即可
 	"tokenExpiresIn": 7200, // 全平台token过期时间，未指定过期时间的平台会使用此值
+	"tokenExpiresThreshold": 600, // 新增于uni-id 1.1.7版本，checkToken时如果token有效期小于此值则自动获取新token，请注意将新token返回给前端保存，如果不配置此参数则不开启自动获取新token功能
 	"bindTokenToDevice": true, // 是否将token和设备绑定，设置为true会进行ua校验，默认为true
 	"passwordErrorLimit": 6, // 密码错误最大重试次数
 	"passwordErrorRetryTime": 3600, // 密码错误重试次数超限之后的冻结时间
@@ -158,9 +161,52 @@ DCloud暂无计划开发百度、头条、QQ等小程序的登录，以及Apple 
 }
 ```
 
-# API列表
+# 特色功能
 
-## 用户注册 @register
+## 角色权限@rbac
+
+自`1.1.9`版本起uni-id支持角色权限（通常情况下管理后台会需要角色权限）。除API列表内列出的角色权限相关的接口外，还有以下调整：
+
+1. 所有登录注册接口可以接收`needPermission`参数，配置为true时会在`checkToken`接口返回用户权限（permission），否则permission字段会是一个空数组。开发者可以在用户登录管理后台时，传入此参数表示当前登录的用户需要返回permission。
+
+2. 新增两个数据表`uni-id-roles`、`uni-id-permissions`，可以使用示例项目里面的db_init.json创建，也可以直接使用opendb中的这两个数据表
+
+角色权限相关API请参考[角色权限API](uniCloud/uni-id.md?id=rbac-api)
+
+**注意**
+
+- uni-id内`admin`角色为超级管理员（即role内包含admin即可拥有所有权限）。uni-clientDB内也做了这种实现，如果用户角色包含`admin`就拥有所有数据表的全部权限。
+
+## 裂变@fission
+
+自`1.1.2`版本起uni-id支持裂变功能，目前仅适用手机号+验证码方式注册可以填写邀请码（inviteCode）接受邀请。裂变相关API请参考[裂变API](uniCloud/uni-id.md?id=fission-api)
+
+在`config.json`内配置了`autoSetInviteCode: true`则在用户注册时会自动给设置不重复的6位邀请码，如果不希望使用自动设置的邀请码可以自行传入`myInviteCode`参数来设置邀请码，需要注意的是要保证邀请码唯一。
+
+在`config.json`内配置了`forceInviteCode: true`则只有使用邀请码才可以注册（仅手机号+验证码注册方式支持）。
+
+针对之前使用了旧版本（不支持裂变）的uni-id，现在想增加裂变功能，可以调用`setUserInviteCode`接口给已注册用户设置邀请码，在设置之前可以使用`my_invite_code不存在`作为条件查询所有需要设置的用户。
+
+如果希望用户注册完成之后再填写邀请人的邀请码，可以调用`acceptInvite`接口来使用户接受邀请。
+
+`getInvitedUser`接口可以用于获取接受邀请的用户列表，其中level参数可以用来设置要获取哪一级的邀请用户，不填写level参数则默认获取第一级。
+
+如果想详细的体验一下裂变流程，可以在插件市场导入[前后一体登录模板](https://ext.dcloud.net.cn/plugin?id=13)，此项目内已有邀请用户注册示例，流程如下
+
+**分享邀请码/邀请链接**
+
+<img width="375" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/1b181d40-e377-11ea-b680-7980c8a877b8.jpeg" />
+
+
+**受邀者注册**
+
+<img width="375" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/1b12c610-e377-11ea-b997-9918a5dda011.jpeg" />
+
+# API列表@api
+
+## 基础功能
+
+### 用户注册 @register
 
 用法`uniID.register(Object user)`
 
@@ -170,11 +216,12 @@ DCloud暂无计划开发百度、头条、QQ等小程序的登录，以及Apple 
 
 **user参数说明**
 
-| 字段					| 类型	| 必填| 说明								|
-| ---						| ---		| ---	| ---									|
-| username			| String| 是	|用户名，唯一					|
-| password			| String| 是	|密码									|
-| myInviteCode	| String| 否	|自行设置用户的邀请码	|
+| 字段					| 类型		| 必填| 说明																																					|
+| ---						| ---			| ---	| ---																																						|
+| username			| String	| 是	|用户名，唯一																																		|
+| password			| String	| 是	|密码																																						|
+| needPermission| Boolean	| 否	|设置为true时会在checkToken时返回用户权限（permission），建议在管理控制台中使用	|
+| myInviteCode	| String	| 否	|自行设置用户的邀请码																														|
 
 username可以是字符串、可以是email、可以是手机号，本插件不约束，开发者可以自己定。
 
@@ -187,7 +234,7 @@ password入库时会自动进行一次sha1加密，不明文存储密码。
 | 字段	| 类型	| 必填	| 说明						|
 | ---	| ---	| ---	| ---						|
 | code	| Number| 是	|错误码，0表示成功			|
-| msg	| String| 是	|详细信息					|
+| message	| String| 是	|详细信息					|
 | token	| String| -	|注册完成自动登录之后返回的token信息|
 | tokenExpired	| String| -	|token过期时间|
 
@@ -229,7 +276,7 @@ uniCloud.callFunction({
 			})
 		} else {
 			uni.showModal({
-				content: res.result.msg,
+				content: res.result.message,
 				showCancel: false
 			})
 		}
@@ -244,7 +291,7 @@ uniCloud.callFunction({
 ```
 
 
-## 用户登录 @login
+### 用户登录 @login
 
 用法：`uniID.login(Object user)`
 
@@ -258,6 +305,7 @@ uniCloud.callFunction({
 | ---		| ---	| ---	| ---	|
 | username	| String| 是	|用户名	|
 | password	| String| 是	|密码	|
+| needPermission| Boolean	| 否	|设置为true时会在checkToken时返回用户权限（permission），建议在管理控制台中使用	|
 | queryField	| Array| 否	|指定从哪些字段中比对username，不填默认与数据库内的username字段对比, 可取值'username'、'email'、'mobile'|
 
 **响应参数**
@@ -267,7 +315,7 @@ uniCloud.callFunction({
 | uid					| String| 是	|用户Id											|
 | userInfo		| Object| 是	|用户全部信息								|
 | code				| Number| 是	|错误码，0表示成功					|
-| msg					| String| 是	|详细信息										|
+| message					| String| 是	|详细信息										|
 | token				| String| -		|登录成功之后返回的token信息|
 | tokenExpired| String| -		|token过期时间							|
 
@@ -291,7 +339,41 @@ exports.main = async function(event,context) {
 }
 ```
 
-## token校验
+### 登出
+
+用法：`uniID.logout(String token);`
+
+**注意**
+
+- 登出成功之后应删除持久化存储的token，键值为：uniIdToken，`uni.removeStorageSync('uniIdToken')`
+
+**参数说明**
+
+| 字段| 类型	| 必填| 说明	|
+| ---	| ---		| ---	| ---		|
+| token	| String| 是	|用户token|
+
+**响应参数**
+
+| 字段| 类型	| 必填| 说明						|
+| ---	| ---		| ---	| ---							|
+| code| Number| 是	|错误码，0表示成功|
+| message	| String| 是	|详细信息					|
+
+**示例代码**
+
+```js
+// 云函数logout代码
+const uniID = require('uni-id')
+exports.main = async function(event,context) {
+	const res = await uniID.logout(uniIdToken)
+	return res
+}
+
+```
+
+
+### token校验
 
 用法：`uniID.checkToken(String token)`
 
@@ -303,12 +385,16 @@ exports.main = async function(event,context) {
 
 **响应参数**
 
-| 字段		| 类型	| 说明															|
-| ---			| ---		| ---																|
-| code		| Number|错误码，0表示成功									|
-| msg			| String|详细信息														|
-| uid			| String|用户Id，校验成功之后会返回					|
-| userInfo| Object|用户信息，uid对应的uni-id-users全部字段|
+| 字段				| 类型			| 说明																																																										|
+| ---					| ---				| ---																																																											|
+| code				| Number		|错误码，0表示成功																																																				|
+| message					| String		|详细信息																																																									|
+| uid					| String		|用户Id，校验成功之后会返回																																																|
+| token				| String		|新增于uni-id 1.1.7版本，用户token快要过期时，新生成的token，只有在config内配置了`tokenExpiresThreshold`的值时才会有此行为|
+| tokenExpired| TimeStamp	|新增于uni-id 1.1.7版本，新token的过期时间																																								|
+| role				| Array			|新增于uni-id 1.1.9版本，用户角色列表																																											|
+| permission	| Array			|新增于uni-id 1.1.9版本，用户权限列表，只有登录操作时传入needPermission才会返回，否则为空数组															|
+| userInfo		| Object		|用户信息，uid对应的uni-id-users全部字段																																									|
 
 **注意：**
 
@@ -325,7 +411,7 @@ exports.main = async function(event,context) {
 }
 ```
 
-## 修改密码 @update-password
+### 修改密码 @update-password
 
 用法：`uniID.updatePwd(Object passwordInfo)`
 
@@ -343,7 +429,7 @@ exports.main = async function(event,context) {
 | 字段	| 类型	| 必填	| 说明						|
 | ---	| ---	| ---	| ---						|
 | code	| Number| 是	|错误码，0表示成功			|
-| msg	| String| 是	|详细信息					|
+| message	| String| 是	|详细信息					|
 
 **示例代码**
 
@@ -373,7 +459,7 @@ exports.main = async function(event,context) {
 }
 ```
 
-## 重置密码 @reset-password
+### 重置密码 @reset-password
 
 用法：`uniID.resetPwd(Object passwordInfo)`
 
@@ -389,7 +475,7 @@ exports.main = async function(event,context) {
 | 字段	| 类型	| 必填	| 说明						|
 | ---	| ---	| ---	| ---						|
 | code	| Number| 是	|错误码，0表示成功			|
-| msg	| String| 是	|详细信息					|
+| message	| String| 是	|详细信息					|
 
 **示例代码**
 
@@ -410,7 +496,7 @@ exports.main = async function(event,context) {
 }
 ```
 
-## 加密密码 @encrypt-password
+### 加密密码 @encrypt-password
 
 用法：`uniID.encryptPwd(String password)`
 
@@ -439,7 +525,7 @@ exports.main = async function(event,context) {
 }
 ```
 
-## 设置头像
+### 设置头像
 
 用法：`uniID.setAvatar(Object avatarInfo)`
 
@@ -455,7 +541,7 @@ exports.main = async function(event,context) {
 | 字段| 类型	| 必填| 说明						|
 | ---	| ---		| ---	| ---							|
 | code| Number| 是	|错误码，0表示成功|
-| msg	| String| 是	|详细信息					|
+| message	| String| 是	|详细信息					|
 
 **示例代码**
 
@@ -479,24 +565,151 @@ exports.main = async function(event,context) {
 
 ```
 
-## 发送短信验证码
 
-用法：`uniID.sendSmsCode(Object codeInfo)`
+### 更新用户信息
 
-**codeInfo**参数说明
+用法：`uniID.updateUser(Object userInfo);`
 
-| 字段	| 类型	| 必填| 说明													|
-| ---		| ---		| ---	| ---														|
-| mobile| String| 是	|用户手机号											|
-| code		| String| 是	|验证码字符串	|
-| type		| String| 是	|类型，用于防止不同功能的验证码混用，目前支持的类型`login`登录、`register`注册、`bind`绑定手机、`unbind`解绑手机	|
+此接口用于在其他接口不满足需求时使用
+
+**userInfo参数说明**
+
+| 字段| 类型	| 必填| 说明													|
+| ---	| ---		| ---	| ---														|
+| uid	| String| 是	|用户Id，可以通过checkToken返回	|
+| 其余参数	| Any| 是	|要设置的用户信息	|
 
 **响应参数**
 
 | 字段| 类型	| 必填| 说明						|
 | ---	| ---		| ---	| ---							|
 | code| Number| 是	|错误码，0表示成功|
-| msg	| String| 是	|详细信息					|
+| message	| String| 是	|详细信息					|
+
+```js
+// 云函数代码
+const uniID = require('uni-id')
+exports.main = async function(event,context) {
+  payload = await uniID.checkToken(event.uniIdToken)
+  if (payload.code && payload.code > 0) {
+  	return payload
+  }
+	const res = await uniID.updateUser({
+    uid: payload.uid,
+    nickname: 'user nickname'
+  })
+	return res
+}
+```
+
+### 获取用户信息
+
+用法：`uniID.getUserInfo(Object GetUserInfoParams);`
+
+此接口用于在其他接口不满足需求时使用
+
+**参数说明**
+
+| 字段	| 类型	| 必填| 说明													|
+| ---		| ---		| ---	| ---														|
+| uid		| String| 是	|用户Id，可以通过checkToken返回	|
+| field	| Array	| 否	|指定返回的字段，不传则返回所有	|
+
+**响应参数**
+
+| 字段		| 类型	| 必填| 说明						|
+| ---			| ---		| ---	| ---							|
+| code		| Number| 是	|错误码，0表示成功|
+| message	| String| 是	|详细信息					|
+| userInfo| Object| 是	|获取的用户信息		|
+
+```js
+// 云函数代码
+const uniID = require('uni-id')
+exports.main = async function(event,context) {
+  payload = await uniID.checkToken(event.uniIdToken)
+  if (payload.code && payload.code > 0) {
+  	return payload
+  }
+	const res = await uniID.getUserInfo({
+    uid: payload.uid,
+    field: ['mobile']
+  })
+	return res
+}
+```
+
+### 自行初始化uni-id@init
+
+用法：`uniID.init(Object config);`
+
+此接口适用于不希望使用config.json初始化而是希望通过js的方式传入配置的情况
+
+**config参数说明**
+
+config格式与config.json完全相同
+
+**响应参数**
+
+无
+
+```js
+// 云函数代码
+const uniID = require('uni-id')
+uniID.init({
+	"passwordSecret": "passwordSecret-demo", // 用于加密用户密码
+	"tokenSecret": "tokenSecret-demo", // 用于生成token
+	"tokenExpiresIn": 7200, // token过期时间
+	"passwordErrorLimit": 6, // 同一个ip密码错误最大重试次数
+	"passwordErrorRetryTime": 3600, // 超过密码重试次数之后的等待时间
+	"service": {
+		"sms": {
+			"name": "your app name", // 应用名称对应uniCloud.sendSms的data参数内的name
+			"codeExpiresIn": 180, // 验证码过期时间，单位：秒，只可取60的整数倍，不填此参数时会取默认值180秒
+			"smsKey": "your sms key", // 短信密钥key
+			"smsSecret": "your sms secret" // 短信密钥secret
+		}
+	}
+})
+exports.main = async function(event,context) {
+  payload = await uniID.checkToken(event.uniIdToken)
+  if (payload.code && payload.code > 0) {
+  	return payload
+  }
+	const res = await uniID.updateUser({
+    uid: payload.uid,
+    nickname: 'user nickname'
+  })
+	return res
+}
+```
+
+## 手机号码
+
+### 发送短信验证码
+
+用法：`uniID.sendSmsCode(Object codeInfo)`
+
+**codeInfo**参数说明
+
+| 字段			| 类型	| 必填| 说明																																																					|
+| ---				| ---		| ---	| ---																																																						|
+| mobile		| String| 是	|用户手机号																																																			|
+| templateId| String| 否	|用户自定义模板Id，不传则使用uniID_code，如果要使用自定义模板请使用类似下面模板示例的参数												|
+| code			| String| 是	|验证码字符串																																																		|
+| type			| String| 是	|类型，用于防止不同功能的验证码混用，目前支持的类型`login`登录、`register`注册、`bind`绑定手机、`unbind`解绑手机|
+
+```
+// 短信模板示例，请在https://dev.dcloud.net.cn/uniSms申请签名（短信开头中括号内部分）及模板
+验证码：${code}，用于${action}，${expMinute}分钟内有效，请勿泄露并尽快验证。
+```
+
+**响应参数**
+
+| 字段| 类型	| 必填| 说明						|
+| ---	| ---		| ---	| ---							|
+| code| Number| 是	|错误码，0表示成功|
+| message	| String| 是	|详细信息					|
 
 **示例代码**
 
@@ -520,7 +733,7 @@ exports.main = async function(event,context) {
 
 ```
 
-## 设置验证码
+### 设置验证码@setVerifyCode
 
 如果你不想使用`uni-id`的sendSmsCode发送短信的话，可以使用此接口自行在库中创建验证码
 
@@ -541,7 +754,7 @@ exports.main = async function(event,context) {
 | 字段| 类型	| 必填| 说明						|
 | ---	| ---		| ---	| ---							|
 | code| Number| 是	|错误码，0表示成功|
-| msg	| String| 是	|详细信息					|
+| message	| String| 是	|详细信息					|
 
 **示例代码**
 
@@ -566,7 +779,7 @@ exports.main = async function(event,context) {
 
 ```
 
-## 校验验证码
+### 校验验证码@verifyCode
 
 uni-id内置方法`loginBySms`、`bindMobile`、`unbindMobile`均已内置校验验证码方法，如果使用以上方法不需要再调用此接口，如需扩展类型请确保type和发送验证码/设置验证码时对应
 
@@ -586,7 +799,7 @@ uni-id内置方法`loginBySms`、`bindMobile`、`unbindMobile`均已内置校验
 | 字段| 类型	| 必填| 说明						|
 | ---	| ---		| ---	| ---							|
 | code| Number| 是	|错误码，0表示成功|
-| msg	| String| 是	|详细信息					|
+| message	| String| 是	|详细信息					|
 
 **示例代码**
 
@@ -608,7 +821,7 @@ exports.main = async function(event,context) {
 
 ```
 
-## 手机号验证码直接登录
+### 手机号验证码直接登录
 
 用法：`uniID.loginBySms(Object mobileInfo)`
 
@@ -622,13 +835,14 @@ exports.main = async function(event,context) {
 | password		|String	| 否	|密码，type为`register`时生效																																						|
 | inviteCode	|String	| 否	|邀请人的邀请码，type为`register`时生效																																	|
 | myInviteCode|String	| 否	|设置当前注册用户自己的邀请码，type为`register`时生效																										|
+| needPermission| Boolean	| 否	|设置为true时会在checkToken时返回用户权限（permission），建议在管理控制台中使用	|
 
 **响应参数**
 
 | 字段				| 类型	| 必填| 说明																		|
 | ---					| ---		| ---	| ---																			|
 | code				| Number| 是	|错误码，0表示成功												|
-| msg					| String| 是	|详细信息																	|
+| message					| String| 是	|详细信息																	|
 | uid					| String| 是	|用户uid																	|
 | type				| String| 是	|操作类型，`login`为登录、`register`为注册|
 | userInfo		| Object| 是	|用户全部信息								|
@@ -654,7 +868,7 @@ exports.main = async function(event,context) {
 
 ```
 
-## 绑定手机号
+### 绑定手机号
 
 用法：`uniID.bindMobile(Object mobileInfo)`
 
@@ -671,7 +885,7 @@ exports.main = async function(event,context) {
 | 字段| 类型	| 必填| 说明						|
 | ---	| ---		| ---	| ---							|
 | code| Number| 是	|错误码，0表示成功|
-| msg	| String| 是	|详细信息					|
+| message	| String| 是	|详细信息					|
 
 **示例代码**
 
@@ -697,7 +911,7 @@ exports.main = async function(event,context) {
 
 ```
 
-## 解绑手机
+### 解绑手机
 
 用法：`uniID.unbindMobile(Object mobileInfo)`
 
@@ -714,7 +928,7 @@ exports.main = async function(event,context) {
 | 字段| 类型	| 必填| 说明						|
 | ---	| ---		| ---	| ---							|
 | code| Number| 是	|错误码，0表示成功|
-| msg	| String| 是	|详细信息					|
+| message	| String| 是	|详细信息					|
 
 **示例代码**
 
@@ -740,7 +954,9 @@ exports.main = async function(event,context) {
 
 ```
 
-## 邮箱验证码直接登录
+## 邮箱
+
+### 邮箱验证码直接登录
 
 用法：`uniID.loginByEmail(Object emailInfo)`
 
@@ -753,13 +969,14 @@ exports.main = async function(event,context) {
 | type					| String| 否	|指定操作类型，覆盖存在则登录不存在则注册的默认行为，可选值为`login`、`register`|
 | password			|String	| 否	|密码，type为`register`时生效																										|
 | myInviteCode	|String	| 否	|设置当前注册用户自己的邀请码，type为`register`时生效														|
+| needPermission| Boolean	| 否	|设置为true时会在checkToken时返回用户权限（permission），建议在管理控制台中使用	|
 
 **响应参数**
 
 | 字段				| 类型	| 必填| 说明											|
 | ---					| ---		| ---	| ---												|
 | code				| Number| 是	|错误码，0表示成功					|
-| msg					| String| 是	|详细信息										|
+| message					| String| 是	|详细信息										|
 | uid					| String| 是	|用户uid																	|
 | userInfo		| Object| 是	|用户全部信息								|
 | type				| String| 是	|操作类型，`login`为登录、`register`为注册|
@@ -785,7 +1002,15 @@ exports.main = async function(event,context) {
 
 ```
 
-## 绑定邮箱
+### 设置验证码
+
+见[设置验证码](uniCloud/uni-id.md?id=setVerifyCode)
+
+### 校验验证码
+
+见[校验验证码](uniCloud/uni-id.md?id=verifyCode)
+
+### 绑定邮箱
 
 用法：`uniID.bindEmail(Object emailInfo)`
 
@@ -802,7 +1027,7 @@ exports.main = async function(event,context) {
 | 字段| 类型	| 必填| 说明						|
 | ---	| ---		| ---	| ---							|
 | code| Number| 是	|错误码，0表示成功|
-| msg	| String| 是	|详细信息					|
+| message	| String| 是	|详细信息					|
 
 **示例代码**
 
@@ -829,7 +1054,7 @@ exports.main = async function(event,context) {
 
 ```
 
-## 解绑邮箱
+### 解绑邮箱
 
 用法：`uniID.unbindEmail(Object emailInfo)`
 
@@ -846,7 +1071,7 @@ exports.main = async function(event,context) {
 | 字段| 类型	| 必填| 说明						|
 | ---	| ---		| ---	| ---							|
 | code| Number| 是	|错误码，0表示成功|
-| msg	| String| 是	|详细信息					|
+| message	| String| 是	|详细信息					|
 
 **示例代码**
 
@@ -871,40 +1096,9 @@ exports.main = async function(event,context) {
 }
 ```
 
-## 登出
+## 微信小程序
 
-用法：`uniID.logout(String token);`
-
-**注意**
-
-- 登出成功之后应删除持久化存储的token，键值为：uniIdToken，`uni.removeStorageSync('uniIdToken')`
-
-**参数说明**
-
-| 字段| 类型	| 必填| 说明	|
-| ---	| ---		| ---	| ---		|
-| token	| String| 是	|用户token|
-
-**响应参数**
-
-| 字段| 类型	| 必填| 说明						|
-| ---	| ---		| ---	| ---							|
-| code| Number| 是	|错误码，0表示成功|
-| msg	| String| 是	|详细信息					|
-
-**示例代码**
-
-```js
-// 云函数logout代码
-const uniID = require('uni-id')
-exports.main = async function(event,context) {
-	const res = await uniID.logout(uniIdToken)
-	return res
-}
-
-```
-
-## 微信登录
+### 微信登录
 
 用法：`uniID.loginByWeixin(Object loginByWexinParams);`
 
@@ -922,13 +1116,14 @@ exports.main = async function(event,context) {
 | code				| String| 是	|微信登录返回的code																																																								|
 | platform		|String	| 否	|客户端类型：`mp-weixin`、`app-plus`，默认uni-id会自动取客户端类型，但是在云函数url化等场景无法取到客户端类型，可以使用此参数指定	|
 | myInviteCode|String	| 否	|设置当前注册用户自己的邀请码，type为`register`时生效																																							|
+| needPermission| Boolean	| 否	|设置为true时会在checkToken时返回用户权限（permission），建议在管理控制台中使用	|
 
 **响应参数**
 
 | 字段						| 类型		| 必填| 说明																		|
 | ---							| ---			| ---	| ---																			|
 | code						| Number	| 是	|错误码，0表示成功												|
-| msg							| String	| 是	|详细信息																	|
+| message							| String	| 是	|详细信息																	|
 | uid							| String	| 是	|用户uid																	|
 | type						| String	| 是	|操作类型，`login`为登录、`register`为注册|
 | openid					| String	| 是	|用户openid																|
@@ -1026,7 +1221,7 @@ export default {
 
 ```
 
-## 获取微信openid
+### 获取微信openid
 
 用法：`uniID.code2SessionWeixin(Object Code2SessionWeixinParams);`
 
@@ -1042,7 +1237,7 @@ export default {
 | 字段				| 类型	| 必填| 说明																													|
 | ---					| ---		| ---	| ---																														|
 | code				| Number| 是	|错误码，0表示成功																							|
-| msg					| String| 是	|详细信息																												|
+| message					| String| 是	|详细信息																												|
 | openid			| String| -		|用户openid																											|
 | unionid			| String| -		|用户unionid，可以取到此值时返回																|
 | sessionKey	| String| -		|客户端为微信小程序时返回																				|
@@ -1061,7 +1256,7 @@ exports.main = async function(event,context) {
 }
 ```
 
-## 绑定微信
+### 绑定微信
 
 用法：`uniID.bindWeixin(Object weixinInfo);`
 
@@ -1080,7 +1275,7 @@ exports.main = async function(event,context) {
 | 字段| 类型	| 必填| 说明						|
 | ---	| ---		| ---	| ---							|
 | code| Number| 是	|错误码，0表示成功|
-| msg	| String| 是	|详细信息					|
+| message	| String| 是	|详细信息					|
 
 ```js
 // 云函数代码
@@ -1098,7 +1293,7 @@ exports.main = async function(event,context) {
 }
 ```
 
-## 解绑微信
+### 解绑微信
 
 用法：`uniID.unbindWeixin(String uid);`
 
@@ -1113,7 +1308,7 @@ exports.main = async function(event,context) {
 | 字段| 类型	| 必填| 说明						|
 | ---	| ---		| ---	| ---							|
 | code| Number| 是	|错误码，0表示成功|
-| msg	| String| 是	|详细信息					|
+| message	| String| 是	|详细信息					|
 
 ```js
 // 云函数代码
@@ -1128,7 +1323,9 @@ exports.main = async function(event,context) {
 }
 ```
 
-## 支付宝登录
+## 支付宝小程序
+
+### 支付宝登录
 
 用法：`uniID.loginByAlipay(Object loginByAlipayParams);`
 
@@ -1144,13 +1341,14 @@ exports.main = async function(event,context) {
 | code				| String| 是	|支付宝登录返回的code																																																							|
 | platform		| String| 否	|客户端类型：`mp-weixin`、`app-plus`，默认uni-id会自动取客户端类型，但是在云函数url化等场景无法取到客户端类型，可以使用此参数指定	|
 | myInviteCode| String| 否	|设置当前注册用户自己的邀请码，type为`register`时生效																																							|
+| needPermission| Boolean	| 否	|设置为true时会在checkToken时返回用户权限（permission），建议在管理控制台中使用	|
 
 **响应参数**
 
 | 字段						| 类型		| 必填| 说明																		|
 | ---							| ---			| ---	| ---																			|
 | code						| Number	| 是	|错误码，0表示成功												|
-| msg							| String	| 是	|详细信息																	|
+| message							| String	| 是	|详细信息																	|
 | uid							| String	| 是	|用户uid																	|
 | type						| String	| 是	|操作类型，`login`为登录、`register`为注册|
 | openid					| String	| 是	|用户openid																|
@@ -1176,7 +1374,7 @@ exports.main = async function(event,context) {
 ```
 
 
-## 获取微信openid
+### 获取支付宝用户ID
 
 用法：`uniID.code2SessionWeixin(Object Code2SessionWeixinParams);`
 
@@ -1192,7 +1390,7 @@ exports.main = async function(event,context) {
 | 字段				| 类型	| 必填| 说明																													|
 | ---					| ---		| ---	| ---																														|
 | code				| Number| 是	|错误码，0表示成功																							|
-| msg					| String| 是	|详细信息																												|
+| message					| String| 是	|详细信息																												|
 | openid			| String| -		|用户openid																											|
 | accessToken	| String| -		|客户端为APP时返回																							|
 | expiresIn		| String| -		|客户端为APP时返回，accessToken 接口调用凭证超时时间，单位（秒）|
@@ -1210,7 +1408,7 @@ exports.main = async function(event,context) {
 }
 ```
 
-## 绑定支付宝
+### 绑定支付宝
 
 用法：`uniID.bindAlipay(Object alipayInfo);`
 
@@ -1228,7 +1426,7 @@ exports.main = async function(event,context) {
 | 字段| 类型	| 必填| 说明						|
 | ---	| ---		| ---	| ---							|
 | code| Number| 是	|错误码，0表示成功|
-| msg	| String| 是	|详细信息					|
+| message	| String| 是	|详细信息					|
 
 ```js
 // 云函数代码
@@ -1246,7 +1444,7 @@ exports.main = async function(event,context) {
 }
 ```
 
-## 解绑支付宝
+### 解绑支付宝
 
 用法：`uniID.unbindAlipay(String uid);`
 
@@ -1261,7 +1459,7 @@ exports.main = async function(event,context) {
 | 字段| 类型	| 必填| 说明						|
 | ---	| ---		| ---	| ---							|
 | code| Number| 是	|错误码，0表示成功|
-| msg	| String| 是	|详细信息					|
+| message	| String| 是	|详细信息					|
 
 ```js
 // 云函数代码
@@ -1276,80 +1474,303 @@ exports.main = async function(event,context) {
 }
 ```
 
-## 更新用户信息
+## 角色权限@rbac-api
 
-用法：`uniID.updateUser(Object userInfo);`
+### 获取用户角色
 
-此接口用于在其他接口不满足需求时使用
+根据uid获取用户角色
 
-**userInfo参数说明**
-
-| 字段| 类型	| 必填| 说明													|
-| ---	| ---		| ---	| ---														|
-| uid	| String| 是	|用户Id，可以通过checkToken返回	|
-| 其余参数	| Any| 是	|要设置的用户信息	|
-
-**响应参数**
-
-| 字段| 类型	| 必填| 说明						|
-| ---	| ---		| ---	| ---							|
-| code| Number| 是	|错误码，0表示成功|
-| msg	| String| 是	|详细信息					|
-
-```js
-// 云函数代码
-const uniID = require('uni-id')
-exports.main = async function(event,context) {
-  payload = await uniID.checkToken(event.uniIdToken)
-  if (payload.code && payload.code > 0) {
-  	return payload
-  }
-	const res = await uniID.updateUser({
-    uid: payload.uid,
-    nickname: 'user nickname'
-  })
-	return res
-}
-```
-
-## 获取用户信息
-
-用法：`uniID.getUserInfo(Object GetUserInfoParams);`
-
-此接口用于在其他接口不满足需求时使用
+用法：`uniID.getRoleByUid(Object GetRoleByUidParams)`
 
 **参数说明**
 
 | 字段	| 类型	| 必填| 说明													|
 | ---		| ---		| ---	| ---														|
 | uid		| String| 是	|用户Id，可以通过checkToken返回	|
-| field	| Array	| 否	|指定返回的字段，不传则返回所有	|
 
 **响应参数**
 
-| 字段		| 类型	| 必填| 说明						|
-| ---			| ---		| ---	| ---							|
-| code		| Number| 是	|错误码，0表示成功|
-| msg			| String| 是	|详细信息					|
-|userInfo	|Object	| 是	|获取的用户信息		|
+| 字段| 类型	| 必填| 说明						|
+| ---	| ---		| ---	| ---							|
+| code| Number| 是	|错误码，0表示成功|
+| message	| String| 是	|详细信息					|
+| role	| Array	| 是	|用户拥有的角色列表|
 
-```js
-// 云函数代码
-const uniID = require('uni-id')
-exports.main = async function(event,context) {
-  payload = await uniID.checkToken(event.uniIdToken)
-  if (payload.code && payload.code > 0) {
-  	return payload
-  }
-	const res = await uniID.getUserInfo({
-    uid: payload.uid,
-    field: ['mobile']
-  })
-	return res
-}
-```
+### 获取角色的权限
 
-## 设置用户邀请码
+根据roleID获取角色权限
+
+用法：`uniID.getPermissionByRole(Object GetPermissionByRoleParams)`
+
+**参数说明**
+
+| 字段	| 类型	| 必填| 说明	|
+| ---		| ---		| ---	| ---		|
+| roleID| String| 是	|角色Id	|
+
+**响应参数**
+
+| 字段			| 类型	| 必填| 说明							|
+| ---				| ---		| ---	| ---								|
+| code			| Number| 是	|错误码，0表示成功	|
+| message				| String| 是	|详细信息						|
+| permission| Array	| 是	|角色拥有的权限列表	|
+
+### 获取用户的权限
+
+根据uid获取用户权限
+
+用法：`uniID.getPermissionByUid(Object GetPermissionByUidParams)`
+
+**参数说明**
+
+| 字段| 类型	| 必填| 说明	|
+| ---	| ---		| ---	| ---		|
+| uid	| String| 是	|用户Id	|
+
+**响应参数**
+
+| 字段			| 类型	| 必填| 说明							|
+| ---				| ---		| ---	| ---								|
+| code			| Number| 是	|错误码，0表示成功	|
+| message				| String| 是	|详细信息						|
+| permission| Array	| 是	|用户拥有的权限列表	|
+
+### 为用户绑定角色
+
+用法：`uniID.bindRole(Object BindRoleParams)`
+
+**参数说明**
+
+| 字段		| 类型		| 必填| 说明																																										|
+| ---			| ---			| ---	| ---																																											|
+| uid			| String	| 是	|用户Id																																										|
+| roleList| Array		| 是	|角色Id（role_id）列表																																		|
+| reset		| Boolean	| 否	|是否直接覆盖用户角色，true：直接将roleList设置为用户角色，false：在用户已有角色后追加角色|
+
+**响应参数**
+
+| 字段			| 类型	| 必填| 说明							|
+| ---				| ---		| ---	| ---								|
+| code			| Number| 是	|错误码，0表示成功	|
+| message				| String| 是	|详细信息						|
+
+### 为角色绑定权限
+
+用法：`uniID.bindPermission(Object BindPermissionParams)`
+
+**参数说明**
+
+| 字段					| 类型		| 必填| 说明																																													|
+| ---						| ---			| ---	| ---																																														|
+| roleID				| String	| 是	|用户Id																																													|
+| permissionList| Array		| 是	|权限Id（permission_id）列表																																													|
+| reset					| Boolean	| 否	|是否直接覆盖角色权限，true：直接将permissionList设置为角色权限，false：在角色已有权限后追加权限|
+
+**响应参数**
+
+| 字段			| 类型	| 必填| 说明							|
+| ---				| ---		| ---	| ---								|
+| code			| Number| 是	|错误码，0表示成功	|
+| message				| String| 是	|详细信息						|
+
+### 为用户解绑角色
+
+用法：`uniID.unbindRole(Object UnbindRoleParams)`
+
+**参数说明**
+
+| 字段		| 类型		| 必填| 说明																																										|
+| ---			| ---			| ---	| ---																																											|
+| uid			| String	| 是	|用户Id																																										|
+| roleList| Array		| 是	|角色Id（role_id）列表																																		|
+
+**响应参数**
+
+| 字段			| 类型	| 必填| 说明							|
+| ---				| ---		| ---	| ---								|
+| code			| Number| 是	|错误码，0表示成功	|
+| message				| String| 是	|详细信息						|
+
+### 为角色解绑权限
+
+用法：`uniID.unbindPermission(Object UnbindPermissionParams)`
+
+**参数说明**
+
+| 字段					| 类型	| 必填| 说明											|
+| ---						| ---		| ---	| ---												|
+| roleID				| String| 是	|角色Id											|
+| permissionList| Array	| 是	|权限Id（permission_id）列表|
+
+**响应参数**
+
+| 字段			| 类型	| 必填| 说明							|
+| ---				| ---		| ---	| ---								|
+| code			| Number| 是	|错误码，0表示成功	|
+| message				| String| 是	|详细信息						|
+
+### 新增角色
+
+用法：`uniID.addRole(Object AddRoleParams)`
+
+**参数说明**
+
+| 字段			| 类型	| 必填| 说明											|
+| ---				| ---		| ---	| ---												|
+| roleID		| String| 是	|角色Id，唯一标识											|
+| roleName	| String| 否	|角色名称，展示用						|
+| comment		| String| 否	|备注												|
+| permission| Array	| 否	|权限Id（permission_id）列表|
+
+**响应参数**
+
+| 字段			| 类型	| 必填| 说明							|
+| ---				| ---		| ---	| ---								|
+| code			| Number| 是	|错误码，0表示成功	|
+| message				| String| 是	|详细信息						|
+
+### 获取角色列表
+
+用法：`uniID.getRoleList(Object GetRoleListParams)`
+
+**参数说明**
+
+| 字段			| 类型		| 必填| 说明						|
+| ---				| ---			| ---	| ---							|
+| limit			| Number	| 是	|限制返回数量			|
+| offset		| Number	| 是	|偏移量						|
+| needTotal	| Boolean	| 否	|是否需要返回总数	|
+
+**响应参数**
+
+| 字段		| 类型	|  说明																			|
+| ---			| ---		|  ---																			|
+| code		| Number| 错误码，0表示成功													|
+| message			| String| 详细信息																	|
+| roleList| Array	|roles表记录数组（包含role_name、comment等）|
+| total		| Number|总数量																			|
+
+### 更新角色信息
+
+**注意不可修改role_id**
+
+用法：`uniID.updateRole(Object UpdateRoleParams)`
+
+**参数说明**
+
+| 字段			| 类型	| 必填| 说明											|
+| ---				| ---		| ---	| ---												|
+| roleID		| String| 是	|角色Id，唯一标识						|
+| roleName	| String| 否	|角色名称，展示用						|
+| comment		| String| 否	|备注												|
+| permission| Array	| 否	|权限Id（permission_id）列表|
+
+**响应参数**
+
+| 字段			| 类型	| 必填| 说明							|
+| ---				| ---		| ---	| ---								|
+| code			| Number| 是	|错误码，0表示成功	|
+| message				| String| 是	|详细信息						|
+
+### 删除角色
+
+用法：`uniID.deleteRole(Object DeleteRoleParams)`
+
+**参数说明**
+
+| 字段	| 类型	| 必填| 说明						|
+| ---		| ---		| ---	| ---							|
+| roleID| String| 是	|角色Id，唯一标识	|
+
+**响应参数**
+
+| 字段			| 类型	| 必填| 说明							|
+| ---				| ---		| ---	| ---								|
+| code			| Number| 是	|错误码，0表示成功	|
+| message				| String| 是	|详细信息						|
+
+### 新增权限
+
+用法：`uniID.addPermission(Object AddPermissionParams)`
+
+**参数说明**
+
+| 字段					| 类型	| 必填| 说明						|
+| ---						| ---		| ---	| ---							|
+| permissionID	| String| 是	|权限Id，唯一标识	|
+| permissionName| String| 否	|权限名称，展示用	|
+| comment				| String| 否	|备注							|
+
+**响应参数**
+
+| 字段			| 类型	| 必填| 说明							|
+| ---				| ---		| ---	| ---								|
+| code			| Number| 是	|错误码，0表示成功	|
+| message				| String| 是	|详细信息						|
+
+### 获取权限列表
+
+用法：`uniID.getPermissionList(Object GetPermissionListParams)`
+
+**参数说明**
+
+| 字段			| 类型		| 必填| 说明						|
+| ---				| ---			| ---	| ---							|
+| limit			| Number	| 是	|限制返回数量			|
+| offset		| Number	| 是	|偏移量						|
+| needTotal	| Boolean	| 否	|是否需要返回总数	|
+
+**响应参数**
+
+| 字段					| 类型	|  说明																									|
+| ---						| ---		|  ---																									|
+| code					| Number| 错误码，0表示成功																			|
+| message						| String| 详细信息																							|
+| permissionList| Array	|permissions表记录数组（包含permission_name、comment等）|
+| total					| Number|总数量																									|
+
+### 修改权限
+
+**注意：不可修改permissionID**
+
+用法：`uniID.updatePermission(Object UpdatePermissionParams)`
+
+**参数说明**
+
+| 字段					| 类型	| 必填| 说明						|
+| ---						| ---		| ---	| ---							|
+| permissionID	| String| 是	|权限Id，唯一标识	|
+| permissionName| String| 否	|权限名称，展示用	|
+| comment				| String| 否	|备注							|
+
+**响应参数**
+
+| 字段			| 类型	| 必填| 说明							|
+| ---				| ---		| ---	| ---								|
+| code			| Number| 是	|错误码，0表示成功	|
+| message				| String| 是	|详细信息						|
+
+### 删除权限
+
+用法：`uniID.deletePermission(Object DeletePermissionParams)`
+
+**参数说明**
+
+| 字段					| 类型	| 必填| 说明						|
+| ---						| ---		| ---	| ---							|
+| permissionID	| String| 是	|权限Id，唯一标识	|
+
+**响应参数**
+
+| 字段			| 类型	| 必填| 说明							|
+| ---				| ---		| ---	| ---								|
+| code			| Number| 是	|错误码，0表示成功	|
+| message				| String| 是	|详细信息						|
+
+## 裂变@fission-api
+
+### 设置用户邀请码
 
 针对未生成邀请码的用户使用此方法生成邀请码
 
@@ -1369,10 +1790,10 @@ exports.main = async function(event,context) {
 | 字段				  | 类型	  | 必填 | 说明						|
 | ---					| ---		| ---	| ---							|
 | code				| Number| 是	  |错误码，0表示成功|
-| msg					| String| 是	  |详细信息					|
+| message					| String| 是	  |详细信息					|
 | myInviteCode| String| 是	  |最终设置的邀请码	|
 
-## 用户接受邀请
+### 用户接受邀请
 
 此接口用于在注册之后再填写邀请码的场景，多数情况下不会用到此接口而是在注册时填写邀请码
 
@@ -1390,9 +1811,9 @@ exports.main = async function(event,context) {
 | 字段				  | 类型	  | 必填 | 说明						|
 | ---					| ---		| ---	| ---							|
 | code				| Number| 是	  |错误码，0表示成功|
-| msg					| String| 是	  |详细信息					|
+| message					| String| 是	  |详细信息					|
 
-## 获取接受邀请的用户清单
+### 获取接受邀请的用户清单
 
 用法：`uniID.getInvitedUser(Object GetInvitedUserParams);`
 
@@ -1413,7 +1834,7 @@ exports.main = async function(event,context) {
 | 字段				| 类型	| 必填| 说明						|
 | ---					| ---		| ---	| ---							|
 | code				| Number| 是	|错误码，0表示成功|
-| msg					| String| 是	|详细信息					|
+| message					| String| 是	|详细信息					|
 | invitedUser	| Array	| 是	|邀请的用户列表		|
 
 **invitedUser每项结构**
@@ -1441,76 +1862,6 @@ exports.main = async function(event,context) {
 	return res
 }
 ```
-
-## 自行初始化uni-id@init
-
-用法：`uniID.init(Object config);`
-
-此接口适用于不希望使用config.json初始化而是希望通过js的方式传入配置的情况
-
-**config参数说明**
-
-config格式与config.json完全相同
-
-**响应参数**
-
-无
-
-```js
-// 云函数代码
-const uniID = require('uni-id')
-uniID.init({
-	"passwordSecret": "passwordSecret-demo", // 用于加密用户密码
-	"tokenSecret": "tokenSecret-demo", // 用于生成token
-	"tokenExpiresIn": 7200, // token过期时间
-	"passwordErrorLimit": 6, // 同一个ip密码错误最大重试次数
-	"passwordErrorRetryTime": 3600, // 超过密码重试次数之后的等待时间
-	"service": {
-		"sms": {
-			"name": "your app name", // 应用名称对应uniCloud.sendSms的data参数内的name
-			"codeExpiresIn": 180, // 验证码过期时间，单位：秒，只可取60的整数倍，不填此参数时会取默认值180秒
-			"smsKey": "your sms key", // 短信密钥key
-			"smsSecret": "your sms secret" // 短信密钥secret
-		}
-	}
-})
-exports.main = async function(event,context) {
-  payload = await uniID.checkToken(event.uniIdToken)
-  if (payload.code && payload.code > 0) {
-  	return payload
-  }
-	const res = await uniID.updateUser({
-    uid: payload.uid,
-    nickname: 'user nickname'
-  })
-	return res
-}
-```
-
-# 裂变@fission
-
-自`1.1.2`版本起uni-id支持裂变功能，目前仅适用手机号+验证码方式注册可以填写邀请码（inviteCode）接受邀请。
-
-在`config.json`内配置了`autoSetInviteCode: true`则在用户注册时会自动给设置不重复的6位邀请码，如果不希望使用自动设置的邀请码可以自行传入`myInviteCode`参数来设置邀请码，需要注意的是要保证邀请码唯一。
-
-在`config.json`内配置了`forceInviteCode: true`则只有使用邀请码才可以注册（仅手机号+验证码注册方式支持）。
-
-针对之前使用了旧版本（不支持裂变）的uni-id，现在想增加裂变功能，可以调用`setUserInviteCode`接口给已注册用户设置邀请码，在设置之前可以使用`my_invite_code不存在`作为条件查询所有需要设置的用户。
-
-如果希望用户注册完成之后再填写邀请人的邀请码，可以调用`acceptInvite`接口来使用户接受邀请。
-
-`getInvitedUser`接口可以用于获取接受邀请的用户列表，其中level参数可以用来设置要获取哪一级的邀请用户，不填写level参数则默认获取第一级。
-
-如果想详细的体验一下裂变流程，可以在插件市场导入[前后一体登录模板](https://ext.dcloud.net.cn/plugin?id=13)，此项目内已有邀请用户注册示例，流程如下
-
-**分享邀请码/邀请链接**
-
-<img width="375" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/1b181d40-e377-11ea-b680-7980c8a877b8.jpeg" />
-
-
-**受邀者注册**
-
-<img width="375" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/1b12c610-e377-11ea-b997-9918a5dda011.jpeg" />
 
 # 数据库结构
 
@@ -1543,6 +1894,7 @@ exports.main = async function(event,context) {
 | login_ip_limit	| Array			| 否	| 登录 IP 限制																							|
 | inviter_uid			| Array			| 否	| 邀请人uid，按层级从下往上排列的uid数组，即第一个是直接上级|
 | my_invite_code	| String		| 否	| 用户自己的邀请码																					|
+| role						| Array			| 否	| 用户角色列表，由role_id组成的数组													|
 
 **wx_openid字段定义**
 
@@ -1611,6 +1963,31 @@ exports.main = async function(event,context) {
 | created_at | Timestamp | 是   | 创建时间                               |
 | expired_at | Timestamp | 是   | 验证码过期时间                         |
 
+## 角色表
+
+表名：`uni-id-roles`
+
+| 字段				| 类型			| 必填| 描述																	|
+| ----------	| ---------	| ----| --------------------------------------|
+| \_id				| Object ID	| 是	| 系统自动生成的Id											|
+| role_id			| String		| 是	| 角色唯一标识													|
+| role_name		| String		| 否	| 角色名，展示用												|
+| permission	| Array			| 是	| 角色拥有的权限列表										|
+| comment			| String		| 否	| 备注																	|
+| created_date| Timestamp	| 是	| 角色创建时间													|
+
+## 权限表
+
+表名：`uni-id-permissions`
+
+| 字段						| 类型			| 必填| 描述																	|
+| ----------			| ---------	| ----| --------------------------------------|
+| \_id						| Object ID	| 是	| 系统自动生成的Id											|
+| permission_id		| String		| 是	| 权限唯一标识													|
+| permission_name	| String		| 否	| 权限名，展示用												|
+| comment					| String		| 否	| 备注																	|
+| created_date		| Timestamp	| 是	| 权限创建时间													|
+
 # 错误码
 
 自`1.1.0`版本使用此错误码规范
@@ -1634,7 +2011,7 @@ exports.main = async function(event,context) {
 |Token类					|300	|-			|-										|
 |生成Token					|301	|-			|-										|
 |验证Token					|302	|01			|设备特征校验未通过						|
-|							|		|02			|云端以不包含此token					|
+|							|		|02			|云端已不包含此token					|
 |							|		|03			|token已过期							|
 |							|		|04			|token校验未通过						|
 |账号安全类					|400	|-			|-										|
@@ -1646,7 +2023,7 @@ exports.main = async function(event,context) {
 |设置验证码					|501	|01			|参数错误								|
 |校验验证码					|502	|01			|参数错误								|
 |							|		|02			|验证码错误或已失效						|
-|发送短信验证码				|503	|01			|验证码发送失败，一般msg内有描述		|
+|发送短信验证码				|503	|01			|验证码发送失败，一般message内有描述		|
 |绑定账号					|600	|-			|-										|
 |绑定手机号					|601	|01			|此手机号已被绑定						|
 |绑定邮箱					|602	|01			|此邮箱已被绑定							|
@@ -1673,6 +2050,8 @@ exports.main = async function(event,context) {
 |获取支付宝openid			        |807	|01			|未能获取openid	|
 |               			|   	|02			|调用获取openid接口失败	|
 |公用码						|900	|01			|数据库读写异常							|
+
+**另外还有一些字符串类型的扩展错误码在各自接口的文档中展示，请不要直接使用`code>0`这种方式来判断是否有错误**
 
 # FAQ
 

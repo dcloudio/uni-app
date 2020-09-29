@@ -3,6 +3,7 @@ import {
 } from 'uni-shared'
 import navigateTo from 'uni-helpers/navigate-to'
 import redirectTo from '../../../mp-weixin/helpers/redirect-to'
+
 // 不支持的 API 列表
 const todos = [
   'preloadPage',

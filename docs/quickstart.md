@@ -200,16 +200,16 @@ HBuilderX 还提供了快捷运行菜单，可以按数字快速选择要运行�
 - 目前仅windows平台支持。360浏览器自身不支持mac平台。
 
 
-**发布为快应用联盟：**
-1. 入驻快应用联盟，参考：[快应用联盟教程](https://www.quickapp.cn/)。
-2. 在HBuilderX中顶部菜单依次点击 "发行" => "快应用联盟"，即可在 ``/unpackage/dist/build/quickapp-webview`` 生成快应用联盟项目代码。
+**发布为快应用(webview)：**
+1. 入驻快应用(webview)，参考：[快应用(webview)教程](https://www.quickapp.cn/)。
+2. 在HBuilderX中顶部菜单依次点击 "发行" => "快应用联盟"，即可在 ``/unpackage/dist/build/quickapp-webview`` 生成快应用(webview)项目代码。
 <div align=center>
   <img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/uni-app-run-release-quickapp-webview.png"/>
 </div>
 3. 在快应用联盟工具中，导入生成的快应用联盟项目，测试项目代码运行正常后，点击”构建“打包正式版，在[快应用联盟后台](https://www.quickapp.cn/)上传
 
 
-**发布为华为快应用：**
+**发布为快应用(webview) - 华为：**
 1. 入驻华为快应用，参考：[华为快应用教程](https://developer.huawei.com/consumer/cn/quickApp)。
 2. 在HBuilderX中顶部菜单依次点击 "发行" => "快应用-华为"，即可在 ``/unpackage/dist/build/quickapp-webview`` 生成华为快应用项目代码。
 <div align=center>
@@ -288,7 +288,7 @@ npm run build:%PLATFORM%
 |mp-toutiao|字节跳动小程序|
 |mp-qq|qq 小程序|
 |mp-360|360 小程序|
-|quickapp-webview|快应用通用|
+|quickapp-webview|快应用(webview)|
 |quickapp-webview-union|快应用联盟|
 |quickapp-webview-huawei|快应用华为|
 
@@ -300,11 +300,11 @@ npm run build:%PLATFORM%
 - 原生渲染方式：[https://ask.dcloud.net.cn/article/37145](https://ask.dcloud.net.cn/article/37145)
 
 
-### 运行并发布快应用联盟@quickapp-webview
+### 运行并发布快应用(webview)@quickapp-webview
 HBuilderX 2.7.12+ 版支持
 
 
-### 运行并发布快应用-华为@quickapp-webview-huawei
+### 运行并发布快应用(webview)-华为@quickapp-webview-huawei
 HBuilderX 2.7.10+ 版支持
 
 华为快应用文档-小程序转快应用 [https://developer.huawei.com/consumer/cn/doc/development/quickApp-References/quickapp-filestructure](https://developer.huawei.com/consumer/cn/doc/development/quickApp-References/quickapp-filestructure)

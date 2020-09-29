@@ -198,7 +198,7 @@ export default {
     this._scrollTopChanged(this.scrollTopNumber)
     this._scrollLeftChanged(this.scrollLeftNumber)
     this._scrollIntoViewChanged(this.scrollIntoView)
-    this.__handleScroll = function (e) {
+    this.__handleScroll = function (event) {
       event.preventDefault()
       event.stopPropagation()
       self._handleScroll.bind(self, event)()

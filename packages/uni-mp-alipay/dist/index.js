@@ -1153,6 +1153,98 @@ var eventApi = /*#__PURE__*/Object.freeze({
   $emit: $emit
 });
 
+function createMediaQueryObserver () {
+  const mediaQueryObserver = {};
+  const {
+    windowWidth,
+    windowHeight
+  } = my.getSystemInfoSync();
+
+  const orientation = windowWidth < windowHeight ? 'portrait' : 'landscape';
+
+  mediaQueryObserver.observe = (options, callback) => {
+    let matches = true;
+    for (const item in options) {
+      const itemValue = item === 'orientation' ? options[item] : Number(options[item]);
+      if (options[item] !== '') {
+        if (item === 'width') {
+          if (itemValue === windowWidth) {
+            matches = true;
+          } else {
+            matches = false;
+            callback(matches);
+            return matches
+          }
+        }
+        if (item === 'minWidth') {
+          if (windowWidth >= itemValue) {
+            matches = true;
+          } else {
+            matches = false;
+            callback(matches);
+            return matches
+          }
+        }
+        if (item === 'maxWidth') {
+          if (windowWidth <= itemValue) {
+            matches = true;
+          } else {
+            matches = false;
+            callback(matches);
+            return matches
+          }
+        }
+
+        if (item === 'height') {
+          if (itemValue === windowHeight) {
+            matches = true;
+          } else {
+            matches = false;
+            callback(matches);
+            return matches
+          }
+        }
+        if (item === 'minHeight') {
+          if (windowHeight >= itemValue) {
+            matches = true;
+          } else {
+            matches = false;
+            callback(matches);
+            return matches
+          }
+        }
+        if (item === 'maxHeight') {
+          if (windowHeight <= itemValue) {
+            matches = true;
+          } else {
+            matches = false;
+            callback(matches);
+            return matches
+          }
+        }
+
+        if (item === 'orientation') {
+          if (options[item] === orientation) {
+            matches = true;
+          } else {
+            matches = false;
+            callback(matches);
+            return matches
+          }
+        }
+      }
+    }
+    callback(matches);
+
+    return matches
+  };
+
+  mediaQueryObserver.disconnect = () => {
+  };
+
+  return mediaQueryObserver
+}
+
 function setStorageSync (key, data) {
   return my.setStorageSync({
     key,
@@ -1262,7 +1354,8 @@ var api = /*#__PURE__*/Object.freeze({
   removeStorageSync: removeStorageSync,
   startGyroscope: startGyroscope,
   createSelectorQuery: createSelectorQuery,
-  createIntersectionObserver: createIntersectionObserver
+  createIntersectionObserver: createIntersectionObserver,
+  createMediaQueryObserver: createMediaQueryObserver
 });
 
 const PAGE_EVENT_HOOKS = [

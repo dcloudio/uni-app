@@ -1,13 +1,5 @@
-import parseBaseComponent from './component-base-parser'
-
-import {
-  isPage,
-  initRelation
-} from './util'
+import parseBaseComponent from '../../../mp-weixin/runtime/wrapper/component-parser'
 
 export default function parseComponent (vueComponentOptions) {
-  return parseBaseComponent(vueComponentOptions, {
-    isPage,
-    initRelation
-  })
+  return parseBaseComponent(vueComponentOptions)
 }

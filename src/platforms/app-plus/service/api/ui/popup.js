@@ -149,9 +149,7 @@ export function showActionSheet ({
     options.title = title
   }
 
-  if (plus.os.name === 'iOS') {
-    options.cancel = ''
-  }
+  options.cancel = ''
 
   plus.nativeUI.actionSheet(Object.assign(options, { popover }), (e) => {
     if (e.index > 0) {

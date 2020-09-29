@@ -92,6 +92,8 @@ const NODE_MODULES_REGEX = /(\.\.\/)?node_modules/g
 
 function normalizeNodeModules (str) {
   str = normalizePath(str).replace(NODE_MODULES_REGEX, 'node-modules')
+  // HBuilderX 内置模块路径转换
+  str = str.replace(/.*HBuilderX\/plugins\/uniapp-cli\/node[-_]modules/, 'node-modules')
   if (process.env.UNI_PLATFORM === 'mp-alipay') {
     str = str.replace('node-modules/@', 'node-modules/npm-scope-')
   }

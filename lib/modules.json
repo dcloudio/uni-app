@@ -157,6 +157,7 @@
     "uni.stopPullDownRefresh": true,
     "uni.createSelectorQuery": true,
     "uni.createIntersectionObserver": true,
+    "uni.createMediaQueryObserver": true,
     "uni.hideKeyboard": true,
     "uni.onKeyboardHeightChange": true
   }

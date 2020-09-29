@@ -154,7 +154,10 @@ const getPageComponents = function (inputDir, pagesJson) {
       isTabBar,
       tabBarIndex,
       isQuit: isEntry || isTabBar,
-      windowTop
+      windowTop,
+      topWindow: pageStyle.topWindow,
+      leftWindow: pageStyle.leftWindow,
+      rightWindow: pageStyle.rightWindow
     }
   }).filter(pageComponents => !!pageComponents)
 }
@@ -211,7 +214,10 @@ const genPageRoutes = function (pageComponents) {
       isEntry,
       isTabBar,
       windowTop,
-      tabBarIndex
+      tabBarIndex,
+      topWindow,
+      leftWindow,
+      rightWindow
     }) => {
       return `
 {
@@ -222,9 +228,8 @@ component: {
       'Page',
       {
         props: Object.assign({
-          ${isQuit ? 'isQuit:true,\n' : ''}
-          ${isEntry ? 'isEntry:true,\n' : ''}
-          ${isTabBar ? 'isTabBar:true,\n' : ''}
+          ${isQuit ? 'isQuit:true,\n' : ''}${isEntry ? 'isEntry:true,\n' : ''}${isTabBar ? 'isTabBar:true,\n' : ''}
+          ${topWindow === false ? 'topWindow:false,\n' : ''}${leftWindow === false ? 'leftWindow:false,\n' : ''}${rightWindow === false ? 'rightWindow:false,\n' : ''}
           ${isTabBar ? ('tabBarIndex:' + tabBarIndex) : ''}
         },__uniConfig.globalStyle,${JSON.stringify(props)})
       },
@@ -238,7 +243,7 @@ component: {
 },
 meta:{${isQuit ? '\nid:' + (id++) + ',' : ''}
   name:'${name}',
-  isNVue:${isNVue},
+  isNVue:${isNVue},${topWindow === false ? 'topWindow:false,\n' : ''}${leftWindow === false ? 'leftWindow:false,\n' : ''}${rightWindow === false ? 'rightWindow:false,\n' : ''}
   pagePath:'${route}'${isQuit ? ',\nisQuit:true' : ''}${isEntry ? ',\nisEntry:true' : ''}${isTabBar ? ',\nisTabBar:true' : ''}${tabBarIndex !== -1 ? (',\ntabBarIndex:' + tabBarIndex) : ''},
   windowTop:${windowTop}
 }
@@ -360,9 +365,17 @@ function filterPages (pagesJson, includes) {
 function genLayoutComponentsCode (pagesJson) {
   const code = []
   const {
+    topWindow,
     leftWindow,
     rightWindow
   } = pagesJson
+  if (topWindow && topWindow.path) {
+    code.push(
+      `import TopWindow from './${topWindow.path}';
+${topWindow.style ? ('TopWindow.style=' + JSON.stringify(topWindow.style)) : ''}
+Vue.component('VUniTopWindow',TopWindow);`
+    )
+  }
   if (leftWindow && leftWindow.path) {
     code.push(
       `import LeftWindow from './${leftWindow.path}';
@@ -423,17 +436,6 @@ module.exports = function (pagesJson, manifestJson, loader) {
     qqMapKey = sdkConfigs.maps.qqmap.key
   }
 
-  let minWidth = 768
-
-  if (
-    manifestJson &&
-    manifestJson.h5 &&
-    manifestJson.h5.responsive &&
-    manifestJson.h5.responsive.minWidth
-  ) {
-    minWidth = parseInt(manifestJson.h5.responsive.minWidth) || minWidth
-  }
-
   return `
 import Vue from 'vue'
 ${genLayoutComponentsCode(pagesJson)}
@@ -441,7 +443,6 @@ global['____${h5.appid}____'] = true;
 delete global['____${h5.appid}____'];
 global.__uniConfig = ${JSON.stringify(pagesJson)};
 global.__uniConfig.compilerVersion = '${compilerVersion}';
-global.__uniConfig.responsive = { minWidth: ${minWidth} };
 global.__uniConfig.router = ${JSON.stringify(h5.router)};
 global.__uniConfig.publicPath = ${JSON.stringify(h5.publicPath)};
 global.__uniConfig['async'] = ${JSON.stringify(h5.async)};

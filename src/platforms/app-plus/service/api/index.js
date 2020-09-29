@@ -62,7 +62,7 @@ export * from './route/preload-page'
 
 export * from './storage/storage'
 
-export * from './ui/keyboard'
+export * from './keyboard/keyboard'
 export * from './ui/navigation-bar'
 export * from './ui/popup'
 

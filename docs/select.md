@@ -6,11 +6,16 @@
 3. 只做小程序，原生wxml开发、wepy、mpvue、taro的对比，[https://ask.dcloud.net.cn/article/35867](https://ask.dcloud.net.cn/article/35867)
 4. uni-app和微信原生开发的详细比较评测，参考：[https://ask.dcloud.net.cn/article/36484](https://ask.dcloud.net.cn/article/36484)
 
+
+**uni-app 有哪些已上线的成功案例？**
+
+uni-app是当今主流的开发框架，DCloud有600万开发者，uni统计手机端月活10亿，华为、阿里、腾讯、字节跳动、美团、京东、快手、vivo都在用，案例参考[uni-app 应用案例](http://uniapp.dcloud.io/case)
+
 **uni-app收费吗？**
 
-```uni-app``` 是免费并且属于Apache2.0开源协议的产品。DCloud官方承诺永远不会变更开源协议。无论HBuilderX、uni-app、App，面向中国人永久免费。大家可以放心使用。
+```uni-app``` 是免费并且属于Apache2.0开源协议的产品。DCloud官方承诺无论HBuilderX、uni-app，面向中国人永久免费。大家可以放心使用。
 
-DCloud的盈利方式在帮助开发者进行流量变现（uni-AD）和提供可选的、有价值的云服务（uniCloud）上，而不在开发工具收费上。
+DCloud的盈利方式在帮助开发者进行流量变现（uni-AD）和提供有价值的云服务（uniCloud）上，而不在开发工具收费上。
 
 **跨端会造成功能受限制吗？**
 
@@ -18,7 +23,7 @@ DCloud的盈利方式在帮助开发者进行流量变现（uni-AD）和提供�
 
 应用开发中，90%的常规开发，比如界面组件、联网等api，```uni-app```封装为可跨多端的API。
 
-各个端的特色功能，```uni-app```引入[条件编译](http://uniapp.dcloud.io/platform)。可以优雅的在一个项目里调用不同平台的特色能力。比如push，微信小程序里不支持，但可以在App里使用，还有很多原生sdk，在App时难免涉及，这些都可以正常的在```uni-app```框架下使用。
+而各个端的特色功能，```uni-app```引入[条件编译](http://uniapp.dcloud.io/platform)。可以优雅的在一个项目里调用不同平台的特色能力。比如push，微信小程序里不支持，但可以在App里使用，还有很多原生sdk，在App时难免涉及，这些都可以正常的在```uni-app```框架下使用。
 
 下图是```uni-app```产品功能框架图，```uni-app```在保持uni规范跨平台的前提下，还可实现每个平台特有的平台能力(如微信小程序平台，可继续调用微信卡劵等微信特有业务API)。
 
@@ -68,7 +73,7 @@ DCloud的盈利方式在帮助开发者进行流量变现（uni-AD）和提供�
 
 过去weex有个很大的问题是api太少，开发时必须iOS、Android原生和前端3拨团队协作开发，实际上react native也如此，因为他们的核心只是高性能渲染器。
 
-plus api的结合解决了这个问题，大多数App的开发不再需要原生介入了，从而把跨平台开发省成本这个核心目的落地了。
+uni-app提供了大量的扩展api解决了这个问题，并且发展了成熟多样的插件生态，大多数App的开发不再需要原生介入了，从而把跨平台开发省成本这个核心目的落地了。
 
 ```uni-app```在App侧可以使用丰富的小程序sdk，如网易云信、环信、七牛等众多sdk厂商均原厂维护其小程序sdk版本，而这些sdk均可直接用于uni-app并发布为iOS、Android的App。
 
@@ -131,9 +136,8 @@ Android4.4、iOS9是官方会保障兼容的。
 
 **uni-app成熟度高吗？**
 
-```uni-app```是目前最成熟的多端开发框架，已迭代几十个版本，拥有几十个开发者交流群，几十万应用案例。
+```uni-app```在2018年夏天推出，目前版本成熟，生态资源丰富，是当今主流的开发框架，案例众多，手机端引擎月活已经突破10亿！
 
-阿里小程序IDE官方内嵌`uni-app`，uni-app没有让阿里巴巴失望，也不会让你失望。详见：[https://ask.dcloud.net.cn/article/36485](https://ask.dcloud.net.cn/article/36485)
 
 **uni-app的社区活跃吗？**
 
@@ -141,16 +145,12 @@ Android4.4、iOS9是官方会保障兼容的。
 
 插件市场内容也非常丰富，各种轮子方便可用。[https://ext.dcloud.net.cn/](https://ext.dcloud.net.cn/)，并且很多轮子的uni-app版，性能功能都强于微信小程序版。
 
-基于```uni-app```的三方培训也很多。腾讯课堂官方亲自为uni-app制作了课程。
+基于```uni-app```的三方培训也很多。腾讯课堂官方亲自为uni-app制作了课程，各大培训网站均有uni-app的培训课程。
 
-
-**uni-app 有哪些已上线的成功案例？**
-
-开发者分享的案例参考[uni-app 应用案例](http://uniapp.dcloud.io/case)
 
 **DCloud是家什么公司，是否可信赖**
 
-```DCloud```从2013年开始做HBuilder，目前470万前端开发者在使用```DCloud```的开发工具，HBuilder百度指数与sublime、webstorm等全球知名工具相同。是中国唯一一家成功的开发工具厂商。
+```DCloud```从2013年开始做HBuilder，目前600万前端开发者在使用```DCloud```的开发工具，HBuilder百度指数与sublime、webstorm等全球知名工具相同。是中国唯一一家成功的开发工具厂商。
 
 ```DCloud```是明星创业公司，融资已经过了B2轮，且均为知名VC或战略投资人。
 
@@ -166,7 +166,7 @@ Android4.4、iOS9是官方会保障兼容的。
 
 代码可以云打包，也可以离线打包。
 
-即使使用云打包，DCloud也不会保留开发者的代码，云端打包完成后程序不会持久化存储相关文件，DCloud不愿也不敢沾惹这方面的麻烦。
+即使使用云打包，DCloud也不会保留开发者的代码，云端打包完成后程序不会持久化存储相关文件，DCloud是一家遵纪守法的公司，目标远大，不愿沾惹这方面的麻烦。
 
 之所以提供云打包，是方便不熟悉原生的前端工程师直接生成App安装包。包括让没有mac电脑的工程师也可以打出iOS的包。
 

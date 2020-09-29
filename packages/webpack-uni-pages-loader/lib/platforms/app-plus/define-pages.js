@@ -7,7 +7,11 @@ function generatePageCode (pages, pageOptions) {
   }).join('\n')
 }
 
-module.exports = function definePages (appJson) {
+function generateUniConfig (appJson, isAppView) {
+  return isAppView ? `window.__uniConfig = ${JSON.stringify({ window: appJson.window }, null)};` : ''
+}
+
+module.exports = function definePages (appJson, isAppView) {
   return {
     name: 'define-pages.js',
     content: `
@@ -22,6 +26,7 @@ if (typeof Promise !== 'undefined' && !Promise.prototype.finally) {
     )
   }
 }
+${generateUniConfig(appJson, isAppView)}
 if(uni.restoreGlobal){
   uni.restoreGlobal(weex,plus,setTimeout,clearTimeout,setInterval,clearInterval)
 }

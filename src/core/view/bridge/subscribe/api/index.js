@@ -11,9 +11,16 @@ import {
   destroyComponentObserver
 } from './request-component-observer'
 
+import {
+  requestMediaQueryObserver,
+  destroyMediaQueryObserver
+} from './request-media-query-observer'
+
 export default {
   setPageMeta,
   requestComponentInfo,
   requestComponentObserver,
-  destroyComponentObserver
+  destroyComponentObserver,
+  requestMediaQueryObserver,
+  destroyMediaQueryObserver
 }

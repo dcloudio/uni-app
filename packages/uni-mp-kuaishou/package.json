@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-mp-kuaishou",
-  "version": "2.0.0-28920200907001",
+  "version": "2.0.0-alpha-29020200925004",
   "description": "uni-app mp-kuaishou",
   "main": "dist/index.js",
   "repository": {
@@ -14,7 +14,7 @@
   "author": "Aero Wang",
   "license": "Apache-2.0",
   "uni-app": {
-    "name": "mp-alipay",
-    "title": "支付宝小程序"
+    "name": "mp-kuaishou",
+    "title": "快手小程序"
   }
 }

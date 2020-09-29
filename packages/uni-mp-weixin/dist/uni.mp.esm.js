@@ -52,28 +52,6 @@ const MP_METHODS = [
     'selectAllComponents',
     'selectComponent'
 ];
-function hasHook(name) {
-    const hooks = this.$[name];
-    if (hooks && hooks.length) {
-        return true;
-    }
-    return false;
-}
-function callHook(name, args) {
-    if (name === 'mounted') {
-        callHook.call(this, 'bm'); // beforeMount
-        this.$.isMounted = true;
-        name = 'm';
-    }
-    const hooks = this.$[name];
-    let ret;
-    if (hooks) {
-        for (let i = 0; i < hooks.length; i++) {
-            ret = hooks[i](args);
-        }
-    }
-    return ret;
-}
 function createEmitFn(oldEmit, ctx) {
     return function emit(event, ...args) {
         if (ctx.$scope && event) {
@@ -81,9 +59,6 @@ function createEmitFn(oldEmit, ctx) {
         }
         return oldEmit.apply(this, [event, ...args]);
     };
-}
-function set(target, key, val) {
-    return (target[key] = val);
 }
 function initBaseInstance(instance, options) {
     const ctx = instance.ctx;
@@ -93,7 +68,9 @@ function initBaseInstance(instance, options) {
     ctx.$scope = options.mpInstance;
     // TODO @deprecated
     ctx.$mp = {};
-    ctx._self = {};
+    if (__VUE_OPTIONS_API__) {
+        ctx._self = {};
+    }
     // $vm
     ctx.$scope.$vm = instance.proxy;
     // slots
@@ -105,15 +82,8 @@ function initBaseInstance(instance, options) {
             });
         }
     }
-    if (__VUE_OPTIONS_API__) {
-        // $set
-        ctx.$set = set;
-    }
     // $emit
     instance.emit = createEmitFn(instance.emit, ctx);
-    // $callHook
-    ctx.$hasHook = hasHook;
-    ctx.$callHook = callHook;
 }
 function initComponentInstance(instance, options) {
     initBaseInstance(instance, options);
@@ -207,7 +177,7 @@ function parseApp(instance, parseAppOptions) {
         $vm: instance,
         onLaunch(options) {
             const ctx = internalInstance.ctx;
-            if (this.$vm && ctx.$callHook) {
+            if (this.$vm && ctx.$scope) {
                 // 已经初始化过了，主要是为了百度，百度 onShow 在 onLaunch 之前
                 return;
             }
@@ -236,6 +206,26 @@ function initCreateApp(parseAppOptions) {
     return function createApp(vm) {
         return App(parseApp(vm, parseAppOptions));
     };
+}
+
+const encode = encodeURIComponent;
+function stringifyQuery(obj, encodeStr = encode) {
+    const res = obj
+        ? Object.keys(obj)
+            .map(key => {
+            let val = obj[key];
+            if (typeof val === undefined || val === null) {
+                val = '';
+            }
+            else if (isPlainObject(val)) {
+                val = JSON.stringify(val);
+            }
+            return encodeStr(key) + '=' + encodeStr(val);
+        })
+            .filter(x => x.length > 0)
+            .join('&')
+        : null;
+    return res ? `?${res}` : '';
 }
 
 function initBehavior(options) {
@@ -791,6 +781,13 @@ function parsePage(vueOptions, parseOptions) {
         initLifetimes
     });
     const methods = miniProgramPageOptions.methods;
+    methods.onLoad = function (query) {
+        this.options = query;
+        this.$page = {
+            fullPath: '/' + this.route + stringifyQuery(query)
+        };
+        return this.$vm && this.$vm.$callHook('onLoad', query);
+    };
     initHooks(methods, PAGE_HOOKS);
     initUnknownHooks(methods, vueOptions);
     parse && parse(miniProgramPageOptions, { handleLink });
