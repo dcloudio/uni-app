@@ -517,21 +517,75 @@ collection.field({ 'age': true }) //只返回age字段，其他字段不返回
 
 查询指令以dbCmd.开头，包括等于、不等于、大于、大于等于、小于、小于等于、in、nin、and、or。
 
-#### eq 等于
+
+下面的查询指令以以下数据集为例：
+
+```json
+// goods表
+
+[{
+  "type": {
+    "brand": "A",
+    "name": "A-01",
+    "memory": 16,
+    "cpu": 3.2
+  },
+  "category": "computer",
+  "quarter": "2020 Q2",
+  "price": 2500
+},{
+  "type": {
+    "brand": "X",
+    "name": "X-01",
+    "memory": 8,
+    "cpu": 4.0
+  },
+  "category": "computer",
+  "quarter": "2020 Q3",
+  "price": 6500
+},{
+  "type": {
+    "brand": "S",
+    "name": "S-01",
+    "author": "S-01-A"
+  },
+  "category": "book",
+  "quarter": "2020 Q3",
+  "price": 20
+}]
+
+```
+
+#### eq 等于@dbcmd-eq
 
 表示字段等于某个值。`eq` 指令接受一个字面量 (literal)，可以是 `number`, `boolean`, `string`, `object`, `array`。
 
 事实上在uniCloud的数据库中，`等于`有两种写法。
 
-比如筛选出所有自己发表的文章，
+比如筛选出所有2020 Q2季度的商品，
 
 写法1：使用`:`来比较
 
 ```js
 const myOpenID = "xxx"
 let res = await db.collection('articles').where({
-  _openid: myOpenID
+  quarter: '2020 Q2'
 }).get()
+
+// 查询返回值
+{
+  "data":[{
+    "type": {
+      "brand": "A",
+      "name": "A-01",
+      "memory": 16,
+      "cpu": 3.2
+    },
+    "category": "computer",
+    "quarter": "2020 Q2",
+    "price": 2500
+  }]
+}
 ```
 
 写法2：使用指令`dbcmd.eq()`
@@ -540,31 +594,68 @@ let res = await db.collection('articles').where({
 const dbCmd = db.command
 const myOpenID = "xxx"
 let res = await db.collection('articles').where({
-  _openid: dbCmd.eq(openid)
+  quarter: dbCmd.eq('2020 Q2')
 }).get()
+
+// 查询返回值
+{
+  "data":[{
+    "type": {
+      "brand": "A",
+      "name": "A-01",
+      "memory": 16,
+      "cpu": 3.2
+    },
+    "category": "computer",
+    "quarter": "2020 Q2",
+    "price": 2500
+  }]
+}
 ```
 
 注意 `eq` 指令有更大的灵活性，可以用于表示字段等于某个对象的情况，比如：
 
 ```js
-// 这种写法表示匹配 stat.publishYear == 2018 且 stat.language == 'zh-CN'
+// 这种写法表示匹配 type.brand == 'S' 且 type.name == 'S-01'
 let res = await db.collection('articles').where({
-  stat: {
-    publishYear: 2018,
-    language: 'zh-CN'
+  type: {
+    brand: 'S',
+    name: 'S-01'
   }
 }).get()
-// 这种写法表示 stat 对象等于 { publishYear: 2018, language: 'zh-CN' }
+
+// 查询返回值
+{
+  "data":[{
+    "type": {
+      "brand": "S",
+      "name": "S-01",
+      "author": "S-01-A"
+    },
+    "category": "book",
+    "quarter": "2020 Q3",
+    "price": 20
+  }]
+}
+
+// 这种写法表示 stat 对象等于 { brand: 'S', name: 'S-01' }
+// 对象中还有其他字段时无法匹配，例如：{ brand: 'S', name: 'S-01', author: 'S-01-A' }
+// 对象中字段顺序不一致也不能匹配，例如：{ name: 'S-01', brand: 'S' }
 const dbCmd = db.command
 let res = await db.collection('articles').where({
   stat: dbCmd.eq({
-    publishYear: 2018,
-    language: 'zh-CN'
+    brand: 'S',
+    name: 'S-01'
   })
 }).get()
+
+// 查询返回值
+{
+  "data":[]
+}
 ```
 
-#### neq
+#### neq 不等于@dbcmd-neq
 
 字段不等于。`neq` 指令接受一个字面量 (literal)，可以是 `number`, `boolean`, `string`, `object`, `array`。
 
@@ -578,35 +669,65 @@ let res = await db.collection('goods').where({
     brand: dbCmd.neq('X')
   },
 }).get()
+
+// 查询返回值
+{
+  "data":[{
+    "type": {
+      "brand": "A",
+      "name": "A-01",
+      "memory": 16,
+      "cpu": 3.2
+    },
+    "category": "computer",
+    "quarter": "2020 Q2",
+    "price": 2500
+  }]
+}
 ```
 
-#### gt
+#### gt 大于@dbcmd-gt
 
 字段大于指定值。
 
-如筛选出价格大于 2000 的计算机：
+如筛选出价格大于 3000 的计算机：
 
 ```js
 const dbCmd = db.command
 let res = await db.collection('goods').where({
   category: 'computer',
-  price: dbCmd.gt(2000)
+  price: dbCmd.gt(3000)
 }).get()
+
+// 查询返回值
+{
+  "data":[{
+    "type": {
+      "brand": "X",
+      "name": "X-01",
+      "memory": 8,
+      "cpu": 4.0
+    },
+    "category": "computer",
+    "quarter": "2020 Q3",
+    "price": 6500
+  }]
+}
 ```
 
-#### gte
+#### gte 大于等于@dbcmd-gte
 
 字段大于或等于指定值。
 
-#### lt
+#### lt 小于@dbcmd-lt
 
 字段小于指定值。
 
-#### lte
+#### lte 小于等于@dbcmd-lte
 
 字段小于或等于指定值。
 
-#### in
+#### in 在数组中@dbcmd-in
 
 字段值在给定的数组中。
 
@@ -620,9 +741,34 @@ let res = await db.collection('goods').where({
     memory: dbCmd.in([8, 16])
   }
 }).get()
+
+// 查询返回值
+{
+  "data":[{
+    "type": {
+      "brand": "A",
+      "name": "A-01",
+      "memory": 16,
+      "cpu": 3.2
+    },
+    "category": "computer",
+    "quarter": "2020 Q2",
+    "price": 2500
+  },{
+    "type": {
+      "brand": "X",
+      "name": "X-01",
+      "memory": 8,
+      "cpu": 4.0
+    },
+    "category": "computer",
+    "quarter": "2020 Q3",
+    "price": 6500
+  }]
+}
 ```
 
-#### nin
+#### nin 不在数组中@dbcmd-nin
 
 字段值不在给定的数组中。
 
@@ -636,9 +782,14 @@ db.collection('goods').where({
     memory: dbCmd.nin([8, 16])
   }
 })
+
+// 查询返回值
+{
+  "data":[]
+}
 ```
 
-#### and
+#### and 且@dbcmd-and
 
 表示需同时满足指定的两个或以上的条件。
 
@@ -653,6 +804,32 @@ db.collection('goods').where({
     memory: dbCmd.gt(4).and(dbCmd.lt(32))
   }
 })
+
+
+// 查询返回值
+{
+  "data":[{
+    "type": {
+      "brand": "A",
+      "name": "A-01",
+      "memory": 16,
+      "cpu": 3.2
+    },
+    "category": "computer",
+    "quarter": "2020 Q2",
+    "price": 2500
+  },{
+    "type": {
+      "brand": "X",
+      "name": "X-01",
+      "memory": 8,
+      "cpu": 4.0
+    },
+    "category": "computer",
+    "quarter": "2020 Q3",
+    "price": 6500
+  }]
+}
 ```
 
 前置写法：
@@ -666,7 +843,7 @@ db.collection('goods').where({
 })
 ```
 
-#### or
+#### or 或@dbcmd-or
 
 表示需满足所有指定条件中的至少一个。如筛选出价格小于 4000 或在 6000-8000 之间的计算机：
 
@@ -679,6 +856,32 @@ db.collection('goods').where({
     price:dbCmd.lt(4000).or(dbCmd.gt(6000).and(dbCmd.lt(8000)))
   }
 })
+
+
+// 查询返回值
+{
+  "data":[{
+    "type": {
+      "brand": "A",
+      "name": "A-01",
+      "memory": 16,
+      "cpu": 3.2
+    },
+    "category": "computer",
+    "quarter": "2020 Q2",
+    "price": 2500
+  },{
+    "type": {
+      "brand": "X",
+      "name": "X-01",
+      "memory": 8,
+      "cpu": 4.0
+    },
+    "category": "computer",
+    "quarter": "2020 Q3",
+    "price": 6500
+  }]
+}
 ```
 
 前置写法：
@@ -708,6 +911,31 @@ db.collection('goods').where(dbCmd.or(
     }
   }
 ))
+
+// 查询返回值
+{
+  "data":[{
+    "type": {
+      "brand": "A",
+      "name": "A-01",
+      "memory": 16,
+      "cpu": 3.2
+    },
+    "category": "computer",
+    "quarter": "2020 Q2",
+    "price": 2500
+  },{
+    "type": {
+      "brand": "X",
+      "name": "X-01",
+      "memory": 8,
+      "cpu": 4.0
+    },
+    "category": "computer",
+    "quarter": "2020 Q3",
+    "price": 6500
+  }]
+}
 ```
 
 ### 正则表达式查询@regexp
@@ -731,7 +959,7 @@ db.collection('user').where({
 // 或者使用new db.RegExp，这种方式阿里云不支持
 db.collection('articles').where({
   version: new db.RegExp({
-    regex: '^\\ds'   // 正则表达式为 /^\ds/，转义后变成 '^\\ds'
+    regex: '^\\ds',   // 正则表达式为 /^\ds/，转义后变成 '^\\ds'
     options: 'i'    // i表示忽略大小写
   }) 
 })
@@ -804,10 +1032,10 @@ let res = await collection.doc('doc-id').update({
 });
 ```
 
-```
+```json
 // 更新前
 {
-  "_id": "xxx",
+  "_id": "doc-id",
   "name": "Hello",
   "count": {
     "fav": 0,
@@ -817,7 +1045,7 @@ let res = await collection.doc('doc-id').update({
 
 // 更新后
 {
-  "_id": "xxx",
+  "_id": "doc-id",
   "name": "Hey",
   "count": {
     "fav": 1,
@@ -839,10 +1067,12 @@ let res = await collection.doc('doc-id').update({
 ```json
 // 更新前
 {
+  "_id": "doc-id",
   "arr": ["hello", "world"]
 }
 // 更新后
 {
+  "_id": "doc-id",
   "arr": ["hello", "uniCloud"]
 }
 ```
@@ -867,7 +1097,7 @@ let res = await collection.doc('doc-id').set({
 ```json
 // 更新前
 {
-  "_id": "xxx",
+  "_id": "doc-id",
   "name": "Hello",
   "count": {
     "fav": 0,
@@ -877,7 +1107,7 @@ let res = await collection.doc('doc-id').set({
 
 // 更新后
 {
-  "_id": "xxx",
+  "_id": "doc-id",
   "name": "Hey",
   "count": {
     "fav": 1
@@ -998,10 +1228,10 @@ let res = await db.collection('photo').doc('doc-id').update({
 })
 ```
 
-```
+```json
 // 更新前
 {
-  "_id": "xxx",
+  "_id": "doc-id",
   "name": "Hello",
   "count": {
     "fav": 0,
@@ -1011,7 +1241,7 @@ let res = await db.collection('photo').doc('doc-id').update({
 
 // 更新后
 {
-  "_id": "xxx",
+  "_id": "doc-id",
   "name": "Hello",
   "count": {
     "fav": 1,
@@ -1043,10 +1273,10 @@ let res = await db.collection('user').where({
 })
 ```
 
-```
+```json
 // 更新前
 {
-  "_id": "xxx",
+  "_id": "my-doc-id",
   "name": "Hello",
   "count": {
     "fav": 0,
@@ -1056,7 +1286,7 @@ let res = await db.collection('user').where({
 
 // 更新后
 {
-  "_id": "xxx",
+  "_id": "my-doc-id",
   "name": "Hello",
   "count": {
     "fav": 1,
@@ -1097,10 +1327,10 @@ let res = await db.collection('user').where({
 })
 ```
 
-```
+```json
 // 更新前
 {
-  "_id": "xxx",
+  "_id": "my-doc-id",
   "name": "Hello",
   "count": {
     "fav": 2,
@@ -1110,7 +1340,7 @@ let res = await db.collection('user').where({
 
 // 更新后
 {
-  "_id": "xxx",
+  "_id": "my-doc-id",
   "name": "Hello",
   "count": {
     "fav": 20,
@@ -1144,17 +1374,17 @@ let res = await db.collection('comments').doc('comment-id').update({
 })
 ```
 
-```
+```json
 // 更新前
 {
-  "_id": "xxx",
+  "_id": "comment-id",
   "rating": 5,
   "comment": "xxx"
 }
 
 // 更新后
 {
-  "_id": "xxx",
+  "_id": "comment-id",
   "comment": "xxx"
 }
 ```
@@ -1174,13 +1404,13 @@ let res = await db.collection('comments').doc('comment-id').update({
 ```json
 // 更新前
 {
-  "_id": "xxx",
+  "_id": "comment-id",
   "users": ["a","b"]
 }
 
 // 更新后
 {
-  "_id": "xxx",
+  "_id": "comment-id",
   "users": ["a","b","c","d"]
 }
 ```
@@ -1199,13 +1429,13 @@ let res = await db.collection('comments').doc('comment-id').update({
 ```json
 // 更新前
 {
-  "_id": "xxx",
+  "_id": "comment-id",
   "users": ["a","b"]
 }
 
 // 更新后
 {
-  "_id": "xxx",
+  "_id": "comment-id",
   "users": ["a"]
 }
 ```
@@ -1225,13 +1455,13 @@ let res = await db.collection('comments').doc('comment-id').update({
 ```json
 // 更新前
 {
-  "_id": "xxx",
+  "_id": "comment-id",
   "users": ["a","b"]
 }
 
 // 更新后
 {
-  "_id": "xxx",
+  "_id": "comment-id",
   "users": ["c","d","a","b"]
 }
 ```
@@ -1250,13 +1480,13 @@ let res = await db.collection('comments').doc('comment-id').update({
 ```json
 // 更新前
 {
-  "_id": "xxx",
+  "_id": "comment-id",
   "users": ["a","b"]
 }
 
 // 更新后
 {
-  "_id": "xxx",
+  "_id": "comment-id",
   "users": ["b"]
 }
 ```
@@ -1672,7 +1902,10 @@ exports.main = async (event) => {
 
 ## 聚合操作
 
+有时候我们需要对数据进行分析操作，比如一些统计操作、联表查询等，这个时候简单的查询操作就搞不定这些需求，因此就需要使用聚合操作来完成。
+
 获取数据库集合的聚合操作实例
+
 ```js
 db.collection('scores').aggregate()
 ```
@@ -1685,9 +1918,41 @@ db.collection('scores').aggregate()
 
 表达式用字段路径表示法来指定记录中的字段。字段路径的表示由一个 `$` 符号加上字段名或嵌套字段名。嵌套字段名用点将嵌套的各级字段连接起来。如 `$profile` 就表示 `profile` 的字段路径，`$profile.name` 就表示 `profile.name` 的字段路径（`profile` 字段中嵌套的 `name` 字段）。
 
+例如：现有以下数据
+
+```json
+[{
+  "profile": {
+    "name": "Chloe"
+  },
+  "status": 0
+}]
+```
+
+```js
+// 执行以下操作
+let res = await db.collection('scores').aggregate()
+  .addFields({
+    name: '$profile.name'
+  })
+  .end()
+
+// 返回值为
+{
+  "data": [{
+    "profile": {
+      "name": "Chloe"
+    },
+    "status": 0,
+    "name": "Chloe"
+  }]
+}
+```
+
+
 **常量**
 
-常量可以是任意类型。默认情况下 $ 开头的字符串都会被当做字段路径处理，如果想要避免这种行为，使用 `AggregateCommand.literal` 声明为常量。
+常量可以是任意类型。默认情况下 $ 开头的字符串都会被当做字段路径处理，如果想要避免这种行为，使用 `db.command.aggregate.literal` 声明为常量。
 
 **聚合操作符**
 
@@ -2284,7 +2549,6 @@ let res = await db.collection('attractions').aggregate()
 ### group
 
 聚合阶段。将输入记录按给定表达式分组，输出时每个记录代表一个分组，每个记录的 _id 是区分不同组的 key。输出记录中也可以包括累计值，将输出字段设为累计值即会从该分组中计算累计值。
-
 
 **API 说明**
 
