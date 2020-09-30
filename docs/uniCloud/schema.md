@@ -48,17 +48,19 @@ clientDB的工程目录结构见：[详情](https://uniapp.dcloud.net.cn/uniClou
 |description|string|描述，开发者维护时自用|
 |format|'url'&#124;'email'|数据格式|
 |pattern|String|正则表达式，如设置为手机号的正则表达式后，不符合该正则表达式则校验失败|
+|db-permission|Object|数据库权限，参考: [https://uniapp.dcloud.net.cn/uniCloud/uni-clientDB?id=db-permission](https://uniapp.dcloud.net.cn/uniCloud/uni-clientDB?id=db-permission)|
 |label|string|字段标题。用于生成数据维护ui界面时，渲染表单项前面的label标题|
 |defaultValue|string&#124;Object|默认值|
 |forceDefaultValue|string&#124;Object|强制默认值，不可通过clientDB的代码修改，常用于存放用户id、时间、客户端ip等固定值。具体参考下表的defaultValue|
 |errorMessage|string&#124;Object |当数据写入或更新时，校验数据合法性失败后，返回的错误提示|
 |group|string|分组id。生成数据维护ui界面时，多个字段对应的表单项可以合并显示在一个uni-group组件中|
 |order|int|表单项排序序号。生成数据维护ui界面时，该字段对应的表单项所处排序位置的序号。如果被包含在uni-group中，按同组排序|
-|component|Object|生成数据维护ui界面时，使用什么组件渲染这个表单项。比如使用uni-field输入框。详见下方示例|
+|component|Object&#124;Array|生成数据维护ui界面时，使用什么组件渲染这个表单项。比如使用input输入框。详见下方示例|
 
 **注意：**
 1. 数据校验，只有使用clientDB 2.0+，才有效。不用clientDB，在云函数中直接操作数据库无法使用该校验规则
-2. 生成数据维护ui页面，该功能暂未开放。
+2. 字段属性 `db-permission`, 仅支持 ".read", ".write"
+3. 生成数据维护ui页面，该功能暂未开放。
 
 ### bsonType可用类型
 
@@ -342,7 +344,7 @@ errorMessage支持字符串，也支持json object。类型为object时，可定
 ```
 
 
-### component属性（暂未开放）
+### component属性
 
 该字段在表单中使用什么样的组件进行渲染，可设置组件名和初始属性。
 
@@ -354,6 +356,13 @@ errorMessage支持字符串，也支持json object。类型为object时，可定
 |:-|:-|:-|
 |name|string|组件名称|
 |props|Object|组件属性|
+|children|String|子组件|
+|childrenData|Array|子组件数据|
+
+
+注意事项
+- `checkbox-group`, `radio-group`, 为uni内置组件，可以省略 `children` 属性
+- `children` 属性, `{item}` 表示 `childrenData` 数组中的项
 
 
 示例
@@ -361,75 +370,142 @@ errorMessage支持字符串，也支持json object。类型为object时，可定
 ```json
 {
   "bsonType": "object",
-  "required": ["name"],
+  "required": ["name", "nickname"],
+  "db-permission": {
+    ".read": false,
+    ".create": false,
+    ".update": false,
+    ".delete": false
+  },
   "properties": {
     "_id": {
-      "description": "存储ID，系统自动生成"
+      "description": "存储文档 ID（用户 ID），系统自动生成"
     },
     "name": {
       "bsonType": "string",
       "label": "姓名",
       "minLength": 2,
-      "maxLength": 8,
+      "maxLength": 10,
       "errorMessage": {
         "required": "{label}必填",
         "minLength": "{label}不能小于{minLength}个字符"
       },
+      "db-permission": {
+        ".read": false,
+        ".write": false
+      },
       "component": {
-        "name": "uni-field",
+        "name": "input",
         "props": {
-          "placeholder": "请输入姓名",
-          "class": "input",
-          "hidden": false,
-          "readonly": false,
-          "disabled": false
+          "placeholder": "请输入姓名"
         }
       }
     },
-    "age": {
-      "bsonType": "int",
-      "label": "年龄",
-      "minimum": 1,
-      "maximum": 150,
-      "errorMessage": "{label}应该大于 {minimum} 岁，小于 {maximum} 岁",
-      "component": {
-        "name": "uni-field",
-        "props": {
-          "placeholder": "请输入年龄"
-        }
-      }
-    },
-    "option": {
-      "bsonType": "int",
-      "label": "选项",
-      "enum": [1, 2, 3],
+    "nickname": {
+      "bsonType": "string",
+      "description": "用户昵称",
+      "label": "昵称",
       "errorMessage": "{label}无效",
       "component": {
-        "name": "select",
+        "name": "input",
         "props": {
-          "range": [
-            {
-              "label": "选项1",
-              "value": 1
-            },
-            {
-              "label": "选项2",
-              "value": 2
-            },
-            {
-              "label": "选项3",
-              "value": 3
-            }
-          ],
-          "range-key": "label",
-          "value": null
+          "placeholder": "请输入昵称"
         }
+      }
+    },
+    "hobby": {
+      "bsonType": "array",
+      "description": "爱好",
+      "label": "爱好",
+      "component": {
+        "name": "checkbox-group",
+        "childrenData": [{
+            "label": "游泳",
+            "value": 1
+          },
+          {
+            "label": "骑行",
+            "value": 2
+          },
+          {
+            "label": "音乐",
+            "value": 3
+          },
+          {
+            "label": "美术",
+            "value": 4
+          }
+        ]
+      }
+    },
+    "gender": {
+      "bsonType": "int",
+      "enum": [0, 1, 2],
+      "description": "用户性别：0 未知 1 男性 2 女性",
+      "label": "性别",
+      "component": {
+        "name": "radio-group",
+        "childrenData": [{
+            "label": "男",
+            "value": 1
+          },
+          {
+            "label": "女",
+            "value": 2
+          }
+        ]
+      },
+      "errorMessage": "{label}无效"
+    },
+    "email": {
+      "bsonType": "string",
+      "description": "邮箱地址",
+      "foarmat": "email",
+      "label": "邮箱",
+      "errorMessage": "{label}无效"
+    },
+    "language": {
+      "bsonType": "string",
+      "label": "自定义children",
+      "component": {
+        "name": "select",
+        "children": "<option value="{item.value}">{item.label}</option>",
+        "childrenData": [{"label": "中文简体", "value": "zh-cn"}]
       }
     }
   }
 }
 ```
 
+
+component 类型为数组
+
+```json
+{
+  "bsonType": "object",
+  "required": [],
+  "properties": {
+    "mobile": {
+      "bsonType": "string",
+      "label": "多个组件",
+      "component": [
+        {
+          "name": "input",
+          "props": {
+            "placeholder": "电话1"
+          }
+        },
+        {
+          "name": "input",
+          "props": {
+            "placeholder": "电话2"
+          }
+        }
+      ]
+    }
+  }
+}
+```
 
 
 ### group属性（暂未开放）
