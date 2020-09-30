@@ -214,6 +214,9 @@ export default {
       }
     },
     onTopWindowInit () {
+      if (!(this.responsive && this.topWindow)) {
+        return
+      }
       // TODO page header
       let windowTopHeight = '0px'
       if (this.topWindowStyle && this.topWindowStyle.height) {
@@ -225,6 +228,9 @@ export default {
       updateCssVar('--window-top', windowTopHeight)
     },
     onLeftWindowInit () {
+      if (!(this.responsive && this.leftWindow)) {
+        return
+      }
       if (this.leftWindowStyle && this.leftWindowStyle.width) {
         updateCssVar('--window-left', this.$refs.leftWindow.offsetWidth + 'px')
       } else {
@@ -232,6 +238,9 @@ export default {
       }
     },
     onRightWindowInit () {
+      if (!(this.responsive && this.rightWindow)) {
+        return
+      }
       if (this.rightWindowStyle && this.rightWindowStyle.width) {
         updateCssVar('--window-right', this.$refs.rightWindow.offsetWidth + 'px')
       } else {
@@ -251,6 +260,10 @@ export default {
 
   uni-main {
     flex: 1;
+  }
+
+  uni-top-window+uni-content {
+    height: calc(100vh - var(--window-top));
   }
 
   uni-left-window {

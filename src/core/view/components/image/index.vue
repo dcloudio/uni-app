@@ -143,7 +143,7 @@ export default {
         } else if (this.mode === 'heightFix') {
           const height = rect.height
           if (height) {
-            $el.style.width = fixNumber(height / this.ratio) + 'px'
+            $el.style.width = fixNumber(height * this.ratio) + 'px'
           }
         }
       }
