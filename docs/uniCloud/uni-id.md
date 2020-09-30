@@ -165,13 +165,24 @@ DCloud暂无计划开发百度、头条、QQ等小程序的登录，以及Apple 
 
 ## 角色权限@rbac
 
-自`1.1.9`版本起uni-id支持角色权限（通常情况下管理后台会需要角色权限）。除API列表内列出的角色权限相关的接口外，还有以下调整：
+自`1.1.9`版本起uni-id支持角色权限（通常情况下管理后台会需要角色权限）。除[角色权限API](uniCloud/uni-id.md?id=rbac-api)内列出的角色权限相关的接口外，还有以下调整：
 
 1. 所有登录注册接口可以接收`needPermission`参数，配置为true时会在`checkToken`接口返回用户权限（permission），否则permission字段会是一个空数组。开发者可以在用户登录管理后台时，传入此参数表示当前登录的用户需要返回permission。
 
 2. 新增两个数据表`uni-id-roles`、`uni-id-permissions`，可以使用示例项目里面的db_init.json创建，也可以直接使用opendb中的这两个数据表
 
-角色权限相关API请参考[角色权限API](uniCloud/uni-id.md?id=rbac-api)
+以管理后台为例，开发者可以在用户登录时传入`needPermission: true`。在checkToken时返回的结果中会包含role和permission，可以据此判断用户有没有权限进行操作。
+
+```js
+// 简单的权限校验示例
+function hasPermission(token, permission) {
+  const checkTokenRes = await uniID.checkToken(token)
+  if(checkTokenRes.code) {
+    return false
+  }
+  return checkTokenRes.permission.includes(permission)
+}
+```
 
 **注意**
 
