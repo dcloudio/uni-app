@@ -102,19 +102,3 @@ export const getSystemInfo = {
 export const getSystemInfoSync = getSystemInfo
 
 export const redirectTo = {}
-
-export const createCanvasContext: MPProtocol = {
-  returnValue(fromRes: any, toRes: UniApp.CanvasContext) {
-    const measureText = fromRes.measureText
-    toRes.measureText = function(
-      text: string,
-      callback: (measureText: UniApp.CanvasTextMetrics) => void
-    ) {
-      const textMetrics = measureText.call(this, text)
-      if (typeof callback === 'function') {
-        setTimeout(() => callback(textMetrics), 0)
-      }
-      return textMetrics
-    }
-  }
-}

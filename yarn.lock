@@ -271,10 +271,10 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@dcloudio/types@^2.0.6":
-  version "2.0.6"
-  resolved "https://registry.yarnpkg.com/@dcloudio/types/-/types-2.0.6.tgz#33daf724a58b593deef1294c210dad6509f1133d"
-  integrity sha512-ZOGaQMV2Xv8AtP2zBEURNVE62964fXZx1yCcMHRYxKPQtUzeOW0ZZVRkO6dxWLs/GE1GXTVJlJl/A9loLHqQOA==
+"@dcloudio/types@^2.0.0":
+  version "2.0.5"
+  resolved "https://registry.npmjs.org/@dcloudio/types/-/types-2.0.5.tgz#4a1e719775b53363945548d45535d5386ffaeaf9"
+  integrity sha512-4lNLAEECY5DEqfsnWIKR2T3lgZKvZIHEpljHVcBr28evbae7GA6pbUnitkEoA7o+yW3E83Sin0hwWBnBfb7B1A==
 
 "@eslint/eslintrc@^0.1.0":
   version "0.1.0"
