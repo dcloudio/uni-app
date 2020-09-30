@@ -146,6 +146,29 @@ clientDB目前内置了3个变量可以供客户端使用，客户端并非直�
 
 使用这些变量，将可以避免过去在服务端代码中写代码获取用户uid、时间和客户端ip的麻烦。
 
+### 刷新token
+
+透传uni-id自动刷新的token给客户端
+
+**用法**
+
+```js
+// 引入公共模块
+import db from '@/js_sdk/uni-clientDB/index.js'
+
+function refreshToken({
+  token,
+  tokenExpired
+}) {
+  uni.setStorageSync('uni_id_token', token)
+  uni.setStorageSync('uni_id_token_expired', tokenExpired)
+}
+// 绑定刷新token事件
+db.auth.on('refreshToken', refreshToken)
+// 解绑刷新token事件
+db.auth.off('refreshToken', refreshToken)
+```
+
 ## 云端部分
 
 clientDB的云端部分较多，包含一个公共模块uni-curd，还有一个很大的云函数uni-clientDB。
@@ -156,7 +179,7 @@ clientDB的云端部分较多，包含一个公共模块uni-curd，还有一个�
 
 1. db-permission目录用于存放权限规则。db-permission下每个文件对应一个表的权限，文件名为对应的表名。所谓数据权限，即什么样的用户身份，可以访问、操作哪些表、哪些字段。
 2. validator目录用于存放字段数据校验规则。和db-permission一样，validator目录下每个文件的文件名对应一个表名。
-3. action目录下存放各种action，action的作用是额外触发一段云函数逻辑。支持在操作数据库前触发action.before，也称为预处理，支持在操作数据库后触发action.afer，也称为后处理。action下每个目录对应一个action操作，前端页面在执行数据库操作时，可使用.action方法传入action参数，这样就会执行action目录下的云函数。还可以在权限规则内指定某些操作必须使用指定的action，比如`"action in ['action-a','action-b']"`，来达到更灵活的权限控制。
+3. action目录下存放各种action，action的作用是额外触发一段云函数逻辑。支持在操作数据库前触发action.before，也称为预处理，支持在操作数据库后触发action.after，也称为后处理。action下每个目录对应一个action操作，前端页面在执行数据库操作时，可使用.action方法传入action参数，这样就会执行action目录下的云函数。还可以在权限规则内指定某些操作必须使用指定的action，比如`"action in ['action-a','action-b']"`，来达到更灵活的权限控制。
 
 **注意**
 
