@@ -1,4 +1,4 @@
-DCloud有**500万**开发者，[uni统计](https://tongji.dcloud.net.cn/)手机端月活**10亿**。是开发者数量和案例最丰富的多端开发框架。
+DCloud有**600万**开发者，[uni统计](https://tongji.dcloud.net.cn/)手机端月活**10亿**。是开发者数量和案例最丰富的多端开发框架。
 
 欢迎知名开发商[提交案例](https://github.com/dcloudio/uni-app/issues/6)或接入[uni统计](https://tongji.dcloud.net.cn/)。
 
@@ -91,6 +91,15 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 		<span style="margin-top:15px;">iOS App版</span>
 	</a>
 </div>
+
+<b>中国教育发布：</b>中国人民共和国教育部官方App。使用uniCloud云开发。[详见](http://www.moe.gov.cn/jyb_xwfb/gzdt_gzdt/s5987/202009/t20200904_485105.html)
+<div style="display:flex;justify-content: space-around;">
+	<a href="javascript:;" target="_blank" class="clear-style barcode-view">
+		<img src="http://www.moe.gov.cn/jyb_xwfb/gzdt_gzdt/s5987/202009/W020200904300248750807.jpg" width="200"/>
+		<span style="margin-top:15px;">iOS、Android通用扫码地址</span>
+	</a>
+</div>
+
 
 <!-- 
 <a href="https://www.csdn.net/" target="_blank" class="clear-style"><b>CSDN：</b></a> 专业 IT 技术社区，致力于为中国软件开发者提供知识传播、在线学习、职业发展等全生命周期服务。
@@ -325,6 +334,8 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 #### 政府
 
 **大量新冠抗疫项目，详见专题：**[xinguan2020.dcloud.net.cn](https://dcloud.io/ncp.html)
+
+**中国教育发布：**中国人民共和国教育部官方App。使用uniCloud云开发。[详见](http://www.moe.gov.cn/jyb_xwfb/gzdt_gzdt/s5987/202009/t20200904_485105.html)
 
 **共青团全国青少年弘扬中华优秀传统文化交流展示活动专题网站：**[同时适配PC和手机版的H5](https://chuancheng.xwhdw.com/)
 
