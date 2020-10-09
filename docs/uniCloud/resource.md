@@ -10,7 +10,14 @@
 更多项目源码，见**插件市场**：[https://ext.dcloud.net.cn/?cat1=7](https://ext.dcloud.net.cn/?cat1=7)
 
 ### 商用案例
-- 中国教育发布：中国教育部官方App。[详见](http://www.moe.gov.cn/jyb_xwfb/gzdt_gzdt/s5987/202009/t20200904_485105.html)
+- 中国教育发布：中国教育部官方App。[详见报道](http://www.moe.gov.cn/jyb_xwfb/gzdt_gzdt/s5987/202009/t20200904_485105.html)
+<div style="display:flex;justify-content: space-around;">
+	<a href="javascript:;" target="_blank" class="clear-style barcode-view">
+		<img src="http://www.moe.gov.cn/jyb_xwfb/gzdt_gzdt/s5987/202009/W020200904300248750807.jpg" width="200"/>
+		<span style="margin-top:15px;">iOS、Android通用扫码地址</span>
+	</a>
+</div>
+
 - 登登多邻国：是登登教育公司为外语学习者提供的题库软件。其服务端整体基于uniCloud，前端包括PC和H5网站、微信小程序，均连接uniCloud。日请求量**百万级**。
 
 web体验地址：[https://duolingo.91ddedu.com](https://duolingo.91ddedu.com)；
