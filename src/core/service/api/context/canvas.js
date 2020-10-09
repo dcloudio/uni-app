@@ -336,6 +336,11 @@ export class CanvasContext {
     } else {
       const webview = plus.webview.getWebviewById(String(this.pageId))
       width = webview.evalJSSync(`(${measureText.toString()})(${JSON.stringify(text)},${JSON.stringify(font)})`)
+      width = Number(width)
+      // 安卓部分情况会计算失败，进行重试
+      if (isNaN(width)) {
+        return this.measureText(text)
+      }
     }
     return new TextMetrics(width)
   }
