@@ -7,7 +7,7 @@ DB Schema是一种基于 JSON 格式定义的数据结构的规范。
 * 完整的结构验证，可用于验证客户端提交的数据及自动化测试。
 * 可自动生成ui维护界面，比如新建页面和编辑页面，自动处理校验规则。（暂未上线）
 
-> MongoDB支持JSON Schema的草案4，包括[core specification](https://tools.ietf.org/html/draft-zyp-json-schema-04)和[validation specification](https://tools.ietf.org/html/draft-fge-json-schema-validation-00)。uniCloud在MongoDB基础上进行了JSON Schema扩展。
+> MongoDB支持通过 [$jsonSchema 操作符](https://docs.mongodb.com/manual/reference/operator/query/jsonSchema/index.html)在插入和更新文档时进行结构验证（非空、类型校验等）， $jsonSchema 支持 JSON Schema的草案4，包括[core specification](https://tools.ietf.org/html/draft-zyp-json-schema-04)和[validation specification](https://tools.ietf.org/html/draft-fge-json-schema-validation-00)。uniCloud在MongoDB基础上进行了JSON Schema扩展。
 
 
 #### 如何体验
