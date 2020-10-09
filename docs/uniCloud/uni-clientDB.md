@@ -146,6 +146,55 @@ clientDB目前内置了3个变量可以供客户端使用，客户端并非直�
 
 使用这些变量，将可以避免过去在服务端代码中写代码获取用户uid、时间和客户端ip的麻烦。
 
+### 查询条件扩展@jsquery
+
+自uni-clientDB 2.0.5版本起，支持使用类js语法进行查询条件的编写。具体看以下示例
+
+```js
+import db from '@/js_sdk/uni-clientDB/index.js'
+const dbCmd = db.command
+
+// 上面的示例中的where条件可以使用以下写法
+db.action('get-info') // 不使用action时可以不调用action方法
+  .collection('list')
+  .where('/龚/g.test(name) && time > 1105885393581')
+  .field({
+    name: true,
+    time: true,
+    content: true
+  }).get()
+  .then((res)=>{
+    // res 为数据库查询结果
+  }).catch((err)=>{
+    
+  })
+```
+
+**条件内可以使用的变量**
+
+|变量名					|说明																																																																												|
+|:-:						|:-:																																																																												|
+|auth.uid				|用户id																																																																											|
+|auth.role			|用户角色数组，参考[uni-id 角色权限](/uniCloud/uni-id?id=rbac)，注意`admin`为clientDB内置的角色，如果用户角色列表里包含`admin`则认为此用户有完全数据访问权限|
+|auth.permission|用户权限数组，参考[uni-id 角色权限](/uniCloud/uni-id?id=rbac)																																															|
+|now						|当前时间戳（单位：毫秒），时间戳可以进行额外运算，如publish\_date > now - 60000表示publish\_date在最近一分钟																						|
+
+
+**条件语句内可以使用的运算符**
+
+|运算符				|说明					|示例															|示例解释(集合查询)																										|
+|:-:					|:-:					|:-:															|:-:																																	|
+|==						|等于					|name == 'abc'										|查询name属性为abc的记录																							|
+|!=						|不等于				|name != 'abc'										|查询name属性不为abc的记录																						|
+|>						|大于					|age>10														|查询条件的 age 属性大于 10																						|
+|>=						|大于等于			|age>=10													|查询条件的 age 属性大于等于 10																				|
+|<						|小于					|age<10														|查询条件的 age 属性小于 10																						|
+|<=						|小于等于			|age<=10													|查询条件的 age 属性小于等于 10																				|
+|in						|存在在数组中	|status in ['a','b']							|查询条件的 status 是['a','b']中的一个，数组中所有元素类型需一致			|
+|!						|非						|!(status in ['a','b'])						|查询条件的 status 不是['a','b']中的任何一个，数组中所有元素类型需一致|
+|&&						|与						|uid == auth.uid && age > 10			|查询记录uid属性 为 当前用户uid 并且查询条件的 age 属性大于 10				|
+|&#124;&#124;	|或						|uid == auth.uid&#124;&#124;age>10|查询记录uid属性 为 当前用户uid 或者查询条件的 age 属性大于 10				|
+
 ### 刷新token
 
 透传uni-id自动刷新的token给客户端
@@ -328,18 +377,18 @@ db-permission为对数据的操作权限，如果要封装业务权限，可以�
 
 **权限规则内可以使用的运算符**
 
-|运算符	|说明						|示例																|示例解释(集合查询)																	|
-|:-:		|:-:						|:-:																|:-:																								|
-|==			|等于						|auth.uid == 'abc'									|用户id为abc																				|
-|!=			|不等于					|auth.uid != 'abc'									|用户id不为abc																			|
-|>			|大于						|doc.age>10													|查询条件的 age 属性大于 10													|
-|>=			|大于等于				|doc.age>=10												|查询条件的 age 属性大于等于 10											|
-|<			|小于						|doc.age<10													|查询条件的 age 属性小于 10													|
-|<=			|小于等于				|doc.age<=10												|查询条件的 age 属性小于等于 10											|
-|in			|存在在数组中		|doc.status in ['a','b']						|查询条件的 status 是['a','b']中的一个，数组中所有元素类型需一致							|
-|nin		|不存在在数组中	|doc.status nin ['a','b']						|查询条件的 status 不是['a','b']中的任何一个，数组中所有元素类型需一致				|
-|&&			|与							|auth.uid == 'abc' && doc.age>10	|用户id 为 abc 并且查询条件的 age 属性大于 10|
-|&#124;&#124;|或	|auth.uid == 'abc'&#124;&#124;doc.age>10												|用户Id为abc或者查询条件的 age 属性大于 10|
+|运算符				|说明					|示例																		|示例解释(集合查询)																										|
+|:-:					|:-:					|:-:																		|:-:																																	|
+|==						|等于					|auth.uid == 'abc'											|用户id为abc																													|
+|!=						|不等于				|auth.uid != 'abc'											|用户id不为abc																												|
+|>						|大于					|doc.age>10															|查询条件的 age 属性大于 10																						|
+|>=						|大于等于			|doc.age>=10														|查询条件的 age 属性大于等于 10																				|
+|<						|小于					|doc.age<10															|查询条件的 age 属性小于 10																						|
+|<=						|小于等于			|doc.age<=10														|查询条件的 age 属性小于等于 10																				|
+|in						|存在在数组中	|doc.status in ['a','b']								|查询条件的 status 是['a','b']中的一个，数组中所有元素类型需一致			|
+|!						|非 `2.0.5+`	|!(doc.status in ['a','b'])							|查询条件的 status 不是['a','b']中的任何一个，数组中所有元素类型需一致|
+|&&						|与						|auth.uid == 'abc' && doc.age>10				|用户id 为 abc 并且查询条件的 age 属性大于 10													|
+|&#124;&#124;	|或						|auth.uid == 'abc'&#124;&#124;doc.age>10|用户Id为abc或者查询条件的 age 属性大于 10														|
 
 **权限规则内可以使用的方法**
 
