@@ -124,6 +124,34 @@ clientDB的工程目录结构见：[详情](https://uniapp.dcloud.net.cn/uniClou
 ```
 
 
+### db-permission属性
+
+数据库权限示例
+
+```json
+{
+  "bsonType": "object",
+  "required": [],
+  "db-permission": {
+    ".read": false, // 禁止新增数据记录
+    ".create": false, // 禁止更新数据
+    ".update": false, // 每个用户只能读取用户自己的数据。前提是要操作的数据doc，里面有一个字段存放了uid，即uni-id的用户id。
+    ".delete": false // 禁止删除数据
+  },
+  "properties": {
+    ...
+    "name": {
+      "bsonType": "string",
+      "label": "姓名",
+      "db-permission": {
+        ".read": false, // 禁止读取 name 字段的数据
+        ".write": false // 禁止写入 name 字段的数据
+      }
+      ...
+    }
+  }
+}
+```
 
 
 ### defaultValue/forceDefaultValue
