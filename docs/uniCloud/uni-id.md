@@ -146,7 +146,8 @@ DCloud暂无计划开发百度、头条、QQ等小程序的登录，以及Apple 
 			// 支付宝小程序登录用到的appid、privateKey请参考支付宝小程序的文档进行设置或者获取，https://opendocs.alipay.com/open/291/105971#LDsXr
 			"alipay": {
 				"appid": "alipay appid",
-				"privateKey": "alipay privateKey"
+				"privateKey": "alipay privateKey", // 私钥
+				"keyType": "PKCS8" // 私钥类型，如果私钥类型不是PKCS8，需要填写此字段，否则会出现“error:0D0680A8:asn1 encoding routines:ASN1_CHECK_TLEN:wrong tag”错误
 			}
 		}
 	},
