@@ -80,7 +80,7 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 	</a>
 </div>
 
-<b>Crimaster犯罪大师：</b>火爆的全球推理侦探专属社区。优秀App案例，Appstore娱乐分类排名曾排**第1位**。[报道](https://baijiahao.baidu.com/s?id=1667788917828125742&wfr=spider&for=pc)
+<b>Crimaster犯罪大师：</b>火爆的全球推理侦探专属社区。优秀App案例，Appstore娱乐分类排名曾排**第1位**。[详见报道](https://baijiahao.baidu.com/s?id=1667788917828125742&wfr=spider&for=pc)
 <div style="display:flex;justify-content: space-around;">
 	<a href="https://android.myapp.com/myapp/detail.htm?apkName=com.ultron.crimaster" target="_blank" class="clear-style barcode-view">
 		<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-alicdn/83bc24b0-c55c-11ea-b244-a9f5e5565f30.png" width="200"/>
@@ -92,7 +92,7 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 	</a>
 </div>
 
-<b>中国教育发布：</b>中国人民共和国教育部官方App。使用uniCloud云开发。[详见](http://www.moe.gov.cn/jyb_xwfb/gzdt_gzdt/s5987/202009/t20200904_485105.html)
+<b>中国教育发布：</b>中国人民共和国教育部官方App。使用uniCloud云开发。[详见报道](http://www.moe.gov.cn/jyb_xwfb/gzdt_gzdt/s5987/202009/t20200904_485105.html)
 <div style="display:flex;justify-content: space-around;">
 	<a href="javascript:;" target="_blank" class="clear-style barcode-view">
 		<img src="http://www.moe.gov.cn/jyb_xwfb/gzdt_gzdt/s5987/202009/W020200904300248750807.jpg" width="200"/>
