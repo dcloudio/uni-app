@@ -1,6 +1,7 @@
 <template>
   <uni-app :class="{'uni-app--showtabbar':showTabBar}">
     <layout
+      ref="layout"
       :router-key="key"
       :keep-alive-include="keepAliveInclude"
     />

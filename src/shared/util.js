@@ -50,6 +50,13 @@ export const camelize = cached((str) => {
   return str.replace(camelizeRE, (_, c) => c ? c.toUpperCase() : '')
 })
 
+/**
+ * Capitalize a string.
+ */
+export const capitalize = cached((str) => {
+  return str.charAt(0).toUpperCase() + str.slice(1)
+})
+
 export function setProperties (item, props, propsData) {
   props.forEach(function (name) {
     if (hasOwn(propsData, name)) {

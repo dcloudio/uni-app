@@ -5,7 +5,7 @@
   >
     <uni-top-window
       v-if="topWindow"
-      v-show="showTopWindow"
+      v-show="showTopWindow || apiShowTopWindow"
     >
       <div
         ref="topWindow"
@@ -30,25 +30,41 @@
       </uni-main>
       <uni-left-window
         v-if="leftWindow"
-        v-show="showLeftWindow"
+        v-show="showLeftWindow || apiShowLeftWindow"
         ref="leftWindow"
+        :data-show="apiShowLeftWindow"
         :style="leftWindowStyle"
       >
-        <v-uni-left-window
-          ref="left"
-          @hook:mounted="onLeftWindowInit"
+        <div
+          v-if="apiShowLeftWindow"
+          class="uni-mask"
+          @click="apiShowLeftWindow = false"
         />
+        <div class="uni-left-window">
+          <v-uni-left-window
+            ref="left"
+            @hook:mounted="onLeftWindowInit"
+          />
+        </div>
       </uni-left-window>
       <uni-right-window
         v-if="rightWindow"
-        v-show="showRightWindow"
+        v-show="showRightWindow || apiShowRightWindow"
         ref="rightWindow"
+        :data-show="apiShowRightWindow"
         :style="rightWindowStyle"
       >
-        <v-uni-right-window
-          ref="right"
-          @hook:mounted="onRightWindowInit"
+        <div
+          v-if="apiShowRightWindow"
+          class="uni-mask"
+          @click="apiShowRightWindow = false"
         />
+        <div class="uni-right-window">
+          <v-uni-right-window
+            ref="right"
+            @hook:mounted="onRightWindowInit"
+          />
+        </div>
       </uni-right-window>
     </uni-content>
     <!--TODO footer-->
@@ -65,7 +81,8 @@
 import Vue from 'vue'
 
 import {
-  hasOwn
+  hasOwn,
+  capitalize
 } from 'uni-shared'
 
 import {
@@ -119,7 +136,10 @@ export default {
       topWindowMediaQuery: false,
       leftWindowMediaQuery: false,
       rightWindowMediaQuery: false,
-      topWindowHeight: '0px'
+      topWindowHeight: '0px',
+      apiShowTopWindow: false,
+      apiShowLeftWindow: false,
+      apiShowRightWindow: false
     }
   },
   computed: {
@@ -127,12 +147,15 @@ export default {
       return this.showTopWindow || this.showLeftWindow || this.showRightWindow
     },
     showTopWindow () {
+      this.resetApiShowWindow()
       return this.$route.meta.topWindow !== false && this.topWindowMediaQuery
     },
     showLeftWindow () {
+      this.resetApiShowWindow()
       return this.$route.meta.leftWindow !== false && this.leftWindowMediaQuery
     },
     showRightWindow () {
+      this.resetApiShowWindow()
       return this.$route.meta.rightWindow !== false && this.rightWindowMediaQuery
     }
   },
@@ -190,6 +213,31 @@ export default {
     }
   },
   methods: {
+    resetApiShowWindow () {
+      // 仅对 left，right 重置
+      // this.apiShowTopWindow = false
+      this.apiShowLeftWindow = false
+      this.apiShowRightWindow = false
+    },
+    showWindow (type, show = true) {
+      if (!this[type + 'Window']) {
+        return type + 'Window not found'
+      }
+      const fType = capitalize(type)
+      if (!this['show' + fType + 'Window']) { // 小屏下
+        const apiShowName = 'apiShow' + fType + 'Window'
+        if (this[apiShowName] !== show) {
+          this[apiShowName] = show
+          if (type === 'top') { // 特殊处理 top
+            if (show) {
+              this.$nextTick(this.onTopWindowInit)
+            } else {
+              updateCssVar('--window-top', '0px')
+            }
+          }
+        }
+      }
+    },
     initWindowMinWidth (type) {
       const name = type + 'Window'
       if (this[name]) {
@@ -211,7 +259,7 @@ export default {
         mediaQueryList.addListener((e) => {
           this[name] = e.matches
           this.$nextTick(() => {
-            this['on' + (type.substr(0, 1).toUpperCase() + type.substr(1)) + 'WindowInit']()
+            this['on' + capitalize(type) + 'WindowInit']()
           })
         })
         this[name] = mediaQueryList.matches
@@ -281,6 +329,26 @@ export default {
     position: relative;
     width: var(--window-right);
     overflow-x: hidden;
+  }
+
+  uni-left-window[data-show],
+  uni-right-window[data-show] {
+    position: absolute;
+  }
+
+  uni-right-window[data-show] {
+    right: 0;
+  }
+
+  uni-content .uni-mask,
+  .uni-left-window,
+  .uni-right-window {
+    z-index: 997;
+  }
+
+  .uni-mask+.uni-left-window,
+  .uni-mask+.uni-right-window {
+    position: absolute;
   }
 
   .uni-app--showlayout+uni-tabbar {
