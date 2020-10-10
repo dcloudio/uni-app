@@ -511,7 +511,9 @@ export default {
       const main = this.$refs.main
       return {
         scrollLeft: main.scrollLeft,
-        scrollTop: main.scrollTop
+        scrollTop: main.scrollTop,
+        scrollHeight: main.scrollHeight,
+        scrollWidth: main.scrollWidth
       }
     }
   }

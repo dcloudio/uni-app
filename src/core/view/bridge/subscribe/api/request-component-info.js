@@ -27,8 +27,12 @@ function getRootInfo (fields) {
     info.height = document.documentElement.clientHeight
   }
   if (fields.scrollOffset) {
-    info.scrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft || 0
-    info.scrollTop = document.documentElement.scrollTop || document.body.scrollTop || 0
+    const documentElement = document.documentElement
+    const body = document.body
+    info.scrollLeft = documentElement.scrollLeft || body.scrollLeft || 0
+    info.scrollTop = documentElement.scrollTop || body.scrollTop || 0
+    info.scrollHeight = documentElement.scrollHeight || body.scrollHeight || 0
+    info.scrollWidth = documentElement.scrollWidth || body.scrollWidth || 0
   }
   return info
 }
