@@ -65,6 +65,10 @@
 import Vue from 'vue'
 
 import {
+  hasOwn
+} from 'uni-shared'
+
+import {
   RESPONSIVE_MIN_WIDTH
 } from 'uni-helpers/constants'
 
@@ -192,7 +196,7 @@ export default {
         const minWidthName = type + 'WindowMinWidth'
         this[minWidthName] = RESPONSIVE_MIN_WIDTH
         const windowOptions = __uniConfig[name]
-        if (windowOptions && windowOptions.matchMedia && windowOptions.matchMedia.minWidth) {
+        if (windowOptions && windowOptions.matchMedia && hasOwn(windowOptions.matchMedia, 'minWidth')) {
           this[minWidthName] = windowOptions.matchMedia.minWidth
         }
         if (!this.minWidth || this.minWidth > this[minWidthName]) {
