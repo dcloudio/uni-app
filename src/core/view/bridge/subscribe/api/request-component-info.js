@@ -62,7 +62,7 @@ function getNodeInfo (el, fields) {
     }
   }
   // TODO 组件 props
-  if (fields.properties) {
+  if (Array.isArray(fields.properties)) {
     fields.properties.forEach(prop => {
       prop = prop.replace(/-([a-z])/g, function (e, t) {
         return t.toUpperCase()
@@ -76,7 +76,15 @@ function getNodeInfo (el, fields) {
     } else {
       info.scrollLeft = 0
       info.scrollTop = 0
+      info.scrollHeight = 0
+      info.scrollWidth = 0
     }
+  }
+  if (Array.isArray(fields.computedStyle)) {
+    const sytle = getComputedStyle(el)
+    fields.computedStyle.forEach(name => {
+      info[name] = sytle[name]
+    })
   }
   if (fields.context) {
     if (el.__vue__ && el.__vue__._getContextInfo) {
