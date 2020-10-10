@@ -1,11 +1,11 @@
 <template>
   <uni-layout
     v-if="responsive"
-    :class="{'uni-app--showlayout':showLayout}"
+    :class="{'uni-app--showlayout':showLayout,'uni-app--showtopwindow':showTopWindow,'uni-app--showleftwindow':showLeftWindow,'uni-app--showrightwindow':showRightWindow}"
   >
     <uni-top-window
       v-if="topWindow"
-      v-show="showTopWindow && topWindowMediaQuery"
+      v-show="showTopWindow"
     >
       <div
         ref="topWindow"
@@ -30,7 +30,7 @@
       </uni-main>
       <uni-left-window
         v-if="leftWindow"
-        v-show="showLeftWindow && leftWindowMediaQuery"
+        v-show="showLeftWindow"
         ref="leftWindow"
         :style="leftWindowStyle"
       >
@@ -41,7 +41,7 @@
       </uni-left-window>
       <uni-right-window
         v-if="rightWindow"
-        v-show="showRightWindow && rightWindowMediaQuery"
+        v-show="showRightWindow"
         ref="rightWindow"
         :style="rightWindowStyle"
       >
@@ -123,13 +123,13 @@ export default {
       return this.showTopWindow || this.showLeftWindow || this.showRightWindow
     },
     showTopWindow () {
-      return this.$route.meta.topWindow !== false
+      return this.$route.meta.topWindow !== false && this.topWindowMediaQuery
     },
     showLeftWindow () {
-      return this.$route.meta.leftWindow !== false
+      return this.$route.meta.leftWindow !== false && this.leftWindowMediaQuery
     },
     showRightWindow () {
-      return this.$route.meta.rightWindow !== false
+      return this.$route.meta.rightWindow !== false && this.rightWindowMediaQuery
     }
   },
   watch: {
