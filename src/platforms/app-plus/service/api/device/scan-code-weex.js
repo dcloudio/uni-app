@@ -23,9 +23,7 @@ export function scanCode (options, callbackId) {
   let result
   const page = showPage({
     url: '__uniappscan',
-    data: {
-      scanType: options.scanType
-    },
+    data: options,
     style: {
       animationType: options.animationType || 'pop-in',
       titleNView: {

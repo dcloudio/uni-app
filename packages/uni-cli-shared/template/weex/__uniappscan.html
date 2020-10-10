@@ -114,11 +114,12 @@
                     scan = new plus.barcode.Barcode('scan', webview.__uniapp_scan_type, {
                         frameColor: '#118CE9',
                         scanbarColor: '#118CE9'
-                    });
-                    scan.onmarked = function(type, code, file) {
+                    }, webview.__uniapp_auto_decode_char_set);
+                    scan.onmarked = function(type, code, file, charSet) {
                         var res = {
                             type: type,
-                            code: code
+                            code: code,
+                            charSet: charSet
                         };
                         back()
                         plus.webview.postMessageToUniNView({
