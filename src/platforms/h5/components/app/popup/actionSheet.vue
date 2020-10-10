@@ -190,6 +190,7 @@ uni-actionsheet .uni-actionsheet__title {
   font-size: 18px;
   text-overflow: ellipsis;
   overflow: hidden;
+  cursor: pointer;
 }
 
 uni-actionsheet .uni-actionsheet__cell:before {
