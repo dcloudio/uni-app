@@ -330,16 +330,20 @@ export class CanvasContext {
 
   measureText (text) {
     const font = this.state.font
-    let width
+    let width = 0
     if (__PLATFORM__ === 'h5') {
       width = measureText(text, font)
     } else {
-      const webview = plus.webview.getWebviewById(String(this.pageId))
-      width = webview.evalJSSync(`(${measureText.toString()})(${JSON.stringify(text)},${JSON.stringify(font)})`)
-      width = Number(width)
-      // 安卓部分情况会计算失败，进行重试
-      if (isNaN(width)) {
-        return this.measureText(text)
+      const webview = plus.webview.all().find(webview => webview.getURL().endsWith('www/__uniappview.html'))
+      if (webview) {
+        for (let index = 0; index < 5; index++) {
+          width = Number(webview.evalJSSync(`(${measureText.toString()})(${JSON.stringify(text)},${JSON.stringify(font)})`))
+          // 安卓部分情况会计算失败，进行重试
+          if (!isNaN(width)) {
+            width = 0
+            break
+          }
+        }
       }
     }
     return new TextMetrics(width)
