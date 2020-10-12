@@ -14,6 +14,7 @@
       >
         <v-uni-top-window
           ref="top"
+          :navigation-bar-title-text="navigationBarTitleText"
           v-bind="bindWindow"
           @hook:mounted="onTopWindowInit"
         />
@@ -142,7 +143,8 @@ export default {
       topWindowHeight: '0px',
       apiShowTopWindow: false,
       apiShowLeftWindow: false,
-      apiShowRightWindow: false
+      apiShowRightWindow: false,
+      navigationBarTitleText: ''
     }
   },
   computed: {
@@ -222,6 +224,10 @@ export default {
           this.rightWindowStyle = this.rightWindow.options.style
         }
         windowTypes.forEach(type => this.initMediaQuery(type))
+
+        UniServiceJSBridge.on('onNavigationBarChange', (navigationBar) => {
+          this.navigationBarTitleText = navigationBar.titleText
+        })
       }
     }
   },
