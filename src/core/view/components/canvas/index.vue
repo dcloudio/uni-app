@@ -349,8 +349,8 @@ export default {
                 return
               }
             }
-            // Chrome85+ 本地路径
-            if (src.indexOf('file://') === 0 && navigator.vendor === 'Google Inc.' && Promise.any) {
+            // Chrome84+ 本地路径
+            if (src.indexOf('file://') === 0 && navigator.vendor === 'Google Inc.' && 'wakeLock' in navigator) {
               image.crossOrigin = 'anonymous'
             }
           }

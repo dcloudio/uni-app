@@ -339,6 +339,10 @@ module.exports = function (pagesJson, userManifestJson, isAppView) {
     const nvuePages = (appJson.nvue && appJson.nvue.pages) || {}
     for (const key in confusion.resources) {
       if (path.extname(key) === '.js') { // 支持 js 混淆，过滤掉
+        // 静态 js 文件
+        if (key.indexOf('hybrid/html') === 0 || key.indexOf('static/') === 0 || key.indexOf('/static/') !== -1) {
+          resources[key] = confusion.resources[key]
+        }
         continue
       }
       if (!/\.nvue$/.test(key)) {
@@ -349,9 +353,10 @@ module.exports = function (pagesJson, userManifestJson, isAppView) {
       if (!Object.keys(nvuePages).find(path => {
         const subNVues = nvuePages[path].window.subNVues || []
         // TODO
-        return (path.replace(/\.html$/, '.nvue') === key || path.replace(/\.html$/, '.nvue') + '.nvue' === key) || subNVues.find(({
-          path
-        }) => path === key.replace(/\.nvue$/, ''))
+        return (path.replace(/\.html$/, '.nvue') === key || path.replace(/\.html$/, '.nvue') + '.nvue' === key) ||
+            subNVues.find(({
+              path
+            }) => path === key.replace(/\.nvue$/, ''))
       }) && !pagesJson.pages.find(({
         style = {}
       }) => {

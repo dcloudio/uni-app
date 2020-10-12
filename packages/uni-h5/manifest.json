@@ -741,6 +741,30 @@
             ]
         ]
     ],
+    "showTopWindow": [
+        "/platforms/h5/service/api/ui/windows.js",
+        []
+    ],
+    "showLeftWindow": [
+        "/platforms/h5/service/api/ui/windows.js",
+        []
+    ],
+    "showRightWindow": [
+        "/platforms/h5/service/api/ui/windows.js",
+        []
+    ],
+    "hideTopWindow": [
+        "/platforms/h5/service/api/ui/windows.js",
+        []
+    ],
+    "hideLeftWindow": [
+        "/platforms/h5/service/api/ui/windows.js",
+        []
+    ],
+    "hideRightWindow": [
+        "/platforms/h5/service/api/ui/windows.js",
+        []
+    ],
     "$emit": [
         "/platforms/h5/service/api/base/event-bus.js",
         [
