@@ -136,35 +136,92 @@
 在 `<web-view>` 加载的 HTML 中，添加以下代码：
 
 ```html
-<script type="text/javascript">
-  var userAgent = navigator.userAgent;
-  if (userAgent.indexOf('AlipayClient') > -1) {
-    // 支付宝小程序的 JS-SDK 防止 404 需要动态加载，如果不需要兼容支付宝小程序，则无需引用此 JS 文件。
-    document.writeln('<script src="https://appx/web-view.min.js"' + '>' + '<' + '/' + 'script>');
-  } else if (/QQ/i.test(userAgent) && /miniProgram/i.test(userAgent)) {
-    // QQ 小程序
-    document.write('<script type="text/javascript" src="https://qqq.gtimg.cn/miniprogram/webview_jssdk/qqjssdk-1.0.0.js"><\/script>');
-  } else if (/miniProgram/i.test(userAgent) || /MicroMessenger/i.test(userAgent)) {
-    // 微信小程序 JS-SDK 如果不需要兼容微信小程序，则无需引用此 JS 文件。
-    document.write('<script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.4.0.js"><\/script>');
-  } else if (/toutiaomicroapp/i.test(userAgent)) {
-    // 字节跳动小程序 JS-SDK 如果不需要兼容字节跳动小程序，则无需引用此 JS 文件。
-    document.write('<script type="text/javascript" src="https://s3.pstatp.com/toutiao/tmajssdk/jssdk-1.0.1.js"><\/script>');
-  } else if (/swan/i.test(userAgent)) {
-    // 百度小程序 JS-SDK 如果不需要兼容百度小程序，则无需引用此 JS 文件。
-    document.write('<script type="text/javascript" src="https://b.bdstatic.com/searchbox/icms/searchbox/js/swan-2.0.18.js"><\/script>');
-  }
-  if (!/toutiaomicroapp/i.test(userAgent)) {
-    document.querySelector('.post-message-section').style.visibility = 'visible';
-  }
-</script>
-<!-- uni 的 SDK -->
-<script type="text/javascript" src="https://js.cdn.aliyun.dcloud.net.cn/dev/uni-app/uni.webview.1.5.2.js"></script>
-```
-待触发 `UniAppJSBridgeReady` 事件后，即可调用 uni 的 API。
-```html
-<script>
-    document.addEventListener('UniAppJSBridgeReady', function() {
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>网络网页</title>
+    <style type="text/css">
+      .btn {
+        display: block;
+        margin: 20px auto;
+        padding: 5px;
+        background-color: #007aff;
+        border: 0;
+        color: #ffffff;
+        height: 40px;
+        width: 200px;
+      }
+
+      .btn-red {
+        background-color: #dd524d;
+      }
+
+      .btn-yellow {
+        background-color: #f0ad4e;
+      }
+
+      .desc {
+        padding: 10px;
+        color: #999999;
+      }
+
+      .post-message-section {
+        visibility: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <p class="desc">web-view 组件加载网络 html 示例。点击下列按钮，跳转至其它页面。</p>
+    <div class="btn-list">
+      <button class="btn" type="button" data-action="navigateTo">navigateTo</button>
+      <button class="btn" type="button" data-action="redirectTo">redirectTo</button>
+      <button class="btn" type="button" data-action="navigateBack">navigateBack</button>
+      <button class="btn" type="button" data-action="reLaunch">reLaunch</button>
+      <button class="btn" type="button" data-action="switchTab">switchTab</button>
+    </div>
+    <div class="post-message-section">
+      <p class="desc">网页向应用发送消息，注意：小程序端应用会在此页面后退时接收到消息。</p>
+      <div class="btn-list">
+        <button class="btn btn-red" type="button" id="postMessage">postMessage</button>
+      </div>
+    </div>
+    <script type="text/javascript">
+      var userAgent = navigator.userAgent;
+      if (userAgent.indexOf('AlipayClient') > -1) {
+        // 支付宝小程序的 JS-SDK 防止 404 需要动态加载，如果不需要兼容支付宝小程序，则无需引用此 JS 文件。
+        document.writeln('<script src="https://appx/web-view.min.js"' + '>' + '<' + '/' + 'script>');
+      } else if (/QQ/i.test(userAgent) && /miniProgram/i.test(userAgent)) {
+        // QQ 小程序
+        document.write(
+          '<script type="text/javascript" src="https://qqq.gtimg.cn/miniprogram/webview_jssdk/qqjssdk-1.0.0.js"><\/script>'
+        );
+      } else if (/miniProgram/i.test(userAgent) && /micromessenger/i.test(userAgent)) {
+        // 微信小程序 JS-SDK 如果不需要兼容微信小程序，则无需引用此 JS 文件。
+        document.write('<script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.4.0.js"><\/script>');
+      } else if (/toutiaomicroapp/i.test(userAgent)) {
+        // 头条小程序 JS-SDK 如果不需要兼容头条小程序，则无需引用此 JS 文件。
+        document.write(
+          '<script type="text/javascript" src="https://s3.pstatp.com/toutiao/tmajssdk/jssdk-1.0.1.js"><\/script>');
+      } else if (/swan/i.test(userAgent)) {
+        // 百度小程序 JS-SDK 如果不需要兼容百度小程序，则无需引用此 JS 文件。
+        document.write(
+          '<script type="text/javascript" src="https://b.bdstatic.com/searchbox/icms/searchbox/js/swan-2.0.18.js"><\/script>'
+        );
+      } else if (/quickapp/i.test(userAgent)) {
+        // quickapp
+        document.write('<script type="text/javascript" src="https://quickapp/jssdk.webview.min.js"><\/script>');
+      }
+      if (!/toutiaomicroapp/i.test(userAgent)) {
+        document.querySelector('.post-message-section').style.visibility = 'visible';
+      }
+    </script>
+    <!-- uni 的 SDK -->
+    <script type="text/javascript" src="https://js.cdn.aliyun.dcloud.net.cn/dev/uni-app/uni.webview.1.5.2.js"></script>
+    <script type="text/javascript">
+      // 待触发 `UniAppJSBridgeReady` 事件后，即可调用 uni 的 API。
+      document.addEventListener('UniAppJSBridgeReady', function() {
         uni.postMessage({
             data: {
                 action: 'message'
@@ -173,8 +230,47 @@
         uni.getEnv(function(res) {
             console.log('当前环境：' + JSON.stringify(res));
         });
-    });
-</script>
+
+        document.querySelector('.btn-list').addEventListener('click', function(evt) {
+          var target = evt.target;
+          if (target.tagName === 'BUTTON') {
+            var action = target.getAttribute('data-action');
+            switch (action) {
+              case 'switchTab':
+                uni.switchTab({
+                  url: '/pages/tabBar/API/API'
+                });
+                break;
+              case 'reLaunch':
+                uni.reLaunch({
+                  url: '/pages/tabBar/component/component'
+                });
+                break;
+              case 'navigateBack':
+                uni.navigateBack({
+                  delta: 1
+                });
+                break;
+              default:
+                uni[action]({
+                  url: '/pages/component/button/button'
+                });
+                break;
+            }
+          }
+        });
+        document.getElementById('postMessage').addEventListener('click', function() {
+          uni.postMessage({
+            data: {
+              action: 'message'
+            }
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
+
 ```
 
 
@@ -282,3 +378,31 @@ A：加载的 HTML 中是有 5+ 环境的，在 plusready 后调用即可。参�
 
 Q: web-view 加载 uni-app H5，内部跳转冲突如何解决
 A：使用 uni.webView.navigateTo...
+
+
+uni.webView.navigateTo 示例，注意uni sdk放到body下面
+```
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    ...
+  </head>
+  <body>
+    <noscript>
+      <strong>Please enable JavaScript to continue.</strong>
+    </noscript>
+    <div id="app"></div>
+    <!-- built files will be auto injected -->
+  </body>
+  <!-- uni 的 SDK -->
+  <script type="text/javascript" src="https://js.cdn.aliyun.dcloud.net.cn/dev/uni-app/uni.webview.1.5.2.js"></script>
+  <script>
+    document.addEventListener('UniAppJSBridgeReady', function() {
+      uni.webView.getEnv(function(res) {
+        console.log('当前环境：' + JSON.stringify(res));
+      });
+      // uni.webView.navigateTo(...)
+    });
+  </script>
+</html>
+```
