@@ -166,28 +166,169 @@ DCloud暂无计划开发百度、头条、QQ等小程序的登录，以及Apple 
 
 ## 角色权限@rbac
 
-自`1.1.9`版本起uni-id支持角色权限（通常情况下管理后台会需要角色权限）。除[角色权限API](uniCloud/uni-id.md?id=rbac-api)内列出的角色权限相关的接口外，还有以下调整：
+为什么需要权限管理？
+- 对于后台管理系统，除了超级管理员，不同账号通常需根据职位、责任设定不同的系统权限。
+- [clientDB](https://uniapp.dcloud.net.cn/uniCloud/uni-clientDB)允许前端直接操作数据库，但部分字段应该是系统计算或管理员设置的，比如文章的阅读数、收藏数及是否加精置顶，这些字段不允许普通用户在前端通过clientDB直接修改，此时也需要通过权限控制来保证系统的安全稳定。 
 
-1. 所有登录注册接口可以接收`needPermission`参数，配置为true时会在`checkToken`接口返回用户权限（permission），否则permission字段会是一个空数组。开发者可以在用户登录管理后台时，传入此参数表示当前登录的用户需要返回permission。
+`uni-id`如何解决权限管理问题？
+- 基于经典的RBAC模型实现内置角色权限系统。
 
-2. 新增两个数据表`uni-id-roles`、`uni-id-permissions`，可以使用示例项目里面的db_init.json创建，也可以直接使用opendb中的这两个数据表
+### RBAC模型简介
 
-以管理后台为例，开发者可以在用户登录时传入`needPermission: true`。在checkToken时返回的结果中会包含role和permission，可以据此判断用户有没有权限进行操作。
+RBAC：Role-Based Access Control，基于角色的访问控制。
+
+其基本思想：对系统操作的各种权限不是直接授予具体的用户，而是在用户集合与权限集合之间建立一个角色集合。每一种角色对应一组相应的权限。一旦用户被分配了适当的角色后，该用户就拥有此角色的所有权限。
+
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/431878b0-0ca0-11eb-8a36-ebb87efcf8c0.png)
+
+这样做的好处是，增强系统管理的扩展性，对于批量用户的权限变更，仅需变更该批用户角色对应权限即可，而无需对该批每个用户变更权限。
+
+这个模型有三个关键名词：用户、角色、权限：
+- 用户：使用系统的人，一个用户可以同时有多个角色
+- 角色：权限的集合，一个角色可以有多个权限
+- 权限：数据权限或业务权限，例如：删除用户、删除评论等
+
+### 用户
+
+用户信息存储在`uni-id-users`表中，然后通过`role`字段保存该用户所拥有的所有角色ID，角色ID即角色表（`uni-id-roles`表）中的`role_id`字段，注意不是`_id`字段。
+
+```
+{
+  {
+    "_id":"5f8428181c229600010389f6",
+    "username":"uniapp",
+    "email":"hr2013@dcloud.io",
+    role:[
+      "USER_ADMIN",
+      "NOTICE_ADMIN"
+    ],
+    "created_date":1602495783272
+  }  
+}
+```
+
+>Tips：将用户角色设计为用户表的字段，而没有新建`用户角色关联表`的原因：避免mongodb在跨表查询时的性能开销
+
+### 角色
+
+角色信息存储在`uni-id-roles`表中
+
+| 字段				| 类型			| 必填| 描述																	|
+| ----------	| ---------	| ----| --------------------------------------|
+| \_id				| Object ID	| 是	| 系统自动生成的Id											|
+| role_id			| String		| 是	| 角色唯一标识													|
+| role_name		| String		| 否	| 角色名，展示用												|
+| permission	| Array			| 是	| 角色拥有的权限列表										|
+| comment			| String		| 否	| 备注																	|
+| created_date| Timestamp	| 是	| 角色创建时间													|
+
+其中：
+- `role_id`为角色标志，全局唯一，可用于clientDB中的权限控制，建议按照语义化命名，例如：`USER_ADMIN`表示人事管理、`NOTICE_ADMIN`表示公告管理
+- `permission`为数组类型，存储该角色拥有的所有权限ID，权限ID即权限表（`uni-id-permissions`表）中的`permission_id`字段，注意不是`_id`字段
+
+如下为示例：
+
+```
+{
+  {
+    "_id":"5f8428181c229600010389f6",
+    "role_id":"USER_ADMIN",
+    "role_name":"人事管理",
+    permission:[
+      "USER_ADD",
+      "USER_EDIT",
+      "USER_DEL"
+    ],
+    "created_date":1602495783272
+  },
+  {
+    "_id":"5f842836d8daea0001906785",
+    "role_id":"NOTICE_ADMIN",
+    "role_name":"公告管理",
+    permission:[
+      "NOTICE_ADD",
+      "NOTICE_EDIT",
+      "NOTICE_DEL"
+    ],
+    "created_date":1602495784372
+  }  
+}
+```
+
+如下是角色在clientDB中的配置示例：
+
+```
+// db-permission/uni-id-users.js
+
+{
+  ".update":"doc._id == auth.uid || 'USER_ADMIN' in auth.role" //用户自己或人事管理员可执行用户表的.update操作
+}
+```
+
+>Tips1：uni-id中`admin`为超级管理员角色，uni-clientDB也基于同样的策略；如果用户角色包含`admin`，则该用户就拥有所有数据表的全部权限。
+
+>Tips2：出厂时可内置常用角色，也可上线后由运营人员动态创建角色。
+
+### 权限
+
+权限信息在`uni-id-permissions`表中，表结构定义如下：
+
+| 字段						| 类型			| 必填| 描述																	|
+| ----------			| ---------	| ----| --------------------------------------|
+| \_id						| Object ID	| 是	| 系统自动生成的Id											|
+| permission_id		| String		| 是	| 权限唯一标识													|
+| permission_name	| String		| 否	| 权限名，展示用												|
+| comment					| String		| 否	| 备注																	|
+| created_date		| Timestamp	| 是	| 权限创建时间													|
+
+其中，`permission_id`为权限标志，全局唯一，可用于clientDB中的权限配置，建议按照语义化命名，例如：`USER_DEL`、`BRANCH_ADD`。
+
+如下为示例内容：
+
+```
+{
+  {
+    "_id":"5f8428181c229600010389f6",
+    "permission_id":"USER_EDIT",
+    "permission_name":"修改用户",
+    "created_date":1602495783272
+  },
+  {
+    "_id":"5f842836d8daea0001906785",
+    "permission_id":"USER_DEL",
+    "permission_name":"删除用户",
+    "created_date":1602495784372
+  }  
+}
+```
+
+如下是权限在clientDB中的配置示例：
+
+```
+// db-permission/uni-id-users.js
+
+{
+  ".update":"doc._id == auth.uid || 'USER_EDIT' in auth.permission" //用户自己或有`USER_EDIT`权限的用户，可执行用户表的.update操作
+}
+```
+
+>Tips1：建议出厂时内置所有权限，方便clientDB中的权限配置。
+
+### 其他说明
+
+uni-id针对角色权限模块封装了丰富的API，比如：获取用户角色、获取某角色下的所有权限等，详情参考：[角色权限API](uniCloud/uni-id.md?id=rbac-api)。
+
+uni-id登录注册接口可接收`needPermission`参数，若`needPermission`配置为true时，后续会在`checkToken`接口返回用户权限列表（permission）。如下是通过token判断权限的简单示例：
 
 ```js
 // 简单的权限校验示例
 function hasPermission(token, permission) {
   const checkTokenRes = await uniID.checkToken(token)
-  if(checkTokenRes.code) {
-    return false
-  }
   return checkTokenRes.permission.includes(permission)
 }
 ```
 
-**注意**
 
-- uni-id内`admin`角色为超级管理员（即role内包含admin即可拥有所有权限）。uni-clientDB内也做了这种实现，如果用户角色包含`admin`就拥有所有数据表的全部权限。
 
 ## 裂变@fission
 
