@@ -12,12 +12,13 @@
       <transition name="uni-fade">
         <div
           v-show="visible"
-          class="uni-mask"
+          class="uni-mask uni-picker-mask"
           @click="_cancel"
         />
       </transition>
       <div
-        :class="{'uni-picker-toggle':visible}"
+        :class="{ 'uni-picker-toggle': visible }"
+        :style="popupStyle.content"
         class="uni-picker"
       >
         <div
@@ -38,20 +39,21 @@
           </div>
         </div>
         <v-uni-picker-view
-          v-if="visible"
+          v-if="contentVisible"
           :value.sync="valueArray"
           class="uni-picker-content"
         >
           <v-uni-picker-view-column
-            v-for="(rangeItem,index0) in rangeArray"
+            v-for="(rangeItem, index0) in rangeArray"
             :key="index0"
           >
             <div
-              v-for="(item,index) in rangeItem"
+              v-for="(item, index) in rangeItem"
               :key="index"
               class="uni-picker-item"
             >
-              {{ typeof item==='object'?item[rangeKey]||'':item }}{{ units[index0]||'' }}
+              {{ typeof item === "object" ? item[rangeKey] || "" : item
+              }}{{ units[index0] || "" }}
             </div>
           </v-uni-picker-view-column>
         </v-uni-picker-view>
@@ -59,6 +61,7 @@
         <!-- <div v-if="units.length" class="uni-picker-units">
         <div v-for="(item,index) in units" :key="index">{{item}}</div>
         </div>-->
+        <div :style="popupStyle.triangle" />
       </div>
     </div>
     <div>
@@ -70,6 +73,7 @@
 <script>
 import { emitter } from 'uni-mixins'
 import { formatDateTime } from 'uni-shared'
+import popup from '../../../components/app/popup/mixins/popup'
 
 function getDefaultStartValue () {
   if (this.mode === mode.TIME) {
@@ -122,7 +126,7 @@ const fields = {
 }
 export default {
   name: 'Picker',
-  mixins: [emitter],
+  mixins: [emitter, popup],
   props: {
     name: {
       type: String,
@@ -173,6 +177,8 @@ export default {
     return {
       valueSync: null,
       visible: false,
+      contentVisible: false,
+      popover: null,
       valueChangeSource: '',
       timeArray: [],
       dateArray: [],
@@ -221,8 +227,19 @@ export default {
           return []
       }
     }
+
   },
   watch: {
+    visible (val) {
+      if (val) {
+        clearTimeout(this.__contentVisibleDelay)
+        this.contentVisible = val
+      } else {
+        this.__contentVisibleDelay = setTimeout(() => {
+          this.contentVisible = val
+        }, 300)
+      }
+    },
     value () {
       this._setValueSync()
     },
@@ -247,8 +264,7 @@ export default {
           const max = dateArray[2].length
           const day = Number(dateArray[2][valueArray[2]]) || 1
           const realDay = new Date(
-            `${dateArray[0][valueArray[0]]}/${
-            dateArray[1][valueArray[1]]
+            `${dateArray[0][valueArray[0]]}/${dateArray[1][valueArray[1]]
             }/${day}`
           ).getDate()
           if (realDay < day) {
@@ -292,7 +308,7 @@ export default {
     })
   },
   methods: {
-    _show () {
+    _show (event) {
       if (this.disabled) {
         return
       }
@@ -301,6 +317,13 @@ export default {
       $picker.remove();
       (document.querySelector('uni-app') || document.body).appendChild($picker)
       $picker.style.display = 'block'
+      const rect = event.currentTarget.getBoundingClientRect()
+      this.popover = {
+        top: rect.top,
+        left: rect.left,
+        width: rect.width,
+        height: rect.height
+      }
       setTimeout(() => {
         this.visible = true
       }, 20)
@@ -633,4 +656,35 @@ uni-picker[disabled] {
   text-align: center;
   transform: translateX(2em);
 } */
+
+@media screen and (min-width: 500px) {
+  .uni-mask.uni-picker-mask {
+    background: none;
+  }
+  .uni-picker-container .uni-picker {
+    width: 300px;
+    left: 50%;
+    right: auto;
+    top: 50%;
+    bottom: auto;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    border-radius: 5px;
+    transition: opacity 0.3s, visibility 0.3s;
+    box-shadow: 0px 0 20px 5px rgba(0, 0, 0, 0.3);
+  }
+  .uni-picker-container .uni-picker-header {
+    border-radius: 5px 5px 0 0;
+  }
+  .uni-picker-container .uni-picker-content {
+    /* transform 用于解决 Safari overflow 失效的问题 */
+    transform: translate(0 0);
+    overflow: hidden;
+    border-radius: 0 0 5px 5px;
+  }
+  .uni-picker-container .uni-picker.uni-picker-toggle {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
 </style>
