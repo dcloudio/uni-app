@@ -14,6 +14,7 @@
       >
         <v-uni-top-window
           ref="top"
+          v-bind="bindWindow"
           @hook:mounted="onTopWindowInit"
         />
       </div>
@@ -32,6 +33,7 @@
         v-if="leftWindow"
         v-show="showLeftWindow || apiShowLeftWindow"
         ref="leftWindow"
+        v-bind="bindWindow"
         :data-show="apiShowLeftWindow"
         :style="leftWindowStyle"
       >
@@ -51,6 +53,7 @@
         v-if="rightWindow"
         v-show="showRightWindow || apiShowRightWindow"
         ref="rightWindow"
+        v-bind="bindWindow"
         :data-show="apiShowRightWindow"
         :style="rightWindowStyle"
       >
@@ -143,6 +146,16 @@ export default {
     }
   },
   computed: {
+    bindWindow () {
+      return {
+        matchTopWindow: this.topWindowMediaQuery,
+        showTopWindow: this.showTopWindow || this.apiShowTopWindow,
+        matchLeftWindow: this.leftWindowMediaQuery,
+        showLeftWindow: this.showLeftWindow || this.apiShowLeftWindow,
+        matchRightWindow: this.rightWindowMediaQuery,
+        showRightWindow: this.showRightWindow || this.apiShowRightWindow
+      }
+    },
     showLayout () {
       return this.showTopWindow || this.showLeftWindow || this.showRightWindow
     },
@@ -247,7 +260,7 @@ export default {
         if (windowOptions && windowOptions.matchMedia && hasOwn(windowOptions.matchMedia, 'minWidth')) {
           this[minWidthName] = windowOptions.matchMedia.minWidth
         }
-        if (!this.minWidth || this.minWidth > this[minWidthName]) {
+        if (typeof this.minWidth === 'undefined' || this.minWidth > this[minWidthName]) {
           this.minWidth = this[minWidthName]
         }
       }
