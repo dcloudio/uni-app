@@ -333,9 +333,18 @@ export class CanvasContext {
     let width = 0
     if (__PLATFORM__ === 'h5') {
       width = measureText(text, font)
-    } else if (plus.os.name.toLowerCase() === 'ios') {
+    } else {
       const webview = plus.webview.all().find(webview => webview.getURL().endsWith('www/__uniappview.html'))
-      width = Number(webview.evalJSSync(`(${measureText.toString()})(${JSON.stringify(text)},${JSON.stringify(font)})`))
+      if (webview) {
+        for (let index = 0; index < 5; index++) {
+          width = Number(webview.evalJSSync(`(${measureText.toString()})(${JSON.stringify(text)},${JSON.stringify(font)})`))
+          // 安卓部分情况会计算失败，进行重试
+          if (!isNaN(width)) {
+            width = 0
+            break
+          }
+        }
+      }
     }
     return new TextMetrics(width)
   }
