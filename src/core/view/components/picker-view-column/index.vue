@@ -286,15 +286,6 @@ export default {
     transform: translateY(-50%);
   }
 
-  .uni-picker-view-indicator,
-  .uni-picker-view-mask {
-    position: absolute;
-    left: 0;
-    width: 100%;
-    z-index: 3;
-    pointer-events: none;
-  }
-
   .uni-picker-view-content {
     position: absolute;
     top: 0;
