@@ -83,8 +83,8 @@
 |fontSize|文字大小|Number|App-nvue 2.1.5+、微信小程序、H5、百度小程序|
 |x|label的坐标，原点是 marker 对应的经纬度|Number|App-nvue 2.1.5+、微信小程序、H5、百度小程序|
 |y|label的坐标，原点是 marker 对应的经纬度|Number|App-nvue 2.1.5+、微信小程序、H5、百度小程序|
-|borderWidth|边框宽度|Number|App-nvue 2.1.5+、微信小程序、百度小程序|
-|borderColor|边框颜色|String|App-nvue 2.1.5+、微信小程序、百度小程序|
+|borderWidth|边框宽度|Number|微信小程序、百度小程序|
+|borderColor|边框颜色|String|微信小程序、百度小程序|
 |borderRadius|边框圆角|Number|App-nvue 2.1.5+、微信小程序、百度小程序|
 |bgColor|背景色|String|App-nvue 2.1.5+、微信小程序、百度小程序|
 |padding|文本边缘留白|Number|App-nvue 2.1.5+、微信小程序、百度小程序|
@@ -192,6 +192,7 @@ export default {
 ```
 
 map 组件相关操作的 JS API：[uni.createMapContext](api/location/map?id=createmapcontext)
+nvue map 更换箭头图标格式参考: [https://ask.dcloud.net.cn/article/37901](https://ask.dcloud.net.cn/article/37901)
 
 **注意事项**
 
