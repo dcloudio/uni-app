@@ -1804,6 +1804,27 @@ exports.main = async function(event,context) {
 | roleList| Array	|roles表记录数组（包含role_name、comment等）|
 | total		| Number|总数量																			|
 
+### 获取角色信息
+
+用法：`uniID.getRoleInfo(String roleID)`
+
+**参数说明**
+
+| 字段	| 类型	| 必填| 说明	|
+| ---		| ---		| ---	| ---		|
+| roleID| String| 是	|角色ID	|
+
+**响应参数**
+
+| 字段				| 类型			|  说明							|
+| ---					| ---				|  ---							|
+| code				| Number		| 错误码，0表示成功	|
+| message			| String		| 详细信息					|
+| role_name		| String		| 角色名，展示用		|
+| permission	| Array			| 角色拥有的权限列表|
+| comment			| String		| 备注							|
+| created_date| Timestamp	| 角色创建时间			|
+
 ### 更新角色信息
 
 **注意不可修改role_id**
@@ -1882,6 +1903,26 @@ exports.main = async function(event,context) {
 | message						| String| 详细信息																							|
 | permissionList| Array	|permissions表记录数组（包含permission_name、comment等）|
 | total					| Number|总数量																									|
+
+### 获取权限信息
+
+用法：`uniID.getPermissionInfo(String permissionID)`
+
+**参数说明**
+
+| 字段				| 类型	| 必填| 说明	|
+| ---					| ---		| ---	| ---		|
+| permissionID| String| 是	|权限ID	|
+
+**响应参数**
+
+| 字段						| 类型			|  说明							|
+| ---							| ---				|  ---							|
+| code						| Number		| 错误码，0表示成功	|
+| message					| String		| 详细信息					|
+| permission_name	| String		| 权限名，展示用		|
+| comment					| String		| 备注							|
+| created_date		| Timestamp	| 权限创建时间			|
 
 ### 修改权限
 
