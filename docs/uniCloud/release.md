@@ -1,5 +1,8 @@
 # uniCloud 更新日志
 ======================================
+#### 2020-10-13
+  + 腾讯云 全面开放企业用户按量计费服务空间的购买 [详情](https://uniapp.dcloud.net.cn/uniCloud/price?id=price-info)
+
 #### 2020-09-29
   + 腾讯云 开放包年包月套餐购买 [详情](https://uniapp.dcloud.net.cn/uniCloud/price?id=price-month)
 
