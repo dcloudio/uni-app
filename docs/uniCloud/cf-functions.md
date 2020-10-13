@@ -160,7 +160,7 @@ uniCloud.callFunction({
 
 ## 云函数中调用云函数@callbyfunction
 
-用法同客户端调用云函数，不支持callback形式
+用法同客户端调用云函数，不支持callback形式。**云函数本地运行时使用callFunction会调用云端的云函数而不是本地云函数**
 
 #### 请求参数
 
