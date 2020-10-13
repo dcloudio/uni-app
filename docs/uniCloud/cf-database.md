@@ -2292,7 +2292,7 @@ E 序列是以 10 的 6 / 12 / 24 / 48 / 96 / 192 次方跟来推导的、带有
 ```js
 const $ = db.command.aggregate
 let res = await db.collection('items').aggregate()
-  .bucket({
+  .bucketAuto({
     groupBy: '$price',
     buckets: 3,
   })
