@@ -154,11 +154,6 @@ const outOfChina = function (lng, lat) {
   return (lng < 72.004 || lng > 137.8347) || ((lat < 0.8293 || lat > 55.8271) || false)
 }
 
-export function getStatusbarHeight () {
-  // 横屏时 iOS 获取的状态栏高度错误，进行纠正
-  return plus.navigator.isImmersedStatusbar() ? Math.round(plus.os.name === 'iOS' ? plus.navigator.getSafeAreaInsets().top : plus.navigator.getStatusbarHeight()) : 0
-}
-
 export function getScreenInfo () {
   const { resolutionWidth, resolutionHeight } = plus.screen.getCurrentSize()
   return {

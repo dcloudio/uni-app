@@ -6,6 +6,9 @@ import {
   WEBVIEW_INSERTED,
   WEBVIEW_REMOVED
 } from '../../../constants'
+
+import { NAVBAR_HEIGHT } from 'uni-helpers/constants'
+
 let webview = false
 const insertHTMLWebView = ({
   htmlId
@@ -19,9 +22,9 @@ const insertHTMLWebView = ({
   const parentTitleNView = parentWebview.getTitleNView()
   if (parentTitleNView) {
     if (plus.navigator.isImmersedStatusbar()) {
-      styles.top = 44 + plus.navigator.getStatusbarHeight()
+      styles.top = NAVBAR_HEIGHT + plus.navigator.getStatusbarHeight()
     } else {
-      styles.top = 44
+      styles.top = NAVBAR_HEIGHT
     }
     styles.bottom = 0
   }

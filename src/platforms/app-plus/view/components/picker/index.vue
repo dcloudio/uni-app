@@ -11,6 +11,7 @@
 import { emitter } from 'uni-mixins'
 import { showPage } from './page'
 import * as webview from './webview'
+import { getNavigationBarHeight } from '../../utils'
 
 const mode = {
   SELECTOR: 'selector',
@@ -198,17 +199,23 @@ export default {
         }
       }
     },
-    _show () {
+    _show (event) {
       if (this.disabled) {
         return
       }
+      const rect = event.currentTarget.getBoundingClientRect()
       this._showPicker(Object.assign({}, this.$props, {
         value: this.valueSync
-      }))
+      }), {
+        top: rect.top + getNavigationBarHeight(),
+        left: rect.left,
+        width: rect.width,
+        height: rect.height
+      })
     },
-    _showPicker (data) {
+    _showPicker (data, popover) {
       if ((data.mode === mode.TIME || data.mode === mode.DATE) && !data.fields) {
-        this._showNativePicker(data)
+        this._showNativePicker(data, popover)
       } else {
         data.fields = Object.values(fields).includes(data.fields) ? data.fields : fields.DAY
         webview.exists((exists) => {
@@ -216,7 +223,7 @@ export default {
         })
       }
     },
-    _showNativePicker (data) {
+    _showNativePicker (data, popover) {
       plus.nativeUI[this.mode === mode.TIME ? 'pickTime' : 'pickDate']((res) => {
         const date = res.date
         this.$trigger('change', {}, {
@@ -225,11 +232,13 @@ export default {
       }, () => {
         this.$trigger('cancel', {}, {})
       }, this.mode === mode.TIME ? {
-        time: getDate(this.value, mode.TIME)
+        time: getDate(this.value, mode.TIME),
+        popover
       } : {
         date: getDate(this.value, mode.DATE),
         minDate: getDate(this.start, mode.DATE),
-        maxDate: getDate(this.end, mode.DATE)
+        maxDate: getDate(this.end, mode.DATE),
+        popover
       })
     },
     _showWeexPicker (data) {
