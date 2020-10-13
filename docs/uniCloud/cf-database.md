@@ -2551,6 +2551,8 @@ let res = await db.collection('attractions').aggregate()
 
 聚合阶段。将输入记录按给定表达式分组，输出时每个记录代表一个分组，每个记录的 _id 是区分不同组的 key。输出记录中也可以包括累计值，将输出字段设为累计值即会从该分组中计算累计值。
 
+使用group可以很方便的实现类似SQL的distinct功能
+
 **API 说明**
 
 **group 的形式如下：**
