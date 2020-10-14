@@ -271,3 +271,11 @@ uni-app理论上不限定浏览器。在HBuilderX 2.9发版时，就新闻示例
 如果你的h5版已经开发完毕，还没来得及适配pc，但想在pc上先用起来。那么可以在pc网页里使用iframe，约定好宽度，在里面套用uni-app的窄屏版。
 
 当然还可以在iframe旁边放置二维码，提供手机版扫码地址。
+
+#### 通过electron打包为windows、mac、linux客户端
+
+有了宽屏适配，uni-app的应用就可以方便的通过electron打包为电脑客户端应用，windows、mac、linux均支持。
+
+开发者可以随意调用electron的API，以调用更多操作系统的能力（为方便多端兼容，可以将这些特殊API写在自定义的条件编译里）
+
+插件市场有已经封装好的一些插件，详见：[https://ext.dcloud.net.cn/search?q=electron](https://ext.dcloud.net.cn/search?q=electron)
