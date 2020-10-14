@@ -78,7 +78,7 @@ function processElement (ast, state, isRoot) {
     if (ast.attr.id && ast.attr.id.indexOf('{{') === 0) {
       state.tips.add(`id 作为属性保留名,不允许在自定义组件 ${ast.type} 中定义为 props`)
     }
-    if (hasOwn(ast.attr, 'data')) { // 百度中会出现异常情况
+    if (hasOwn(ast.attr, 'data') && platformName !== 'mp-toutiao') { // 百度中会出现异常情况
       state.tips.add(`data 作为属性保留名,不允许在自定义组件 ${ast.type} 中定义为 props`)
     }
   }

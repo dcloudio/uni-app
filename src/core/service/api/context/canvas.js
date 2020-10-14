@@ -336,14 +336,7 @@ export class CanvasContext {
     } else {
       const webview = plus.webview.all().find(webview => webview.getURL().endsWith('www/__uniappview.html'))
       if (webview) {
-        for (let index = 0; index < 5; index++) {
-          width = Number(webview.evalJSSync(`(${measureText.toString()})(${JSON.stringify(text)},${JSON.stringify(font)})`))
-          // 安卓部分情况会计算失败，进行重试
-          if (!isNaN(width)) {
-            width = 0
-            break
-          }
-        }
+        width = Number(webview.evalJSSync(`(${measureText.toString()})(${JSON.stringify(text)},${JSON.stringify(font)})`))
       }
     }
     return new TextMetrics(width)

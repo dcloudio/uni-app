@@ -1,19 +1,4 @@
-const TITLEBAR_HEIGHT = 44
-
-function getStatusbarHeight () {
-  // 横屏时 iOS 获取的状态栏高度错误，进行纠正
-  return plus.navigator.isImmersedStatusbar() ? Math.round(plus.os.name === 'iOS' ? plus.navigator.getSafeAreaInsets().top : plus.navigator.getStatusbarHeight()) : 0
-}
-
-function getNavigationBarHeight () {
-  const webview = plus.webview.currentWebview()
-  let style = webview.getStyle()
-  style = style && style.titleNView
-  if (style && style.type === 'default') {
-    return TITLEBAR_HEIGHT + getStatusbarHeight()
-  }
-  return 0
-}
+import { getNavigationBarHeight } from '../utils'
 
 function getFixed ($el) {
   let fixed

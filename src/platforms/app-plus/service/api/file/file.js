@@ -1,7 +1,7 @@
 import {
   warpPlusMethod,
   warpPlusErrorCallback,
-  getFileName
+  getExtName
 } from '../util'
 
 import {
@@ -25,8 +25,7 @@ export function saveFile ({
   tempFilePath
 } = {}, callbackId) {
   const errorCallback = warpPlusErrorCallback(callbackId, 'saveFile')
-  let fileName = getFileName(tempFilePath)
-  fileName = `${Date.now()}${index++}_${fileName}`
+  const fileName = `${Date.now()}${index++}${getExtName(tempFilePath)}`
 
   plus.io.resolveLocalFileSystemURL(tempFilePath, entry => { // 读取临时文件 FileEntry
     getSavedFileDir(dir => {
