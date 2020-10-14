@@ -384,12 +384,13 @@ password入库时会自动进行一次sha1加密，不明文存储密码。
 
 **响应参数**
 
-| 字段	| 类型	| 必填	| 说明						|
-| ---	| ---	| ---	| ---						|
-| code	| Number| 是	|错误码，0表示成功			|
-| message	| String| 是	|详细信息					|
-| token	| String| -	|注册完成自动登录之后返回的token信息|
-| tokenExpired	| String| -	|token过期时间|
+| 字段				| 类型	| 必填| 说明															|
+| ---					| ---		| ---	| ---																|
+| code				| Number| 是	|错误码，0表示成功									|
+| message			| String| 是	|详细信息														|
+| uid					| String| -		|用户id															|
+| token				| String| -		|注册完成自动登录之后返回的token信息|
+| tokenExpired| String| -		|token过期时间											|
 
 **示例代码**
 
@@ -575,7 +576,6 @@ exports.main = async function(event,context) {
 | uid									| String| 是	|用户Id，可以通过checkToken返回	|
 | oldPassword					| String| 是	|旧密码													|
 | newPassword					| String| 是	|新密码													|
-| passwordConfirmation| String| 是	|确认新密码											|
 
 **响应参数**
 
