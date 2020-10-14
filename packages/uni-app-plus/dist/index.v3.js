@@ -3294,11 +3294,6 @@ var serviceContext = (function () {
     return (lng < 72.004 || lng > 137.8347) || ((lat < 0.8293 || lat > 55.8271) || false)
   };
 
-  function getStatusbarHeight () {
-    // 横屏时 iOS 获取的状态栏高度错误，进行纠正
-    return plus.navigator.isImmersedStatusbar() ? Math.round(plus.os.name === 'iOS' ? plus.navigator.getSafeAreaInsets().top : plus.navigator.getStatusbarHeight()) : 0
-  }
-
   function getScreenInfo () {
     const { resolutionWidth, resolutionHeight } = plus.screen.getCurrentSize();
     return {
@@ -3350,6 +3345,11 @@ var serviceContext = (function () {
   function getFileName (path) {
     const array = path.split('/');
     return array[array.length - 1]
+  }
+
+  function getExtName (path) {
+    const array = path.split('.');
+    return array.length > 1 ? '.' + array[array.length - 1] : ''
   }
 
   const audios = {};
@@ -4401,8 +4401,6 @@ var serviceContext = (function () {
 
   const ANI_CLOSE = downgrade ? 'slide-out-right' : 'pop-out';
 
-  const TITLEBAR_HEIGHT = 44;
-
   const ON_REACH_BOTTOM_DISTANCE = 50;
 
   const VIEW_WEBVIEW_PATH = '_www/__uniappview.html';
@@ -5061,6 +5059,8 @@ var serviceContext = (function () {
     }
   }
 
+  const NAVBAR_HEIGHT = 44;
+
   const TABBAR_HEIGHT = 50;
   const isIOS$1 = plus.os.name === 'iOS';
   let config;
@@ -5237,6 +5237,11 @@ var serviceContext = (function () {
     }
   };
 
+  function getStatusbarHeight () {
+    // 横屏时 iOS 获取的状态栏高度错误，进行纠正
+    return plus.navigator.isImmersedStatusbar() ? Math.round(plus.os.name === 'iOS' ? plus.navigator.getSafeAreaInsets().top : plus.navigator.getStatusbarHeight()) : 0
+  }
+
   function getSystemInfoSync () {
     return callApiSync(getSystemInfo, Object.create(null), 'getSystemInfo', 'getSystemInfoSync')
   }
@@ -5260,7 +5265,7 @@ var serviceContext = (function () {
       let style = webview.getStyle();
       style = style && style.titleNView;
       if (style && style.type && style.type !== 'none') {
-        titleNView.height = style.type === 'transparent' ? 0 : (statusBarHeight + TITLEBAR_HEIGHT);
+        titleNView.height = style.type === 'transparent' ? 0 : (statusBarHeight + NAVBAR_HEIGHT);
         titleNView.cover = style.type === 'transparent' || style.type === 'float';
       }
       safeAreaInsets = webview.getSafeAreaInsets();
@@ -5357,8 +5362,7 @@ var serviceContext = (function () {
     tempFilePath
   } = {}, callbackId) {
     const errorCallback = warpPlusErrorCallback(callbackId, 'saveFile');
-    let fileName = getFileName(tempFilePath);
-    fileName = `${Date.now()}${index++}_${fileName}`;
+    const fileName = `${Date.now()}${index++}${getExtName(tempFilePath)}`;
 
     plus.io.resolveLocalFileSystemURL(tempFilePath, entry => { // 读取临时文件 FileEntry
       getSavedFileDir(dir => {
@@ -7810,7 +7814,7 @@ var serviceContext = (function () {
       style.dock = 'top';
       style.top = 0;
       style.width = '100%';
-      style.height = TITLEBAR_HEIGHT + getStatusbarHeight();
+      style.height = NAVBAR_HEIGHT + getStatusbarHeight();
       delete style.left;
       delete style.right;
       delete style.bottom;
@@ -8461,6 +8465,57 @@ var serviceContext = (function () {
     return pageVm
   }
 
+  let isInitEntryPage = false;
+
+  function initEntryPage () {
+    if (isInitEntryPage) {
+      return
+    }
+    isInitEntryPage = true;
+
+    let entryPagePath;
+    let entryPageQuery;
+
+    const weexPlus = weex.requireModule('plus');
+
+    if (weexPlus.getRedirectInfo) {
+      const info = weexPlus.getRedirectInfo() || {};
+      entryPagePath = info.path;
+      entryPageQuery = info.query ? ('?' + info.query) : '';
+    } else {
+      const argsJsonStr = plus.runtime.arguments;
+      if (!argsJsonStr) {
+        return
+      }
+      try {
+        const args = JSON.parse(argsJsonStr);
+        entryPagePath = args.path || args.pathName;
+        entryPageQuery = args.query ? ('?' + args.query) : '';
+      } catch (e) {}
+    }
+
+    if (!entryPagePath || entryPagePath === __uniConfig.entryPagePath) {
+      return
+    }
+
+    const entryRoute = '/' + entryPagePath;
+    const routeOptions = __uniRoutes.find(route => route.path === entryRoute);
+    if (!routeOptions) {
+      return
+    }
+
+    if (!routeOptions.meta.isTabBar) {
+      __uniConfig.realEntryPagePath = __uniConfig.realEntryPagePath || __uniConfig.entryPagePath;
+    }
+
+    __uniConfig.entryPagePath = entryPagePath;
+    __uniConfig.entryPageQuery = entryPageQuery;
+
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`[uni-app] entryPagePath(${entryPagePath + entryPageQuery})`);
+    }
+  }
+
   const pages = [];
 
   function getCurrentPages$1 (returnAll) {
@@ -8527,6 +8582,9 @@ var serviceContext = (function () {
     webview,
     eventChannel
   }) {
+    // fast 模式，nvue 首页时，初始化下 entry page
+    webview && initEntryPage();
+
     if (preloadWebviews[url]) {
       webview = preloadWebviews[url];
       if (webview.__page__) {
@@ -8581,6 +8639,8 @@ var serviceContext = (function () {
       console.log(`[uni-app] registerPage(${path},${webview.id})`);
     }
 
+    const isLaunchNVuePage = webview.id === '1' && webview.nvue;
+
     initWebview(webview, routeOptions, path, query);
 
     const route = path.slice(1);
@@ -8632,7 +8692,7 @@ var serviceContext = (function () {
     }
 
     // 首页是 nvue 时，在 registerPage 时，执行路由堆栈
-    if (webview.id === '1' && webview.nvue) {
+    if (isLaunchNVuePage) {
       if (
         __uniConfig.splashscreen &&
         __uniConfig.splashscreen.autoclose &&
@@ -10491,14 +10551,7 @@ var serviceContext = (function () {
       {
         const webview = plus.webview.all().find(webview => webview.getURL().endsWith('www/__uniappview.html'));
         if (webview) {
-          for (let index = 0; index < 5; index++) {
-            width = Number(webview.evalJSSync(`(${measureText.toString()})(${JSON.stringify(text)},${JSON.stringify(font)})`));
-            // 安卓部分情况会计算失败，进行重试
-            if (!isNaN(width)) {
-              width = 0;
-              break
-            }
-          }
+          width = Number(webview.evalJSSync(`(${measureText.toString()})(${JSON.stringify(text)},${JSON.stringify(font)})`));
         }
       }
       return new TextMetrics(width)
@@ -13315,50 +13368,6 @@ var serviceContext = (function () {
     }
   }
 
-  function initEntryPage () {
-    let entryPagePath;
-    let entryPageQuery;
-
-    const weexPlus = weex.requireModule('plus');
-
-    if (weexPlus.getRedirectInfo) {
-      const info = weexPlus.getRedirectInfo() || {};
-      entryPagePath = info.path;
-      entryPageQuery = info.query ? ('?' + info.query) : '';
-    } else {
-      const argsJsonStr = plus.runtime.arguments;
-      if (!argsJsonStr) {
-        return
-      }
-      try {
-        const args = JSON.parse(argsJsonStr);
-        entryPagePath = args.path || args.pathName;
-        entryPageQuery = args.query ? ('?' + args.query) : '';
-      } catch (e) {}
-    }
-
-    if (!entryPagePath || entryPagePath === __uniConfig.entryPagePath) {
-      return
-    }
-
-    const entryRoute = '/' + entryPagePath;
-    const routeOptions = __uniRoutes.find(route => route.path === entryRoute);
-    if (!routeOptions) {
-      return
-    }
-
-    if (!routeOptions.meta.isTabBar) {
-      __uniConfig.realEntryPagePath = __uniConfig.realEntryPagePath || __uniConfig.entryPagePath;
-    }
-
-    __uniConfig.entryPagePath = entryPagePath;
-    __uniConfig.entryPageQuery = entryPageQuery;
-
-    if (process.env.NODE_ENV !== 'production') {
-      console.log(`[uni-app] entryPagePath(${entryPagePath + entryPageQuery})`);
-    }
-  }
-
   function clearTempFile () {
     // 统一处理路径
     function getPath (path) {
@@ -14243,7 +14252,7 @@ var serviceContext = (function () {
       onReachBottomDistance,
       statusbarHeight,
       windowTop: windowOptions.titleNView && windowOptions.titleNView.type === 'float' ? (statusbarHeight +
-        TITLEBAR_HEIGHT) : 0,
+        NAVBAR_HEIGHT) : 0,
       windowBottom: (tabBar$1.indexOf(route) >= 0 && tabBar$1.cover) ? tabBar$1.height : 0
     }
   }
