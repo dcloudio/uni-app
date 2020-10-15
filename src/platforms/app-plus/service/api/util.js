@@ -4,7 +4,8 @@ import {
 
 export {
   isTabBarPage
-} from '../bridge'
+}
+  from '../bridge'
 
 export function callApiSync (api, args, name, alias) {
   const ret = api(args)
@@ -155,16 +156,19 @@ const outOfChina = function (lng, lat) {
 }
 
 export function getScreenInfo () {
-  const { resolutionWidth, resolutionHeight } = plus.screen.getCurrentSize()
+  const {
+    resolutionWidth,
+    resolutionHeight
+  } = plus.screen.getCurrentSize()
   return {
     screenWidth: Math.round(resolutionWidth),
     screenHeight: Math.round(resolutionHeight)
   }
 }
 
-export function warpPlusEvent (origin, name) {
+export function warpPlusEvent (module, name) {
   return function (callbackId) {
-    origin[name](function (data) {
+    plus[module][name](function (data) {
       if (data) {
         delete data.code
         delete data.message
@@ -184,12 +188,12 @@ export function warpPlusErrorCallback (callbackId, neme, errMsg) {
   }
 }
 
-export function warpPlusMethod (origin, name, before) {
+export function warpPlusMethod (module, name, before) {
   return function (options, callbackId) {
     if (typeof before === 'function') {
       options = before(options)
     }
-    origin[name](Object.assign(options, {
+    plus[module][name](Object.assign(options, {
       success (data = {}) {
         delete data.code
         delete data.message
