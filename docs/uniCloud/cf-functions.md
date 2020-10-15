@@ -208,7 +208,7 @@ serverless默认是没有固定的服务器IP的，因为有很多服务器在�
 
 自`HBuilderX 2.9`起`uniCloud`提供了`cloudfunctions_init.json`来方便开发者快速进行云函数的初始化操作，即在HBuilderX工具中，一次性完成所有云函数的配置。
 
-这个功能尤其适合插件作者，不用再使用说明文档一步一步引到用户去配置云函数定时触发器、内存、url化路径等。
+这个功能尤其适合插件作者，不用再使用说明文档一步一步引导用户去配置云函数定时触发器、内存、url化路径等。
 
 **使用方式**
 - 在`cloudfucntions`目录右键即可创建`cloudfunctions_init.json`，
