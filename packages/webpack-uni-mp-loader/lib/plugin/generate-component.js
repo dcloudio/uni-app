@@ -133,7 +133,7 @@ module.exports = function generateComponent (compilation) {
         origSource = origSource.trim ? origSource.trim() : ''
         const result = origSource.match(/^@import ["'](.+?)["']$/)
         if (result) {
-          const stylePath = path.join(path.dirname(name), result[1])
+          const stylePath = normalizePath(path.join(path.dirname(name), result[1]))
           if (Object.keys(assets).includes(stylePath)) {
             styleImports[stylePath] = styleImports[stylePath] || []
             styleImports[stylePath].push(name)
@@ -155,7 +155,7 @@ module.exports = function generateComponent (compilation) {
         if (json) {
           const data = JSON.parse(json)
           const usingComponents = data.usingComponents || {}
-          const componentPath = path.relative('/', usingComponents[parentName])
+          const componentPath = normalizePath(path.relative('/', usingComponents[parentName]))
           const slots = fixSlots[componentPath] = fixSlots[componentPath] || {}
           const slot = slots[slotName] = slots[slotName] || {}
           slot[componentName] = '/' + name.replace(fixExtname, '')

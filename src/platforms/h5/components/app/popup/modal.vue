@@ -174,6 +174,7 @@ export default {
 		text-decoration: none;
 		-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 		position: relative;
+		cursor: pointer;
 	}
 
 	uni-modal .uni-modal__btn:active {

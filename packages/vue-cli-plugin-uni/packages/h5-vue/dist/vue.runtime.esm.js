@@ -7318,11 +7318,12 @@ var transformUnit = function (val) {
   return val
 };
 
-var urlRE = /url\(\s*'?"?([a-zA-Z0-9\.\-\_\/]+\.(jpg|gif|png))"?'?\s*\)/;
+var urlRE1 = /url\(\s*['"](.+?\.(jpg|gif|png))['"]\s*\)/;
+var urlRE2 = /url\(\s*([a-zA-Z0-9\.\-\_\/]+?\.(jpg|gif|png))\s*\)/;
 
 var transformUrl = function (val, ctx) {
   if (typeof val === 'string' && val.indexOf('url(') !== -1) {
-    var matches = val.match(urlRE);
+    var matches = val.match(urlRE1) || val.match(urlRE2);
     if (matches && matches.length === 3) {
         val = val.replace(matches[1], ctx._$getRealPath(matches[1]));
     }

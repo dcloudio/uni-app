@@ -1,6 +1,4 @@
-import {
-  TITLEBAR_HEIGHT
-} from '../../../constants'
+import { NAVBAR_HEIGHT } from 'uni-helpers/constants'
 
 import {
   backbuttonListener
@@ -10,9 +8,7 @@ import {
   isTabBarPage
 } from '../../../bridge'
 
-import {
-  getStatusbarHeight
-} from '../../../api/util'
+import { getStatusbarHeight } from 'uni-platform/helpers/status-bar'
 
 import tabBar from '../../tab-bar'
 
@@ -100,7 +96,7 @@ function initSubNVue (subNVue, routeOptions, webview) {
     style.dock = 'top'
     style.top = 0
     style.width = '100%'
-    style.height = TITLEBAR_HEIGHT + getStatusbarHeight()
+    style.height = NAVBAR_HEIGHT + getStatusbarHeight()
     delete style.left
     delete style.right
     delete style.bottom

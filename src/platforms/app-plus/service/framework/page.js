@@ -17,6 +17,10 @@ import {
   loadPage
 } from './load-sub-package'
 
+import {
+  initEntryPage
+} from './config'
+
 const pages = []
 
 export function getCurrentPages (returnAll) {
@@ -83,6 +87,9 @@ export function registerPage ({
   webview,
   eventChannel
 }) {
+  // fast 模式，nvue 首页时，初始化下 entry page
+  webview && initEntryPage()
+
   if (preloadWebviews[url]) {
     webview = preloadWebviews[url]
     if (webview.__page__) {
@@ -137,6 +144,8 @@ export function registerPage ({
     console.log(`[uni-app] registerPage(${path},${webview.id})`)
   }
 
+  const isLaunchNVuePage = webview.id === '1' && webview.nvue
+
   initWebview(webview, routeOptions, path, query)
 
   const route = path.slice(1)
@@ -188,7 +197,7 @@ export function registerPage ({
   }
 
   // 首页是 nvue 时，在 registerPage 时，执行路由堆栈
-  if (webview.id === '1' && webview.nvue) {
+  if (isLaunchNVuePage) {
     if (
       __uniConfig.splashscreen &&
       __uniConfig.splashscreen.autoclose &&

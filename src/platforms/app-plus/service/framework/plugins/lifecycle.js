@@ -21,16 +21,15 @@ import {
 } from '../../../constants'
 
 import {
-  ON_REACH_BOTTOM_DISTANCE,
-  TITLEBAR_HEIGHT
+  ON_REACH_BOTTOM_DISTANCE
 }
   from '../../constants'
 
+import { NAVBAR_HEIGHT } from 'uni-helpers/constants'
+
 import tabBar from '../tab-bar'
 
-import {
-  getStatusbarHeight
-} from '../../api/util'
+import { getStatusbarHeight } from 'uni-platform/helpers/status-bar'
 
 import {
   preloadSubPackages
@@ -58,7 +57,7 @@ function parsePageCreateOptions (vm, route) {
     onReachBottomDistance,
     statusbarHeight,
     windowTop: windowOptions.titleNView && windowOptions.titleNView.type === 'float' ? (statusbarHeight +
-      TITLEBAR_HEIGHT) : 0,
+      NAVBAR_HEIGHT) : 0,
     windowBottom: (tabBar.indexOf(route) >= 0 && tabBar.cover) ? tabBar.height : 0
   }
 }

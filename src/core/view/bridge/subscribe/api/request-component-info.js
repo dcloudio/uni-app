@@ -27,8 +27,12 @@ function getRootInfo (fields) {
     info.height = document.documentElement.clientHeight
   }
   if (fields.scrollOffset) {
-    info.scrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft || 0
-    info.scrollTop = document.documentElement.scrollTop || document.body.scrollTop || 0
+    const documentElement = document.documentElement
+    const body = document.body
+    info.scrollLeft = documentElement.scrollLeft || body.scrollLeft || 0
+    info.scrollTop = documentElement.scrollTop || body.scrollTop || 0
+    info.scrollHeight = documentElement.scrollHeight || body.scrollHeight || 0
+    info.scrollWidth = documentElement.scrollWidth || body.scrollWidth || 0
   }
   return info
 }
@@ -58,7 +62,7 @@ function getNodeInfo (el, fields) {
     }
   }
   // TODO 组件 props
-  if (fields.properties) {
+  if (Array.isArray(fields.properties)) {
     fields.properties.forEach(prop => {
       prop = prop.replace(/-([a-z])/g, function (e, t) {
         return t.toUpperCase()
@@ -72,7 +76,15 @@ function getNodeInfo (el, fields) {
     } else {
       info.scrollLeft = 0
       info.scrollTop = 0
+      info.scrollHeight = 0
+      info.scrollWidth = 0
     }
+  }
+  if (Array.isArray(fields.computedStyle)) {
+    const sytle = getComputedStyle(el)
+    fields.computedStyle.forEach(name => {
+      info[name] = sytle[name]
+    })
   }
   if (fields.context) {
     if (el.__vue__ && el.__vue__._getContextInfo) {
