@@ -20,7 +20,6 @@ class FullScreenVideoAd {
       }
     })
 
-    this._preload = options.preload !== undefined ? options.preload : true
     this._isLoad = false
     this._adError = ''
     this._loadPromiseResolve = null
@@ -39,9 +38,6 @@ class FullScreenVideoAd {
       }
     })
     ad.onClose((e) => {
-      if (this._preload) {
-        this._loadAd()
-      }
       this._dispatchEvent('close', { isEnded: e.isEnded })
     })
     ad.onError((e) => {
@@ -59,9 +55,7 @@ class FullScreenVideoAd {
       }
     })
 
-    if (this._preload) {
-      this._loadAd()
-    }
+    this._loadAd()
   }
 
   get isExpired () {
