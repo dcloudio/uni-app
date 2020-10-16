@@ -235,7 +235,8 @@ var serviceContext = (function () {
   ];
 
   const ad = [
-    'createRewardedVideoAd'
+    'createRewardedVideoAd',
+    'createFullScreenVideoAd'
   ];
 
   const apis = [
@@ -3295,16 +3296,19 @@ var serviceContext = (function () {
   };
 
   function getScreenInfo () {
-    const { resolutionWidth, resolutionHeight } = plus.screen.getCurrentSize();
+    const {
+      resolutionWidth,
+      resolutionHeight
+    } = plus.screen.getCurrentSize();
     return {
       screenWidth: Math.round(resolutionWidth),
       screenHeight: Math.round(resolutionHeight)
     }
   }
 
-  function warpPlusEvent (origin, name) {
+  function warpPlusEvent (module, name) {
     return function (callbackId) {
-      origin[name](function (data) {
+      plus[module][name](function (data) {
         if (data) {
           delete data.code;
           delete data.message;
@@ -3324,12 +3328,12 @@ var serviceContext = (function () {
     }
   }
 
-  function warpPlusMethod (origin, name, before) {
+  function warpPlusMethod (module, name, before) {
     return function (options, callbackId) {
       if (typeof before === 'function') {
         options = before(options);
       }
-      origin[name](Object.assign(options, {
+      plus[module][name](Object.assign(options, {
         success (data = {}) {
           delete data.code;
           delete data.message;
@@ -4241,10 +4245,10 @@ var serviceContext = (function () {
     });
   }
 
-  const onBluetoothDeviceFound = warpPlusEvent(plus.bluetooth, 'onBluetoothDeviceFound');
-  const onBluetoothAdapterStateChange = warpPlusEvent(plus.bluetooth, 'onBluetoothAdapterStateChange');
-  const onBLEConnectionStateChange = warpPlusEvent(plus.bluetooth, 'onBLEConnectionStateChange');
-  const onBLECharacteristicValueChange = warpPlusEvent(plus.bluetooth, 'onBLECharacteristicValueChange');
+  const onBluetoothDeviceFound = warpPlusEvent('bluetooth', 'onBluetoothDeviceFound');
+  const onBluetoothAdapterStateChange = warpPlusEvent('bluetooth', 'onBluetoothAdapterStateChange');
+  const onBLEConnectionStateChange = warpPlusEvent('bluetooth', 'onBLEConnectionStateChange');
+  const onBLECharacteristicValueChange = warpPlusEvent('bluetooth', 'onBLECharacteristicValueChange');
 
   function toUpperCase (options = {}) {
     const deviceId = options.deviceId;
@@ -4258,22 +4262,22 @@ var serviceContext = (function () {
     return options
   }
 
-  const openBluetoothAdapter = warpPlusMethod(plus.bluetooth, 'openBluetoothAdapter');
-  const closeBluetoothAdapter = warpPlusMethod(plus.bluetooth, 'closeBluetoothAdapter');
-  const getBluetoothAdapterState = warpPlusMethod(plus.bluetooth, 'getBluetoothAdapterState');
-  const startBluetoothDevicesDiscovery = warpPlusMethod(plus.bluetooth, 'startBluetoothDevicesDiscovery', toUpperCase);
-  const stopBluetoothDevicesDiscovery = warpPlusMethod(plus.bluetooth, 'stopBluetoothDevicesDiscovery');
-  const getBluetoothDevices = warpPlusMethod(plus.bluetooth, 'getBluetoothDevices');
-  const getConnectedBluetoothDevices = warpPlusMethod(plus.bluetooth, 'getConnectedBluetoothDevices', toUpperCase);
-  const createBLEConnection = warpPlusMethod(plus.bluetooth, 'createBLEConnection', toUpperCase);
-  const closeBLEConnection = warpPlusMethod(plus.bluetooth, 'closeBLEConnection', toUpperCase);
-  const getBLEDeviceServices = warpPlusMethod(plus.bluetooth, 'getBLEDeviceServices', toUpperCase);
-  const getBLEDeviceCharacteristics = warpPlusMethod(plus.bluetooth, 'getBLEDeviceCharacteristics', toUpperCase);
-  const notifyBLECharacteristicValueChange = warpPlusMethod(plus.bluetooth, 'notifyBLECharacteristicValueChange', toUpperCase);
-  const readBLECharacteristicValue = warpPlusMethod(plus.bluetooth, 'readBLECharacteristicValue', toUpperCase);
-  const writeBLECharacteristicValue = warpPlusMethod(plus.bluetooth, 'writeBLECharacteristicValue', toUpperCase);
-  const setBLEMTU = warpPlusMethod(plus.bluetooth, 'setBLEMTU', toUpperCase);
-  const getBLEDeviceRSSI = warpPlusMethod(plus.bluetooth, 'getBLEDeviceRSSI', toUpperCase);
+  const openBluetoothAdapter = warpPlusMethod('bluetooth', 'openBluetoothAdapter');
+  const closeBluetoothAdapter = warpPlusMethod('bluetooth', 'closeBluetoothAdapter');
+  const getBluetoothAdapterState = warpPlusMethod('bluetooth', 'getBluetoothAdapterState');
+  const startBluetoothDevicesDiscovery = warpPlusMethod('bluetooth', 'startBluetoothDevicesDiscovery', toUpperCase);
+  const stopBluetoothDevicesDiscovery = warpPlusMethod('bluetooth', 'stopBluetoothDevicesDiscovery');
+  const getBluetoothDevices = warpPlusMethod('bluetooth', 'getBluetoothDevices');
+  const getConnectedBluetoothDevices = warpPlusMethod('bluetooth', 'getConnectedBluetoothDevices', toUpperCase);
+  const createBLEConnection = warpPlusMethod('bluetooth', 'createBLEConnection', toUpperCase);
+  const closeBLEConnection = warpPlusMethod('bluetooth', 'closeBLEConnection', toUpperCase);
+  const getBLEDeviceServices = warpPlusMethod('bluetooth', 'getBLEDeviceServices', toUpperCase);
+  const getBLEDeviceCharacteristics = warpPlusMethod('bluetooth', 'getBLEDeviceCharacteristics', toUpperCase);
+  const notifyBLECharacteristicValueChange = warpPlusMethod('bluetooth', 'notifyBLECharacteristicValueChange', toUpperCase);
+  const readBLECharacteristicValue = warpPlusMethod('bluetooth', 'readBLECharacteristicValue', toUpperCase);
+  const writeBLECharacteristicValue = warpPlusMethod('bluetooth', 'writeBLECharacteristicValue', toUpperCase);
+  const setBLEMTU = warpPlusMethod('bluetooth', 'setBLEMTU', toUpperCase);
+  const getBLEDeviceRSSI = warpPlusMethod('bluetooth', 'getBLEDeviceRSSI', toUpperCase);
 
   function getScreenBrightness () {
     return {
@@ -4378,12 +4382,12 @@ var serviceContext = (function () {
     }
   }
 
-  const onBeaconUpdate = warpPlusEvent(plus.ibeacon, 'onBeaconUpdate');
-  const onBeaconServiceChange = warpPlusEvent(plus.ibeacon, 'onBeaconServiceChange');
+  const onBeaconUpdate = warpPlusEvent('ibeacon', 'onBeaconUpdate');
+  const onBeaconServiceChange = warpPlusEvent('ibeacon', 'onBeaconServiceChange');
 
-  const getBeacons = warpPlusMethod(plus.ibeacon, 'getBeacons');
-  const startBeaconDiscovery = warpPlusMethod(plus.ibeacon, 'startBeaconDiscovery');
-  const stopBeaconDiscovery = warpPlusMethod(plus.ibeacon, 'stopBeaconDiscovery');
+  const getBeacons = warpPlusMethod('ibeacon', 'getBeacons');
+  const startBeaconDiscovery = warpPlusMethod('ibeacon', 'startBeaconDiscovery');
+  const stopBeaconDiscovery = warpPlusMethod('ibeacon', 'stopBeaconDiscovery');
 
   function makePhoneCall$1 ({
     phoneNumber
@@ -4547,7 +4551,9 @@ var serviceContext = (function () {
             }
           }, {
             multiple: false,
-            system: false
+            system: false,
+            filename: TEMP_PATH + '/gallery/',
+            permissionAlert: true
           });
         }
       });
@@ -5411,7 +5417,7 @@ var serviceContext = (function () {
     }, errorCallback);
   }
 
-  const getFileInfo$1 = warpPlusMethod(plus.io, 'getFileInfo');
+  const getFileInfo$1 = warpPlusMethod('io', 'getFileInfo');
 
   function getSavedFileInfo$1 ({
     filePath
@@ -5950,7 +5956,8 @@ var serviceContext = (function () {
         maximum: count,
         multiple: true,
         system: false,
-        filename: TEMP_PATH + '/gallery/'
+        filename: TEMP_PATH + '/gallery/',
+        permissionAlert: true
       });
     }
 
@@ -6014,7 +6021,8 @@ var serviceContext = (function () {
       plus.gallery.pick(successCallback, errorCallback, {
         filter: 'video',
         system: false,
-        filename: TEMP_PATH + '/gallery/'
+        filename: TEMP_PATH + '/gallery/',
+        permissionAlert: true
       });
     }
 
@@ -6079,7 +6087,7 @@ var serviceContext = (function () {
     });
   }
 
-  const getImageInfo$1 = warpPlusMethod(plus.io, 'getImageInfo');
+  const getImageInfo$1 = warpPlusMethod('io', 'getImageInfo');
 
   function previewImagePlus ({
     current = 0,
@@ -9896,6 +9904,109 @@ var serviceContext = (function () {
     return new RewardedVideoAd(options)
   }
 
+  const eventNames$1 = [
+    'load',
+    'close',
+    'error'
+  ];
+
+  class FullScreenVideoAd {
+    constructor (options = {}) {
+      const _callbacks = this._callbacks = {};
+      eventNames$1.forEach(item => {
+        _callbacks[item] = [];
+        const name = item[0].toUpperCase() + item.substr(1);
+        this[`on${name}`] = function (callback) {
+          _callbacks[item].push(callback);
+        };
+      });
+
+      this._isLoad = false;
+      this._adError = '';
+      this._loadPromiseResolve = null;
+      this._loadPromiseReject = null;
+      this._lastLoadTime = 0;
+
+      const ad = this._ad = plus.ad.createFullScreenVideoAd(options);
+      ad.onLoad((e) => {
+        this._isLoad = true;
+        this._lastLoadTime = Date.now();
+        this._dispatchEvent('load', {});
+
+        if (this._loadPromiseResolve != null) {
+          this._loadPromiseResolve();
+          this._loadPromiseResolve = null;
+        }
+      });
+      ad.onClose((e) => {
+        this._isLoad = false;
+        this._dispatchEvent('close', { isEnded: e.isEnded });
+      });
+      ad.onError((e) => {
+        const { code, message } = e;
+        const data = { code: code, errMsg: message };
+        this._adError = message;
+        if (code === -5008) {
+          this._isLoad = false;
+        }
+        this._dispatchEvent('error', data);
+
+        if (this._loadPromiseReject != null) {
+          this._loadPromiseReject(data);
+          this._loadPromiseReject = null;
+        }
+      });
+    }
+
+    load () {
+      return new Promise((resolve, reject) => {
+        if (this._isLoad) {
+          resolve();
+          return
+        }
+        this._loadPromiseResolve = resolve;
+        this._loadPromiseReject = reject;
+        this._loadAd();
+      })
+    }
+
+    show () {
+      return new Promise((resolve, reject) => {
+        if (this._isLoad) {
+          this._ad.show();
+          resolve();
+        } else {
+          reject(new Error(this._adError));
+        }
+      })
+    }
+
+    getProvider () {
+      return this._ad.getProvider()
+    }
+
+    destroy () {
+      this._ad.destroy();
+    }
+
+    _loadAd () {
+      this._isLoad = false;
+      this._ad.load();
+    }
+
+    _dispatchEvent (name, data) {
+      this._callbacks[name].forEach(callback => {
+        if (typeof callback === 'function') {
+          callback(data || {});
+        }
+      });
+    }
+  }
+
+  function createFullScreenVideoAd (options) {
+    return new FullScreenVideoAd(options)
+  }
+
   var api = /*#__PURE__*/Object.freeze({
     __proto__: null,
     startPullDownRefresh: startPullDownRefresh,
@@ -10046,7 +10157,8 @@ var serviceContext = (function () {
     hideTabBar: hideTabBar$2,
     showTabBar: showTabBar$2,
     requestComponentInfo: requestComponentInfo$2,
-    createRewardedVideoAd: createRewardedVideoAd
+    createRewardedVideoAd: createRewardedVideoAd,
+    createFullScreenVideoAd: createFullScreenVideoAd
   });
 
   var platformApi = Object.assign(Object.create(null), api, eventApis);
@@ -10082,7 +10194,7 @@ var serviceContext = (function () {
     return page && page.$page.id
   }
 
-  const eventNames$1 = [
+  const eventNames$2 = [
     'canplay',
     'play',
     'pause',
@@ -10095,7 +10207,7 @@ var serviceContext = (function () {
     'waiting'
   ];
   const callbacks$5 = {};
-  eventNames$1.forEach(name => {
+  eventNames$2.forEach(name => {
     callbacks$5[name] = [];
   });
 
@@ -10214,7 +10326,7 @@ var serviceContext = (function () {
     }
   }
 
-  eventNames$1.forEach(item => {
+  eventNames$2.forEach(item => {
     const name = item[0].toUpperCase() + item.substr(1);
     BackgroundAudioManager.prototype[`on${name}`] = function (callback) {
       callbacks$5[item].push(callback);
@@ -11279,7 +11391,7 @@ var serviceContext = (function () {
     EditorContext: EditorContext
   });
 
-  const eventNames$2 = [
+  const eventNames$3 = [
     'canplay',
     'play',
     'pause',
@@ -11344,7 +11456,7 @@ var serviceContext = (function () {
       this.id = id;
       this._callbacks = {};
       this._options = {};
-      eventNames$2.forEach(name => {
+      eventNames$3.forEach(name => {
         this._callbacks[name.toLowerCase()] = [];
       });
       props$1.forEach(item => {
@@ -11404,7 +11516,7 @@ var serviceContext = (function () {
     }
   }
 
-  eventNames$2.forEach(item => {
+  eventNames$3.forEach(item => {
     const name = item[0].toUpperCase() + item.substr(1);
     item = item.toLowerCase();
     InnerAudioContext.prototype[`on${name}`] = function (callback) {
