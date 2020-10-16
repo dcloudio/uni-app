@@ -8,9 +8,9 @@
 
 |App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|√（2.9.6+）|x|x|x|x|x|x|
+|√（2.9.5+）|x|x|x|x|x|x|
 
-uni.createFullScreenVideoAd(Object object)
+uni.createFullScreenVideoAd(Object)
 
 |属性|类型|必填|说明|
 |:-:|:-:|:-:|:-:|
