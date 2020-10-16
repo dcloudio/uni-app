@@ -1,4 +1,8 @@
 import {
+  TEMP_PATH
+} from '../constants'
+
+import {
   getStatusBarStyle
 } from '../util'
 
@@ -115,7 +119,9 @@ export function scanCode ({
           }
         }, {
           multiple: false,
-          system: false
+          system: false,
+          filename: TEMP_PATH + '/gallery/',
+          permissionAlert: true
         })
       }
     })
