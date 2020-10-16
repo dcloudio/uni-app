@@ -309,7 +309,14 @@ export default {
            */
           function loadFile (path) {
             function onError () {
-              image.src = src
+              const bitmap = new plus.nativeObj.Bitmap(`bitmap_${Date.now()}_${Math.random()}}`)
+              bitmap.load(path, function () {
+                image.src = bitmap.toBase64Data()
+                bitmap.clear()
+              }, function () {
+                bitmap.clear()
+                image.src = src
+              })
             }
             plus.io.resolveLocalFileSystemURL(path, function (entry) {
               entry.file(function (file) {

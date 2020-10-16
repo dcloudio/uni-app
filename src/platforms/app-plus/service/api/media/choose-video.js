@@ -39,7 +39,8 @@ export function chooseVideo ({
     plus.gallery.pick(successCallback, errorCallback, {
       filter: 'video',
       system: false,
-      filename: TEMP_PATH + '/gallery/'
+      filename: TEMP_PATH + '/gallery/',
+      permissionAlert: true
     })
   }
 

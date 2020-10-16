@@ -216,6 +216,7 @@
   "name": "ad",
   "title": "广告",
   "apiList": {
-    "uni.createRewardedVideoAd": true
+    "uni.createRewardedVideoAd": true,
+    "uni.createFullScreenVideoAd": true
   }
 }]
