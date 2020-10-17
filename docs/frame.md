@@ -313,7 +313,7 @@ switch(uni.getSystemInfoSync().platform){
 `uni-app` 支持的通用 css 单位包括 px、rpx
 
 - px 即屏幕像素
-- rpx 即响应式px，一种根据屏幕宽度自适应的动态单位。以750宽的屏幕为基准，750rpx恰好为屏幕宽度。屏幕变宽，rpx 实际显示效果会等比放大。
+- rpx 即响应式px，一种根据屏幕宽度自适应的动态单位。以750宽的屏幕为基准，750rpx恰好为屏幕宽度。屏幕变宽，rpx 实际显示效果会等比放大，但在 App 端和 H5 端屏幕宽度达到 960px 时，默认将按照 375px 的屏幕宽度进行计算，具体配置参考：[rpx计算配置](https://uniapp.dcloud.io/collocation/pages?id=globalstyle) 。
 
 vue页面支持普通H5单位，但在nvue里不支持：
 - rem 根字体大小可以通过 [page-meta](/component/page-meta?id=page-meta) 配置<span style="display:none">字节跳动小程序：屏幕宽度/20、百度小程序：16px、支付宝小程序：50px</span>
@@ -338,7 +338,7 @@ nvue中，uni-app 模式（[nvue 不同编译模式介绍](https://ask.dcloud.ne
 
 而且主要是宽度变形。高度一般因为有滚动条，不容易出问题。由此，引发了较强的动态宽度单位需求。
 
-微信小程序设计了 rpx 解决这个问题，`uni-app` 在 App 端、H5 端都支持了 `rpx`。
+微信小程序设计了 rpx 解决这个问题。`uni-app` 在 App 端、H5 端都支持了 `rpx`，并且可以配置不同屏幕宽度的计算方式，具体参考：[rpx计算配置](https://uniapp.dcloud.io/collocation/pages?id=globalstyle)。
 
 rpx 是相对于基准宽度的单位，可以根据屏幕宽度进行自适应。```uni-app``` 规定屏幕基准宽度 750rpx。
 
