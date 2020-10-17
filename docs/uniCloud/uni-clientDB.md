@@ -107,15 +107,9 @@ import db from '@/js_sdk/uni-clientDB/index.js'
 const dbCmd = db.command
 
 // 使用uni-clientDB
-db.action('get-info') // 不使用action时可以不调用action方法
-  .collection('list')
+db.collection('list')
   .where({
-    name: new RegExp('龚','g'),
-    time: dbCmd.gt(1105885393581)
-  }).field({
-    name: true,
-    time: true,
-    content: true
+    name: "hello-uni-app"
   }).get()
   .then((res)=>{
     // res 为数据库查询结果
@@ -155,14 +149,9 @@ import db from '@/js_sdk/uni-clientDB/index.js'
 const dbCmd = db.command
 
 // 上面的示例中的where条件可以使用以下写法
-db.action('get-info') // 不使用action时可以不调用action方法
-  .collection('list')
-  .where('/龚/g.test(name) && time > 1105885393581')
-  .field({
-    name: true,
-    time: true,
-    content: true
-  }).get()
+db.collection('list')
+  .where('name == "hello-uni-app"')
+  .get()
   .then((res)=>{
     // res 为数据库查询结果
   }).catch((err)=>{
