@@ -133,10 +133,10 @@ clientDB的工程目录结构见：[详情](https://uniapp.dcloud.net.cn/uniClou
   "bsonType": "object",
   "required": [],
   "db-permission": {
-    ".read": false, // 每个用户只能读取用户自己的数据。前提是要操作的数据doc，里面有一个字段存放了uid，即uni-id的用户id。
-    ".create": false, // 禁止新增数据记录
-    ".update": false, // 禁止更新数据
-    ".delete": false // 禁止删除数据
+    ".read": true, // 任何用户都可以读
+    ".create": false, // 禁止新增数据记录（admin权限用户不受限）
+    ".update": false, // 禁止更新数据（admin权限用户不受限）
+    ".delete": false // 禁止删除数据（admin权限用户不受限）
   },
   "properties": {
     ...
@@ -144,8 +144,8 @@ clientDB的工程目录结构见：[详情](https://uniapp.dcloud.net.cn/uniClou
       "bsonType": "string",
       "label": "姓名",
       "db-permission": {
-        ".read": false, // 禁止读取 name 字段的数据
-        ".write": false // 禁止写入 name 字段的数据
+        ".read": false, // 禁止读取 name 字段的数据（admin权限用户不受限）
+        ".write": false // 禁止写入 name 字段的数据（admin权限用户不受限）
       }
       ...
     }
