@@ -1,23 +1,5 @@
 # uniCloud Admin
 
-## 文档修改
-
-- 看完文档，还是不知道作为插件作者，怎么开发一个插件。作为用户，怎么导入一个插件
-    >把你们之前做的某个功能，比如权限管理，作为插件，发布到市场。以这个例子为例，说明怎么开发插件，怎么导入插件
-- ~~菜单表的叫什么？名字都没有。db_inti里还有几个没见过的表，都要说明啊~~
-- admin自带的组件都要有说明，尤其是红框里的，该叫这名字吗？
-- 关于uni-cloud-router的用法,单独提一节出来
-- ~~文档还漏了如何获得uniCloud Admin，说清楚HBuilderX 2.9.5+版本新建项目选择xx，要截图说明。HBuilderX 2.9+可以从插件市场的xx链接获取~~
-
-- ~~菜单弄三个~~
-- 用表格表示菜单配置
-
-新增页面，要讲清楚：
-1. 可以新增普通的页面，在前端callfunction，后台搭配云函数操作
-2. 可以使用uni-clientdb，在前端直接操作数据库，后台配置db schema进行权限和格式校验
-3. 可以使用云函数单文件路由，在项目中默认包含了一个uni-cloud-router的单文件路由，也可以使用插件市场的其他单文件路由
-
-
 ## 代码
 
 1. 这里不应该是输入时校验，改成失焦时校验
@@ -84,6 +66,10 @@ uniCloud Admin，是基于uni-app和uniCloud的应用后台管理框架。
 ├── common
 │   └── uni.css                 # 公共样式
 ├── components                  # 自定义组件
+│   └── common                  # 自定义组件共用逻辑
+│   └── sidebar-item            # 侧边栏菜单组成元素，
+│   └── password                # 修改密码组件
+│   └── error                   # 开发模式下的 debug 错误列表组件
 ├── js_sdk                      # js sdk
 ├── pages                       # 页面
 │   │── index                   # 首页
@@ -314,7 +300,8 @@ module.exports = class UserService extends Service {
 
 ### admin 自带的组件
 
--
+- sidebar-item
+
 
 ### 怎么开发一个插件
 
