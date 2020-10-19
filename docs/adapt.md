@@ -67,8 +67,9 @@ pages.json 配置样例
 
 以新闻示例项目为例，预览地址[https://static-7d133019-9a7e-474a-b7c2-c01751f00ca5.bspapp.com/#/](https://static-7d133019-9a7e-474a-b7c2-c01751f00ca5.bspapp.com/#/)。这个项目的源码已经内置于HBuilderX 2.9中，新建uni-app项目时选择新闻/资讯模板。
 
-首先在这个项目的pages.json里，配置一个rightWindow，放置一个新页面right-window.vue。
+首先在这个项目的`pages.json`文件中，配置[`rightWindow`选项](https://uniapp.dcloud.net.cn/collocation/pages?id=rightwindow)，放置一个新页面`right-window.vue`。
 ```json
+# pages.json
 "rightWindow": {
     "path": "responsive/right-window.vue",
     "style": {
@@ -80,7 +81,7 @@ pages.json 配置样例
   }
 ```
 
-rightWindow对应的页面不需要重写一遍新闻详情的页面逻辑，只需要引入之前的详情页面组件。
+`rightWindow`对应的页面不需要重写一遍新闻详情的页面逻辑，只需要引入之前的详情页面组件（详情页面`/pages/detail/detail`可自动转化为`pages-detail-detail`组件使用）。
 
 ```html
 <!--responsive/right-window.vue-->
