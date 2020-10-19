@@ -1,5 +1,24 @@
 # uniCloud Admin
 
+## 文档修改
+
+- 看完文档，还是不知道作为插件作者，怎么开发一个插件。作为用户，怎么导入一个插件
+    >把你们之前做的某个功能，比如权限管理，作为插件，发布到市场。以这个例子为例，说明怎么开发插件，怎么导入插件
+
+- 用表格表示菜单配置
+
+新增页面，要讲清楚：
+1. 可以新增普通的页面，在前端callfunction，后台搭配云函数操作
+2. 可以使用uni-clientdb，在前端直接操作数据库，后台配置db schema进行权限和格式校验
+3. 可以使用云函数单文件路由，在项目中默认包含了一个uni-cloud-router的单文件路由，也可以使用插件市场的其他单文件路由
+
+
+## 代码
+
+1. 这里不应该是输入时校验，改成失焦时校验
+2. 这个界面不响应回车键
+3. 这里需要验证码啊，不然怎么商用？
+
 ### 什么是uniCloud Admin
 
 uniCloud Admin，是基于uni-app和uniCloud的应用后台管理框架。
@@ -16,8 +35,7 @@ uniCloud Admin，是基于uni-app和uniCloud的应用后台管理框架。
 - 顶部topWindow的设置：比如logo更换、右上角部分连接更换。详见项目根目录的`admin.config.js`文件
 - 左侧leftWindow的菜单设置：菜单包括两类，一类是动态菜单，具备业务和权限功能，在数据库的`opendb-admin-menu`表中增加删除菜单；另一类是静态菜单，不会根据登录用户角色变化，在项目根目录的`admin.config.js`文件中配置
 - 开发模式下的 debug 功能，帮助开发者及时发现报错和搜索错误信息，可在`admin.config.js`文件中配置
-
-### PC 宽屏和移动端上的 UI 表现
+g### PC 宽屏和移动端上的 UI 表现
 
 <div class="flex-img-group-view" style="padding-right: 30px">
     <div class="clear-style barcode-view">
@@ -115,17 +133,50 @@ $top-window-text-color: #999; /* 文字颜色 */
 
 1. 通过 [admin.config.js](https://github.com/dcloudio/uni-template-admin/blob/master/admin.config.js) 配置侧边栏内容，侧边栏的菜单包括根据用户角色动态显示的动态菜单，和所有用户都能看到静态菜单。
 
+*菜单的属性*
+
+| 字段 | 类型 | 必填 | 描述 |
+|:-|:-|:-|:-|
+| \_id | Object ID | 是 | Id保持唯一 |
+| name | String | 是 | 菜单文字 |
+| icon | String | 否 | 菜单图标 |
+| url | String | 否 | 菜单对应的页面链接（只有没有子菜单的菜单项可以配置） |
+| children | Array | 否 | 子菜单，重复它的父菜单的数据结构 |
+
+静态菜单 secondaryMenus 配置如下：
+
 ```js
 export default {
     // 侧边栏
     sideBar: {
         // 配置静态菜单列表（放置在用户被授权的菜单列表下边）
-        secondaryMenus: [
-            {
-                name: "404页面",
-                url: "/pages/error/404",
-            },
-        ],
+        secondaryMenus: [{
+            _id: 'demo',
+            name: '系统设置',
+            icon: 'el-icon-menu',
+            children: [{
+                _id: 'table',
+                name: '用户',
+                url: '/pages/demo/table/table'
+            },{
+                _id: 'table',
+                name: '角色',
+                url: '/pages/demo/table/table'
+            },{
+                _id: 'table',
+                name: '权限',
+                url: '/pages/demo/table/table'
+            }]
+        }, {
+            _id: 'app',
+            name: '应用管理',
+            icon: 'el-icon-menu',
+            children: [{
+                _id: 'table',
+                name: '表格',
+                url: '/pages/demo/table/table'
+            }]
+        }],
     },
 };
 ```
@@ -161,7 +212,7 @@ $menu-text-color-actived: #409eff; /* 菜单激活前景色 */
     > [详情](https://uniapp.dcloud.io/uniCloud/uni-id?id=%e6%9d%83%e9%99%90%e8%a1%a8)
 3. 菜单表 `opendb-admin-menu`
    | 字段 | 类型 | 必填 | 描述 |
-   | ---------- | --------- | ---- | ------- |
+   |:-|:-|:-|:-|
    | \_id | Object ID | 是 | 系统自动生成的 Id |
    | name | String | 是 | 菜单文字 |
    | icon | String | 否 | 菜单图标 |
@@ -192,9 +243,13 @@ $menu-text-color-actived: #409eff; /* 菜单激活前景色 */
 
 ### 新增页面
 
-在框架搭建好后，接下来就需要增加页面，实现功能，建议页面统一放在 ``pages`` 目录，以便管理。由于是云端一体的开发模式，简单的理解为，在前端实现页面和 *api 接口*，这里需要转换一下观念，api 也是在前端实现的。
+- 可以新增普通的页面，在前端callfunction，后台搭配云函数操作
+- 可以使用uni-clientdb，在前端直接操作数据库，后台配置db schema进行权限和格式校验
+- 可以使用云函数单文件路由，在项目中默认包含了一个uni-cloud-router的单文件路由，也可以使用插件市场的其他单文件路由
 
-以登录功能为例，以下是代码片段，完整代码见项目源码：
+建议页面统一放在 ``pages`` 目录，以便管理。由于是云端一体的开发模式，简单的理解为，在前端实现页面和 *api 接口*，这里需要转换一下观念，api 也是在前端实现的。
+
+以登录功能为例，这里使用的是 `可以新增普通的页面，在前端callfunction，后台搭配云函数操作` 和 `项目中默认的 uni-cloud-router 的单文件路由` 的方式新增页面，以下是代码片段，完整代码见项目源码：
 
 1. 新增前端 vue 页面
 
@@ -282,22 +337,15 @@ module.exports = class UserService extends Service {
 
 ```
 
-### 关于uni-cloud-router的用法
+### 关于 uni-cloud-router 的用法
 
-
+> [详情](https://uniapp.dcloud.io/uniCloud/uni-cloud-router)
 
 ### 云函数
 
 #### uni-clientDB
 
 > [详情](https://uniapp.dcloud.io/uniCloud/uni-clientDB)
-
-### admin 自带的组件
-
-- sidebar-item
-
-
-### 怎么开发一个插件
 
 ### 使用三方组件库
 
