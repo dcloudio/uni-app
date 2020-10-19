@@ -16,6 +16,7 @@
         v-text="placeholder"
       />
       <input
+        v-if="!disabled || !fixColor"
         ref="input"
         v-model="valueSync"
         v-keyboard
@@ -32,6 +33,17 @@
         @compositionstart="_onComposition"
         @compositionend="_onComposition"
         @keyup.stop="_onKeyup"
+      >
+      <input
+        v-if="disabled && fixColor"
+        ref="input"
+        :value="valueSync"
+        tabindex="-1"
+        :readonly="disabled"
+        :type="inputType"
+        :maxlength="maxlength"
+        :step="step"
+        class="uni-input-input"
       >
     </div>
   </uni-input>
@@ -91,7 +103,9 @@ export default {
     return {
       composing: false,
       wrapperHeight: 0,
-      cachedValue: ''
+      cachedValue: '',
+      // Safari 14 以上修正禁用状态颜色
+      fixColor: String(navigator.vendor).indexOf('Apple') === 0 && CSS.supports('image-orientation:from-image')
     }
   },
   computed: {
@@ -290,7 +304,6 @@ uni-input[hidden] {
   background: none;
   color: inherit;
   opacity: 1;
-  -webkit-text-fill-color: currentcolor;
   font: inherit;
   line-height: inherit;
   letter-spacing: inherit;
@@ -312,5 +325,10 @@ uni-input[hidden] {
 
 .uni-input-input[type="number"] {
   -moz-appearance: textfield;
+}
+
+.uni-input-input:disabled {
+  /* 用于重置iOS14以下禁用状态文字颜色 */
+  -webkit-text-fill-color: currentcolor;
 }
 </style>
