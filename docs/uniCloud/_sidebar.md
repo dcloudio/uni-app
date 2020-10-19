@@ -19,6 +19,7 @@
   * [腾讯云权限管理](uniCloud/policy-tcb.md)
 * 扩展能力
   * [uni-id](uniCloud/uni-id.md)
+  * [admin](uniCloud/admin.md)
   * [uni-clientDB](uniCloud/uni-clientDB.md)
   * [DB-Schema](uniCloud/schema.md)
   * [unipay](uniCloud/unipay.md)

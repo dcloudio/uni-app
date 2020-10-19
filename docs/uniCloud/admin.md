@@ -1,6 +1,38 @@
 # uni-template-admin
 
-> 基于 uni-app，uniCloud 的 admin 管理项目模板，前端工程师完成页面开发的同时，也可以用 JS 开发服务端 api，轻松搞定前后台整体业务。
+### 什么是uniCloud Admin
+
+uniCloud Admin，是基于uni-app和uniCloud的应用后台管理框架。
+
+- 它使用uni-app的宽屏适配，可自动适配PC宽屏和手机各端。了解[宽屏适配](https://uniapp.dcloud.io/adapt)
+- 它基于uniCloud，是serverless的云开发。了解[uniCloud](https://uniapp.dcloud.io/uniCloud/README)
+- 它基于uni-id，是uniCloud之上的用户账户、权限系统。了解[uni-id](https://uniapp.dcloud.io/uniCloud/uni-id)
+
+> 它只是一个框架，具体业务需要开发者自己开发或从插件市场导入相关插件
+
+### uniCloud Admin内置的功能包括：
+
+- 管理员账户初始化、登录、修改密码
+- 顶部topWindow的设置：比如logo更换、右上角部分连接更换。详见项目根目录的`admin.config.js`文件
+- 左侧leftWindow的菜单设置：菜单包括两类，一类是动态菜单，具备业务和权限功能，在数据库的`opendb-admin-menu`表中增加删除菜单；另一类是静态菜单，不会根据登录用户角色变化，在项目根目录的`admin.config.js`文件中配置
+- 开发模式下的 debug 功能，帮助开发者及时发现报错和搜索错误信息，可在`admin.config.js`文件中配置
+
+### PC 宽屏和移动端上的 UI 表现
+
+<div class="flex-img-group-view" style="padding-right: 30px">
+    <div class="clear-style barcode-view">
+        <div class="barcode-img-box">
+            <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/2811fb40-11d7-11eb-8bd0-2998ac5bbf7e.png" width="75%" />
+        </div>
+        <p style="text-algin: center">PC端</p>
+    </div>
+    <div class="clear-style barcode-view">
+        <div class="barcode-img-box">
+            <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/2766a010-11d7-11eb-8bd0-2998ac5bbf7e.png" width="25%" />
+        </div>
+        <p>移动端</P>
+    </div>
+</div>
 
 ### 使用
 
@@ -75,7 +107,7 @@ $top-window-text-color: #999; /* 文字颜色 */
 
 > 源码 [windows/leftWindow.vue](https://github.com/dcloudio/uni-template-admin/blob/master/windows/leftWindow.vue)
 
-1. 通过 [admin.config.js](https://github.com/dcloudio/uni-template-admin/blob/master/admin.config.js) 配置侧边栏内容
+1. 通过 [admin.config.js](https://github.com/dcloudio/uni-template-admin/blob/master/admin.config.js) 配置侧边栏内容，侧边栏的菜单包括根据用户角色动态显示的动态菜单，也有所有角都能看到静态菜单。
 
 ```js
 export default {
@@ -117,15 +149,15 @@ $menu-text-color-actived: #409eff; /* 菜单激活前景色 */
 
 ### 权限系统
 
-> 基于 [uni-id](https://uniapp.dcloud.io/uniCloud/uni-id?id=rbac-api) 角色权限
+> 基于 [uni-id](https://uniapp.dcloud.io/uniCloud/uni-id?id=rbac-api) 角色权限, uni-id 是 uniCloud之上的用户账户、权限系统
 
-1. 角色表
+1. 角色表 `uni-id-roles`
     > [详情](https://uniapp.dcloud.io/uniCloud/uni-id?id=%e8%a7%92%e8%89%b2%e8%a1%a8)
-2. 权限表
+2. 权限表 `uni-id-permissions`
     > [详情](https://uniapp.dcloud.io/uniCloud/uni-id?id=%e6%9d%83%e9%99%90%e8%a1%a8)
-3. 菜单表
+3. 菜单表 `opendb-admin-menu`
    | 字段 | 类型 | 必填 | 描述 |
-   | ---------- | --------- | ---- | -------------------------------------- |
+   | ---------- | --------- | ---- | ------- |
    | \_id | Object ID | 是 | 系统自动生成的 Id |
    | name | String | 是 | 菜单文字 |
    | icon | String | 否 | 菜单图标 |
@@ -135,7 +167,9 @@ $menu-text-color-actived: #409eff; /* 菜单激活前景色 */
    | permission | Array | 否 | 菜单权限（只有没有子菜单的菜单项可以配置） |
    | status | Integer | 是 | 菜单状态：0 禁用 1 启用 |
    | created_date | Timestamp | 是 | 创建时间 |
-4. 权限验证
+4. 用户表 `uni-id-users`
+    > [详情](https://uniapp.dcloud.io/uniCloud/uni-id?id=%e7%94%a8%e6%88%b7%e8%a1%a8)
+5. 权限验证
 
     ```html
     <template>
@@ -215,7 +249,6 @@ module.exports = class UserController extends Controller {
             password
         })
     }
-
 }
 ```
 
@@ -249,20 +282,19 @@ module.exports = class UserService extends Service {
 
 ### 使用三方组件库
 
-uniCloud admin 可以和其他 UI 框架一起使用，但不推荐这种用法，可以能会跨端不兼容的问题，尤其在移动端。
+uniCloud Admin支持所有三方的Vue UI库，包括elementUI等非uni-app的UI库，但注意这些for h5的ui库只能在浏览器中使用，无法适配App和小程序，按如下操作。
 
-以使用 xxx-ui 框架为例：
+以使用 element-ui 框架为例：
 
 1. 安装 UI 框架
 
-> npm i xxx-ui -S
+    > npm i element-ui -S
 
 2. 在 main.js 中引用
 
-```javascript
+    ```javascript
+    import elementUI from 'element-ui';
+    import 'element-ui/lib/theme-chalk/index.css';
 
-import xxxUI from 'xxx-ui';
-import 'xxx-ui/lib/theme-chalk/index.css';
-
-Vue.use(xxxUI);
-```
+    Vue.use(elementUI);
+    ```
