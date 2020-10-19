@@ -10,6 +10,7 @@
 - ~~文档还漏了如何获得uniCloud Admin，说清楚HBuilderX 2.9.5+版本新建项目选择xx，要截图说明。HBuilderX 2.9+可以从插件市场的xx链接获取~~
 
 - ~~菜单弄三个~~
+- 用表格表示菜单配置
 
 新增页面，要讲清楚：
 1. 可以新增普通的页面，在前端callfunction，后台搭配云函数操作
@@ -192,7 +193,11 @@ $menu-text-color-actived: #409eff; /* 菜单激活前景色 */
    | created_date | Timestamp | 是 | 创建时间 |
 4. 用户表 `uni-id-users`
     > [详情](https://uniapp.dcloud.io/uniCloud/uni-id?id=%e7%94%a8%e6%88%b7%e8%a1%a8)
-5. 权限验证
+5. 验证码表 `uni-verify`
+    > [详情](https://uniapp.dcloud.io/uniCloud/uni-id?id=%e7%94%a8%e6%88%b7%e8%a1%a8)
+6. 存储表（系统使用，开发不需要修改） `opendb-admin-storage`
+
+7. 权限验证
 
     ```html
     <template>
@@ -297,11 +302,21 @@ module.exports = class UserService extends Service {
 
 ```
 
+### 关于uni-cloud-router的用法
+
+
+
 ### 云函数
 
 #### uni-clientDB
 
 > [详情](https://uniapp.dcloud.io/uniCloud/uni-clientDB)
+
+### admin 自带的组件
+
+-
+
+### 怎么开发一个插件
 
 ### 使用三方组件库
 
