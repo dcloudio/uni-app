@@ -87,7 +87,7 @@ rightWindow对应的页面不需要重写一遍新闻详情的页面逻辑，只
 <template>
   <view>
     <!-- 这里将 /pages/detail/detail.nvue 页面作为一个组件使用 -->
-	  <!-- 路径 “/pages/detail/detail” 转为 “pages-detail-detail” 组件 -->
+    <!-- 路径 “/pages/detail/detail” 转为 “pages-detail-detail” 组件 -->
     <pages-detail-detail ref="detailPage"></pages-detail-detail>
   </view>
 </template>
