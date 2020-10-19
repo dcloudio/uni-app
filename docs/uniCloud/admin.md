@@ -1,4 +1,27 @@
-# uni-template-admin
+# uniCloud Admin
+
+## 文档修改
+
+- 看完文档，还是不知道作为插件作者，怎么开发一个插件。作为用户，怎么导入一个插件
+    >把你们之前做的某个功能，比如权限管理，作为插件，发布到市场。以这个例子为例，说明怎么开发插件，怎么导入插件
+- ~~菜单表的叫什么？名字都没有。db_inti里还有几个没见过的表，都要说明啊~~
+- admin自带的组件都要有说明，尤其是红框里的，该叫这名字吗？
+- 关于uni-cloud-router的用法,单独提一节出来
+- ~~文档还漏了如何获得uniCloud Admin，说清楚HBuilderX 2.9.5+版本新建项目选择xx，要截图说明。HBuilderX 2.9+可以从插件市场的xx链接获取~~
+
+- ~~菜单弄三个~~
+
+新增页面，要讲清楚：
+1. 可以新增普通的页面，在前端callfunction，后台搭配云函数操作
+2. 可以使用uni-clientdb，在前端直接操作数据库，后台配置db schema进行权限和格式校验
+3. 可以使用云函数单文件路由，在项目中默认包含了一个uni-cloud-router的单文件路由，也可以使用插件市场的其他单文件路由
+
+
+## 代码
+
+1. 这里不应该是输入时校验，改成失焦时校验
+2. 这个界面不响应回车键
+3. 这里需要验证码啊，不然怎么商用？
 
 ### 什么是uniCloud Admin
 
@@ -22,7 +45,7 @@ uniCloud Admin，是基于uni-app和uniCloud的应用后台管理框架。
 <div class="flex-img-group-view" style="padding-right: 30px">
     <div class="clear-style barcode-view">
         <div class="barcode-img-box">
-            <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/2811fb40-11d7-11eb-8bd0-2998ac5bbf7e.png" width="75%" />
+            <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/9303c360-11f1-11eb-b680-7980c8a877b8.png" width="75%" />
         </div>
         <p style="text-algin: center">PC端</p>
     </div>
@@ -38,7 +61,13 @@ uniCloud Admin，是基于uni-app和uniCloud的应用后台管理框架。
 
 #### 创建
 
-[HBuilderX](https://www.dcloud.io/hbuilderx.html) 新建 uni-app 项目，选择 uniCloud admin 项目模板，创建完成后，可以跟随``云服务空间初始化向导``初始化项目，创建并绑定云服务空间，也可稍后自行初始化。
+[HBuilderX](https://www.dcloud.io/hbuilderx.html) 2.9.5+版本新建 uni-app 项目，选择 uniCloud admin 项目模板，如下图，HBuilderX 2.9+可以从插件市场的[uniCloud admin 链接]()获取
+
+![download-admin](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/d5fdccf0-11f2-11eb-b244-a9f5e5565f30.png)
+
+创建完成后，可以跟随``云服务空间初始化向导``初始化项目，创建并绑定云服务空间
+
+![download-admin](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/2baaddd0-11f5-11eb-81ea-f115fe74321c.png)
 
 #### 运行
 
@@ -74,8 +103,6 @@ uniCloud Admin，是基于uni-app和uniCloud的应用后台管理框架。
 
 ### 顶部窗口（导航栏）
 
-> 源码 [windows/topWindow.vue](https://github.com/dcloudio/uni-template-admin/blob/master/windows/topWindow.vue)
-
 1. 通过 [admin.config.js](https://github.com/dcloudio/uni-template-admin/blob/master/admin.config.js) 配置导航栏内容
 
 ```js
@@ -105,9 +132,7 @@ $top-window-text-color: #999; /* 文字颜色 */
 
 ### 左侧窗口（菜单栏）
 
-> 源码 [windows/leftWindow.vue](https://github.com/dcloudio/uni-template-admin/blob/master/windows/leftWindow.vue)
-
-1. 通过 [admin.config.js](https://github.com/dcloudio/uni-template-admin/blob/master/admin.config.js) 配置侧边栏内容，侧边栏的菜单包括根据用户角色动态显示的动态菜单，也有所有角都能看到静态菜单。
+1. 通过 [admin.config.js](https://github.com/dcloudio/uni-template-admin/blob/master/admin.config.js) 配置侧边栏内容，侧边栏的菜单包括根据用户角色动态显示的动态菜单，和所有用户都能看到静态菜单。
 
 ```js
 export default {
@@ -142,8 +167,6 @@ $menu-text-color-actived: #409eff; /* 菜单激活前景色 */
 > 基于 [uni-id](https://uniapp.dcloud.io/uniCloud/uni-id) 用户登录
 
 1. 用户登录
-
-- 源码 [pages/login/login.vue](https://github.com/dcloudio/uni-template-admin/blob/master/pages/login/login.vue)
 
 注意：首次使用，可以通过登录页面底部链接创建一个超级管理员（仅允许创建一次），注册完毕后，建议从登录页面移除该链接
 
