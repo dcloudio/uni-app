@@ -1,11 +1,5 @@
 # uniCloud Admin
 
-## 代码
-
-1. 这里不应该是输入时校验，改成失焦时校验
-2. 这个界面不响应回车键
-3. 这里需要验证码啊，不然怎么商用？
-
 ### 什么是uniCloud Admin
 
 uniCloud Admin，是基于uni-app和uniCloud的应用后台管理框架。
