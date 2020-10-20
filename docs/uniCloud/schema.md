@@ -20,14 +20,10 @@ DB Schema是一种基于 JSON 格式定义的数据结构的规范。
 
 
 编写好schema后，您可以进一步导出表单校验规则。方法如下：
-1. 点击 “导出表单校验规则”，在左侧选择要校验的字段，然后点击“下载zip”按钮，将导出一个工程源码压缩包，其中含有clientDB、uni-id等库，最重要的是cloudfunctions目录下uni-clientDB/validator/下的js文件。该文件包含了根据schema生成的校验规则。
+1. 点击 “导出表单校验规则”，在左侧选择要校验的字段，然后点击“下载zip”按钮，将导出一个工程源码压缩包，其中js_sdk目录下validator/validator/下的js文件。该文件包含了根据schema生成的校验规则。
   ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/38cdc790-ff2e-11ea-9dfb-6da8e309e0d8.png)
 2. 解压导出的zip包，拷贝到已有工程(以后会支持直接导入到HBuilderX)
-- 如果你的项目下还没有clientDB，可以把整个zip解压到工程下，然后上传云函数到服务空间。
-- 如果你的项目下已经有clientDB，且版本大于等于2.0，只需要把zip里的cloudfunctions目录下`uni-clientDB/validator/`下的js文件copy到工程的对应目录下即可。
 - 如果你已经自行编写过`db-permission`文件，注意不要把`db-permission`也覆盖了，如果您未编写过`db-permission`，可以覆盖过去，并打开该文件根据自己的需求进行修改。
-
-clientDB的工程目录结构见：[详情](https://uniapp.dcloud.net.cn/uniCloud/uni-clientDB?id=structure)
 
 注意数据校验，只有使用clientDB 2.0+，才有效。不用clientDB，在云函数中直接操作数据库无法使用该校验规则。
 
@@ -48,7 +44,8 @@ clientDB的工程目录结构见：[详情](https://uniapp.dcloud.net.cn/uniClou
 |description|string|描述，开发者维护时自用|
 |format|'url'&#124;'email'|数据格式|
 |pattern|String|正则表达式，如设置为手机号的正则表达式后，不符合该正则表达式则校验失败|
-|db-permission|Object|数据库权限，参考: [https://uniapp.dcloud.net.cn/uniCloud/uni-clientDB?id=db-permission](https://uniapp.dcloud.net.cn/uniCloud/uni-clientDB?id=db-permission)|
+|validateFunction|string|扩展校验函数名|
+|permission|Object|数据库权限，参考: [https://uniapp.dcloud.net.cn/uniCloud/uni-clientDB?id=db-permission](https://uniapp.dcloud.net.cn/uniCloud/uni-clientDB?id=db-permission)|
 |label|string|字段标题。用于生成数据维护ui界面时，渲染表单项前面的label标题|
 |defaultValue|string&#124;Object|默认值|
 |forceDefaultValue|string&#124;Object|强制默认值，不可通过clientDB的代码修改，常用于存放用户id、时间、客户端ip等固定值。具体参考下表的defaultValue|
@@ -59,7 +56,7 @@ clientDB的工程目录结构见：[详情](https://uniapp.dcloud.net.cn/uniClou
 
 **注意：**
 1. 数据校验，只有使用clientDB 2.0+，才有效。不用clientDB，在云函数中直接操作数据库无法使用该校验规则
-2. 字段属性 `db-permission`, 仅支持 ".read", ".write"
+2. 字段属性 `permission`, 仅支持 ".read", ".write"
 3. 生成数据维护ui页面，该功能暂未开放。
 
 ### bsonType可用类型
@@ -124,7 +121,7 @@ clientDB的工程目录结构见：[详情](https://uniapp.dcloud.net.cn/uniClou
 ```
 
 
-### db-permission属性
+### permission属性
 
 数据库权限示例
 
@@ -132,7 +129,7 @@ clientDB的工程目录结构见：[详情](https://uniapp.dcloud.net.cn/uniClou
 {
   "bsonType": "object",
   "required": [],
-  "db-permission": {
+  "permission": {
     ".read": true, // 任何用户都可以读
     ".create": false, // 禁止新增数据记录（admin权限用户不受限）
     ".update": false, // 禁止更新数据（admin权限用户不受限）
@@ -143,7 +140,7 @@ clientDB的工程目录结构见：[详情](https://uniapp.dcloud.net.cn/uniClou
     "name": {
       "bsonType": "string",
       "label": "姓名",
-      "db-permission": {
+      "permission": {
         ".read": false, // 禁止读取 name 字段的数据（admin权限用户不受限）
         ".write": false // 禁止写入 name 字段的数据（admin权限用户不受限）
       }
@@ -328,6 +325,51 @@ clientDB的工程目录结构见：[详情](https://uniapp.dcloud.net.cn/uniClou
 ```
 
 
+### validateFunction属性@validateFunction
+
+扩展校验函数
+
+如何使用
+
+1. uniCloud 控制台，选择服务空间，切换到数据表
+
+2. 底部 “扩展校验函数” 点击 “+” 增加校验函数 ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/2f4d0230-12a2-11eb-b244-a9f5e5565f30.png)
+
+
+```
+// 扩展校验函数示例
+exports = function (rule, value, data) {
+  // rule  当前规则
+  // value 当前规则校验数据
+  // data  全部校验数据
+  return value.length < 10
+}
+```
+
+3. 在表结构 schema 编辑页面中配置需要校验的函数名称
+
+```json
+{
+  "bsonType": "object",
+  "required": ["name"],
+  "properties": {
+    "name": {
+      "bsonType": "string",
+      "label": "姓名",
+      "validateFunction": "name",
+      "errorMessage": {
+        "required": "{label}不能为空",
+        "pattern": "{label}格式无效"
+      }
+    }
+  }
+}
+```
+
+4. 保存后生效
+
+
+
 ### errorMessage属性
 
 clientDB的validator校验库，会根据schema配置的规范进行校验。数据不符合要求时，无法入库，此时会根据errorMessage的定义报出错误提示。
@@ -399,7 +441,7 @@ errorMessage支持字符串，也支持json object。类型为object时，可定
 {
   "bsonType": "object",
   "required": ["name", "nickname"],
-  "db-permission": {
+  "permission": {
     ".read": false,
     ".create": false,
     ".update": false,
@@ -418,7 +460,7 @@ errorMessage支持字符串，也支持json object。类型为object时，可定
         "required": "{label}必填",
         "minLength": "{label}不能小于{minLength}个字符"
       },
-      "db-permission": {
+      "permission": {
         ".read": false,
         ".write": false
       },

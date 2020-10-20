@@ -26,6 +26,9 @@ HBuilderX 2.9.5+ 全端支持
 |field|string|查询字段，多个字段用 `,` 分割|
 |where|string|查询条件，内容较多，另见文档：[详情](https://uniapp.dcloud.net.cn/uniCloud/uni-clientDB?id=jsquery)|
 |orderby|string|排序字段及正序倒叙设置|
+|page-current|Number|当前页|
+|page-size|Number|每页数据数量|
+|need-total|Number|分页模式，默认 `false`，需要分页模式时指定为 `true`|
 |getone|Boolean|指定查询结果是否返回数组第一条数据，默认 false。在false情况下返回的是数组，即便只有一条结果，也需要[0]的方式获取。在true下，直接返回结果数据，少一层数组。应用场景：详情页|
 |action|string|云端执行数据库查询的前或后，触发某个action函数操作，进行预处理或后处理，[详情](https://uniapp.dcloud.net.cn/uniCloud/uni-clientDB?id=%e4%ba%91%e7%ab%af%e9%83%a8%e5%88%86)。场景：前端无权操作的数据，比如阅读数+1|
 |manual|Boolean|是否手动加载数据，默认为 false，页面onready时自动联网加载数据。如果设为 true，则需要自行指定时机通过方法`this.$refs.udb.loadData()`来触发联网，其中的`udb`指组件的ref值|
@@ -61,16 +64,6 @@ HBuilderX 2.9.5+ 全端支持
 ```
 <uni-clientdb orderby="createTime desc"></uni-clientdb>
 ```
-
-
-
-#### pagination属性
-
-|属性|类型|描述|
-|:-|:-|:-|
-|current|Number|当前页|
-|size|Number|每页多少条数据|
-|total|Boolean|分页模式，默认 `false`，需要分页模式时指定为 `true`|
 
 
 #### 事件
@@ -120,7 +113,7 @@ this.$refs.udb.loadMore() //udb为uni-clientdb组件的ref属性值
 ```html
 <template>
   <view>
-    <uni-clientdb v-slot:default="{data, pagination, loading, error, options}" collection="user" field="name" :getone="true" where="id=='1'">
+    <uni-clientdb v-slot:default="{data, loading, error, options}" collection="user" field="name" :getone="true" where="id=='1'">
       <view>
           {{ data.name}}
       </view>
@@ -145,8 +138,7 @@ this.$refs.udb.loadMore() //udb为uni-clientdb组件的ref属性值
       :getone="false"
       :action="action"
       :where="where"
-      :pagination="pagination" @load="onqueryload" @error="onqueryerror">
-      <view>{{pagination}}</view>
+      @load="onqueryload" @error="onqueryerror">
       <view v-if="error" class="error">{{error.errMsg}}</view>
       <view v-else class="list">
         <view v-for="(item, index) in data" :key="index" class="list-item">
@@ -240,12 +232,10 @@ this.$refs.udb.loadMore() //udb为uni-clientdb组件的ref属性值
   <view class="content">
     <uni-clientdb ref="udb" v-slot:default="{data, pagination, loading, error, options}"
       :options="options"
-      collection="table1"
+      collection="unicloud-test"
       orderby="createTime desc"
       field="name,subType,createTime"
-      :getone="false"
-      :action="action"
-      :pagination="pagination" @load="onqueryload" @error="onqueryerror">
+      @load="onqueryload" @error="onqueryerror">
       <view>{{pagination}}</view>
       <view v-if="error" class="error">{{error.errMsg}}</view>
       <view v-else class="list">
@@ -255,7 +245,7 @@ this.$refs.udb.loadMore() //udb为uni-clientdb组件的ref属性值
       </view>
       <view class="loading" v-if="loading">加载中...</view>
       <!-- 分页组件 -->
-      <uni-pagination show-icon :page-size="pagination.size" v-model="options.current" total="pagination.total" @change="onpagination" />
+      <uni-pagination show-icon :page-size="pagination.size" total="pagination.total" @change="onpagination" />
     </uni-clientdb>
   </view>
 </template>
@@ -265,13 +255,6 @@ this.$refs.udb.loadMore() //udb为uni-clientdb组件的ref属性值
     data() {
       return {
         options: {}, // 插槽不能访问外面的数据，通过此参数传递, 不支持传递函数
-        pagination: {
-          current: 1,
-          size: 20,
-          total: true
-        },
-        action: '',
-        where: {} // 类型为对象或字符串
       }
     },
     onPullDownRefresh() {
@@ -286,7 +269,7 @@ this.$refs.udb.loadMore() //udb为uni-clientdb组件的ref属性值
         data.forEach((item) => {
           item.createTime = new Date(item.createTime).toLocaleString()
         })
-		// 上述时间格式化仅为演示，实际开发中推荐在组件里直接使用`<uni-dataformat>`组件，不用在load事件中通过js格式化数据
+        // 上述时间格式化仅为演示，实际开发中推荐在组件里直接使用`<uni-dateformat>`组件，不用在load事件中通过js格式化数据
         if (ended) {
           // 没有更多数据了
         }
@@ -329,10 +312,43 @@ this.$refs.udb.loadMore() //udb为uni-clientdb组件的ref属性值
 ```
 
 
+组件嵌套示例，访问父组件 data
+
+
+```
+<uni-clientdb ref="dataQuery" v-slot:default="{data, pagination, loading, error, options}" :options="options" collection="unicloud-test"
+    orderby="createTime desc" field="name,createTime"
+    :where="where" @load="onqueryload" @error="onqueryerror">
+    <view>{{pagination}}</view>
+    <view v-if="error" class="error">{{error.errMsg}}</view>
+    <view v-else class="list">
+      <view v-for="(item, index) in data" :key="index" class="list-item">
+        {{ item.name }}
+        {{ item.createTime }}
+      </view>
+    </view>
+    <view class="loading" v-if="loading">加载中...</view>
+    <!-- 嵌套测试 -->
+    <!--  :options="data",将 父组件返回的 data 通过 options 传递到组件，子组件通过 options 访问 -->
+    <uni-clientdb ref="dataQuery1" v-slot:default="{loading, data, error, options}" :options="data" collection="unicloud-test"
+      orderby="createTime desc" field="name,createTime" @load="onqueryload" @error="onqueryerror">
+      <view v-if="options" class="error">{{options}}</view>
+      <view v-if="error" class="error">{{error.errMsg}}</view>
+      <view v-else class="list">
+        <view v-for="(item, index) in data" :key="index" class="list-item">
+          {{ item.name }}
+        </view>
+      </view>
+    </uni-clientdb>
+  </uni-clientdb>
+```
+
+
+
 **调试小技巧**
 
 - H5平台，开发模式下浏览器控制台输入 `unidev.clientDB.data`，可查看组件内部数据，多个组件通过索引查看 `unidev.clientDB.data[0]`
 
 **Tips**
 
-- 时间显示，推荐使用`<uni-data-format>`组件，可以避免在 load 事件中写代码对时间进行格式处理。
+- 时间显示，推荐使用`<uni-dateformat>`组件，可以避免在 load 事件中写代码对时间进行格式处理。
