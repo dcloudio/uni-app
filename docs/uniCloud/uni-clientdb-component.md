@@ -348,6 +348,8 @@ this.$refs.udb.loadMore() //udb为uni-clientdb组件的ref属性值
 ```
 
 
+完整项目示例见插件市场: [https://ext.dcloud.net.cn/plugin?id=3256](https://ext.dcloud.net.cn/plugin?id=3256)
+
 
 **调试小技巧**
 
