@@ -183,7 +183,7 @@ db.collection('list')
 |!						|非						|!(status in ['a','b'])						|查询条件的 status 不是['a','b']中的任何一个									|
 |&&						|与						|uid == auth.uid && age > 10			|查询记录uid属性 为 当前用户uid 并且查询条件的 age 属性大于 10|
 |&#124;&#124;	|或						|uid == auth.uid&#124;&#124;age>10|查询记录uid属性 为 当前用户uid 或者查询条件的 age 属性大于 10|
-|test					|正则校验			|/abc/.test(content)							|查询 content 内包含abc的记录																	|
+|test					|正则校验			|/abc/.test(content)							|查询 content 内包含abc的记录	。可用于替代sql中的like。还可以写更多正则实现更复杂的功能	|
 
 
 ### 刷新token
