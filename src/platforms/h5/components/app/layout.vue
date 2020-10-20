@@ -331,6 +331,7 @@ export default {
 
   uni-main {
     flex: 1;
+    width: 100%;
   }
 
   uni-top-window+uni-content {

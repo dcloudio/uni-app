@@ -5,7 +5,7 @@
   >
     <div class="uni-textarea-wrapper">
       <div
-        v-show="!(composition||valueSync.length)"
+        v-show="!(composition || valueSync.length)"
         ref="placeholder"
         :style="placeholderStyle"
         :class="placeholderClass"
@@ -19,7 +19,7 @@
       />
       <div class="uni-textarea-compute">
         <div
-          v-for="(item,index) in valueCompute"
+          v-for="(item, index) in valueCompute"
           :key="index"
           v-text="item.trim() ? item : '.'"
         />
@@ -29,14 +29,15 @@
         />
       </div>
       <textarea
+        v-if="!disabled || !fixColor"
         ref="textarea"
         v-model="valueSync"
         v-keyboard
         :disabled="disabled"
         :maxlength="maxlengthNumber"
         :autofocus="autoFocus || focus"
-        :class="{'uni-textarea-textarea-fix-margin': fixMargin}"
-        :style="{'overflow-y': autoHeight? 'hidden':'auto'}"
+        :class="{ 'uni-textarea-textarea-fix-margin': fixMargin }"
+        :style="{ 'overflow-y': autoHeight ? 'hidden' : 'auto' }"
         class="uni-textarea-textarea"
         @compositionstart="_compositionstart"
         @compositionend="_compositionend"
@@ -44,6 +45,17 @@
         @focus="_focus"
         @blur="_blur"
         @touchstart.passive="_touchstart"
+      />
+      <textarea
+        v-if="disabled && fixColor"
+        ref="textarea"
+        :value="valueSync"
+        tabindex="-1"
+        :readonly="disabled"
+        :maxlength="maxlengthNumber"
+        :class="{ 'uni-textarea-textarea-fix-margin': fixMargin }"
+        :style="{ 'overflow-y': autoHeight ? 'hidden' : 'auto' }"
+        class="uni-textarea-textarea"
       />
     </div>
   </uni-textarea>
@@ -114,7 +126,9 @@ export default {
       height: 0,
       focusChangeSource: '',
       // iOS 13 以下版本需要修正边距
-      fixMargin: String(navigator.platform).indexOf('iP') === 0 && String(navigator.vendor).indexOf('Apple') === 0 && window.matchMedia(DARK_TEST_STRING).media !== DARK_TEST_STRING
+      fixMargin: String(navigator.platform).indexOf('iP') === 0 && String(navigator.vendor).indexOf('Apple') === 0 && window.matchMedia(DARK_TEST_STRING).media !== DARK_TEST_STRING,
+      // Safari 14 以上修正禁用状态颜色
+      fixColor: String(navigator.vendor).indexOf('Apple') === 0 && CSS.supports('image-orientation:from-image')
     }
   },
   computed: {
@@ -340,7 +354,6 @@ uni-textarea[hidden] {
   background: none;
   color: inherit;
   opacity: 1;
-  -webkit-text-fill-color: currentcolor;
   font: inherit;
   line-height: inherit;
   letter-spacing: inherit;
@@ -354,5 +367,9 @@ uni-textarea[hidden] {
   width: auto;
   right: 0;
   margin: 0 -3px;
+}
+.uni-textarea-textarea:disabled {
+  /* 用于重置iOS14以下禁用状态文字颜色 */
+  -webkit-text-fill-color: currentcolor;
 }
 </style>
