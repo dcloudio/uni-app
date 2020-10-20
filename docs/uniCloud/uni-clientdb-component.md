@@ -14,7 +14,9 @@ uni-clientdb组件是一个数据库查询组件，它是对uni-clientdb的js库
 
 **平台差异及版本说明**
 
-HBuilderX 2.9.5+ 暂不支持快应用
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|快应用|360小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|√（2.9.5+）|√|√|√|√|√|√|x|√|
 
 
 #### 属性
@@ -29,7 +31,8 @@ HBuilderX 2.9.5+ 暂不支持快应用
 |orderby|string|排序字段及正序倒叙设置|
 |page-current|Number|当前页|
 |page-size|Number|每页数据数量|
-|need-total|Boolan|是否查询总数据条数，默认 `false`，需要分页模式时指定为 `true`|
+|page-data|String|`add` 多次查询的集合, `replace` 当前查询的集合|
+|getcount|Boolan|是否查询总数据条数，默认 `false`，需要分页模式时指定为 `true`|
 |getone|Boolean|指定查询结果是否返回数组第一条数据，默认 false。在false情况下返回的是数组，即便只有一条结果，也需要[0]的方式获取。在true下，直接返回结果数据，少一层数组。应用场景：详情页|
 |action|string|云端执行数据库查询的前或后，触发某个action函数操作，进行预处理或后处理，[详情](https://uniapp.dcloud.net.cn/uniCloud/uni-clientDB?id=%e4%ba%91%e7%ab%af%e9%83%a8%e5%88%86)。场景：前端无权操作的数据，比如阅读数+1|
 |manual|Boolean|是否手动加载数据，默认为 false，页面onready时自动联网加载数据。如果设为 true，则需要自行指定时机通过方法`this.$refs.udb.loadData()`来触发联网，其中的`udb`指组件的ref值|
@@ -71,8 +74,11 @@ HBuilderX 2.9.5+ 暂不支持快应用
 
 load事件在查询执行后、渲染前触发，一般用于查询数据的二次加工。比如查库结果不能直接渲染时，可以在load事件里先对data进行预处理。
 
-```
-@load
+``` html
+...
+<uni-clientdb @load="handleLoad" />
+...
+
 handleLoad(data, ended, pagination) {
   // `data` 当前查询结果
   // `ended` 是否有更多数据
@@ -82,10 +88,13 @@ handleLoad(data, ended, pagination) {
 
 error事件在查询报错时触发
 
-```
-@error
+``` html
+...
+<uni-clientdb @error="handleError" />
+...
+
 handleError(e) {
-  // {errorMessage}
+  // {message}
 }
 ```
 
@@ -128,19 +137,18 @@ this.$refs.udb.loadMore() //udb为uni-clientdb组件的ref属性值
 模式1：上拉加载上一页。下一页的查询结果会追加合并到data里
 
 ```html
-
 <template>
   <view class="content">
     <uni-clientdb ref="udb" v-slot:default="{data, pagination, loading, error, options}"
       :options="options"
-      :collection="collection"
+      collection="table1"
       orderby="createTime desc"
       field="name,subType,createTime"
       :getone="false"
       :action="action"
       :where="where"
       @load="onqueryload" @error="onqueryerror">
-      <view v-if="error" class="error">{{error.errMsg}}</view>
+      <view v-if="error" class="error">{{error.message}}</view>
       <view v-else class="list">
         <view v-for="(item, index) in data" :key="index" class="list-item">
           {{ item.createTime }}
@@ -158,12 +166,6 @@ this.$refs.udb.loadMore() //udb为uni-clientdb组件的ref属性值
     data() {
       return {
         options: {}, // 插槽不能访问外面的数据，通过此参数传递, 不支持传递函数
-        collection: 'table1',
-        pagination: {
-          current: 1,
-          size: 20,
-          total: true
-        },
         action: '',
         where: {} // 类型为对象或字符串
       }
@@ -235,10 +237,10 @@ this.$refs.udb.loadMore() //udb为uni-clientdb组件的ref属性值
   <view class="content">
     <uni-clientdb ref="udb" v-slot:default="{data, pagination, loading, error, options}"
       :options="options"
-      collection="unicloud-test"
+      collection="table1"
       orderby="createTime desc"
       field="name,subType,createTime"
-      :need-total="true"
+      :getcount="true"
       @load="onqueryload" @error="onqueryerror">
       <view>{{pagination}}</view>
       <view v-if="error" class="error">{{error.errMsg}}</view>
@@ -319,29 +321,27 @@ this.$refs.udb.loadMore() //udb为uni-clientdb组件的ref属性值
 组件嵌套示例，访问父组件 data
 
 
-```
-<uni-clientdb ref="dataQuery" v-slot:default="{data, pagination, loading, error, options}" :options="options" collection="unicloud-test"
-    orderby="createTime desc" field="name,createTime"
-    :where="where" @load="onqueryload" @error="onqueryerror">
-    <view>{{pagination}}</view>
+``` html
+<uni-clientdb v-slot:default="{data, loading, error, options}" :options="options" collection="table1"
+    orderby="createTime desc" field="name,createTime">
     <view v-if="error" class="error">{{error.errMsg}}</view>
     <view v-else class="list">
-      <view v-for="(item, index) in data" :key="index" class="list-item">
+      <!-- table1 返回的数据 -->
+      <view v-for="(item, index) in options" :key="index" class="list-item">
         {{ item.name }}
-        {{ item.createTime }}
       </view>
     </view>
-    <view class="loading" v-if="loading">加载中...</view>
-    <!-- 嵌套测试 -->
-    <!--  :options="data",将 父组件返回的 data 通过 options 传递到组件，子组件通过 options 访问 -->
-    <uni-clientdb ref="dataQuery1" v-slot:default="{loading, data, error, options}" :options="data" collection="unicloud-test"
+    <!-- 嵌套 -->
+    <!-- :options="data",将 父组件返回的 data 通过 options 传递到组件，子组件通过 options 访问 -->
+    <uni-clientdb ref="dataQuery1" v-slot:default="{loading, data, error, options}" :options="data" collection="table2"
       orderby="createTime desc" field="name,createTime" @load="onqueryload" @error="onqueryerror">
-      <view v-if="options" class="error">{{options}}</view>
-      <view v-if="error" class="error">{{error.errMsg}}</view>
-      <view v-else class="list">
-        <view v-for="(item, index) in data" :key="index" class="list-item">
-          {{ item.name }}
-        </view>
+      <!-- 父组件 table1 返回的数据 -->
+      <view v-for="(item, index) in options" :key="index" class="list-item">
+        {{ item.name }}
+      </view>
+      <!-- 子组件 table2 返回的数据 -->
+      <view v-for="(item, index) in data" :key="index" class="list-item">
+        {{ item.name }}
       </view>
     </uni-clientdb>
   </uni-clientdb>
