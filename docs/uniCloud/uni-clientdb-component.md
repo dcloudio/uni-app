@@ -14,7 +14,8 @@ uni-clientdb组件是一个数据库查询组件，它是对uni-clientdb的js库
 
 **平台差异及版本说明**
 
-HBuilderX 2.9.5+ 全端支持
+HBuilderX 2.9.5+ 暂不支持快应用
+
 
 #### 属性
 
@@ -28,7 +29,7 @@ HBuilderX 2.9.5+ 全端支持
 |orderby|string|排序字段及正序倒叙设置|
 |page-current|Number|当前页|
 |page-size|Number|每页数据数量|
-|need-total|Number|分页模式，默认 `false`，需要分页模式时指定为 `true`|
+|need-total|Boolan|是否查询总数据条数，默认 `false`，需要分页模式时指定为 `true`|
 |getone|Boolean|指定查询结果是否返回数组第一条数据，默认 false。在false情况下返回的是数组，即便只有一条结果，也需要[0]的方式获取。在true下，直接返回结果数据，少一层数组。应用场景：详情页|
 |action|string|云端执行数据库查询的前或后，触发某个action函数操作，进行预处理或后处理，[详情](https://uniapp.dcloud.net.cn/uniCloud/uni-clientDB?id=%e4%ba%91%e7%ab%af%e9%83%a8%e5%88%86)。场景：前端无权操作的数据，比如阅读数+1|
 |manual|Boolean|是否手动加载数据，默认为 false，页面onready时自动联网加载数据。如果设为 true，则需要自行指定时机通过方法`this.$refs.udb.loadData()`来触发联网，其中的`udb`指组件的ref值|
@@ -144,7 +145,7 @@ this.$refs.udb.loadMore() //udb为uni-clientdb组件的ref属性值
         <view v-for="(item, index) in data" :key="index" class="list-item">
           {{ item.createTime }}
           <!-- 使用日期格式化组件，详情见插件 https://ext.dcloud.net.cn/search?q=date-format -->
-          <!-- <uni-date-format :date="item.createTime" /> -->
+          <uni-dateformat :date="item.createTime" />
         </view>
       </view>
       <view v-if="loading" class="loading">加载中...</view>
@@ -184,9 +185,11 @@ this.$refs.udb.loadMore() //udb为uni-clientdb组件的ref属性值
     methods: {
       onqueryload(data, ended) {
         // 格式化数据
-        data.forEach((item) => {
-          item.createTime = new Date(item.createTime).toLocaleString()
-        })
+        // data.forEach((item) => {
+        //   item.createTime = new Date(item.createTime).toLocaleString()
+        // })
+
+        // 模板中已使用格式化事件组件，不在需要上面的js处理
 
         if (ended) {
           // 没有更多数据了
@@ -235,6 +238,7 @@ this.$refs.udb.loadMore() //udb为uni-clientdb组件的ref属性值
       collection="unicloud-test"
       orderby="createTime desc"
       field="name,subType,createTime"
+      :need-total="true"
       @load="onqueryload" @error="onqueryerror">
       <view>{{pagination}}</view>
       <view v-if="error" class="error">{{error.errMsg}}</view>
