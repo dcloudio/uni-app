@@ -6087,7 +6087,10 @@ var serviceContext = (function () {
     });
   }
 
-  const getImageInfo$1 = warpPlusMethod('io', 'getImageInfo');
+  const getImageInfo$1 = warpPlusMethod('io', 'getImageInfo', options => {
+    options.savePath = options.filename = TEMP_PATH + '/download/';
+    return options
+  });
 
   function previewImagePlus ({
     current = 0,
