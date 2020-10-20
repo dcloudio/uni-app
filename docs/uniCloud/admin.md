@@ -16,7 +16,8 @@ uniCloud Admin，是基于uni-app和uniCloud的应用后台管理框架。
 - 顶部topWindow的设置：比如logo更换、右上角部分连接更换。详见项目根目录的`admin.config.js`文件
 - 左侧leftWindow的菜单设置：菜单包括两类，一类是动态菜单，具备业务和权限功能，在数据库的`opendb-admin-menu`表中增加删除菜单；另一类是静态菜单，不会根据登录用户角色变化，在项目根目录的`admin.config.js`文件中配置
 - 开发模式下的 debug 功能，帮助开发者及时发现报错和搜索错误信息，可在`admin.config.js`文件中配置
-g### PC 宽屏和移动端上的 UI 表现
+
+### PC 宽屏和移动端上的 UI 表现
 
 <div class="flex-img-group-view" style="padding-right: 30px">
     <div class="clear-style barcode-view">
@@ -27,7 +28,7 @@ g### PC 宽屏和移动端上的 UI 表现
     </div>
     <div class="clear-style barcode-view">
         <div class="barcode-img-box">
-            <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/2766a010-11d7-11eb-8bd0-2998ac5bbf7e.png" width="25%" />
+            <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/2766a010-11d7-11eb-8bd0-2998ac5bbf7e.png" />
         </div>
         <p>移动端</P>
     </div>
