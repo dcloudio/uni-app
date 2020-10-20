@@ -299,6 +299,7 @@ uni-input[hidden] {
 }
 
 .uni-input-input {
+  position: relative;
   display: block;
   height: 100%;
   background: none;
