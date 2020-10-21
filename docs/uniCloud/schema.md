@@ -27,7 +27,7 @@ DB Schema是一种基于 JSON 格式定义的数据结构的规范。
 
 注意数据校验，只有使用clientDB 2.0+，才有效。不用clientDB，在云函数中直接操作数据库无法使用该校验规则。
 
-#### Schema字段
+#### Schema字段@segment
 
 |属性|类型|描述|
 |:-|:-|:-|
@@ -46,6 +46,7 @@ DB Schema是一种基于 JSON 格式定义的数据结构的规范。
 |pattern|String|正则表达式，如设置为手机号的正则表达式后，不符合该正则表达式则校验失败|
 |validateFunction|string|扩展校验函数名|
 |permission|Object|数据库权限，参考: [https://uniapp.dcloud.net.cn/uniCloud/uni-clientDB?id=db-permission](https://uniapp.dcloud.net.cn/uniCloud/uni-clientDB?id=db-permission)|
+|foreignKey|String|关联字段，形如`表名.字段名`|
 |label|string|字段标题。用于生成数据维护ui界面时，渲染表单项前面的label标题|
 |defaultValue|string&#124;Object|默认值|
 |forceDefaultValue|string&#124;Object|强制默认值，不可通过clientDB的代码修改，常用于存放用户id、时间、客户端ip等固定值。具体参考下表的defaultValue|
