@@ -151,7 +151,6 @@ this.$refs.udb.loadMore() //udb为uni-clientdb组件的ref属性值
       <view v-if="error" class="error">{{error.message}}</view>
       <view v-else class="list">
         <view v-for="(item, index) in data" :key="index" class="list-item">
-          {{ item.createTime }}
           <!-- 使用日期格式化组件，详情见插件 https://ext.dcloud.net.cn/search?q=date-format -->
           <uni-dateformat :date="item.createTime" />
         </view>
@@ -186,12 +185,10 @@ this.$refs.udb.loadMore() //udb为uni-clientdb组件的ref属性值
     },
     methods: {
       onqueryload(data, ended) {
-        // 格式化数据
+        // 格式化数据, 模板中已使用日期格式化组件，不在需要下面的js格式化
         // data.forEach((item) => {
         //   item.createTime = new Date(item.createTime).toLocaleString()
         // })
-
-        // 模板中已使用格式化事件组件，不在需要上面的js处理
 
         if (ended) {
           // 没有更多数据了
