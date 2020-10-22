@@ -434,7 +434,7 @@ let res = await db.collection('goods').where({
 ```js
 const dbCmd = db.command
 let res = await db.collection('goods').where({
-  _db: dbCmd.exists(true)
+  _id: dbCmd.exists(true)
 }).count()
 ```
 
