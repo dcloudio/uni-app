@@ -38,13 +38,21 @@
           </div>
         </div>
       </div>
+      <keypress
+        :disable="!visible"
+        @esc="_close('cancel')"
+        @enter="_close('confirm')"
+      />
     </uni-modal>
   </transition>
 </template>
 <script>
 import transition from './mixins/transition'
+import keypress from '../../../helpers/keypress'
+
 export default {
   name: 'Modal',
+  components: { keypress },
   mixins: [transition],
   props: {
     title: {

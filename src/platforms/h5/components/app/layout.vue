@@ -34,7 +34,6 @@
         v-if="leftWindow"
         v-show="showLeftWindow || apiShowLeftWindow"
         ref="leftWindow"
-        v-bind="bindWindow"
         :data-show="apiShowLeftWindow"
         :style="leftWindowStyle"
       >
@@ -46,6 +45,7 @@
         <div class="uni-left-window">
           <v-uni-left-window
             ref="left"
+            v-bind="bindWindow"
             @hook:mounted="onLeftWindowInit"
           />
         </div>
@@ -54,7 +54,6 @@
         v-if="rightWindow"
         v-show="showRightWindow || apiShowRightWindow"
         ref="rightWindow"
-        v-bind="bindWindow"
         :data-show="apiShowRightWindow"
         :style="rightWindowStyle"
       >
@@ -66,6 +65,7 @@
         <div class="uni-right-window">
           <v-uni-right-window
             ref="right"
+            v-bind="bindWindow"
             @hook:mounted="onRightWindowInit"
           />
         </div>

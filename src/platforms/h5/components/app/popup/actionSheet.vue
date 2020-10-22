@@ -40,13 +40,19 @@
       </div>
       <div :style="popupStyle.triangle" />
     </div>
+    <keypress
+      :disable="!visible"
+      @esc="_close(-1)"
+    />
   </uni-actionsheet>
 </template>
 <script>
 import popup from './mixins/popup'
+import keypress from '../../../helpers/keypress'
 
 export default {
   name: 'ActionSheet',
+  components: { keypress },
   mixins: [popup],
   props: {
     title: {
