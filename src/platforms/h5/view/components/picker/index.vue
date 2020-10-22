@@ -67,6 +67,11 @@
     <div>
       <slot />
     </div>
+    <keypress
+      :disable="!visible"
+      @esc="_cancel"
+      @enter="_change"
+    />
   </uni-picker>
 </template>
 
@@ -74,6 +79,7 @@
 import { emitter } from 'uni-mixins'
 import { formatDateTime } from 'uni-shared'
 import popup from '../../../components/app/popup/mixins/popup'
+import keypress from '../../../helpers/keypress'
 
 function getDefaultStartValue () {
   if (this.mode === mode.TIME) {
@@ -126,6 +132,7 @@ const fields = {
 }
 export default {
   name: 'Picker',
+  components: { keypress },
   mixins: [emitter, popup],
   props: {
     name: {
