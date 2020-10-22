@@ -104,8 +104,10 @@ message|string|失败描述
 		onLoad() {
 			
 		},
-		data: {
-			fil: [0, 2, 1]
+		data() {
+			return {
+				fil: [0, 2, 1]
+			}
 		},
 
 		methods: {

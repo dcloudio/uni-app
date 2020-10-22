@@ -51,8 +51,10 @@
 ```
 ```javascript
 export default {
-	data: {
-		src: ''
+	data() {
+		return {
+			src: ''
+		}
 	},
 	methods: {
 		test: function () {
@@ -195,8 +197,10 @@ uni.chooseMedia({
 ```
 ```javascript
 export default {
-	data: {
-		src: ''
+	data() {
+		return {
+			src: ''
+		}
 	},
 	methods: {
 		test: function () {
