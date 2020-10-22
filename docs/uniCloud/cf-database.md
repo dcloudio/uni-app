@@ -5487,7 +5487,7 @@ db.command.aggregate.log([<number>, <base>])
  
 ```js
 const $ = db.command.aggregate
-let res = await db.collection('staff').aggregate()
+let res = await db.collection('curve').aggregate()
   .project({
     log: $.log(['$x', 2])
   })
@@ -6480,7 +6480,7 @@ db.command.aggregate.size(<array>)
  
 ```js
 const $ = db.command.aggregate
-let res = await db.collection('staff').aggregate()
+let res = await db.collection('shops').aggregate()
   .project({
     totalStaff: $.size('$staff')
   })
