@@ -25,8 +25,9 @@ const platformOptions = manifestJsonObj[process.env.UNI_SUB_PLATFORM || process.
 global.uniPlugin.validate.forEach(validate => {
   validate(platformOptions, manifestJsonObj)
 })
-
 process.UNI_MANIFEST = manifestJsonObj
+
+process.env.VUE_APP_NAME = manifestJsonObj.name
 
 process.env.UNI_USING_V3_SCOPED = true
 
@@ -73,7 +74,8 @@ if (
   process.env.UNI_PLATFORM === 'h5' &&
   process.env.NODE_ENV === 'production'
 ) {
-  console.warn('发布H5，需要在uniCloud后台操作，绑定安全域名，否则会因为跨域问题而无法访问。教程参考：https://uniapp.dcloud.io/uniCloud/quickstart?id=useinh5')
+  console.warn(
+    '发布H5，需要在uniCloud后台操作，绑定安全域名，否则会因为跨域问题而无法访问。教程参考：https://uniapp.dcloud.io/uniCloud/quickstart?id=useinh5')
 }
 
 // 初始化环境变量
