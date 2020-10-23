@@ -488,18 +488,6 @@ const getSystemInfo = {
 };
 const getSystemInfoSync = getSystemInfo;
 const redirectTo = {};
-const createCanvasContext = {
-    returnValue(fromRes, toRes) {
-        const measureText = fromRes.measureText;
-        toRes.measureText = function (text, callback) {
-            const textMetrics = measureText.call(this, text);
-            if (typeof callback === 'function') {
-                setTimeout(() => callback(textMetrics), 0);
-            }
-            return textMetrics;
-        };
-    }
-};
 
 const providers = {
     oauth: [],
@@ -525,8 +513,7 @@ var protocols = /*#__PURE__*/Object.freeze({
   redirectTo: redirectTo,
   previewImage: previewImage,
   getSystemInfo: getSystemInfo,
-  getSystemInfoSync: getSystemInfoSync,
-  createCanvasContext: createCanvasContext
+  getSystemInfoSync: getSystemInfoSync
 });
 
 var index = initUni(shims, protocols);

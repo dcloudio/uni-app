@@ -451,18 +451,6 @@ function addSafeAreaInsets(fromRes, toRes) {
     }
 }
 const redirectTo = {};
-const createCanvasContext = {
-    returnValue(fromRes, toRes) {
-        const measureText = fromRes.measureText;
-        toRes.measureText = function (text, callback) {
-            const textMetrics = measureText.call(this, text);
-            if (typeof callback === 'function') {
-                setTimeout(() => callback(textMetrics), 0);
-            }
-            return textMetrics;
-        };
-    }
-};
 
 const getProvider = initGetProvider({
     oauth: ['alipay'],
@@ -1050,8 +1038,7 @@ var protocols = /*#__PURE__*/Object.freeze({
   saveImageToPhotosAlbum: saveImageToPhotosAlbum,
   saveVideoToPhotosAlbum: saveVideoToPhotosAlbum,
   chooseAddress: chooseAddress,
-  redirectTo: redirectTo,
-  createCanvasContext: createCanvasContext
+  redirectTo: redirectTo
 });
 
 var index = initUni(shims, protocols);

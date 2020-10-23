@@ -1544,6 +1544,192 @@ const canIUse = /* @__PURE__ */ createApi({type: API_TYPE_SYNC, name: "canIUse"}
 const makePhoneCall = /* @__PURE__ */ createApi({type: API_TYPE_ASYNC, name: "makePhoneCall"}, (option) => {
   window.location.href = `tel:${option.phoneNumber}`;
 }, MakePhoneCallProtocol);
+var attrs$1 = ["top", "left", "right", "bottom"];
+var inited$1;
+var elementComputedStyle$1 = {};
+var support$1;
+function getSupport$1() {
+  if (!("CSS" in window) || typeof CSS.supports != "function") {
+    support$1 = "";
+  } else if (CSS.supports("top: env(safe-area-inset-top)")) {
+    support$1 = "env";
+  } else if (CSS.supports("top: constant(safe-area-inset-top)")) {
+    support$1 = "constant";
+  } else {
+    support$1 = "";
+  }
+  return support$1;
+}
+function init$1() {
+  support$1 = typeof support$1 === "string" ? support$1 : getSupport$1();
+  if (!support$1) {
+    attrs$1.forEach(function(attr) {
+      elementComputedStyle$1[attr] = 0;
+    });
+    return;
+  }
+  function setStyle(el, style) {
+    var elStyle = el.style;
+    Object.keys(style).forEach(function(key) {
+      var val = style[key];
+      elStyle[key] = val;
+    });
+  }
+  var cbs = [];
+  function parentReady(callback) {
+    if (callback) {
+      cbs.push(callback);
+    } else {
+      cbs.forEach(function(cb) {
+        cb();
+      });
+    }
+  }
+  var passiveEvents = false;
+  try {
+    var opts = Object.defineProperty({}, "passive", {
+      get: function() {
+        passiveEvents = {passive: true};
+      }
+    });
+    window.addEventListener("test", null, opts);
+  } catch (e) {
+  }
+  function addChild(parent, attr) {
+    var a1 = document.createElement("div");
+    var a2 = document.createElement("div");
+    var a1Children = document.createElement("div");
+    var a2Children = document.createElement("div");
+    var W = 100;
+    var MAX = 1e4;
+    var aStyle = {
+      position: "absolute",
+      width: W + "px",
+      height: "200px",
+      boxSizing: "border-box",
+      overflow: "hidden",
+      paddingBottom: support$1 + "(safe-area-inset-" + attr + ")"
+    };
+    setStyle(a1, aStyle);
+    setStyle(a2, aStyle);
+    setStyle(a1Children, {
+      transition: "0s",
+      animation: "none",
+      width: "400px",
+      height: "400px"
+    });
+    setStyle(a2Children, {
+      transition: "0s",
+      animation: "none",
+      width: "250%",
+      height: "250%"
+    });
+    a1.appendChild(a1Children);
+    a2.appendChild(a2Children);
+    parent.appendChild(a1);
+    parent.appendChild(a2);
+    parentReady(function() {
+      a1.scrollTop = a2.scrollTop = MAX;
+      var a1LastScrollTop = a1.scrollTop;
+      var a2LastScrollTop = a2.scrollTop;
+      function onScroll() {
+        if (this.scrollTop === (this === a1 ? a1LastScrollTop : a2LastScrollTop)) {
+          return;
+        }
+        a1.scrollTop = a2.scrollTop = MAX;
+        a1LastScrollTop = a1.scrollTop;
+        a2LastScrollTop = a2.scrollTop;
+        attrChange$1(attr);
+      }
+      a1.addEventListener("scroll", onScroll, passiveEvents);
+      a2.addEventListener("scroll", onScroll, passiveEvents);
+    });
+    var computedStyle = getComputedStyle(a1);
+    Object.defineProperty(elementComputedStyle$1, attr, {
+      configurable: true,
+      get: function() {
+        return parseFloat(computedStyle.paddingBottom);
+      }
+    });
+  }
+  var parentDiv = document.createElement("div");
+  setStyle(parentDiv, {
+    position: "absolute",
+    left: "0",
+    top: "0",
+    width: "0",
+    height: "0",
+    zIndex: "-1",
+    overflow: "hidden",
+    visibility: "hidden"
+  });
+  attrs$1.forEach(function(key) {
+    addChild(parentDiv, key);
+  });
+  document.body.appendChild(parentDiv);
+  parentReady();
+  inited$1 = true;
+}
+function getAttr$1(attr) {
+  if (!inited$1) {
+    init$1();
+  }
+  return elementComputedStyle$1[attr];
+}
+var changeAttrs$1 = [];
+function attrChange$1(attr) {
+  if (!changeAttrs$1.length) {
+    setTimeout(function() {
+      var style = {};
+      changeAttrs$1.forEach(function(attr2) {
+        style[attr2] = elementComputedStyle$1[attr2];
+      });
+      changeAttrs$1.length = 0;
+      callbacks$1.forEach(function(callback) {
+        callback(style);
+      });
+    }, 0);
+  }
+  changeAttrs$1.push(attr);
+}
+var callbacks$1 = [];
+function onChange$1(callback) {
+  if (!getSupport$1()) {
+    return;
+  }
+  if (!inited$1) {
+    init$1();
+  }
+  if (typeof callback === "function") {
+    callbacks$1.push(callback);
+  }
+}
+function offChange$1(callback) {
+  var index2 = callbacks$1.indexOf(callback);
+  if (index2 >= 0) {
+    callbacks$1.splice(index2, 1);
+  }
+}
+var safeAreaInsets$1 = {
+  get support() {
+    return (typeof support$1 === "string" ? support$1 : getSupport$1()).length != 0;
+  },
+  get top() {
+    return getAttr$1("top");
+  },
+  get left() {
+    return getAttr$1("left");
+  },
+  get right() {
+    return getAttr$1("right");
+  },
+  get bottom() {
+    return getAttr$1("bottom");
+  },
+  onChange: onChange$1,
+  offChange: offChange$1
+};
+var out$1 = safeAreaInsets$1;
 const ua = navigator.userAgent;
 const isAndroid = /android/i.test(ua);
 const isIOS$1 = /iphone|ipad|ipod/i.test(ua);
@@ -1557,7 +1743,7 @@ const getSystemInfoSync = /* @__PURE__ */ createApi({type: API_TYPE_SYNC}, () =>
   var windowWidth = Math.min(window.innerWidth, document.documentElement.clientWidth, screenWidth) || screenWidth;
   var windowHeight = window.innerHeight;
   var language = navigator.language;
-  var statusBarHeight = out.top;
+  var statusBarHeight = out$1.top;
   var osname;
   var osversion;
   var model;
@@ -1616,12 +1802,12 @@ const getSystemInfoSync = /* @__PURE__ */ createApi({type: API_TYPE_SYNC}, () =>
   var system = `${osname} ${osversion}`;
   var platform = osname.toLocaleLowerCase();
   var safeArea = {
-    left: out.left,
-    right: windowWidth - out.right,
-    top: out.top,
-    bottom: windowHeight - out.bottom,
-    width: windowWidth - out.left - out.right,
-    height: windowHeight - out.top - out.bottom
+    left: out$1.left,
+    right: windowWidth - out$1.right,
+    top: out$1.top,
+    bottom: windowHeight - out$1.bottom,
+    width: windowWidth - out$1.left - out$1.right,
+    height: windowHeight - out$1.top - out$1.bottom
   };
   const {top: windowTop, bottom: windowBottom} = getWindowOffset();
   windowHeight -= windowTop;
@@ -1641,10 +1827,10 @@ const getSystemInfoSync = /* @__PURE__ */ createApi({type: API_TYPE_SYNC}, () =>
     model,
     safeArea,
     safeAreaInsets: {
-      top: out.top,
-      right: out.right,
-      bottom: out.bottom,
-      left: out.left
+      top: out$1.top,
+      right: out$1.right,
+      bottom: out$1.bottom,
+      left: out$1.left
     }
   };
 });
@@ -2763,7 +2949,7 @@ var script$8 = {
     }, this.pullToRefresh);
     let offset = uni.upx2px(refreshOptions.offset);
     if (titleNView.type !== "none" && titleNView.type !== "transparent") {
-      offset += NAVBAR_HEIGHT + out.top;
+      offset += NAVBAR_HEIGHT + out$1.top;
     }
     refreshOptions.offset = offset;
     refreshOptions.height = uni.upx2px(refreshOptions.height);

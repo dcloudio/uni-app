@@ -473,18 +473,6 @@ const previewImage = {
     }
 };
 const redirectTo = {};
-const createCanvasContext = {
-    returnValue(fromRes, toRes) {
-        const measureText = fromRes.measureText;
-        toRes.measureText = function (text, callback) {
-            const textMetrics = measureText.call(this, text);
-            if (typeof callback === 'function') {
-                setTimeout(() => callback(textMetrics), 0);
-            }
-            return textMetrics;
-        };
-    }
-};
 
 const getProvider = initGetProvider({
     oauth: ['toutiao'],
@@ -586,8 +574,7 @@ var protocols = /*#__PURE__*/Object.freeze({
   requestPayment: requestPayment,
   getFileInfo: getFileInfo,
   redirectTo: redirectTo,
-  previewImage: previewImage,
-  createCanvasContext: createCanvasContext
+  previewImage: previewImage
 });
 
 var index = initUni(shims, protocols);
