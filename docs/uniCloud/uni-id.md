@@ -552,7 +552,8 @@ exports.main = async function(event,context) {
 
 **注意：**
 
-- 2.7.14+ 客户端会自动查找storage内的token在callFunction时插入
+- 客户端会自动查找storage内的token在callFunction时插入
+- 2.9.5+ 客户端允许开发者自行传入uniIdToken，此时不再从storage获取token
 - 2.7.14 版本token存储在storage内使用的是驼峰形式的键值`uniIdToken`，下版会调整为蛇形`uni_id_token`，调整后会在一段时间内兼容驼峰形式
 
 **示例代码**
