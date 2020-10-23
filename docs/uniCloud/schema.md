@@ -21,7 +21,20 @@ DB Schema是一种基于 JSON 格式定义的数据结构的规范。
 
 编写好schema后，您可以进一步导出表单校验规则。方法如下：
 1. 点击 “导出表单校验规则”，在左侧选择要校验的字段，然后点击“下载zip”按钮，将导出一个工程源码压缩包，其中js_sdk目录下validator/validator/下的js文件。该文件包含了根据schema生成的校验规则。
-  ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/4cc17850-12cf-11eb-8a36-ebb87efcf8c0.png)
+  ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/ba87a6b0-1519-11eb-81ea-f115fe74321c.png)
+
+  A. 字段列表
+
+  B. 导出文件清单
+
+  C. 组件列表
+
+  D. 扩展校验函数，每个函数是一个文件
+
+  E. 验证规则，和表名一致
+
+  F. vue 页面，包含新增和修改
+
 2. 解压导出的zip包，拷贝到已有工程(以后会支持直接导入到HBuilderX)
 - 如果你已经自行编写过`db-permission`文件，注意不要把`db-permission`也覆盖了，如果您未编写过`db-permission`，可以覆盖过去，并打开该文件根据自己的需求进行修改。
 
