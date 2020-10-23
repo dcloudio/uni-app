@@ -39,7 +39,7 @@ uni-clientdb组件是一个数据库查询组件，它是对uni-clientdb的js库
 |@load|EventHandle|成功回调。如联网返回结果后，想修改下数据再渲染界面，则在本方法里对data进行修改|
 |@error|EventHandle|失败回调|
 
-**提示：目前仅支持单表查询，后续会补充跨表查询、groupby等高级功能**
+**提示：支持跨表查询，后续会补充、groupby等高级功能**
 
 
 #### v-slot:default
@@ -132,6 +132,25 @@ this.$refs.udb.loadMore() //udb为uni-clientdb组件的ref属性值
 </template>
 
 ```
+
+跨表查询示例
+
+```html
+// 注意 `collection` 属性需要传入所有用到的表名，用逗号分隔，主表需要放在第一位
+// where 属性 查询order表内书名为“三国演义”的订单
+// field 属性 查询book表返回book表内的title、book表内的author、order表内的quantity
+<template>
+  <view>
+    <uni-clientdb v-slot:default="{data, loading, error, options}" collection="order,book" where="'book.title == "三国演义"'" field="book{title,author},quantity">
+      <view>
+          {{ data.name}}
+      </view>
+    </uni-clientdb>
+  </view>
+</template>
+```
+
+跨表查询详情参考 [https://uniapp.dcloud.net.cn/uniCloud/database?id=lookup](https://uniapp.dcloud.net.cn/uniCloud/database?id=lookup)
 
 
 模式1：上拉加载上一页。下一页的查询结果会追加合并到data里
