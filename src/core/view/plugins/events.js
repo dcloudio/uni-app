@@ -90,6 +90,16 @@ export function processEvent (name, $event = {}, detail = {}, target = {}, curre
     stopPropagation () {}
   })
 
+  if (name.startsWith('mouse')) {
+    const {
+      top
+    } = getWindowOffset()
+    ret.pageX = $event.pageX
+    ret.pageY = $event.pageY - top
+    ret.clientX = $event.clientX
+    ret.clientY = $event.clientY - top
+  }
+
   if (__PLATFORM__ === 'app-plus') {
     const nid = currentTarget.getAttribute('_i')
     ret.options = {
