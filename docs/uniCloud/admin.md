@@ -1,8 +1,8 @@
 # uniCloud admin 基础框架
 
-### 什么是 uniCloud Admin
+### 什么是 uniCloud admin
 
-uniCloud admin 基础框架，是基于 uni-app 和 uniCloud 的应用后台管理框架。HBuilder X 2.9.5+ 支持，请更新到最新版本使用。
+uniCloud admin 基础框架，是基于 uni-app 和 uniCloud 的应用后台管理框架。HBuilderX 2.9.5+ 支持，请更新到最新版本使用。
 
 - 它使用 uni-app 的宽屏适配，可自动适配 PC 宽屏和手机各端。了解[宽屏适配](https://uniapp.dcloud.io/adapt)
 - 它基于 uniCloud，是 serverless 的云开发。了解[uniCloud](https://uniapp.dcloud.io/uniCloud/README)
@@ -15,24 +15,19 @@ uniCloud admin 基础框架，是基于 uni-app 和 uniCloud 的应用后台管�
 - 左侧 leftWindow 的菜单设置：菜单包括两类，一类是动态菜单，具备业务和权限功能；另一类是静态菜单，不会根据登录用户角色变化
 - 开发模式下的 debug 功能，帮助开发者及时发现报错和搜索错误信息，可在`admin.config.js`文件中配置
 
-> uniCloud Admin 是一个框架，具体业务需要开发者自己开发或从插件市场导入相关插件
+> uniCloud admin 是一个框架，具体业务需要开发者自己开发或从插件市场导入相关插件
 
-### PC 和移动端上的 UI 表现
+### 支持响应式布局
 
-<div class="flex-img-group-view" style="padding-right: 30px">
-    <div class="clear-style barcode-view">
-        <div class="barcode-img-box">
-            <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/9303c360-11f1-11eb-b680-7980c8a877b8.png" width="75%" />
-        </div>
-        <p style="text-algin: center; width: 75%">PC端</p>
-    </div>
-    <div class="clear-style barcode-view">
-        <div class="barcode-img-box">
-            <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/2766a010-11d7-11eb-8bd0-2998ac5bbf7e.png" width="375" />
-        </div>
-        <p>移动端</P>
-    </div>
-</div>
+uniCloud admin 同时支持 PC 端 和移动端。
+
+PC 端如下图：
+
+![pc](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/c2a69410-15db-11eb-880a-0db19f4f74bb.png)
+
+移动端如下图：
+
+<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/2766a010-11d7-11eb-8bd0-2998ac5bbf7e.png" width="375"/>
 
 ### 使用
 
@@ -40,7 +35,7 @@ uniCloud admin 基础框架，是基于 uni-app 和 uniCloud 的应用后台管�
 
 [HBuilderX](https://www.dcloud.io/hbuilderx.html) 2.9.5+版本新建 uni-app 项目，选择 uniCloud admin 项目模板，如下图
 
-![download-admin](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/d5fdccf0-11f2-11eb-b244-a9f5e5565f30.png)
+![download-admin](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/c2085840-15db-11eb-880a-0db19f4f74bb.png)
 
 创建完成后，可以跟随`云服务空间初始化向导`初始化项目，创建并绑定云服务空间
 
@@ -68,7 +63,8 @@ uniCloud admin 基础框架，是基于 uni-app 和 uniCloud 的应用后台管�
 ├── static
 ├── store                       # vuex
 ├── windows
-│   └── leftWindow.vue          # 左侧窗口（菜单栏）
+│   │── component               # 项目中使用的组件
+│   │── leftWindow.vue          # 左侧窗口（菜单栏）
 │   └── topWindow.vue           # 顶部窗口（导航栏）
 ├── admin.config.js             # 系统配置（配置导航，菜单等）
 ├── App.vue
@@ -83,13 +79,13 @@ uniCloud admin 基础框架，是基于 uni-app 和 uniCloud 的应用后台管�
 
 首次使用，可以通过登录页面底部链接创建一个超级管理员（仅允许创建一次），注册完毕后，建议从登录页面移除该链接
 
-![login](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/69674be0-1501-11eb-81ea-f115fe74321c.png)
+![login](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/c3f33850-15db-11eb-8ff1-d5dcf8779628.png)
 
 ### admin 窗体结构介绍
 
 登录后我们会看到如下窗体, 窗体分为三个部分，topWindow 顶部窗口（导航栏），leftwindow 左侧窗口（菜单栏），右侧的内容主窗体
 
-![index](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/27f0ae00-1500-11eb-880a-0db19f4f74bb.image)
+![index](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/c3591b30-15db-11eb-8ff1-d5dcf8779628.png)
 
 #### 顶部窗口（导航栏）
 
@@ -167,52 +163,69 @@ export default {
 
 ##### 管理动态菜单
 
-在云后台数据库的 `opendb-admin-menu` 表中管理菜单， 对菜单增删改查。如下图：
+在云后台数据库的 `opendb-admin-menus` 表中管理菜单， 对菜单增删改查。如下图：
 
 ![add-menu](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/aa7adb00-152a-11eb-81ea-f115fe74321c.png)
+
+_菜单字段解释:_
+
+   | 字段         | 类型      | 必填 | 描述                                                 |
+   | :----------- | :-------- | :--- | :--------------------------------------------------- |
+   | \_id         | Object ID | 是   | 系统自动生成的 Id                                    |
+   | name         | String    | 是   | 菜单文字                                             |
+   | icon         | String    | 否   | 菜单图标                                             |
+   | url          | String    | 否   | 菜单对应的页面链接（只有没有子菜单的菜单项可以配置） |
+   | sort         | Integer   | 否   | 在同级菜单中的排序，数组越大越靠后                   |
+   | parent_id    | String    | 否   | 父级菜单 Id                                          |
+   | permission   | Array     | 否   | 菜单权限（只有没有子菜单的菜单项可以配置）           |
+   | status       | Integer   | 是   | 菜单状态：0 禁用 1 启用                              |
+   | create_date  | Timestamp | 是   | 创建时间                                             |
+
+_添加菜单记录需要注意：_
+
+- 无子菜单，则需 `url` 字段不能为空，该菜单才能在页面显示
+- 有子菜单，则需至少一个子菜单的 `url` 字段不能为空，该菜单才能在页面显示
 
 例如，如需增加如下菜单：
 
 ```bash
-订单管理 （_id: order）                  # 父菜单
-└── 手机 （_id: phone）                  # 子菜单
+订单管理                  # 父菜单
+└── 手机                 # 子菜单
 ```
 
-1. 添加父菜单
+1. 添加一条父菜单记录
 
 菜单的 `parent_id` 字段为空, 即为一级菜单
 
-> tips: 如无子菜单，或子菜单`url` 字段为空，则不能在页面显示
-
 ```json
 {
-  "_id": "order",
+  "_id": "5f8428181c229600010389f6",
   "name": "订单管理",
   "icon": "uni-icons-cart-filled",
   "url": "",
-  "sort": 1000,
+  "sort": 2,
   "parent_id": "",
   "permission": [],
-  "status": 1
+  "status": 1,
+  "create_date": "1602662469396"
 }
 ```
 
-2. 添加子菜单
+2. 添加一条子菜单记录
 
 将子菜单的 `parent_id` 指向父菜单的 `_id`即可，孙菜单就是将子菜单的 `_id` 当做父菜单
 
-> tips: 子菜单下没有子孙菜单，必须配置 `url` 字段，否则不能在页面显示
-
 ```json
 {
-  "_id": "phone",
+  "_id": "5f842836d8daea0001906785",
   "name": "手机",
   "icon": "uni-icons-phone",
-  "url": "/phone",
-  "sort": 1001,
-  "parent_id": "order",
+  "url": "pages/phone",
+  "sort": 3,
+  "parent_id": "5f8428181c229600010389f6",
   "permission": [],
-  "status": 1
+  "status": 1,
+  "create_date": "1602662469492"
 }
 ```
 
@@ -233,7 +246,9 @@ $menu-text-color-actived: #409eff; /* 菜单激活前景色 */
 
 #### 右侧窗口（内容主窗体)
 
-右侧窗口是内容主窗体，和 uni-app 保持一致，用户登录后看到的第一个页面，默认是 pages 数组中第一项表示应用启动页，可在 page.json 调整启动页。
+右侧窗口是内容主窗体，和 uni-app 保持一致，用户登录后看到的第一个页面，默认是 pages 数组中第一项表示应用启动页。
+
+如果想将自己开发的页面调到登录后首页，可在 page.json 调整。
 
 ### icon 图标的使用
 
@@ -272,11 +287,11 @@ admin 内置了一套图标以供使用，开发者也可以使用第三方图�
 
 > 基于 [uni-id](https://uniapp.dcloud.io/uniCloud/uni-id?id=rbac-api) 角色权限, uni-id 是 uniCloud 之上的用户账户、权限系统
 
-1. 角色表 `uni-id-roles`
-   > [详情](https://uniapp.dcloud.io/uniCloud/uni-id?id=%e8%a7%92%e8%89%b2%e8%a1%a8)
-2. 权限表 `uni-id-permissions`
-   > [详情](https://uniapp.dcloud.io/uniCloud/uni-id?id=%e6%9d%83%e9%99%90%e8%a1%a8)
-3. 菜单表 `opendb-admin-menu`
+1. 用户表 `uni-id-users` [详情](https://uniapp.dcloud.io/uniCloud/uni-id?id=%e7%94%a8%e6%88%b7%e8%a1%a8)
+
+2. 角色表 `uni-id-roles` [详情](https://uniapp.dcloud.io/uniCloud/uni-id?id=%e8%a7%92%e8%89%b2%e8%a1%a8)
+3. 权限表 `uni-id-permissions` [详情](https://uniapp.dcloud.io/uniCloud/uni-id?id=%e6%9d%83%e9%99%90%e8%a1%a8)
+4. 菜单表 `opendb-admin-menus`
 
    | 字段         | 类型      | 必填 | 描述                                                 |
    | :----------- | :-------- | :--- | :--------------------------------------------------- |
@@ -288,12 +303,9 @@ admin 内置了一套图标以供使用，开发者也可以使用第三方图�
    | parent_id    | String    | 否   | 父级菜单 Id                                          |
    | permission   | Array     | 否   | 菜单权限（只有没有子菜单的菜单项可以配置）           |
    | status       | Integer   | 是   | 菜单状态：0 禁用 1 启用                              |
-   | created_date | Timestamp | 是   | 创建时间                                             |
+   | create_date  | Timestamp | 是   | 创建时间                                             |
 
-4. 用户表 `uni-id-users`
-   > [详情](https://uniapp.dcloud.io/uniCloud/uni-id?id=%e7%94%a8%e6%88%b7%e8%a1%a8)
-5. 验证码表 `uni-verify`
-   > [详情](https://uniapp.dcloud.io/uniCloud/uni-id?id=%e7%94%a8%e6%88%b7%e8%a1%a8)
+5. 验证码表 `uni-verify` [详情](https://uniapp.dcloud.io/uniCloud/uni-id?id=%e7%94%a8%e6%88%b7%e8%a1%a8)
 6. 权限验证
 
 admin 提供了两个内置方法，方便在页面中鉴定登录用户权限和角色:
@@ -307,7 +319,7 @@ admin 提供了两个内置方法，方便在页面中鉴定登录用户权限�
 <template>
   <view>
     <!-- 包含 user/add 权限的用户可以看到新增按钮 -->
-    <button v-if="$hasPermission('user/add')">新增</button>
+    <button v-if="$hasPermission('USER_ADD')">新增</button>
     <!-- 包含 admin 角色的用户可以看到删除按钮 -->
     <button v-if="$hasRole('admin')">删除</button>
   </view>
@@ -318,6 +330,8 @@ admin 提供了两个内置方法，方便在页面中鉴定登录用户权限�
 
 新增页面可以自己开发页面，也可以从插件市场下载插件。页面如需添加菜单，参见上文的[菜单管理](#静态菜单和动态菜单)。
 
+开发页面不局限开发方式：
+
 - 可以新增普通的页面，在前端 callfunction，后台搭配云函数操作
 - 可以使用 uni-clientdb，在前端直接操作数据库，后台配置 db schema 进行权限和格式校验
 - 可以使用云函数单文件路由，在项目中默认包含了一个[uni-cloud-router](https://uniapp.dcloud.io/uniCloud/uni-cloud-router) 的单文件路由，也可以使用插件市场的其他单文件路由
@@ -326,9 +340,9 @@ admin 提供了两个内置方法，方便在页面中鉴定登录用户权限�
 
 admin 中开发页面，和 uni-app 开发 vue 页面是一致的。
 
-#### 从插件市场下载插件，怎么注册菜单进去
+#### 从插件市场下载插件，并注册到 admin 菜单
 
-以[uniCloud admin 管理项目-权限管理插件](https://ext.dcloud.net.cn/plugin?id=3269)
+以[uniCloud admin 管理项目-权限管理插件](https://ext.dcloud.net.cn/plugin?id=3269)为例
 
 _使用步骤:_
 
@@ -338,40 +352,15 @@ _使用步骤:_
 4. 在 db_init.json 文件上右键，点击“初始化云数据库”
 5. 刷新 admin 即可在菜单栏看到新增的菜单
 
+---------------------------------- 分割线 ----------------------------------------
+
 ### 插件开发
 
-我们不仅是插件的使用者，也可以是插件的开发者，那么如何开发一款插件呢？
-
-#### 如何开发插件
-
-插件就是项目中的一项功能，例如[uniCloud admin 管理项目-权限管理插件](https://ext.dcloud.net.cn/plugin?id=3269)，对于 admin 项目来说，可以项目中开发完成功能，再将这项功能剥离成一个插件。其他开发者使用插件的过程，就是将插件还原成项目中一项功能。
-
-_插件的目录结构：_
-
-```bash
-├── cloudfunctions
-│   └── db_init.json            # 云函数
-├── js_sdk                      # js sdk
-├── pages                       # 页面
-│   └── index                   # 你的页面
-└── pages.json
-```
-
-
-
-#### 如何发布插件
-
-将插件发布到[插件市场](https://ext.dcloud.net.cn/)， 登录后看到如下界面：
-
-![publish-plugin](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/abd19160-152a-11eb-81ea-f115fe74321c.png)
-
-admin 相关的插件必须发到，``uniCloud`` 分类的 ``Admin 插件`` 下：
-
-![plugin-class](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/ab2e7390-152a-11eb-880a-0db19f4f74bb.png)
+我们不仅是插件的使用者，也可以是插件的开发者，那么如何开发一款插件呢？参考 [DCloud插件开发指南汇总](https://ask.dcloud.net.cn/article/35408) 及其中的 `admin 插件`部分.
 
 ### 使用三方组件库
 
-uniCloud Admin 支持所有三方的 Vue UI 库，包括 elementUI 等非 uni-app 的 UI 库，但注意这些 for h5 的 ui 库只能在浏览器中使用，无法适配 App 和小程序，按如下操作。
+uniCloud admin 支持所有三方的 Vue UI 库，包括 elementUI 等非 uni-app 的 UI 库，但注意这些 for h5 的 ui 库只能在浏览器中使用，无法适配 App 和小程序，按如下操作。
 
 以使用 element-ui 框架为例：
 
