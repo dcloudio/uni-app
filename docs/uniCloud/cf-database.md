@@ -11,7 +11,17 @@
 |行 row					|记录 record / doc|
 |列 column			|字段 field				|
 
-**云数据库仅支持通过云函数可访问。如需要在客户端访问云数据库，需通过`clientDB`插件。该插件可以将所有数据库操作封装在一个云函数中，大幅提升开发效率，是uniCloud开发者的必备插件，详见：[https://uniapp.dcloud.io/uniCloud/uni-clientDB](https://uniapp.dcloud.io/uniCloud/uni-clientDB)**
+**云数据库仅支持通过云函数可访问。如需要在客户端访问云数据库，需通过`clientDB`**
+
+HBuilderX 2.9.5以前，使用clientDB需单独下载插件[https://ext.dcloud.net.cn/plugin?id=2314](https://ext.dcloud.net.cn/plugin?id=2314)
+
+HBuilderX 2.9.5+，clientDB已经内置，开发者可直接使用。详见[https://uniapp.dcloud.net.cn/uniCloud/database](https://uniapp.dcloud.net.cn/uniCloud/database)
+
+clientDB可极大的提升开发效率，是uniCloud开发者的必备插件。
+
+不管在云函数里操作数据库，还是使用clientDB在前端操作数据库，均支持MongoDB的查询语法。
+
+本文仅介绍MongoDB的传统语法，clientDB还额外支持了更简单易用的`jql`语法，推荐开发者使用和学习更简单的方式，[另见jql](https://uniapp.dcloud.net.cn/uniCloud/database?id=jsquery)
 
 **阿里云使用的mongoDB数据库版本为4.0，腾讯云使用的腾讯云自研的文档型数据库（兼容mongoDB 4.0版本）。请注意API的兼容性说明**
 
@@ -21,6 +31,8 @@
 - [云函数连接Redis数据库示例](https://ext.dcloud.net.cn/plugin?id=1846)
 
 ## 获取数据库的引用
+
+不管云函数还是前端，获取数据库连接都是如下写法。前端写法需2.9.5起支持。
 
 ```js
 const db = uniCloud.database();
@@ -43,6 +55,7 @@ const db = uniCloud.database();
 |×			|√			|
 
 ```
+const db = uniCloud.database();
 db.createCollection(collectionName)
 ```
 
@@ -149,6 +162,7 @@ uniCloud提供的`db_init.json`主要是为了对数据库进行初始化，并�
 ## 获取集合的引用
 
 ```js
+const db = uniCloud.database();
 // 获取 `user` 集合的引用
 const collection = db.collection('user');
 ```
@@ -2871,7 +2885,7 @@ books 集合有以下记录：
 ```
 以下聚合操作可以通过一个相等匹配条件连接 `orders` 和 `books` 集合，匹配的字段是 `orders` 集合的 `book` 字段和 `books` 集合的 title 字段：
 ```js
-const db = cloud.database()
+const db = uniCloud.database()
 let res = await db.collection('orders').aggregate()
   .lookup({
     from: 'books',
