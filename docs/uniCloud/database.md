@@ -462,7 +462,7 @@ const db = uniCloud.database()
 		"quantity": 555
 	}],
 	"requestId": "26649773c9781-1754b282aef_6",
-	"total": 5
+	"count": 5
 }
 ```
 
