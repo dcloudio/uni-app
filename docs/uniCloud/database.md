@@ -74,12 +74,12 @@ clientDB云端默认返回值形式如下，开发者可以在action的after内�
 |TOKEN_INVALID									|token校验未通过（云端已不包含此token）	|
 |TOKEN_INVALID_TOKEN_EXPIRED		|token校验未通过（token已过期）					|
 |TOKEN_INVALID_WRONG_TOKEN			|token校验未通过（token校验未通过）			|
-|SYNTAX_ERROR										|db-permission语法错误									|
+|SYNTAX_ERROR										|语法错误																|
 |PERMISSION_ERROR								|权限校验未通过													|
 |VALIDATION_ERROR								|数据格式未通过													|
 |SYSTEM_ERROR										|系统错误																|
 
-### 变量@variable
+### 前端环境变量@variable
 
 clientDB目前内置了3个变量可以供客户端使用，客户端并非直接获得这三个变量的值，而是需要传递给云端，云数据库在数据入库时会把变量替换为实际值。
 
@@ -90,6 +90,13 @@ clientDB目前内置了3个变量可以供客户端使用，客户端并非直�
 |db.env.clientIP|当前客户端IP		|
 
 使用这些变量，将可以避免过去在服务端代码中写代码获取用户uid、时间和客户端ip的麻烦。
+
+```js
+const db = uniCloud.database()
+let res = await db.collection('table').where({
+  user_id: db.env.uid // 查询当前用户的数据
+}).get()
+```
 
 ### JQL查询语法@jsquery
 
@@ -202,15 +209,15 @@ db.collection('list')
 </uni-clientdb>
 ```
 
-**jql条件语句内可以使用的变量**
+**jql条件语句内变量**
 
-|变量名			|说明																																						|
-|:-:			|:-:																																						|
-|auth.uid		|用户id																																						|
-|auth.role		|用户角色数组，参考[uni-id 角色权限](/uniCloud/uni-id?id=rbac)，注意`admin`为clientDB内置的角色，如果用户角色列表里包含`admin`则认为此用户有完全数据访问权限|
-|auth.permission|用户权限数组，参考[uni-id 角色权限](/uniCloud/uni-id?id=rbac)																								|
-|now			|当前时间戳（单位：毫秒），时间戳可以进行额外运算，如publish\_date > now - 60000表示publish\_date在最近一分钟												|
+以下变量同[前端环境变量](uniCloud/database.md?id=variable)
 
+|参数名			|说明				|
+|:-:			|:-:				|
+|$env.uid		|用户uid，依赖uni-id|
+|$env.now		|服务器时间戳		|
+|$env.clientIP|当前客户端IP		|
 
 **jql条件语句的运算符**
 
@@ -231,8 +238,6 @@ db.collection('list')
 这里的test方法比较强大，格式为：`正则规则.test(fieldname)`。
 
 具体到这个正则 `/abc/.test(content)`，类似于sql中的`content like %abc%`
-
-
 
 ### JQL联表查询扩展@lookup
 
@@ -268,6 +273,10 @@ book表内有以下数据，title为书名、author为作者：
 ```
 
 order表内有以下数据，book字段为book表的书籍_id，quantity为该订单销售了多少本书：
+
+**注意编写查询条件时，除test外均为运算符左侧为数据库字段右侧右侧为常量**
+
+### 联表查询扩展@lookup
 
 ```js
 {
@@ -307,7 +316,7 @@ order表内有以下数据，book字段为book表的书籍_id，quantity为该�
   "properties": {
     "book": {
       "bsonType": "string",
-      "foreignKey": "book._id"
+      "foreignKey": "book._id" // 使用foreignKey表示，此字段关联book表的_id。
     },
     "quantity": {
       "bsonType": "int"
@@ -564,6 +573,14 @@ permission规则，可以对整个表的增删改查进行控制，也可以针�
         ".read": false, // 禁止读取secret_field字段的数据
         ".write": false // 禁止写入（包括更新和新增）secret_field字段的数据，父级节点存在false时这里可以不配
       }
+    },
+    "uid":{
+      "bsonType": "string", // 字段类型
+      "foreignKey": "uni-id-users._id"
+    },
+    "book_id": {
+      "bsonType": "string", // 字段类型
+      "foreignKey": "book._id"
     }
   }
 }
@@ -578,6 +595,12 @@ permission规则，可以对整个表的增删改查进行控制，也可以针�
     ".read": "doc.status == 'OnSell'" // 允许所有人读取状态是OnSell的数据
   },
   "properties": { // 字段列表，注意这里是对象
+    "title": {
+      "bsonType": "string"
+    },
+    "author": {
+      "bsonType": "string"
+    },
     "secret_field": { // 字段名
       "bsonType": "string", // 字段类型
       "permission": { // 字段权限
@@ -596,43 +619,12 @@ const db = uniCloud.database()
 const dbCmd = db.command
 const $ = dbCmd.aggregate
 db.collection('order')
-  .aggregate()
-  // 此match方法内的条件会和order表对应的权限规则进行校验
-  .match({
-    uid: db.env.uid
-  })
-  // 此project方法是为了确定查询需要访问order表的哪些字段
-  .project({
-    _id: true,
-    book_id: true
-  })
-  .lookup({
-    from: 'book',
-    let: {
-      book_id: '$book_id'
-    },
-    pipeline: $.pipeline()
-    // 此match方法内的条件会和book表对应的权限规则进行校验，{status: 'OnSell'}会参与校验，整个expr方法转化成一个不与任何条件产生交集的特别表达式。这里如果将dbCmd.and换成dbCmd.or会校验不通过
-    .match(dbCmd.and([ 
-      {
-        status: 'OnSell'
-      },
-      // 指定book表的_id等于order表的book_id
-      dbCmd.expr(
-        $.eq(['$_id', '$$book_id'])
-      )
-    ]))
-    // 此project方法是为了确定查询需要访问book表的哪些字段
-    .project({
-      book_name: true
-    })
-    .done()
-  })
-  .end()
-
+  .where('uid == $env.uid && book_id.status == "OnSell"')
+  .field('uid,book_id{title,author}')
+  .get()
 ```
 
-**权限规则内可以使用的全局变量**
+**权限规则变量**
 
 |变量名			|说明																																						|
 |:-:			|:-:																																						|
