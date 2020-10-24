@@ -80,7 +80,7 @@ function initBridge(namespace) {
       return off(`${namespace}.${event}`, callback);
     },
     subscribeHandler(event, args, pageId) {
-      if (process.env.NODE_ENV !== "production") {
+      {
         console.log(`[${namespace}][subscribeHandler][${Date.now()}]:${event}, ${JSON.stringify(args)}, ${pageId}`);
       }
       return emit(`${namespace}.${event}`, args, pageId);
@@ -781,18 +781,18 @@ const _hoisted_2 = /* @__PURE__ */ createVNode("div", {class: "uni-placeholder"}
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-tabbar", null, [
     createVNode("div", {
-      style: {backgroundColor: _ctx.backgroundColor},
+      style: {backgroundColor: $props.backgroundColor},
       class: "uni-tabbar"
     }, [
       createVNode("div", {
-        style: {backgroundColor: _ctx.borderColor},
+        style: {backgroundColor: $options.borderColor},
         class: "uni-tabbar-border"
       }, null, 4),
-      (openBlock(true), createBlock(Fragment, null, renderList(_ctx.list, (item, index2) => {
+      (openBlock(true), createBlock(Fragment, null, renderList($props.list, (item, index2) => {
         return openBlock(), createBlock("div", {
           key: item.pagePath,
           class: "uni-tabbar__item",
-          onClick: ($event) => _ctx._switchTab(item, index2)
+          onClick: ($event) => $options._switchTab(item, index2)
         }, [
           createVNode("div", _hoisted_1, [
             item.iconPath ? (openBlock(), createBlock("div", {
@@ -800,24 +800,24 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
               class: [{"uni-tabbar__icon__diff": !item.text}, "uni-tabbar__icon"]
             }, [
               createVNode("img", {
-                src: _ctx._getRealPath(_ctx.$route.meta.pagePath === item.pagePath ? item.selectedIconPath : item.iconPath)
+                src: $options._getRealPath(_ctx.$route.meta.pagePath === item.pagePath ? item.selectedIconPath : item.iconPath)
               }, null, 8, ["src"]),
               item.redDot ? (openBlock(), createBlock("div", {
                 key: 0,
                 class: [{"uni-tabbar__badge": !!item.badge}, "uni-tabbar__reddot"]
-              }, toDisplayString(item.badge), 3)) : createCommentVNode("v-if", true)
-            ], 2)) : createCommentVNode("v-if", true),
+              }, toDisplayString(item.badge), 3)) : createCommentVNode("", true)
+            ], 2)) : createCommentVNode("", true),
             item.text ? (openBlock(), createBlock("div", {
               key: 1,
-              style: {color: _ctx.$route.meta.pagePath === item.pagePath ? _ctx.selectedColor : _ctx.color, fontSize: item.iconPath ? "10px" : "14px"},
+              style: {color: _ctx.$route.meta.pagePath === item.pagePath ? $props.selectedColor : $props.color, fontSize: item.iconPath ? "10px" : "14px"},
               class: "uni-tabbar__label"
             }, [
               createTextVNode(toDisplayString(item.text) + " ", 1),
               item.redDot && !item.iconPath ? (openBlock(), createBlock("div", {
                 key: 0,
                 class: [{"uni-tabbar__badge": !!item.badge}, "uni-tabbar__reddot"]
-              }, toDisplayString(item.badge), 3)) : createCommentVNode("v-if", true)
-            ], 4)) : createCommentVNode("v-if", true)
+              }, toDisplayString(item.badge), 3)) : createCommentVNode("", true)
+            ], 4)) : createCommentVNode("", true)
           ])
         ], 8, ["onClick"]);
       }), 128))
@@ -827,7 +827,6 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 }
 ;
 script.render = render;
-script.__file = "packages/uni-h5/src/framework/components/app/tabBar.vue";
 var Transtion = {
   methods: {
     beforeTransition() {
@@ -900,38 +899,37 @@ const _hoisted_4 = {class: "uni-toast__content"};
 function render$1(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock(Transition, {name: "uni-fade"}, {
     default: withCtx(() => [
-      _ctx.visible ? (openBlock(), createBlock("uni-toast", {
+      $props.visible ? (openBlock(), createBlock("uni-toast", {
         key: 0,
-        "data-duration": _ctx.duration
+        "data-duration": $props.duration
       }, [
-        _ctx.mask ? (openBlock(), createBlock("div", {
+        $props.mask ? (openBlock(), createBlock("div", {
           key: 0,
           class: "uni-mask",
           style: {background: "transparent"},
           onTouchmovePassive: _cache[1] || (_cache[1] = withModifiers(() => {
           }, ["prevent"]))
-        }, null, 32)) : createCommentVNode("v-if", true),
-        !_ctx.image && !_ctx.iconClass ? (openBlock(), createBlock("div", _hoisted_1$1, [
-          createVNode("p", _hoisted_2$1, toDisplayString(_ctx.title), 1)
+        }, null, 32)) : createCommentVNode("", true),
+        !$props.image && !$options.iconClass ? (openBlock(), createBlock("div", _hoisted_1$1, [
+          createVNode("p", _hoisted_2$1, toDisplayString($props.title), 1)
         ])) : (openBlock(), createBlock("div", _hoisted_3, [
-          _ctx.image ? (openBlock(), createBlock("img", {
+          $props.image ? (openBlock(), createBlock("img", {
             key: 0,
-            src: _ctx.image,
+            src: $props.image,
             class: "uni-toast__icon"
           }, null, 8, ["src"])) : (openBlock(), createBlock("i", {
             key: 1,
-            class: [_ctx.iconClass, "uni-icon_toast"]
+            class: [$options.iconClass, "uni-icon_toast"]
           }, null, 2)),
-          createVNode("p", _hoisted_4, toDisplayString(_ctx.title), 1)
+          createVNode("p", _hoisted_4, toDisplayString($props.title), 1)
         ]))
-      ], 8, ["data-duration"])) : createCommentVNode("v-if", true)
+      ], 8, ["data-duration"])) : createCommentVNode("", true)
     ]),
     _: 1
   });
 }
 ;
 script$1.render = render$1;
-script$1.__file = "packages/uni-h5/src/framework/components/app/popup/toast.vue";
 var script$2 = {
   name: "Modal",
   mixins: [Transtion],
@@ -991,34 +989,34 @@ function render$2(_ctx, _cache, $props, $setup, $data, $options) {
       }, [
         _hoisted_1$2,
         createVNode("div", _hoisted_2$2, [
-          _ctx.title ? (openBlock(), createBlock("div", _hoisted_3$1, [
+          $props.title ? (openBlock(), createBlock("div", _hoisted_3$1, [
             createVNode("strong", {
               class: "uni-modal__title",
-              textContent: _ctx.title
+              textContent: toDisplayString($props.title)
             }, null, 8, ["textContent"])
-          ])) : createCommentVNode("v-if", true),
+          ])) : createCommentVNode("", true),
           createVNode("div", {
             class: "uni-modal__bd",
             onTouchmovePassive: _cache[1] || (_cache[1] = withModifiers(() => {
             }, ["stop"])),
-            textContent: _ctx.content
+            textContent: toDisplayString($props.content)
           }, null, 40, ["textContent"]),
           createVNode("div", _hoisted_4$1, [
-            _ctx.showCancel ? (openBlock(), createBlock("div", {
+            $props.showCancel ? (openBlock(), createBlock("div", {
               key: 0,
-              style: {color: _ctx.cancelColor},
+              style: {color: $props.cancelColor},
               class: "uni-modal__btn uni-modal__btn_default",
-              onClick: _cache[2] || (_cache[2] = ($event) => _ctx._close("cancel"))
-            }, toDisplayString(_ctx.cancelText), 5)) : createCommentVNode("v-if", true),
+              onClick: _cache[2] || (_cache[2] = ($event) => $options._close("cancel"))
+            }, toDisplayString($props.cancelText), 5)) : createCommentVNode("", true),
             createVNode("div", {
-              style: {color: _ctx.confirmColor},
+              style: {color: $props.confirmColor},
               class: "uni-modal__btn uni-modal__btn_primary",
-              onClick: _cache[3] || (_cache[3] = ($event) => _ctx._close("confirm"))
-            }, toDisplayString(_ctx.confirmText), 5)
+              onClick: _cache[3] || (_cache[3] = ($event) => $options._close("confirm"))
+            }, toDisplayString($props.confirmText), 5)
           ])
         ])
       ], 544), [
-        [vShow, _ctx.visible]
+        [vShow, $props.visible]
       ])
     ]),
     _: 1
@@ -1026,7 +1024,6 @@ function render$2(_ctx, _cache, $props, $setup, $data, $options) {
 }
 ;
 script$2.render = render$2;
-script$2.__file = "packages/uni-h5/src/framework/components/app/popup/modal.vue";
 var script$3 = {
   name: "ActionSheet",
   props: {
@@ -1070,32 +1067,32 @@ function render$3(_ctx, _cache, $props, $setup, $data, $options) {
       default: withCtx(() => [
         withDirectives(createVNode("div", {
           class: "uni-mask",
-          onClick: _cache[1] || (_cache[1] = ($event) => _ctx._close(-1))
+          onClick: _cache[1] || (_cache[1] = ($event) => $options._close(-1))
         }, null, 512), [
-          [vShow, _ctx.visible]
+          [vShow, $props.visible]
         ])
       ]),
       _: 1
     }),
     createVNode("div", {
-      class: [{"uni-actionsheet_toggle": _ctx.visible}, "uni-actionsheet"]
+      class: [{"uni-actionsheet_toggle": $props.visible}, "uni-actionsheet"]
     }, [
       createVNode("div", _hoisted_1$3, [
-        _ctx.title ? (openBlock(), createBlock("div", _hoisted_2$3, toDisplayString(_ctx.title), 1)) : createCommentVNode("v-if", true),
-        (openBlock(true), createBlock(Fragment, null, renderList(_ctx.itemList, (itemTitle, index2) => {
+        $props.title ? (openBlock(), createBlock("div", _hoisted_2$3, toDisplayString($props.title), 1)) : createCommentVNode("", true),
+        (openBlock(true), createBlock(Fragment, null, renderList($props.itemList, (itemTitle, index2) => {
           return openBlock(), createBlock("div", {
             key: index2,
-            style: {color: _ctx.itemColor},
+            style: {color: $props.itemColor},
             class: "uni-actionsheet__cell",
-            onClick: ($event) => _ctx._close(index2)
+            onClick: ($event) => $options._close(index2)
           }, toDisplayString(itemTitle), 13, ["onClick"]);
         }), 128))
       ]),
       createVNode("div", _hoisted_3$2, [
         createVNode("div", {
-          style: {color: _ctx.itemColor},
+          style: {color: $props.itemColor},
           class: "uni-actionsheet__cell",
-          onClick: _cache[2] || (_cache[2] = ($event) => _ctx._close(-1))
+          onClick: _cache[2] || (_cache[2] = ($event) => $options._close(-1))
         }, " 取消 ", 4)
       ])
     ], 2)
@@ -1103,7 +1100,6 @@ function render$3(_ctx, _cache, $props, $setup, $data, $options) {
 }
 ;
 script$3.render = render$3;
-script$3.__file = "packages/uni-h5/src/framework/components/app/popup/actionSheet.vue";
 var Components = {
   Toast: script$1,
   Modal: script$2,
@@ -1258,10 +1254,10 @@ function formatApiArgs(args, options) {
     return args;
   }
 }
-function createApi({type: type2, name, options}, fn, protocol) {
+function /*#__PURE__*/ createApi({type: type2, name, options}, fn, protocol) {
   return function(...args) {
     if (type2 === API_TYPE_SYNC) {
-      if (!(process.env.NODE_ENV !== "production" && protocol && !validateProtocol())) {
+      if (!(protocol && !validateProtocol())) {
         return fn.apply(null, formatApiArgs(args, options));
       }
     }
@@ -1281,10 +1277,10 @@ const ArrayBufferToBase64Protocol = [
     required: true
   }
 ];
-const base64ToArrayBuffer = /* @__PURE__ */ createApi({type: API_TYPE_SYNC, name: "base64ToArrayBuffer"}, (base642) => {
+const base64ToArrayBuffer = /* @__PURE__ */ /*#__PURE__*/ createApi({type: API_TYPE_SYNC, name: "base64ToArrayBuffer"}, (base642) => {
   return decode(base642);
 }, Base64ToArrayBufferProtocol);
-const arrayBufferToBase64 = /* @__PURE__ */ createApi({type: API_TYPE_SYNC, name: "arrayBufferToBase64"}, (arrayBuffer) => {
+const arrayBufferToBase64 = /* @__PURE__ */ /*#__PURE__*/ createApi({type: API_TYPE_SYNC, name: "arrayBufferToBase64"}, (arrayBuffer) => {
   return encode(arrayBuffer);
 }, ArrayBufferToBase64Protocol);
 const Upx2pxProtocol = [
@@ -1305,7 +1301,7 @@ function checkDeviceWidth() {
   deviceDPR = pixelRatio;
   isIOS = platform === "ios";
 }
-const upx2px = /* @__PURE__ */ createApi({type: API_TYPE_SYNC, name: "upx2px"}, (number, newDeviceWidth) => {
+const upx2px = /* @__PURE__ */ /*#__PURE__*/ createApi({type: API_TYPE_SYNC, name: "upx2px"}, (number, newDeviceWidth) => {
   if (deviceWidth === 0) {
     checkDeviceWidth();
   }
@@ -1384,14 +1380,14 @@ function removeHook(hooks, hook) {
     hooks.splice(index2, 1);
   }
 }
-const addInterceptor = /* @__PURE__ */ createApi({type: API_TYPE_SYNC, name: "addInterceptor"}, (method, interceptor3) => {
+const addInterceptor = /* @__PURE__ */ /*#__PURE__*/ createApi({type: API_TYPE_SYNC, name: "addInterceptor"}, (method, interceptor3) => {
   if (typeof method === "string" && isPlainObject(interceptor3)) {
     mergeInterceptorHook(scopedInterceptors[method] || (scopedInterceptors[method] = {}), interceptor3);
   } else if (isPlainObject(method)) {
     mergeInterceptorHook(globalInterceptors, method);
   }
 }, AddInterceptorProtocol);
-const removeInterceptor = /* @__PURE__ */ createApi({type: API_TYPE_SYNC, name: "removeInterceptor"}, (method, interceptor3) => {
+const removeInterceptor = /* @__PURE__ */ /*#__PURE__*/ createApi({type: API_TYPE_SYNC, name: "removeInterceptor"}, (method, interceptor3) => {
   if (typeof method === "string") {
     if (isPlainObject(interceptor3)) {
       removeInterceptorHook(scopedInterceptors[method], interceptor3);
@@ -1479,7 +1475,7 @@ class ServiceIntersectionObserver {
     }, this._pageId);
   }
 }
-const createIntersectionObserver$1 = /* @__PURE__ */ createApi({type: API_TYPE_RETURN}, (context, options) => {
+const createIntersectionObserver$1 = /* @__PURE__ */ /*#__PURE__*/ createApi({type: API_TYPE_RETURN}, (context, options) => {
   if (!context) {
     context = getCurrentPageVm();
   }
@@ -1535,205 +1531,19 @@ const SCHEMA_CSS = {
   "css.env": cssSupports("top:env(a)"),
   "css.constant": cssSupports("top:constant(a)")
 };
-const canIUse = /* @__PURE__ */ createApi({type: API_TYPE_SYNC, name: "canIUse"}, (schema) => {
+const canIUse = /* @__PURE__ */ /*#__PURE__*/ createApi({type: API_TYPE_SYNC, name: "canIUse"}, (schema) => {
   if (hasOwn(SCHEMA_CSS, schema)) {
     return SCHEMA_CSS[schema];
   }
   return true;
 }, CanIUseProtocol);
-const makePhoneCall = /* @__PURE__ */ createApi({type: API_TYPE_ASYNC, name: "makePhoneCall"}, (option) => {
+const makePhoneCall = /* @__PURE__ */ /*#__PURE__*/ createApi({type: API_TYPE_ASYNC, name: "makePhoneCall"}, (option) => {
   window.location.href = `tel:${option.phoneNumber}`;
 }, MakePhoneCallProtocol);
-var attrs$1 = ["top", "left", "right", "bottom"];
-var inited$1;
-var elementComputedStyle$1 = {};
-var support$1;
-function getSupport$1() {
-  if (!("CSS" in window) || typeof CSS.supports != "function") {
-    support$1 = "";
-  } else if (CSS.supports("top: env(safe-area-inset-top)")) {
-    support$1 = "env";
-  } else if (CSS.supports("top: constant(safe-area-inset-top)")) {
-    support$1 = "constant";
-  } else {
-    support$1 = "";
-  }
-  return support$1;
-}
-function init$1() {
-  support$1 = typeof support$1 === "string" ? support$1 : getSupport$1();
-  if (!support$1) {
-    attrs$1.forEach(function(attr) {
-      elementComputedStyle$1[attr] = 0;
-    });
-    return;
-  }
-  function setStyle(el, style) {
-    var elStyle = el.style;
-    Object.keys(style).forEach(function(key) {
-      var val = style[key];
-      elStyle[key] = val;
-    });
-  }
-  var cbs = [];
-  function parentReady(callback) {
-    if (callback) {
-      cbs.push(callback);
-    } else {
-      cbs.forEach(function(cb) {
-        cb();
-      });
-    }
-  }
-  var passiveEvents = false;
-  try {
-    var opts = Object.defineProperty({}, "passive", {
-      get: function() {
-        passiveEvents = {passive: true};
-      }
-    });
-    window.addEventListener("test", null, opts);
-  } catch (e) {
-  }
-  function addChild(parent, attr) {
-    var a1 = document.createElement("div");
-    var a2 = document.createElement("div");
-    var a1Children = document.createElement("div");
-    var a2Children = document.createElement("div");
-    var W = 100;
-    var MAX = 1e4;
-    var aStyle = {
-      position: "absolute",
-      width: W + "px",
-      height: "200px",
-      boxSizing: "border-box",
-      overflow: "hidden",
-      paddingBottom: support$1 + "(safe-area-inset-" + attr + ")"
-    };
-    setStyle(a1, aStyle);
-    setStyle(a2, aStyle);
-    setStyle(a1Children, {
-      transition: "0s",
-      animation: "none",
-      width: "400px",
-      height: "400px"
-    });
-    setStyle(a2Children, {
-      transition: "0s",
-      animation: "none",
-      width: "250%",
-      height: "250%"
-    });
-    a1.appendChild(a1Children);
-    a2.appendChild(a2Children);
-    parent.appendChild(a1);
-    parent.appendChild(a2);
-    parentReady(function() {
-      a1.scrollTop = a2.scrollTop = MAX;
-      var a1LastScrollTop = a1.scrollTop;
-      var a2LastScrollTop = a2.scrollTop;
-      function onScroll() {
-        if (this.scrollTop === (this === a1 ? a1LastScrollTop : a2LastScrollTop)) {
-          return;
-        }
-        a1.scrollTop = a2.scrollTop = MAX;
-        a1LastScrollTop = a1.scrollTop;
-        a2LastScrollTop = a2.scrollTop;
-        attrChange$1(attr);
-      }
-      a1.addEventListener("scroll", onScroll, passiveEvents);
-      a2.addEventListener("scroll", onScroll, passiveEvents);
-    });
-    var computedStyle = getComputedStyle(a1);
-    Object.defineProperty(elementComputedStyle$1, attr, {
-      configurable: true,
-      get: function() {
-        return parseFloat(computedStyle.paddingBottom);
-      }
-    });
-  }
-  var parentDiv = document.createElement("div");
-  setStyle(parentDiv, {
-    position: "absolute",
-    left: "0",
-    top: "0",
-    width: "0",
-    height: "0",
-    zIndex: "-1",
-    overflow: "hidden",
-    visibility: "hidden"
-  });
-  attrs$1.forEach(function(key) {
-    addChild(parentDiv, key);
-  });
-  document.body.appendChild(parentDiv);
-  parentReady();
-  inited$1 = true;
-}
-function getAttr$1(attr) {
-  if (!inited$1) {
-    init$1();
-  }
-  return elementComputedStyle$1[attr];
-}
-var changeAttrs$1 = [];
-function attrChange$1(attr) {
-  if (!changeAttrs$1.length) {
-    setTimeout(function() {
-      var style = {};
-      changeAttrs$1.forEach(function(attr2) {
-        style[attr2] = elementComputedStyle$1[attr2];
-      });
-      changeAttrs$1.length = 0;
-      callbacks$1.forEach(function(callback) {
-        callback(style);
-      });
-    }, 0);
-  }
-  changeAttrs$1.push(attr);
-}
-var callbacks$1 = [];
-function onChange$1(callback) {
-  if (!getSupport$1()) {
-    return;
-  }
-  if (!inited$1) {
-    init$1();
-  }
-  if (typeof callback === "function") {
-    callbacks$1.push(callback);
-  }
-}
-function offChange$1(callback) {
-  var index2 = callbacks$1.indexOf(callback);
-  if (index2 >= 0) {
-    callbacks$1.splice(index2, 1);
-  }
-}
-var safeAreaInsets$1 = {
-  get support() {
-    return (typeof support$1 === "string" ? support$1 : getSupport$1()).length != 0;
-  },
-  get top() {
-    return getAttr$1("top");
-  },
-  get left() {
-    return getAttr$1("left");
-  },
-  get right() {
-    return getAttr$1("right");
-  },
-  get bottom() {
-    return getAttr$1("bottom");
-  },
-  onChange: onChange$1,
-  offChange: offChange$1
-};
-var out$1 = safeAreaInsets$1;
 const ua = navigator.userAgent;
 const isAndroid = /android/i.test(ua);
 const isIOS$1 = /iphone|ipad|ipod/i.test(ua);
-const getSystemInfoSync = /* @__PURE__ */ createApi({type: API_TYPE_SYNC}, () => {
+const getSystemInfoSync = /* @__PURE__ */ /*#__PURE__*/ createApi({type: API_TYPE_SYNC}, () => {
   var screen = window.screen;
   var pixelRatio = window.devicePixelRatio;
   const screenFix = /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
@@ -1743,7 +1553,7 @@ const getSystemInfoSync = /* @__PURE__ */ createApi({type: API_TYPE_SYNC}, () =>
   var windowWidth = Math.min(window.innerWidth, document.documentElement.clientWidth, screenWidth) || screenWidth;
   var windowHeight = window.innerHeight;
   var language = navigator.language;
-  var statusBarHeight = out$1.top;
+  var statusBarHeight = out.top;
   var osname;
   var osversion;
   var model;
@@ -1802,12 +1612,12 @@ const getSystemInfoSync = /* @__PURE__ */ createApi({type: API_TYPE_SYNC}, () =>
   var system = `${osname} ${osversion}`;
   var platform = osname.toLocaleLowerCase();
   var safeArea = {
-    left: out$1.left,
-    right: windowWidth - out$1.right,
-    top: out$1.top,
-    bottom: windowHeight - out$1.bottom,
-    width: windowWidth - out$1.left - out$1.right,
-    height: windowHeight - out$1.top - out$1.bottom
+    left: out.left,
+    right: windowWidth - out.right,
+    top: out.top,
+    bottom: windowHeight - out.bottom,
+    width: windowWidth - out.left - out.right,
+    height: windowHeight - out.top - out.bottom
   };
   const {top: windowTop, bottom: windowBottom} = getWindowOffset();
   windowHeight -= windowTop;
@@ -1827,23 +1637,23 @@ const getSystemInfoSync = /* @__PURE__ */ createApi({type: API_TYPE_SYNC}, () =>
     model,
     safeArea,
     safeAreaInsets: {
-      top: out$1.top,
-      right: out$1.right,
-      bottom: out$1.bottom,
-      left: out$1.left
+      top: out.top,
+      right: out.right,
+      bottom: out.bottom,
+      left: out.left
     }
   };
 });
-const getSystemInfo = /* @__PURE__ */ createApi({type: API_TYPE_ASYNC, name: "getSystemInfo"}, () => {
+const getSystemInfo = /* @__PURE__ */ /*#__PURE__*/ createApi({type: API_TYPE_ASYNC, name: "getSystemInfo"}, () => {
   return getSystemInfoSync();
 });
-const openDocument = /* @__PURE__ */ createApi({type: API_TYPE_ASYNC, name: "openDocument"}, (option) => {
+const openDocument = /* @__PURE__ */ /*#__PURE__*/ createApi({type: API_TYPE_ASYNC, name: "openDocument"}, (option) => {
   window.open(option.filePath);
 }, OpenDocumentProtocol);
 function _getServiceAddress() {
   return window.location.protocol + "//" + window.location.host;
 }
-const getImageInfo = /* @__PURE__ */ createApi({type: API_TYPE_ASYNC, name: "getImageInfo", options: GetImageInfoOptions}, ({src}, callback) => {
+const getImageInfo = /* @__PURE__ */ /*#__PURE__*/ createApi({type: API_TYPE_ASYNC, name: "getImageInfo", options: GetImageInfoOptions}, ({src}, callback) => {
   const img = new Image();
   img.onload = function() {
     callback({
@@ -1860,19 +1670,19 @@ const getImageInfo = /* @__PURE__ */ createApi({type: API_TYPE_ASYNC, name: "get
   };
   img.src = src;
 }, GetImageInfoProtocol);
-const navigateBack = /* @__PURE__ */ createApi({type: API_TYPE_ASYNC}, () => {
+const navigateBack = /* @__PURE__ */ /*#__PURE__*/ createApi({type: API_TYPE_ASYNC}, () => {
 });
-const navigateTo = /* @__PURE__ */ createApi({type: API_TYPE_ASYNC}, (options) => {
+const navigateTo = /* @__PURE__ */ /*#__PURE__*/ createApi({type: API_TYPE_ASYNC}, (options) => {
   const router = getApp().$router;
   router.push(options.url);
 });
-const redirectTo = /* @__PURE__ */ createApi({type: API_TYPE_ASYNC}, () => {
+const redirectTo = /* @__PURE__ */ /*#__PURE__*/ createApi({type: API_TYPE_ASYNC}, () => {
 });
-const reLaunch = /* @__PURE__ */ createApi({type: API_TYPE_ASYNC}, () => {
+const reLaunch = /* @__PURE__ */ /*#__PURE__*/ createApi({type: API_TYPE_ASYNC}, () => {
 });
-const switchTab = /* @__PURE__ */ createApi({type: API_TYPE_ASYNC}, () => {
+const switchTab = /* @__PURE__ */ /*#__PURE__*/ createApi({type: API_TYPE_ASYNC}, () => {
 });
-const getRealPath = /* @__PURE__ */ createApi({type: API_TYPE_SYNC}, (path) => {
+const getRealPath = /* @__PURE__ */ /*#__PURE__*/ createApi({type: API_TYPE_SYNC}, (path) => {
   return path;
 });
 var api = /* @__PURE__ */ Object.freeze({
@@ -1971,33 +1781,29 @@ function render$4(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_action_sheet = resolveComponent("action-sheet");
   const _component_modal = resolveComponent("modal");
   return openBlock(), createBlock("uni-app", {
-    class: {"uni-app--showtabbar": _ctx.showTabBar}
+    class: {"uni-app--showtabbar": $options.showTabBar}
   }, [
-    createCommentVNode(' <transition :name="transitionName"> '),
-    createCommentVNode(" TODO "),
-    createVNode(_component_router_view, {key: _ctx.key}, {
+    createVNode(_component_router_view, {key: $options.key}, {
       default: withCtx(({Component}) => [
-        (openBlock(), createBlock(KeepAlive, {include: _ctx.keepAliveInclude}, [
+        (openBlock(), createBlock(KeepAlive, {include: $props.keepAliveInclude}, [
           (openBlock(), createBlock(resolveDynamicComponent(Component)))
         ], 1032, ["include"]))
       ]),
       _: 1
     }),
-    createCommentVNode(" </transition> "),
-    _ctx.hasTabBar ? withDirectives(createVNode(_component_tab_bar, mergeProps({key: 0}, _ctx.tabBar), null, 16), [
-      [vShow, _ctx.showTabBar]
-    ]) : createCommentVNode("v-if", true),
-    _ctx.$options.components.Toast ? createVNode(_component_toast, mergeProps({key: 1}, _ctx.showToast), null, 16) : createCommentVNode("v-if", true),
-    _ctx.$options.components.ActionSheet ? createVNode(_component_action_sheet, mergeProps({key: 2}, _ctx.showActionSheet, {onClose: _ctx._onActionSheetClose}), null, 16, ["onClose"]) : createCommentVNode("v-if", true),
-    _ctx.$options.components.Modal ? createVNode(_component_modal, mergeProps({key: 3}, _ctx.showModal, {onClose: _ctx._onModalClose}), null, 16, ["onClose"]) : createCommentVNode("v-if", true),
-    _ctx.sysComponents && _ctx.sysComponents.length ? (openBlock(true), createBlock(Fragment, {key: 4}, renderList(_ctx.sysComponents, (item, index2) => {
+    $options.hasTabBar ? withDirectives((openBlock(), createBlock(_component_tab_bar, mergeProps({key: 0}, $data.tabBar), null, 16)), [
+      [vShow, $options.showTabBar]
+    ]) : createCommentVNode("", true),
+    _ctx.$options.components.Toast ? (openBlock(), createBlock(_component_toast, mergeProps({key: 1}, _ctx.showToast), null, 16)) : createCommentVNode("", true),
+    _ctx.$options.components.ActionSheet ? (openBlock(), createBlock(_component_action_sheet, mergeProps({key: 2}, _ctx.showActionSheet, {onClose: _ctx._onActionSheetClose}), null, 16, ["onClose"])) : createCommentVNode("", true),
+    _ctx.$options.components.Modal ? (openBlock(), createBlock(_component_modal, mergeProps({key: 3}, _ctx.showModal, {onClose: _ctx._onModalClose}), null, 16, ["onClose"])) : createCommentVNode("", true),
+    $data.sysComponents && $data.sysComponents.length ? (openBlock(true), createBlock(Fragment, {key: 4}, renderList($data.sysComponents, (item, index2) => {
       return openBlock(), createBlock(resolveDynamicComponent(item), {key: index2});
-    }), 128)) : createCommentVNode("v-if", true)
+    }), 128)) : createCommentVNode("", true)
   ], 2);
 }
 ;
 script$4.render = render$4;
-script$4.__file = "packages/uni-h5/src/framework/components/app/index.vue";
 function initSystemComponents(app2) {
   script$4.name = COMPONENT_NAME_PREFIX + script$4.name;
   app2.component(script$4.name, script$4);
@@ -2431,106 +2237,105 @@ const _hoisted_3$3 = {
 const _hoisted_4$2 = {class: "uni-page-head-ft"};
 function render$5(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_VUniInput = resolveComponent("VUniInput");
-  return openBlock(), createBlock("uni-page-head", {"uni-page-head-type": _ctx.type}, [
+  return openBlock(), createBlock("uni-page-head", {"uni-page-head-type": $props.type}, [
     createVNode("div", {
-      style: {transitionDuration: _ctx.duration, transitionTimingFunction: _ctx.timingFunc, backgroundColor: _ctx.bgColor, color: _ctx.textColor},
-      class: [_ctx.headClass, "uni-page-head"]
+      style: {transitionDuration: $props.duration, transitionTimingFunction: $props.timingFunc, backgroundColor: _ctx.bgColor, color: $props.textColor},
+      class: [$options.headClass, "uni-page-head"]
     }, [
       createVNode("div", _hoisted_1$4, [
         withDirectives(createVNode("div", {
           class: "uni-page-head-btn",
-          onClick: _cache[1] || (_cache[1] = (...args) => _ctx._back(...args))
+          onClick: _cache[1] || (_cache[1] = (...args) => $options._back(...args))
         }, [
           createVNode("i", {
             style: {color: _ctx.color, fontSize: "27px"},
             class: "uni-btn-icon"
           }, "", 4)
         ], 512), [
-          [vShow, _ctx.backButton]
+          [vShow, $props.backButton]
         ]),
-        (openBlock(true), createBlock(Fragment, null, renderList(_ctx.leftBtns, (btn, index2) => {
+        (openBlock(true), createBlock(Fragment, null, renderList($options.leftBtns, (btn, index2) => {
           return openBlock(), createBlock("div", {
             key: index2,
-            style: {backgroundColor: _ctx.type === "transparent" ? btn.background : "transparent", width: btn.width},
+            style: {backgroundColor: $props.type === "transparent" ? btn.background : "transparent", width: btn.width},
             "badge-text": btn.badgeText,
             class: [{"uni-page-head-btn-red-dot": btn.redDot || btn.badgeText, "uni-page-head-btn-select": btn.select}, "uni-page-head-btn"]
           }, [
             createVNode("i", {
-              style: _ctx._formatBtnStyle(btn),
+              style: $options._formatBtnStyle(btn),
               class: "uni-btn-icon",
-              onClick: ($event) => _ctx._onBtnClick(index2),
-              innerHTML: _ctx._formatBtnFontText(btn)
+              onClick: ($event) => $options._onBtnClick(index2),
+              innerHTML: $options._formatBtnFontText(btn)
             }, null, 12, ["onClick", "innerHTML"])
           ], 14, ["badge-text"]);
         }), 128))
       ]),
-      !_ctx.searchInput ? (openBlock(), createBlock("div", _hoisted_2$4, [
+      !$props.searchInput ? (openBlock(), createBlock("div", _hoisted_2$4, [
         createVNode("div", {
-          style: {fontSize: _ctx.titleSize, opacity: _ctx.type === "transparent" ? 0 : 1},
+          style: {fontSize: $props.titleSize, opacity: $props.type === "transparent" ? 0 : 1},
           class: "uni-page-head__title"
         }, [
-          _ctx.loading ? (openBlock(), createBlock("i", _hoisted_3$3)) : createCommentVNode("v-if", true),
-          _ctx.titleImage !== "" ? (openBlock(), createBlock("img", {
+          $props.loading ? (openBlock(), createBlock("i", _hoisted_3$3)) : createCommentVNode("", true),
+          $props.titleImage !== "" ? (openBlock(), createBlock("img", {
             key: 1,
-            src: _ctx.titleImage,
+            src: $props.titleImage,
             class: "uni-page-head__title_image"
           }, null, 8, ["src"])) : (openBlock(), createBlock(Fragment, {key: 2}, [
-            createTextVNode(toDisplayString(_ctx.titleText), 1)
+            createTextVNode(toDisplayString($props.titleText), 1)
           ], 64))
         ], 4)
-      ])) : createCommentVNode("v-if", true),
-      _ctx.searchInput ? (openBlock(), createBlock("div", {
+      ])) : createCommentVNode("", true),
+      $props.searchInput ? (openBlock(), createBlock("div", {
         key: 1,
-        style: {"border-radius": _ctx.searchInput.borderRadius, "background-color": _ctx.searchInput.backgroundColor},
+        style: {"border-radius": $props.searchInput.borderRadius, "background-color": $props.searchInput.backgroundColor},
         class: "uni-page-head-search"
       }, [
         createVNode("div", {
-          style: {color: _ctx.searchInput.placeholderColor},
-          class: [[`uni-page-head-search-placeholder-${_ctx.focus || _ctx.text ? "left" : _ctx.searchInput.align}`], "uni-page-head-search-placeholder"],
-          textContent: _ctx.text || _ctx.composing ? "" : _ctx.searchInput.placeholder
+          style: {color: $props.searchInput.placeholderColor},
+          class: [[`uni-page-head-search-placeholder-${$data.focus || $data.text ? "left" : $props.searchInput.align}`], "uni-page-head-search-placeholder"],
+          textContent: toDisplayString($data.text || $data.composing ? "" : $props.searchInput.placeholder)
         }, null, 14, ["textContent"]),
         createVNode(_component_VUniInput, {
           ref: "input",
-          modelValue: _ctx.text,
-          "onUpdate:modelValue": _cache[2] || (_cache[2] = ($event) => _ctx.text = $event),
-          focus: _ctx.searchInput.autoFocus,
-          disabled: _ctx.searchInput.disabled,
-          style: {color: _ctx.searchInput.color},
-          "placeholder-style": `color:${_ctx.searchInput.placeholderColor}`,
+          modelValue: $data.text,
+          "onUpdate:modelValue": _cache[2] || (_cache[2] = ($event) => $data.text = $event),
+          focus: $props.searchInput.autoFocus,
+          disabled: $props.searchInput.disabled,
+          style: {color: $props.searchInput.color},
+          "placeholder-style": `color:${$props.searchInput.placeholderColor}`,
           class: "uni-page-head-search-input",
           "confirm-type": "search",
-          onFocus: _ctx._focus,
-          onBlur: _ctx._blur,
-          "onUpdate:value": _ctx._input
+          onFocus: $options._focus,
+          onBlur: $options._blur,
+          "onUpdate:value": $options._input
         }, null, 8, ["modelValue", "focus", "disabled", "style", "placeholder-style", "onFocus", "onBlur", "onUpdate:value"])
-      ], 4)) : createCommentVNode("v-if", true),
+      ], 4)) : createCommentVNode("", true),
       createVNode("div", _hoisted_4$2, [
-        (openBlock(true), createBlock(Fragment, null, renderList(_ctx.rightBtns, (btn, index2) => {
+        (openBlock(true), createBlock(Fragment, null, renderList($options.rightBtns, (btn, index2) => {
           return openBlock(), createBlock("div", {
             key: index2,
-            style: {backgroundColor: _ctx.type === "transparent" ? btn.background : "transparent", width: btn.width},
+            style: {backgroundColor: $props.type === "transparent" ? btn.background : "transparent", width: btn.width},
             "badge-text": btn.badgeText,
             class: [{"uni-page-head-btn-red-dot": btn.redDot || btn.badgeText, "uni-page-head-btn-select": btn.select}, "uni-page-head-btn"]
           }, [
             createVNode("i", {
-              style: _ctx._formatBtnStyle(btn),
+              style: $options._formatBtnStyle(btn),
               class: "uni-btn-icon",
-              onClick: ($event) => _ctx._onBtnClick(index2),
-              innerHTML: _ctx._formatBtnFontText(btn)
+              onClick: ($event) => $options._onBtnClick(index2),
+              innerHTML: $options._formatBtnFontText(btn)
             }, null, 12, ["onClick", "innerHTML"])
           ], 14, ["badge-text"]);
         }), 128))
       ])
     ], 6),
-    _ctx.type !== "transparent" && _ctx.type !== "float" ? (openBlock(), createBlock("div", {
+    $props.type !== "transparent" && $props.type !== "float" ? (openBlock(), createBlock("div", {
       key: 0,
-      class: [{"uni-placeholder-titlePenetrate": _ctx.titlePenetrate}, "uni-placeholder"]
-    }, null, 2)) : createCommentVNode("v-if", true)
+      class: [{"uni-placeholder-titlePenetrate": $props.titlePenetrate}, "uni-placeholder"]
+    }, null, 2)) : createCommentVNode("", true)
   ], 8, ["uni-page-head-type"]);
 }
 ;
 script$5.render = render$5;
-script$5.__file = "packages/uni-h5/src/framework/components/page/pageHead.vue";
 var script$6 = {
   name: "PageBody"
 };
@@ -2543,7 +2348,6 @@ function render$6(_ctx, _cache, $props, $setup, $data, $options) {
 }
 ;
 script$6.render = render$6;
-script$6.__file = "packages/uni-h5/src/framework/components/page/pageBody.vue";
 var script$7 = {
   name: "PageRefresh",
   props: {
@@ -2572,12 +2376,12 @@ const _hoisted_4$3 = {
 function render$7(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-page-refresh", null, [
     createVNode("div", {
-      style: {"margin-top": _ctx.offset + "px"},
+      style: {"margin-top": $props.offset + "px"},
       class: "uni-page-refresh"
     }, [
       createVNode("div", _hoisted_1$5, [
         (openBlock(), createBlock("svg", {
-          fill: _ctx.color,
+          fill: $props.color,
           class: "uni-page-refresh__icon",
           width: "24",
           height: "24",
@@ -2588,7 +2392,7 @@ function render$7(_ctx, _cache, $props, $setup, $data, $options) {
         ], 8, ["fill"])),
         (openBlock(), createBlock("svg", _hoisted_4$3, [
           createVNode("circle", {
-            stroke: _ctx.color,
+            stroke: $props.color,
             class: "uni-page-refresh__path",
             cx: "50",
             cy: "50",
@@ -2604,7 +2408,6 @@ function render$7(_ctx, _cache, $props, $setup, $data, $options) {
 }
 ;
 script$7.render = render$7;
-script$7.__file = "packages/uni-h5/src/framework/components/page/pageRefresh.vue";
 function processDeltaY(evt, identifier, startY) {
   const touch = Array.prototype.slice.call(evt.changedTouches).filter((touch2) => touch2.identifier === identifier)[0];
   if (!touch) {
@@ -2949,7 +2752,7 @@ var script$8 = {
     }, this.pullToRefresh);
     let offset = uni.upx2px(refreshOptions.offset);
     if (titleNView.type !== "none" && titleNView.type !== "transparent") {
-      offset += NAVBAR_HEIGHT + out$1.top;
+      offset += NAVBAR_HEIGHT + out.top;
     }
     refreshOptions.offset = offset;
     refreshOptions.height = uni.upx2px(refreshOptions.height);
@@ -2972,14 +2775,14 @@ function render$8(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-page", {
     "data-page": _ctx.$route.meta.pagePath
   }, [
-    _ctx.navigationBar.type !== "none" ? createVNode(_component_page_head, mergeProps({key: 0}, _ctx.navigationBar), null, 16) : createCommentVNode("v-if", true),
-    _ctx.enablePullDownRefresh ? createVNode(_component_page_refresh, {
+    $data.navigationBar.type !== "none" ? (openBlock(), createBlock(_component_page_head, mergeProps({key: 0}, $data.navigationBar), null, 16)) : createCommentVNode("", true),
+    $props.enablePullDownRefresh ? (openBlock(), createBlock(_component_page_refresh, {
       key: 1,
       ref: "refresh",
-      color: _ctx.refreshOptions.color,
-      offset: _ctx.refreshOptions.offset
-    }, null, 8, ["color", "offset"]) : createCommentVNode("v-if", true),
-    _ctx.enablePullDownRefresh ? createVNode(_component_page_body, {
+      color: $data.refreshOptions.color,
+      offset: $data.refreshOptions.offset
+    }, null, 8, ["color", "offset"])) : createCommentVNode("", true),
+    $props.enablePullDownRefresh ? (openBlock(), createBlock(_component_page_body, {
       key: 2,
       onTouchstartPassive: _ctx._touchstart,
       onTouchmovePassive: _ctx._touchmove,
@@ -2990,17 +2793,16 @@ function render$8(_ctx, _cache, $props, $setup, $data, $options) {
         renderSlot(_ctx.$slots, "page")
       ]),
       _: 3
-    }, 8, ["onTouchstartPassive", "onTouchmovePassive", "onTouchendPassive", "onTouchcancelPassive"]) : createVNode(_component_page_body, {key: 3}, {
+    }, 8, ["onTouchstartPassive", "onTouchmovePassive", "onTouchendPassive", "onTouchcancelPassive"])) : (openBlock(), createBlock(_component_page_body, {key: 3}, {
       default: withCtx(() => [
         renderSlot(_ctx.$slots, "page")
       ]),
       _: 3
-    })
+    }))
   ], 8, ["data-page"]);
 }
 ;
 script$8.render = render$8;
-script$8.__file = "packages/uni-h5/src/framework/components/page/index.vue";
 var script$9 = {
   name: "AsyncError",
   methods: {
@@ -3012,12 +2814,11 @@ var script$9 = {
 function render$9(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("div", {
     class: "uni-async-error",
-    onClick: _cache[1] || (_cache[1] = (...args) => _ctx._onClick(...args))
+    onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick(...args))
   }, " 连接服务器超时，点击屏幕重试 ");
 }
 ;
 script$9.render = render$9;
-script$9.__file = "packages/uni-h5/src/framework/components/async-error/index.vue";
 var script$a = {
   name: "AsyncLoading"
 };
@@ -3030,5 +2831,4 @@ function render$a(_ctx, _cache, $props, $setup, $data, $options) {
 }
 ;
 script$a.render = render$a;
-script$a.__file = "packages/uni-h5/src/framework/components/async-loading/index.vue";
 export {script$9 as AsyncErrorComponent, script$a as AsyncLoadingComponent, script$8 as PageComponent, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, createIntersectionObserver$1 as createIntersectionObserver, createSelectorQuery$1 as createSelectorQuery, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getImageInfo, getRealPath, getSystemInfo, getSystemInfoSync, makePhoneCall, navigateBack, navigateTo, openDocument, index as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, switchTab, uni$1 as uni, upx2px};

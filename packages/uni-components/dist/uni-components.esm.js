@@ -239,7 +239,7 @@ var keyboard = {
   },
   watch: {
     focus(val) {
-      if (val && true) {
+      if (val && false) {
         this.showSoftKeybord();
       }
     }
@@ -260,10 +260,6 @@ var keyboard = {
         };
         UniViewJSBridge.subscribe("hideKeyboard", this.hideKeyboardTemp);
         document.addEventListener("click", iosHideKeyboard, false);
-        {
-          this.setSoftinputNavBar();
-          this.setSoftinputTemporary();
-        }
       });
       el.addEventListener("blur", this.onKeyboardHide.bind(this));
     },
@@ -319,9 +315,6 @@ var keyboard = {
     onKeyboardHide() {
       UniViewJSBridge.unsubscribe("hideKeyboard", this.hideKeyboardTemp);
       document.removeEventListener("click", iosHideKeyboard, false);
-      {
-        this.resetSoftinputNavBar();
-      }
       if (String(navigator.vendor).indexOf("Apple") === 0) {
         document.documentElement.scrollTo(document.documentElement.scrollLeft, document.documentElement.scrollTop);
       }
@@ -530,29 +523,29 @@ const _hoisted_5 = {class: "uni-audio-name"};
 const _hoisted_6 = {class: "uni-audio-author"};
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-audio", mergeProps({
-    id: _ctx.id,
-    controls: !!_ctx.controls
+    id: $props.id,
+    controls: !!$props.controls
   }, _ctx.$attrs), [
     createVNode("audio", {
       ref: "audio",
-      loop: _ctx.loop,
+      loop: $props.loop,
       style: {display: "none"}
     }, null, 8, ["loop"]),
     createVNode("div", _hoisted_1, [
       createVNode("div", {
-        style: "background-image: url(" + _ctx.$getRealPath(_ctx.poster) + ");",
+        style: "background-image: url(" + _ctx.$getRealPath($props.poster) + ");",
         class: "uni-audio-left"
       }, [
         createVNode("div", {
-          class: [{play: !_ctx.playing, pause: _ctx.playing}, "uni-audio-button"],
-          onClick: _cache[1] || (_cache[1] = (...args) => _ctx.trigger(...args))
+          class: [{play: !$data.playing, pause: $data.playing}, "uni-audio-button"],
+          onClick: _cache[1] || (_cache[1] = (...args) => $options.trigger(...args))
         }, null, 2)
       ], 4),
       createVNode("div", _hoisted_2, [
-        createVNode("div", _hoisted_3, toDisplayString(_ctx.currentTime), 1),
+        createVNode("div", _hoisted_3, toDisplayString($data.currentTime), 1),
         createVNode("div", _hoisted_4, [
-          createVNode("div", _hoisted_5, toDisplayString(_ctx.name), 1),
-          createVNode("div", _hoisted_6, toDisplayString(_ctx.author), 1)
+          createVNode("div", _hoisted_5, toDisplayString($props.name), 1),
+          createVNode("div", _hoisted_6, toDisplayString($props.author), 1)
         ])
       ])
     ])
@@ -560,7 +553,6 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 }
 ;
 script.render = render;
-script.__file = "packages/uni-components/src/components/audio/index.vue";
 const pixelRatio = function() {
   const canvas = document.createElement("canvas");
   canvas.height = canvas.width = 0;
@@ -1218,22 +1210,21 @@ const _hoisted_2$1 = {style: {position: "absolute", top: "0", left: "0", width: 
 function render$1(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_v_uni_resize_sensor = resolveComponent("v-uni-resize-sensor");
   return openBlock(), createBlock("uni-canvas", mergeProps({
-    "canvas-id": _ctx.canvasId,
-    "disable-scroll": _ctx.disableScroll
-  }, toHandlers(_ctx._listeners)), [
+    "canvas-id": $props.canvasId,
+    "disable-scroll": $props.disableScroll
+  }, toHandlers($options._listeners)), [
     createVNode("canvas", _hoisted_1$1, null, 512),
     createVNode("div", _hoisted_2$1, [
       renderSlot(_ctx.$slots, "default")
     ]),
     createVNode(_component_v_uni_resize_sensor, {
       ref: "sensor",
-      onResize: _ctx._resize
+      onResize: $options._resize
     }, null, 8, ["onResize"])
   ], 16, ["canvas-id", "disable-scroll"]);
 }
 ;
 script$1.render = render$1;
-script$1.__file = "packages/uni-components/src/components/canvas/index.vue";
 var script$2 = {
   name: "Checkbox",
   mixins: [emitter, listeners],
@@ -1312,13 +1303,13 @@ var script$2 = {
 };
 const _hoisted_1$2 = {class: "uni-checkbox-wrapper"};
 function render$2(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createBlock("uni-checkbox", mergeProps({disabled: _ctx.disabled}, _ctx.$attrs, {
-    onClick: _cache[1] || (_cache[1] = (...args) => _ctx._onClick(...args))
+  return openBlock(), createBlock("uni-checkbox", mergeProps({disabled: $props.disabled}, _ctx.$attrs, {
+    onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick(...args))
   }), [
     createVNode("div", _hoisted_1$2, [
       createVNode("div", {
-        class: [[_ctx.checkboxChecked ? "uni-checkbox-input-checked" : ""], "uni-checkbox-input"],
-        style: {color: _ctx.color}
+        class: [[$data.checkboxChecked ? "uni-checkbox-input-checked" : ""], "uni-checkbox-input"],
+        style: {color: $props.color}
       }, null, 6),
       renderSlot(_ctx.$slots, "default")
     ])
@@ -1326,7 +1317,6 @@ function render$2(_ctx, _cache, $props, $setup, $data, $options) {
 }
 ;
 script$2.render = render$2;
-script$2.__file = "packages/uni-components/src/components/checkbox/index.vue";
 var script$3 = {
   name: "CheckboxGroup",
   mixins: [emitter, listeners],
@@ -1400,7 +1390,6 @@ function render$3(_ctx, _cache, $props, $setup, $data, $options) {
 }
 ;
 script$3.render = render$3;
-script$3.__file = "packages/uni-components/src/components/checkbox-group/index.vue";
 var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;
 var endTag = /^<\/([-A-Za-z0-9_]+)[^>]*>/;
 var attr = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g;
@@ -2107,13 +2096,13 @@ var script$4 = {
 };
 function render$4(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-editor", mergeProps({
-    id: _ctx.id,
+    id: $props.id,
     class: "ql-container"
   }, _ctx.$attrs), null, 16, ["id"]);
 }
 ;
+;
 script$4.render = render$4;
-script$4.__file = "packages/uni-components/src/components/editor/index.vue";
 var script$5 = {
   name: "Form",
   mixins: [listeners],
@@ -2164,7 +2153,6 @@ function render$5(_ctx, _cache, $props, $setup, $data, $options) {
 }
 ;
 script$5.render = render$5;
-script$5.__file = "packages/uni-components/src/components/form/index.vue";
 var script$6 = {
   name: "Icon",
   props: {
@@ -2198,15 +2186,14 @@ var script$6 = {
 function render$6(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-icon", _ctx.$attrs, [
     createVNode("i", {
-      class: `uni-icon-${_ctx.type}`,
-      style: {"font-size": _ctx._converPx(_ctx.size), color: _ctx.color},
+      class: `uni-icon-${$props.type}`,
+      style: {"font-size": $options._converPx($props.size), color: $props.color},
       role: "img"
     }, null, 6)
   ], 16);
 }
 ;
 script$6.render = render$6;
-script$6.__file = "packages/uni-components/src/components/icon/index.vue";
 var script$7 = {
   name: "Image",
   props: {
@@ -2363,19 +2350,18 @@ function render$7(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-image", _ctx.$attrs, [
     createVNode("div", {
       ref: "content",
-      style: _ctx.modeStyle
+      style: $options.modeStyle
     }, null, 4),
-    createVNode("img", {src: _ctx.realImagePath}, null, 8, ["src"]),
-    _ctx.mode === "widthFix" ? createVNode(_component_v_uni_resize_sensor, {
+    createVNode("img", {src: $options.realImagePath}, null, 8, ["src"]),
+    $props.mode === "widthFix" ? (openBlock(), createBlock(_component_v_uni_resize_sensor, {
       key: 0,
       ref: "sensor",
-      onResize: _ctx._resize
-    }, null, 8, ["onResize"]) : createCommentVNode("v-if", true)
+      onResize: $options._resize
+    }, null, 8, ["onResize"])) : createCommentVNode("", true)
   ], 16);
 }
 ;
 script$7.render = render$7;
-script$7.__file = "packages/uni-components/src/components/image/index.vue";
 const INPUT_TYPES = ["text", "number", "idcard", "digit", "password"];
 const NUMBER_TYPES = ["number", "digit"];
 var script$8 = {
@@ -2568,28 +2554,28 @@ function render$8(_ctx, _cache, $props, $setup, $data, $options) {
     createVNode("div", _hoisted_1$3, [
       withDirectives(createVNode("div", {
         ref: "placeholder",
-        style: _ctx.placeholderStyle,
-        class: [_ctx.placeholderClass, "uni-input-placeholder"],
-        textContent: _ctx.placeholder
+        style: $props.placeholderStyle,
+        class: [$props.placeholderClass, "uni-input-placeholder"],
+        textContent: toDisplayString($props.placeholder)
       }, null, 14, ["textContent"]), [
-        [vShow, !(_ctx.composing || _ctx.valueSync.length)]
+        [vShow, !($data.composing || _ctx.valueSync.length)]
       ]),
       withDirectives(createVNode("input", {
         ref: "input",
         "onUpdate:modelValue": _cache[1] || (_cache[1] = ($event) => _ctx.valueSync = $event),
-        disabled: _ctx.disabled,
-        type: _ctx.inputType,
-        maxlength: _ctx.maxlength,
-        step: _ctx.step,
-        autofocus: _ctx.focus,
+        disabled: $props.disabled,
+        type: $options.inputType,
+        maxlength: $props.maxlength,
+        step: $options.step,
+        autofocus: $props.focus,
         class: "uni-input-input",
         autocomplete: "off",
-        onFocus: _cache[2] || (_cache[2] = (...args) => _ctx._onFocus(...args)),
-        onBlur: _cache[3] || (_cache[3] = (...args) => _ctx._onBlur(...args)),
-        onInput: _cache[4] || (_cache[4] = withModifiers((...args) => _ctx._onInput(...args), ["stop"])),
-        onCompositionstart: _cache[5] || (_cache[5] = (...args) => _ctx._onComposition(...args)),
-        onCompositionend: _cache[6] || (_cache[6] = (...args) => _ctx._onComposition(...args)),
-        onKeyup: _cache[7] || (_cache[7] = withModifiers((...args) => _ctx._onKeyup(...args), ["stop"]))
+        onFocus: _cache[2] || (_cache[2] = (...args) => $options._onFocus(...args)),
+        onBlur: _cache[3] || (_cache[3] = (...args) => $options._onBlur(...args)),
+        onInput: _cache[4] || (_cache[4] = withModifiers((...args) => $options._onInput(...args), ["stop"])),
+        onCompositionstart: _cache[5] || (_cache[5] = (...args) => $options._onComposition(...args)),
+        onCompositionend: _cache[6] || (_cache[6] = (...args) => $options._onComposition(...args)),
+        onKeyup: _cache[7] || (_cache[7] = withModifiers((...args) => $options._onKeyup(...args), ["stop"]))
       }, null, 40, ["disabled", "type", "maxlength", "step", "autofocus"]), [
         [vModelDynamic, _ctx.valueSync]
       ])
@@ -2598,7 +2584,6 @@ function render$8(_ctx, _cache, $props, $setup, $data, $options) {
 }
 ;
 script$8.render = render$8;
-script$8.__file = "packages/uni-components/src/components/input/index.vue";
 var script$9 = {
   name: "Label",
   mixins: [emitter],
@@ -2632,16 +2617,15 @@ var script$9 = {
 };
 function render$9(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-label", mergeProps({
-    class: {"uni-label-pointer": _ctx.pointer}
+    class: {"uni-label-pointer": $options.pointer}
   }, _ctx.$attrs, {
-    onClick: _cache[1] || (_cache[1] = (...args) => _ctx._onClick(...args))
+    onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick(...args))
   }), [
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
 ;
 script$9.render = render$9;
-script$9.__file = "packages/uni-components/src/components/label/index.vue";
 const addListenerToElement = function(element, type, callback, capture) {
   element.addEventListener(type, ($event) => {
     if (typeof callback === "function") {
@@ -3701,13 +3685,12 @@ var script$a = {
 function render$a(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_v_uni_resize_sensor = resolveComponent("v-uni-resize-sensor");
   return openBlock(), createBlock("uni-movable-view", _ctx.$attrs, [
-    createVNode(_component_v_uni_resize_sensor, {onResize: _ctx.setParent}, null, 8, ["onResize"]),
+    createVNode(_component_v_uni_resize_sensor, {onResize: $options.setParent}, null, 8, ["onResize"]),
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
 ;
 script$a.render = render$a;
-script$a.__file = "packages/uni-components/src/components/movable-view/index.vue";
 const OPEN_TYPES = ["navigate", "redirect", "switchTab", "reLaunch", "navigateBack"];
 var script$b = {
   name: "Navigator",
@@ -3778,25 +3761,24 @@ var script$b = {
   }
 };
 function render$b(_ctx, _cache, $props, $setup, $data, $options) {
-  return _ctx.hoverClass && _ctx.hoverClass !== "none" ? (openBlock(), createBlock("uni-navigator", mergeProps({
+  return $props.hoverClass && $props.hoverClass !== "none" ? (openBlock(), createBlock("uni-navigator", mergeProps({
     key: 0,
-    class: [_ctx.hovering ? _ctx.hoverClass : ""],
+    class: [_ctx.hovering ? $props.hoverClass : ""],
     onTouchstart: _cache[1] || (_cache[1] = (...args) => _ctx._hoverTouchStart(...args)),
     onTouchend: _cache[2] || (_cache[2] = (...args) => _ctx._hoverTouchEnd(...args)),
     onTouchcancel: _cache[3] || (_cache[3] = (...args) => _ctx._hoverTouchCancel(...args)),
-    onClick: _cache[4] || (_cache[4] = (...args) => _ctx._onClick(...args))
+    onClick: _cache[4] || (_cache[4] = (...args) => $options._onClick(...args))
   }, _ctx.$attrs), [
     renderSlot(_ctx.$slots, "default")
   ], 16)) : (openBlock(), createBlock("uni-navigator", mergeProps({
     key: 1,
-    onClick: _cache[5] || (_cache[5] = (...args) => _ctx._onClick(...args))
+    onClick: _cache[5] || (_cache[5] = (...args) => $options._onClick(...args))
   }, _ctx.$attrs), [
     renderSlot(_ctx.$slots, "default")
   ], 16));
 }
 ;
 script$b.render = render$b;
-script$b.__file = "packages/uni-components/src/components/navigator/index.vue";
 const VALUES = {
   activeColor: "#007AFF",
   backgroundColor: "#EBEBEB",
@@ -3906,20 +3888,19 @@ const _hoisted_1$4 = {
 function render$c(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-progress", mergeProps({class: "uni-progress"}, _ctx.$attrs), [
     createVNode("div", {
-      style: _ctx.outerBarStyle,
+      style: $options.outerBarStyle,
       class: "uni-progress-bar"
     }, [
       createVNode("div", {
-        style: _ctx.innerBarStyle,
+        style: $options.innerBarStyle,
         class: "uni-progress-inner-bar"
       }, null, 4)
     ], 4),
-    _ctx.showInfo ? (openBlock(), createBlock("p", _hoisted_1$4, toDisplayString(_ctx.currentPercent) + "% ", 1)) : createCommentVNode("v-if", true)
+    $props.showInfo ? (openBlock(), createBlock("p", _hoisted_1$4, toDisplayString($data.currentPercent) + "% ", 1)) : createCommentVNode("", true)
   ], 16);
 }
 ;
 script$c.render = render$c;
-script$c.__file = "packages/uni-components/src/components/progress/index.vue";
 var script$d = {
   name: "Radio",
   mixins: [emitter, listeners],
@@ -4003,13 +3984,13 @@ var script$d = {
 };
 const _hoisted_1$5 = {class: "uni-radio-wrapper"};
 function render$d(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createBlock("uni-radio", mergeProps({disabled: _ctx.disabled}, _ctx.$attrs, {
-    onClick: _cache[1] || (_cache[1] = (...args) => _ctx._onClick(...args))
+  return openBlock(), createBlock("uni-radio", mergeProps({disabled: $props.disabled}, _ctx.$attrs, {
+    onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick(...args))
   }), [
     createVNode("div", _hoisted_1$5, [
       createVNode("div", {
-        class: [_ctx.radioChecked ? "uni-radio-input-checked" : "", "uni-radio-input"],
-        style: _ctx.radioChecked ? _ctx.checkedStyle : ""
+        class: [$data.radioChecked ? "uni-radio-input-checked" : "", "uni-radio-input"],
+        style: $data.radioChecked ? $options.checkedStyle : ""
       }, null, 6),
       renderSlot(_ctx.$slots, "default")
     ])
@@ -4017,7 +3998,6 @@ function render$d(_ctx, _cache, $props, $setup, $data, $options) {
 }
 ;
 script$d.render = render$d;
-script$d.__file = "packages/uni-components/src/components/radio/index.vue";
 var script$e = {
   name: "RadioGroup",
   mixins: [emitter, listeners],
@@ -4109,7 +4089,6 @@ function render$e(_ctx, _cache, $props, $setup, $data, $options) {
 }
 ;
 script$e.render = render$e;
-script$e.__file = "packages/uni-components/src/components/radio-group/index.vue";
 var script$f = {
   name: "ResizeSensor",
   props: {
@@ -4187,7 +4166,6 @@ var script$f = {
 const render$f = () => {
 };
 script$f.render = render$f;
-script$f.__file = "packages/uni-components/src/components/resize-sensor/index.vue";
 function removeDOCTYPE(html) {
   return html.replace(/<\?xml.*\?>\n/, "").replace(/<!doctype.*>\n/, "").replace(/<!DOCTYPE.*>\n/, "");
 }
@@ -4431,7 +4409,6 @@ function render$g(_ctx, _cache, $props, $setup, $data, $options) {
   ], 16);
 }
 script$g.render = render$g;
-script$g.__file = "packages/uni-components/src/components/rich-text/index.vue";
 function Friction$1(e2) {
   this._drag = e2;
   this._dragLog = Math.log(e2);
@@ -5559,21 +5536,21 @@ function render$h(_ctx, _cache, $props, $setup, $data, $options) {
     createVNode("div", _hoisted_1$7, [
       createVNode("div", {
         ref: "main",
-        style: {"overflow-x": _ctx.scrollX ? "auto" : "hidden", "overflow-y": _ctx.scrollY ? "auto" : "hidden"},
+        style: {"overflow-x": $props.scrollX ? "auto" : "hidden", "overflow-y": $props.scrollY ? "auto" : "hidden"},
         class: "uni-scroll-view"
       }, [
         createVNode("div", _hoisted_2$2, [
-          _ctx.refresherEnabled ? (openBlock(), createBlock("div", {
+          $props.refresherEnabled ? (openBlock(), createBlock("div", {
             key: 0,
             ref: "refresherinner",
-            style: {"background-color": _ctx.refresherBackground, height: _ctx.refresherHeight + "px"},
+            style: {"background-color": $props.refresherBackground, height: $data.refresherHeight + "px"},
             class: "uni-scroll-view-refresher"
           }, [
-            _ctx.refresherDefaultStyle !== "none" ? (openBlock(), createBlock("div", _hoisted_3$1, [
+            $props.refresherDefaultStyle !== "none" ? (openBlock(), createBlock("div", _hoisted_3$1, [
               createVNode("div", _hoisted_4$1, [
-                _ctx.refreshState == "pulling" ? (openBlock(), createBlock("svg", {
+                $data.refreshState == "pulling" ? (openBlock(), createBlock("svg", {
                   key: 0,
-                  style: {transform: "rotate(" + _ctx.refreshRotate + "deg)"},
+                  style: {transform: "rotate(" + $data.refreshRotate + "deg)"},
                   fill: "#2BD009",
                   class: "uni-scroll-view-refresh__icon",
                   width: "24",
@@ -5582,14 +5559,14 @@ function render$h(_ctx, _cache, $props, $setup, $data, $options) {
                 }, [
                   _hoisted_5$1,
                   _hoisted_6$1
-                ], 4)) : createCommentVNode("v-if", true),
-                _ctx.refreshState == "refreshing" ? (openBlock(), createBlock("svg", _hoisted_7, [
+                ], 4)) : createCommentVNode("", true),
+                $data.refreshState == "refreshing" ? (openBlock(), createBlock("svg", _hoisted_7, [
                   _hoisted_8
-                ])) : createCommentVNode("v-if", true)
+                ])) : createCommentVNode("", true)
               ])
-            ])) : createCommentVNode("v-if", true),
-            _ctx.refresherDefaultStyle == "none" ? renderSlot(_ctx.$slots, "refresher", {key: 1}) : createCommentVNode("v-if", true)
-          ], 4)) : createCommentVNode("v-if", true),
+            ])) : createCommentVNode("", true),
+            $props.refresherDefaultStyle == "none" ? renderSlot(_ctx.$slots, "refresher", {key: 1}) : createCommentVNode("", true)
+          ], 4)) : createCommentVNode("", true),
           renderSlot(_ctx.$slots, "default")
         ], 512)
       ], 4)
@@ -5598,7 +5575,6 @@ function render$h(_ctx, _cache, $props, $setup, $data, $options) {
 }
 ;
 script$h.render = render$h;
-script$h.__file = "packages/uni-components/src/components/scroll-view/index.vue";
 var script$i = {
   name: "Slider",
   mixins: [emitter, listeners, touchtrack],
@@ -5766,31 +5742,31 @@ const _hoisted_1$8 = {class: "uni-slider-wrapper"};
 const _hoisted_2$3 = {class: "uni-slider-tap-area"};
 function render$i(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-slider", mergeProps({ref: "uni-slider"}, _ctx.$attrs, {
-    onClick: _cache[1] || (_cache[1] = (...args) => _ctx._onClick(...args))
+    onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick(...args))
   }), [
     createVNode("div", _hoisted_1$8, [
       createVNode("div", _hoisted_2$3, [
         createVNode("div", {
-          style: _ctx.setBgColor,
+          style: $options.setBgColor,
           class: "uni-slider-handle-wrapper"
         }, [
           createVNode("div", {
             ref: "uni-slider-handle",
-            style: _ctx.setBlockBg,
+            style: $options.setBlockBg,
             class: "uni-slider-handle"
           }, null, 4),
           createVNode("div", {
-            style: _ctx.setBlockStyle,
+            style: $options.setBlockStyle,
             class: "uni-slider-thumb"
           }, null, 4),
           createVNode("div", {
-            style: _ctx.setActiveColor,
+            style: $options.setActiveColor,
             class: "uni-slider-track"
           }, null, 4)
         ], 4)
       ]),
-      withDirectives(createVNode("span", {class: "uni-slider-value"}, toDisplayString(_ctx.sliderValue), 513), [
-        [vShow, _ctx.showValue]
+      withDirectives(createVNode("span", {class: "uni-slider-value"}, toDisplayString($data.sliderValue), 513), [
+        [vShow, $props.showValue]
       ])
     ]),
     renderSlot(_ctx.$slots, "default")
@@ -5798,7 +5774,6 @@ function render$i(_ctx, _cache, $props, $setup, $data, $options) {
 }
 ;
 script$i.render = render$i;
-script$i.__file = "packages/uni-components/src/components/slider/index.vue";
 var script$j = {
   name: "SwiperItem",
   props: {
@@ -5827,7 +5802,6 @@ function render$j(_ctx, _cache, $props, $setup, $data, $options) {
 }
 ;
 script$j.render = render$j;
-script$j.__file = "packages/uni-components/src/components/swiper-item/index.vue";
 var script$k = {
   name: "Switch",
   mixins: [emitter, listeners],
@@ -5908,28 +5882,27 @@ var script$k = {
 };
 const _hoisted_1$9 = {class: "uni-switch-wrapper"};
 function render$k(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createBlock("uni-switch", mergeProps({disabled: _ctx.disabled}, _ctx.$attrs, {
-    onClick: _cache[1] || (_cache[1] = (...args) => _ctx._onClick(...args))
+  return openBlock(), createBlock("uni-switch", mergeProps({disabled: $props.disabled}, _ctx.$attrs, {
+    onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick(...args))
   }), [
     createVNode("div", _hoisted_1$9, [
       withDirectives(createVNode("div", {
-        class: [[_ctx.switchChecked ? "uni-switch-input-checked" : ""], "uni-switch-input"],
-        style: {backgroundColor: _ctx.switchChecked ? _ctx.color : "#DFDFDF", borderColor: _ctx.switchChecked ? _ctx.color : "#DFDFDF"}
+        class: [[$data.switchChecked ? "uni-switch-input-checked" : ""], "uni-switch-input"],
+        style: {backgroundColor: $data.switchChecked ? $props.color : "#DFDFDF", borderColor: $data.switchChecked ? $props.color : "#DFDFDF"}
       }, null, 6), [
-        [vShow, _ctx.type === "switch"]
+        [vShow, $props.type === "switch"]
       ]),
       withDirectives(createVNode("div", {
-        class: [[_ctx.switchChecked ? "uni-checkbox-input-checked" : ""], "uni-checkbox-input"],
-        style: {color: _ctx.color}
+        class: [[$data.switchChecked ? "uni-checkbox-input-checked" : ""], "uni-checkbox-input"],
+        style: {color: $props.color}
       }, null, 6), [
-        [vShow, _ctx.type === "checkbox"]
+        [vShow, $props.type === "checkbox"]
       ])
     ])
   ], 16, ["disabled"]);
 }
 ;
 script$k.render = render$k;
-script$k.__file = "packages/uni-components/src/components/switch/index.vue";
 const DARK_TEST_STRING = "(prefers-color-scheme: dark)";
 var script$l = {
   name: "Textarea",
@@ -6153,12 +6126,7 @@ var script$l = {
   }
 };
 const _hoisted_1$a = {class: "uni-textarea-wrapper"};
-const _hoisted_2$4 = {
-  ref: "line",
-  class: "uni-textarea-line",
-  textContent: " "
-};
-const _hoisted_3$2 = {class: "uni-textarea-compute"};
+const _hoisted_2$4 = {class: "uni-textarea-compute"};
 function render$l(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_v_uni_resize_sensor = resolveComponent("v-uni-resize-sensor");
   return openBlock(), createBlock("uni-textarea", mergeProps({
@@ -6168,39 +6136,43 @@ function render$l(_ctx, _cache, $props, $setup, $data, $options) {
     createVNode("div", _hoisted_1$a, [
       withDirectives(createVNode("div", {
         ref: "placeholder",
-        style: _ctx.placeholderStyle,
-        class: [_ctx.placeholderClass, "uni-textarea-placeholder"],
-        textContent: _ctx.placeholder
+        style: $props.placeholderStyle,
+        class: [$props.placeholderClass, "uni-textarea-placeholder"],
+        textContent: toDisplayString($props.placeholder)
       }, null, 14, ["textContent"]), [
-        [vShow, !(_ctx.composition || _ctx.valueSync.length)]
+        [vShow, !($data.composition || _ctx.valueSync.length)]
       ]),
-      createVNode("div", _hoisted_2$4, null, 512),
-      createVNode("div", _hoisted_3$2, [
-        (openBlock(true), createBlock(Fragment, null, renderList(_ctx.valueCompute, (item, index) => {
+      createVNode("div", {
+        ref: "line",
+        class: "uni-textarea-line",
+        textContent: toDisplayString(" ")
+      }, null, 8, ["textContent"]),
+      createVNode("div", _hoisted_2$4, [
+        (openBlock(true), createBlock(Fragment, null, renderList($options.valueCompute, (item, index) => {
           return openBlock(), createBlock("div", {
             key: index,
-            textContent: item.trim() ? item : "."
+            textContent: toDisplayString(item.trim() ? item : ".")
           }, null, 8, ["textContent"]);
         }), 128)),
         createVNode(_component_v_uni_resize_sensor, {
           ref: "sensor",
-          onResize: _ctx._resize
+          onResize: $options._resize
         }, null, 8, ["onResize"])
       ]),
       withDirectives(createVNode("textarea", {
         ref: "textarea",
         "onUpdate:modelValue": _cache[1] || (_cache[1] = ($event) => _ctx.valueSync = $event),
-        disabled: _ctx.disabled,
-        maxlength: _ctx.maxlengthNumber,
-        autofocus: _ctx.autoFocus || _ctx.focus,
-        class: [{"uni-textarea-textarea-fix-margin": _ctx.fixMargin}, "uni-textarea-textarea"],
-        style: {"overflow-y": _ctx.autoHeight ? "hidden" : "auto"},
-        onCompositionstart: _cache[2] || (_cache[2] = (...args) => _ctx._compositionstart(...args)),
-        onCompositionend: _cache[3] || (_cache[3] = (...args) => _ctx._compositionend(...args)),
-        onInput: _cache[4] || (_cache[4] = withModifiers((...args) => _ctx._input(...args), ["stop"])),
-        onFocus: _cache[5] || (_cache[5] = (...args) => _ctx._focus(...args)),
-        onBlur: _cache[6] || (_cache[6] = (...args) => _ctx._blur(...args)),
-        onTouchstartPassive: _cache[7] || (_cache[7] = (...args) => _ctx._touchstart(...args))
+        disabled: $props.disabled,
+        maxlength: $options.maxlengthNumber,
+        autofocus: $props.autoFocus || $props.focus,
+        class: [{"uni-textarea-textarea-fix-margin": $data.fixMargin}, "uni-textarea-textarea"],
+        style: {"overflow-y": $props.autoHeight ? "hidden" : "auto"},
+        onCompositionstart: _cache[2] || (_cache[2] = (...args) => $options._compositionstart(...args)),
+        onCompositionend: _cache[3] || (_cache[3] = (...args) => $options._compositionend(...args)),
+        onInput: _cache[4] || (_cache[4] = withModifiers((...args) => $options._input(...args), ["stop"])),
+        onFocus: _cache[5] || (_cache[5] = (...args) => $options._focus(...args)),
+        onBlur: _cache[6] || (_cache[6] = (...args) => $options._blur(...args)),
+        onTouchstartPassive: _cache[7] || (_cache[7] = (...args) => $options._touchstart(...args))
       }, null, 46, ["disabled", "maxlength", "autofocus"]), [
         [vModelText, _ctx.valueSync]
       ])
@@ -6209,7 +6181,6 @@ function render$l(_ctx, _cache, $props, $setup, $data, $options) {
 }
 ;
 script$l.render = render$l;
-script$l.__file = "packages/uni-components/src/components/textarea/index.vue";
 var script$m = {
   name: "View",
   mixins: [hover],
@@ -6232,5 +6203,4 @@ function render$m(_ctx, _cache, $props, $setup, $data, $options) {
 }
 ;
 script$m.render = render$m;
-script$m.__file = "packages/uni-components/src/components/view/index.vue";
 export {script as Audio, script$1 as Canvas, script$2 as Checkbox, script$3 as CheckboxGroup, script$4 as Editor, script$5 as Form, script$6 as Icon, script$7 as Image, script$8 as Input, script$9 as Label, script$a as MovableView, script$b as Navigator, script$c as Progress, script$d as Radio, script$e as RadioGroup, script$f as ResizeSensor, script$g as RichText, script$h as ScrollView, script$i as Slider, script$j as SwiperItem, script$k as Switch, script$l as Textarea, script$m as View, passiveOptions, supportsPassive$1 as supportsPassive};

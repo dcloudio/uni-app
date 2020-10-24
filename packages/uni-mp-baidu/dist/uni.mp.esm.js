@@ -451,14 +451,14 @@ function initBehaviors(vueOptions, initBehavior) {
             }
         });
     }
-    if (isPlainObject(vueExtends) && vueExtends.props) {
+    if (vueExtends.props) {
         const behavior = {};
         initProps(behavior, vueExtends.props, true);
         behaviors.push(initBehavior(behavior));
     }
     if (isArray(vueMixins)) {
         vueMixins.forEach(vueMixin => {
-            if (isPlainObject(vueMixin) && vueMixin.props) {
+            if (vueMixin.props) {
                 const behavior = {};
                 initProps(behavior, vueMixin.props, true);
                 behaviors.push(initBehavior(behavior));

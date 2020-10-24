@@ -48,15 +48,25 @@ export function initProvide(instance: ComponentPublicInstance) {
 function inject(
   instance: ComponentInternalInstance,
   key: InjectionKey<any> | string,
-  defaultValue?: unknown
+  defaultValue?: unknown,
+  treatDefaultAsFactory = false
 ) {
   if (instance) {
-    const provides = (instance as any).provides
-    if (key in provides) {
+    // #2400
+    // to support `app.use` plugins,
+    // fallback to appContext's `provides` if the intance is at root
+    const provides =
+      instance.parent == null
+        ? instance.vnode.appContext && instance.vnode.appContext.provides
+        : (instance.parent as any).provides
+
+    if (provides && (key as string | symbol) in provides) {
       // TS doesn't allow symbol as index type
       return provides[key as string]
     } else if (arguments.length > 1) {
-      return defaultValue
+      return treatDefaultAsFactory && isFunction(defaultValue)
+        ? defaultValue()
+        : defaultValue
     } else if (__DEV__) {
       console.warn(`injection "${String(key)}" not found.`)
     }
@@ -83,7 +93,12 @@ export function initInjections(instance: ComponentPublicInstance) {
     for (const key in injectOptions) {
       const opt = injectOptions[key]
       if (isObject(opt)) {
-        ctx[key] = inject(internalInstance, opt.from, opt.default)
+        ctx[key] = inject(
+          internalInstance,
+          opt.from || key,
+          opt.default,
+          true /* treat default function as factory */
+        )
       } else {
         ctx[key] = inject(internalInstance, opt)
       }

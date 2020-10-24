@@ -421,14 +421,14 @@ function initBehaviors(vueOptions, initBehavior) {
             }
         });
     }
-    if (isPlainObject(vueExtends) && vueExtends.props) {
+    if (vueExtends.props) {
         const behavior = {};
         initProps(behavior, vueExtends.props, true);
         behaviors.push(initBehavior(behavior));
     }
     if (isArray(vueMixins)) {
         vueMixins.forEach(vueMixin => {
-            if (isPlainObject(vueMixin) && vueMixin.props) {
+            if (vueMixin.props) {
                 const behavior = {};
                 initProps(behavior, vueMixin.props, true);
                 behaviors.push(initBehavior(behavior));
@@ -849,15 +849,22 @@ function initProvide(instance) {
         provide(internalInstance, key, provides[key]);
     }
 }
-function inject(instance, key, defaultValue) {
+function inject(instance, key, defaultValue, treatDefaultAsFactory = false) {
     if (instance) {
-        const provides = instance.provides;
-        if (key in provides) {
+        // #2400
+        // to support `app.use` plugins,
+        // fallback to appContext's `provides` if the intance is at root
+        const provides = instance.parent == null
+            ? instance.vnode.appContext && instance.vnode.appContext.provides
+            : instance.parent.provides;
+        if (provides && key in provides) {
             // TS doesn't allow symbol as index type
             return provides[key];
         }
         else if (arguments.length > 1) {
-            return defaultValue;
+            return treatDefaultAsFactory && isFunction(defaultValue)
+                ? defaultValue()
+                : defaultValue;
         }
         else if ((process.env.NODE_ENV !== 'production')) {
             console.warn(`injection "${String(key)}" not found.`);
@@ -884,7 +891,7 @@ function initInjections(instance) {
         for (const key in injectOptions) {
             const opt = injectOptions[key];
             if (isObject(opt)) {
-                ctx[key] = inject(internalInstance, opt.from, opt.default);
+                ctx[key] = inject(internalInstance, opt.from || key, opt.default, true /* treat default function as factory */);
             }
             else {
                 ctx[key] = inject(internalInstance, opt);
