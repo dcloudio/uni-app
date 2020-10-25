@@ -5,6 +5,11 @@
   * [服务空间](uniCloud/concepts/space.md)
   * [数据库](uniCloud/concepts/database.md)
   * [云函数](uniCloud/concepts/cloudfunction.md)
+* 云数据库
+  * [传统nosql云数据库](uniCloud/cf-database.md)
+  * [clientDB及jql](uniCloud/database.md)
+  * [uni-clientDB组件](uniCloud/uni-clientdb-component.md)
+  * [DB-Schema](uniCloud/schema.md)
 * 云函数
   * [开发云函数](uniCloud/cf-functions.md)
   * [云函数公共模块](uniCloud/cf-common.md)
@@ -12,18 +17,16 @@
   * [身份认证](uniCloud/cf-authentication.md)
   * [定时触发](uniCloud/trigger.md)
   * [云函数URL化](uniCloud/http.md)
-* [云数据库](uniCloud/cf-database.md)
 * 云存储
   * [云存储](uniCloud/storage.md)
   * [腾讯云自定义登录](uniCloud/authentication.md)
   * [腾讯云权限管理](uniCloud/policy-tcb.md)
 * 扩展能力
   * [uni-id](uniCloud/uni-id.md)
-  * [admin](uniCloud/admin.md)
-  * [uni-clientDB](uniCloud/uni-clientDB.md)
-  * [DB-Schema](uniCloud/schema.md)
+  * [uniCloud admin](uniCloud/admin.md)
   * [unipay](uniCloud/unipay.md)
   * [发送短信](uniCloud/send-sms.md)
+  * [旧版clientDB插件](uniCloud/uni-clientDB.md)
 * [前端网页托管](uniCloud/hosting.md)
 * [日志输出](uniCloud/cf-logger.md)
 * [同时连多服务空间](uniCloud/init.md)
