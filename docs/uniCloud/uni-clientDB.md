@@ -1,6 +1,8 @@
 ## 简介
 
-**重要：uni-clientDB 2.0.0版本不兼容旧版，如果你依然需要使用旧版本请在此链接下载 [uni-clientDB 1.0.8](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/839b6a50-fe54-11ea-81ea-f115fe74321c.zip)**
+**重要：** clientDB重大升级，在HBuilderX 2.9.5+中已经内置，不再需要单独下载插件。并且新版增加大量功能。本文已过期，推荐使用clientDB的开发者升级到HBuilderX 2.9.5+，并阅读新文档：[https://uniapp.dcloud.net.cn/uniCloud/database](https://uniapp.dcloud.net.cn/uniCloud/database)
+
+uni-clientDB 2.0.0版本不兼容旧版，如果你依然需要使用旧版本请在此链接下载 [uni-clientDB 1.0.8](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/839b6a50-fe54-11ea-81ea-f115fe74321c.zip)
 
 clientDB框架的目标：减少服务端代码开发。
 
