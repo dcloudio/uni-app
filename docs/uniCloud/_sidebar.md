@@ -7,9 +7,10 @@
   * [云函数](uniCloud/concepts/cloudfunction.md)
 * 云数据库
   * [传统nosql云数据库](uniCloud/cf-database.md)
-  * [clientDB及jql](uniCloud/database.md)
+  * [clientDB及JQL](uniCloud/database.md)
   * [uni-clientDB组件](uniCloud/uni-clientdb-component.md)
   * [DB-Schema](uniCloud/schema.md)
+  * [opendb](https://gitee.com/dcloud/opendb)
 * 云函数
   * [开发云函数](uniCloud/cf-functions.md)
   * [云函数公共模块](uniCloud/cf-common.md)
