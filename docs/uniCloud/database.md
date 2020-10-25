@@ -1,34 +1,43 @@
-## 简介
+## clientDB简介
 
 > 自`HBuilderX 2.9.5`起支持在客户端直接使用`uniCloud.database()`方式获取数据库引用，即在前端直接操作数据库，这个功能被称为clientDB
+> 2.9.5以前的用户如使用过clientDB，再升级后请将clientDB的前端库和云函数删除，新版已经在前端和云端内置了clientDB
 
-使用clientDB的好处：不用写服务器代码了！
+使用`clientDB`的好处：**不用写服务器代码了！**
 
-一个应用开发的40%工作量，就此直接省去。
+1个应用开发的一半的工作量，就此直接省去。
 
-当然使用clientDB需要扭转传统后台开发观念，不再编写云函数，直接在前端操作数据库。但是为了数据安全，需要在数据库上配置schema。
+当然使用`clientDB`需要扭转传统后台开发观念，不再编写云函数，直接在前端操作数据库。但是为了数据安全，需要在数据库上配置schema。
 
-在db schema中，配置数据操作的权限和校验规则，阻止前端不恰当的数据读取和写入。参考：[DB-schema](https://uniapp.dcloud.net.cn/uniCloud/schema)
+在`db schema`中，配置数据操作的权限和校验规则，阻止前端不恰当的数据读取和写入。参考：[DB-schema](https://uniapp.dcloud.net.cn/uniCloud/schema)
 
-如果想在数据库操作之前或之后需要在云端执行额外的动作（比如获取文章详情之后阅读量+1），clientDB提供了action机制。在HBuilderX项目的`cloudfunctions/uni-clientDB-actions`目录编写上传js，参考：[actions](uniCloud/database?id=actions)
+如果想在数据库操作之前或之后需要在云端执行额外的动作（比如获取文章详情之后阅读量+1），`clientDB`提供了action机制。在HBuilderX项目的`cloudfunctions/uni-clientDB-actions`目录编写上传js，参考：[actions](uniCloud/database?id=actions)
 
 **注意**
 
-- clientDB依赖uni-id提供用户身份和权限校验，如果你不了解uni-id，请参考[uni-id文档](https://uniapp.dcloud.net.cn/uniCloud/uni-id)
-- 通常在管理控制台使用clientDB，需要获取不同角色用户拥有的权限（在权限规则内使用auth.permission），请先查阅[uni-id 角色权限](https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=rbac)
+- `clientDB`依赖uni-id提供用户身份和权限校验，如果你不了解uni-id，请参考[uni-id文档](https://uniapp.dcloud.net.cn/uniCloud/uni-id)
+- 通常在管理控制台使用`clientDB`，需要获取不同角色用户拥有的权限（在权限规则内使用auth.permission），请先查阅[uni-id 角色权限](https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=rbac)
 
 ## clientDB图解
 ![](https://static-eefb4127-9f58-4963-a29b-42856d4205ee.bspapp.com/clientdb.jpg)
 
-## 客户端部分@jssdk
+`clientDB`的前端部分包括js API和`<uni-clientDB>`组件两部分。
 
-clientDB的客户端部分主要负责提供API，允许前端编写数据库操作指令，以及处理一些客户端不太方便表示的字段，比如用户ID（详情看下面语法扩展部分）
+js API可以执行所有数据库操作。`<uni-clientDB>`组件适用于查询数据库，它是js API的再封装，进一步简化查询的代码量。
 
-clientDB支持传统的nosql查询语法，更新增了jql查询语法。jql是一种更简单的查询语法。
+目前`<uni-clientDB>`组件没有内置，而是作为一个插件单独下载，它的文档另见：[https://uniapp.dcloud.net.cn/uniCloud/uni-clientdb-component](https://uniapp.dcloud.net.cn/uniCloud/uni-clientdb-component)
 
-**nosql查询语法示例代码**
+以下文章重点介绍`clientDB`的js API，组件的查询语法与js API是一致的。
 
-这段示例代码，在一个前端页面，直接查询了云数据库的`list`表，并且指定了`name`字段值为`hello-uni-app`的查询条件，then的res即为返回的查询结果。
+## clientDB前端API@jssdk
+
+`clientDB`的客户端部分主要负责提供API，允许前端编写数据库操作指令，以及处理一些客户端不太方便表示的字段，比如用户ID（详情看下面语法扩展部分）
+
+`clientDB`支持传统的nosql查询语法，并新增了`jql`查询语法。`jql`是一种更易用的查询语法。
+
+**传统nosql查询语法示例**
+
+这段示例代码，在一个前端页面，直接查询了云数据库的`list`表，并且指定了`name`字段值为`hello-uni-app`的查询条件，then里的res即为返回的查询结果。
 
 ```js
 // 获取db引用
@@ -36,7 +45,7 @@ const db = uniCloud.database()
 // 使用uni-clientDB
 db.collection('list')
   .where({
-    name: "hello-uni-app"
+    name: "hello-uni-app" //传统MongoDB写法，不是jql写法。实际开发中推荐使用jql写法
   }).get()
   .then((res)=>{
     // res 为数据库查询结果
@@ -47,16 +56,16 @@ db.collection('list')
 
 **使用说明**
 
-语法与云函数写查询数据库一致，目前有以下限制：
+前端操作数据库的语法与云函数一致，但有以下限制：
 
 - 上传时会对query进行序列化，除Date类型、RegExp之外的所有不可序列化的参数类型均不支持（例如：undefined）
-- 为方便控制禁止前端使用set方法，一般情况下也不需要前端使用set
+- 为方便控制权限，禁止前端使用set方法，一般情况下也不需要前端使用set
 - 更新数据库时不可使用更新操作符`db.command.inc`等
 - 更新数据时键值不可使用`{'a.b.c': 1}`的形式，需要写成`{a:{b:{c:1}}}`形式（后续会对此进行优化）
 
 ### 返回值说明@returnvalue
 
-clientDB云端默认返回值形式如下，开发者可以在action的after内用js修改返回结果，传入after内的result不带code和message。
+`clientDB`云端默认返回值形式如下，开发者可以在[action](uniCloud/database?id=action)的`after`内用js修改返回结果，传入`after`内的result不带code和message。
 
 ```js
 {
@@ -81,7 +90,7 @@ clientDB云端默认返回值形式如下，开发者可以在action的after内�
 
 ### 前端环境变量@variable
 
-clientDB目前内置了3个变量可以供客户端使用，客户端并非直接获得这三个变量的值，而是需要传递给云端，云数据库在数据入库时会把变量替换为实际值。
+`clientDB`目前内置了3个变量可以供客户端使用，客户端并非直接获得这三个变量的值，而是需要传递给云端，云数据库在数据入库时会把变量替换为实际值。
 
 |参数名			|说明				|
 |:-:			|:-:				|
@@ -98,13 +107,13 @@ let res = await db.collection('table').where({
 }).get()
 ```
 
-### JQL查询语法@jsquery
+### jql查询语法@jsquery
 
 `jql`，全称javascript query language，是一种js方式操作数据库的语法规范。
 
 `jql`大幅降低了js工程师操作数据库的难度、大幅缩短开发代码量。并利用json数据库的嵌套特点，极大的简化了联表查询的复杂度。
 
-#### JQL的诞生背景
+#### jql的诞生背景
 
 传统的数据库查询，有sql和nosql两种查询语法。
 
@@ -144,7 +153,7 @@ field1:dbCmd.gt(4000).or(dbCmd.gt(6000).and(dbCmd.lt(8000)))
 ```
 
 2. nosql的联表查询写法，比sql还复杂
-sql的inner join、left join已经够乱了，而nosql的代码无论写法还是可读性，都更令人发指。比如这个联表查询：
+sql的inner join、left join已经够乱了，而nosql的代码无论写法还是可读性，都更“令人发指”。比如这个联表查询：
 
 ```js
 const db = uniCloud.database()
@@ -237,9 +246,11 @@ db.collection('list')
 
 这里的test方法比较强大，格式为：`正则规则.test(fieldname)`。
 
-具体到这个正则 `/abc/.test(content)`，类似于sql中的`content like %abc%`
+具体到这个正则 `/abc/.test(content)`，类似于sql中的`content like '%abc%'`，即查询所有字段content包含abc的数据记录。
 
-### JQL联表查询扩展@lookup
+**注意编写查询条件时，除test外，均为运算符左侧为数据库字段，右侧为常量**
+
+### JQL联表查询@lookup
 
 `JQL`提供了更简单的联表查询方案。不需要学习join、lookup等复杂方法。
 
@@ -273,10 +284,6 @@ book表内有以下数据，title为书名、author为作者：
 ```
 
 order表内有以下数据，book字段为book表的书籍_id，quantity为该订单销售了多少本书：
-
-**注意编写查询条件时，除test外均为运算符左侧为数据库字段右侧右侧为常量**
-
-### 联表查询扩展@lookup
 
 ```js
 {
@@ -350,15 +357,15 @@ schema保存至云端后，即可在前端直接查询。查询表设为order和
 ```js
 // 客户端联表查询
 const db = uniCloud.database()
-  db.collection('order,book') // 注意collection方法内需要传入所有用到的表名，用逗号分隔，主表需要放在第一位
-    .where('book.title == "三国演义"') // 查询order表内书名为“三国演义”的订单
-    .field('book{title,author},quantity') // 这里联表查询book表返回book表内的title、book表内的author、order表内的quantity
-    .get()
-    .then(res => {
-      console.log(res);
-    }).catch(err => {
-      console.error(err)
-    })
+db.collection('order,book') // 注意collection方法内需要传入所有用到的表名，用逗号分隔，主表需要放在第一位
+  .where('book.title == "三国演义"') // 查询order表内书名为“三国演义”的订单
+  .field('book{title,author},quantity') // 这里联表查询book表返回book表内的title、book表内的author、order表内的quantity
+  .get()
+  .then(res => {
+    console.log(res);
+  }).catch(err => {
+    console.error(err)
+  })
 ```
 
 
@@ -388,7 +395,7 @@ const db = uniCloud.database()
 
 ```
 
-关系型数据库做不到这种设计。jql充分利用了json文档型数据库的特点，实现了这个简化的联表查询方案。
+关系型数据库做不到这种设计。`jql`充分利用了json文档型数据库的特点，实现了这个简化的联表查询方案。
 
 不止是2个表，3个、4个表也可以通过这种方式查询。
 
@@ -398,30 +405,30 @@ const db = uniCloud.database()
 
 - field参数字符串内没有冒号，{}为联表查询标志
 
-### 排序规则扩展@orderby
+### 排序orderBy@orderby
 
 传统的MongoDB的排序参数是json格式，jql支持类sql的字符串格式，书写更为简单。
 
 sort方法和orderBy方法内可以传入一个字符串来指定排序规则。
 
-orderBy允许进行多个字段排序格式如下
+orderBy允许进行多个字段排序，以逗号分隔。每个字段可以指定 asc(升序)、desc(降序)。
+
+写在前面的排序字段优先级高于后面。
+
+示例如下：
 
 ```js
-orderBy('quantity desc, create_date desc') //按照quantity字段降序排序，quantity相同时按照create_date降序排序
-// desc可以省略，上述代码和以下写法效果一致
-orderBy('quantity, create_date')
+orderBy('quantity asc, create_date desc') //按照quantity字段升序排序，quantity相同时按照create_date降序排序
 
-// 注意不要写错了英文逗号
+// 注意不要写错成全角逗号
 ```
 
-```js
-// desc 降序
-// asc 升序
+以上面的order表数据为例：
 
-// 这里以上面的order表数据为例
+```js
 const db = uniCloud.database()
-  db.collection('order') // 注意collection方法内需要传入所有用到的表名，用逗号分隔，主表需要放在第一位
-    .orderBy('quantity desc') // 按照quantity字段降序排序
+  db.collection('order')
+    .orderBy('quantity asc, create_date desc') // 按照quantity字段升序排序，quantity相同时按照create_date降序排序
     .get()
     .then(res => {
       console.log(res);
@@ -430,16 +437,14 @@ const db = uniCloud.database()
     })
 ```
 
-### 查询结果时返回总数@getcount
+### 查询结果返回总数getcount@getcount
 
-使用clientDB时可以在get方法内传入`getCount:true`来同时返回总数
+使用`clientDB`时可以在get方法内传入`getCount:true`来同时返回总数
 
 ```js
 // 这以上面的order表数据为例
 const db = uniCloud.database()
-  db.collection('order') // 注意collection方法内需要传入所有用到的表名，用逗号分隔，主表需要放在第一位
-    .orderBy('quantity desc') // 按照quantity字段降序排序
-    .limit(1)
+  db.collection('order')
     .get({
       getCount:true
     })
@@ -467,8 +472,309 @@ const db = uniCloud.database()
 ```
 
 
-### 查询结果时返回单条记录@getone
+<!-- ### 查询结果时返回单条记录getone@getone -->
 <!-- 这里需要补充文档和示例 -->
+
+### 新增数据记录add
+
+获取到db的表对象后，通过`add`方法新增数据记录。
+
+`add`方法的参数为要新增的json数据，可以是单条数据、也可以是多条数据。
+
+注意：如果是非admin账户新增数据，需要在数据库中待操作表的`db schema`中要配置permission权限，赋予create为true。
+
+示例：
+
+```js
+// 一次插入3条数据
+const db = uniCloud.database();
+db.collection("table1").add(
+	[{
+	  name: 'Alex'
+	},{
+	  name: 'Ben'
+	},{
+	  name: 'John'
+	}]
+)
+```
+
+```js
+// 插入1条数据，同时判断成功失败状态
+const db = uniCloud.database();
+db.collection("table1")
+	.add({name: 'Ben'})
+	.then((res) => {
+		uni.showToast({
+			title: '新增成功'
+		})
+	})
+	.catch((err) => {
+		uni.showModal({
+			content: err.message || '新增失败',
+			showCancel: false
+		})
+	})
+	.finally(() => {
+		
+	})
+```
+
+**Tips**
+
+- 云服务商选择阿里云时，若集合表不存在，调用add方法会自动创建集合表
+
+
+### 删除数据记录remove
+获取到db的表对象，然后指定要删除的记录，通过remove方法删除。
+
+注意：如果是非admin账户删除数据，需要在数据库中待操作表的`db schema`中要配置permission权限，赋予delete为true。
+
+指定要删除的记录有2种方式：
+
+#### 方式1 通过指定文档ID删除
+
+collection.doc(_id).remove()
+
+删除单条记录
+
+```js
+const db = uniCloud.database();
+db.collection("table1").doc("5f79fdb337d16d0001899566").remove()
+```
+
+删除该表所有数据
+```js
+const db = uniCloud.database();
+let collection = db.collection("table1")
+let res = await collection.get()
+res.data.map(async(document) => {
+  return await collection.doc(document.id).remove();
+});
+```
+
+#### 方式2 条件查找文档后删除
+
+collection.where().remove()
+
+```js
+// 删除字段a的值大于2的文档
+try {
+	await db.collection("table1").where("a>2").remove()
+} catch (e) {
+	uni.showModal({
+		title: '提示',
+		content: e.message
+	})
+}
+```
+
+#### 回调的res响应参数
+
+| 字段		| 类型		| 必填	| 说明						|
+| ---------	| -------	| ----	| ------------------------	|
+| deleted	| Integer	| 否	| 删除的记录数量			|
+
+示例：判断删除成功或失败，打印删除的记录数量
+
+```js
+const db = uniCloud.database();
+db.collection("table1").doc("5f79fdb337d16d0001899566").remove()
+	.then((res) => {
+		uni.showToast({
+			title: '删除成功'
+		})
+		console.log("删除条数: ",res.deleted);
+	}).catch((err) => {
+		uni.showModal({
+			content: err.message || '删除失败',
+			showCancel: false
+		})
+	}).finally(() => {
+		
+	})
+```
+
+### 更新数据记录update
+
+获取到db的表对象，然后指定要删除的记录，通过remove方法删除。
+
+注意：如果是非admin账户修改数据，需要在数据库中待操作表的`db schema`中要配置permission权限，赋予update为true。
+
+collection.doc().update(Object data)
+
+**参数说明**
+
+| 参数 | 类型   | 必填 | 说明                                     |
+| ---- | ------ | ---- | ---------------------------------------- |
+| data | object | 是   | 更新字段的Object，{'name': 'Ben'} _id 非必填|
+
+**回调的res响应参数**
+
+| 参数	| 类型	|  说明																			|
+| ----	| ------|  ----------------------------------------	|
+|updated| Number| 更新成功条数，数据更新前后没变化时会返回0。用法与删除数据的响应参数示例相同	|
+
+
+```js
+const db = uniCloud.database();
+let collection = db.collection("table1")
+let res = await collection.doc('doc-id').update({
+  name: "Hey",
+  count: {
+    fav: 1
+  }
+});
+```
+
+```json
+// 更新前的数据
+{
+  "_id": "doc-id",
+  "name": "Hello",
+  "count": {
+    "fav": 0,
+    "follow": 0
+  }
+}
+
+// 更新后的数据
+{
+  "_id": "doc-id",
+  "name": "Hey",
+  "count": {
+    "fav": 1,
+    "follow": 0
+  }
+}
+```
+
+更新数组时，以数组下标作为key即可，比如以下示例将数组arr内下标为1的值修改为 uniCloud
+
+```js
+const db = uniCloud.database();
+let collection = db.collection("table1")
+let res = await collection.doc('doc-id').update({
+  arr: {
+    1: "uniCloud"
+  }
+})
+```
+
+```json
+// 更新前
+{
+  "_id": "doc-id",
+  "arr": ["hello", "world"]
+}
+// 更新后
+{
+  "_id": "doc-id",
+  "arr": ["hello", "uniCloud"]
+}
+```
+
+#### 批量更新文档
+
+```js
+const db = uniCloud.database();
+let collection = db.collection("table1")
+let res = await collection.where("name=='hey'").update({
+  age: 18,
+})
+```
+
+#### 更新数组内指定下标的元素
+
+```js
+const db = uniCloud.database();
+const res = await db.collection('table1').doc('1').update({
+  // 更新students[1]
+  ['students.' + 1]: {
+    name: 'wang'
+  }
+})
+```
+
+```json
+// 更新前
+{
+  "_id": "1",
+  "students": [
+    {
+      "name": "zhang"
+    },
+    {
+      "name": "li"
+    }
+  ]
+}
+
+// 更新后
+{
+  "_id": "1",
+  "students": [
+    {
+      "name": "zhang"
+    },
+    {
+      "name": "wang"
+    }
+  ]
+}
+```
+
+#### 更新数组内匹配条件的元素
+
+**注意：只可确定数组内只会被匹配到一个的时候使用**
+
+```js
+const db = uniCloud.database();
+const res = await db.collection('table1').where({
+	'students.id': '001'
+}).update({
+  // 将students内id为001的name改为li
+	'students.$.name': 'li'
+})
+```
+
+
+```js
+// 更新前
+{
+  "_id": "1",
+  "students": [
+    {
+      "id": "001",
+      "name": "zhang"
+    },
+    {
+      "id": "002",
+      "name": "wang"
+    }
+  ]
+}
+
+// 更新后
+{
+  "_id": "1",
+  "students": [
+    {
+      "id": "001",
+      "name": "li"
+    },
+    {
+      "id": "002",
+      "name": "wang"
+    }
+  ]
+}
+```
+
+注意：
+- 为方便控制权限，禁止前端使用set方法，一般情况下也不需要前端使用set
+- 更新数据库时不可使用更新操作符`db.command.inc`等
+- 更新数据时键值不可使用`{'a.b.c': 1}`的形式，需要写成`{a:{b:{c:1}}}`形式（后续会对此进行优化）
 
 ### 刷新token@refreshtoken
 
@@ -492,7 +798,7 @@ db.auth.on('refreshToken', refreshToken)
 db.auth.off('refreshToken', refreshToken)
 ```
 
-## schema@schema
+## DBschema@schema
 
 目前schema需要在[uniCloud web控制台](https://unicloud.dcloud.net.cn)数据表的表结构处创建/修改。
 
@@ -629,7 +935,7 @@ db.collection('order')
 |变量名			|说明																																						|
 |:-:			|:-:																																						|
 |auth.uid		|用户id																																						|
-|auth.role		|用户角色数组，参考[uni-id 角色权限](/uniCloud/uni-id?id=rbac)，注意`admin`为clientDB内置的角色，如果用户角色列表里包含`admin`则认为此用户有完全数据访问权限|
+|auth.role		|用户角色数组，参考[uni-id 角色权限](/uniCloud/uni-id?id=rbac)，注意`admin`为`clientDB`内置的角色，如果用户角色列表里包含`admin`则认为此用户有完全数据访问权限|
 |auth.permission|用户权限数组，参考[uni-id 角色权限](/uniCloud/uni-id?id=rbac)																								|
 |doc			|记录内容，用于匹配记录内容/查询条件（需要注意的是，规则内的doc对象并不是直接去校验存在于数据库的数据，而是校验客户端的查询条件）							|
 |now			|当前时间戳（单位：毫秒），时间戳可以进行额外运算，如doc.publish\_date > now - 60000表示publish\_date在最近一分钟											|
