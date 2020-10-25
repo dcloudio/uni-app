@@ -135,6 +135,7 @@ let res = await db.collection('table').where({
 sql写法，对js工程师而言有学习成本，而且无法处理非关系型的MongoDB数据库，以及sql的联表查询inner join、left join也并不易于学习。
 
 而nosql的写法，实在过于复杂。
+
 1. 运算符需要转码，`>`需要使用`gt`方法、`==`需要使用`eq`方法、
 比如一个简单的查询，取field1>0，则需要如下复杂写法
 
@@ -182,6 +183,9 @@ let res = await db.collection('orders').aggregate()
 })
 .end()
 ```
+
+3. 列表分页写法复杂
+需要使用skip，处理offset
 
 这些问题竖起一堵墙，让后端开发难度加大，成为一个“专业领域”。但其实这堵墙是完全可以推倒的。
 
@@ -404,6 +408,15 @@ db.collection('order,book') // 注意collection方法内需要传入所有用到
 **注意**
 
 - field参数字符串内没有冒号，{}为联表查询标志
+
+### 查询列表分页
+
+`jql`提供了更简单的分页方法，包括两种模式：
+
+1. 滚动到底加载下一页
+2. 点击页码按钮切换不同页
+
+推荐通过`<uni-clientDB>`组件处理分页，详见：[https://uniapp.dcloud.net.cn/uniCloud/uni-clientdb-component?id=page](https://uniapp.dcloud.net.cn/uniCloud/uni-clientdb-component?id=page)
 
 ### 排序orderBy@orderby
 
