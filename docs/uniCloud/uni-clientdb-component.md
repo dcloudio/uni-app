@@ -1,4 +1,4 @@
-## uni-clientdb组件
+## uni-clientdb组件简介
 
 `<uni-clientdb>` 组件是一个数据库查询组件，它是对`uni-clientdb`的js库的再封装。
 
@@ -34,7 +34,7 @@
 
 从HBuilderX 2.9.5+ 起支持`<uni-clientdb>`组件，与小程序基础库版本无关。
 
-### 属性
+## 属性
 
 |属性|类型|描述|
 |:-|:-|:-|
@@ -75,7 +75,7 @@ TODO：暂不支持groupby、in子查询功能。后续会补充
 
 **注意：除非使用admin账户登录操作，否则需要在 uniCloud 控制台对要查询的表增加 Schema 权限配置。至少配置读取权限，否则无权查询**，详情 [https://uniapp.dcloud.net.cn/uniCloud/schema](https://uniapp.dcloud.net.cn/uniCloud/schema)
 
-### v-slot:default
+## v-slot:default
 
 ```
 <uni-clientdb v-slot:default="{data, pagination, loading, error, options}"></uni-clientdb>
@@ -93,7 +93,7 @@ TODO：暂不支持groupby、in子查询功能。后续会补充
 **提示：如果不指定分页模式， `data` 为多次查询的集合**
 
 
-### orderby
+## orderby
 
 格式为 `字段名` 空格 `asc`(升序)/`desc`(降序)`，多个字段用 `,` 分割，优先级为字段顺序
 
@@ -104,7 +104,7 @@ TODO：暂不支持groupby、in子查询功能。后续会补充
 <uni-clientdb orderby="createTime desc"></uni-clientdb>
 ```
 
-### 事件
+## 事件
 
 - load事件
 
@@ -139,7 +139,7 @@ handleError(e) {
 ```
 
 
-### 方法
+## 方法
 
 - loadData
 
@@ -170,7 +170,7 @@ console.log(this.$refs.udb.dataList);
 H5平台，开发模式下浏览器控制台输入 `unidev.clientDB.data`，可查看组件内部数据，多个组件通过索引查看 `unidev.clientDB.data[0]`
 
 
-### 联表查询
+## 联表查询
 
 ```html
 // 注意 `collection` 属性需要传入所有用到的表名，用逗号分隔，主表需要放在第一位
@@ -191,7 +191,7 @@ H5平台，开发模式下浏览器控制台输入 `unidev.clientDB.data`，可�
 
 联表查询详情参考 [https://uniapp.dcloud.net.cn/uniCloud/database?id=lookup](https://uniapp.dcloud.net.cn/uniCloud/database?id=lookup)
 
-### 列表分页@page
+## 列表分页@page
 - 列表分页模式1：上拉加载上一页。下一页的查询结果会追加合并到data里
 
 ```html
@@ -360,7 +360,7 @@ H5平台，开发模式下浏览器控制台输入 `unidev.clientDB.data`，可�
 
 使用分页控件，常见于PC端。在这个uniCloud Admin的[权限管理插件](https://ext.dcloud.net.cn/plugin?id=3269)插件中，有完整的分页展示数据、新增删除数据的示例代码。
 
-### 组件嵌套
+## 组件嵌套
 
 `<uni-clientdb>` 组件支持嵌套。
 
