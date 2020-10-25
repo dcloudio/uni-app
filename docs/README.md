@@ -1,7 +1,7 @@
 
-```uni-app``` 是一个使用 [Vue.js](https://vuejs.org/) 开发所有前端应用的框架，开发者编写一套代码，可发布到iOS、Android、H5、以及各种小程序（微信/支付宝/百度/头条/QQ/钉钉/淘宝）、快应用等多个平台。
+```uni-app``` 是一个使用 [Vue.js](https://vuejs.org/) 开发所有前端应用的框架，开发者编写一套代码，可发布到iOS、Android、Web（响应式）、以及各种小程序（微信/支付宝/百度/头条/QQ/钉钉/淘宝）、快应用等多个平台。
 
-`DCloud`公司拥有500万开发者用户，几十万应用案例、10亿手机端月活用户，数千款uni-app插件、70+微信/qq群。阿里小程序工具官方内置uni-app（[详见](https://docs.alipay.com/mini/ide/0.70-stable)），腾讯课堂官方为uni-app录制培训课程（[详见](https://ask.dcloud.net.cn/article/35640)），开发者可以放心选择。
+`DCloud`公司拥有600万开发者用户，几十万应用案例、12亿手机端月活用户，数千款uni-app插件、70+微信/qq群。阿里小程序工具官方内置uni-app（[详见](https://docs.alipay.com/mini/ide/0.70-stable)），腾讯课堂官方为uni-app录制培训课程（[详见](https://ask.dcloud.net.cn/article/35640)），开发者可以放心选择。
 
 `uni-app`在手，做啥都不愁。即使不跨端，```uni-app```也是更好的小程序开发框架（[详见](https://ask.dcloud.net.cn/article/35947)）、更好的App跨平台框架、更方便的H5开发框架。不管领导安排什么样的项目，你都可以快速交付，不需要转换开发思维、不需要更改开发习惯。
 
@@ -25,7 +25,7 @@
         <div class="barcode-img-box">
           <img src="https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/uni-h5-hosting-qr.png" width="160" />
         </div>
-        <b>H5版</b>
+        <b>Web版</b>
       </a>
       <a href="//m3w.cn/uniapp" target="_blank" class="clear-style barcode-view">
         <div class="barcode-img-box"><img src="//img.cdn.aliyun.dcloud.net.cn/guide/uniapp/gh_33446d7f7a26_430.jpg" width="160" /></div>
@@ -90,7 +90,7 @@
       </div>
       <div class="uniapp-home-content-item-header">
         <h5 class="uniapp-home-content-item-title">开发者/案例数量更多</h5>
-        <p class="uniapp-home-content-item-text">几十万应用、uni统计月活10亿、70+微信/qq群、更高的百度指数</p>
+        <p class="uniapp-home-content-item-text">几十万应用、uni统计月活12亿、70+微信/qq群、更高的百度指数</p>
         <p class="uniapp-home-content-item-text">跨端完善度更高，真正落地的提高生产力</p>
       </div>
     </div>
@@ -110,8 +110,8 @@
       </div>
       <div class="uniapp-home-content-item-header">
         <h5 class="uniapp-home-content-item-title">性能体验优秀</h5>
-        <p class="uniapp-home-content-item-text">体验更好的Hybrid框架，加载新页面速度更快。</p>
-        <p class="uniapp-home-content-item-text">App端支持weex原生渲染，可支撑更流畅的用户体验。</p>
+        <p class="uniapp-home-content-item-text">加载新页面速度更快、自动diff更新数据。</p>
+        <p class="uniapp-home-content-item-text">App端支持原生渲染，可支撑更流畅的用户体验。</p>
         <p class="uniapp-home-content-item-text">小程序端的性能优于市场其他框架。<a href="https://ask.dcloud.net.cn/article/35947" target="_blank">评测</a></p>
       </div>
     </div>
@@ -122,7 +122,7 @@
       <div class="uniapp-home-content-item-header">
         <h5 class="uniapp-home-content-item-title">周边生态丰富</h5>
         <p class="uniapp-home-content-item-text"><a href="https://ext.dcloud.net.cn/?orderBy=WeekDownload" target="_blank">插件市场</a>数千款插件。</p>
-        <p class="uniapp-home-content-item-text">支持NPM、支持小程序组件和SDK、兼容mpvue组件和项目、兼容weex组件。</p>
+        <p class="uniapp-home-content-item-text">支持NPM、支持小程序组件和SDK。</p>
         <p class="uniapp-home-content-item-text">微信生态的各种sdk可直接用于跨平台App。</p>
       </div>
     </div>
@@ -149,13 +149,13 @@
 
 <!-- ```uni-app``` 使用```Vue.js```的语法 + 微信小程序的API，均为通用技术。
 
-有一定 ```Vue.js``` 和微信小程序开发经验的开发者可快速上手 ```uni-app``` ，开发出兼容多端的应用。
+有一定 ```Vue.js``` 和小程序开发经验的开发者可快速上手 ```uni-app``` ，开发出兼容多端的应用。
 
 ```uni-app```提供了条件编译机制，在跨端的同时，可以优雅的为某平台写个性化代码、调用专有能力而不影响其他平台。这是能落地的真正一套代码的解决方案，而不是仅仅统一技术栈，实际项目仍然多套代码、各自升级。
 
-```uni-app```打包到App时使用了小程序和weex双引擎，丰富的js扩展能力和高效的weex渲染都可以在```uni-app```中可以使用。同时支持以sdk方式嵌入原生项目中混合开发。生成的App性能体验优秀且扩展能力丰富。
+```uni-app```打包到App时使用了使用独立v8引擎，渲染层支持原生渲染和webview渲染双选，内置大量常用原生功能，支持原生插件扩展，并且插件市场有丰富的插件生态，无需懂原生开发亦可完成复杂应用。
 
-```uni-app```支持将小程序生态丰富的组件和js sdk引用到App开发中，大幅强化了跨平台开发的三方生态，开发者可直接使用大量原sdk厂商维护的高质量sdk。
+`uni-app`提供了`uni小程序sdk`，支持以sdk方式嵌入原生项目中混合开发，帮助原生App得到小程序能力，并可享受`uni-app`的开发者生态。
 
 ```uni-app```被DCloud定义为**终极跨平台开发框架**，拥有极强的竞争优势。
 
