@@ -71,9 +71,9 @@ DB Schema是一种基于 JSON 格式定义的数据结构的规范。
 |component|Object&#124;Array|生成数据维护ui界面时，使用什么组件渲染这个表单项。比如使用input输入框。详见下方示例|
 
 **注意：**
-1. 数据校验，只有使用clientDB 2.0+，才有效。不用clientDB，在云函数中直接操作数据库无法使用该校验规则
+1. `DB Schema`的各种功能均只支持`clientDB`。如果使用云函数操作数据库，schema的作用仅仅是描述字段信息。同时强烈推荐使用HBuilderX 2.9.5以上版本使用`clientDB`。
 2. 字段属性 `permission`, 仅支持 ".read", ".write"
-3. 生成数据维护ui页面，该功能暂未开放。
+3. 生成表单页面的功能，入口在uniCloud web控制台的数据库schema界面，注意该功能需搭配HBuilderX 2.9.5+版本。
 4. 暂不支持子属性校验
 
 
@@ -89,7 +89,7 @@ DB Schema是一种基于 JSON 格式定义的数据结构的规范。
 |32-bit integer	|16		|“int”		|
 |Timestamp		|17		|“timestamp”	|
 
-注意：在schema描述中需要使用上述表格中的“名称”，而不是“类型”。
+**注意：在schema描述中需要使用上述表格中的“名称”，而不是“类型”。**
 
 
 ### 示例
@@ -599,9 +599,9 @@ component 类型为数组
 ```
 
 
-### group属性（暂未开放）
+### group属性
 
-将多个表单项合并在一个分组里显示。前端渲染时，group相关的自动会合并在一个uni-group组件中，不同分组的表单项之间有间隔。
+将多个表单项合并在一个分组里显示。前端渲染时，group相关的自动会合并在一个uni-group组件中，不同分组的表单项之间有间隔。该组件详见：[https://ext.dcloud.net.cn/plugin?id=3281](https://ext.dcloud.net.cn/plugin?id=3281)
 
 示例
 ```json
@@ -655,10 +655,10 @@ component 类型为数组
 生成带有group组件的表单代码
 
 ```
-...
+<uni-forms>
   <uni-group>
-    <uni-field label="姓名" placeholder="请输入姓名" class="input" :hidden="false" :readonly="false" :disabled="false" />
-    <uni-field label="年龄" placeholder="请输入年龄" />
+    <uni-forms-item label="姓名"><input placeholder="请输入姓名" class="input" :hidden="false" :readonly="false" :disabled="false" /></uni-forms-item>
+    <uni-forms-item label="年龄"><input  placeholder="请输入年龄" /></uni-forms-item>
   </uni-group>
 ...
 ```
