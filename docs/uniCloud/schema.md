@@ -350,7 +350,7 @@ exports = function (rule, value, data, callback) {
 }
 ```
 
-3. 在表结构 schema 编辑页面中的`validateFunction`属性中配置上面编写的 扩展校验函数 的名称。
+3. 在表结构 schema 编辑页面中的`validateFunction`属性中配置上面编写的 扩展校验函数 的名称，保存生效
 
 ```json
 {
@@ -362,15 +362,13 @@ exports = function (rule, value, data, callback) {
       "label": "姓名",
       "validateFunction": "checkabc",
       "errorMessage": {
-        "required": "{label}不能为空",
-        "pattern": "{label}格式无效"
+        "required": "{label}不能为空"
       }
     }
   }
 }
 ```
 
-4. 保存后生效
 
 
 #### errorMessage自定义错误提示
