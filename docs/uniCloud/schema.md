@@ -715,7 +715,7 @@ DCloud提供了`uni-forms`前端组件，该组件的校验规范完全符合`DB
     "email": {
       "bsonType": "string",
       "description": "邮箱地址",
-      "foarmat": "email",
+      "format": "email",
       "label": "邮箱",
       "errorMessage": "{label}无效"
     },
