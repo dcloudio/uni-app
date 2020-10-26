@@ -63,15 +63,15 @@
 
 ### bsonType可用类型
 
-|类型			|长度	|名称			|
-|:-				|:-		|:-				|
-|String			|2		|“string”		|
-|Double			|1		|“double”		|
-|32-bit integer	|16		|“int”		|
-|Object			|3		|“object”		|
-|Array			|4		|“array”		|
-|Boolean		|8		|“bool”		|
-|Timestamp		|17		|“timestamp”	|
+|类型						|名称				|
+|:-							|:-					|
+|String					|“string”		|
+|Double					|“double”		|
+|32-bit integer	|“int”			|
+|Object					|“object”		|
+|Array					|“array”		|
+|Boolean				|“bool”			|
+|Timestamp			|“timestamp”|
 
 **注意：在schema描述中需要使用上述表格中的“名称”，而不是“类型”**
 
