@@ -432,6 +432,8 @@ orderBy允许进行多个字段排序，以逗号分隔。每个字段可以指�
 
 ```js
 orderBy('quantity asc, create_date desc') //按照quantity字段升序排序，quantity相同时按照create_date降序排序
+// desc可以省略，上述代码和以下写法效果一致
+orderBy('quantity, create_date desc')
 
 // 注意不要写错成全角逗号
 ```
