@@ -406,7 +406,6 @@ db.collection('order')
 {
 	"code": "",
 	"message": "",
-	"requestId": "79768ccd5808c-1754b13efc3_3",
 	"data": [{
 		"_id": "b8df3bd65f8f0d06018fdc250a5688bb",
 		"book": [{
@@ -537,14 +536,45 @@ const db = uniCloud.database()
 		"book": "3",
 		"quantity": 555
 	}],
-	"requestId": "26649773c9781-1754b282aef_6",
 	"count": 5
 }
 ```
 
 
-<!-- ### 查询结果时返回单条记录getone@getone -->
-<!-- 这里需要补充文档和示例 -->
+### 查询结果时返回单条记录getone@getone
+
+使用`clientDB`时可以在get方法内传入`getOne:true`来返回一条数据
+
+```js
+// 这以上面的book表数据为例
+const db = uniCloud.database()
+  db.collection('book')
+    .where({
+      title: '西游记'
+    })
+    .get({
+      getOne:true
+    })
+    .then(res => {
+      console.log(res);
+    }).catch(err => {
+      console.error(err)
+    })
+```
+
+返回结果为
+
+```js
+{
+	"code": "",
+	"message": "",
+	"data": {
+    "_id": "1",
+    "title": "西游记",
+    "author": "吴承恩"
+  }
+}
+```
 
 ### 新增数据记录add
 
