@@ -38,11 +38,11 @@ export function createApi<T extends Function>(
   fn: T,
   protocol?: ApiProtocols
 ) {
-  return function(...args: any[]) {
+  return (function(...args: any[]) {
     if (type === API_TYPE_SYNC) {
       if (!(__DEV__ && protocol && !validateProtocol(name!, args, protocol))) {
         return fn.apply(null, formatApiArgs(args, options))
       }
     }
-  }
+  } as unknown) as T
 }
