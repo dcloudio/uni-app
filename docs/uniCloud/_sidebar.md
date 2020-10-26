@@ -10,7 +10,7 @@
   * [clientDB及JQL](uniCloud/database.md)
   * [uni-clientDB组件](uniCloud/uni-clientdb-component.md)
   * [DB-Schema](uniCloud/schema.md)
-  * [opendb](https://gitee.com/dcloud/opendb)
+  * [openDB](https://gitee.com/dcloud/opendb)
 * 云函数
   * [开发云函数](uniCloud/cf-functions.md)
   * [云函数公共模块](uniCloud/cf-common.md)
