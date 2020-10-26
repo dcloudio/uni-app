@@ -36,9 +36,12 @@ export function chooseVideo ({
   }
 
   function openAlbum () {
-    plus.gallery.pick(successCallback, errorCallback, {
+    plus.gallery.pick(({ files }) => successCallback(files[0]), errorCallback, {
       filter: 'video',
       system: false,
+      // 不启用 multiple 时 system 无效
+      multiple: true,
+      maximum: 1,
       filename: TEMP_PATH + '/gallery/',
       permissionAlert: true
     })
