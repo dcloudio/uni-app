@@ -102,14 +102,14 @@ export default {
     links: [
       {
         text: "Admin框架文档",
-        url: "https://uniapp.dcloud.net.cn/uniCloud/admin"
+        url: "https://uniapp.dcloud.net.cn/uniCloud/admin",
       },
       {
         text: "浏览更多Admin插件",
-        url: "https://ext.dcloud.net.cn/?cat1=7&cat2=74"
-      }
-    ]
-  }
+        url: "https://ext.dcloud.net.cn/?cat1=7&cat2=74",
+      },
+    ],
+  },
 };
 ```
 
@@ -147,17 +147,17 @@ export default {
           {
             menu_id: "icons",
             name: "图标",
-            url: "/pages/demo/icons/icons"
+            url: "/pages/demo/icons/icons",
           },
           {
             menu_id: "table",
             name: "表格",
-            url: "/pages/demo/table/table"
-          }
-        ]
-      }
-    ]
-  }
+            url: "/pages/demo/table/table",
+          },
+        ],
+      },
+    ],
+  },
 };
 ```
 
@@ -287,26 +287,27 @@ admin 内置了一套图标以供使用，开发者也可以使用第三方图�
 
 > 基于 [uni-id](https://uniapp.dcloud.io/uniCloud/uni-id?id=rbac-api) 角色权限, uni-id 是 uniCloud 之上的用户账户、权限系统
 
-1. 用户表 `uni-id-users` [详情](https://uniapp.dcloud.io/uniCloud/uni-id?id=%e7%94%a8%e6%88%b7%e8%a1%a8)
+- 用户表 `uni-id-users` [详情](https://uniapp.dcloud.io/uniCloud/uni-id?id=%e7%94%a8%e6%88%b7%e8%a1%a8)
 
-2. 角色表 `uni-id-roles` [详情](https://uniapp.dcloud.io/uniCloud/uni-id?id=%e8%a7%92%e8%89%b2%e8%a1%a8)
-3. 权限表 `uni-id-permissions` [详情](https://uniapp.dcloud.io/uniCloud/uni-id?id=%e6%9d%83%e9%99%90%e8%a1%a8)
-4. 菜单表 `opendb-admin-menus`
+- 角色表 `uni-id-roles` [详情](https://uniapp.dcloud.io/uniCloud/uni-id?id=%e8%a7%92%e8%89%b2%e8%a1%a8)
+- 权限表 `uni-id-permissions` [详情](https://uniapp.dcloud.io/uniCloud/uni-id?id=%e6%9d%83%e9%99%90%e8%a1%a8)
 
-| 字段        | 类型      | 必填 | 描述                                                 |
-| :---------- | :-------- | :--- | :--------------------------------------------------- |
-| menu_id     | Object ID | 是   | 系统自动生成的 Id                                    |
-| name        | String    | 是   | 菜单文字                                             |
-| icon        | String    | 否   | 菜单图标                                             |
-| url         | String    | 否   | 菜单对应的页面链接（只有没有子菜单的菜单项可以配置） |
-| sort        | Integer   | 否   | 在同级菜单中的排序，数组越大越靠后                   |
-| parent_id   | String    | 否   | 父级菜单 Id                                          |
-| permission  | Array     | 否   | 菜单权限（只有没有子菜单的菜单项可以配置）           |
-| status      | Integer   | 是   | 菜单状态：0 禁用 1 启用                              |
-| create_date | Timestamp | 是   | 创建时间                                             |
+- 菜单表 `opendb-admin-menus`
 
-5. 验证码表 `uni-verify` [详情](https://uniapp.dcloud.io/uniCloud/uni-id?id=%e7%94%a8%e6%88%b7%e8%a1%a8)
-6. 权限验证
+| 字段 | 类型 | 必填 | 描述 |
+| :--------- | :-------- | :--- | :--------------------------------------------------- |
+| menu_id | Object ID | 是 | 系统自动生成的 Id |
+| name | String | 是 | 菜单文字 |
+| icon | String | 否 | 菜单图标 |
+| url | String | 否 | 菜单对应的页面链接（只有没有子菜单的菜单项可以配置） |
+| sort | Integer | 否 | 在同级菜单中的排序，数组越大越靠后 |
+| parent_id | String | 否 | 父级菜单 Id |
+| permission | Array | 否 | 菜单权限（只有没有子菜单的菜单项可以配置） |
+| status | Integer | 是 | 菜单状态：0 禁用 1 启用 |
+| create_date | Timestamp | 是 | 创建时间 |
+
+- 验证码表 `uni-verify` [详情](https://uniapp.dcloud.io/uniCloud/uni-id?id=%e7%94%a8%e6%88%b7%e8%a1%a8)
+- 权限验证
 
 admin 提供了两个内置方法，方便在页面中鉴定登录用户权限和角色:
 
