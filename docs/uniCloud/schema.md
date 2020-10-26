@@ -134,6 +134,23 @@
 
 其中uid是和`uni-id`绑定的。如果用户没有登录，则无法获取uid，无法写入数据。
 
+
+`defaultValue/forceDefaultValue`内可以使用一些预置变量，形式如下：
+
+```json
+"forceDefaultValue": {
+  "$env": "now"
+}
+```
+
+`$env`可取值如下：
+
+|变量			|说明																								|
+|:-:			|:-:																								|
+|now			|当前时间戳																					|
+|clientIP	|当前客户端IP																				|
+|uid			|当前用户Id，如果当前用户未登录或登录状态无效会报错	|
+
 示例：
 
 ```json
