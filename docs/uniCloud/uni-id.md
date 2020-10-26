@@ -566,6 +566,26 @@ exports.main = async function(event,context) {
 }
 ```
 
+### 生成token@createtoken
+
+用法：`uniID.createToken(Object passwordInfo)`
+
+**passwordInfo参数说明**
+
+| 字段					| 类型		| 必填| 说明																		|
+| ---						| ---			| ---	| ---																			|
+| uid						| String	| 是	|用户Id																		|
+| needPermission| Boolean	| 否	|标识是否需要在checkToken时返回permission	|
+
+**响应参数**
+
+| 字段				| 类型	| 必填| 说明										|
+| ---					| ---		| ---	| ---											|
+| code				| Number| 是	|错误码，0表示成功				|
+| message			| String| 是	|详细信息									|
+| token				| String| 是	|生成的token							|
+| tokenExpired| Number| 是	|token过期时间对应的时间戳|
+
 ### 修改密码 @update-password
 
 用法：`uniID.updatePwd(Object passwordInfo)`
