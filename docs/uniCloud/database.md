@@ -370,6 +370,33 @@ db.collection('order,book') // 注意collection方法内需要传入所有用到
   }).catch(err => {
     console.error(err)
   })
+  
+// 上面的写法是clientDB的jql语法，如果不使用jql的话，写法会变得很长，大致如下
+// 注意clientDB内联表查询需要用拼接子查询的方式（let+pipeline）
+const db = uniCloud.database()
+const dbCmd = db.command
+const $ = dbCmd.aggregate
+db.collection('order')
+  .aggregate()
+  .lookup({
+    from: 'book',
+    let: {
+      book_id: '$book_id'
+    },
+    pipeline: $.pipeline()
+    // 此match方法内的条件会和book表对应的权限规则进行校验，{status: 'OnSell'}会参与校验，整个expr方法转化成一个不与任何条件产生交集的特别表达式。这里如果将dbCmd.and换成dbCmd.or会校验不通过
+    .match(dbCmd.expr(
+        $.eq(['$_id', '$$book_id'])
+      ))
+    .done()
+    as: 'book'
+  })
+  .match({
+    book: {
+      title: '三国演义'
+    }
+  })
+  .end()
 ```
 
 
@@ -450,6 +477,18 @@ const db = uniCloud.database()
     }).catch(err => {
       console.error(err)
     })
+    
+// 上述写法等价于
+const db = uniCloud.database()
+  db.collection('order')
+    .orderBy('quantity','asc')
+    .orderBy('create_date','desc')
+    .get()
+    .then(res => {
+      console.log(res);
+    }).catch(err => {
+      console.error(err)
+    })
 ```
 
 ### 查询结果返回总数getcount@getcount
@@ -463,6 +502,23 @@ const db = uniCloud.database()
     .get({
       getCount:true
     })
+    .then(res => {
+      console.log(res);
+    }).catch(err => {
+      console.error(err)
+    })
+    
+// 如果不使用getCount，需要再调用一次count方法来返回总数
+const db = uniCloud.database()
+  db.collection('order')
+    .get()
+    .then(res => {
+      console.log(res);
+    }).catch(err => {
+      console.error(err)
+    })
+  db.collection('order')
+    .count()
     .then(res => {
       console.log(res);
     }).catch(err => {
@@ -588,13 +644,17 @@ try {
 
 | 字段		| 类型		| 必填	| 说明						|
 | ---------	| -------	| ----	| ------------------------	|
-| deleted	| Integer	| 否	| 删除的记录数量			|
+| deleted	| Number	| 否	| 删除的记录数量			|
 
 示例：判断删除成功或失败，打印删除的记录数量
 
 ```js
 const db = uniCloud.database();
-db.collection("table1").doc("5f79fdb337d16d0001899566").remove()
+db.collection("table1")
+  .where({
+    _id: "5f79fdb337d16d0001899566"
+  })
+  .remove()
 	.then((res) => {
 		uni.showToast({
 			title: '删除成功'
@@ -634,12 +694,13 @@ collection.doc().update(Object data)
 ```js
 const db = uniCloud.database();
 let collection = db.collection("table1")
-let res = await collection.doc('doc-id').update({
-  name: "Hey",
-  count: {
-    fav: 1
-  }
-});
+let res = await collection.where({_id:'doc-id'})
+  .update({
+    name: "Hey",
+    count: {
+      fav: 1
+    }
+  });
 ```
 
 ```json
@@ -669,11 +730,12 @@ let res = await collection.doc('doc-id').update({
 ```js
 const db = uniCloud.database();
 let collection = db.collection("table1")
-let res = await collection.doc('doc-id').update({
-  arr: {
-    1: "uniCloud"
-  }
-})
+let res = await collection.where({_id:'doc-id'})
+  .update({
+    arr: {
+      1: "uniCloud"
+    }
+  })
 ```
 
 ```json
@@ -703,12 +765,13 @@ let res = await collection.where("name=='hey'").update({
 
 ```js
 const db = uniCloud.database();
-const res = await db.collection('table1').doc('1').update({
-  // 更新students[1]
-  ['students.' + 1]: {
-    name: 'wang'
-  }
-})
+const res = await db.collection('table1').where({_id:'1'})
+  .update({
+    // 更新students[1]
+    ['students.' + 1]: {
+      name: 'wang'
+    }
+  })
 ```
 
 ```json
