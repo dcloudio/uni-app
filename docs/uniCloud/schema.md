@@ -640,7 +640,7 @@ permission的字段级控制，包括读写两种权限，分别称为：read、
 
 **action的说明**
 
-action是`clientDB`的一个配套功能。它的作用是在前端发起数据操作请求时，附带一个action的name，则会同时执行一个`uni-clientDB-action`的云函数。[详见](/uniCloud/database?id=actions)
+action是`clientDB`的一个配套功能。它的作用是在前端发起数据操作请求时，附带一个action的name，则会同时执行一个`uni-clientDB-action`的云函数。[详见](/uniCloud/database?id=action)
 
 有些复杂业务，要求必须同时执行一个action云函数，才能允许前端对特定数据的修改。
 
@@ -1023,5 +1023,3 @@ component 类型为数组
     <uni-forms-item label="年龄"><input  placeholder="请输入年龄" /></uni-forms-item>
   </uni-group>
 ```
-
-
