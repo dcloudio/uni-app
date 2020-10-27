@@ -361,7 +361,7 @@ function hasPermission(token, permission) {
 
 ### 用户注册 @register
 
-用法`uniID.register(Object user)`
+用法`uniID.register(Object RegisterParams)`
 
 **注意**
 
@@ -447,7 +447,7 @@ uniCloud.callFunction({
 
 ### 用户登录 @login
 
-用法：`uniID.login(Object user)`
+用法：`uniID.login(Object LoginParams)`
 
 **注意**
 
@@ -568,7 +568,7 @@ exports.main = async function(event,context) {
 
 ### 生成token@createtoken
 
-用法：`uniID.createToken(Object passwordInfo)`
+用法：`uniID.createToken(Object CreateTokenParams)`
 
 **passwordInfo参数说明**
 
@@ -588,7 +588,7 @@ exports.main = async function(event,context) {
 
 ### 修改密码 @update-password
 
-用法：`uniID.updatePwd(Object passwordInfo)`
+用法：`uniID.updatePwd(Object UpdatePwdParams)`
 
 **passwordInfo参数说明**
 
@@ -635,7 +635,7 @@ exports.main = async function(event,context) {
 
 ### 重置密码 @reset-password
 
-用法：`uniID.resetPwd(Object passwordInfo)`
+用法：`uniID.resetPwd(Object ResetPwdParams)`
 
 **passwordInfo参数说明**
 
@@ -701,7 +701,7 @@ exports.main = async function(event,context) {
 
 ### 设置头像
 
-用法：`uniID.setAvatar(Object avatarInfo)`
+用法：`uniID.setAvatar(Object SetAvatarParams)`
 
 **avatarInfo**参数说明
 
@@ -742,7 +742,7 @@ exports.main = async function(event,context) {
 
 ### 更新用户信息
 
-用法：`uniID.updateUser(Object userInfo);`
+用法：`uniID.updateUser(Object UpdateUserParams);`
 
 此接口用于在其他接口不满足需求时使用
 
@@ -815,7 +815,7 @@ exports.main = async function(event,context) {
 
 ### 自行初始化uni-id@init
 
-用法：`uniID.init(Object config);`
+用法：`uniID.init(Object InitParams);`
 
 此接口适用于不希望使用config.json初始化而是希望通过js的方式传入配置的情况
 
@@ -862,7 +862,7 @@ exports.main = async function(event,context) {
 
 ### 发送短信验证码
 
-用法：`uniID.sendSmsCode(Object codeInfo)`
+用法：`uniID.sendSmsCode(Object SendSmsCodeParams)`
 
 **codeInfo**参数说明
 
@@ -911,7 +911,7 @@ exports.main = async function(event,context) {
 
 如果你不想使用`uni-id`的sendSmsCode发送短信的话，可以使用此接口自行在库中创建验证码
 
-用法：`uniID.setVerifyCode(Object codeInfo)`
+用法：`uniID.setVerifyCode(Object SetVerifyCodeParams)`
 
 **codeInfo**参数说明
 
@@ -957,7 +957,7 @@ exports.main = async function(event,context) {
 
 uni-id内置方法`loginBySms`、`bindMobile`、`unbindMobile`均已内置校验验证码方法，如果使用以上方法不需要再调用此接口，如需扩展类型请确保type和发送验证码/设置验证码时对应
 
-用法：`uniID.verifyCode(Object codeInfo)`
+用法：`uniID.verifyCode(Object VerifyCodeParams)`
 
 **codeInfo**参数说明
 
@@ -997,7 +997,7 @@ exports.main = async function(event,context) {
 
 ### 手机号验证码直接登录
 
-用法：`uniID.loginBySms(Object mobileInfo)`
+用法：`uniID.loginBySms(Object LoginBySmsParams)`
 
 **mobileInfo**参数说明
 
@@ -1044,7 +1044,7 @@ exports.main = async function(event,context) {
 
 ### 绑定手机号
 
-用法：`uniID.bindMobile(Object mobileInfo)`
+用法：`uniID.bindMobile(Object BindMobileParams)`
 
 **mobileInfo**参数说明
 
@@ -1087,7 +1087,7 @@ exports.main = async function(event,context) {
 
 ### 解绑手机
 
-用法：`uniID.unbindMobile(Object mobileInfo)`
+用法：`uniID.unbindMobile(Object UnbindMobileParams)`
 
 **mobileInfo**参数说明
 
@@ -1132,7 +1132,7 @@ exports.main = async function(event,context) {
 
 ### 邮箱验证码直接登录
 
-用法：`uniID.loginByEmail(Object emailInfo)`
+用法：`uniID.loginByEmail(Object LoginByEmailParams)`
 
 **mobileInfo**参数说明
 
@@ -1186,7 +1186,7 @@ exports.main = async function(event,context) {
 
 ### 绑定邮箱
 
-用法：`uniID.bindEmail(Object emailInfo)`
+用法：`uniID.bindEmail(Object BindEmailParams)`
 
 **emailInfo**参数说明
 
@@ -1230,7 +1230,7 @@ exports.main = async function(event,context) {
 
 ### 解绑邮箱
 
-用法：`uniID.unbindEmail(Object emailInfo)`
+用法：`uniID.unbindEmail(Object UnbindEmailParams)`
 
 **emailInfo**参数说明
 
@@ -1274,7 +1274,7 @@ exports.main = async function(event,context) {
 
 ### 微信登录
 
-用法：`uniID.loginByWeixin(Object loginByWexinParams);`
+用法：`uniID.loginByWeixin(Object LoginByWexinParams);`
 
 **注意**
 
@@ -1432,7 +1432,7 @@ exports.main = async function(event,context) {
 
 ### 绑定微信
 
-用法：`uniID.bindWeixin(Object weixinInfo);`
+用法：`uniID.bindWeixin(Object BindWeixinParams);`
 
 **weixinInfo 参数说明**
 
@@ -1501,7 +1501,7 @@ exports.main = async function(event,context) {
 
 ### 支付宝登录
 
-用法：`uniID.loginByAlipay(Object loginByAlipayParams);`
+用法：`uniID.loginByAlipay(Object LoginByAlipayParams);`
 
 **注意**
 
@@ -1550,7 +1550,7 @@ exports.main = async function(event,context) {
 
 ### 获取支付宝用户ID
 
-用法：`uniID.code2SessionWeixin(Object Code2SessionWeixinParams);`
+用法：`uniID.code2SessionAlipay(Object Code2SessionAlipayParams);`
 
 **参数说明**
 
@@ -1575,7 +1575,7 @@ exports.main = async function(event,context) {
 // 云函数代码
 const uniID = require('uni-id')
 exports.main = async function(event,context) {
-	const res = await uniID.code2SessionWeixin({
+	const res = await uniID.code2SessionAlipay({
     code: event.code
   })
 	return res
@@ -1584,7 +1584,7 @@ exports.main = async function(event,context) {
 
 ### 绑定支付宝
 
-用法：`uniID.bindAlipay(Object alipayInfo);`
+用法：`uniID.bindAlipay(Object BindAlipayParams);`
 
 **alipayInfo 参数说明**
 
