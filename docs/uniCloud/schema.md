@@ -700,10 +700,10 @@ action是`clientDB`的一个配套功能。它的作用是在前端发起数据�
 使用get方法时需要注意get方法的参数必须是唯一确定值，以上述示例为例
 
 ```js
-// 可以使用的查询条件，此条件内doc.shop_id只能是'123123'
+// 此条件内doc.shop_id只能是'123123'，可以通过get(`database.shop.${doc.shop_id}`)获取数据来进行权限验证
 db.collection('street').where("shop_id=='123123'").get()
 
-// 不可使用的查询条件，此条件内doc.shop_id可能是'123123'也可能是'456456'
+// 此条件内doc.shop_id可能是'123123'也可能是'456456'，`"get(`database.shop.${doc.shop_id}`).owner == auth.uid"`会直接返回false不会获取数据进行验证
 db.collection('street').where("shop_id=='123123 || shop_id=='456456'").get()
 ```
 

@@ -1,8 +1,8 @@
 ## clientDB简介
 
-> 自`HBuilderX 2.9.5`起支持在客户端直接使用`uniCloud.database()`方式获取数据库引用，即在前端直接操作数据库，这个功能被称为`clientDB`
+> 自`HBuilderX 2.9.5`起支持在客户端直接使用`uniCloud.database()`方式获取数据库引用，即在前端直接操作数据库，这个功能被称为clientDB
 
-> `HBuilderX 2.9.5`以前的用户如使用过`clientDB`，在升级后请将`clientDB`的前端库和云函数删除，新版已经在前端和云端内置了`clientDB`
+> 2.9.5以前的用户如使用过clientDB，再升级后请将clientDB的前端库和云函数删除，新版已经在前端和云端内置了clientDB
 
 使用`clientDB`的好处：**不用写服务器代码了！**
 
@@ -16,7 +16,7 @@
 
 **注意**
 
-- `clientDB`依赖uni-id提供用户身份和权限校验，如果你不了解uni-id，请参考[uni-id文档](https://uniapp.dcloud.net.cn/uniCloud/uni-id)
+- `clientDB`依赖uni-id（`1.1.10+版本`）提供用户身份和权限校验，如果你不了解uni-id，请参考[uni-id文档](https://uniapp.dcloud.net.cn/uniCloud/uni-id)
 - 通常在管理控制台使用`clientDB`，需要获取不同角色用户拥有的权限（在权限规则内使用auth.permission），请先查阅[uni-id 角色权限](https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=rbac)
 
 ## clientDB图解
@@ -137,77 +137,80 @@ sql写法，对js工程师而言有学习成本，而且无法处理非关系型
 
 而nosql的写法，实在过于复杂。
 
-1. 运算符需要转码，`>`需要使用`gt`方法、`==`需要使用`eq`方法、
-比如一个简单的查询，取field1>0，则需要如下复杂写法
+1. 运算符需要转码，`>`需要使用`gt`方法、`==`需要使用`eq`方法
 
-```js
-const db = uniCloud.database()
-const dbCmd = db.command
-let res = await db.collection('table1').where({
-  field1: dbCmd.gt(0)
-}).get()
-```
+  比如一个简单的查询，取field1>0，则需要如下复杂写法
 
-如果要表达`或`关系，需要用`or`方法，写法更复杂
+  ```js
+  const db = uniCloud.database()
+  const dbCmd = db.command
+  let res = await db.collection('table1').where({
+    field1: dbCmd.gt(0)
+  }).get()
+  ```
 
-```js
-field1:dbCmd.gt(4000).or(dbCmd.gt(6000).and(dbCmd.lt(8000)))
-```
+  如果要表达`或`关系，需要用`or`方法，写法更复杂
+
+  ```js
+  field1:dbCmd.gt(4000).or(dbCmd.gt(6000).and(dbCmd.lt(8000)))
+  ```
 
 2. nosql的联表查询写法，比sql还复杂
-sql的inner join、left join已经够乱了，而nosql的代码无论写法还是可读性，都更“令人发指”。比如这个联表查询：
 
-```js
-const db = uniCloud.database()
-const dbCmd = db.command
-const $ = dbCmd.aggregate
-let res = await db.collection('orders').aggregate()
-.lookup({
-  from: 'books',
-  let: {
-    order_book: '$book',
-    order_quantity: '$quantity'
-  },
-  pipeline: $.pipeline()
-    .match(dbCmd.expr($.and([
-      $.eq(['$title', '$$order_book']),
-      $.gte(['$stock', '$$order_quantity'])
-    ])))
-    .project({
-      _id: 0,
-      title: 1,
-      author: 1,
-      stock: 1
-    })
-    .done(),
-  as: 'bookList',
-})
-.end()
-```
+  sql的inner join、left join已经够乱了，而nosql的代码无论写法还是可读性，都更“令人发指”。比如这个联表查询：
+
+  ```js
+  const db = uniCloud.database()
+  const dbCmd = db.command
+  const $ = dbCmd.aggregate
+  let res = await db.collection('orders').aggregate()
+  .lookup({
+    from: 'books',
+    let: {
+      order_book: '$book',
+      order_quantity: '$quantity'
+    },
+    pipeline: $.pipeline()
+      .match(dbCmd.expr($.and([
+        $.eq(['$title', '$$order_book']),
+        $.gte(['$stock', '$$order_quantity'])
+      ])))
+      .project({
+        _id: 0,
+        title: 1,
+        author: 1,
+        stock: 1
+      })
+      .done(),
+    as: 'bookList',
+  })
+  .end()
+  ```
 
 3. 列表分页写法复杂
-需要使用skip，处理offset
 
-这些问题竖起一堵墙，让后端开发难度加大，成为一个“专业领域”。但其实这堵墙是完全可以推倒的。
+  需要使用skip，处理offset
 
-`jql`将解决这些问题，让js工程师没有难操作的数据。
+  这些问题竖起一堵墙，让后端开发难度加大，成为一个“专业领域”。但其实这堵墙是完全可以推倒的。
 
-具体看以下示例
+  `jql`将解决这些问题，让js工程师没有难操作的数据。
 
-```js
-const db = uniCloud.database()
+  具体看以下示例
 
-// 上面的示例中的where条件可以使用以下写法
-db.collection('list')
-  .where('name == "hello-uni-app"')
-  .get()
-  .then((res)=>{
-    // res 为数据库查询结果
-  }).catch((err)=>{
-    // err.message 错误信息
-    // err.code 错误码
-  })
-```
+  ```js
+  const db = uniCloud.database()
+
+  // 上面的示例中的where条件可以使用以下写法
+  db.collection('list')
+    .where('name == "hello-uni-app"')
+    .get()
+    .then((res)=>{
+      // res 为数据库查询结果
+    }).catch((err)=>{
+      // err.message 错误信息
+      // err.code 错误码
+    })
+  ```
 
 除了js写法，uniCloud还提供了`<uni-clientdb>`组件，可以在前端页面中直接查询云端数据并绑定到界面上。[详情](https://ext.dcloud.net.cn/plugin?id=3256)
 比如下面的代码，list表中查询到符合条件的记录可以直接绑定渲染到界面上
@@ -459,7 +462,7 @@ orderBy允许进行多个字段排序，以逗号分隔。每个字段可以指�
 
 ```js
 orderBy('quantity asc, create_date desc') //按照quantity字段升序排序，quantity相同时按照create_date降序排序
-// desc可以省略，上述代码和以下写法效果一致
+// asc可以省略，上述代码和以下写法效果一致
 orderBy('quantity, create_date desc')
 
 // 注意不要写错成全角逗号
