@@ -45,10 +45,10 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 
 <a href="https://m.qinxuan.honor.cn/" target="_blank" class="clear-style"><b>华为荣耀亲选商城：</b></a> 华为公司旗下荣耀品牌精品电商平台。
 <div style="display:flex;justify-content: space-around;">
-	
+	<a href="javascript:;" target="_self" class="clear-style barcode-view">
 		<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/60aa65e0-d95c-11ea-b244-a9f5e5565f30.png" width="200"/>
 		<span style="margin-top:15px;">微信小程序</span>
-	
+	</a>
   <a href="https://m.qinxuan.honor.cn/" target="_blank" class="clear-style barcode-view">
 		<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-alicdn/1fa35320-c559-11ea-81ea-f115fe74321c.png" width="200"/>
 		<span style="margin-top:15px;">H5</span>
@@ -74,10 +74,10 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 
 <b>星巴克：</b>全球最大的咖啡连锁店，世界领先的特种咖啡零售商
 <div style="display:flex;justify-content: space-around;">
-	
+	<a href="javascript:;" target="_self" class="clear-style barcode-view">
 		<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/734f5c50-d3df-11ea-81ea-f115fe74321c.jpg" width="200"/>
 		<span style="margin-top:15px;">微信小程序</span>
-	
+	</a>
 </div>
 
 <b>Crimaster犯罪大师：</b>火爆的全球推理侦探专属社区。优秀App案例，Appstore娱乐分类排名曾排**第1位**。[详见报道](https://baijiahao.baidu.com/s?id=1667788917828125742&wfr=spider&for=pc)
@@ -148,10 +148,10 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 		<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-alicdn/bda036a0-c55f-11ea-b997-9918a5dda011.png" width="200"/>
 		<span style="margin-top:15px;">Web及H5码</span>
 	</a>
-  
+  <a href="javascript:;" target="_self" class="clear-style barcode-view">
 		<img src="https://duolingo.91ddedu.com/static/miniapp.4a4ddf6b.jpg" width="200"/>
 		<span style="margin-top:15px;">微信小程序码</span>
-	
+	</a>
 </div>
 
 <a href="http://ext.dcloud.net.cn/plugin?id=239" target="_blank" class="clear-style"><b>ColorUI：</b></a>ColorUI官方组件库for uni-app，高颜值示例。本项目插件市场地址：[https://ext.dcloud.net.cn/plugin?id=239](https://ext.dcloud.net.cn/plugin?id=239)
