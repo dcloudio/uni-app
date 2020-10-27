@@ -1,8 +1,8 @@
 ## clientDB简介
 
-> 自`HBuilderX 2.9.5`起支持在客户端直接使用`uniCloud.database()`方式获取数据库引用，即在前端直接操作数据库，这个功能被称为clientDB
+> 自`HBuilderX 2.9.5`起支持在客户端直接使用`uniCloud.database()`方式获取数据库引用，即在前端直接操作数据库，这个功能被称为`clientDB`
 
-> 2.9.5以前的用户如使用过clientDB，再升级后请将clientDB的前端库和云函数删除，新版已经在前端和云端内置了clientDB
+> `HBuilderX 2.9.5`以前的用户如使用过`clientDB`，在升级后请将`clientDB`的前端库和云函数删除，新版已经在前端和云端内置了`clientDB`
 
 使用`clientDB`的好处：**不用写服务器代码了！**
 
