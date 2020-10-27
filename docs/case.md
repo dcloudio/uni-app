@@ -132,14 +132,14 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 
 <b>vivo官方商城：</b> vivo公司旗下的官方自营商城。
 <div style="display:flex;justify-content: space-around;">
-	
+	<a href="//m3w.cn/uniapp" target="_blank" class="clear-style barcode-view">
 		<img src="https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/vivo-weixin.jpg" width="200"/>
 		<span style="margin-top:15px;">微信小程序码</span>
-	
-  
+	</a>
+  <a href="//m3w.cn/uniapp" target="_blank" class="clear-style barcode-view">
 		<img src="https://img.cdn.aliyun.dcloud.net.cn/uni-app/case/vivo-mall.png" width="200"/>
 		<span style="margin-top:15px;">支付宝小程序码</span>
-	
+	</a>
 </div>
 
 <a href="https://duolingo.91ddedu.com/" target="_blank" class="clear-style"><b>登登多邻国：</b></a> 外语学习者题库。其服务端整体基于[uniCloud](https://uniapp.dcloud.net.cn/uniCloud/README)，前端包括PC和H5网站、微信小程序，均连接uniCloud。日请求量百万级。
