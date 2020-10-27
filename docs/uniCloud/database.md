@@ -8,11 +8,11 @@
 
 1个应用开发的一半的工作量，就此直接省去。
 
-当然使用`clientDB`需要扭转传统后台开发观念，不再编写云函数，直接在前端操作数据库。但是为了数据安全，需要在数据库上配置schema。
+当然使用`clientDB`需要扭转传统后台开发观念，不再编写云函数，直接在前端操作数据库。但是为了数据安全，需要在数据库上配置`DB Schema`。
 
-在`db schema`中，配置数据操作的权限和校验规则，阻止前端不恰当的数据读取和写入。参考：[DB-schema](https://uniapp.dcloud.net.cn/uniCloud/schema)
+在`DB Schema`中，配置数据操作的权限和字段值域校验规则，阻止前端不恰当的数据读写。详见：[DB Schema](https://uniapp.dcloud.net.cn/uniCloud/schema)
 
-如果想在数据库操作之前或之后需要在云端执行额外的动作（比如获取文章详情之后阅读量+1），`clientDB`提供了action机制。在HBuilderX项目的`cloudfunctions/uni-clientDB-actions`目录编写上传js，参考：[actions](uniCloud/database?id=actions)
+如果想在数据库操作之前或之后需要在云端执行额外的动作（比如获取文章详情之后阅读量+1），`clientDB`提供了action机制。在HBuilderX项目的`cloudfunctions/uni-clientDB-actions`目录编写上传js，参考：[action](uniCloud/database?id=action)
 
 **注意**
 
@@ -907,21 +907,24 @@ db.auth.on('refreshToken', refreshToken)
 db.auth.off('refreshToken', refreshToken)
 ```
 
-## DBschema@schema
+## DBSchema@schema
 
-目前schema需要在[uniCloud web控制台](https://unicloud.dcloud.net.cn)数据表的表结构处创建/修改。
+`DB Schema`是基于 JSON 格式定义的数据结构的规范。
 
-schema内可以编写数据表的权限以及字段规则校验。
+它有很多重要的作用：
 
-web控制台还可以根据schema生成前端使用的表单校验规则，无需前端再重复做一次表单校验。（需搭配`<uni-forms>组件`，[详见](https://ext.dcloud.net.cn/plugin?id=2773)）
-
-甚至可以自动生成前端用的新增、修改数据的vue页面。[详情](https://uniapp.dcloud.net.cn/uniCloud/schema?id=%e5%a6%82%e4%bd%95%e4%bd%93%e9%aa%8c)
+- 描述现有的数据格式。可以一目了然的阅读每个表、每个字段的用途。
+- 设定数据操作权限(permission)。什么样的角色可以读/写哪些数据，都在这里配置。
+- 设定字段值域能接受的格式(validator)，比如不能为空、需符合指定的正则格式。
+- 设置数据的默认值(defaultValue/forceDefaultValue)，比如服务器当前时间、当前用户id等。
+- 设定多个表的字段间映射关系(foreignKey)，将多个表按一个虚拟表直接查询，大幅简化联表查询。
+- 根据schema自动生成表单维护界面，比如新建页面和编辑页面，自动处理校验规则。
 
 这些工具大幅减少了开发者的开发工作量和重复劳动。
 
-**下面示例中使用了注释，实际使用时schema是一个标准的json文件不可使用注释。**完整属性参考[schema字段](https://uniapp.dcloud.net.cn/uniCloud/schema?id=segment)
+**`DB Schema`是`clientDB`紧密相关的配套，掌握clientDB离不开详读[DB Schema文档](uniCloud/schema)。**
 
-关于如何编写permission请参考：[permission](uniCloud/database?id=permission)
+**下面示例中使用了注释，实际使用时schema是一个标准的json文件不可使用注释。**完整属性参考[schema字段](https://uniapp.dcloud.net.cn/uniCloud/schema?id=segment)
 
 ```js
 {
@@ -949,24 +952,16 @@ web控制台还可以根据schema生成前端使用的表单校验规则，无�
 }
 ```
 
-## permission@permission
+### permission@permission
 
-为了更好的控制客户端行为，客户端在permission不为公有读（并非true时）时写法有以下限制：
+`DB Schema`中的数据权限配置功能非常强大，请详读[DB Schema的数据权限控制](uniCloud/schema?id=permission)
 
+在配置好`DB Schema`的权限后，clientDB的查询写法，尤其是非`JQL`的聚合查询写法有些限制，具体如下：
 - 不使用聚合时collection方法之后需紧跟一个where方法，这个where方法内传入的条件必须满足权限控制规则
 - 使用聚合时aggregate方法之后需紧跟一个match方法，这个match方法内的条件需满足权限控制规则
 - 使用lookup时只可以使用拼接子查询的写法（let+pipeline模式），做这个限制主要是因为需要确保访问需要lookup的表时也会传入查询条件，即pipeline参数里面`db.command.pipeline()`之后的match方法也需要像上一条里面的match一样限制
 - 上面用于校验权限的match和where后的project和field是用来确定本次查询需要访问什么字段的（如果没有将会认为是在访问所有字段），访问的字段列表会用来确认使用那些字段权限校验。这个位置的project和field只能使用白名单模式
 - 上面用于校验权限的match和where内如果有使用`db.command.expr`，那么在进行权限校验时expr方法内部的条件会被忽略，整个expr方法转化成一个不与任何条件产生交集的特别表达式，具体表现请看下面示例
-
-实际运行时，
-1. permission模块会解析前端传递的参数，分析前端操作人员的uni-id身份、要操作的数据表、字段和增删改查动作。
-2. 然后从云端schema内读取数据表、字段、增删改查动作的权限配置
-3. 最后根据用户身份和权限配置进行比对，以决定是否有权进行前端发起的这次数据库操作
-
-permission规则，可以对整个表的增删改查进行控制，也可以针对字段进行控制；可以简单的配置true/false，也可以配置更具体的规则
-
-比如permission内规定doc.a > 1,那么查询条件里面就必须有a且条件内的a也满足a>1，`{a:2}`、`{a:db.command.gt(3)}`都是满足条件的查询。
 
 **schema内permission配置示例**
 
@@ -1039,66 +1034,6 @@ db.collection('order')
   .get()
 ```
 
-**权限规则变量**
-
-|变量名			|说明																																						|
-|:-:			|:-:																																						|
-|auth.uid		|用户id																																						|
-|auth.role		|用户角色数组，参考[uni-id 角色权限](/uniCloud/uni-id?id=rbac)，注意`admin`为`clientDB`内置的角色，如果用户角色列表里包含`admin`则认为此用户有完全数据访问权限|
-|auth.permission|用户权限数组，参考[uni-id 角色权限](/uniCloud/uni-id?id=rbac)																								|
-|doc			|记录内容，用于匹配记录内容/查询条件（需要注意的是，规则内的doc对象并不是直接去校验存在于数据库的数据，而是校验客户端的查询条件）							|
-|now			|当前时间戳（单位：毫秒），时间戳可以进行额外运算，如doc.publish\_date > now - 60000表示publish\_date在最近一分钟											|
-|action			|当前客户端指定的action																																		|
-
-permission为对数据的操作权限，如果要封装业务权限，可以在uni-id的业务权限表里进行配置。业务权限进一步可组装为角色。然后每个具体的uni-id用户可以被赋予某个角色。
-
-如果在uni-id里定义了业务权限和角色，也可以在permission中通过auth.permission和auth.role来使用，以实现更灵活的配置定义。
-
-**权限规则内可以使用的运算符**
-
-|运算符				|说明					|示例																		|示例解释(集合查询)																										|
-|:-:					|:-:					|:-:																		|:-:																																	|
-|==						|等于					|auth.uid == 'abc'											|用户id为abc																													|
-|!=						|不等于				|auth.uid != 'abc'											|用户id不为abc																												|
-|>						|大于					|doc.age>10															|查询条件的 age 属性大于 10																						|
-|>=						|大于等于			|doc.age>=10														|查询条件的 age 属性大于等于 10																				|
-|<						|小于					|doc.age<10															|查询条件的 age 属性小于 10																						|
-|<=						|小于等于			|doc.age<=10														|查询条件的 age 属性小于等于 10																				|
-|in						|存在在数组中	|doc.status in ['a','b']								|查询条件的 status 是['a','b']中的一个，数组中所有元素类型需一致			|
-|!						|非						|!(doc.status in ['a','b'])							|查询条件的 status 不是['a','b']中的任何一个，数组中所有元素类型需一致|
-|&&						|与						|auth.uid == 'abc' && doc.age>10				|用户id 为 abc 并且查询条件的 age 属性大于 10													|
-|&#124;&#124;	|或						|auth.uid == 'abc'&#124;&#124;doc.age>10|用户Id为abc或者查询条件的 age 属性大于 10														|
-
-**权限规则内可以使用的方法**
-
-目前权限规则内仅可使用get方法，作用是根据id获取数据库中的数据。get方法接收一个字符串作为参数字符串形式为`database.表名.记录ID`
-
-用法示例: 
-
-```js
-"get(`database.shop.${doc.shop_id}`).owner == auth.uid"
-```
-
-使用get方法时需要注意get方法的参数必须是唯一确定值，以上述示例为例
-
-```js
-// 可以使用的查询条件，此条件内doc.shop_id只能是'123123'
-db.collection('street').where({
-  shop_id: '123123'
-}).get()
-
-// 不可使用的查询条件，此条件内doc.shop_id可能是'123123'也可能是'456456'
-const dbCmd = db.command
-db.collection('street').where(dbCmd.or([
-  {
-    shop_id: '123123'
-  },
-  {
-    shop_id: '456456'
-  }
-])).get()
-```
-
 ## action@action
 
 action的作用是在执行前端发起的数据库操作时，额外触发一段云函数逻辑。它是一个可选模块。
@@ -1107,9 +1042,13 @@ action的作用是在执行前端发起的数据库操作时，额外触发一�
 
 如果使用`<uni-clientdb>组件`，该组件也有action属性，设置action="someactionname"即可。
 
-**新建actions**
+action是一种特殊的云函数，它不占用服务空间的云函数数量。
 
-![新建actions](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/b6846d00-1460-11eb-b997-9918a5dda011.jpg)
+目前action还不支持本地运行。后续HBuilderX会支持。
+
+**新建action**
+
+![新建action](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/b6846d00-1460-11eb-b997-9918a5dda011.jpg)
 
 每个action在uni-clientDB-actions目录下存放一个以action名称命名的js文件。
 
