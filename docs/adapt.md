@@ -67,8 +67,9 @@ pages.json 配置样例
 
 以新闻示例项目为例，预览地址[https://static-7d133019-9a7e-474a-b7c2-c01751f00ca5.bspapp.com/#/](https://static-7d133019-9a7e-474a-b7c2-c01751f00ca5.bspapp.com/#/)。这个项目的源码已经内置于HBuilderX 2.9中，新建uni-app项目时选择新闻/资讯模板。
 
-首先在这个项目的pages.json里，配置一个rightWindow，放置一个新页面right-window.vue。
+首先在这个项目的`pages.json`文件中，配置[`rightWindow`选项](https://uniapp.dcloud.net.cn/collocation/pages?id=rightwindow)，放置一个新页面`right-window.vue`。
 ```json
+# pages.json
 "rightWindow": {
     "path": "responsive/right-window.vue",
     "style": {
@@ -80,12 +81,14 @@ pages.json 配置样例
   }
 ```
 
-rightWindow对应的页面不需要重写一遍新闻详情的页面逻辑，只需要引入之前的详情页面组件。
+`rightWindow`对应的页面不需要重写一遍新闻详情的页面逻辑，只需要引入之前的详情页面组件（详情页面`/pages/detail/detail`可自动转化为`pages-detail-detail`组件使用）。
 
 ```html
 <!--responsive/right-window.vue-->
 <template>
   <view>
+    <!-- 这里将 /pages/detail/detail.nvue 页面作为一个组件使用 -->
+    <!-- 路径 “/pages/detail/detail” 转为 “pages-detail-detail” 组件 -->
     <pages-detail-detail ref="detailPage"></pages-detail-detail>
   </view>
 </template>
@@ -93,7 +96,9 @@ rightWindow对应的页面不需要重写一遍新闻详情的页面逻辑，只
 <script>
   export default {
     created(e) {
+      //监听自定义事件，该事件由详情页列表的点击触发
       uni.$on('updateDetail', (e) => {
+        // 执行 detailPage组件，即：/pages/detail/detail.nvue 页面的load方法
         this.$refs.detailPage.load(e.detail);
       })
     },
@@ -104,14 +109,15 @@ rightWindow对应的页面不需要重写一遍新闻详情的页面逻辑，只
 ```
 
 然后在新闻列表页面，处理点击列表后与rightWindow交互通信的逻辑。
+
 ```js
 // pages/news/news-page.nvue
 goDetail(detail) {
-	if (this._isWidescreen) { //宽屏时与rightWindow通信
+	if (this._isWidescreen) { //若为宽屏，则触发右侧详情页的自定义事件，通知右侧窗体刷新新闻详情
 		uni.$emit('updateDetail', {
 			detail: encodeURIComponent(JSON.stringify(detail))
 		})
-	} else { // 窄屏时继续跳转新窗体，在新窗体打开详情页面
+	} else { // 若为窄评，则打开新窗体，在新窗体打开详情页面
 		uni.navigateTo({
 			url: '/pages/detail/detail?query=' + encodeURIComponent(JSON.stringify(detail))
 		});
@@ -191,7 +197,7 @@ uni-app的屏幕适配推荐方案是运行时动态适配，而不是为PC版�
 }
 ```
 
-通过上述配置中的前2个，即rpxCalcMaxDeviceWidth和rpxCalcBaseDeviceWidth，即可有效解决使用了rpx后，在宽屏下界面变的奇大无比的问题。如果你不需要特别定义这2个参数的数值，则完全可以不再pages.json配置它们，让它们保持默认的960和375即可。
+通过上述配置中的前2个，即rpxCalcMaxDeviceWidth和rpxCalcBaseDeviceWidth，即可有效解决使用了rpx后，在宽屏下界面变的奇大无比的问题。如果你不需要特别定义这2个参数的数值，则无需在`pages.json`中配置它们，保持默认的960和375即可。
 
 但是，rpx的最大适配宽度被限定后，会带来一个新问题：如果您的代码中把750rpx当做100%来使用（官方强烈不推荐这种写法，即便是nvue不支持百分比，也应该使用flex来解决撑满问题），此时不管屏幕宽度为多少，哪怕超过了960px，您的预期仍然是要占满整个屏幕宽度，但如果按rpxCalcBaseDeviceWidth的375px的策略执行将不再占满屏宽。
 
@@ -265,3 +271,19 @@ uni-app理论上不限定浏览器。在HBuilderX 2.9发版时，就新闻示例
 如果你发现了uni-app框架层面、内置组件有浏览器兼容问题，欢迎在github上给我们提交pr。
 
 一般情况下，只要基础框架没有浏览器兼容问题，那么组件层面的问题也可以通过更换组件来解决。当uni-app编译到PC浏览器端时，支持所有的vue组件，包含那些操作了dom、window的ui库，比如elementUI等。
+
+#### 一个让手机版网页临时可用于pc浏览器的方案
+
+如果你的h5版已经开发完毕，还没来得及适配pc，但想在pc上先用起来。那么可以在pc网页里使用iframe，约定好宽度，在里面套用uni-app的窄屏版。
+
+当然还可以在iframe旁边放置二维码，提供手机版扫码地址，如下：
+
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/979f7940-12ba-11eb-b680-7980c8a877b8.png)
+
+#### 通过electron打包为windows、mac、linux客户端
+
+有了宽屏适配，uni-app的应用就可以方便的通过electron打包为电脑客户端应用，windows、mac、linux均支持。
+
+开发者可以随意调用electron的API，以调用更多操作系统的能力（为方便多端兼容，可以将这些特殊API写在自定义的条件编译里）
+
+插件市场有已经封装好的一些插件，详见：[https://ext.dcloud.net.cn/search?q=electron](https://ext.dcloud.net.cn/search?q=electron)

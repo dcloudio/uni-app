@@ -138,8 +138,8 @@ message|string| 具体的网络状态信息
 ```javascript
 <script>
     export default {
-        data: {
-            fil: true
+        data() {
+			return {}
         },
         onReady() {
             // 注意：需要在onReady中 或 onLoad 延时

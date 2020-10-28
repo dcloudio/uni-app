@@ -141,9 +141,9 @@ const hour = getOffsetDate(8).getHours()
 
 服务空间所使用的nodejs版本为8.9，本地运行时使用的本地nodejs可能与服务空间的nodejs版本并不一致，在本地测试之后部署到云端也务必测试一下兼容性。
 
-**协作者**
+**日志打印**
 
-目前只开放了协作者本地使用腾讯云服务空间，协作者使用阿里云服务空间后续会开放。
+目前本地运行云函数只能打印字符串类型的值，其他类型请注意转换为字符串
 
 ## 运行云函数时配置运行测试参数@runparam
 
@@ -245,6 +245,7 @@ uniCloud的[web控制台](https://unicloud.dcloud.net.cn/)可以查看线上云�
 |阿里云		|api.bspapp.com				|bsppub.oss-cn-shanghai.aliyuncs.com|需要从云存储下载文件的时候才需要配置，不同服务空间域名不同，可以在web控制台查看文件详情里面看到|
 |腾讯云		|tcb-api.tencentcloudapi.com|cos.ap-shanghai.myqcloud.com		|需要从云存储下载文件的时候才需要配置，不同服务空间域名不同，可以在web控制台查看文件详情里面看到|
 
+**如果需要用uni.request请求云存储内的文件，需要将云存储域名（即上表中的download合法域名）配置到request合法域名内**
 
 小程序开发工具的真机预览功能，必须添加上述域名白名单，否则无法调用云函数。模拟器的PC端预览、真机调试不受此影响。
 
