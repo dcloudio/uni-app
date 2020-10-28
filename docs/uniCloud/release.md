@@ -1,5 +1,24 @@
 # uniCloud 更新日志
 ======================================
+#### 2020-10-24
+  + clientDB 去除schema内permission中的点，例：`.write`改为`write`，旧写法仍然支持。
+  + clientDB 优化无权限操作时的报错提示
+  
+#### 2020-10-24
+  + 【重要】新增 clientDB 支持 `jql` 查询语法，大幅降低数据库操作难度 [详情](https://uniapp.dcloud.net.cn/uniCloud/database?id=jsquery)、大幅简化联表查询 [详情](https://uniapp.dcloud.net.cn/uniCloud/database?id=lookup)
+  + 【重要】新增 uni-clientDB 组件，在前端通过组件直接获得云数据库内容，并直接绑定到界面上，大幅提升开发效率 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-clientdb-component)
+  + 【重要】调整 clientDB内置，云端不再需要单独的clientDB云函数，前端无需引用clientDB的js sdk，直接在前端写`const db = uniCloud.database()`即可 [详情](https://uniapp.dcloud.net.cn/uniCloud/database)
+  + 【重要】调整 uni-clientDB-actions 目录调整到 cloudfunctions 根目录 [详情](https://uniapp.dcloud.net.cn/uniCloud/database?id=action)
+  + 【重要】调整 clientDB云函数的permission和validator子目录废除，只需在 DB Schema 中书写permission和validator内容，保存即可直接生效，无需再次导出
+  + 【重要】新增 `uniCloud Admin 基础框架`（HBuilderX新建项目可选择该模板） [详情](https://uniapp.dcloud.net.cn/uniCloud/admin)
+  + 【重要】新增 web控制台 云数据库配置 DB Schema 后，可直接生成前端工程，含数据表单新增、修改页面，以及校验规则。大幅提升开发效率
+  + 【重要】腾讯云 正式商用 [详见](https://uniapp.dcloud.net.cn/uniCloud/price)
+  + 新增 web控制台 云数据库支持导出db_init.json
+  + 新增 web控制台 服务空间改名
+  + 新增 web控制台 云数据库支持`扩展校验函数`，可自主编程实现更复杂的数据校验逻辑，同时在 DB Schema 中引用这些`扩展校验函数`
+  + 修复 阿里云 数据库set方法表现不正确的Bug
+  + uni-id 新增 开发者callFunction时可自行传入uniIdToken，此时不再从storage获取token
+
 #### 2020-10-13
   + 腾讯云 全面开放企业用户按量计费服务空间的购买 [详情](https://uniapp.dcloud.net.cn/uniCloud/price?id=price-info)
 
