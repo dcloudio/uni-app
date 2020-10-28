@@ -1,5 +1,5 @@
 ### uni.onAccelerometerChange(CALLBACK)
-监听加速度数据，频率：5次/秒，接口调用后会自动开始监听，可使用 ``uni.stopAccelerometer`` 停止监听。
+监听加速度数据，频率：5次/秒，接口调用后会自动开始监听，可使用 ``uni.offAccelerometer`` 取消监听。
 
 **CALLBACK 返回参数**
 
@@ -22,6 +22,15 @@ uni.onAccelerometerChange(function (res) {
 	console.log(res.z);
 });
 ```
+
+### uni.offAccelerometerChange(CALLBACK)
+取消监听加速度数据。
+
+**平台差异说明**
+
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|HBuilderX 2.9.6+|HBuilderX 2.9.6+|基础库 2.9.3+|x|x|x|x|
 
 ### uni.startAccelerometer(OBJECT)
 开始监听加速度数据。
