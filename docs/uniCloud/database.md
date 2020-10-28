@@ -326,7 +326,7 @@ order表内有以下数据，book_id字段为book表的书籍_id，quantity为�
   "bsonType": "object",
   "required": [],
   "permission": {
-    ".read": true
+    "read": true
   },
   "properties": {
     "book_id": {
@@ -347,7 +347,7 @@ book表的db schema也要保持正确
   "bsonType": "object",
   "required": [],
   "permission": {
-    ".read": true
+    "read": true
   },
   "properties": {
     "title": {
@@ -934,17 +934,17 @@ db.auth.off('refreshToken', refreshToken)
   "bsonType": "object", // 表级的类型，固定为object
   "required": ['book', 'quantity'], // 新增数据时必填字段
   "permission": { // 表级权限
-    ".read": true, // 读
-    ".create": false, // 新增
-    ".update": false, // 更新
-    ".delete": false, // 删除
+    "read": true, // 读
+    "create": false, // 新增
+    "update": false, // 更新
+    "delete": false, // 删除
   },
   "properties": { // 字段列表，注意这里是对象
     "book": { // 字段名book
       "bsonType": "string", // 字段类型
       "permission": { // 字段权限
-        ".read": true, // 字段读权限
-        ".write": false, // 字段写权限
+        "read": true, // 字段读权限
+        "write": false, // 字段写权限
       },
       "foreignKey": "book._id" // 其他表的关联字段
     },
@@ -974,17 +974,17 @@ db.auth.off('refreshToken', refreshToken)
   "bsonType": "object", // 表级的类型，固定为object
   "required": ['book', 'quantity'], // 新增数据时必填字段
   "permission": { // 表级权限
-    ".read": "doc.uid == auth.uid", // 每个用户只能读取用户自己的数据。前提是要操作的数据doc，里面有一个字段存放了uid，即uni-id的用户id。（不配置时等同于false）
-    ".create": false, // 禁止新增数据记录（不配置时等同于false）
-    ".update": false, // 禁止更新数据（不配置时等同于false）
-    ".delete": false, // 禁止删除数据（不配置时等同于false）
+    "read": "doc.uid == auth.uid", // 每个用户只能读取用户自己的数据。前提是要操作的数据doc，里面有一个字段存放了uid，即uni-id的用户id。（不配置时等同于false）
+    "create": false, // 禁止新增数据记录（不配置时等同于false）
+    "update": false, // 禁止更新数据（不配置时等同于false）
+    "delete": false, // 禁止删除数据（不配置时等同于false）
   },
   "properties": { // 字段列表，注意这里是对象
     "secret_field": { // 字段名
       "bsonType": "string", // 字段类型
       "permission": { // 字段权限
-        ".read": false, // 禁止读取secret_field字段的数据
-        ".write": false // 禁止写入（包括更新和新增）secret_field字段的数据，父级节点存在false时这里可以不配
+        "read": false, // 禁止读取secret_field字段的数据
+        "write": false // 禁止写入（包括更新和新增）secret_field字段的数据，父级节点存在false时这里可以不配
       }
     },
     "uid":{
@@ -1005,7 +1005,7 @@ db.auth.off('refreshToken', refreshToken)
   "bsonType": "object",
   "required": ['book', 'quantity'], // 新增数据时必填字段
   "permission": { // 表级权限
-    ".read": "doc.status == 'OnSell'" // 允许所有人读取状态是OnSell的数据
+    "read": "doc.status == 'OnSell'" // 允许所有人读取状态是OnSell的数据
   },
   "properties": { // 字段列表，注意这里是对象
     "title": {
@@ -1017,8 +1017,8 @@ db.auth.off('refreshToken', refreshToken)
     "secret_field": { // 字段名
       "bsonType": "string", // 字段类型
       "permission": { // 字段权限
-        ".read": false, // 禁止读取secret_field字段的数据
-        ".write": false // 禁止写入（包括更新和新增）secret_field字段的数据
+        "read": false, // 禁止读取secret_field字段的数据
+        "write": false // 禁止写入（包括更新和新增）secret_field字段的数据
       }
     }
   }
