@@ -4,13 +4,22 @@
 
 `uniCloud`和微信小程序云开发、支付宝小程序云开发使用相同的基础建设平台，微信小程序云开发背后是腾讯云的TCB团队，支付宝小程序云开发背后是阿里小程序云团队。`uniCloud`是DCloud和阿里小程序云团队、腾讯云的TCB团队直接展开深层次合作，在他们底层资源的基础上进行二次封装，提供的跨端云开发方案。
 
-简单来说，uniCloud和微信小程序云开发、支付宝小程序云开发一样稳定健壮，但可以跨更多平台。不管你在uniCloud里选择了阿里还是腾讯的serverless，均可以跨端使用。
+简单来说，uniCloud和微信小程序云开发、支付宝小程序云开发一样稳定健壮，但有更多优势：
+- 跨平台。不管你在uniCloud里选择了阿里还是腾讯的serverless，均可以跨uni-app的全端使用。从pc到h5，从Android到iOS，以及各家小程序快应用，十几个平台全端支持
+- uniCloud提供了`clientDB`神器，减少90%的服务器开发工作量，且保障数据安全。[详见](https://uniapp.dcloud.io/uniCloud/database)
+- uniCloud提供了[uni-id](https://uniapp.dcloud.io/uniCloud/uni-id)、[uniPay](https://uniapp.dcloud.io/uniCloud/unipay)等重要框架，大幅减少开发者的相应功能开发量。
+- uniCloud提供了[uniCloud admin](https://uniapp.dcloud.io/uniCloud/admin)，管理端开发工作量大幅减少。
+- 更易学。uniCloud提供了`JQL`查询语言，比SQL和MongoDB的查询语法更简单易掌握，尤其是联表查询非常简单。[详见](https://uniapp.dcloud.io/uniCloud/database?id=jsquery)
+- 更完善的工具链。前端uni-app、云端uniCloud、还有ide端的HBuilderX，互相紧密搭配，打造闭环的优秀开发体验
+- 更丰富的生态。插件市场有大量现成的轮子和资源 [详见](https://ext.dcloud.net.cn/?cat1=7&orderBy=TotalDownload)
 
 ### uniCloud稳定吗？DCloud服务器异常会影响我的线上业务吗？
 
 `uniCloud`是 DCloud 和阿里云、腾讯云等成熟云厂商合作推出的云服务产品，阿里云、腾讯云等提供云端基础资源，DCloud提供API设计、前端框架、IDE工具支持、管理控制台、插件生态等服务，开发者的云函数直接托管在阿里云等服务商的serverless平台。
 
 用户终端上的应用在运行时，直连云服务商serverless平台，不会经过DCloud服务器，开发者无需担心因DCloud服务器负载而影响自己业务的问题。
+
+尤其是腾讯云付费版，享受腾讯云的SLA。如果真出问题，腾讯云会负责赔偿（实际上不太会出现故障）
 
 ### 云函数 和 传统 Node.js 开发有何区别？
 
@@ -24,24 +33,15 @@
 
 另外，在 Node.js 代码实现上，云函数每次执行的宿主环境（可简单理解为虚拟机或服务器硬件）可能相同，也可能不同，因此传统`Node.js`开发中将部分信息存储本地硬盘或内存的方案就不再适合，建议通过云数据库或云存储的方案替代。
 
+当然还有最重要的一点，在uniCloud中，推荐大量业务使用clientDB，一个应用中写不了太多云函数。
+
 ### uniCloud只支持uni-app，怎么开发web界面？
 
-uni-app本来也可以开发web界面，只是内置组件对宽屏没有自动适配而已。你可以：
-1. 新建uni-app项目，但不使用内置组件，而是直接用三方ui库，比如elementUI。这些基于vue的、适合宽屏使用的ui库可以直接用。至于js api，仍然使用uni的，比如uni.setStorage等。
-2. 继续使用内置组件，自己处理pc适配：
-    - 如果要多端适配界面，使用css的媒体查询处理适配。
-    - 2.6.3起，uni内置组件支持了pc鼠标的滚动和drag。老版可以使用三方库替换touch的拖动为pc上的drag，比如touch-emulator.js。
-    - uni-app的内置组件和api仅适配了webkit内核浏览器，ie和firefox可能有兼容问题。如有问题需自己写额外css或js适配。
+uni-app本来可以开发web界面，详见：[uni-app宽屏适配指南](https://uniapp.dcloud.io/adapt)
 
-后续DCloud会进一步强化内置组件和uni-ui对PC浏览器的适配。
+如果是需要pc版admin的话，uniCloud提供了[uniCloud admin](https://uniapp.dcloud.io/uniCloud/admin)
 
-如果是需要pc版admin的话，已经有很多现成插件了：
-- [baseCloud](https://ext.dcloud.net.cn/plugin?id=2481)
-- [coolAdmin](https://ext.dcloud.net.cn/plugin?id=2444)
-- [GraceAdmin](https://ext.dcloud.net.cn/plugin?id=1347)
-- [基于elementUI的uniCloud示例](https://ext.dcloud.net.cn/plugin?id=1585)，均是基于uniCloud的pc端管理后台框架。
-
-更多uniCloud Admin系统可搜索：[https://ext.dcloud.net.cn/search?q=admin&cat1=7&orderBy=UpdatedDate](https://ext.dcloud.net.cn/search?q=admin&cat1=7&orderBy=UpdatedDate)
+插件市场有很多uniCloud Admin系统可搜索：[https://ext.dcloud.net.cn/search?q=admin&cat1=7&orderBy=UpdatedDate](https://ext.dcloud.net.cn/search?q=admin&cat1=7&orderBy=UpdatedDate)
 
 ### 可否通过http url方式访问云函数或云数据库？
 
@@ -51,7 +51,7 @@ uni-app本来也可以开发web界面，只是内置组件对宽屏没有自动�
 uniCloud提供了`云函数URL化`，来满足上述需求。[详见](https://uniapp.dcloud.io/uniCloud/http)
 
 ### 微信云开发支持客户端直接操作数据库，uniCloud不支持？
-uniCloud提供了比微信云开发更优秀的前端操作数据库方案，见：[https://uniapp.dcloud.io/uniCloud/uni-clientDB](https://uniapp.dcloud.io/uniCloud/uni-clientDB)
+uniCloud提供了比微信云开发更优秀的前端操作数据库方案，见：[clientDB](https://uniapp.dcloud.net.cn/uniCloud/database)
 
 ### 云开发是nodejs+MongoDB组合，对比php+mysql的传统组合怎么样？
 nodejs的性能高于php，MongoDB的性能也优于mysql。
@@ -61,7 +61,7 @@ nodejs的性能高于php，MongoDB的性能也优于mysql。
 
 对于喜欢传统数据库的开发者而言，仍然可以按传统方式设计数据库表结构。对于希望增加数据冗余以提高性能的开发者而言，nosql数据库则是利器。
 
-php+mysql的优势在于生态，有很多现成的开源项目，可以大幅提高开发效率。而uniCloud将通过插件市场等一系列手段强化生态，给开发者提供更高效率的各种轮子。
+uniCloud提供了`JQL`，它更符合js开发者的习惯，并且极大的降低了联表查询的复杂度，其他方案相比`JQL`都复杂很多。[详见](https://uniapp.dcloud.net.cn/uniCloud/database?id=jsquery)
 
 ### 支持websocket吗？
 websocket的实时特性导致serverless化比较复杂，目前曲线方案有：
@@ -87,9 +87,10 @@ websocket的实时特性导致serverless化比较复杂，目前曲线方案有�
 资源回收策略方面，阿里云是15分钟内没有第二次访问的云函数，就会被回收。腾讯云是半小时。
 
 两家云厂商仍然在优化这个问题。目前如果开发者在意这个问题，给开发者的建议是：
-1. 非高频访问的云函数，合并到高频云函数中。有的开发者使用纯单页方式编写云函数，即在一个云函数中通过路由处理实现了整个应用的所有后台逻辑。参考[插件](https://ext.dcloud.net.cn/search?q=%E8%B7%AF%E7%94%B1&cat1=7&orderBy=UpdatedDate)
-2. 非高频访问的云函数，可以通过定时任务持续运行它（注意阿里云的定时任务最短周期大于资源回收周期）
-3. 向service@dcloud.io发邮件，申请预留资源不销毁
+1. 使用clientDB可以减少遇到问题的概率
+2. 非高频访问的云函数，合并到高频云函数中。有的开发者使用纯单页方式编写云函数，即在一个云函数中通过路由处理实现了整个应用的所有后台逻辑。参考[插件](https://ext.dcloud.net.cn/search?q=%E8%B7%AF%E7%94%B1&cat1=7&orderBy=UpdatedDate)
+3. 非高频访问的云函数，可以通过定时任务持续运行它（注意腾讯云可以使用这个方式完全避开冷启动，而阿里云的定时任务最短周期大于资源回收周期）
+4. 向service@dcloud.io发邮件，申请预留资源不销毁
 
 ### 发布H5时还得自己找个服务器部署前端网页，可以不用自己再找服务器吗？
 
@@ -132,56 +133,18 @@ uniCloud.httpclient.request('https://example.com',{
 - 微信小程序云开发，已经有50万开发者，包括腾讯自有的很多大日活应用都构建在腾讯云serverless上，如微信生活缴费、乘车码、微信读书、腾讯新闻、腾讯相册等。
 - 2019年双11，阿里部分业务已经迁移在serverless上。支付宝小程序也提供了云开发功能。
 
-### uniCloud费用贵不贵？
-
-uniCloud的阿里云目前是完全免费的。
-uniCloud的腾讯云免费提供一个服务空间，更多服务空间或更多资源消耗需要付费。付费价格同微信云开发定价。整体成本远低于传统服务器租用成本。详见：[https://uniapp.dcloud.io/uniCloud/price](https://uniapp.dcloud.io/uniCloud/price)
-
-uniCloud的免费服务空间，为避免资源滥用，有使用限制，见下。
-
-**阿里云免费版限制如下**
-
-|资源类目						|限制						|说明	|
-|:-:							|:-:						|:-:	|
-|云函数并发限制	|1000个/服务空间|-		|
-|每个服务空间的云函数数量				|49个						|如何合并云函数见下一节		|
-
-**腾讯云免费版限制如下**
-
-|资源类别	|子类目			|限制			|说明																				|
-|:-:		|:-:			|:-:			|:-:																				|
-|云函数		|硬件资源用量	|4万GBs/月		|腾讯云最小计费粒度为256MB*100ms，即使用内存固定为256MB，运行时间以100ms为阶梯计算	|
-|			|外网出流量		|1GB/月			|-																					|
-|			|云函数并发限制	|1000个/云函数	|超出此连接数的请求会直接失败。如有需求突破此限制，请发邮件到service@dcloud.io申请	|
-|			|云函数数目		|50个			|如何合并云函数见下一节																|
-|云存储		|容量			|3GB			|-																					|
-|			|下载操作次数	|150万/月		|-																					|
-|			|上传操作次数	|60万/月		|-																					|
-|			|CDN回源流量	|5GB/月			|-																					|
-|CDN		|CDN流量		|4GB/月			|-																					|
-|云数据库	|容量			|2GB			|-																					|
-|			|读操作数		|5万次/天		|-																					|
-|			|写操作数		|3万次/天		|-																					|
-
-**关于数据库读写次数：**修改或读取条数为0时也计算一次读写，即只要调用接口就计算一次。
-
-阿里云如有需求突破资源限制，请发邮件到service@dcloud.io请求协助。如果属于标杆案例，可以特批扩大免费资源。
-
 
 ### 如何控制云函数数量？云函数是否可以按多级目录整理@merge-functions
 
-每个云函数是一个独立进程，不存在云函数级别的多级目录概念。
+其实不需要控制数量，实际开发中不会突破限制。
+
+因为大多数项目，会使用clientDB和单路由云函数框架。
+
+uniCloud的每个云函数是一个独立进程，不存在云函数级别的多级目录概念。
 
 每个云函数下可以有子目录，但它们都属于这个云函数的一部分，而不是另一个云函数。
 
-hx内置了资源管理器，可以在右边看云函数列表，界面更宽大。
-
-并且uniCloud有云函数总量限制，多级目录没有意义。
-
-实际开发中可以合并很多云函数，
-- 比如数据库操作用一个云函数：[https://ext.dcloud.net.cn/plugin?id=2314](https://ext.dcloud.net.cn/plugin?id=2314)
-- 比如用户相关的逻辑，应该使用uni-id插件，只占用一个云函数：[https://ext.dcloud.net.cn/plugin?id=2116](https://ext.dcloud.net.cn/plugin?id=2116)
-- 比如用单页路由方式的云函数：[https://ext.dcloud.net.cn/plugin?id=2204](https://ext.dcloud.net.cn/plugin?id=2204)
+当然也可以在一个云函数下实现单路由云函数开发框架，插件市场有很多类似框架：[详见](https://ext.dcloud.net.cn/search?q=%E8%B7%AF%E7%94%B1&cat1=7&orderBy=TotalDownload)
 
 
 ### 海外用户访问比较慢怎么办
