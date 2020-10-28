@@ -108,7 +108,7 @@ let res = await db.collection('table').where({
 }).get()
 ```
 
-### jql查询语法@jsquery
+### JQL查询语法@jsquery
 
 `jql`，全称javascript query language，是一种js方式操作数据库的语法规范。
 
@@ -291,34 +291,34 @@ book表内有以下数据，title为书名、author为作者：
 }
 ```
 
-order表内有以下数据，book字段为book表的书籍_id，quantity为该订单销售了多少本书：
+order表内有以下数据，book_id字段为book表的书籍_id，quantity为该订单销售了多少本书：
 
 ```js
 {
-  "book": "1",
+  "book_id": "1",
   "quantity": 111
 }
 {
-  "book": "2",
+  "book_id": "2",
   "quantity": 222
 }
 {
-  "book": "3",
+  "book_id": "3",
   "quantity": 333
 }
 {
-  "book": "4",
+  "book_id": "4",
   "quantity": 444
 }
 {
-  "book": "3",
+  "book_id": "3",
   "quantity": 555
 }
 ```
 
 如果我们要对这2个表联表查询，在订单记录中同时显示书籍名称和作者，那么首先要建立两个表中关联字段`book`的映射关系。
 
-即，在order表的db schema中，配置字段 book 的`foreignKey`，指向 book 表的 _id 字段，如下
+即，在order表的db schema中，配置字段 book_id 的`foreignKey`，指向 book 表的 _id 字段，如下
 
 ```json
 // order表schema
@@ -329,7 +329,7 @@ order表内有以下数据，book字段为book表的书籍_id，quantity为该�
     ".read": true
   },
   "properties": {
-    "book": {
+    "book_id": {
       "bsonType": "string",
       "foreignKey": "book._id" // 使用foreignKey表示，此字段关联book表的_id。
     },
@@ -366,8 +366,8 @@ schema保存至云端后，即可在前端直接查询。查询表设为order和
 // 客户端联表查询
 const db = uniCloud.database()
 db.collection('order,book') // 注意collection方法内需要传入所有用到的表名，用逗号分隔，主表需要放在第一位
-  .where('book.title == "三国演义"') // 查询order表内书名为“三国演义”的订单
-  .field('book{title,author},quantity') // 这里联表查询book表返回book表内的title、book表内的author、order表内的quantity
+  .where('book_id.title == "三国演义"') // 查询order表内书名为“三国演义”的订单
+  .field('book_id{title,author},quantity') // 这里联表查询book表返回book表内的title、book表内的author、order表内的quantity
   .get()
   .then(res => {
     console.log(res);
