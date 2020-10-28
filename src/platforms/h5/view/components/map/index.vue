@@ -820,9 +820,10 @@ export default {
           })
           this._location = location
           refreshLocation()
-          uni.onCompassChange(function (res) {
+          this.__onCompassChange = function (res) {
             location.setRotation(res.direction)
-          })
+          }
+          uni.onCompassChange(this.__onCompassChange)
         },
         fail: e => {
           console.error(e)
@@ -857,7 +858,7 @@ export default {
         location.setMap(null)
         this._location = null
         this._locationPosition = null
-        uni.stopCompass()
+        uni.offCompassChange(this.__onCompassChange)
       }
     },
     fitBounds (points, cb) {
