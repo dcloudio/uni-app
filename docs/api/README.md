@@ -220,6 +220,7 @@ function async request () {
 |API|说明|
 |:-|:-|
 |[uni.onAccelerometerChange](api/system/accelerometer?id=onaccelerometerchange)|监听加速度数据|
+|[uni.offAccelerometerChange](api/system/accelerometer?id=offaccelerometerchange)|取消监听加速度数据|
 |[uni.startAccelerometer](api/system/accelerometer?id=startaccelerometer)|开始监听加速度数据|
 |[uni.stopAccelerometer](api/system/accelerometer?id=stopaccelerometer)|停止监听加速度数据|
 ##### 罗盘
@@ -227,6 +228,7 @@ function async request () {
 |API|说明|
 |:-|:-|
 |[uni.onCompassChange](api/system/compass?id=oncompasschange)|监听罗盘数据|
+|[uni.offCompassChange](api/system/compass?id=offcompasschange)|取消监听罗盘数据|
 |[uni.startCompass](api/system/compass?id=startcompass)|开始监听罗盘数据|
 |[uni.stopCompass](api/system/compass?id=stopcompass)|停止监听罗盘数据|
 ##### 陀螺仪

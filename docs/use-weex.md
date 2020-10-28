@@ -379,8 +379,10 @@ BindingX类似一种强化版的css，运行性能高，但没有js那样足够�
 <script>
 	const Binding = uni.requireNativePlugin('bindingx');
 	module.exports = {
-		data: {
-			isExpanded: false
+		data() {
+			return {
+				isExpanded: false
+			}
 		},
 		methods: {
 			getEl: function(el) {

@@ -11,11 +11,13 @@ MediaQueryObserver 对象，用于监听页面 media query 状态的变化，如
 
 |app|微信小程序|支付宝小程序|qq小程序|百度小程序|字节小程序|360小程序|快应用|
 |:-|:-|:-|:-|:-|:-|:-|:-|
-|2.8.12+，app-vue|基础库 2.11.1+|√|√|√|√|√|
+|2.8.12+，app-vue|基础库 2.11.1+|√|√|√|√|√|X|
 
 注意：支付宝小程序、qq小程序、百度小程序、字节小程序，暂不支持监听屏幕动态改变，即只执行一次媒体查询。
 
 ### MediaQueryObserver 对象的方法列表
+
+>tips: 和 UI 相关的 api 在组件 mountd 后执行
 
 |方法|说明|
 |:-|:-|:-|
@@ -53,13 +55,11 @@ MediaQueryObserver 对象，用于监听页面 media query 状态的变化，如
         <view>
             要求屏幕方向为纵向，是否匹配: {{landscape}}
         </view>
-            <button type="success" @click="remove">停止监听</button>
-        </view>
     </view>
 </template>
 
 <script>
-    let landscapeObs
+    let landscapeOb
     export default {
         data() {
             return {
@@ -71,10 +71,11 @@ MediaQueryObserver 对象，用于监听页面 media query 状态的变化，如
         onLoad() {
 
         },
+        
+        // 和 UI 相关的 api 在组件 mountd 后执行
         mounted() {
             this.testMediaQueryObserver()
             this.landscapeObserver()
-
         },
 
         methods: {
@@ -89,8 +90,8 @@ MediaQueryObserver 对象，用于监听页面 media query 状态的变化，如
                 })
             },
             landscapeObserver() {
-                landscapeObs = uni.createMediaQueryObserver(this)
-                landscapeObs.observe({
+                landscapeOb = uni.createMediaQueryObserver(this)
+                landscapeOb.observe({
                     orientation: 'landscape'  //屏幕方向为纵向
                 }, matches => {
                         this.landscape = matches
@@ -98,7 +99,7 @@ MediaQueryObserver 对象，用于监听页面 media query 状态的变化，如
             },
             destroyed () {
                 this.mediaQueryOb.disconnect()  //组件销毁时停止监听
-                landscapeObs.disconnect()
+                landscapeOb.disconnect()
             }
         }
     }

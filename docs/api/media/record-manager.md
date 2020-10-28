@@ -89,9 +89,11 @@ const innerAudioContext = uni.createInnerAudioContext();
 innerAudioContext.autoplay = true;
 
 export default {
-	data: {
-		text: 'uni-app',
-		voicePath: ''
+	data() {
+		return {
+			text: 'uni-app',
+			voicePath: ''
+		}
 	},
 	onLoad() {
 		let self = this;

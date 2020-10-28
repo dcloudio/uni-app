@@ -300,11 +300,11 @@ npm run build:%PLATFORM%
 - 原生渲染方式：[https://ask.dcloud.net.cn/article/37145](https://ask.dcloud.net.cn/article/37145)
 
 
-### 运行并发布快应用(webview)@quickapp-webview
+#### 运行并发布快应用(webview)@quickapp-webview
 HBuilderX 2.7.12+ 版支持
 
 
-### 运行并发布快应用(webview)-华为@quickapp-webview-huawei
+#### 运行并发布快应用(webview)-华为@quickapp-webview-huawei
 HBuilderX 2.7.10+ 版支持
 
 华为快应用文档-小程序转快应用 [https://developer.huawei.com/consumer/cn/doc/development/quickApp-References/quickapp-filestructure](https://developer.huawei.com/consumer/cn/doc/development/quickApp-References/quickapp-filestructure)

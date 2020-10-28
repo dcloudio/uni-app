@@ -51,8 +51,10 @@ index.vue
 ```javascript
 // 仅做示例，实际开发中延时根据需求来使用。
 export default {
-	data: {
-		text: 'uni-app'
+	data() {
+		return {
+			text: 'uni-app'
+		}
 	},
 	onLoad: function (options) {
 		setTimeout(function () {

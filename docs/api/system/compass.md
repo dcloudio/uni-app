@@ -1,5 +1,5 @@
 ### uni.onCompassChange(CALLBACK)
-监听罗盘数据，频率：5次/秒，接口调用后会自动开始监听，可使用 ``uni.stopCompass`` 停止监听。
+监听罗盘数据，频率：5次/秒，接口调用后会自动开始监听，可使用 ``uni.offCompassChange`` 取消监听。
 
 **CALLBACK 返回参数**
 
@@ -17,6 +17,15 @@ uni.onCompassChange(function (res) {
 	console.log(res.direction);
 });
 ```
+
+### uni.offCompassChange(CALLBACK)
+取消监听罗盘数据。
+
+**平台差异说明**
+
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|HBuilderX 2.9.6+|HBuilderX 2.9.6+|基础库 2.9.3+|x|x|x|x|
 
 ### uni.startCompass(OBJECT)
 开始监听罗盘数据。
