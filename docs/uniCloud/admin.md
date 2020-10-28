@@ -89,17 +89,14 @@ PC 端如下图：
 
 #### 顶部窗口（导航栏）
 
-1. 通过 [admin.config.js](https://github.com/dcloudio/uni-template-admin/blob/master/admin.config.js) 配置导航栏内容
+顶部窗口默认在左侧展示系统Logo、右侧显示导航链接，效果如上图。展示内容可通过项目根目录下的`admin.config.js`文件进行配置，如下为示例：
 
 ```js
+# admin.config.js
 export default {
-  // 导航栏
-  navBar: {
-    // 如上图 topWindow 左侧 Logo
-    logo:
-      "https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/unicloudlogo.png",
-    // 右侧链接
-    links: [
+  navBar: {// 顶部导航
+    logo:"https://www.example.com/logo.png",//左侧 Logo
+    links: [ // 右侧链接
       {
         text: "Admin框架文档",
         url: "https://uniapp.dcloud.net.cn/uniCloud/admin",
@@ -107,15 +104,15 @@ export default {
       {
         text: "浏览更多Admin插件",
         url: "https://ext.dcloud.net.cn/?cat1=7&cat2=74",
-      },
+      }
     ],
   },
 };
 ```
-
-2. 通过 [uni.scss](https://github.com/dcloudio/uni-template-admin/blob/master/uni.scss) 配置导航栏样式
+顶部导航栏的样式，可通过项目根目录下的`uni.scss`进行自定义，如下：
 
 ```css
+# uni.scss
 $top-window-bg-color: #fff; /* 背景色 */
 $top-window-text-color: #999; /* 文字颜色 */
 ```
