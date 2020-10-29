@@ -49,7 +49,7 @@
 |defaultValue|string&#124;Object|默认值|
 |forceDefaultValue|string&#124;Object|强制默认值，不可通过clientDB的代码修改，常用于存放用户id、时间、客户端ip等固定值。具体参考下表的defaultValue|
 |foreignKey|String|关联字段。表示该字段的原始定义指向另一个表的某个字段，值的格式为`表名.字段名`，比如订单表的下单用户uid字段指向uni-id-users表的_id字段，那么值为`uni-id-users._id`。关联字段定义后可用于[联表查询](https://uniapp.dcloud.net.cn/uniCloud/database?id=lookup)，通过关联字段合成虚拟表，极大的简化了联表查询的复杂度|
-|permission|Object|数据库权限，控制什么角色可以对什么数据进行读/写，可控制表和字段，可设置where条件。见下文[详述](?id=permission)|
+|permission|Object|数据库权限，控制什么角色可以对什么数据进行读/写，可控制表和字段，可设置where条件。见下文[详述](https://uniapp.dcloud.net.cn/uniCloud/database?id=permission)|
 |label|string|字段标题。生成前端表单代码时，渲染表单项前面的label标题|
 |group|string|分组id。生成前端表单代码时，多个字段对应的表单项可以合并显示在一个uni-group组件中|
 |order|int|表单项排序序号。生成前端表单代码时，默认是以schema中的字段顺序从上到下排布表单项的，但如果指定了order，则按order规定的顺序进行排序。如果表单项被包含在uni-group中，则同组内按order排序|
