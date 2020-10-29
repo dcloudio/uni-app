@@ -24,9 +24,9 @@ export {
   from './keyboard'
 
 export {
-  default as baseInput
+  default as field
 }
-  from './base-input'
+  from './field'
 
 export {
   default as interact

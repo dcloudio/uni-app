@@ -24,7 +24,6 @@
         :type="inputType"
         :maxlength="maxlength"
         :step="step"
-        :autofocus="focus"
         class="uni-input-input"
         autocomplete="off"
         @focus="_onFocus"
@@ -50,13 +49,13 @@
 </template>
 <script>
 import {
-  baseInput
+  field
 } from 'uni-mixins'
 const INPUT_TYPES = ['text', 'number', 'idcard', 'digit', 'password']
 const NUMBER_TYPES = ['number', 'digit']
 export default {
   name: 'Input',
-  mixins: [baseInput],
+  mixins: [field],
   props: {
     name: {
       type: String,
@@ -89,10 +88,6 @@ export default {
     maxlength: {
       type: [Number, String],
       default: 140
-    },
-    focus: {
-      type: [Boolean, String],
-      default: false
     },
     confirmType: {
       type: String,
@@ -134,9 +129,6 @@ export default {
     }
   },
   watch: {
-    focus (val) {
-      this.$refs.input && this.$refs.input[val ? 'focus' : 'blur']()
-    },
     maxlength (value) {
       const realValue = this.valueSync.slice(0, parseInt(value, 10))
       realValue !== this.valueSync && (this.valueSync = realValue)
@@ -168,6 +160,8 @@ export default {
       }
       $vm = $vm.$parent
     }
+
+    this._initField('input')
   },
   beforeDestroy () {
     this.$dispatch('Form', 'uni-form-group-update', {
