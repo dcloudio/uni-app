@@ -8,7 +8,7 @@
 |参数名|类型|必填|说明|平台差异说明|
 |:-|:-|:-|:-|:-|
 |url|String|是|服务器接口地址|小程序中必须是 `wss://` 协议|
-|header|Object|否|HTTP Header , header 中不能设置 Referer|仅小程序支持|
+|header|Object|否|HTTP Header , header 中不能设置 Referer|小程序、App 2.9.6+|
 |method|String|否|默认是GET，有效值：OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT|仅微信小程序支持|
 |protocols|Array&lt;String&gt;|否|子协议数组|App、H5、微信小程序、百度小程序、字节跳动小程序|
 |success|Function|否|接口调用成功的回调函数||
