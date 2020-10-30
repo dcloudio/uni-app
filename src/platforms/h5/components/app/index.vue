@@ -1,9 +1,10 @@
 <template>
-  <uni-app :class="{'uni-app--showtabbar':showTabBar}">
+  <uni-app :class="{'uni-app--showtabbar':showTabBar,'uni-app--maxwidth':showMaxWidth}">
     <layout
       ref="layout"
       :router-key="key"
       :keep-alive-include="keepAliveInclude"
+      @maxWidth="onMaxWidth"
     />
     <tab-bar
       v-if="hasTabBar"
@@ -63,7 +64,8 @@ export default {
       transitionName: 'fade',
       hideTabBar: false,
       tabBar: __uniConfig.tabBar || {},
-      sysComponents: this.$sysComponents
+      sysComponents: this.$sysComponents,
+      showMaxWidth: false
     }
   },
   computed: {
@@ -113,6 +115,11 @@ export default {
         UniServiceJSBridge.emit('onAppEnterBackground')
       }
     })
+  },
+  methods: {
+    onMaxWidth (showMaxWidth) {
+      this.showMaxWidth = showMaxWidth
+    }
   }
 }
 </script>

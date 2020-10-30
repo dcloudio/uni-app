@@ -134,6 +134,7 @@ export default {
   },
   data () {
     return {
+      marginWidth: 0,
       leftWindowStyle: '',
       rightWindowStyle: '',
       topWindowStyle: '',
@@ -144,7 +145,8 @@ export default {
       apiShowTopWindow: false,
       apiShowLeftWindow: false,
       apiShowRightWindow: false,
-      navigationBarTitleText: ''
+      navigationBarTitleText: '',
+      maxWidthMeidaQuery: false
     }
   },
   computed: {
@@ -175,6 +177,9 @@ export default {
     }
   },
   watch: {
+    $route () {
+      this.checkMaxWidth()
+    },
     showTopWindow (newVal, val) {
       if (newVal) {
         this.$nextTick(this.onTopWindowInit)
@@ -230,6 +235,10 @@ export default {
         })
       }
     }
+    this.initMaxWidth()
+  },
+  mounted () {
+    this.checkMaxWidth()
   },
   methods: {
     resetApiShowWindow () {
@@ -255,6 +264,42 @@ export default {
             }
           }
         }
+      }
+    },
+    initMaxWidth () {
+      window.addEventListener('resize', () => {
+        this.checkMaxWidth()
+      })
+    },
+    checkMaxWidth () {
+      const maxWidth = parseInt(this.$route.meta.maxWidth)
+      let showMaxWidth = false
+      if (window.innerWidth > maxWidth) {
+        showMaxWidth = true
+      } else {
+        showMaxWidth = false
+      }
+      this.$emit('maxWidth', showMaxWidth)
+      if (!this.$containerElem) {
+        this.$containerElem = document.querySelector('uni-content,uni-app')
+      }
+      if (!this.$containerElem) {
+        return
+      }
+      if (showMaxWidth && maxWidth) {
+        this.marginWidth = (window.innerWidth - maxWidth) / 2
+        this.$nextTick(() => {
+          this.onLeftWindowInit()
+          this.onRightWindowInit()
+          this.$containerElem.setAttribute('style', 'max-width:' + maxWidth + 'px;margin:0 auto')
+        })
+      } else {
+        this.marginWidth = 0
+        this.$nextTick(() => {
+          this.onLeftWindowInit()
+          this.onRightWindowInit()
+          this.$containerElem.removeAttribute('style')
+        })
       }
     },
     initWindowMinWidth (type) {
@@ -300,22 +345,24 @@ export default {
     },
     onLeftWindowInit () {
       if (!(this.responsive && this.leftWindow)) {
+        updateCssVar('--window-left', this.marginWidth + 'px')
         return
       }
       if (this.leftWindowStyle && this.leftWindowStyle.width) {
-        updateCssVar('--window-left', this.$refs.leftWindow.offsetWidth + 'px')
+        updateCssVar('--window-left', this.$refs.leftWindow.offsetWidth + this.marginWidth + 'px')
       } else {
-        updateCssVar('--window-left', this.$refs.left.$el.offsetWidth + 'px')
+        updateCssVar('--window-left', this.$refs.left.$el.offsetWidth + this.marginWidth + 'px')
       }
     },
     onRightWindowInit () {
       if (!(this.responsive && this.rightWindow)) {
+        updateCssVar('--window-right', this.marginWidth + 'px')
         return
       }
       if (this.rightWindowStyle && this.rightWindowStyle.width) {
-        updateCssVar('--window-right', this.$refs.rightWindow.offsetWidth + 'px')
+        updateCssVar('--window-right', this.$refs.rightWindow.offsetWidth + this.marginWidth + 'px')
       } else {
-        updateCssVar('--window-right', this.$refs.right.$el.offsetWidth + 'px')
+        updateCssVar('--window-right', this.$refs.right.$el.offsetWidth + this.marginWidth + 'px')
       }
     }
   }

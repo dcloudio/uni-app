@@ -66,9 +66,9 @@ uni-tabbar {
 uni-tabbar .uni-tabbar {
   display: flex;
   position: fixed;
-  left: 0;
+  left: var(--window-left);
+  right: var(--window-right);
   bottom: 0;
-  width: 100%;
   z-index: 998;
   box-sizing: border-box;
   padding-bottom: 0;
