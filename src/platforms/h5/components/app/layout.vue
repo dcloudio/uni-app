@@ -200,12 +200,16 @@ export default {
       } else {
         updateCssVar('--window-right', '0px')
       }
+    },
+    marginWidth (newVal) {
+      updateCssVar('--window-margin', newVal + 'px')
     }
   },
   beforeCreate () {
     updateCssVar('--top-window-height', '0px')
     updateCssVar('--window-left', '0px')
     updateCssVar('--window-right', '0px')
+    updateCssVar('--window-margin', '0px')
   },
   created () {
     this.topWindow = Vue.component('VUniTopWindow')
@@ -281,7 +285,7 @@ export default {
       }
       this.$emit('maxWidth', showMaxWidth)
       if (!this.$containerElem) {
-        this.$containerElem = document.querySelector('uni-content,uni-app')
+        this.$containerElem = document.querySelector('uni-app')
       }
       if (!this.$containerElem) {
         return
@@ -424,8 +428,8 @@ export default {
 
   .uni-top-window {
     position: fixed;
-    left: 0;
-    right: 0;
+    left: var(--window-margin);
+    right: var(--window-margin);
     top: 0;
     z-index: 998;
     overflow: hidden;
