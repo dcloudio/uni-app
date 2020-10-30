@@ -583,22 +583,12 @@ mp-qq只支持自定义组件模式，不存在usingComponents配置
 				"password": "iOS应用打包个人证书导入密码",
 				"p12": "iOS应用打包个人证书，打包配置文件关联的个人证书",
 				"devices": "iOS应用支持的设备类型，可取值iphone/ipad/universal",
-				"urltypes": [{
-						"urlschemes": [
-							"hbuilder",
-							"必选，程序所支持的自定义协议名称"
-						],
-						"id": "可选，自定义协议的标识",
-						"icon": "可选，打开程序时显示的图标"
-					},
+				"urltypes": [
 					{
+            "urlidentifier": "com.xxx.test",
 						"urlschemes": [
-							"http",
-							"https",
-							"必选，程序所支持的自定义协议名称，大小写无关，推荐使用小写"
-						],
-						"id": "可选，自定义协议的标识",
-						"icon": "可选，打开程序时显示的图标"
+							"hbuilder"// 必选，程序所支持的自定义协议名称
+						]
 					}
 				],
 				"frameworks": ["使用native.js调用API要引用的库文件名称，如CoreLocation.framework", "QuartzCore.framework"],
