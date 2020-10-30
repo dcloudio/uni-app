@@ -370,6 +370,7 @@ exports = function (rule, value, data, callback) {
 }
 ```
 
+`validateFunction`里的代码是可以联网的。一个常见场景是内容的敏感词过滤，可以将内容提交到三方校验服务里，如果校验通过再入库
 
 
 #### errorMessage自定义错误提示
