@@ -84,9 +84,11 @@ var serviceContext = (function () {
     'getNetworkType',
     'onNetworkStatusChange',
     'onAccelerometerChange',
+    'offAccelerometerChange',
     'startAccelerometer',
     'stopAccelerometer',
     'onCompassChange',
+    'offCompassChange',
     'startCompass',
     'stopCompass',
     'onGyroscopeChange',
@@ -2579,16 +2581,23 @@ var serviceContext = (function () {
     const callbackId = invokeCallbackId++;
     const invokeCallbackName = 'api.' + apiName + '.' + callbackId;
 
-    const invokeCallback = function (res, extras) {
-      callback(res, extras);
-    };
-
     invokeCallbacks[callbackId] = {
       name: invokeCallbackName,
       keepAlive: true,
-      callback: invokeCallback
+      callback
     };
     return callbackId
+  }
+
+  function getKeepAliveApiCallback (apiName, callback) {
+    for (const key in invokeCallbacks) {
+      const item = invokeCallbacks[key];
+      if (item.name.startsWith('api.' + apiName.replace(/^off/, 'on')) && item.callback === callback) {
+        delete invokeCallbacks[key];
+        return Number(key)
+      }
+    }
+    return 'fail'
   }
 
   function createApiCallback (apiName, params = {}, extras = {}) {
@@ -2767,7 +2776,7 @@ var serviceContext = (function () {
         }
       } else if (isCallbackApi(name)) {
         if (validateParams(name, args, -1)) {
-          return invokeMethod(createKeepAliveApiCallback(name, args[0]))
+          return invokeMethod((name.startsWith('off') ? getKeepAliveApiCallback : createKeepAliveApiCallback)(name, args[0]))
         }
       } else {
         let argsObj = {};
@@ -3985,47 +3994,59 @@ var serviceContext = (function () {
   const TEMP_PATH_BASE = '_doc/uniapp_temp';
   const TEMP_PATH = `${TEMP_PATH_BASE}_${Date.now()}`;
 
-  let watchAccelerationId = false;
-  let isWatchAcceleration = false;
+  let listener;
 
-  const clearWatchAcceleration = () => {
-    if (watchAccelerationId) {
-      plus.accelerometer.clearWatch(watchAccelerationId);
-      watchAccelerationId = false;
-    }
-  };
+  const callbackIds = [];
 
-  function enableAccelerometer ({
-    enable
-  }) {
-    if (enable) { // 启用监听
-      clearWatchAcceleration();
-      watchAccelerationId = plus.accelerometer.watchAcceleration((res) => {
-        publish('onAccelerometerChange', {
+  function startAccelerometer (options, callbackId) {
+    listener = listener || plus.accelerometer.watchAcceleration((res) => {
+      callbackIds.forEach(callbackId => {
+        invoke$1(callbackId, {
           x: res.xAxis,
           y: res.yAxis,
-          z: res.zAxis,
-          errMsg: 'enableAccelerometer:ok'
+          z: res.zAxis
         });
-      }, (e) => {
-        publish('onAccelerometerChange', {
-          errMsg: 'enableAccelerometer:fail'
-        });
-      }, {
-        frequency: DEVICE_FREQUENCY
       });
-      if (!isWatchAcceleration) {
-        isWatchAcceleration = true;
-        const webview = getLastWebview();
-        if (webview) {
-          webview.addEventListener('close', clearWatchAcceleration);
-        }
-      }
-    } else {
-      clearWatchAcceleration();
+    }, err => {
+      listener = null;
+      invoke$1(callbackId, {
+        errMsg: `startAccelerometer:fail ${err.message}`
+      });
+    }, {
+      frequency: DEVICE_FREQUENCY
+    });
+    setTimeout(() => {
+      invoke$1(callbackId, {
+        errMsg: 'startAccelerometer:ok'
+      });
+    }, DEVICE_FREQUENCY);
+  }
+
+  function stopAccelerometer () {
+    if (listener) {
+      plus.accelerometer.clearWatch(listener);
+      listener = null;
     }
-    return {
-      errMsg: 'enableAccelerometer:ok'
+    return {}
+  }
+
+  function onAccelerometerChange (callbackId) {
+    if (!callbackIds.length) {
+      startAccelerometer();
+    }
+    callbackIds.push(callbackId);
+  }
+
+  function offAccelerometerChange (callbackId) {
+    // 暂不支持移除所有监听
+    if (callbackId) {
+      const index = callbackIds.indexOf(callbackId);
+      if (index >= 0) {
+        callbackIds.splice(index, 1);
+      }
+    }
+    if (!callbackIds.length) {
+      stopAccelerometer();
     }
   }
 
@@ -4331,47 +4352,57 @@ var serviceContext = (function () {
     }
   }
 
-  let watchOrientationId = false;
-  let isWatchOrientation = false;
+  let listener$1;
 
-  const clearWatchOrientation = () => {
-    if (watchOrientationId) {
-      plus.orientation.clearWatch(watchOrientationId);
-      watchOrientationId = false;
-    }
-  };
+  const callbackIds$1 = [];
 
-  function enableCompass ({
-    enable
-  }) {
-    if (enable) {
-      clearWatchOrientation();
-      watchOrientationId = plus.orientation.watchOrientation((o) => {
-        publish('onCompassChange', {
-          direction: o.magneticHeading,
-          errMsg: 'enableCompass:ok'
+  function startCompass (options, callbackId) {
+    listener$1 = listener$1 || plus.orientation.watchOrientation((res) => {
+      callbackIds$1.forEach(callbackId => {
+        invoke$1(callbackId, {
+          direction: res.magneticHeading
         });
-      }, (e) => {
-        publish('onCompassChange', {
-          errMsg: 'enableCompass:fail'
-        });
-      }, {
-        frequency: DEVICE_FREQUENCY
       });
-      if (!isWatchOrientation) {
-        isWatchOrientation = true;
-        const webview = getLastWebview();
-        if (webview) {
-          webview.addEventListener('close', () => {
-            plus.orientation.clearWatch(watchOrientationId);
-          });
-        }
-      }
-    } else {
-      clearWatchOrientation();
+    }, err => {
+      listener$1 = null;
+      invoke$1(callbackId, {
+        errMsg: `startCompass:fail ${err.message}`
+      });
+    }, {
+      frequency: DEVICE_FREQUENCY
+    });
+    setTimeout(() => {
+      invoke$1(callbackId, {
+        errMsg: 'startCompass:ok'
+      });
+    }, DEVICE_FREQUENCY);
+  }
+
+  function stopCompass () {
+    if (listener$1) {
+      plus.orientation.clearWatch(listener$1);
+      listener$1 = null;
     }
-    return {
-      errMsg: 'enableCompass:ok'
+    return {}
+  }
+
+  function onCompassChange (callbackId) {
+    if (!callbackIds$1.length) {
+      startCompass();
+    }
+    callbackIds$1.push(callbackId);
+  }
+
+  function offCompassChange (callbackId) {
+    // 暂不支持移除所有监听
+    if (callbackId) {
+      const index = callbackIds$1.indexOf(callbackId);
+      if (index >= 0) {
+        callbackIds$1.splice(index, 1);
+      }
+    }
+    if (!callbackIds$1.length) {
+      stopCompass();
     }
   }
 
@@ -6018,9 +6049,12 @@ var serviceContext = (function () {
     }
 
     function openAlbum () {
-      plus.gallery.pick(successCallback, errorCallback, {
+      plus.gallery.pick(({ files }) => successCallback(files[0]), errorCallback, {
         filter: 'video',
         system: false,
+        // 不启用 multiple 时 system 无效
+        multiple: true,
+        maximum: 1,
         filename: TEMP_PATH + '/gallery/',
         permissionAlert: true
       });
@@ -6579,7 +6613,8 @@ var serviceContext = (function () {
     socket.WebSocket({
       id: socketTaskId,
       url,
-      protocol: Array.isArray(protocols) ? protocols.join(',') : protocols
+      protocol: Array.isArray(protocols) ? protocols.join(',') : protocols,
+      header
     });
     socketTasks[socketTaskId] = socket;
     return {
@@ -10031,7 +10066,10 @@ var serviceContext = (function () {
     operateMapPlayer: operateMapPlayer$2,
     operateVideoPlayer: operateVideoPlayer$2,
     createLivePusherContext: createLivePusherContext$1,
-    enableAccelerometer: enableAccelerometer,
+    startAccelerometer: startAccelerometer,
+    stopAccelerometer: stopAccelerometer,
+    onAccelerometerChange: onAccelerometerChange,
+    offAccelerometerChange: offAccelerometerChange,
     addPhoneContact: addPhoneContact,
     onBluetoothDeviceFound: onBluetoothDeviceFound,
     onBluetoothAdapterStateChange: onBluetoothAdapterStateChange,
@@ -10058,7 +10096,10 @@ var serviceContext = (function () {
     setKeepScreenOn: setKeepScreenOn,
     getClipboardData: getClipboardData,
     setClipboardData: setClipboardData$1,
-    enableCompass: enableCompass,
+    startCompass: startCompass,
+    stopCompass: stopCompass,
+    onCompassChange: onCompassChange,
+    offCompassChange: offCompassChange,
     getNetworkType: getNetworkType,
     onBeaconUpdate: onBeaconUpdate,
     onBeaconServiceChange: onBeaconServiceChange,
@@ -11586,140 +11627,46 @@ var serviceContext = (function () {
 
   const callbacks$6 = [];
 
-  onMethod('onAccelerometerChange', function (res) {
+  onMethod('onNetworkStatusChange', res => {
     callbacks$6.forEach(callbackId => {
       invoke$1(callbackId, res);
     });
   });
 
-  let isEnable = false;
-  /**
-   * 监听加速度
-   * @param {*} callbackId
-   */
-  function onAccelerometerChange (callbackId) {
-    // TODO 当没有 start 时，添加 on 需要主动 start?
+  function onNetworkStatusChange (callbackId) {
     callbacks$6.push(callbackId);
-    if (!isEnable) {
-      startAccelerometer();
-    }
-  }
-
-  function startAccelerometer ({
-    interval // TODO
-  } = {}) {
-    if (isEnable) {
-      return
-    }
-    isEnable = true;
-    return invokeMethod('enableAccelerometer', {
-      enable: true
-    })
-  }
-
-  function stopAccelerometer () {
-    isEnable = false;
-    return invokeMethod('enableAccelerometer', {
-      enable: false
-    })
   }
 
   var require_context_module_1_11 = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    onAccelerometerChange: onAccelerometerChange,
-    startAccelerometer: startAccelerometer,
-    stopAccelerometer: stopAccelerometer
+    onNetworkStatusChange: onNetworkStatusChange
   });
 
   const callbacks$7 = [];
 
-  onMethod('onCompassChange', function (res) {
+  onMethod('onThemeChange', function (res) {
     callbacks$7.forEach(callbackId => {
       invoke$1(callbackId, res);
     });
   });
 
-  let isEnable$1 = false;
-  /**
-   * 监听加速度
-   * @param {*} callbackId
-   */
-  function onCompassChange (callbackId) {
-    // TODO 当没有 start 时，添加 on 需要主动 start?
-    callbacks$7.push(callbackId);
-    if (!isEnable$1) {
-      startCompass();
-    }
-  }
-
-  function startCompass ({
-    interval // TODO
-  } = {}) {
-    if (isEnable$1) {
-      return
-    }
-    isEnable$1 = true;
-    return invokeMethod('enableCompass', {
-      enable: true
-    })
-  }
-
-  function stopCompass () {
-    isEnable$1 = false;
-    return invokeMethod('enableCompass', {
-      enable: false
-    })
-  }
-
-  var require_context_module_1_12 = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    onCompassChange: onCompassChange,
-    startCompass: startCompass,
-    stopCompass: stopCompass
-  });
-
-  const callbacks$8 = [];
-
-  onMethod('onNetworkStatusChange', res => {
-    callbacks$8.forEach(callbackId => {
-      invoke$1(callbackId, res);
-    });
-  });
-
-  function onNetworkStatusChange (callbackId) {
-    callbacks$8.push(callbackId);
-  }
-
-  var require_context_module_1_13 = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    onNetworkStatusChange: onNetworkStatusChange
-  });
-
-  const callbacks$9 = [];
-
-  onMethod('onThemeChange', function (res) {
-    callbacks$9.forEach(callbackId => {
-      invoke$1(callbackId, res);
-    });
-  });
-
   function onThemeChange (callbackId) {
-    callbacks$9.push(callbackId);
+    callbacks$7.push(callbackId);
   }
 
   // 旧版本 API，后期文档更新后考虑移除
   onMethod('onUIStyleChange', function (res) {
-    callbacks$9.forEach(callbackId => {
+    callbacks$7.forEach(callbackId => {
       invoke$1(callbackId, res);
     });
   });
 
   function onUIStyleChange (callbackId) {
-    callbacks$9.push(callbackId);
+    callbacks$7.push(callbackId);
     console.log('API uni.onUIStyleChange 已过时，请使用 uni.onThemeChange，详情：https://uniapp.dcloud.net.cn/api/system/theme');
   }
 
-  var require_context_module_1_14 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_12 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     onThemeChange: onThemeChange,
     onUIStyleChange: onUIStyleChange
@@ -11748,7 +11695,7 @@ var serviceContext = (function () {
     }, pageId);
   }
 
-  var require_context_module_1_15 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_13 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getSelectedTextRange: getSelectedTextRange
   });
@@ -11765,7 +11712,7 @@ var serviceContext = (function () {
     callback$1 = callbackId;
   }
 
-  var require_context_module_1_16 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_14 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     onKeyboardHeightChange: onKeyboardHeightChange
   });
@@ -11793,12 +11740,12 @@ var serviceContext = (function () {
     return invokeMethod('previewImagePlus', args)
   }
 
-  var require_context_module_1_17 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_15 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     previewImage: previewImage$1
   });
 
-  const callbacks$a = {
+  const callbacks$8 = {
     pause: null,
     resume: null,
     start: null,
@@ -11812,14 +11759,14 @@ var serviceContext = (function () {
         const state = res.state;
         delete res.state;
         delete res.errMsg;
-        if (typeof callbacks$a[state] === 'function') {
-          callbacks$a[state](res);
+        if (typeof callbacks$8[state] === 'function') {
+          callbacks$8[state](res);
         }
       });
     }
 
     onError (callback) {
-      callbacks$a.error = callback;
+      callbacks$8.error = callback;
     }
 
     onFrameRecorded (callback) {
@@ -11835,19 +11782,19 @@ var serviceContext = (function () {
     }
 
     onPause (callback) {
-      callbacks$a.pause = callback;
+      callbacks$8.pause = callback;
     }
 
     onResume (callback) {
-      callbacks$a.resume = callback;
+      callbacks$8.resume = callback;
     }
 
     onStart (callback) {
-      callbacks$a.start = callback;
+      callbacks$8.start = callback;
     }
 
     onStop (callback) {
-      callbacks$a.stop = callback;
+      callbacks$8.stop = callback;
     }
 
     pause () {
@@ -11881,7 +11828,7 @@ var serviceContext = (function () {
     return recorderManager || (recorderManager = new RecorderManager())
   }
 
-  var require_context_module_1_18 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_16 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getRecorderManager: getRecorderManager
   });
@@ -11975,7 +11922,7 @@ var serviceContext = (function () {
     return task
   }
 
-  var require_context_module_1_19 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_17 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     downloadFile: downloadFile$1
   });
@@ -12093,7 +12040,7 @@ var serviceContext = (function () {
     return new RequestTask(requestTaskId)
   }
 
-  var require_context_module_1_20 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_18 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     request: request$1
   });
@@ -12179,7 +12126,7 @@ var serviceContext = (function () {
 
   const socketTasks$1 = Object.create(null);
   const socketTasksArray = [];
-  const callbacks$b = Object.create(null);
+  const callbacks$9 = Object.create(null);
   onMethod('onSocketTaskStateChange', ({
     socketTaskId,
     state,
@@ -12193,8 +12140,8 @@ var serviceContext = (function () {
     if (state === 'open') {
       socketTask.readyState = socketTask.OPEN;
     }
-    if (socketTask === socketTasksArray[0] && callbacks$b[state]) {
-      invoke$1(callbacks$b[state], state === 'message' ? {
+    if (socketTask === socketTasksArray[0] && callbacks$9[state]) {
+      invoke$1(callbacks$9[state], state === 'message' ? {
         data
       } : {});
     }
@@ -12260,22 +12207,22 @@ var serviceContext = (function () {
   }
 
   function onSocketOpen (callbackId) {
-    callbacks$b.open = callbackId;
+    callbacks$9.open = callbackId;
   }
 
   function onSocketError (callbackId) {
-    callbacks$b.error = callbackId;
+    callbacks$9.error = callbackId;
   }
 
   function onSocketMessage (callbackId) {
-    callbacks$b.message = callbackId;
+    callbacks$9.message = callbackId;
   }
 
   function onSocketClose (callbackId) {
-    callbacks$b.close = callbackId;
+    callbacks$9.close = callbackId;
   }
 
-  var require_context_module_1_21 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_19 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     connectSocket: connectSocket$1,
     sendSocketMessage: sendSocketMessage$1,
@@ -12310,7 +12257,7 @@ var serviceContext = (function () {
     return updateManager || (updateManager = new UpdateManager())
   }
 
-  var require_context_module_1_22 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_20 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getUpdateManager: getUpdateManager
   });
@@ -12404,7 +12351,7 @@ var serviceContext = (function () {
     return task
   }
 
-  var require_context_module_1_23 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_21 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     uploadFile: uploadFile$1
   });
@@ -12493,7 +12440,7 @@ var serviceContext = (function () {
     return new MPAnimation(option)
   }
 
-  var require_context_module_1_24 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_22 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     createAnimation: createAnimation
   });
@@ -12563,7 +12510,7 @@ var serviceContext = (function () {
     return new ServiceIntersectionObserver(getCurrentPageVm('createIntersectionObserver'), options)
   }
 
-  var require_context_module_1_25 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_23 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     createIntersectionObserver: createIntersectionObserver
   });
@@ -12610,7 +12557,7 @@ var serviceContext = (function () {
     return new ServiceMediaQueryObserver(getCurrentPageVm('createMediaQueryObserver'), options)
   }
 
-  var require_context_module_1_26 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_24 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     createMediaQueryObserver: createMediaQueryObserver
   });
@@ -12751,7 +12698,7 @@ var serviceContext = (function () {
     return new SelectorQuery(getCurrentPageVm('createSelectorQuery'))
   }
 
-  var require_context_module_1_27 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_25 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     createSelectorQuery: createSelectorQuery
   });
@@ -12776,7 +12723,7 @@ var serviceContext = (function () {
     }, pageId);
   }
 
-  var require_context_module_1_28 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_26 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     loadFontFace: loadFontFace$1
   });
@@ -12789,7 +12736,7 @@ var serviceContext = (function () {
     return {}
   }
 
-  var require_context_module_1_29 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_27 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     pageScrollTo: pageScrollTo$1
   });
@@ -12802,7 +12749,7 @@ var serviceContext = (function () {
     return {}
   }
 
-  var require_context_module_1_30 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_28 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     setPageMeta: setPageMeta
   });
@@ -12827,19 +12774,19 @@ var serviceContext = (function () {
 
   const hideTabBarRedDot$1 = removeTabBarBadge$1;
 
-  const callbacks$c = [];
+  const callbacks$a = [];
 
   onMethod('onTabBarMidButtonTap', res => {
-    callbacks$c.forEach(callbackId => {
+    callbacks$a.forEach(callbackId => {
       invoke$1(callbackId, res);
     });
   });
 
   function onTabBarMidButtonTap (callbackId) {
-    callbacks$c.push(callbackId);
+    callbacks$a.push(callbackId);
   }
 
-  var require_context_module_1_31 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_29 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     removeTabBarBadge: removeTabBarBadge$1,
     showTabBarRedDot: showTabBarRedDot$1,
@@ -12847,25 +12794,23 @@ var serviceContext = (function () {
     onTabBarMidButtonTap: onTabBarMidButtonTap
   });
 
-  const callbacks$d = [];
+  const callbacks$b = [];
   onMethod('onViewDidResize', res => {
-    callbacks$d.forEach(callbackId => {
+    callbacks$b.forEach(callbackId => {
       invoke$1(callbackId, res);
     });
   });
 
   function onWindowResize (callbackId) {
-    callbacks$d.push(callbackId);
+    callbacks$b.push(callbackId);
   }
 
   function offWindowResize (callbackId) {
-    // TODO 目前 on 和 off 即使传入同一个 function，获取到的 callbackId 也不会一致，导致不能 off 掉指定
-    // 后续修复
     // 此处和微信平台一致查询不到去掉最后一个
-    callbacks$d.splice(callbacks$d.indexOf(callbackId), 1);
+    callbacks$b.splice(callbacks$b.indexOf(callbackId), 1);
   }
 
-  var require_context_module_1_32 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_30 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     onWindowResize: onWindowResize,
     offWindowResize: offWindowResize
@@ -12887,28 +12832,26 @@ var serviceContext = (function () {
   './context/create-video-context.js': require_context_module_1_8,
   './context/editor.js': require_context_module_1_9,
   './context/inner-audio.js': require_context_module_1_10,
-  './device/accelerometer.js': require_context_module_1_11,
-  './device/compass.js': require_context_module_1_12,
-  './device/network.js': require_context_module_1_13,
-  './device/theme.js': require_context_module_1_14,
-  './keyboard/get-selected-text-range.js': require_context_module_1_15,
-  './keyboard/keyboard.js': require_context_module_1_16,
-  './media/preview-image.js': require_context_module_1_17,
-  './media/recorder.js': require_context_module_1_18,
-  './network/download-file.js': require_context_module_1_19,
-  './network/request.js': require_context_module_1_20,
-  './network/socket.js': require_context_module_1_21,
-  './network/update.js': require_context_module_1_22,
-  './network/upload-file.js': require_context_module_1_23,
-  './ui/create-animation.js': require_context_module_1_24,
-  './ui/create-intersection-observer.js': require_context_module_1_25,
-  './ui/create-media-query-observer.js': require_context_module_1_26,
-  './ui/create-selector-query.js': require_context_module_1_27,
-  './ui/load-font-face.js': require_context_module_1_28,
-  './ui/page-scroll-to.js': require_context_module_1_29,
-  './ui/set-page-meta.js': require_context_module_1_30,
-  './ui/tab-bar.js': require_context_module_1_31,
-  './ui/window.js': require_context_module_1_32,
+  './device/network.js': require_context_module_1_11,
+  './device/theme.js': require_context_module_1_12,
+  './keyboard/get-selected-text-range.js': require_context_module_1_13,
+  './keyboard/keyboard.js': require_context_module_1_14,
+  './media/preview-image.js': require_context_module_1_15,
+  './media/recorder.js': require_context_module_1_16,
+  './network/download-file.js': require_context_module_1_17,
+  './network/request.js': require_context_module_1_18,
+  './network/socket.js': require_context_module_1_19,
+  './network/update.js': require_context_module_1_20,
+  './network/upload-file.js': require_context_module_1_21,
+  './ui/create-animation.js': require_context_module_1_22,
+  './ui/create-intersection-observer.js': require_context_module_1_23,
+  './ui/create-media-query-observer.js': require_context_module_1_24,
+  './ui/create-selector-query.js': require_context_module_1_25,
+  './ui/load-font-face.js': require_context_module_1_26,
+  './ui/page-scroll-to.js': require_context_module_1_27,
+  './ui/set-page-meta.js': require_context_module_1_28,
+  './ui/tab-bar.js': require_context_module_1_29,
+  './ui/window.js': require_context_module_1_30,
 
       };
       var req = function req(key) {
