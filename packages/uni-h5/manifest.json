@@ -388,33 +388,26 @@
         []
     ],
     "onAccelerometerChange": [
-        "/core/service/api/device/accelerometer.js",
-        [
-            [
-                "/platforms/h5/service/api/device/accelerometer.js",
-                "enableAccelerometer"
-            ]
-        ]
+        "/platforms/h5/service/api/device/accelerometer.js",
+        []
+    ],
+    "offAccelerometerChange": [
+        "/platforms/h5/service/api/device/accelerometer.js",
+        []
     ],
     "startAccelerometer": [
-        "/core/service/api/device/accelerometer.js",
-        [
-            [
-                "/platforms/h5/service/api/device/accelerometer.js",
-                "enableAccelerometer"
-            ]
-        ]
+        "/platforms/h5/service/api/device/accelerometer.js",
+        []
     ],
     "stopAccelerometer": [
-        "/core/service/api/device/accelerometer.js",
-        [
-            [
-                "/platforms/h5/service/api/device/accelerometer.js",
-                "enableAccelerometer"
-            ]
-        ]
+        "/platforms/h5/service/api/device/accelerometer.js",
+        []
     ],
     "onCompassChange": [
+        "/platforms/h5/service/api/device/compass.js",
+        []
+    ],
+    "offCompassChange": [
         "/platforms/h5/service/api/device/compass.js",
         []
     ],
