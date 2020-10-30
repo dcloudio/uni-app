@@ -87,11 +87,11 @@ exports.main = async (event, context) => {
 在云函数对应的目录右键可以配置运行测试参数，如下图，选择之后会生成一个形如`${函数名}.param.json`的文件，此文件内容会在云函数`上传并运行`时作为参数传入云函数内。详细用法可参考：[配置运行测试参数](https://uniapp.dcloud.net.cn/uniCloud/quickstart?id=runparam)
 
 
-## 本地运行云函数注意事项@runlocal
+## 本地运行云函数@runlocal
 
 自2.8.1版本起HBuilderX支持云函数本地运行，调试云函数更加方便快捷。此外还可以方便批量导入数据及文件，不再受云函数超时限制。
 
-**目前只支持本地运行，debug断点还在开发中**
+**目前只支持本地运行打日志。断点debug还在开发中**
 
 #### 使用方式
 
@@ -102,7 +102,7 @@ exports.main = async (event, context) => {
 
 ![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/uniCloud-local-1.jpg)
 
-#### 注意事项
+#### 本地运行注意事项
 
 **使用公用模块**
 
@@ -131,6 +131,8 @@ const hour = getOffsetDate(8).getHours()
 // 获取时间戳无需使用此方式utc+0时间戳是与utc+8时间戳一致的
 ```
 
+推荐使用`<uni-dateformat>`组件格式化显示日期，[详情](https://ext.dcloud.net.cn/plugin?id=3279)
+
 **数据与存储**
 
 请务必注意云函数在本地运行时依然是连接的云端数据库与存储
@@ -141,7 +143,7 @@ const hour = getOffsetDate(8).getHours()
 
 服务空间所使用的nodejs版本为8.9，本地运行时使用的本地nodejs可能与服务空间的nodejs版本并不一致，在本地测试之后部署到云端也务必测试一下兼容性。
 
-**日志打印**
+**控制台日志打印**
 
 目前本地运行云函数只能打印字符串类型的值，其他类型请注意转换为字符串
 
@@ -231,6 +233,11 @@ App端真机调试输出云函数日志，如下图所示：
 
 uniCloud的[web控制台](https://unicloud.dcloud.net.cn/)可以查看线上云函数的所有运行日志，而不仅仅是开发时的运行日志。
 
+## clientDB - 前端直接操作数据库
+
+uniCloud支持云函数，但其实大多数场景下并不需要写云函数，可以通过clientDB直接操作云数据库。
+
+文档另见：[clientDB](https://uniapp.dcloud.io/uniCloud/database)
 
 ## 小程序中使用uniCloud的白名单配置
 
@@ -284,15 +291,10 @@ H5前端js访问云函数，涉及跨域问题，导致前端js无法连接云�
 
 **H5前端页面部署问题**
 
-uniCloud已支持前端页面部署，在HBuilderX中点发行菜单，生成H5，将生成的前端文件部署在uniCloud的前端网页托管内即可[详情参考](uniCloud/hosting.md)。
+uniCloud支持前端页面部署，在HBuilderX中点发行菜单，生成H5，将生成的前端文件部署在uniCloud的前端网页托管内即可[详情参考](uniCloud/hosting.md)。
 
 需要注意的是你仍在[uniCloud web控制台](https://unicloud.dcloud.net.cn) 配置H5安全域名。
 
-**m3w.cn二级域名申请**
-
-若为新冠抗疫需紧急上线H5，来不及注册域名，可申请使用DCloud提供的m3w.cn的二级域名，示例：[hellounicloud.m3w.cn](https://hellounicloud.m3w.cn) 。此时请使用你注册DCloud账户的邮箱向service@dcloud.io发邮件申请，提供你的appid、计划使用的二级域名名称、解析的ip地址、应用的使用用途。
-
-如果不发布H5，则不需要自己申请或准备域名。App和小程序里直接调用云函数即可，无需域名。
 
 
 **Tips**
