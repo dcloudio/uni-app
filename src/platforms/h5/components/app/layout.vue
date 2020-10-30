@@ -179,7 +179,7 @@ export default {
       if (newVal) {
         this.$nextTick(this.onTopWindowInit)
       } else {
-        updateCssVar('--window-top', '0px')
+        updateCssVar('--top-window-height', '0px')
       }
     },
     showLeftWindow (newVal, val) {
@@ -198,7 +198,7 @@ export default {
     }
   },
   beforeCreate () {
-    updateCssVar('--window-top', '0px')
+    updateCssVar('--top-window-height', '0px')
     updateCssVar('--window-left', '0px')
     updateCssVar('--window-right', '0px')
   },
@@ -251,7 +251,7 @@ export default {
             if (show) {
               this.$nextTick(this.onTopWindowInit)
             } else {
-              updateCssVar('--window-top', '0px')
+              updateCssVar('--top-window-height', '0px')
             }
           }
         }
@@ -296,7 +296,7 @@ export default {
         windowTopHeight = this.$refs.top.$el.offsetHeight + 'px'
       }
       this.topWindowHeight = windowTopHeight
-      updateCssVar('--window-top', windowTopHeight)
+      updateCssVar('--top-window-height', windowTopHeight)
     },
     onLeftWindowInit () {
       if (!(this.responsive && this.leftWindow)) {
@@ -335,7 +335,7 @@ export default {
   }
 
   uni-top-window+uni-content {
-    height: calc(100vh - var(--window-top));
+    height: calc(100vh - var(--top-window-height));
   }
 
   uni-left-window {

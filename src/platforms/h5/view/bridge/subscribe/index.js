@@ -1,5 +1,3 @@
-import Vue from 'vue'
-
 import {
   isPlainObject,
   supportsPassive
@@ -35,9 +33,7 @@ function updateCssVar (vm) {
     const windowBottom = windowBottomValue && envMethod
       ? `calc(${windowBottomValue}px + ${envMethod}(safe-area-inset-bottom))` : `${windowBottomValue}px`
     const style = document.documentElement.style
-    if (!Vue.component('VUniTopWindow') || pageVm.topWindow === false) { // TODO 目前简单处理，只要包含topWindow，则不再更新--window-top
-      style.setProperty('--window-top', windowTop)
-    }
+    style.setProperty('--window-top', `calc(var(--top-window-height) + ${windowTop})`)
     style.setProperty('--window-bottom', windowBottom)
     console.debug(`${vm.$page.route}[${vm.$page.id}]：--window-top=${windowTop}`)
     console.debug(`${vm.$page.route}[${vm.$page.id}]：--window-bottom=${windowBottom}`)

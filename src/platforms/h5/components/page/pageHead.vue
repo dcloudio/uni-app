@@ -118,7 +118,6 @@
     position: fixed;
     left: var(--window-left);
     right: var(--window-right);
-    top: 0;
     height: 44px;
     height: calc(44px + constant(safe-area-inset-top));
     height: calc(44px + env(safe-area-inset-top));
