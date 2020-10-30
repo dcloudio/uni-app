@@ -605,6 +605,8 @@ exports.main = async function(event,context) {
 | code	| Number| 是	|错误码，0表示成功			|
 | message	| String| 是	|详细信息					|
 
+**注意：修改密码会导致所有token失效**
+
 **示例代码**
 
 ```js
@@ -650,6 +652,8 @@ exports.main = async function(event,context) {
 | ---	| ---	| ---	| ---						|
 | code	| Number| 是	|错误码，0表示成功			|
 | message	| String| 是	|详细信息					|
+
+**注意：重置密码会导致所有token失效**
 
 **示例代码**
 
