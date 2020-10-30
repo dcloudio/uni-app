@@ -729,26 +729,25 @@ action云函数中记录日志的代码，此处省略。
 例如有个论坛，要求用户积分大于100分才可以发帖。那么帖子表的create权限应该配成：
 
 ```json
+// 使用模板字符串语法拼接产生`database.表名.记录ID`形式字符串
 "create": get(`database.uni-id-users.${auth.uid}`).score > 100"
 ```
-
 
 使用get方法时需要注意get方法的参数必须是唯一确定值，例如schema配置的get权限如下：
 
 ```json
+// 这句的含义是，本次查询where条件内传入的shop_id需要满足以下条件：shop表内_id为此shop_id的记录的owner字段等于当前用户uid
 "get(`database.shop.${doc.shop_id}`).owner == auth.uid"
 ```
 
 前端js如下：
 ```js
-// 此条件内doc.shop_id只能是'123123'，可以通过get(`database.shop.${doc.shop_id}`)获取数据来进行权限验证
+// 此条件内doc.shop_id只能是'123123'，可以通过get(`database.shop.${doc.shop_id}`)获取shop表内_id为123123的记录验证其owner是否等于当前用户uid
 db.collection('street').where("shop_id=='123123'").get()
 
-// 此条件内doc.shop_id可能是'123123'也可能是'456456'，`"get(`database.shop.${doc.shop_id}`).owner == auth.uid"`会直接返回false不会获取数据进行验证
+// 此条件内doc.shop_id可能是'123123'也可能是'456456'，`"get(`database.shop.${doc.shop_id}`).owner == auth.uid"`会直接返回false不会获取shop表数据进行验证
 db.collection('street').where("shop_id=='123123 || shop_id=='456456'").get()
 ```
-
-
 
 ### 前端表单生成系统@autocode
 
