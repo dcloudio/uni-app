@@ -451,11 +451,12 @@ export default {
       var map = this._map = new maps.Map(this.$refs.map, {
         center,
         zoom: Number(this.scale),
-        scrollwheel: false,
+        // scrollwheel: false,
         disableDoubleClickZoom: true,
         mapTypeControl: false,
         zoomControl: false,
         scaleControl: false,
+        panControl: false,
         minZoom: 5,
         maxZoom: 18,
         draggable: true
@@ -849,7 +850,7 @@ export default {
               refreshLocation()
             }
           })
-        }, 1000)
+        }, 10000)
       }
     },
     removeLocation () {
