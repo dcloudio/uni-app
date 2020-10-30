@@ -1043,13 +1043,20 @@ db.collection('order')
 
 action的作用是在执行前端发起的数据库操作时，额外触发一段云函数逻辑。它是一个可选模块。
 
-当一个前端操作数据库的方式不能完全满足需求，仍然同时需要在云端再执行一些云函数时，就在前端发起数据库操作时，通过db.action("someactionname")方式要求云端同时执行这个叫someactionname的action。还可以在权限规则内指定某些操作必须使用指定的action，比如`"action in ['action-a','action-b']"`，来达到更灵活的权限控制。**action方法只能紧跟在db之后**
+当一个前端操作数据库的方式不能完全满足需求，仍然同时需要在云端再执行一些云函数时，就在前端发起数据库操作时，通过`db.action("someactionname")`方式要求云端同时执行这个叫someactionname的action。还可以在权限规则内指定某些操作必须使用指定的action，比如`"action in ['action-a','action-b']"`，来达到更灵活的权限控制。
+
+**注意action方法是db对象的方法，只能跟在db后面，不能跟在collection()后面**
+- 正确：`db.action("someactionname").collection('table1')`
+- 错误：`db.collection('table1').action("someactionname")`
 
 如果使用`<uni-clientdb>组件`，该组件也有action属性，设置action="someactionname"即可。
+```html
+<uni-clientdb ref="udb" collection="table1" action="someactionname" v-slot:default="{data,pagination,loading,error}">
+```
 
 action是一种特殊的云函数，它不占用服务空间的云函数数量。
 
-目前action还不支持本地运行。后续HBuilderX会支持。
+目前action还不支持本地运行。后续会支持。
 
 **新建action**
 
@@ -1057,14 +1064,14 @@ action是一种特殊的云函数，它不占用服务空间的云函数数量�
 
 每个action在uni-clientDB-actions目录下存放一个以action名称命名的js文件。
 
-在这个js文件的代码里，包括before和after两部分。
+在这个js文件的代码里，包括before和after两部分，分别代表clientDB具体操作数据库前和后。
 
-- before部分的常用用途：
+- before在clientDB执行前触发，before里的代码执行完毕后再开始操作数据库。before的常用用途：
 	* 对前端传入的数据进行二次处理
 	* 在此处开启数据库事务，万一操作数据库失败，可以在after里回滚
 	* 如果权限或字段值域校验不想配在schema和validateFunction里，也可以在这里做校验
 	
-- after部分的常用用途：
+- after在clientDB执行后触发，clientDB操作数据库后触发before里的代码。after的常用用途：
 	* 对将要返回给前端的数据进行二次处理
 	* 也可以在此处处理错误，回滚数据库事务
 	* 对数据库进行二次操作，比如前端查询一篇文章详情后，在此处对文章的阅读数+1。因为permission里定义，一般是要禁止前端操作文章的阅读数字段的，此时就应该通过action，在云函数里对阅读数+1
@@ -1074,7 +1081,7 @@ action是一种特殊的云函数，它不占用服务空间的云函数数量�
 ```js
 // 客户端发起请求，给todo表新增一行数据，同时指定action为add-todo
 const db = uniCloud.database()
-db.action('add-todo')
+db.action('add-todo') //注意action方法是db的方法，只能跟在db后面，不能跟在collection()后面
   .collection('todo')
   .add({
     title: 'todo title'
