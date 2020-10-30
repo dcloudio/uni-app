@@ -42,7 +42,7 @@
 |@load|EventHandle||广告加载成功的回调||
 |@error|EventHandle||广告加载失败的回调，event.detail = {errCode: }||
 |@close|EventHandle||广告关闭的回调||
-|@downloadchange|EventHandle||下载类广告的状态, event.detail = {status: }|仅App Android 支持|
+
 
 **type属性 百度**
 
@@ -85,19 +85,6 @@ App和微信小程序的ad组件没有type属性，可以用于banner，也可�
 - App端聚合的广点通(iOS)：[错误码](https://developers.adnet.qq.com/doc/ios/union/union_debug#%E9%94%99%E8%AF%AF%E7%A0%81)
 - App端聚合的广点通(Android)：[错误码](https://developers.adnet.qq.com/doc/android/union/union_debug#sdk%20%E9%94%99%E8%AF%AF%E7%A0%81)
 
-**@downloadchange status**
-
-|代码|说明|
-|:-|:-|
-|-1| 非下载|
-|0|未开始下载|
-|1|下载中|
-|2|下载暂停|
-|3|下载完成后|
-|4|下载失败|
-|5| 下载取消|
-|6|已安装|
-
 
 **示例：**
 
@@ -108,7 +95,7 @@ App和微信小程序的ad组件没有type属性，可以用于banner，也可�
     <!-- App平台 示例 1 -->
     <!-- adpid="1111111111" 此广告位标识仅在HBuilderX标准基座中有效，仅用于测试，替换为自己申请获取的广告位标识 -->
     <view class="ad-view">
-      <ad adpid="1111111111" @load="onload" @close="onclose" @error="onerror" @downloadchange="ondownloadchange"></ad>
+      <ad adpid="1111111111" @load="onload" @close="onclose" @error="onerror"></ad>
     </view>
 
     <!-- App平台 示例 2 -->
@@ -187,9 +174,6 @@ export default {
     },
     onerror(e) {
       console.log("onerror: " + e.detail.errCode + " message:: " + e.detail.errMsg);
-    },
-    ondownloadchange(e) {
-      console.log("downloadchanged: " + JSON.stringify(e.detail));
     }
   }
 }

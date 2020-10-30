@@ -61,7 +61,8 @@ const createSocketTaskById = function (socketTaskId, {
   socket.WebSocket({
     id: socketTaskId,
     url,
-    protocol: Array.isArray(protocols) ? protocols.join(',') : protocols
+    protocol: Array.isArray(protocols) ? protocols.join(',') : protocols,
+    header
   })
   socketTasks[socketTaskId] = socket
   return {

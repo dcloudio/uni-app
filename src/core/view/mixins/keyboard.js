@@ -7,12 +7,6 @@ import {
  */
 function iosHideKeyboard () { }
 
-function showSoftKeybord () {
-  plusReady(() => {
-    plus.key.showSoftKeybord()
-  })
-}
-
 function setSoftinputTemporary (vm, reset) {
   plusReady(() => {
     const MODE_ADJUSTRESIZE = 'adjustResize'
@@ -98,23 +92,11 @@ export default {
       default: true
     }
   },
-  watch: {
-    focus (val) {
-      if (val && __PLATFORM__ === 'app-plus') {
-        showSoftKeybord()
-      }
-    }
-  },
   directives: {
     keyboard: {
       inserted (el, binding, vnode) {
         vnode.context.initKeyboard(el)
       }
-    }
-  },
-  mounted () {
-    if ((this.autoFocus || this.focus) && __PLATFORM__ === 'app-plus') {
-      showSoftKeybord()
     }
   },
   methods: {

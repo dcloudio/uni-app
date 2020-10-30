@@ -388,11 +388,11 @@ uni-app 2.9+ 新增 leftWindow, topWindow, rightWindow 配置。用于解决宽�
 |softinputNavBar|String|auto|iOS软键盘上完成工具栏的显示模式，设置为 "none" 时关闭工具栏。|仅ios生效|
 |softinputMode|String|adjustPan|软键盘弹出模式，支持 adjustResize、adjustPan 两种模式|App|
 |pullToRefresh|Object||下拉刷新|App|
-|scrollIndicator|String||滚动条显示策略，设置为 "none" 时不显示滚动条。|App-vue|
+|scrollIndicator|String||滚动条显示策略，设置为 "none" 时不显示滚动条。|App|
 |animationType|String|pop-in|窗口显示的动画效果，详见：[窗口动画](api/router?id=animation)。|App|
 |animationDuration|Number|300|窗口显示动画的持续时间，单位为 ms。|App|
 **Tips**
-- `.nvue` 页面仅支持 `titleNView、pullToRefresh` 配置，其它配置项暂不支持
+- `.nvue` 页面仅支持 `titleNView、pullToRefresh、scrollIndicator` 配置，其它配置项暂不支持
 
 #### 导航栏@app-titleNView
 |属性|类型|默认值|描述|版本兼容性|

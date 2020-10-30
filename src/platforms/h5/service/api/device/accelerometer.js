@@ -1,42 +1,78 @@
-import {
-  publish
-} from '../../bridge'
-
 let listener
 
-export function enableAccelerometer ({
-  enable
-}) {
-  return enable ? startAccelerometer() : stopAccelerometer()
-}
+const callbackIds = []
 
-/**
- * 开始监听加速度数据
- */
-function startAccelerometer () {
-  if (window.DeviceMotionEvent) {
+export function startAccelerometer (options, callbackId) {
+  const {
+    invokeCallbackHandler: invoke
+  } = UniServiceJSBridge
+  if (!window.DeviceMotionEvent) {
+    return {
+      errMsg: 'startAccelerometer:fail'
+    }
+  }
+  function addEventListener () {
     listener = function (event) {
       const acceleration = event.acceleration || event.accelerationIncludingGravity
-      publish('onAccelerometerChange', {
-        x: acceleration.x || 0,
-        y: acceleration.y || 0,
-        z: acceleration.z || 0,
-        errMsg: 'onAccelerometerChange:ok'
+      callbackIds.forEach(callbackId => {
+        invoke(callbackId, {
+          x: acceleration.x || 0,
+          y: acceleration.y || 0,
+          z: acceleration.z || 0
+        })
       })
     }
     window.addEventListener('devicemotion', listener, false)
-    return {}
-  } else {
-    throw new Error('device nonsupport devicemotion')
   }
+  if (!listener) {
+    if (DeviceMotionEvent.requestPermission) {
+      DeviceMotionEvent.requestPermission().then((res) => {
+        if (res === 'granted') {
+          addEventListener()
+          invoke(callbackId, {
+            errMsg: 'startAccelerometer:ok'
+          })
+        } else {
+          invoke(callbackId, {
+            errMsg: `startAccelerometer:fail ${res}`
+          })
+        }
+      }).catch(error => {
+        invoke(callbackId, {
+          errMsg: `startAccelerometer:fail ${error}`
+        })
+      })
+      return
+    }
+    addEventListener()
+  }
+  return {}
 }
-/**
- * 停止监听加速度数据
- */
-function stopAccelerometer () {
+
+export function stopAccelerometer () {
   if (listener) {
     window.removeEventListener('devicemotion', listener, false)
     listener = null
   }
   return {}
+}
+
+export function onAccelerometerChange (callbackId) {
+  if (!callbackIds.length) {
+    startAccelerometer()
+  }
+  callbackIds.push(callbackId)
+}
+
+export function offAccelerometerChange (callbackId) {
+  // 暂不支持移除所有监听
+  if (callbackId) {
+    const index = callbackIds.indexOf(callbackId)
+    if (index >= 0) {
+      callbackIds.splice(index, 1)
+    }
+  }
+  if (!callbackIds.length) {
+    stopAccelerometer()
+  }
 }

@@ -35,16 +35,15 @@
         v-keyboard
         :disabled="disabled"
         :maxlength="maxlengthNumber"
-        :autofocus="autoFocus || focus"
         :class="{ 'uni-textarea-textarea-fix-margin': fixMargin }"
         :style="{ 'overflow-y': autoHeight ? 'hidden' : 'auto' }"
         class="uni-textarea-textarea"
-        @compositionstart="_compositionstart"
-        @compositionend="_compositionend"
-        @input.stop="_input"
-        @focus="_focus"
-        @blur="_blur"
-        @touchstart.passive="_touchstart"
+        @compositionstart="_onCompositionstart"
+        @compositionend="_onCompositionend"
+        @input.stop="_onInput"
+        @focus="_onFocus"
+        @blur="_onBlur"
+        @touchstart.passive="_onTouchstart"
       />
       <textarea
         v-if="disabled && fixColor"
@@ -62,12 +61,12 @@
 </template>
 <script>
 import {
-  baseInput
+  field
 } from 'uni-mixins'
 const DARK_TEST_STRING = '(prefers-color-scheme: dark)'
 export default {
   name: 'Textarea',
-  mixins: [baseInput],
+  mixins: [field],
   props: {
     name: {
       type: String,
@@ -82,14 +81,6 @@ export default {
       default: ''
     },
     disabled: {
-      type: [Boolean, String],
-      default: false
-    },
-    focus: {
-      type: [Boolean, String],
-      default: false
-    },
-    autoFocus: {
       type: [Boolean, String],
       default: false
     },
@@ -156,13 +147,6 @@ export default {
     focus (val) {
       if (val) {
         this.focusChangeSource = 'focus'
-        if (this.$refs.textarea) {
-          this.$refs.textarea.focus()
-        }
-      } else {
-        if (this.$refs.textarea) {
-          this.$refs.textarea.blur()
-        }
       }
     },
     focusSync (val) {
@@ -214,6 +198,8 @@ export default {
       }
       $vm = $vm.$parent
     }
+
+    this._initField('textarea')
   },
   beforeDestroy () {
     this.$dispatch('Form', 'uni-form-group-update', {
@@ -222,7 +208,7 @@ export default {
     })
   },
   methods: {
-    _focus: function ($event) {
+    _onFocus: function ($event) {
       this.focusSync = true
       this.$trigger('focus', $event, {
         value: this.valueSync
@@ -239,20 +225,20 @@ export default {
         this.$refs.textarea.selectionEnd = this.$refs.textarea.selectionStart = this.cursorNumber
       }
     },
-    _blur: function ($event) {
+    _onBlur: function ($event) {
       this.focusSync = false
       this.$trigger('blur', $event, {
         value: this.valueSync,
         cursor: this.$refs.textarea.selectionEnd
       })
     },
-    _compositionstart ($event) {
+    _onCompositionstart ($event) {
       this.composition = true
     },
-    _compositionend ($event) {
+    _onCompositionend ($event) {
       this.composition = false
       // 部分输入法 compositionend 事件可能晚于 input
-      this._input($event)
+      this._onInput($event)
     },
     // 暂无完成按钮，此功能未实现
     _confirm ($event) {
@@ -265,13 +251,13 @@ export default {
         value: this.valueSync
       })
     },
-    _touchstart () {
+    _onTouchstart () {
       this.focusChangeSource = 'touch'
     },
     _resize ({ height }) {
       this.height = height
     },
-    _input ($event) {
+    _onInput ($event) {
       if (this.composition) {
         this.valueComposition = $event.target.value
         return

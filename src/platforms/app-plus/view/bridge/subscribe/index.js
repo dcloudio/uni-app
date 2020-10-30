@@ -28,6 +28,10 @@ function onCssVar ({
   global.__WINDOW_BOTTOM = windowBottom
   if (uni.canIUse('css.var')) {
     const style = document.documentElement.style
+    // TODO
+    style.setProperty('--window-left', '0px')
+    style.setProperty('--window-right', '0px')
+
     style.setProperty('--window-top', windowTop + 'px')
     style.setProperty('--window-bottom', windowBottom + 'px')
     style.setProperty('--status-bar-height', statusbarHeight + 'px')

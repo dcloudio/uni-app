@@ -1,45 +1,76 @@
-const callbacks = []
-var listener
-/**
- * 监听罗盘数据
- * @param {*} callbackId
- */
-export function onCompassChange (callbackId) {
-  callbacks.push(callbackId)
-  if (!listener) {
-    startCompass()
-  }
-}
-/**
- * 开始监听罗盘数据
- */
-export function startCompass () {
+let listener
+
+const callbackIds = []
+
+export function startCompass (options, callbackId) {
   const {
     invokeCallbackHandler: invoke
   } = UniServiceJSBridge
-  if (window.DeviceOrientationEvent) {
+  if (!window.DeviceOrientationEvent) {
+    return {
+      errMsg: 'startCompass:fail'
+    }
+  }
+  function addEventListener () {
     listener = function (event) {
-      var direction = 360 - event.alpha
-      callbacks.forEach(callbackId => {
+      const direction = 360 - event.alpha
+      callbackIds.forEach(callbackId => {
         invoke(callbackId, {
-          errMsg: 'onCompassChange:ok',
           direction: direction || 0
         })
       })
     }
     window.addEventListener('deviceorientation', listener, false)
-    return {}
-  } else {
-    throw new Error('device nonsupport deviceorientation')
   }
+  if (!listener) {
+    if (DeviceOrientationEvent.requestPermission) {
+      DeviceOrientationEvent.requestPermission().then((res) => {
+        if (res === 'granted') {
+          addEventListener()
+          invoke(callbackId, {
+            errMsg: 'startCompass:ok'
+          })
+        } else {
+          invoke(callbackId, {
+            errMsg: `startCompass:fail ${res}`
+          })
+        }
+      }).catch(error => {
+        invoke(callbackId, {
+          errMsg: `startCompass:fail ${error}`
+        })
+      })
+      return
+    }
+    addEventListener()
+  }
+  return {}
 }
-/**
- * 停止监听罗盘数据
- */
+
 export function stopCompass () {
   if (listener) {
     window.removeEventListener('deviceorientation', listener, false)
     listener = null
   }
   return {}
+}
+
+export function onCompassChange (callbackId) {
+  if (!callbackIds.length) {
+    startCompass()
+  }
+  callbackIds.push(callbackId)
+}
+
+export function offCompassChange (callbackId) {
+  // 暂不支持移除所有监听
+  if (callbackId) {
+    const index = callbackIds.indexOf(callbackId)
+    if (index >= 0) {
+      callbackIds.splice(index, 1)
+    }
+  }
+  if (!callbackIds.length) {
+    stopCompass()
+  }
 }

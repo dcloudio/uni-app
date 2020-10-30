@@ -1,7 +1,7 @@
 <template>
   <uni-page :data-page="$route.meta.pagePath">
     <page-head
-      v-if="!hasTopWindow && navigationBar.type!=='none'"
+      v-if="!showTopWindow && navigationBar.type!=='none'"
       v-bind="navigationBar"
     />
     <page-refresh
@@ -32,8 +32,6 @@
   }
 </style>
 <script>
-import Vue from 'vue'
-
 import {
   upx2px
 } from 'uni-helpers/index'
@@ -169,7 +167,6 @@ export default {
   },
   data () {
     // 目前简单处理，存在topWindow时，始终不显示page head
-    const hasTopWindow = this.topWindow !== false && !!Vue.component('VUniTopWindow')
     let navigationBar = {}
     const titleNViewTypeList = {
       none: 'default',
@@ -240,9 +237,17 @@ export default {
     refreshOptions.range = upx2px(refreshOptions.range)
 
     return {
-      hasTopWindow,
       navigationBar,
       refreshOptions
+    }
+  },
+  computed: {
+    showTopWindow () {
+      try {
+        const appLayout = getApp().$children[0].$children[0]
+        return appLayout && appLayout.showTopWindow
+      } catch (e) {}
+      return false
     }
   },
   created () {

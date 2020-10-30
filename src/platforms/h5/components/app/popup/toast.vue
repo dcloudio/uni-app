@@ -104,6 +104,7 @@ uni-toast {
   display: block;
   box-sizing: border-box;
   pointer-events: none;
+  font-size: 16px;
 }
 
 uni-toast .uni-sample-toast {
