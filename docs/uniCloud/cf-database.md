@@ -12337,8 +12337,11 @@ let res = await db.collection('items').aggregate()
 ```
 返回结果如下：
 ```js
+// res = 
 {
-  "expensiveCount": 3
+  "data": [{
+    "expensiveCount": 3
+  }]
 }
 ```
 
