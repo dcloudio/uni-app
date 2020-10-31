@@ -276,9 +276,10 @@ export default {
       })
     },
     checkMaxWidth () {
+      const windowWidth = document.body.clientWidth
       const maxWidth = parseInt(this.$route.meta.maxWidth)
       let showMaxWidth = false
-      if (window.innerWidth > maxWidth) {
+      if (windowWidth > maxWidth) {
         showMaxWidth = true
       } else {
         showMaxWidth = false
@@ -291,11 +292,11 @@ export default {
         return
       }
       if (showMaxWidth && maxWidth) {
-        this.marginWidth = (window.innerWidth - maxWidth) / 2
+        this.marginWidth = (windowWidth - maxWidth) / 2
         this.$nextTick(() => {
           this.onLeftWindowInit()
           this.onRightWindowInit()
-          this.$containerElem.setAttribute('style', 'max-width:' + maxWidth + 'px;margin:0 auto')
+          this.$containerElem.setAttribute('style', 'max-width:' + maxWidth + 'px;margin:0 auto;')
         })
       } else {
         this.marginWidth = 0
