@@ -22,7 +22,7 @@
 
 `<uni-clientdb>` 组件的查询语法是`jql`，这是一种比sql语句和nosql语法更简洁、更符合js开发者习惯的查询语法。没学过sql或nosql的前端，也可以轻松掌握。[jql详见](https://uniapp.dcloud.net.cn/uniCloud/uni-clientDB?id=jsquery)
 
-`<uni-clientdb>` 组件只支持查询。如果要对数据库进行新增修改删除操作，仍需使用clientDB的js API进行add、update、remove操作。
+`<uni-clientdb>` 组件只支持查询。如果要对数据库进行新增修改删除操作，仍需使用clientDB的js API进行add、update、remove操作。另，`<uni-clientdb>` 组件自带了一个封装remove方法，见下文方法章节
 
 `<uni-clientdb>` 组件没有预置到基础库，需单独下载插件到工程中。下载地址为：[https://ext.dcloud.net.cn/plugin?id=3256](https://ext.dcloud.net.cn/plugin?id=3256)
 
@@ -141,7 +141,7 @@ handleError(e) {
 
 ## 方法
 
-- loadData
+### loadData
 
 当 `<uni-clientdb>` 组件的 manual 属性设为为 true 时，不会在页面初始化时联网查询数据，此时需要通过本方法手动加载数据
 
@@ -149,7 +149,7 @@ handleError(e) {
 this.$refs.udb.loadData() //udb为uni-clientdb组件的ref属性值
 ```
 
-- loadMore
+### loadMore
 
 在列表的加载下一页场景下，使用ref方式访问组件方法，加载更多数据，每加载成功一次，当前页 +1
 
@@ -157,7 +157,57 @@ this.$refs.udb.loadData() //udb为uni-clientdb组件的ref属性值
 this.$refs.udb.loadMore() //udb为uni-clientdb组件的ref属性值
 ```
 
-- dataList
+### remove
+
+在列表页面，如果想删除一个item，原本要做很多事：
+1. 弹出删除确认框
+2. 弹出loading
+3. 调用clientDB的js api删除云端数据
+4. 接收云端删除结果，如果成功则关闭loading
+5. 进一步删除列表的data中对应的item，刷新页面
+
+为减少重复开发，`clientDB`组件提供了remove方法，在列表渲染时绑定好index，直接调用remove方法即可一行代码完成上述5步。
+
+首先在列表生成的时候给删除按钮绑定好id：
+
+```html
+<uni-clientdb ref="udb" :collection="collectionName" v-slot:default="{data,pagination,loading,error}">
+	<uni-table :loading="loading" :emptyText="error.message || '没有更多数据'" border stripe >
+		<uni-tr>
+			<uni-th>用户名</uni-th>
+			<uni-th>操作</uni-th>
+		</uni-tr>
+		<uni-tr v-for="(item,index) in data" :key="index">
+			<uni-th>{{item.username}}</uni-th>
+			<uni-td>
+				<view>
+					<button @click="confirmDelete(item._id)" type="warn">删除</button>
+				</view>
+			</uni-td>
+		</uni-tr>
+	</uni-table>
+</uni-clientdb>
+```
+
+然后confirmDelete方法里面其实只有一句话：
+
+```js
+confirmDelete(id) {
+	this.$refs.udb.remove(id)
+}
+```
+
+`clientDB`组件的remove方法的参数只支持传入数据库的_id进行删除，不支持其他where条件删除。
+
+参数传入的_id支持单个，也支持多个，即可以批量删除。多个id的格式是：
+
+```js
+this.$refs.udb.remove(["5f921826cf447a000151b16d", "5f9dee1ff10d2400016f01a4"])
+```
+
+<!-- 注意：如果列表分页采取分页组件，每页有固定数量，那么`clientDB`组件的remove方法删除数据后，该页的列表项会减少。 -->
+
+### dataList
 
 在js中，可以打印`<uni-clientdb>` 组件的data
 
