@@ -336,39 +336,39 @@ uniCloud推出了`openDB`开源数据库规范，包括用户表、文章表、�
 
 2. 底部 “扩展校验函数” 点击 “+” 增加校验函数 ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/2f4d0230-12a2-11eb-b244-a9f5e5565f30.png)
 
-给函数起个名字，比如叫“checkabc”，然后写具体的js代码，如下
+  给函数起个名字，比如叫“checkabc”，然后写具体的js代码，如下
 
-```
-// 扩展校验函数示例
-exports = function (rule, value, data, callback) {
-  // rule  当前规则
-  // value 当前规则校验数据
-  // data  全部校验数据
-  // callback 可选，一般用于自定义 errorMessage，如果执行了callback return 值无效，callback 传入的 message 将替换 errorMessage
-  // callback(new Error('message')) 传入 Error 类型时校验不通过
-  // callback('message') 传入 String 类型时通过
-  return value.length < 10
-}
-```
+  ```js
+  // 扩展校验函数示例
+  exports = function (rule, value, data, callback) {
+    // rule  当前规则
+    // value 当前规则校验数据
+    // data  全部校验数据
+    // callback 可选，一般用于自定义 errorMessage，如果执行了callback return 值无效，callback 传入的 message 将替换 errorMessage
+    // callback(new Error('message')) 传入 Error 类型时校验不通过
+    // callback('message') 传入 String 类型时通过
+    return value.length < 10
+  }
+  ```
 
 3. 在表结构 schema 编辑页面中的`validateFunction`属性中配置上面编写的 扩展校验函数 的名称，保存生效
 
-```json
-{
-  "bsonType": "object",
-  "required": ["name"],
-  "properties": {
-    "name": {
-      "bsonType": "string",
-      "label": "姓名",
-      "validateFunction": "checkabc",
-      "errorMessage": {
-        "required": "{label}不能为空"
+  ```json
+  {
+    "bsonType": "object",
+    "required": ["name"],
+    "properties": {
+      "name": {
+        "bsonType": "string",
+        "label": "姓名",
+        "validateFunction": "checkabc",
+        "errorMessage": {
+          "required": "{label}不能为空"
+        }
       }
     }
   }
-}
-```
+  ```
 
 `validateFunction`里的代码是可以联网的。一个常见场景是内容的敏感词过滤，可以将内容提交到三方校验服务里，如果校验通过再入库
 
