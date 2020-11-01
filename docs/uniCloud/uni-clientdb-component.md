@@ -189,7 +189,7 @@ this.$refs.udb.loadMore() //udb为uni-clientdb组件的ref属性值
 </uni-clientdb>
 ```
 
-然后confirmDelete方法里面其实只有一句话：
+然后confirmDelete方法里面只有一行代码：
 
 ```js
 confirmDelete(id) {
@@ -204,6 +204,8 @@ confirmDelete(id) {
 ```js
 this.$refs.udb.remove(["5f921826cf447a000151b16d", "5f9dee1ff10d2400016f01a4"])
 ```
+
+在uniCloud的web控制台的`DB Schema`界面，可自助生成数据表的admin管理插件，其中有多行数据批选批删示例。
 
 <!-- 注意：如果列表分页采取分页组件，每页有固定数量，那么`clientDB`组件的remove方法删除数据后，该页的列表项会减少。 -->
 
