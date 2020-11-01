@@ -754,7 +754,7 @@ db.collection('street').where("shop_id=='123123 || shop_id=='456456'").get()
 
 `DB Schema`里有大量的信息，有了这些信息，前端将无需自己开发表单维护界面，uniCloud可以自动生成新增数据、修改数据的表单页面。
 
-为强化表单的自定义性，`DB Schema`还扩展了label、component、group、order等属性。
+为强化表单的自定义性，`DB Schema`还扩展了label、component、group、order等属性，以控制表单项在界面上的渲染控件。
 
 前端表单生成系统功能包括：
 - 自动生成新增、修改表单的页面文件，分别是add.vue和edit.vue
@@ -1064,3 +1064,8 @@ component 类型为数组
     <uni-forms-item label="年龄"><input  placeholder="请输入年龄" /></uni-forms-item>
   </uni-group>
 ```
+
+**Bug&Tips**
+
+- 表单验证是可商用的。而生成前端表单页面，只是一个代码辅助生成工具，生成后的代码，免不了二次开发调整。
+- 已知生成代码功能在处理字段类型为时间、枚举时有问题，需要对生成的代码再修改调整
