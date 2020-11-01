@@ -168,7 +168,7 @@ DCloud暂无计划开发百度、头条、QQ等小程序的登录，以及Apple 
 
 为什么需要权限管理？
 - 对于后台管理系统，除了超级管理员，不同账号通常需根据职位、责任设定不同的系统权限。
-- [clientDB](https://uniapp.dcloud.net.cn/uniCloud/uni-clientDB)允许前端直接操作数据库，但部分字段应该是系统计算或管理员设置的，比如文章的阅读数、收藏数及是否加精置顶，这些字段不允许普通用户在前端通过clientDB直接修改，此时也需要通过权限控制来保证系统的安全稳定。 
+- [clientDB](https://uniapp.dcloud.io/uniCloud/database)允许前端直接操作数据库，但部分字段应该是系统计算或管理员设置的，比如文章的阅读数、收藏数及是否加精置顶，这些字段不允许普通用户在前端通过clientDB直接修改，此时也需要通过权限控制来保证系统的安全稳定。 
 
 `uni-id`如何解决权限管理问题？
 - 基于经典的RBAC模型实现内置角色权限系统。
@@ -198,7 +198,7 @@ RBAC：Role-Based Access Control，基于角色的访问控制。
     "_id":"5f8428181c229600010389f6",
     "username":"uniapp",
     "email":"hr2013@dcloud.io",
-    role:[
+    "role":[
       "USER_ADMIN",
       "NOTICE_ADMIN"
     ],
@@ -234,7 +234,7 @@ RBAC：Role-Based Access Control，基于角色的访问控制。
     "_id":"5f8428181c229600010389f6",
     "role_id":"USER_ADMIN",
     "role_name":"人事管理",
-    permission:[
+    "permission":[
       "USER_ADD",
       "USER_EDIT",
       "USER_DEL"
@@ -245,7 +245,7 @@ RBAC：Role-Based Access Control，基于角色的访问控制。
     "_id":"5f842836d8daea0001906785",
     "role_id":"NOTICE_ADMIN",
     "role_name":"公告管理",
-    permission:[
+    "permission":[
       "NOTICE_ADD",
       "NOTICE_EDIT",
       "NOTICE_DEL"
@@ -261,7 +261,7 @@ RBAC：Role-Based Access Control，基于角色的访问控制。
 // db-permission/uni-id-users.js
 
 {
-  ".update":"doc._id == auth.uid || 'USER_ADMIN' in auth.role" //用户自己或人事管理员可执行用户表的.update操作
+  "update":"doc._id == auth.uid || 'USER_ADMIN' in auth.role" //用户自己或人事管理员可执行用户表的.update操作
 }
 ```
 
@@ -308,7 +308,7 @@ RBAC：Role-Based Access Control，基于角色的访问控制。
 // db-permission/uni-id-users.js
 
 {
-  ".update":"doc._id == auth.uid || 'USER_EDIT' in auth.permission" //用户自己或有`USER_EDIT`权限的用户，可执行用户表的.update操作
+  "update":"doc._id == auth.uid || 'USER_EDIT' in auth.permission" //用户自己或有`USER_EDIT`权限的用户，可执行用户表的.update操作
 }
 ```
 
