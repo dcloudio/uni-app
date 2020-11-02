@@ -12,8 +12,8 @@
 - 客户端调用的js API见：[https://www.html5plus.org/doc/zh_cn/push.html](https://www.html5plus.org/doc/zh_cn/push.html)
 - web自助发送界面：在DCloud的开发者后台：[https://dev.dcloud.net.cn/](https://dev.dcloud.net.cn/)，选择应用后点击uniPush栏目。
 - 编写代码调用服务器接口发送push消息：
-* 如果使用uniCloud开发服务器，可以使用封装好的插件，更简单易用：[https://ext.dcloud.net.cn/plugin?id=1680](https://ext.dcloud.net.cn/plugin?id=1680)
-* 如果使用传统服务器开发，文档仍然是个推的服务器文档[http://docs.getui.com/](http://docs.getui.com/)。
+  * 如果使用uniCloud开发服务器，可以使用封装好的插件，更简单易用：[https://ext.dcloud.net.cn/plugin?id=1680](https://ext.dcloud.net.cn/plugin?id=1680)
+  * 如果使用传统服务器开发，文档仍然是个推的服务器文档[http://docs.getui.com/](http://docs.getui.com/)。
 
 **其他相关资源**
 - 检查应用是否被授予推送权限：[https://ext.dcloud.net.cn/plugin?id=594](https://ext.dcloud.net.cn/plugin?id=594)
@@ -35,17 +35,23 @@
 
 ### 小程序平台
 
-小程序平台的类似概念叫做`模板消息`。
+小程序平台的类似概念叫做`模板消息`，也有的平台改名为`订阅消息`。
 
-以微信为例，开发者的服务器发送消息给微信的服务器，微信服务器会发送一条模板消息，折叠到微信的消息列表中的服务通知里。它属于后台开发，和手机端无关。
+以微信为例，开发者的服务器发送消息给微信的服务器，微信服务器会发送一条订阅消息，折叠到微信的消息列表中的服务通知里。它属于后台开发，和手机端无关。
 
-微信模板消息文档：[https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/template-message.html](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/template-message.html)
+如果使用uniCloud发送微信、支付宝订阅消息，参考：[https://ext.dcloud.net.cn/plugin?id=1810](https://ext.dcloud.net.cn/plugin?id=1810)
 
-如果使用uniCloud发送微信模板消息，参考：[https://ext.dcloud.net.cn/plugin?id=1810](https://ext.dcloud.net.cn/plugin?id=1810)
+微信订阅消息文档：[https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/subscribe-message.html](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/subscribe-message.html)
 
 支付宝模板消息文档：[https://docs.alipay.com/mini/introduce/message](https://docs.alipay.com/mini/introduce/message)
 
 百度模板消息文档：[https://smartprogram.baidu.com/docs/develop/third/api/](https://smartprogram.baidu.com/docs/develop/third/api/)
+
+字节跳动订阅消息文档：[https://microapp.bytedance.com/docs/zh-CN/mini-app/develop/functional-plug-in/subscribemessage/](https://microapp.bytedance.com/docs/zh-CN/mini-app/develop/functional-plug-in/subscribemessage/)
+
+QQ小程序订阅消息文档：[https://q.qq.com/wiki/develop/miniprogram/frame/open_ability/open_message.html#%E8%AE%A2%E9%98%85%E6%B6%88%E6%81%AF](https://q.qq.com/wiki/develop/miniprogram/frame/open_ability/open_message.html#%E8%AE%A2%E9%98%85%E6%B6%88%E6%81%AF)
+
+华为快应用推送文档：[https://developer.huawei.com/consumer/cn/doc/development/quickApp-References/webview-api-hwpush](https://developer.huawei.com/consumer/cn/doc/development/quickApp-References/webview-api-hwpush)
 
 <!--
 **注意：以下API暂停维护，仅为向下兼容而保留。App端 uni push 的API请使用 [https://www.html5plus.org/doc/zh_cn/push.html](https://www.html5plus.org/doc/zh_cn/push.html)**
