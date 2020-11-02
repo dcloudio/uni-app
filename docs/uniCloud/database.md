@@ -586,31 +586,65 @@ const db = uniCloud.database()
 
 获取到db的表对象后，通过`add`方法新增数据记录。
 
-`add`方法的参数为要新增的json数据，可以是单条数据、也可以是多条数据。
+方法：collection.add(data)
 
-注意：如果是非admin账户新增数据，需要在数据库中待操作表的`db schema`中要配置permission权限，赋予create为true。
+**参数说明**
 
-示例：
+| 参数	| 类型					| 必填	|
+| ----	| ------				| ----	|
+| data	| object &#124; array	| 是	|
+
+data支持一条记录，也支持多条记录一并新增到集合中。
+
+data中不需要包括`_id`字段，数据库会自动维护该字段。
+
+**返回值**
+
+单条插入时
+
+| 参数	| 类型	|  说明										|
+| ----	| ------|  ----------------------------------------	|
+|id		| String|插入记录的`_id`								|
+
+批量插入时
+
+| 参数		| 类型	|  说明										|
+| ----		| ------|  ----------------------------------------	|
+| inserted	| Number| 插入成功条数								|
+|ids		| Array	|批量插入所有记录的`_id`						|
+
+**示例：**
+
+比如在user表里新增一个叫王五的记录：
 
 ```js
-// 一次插入3条数据
 const db = uniCloud.database();
-db.collection("table1").add(
-	[{
-	  name: 'Alex'
-	},{
-	  name: 'Ben'
-	},{
-	  name: 'John'
-	}]
-)
+db.collection('user').add({name:"王五"})
 ```
+
+也可以批量插入数据并获取返回值
+
+```js
+const db = uniCloud.database();
+const collection = db.collection('user');
+let res = await collection.add([{
+  name: '张三'
+},{
+  name: '李四'
+},{
+  name: '王五'
+}])
+```
+
+如果上述代码执行成功，则res的值将包括inserted:3，代表插入3条数据，同时在ids里返回3条记录的`_id`。
+
+如果新增记录失败，会抛出异常，以下代码示例为捕获异常：
 
 ```js
 // 插入1条数据，同时判断成功失败状态
 const db = uniCloud.database();
-db.collection("table1")
-	.add({name: 'Ben'})
+db.collection("user")
+	.add({name: '张三'})
 	.then((res) => {
 		uni.showToast({
 			title: '新增成功'
@@ -628,8 +662,8 @@ db.collection("table1")
 ```
 
 **Tips**
-
-- 云服务商选择阿里云时，若集合表不存在，调用add方法会自动创建集合表
+- 如果是非admin账户新增数据，需要在数据库中待操作表的`db schema`中要配置permission权限，赋予create为true。
+- 云服务商选择阿里云时，若集合表不存在，调用add方法会自动创建集合表，并且不会报错。
 
 
 ### 删除数据记录remove
