@@ -26,7 +26,7 @@ export default {
         const popoverWidth = getNumber(popover.width)
         const popoverTop = getNumber(popover.top)
         const popoverHeight = getNumber(popover.height)
-        const center = (popoverLeft + popoverWidth) / 2
+        const center = popoverLeft + popoverWidth / 2
         contentStyle.transform = 'none !important'
         const contentLeft = Math.max(0, center - 300 / 2)
         contentStyle.left = `${contentLeft}px`
