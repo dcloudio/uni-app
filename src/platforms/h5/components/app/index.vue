@@ -9,7 +9,7 @@
     <tab-bar
       v-if="hasTabBar"
       v-show="showTabBar"
-      v-bind="tabBar"
+      v-bind="tabBarOptions"
     />
     <toast
       v-if="$options.components.Toast"
@@ -47,6 +47,10 @@ import components from './components'
 
 import mixins from 'uni-h5-app-mixins'
 
+import {
+  tabBar
+} from './observable'
+
 export default {
   name: 'App',
   components,
@@ -63,7 +67,6 @@ export default {
     return {
       transitionName: 'fade',
       hideTabBar: false,
-      tabBar: __uniConfig.tabBar || {},
       sysComponents: this.$sysComponents,
       showMaxWidth: false
     }
@@ -72,8 +75,11 @@ export default {
     key () {
       return this.$route.meta.name + '-' + this.$route.params.__id__ + '-' + (__uniConfig.reLaunch || 1)
     },
+    tabBarOptions () {
+      return tabBar
+    },
     hasTabBar () {
-      return __uniConfig.tabBar && __uniConfig.tabBar.list && __uniConfig.tabBar.list.length
+      return tabBar.list && tabBar.list.length
     },
     showTabBar () {
       return this.$route.meta.isTabBar && !this.hideTabBar
