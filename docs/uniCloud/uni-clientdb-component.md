@@ -350,7 +350,7 @@ H5平台，开发模式下浏览器控制台输入 `unidev.clientDB.data`，可�
       </view>
       <view class="loading" v-if="loading">加载中...</view>
       <!-- 分页组件 -->
-      <uni-pagination show-icon :page-size="pagination.size" total="pagination.total" @change="onpagination" />
+      <uni-pagination show-icon :page-size="pagination.size" total="pagination.count" @change="onpagination" />
     </uni-clientdb>
   </view>
 </template>
