@@ -141,7 +141,7 @@ exports.main = async (event, context) => {
 
 ### Null
 
-  Null 相当于一个占位符，表示一个字段存在但是值为空。
+Null 相当于一个占位符，表示一个字段存在但是值为空。
 
 ## 新增文档@add
 

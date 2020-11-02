@@ -85,7 +85,7 @@ uniCloud同时支持阿里云和腾讯云，它们的数据库大体相同，有
 - [云函数使用传统MongoDB语法操作数据库](uniCloud/cf-database)
 - [前端操作数据库，clientDB和jql](uniCloud/cf-database)
 
-## 获取数据库对象
+## 获取数据库对象@database
 
 想要通过代码操作数据库，第一步要获取服务空间里的数据库对象。
 
@@ -95,15 +95,22 @@ uniCloud同时支持阿里云和腾讯云，它们的数据库大体相同，有
 const db = uniCloud.database();
 ```
 
-<!-- 
+
 **DBOptions参数说明**
 
 |字段		|类型		|必填	|描述											|平台差异说明	|
 |:-:		|:-:		|:-:	|:-:											|:-:					|
 |spaceId|String	|否		|同一账号下的，服务空间ID	|仅腾讯云支持	|
- -->
+
+```js
+// 如果ID为tcb-space-demo的服务空间也在你的账号下，可以通过这种方式访问tcb-space-demo的数据库。调用此接口的服务空间和tcb-space-demo对应的服务空间均为腾讯云才可以正常使用
+const db = uniCloud.database({
+  spaceId: 'tcb-space-demo'
+});
+```
+
  
-## 创建一个集合/数据表
+## 创建一个集合/数据表@createCollection
 
 新建的服务空间，没有一个集合。需要首先创建集合。
 
