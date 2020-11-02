@@ -440,7 +440,7 @@ export default {
         case 'getScale':
           this.mapReady(() => {
             callback({
-              scale: Number(this.scale)
+              scale: this._map.getZoom()
             })
           })
           break
@@ -472,16 +472,32 @@ export default {
       })
       maps.event.addListener(map, 'dragstart', () => {
         this.$trigger('regionchange', {}, {
-          type: 'begin'
+          type: 'begin',
+          causedBy: 'gesture'
         })
       })
+      function getMapInfo () {
+        var center = map.getCenter()
+        return {
+          scale: map.getZoom(),
+          centerLocation: {
+            latitude: center.getLat(),
+            longitude: center.getLng()
+          }
+        }
+      }
       maps.event.addListener(map, 'dragend', () => {
-        this.$trigger('regionchange', {}, {
-          type: 'end'
-        })
+        this.$trigger('regionchange', {}, Object.assign({
+          type: 'end',
+          causedBy: 'drag'
+        }, getMapInfo()))
       })
       maps.event.addListener(map, 'zoom_changed', () => {
         this.$emit('update:scale', map.getZoom())
+        this.$trigger('regionchange', {}, Object.assign({
+          type: 'end',
+          causedBy: 'scale'
+        }, getMapInfo()))
       })
       maps.event.addListener(map, 'center_changed', () => {
         var latitude
