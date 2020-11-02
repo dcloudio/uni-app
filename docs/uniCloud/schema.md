@@ -59,6 +59,7 @@
 1. `DB Schema`的各种功能均只支持`clientDB`。如果使用云函数操作数据库，schema的作用仅仅是描述字段信息。同时强烈推荐使用HBuilderX 2.9.5以上版本使用`clientDB`。
 2. 生成表单页面的功能，入口在uniCloud web控制台的数据库schema界面，注意该功能需搭配HBuilderX 2.9.5+版本。
 3. 暂不支持子属性校验
+4. 如果需要使用地理位置相关功能，需要把对应字段bsonType设置为object
 
 
 ### 字段类型bsonType
