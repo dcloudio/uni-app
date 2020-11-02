@@ -241,7 +241,7 @@ H5平台，开发模式下浏览器控制台输入 `unidev.clientDB.data`，可�
 </template>
 ```
 
-联表查询详情参考 [https://uniapp.dcloud.net.cn/uniCloud/database?id=lookup](https://uniapp.dcloud.net.cn/uniCloud/database?id=lookup)
+联表查询详情参考 [https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=lookup](https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=lookup)
 
 ## 列表分页@page
 - 列表分页模式1：上拉加载上一页。下一页的查询结果会追加合并到data里

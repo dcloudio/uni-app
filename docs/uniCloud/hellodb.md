@@ -77,13 +77,13 @@ uniCloud同时支持阿里云和腾讯云，它们的数据库大体相同，有
 
 - 云函数操作数据库是较为传统的开发方式，使用nodejs写云函数、使用传统的MongoDB的API操作云数据库。
 
-- 客户端访问云数据库，称为[clientDB](https://uniapp.dcloud.net.cn/uniCloud/database)。这种开发方式可大幅提升开发效率，避免开发者开发服务器代码，并且支持更易用的`jql`语法操作数据库，是更为推荐的开发方式。[clientDB](https://uniapp.dcloud.net.cn/uniCloud/database)有单独一套权限和字段值控制系统，无需单独数据库安全。（使用[clientDB](https://uniapp.dcloud.net.cn/uniCloud/database)推荐HBuilderX 2.9.5以上版本。2.9.5以下的版本需单独下载插件，并且不支持`jql`，不再推荐使用。）
+- 客户端访问云数据库，称为[clientDB](https://uniapp.dcloud.net.cn/uniCloud/clientdb)。这种开发方式可大幅提升开发效率，避免开发者开发服务器代码，并且支持更易用的`jql`语法操作数据库，是更为推荐的开发方式。[clientDB](https://uniapp.dcloud.net.cn/uniCloud/clientdb)有单独一套权限和字段值控制系统，无需单独数据库安全。（使用[clientDB](https://uniapp.dcloud.net.cn/uniCloud/clientdb)推荐HBuilderX 2.9.5以上版本。2.9.5以下的版本需单独下载插件，并且不支持`jql`，不再推荐使用。）
 
 不管使用哪种方法，都有很多公共的概念或功能。本文档将讲述这些公共的内容。
 
 同时左侧导航有2种方法的专项链接，描述它们各自特有的功能。
 - [云函数使用传统MongoDB语法操作数据库](uniCloud/cf-database)
-- [前端操作数据库，clientDB和jql](uniCloud/cf-database)
+- [前端操作数据库，clientDB和jql](uniCloud/clientdb)
 
 ## 获取数据库对象@database
 
@@ -211,7 +211,7 @@ collection对象的方法可以增和查数据，删和改不能直接操作，�
 
 具体前端clientDB和云函数各自增删改查的方法，请单独参考文档：
 - [云函数使用传统MongoDB语法操作数据库](uniCloud/cf-database)
-- [前端操作数据库，clientDB和jql](uniCloud/cf-database)
+- [前端操作数据库，clientDB和jql](uniCloud/clientdb)
 
 ## 数据导入导出和备份
 
