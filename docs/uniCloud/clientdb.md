@@ -449,7 +449,7 @@ db.collection('order')
 1. 滚动到底加载下一页
 2. 点击页码按钮切换不同页
 
-推荐通过`<uni-clientDB>`组件处理分页，详见：[https://uniapp.dcloud.net.cn/uniCloud/uni-clientdb-component?id=page](https://uniapp.dcloud.net.cn/uniCloud/uni-clientdb-component?id=page)
+推荐通过`<uni-clientDB>`组件渲染分页列表，详见：[https://uniapp.dcloud.net.cn/uniCloud/uni-clientdb-component?id=page](https://uniapp.dcloud.net.cn/uniCloud/uni-clientdb-component?id=page)
 
 ### 排序orderBy@orderby
 

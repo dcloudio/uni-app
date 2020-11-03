@@ -8,13 +8,19 @@
 
 `uni-id`为`uniCloud`开发者提供了简单、统一、可扩展的用户管理能力封装。
 
+[clientDB](uniCloud/clientDB)、[DB Schema](uniCloud/schema)、[uniCloud admin](uniCloud/admin)，这些产品都基于`uni-id`的账户体系。可以说`uni-id`是uniCloud不可获取的基础能力。
+
 # 组成部分
+
 `uni-id`包括如下组成部分：
+
 1. 云数据库
 
-主表为 `uni-id-users` 表，保存用户的基本信息。
+主表为 `uni-id-users` 表，保存用户的基本信息。扩展字段有很多，如实名认证数据、工作履历数据，开发者可以自由扩展。
 
-扩展字段有很多，如实名认证数据、工作履历数据，开发者可以自由扩展。
+还有 uni-id- 开头的十几个附表，比如权限表`uni-id-permissions`、角色表`uni-id-roles`、积分表`uni-id-scores`、设备表`uni-id-device`...
+
+所有`uni-id`的数据表，在uniCloud web控制台新建表的界面上，都可以选择这些数据表模板，直接建好。
 
 2. 云函数
 
@@ -29,6 +35,7 @@
 uniCloud框架底层，会自动在callfunction时传递`uni-id`的token（uni-app 2.7.13+版本）。在云函数的event中可直接拿到`uni-id`的token。也就是说开发者无需自己管理token了。
 
 # uni-id 对开发者的价值
+
 1. 节省了大量重复劳动
 2. 降低门槛，前端开发者无需纠结怎样设计数据库设计才更合理
 3. 多系统打通用户和上下游协同
@@ -39,18 +46,21 @@ uniCloud框架底层，会自动在callfunction时传递`uni-id`的token（uni-a
 
 在插件市场，每类模板插件都能找到，但他们如果不是基于同一套用户体系设计，就很难整合。
 
-DCloud推荐所有uniCloud的应用，都基于`uni-id`来做。
+所有uniCloud的应用，几乎都基于`uni-id`来做。
 
 有了统一的账户规范，并且围绕这套账户规范，有各种各样插件，那么开发者可以随意整合这些插件，让数据连同。
 
 规范，还可以让上下游充分协同。插件市场会出现各种数据迁移插件，比如把从discuz里把用户迁移到`uni-id`中的插件，相信围绕这套规范的产业链会非常活跃。
 
+事实上，[clientDB](uniCloud/clientDB)、[DB Schema](uniCloud/schema)、[uniCloud admin](uniCloud/admin)等重要uniCloud产品，以及插件市场上各种优秀的轮子，都是基于`uni-id`的。
+
 # 现状和未来
 
-`uni-id`已完整的内容：
+`uni-id`已完成的内容：
 
 - 注册、登录、发送短信验证码、密码加密保存、修改密码、token管理（短信验证码功能需要HBuilderX 2.8.3+）
 - 三方登录：App中的微信登录、微信小程序中的微信登录、支付宝小程序中的支付宝账户登录 
+- rbac权限角色体系
 
 关于还缺少的部分，哪些DCloud在完善，哪些希望开发者给共同完善开源项目，计划与边界公布如下：
 
@@ -66,10 +76,6 @@ DCloud暂无计划开发百度、头条、QQ等小程序的登录，以及Apple 
 
 目前插件市场里已经有不少相关插件，未来DCloud会整合到`uni-id`中。
 
-4. 权限管理ACL
-
-这部分欢迎开发者参与完善。
-
 其他方面，各种常见开源项目如discuz、wordPress、ecshop的用户导入插件，不属于`uni-id`主工程，欢迎开发者单独提交插件到插件市场。
 
 `uni-id`的git仓库：[https://gitee.com/dcloud/uni-id.git](https://gitee.com/dcloud/uni-id.git)
@@ -79,16 +85,14 @@ DCloud暂无计划开发百度、头条、QQ等小程序的登录，以及Apple 
 
 使用uni-id需要按照以下步骤操作
 
-1. 准备2.7.14或以上版本的HBuilderX
+1. 准备2.8或以上版本的HBuilderX
 2. 插件市场导入`uni-id`公用模块，[插件市场 uni-id](https://ext.dcloud.net.cn/plugin?id=2116)
 3. 修改公用模块`uni-id`下的`config.json`内所需参数（请参考下面config.json的说明）
 4. 上传`cloudfunctions/common`下的`uni-id`模块
 5. 按照[公用模块使用说明](https://uniapp.dcloud.io/uniCloud/cf-common)在云函数下安装`uni-id`模块
-6. 创建`uni-id-users`、`uni-verify`集合（可以直接使用示例项目里面的db_init.json进行初始化）
+6. 创建`uni-id-users`、`uni-verify`集合（uni-verify是验证码表。可以使用示例项目里面的db_init.json进行初始化、也可以在web控制台新建表时选择这些表模块）
 
 或者直接导入[uni-id在插件市场的示例工程](https://ext.dcloud.net.cn/plugin?id=2116)
-
-导入示例项目时，如果选择腾讯云，在HBuilderX2.7及以下版本中，需要进入项目目录，手动将目录`cloudfunctions-aliyun`改名为`cloudfunctions-tcb`，然后在HBuilderX中右键cloudfunctions绑定服务空间。
 
 **config.json的说明**
 
@@ -380,7 +384,7 @@ username可以是字符串、可以是email、可以是手机号，本插件不�
 
 比如要求username为手机号，则自行在前端界面上做好提示，在后台对格式进行校验。
 
-password入库时会自动进行一次sha1加密，不明文存储密码。
+password入库时会自动进行一次sha1加密，不明文存储密码。秘钥是开发者在config.json里自行配置的。
 
 **响应参数**
 
@@ -2207,6 +2211,19 @@ exports.main = async function(event,context) {
 | permission_name	| String		| 否	| 权限名，展示用												|
 | comment					| String		| 否	| 备注																	|
 | created_date		| Timestamp	| 是	| 权限创建时间													|
+
+## 更多表
+
+还有更多uni-id的配套数据表，可以在uniCloud web控制台新建表时选择相应模板。此处不再详述，仅罗列清单：
+
+- 积分表：uni-id-scores
+- 地址信息表：uni-id-address
+- 订单表：uni-id-base-order
+- 设备表：uni-id-device
+- 关注粉丝表：uni-id-followers
+- 日志表：uni-id-log
+- 任务表：uni-id-task
+- 任务日志表：uni-id-task-log
 
 # 错误码
 

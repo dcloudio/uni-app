@@ -70,6 +70,8 @@
 - bool
 - timestamp
 
+注：timestamp是一串数字的时间戳，不合适直接渲染到界面上。推荐的做法是在前端渲染时使用[`<uni-dateformat>`组件](https://ext.dcloud.net.cn/plugin?id=3279)。
+
 <!-- schema里时间格式只允许时间戳是不够的 -->
 
 ### 基本示例
