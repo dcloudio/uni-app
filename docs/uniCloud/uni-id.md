@@ -452,6 +452,7 @@ uniCloud.callFunction({
 **注意**
 
 - 登录成功之后会返回token，在获取token之后应进行持久化存储，键值为：uniIdToken，`uni.setStorageSync('uniIdToken',res.result.token)`
+- 登录时请注意自行验证数据有效性
 
 **user参数说明**
 
@@ -460,7 +461,7 @@ uniCloud.callFunction({
 | username	| String| 是	|用户名	|
 | password	| String| 是	|密码	|
 | needPermission| Boolean	| 否	|设置为true时会在checkToken时返回用户权限（permission），建议在管理控制台中使用	|
-| queryField	| Array| 否	|指定从哪些字段中比对username，不填默认与数据库内的username字段对比, 可取值'username'、'email'、'mobile'|
+| queryField	| Array| 否	|指定从哪些字段中比对username（传入参数均为username），不填默认与数据库内的username字段对比, 可取值'username'、'email'、'mobile'|
 
 **响应参数**
 
@@ -2097,9 +2098,9 @@ exports.main = async function(event,context) {
 | gender					| Integer		| 否	| 用户性别：0 未知 1 男性 2 女性														|
 | status					| Integer		| 是	| 用户状态：0 正常 1 禁用 2 审核中 3 审核拒绝								|
 | mobile					| String		| 否	| 手机号码																									|
-| mobile_confirmed| Integer		| 否	| 手机号验证状态：0 未验证 1 已验证													|
+| mobile_confirmed| Integer		| 否	| 手机号验证状态：0 未验证 1 已验证，未验证用户不可登录			|
 | email						| String		| 否	| 邮箱地址																									|
-| email_confirmed	| Integer		| 否	| 邮箱验证状态：0 未验证 1 已验证														|
+| email_confirmed	| Integer		| 否	| 邮箱验证状态：0 未验证 1 已验证，未验证用户不可登录				|
 | avatar					| String		| 否	| 头像地址																									|
 | wx_unionid			| String		| 否	| 微信unionid																								|
 | wx_openid				| Object		| 否	| 微信各个平台openid																				|
