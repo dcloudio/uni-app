@@ -27,6 +27,7 @@
       </div>
       <span
         v-show="showValue"
+        ref="uni-slider-value"
         class="uni-slider-value"
       >{{ sliderValue }}</span>
     </div>
@@ -151,15 +152,21 @@ export default {
   },
   methods: {
     _onUserChangedValue (e) {
+      const sliderRightBox = this.$refs['uni-slider-value']
+      const sliderRightBoxLeft = getComputedStyle(sliderRightBox, null).marginLeft
+      let sliderRightBoxWidth = sliderRightBox.offsetWidth
+      sliderRightBoxWidth = sliderRightBoxWidth + parseInt(sliderRightBoxLeft)
       const slider = this.$refs['uni-slider']
-      const offsetWidth = slider.offsetWidth
+      const offsetWidth = slider.offsetWidth - (this.showValue ? sliderRightBoxWidth : 0)
       const boxLeft = slider.getBoundingClientRect().left
       const value = (e.x - boxLeft) * (this.max - this.min) / offsetWidth + Number(this.min)
       this.sliderValue = this._filterValue(value)
     },
     _filterValue (e) {
-      return e < this.min ? this.min : e > this.max ? this.max : Math.round((e - this.min) / this
-        .step) * this.step + Number(this.min)
+      const max = Number(this.max)
+      const min = Number(this.min)
+      return e < min ? min : e > max ? max : Math.round((e - min) / this
+        .step) * this.step + min
     },
     _getValueWidth () {
       return 100 * (this.sliderValue - this.min) / (this.max - this.min) + '%'
@@ -282,6 +289,7 @@ export default {
 	}
 
 	uni-slider .uni-slider-value {
+    width: 3ch;
 		color: #888;
 		font-size: 14px;
 		margin-left: 1em;
