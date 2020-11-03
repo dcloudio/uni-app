@@ -207,6 +207,21 @@ this.$refs.udb.remove(["5f921826cf447a000151b16d", "5f9dee1ff10d2400016f01a4"])
 
 在uniCloud的web控制台的`DB Schema`界面，可自助生成数据表的admin管理插件，其中有多行数据批选批删示例。
 
+
+完整实例，第二个是可选参数
+
+```js
+var ids = ["5f921826cf447a000151b16d", "5f9dee1ff10d2400016f01a4"]
+this.$refs.udb.remove(ids, {
+  action: '', // 删除前后的动作
+  confirmTitle: '提示', // 确认框标题
+  confirmContent: '是否删除该数据',  // 确认框内容
+  callback: (res) => { // 删除成功后的回调
+    const { code, message } = res
+  }
+})
+```
+
 注意：
 - 如果列表分页采取分页组件，每页有固定数量，那么`clientDB`组件的remove方法删除数据后，会重新请求当前页面数据。
 - 如果列表采取滚动加载方式，滚动加载下一页数据，那么`clientDB`组件的remove方法删除数据后，不会重新请求数据，而是从已有数据移除已删除项。(组件支持版本大于1.1.0)
