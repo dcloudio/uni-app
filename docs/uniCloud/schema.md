@@ -584,7 +584,7 @@ permission的字段级控制，包括读写两种权限，分别称为：read、
 **注意**
 
 - `uni-id`的角色和权限，也即auth.role和auth.permission是不一样的概念。注意阅读[uni-id 角色权限](/uniCloud/uni-id?id=rbac)
-- `action`使用多个时可以通过`"'actionNameRequired' in action"`的形式配置权限，限制客户端使用的action内必须包含`actionNameRequired`
+- 如果想支持使用多个`action`的用法，可以通过`"'actionRequired' in action"`的形式配置权限，限制客户端使用的action内必须包含名为`actionRequired`的action
 
 **权限规则内可以使用的运算符**
 
