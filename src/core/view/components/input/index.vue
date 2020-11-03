@@ -24,6 +24,7 @@
         :type="inputType"
         :maxlength="maxlength"
         :step="step"
+        :enterkeyhint="confirmType"
         class="uni-input-input"
         autocomplete="off"
         @focus="_onFocus"
@@ -31,7 +32,7 @@
         @input.stop="_onInput"
         @compositionstart="_onComposition"
         @compositionend="_onComposition"
-        @keyup.stop="_onKeyup"
+        @keyup.enter.stop="_onKeyup"
       >
       <input
         v-if="disabled && fixColor"
@@ -42,6 +43,7 @@
         :type="inputType"
         :maxlength="maxlength"
         :step="step"
+        :enterkeyhint="confirmType"
         class="uni-input-input"
       >
     </div>
@@ -171,11 +173,9 @@ export default {
   },
   methods: {
     _onKeyup ($event) {
-      if ($event.keyCode === 13) {
-        this.$trigger('confirm', $event, {
-          value: $event.target.value
-        })
-      }
+      this.$trigger('confirm', $event, {
+        value: $event.target.value
+      })
     },
     _onInput ($event) {
       if (this.composing) {
