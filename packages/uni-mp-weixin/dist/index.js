@@ -1449,10 +1449,12 @@ function selectAllComponents (mpInstance, selector, $refs) {
   components.forEach(component => {
     const ref = component.dataset.ref;
     $refs[ref] = component.$vm || component;
-    if (component.dataset.vueGeneric === 'scoped') {
-      component.selectAllComponents('.scoped-ref').forEach(scopedComponent => {
-        selectAllComponents(scopedComponent, selector, $refs);
-      });
+    {
+      if (component.dataset.vueGeneric === 'scoped') {
+        component.selectAllComponents('.scoped-ref').forEach(scopedComponent => {
+          selectAllComponents(scopedComponent, selector, $refs);
+        });
+      }
     }
   });
 }
