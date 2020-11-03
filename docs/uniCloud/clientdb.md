@@ -1089,6 +1089,8 @@ action的作用是在执行前端发起的数据库操作时，额外触发一�
 <uni-clientdb ref="udb" collection="table1" action="someactionname" v-slot:default="{data,pagination,loading,error}">
 ```
 
+action支持一次使用多个，比如使用`db.action("action-a,action-b")`，其执行流程为`action-a.before->action-b.before->执行数据库操作->action-b.after->action-a.after`。在任一环节抛出错误会终止此流程。
+
 action是一种特殊的云函数，它不占用服务空间的云函数数量。
 
 目前action还不支持本地运行。后续会支持。

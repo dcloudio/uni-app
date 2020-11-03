@@ -581,7 +581,10 @@ permission的字段级控制，包括读写两种权限，分别称为：read、
 |now			|当前服务器时间戳（单位：毫秒），时间戳可以进行额外运算，如doc.publish\_date > now - 60000表示publish\_date在最近一分钟											|
 |action			|数据操作请求同时指定的uni-clientDB-action。用于指定前端的数据操作必须同时附带执行一个action云函数，如未触发该action则权限验证失败					|
 
-注意`uni-id`的角色和权限，也即auth.role和auth.permission是不一样的概念。注意阅读[uni-id 角色权限](/uniCloud/uni-id?id=rbac)
+**注意**
+
+- `uni-id`的角色和权限，也即auth.role和auth.permission是不一样的概念。注意阅读[uni-id 角色权限](/uniCloud/uni-id?id=rbac)
+- `action`使用多个时可以通过`"'actionNameRequired' in action"`的形式配置权限，限制客户端使用的action内必须包含`actionNameRequired`
 
 **权限规则内可以使用的运算符**
 
@@ -620,7 +623,7 @@ permission的字段级控制，包括读写两种权限，分别称为：read、
 		"title": "名称",
 		"permission": {
 		  "read": true, 
-		  "write": "(doc._id == auth.uid)" // 允许登录的用户修改自己的name字段
+		  "write": "doc._id == auth.uid" // 允许登录的用户修改自己的name字段
 		}
 	},
     "pwd": {
