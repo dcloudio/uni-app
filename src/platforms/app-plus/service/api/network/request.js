@@ -45,7 +45,8 @@ export function createRequestTaskById (requestTaskId, {
   method = 'GET',
   responseType,
   sslVerify = true,
-  firstIpv4 = false
+  firstIpv4 = false,
+  timeout = __uniConfig.networkTimeout.request
 } = {}) {
   const stream = requireNativePlugin('stream')
   const headers = {}
@@ -77,7 +78,6 @@ export function createRequestTaskById (requestTaskId, {
     headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8'
   }
 
-  const timeout = __uniConfig.networkTimeout.request
   if (timeout) {
     abortTimeout = setTimeout(() => {
       aborted = true
