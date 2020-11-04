@@ -1,13 +1,16 @@
 <template>
   <div class="uni-system-open-location">
-    <div class="map-content">
+    <div
+      class="map-content"
+      :class="{ 'fix-position': isPoimarkerSrc }"
+    >
       <iframe
         ref="map"
         :src="src"
         allow="geolocation"
         sandbox="allow-scripts allow-same-origin allow-forms allow-top-navigation allow-modals allow-popups"
         frameborder="0"
-        @load="_load"
+        @load="_check"
       />
       <!-- 去这里 -->
       <div
@@ -46,7 +49,7 @@ export default {
       name,
       address,
       src: latitude && longitude ? `${poimarkerSrc}?type=0&marker=coord:${latitude},${longitude};title:${name};addr:${address};&key=${key}&referer=${referer}` : '',
-      isPoimarkerSrc: false
+      isPoimarkerSrc: true
     }
   },
   methods: {
@@ -56,8 +59,9 @@ export default {
       } else {
         getApp().$router.back()
       }
+      this._check()
     },
-    _load () {
+    _check () {
       if (this.$refs.map.src.indexOf(poimarkerSrc) === 0) {
         this.isPoimarkerSrc = true
       } else {
@@ -75,7 +79,7 @@ export default {
 <style>
 .uni-system-open-location {
   display: block;
-  position: fixed;
+  position: absolute;
   left: 0;
   top: 0;
   width: 100%;
@@ -114,6 +118,11 @@ export default {
   width: 100%;
   bottom: 0;
   overflow: hidden;
+}
+
+.map-content.fix-position {
+  top: -74px;
+  bottom: -44px;
 }
 
 .map-content > iframe {
