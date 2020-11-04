@@ -43,7 +43,6 @@
         :type="inputType"
         :maxlength="maxlength"
         :step="step"
-        :enterkeyhint="confirmType"
         class="uni-input-input"
       >
     </div>

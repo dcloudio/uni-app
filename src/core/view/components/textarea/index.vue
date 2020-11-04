@@ -57,7 +57,6 @@
         :maxlength="maxlengthNumber"
         :class="{ 'uni-textarea-textarea-fix-margin': fixMargin }"
         :style="{ 'overflow-y': autoHeight ? 'hidden' : 'auto' }"
-        :enterkeyhint="confirmType"
         class="uni-textarea-textarea"
       />
     </div>
