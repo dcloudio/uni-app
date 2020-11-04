@@ -866,7 +866,7 @@ export default {
               refreshLocation()
             }
           })
-        }, 10000)
+        }, 30000)
       }
     },
     removeLocation () {
