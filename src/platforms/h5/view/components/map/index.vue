@@ -921,6 +921,7 @@ export default {
           return element
         }
       }
+      throw new Error('translateMarker: fail cannot find marker with id ' + id)
     }
   }
 }
