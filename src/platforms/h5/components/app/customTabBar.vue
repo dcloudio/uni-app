@@ -89,6 +89,16 @@ export default {
       return true
     }
   },
+  watch: {
+    '$route' (to, from) {
+      if (to.meta.isTabBar) {
+        const index = tabBar.list.findIndex(item => to.meta.pagePath === item.pagePath)
+        if (index > -1) {
+          this.selectedIndex = index
+        }
+      }
+    }
+  },
   methods: {
     _getRealPath (filePath) {
       if (filePath.indexOf('/') !== 0) {
