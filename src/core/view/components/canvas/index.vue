@@ -212,24 +212,21 @@ export default {
             data.forEach(function (color_, method_) {
               c2d[_[method_]] = _[method_] === 'shadowColor' ? resolveColor(color_) : color_
             })
-          } else {
-            if (method1 === 'fontSize') {
-              c2d.font = c2d.font.replace(/\d+\.?\d*px/, data[0] + 'px')
-            } else {
-              if (method1 === 'lineDash') {
-                c2d.setLineDash(data[0])
-                c2d.lineDashOffset = data[1] || 0
-              } else {
-                if (method1 === 'textBaseline') {
-                  if (data[0] === 'normal') {
-                    data[0] = 'alphabetic'
-                  }
-                  c2d[method1] = data[0]
-                } else {
-                  c2d[method1] = data[0]
-                }
-              }
+          } else if (method1 === 'fontSize') {
+            const font = c2d.__font__ || c2d.font
+            c2d.__font__ = c2d.font = font.replace(/\d+\.?\d*px/, data[0] + 'px')
+          } else if (method1 === 'lineDash') {
+            c2d.setLineDash(data[0])
+            c2d.lineDashOffset = data[1] || 0
+          } else if (method1 === 'textBaseline') {
+            if (data[0] === 'normal') {
+              data[0] = 'alphabetic'
             }
+            c2d[method1] = data[0]
+          } else if (method1 === 'font') {
+            c2d.__font__ = c2d.font = data[0]
+          } else {
+            c2d[method1] = data[0]
           }
         } else if (method === 'fillPath' || method === 'strokePath') {
           method = method.replace(/Path/, '')
