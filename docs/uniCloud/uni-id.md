@@ -2096,7 +2096,7 @@ exports.main = async function(event,context) {
 | 字段						| 类型			| 必填| 描述																											|
 | ----------------| ---------	| ----| -------------------------------------------								|
 | \_id						| Object ID	| 是	| 存储文档 ID（用户 ID），系统自动生成											|
-| username				| String		| 是	| 用户名，不允许重复																				|
+| username				| String		| 否	| 用户名，不允许重复																				|
 | password				| String		| 否	| 密码，加密存储																						|
 | nickname				| String		| 否	| 用户昵称																									|
 | gender					| Integer		| 否	| 用户性别：0 未知 1 男性 2 女性														|
