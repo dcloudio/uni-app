@@ -8,7 +8,7 @@
 
 `uni-id`为`uniCloud`开发者提供了简单、统一、可扩展的用户管理能力封装。
 
-[clientDB](uniCloud/clientDB)、[DB Schema](uniCloud/schema)、[uniCloud admin](uniCloud/admin)，这些产品都基于`uni-id`的账户体系。可以说`uni-id`是uniCloud不可获取的基础能力。
+[clientDB](uniCloud/clientDB)、[DB Schema](uniCloud/schema)、[uniCloud admin](uniCloud/admin)，这些产品都基于`uni-id`的账户体系。可以说`uni-id`是uniCloud不可或缺的基础能力。
 
 # 组成部分
 
