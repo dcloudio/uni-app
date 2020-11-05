@@ -20,7 +20,7 @@ export function getLocation ({
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(res => resolve(res.coords), reject, {
         enableHighAccuracy: altitude,
-        timeout: 1000 * 60 * 5
+        timeout: 1000 * 100
       })
     } else {
       reject(new Error('device nonsupport geolocation'))
@@ -35,28 +35,30 @@ export function getLocation ({
           resolve({
             latitude: location.lat,
             longitude: location.lng
-          })
+          }, true)
         } else {
-          reject(new Error(JSON.stringify(res)))
+          reject(new Error(res.message || JSON.stringify(res)))
         }
       }, () => reject(new Error('network error')))
     })
-  }).then(coords => {
-    if (type.toUpperCase() === 'WGS84') {
+  }).then((coords, skip) => {
+    if (type.toUpperCase() === 'WGS84' || skip) {
       return coords
     }
     return new Promise((resolve, reject) => {
-      getJSONP(`https://apis.map.qq.com/ws/coord/v1/translate?locations=${coords.latitude},${coords.longitude}&type=1&key=${key}&output=jsonp`, {}, (res) => {
-        if ('locations' in res && res.locations.length) {
-          const location = res.locations[0]
+      getJSONP(`https://apis.map.qq.com/jsapi?qt=translate&type=1&points=${coords.longitude},${coords.latitude}&key=${key}&output=jsonp&pf=jsapi&ref=jsapi`, {
+        callback: 'cb'
+      }, (res) => {
+        if ('detail' in res && 'points' in res.detail && res.detail.points.length) {
+          const location = res.detail.points[0]
           resolve(Object.assign({}, coords, {
             longitude: location.lng,
             latitude: location.lat
           }))
         } else {
-          reject(new Error(JSON.stringify(res)))
+          resolve(coords)
         }
-      }, () => reject(new Error('network error')))
+      }, () => resolve(coords))
     })
   }).then(coords => {
     invoke(callbackId, Object.assign(coords, {
