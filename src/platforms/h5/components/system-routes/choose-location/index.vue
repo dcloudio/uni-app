@@ -67,7 +67,11 @@
           :key="index"
           class="list-item"
           :class="{ selected: selectedIndex === index }"
-          @click="selectedIndex = index"
+          @click="
+            selectedIndex = index;
+            latitude = item.latitude;
+            longitude = item.longitude;
+          "
         >
           <div class="list-item-title">
             {{ item.name }}
@@ -117,12 +121,6 @@ export default {
         this._getList()
       }
     }, 1000)
-    this.$watch(() => this.latitude + this.longitude, () => {
-      if (!this.searching) {
-        this._reset()
-        this._getList()
-      }
-    })
     this.$watch('searching', val => {
       this._reset()
       if (!val) {
@@ -147,21 +145,19 @@ export default {
     _moveToLocation () {
       uni.getLocation({
         type: 'gcj02',
-        success: ({ latitude, longitude }) => {
-          this.latitude = latitude
-          this.longitude = longitude
-        },
+        success: this._move.bind(this),
         fail: () => {
-          this.latitude = 39.90960456049752
-          this.longitude = 116.3972282409668
+          this._move({
+            latitude: 39.90960456049752,
+            longitude: 116.3972282409668
+          })
         }
       })
     },
     _regionchange ({ detail: { centerLocation } }) {
       if (centerLocation) {
         // TODO 图钉 icon 动画
-        this.latitude = centerLocation.latitude
-        this.longitude = centerLocation.longitude
+        this._move(centerLocation)
       }
     },
     _pushData (array) {
@@ -202,6 +198,14 @@ export default {
       this.selectedIndex = -1
       this.pageIndex = 1
       this.list = []
+    },
+    _move ({ latitude, longitude }) {
+      this.latitude = latitude
+      this.longitude = longitude
+      if (!this.searching) {
+        this._reset()
+        this._getList()
+      }
     },
     _input () {
       this._search()
