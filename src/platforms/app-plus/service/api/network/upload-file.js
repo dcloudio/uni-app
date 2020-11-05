@@ -23,10 +23,11 @@ const createUploadTaskById = function (uploadTaskId, {
   name,
   files,
   header,
-  formData
+  formData,
+  timeout = __uniConfig.networkTimeout.uploadFile ? __uniConfig.networkTimeout.uploadFile / 1000 : 120
 } = {}) {
   const uploader = plus.uploader.createUpload(url, {
-    timeout: __uniConfig.networkTimeout.uploadFile ? __uniConfig.networkTimeout.uploadFile / 1000 : 120,
+    timeout,
     // 需要与其它平台上的表现保持一致，不走重试的逻辑。
     retry: 0,
     retryInterval: 0

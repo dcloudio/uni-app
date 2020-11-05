@@ -37,6 +37,7 @@
         :maxlength="maxlengthNumber"
         :class="{ 'uni-textarea-textarea-fix-margin': fixMargin }"
         :style="{ 'overflow-y': autoHeight ? 'hidden' : 'auto' }"
+        :enterkeyhint="confirmType"
         class="uni-textarea-textarea"
         @compositionstart="_onCompositionstart"
         @compositionend="_onCompositionend"
@@ -44,6 +45,8 @@
         @focus="_onFocus"
         @blur="_onBlur"
         @touchstart.passive="_onTouchstart"
+        @keyup.enter="_onKeyUpEnter"
+        @keydown.enter="_onKeyDownEnter"
       />
       <textarea
         v-if="disabled && fixColor"
@@ -107,6 +110,10 @@ export default {
     selectionEnd: {
       type: [Number, String],
       default: -1
+    },
+    confirmType: {
+      type: String,
+      default: ''
     }
   },
   data () {
@@ -141,6 +148,9 @@ export default {
     },
     valueCompute () {
       return (this.composition ? this.valueComposition : this.valueSync).split('\n')
+    },
+    isDone () {
+      return ['done', 'go', 'next', 'search', 'send'].includes(this.confirmType)
     }
   },
   watch: {
@@ -208,6 +218,17 @@ export default {
     })
   },
   methods: {
+    _onKeyDownEnter: function ($event) {
+      if (this.isDone) {
+        $event.preventDefault()
+      }
+    },
+    _onKeyUpEnter: function ($event) {
+      if (this.isDone) {
+        this._confirm($event)
+        this.$refs.textarea.blur()
+      }
+    },
     _onFocus: function ($event) {
       this.focusSync = true
       this.$trigger('focus', $event, {
