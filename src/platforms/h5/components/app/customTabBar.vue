@@ -90,6 +90,9 @@ export default {
     }
   },
   watch: {
+    selected (val) {
+      this.selectedIndex = val
+    },
     '$route' (to, from) {
       if (to.meta.isTabBar) {
         const index = tabBar.list.findIndex(item => to.meta.pagePath === item.pagePath)
