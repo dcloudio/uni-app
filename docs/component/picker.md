@@ -2,7 +2,7 @@
 
 从底部弹起的滚动选择器。支持五种选择器，通过mode来区分，分别是普通选择器，多列选择器，时间选择器，日期选择器，省市区选择器，默认是普通选择器。
 
-**普通选择器**
+#### 普通选择器
 
 ``mode = selector``
 
@@ -19,7 +19,7 @@
 
 - picker在各平台的实现是有UI差异的，有的平台如百度、支付宝小程序的Android端是从中间弹出的；有的平台支持循环滚动如微信、百度小程序；有的平台没有取消按钮如App端。但均不影响功能使用。
 
-**多列选择器**
+#### 多列选择器
 
 ``mode = multiSelector``
 
@@ -47,7 +47,7 @@
 - 由于 JavaScript 的限制 vue 不能观测如下方式设置 value：``this.value[0] = 0`` （[vue 注意事项](https://cn.vuejs.org/v2/guide/list.html#注意事项)），解决方式参考：[hello-uniapp 示例](https://github.com/dcloudio/hello-uniapp/commit/59264474172a591c865431d02a2a1e3583978827)
 - 微信开发工具的pc模拟器有可能出现拖动数据错乱，使用真机正常
 
-**时间选择器**
+#### 时间选择器
 
 ``mode = time``
 
@@ -70,7 +70,7 @@
 |@cancel|EventHandle||取消选择时触发||
 |disabled|Boolean|false|是否禁用|&nbsp;|
 
-**日期选择器**
+#### 日期选择器
 
 ``mode = date``
 
@@ -102,7 +102,7 @@
 |month|选择器粒度为月份|
 |day|选择器粒度为天|
 
-**省市区选择器**
+#### 省市区选择器
 
 ``mode = region``
 
