@@ -1074,6 +1074,47 @@ db.collection('order')
   .get()
 ```
 
+在进行数据库操作之前，clientDB会使用permission内配置的规则对客户端操作进行一次预校验，如果预校验不通过还会通过数据库查询再进行一次校验
+
+例：
+
+```js
+// 数据库内news表有以下数据
+{
+  _id: "1",
+  user_id: "uid_1",
+  title: "abc"
+}
+```
+
+```js
+// news表对应的schema内做如下配置
+{
+  "bsonType": "object",
+  "permission": { // 表级权限
+    "read": true,
+    "update": "doc.user_id == auth.uid" // 只允许修改自己的数据
+  },
+  "properties": {
+    "user_id": {
+      "bsonType": "string"
+    },
+    "title": {
+      "bsonType": "string"
+    }
+  }
+}
+```
+
+```js
+// 用户ID为uid_1的用户在客户端使用如下操作
+db.collection('news').doc('1').update({
+  title: 'def'
+})
+```
+
+此时客户端条件里面只有`doc._id == 1`，schema内又限制的`doc.user_id == auth.uid`，所以第一次预校验无法通过，会进行一次查库校验判断是否有权限进行操作。发现auth.uid确实和doc.user_id一致，上面的数据库操作允许执行。
+
 ## action@action
 
 action的作用是在执行前端发起的数据库操作时，额外触发一段云函数逻辑。它是一个可选模块。action是运行于云函数内的，可以使用云函数内的所有接口。
