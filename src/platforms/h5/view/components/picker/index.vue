@@ -7,6 +7,8 @@
     <div
       ref="picker"
       class="uni-picker-container"
+      :class="`uni-${mode}-${selectorTypeComputed}`"
+      @wheel.prevent
       @touchmove.prevent
     >
       <transition name="uni-fade">
@@ -57,10 +59,23 @@
             </div>
           </v-uni-picker-view-column>
         </v-uni-picker-view>
-        <!-- 第二种时间单位展示方式-暂时不用这种 -->
-        <!-- <div v-if="units.length" class="uni-picker-units">
-        <div v-for="(item,index) in units" :key="index">{{item}}</div>
-        </div>-->
+        <div
+          ref="select"
+          class="uni-picker-select"
+        >
+          <div
+            v-for="(item, index) in rangeArray[0]"
+            :key="index"
+            class="uni-picker-item"
+            :class="{ selected: valueArray[0] === index }"
+            @click="
+              valueArray[0] = index;
+              _change();
+            "
+          >
+            {{ typeof item === "object" ? item[rangeKey] || "" : item }}
+          </div>
+        </div>
         <div :style="popupStyle.triangle" />
       </div>
     </div>
@@ -130,6 +145,10 @@ const fields = {
   MONTH: 'month',
   DAY: 'day'
 }
+const selectorType = {
+  PICKER: 'picker',
+  SELECT: 'select'
+}
 export default {
   name: 'Picker',
   components: { keypress },
@@ -178,6 +197,10 @@ export default {
     disabled: {
       type: [Boolean, String],
       default: false
+    },
+    selectorType: {
+      type: String,
+      default: ''
     }
   },
   data () {
@@ -233,14 +256,21 @@ export default {
         default:
           return []
       }
+    },
+    selectorTypeComputed () {
+      const type = this.selectorType
+      if (Object.values(selectorType).includes(type)) {
+        return type
+      }
+      return String(navigator.vendor).indexOf('Apple') === 0 && navigator.maxTouchPoints > 0 ? selectorType.PICKER : selectorType.SELECT
     }
-
   },
   watch: {
     visible (val) {
       if (val) {
         clearTimeout(this.__contentVisibleDelay)
         this.contentVisible = val
+        this._select()
       } else {
         this.__contentVisibleDelay = setTimeout(() => {
           this.contentVisible = val
@@ -524,6 +554,11 @@ export default {
         this.$el.prepend($picker)
         $picker.style.display = 'none'
       }, 260)
+    },
+    _select () {
+      if (this.mode === mode.SELECTOR && this.selectorTypeComputed === selectorType.SELECT) {
+        this.$refs.select.scrollTop = this.valueArray[0] * 34
+      }
     }
   }
 }
@@ -594,6 +629,7 @@ uni-picker[disabled] {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+  cursor: pointer;
 }
 
 .uni-picker-container .uni-picker-header {
@@ -664,7 +700,11 @@ uni-picker[disabled] {
   transform: translateX(2em);
 } */
 
-@media screen and (min-width: 500px) {
+.uni-picker-container .uni-picker-select {
+  display: none;
+}
+
+@media screen and (min-width: 500px) and (min-height: 500px) {
   .uni-mask.uni-picker-mask {
     background: none;
   }
@@ -692,6 +732,28 @@ uni-picker[disabled] {
   .uni-picker-container .uni-picker.uni-picker-toggle {
     opacity: 1;
     transform: translate(-50%, -50%);
+  }
+  .uni-selector-select .uni-picker-header,
+  .uni-selector-select .uni-picker-content {
+    display: none;
+  }
+  .uni-selector-select .uni-picker-select {
+    display: block;
+    max-height: 300px;
+    overflow: auto;
+    background-color: white;
+    border-radius: 5px;
+    padding: 6px 0;
+  }
+  .uni-selector-select .uni-picker-item {
+    padding: 0 10px;
+    color: #555555;
+  }
+  .uni-selector-select .uni-picker-item:hover {
+    background-color: #f6f6f6;
+  }
+  .uni-selector-select .uni-picker-item.selected {
+    color: #007aff;
   }
 }
 </style>

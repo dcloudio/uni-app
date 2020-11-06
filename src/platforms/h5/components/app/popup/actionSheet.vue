@@ -154,7 +154,7 @@ uni-actionsheet .uni-actionsheet__cell:first-child:before {
   display: none;
 }
 
-@media screen and (min-width: 500px) {
+@media screen and (min-width: 500px) and (min-height: 500px) {
   .uni-mask.uni-actionsheet__mask {
     background: none;
   }
