@@ -40,7 +40,7 @@ export function createRequestTaskById (requestTaskId, {
     url: url.trim(),
     header,
     type: responseType,
-    timeout: timeout || 6e5
+    timeout: timeout
   }
   if (method !== 'GET') {
     options.data = data
