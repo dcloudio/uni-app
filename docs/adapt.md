@@ -1,6 +1,6 @@
 #### 宽屏适配指南
 
-uni-app是以移动为先的理念诞生的。从uni-app 2.9起，提供了PC等宽屏的适配方案。
+uni-app是以移动为先的理念诞生的。从uni-app 2.9起，提供了PC等宽屏的适配方案，完成了全端统一。
 
 PC适配和屏幕适配略有差异。PC适配包含`宽屏适配`和`uni-app内置组件适配PC`两方面的工作。
 
@@ -14,14 +14,15 @@ uni-app提供的屏幕适配方案，包括3部分：
 各个window之间可以交互通信。
 
 这里有2个例子：
-- 分栏式的新闻模块：[https://static-7d133019-9a7e-474a-b7c2-c01751f00ca5.bspapp.com/#/](https://static-7d133019-9a7e-474a-b7c2-c01751f00ca5.bspapp.com/#/)，这个示例对应的源码在：[https://github.com/dcloudio/uni-template-news](https://github.com/dcloudio/uni-template-news)
-- 分栏式的DCloud社区：[https://static-1afcc27f-ce2f-4a6d-9416-c65a6f87d24e.bspapp.com/#/](https://static-1afcc27f-ce2f-4a6d-9416-c65a6f87d24e.bspapp.com/#/)。这个示例只适配了首页。
+- hello uni-app：[https://hellouniapp.dcloud.net.cn/](https://hellouniapp.dcloud.net.cn/)
+- 分栏式的新闻模板：[https://static-7d133019-9a7e-474a-b7c2-c01751f00ca5.bspapp.com/#/](https://static-7d133019-9a7e-474a-b7c2-c01751f00ca5.bspapp.com/#/)，这个示例对应的源码在：[https://github.com/dcloudio/uni-template-news](https://github.com/dcloudio/uni-template-news)
+
 
 以上示例建议使用最新版的chrome、Safari、或firefox访问。可以在PC模式和手机模式分别体验。以上示例源码的运行需使用HBuilderX 2.9+
 
 这些例子特点如下：
-- 在宽屏下会新增rightWindow区域，用于显示详情页面，点击左边的列表在右边显示详情内容。而窄屏下仍然是点击列表后新开一个页面显示详情内容。
-- rightWindow里的页面是复用的，不需要重写新闻详情页面，支持把已有详情页面当组件放到 rightWindow 页面中。
+- hello uni-app使用了topWindow和leftWindow，分为上左右3栏。新闻模板使用了rightWindow区域，分为左右2栏。宽屏下点击左边的列表在右边显示详情内容。而窄屏下仍然是点击列表后新开一个页面显示详情内容。
+- leftWindow或rightWindow 里的页面是复用的，不需要重写新闻详情页面，支持把已有详情页面当组件放到 leftWindow或rightWindow 页面中。
 
 这套方案是已知的、最便捷的分栏式宽屏应用适配方案。
 
@@ -63,7 +64,7 @@ pages.json 配置样例
 
 如果已经有了一个为小屏设计的uni-app，在使用leftWindow等窗体适配大屏时，需理清一个思路：现有的小屏内容，放在哪个window里？
 
-比如上面的2个例子，都是双栏式窗体，左边列表、右边详情。此时适合的做法是，将原有的小屏列表作为主window，在右边扩展rightWindow来显示详情。
+如果应用的首页是列表，二级页是详情，此时适合的做法是，将原有的小屏列表作为主window，在右边扩展rightWindow来显示详情。
 
 以新闻示例项目为例，预览地址[https://static-7d133019-9a7e-474a-b7c2-c01751f00ca5.bspapp.com/#/](https://static-7d133019-9a7e-474a-b7c2-c01751f00ca5.bspapp.com/#/)。这个项目的源码已经内置于HBuilderX 2.9中，新建uni-app项目时选择新闻/资讯模板。
 
@@ -134,9 +135,9 @@ leftWindow比较适合放置导航页面。如果你的应用首页有很多tab�
 
 leftWindow除了适用于手机应用适配大屏，也适用于重新开发的PC应用，尤其是PC Admin管理控制台。
 
-这里有一个使用uni-app做PC Admin的例子：[https://github.com/dcloudio/uni-template-admin](https://github.com/dcloudio/uni-template-admin)
+DCloud官方基于uni-app的pc版，推出了unicloud Admin：[https://uniapp.dcloud.net.cn/uniCloud/admin](https://uniapp.dcloud.net.cn/uniCloud/admin)
 
-目前的leftWindow、rightWindow、topWindow 只支持H5端。计划后续在Pad App上实现该配置。小程序无法支持该配置。
+目前的leftWindow、rightWindow、topWindow 只支持web端。计划后续在Pad App上实现该配置。小程序无法支持该配置。
 
 
 #### 2. 组件级适配方案：match-media组件
@@ -276,7 +277,7 @@ uni-app理论上不限定浏览器。在HBuilderX 2.9发版时，就新闻示例
 
 如果你的h5版已经开发完毕，还没来得及适配pc，但想在pc上先用起来。那么可以在pc网页里使用iframe，约定好宽度，在里面套用uni-app的窄屏版。
 
-当然还可以在iframe旁边放置二维码，提供手机版扫码地址，如下：
+当然还可以在iframe旁边放置二维码，提供手机版扫码地址，例如：
 
 ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/979f7940-12ba-11eb-b680-7980c8a877b8.png)
 
