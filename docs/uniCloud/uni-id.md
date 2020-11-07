@@ -1387,10 +1387,10 @@ export default {
       }).then((res) => {
         uni.showModal({
           showCancel: false,
-          content: JSON.stringify(e.result)
+          content: JSON.stringify(res.result)
         })
         if (res.result.code === 0) {
-          uni.setStorageSync('uniIdToken', e.result.token)
+          uni.setStorageSync('uniIdToken', res.result.token)
         }
       }).catch(() => {
         uni.showModal({
