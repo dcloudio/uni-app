@@ -92,9 +92,10 @@ uniCloud同时支持阿里云和腾讯云，它们的数据库大体相同，有
 不管云函数还是前端，获取数据库连接都是如下写法。前端写法需2.9.5起支持。
 
 ```js
-const db = uniCloud.database();
+const db = uniCloud.database(); //代码块为cdb
 ```
 
+js中敲下代码块`cdb`，即可快速输入上述代码。
 
 **DBOptions参数说明**
 
