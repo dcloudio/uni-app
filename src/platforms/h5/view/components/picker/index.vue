@@ -7,6 +7,8 @@
     <div
       ref="picker"
       class="uni-picker-container"
+      :class="`uni-${mode}-${selectorTypeComputed}`"
+      @wheel.prevent
       @touchmove.prevent
     >
       <transition name="uni-fade">
@@ -17,9 +19,10 @@
         />
       </transition>
       <div
+        v-if="!system"
         :class="{ 'uni-picker-toggle': visible }"
         :style="popupStyle.content"
-        class="uni-picker"
+        class="uni-picker-custom"
       >
         <div
           class="uni-picker-header"
@@ -57,15 +60,43 @@
             </div>
           </v-uni-picker-view-column>
         </v-uni-picker-view>
-        <!-- 第二种时间单位展示方式-暂时不用这种 -->
-        <!-- <div v-if="units.length" class="uni-picker-units">
-        <div v-for="(item,index) in units" :key="index">{{item}}</div>
-        </div>-->
+        <div
+          ref="select"
+          class="uni-picker-select"
+        >
+          <div
+            v-for="(item, index) in rangeArray[0]"
+            :key="index"
+            class="uni-picker-item"
+            :class="{ selected: valueArray[0] === index }"
+            @click="
+              valueArray[0] = index;
+              _change();
+            "
+          >
+            {{ typeof item === "object" ? item[rangeKey] || "" : item }}
+          </div>
+        </div>
         <div :style="popupStyle.triangle" />
       </div>
     </div>
     <div>
       <slot />
+    </div>
+    <div
+      v-if="system"
+      class="uni-picker-system"
+    >
+      <input
+        ref="input"
+        :value="valueSync"
+        :type="mode"
+        tabindex="-1"
+        :min="start"
+        :max="end"
+        :class="[system, popupStyle.dock]"
+        @change.stop="_input"
+      >
     </div>
     <keypress
       :disable="!visible"
@@ -92,7 +123,7 @@ function getDefaultStartValue () {
         return year.toString()
       case fields.MONTH:
         return year + '-01'
-      case fields.DAY:
+      default:
         return year + '-01-01'
     }
   }
@@ -110,7 +141,7 @@ function getDefaultEndValue () {
         return year.toString()
       case fields.MONTH:
         return year + '-12'
-      case fields.DAY:
+      default:
         return year + '-12-31'
     }
   }
@@ -129,6 +160,10 @@ const fields = {
   YEAR: 'year',
   MONTH: 'month',
   DAY: 'day'
+}
+const selectorType = {
+  PICKER: 'picker',
+  SELECT: 'select'
 }
 export default {
   name: 'Picker',
@@ -157,15 +192,12 @@ export default {
       type: String,
       default: mode.SELECTOR,
       validator (val) {
-        return Object.values(mode).indexOf(val) >= 0
+        return Object.values(mode).includes(val)
       }
     },
     fields: {
       type: String,
-      default: 'day',
-      validator (val) {
-        return Object.values(fields).indexOf(val) >= 0
-      }
+      default: ''
     },
     start: {
       type: String,
@@ -178,6 +210,10 @@ export default {
     disabled: {
       type: [Boolean, String],
       default: false
+    },
+    selectorType: {
+      type: String,
+      default: ''
     }
   },
   data () {
@@ -211,7 +247,7 @@ export default {
               return [dateArray[0]]
             case fields.MONTH:
               return [dateArray[0], dateArray[1]]
-            case fields.DAY:
+            default:
               return [dateArray[0], dateArray[1], dateArray[2]]
           }
         }
@@ -233,14 +269,31 @@ export default {
         default:
           return []
       }
+    },
+    selectorTypeComputed () {
+      const type = this.selectorType
+      if (Object.values(selectorType).includes(type)) {
+        return type
+      }
+      return String(navigator.vendor).indexOf('Apple') === 0 && navigator.maxTouchPoints > 0 ? selectorType.PICKER : selectorType.SELECT
+    },
+    system () {
+      if (this.mode === mode.DATE && !Object.values(fields).includes(this.fields) && this.isDesktop && /win|mac/i.test(navigator.platform)) {
+        if (navigator.vendor === 'Google Inc.') {
+          return 'chrome'
+        } else if (/Firefox/.test(navigator.userAgent)) {
+          return 'firefox'
+        }
+      }
+      return ''
     }
-
   },
   watch: {
     visible (val) {
       if (val) {
         clearTimeout(this.__contentVisibleDelay)
         this.contentVisible = val
+        this._select()
       } else {
         this.__contentVisibleDelay = setTimeout(() => {
           this.contentVisible = val
@@ -512,7 +565,15 @@ export default {
         value
       })
     },
-    _cancel () {
+    _cancel ($event) {
+      if (this.system === 'firefox') {
+        // Firefox 在 input 同位置区域点击无法隐藏控件
+        const { top, left, width, height } = this.popover
+        const { pageX, pageY } = $event
+        if (pageX > left && pageX < left + width && pageY > top && pageY < top + height) {
+          return
+        }
+      }
       this._close()
       this.$trigger('cancel', {}, {})
     },
@@ -524,6 +585,17 @@ export default {
         this.$el.prepend($picker)
         $picker.style.display = 'none'
       }, 260)
+    },
+    _select () {
+      if (this.mode === mode.SELECTOR && this.selectorTypeComputed === selectorType.SELECT) {
+        this.$refs.select.scrollTop = this.valueArray[0] * 34
+      }
+    },
+    _input ($event) {
+      this.valueSync = $event.target.value
+      this.$nextTick(() => {
+        this._change()
+      })
     }
   }
 }
@@ -531,6 +603,7 @@ export default {
 
 <style>
 uni-picker {
+  position: relative;
   display: block;
   cursor: pointer;
 }
@@ -555,11 +628,11 @@ uni-picker[disabled] {
   font-size: 16px;
 }
 
-.uni-picker-container .uni-picker * {
+.uni-picker-container .uni-picker-custom * {
   box-sizing: border-box;
 }
 
-.uni-picker-container .uni-picker {
+.uni-picker-container .uni-picker-custom {
   position: fixed;
   left: 0;
   bottom: 0;
@@ -572,7 +645,7 @@ uni-picker[disabled] {
   transition: transform 0.3s, visibility 0.3s;
 }
 
-.uni-picker-container .uni-picker.uni-picker-toggle {
+.uni-picker-container .uni-picker-custom.uni-picker-toggle {
   visibility: visible;
   transform: translate(0, 0);
 }
@@ -594,6 +667,7 @@ uni-picker[disabled] {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+  cursor: pointer;
 }
 
 .uni-picker-container .uni-picker-header {
@@ -642,33 +716,48 @@ uni-picker[disabled] {
   color: #007aff;
 }
 
-/* .uni-picker {
-  position: relative;
+.uni-picker-container .uni-picker-select {
+  display: none;
 }
-.uni-picker-units {
-  position: absolute;
-  display: flex;
-  width: 100%;
-  line-height: 16px;
-  font-size: 14px;
-  top: 50%;
-  margin-top: 22.5px;
-  transform: translateY(-50%);
-  overflow: hidden;
-  color: #666666;
-  pointer-events: none;
-}
-.uni-picker-units > div {
-  flex: 1;
-  text-align: center;
-  transform: translateX(2em);
-} */
 
-@media screen and (min-width: 500px) {
+.uni-picker-system {
+  position: absolute;
+  display: none;
+  display: block;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.uni-picker-system > input {
+  position: absolute;
+  border: none;
+  height: 100%;
+  opacity: 0;
+}
+
+.uni-picker-system > input.firefox {
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+.uni-picker-system > input.chrome {
+  /* 翻转且使用较大字体保证可点击日历按钮 */
+  top: 0;
+  right: 100%;
+  font-size: 9999px;
+  transform-origin: 100% 0;
+  transform: scaleX(-1);
+}
+
+@media screen and (min-width: 500px) and (min-height: 500px) {
   .uni-mask.uni-picker-mask {
     background: none;
   }
-  .uni-picker-container .uni-picker {
+  .uni-picker-container .uni-picker-custom {
     width: 300px;
     left: 50%;
     right: auto;
@@ -689,9 +778,31 @@ uni-picker[disabled] {
     overflow: hidden;
     border-radius: 0 0 5px 5px;
   }
-  .uni-picker-container .uni-picker.uni-picker-toggle {
+  .uni-picker-container .uni-picker-custom.uni-picker-toggle {
     opacity: 1;
     transform: translate(-50%, -50%);
+  }
+  .uni-selector-select .uni-picker-header,
+  .uni-selector-select .uni-picker-content {
+    display: none;
+  }
+  .uni-selector-select .uni-picker-select {
+    display: block;
+    max-height: 300px;
+    overflow: auto;
+    background-color: white;
+    border-radius: 5px;
+    padding: 6px 0;
+  }
+  .uni-selector-select .uni-picker-item {
+    padding: 0 10px;
+    color: #555555;
+  }
+  .uni-selector-select .uni-picker-item:hover {
+    background-color: #f6f6f6;
+  }
+  .uni-selector-select .uni-picker-item.selected {
+    color: #007aff;
   }
 }
 </style>

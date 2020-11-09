@@ -76,7 +76,7 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped>
 .uni-system-open-location {
   display: block;
   position: absolute;
