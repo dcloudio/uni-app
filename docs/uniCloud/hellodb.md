@@ -270,6 +270,9 @@ uniCloud数据库提供了多种数据导入导出和备份方案。
 
 在HBuilderX中，对项目下的cloudfunctions目录下的`db_init.json`点右键，即可选择`初始化云数据库`。将`db_init.json`里的内容导入云端。
 
+**注意事项**
+- 如果表名与opendb中任意表名匹配且db_init.json内没有编写schema和index，将会自动拉取最新的opendb内对应表的schema和index
+
 **生成`db_init.json`的方式**
 
 1. 在uniCloud web控制台的数据库界面，左侧导航点击 生成`db_init.json`，会将选择的表的内容、索引、表结构导出为`db_init.json`文件
@@ -277,6 +280,7 @@ uniCloud数据库提供了多种数据导入导出和备份方案。
 
 **注意事项**
 - 目前`db_init.json`为同步导入形式，无法导入大量数据，后续会实现异步导入方案。
+- 如果表名与opendb中任意表名匹配，导出时将不会带上schema和index
 
 `db_init.json`包含三部分：数据内容(data)、数据表索引(index)、数据表结构(schema)，形式如下
 
