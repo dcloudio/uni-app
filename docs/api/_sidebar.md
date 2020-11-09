@@ -37,6 +37,7 @@
   * [地图组件控制](api/location/map.md)
 * 媒体
   * [图片](api/media/image.md)
+  * [文件](api/media/file.md)
   * [录音管理](api/media/record-manager.md)
   * [背景音频播放管理](api/media/background-audio-manager.md)
   * [音频组件控制](api/media/audio-context.md)
