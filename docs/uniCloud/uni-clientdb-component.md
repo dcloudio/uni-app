@@ -8,7 +8,7 @@
 
 有了`<uni-clientdb>` 组件，**上述工作只需要1行代码**！写组件，设组件的属性，在属性中指定要查什么表、哪些字段、以及查询条件，就OK了！
 
-如下：
+敲下`udb`代码块，得到如下代码：
 
 ```html
 <uni-clientdb v-slot:default="{data, loading, error, options}" collection="table1" field="field1" :getone="true" where="id=='1'">
