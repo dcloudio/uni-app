@@ -228,9 +228,6 @@ export default {
   },
   methods: {
     _getRealPath (filePath) {
-      if (filePath.indexOf('/') !== 0) {
-        filePath = '/' + filePath
-      }
       return getRealPath(filePath)
     },
     _switchTab ({
