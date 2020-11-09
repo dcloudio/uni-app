@@ -43,7 +43,7 @@ js API可以执行所有数据库操作。`<uni-clientDB>`组件适用于查询�
 
 ```js
 // 获取db引用
-const db = uniCloud.database()
+const db = uniCloud.database() //代码块为cdb
 // 使用uni-clientDB
 db.collection('list')
   .where({
