@@ -45,6 +45,7 @@
         @blur="_onBlur"
         @touchstart.passive="_onTouchstart"
       />
+      <!-- fix: 禁止 readonly 状态获取焦点 -->
       <textarea
         v-if="disabled && fixColor"
         ref="textarea"
@@ -55,6 +56,7 @@
         :class="{ 'uni-textarea-textarea-fix-margin': fixMargin }"
         :style="{ 'overflow-y': autoHeight ? 'hidden' : 'auto' }"
         class="uni-textarea-textarea"
+        @focus="$event=>$event.target.blur()"
       />
     </div>
   </uni-textarea>

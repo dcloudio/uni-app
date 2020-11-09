@@ -33,6 +33,7 @@
         @compositionend="_onComposition"
         @keyup.stop="_onKeyup"
       >
+      <!-- fix: 禁止 readonly 状态获取焦点 -->
       <input
         v-if="disabled && fixColor"
         ref="input"
@@ -43,6 +44,7 @@
         :maxlength="maxlength"
         :step="step"
         class="uni-input-input"
+        @focus="$event=>$event.target.blur()"
       >
     </div>
   </uni-input>
