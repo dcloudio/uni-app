@@ -262,25 +262,13 @@ uniCloud数据库提供了多种数据导入导出和备份方案。
 
 ### `db_init.json`初始化数据库@db-init
 
-自`HBuilderX 2.5.11`起支持`db_init.json`来方便开发者快速进行数据库的初始化操作，即在HBuilderX工具中，将本地数据直接同步到云数据库中。
+`db_init.json`定义了一个json格式，里面包含了表名、表数据、表索引、表schema等表的所有数据。
+
+在HBuilderX中，项目的cloudfunctions的根目录可以放置`db_init.json`文件，对文件点右键，可以按`db_init.json`的描述，在云服务空间创建相应的表、初始化表中的数据。（需HBuilderX 2.5.11+）
 
 这个功能尤其适合插件作者，可以快速初始化插件所需的数据库环境。
 
-**使用`db_init.json`导入数据库**
-
-在HBuilderX中，对项目下的cloudfunctions目录下的`db_init.json`点右键，即可选择`初始化云数据库`。将`db_init.json`里的内容导入云端。
-
-**注意事项**
-- 如果表名与opendb中任意表名匹配且db_init.json内没有编写schema和index，将会自动拉取最新的opendb内对应表的schema和index
-
-**生成`db_init.json`的方式**
-
-1. 在uniCloud web控制台的数据库界面，左侧导航点击 生成`db_init.json`，会将选择的表的内容、索引、表结构导出为`db_init.json`文件
-2. 也可以手动编写`db_init.json`，在HBuilderX中项目下`cloudfucntions`目录右键即可创建`db_init.json`，
-
-**注意事项**
-- 目前`db_init.json`为同步导入形式，无法导入大量数据，后续会实现异步导入方案。
-- 如果表名与opendb中任意表名匹配，导出时将不会带上schema和index
+**`db_init.json`的数据格式**
 
 `db_init.json`包含三部分：数据内容(data)、数据表索引(index)、数据表结构(schema)，形式如下
 
@@ -289,7 +277,7 @@ uniCloud数据库提供了多种数据导入导出和备份方案。
     "collection_test": { // 集合（表名）
         "data": [ // 数据
            {
-                "_id": "da51bd8c5e37ac14099ea43a2505a1a5",
+                "_id": "da51bd8c5e37ac14099ea43a2505a1a5", // 一般不带_id字段，防止导入时数据冲突。
                "name": "tom"
            }
         ],
@@ -328,6 +316,27 @@ uniCloud数据库提供了多种数据导入导出和备份方案。
     }
 }
 ```
+
+在HBuilderX中对上述`db_init.json`点右键，可初始化数据库到云服务空间，创建`collection_test`表，并按上述json配置设置该表的index索引和schema，以及插入data下的数据。
+
+一般opendb的表，在`db_init.json`中初始化时，不建议自定义index和schema。系统会自动从opendb规范中读取最新的index和schema。
+
+**使用`db_init.json`导入数据库**
+
+在HBuilderX中，对项目下的cloudfunctions目录下的`db_init.json`点右键，即可选择`初始化云数据库`。将`db_init.json`里的内容导入云端。
+
+注意事项：
+- 目前`db_init.json`为同步导入形式，无法导入大量数据，后续会实现异步导入方案。
+- 如果`db_init.json`中的表名与opendb中任意表名相同，且`db_init.json`中该表名内没有编写schema和index，则在初始化时会自动拉取最新的opendb规范内对应表的schema和index。
+
+**生成`db_init.json`的方式**
+
+在uniCloud web控制台的数据库界面，左侧导航点击 生成`db_init.json`，会将选择的表的内容、索引、表结构导出为`db_init.json`文件。
+
+注意事项：
+- 如果表名与opendb中任意表名相同，web控制台导出时将不会带上schema和index。
+- web控制台导出时默认不包括`_id`字段，在导入时，数据库插入新记录时会自动补`_id`字段。如果需要指定`_id`，需要手工补足数据。
+
 
 
 ### 数据库回档备份和恢复@backup
