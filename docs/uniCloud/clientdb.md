@@ -88,6 +88,7 @@ db.collection('list')
 |SYNTAX_ERROR										|语法错误																|
 |PERMISSION_ERROR								|权限校验未通过													|
 |VALIDATION_ERROR								|数据格式未通过													|
+|DUPLICATE_KEY									|索引冲突																|
 |SYSTEM_ERROR										|系统错误																|
 
 ### 前端环境变量@variable
