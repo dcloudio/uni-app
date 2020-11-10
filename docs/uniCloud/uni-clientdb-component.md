@@ -56,6 +56,8 @@
 
 TODO：暂不支持groupby、in子查询功能。后续会补充
 
+注意：`page-current/page-size` 改变不重置数据(`page-data="replace"`)除外，`collection/action/field/getcount/orderby/where` 改变后清空已有数据
+
 
 **示例**
 
