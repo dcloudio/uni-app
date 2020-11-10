@@ -3813,20 +3813,8 @@ let res = await db.collection('todo').where({
   tags: 'cloud'
 }).get()
 ```
-通常需要显示使用 `and` 是用在有跨字段或操作的时候，如以下表示 “progress 字段大于 50 或 tags 字段等于 cloud 或 tags 数组字段（如果 tags 是数组）中含有 cloud”：  
 
- 
-```js
-const dbCmd = db.command
-let res = await db.collection('todo').where(dbCmd.and([
-  dbCmd.or({
-    progress: dbCmd.gt(50)
-  }),
-  dbCmd.or({
-    tags: 'cloud'
-  })
-])).get()
-```
+通常需要显示使用 `and` 是用在有跨字段或操作的时候
 
 
 **2. 用在字段查询条件**
