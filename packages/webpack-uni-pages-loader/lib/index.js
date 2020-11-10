@@ -30,6 +30,7 @@ function checkEmitFile (filePath, jsonObj, changedEmitFiles) {
 }
 
 module.exports = function (content, map) {
+  content = require('./uni_modules.js')(content)
   if (this.resourceQuery) {
     const params = loaderUtils.parseQuery(this.resourceQuery)
     if (params) {

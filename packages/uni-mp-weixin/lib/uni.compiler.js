@@ -29,10 +29,11 @@ module.exports = {
     if (!state.componentGenerics) {
       state.componentGenerics = Object.create(null)
     }
-
     state.componentGenerics[componentName] = true
     const attr = props || {}
-    attr.class = 'scoped-ref'
+    if (state.options.platform.name === 'mp-weixin') {
+      attr.class = 'scoped-ref'
+    }
     // 返回多个节点，支持作用域插槽当作普通插槽使用
     return [{
       type: 'slot',
@@ -72,7 +73,9 @@ module.exports = {
     }
     state.scopedSlots[baseName]++
     parentNode.attr['generic:scoped-slots-' + slotName] = componentName
-    parentNode.attr['data-vue-generic'] = 'scoped'
+    if (state.options.platform.name === 'mp-weixin') {
+      parentNode.attr['data-vue-generic'] = 'scoped'
+    }
     if (!parentNode.attr.generic) {
       parentNode.attr.generic = {}
     }
