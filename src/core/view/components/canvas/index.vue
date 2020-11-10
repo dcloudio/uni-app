@@ -353,8 +353,8 @@ export default {
                 return
               }
             }
-            // Chrome84+ 本地路径
-            if (src.indexOf('file://') === 0 && navigator.vendor === 'Google Inc.' && 'wakeLock' in navigator) {
+            // 安卓 WebView 本地路径
+            if (src.indexOf('file://') === 0 && navigator.vendor === 'Google Inc.') {
               image.crossOrigin = 'anonymous'
             }
           }
