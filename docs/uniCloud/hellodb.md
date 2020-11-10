@@ -329,6 +329,7 @@ uniCloud数据库提供了多种数据导入导出和备份方案。
 注意事项：
 - 目前`db_init.json`为同步导入形式，无法导入大量数据，后续会实现异步导入方案。
 - 如果`db_init.json`中的表名与opendb中任意表名相同，且`db_init.json`中该表名内没有编写schema和index，则在初始化时会自动拉取最新的opendb规范内对应表的schema和index。
+- 如果`db_init.json`中的数据表在服务空间已存在，且`db_init.json`中该表含有schema和index，则在初始化时schema会被替换，新增索引会被添加，已存在索引不受影响。
 
 **生成`db_init.json`的方式**
 
