@@ -19,6 +19,7 @@ process.env.UNI_INPUT_DIR = process.env.UNI_INPUT_DIR || path.resolve(process.cw
 
 // 初始化全局插件对象
 global.uniPlugin = require('@dcloudio/uni-cli-shared/lib/plugin').init()
+
 const manifestJsonObj = require('@dcloudio/uni-cli-shared/lib/manifest').getManifestJson()
 const platformOptions = manifestJsonObj[process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM] || {}
 // 插件校验环境
@@ -102,6 +103,17 @@ process.UNI_LIBRARIES = process.UNI_LIBRARIES || ['@dcloudio/uni-ui']
 if (process.env.NODE_ENV === 'production') { // 发行模式,不启用 cache
   delete process.env.UNI_USING_CACHE
 }
+
+global.uniModules = []
+try {
+  global.uniModules = fs
+    .readdirSync(path.resolve(process.env.UNI_INPUT_DIR, 'uni_modules'))
+    .filter(module =>
+      fs.existsSync(
+        path.resolve(process.env.UNI_INPUT_DIR, 'uni_modules', module, 'package.json')
+      )
+    )
+} catch (e) {}
 
 const {
   normalizePath,

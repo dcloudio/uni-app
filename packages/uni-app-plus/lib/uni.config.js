@@ -33,6 +33,9 @@ module.exports = {
       copyOptions.push(componentsCopyOption)
     }
     copyOptions.push('hybrid/html')
+    global.uniModules.forEach(module => {
+      copyOptions.push('uni_modules/' + module + '/hybrid/html')
+    })
     if (process.env.UNI_USING_V3) { // TODO 将仅保留v3逻辑
       copyOptions.push(path.resolve(__dirname, '../dist/view.css'))
       copyOptions.push(path.resolve(__dirname, '../dist/view.umd.min.js'))

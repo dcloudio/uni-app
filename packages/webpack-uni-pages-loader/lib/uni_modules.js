@@ -22,12 +22,8 @@ function normalizeUniModulesPagesJson (pagesJson, pluginId) {
 
 module.exports = function parsePages (content) {
   const uniModulesDir = path.resolve(process.env.UNI_INPUT_DIR, 'uni_modules')
-  let plugins = []
-  try {
-    plugins = fs.readdirSync(uniModulesDir)
-  } catch (e) {}
   const pluginPagesJsons = []
-  plugins.forEach(plugin => {
+  global.uniModules.forEach(plugin => {
     const pagesJsonPath = path.resolve(uniModulesDir, plugin, 'pages.json')
     if (fs.existsSync(pagesJsonPath)) {
       pluginPagesJsons.push(

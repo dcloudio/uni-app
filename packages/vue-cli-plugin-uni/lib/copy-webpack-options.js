@@ -51,8 +51,16 @@ function getAssetsCopyOptions (assetsDir) {
   return copyOptions
 }
 
+function getUniModulesAssetsCopyOptions (assetsDir) {
+  const copyOptions = []
+  global.uniModules.forEach(module => {
+    copyOptions.push(...getAssetsCopyOptions('uni_modules/' + module + '/' + assetsDir))
+  })
+  return copyOptions
+}
+
 function getCopyWebpackPluginOptions (platformOptions, vueOptions) {
-  const copyOptions = getAssetsCopyOptions(assetsDir)
+  const copyOptions = getAssetsCopyOptions(assetsDir).concat(getUniModulesAssetsCopyOptions(assetsDir))
   global.uniPlugin.copyWebpackOptions.forEach(copyWebpackOptions => {
     const platformCopyOptions = copyWebpackOptions(platformOptions, vueOptions, copyOptions) || []
     platformCopyOptions.forEach(copyOption => {
