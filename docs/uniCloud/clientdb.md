@@ -408,7 +408,7 @@ db.collection('order')
 ```
 
 
-上述查询会返回如下结果，可以看到书籍信息被嵌入到order表的book字段下，成为子节点。同时根据where条件设置，只返回书名为三国演义的订单记录。
+上述查询会返回如下结果，可以看到书籍信息被嵌入到order表的book_id字段下，成为子节点。同时根据where条件设置，只返回书名为三国演义的订单记录。
 
 ```js
 {
@@ -416,14 +416,14 @@ db.collection('order')
 	"message": "",
 	"data": [{
 		"_id": "b8df3bd65f8f0d06018fdc250a5688bb",
-		"book": [{
+		"book_id": [{
 			"author": "罗贯中",
 			"title": "三国演义"
 		}],
 		"quantity": 555
 	}, {
 		"_id": "b8df3bd65f8f0d06018fdc2315af05ec",
-		"book": [{
+		"book_id": [{
 			"author": "罗贯中",
 			"title": "三国演义"
 		}],
@@ -442,7 +442,7 @@ db.collection('order')
 **注意**
 
 - field参数字符串内没有冒号，{}为联表查询标志
-- 上述示例中如果order表的book字段是数组形式存放多个book_id，也跟上述写法一致，clientDB会自动根据字段类型进行联表查询
+- 上述示例中如果order表的`book_id`字段是数组形式存放多个book_id，也跟上述写法一致，clientDB会自动根据字段类型进行联表查询
 
 ### 查询列表分页
 
