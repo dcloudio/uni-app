@@ -118,7 +118,7 @@ goDetail(detail) {
 		uni.$emit('updateDetail', {
 			detail: encodeURIComponent(JSON.stringify(detail))
 		})
-	} else { // 若为窄评，则打开新窗体，在新窗体打开详情页面
+	} else { // 若为窄屏，则打开新窗体，在新窗体打开详情页面
 		uni.navigateTo({
 			url: '/pages/detail/detail?query=' + encodeURIComponent(JSON.stringify(detail))
 		});
