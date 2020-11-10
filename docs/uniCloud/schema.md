@@ -344,9 +344,38 @@ uniCloud推出了`openDB`开源数据库规范，包括用户表、文章表、�
     // value 当前规则校验数据
     // data  全部校验数据
     // callback 可选，一般用于自定义 errorMessage，如果执行了callback return 值无效，callback 传入的 message 将替换 errorMessage
-    // callback(new Error('message')) 传入 Error 类型时校验不通过
-    // callback('message') 传入 String 类型时通过
+    // callback('message') 传入错误消息时校验不通过
+    // callback() 无参时通过
+    // 注意 callback 不支持异步调用，异步请使用 Promise/await/async
     return value.length < 10
+  }
+
+  // 异步校验 Promise
+  export = function (rule, value, data) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (value > 10) {
+          // 校验通过
+          resolve()
+        } else {
+          // 校验失败
+          resolve('error') // 等于 reject(new Error('error'))
+          // reject(new Error('error'))
+        }
+      }, 3000);
+    })
+  }
+
+  // 异步校验 await/async
+  export = async function (rule, value, data) {
+    let result = await uni.request({...})
+    if (result > 10) {
+      // 校验通过
+      return true
+    } else {
+      // 校验失败
+      return 'error message'
+    }
   }
   ```
 
@@ -478,7 +507,7 @@ errorMessage支持字符串，也支持json object。类型为object时，可定
   },
   "properties": {
     "_id":{},
-	"name":{},
+    "name":{},
     "pwd": {}
   }
 }
@@ -828,7 +857,7 @@ DCloud提供了`uni-forms`前端组件，该组件的校验规范完全符合`DB
 
 <!-- 
 如果是时间戳，则需要新做一个时间选择组件
-如果有枚举，默认为picker
+如果有枚举，默认为 uni-data-checkbox
 如果是number且有大小范围，默认用步进器
  -->
 
@@ -913,45 +942,41 @@ DCloud提供了`uni-forms`前端组件，该组件的校验规范完全符合`DB
       "bsonType": "array",
       "description": "爱好",
       "label": "爱好",
-      "component": {
-        "name": "checkbox-group",
-        "childrenData": [{
-            "label": "游泳",
-            "value": 1
-          },
-          {
-            "label": "骑行",
-            "value": 2
-          },
-          {
-            "label": "音乐",
-            "value": 3
-          },
-          {
-            "label": "美术",
-            "value": 4
-          }
-        ]
-      }
+      "enum": [
+        {
+          "text": "游泳",
+          "value": 1
+        },
+        {
+          "text": "骑行",
+          "value": 2
+        },
+        {
+          "text": "音乐",
+          "value": 3
+        },
+        {
+          "text": "美术",
+          "value": 4
+        }
+      ]
     },
     "gender": {
       "bsonType": "int",
-      "enum": [0, 1, 2],
       "description": "用户性别：0 未知 1 男性 2 女性",
       "label": "性别",
-      "component": {
-        "name": "radio-group",
-        "childrenData": [{
-            "label": "男",
-            "value": 1
-          },
-          {
-            "label": "女",
-            "value": 2
-          }
-        ]
-      },
-      "errorMessage": "{label}无效"
+      "errorMessage": "{label}无效",
+      "defaultValue": 0,
+      "enum": [{
+        "text": "未知",
+        "value": 0
+      }, {
+        "text": "男",
+        "value": 1
+      }, {
+        "text": "女",
+        "value": 2
+      }]
     },
     "email": {
       "bsonType": "string",
@@ -965,39 +990,9 @@ DCloud提供了`uni-forms`前端组件，该组件的校验规范完全符合`DB
       "label": "自定义children",
       "component": {
         "name": "select",
-        "children": "<option value="{item.value}">{item.label}</option>",
+        "children": "<option value='{item.value}'>{item.label}</option>",
         "childrenData": [{"label": "中文简体", "value": "zh-cn"}]
       }
-    }
-  }
-}
-```
-
-
-component 类型为数组
-
-```json
-{
-  "bsonType": "object",
-  "required": [],
-  "properties": {
-    "mobile": {
-      "bsonType": "string",
-      "label": "多个组件",
-      "component": [
-        {
-          "name": "input",
-          "props": {
-            "placeholder": "电话1"
-          }
-        },
-        {
-          "name": "input",
-          "props": {
-            "placeholder": "电话2"
-          }
-        }
-      ]
     }
   }
 }
