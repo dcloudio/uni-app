@@ -1474,10 +1474,15 @@ function parseApp$1 (vm) {
 
 function createApp (vm) {
   Vue.prototype.getOpenerEventChannel = function () {
-    if (!this.__eventChannel__) {
-      this.__eventChannel__ = new EventChannel();
+    switch ("mp-kuaishou") {
+      case 'mp-weixin':
+        return this.$scope.getOpenerEventChannel()
+      default :
+        if (!this.__eventChannel__) {
+          this.__eventChannel__ = new EventChannel();
+        }
+        return this.__eventChannel__
     }
-    return this.__eventChannel__
   };
   const callHook = Vue.prototype.__call_hook;
   Vue.prototype.__call_hook = function (hook, args) {
