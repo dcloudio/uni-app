@@ -60,6 +60,7 @@ var serviceContext = (function () {
 
   const media = [
     'chooseImage',
+    'chooseFile',
     'previewImage',
     'getImageInfo',
     'saveImageToPhotosAlbum',
@@ -181,7 +182,7 @@ var serviceContext = (function () {
     'showRightWindow',
     'hideTopWindow',
     'hideLeftWindow',
-    'hideRightWindow',
+    'hideRightWindow'
   ];
 
   const event = [
@@ -1311,8 +1312,51 @@ var serviceContext = (function () {
     openLocation: openLocation
   });
 
-  const SIZE_TYPES = ['original', 'compressed'];
+  const MEDIA_TYPE = ['all', 'image', 'video'];
   const SOURCE_TYPES = ['album', 'camera'];
+
+  const chooseFile = {
+    count: {
+      type: Number,
+      required: false,
+      default: 100,
+      validator (count, params) {
+        if (count <= 0) {
+          params.count = 100;
+        }
+      }
+    },
+    sourceType: {
+      type: Array,
+      required: false,
+      default: SOURCE_TYPES,
+      validator (sourceType, params) {
+        sourceType = sourceType.filter(sourceType => SOURCE_TYPES.includes(sourceType));
+        params.sourceType = sourceType.length ? sourceType : SOURCE_TYPES;
+      }
+    },
+    type: {
+      type: String,
+      required: false,
+      default: 'all',
+      validator (type, params) {
+        if (!MEDIA_TYPE.includes(type)) params.type = MEDIA_TYPE[0];
+        params.type = params.type === 'all' ? params.type = '*' : params.type;
+      }
+    },
+    extension: {
+      type: Array,
+      default: ['*']
+    }
+  };
+
+  var require_context_module_0_15 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    chooseFile: chooseFile
+  });
+
+  const SIZE_TYPES = ['original', 'compressed'];
+  const SOURCE_TYPES$1 = ['album', 'camera'];
 
   const chooseImage = {
     count: {
@@ -1338,29 +1382,33 @@ var serviceContext = (function () {
     sourceType: {
       type: Array,
       required: false,
-      default: SOURCE_TYPES,
+      default: SOURCE_TYPES$1,
       validator (sourceType, params) {
-        sourceType = sourceType.filter(sourceType => SOURCE_TYPES.includes(sourceType));
-        params.sourceType = sourceType.length ? sourceType : SOURCE_TYPES;
+        sourceType = sourceType.filter(sourceType => SOURCE_TYPES$1.includes(sourceType));
+        params.sourceType = sourceType.length ? sourceType : SOURCE_TYPES$1;
       }
+    },
+    extension: {
+      type: Array,
+      default: ['*']
     }
   };
 
-  var require_context_module_0_15 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_16 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     chooseImage: chooseImage
   });
 
-  const SOURCE_TYPES$1 = ['album', 'camera'];
+  const SOURCE_TYPES$2 = ['album', 'camera'];
 
   const chooseVideo = {
     sourceType: {
       type: Array,
       required: false,
-      default: SOURCE_TYPES$1,
+      default: SOURCE_TYPES$2,
       validator (sourceType, params) {
-        sourceType = sourceType.filter(sourceType => SOURCE_TYPES$1.includes(sourceType));
-        params.sourceType = sourceType.length ? sourceType : SOURCE_TYPES$1;
+        sourceType = sourceType.filter(sourceType => SOURCE_TYPES$2.includes(sourceType));
+        params.sourceType = sourceType.length ? sourceType : SOURCE_TYPES$2;
       }
     },
     maxDuration: {
@@ -1370,10 +1418,14 @@ var serviceContext = (function () {
     camera: {
       type: String,
       default: 'back'
+    },
+    extension: {
+      type: Array,
+      default: ['*']
     }
   };
 
-  var require_context_module_0_16 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_17 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     chooseVideo: chooseVideo
   });
@@ -1388,7 +1440,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_17 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_18 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getImageInfo: getImageInfo
   });
@@ -1424,7 +1476,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_18 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_19 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     previewImage: previewImage
   });
@@ -1439,7 +1491,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_19 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_20 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     saveImageToPhotosAlbum: saveImageToPhotosAlbum
   });
@@ -1457,7 +1509,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_20 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_21 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     downloadFile: downloadFile
   });
@@ -1562,10 +1614,13 @@ var serviceContext = (function () {
     },
     withCredentials: {
       type: Boolean
+    },
+    timeout: {
+      type: Number
     }
   };
 
-  var require_context_module_0_21 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_22 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     request: request
   });
@@ -1623,7 +1678,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_22 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_23 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     connectSocket: connectSocket,
     sendSocketMessage: sendSocketMessage,
@@ -1665,7 +1720,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_23 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_24 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     uploadFile: uploadFile
   });
@@ -1690,7 +1745,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_24 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_25 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getProvider: getProvider
   });
@@ -1711,7 +1766,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_25 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_26 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     loadSubPackage: loadSubPackage
   });
@@ -1912,7 +1967,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_26 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_27 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     redirectTo: redirectTo,
     reLaunch: reLaunch,
@@ -1958,7 +2013,7 @@ var serviceContext = (function () {
   const removeStorage = getStorage;
   const removeStorageSync = getStorageSync;
 
-  var require_context_module_0_27 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_28 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getStorage: getStorage,
     getStorageSync: getStorageSync,
@@ -1995,7 +2050,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_28 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_29 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     loadFontFace: loadFontFace
   });
@@ -2038,7 +2093,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_29 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_30 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     setNavigationBarColor: setNavigationBarColor,
     setNavigationBarTitle: setNavigationBarTitle
@@ -2058,7 +2113,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_30 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_31 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     pageScrollTo: pageScrollTo
   });
@@ -2179,7 +2234,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_31 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_32 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     showModal: showModal,
     showToast: showToast,
@@ -2278,7 +2333,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_32 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_33 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     setTabBarItem: setTabBarItem,
     setTabBarStyle: setTabBarStyle,
@@ -2309,24 +2364,25 @@ var serviceContext = (function () {
   './location/choose-location.js': require_context_module_0_12,
   './location/get-location.js': require_context_module_0_13,
   './location/open-location.js': require_context_module_0_14,
-  './media/choose-image.js': require_context_module_0_15,
-  './media/choose-video.js': require_context_module_0_16,
-  './media/get-image-info.js': require_context_module_0_17,
-  './media/preview-image.js': require_context_module_0_18,
-  './media/save-image-to-photos-album.js': require_context_module_0_19,
-  './network/download-file.js': require_context_module_0_20,
-  './network/request.js': require_context_module_0_21,
-  './network/socket.js': require_context_module_0_22,
-  './network/upload-file.js': require_context_module_0_23,
-  './plugin/get-provider.js': require_context_module_0_24,
-  './plugin/load-sub-package.js': require_context_module_0_25,
-  './route/route.js': require_context_module_0_26,
-  './storage/storage.js': require_context_module_0_27,
-  './ui/load-font-face.js': require_context_module_0_28,
-  './ui/navigation-bar.js': require_context_module_0_29,
-  './ui/page-scroll-to.js': require_context_module_0_30,
-  './ui/popup.js': require_context_module_0_31,
-  './ui/tab-bar.js': require_context_module_0_32,
+  './media/choose-file.js': require_context_module_0_15,
+  './media/choose-image.js': require_context_module_0_16,
+  './media/choose-video.js': require_context_module_0_17,
+  './media/get-image-info.js': require_context_module_0_18,
+  './media/preview-image.js': require_context_module_0_19,
+  './media/save-image-to-photos-album.js': require_context_module_0_20,
+  './network/download-file.js': require_context_module_0_21,
+  './network/request.js': require_context_module_0_22,
+  './network/socket.js': require_context_module_0_23,
+  './network/upload-file.js': require_context_module_0_24,
+  './plugin/get-provider.js': require_context_module_0_25,
+  './plugin/load-sub-package.js': require_context_module_0_26,
+  './route/route.js': require_context_module_0_27,
+  './storage/storage.js': require_context_module_0_28,
+  './ui/load-font-face.js': require_context_module_0_29,
+  './ui/navigation-bar.js': require_context_module_0_30,
+  './ui/page-scroll-to.js': require_context_module_0_31,
+  './ui/popup.js': require_context_module_0_32,
+  './ui/tab-bar.js': require_context_module_0_33,
 
       };
       var req = function req(key) {
@@ -6310,10 +6366,11 @@ var serviceContext = (function () {
 
   const createDownloadTaskById = function (downloadTaskId, {
     url,
-    header
+    header,
+    timeout = __uniConfig.networkTimeout.downloadFile ? __uniConfig.networkTimeout.downloadFile / 1000 : 120
   } = {}) {
     const downloader = plus.downloader.createDownload(url, {
-      time: __uniConfig.networkTimeout.downloadFile ? __uniConfig.networkTimeout.downloadFile / 1000 : 120,
+      timeout,
       filename: TEMP_PATH + '/download/',
       // 需要与其它平台上的表现保持一致，不走重试的逻辑。
       retry: 0,
@@ -6421,7 +6478,8 @@ var serviceContext = (function () {
     method = 'GET',
     responseType,
     sslVerify = true,
-    firstIpv4 = false
+    firstIpv4 = false,
+    timeout = __uniConfig.networkTimeout.request
   } = {}) {
     const stream = requireNativePlugin('stream');
     const headers = {};
@@ -6453,7 +6511,6 @@ var serviceContext = (function () {
       headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
     }
 
-    const timeout = __uniConfig.networkTimeout.request;
     if (timeout) {
       abortTimeout = setTimeout(() => {
         aborted = true;
@@ -6684,10 +6741,11 @@ var serviceContext = (function () {
     name,
     files,
     header,
-    formData
+    formData,
+    timeout = __uniConfig.networkTimeout.uploadFile ? __uniConfig.networkTimeout.uploadFile / 1000 : 120
   } = {}) {
     const uploader = plus.uploader.createUpload(url, {
-      timeout: __uniConfig.networkTimeout.uploadFile ? __uniConfig.networkTimeout.uploadFile / 1000 : 120,
+      timeout,
       // 需要与其它平台上的表现保持一致，不走重试的逻辑。
       retry: 0,
       retryInterval: 0
