@@ -55,6 +55,23 @@
 |order|int|表单项排序序号。生成前端表单代码时，默认是以schema中的字段顺序从上到下排布表单项的，但如果指定了order，则按order规定的顺序进行排序。如果表单项被包含在uni-group中，则同组内按order排序|
 |component|Object&#124;Array|生成前端表单代码时，使用什么组件渲染这个表单项。比如使用input输入框。详见下方示例|
 
+**url格式**
+
+`http://` | `https://` | `ftp://` 开头, `//` 后必须包含一个 `.`(localhost除外)
+
+有效格式
+- http://dcloud.io
+- https://dcloud.io
+- http://localhost
+
+无效格式
+- http://dcloud
+- https://dcloud
+- mailto:dcloud@dcloud.io
+- file:\\
+- file:\\\
+
+
 **注意：**
 1. `DB Schema`的各种功能均只支持`clientDB`。如果使用云函数操作数据库，schema的作用仅仅是描述字段信息。同时强烈推荐使用HBuilderX 2.9.5以上版本使用`clientDB`。
 2. 生成表单页面的功能，入口在uniCloud web控制台的数据库schema界面，注意该功能需搭配HBuilderX 2.9.5+版本。
