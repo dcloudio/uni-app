@@ -13,7 +13,7 @@
 |range|Array / Array＜Object＞|[]|mode为 selector 或 multiSelector 时，range 有效||
 |range-key|String||当 range 是一个 Array＜Object＞ 时，通过 range-key 来指定 Object 中 key 的值作为选择器显示内容||
 |value|Number|0|value 的值表示选择了 range 中的第几个（下标从 0 开始）||
-|selector-type|String|auto|大屏时UI类型，支持 picker、select、auto，默认在 iPad 以 picker 样式展示而在 PC 以 select 样式展示|H5 2.8.9+|
+|selector-type|String|auto|大屏时UI类型，支持 picker、select、auto，默认在 iPad 以 picker 样式展示而在 PC 以 select 样式展示|H5 2.9.9+|
 |@change|EventHandle||value 改变时触发 change 事件，event.detail = {value: value}||
 |disabled|Boolean|false|是否禁用||
 |@cancel|EventHandle||取消选择或点遮罩层收起 picker 时触发||

@@ -17,7 +17,7 @@
 |fixed|Boolean|false|如果 textarea 是在一个 position:fixed 的区域，需要显示指定属性 fixed 为 true|微信小程序、百度小程序、字节跳动小程序、QQ小程序|
 |cursor-spacing|Number|0|指定光标与键盘的距离，单位 px 。取 textarea 距离底部的距离和 cursor-spacing 指定的距离的最小值作为光标与键盘的距离|App、微信小程序、百度小程序、字节跳动小程序、QQ小程序|
 |cursor|Number||指定focus时的光标位置|微信小程序、App、H5、百度小程序、字节跳动小程序、QQ小程序|
-|confirm-type|String|done|设置键盘右下角按钮的文字，仅在 type="text" 时生效。|微信小程序基础库2.13.0、APP(HBuilder X2.9.8+)、H5(HBuilder X2.9.8+)|
+|confirm-type|String|done|设置键盘右下角按钮的文字，仅在 type="text" 时生效。|微信小程序基础库2.13.0、APP(HBuilder X2.9.9+)、H5(HBuilder X2.9.9+)|
 |show-confirm-bar|Boolean|true|是否显示键盘上方带有”完成“按钮那一栏|微信小程序、百度小程序、QQ小程序|
 |selection-start|Number|-1|光标起始位置，自动聚焦时有效，需与selection-end搭配使用|微信小程序、App、H5、百度小程序、字节跳动小程序、QQ小程序|
 |selection-end|Number|-1|光标结束位置，自动聚焦时有效，需与selection-start搭配使用|微信小程序、App、H5、百度小程序、字节跳动小程序、QQ小程序|
