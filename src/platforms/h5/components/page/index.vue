@@ -1,7 +1,7 @@
 <template>
   <uni-page :data-page="$route.meta.pagePath">
     <page-head
-      v-if="!showTopWindow && navigationBar.type!=='none'"
+      v-if="navigationBar.type!=='none'"
       v-bind="navigationBar"
     />
     <page-refresh
@@ -239,15 +239,6 @@ export default {
     return {
       navigationBar,
       refreshOptions
-    }
-  },
-  computed: {
-    showTopWindow () {
-      try {
-        const appLayout = getApp().$children[0].$children[0]
-        return appLayout && appLayout.showTopWindow
-      } catch (e) {}
-      return false
     }
   },
   created () {

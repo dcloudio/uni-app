@@ -51,13 +51,13 @@ export function request ({
   method,
   dataType,
   responseType,
-  withCredentials
+  withCredentials,
+  timeout = (__uniConfig.networkTimeout && __uniConfig.networkTimeout.request) || 60 * 1000
 }, callbackId) {
   const {
     invokeCallbackHandler: invoke
   } = UniServiceJSBridge
   var body = null
-  var timeout = (__uniConfig.networkTimeout && __uniConfig.networkTimeout.request) || 60 * 1000
   // 根据请求类型处理数据
   var contentType
   for (const key in header) {

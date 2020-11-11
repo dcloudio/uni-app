@@ -45,9 +45,9 @@ class DownloadTask {
  */
 export function downloadFile ({
   url,
-  header
+  header,
+  timeout = (__uniConfig.networkTimeout && __uniConfig.networkTimeout.downloadFile) || 60 * 1000
 }, callbackId) {
-  var timeout = (__uniConfig.networkTimeout && __uniConfig.networkTimeout.downloadFile) || 60 * 1000
   const {
     invokeCallbackHandler: invoke
   } = UniServiceJSBridge

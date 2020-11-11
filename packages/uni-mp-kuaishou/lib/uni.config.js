@@ -14,6 +14,10 @@ module.exports = {
     project: 'project.ks.json'
   },
   copyWebpackOptions (platformOptions, vueOptions) {
-    return ['kscomponents']
+    const copyOptions = ['kscomponents']
+    global.uniModules.forEach(module => {
+      copyOptions.push('uni_modules/' + module + '/kscomponents')
+    })
+    return copyOptions
   }
 }

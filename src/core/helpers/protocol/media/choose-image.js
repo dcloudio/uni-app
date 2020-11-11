@@ -30,5 +30,9 @@ export const chooseImage = {
       sourceType = sourceType.filter(sourceType => SOURCE_TYPES.includes(sourceType))
       params.sourceType = sourceType.length ? sourceType : SOURCE_TYPES
     }
+  },
+  extension: {
+    type: Array,
+    default: ['*']
   }
 }

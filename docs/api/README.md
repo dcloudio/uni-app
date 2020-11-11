@@ -114,6 +114,11 @@ function async request () {
 |[uni.previewImage](api/media/image?id=previewimage)|预览图片|
 |[uni.getImageInfo](api/media/image?id=getimageinfo)|获取图片信息|
 |[uni.saveImageToPhotosAlbum](api/media/image?id=saveimagetophotosalbum)|保存图片到系统相册|
+##### 文件
+
+|API|说明|
+|:-|:-|
+|[uni.chooseFile](api/media/file?id=chooseFile)|从本地选择文件|
 ##### 录音管理
 
 |API|说明|

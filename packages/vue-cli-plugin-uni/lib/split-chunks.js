@@ -166,7 +166,7 @@ module.exports = function getSplitChunks () {
     if (module.resource && module.reasons) {
       for (let index = 0; index < module.reasons.length; index++) {
         const m = module.reasons[index]
-        
+
         if (m.module && m.module.resource) {
           const resource = normalizePath(m.module.resource)
           if (
@@ -203,7 +203,6 @@ module.exports = function getSplitChunks () {
             !hasMainPackage(chunks) &&
             !hasMainPackageComponent(module, matchSubPackages.values().next().value)
           ) {
-
             if (process.env.UNI_OPT_TRACE) {
               console.log(root, module.resource, chunks.map(chunk => chunk.name))
             }

@@ -17,6 +17,10 @@ module.exports = {
     subPackages: true
   },
   copyWebpackOptions (platformOptions, vueOptions) {
-    return ['mycomponents']
+    const copyOptions = ['mycomponents']
+    global.uniModules.forEach(module => {
+      copyOptions.push('uni_modules/' + module + '/mycomponents')
+    })
+    return copyOptions
   }
 }
