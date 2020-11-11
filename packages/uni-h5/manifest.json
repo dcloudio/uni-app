@@ -246,6 +246,22 @@
                 "chooseLocation"
             ],
             [
+                "/platforms/h5/view/components/map/index.vue",
+                "Map"
+            ],
+            [
+                "/core/view/components/input/index.vue",
+                "Input"
+            ],
+            [
+                "/core/view/components/scroll-view/index.vue",
+                "ScrollView"
+            ],
+            [
+                "/platforms/h5/service/api/location/get-location.js",
+                "getLocation"
+            ],
+            [
                 "/platforms/h5/components/system-routes/choose-location/index.vue",
                 "ChooseLocation"
             ]
@@ -283,6 +299,15 @@
             [
                 "/core/helpers/protocol/media/choose-image.js",
                 "chooseImage"
+            ]
+        ]
+    ],
+    "chooseFile": [
+        "/platforms/h5/service/api/media/choose-file.js",
+        [
+            [
+                "/core/helpers/protocol/media/choose-file.js",
+                "chooseFile"
             ]
         ]
     ],
