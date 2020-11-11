@@ -12,15 +12,14 @@ import {
 
 export default function createApp (vm) {
   Vue.prototype.getOpenerEventChannel = function () {
-    switch (__PLATFORM__) {
-      case 'mp-weixin':
-        return this.$scope.getOpenerEventChannel()
-      default :
-        if (!this.__eventChannel__) {
-          this.__eventChannel__ = new EventChannel()
-        }
-        return this.__eventChannel__
+    // 微信小程序使用自身getOpenerEventChannel
+    if (__PLATFORM__ === 'mp-weixin') {
+      return this.$scope.getOpenerEventChannel()
     }
+    if (!this.__eventChannel__) {
+      this.__eventChannel__ = new EventChannel()
+    }
+    return this.__eventChannel__
   }
   const callHook = Vue.prototype.__call_hook
   Vue.prototype.__call_hook = function (hook, args) {
