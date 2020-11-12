@@ -359,11 +359,45 @@ function getAutoComponentsByDir (componentsPath, absolute = false) {
   return components
 }
 
+function initAutoComponents () {
+  const allComponents = {}
+  const componentsDirs = [path.resolve(process.env.UNI_INPUT_DIR, 'components')]
+  global.uniModules.forEach(module => {
+    componentsDirs.push(path.resolve(process.env.UNI_INPUT_DIR, 'uni_modules', module, 'components'))
+  })
+  componentsDirs.forEach(componentsDir => {
+    const currentComponents = getAutoComponentsByDir(componentsDir, true)
+    Object.keys(currentComponents).forEach(name => {
+      (allComponents[name] || (allComponents[name] = [])).push(currentComponents[name])
+    })
+  })
+  const components = {}
+  const conflictFiles = []
+  Object.keys(allComponents).forEach(name => {
+    const files = allComponents[name]
+    components[name] = files[0]
+    if (files.length > 1) {
+      conflictFiles.push(files)
+    }
+  })
+  if (conflictFiles.length > 0) {
+    conflictFiles.forEach(files => {
+      let usedFile
+      console.warn('easycom组件冲突：[' + files.map((file, index) => {
+        file = path.relative(process.env.UNI_INPUT_DIR, file)
+        if (index === 0) {
+          usedFile = file
+        }
+        return file
+      }).join(',') + ']，优先使用：' + usedFile)
+      console.log('\n')
+    })
+  }
+  return components
+}
+
 function initAutoImportScanComponents () {
-  const componentsPath = path.resolve(process.env.UNI_INPUT_DIR, 'components')
-
-  const components = getAutoComponentsByDir(componentsPath)
-
+  const components = initAutoComponents()
   if (process.env.UNI_PLATFORM === 'quickapp-native') {
     if (!uniQuickAppAutoImportScanComponents) {
       uniQuickAppAutoImportScanComponents = getAutoComponentsByDir(
