@@ -283,7 +283,7 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 
 **中国移动咪咕商城：**[H5](https://mgmall.migudm.cn/)
 
-**中国移动咪咕爱看App** 内嵌[uni小程序SDK](https://nativesupport.dcloud.net.cn)。App内部部分栏目做成小程序形式。[App下载](https://android.myapp.com/myapp/detail.htm?apkName=com.wondertek.miguaikan)
+**中国移动咪咕爱看App：** 内嵌[uni小程序SDK](https://nativesupport.dcloud.net.cn)。App内部部分栏目做成小程序形式。[Android](https://android.myapp.com/myapp/detail.htm?apkName=com.wondertek.miguaikan)、[iOS](https://apps.apple.com/cn/app/id1168490851)
 
 **中国移动微信平台个人中心**
 
