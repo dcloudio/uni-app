@@ -31,10 +31,10 @@
 |POST|√|√|√|√|√|√|
 |PUT|√|√|√|x|√|√|
 |DELETE|√|√|√|x|√|x|
-|CONNECT|√|√|√|x|x|x|
-|HEAD|√|√|√|x|√|x|
+|CONNECT|x|√|√|x|x|x|
+|HEAD|x|√|√|x|√|x|
 |OPTIONS|√|√|√|x|√|x|
-|TRACE|√|√|√|x|x|x|
+|TRACE|x|√|√|x|x|x|
 
 **success 返回参数说明**
 
