@@ -5,7 +5,7 @@
 
 |App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|x|√`(HBuilder X2.9.8+)`|x`(可使用wx.chooseMessageFile)`|x|x|x|x|
+|x|√`(HBuilder X2.9.9+)`|x`(可使用wx.chooseMessageFile)`|x|x|x|x|
 
 **OBJECT 参数说明**
 

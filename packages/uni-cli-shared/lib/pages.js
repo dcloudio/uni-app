@@ -9,12 +9,9 @@ const {
 } = require('./util')
 
 const {
+  getJson,
   parseJson
 } = require('./json')
-
-const {
-  getPagesJson
-} = require('./uni_modules')
 
 let mainEntry = ''
 let nvueMainEntry = ''
@@ -34,6 +31,10 @@ function getNVueMainEntry () {
     }
   }
   return nvueMainEntry
+}
+
+function getPagesJson () {
+  return processPagesJson(getJson('pages.json', true))
 }
 
 function parsePagesJson (content, loader) {
