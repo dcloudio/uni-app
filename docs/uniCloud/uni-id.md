@@ -1565,7 +1565,7 @@ exports.main = async function(event,context) {
 
 | 字段		| 类型	| 必填| 说明																																																														|
 | ---			| ---		| ---	| ---																																																															|
-| code		| String| 是	|微信登录返回的code																																																								|
+| code		| String| 是	|支付宝登录返回的code																																																								|
 |platform	|String	|否		|客户端类型：`mp-weixin`、`app-plus`，默认uni-id会自动取客户端类型，但是在云函数url化等场景无法取到客户端类型，可以使用此参数指定	|
 
 **响应参数**
