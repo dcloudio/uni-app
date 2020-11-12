@@ -63,6 +63,8 @@
         <div
           ref="select"
           class="uni-picker-select"
+          @wheel.stop
+          @touchmove.stop
         >
           <div
             v-for="(item, index) in rangeArray[0]"
