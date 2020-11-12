@@ -384,6 +384,7 @@ export default {
   position: relative;
   padding: 10px;
   padding-right: 40px;
+  cursor: pointer;
 }
 
 .list-item.selected::before {
