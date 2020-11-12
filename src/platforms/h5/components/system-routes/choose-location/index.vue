@@ -361,6 +361,7 @@ export default {
   color: #007aff;
   font-size: 17px;
   text-align: center;
+  cursor: pointer;
 }
 
 .list {
