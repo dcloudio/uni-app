@@ -251,7 +251,7 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 
 **中华英才网：** 百度小程序搜索“中华英才网”
 
-<!-- **CSDN：** 微信小程序搜索“CSDN” -->
+**CSDN App：** Appstore新闻类榜单前十。[uni小程序SDK](https://nativesupport.dcloud.net.cn)案例。App内部众多栏目做成小程序形式。[App下载](https://www.csdn.net/apps/download)
 
 **开源中国：** 微信小程序搜索“osc+”、百度小程序搜索“开源中国社区”
 
@@ -282,6 +282,8 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 #### 国企
 
 **中国移动咪咕商城：**[H5](https://mgmall.migudm.cn/)
+
+**中国移动咪咕爱看App** 内嵌[uni小程序SDK](https://nativesupport.dcloud.net.cn)。App内部部分栏目做成小程序形式。[App下载](https://android.myapp.com/myapp/detail.htm?apkName=com.wondertek.miguaikan)
 
 **中国移动微信平台个人中心**
 
