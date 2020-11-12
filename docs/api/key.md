@@ -37,7 +37,7 @@ uni.onKeyboardHeightChange(res => {
 
 #### uni.getSelectedTextRange(OBJECT)
 
-在input、textarea等focus之后，获取输入框的光标位置。注意：只有在focus的时候调用此接口才有效。
+在input、textarea等focus之后，获取输入框的光标位置。注意：只有在focus的时候调用此接口才有效。目前仅支持 vue 页面，nvue 可以直接使用 weex 的 [getSelectionRange](https://weex.apache.org/zh/docs/components/input.html#getSelectionRange)。
 
 **平台差异说明**
 
