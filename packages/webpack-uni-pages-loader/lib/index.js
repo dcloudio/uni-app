@@ -30,7 +30,7 @@ function checkEmitFile (filePath, jsonObj, changedEmitFiles) {
 }
 
 module.exports = function (content, map) {
-  content = JSON.stringify(require('@dcloudio/uni-cli-shared/lib/uni_modules').getPagesJson(content))
+  // content = JSON.stringify(require('@dcloudio/uni-cli-shared/lib/uni_modules').getPagesJson(content))
   if (this.resourceQuery) {
     const params = loaderUtils.parseQuery(this.resourceQuery)
     if (params) {
@@ -42,12 +42,12 @@ module.exports = function (content, map) {
     }
   }
   // add deps
-  global.uniModules.forEach(module => {
-    const uniModulePagesJsonPath = path.resolve(process.env.UNI_INPUT_DIR, 'uni_modules', module, 'pages.json')
-    if (fs.existsSync(uniModulePagesJsonPath)) {
-      this.addDependency(uniModulePagesJsonPath)
-    }
-  })
+  // global.uniModules.forEach(module => {
+  //   const uniModulePagesJsonPath = path.resolve(process.env.UNI_INPUT_DIR, 'uni_modules', module, 'pages.json')
+  //   if (fs.existsSync(uniModulePagesJsonPath)) {
+  //     this.addDependency(uniModulePagesJsonPath)
+  //   }
+  // })
 
   if (
     process.env.UNI_USING_COMPONENTS ||
