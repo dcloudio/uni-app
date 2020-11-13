@@ -1,6 +1,6 @@
 #### custom-tab-bar
 
-自定义tabbar。
+自定义tabBar。
 
 **平台兼容性**
 
@@ -25,7 +25,8 @@ __仅 H5 支持__，HBuilderX 2.9.9 + 。
 
 **示例**
 
-以下为示例代码，来自于[hello uni-app项目](https://github.com/dcloudio/hello-uniapp)的适配 pc 版，window/top-window.vue 文件，推荐使用HBuilderX 2.9.9 + 体验，新建uni-app项目，选择hello uni-app模板，可快速体验完整示例。
+如下为`hello uni-app`中的源码示例，展现效果见下方截图：
+
 ```html
 <!-- 本示例未包含完整css，获取外链css请参考上文，在hello uni-app项目中查看 -->
 <template>
@@ -36,8 +37,8 @@ __仅 H5 支持__，HBuilderX 2.9.9 + 。
 ```
 
 ![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/5dc930c0-2580-11eb-8a36-ebb87efcf8c0.png)
- 
-**Tips**    
 
-- 该组件目前不支持borderStyle配置
-- 该组件支持所有tabBar相关API
+**Tips**
+
+- 该组件目前支持 ``pages.json`` 中 ``tabBar`` 相关配置， 其中不支持 ``borderStyle`` 配置
+- 该组件支持所有 ``tabBar`` 相关 API
