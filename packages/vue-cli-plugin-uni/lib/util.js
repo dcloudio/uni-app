@@ -1,3 +1,4 @@
+const path = require('path')
 let partialIdentifier = false
 module.exports = {
   getPartialIdentifier () {
@@ -16,5 +17,17 @@ module.exports = {
   getAutomatorCode () {
     const automator = `@dcloudio/uni-${process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM}/dist/automator`
     return process.env.UNI_AUTOMATOR_WS_ENDPOINT ? `import '${automator}';` : ''
+  },
+  getWatchOptions () {
+    return {
+      ignored: [
+        /node_modules/,
+        path.resolve(process.env.UNI_INPUT_DIR, 'unpackage'),
+        path.resolve(process.env.UNI_INPUT_DIR, 'uniCloud'),
+        path.resolve(process.env.UNI_INPUT_DIR, 'unicloud'),
+        path.resolve(process.env.UNI_INPUT_DIR, 'cloudfunctions-aliyun'),
+        path.resolve(process.env.UNI_INPUT_DIR, 'cloudfunctions-tcb')
+      ]
+    }
   }
 }
