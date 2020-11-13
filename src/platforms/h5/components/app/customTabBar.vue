@@ -104,7 +104,9 @@ export default {
   },
   methods: {
     _getRealPath (filePath) {
-      if (filePath.indexOf('/') !== 0) {
+      const SCHEME_RE = /^([a-z-]+:)?\/\//i
+      const DATA_RE = /^data:.*,.*/
+      if (!(SCHEME_RE.test(filePath) || DATA_RE.test(filePath)) && filePath.indexOf('/') !== 0) {
         filePath = '/' + filePath
       }
       return getRealPath(filePath)
