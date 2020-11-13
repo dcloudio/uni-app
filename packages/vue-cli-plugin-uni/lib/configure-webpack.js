@@ -314,7 +314,8 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
         assetFilter (assetFilename) {
           return !(/\.map$/.test(assetFilename)) && !(/vendor/.test(assetFilename))
         }
-      }
+      },
+      watchOptions: require('./util').getWatchOptions()
     }, platformWebpackConfig)
   }
 }

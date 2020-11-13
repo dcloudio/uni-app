@@ -154,7 +154,10 @@ module.exports = {
           'vue-style-loader': resolve('packages/h5-vue-style-loader')
         }
       },
-      plugins
+      plugins,
+      devServer: {
+        watchOptions: require('../util').getWatchOptions()
+      }
     }
   },
   chainWebpack (webpackConfig, vueOptions, api) {
