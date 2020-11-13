@@ -8,7 +8,7 @@
 
 **使用场景**
 
-适用于 app 宽屏适配等场景(web)，例如：已有 tabBar 的移动 App 适配 PC，可用 custom-tab-bar 组件将原来的 tabBar 的功能和逻辑快速转换为网页顶部的导航或侧边栏（见文章尾部截图），实现快速适配 pc 网页，当页面路由跳转到tabBar页面时，自动高亮。
+适用于 PC 宽屏适配等场景，可用 custom-tab-bar 组件将原来的 tabBar 的功能和逻辑快速转换为网页顶部的导航或侧边栏（见文章尾部截图），实现快速适配 pc 网页，当页面路由跳转到tabBar页面时，自动高亮。
 
 **平台兼容性**
 
@@ -36,15 +36,13 @@ __仅 H5 支持__，HBuilderX 2.9.9 + 。
 如下为`hello uni-app`中的源码示例，展现效果见下方截图：
 
 ```html
-<!-- 本示例未包含完整css，获取外链css请参考上文，在hello uni-app项目中查看 -->
+<!-- 本示例未包含完整css，获取外链css请参考上文，在hello uni-app项目中的 top-window 查看 -->
 <template>
     <view>
         <custom-tab-bar direction="horizontal" :show-icon="false" :selected="selected" @onTabItemTap="onTabItemTap" />
     </view>
 </template>
 ```
-
-**参考 [hello uni-app](https://github.com/dcloudio/hello-uniapp)项目的 custom-tab-bar使用**
 
 custom-tab-bar 水平布局（horizontal）：
 
