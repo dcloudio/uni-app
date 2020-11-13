@@ -19,7 +19,8 @@ const {
 
 const {
   hasOwn,
-  parseStyle
+  parseStyle,
+  trimMPJson
 } = require('../util')
 
 function defaultCopy (name, value, json) {
@@ -172,12 +173,6 @@ function getCondition (pagesJson) {
   return false
 }
 
-function trimAppJson (app) {
-  delete app.topWindow
-  delete app.leftWindow
-  delete app.rightWindow
-}
-
 module.exports = function (pagesJson, manifestJson, project = {}) {
   const app = {
     pages: [],
@@ -251,14 +246,14 @@ module.exports = function (pagesJson, manifestJson, project = {}) {
       return {
         app: {
           name: 'app',
-          content: trimAppJson(app)
+          content: trimMPJson(app)
         }
       }
     }
     return {
       app: {
         name: 'app',
-        content: trimAppJson(app)
+        content: trimMPJson(app)
       },
       project: {
         name: 'project.config',
@@ -317,7 +312,7 @@ module.exports = function (pagesJson, manifestJson, project = {}) {
     return {
       app: {
         name: 'app',
-        content: trimAppJson(app)
+        content: trimMPJson(app)
       },
       project: {
         name: 'project.config',
