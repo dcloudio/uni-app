@@ -117,6 +117,7 @@ DCloud暂无计划开发百度、头条、QQ等小程序的登录，以及Apple 
 ```json
 // 如果拷贝此内容切记去除注释
 {
+  // 注意passwordSecret与tokenSecret十分重要，切记妥善保存
 	"passwordSecret": "passwordSecret-demo", // 加密密码所用的密钥，注意修改为自己的，使用一个较长的字符串即可
 	"tokenSecret": "tokenSecret-demo", // 生成token所用的密钥，注意修改为自己的，使用一个较长的字符串即可
 	"tokenExpiresIn": 7200, // 全平台token过期时间，未指定过期时间的平台会使用此值
