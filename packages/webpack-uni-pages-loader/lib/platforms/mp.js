@@ -172,6 +172,12 @@ function getCondition (pagesJson) {
   return false
 }
 
+function trimAppJson (app) {
+  delete app.topWindow
+  delete app.leftWindow
+  delete app.rightWindow
+}
+
 module.exports = function (pagesJson, manifestJson, project = {}) {
   const app = {
     pages: [],
@@ -245,14 +251,14 @@ module.exports = function (pagesJson, manifestJson, project = {}) {
       return {
         app: {
           name: 'app',
-          content: app
+          content: trimAppJson(app)
         }
       }
     }
     return {
       app: {
         name: 'app',
-        content: app
+        content: trimAppJson(app)
       },
       project: {
         name: 'project.config',
@@ -311,7 +317,7 @@ module.exports = function (pagesJson, manifestJson, project = {}) {
     return {
       app: {
         name: 'app',
-        content: app
+        content: trimAppJson(app)
       },
       project: {
         name: 'project.config',

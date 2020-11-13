@@ -339,20 +339,27 @@ const isDirectory = source => fs.lstatSync(source).isDirectory()
 function getAutoComponentsByDir (componentsPath, absolute = false) {
   const components = {}
   try {
-    fs.existsSync(componentsPath) && fs.readdirSync(componentsPath).forEach(name => {
-      const folder = path.resolve(componentsPath, name)
-      if (!isDirectory(folder)) {
-        return
+    if (fs.existsSync(componentsPath)) {
+      let importComponentsDir = '@/components'
+      const uniModulesDir = path.resolve(process.env.UNI_INPUT_DIR, 'uni_modules')
+      if (!absolute && componentsPath.includes(uniModulesDir)) {
+        importComponentsDir = `@/uni_modules/${path.basename(path.dirname(componentsPath))}/components`
       }
-      const importDir = absolute ? normalizePath(folder) : `@/components/${name}`
-      // 读取文件夹文件列表，比对文件名（fs.existsSync在大小写不敏感的系统会匹配不准确）
-      const files = fs.readdirSync(folder)
-      if (files.includes(name + '.vue')) {
-        components[`^${name}$`] = `${importDir}/${name}.vue`
-      } else if (files.includes(name + '.nvue')) {
-        components[`^${name}$`] = `${importDir}/${name}.nvue`
-      }
-    })
+      fs.readdirSync(componentsPath).forEach(name => {
+        const folder = path.resolve(componentsPath, name)
+        if (!isDirectory(folder)) {
+          return
+        }
+        const importDir = absolute ? normalizePath(folder) : `${importComponentsDir}/${name}`
+        // 读取文件夹文件列表，比对文件名（fs.existsSync在大小写不敏感的系统会匹配不准确）
+        const files = fs.readdirSync(folder)
+        if (files.includes(name + '.vue')) {
+          components[`^${name}$`] = `${importDir}/${name}.vue`
+        } else if (files.includes(name + '.nvue')) {
+          components[`^${name}$`] = `${importDir}/${name}.nvue`
+        }
+      })
+    }
   } catch (e) {
     console.log(e)
   }
@@ -365,8 +372,9 @@ function initAutoComponents () {
   global.uniModules.forEach(module => {
     componentsDirs.push(path.resolve(process.env.UNI_INPUT_DIR, 'uni_modules', module, 'components'))
   })
-  componentsDirs.forEach(componentsDir => {
-    const currentComponents = getAutoComponentsByDir(componentsDir, true)
+  componentsDirs.forEach((componentsDir) => {
+    // 根目录 components 使用相对路径，uni_modules 使用绝对路径
+    const currentComponents = getAutoComponentsByDir(componentsDir, false)
     Object.keys(currentComponents).forEach(name => {
       (allComponents[name] || (allComponents[name] = [])).push(currentComponents[name])
     })
@@ -384,7 +392,6 @@ function initAutoComponents () {
     conflictFiles.forEach(files => {
       let usedFile
       console.warn('easycom组件冲突：[' + files.map((file, index) => {
-        file = path.relative(process.env.UNI_INPUT_DIR, file)
         if (index === 0) {
           usedFile = file
         }
