@@ -1,4 +1,3 @@
-const path = require('path')
 let partialIdentifier = false
 module.exports = {
   getPartialIdentifier () {
@@ -22,11 +21,10 @@ module.exports = {
     return {
       ignored: [
         /node_modules/,
-        path.resolve(process.env.UNI_INPUT_DIR, 'unpackage'),
-        path.resolve(process.env.UNI_INPUT_DIR, 'uniCloud'),
-        path.resolve(process.env.UNI_INPUT_DIR, 'unicloud'),
-        path.resolve(process.env.UNI_INPUT_DIR, 'cloudfunctions-aliyun'),
-        path.resolve(process.env.UNI_INPUT_DIR, 'cloudfunctions-tcb')
+        /unpackage/,
+        /uniCloud/i,
+        /cloudfunctions-aliyun/,
+        /cloudfunctions-tcb/
       ]
     }
   }
