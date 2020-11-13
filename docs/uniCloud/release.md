@@ -1,6 +1,9 @@
 # uniCloud 更新日志
 ======================================
 #### 2020-10-24
+  +  阿里云支持事务（startTransaction方式，暂不支持ranTransaction）[详情](https://uniapp.dcloud.net.cn/uniCloud/cf-database?id=starttransaction)
+
+#### 2020-10-24
   + clientDB 去除schema内permission中的点，例：`.write`改为`write`，旧写法仍然支持。
   + clientDB 优化无权限操作时的报错提示
   

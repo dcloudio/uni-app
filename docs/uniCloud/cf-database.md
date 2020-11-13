@@ -1567,11 +1567,11 @@ let res = await db.collection('user').where({
 
 ## 事务
 
-**目前仅腾讯云支持事务，阿里云即将支持**
-
 事务通常用来在某个数据库操作失败之后进行回滚。
 
 ### runTransaction
+
+**阿里云不支持此用法，请换成startTransaction以使用事务**
 
 发起事务。与`startTransaction`作用类似，接收参数类型不同
 
