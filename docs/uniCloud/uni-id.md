@@ -114,10 +114,11 @@ DCloud暂无计划开发百度、头条、QQ等小程序的登录，以及Apple 
 
 **下面的配置文件中所有时间的单位都是秒**
 
+> ！！！重要！！！ passwordSecret与tokenSecret十分重要，切记妥善保存。修改passwordSecret会导致老用户使用密码无法登陆，修改tokenSecret会导致所有已经下发的token失效。如果重新导入uni-id切勿直接覆盖config.json相关配置
+
 ```json
 // 如果拷贝此内容切记去除注释
 {
-  // 注意passwordSecret与tokenSecret十分重要，切记妥善保存
 	"passwordSecret": "passwordSecret-demo", // 加密密码所用的密钥，注意修改为自己的，使用一个较长的字符串即可
 	"tokenSecret": "tokenSecret-demo", // 生成token所用的密钥，注意修改为自己的，使用一个较长的字符串即可
 	"tokenExpiresIn": 7200, // 全平台token过期时间，未指定过期时间的平台会使用此值
