@@ -2,14 +2,13 @@
 
 自定义tabBar。
 
-该组件目前支持 ``pages.json`` 中 ``tabBar`` 相关配置， 其中不支持 ``borderStyle`` 配置
+该组件目前支持 ``pages.json`` 中 ``tabBar`` 相关配置（兼容性和 H5 保持一致）， 其中不支持 ``borderStyle`` 配置
 
-该组件支持所有 ``tabBar`` 相关 API。
+该组件保留了原生 ``tabBar`` 相关功能，例如设置 tab 徽标、显示红点等，支持所有 ``tabBar`` 相关 API。
 
 **使用场景**
 
-适用于 app 宽屏适配(web)等场景，例如：已有 tabBar 的移动 App 适配 PC，可用 custom-tab-bar 组件将原来的 tabBar 的功能和逻辑快速转换为网页顶部的导航栏，实现快速适配 pc 网页，当页面路由跳转到tabBar页面时，自动高亮。
-
+适用于 app 宽屏适配等场景(web)，例如：已有 tabBar 的移动 App 适配 PC，可用 custom-tab-bar 组件将原来的 tabBar 的功能和逻辑快速转换为网页顶部的导航或侧边栏（见文章尾部截图），实现快速适配 pc 网页，当页面路由跳转到tabBar页面时，自动高亮。
 **平台兼容性**
 
 __仅 H5 支持__，HBuilderX 2.9.9 + 。
@@ -44,11 +43,12 @@ __仅 H5 支持__，HBuilderX 2.9.9 + 。
 </template>
 ```
 
-组件水平布局（horizontal）时效果：
+**参考 [hello uni-app](https://github.com/dcloudio/hello-uniapp)项目的 custom-tab-bar使用**
+
+custom-tab-bar 水平布局（horizontal）时效果：
 
 ![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/5dc930c0-2580-11eb-8a36-ebb87efcf8c0.png)
 
+custom-tab-bar 竖直布局（vertical）时效果：
 
-组件竖直布局（vertical）时效果：
-
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/0f8ca2e0-2592-11eb-8a36-ebb87efcf8c0.png)
+![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/b3b68450-2595-11eb-880a-0db19f4f74bb.png)
