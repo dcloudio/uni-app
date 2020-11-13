@@ -1,6 +1,6 @@
 # uniCloud 更新日志
 ======================================
-#### 2020-10-24
+#### 2020-11-13
   +  阿里云支持事务（startTransaction方式，暂不支持ranTransaction）[详情](https://uniapp.dcloud.net.cn/uniCloud/cf-database?id=starttransaction)
 
 #### 2020-10-24
