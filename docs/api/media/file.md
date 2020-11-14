@@ -1,11 +1,18 @@
 ### uni.chooseFile(OBJECT)
 从本地选择文件。
 
+本API主要用于选择非媒体文件，如果选择的文件是媒体文件，另有3个专用API：
+- [图片选择](https://uniapp.dcloud.io/api/media/image?id=chooseimage)
+- [视频选择](https://uniapp.dcloud.io/api/media/video?id=choosevideo)
+- [多媒体文件选择(含图片视频)](https://uniapp.dcloud.io/api/media/video?id=choosemedia)
+
 **平台差异说明**
 
 |App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |x|√`(HBuilder X2.9.9+)`|x`(可使用wx.chooseMessageFile)`|x|x|x|x|
+
+- App端如需选择非媒体文件，可在插件市场搜索[文件选择](https://ext.dcloud.net.cn/search?q=文件选择)，其中Android端可以使用Native.js，无需原生插件，而iOS端需要原生插件。
 
 **OBJECT 参数说明**
 
@@ -23,7 +30,6 @@
 
 - count 值在 H5 平台的表现，基于浏览器本身的规范。目前测试的结果来看，只能限制单选/多选，并不能限制数量。并且，在实际的手机浏览器很少有能够支持多选的。
 - sourceType 在H5端对应`input`的`capture`属性，设置为`['album']`无效，依然可以使用相机。
-- App端如需选择非媒体文件，可在插件市场搜索[文件选择](https://ext.dcloud.net.cn/search?q=文件选择)，其中Android端可以使用Native.js，无需原生插件，而iOS端需要原生插件。
 - extension暂只支持文件后缀名，例如`['.zip','.exe','.js']`，不支持`application/msword`等类似值
 
 **注：文件的临时路径，在应用本次启动期间可以正常使用，如需持久保存，需在主动调用 [uni.saveFile](api/file/file?id=savefile)，在应用下次启动时才能访问得到。**
