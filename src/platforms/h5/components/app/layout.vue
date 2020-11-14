@@ -420,7 +420,7 @@ export default {
 
   .uni-mask+.uni-left-window,
   .uni-mask+.uni-right-window {
-    position: absolute;
+    position: fixed;
   }
 
   .uni-app--showlayout+uni-tabbar {

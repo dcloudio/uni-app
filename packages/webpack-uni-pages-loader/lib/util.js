@@ -42,6 +42,7 @@ function hasOwn (obj, key) {
 }
 
 function trimMPJson (json) {
+  delete json.maxWidth
   delete json.topWindow
   delete json.leftWindow
   delete json.rightWindow
