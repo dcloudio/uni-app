@@ -114,7 +114,7 @@ DCloud暂无计划开发百度、头条、QQ等小程序的登录，以及Apple 
 
 **下面的配置文件中所有时间的单位都是秒**
 
-> ！！！重要！！！ passwordSecret与tokenSecret十分重要，切记妥善保存。修改passwordSecret会导致老用户使用密码无法登陆，修改tokenSecret会导致所有已经下发的token失效。如果重新导入uni-id切勿直接覆盖config.json相关配置
+> ！！！重要！！！ passwordSecret与tokenSecret十分重要，切记妥善保存（不要直接使用下面示例中的passwordSecret与tokenSecret）。修改passwordSecret会导致老用户使用密码无法登陆，修改tokenSecret会导致所有已经下发的token失效。如果重新导入uni-id切勿直接覆盖config.json相关配置
 
 ```json
 // 如果拷贝此内容切记去除注释
@@ -360,6 +360,65 @@ function hasPermission(token, permission) {
 **受邀者注册**
 
 <img width="375" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/1b12c610-e377-11ea-b997-9918a5dda011.jpeg" />
+
+## 修改passwordSecret@modifysecret
+
+> 注意：通常情况下设定好passwordSecret之后不需要再进行修改，使用此功能时请务必小心谨慎
+
+**说明**
+
+在config.json内修改passwordSecret会导致已有用户无法通过密码登录。但是某些情况下有些应用有修改passwordSecret的需求，这种场景下可以使用uni-id 2.0.1版本新增的修改passwordSecret功能。（注意：2.0.1版本验证码表名调整为了`opendb-verify-codes`）
+
+**如何使用**
+
+下面以将passwordSecret从`passwordSecret-demo`修改为`qwertyasdfgh`为例介绍如何使用
+
+```json
+// 旧config.json
+{
+  "passwordSecret": "passwordSecret-demo"
+}
+
+// 新config.json
+{
+  "passwordSecret": [{
+    "version": 1,
+    "value": "passwordSecret-demo"
+  },{
+    "version": 2,
+    "value": "qwertyasdfgh"
+  }]
+}
+
+```
+
+如果在上面基础上再修改passwordSecret为`1q2w3e4r5t`,config.json调整如下
+
+> !!!注意只有在数据库内完全没有使用某个版本（`password_version`字段表示了用户密钥版本）密钥的用户才可以将此密钥从config.json内去除。没有`password_version`的用户使用的是最旧版本的passwordSecret，如果存在这样的用户对应的passwordSecret也不可去除。
+
+```json
+// 新config.json，
+{
+  "passwordSecret": [{
+    "version": 1,
+    "value": "passwordSecret-demo"
+  },{
+    "version": 2,
+    "value": "qwertyasdfgh"
+  },{
+    "version": 3,
+    "value": "1q2w3e4r5t"
+  }]
+}
+```
+
+**原理**
+
+uni-id-users表内存储的password字段为使用hmac-sha1生成的hash值，此值不可逆向推出用户真实密码。所以直接修改passwordSecret会导致老用户无法使用密码登录。
+
+上述修改通过密钥版本号区分新旧密钥，用户登录时如果密钥版本小于当前最新版本，会为用户更新数据库内存储的password字段，并记录当前使用的密钥版本。
+
+用户对应的数据库记录内没有密钥版本的话会使用最低版本密钥进行密码校验，校验通过后为用户更新为最新版密钥对应的password并记录版本号。
 
 # API列表@api
 
@@ -696,6 +755,17 @@ exports.main = async function(event,context) {
 | 字段	| 类型	| 必填	| 说明						|
 | ---	| ---	| ---	| ---						|
 | password	| String| 是	|加密后的字符串		|
+
+**重要**
+
+`2.0.0`版本起`encryptPwd`接口调整为返回对象。结构如下
+
+```js
+{
+  passwordHash: 'asdajdoaiojfj', // 存储到数据库的密码
+  version: 1 // 密钥版本，关于此字段请参考https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=modifysecret
+}
+```
 
 **示例代码**
 
@@ -2175,7 +2245,7 @@ exports.main = async function(event,context) {
 
 ## 验证码表
 
-表名：`uni-verify`
+表名：`uni-verify` **uni-id 2.0.0版本起，此表名改为opendb-verify-codes**
 
 | 字段       | 类型      | 必填 | 描述                                   |
 | ---------- | --------- | ---- | -------------------------------------- |
