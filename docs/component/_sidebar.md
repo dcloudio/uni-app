@@ -25,7 +25,7 @@
   * [slider](component/slider.md)
   * [switch](component/switch.md)
   * [textarea](component/textarea.md)
-* 导航
+* 路由导航
   * [navigator](component/navigator.md)
 * 媒体组件
   * [audio](component/audio.md)
@@ -42,6 +42,11 @@
   * [web-view](component/web-view.md)
 * 广告
   * [ad](component/ad.md)
+* 导航类组件
+  * [navigation-bar](component/navigation-bar.md)
+  * [custom-tab-bar](component/custom-tab-bar.md)
+* 页面属性配置节点
+  * [page-meta](component/page-meta.md)
 * 小程序开放能力组件
   * [official-account](component/official-account.md)
   * [open-data](component/open-data.md)
@@ -82,11 +87,6 @@
   * [SwiperDot 轮播图指示点](https://ext.dcloud.net.cn/plugin?id=284)
   * [Tag 标签](https://ext.dcloud.net.cn/plugin?id=35)
   * [更多插件市场的组件](https://ext.dcloud.net.cn/?cat1=2)
-* 导航栏
-  * [navigation-bar](component/navigation-bar.md)
-  * [custom-tab-bar](component/custom-tab-bar.md)
-* 页面属性配置节点
-  * [page-meta](component/page-meta.md)
 * [配置小程序插件](component/mp-weixin-plugin.md)
 * [原生组件说明](component/native-component.md)
 <li></li>
