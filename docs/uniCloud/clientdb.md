@@ -12,11 +12,12 @@
 
 在`DB Schema`中，配置数据操作的权限和字段值域校验规则，阻止前端不恰当的数据读写。详见：[DB Schema](https://uniapp.dcloud.net.cn/uniCloud/schema)
 
-如果想在数据库操作之前或之后需要在云端执行额外的动作（比如获取文章详情之后阅读量+1），`clientDB`提供了action机制。在HBuilderX项目的`cloudfunctions/uni-clientDB-actions`目录编写上传js，参考：[action](uniCloud/database?id=action)
+如果想在数据库操作之前或之后需要在云端执行额外的动作（比如获取文章详情之后阅读量+1），`clientDB`提供了action云函数机制。在HBuilderX项目的`cloudfunctions/uni-clientDB-actions`目录编写上传js，参考：[action](uniCloud/database?id=action)
 
 **注意**
 
 - `clientDB`依赖uni-id（`1.1.10+版本`）提供用户身份和权限校验，如果你不了解uni-id，请参考[uni-id文档](https://uniapp.dcloud.net.cn/uniCloud/uni-id)
+- `clientDB`依赖的uni-id需要在uni-id的config.json内添加uni-id相关配置，通过uni-id的init方法传递的参数不会对clientDB生效
 - 通常在管理控制台使用`clientDB`，需要获取不同角色用户拥有的权限（在权限规则内使用auth.permission），请先查阅[uni-id 角色权限](https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=rbac)
 
 ## clientDB图解
@@ -42,7 +43,7 @@ js API可以执行所有数据库操作。`<uni-clientDB>`组件适用于查询�
 
 ```js
 // 获取db引用
-const db = uniCloud.database()
+const db = uniCloud.database() //代码块为cdb
 // 使用uni-clientDB
 db.collection('list')
   .where({
@@ -87,6 +88,7 @@ db.collection('list')
 |SYNTAX_ERROR										|语法错误																|
 |PERMISSION_ERROR								|权限校验未通过													|
 |VALIDATION_ERROR								|数据格式未通过													|
+|DUPLICATE_KEY									|索引冲突																|
 |SYSTEM_ERROR										|系统错误																|
 
 ### 前端环境变量@variable
@@ -191,11 +193,13 @@ sql写法，对js工程师而言有学习成本，而且无法处理非关系型
 
   需要使用skip，处理offset
 
-  这些问题竖起一堵墙，让后端开发难度加大，成为一个“专业领域”。但其实这堵墙是完全可以推倒的。
 
-  `jql`将解决这些问题，让js工程师没有难操作的数据。
 
-  具体看以下示例
+这些问题竖起一堵墙，让后端开发难度加大，成为一个“专业领域”。但其实这堵墙是完全可以推倒的。
+
+`jql`将解决这些问题，让js工程师没有难操作的数据。
+
+具体看以下示例
 
   ```js
   const db = uniCloud.database()
@@ -326,7 +330,7 @@ order表内有以下数据，book_id字段为book表的书籍_id，quantity为�
   "bsonType": "object",
   "required": [],
   "permission": {
-    ".read": true
+    "read": true
   },
   "properties": {
     "book_id": {
@@ -347,7 +351,7 @@ book表的db schema也要保持正确
   "bsonType": "object",
   "required": [],
   "permission": {
-    ".read": true
+    "read": true
   },
   "properties": {
     "title": {
@@ -404,7 +408,7 @@ db.collection('order')
 ```
 
 
-上述查询会返回如下结果，可以看到书籍信息被嵌入到order表的book字段下，成为子节点。同时根据where条件设置，只返回书名为三国演义的订单记录。
+上述查询会返回如下结果，可以看到书籍信息被嵌入到order表的book_id字段下，成为子节点。同时根据where条件设置，只返回书名为三国演义的订单记录。
 
 ```js
 {
@@ -412,14 +416,14 @@ db.collection('order')
 	"message": "",
 	"data": [{
 		"_id": "b8df3bd65f8f0d06018fdc250a5688bb",
-		"book": [{
+		"book_id": [{
 			"author": "罗贯中",
 			"title": "三国演义"
 		}],
 		"quantity": 555
 	}, {
 		"_id": "b8df3bd65f8f0d06018fdc2315af05ec",
-		"book": [{
+		"book_id": [{
 			"author": "罗贯中",
 			"title": "三国演义"
 		}],
@@ -438,6 +442,7 @@ db.collection('order')
 **注意**
 
 - field参数字符串内没有冒号，{}为联表查询标志
+- 上述示例中如果order表的`book_id`字段是数组形式存放多个book_id，也跟上述写法一致，clientDB会自动根据字段类型进行联表查询
 
 ### 查询列表分页
 
@@ -446,7 +451,7 @@ db.collection('order')
 1. 滚动到底加载下一页
 2. 点击页码按钮切换不同页
 
-推荐通过`<uni-clientDB>`组件处理分页，详见：[https://uniapp.dcloud.net.cn/uniCloud/uni-clientdb-component?id=page](https://uniapp.dcloud.net.cn/uniCloud/uni-clientdb-component?id=page)
+推荐通过`<uni-clientDB>`组件渲染分页列表，详见：[https://uniapp.dcloud.net.cn/uniCloud/uni-clientdb-component?id=page](https://uniapp.dcloud.net.cn/uniCloud/uni-clientdb-component?id=page)
 
 ### 排序orderBy@orderby
 
@@ -584,31 +589,65 @@ const db = uniCloud.database()
 
 获取到db的表对象后，通过`add`方法新增数据记录。
 
-`add`方法的参数为要新增的json数据，可以是单条数据、也可以是多条数据。
+方法：collection.add(data)
 
-注意：如果是非admin账户新增数据，需要在数据库中待操作表的`db schema`中要配置permission权限，赋予create为true。
+**参数说明**
 
-示例：
+| 参数	| 类型					| 必填	|
+| ----	| ------				| ----	|
+| data	| object &#124; array	| 是	|
+
+data支持一条记录，也支持多条记录一并新增到集合中。
+
+data中不需要包括`_id`字段，数据库会自动维护该字段。
+
+**返回值**
+
+单条插入时
+
+| 参数	| 类型	|  说明										|
+| ----	| ------|  ----------------------------------------	|
+|id		| String|插入记录的`_id`								|
+
+批量插入时
+
+| 参数		| 类型	|  说明										|
+| ----		| ------|  ----------------------------------------	|
+| inserted	| Number| 插入成功条数								|
+|ids		| Array	|批量插入所有记录的`_id`						|
+
+**示例：**
+
+比如在user表里新增一个叫王五的记录：
 
 ```js
-// 一次插入3条数据
 const db = uniCloud.database();
-db.collection("table1").add(
-	[{
-	  name: 'Alex'
-	},{
-	  name: 'Ben'
-	},{
-	  name: 'John'
-	}]
-)
+db.collection('user').add({name:"王五"})
 ```
+
+也可以批量插入数据并获取返回值
+
+```js
+const db = uniCloud.database();
+const collection = db.collection('user');
+let res = await collection.add([{
+  name: '张三'
+},{
+  name: '李四'
+},{
+  name: '王五'
+}])
+```
+
+如果上述代码执行成功，则res的值将包括inserted:3，代表插入3条数据，同时在ids里返回3条记录的`_id`。
+
+如果新增记录失败，会抛出异常，以下代码示例为捕获异常：
 
 ```js
 // 插入1条数据，同时判断成功失败状态
 const db = uniCloud.database();
-db.collection("table1")
-	.add({name: 'Ben'})
+db.collection("user")
+	.add({name: '张三'})
 	.then((res) => {
 		uni.showToast({
 			title: '新增成功'
@@ -626,8 +665,8 @@ db.collection("table1")
 ```
 
 **Tips**
-
-- 云服务商选择阿里云时，若集合表不存在，调用add方法会自动创建集合表
+- 如果是非admin账户新增数据，需要在数据库中待操作表的`db schema`中要配置permission权限，赋予create为true。
+- 云服务商选择阿里云时，若集合表不存在，调用add方法会自动创建集合表，并且不会报错。
 
 
 ### 删除数据记录remove
@@ -934,17 +973,17 @@ db.auth.off('refreshToken', refreshToken)
   "bsonType": "object", // 表级的类型，固定为object
   "required": ['book', 'quantity'], // 新增数据时必填字段
   "permission": { // 表级权限
-    ".read": true, // 读
-    ".create": false, // 新增
-    ".update": false, // 更新
-    ".delete": false, // 删除
+    "read": true, // 读
+    "create": false, // 新增
+    "update": false, // 更新
+    "delete": false, // 删除
   },
   "properties": { // 字段列表，注意这里是对象
     "book": { // 字段名book
       "bsonType": "string", // 字段类型
       "permission": { // 字段权限
-        ".read": true, // 字段读权限
-        ".write": false, // 字段写权限
+        "read": true, // 字段读权限
+        "write": false, // 字段写权限
       },
       "foreignKey": "book._id" // 其他表的关联字段
     },
@@ -974,17 +1013,17 @@ db.auth.off('refreshToken', refreshToken)
   "bsonType": "object", // 表级的类型，固定为object
   "required": ['book', 'quantity'], // 新增数据时必填字段
   "permission": { // 表级权限
-    ".read": "doc.uid == auth.uid", // 每个用户只能读取用户自己的数据。前提是要操作的数据doc，里面有一个字段存放了uid，即uni-id的用户id。（不配置时等同于false）
-    ".create": false, // 禁止新增数据记录（不配置时等同于false）
-    ".update": false, // 禁止更新数据（不配置时等同于false）
-    ".delete": false, // 禁止删除数据（不配置时等同于false）
+    "read": "doc.uid == auth.uid", // 每个用户只能读取用户自己的数据。前提是要操作的数据doc，里面有一个字段存放了uid，即uni-id的用户id。（不配置时等同于false）
+    "create": false, // 禁止新增数据记录（不配置时等同于false）
+    "update": false, // 禁止更新数据（不配置时等同于false）
+    "delete": false, // 禁止删除数据（不配置时等同于false）
   },
   "properties": { // 字段列表，注意这里是对象
     "secret_field": { // 字段名
       "bsonType": "string", // 字段类型
       "permission": { // 字段权限
-        ".read": false, // 禁止读取secret_field字段的数据
-        ".write": false // 禁止写入（包括更新和新增）secret_field字段的数据，父级节点存在false时这里可以不配
+        "read": false, // 禁止读取secret_field字段的数据
+        "write": false // 禁止写入（包括更新和新增）secret_field字段的数据，父级节点存在false时这里可以不配
       }
     },
     "uid":{
@@ -1005,7 +1044,7 @@ db.auth.off('refreshToken', refreshToken)
   "bsonType": "object",
   "required": ['book', 'quantity'], // 新增数据时必填字段
   "permission": { // 表级权限
-    ".read": "doc.status == 'OnSell'" // 允许所有人读取状态是OnSell的数据
+    "read": "doc.status == 'OnSell'" // 允许所有人读取状态是OnSell的数据
   },
   "properties": { // 字段列表，注意这里是对象
     "title": {
@@ -1017,8 +1056,8 @@ db.auth.off('refreshToken', refreshToken)
     "secret_field": { // 字段名
       "bsonType": "string", // 字段类型
       "permission": { // 字段权限
-        ".read": false, // 禁止读取secret_field字段的数据
-        ".write": false // 禁止写入（包括更新和新增）secret_field字段的数据
+        "read": false, // 禁止读取secret_field字段的数据
+        "write": false // 禁止写入（包括更新和新增）secret_field字段的数据
       }
     }
   }
@@ -1037,17 +1076,67 @@ db.collection('order')
   .get()
 ```
 
+在进行数据库操作之前，clientDB会使用permission内配置的规则对客户端操作进行一次预校验，如果预校验不通过还会通过数据库查询再进行一次校验
+
+例：
+
+```js
+// 数据库内news表有以下数据
+{
+  _id: "1",
+  user_id: "uid_1",
+  title: "abc"
+}
+```
+
+```js
+// news表对应的schema内做如下配置
+{
+  "bsonType": "object",
+  "permission": { // 表级权限
+    "read": true,
+    "update": "doc.user_id == auth.uid" // 只允许修改自己的数据
+  },
+  "properties": {
+    "user_id": {
+      "bsonType": "string"
+    },
+    "title": {
+      "bsonType": "string"
+    }
+  }
+}
+```
+
+```js
+// 用户ID为uid_1的用户在客户端使用如下操作
+db.collection('news').doc('1').update({
+  title: 'def'
+})
+```
+
+此时客户端条件里面只有`doc._id == 1`，schema内又限制的`doc.user_id == auth.uid`，所以第一次预校验无法通过，会进行一次查库校验判断是否有权限进行操作。发现auth.uid确实和doc.user_id一致，上面的数据库操作允许执行。
+
 ## action@action
 
-action的作用是在执行前端发起的数据库操作时，额外触发一段云函数逻辑。它是一个可选模块。
+action的作用是在执行前端发起的数据库操作时，额外触发一段云函数逻辑。它是一个可选模块。action是运行于云函数内的，可以使用云函数内的所有接口。
 
-当一个前端操作数据库的方式不能完全满足需求，仍然同时需要在云端再执行一些云函数时，就在前端发起数据库操作时，通过db.action("someactionname")方式要求云端同时执行这个叫someactionname的action。还可以在权限规则内指定某些操作必须使用指定的action，比如`"action in ['action-a','action-b']"`，来达到更灵活的权限控制。
+当一个前端操作数据库的方式不能完全满足需求，仍然同时需要在云端再执行一些云函数时，就在前端发起数据库操作时，通过`db.action("someactionname")`方式要求云端同时执行这个叫someactionname的action。还可以在权限规则内指定某些操作必须使用指定的action，比如`"action in ['action-a','action-b']"`，来达到更灵活的权限控制。
+
+**注意action方法是db对象的方法，只能跟在db后面，不能跟在collection()后面**
+- 正确：`db.action("someactionname").collection('table1')`
+- 错误：`db.collection('table1').action("someactionname")`
 
 如果使用`<uni-clientdb>组件`，该组件也有action属性，设置action="someactionname"即可。
+```html
+<uni-clientdb ref="udb" collection="table1" action="someactionname" v-slot:default="{data,pagination,loading,error}">
+```
+
+action支持一次使用多个，比如使用`db.action("action-a,action-b")`，其执行流程为`action-a.before->action-b.before->执行数据库操作->action-b.after->action-a.after`。在任一before环节抛出错误直接进入after流程，在after流程内抛出的错误会被传到下一个after流程。
 
 action是一种特殊的云函数，它不占用服务空间的云函数数量。
 
-目前action还不支持本地运行。后续HBuilderX会支持。
+目前action还不支持本地运行。后续会支持。
 
 **新建action**
 
@@ -1055,13 +1144,14 @@ action是一种特殊的云函数，它不占用服务空间的云函数数量�
 
 每个action在uni-clientDB-actions目录下存放一个以action名称命名的js文件。
 
-在这个js文件的代码里，包括before和after两部分。
+在这个js文件的代码里，包括before和after两部分，分别代表clientDB具体操作数据库前和后。
 
-- before部分的常用用途：
+- before在clientDB执行前触发，before里的代码执行完毕后再开始操作数据库。before的常用用途：
 	* 对前端传入的数据进行二次处理
 	* 在此处开启数据库事务，万一操作数据库失败，可以在after里回滚
+	* 如果权限或字段值域校验不想配在schema和validateFunction里，也可以在这里做校验
 	
-- after部分的常用用途：
+- after在clientDB执行后触发，clientDB操作数据库后触发before里的代码。after的常用用途：
 	* 对将要返回给前端的数据进行二次处理
 	* 也可以在此处处理错误，回滚数据库事务
 	* 对数据库进行二次操作，比如前端查询一篇文章详情后，在此处对文章的阅读数+1。因为permission里定义，一般是要禁止前端操作文章的阅读数字段的，此时就应该通过action，在云函数里对阅读数+1
@@ -1071,7 +1161,7 @@ action是一种特殊的云函数，它不占用服务空间的云函数数量�
 ```js
 // 客户端发起请求，给todo表新增一行数据，同时指定action为add-todo
 const db = uniCloud.database()
-db.action('add-todo')
+db.action('add-todo') //注意action方法是db的方法，只能跟在db后面，不能跟在collection()后面
   .collection('todo')
   .add({
     title: 'todo title'

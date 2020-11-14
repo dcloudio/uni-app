@@ -42,6 +42,8 @@
 
 **App初期启动的引导轮播：** 因为是App专用，为了更好的性能，推荐使用nvue制作。参考插件市场已经封装的插件[https://ext.dcloud.net.cn/plugin?id=676](https://ext.dcloud.net.cn/plugin?id=676)
 
+**iOS平台适配暗黑模式（DarkMode）：**[https://ask.dcloud.net.cn/article/36995](https://ask.dcloud.net.cn/article/36995)
+
 **原生App和uni-app混合开发：** [详见](hybrid)
 
 ## H5常见问题

@@ -44,9 +44,12 @@ PC 端如下图：
 #### 运行
 
 1. 进入 admin 项目
-2. 右键 cloudfuntions 运行云服务空间初始化向导（如已创建并绑定云服务空间，则跳过此步）
-3. 点击工具栏的运行 -> 运行到浏览器
-4. 登录页面底部进入创建管理员页面（仅允许注册一次管理员账号）
+2. 在/cloudfunctions-aliyun/common/uni-id/config.json 文件中填写 `passwordSecret` 字段 (用于加密密码入库的密钥) 和 `tokenSecret` 字段 (为生成token需要的密钥)
+3. 右键 cloudfuntions 运行云服务空间初始化向导（如已创建并绑定云服务空间，则跳过此步）
+4. 点击工具栏的运行 -> 运行到浏览器
+5. 登录页面底部进入创建管理员页面（仅允许注册一次管理员账号）
+
+> 注意：手机端报 ``request：fail``，需要去云服务空间的``跨域配置``配置跨域域名，需带端口
 
 ### 目录结构
 
@@ -77,11 +80,13 @@ PC 端如下图：
 
 ### 登录页
 
-首次使用，可以通过登录页面底部链接创建一个超级管理员（仅允许创建一次），注册完毕后，建议从登录页面移除该链接
+首次使用，可以通过登录页面底部链接创建一个超级管理员（仅允许创建一次），该接口会判断系统里如果有admin角色的用户,就不再允许添加新的超级管理员。
+
+> 注意：注册完毕后，建议从登录页面移除该链接
 
 ![login](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/c3f33850-15db-11eb-8ff1-d5dcf8779628.png)
 
-### admin 窗体结构介绍
+### 分栏窗体介绍
 
 登录后我们会看到如下窗体, 窗体分为三个部分，topWindow 顶部窗口（导航栏），leftwindow 左侧窗口（菜单栏），右侧的内容主窗体
 
@@ -150,8 +155,8 @@ export default {
             menu_id: "table",
             name: "表格",
             url: "/pages/demo/table/table",
-          },
-        ],
+          }
+        ]
       },
     ],
   },
@@ -168,7 +173,7 @@ _菜单字段解释:_
 
 | 字段        | 类型      | 必填 | 描述                                                 |
 | :---------- | :-------- | :--- | :--------------------------------------------------- |
-| menu_id     | Object ID | 是   | 系统自动生成的 Id                                    |
+| menu_id     | Object ID | 是   | 菜单 Id                                    |
 | name        | String    | 是   | 菜单文字                                             |
 | icon        | String    | 否   | 菜单图标                                             |
 | url         | String    | 否   | 菜单对应的页面链接（只有没有子菜单的菜单项可以配置） |
@@ -190,7 +195,7 @@ _添加菜单记录需要注意：_
 └── 手机                 # 子菜单
 ```
 
-1. 添加一条父菜单记录
+**step 1:**添加一条父菜单记录
 
 菜单的 `parent_id` 字段为空, 即为一级菜单
 
@@ -208,7 +213,7 @@ _添加菜单记录需要注意：_
 }
 ```
 
-2. 添加一条子菜单记录
+**step 2:**添加一条子菜单记录
 
 将子菜单的 `parent_id` 指向父菜单的 `menu_id`即可，孙菜单就是将子菜单的 `menu_id` 当做父菜单
 
@@ -247,23 +252,15 @@ $menu-text-color-actived: #409eff; /* 菜单激活前景色 */
 
 如果想将自己开发的页面调到登录后首页，可在 page.json 调整。
 
-### icon 图标的使用
+### icon 图标
 
-admin 内置了一套图标以供使用，开发者也可以使用第三方图标
+admin 框架内置了一套icon图标，在静态功能演示-图标菜单中，点击图标即可复制图标的class定义，或者直接到`common/uni-icons.css`中查看定义，然后以如下方式使用：
 
-#### 使用内置 icon
+```
+<view class="uni-icons-gear"></view>
+```
 
-前往静态功能演示-图标菜单中，点击图标即可复制图标代码
-
-> `<view class="uni-icons-gear"></view>`
-
-或直接在标签上使用图标的 class 名称，即：
-
-> `class='uni-icons-gear'`
-
-#### 使用第三方 icon
-
-以使用 elementUI 的图标为例，在 `app.vue` 中应用图标库的样式文件：
+当然，你也可以使用三方icon库。以使用 `elementUI` 的图标为例，在 `app.vue` 中导入图标库的样式文件：
 
 ```javascript
 <style>
@@ -273,27 +270,21 @@ admin 内置了一套图标以供使用，开发者也可以使用第三方图�
 ```
 
 在标签上使用图标的 class 名称，即：
+```
+<view class="el-icon-s-tools"></view>
+```
 
-> `<view class="el-icon-s-tools"></view>`
+### 用户-角色-权限
 
-### 用户系统
+uniCloud admin 框架基于 uni-id，复用 uni-id 的用户、角色、权限系统，详见[uni-id](https://uniapp.dcloud.io/uniCloud/uni-id)。
 
-> 基于 [uni-id](https://uniapp.dcloud.io/uniCloud/uni-id) 用户登录
+需要注意的是，admin框架的动态菜单同样依赖uni-id的权限表（uni-id-permissions）。
 
-### 权限系统
-
-> 基于 [uni-id](https://uniapp.dcloud.io/uniCloud/uni-id?id=rbac-api) 角色权限, uni-id 是 uniCloud 之上的用户账户、权限系统
-
-- 用户表 `uni-id-users` [详情](https://uniapp.dcloud.io/uniCloud/uni-id?id=%e7%94%a8%e6%88%b7%e8%a1%a8)
-
-- 角色表 `uni-id-roles` [详情](https://uniapp.dcloud.io/uniCloud/uni-id?id=%e8%a7%92%e8%89%b2%e8%a1%a8)
-- 权限表 `uni-id-permissions` [详情](https://uniapp.dcloud.io/uniCloud/uni-id?id=%e6%9d%83%e9%99%90%e8%a1%a8)
-
-- 菜单表 `opendb-admin-menus`
+菜单表(opendb-admin-menus)定义如下：
 
 | 字段 | 类型 | 必填 | 描述 |
 | :--------- | :-------- | :--- | :--------------------------------------------------- |
-| menu_id | Object ID | 是 | 系统自动生成的 Id |
+| menu_id | Object ID | 是 | 菜单 Id |
 | name | String | 是 | 菜单文字 |
 | icon | String | 否 | 菜单图标 |
 | url | String | 否 | 菜单对应的页面链接（只有没有子菜单的菜单项可以配置） |
@@ -302,9 +293,6 @@ admin 内置了一套图标以供使用，开发者也可以使用第三方图�
 | permission | Array | 否 | 菜单权限（只有没有子菜单的菜单项可以配置） |
 | enable | Boolean | 是 | 菜单状态：false 禁用 true 启用 |
 | create_date | Timestamp | 是 | 创建时间 |
-
-- 验证码表 `uni-verify` [详情](https://uniapp.dcloud.io/uniCloud/uni-id?id=%e7%94%a8%e6%88%b7%e8%a1%a8)
-- 权限验证
 
 admin 提供了两个内置方法，方便在页面中鉴定登录用户权限和角色:
 

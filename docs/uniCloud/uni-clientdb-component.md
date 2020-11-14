@@ -8,7 +8,7 @@
 
 有了`<uni-clientdb>` 组件，**上述工作只需要1行代码**！写组件，设组件的属性，在属性中指定要查什么表、哪些字段、以及查询条件，就OK了！
 
-如下：
+敲下`udb`代码块，得到如下代码：
 
 ```html
 <uni-clientdb v-slot:default="{data, loading, error, options}" collection="table1" field="field1" :getone="true" where="id=='1'">
@@ -22,7 +22,7 @@
 
 `<uni-clientdb>` 组件的查询语法是`jql`，这是一种比sql语句和nosql语法更简洁、更符合js开发者习惯的查询语法。没学过sql或nosql的前端，也可以轻松掌握。[jql详见](https://uniapp.dcloud.net.cn/uniCloud/uni-clientDB?id=jsquery)
 
-`<uni-clientdb>` 组件只支持查询。如果要对数据库进行新增修改删除操作，仍需使用clientDB的js API进行add、update、remove操作。
+`<uni-clientdb>` 组件只支持查询。如果要对数据库进行新增修改删除操作，仍需使用clientDB的js API进行add、update、remove操作。另，`<uni-clientdb>` 组件自带了一个封装remove方法，见下文方法章节
 
 `<uni-clientdb>` 组件没有预置到基础库，需单独下载插件到工程中。下载地址为：[https://ext.dcloud.net.cn/plugin?id=3256](https://ext.dcloud.net.cn/plugin?id=3256)
 
@@ -47,7 +47,7 @@
 |page-data|String|分页策略选择。值为 `add` 代表下一页的数据追加到之前的数据中，常用于滚动到底加载下一页；值为 `replace` 时则替换当前data数据，常用于PC式交互，列表底部有页码分页按钮|
 |page-current|Number|当前页|
 |page-size|Number|每页数据数量|
-|getcount|Boolan|是否查询总数据条数，默认 `false`，需要分页模式时指定为 `true`|
+|getcount|Boolean|是否查询总数据条数，默认 `false`，需要分页模式时指定为 `true`|
 |getone|Boolean|指定查询结果是否仅返回数组第一条数据，默认 false。在false情况下返回的是数组，即便只有一条结果，也需要[0]的方式获取。在值为 true 时，直接返回结果数据，少一层数组。一般用于非列表页，比如详情页|
 |action|string|云端执行数据库查询的前或后，触发某个action函数操作，进行预处理或后处理，[详情](https://uniapp.dcloud.net.cn/uniCloud/uni-clientDB?id=%e4%ba%91%e7%ab%af%e9%83%a8%e5%88%86)。场景：前端无权操作的数据，比如阅读数+1|
 |manual|Boolean|是否手动加载数据，默认为 false，页面onready时自动联网加载数据。如果设为 true，则需要自行指定时机通过方法`this.$refs.udb.loadData()`来触发联网，其中的`udb`指组件的ref值|
@@ -55,6 +55,8 @@
 |@error|EventHandle|失败回调|
 
 TODO：暂不支持groupby、in子查询功能。后续会补充
+
+注意：`page-current/page-size` 改变不重置数据(`page-data="replace"`)除外，`collection/action/field/getcount/orderby/where` 改变后清空已有数据
 
 
 **示例**
@@ -141,7 +143,7 @@ handleError(e) {
 
 ## 方法
 
-- loadData
+### loadData
 
 当 `<uni-clientdb>` 组件的 manual 属性设为为 true 时，不会在页面初始化时联网查询数据，此时需要通过本方法手动加载数据
 
@@ -149,7 +151,7 @@ handleError(e) {
 this.$refs.udb.loadData() //udb为uni-clientdb组件的ref属性值
 ```
 
-- loadMore
+### loadMore
 
 在列表的加载下一页场景下，使用ref方式访问组件方法，加载更多数据，每加载成功一次，当前页 +1
 
@@ -157,7 +159,78 @@ this.$refs.udb.loadData() //udb为uni-clientdb组件的ref属性值
 this.$refs.udb.loadMore() //udb为uni-clientdb组件的ref属性值
 ```
 
-- dataList
+### remove
+
+在列表页面，如果想删除一个item，原本要做很多事：
+1. 弹出删除确认框
+2. 弹出loading
+3. 调用clientDB的js api删除云端数据
+4. 接收云端删除结果，如果成功则关闭loading
+5. 进一步删除列表的data中对应的item，刷新页面
+
+为减少重复开发，`clientDB`组件提供了remove方法，在列表渲染时绑定好index，直接调用remove方法即可一行代码完成上述5步。
+
+首先在列表生成的时候给删除按钮绑定好id：
+
+```html
+<uni-clientdb ref="udb" :collection="collectionName" v-slot:default="{data,pagination,loading,error}">
+	<uni-table :loading="loading" :emptyText="error.message || '没有更多数据'" border stripe >
+		<uni-tr>
+			<uni-th>用户名</uni-th>
+			<uni-th>操作</uni-th>
+		</uni-tr>
+		<uni-tr v-for="(item,index) in data" :key="index">
+			<uni-th>{{item.username}}</uni-th>
+			<uni-td>
+				<view>
+					<button @click="confirmDelete(item._id)" type="warn">删除</button>
+				</view>
+			</uni-td>
+		</uni-tr>
+	</uni-table>
+</uni-clientdb>
+```
+
+然后confirmDelete方法里面只有一行代码：
+
+```js
+confirmDelete(id) {
+	this.$refs.udb.remove(id)
+}
+```
+
+`clientDB`组件的remove方法的参数只支持传入数据库的_id进行删除，不支持其他where条件删除。
+
+参数传入的_id支持单个，也支持多个，即可以批量删除。多个id的格式是：
+
+```js
+this.$refs.udb.remove(["5f921826cf447a000151b16d", "5f9dee1ff10d2400016f01a4"])
+```
+
+在uniCloud的web控制台的`DB Schema`界面，可自助生成数据表的admin管理插件，其中有多行数据批选批删示例。
+
+
+完整实例，第二个是可选参数
+
+```js
+var ids = ["5f921826cf447a000151b16d", "5f9dee1ff10d2400016f01a4"]
+this.$refs.udb.remove(ids, {
+  action: '', // 删除前后的动作
+  confirmTitle: '提示', // 确认框标题
+  confirmContent: '是否删除该数据',  // 确认框内容
+  callback: (res) => { // 删除成功后的回调
+    const { code, message } = res
+  }
+})
+```
+
+注意：
+- 如果列表分页采取分页组件，即page-data值为`replace`，每页有固定数量，那么`clientDB`组件的remove方法删除数据后，会重新请求当前页面数据。
+- 如果列表采取滚动加载方式，即page-data值为`add`，滚动加载下一页数据，那么`clientDB`组件的remove方法删除数据后，不会重新请求数据，而是从已有数据移除已删除项。(组件版本1.1.0+支持)
+
+
+
+### dataList
 
 在js中，可以打印`<uni-clientdb>` 组件的data
 
@@ -189,7 +262,7 @@ H5平台，开发模式下浏览器控制台输入 `unidev.clientDB.data`，可�
 </template>
 ```
 
-联表查询详情参考 [https://uniapp.dcloud.net.cn/uniCloud/database?id=lookup](https://uniapp.dcloud.net.cn/uniCloud/database?id=lookup)
+联表查询详情参考 [https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=lookup](https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=lookup)
 
 ## 列表分页@page
 - 列表分页模式1：上拉加载上一页。下一页的查询结果会追加合并到data里
@@ -298,7 +371,7 @@ H5平台，开发模式下浏览器控制台输入 `unidev.clientDB.data`，可�
       </view>
       <view class="loading" v-if="loading">加载中...</view>
       <!-- 分页组件 -->
-      <uni-pagination show-icon :page-size="pagination.size" total="pagination.total" @change="onpagination" />
+      <uni-pagination show-icon :page-size="pagination.size" total="pagination.count" @change="onpagination" />
     </uni-clientdb>
   </view>
 </template>
