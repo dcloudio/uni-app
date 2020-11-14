@@ -2,6 +2,7 @@
   + App-Android平台 修复 uni原生插件扩展Component组件 bindData 回调不触发的Bug
   + App-iOS平台 修复 input 组件在点击时取消禁用无法弹出软键盘的Bug [详情](https://ask.dcloud.net.cn/question/110491)
 * 【App插件(含5+App和uni-app的App端)】
+  + Android平台 修复 压缩图片 plus.zip.compressImage 在Android10上可能引起崩溃的Bug [详情](https://ask.dcloud.net.cn/question/110303)
   + iOS平台 修复 2.8.13版本引出的 高德定位设置 geocode 为 true 无法返回地址信息的Bug [详情](https://ask.dcloud.net.cn/question/110474)
 
 #### 2.9.7.20201106

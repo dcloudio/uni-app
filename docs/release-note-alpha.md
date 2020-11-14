@@ -1,3 +1,42 @@
+#### 2.9.9.20201114-alpha
+  + App、H5平台 新增 vue 页面中的 input、textarea 在新版浏览器内核（Chrome81+、Safari13.7+）中 confirm-type 即键盘右下角按钮文字，支持更多配置（send、next、done）
+  + App、H5平台 新增 网络请求相关接口 uni.request、uni.uploadFile、uni.downloadFile 支持 timeout 参数
+  + App、H5平台 修复 slider 组件显示最大值时拖动不跟手的Bug
+  + App-Android平台 修复 uni 原生插件扩展 Component 组件 bindData 回调不触发的Bug
+  + App-Android平台 修复 华为更新系统后 canvas 绘制本地图像跨域的Bug [详情](https://ask.dcloud.net.cn/question/110676)
+  + App-Android平台 修复 uni.request 请求超时不准确的Bug，优化请求最大并发数为10 [详情](https://ask.dcloud.net.cn/question/109996)
+  + App-Android平台 修复 websocket 在5.0以下设备强制使用 LTSv1.2 导致无法建立连接的Bug [详情](https://ask.dcloud.net.cn/question/110367)
+  + App-Android平台 修复 nvue input组件设置 focus 属性值为 false 时依然会自动获取焦点的Bug [详情](https://ask.dcloud.net.cn/question/110553)
+  + App-iOS平台 修复 input 组件在点击时取消禁用无法弹出软键盘的Bug [详情](https://ask.dcloud.net.cn/question/110491)
+  + App-iOS平台 修复 canvas 组件绘制字体部分属性未生效的Bug [详情](https://ask.dcloud.net.cn/question/110227)
+  + App-iOS平台 修复 nvue video 组件的子组件点击事件会透传到 video 组件上的Bug [详情](https://ask.dcloud.net.cn/question/110601)
+  + App-iOS平台 修复 uni.openLocation 页面使用 Apple 地图导航目的地错误的Bug
+  + H5平台 新增 custom-tab-bar 组件，可自由定义 tabBar 的位置和样式，比如在宽屏浏览器上显示在 topWindow 中 [详情](https://uniapp.dcloud.io/component/custom-tab-bar)
+  + H5平台 新增 uni.chooseFile 接口。用于替代 input type=file [详情](https://uniapp.dcloud.io/api/media/file)
+  + H5平台 优化 uni.getLocation 支持通过 IP 定位
+  + H5平台 优化 uni.chooseLocation、uni.openLocation 在大屏模式的显示效果
+  + H5平台 优化 日期类型 picker 组件在PC版Chrome和FireFox上使用浏览器自带日期选择控件
+  + H5平台 优化 单列 picker 组件在大屏设备默认使用 select 样式
+  + H5平台 修复 topWindow 存在时，下方window页面的 navigationBar 无法显示的Bug
+  + H5平台 修复 picker 组件在宽屏模式显示错位的Bug
+  + H5平台 修复 tabBar 的 iconPath 使用带协议的图像路径不显示的Bug
+  + 微信小程序平台 优化 跳转页面路径中不再自动增加 __id__ 参数
+  + hello uni-app 优化 适配PC宽屏，参考：[https://hellouniapp.dcloud.net.cn/](https://hellouniapp.dcloud.net.cn/)
+* 【uniCloud】
+  + 阿里云支持事务（startTransaction方式，暂不支持ranTransaction）[详情](https://uniapp.dcloud.net.cn/uniCloud/cf-database?id=starttransaction)
+* 【App插件(含5+App和uni-app的App端)】
+  + 新增 QQ分享支持 type 为 web 类型分享网页链接
+  + 修复 打开新页面后，手机无障碍功能的屏幕阅读器可浏览到底层页面元素的Bug [详情](https://ask.dcloud.net.cn/question/109916)
+  + Android平台 新增 设置应用图标角标数字 plus.runtime.setBadgeNumber 支持 vivo 手机 [文档](https://www.html5plus.org/doc/zh_cn/runtime.html#plus.runtime.setBadgeNumber)
+  + Android平台 修复 多次调用 getImageInfo 获取网络图片信息返回的路径可能会重复的Bug [详情](https://ask.dcloud.net.cn/question/110487)
+  + Android平台 修复 压缩图片 plus.zip.compressImage 在Android10上可能引起崩溃的Bug [详情](https://ask.dcloud.net.cn/question/110303)
+  + Android平台 修复 storage 存储中文数据内容后读取可能出现乱码的Bug
+  + Android平台 修复 频繁多次调用 Audio 播放音频可能引起崩溃的Bug
+  + iOS平台 修复 2.9.1版本引出的 高德定位设置 geocode 为 true 无法返回地址信息的Bug [详情](https://ask.dcloud.net.cn/question/110474)
+  + iOS平台 修复 关闭页面窗口时底部区域可能出现闪动的Bug [详情](https://ask.dcloud.net.cn/question/110153)
+  + iOS平台 修复 打开系统内置地图导航时，传入的位置和名称与地图实际显示不一致的Bug [详情](https://ask.dcloud.net.cn/question/109998)
+  + iOS平台 修复 native.js 使用 plus.ios.invoke 调用方法时传入参数为 jsonObject 不执行的Bug
+
 #### 2.9.6.20201031-alpha
   + 【重要】 更新文档 2.9.0+ 后 rpx、rem 样式变形的处理办法 [详情](https://ask.dcloud.net.cn/article/37911)
   + App平台、H5平台 新增 支持 uni.offCompassChange、uni.offAccelerometerChange 用于移除相关事件监听
