@@ -56,9 +56,9 @@ export function uploadFile ({
   name,
   files,
   header,
-  formData
+  formData,
+  timeout = (__uniConfig.networkTimeout && __uniConfig.networkTimeout.uploadFile) || 60 * 1000
 }, callbackId) {
-  var timeout = (__uniConfig.networkTimeout && __uniConfig.networkTimeout.uploadFile) || 60 * 1000
   const {
     invokeCallbackHandler: invoke
   } = UniServiceJSBridge

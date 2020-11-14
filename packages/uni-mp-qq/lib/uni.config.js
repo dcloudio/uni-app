@@ -38,6 +38,16 @@ module.exports = {
         ignore: ['**/*.vue', '**/*.css'] // v3 会自动转换生成vue,css文件，需要过滤
       })
     }
+    global.uniModules.forEach(module => {
+      const wxcomponentsDir = path.resolve(process.env.UNI_INPUT_DIR, 'uni_modules', module, COMPONENTS_DIR_NAME)
+      if (fs.existsSync(wxcomponentsDir)) {
+        copyOptions.push({
+          from: wxcomponentsDir,
+          to: 'uni_modules/' + module + '/' + COMPONENTS_DIR_NAME,
+          ignore: ['**/*.vue', '**/*.css'] // v3 会自动转换生成vue,css文件，需要过滤
+        })
+      }
+    })
     return copyOptions
   }
 }

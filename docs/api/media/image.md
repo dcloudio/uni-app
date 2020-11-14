@@ -9,6 +9,7 @@ App端如需要更丰富的相机拍照API（如直接调用前置摄像头）�
 |:-|:-|:-|:-|:-|
 |count|Number|否|最多可以选择的图片张数，默认9|见下方说明|
 |sizeType|Array&lt;String&gt;|否|original 原图，compressed 压缩图，默认二者都有|App、微信小程序、支付宝小程序、百度小程序|
+|extension|Array&lt;String&gt;|否|根据文件拓展名过滤，每一项都不能是空字符串。默认不过滤。|H5(HBuilder X2.9.9+)|
 |sourceType|Array&lt;String&gt;|否|album 从相册选图，camera 使用相机，默认二者都有。如需直接开相机或直接选相册，请只使用一个选项||
 |success|Function|是|成功则返回图片的本地文件路径列表 tempFilePaths||
 |fail|Function|否|接口调用失败的回调函数|小程序、App|
@@ -280,15 +281,3 @@ uni.compressImage({
   }
 })
 ```
-
-
-# wx.chooseMessageFile(OBJECT)
-
-从微信聊天会话中选择文件。
-
-**平台差异说明**
-
-|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|x|x|√|x|x|x|x|
-

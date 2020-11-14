@@ -34,7 +34,6 @@
         v-if="leftWindow"
         v-show="showLeftWindow || apiShowLeftWindow"
         ref="leftWindow"
-        v-bind="bindWindow"
         :data-show="apiShowLeftWindow"
         :style="leftWindowStyle"
       >
@@ -46,6 +45,7 @@
         <div class="uni-left-window">
           <v-uni-left-window
             ref="left"
+            v-bind="bindWindow"
             @hook:mounted="onLeftWindowInit"
           />
         </div>
@@ -54,7 +54,6 @@
         v-if="rightWindow"
         v-show="showRightWindow || apiShowRightWindow"
         ref="rightWindow"
-        v-bind="bindWindow"
         :data-show="apiShowRightWindow"
         :style="rightWindowStyle"
       >
@@ -66,6 +65,7 @@
         <div class="uni-right-window">
           <v-uni-right-window
             ref="right"
+            v-bind="bindWindow"
             @hook:mounted="onRightWindowInit"
           />
         </div>
@@ -134,6 +134,7 @@ export default {
   },
   data () {
     return {
+      marginWidth: 0,
       leftWindowStyle: '',
       rightWindowStyle: '',
       topWindowStyle: '',
@@ -144,7 +145,8 @@ export default {
       apiShowTopWindow: false,
       apiShowLeftWindow: false,
       apiShowRightWindow: false,
-      navigationBarTitleText: ''
+      navigationBarTitleText: '',
+      maxWidthMeidaQuery: false
     }
   },
   computed: {
@@ -175,11 +177,14 @@ export default {
     }
   },
   watch: {
+    $route () {
+      this.checkMaxWidth()
+    },
     showTopWindow (newVal, val) {
       if (newVal) {
         this.$nextTick(this.onTopWindowInit)
       } else {
-        updateCssVar('--window-top', '0px')
+        updateCssVar('--top-window-height', '0px')
       }
     },
     showLeftWindow (newVal, val) {
@@ -195,12 +200,16 @@ export default {
       } else {
         updateCssVar('--window-right', '0px')
       }
+    },
+    marginWidth (newVal) {
+      updateCssVar('--window-margin', newVal + 'px')
     }
   },
   beforeCreate () {
-    updateCssVar('--window-top', '0px')
+    updateCssVar('--top-window-height', '0px')
     updateCssVar('--window-left', '0px')
     updateCssVar('--window-right', '0px')
+    updateCssVar('--window-margin', '0px')
   },
   created () {
     this.topWindow = Vue.component('VUniTopWindow')
@@ -230,6 +239,10 @@ export default {
         })
       }
     }
+    this.initMaxWidth()
+  },
+  mounted () {
+    this.checkMaxWidth()
   },
   methods: {
     resetApiShowWindow () {
@@ -251,10 +264,47 @@ export default {
             if (show) {
               this.$nextTick(this.onTopWindowInit)
             } else {
-              updateCssVar('--window-top', '0px')
+              updateCssVar('--top-window-height', '0px')
             }
           }
         }
+      }
+    },
+    initMaxWidth () {
+      window.addEventListener('resize', () => {
+        this.checkMaxWidth()
+      })
+    },
+    checkMaxWidth () {
+      const windowWidth = document.body.clientWidth
+      const maxWidth = parseInt(this.$route.meta.maxWidth)
+      let showMaxWidth = false
+      if (windowWidth > maxWidth) {
+        showMaxWidth = true
+      } else {
+        showMaxWidth = false
+      }
+      this.$emit('maxWidth', showMaxWidth)
+      if (!this.$containerElem) {
+        this.$containerElem = document.querySelector('uni-app')
+      }
+      if (!this.$containerElem) {
+        return
+      }
+      if (showMaxWidth && maxWidth) {
+        this.marginWidth = (windowWidth - maxWidth) / 2
+        this.$nextTick(() => {
+          this.onLeftWindowInit()
+          this.onRightWindowInit()
+          this.$containerElem.setAttribute('style', 'max-width:' + maxWidth + 'px;margin:0 auto;')
+        })
+      } else {
+        this.marginWidth = 0
+        this.$nextTick(() => {
+          this.onLeftWindowInit()
+          this.onRightWindowInit()
+          this.$containerElem.removeAttribute('style')
+        })
       }
     },
     initWindowMinWidth (type) {
@@ -296,26 +346,28 @@ export default {
         windowTopHeight = this.$refs.top.$el.offsetHeight + 'px'
       }
       this.topWindowHeight = windowTopHeight
-      updateCssVar('--window-top', windowTopHeight)
+      updateCssVar('--top-window-height', windowTopHeight)
     },
     onLeftWindowInit () {
       if (!(this.responsive && this.leftWindow)) {
+        updateCssVar('--window-left', this.marginWidth + 'px')
         return
       }
       if (this.leftWindowStyle && this.leftWindowStyle.width) {
-        updateCssVar('--window-left', this.$refs.leftWindow.offsetWidth + 'px')
+        updateCssVar('--window-left', this.$refs.leftWindow.offsetWidth + this.marginWidth + 'px')
       } else {
-        updateCssVar('--window-left', this.$refs.left.$el.offsetWidth + 'px')
+        updateCssVar('--window-left', this.$refs.left.$el.offsetWidth + this.marginWidth + 'px')
       }
     },
     onRightWindowInit () {
       if (!(this.responsive && this.rightWindow)) {
+        updateCssVar('--window-right', this.marginWidth + 'px')
         return
       }
       if (this.rightWindowStyle && this.rightWindowStyle.width) {
-        updateCssVar('--window-right', this.$refs.rightWindow.offsetWidth + 'px')
+        updateCssVar('--window-right', this.$refs.rightWindow.offsetWidth + this.marginWidth + 'px')
       } else {
-        updateCssVar('--window-right', this.$refs.right.$el.offsetWidth + 'px')
+        updateCssVar('--window-right', this.$refs.right.$el.offsetWidth + this.marginWidth + 'px')
       }
     }
   }
@@ -331,10 +383,11 @@ export default {
 
   uni-main {
     flex: 1;
+    width: 100%;
   }
 
   uni-top-window+uni-content {
-    height: calc(100vh - var(--window-top));
+    height: calc(100vh - var(--top-window-height));
   }
 
   uni-left-window {
@@ -376,8 +429,8 @@ export default {
 
   .uni-top-window {
     position: fixed;
-    left: 0;
-    right: 0;
+    left: var(--window-margin);
+    right: var(--window-margin);
     top: 0;
     z-index: 998;
     overflow: hidden;

@@ -16,7 +16,7 @@
 |maxlength|Number|140|最大输入长度，设置为 -1 的时候不限制最大长度||
 |cursor-spacing|Number|0|指定光标与键盘的距离，单位 px 。取 input 距离底部的距离和 cursor-spacing 指定的距离的最小值作为光标与键盘的距离|App、微信小程序、百度小程序、QQ小程序|
 |focus|Boolean|false|获取焦点。|在 H5 平台能否聚焦以及软键盘是否跟随弹出，取决于当前浏览器本身的实现。|
-|confirm-type|String|done|设置键盘右下角按钮的文字，仅在 type="text" 时生效。||
+|confirm-type|String|done|设置键盘右下角按钮的文字，仅在 type="text" 时生效。|微信小程序基础库2.13.0、APP(HBuilder X2.9.9+)、H5(HBuilder X2.9.9+)|
 |confirm-hold|Boolean|false|点击键盘右下角按钮时是否保持键盘不收起|App、微信小程序、支付宝小程序、百度小程序、QQ小程序|
 |cursor|Number||指定focus时的光标位置||
 |selection-start|Number|-1|光标起始位置，自动聚集时有效，需与selection-end搭配使用||
@@ -68,6 +68,7 @@
 
 - App平台的nvue页面，如果是uni-app编译模式，直接使用此属性设置即可生效。如果是weex编译模式，需通过weex的api设置，[weex相关文档参考](https://weex.apache.org/zh/docs/components/input.html#%E5%B1%9E%E6%80%A7)
 - App平台的vue页面不支持控制键盘右下角为“发送”，涉及聊天的建议使用nvue。
+- confirm-type属性仅在Chrome 77+、IOS 13.4+、Android 5-6.x WebView: Chromium 81+支持。
 
 #### App平台iOS端软键盘上方横条去除方案
 

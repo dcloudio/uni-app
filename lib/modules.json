@@ -55,6 +55,7 @@
   "title": "媒体",
   "apiList": {
     "uni.chooseImage": true,
+    "uni.chooseFile": true,
     "uni.previewImage": true,
     "uni.getImageInfo": true,
     "uni.saveImageToPhotosAlbum": true,
@@ -216,6 +217,7 @@
   "name": "ad",
   "title": "广告",
   "apiList": {
-    "uni.createRewardedVideoAd": true
+    "uni.createRewardedVideoAd": true,
+    "uni.createFullScreenVideoAd": true
   }
 }]

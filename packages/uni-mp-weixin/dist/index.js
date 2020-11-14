@@ -356,111 +356,6 @@ var baseApi = /*#__PURE__*/Object.freeze({
   interceptors: interceptors
 });
 
-class EventChannel {
-  constructor (id, events) {
-    this.id = id;
-    this.listener = {};
-    this.emitCache = {};
-    if (events) {
-      Object.keys(events).forEach(name => {
-        this.on(name, events[name]);
-      });
-    }
-  }
-
-  emit (eventName, ...args) {
-    const fns = this.listener[eventName];
-    if (!fns) {
-      return (this.emitCache[eventName] || (this.emitCache[eventName] = [])).push(args)
-    }
-    fns.forEach(opt => {
-      opt.fn.apply(opt.fn, args);
-    });
-    this.listener[eventName] = fns.filter(opt => opt.type !== 'once');
-  }
-
-  on (eventName, fn) {
-    this._addListener(eventName, 'on', fn);
-    this._clearCache(eventName);
-  }
-
-  once (eventName, fn) {
-    this._addListener(eventName, 'once', fn);
-    this._clearCache(eventName);
-  }
-
-  off (eventName, fn) {
-    const fns = this.listener[eventName];
-    if (!fns) {
-      return
-    }
-    if (fn) {
-      for (let i = 0; i < fns.length;) {
-        if (fns[i].fn === fn) {
-          fns.splice(i, 1);
-          i--;
-        }
-        i++;
-      }
-    } else {
-      delete this.listener[eventName];
-    }
-  }
-
-  _clearCache (eventName) {
-    const cacheArgs = this.emitCache[eventName];
-    if (cacheArgs) {
-      for (; cacheArgs.length > 0;) {
-        this.emit.apply(this, [eventName].concat(cacheArgs.shift()));
-      }
-    }
-  }
-
-  _addListener (eventName, type, fn) {
-    (this.listener[eventName] || (this.listener[eventName] = [])).push({
-      fn,
-      type
-    });
-  }
-}
-
-const eventChannels = {};
-
-const eventChannelStack = [];
-
-let id = 0;
-
-function initEventChannel (events, cache = true) {
-  id++;
-  const eventChannel = new EventChannel(id, events);
-  if (cache) {
-    eventChannels[id] = eventChannel;
-    eventChannelStack.push(eventChannel);
-  }
-  return eventChannel
-}
-
-function getEventChannel (id) {
-  if (id) {
-    const eventChannel = eventChannels[id];
-    delete eventChannels[id];
-    return eventChannel
-  }
-  return eventChannelStack.shift()
-}
-
-var navigateTo = {
-  args (fromArgs, toArgs) {
-    const id = initEventChannel(fromArgs.events).id;
-    if (fromArgs.url) {
-      fromArgs.url = fromArgs.url + (fromArgs.url.indexOf('?') === -1 ? '?' : '&') + '__id__=' + id;
-    }
-  },
-  returnValue (fromRes, toRes) {
-    fromRes.eventChannel = getEventChannel();
-  }
-};
-
 function findExistsPageIndex (url) {
   const pages = getCurrentPages();
   let len = pages.length;
@@ -527,6 +422,8 @@ var previewImage = {
   }
 };
 
+// import navigateTo from 'uni-helpers/navigate-to'
+
 function addSafeAreaInsets (result) {
   if (result.safeArea) {
     const safeArea = result.safeArea;
@@ -540,7 +437,7 @@ function addSafeAreaInsets (result) {
 }
 const protocols = {
   redirectTo,
-  navigateTo,
+  // navigateTo,  // 由于在微信开发者工具的页面参数，会显示__id__参数，因此暂时关闭mp-weixin对于navigateTo的AOP
   previewImage,
   getSystemInfo: {
     returnValue: addSafeAreaInsets
@@ -1444,16 +1341,28 @@ function initRelation (detail) {
   this.triggerEvent('__l', detail);
 }
 
+function selectAllComponents (mpInstance, selector, $refs) {
+  const components = mpInstance.selectAllComponents(selector);
+  components.forEach(component => {
+    const ref = component.dataset.ref;
+    $refs[ref] = component.$vm || component;
+    {
+      if (component.dataset.vueGeneric === 'scoped') {
+        component.selectAllComponents('.scoped-ref').forEach(scopedComponent => {
+          selectAllComponents(scopedComponent, selector, $refs);
+        });
+      }
+    }
+  });
+}
+
 function initRefs (vm) {
   const mpInstance = vm.$scope;
   Object.defineProperty(vm, '$refs', {
     get () {
       const $refs = {};
-      const components = mpInstance.selectAllComponents('.vue-ref');
-      components.forEach(component => {
-        const ref = component.dataset.ref;
-        $refs[ref] = component.$vm || component;
-      });
+      selectAllComponents(mpInstance, '.vue-ref', $refs);
+      // TODO 暂不考虑 for 中的 scoped
       const forComponents = mpInstance.selectAllComponents('.vue-ref-in-for');
       forComponents.forEach(component => {
         const ref = component.dataset.ref;
@@ -1493,12 +1402,25 @@ function parseApp (vm) {
   })
 }
 
+const eventChannels = {};
+
+const eventChannelStack = [];
+
+function getEventChannel (id) {
+  if (id) {
+    const eventChannel = eventChannels[id];
+    delete eventChannels[id];
+    return eventChannel
+  }
+  return eventChannelStack.shift()
+}
+
 function createApp (vm) {
   Vue.prototype.getOpenerEventChannel = function () {
-    if (!this.__eventChannel__) {
-      this.__eventChannel__ = new EventChannel();
+    // 微信小程序使用自身getOpenerEventChannel
+    {
+      return this.$scope.getOpenerEventChannel()
     }
-    return this.__eventChannel__
   };
   const callHook = Vue.prototype.__call_hook;
   Vue.prototype.__call_hook = function (hook, args) {

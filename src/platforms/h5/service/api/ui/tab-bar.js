@@ -30,7 +30,7 @@ function setTabBar (type, args = {}) {
     const {
       index
     } = args
-    const tabBar = app.$children[0].tabBar
+    const tabBar = __uniConfig.tabBar
     if (index >= __uniConfig.tabBar.list.length) {
       return {
         errMsg: `${type}:fail tabbar item not found`

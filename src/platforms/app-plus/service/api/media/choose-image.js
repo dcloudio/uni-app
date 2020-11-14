@@ -98,7 +98,8 @@ export function chooseImage ({
       maximum: count,
       multiple: true,
       system: false,
-      filename: TEMP_PATH + '/gallery/'
+      filename: TEMP_PATH + '/gallery/',
+      permissionAlert: true
     })
   }
 

@@ -103,5 +103,8 @@ export const request = {
   },
   withCredentials: {
     type: Boolean
+  },
+  timeout: {
+    type: Number
   }
 }

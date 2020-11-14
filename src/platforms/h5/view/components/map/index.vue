@@ -440,7 +440,7 @@ export default {
         case 'getScale':
           this.mapReady(() => {
             callback({
-              scale: Number(this.scale)
+              scale: this._map.getZoom()
             })
           })
           break
@@ -451,11 +451,12 @@ export default {
       var map = this._map = new maps.Map(this.$refs.map, {
         center,
         zoom: Number(this.scale),
-        scrollwheel: false,
+        // scrollwheel: false,
         disableDoubleClickZoom: true,
         mapTypeControl: false,
         zoomControl: false,
         scaleControl: false,
+        panControl: false,
         minZoom: 5,
         maxZoom: 18,
         draggable: true
@@ -471,16 +472,32 @@ export default {
       })
       maps.event.addListener(map, 'dragstart', () => {
         this.$trigger('regionchange', {}, {
-          type: 'begin'
+          type: 'begin',
+          causedBy: 'gesture'
         })
       })
+      function getMapInfo () {
+        var center = map.getCenter()
+        return {
+          scale: map.getZoom(),
+          centerLocation: {
+            latitude: center.getLat(),
+            longitude: center.getLng()
+          }
+        }
+      }
       maps.event.addListener(map, 'dragend', () => {
-        this.$trigger('regionchange', {}, {
-          type: 'end'
-        })
+        this.$trigger('regionchange', {}, Object.assign({
+          type: 'end',
+          causedBy: 'drag'
+        }, getMapInfo()))
       })
       maps.event.addListener(map, 'zoom_changed', () => {
         this.$emit('update:scale', map.getZoom())
+        this.$trigger('regionchange', {}, Object.assign({
+          type: 'end',
+          causedBy: 'scale'
+        }, getMapInfo()))
       })
       maps.event.addListener(map, 'center_changed', () => {
         var latitude
@@ -820,9 +837,10 @@ export default {
           })
           this._location = location
           refreshLocation()
-          uni.onCompassChange(function (res) {
+          this.__onCompassChange = function (res) {
             location.setRotation(res.direction)
-          })
+          }
+          uni.onCompassChange(this.__onCompassChange)
         },
         fail: e => {
           console.error(e)
@@ -848,7 +866,7 @@ export default {
               refreshLocation()
             }
           })
-        }, 1000)
+        }, 30000)
       }
     },
     removeLocation () {
@@ -857,7 +875,7 @@ export default {
         location.setMap(null)
         this._location = null
         this._locationPosition = null
-        uni.stopCompass()
+        uni.offCompassChange(this.__onCompassChange)
       }
     },
     fitBounds (points, cb) {
@@ -903,6 +921,7 @@ export default {
           return element
         }
       }
+      throw new Error('translateMarker: fail cannot find marker with id ' + id)
     }
   }
 }

@@ -19,14 +19,16 @@ process.env.UNI_INPUT_DIR = process.env.UNI_INPUT_DIR || path.resolve(process.cw
 
 // 初始化全局插件对象
 global.uniPlugin = require('@dcloudio/uni-cli-shared/lib/plugin').init()
+
 const manifestJsonObj = require('@dcloudio/uni-cli-shared/lib/manifest').getManifestJson()
 const platformOptions = manifestJsonObj[process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM] || {}
 // 插件校验环境
 global.uniPlugin.validate.forEach(validate => {
   validate(platformOptions, manifestJsonObj)
 })
-
 process.UNI_MANIFEST = manifestJsonObj
+
+process.env.VUE_APP_NAME = manifestJsonObj.name
 
 process.env.UNI_USING_V3_SCOPED = true
 
@@ -73,7 +75,8 @@ if (
   process.env.UNI_PLATFORM === 'h5' &&
   process.env.NODE_ENV === 'production'
 ) {
-  console.warn('发布H5，需要在uniCloud后台操作，绑定安全域名，否则会因为跨域问题而无法访问。教程参考：https://uniapp.dcloud.io/uniCloud/quickstart?id=useinh5')
+  console.warn(
+    '发布H5，需要在uniCloud后台操作，绑定安全域名，否则会因为跨域问题而无法访问。教程参考：https://uniapp.dcloud.io/uniCloud/quickstart?id=useinh5')
 }
 
 // 初始化环境变量
@@ -100,6 +103,17 @@ process.UNI_LIBRARIES = process.UNI_LIBRARIES || ['@dcloudio/uni-ui']
 if (process.env.NODE_ENV === 'production') { // 发行模式,不启用 cache
   delete process.env.UNI_USING_CACHE
 }
+
+global.uniModules = []
+try {
+  global.uniModules = fs
+    .readdirSync(path.resolve(process.env.UNI_INPUT_DIR, 'uni_modules'))
+    .filter(module =>
+      fs.existsSync(
+        path.resolve(process.env.UNI_INPUT_DIR, 'uni_modules', module, 'package.json')
+      )
+    )
+} catch (e) {}
 
 const {
   normalizePath,

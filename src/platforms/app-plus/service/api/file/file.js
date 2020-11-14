@@ -74,7 +74,7 @@ export function getSavedFileList (options, callbackId) {
   }, errorCallback)
 }
 
-export const getFileInfo = warpPlusMethod(plus.io, 'getFileInfo')
+export const getFileInfo = warpPlusMethod('io', 'getFileInfo')
 
 export function getSavedFileInfo ({
   filePath

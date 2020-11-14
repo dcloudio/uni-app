@@ -4,7 +4,10 @@
       ref="content"
       :style="style"
     />
-    <img :src="contentPath">
+    <img
+      v-if="contentPath"
+      :src="contentPath"
+    >
     <v-uni-resize-sensor
       v-if="mode === 'widthFix' || mode === 'heightFix'"
       ref="sensor"

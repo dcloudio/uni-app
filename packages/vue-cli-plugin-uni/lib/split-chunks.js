@@ -123,13 +123,18 @@ module.exports = function getSplitChunks () {
         if (!baseTest(module)) {
           return false
         }
-        const matchSubPackagesCount = findSubPackages(chunks).size
+        const matchSubPackages = findSubPackages(chunks)
+        const matchSubPackagesCount = matchSubPackages.size
         const isMainPackage = ( // 非分包 或 两个及以上分包 或 主包内有使用
           matchSubPackagesCount === 0 ||
           matchSubPackagesCount > 1 ||
           (
             matchSubPackagesCount === 1 &&
             hasMainPackage(chunks)
+          ) ||
+          (
+            matchSubPackagesCount === 1 &&
+            hasMainPackageComponent(module, matchSubPackages.values().next().value)
           )
         )
         if (isMainPackage && process.env.UNI_OPT_TRACE) {
@@ -157,6 +162,31 @@ module.exports = function getSplitChunks () {
     return chunks.find(item => !subPackageRoots.find(root => item.name.indexOf(root) === 0))
   }
 
+  const hasMainPackageComponent = function (module, subPackageRoot) {
+    if (module.resource && module.reasons) {
+      for (let index = 0; index < module.reasons.length; index++) {
+        const m = module.reasons[index]
+
+        if (m.module && m.module.resource) {
+          const resource = normalizePath(m.module.resource)
+          if (
+            resource.indexOf('.vue') !== -1 ||
+            resource.indexOf('.nvue') !== -1
+          ) {
+            if (resource.indexOf(subPackageRoot) === -1) {
+              if (process.env.UNI_OPT_TRACE) {
+                console.log('move module to main chunk:', module.resource,
+                  'from', subPackageRoot, 'for component in main package:', resource)
+              }
+              return true
+            }
+          }
+        }
+      }
+    }
+    return false
+  }
+
   const subPackageRoots = Object.keys(process.UNI_SUBPACKAGES).map(root => root + '/')
 
   Object.keys(process.UNI_SUBPACKAGES).forEach(root => {
@@ -170,7 +200,8 @@ module.exports = function getSplitChunks () {
           if (
             matchSubPackages.size === 1 &&
             matchSubPackages.has(root + '/') &&
-            !hasMainPackage(chunks)
+            !hasMainPackage(chunks) &&
+            !hasMainPackageComponent(module, matchSubPackages.values().next().value)
           ) {
             if (process.env.UNI_OPT_TRACE) {
               console.log(root, module.resource, chunks.map(chunk => chunk.name))

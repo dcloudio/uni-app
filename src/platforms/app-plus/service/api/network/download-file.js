@@ -19,10 +19,11 @@ const publishStateChange = (res) => {
 
 const createDownloadTaskById = function (downloadTaskId, {
   url,
-  header
+  header,
+  timeout = __uniConfig.networkTimeout.downloadFile ? __uniConfig.networkTimeout.downloadFile / 1000 : 120
 } = {}) {
   const downloader = plus.downloader.createDownload(url, {
-    time: __uniConfig.networkTimeout.downloadFile ? __uniConfig.networkTimeout.downloadFile / 1000 : 120,
+    timeout,
     filename: TEMP_PATH + '/download/',
     // 需要与其它平台上的表现保持一致，不走重试的逻辑。
     retry: 0,

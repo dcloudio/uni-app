@@ -34,7 +34,8 @@ const insertHTMLWebView = ({
       const title = webview.getTitle()
       parentWebview.setStyle({
         titleNView: {
-          titleText: (!title || title === 'null') ? '' : title
+          // iOS titleText 为空字符串时 按钮会隐藏
+          titleText: (!title || title === 'null') ? ' ' : title
         }
       })
     })

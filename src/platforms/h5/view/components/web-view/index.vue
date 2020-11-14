@@ -42,7 +42,7 @@ export default {
     _resize () {
       const {
         top,
-        bottom,
+        left,
         width,
         height
       } = this.$el.getBoundingClientRect()
@@ -51,7 +51,7 @@ export default {
       this.iframe.style.display = 'block'
       this.iframe.style.border = 0
       this.iframe.style.top = top + 'px'
-      this.iframe.style.bottom = bottom + 'px'
+      this.iframe.style.left = left + 'px'
       this.iframe.style.width = width + 'px'
       this.iframe.style.height = height + 'px'
     }

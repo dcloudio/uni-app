@@ -16,6 +16,7 @@
         v-text="placeholder"
       />
       <input
+        v-if="!disabled || !fixColor"
         ref="input"
         v-model="valueSync"
         v-keyboard
@@ -23,7 +24,7 @@
         :type="inputType"
         :maxlength="maxlength"
         :step="step"
-        :autofocus="focus"
+        :enterkeyhint="confirmType"
         class="uni-input-input"
         autocomplete="off"
         @focus="_onFocus"
@@ -31,20 +32,33 @@
         @input.stop="_onInput"
         @compositionstart="_onComposition"
         @compositionend="_onComposition"
-        @keyup.stop="_onKeyup"
+        @keyup.enter.stop="_onKeyup"
+      >
+      <!-- fix: 禁止 readonly 状态获取焦点 -->
+      <input
+        v-if="disabled && fixColor"
+        ref="input"
+        :value="valueSync"
+        tabindex="-1"
+        :readonly="disabled"
+        :type="inputType"
+        :maxlength="maxlength"
+        :step="step"
+        class="uni-input-input"
+        @focus="$event=>$event.target.blur()"
       >
     </div>
   </uni-input>
 </template>
 <script>
 import {
-  baseInput
+  field
 } from 'uni-mixins'
 const INPUT_TYPES = ['text', 'number', 'idcard', 'digit', 'password']
 const NUMBER_TYPES = ['number', 'digit']
 export default {
   name: 'Input',
-  mixins: [baseInput],
+  mixins: [field],
   props: {
     name: {
       type: String,
@@ -78,10 +92,6 @@ export default {
       type: [Number, String],
       default: 140
     },
-    focus: {
-      type: [Boolean, String],
-      default: false
-    },
     confirmType: {
       type: String,
       default: 'done'
@@ -91,7 +101,9 @@ export default {
     return {
       composing: false,
       wrapperHeight: 0,
-      cachedValue: ''
+      cachedValue: '',
+      // Safari 14 以上修正禁用状态颜色
+      fixColor: String(navigator.vendor).indexOf('Apple') === 0 && CSS.supports('image-orientation:from-image')
     }
   },
   computed: {
@@ -120,9 +132,6 @@ export default {
     }
   },
   watch: {
-    focus (val) {
-      this.$refs.input && this.$refs.input[val ? 'focus' : 'blur']()
-    },
     maxlength (value) {
       const realValue = this.valueSync.slice(0, parseInt(value, 10))
       realValue !== this.valueSync && (this.valueSync = realValue)
@@ -154,6 +163,8 @@ export default {
       }
       $vm = $vm.$parent
     }
+
+    this._initField('input')
   },
   beforeDestroy () {
     this.$dispatch('Form', 'uni-form-group-update', {
@@ -163,11 +174,9 @@ export default {
   },
   methods: {
     _onKeyup ($event) {
-      if ($event.keyCode === 13) {
-        this.$trigger('confirm', $event, {
-          value: $event.target.value
-        })
-      }
+      this.$trigger('confirm', $event, {
+        value: $event.target.value
+      })
     },
     _onInput ($event) {
       if (this.composing) {
@@ -285,12 +294,12 @@ uni-input[hidden] {
 }
 
 .uni-input-input {
+  position: relative;
   display: block;
   height: 100%;
   background: none;
   color: inherit;
   opacity: 1;
-  -webkit-text-fill-color: currentcolor;
   font: inherit;
   line-height: inherit;
   letter-spacing: inherit;
@@ -312,5 +321,10 @@ uni-input[hidden] {
 
 .uni-input-input[type="number"] {
   -moz-appearance: textfield;
+}
+
+.uni-input-input:disabled {
+  /* 用于重置iOS14以下禁用状态文字颜色 */
+  -webkit-text-fill-color: currentcolor;
 }
 </style>

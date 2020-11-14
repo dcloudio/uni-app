@@ -114,6 +114,11 @@ function async request () {
 |[uni.previewImage](api/media/image?id=previewimage)|预览图片|
 |[uni.getImageInfo](api/media/image?id=getimageinfo)|获取图片信息|
 |[uni.saveImageToPhotosAlbum](api/media/image?id=saveimagetophotosalbum)|保存图片到系统相册|
+##### 文件
+
+|API|说明|
+|:-|:-|
+|[uni.chooseFile](api/media/file?id=chooseFile)|从本地选择文件|
 ##### 录音管理
 
 |API|说明|
@@ -220,6 +225,7 @@ function async request () {
 |API|说明|
 |:-|:-|
 |[uni.onAccelerometerChange](api/system/accelerometer?id=onaccelerometerchange)|监听加速度数据|
+|[uni.offAccelerometerChange](api/system/accelerometer?id=offaccelerometerchange)|取消监听加速度数据|
 |[uni.startAccelerometer](api/system/accelerometer?id=startaccelerometer)|开始监听加速度数据|
 |[uni.stopAccelerometer](api/system/accelerometer?id=stopaccelerometer)|停止监听加速度数据|
 ##### 罗盘
@@ -227,6 +233,7 @@ function async request () {
 |API|说明|
 |:-|:-|
 |[uni.onCompassChange](api/system/compass?id=oncompasschange)|监听罗盘数据|
+|[uni.offCompassChange](api/system/compass?id=offcompasschange)|取消监听罗盘数据|
 |[uni.startCompass](api/system/compass?id=startcompass)|开始监听罗盘数据|
 |[uni.stopCompass](api/system/compass?id=stopcompass)|停止监听罗盘数据|
 ##### 陀螺仪

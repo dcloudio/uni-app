@@ -23,6 +23,10 @@ UniViewJSBridge.subscribe('getSelectedTextRange', function ({ pageId, callbackId
   }, pageId)
 })
 
+// App 延迟获取焦点
+const FOCUS_DELAY = 200
+let startTime
+
 export default {
   name: 'BaseInput',
   mixins: [emitter, keyboard],
@@ -34,11 +38,36 @@ export default {
     value: {
       type: [String, Number],
       default: ''
+    },
+    /**
+     * 已废弃属性，用于历史兼容
+     */
+    autoFocus: {
+      type: [Boolean, String],
+      default: false
+    },
+    focus: {
+      type: [Boolean, String],
+      default: false
     }
   },
   data () {
     return {
       valueSync: this._getValueString(this.value)
+    }
+  },
+  watch: {
+    focus (val) {
+      if (val) {
+        this._focus()
+      } else {
+        this._blur()
+      }
+    }
+  },
+  computed: {
+    needFocus () {
+      return this.autoFocus || this.focus
     }
   },
   created () {
@@ -62,6 +91,38 @@ export default {
   methods: {
     _getValueString (value) {
       return value === null ? '' : String(value)
+    },
+    _initField (ref) {
+      this._fieldRef = ref
+      startTime = startTime || Date.now()
+      if (this.needFocus) {
+        this._focus()
+      }
+    },
+    _focus () {
+      if (!this.needFocus) {
+        return
+      }
+      const field = this.$refs[this._fieldRef]
+      if (!field || (__PLATFORM__ === 'app-plus' && !window.plus)) {
+        setTimeout(this._focus.bind(this), 100)
+        return
+      }
+      if (__PLATFORM__ === 'h5') {
+        field.focus()
+      } else {
+        const timeout = FOCUS_DELAY - (Date.now() - startTime)
+        if (timeout > 0) {
+          setTimeout(this._focus.bind(this), timeout)
+          return
+        }
+        field.focus()
+        plus.key.showSoftKeybord()
+      }
+    },
+    _blur () {
+      const field = this.$refs[this._fieldRef]
+      field && field.blur()
     }
   }
 }

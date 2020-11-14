@@ -17,5 +17,9 @@ export const chooseVideo = {
   camera: {
     type: String,
     default: 'back'
+  },
+  extension: {
+    type: Array,
+    default: ['*']
   }
 }

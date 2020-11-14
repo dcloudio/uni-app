@@ -1,5 +1,5 @@
 import { fileToUrl, revokeObjectURL } from 'uni-platform/helpers/file'
-import { updateElementStyle } from 'uni-shared'
+import _createInput from './create_input'
 
 const {
   invokeCallbackHandler: invoke
@@ -7,28 +7,9 @@ const {
 
 let videoInput = null
 
-const _createInput = function (options) {
-  const inputEl = document.createElement('input')
-  inputEl.type = 'file'
-  updateElementStyle(inputEl, {
-    position: 'absolute',
-    visibility: 'hidden',
-    'z-index': -999,
-    width: 0,
-    height: 0,
-    top: 0,
-    left: 0
-  })
-  inputEl.accept = 'video/*'
-  // 经过测试，仅能限制只通过相机拍摄，不能限制只允许从相册选择。
-  if (options.sourceType.length === 1 && options.sourceType[0] === 'camera') {
-    inputEl.capture = 'camera'
-  }
-  return inputEl
-}
-
 export function chooseVideo ({
-  sourceType
+  sourceType,
+  extension
 }, callbackId) {
   if (videoInput) {
     document.body.removeChild(videoInput)
@@ -36,7 +17,9 @@ export function chooseVideo ({
   }
 
   videoInput = _createInput({
-    sourceType: sourceType
+    sourceType: sourceType,
+    extension,
+    type: 'video'
   })
   document.body.appendChild(videoInput)
 

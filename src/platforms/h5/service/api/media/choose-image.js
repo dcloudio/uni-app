@@ -1,5 +1,5 @@
 import { fileToUrl } from 'uni-platform/helpers/file'
-import { updateElementStyle } from 'uni-shared'
+import _createInput from './create_input'
 
 const {
   invokeCallbackHandler: invoke
@@ -7,34 +7,11 @@ const {
 
 let imageInput = null
 
-const _createInput = function (options) {
-  const inputEl = document.createElement('input')
-  inputEl.type = 'file'
-  updateElementStyle(inputEl, {
-    position: 'absolute',
-    visibility: 'hidden',
-    'z-index': -999,
-    width: 0,
-    height: 0,
-    top: 0,
-    left: 0
-  })
-  inputEl.accept = 'image/*'
-  if (options.count > 1) {
-    inputEl.multiple = 'multiple'
-  }
-  // 经过测试，仅能限制只通过相机拍摄，不能限制只允许从相册选择。
-  if (options.sourceType.length === 1 && options.sourceType[0] === 'camera') {
-    inputEl.capture = 'camera'
-  }
-
-  return inputEl
-}
-
 export function chooseImage ({
   count,
   // sizeType,
-  sourceType
+  sourceType,
+  extension
 }, callbackId) {
   // TODO handle sizeType 尝试通过 canvas 压缩
 
@@ -44,8 +21,10 @@ export function chooseImage ({
   }
 
   imageInput = _createInput({
-    count: count,
-    sourceType: sourceType
+    count,
+    sourceType,
+    extension,
+    type: 'image'
   })
   document.body.appendChild(imageInput)
 
@@ -61,7 +40,7 @@ export function chooseImage ({
           return filePath
         }
       })
-      tempFiles.push(file)
+      if (i < count) tempFiles.push(file)
     }
     const res = {
       errMsg: 'chooseImage:ok',

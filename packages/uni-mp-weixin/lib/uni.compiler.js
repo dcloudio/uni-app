@@ -29,23 +29,24 @@ module.exports = {
     if (!state.componentGenerics) {
       state.componentGenerics = Object.create(null)
     }
-
     state.componentGenerics[componentName] = true
-
+    const attr = props || {}
+    if (state.options.platform.name === 'mp-weixin') {
+      attr.class = 'scoped-ref'
+    }
     // 返回多个节点，支持作用域插槽当作普通插槽使用
-    return [
-      {
-        type: 'slot',
-        attr: {
-          name: slotName
-        },
-        children: []
+    return [{
+      type: 'slot',
+      attr: {
+        name: slotName
       },
-      {
-        type: componentName,
-        attr: props || {},
-        children: []
-      }
+      children: []
+    },
+    {
+      type: componentName,
+      attr,
+      children: []
+    }
     ]
   },
   resolveScopedSlots (slotName, {
@@ -72,6 +73,9 @@ module.exports = {
     }
     state.scopedSlots[baseName]++
     parentNode.attr['generic:scoped-slots-' + slotName] = componentName
+    if (state.options.platform.name === 'mp-weixin') {
+      parentNode.attr['data-vue-generic'] = 'scoped'
+    }
     if (!parentNode.attr.generic) {
       parentNode.attr.generic = {}
     }
@@ -118,7 +122,9 @@ module.exports = {
 
     try {
       // TODO 使用 getPlatformExts 在单元测试报错，改从 state.options.platform 判断
-      const { getPlatformExts } = require('@dcloudio/uni-cli-shared')
+      const {
+        getPlatformExts
+      } = require('@dcloudio/uni-cli-shared')
       const styleExtname = getPlatformExts().style
       const styleFile = resourcePath.replace(ownerName + extname, componentName + styleExtname)
       const styleContent = generateCssCode(ownerName + styleExtname)
