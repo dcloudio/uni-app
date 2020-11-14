@@ -394,7 +394,7 @@ function hasPermission(token, permission) {
 
 如果在上面基础上再修改passwordSecret为`1q2w3e4r5t`,config.json调整如下
 
-> !!!注意只有在数据库内完全没有使用某个版本（`password_version`字段表示了用户密钥版本）密钥的用户才可以将此密钥从config.json内去除。没有`password_version`的用户使用的是最旧版本的passwordSecret，如果存在这样的用户对应的passwordSecret也不可去除。
+> !!!注意只有在数据库内完全没有使用某个版本（`password_secret_version`字段表示了用户密钥版本）密钥的用户才可以将此密钥从config.json内去除。没有`password_secret_version`的用户使用的是最旧版本的passwordSecret，如果存在这样的用户对应的passwordSecret也不可去除。
 
 ```json
 // 新config.json，
