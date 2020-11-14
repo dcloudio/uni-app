@@ -296,7 +296,7 @@ Tips：`uni-app` 中 `manifest.json->h5->devServer` 实际上对应 `webpack` �
 	"sdkConfigs": {
 		"maps": {
 			"qqmap": {
-				//腾讯地图秘钥（key）
+				// 腾讯地图秘钥（key）https://lbs.qq.com/dev/console/key/manage
 				"key": ""
 			}
 		}
