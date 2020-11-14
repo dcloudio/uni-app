@@ -84,6 +84,7 @@
   * [更多插件市场的组件](https://ext.dcloud.net.cn/?cat1=2)
 * 导航栏
   * [navigation-bar](component/navigation-bar.md)
+  * [custom-tab-bar](component/custom-tab-bar.md)
 * 页面属性配置节点
   * [page-meta](component/page-meta.md)
 * [配置小程序插件](component/mp-weixin-plugin.md)
