@@ -801,16 +801,21 @@ export function canvasGetImageData ({
   width,
   height
 }, callbackId) {
-  var pageId = getCurrentPageId()
+  const pageId = getCurrentPageId()
   if (!pageId) {
     invoke(callbackId, {
       errMsg: 'canvasGetImageData:fail'
     })
     return
   }
-  var cId = canvasEventCallbacks.push(function (data) {
-    var imgData = data.data
+  const cId = canvasEventCallbacks.push(function (data) {
+    let imgData = data.data
     if (imgData && imgData.length) {
+      if (__PLATFORM__ === 'app-plus' && data.compressed) {
+        const pako = require('pako')
+        imgData = pako.inflateRaw(imgData)
+        delete data.compressed
+      }
       data.data = new Uint8ClampedArray(imgData)
     }
     invoke(callbackId, data)
@@ -842,13 +847,23 @@ export function canvasPutImageData ({
   var cId = canvasEventCallbacks.push(function (data) {
     invoke(callbackId, data)
   })
-  // fix ...
+  let compressed
+  if (__PLATFORM__ === 'app-plus') {
+    const pako = require('pako')
+    data = pako.deflateRaw(data, { to: 'string' })
+    compressed = true
+  } else {
+    // fix ...
+    data = Array.prototype.slice.call(data)
+  }
+
   operateCanvas(canvasId, pageId, 'putImageData', {
-    data: Array.prototype.slice.call(data),
+    data,
     x,
     y,
     width,
     height,
+    compressed,
     callbackId: cId
   })
 }

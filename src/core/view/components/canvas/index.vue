@@ -435,16 +435,24 @@ export default {
       context.drawImageByCanvas(canvas, x, y, width, height, 0, 0, destWidth, destHeight, false)
       let result
       try {
+        let compressed
         if (dataType === 'base64') {
           data = newCanvas.toDataURL(`image/${type}`, qualit)
         } else {
           const imgData = context.getImageData(0, 0, destWidth, destHeight)
-          // fix [...]展开TypedArray在低版本手机报错的问题，使用Array.prototype.slice
-          data = Array.prototype.slice.call(imgData.data)
+          if (__PLATFORM__ === 'app-plus') {
+            const pako = require('pako')
+            data = pako.deflateRaw(imgData.data, { to: 'string' })
+            compressed = true
+          } else {
+            // fix [...]展开TypedArray在低版本手机报错的问题，使用Array.prototype.slice
+            data = Array.prototype.slice.call(imgData.data)
+          }
         }
         result = {
           errMsg: 'canvasGetImageData:ok',
           data,
+          compressed,
           width: destWidth,
           height: destHeight
         }
@@ -470,6 +478,7 @@ export default {
       y,
       width,
       height,
+      compressed,
       callbackId
     }) {
       try {
@@ -478,6 +487,10 @@ export default {
         }
         const canvas = getTempCanvas(width, height)
         const context = canvas.getContext('2d')
+        if (__PLATFORM__ === 'app-plus' && compressed) {
+          const pako = require('pako')
+          data = pako.inflateRaw(data)
+        }
         context.putImageData(new ImageData(new Uint8ClampedArray(data), width, height), 0, 0)
         this.$refs.canvas.getContext('2d').drawImage(canvas, x, y, width, height)
         canvas.height = canvas.width = 0
