@@ -1,5 +1,7 @@
 ### uni.chooseVideo(OBJECT)
-拍摄视频或从手机相册中选视频，返回视频的临时文件路径。另外选择和上传非图像、视频文件参考：[https://ask.dcloud.net.cn/article/35547](https://ask.dcloud.net.cn/article/35547)。
+拍摄视频或从手机相册中选视频，返回视频的临时文件路径。
+
+若选择和上传非图像、视频文件，另行参考：[https://uniapp.dcloud.io/api/media/file](https://uniapp.dcloud.io/api/media/file)。
 
 **平台差异说明**
 
@@ -75,6 +77,8 @@ export default {
 
 ### uni.chooseMedia(OBJECT)
 拍摄或从手机相册中选择图片或视频。
+
+若选择和上传非图像、视频文件，另行参考：[https://uniapp.dcloud.io/api/media/file](https://uniapp.dcloud.io/api/media/file)。
 
 **平台差异说明**
 
