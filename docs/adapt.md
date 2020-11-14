@@ -26,6 +26,10 @@ uni-app提供的屏幕适配方案，包括3部分：
 
 这套方案是已知的、最便捷的分栏式宽屏应用适配方案。
 
+__宽屏下原生 tabBar 与窗体的关系__
+
+> 目前做如下调整：leftWindow、rightWindow、topWindow 中有其一存在，则 tabBar 隐藏；不存在，则隐藏。
+
 leftWindow等配置，在pages.json里进行。文档见：[https://uniapp.dcloud.net.cn/collocation/pages?id=topwindow](https://uniapp.dcloud.net.cn/collocation/pages?id=topwindow)
 
 pages.json 配置样例
