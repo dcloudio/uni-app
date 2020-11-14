@@ -1,5 +1,10 @@
 # uniCloud 更新日志
 ======================================
+#### 2020-11-14
+  + uni-id 调整 2.0.0版本起验证码表名改为`opendb-verify-codes`
+  + uni-id 调整 2.0.0版本起encryptPwd接口返回值调整 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=encrypt-password)
+  + uni-id 新增 修改passwordSecret功能 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=modifysecret)
+
 #### 2020-11-13
   +  阿里云支持事务（startTransaction方式，暂不支持ranTransaction）[详情](https://uniapp.dcloud.net.cn/uniCloud/cf-database?id=starttransaction)
 
