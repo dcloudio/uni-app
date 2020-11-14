@@ -16,7 +16,7 @@
 |maxlength|Number|140|最大输入长度，设置为 -1 的时候不限制最大长度||
 |cursor-spacing|Number|0|指定光标与键盘的距离，单位 px 。取 input 距离底部的距离和 cursor-spacing 指定的距离的最小值作为光标与键盘的距离|App、微信小程序、百度小程序、QQ小程序|
 |focus|Boolean|false|获取焦点。|在 H5 平台能否聚焦以及软键盘是否跟随弹出，取决于当前浏览器本身的实现。|
-|confirm-type|String|done|设置键盘右下角按钮的文字，仅在 type="text" 时生效。|微信小程序基础库2.13.0、APP(HBuilder X2.9.9+)、H5(HBuilder X2.9.9+)|
+|confirm-type|String|done|设置键盘右下角按钮的文字，仅在 type="text" 时生效。|微信小程序基础库2.13.0、App-nvue、App-vue 2.9.9+（且要求手机webview内核Chrome81+、Safari13.7+）、H5 2.9.9+（且要求手机webview内核Chrome81+、Safari13.7+）|
 |confirm-hold|Boolean|false|点击键盘右下角按钮时是否保持键盘不收起|App、微信小程序、支付宝小程序、百度小程序、QQ小程序|
 |cursor|Number||指定focus时的光标位置||
 |selection-start|Number|-1|光标起始位置，自动聚集时有效，需与selection-end搭配使用||
@@ -46,11 +46,11 @@
 
 **注意事项**
 
+- 原html规范中input不仅是输入框，还有radio、checkbox、时间、日期、文件选择功能。在uni-app和小程序规范中，input仅仅是输入框。其他功能uni-app有单独的组件或API：[radio组件](https://uniapp.dcloud.io/component/radio)、[checkbox组件](https://uniapp.dcloud.io/component/checkbox)、[时间选择](https://uniapp.dcloud.io/component/picker?id=%e6%97%b6%e9%97%b4%e9%80%89%e6%8b%a9%e5%99%a8)、[日期选择](https://uniapp.dcloud.io/component/picker?id=%e6%97%a5%e6%9c%9f%e9%80%89%e6%8b%a9%e5%99%a8)、[图片选择](https://uniapp.dcloud.io/api/media/image?id=chooseimage)、[视频选择](https://uniapp.dcloud.io/api/media/video?id=choosevideo)、[多媒体文件选择(含图片视频)](https://uniapp.dcloud.io/api/media/video?id=choosemedia)、[通用文件选择](https://uniapp.dcloud.io/api/media/file?id=choosefile)。
 - 小程序平台，`number` 类型只支持输入整型数字。微信开发者工具上体现不出效果，请使用真机预览。
 - 如果需要在小程序平台输入浮点型数字，请使用 `digit` 类型。
 - 小程序端input在置焦时，会表现为原生控件，此时会层级变高。如需前端组件遮盖input，需让input失焦，或使用cover-view等覆盖原生控件的方案，[参考](https://uniapp.dcloud.io/component/native-component)。具体来讲，阿里小程序的input为text且置焦为原生控件；微信、头条、QQ所有input置焦均为原生控件；百度小程序置焦时仍然是非原生的。也可以参考[原生控件](https://uniapp.dcloud.io/component/native-component)文档
 - input组件若不想弹出软键盘，可设置为disable
-- App平台的vue页面及 H5平台 的弹出键盘使用的是浏览器控制的键盘，丰富程度略低。可通过插件市场找到更多类型的键盘。
 - 插件市场有各种类型的模拟键盘，比如车牌键盘、身份证键盘，可去插件市场搜索 [键盘](https://ext.dcloud.net.cn/search?q=%E9%94%AE%E7%9B%98)。
 - 搜索框ui组件，可参考uni ui的search组件或封装好的页面模板。[详见](https://ext.dcloud.net.cn/search?q=search)
 - uni-app插件市场有输入文字后自动提示候选的组件，可搜索 [autocomplete](https://ext.dcloud.net.cn/search?q=autocomplete) 查看。
@@ -60,15 +60,16 @@
 
 |值|说明|平台差异说明|
 |:-|:-|-|
-|send|右下角按钮为“发送”|微信、支付宝、百度小程序、App的nvue|
+|send|右下角按钮为“发送”|微信、支付宝、百度小程序、app-nvue、app-vue和h5(2.9.9+，且要求手机webview内核Chrome81+、Safari13.7+)|
 |search|右下角按钮为“搜索”||
-|next|右下角按钮为“下一个”|微信、支付宝、百度小程序、App的nvue|
+|next|右下角按钮为“下一个”|微信、支付宝、百度小程序、app-nvue、app-vue和h5(2.9.9+，且要求手机webview内核Chrome81+、Safari13.7+)|
 |go|右下角按钮为“前往”||
-|done|右下角按钮为“完成”|微信、支付宝、百度小程序、App的nvue|
+|done|右下角按钮为“完成”|微信、支付宝、百度小程序、app-nvue、app-vue和h5(2.9.9+，且要求手机webview内核Chrome81+、Safari13.7+)|
 
-- App平台的nvue页面，如果是uni-app编译模式，直接使用此属性设置即可生效。如果是weex编译模式，需通过weex的api设置，[weex相关文档参考](https://weex.apache.org/zh/docs/components/input.html#%E5%B1%9E%E6%80%A7)
-- App平台的vue页面不支持控制键盘右下角为“发送”，涉及聊天的建议使用nvue。
-- confirm-type属性仅在Chrome 77+、IOS 13.4+、Android 5-6.x WebView: Chromium 81+支持。
+- App平台的nvue页面，如果是weex编译模式，需通过weex的api设置（weex模式已被淘汰）
+- App平台的vue页面及 H5平台 的弹出键盘使用的是浏览器控制的键盘，在Chrome81+、Safari13.7+之前，键盘右下角文字只能设置完成和搜索，从Chrome81+、Safari13.7+起支持设置发送、下一个。
+- App平台涉及聊天的建议使用nvue，一方面因为app-vue控制键盘右下角按键文字为“发送”对webview内核有要求，另一方面聊天记录如使用sroll-view，过长的内容在app-vue上会有性能问题。
+<!--- confirm-type属性仅在Chrome 77+、IOS 13.4+、Android 5-6.x WebView: Chromium 81+支持。-->
 
 #### App平台iOS端软键盘上方横条去除方案
 
