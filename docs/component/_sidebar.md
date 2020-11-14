@@ -25,7 +25,7 @@
   * [slider](component/slider.md)
   * [switch](component/switch.md)
   * [textarea](component/textarea.md)
-* 路由导航
+* 路由与页面跳转
   * [navigator](component/navigator.md)
 * 媒体组件
   * [audio](component/audio.md)
