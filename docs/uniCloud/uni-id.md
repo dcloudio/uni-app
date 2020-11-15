@@ -85,12 +85,12 @@ DCloud暂无计划开发百度、头条、QQ等小程序的登录，以及Apple 
 
 使用uni-id需要按照以下步骤操作
 
-1. 准备2.8或以上版本的HBuilderX
+1. HBuilderX 2.9+
 2. 插件市场导入`uni-id`公用模块，[插件市场 uni-id](https://ext.dcloud.net.cn/plugin?id=2116)
 3. 修改公用模块`uni-id`下的`config.json`内所需参数（请参考下面config.json的说明）
 4. 上传`cloudfunctions/common`下的`uni-id`模块
-5. 按照[公用模块使用说明](https://uniapp.dcloud.io/uniCloud/cf-common)在云函数下安装`uni-id`模块
-6. 创建`uni-id-users`、`uni-verify`集合（uni-verify是验证码表。可以使用示例项目里面的db_init.json进行初始化、也可以在web控制台新建表时选择这些表模块）
+5. 按照[公用模块使用说明](/uniCloud/cf-common)在云函数下安装`uni-id`模块
+6. 创建`uni-id-users`、`opendb-verify-codes`集合（opendb-verify-codes是验证码表。可以使用示例项目里面的db_init.json进行初始化、也可以在web控制台新建表时选择这些表模块）
 
 或者直接导入[uni-id在插件市场的示例工程](https://ext.dcloud.net.cn/plugin?id=2116)
 
@@ -119,16 +119,16 @@ DCloud暂无计划开发百度、头条、QQ等小程序的登录，以及Apple 
 ```json
 // 如果拷贝此内容切记去除注释
 {
-	"passwordSecret": "passwordSecret-demo", // 加密密码所用的密钥，注意修改为自己的，使用一个较长的字符串即可
+	"passwordSecret": "passwordSecret-demo", // 数据库中password字段是加密存储的，这里的passwordSecret即为加密密码所用的密钥，注意修改为自己的密钥，使用一个较长的字符串即可
 	"tokenSecret": "tokenSecret-demo", // 生成token所用的密钥，注意修改为自己的，使用一个较长的字符串即可
 	"tokenExpiresIn": 7200, // 全平台token过期时间，未指定过期时间的平台会使用此值
 	"tokenExpiresThreshold": 600, // 新增于uni-id 1.1.7版本，checkToken时如果token有效期小于此值则自动获取新token，请注意将新token返回给前端保存，如果不配置此参数则不开启自动获取新token功能
 	"bindTokenToDevice": true, // 是否将token和设备绑定，设置为true会进行ua校验，默认为true
 	"passwordErrorLimit": 6, // 密码错误最大重试次数
 	"passwordErrorRetryTime": 3600, // 密码错误重试次数超限之后的冻结时间
-  "autoSetInviteCode": false, // 是否在用户注册时自动设置邀请码，默认不自动设置
-  "forceInviteCode": false, // 是否强制用户注册时必填邀请码，默认为false（需要注意的是目前只有短信验证码注册才可以填写邀请码）,设置为true时需要在loginBySms时指定type为register来使用注册，登录时也要传入type为login
-  "app-plus": {
+	"autoSetInviteCode": false, // 是否在用户注册时自动设置邀请码，默认不自动设置
+	"forceInviteCode": false, // 是否强制用户注册时必填邀请码，默认为false（需要注意的是目前只有短信验证码注册才可以填写邀请码）,设置为true时需要在loginBySms时指定type为register来使用注册，登录时也要传入type为login
+	"app-plus": {
 		"tokenExpiresIn": 2592000,
 		"oauth": {
 			// App微信登录所用到的appid、appsecret需要在微信开放平台获取，注意：不是公众平台而是开放平台
@@ -168,18 +168,15 @@ DCloud暂无计划开发百度、头条、QQ等小程序的登录，以及Apple 
 }
 ```
 
-# 特色功能
+# 用户角色权限@rbac
 
-## 角色权限@rbac
+为什么需要角色权限管理？
+- 对于后台管理系统，比如[uniCloud admin](/uniCloud/admin)，除了超级管理员，不同账号通常需根据职位、责任设定不同的系统权限。
+- [clientDB](/uniCloud/database)允许前端直接操作数据库，但部分字段应该是系统计算或管理员设置的，比如文章的阅读数、收藏数及是否加精置顶，这些字段不允许普通用户在前端通过clientDB直接修改，此时也需要通过权限控制来保证系统的安全稳定。 
 
-为什么需要权限管理？
-- 对于后台管理系统，除了超级管理员，不同账号通常需根据职位、责任设定不同的系统权限。
-- [clientDB](https://uniapp.dcloud.io/uniCloud/database)允许前端直接操作数据库，但部分字段应该是系统计算或管理员设置的，比如文章的阅读数、收藏数及是否加精置顶，这些字段不允许普通用户在前端通过clientDB直接修改，此时也需要通过权限控制来保证系统的安全稳定。 
+`uni-id`基于经典的RBAC模型实现了角色权限系统。
 
-`uni-id`如何解决权限管理问题？
-- 基于经典的RBAC模型实现内置角色权限系统。
-
-### RBAC模型简介
+## RBAC模型简介
 
 RBAC：Role-Based Access Control，基于角色的访问控制。
 
@@ -194,7 +191,7 @@ RBAC：Role-Based Access Control，基于角色的访问控制。
 - 角色：权限的集合，一个角色可以有多个权限
 - 权限：数据权限或业务权限，例如：删除用户、删除评论等
 
-### 用户
+## 用户
 
 用户信息存储在`uni-id-users`表中，然后通过`role`字段保存该用户所拥有的所有角色ID，角色ID即角色表（`uni-id-roles`表）中的`role_id`字段，注意不是`_id`字段。
 
@@ -215,7 +212,7 @@ RBAC：Role-Based Access Control，基于角色的访问控制。
 
 >Tips：将用户角色设计为用户表的字段，而没有新建`用户角色关联表`的原因：避免mongodb在跨表查询时的性能开销
 
-### 角色
+## 角色
 
 角色信息存储在`uni-id-roles`表中
 
@@ -275,7 +272,7 @@ RBAC：Role-Based Access Control，基于角色的访问控制。
 
 >Tips2：出厂时可内置常用角色，也可上线后由运营人员动态创建角色。
 
-### 权限
+## 权限
 
 权限信息在`uni-id-permissions`表中，表结构定义如下：
 
@@ -320,7 +317,7 @@ RBAC：Role-Based Access Control，基于角色的访问控制。
 
 >Tips1：建议出厂时内置所有权限，方便clientDB中的权限配置。
 
-### 其他说明
+## 其他说明
 
 uni-id针对角色权限模块封装了丰富的API，比如：获取用户角色、获取某角色下的所有权限等，详情参考：[角色权限API](uniCloud/uni-id.md?id=rbac-api)。
 
@@ -335,92 +332,9 @@ function hasPermission(token, permission) {
 ```
 
 
+# uni-id的API列表@api
 
-## 裂变@fission
-
-自`1.1.2`版本起uni-id支持裂变功能，目前仅适用手机号+验证码方式注册可以填写邀请码（inviteCode）接受邀请。裂变相关API请参考[裂变API](uniCloud/uni-id.md?id=fission-api)
-
-在`config.json`内配置了`autoSetInviteCode: true`则在用户注册时会自动给设置不重复的6位邀请码，如果不希望使用自动设置的邀请码可以自行传入`myInviteCode`参数来设置邀请码，需要注意的是要保证邀请码唯一。
-
-在`config.json`内配置了`forceInviteCode: true`则只有使用邀请码才可以注册（仅手机号+验证码注册方式支持）。
-
-针对之前使用了旧版本（不支持裂变）的uni-id，现在想增加裂变功能，可以调用`setUserInviteCode`接口给已注册用户设置邀请码，在设置之前可以使用`my_invite_code不存在`作为条件查询所有需要设置的用户。
-
-如果希望用户注册完成之后再填写邀请人的邀请码，可以调用`acceptInvite`接口来使用户接受邀请。
-
-`getInvitedUser`接口可以用于获取接受邀请的用户列表，其中level参数可以用来设置要获取哪一级的邀请用户，不填写level参数则默认获取第一级。
-
-如果想详细的体验一下裂变流程，可以在插件市场导入[前后一体登录模板](https://ext.dcloud.net.cn/plugin?id=13)，此项目内已有邀请用户注册示例，流程如下
-
-**分享邀请码/邀请链接**
-
-<img width="375" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/1b181d40-e377-11ea-b680-7980c8a877b8.jpeg" />
-
-
-**受邀者注册**
-
-<img width="375" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/1b12c610-e377-11ea-b997-9918a5dda011.jpeg" />
-
-## 修改passwordSecret@modifysecret
-
-> 注意：通常情况下设定好passwordSecret之后不需要再进行修改，使用此功能时请务必小心谨慎
-
-**说明**
-
-在config.json内修改passwordSecret会导致已有用户无法通过密码登录。但是某些情况下有些应用有修改passwordSecret的需求，这种场景下可以使用uni-id 2.0.1版本新增的修改passwordSecret功能。（注意：2.0.1版本验证码表名调整为了`opendb-verify-codes`）
-
-**如何使用**
-
-下面以将passwordSecret从`passwordSecret-demo`修改为`qwertyasdfgh`为例介绍如何使用
-
-```json
-// 旧config.json
-{
-  "passwordSecret": "passwordSecret-demo"
-}
-
-// 新config.json
-{
-  "passwordSecret": [{
-    "version": 1,
-    "value": "passwordSecret-demo"
-  },{
-    "version": 2,
-    "value": "qwertyasdfgh"
-  }]
-}
-
-```
-
-如果在上面基础上再修改passwordSecret为`1q2w3e4r5t`,config.json调整如下
-
-> !!!注意只有在数据库内完全没有使用某个版本（`password_secret_version`字段表示了用户密钥版本）密钥的用户才可以将此密钥从config.json内去除。没有`password_secret_version`的用户使用的是最旧版本的passwordSecret，如果存在这样的用户对应的passwordSecret也不可去除。
-
-```json
-// 新config.json，
-{
-  "passwordSecret": [{
-    "version": 1,
-    "value": "passwordSecret-demo"
-  },{
-    "version": 2,
-    "value": "qwertyasdfgh"
-  },{
-    "version": 3,
-    "value": "1q2w3e4r5t"
-  }]
-}
-```
-
-**原理**
-
-uni-id-users表内存储的password字段为使用hmac-sha1生成的hash值，此值不可逆向推出用户真实密码。所以直接修改passwordSecret会导致老用户无法使用密码登录。
-
-上述修改通过密钥版本号区分新旧密钥，用户登录时如果密钥版本小于当前最新版本，会为用户更新数据库内存储的password字段，并记录当前使用的密钥版本。
-
-用户对应的数据库记录内没有密钥版本的话会使用最低版本密钥进行密码校验，校验通过后为用户更新为最新版密钥对应的password并记录版本号。
-
-# API列表@api
+`uni-id`作为一个云函数的公共模块，暴露了各种API，供云函数调用。
 
 ## 基础功能
 
@@ -445,7 +359,15 @@ username可以是字符串、可以是email、可以是手机号，本插件不�
 
 比如要求username为手机号，则自行在前端界面上做好提示，在后台对格式进行校验。
 
-password入库时会自动进行一次sha1加密，不明文存储密码。秘钥是开发者在config.json里自行配置的。
+password入库时会自动进行一次sha1加密，不明文存储密码。这是一种单向不可逆加密方式，强度高于md5，密钥是开发者在config.json里自行配置的passwordSecret。
+
+即用户注册时输入的密码，通过密钥passwordSecret使用sha1算法加密，然后再入库。
+
+由于是不可逆加密，理论上数据库泄露或passwordSecret泄露都不会造成用户的真实密码被泄露。
+
+但任何加密算法，在撞库等暴力手段面前被攻破只是时间和算力问题。使用自己特定的而不是默认的passwordSecret，并保护好passwordSecret可以数倍提升破解的算力代价。
+
+uni-id公共模块没有限制密码的强度，如长度限制、是否包含大小写或数据等限制，这类限制需要开发者自行在云函数中处理。
 
 **响应参数**
 
@@ -460,7 +382,7 @@ password入库时会自动进行一次sha1加密，不明文存储密码。秘�
 **示例代码**
 
 ```js
-// 云函数代码
+// 云函数register的代码
 const uniID = require('uni-id')
 exports.main = async function(event,context) {
 	const {
@@ -2161,15 +2083,19 @@ exports.main = async function(event,context) {
 
 # 数据库结构
 
+`uni-id`的所有数据表，都在[opendb](https://gitee.com/dcloud/opendb/)规范中。
+
+在unicloud [web控制台](https://unicloud.dcloud.net.cn/) 新建数据表时，可以从`uni-id`的模板分类里找到下面的表，并一键创建这些表。
+
 ## 用户表
 
-表名：uni-id-users
+表名：`uni-id-users`
 
 | 字段						| 类型			| 必填| 描述																											|
 | ----------------| ---------	| ----| -------------------------------------------								|
 | \_id						| Object ID	| 是	| 存储文档 ID（用户 ID），系统自动生成											|
 | username				| String		| 否	| 用户名，不允许重复																				|
-| password				| String		| 否	| 密码，加密存储																						|
+| password				| String		| 否	| 密码。加密存储																						|
 | nickname				| String		| 否	| 用户昵称																									|
 | gender					| Integer		| 否	| 用户性别：0 未知 1 男性 2 女性														|
 | status					| Integer		| 是	| 用户状态：0 正常 1 禁用 2 审核中 3 审核拒绝								|
@@ -2245,7 +2171,13 @@ exports.main = async function(event,context) {
 
 ## 验证码表
 
-表名：`uni-verify` **uni-id 2.0.0版本起，此表名改为opendb-verify-codes**
+表名：`opendb-verify-codes` 
+
+**uni-id 2.0.0版本以前，使用的表名为uni-verify，2.0.0+起改为新表名**
+
+该表的前缀不是uni-id，意味着该表的设计用途是通用的，不管是uni-id的手机号验证码，或者支付等关键业务需要验证码，都使用此表。
+
+每条验证信息，都记录在本表中。uni-id不会自动删除本表的历史数据，数据保留有效期需要开发者自行管理，可以在云函数中设置一个定时运行来清理过期数据。
 
 | 字段       | 类型      | 必填 | 描述                                   |
 | ---------- | --------- | ---- | -------------------------------------- |
@@ -2286,7 +2218,7 @@ exports.main = async function(event,context) {
 
 ## 更多表
 
-还有更多uni-id的配套数据表，可以在uniCloud web控制台新建表时选择相应模板。此处不再详述，仅罗列清单：
+还有更多uni-id的配套数据表，可以在uniCloud [web控制台](https://unicloud.dcloud.net.cn/)新建表时选择相应模板。此处不再详述，仅罗列清单：
 
 - 积分表：uni-id-scores
 - 地址信息表：uni-id-address
@@ -2361,6 +2293,96 @@ exports.main = async function(event,context) {
 |公用码										|900		|01				|（90001）数据库读写异常																						|
 
 **另外还有一些字符串类型的扩展错误码在各自接口的文档中展示，请不要直接使用`code>0`这种方式来判断是否有错误**
+
+
+# 其他功能
+
+## 裂变@fission
+
+自`1.1.2`版本起uni-id支持裂变功能，目前仅适用手机号+验证码方式注册可以填写邀请码（inviteCode）接受邀请。裂变相关API请参考[裂变API](uniCloud/uni-id.md?id=fission-api)
+
+在`config.json`内配置了`autoSetInviteCode: true`则在用户注册时会自动给设置不重复的6位邀请码，如果不希望使用自动设置的邀请码可以自行传入`myInviteCode`参数来设置邀请码，需要注意的是要保证邀请码唯一。
+
+在`config.json`内配置了`forceInviteCode: true`则只有使用邀请码才可以注册（仅手机号+验证码注册方式支持）。
+
+针对之前使用了旧版本（不支持裂变）的uni-id，现在想增加裂变功能，可以调用`setUserInviteCode`接口给已注册用户设置邀请码，在设置之前可以使用`my_invite_code不存在`作为条件查询所有需要设置的用户。
+
+如果希望用户注册完成之后再填写邀请人的邀请码，可以调用`acceptInvite`接口来使用户接受邀请。
+
+`getInvitedUser`接口可以用于获取接受邀请的用户列表，其中level参数可以用来设置要获取哪一级的邀请用户，不填写level参数则默认获取第一级。
+
+如果想详细的体验一下裂变流程，可以在插件市场导入[前后一体登录模板](https://ext.dcloud.net.cn/plugin?id=13)，此项目内已有邀请用户注册示例，流程如下
+
+**分享邀请码/邀请链接**
+
+<img width="375" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/1b181d40-e377-11ea-b680-7980c8a877b8.jpeg" />
+
+
+**受邀者注册**
+
+<img width="375" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/1b12c610-e377-11ea-b997-9918a5dda011.jpeg" />
+
+
+## 修改passwordSecret@modifysecret
+
+> `注意：通常情况下设定好passwordSecret之后不需要再进行修改，使用此功能时请务必小心谨慎`
+
+**说明**
+
+在config.json内修改passwordSecret会导致历史用户无法通过密码登录。但是某些情况下有些应用有修改passwordSecret的需求，例如刚开始使用uni-id时没有自定义passwordSecret，后续需要修改，此时可以使用uni-id 2.0.1版本新增的修改passwordSecret功能。（注意：2.0.1版本验证码表名调整为了`opendb-verify-codes`）
+
+**如何使用**
+
+下面以将passwordSecret从`passwordSecret-demo`修改为`qwertyasdfgh`为例介绍如何使用
+
+```json
+// 旧config.json
+{
+  "passwordSecret": "passwordSecret-demo"
+}
+
+// 新config.json
+{
+  "passwordSecret": [{
+    "version": 1,
+    "value": "passwordSecret-demo"
+  },{
+    "version": 2,
+    "value": "qwertyasdfgh"
+  }]
+}
+
+```
+
+如果在上面基础上再修改passwordSecret为`1q2w3e4r5t`,config.json调整如下
+
+> !!!注意只有在数据库内完全没有使用某个版本（`password_secret_version`字段表示了用户密钥版本）密钥的用户才可以将此密钥从config.json内去除。没有`password_secret_version`的用户使用的是最旧版本的passwordSecret，如果存在这样的用户对应的passwordSecret也不可去除。
+
+```json
+// 新config.json，
+{
+  "passwordSecret": [{
+    "version": 1,
+    "value": "passwordSecret-demo"
+  },{
+    "version": 2,
+    "value": "qwertyasdfgh"
+  },{
+    "version": 3,
+    "value": "1q2w3e4r5t"
+  }]
+}
+```
+
+**原理**
+
+uni-id-users表内存储的password字段为使用hmac-sha1生成的hash值，此值不可逆向推出用户真实密码。所以直接修改passwordSecret会导致老用户无法使用密码登录。
+
+上述修改通过密钥版本号区分新旧密钥，用户登录时如果密钥版本小于当前最新版本，会为用户更新数据库内存储的password字段，并记录当前使用的密钥版本。
+
+用户对应的数据库记录内没有密钥版本的话会使用最低版本密钥进行密码校验，校验通过后为用户更新为最新版密钥对应的password并记录版本号。
+
+由于是不可逆加密，理论上passwordSecret泄露不会造成用户的真实密码被泄露，自定义passwordSecret只是进一步加强安全性。
 
 # FAQ
 
