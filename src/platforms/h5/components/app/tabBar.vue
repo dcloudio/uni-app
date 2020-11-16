@@ -20,7 +20,7 @@
             :class="{'uni-tabbar__icon__diff':!item.text}"
             class="uni-tabbar__icon"
           >
-            <img :src="_getRealPath($route.meta.pagePath===item.pagePath?item.selectedIconPath:item.iconPath)">
+            <img :src="_getRealPath(selectedIndex===index?item.selectedIconPath:item.iconPath)">
             <div
               v-if="item.redDot"
               :class="{'uni-tabbar__badge':!!item.badge}"
@@ -31,7 +31,7 @@
           </div>
           <div
             v-if="item.text"
-            :style="{color:$route.meta.pagePath===item.pagePath?selectedColor:color,fontSize:item.iconPath?'10px':'14px'}"
+            :style="{color:selectedIndex===index?selectedColor:color,fontSize:item.iconPath?'10px':'14px'}"
             class="uni-tabbar__label"
           >
             {{ item.text }}
@@ -71,6 +71,14 @@
     position: fixed;
     left: var(--window-left);
     right: var(--window-right);
+  }
+
+  .uni-app--showlayout+uni-tabbar.uni-tabbar-top,
+  .uni-app--showlayout+uni-tabbar.uni-tabbar-bottom,
+  .uni-app--showlayout+uni-tabbar.uni-tabbar-top .uni-tabbar,
+  .uni-app--showlayout+uni-tabbar.uni-tabbar-bottom .uni-tabbar {
+    left: var(--window-margin);
+    right: var(--window-margin);
   }
 
   uni-tabbar.uni-tabbar-bottom .uni-tabbar {
@@ -207,6 +215,17 @@ export default {
       default: function () {
         return []
       }
+    },
+    matchMedia: {
+      type: Object,
+      default: function () {
+        return {}
+      }
+    }
+  },
+  data () {
+    return {
+      selectedIndex: 0
     }
   },
   computed: {
@@ -217,9 +236,16 @@ export default {
     }
   },
   watch: {
-    '$route' (to, from) {
-      if (to.meta.isTabBar) {
-        this.__path__ = to.path
+    $route: {
+      immediate: true,
+      handler (to) {
+        if (to.meta.isTabBar) {
+          this.__path__ = to.path
+          const index = this.list.findIndex(item => to.meta.pagePath === item.pagePath)
+          if (index > -1) {
+            this.selectedIndex = index
+          }
+        }
       }
     }
   },
@@ -239,6 +265,7 @@ export default {
       text,
       pagePath
     }, index) {
+      this.selectedIndex = index
       let url = '/' + pagePath
       if (url === __uniRoutes[0].alias) {
         url = '/'

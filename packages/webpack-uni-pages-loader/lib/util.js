@@ -46,6 +46,9 @@ function trimMPJson (json) {
   delete json.topWindow
   delete json.leftWindow
   delete json.rightWindow
+  if (json.tabBar) {
+    delete json.tabBar.matchMedia
+  }
   return json
 }
 

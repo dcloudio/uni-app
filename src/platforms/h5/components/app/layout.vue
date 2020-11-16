@@ -180,6 +180,9 @@ export default {
     $route () {
       this.checkMaxWidth()
     },
+    showLayout () {
+      this.checkLayout()
+    },
     showTopWindow (newVal, val) {
       if (newVal) {
         this.$nextTick(this.onTopWindowInit)
@@ -242,6 +245,7 @@ export default {
     this.initMaxWidth()
   },
   mounted () {
+    this.checkLayout()
     this.checkMaxWidth()
   },
   methods: {
@@ -274,6 +278,9 @@ export default {
       window.addEventListener('resize', () => {
         this.checkMaxWidth()
       })
+    },
+    checkLayout () {
+      this.$emit('layout', this.showLayout)
     },
     checkMaxWidth () {
       const windowWidth = document.body.clientWidth
@@ -421,10 +428,6 @@ export default {
   .uni-mask+.uni-left-window,
   .uni-mask+.uni-right-window {
     position: fixed;
-  }
-
-  .uni-app--showlayout+uni-tabbar {
-    display: none;
   }
 
   .uni-top-window {
