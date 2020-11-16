@@ -17,7 +17,7 @@
 |fixed|Boolean|false|如果 textarea 是在一个 position:fixed 的区域，需要显示指定属性 fixed 为 true|微信小程序、百度小程序、字节跳动小程序、QQ小程序|
 |cursor-spacing|Number|0|指定光标与键盘的距离，单位 px 。取 textarea 距离底部的距离和 cursor-spacing 指定的距离的最小值作为光标与键盘的距离|App、微信小程序、百度小程序、字节跳动小程序、QQ小程序|
 |cursor|Number||指定focus时的光标位置|微信小程序、App、H5、百度小程序、字节跳动小程序、QQ小程序|
-|confirm-type|String|done|设置键盘右下角按钮的文字，仅在 type="text" 时生效。|微信小程序基础库2.13.0、APP(HBuilder X2.9.9+)、H5(HBuilder X2.9.9+)|
+|confirm-type|String|done|设置键盘右下角按钮的文字，仅在 type="text" 时生效。|微信小程序基础库2.13.0+、App-vue 2.9.9+、H5 2.9.9+|
 |show-confirm-bar|Boolean|true|是否显示键盘上方带有”完成“按钮那一栏|微信小程序、百度小程序、QQ小程序|
 |selection-start|Number|-1|光标起始位置，自动聚焦时有效，需与selection-end搭配使用|微信小程序、App、H5、百度小程序、字节跳动小程序、QQ小程序|
 |selection-end|Number|-1|光标结束位置，自动聚焦时有效，需与selection-start搭配使用|微信小程序、App、H5、百度小程序、字节跳动小程序、QQ小程序|
@@ -37,11 +37,11 @@
 
 |值|说明|平台差异说明|
 |:-|:-|-|
-|send|右下角按钮为“发送”|微信、支付宝、百度小程序、App的nvue|
+|send|右下角按钮为“发送”|微信、支付宝、百度小程序、app-vue和h5(2.9.9+，且要求设备webview内核Chrome81+、Safari13.7+)|
 |search|右下角按钮为“搜索”||
-|next|右下角按钮为“下一个”|微信、支付宝、百度小程序、App的nvue|
+|next|右下角按钮为“下一个”|微信、支付宝、百度小程序、app-vue和h5(2.9.9+，且要求设备webview内核Chrome81+、Safari13.7+)|
 |go|右下角按钮为“前往”||
-|done|右下角按钮为“完成”|微信、支付宝、百度小程序、App的nvue|
+|done|右下角按钮为“完成”|微信、支付宝、百度小程序、app-vue和h5(2.9.9+，且要求设备webview内核Chrome81+、Safari13.7+)|
 
 **示例** [查看示例](https://hellouniapp.dcloud.net.cn/pages/component/textarea/textarea)
  
@@ -87,7 +87,6 @@ export default {
 - 如果遇到 focus 属性设置不生效的问题参考：[组件属性设置不生效解决办法](/use?id=%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98)
 - 软键盘的弹出和收起逻辑，详见[input的文档](/component/input?id=app%E5%B9%B3%E5%8F%B0ios%E7%AB%AF%E8%BD%AF%E9%94%AE%E7%9B%98%E4%B8%8A%E6%96%B9%E6%A8%AA%E6%9D%A1%E5%8E%BB%E9%99%A4%E6%96%B9%E6%A1%88)
 - 如需禁止点击其他位置收起键盘的默认行为，可以监听`touch`事件并使用`prevent`修饰符（仅支持App-v3、H5，其他平台可以通过设置`focus`来使输入框重新获取焦点），例如在确认按钮上使用：```@touchend.prevent="onTap"```
-- confirm-type属性仅在Chrome 77+、IOS 13.4+、Android 5-6.x WebView: Chromium 81+支持。
 
 **富文本编辑的解决方案**
 在输入框里图文混排内容，在web上该功能依赖document，而小程序和app的正常页面又没有document。
