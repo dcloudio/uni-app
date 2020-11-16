@@ -284,23 +284,11 @@ let res = await db.collection('goods').where({
 }).count()
 ```
 
-**注意**
-
-使用阿里云时，count必须搭配where使用，此问题阿里云正在修复。如果要count所有记录可以使用一个必然满足的条件，比如下面这样：
-
-```js
-const dbCmd = db.command
-let res = await db.collection('goods').where({
-  _id: dbCmd.exists(true)
-}).count()
-```
-
 响应参数
 
 | 字段      | 类型    | 必填 | 说明                     |
 | --------- | ------- | ---- | ------------------------ |
 | total     | Number | 否   | 计数结果                 |
-
 
 
 ### 设置记录数量
@@ -318,6 +306,10 @@ collection.limit()
 ```js
 let res = await collection.limit(1).get() // 只返回第一条记录
 ```
+
+**注意**
+
+- limit不设置的情况下默认返回100条数据，设置limit不可超过1000
 
 ### 设置起始位置
 
