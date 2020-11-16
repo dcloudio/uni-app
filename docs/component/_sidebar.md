@@ -27,6 +27,7 @@
   * [textarea](component/textarea.md)
 * 路由与页面跳转
   * [navigator](component/navigator.md)
+  * [custom-tab-bar](component/custom-tab-bar.md)
 * 媒体组件
   * [audio](component/audio.md)
   * [camera](component/camera.md)
