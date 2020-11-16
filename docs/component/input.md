@@ -59,7 +59,7 @@
 
 
 |值|说明|平台差异说明|
-|:-|:-|-|
+|:-|:-|:-|
 |send|右下角按钮为“发送”|微信、支付宝、百度小程序、app-nvue、app-vue和h5(2.9.9+，且要求设备webview内核Chrome81+、Safari13.7+)|
 |search|右下角按钮为“搜索”||
 |next|右下角按钮为“下一个”|微信、支付宝、百度小程序、app-nvue、app-vue和h5(2.9.9+，且要求设备webview内核Chrome81+、Safari13.7+)|
