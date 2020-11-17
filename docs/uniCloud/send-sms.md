@@ -4,8 +4,6 @@
 
 该服务类似小程序的模板消息，在一个固定模板格式的文字里自定义某些字段，而不是所有文字都可以随便写。
 
-后续视需求提供自定义短信模板功能。
-
 使用本功能需要在[DCloud开发者中心](https://dev.dcloud.net.cn/uniSms)开通并充值，教程参考[短信服务开通指南](https://ask.dcloud.net.cn/article/37534)
 
 因涉及费用，为保障安全，本能力应该在云函数中调用，而不是在前端调用。
@@ -166,3 +164,4 @@ exports.main = async (event, context) => {
 - 如果是用于用户注册的短信验证码，那么强烈推荐使用uni-id，这是一套云端一体的、完善的用户管理方案，已经内置封装好的短信验证码功能，详见：[https://ext.dcloud.net.cn/plugin?id=2116](https://ext.dcloud.net.cn/plugin?id=2116)
 - Android手机在App端获取短信验证码，参考：[https://ask.dcloud.net.cn/article/676](https://ask.dcloud.net.cn/article/676)
 - 短信内容超过70个字符时为长短信，需分条发送，每67个字按一条短信计算
+- 如果本地运行提示`不支持的模板ID`，请更新到`2.9.9+`版本的HBuilderX 
