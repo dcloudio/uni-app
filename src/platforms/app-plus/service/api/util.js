@@ -178,6 +178,15 @@ export function warpPlusEvent (module, name) {
   }
 }
 
+export function warpPlusSuccessCallback (callbackId, neme) {
+  return function errorCallback (result) {
+    result = result || {}
+    invoke(callbackId, Object.assign({}, result, {
+      errMsg: `${neme}:ok`
+    }))
+  }
+}
+
 export function warpPlusErrorCallback (callbackId, neme, errMsg) {
   return function errorCallback (error) {
     error = error || {}
