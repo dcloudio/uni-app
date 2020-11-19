@@ -1,7 +1,10 @@
 <template>
   <uni-tabbar :class="['uni-tabbar-'+position]">
     <div
-      :style="{backgroundColor:backgroundColor}"
+      :style="{
+        backgroundColor:tabbarBackgroundColor,
+        'backdrop-filter':blurEffect !== 'none' ? 'blur(10px)' : blurEffect
+      }"
       class="uni-tabbar"
     >
       <div
@@ -10,17 +13,37 @@
       />
       <div
         v-for="(item,index) in list"
-        :key="item.pagePath"
+        :key="item.isMidButton ? index : item.pagePath"
+        :style="item.isMidButton ? {flex:'0 0 ' + item.width} : {}"
         class="uni-tabbar__item"
         @click="_switchTab(item,index)"
       >
-        <div class="uni-tabbar__bd">
+        <!-- midButton iconPath -->
+        <div
+          v-if="item.isMidButton"
+          class="uni-tabbar__mid"
+          :style="_uniTabbarBdStyle(item)"
+        >
+          <img
+            :style="{width: item.iconWidth,height:item.iconWidth}"
+            :src="_getRealPath(item.iconPath)"
+          >
+        </div>
+        <!-- tabbar button -->
+        <div
+          class="uni-tabbar__bd"
+          :style="{height:height}"
+        >
           <div
-            v-if="item.iconPath"
+            v-if="item.iconPath || item.isMidButton"
             :class="{'uni-tabbar__icon__diff':!item.text}"
             class="uni-tabbar__icon"
+            :style="{width: iconWidth,height:iconWidth}"
           >
-            <img :src="_getRealPath(selectedIndex===index?item.selectedIconPath:item.iconPath)">
+            <img
+              v-if="!item.isMidButton"
+              :src="_getRealPath(selectedIndex===index?item.selectedIconPath:item.iconPath)"
+            >
             <div
               v-if="item.redDot"
               :class="{'uni-tabbar__badge':!!item.badge}"
@@ -31,7 +54,12 @@
           </div>
           <div
             v-if="item.text"
-            :style="{color:selectedIndex===index?selectedColor:color,fontSize:item.iconPath?'10px':'14px'}"
+            :style="{
+              color:selectedIndex === index ? selectedColor : color,
+              fontSize: fontSize,
+              lineHeight: !item.iconPath ? 1.8 : 'normal',
+              marginTop: !item.iconPath ? 'inherit' : spacing
+            }"
             class="uni-tabbar__label"
           >
             {{ item.text }}
@@ -46,7 +74,10 @@
         </div>
       </div>
     </div>
-    <div class="uni-placeholder" />
+    <div
+      class="uni-placeholder"
+      :style="{height:height}"
+    />
   </uni-tabbar>
 </template>
 
@@ -90,7 +121,6 @@
 
   uni-tabbar .uni-tabbar~.uni-placeholder {
     width: 100%;
-    height: 50px;
     margin-bottom: 0;
     margin-bottom: constant(safe-area-inset-bottom);
     margin-bottom: env(safe-area-inset-bottom);
@@ -113,7 +143,6 @@
 
   uni-tabbar .uni-tabbar__bd {
     position: relative;
-    height: 50px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -125,8 +154,6 @@
     position: relative;
     display: inline-block;
     margin-top: 5px;
-    width: 24px;
-    height: 24px;
   }
 
   uni-tabbar .uni-tabbar__icon.uni-tabbar__icon__diff {
@@ -144,7 +171,6 @@
     position: relative;
     text-align: center;
     font-size: 10px;
-    line-height: 1.8;
   }
 
   uni-tabbar .uni-tabbar-border {
@@ -179,10 +205,23 @@
     text-align: center;
     white-space: nowrap;
   }
+
+  uni-tabbar .uni-tabbar__mid {
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    bottom: 0;
+    background-size: 100% 100%;
+  }
 </style>
 
 <script>
 import getRealPath from 'uni-platform/helpers/get-real-path'
+import { isPlainObject } from 'uni-shared'
+import { publish } from 'uni-platform/service/bridge'
+function cssSupports (css) {
+  return window.CSS && CSS.supports && (CSS.supports(css) || CSS.supports.apply(undefined, css.split(':')))
+}
 export default {
   name: 'TabBar',
   props: {
@@ -202,13 +241,11 @@ export default {
     },
     backgroundColor: {
       type: String,
-      default: '#f7f7fa'
+      default: ''
     },
     borderStyle: {
-      default: 'black',
-      validator (value) {
-        return ['black', 'white'].indexOf(value) !== -1
-      }
+      type: String,
+      default: 'black'
     },
     list: {
       type: Array,
@@ -221,6 +258,30 @@ export default {
       default: function () {
         return {}
       }
+    },
+    blurEffect: {
+      type: String,
+      default: 'none'
+    },
+    fontSize: {
+      type: String,
+      default: '10px'
+    },
+    iconWidth: {
+      type: String,
+      default: '24px'
+    },
+    spacing: {
+      type: String,
+      default: '3px'
+    },
+    height: {
+      type: String,
+      default: '50px'
+    },
+    midButton: {
+      type: Object,
+      default: null
     }
   },
   data () {
@@ -229,10 +290,29 @@ export default {
     }
   },
   computed: {
+    tabbarBackgroundColor () {
+      // 背景色 区分 高斯模糊 分别返回
+      const DefaultBgColor = '#f7f7fa'
+
+      if (this.backgroundColor) return this.backgroundColor
+
+      if (cssSupports('backdrop-filter:blur(10px)') && this.blurEffect !== 'none') {
+        if (this.blurEffect === 'dark') {
+          return 'rgb(0, 0, 0, 0.8)'
+        }
+
+        if (['light', 'extralight'].includes(this.blurEffect)) {
+          return 'rgb(250, 250, 250, 0.8)'
+        }
+      }
+
+      return DefaultBgColor
+    },
     borderColor () {
-      return this.borderStyle === 'white'
-        ? 'rgba(255, 255, 255, 0.33)'
-        : 'rgba(0, 0, 0, 0.33)'
+      // 不再限制可配置颜色值
+      if (this.borderStyle === 'white') return 'rgba(255, 255, 255, 0.33)'
+      if (this.borderStyle === 'black') return 'rgba(0, 0, 0, 0.33)'
+      return this.borderStyle
     }
   },
   watch: {
@@ -249,6 +329,9 @@ export default {
       }
     }
   },
+  created () {
+    this._initMidButton()
+  },
   beforeCreate () {
     this.__path__ = this.$route.path
   },
@@ -263,8 +346,13 @@ export default {
     },
     _switchTab ({
       text,
-      pagePath
+      pagePath,
+      isMidButton = false
     }, index) {
+      if (isMidButton) {
+        publish('onTabBarMidButtonTap')
+        return
+      }
       this.selectedIndex = index
       let url = '/' + pagePath
       if (url === __uniRoutes[0].alias) {
@@ -285,6 +373,29 @@ export default {
       } else {
         UniServiceJSBridge.emit('onTabItemTap', detail)
       }
+    },
+    _initMidButton () {
+      const listLength = this.list.length
+      // 偶数则添加midButton
+      if (listLength % 2 === 0 && isPlainObject(this.midButton)) {
+        // 给midButton赋值默认值
+        const DefaultMidButton = {
+          width: '50px',
+          height: '50px',
+          iconWidth: '24px'
+        }
+        for (const key in DefaultMidButton) {
+          this.midButton[key] = this.midButton[key] || DefaultMidButton[key]
+        }
+        this.list.splice(~~(listLength / 2), 0, Object.assign({}, this.midButton, { isMidButton: true }))
+      }
+    },
+    _uniTabbarBdStyle (item) {
+      return Object.assign({}, {
+        width: item.width,
+        height: item.height,
+        backgroundImage: item.backgroundImage ? 'url(\'' + this._getRealPath(item.backgroundImage) + '\')' : ''
+      })
     }
   }
 }
