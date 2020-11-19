@@ -97,6 +97,15 @@
  
 ![uniapp](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/img/form.png?t=201857)
 
+
+**Tips**
+- 为方便做表单验证，uni ui提供了`<uni-forms>`组件，参考：[https://ext.dcloud.net.cn/plugin?id=2773](https://ext.dcloud.net.cn/plugin?id=2773)
+- 如果使用uniCloud，其数据库提供了`DB Schema`，在schema中配置字段的格式，前端表单校验和服务器入参校验将可以复用该规则，无需在两端重复开发。[详见](https://uniapp.dcloud.io/uniCloud/schema)
+- 有很多表单自助生成辅助工具
+  * 如果使用uniCloud的`DB Schema`可以自动生成全套表单，包括界面、校验逻辑、提交入库，[详见](https://uniapp.dcloud.io/uniCloud/schema?id=autocode).
+  * 不使用uniCloud的话，插件市场有可视化拖拽表单插件：[详见](https://ext.dcloud.net.cn/search?q=%E5%8F%AF%E8%A7%86%E5%8C%96)。这类插件只生成界面，没有逻辑。
+
+
 **使用内置 behaviors**
 
 小程序端在`form`内的自定义组件内有`input`表单控件时，或者用普通标签实现表单控件，例如``评分``等，无法在`form`的`submit`事件内获取组件内表单控件值，此时可以使用`behaviors`。
@@ -173,6 +182,3 @@ uni://form-field
 
 </style>  
 ```
-
-**tips**
-- [插件市场](http://ext.dcloud.net.cn/search?q=%E8%A1%A8%E5%8D%95%E6%A0%A1%E9%AA%8C)有表单校验插件

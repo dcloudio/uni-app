@@ -57,7 +57,7 @@ const getPageComponents = function (inputDir, pagesJson) {
   if (tabBarList.length) { // 添加全部属性，方便 Vue 响应式
     pagesJson.tabBar.color = pagesJson.tabBar.color || '#999'
     pagesJson.tabBar.selectedColor = pagesJson.tabBar.selectedColor || '#007aff'
-    pagesJson.tabBar.backgroundColor = pagesJson.tabBar.backgroundColor || '#f7f7fa'
+    pagesJson.tabBar.backgroundColor = pagesJson.tabBar.backgroundColor || ''
     pagesJson.tabBar.borderStyle = pagesJson.tabBar.borderStyle || 'black'
   }
 

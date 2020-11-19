@@ -92,6 +92,11 @@ export default {
   watch: {
     selected (val) {
       this.selectedIndex = val
+      // 同步至内置tabBar
+      const tabBar = getApp().$children[0].$refs.tabBar
+      if (tabBar) {
+        tabBar.selectedIndex = val
+      }
     },
     '$route' (to, from) {
       if (to.meta.isTabBar) {

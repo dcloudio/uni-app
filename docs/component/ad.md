@@ -65,17 +65,15 @@ App和微信小程序的ad组件没有type属性，可以用于banner，也可�
 
 
 **注意**
+- `<ad>` 组件是原生组件，在webview页面会有层级问题，同时无法在`<swiper>` 、`<scroll-view>` 组件中使用。但app-nvue、微信小程序新版和头条小程序新版支持同层渲染，所以没有层级问题。而app-vue、QQ小程序等平台则有层级问题。详见：[原生组件](https://uniapp.dcloud.io/component/native-component)
 - 无广告时没有高度，关闭广告时释放高度，宽度由父容器决定
 - App 平台，因广告组件内部获得广告数据计算后设置组件大小，会出现界面抖动问题，可以提前通过 plus.ad.getAds 获得广告数据，设置 data 后 adpid 将无效
 - 微信小程序 `<ad>` 组件不支持触发 tap 等触摸相关事件
 - Android 平台 nvue的 `<list>` 组件中使用 `<ad>` 时，必须指定宽度属性`<ad width="750rpx" />`，因为 `<list>` 有自动的内存回收机制，不在屏幕范围的组件不被创建，组件内部无法获取大小
+- app-nvue 的 `<recycle-list>` 组件内不支持嵌套 `<ad>`
 - 广点通概率出现重复广告，可根据需求请求广告数据，推荐单次大于1条(plus.ad.getAds) 来降低重复率
-- app-vue 页面使用 `<ad>` 不支持非 V3 编译，必须使用v3编译器。
-- `<recycle-list>` 暂不支持 `<ad>`
-- app-vue|QQ是客户端[原生组件](https://uniapp.dcloud.io/component/native-component)，层级最高无法被覆盖，app-nvue|微信|头条没有层级覆盖问题
-- app-vue 无法在 `<swiper>` 组件中使用`<ad>`
-- app-vue 不能在 `<scroll-view>` 组件中使用 `<ad>`，仅适用于页面级的滚动
 - HBuilderX2.8+版本Android平台更新穿山甲（今日头条）广告SDK后不再支持x86类型CPU，无法运行到x86类型cpu的模拟器。
+- app-vue 页面使用 `<ad>` 必须使用v3编译器。如果使用HBuilderX 2.7以下版本，需注意开启v3编译模式。2.7以上版本已经淘汰了其他模式，无需关心本条。
 - `<ad>` 组件测试广告位是上图下文，uniAD后台申请的广告位默认左图右文
 - HBuilderX标准基座真机运行测试信息流广告位标识（adpid）为：1111111111
 

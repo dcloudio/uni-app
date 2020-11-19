@@ -49,29 +49,45 @@
 |defaultValue|string&#124;Object|默认值|
 |forceDefaultValue|string&#124;Object|强制默认值，不可通过clientDB的代码修改，常用于存放用户id、时间、客户端ip等固定值。具体参考下表的defaultValue|
 |foreignKey|String|关联字段。表示该字段的原始定义指向另一个表的某个字段，值的格式为`表名.字段名`，比如订单表的下单用户uid字段指向uni-id-users表的_id字段，那么值为`uni-id-users._id`。关联字段定义后可用于[联表查询](https://uniapp.dcloud.net.cn/uniCloud/database?id=lookup)，通过关联字段合成虚拟表，极大的简化了联表查询的复杂度|
-|permission|Object|数据库权限，控制什么角色可以对什么数据进行读/写，可控制表和字段，可设置where条件。见下文[详述](?id=permission)|
+|permission|Object|数据库权限，控制什么角色可以对什么数据进行读/写，可控制表和字段，可设置where条件。见下文[详述](uniCloud/schema?id=permission)|
 |label|string|字段标题。生成前端表单代码时，渲染表单项前面的label标题|
 |group|string|分组id。生成前端表单代码时，多个字段对应的表单项可以合并显示在一个uni-group组件中|
 |order|int|表单项排序序号。生成前端表单代码时，默认是以schema中的字段顺序从上到下排布表单项的，但如果指定了order，则按order规定的顺序进行排序。如果表单项被包含在uni-group中，则同组内按order排序|
 |component|Object&#124;Array|生成前端表单代码时，使用什么组件渲染这个表单项。比如使用input输入框。详见下方示例|
+
+**url格式**
+
+`http://` | `https://` | `ftp://` 开头, `//` 后必须包含一个 `.`(localhost除外)
+
+有效格式
+- http://dcloud.io
+- https://dcloud.io
+- http://localhost
+
+无效格式
+- http://dcloud
+- https://dcloud
+- mailto:dcloud@dcloud.io
+- file:\\
+- file:\\\
+
 
 **注意：**
 1. `DB Schema`的各种功能均只支持`clientDB`。如果使用云函数操作数据库，schema的作用仅仅是描述字段信息。同时强烈推荐使用HBuilderX 2.9.5以上版本使用`clientDB`。
 2. 生成表单页面的功能，入口在uniCloud web控制台的数据库schema界面，注意该功能需搭配HBuilderX 2.9.5+版本。
 3. 暂不支持子属性校验
 
-
 ### 字段类型bsonType
 
-|名称		|
-|:-			|
-|string		|
-|double		|
-|int		|
-|object		|
-|array		|
-|bool		|
-|timestamp	|
+- string
+- double
+- int
+- object （地理位置属于object）
+- array
+- bool
+- timestamp
+
+注：timestamp是一串数字的时间戳，不合适直接渲染到界面上。推荐的做法是在前端渲染时使用[`<uni-dateformat>`组件](https://ext.dcloud.net.cn/plugin?id=3279)。
 
 <!-- schema里时间格式只允许时间戳是不够的 -->
 
@@ -122,7 +138,7 @@
 ```
 
 
-uniCloud推出了`openDB`开源数据库规范，其中的表均已经内置`DB Schema`。[详见](https://gitee.com/dcloud/opendb)
+uniCloud推出了`openDB`开源数据库规范，包括用户表、文章表、商品表等很多模板表，这些模板表均已经内置`DB Schema`，可学习参考。[详见](https://gitee.com/dcloud/opendb)
 
 ### 默认值defaultValue/forceDefaultValue
 
@@ -133,7 +149,7 @@ uniCloud推出了`openDB`开源数据库规范，其中的表均已经内置`DB 
 
 这些数据都不能通过前端上传，不安全。过去只能在云端写云函数操作。在schema配置后则可以不用写云函数。`clientDB`在新增数据记录时会自动补齐这些数据。
 
-其中uid是和`uni-id`绑定的。如果用户没有登录，则无法获取uid，无法写入数据。
+其中uid是和`uni-id`绑定的。如果用户没有登录，则无法获取uid，此时写入数据会报错。
 
 
 `defaultValue/forceDefaultValue`内可以使用一些预置变量，形式如下：
@@ -150,7 +166,7 @@ uniCloud推出了`openDB`开源数据库规范，其中的表均已经内置`DB 
 |:-:			|:-:																								|
 |now			|当前时间戳																					|
 |clientIP	|当前客户端IP																				|
-|uid			|当前用户Id，如果当前用户未登录或登录状态无效会报错	|
+|uid			|当前用户Id，基于`uni-id`。如果当前用户未登录或登录状态无效会报错	|
 
 示例：
 
@@ -336,40 +352,41 @@ uniCloud推出了`openDB`开源数据库规范，其中的表均已经内置`DB 
 
 2. 底部 “扩展校验函数” 点击 “+” 增加校验函数 ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/2f4d0230-12a2-11eb-b244-a9f5e5565f30.png)
 
-给函数起个名字，比如叫“checkabc”，然后写具体的js代码，如下
+  给函数起个名字，比如叫“checkabc”，然后写具体的js代码，如下
 
-```
-// 扩展校验函数示例
-exports = function (rule, value, data, callback) {
-  // rule  当前规则
-  // value 当前规则校验数据
-  // data  全部校验数据
-  // callback 可选，一般用于自定义 errorMessage，如果执行了callback return 值无效，callback 传入的 message 将替换 errorMessage
-  // callback(new Error('message')) 传入 Error 类型时校验不通过
-  // callback('message') 传入 String 类型时通过
-  return value.length < 10
-}
-```
+  ```js
+  // 扩展校验函数示例
+  exports = function (rule, value, data, callback) {
+    // rule  当前规则
+    // value 当前规则校验数据
+    // data  全部校验数据
+    // callback 可选，一般用于自定义 errorMessage，如果执行了callback return 值无效，callback 传入的 message 将替换 errorMessage
+    // callback(new Error('message')) 传入 Error 类型时校验不通过
+    // callback('message') 传入 String 类型时通过
+    return value.length < 10
+  }
+  ```
 
 3. 在表结构 schema 编辑页面中的`validateFunction`属性中配置上面编写的 扩展校验函数 的名称，保存生效
 
-```json
-{
-  "bsonType": "object",
-  "required": ["name"],
-  "properties": {
-    "name": {
-      "bsonType": "string",
-      "label": "姓名",
-      "validateFunction": "checkabc",
-      "errorMessage": {
-        "required": "{label}不能为空"
+  ```json
+  {
+    "bsonType": "object",
+    "required": ["name"],
+    "properties": {
+      "name": {
+        "bsonType": "string",
+        "label": "姓名",
+        "validateFunction": "checkabc",
+        "errorMessage": {
+          "required": "{label}不能为空"
+        }
       }
     }
   }
-}
-```
+  ```
 
+`validateFunction`里的代码是可以联网的。一个常见场景是内容的敏感词过滤，可以将内容提交到三方校验服务里，如果校验通过再入库
 
 
 #### errorMessage自定义错误提示
@@ -420,6 +437,12 @@ errorMessage支持字符串，也支持json object。类型为object时，可定
 - 每个校验相关的属性不通过，可以以属性名为key配置它的错误提示语。
 - 如果是扩展校验函数，可以在其内部写callback来自定义错误提示语。
 
+**其他注意事项**
+
+“数据库中某字段值不能在多条记录中重复”，这个需求一般不是在字段值域校验里实现，而是在数据库索引里配置该字段为唯一索引。
+
+可以在web控制台配置索引，db_init.json也可以创建索引。注意如果数据库中多条记录中该字段已经有重复内容，那么设该字段为唯一索引时会报错，需先把重复数据去掉。
+
 ### 数据权限系统permission@permission
 
 #### 概述
@@ -432,7 +455,7 @@ errorMessage支持字符串，也支持json object。类型为object时，可定
 
 只要配好`DB Schema`，放开让前端写业务即可。配置里声明不能读写的数据，前端就无法读写。
 
-`DB Schema`的permission规则，分为两部分，一边是对数据的指定，一边是对角色的指定，规则中对两者进行关联，匹配则校验通过。
+`DB Schema`的permission规则，分为两部分，一边是对操作数据的指定，一边是对角色的指定，规则中对两者进行关联，匹配则校验通过。
 
 1. 对数据的指定
 - 可以对整个表进行`增删改查`控制
@@ -449,12 +472,13 @@ errorMessage支持字符串，也支持json object。类型为object时，可定
 
 例如在`uniCloud admin`等管理端系统，只要使用admin用户登录就可以在前端操作数据库。
 
+在保存`DB Schema`时，如果发现服务空间下没有`uni-id`公共模块，会自动安装`uni-id`。如果服务空间已经存在`uni-id`，则不会再自动安装。此时需要注意及时升级`uni-id`，避免太老的`uni-id`有兼容问题。
 
 #### 表级权限控制
 
-表级控制，包括增删改查四种权限，分别称为：create、delete、update、read。
+表级控制，包括增删改查四种权限，分别称为：create、delete、update、read。（注意这里使用的是行业通用的crud命名，与操作数据库的方法add()、remove()、update()、get()在命名上有差异，但表意是相同的）
 
-所有的操作的默认值均为false。也就是不配置permission代表前端不能操作数据库。
+所有的操作的默认值均为false。也就是不配置permission代表前端不能操作数据库（admin用户例外）。
 
 例如一个user表，里面有_id、name、pwd等字段，该表的`DB Schema`如下，代表前端用户可读（包括游客），但前端非admin用户不可新增、删除、更新数据记录。
 
@@ -464,10 +488,10 @@ errorMessage支持字符串，也支持json object。类型为object时，可定
   "bsonType": "object",
   "required": [],
   "permission": {
-    ".read": true, // 任何用户都可以读
-    ".create": false, // 禁止新增数据记录（admin权限用户不受限）
-    ".update": false, // 禁止更新数据（admin权限用户不受限）
-    ".delete": false // 禁止删除数据（admin权限用户不受限）
+    "read": true, // 任何用户都可以读
+    "create": false, // 禁止新增数据记录（admin权限用户不受限）
+    "update": false, // 禁止更新数据（admin权限用户不受限）
+    "delete": false // 禁止删除数据（admin权限用户不受限）
   },
   "properties": {
     "_id":{},
@@ -493,10 +517,10 @@ permission的字段级控制，包括读写两种权限，分别称为：read、
   "bsonType": "object",
   "required": [],
   "permission": {
-    ".read": true, // 任何用户都可以读
-    ".create": false, // 禁止新增数据记录（admin权限用户不受限）
-    ".update": false, // 禁止更新数据（admin权限用户不受限）
-    ".delete": false // 禁止删除数据（admin权限用户不受限）
+    "read": true, // 任何用户都可以读
+    "create": false, // 禁止新增数据记录（admin权限用户不受限）
+    "update": false, // 禁止更新数据（admin权限用户不受限）
+    "delete": false // 禁止删除数据（admin权限用户不受限）
   },
   "properties": {
     "_id":{
@@ -507,8 +531,8 @@ permission的字段级控制，包括读写两种权限，分别称为：read、
       "bsonType": "string",
       "title": "密码",
       "permission": {
-        ".read": false, // 禁止读取 pwd 字段的数据（admin权限用户不受限）
-        ".write": false // 禁止写入 pwd 字段的数据（admin权限用户不受限）
+        "read": false, // 禁止读取 pwd 字段的数据（admin权限用户不受限）
+        "write": false // 禁止写入 pwd 字段的数据（admin权限用户不受限）
       }
     }
   }
@@ -533,10 +557,10 @@ permission的字段级控制，包括读写两种权限，分别称为：read、
   "bsonType": "object",
   "required": [],
   "permission": {
-    ".read": "doc.status==true", // 任何用户都可以读status字段的值为true的记录，其他记录不可读
-    ".create": false, // 禁止新增数据记录（admin权限用户不受限）
-    ".update": false, // 禁止更新数据（admin权限用户不受限）
-    ".delete": false // 禁止删除数据（admin权限用户不受限）
+    "read": "doc.status==true", // 任何用户都可以读status字段的值为true的记录，其他记录不可读
+    "create": false, // 禁止新增数据记录（admin权限用户不受限）
+    "update": false, // 禁止更新数据（admin权限用户不受限）
+    "delete": false // 禁止删除数据（admin权限用户不受限）
   },
   "properties": {
     "_id":{
@@ -547,8 +571,8 @@ permission的字段级控制，包括读写两种权限，分别称为：read、
       "bsonType": "string",
       "title": "密码",
       "permission": {
-        ".read": false, // 禁止读取 pwd 字段的数据（admin权限用户不受限）
-        ".write": false // 禁止写入 pwd 字段的数据（admin权限用户不受限）
+        "read": false, // 禁止读取 pwd 字段的数据（admin权限用户不受限）
+        "write": false // 禁止写入 pwd 字段的数据（admin权限用户不受限）
       }
     },
 	"status": {
@@ -573,29 +597,32 @@ permission的字段级控制，包括读写两种权限，分别称为：read、
 |auth.uid		|用户id																																						|
 |auth.role		|用户角色数组，参考[uni-id 角色权限](/uniCloud/uni-id?id=rbac)，注意`admin`为内置的角色，如果用户角色列表里包含`admin`则认为此用户有完全数据访问权限|
 |auth.permission|用户权限数组，参考[uni-id 角色权限](/uniCloud/uni-id?id=rbac)																								|
-|doc			|记录内容，用于匹配记录内容/查询条件（需要注意的是，规则内的doc对象并不是直接去校验存在于数据库的数据，而是校验客户端的查询条件）							|
+|doc			|数据库中的目标数据记录，用于匹配记录内容/查询条件（需要注意的是，规则内的doc对象并不是直接去校验存在于数据库的数据，而是校验客户端的查询条件）							|
 |now			|当前服务器时间戳（单位：毫秒），时间戳可以进行额外运算，如doc.publish\_date > now - 60000表示publish\_date在最近一分钟											|
 |action			|数据操作请求同时指定的uni-clientDB-action。用于指定前端的数据操作必须同时附带执行一个action云函数，如未触发该action则权限验证失败					|
 
-注意`uni-id`的角色和权限，也即auth.role和auth.permission是不一样的概念。注意阅读[uni-id 角色权限](/uniCloud/uni-id?id=rbac)
+**注意**
+
+- `uni-id`的角色和权限，也即auth.role和auth.permission是不一样的概念。注意阅读[uni-id 角色权限](/uniCloud/uni-id?id=rbac)
+- 如果想支持使用多个`action`的用法，可以通过`"'actionRequired' in action"`的形式配置权限，限制客户端使用的action内必须包含名为`actionRequired`的action
 
 **权限规则内可以使用的运算符**
 
 |运算符			|说明			|示例									|示例解释(集合查询)														|
 |:-:			|:-:			|:-:									|:-:																	|
 |==				|等于			|auth.uid == 'abc'						|用户id为abc															|
-|!=				|不等于			|auth.uid != 'abc'						|用户id不为abc															|
+|!=				|不等于			|auth.uid != null						|用户要处于登录状态											|
 |>				|大于			|doc.age>10								|查询条件的 age 属性大于 10												|
 |>=				|大于等于		|doc.age>=10							|查询条件的 age 属性大于等于 10											|
 |<				|小于			|doc.age<10								|查询条件的 age 属性小于 10												|
 |<=				|小于等于		|doc.age<=10							|查询条件的 age 属性小于等于 10											|
 |in				|存在在数组中	|doc.status in ['a','b']				|查询条件的 status 是['a','b']中的一个，数组中所有元素类型需一致		|
-|!				|非 `2.0.5+`	|!(doc.status in ['a','b'])				|查询条件的 status 不是['a','b']中的任何一个，数组中所有元素类型需一致	|
+|!				|非				|!(doc.status in ['a','b'])				|查询条件的 status 不是['a','b']中的任何一个，数组中所有元素类型需一致	|
 |&&				|与				|auth.uid == 'abc' && doc.age>10		|用户id 为 abc 并且查询条件的 age 属性大于 10							|
 |&#124;&#124;	|或				|auth.uid == 'abc'&#124;&#124;doc.age>10|用户Id为abc或者查询条件的 age 属性大于 10								|
 
 
-我们继续使用user表举例，目前需求如下，前端用户如果登录，那么该用户可以修改自己的name字段。此时需要在schema中配置name字段的permission为`".write":"(doc._id == auth.uid)"`
+我们继续使用user表举例，目前需求如下，前端用户如果登录，那么该用户可以修改自己的name字段。此时需要在schema中配置name字段的permission为`"write":"(doc._id == auth.uid)"`
 
 ```json
 // user表的schema
@@ -603,10 +630,10 @@ permission的字段级控制，包括读写两种权限，分别称为：read、
   "bsonType": "object",
   "required": [],
   "permission": {
-    ".read": "doc.status==true", // 任何用户都可以读status字段的值为true的记录，其他记录不可读
-    ".create": false, // 禁止新增数据记录（admin权限用户不受限）
-    ".update": false, // 禁止更新数据（admin权限用户不受限）
-    ".delete": false // 禁止删除数据（admin权限用户不受限）
+    "read": "doc.status==true", // 任何用户都可以读status字段的值为true的记录，其他记录不可读
+    "create": false, // 禁止新增数据记录（admin权限用户不受限）
+    "update": false, // 禁止更新数据（admin权限用户不受限）
+    "delete": false // 禁止删除数据（admin权限用户不受限）
   },
   "properties": {
     "_id":{
@@ -615,16 +642,16 @@ permission的字段级控制，包括读写两种权限，分别称为：read、
 		"bsonType": "string",
 		"title": "名称",
 		"permission": {
-		  ".read": true, 
-		  ".write": "(doc._id == auth.uid)" // 允许登录的用户修改自己的name字段
+		  "read": true, 
+		  "write": "doc._id == auth.uid" // 允许登录的用户修改自己的name字段
 		}
 	},
     "pwd": {
       "bsonType": "string",
       "title": "密码",
       "permission": {
-        ".read": false, // 禁止读取 pwd 字段的数据（admin权限用户不受限）
-        ".write": false // 禁止写入 pwd 字段的数据（admin权限用户不受限）
+        "read": false, // 禁止读取 pwd 字段的数据（admin权限用户不受限）
+        "write": false // 禁止写入 pwd 字段的数据（admin权限用户不受限）
       }
     },
 	"status": {
@@ -638,13 +665,25 @@ permission的字段级控制，包括读写两种权限，分别称为：read、
 
 根据这个配置，如前端应用已经登录，且登录的用户发起修改自己的name的请求，则允许修改。其他修改数据请求则会被拒绝。
 
-**action的说明**
+**注意**
+
+要分清 数据权限permission 和 字段值域校验validator 的区别。
+
+在权限规则的变量中只有数据库中的数据doc，并没有前端提交的待入库数据data。所以如果要对待入库的数据data做校验，应该在字段值域validator中校验，而不是在权限permission中校验。
+
+如果想获取和判断目标数据记录doc之外的其他数据，则需要使用get方法，见下一章节。
+
+很多需求貌似属于 数据权限校验 ，但实际不用写权限规则：
+- 例如在news表新增一条记录，权限需求是“未登录用户不能创建新闻”，其实不需要在news表的create权限里写`auth.uid != null`。只需把news表的uid字段的forceDefaultValue设为`"$env": "uid"`即可，未登录用户自然无法创建。
+
+
+**变量action的说明**
 
 action是`clientDB`的一个配套功能。它的作用是在前端发起数据操作请求时，附带一个action的name，则会同时执行一个`uni-clientDB-action`的云函数。[详见](/uniCloud/database?id=action)
 
 有些复杂业务，要求必须同时执行一个action云函数，才能允许前端对特定数据的修改。
 
-以user表为例，假使用户在修改name时，必须要触发一个名为changenamelog的action云函数，在该云函数里会记录一条留痕日志，如果没有记录日志则不允许修改name。那么在`DB Schema`里要配置`action == 'changenamelog'`
+以user表为例，假使用户在修改自己的name时，必须要触发一个名为changenamelog的action云函数，在该云函数里会记录一条留痕日志，如果没有记录日志则不允许修改name。那么在`DB Schema`里要配置`action == 'changenamelog'`
 
 ```json
 // user表的schema
@@ -652,10 +691,10 @@ action是`clientDB`的一个配套功能。它的作用是在前端发起数据�
   "bsonType": "object",
   "required": [],
   "permission": {
-    ".read": "doc.status==true", // 任何用户都可以读status字段的值为true的记录，其他记录不可读
-    ".create": false, // 禁止新增数据记录（admin权限用户不受限）
-    ".update": false, // 禁止更新数据（admin权限用户不受限）
-    ".delete": false // 禁止删除数据（admin权限用户不受限）
+    "read": "doc.status==true", // 任何用户都可以读status字段的值为true的记录，其他记录不可读
+    "create": false, // 禁止新增数据记录（admin权限用户不受限）
+    "update": false, // 禁止更新数据（admin权限用户不受限）
+    "delete": false // 禁止删除数据（admin权限用户不受限）
   },
   "properties": {
     "_id":{
@@ -664,16 +703,16 @@ action是`clientDB`的一个配套功能。它的作用是在前端发起数据�
 		"bsonType": "string",
 		"title": "名称",
 		"permission": {
-		  ".read": true, 
-		  ".write": "(doc._id == auth.uid) && (action == 'changenamelog')" // 允许登录的用户修改自己的name字段，但必须同时触发执行action云函数changenamelog
+		  "read": true, 
+		  "write": "(doc._id == auth.uid) && (action == 'changenamelog')" // 允许登录的用户修改自己的name字段，但必须同时触发执行action云函数changenamelog
 		}
 	},
     "pwd": {
       "bsonType": "string",
       "title": "密码",
       "permission": {
-        ".read": false, // 禁止读取 pwd 字段的数据（admin权限用户不受限）
-        ".write": false // 禁止写入 pwd 字段的数据（admin权限用户不受限）
+        "read": false, // 禁止读取 pwd 字段的数据（admin权限用户不受限）
+        "write": false // 禁止写入 pwd 字段的数据（admin权限用户不受限）
       }
     },
 	"status": {
@@ -685,35 +724,57 @@ action是`clientDB`的一个配套功能。它的作用是在前端发起数据�
 }
 ```
 
-根据这个配置，如前端应用已经登录，且登录的用户发起修改自己的name的请求，且同时前端的改库请求伴随action云函数changenamelog，则允许修改。其他修改数据请求则会被拒绝。
-
-#### 权限规则内可用的方法
-
-权限规则内仅可使用get方法，作用是根据id获取数据库中的数据。get方法接收一个字符串作为参数字符串形式为`database.表名.记录ID`
-
-用法示例: 
-
+前端提交代码，必须带上action参数
 ```js
+const db = uniCloud.database();
+db.collection("user").action("changenamelog").doc("xxx").update({
+	name:"newname"
+})
+```
+
+action云函数中记录日志的代码，此处省略。
+
+根据上述配置，如前端应用已经登录，且登录的用户发起修改自己的name的请求，且同时前端的改库请求伴随action云函数changenamelog，则允许修改。其他修改数据请求则会被拒绝。
+
+`action`有很多用途，有的权限规则比较复杂，需要写很多js代码，此时也可以在`action`的before中进行校验。
+
+但注意导出`db_init.json`时不会包含`action`，`action`属于云函数。导出`db_init.json`只会包含schema和validateFunction。
+
+
+#### 权限规则内的数据库查询get方法
+
+权限规则内置了doc变量，但只能用于要操作的数据表的判断，如果要获取其他表的数据做判断就需要get方法了。
+
+权限规则内通过get方法，根据id获取数据库中的数据。get方法接收一个字符串作为参数，字符串形式为`database.表名.记录ID`
+
+例如有个论坛，要求用户积分大于100分才可以发帖。那么帖子表的create权限应该配成：
+
+```json
+// 使用模板字符串语法拼接产生`database.表名.记录ID`形式字符串
+"create": get(`database.uni-id-users.${auth.uid}`).score > 100"
+```
+
+使用get方法时需要注意get方法的参数必须是唯一确定值，例如schema配置的get权限如下：
+
+```json
+// 这句的含义是，本次查询where条件内传入的shop_id需要满足以下条件：shop表内_id为此shop_id的记录的owner字段等于当前用户uid
 "get(`database.shop.${doc.shop_id}`).owner == auth.uid"
 ```
 
-使用get方法时需要注意get方法的参数必须是唯一确定值，以上述示例为例
-
+前端js如下：
 ```js
-// 此条件内doc.shop_id只能是'123123'，可以通过get(`database.shop.${doc.shop_id}`)获取数据来进行权限验证
+// 此条件内doc.shop_id只能是'123123'，可以通过get(`database.shop.${doc.shop_id}`)获取shop表内_id为123123的记录验证其owner是否等于当前用户uid
 db.collection('street').where("shop_id=='123123'").get()
 
-// 此条件内doc.shop_id可能是'123123'也可能是'456456'，`"get(`database.shop.${doc.shop_id}`).owner == auth.uid"`会直接返回false不会获取数据进行验证
+// 此条件内doc.shop_id可能是'123123'也可能是'456456'，`"get(`database.shop.${doc.shop_id}`).owner == auth.uid"`会直接返回false不会获取shop表数据进行验证
 db.collection('street').where("shop_id=='123123 || shop_id=='456456'").get()
 ```
-
-
 
 ### 前端表单生成系统@autocode
 
 `DB Schema`里有大量的信息，有了这些信息，前端将无需自己开发表单维护界面，uniCloud可以自动生成新增数据、修改数据的表单页面。
 
-为强化表单的自定义性，`DB Schema`还扩展了label、component、group、order等属性。
+为强化表单的自定义性，`DB Schema`还扩展了label、component、group、order等属性，以控制表单项在界面上的渲染控件。
 
 前端表单生成系统功能包括：
 - 自动生成新增、修改表单的页面文件，分别是add.vue和edit.vue
@@ -824,10 +885,10 @@ DCloud提供了`uni-forms`前端组件，该组件的校验规范完全符合`DB
   "bsonType": "object",
   "required": ["name", "nickname"],
   "permission": {
-    ".read": false,
-    ".create": false,
-    ".update": false,
-    ".delete": false
+    "read": false,
+    "create": false,
+    "update": false,
+    "delete": false
   },
   "properties": {
     "_id": {
@@ -843,8 +904,8 @@ DCloud提供了`uni-forms`前端组件，该组件的校验规范完全符合`DB
         "minLength": "{label}不能小于{minLength}个字符"
       },
       "permission": {
-        ".read": false,
-        ".write": false
+        "read": false,
+        "write": false
       },
       "component": {
         "name": "input",
@@ -1023,3 +1084,8 @@ component 类型为数组
     <uni-forms-item label="年龄"><input  placeholder="请输入年龄" /></uni-forms-item>
   </uni-group>
 ```
+
+**Bug&Tips**
+
+- 表单验证是可商用的。而生成前端表单页面，只是一个代码辅助生成工具，生成后的代码，免不了二次开发调整。
+- 已知生成代码功能在处理字段类型为时间、枚举时有问题，需要对生成的代码再修改调整

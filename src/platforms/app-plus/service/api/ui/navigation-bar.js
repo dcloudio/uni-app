@@ -40,6 +40,15 @@ export function hideNavigationBarLoading () {
   }
 }
 
+function setPageMeta (statusBarStyle) {
+  const pages = getCurrentPages()
+  if (!pages.length) {
+    return
+  }
+  // 框架内部页面跳转会从这里获取style配置
+  pages[pages.length - 1].$page.meta.statusBarStyle = statusBarStyle
+}
+
 export function setNavigationBarColor ({
   frontColor,
   backgroundColor
@@ -53,7 +62,12 @@ export function setNavigationBarColor ({
     if (backgroundColor) {
       styles.backgroundColor = backgroundColor
     }
-    plus.navigator.setStatusBarStyle(frontColor === '#000000' ? 'dark' : 'light')
+    const statusBarStyle = frontColor === '#000000' ? 'dark' : 'light'
+    plus.navigator.setStatusBarStyle(statusBarStyle)
+
+    // 用户调用api时同时改变当前页配置，这样在系统调用设置时，可以避免覆盖用户设置
+    setPageMeta(statusBarStyle)
+
     const style = webview.getStyle()
     if (style && style.titleNView) {
       if (style.titleNView.autoBackButton) {

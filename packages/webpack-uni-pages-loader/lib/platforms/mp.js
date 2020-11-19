@@ -19,7 +19,8 @@ const {
 
 const {
   hasOwn,
-  parseStyle
+  parseStyle,
+  trimMPJson
 } = require('../util')
 
 function defaultCopy (name, value, json) {
@@ -245,14 +246,14 @@ module.exports = function (pagesJson, manifestJson, project = {}) {
       return {
         app: {
           name: 'app',
-          content: app
+          content: trimMPJson(app)
         }
       }
     }
     return {
       app: {
         name: 'app',
-        content: app
+        content: trimMPJson(app)
       },
       project: {
         name: 'project.config',
@@ -311,7 +312,7 @@ module.exports = function (pagesJson, manifestJson, project = {}) {
     return {
       app: {
         name: 'app',
-        content: app
+        content: trimMPJson(app)
       },
       project: {
         name: 'project.config',

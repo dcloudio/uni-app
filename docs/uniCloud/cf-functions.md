@@ -38,17 +38,34 @@ exports.main = async (event, context) => {
 ）传入`debugFunction: false`来实现客户端直连调用，需要注意的是此时控制台将不会打印云函数日志。
 
 
-云函数中如果要使用其他服务（比如mysql数据库、redis等），可以按照nodejs的写法即可。
+云函数中如果要使用其他服务（比如mysql数据库、redis等），可以按照nodejs的写法即可。但注意这些非uniCloud数据库和云函数运行环境不在一起，访问速度受影响。
 
 **注意事项**
 
 - 服务商为阿里云时，暂不可使用相对路径读取文件（比如`fs.readFileSync('./info.txt')`），可以使用绝对路径`fs.readFileSync(path.resolve(__dirname,'./info.txt'))`
 
+## API列表
+
+云函数支持nodejs和js的标准API，但除了标准API外，uniCloud扩展了一批新API，实际开发中更常用的是uniCloud的扩展API。见下：
+
+|API						|描述																					|
+|--							|--																						|
+|uniCloud.callFunction()	|云函数中调用另一个云函数 [见下](uniCloud/cf-functions?id=callbyfunction)				|
+|uniCloud.database()		|云数据库对象 [详情](uniCloud/cf-database.md)											|
+|uniCloud.uploadFile()		|云函数上传文件到云存储 [详情](uniCloud/storage?id=uploadfile)							|
+|uniCloud.downloadFile()	|云函数下载云存储的文件到云函数运行环境 [详情](uniCloud/storage?id=clouddownloadfile)	|
+|uniCloud.deleteFile()		|云函数删除云存储的文件 [详情](uniCloud/storage?id=deletefile)							|
+|uniCloud.getTempFileURL()	|获取云存储文件的临时路径 [详情](uniCloud/storage?id=gettempfileurl)					|
+|uniCloud.httpclient		|云函数中通过http连接其他系统 [见下](uniCloud/cf-functions?id=httpclient)				|
+|uniCloud.logger			|云函数中打印日志到uniCloud日志记录系统（非HBuilderX控制台）[详情](uniCloud/cf-logger)	|
+|uniCloud.sendSms()			|发送短信 [详见](uniCloud/send-sms.md)													|
+
+	
 ## 访问数据库
 
 云函数中支持访问本服务空间下的数据库，调用方式详见[规范](uniCloud/cf-database.md)
 
-## 访问HTTP服务
+## 访问HTTP服务@httpclient
 
 `uniCloud`提供了`uniCloud.httpclient`供开发者使用。无需额外依赖，就可以请求任何 HTTP 和 HTTPS 协议的 Web 服务。`uniCloud.httpclient`返回的是一个[urllib实例](https://github.com/node-modules/urllib)。
 
@@ -113,12 +130,16 @@ console.log(res)
 
 ## 使用npm
 
-在云函数中我们可以引入第三方依赖来帮助我们更快的开发。云函数的运行环境是 `Node.js`，因此我们可以使用 `npm` 安装第三方依赖。
+云函数的运行环境是 `Node.js`，因此我们可以使用 `npm` 安装第三方依赖。
 
-注意：鉴于阿里云的限制，目前仅支持全量上传云函数（整个 node_modules文件夹全部上传），因此提醒大家，精简依赖，否则可能会每次上传时间很慢，影响开发体验。
+注意：鉴于阿里云的限制，目前仅支持全量上传云函数（整个 node_modules文件夹全部上传），因此提醒大家，精简依赖，否则可能会每次上传时间很慢，影响开发体验。并且太大的npm库影响云函数的运行性能。
 
 Tips:
 - 目前每个云函数上传包大小限制为10M。
+
+## 公共模块
+
+云函数支持公共模块。多个云函数的共享部分，可以抽离为公共模块，然后被多个云函数引用。[详见](uniCloud/cf-common)
 
 ## 客户端调用云函数
 
@@ -186,6 +207,15 @@ let callFunctionResult = await uniCloud.callFunction({
     data: { a: 1 }
 })
 ```
+
+## 开发模式
+
+实际项目中，很少会每个接口新建一个云函数。
+
+更常见的开发模式有如下两种：
+
+- 不写云函数，客户端直接操作数据库，开发效率更高。详见：[clientDB](uniCloud/database)
+- 使用路由框架，在一个云函数内通过控制器、路由的方式编写服务器接口，控制更灵活。插件市场有很多这类插件，[详见](https://ext.dcloud.net.cn/search?q=%E8%B7%AF%E7%94%B1&orderBy=WeekDownload&cat1=7)
 
 ## 云函数配置
 
@@ -325,6 +355,5 @@ exports.main = async function() {
 
 - 云函数中使用的时区是 `UTC+0`，而不是 `UTC+8`，在云函数中使用时间时需特别注意。
 - 使用阿里云作为服务商时，暂时无法使用相对路径读取文件，如：`fs.readFileSync('./info')`，可以替换为`fs.readFileSync(path.resolve(__dirname,'./info'))`
-
 
 

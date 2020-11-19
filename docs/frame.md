@@ -37,7 +37,7 @@
 </pre>
 
 **Tips**
-
+- 编译到任意平台时，`static` 目录下的文件均会被打包进去，非 `static` 目录下的文件（vue、js、css 等）被引用到才会被包含进去。
 - `static` 目录下的 `js` 文件不会被编译，如果里面有 `es6` 的代码，不经过转换直接运行，在手机设备上会报错。
 - `css`、`less/scss` 等资源同样不要放在 `static` 目录下，建议这些公用的资源放在 `common` 目录下。
 - HbuilderX 1.9.0+ 支持在根目录创建 `ext.json` `sitemap.json` 文件。  

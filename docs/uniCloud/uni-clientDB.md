@@ -1,4 +1,4 @@
-**重要：** clientDB重大升级，在HBuilderX 2.9.5+中已经内置，不再需要单独下载插件。并且新版增加大量功能。本文已过期，推荐使用clientDB的开发者升级到HBuilderX 2.9.5+，并阅读新文档：[https://uniapp.dcloud.net.cn/uniCloud/database](https://uniapp.dcloud.net.cn/uniCloud/database)
+**重要：** clientDB重大升级，在HBuilderX 2.9.5+中已经内置，不再需要单独下载插件。并且新版增加大量功能。本文已过期，推荐使用clientDB的开发者升级到HBuilderX 2.9.5+，并阅读新文档：[https://uniapp.dcloud.net.cn/uniCloud/clientdb](https://uniapp.dcloud.net.cn/uniCloud/clientdb)
 
 ## 旧版clientDB简介
 

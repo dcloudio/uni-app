@@ -102,7 +102,7 @@ export function scanCode ({
         plus.gallery.pick(file => {
           barcode.scan(file, (type, code, path, charSet) => {
             if (isDark) {
-              plus.navigator.setStatusBarStyle('isDark')
+              plus.navigator.setStatusBarStyle('dark')
             }
             result = {
               type,

@@ -28,7 +28,7 @@
 |@getuserinfo|Handler||用户点击该按钮时，会返回获取到的用户信息，从返回参数的detail中获取到的值同uni.getUserInfo|open-type="getUserInfo"|微信小程序|
 |@error|Handler||当使用开放能力时，发生错误的回调|open-type="launchApp"|微信小程序|
 |@opensetting|Handler||在打开授权设置页并关闭后回调|open-type="openSetting"|微信小程序|
-|@launchapp|Handler||打开 APP 成功的回调|open-type="launchApp"|微信小程序|
+|@launchapp|Handler||从小程序打开 App 成功的回调|open-type="launchApp"|微信小程序|
 
 - **注1：``button-hover`` 默认为 ``{background-color: rgba(0, 0, 0, 0.1); opacity: 0.7;}``**
 - ```open-type="launchApp"```时需要调起的APP接入微信OpenSDK[详见](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/launchApp.html)
@@ -64,12 +64,40 @@
 |getUserInfo|获取用户信息，可以从@getuserinfo回调中获取到用户信息，包括头像、昵称等信息|微信小程序、百度小程序、QQ小程序|
 |contact | 打开客服会话，如果用户在会话中点击消息卡片后返回应用，可以从 @contact 回调中获得具体信息 |微信小程序、百度小程序|
 |getPhoneNumber | 获取用户手机号，可以从@getphonenumber回调中获取到用户信息|微信小程序、百度小程序、字节跳动小程序、支付宝小程序 |
-|launchApp | 打开APP，可以通过app-parameter属性设定向APP传的参数|[微信小程序](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/launchApp.html)、[QQ小程序](https://q.qq.com/wiki/develop/miniprogram/frame/open_ability/open_app.html)|
+|launchApp | 小程序中打开APP，可以通过app-parameter属性设定向APP传的参数|[微信小程序](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/launchApp.html)、[QQ小程序](https://q.qq.com/wiki/develop/miniprogram/frame/open_ability/open_app.html)|
 |openSetting | 打开授权设置页 |微信小程序、百度小程序|
 |getAuthorize | 支持小程序授权 | 支付宝小程序 |
 |contactShare | 分享到通讯录好友 | 支付宝小程序 |
 |lifestyle | 关注生活号 | 支付宝小程序 |
 |openGroupProfile|呼起QQ群资料卡页面，可以通过group-id属性设定需要打开的群资料卡的群号，同时manifest中必须配置groupIdList|QQ小程序基础库1.4.7版本+|
+
+**button点击**
+
+button 组件的点击遵循 vue 标准的 @click事件。
+
+button 组件没有 url 属性，如果要跳转页面，可以在@click中编写，也可以在button组件外面套一层 navigator 组件。举例，如需跳转到about页面，可按如下几种代码写法执行：
+
+```html
+<template>
+	<view>
+		<navigator url="/pages/about/about"><button type="default">通过navigator组件跳转到about页面</button></navigator>
+		<button type="default" @click="goto('/pages/about/about')">通过方法跳转到about页面</button>
+		<button type="default" @click="navigateTo('/pages/about/about')">跳转到about页面</button><!-- 这种写法只有h5平台支持，不跨端，不推荐使用 -->
+	</view>
+</template>
+<script>
+	export default {
+		methods: {
+			goto(url) {
+				uni.navigateTo({
+					url:url
+				})
+			}
+		}
+	}
+</script>
+```
+
 
 **注意** 
 - 在小程序中，开发者可以登录 [微信小程序管理后台](https://mp.weixin.qq.com/) 、[QQ小程序后台](https://q.qq.com/#/)后，进入菜单“客服反馈”页面获取反馈内容。

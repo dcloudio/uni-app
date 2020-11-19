@@ -73,7 +73,7 @@ export function getSubNVueById (id) {
   var parentWebview = plus.webview.getWebviewById(webview.__uniapp_mask_id)
   webview.setStyle = function (style) {
     if (style && style.mask) {
-      parentWebview.setStyle({
+      parentWebview && parentWebview.setStyle({
         mask: style.mask
       })
       delete style.mask
