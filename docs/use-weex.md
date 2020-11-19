@@ -683,6 +683,7 @@ Android平台weex对阴影样式(`box-shadow`)支持不完善，如设置圆角�
 **注意**
 
 - 设置elevation属性产生的阴影暂时无法修改颜色
+- 设置elevation后当前组件的层级会高于其他未设置elevation组件的层级，都设置elevation则越大层级越高！组件覆盖的场景需要留意
 - 为了避免`elevation`属性的阴影效果与阴影样式(`box-shadow`)冲突，设置`elevation`属性后`box-shadow`样式失效
 - 使用`elevation`需要阴影元素的父元素大于阴影范围，否则会对阴影进行裁剪
 - IOS不支持`elevation`属性，请使用`box-shadow`设置阴影
