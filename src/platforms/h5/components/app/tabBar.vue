@@ -14,7 +14,7 @@
       <div
         v-for="(item,index) in list"
         :key="item.isMidButton ? index : item.pagePath"
-        :style="item.isMidButton ? {flex:'0 0 ' + item.width} : {}"
+        :style="item.isMidButton ? {flex:'0 0 ' + item.width,position:'relative'} : {}"
         class="uni-tabbar__item"
         @click="_switchTab(item,index)"
       >
