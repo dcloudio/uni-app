@@ -89,7 +89,7 @@ export default {
     },
     autoBlur: {
       type: [Boolean, String],
-      default: true
+      default: false
     }
   },
   directives: {
