@@ -93,9 +93,10 @@
 <!-- schema里时间格式只允许时间戳是不够的 -->
 
 
-**enum**
+**enum属性**
 
 支持本地数据/云端数据
+
 ```json
 {
   "bsonType": "object",
@@ -107,7 +108,7 @@
     // role 云端数据, enum属性的值和clientdb组件的写法一致，clientdb组件 https://uniapp.dcloud.net.cn/uniCloud/uni-clientdb-component
     // 通过clientdb提交数据时多一次查库请求以校验数据是否有效
     "role": {
-      "bsonType": "int",
+      "bsonType": "array",
       "description": "角色",
       "label": "角色",
       "enum": {
@@ -119,7 +120,7 @@
     },
     // role2 本地数据
     "role2": {
-      "bsonType": "int",
+      "bsonType": "array",
       "description": "角色，不允许重复2",
       "label": "角色",
       "enum": [
