@@ -453,6 +453,31 @@ db.collection('order')
 
 推荐通过`<uni-clientDB>`组件渲染分页列表，详见：[https://uniapp.dcloud.net.cn/uniCloud/uni-clientdb-component?id=page](https://uniapp.dcloud.net.cn/uniCloud/uni-clientdb-component?id=page)
 
+### 别名@alias
+
+自`2020-11-20`起clientDB jql写法支持字段别名
+
+仍以上面的order表和book表为例
+
+```js
+// 客户端联表查询
+const db = uniCloud.database()
+db.collection('order,book')
+  .where('book_id.title == "三国演义"')
+  .field('book_id{title as book_title,author as book_author},quantity as order_quantity') // 这里联表查询book表返回book表内的title、book表内的author、order表内的quantity，并将title重命名为book_title，author重命名为book_author，quantity重命名为order_quantity
+  .orderBy('order_quantity desc') // 按照order_quantity降序排列
+  .get()
+  .then(res => {
+    console.log(res);
+  }).catch(err => {
+    console.error(err)
+  })
+```
+
+**注意**
+
+- mongoDB分阶段执行，上一阶段处理结果输出到下一阶段，上面的例子中表现为where中使用的是原名，orderBy中使用的是别名
+
 ### 排序orderBy@orderby
 
 传统的MongoDB的排序参数是json格式，jql支持类sql的字符串格式，书写更为简单。
