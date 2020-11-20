@@ -63,8 +63,8 @@ export default {
       this.popupWidth = windowWidth
       this.popupHeight = windowHeight + windowTop
     }
-    this.$watch('visible', value => value && fixSize())
     window.addEventListener('resize', fixSize)
+    fixSize()
     this.$once('hook:beforeDestroy', () => {
       window.removeEventListener('resize', fixSize)
     })
