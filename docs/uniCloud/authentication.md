@@ -18,14 +18,17 @@
 - 匿名登录：用户未进行登录操作的状态
 - 短期访问令牌：用户身份的凭证（access token），调用`signInWithTicket`或者`linkAndRetrieveDataWithTicket`之后会自动进行存储
 
-## uniCloud.auth()
+
+## uniCloud.customAuth()
+
+**重要：自HBuilderX 2.9.11起，此接口由uniCloud.auth调整为uniCloud.customAuth，短时间内仍会兼容uniCloud.auth**
 
 获取登录对象
 
 **示例代码**
 
 ```js
-const auth = uniCloud.auth()
+const auth = uniCloud.customAuth()
 ```
 
 <!-- ## auth.signInAnonymously()
@@ -35,7 +38,7 @@ const auth = uniCloud.auth()
 **示例代码**
 
 ```js
-const auth = uniCloud.auth()
+const auth = uniCloud.customAuth()
 auth.signInAnonymously()
 ``` -->
 
@@ -119,7 +122,7 @@ auth.signInWithTicket('YourTicket').then(() => {
 ```js
 let customUserId = '123456';
 
-const ticket = uniCloud.auth().createTicket(customUserId, {
+const ticket = uniCloud.customAuth().createTicket(customUserId, {
   refresh: 10 * 60 * 1000 // 每十分钟刷新一次登录态， 默认为一小时
 });
 // 然后把 ticket 发送给客户端

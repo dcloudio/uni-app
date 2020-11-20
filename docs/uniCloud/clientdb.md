@@ -974,6 +974,30 @@ db.auth.on('refreshToken', refreshToken)
 db.auth.off('refreshToken', refreshToken)
 ```
 
+### 处理错误@error
+
+clientDB出现错误时触发
+
+**用法**
+
+```js
+const db = uniCloud.database()
+
+function onError({
+  code, // 错误码详见https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=returnvalue
+  message
+}) {
+  uni.showModal({
+    content: message,
+    showCancel: false
+  })
+}
+// 绑定错误处理事件
+db.auth.on('error', onError)
+// 解绑错误处理事件
+db.auth.off('error', onError)
+```
+
 ## DBSchema@schema
 
 `DB Schema`是基于 JSON 格式定义的数据结构的规范。
