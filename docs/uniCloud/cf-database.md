@@ -5770,7 +5770,7 @@ let res = await db.collection('shops').aggregate()
 
  
 ```js
-db.command.aggregate.arrayToObject([ <array1>, <array2>, ... ])
+db.command.aggregate.concatArrays([ <array1>, <array2>, ... ])
 ```
 参数可以是任意解析为数组的表达式。  
 
