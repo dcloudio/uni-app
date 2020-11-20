@@ -7629,6 +7629,25 @@ var serviceContext = (function () {
     });
   }
 
+  const VD_SYNC_VERSION = 2;
+
+  const PAGE_CREATE = 2;
+  const MOUNTED_DATA = 4;
+  const UPDATED_DATA = 6;
+  const PAGE_CREATED = 10;
+
+  const UI_EVENT = 20;
+
+  const VD_SYNC = 'vdSync';
+
+  const WEBVIEW_READY = 'webviewReady';
+  const VD_SYNC_CALLBACK = 'vdSyncCallback';
+  const INVOKE_API = 'invokeApi';
+  const WEB_INVOKE_APPSERVICE$1 = 'WEB_INVOKE_APPSERVICE';
+  const WEBVIEW_INSERTED = 'webviewInserted';
+  const WEBVIEW_REMOVED = 'webviewRemoved';
+  const WEBVIEW_ID_PREFIX = 'webviewId';
+
   function createButtonOnClick (index) {
     return function onClick (btn) {
       const pages = getCurrentPages();
@@ -8019,24 +8038,6 @@ var serviceContext = (function () {
     webview.addEventListener('resize', debounce(onResize, 50));
   }
 
-  const VD_SYNC_VERSION = 2;
-
-  const PAGE_CREATE = 2;
-  const MOUNTED_DATA = 4;
-  const UPDATED_DATA = 6;
-  const PAGE_CREATED = 10;
-
-  const UI_EVENT = 20;
-
-  const VD_SYNC = 'vdSync';
-
-  const WEBVIEW_READY = 'webviewReady';
-  const VD_SYNC_CALLBACK = 'vdSyncCallback';
-  const INVOKE_API = 'invokeApi';
-  const WEB_INVOKE_APPSERVICE$1 = 'WEB_INVOKE_APPSERVICE';
-  const WEBVIEW_INSERTED = 'webviewInserted';
-  const WEBVIEW_REMOVED = 'webviewRemoved';
-
   function onWebviewRecovery (webview, routeOptions) {
     const {
       subscribe,
@@ -8399,7 +8400,10 @@ var serviceContext = (function () {
     if (!children || !children.length) { // 有子 webview
       return callback()
     }
-    const childWebview = children[0];
+
+    // 如果页面有subNvues，切使用了webview组件，则返回时子webview会取错，因此需要做id匹配
+    const childWebview = children.find(webview => webview.id.indexOf(WEBVIEW_ID_PREFIX) === 0) || children[0];
+    console.log('backWebview -> childWebview', childWebview);
     childWebview.canBack(({
       canBack
     }) => {
