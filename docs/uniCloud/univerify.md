@@ -27,11 +27,29 @@ univerify是替代短信验证登录的下一代登录验证方式，能消除�
 
 使用上面结果中的`openid`和`access_token`即可在`云函数`内调用接口获取手机号
 
+云函数内接口调用形式如下
+
+```js
+const res = await uniCloud.getPhoneNumber({
+  provider: 'univerify',
+  apiKey: 'xxx', // 在开发者中心开通服务并获取apiKey
+  apiSecret: 'xxx', // 在开发者中心开通服务并获取apiSecret
+  accessToken: event.accessToken,
+  openid: event.openid
+})
+// res形式如下
+// {
+//   code: 0,
+//   message: '',
+//   phoneNumber: '138xxxxxxxx'
+// }
+```
+
 **相关文档**
 - [uniCloud快速上手](https://uniapp.dcloud.net.cn/uniCloud/quickstart)
 - [云函数URL化](https://uniapp.dcloud.net.cn/uniCloud/http)
 
-**uni-app项目**
+### uni-app项目
 
 如果开发uni-app项目可以使用callFunction的方式调用云函数
 
@@ -46,8 +64,7 @@ uniCloud.callFunction({
 }).then(res => {
   // res.result = {
   //   code: '',
-  //   message: '',
-  //   phoneNumber: '138xxxxxxx'
+  //   message: ''
   // }
 }).catch(err=>{
   // 处理错误
@@ -62,11 +79,15 @@ module.exports = async(event){
   	accessToken: event.accessToken,
   	openid: event.openid
   })
-  return res
+  // 执行入库等操作，正常情况下不要把完整手机号返回给前端
+  return {
+    code: 0,
+    message: '获取手机号成功'
+  }
 }
 ```
 
-**5+项目**
+### 5+项目
 
 5+项目不可使用callFunction请求云函数，这时候可以使用云函数URL化让5+项目通过http请求的方式访问云函数
 
@@ -76,8 +97,7 @@ const xhr = new plus.net.XMLHttpRequest();
 xhr.onload = function(e) {
   const {
     code,
-    message,
-    phoneNumer // 取得手机号
+    message
   } = JSON.parse(xhr.responseText)
 }
 xhr.open( "POST", "https://xxx" ); // url应为云函数Url化之后的地址，可以在uniCloud web控制台云函数详情页面看到
@@ -105,6 +125,77 @@ module.exports = async(event){
   	accessToken: accessToken,
   	openid: openid
   })
+  // 执行入库等操作，正常情况下不要把完整手机号返回给前端
+  return {
+    code: 0,
+    message: '获取手机号成功'
+  }
+}
+```
+
+### 自有服务器调用
+
+写法类似上面5+项目的云函数url化的方式，但是不同的是需要云函数返回手机号给自己服务器，这样就需要确保数据安全。
+
+下面以一个简单的例子演示如何使用签名验证请求是否合法
+
+```js
+// 以nodejs为例
+const crypto = require('crypto')
+
+const secret = 'your-secret-string' // 自己的密钥不要直接使用示例值，且注意不要泄露
+const hmac = crypto.createHmac('sha256', secret);
+
+// 自有服务器生成签名，并以GET方式发送请求
+const params = {
+  accessToken: 'xxx', // 客户端传到自己服务器的参数
+  openid: 'xxx'
+}
+// 字母顺序排序后拼接签名串
+const signStr = Object.keys(params).sort().map(key => {
+  return `${key}=${params[key]}`
+}).join('&')
+hmac.update(signStr);
+const sign = hmac.digest('hex')
+// 最终请求如下链接，其中https://xxxx/xxx为云函数Url化地址
+// https://xxxx/xxx?accessToken=xxx&openid=xxx&sign=${sign} 其中${sign}为上一步得到的sign值
+```
+
+
+```js
+// 云函数验证签名，此示例中以接受GET请求为例作演示
+const crypto = require('crypto')
+module.exports = async(event){
+  
+  const secret = 'your-secret-string' // 自己的密钥不要直接使用示例值，且注意不要泄露
+  const hmac = crypto.createHmac('sha256', secret);
+  
+  let params = event.queryStringParameters
+  const sign = params.sign
+  delete params.sign
+  const signStr = Object.keys(params).sort().map(key => {
+    return `${key}=${params[key]}`
+  }).join('&')
+  
+  hmac.update(signStr);
+  
+  if(sign!==hmac.digest('hex')){
+    throw new Error('非法访问')
+  }
+  
+  const {
+    accessToken,
+    openid
+  } = JSON.parse(body)
+  const res = await uniCloud.getPhoneNumber({
+  	provider: 'univerify',
+    appid: 'xxx', // DCloud appid，不同于callFunction方式调用，使用云函数Url化需要传递DCloud appid参数
+  	apiKey: 'xxx', // 在开发者中心开通服务并获取apiKey
+  	apiSecret: 'xxx', // 在开发者中心开通服务并获取apiSecret
+  	accessToken: accessToken,
+  	openid: openid
+  })
+  // 返回手机号给自己服务器
   return res
 }
 ```
