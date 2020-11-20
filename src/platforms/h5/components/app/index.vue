@@ -90,7 +90,7 @@ export default {
       return !this.hideTabBar &&
           (
             this.$route.meta.isTabBar ||
-            (this.showLayout && this.tabBarMediaQuery) // 宽屏且符合tabBar的media
+            this.tabBarMediaQuery
           )
     }
   },
