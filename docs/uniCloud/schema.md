@@ -105,6 +105,7 @@
       "description": "存储文档 ID（用户 ID），系统自动生成"
     },
     // role 云端数据, enum属性的值和clientdb组件的写法一致，clientdb组件 https://uniapp.dcloud.net.cn/uniCloud/uni-clientdb-component
+    // 通过clientdb提交数据时多一次查库请求以校验数据是否有效
     "role": {
       "bsonType": "int",
       "description": "角色",
