@@ -86,10 +86,56 @@
 - array
 - bool
 - timestamp
+- password （所有用户都不能读取，即使是Admin）
 
 注：timestamp是一串数字的时间戳，不合适直接渲染到界面上。推荐的做法是在前端渲染时使用[`<uni-dateformat>`组件](https://ext.dcloud.net.cn/plugin?id=3279)。
 
 <!-- schema里时间格式只允许时间戳是不够的 -->
+
+
+**enum**
+
+支持本地数据/云端数据
+```json
+{
+  "bsonType": "object",
+  "required": [],
+  "properties": {
+    "_id": {
+      "description": "存储文档 ID（用户 ID），系统自动生成"
+    },
+    // role 云端数据, enum属性的值和clientdb组件的写法一致，clientdb组件 https://uniapp.dcloud.net.cn/uniCloud/uni-clientdb-component
+    "role": {
+      "bsonType": "int",
+      "description": "角色",
+      "label": "角色",
+      "enum": {
+        "collection": "uni-id-roles", // 表名，这里使用 uni-id-roles表举例，在uniCloud控制台使用 opendb 创建此表
+        "field": "role_name as text, role_id as value", //字段筛选，需要 as 成前端组件支持的字段名 text,value
+        "where": "", // 查询条件
+        "orderby": "" // 排序字段及正序倒叙设置
+      }
+    },
+    // role2 本地数据
+    "role2": {
+      "bsonType": "int",
+      "description": "角色，不允许重复2",
+      "label": "角色",
+      "enum": [
+        {
+          "value": 1,
+          "text": "text1"
+        },
+        {
+          "value": 2,
+          "text": "text2"
+        }
+      ]
+    }
+  }
+}
+```
+
 
 ### 基本示例
 
@@ -361,9 +407,38 @@ uniCloud推出了`openDB`开源数据库规范，包括用户表、文章表、�
     // value 当前规则校验数据
     // data  全部校验数据
     // callback 可选，一般用于自定义 errorMessage，如果执行了callback return 值无效，callback 传入的 message 将替换 errorMessage
-    // callback(new Error('message')) 传入 Error 类型时校验不通过
-    // callback('message') 传入 String 类型时通过
+    // callback('message') 传入错误消息时校验不通过
+    // callback() 无参时通过
+    // 注意 callback 不支持异步调用，异步请使用 Promise/await/async
     return value.length < 10
+  }
+
+  // 异步校验 Promise
+  export = function (rule, value, data) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (value > 10) {
+          // 校验通过
+          resolve()
+        } else {
+          // 校验失败
+          resolve('error') // 等于 reject(new Error('error'))
+          // reject(new Error('error'))
+        }
+      }, 3000);
+    })
+  }
+
+  // 异步校验 await/async
+  export = async function (rule, value, data) {
+    let result = await uni.request({...})
+    if (result > 10) {
+      // 校验通过
+      return true
+    } else {
+      // 校验失败
+      return 'error message'
+    }
   }
   ```
 
@@ -524,17 +599,17 @@ permission的字段级控制，包括读写两种权限，分别称为：read、
   },
   "properties": {
     "_id":{
-	},
-	"name":{
-	},
-    "pwd": {
-      "bsonType": "string",
-      "title": "密码",
-      "permission": {
-        "read": false, // 禁止读取 pwd 字段的数据（admin权限用户不受限）
-        "write": false // 禁止写入 pwd 字段的数据（admin权限用户不受限）
-      }
+  },
+  "name":{
+  },
+  "pwd": {
+    "bsonType": "string",
+    "title": "密码",
+    "permission": {
+      "read": false, // 禁止读取 pwd 字段的数据（admin权限用户不受限）
+      "write": false // 禁止写入 pwd 字段的数据（admin权限用户不受限）
     }
+  }
   }
 }
 ```
@@ -564,9 +639,9 @@ permission的字段级控制，包括读写两种权限，分别称为：read、
   },
   "properties": {
     "_id":{
-	},
-	"name":{
-	},
+    },
+    "name":{
+    },
     "pwd": {
       "bsonType": "string",
       "title": "密码",
@@ -575,11 +650,11 @@ permission的字段级控制，包括读写两种权限，分别称为：read、
         "write": false // 禁止写入 pwd 字段的数据（admin权限用户不受限）
       }
     },
-	"status": {
-		"bsonType": "bool",
-		"title": "用户状态",
-		"description": "true代表用户正常。false代表用户被禁用"
-	}
+    "status": {
+      "bsonType": "bool",
+      "title": "用户状态",
+      "description": "true代表用户正常。false代表用户被禁用"
+    }
   }
 }
 ```
@@ -839,7 +914,8 @@ DCloud提供了`uni-forms`前端组件，该组件的校验规范完全符合`DB
 - 如果配置了字段的component属性，则严格按component的配置执行。
 - 如果没有配置component属性，那么默认有如下策略：
 	* 字段类型为bool时，默认使用switch组件
-	* 其他字段类型，将生成input组件。如果是数字类型，会同时把input的键盘类型设为数字。
+  * 字段类型为Array时，默认使用uni-data-checkbox组件
+	* 其他字段类型，将生成uni-easyinput组件。如果是数字类型，会同时把input的键盘类型设为数字。
 - 如果没有配label，则以title作为label，渲染在表单项前面
 - description在渲染为input时会被设为placehold
 
@@ -930,44 +1006,39 @@ DCloud提供了`uni-forms`前端组件，该组件的校验规范完全符合`DB
       "bsonType": "array",
       "description": "爱好",
       "label": "爱好",
-      "component": {
-        "name": "checkbox-group",
-        "childrenData": [{
-            "label": "游泳",
-            "value": 1
-          },
-          {
-            "label": "骑行",
-            "value": 2
-          },
-          {
-            "label": "音乐",
-            "value": 3
-          },
-          {
-            "label": "美术",
-            "value": 4
-          }
-        ]
-      }
+      "enum": [
+        {
+          "text": "游泳",
+          "value": 1
+        },
+        {
+          "text": "骑行",
+          "value": 2
+        },
+        {
+          "text": "音乐",
+          "value": 3
+        },
+        {
+          "text": "美术",
+          "value": 4
+        }
+      ]
     },
     "gender": {
       "bsonType": "int",
-      "enum": [0, 1, 2],
       "description": "用户性别：0 未知 1 男性 2 女性",
       "label": "性别",
-      "component": {
-        "name": "radio-group",
-        "childrenData": [{
-            "label": "男",
-            "value": 1
-          },
-          {
-            "label": "女",
-            "value": 2
-          }
-        ]
-      },
+      "enum": [{
+        "text": "未知",
+        "value": 0
+      }, {
+        "text": "男",
+        "value": 1
+      }, {
+        "text": "女",
+        "value": 2
+      }],
       "errorMessage": "{label}无效"
     },
     "email": {
@@ -982,39 +1053,9 @@ DCloud提供了`uni-forms`前端组件，该组件的校验规范完全符合`DB
       "label": "自定义children",
       "component": {
         "name": "select",
-        "children": "<option value="{item.value}">{item.label}</option>",
+        "children": "<option value=\"{item.value}\">{item.label}</option>",
         "childrenData": [{"label": "中文简体", "value": "zh-cn"}]
       }
-    }
-  }
-}
-```
-
-
-component 类型为数组
-
-```json
-{
-  "bsonType": "object",
-  "required": [],
-  "properties": {
-    "mobile": {
-      "bsonType": "string",
-      "label": "多个组件",
-      "component": [
-        {
-          "name": "input",
-          "props": {
-            "placeholder": "电话1"
-          }
-        },
-        {
-          "name": "input",
-          "props": {
-            "placeholder": "电话2"
-          }
-        }
-      ]
     }
   }
 }
