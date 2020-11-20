@@ -4,7 +4,8 @@
 <script>
 import {
   WEBVIEW_INSERTED,
-  WEBVIEW_REMOVED
+  WEBVIEW_REMOVED,
+  WEBVIEW_ID_PREFIX
 } from '../../../constants'
 
 import { NAVBAR_HEIGHT } from 'uni-helpers/constants'
@@ -92,7 +93,7 @@ export default {
     }
   },
   mounted () {
-    this.htmlId = 'webviewId' + this.$page.id
+    this.htmlId = WEBVIEW_ID_PREFIX + this.$page.id
     insertHTMLWebView({
       htmlId: this.htmlId
     })

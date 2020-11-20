@@ -4,6 +4,10 @@ import {
 } from '../../constants'
 
 import {
+  WEBVIEW_ID_PREFIX
+} from '../../../constants'
+
+import {
   setStatusBarStyle
 } from '../../bridge'
 
@@ -30,7 +34,10 @@ function backWebview (webview, callback) {
   if (!children || !children.length) { // 有子 webview
     return callback()
   }
-  const childWebview = children[0]
+
+  // 如果页面有subNvues，切使用了webview组件，则返回时子webview会取错，因此需要做id匹配
+  const childWebview = children.find(webview => webview.id.indexOf(WEBVIEW_ID_PREFIX) === 0) || children[0]
+  console.log('backWebview -> childWebview', childWebview)
   childWebview.canBack(({
     canBack
   }) => {
