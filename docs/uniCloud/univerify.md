@@ -186,7 +186,7 @@ module.exports = async(event){
   const {
     accessToken,
     openid
-  } = JSON.parse(body)
+  } = params
   const res = await uniCloud.getPhoneNumber({
   	provider: 'univerify',
     appid: 'xxx', // DCloud appid，不同于callFunction方式调用，使用云函数Url化需要传递DCloud appid参数
