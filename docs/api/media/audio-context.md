@@ -16,7 +16,7 @@
 |autoplay|Boolean|是否自动开始播放，默认 false|否|H5端部分浏览器不支持|
 |loop|Boolean|是否循环播放，默认 false|否||
 |obeyMuteSwitch|Boolean|是否遵循系统静音开关，当此参数为 false 时，即使用户打开了静音开关，也能继续发出声音，默认值 true|否|微信小程序、百度小程序、字节跳动小程序|
-|duration|Number|当前音频的长度（单位：s），只有在当前有合法的 src 时返回|是||
+|duration|Number|当前音频的长度（单位：s），只有在当前有合法的 src 时返回，需要在onCanplay中获取|是||
 |currentTime|Number|当前音频的播放位置（单位：s），只有在当前有合法的 src 时返回，时间不取整，保留小数点后 6 位|是||
 |paused|Boolean|当前是是否暂停或停止状态，true 表示暂停或停止，false 表示正在播放|是||
 |buffered|Number|音频缓冲的时间点，仅保证当前播放时间点到此时间点内容已缓冲。|是||
