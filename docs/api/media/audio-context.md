@@ -86,7 +86,7 @@ errCode 说明
 ```javascript
 const innerAudioContext = uni.createInnerAudioContext();
 innerAudioContext.autoplay = true;
-innerAudioContext.src = 'https://img-cdn-qiniu.dcloud.net.cn/uniapp/audio/music.mp3';
+innerAudioContext.src = 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-hello-uniapp/2cc220e0-c27a-11ea-9dfb-6da8e309e0d8.mp3';
 innerAudioContext.onPlay(() => {
   console.log('开始播放');
 });
