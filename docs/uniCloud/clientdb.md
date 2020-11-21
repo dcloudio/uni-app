@@ -453,6 +453,11 @@ db.collection('order')
 
 推荐通过`<uni-clientDB>`组件渲染分页列表，详见：[https://uniapp.dcloud.net.cn/uniCloud/uni-clientdb-component?id=page](https://uniapp.dcloud.net.cn/uniCloud/uni-clientdb-component?id=page)
 
+
+### 指定返回字段@field
+
+查询时可以使用field方法指定返回字段，在`<uni-clientDB>`组件中也支持field属性。不使用field方法时会返回所有字段
+
 ### 别名@alias
 
 自`2020-11-20`起clientDB jql写法支持字段别名
@@ -476,7 +481,7 @@ db.collection('order,book')
 
 **注意**
 
-- mongoDB分阶段执行，上一阶段处理结果输出到下一阶段，上面的例子中表现为where中使用的是原名，orderBy中使用的是别名
+- 上面的查询指令中，上一阶段处理结果输出到下一阶段，上面的例子中表现为where中使用的是原名，orderBy中使用的是别名
 
 ### 排序orderBy@orderby
 
