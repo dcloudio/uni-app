@@ -979,9 +979,9 @@ db.auth.on('refreshToken', refreshToken)
 db.auth.off('refreshToken', refreshToken)
 ```
 
-### 处理错误@error
+<!-- ### 处理错误@error
 
-clientDB出现错误时触发
+clientDB出现错误时触发，`HBuilderX 2.9.12+` 支持
 
 **用法**
 
@@ -1001,7 +1001,7 @@ function onError({
 db.auth.on('error', onError)
 // 解绑错误处理事件
 db.auth.off('error', onError)
-```
+``` -->
 
 ## DBSchema@schema
 

@@ -290,6 +290,7 @@ let res = await db.collection('goods').where({
 | --------- | ------- | ---- | ------------------------ |
 | total     | Number | 否   | 计数结果                 |
 
+**注意：数据量很大的情况下，count性能会很差，尽量使用其他方式替代**
 
 ### 设置记录数量
 
@@ -326,6 +327,8 @@ collection.skip(value)
 ```js
 let res = await collection.skip(4).get()
 ```
+
+**注意：数据量很大的情况下，skip性能会很差，尽量使用其他方式替代**
 
 ### 对结果排序
 

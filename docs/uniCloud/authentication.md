@@ -21,7 +21,7 @@
 
 ## uniCloud.customAuth()
 
-**重要：自HBuilderX 2.9.11起，此接口由uniCloud.auth调整为uniCloud.customAuth，短时间内仍会兼容uniCloud.auth**
+**重要：自HBuilderX 2.9.12起，此接口由uniCloud.auth调整为uniCloud.customAuth，短时间内仍会兼容uniCloud.auth**
 
 获取登录对象
 
