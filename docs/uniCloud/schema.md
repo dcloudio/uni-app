@@ -95,7 +95,59 @@
 
 ### enum属性@enum
 
-支持本地数据/云端数据
+
+简单本地数据
+
+```json
+{
+  "bsonType": "object",
+  "required": [],
+  "properties": {
+    "_id": {
+      "description": "存储文档 ID（用户 ID），系统自动生成"
+    },
+    "role": {
+      "bsonType": "array",
+      "description": "角色，不允许重复",
+      "label": "角色",
+      "enum": [1, 2, 3]
+    }
+  }
+}
+```
+
+
+复杂本地数据
+
+```json
+{
+  "bsonType": "object",
+  "required": [],
+  "properties": {
+    "_id": {
+      "description": "存储文档 ID（用户 ID），系统自动生成"
+    },
+    "role": {
+      "bsonType": "array",
+      "description": "角色，不允许重复",
+      "label": "角色",
+      "enum": [
+        {
+          "value": 1,
+          "text": "text1"
+        },
+        {
+          "value": 2,
+          "text": "text2"
+        }
+      ]
+    }
+  }
+}
+```
+
+
+云端数据
 
 ```json
 {
@@ -117,22 +169,6 @@
         "where": "", // 查询条件
         "orderby": "" // 排序字段及正序倒叙设置
       }
-    },
-    // role2 本地数据
-    "role2": {
-      "bsonType": "array",
-      "description": "角色，不允许重复2",
-      "label": "角色",
-      "enum": [
-        {
-          "value": 1,
-          "text": "text1"
-        },
-        {
-          "value": 2,
-          "text": "text2"
-        }
-      ]
     }
   }
 }
