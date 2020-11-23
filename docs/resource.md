@@ -28,6 +28,8 @@
 * [《0基础学unicloud开发，跨端serverless技术》](https://study.163.com/course/introduction.htm?courseId=1209978085#/courseDetail?tab=1)，出品人：林举
 * [《uni-app 5小时快速入门》](https://www.imooc.com/learn/1215)，出品人：meHaoTian
 * [《uni-app 快速入门 从零开始实现新闻资讯类跨端应用》](https://coding.imooc.com/class/433.html)，出品人：meHaoTian
+* [《uni-app实战直播app全栈开发》](https://study.163.com/course/courseMain.htm?courseId=1210217810&share=2&shareId=480000001892585)，出品人：帝莎IT学院
+
 
 目前各大视频学习网站都有不少uni-app的学习资源，更多资源请点击搜索链接：
 - [腾讯课堂的uni-app相关课程](https://ke.qq.com/course/list/uni-app?tuin=269fe6b)
