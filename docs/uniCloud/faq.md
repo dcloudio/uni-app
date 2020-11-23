@@ -165,3 +165,32 @@ uniCloud服务商为阿里云时支持配置全球加速，步骤如下：
 4. 选择不使用的账号登录之后注销即可，参考文档：[注销腾讯云账号](https://cloud.tencent.com/document/product/378/30253)
 
 同时，如果付费购买腾讯云服务空间，每个账号可以最多拥有50个腾讯云服务空间（注意其中仅有一个享受免费额度）。
+
+### 高并发下简单的防止超卖
+
+高并发时很多用户同时对一条数据读写，很容易造成数据混乱，表现在秒杀抢购等场景就是超卖。以秒杀为例，开发者可以从扣除库存这步入手对超卖进行很大程度的限制，下面是一个简单的示例
+
+```js
+// 云函数
+const db = uniCloud.database()
+const dbCmd = db.command
+exports.main = async function(event){
+  const transaction = await db.startTransaction()
+  // 其他业务逻辑...
+  // 库存减一
+  const reduceRes = await db.collection('goods').where({
+    _id: 'goods_id', // 商品ID
+    stock: dbCmd.gt(1) // 限制库存大于1的才允许扣除库存
+  }).update({
+    stock: dbCmd.inc(-1)
+  })
+  if(reduceRes.updated === 0) { // 如果没成功更新库存就认为下单失败
+    await transaction.rollback()
+    return {
+      code: 1001,
+      message: '下单失败'
+    }
+  }
+  // 其他业务逻辑...
+}
+```
