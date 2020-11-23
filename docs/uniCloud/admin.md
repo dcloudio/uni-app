@@ -133,7 +133,7 @@ $top-window-text-color: #999; /* 文字颜色 */
 
 ##### 管理静态菜单
 
-通过 [admin.config.js](https://github.com/dcloudio/uni-template-admin/blob/master/admin.config.js) 配置侧边栏内容，所有用户都能看到静态菜单。
+通过 [admin.config.js](https://github.com/dcloudio/uniCloud-admin/blob/master/admin.config.js) 配置侧边栏内容，所有用户都能看到静态菜单。
 
 ```js
 export default {
@@ -233,7 +233,7 @@ _添加菜单记录需要注意：_
 
 ##### 侧边栏样式管理
 
-通过 [uni.scss](https://github.com/dcloudio/uni-template-admin/blob/master/uni.scss) 配置侧边栏样式
+通过 [uni.scss](https://github.com/dcloudio/uniCloud-admin/blob/master/uni.scss) 配置侧边栏样式
 
 > 调整菜单颜色时，只需设置菜单背景色 `$menu-bg-color`，自行搭配文字前景色即可
 
