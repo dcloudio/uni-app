@@ -878,7 +878,7 @@ exports.main = async function(event,context) {
 
 ```
 // 短信模板示例，请在https://dev.dcloud.net.cn/uniSms申请签名（短信开头中括号内部分）及模板
-验证码：${code}，用于${action}，${expMinute}分钟内有效，请勿泄露并尽快验证。
+验证码：${code}，${expMinute}分钟内有效，请勿泄露并尽快验证。
 ```
 
 **响应参数**
