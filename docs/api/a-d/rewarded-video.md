@@ -69,7 +69,9 @@
 
 ### 完整调用示例
 
-支持多页面重复调用，可以传入不同广告位，默认处理了Loading状态及快速点击调用问题
+支持多页面重复调用，可以传入不同广告位，默认处理了Loading状态、快速点击、数据过期、失败重试1次逻辑
+
+推荐使用此方案
 
 ```html
 <script>
@@ -87,15 +89,13 @@
       // 广告后台申请的广告位(adpid)需要自定义基座/云打包/本地打包后生效
       this._adpid = 1507000689
 
-      // 可选预加载数据
+      // 可选预加载数据, 减少加载等待时间，调用此 API 不会显示loading，不影响业务
       // AD.load(this._adpid)
     },
     methods: {
       showAd() {
+        // 调用后默认显示Loading
         AD.show(this._adpid, (res) => {
-          console.log("onclose")
-          console.log(res)
-
           // 用户点击了【关闭广告】按钮
           if (res && res.isEnded) {
             // 正常播放结束
@@ -104,11 +104,8 @@
             // 播放中途退出
             console.log("onClose " + res.isEnded);
           }
-
-          // 可选预加载下一条广告数据，减少加载等待时间，调用此 API 不会显示loading，不影响业务
-          // AD.load(this._adpid)
         }, (err) => {
-          // 广告无法显示，输出错误信息，可以采集数据上报以便分析
+          // 广告无法显示，输出错误信息
           console.log(err) // {code: code, errMsg: message}
         })
       }
@@ -134,21 +131,20 @@ class AdHelper {
   }
 
   show(adpid, onsuccess, onfail) {
-    if (!adpid || this.isBusy(adpid)) {
+    if (!adpid) {
       return
     }
-
-    var ad = this.get(adpid)
 
     uni.showLoading({
       mask: true
     })
 
+    var ad = this.get(adpid)
+
     ad.load(() => {
       uni.hideLoading()
       ad.show((e) => {
         onsuccess && onsuccess(e)
-        // 关闭视频
       })
     }, (err) => {
       uni.hideLoading()
