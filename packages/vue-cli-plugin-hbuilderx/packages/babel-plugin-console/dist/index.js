@@ -1,5 +1,5 @@
 const isWin = /^win/.test(process.platform)
-const normalizePath = path => (isWin ? path.split(':')[1].replace(/\\/g, '/') : path)
+const normalizePath = path => (isWin ? (path.split(':')[1] || path).replace(/\\/g, '/') : path)
 
 const METHODS = ['error', 'warn', 'info', 'log', 'debug']
 const FORMAT_LOG = '__f__'
