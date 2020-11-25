@@ -39,7 +39,7 @@ files 参数是一个 file 对象的数组，file 对象的结构如下：
 |:-|:-|:-|:-|
 |name|String|否|multipart 提交时，表单的项目名，默认为 file|
 |file|File|否|要上传的文件对象，仅H5（2.6.15+）支持|
-|url|String|是|文件的本地地址|
+|uri|String|是|文件的本地地址|
 
 Tip:
 
