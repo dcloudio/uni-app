@@ -55,7 +55,7 @@
   <!-- 仅nvue页面支持 -->
   <!-- 必须指定ad-draw的宽度和高度，否则大小全屏 -->
   <view class="container">
-    <ad-draw adpid="1111111111"></ad-draw>
+    <ad-draw class="ad-draw" adpid="1111111111"></ad-draw>
   </view>
 </template>
 
