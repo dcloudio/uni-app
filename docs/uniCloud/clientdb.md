@@ -957,6 +957,28 @@ const res = await db.collection('table1').where({
 - 更新数据库时不可使用更新操作符`db.command.inc`等
 - 更新数据时键值不可使用`{'a.b.c': 1}`的形式，需要写成`{a:{b:{c:1}}}`形式（后续会对此进行优化）
 
+### 其他数据库操作
+
+clientDB支持使用聚合操作读取数据，关于聚合操作请参考[聚合操作](uniCloud/cf-database.md?id=aggregate)
+
+例：取status等于1的随机20条数据
+
+```js
+const db = uniCloud.database()
+const res = await db.collection('test').aggregate()
+.match({
+  status: 1
+})
+.sample({
+  size: 20
+})
+.end()
+```
+
+**注意**
+
+- 目前`<uni-clientdb>`组件暂不支持使用聚合操作读取数据
+
 ### 刷新token@refreshtoken
 
 透传uni-id自动刷新的token给客户端
