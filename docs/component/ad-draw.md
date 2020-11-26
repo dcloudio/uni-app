@@ -48,55 +48,90 @@
 
 **示例：**
 
+示例1
+
 ```html
 <template>
+  <!-- 仅nvue页面支持 -->
+  <!-- 必须指定ad-draw的宽度和高度，否则大小全屏 -->
+  <view class="container">
+    <ad-draw adpid="1111111111"></ad-draw>
+  </view>
+</template>
+
+<script>
+  export default {
+    data() {
+      return {
+      }
+    },
+    methods: {
+    }
+  }
+</script>
+
+<style>
+  .container {
+    flex: 1;
+  }
+
+  .ad-draw {
+    flex: 1;
+    width: 750rpx;
+  }
+</style>
+
+```
+
+示例2
+
+```html
+<template>
+  <!-- 仅nvue页面支持 -->
   <view class="content">
-    <!-- App nvue页面 -->
-    <!-- adpid="1111111111" 此广告位标识仅在HBuilderX标准基座中有效，仅用于测试 -->
     <view class="ad-draw">
-      <ad-draw adpid="1111111111" @load="onload" @error="onerror"></ad-draw>
+      <ad-draw :adData="adData" @load="onload" @error="onerror"></ad-draw>
     </view>
   </view>
 </template>
-```
 
-```javascript
-export default {
-  data() {
-    return {
-      title: 'ad-draw',
-      adData: {}
-    }
-  },
-  onReady: function (e) {
-  },
-  methods: {
-    // 可选
-    getAdData: function (e) {
-      // 仅APP平台支持
-      plus.ad.getDrawAds({
-          adpid: '1111111111',  // 此广告位标识仅在HBuilderX标准基座中有效，仅用于测试
-          count: 1,   // 广告数量，默认 1-3
-          width: 300,  // 根据宽度获取合适的广告(单位px)
-          height: 300  // 根据高度获取合适的广告(单位px)
-        },
-        (res) => {
-          this.adData = res.ads[0];
-          console.log(this.adData);
-        },
-        (err) => {
-          console.log(err);
-        }
-      )
+<script>
+  export default {
+    data() {
+      return {
+        title: 'ad-draw',
+        adData: {}
+      }
     },
-    onload(e) {
-      console.log("onload");
+    onReady: function (e) {
     },
-    onerror(e) {
-      console.log("onerror: " + e.detail.errCode + " message:: " + e.detail.errMsg);
+    methods: {
+      getAdData: function (e) {
+        // 仅APP平台支持
+        plus.ad.getDrawAds({
+            adpid: '1111111111',  // 此广告位标识仅在HBuilderX标准基座中有效，仅用于测试
+            count: 1,   // 广告数量，默认 1-3
+            width: 300,  // 根据宽度获取合适的广告(单位px)
+            height: 300  // 根据高度获取合适的广告(单位px)
+          },
+          (res) => {
+            this.adData = res.ads[0];
+            console.log(this.adData);
+          },
+          (err) => {
+            console.log(err);
+          }
+        )
+      },
+      onload(e) {
+        console.log("onload");
+      },
+      onerror(e) {
+        console.log("onerror: " + e.detail.errCode + " message:: " + e.detail.errMsg);
+      }
     }
   }
-}
+</script>
 ```
 
 **激励视频广告**
