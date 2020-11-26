@@ -37,7 +37,7 @@
 
 **注意**
 - HBuilderX2.8+版本Android平台更新穿山甲（今日头条）广告SDK后不再支持x86类型CPU，无法运行到x86类型cpu的模拟器。
-- HBuilderX标准基座真机运行测试信息流广告位标识（adpid）为：1111111111
+- HBuilderX标准基座真机运行测试draw信息流广告位标识（adpid）为：1507000690
 - uniAd广告平台申请的adpid需要自定义基座生效
 
 **@error 错误码**
@@ -56,7 +56,7 @@
   <!-- 仅nvue页面支持 -->
   <!-- 必须指定ad-draw的宽度和高度，否则大小全屏 -->
   <view class="container">
-    <ad-draw class="ad-draw" adpid="1111111111"></ad-draw>
+    <ad-draw class="ad-draw" adpid="1507000690"></ad-draw>
   </view>
 </template>
 
@@ -110,7 +110,7 @@
       getAdData: function (e) {
         // 仅APP平台支持
         plus.ad.getDrawAds({
-            adpid: '1111111111',  // 此广告位标识仅在HBuilderX标准基座中有效，仅用于测试
+            adpid: '1507000690',  // 此广告位标识仅在HBuilderX标准基座中有效，仅用于测试
             count: 1,   // 广告数量，默认 1-3
             width: 300,  // 根据宽度获取合适的广告(单位px)
             height: 300  // 根据高度获取合适的广告(单位px)
