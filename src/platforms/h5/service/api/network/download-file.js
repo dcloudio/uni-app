@@ -46,7 +46,7 @@ class DownloadTask {
 export function downloadFile ({
   url,
   header,
-  timeout = (__uniConfig.networkTimeout && __uniConfig.networkTimeout.downloadFile) || 60 * 1000
+  timeout = (__uniConfig.networkTimeout && __uniConfig.networkTimeout.request) || 60 * 1000
 }, callbackId) {
   const {
     invokeCallbackHandler: invoke

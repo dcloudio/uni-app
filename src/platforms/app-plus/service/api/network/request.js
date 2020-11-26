@@ -46,7 +46,7 @@ export function createRequestTaskById (requestTaskId, {
   responseType,
   sslVerify = true,
   firstIpv4 = false,
-  timeout = __uniConfig.networkTimeout.request
+  timeout = (__uniConfig.networkTimeout && __uniConfig.networkTimeout.request) || 60 * 1000
 } = {}) {
   const stream = requireNativePlugin('stream')
   const headers = {}
