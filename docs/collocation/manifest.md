@@ -758,8 +758,7 @@ mp-qq只支持自定义组件模式，不存在usingComponents配置
 		// HBuilderX->manifest.json->启动图配置->启动界面选项
 		"splashscreen": {
 			"waiting": true,
-			"autoclose": true,
-			"delay": 0
+			"autoclose": true
 		},
 		"error": {
 			"url": "页面加载错误时打开的页面地址，可以是网络地址，也可以是本地地址"
