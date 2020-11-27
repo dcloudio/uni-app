@@ -51,7 +51,6 @@ mapContext
 |longitude|Number		|否		|经度 ，App 2.6.8、H5、仅微信小程序 2.8.0+ 支持																			|
 |latitude	|Number		|否		|纬度 ，App 2.6.8、H5、仅微信小程序 2.8.0+ 支持																			|
 |success	|Function	|否		|接口调用成功的回调函数 ，res = { longitude: "经度", latitude: "纬度"}|
-|success	|Function	|否		|接口调用成功的回调函数 ，res = { longitude: "经度", latitude: "纬度"}|
 |fail			|Function	|否		|接口调用失败的回调函数																								|
 |complete	|Function	|否		|接口调用结束的回调函数（调用成功、失败都会执行）											|
 
