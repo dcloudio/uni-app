@@ -210,6 +210,11 @@ splash（启动封面）是App必然存在的、不可取消的。
 		<title>
 			<%= htmlWebpackPlugin.options.title %>
 		</title>
+		<!-- Open Graph data -->
+		<!-- <meta property="og:title" content="Title Here" /> -->
+		<!-- <meta property="og:url" content="http://www.example.com/" /> -->
+		<!-- <meta property="og:image" content="http://example.com/image.jpg" /> -->
+		<!-- <meta property="og:description" content="Description Here" /> -->
 		<script>
 			var coverSupport = 'CSS' in window && typeof CSS.supports === 'function' && (CSS.supports('top: env(a)') || CSS.supports('top: constant(a)'))
 			document.write('<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' + (coverSupport ? ', viewport-fit=cover' : '') + '" />')
