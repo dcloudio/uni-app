@@ -6394,8 +6394,9 @@ var serviceContext = (function () {
   const createDownloadTaskById = function (downloadTaskId, {
     url,
     header,
-    timeout = __uniConfig.networkTimeout.downloadFile ? __uniConfig.networkTimeout.downloadFile / 1000 : 120
+    timeout
   } = {}) {
+    timeout = (timeout || (__uniConfig.networkTimeout && __uniConfig.networkTimeout.request) || 60 * 1000) / 1000;
     const downloader = plus.downloader.createDownload(url, {
       timeout,
       filename: TEMP_PATH + '/download/',
@@ -6506,7 +6507,7 @@ var serviceContext = (function () {
     responseType,
     sslVerify = true,
     firstIpv4 = false,
-    timeout = __uniConfig.networkTimeout.request
+    timeout = (__uniConfig.networkTimeout && __uniConfig.networkTimeout.request) || 60 * 1000
   } = {}) {
     const stream = requireNativePlugin('stream');
     const headers = {};
@@ -6965,8 +6966,8 @@ var serviceContext = (function () {
         }, provider === 'apple' ? { scope: 'email' } : params.univerifyStyle || {});
       }
       // 先注销再登录
-      // apple登录logout之后无法重新触发获取email,fullname
-      if (provider === 'apple') {
+      // apple登录logout之后无法重新触发获取email,fullname；一键登录无logout
+      if (provider === 'apple' || provider === 'univerify') {
         login();
       } else {
         service.logout(login, login);
@@ -9822,13 +9823,19 @@ var serviceContext = (function () {
     }
   }
 
+  function checkInWindows (vm) {
+    {
+      return false
+    }
+  }
+
   const requestComponentInfoCallbacks = createCallbacks('requestComponentInfo');
 
   function requestComponentInfo (pageVm, queue, callback) {
     UniServiceJSBridge.publishHandler('requestComponentInfo', {
       reqId: requestComponentInfoCallbacks.push(callback),
       reqs: queue
-    }, pageVm.$page.id);
+    }, checkInWindows() ? pageVm : pageVm.$page.id);
   }
 
   function parseDataset (attr) {
@@ -19381,7 +19388,7 @@ var serviceContext = (function () {
 
   class ServiceIntersectionObserver {
     constructor (component, options) {
-      this.pageId = component.$page.id;
+      this.pageId = component.$page && component.$page.id;
       this.component = component._$id || component; // app-plus 平台传输_$id
       this.options = Object.assign({}, defaultOptions, options);
     }
@@ -19415,13 +19422,13 @@ var serviceContext = (function () {
         reqId: this.reqId,
         component: this.component,
         options: this.options
-      }, this.pageId);
+      }, checkInWindows(this.component) ? this.component : this.pageId);
     }
 
     disconnect () {
       UniServiceJSBridge.publishHandler('destroyComponentObserver', {
         reqId: this.reqId
-      }, this.pageId);
+      }, checkInWindows(this.component) ? this.component : this.pageId);
     }
   }
 
@@ -19445,7 +19452,7 @@ var serviceContext = (function () {
 
   class ServiceMediaQueryObserver {
     constructor (component, options) {
-      this.pageId = component.$page.id;
+      this.pageId = component.$page && component.$page.id;
       this.component = component._$id || component; // app-plus 平台传输_$id
       this.options = options;
     }
@@ -19462,13 +19469,13 @@ var serviceContext = (function () {
         reqId: this.reqId,
         component: this.component,
         options: this.options
-      }, this.pageId);
+      });
     }
 
     disconnect () {
       UniServiceJSBridge.publishHandler('destroyMediaQueryObserver', {
         reqId: this.reqId
-      }, this.pageId);
+      });
     }
   }
 
