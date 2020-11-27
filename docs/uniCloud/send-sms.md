@@ -138,7 +138,7 @@ exports.main = async (event, context) => {
     console.log(err.errCode)
     console.log(err.errMsg)
     return {
-      code: err.errCode
+      code: err.errCode,
       msg: err.errMsg
     }
   }
