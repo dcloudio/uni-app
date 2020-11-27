@@ -1,5 +1,7 @@
 import createCallbacks from 'uni-helpers/callbacks'
-
+import {
+  checkInWindows
+} from 'uni-helpers/windows'
 import {
   getCurrentPageVm
 } from '../../platform'
@@ -14,7 +16,7 @@ const defaultOptions = {
 
 class ServiceIntersectionObserver {
   constructor (component, options) {
-    this.pageId = component.$page.id
+    this.pageId = component.$page && component.$page.id
     this.component = component._$id || component // app-plus 平台传输_$id
     this.options = Object.assign({}, defaultOptions, options)
   }
@@ -48,13 +50,13 @@ class ServiceIntersectionObserver {
       reqId: this.reqId,
       component: this.component,
       options: this.options
-    }, this.pageId)
+    }, checkInWindows(this.component) ? this.component : this.pageId)
   }
 
   disconnect () {
     UniServiceJSBridge.publishHandler('destroyComponentObserver', {
       reqId: this.reqId
-    }, this.pageId)
+    }, checkInWindows(this.component) ? this.component : this.pageId)
   }
 }
 

@@ -124,16 +124,17 @@ export function requestComponentInfo ({
   reqId,
   reqs
 }, pageId) {
-  const pages = getCurrentPages() // 跨平台时，View 层也应该实现该方法，举例 App 上，View 层的 getCurrentPages 返回长度为1的当前页面数组
-
-  const page = pages.find(page => page.$page.id === pageId)
-
-  if (!page) {
-    throw new Error(`Not Found：Page[${pageId}]`)
+  let pageVm
+  if (pageId._isVue) {
+    pageVm = pageId
+  } else {
+    const pages = getCurrentPages() // 跨平台时，View 层也应该实现该方法，举例 App 上，View 层的 getCurrentPages 返回长度为1的当前页面数组
+    const page = pages.find(page => page.$page.id === pageId)
+    if (!page) {
+      throw new Error(`Not Found：Page[${pageId}]`)
+    }
+    pageVm = page.$vm
   }
-
-  const pageVm = page.$vm
-
   const result = []
   reqs.forEach(function ({
     component,
@@ -151,5 +152,5 @@ export function requestComponentInfo ({
   UniViewJSBridge.publishHandler('onRequestComponentInfo', {
     reqId,
     res: result
-  }, pageId)
+  })
 }
