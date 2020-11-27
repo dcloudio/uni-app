@@ -20,8 +20,9 @@ const publishStateChange = (res) => {
 const createDownloadTaskById = function (downloadTaskId, {
   url,
   header,
-  timeout = __uniConfig.networkTimeout.downloadFile ? __uniConfig.networkTimeout.downloadFile / 1000 : 120
+  timeout
 } = {}) {
+  timeout = (timeout || (__uniConfig.networkTimeout && __uniConfig.networkTimeout.request) || 60 * 1000) / 1000
   const downloader = plus.downloader.createDownload(url, {
     timeout,
     filename: TEMP_PATH + '/download/',

@@ -1,5 +1,4 @@
 import createCallbacks from 'uni-helpers/callbacks'
-
 import {
   getCurrentPageVm
 } from '../../platform'
@@ -8,7 +7,7 @@ const createMediaQueryObserverCallbacks = createCallbacks('requestMediaQueryObse
 
 class ServiceMediaQueryObserver {
   constructor (component, options) {
-    this.pageId = component.$page.id
+    this.pageId = component.$page && component.$page.id
     this.component = component._$id || component // app-plus 平台传输_$id
     this.options = options
   }
@@ -25,13 +24,13 @@ class ServiceMediaQueryObserver {
       reqId: this.reqId,
       component: this.component,
       options: this.options
-    }, this.pageId)
+    })
   }
 
   disconnect () {
     UniServiceJSBridge.publishHandler('destroyMediaQueryObserver', {
       reqId: this.reqId
-    }, this.pageId)
+    })
   }
 }
 

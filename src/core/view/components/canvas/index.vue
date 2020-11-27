@@ -9,7 +9,16 @@
       width="300"
       height="150"
     />
-    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden;">
+    <div
+      style="
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      "
+    >
       <slot />
     </div>
     <v-uni-resize-sensor
@@ -29,6 +38,7 @@ import {
 } from 'uni-helpers/hidpi'
 
 import saveImage from 'uni-platform/helpers/save-image'
+import { getSameOriginUrl } from 'uni-platform/helpers/file'
 
 function resolveColor (color) {
   color = color.slice(0)
@@ -300,66 +310,16 @@ export default {
           image.onload = function () {
             image.ready = true
           }
-          /**
-           * 从本地文件加载
-           * @param {string} path 文件路径
-           */
-          function loadFile (path) {
-            function onError () {
-              const bitmap = new plus.nativeObj.Bitmap(`bitmap_${Date.now()}_${Math.random()}}`)
-              bitmap.load(path, function () {
-                image.src = bitmap.toBase64Data()
-                bitmap.clear()
-              }, function () {
-                bitmap.clear()
-                image.src = src
-              })
-            }
-            plus.io.resolveLocalFileSystemURL(path, function (entry) {
-              entry.file(function (file) {
-                var fileReader = new plus.io.FileReader()
-                fileReader.onload = function (data) {
-                  image.src = data.target.result
-                }
-                fileReader.onerror = onError
-                fileReader.readAsDataURL(file)
-              }, onError)
-            }, onError)
-          }
-          /**
-           * 从网络加载
-           * @param {string} url 文件地址
-           */
-          function loadUrl (url) {
-            plus.downloader.createDownload(url, {
-              filename: '_doc/uniapp_temp/download/'
-            }, function (d, status) {
-              if (status === 200) {
-                loadFile(d.filename)
-              } else {
-                image.src = src
-              }
-            }).start()
-          }
 
-          if (__PLATFORM__ === 'app-plus') {
-            // WKWebView
-            if (window.webkit && window.webkit.messageHandlers) {
-              if (src.indexOf('file://') === 0) {
-                loadFile(src)
-                return
-              } else if (src.indexOf('http://') === 0 || src.indexOf('https://') === 0) {
-                loadUrl(src)
-                return
-              }
-            }
-            // 安卓 WebView 本地路径
-            if (src.indexOf('file://') === 0 && navigator.vendor === 'Google Inc.') {
-              image.crossOrigin = 'anonymous'
-            }
+          // 安卓 WebView 本地路径
+          if (__PLATFORM__ === 'app-plus' && navigator.vendor === 'Google Inc.' && src.indexOf('file://') === 0) {
+            image.crossOrigin = 'anonymous'
           }
-
-          image.src = src
+          getSameOriginUrl(src).then(src => {
+            image.src = src
+          }).catch(() => {
+            image.src = src
+          })
         }
       })
     },

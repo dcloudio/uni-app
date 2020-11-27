@@ -37,8 +37,8 @@ export function login (params, callbackId) {
       }, provider === 'apple' ? { scope: 'email' } : params.univerifyStyle || {})
     }
     // 先注销再登录
-    // apple登录logout之后无法重新触发获取email,fullname
-    if (provider === 'apple') {
+    // apple登录logout之后无法重新触发获取email,fullname；一键登录无logout
+    if (provider === 'apple' || provider === 'univerify') {
       login()
     } else {
       service.logout(login, login)

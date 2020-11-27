@@ -93,6 +93,15 @@ export function fileToUrl (file) {
   return url
 }
 
+export function getSameOriginUrl (url) {
+  const a = document.createElement('a')
+  a.href = url
+  if (a.origin === location.origin) {
+    return Promise.resolve(url)
+  }
+  return urlToFile(url).then(fileToUrl)
+}
+
 export function revokeObjectURL (url) {
   (window.URL || window.webkitURL).revokeObjectURL(url)
   delete files[url]
