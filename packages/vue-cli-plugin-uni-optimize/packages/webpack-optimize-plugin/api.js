@@ -102,7 +102,7 @@ const isAppComponents = filepath => {
 
 const isCoreComponents = filepath => {
   return path.extname(filepath) === '.vue' &&
-    filepath.indexOf('/core/view/components/') === 0
+    (filepath.indexOf('/core/view/components/') === 0 || filepath.indexOf('/platforms/' + process.env.UNI_PLATFORM + '/view/components/') === 0)
 }
 
 const isAppMixins = filepath => {
