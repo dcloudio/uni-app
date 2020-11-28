@@ -863,7 +863,7 @@ exports.main = async function(event,context) {
 
 ## 手机号码
 
-### 发送短信验证码
+### 发送短信验证码@sendsmscode
 
 用法：`uniID.sendSmsCode(Object SendSmsCodeParams)`
 
@@ -2067,17 +2067,17 @@ exports.main = async function(event,context) {
 // 云函数代码
 const uniID = require('uni-id')
 exports.main = async function(event,context) {
-  payload = await uniID.checkToken(event.uniIdToken)
+  const payload = await uniID.checkToken(event.uniIdToken)
   if (payload.code && payload.code > 0) {
-  	return payload
+    return payload
   }
-	const res = await uniID.getUserInfo({
+  const res = await uniID.getInvitedUser({
     uid: payload.uid,
     limit: 10,
     offset: 0,
     needTotal: true
   })
-	return res
+  return res
 }
 ```
 
