@@ -55,22 +55,6 @@
 |order|int|表单项排序序号。生成前端表单代码时，默认是以schema中的字段顺序从上到下排布表单项的，但如果指定了order，则按order规定的顺序进行排序。如果表单项被包含在uni-group中，则同组内按order排序|
 |component|Object&#124;Array|生成前端表单代码时，使用什么组件渲染这个表单项。比如使用input输入框。详见下方示例|
 
-**url格式**
-
-`http://` | `https://` | `ftp://` 开头, `//` 后必须包含一个 `.`(localhost除外)
-
-有效格式
-- http://dcloud.io
-- https://dcloud.io
-- http://localhost
-
-无效格式
-- http://dcloud
-- https://dcloud
-- mailto:dcloud@dcloud.io
-- file:\\
-- file:\\\
-
 
 **注意：**
 1. `DB Schema`的各种功能均只支持`clientDB`。如果使用云函数操作数据库，schema的作用仅仅是描述字段信息。同时强烈推荐使用HBuilderX 2.9.5以上版本使用`clientDB`。
@@ -91,6 +75,23 @@
 注：timestamp是一串数字的时间戳，不合适直接渲染到界面上。推荐的做法是在前端渲染时使用[`<uni-dateformat>`组件](https://ext.dcloud.net.cn/plugin?id=3279)。
 
 <!-- schema里时间格式只允许时间戳是不够的 -->
+
+
+### url格式@url
+
+`http://` | `https://` | `ftp://` 开头, `//` 后必须包含一个 `.`(localhost除外)
+
+有效格式
+- http://dcloud.io
+- https://dcloud.io
+- http://localhost
+
+无效格式
+- http://dcloud
+- https://dcloud
+- mailto:dcloud@dcloud.io
+- file:\\
+- file:\\\
 
 
 ### enum属性@enum
@@ -224,7 +225,7 @@
 
 uniCloud推出了`openDB`开源数据库规范，包括用户表、文章表、商品表等很多模板表，这些模板表均已经内置`DB Schema`，可学习参考。[详见](https://gitee.com/dcloud/opendb)
 
-### 默认值defaultValue/forceDefaultValue
+### 默认值defaultValue/forceDefaultValue@defaultvalue
 
 - defaultValue指定新增时当前字段默认值，客户端可以修改此值。
 - forceDefaultValue也是指定新增时当前字段的默认值，与defaultValue不一样，forceDefaultValue不可被客户端修改。
@@ -424,7 +425,7 @@ uniCloud推出了`openDB`开源数据库规范，包括用户表、文章表、�
 ```
 
 
-#### validateFunction扩展校验函数@validateFunction
+#### validateFunction扩展校验函数@validatefunction
 
 扩展校验函数
 
@@ -502,7 +503,7 @@ uniCloud推出了`openDB`开源数据库规范，包括用户表、文章表、�
 `validateFunction`里的代码是可以联网的。一个常见场景是内容的敏感词过滤，可以将内容提交到三方校验服务里，如果校验通过再入库
 
 
-#### errorMessage自定义错误提示
+#### errorMessage自定义错误提示@errormessage
 
 数据不符合schema配置的规范时，无法入库，此时会根据errorMessage的定义报出错误提示。
 
@@ -971,7 +972,7 @@ DCloud提供了`uni-forms`前端组件，该组件的校验规范完全符合`DB
 
 如果未设置label属性，但配置了title属性，生成前端表单页面时会取title作为前端的label。
 
-#### component属性
+#### component属性@component
 
 定义该字段在表单中使用什么样的组件进行渲染，可设置前端的组件名和初始属性。
 
