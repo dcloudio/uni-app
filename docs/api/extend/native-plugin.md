@@ -67,6 +67,7 @@ dcRichAlert.show({
 
 **注意事项：**
 
-1. 可以在 [插件市场](https://ext.dcloud.net.cn/?cat1=5&cat2=51) 查看更多插件，如需开发uni原生插件请参考 [uni原生插件开发文档](https://nativesupport.dcloud.net.cn/NativePlugin/README)。
-2. 集成原生插件后，需要提交云端打包或制作自定义基座运行才会生效，不支持直接在内置基座运行。
-3. 如果插件需要传递文件路径，则需要传手机文件的绝对路径，可使用 5+ [IO模块](http://www.html5plus.org/doc/zh_cn/io.html) 的相关 API 得到文件的绝对路径。
+1. 可以在 [插件市场](https://ext.dcloud.net.cn/?cat1=5&cat2=51) 查看更多插件，如需开发uni原生插件请参考 [uni原生插件开发文档](https://nativesupport.dcloud.net.cn/NativePlugin/README)。 
+2. 如果插件需要传递文件路径，则需要传手机文件的绝对路径，可使用 5+ [IO模块](http://www.html5plus.org/doc/zh_cn/io.html) 的相关 API 得到文件的绝对路径。
+3. uni-app默认内置集成原生模块，如：BindingX，Animation， DOM.addRule等。通过```uni.requireNativePlugin```引入 App 原生插件。
+4. 支持项目nativeplugins目录下和插件市场原生云打包的第三方原生插件。集成原生插件后，需要提交云端打包或制作自定义基座运行才会生效，不支持直接在内置基座运行。
