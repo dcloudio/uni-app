@@ -76,7 +76,7 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style>
 .uni-system-open-location {
   display: block;
   position: absolute;
@@ -87,7 +87,7 @@ export default {
   background: #f8f8f8;
 }
 
-.nav-btn-back {
+.uni-system-open-location .nav-btn-back {
   position: absolute;
   box-sizing: border-box;
   top: 0;
@@ -102,7 +102,7 @@ export default {
   cursor: pointer;
 }
 
-.nav-btn-back > .uni-btn-icon {
+.uni-system-open-location .nav-btn-back > .uni-btn-icon {
   display: block;
   width: 100%;
   height: 100%;
@@ -111,7 +111,7 @@ export default {
   background-color: rgba(0, 0, 0, 0.5);
 }
 
-.map-content {
+.uni-system-open-location .map-content {
   position: absolute;
   left: 0;
   top: 0px;
@@ -120,18 +120,18 @@ export default {
   overflow: hidden;
 }
 
-.map-content.fix-position {
+.uni-system-open-location .map-content.fix-position {
   top: -74px;
   bottom: -44px;
 }
 
-.map-content > iframe {
+.uni-system-open-location .map-content > iframe {
   width: 100%;
   height: 100%;
   border: none;
 }
 
-.actTonav {
+.uni-system-open-location .actTonav {
   position: absolute;
   right: 16px;
   bottom: 56px;
