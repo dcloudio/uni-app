@@ -274,6 +274,15 @@ export default {
         }
       }
     },
+    setWindowStyle (type, style) {
+      if (!this[type + 'Window']) {
+        return type + 'Window not found'
+      }
+      if (style) {
+        this[type + 'WindowStyle'] = style
+        this.$nextTick(this['on' + capitalize(type) + 'WindowInit'])
+      }
+    },
     initMaxWidth () {
       window.addEventListener('resize', () => {
         this.checkMaxWidth()
