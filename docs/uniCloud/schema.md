@@ -441,7 +441,7 @@ uniCloud推出了`openDB`开源数据库规范，包括用户表、文章表、�
 
   ```js
   // 扩展校验函数示例
-  exports = function (rule, value, data, callback) {
+  module.exports = function (rule, value, data, callback) {
     // rule  当前规则
     // value 当前规则校验数据
     // data  全部校验数据
@@ -453,7 +453,7 @@ uniCloud推出了`openDB`开源数据库规范，包括用户表、文章表、�
   }
 
   // 异步校验 Promise
-  export = function (rule, value, data) {
+  module.exports = function (rule, value, data) {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         if (value > 10) {
@@ -469,7 +469,7 @@ uniCloud推出了`openDB`开源数据库规范，包括用户表、文章表、�
   }
 
   // 异步校验 await/async
-  export = async function (rule, value, data) {
+  module.exports = async function (rule, value, data) {
     let result = await uni.request({...})
     if (result > 10) {
       // 校验通过
