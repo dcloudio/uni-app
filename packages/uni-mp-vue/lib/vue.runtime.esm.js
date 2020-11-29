@@ -3361,6 +3361,8 @@ function patch(instance) {
                 ctx.__next_tick_pending = false;
                 flushCallbacks(instance);
             });
+            // props update may have triggered pre-flush watchers.
+            flushPreFlushCbs(undefined, instance.update);
         }
         else {
             flushCallbacks(instance);

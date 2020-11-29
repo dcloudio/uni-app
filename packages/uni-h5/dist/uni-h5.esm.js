@@ -948,7 +948,7 @@ var script$2 = {
     },
     cancelText: {
       type: String,
-      default: "取消"
+      default: "\u53D6\u6D88"
     },
     cancelColor: {
       type: String,
@@ -956,7 +956,7 @@ var script$2 = {
     },
     confirmText: {
       type: String,
-      default: "确定"
+      default: "\u786E\u5B9A"
     },
     confirmColor: {
       type: String,
@@ -1093,7 +1093,7 @@ function render$3(_ctx, _cache, $props, $setup, $data, $options) {
           style: {color: $props.itemColor},
           class: "uni-actionsheet__cell",
           onClick: _cache[2] || (_cache[2] = ($event) => $options._close(-1))
-        }, " 取消 ", 4)
+        }, " \u53D6\u6D88 ", 4)
       ])
     ], 2)
   ], 32);
@@ -1184,9 +1184,9 @@ var Toast = {
         }
         let warnMsg = "";
         if (type === "onHideToast" && showType !== "onShowToast") {
-          warnMsg = "请注意 showToast 与 hideToast 必须配对使用";
+          warnMsg = "\u8BF7\u6CE8\u610F showToast \u4E0E hideToast \u5FC5\u987B\u914D\u5BF9\u4F7F\u7528";
         } else if (type === "onHideLoading" && showType !== "onShowLoading") {
-          warnMsg = "请注意 showLoading 与 hideLoading 必须配对使用";
+          warnMsg = "\u8BF7\u6CE8\u610F showLoading \u4E0E hideLoading \u5FC5\u987B\u914D\u5BF9\u4F7F\u7528";
         }
         if (warnMsg) {
           return console.warn(warnMsg);
@@ -1254,7 +1254,7 @@ function formatApiArgs(args, options) {
     return args;
   }
 }
-function /*#__PURE__*/ createApi({type: type2, name, options}, fn, protocol) {
+function createApi({type: type2, name, options}, fn, protocol) {
   return function(...args) {
     if (type2 === API_TYPE_SYNC) {
       if (!(protocol && !validateProtocol())) {
@@ -1277,10 +1277,10 @@ const ArrayBufferToBase64Protocol = [
     required: true
   }
 ];
-const base64ToArrayBuffer = /* @__PURE__ */ /*#__PURE__*/ createApi({type: API_TYPE_SYNC, name: "base64ToArrayBuffer"}, (base642) => {
+const base64ToArrayBuffer = /* @__PURE__ */ createApi({type: API_TYPE_SYNC, name: "base64ToArrayBuffer"}, (base642) => {
   return decode(base642);
 }, Base64ToArrayBufferProtocol);
-const arrayBufferToBase64 = /* @__PURE__ */ /*#__PURE__*/ createApi({type: API_TYPE_SYNC, name: "arrayBufferToBase64"}, (arrayBuffer) => {
+const arrayBufferToBase64 = /* @__PURE__ */ createApi({type: API_TYPE_SYNC, name: "arrayBufferToBase64"}, (arrayBuffer) => {
   return encode(arrayBuffer);
 }, ArrayBufferToBase64Protocol);
 const Upx2pxProtocol = [
@@ -1301,7 +1301,7 @@ function checkDeviceWidth() {
   deviceDPR = pixelRatio;
   isIOS = platform === "ios";
 }
-const upx2px = /* @__PURE__ */ /*#__PURE__*/ createApi({type: API_TYPE_SYNC, name: "upx2px"}, (number, newDeviceWidth) => {
+const upx2px = /* @__PURE__ */ createApi({type: API_TYPE_SYNC, name: "upx2px"}, (number, newDeviceWidth) => {
   if (deviceWidth === 0) {
     checkDeviceWidth();
   }
@@ -1380,14 +1380,14 @@ function removeHook(hooks, hook) {
     hooks.splice(index2, 1);
   }
 }
-const addInterceptor = /* @__PURE__ */ /*#__PURE__*/ createApi({type: API_TYPE_SYNC, name: "addInterceptor"}, (method, interceptor3) => {
+const addInterceptor = /* @__PURE__ */ createApi({type: API_TYPE_SYNC, name: "addInterceptor"}, (method, interceptor3) => {
   if (typeof method === "string" && isPlainObject(interceptor3)) {
     mergeInterceptorHook(scopedInterceptors[method] || (scopedInterceptors[method] = {}), interceptor3);
   } else if (isPlainObject(method)) {
     mergeInterceptorHook(globalInterceptors, method);
   }
 }, AddInterceptorProtocol);
-const removeInterceptor = /* @__PURE__ */ /*#__PURE__*/ createApi({type: API_TYPE_SYNC, name: "removeInterceptor"}, (method, interceptor3) => {
+const removeInterceptor = /* @__PURE__ */ createApi({type: API_TYPE_SYNC, name: "removeInterceptor"}, (method, interceptor3) => {
   if (typeof method === "string") {
     if (isPlainObject(interceptor3)) {
       removeInterceptorHook(scopedInterceptors[method], interceptor3);
@@ -1475,7 +1475,7 @@ class ServiceIntersectionObserver {
     }, this._pageId);
   }
 }
-const createIntersectionObserver$1 = /* @__PURE__ */ /*#__PURE__*/ createApi({type: API_TYPE_RETURN}, (context, options) => {
+const createIntersectionObserver$1 = /* @__PURE__ */ createApi({type: API_TYPE_RETURN}, (context, options) => {
   if (!context) {
     context = getCurrentPageVm();
   }
@@ -1531,19 +1531,19 @@ const SCHEMA_CSS = {
   "css.env": cssSupports("top:env(a)"),
   "css.constant": cssSupports("top:constant(a)")
 };
-const canIUse = /* @__PURE__ */ /*#__PURE__*/ createApi({type: API_TYPE_SYNC, name: "canIUse"}, (schema) => {
+const canIUse = /* @__PURE__ */ createApi({type: API_TYPE_SYNC, name: "canIUse"}, (schema) => {
   if (hasOwn(SCHEMA_CSS, schema)) {
     return SCHEMA_CSS[schema];
   }
   return true;
 }, CanIUseProtocol);
-const makePhoneCall = /* @__PURE__ */ /*#__PURE__*/ createApi({type: API_TYPE_ASYNC, name: "makePhoneCall"}, (option) => {
+const makePhoneCall = /* @__PURE__ */ createApi({type: API_TYPE_ASYNC, name: "makePhoneCall"}, (option) => {
   window.location.href = `tel:${option.phoneNumber}`;
 }, MakePhoneCallProtocol);
 const ua = navigator.userAgent;
 const isAndroid = /android/i.test(ua);
 const isIOS$1 = /iphone|ipad|ipod/i.test(ua);
-const getSystemInfoSync = /* @__PURE__ */ /*#__PURE__*/ createApi({type: API_TYPE_SYNC}, () => {
+const getSystemInfoSync = /* @__PURE__ */ createApi({type: API_TYPE_SYNC}, () => {
   var screen = window.screen;
   var pixelRatio = window.devicePixelRatio;
   const screenFix = /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
@@ -1644,16 +1644,16 @@ const getSystemInfoSync = /* @__PURE__ */ /*#__PURE__*/ createApi({type: API_TYP
     }
   };
 });
-const getSystemInfo = /* @__PURE__ */ /*#__PURE__*/ createApi({type: API_TYPE_ASYNC, name: "getSystemInfo"}, () => {
+const getSystemInfo = /* @__PURE__ */ createApi({type: API_TYPE_ASYNC, name: "getSystemInfo"}, () => {
   return getSystemInfoSync();
 });
-const openDocument = /* @__PURE__ */ /*#__PURE__*/ createApi({type: API_TYPE_ASYNC, name: "openDocument"}, (option) => {
+const openDocument = /* @__PURE__ */ createApi({type: API_TYPE_ASYNC, name: "openDocument"}, (option) => {
   window.open(option.filePath);
 }, OpenDocumentProtocol);
 function _getServiceAddress() {
   return window.location.protocol + "//" + window.location.host;
 }
-const getImageInfo = /* @__PURE__ */ /*#__PURE__*/ createApi({type: API_TYPE_ASYNC, name: "getImageInfo", options: GetImageInfoOptions}, ({src}, callback) => {
+const getImageInfo = /* @__PURE__ */ createApi({type: API_TYPE_ASYNC, name: "getImageInfo", options: GetImageInfoOptions}, ({src}, callback) => {
   const img = new Image();
   img.onload = function() {
     callback({
@@ -1670,19 +1670,19 @@ const getImageInfo = /* @__PURE__ */ /*#__PURE__*/ createApi({type: API_TYPE_ASY
   };
   img.src = src;
 }, GetImageInfoProtocol);
-const navigateBack = /* @__PURE__ */ /*#__PURE__*/ createApi({type: API_TYPE_ASYNC}, () => {
+const navigateBack = /* @__PURE__ */ createApi({type: API_TYPE_ASYNC}, () => {
 });
-const navigateTo = /* @__PURE__ */ /*#__PURE__*/ createApi({type: API_TYPE_ASYNC}, (options) => {
+const navigateTo = /* @__PURE__ */ createApi({type: API_TYPE_ASYNC}, (options) => {
   const router = getApp().$router;
   router.push(options.url);
 });
-const redirectTo = /* @__PURE__ */ /*#__PURE__*/ createApi({type: API_TYPE_ASYNC}, () => {
+const redirectTo = /* @__PURE__ */ createApi({type: API_TYPE_ASYNC}, () => {
 });
-const reLaunch = /* @__PURE__ */ /*#__PURE__*/ createApi({type: API_TYPE_ASYNC}, () => {
+const reLaunch = /* @__PURE__ */ createApi({type: API_TYPE_ASYNC}, () => {
 });
-const switchTab = /* @__PURE__ */ /*#__PURE__*/ createApi({type: API_TYPE_ASYNC}, () => {
+const switchTab = /* @__PURE__ */ createApi({type: API_TYPE_ASYNC}, () => {
 });
-const getRealPath = /* @__PURE__ */ /*#__PURE__*/ createApi({type: API_TYPE_SYNC}, (path) => {
+const getRealPath = /* @__PURE__ */ createApi({type: API_TYPE_SYNC}, (path) => {
   return path;
 });
 var api = /* @__PURE__ */ Object.freeze({
@@ -1749,7 +1749,7 @@ var script$4 = {
         const envMethod = canIUse("css.env") ? "env" : canIUse("css.constant") ? "constant" : "";
         const windowBottom = windowBottomValue && envMethod ? `calc(${windowBottomValue}px + ${envMethod}(safe-area-inset-bottom))` : `${windowBottomValue}px`;
         document.documentElement.style.setProperty("--window-bottom", windowBottom);
-        console.debug(`uni.${windowBottom ? "showTabBar" : "hideTabBar"}：--window-bottom=${windowBottom}`);
+        console.debug(`uni.${windowBottom ? "showTabBar" : "hideTabBar"}\uFF1A--window-bottom=${windowBottom}`);
       }
       window.dispatchEvent(new CustomEvent("resize"));
     }
@@ -2250,7 +2250,7 @@ function render$5(_ctx, _cache, $props, $setup, $data, $options) {
           createVNode("i", {
             style: {color: _ctx.color, fontSize: "27px"},
             class: "uni-btn-icon"
-          }, "", 4)
+          }, "\uE601", 4)
         ], 512), [
           [vShow, $props.backButton]
         ]),
@@ -2815,7 +2815,7 @@ function render$9(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("div", {
     class: "uni-async-error",
     onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick(...args))
-  }, " 连接服务器超时，点击屏幕重试 ");
+  }, " \u8FDE\u63A5\u670D\u52A1\u5668\u8D85\u65F6\uFF0C\u70B9\u51FB\u5C4F\u5E55\u91CD\u8BD5 ");
 }
 ;
 script$9.render = render$9;

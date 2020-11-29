@@ -5428,8 +5428,8 @@ var script$h = {
     _scrollIntoViewChanged: function(val) {
       if (val) {
         if (!/^[_a-zA-Z][-_a-zA-Z0-9:]*$/.test(val)) {
-          console.group('scroll-into-view="' + val + '" 有误');
-          console.error("id 属性值格式错误。如不能以数字开头。");
+          console.group('scroll-into-view="' + val + '" \u6709\u8BEF');
+          console.error("id \u5C5E\u6027\u503C\u683C\u5F0F\u9519\u8BEF\u3002\u5982\u4E0D\u80FD\u4EE5\u6570\u5B57\u5F00\u5934\u3002");
           console.groupEnd();
           return;
         }
