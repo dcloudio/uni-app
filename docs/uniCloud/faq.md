@@ -165,3 +165,7 @@ uniCloud服务商为阿里云时支持配置全球加速，步骤如下：
 4. 选择不使用的账号登录之后注销即可，参考文档：[注销腾讯云账号](https://cloud.tencent.com/document/product/378/30253)
 
 同时，如果付费购买腾讯云服务空间，每个账号可以最多拥有50个腾讯云服务空间（注意其中仅有一个享受免费额度）。
+
+### 部署网站到前端网页托管报“The requested file was not found on this server.”
+
+- 部署history模式的uni-app项目时，如果未修改前端网页托管的配置，直接访问子页面时就会遇到上面的错误。如何配置请参考[部署uni-app项目](uniCloud/hosting.md?id=host-uni-app)

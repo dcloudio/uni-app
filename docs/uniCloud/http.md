@@ -151,6 +151,21 @@ uni.request({
   + 请求Body大小限制，不能超过1M。
   + 响应Body大小限制，不能超过1M。
 
+云函数接收到的post请求的请求体可能是被转成base64的，如果是这样需要进行一次转化。
+
+以接收application/json格式的post请求为例
+
+```js
+exports.main = function(event) {
+    let body = event.body
+    if(event.isBase64Encoded){
+      body = Buffer.from(body)
+    }
+    const param = JSON.parse(body) // param为客户端上传的数据
+    // ...
+}
+```
+
 
 ### 云函数的返回值
 
@@ -160,7 +175,7 @@ uni.request({
 
 云函数返回字符串，那么：
 ```js
-module.exports.main = function() {
+exports.main = function() {
     return 'hello gateway'
 }
 ```
@@ -180,7 +195,7 @@ hello gateway
 返回的`Object`会被转换为 JSON，同时 HTTP 响应的`content-type`会被设置为 `application/json`：
 
 ```js
-module.exports.main = function() {
+exports.main = function() {
     return {
         foo: 'bar'
     }
@@ -216,7 +231,7 @@ content-length: 13
 将`content-type`设置为`text/html`，即可在`body`中返回 HTML，会被浏览器自动解析：
 
 ```js
-module.exports.main = function() {
+exports.main = function() {
     return {
         mpserverlessComposedResponse: true, // 使用阿里云返回集成响应是需要此字段为true
         statusCode: 200,
@@ -243,7 +258,7 @@ content-length: 14
 将`content-type`设置为`application/javascript`，即可在`body`中返回 JavaScript 文件：
 
 ```js
-module.exports.main = function() {
+exports.main = function() {
     return {
         mpserverlessComposedResponse: true, // 使用阿里云返回集成响应是需要此字段为true
         statusCode: 200,
@@ -270,7 +285,7 @@ console.log("Hello!")
 如果返回体是诸如图片、音视频这样的二进制文件，那么可以将`isBase64Encoded`设置为`true`，并且将二进制文件内容转为 Base64 编码的字符串，例如：
 
 ```js
-module.exports.main = function() {
+exports.main = function() {
     return {
         mpserverlessComposedResponse: true, // 使用阿里云返回集成响应是需要此字段为true
         isBase64Encoded: true,
