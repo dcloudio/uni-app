@@ -324,28 +324,28 @@ padding {length}：内边距，内容和边框之间的距离，默认值 0。�
 
 
 ##### 边框
-```border-style```设定边框样式，如果四个方向的边框样式不同，可分别设置：
+```border-style``` 设定边框样式，如果四个方向的边框样式不同，可分别设置：
 
 
 |可选值	|描述					|
 |--		|--						|
-|border-left-style {string}		|可选值为 ```solid```， ```dashed```， ```dotted```，默认值 ```solid```	|
-|border-top-style {string}		|可选值为 ```solid```， ```dashed```， ```dotted```，默认值 ```solid```	|
-|border-right-style {string}	|可选值为 ```solid```， ```dashed```， ```dotted```，默认值 ```solid```	|
-|border-bottom-style {string}	|可选值为 ```solid```， ```dashed```， ```dotted```，默认值 ```solid```	|
+|border-left-style {string}		|可选值为 ```solid``` ， ```dashed``` ， ```dotted``` ，默认值 ```solid```	|
+|border-top-style {string}		|可选值为 ```solid``` ， ```dashed``` ， ```dotted``` ，默认值 ```solid```	|
+|border-right-style {string}	|可选值为 ```solid``` ， ```dashed``` ， ```dotted``` ，默认值 ```solid```	|
+|border-bottom-style {string}	|可选值为 ```solid``` ， ```dashed``` ， ```dotted``` ，默认值 ```solid```	|
 
 
 
 |可选值	|描述					|
 |--		|--						|
-|solid	|实线边框，默认值 ```solid```	|
+|solid	|实线边框，默认值 ```solid``` 	|
 |dashed	|方形虚线边框			|
 |dotted	|圆点虚线边框			|
 
 
 ##### border-width
 
-```border-width```：设定边框宽度，非负值, 默认值 0，如果四个方向的边框宽度不同，可分别设置：
+```border-width``` ：设定边框宽度，非负值, 默认值 0，如果四个方向的边框宽度不同，可分别设置：
 
 
 |可选值							|描述				|
@@ -360,7 +360,7 @@ padding {length}：内边距，内容和边框之间的距离，默认值 0。�
 
 ##### border-color
 
-```border-color```：设定边框颜色，默认值 ```#000000```，如果四个方向的边框颜色不同，可分别设置：
+```border-color``` ：设定边框颜色，默认值 ```#000000``` ，如果四个方向的边框颜色不同，可分别设置：
 
 
 |可选值						|描述					|
@@ -375,7 +375,7 @@ padding {length}：内边距，内容和边框之间的距离，默认值 0。�
 
 ##### border-radius
 
-```border-radius```：设置边框的圆角，默认值 0，如果四个方向的圆角弧度不同，可分别设置：
+```border-radius``` ：设置边框的圆角，默认值 0，如果四个方向的圆角弧度不同，可分别设置：
 
 
 |可选值								|描述				|
@@ -387,7 +387,7 @@ padding {length}：内边距，内容和边框之间的距离，默认值 0。�
 |border-top-right-radius {length}	|非负值, 默认值 0	|
 
 
-> ```border-radius```和```border-width```定义了圆心角为90度的椭圆弧的长轴和半长轴的大小。如果邻接两边```border-radius```(或```border-width```不一致，nvue绘制的边框曲线可能不够平滑。
+>  ```border-radius``` 和 ```border-width``` 定义了圆心角为90度的椭圆弧的长轴和半长轴的大小。如果邻接两边 ```border-radius``` (或 ```border-width``` 不一致，nvue绘制的边框曲线可能不够平滑
 
 
 ##### 外边距
@@ -408,9 +408,9 @@ margin {length}：外边距，元素和元素之间的空白距离，默认值 0
 
 ##### Android 兼容性
 
-尽管 ```overflow: hidden``` 在 Android 上是默认行为，但只有下列条件都满足时，一个父 view 才会去剪切它的子 ```view```。
+尽管 ```overflow: hidden``` 在 Android 上是默认行为，但只有下列条件都满足时，一个父 view 才会去剪切它的子 ```view``` 。
 
-- 父view是```view```, ```cell```, ```refresh``` 或 ```loading```。
+- 父view是 ```view``` ,  ```cell``` ,  ```refresh``` 或 ```loading``` 。
 - 系统版本是 Android 4.3 或更高。
 - 系统版本不是 Andorid 7.0。
 - 父 view 没有 ```background-image``` 属性或系统版本是 Android 5.0 或更高。
