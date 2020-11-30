@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-mp-toutiao",
-  "version": "2.0.0-alpha-29920201130005",
+  "version": "2.0.0-alpha-29920201130006",
   "description": "uni-app mp-toutiao",
   "main": "dist/index.js",
   "repository": {
@@ -17,5 +17,5 @@
     "name": "mp-toutiao",
     "title": "字节跳动小程序"
   },
-  "gitHead": "55712fabcea605cd3de97951e89142876d0c36f1"
+  "gitHead": "c135dec26ebb9c45211964ed038893f252612853"
 }
