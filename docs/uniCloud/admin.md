@@ -322,6 +322,8 @@ admin 提供了两个内置方法，方便在页面中鉴定登录用户权限�
 - 可以使用 uni-clientdb，在前端直接操作数据库，后台配置 db schema 进行权限和格式校验
 - 可以使用云函数单文件路由，在项目中默认包含了一个[uni-cloud-router](https://uniapp.dcloud.io/uniCloud/uni-cloud-router) 的单文件路由，也可以使用插件市场的其他单文件路由
 
+> 注意：在搭配云函数操作，controller 下的文件夹和文件，不要命名相同，例如：app/room 这个写法目前分辨不了 `app` 是文件 `app.js`，还是文件夹 `app`
+
 #### 自己开发页面
 
 admin 中开发页面，和 uni-app 开发 vue 页面是一致的。
