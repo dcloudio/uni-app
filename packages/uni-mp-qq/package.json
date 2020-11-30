@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-mp-qq",
-  "version": "2.0.0-alpha-29920201130004",
+  "version": "2.0.0-alpha-29920201130005",
   "description": "uni-app mp-qq",
   "main": "dist/index.js",
   "repository": {
@@ -17,5 +17,5 @@
     "name": "mp-qq",
     "title": "QQ小程序"
   },
-  "gitHead": "c5c30b98ceb5f266681858f6879dbdd733e0afd5"
+  "gitHead": "55712fabcea605cd3de97951e89142876d0c36f1"
 }
