@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-app-plus",
-  "version": "2.0.0-alpha-29920201130002",
+  "version": "2.0.0-alpha-29920201130003",
   "description": "uni-app app-plus",
   "main": "dist/index.js",
   "repository": {
@@ -17,5 +17,5 @@
     "name": "app-plus",
     "title": "APP-PLUS"
   },
-  "gitHead": "1322091076b222d6d097097142ddc247b46af47a"
+  "gitHead": "f61e6b705ddd0881d5292d43af7452623dd0171c"
 }
