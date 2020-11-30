@@ -1,6 +1,6 @@
 
-# 概述
-## 介绍
+## 概述
+### 介绍
 ```uni-app``` App端内置了一个基于 weex 改进的原生渲染引擎，提供了原生渲染能力。
 
 在App端，如果使用vue页面，则使用webview渲染；如果使用nvue页面(native vue的缩写)，则使用原生渲染。一个App中可以同时使用两种页面，比如首页使用nvue，二级页使用vue页面，hello uni-app示例就是如此。
@@ -16,7 +16,7 @@
 - 可实现区域滚动长列表+左右拖动列表+吸顶的复杂排版效果
 - 优化圆角边框绘制性能
 
-## 适用场景
+### 适用场景
 
 nvue的组件和API写法与vue页面一致，其内置组件还比vue页面内置组件增加了更多，[详见](https://uniapp.dcloud.io/component/list)。
 
@@ -40,7 +40,7 @@ nvue的组件和API写法与vue页面一致，其内置组件还比vue页面内�
 2. 动态横竖屏。nvue页面的css不支持媒体查询，所以横竖屏动态切换、动态适配屏幕是很困难的。
 
 
-## 纯原生渲染模式
+### 纯原生渲染模式
 uni-app在App端，支持vue页面和nvue页面混搭、互相跳转。也支持纯nvue原生渲染。
 
 启用纯原生渲染模式，可以减少App端的包体积、减少使用时的内存占用。因为webview渲染模式的相关模块将被移除。
@@ -61,7 +61,7 @@ uni-app在App端，支持vue页面和nvue页面混搭、互相跳转。也支持
 ```
 
 
-## 编译模式
+### 编译模式
 **weex编译模式和uni-app编译模式**
 
 如你之前是weex开发者，可以继续查阅本章节，否则可以跳过看下一节[快速上手](#快速上手)。
@@ -124,8 +124,8 @@ nvue 的页面跳转，与 weex 不同，仍然遵循 uni-app 的路由模型。
 
 weex 编译模式下支持使用 weex ui ，例子[详见](https://ext.dcloud.net.cn/plugin?id=442)。但相比uni-app插件市场及官方[uni ui](https://ext.dcloud.net.cn/plugin?id=55)而言，weex语法的组件生态还是比较欠缺的。
 
-## 快速上手
-### 1.新建nvue页面
+### 快速上手
+#### 1.新建nvue页面
 在HBuilderX的 ```uni-app``` 项目中，新建页面，弹出界面右上角可以选择是建立```vue```页面还是```nvue```页面，或者2个同时建。
 
 不管是vue页面还是nvue页面，都需要在```pages.json```中注册。如果在HBuilderX中新建页面是会自动注册的，如果使用其他编辑器，则需要自行在pages.json里注册。
@@ -134,7 +134,7 @@ weex 编译模式下支持使用 weex ui ，例子[详见](https://ext.dcloud.ne
 
 如果不同名，只有nvue页面，则在非app端，只有uni-app编译模式的nvue文件才会编译。
 
-### 2.开发nvue页面
+#### 2.开发nvue页面
 ```nvue``` 页面结构同 ```vue```, 由 ```template```、```style```、```script``` 构成。
 
 - template： 模板写法、数据绑定同 vue。组件支持2种模式，
@@ -146,11 +146,11 @@ weex 编译模式下支持使用 weex ui ，例子[详见](https://ext.dcloud.ne
 	- uni API：[https://uniapp.dcloud.io/api/README](https://uniapp.dcloud.io/api/README)
 	- plus API：仅支持App端。[http://www.html5plus.org/doc/h5p.html](http://www.html5plus.org/doc/h5p.html)
 
-### 3.调试 nvue 页面
+#### 3.调试 nvue 页面
 HBuilderX内置了weex调试工具的强化版，包括审查界面元素、看log、debug打断点，[详见](https://uniapp.dcloud.io/snippet?id=%e5%85%b3%e4%ba%8e-app-%e7%9a%84%e8%b0%83%e8%af%95)
 
 
-## nvue开发与vue开发的常见区别
+### nvue开发与vue开发的常见区别
 
 基于原生引擎的渲染，虽然还是前端技术栈，但和web开发肯定是有区别的。
 
@@ -177,7 +177,7 @@ HBuilderX内置了weex调试工具的强化版，包括审查界面元素、看l
 21. nvue 页面关闭原生导航栏时，想要模拟状态栏，可以[参考文章](https://ask.dcloud.net.cn/article/35111)。但是，仍然强烈建议在nvue页面使用原生导航栏。nvue的渲染速度再快，也没有原生导航栏快。原生排版引擎解析```json```绘制原生导航栏耗时很少，而解析nvue的js绘制整个页面的耗时要大的多，尤其在新页面进入动画期间，对于复杂页面，没有原生导航栏会在动画期间产生整个屏幕的白屏或闪屏。
 
 
-## iOS平台下拉组件refresh组件注意问题
+### iOS平台下拉组件refresh组件注意问题
 
 iOS平台默认情况下滚动容器组件（如```list```、```waterfall```组件）内容不足时，由于没有撑满容器的可视区域会导致无法上下滚动，此时无法操作下拉刷新功能，无法触发```refresh```组件的```@refresh```、```@pullingdown```事件。 此时可在容器组件中配置```alwaysScrollableVertical```属性值为```true```来设置支持上下滚动，支持下拉刷新操作。
 
@@ -197,7 +197,7 @@ iOS平台默认情况下滚动容器组件（如```list```、```waterfall```组�
 
 > Android平台不存在此问题
 
-# 样式
+## 样式
 #### nvue所支持的通用样式已在本文档中全部列出，一些组件可能有自定义样式，请参考组件文档。除此之外的属性，均不被支持。
 
 - nvue的css**仅支持flex布局**，是webview的css语法的子集。这是因为操作系统原生排版不支持非flex之外的web布局。当然flex足以排布出各种页面，只是写法需要适应。
@@ -276,7 +276,7 @@ iOS平台默认情况下滚动容器组件（如```list```、```waterfall```组�
 	}
 ```
 
-## 盒模型
+### 盒模型
 
 nvue盒模型基于 CSS 盒模型，每个 nvue 元素都可视作一个盒子。我们一般在讨论设计或布局时，会提到「盒模型」这个概念。
 
@@ -404,10 +404,10 @@ margin {length}：外边距，元素和元素之间的空白距离，默认值 0
 
 
 
-## Flexbox
+### Flexbox
 
 
-### Flex 容器
+#### Flex 容器
 Flex 是 Flexible Box 的缩写，意为"弹性布局"，用来为盒状模型提供最大的灵活性。
 
 nvue布局模型基于 CSS Flexbox，以便所有页面元素的排版能够一致可预测，同时页面布局能适应各种设备或者屏幕尺寸。Flexbox 包含 flex 容器和 flex 成员项。如果一个nvue元素可以容纳其他元素，那么它就成为 flex 容器。
@@ -550,7 +550,7 @@ flex {number}：值为 number 类型。
 
 
 
-## position 定位
+### position 定位
 
 设置定位类型。默认值为 ```relative```。
 
@@ -599,7 +599,7 @@ flex {number}：值为 number 类型。
 如果定位元素超过容器边界，在 Android 下，超出部分将不可见，原因在于 Android 端元素 ```overflow``` 默认值为 ```hidden```，但目前 Android 暂不支持设置 ```overflow: visible```。
 
 
-## Transition 
+### Transition 
 
 ```transition```允许 CSS 的属性值在一定的时间区间内平滑地过渡。
 ##### transition-property
@@ -697,7 +697,7 @@ flex {number}：值为 number 类型。
 
 <img width="300px" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/0d2fc7a0-3089-11eb-8ff1-d5dcf8779628.gif" />
 
-## Transform
+### Transform
 
 应用于元素的2D或3D转换。这个属性允许你将元素旋转，缩放，移动，倾斜等。
 
@@ -830,7 +830,7 @@ flex {number}：值为 number 类型。
 <img width="300px" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/810e5de0-3088-11eb-b997-9918a5dda011.gif" />
 
 
-## 伪类
+### 伪类
 
 
 |参数名		|描述								|
@@ -849,7 +849,7 @@ flex {number}：值为 number 类型。
 <img width="400px" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/f3069420-2f17-11eb-8a36-ebb87efcf8c0.png" />
 
 
-## 线性渐变
+### 线性渐变
 
 所有组件均支持线性渐变。[CSS3 渐变](https://www.w3cschool.cn/css3/oj26bfli.html)
 你可以通过  ``` background-image ```属性创建线性渐变。
@@ -879,9 +879,9 @@ flex {number}：值为 number 类型。
 <img width="300px" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/8f70e4e0-308b-11eb-97b7-0dc4655d6e68.PNG" />
 
 
-## 阴影
+### 阴影
 
-### IOS平台：阴影```box-shadow```
+#### IOS平台：阴影```box-shadow```
 
 	
 	{box-shadow:inset offset-x offset-y blur-radius color}
@@ -911,7 +911,7 @@ flex {number}：值为 number 类型。
 
 
 
-### Android平台：阴影```elevation```
+#### Android平台：阴影```elevation```
 
 Android平台weex对阴影样式(box-shadow)支持不完善，如设置圆角边框时阴影样式显示不正常、设置动画时在Android7上显示不正常、在Android10上出现闪烁现象等。
 
@@ -934,7 +934,7 @@ Android平台weex对阴影样式(box-shadow)支持不完善，如设置圆角边
 
 
 
-## 文本样式
+### 文本样式
 
 ##### color
 color {color}：文字颜色，支持如下字段：
@@ -1020,7 +1020,7 @@ line-height {length}: 正整数，每行文字高度。```line-height```是 top 
 
 
 
-# API <div id="API"></div>
+## API <div id="API"></div>
 
 
 对于那些不依赖 UI 交互的原生功能，nvue将其封装成模块，这是一种通过 javascript 调用原生能力的方法。
@@ -1043,7 +1043,7 @@ line-height {length}: 正整数，每行文字高度。```line-height```是 top 
 
 
 
-## DOM.addRule <div id="addRule"></div>
+### DOM.addRule <div id="addRule"></div>
 
  Weex 提供 DOM.addRule 以**加载自定义字体**。开发者可以通过指定 font-family加载 iconfont 和 custom font。开发者可以使用下面的代码加载自定义字体：
 ``` html
@@ -1095,7 +1095,7 @@ line-height {length}: 正整数，每行文字高度。```line-height```是 top 
 
 
 
-## animation
+### animation
 
 ```animation```模块可以用来在组件上执行动画。JS-Animation可以对组件执行一系列简单的变换 (位置、大小、旋转角度、背景颜色和不透明度)。
 
@@ -1206,7 +1206,7 @@ line-height {length}: 正整数，每行文字高度。```line-height```是 top 
 
 
 
-## nvue 里使用 BindingX
+### nvue 里使用 BindingX
 
 ```uni-app```是逻辑层和视图层分离的。此时会产生两层通信成本。比如拖动视图层的元素，如果在逻辑层不停接收事件，因为通信损耗会产生不顺滑的体验。
 
@@ -1408,7 +1408,7 @@ BindingX类似一种强化版的```css```，运行性能高，但没有js那样�
 
 
 
-## nvue 和 vue 相互通讯
+### nvue 和 vue 相互通讯
 在 uni-app 中，nvue 和 vue 页面可以混搭使用。
 
 推荐使用```uni.$on```,```uni.$emit```的方式进行页面通讯，旧的通讯方式（uni.postMessage及plus.webview.postMessageToUniNView）不再推荐使用。
@@ -1433,7 +1433,7 @@ BindingX类似一种强化版的```css```，运行性能高，但没有js那样�
 
 **使用此页面通讯时注意事项：要在页面卸载前，使用 uni.$off 移除事件监听器。**[参考](https://uniapp.dcloud.io/collocation/frame/communication?id=off)
 
-### nvue 向 vue 通讯（已过期，推荐使用上面的uni.$on、uni.$emit）
+#### nvue 向 vue 通讯（已过期，推荐使用上面的uni.$on、uni.$emit）
 
 ##### 步骤：
 
@@ -1475,7 +1475,7 @@ BindingX类似一种强化版的```css```，运行性能高，但没有js那样�
 ```
 
 
-### vue 向 nvue 通讯（已过期，推荐使用上面的uni.$on、uni.$emit）
+#### vue 向 nvue 通讯（已过期，推荐使用上面的uni.$on、uni.$emit）
 
 ##### 步骤：
 
@@ -1552,7 +1552,7 @@ BindingX类似一种强化版的```css```，运行性能高，但没有js那样�
 
 
 
-## vue 和 nvue 共享的变量和数据
+###  vue 和 nvue 共享的变量和数据
 
 除了通信事件，vue 和 nvue 页面之间还可以共享变量和存储。 ```uni-app```提供的共享变量和数据的方案如下：
 
@@ -1591,11 +1591,11 @@ BindingX类似一种强化版的```css```，运行性能高，但没有js那样�
 
 
 
-## nvue 里使用 HTML5Plus API
+###  nvue 里使用 HTML5Plus API
 nvue页面可直接使用plus的API，并且不需要等待plus ready。
 
 
-## nvue 里不支持的 uni-app API<div id="nvueAPI"></div>
+### nvue 里不支持的 uni-app API<div id="nvueAPI"></div>
 nvue 支持大部分 uni-app API ，下面只列举目前还**不支持的 API** 。
 
 ##### 动画
