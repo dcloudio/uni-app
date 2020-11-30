@@ -310,6 +310,7 @@ nvue盒模型基于 CSS 盒模型，每个 nvue 元素都可视作一个盒子�
 |width {length}	|宽度，默认值 0							|
 |height {length}|高度，默认值 0							|
 
+
 ##### 内边距
 padding {length}：内边距，内容和边框之间的距离，默认值 0。与标准 CSS 类似，padding 支持简写，也可分解为以下四个：
 
@@ -324,6 +325,7 @@ padding {length}：内边距，内容和边框之间的距离，默认值 0。�
 
 ##### 边框
 ```border-style```设定边框样式，如果四个方向的边框样式不同，可分别设置：
+
 
 |可选值	|描述					|
 |--		|--						|
@@ -342,7 +344,9 @@ padding {length}：内边距，内容和边框之间的距离，默认值 0。�
 
 
 ##### border-width
+
 ```border-width```：设定边框宽度，非负值, 默认值 0，如果四个方向的边框宽度不同，可分别设置：
+
 
 |可选值							|描述				|
 |--								|--					|
@@ -352,7 +356,10 @@ padding {length}：内边距，内容和边框之间的距离，默认值 0。�
 |border-right-width {length}	|非负值, 默认值 0	|
 |border-bottom-width {length}	|非负值, 默认值 0	|
 
+
+
 ##### border-color
+
 ```border-color```：设定边框颜色，默认值 ```#000000```，如果四个方向的边框颜色不同，可分别设置：
 
 
@@ -364,8 +371,12 @@ padding {length}：内边距，内容和边框之间的距离，默认值 0。�
 |border-right-color {color}	|默认值 ```#000000```	|
 |border-bottom-color {color}|默认值 ```#000000```	|
 
+
+
 ##### border-radius
+
 ```border-radius```：设置边框的圆角，默认值 0，如果四个方向的圆角弧度不同，可分别设置：
+
 
 |可选值								|描述				|
 |--									|--					|
@@ -375,11 +386,14 @@ padding {length}：内边距，内容和边框之间的距离，默认值 0。�
 |border-top-left-radius {length}	|非负值, 默认值 0	|
 |border-top-right-radius {length}	|非负值, 默认值 0	|
 
+
 > ```border-radius```和```border-width```定义了圆心角为90度的椭圆弧的长轴和半长轴的大小。如果邻接两边```border-radius```(或```border-width```不一致，nvue绘制的边框曲线可能不够平滑。
 
 
 ##### 外边距
+
 margin {length}：外边距，元素和元素之间的空白距离，默认值 0。与标准 CSS 类似，margin 支持简写，也可分解为四边：
+
 
 |可选值					|描述								|
 |--						|--									|
@@ -415,6 +429,7 @@ nvue布局模型基于 CSS Flexbox，以便所有页面元素的排版能够一�
 > 文档中未说明的 flexbox 属性**均不支持**：如 ```order```、```flex-grow``` 、```flex-shrink``` 、 ```flex-basis```、```align-content```、```align-self``` 等。
 
 **在 nvue中，Flexbox 是默认且唯一的布局模型，所以你不需要手动为元素添加 ```display: flex;``` 属性。**
+
 
 
 ##### flex-direction
