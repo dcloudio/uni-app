@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-quickapp-native",
-  "version": "2.0.0-alpha-29920201130001",
+  "version": "2.0.0-alpha-29920201130002",
   "description": "uni-app quickapp-native",
   "main": "dist/vue.prod.js",
   "repository": {
@@ -19,7 +19,7 @@
   },
   "author": "fxy060608",
   "license": "Apache-2.0",
-  "gitHead": "e51484a49748f7bff86bb833763e5dff1522d380",
+  "gitHead": "1322091076b222d6d097097142ddc247b46af47a",
   "uni-app": {
     "name": "quickapp-native",
     "title": "快应用(Native)版"
