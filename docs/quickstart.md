@@ -17,7 +17,7 @@ HBuilderX是通用的前端开发工具，但为`uni-app`做了特别强化。
 如使用`cli`方式创建项目，可直接下载标准版，因为uni-app编译插件被安装到项目下了。
 
 
-### 创建uni-app
+## 创建uni-app
 
 在点击工具栏里的文件 -> 新建 -> 项目：
 <div align=center>
@@ -32,7 +32,7 @@ uni-app自带的模板有 Hello uni-app ，是官方的组件和API示例。还�
   <img src="//img.cdn.aliyun.dcloud.net.cn/uni-app/doc/create.png"/>
 </div>
 
-### 运行uni-app
+## 运行uni-app
 1. 浏览器运行：进入hello-uniapp项目，点击工具栏的运行 -> 运行到浏览器 -> 选择浏览器，即可在浏览器里面体验uni-app 的 H5 版。
   <div align=center>
   	<img src="//img-cdn-qiniu.dcloud.net.cn/uniapp/doc/run-chrome.png"/>
@@ -112,9 +112,9 @@ HBuilderX 还提供了快捷运行菜单，可以按数字快速选择要运行�
 
 如需调试，可参考：[uni-app调试](/snippet?id=使用-chrome-调试)
 
-### 发布uni-app
+## 发布uni-app
 
-#### 打包为原生App（云端）
+### 打包为原生App（云端）
 
 在HBuilderX工具栏，点击发行，选择原生app-云端打包，如下图：
 
@@ -126,7 +126,7 @@ HBuilderX 还提供了快捷运行菜单，可以按数字快速选择要运行�
   <img style="max-width:600px;" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/001a20b0-d85a-11ea-81ea-f115fe74321c.png"/>
 </div>
 
-#### 打包为原生App（离线）
+### 打包为原生App（离线）
 
 ``uni-app`` 支持离线打包，在 HBuilderX 发行菜单里生成离线打包资源，然后参考离线打包文档操作，可以从HBuilderX的发行菜单里找到文档链接，也可以直接访问：[https://nativesupport.dcloud.net.cn/AppDocs/README](https://nativesupport.dcloud.net.cn/AppDocs/README)。
 
@@ -136,7 +136,7 @@ HBuilderX 还提供了快捷运行菜单，可以按数字快速选择要运行�
   <img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/uni20190222-12.png"/>
 </div>
 
-#### 发布为H5
+### 发布为H5
 
 1. 在 ``manifest.json`` 的可视化界面，进行如下配置（发行在网站根目录可不配置应用基本路径），此时发行网站路径是 www.xxx.com/h5，如：[https://hellouniapp.dcloud.net.cn](https://hellouniapp.dcloud.net.cn)。
 <div align=center>
@@ -152,7 +152,7 @@ HBuilderX 还提供了快捷运行菜单，可以按数字快速选择要运行�
 - `history` 模式发行需要后台配置支持，详见：[history 模式的后端配置](https://router.vuejs.org/zh/guide/essentials/history-mode.html#%E5%90%8E%E7%AB%AF%E9%85%8D%E7%BD%AE%E4%BE%8B%E5%AD%90)
 - 打包部署后，在服务器上开启 gzip 可以进一步压缩文件。具体的配置，可以参考网上的分享：https://juejin.im/post/5af003286fb9a07aac24611b
 
-#### 发布为小程序
+### 发布为小程序
 
 **发布为微信小程序：**
 1. 申请微信小程序AppID，参考：[微信教程](https://developers.weixin.qq.com/miniprogram/dev/#申请帐号)。
