@@ -609,7 +609,7 @@ exports.main = async function(event,context) {
 	// 校验新密码与确认新密码是否一致
   
   const payload = await uniID.checkToken(event.uniIdToken)
-  if(payload.code > 0) {
+  if(payload.code) {
     return payload
   }
   
@@ -650,7 +650,7 @@ exports.main = async function(event,context) {
 const uniID = require('uni-id')
 exports.main = async function(event,context) {
   const payload = await uniID.checkToken(event.uniIdToken)
-  if(payload.code > 0) {
+  if(payload.code) {
     return payload
   }
   
@@ -730,7 +730,7 @@ exports.main = async function(event,context) {
 		avatar
 	} = event
   const payload = await uniID.checkToken(event.uniIdToken)
-  if(payload.code > 0) {
+  if(payload.code) {
     return payload
   }
 	const res = await uniID.setAvatar({
@@ -768,7 +768,7 @@ exports.main = async function(event,context) {
 const uniID = require('uni-id')
 exports.main = async function(event,context) {
   payload = await uniID.checkToken(event.uniIdToken)
-  if (payload.code && payload.code > 0) {
+  if (payload.code) {
   	return payload
   }
 	const res = await uniID.updateUser({
@@ -805,7 +805,7 @@ exports.main = async function(event,context) {
 const uniID = require('uni-id')
 exports.main = async function(event,context) {
   payload = await uniID.checkToken(event.uniIdToken)
-  if (payload.code && payload.code > 0) {
+  if (payload.code) {
   	return payload
   }
 	const res = await uniID.getUserInfo({
@@ -850,7 +850,7 @@ uniID.init({
 })
 exports.main = async function(event,context) {
   payload = await uniID.checkToken(event.uniIdToken)
-  if (payload.code && payload.code > 0) {
+  if (payload.code) {
   	return payload
   }
 	const res = await uniID.updateUser({
@@ -1075,7 +1075,7 @@ exports.main = async function(event,context) {
     code
 	} = event
   const payload = await uniID.checkToken(event.uniIdToken)
-  if(payload.code > 0) {
+  if(payload.code) {
     return payload
   }
 	const res = await uniID.bindMobile({
@@ -1118,7 +1118,7 @@ exports.main = async function(event,context) {
     code
 	} = event
   const payload = await uniID.checkToken(event.uniIdToken)
-  if(payload.code > 0) {
+  if(payload.code) {
     return payload
   }
 	const res = await uniID.unbindMobile({
@@ -1217,7 +1217,7 @@ exports.main = async function(event,context) {
     code
 	} = event
   const payload = await uniID.checkToken(event.uniIdToken)
-  if(payload.code > 0) {
+  if(payload.code) {
     return payload
   }
 	const res = await uniID.bindEmail({
@@ -1261,7 +1261,7 @@ exports.main = async function(event,context) {
     code
 	} = event
   const payload = await uniID.checkToken(event.uniIdToken)
-  if(payload.code > 0) {
+  if(payload.code) {
     return payload
   }
 	const res = await uniID.unbindEmail({
@@ -1459,7 +1459,7 @@ exports.main = async function(event,context) {
 const uniID = require('uni-id')
 exports.main = async function(event,context) {
   payload = await uniID.checkToken(event.uniIdToken)
-  if (payload.code && payload.code > 0) {
+  if (payload.code) {
   	return payload
   }
 	const res = await uniID.bindWeixin({
@@ -1492,7 +1492,7 @@ exports.main = async function(event,context) {
 const uniID = require('uni-id')
 exports.main = async function(event,context) {
   payload = await uniID.checkToken(event.uniIdToken)
-  if (payload.code && payload.code > 0) {
+  if (payload.code) {
   	return payload
   }
 	const res = await uniID.unbindWeixin(payload.uid)
@@ -1610,7 +1610,7 @@ exports.main = async function(event,context) {
 const uniID = require('uni-id')
 exports.main = async function(event,context) {
   payload = await uniID.checkToken(event.uniIdToken)
-  if (payload.code && payload.code > 0) {
+  if (payload.code) {
   	return payload
   }
 	const res = await uniID.bindAlipay({
@@ -1643,7 +1643,7 @@ exports.main = async function(event,context) {
 const uniID = require('uni-id')
 exports.main = async function(event,context) {
   payload = await uniID.checkToken(event.uniIdToken)
-  if (payload.code && payload.code > 0) {
+  if (payload.code) {
   	return payload
   }
 	const res = await uniID.unbindAlipay(payload.uid)
@@ -2068,7 +2068,7 @@ exports.main = async function(event,context) {
 const uniID = require('uni-id')
 exports.main = async function(event,context) {
   const payload = await uniID.checkToken(event.uniIdToken)
-  if (payload.code && payload.code > 0) {
+  if (payload.code) {
     return payload
   }
   const res = await uniID.getInvitedUser({
