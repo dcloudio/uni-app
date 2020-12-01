@@ -22,7 +22,7 @@ const res = compiler.compile(
 <custom data-a="1" :data-b="b"></custom>
 `, {
     miniprogram: true,
-    resourcePath: '/User/fxy/Documents/test.wxml',
+    resourcePath: 'test.wxml',
     isReservedTag: function (tag) {
       return true
     },
