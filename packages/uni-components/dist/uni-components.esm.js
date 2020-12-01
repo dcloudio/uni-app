@@ -551,7 +551,6 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["id", "controls"]);
 }
-;
 script.render = render;
 const pixelRatio = function() {
   const canvas = document.createElement("canvas");
@@ -1223,7 +1222,6 @@ function render$1(_ctx, _cache, $props, $setup, $data, $options) {
     }, null, 8, ["onResize"])
   ], 16, ["canvas-id", "disable-scroll"]);
 }
-;
 script$1.render = render$1;
 var script$2 = {
   name: "Checkbox",
@@ -1315,7 +1313,6 @@ function render$2(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["disabled"]);
 }
-;
 script$2.render = render$2;
 var script$3 = {
   name: "CheckboxGroup",
@@ -1388,7 +1385,6 @@ function render$3(_ctx, _cache, $props, $setup, $data, $options) {
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-;
 script$3.render = render$3;
 var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;
 var endTag = /^<\/([-A-Za-z0-9_]+)[^>]*>/;
@@ -2100,8 +2096,6 @@ function render$4(_ctx, _cache, $props, $setup, $data, $options) {
     class: "ql-container"
   }, _ctx.$attrs), null, 16, ["id"]);
 }
-;
-;
 script$4.render = render$4;
 var script$5 = {
   name: "Form",
@@ -2151,7 +2145,6 @@ function render$5(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16);
 }
-;
 script$5.render = render$5;
 var script$6 = {
   name: "Icon",
@@ -2192,7 +2185,6 @@ function render$6(_ctx, _cache, $props, $setup, $data, $options) {
     }, null, 6)
   ], 16);
 }
-;
 script$6.render = render$6;
 var script$7 = {
   name: "Image",
@@ -2360,7 +2352,6 @@ function render$7(_ctx, _cache, $props, $setup, $data, $options) {
     }, null, 8, ["onResize"])) : createCommentVNode("", true)
   ], 16);
 }
-;
 script$7.render = render$7;
 const INPUT_TYPES = ["text", "number", "idcard", "digit", "password"];
 const NUMBER_TYPES = ["number", "digit"];
@@ -2582,7 +2573,6 @@ function render$8(_ctx, _cache, $props, $setup, $data, $options) {
     ], 512)
   ], 16);
 }
-;
 script$8.render = render$8;
 var script$9 = {
   name: "Label",
@@ -2624,7 +2614,6 @@ function render$9(_ctx, _cache, $props, $setup, $data, $options) {
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-;
 script$9.render = render$9;
 const addListenerToElement = function(element, type, callback, capture) {
   element.addEventListener(type, ($event) => {
@@ -3689,7 +3678,6 @@ function render$a(_ctx, _cache, $props, $setup, $data, $options) {
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-;
 script$a.render = render$a;
 const OPEN_TYPES = ["navigate", "redirect", "switchTab", "reLaunch", "navigateBack"];
 var script$b = {
@@ -3777,7 +3765,6 @@ function render$b(_ctx, _cache, $props, $setup, $data, $options) {
     renderSlot(_ctx.$slots, "default")
   ], 16));
 }
-;
 script$b.render = render$b;
 const VALUES = {
   activeColor: "#007AFF",
@@ -3899,7 +3886,6 @@ function render$c(_ctx, _cache, $props, $setup, $data, $options) {
     $props.showInfo ? (openBlock(), createBlock("p", _hoisted_1$4, toDisplayString($data.currentPercent) + "% ", 1)) : createCommentVNode("", true)
   ], 16);
 }
-;
 script$c.render = render$c;
 var script$d = {
   name: "Radio",
@@ -3996,7 +3982,6 @@ function render$d(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["disabled"]);
 }
-;
 script$d.render = render$d;
 var script$e = {
   name: "RadioGroup",
@@ -4087,7 +4072,6 @@ function render$e(_ctx, _cache, $props, $setup, $data, $options) {
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-;
 script$e.render = render$e;
 var script$f = {
   name: "ResizeSensor",
@@ -4162,10 +4146,6 @@ var script$f = {
     ]);
   }
 };
-;
-const render$f = () => {
-};
-script$f.render = render$f;
 function removeDOCTYPE(html) {
   return html.replace(/<\?xml.*\?>\n/, "").replace(/<!doctype.*>\n/, "").replace(/<!DOCTYPE.*>\n/, "");
 }
@@ -4403,12 +4383,12 @@ var script$g = {
   }
 };
 const _hoisted_1$6 = /* @__PURE__ */ createVNode("div", null, null, -1);
-function render$g(_ctx, _cache, $props, $setup, $data, $options) {
+function render$f(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-rich-text", _ctx.$attrs, [
     _hoisted_1$6
   ], 16);
 }
-script$g.render = render$g;
+script$g.render = render$f;
 function Friction$1(e2) {
   this._drag = e2;
   this._dragLog = Math.log(e2);
@@ -5531,7 +5511,7 @@ const _hoisted_8 = /* @__PURE__ */ createVNode("circle", {
   style: {color: "#2BD009"},
   "stroke-width": "3"
 }, null, -1);
-function render$h(_ctx, _cache, $props, $setup, $data, $options) {
+function render$g(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-scroll-view", _ctx.$attrs, [
     createVNode("div", _hoisted_1$7, [
       createVNode("div", {
@@ -5573,8 +5553,7 @@ function render$h(_ctx, _cache, $props, $setup, $data, $options) {
     ], 512)
   ], 16);
 }
-;
-script$h.render = render$h;
+script$h.render = render$g;
 var script$i = {
   name: "Slider",
   mixins: [emitter, listeners, touchtrack],
@@ -5740,7 +5719,7 @@ var script$i = {
 };
 const _hoisted_1$8 = {class: "uni-slider-wrapper"};
 const _hoisted_2$3 = {class: "uni-slider-tap-area"};
-function render$i(_ctx, _cache, $props, $setup, $data, $options) {
+function render$h(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-slider", mergeProps({ref: "uni-slider"}, _ctx.$attrs, {
     onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick(...args))
   }), [
@@ -5772,8 +5751,7 @@ function render$i(_ctx, _cache, $props, $setup, $data, $options) {
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-;
-script$i.render = render$i;
+script$i.render = render$h;
 var script$j = {
   name: "SwiperItem",
   props: {
@@ -5795,13 +5773,12 @@ var script$j = {
     }
   }
 };
-function render$j(_ctx, _cache, $props, $setup, $data, $options) {
+function render$i(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-swiper-item", _ctx.$attrs, [
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-;
-script$j.render = render$j;
+script$j.render = render$i;
 var script$k = {
   name: "Switch",
   mixins: [emitter, listeners],
@@ -5881,7 +5858,7 @@ var script$k = {
   }
 };
 const _hoisted_1$9 = {class: "uni-switch-wrapper"};
-function render$k(_ctx, _cache, $props, $setup, $data, $options) {
+function render$j(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-switch", mergeProps({disabled: $props.disabled}, _ctx.$attrs, {
     onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick(...args))
   }), [
@@ -5901,8 +5878,7 @@ function render$k(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["disabled"]);
 }
-;
-script$k.render = render$k;
+script$k.render = render$j;
 const DARK_TEST_STRING = "(prefers-color-scheme: dark)";
 var script$l = {
   name: "Textarea",
@@ -6127,7 +6103,7 @@ var script$l = {
 };
 const _hoisted_1$a = {class: "uni-textarea-wrapper"};
 const _hoisted_2$4 = {class: "uni-textarea-compute"};
-function render$l(_ctx, _cache, $props, $setup, $data, $options) {
+function render$k(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_v_uni_resize_sensor = resolveComponent("v-uni-resize-sensor");
   return openBlock(), createBlock("uni-textarea", mergeProps({
     onChange: _cache[8] || (_cache[8] = withModifiers(() => {
@@ -6179,8 +6155,7 @@ function render$l(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16);
 }
-;
-script$l.render = render$l;
+script$l.render = render$k;
 var script$m = {
   name: "View",
   mixins: [hover],
@@ -6188,7 +6163,7 @@ var script$m = {
     "label-click": "clickHandler"
   }
 };
-function render$m(_ctx, _cache, $props, $setup, $data, $options) {
+function render$l(_ctx, _cache, $props, $setup, $data, $options) {
   return _ctx.hoverClass && _ctx.hoverClass !== "none" ? (openBlock(), createBlock("uni-view", mergeProps({
     key: 0,
     class: [_ctx.hovering ? _ctx.hoverClass : ""],
@@ -6201,6 +6176,5 @@ function render$m(_ctx, _cache, $props, $setup, $data, $options) {
     renderSlot(_ctx.$slots, "default")
   ], 16));
 }
-;
-script$m.render = render$m;
+script$m.render = render$l;
 export {script as Audio, script$1 as Canvas, script$2 as Checkbox, script$3 as CheckboxGroup, script$4 as Editor, script$5 as Form, script$6 as Icon, script$7 as Image, script$8 as Input, script$9 as Label, script$a as MovableView, script$b as Navigator, script$c as Progress, script$d as Radio, script$e as RadioGroup, script$f as ResizeSensor, script$g as RichText, script$h as ScrollView, script$i as Slider, script$j as SwiperItem, script$k as Switch, script$l as Textarea, script$m as View, passiveOptions, supportsPassive$1 as supportsPassive};

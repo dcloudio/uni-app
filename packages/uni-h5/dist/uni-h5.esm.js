@@ -451,6 +451,7 @@ function $getRealPath(v) {
 }
 var instance = /* @__PURE__ */ Object.freeze({
   __proto__: null,
+  [Symbol.toStringTag]: "Module",
   $trigger,
   $handleEvent,
   $getRealPath
@@ -667,6 +668,7 @@ function selectAllComponents(selector) {
 }
 var wxInstance = /* @__PURE__ */ Object.freeze({
   __proto__: null,
+  [Symbol.toStringTag]: "Module",
   createSelectorQuery,
   createIntersectionObserver,
   selectComponent,
@@ -825,7 +827,6 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     _hoisted_2
   ]);
 }
-;
 script.render = render;
 var Transtion = {
   methods: {
@@ -928,7 +929,6 @@ function render$1(_ctx, _cache, $props, $setup, $data, $options) {
     _: 1
   });
 }
-;
 script$1.render = render$1;
 var script$2 = {
   name: "Modal",
@@ -1022,7 +1022,6 @@ function render$2(_ctx, _cache, $props, $setup, $data, $options) {
     _: 1
   });
 }
-;
 script$2.render = render$2;
 var script$3 = {
   name: "ActionSheet",
@@ -1098,7 +1097,6 @@ function render$3(_ctx, _cache, $props, $setup, $data, $options) {
     ], 2)
   ], 32);
 }
-;
 script$3.render = render$3;
 var Components = {
   Toast: script$1,
@@ -1687,6 +1685,7 @@ const getRealPath = /* @__PURE__ */ createApi({type: API_TYPE_SYNC}, (path) => {
 });
 var api = /* @__PURE__ */ Object.freeze({
   __proto__: null,
+  [Symbol.toStringTag]: "Module",
   upx2px,
   addInterceptor,
   removeInterceptor,
@@ -1802,7 +1801,6 @@ function render$4(_ctx, _cache, $props, $setup, $data, $options) {
     }), 128)) : createCommentVNode("", true)
   ], 2);
 }
-;
 script$4.render = render$4;
 function initSystemComponents(app2) {
   script$4.name = COMPONENT_NAME_PREFIX + script$4.name;
@@ -2334,7 +2332,6 @@ function render$5(_ctx, _cache, $props, $setup, $data, $options) {
     }, null, 2)) : createCommentVNode("", true)
   ], 8, ["uni-page-head-type"]);
 }
-;
 script$5.render = render$5;
 var script$6 = {
   name: "PageBody"
@@ -2346,7 +2343,6 @@ function render$6(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ]);
 }
-;
 script$6.render = render$6;
 var script$7 = {
   name: "PageRefresh",
@@ -2406,7 +2402,6 @@ function render$7(_ctx, _cache, $props, $setup, $data, $options) {
     ], 4)
   ]);
 }
-;
 script$7.render = render$7;
 function processDeltaY(evt, identifier, startY) {
   const touch = Array.prototype.slice.call(evt.changedTouches).filter((touch2) => touch2.identifier === identifier)[0];
@@ -2801,7 +2796,6 @@ function render$8(_ctx, _cache, $props, $setup, $data, $options) {
     }))
   ], 8, ["data-page"]);
 }
-;
 script$8.render = render$8;
 var script$9 = {
   name: "AsyncError",
@@ -2817,7 +2811,6 @@ function render$9(_ctx, _cache, $props, $setup, $data, $options) {
     onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick(...args))
   }, " \u8FDE\u63A5\u670D\u52A1\u5668\u8D85\u65F6\uFF0C\u70B9\u51FB\u5C4F\u5E55\u91CD\u8BD5 ");
 }
-;
 script$9.render = render$9;
 var script$a = {
   name: "AsyncLoading"
@@ -2829,6 +2822,5 @@ function render$a(_ctx, _cache, $props, $setup, $data, $options) {
     _hoisted_2$6
   ]);
 }
-;
 script$a.render = render$a;
 export {script$9 as AsyncErrorComponent, script$a as AsyncLoadingComponent, script$8 as PageComponent, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, createIntersectionObserver$1 as createIntersectionObserver, createSelectorQuery$1 as createSelectorQuery, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getImageInfo, getRealPath, getSystemInfo, getSystemInfoSync, makePhoneCall, navigateBack, navigateTo, openDocument, index as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, switchTab, uni$1 as uni, upx2px};

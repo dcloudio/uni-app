@@ -44,6 +44,12 @@ export default {
   },
   rollupOutputOptions: {
     format: 'es',
-    entryFileNames: 'uni-h5.esm.js'
+    entryFileNames: 'uni-h5.esm.js',
+    assetFileNames(assetInfo) {
+      if (assetInfo.name === 'style.css') {
+        return 'uni-h5.css'
+      }
+      return 'assets/[name]-[hash][extname]'
+    }
   }
 }

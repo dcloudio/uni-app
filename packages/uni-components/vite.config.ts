@@ -17,6 +17,12 @@ export default {
   },
   rollupOutputOptions: {
     format: 'es',
-    entryFileNames: 'uni-components.esm.js'
+    entryFileNames: 'uni-components.esm.js',
+    assetFileNames(assetInfo) {
+      if (assetInfo.name === 'style.css') {
+        return 'uni-components.css'
+      }
+      return 'assets/[name]-[hash][extname]'
+    }
   }
 }

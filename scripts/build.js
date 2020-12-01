@@ -51,14 +51,13 @@ async function build(target) {
   const env = devOnly ? 'development' : 'production'
 
   if (bundler === 'vite') {
-    await execa(
+    return await execa(
       'vite',
       ['build', '--config', path.resolve(pkgDir, 'vite.config.ts')],
       {
         stdio: 'inherit'
       }
     )
-    return require('./renameStyle').renameStyle(target, pkgDir)
   } else if (bundler === 'tsc') {
     return await execa('tsc', ['--listEmittedFiles', '-p', pkgDir], {
       stdio: 'inherit'
