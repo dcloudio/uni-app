@@ -10,16 +10,16 @@ function convertLengthShorthand (rule, prop) {
   for (var i = 0; i < rule.declarations.length; i++) {
     var declaration = rule.declarations[i]
     if (declaration.property === prop) {
-      var values =  declaration.value.split(/\s+/)
+      var values = declaration.value.split(/\s+/)
       // values[0] = values[0] || 0
       values[1] = values[1] || values[0]
       values[2] = values[2] || values[0]
       values[3] = values[3] || values[1]
       rule.declarations.splice(i, 1)
-      rule.declarations.splice(i, 0, {type: 'declaration', property: prop + '-left', value: values[3], position: declaration.position})
-      rule.declarations.splice(i, 0, {type: 'declaration', property: prop + '-bottom', value: values[2], position: declaration.position})
-      rule.declarations.splice(i, 0, {type: 'declaration', property: prop + '-right', value: values[1], position: declaration.position})
-      rule.declarations.splice(i, 0, {type: 'declaration', property: prop + '-top', value: values[0], position: declaration.position})
+      rule.declarations.splice(i, 0, { type: 'declaration', property: prop + '-left', value: values[3], position: declaration.position })
+      rule.declarations.splice(i, 0, { type: 'declaration', property: prop + '-bottom', value: values[2], position: declaration.position })
+      rule.declarations.splice(i, 0, { type: 'declaration', property: prop + '-right', value: values[1], position: declaration.position })
+      rule.declarations.splice(i, 0, { type: 'declaration', property: prop + '-top', value: values[0], position: declaration.position })
       // break
     }
   }
@@ -34,24 +34,24 @@ function convertLengthShorthand (rule, prop) {
  * - data.jsonStyle{}: `classname.propname.value`-like object
  * - data.log[{line, column, reason}]
  */
-function parse(code, done) {
+function parse (code, done) {
   var ast, err, jsonStyle = {}, log = []
 
   // css parse
-  ast = css.parse(code, {silent: true})
+  ast = css.parse(code, { silent: true })
 
   // catch syntax error
   if (ast.stylesheet.parsingErrors && ast.stylesheet.parsingErrors.length) {
     err = ast.stylesheet.parsingErrors
     err.forEach(function (error) {
-      log.push({line: error.line, column: error.column, reason: error.toString().replace('Error', 'ERROR')})
+      log.push({ line: error.line, column: error.column, reason: error.toString().replace('Error', 'ERROR') })
     })
   }
 
   // walk all
   /* istanbul ignore else */
   if (ast && ast.type === 'stylesheet' && ast.stylesheet &&
-      ast.stylesheet.rules && ast.stylesheet.rules.length) {
+    ast.stylesheet.rules && ast.stylesheet.rules.length) {
     ast.stylesheet.rules.forEach(function (rule) {
       var type = rule.type
       var ruleResult = {}
@@ -158,7 +158,7 @@ function parse(code, done) {
     })
   }
 
-  done(err, {jsonStyle: jsonStyle, log: log})
+  done(err, { jsonStyle: jsonStyle, log: log })
 }
 
 /**
@@ -170,7 +170,7 @@ function parse(code, done) {
  * - data.jsonStyle{}: `classname.propname.value`-like object
  * - data.log[{reason}]
  */
-function validate(json, done) {
+function validate (json, done) {
   var log = []
   var err
 
