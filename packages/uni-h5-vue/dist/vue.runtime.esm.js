@@ -238,7 +238,7 @@ function createGetter(isReadonly = false, shallow = false) {
             return target;
         }
         const targetIsArray = isArray(target);
-        if (targetIsArray && hasOwn(arrayInstrumentations, key)) {
+        if (!isReadonly && targetIsArray && hasOwn(arrayInstrumentations, key)) {
             return Reflect.get(arrayInstrumentations, key, receiver);
         }
         const res = Reflect.get(target, key, receiver);
@@ -393,11 +393,11 @@ function add(value) {
     const target = toRaw(this);
     const proto = getProto(target);
     const hadKey = proto.has.call(target, value);
-    const result = target.add(value);
+    target.add(value);
     if (!hadKey) {
         trigger(target, "add" /* ADD */, value, value);
     }
-    return result;
+    return this;
 }
 function set$1(key, value) {
     value = toRaw(value);
@@ -412,14 +412,14 @@ function set$1(key, value) {
         checkIdentityKeys(target, has, key);
     }
     const oldValue = get.call(target, key);
-    const result = target.set(key, value);
+    target.set(key, value);
     if (!hadKey) {
         trigger(target, "add" /* ADD */, key, value);
     }
     else if (hasChanged(value, oldValue)) {
         trigger(target, "set" /* SET */, key, value, oldValue);
     }
-    return result;
+    return this;
 }
 function deleteEntry(key) {
     const target = toRaw(this);
@@ -630,19 +630,27 @@ function reactive(target) {
     }
     return createReactiveObject(target, false, mutableHandlers, mutableCollectionHandlers);
 }
-// Return a reactive-copy of the original object, where only the root level
-// properties are reactive, and does NOT unwrap refs nor recursively convert
-// returned properties.
+/**
+ * Return a shallowly-reactive copy of the original object, where only the root
+ * level properties are reactive. It also does not auto-unwrap refs (even at the
+ * root level).
+ */
 function shallowReactive(target) {
     return createReactiveObject(target, false, shallowReactiveHandlers, shallowCollectionHandlers);
 }
+/**
+ * Creates a readonly copy of the original object. Note the returned copy is not
+ * made reactive, but `readonly` can be called on an already reactive object.
+ */
 function readonly(target) {
     return createReactiveObject(target, true, readonlyHandlers, readonlyCollectionHandlers);
 }
-// Return a reactive-copy of the original object, where only the root level
-// properties are readonly, and does NOT unwrap refs nor recursively convert
-// returned properties.
-// This is used for creating the props proxy object for stateful components.
+/**
+ * Returns a reactive-copy of the original object, where only the root level
+ * properties are readonly, and does NOT unwrap refs nor recursively convert
+ * returned properties.
+ * This is used for creating the props proxy object for stateful components.
+ */
 function shallowReadonly(target) {
     return createReactiveObject(target, true, shallowReadonlyHandlers, readonlyCollectionHandlers);
 }
@@ -1109,7 +1117,7 @@ function queueFlush() {
 function invalidateJob(job) {
     const i = queue.indexOf(job);
     if (i > -1) {
-        queue[i] = null;
+        queue.splice(i, 1);
     }
 }
 function queueCb(cb, activeQueue, pendingQueue, index) {
@@ -1193,8 +1201,6 @@ function flushJobs(seen) {
     //    priority number)
     // 2. If a component is unmounted during a parent component's update,
     //    its update can be skipped.
-    // Jobs can never be null before flush starts, since they are only invalidated
-    // during execution of another flushed job.
     queue.sort((a, b) => getId(a) - getId(b));
     try {
         for (flushIndex = 0; flushIndex < queue.length; flushIndex++) {
@@ -1247,7 +1253,7 @@ const hmrDirtyComponents = new Set();
 // it easier to be used in toolings like vue-loader
 // Note: for a component to be eligible for HMR it also needs the __hmrId option
 // to be set so that its instances can be registered / removed.
-if ((process.env.NODE_ENV !== 'production') && (true )) {
+if ((process.env.NODE_ENV !== 'production')) {
     const globalObject = typeof global !== 'undefined'
         ? global
         : typeof self !== 'undefined'
@@ -1266,28 +1272,39 @@ function registerHMR(instance) {
     const id = instance.type.__hmrId;
     let record = map.get(id);
     if (!record) {
-        createRecord(id);
+        createRecord(id, instance.type);
         record = map.get(id);
     }
-    record.add(instance);
+    record.instances.add(instance);
 }
 function unregisterHMR(instance) {
-    map.get(instance.type.__hmrId).delete(instance);
+    map.get(instance.type.__hmrId).instances.delete(instance);
 }
-function createRecord(id) {
+function createRecord(id, component) {
+    if (!component) {
+        warn(`HMR API usage is out of date.\n` +
+            `Please upgrade vue-loader/vite/rollup-plugin-vue or other relevant ` +
+            `depdendency that handles Vue SFC compilation.`);
+        component = {};
+    }
     if (map.has(id)) {
         return false;
     }
-    map.set(id, new Set());
+    map.set(id, {
+        component: isClassComponent(component) ? component.__vccOpts : component,
+        instances: new Set()
+    });
     return true;
 }
 function rerender(id, newRender) {
     const record = map.get(id);
     if (!record)
         return;
+    if (newRender)
+        record.component.render = newRender;
     // Array.from creates a snapshot which avoids the set being mutated during
     // updates
-    Array.from(record).forEach(instance => {
+    Array.from(record.instances).forEach(instance => {
         if (newRender) {
             instance.render = newRender;
         }
@@ -1304,25 +1321,25 @@ function reload(id, newComp) {
         return;
     // Array.from creates a snapshot which avoids the set being mutated during
     // updates
-    Array.from(record).forEach(instance => {
-        const comp = instance.type;
-        if (!hmrDirtyComponents.has(comp)) {
-            // 1. Update existing comp definition to match new one
-            newComp = isClassComponent(newComp) ? newComp.__vccOpts : newComp;
-            extend(comp, newComp);
-            for (const key in comp) {
-                if (!(key in newComp)) {
-                    delete comp[key];
-                }
+    const { component, instances } = record;
+    if (!hmrDirtyComponents.has(component)) {
+        // 1. Update existing comp definition to match new one
+        newComp = isClassComponent(newComp) ? newComp.__vccOpts : newComp;
+        extend(component, newComp);
+        for (const key in component) {
+            if (!(key in newComp)) {
+                delete component[key];
             }
-            // 2. Mark component dirty. This forces the renderer to replace the component
-            // on patch.
-            hmrDirtyComponents.add(comp);
-            // 3. Make sure to unmark the component after the reload.
-            queuePostFlushCb(() => {
-                hmrDirtyComponents.delete(comp);
-            });
         }
+        // 2. Mark component dirty. This forces the renderer to replace the component
+        // on patch.
+        hmrDirtyComponents.add(component);
+        // 3. Make sure to unmark the component after the reload.
+        queuePostFlushCb(() => {
+            hmrDirtyComponents.delete(component);
+        });
+    }
+    Array.from(instances).forEach(instance => {
         if (instance.parent) {
             // 4. Force the parent instance to re-render. This will cause all updated
             // components to be unmounted and re-mounted. Queue the update so that we
@@ -1504,20 +1521,25 @@ function isEmitListener(options, key) {
     if (!options || !isOn(key)) {
         return false;
     }
-    key = key.replace(/Once$/, '');
-    return (hasOwn(options, key[2].toLowerCase() + key.slice(3)) ||
-        hasOwn(options, key.slice(2)));
+    key = key.slice(2).replace(/Once$/, '');
+    return (hasOwn(options, key[0].toLowerCase() + key.slice(1)) ||
+        hasOwn(options, hyphenate(key)) ||
+        hasOwn(options, key));
 }
 
-// mark the current rendering instance for asset resolution (e.g.
-// resolveComponent, resolveDirective) during render
+/**
+ * mark the current rendering instance for asset resolution (e.g.
+ * resolveComponent, resolveDirective) during render
+ */
 let currentRenderingInstance = null;
 function setCurrentRenderingInstance(instance) {
     currentRenderingInstance = instance;
 }
-// dev only flag to track whether $attrs was used during render.
-// If $attrs was used during render then the warning for failed attrs
-// fallthrough can be suppressed.
+/**
+ * dev only flag to track whether $attrs was used during render.
+ * If $attrs was used during render then the warning for failed attrs
+ * fallthrough can be suppressed.
+ */
 let accessedAttrs = false;
 function markAttrsAccessed() {
     accessedAttrs = true;
@@ -1566,7 +1588,7 @@ function renderComponentRoot(instance) {
         // to have comments along side the root element which makes it a fragment
         let root = result;
         let setRoot = undefined;
-        if ((process.env.NODE_ENV !== 'production')) {
+        if ((process.env.NODE_ENV !== 'production') && result.patchFlag & 2048 /* DEV_ROOT_FRAGMENT */) {
             ;
             [root, setRoot] = getChildRoot(result);
         }
@@ -1657,9 +1679,6 @@ function renderComponentRoot(instance) {
  * root for attrs and scope id processing.
  */
 const getChildRoot = (vnode) => {
-    if (vnode.type !== Fragment) {
-        return [vnode, undefined];
-    }
     const rawChildren = vnode.children;
     const dynamicChildren = vnode.dynamicChildren;
     const childRoot = filterSingleRoot(rawChildren);
@@ -1681,16 +1700,27 @@ const getChildRoot = (vnode) => {
     };
     return [normalizeVNode(childRoot), setRoot];
 };
-/**
- * dev only
- */
 function filterSingleRoot(children) {
-    const filtered = children.filter(child => {
-        return !(isVNode(child) &&
-            child.type === Comment &&
-            child.children !== 'v-if');
-    });
-    return filtered.length === 1 && isVNode(filtered[0]) ? filtered[0] : null;
+    let singleRoot;
+    for (let i = 0; i < children.length; i++) {
+        const child = children[i];
+        if (isVNode(child)) {
+            // ignore user comment
+            if (child.type !== Comment || child.children === 'v-if') {
+                if (singleRoot) {
+                    // has more than 1 non-comment child, return now
+                    return;
+                }
+                else {
+                    singleRoot = child;
+                }
+            }
+        }
+        else {
+            return;
+        }
+    }
+    return singleRoot;
 }
 const getFunctionalFallthrough = (attrs) => {
     let res;
@@ -1730,7 +1760,7 @@ function shouldUpdateComponent(prevVNode, nextVNode, optimized) {
     if (nextVNode.dirs || nextVNode.transition) {
         return true;
     }
-    if (optimized && patchFlag > 0) {
+    if (optimized && patchFlag >= 0) {
         if (patchFlag & 1024 /* DYNAMIC_SLOTS */) {
             // slot content that references values that might have changed,
             // e.g. in a v-for
@@ -2082,11 +2112,11 @@ function createSuspenseBoundary(vnode, parent, parentComponent, container, hidde
             return suspense.activeBranch && next(suspense.activeBranch);
         },
         registerDep(instance, setupRenderEffect) {
-            if (!suspense.pendingBranch) {
-                return;
+            const isInPendingSuspense = !!suspense.pendingBranch;
+            if (isInPendingSuspense) {
+                suspense.deps++;
             }
             const hydratedEl = instance.vnode.el;
-            suspense.deps++;
             instance
                 .asyncDep.catch(err => {
                 handleError(err, instance, 0 /* SETUP_FUNCTION */);
@@ -2099,7 +2129,6 @@ function createSuspenseBoundary(vnode, parent, parentComponent, container, hidde
                     suspense.pendingId !== instance.suspenseId) {
                     return;
                 }
-                suspense.deps--;
                 // retry from this component
                 instance.asyncResolved = true;
                 const { vnode } = instance;
@@ -2128,7 +2157,8 @@ function createSuspenseBoundary(vnode, parent, parentComponent, container, hidde
                 if ((process.env.NODE_ENV !== 'production')) {
                     popWarningContext();
                 }
-                if (suspense.deps === 0) {
+                // only decrease deps count if suspense is not already resolved
+                if (isInPendingSuspense && --suspense.deps === 0) {
                     suspense.resolve();
                 }
             });
@@ -2238,12 +2268,27 @@ fallback) {
     // `renderSlot` we can be sure that it's template-based so we can force
     // enable it.
     isRenderingCompiledSlot++;
-    const rendered = (openBlock(),
-        createBlock(Fragment, { key: props.key }, slot ? slot(props) : fallback ? fallback() : [], slots._ === 1 /* STABLE */
-            ? 64 /* STABLE_FRAGMENT */
-            : -2 /* BAIL */));
+    openBlock();
+    const validSlotContent = slot && ensureValidVNode(slot(props));
+    const rendered = createBlock(Fragment, { key: props.key || `_${name}` }, validSlotContent || (fallback ? fallback() : []), validSlotContent && slots._ === 1 /* STABLE */
+        ? 64 /* STABLE_FRAGMENT */
+        : -2 /* BAIL */);
     isRenderingCompiledSlot--;
     return rendered;
+}
+function ensureValidVNode(vnodes) {
+    return vnodes.some(child => {
+        if (!isVNode(child))
+            return true;
+        if (child.type === Comment)
+            return false;
+        if (child.type === Fragment &&
+            !ensureValidVNode(child.children))
+            return false;
+        return true;
+    })
+        ? vnodes
+        : null;
 }
 
 /**
@@ -2894,7 +2939,7 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = EM
         onTrigger,
         scheduler
     });
-    recordInstanceBoundEffect(runner);
+    recordInstanceBoundEffect(runner, instance);
     // initial run
     if (cb) {
         if (immediate) {
@@ -3253,7 +3298,7 @@ function getTransitionRawChildren(children, keepComment = false) {
     }
     // #1126 if a transition children list contains multiple sub fragments, these
     // fragments will be merged into a flat children array. Since each v-for
-    // fragment may contain different static bindings inside, we need to de-top
+    // fragment may contain different static bindings inside, we need to de-op
     // these children to force full diffs to ensure correct behavior.
     if (keyedFragmentCount > 1) {
         for (let i = 0; i < ret.length; i++) {
@@ -3352,7 +3397,7 @@ const KeepAliveImpl = {
             exclude && pruneCache(name => !matches(exclude, name));
         }, 
         // prune post-render after `current` has been updated
-        { flush: 'post' });
+        { flush: 'post', deep: true });
         // cache sub tree after render
         let pendingCacheKey = null;
         const cacheSubtree = () => {
@@ -4001,8 +4046,8 @@ function createHydrationFunctions(rendererInternals) {
                     warn('Invalid HostVNode type:', type, `(${typeof type})`);
                 }
         }
-        if (ref != null && parentComponent) {
-            setRef(ref, null, parentComponent, parentSuspense, vnode);
+        if (ref != null) {
+            setRef(ref, null, parentSuspense, vnode);
         }
         return nextNode;
     };
@@ -4225,6 +4270,140 @@ function initFeatureFlags() {
     }
 }
 
+// implementation, close to no-op
+function defineComponent(options) {
+    return isFunction(options) ? { setup: options, name: options.name } : options;
+}
+
+const isAsyncWrapper = (i) => !!i.type.__asyncLoader;
+function defineAsyncComponent(source) {
+    if (isFunction(source)) {
+        source = { loader: source };
+    }
+    const { loader, loadingComponent: loadingComponent, errorComponent: errorComponent, delay = 200, timeout, // undefined = never times out
+    suspensible = true, onError: userOnError } = source;
+    let pendingRequest = null;
+    let resolvedComp;
+    let retries = 0;
+    const retry = () => {
+        retries++;
+        pendingRequest = null;
+        return load();
+    };
+    const load = () => {
+        let thisRequest;
+        return (pendingRequest ||
+            (thisRequest = pendingRequest = loader()
+                .catch(err => {
+                err = err instanceof Error ? err : new Error(String(err));
+                if (userOnError) {
+                    return new Promise((resolve, reject) => {
+                        const userRetry = () => resolve(retry());
+                        const userFail = () => reject(err);
+                        userOnError(err, userRetry, userFail, retries + 1);
+                    });
+                }
+                else {
+                    throw err;
+                }
+            })
+                .then((comp) => {
+                if (thisRequest !== pendingRequest && pendingRequest) {
+                    return pendingRequest;
+                }
+                if ((process.env.NODE_ENV !== 'production') && !comp) {
+                    warn(`Async component loader resolved to undefined. ` +
+                        `If you are using retry(), make sure to return its return value.`);
+                }
+                // interop module default
+                if (comp &&
+                    (comp.__esModule || comp[Symbol.toStringTag] === 'Module')) {
+                    comp = comp.default;
+                }
+                if ((process.env.NODE_ENV !== 'production') && comp && !isObject(comp) && !isFunction(comp)) {
+                    throw new Error(`Invalid async component load result: ${comp}`);
+                }
+                resolvedComp = comp;
+                return comp;
+            })));
+    };
+    return defineComponent({
+        __asyncLoader: load,
+        name: 'AsyncComponentWrapper',
+        setup() {
+            const instance = currentInstance;
+            // already resolved
+            if (resolvedComp) {
+                return () => createInnerComp(resolvedComp, instance);
+            }
+            const onError = (err) => {
+                pendingRequest = null;
+                handleError(err, instance, 13 /* ASYNC_COMPONENT_LOADER */, !errorComponent /* do not throw in dev if user provided error component */);
+            };
+            // suspense-controlled or SSR.
+            if (( suspensible && instance.suspense) ||
+                (false )) {
+                return load()
+                    .then(comp => {
+                    return () => createInnerComp(comp, instance);
+                })
+                    .catch(err => {
+                    onError(err);
+                    return () => errorComponent
+                        ? createVNode(errorComponent, {
+                            error: err
+                        })
+                        : null;
+                });
+            }
+            const loaded = ref(false);
+            const error = ref();
+            const delayed = ref(!!delay);
+            if (delay) {
+                setTimeout(() => {
+                    delayed.value = false;
+                }, delay);
+            }
+            if (timeout != null) {
+                setTimeout(() => {
+                    if (!loaded.value && !error.value) {
+                        const err = new Error(`Async component timed out after ${timeout}ms.`);
+                        onError(err);
+                        error.value = err;
+                    }
+                }, timeout);
+            }
+            load()
+                .then(() => {
+                loaded.value = true;
+            })
+                .catch(err => {
+                onError(err);
+                error.value = err;
+            });
+            return () => {
+                if (loaded.value && resolvedComp) {
+                    return createInnerComp(resolvedComp, instance);
+                }
+                else if (error.value && errorComponent) {
+                    return createVNode(errorComponent, {
+                        error: error.value
+                    });
+                }
+                else if (loadingComponent && !delayed.value) {
+                    return createVNode(loadingComponent);
+                }
+            };
+        }
+    });
+}
+function createInnerComp(comp, { vnode: { ref, props, children } }) {
+    const vnode = createVNode(comp, props, children);
+    // ensure inner component inherits the async wrapper's ref owner
+    vnode.ref = ref;
+    return vnode;
+}
+
 const prodEffectOptions = {
     scheduler: queueJob,
     // #1801, #2043 component render effects should allow recursive updates
@@ -4240,18 +4419,18 @@ function createDevEffectOptions(instance) {
 }
 const queuePostRenderEffect =  queueEffectWithSuspense
     ;
-const setRef = (rawRef, oldRawRef, parentComponent, parentSuspense, vnode) => {
+const setRef = (rawRef, oldRawRef, parentSuspense, vnode) => {
     if (isArray(rawRef)) {
-        rawRef.forEach((r, i) => setRef(r, oldRawRef && (isArray(oldRawRef) ? oldRawRef[i] : oldRawRef), parentComponent, parentSuspense, vnode));
+        rawRef.forEach((r, i) => setRef(r, oldRawRef && (isArray(oldRawRef) ? oldRawRef[i] : oldRawRef), parentSuspense, vnode));
         return;
     }
     let value;
-    if (!vnode) {
+    if (!vnode || isAsyncWrapper(vnode)) {
         value = null;
     }
     else {
         if (vnode.shapeFlag & 4 /* STATEFUL_COMPONENT */) {
-            value = vnode.component.proxy;
+            value = vnode.component.exposed || vnode.component.proxy;
         }
         else {
             value = vnode.el;
@@ -4309,10 +4488,7 @@ const setRef = (rawRef, oldRawRef, parentComponent, parentSuspense, vnode) => {
         }
     }
     else if (isFunction(ref)) {
-        callWithErrorHandling(ref, parentComponent, 12 /* FUNCTION_REF */, [
-            value,
-            refs
-        ]);
+        callWithErrorHandling(ref, owner, 12 /* FUNCTION_REF */, [value, refs]);
     }
     else if ((process.env.NODE_ENV !== 'production')) {
         warn('Invalid template ref type:', value, `(${typeof value})`);
@@ -4400,7 +4576,7 @@ function baseCreateRenderer(options, createHydrationFns) {
         }
         // set ref
         if (ref != null && parentComponent) {
-            setRef(ref, n1 && n1.ref, parentComponent, parentSuspense, n2);
+            setRef(ref, n1 && n1.ref, parentSuspense, n2);
         }
     };
     const processText = (n1, n2, container, anchor) => {
@@ -4442,30 +4618,23 @@ function baseCreateRenderer(options, createHydrationFns) {
             n2.anchor = n1.anchor;
         }
     };
-    /**
-     * Dev / HMR only
-     */
-    const moveStaticNode = (vnode, container, anchor) => {
-        let cur = vnode.el;
-        const end = vnode.anchor;
-        while (cur && cur !== end) {
-            const next = hostNextSibling(cur);
-            hostInsert(cur, container, anchor);
-            cur = next;
+    const moveStaticNode = ({ el, anchor }, container, nextSibling) => {
+        let next;
+        while (el && el !== anchor) {
+            next = hostNextSibling(el);
+            hostInsert(el, container, nextSibling);
+            el = next;
         }
-        hostInsert(end, container, anchor);
+        hostInsert(anchor, container, nextSibling);
     };
-    /**
-     * Dev / HMR only
-     */
-    const removeStaticNode = (vnode) => {
-        let cur = vnode.el;
-        while (cur && cur !== vnode.anchor) {
-            const next = hostNextSibling(cur);
-            hostRemove(cur);
-            cur = next;
+    const removeStaticNode = ({ el, anchor }) => {
+        let next;
+        while (el && el !== anchor) {
+            next = hostNextSibling(el);
+            hostRemove(el);
+            el = next;
         }
-        hostRemove(vnode.anchor);
+        hostRemove(anchor);
     };
     const processElement = (n1, n2, container, anchor, parentComponent, parentSuspense, isSVG, optimized) => {
         isSVG = isSVG || n2.type === 'svg';
@@ -4593,7 +4762,7 @@ function baseCreateRenderer(options, createHydrationFns) {
         if (dirs) {
             invokeDirectiveHook(n2, n1, parentComponent, 'beforeUpdate');
         }
-        if ((process.env.NODE_ENV !== 'production') && (true ) && isHmrUpdating) {
+        if ((process.env.NODE_ENV !== 'production') && isHmrUpdating) {
             // HMR updated, force full diff
             patchFlag = 0;
             optimized = false;
@@ -4656,10 +4825,7 @@ function baseCreateRenderer(options, createHydrationFns) {
         const areChildrenSVG = isSVG && n2.type !== 'foreignObject';
         if (dynamicChildren) {
             patchBlockChildren(n1.dynamicChildren, dynamicChildren, el, parentComponent, parentSuspense, areChildrenSVG);
-            if ((process.env.NODE_ENV !== 'production') &&
-                (true ) &&
-                parentComponent &&
-                parentComponent.type.__hmrId) {
+            if ((process.env.NODE_ENV !== 'production') && parentComponent && parentComponent.type.__hmrId) {
                 traverseStaticChildren(n1, n2);
             }
         }
@@ -4784,7 +4950,7 @@ function baseCreateRenderer(options, createHydrationFns) {
     };
     const mountComponent = (initialVNode, container, anchor, parentComponent, parentSuspense, isSVG, optimized) => {
         const instance = (initialVNode.component = createComponentInstance(initialVNode, parentComponent, parentSuspense));
-        if ((process.env.NODE_ENV !== 'production') && (true ) && instance.type.__hmrId) {
+        if ((process.env.NODE_ENV !== 'production') && instance.type.__hmrId) {
             registerHMR(instance);
         }
         if ((process.env.NODE_ENV !== 'production')) {
@@ -5271,8 +5437,7 @@ function baseCreateRenderer(options, createHydrationFns) {
             hostInsert(vnode.anchor, container, anchor);
             return;
         }
-        // static node move can only happen when force updating HMR
-        if ((process.env.NODE_ENV !== 'production') && type === Static) {
+        if (type === Static) {
             moveStaticNode(vnode, container, anchor);
             return;
         }
@@ -5310,8 +5475,8 @@ function baseCreateRenderer(options, createHydrationFns) {
     const unmount = (vnode, parentComponent, parentSuspense, doRemove = false, optimized = false) => {
         const { type, props, ref, children, dynamicChildren, shapeFlag, patchFlag, dirs } = vnode;
         // unset ref
-        if (ref != null && parentComponent) {
-            setRef(ref, null, parentComponent, parentSuspense, null);
+        if (ref != null) {
+            setRef(ref, null, parentSuspense, null);
         }
         if (shapeFlag & 256 /* COMPONENT_SHOULD_KEEP_ALIVE */) {
             parentComponent.ctx.deactivate(vnode);
@@ -5369,7 +5534,7 @@ function baseCreateRenderer(options, createHydrationFns) {
             removeFragment(el, anchor);
             return;
         }
-        if ((process.env.NODE_ENV !== 'production') && type === Static) {
+        if (type === Static) {
             removeStaticNode(vnode);
             return;
         }
@@ -5407,7 +5572,7 @@ function baseCreateRenderer(options, createHydrationFns) {
         hostRemove(end);
     };
     const unmountComponent = (instance, parentSuspense, doRemove) => {
-        if ((process.env.NODE_ENV !== 'production') && (true ) && instance.type.__hmrId) {
+        if ((process.env.NODE_ENV !== 'production') && instance.type.__hmrId) {
             unregisterHMR(instance);
         }
         const { bum, effects, update, subTree, um } = instance;
@@ -5588,6 +5753,7 @@ function getSequence(arr) {
 
 const isTeleport = (type) => type.__isTeleport;
 const isTeleportDisabled = (props) => props && (props.disabled || props.disabled === '');
+const isTargetSVG = (target) => typeof SVGElement !== 'undefined' && target instanceof SVGElement;
 const resolveTarget = (props, select) => {
     const targetSelector = props && props.to;
     if (isString(targetSelector)) {
@@ -5636,6 +5802,8 @@ const TeleportImpl = {
             const targetAnchor = (n2.targetAnchor = createText(''));
             if (target) {
                 insert(targetAnchor, target);
+                // #2652 we could be teleporting from a non-SVG tree into an SVG tree
+                isSVG = isSVG || isTargetSVG(target);
             }
             else if ((process.env.NODE_ENV !== 'production') && !disabled) {
                 warn('Invalid Teleport target on mount:', target, `(${typeof target})`);
@@ -5663,6 +5831,7 @@ const TeleportImpl = {
             const wasDisabled = isTeleportDisabled(n1.props);
             const currentContainer = wasDisabled ? container : target;
             const currentAnchor = wasDisabled ? mainAnchor : targetAnchor;
+            isSVG = isSVG || isTargetSVG(target);
             if (n2.dynamicChildren) {
                 // fast path when the teleport happens to be a block root
                 patchBlockChildren(n1.dynamicChildren, n2.dynamicChildren, currentContainer, parentComponent, parentSuspense, isSVG);
@@ -5797,6 +5966,11 @@ function resolveAsset(type, name, warnMissing = true) {
         const Component = instance.type;
         // self name has highest priority
         if (type === COMPONENTS) {
+            // special self referencing call generated by compiler
+            // inferred from SFC filename
+            if (name === `_self`) {
+                return Component;
+            }
             const selfName = Component.displayName || Component.name;
             if (selfName &&
                 (selfName === name ||
@@ -5937,9 +6111,9 @@ const InternalObjectKey = `__vInternal`;
 const normalizeKey = ({ key }) => key != null ? key : null;
 const normalizeRef = ({ ref }) => {
     return (ref != null
-        ? isArray(ref)
-            ? ref
-            : { i: currentRenderingInstance, r: ref }
+        ? isString(ref) || isRef(ref) || isFunction(ref)
+            ? { i: currentRenderingInstance, r: ref }
+            : ref
         : null);
 };
 const createVNode = ((process.env.NODE_ENV !== 'production')
@@ -6320,7 +6494,9 @@ function applyOptions(instance, options, deferredData = [], deferredWatch = [], 
     // assets
     components, directives, 
     // lifecycle
-    beforeMount, mounted, beforeUpdate, updated, activated, deactivated, beforeDestroy, beforeUnmount, destroyed, unmounted, render, renderTracked, renderTriggered, errorCaptured } = options;
+    beforeMount, mounted, beforeUpdate, updated, activated, deactivated, beforeDestroy, beforeUnmount, destroyed, unmounted, render, renderTracked, renderTriggered, errorCaptured, 
+    // public API
+    expose } = options;
     const publicThis = instance.proxy;
     const ctx = instance.ctx;
     const globalMixins = instance.appContext.mixins;
@@ -6476,9 +6652,9 @@ function applyOptions(instance, options, deferredData = [], deferredWatch = [], 
             const provides = isFunction(provideOptions)
                 ? provideOptions.call(publicThis)
                 : provideOptions;
-            for (const key in provides) {
+            Reflect.ownKeys(provides).forEach(key => {
                 provide(key, provides[key]);
-            }
+            });
         });
     }
     // asset options.
@@ -6536,6 +6712,22 @@ function applyOptions(instance, options, deferredData = [], deferredWatch = [], 
     }
     if (unmounted) {
         onUnmounted(unmounted.bind(publicThis));
+    }
+    if (isArray(expose)) {
+        if (!asMixin) {
+            if (expose.length) {
+                const exposed = instance.exposed || (instance.exposed = proxyRefs({}));
+                expose.forEach(key => {
+                    exposed[key] = toRef(publicThis, key);
+                });
+            }
+            else if (!instance.exposed) {
+                instance.exposed = EMPTY_OBJ;
+            }
+        }
+        else if ((process.env.NODE_ENV !== 'production')) {
+            warn(`The \`expose\` option is ignored when used in mixins.`);
+        }
     }
 }
 function callSyncHook(name, type, options, instance, globalMixins) {
@@ -6675,6 +6867,12 @@ function mergeOptions(to, from, instance) {
     }
 }
 
+/**
+ * #2437 In Vue 3, functional components do not have a public instance proxy but
+ * they exist in the internal parent chain. For code that relies on traversing
+ * public $parent chains, skip functional ones and go to the parent instead.
+ */
+const getPublicInstance = (i) => i && (i.proxy ? i.proxy : getPublicInstance(i.parent));
 const publicPropertiesMap = extend(Object.create(null), {
     $: i => i,
     $el: i => i.vnode.el,
@@ -6683,7 +6881,7 @@ const publicPropertiesMap = extend(Object.create(null), {
     $attrs: i => ((process.env.NODE_ENV !== 'production') ? shallowReadonly(i.attrs) : i.attrs),
     $slots: i => ((process.env.NODE_ENV !== 'production') ? shallowReadonly(i.slots) : i.slots),
     $refs: i => ((process.env.NODE_ENV !== 'production') ? shallowReadonly(i.refs) : i.refs),
-    $parent: i => i.parent && i.parent.proxy,
+    $parent: i => getPublicInstance(i.parent),
     $root: i => i.root && i.root.proxy,
     $emit: i => i.emit,
     $options: i => (__VUE_OPTIONS_API__ ? resolveMergedOptions(i) : i.type),
@@ -6944,6 +7142,7 @@ function createComponentInstance(vnode, parent, suspense) {
         update: null,
         render: null,
         proxy: null,
+        exposed: null,
         withProxy: null,
         effects: null,
         provides: parent ? parent.provides : Object.create(appContext.provides),
@@ -7090,7 +7289,9 @@ function setupStatefulComponent(instance, isSSR) {
 function handleSetupResult(instance, setupResult, isSSR) {
     if (isFunction(setupResult)) {
         // setup returned an inline render function
-        instance.render = setupResult;
+        {
+            instance.render = setupResult;
+        }
     }
     else if (isObject(setupResult)) {
         if ((process.env.NODE_ENV !== 'production') && isVNode(setupResult)) {
@@ -7148,7 +7349,9 @@ function finishComponentSetup(instance, isSSR) {
     // support for 2.x options
     if (__VUE_OPTIONS_API__) {
         currentInstance = instance;
+        pauseTracking();
         applyOptions(instance, Component);
+        resetTracking();
         currentInstance = null;
     }
     // warn missing template/render
@@ -7182,10 +7385,19 @@ const attrHandlers = {
     }
 };
 function createSetupContext(instance) {
+    const expose = exposed => {
+        if ((process.env.NODE_ENV !== 'production') && instance.exposed) {
+            warn(`expose() should be called only once per setup().`);
+        }
+        instance.exposed = proxyRefs(exposed);
+    };
     if ((process.env.NODE_ENV !== 'production')) {
         // We use getters in dev in case libs like test-utils overwrite instance
         // properties (overwrites should not be done in prod)
         return Object.freeze({
+            get props() {
+                return instance.props;
+            },
             get attrs() {
                 return new Proxy(instance.attrs, attrHandlers);
             },
@@ -7194,22 +7406,24 @@ function createSetupContext(instance) {
             },
             get emit() {
                 return (event, ...args) => instance.emit(event, ...args);
-            }
+            },
+            expose
         });
     }
     else {
         return {
             attrs: instance.attrs,
             slots: instance.slots,
-            emit: instance.emit
+            emit: instance.emit,
+            expose
         };
     }
 }
 // record effects created during a component's setup() so that they can be
 // stopped when the component unmounts
-function recordInstanceBoundEffect(effect) {
-    if (currentInstance) {
-        (currentInstance.effects || (currentInstance.effects = [])).push(effect);
+function recordInstanceBoundEffect(effect, instance = currentInstance) {
+    if (instance) {
+        (instance.effects || (instance.effects = [])).push(effect);
     }
 }
 const classifyRE = /(?:^|[-_])(\w)/g;
@@ -7220,7 +7434,7 @@ function formatComponentName(instance, Component, isRoot = false) {
         ? Component.displayName || Component.name
         : Component.name;
     if (!name && Component.__file) {
-        const match = Component.__file.match(/([^/\\]+)\.vue$/);
+        const match = Component.__file.match(/([^/\\]+)\.\w+$/);
         if (match) {
             name = match[1];
         }
@@ -7250,134 +7464,30 @@ function computed$1(getterOrOptions) {
     return c;
 }
 
-// implementation, close to no-op
-function defineComponent(options) {
-    return isFunction(options) ? { setup: options, name: options.name } : options;
-}
-
-function defineAsyncComponent(source) {
-    if (isFunction(source)) {
-        source = { loader: source };
+// implementation
+function defineProps() {
+    if ((process.env.NODE_ENV !== 'production')) {
+        warn(`defineProps() is a compiler-hint helper that is only usable inside ` +
+            `<script setup> of a single file component. Its arguments should be ` +
+            `compiled away and passing it at runtime has no effect.`);
     }
-    const { loader, loadingComponent: loadingComponent, errorComponent: errorComponent, delay = 200, timeout, // undefined = never times out
-    suspensible = true, onError: userOnError } = source;
-    let pendingRequest = null;
-    let resolvedComp;
-    let retries = 0;
-    const retry = () => {
-        retries++;
-        pendingRequest = null;
-        return load();
-    };
-    const load = () => {
-        let thisRequest;
-        return (pendingRequest ||
-            (thisRequest = pendingRequest = loader()
-                .catch(err => {
-                err = err instanceof Error ? err : new Error(String(err));
-                if (userOnError) {
-                    return new Promise((resolve, reject) => {
-                        const userRetry = () => resolve(retry());
-                        const userFail = () => reject(err);
-                        userOnError(err, userRetry, userFail, retries + 1);
-                    });
-                }
-                else {
-                    throw err;
-                }
-            })
-                .then((comp) => {
-                if (thisRequest !== pendingRequest && pendingRequest) {
-                    return pendingRequest;
-                }
-                if ((process.env.NODE_ENV !== 'production') && !comp) {
-                    warn(`Async component loader resolved to undefined. ` +
-                        `If you are using retry(), make sure to return its return value.`);
-                }
-                // interop module default
-                if (comp &&
-                    (comp.__esModule || comp[Symbol.toStringTag] === 'Module')) {
-                    comp = comp.default;
-                }
-                if ((process.env.NODE_ENV !== 'production') && comp && !isObject(comp) && !isFunction(comp)) {
-                    throw new Error(`Invalid async component load result: ${comp}`);
-                }
-                resolvedComp = comp;
-                return comp;
-            })));
-    };
-    return defineComponent({
-        __asyncLoader: load,
-        name: 'AsyncComponentWrapper',
-        setup() {
-            const instance = currentInstance;
-            // already resolved
-            if (resolvedComp) {
-                return () => createInnerComp(resolvedComp, instance);
-            }
-            const onError = (err) => {
-                pendingRequest = null;
-                handleError(err, instance, 13 /* ASYNC_COMPONENT_LOADER */, !errorComponent /* do not throw in dev if user provided error component */);
-            };
-            // suspense-controlled or SSR.
-            if (( suspensible && instance.suspense) ||
-                (false )) {
-                return load()
-                    .then(comp => {
-                    return () => createInnerComp(comp, instance);
-                })
-                    .catch(err => {
-                    onError(err);
-                    return () => errorComponent
-                        ? createVNode(errorComponent, {
-                            error: err
-                        })
-                        : null;
-                });
-            }
-            const loaded = ref(false);
-            const error = ref();
-            const delayed = ref(!!delay);
-            if (delay) {
-                setTimeout(() => {
-                    delayed.value = false;
-                }, delay);
-            }
-            if (timeout != null) {
-                setTimeout(() => {
-                    if (!loaded.value && !error.value) {
-                        const err = new Error(`Async component timed out after ${timeout}ms.`);
-                        onError(err);
-                        error.value = err;
-                    }
-                }, timeout);
-            }
-            load()
-                .then(() => {
-                loaded.value = true;
-            })
-                .catch(err => {
-                onError(err);
-                error.value = err;
-            });
-            return () => {
-                if (loaded.value && resolvedComp) {
-                    return createInnerComp(resolvedComp, instance);
-                }
-                else if (error.value && errorComponent) {
-                    return createVNode(errorComponent, {
-                        error: error.value
-                    });
-                }
-                else if (loadingComponent && !delayed.value) {
-                    return createVNode(loadingComponent);
-                }
-            };
-        }
-    });
+    return null;
 }
-function createInnerComp(comp, { vnode: { props, children } }) {
-    return createVNode(comp, props, children);
+// implementation
+function defineEmit() {
+    if ((process.env.NODE_ENV !== 'production')) {
+        warn(`defineEmit() is a compiler-hint helper that is only usable inside ` +
+            `<script setup> of a single file component. Its arguments should be ` +
+            `compiled away and passing it at runtime has no effect.`);
+    }
+    return null;
+}
+function useContext() {
+    const i = getCurrentInstance();
+    if ((process.env.NODE_ENV !== 'production') && !i) {
+        warn(`useContext() called without active instance.`);
+    }
+    return i.setupContext || (i.setupContext = createSetupContext(i));
 }
 
 // Actual implementation
@@ -7421,7 +7531,8 @@ const useSSRContext = () => {
 };
 
 function initCustomFormatter() {
-    if (!(process.env.NODE_ENV !== 'production') || !true) {
+    /* eslint-disable no-restricted-globals */
+    if (!(process.env.NODE_ENV !== 'production') || typeof window === 'undefined') {
         return;
     }
     const vueStyle = { style: 'color:#3ba776' };
@@ -7600,7 +7711,6 @@ function initCustomFormatter() {
         }
         return `Ref`;
     }
-    /* eslint-disable no-restricted-globals */
     if (window.devtoolsFormatters) {
         window.devtoolsFormatters.push(formatter);
     }
@@ -7687,7 +7797,7 @@ function createSlots(slots, dynamicSlots) {
 }
 
 // Core API ------------------------------------------------------------------
-const version = "3.0.2";
+const version = "3.0.3";
 /**
  * SSR utils for \@vue/server-renderer. Only exposed in cjs builds.
  * @internal
@@ -7886,25 +7996,34 @@ prevChildren, parentComponent, parentSuspense, unmountChildren) {
         }
         return;
     }
-    if (value === '' && typeof el[key] === 'boolean') {
-        // e.g. <select multiple> compiles to { multiple: '' }
-        el[key] = true;
-    }
-    else if (value == null && typeof el[key] === 'string') {
-        // e.g. <div :id="null">
-        el[key] = '';
-        el.removeAttribute(key);
-    }
-    else {
-        // some properties perform value validation and throw
-        try {
-            el[key] = value;
+    if (value === '' || value == null) {
+        const type = typeof el[key];
+        if (value === '' && type === 'boolean') {
+            // e.g. <select multiple> compiles to { multiple: '' }
+            el[key] = true;
+            return;
         }
-        catch (e) {
-            if ((process.env.NODE_ENV !== 'production')) {
-                warn(`Failed setting prop "${key}" on <${el.tagName.toLowerCase()}>: ` +
-                    `value ${value} is invalid.`, e);
-            }
+        else if (value == null && type === 'string') {
+            // e.g. <div :id="null">
+            el[key] = '';
+            el.removeAttribute(key);
+            return;
+        }
+        else if (type === 'number') {
+            // e.g. <img :width="null">
+            el[key] = 0;
+            el.removeAttribute(key);
+            return;
+        }
+    }
+    // some properties perform value validation and throw
+    try {
+        el[key] = value;
+    }
+    catch (e) {
+        if ((process.env.NODE_ENV !== 'production')) {
+            warn(`Failed setting prop "${key}" on <${el.tagName.toLowerCase()}>: ` +
+                `value ${value} is invalid.`, e);
         }
     }
 }
@@ -8100,7 +8219,11 @@ function useCssModule(name = '$style') {
     }
 }
 
-function useCssVars(getter, scoped = false) {
+/**
+ * Runtime helper for SFC's CSS variable injection feature.
+ * @private
+ */
+function useCssVars(getter) {
     const instance = getCurrentInstance();
     /* istanbul ignore next */
     if (!instance) {
@@ -8108,20 +8231,17 @@ function useCssVars(getter, scoped = false) {
             warn(`useCssVars is called without current active component instance.`);
         return;
     }
-    const prefix = scoped && instance.type.__scopeId
-        ? `${instance.type.__scopeId.replace(/^data-v-/, '')}-`
-        : ``;
-    const setVars = () => setVarsOnVNode(instance.subTree, getter(instance.proxy), prefix);
-    onMounted(() => watchEffect(setVars));
+    const setVars = () => setVarsOnVNode(instance.subTree, getter(instance.proxy));
+    onMounted(() => watchEffect(setVars, { flush: 'post' }));
     onUpdated(setVars);
 }
-function setVarsOnVNode(vnode, vars, prefix) {
+function setVarsOnVNode(vnode, vars) {
     if ( vnode.shapeFlag & 128 /* SUSPENSE */) {
         const suspense = vnode.suspense;
         vnode = suspense.activeBranch;
         if (suspense.pendingBranch && !suspense.isHydrating) {
             suspense.effects.push(() => {
-                setVarsOnVNode(suspense.activeBranch, vars, prefix);
+                setVarsOnVNode(suspense.activeBranch, vars);
             });
         }
     }
@@ -8132,11 +8252,11 @@ function setVarsOnVNode(vnode, vars, prefix) {
     if (vnode.shapeFlag & 1 /* ELEMENT */ && vnode.el) {
         const style = vnode.el.style;
         for (const key in vars) {
-            style.setProperty(`--${prefix}${key}`, unref(vars[key]));
+            style.setProperty(`--${key}`, vars[key]);
         }
     }
     else if (vnode.type === Fragment) {
-        vnode.children.forEach(c => setVarsOnVNode(c, vars, prefix));
+        vnode.children.forEach(c => setVarsOnVNode(c, vars));
     }
 }
 
@@ -8605,12 +8725,10 @@ const vModelCheckbox = {
                 const index = looseIndexOf(modelValue, elementValue);
                 const found = index !== -1;
                 if (checked && !found) {
-                    assign(modelValue.concat(elementValue));
+                    modelValue.push(elementValue);
                 }
                 else if (!checked && found) {
-                    const filtered = [...modelValue];
-                    filtered.splice(index, 1);
-                    assign(filtered);
+                    modelValue.splice(index, 1);
                 }
             }
             else if (isSet(modelValue)) {
@@ -8829,9 +8947,7 @@ const vShow = {
         }
     },
     updated(el, { value, oldValue }, { transition }) {
-        if (!value === !oldValue)
-            return;
-        if (transition) {
+        if (transition && value !== oldValue) {
             if (value) {
                 transition.beforeEnter(el);
                 setDisplay(el, true);
@@ -8938,8 +9054,6 @@ function initDev() {
     target.__VUE__ = true;
     setDevtoolsHook(target.__VUE_DEVTOOLS_GLOBAL_HOOK__);
     {
-        console.info(`You are running a development build of Vue.\n` +
-            `Make sure to use the production build (*.prod.js) when deploying for production.`);
         initCustomFormatter();
     }
 }
@@ -8983,4 +9097,4 @@ const onNavigationBarSearchInputClicked = /*#__PURE__*/ createHook$1("onNavigati
 const onNavigationBarSearchInputConfirmed = /*#__PURE__*/ createHook$1("onNavigationBarSearchInputConfirmed" /* ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED */);
 const onNavigationBarSearchInputFocusChanged = /*#__PURE__*/ createHook$1("onNavigationBarSearchInputFocusChanged" /* ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED */);
 
-export { BaseTransition, Comment, Fragment, KeepAlive, Static, Suspense, Teleport, Text, Transition, TransitionGroup, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compile$1 as compile, computed$1 as computed, createApp, createBlock, createCommentVNode, createHook$1 as createHook, createHydrationRenderer, createRenderer, createSSRApp, createSlots, createStaticVNode, createTextVNode, createVNode, customRef, defineAsyncComponent, defineComponent, devtools, getCurrentInstance, getTransitionRawChildren, h, handleError, hydrate, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, isVNode, markRaw, mergeProps, nextTick, onActivated, onAddToFavorites, onBackPress, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onError, onErrorCaptured, onHide, onLaunch, onLoad, onMounted, onNavigationBarButtonTap, onNavigationBarSearchInputChanged, onNavigationBarSearchInputClicked, onNavigationBarSearchInputConfirmed, onNavigationBarSearchInputFocusChanged, onPageNotFound, onPageScroll, onPullDownRefresh, onReachBottom, onReady, onRenderTracked, onRenderTriggered, onResize, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, onUnmounted, onUpdated, openBlock, popScopeId, provide, proxyRefs, pushScopeId, queuePostFlushCb, reactive, readonly, ref, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, shallowReactive, shallowReadonly, shallowRef, ssrContextKey, ssrUtils, toHandlers, toRaw, toRef, toRefs, transformVNodeArgs, triggerRef, unref, useCssModule, useCssVars, useSSRContext, useTransitionState, vModelCheckbox, vModelDynamic, vModelRadio, vModelSelect, vModelText, vShow, version, warn, watch, watchEffect, withCtx, withDirectives, withKeys, withModifiers, withScopeId };
+export { BaseTransition, Comment, Fragment, KeepAlive, Static, Suspense, Teleport, Text, Transition, TransitionGroup, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compile$1 as compile, computed$1 as computed, createApp, createBlock, createCommentVNode, createHook$1 as createHook, createHydrationRenderer, createRenderer, createSSRApp, createSlots, createStaticVNode, createTextVNode, createVNode, customRef, defineAsyncComponent, defineComponent, defineEmit, defineProps, devtools, getCurrentInstance, getTransitionRawChildren, h, handleError, hydrate, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, isVNode, markRaw, mergeProps, nextTick, onActivated, onAddToFavorites, onBackPress, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onError, onErrorCaptured, onHide, onLaunch, onLoad, onMounted, onNavigationBarButtonTap, onNavigationBarSearchInputChanged, onNavigationBarSearchInputClicked, onNavigationBarSearchInputConfirmed, onNavigationBarSearchInputFocusChanged, onPageNotFound, onPageScroll, onPullDownRefresh, onReachBottom, onReady, onRenderTracked, onRenderTriggered, onResize, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, onUnmounted, onUpdated, openBlock, popScopeId, provide, proxyRefs, pushScopeId, queuePostFlushCb, reactive, readonly, ref, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, shallowReactive, shallowReadonly, shallowRef, ssrContextKey, ssrUtils, toHandlers, toRaw, toRef, toRefs, transformVNodeArgs, triggerRef, unref, useContext, useCssModule, useCssVars, useSSRContext, useTransitionState, vModelCheckbox, vModelDynamic, vModelRadio, vModelSelect, vModelText, vShow, version, warn, watch, watchEffect, withCtx, withDirectives, withKeys, withModifiers, withScopeId };
