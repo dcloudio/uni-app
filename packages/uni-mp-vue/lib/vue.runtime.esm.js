@@ -238,7 +238,7 @@ function createGetter(isReadonly = false, shallow = false) {
             return target;
         }
         const targetIsArray = isArray(target);
-        if (targetIsArray && hasOwn(arrayInstrumentations, key)) {
+        if (!isReadonly && targetIsArray && hasOwn(arrayInstrumentations, key)) {
             return Reflect.get(arrayInstrumentations, key, receiver);
         }
         const res = Reflect.get(target, key, receiver);
@@ -393,11 +393,11 @@ function add(value) {
     const target = toRaw(this);
     const proto = getProto(target);
     const hadKey = proto.has.call(target, value);
-    const result = target.add(value);
+    target.add(value);
     if (!hadKey) {
         trigger(target, "add" /* ADD */, value, value);
     }
-    return result;
+    return this;
 }
 function set$1(key, value) {
     value = toRaw(value);
@@ -412,14 +412,14 @@ function set$1(key, value) {
         checkIdentityKeys(target, has, key);
     }
     const oldValue = get.call(target, key);
-    const result = target.set(key, value);
+    target.set(key, value);
     if (!hadKey) {
         trigger(target, "add" /* ADD */, key, value);
     }
     else if (hasChanged(value, oldValue)) {
         trigger(target, "set" /* SET */, key, value, oldValue);
     }
-    return result;
+    return this;
 }
 function deleteEntry(key) {
     const target = toRaw(this);
@@ -630,19 +630,27 @@ function reactive(target) {
     }
     return createReactiveObject(target, false, mutableHandlers, mutableCollectionHandlers);
 }
-// Return a reactive-copy of the original object, where only the root level
-// properties are reactive, and does NOT unwrap refs nor recursively convert
-// returned properties.
+/**
+ * Return a shallowly-reactive copy of the original object, where only the root
+ * level properties are reactive. It also does not auto-unwrap refs (even at the
+ * root level).
+ */
 function shallowReactive(target) {
     return createReactiveObject(target, false, shallowReactiveHandlers, shallowCollectionHandlers);
 }
+/**
+ * Creates a readonly copy of the original object. Note the returned copy is not
+ * made reactive, but `readonly` can be called on an already reactive object.
+ */
 function readonly(target) {
     return createReactiveObject(target, true, readonlyHandlers, readonlyCollectionHandlers);
 }
-// Return a reactive-copy of the original object, where only the root level
-// properties are readonly, and does NOT unwrap refs nor recursively convert
-// returned properties.
-// This is used for creating the props proxy object for stateful components.
+/**
+ * Returns a reactive-copy of the original object, where only the root level
+ * properties are readonly, and does NOT unwrap refs nor recursively convert
+ * returned properties.
+ * This is used for creating the props proxy object for stateful components.
+ */
 function shallowReadonly(target) {
     return createReactiveObject(target, true, shallowReadonlyHandlers, readonlyCollectionHandlers);
 }
@@ -1189,8 +1197,6 @@ function flushJobs(seen) {
     //    priority number)
     // 2. If a component is unmounted during a parent component's update,
     //    its update can be skipped.
-    // Jobs can never be null before flush starts, since they are only invalidated
-    // during execution of another flushed job.
     queue.sort((a, b) => getId(a) - getId(b));
     try {
         for (flushIndex = 0; flushIndex < queue.length; flushIndex++) {
@@ -1346,13 +1352,16 @@ function isEmitListener(options, key) {
     if (!options || !isOn(key)) {
         return false;
     }
-    key = key.replace(/Once$/, '');
-    return (hasOwn(options, key[2].toLowerCase() + key.slice(3)) ||
-        hasOwn(options, key.slice(2)));
+    key = key.slice(2).replace(/Once$/, '');
+    return (hasOwn(options, key[0].toLowerCase() + key.slice(1)) ||
+        hasOwn(options, hyphenate(key)) ||
+        hasOwn(options, key));
 }
 
-// mark the current rendering instance for asset resolution (e.g.
-// resolveComponent, resolveDirective) during render
+/**
+ * mark the current rendering instance for asset resolution (e.g.
+ * resolveComponent, resolveDirective) during render
+ */
 let currentRenderingInstance = null;
 function markAttrsAccessed() {
 }
@@ -2065,7 +2074,7 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = EM
         onTrigger,
         scheduler
     });
-    recordInstanceBoundEffect(runner);
+    recordInstanceBoundEffect(runner, instance);
     // initial run
     if (cb) {
         if (immediate) {
@@ -2193,7 +2202,9 @@ function applyOptions(instance, options, deferredData = [], deferredWatch = [], 
     // assets
     components, directives, 
     // lifecycle
-    beforeMount, mounted, beforeUpdate, updated, activated, deactivated, beforeDestroy, beforeUnmount, destroyed, unmounted, render, renderTracked, renderTriggered, errorCaptured } = options;
+    beforeMount, mounted, beforeUpdate, updated, activated, deactivated, beforeDestroy, beforeUnmount, destroyed, unmounted, render, renderTracked, renderTriggered, errorCaptured, 
+    // public API
+    expose } = options;
     const publicThis = instance.proxy;
     const ctx = instance.ctx;
     const globalMixins = instance.appContext.mixins;
@@ -2352,9 +2363,9 @@ function applyOptions(instance, options, deferredData = [], deferredWatch = [], 
                 const provides = isFunction(provideOptions)
                     ? provideOptions.call(publicThis)
                     : provideOptions;
-                for (const key in provides) {
+                Reflect.ownKeys(provides).forEach(key => {
                     provide(key, provides[key]);
-                }
+                });
             });
         }
     }
@@ -2419,6 +2430,22 @@ function applyOptions(instance, options, deferredData = [], deferredWatch = [], 
     }
     if (unmounted) {
         onUnmounted(unmounted.bind(publicThis));
+    }
+    if (isArray(expose)) {
+        if (!asMixin) {
+            if (expose.length) {
+                const exposed = instance.exposed || (instance.exposed = proxyRefs({}));
+                expose.forEach(key => {
+                    exposed[key] = toRef(publicThis, key);
+                });
+            }
+            else if (!instance.exposed) {
+                instance.exposed = EMPTY_OBJ;
+            }
+        }
+        else if ((process.env.NODE_ENV !== 'production')) {
+            warn(`The \`expose\` option is ignored when used in mixins.`);
+        }
     }
     // fixed by xxxxxx
     if (instance.ctx.$onApplyOptions) {
@@ -2562,6 +2589,12 @@ function mergeOptions(to, from, instance) {
     }
 }
 
+/**
+ * #2437 In Vue 3, functional components do not have a public instance proxy but
+ * they exist in the internal parent chain. For code that relies on traversing
+ * public $parent chains, skip functional ones and go to the parent instead.
+ */
+const getPublicInstance = (i) => i && (i.proxy ? i.proxy : getPublicInstance(i.parent));
 const publicPropertiesMap = extend(Object.create(null), {
     $: i => i,
     $el: i => i.vnode.el,
@@ -2570,7 +2603,7 @@ const publicPropertiesMap = extend(Object.create(null), {
     $attrs: i => ((process.env.NODE_ENV !== 'production') ? shallowReadonly(i.attrs) : i.attrs),
     $slots: i => ((process.env.NODE_ENV !== 'production') ? shallowReadonly(i.slots) : i.slots),
     $refs: i => ((process.env.NODE_ENV !== 'production') ? shallowReadonly(i.refs) : i.refs),
-    $parent: i => i.parent && i.parent.proxy,
+    $parent: i => getPublicInstance(i.parent),
     $root: i => i.root && i.root.proxy,
     $emit: i => i.emit,
     $options: i => (__VUE_OPTIONS_API__ ? resolveMergedOptions(i) : i.type),
@@ -2831,6 +2864,7 @@ function createComponentInstance(vnode, parent, suspense) {
         update: null,
         render: null,
         proxy: null,
+        exposed: null,
         withProxy: null,
         effects: null,
         provides: parent ? parent.provides : Object.create(appContext.provides),
@@ -2973,7 +3007,9 @@ function setupStatefulComponent(instance, isSSR) {
 function handleSetupResult(instance, setupResult, isSSR) {
     if (isFunction(setupResult)) {
         // setup returned an inline render function
-        instance.render = setupResult;
+        {
+            instance.render = setupResult;
+        }
     }
     else if (isObject(setupResult)) {
         // if ((process.env.NODE_ENV !== 'production') && isVNode(setupResult)) {
@@ -3012,7 +3048,9 @@ function finishComponentSetup(instance, isSSR) {
     // support for 2.x options
     if (__VUE_OPTIONS_API__) {
         currentInstance = instance;
+        pauseTracking();
         applyOptions(instance, Component);
+        resetTracking();
         currentInstance = null;
     }
     // warn missing template/render
@@ -3044,10 +3082,19 @@ const attrHandlers = {
     }
 };
 function createSetupContext(instance) {
+    const expose = exposed => {
+        if ((process.env.NODE_ENV !== 'production') && instance.exposed) {
+            warn(`expose() should be called only once per setup().`);
+        }
+        instance.exposed = proxyRefs(exposed);
+    };
     if ((process.env.NODE_ENV !== 'production')) {
         // We use getters in dev in case libs like test-utils overwrite instance
         // properties (overwrites should not be done in prod)
         return Object.freeze({
+            get props() {
+                return instance.props;
+            },
             get attrs() {
                 return new Proxy(instance.attrs, attrHandlers);
             },
@@ -3056,22 +3103,24 @@ function createSetupContext(instance) {
             },
             get emit() {
                 return (event, ...args) => instance.emit(event, ...args);
-            }
+            },
+            expose
         });
     }
     else {
         return {
             attrs: instance.attrs,
             slots: instance.slots,
-            emit: instance.emit
+            emit: instance.emit,
+            expose
         };
     }
 }
 // record effects created during a component's setup() so that they can be
 // stopped when the component unmounts
-function recordInstanceBoundEffect(effect) {
-    if (currentInstance) {
-        (currentInstance.effects || (currentInstance.effects = [])).push(effect);
+function recordInstanceBoundEffect(effect, instance = currentInstance) {
+    if (instance) {
+        (instance.effects || (instance.effects = [])).push(effect);
     }
 }
 const classifyRE = /(?:^|[-_])(\w)/g;
@@ -3082,7 +3131,7 @@ function formatComponentName(instance, Component, isRoot = false) {
         ? Component.displayName || Component.name
         : Component.name;
     if (!name && Component.__file) {
-        const match = Component.__file.match(/([^/\\]+)\.vue$/);
+        const match = Component.__file.match(/([^/\\]+)\.\w+$/);
         if (match) {
             name = match[1];
         }
@@ -3110,7 +3159,7 @@ function computed$1(getterOrOptions) {
 }
 
 // Core API ------------------------------------------------------------------
-const version = "3.0.2";
+const version = "3.0.3";
 
 // import deepCopy from './deepCopy'
 /**
