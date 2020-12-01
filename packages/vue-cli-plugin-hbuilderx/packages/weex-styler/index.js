@@ -4,6 +4,7 @@ var css = require('css')
 var util = require('./lib/util')
 var validateItem = require('./lib/validator').validate
 var shorthandParser = require('./lib/shorthand-parser')
+var importantStr = ' !important'
 
 // padding & margin shorthand parsing
 function convertLengthShorthand (rule, prop) {
@@ -23,6 +24,31 @@ function convertLengthShorthand (rule, prop) {
       // break
     }
   }
+}
+
+/**
+ * mergeStyle
+ * @param {*} object 
+ * @param {*} classNames 
+ * @param {*} preClassNames 
+ * @param {*} ruleResult 
+ * @param {*} prop 
+ * @param {*} index 
+ */
+function mergeStyle (object, classNames, preClassNames, ruleResult, prop, index) {
+  if (!process.env.UNI_USING_NVUE_STYLE_COMPILER) {
+    object[classNames] = object[classNames] || {}
+    object[classNames][prop] = ruleResult[prop]
+    return
+  }
+  classNames = classNames.split('.').map(str => '.' + str).slice(1)
+  var className = classNames.find(className => className in object) || classNames[0]
+  // 假设选择器已经去重简化
+  preClassNames += classNames.filter(str => str !== className).sort().join('')
+  var rules = object[className] = object[className] || {}
+  var style = rules[preClassNames] = rules[preClassNames] || {}
+  // 增加其他权重信息
+  style[prop] = [...ruleResult[prop], preClassNames.split('.').length - 1, index]
 }
 
 /**
@@ -52,7 +78,7 @@ function parse (code, done) {
   /* istanbul ignore else */
   if (ast && ast.type === 'stylesheet' && ast.stylesheet &&
     ast.stylesheet.rules && ast.stylesheet.rules.length) {
-    ast.stylesheet.rules.forEach(function (rule) {
+    ast.stylesheet.rules.forEach(function (rule, index) {
       var type = rule.type
       var ruleResult = {}
       var ruleLog = []
@@ -75,6 +101,8 @@ function parse (code, done) {
 
             name = declaration.property
             value = declaration.value
+            var important = value.endsWith(importantStr)
+            value = value.replace(new RegExp(importantStr, 'g'), '')
 
             // validate declarations and collect them to result
             camelCasedName = util.hyphenedToCamelCase(name)
@@ -82,7 +110,8 @@ function parse (code, done) {
 
             /* istanbul ignore else */
             if (typeof subResult.value === 'number' || typeof subResult.value === 'string') {
-              ruleResult[camelCasedName] = subResult.value
+              // 增加 important 权重信息
+              ruleResult[camelCasedName] = process.env.UNI_USING_NVUE_STYLE_COMPILER ? [subResult.value, Number(important)] : subResult.value
             }
             if (subResult.log) {
               subResult.log.line = declaration.position.start.line
@@ -92,14 +121,18 @@ function parse (code, done) {
           })
 
           rule.selectors.forEach(function (selector) {
-            if (selector.match(/^\.[A-Za-z0-9_\-:]+$/)) {
-              var className = selector.slice(1)
+            selector = selector.replace(/\s*([\+\~\>])\s*/g, '$1').replace(/\s+/, ' ')
+            // 支持组合选择器
+            const res = selector.match(process.env.UNI_USING_NVUE_STYLE_COMPILER ? /^((?:(?:\.[A-Za-z0-9_\-]+)+[\+\~\> ])*)((?:\.[A-Za-z0-9_\-\:]+)+)$/ : /^(\.)([A-Za-z0-9_\-:]+)$/)
+            if (res) {
+              var preClassNames = res[1]
+              var classNames = res[2]
 
               // handle pseudo class
-              var pseudoIndex = className.indexOf(':')
+              var pseudoIndex = classNames.indexOf(':')
               if (pseudoIndex > -1) {
-                var pseudoCls = className.slice(pseudoIndex)
-                className = className.slice(0, pseudoIndex)
+                var pseudoCls = classNames.slice(pseudoIndex)
+                classNames = classNames.slice(0, pseudoIndex)
                 var pseudoRuleResult = {}
                 Object.keys(ruleResult).forEach(function (prop) {
                   pseudoRuleResult[prop + pseudoCls] = ruleResult[prop]
@@ -109,24 +142,22 @@ function parse (code, done) {
 
               // merge style
               Object.keys(ruleResult).forEach(function (prop) {
-                // handle transition
-                if (prop.indexOf('transition') === 0 && prop !== 'transition') {
-                  var realProp = prop.replace('transition', '')
-                  realProp = realProp[0].toLowerCase() + realProp.slice(1)
-                  jsonStyle['@TRANSITION'] = jsonStyle['@TRANSITION'] || {}
-                  jsonStyle['@TRANSITION'][className] = jsonStyle['@TRANSITION'][className] || {}
-                  jsonStyle['@TRANSITION'][className][realProp] = ruleResult[prop]
-                }
+                // // handle transition
+                // if (prop.indexOf('transition') === 0 && prop !== 'transition') {
+                //   var realProp = prop.replace('transition', '')
+                //   realProp = realProp[0].toLowerCase() + realProp.slice(1)
+                //   var object = jsonStyle['@TRANSITION'] = jsonStyle['@TRANSITION'] || {}
+                //   mergeStyle(object, classNames, preClassNames, ruleResult, prop, index)
+                // }
 
-                jsonStyle[className] = jsonStyle[className] || {}
-                jsonStyle[className][prop] = ruleResult[prop]
+                mergeStyle(jsonStyle, classNames, preClassNames, ruleResult, prop, index)
               })
             }
             else {
               log.push({
                 line: rule.position.start.line,
                 column: rule.position.start.column,
-                reason: 'ERROR: Selector `' + selector + '` is not supported. Weex only support single-classname selector'
+                reason: 'ERROR: Selector `' + selector + '` is not supported. Weex only support classname selector'
               })
             }
           })
@@ -157,6 +188,8 @@ function parse (code, done) {
       }
     })
   }
+
+  jsonStyle['@VERSION'] = 2
 
   done(err, { jsonStyle: jsonStyle, log: log })
 }

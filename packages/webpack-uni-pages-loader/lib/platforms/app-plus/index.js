@@ -271,6 +271,8 @@ module.exports = function (pagesJson, userManifestJson, isAppView) {
     appJson.nvueCompiler = 'weex'
   }
 
+  appJson.nvueStyleCompiler = process.env.UNI_USING_NVUE_STYLE_COMPILER ? 'uni-app' : 'weex'
+
   if (manifestJson.plus.renderer === 'native') {
     appJson.renderer = 'native'
   } else {
