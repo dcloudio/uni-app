@@ -41,3 +41,30 @@ export function showRightWindow () {
 export function hideRightWindow () {
   return showWindow('right', false)
 }
+
+function setWindowStyle (type, style) {
+  const api = 'set' + capitalize(type) + 'WindowStyle'
+  const app = getApp()
+  if (!app) {
+    return {
+      errMsg: `${api}:fail app not ready`
+    }
+  }
+  const msg = app.$children[0].$refs.layout.setWindowStyle(type, style)
+  if (msg) {
+    return {
+      errMsg: `${api}:fail ${msg}`
+    }
+  }
+  return {}
+}
+
+export function setTopWindowStyle (style) {
+  return setWindowStyle('top', style)
+}
+export function setLeftWindowStyle (style) {
+  return setWindowStyle('left', style)
+}
+export function setRightWindowStyle (style) {
+  return setWindowStyle('right', style)
+}

@@ -182,7 +182,10 @@ var serviceContext = (function () {
     'showRightWindow',
     'hideTopWindow',
     'hideLeftWindow',
-    'hideRightWindow'
+    'hideRightWindow',
+    'setTopWindowStyle',
+    'setLeftWindowStyle',
+    'setRightWindowStyle'
   ];
 
   const event = [
@@ -1349,7 +1352,7 @@ var serviceContext = (function () {
     },
     extension: {
       type: Array,
-      default: ['*']
+      default: ['']
     }
   };
 
@@ -8632,6 +8635,9 @@ var serviceContext = (function () {
     }
 
     if (!entryPagePath || entryPagePath === __uniConfig.entryPagePath) {
+      if (entryPageQuery) {
+        __uniConfig.entryPageQuery = entryPageQuery;
+      }
       return
     }
 

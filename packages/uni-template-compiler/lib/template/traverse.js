@@ -369,7 +369,11 @@ function traverseResolveScopedSlots (callExprNode, state) {
           resourcePath,
           paramExprNode,
           returnExprNodes,
-          traverseExpr,
+          traverseExpr: function (exprNode, state) {
+            const ast = traverseExpr(exprNode, state)
+            initParent(ast)
+            return ast
+          },
           normalizeChildren
         },
         state
@@ -416,7 +420,8 @@ function traverseRenderList (callExprNode, state) {
 
   const children = traverseExpr(forReturnStatementArgument, state)
   // 支付宝小程序在 block 标签上使用 key 时顺序不能保障
-  if (state.options.platform.name === 'mp-alipay' && t.isCallExpression(forReturnStatementArgument) && children && children.type) {
+  if (state.options.platform.name === 'mp-alipay' && t.isCallExpression(forReturnStatementArgument) && children &&
+    children.type) {
     children.attr = children.attr || {}
     Object.assign(children.attr, attr)
     return children

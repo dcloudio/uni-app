@@ -27,6 +27,9 @@ module.exports = function modifyVueLoader (webpackConfig, loaderOptions, compile
     .tap(options => Object.assign(options, vueLoader.options(loaderOptions, compilerOptions), cacheConfig))
     .end()
 
+  // 强制使用vue2,vue3时会使用vue-loader-v16
+  webpackConfig.plugin('vue-loader').use(require(vueLoader.loader).VueLoaderPlugin)
+
   // h5 框架需要使用 scoped 样式,其他平台编译时识别是否 nvue 文件且注入 flex 相关样式
   if (process.env.UNI_PLATFORM === 'h5') {
     webpackConfig.module

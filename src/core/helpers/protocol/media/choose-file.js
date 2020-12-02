@@ -32,6 +32,6 @@ export const chooseFile = {
   },
   extension: {
     type: Array,
-    default: ['*']
+    default: ['']
   }
 }

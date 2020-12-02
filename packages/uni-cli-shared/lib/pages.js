@@ -504,7 +504,7 @@ function parseUsingAutoImportComponents (usingAutoImportComponents) {
   return autoImportComponents
 }
 
-const BUILT_IN_COMPONENTS = ['page-meta', 'navigation-bar', 'uni-match-media']
+const BUILT_IN_COMPONENTS = ['page-meta', 'navigation-bar', 'uni-match-media', 'unicloud-db']
 
 function isBuiltInComponent (name) {
   return BUILT_IN_COMPONENTS.includes(name)
