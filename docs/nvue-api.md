@@ -73,7 +73,7 @@
 
 
 
-### scrollToElement
+### scrollToElement<div id="scrollToElement"></div>
 
 让页面滚动到 ref 对应的组件，这个 API 只能用于可滚动组件的子节点，例如 ```<scroller>```，```<list>```, ```<waterfall>``` 等可滚动组件中。
 
@@ -204,7 +204,7 @@
 
 
 
-## animation
+## animation<div id="animation"></div>
 
 ```animation```模块可以用来在组件上执行动画。JS-Animation可以对组件执行一系列简单的变换 (位置、大小、旋转角度、背景颜色和不透明度)。
 
@@ -304,12 +304,6 @@
 
 
 > 如果需要使用CSS动画，参考[transition](#transition) 或 [transform](#transform) 。
-
-
-
-
-
-
 
 
 
@@ -709,16 +703,16 @@ nvue 支持大部分 uni-app API ，下面只列举目前还**不支持的 API**
 
 ##### 动画
 
-|API		|说明		|
-|--			|--			|
-|uni.createAnimation()	|创建一个动画实例	|
+|API		|说明		|解决方案|
+|--			|--			|--			|
+|uni.createAnimation()	|创建一个动画实例	|[animation](#animation)|
 
 
 ##### 滚动
 
-|API		|说明		|
-|--			|--			|
-|uni.pageScrollTo()	|将页面滚动到目标位置	|
+|API		|说明		|解决方案|
+|--			|--			|--			|
+|uni.pageScrollTo()	|将页面滚动到目标位置	|[scrollToElement](#scrollToElement)|
 
 
 ##### 节点布局交互

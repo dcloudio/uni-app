@@ -16,11 +16,11 @@
 
 **平台差异说明**
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|快应用|360小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|2.0+，app-vue|2.4.5+|基础库 2.7.0+|x|x|x|x|
+|App					|H5			|微信小程序		|支付宝小程序|百度小程序		|字节跳动小程序|QQ小程序		|快应用					|360小程序|
+|:-:					|:-:		|:-:					|:-:		    |:-:					|:-:					|:-:				|:-:						|:-:			|
+|2.0+，app-vue|2.4.5+	|基础库 2.7.0+|x						|需引入动态库[引入方式](/api/media/editor-context)					|x							|x				|x				|x				|
 
-editor组件目前只有H5、App的vue页面和微信支持，其他端平台自身未提供editor组件，只能使用web-view加载web页面，也可搜索[插件市场](https://ext.dcloud.net.cn/search?q=%E5%AF%8C%E6%96%87%E6%9C%AC%E7%BC%96%E8%BE%91) 获取简单的markdown富文本编辑器
+editor组件目前只有H5、App的vue页面、微信小程序、百度小程序支持，其他端平台自身未提供editor组件，只能使用web-view加载web页面，也可搜索[插件市场](https://ext.dcloud.net.cn/search?q=%E5%AF%8C%E6%96%87%E6%9C%AC%E7%BC%96%E8%BE%91) 获取简单的markdown富文本编辑器
 
 | 属性 | 类型 | 默认值 | 必填 | 说明 |
 | --- | --- | --- | --- | --- |
@@ -84,9 +84,15 @@ editor组件目前只有H5、App的vue页面和微信支持，其他端平台自
 		},
 		methods: {
 			onEditorReady() {
-				uni.createSelectorQuery().select('#editor').context((res) => {
-					this.editorCtx = res.context
-				}).exec()
+			    // #ifdef MP-BAIDU
+			    this.editorCtx = requireDynamicLib('editorLib').createEditorContext('editorId');
+			    // #endif
+			    
+			    // #ifdef APP-PLUS || H5 ||MP-WEIXIN
+			    uni.createSelectorQuery().select('#editor').context((res) => {
+			      this.editorCtx = res.context
+			    }).exec()
+			    // #endif
 			},
 			undo() {
 				this.editorCtx.undo()
