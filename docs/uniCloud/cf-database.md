@@ -7131,6 +7131,17 @@ let res = await db.collection('items').aggregate()
 
 ### 日期操作符
 
+**注意**
+
+- 以下日期操作符中`timezone`均支持以下几种形式
+
+```js
+timezone: "Asia/Shanghai" // Asia/Shanghai时区
+timezone: "+08" // utc+8时区
+timezone: "+08:30" // 时区偏移8小时30分
+timezone: "+0830" // 时区偏移8小时30分，同上
+```
+
 #### dateFromParts
 
 聚合操作符。给定日期的相关信息，构建并返回一个日期对象。  
