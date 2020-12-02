@@ -37,7 +37,7 @@ function backWebview (webview, callback) {
 
   // 如果页面有subNvues，切使用了webview组件，则返回时子webview会取错，因此需要做id匹配
   const childWebview = children.find(webview => webview.id.indexOf(WEBVIEW_ID_PREFIX) === 0) || children[0]
-  console.log('backWebview -> childWebview', childWebview)
+
   childWebview.canBack(({
     canBack
   }) => {
