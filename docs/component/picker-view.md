@@ -10,7 +10,7 @@
 |:-|:-|:-|:-|
 |value|Array＜Number＞|数组中的数字依次表示 picker-view 内的 picker-view-column 选择的第几项（下标从 0 开始），数字大于 picker-view-column 可选项长度时，选择最后一项。||
 |indicator-style|String|设置选择器中间选中框的样式||
-|indicator-class|String|设置选择器中间选中框的类名|app-nvue和字节跳动小程序不支持|
+|indicator-class|String|设置选择器中间选中框的类名，注意页面或组件的style中写了scoped时，需要在类名前写/deep/|app-nvue和字节跳动小程序不支持|
 |mask-style|String|设置蒙层的样式||
 |mask-class|String|设置蒙层的类名|app-nvue和字节跳动小程序不支持|
 |@change|EventHandle|当滚动选择，value 改变时触发 change 事件，event.detail = {value: value}；value为数组，表示 picker-view 内的 picker-view-column 当前选择的是第几项（下标从 0 开始）|&nbsp;|
