@@ -47,6 +47,24 @@ function assertCodegenOptions (content, expectedOptions, isScoped = true) {
 describe('mp:loader', () => {
   it('parse scoped component', () => {
     assertCodegen(
+      `import { uniBadge,uniCard} from '@dcloudio/uni-ui';
+export default defineComponent({
+    components: {
+        'uni-badge':uniBadge,
+        'uni-card':uniCard
+    }
+})`,
+      [{
+        name: 'uni-badge',
+        value: 'uniBadge',
+        source: '@dcloudio/uni-ui/lib/uni-badge/uni-badge'
+      }, {
+        name: 'uni-card',
+        value: 'uniCard',
+        source: '@dcloudio/uni-ui/lib/uni-card/uni-card'
+      }])
+
+    assertCodegen(
       `
 import mediaList from '@/components/tab-nvue/mediaList.vue';
 import uniLoadMore from '@/components/uni-load-more.vue';
@@ -158,29 +176,27 @@ global['__wxVueOptions'] = {
           'van-button': VanButton,
           'van-search': VanSearch,
         },exports.default.components || {})`,
-      [
-        {
-          name: 'van-button',
-          value: 'VanButton',
-          source: '../button/index.vue'
-        },
-        {
-          name: 'van-search',
-          value: 'VanSearch',
-          source: '../search/index.vue'
-        },
-        {
-          name: 'myButton',
-          value: 'myButton',
-          source: '@/components/my-button/my-button.vue'
-        }
+      [{
+        name: 'van-button',
+        value: 'VanButton',
+        source: '../button/index.vue'
+      },
+      {
+        name: 'van-search',
+        value: 'VanSearch',
+        source: '../search/index.vue'
+      },
+      {
+        name: 'myButton',
+        value: 'myButton',
+        source: '@/components/my-button/my-button.vue'
+      }
       ])
 
     assertCodegenOptions(
       `export default {
         name: 'test'
-      }`,
-      {
+      }`, {
         name: '"test"',
         inheritAttrs: null,
         props: null
@@ -191,8 +207,7 @@ global['__wxVueOptions'] = {
       `const options = {
         name: 'test'
       }
-      export default options`,
-      {
+      export default options`, {
         name: '"test"',
         inheritAttrs: null,
         props: null
@@ -204,8 +219,7 @@ global['__wxVueOptions'] = {
       options = {
         name: 'test'
       }
-      export default options`,
-      {
+      export default options`, {
         name: '"test"',
         inheritAttrs: null,
         props: null
@@ -216,8 +230,7 @@ global['__wxVueOptions'] = {
       `const options = Vue.extend({
         name: 'test'
       })
-      export default options`,
-      {
+      export default options`, {
         name: '"test"',
         inheritAttrs: null,
         props: null
@@ -229,8 +242,7 @@ global['__wxVueOptions'] = {
       options = Vue.extend({
         name: 'test'
       })
-      export default options`,
-      {
+      export default options`, {
         name: '"test"',
         inheritAttrs: null,
         props: null
@@ -241,8 +253,7 @@ global['__wxVueOptions'] = {
       `const options = {
         name: 'test'
       }
-      export default Vue.extend(options)`,
-      {
+      export default Vue.extend(options)`, {
         name: '"test"',
         inheritAttrs: null,
         props: null
@@ -252,8 +263,7 @@ global['__wxVueOptions'] = {
     assertCodegenOptions(
       `export default {
         props: ['id', 'test']
-      }`,
-      {
+      }`, {
         name: null,
         inheritAttrs: null,
         props: '["id","test"]'
@@ -270,8 +280,7 @@ global['__wxVueOptions'] = {
             type: String
           }
         }
-      }`,
-      {
+      }`, {
         name: null,
         inheritAttrs: null,
         props: '["id","test"]'
