@@ -85,13 +85,15 @@ DCloud为开发者提供了`uni发布平台`，包括网站发布、App发布和
 1、登录[uniCloud控制台](https://unicloud.dcloud.net.cn/)。
 2、进入前端网页托管页面，选择【基础设置】，单击【添加域名】，进行域名添加，如下图所示：
 
-![](https://dcloud-img.oss-cn-hangzhou.aliyuncs.com/uni-app/uniCloud/uniCloud-hosting-domain-add.jpg)
+ ![](https://dcloud-img.oss-cn-hangzhou.aliyuncs.com/uni-app/uniCloud/uniCloud-hosting-domain-add.jpg)
 
 3、添加后，系统会自动分配一个 CNAME 域名，CNAME 域名不能直接访问，您需要在域名服务提供商处完成 CNAME 配置（将添加的域名CNAME到此域名），配置生效后，新域名即可使用。
 
 **关于证书内容与私钥**
 
-申请证书时通常会有下载选项，下载到证书之后找到对应Nginx的证书（包含一个crt文件和一个key文件），以文本形式打开crt文件即可看到证书内容，同样的key文件对应着私钥。
+证书签发后，可下载到本地，然后将内容复制黏贴到uniCloud web控制台。
+
+注意：各运营商下载证书的后缀可能不同，一般来说，`.key`文件对应私钥，`.pem`或`.crt`文件对应证书。这几种类型文件都是文本内容，可选择记事本打开查看内容。
 
 **注意事项**
 
