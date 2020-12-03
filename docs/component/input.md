@@ -11,7 +11,7 @@
 |password|Boolean|false|是否是密码类型||
 |placeholder|String||输入框为空时占位符||
 |placeholder-style|String||指定 placeholder 的样式||
-|placeholder-class|String|"input-placeholder"|指定 placeholder 的样式类||
+|placeholder-class|String|"input-placeholder"|指定 placeholder 的样式类，注意页面或组件的style中写了scoped时，需要在类名前写/deep/||
 |disabled|Boolean|false|是否禁用||
 |maxlength|Number|140|最大输入长度，设置为 -1 的时候不限制最大长度||
 |cursor-spacing|Number|0|指定光标与键盘的距离，单位 px 。取 input 距离底部的距离和 cursor-spacing 指定的距离的最小值作为光标与键盘的距离|App、微信小程序、百度小程序、QQ小程序|
