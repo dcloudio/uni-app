@@ -63,11 +63,16 @@ function generateAutoComponentsCode (autoComponents, dynamic = false) {
     // 统一转换为驼峰命名
     name = name.replace(/-(\w)/g, (_, str) => str.toUpperCase())
     if (dynamic) {
-      components.push(`'${name}': function(){return import(/* webpackChunkName: "${getWebpackChunkName(source)}" */'${source}')}`)
+      components.push(
+        `'${name}': function(){return import(/* webpackChunkName: "${getWebpackChunkName(source)}" */'${source}')}`
+      )
     } else {
       components.push(`'${name}': require('${source}').default`)
     }
   })
+  if (process.env.NODE_ENV === 'production') {
+    return `var components = {${components.join(',')}}`
+  }
   return `var components;
 try{
   components = {${components.join(',')}}
