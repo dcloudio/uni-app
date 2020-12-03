@@ -1306,7 +1306,7 @@ exports.main = async function(event,context) {
 | openid					| String	| 是	|用户openid																|
 | unionid					| String	| 否	|用户unionid，能取到此参数时会返回				|
 | token						| String	| 是	|登录成功之后返回的token信息							|
-| userInfo		| Object| 是	|用户全部信息								|
+| userInfo		    | Object  | 否	|用户全部信息，`type`为`login`时返回								|
 | tokenExpired		| String	| 是	|token过期时间														|
 | mobileConfirmed	| Boolean	| 是	|是否已验证手机号													|
 | emailConfirmed	| Boolean	| 是	|是否已验证邮箱														|
@@ -1530,7 +1530,7 @@ exports.main = async function(event,context) {
 | type						| String	| 是	|操作类型，`login`为登录、`register`为注册|
 | openid					| String	| 是	|用户openid																|
 | token						| String	| 是	|登录成功之后返回的token信息							|
-| userInfo		| Object| 是	|用户全部信息								|
+| userInfo		| Object| 是	|用户全部信息，`type`为`login`时返回								|
 | tokenExpired		| String	| 是	|token过期时间														|
 | mobileConfirmed	| Boolean	| 是	|是否已验证手机号													|
 | emailConfirmed	| Boolean	| 是	|是否已验证邮箱														|

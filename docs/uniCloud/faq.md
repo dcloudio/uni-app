@@ -191,7 +191,6 @@ exports.main = async function(event){
       message: '下单失败'
     }
   }
-  // 其他业务逻辑...
 }
 ```
 
@@ -200,6 +199,7 @@ exports.main = async function(event){
 关于云存储：这里的读写次数，并不一定是针对文件的：包括：上传文件、修改Policy、修改ACL、修改CORS 等操作，都会被认为是COS写。环境初始化时也会执行很多次初始化操作，写入 policy/acl/cors 等配置信息。用户每次操作 修改安全域名、修改静态域名等，也会触发 CORS 的写入。
 
 关于数据库：开发者通过uniCloud web控制台访问数据库也会增加少量读写次数
+
 ### 部署网站到前端网页托管报“The requested file was not found on this server.”
 
 - 部署history模式的uni-app项目时，如果未修改前端网页托管的配置，直接访问子页面时就会遇到上面的错误。如何配置请参考[部署uni-app项目](uniCloud/hosting.md?id=host-uni-app)

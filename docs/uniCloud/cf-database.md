@@ -1611,7 +1611,8 @@ db.runTransaction(callback: function, times: number)
 
 **注意事项**
 
-开发者提供的事务执行函数正常返回时，uniCloud 会自动提交（`commit`）事务，请勿在事务执行函数内调用 `transaction.commit` 方法，该方法仅在通过 `db.startTransaction` 进行事务操作时使用
+- 开发者提供的事务执行函数正常返回时，uniCloud 会自动提交（`commit`）事务，请勿在事务执行函数内调用 `transaction.commit` 方法，该方法仅在通过 `db.startTransaction` 进行事务操作时使用
+- 请注意transaction.doc().get()返回的data不是数组形式
 
 **示例代码**
 
@@ -1625,8 +1626,7 @@ exports.main = async (event) => {
     const result = await db.runTransaction(async transaction => {
       const aaaRes = await transaction.collection('account').doc('aaa').get()
       const bbbRes = await transaction.collection('account').doc('bbb').get()
-
-      if (aaaRes.data && bbbRes.data) {
+      if(aaaRes.data && bbbRes.data) {
         try {
           const updateAAARes = await transaction.collection('account').doc('aaa').update({
             amount: dbCmd.inc(-10)
@@ -1635,19 +1635,19 @@ exports.main = async (event) => {
           const updateBBBRes = await transaction.collection('account').doc('bbb').update({
             amount: dbCmd.inc(10)
           })
-
-          console.log(`transaction succeeded`)
-
+          const aaaEndRes = await transaction.collection('account').doc('aaa').get()
+          if (aaaEndRes.data.amount < 0) { // 请注意transaction.doc().get()返回的data不是数组形式
+            transaction.rollback(-100)
+          }
           // 会作为 runTransaction resolve 的结果返回
           return {
-            aaaAccount: aaaRes.data.amount - 10,
+            aaaAccount: aaaEndRes.data.amount,
           }
         } catch(e) {
           // 会作为 runTransaction reject 的结果出去
           await transaction.rollback(-100)
         }
       } else {
-        // 会作为 runTransaction reject 的结果出去
         await transaction.rollback(-100)
       }
     })
@@ -1690,6 +1690,10 @@ db.startTransaction()
 - 新增时使用add方法一次只可以新增单条，不可新增多条，即不支持在add方法内传入数组
 - 腾讯云没有限制where的使用，但是使用where修改或删除多条会导致无法回滚
 
+**注意**
+
+- 请注意transaction.doc().get()返回的data不是数组形式
+
 **示例代码**
 
 两个账户之间进行转账的简易示例
@@ -1713,15 +1717,25 @@ exports.main = async (event) => {
       const updateBBBRes = await transaction.collection('account').doc('bbb').update({
         amount: dbCmd.inc(10)
       })
+      
+      const aaaEndRes = await transaction.collection('account').doc('aaa').get()
+      if (aaaEndRes.data.amount < 0) { // 请注意transaction.doc().get()返回的data不是数组形式
+        transaction.rollback(-100)
+        return {
+          success: false,
+          error: `rollback`,
+          rollbackCode: -100,
+        }
+      } else {
+        await transaction.commit()
+        console.log(`transaction succeeded`)
 
-      await transaction.commit()
-
-      console.log(`transaction succeeded`)
-
-      return {
-        success: true,
-        aaaAccount: aaaRes.data.amount - 10,
+        return {
+          success: true,
+          aaaAccount: aaaRes.data.amount - 10,
+        }
       }
+
     } else {
 
       return {
