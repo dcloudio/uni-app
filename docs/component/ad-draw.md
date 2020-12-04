@@ -4,7 +4,7 @@
 应用内展示的广告组件，可用于全屏视频。
 
 - app端的广告源由腾讯广点通、头条穿山甲、快手广告联盟、360广告联盟以及部分DCloud直投广告聚合提供，在DCloud的uni-AD后台注册：[https://uniad.dcloud.net.cn/](https://uniad.dcloud.net.cn/)
-- 小程序端的广告由小程序平台提供
+
 
 **平台差异说明**
 
@@ -19,10 +19,9 @@
 1. 开通广告
 需在广告平台后台操作：
     * App平台：[https://uniad.dcloud.net.cn/](https://uniad.dcloud.net.cn/)
-    * 小程序平台：在各自的小程序管理后台操作。
 2. 申请广告位id
 在各位后台申请广告位id
-3. 在页面合适位置编写代码，放置ad组件，配上广告位id（app是adpid，微信、头条、qq小程序是unit-id，百度小程序是apid）
+3. 在页面合适位置编写代码，放置ad-draw组件，配上广告位adpid
 4. App端打包后生效，打包时必须选择要集成的广告SDK（穿山甲、广点通、360联盟、快手）。
 
 **属性说明**
@@ -38,7 +37,7 @@
 **注意**
 - HBuilderX2.8+版本Android平台更新穿山甲（今日头条）广告SDK后不再支持x86类型CPU，无法运行到x86类型cpu的模拟器。
 - HBuilderX标准基座真机运行测试draw信息流广告位标识（adpid）为：1507000690
-- uniAd广告平台申请的adpid需要自定义基座生效
+
 
 **@error 错误码**
 - App端聚合的穿山甲(iOS)：[错误码](https://ad.oceanengine.com/union/media/union/download/detail?id=16&docId=5de8d574b1afac00129330d5&osType=ios)
