@@ -52,7 +52,7 @@ const createUploadTaskById = function (uploadTaskId, {
 
   for (const name in header) {
     if (hasOwn(header, name)) {
-      uploader.setRequestHeader(name, header[name])
+      uploader.setRequestHeader(name, String(header[name]))
     }
   }
   for (const name in formData) {
