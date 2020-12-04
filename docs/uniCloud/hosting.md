@@ -13,8 +13,9 @@ DCloud为开发者提供了`uni发布平台`，包括网站发布、App发布和
 
 ## 案例
 
-- HBuilderX插件开发网站，是一个基于markdown的文档系统，域名：[https://hx.dcloud.net.cn/](https://hx.dcloud.net.cn/)。
-- hello uni-app项目现已部署到uniCloud，线上地址：[https://hellouniapp.dcloud.net.cn](https://hellouniapp.dcloud.net.cn)
+- `HBuilderX`插件开发网站，是一个基于`markdown`的文档系统，域名：[https://hx.dcloud.net.cn/](https://hx.dcloud.net.cn/)
+- `uni统计`官网现已部署到uniCloud，一份报表，掌握业务全景，域名：[https://tongji.dcloud.net.cn](https://tongji.dcloud.net.cn)
+- `hello uni-app`项目现已部署到uniCloud，线上地址：[https://hellouniapp.dcloud.net.cn](https://hellouniapp.dcloud.net.cn)
 
 ## 开通
 
