@@ -77,7 +77,6 @@ export function downloadFile ({
       }
     }
     blob.name = filename || getFileName(url)
-    console.log(blob)
     invoke(callbackId, {
       errMsg: 'downloadFile:ok',
       statusCode,
