@@ -13,7 +13,7 @@ Weex在```view```组件中增加了```eventPenetrationEnabled```属性，当值�
 
 ### View交互性
 
-Weex在```view```组件中增加了```userInteractionEnabled```属性，当值为false（默认为true）时，View及其子View均不响应事件，事件向下层View传递
+Weex在```view```组件中增加了```userInteractionEnabled```属性，当值为false（默认为true）时，View及其子View均不响应事件，事件向下层View传递。
 
 **longpress**
 
@@ -35,26 +35,26 @@ Weex在```view```组件中增加了```userInteractionEnabled```属性，当值�
 
 **事件对象**
 
-|key			|value										|备注														|
-|--				|--												|--															|
-|type			|appear										|																|
-|target		|													|触发 Appear 事件的组件对象			|
-|timestamp|													|事件被触发时的时间戳(不支持 H5)|
-|direction| ```up```或 ```down```		|触发事件时屏幕的滚动方向				|
+|key		|value					|备注							|
+|--			|--						|--								|
+|type		|appear					|								|
+|target		|						|触发 Appear 事件的组件对象		|
+|timestamp	|						|事件被触发时的时间戳(不支持 H5)|
+|direction	| ```up```或 ```down```	|触发事件时屏幕的滚动方向		|
 
 
 **Disappear**
 
-如果一个位于某个可滚动区域内的组件被绑定了 disappear 事件，那么当这个组件被滑出屏幕变为不可见状态时，该事件将被触发。
+如果一个位于某个可滚动区域内的组件被绑定了 ```disappear``` 事件，那么当这个组件被滑出屏幕变为不可见状态时，该事件将被触发。
 
 **事件对象**
 
-|key			|value										|备注														|
-|--				|--												|--															|
-|type			|disappear										|																|
-|target		|													|触发 Disappear 事件的组件对象	|
-|timestamp|													|事件被触发时的时间戳(不支持 H5)|
-|direction| ```up```或 ```down```		|触发事件时屏幕的滚动方向				|
+|key			|value									|备注														|
+|--				|--											|--															|
+|type			|disappear							|																|
+|target		|												|触发 Disappear 事件的组件对象	|
+|timestamp|												|事件被触发时的时间戳(不支持 H5)|
+|direction| ```up```或 ```down```	|触发事件时屏幕的滚动方向				|
 
 
 
