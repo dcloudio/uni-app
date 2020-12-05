@@ -258,18 +258,18 @@ export default {
         } = res.result
         this._isEnded = data.length < this.pageSize
 
-        callback && callback(data, this._isEnded)
-        this._dispatchEvent(events.load, data)
+        const data2 = this.getone ? (data.length ? data[0] : undefined) : data
 
-        if (this.getone) {
-          this.dataList = data.length ? data[0] : undefined
-        } else if (this.pageData === pageMode.add) {
-          this.dataList.push(...data)
+        callback && callback(data2, this._isEnded)
+        this._dispatchEvent(events.load, data2)
+
+        if (this.pageData === pageMode.add) {
+          this.dataList.push(...data2)
           if (this.dataList.length) {
             this.paginationInternal.current++
           }
-        } else if (this.pageData === pageMode.replace) {
-          this.dataList = data
+        } else {
+          this.dataList = data2
         }
 
         if (this.getcount) {
