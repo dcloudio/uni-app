@@ -344,7 +344,7 @@ function hasPermission(token, permission) {
 
 **注意**
 
-- 注册成功之后会返回token，在获取token之后应进行持久化存储，键值为：uniIdToken，`uni.setStorageSync('uniIdToken',res.result.token)`
+- 注册成功之后会返回token，在获取token之后应进行持久化存储，键值为：`uni_id_token`，`uni.setStorageSync('uni_id_token',res.result.token)`
 
 **user参数说明**
 
@@ -408,8 +408,8 @@ uniCloud.callFunction({
 	},
 	success(res){
 		if(res.result.code === 0) {
-      // 目前版本是驼峰形式uniIdToken，后面会调整为蛇形uni_id_token（调整后会在一段时间内兼容驼峰）
-			uni.setStorageSync('uniIdToken',res.result.token)
+			// 2.8.0版本起调整为蛇形uni_id_token（调整后在一段时间内兼容驼峰uniIdToken）
+			uni.setStorageSync('uni_id_token',res.result.token)
 			// 其他业务代码，如跳转到首页等
 			uni.showToast({
 				title: '注册成功',
@@ -438,7 +438,7 @@ uniCloud.callFunction({
 
 **注意**
 
-- 登录成功之后会返回token，在获取token之后应进行持久化存储，键值为：uniIdToken，`uni.setStorageSync('uniIdToken',res.result.token)`
+- 登录成功之后会返回token，在获取token之后应进行持久化存储，键值为：`uni_id_token`，`uni.setStorageSync('uni_id_token',res.result.token)`
 - 登录时请注意自行验证数据有效性
 
 **user参数说明**
@@ -487,7 +487,7 @@ exports.main = async function(event,context) {
 
 **注意**
 
-- 登出成功之后应删除持久化存储的token，键值为：uniIdToken，`uni.removeStorageSync('uniIdToken')`
+- 登出成功之后应删除持久化存储的token，键值为：`uni_id_token`，`uni.removeStorageSync('uni_id_token')`
 
 **参数说明**
 
@@ -542,7 +542,7 @@ exports.main = async function(event,context) {
 
 - 客户端会自动查找storage内的token在callFunction时插入
 - 2.9.5+ 客户端允许开发者自行传入uniIdToken，此时不再从storage获取token
-- 2.7.14 版本token存储在storage内使用的是驼峰形式的键值`uniIdToken`，下版会调整为蛇形`uni_id_token`，调整后会在一段时间内兼容驼峰形式
+- 2.8.0版本起token存储在storage内推荐使用使用蛇形`uni_id_token`，会在一段时间内兼容驼峰形式`uniIdToken`
 
 **示例代码**
 
@@ -1283,7 +1283,7 @@ exports.main = async function(event,context) {
 
 - 需要在config.json内使用微信登录的平台下配置appid和appsecret
 - uniId会自动判断客户端平台
-- 登录成功之后应持久化存储token，键值为：uniIdToken，`uni.setStorageSync('uniIdToken', res.result.token)`
+- 登录成功之后应持久化存储token，键值为：`uni_id_token`，`uni.setStorageSync('uni_id_token', res.result.token)`
 - App端获取code不可直接调用`uni.login`，详细用法可以看下面示例
 
 **参数说明**
@@ -1384,7 +1384,7 @@ export default {
           content: JSON.stringify(res.result)
         })
         if (res.result.code === 0) {
-          uni.setStorageSync('uniIdToken', res.result.token)
+          uni.setStorageSync('uni_id_token', res.result.token)
         }
       }).catch(() => {
         uni.showModal({
@@ -1509,7 +1509,7 @@ exports.main = async function(event,context) {
 **注意**
 
 - 需要在config.json内支付宝平台下配置appid和privateKey（应用私钥）
-- 登录成功之后应持久化存储token，键值为：uniIdToken，`uni.setStorageSync('uniIdToken', res.result.token)`
+- 登录成功之后应持久化存储token，键值为：`uni_id_token`，`uni.setStorageSync('uni_id_token', res.result.token)`
 
 **参数说明**
 
