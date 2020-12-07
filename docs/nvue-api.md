@@ -311,21 +311,22 @@
 
 ## nvue 里使用 BindingX
 
-```uni-app``` 是逻辑层和视图层分离的。此时会产生两层通信成本。比如拖动视图层的元素，如果在逻辑层不停接收事件，因为通信损耗会产生不顺滑的体验。
+`uni-app` 是逻辑层和视图层分离的。此时会产生两层通信成本。比如拖动视图层的元素，如果在逻辑层不停接收事件，因为通信损耗会产生不顺滑的体验。
 
 [BindingX](https://alibaba.github.io/bindingx/) 是weex提供的一种预描述交互语法。由原生解析BindingX规则，按此规则处理视图层的交互和动效。不再实时去js逻辑层运行和通信。
 
-BindingX类似一种强化版的 ```css``` ，运行性能高，但没有js那样足够强的编程灵活性。
+BindingX类似一种强化版的css，运行性能高，但没有js那样足够强的编程灵活性。
 
-```uni-app``` 内置了 BindingX，可在 ```nvue``` 中使用 BindingX 完成复杂的动画效果。
+`uni-app` 内置了 BindingX，可在 `nvue` 中使用 BindingX 完成复杂的动画效果。
 
-- 从HBuilderX 2.3.4起，```uni-app``` 编译模式可直接引用 ```uni.requireNativePlugin('bindingx')``` 模块，weex 模式还需使用 npm 方式引用。
+- 从HBuilderX 2.3.4起，`uni-app` 编译模式可直接引用 `uni.requireNativePlugin('bindingx')` 模块，weex 模式还需使用 npm 方式引用。
 
-- BindingX demo示例可参考 BindingX 示例 里 ```vue``` 的相关示例，将实验田里的 vue 代码拷贝到 ```nvue``` 文件里即可。
+- BindingX demo示例可参考 BindingX 示例里 vue 的相关示例，将实验田里的 vue 代码拷贝到 `nvue` 文件里即可。
 
 
 ##### 注意
-- 暂时不要在 ```expression``` 内使用 ```origin```
+
+- 暂时不要在 `expression` 内使用 `origin` 
 
 
 ##### 代码示例:
