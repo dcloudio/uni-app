@@ -20,6 +20,8 @@ function getService (provider) {
  */
 export function login (params, callbackId) {
   const provider = params.provider || 'weixin'
+  const errorCallback = warpPlusErrorCallback(callbackId, 'login')
+
   getService(provider).then(service => {
     function login () {
       service.login(res => {
@@ -29,12 +31,7 @@ export function login (params, callbackId) {
           authResult: authResult,
           errMsg: 'login:ok'
         })
-      }, err => {
-        invoke(callbackId, {
-          code: err.code,
-          errMsg: 'login:fail:' + err.message
-        })
-      }, provider === 'apple' ? { scope: 'email' } : params.univerifyStyle || {})
+      }, errorCallback, provider === 'apple' ? { scope: 'email' } : params.univerifyStyle || {})
     }
     // 先注销再登录
     // apple登录logout之后无法重新触发获取email,fullname；一键登录无logout
@@ -43,12 +40,7 @@ export function login (params, callbackId) {
     } else {
       service.logout(login, login)
     }
-  }).catch(err => {
-    invoke(callbackId, {
-      code: err.code || '',
-      errMsg: 'login:fail:' + err.message
-    })
-  })
+  }).catch(errorCallback)
 }
 
 export function getUserInfo (params, callbackId) {

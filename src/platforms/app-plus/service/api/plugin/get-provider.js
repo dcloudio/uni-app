@@ -58,7 +58,7 @@ export function getProvider ({
     providers[service]((err, provider) => {
       if (err) {
         invoke(callbackId, {
-          errMsg: 'getProvider:fail:' + err.message
+          errMsg: 'getProvider:fail ' + err.message
         })
       } else {
         invoke(callbackId, {
@@ -70,7 +70,7 @@ export function getProvider ({
     })
   } else {
     invoke(callbackId, {
-      errMsg: 'getProvider:fail:服务[' + service + ']不支持'
+      errMsg: 'getProvider:fail 服务[' + service + ']不支持'
     })
   }
 }
