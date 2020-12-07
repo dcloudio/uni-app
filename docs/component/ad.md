@@ -90,24 +90,11 @@ App和微信小程序的ad组件没有type属性，可以用于banner，也可�
 <template>
   <view class="content">
 
-    <!-- App平台 示例 1 -->
+    <!-- App平台 -->
     <!-- adpid="1111111111" 此广告位标识仅在HBuilderX标准基座中有效，仅用于测试，替换为自己申请获取的广告位标识 -->
-    <view class="ad-view">
-      <ad adpid="1111111111" @load="onload" @close="onclose" @error="onerror"></ad>
-    </view>
-
-    <!-- App平台 示例 2 -->
     <!-- 需要时可自定义属性，监听到 error 回调后(e.target可以取到)，开发者可以针对性的处理，比如隐藏广告组件的父容器，以保证用户体验 -->
-    <view class="ad-view" v-for="adItem in adList" :key="adItem.id">
-      <ad :adpid="adItem.adpid" :data-xx="adItem.id"></ad>
-    </view>
-
-    <!-- App平台 示例 3 (手动请求广告数据 仅App平台支持) -->
-    <view>
-      <button @click="getAdData">Get ad data</button>
-    </view>
     <view class="ad-view">
-      <ad :data="adData"></ad>
+      <ad adpid="1111111111" :data-xx="adItem.id" @load="onload" @close="onclose" @error="onerror"></ad>
     </view>
 
     <!-- 微信小程序 -->
@@ -127,25 +114,63 @@ App和微信小程序的ad组件没有type属性，可以用于banner，也可�
 
   </view>
 </template>
-```
 
-```javascript
+<script>
 export default {
   data() {
     return {
-      title: 'uni-app ad',
-      adList: [],
+      title: 'ad'
+    }
+  },
+  methods: {
+    onload(e) {
+      console.log("onload");
+    },
+    onclose(e) {
+      console.log("onclose: " + e.detail);
+    },
+    onerror(e) {
+      console.log("onerror: " + e.detail.errCode + " message:: " + e.detail.errMsg);
+    }
+  }
+}
+</script>
+
+<style>
+  .content {
+    background-color: #DBDBDB;
+    padding: 10px;
+  }
+
+  .ad-view {
+    background-color: #FFFFFF;
+    margin-bottom: 10px;
+  }
+</style>
+```
+
+
+api的方式(仅app平台支持)
+
+``` html
+<template>
+  <view class="content">
+    <view class="ad-view">
+      <ad :data="adData"></ad>
+    </view>
+  </view>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      title: 'ad',
       adData: {}
     }
   },
   onReady: function (e) {
-    // 显示 4 个广告
-    for (let i = 0; i < 4; i++) {
-      this.adList.push({
-        id: i,
-        adpid: "1111111111"
-      })
-    }
+    this.getAdData()
   },
   methods: {
     getAdData: function (e) {
@@ -163,21 +188,11 @@ export default {
           console.log(err);
         }
       )
-    },
-    onload(e) {
-      console.log("onload");
-    },
-    onclose(e) {
-      console.log("onclose: " + e.detail);
-    },
-    onerror(e) {
-      console.log("onerror: " + e.detail.errCode + " message:: " + e.detail.errMsg);
     }
   }
 }
-```
+</script>
 
-``` css
 <style>
   .content {
     background-color: #DBDBDB;
