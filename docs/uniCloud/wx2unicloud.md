@@ -20,7 +20,7 @@ uniCloud去掉了微信云开发的一些功能，添加了更多功能。以及
 |数据库schema	|不支持																		|完善的数据库[schema](https://uniapp.dcloud.io/uniCloud/schema)设计，自带权限验证和数据合法性验证																										|
 |数据库查询语法	|MongoDB语法。学习门槛高、写法复杂，尤其聚合查询							|除了MongoDB语法外，支持JQL语法，大幅降低学习门槛，减少数据库操作的代码量，快速完成复杂查询																												|
 |开发工具		|微信小程序工具，编码体验欠佳												|通用编程工具HBuilderX，高效操作完善，插件体系开放																																						|
-|前端数据库watch	|支持。权限按微信账户体系执行												|暂未集成。有需求可到需求墙投票：[http://dev.dcloud.net.cn/wish/](http://dev.dcloud.net.cn/wish/)																										|
+|前端数据库watch	|支持。权限按微信账户体系执行												|暂未集成。有需求可到需求墙投票：[http://dev.dcloud.net.cn/wish/](http://dev.dcloud.net.cn/wish/)。同时有插件可用于解决聊天场景，[详见](https://ext.dcloud.net.cn/search?q=im&cat1=7)																										|
 |opendb			|无																			|开放的数据库规范，众多价值，[详情](https://gitee.com/dcloud/opendb)																																	|
 |账户服务		|仅微信登录																	|[uni-id](https://uniapp.dcloud.io/uniCloud/uni-id)支持应用自己的账户体系，手机号或email，内置短信验证码和app端一键登录，支持微信、支付宝等三方登录，支持权限、角色、社交裂变等众多功能					|
 |admin系统		|不自带																		|自带开源[uniCloud admin](https://uniapp.dcloud.io/uniCloud/admin)系统，大小屏自适配，自带用户、角色、权限功能，还有更多[插件](https://ext.dcloud.net.cn/?cat1=7&cat2=74&orderBy=UpdatedDate)拿来即用	|
