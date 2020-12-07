@@ -28,7 +28,6 @@
   * [uniCloud admin](uniCloud/admin.md)
   * [unipay](uniCloud/unipay.md)
   * [发送短信](uniCloud/send-sms.md)
-  * [旧版clientDB插件](uniCloud/uni-clientDB.md)
 * [前端网页托管](uniCloud/hosting.md)
 * [日志输出](uniCloud/cf-logger.md)
 * [同时连多服务空间](uniCloud/init.md)
