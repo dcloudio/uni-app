@@ -1,14 +1,14 @@
 export function getScreenBrightness () {
   return {
     errMsg: 'getScreenBrightness:ok',
-    value: plus.screen.getBrightness()
+    value: plus.screen.getBrightness(false)
   }
 }
 
 export function setScreenBrightness ({
   value
 } = {}) {
-  plus.screen.setBrightness(value)
+  plus.screen.setBrightness(value, false)
   return {
     errMsg: 'setScreenBrightness:ok'
   }
