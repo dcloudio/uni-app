@@ -668,6 +668,8 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 
 **迷上我** 恋爱学习App，[Android及iOS](https://a.app.qq.com/o/simple.jsp?pkgname=com.mishangwo)
 
+**未来信封：**给未来写封信，更加专业的时光邮局，[Android及iOS](https://a.app.qq.com/o/simple.jsp?pkgname=cn.futureletter)
+
 #### 更多小程序案例（可在微信小程序中搜索）@wx-more
 
 <div>
