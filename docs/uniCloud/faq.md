@@ -13,6 +13,8 @@
 - 更完善的工具链。前端uni-app、云端uniCloud、还有ide端的HBuilderX，互相紧密搭配，打造闭环的优秀开发体验
 - 更丰富的生态。插件市场有大量现成的轮子和资源 [详见](https://ext.dcloud.net.cn/?cat1=7&orderBy=TotalDownload)
 
+如果你已经使用过微信小程序云开发，想进一步了解对比差异或如何从微信小程序云迁移到uniCloud，[详见](uniCloud/wx2unicloud.md)
+
 ### uniCloud稳定吗？DCloud服务器异常会影响我的线上业务吗？
 
 `uniCloud`是 DCloud 和阿里云、腾讯云等成熟云厂商合作推出的云服务产品，阿里云、腾讯云等提供云端基础资源，DCloud提供API设计、前端框架、IDE工具支持、管理控制台、插件生态等服务，开发者的云函数直接托管在阿里云等服务商的serverless平台。
@@ -50,7 +52,7 @@ uni-app本来可以开发web界面，详见：[uni-app宽屏适配指南](https:
 
 uniCloud提供了`云函数URL化`，来满足上述需求。[详见](https://uniapp.dcloud.io/uniCloud/http)
 
-### 微信云开发支持客户端直接操作数据库，uniCloud不支持？
+### 微信云开发支持客户端直接操作数据库，uniCloud支持吗？
 uniCloud提供了比微信云开发更优秀的前端操作数据库方案，见：[clientDB](https://uniapp.dcloud.net.cn/uniCloud/database)
 
 ### 云开发是nodejs+MongoDB组合，对比php+mysql的传统组合怎么样？
