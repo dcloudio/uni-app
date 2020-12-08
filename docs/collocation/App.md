@@ -13,7 +13,7 @@
 |onShow						|当 `uni-app` 启动，或从后台进入前台显示																										||
 |onHide						|当 `uni-app` 从前台进入后台																																||
 |onError					|当 `uni-app` 报错时触发																																||
-|onUniNViewMessage|对 `nvue` 页面发送的数据进行监听，可参考 [nvue 向 vue 通讯](/nvue-api?id=nvue-向-vue-通讯)	|App|
+|onUniNViewMessage|对 `nvue` 页面发送的数据进行监听，可参考 [nvue 向 vue 通讯](/nvue-api?id=nvue-和-vue-相互通讯)	|App|
 
 在`App.vue`文件里使用生命周期函数，如下：
 

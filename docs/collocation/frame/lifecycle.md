@@ -8,7 +8,7 @@
 |onShow|当 ``uni-app`` 启动，或从后台进入前台显示|
 |onHide|当 ``uni-app`` 从前台进入后台|
 |onError|当 ``uni-app`` 报错时触发|
-|onUniNViewMessage|对 ``nvue`` 页面发送的数据进行监听，可参考 [nvue 向 vue 通讯](/nvue-api?id=nvue-向-vue-通讯)|
+|onUniNViewMessage|对 ``nvue`` 页面发送的数据进行监听，可参考 [nvue 向 vue 通讯](/nvue-api?id=nvue-和-vue-相互通讯)|
 |onUnhandledRejection|对未处理的 Promise 拒绝事件监听函数（2.8.1+）|
 |onPageNotFound|页面不存在监听函数|
 |onThemeChange|监听系统主题变化|
