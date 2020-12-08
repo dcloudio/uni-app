@@ -140,7 +140,7 @@ weex 编译模式下支持使用 weex ui ，例子[详见](https://ext.dcloud.ne
 	- uni-app组件，同uni-app写法。
 - style：由于采用原生渲染，**并非所有浏览器的 css 均支持，布局模型只支持 flex 布局**，虽然不会造成某些界面布局无法实现，但写法要注意。详见：[样式](#样式)
 - script：写法同 vue，并支持3种API：
-	- nvue API ：仅支持App端，uni-app编译模式也可使用。使用前需先引入对应模块，参考：[模块引入API](#API)
+	- nvue API ：仅支持App端，uni-app编译模式也可使用。使用前需先引入对应模块，参考：[模块引入API](/nvue-api)
 	- uni API：[https://uniapp.dcloud.io/api/README](https://uniapp.dcloud.io/api/README)
 	- plus API：仅支持App端。[http://www.html5plus.org/doc/h5p.html](http://www.html5plus.org/doc/h5p.html)
 
