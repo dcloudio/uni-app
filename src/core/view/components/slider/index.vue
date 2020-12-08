@@ -40,6 +40,78 @@ import {
   listeners
 } from 'uni-mixins'
 import touchtrack from 'uni-mixins/touchtrack'
+
+// 处理js计算小数时的精度问题
+var computeController = {
+  add: function (arg) {
+    var r1, r2, m
+    try {
+      // 获得小数位数
+      r1 = this.toString().split('.')[1].length
+    } catch (e) {
+      r1 = 0
+    }
+    try {
+      // 获得小数位数
+      r2 = arg.toString().split('.')[1].length
+    } catch (e) {
+      r2 = 0
+    }
+    m = Math.pow(10, Math.max(r1, r2))
+    return (this * m + arg * m) / m
+  },
+  sub: function (arg) {
+    return this.add(-arg)
+  },
+  mul: function (arg) {
+    var m = 0; var s1 = this.toString(); var s2 = arg.toString()
+    try {
+      // 获得小数位数
+      m += s1.split('.')[1].length
+    } catch (e) { }
+    try {
+      // 获得小数位数
+      m += s2.split('.')[1].length
+    } catch (e) { }
+    // 转为十进制计算后，要除以两个数的共同小数位数
+    return Number(s1.replace('.', '')) * Number(s2.replace('.', '')) / Math.pow(10, m)
+  },
+  div: function (arg) {
+    var t1 = 0; var t2 = 0; var r1; var r2
+    try {
+      // 获得小数位数
+      t1 = this.toString().split('.')[1].length
+    } catch (e) { }
+    try {
+      // 获得小数位数
+      t2 = arg.toString().split('.')[1].length
+    } catch (e) { }
+    r1 = Number(this.toString().replace('.', ''))
+    r2 = Number(arg.toString().replace('.', ''))
+    // 转为十进制计算后，要乘以除数与被除数小数位数的差
+    return (r1 / r2) * Math.pow(10, t2 - t1)
+  },
+  mod: function (arg) {
+    var t1 = 0; var t2 = 0; var r1; var r2
+    try {
+      t1 = this.toString().split('.')[1].length
+    } catch (e) { }
+    try {
+      t2 = arg.toString().split('.')[1].length
+    } catch (e) { }
+    // 小数位数
+    var digit = Math.pow(10, Math.abs(t1 - t2))
+    // eslint-disable-next-line eqeqeq
+    if (digit == 1) { digit = Math.pow(10, t1) }
+    // 计算余数
+    r1 = (this * digit).toString().split('.')[0]
+    r2 = arg * digit
+    // 小数点后数字，直接拼接上即可
+    var decimals = (this * digit).toString().split('.')[1] ? (this * digit).toString().split('.')[1] : ''
+    return (r1 % r2 + decimals) / digit
+  }
+}
+
 export default {
   name: 'Slider',
   mixins: [emitter, listeners, touchtrack],
@@ -165,8 +237,7 @@ export default {
     _filterValue (e) {
       const max = Number(this.max)
       const min = Number(this.min)
-      return e < min ? min : e > max ? max : Math.round((e - min) / this
-        .step) * this.step + min
+      return e < min ? min : e > max ? max : computeController.mul.call(Math.round((e - min) / this.step), this.step) + min
     },
     _getValueWidth () {
       return 100 * (this.sliderValue - this.min) / (this.max - this.min) + '%'
