@@ -258,7 +258,21 @@
 
 
 - @ref，将要执行动画的元素。例如指定动画的元素 ref 属性为 test，可以通过调用 this.$refs.test 来获取元素的引用。
-- @options，动画参数。styles，设置不同样式过渡效果的键值对，下表列出了所有合法的参数：
+- @options，动画参数。
+
+
+下表列出了options所有合法的参数：
+
+|可选值		|描述		|
+|--			|--			|
+|styles	|设置不同样式过渡效果的键值对|
+|duration		|指定动画的持续时间 (单位是毫秒)，默认值是 0，表示瞬间达到动画结束状态。																																				|
+|delay			|指定请求动画操作到执行动画之间的时间间隔 (单位是毫秒)，默认值是 0，表示没有延迟，在请求后立即执行动画。																												|
+|needLayout		|动画执行是否影响布局，默认值是false。																																													|
+|timingFunction	|描述动画执行的速度曲线，用于描述动画已消耗时间和动画完成进度间的映射关系。默认值是 ```linear```，表示动画从开始到结束都拥有同样的速度。详见下						|
+
+
+下表列出了styles所有合法的参数：
 
 |可选值		|描述		|
 |--			|--			|
@@ -266,12 +280,9 @@
 |height		|表示动画执行后应用到组件上的高度值。如果你需要影响布局，设置设置为 needLayout为true。默认值为computed width。		|
 |backgroundColor	|动画执行后应用到组件上的背景颜色，默认值为computed backgroundColor。
 |opacity		|表示动画执行后应用到组件上的不透明度值，默认值为computed opacity。																																						|
-|transformOrigin|```transformOrigin```定义变化过程的中心点，如transformOrigin: x-axis y-axis 参数 x-axis 可能的值为 left、center、right、长度值或百分比值，参数 y-axis 可能的值为 top、center、bottom、长度值或百分比。默认值为center center。|
-|transform		|```transform```变换类型，可能包含rotate，translate，scale及其他属性。默认值为空。详见下																																			|
-|duration		|指定动画的持续时间 (单位是毫秒)，默认值是 0，表示瞬间达到动画结束状态。																																				|
-|delay			|指定请求动画操作到执行动画之间的时间间隔 (单位是毫秒)，默认值是 0，表示没有延迟，在请求后立即执行动画。																												|
-|needLayout		|动画执行是否影响布局，默认值是false。																																													|
-|timingFunction	|描述动画执行的速度曲线，用于描述动画已消耗时间和动画完成进度间的映射关系。默认值是 ```linear```，表示动画从开始到结束都拥有同样的速度。详见下						|
+|transformOrigin|`transformOrigin` 定义变化过程的中心点，如transformOrigin: x-axis y-axis 参数 x-axis 可能的值为 left、center、right、长度值或百分比值，参数 y-axis 可能的值为 top、center、bottom、长度值或百分比。默认值为center center。|
+|transform		| `transform` 变换类型，可能包含rotate，translate，scale及其他属性。默认值为空。详见下																																			|
+
 
 **transform** 
 
