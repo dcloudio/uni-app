@@ -333,7 +333,6 @@ flex {number}：值为 number 类型。
 		background-color: #00AAFF;
 	}
 	</style>
-	</style>
 ```
 
 
@@ -791,7 +790,7 @@ font-weight {string}：字体粗细程度。默认值: ```normal```；
 ### font-family
 ```font-family {string}```：设置字体。这个设置不保证在不同平台，设备间的一致性。
 如所选设置在平台上不可用，将会降级到平台默认字体。
-如果需要加载自定义字体，请参考相关[DOM.addRule](#addRule)
+如果需要加载自定义字体，请参考相关[DOM.addRule](/nvue-api?id=addrule)
 
 ### text-overflow
 ```text-overflow {string}```：设置内容超长时的省略样式。

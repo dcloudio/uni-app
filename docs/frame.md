@@ -216,7 +216,7 @@ export default {
 
 **注意**
 
-- nvue 页面支持的生命周期参考：[nvue 生命周期介绍](/nvue-outline?id=生命周期)。
+- nvue 页面支持的生命周期参考：[nvue 生命周期介绍](/nvue-outline?id=编译模式)。
 
 ## 路由
 

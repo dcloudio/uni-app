@@ -16,13 +16,13 @@
  - 支持项目nativeplugins目录下和插件市场原生云打包的第三方原生插件。你可以将已有原生模块移植到nvue平台也很方便。
   使用方式：在manifest.json->App原生插件配置->选择本地插件或者云端插件->打自定义基座才能使用。[详见](/api/extend/native-plugin.md)
   
- - nvue还支持uni-app的js API接口，若无特殊说明，则表示vue文件和nvue文件均支持。[详见](/api)。
+ - nvue还支持uni-app的js API接口，若无特殊说明，则表示vue文件和nvue文件均支持。[详见](/api/README)。
   
- - nvue 里不支持的 uni-app API，[详见](#nvueAPI)
+ - nvue 里不支持的 uni-app API，[详见](/nvue-api?id=nvue-里不支持的-uni-app-api)
 
 
 
-### addRule <div id="addRule"></div>
+### addRule
 
  Weex 提供 DOM.addRule 以**加载自定义字体**。开发者可以通过指定 font-family加载 iconfont 和 custom font。开发者可以使用下面的代码加载自定义字体：
 ``` html
@@ -204,7 +204,7 @@
 
 
 
-## animation<div id="animation"></div>
+## animation
 
 ```animation```模块可以用来在组件上执行动画。JS-Animation可以对组件执行一系列简单的变换 (位置、大小、旋转角度、背景颜色和不透明度)。
 
@@ -303,7 +303,7 @@
 - Android 的callback 函数不支持result参数。
 
 
-> 如果需要使用CSS动画，参考[transition](#transition) 或 [transform](#transform) 。
+> 如果需要使用CSS动画，参考[transition](/nvue-css?id=transition)和[transition](/nvue-css?id=transform)。
 
 
 
@@ -699,14 +699,14 @@ BindingX类似一种强化版的css，运行性能高，但没有js那样足够�
 nvue页面可直接使用plus的API，并且不需要等待plus ready。
 
 
-## nvue 里不支持的 uni-app API<div id="nvueAPI"></div>
+## nvue 里不支持的 uni-app API
 nvue 支持大部分 uni-app API ，下面只列举目前还**不支持的 API** 。
 
 ##### 动画
 
 |API		|说明		|解决方案|
 |--			|--			|--			|
-|uni.createAnimation()	|创建一个动画实例	|[animation](#animation)|
+|uni.createAnimation()	|创建一个动画实例	|[animation](/nvue-api?id=animation)|
 
 
 ##### 滚动
