@@ -211,41 +211,47 @@
 举个例子，如果有一个```image```组件，通过动画你可以对其进行移动、旋转、拉伸或收缩等动作。
 
 ```html
-<template>
-	<view ref="test" @click="move" class="box"></view>
-</template>
-<script>
-	const animation = uni.requireNativePlugin('animation')
-	export default {
-		methods: {
-			move() {
-				var testEl = this.$refs.test;
-				animation.transition(testEl, {
-					styles: {
-						backgroundColor: '#007AFF',
-						transform: 'translate(100px, 80px)',
-						transformOrigin: 'center center'
-					},
-					duration: 800, //ms
-					timingFunction: 'ease',
-					delay: 0 //ms
-				},()=>{
-					uni.showToast({
-						title: 'finished',
-						icon:'none'
-					});
-				})
-			}
-		}
-	}
-</script>
-<style scoped>
-.box{
-	width: 250rpx;
-	height: 250rpx;
-	background-color: #00aaff;
-}
-</style>
+  <template>
+    <view class="box">
+      <view ref="test" @click="move" class="box-item"></view>
+    </view>
+  </template>
+  <script>
+      const animation = uni.requireNativePlugin('animation')
+      export default {
+          methods: {
+              move() {
+                  var testEl = this.$refs.test;
+                  animation.transition(testEl, {
+                      styles: {
+                          backgroundColor: '#007AFF',
+                          transform: 'translate(100px, 80px)',
+                          transformOrigin: 'center center'
+                      },
+                      duration: 800, //ms
+                      timingFunction: 'ease',
+                      delay: 0 //ms
+                  },()=>{
+                      uni.showToast({
+                          title: 'finished',
+                          icon:'none'
+                      });
+                  })
+              }
+          }
+      }
+  </script>
+  <style scoped>
+    .box{
+        width:750rpx;
+        height:750rpx;
+    }
+    .box-item{
+      width: 250rpx;
+      height: 250rpx;
+      background-color: #00aaff;
+    }
+  </style>
 ```
 
 
