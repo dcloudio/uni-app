@@ -3372,7 +3372,7 @@ const KeepAliveImpl = {
         }
         function pruneCache(filter) {
             cache.forEach((vnode, key) => {
-                const name = getName(vnode.type);
+                const name = getComponentName(vnode.type);
                 if (name && (!filter || !filter(name))) {
                     pruneCacheEntry(key);
                 }
@@ -3445,7 +3445,7 @@ const KeepAliveImpl = {
             }
             let vnode = getInnerChild(rawVNode);
             const comp = vnode.type;
-            const name = getName(comp);
+            const name = getComponentName(comp);
             const { include, exclude, max } = props;
             if ((include && (!name || !matches(include, name))) ||
                 (exclude && name && matches(exclude, name))) {
@@ -3498,9 +3498,6 @@ const KeepAliveImpl = {
 // export the public type for h/tsx inference
 // also to avoid inline import() in generated d.ts files
 const KeepAlive = KeepAliveImpl;
-function getName(comp) {
-    return comp.displayName || comp.name;
-}
 function matches(pattern, name) {
     if (isArray(pattern)) {
         return pattern.some((p) => matches(p, name));
@@ -4909,7 +4906,10 @@ function baseCreateRenderer(options, createHydrationFns) {
         else {
             if (patchFlag > 0 &&
                 patchFlag & 64 /* STABLE_FRAGMENT */ &&
-                dynamicChildren) {
+                dynamicChildren &&
+                // #2715 the previous fragment could've been a BAILed one as a result
+                // of renderSlot() with no valid children
+                n1.dynamicChildren) {
                 // a stable fragment (template root or <template v-for>) doesn't need to
                 // patch children order, but it may contain dynamicChildren.
                 patchBlockChildren(n1.dynamicChildren, dynamicChildren, container, parentComponent, parentSuspense, isSVG);
@@ -5070,8 +5070,9 @@ function baseCreateRenderer(options, createHydrationFns) {
                 }
                 // onVnodeMounted
                 if ((vnodeHook = props && props.onVnodeMounted)) {
+                    const scopedInitialVNode = initialVNode;
                     queuePostRenderEffect(() => {
-                        invokeVNodeHook(vnodeHook, parent, initialVNode);
+                        invokeVNodeHook(vnodeHook, parent, scopedInitialVNode);
                     }, parentSuspense);
                 }
                 // activated hook for keep-alive roots.
@@ -5083,6 +5084,8 @@ function baseCreateRenderer(options, createHydrationFns) {
                     queuePostRenderEffect(a, parentSuspense);
                 }
                 instance.isMounted = true;
+                // #2458: deference mount-only object parameters to prevent memleaks
+                initialVNode = container = anchor = null;
             }
             else {
                 // updateComponent
@@ -5971,7 +5974,7 @@ function resolveAsset(type, name, warnMissing = true) {
             if (name === `_self`) {
                 return Component;
             }
-            const selfName = Component.displayName || Component.name;
+            const selfName = getComponentName(Component);
             if (selfName &&
                 (selfName === name ||
                     selfName === camelize(name) ||
@@ -6580,6 +6583,7 @@ function applyOptions(instance, options, deferredData = [], deferredWatch = [], 
             deferredData.forEach(dataFn => resolveData(instance, dataFn, publicThis));
         }
         if (dataOptions) {
+            // @ts-ignore dataOptions is not fully type safe
             resolveData(instance, dataOptions, publicThis);
         }
         if ((process.env.NODE_ENV !== 'production')) {
@@ -7428,11 +7432,14 @@ function recordInstanceBoundEffect(effect, instance = currentInstance) {
 }
 const classifyRE = /(?:^|[-_])(\w)/g;
 const classify = (str) => str.replace(classifyRE, c => c.toUpperCase()).replace(/[-_]/g, '');
-/* istanbul ignore next */
-function formatComponentName(instance, Component, isRoot = false) {
-    let name = isFunction(Component)
+function getComponentName(Component) {
+    return isFunction(Component)
         ? Component.displayName || Component.name
         : Component.name;
+}
+/* istanbul ignore next */
+function formatComponentName(instance, Component, isRoot = false) {
+    let name = getComponentName(Component);
     if (!name && Component.__file) {
         const match = Component.__file.match(/([^/\\]+)\.\w+$/);
         if (match) {
@@ -7797,7 +7804,7 @@ function createSlots(slots, dynamicSlots) {
 }
 
 // Core API ------------------------------------------------------------------
-const version = "3.0.3";
+const version = "3.0.4";
 /**
  * SSR utils for \@vue/server-renderer. Only exposed in cjs builds.
  * @internal
@@ -8319,12 +8326,7 @@ function resolveTransitionProps(rawProps) {
                 removeTransitionClass(el, isAppear ? appearFromClass : enterFromClass);
                 addTransitionClass(el, isAppear ? appearToClass : enterToClass);
                 if (!(hook && hook.length > 1)) {
-                    if (enterDuration) {
-                        setTimeout(resolve, enterDuration);
-                    }
-                    else {
-                        whenTransitionEnds(el, type, resolve);
-                    }
+                    whenTransitionEnds(el, type, enterDuration, resolve);
                 }
             });
         };
@@ -8332,30 +8334,27 @@ function resolveTransitionProps(rawProps) {
     return extend(baseProps, {
         onBeforeEnter(el) {
             onBeforeEnter && onBeforeEnter(el);
-            addTransitionClass(el, enterActiveClass);
             addTransitionClass(el, enterFromClass);
+            addTransitionClass(el, enterActiveClass);
         },
         onBeforeAppear(el) {
             onBeforeAppear && onBeforeAppear(el);
-            addTransitionClass(el, appearActiveClass);
             addTransitionClass(el, appearFromClass);
+            addTransitionClass(el, appearActiveClass);
         },
         onEnter: makeEnterHook(false),
         onAppear: makeEnterHook(true),
         onLeave(el, done) {
             const resolve = () => finishLeave(el, done);
-            addTransitionClass(el, leaveActiveClass);
             addTransitionClass(el, leaveFromClass);
+            // force reflow so *-leave-from classes immediately take effect (#2593)
+            forceReflow();
+            addTransitionClass(el, leaveActiveClass);
             nextFrame(() => {
                 removeTransitionClass(el, leaveFromClass);
                 addTransitionClass(el, leaveToClass);
                 if (!(onLeave && onLeave.length > 1)) {
-                    if (leaveDuration) {
-                        setTimeout(resolve, leaveDuration);
-                    }
-                    else {
-                        whenTransitionEnds(el, type, resolve);
-                    }
+                    whenTransitionEnds(el, type, leaveDuration, resolve);
                 }
             });
             onLeave && onLeave(el, resolve);
@@ -8422,22 +8421,30 @@ function nextFrame(cb) {
         requestAnimationFrame(cb);
     });
 }
-function whenTransitionEnds(el, expectedType, cb) {
+let endId = 0;
+function whenTransitionEnds(el, expectedType, explicitTimeout, resolve) {
+    const id = (el._endId = ++endId);
+    const resolveIfNotStale = () => {
+        if (id === el._endId) {
+            resolve();
+        }
+    };
+    if (explicitTimeout) {
+        return setTimeout(resolveIfNotStale, explicitTimeout);
+    }
     const { type, timeout, propCount } = getTransitionInfo(el, expectedType);
     if (!type) {
-        return cb();
+        return resolve();
     }
     const endEvent = type + 'end';
     let ended = 0;
     const end = () => {
         el.removeEventListener(endEvent, onEnd);
-        cb();
+        resolveIfNotStale();
     };
     const onEnd = (e) => {
-        if (e.target === el) {
-            if (++ended >= propCount) {
-                end();
-            }
+        if (e.target === el && ++ended >= propCount) {
+            end();
         }
     };
     setTimeout(() => {
@@ -8510,6 +8517,10 @@ function getTimeout(delays, durations) {
 // (i.e. acting as a floor function) causing unexpected behaviors
 function toMs(s) {
     return Number(s.slice(0, -1).replace(',', '.')) * 1000;
+}
+// synchronously force layout to put elements into a certain state
+function forceReflow() {
+    return document.body.offsetHeight;
 }
 
 const positionMap = new WeakMap();
@@ -8610,10 +8621,6 @@ function applyTranslation(c) {
         return c;
     }
 }
-// this is put in a dedicated function to avoid the line from being treeshaken
-function forceReflow() {
-    return document.body.offsetHeight;
-}
 function hasCSSTransform(el, root, moveClass) {
     // Detect whether an element with the move class applied has
     // CSS transitions. Since the element may be inside an entering
@@ -8713,8 +8720,7 @@ const vModelText = {
     }
 };
 const vModelCheckbox = {
-    created(el, binding, vnode) {
-        setChecked(el, binding, vnode);
+    created(el, _, vnode) {
         el._assign = getModelAssigner(vnode);
         addEventListener(el, 'change', () => {
             const modelValue = el._modelValue;
@@ -8725,25 +8731,31 @@ const vModelCheckbox = {
                 const index = looseIndexOf(modelValue, elementValue);
                 const found = index !== -1;
                 if (checked && !found) {
-                    modelValue.push(elementValue);
+                    assign(modelValue.concat(elementValue));
                 }
                 else if (!checked && found) {
-                    modelValue.splice(index, 1);
+                    const filtered = [...modelValue];
+                    filtered.splice(index, 1);
+                    assign(filtered);
                 }
             }
             else if (isSet(modelValue)) {
+                const cloned = new Set(modelValue);
                 if (checked) {
-                    modelValue.add(elementValue);
+                    cloned.add(elementValue);
                 }
                 else {
-                    modelValue.delete(elementValue);
+                    cloned.delete(elementValue);
                 }
+                assign(cloned);
             }
             else {
                 assign(getCheckboxValue(el, checked));
             }
         });
     },
+    // set initial checked on mount to wait for true-value/false-value
+    mounted: setChecked,
     beforeUpdate(el, binding, vnode) {
         el._assign = getModelAssigner(vnode);
         setChecked(el, binding, vnode);
@@ -8777,12 +8789,17 @@ const vModelRadio = {
     }
 };
 const vModelSelect = {
-    created(el, { modifiers: { number } }, vnode) {
+    created(el, { value, modifiers: { number } }, vnode) {
+        const isSetModel = isSet(value);
         addEventListener(el, 'change', () => {
             const selectedVal = Array.prototype.filter
                 .call(el.options, (o) => o.selected)
                 .map((o) => number ? toNumber(getValue(o)) : getValue(o));
-            el._assign(el.multiple ? selectedVal : selectedVal[0]);
+            el._assign(el.multiple
+                ? isSetModel
+                    ? new Set(selectedVal)
+                    : selectedVal
+                : selectedVal[0]);
         });
         el._assign = getModelAssigner(vnode);
     },
@@ -9010,8 +9027,10 @@ const createApp = ((...args) => {
         // clear content before mounting
         container.innerHTML = '';
         const proxy = mount(container);
-        container.removeAttribute('v-cloak');
-        container.setAttribute('data-v-app', '');
+        if (container instanceof Element) {
+            container.removeAttribute('v-cloak');
+            container.setAttribute('data-v-app', '');
+        }
         return proxy;
     };
     return app;
@@ -9042,9 +9061,14 @@ function normalizeContainer(container) {
     if (isString(container)) {
         const res = document.querySelector(container);
         if ((process.env.NODE_ENV !== 'production') && !res) {
-            warn(`Failed to mount app: mount target selector returned null.`);
+            warn(`Failed to mount app: mount target selector "${container}" returned null.`);
         }
         return res;
+    }
+    if ((process.env.NODE_ENV !== 'production') &&
+        container instanceof ShadowRoot &&
+        container.mode === 'closed') {
+        warn(`mounting on a ShadowRoot with \`{mode: "closed"}\` may lead to unpredictable bugs`);
     }
     return container;
 }
