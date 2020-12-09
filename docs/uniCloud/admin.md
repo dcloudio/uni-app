@@ -1,21 +1,26 @@
-# uniCloud admin 基础框架
+# uniCloud admin 框架
 
 ### 什么是 uniCloud admin
 
-uniCloud admin 基础框架，是基于 uni-app 和 uniCloud 的应用后台管理框架。HBuilderX 2.9.5+ 支持，请更新到最新版本使用。
+uniCloud admin 框架，是基于 uni-app 和 uniCloud 的应用后台管理的开源框架。
 
-- 它使用 uni-app 的宽屏适配，可自动适配 PC 宽屏和手机各端。了解[宽屏适配](https://uniapp.dcloud.io/adapt)
+对于uniCloud的开发者而言，其后台管理系统应该使用本框架。
+
+版本支持：HBuilderX 2.9.5+
+
+- 它基于 uni-app 的宽屏适配，可自动适配 PC 宽屏和手机各端。了解[宽屏适配](https://uniapp.dcloud.io/adapt)
 - 它基于 uniCloud，是 serverless 的云开发。了解[uniCloud](https://uniapp.dcloud.io/uniCloud/README)
-- 它基于 uni-id，admin 框架使用的是 uni-id 的用户账户、权限系统。了解[uni-id](https://uniapp.dcloud.io/uniCloud/uni-id)
+- 它基于 uni-id，admin 框架使用的是 uni-id 的用户账户、角色、权限系统。了解[uni-id](https://uniapp.dcloud.io/uniCloud/uni-id)
 
 ### 内置的功能
 
 - 管理员账户初始化、登录、修改密码
+- 基于uni-id的用户管理（注册、修改信息、停用启用、删除）、角色管理、权限管理
 - 顶部 topWindow 的设置：比如 logo 更换、右上角部分链接更换。详见项目根目录的`admin.config.js`文件
 - 左侧 leftWindow 的菜单设置：菜单包括两类，一类是动态菜单，具备业务和权限功能；另一类是静态菜单，不会根据登录用户角色变化
 - 开发模式下的 debug 功能，帮助开发者及时发现报错和搜索错误信息，可在`admin.config.js`文件中配置
 
-> uniCloud admin 是一个框架，具体业务需要开发者自己开发或从插件市场导入相关插件
+除了内置功能，uniCloud admin支持插件生态，在[插件市场](https://ext.dcloud.net.cn/?cat1=7&cat2=74&orderBy=UpdatedDate)可以找到更多现成的轮子拿来即用，比如cms等。
 
 ### 支持响应式布局
 
@@ -41,13 +46,15 @@ PC 端如下图：
 
 ![download-admin](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/2baaddd0-11f5-11eb-81ea-f115fe74321c.png)
 
+除了可视化向导外，也可以从[https://github.com/dcloudio/uniCloud-admin](https://github.com/dcloudio/uniCloud-admin)获取代码。
+
 #### 运行
 
 1. 进入 admin 项目
 2. 在/cloudfunctions-aliyun/common/uni-id/config.json 文件中填写 `passwordSecret` 字段 (用于加密密码入库的密钥) 和 `tokenSecret` 字段 (为生成 token 需要的密钥)
 3. 右键 cloudfuntions 运行云服务空间初始化向导（如已创建并绑定云服务空间，则跳过此步）
-4. 点击工具栏的运行 -> 运行到浏览器
-5. 登录页面底部进入创建管理员页面（仅允许注册一次管理员账号）
+4. 点击HBuilderX工具栏的运行【Ctrl+r】 -> 运行到浏览器
+5. 从启动后的登录页面的底部，进入创建管理员页面（仅允许注册一次管理员账号）
 
 **注意**：
 
@@ -83,7 +90,7 @@ PC 端如下图：
 
 ### 登录页
 
-首次使用，可以通过登录页面底部链接创建一个超级管理员（仅允许创建一次），该接口会判断系统里如果有 admin 角色的用户,就不再允许添加新的超级管理员。
+首次使用，可以通过登录页面底部链接创建一个超级管理员（仅允许创建一次），该接口会判断系统里如果有 admin 角色的用户，就不再允许添加新的超级管理员。
 
 > 注意：注册完毕后，建议从登录页面移除该链接
 
@@ -332,7 +339,7 @@ admin 提供了两个内置方法，方便在页面中鉴定登录用户权限�
 
 admin 中开发页面，和 uni-app 开发 vue 页面是一致的。
 
-#### 从插件市场下载插件，并注册到 admin 菜单
+#### 从插件市场下载插件，并注册到 admin 的左侧动态菜单中
 
 _使用步骤:_
 
@@ -345,9 +352,9 @@ _使用步骤:_
 
 ---------------------------------- 分割线 ----------------------------------------
 
-### 插件开发
+### admin 插件开发
 
-我们不仅是插件的使用者，也可以是插件的开发者，那么如何开发一款插件呢？
+我们不仅是插件的使用者，也可以是插件的开发者，那么如何开发一款 uniCloud admin 插件呢？
 
 对于 admin 插件来说，可以项目中开发完成功能，再将这项功能剥离成一个插件。其他开发者使用插件的过程，就是将插件还原成项目中的一项功能。
 
@@ -362,7 +369,7 @@ _admin 插件的目录结构：_
 ├── pages                       # 页面
 │   └── your-page               # 你的页面
 ├── pages.json                  # 插件页面路由等
-└── pulginId-menu.json          # 插件菜单，pulginId 为你上传插件的 id
+└── %pluginId%-menu.json          # 插件菜单，pluginId 为你上传插件市场时填的插件id
 ```
 
 以开发一个【权限插件】为例：
@@ -401,9 +408,13 @@ _admin 插件的目录结构：_
 }
 ```
 
-**pulginId-menu.json 配置:**
+**%pluginId%-menu.json 配置**
 
-插件里的 pulginId-menu.json 内容，导入项目后，菜单管理会读取菜单配置，生成【待添加菜单】，配置与 admin [添加动态菜单](管理动态菜单)同理，例如 ：
+本文件用于插件注册 admin系统左侧的动态菜单。
+
+pluginId 为你上传插件市场时填的插件id（插件市场每个插件都有一个唯一id）。
+
+假使你的插件id为“xxx-xxx”，那么在插件的根目录放置 xxx-xxx-menu.json ，按下文格式配置内容。
 
 ```json
 [
@@ -421,19 +432,25 @@ _admin 插件的目录结构：_
 ]
 ```
 
-> 注：`system_management` 是【系统管理】的菜单 id
+> 注：`system_management` 是 uniCloud admin 内置的一级菜单【系统管理】的菜单 id
 
-大多数的 admin 插件的表单页面是用自动工具生成的，所以在 uniCloud admin 中制作一个插件非常简单。
+这样的插件导入项目后，运行起来uniCloud admin，菜单管理模块会自动读取这个json文件中的菜单配置，生成【待添加菜单】，配置与 admin [添加动态菜单](管理动态菜单)同理。
 
-首先在数据库中配好[schema](https://uniapp.dcloud.io/uniCloud/schema)，然后使用 uniCloud web 控制台提供的自动生成代码工具，即可快速的生成数据的展示、新建、修改、删除的页面代码，并且自带表单校验。详见：[https://uniapp.dcloud.io/uniCloud/schema?id=autocode](https://uniapp.dcloud.io/uniCloud/schema?id=autocode)
+**使用自动工具生成admin页面**
+
+大多数的 admin 插件的表单页面是用uniCloud自带的自动工具生成的，可以直接生成数据库的增删改查页面。所以在 uniCloud admin 中制作一个插件非常简单。
+
+首先在数据库中配好[DB Schema](https://uniapp.dcloud.io/uniCloud/schema)，然后使用 uniCloud web 控制台提供的自动生成代码工具，即可快速的生成数据的展示、新建、修改、删除的页面代码，并且自带表单校验。详见：[https://uniapp.dcloud.io/uniCloud/schema?id=autocode](https://uniapp.dcloud.io/uniCloud/schema?id=autocode)
 
 为防止和用户工程的文件冲突，插件的页面应该有插件的前缀，比如 xxx-page。
 
 这里有已存的 uniCloud admin 插件列表，可以参考它们：[https://ext.dcloud.net.cn/?cat1=7&cat2=74&orderBy=UpdatedDate](https://ext.dcloud.net.cn/?cat1=7&cat2=74&orderBy=UpdatedDate)
 
+**插件开发后如何上传插件市场**
+
 插件上传等更多信息，参考 [DCloud 插件开发指南汇总](https://ask.dcloud.net.cn/article/35408) 及其中的 `admin 插件`部分，插件作者可以按此文档提交插件，在插件市场的上传发布页面选择`uniCloud` 分类的 `Admin 插件` 。
 
-### 使用三方组件库
+### uniCloud admin中使用三方组件库
 
 uniCloud admin 支持所有三方的 Vue UI 库，包括 elementUI 等非 uni-app 的 UI 库，但注意这些 for h5 的 ui 库只能在浏览器中使用，无法适配 App 和小程序，按如下操作。
 
