@@ -8,7 +8,7 @@
 |:-|:-|:-|:-|:-|
 |value|String||输入框的初始内容||
 |type|String|text|input 的类型|H5 暂未支持动态切换请使用 v-if 进行整体切换|
-|password|Boolean|false|是否是密码类型||
+|password|Boolean|false|是否是密码类型|H5和App写此属性时，type失效|
 |placeholder|String||输入框为空时占位符||
 |placeholder-style|String||指定 placeholder 的样式||
 |placeholder-class|String|"input-placeholder"|指定 placeholder 的样式类，注意页面或组件的style中写了scoped时，需要在类名前写/deep/||
