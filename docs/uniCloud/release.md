@@ -1,5 +1,15 @@
 # uniCloud 更新日志
 ======================================
+#### 2020-12-10
+  + web控制台 新增 阿里云新增稀疏索引 [详情](https://uniapp.dcloud.net.cn/uniCloud/hellodb?id=dbindex)
+  + web控制台 新增 阿里云云存储新增批量删除
+  + web控制台 新增 前端网页托管批量删除
+  + web控制台 新增 腾讯云 概览页面新增clientDB资源用量
+  + web控制台 新增 导出 db_init.json 新增是否导出 ID
+  + web控制台 新增 云函数、公共模块、action 列表新增操作者邮箱
+  + web控制台 优化 数据库记录编辑窗口
+  + web控制台 修复 腾讯云 云存储文件夹过多时上拉加载错误的BUG
+
 #### 2020-11-14
   + uni-id 调整 2.0.0版本起验证码表名改为`opendb-verify-codes`
   + uni-id 调整 2.0.0版本起encryptPwd接口返回值调整 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=encrypt-password)
