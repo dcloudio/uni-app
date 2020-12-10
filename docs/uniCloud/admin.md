@@ -434,11 +434,11 @@ pluginId 为你上传插件市场时填的插件id（插件市场每个插件都
 
 > 注：`system_management` 是 uniCloud admin 内置的一级菜单【系统管理】的菜单 id
 
-这样的插件导入项目后，运行起来uniCloud admin，菜单管理模块会自动读取这个json文件中的菜单配置，生成【待添加菜单】，配置与 admin [添加动态菜单](管理动态菜单)同理。
+这样的插件导入项目后，运行起来uniCloud admin，菜单管理模块会自动读取这个json文件中的菜单配置，生成【待添加菜单】，配置与 admin【管理动态菜单】同理。
 
 **使用自动工具生成admin页面**
 
-大多数的 admin 插件的表单页面是用uniCloud自带的自动工具生成的，可以直接生成数据库的增删改查页面。所以在 uniCloud admin 中制作一个插件非常简单。
+大多数的 admin 插件的表单页面是可以用uniCloud自带的自动工具生成的，可以直接生成数据库的增删改查页面。所以在 uniCloud admin 中制作一个插件非常简单。
 
 首先在数据库中配好[DB Schema](https://uniapp.dcloud.io/uniCloud/schema)，然后使用 uniCloud web 控制台提供的自动生成代码工具，即可快速的生成数据的展示、新建、修改、删除的页面代码，并且自带表单校验。详见：[https://uniapp.dcloud.io/uniCloud/schema?id=autocode](https://uniapp.dcloud.io/uniCloud/schema?id=autocode)
 
