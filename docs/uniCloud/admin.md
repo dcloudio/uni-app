@@ -369,7 +369,7 @@ _admin 插件的目录结构：_
 ├── pages                       # 页面
 │   └── your-page               # 你的页面
 ├── pages.json                  # 插件页面路由等
-└── %pluginId%-menu.json          # 插件菜单，pluginId 为你上传插件市场时填的插件id
+└── %pluginId%-menu.json        # 插件菜单，pluginId 为你上传插件市场时填的插件id
 ```
 
 以开发一个【权限插件】为例：
