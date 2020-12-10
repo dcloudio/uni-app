@@ -6,7 +6,7 @@ univerify是替代短信验证登录的下一代登录验证方式，能消除�
 
 ## 客户端@client
 
-客户端如何使用一键登录请参考此文档：[univerify 使用指南](https://ask.dcloud.net.cn/article/38009)
+客户端如何使用一键登录请参考此文档：[univerify 使用指南](https://uniapp.dcloud.io/univerify)
 
 ## 云函数@cloud
 
