@@ -479,9 +479,34 @@ db.collection('order,book')
   })
 ```
 
+上述请求返回的res如下
+
+```js
+{
+	"code": "",
+	"message": "",
+	"data": [{
+		"_id": "b8df3bd65f8f0d06018fdc250a5688bb",
+		"book_id": [{
+			"book_author": "罗贯中",
+			"book_title": "三国演义"
+		}],
+		"order_quantity": 555
+	}, {
+		"_id": "b8df3bd65f8f0d06018fdc2315af05ec",
+		"book_id": [{
+			"book_author": "罗贯中",
+			"book_title": "三国演义"
+		}],
+		"order_quantity": 333
+	}]
+}
+```
+
 **注意**
 
 - 上面的查询指令中，上一阶段处理结果输出到下一阶段，上面的例子中表现为where中使用的是原名，orderBy中使用的是别名
+- 目前不支持对联表查询的关联字段使用别名，即上述示例中的book_id不可设置别名
 
 ### 排序orderBy@orderby
 
