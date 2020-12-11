@@ -460,7 +460,9 @@ db.collection('order')
 
 ### 别名@alias
 
-自`2020-11-20`起clientDB jql写法支持字段别名
+自`2020-11-20`起clientDB jql写法支持字段别名，主要用于在前端需要的字段名和数据库字段名称不一致的情况下对字段进行重命名。
+
+用法形如：`author as book_author`，意思是将数据库的author字段重命名为book_author。
 
 仍以上面的order表和book表为例
 
