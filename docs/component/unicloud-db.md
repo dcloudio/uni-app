@@ -216,8 +216,13 @@ this.$refs.udb.remove(ids, {
   action: '', // 删除前后的动作
   confirmTitle: '提示', // 确认框标题
   confirmContent: '是否删除该数据',  // 确认框内容
-  callback: (res) => { // 删除成功后的回调
+  success: (res) => { // 删除成功后的回调
     const { code, message } = res
+  },
+  fail: (err) => { // 删除失败后的回调
+    const { message } = res
+  },
+  complete: (res) => { // 完成后的回调
   }
 })
 ```
