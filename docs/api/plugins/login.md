@@ -180,14 +180,6 @@ uni.login({
 |fail|Function|否|接口调用失败的回调函数|
 |complete|Function|否|接口调用结束的回调函数（调用成功、失败都会执行）|
 
-### uni.onAuthViewOtherLoginButtonClick(CALLBACK)
-监听[一键登陆](https://ask.dcloud.net.cn/article/38009)页面“其他登录”按钮点击。
-
-**平台差异说明**
-
-|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|2.9.11+|x|x|x|x|x|x|
 
 ### uni.closeAuthView()
 关闭[一键登陆](https://ask.dcloud.net.cn/article/38009)页面。
