@@ -220,7 +220,7 @@ import getRealPath from 'uni-platform/helpers/get-real-path'
 import { isPlainObject } from 'uni-shared'
 import { publish } from 'uni-platform/service/bridge'
 function cssSupports (css) {
-  return window.CSS && CSS.supports && (CSS.supports(css) || CSS.supports.apply(undefined, css.split(':')))
+  return window.CSS && CSS.supports && (CSS.supports(css) || CSS.supports.apply(CSS, css.split(':')))
 }
 export default {
   name: 'TabBar',

@@ -56,6 +56,16 @@ function getExtname (type) {
   return extname ? `.${extname}` : ''
 }
 /**
+ * 简易获取文件名
+ * @param {*} url
+ */
+export function getFileName (url) {
+  url = url.split('#')[0].split('?')[0]
+  const array = url.split('/')
+  return array[array.length - 1]
+}
+
+/**
  * blob转File
  * @param {Blob} blob
  * @param {string} type

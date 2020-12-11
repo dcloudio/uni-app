@@ -49,7 +49,7 @@ export function previewImagePlus ({
           title: item,
           color: itemColor
         })),
-        cancel: '取消'
+        cancel: ''
       }
       if (title) {
         options.title = title

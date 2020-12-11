@@ -190,9 +190,11 @@ export function warpPlusSuccessCallback (callbackId, neme) {
 export function warpPlusErrorCallback (callbackId, neme, errMsg) {
   return function errorCallback (error) {
     error = error || {}
+    const code = error.code || 0
     invoke(callbackId, {
       errMsg: `${neme}:fail ${error.message || errMsg || ''}`,
-      errCode: error.code || 0
+      errCode: code,
+      code
     })
   }
 }

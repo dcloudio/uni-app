@@ -81,7 +81,7 @@ function beforeEach (to, from, next, routes) {
   if (toId === fromId && to.type !== 'reLaunch') { // 相同页面阻止
     // 处理外部修改 history 导致卡在当前页面的问题
     if (to.fullPath !== from.fullPath) {
-      removeKeepAliveInclude.call(this, toName)
+      addKeepAliveInclude.call(this, toName)
       next()
     } else {
       next(false)

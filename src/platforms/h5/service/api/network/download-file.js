@@ -1,4 +1,7 @@
-import { fileToUrl } from 'uni-platform/helpers/file'
+import {
+  fileToUrl,
+  getFileName
+} from 'uni-platform/helpers/file'
 /**
  * 下载任务
  */
@@ -63,6 +66,17 @@ export function downloadFile ({
     clearTimeout(timer)
     const statusCode = xhr.status
     const blob = this.response
+    let filename
+    // 使用 getResponseHeader 跨域时会出现警告，但相比 getAllResponseHeaders 更方便
+    const contentDisposition = xhr.getResponseHeader('content-disposition')
+    if (contentDisposition) {
+      // 暂时仅解析 filename 不解析 filename*
+      const res = contentDisposition.match(/filename="?(\S+)"?\b/)
+      if (res) {
+        filename = res[1]
+      }
+    }
+    blob.name = filename || getFileName(url)
     invoke(callbackId, {
       errMsg: 'downloadFile:ok',
       statusCode,

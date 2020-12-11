@@ -1386,7 +1386,7 @@ function resolveAsset(type, name, warnMissing = true) {
             if (name === `_self`) {
                 return Component;
             }
-            const selfName = Component.displayName || Component.name;
+            const selfName = getComponentName(Component);
             if (selfName &&
                 (selfName === name ||
                     selfName === camelize(name) ||
@@ -2354,6 +2354,7 @@ function applyOptions(instance, options, deferredData = [], deferredWatch = [], 
             deferredData.forEach(dataFn => resolveData(instance, dataFn, publicThis));
         }
         if (dataOptions) {
+            // @ts-ignore dataOptions is not fully type safe
             resolveData(instance, dataOptions, publicThis);
         }
         if ((process.env.NODE_ENV !== 'production')) {
@@ -3190,11 +3191,14 @@ function recordInstanceBoundEffect(effect, instance = currentInstance) {
 }
 const classifyRE = /(?:^|[-_])(\w)/g;
 const classify = (str) => str.replace(classifyRE, c => c.toUpperCase()).replace(/[-_]/g, '');
-/* istanbul ignore next */
-function formatComponentName(instance, Component, isRoot = false) {
-    let name = isFunction(Component)
+function getComponentName(Component) {
+    return isFunction(Component)
         ? Component.displayName || Component.name
         : Component.name;
+}
+/* istanbul ignore next */
+function formatComponentName(instance, Component, isRoot = false) {
+    let name = getComponentName(Component);
     if (!name && Component.__file) {
         const match = Component.__file.match(/([^/\\]+)\.\w+$/);
         if (match) {
@@ -3243,7 +3247,7 @@ function defineEmit() {
 }
 
 // Core API ------------------------------------------------------------------
-const version = "3.0.3";
+const version = "3.0.4";
 
 // import deepCopy from './deepCopy'
 /**
