@@ -287,6 +287,9 @@ export default {
         this.errorMessage = err
         callback && callback()
         this.$emit(events.error, err)
+        if (process.env.NODE_ENV === 'development') {
+          console.error(err)
+        }
       })
     },
     _getExec () {
