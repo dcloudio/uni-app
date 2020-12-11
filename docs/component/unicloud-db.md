@@ -1,6 +1,6 @@
 ## unicloud-db组件简介
 
-`<unicloud-db>` 组件是一个数据库查询组件，它是对`unicloud-db`的js库的再封装。
+`<unicloud-db>` 组件是一个数据库查询组件，它是对`uni-clientDB`的js库的再封装。
 
 前端通过组件方式直接获取uniCloud的云端数据库中的数据，并绑定在界面上进行渲染。
 
