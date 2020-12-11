@@ -121,12 +121,6 @@ export function preLogin (params, callbackId) {
   getService(params.provider).then(service => service.preLogin(successCallback, errorCallback)).catch(errorCallback)
 }
 
-export function onAuthViewOtherLoginButtonClick (callbackId) {
-  getService('univerify').then(service => service.onOtherLoginButtonClick(() => {
-    invoke(callbackId, {})
-  }))
-}
-
 export function closeAuthView () {
   getService('univerify').then(service => service.closeAuthView())
 }
