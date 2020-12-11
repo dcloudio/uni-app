@@ -442,6 +442,13 @@ pluginId 为你上传插件市场时填的插件id（插件市场每个插件都
 
 首先在数据库中配好[DB Schema](https://uniapp.dcloud.io/uniCloud/schema)，然后使用 uniCloud web 控制台提供的自动生成代码工具，即可快速的生成数据的展示、新建、修改、删除的页面代码，并且自带表单校验。详见：[https://uniapp.dcloud.io/uniCloud/schema?id=autocode](https://uniapp.dcloud.io/uniCloud/schema?id=autocode)
 
+> tips：生成的列表页（list），需自行配置【排序字段】和【模糊搜索字段】，了解更多参考[clientDB](https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=jssdk),以内置功能【用户列表页】配置为如下：
+
+```javascript
+const dbOrderBy = 'register_date desc' // 排序字段，asc(升序)、desc(降序)
+const dbSearchFields = ['username', 'role_name', 'mobile', 'email'] // 模糊搜索字段，支持模糊搜索的字段列表
+```
+
 为防止和用户工程的文件冲突，插件的页面应该有插件的前缀，比如 xxx-page。
 
 这里有已存的 uniCloud admin 插件列表，可以参考它们：[https://ext.dcloud.net.cn/?cat1=7&cat2=74&orderBy=UpdatedDate](https://ext.dcloud.net.cn/?cat1=7&cat2=74&orderBy=UpdatedDate)
