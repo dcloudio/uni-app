@@ -34,6 +34,7 @@
 * [案例源码](uniCloud/resource.md)
 * [学习资料](uniCloud/learning.md)
 * [常见问题](uniCloud/faq.md)
+* [微信云开发转uniCloud](wx2unicloud.md)
 * [uniCloud产品服务协议](uniCloud/agreement.md)
 * [更新日志](uniCloud/release.md)
 <li></li>
