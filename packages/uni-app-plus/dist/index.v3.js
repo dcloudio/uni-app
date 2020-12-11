@@ -219,7 +219,6 @@ var serviceContext = (function () {
     'checkSession',
     'getUserInfo',
     'preLogin',
-    'onAuthViewOtherLoginButtonClick',
     'closeAuthView',
     'share',
     'shareWithSystem',
@@ -3424,9 +3423,11 @@ var serviceContext = (function () {
   function warpPlusErrorCallback (callbackId, neme, errMsg) {
     return function errorCallback (error) {
       error = error || {};
+      const code = error.code || 0;
       invoke$1(callbackId, {
         errMsg: `${neme}:fail ${error.message || errMsg || ''}`,
-        errCode: error.code || 0
+        errCode: code,
+        code
       });
     }
   }
@@ -4397,14 +4398,14 @@ var serviceContext = (function () {
   function getScreenBrightness () {
     return {
       errMsg: 'getScreenBrightness:ok',
-      value: plus.screen.getBrightness()
+      value: plus.screen.getBrightness(false)
     }
   }
 
   function setScreenBrightness ({
     value
   } = {}) {
-    plus.screen.setBrightness(value);
+    plus.screen.setBrightness(value, false);
     return {
       errMsg: 'setScreenBrightness:ok'
     }
@@ -6255,7 +6256,7 @@ var serviceContext = (function () {
             title: item,
             color: itemColor
           })),
-          cancel: '取消'
+          cancel: ''
         };
         if (title) {
           options.title = title;
@@ -6801,7 +6802,7 @@ var serviceContext = (function () {
 
     for (const name in header) {
       if (hasOwn(header, name)) {
-        uploader.setRequestHeader(name, header[name]);
+        uploader.setRequestHeader(name, String(header[name]));
       }
     }
     for (const name in formData) {
@@ -6921,7 +6922,7 @@ var serviceContext = (function () {
       providers[service]((err, provider) => {
         if (err) {
           invoke$1(callbackId, {
-            errMsg: 'getProvider:fail:' + err.message
+            errMsg: 'getProvider:fail ' + err.message
           });
         } else {
           invoke$1(callbackId, {
@@ -6933,7 +6934,7 @@ var serviceContext = (function () {
       });
     } else {
       invoke$1(callbackId, {
-        errMsg: 'getProvider:fail:服务[' + service + ']不支持'
+        errMsg: 'getProvider:fail 服务[' + service + ']不支持'
       });
     }
   }
@@ -6952,6 +6953,8 @@ var serviceContext = (function () {
    */
   function login (params, callbackId) {
     const provider = params.provider || 'weixin';
+    const errorCallback = warpPlusErrorCallback(callbackId, 'login');
+
     getService(provider).then(service => {
       function login () {
         service.login(res => {
@@ -6961,12 +6964,7 @@ var serviceContext = (function () {
             authResult: authResult,
             errMsg: 'login:ok'
           });
-        }, err => {
-          invoke$1(callbackId, {
-            code: err.code,
-            errMsg: 'login:fail:' + err.message
-          });
-        }, provider === 'apple' ? { scope: 'email' } : params.univerifyStyle || {});
+        }, errorCallback, provider === 'apple' ? { scope: 'email' } : params.univerifyStyle || {});
       }
       // 先注销再登录
       // apple登录logout之后无法重新触发获取email,fullname；一键登录无logout
@@ -6975,12 +6973,7 @@ var serviceContext = (function () {
       } else {
         service.logout(login, login);
       }
-    }).catch(err => {
-      invoke$1(callbackId, {
-        code: err.code || '',
-        errMsg: 'login:fail:' + err.message
-      });
-    });
+    }).catch(errorCallback);
   }
 
   function getUserInfo (params, callbackId) {
@@ -7061,41 +7054,29 @@ var serviceContext = (function () {
     getService(params.provider).then(service => service.preLogin(successCallback, errorCallback)).catch(errorCallback);
   }
 
-  function onAuthViewOtherLoginButtonClick (callbackId) {
-    getService('univerify').then(service => service.onOtherLoginButtonClick(() => {
-      invoke$1(callbackId, {});
-    }));
-  }
-
   function closeAuthView () {
     getService('univerify').then(service => service.closeAuthView());
   }
 
   function requestPayment (params, callbackId) {
     const provider = params.provider;
+    const errorCallback = warpPlusErrorCallback(callbackId, 'requestPayment');
+
     plus.payment.getChannels(services => {
       const service = services.find(({
         id
       }) => id === provider);
       if (!service) {
         invoke$1(callbackId, {
-          errMsg: 'requestPayment:fail:支付服务[' + provider + ']不存在'
+          errMsg: 'requestPayment:fail 支付服务[' + provider + ']不存在'
         });
       } else {
         plus.payment.request(service, params.orderInfo, res => {
           res.errMsg = 'requestPayment:ok';
           invoke$1(callbackId, res);
-        }, err => {
-          invoke$1(callbackId, {
-            errMsg: 'requestPayment:fail:' + err.message
-          });
-        });
+        }, errorCallback);
       }
-    }, err => {
-      invoke$1(callbackId, {
-        errMsg: 'requestPayment:fail:' + err.message
-      });
-    });
+    }, errorCallback);
   }
 
   let onPushing;
@@ -7236,19 +7217,13 @@ var serviceContext = (function () {
   };
 
   const sendShareMsg = function (service, params, callbackId, method = 'share') {
-    service.send(
-      params,
-      () => {
-        invoke$1(callbackId, {
-          errMsg: method + ':ok'
-        });
-      },
-      err => {
-        invoke$1(callbackId, {
-          errMsg: method + ':fail:' + err.message
-        });
-      }
-    );
+    const errorCallback = warpPlusErrorCallback(callbackId, method);
+
+    service.send(params, () => {
+      invoke$1(callbackId, {
+        errMsg: method + ':ok'
+      });
+    }, errorCallback);
   };
 
   function shareAppMessageDirectly ({
@@ -7271,37 +7246,24 @@ var serviceContext = (function () {
       'shareAppMessageDirectly'
       );
     };
+    const errorCallback = warpPlusErrorCallback(callbackId, 'shareAppMessageDirectly');
+
     if (useDefaultSnapshot) {
       const pages = getCurrentPages();
       const webview = plus.webview.getWebviewById(pages[pages.length - 1].__wxWebviewId__ + '');
       if (webview) {
         const bitmap = new plus.nativeObj.Bitmap();
-        webview.draw(
-          bitmap,
-          () => {
-            const fileName = TEMP_PATH + '/share/snapshot.jpg';
-            bitmap.save(
-              fileName, {
-                overwrite: true,
-                format: 'jpg'
-              },
-              () => {
-                imageUrl = fileName;
-                goShare();
-              },
-              err => {
-                invoke$1(callbackId, {
-                  errMsg: 'shareAppMessageDirectly:fail:' + err.message
-                });
-              }
-            );
-          },
-          err => {
-            invoke$1(callbackId, {
-              errMsg: 'shareAppMessageDirectly:fail:' + err.message
-            });
-          }
-        );
+        webview.draw(bitmap, () => {
+          const fileName = TEMP_PATH + '/share/snapshot.jpg';
+          bitmap.save(
+            fileName, {
+              overwrite: true,
+              format: 'jpg'
+            }, () => {
+              imageUrl = fileName;
+              goShare();
+            }, errorCallback);
+        }, errorCallback);
       } else {
         goShare();
       }
@@ -7312,42 +7274,33 @@ var serviceContext = (function () {
 
   function share (params, callbackId, method = 'share') {
     params = parseParams(params);
+    const errorCallback = warpPlusErrorCallback(callbackId, method);
+
     if (typeof params === 'string') {
       return invoke$1(callbackId, {
-        errMsg: method + ':fail:' + params
+        errMsg: method + ':fail ' + params
       })
     }
     const provider = params.provider;
-    plus.share.getServices(
-      services => {
-        const service = services.find(({
-          id
-        }) => id === provider);
-        if (!service) {
-          invoke$1(callbackId, {
-            errMsg: method + ':fail:分享服务[' + provider + ']不存在'
-          });
-        } else {
-          if (service.authenticated) {
-            sendShareMsg(service, params, callbackId);
-          } else {
-            service.authorize(
-              () => sendShareMsg(service, params, callbackId),
-              err => {
-                invoke$1(callbackId, {
-                  errMsg: method + ':fail:' + err.message
-                });
-              }
-            );
-          }
-        }
-      },
-      err => {
+    plus.share.getServices(services => {
+      const service = services.find(({
+        id
+      }) => id === provider);
+      if (!service) {
         invoke$1(callbackId, {
-          errMsg: method + ':fail:' + err.message
+          errMsg: method + ':fail 分享服务[' + provider + ']不存在'
         });
+      } else {
+        if (service.authenticated) {
+          sendShareMsg(service, params, callbackId);
+        } else {
+          service.authorize(
+            () => sendShareMsg(service, params, callbackId),
+            errorCallback
+          );
+        }
       }
-    );
+    }, errorCallback);
   }
 
   function shareWithSystem (params, callbackId, method = 'shareWithSystem') {
@@ -7359,9 +7312,11 @@ var serviceContext = (function () {
     } = params;
     type = type || 'text';
     const allowedTypes = ['text', 'image'];
+    const errorCallback = warpPlusErrorCallback(callbackId, method);
+
     if (allowedTypes.indexOf(type) < 0) {
       invoke$1(callbackId, {
-        errMsg: method + ':fail:分享参数 type 不正确'
+        errMsg: method + ':fail 分享参数 type 不正确'
       });
     }
     if (typeof imageUrl === 'string' && imageUrl) {
@@ -7376,11 +7331,7 @@ var serviceContext = (function () {
       invoke$1(callbackId, {
         errMsg: method + ':ok'
       });
-    }, function (err) {
-      invoke$1(callbackId, {
-        errMsg: method + ':fail:' + err.message
-      });
-    });
+    }, errorCallback);
   }
 
   function restoreGlobal (
@@ -8407,7 +8358,7 @@ var serviceContext = (function () {
 
     // 如果页面有subNvues，切使用了webview组件，则返回时子webview会取错，因此需要做id匹配
     const childWebview = children.find(webview => webview.id.indexOf(WEBVIEW_ID_PREFIX) === 0) || children[0];
-    console.log('backWebview -> childWebview', childWebview);
+
     childWebview.canBack(({
       canBack
     }) => {
@@ -9931,7 +9882,8 @@ var serviceContext = (function () {
     'load',
     'close',
     'verify',
-    'error'
+    'error',
+    'adClicked'
   ];
 
   const ERROR_CODE_LIST = [-5001, -5002, -5003, -5004, -5005, -5006];
@@ -9990,6 +9942,9 @@ var serviceContext = (function () {
           this._loadPromiseReject(data);
           this._loadPromiseReject = null;
         }
+      });
+      rewardAd.onAdClicked((e) => {
+        this._dispatchEvent('adClicked', {});
       });
 
       if (this._preload) {
@@ -10062,7 +10017,8 @@ var serviceContext = (function () {
   const eventNames$1 = [
     'load',
     'close',
-    'error'
+    'error',
+    'adClicked'
   ];
 
   class FullScreenVideoAd {
@@ -10110,6 +10066,9 @@ var serviceContext = (function () {
           this._loadPromiseReject(data);
           this._loadPromiseReject = null;
         }
+      });
+      ad.onAdClicked((e) => {
+        this._dispatchEvent('adClicked', {});
       });
     }
 
@@ -10268,7 +10227,6 @@ var serviceContext = (function () {
     getUserInfo: getUserInfo,
     operateWXData: operateWXData,
     preLogin: preLogin$1,
-    onAuthViewOtherLoginButtonClick: onAuthViewOtherLoginButtonClick,
     closeAuthView: closeAuthView,
     requestPayment: requestPayment,
     subscribePush: subscribePush,
