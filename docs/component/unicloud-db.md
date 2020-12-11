@@ -220,9 +220,9 @@ this.$refs.udb.remove(ids, {
     const { code, message } = res
   },
   fail: (err) => { // 删除失败后的回调
-    const { message } = res
+    const { message } = err
   },
-  complete: (res) => { // 完成后的回调
+  complete: () => { // 完成后的回调
   }
 })
 ```
