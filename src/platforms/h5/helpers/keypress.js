@@ -28,12 +28,15 @@ export default {
         return value === keyName || (Array.isArray(value) && value.includes(keyName))
       })
       if (keyName) {
-        this.$emit(keyName, $event)
+        // 避免和其他按键事件冲突
+        setTimeout(() => {
+          this.$emit(keyName, $event)
+        }, 0)
       }
     }
-    document.addEventListener('keydown', listener)
+    document.addEventListener('keyup', listener)
     this.$once('hook:beforeDestroy', () => {
-      document.removeEventListener('keydown', listener)
+      document.removeEventListener('keyup', listener)
     })
   },
   render: () => null
