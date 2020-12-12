@@ -22,7 +22,7 @@
 
 `<unicloud-db>` 组件的查询语法是`jql`，这是一种比sql语句和nosql语法更简洁、更符合js开发者习惯的查询语法。没学过sql或nosql的前端，也可以轻松掌握。[jql详见](https://uniapp.dcloud.net.cn/uniCloud/uni-clientDB?id=jsquery)
 
-`<unicloud-db>` 组件只支持查询。如果要对数据库进行新增修改删除操作，仍需使用clientDB的js API进行add、update、remove操作。另，`<unicloud-db>` 组件自带了一个封装remove方法，见下文方法章节
+`<unicloud-db>` 组件不仅支持查询。自带了一个封装add、remove、update方法，见下文方法章节
 
 **平台差异及版本说明**
 
@@ -42,7 +42,7 @@
 |field|string|查询字段，多个字段用 `,` 分割|
 |where|string|查询条件，内容较多，另见`jql`文档：[详情](https://uniapp.dcloud.net.cn/uniCloud/uni-clientDB?id=jsquery)|
 |orderby|string|排序字段及正序倒叙设置|
-|page-data|String|分页策略选择。值为 `add` 代表下一页的数据追加到之前的数据中，常用于滚动到底加载下一页；值为 `replace` 时则替换当前data数据，常用于PC式交互，列表底部有页码分页按钮|
+|page-data|String|分页策略选择。值为 `add` 代表下一页的数据追加到之前的数据中，常用于滚动到底加载下一页；值为 `replace` 时则替换当前data数据，常用于PC式交互，列表底部有页码分页按钮，默认值为`add`|
 |page-current|Number|当前页|
 |page-size|Number|每页数据数量|
 |getcount|Boolean|是否查询总数据条数，默认 `false`，需要分页模式时指定为 `true`|
@@ -227,6 +227,66 @@ this.$refs.udb.remove(ids, {
 })
 ```
 
+### add
+
+一般用于列表页弹出一个简单的新增输入框
+
+```html
+<unicloud-db ref="udb" :collection="collectionName" v-slot:default="{data,pagination,loading,error}">
+</unicloud-db>
+```
+
+```js
+this.$refs.udb.add(value)
+```
+
+
+完整实例，第二个是可选参数
+
+```js
+this.$refs.udb.add(value, {
+  toastTitle: '新增成功', // toast提示语
+  success: (res) => { // 新增成功后的回调
+    const { code, message } = res
+  },
+  fail: (err) => { // 新增失败后的回调
+    const { message } = err
+  },
+  complete: () => { // 完成后的回调
+  }
+})
+```
+
+### update
+
+一般用于详情页需要修改数据时
+
+```html
+<unicloud-db ref="udb" :collection="collectionName" v-slot:default="{data,pagination,loading,error}" :getone="true">
+</unicloud-db>
+```
+
+第一个参数 `id` 是数据的唯一标识，第二个参数 `value` 是需要修改的新数据
+```js
+this.$refs.udb.update(id, value)
+```
+
+完整实例，第三个是可选参数
+
+```js
+this.$refs.udb.update(id, value, {
+  toastTitle: '修改成功', // toast提示语
+  success: (res) => { // 更新成功后的回调
+    const { code, message } = res
+  },
+  fail: (err) => { // 更新失败后的回调
+    const { message } = err
+  },
+  complete: () => { // 完成后的回调
+  }
+})
+```
+
 注意：
 - 如果列表分页采取分页组件，即page-data值为`replace`，每页有固定数量，那么`clientDB`组件的remove方法删除数据后，会重新请求当前页面数据。
 - 如果列表采取滚动加载方式，即page-data值为`add`，滚动加载下一页数据，那么`clientDB`组件的remove方法删除数据后，不会重新请求数据，而是从已有数据移除已删除项。(组件版本1.1.0+支持)
@@ -306,7 +366,7 @@ H5平台，开发模式下浏览器控制台输入 `unidev.clientDB.data`，可�
     },
     onPullDownRefresh() { //下拉刷新
       this.$refs.udb.loadData({
-        clear: true
+        clear: true //可选参数，是否清空数据
       }, () => {
         uni.stopPullDownRefresh()
       })
