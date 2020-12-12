@@ -802,7 +802,7 @@ db.collection("table1")
 
 ### 更新数据记录update
 
-获取到db的表对象，然后指定要删除的记录，通过remove方法删除。
+获取到db的表对象，然后指定要更新的记录，通过update方法更新。
 
 注意：如果是非admin账户修改数据，需要在数据库中待操作表的`db schema`中要配置permission权限，赋予update为true。
 
