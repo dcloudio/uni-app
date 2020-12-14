@@ -115,3 +115,9 @@
   	</div>
   </div>
 </div>
+<script type="text/javascript">
+  window.οnlοad=function(){
+    console.log("window.οnlοad")
+    document.querySelector(".chapter").click() 
+  }
+</script>
