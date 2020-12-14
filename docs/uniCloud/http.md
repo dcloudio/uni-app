@@ -308,3 +308,22 @@ content-length: 9897
 
 <binary payload...>
 ```
+
+##### 返回不同的状态码
+
+如需重定向或返回4xx，5xx等自定义状态码等，可以使用如下方式
+
+**注意：阿里云暂不支持在返回的header里面使用location**
+
+```js
+exports.main = function() {
+    return {
+        mpserverlessComposedResponse: false, // 使用阿里云返回集成响应是需要此字段为true
+        isBase64Encoded: false,
+        statusCode: 301,
+        headers: {
+            'location': 'http://www.baidu.com'
+        }
+    }
+}
+```
