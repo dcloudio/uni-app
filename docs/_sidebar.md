@@ -115,9 +115,10 @@
   	</div>
   </div>
 </div>
-<script type="text/javascript">
-  window.οnlοad=function(){
+<script>
+  window.onload = function(){
     console.log("window.οnlοad")
+    console.log(document.querySelector(".chapter"))
     document.querySelector(".chapter").click() 
   }
 </script>
