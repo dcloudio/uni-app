@@ -2,7 +2,7 @@
 > `uni-app`支持通过 可视化界面、[`vue-cli`命令行](https://uniapp.dcloud.io/quickstart?id=%e9%80%9a%e8%bf%87vue-cli%e5%91%bd%e4%bb%a4%e8%a1%8c) 两种方式快速创建项目。
 
 
-## 1. 通过 HBuilderX 可视化界面
+### 1. 通过 HBuilderX 可视化界面
 
 可视化的方式比较简单，HBuilderX内置相关环境，开箱即用，无需配置nodejs。
 
@@ -223,12 +223,13 @@ HBuilderX 还提供了快捷运行菜单，可以按数字快速选择要运行�
 
 发布的快捷键是`Ctrl+u`。同样可拉下快速发布菜单并按数字键选择。
 
-## 2. 通过vue-cli命令行
+
+# 2. 通过vue-cli命令行
 
 除了HBuilderX可视化界面，也可以使用 `cli` 脚手架，可以通过 `vue-cli` 创建 `uni-app` 项目。
 
 
-### 环境安装
+## 环境安装
 
 全局安装vue-cli
 
@@ -236,7 +237,7 @@ HBuilderX 还提供了快捷运行菜单，可以按数字快速选择要运行�
 npm install -g @vue/cli
 ```
 
-### 创建uni-app
+## 创建uni-app
 
 **使用正式版**（对应HBuilderX最新正式版）
 
@@ -269,7 +270,7 @@ vue create -p dcloudio/uni-preset-vue#alpha my-alpha-project
 
 3. 对于有变化的依赖进行增删，提示不存指定版本的依赖可以保留原始版本或者删除，运行时提示缺少的依赖自行安装。
 
-### 运行、发布uni-app
+## 运行、发布uni-app
 
 ```
 npm run dev:%PLATFORM%
@@ -294,7 +295,7 @@ npm run build:%PLATFORM%
 
 可以自定义更多条件编译平台，比如钉钉小程序，参考[package.json文档](https://uniapp.dcloud.io/collocation/package)。
 
-### 运行并发布快应用@quickapp
+## 运行并发布快应用@quickapp
 快应用有两种开发方式，uni-app均支持：
 - 类小程序webview渲染方式：[https://ask.dcloud.net.cn/article/37182](https://ask.dcloud.net.cn/article/37182)
 - 原生渲染方式：[https://ask.dcloud.net.cn/article/37145](https://ask.dcloud.net.cn/article/37145)
@@ -320,7 +321,7 @@ HBuilderX 2.7.10+ 版支持
     2. build 模式会将代码进行压缩，体积更小更适合发布为正式版应用；
     3. 进行 [环境判断](/frame?id=运行环境判断) 时，dev 模式 process.env.NODE_ENV 的值为 development，build 模式 process.env.NODE_ENV 的值为 production。
 
-### 使用cli创建项目和使用HBuilderX可视化界面创建项目有什么区别
+## 使用cli创建项目和使用HBuilderX可视化界面创建项目有什么区别
 
 #### 编译器的区别
 
