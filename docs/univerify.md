@@ -81,7 +81,7 @@ uni.getProvider({
 
 ```
 uni.preLogin({
-	provider: 'univerify'
+	provider: 'univerify',
 	success(){
 		// 成功
 	},
