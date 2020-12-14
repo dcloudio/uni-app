@@ -60,16 +60,15 @@
 
 ### 使用一键登录
 
-#### 获取服务提供商
+#### 获取可用的服务提供商
 
-一键登录对应的服务提供商ID
-- id 为 'univerify'   
+其中一键登录对应的服务提供商ID为 'univerify'，当包含 'univerify' 时说明支持一键登录
 
 ```
 uni.getProvider({
     service: 'oauth',
     success: function (res) {
-        console.log(res.provider)// univerify
+        console.log(res.provider)// ['qq', 'univerify']
     }
 });
 
