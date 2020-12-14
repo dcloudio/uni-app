@@ -1,4 +1,4 @@
-> HBuilderX 2.9.12+ 版本新增支持 `一键登录`
+> HBuilderX 2.9.12+ 版本新增支持 `一键登录` 功能
 
 
 ## 概述
@@ -17,7 +17,7 @@
 在用户同意授权的操作前提下，访问运营商网关鉴权，获取当前设备access_token等信息。
 通过uniCloud 将access_token信息 置换为当前设备的真实手机号码
 
-![](https://dcloud-img.oss-cn-hangzhou.aliyuncs.com/client/doc/univerify/process.png)
+![](https://dcloud-img.oss-cn-hangzhou.aliyuncs.com/client/doc/univerify/process.jpg)
 
 前置条件：
 + 手机安装有sim卡
@@ -37,31 +37,31 @@
 
 ### 开通服务
 开发者需要登录[DCloud开发者中心](https://dev.dcloud.net.cn/)，申请开通一键登录服务。
-具体文档：[开通一键登录的详细教程](https://ask.dcloud.net.cn/article/37965)
+详细步骤参考：[开通一键登录服务的详细教程](https://ask.dcloud.net.cn/article/37965)
 
 ### 集成模块
 - **云端打包**
 在项目manifest.json页面“App模块配置”项的“OAuth(登录鉴权)”下勾选“一键登录(uni-verify)”
 ![](https://dcloud-img.oss-cn-hangzhou.aliyuncs.com/client/doc/univerify/hx.png)
 - **离线打包**
-  + Android平台：[一键登录Android离线打包配置](https://nativesupport.dcloud.net.cn/AppDocs/usemodule/androidModuleConfig/oauth)
+  + Android平台：[一键登录Android离线打包配置](https://nativesupport.dcloud.net.cn/AppDocs/usemodule/androidModuleConfig/oauth?id=%e4%b8%80%e9%94%ae%e7%99%bb%e5%bd%95)
   + iOS平台：[一键登录iOS离线打包配置](https://nativesupport.dcloud.net.cn/AppDocs/usemodule/iOSModuleConfig/oauth?id=%e4%b8%80%e9%94%ae%e7%99%bb%e5%bd%95%ef%bc%88univerify%ef%bc%89h)
 
 ### 开通uniCloud服务
-一键登录在客户端获取 token 后，必须在 uniCloud 换取手机号码。
-在uniCloud的云函数中拿到手机号后，可以再转给传统服务器，也可以通过云函数url方式生成普通的http接口给5+ App使用。
+一键登录在客户端获取 access_token 后，必须在 [uniCloud](https://uniapp.dcloud.io/uniCloud/README) 换取手机号码。
+在uniCloud的云函数中拿到手机号后，可以直接使用，也可以再转给传统服务器处理，也可以通过云函数url方式生成普通的http接口给5+ App使用。
 开通uniCloud是免费的，其中阿里云是全免费，腾讯云是提供一个免费服务空间。
 
 注意:
 **虽然一键登录需要uniCloud，但并不要求开发者把所有的后台服务都迁移到uniCloud**
 
-关于uniCloud的介绍和使用： [uniCloud说明文档](https://uniapp.dcloud.io/uniCloud/README)
-
+更多说明请参考：[uniCloud使用一键登录服务](https://uniapp.dcloud.net.cn/uniCloud/univerify)
 
 ### 使用一键登录
 
-#### 获取可用的服务提供商
+>5+ App（Wap2App）请参考：[5+ App一键登录使用指南](https://ask.dcloud.net.cn/article/38009)
 
+#### 获取可用的服务提供商
 其中一键登录对应的服务提供商ID为 'univerify'，当包含 'univerify' 时说明支持一键登录
 
 ```
@@ -74,19 +74,21 @@ uni.getProvider({
 
 ```
 
-#### 预登录
-（可选） 进行预登录操作，在预登录成功后有效时间内，进行登录操作 速度会显著提升
+#### 预登录（可选）
+预登录操作可以判断当前设备环境是否支持一键登录，如果能支持一键登录，此时可以显示一键登录选项，同时预登录会准备好相关环境，显著提升一键登录的操作速度。
+如果当前设备环境不支持一键登录，此时应该显示其他的登录选项。
 
 `uni.preLogin(options)`
 
 ```
 uni.preLogin({
 	provider: 'univerify',
-	success(){
-		// 成功
+	success(){  //预登录成功
+		// 显示一键登录选项
 	},
-	fail(res){
-		// 失败
+	fail(res){  // 预登录失败
+		// 不显示一键登录选项（或置灰）
+    // 根据错误信息判断失败原因，如有需要可将错误提交给统计服务器
 		console.log(res.errCode)
 		console.log(res.errMsg)
 	}
@@ -94,12 +96,6 @@ uni.preLogin({
 
 ```
 
-
-#### 关闭一键登录页面
-
-```
-uni.closeAuthView()
-```
 
 #### 请求登录认证
 
@@ -110,13 +106,13 @@ uni.closeAuthView()
 ```
 uni.login({
 	provider: 'univerify',
-	// 自定义样式
-	univerifyStyle: {},
-	success(res){
-		console.log(res.authResult)// {openid:'deviceIDlength+deviceID+gyuid',access_token:'接口返回的 token'}
+	univerifyStyle: { // 自定义登录框样式
+    //参考`univerifyStyle 数据结构`
+  },
+	success(res){ // 登录成功
+		console.log(res.authResult);  // {openid:'deviceIDlength+deviceID+gyuid',access_token:'接口返回的 token'}
 	},
-	fail(res){
-		// 失败
+	fail(res){  // 登录失败
 		console.log(res.errCode)
 		console.log(res.errMsg)
 	}
@@ -193,20 +189,48 @@ univerifyStyle 数据结构
 ```
 
 
+#### 关闭一键登录界面
+请求登录认证操作完成后，不管成功或失败都不会关闭一键登录界面，需要主动调用`closeAuthView`方法关闭。
+客户端登录认证完成只是说明获取 access_token 成功，需要将此数据提交到服务器获取手机号码，完成业务服务登录逻辑后通知客户端关闭登录界面。
+```
+uni.closeAuthView()
+```
+
 
 ### 换取手机号码
+在 uniCloud 中可以将客户端获取的 access_token 置换为真实的手机号码。
+** 重要提示：为了保证数据的安全，用户手机号码信息不应该返回给客户端 !!!  **
 
-通过uniCloud 将返回的access_token置换为真实的手机号码。
+以下示例为调用云函数 uniCloud.getPhoneNumber 获取手机号：
+```
+'use strict';
+exports.main = async (event, context) => {
+  //获取客户端提交的openid、access_token
+  var paramsPost = event;
+  var openIdParam = paramsPost.openid;
+  var accessTokenParam = paramsPost.access_token;
 
-** 重要提示：正常情况下，用户的手机号码信息不应该返回给客户端 !!!  **
+  //调用 uniCloud.getPhoneNumber 获取手机号码
+  const res = await uniCloud.getPhoneNumber({
+    'provider': 'univerify',
+    'appid': '__UNI__XXXXXXX',      //应用的appid
+    'apiKey': 'XXXXXXXXXXXXXX',     //开通一键登录服务后，从后台获取的apiKey
+    'apiSecret': 'XXXXXXXXXXXXXX',  //开通一键登录服务后，从后台获取的apiSecret
+    'accessToken': accessTokenParam,
+    'openid': openIdParam
+  });
+  
+  /*
+  res对象中包含手机号码等信息，数据结构如下所示：
+  大部分开发者应该在云函数中，实现用户的登录逻辑，返回客户端登录结果即可。
+  我们这里为了示例，选择将用户信息返回给 客户端（注意，这一行为在真实的业务环境中，不应该发生。）
+  */
+  uniCloud.logger.log(res);
+  return res;
+};
+```
 
-我们这里以调用云函数为例：
-
-新建云函数上传部署，代码实现可以参考：
-
-![](https://img-cdn-qiniu.dcloud.net.cn/uploads/article/20201125/81b289aace20942def2e98a4cd41b97e.png)
-
-返回数据示例
+返回 res 数据示例：
 ```
 {
 	"data": {
@@ -228,32 +252,32 @@ univerifyStyle 数据结构
 ```
 
 
-[uniCloud对一键登录功能的详细说明](https://uniapp.dcloud.net.cn/uniCloud/univerify)
+更多说明请参考：[uniCloud使用一键登录服务](https://uniapp.dcloud.net.cn/uniCloud/univerify)
 
 
-## Q&A
 
-### 常见错误代码
-
+## 错误码
 |  错误码  |  错误描述  |
 |  -:-  |  -:-  |  
 |  1000 |  当前 uniAppid 尚未开通一键登录  |    
-|  1001  | 应用所有者账号信息异常，请检查账号一键登录服务是否正常  |    
-| 1002 | 应用所有者账号信息异常，请检查账号余额是否充足 |    
-| 4001 | 请求参数异常 |    
-|30001	|当前网络环境不适合执行该操作|
-|30002	 |用户点击了其他登录方式|
-|30003	 |用户关闭验证界面|
-|30004	|其他错误|
-|30005	|预登录失败|
-|30006	|一键登录失败|
-|30007	|获取本机号码校验token失败|
-|40047	|一键登录取号失败|
-|40053	|手机号校验失败|
+|  1001 |  应用所有者账号信息异常，请检查账号一键登录服务是否正常  |    
+|  1002 |  应用所有者账号信息异常，请检查账号余额是否充足 |    
+|  4001 |  请求参数异常 |    
+| 30001	|  当前网络环境不适合执行该操作  |
+| 30002 |  用户点击了其他登录方式  |
+| 30003 |  用户关闭验证界面  |
+| 30004 |  其他错误  |
+| 30005 |  预登录失败  |
+| 30006 |  一键登录失败  |
+| 30007 |  获取本机号码校验token失败  |
+| 40047 |  一键登录取号失败  |
+| 40053 |  手机号校验失败  |
 
-###  提示 非移动网关ip地址
+
+
+## 常见问题
+- 提示“非移动网关ip地址”
 大多数情况 是因为部分特定设备，不支持双卡双待的网络环境
-
-###  代码 40201  提示 源IP鉴权失败
+- 错误代码 40201，提示“源IP鉴权失败”
 检查一下手机卡类型是否是正常运营商手机卡，关闭飞行模式后重新尝试
 
