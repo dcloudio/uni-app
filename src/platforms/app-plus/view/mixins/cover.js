@@ -148,7 +148,7 @@ export default {
     _updateStyle () {
       const style = getComputedStyle(this.$el)
       base.concat(text, image).forEach(key => {
-        this.style[key] = style[key]
+        this.$set(this.style, key, style[key])
       })
     },
     _requestStyleUpdate () {
