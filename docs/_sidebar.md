@@ -1,5 +1,7 @@
 * [什么是 uni-app](README.md)
-* [快速上手](quickstart.md)
+* 快速上手
+  * [1. 通过 HBuilderX 可视化界面](quickstart-hx.md)
+  * [2. 通过vue-cli命令行](quickstart-hx.md)
 * [uni-app的由来](history.md)
 * [如何学习](resource.md)
 * [框架简介](frame.md)
