@@ -1,70 +1,80 @@
-> HBuilderX 2.9.12+ 版本新增支持 `一键登录` 功能
-
-
 ## 概述
-`一键登录`是DCloud联合个推公司推出的，整合了三大运营商网关认证能力的服务。
-通过与运营商,个验深度合作，实现APP用户无需输入帐号密码，即可使用本机手机号码自动登录的能力。
-`一键登录`是替代短信验证登录的下一代登录验证方式，能消除现有短信验证模式等待时间长、操作繁琐和容易泄露的痛点。
 
-+ 支持项目类型：uni-app，5+ App，Wap2App
+`uni一键登录`是DCloud联合个推公司推出的，整合了三大运营商网关认证能力的服务。
+
+通过运营商的底层SDK，实现App端无需短信验证码直接获取手机号，也就是很多主流App都提供的一键登陆功能。
+
+`uni一键登录`是替代短信验证登录的下一代登录验证方式，能消除现有短信验证模式等待时间长、操作繁琐和容易泄露的痛点。
+
++ 支持版本：HBuilderX 3.0+
++ 支持项目类型：uni-app的App端，5+ App，Wap2App
 + 支持系统平台: Android，iOS
-+ 支持运营商: 移动，联通，电信
++ 支持运营商: 中国移动，中国联通，中国电信
 
 ![](https://dcloud-img.oss-cn-hangzhou.aliyuncs.com/client/doc/univerify/demo.png)
 
 
-### 原理
-在用户同意授权的操作前提下，访问运营商网关鉴权，获取当前设备access_token等信息。
-通过uniCloud 将access_token信息 置换为当前设备的真实手机号码
+### 流程
+1. App界面弹出请求授权，询问用户是否同意授权该App获取手机号。这个授权请求界面是运营商sdk弹出的，可以有限定制。
+2. 用户同意授权后，SDK底层访问运营商网关鉴权，获得当前设备`access_token`等信息。
+3. 在服务器侧通过 uniCloud 将`access_token`等信息 置换为当前设备的真实手机号码。然后服务器直接入库，避免手机号传递到前端发生的不可信情况。
 
 ![](https://dcloud-img.oss-cn-hangzhou.aliyuncs.com/client/doc/univerify/process.jpg)
 
 前置条件：
 + 手机安装有sim卡
 + 手机开启数据流量
-+ 开通uniCloud服务
++ 开通uniCloud服务（但不要求所有后台代码都使用uniCloud）
 
 
 ### 产品优势
-- **便捷**
-优化了现有短信验证方式，免短信验证一键免密登录APP，耗时极短，减轻用户记忆负担，能有效降低用户流失率，提升运营效果
+
+- **用户体验好**
+用户体验好，无需等待短信验证码，能有效降低用户流失率，提升用户注册量在App激活量中的占比。
+
+- **便宜**
+使用`uni一键登录`的成本比短信验证码便宜数倍。
+
 - **安全**
 采用运营商网关认证，避免短信劫持，有效提升安全性
 
 
+## 开通
 
-## 开通使用
-
-### 开通服务
+### 开通uni一键登录服务
 开发者需要登录[DCloud开发者中心](https://dev.dcloud.net.cn/)，申请开通一键登录服务。
+
 详细步骤参考：[开通一键登录服务的详细教程](https://ask.dcloud.net.cn/article/37965)
 
-### 集成模块
-- **云端打包**
-在项目manifest.json页面“App模块配置”项的“OAuth(登录鉴权)”下勾选“一键登录(uni-verify)”
-![](https://dcloud-img.oss-cn-hangzhou.aliyuncs.com/client/doc/univerify/hx.png)
-- **离线打包**
-  + Android平台：[一键登录Android离线打包配置](https://nativesupport.dcloud.net.cn/AppDocs/usemodule/androidModuleConfig/oauth?id=%e4%b8%80%e9%94%ae%e7%99%bb%e5%bd%95)
-  + iOS平台：[一键登录iOS离线打包配置](https://nativesupport.dcloud.net.cn/AppDocs/usemodule/iOSModuleConfig/oauth?id=%e4%b8%80%e9%94%ae%e7%99%bb%e5%bd%95%ef%bc%88univerify%ef%bc%89h)
+开通成功后会得到 apiKey、apiSecret。这2个信息，后续需要配置在uniCloud的云函数里。同时注意保密，这2个信息也是计费凭证。
+
 
 ### 开通uniCloud服务
-一键登录在客户端获取 access_token 后，必须在 [uniCloud](https://uniapp.dcloud.io/uniCloud/README) 换取手机号码。
-在uniCloud的云函数中拿到手机号后，可以直接使用，也可以再转给传统服务器处理，也可以通过云函数url方式生成普通的http接口给5+ App使用。
+一键登录在客户端获取 `access_token` 后，必须在 [uniCloud](https://uniapp.dcloud.io/uniCloud/README) 换取手机号码。
+
+在uniCloud的云函数中拿到手机号后，可以直接使用，也可以再转给传统服务器处理，也可以通过[云函数url化](https://uniapp.dcloud.io/uniCloud/http)方式生成普通的http接口给5+ App使用。
+
 开通uniCloud是免费的，其中阿里云是全免费，腾讯云是提供一个免费服务空间。
 
 注意:
 **虽然一键登录需要uniCloud，但并不要求开发者把所有的后台服务都迁移到uniCloud**
 
-更多说明请参考：[uniCloud使用一键登录服务](https://uniapp.dcloud.net.cn/uniCloud/univerify)
+服务器API详见：[uniCloud云函数中使用一键登录](https://uniapp.dcloud.net.cn/uniCloud/univerify)
 
-### 使用一键登录
+## 开发
 
->5+ App（Wap2App）请参考：[5+ App一键登录使用指南](https://ask.dcloud.net.cn/article/38009)
+本文主要介绍uni-app的客户端调用方法。5+ App（Wap2App）请另行参考：[5+ App一键登录使用指南](https://ask.dcloud.net.cn/article/38009)
 
-#### 获取可用的服务提供商
-其中一键登录对应的服务提供商ID为 'univerify'，当包含 'univerify' 时说明支持一键登录
+DCloud还提供了更易用的封装。在[uni-id](/unicloud/uni-id)里已经预置了`uni一键登陆`，并基于`uni-id`提供了[前后一体登录模板](https://ext.dcloud.net.cn/plugin?id=13)（也可以在HBuilderX 3.0+ 新建项目界面选择“前后一体登录模板”），开发者可以拿去直接用
 
-```
+接下来继续介绍原始API的用法。
+
+### 客户端-获取可用的服务提供商
+一键登陆，和 uni.login 中的微信登录、QQ登录等provider是并列的。
+
+其中一键登录对应的 provider ID为 'univerify'，当获取provider列表时发现包含 'univerify' ，则说明当前环境打包了一键登录的sdk。
+
+```js
 uni.getProvider({
     service: 'oauth',
     success: function (res) {
@@ -74,13 +84,16 @@ uni.getProvider({
 
 ```
 
-#### 预登录（可选）
+### 客户端-预登录（可选）
 预登录操作可以判断当前设备环境是否支持一键登录，如果能支持一键登录，此时可以显示一键登录选项，同时预登录会准备好相关环境，显著提升一键登录的操作速度。
+
 如果当前设备环境不支持一键登录，此时应该显示其他的登录选项。
+
+如果手机没有插入有效的sim卡，或者手机蜂窝数据网络关闭，都有可能造成预登陆校验失败。
 
 `uni.preLogin(options)`
 
-```
+```js
 uni.preLogin({
 	provider: 'univerify',
 	success(){  //预登录成功
@@ -97,13 +110,13 @@ uni.preLogin({
 ```
 
 
-#### 请求登录认证
+### 客户端-请求登录授权
 
-弹出用户授权界面。根据用户操作及授权结果返回对应的回调
+弹出用户授权界面。根据用户操作及授权结果返回对应的回调，拿到 `access_token`
 
 `uni.login(options);`
 
-```
+```js
 uni.login({
 	provider: 'univerify',
 	univerifyStyle: { // 自定义登录框样式
@@ -120,9 +133,14 @@ uni.login({
 
 ```
 
-univerifyStyle 数据结构
 
-```
+`uni一键登录`的授权弹出界面是半屏的，这个界面本质是运营商sdk弹出的，它询问手机用户是否授权自己的手机号给这个App使用。
+
+这个授权弹出界面可以通过 univerifyStyle 设置有限定制。
+
+univerifyStyle 数据结构：
+
+```json
 {
     "backgroundColor": "页面背景颜色，默认白色 #ffffff",  
     "icon": {
@@ -141,29 +159,29 @@ univerifyStyle 数据结构
     "authButton": {
         "normalColor": "正常状态颜色 #3479f5",
         "highlightColor": "按下状态颜色 #2861c5",
-        "disabledColor": "不可点击时颜色 #73aaf5",（仅ios支持）
+        "disabledColor": "不可点击时颜色 #73aaf5",//仅ios支持
         "width": "宽度 默认 设备屏幕宽度左右各留 32px",
         "height": "高度 默认 94px",
         "textColor": "#ffffff",
         "title": "本机号码一键登录"
     },
     "otherLoginButton": {
-        "visible": "true 是否显示其他登录按钮，默认显示"    
+        "visible": "true", //是否显示其他登录按钮，默认显示
         "normalColor": "正常状态颜色 #f8f8f8",
         "highlightColor": "按下状态颜色 #dedede",
         "width": "宽度 默认 设备屏幕宽度左右各留 32px",
         "height": "高度 默认 94px",
         "textColor": "#000000",
         "title": "其他登录方式",
-        "borderWidth": "边框宽度 1px",（仅ios支持）
-        "borderColor": "边框颜色 #c5c5c5"（仅ios支持）
+        "borderWidth": "边框宽度 1px",//仅ios支持
+        "borderColor": "边框颜色 #c5c5c5"//仅ios支持
     },
     "privacyTerms": {
-        "textColor": "#8a8b90 文字颜色", 
-        "termsColor": "#1d4788 协议文字颜色"   
+        "textColor": "#8a8b90", //文字颜色
+        "termsColor": "#1d4788", //协议文字颜色
         "prefix": "我已阅读并同意",
         "suffix": "并使用本机号码登录",
-        "fontSize": 12号字体,
+        "fontSize": 12,
         "privacyItems": [
             {
                 "url": "https://",
@@ -176,7 +194,7 @@ univerifyStyle 数据结构
 
 返回数据示例
 
-```
+```json
 
 {
 	"errMsg": "login:ok",
@@ -189,49 +207,199 @@ univerifyStyle 数据结构
 ```
 
 
-#### 关闭一键登录界面
+### 客户端关闭一键登录授权界面
+
 请求登录认证操作完成后，不管成功或失败都不会关闭一键登录界面，需要主动调用`closeAuthView`方法关闭。
-客户端登录认证完成只是说明获取 access_token 成功，需要将此数据提交到服务器获取手机号码，完成业务服务登录逻辑后通知客户端关闭登录界面。
-```
+
+客户端登录认证完成只是说明获取 `access_token` 成功，需要将此数据提交到服务器获取手机号码，完成业务服务登录逻辑后通知客户端关闭登录界面。
+
+```js
 uni.closeAuthView()
 ```
 
 
-### 换取手机号码
-在 uniCloud 中可以将客户端获取的 access_token 置换为真实的手机号码。
-** 重要提示：为了保证数据的安全，用户手机号码信息不应该返回给客户端 !!!  **
+### 用access_token换手机号
 
-以下示例为调用云函数 uniCloud.getPhoneNumber 获取手机号：
+客户端获取到 `access_token` 后，传递给uniCloud云函数，云函数中通过`uniCloud.getPhoneNumber`方法获取真正的手机号。
+
+这一步有3种方式：
+1. uni-app项目开通[uniCloud](https://unicloud.dcloud.net.cn/)服务，在前端直接写 `uniCloud.callfuntion` ，将 `access_token` 传给指定的云函数。
+2. 使用普通ajax请求提交 `access_token` 给uniCloud的云函数。这种方式uni-app和5+App、wap2app均可使用，但uniCloud上的云函数需要做URL化。
+3. 使用普通ajax请求提交 `access_token` 给自己的传统服务器，通过自己的传统服务器再转发给 uniCloud 云函数。这种方式uni-app和5+App、wap2app均可使用，但uniCloud上的云函数需要做URL化。
+
+下面分别提供示例代码：
+
+#### uni-app项目使用uniCloud.callfuntion的方式调用云函数
+
+客户端示例：
+
+```js
+uniCloud.callFunction({
+  name: 'xxx', // 你的云函数名称
+  data: {
+    'access_token': 'xxx', // 客户端一键登录接口返回的accessToken
+    'openid': 'xxx' // 客户端一键登录接口返回的openid
+  }
+}).then(res => {
+  // res.result = {
+  //   code: '',
+  //   message: ''
+  // }
+  // 登录成功，可以关闭一键登陆授权界面了
+}).catch(err=>{
+  // 处理错误
+})
 ```
+
+云函数需要接收示例：
+```js
 'use strict';
 exports.main = async (event, context) => {
-  //获取客户端提交的openid、access_token
-  var paramsPost = event;
-  var openIdParam = paramsPost.openid;
-  var accessTokenParam = paramsPost.access_token;
-
-  //调用 uniCloud.getPhoneNumber 获取手机号码
   const res = await uniCloud.getPhoneNumber({
-    'provider': 'univerify',
-    'appid': '__UNI__XXXXXXX',      //应用的appid
-    'apiKey': 'XXXXXXXXXXXXXX',     //开通一键登录服务后，从后台获取的apiKey
-    'apiSecret': 'XXXXXXXXXXXXXX',  //开通一键登录服务后，从后台获取的apiSecret
-    'accessToken': accessTokenParam,
-    'openid': openIdParam
-  });
+  	provider: 'univerify',
+  	apiKey: 'xxx', // 在开发者中心开通服务并获取apiKey
+  	apiSecret: 'xxx', // 在开发者中心开通服务并获取apiSecret
+  	accessToken: event.access_token,
+  	openid: event.openid
+  })
   
-  /*
-  res对象中包含手机号码等信息，数据结构如下所示：
-  大部分开发者应该在云函数中，实现用户的登录逻辑，返回客户端登录结果即可。
-  我们这里为了示例，选择将用户信息返回给 客户端（注意，这一行为在真实的业务环境中，不应该发生。）
-  */
   uniCloud.logger.log(res);
-  return res;
-};
+  // 执行用户信息入库等操作，正常情况下不要把完整手机号返回给前端
+  return {
+    code: 0,
+    message: '获取手机号成功'
+  }
+}
 ```
 
-返回 res 数据示例：
+
+完整的项目实例源码，可以参考：[https://ext.dcloud.net.cn/plugin?id=13](https://ext.dcloud.net.cn/plugin?id=13)
+
+#### 5+（wap2app）项目通过云函数URL化让云函数暴露出普通http接口
+
+5+（wap2app）项目不可使用uniCloud.callFunction请求云函数。
+
+uniCloud云函数提供了[URL化](https://uniapp.dcloud.io/uniCloud/http)方案，可以把云函数暴露出普通http接口。
+
+此时客户端代码使用普通ajax写法。
+
+客户端代码：
+```js
+const xhr = new plus.net.XMLHttpRequest();
+xhr.onload = function(e) {
+  const {
+    code,
+    message
+  } = JSON.parse(xhr.responseText)
+}
+xhr.open( "POST", "https://xxx" ); // url应为云函数Url化之后的地址，可以在uniCloud web控制台云函数详情页面看到
+xhr.setRequestHeader('Content-Type','application/json');
+xhr.send(JSON.stringify({
+  accessToken: 'xxx', // 客户端一键登录接口返回的accessToken
+  openid: 'xxx' // 客户端一键登录接口返回的openid
+}));
 ```
+
+云函数代码：
+```js
+// 下面仅展示客户端使用post方式发送content-type为application/json请求的场景
+module.exports = async(event){
+  let body = event.body
+  if(event.isBase64Encoded) {
+    body = Buffer.from(body,'base64')
+  }
+  const {
+    accessToken,
+    openid
+  } = JSON.parse(body)
+  const res = await uniCloud.getPhoneNumber({
+  	provider: 'univerify',
+    appid: 'xxx', // DCloud appid，不同于callFunction方式调用，使用云函数Url化需要传递DCloud appid参数！！！
+  	apiKey: 'xxx', // 在开发者中心开通服务并获取apiKey
+  	apiSecret: 'xxx', // 在开发者中心开通服务并获取apiSecret
+  	accessToken: accessToken,
+  	openid: openid
+  })
+  // 执行入库等操作，正常情况下不要把完整手机号返回给前端
+  return {
+    code: 0,
+    message: '获取手机号成功'
+  }
+}
+```
+
+uni-app项目也可以使用普通的uni.request来请求云函数URL化后的http接口，此处不再重复举例。
+
+#### 通过传统服务器连接uniCloud云函数
+
+写法类似上面5+项目的云函数url化的方式，但是不同的是需要云函数返回手机号给自己服务器，这样就需要确保数据安全。
+
+下面以一个简单的例子演示如何使用签名验证请求是否合法
+
+```js
+// 以nodejs为例
+const crypto = require('crypto')
+
+const secret = 'your-secret-string' // 自己的密钥不要直接使用示例值，且注意不要泄露
+const hmac = crypto.createHmac('sha256', secret);
+
+// 自有服务器生成签名，并以GET方式发送请求
+const params = {
+  accessToken: 'xxx', // 客户端传到自己服务器的参数
+  openid: 'xxx'
+}
+// 字母顺序排序后拼接签名串
+const signStr = Object.keys(params).sort().map(key => {
+  return `${key}=${params[key]}`
+}).join('&')
+hmac.update(signStr);
+const sign = hmac.digest('hex')
+// 最终请求如下链接，其中https://xxxx/xxx为云函数Url化地址
+// https://xxxx/xxx?accessToken=xxx&openid=xxx&sign=${sign} 其中${sign}为上一步得到的sign值
+```
+
+
+```js
+// 云函数验证签名，此示例中以接受GET请求为例作演示
+const crypto = require('crypto')
+module.exports = async(event){
+  
+  const secret = 'your-secret-string' // 自己的密钥不要直接使用示例值，且注意不要泄露
+  const hmac = crypto.createHmac('sha256', secret);
+  
+  let params = event.queryStringParameters
+  const sign = params.sign
+  delete params.sign
+  const signStr = Object.keys(params).sort().map(key => {
+    return `${key}=${params[key]}`
+  }).join('&')
+  
+  hmac.update(signStr);
+  
+  if(sign!==hmac.digest('hex')){
+    throw new Error('非法访问')
+  }
+  
+  const {
+    accessToken,
+    openid
+  } = params
+  const res = await uniCloud.getPhoneNumber({
+  	provider: 'univerify',
+    appid: 'xxx', // DCloud appid，不同于callFunction方式调用，使用云函数Url化需要传递DCloud appid参数
+  	apiKey: 'xxx', // 在开发者中心开通服务并获取apiKey
+  	apiSecret: 'xxx', // 在开发者中心开通服务并获取apiSecret
+  	accessToken: accessToken,
+  	openid: openid
+  })
+  // 返回手机号给自己服务器
+  return res
+}
+```
+
+
+#### 返回 res 数据说明
+```json
 {
 	"data": {
 		"code": 0,
@@ -252,11 +420,7 @@ exports.main = async (event, context) => {
 ```
 
 
-更多说明请参考：[uniCloud使用一键登录服务](https://uniapp.dcloud.net.cn/uniCloud/univerify)
-
-
-
-## 错误码
+### 错误码
 |  错误码  |  错误描述  |
 |  -:-  |  -:-  |  
 |  1000 |  当前 uniAppid 尚未开通一键登录  |    
@@ -273,11 +437,23 @@ exports.main = async (event, context) => {
 | 40047 |  一键登录取号失败  |
 | 40053 |  手机号校验失败  |
 
+## 运行基座和打包
+
+- 使用`uni一键登陆`，不需要制作自定义基座，使用HBuilder标准真机运行基座即可。在云函数中配置好apiKey、apiSecret后，一样从你的账户充值中扣费。
+
+- 云端打包
+在项目manifest.json页面“App模块配置”项的“OAuth(登录鉴权)”下勾选“一键登录(uni-verify)”
+![](https://dcloud-img.oss-cn-hangzhou.aliyuncs.com/client/doc/univerify/hx.png)
+
+- 离线打包
+  + Android平台：[一键登录Android离线打包配置](https://nativesupport.dcloud.net.cn/AppDocs/usemodule/androidModuleConfig/oauth?id=%e4%b8%80%e9%94%ae%e7%99%bb%e5%bd%95)
+  + iOS平台：[一键登录iOS离线打包配置](https://nativesupport.dcloud.net.cn/AppDocs/usemodule/iOSModuleConfig/oauth?id=%e4%b8%80%e9%94%ae%e7%99%bb%e5%bd%95%ef%bc%88univerify%ef%bc%89h)
 
 
 ## 常见问题
 - 提示“非移动网关ip地址”
 大多数情况 是因为部分特定设备，不支持双卡双待的网络环境
+
 - 错误代码 40201，提示“源IP鉴权失败”
 检查一下手机卡类型是否是正常运营商手机卡，关闭飞行模式后重新尝试
 
