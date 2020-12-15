@@ -5,6 +5,7 @@
       :data="dataList"
       :pagination="paginationInternal"
       :loading="loading"
+      :hasMore="hasMore"
       :error="errorMessage"
     />
   </view>
@@ -88,6 +89,7 @@ export default {
   data () {
     return {
       loading: false,
+      hasMore: false,
       dataList: this.getone ? {} : [],
       paginationInternal: {
         current: this.pageCurrent,
@@ -309,6 +311,7 @@ export default {
           count
         } = res.result
         this._isEnded = data.length < this.pageSize
+        this.hasMore = !this._isEnded
 
         const data2 = this.getone ? (data.length ? data[0] : undefined) : data
 
