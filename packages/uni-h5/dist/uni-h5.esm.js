@@ -1,9 +1,9 @@
 import {isFunction, extend, isPlainObject, isPromise, isArray, hasOwn} from "@vue/shared";
 import {injectHook, openBlock, createBlock, createVNode, Fragment, renderList, toDisplayString, createCommentVNode, createTextVNode, Transition, withCtx, withModifiers, withDirectives, vShow, resolveComponent, KeepAlive, resolveDynamicComponent, mergeProps, renderSlot} from "vue";
-import {passiveOptions, Input} from "@dcloudio/uni-components";
-export * from "@dcloudio/uni-components";
 import {TABBAR_HEIGHT, COMPONENT_NAME_PREFIX, isCustomElement, NAVBAR_HEIGHT} from "@dcloudio/uni-shared";
 import {createWebHistory, createWebHashHistory, createRouter} from "vue-router";
+import {Input} from "@dcloudio/uni-components";
+export * from "@dcloudio/uni-components";
 function applyOptions(options, instance2, publicThis) {
   Object.keys(options).forEach((name) => {
     if (name.indexOf("on") === 0) {
@@ -90,6 +90,7 @@ function initBridge(namespace) {
 const ViewJSBridge = initBridge("view");
 const LONGPRESS_TIMEOUT = 350;
 const LONGPRESS_THRESHOLD = 10;
+const passiveOptions = {passive: true};
 let longPressTimer = 0;
 function clearLongPressTimer() {
   if (longPressTimer) {
@@ -2243,7 +2244,7 @@ function render$5(_ctx, _cache, $props, $setup, $data, $options) {
       createVNode("div", _hoisted_1$4, [
         withDirectives(createVNode("div", {
           class: "uni-page-head-btn",
-          onClick: _cache[1] || (_cache[1] = (...args) => $options._back(...args))
+          onClick: _cache[1] || (_cache[1] = (...args) => $options._back && $options._back(...args))
         }, [
           createVNode("i", {
             style: {color: _ctx.color, fontSize: "27px"},
@@ -2808,7 +2809,7 @@ var script$9 = {
 function render$9(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("div", {
     class: "uni-async-error",
-    onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick(...args))
+    onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick && $options._onClick(...args))
   }, " \u8FDE\u63A5\u670D\u52A1\u5668\u8D85\u65F6\uFF0C\u70B9\u51FB\u5C4F\u5E55\u91CD\u8BD5 ");
 }
 script$9.render = render$9;

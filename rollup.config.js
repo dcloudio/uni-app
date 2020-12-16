@@ -15,23 +15,38 @@ const packageDir = path.resolve(packagesDir, process.env.TARGET)
 const resolve = p => path.resolve(packageDir, p)
 const pkg = require(resolve(`package.json`))
 
+// ensure TS checks only once for each build
+let hasTSChecked = false
+
 const configs = []
 const buildOptions = require(resolve(`build.json`))
 Object.keys(buildOptions.input).forEach(name => {
-  configs.push(
-    createConfig(name, {
-      file: resolve(buildOptions.input[name]),
-      format: `es`
+  const files = buildOptions.input[name]
+  if (Array.isArray(files)) {
+    files.forEach(file => {
+      configs.push(
+        createConfig(name, {
+          file: resolve(file),
+          format: file.includes('.cjs.') ? 'cjs' : 'es'
+        })
+      )
     })
-  )
+  } else {
+    configs.push(
+      createConfig(name, {
+        file: resolve(buildOptions.input[name]),
+        format: (buildOptions.output && buildOptions.output.format) || `es`
+      })
+    )
+  }
 })
 export default configs
 
 function createConfig(entryFile, output, plugins = []) {
-  const shouldEmitDeclarations = process.env.TYPES != null
+  const shouldEmitDeclarations = process.env.TYPES != null && !hasTSChecked
 
   const tsPlugin = ts({
-    check: process.env.NODE_ENV === 'production',
+    check: process.env.NODE_ENV === 'production' && !hasTSChecked,
     tsconfig: path.resolve(__dirname, 'tsconfig.json'),
     cacheRoot: path.resolve(__dirname, 'node_modules/.rts2_cache'),
     tsconfigOverride: {
@@ -44,10 +59,16 @@ function createConfig(entryFile, output, plugins = []) {
     }
   })
 
+  // we only need to check TS and generate declarations once for each build.
+  // it also seems to run into weird issues when checking multiple times
+  // during a single build.
+  hasTSChecked = true
+
   const external = [
     '@vue/shared',
     ...Object.keys(pkg.dependencies || {}),
-    ...Object.keys(pkg.peerDependencies || {})
+    ...Object.keys(pkg.peerDependencies || {}),
+    ...(buildOptions.external || [])
   ]
 
   return {

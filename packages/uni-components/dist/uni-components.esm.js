@@ -538,7 +538,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       }, [
         createVNode("div", {
           class: [{play: !$data.playing, pause: $data.playing}, "uni-audio-button"],
-          onClick: _cache[1] || (_cache[1] = (...args) => $options.trigger(...args))
+          onClick: _cache[1] || (_cache[1] = (...args) => $options.trigger && $options.trigger(...args))
         }, null, 2)
       ], 4),
       createVNode("div", _hoisted_2, [
@@ -1302,7 +1302,7 @@ var script$2 = {
 const _hoisted_1$2 = {class: "uni-checkbox-wrapper"};
 function render$2(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-checkbox", mergeProps({disabled: $props.disabled}, _ctx.$attrs, {
-    onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick(...args))
+    onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick && $options._onClick(...args))
   }), [
     createVNode("div", _hoisted_1$2, [
       createVNode("div", {
@@ -2561,12 +2561,12 @@ function render$8(_ctx, _cache, $props, $setup, $data, $options) {
         autofocus: $props.focus,
         class: "uni-input-input",
         autocomplete: "off",
-        onFocus: _cache[2] || (_cache[2] = (...args) => $options._onFocus(...args)),
-        onBlur: _cache[3] || (_cache[3] = (...args) => $options._onBlur(...args)),
-        onInput: _cache[4] || (_cache[4] = withModifiers((...args) => $options._onInput(...args), ["stop"])),
-        onCompositionstart: _cache[5] || (_cache[5] = (...args) => $options._onComposition(...args)),
-        onCompositionend: _cache[6] || (_cache[6] = (...args) => $options._onComposition(...args)),
-        onKeyup: _cache[7] || (_cache[7] = withModifiers((...args) => $options._onKeyup(...args), ["stop"]))
+        onFocus: _cache[2] || (_cache[2] = (...args) => $options._onFocus && $options._onFocus(...args)),
+        onBlur: _cache[3] || (_cache[3] = (...args) => $options._onBlur && $options._onBlur(...args)),
+        onInput: _cache[4] || (_cache[4] = withModifiers((...args) => $options._onInput && $options._onInput(...args), ["stop"])),
+        onCompositionstart: _cache[5] || (_cache[5] = (...args) => $options._onComposition && $options._onComposition(...args)),
+        onCompositionend: _cache[6] || (_cache[6] = (...args) => $options._onComposition && $options._onComposition(...args)),
+        onKeyup: _cache[7] || (_cache[7] = withModifiers((...args) => $options._onKeyup && $options._onKeyup(...args), ["stop"]))
       }, null, 40, ["disabled", "type", "maxlength", "step", "autofocus"]), [
         [vModelDynamic, _ctx.valueSync]
       ])
@@ -2609,7 +2609,7 @@ function render$9(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-label", mergeProps({
     class: {"uni-label-pointer": $options.pointer}
   }, _ctx.$attrs, {
-    onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick(...args))
+    onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick && $options._onClick(...args))
   }), [
     renderSlot(_ctx.$slots, "default")
   ], 16);
@@ -3752,15 +3752,15 @@ function render$b(_ctx, _cache, $props, $setup, $data, $options) {
   return $props.hoverClass && $props.hoverClass !== "none" ? (openBlock(), createBlock("uni-navigator", mergeProps({
     key: 0,
     class: [_ctx.hovering ? $props.hoverClass : ""],
-    onTouchstart: _cache[1] || (_cache[1] = (...args) => _ctx._hoverTouchStart(...args)),
-    onTouchend: _cache[2] || (_cache[2] = (...args) => _ctx._hoverTouchEnd(...args)),
-    onTouchcancel: _cache[3] || (_cache[3] = (...args) => _ctx._hoverTouchCancel(...args)),
-    onClick: _cache[4] || (_cache[4] = (...args) => $options._onClick(...args))
+    onTouchstart: _cache[1] || (_cache[1] = (...args) => _ctx._hoverTouchStart && _ctx._hoverTouchStart(...args)),
+    onTouchend: _cache[2] || (_cache[2] = (...args) => _ctx._hoverTouchEnd && _ctx._hoverTouchEnd(...args)),
+    onTouchcancel: _cache[3] || (_cache[3] = (...args) => _ctx._hoverTouchCancel && _ctx._hoverTouchCancel(...args)),
+    onClick: _cache[4] || (_cache[4] = (...args) => $options._onClick && $options._onClick(...args))
   }, _ctx.$attrs), [
     renderSlot(_ctx.$slots, "default")
   ], 16)) : (openBlock(), createBlock("uni-navigator", mergeProps({
     key: 1,
-    onClick: _cache[5] || (_cache[5] = (...args) => $options._onClick(...args))
+    onClick: _cache[5] || (_cache[5] = (...args) => $options._onClick && $options._onClick(...args))
   }, _ctx.$attrs), [
     renderSlot(_ctx.$slots, "default")
   ], 16));
@@ -3971,7 +3971,7 @@ var script$d = {
 const _hoisted_1$5 = {class: "uni-radio-wrapper"};
 function render$d(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-radio", mergeProps({disabled: $props.disabled}, _ctx.$attrs, {
-    onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick(...args))
+    onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick && $options._onClick(...args))
   }), [
     createVNode("div", _hoisted_1$5, [
       createVNode("div", {
@@ -5721,7 +5721,7 @@ const _hoisted_1$8 = {class: "uni-slider-wrapper"};
 const _hoisted_2$3 = {class: "uni-slider-tap-area"};
 function render$h(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-slider", mergeProps({ref: "uni-slider"}, _ctx.$attrs, {
-    onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick(...args))
+    onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick && $options._onClick(...args))
   }), [
     createVNode("div", _hoisted_1$8, [
       createVNode("div", _hoisted_2$3, [
@@ -5860,7 +5860,7 @@ var script$k = {
 const _hoisted_1$9 = {class: "uni-switch-wrapper"};
 function render$j(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-switch", mergeProps({disabled: $props.disabled}, _ctx.$attrs, {
-    onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick(...args))
+    onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick && $options._onClick(...args))
   }), [
     createVNode("div", _hoisted_1$9, [
       withDirectives(createVNode("div", {
@@ -6143,12 +6143,12 @@ function render$k(_ctx, _cache, $props, $setup, $data, $options) {
         autofocus: $props.autoFocus || $props.focus,
         class: [{"uni-textarea-textarea-fix-margin": $data.fixMargin}, "uni-textarea-textarea"],
         style: {"overflow-y": $props.autoHeight ? "hidden" : "auto"},
-        onCompositionstart: _cache[2] || (_cache[2] = (...args) => $options._compositionstart(...args)),
-        onCompositionend: _cache[3] || (_cache[3] = (...args) => $options._compositionend(...args)),
-        onInput: _cache[4] || (_cache[4] = withModifiers((...args) => $options._input(...args), ["stop"])),
-        onFocus: _cache[5] || (_cache[5] = (...args) => $options._focus(...args)),
-        onBlur: _cache[6] || (_cache[6] = (...args) => $options._blur(...args)),
-        onTouchstartPassive: _cache[7] || (_cache[7] = (...args) => $options._touchstart(...args))
+        onCompositionstart: _cache[2] || (_cache[2] = (...args) => $options._compositionstart && $options._compositionstart(...args)),
+        onCompositionend: _cache[3] || (_cache[3] = (...args) => $options._compositionend && $options._compositionend(...args)),
+        onInput: _cache[4] || (_cache[4] = withModifiers((...args) => $options._input && $options._input(...args), ["stop"])),
+        onFocus: _cache[5] || (_cache[5] = (...args) => $options._focus && $options._focus(...args)),
+        onBlur: _cache[6] || (_cache[6] = (...args) => $options._blur && $options._blur(...args)),
+        onTouchstartPassive: _cache[7] || (_cache[7] = (...args) => $options._touchstart && $options._touchstart(...args))
       }, null, 46, ["disabled", "maxlength", "autofocus"]), [
         [vModelText, _ctx.valueSync]
       ])
@@ -6167,9 +6167,9 @@ function render$l(_ctx, _cache, $props, $setup, $data, $options) {
   return _ctx.hoverClass && _ctx.hoverClass !== "none" ? (openBlock(), createBlock("uni-view", mergeProps({
     key: 0,
     class: [_ctx.hovering ? _ctx.hoverClass : ""],
-    onTouchstart: _cache[1] || (_cache[1] = (...args) => _ctx._hoverTouchStart(...args)),
-    onTouchend: _cache[2] || (_cache[2] = (...args) => _ctx._hoverTouchEnd(...args)),
-    onTouchcancel: _cache[3] || (_cache[3] = (...args) => _ctx._hoverTouchCancel(...args))
+    onTouchstart: _cache[1] || (_cache[1] = (...args) => _ctx._hoverTouchStart && _ctx._hoverTouchStart(...args)),
+    onTouchend: _cache[2] || (_cache[2] = (...args) => _ctx._hoverTouchEnd && _ctx._hoverTouchEnd(...args)),
+    onTouchcancel: _cache[3] || (_cache[3] = (...args) => _ctx._hoverTouchCancel && _ctx._hoverTouchCancel(...args))
   }, _ctx.$attrs), [
     renderSlot(_ctx.$slots, "default")
   ], 16)) : (openBlock(), createBlock("uni-view", mergeProps({key: 1}, _ctx.$attrs), [
@@ -6177,4 +6177,4 @@ function render$l(_ctx, _cache, $props, $setup, $data, $options) {
   ], 16));
 }
 script$m.render = render$l;
-export {script as Audio, script$1 as Canvas, script$2 as Checkbox, script$3 as CheckboxGroup, script$4 as Editor, script$5 as Form, script$6 as Icon, script$7 as Image, script$8 as Input, script$9 as Label, script$a as MovableView, script$b as Navigator, script$c as Progress, script$d as Radio, script$e as RadioGroup, script$f as ResizeSensor, script$g as RichText, script$h as ScrollView, script$i as Slider, script$j as SwiperItem, script$k as Switch, script$l as Textarea, script$m as View, passiveOptions, supportsPassive$1 as supportsPassive};
+export {script as Audio, script$1 as Canvas, script$2 as Checkbox, script$3 as CheckboxGroup, script$4 as Editor, script$5 as Form, script$6 as Icon, script$7 as Image, script$8 as Input, script$9 as Label, script$a as MovableView, script$b as Navigator, script$c as Progress, script$d as Radio, script$e as RadioGroup, script$f as ResizeSensor, script$g as RichText, script$h as ScrollView, script$i as Slider, script$j as SwiperItem, script$k as Switch, script$l as Textarea, script$m as View};

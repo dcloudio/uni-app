@@ -1,5 +1,5 @@
 import { defineComponent } from 'vue'
-import { initHooks, initUnknownHooks } from '../src/componentHooks'
+import { initHooks, initUnknownHooks } from '../src/runtime/componentHooks'
 
 const vueBasicOptions = defineComponent({
   onLoad() {},

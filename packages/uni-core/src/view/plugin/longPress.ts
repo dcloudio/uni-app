@@ -1,6 +1,7 @@
-import { passiveOptions } from '@dcloudio/uni-components'
 const LONGPRESS_TIMEOUT = 350
 const LONGPRESS_THRESHOLD = 10
+
+const passiveOptions = { passive: true } // TODO caniuse?
 
 let longPressTimer = 0
 

@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "node scripts/dev.js",
     "build": "node scripts/build.js",
-    "lint": "eslint --ext .ts packages/*/src/**",
+    "lint": "eslint packages/**/*.ts",
     "format": "prettier --write --parser typescript \"packages/**/*.ts?(x)\"",
     "ls-lint": "ls-lint",
     "test": "jest",

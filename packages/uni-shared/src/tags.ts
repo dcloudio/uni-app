@@ -1,23 +1,4 @@
-export const TAGS = [
-  'uni-app',
-  'uni-layout',
-  'uni-content',
-  'uni-main',
-  'uni-top-window',
-  'uni-left-window',
-  'uni-right-window',
-  'uni-tabbar',
-  'uni-page',
-  'uni-page-head',
-  'uni-page-wrapper',
-  'uni-page-body',
-  'uni-page-refresh',
-  'uni-actionsheet',
-  'uni-modal',
-  'uni-toast',
-  'uni-resize-sensor',
-  'uni-shadow-root',
-
+export const BUILT_IN_TAGS = [
   'uni-ad',
   'uni-audio',
   'uni-button',
@@ -61,6 +42,31 @@ export const TAGS = [
   'uni-web-view'
 ]
 
+export const TAGS = [
+  'uni-app',
+  'uni-layout',
+  'uni-content',
+  'uni-main',
+  'uni-top-window',
+  'uni-left-window',
+  'uni-right-window',
+  'uni-tabbar',
+  'uni-page',
+  'uni-page-head',
+  'uni-page-wrapper',
+  'uni-page-body',
+  'uni-page-refresh',
+  'uni-actionsheet',
+  'uni-modal',
+  'uni-toast',
+  'uni-resize-sensor',
+  'uni-shadow-root'
+]
+
+export function isBuiltInComponent(tag: string) {
+  return BUILT_IN_TAGS.indexOf('uni-' + tag) !== -1
+}
+
 export function isCustomElement(tag: string) {
-  return TAGS.indexOf(tag) !== -1
+  return TAGS.indexOf(tag) !== -1 || BUILT_IN_TAGS.indexOf(tag) !== -1
 }

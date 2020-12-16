@@ -1,5 +1,5 @@
 export function debounce(fn: Function, delay: number) {
-  let timeout: number
+  let timeout: any
   const newFn = function(this: any) {
     clearTimeout(timeout)
     const timerFn = () => fn.apply(this, arguments)

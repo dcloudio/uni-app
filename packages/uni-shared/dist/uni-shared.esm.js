@@ -47,25 +47,7 @@ function stringifyQuery(obj, encodeStr = encode) {
     return res ? `?${res}` : '';
 }
 
-const TAGS = [
-    'uni-app',
-    'uni-layout',
-    'uni-content',
-    'uni-main',
-    'uni-top-window',
-    'uni-left-window',
-    'uni-right-window',
-    'uni-tabbar',
-    'uni-page',
-    'uni-page-head',
-    'uni-page-wrapper',
-    'uni-page-body',
-    'uni-page-refresh',
-    'uni-actionsheet',
-    'uni-modal',
-    'uni-toast',
-    'uni-resize-sensor',
-    'uni-shadow-root',
+const BUILT_IN_TAGS = [
     'uni-ad',
     'uni-audio',
     'uni-button',
@@ -108,8 +90,31 @@ const TAGS = [
     'uni-view',
     'uni-web-view'
 ];
+const TAGS = [
+    'uni-app',
+    'uni-layout',
+    'uni-content',
+    'uni-main',
+    'uni-top-window',
+    'uni-left-window',
+    'uni-right-window',
+    'uni-tabbar',
+    'uni-page',
+    'uni-page-head',
+    'uni-page-wrapper',
+    'uni-page-body',
+    'uni-page-refresh',
+    'uni-actionsheet',
+    'uni-modal',
+    'uni-toast',
+    'uni-resize-sensor',
+    'uni-shadow-root'
+];
+function isBuiltInComponent(tag) {
+    return BUILT_IN_TAGS.indexOf('uni-' + tag) !== -1;
+}
 function isCustomElement(tag) {
-    return TAGS.indexOf(tag) !== -1;
+    return TAGS.indexOf(tag) !== -1 || BUILT_IN_TAGS.indexOf(tag) !== -1;
 }
 
-export { COMPONENT_NAME_PREFIX, NAVBAR_HEIGHT, TABBAR_HEIGHT, TAGS, debounce, isCustomElement, plusReady, stringifyQuery };
+export { BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, NAVBAR_HEIGHT, TABBAR_HEIGHT, TAGS, debounce, isBuiltInComponent, isCustomElement, plusReady, stringifyQuery };

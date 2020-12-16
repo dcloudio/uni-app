@@ -4,6 +4,9 @@ const chalk = require('chalk')
 const execa = require('execa')
 const { gzipSync } = require('zlib')
 const { compress } = require('brotli')
+
+const { extract } = require('./apiExtractor')
+
 const { targets: allTargets, fuzzyMatchTarget } = require('./utils')
 
 const args = require('minimist')(process.argv.slice(2))
@@ -11,6 +14,7 @@ const targets = args._
 const formats = args.formats || args.f
 const devOnly = args.devOnly || args.d
 const isRelease = args.release
+const buildTypes = args.t || args.types || isRelease
 const buildAllMatching = args.all || args.a
 
 run()
@@ -42,7 +46,7 @@ async function build(target) {
   }
 
   const bundler = pkg.buildOptions && pkg.buildOptions.bundler
-
+  const types = buildTypes && pkg.types
   // if building a specific format, do not remove dist.
   if (!formats && bundler !== 'vite') {
     await fs.remove(`${pkgDir}/dist`)
@@ -59,9 +63,13 @@ async function build(target) {
       }
     )
   } else if (bundler === 'tsc') {
-    return await execa('tsc', ['--listEmittedFiles', '-p', pkgDir], {
-      stdio: 'inherit'
-    })
+    return await execa(
+      'tsc',
+      ['--listEmittedFiles', types ? `--declaration` : '', '-p', pkgDir],
+      {
+        stdio: 'inherit'
+      }
+    )
   }
 
   await execa(
@@ -69,10 +77,15 @@ async function build(target) {
     [
       '-c',
       '--environment',
-      [`NODE_ENV:${env}`, `TARGET:${target}`].filter(Boolean).join(',')
+      [`NODE_ENV:${env}`, types ? `TYPES:true` : ``, `TARGET:${target}`]
+        .filter(Boolean)
+        .join(',')
     ],
     { stdio: 'inherit' }
   )
+  if (types) {
+    await extract(target)
+  }
 }
 
 function checkAllSizes(targets) {

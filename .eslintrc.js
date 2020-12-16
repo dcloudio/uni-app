@@ -43,7 +43,10 @@ module.exports = {
     },
     // Packages targeting Node
     {
-      files: ['packages/{vue-cli-plugin-uni,vue-cli-plugin-hbuilderx}/**'],
+      files: [
+        'packages/{vue-cli-plugin-uni,vue-cli-plugin-hbuilderx}/**',
+        'packages/*/vite.config.ts'
+      ],
       rules: {
         'no-restricted-globals': ['error', ...DOMGlobals],
         'no-restricted-syntax': 'off'

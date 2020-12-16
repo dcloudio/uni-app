@@ -1,17 +1,7 @@
 {
-    "compilerOptions": {
-      "rootDir": "src",
-      "baseUrl": "./",
-      "target": "esnext",
-      "moduleResolution": "node",
-      "strict": true,
-      "declaration": true,
-      "noUnusedLocals": true,
-      "esModuleInterop": true,
-      "outDir": "./dist",
-      "module": "commonjs",
-      "lib": ["ESNext", "DOM"],
-      "sourceMap": false
-    }
-  }
-  
+  "extends": "../../tsconfig.node.json",
+  "compilerOptions": {
+    "outDir": "dist"
+  },
+  "include": ["src"]
+}

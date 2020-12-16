@@ -21,7 +21,8 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "@rollup/pluginutils": "^4.0.0",
+    "@dcloudio/uni-cli-shared": "^3.0.0",
+    "@rollup/pluginutils": "^4.1.0",
     "estree-walker": "^2.0.1",
     "magic-string": "^0.25.7",
     "slash": "^3.0.0"
