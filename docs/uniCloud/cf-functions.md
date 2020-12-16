@@ -143,7 +143,7 @@ Tips:
 
 云函数支持公共模块。多个云函数的共享部分，可以抽离为公共模块，然后被多个云函数引用。[详见](uniCloud/cf-common)
 
-## 客户端调用云函数
+## 客户端调用云函数@clientcallfunction
 
 前端代码（H5前端、App、小程序），不再执行uni.request联网，而是通过`uniCloud.callFunction`调用云函数，`callFunction`定义如下：
 
