@@ -49,6 +49,7 @@
 - 单个云函数大小限制为10M（包含node_modules）
 
 ## 编写云函数
+
 云函数的语法，是在普通的Node.js基础上补充了uniCloud的专用API。可参考API开发文档编写，也可以直接新建项目时选择`hello uniCloud`模板体验。
 
 HBuilderX为uniCloud开发提供了良好的语法提示和转到定义支持，对于代码中的API，选中并按下F1，也可以直接查看相应的文档。
@@ -68,11 +69,117 @@ exports.main = async (event, context) => {
 
 ## 运行和调试云函数@rundebug
 
-编写云函数后，在项目管理器里右键点击该云函数的目录，在弹出菜单中可选择“本地运行云函数”、“上传部署云函数”、“上传并运行云函数”。
+编写云函数后，在项目管理器里右键点击该云函数的目录，在弹出菜单中可选择“本地运行云函数”、“上传部署云函数”、“上传并运行云函数”。如果使用`HBuilderX 3.0.0`及以上版本还可以使用客户端连接本地云函数的方式，不同于上面三种，客户端连接本地云函数需要在运行起来的客户端对应的HBuilderX控制台上切换连接云端还是本地云函数，如下图
 
-- 本地运行云函数：即在HBuilderX自带的node环境中运行选中的云函数。云函数连接的数据库和云存储，仍然在云端。（从HBuilderX 2.8.1起支持）
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/28f84f90-3f69-11eb-8ff1-d5dcf8779628.jpg)
+
 - 上传部署云函数：将云函数部署到uniCloud服务空间，不会运行。（快捷键Ctrl+u）
-- 上传并运行云函数会：先上传云函数，并在云端立即执行该云函数。在部署后同时运行，并打印日志出来。有延时，调试时不如本地运行云函数快捷。
+- 上传并运行云函数：先上传云函数，并在云端立即执行该云函数。在部署后同时运行，并打印日志出来。有延时，调试时不如本地运行云函数快捷。
+- 本地运行云函数：即在HBuilderX自带的node环境中运行选中的云函数。云函数连接的数据库和云存储，仍然在云端。（从HBuilderX 2.8.1起支持）
+- 客户端连接本地云函数：运行已经关联uniCloud服务空间的项目，在HBuilderX控制台切换访问云端云函数还是本地云函数（从HBuilderX 3.0.0起支持）
+
+**模式差异**
+
+**上传部署云函数**
+
+云函数会被上传到服务空间，不会执行。如果要测试需使用客户端调用此云函数。
+
+**上传并运行云函数**
+
+云函数会被上传到服务空间，然后执行一次，可以在HBuilderX内uniCloud控制台看到结果及日志。如果有配置运行测试参数，会使用配置的参数调用云函数。
+
+上传并运行使用的资源全部都是云端资源。包括云函数、数据库、云存储。
+
+**本地运行云函数**
+
+云函数不会被上传到服务空间，只在本地运行，可以在HBuilderX内uniCloud控制台看到结果及日志。如果有配置运行测试参数会使用配置的参数调用本地云函数。
+
+本地运行时只有当前云函数会使用本地的。如果在当前云函数内使用callFunction调用其他云函数会调用云端已部署的云函数，云存储、数据库均会使用云端数据。
+
+**客户端连接本地云函数**
+
+云函数不会被上传到服务空间，由本地调试服务调用云函数，可以在HBuilderX内uniCloud控制台看到结果及日志。
+
+客户端连接本地云函数时云函数内的callFunction也会调用本地云函数。云存储、数据库均会使用云端数据。
+
+在客户端使用clientDB操作数据库时，表结构、扩展校验函数、clientDB-actions均使用本地项目下的资源，所操作的的数据依然是云端数据。
+
+**注意**
+
+- HBuilderX 3.0.0版本云函数目录有调整，请参考【链接待补充】
+
+### 上传并运行云函数@uploadandrun
+
+在项目管理器里右键点击云函数的目录，在弹出菜单中可选择“上传并运行云函数”。此外也可以打开此目录下的文件然后使用快捷键`Ctrl+r`，在弹出菜单中选择“上传并运行云函数”。上传并运行时会自动带上配置的运行测试参数。
+
+如需配置运行测试参数请参考：[配置运行测试参数](https://uniapp.dcloud.net.cn/uniCloud/quickstart?id=runparam)
+
+### 客户端连接本地云函数@calllocalfunction
+
+自`HBuilderX 3.0.0`起支持客户端连接本地云函数，由客户端访问本地调试服务调用云函数。与本地运行相比无需配置运行参数，直接客户端上操作即可，调试更加方便快捷。
+
+**目前只支持本地运行打日志。断点debug还在开发中**
+
+**使用方式**
+
+运行客户端后可以在HBuilderX控制台切换是连接本地云函数还是云端云函数，如下图所示
+
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/28f84f90-3f69-11eb-8ff1-d5dcf8779628.jpg)
+
+**日志查看**
+
+切换为本地云函数之后客户端的callFunction会直接调用cloudfunctions目录下的云函数。此时云函数的日志会在HBuilderX uniCloud控制台打印。如下图
+
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/b6f52050-3f7a-11eb-8a36-ebb87efcf8c0.jpg)
+
+切换连接云端云函数还是本地云函数之后会在项目下的`.hbuilderx`目录创建一个`launch.json`文件。关于此文件的说明请参考：【链接待补充】
+
+一个典型的`launch.json`是如下形式的（无需手动创建此文件）
+
+```js
+{
+    "version": "0.0.1",
+    "configurations": [
+      {
+        "app-plus": {
+          "launchtype" : "local" // app平台连接本地云函数
+        },
+        "default": {
+          "launchtype" : "remote" // 未配置的平台连接云端云函数
+        },
+        "h5": {
+          "launchtype" : "remote" // h5平台连接云端云函数
+        },
+        "provider" : "aliyun", // 如果项目仅关联一个服务空间无需此参数
+        "type" : "uniCloud" // 标识此项配置为uniCloud配置，必填
+     }
+    ]
+}
+
+```
+
+**注意事项**
+
+- 切换云端本地无需重新运行客户端，不同类型的客户端可以有不同的配置（安卓和iOS对应着同一个配置，在launch.json内安卓、iOS都是app-plus）
+- 如果项目内关联了两个服务空间，需要在`.hbuilderx/launch.json`内配置provider参数指定哪个服务空间使用本地调试
+- 客户端在每次发送数据库请求之前会，发送一条请求到本地调试服务，调试服务会根据当前用户选择来通知客户端该访问本地云函数还是云端云函数
+- 当前项目运行的所有客户端都停止运行时，对本项目的调试服务会关闭，已经运行到手机的客户端将无法连接本地云函数，这时会自动切换为云端云函数
+- 在h5端network面板的会看到一些`Request Method: OPTION`的请求，这些是跨域预检请求，忽略即可。请参考：[HTTP 的 OPTIONS 方法](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Methods/OPTIONS)
+
+### 本地运行云函数@runlocal
+
+自2.8.1版本起HBuilderX支持云函数本地运行，调试云函数更加方便快捷。此外还可以方便批量导入数据及文件，不再受云函数超时限制。
+
+**目前只支持本地运行打日志。断点debug还在开发中**
+
+**使用方式**
+
+在项目管理器选择要本地运行的云函数，右键选择本地运行。或者打开这个云函数内的文件，按`ctrl+r`回车。
+
+- 如果没有安装本地运行插件，按照提示安装即可
+- 如需配置运行参数请参考：[配置运行测试参数](https://uniapp.dcloud.net.cn/uniCloud/quickstart?id=runparam)
+
+![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/uniCloud-local-1.jpg)
 
 在云函数编辑器里，按`Ctrl+r`运行快捷键（或点工具栏的运行），可看到运行云函数的若干菜单。`Ctrl+r`然后回车或选`0`，即可高效的在控制台看到运行结果和日志输出。如下图所示：
 
@@ -84,32 +191,20 @@ exports.main = async (event, context) => {
 
 运行云函数时，如需要给云函数传参，除了在前端传参外，在调试阶段，可以通过配置json文件来传测试参数。
 
-在云函数对应的目录右键可以配置运行测试参数，如下图，选择之后会生成一个形如`${函数名}.param.json`的文件，此文件内容会在云函数`上传并运行`时作为参数传入云函数内。详细用法可参考：[配置运行测试参数](https://uniapp.dcloud.net.cn/uniCloud/quickstart?id=runparam)
+在云函数对应的目录右键可以配置运行测试参数，如下图，选择之后会生成一个形如`${函数名}.param.json`的文件，此文件内容会在云函数`上传并运行`以及`本地运行云函数`时作为参数传入云函数内。详细用法可参考：[配置运行测试参数](https://uniapp.dcloud.net.cn/uniCloud/quickstart?id=runparam)
 
+## 调用本地云函数注意事项
 
-## 本地运行云函数@runlocal
-
-自2.8.1版本起HBuilderX支持云函数本地运行，调试云函数更加方便快捷。此外还可以方便批量导入数据及文件，不再受云函数超时限制。
-
-**目前只支持本地运行打日志。断点debug还在开发中**
-
-#### 使用方式
-
-在项目管理器选择要本地运行的云函数，右键选择本地运行。或者打开这个云函数，按`ctrl+r`回车。
-
-- 如果没有安装本地运行插件，按照提示安装即可
-- 如需配置运行参数请参考[配置运行测试参数](https://uniapp.dcloud.net.cn/uniCloud/quickstart?id=runparam)
-
-![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/uniCloud-local-1.jpg)
-
-#### 本地运行注意事项
+**本章节注意事项包括本地运行、客户端连接本地云函数**
 
 **使用公用模块**
 
 本地运行的云函数使用公用模块时需注意：
 
 - 需要在云函数内执行`npm install ../common/xxx`安装公共模块，详细请参考[云函数公用模块](uniCloud/cf-common.md)
+- 如果使用`HBuilderX 3.0.0`及以上版本，可以直接在云函数目录右键选择“管理公共模块依赖”进行公共模块的引入
 - 如果使用到加密的公共模块则此云函数不可本地运行
+- `HBuilderX 3.0.0`版本运行uniCloud项目时，uniCloud本地调试插件会自动进行云函数依赖安装（包括公共模块和package.json里面的其他依赖）
 
 **时区问题**
 
@@ -133,6 +228,12 @@ const hour = getOffsetDate(8).getHours()
 
 推荐使用`<uni-dateformat>`组件格式化显示日期，[详情](https://ext.dcloud.net.cn/plugin?id=3279)
 
+**调用其他云函数**
+
+“本地运行云函数”时云函数内callFunction会调用云端已部署的云函数
+
+“客户端连接本地云函数时”云函数内callFunction会调用本地云函数
+
 **数据与存储**
 
 请务必注意云函数在本地运行时依然是连接的云端数据库与存储
@@ -142,10 +243,6 @@ const hour = getOffsetDate(8).getHours()
 **Nodejs版本**
 
 服务空间所使用的nodejs版本为8.9，本地运行时使用的本地nodejs可能与服务空间的nodejs版本并不一致，在本地测试之后部署到云端也务必测试一下兼容性。
-
-**控制台日志打印**
-
-目前本地运行云函数只能打印字符串类型的值，其他类型请注意转换为字符串
 
 ## 运行云函数时配置运行测试参数@runparam
 
@@ -179,6 +276,7 @@ const hour = getOffsetDate(8).getHours()
 ```
 
 ## 手机端调用云函数
+
 在uni-app的前端代码中，通过`uniCloud.callFunction`方法调用云函数。详见[callFunction文档](https://uniapp.dcloud.io/uniCloud/functions?id=callfunction)
 
 如下代码中，调用了名为`test`的云函数，并发送了`data`的json数据作为上行参数。
