@@ -28,9 +28,11 @@
 
 |App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|快应用|360小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|√（2.9.5+）|√|√|√|√|√|√|x|√|
+|√（3.0+）|√|√|√|√|√|√|x|√|
 
-从HBuilderX 2.9.12+ 起内置到框架`<unicloud-db>`组件，与小程序基础库版本无关。
+
+`<unicloud-db>` 由原 `<uni-clientdb>` 升级而来，从 HBuilderX 3.0 起`<unicloud-db>`内置到框架，与小程序基础库版本无关，建议升级HBuilderX。如果使用 HBuilderX3.0 以下版本需要从插件市场下载`<uni-clientdb>`，下载地址为：[https://ext.dcloud.net.cn/plugin?id=3256](https://ext.dcloud.net.cn/plugin?id=3256)
+
 
 ## 属性
 
@@ -78,7 +80,7 @@ TODO：暂不支持groupby、in子查询功能。后续会补充
 ## v-slot:default
 
 ```
-<unicloud-db v-slot:default="{data, pagination, loading, error, options}"></unicloud-db>
+<unicloud-db v-slot:default="{data, pagination, loading, hasMore, error, options}"></unicloud-db>
 ```
 
 
@@ -87,6 +89,7 @@ TODO：暂不支持groupby、in子查询功能。后续会补充
 |data|Array&#124;Object|查询结果，默认值为`Array`, 当 `getone` 指定为 `true` 时，值为数组中第一条数据，类型为 `Object`，减少了一层|
 |pagination|Object|分页属性|
 |loading|Boolean|查询中的状态。可根据此状态，在template中通过v-if显示等待内容，如`<view v-if="loading">加载中...</view>`|
+|hasMore|Boolean|是否有更多数据。可根据此状态，在template中通过v-if显示没有更多数据了，如`<uni-load-more v-if="!hasMore" status="noMore"></uni-load-more>`, `<uni-load-more>`详情 [https://ext.dcloud.net.cn/plugin?id=29](https://ext.dcloud.net.cn/plugin?id=29)|
 |error|Object|查询错误。可根据此状态，在template中通过v-if显示等待内容，如`<view v-if="error">加载错误</view>`|
 |options|Object|在小程序中，插槽不能访问外面的数据，需通过此参数传递, 不支持传递函数|
 
