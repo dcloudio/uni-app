@@ -57,6 +57,12 @@ Tips：
 
 开发者可在代码中使用`MP-DINGTALK`进行条件编译，如下：
 ```javascript
+// #ifdef MP
+小程序平台通用代码（含钉钉）
+// #endif
+// #ifdef MP-ALIPAY
+支付宝平台通用代码（含钉钉）
+// #endif
 // #ifdef MP-DINGTALK
 钉钉平台特有代码
 // #endif
