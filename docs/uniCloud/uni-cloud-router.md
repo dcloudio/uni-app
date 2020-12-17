@@ -2,36 +2,7 @@
 
 > 基于 koa 风格的 uniCloud 云函数路由库，同时支持 uniCloud 客户端及 URL 化访问
 
----
-
-- [云函数端](#云函数端)
-  - [安装](#安装)
-  - [目录结构](#目录结构)
-  - [控制器（Controller）](#控制器controller)
-    - [如何编写 Controller](#如何编写-controller)
-    - [获取请求参数](#获取请求参数)
-    - [调用 Service](#调用-service)
-    - [定制 URL 化返回的状态码](#定制-url-化返回的状态码)
-  - [服务（Service）](#服务service)
-    - [使用场景](#使用场景)
-    - [如何编写 Service](#如何编写-service)
-    - [使用 Service](#使用-service)
-  - [中间件（Middleware）](#中间件middleware)
-    - [开发中间件](#开发中间件)
-    - [使用中间件](#使用中间件)
-  - [Context](#context)
-    - [获取方式](#获取方式)
-- [客户端](#客户端)
-  - [发送请求](#发送请求)
-  - [返回结果](#返回结果)
-
-## 云函数端
-
-### 安装
-
-```bash
-npm install --save uni-cloud-router
-```
+## 介绍
 
 ### 目录结构
 
@@ -45,14 +16,22 @@ npm install --save uni-cloud-router
 |   ├── user.js
 ```
 
+### 快速开始
+
+为了快速上手，提供了一个简单的 demo 示例，以创建是一个 `hello-uni-cloud-router` 云函数为例，演示如何通过 `uni-cloud-router` 组织代码：
+
+**1.添加入口文件**
+
 ```js
-// index.js (通常无需改动)
-const Router = require('uni-cloud-router').Router // 引入 Router
-const router = new Router(require('./config.js')) // 根据 config 初始化 Router
+// index.js (通常无需改动)做
+const Router = require("uni-cloud-router").Router; // 引入 Router
+const router = new Router(require("./config.js")); // 根据 config 初始化 Router
 exports.main = async (event, context) => {
-  return router.serve(event, context) // 由 Router 接管云函数
-}
+  return router.serve(event, context); // 由 Router 接管云函数
+};
 ```
+
+**2.添加配置文件**
 
 ```js
 // config.js
@@ -60,25 +39,58 @@ module.exports = {
   debug: true, // 调试模式时，将返回 stack 错误堆栈
   baseDir: __dirname, // 必选，应用根目录
   middleware: [], // 自定义中间件
+};
+```
+
+**3.在 controller 文件夹下创建一个 hello.js**
+
+创建一个 controller
+
+```js
+const { Controller } = require("uni-cloud-router");
+module.exports = class HelloController extends (
+  Controller
+) {
+  sayHello() {
+    return this.service.hello.sayHello();
+  }
+};
+```
+
+**4.在 service 文件夹下创建一个 hello.js**
+
+创建一个 service
+
+```js
+const { Service } = require("uni-cloud-router");
+module.exports = class HelloService extends (
+  Service
+) {
+  sayHello() {
+    return {
+      data: "welcome to uni-cloud-router!",
+    };
+  }
+};
+```
+
+到这里，已创建好了是一个 `hello-uni-cloud-router` 云函数（注意：需上传云函数后，前端才能访问)。
+
+**5.在页面里调用云函数**
+
+在页面中 URL 化访问 hello（controller）下 sayHello：
+
+```js
+sayHello() {
+  this.request('hello/sayHello', {}).then(res => {
+    this.title = res.data
+  })
 }
 ```
 
-```js
-// controller/user.js
-const uniID = require('uni-id')
-const Controller = require('uni-cloud-router').Controller
-// 必须继承 Controller
-module.exports = class UserController extends Controller {
-  async login() {
-    const { username, password } = this.ctx.data // 获取请求参数
-    // 使用 uni-id 登录
-    return uniID.login({
-      username,
-      password,
-    })
-  }
-}
-```
+以上代码仅作为示例，建议点击右侧【使用 HBuilderX 导入示例项目】尝试。
+
+## 深入学习
 
 ### 控制器（Controller）
 
@@ -97,23 +109,25 @@ module.exports = class UserController extends Controller {
 
 ```js
 // controller/post.js
-const Controller = require('uni-cloud-router').Controller
+const Controller = require("uni-cloud-router").Controller;
 // 必须继承 Controller 类
-module.exports = class PostController extends Controller {
+module.exports = class PostController extends (
+  Controller
+) {
   async create() {
-    const { ctx, service } = this
+    const { ctx, service } = this;
     // 校验参数
     ctx.validate({
-      title: { type: 'string' },
-      content: { type: 'string' },
-    })
+      title: { type: "string" },
+      content: { type: "string" },
+    });
     // 组装参数
-    const author = ctx.auth.uid
-    const post = Object.assign(ctx.data, { author })
+    const author = ctx.auth.uid;
+    const post = Object.assign(ctx.data, { author });
     // 调用 Service 进行业务处理
-    return service.post.create(post)
+    return service.post.create(post);
   }
-}
+};
 ```
 
 定义的 Controller 类，会在每一个请求访问时实例化一个全新的对象，会有下面几个属性挂在 `this` 上。
@@ -131,7 +145,7 @@ module.exports = class PostController extends Controller {
 ```js
 class PostController extends Controller {
   async listPosts() {
-    const data = this.ctx.data
+    const data = this.ctx.data;
     // {
     //   username: 'demo',
     //   password: 'demo',
@@ -149,11 +163,11 @@ Controller 中可以调用任何一个 Service 上的任何方法，同时 Servi
 ```js
 class PostController extends Controller {
   async create() {
-    const { ctx, service } = this
-    const author = ctx.auth.uid
-    const post = Object.assign(ctx.data, { author })
+    const { ctx, service } = this;
+    const author = ctx.auth.uid;
+    const post = Object.assign(ctx.data, { author });
     // 调用 service 进行业务处理
-    return service.post.create(post)
+    return service.post.create(post);
   }
 }
 ```
@@ -166,7 +180,7 @@ Service 的具体写法，请查看 [Service](#服务service) 章节。
 class PostController extends Controller {
   async create() {
     // 设置状态码为 201
-    this.ctx.status = 201 // 仅当使用 HTTP/HTTPS 请求时生效
+    this.ctx.status = 201; // 仅当使用 HTTP/HTTPS 请求时生效
   }
 }
 ```
@@ -190,13 +204,15 @@ class PostController extends Controller {
 
 ```js
 // service/post.js
-const Service = require('uni-cloud-router').Service
+const Service = require("uni-cloud-router").Service;
 // 必须继承 Service
-module.exports = class PostService extends Service {
+module.exports = class PostService extends (
+  Service
+) {
   async create(data) {
-    return this.db.add(data)
+    return this.db.add(data);
   }
-}
+};
 ```
 
 定义的 Service 类是懒加载的，只有当访问到它的时候才会去实例化它，会有下面几个属性挂在 `this` 上。
@@ -221,22 +237,22 @@ module.exports = class PostService extends Service {
 
 ```js
 // middleware/auth.js
-const uniID = require('uni-id')
+const uniID = require("uni-id");
 module.exports = (options) => {
   // 初始化 uniID 配置
-  uniID.init(options)
+  uniID.init(options);
   // 返回中间件函数
   return async function auth(ctx, next) {
     // 校验 token
-    const auth = uniID.checkToken(ctx.event.uniIdToken)
+    const auth = uniID.checkToken(ctx.event.uniIdToken);
     if (auth.code) {
       // 校验失败，抛出错误信息
-      throw { code: auth.code, message: auth.message }
+      throw { code: auth.code, message: auth.message };
     }
-    ctx.auth = auth // 设置当前请求的 auth 对象
-    await next() // 执行后续中间件
-  }
-}
+    ctx.auth = auth; // 设置当前请求的 auth 对象
+    await next(); // 执行后续中间件
+  };
+};
 ```
 
 示例：
@@ -250,18 +266,18 @@ module.exports = (options) => {
 1. 通过 config.js 配置
 
 ```js
-const auth = require('./middleware/auth.js') // 引入 auth 中间件
+const auth = require("./middleware/auth.js"); // 引入 auth 中间件
 module.exports = {
   debug: true, // 调试模式时，将返回 stack 错误堆栈
   baseDir: __dirname, // 指定应用根目录
   middleware: [
     [
       //数组格式，第一个元素为中间件，第二个元素为中间件生效规则配置
-      auth({ tokenSecret: 'tokenSecret-demo' }), // 注册中间件
+      auth({ tokenSecret: "tokenSecret-demo" }), // 注册中间件
       { enable: true, ignore: /\/login$/ }, // 配置当前中间件生效规则，该规则表示以`/login`结尾的路由不会执行 auth 中间件校验 token
     ],
   ],
-}
+};
 ```
 
 2. 中间件配置项
