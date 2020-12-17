@@ -766,5 +766,5 @@ export default {
 |component				|支持	|不支持		|支持		|不支持			|-		|
 |transition				|支持	|不支持		|不支持	|不支持			|-		|
 |transition-group	|支持	|不支持		|不支持	|不支持			|-		|
-|keep-alive				|支持	|不支持		|支持		|不支持			|-		|
+|keep-alive				|支持	|不支持		|不支持		|不支持			|-		|
 |slot							|支持	|支持			|支持		|支持				|-		|
