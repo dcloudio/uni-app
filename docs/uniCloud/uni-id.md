@@ -872,7 +872,7 @@ exports.main = async function(event,context) {
 | 字段			| 类型	| 必填| 说明																																																					|
 | ---				| ---		| ---	| ---																																																						|
 | mobile		| String| 是	|用户手机号																																																			|
-| templateId| String| 否	|`uni-id 1.1.8+`用户自定义模板Id，不传则使用uniID_code，如果要使用自定义模板请使用类似下面模板示例的参数												|
+| templateId| String| 是	|`uni-id 1.1.8+`用户自定义模板Id，不传则使用uniID_code（请注意目前此模板已经不再开放使用，请传入自定义模板Id，已经报备使用的用户不受影响），请使用类似下面模板示例的参数申请模板												|
 | code			| String| 否	|验证码字符串																																																		|
 | type			| String| 是	|类型，用于防止不同功能的验证码混用，目前支持的类型`login`登录、`register`注册、`bind`绑定手机、`unbind`解绑手机|
 
