@@ -393,7 +393,7 @@ export default {
 * 异步组件
 * ``inline-template``
 * ``X-Templates``
-* ``keep-alive``
+* ``keep-alive``（App端也未支持）
 * ``transition`` （可使用 [animation](/api/ui/animation) 或 CSS 动画替代）
 * [老的非自定义组件编译模式](https://ask.dcloud.net.cn/article/35843)不支持在组件引用时，在组件上定义 ``click`` 等原生事件、``v-show``（可用 ``v-if`` 代替）和 ``class`` ``style`` 等样式属性(例：``<card class="class-name"> </card>`` 样式是不会生效的)。建议更新为自定义组件模式
 * [老的非自定义组件编译模式](https://ask.dcloud.net.cn/article/35843)组件里使用 ``slot`` 嵌套的其他组件时不支持 ``v-for``。建议更新为自定义组件模式
