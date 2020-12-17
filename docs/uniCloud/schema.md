@@ -844,7 +844,7 @@ action是`clientDB`的一个配套功能。它的作用是在前端发起数据�
 前端提交代码，必须带上action参数
 ```js
 const db = uniCloud.database();
-db.collection("user").action("changenamelog").doc("xxx").update({
+db.action("changenamelog").collection("user").doc("xxx").update({
 	name:"newname"
 })
 ```
