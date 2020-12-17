@@ -1144,7 +1144,7 @@ exports.main = async function(event,context) {
 
 ```
 
-### 手机一键登录
+### 手机一键登录@univerify
 
 用法：`uniID.loginByUniverify(Object loginByUniverifyParams)`
 
@@ -1180,11 +1180,11 @@ exports.main = async function(event,context) {
 const uniID = require('uni-id')
 exports.main = async function(event,context) {
 	const {
-		accessToken,
+		access_token,
     openid
 	} = event
 	const res = await uniID.loginByUniverify({
-		accessToken,
+		access_token,
     openid
 	})
 	return res
