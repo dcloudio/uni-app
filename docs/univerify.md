@@ -19,7 +19,7 @@
 2. 用户同意授权后，SDK底层访问运营商网关鉴权，获得当前设备`access_token`等信息。
 3. 在服务器侧通过 uniCloud 将`access_token`等信息 置换为当前设备的真实手机号码。然后服务器直接入库，避免手机号传递到前端发生的不可信情况。
 
-![](https://dcloud-img.oss-cn-hangzhou.aliyuncs.com/client/doc/univerify/process.jpg)
+![](https://dcloud-img.oss-cn-hangzhou.aliyuncs.com/client/doc/univerify/process.png)
 
 前置条件：
 + 手机安装有sim卡
@@ -81,11 +81,10 @@ uni.getProvider({
         console.log(res.provider)// ['qq', 'univerify']
     }
 });
-
 ```
 
 ### 客户端-预登录（可选）
-预登录操作可以判断当前设备环境是否支持一键登录，如果能支持一键登录，此时可以显示一键登录选项，同时预登录会准备好相关环境，显著提升一键登录的操作速度。
+预登录操作可以判断当前设备环境是否支持一键登录，如果能支持一键登录，此时可以显示一键登录选项，同时预登录会准备好相关环境，显著提升显示授权登录界面的速度。
 
 如果当前设备环境不支持一键登录，此时应该显示其他的登录选项。
 
@@ -130,7 +129,6 @@ uni.login({
 		console.log(res.errMsg)
 	}
 })
-
 ```
 
 
@@ -192,10 +190,14 @@ univerifyStyle 数据结构：
 }
 ```
 
+univerifyStyle 属性对应配置的界面指示图
+
+![](https://dcloud-img.oss-cn-hangzhou.aliyuncs.com/client/doc/univerify/styles.png)
+
+
 返回数据示例
 
 ```json
-
 {
 	"errMsg": "login:ok",
 	"authResult": {
@@ -203,7 +205,6 @@ univerifyStyle 数据结构：
 		"access_token": "ZGI4NjkxZWE4YjAyNGUzMjhiMmZiNDcwODBjYjc5MDF8fDJ8djJ8Mg=="
 	}
 }
-
 ```
 
 
@@ -422,11 +423,11 @@ module.exports = async(event){
 
 ### 错误码
 |  错误码  |  错误描述  |
-|  -:-  |  -:-  |  
-|  1000 |  当前 uniAppid 尚未开通一键登录  |    
-|  1001 |  应用所有者账号信息异常，请检查账号一键登录服务是否正常  |    
-|  1002 |  应用所有者账号信息异常，请检查账号余额是否充足 |    
-|  4001 |  请求参数异常 |    
+|  -:-  |  -:-  |
+|  1000 |  当前 uniAppid 尚未开通一键登录  |
+|  1001 |  应用所有者账号信息异常，请检查账号一键登录服务是否正常  |
+|  1002 |  应用所有者账号信息异常，请检查账号余额是否充足 |
+|  4001 |  请求参数异常 |
 | 30001	|  当前网络环境不适合执行该操作  |
 | 30002 |  用户点击了其他登录方式  |
 | 30003 |  用户关闭验证界面  |
@@ -451,9 +452,13 @@ module.exports = async(event){
 
 
 ## 常见问题
-- 提示“非移动网关ip地址”
+- **预登录有效期**
+预登录有效期为10分钟，超过10分钟后预登录失效，此时调用login授权登录相当于之前没有调用过预登录，大概需要等待1-2秒才能弹出授权界面。
+预登录只能使用一次，调用login弹出授权界面后，如果用户操作取消登录授权，再次使用一键登录时需要重新调用预登录。
+
+- **提示“非移动网关ip地址”**
 大多数情况 是因为部分特定设备，不支持双卡双待的网络环境
 
-- 错误代码 40201，提示“源IP鉴权失败”
+- **错误代码 40201，提示“源IP鉴权失败”**
 检查一下手机卡类型是否是正常运营商手机卡，关闭飞行模式后重新尝试
 
