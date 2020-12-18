@@ -27,12 +27,12 @@ HBuilderX 3.0起目录结构做了调整如下：
 |   |   │      └──new_action.js       clientDB action代码 [详情](https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=action)
 |   |   └───function-name             云函数目录
 |   |         │──index.js             云函数代码
-|   |         └──package.json         包含cloudfunctions_init.json内容的package.json
+|   |         └──package.json         包含云函数的配置信息，如url化、定时设置、内存等内容 [详情](/uniCloud/cf-functions?id=packagejson)
 │   └──database                       云数据目录
 │         │──validateFunction         数据库扩展校验函数目录 [详情](https://uniapp.dcloud.net.cn/uniCloud/hellodb?id=db-init)
 │         │   └──new_validation.js    扩展校验函数代码 [详情](https://uniapp.dcloud.net.cn/uniCloud/schema?id=validatefunction)
-│         │──db_init.json             db_init.json内不再包含schema,初始化数据库文件 [详情](https://uniapp.dcloud.net.cn/uniCloud/hellodb?id=db-init)
-│         └──log.schema.json          数据表log的schema代码 [详情](https://uniapp.dcloud.net.cn/uniCloud/schema)
+│         │──db_init.json             db_init.json初始化数据库文件，其中不再包含schema [详情](https://uniapp.dcloud.net.cn/uniCloud/hellodb?id=db-init)
+│         └──xxx.schema.json          数据表xxx的DB Schema [详情](https://uniapp.dcloud.net.cn/uniCloud/schema)
 根目录
 ```
 
@@ -49,7 +49,7 @@ HBuilderX 3.0之前版本目录结构如下
 |   |      └──package.json          公用模块package.json
 |   │───uni-clientDB-actions
 |   │      └──new_action.js         clientDB action代码 [详情](https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=action)
-│   │───db_init.json                包含schema的db_init.json,初始化数据库文件 [详情](https://uniapp.dcloud.net.cn/uniCloud/hellodb?id=db-init)
+│   │───db_init.json                初始化数据库文件 [详情](https://uniapp.dcloud.net.cn/uniCloud/hellodb?id=db-init)
 │   └───cloudfunctions_init.json    云函数初始化文件 [详情](https://uniapp.dcloud.net.cn/uniCloud/cf-functions?id=init)
 │
 根目录
@@ -170,7 +170,9 @@ exports.main = async (event, context) => {
 
 自`HBuilderX 3.0.0`起支持客户端连接本地云函数，由客户端访问本地调试服务调用云函数。方便前后端联调、方便schema联调。
 
-**目前只支持本地运行打日志。暂不支持断点debug**
+**只支持本地运行打日志。暂不支持断点debug**
+
+**虽然云函数、数据库schema、validatefunction在本地，但云存储、数据库的数据和索引，仍然在云端。也就是开发机不能完全脱线开发。只是代码可以在本地写，免上传就能联调。**
 
 **使用方式**
 
@@ -212,16 +214,16 @@ exports.main = async (event, context) => {
 
 **注意事项**
 
-- 切换云端本地无需重新运行客户端。
-- 不同平台可以有不同的配置。但同一平台，如安卓和iOS都是app-plus，则对应着同一个配置，或者两台安卓手机也一样只能有一个配置。
+- 虽然云函数、数据库schema、validatefunction在本地，但云存储、数据库的数据和索引，仍然在云端。也就是开发机不能完全脱线开发。只是代码可以在本地写，免上传就能联调。
+- 切换云端、本地，无需重新运行客户端
+- 不同平台可以有不同的配置。但同一平台，如安卓和iOS都是app-plus，则对应着同一个配置，或者两台安卓手机也只能有一个配置
+- 客户端在每次发送数据库请求之前，会发送一条请求到本地调试服务，本地服务会根据当前用户选择来通知客户端该访问本地云函数还是云端云函数
+- 客户端连接本地云函数时，云函数内的callFunction也会调用本地云函数。除非目标云函数是插件市场售卖的加密云函数，此时不会调用本地，仍会调用云端
+- 如果云函数或云函数依赖的公共模块有加密（在插件市场销售），则会忽略本地配置，请求云端已部署的云函数。请留意控制台输出
+- 发送clientDB请求时，如果使用了加密的action（在插件市场销售），当前请求会使用云端已部署资源而不是本地资源（包括schema、validateFunction、action），请留意控制台输出
 - 如果项目内关联了两个服务空间，需要在`.hbuilderx/launch.json`内配置provider参数指定哪个服务空间使用本地调试
-- 客户端在每次发送数据库请求之前会，发送一条请求到本地调试服务，调试服务会根据当前用户选择来通知客户端该访问本地云函数还是云端云函数
-- 当前项目运行的所有客户端都停止运行时，对本项目的调试服务会关闭，已经运行到手机的客户端将无法连接本地云函数，这时会自动切换为云端云函数
+- 当前项目运行的所有客户端都停止运行时，对本项目的调试服务会关闭，已经运行到手机的客户端将无法连接本地云函数，这时会自动切换为连接云端云函数
 - 在h5端network面板的会看到一些`Request Method: OPTION`的请求，这些是跨域预检请求，忽略即可。请参考：[HTTP 的 OPTIONS 方法](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Methods/OPTIONS)
-- 客户端连接本地云函数时云函数内的callFunction也会调用本地云函数，除非目标云函数是插件市场售卖的加密云函数，此时仍会调用云端。
-- 虽然云函数、数据库schema、validatefunction在本地了，但云存储、数据库的数据和索引，仍然在云端。也就是开发机不能纯脱线开发。
-- 如果云函数或云函数依赖的公共模块有加密则会忽略本地配置请求云端已部署的云函数，请留意控制台输出
-- 发送clientDB请求时，如果使用了加密的action，当前请求会使用云端已部署资源而不是本地资源（包括schema、validateFunction、action），请留意控制台输出
 
 ### 本地运行云函数@runlocal
 
@@ -252,7 +254,7 @@ exports.main = async (event, context) => {
 
 ## 调用本地云函数注意事项
 
-**本章节注意事项包括本地运行、客户端连接本地云函数**
+**本章节注意事项包括本地运行云函数、客户端连接本地云函数**
 
 **使用公用模块**
 
