@@ -220,6 +220,8 @@ exports.main = async (event, context) => {
 - 在h5端network面板的会看到一些`Request Method: OPTION`的请求，这些是跨域预检请求，忽略即可。请参考：[HTTP 的 OPTIONS 方法](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Methods/OPTIONS)
 - 客户端连接本地云函数时云函数内的callFunction也会调用本地云函数，除非目标云函数是插件市场售卖的加密云函数，此时仍会调用云端。
 - 虽然云函数、数据库schema、validatefunction在本地了，但云存储、数据库的数据和索引，仍然在云端。也就是开发机不能纯脱线开发。
+- 如果云函数或云函数依赖的公共模块有加密则会忽略本地配置请求云端已部署的云函数，请留意控制台输出
+- 发送clientDB请求时，如果使用了加密的action，当前请求会使用云端已部署资源而不是本地资源（包括schema、validateFunction、action），请留意控制台输出
 
 ### 本地运行云函数@runlocal
 
