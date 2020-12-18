@@ -238,7 +238,13 @@ serverless默认是没有固定的服务器IP的，因为有很多服务器在�
 
 ## 云函数package.json@packagejson
 
-HBuilderX 3.0.0版本之前，package.json只是一个标准的package.json，一般来说安装依赖或公共模块才需要。HBuilderX 3.0.0及以上版本，package.json也可以用来配置云函数。
+HBuilderX 3.0版本之前，package.json只是一个标准的package.json，一般来说安装依赖或公共模块才需要。HBuilderX 3.0及以上版本，package.json也可以用来配置云函数。
+
+uniCloud web控制台提供了很多云函数的设置，比如内存大小、url化、定时触发等，从HBuilderX 3.0起，在云函数的package.json里也可以编写这些设置。
+
+开发者在本地编写云函数的设置，上传云函数，这些设置会自动在云端生效。（本地不生效）
+
+在云端设置了非默认参数后，HBuilderX下载云函数到本地时，也会自动把设置项放入package.json中下载下来。
 
 package.json是一个标准json文件，不可带注释。下面是一个package.json示例。
 
@@ -264,7 +270,7 @@ package.json是一个标准json文件，不可带注释。下面是一个package
 }
 ```
 
-cloudfunction-config字段是云函数配置，支持的配置如下
+其中cloudfunction-config字段是云函数配置，支持的配置如下
 
 ```js
 {
@@ -286,16 +292,16 @@ cloudfunction-config字段是云函数配置，支持的配置如下
 
 **注意**
 
+- 插件作者在发布插件时，如果云函数有特殊设置，应该放入package.json中，然后发布到插件市场。这样就不用再通过说明文档一步一步引导用户去配置云函数定时触发器、内存、url化路径等
 - 在web控制台修改云函数配置后，通过HBuilderX的下载云函数菜单会在package.json内添加修改后的云函数配置
 - 上传云函数时，如果项目下的package.json内包含云函数配置会同时进行云函数的配置更新
+- package.json只有云端部署才生效，本地运行不生效。
 
 ## 使用cloudfunctions_init初始化云函数@init
 
-自`HBuilderX 2.9`起`uniCloud`提供了`cloudfunctions_init.json`来方便开发者快速进行云函数的初始化操作，即在HBuilderX工具中，一次性完成所有云函数的配置。
+`HBuilderX 2.9`版本，`uniCloud`提供了`cloudfunctions_init.json`来方便开发者快速进行云函数的初始化操作，即在HBuilderX工具中，一次性完成所有云函数的配置。
 
-这个功能尤其适合插件作者，不用再使用说明文档一步一步引导用户去配置云函数定时触发器、内存、url化路径等。
-
-**注意：HBuilderX 3.0.0版本起不再使用cloudfunctions_init.json来初始化云函数**
+**注意：HBuilderX 3.0.0版本起不再使用cloudfunctions_init.json来初始化云函数。改为使用在云函数目录下通过package.json进行配置，具体见上个章节**
 
 详细调整如下：
 
@@ -395,9 +401,9 @@ cloudfunction-config说明如下
 
 不同云厂商的函数实例回收时间，以及优化冷启动的建议，[参考](https://uniapp.dcloud.io/uniCloud/faq?id=%e4%ba%91%e5%87%bd%e6%95%b0%e8%ae%bf%e9%97%ae%e6%97%b6%e5%bf%ab%e6%97%b6%e6%85%a2%e6%80%8e%e4%b9%88%e5%9b%9e%e4%ba%8b%ef%bc%9f)
 
-因为存在冷热启动的差异，云函数中的全局变量就可能出现每次不一样的情况。
+因为存在冷热启动的差异，云函数中的全局变量就可能出现每次不一样的情况。也就是云函数是无状态的。
 
-以如下代码为例，`count`作为全局变量，当多次调用该云函数时，可能会出现变量累加的情况（实例未复用时，每次返回0，若实例被复用，则可能返回1、2、3等各种意外情况）
+以如下代码为例，`count`作为全局变量，当多次调用该云函数时，可能会出现变量累加的情况（实例未复用时，每次返回0，若实例被复用，则可能返回1、2、3等各种意外情况）。所以不要这么使用。
 
 
 ```javascript
