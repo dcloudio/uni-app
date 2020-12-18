@@ -1,4 +1,4 @@
-import { isPlainObject } from '@vue/shared';
+import { isPlainObject, isHTMLTag, isSVGTag } from '@vue/shared';
 
 const NAVBAR_HEIGHT = 44;
 const TABBAR_HEIGHT = 50;
@@ -116,5 +116,9 @@ function isBuiltInComponent(tag) {
 function isCustomElement(tag) {
     return TAGS.indexOf(tag) !== -1 || BUILT_IN_TAGS.indexOf(tag) !== -1;
 }
+function isNativeTag(tag) {
+    return (isHTMLTag(tag) || isSVGTag(tag)) && !isBuiltInComponent(tag);
+}
+const COMPONENT_PREFIX = 'v-uni-';
 
-export { BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, NAVBAR_HEIGHT, TABBAR_HEIGHT, TAGS, debounce, isBuiltInComponent, isCustomElement, plusReady, stringifyQuery };
+export { BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, NAVBAR_HEIGHT, TABBAR_HEIGHT, TAGS, debounce, isBuiltInComponent, isCustomElement, isNativeTag, plusReady, stringifyQuery };

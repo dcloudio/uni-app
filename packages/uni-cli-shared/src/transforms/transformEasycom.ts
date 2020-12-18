@@ -1,18 +1,64 @@
-import { NodeTypes, NodeTransform } from '@vue/compiler-core'
+import { camelize, capitalize } from '@vue/shared'
+import {
+  ConstantTypes,
+  NodeTransform,
+  createSimpleExpression,
+  toValidAssetId,
+  ComponentNode,
+  TransformContext
+} from '@vue/compiler-core'
 
-import { matchEasycom } from '../easycom'
+import { COMPONENT_PREFIX } from '@dcloudio/uni-shared'
 
-import { addImport } from './addImport'
+import { debugEasycom, matchEasycom } from '../easycom'
+
+import { addAutoImport, isComponentNode } from './autoImport'
+
+function createImportItem(path: string, node: ComponentNode) {
+  const tag = node.tag
+  return {
+    path,
+    exp: createSimpleExpression(
+      toValidAssetId(tag, 'component'),
+      false,
+      node.loc,
+      ConstantTypes.CAN_HOIST
+    )
+  }
+}
+
+function isBinding(tag: string, context: TransformContext) {
+  const bindings = context.bindingMetadata
+  if (!bindings) {
+    return false
+  }
+  if (bindings[tag]) {
+    return true
+  }
+  const camelName = camelize(tag)
+  if (bindings[camelName]) {
+    return true
+  }
+  const PascalName = capitalize(camelName)
+  if (bindings[PascalName]) {
+    return true
+  }
+  return false
+}
 
 export const transformEasycom: NodeTransform = (node, context) => {
-  if (node.type !== NodeTypes.ELEMENT) {
+  if (!isComponentNode(node)) {
     return
   }
-  if (node.tag === 'match-media' && process.env.UNI_PLATFORM !== 'mp-weixin') {
-    node.tag = 'uni-match-media'
+  const tag = node.tag
+  // built-in component
+  if (tag.startsWith(COMPONENT_PREFIX)) {
+    return
   }
-  const path = matchEasycom(node.tag)
-  if (path) {
-    addImport(path, node, context)
+  // https://github.com/vuejs/rfcs/blob/script-setup-2/active-rfcs/0000-script-setup.md#exposing-components-and-directives
+  if (isBinding(tag, context)) {
+    return debugEasycom(tag + ' is binding by setup')
   }
+  const path = matchEasycom(tag)
+  path && addAutoImport(tag, createImportItem(path, node), context)
 }

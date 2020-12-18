@@ -1,3 +1,5 @@
+import { isHTMLTag, isSVGTag } from '@vue/shared'
+
 export const BUILT_IN_TAGS = [
   'uni-ad',
   'uni-audio',
@@ -70,3 +72,9 @@ export function isBuiltInComponent(tag: string) {
 export function isCustomElement(tag: string) {
   return TAGS.indexOf(tag) !== -1 || BUILT_IN_TAGS.indexOf(tag) !== -1
 }
+
+export function isNativeTag(tag: string) {
+  return (isHTMLTag(tag) || isSVGTag(tag)) && !isBuiltInComponent(tag)
+}
+
+export const COMPONENT_PREFIX = 'v-uni-'

@@ -120,14 +120,20 @@ function isBuiltInComponent(tag) {
 function isCustomElement(tag) {
     return TAGS.indexOf(tag) !== -1 || BUILT_IN_TAGS.indexOf(tag) !== -1;
 }
+function isNativeTag(tag) {
+    return (shared.isHTMLTag(tag) || shared.isSVGTag(tag)) && !isBuiltInComponent(tag);
+}
+const COMPONENT_PREFIX = 'v-uni-';
 
 exports.BUILT_IN_TAGS = BUILT_IN_TAGS;
 exports.COMPONENT_NAME_PREFIX = COMPONENT_NAME_PREFIX;
+exports.COMPONENT_PREFIX = COMPONENT_PREFIX;
 exports.NAVBAR_HEIGHT = NAVBAR_HEIGHT;
 exports.TABBAR_HEIGHT = TABBAR_HEIGHT;
 exports.TAGS = TAGS;
 exports.debounce = debounce;
 exports.isBuiltInComponent = isBuiltInComponent;
 exports.isCustomElement = isCustomElement;
+exports.isNativeTag = isNativeTag;
 exports.plusReady = plusReady;
 exports.stringifyQuery = stringifyQuery;

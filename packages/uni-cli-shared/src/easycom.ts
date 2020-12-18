@@ -1,10 +1,11 @@
 import fs from 'fs'
 import path from 'path'
-
+import debug from 'debug'
 interface EasycomOption {
   dirs?: string[]
   rootDir?: string
   custom?: EasycomCustom
+  extensions?: string[]
 }
 interface EasycomMatcher {
   pattern: RegExp
@@ -14,22 +15,32 @@ interface EasycomCustom {
   [key: string]: string
 }
 
+export const debugEasycom = debug('easycom')
+
 const easycoms: EasycomMatcher[] = []
 
 const easycomsCache = new Map<string, string>()
 const easycomsInvalidCache = new Set<string>()
 
-function clearEasycoms() {
+let hasEasycom = false
+
+function clearEasycom() {
   easycoms.length = 0
   easycomsCache.clear()
   easycomsInvalidCache.clear()
 }
 
-export function initEasycoms({ dirs, rootDir, custom }: EasycomOption) {
-  clearEasycoms()
+export function initEasycom({
+  dirs,
+  rootDir,
+  custom,
+  extensions = ['.vue']
+}: EasycomOption) {
+  debugEasycom(dirs, rootDir, custom, extensions)
+  clearEasycom()
   const easycomsObj = Object.create(null)
   if (dirs && rootDir) {
-    Object.assign(easycomsObj, initAutoScanEasycoms(dirs, rootDir))
+    Object.assign(easycomsObj, initAutoScanEasycoms(dirs, rootDir, extensions))
   }
   if (custom) {
     Object.assign(easycomsObj, custom)
@@ -40,10 +51,15 @@ export function initEasycoms({ dirs, rootDir, custom }: EasycomOption) {
       replacement: easycomsObj[name]
     })
   })
+  debugEasycom(easycoms)
+  hasEasycom = !!easycoms.length
   return easycoms
 }
 
 export function matchEasycom(tag: string) {
+  if (!hasEasycom) {
+    return
+  }
   let source = easycomsCache.get(tag)
   if (source) {
     return source
@@ -58,6 +74,7 @@ export function matchEasycom(tag: string) {
   }
   source = tag.replace(matcher.pattern, matcher.replacement)
   easycomsCache.set(tag, source)
+  debugEasycom('matchEasycom', tag, source)
   return source
 }
 
@@ -65,8 +82,12 @@ const isDir = (path: string) => fs.lstatSync(path).isDirectory()
 
 function initAutoScanEasycom(
   dir: string,
-  rootDir: string
+  rootDir: string,
+  extensions: string[]
 ): Record<string, string> {
+  if (!path.isAbsolute(dir)) {
+    dir = path.resolve(rootDir, dir)
+  }
   const easycoms = Object.create(null)
   if (!fs.existsSync(dir)) {
     return easycoms
@@ -78,17 +99,26 @@ function initAutoScanEasycom(
     }
     const importDir = path.relative(rootDir, folder)
     const files = fs.readdirSync(folder)
-    if (files.find(file => path.parse(file).name === name)) {
-      easycoms[`^${name}$`] = `@/${importDir}/${name}`
+    // 读取文件夹文件列表，比对文件名（fs.existsSync在大小写不敏感的系统会匹配不准确）
+    for (let i = 0; i < extensions.length; i++) {
+      const ext = extensions[i]
+      if (files.includes(name + ext)) {
+        easycoms[`^${name}$`] = `@/${importDir}/${name}${ext}`
+        break
+      }
     }
   })
   return easycoms
 }
 
-function initAutoScanEasycoms(dirs: string[], rootDir: string) {
+function initAutoScanEasycoms(
+  dirs: string[],
+  rootDir: string,
+  extensions: string[]
+) {
   return dirs.reduce<Record<string, string>>(
     (easycoms: Record<string, string>, dir: string) => {
-      const curEasycoms = initAutoScanEasycom(dir, rootDir)
+      const curEasycoms = initAutoScanEasycom(dir, rootDir, extensions)
       Object.keys(curEasycoms).forEach(name => {
         // Use the first component when name conflict
         if (!easycoms[name]) {

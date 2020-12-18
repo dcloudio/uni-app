@@ -1,5 +1,5 @@
-import { ServerPlugin } from 'vite'
-import { readBody } from 'vite'
+import { ServerPlugin, readBody } from 'vite'
+
 import { parsePagesJson } from '../utils'
 
 const uniCode = `import {uni,getCurrentPages,getApp,UniServiceJSBridge,UniViewJSBridge} from '@dcloudio/uni-h5'

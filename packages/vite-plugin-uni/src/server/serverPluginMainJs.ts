@@ -1,7 +1,7 @@
 import path from 'path'
 
-import { ServerPlugin } from 'vite'
-import { readBody } from 'vite'
+import { ServerPlugin, readBody } from 'vite'
+
 import { getRoot, isMainJs, wrapperMainCode } from '../utils'
 
 export const serverPluginMainJs: ServerPlugin = ({ app, root }) => {

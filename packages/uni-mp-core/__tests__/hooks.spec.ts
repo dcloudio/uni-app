@@ -33,7 +33,7 @@ describe('hooks', () => {
     const mpOptions: any = {}
     initHooks(mpOptions, ['onReady'])
     initUnknownHooks(mpOptions, vueBasicOptions)
-    expect(mpOptions.onReady).toBeDefined()
+    expect(mpOptions.onReady).toBeUndefined()
     expect(mpOptions.onLoad).toBeDefined()
   })
   test('extends', () => {
@@ -53,7 +53,7 @@ describe('hooks', () => {
     const mpOptions: any = {}
     initUnknownHooks(mpOptions, vueExtendsANdMixinsOptions)
     expect(mpOptions.onLoad).toBeDefined()
-    expect(mpOptions.onReady).toBeDefined()
+    expect(mpOptions.onReady).toBeUndefined()
     expect(mpOptions.onShow).toBeDefined()
     expect(mpOptions.onHide).toBeDefined()
   })

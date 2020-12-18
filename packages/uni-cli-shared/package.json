@@ -22,9 +22,12 @@
     "url": "https://github.com/dcloudio/uni-app/issues"
   },
   "dependencies": {
-    "@dcloudio/uni-shared": "^3.0.0",
     "@vue/compiler-core": "^3.0.4",
+    "debug": "^4.3.1",
     "strip-json-comments": "^3.1.1",
     "xregexp": "3.1.0"
+  },
+  "peerDependencies": {
+    "@dcloudio/uni-shared": "^3.0.0"
   }
 }

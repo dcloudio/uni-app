@@ -1,0 +1,54 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`easycom render 1`] = `
+"import { resolveComponent as _resolveComponent, createVNode as _createVNode, openBlock as _openBlock, createBlock as _createBlock } from \\"vue\\"
+import _component_test from '@/components/uni-test.vue'
+import _component_test1 from '@/components/test1/test1.vue'
+import _component_test2 from '@/uni_modules/plugin/components/test2/test2.vue'
+import { CheckboxGroup as _component_v_uni_checkbox_group } from '@dcloudio/uni-h5/dist/uni-h5.esm.js'
+import _style_v_uni_checkbox_group from '@dcloudio/uni-h5/style/checkbox-group.css'
+
+
+export function render(_ctx, _cache, $props, $setup, $data, $options) {
+  // const _component_test = _resolveComponent(\\"test\\")
+  // const _component_test1 = _resolveComponent(\\"test1\\")
+  // const _component_test2 = _resolveComponent(\\"test2\\")
+  const _component_some_other_comp = _resolveComponent(\\"some-other-comp\\")
+  // const _component_v_uni_checkbox_group = _resolveComponent(\\"v-uni-checkbox-group\\")
+
+  return (_openBlock(), _createBlock(\\"template\\", null, [
+    _createVNode(_component_test),
+    _createVNode(_component_test1),
+    _createVNode(_component_test1),
+    _createVNode(_component_test2),
+    _createVNode(_component_some_other_comp),
+    _createVNode(_component_v_uni_checkbox_group),
+    _createVNode(_component_v_uni_checkbox_group)
+  ]))
+}"
+`;
+
+exports[`easycom render with setup 1`] = `
+"import { createVNode as _createVNode, resolveComponent as _resolveComponent, openBlock as _openBlock, createBlock as _createBlock } from \\"vue\\"
+import _component_test1 from '@/components/test1/test1.vue'
+import _component_test2 from '@/uni_modules/plugin/components/test2/test2.vue'
+import { CheckboxGroup as _component_v_uni_checkbox_group } from '@dcloudio/uni-h5/dist/uni-h5.esm.js'
+import _style_v_uni_checkbox_group from '@dcloudio/uni-h5/style/checkbox-group.css'
+
+
+export function render(_ctx, _cache, $props, $setup, $data, $options) {
+  // const _component_test1 = _resolveComponent(\\"test1\\")
+  // const _component_test2 = _resolveComponent(\\"test2\\")
+  // const _component_v_uni_checkbox_group = _resolveComponent(\\"v-uni-checkbox-group\\")
+
+  return (_openBlock(), _createBlock(\\"template\\", null, [
+    _createVNode($setup[\\"Test\\"]),
+    _createVNode(_component_test1),
+    _createVNode(_component_test1),
+    _createVNode(_component_test2),
+    _createVNode($setup[\\"SomeOtherComp\\"]),
+    _createVNode(_component_v_uni_checkbox_group),
+    _createVNode(_component_v_uni_checkbox_group)
+  ]))
+}"
+`;

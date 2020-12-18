@@ -12,11 +12,12 @@ export default {
   root: '.',
   minify: false,
   assetsDir: '.',
-  cssCodeSplit: true,
+  emitAssets: false,
   alias: {
     '@dcloudio/uni-api': resolve('../uni-api/src/index.ts'),
     '@dcloudio/uni-vue': resolve('../uni-vue/src/index.ts'),
-    '@dcloudio/uni-core': resolve('../uni-core/src/index.ts')
+    '@dcloudio/uni-core': resolve('../uni-core/src/index.ts'),
+    '@dcloudio/uni-components': resolve('../uni-components/src/index.ts')
   },
   define: {
     global: 'window',
@@ -28,13 +29,7 @@ export default {
   },
   rollupInputOptions: {
     input: 'src/index.ts',
-    external: [
-      'vue',
-      'vue-router',
-      '@vue/shared',
-      '@dcloudio/uni-shared',
-      '@dcloudio/uni-components'
-    ],
+    external: ['vue', 'vue-router', '@vue/shared', '@dcloudio/uni-shared'],
     preserveEntrySignatures: 'strict',
     plugins: [
       replace({

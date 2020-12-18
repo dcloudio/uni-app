@@ -15,8 +15,6 @@ export function getRoot(mainJsPath: string) {
 
 export function wrapperMainCode(code: string, root: string) {
   return `${dynamicImportCode}
-import '@dcloudio/uni-h5/dist/uni-h5.css'
-import '@dcloudio/uni-components/dist/uni-components.css'
 import '${slash(path.resolve(root, 'pages.json'))}'
 ${code}
 `
