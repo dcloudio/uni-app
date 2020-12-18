@@ -11,6 +11,50 @@
   uniCloud云开发环境创建成功后，项目根目录下会有一个带有云图标的特殊目录，名为“cloudfunctions”。（即便是cli创建的项目，云函数目录也在项目的根目录下，而不是src下）
   
   非uni-app项目也可以通过使用[云函数Url化](uniCloud/http.md)来享受云函数的带来的便利。
+  
+## 目录结构
+
+HBuilderX 3.0起目录结构做了调整如下：
+
+```bash
+┌──uniCloud-aliyun                    云空间目录，阿里云为uniCloud-aliyun,腾讯云为uniCloud-tcb
+|   |——— cloudfunctions               云函数目录
+|   |   │───common                    云函数公用模块目录 [详情](https://uniapp.dcloud.io/uniCloud/cf-common)
+|   |   |   └──hello-common           云函数公用模块
+|   |   |      │──index.js            公用模块代码
+|   |   |      └──package.json        公用模块package.json
+|   |   │───uni-clientDB-actions
+|   |   │      └──new_action.js       clientDB action代码 [详情](https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=action)
+|   |   └───function-name             云函数目录
+|   |         │──index.js             云函数代码
+|   |         └──package.json         包含cloudfunctions_init.json内容的package.json
+│   └──database                       云数据目录
+│         │──validateFunction         数据库扩展校验函数目录 [详情](https://uniapp.dcloud.net.cn/uniCloud/hellodb?id=db-init)
+│         │   └──new_validation.js    扩展校验函数代码 [详情](https://uniapp.dcloud.net.cn/uniCloud/schema?id=validatefunction)
+│         │──db_init.json             db_init.json内不再包含schema,初始化数据库文件 [详情](https://uniapp.dcloud.net.cn/uniCloud/hellodb?id=db-init)
+│         └──log.schema.json          数据表log的schema代码 [详情](https://uniapp.dcloud.net.cn/uniCloud/schema)
+根目录
+```
+
+HBuilderX 3.0之前版本目录结构如下
+
+```bash
+┌──cloudfunctions-aliyun            云空间目录，阿里云为cloudfunctions-aliyun,腾讯云为cloudfunctions-tcb
+|   │───function-name               云函数目录
+|   |      │──index.js              云函数代码
+|   |      └──package.json          标准package.json
+|   │───common                      云函数公用模块目录 [详情](https://uniapp.dcloud.io/uniCloud/cf-common)
+|   |   └──hello-common             云函数公用模块
+|   |      │──index.js              公用模块代码
+|   |      └──package.json          公用模块package.json
+|   │───uni-clientDB-actions
+|   │      └──new_action.js         clientDB action代码 [详情](https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=action)
+│   │───db_init.json                包含schema的db_init.json,初始化数据库文件 [详情](https://uniapp.dcloud.net.cn/uniCloud/hellodb?id=db-init)
+│   └───cloudfunctions_init.json    云函数初始化文件 [详情](https://uniapp.dcloud.net.cn/uniCloud/cf-functions?id=init)
+│
+根目录
+```
+
 
 ## 创建和绑定服务空间
 
@@ -22,11 +66,11 @@
 
 服务空间和手机端项目是多对多绑定关系。同账号下，一个项目可以关联到多个服务空间。一个服务空间也可以被多个项目访问。
 
-  - 在云函数目录`cloudfunctions`右键菜单创建服务空间，会打开web控制台[https://unicloud.dcloud.net.cn](https://unicloud.dcloud.net.cn) 进行创建
+  - 在云函数目录`cloudfunctions`右键菜单创建服务空间（HBuilderX 3.0以上版本请在uniCloud目录右键），会打开web控制台[https://unicloud.dcloud.net.cn](https://unicloud.dcloud.net.cn) 进行创建
 
 ![创建服务空间](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/create-space.png)
 
-  - 创建好服务空间后，对目录`cloudfunctions`点右键，菜单中点击`选择云服务空间`，绑定你之前创建的服务空间。
+  - 创建好服务空间后，对目录`cloudfunctions`点右键（HBuilderX 3.0以上版本请在uniCloud目录右键），菜单中点击`选择云服务空间`，绑定你之前创建的服务空间。
   
 **说明**
 
@@ -36,7 +80,7 @@
 
 ## 创建云函数
 
-`uniCloud`项目创建并绑定服务空间后，开发者可以在`cloudfunctions`目录右键创建云函数。
+`uniCloud`项目创建并绑定服务空间后，开发者可以在`cloudfunctions`目录右键创建云函数（HBuilderX 3.0以上版本请在`uniCloud/cloudfunctions`目录右键）。
 
 ![新建云函数](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/unicloud-02.png)
 
@@ -389,7 +433,7 @@ H5前端js访问云函数，涉及跨域问题，导致前端js无法连接云�
 如果要在cli项目中使用uniCloud，可以参考以下步骤
 
 1. 将cli项目导入`HBuilderX`
-2. 在项目根目录（src同级）创建`cloudfunctions-aliyun`或者`cloudfunctions-tcb`目录
+2. 在项目根目录（src同级）创建`cloudfunctions-aliyun`或者`cloudfunctions-tcb`目录（HBuilderX 3.0以上版本请创建`uniCloud-aliyun`、`uniCloud-tcb`目录）
 3. 打开`src/manifest.json`，在`基础配置-->uni-app应用标示`处点击`重新获取`
 4. 在步骤2创建的目录右键关联服务空间
 5. 完成

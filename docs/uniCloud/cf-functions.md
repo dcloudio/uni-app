@@ -236,11 +236,116 @@ serverless默认是没有固定的服务器IP的，因为有很多服务器在�
 - 同一个服务空间内所有开启固定出口IP的云函数使用的是同一个IP。
 - 如果你是免费版升配到付费版，开启`固定IP`功能后，会导致付费版到期无法自动降级到免费版，请注意按时续费
 
+## 云函数package.json@packagejson
+
+HBuilderX 3.0.0版本之前，package.json只是一个标准的package.json，一般来说安装依赖或公共模块才需要。HBuilderX 3.0.0及以上版本，package.json也可以用来配置云函数。
+
+package.json是一个标准json文件，不可带注释。下面是一个package.json示例。
+
+```json
+{
+  "name": "add-article",
+  "version": "1.0.0",
+  "description": "新增文章",
+  "main": "index.js",
+  "dependencies": {
+    
+  },
+  "cloudfunction-config": {
+      "memorySize": 256,
+      "timeout": 5,
+      "triggers": [{
+          "name": "myTrigger",
+          "type": "timer",
+          "config": "0 0 2 1 * * *"
+      }],
+      "path": ""
+    }
+}
+```
+
+cloudfunction-config字段是云函数配置，支持的配置如下
+
+```js
+{
+  "memorySize": 256, // 函数的最大可用内存，单位MB，可选值： 128|256|512|1024|2048，默认值256
+  "timeout": 5, // 函数的超时时间，单位秒，默认值5。最长为60秒，阿里云在定时触发时最长可以是600秒
+  // triggers 字段是触发器数组，目前仅支持一个触发器，即数组只能填写一个，不可添加多个
+  "triggers": [{
+      // name: 触发器的名字，规则见https://uniapp.dcloud.net.cn/uniCloud/trigger，name不对阿里云生效
+      "name": "myTrigger",
+      // type: 触发器类型，目前仅支持 timer (即 定时触发器)，type不对阿里云生效
+      "type": "timer",
+      // config: 触发器配置，在定时触发器下，config 格式为 cron 表达式，规则见https://uniapp.dcloud.net.cn/uniCloud/trigger。使用阿里云时会自动忽略最后一位，即代表年份的一位在阿里云不生效
+      "config": "0 0 2 1 * * *"
+  }],
+  // 云函数Url化path部分，阿里云需要以/http/开头
+  "path": ""
+}
+```
+
+**注意**
+
+- 在web控制台修改云函数配置后，通过HBuilderX的下载云函数菜单会在package.json内添加修改后的云函数配置
+- 上传云函数时，如果项目下的package.json内包含云函数配置会同时进行云函数的配置更新
+
 ## 使用cloudfunctions_init初始化云函数@init
 
 自`HBuilderX 2.9`起`uniCloud`提供了`cloudfunctions_init.json`来方便开发者快速进行云函数的初始化操作，即在HBuilderX工具中，一次性完成所有云函数的配置。
 
 这个功能尤其适合插件作者，不用再使用说明文档一步一步引导用户去配置云函数定时触发器、内存、url化路径等。
+
+**注意：HBuilderX 3.0.0版本起不再使用cloudfunctions_init.json来初始化云函数**
+
+详细调整如下：
+
+不再使用cloudfunctions_init.json，内容被分散到每个云函数的package.json的`cloudfunction-config`字段下
+
+package.json是一个标准json文件，不可带注释。下面是一个package.json示例
+
+```json
+{
+  "name": "add-article",
+  "version": "1.0.0",
+  "description": "新增文章",
+  "main": "index.js",
+  "dependencies": {
+    
+  },
+  "cloudfunction-config": {
+      "memorySize": 256,
+      "timeout": 5,
+      "triggers": [{
+          "name": "myTrigger",
+          "type": "timer",
+          "config": "0 0 2 1 * * *"
+      }],
+      "path": ""
+    }
+}
+```
+
+cloudfunction-config说明如下
+
+```js
+{
+  "memorySize": 256, // 函数的最大可用内存，单位MB，可选值： 128|256|512|1024|2048，默认值256
+  "timeout": 5, // 函数的超时时间，单位秒，默认值5。最长为60秒，阿里云在定时触发时最长可以是600秒
+  // triggers 字段是触发器数组，目前仅支持一个触发器，即数组只能填写一个，不可添加多个
+  "triggers": [{
+      // name: 触发器的名字，规则见https://uniapp.dcloud.net.cn/uniCloud/trigger，name不对阿里云生效
+      "name": "myTrigger",
+      // type: 触发器类型，目前仅支持 timer (即 定时触发器)，type不对阿里云生效
+      "type": "timer",
+      // config: 触发器配置，在定时触发器下，config 格式为 cron 表达式，规则见https://uniapp.dcloud.net.cn/uniCloud/trigger。使用阿里云时会自动忽略最后一位，即代表年份的一位在阿里云不生效
+      "config": "0 0 2 1 * * *"
+  }],
+  // 云函数Url化path部分，阿里云需要以/http/开头
+  "path": ""
+}
+```
+
+**HBuilderX 3.0.0之前版本，请继续阅读下面文档**
 
 **使用方式**
 - 在`cloudfucntions`目录右键即可创建`cloudfunctions_init.json`，
@@ -259,7 +364,7 @@ serverless默认是没有固定的服务器IP的，因为有很多服务器在�
             "name": "myTrigger",
             // type: 触发器类型，目前仅支持 timer (即 定时触发器)，type不对阿里云生效
             "type": "timer",
-            // config: 触发器配置，在定时触发器下，config 格式为 cron 表达式，规则见https://uniapp.dcloud.net.cn/uniCloud/trigger。使用阿里云时会自动忽略最后一位，即代表年份的一位
+            // config: 触发器配置，在定时触发器下，config 格式为 cron 表达式，规则见https://uniapp.dcloud.net.cn/uniCloud/trigger。使用阿里云时会自动忽略最后一位，即代表年份的一位在阿里云不生效
             "config": "0 0 2 1 * * *"
         }],
         // 云函数Url化path部分，阿里云需要以/http/开头

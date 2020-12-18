@@ -25,7 +25,25 @@
 2. 点击表右侧页签 “表结构”，点击 “编辑” 按钮，在编辑区域编写 Schema，编写完毕后点保存按钮即可生效。
   ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/e237cb60-ff2d-11ea-8a36-ebb87efcf8c0.png)
 
-`DB Schema`在保存后是实时生效的，请注意对现网商用项目的影响。
+**web控制台上编辑`DB Schema`保存后是实时生效的，请注意对现网商用项目的影响。**
+
+`HBuilderX 3.0.0`及以上版本可以在项目下管理schema，用法如下：
+
+**创建schema**
+
+1. 在`uniCloud`项目右键，选择`创建database目录`
+2. 在第一步创建的database目录右键选择`新建数据集合schema`
+
+**HBuilderX内创建的schema新建和保存时不会自动上传**
+
+**上传schema**
+
+- 在单个schema文件右键可以只上传当前选中的schema
+- 在database目录右键可以上传全部schema
+
+**下载schema**
+
+- database目录右键可以下载所有schema及扩展校验函数
 
 ### Schema字段@segment
 
@@ -434,13 +452,21 @@ uniCloud推出了`openDB`开源数据库规范，包括用户表、文章表、�
 
 当属性配置不满足需求，需要写js函数进行校验时，使用本功能。
 
+**注意：扩展校验函数不能有其他依赖**
+
 如何使用
 
 1. uniCloud 控制台，选择服务空间，切换到数据表
-
 2. 底部 “扩展校验函数” 点击 “+” 增加校验函数 ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/2f4d0230-12a2-11eb-b244-a9f5e5565f30.png)
+3. 给函数起个名字，比如叫“checkabc”
 
-  给函数起个名字，比如叫“checkabc”，然后写具体的js代码，如下
+`HBuilderX 3.0.0`及以上版本，可以在项目下创建扩展校验云函数并上传，使用方法如下：
+
+1. 在`uniCloud`项目右键，选择`创建database目录`
+2. 在第一步创建的database目录右键选择`创建数据库扩展校验函数目录`
+3. 在第二步创建的`validateFunction`目录右键选择`新建数据库扩展校验函数`
+
+扩展校验函数示例如下
 
   ```js
   // 扩展校验函数示例

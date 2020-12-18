@@ -277,49 +277,61 @@ uniCloud数据库提供了多种数据导入导出和备份方案。
 
 `db_init.json`包含三部分：数据内容(data)、数据表索引(index)、数据表结构(schema)，形式如下
 
+**注意：HBuilderX 3.0.0以上版本schema不再放在db_init.json内，db_init.json文件位置也做了调整。**
+
+详细调整如下
+
+- db_init.json位置由`cloudfunctions/db_init.json`移至`uniCloud/database/db_init.json`
+- schema不再放在db_init.json内，每个表都有一个单独的schema文件，比如news表对应的schema为`uniCloud/database/news.schema.json`
+- schema可以在`uniCloud/database`目录上右键创建
+- db_init.json文件右键初始化云数据库时依然会带上schema进行数据库的初始化，除schema外HBuilderX3.0.0以上版本使用db_init.json初始化数据库还会带上扩展校验函数，扩展校验函数位于`uniCloud/database/validateFunction`目录下，扩展校验函数文档详见：[validateFunction](https://uniapp.dcloud.net.cn/uniCloud/schema?id=validatefunction)
+
+**HBuilderX 3.0.0版本之前的db_init.json示例**
+
 ```json
 {
-    "collection_test": { // 集合（表名）
-        "data": [ // 数据
-           {
-                "_id": "da51bd8c5e37ac14099ea43a2505a1a5", // 一般不带_id字段，防止导入时数据冲突。
-               "name": "tom"
-           }
-        ],
-        "index": [{ // 索引
-            "IndexName": "index_a", // 索引名称
-            "MgoKeySchema": { // 索引规则
-                "MgoIndexKeys": [{
-                    "Name": "index", // 索引字段
-                    "Direction": "1" // 索引方向，1：ASC-升序，-1：DESC-降序，2dsphere：地理位置
-                }],
-                "MgoIsUnique": false // 索引是否唯一
-            }
+  "collection_test": { // 集合（表名）
+    "data": [ // 数据
+      {
+        "_id": "da51bd8c5e37ac14099ea43a2505a1a5", // 一般不带_id字段，防止导入时数据冲突。
+        "name": "tom"
+      }
+    ],
+    "index": [{ // 索引
+      "IndexName": "index_a", // 索引名称
+      "MgoKeySchema": { // 索引规则
+        "MgoIndexKeys": [{
+          "Name": "index", // 索引字段
+          "Direction": "1" // 索引方向，1：ASC-升序，-1：DESC-降序，2dsphere：地理位置
         }],
-		"schema": {
-		    "bsonType": "object",
-		    "permission": {
-		        ".read": true,
-		        ".create": false,
-		        ".update": false,
-		        ".delete": false
-		    },
-		    "required": [
-		        "image_url"
-		    ],
-		    "properties": {
-		        "_id": {
-		            "description": "ID，系统自动生成"
-		        },
-		        "image_url": {
-		            "bsonType": "string",
-		            "description": "可以是在线地址，也支持本地地址",
-		            "label": "图片url"
-		        }
-		    }
-		}
+        "MgoIsUnique": false // 索引是否唯一
+      }
+    }],
+    "schema": {
+      "bsonType": "object",
+      "permission": {
+        ".read": true,
+        ".create": false,
+        ".update": false,
+        ".delete": false
+      },
+      "required": [
+        "image_url"
+      ],
+      "properties": {
+        "_id": {
+          "description": "ID，系统自动生成"
+        },
+        "image_url": {
+          "bsonType": "string",
+          "description": "可以是在线地址，也支持本地地址",
+          "label": "图片url"
+        }
+      }
     }
+  }
 }
+
 ```
 
 在HBuilderX中对上述`db_init.json`点右键，可初始化数据库到云服务空间，创建`collection_test`表，并按上述json配置设置该表的index索引和schema，以及插入data下的数据。
