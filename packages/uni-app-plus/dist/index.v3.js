@@ -18104,10 +18104,14 @@ var serviceContext = (function () {
       invoke$1(callbackId, data);
     });
     let compressed;
-    {
+    // iOS真机非调试模式压缩太慢暂时排除
+    if ( (plus.os.name !== 'iOS' || typeof __WEEX_DEVTOOL__ === 'boolean')) {
       const pako = pako_1;
       data = pako.deflateRaw(data, { to: 'string' });
       compressed = true;
+    } else {
+      // fix ...
+      data = Array.prototype.slice.call(data);
     }
 
     operateCanvas(canvasId, pageId, 'putImageData', {
