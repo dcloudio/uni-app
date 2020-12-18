@@ -21,13 +21,17 @@
 
 #### 如何编写DB Schema
 
+- **方式1，在web控制台编写schema**
 1. 登录 [uniCloud控制台](https://unicloud.dcloud.net.cn)，选中一个数据表
 2. 点击表右侧页签 “表结构”，点击 “编辑” 按钮，在编辑区域编写 Schema，编写完毕后点保存按钮即可生效。
   ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/e237cb60-ff2d-11ea-8a36-ebb87efcf8c0.png)
 
 **web控制台上编辑`DB Schema`保存后是实时生效的，请注意对现网商用项目的影响。**
 
-`HBuilderX 3.0.0`及以上版本可以在项目下管理schema，用法如下：
+- **方式2，在HBuilderX中编写schema**
+> 需HBuilderX 3.0+版本
+
+在HBuilderX中编写schema，有良好的语法提示和语法校验，还可以在前端连本地云函数功能中免上传联调测试，是更为推荐的schema编写方案。
 
 **创建schema**
 
@@ -44,6 +48,8 @@
 **下载schema**
 
 - database目录右键可以下载所有schema及扩展校验函数
+
+HBuilderX中运行前端项目，在控制台选择连接本地云函数，此时本地编写的schema可直接生效，无需上传。方便编写调试。
 
 ### Schema字段@segment
 
@@ -913,9 +919,9 @@ db.collection('street').where("shop_id=='123123'").get()
 db.collection('street').where("shop_id=='123123 || shop_id=='456456'").get()
 ```
 
-### 前端表单生成系统@autocode
+### schema2code前端表单生成系统@autocode
 
-`DB Schema`里有大量的信息，有了这些信息，前端将无需自己开发表单维护界面，uniCloud可以自动生成新增数据、修改数据的表单页面。
+`DB Schema`里有大量的信息，有了这些信息，前端将无需自己开发表单维护界面，uniCloud可以自动生成新增数据、修改数据的前端表单页面，以及admin端的列表、新增、修改、删除全套功能。
 
 为强化表单的自定义性，`DB Schema`还扩展了label、component、group、order等属性，以控制表单项在界面上的渲染控件。
 
@@ -931,7 +937,7 @@ db.collection('street').where("shop_id=='123123 || shop_id=='456456'").get()
 
 然后开发者需要把这套校验规则导入到前端项目中。即利用本功能。
 
-DCloud提供了`uni-forms`前端组件，该组件的校验规范完全符合`DB Schema`中的校验规则，实现云端统一。`uni-forms`组件地址：[https://ext.dcloud.net.cn/plugin?id=2773](https://ext.dcloud.net.cn/plugin?id=2773)
+DCloud提供了`uni-forms`前端组件，该组件的表单校验规范完全符合`DB Schema`中的校验规则，实现云端统一。`uni-forms`组件地址：[https://ext.dcloud.net.cn/plugin?id=2773](https://ext.dcloud.net.cn/plugin?id=2773)
 
 
 1. 在schema界面点击 “导出表单页面”
@@ -1196,5 +1202,6 @@ DCloud提供了`uni-forms`前端组件，该组件的校验规范完全符合`DB
 
 **Bug&Tips**
 
-- 表单验证是可商用的。而生成前端表单页面，只是一个代码辅助生成工具，生成后的代码，免不了二次开发调整。
-- 已知生成代码功能在处理字段类型为时间、枚举时有问题，需要对生成的代码再修改调整
+- schema2code是一个代码辅助生成工具，生成后的代码，经常会有二次开发需求。如果二次开发后又变动schema，建议使用Git等工具管理源码，进行差异比对。
+
+
