@@ -10,7 +10,7 @@ import {
 
 import { COMPONENT_PREFIX, isBuiltInComponent } from '@dcloudio/uni-shared'
 
-import { addAutoImport, isComponentNode } from './autoImport'
+import { addAutoImport, isComponentNode } from '../easycom'
 
 const COMPONENTS_PATH = '@dcloudio/uni-h5/dist/uni-h5.esm.js'
 
@@ -52,7 +52,7 @@ export const transformBuiltInComponent: NodeTransform = (node, context) => {
     return
   }
   node.tag = COMPONENT_PREFIX + tag
-  if (addAutoImport(node.tag, createComponentImportItem(tag, node), context)) {
-    addAutoImport('', createStyleImportItem(tag, node), context)
+  if (addAutoImport(createComponentImportItem(tag, node), context)) {
+    addAutoImport(createStyleImportItem(tag, node), context)
   }
 }

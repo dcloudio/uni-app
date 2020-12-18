@@ -57,6 +57,14 @@ Object.assign(plugin, {
       '@dcloudio/uni-h5-vue',
       '@dcloudio/uni-shared'
     ]
+  },
+  chokidarWatchOptions: {
+    ignored: [
+      '**/node_modules/**',
+      '**/.git/**',
+      '**/uniCloud-aliyun/**',
+      '**/uniCloud-tcb/**'
+    ]
   }
 })
 export default plugin

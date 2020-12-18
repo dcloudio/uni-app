@@ -1,11 +1,15 @@
 import { CompilerOptions } from '@vue/compiler-sfc'
 
-import { isNativeTag } from '@dcloudio/uni-shared'
+import {
+  COMPONENT_PREFIX,
+  isBuiltInComponent,
+  isNativeTag
+} from '@dcloudio/uni-shared'
 
-import { isAutoImported } from './transforms/autoImport'
 import { transformBuiltInComponent } from './transforms/transformBuiltInComponent'
 import { transformBuiltInEasycom } from './transforms/transformBuiltInEasycom'
 import { transformEasycom } from './transforms/transformEasycom'
+import { isEasycomTag } from './easycom'
 
 interface CodegenContext {
   push: (code: string, node: any) => void
@@ -13,6 +17,12 @@ interface CodegenContext {
 }
 interface VueCompilerOptions extends CompilerOptions {
   onContextCreated: (context: CodegenContext) => void
+}
+
+function isAutoImported(tag: string) {
+  return (
+    isEasycomTag(tag) || isBuiltInComponent(tag.replace(COMPONENT_PREFIX, ''))
+  )
 }
 
 const resolveComponentRE = /_resolveComponent\("(.*)"\)/
