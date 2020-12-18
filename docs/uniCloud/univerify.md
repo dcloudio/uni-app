@@ -34,7 +34,7 @@ const res = await uniCloud.getPhoneNumber({
   provider: 'univerify',
   apiKey: 'xxx', // 在开发者中心开通服务并获取apiKey
   apiSecret: 'xxx', // 在开发者中心开通服务并获取apiSecret
-  accessToken: event.accessToken,
+  access_token: event.access_token,
   openid: event.openid
 })
 // res形式如下
@@ -76,7 +76,7 @@ module.exports = async(event){
   	provider: 'univerify',
   	apiKey: 'xxx', // 在开发者中心开通服务并获取apiKey
   	apiSecret: 'xxx', // 在开发者中心开通服务并获取apiSecret
-  	accessToken: event.accessToken,
+  	access_token: event.access_token,
   	openid: event.openid
   })
   // 执行入库等操作，正常情况下不要把完整手机号返回给前端
@@ -103,7 +103,7 @@ xhr.onload = function(e) {
 xhr.open( "POST", "https://xxx" ); // url应为云函数Url化之后的地址，可以在uniCloud web控制台云函数详情页面看到
 xhr.setRequestHeader('Content-Type','application/json');
 xhr.send(JSON.stringify({
-  accessToken: 'xxx', // 客户端一键登录接口返回的accessToken
+  access_token: 'xxx', // 客户端一键登录接口返回的access_token
   openid: 'xxx' // 客户端一键登录接口返回的openid
 }));
   
@@ -122,7 +122,7 @@ module.exports = async(event){
     appid: 'xxx', // DCloud appid，不同于callFunction方式调用，使用云函数Url化需要传递DCloud appid参数
   	apiKey: 'xxx', // 在开发者中心开通服务并获取apiKey
   	apiSecret: 'xxx', // 在开发者中心开通服务并获取apiSecret
-  	accessToken: accessToken,
+  	access_token: access_token,
   	openid: openid
   })
   // 执行入库等操作，正常情况下不要把完整手机号返回给前端
@@ -148,7 +148,7 @@ const hmac = crypto.createHmac('sha256', secret);
 
 // 自有服务器生成签名，并以GET方式发送请求
 const params = {
-  accessToken: 'xxx', // 客户端传到自己服务器的参数
+  access_token: 'xxx', // 客户端传到自己服务器的参数
   openid: 'xxx'
 }
 // 字母顺序排序后拼接签名串
@@ -192,7 +192,7 @@ module.exports = async(event){
     appid: 'xxx', // DCloud appid，不同于callFunction方式调用，使用云函数Url化需要传递DCloud appid参数
   	apiKey: 'xxx', // 在开发者中心开通服务并获取apiKey
   	apiSecret: 'xxx', // 在开发者中心开通服务并获取apiSecret
-  	accessToken: accessToken,
+  	access_token: access_token,
   	openid: openid
   })
   // 返回手机号给自己服务器
