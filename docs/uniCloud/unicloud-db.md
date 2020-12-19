@@ -100,12 +100,13 @@ TODO：暂不支持groupby、in子查询功能。后续会补充
 状态示例：
 ```html
 <unicloud-db v-slot:default="{data, loading, error, options}" collection="user">
-				<view v-if="error">加载失败：{{error.message}}</view>
-				<view v-else-if="loading">正在加载...</view>
-				<view v-else>
-					{{data}}
-				</view>
-			</unicloud-db>
+	<view v-if="error">{{error.message}}</view>
+	<view v-else-if="loading">正在加载...</view>
+	<view v-else>
+		{{data}}
+	</view>
+</unicloud-db>
+
 ```
 
 
