@@ -16,7 +16,6 @@ export const buildPluginPagesJson: Plugin = {
   },
   load(id) {
     if (id.endsWith(pagesJsonAliasName)) {
-      console.log(id.replace(pagesJsonAliasName, pagesJsonName))
       return parsePagesJson(
         fs
           .readFileSync(id.replace(pagesJsonAliasName, pagesJsonName))

@@ -9,6 +9,7 @@ import {
 } from './server'
 
 import {
+  buildPluginCopy,
   buildPluginInject,
   buildPluginMainJs,
   buildPluginPagesJson,
@@ -16,10 +17,16 @@ import {
 } from './build'
 
 import { dynamicImportCode } from './utils/dynamicImportUtils'
+import { initEasycoms } from './utils/easycomUtils'
 
 const VUES = ['vue', 'vue.js', './vue.js']
 
-const plugins = [buildPluginMainJs, buildPluginPagesJson, buildPluginInject]
+const plugins = [
+  buildPluginMainJs,
+  buildPluginPagesJson,
+  buildPluginInject,
+  buildPluginCopy
+]
 
 if (dynamicImportCode) {
   plugins.push(buildPluginDynamicImport)
@@ -47,8 +54,12 @@ const plugin: Plugin = {
   rollupInputOptions: {
     plugins
   },
-  vueCompilerOptions
+  vueCompilerOptions,
+  configureBuild({ root }) {
+    initEasycoms(root)
+  }
 }
+// TODO 等待 vite 升级支持以下配置
 Object.assign(plugin, {
   optimizeDeps: {
     exclude: [

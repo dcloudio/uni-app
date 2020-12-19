@@ -2,6 +2,8 @@ import path from 'path'
 
 import slash from 'slash'
 
+import { camelize, capitalize } from '@vue/shared'
+
 import { parseJson } from '@dcloudio/uni-cli-shared'
 
 interface PageOptions {
@@ -103,7 +105,7 @@ function formatPagesJson(jsonStr: string) {
 }
 
 function formatPageIdentifier(path: string) {
-  return path.replace(/\//g, '')
+  return capitalize(camelize(path.replace(/\//g, '-')))
 }
 
 function generatePageDefineCode(pageOptions: PageOptions) {

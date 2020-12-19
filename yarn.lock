@@ -714,6 +714,12 @@
     "@types/qs" "*"
     "@types/serve-static" "*"
 
+"@types/fs-extra@^9.0.5":
+  version "9.0.5"
+  resolved "https://registry.npmjs.org/@types/fs-extra/-/fs-extra-9.0.5.tgz#2afb76a43a4bef80a363b94b314d0ca1694fc4f8"
+  dependencies:
+    "@types/node" "*"
+
 "@types/graceful-fs@^4.1.2":
   version "4.1.4"
   resolved "https://registry.npmjs.org/@types/graceful-fs/-/graceful-fs-4.1.4.tgz#4ff9f641a7c6d1a3508ff88bc3141b152772e753"
