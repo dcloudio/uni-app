@@ -44,6 +44,14 @@ module.exports = function traverseData (path, state, tagName) {
         t.stringLiteral('wx')
       )
     )
+    if (state.options.platform.name === 'mp-alipay') {
+      addAttrProperties.push(
+        t.objectProperty(
+          t.stringLiteral('ref'),
+          t.stringLiteral('__r')
+        )
+      )
+    }
   }
 
   if (addAttrProperties.length) {
