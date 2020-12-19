@@ -5,10 +5,12 @@
       :router-key="key"
       :keep-alive-include="keepAliveInclude"
       @maxWidth="onMaxWidth"
+      @layout="onLayout"
     />
     <tab-bar
       v-if="hasTabBar"
       v-show="showTabBar"
+      ref="tabBar"
       v-bind="tabBarOptions"
     />
     <toast
@@ -36,6 +38,7 @@
 </template>
 <script>
 import {
+  hasOwn,
   isPlainObject
 } from 'uni-shared'
 
@@ -68,7 +71,9 @@ export default {
       transitionName: 'fade',
       hideTabBar: false,
       sysComponents: this.$sysComponents,
-      showMaxWidth: false
+      showLayout: false,
+      showMaxWidth: false,
+      tabBarMediaQuery: false
     }
   },
   computed: {
@@ -82,7 +87,11 @@ export default {
       return tabBar.list && tabBar.list.length
     },
     showTabBar () {
-      return this.$route.meta.isTabBar && !this.hideTabBar
+      return !this.hideTabBar &&
+          (
+            this.$route.meta.isTabBar ||
+            this.tabBarMediaQuery
+          )
     }
   },
   watch: {
@@ -107,6 +116,7 @@ export default {
     if (uni.canIUse('css.var')) {
       document.documentElement.style.setProperty('--status-bar-height', '0px')
     }
+    this.initMediaQuery()
   },
   mounted () {
     window.addEventListener('message', function (evt) {
@@ -123,8 +133,24 @@ export default {
     })
   },
   methods: {
+    onLayout (showLayout) {
+      this.showLayout = showLayout
+    },
     onMaxWidth (showMaxWidth) {
       this.showMaxWidth = showMaxWidth
+    },
+    initMediaQuery () {
+      if (
+        window.matchMedia &&
+          tabBar.matchMedia &&
+          hasOwn(tabBar.matchMedia, 'minWidth')
+      ) {
+        const mediaQueryList = window.matchMedia('(min-width: ' + tabBar.matchMedia.minWidth + 'px)')
+        mediaQueryList.addListener((e) => {
+          this.tabBarMediaQuery = e.matches
+        })
+        this.tabBarMediaQuery = mediaQueryList.matches
+      }
     }
   }
 }

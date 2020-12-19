@@ -178,12 +178,23 @@ export function warpPlusEvent (module, name) {
   }
 }
 
+export function warpPlusSuccessCallback (callbackId, neme) {
+  return function errorCallback (result) {
+    result = result || {}
+    invoke(callbackId, Object.assign({}, result, {
+      errMsg: `${neme}:ok`
+    }))
+  }
+}
+
 export function warpPlusErrorCallback (callbackId, neme, errMsg) {
   return function errorCallback (error) {
     error = error || {}
+    const code = error.code || 0
     invoke(callbackId, {
       errMsg: `${neme}:fail ${error.message || errMsg || ''}`,
-      errCode: error.code || 0
+      errCode: code,
+      code
     })
   }
 }

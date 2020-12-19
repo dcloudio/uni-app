@@ -2162,7 +2162,7 @@ function handleRef (ref) {
 }
 
 function triggerEvent (type, detail, options) {
-  const handler = this.props[customize('on-' + type)];
+  const handler = this.props && this.props[customize('on-' + type)];
   if (!handler) {
     return
   }
@@ -2405,7 +2405,8 @@ function parsePage (vuePageOptions) {
     },
     __r: handleRef,
     __e: handleEvent,
-    __l: handleLink$1
+    __l: handleLink$1,
+    triggerEvent
   };
 
   initHooks(pageOptions, hooks$1, vuePageOptions);

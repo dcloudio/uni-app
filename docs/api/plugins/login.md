@@ -19,6 +19,7 @@ H5平台登陆注意事项：
 |provider|String|否|登录服务提供商，通过 [uni.getProvider](/api/plugins/provider) 获取，如果不设置则弹出登录列表选择界面||
 |scopes|String/Array|见平台差异说明|授权类型，默认 auth_base。支持 auth_base（静默授权）/ auth_user（主动授权） / auth_zhima（芝麻信用）|支付宝小程序|
 |timeout|Number|否|超时时间，单位ms|微信小程序、百度小程序|
+|univerifyStyle|Object|否|[一键登录](/univerify)页面样式|App 3.0.0+|
 |success|Function|否|接口调用成功的回调||
 |fail|Function|否|接口调用失败的回调函数||
 |complete|Function|否|接口调用结束的回调函数（调用成功、失败都会执行）|&nbsp;|
@@ -38,6 +39,7 @@ H5平台登陆注意事项：
 * [百度小程序登录](https://smartprogram.baidu.com/docs/develop/api/open_log/#%E6%8E%88%E6%9D%83%E6%B5%81%E7%A8%8B%E8%AF%B4%E6%98%8E/)
 * [字节跳动小程序登录](https://developer.toutiao.com/dev/cn/mini-app/develop/open-capacity/log-in/login)
 * [Apple登录、苹果登录、Sign in with Apple](https://ask.dcloud.net.cn/article/36651)
+* [一键登陆](/univerify)
 
 如果服务端使用`uniCloud`，那么官方提供了[uni-id](https://uniapp.dcloud.net.cn/uniCloud/uni-id)云端统一登录服务，把微信登录、短信验证码登录及角色权限管理等服务端登录开发，进行了统一的封装。
 
@@ -163,3 +165,31 @@ uni.login({
 #### App端集成其他登陆SDK如支付宝、淘宝、facebook登陆的说明
 1. [支付宝登陆](https://ext.dcloud.net.cn/search?q=%E6%94%AF%E4%BB%98%E5%AE%9D%E7%99%BB%E9%99%86)、[淘宝登陆](https://ext.dcloud.net.cn/search?q=%E7%99%BE%E5%B7%9D)、[抖音登录](https://ext.dcloud.net.cn/search?q=%E6%8A%96%E9%9F%B3%E7%99%BB%E5%BD%95)、[facebook登录](https://ext.dcloud.net.cn/search?q=facebook%E7%99%BB%E5%BD%95)等在插件市场均已有插件，还有[sharesdk](https://ext.dcloud.net.cn/search?q=sharesdk)等专业集成多家登录分享的插件。
 2. 也可以内嵌web-view组件，使用web登陆模式集成这些三方登陆
+
+### uni.preLogin(OBJECT)
+预登录。
+
+**平台差异说明**
+
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|3.0.0+|x|x|x|x|x|x|
+
+**OBJECT 参数说明**
+
+|参数名|类型|必填|说明|
+|:-|:-|:-|:-|
+|provider|String|否|登录服务提供商，通过 [uni.getProvider](/api/plugins/provider) 获取，目前仅支持[一键登陆](/univerify)|
+|success|Function|否|接口调用成功的回调|
+|fail|Function|否|接口调用失败的回调函数|
+|complete|Function|否|接口调用结束的回调函数（调用成功、失败都会执行）|
+
+
+### uni.closeAuthView()
+关闭[一键登陆](/univerify)页面。
+
+**平台差异说明**
+
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|3.0.0+|x|x|x|x|x|x|

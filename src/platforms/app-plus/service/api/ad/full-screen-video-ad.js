@@ -1,7 +1,8 @@
 const eventNames = [
   'load',
   'close',
-  'error'
+  'error',
+  'adClicked'
 ]
 
 class FullScreenVideoAd {
@@ -49,6 +50,9 @@ class FullScreenVideoAd {
         this._loadPromiseReject(data)
         this._loadPromiseReject = null
       }
+    })
+    ad.onAdClicked((e) => {
+      this._dispatchEvent('adClicked', {})
     })
   }
 

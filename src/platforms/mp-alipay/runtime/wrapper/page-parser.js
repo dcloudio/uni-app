@@ -17,6 +17,7 @@ import {
   handleRef,
   handleLink,
   initBehavior,
+  triggerEvent,
   initChildVues,
   initSpecialMethods
 } from './util'
@@ -85,7 +86,8 @@ export default function parsePage (vuePageOptions) {
     },
     __r: handleRef,
     __e: handleEvent,
-    __l: handleLink
+    __l: handleLink,
+    triggerEvent
   }
 
   initHooks(pageOptions, hooks, vuePageOptions)

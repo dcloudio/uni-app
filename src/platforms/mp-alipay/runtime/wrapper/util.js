@@ -122,7 +122,7 @@ export function handleRef (ref) {
 }
 
 export function triggerEvent (type, detail, options) {
-  const handler = this.props[customize('on-' + type)]
+  const handler = this.props && this.props[customize('on-' + type)]
   if (!handler) {
     return
   }

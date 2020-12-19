@@ -213,7 +213,7 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style>
 @font-face {
   font-weight: normal;
   font-style: normal;
@@ -232,7 +232,7 @@ export default {
   background: #f8f8f8;
 }
 
-.map {
+.uni-system-choose-location .map {
   position: absolute;
   top: -40px;
   left: 0;
@@ -240,7 +240,7 @@ export default {
   height: 380px;
 }
 
-.map-location {
+.uni-system-choose-location .map-location {
   position: absolute;
   left: 50%;
   bottom: 50%;
@@ -252,7 +252,7 @@ export default {
   background-size: 100%;
 }
 
-.map-move {
+.uni-system-choose-location .map-move {
   position: absolute;
   bottom: 50px;
   right: 10px;
@@ -267,7 +267,7 @@ export default {
   box-shadow: 0px 0 5px 1px rgba(0, 0, 0, 0.3);
 }
 
-.map-move > i {
+.uni-system-choose-location .map-move > i {
   display: block;
   width: 100%;
   height: 100%;
@@ -279,7 +279,7 @@ export default {
   -webkit-font-smoothing: antialiased;
 }
 
-.nav {
+.uni-system-choose-location .nav {
   position: absolute;
   top: 0;
   left: 0;
@@ -293,7 +293,7 @@ export default {
   );
 }
 
-.nav-btn {
+.uni-system-choose-location .nav-btn {
   position: absolute;
   box-sizing: border-box;
   top: 0;
@@ -308,16 +308,16 @@ export default {
   cursor: pointer;
 }
 
-.nav-btn.confirm {
+.uni-system-choose-location .nav-btn.confirm {
   left: auto;
   right: 0;
 }
 
-.nav-btn.disable {
+.uni-system-choose-location .nav-btn.disable {
   opacity: 0.4;
 }
 
-.nav-btn > .uni-btn-icon {
+.uni-system-choose-location .nav-btn > .uni-btn-icon {
   display: block;
   width: 100%;
   height: 100%;
@@ -325,11 +325,11 @@ export default {
   border-radius: 2px;
 }
 
-.nav-btn.confirm > .uni-btn-icon {
+.uni-system-choose-location .nav-btn.confirm > .uni-btn-icon {
   background-color: #007aff;
 }
 
-.menu {
+.uni-system-choose-location .menu {
   position: absolute;
   top: 300px;
   left: 0;
@@ -338,7 +338,7 @@ export default {
   background-color: white;
 }
 
-.search {
+.uni-system-choose-location .search {
   display: flex;
   flex-direction: row;
   height: 50px;
@@ -348,7 +348,7 @@ export default {
   background-color: white;
 }
 
-.search-input {
+.uni-system-choose-location .search-input {
   flex: 1;
   height: 100%;
   border-radius: 5px;
@@ -356,15 +356,14 @@ export default {
   background: #ebebeb;
 }
 
-.search-btn {
+.uni-system-choose-location .search-btn {
   width: 2.8em;
   color: #007aff;
   font-size: 17px;
   text-align: center;
-  cursor: pointer;
 }
 
-.list {
+.uni-system-choose-location .list {
   position: absolute;
   top: 50px;
   left: 0;
@@ -374,21 +373,21 @@ export default {
   /* background-color: #f6f6f6; */
 }
 
-.list-loading {
+.uni-system-choose-location .list-loading {
   display: flex;
   height: 50px;
   justify-content: center;
   align-items: center;
 }
 
-.list-item {
+.uni-system-choose-location .list-item {
   position: relative;
   padding: 10px;
   padding-right: 40px;
   cursor: pointer;
 }
 
-.list-item.selected::before {
+.uni-system-choose-location .list-item.selected::before {
   position: absolute;
   top: 50%;
   right: 10px;
@@ -405,7 +404,7 @@ export default {
   -webkit-font-smoothing: antialiased;
 }
 
-.list-item:not(:last-child)::after {
+.uni-system-choose-location .list-item:not(:last-child)::after {
   position: absolute;
   content: "";
   height: 1px;
@@ -415,14 +414,14 @@ export default {
   background-color: #d3d3d3;
 }
 
-.list-item-title {
+.uni-system-choose-location .list-item-title {
   font-size: 14px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 
-.list-item-detail {
+.uni-system-choose-location .list-item-detail {
   font-size: 12px;
   color: #808080;
   overflow: hidden;
@@ -431,15 +430,15 @@ export default {
 }
 
 @media screen and (min-width: 800px) {
-  .map {
+  .uni-system-choose-location .map {
     top: 0;
     height: 100%;
   }
-  .map-move {
+  .uni-system-choose-location .map-move {
     bottom: 10px;
     right: 320px;
   }
-  .menu {
+  .uni-system-choose-location .menu {
     top: 54px;
     left: auto;
     right: 10px;

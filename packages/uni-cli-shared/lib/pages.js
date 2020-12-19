@@ -339,31 +339,72 @@ const isDirectory = source => fs.lstatSync(source).isDirectory()
 function getAutoComponentsByDir (componentsPath, absolute = false) {
   const components = {}
   try {
-    fs.existsSync(componentsPath) && fs.readdirSync(componentsPath).forEach(name => {
-      const folder = path.resolve(componentsPath, name)
-      if (!isDirectory(folder)) {
-        return
+    if (fs.existsSync(componentsPath)) {
+      let importComponentsDir = '@/components'
+      const uniModulesDir = path.resolve(process.env.UNI_INPUT_DIR, 'uni_modules')
+      if (!absolute && componentsPath.includes(uniModulesDir)) {
+        importComponentsDir = `@/uni_modules/${path.basename(path.dirname(componentsPath))}/components`
       }
-      const importDir = absolute ? normalizePath(folder) : `@/components/${name}`
-      // 读取文件夹文件列表，比对文件名（fs.existsSync在大小写不敏感的系统会匹配不准确）
-      const files = fs.readdirSync(folder)
-      if (files.includes(name + '.vue')) {
-        components[`^${name}$`] = `${importDir}/${name}.vue`
-      } else if (files.includes(name + '.nvue')) {
-        components[`^${name}$`] = `${importDir}/${name}.nvue`
-      }
-    })
+      fs.readdirSync(componentsPath).forEach(name => {
+        const folder = path.resolve(componentsPath, name)
+        if (!isDirectory(folder)) {
+          return
+        }
+        const importDir = absolute ? normalizePath(folder) : `${importComponentsDir}/${name}`
+        // 读取文件夹文件列表，比对文件名（fs.existsSync在大小写不敏感的系统会匹配不准确）
+        const files = fs.readdirSync(folder)
+        if (files.includes(name + '.vue')) {
+          components[`^${name}$`] = `${importDir}/${name}.vue`
+        } else if (files.includes(name + '.nvue')) {
+          components[`^${name}$`] = `${importDir}/${name}.nvue`
+        }
+      })
+    }
   } catch (e) {
     console.log(e)
   }
   return components
 }
 
+function initAutoComponents () {
+  const allComponents = {}
+  const componentsDirs = [path.resolve(process.env.UNI_INPUT_DIR, 'components')]
+  global.uniModules.forEach(module => {
+    componentsDirs.push(path.resolve(process.env.UNI_INPUT_DIR, 'uni_modules', module, 'components'))
+  })
+  componentsDirs.forEach((componentsDir) => {
+    // 根目录 components 使用相对路径，uni_modules 使用绝对路径
+    const currentComponents = getAutoComponentsByDir(componentsDir, false)
+    Object.keys(currentComponents).forEach(name => {
+      (allComponents[name] || (allComponents[name] = [])).push(currentComponents[name])
+    })
+  })
+  const components = {}
+  const conflictFiles = []
+  Object.keys(allComponents).forEach(name => {
+    const files = allComponents[name]
+    components[name] = files[0]
+    if (files.length > 1) {
+      conflictFiles.push(files)
+    }
+  })
+  if (conflictFiles.length > 0) {
+    conflictFiles.forEach(files => {
+      let usedFile
+      console.warn('easycom组件冲突：[' + files.map((file, index) => {
+        if (index === 0) {
+          usedFile = file
+        }
+        return file
+      }).join(',') + ']，优先使用：' + usedFile)
+      console.log('\n')
+    })
+  }
+  return components
+}
+
 function initAutoImportScanComponents () {
-  const componentsPath = path.resolve(process.env.UNI_INPUT_DIR, 'components')
-
-  const components = getAutoComponentsByDir(componentsPath)
-
+  const components = initAutoComponents()
   if (process.env.UNI_PLATFORM === 'quickapp-native') {
     if (!uniQuickAppAutoImportScanComponents) {
       uniQuickAppAutoImportScanComponents = getAutoComponentsByDir(
@@ -463,7 +504,7 @@ function parseUsingAutoImportComponents (usingAutoImportComponents) {
   return autoImportComponents
 }
 
-const BUILT_IN_COMPONENTS = ['page-meta', 'navigation-bar', 'uni-match-media']
+const BUILT_IN_COMPONENTS = ['page-meta', 'navigation-bar', 'uni-match-media', 'unicloud-db']
 
 function isBuiltInComponent (name) {
   return BUILT_IN_COMPONENTS.includes(name)

@@ -41,9 +41,20 @@ function hasOwn (obj, key) {
   return _hasOwnProperty.call(obj, key)
 }
 
+function trimMPJson (json) {
+  delete json.maxWidth
+  delete json.topWindow
+  delete json.leftWindow
+  delete json.rightWindow
+  if (json.tabBar) {
+    delete json.tabBar.matchMedia
+  }
+  return json
+}
+
 function parseStyle (style = {}, root = '') {
   // TODO pages.json 触发了两次，需要排查
-  style = JSON.parse(JSON.stringify(style))
+  style = trimMPJson(JSON.parse(JSON.stringify(style)))
 
   let platformStyle = {}
 
@@ -117,5 +128,6 @@ function parseTabBar (style = {}) {
 module.exports = {
   hasOwn,
   parseStyle,
-  parseTabBar
+  parseTabBar,
+  trimMPJson
 }

@@ -16,10 +16,15 @@ function handleObjectExpression (declaration, path, state) {
       if (optionProperty) {
         if (name === 'props') {
           if (t.isArrayExpression(optionProperty.value)) {
-            state.options[name] = JSON.stringify(optionProperty.value.elements.filter(element => t.isStringLiteral(element)).map(({ value }) => value))
+            state.options[name] = JSON.stringify(optionProperty.value.elements.filter(element => t.isStringLiteral(
+              element)).map(({
+              value
+            }) => value))
           } else if (t.isObjectExpression(optionProperty.value)) {
             const props = []
-            optionProperty.value.properties.forEach(({ key }) => {
+            optionProperty.value.properties.forEach(({
+              key
+            }) => {
               if (t.isIdentifier(key)) {
                 props.push(key.name)
               } else if (t.isStringLiteral(key)) {
@@ -60,7 +65,9 @@ function handleComponentsObjectExpression (componentsObjExpr, path, state, prepe
   state.components = prepend ? components.concat(state.components) : components
 }
 
-function handleIdentifier ({ name }, path, state) {
+function handleIdentifier ({
+  name
+}, path, state) {
   // 仅做有限查找
   for (let i = path.container.length; i > 0; i--) {
     const node = path.container[i - 1]
@@ -101,6 +108,19 @@ module.exports = function (ast, state = {
   options: {}
 }) {
   babelTraverse(ast, {
+    CallExpression (path) {
+      const callee = path.node.callee
+      const args = path.node.arguments
+      const objExpr = args[0]
+      if (
+        t.isIdentifier(callee) &&
+        callee.name === 'defineComponent' &&
+        args.length === 1 &&
+        t.isObjectExpression(objExpr)
+      ) {
+        handleObjectExpression(objExpr, path, state)
+      }
+    },
     AssignmentExpression (path) {
       const leftExpression = path.node.left
       const rightExpression = path.node.right

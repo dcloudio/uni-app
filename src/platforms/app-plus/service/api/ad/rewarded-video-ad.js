@@ -2,7 +2,8 @@ const eventNames = [
   'load',
   'close',
   'verify',
-  'error'
+  'error',
+  'adClicked'
 ]
 
 const ERROR_CODE_LIST = [-5001, -5002, -5003, -5004, -5005, -5006]
@@ -61,6 +62,9 @@ class RewardedVideoAd {
         this._loadPromiseReject(data)
         this._loadPromiseReject = null
       }
+    })
+    rewardAd.onAdClicked((e) => {
+      this._dispatchEvent('adClicked', {})
     })
 
     if (this._preload) {

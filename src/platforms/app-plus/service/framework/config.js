@@ -67,6 +67,9 @@ export function initEntryPage () {
   }
 
   if (!entryPagePath || entryPagePath === __uniConfig.entryPagePath) {
+    if (entryPageQuery) {
+      __uniConfig.entryPageQuery = entryPageQuery
+    }
     return
   }
 

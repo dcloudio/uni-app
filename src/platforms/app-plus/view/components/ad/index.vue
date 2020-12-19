@@ -136,9 +136,8 @@ export default {
         })
       }
     })
-    // 仅 Android 下载类广告
-    adView.setDownloadListener && adView.setDownloadListener((data) => {
-      this.$trigger('downloadchange', {}, data)
+    adView.setAdClickedListener((data) => {
+      this.$trigger('adclicked', {}, data)
     })
     this._request()
   },

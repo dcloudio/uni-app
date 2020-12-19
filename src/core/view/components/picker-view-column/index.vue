@@ -95,6 +95,15 @@ export default {
     })
     initClick(this.$el)
     initScrollBounce()
+
+    let $vm = this
+    while ($vm) {
+      const scopeId = $vm.$options._scopeId
+      if (scopeId) {
+        this.$refs.indicator.setAttribute(scopeId, '')
+      }
+      $vm = $vm.$parent
+    }
   },
   methods: {
     _setItemHeight (height) {

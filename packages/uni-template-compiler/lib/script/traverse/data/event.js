@@ -304,47 +304,60 @@ function parseEvent (keyPath, valuePath, state, isComponent, isNativeOn = false,
           }
         }
 
-        anonymous && funcPath.traverse({
-          noScope: true,
-          MemberExpression (path) {
-            if (path.node.object.name === '$event' && path.node.property.name ===
-              'stopPropagation') {
-              isCatch = true
-              path.stop()
-            }
-          },
-          AssignmentExpression (path) { // "update:title": function($event) {title = $event}
-            const left = path.node.left
-            const right = path.node.right
-            // v-bind:title.sync="title"
-            if (t.isIdentifier(left) &&
-              t.isIdentifier(right) &&
-              right.name === '$event' &&
-              type.indexOf('update:') === 0) {
-              methods.push(t.arrayExpression( // ['$set',['title','$event']]
-                [
-                  t.stringLiteral(INTERNAL_SET_SYNC),
-                  t.arrayExpression([
-                    t.identifier(left.name),
-                    t.stringLiteral(left.name),
-                    t.stringLiteral('$event')
-                  ])
-                ]
-              ))
-              anonymous = false
-              path.stop()
-            }
-          },
-          ReturnStatement (path) {
-            const argument = path.node.argument
-            if (t.isCallExpression(argument)) {
-              if (t.isIdentifier(argument.callee)) { // || t.isMemberExpression(argument.callee)
+        // 判断是否是复杂表达式  数组  或  对象
+        const isNotDynamicExpression = (state) => {
+          if (!(state.scoped[0])) {
+            return true
+          }
+          const value = state.scoped[0].forExtra[0].elements[0].value
+          return !(typeof value === 'string' && (value.startsWith('[') || value.startsWith('}')))
+        }
+
+        // 如果v-for遍历的值为 数组、对象 则进入复杂表达式
+        if (isNotDynamicExpression(state)) {
+          anonymous && funcPath.traverse({
+            noScope: true,
+            MemberExpression (path) {
+              if (path.node.object.name === '$event' && path.node.property.name ===
+                'stopPropagation') {
+                isCatch = true
+                path.stop()
+              }
+            },
+            AssignmentExpression (path) { // "update:title": function($event) {title = $event}
+              const left = path.node.left
+              const right = path.node.right
+              // v-bind:title.sync="title"
+              if (t.isIdentifier(left) &&
+                t.isIdentifier(right) &&
+                right.name === '$event' &&
+                type.indexOf('update:') === 0) {
+                methods.push(t.arrayExpression( // ['$set',['title','$event']]
+                  [
+                    t.stringLiteral(INTERNAL_SET_SYNC),
+                    t.arrayExpression([
+                      t.identifier(left.name),
+                      t.stringLiteral(left.name),
+                      t.stringLiteral('$event')
+                    ])
+                  ]
+                ))
                 anonymous = false
-                parseEventByCallExpression(argument, methods)
+                path.stop()
+              }
+            },
+            ReturnStatement (path) {
+              const argument = path.node.argument
+              if (t.isCallExpression(argument)) {
+                if (t.isIdentifier(argument.callee)) { // || t.isMemberExpression(argument.callee)
+                  anonymous = false
+                  parseEventByCallExpression(argument, methods)
+                }
               }
             }
-          }
-        })
+          })
+        }
+
         if (anonymous) {
           // 处理复杂表达式中使用的局部变量（主要在v-for中定义）
           funcPath.traverse({

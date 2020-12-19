@@ -56,6 +56,16 @@ function getExtname (type) {
   return extname ? `.${extname}` : ''
 }
 /**
+ * 简易获取文件名
+ * @param {*} url
+ */
+export function getFileName (url) {
+  url = url.split('#')[0].split('?')[0]
+  const array = url.split('/')
+  return array[array.length - 1]
+}
+
+/**
  * blob转File
  * @param {Blob} blob
  * @param {string} type
@@ -91,6 +101,15 @@ export function fileToUrl (file) {
   var url = (window.URL || window.webkitURL).createObjectURL(file)
   files[url] = file
   return url
+}
+
+export function getSameOriginUrl (url) {
+  const a = document.createElement('a')
+  a.href = url
+  if (a.origin === location.origin) {
+    return Promise.resolve(url)
+  }
+  return urlToFile(url).then(fileToUrl)
 }
 
 export function revokeObjectURL (url) {

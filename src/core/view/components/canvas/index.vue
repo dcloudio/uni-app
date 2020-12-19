@@ -9,7 +9,16 @@
       width="300"
       height="150"
     />
-    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden;">
+    <div
+      style="
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      "
+    >
       <slot />
     </div>
     <v-uni-resize-sensor
@@ -29,6 +38,7 @@ import {
 } from 'uni-helpers/hidpi'
 
 import saveImage from 'uni-platform/helpers/save-image'
+import { getSameOriginUrl } from 'uni-platform/helpers/file'
 
 function resolveColor (color) {
   color = color.slice(0)
@@ -300,66 +310,16 @@ export default {
           image.onload = function () {
             image.ready = true
           }
-          /**
-           * 从本地文件加载
-           * @param {string} path 文件路径
-           */
-          function loadFile (path) {
-            function onError () {
-              const bitmap = new plus.nativeObj.Bitmap(`bitmap_${Date.now()}_${Math.random()}}`)
-              bitmap.load(path, function () {
-                image.src = bitmap.toBase64Data()
-                bitmap.clear()
-              }, function () {
-                bitmap.clear()
-                image.src = src
-              })
-            }
-            plus.io.resolveLocalFileSystemURL(path, function (entry) {
-              entry.file(function (file) {
-                var fileReader = new plus.io.FileReader()
-                fileReader.onload = function (data) {
-                  image.src = data.target.result
-                }
-                fileReader.onerror = onError
-                fileReader.readAsDataURL(file)
-              }, onError)
-            }, onError)
-          }
-          /**
-           * 从网络加载
-           * @param {string} url 文件地址
-           */
-          function loadUrl (url) {
-            plus.downloader.createDownload(url, {
-              filename: '_doc/uniapp_temp/download/'
-            }, function (d, status) {
-              if (status === 200) {
-                loadFile(d.filename)
-              } else {
-                image.src = src
-              }
-            }).start()
-          }
 
-          if (__PLATFORM__ === 'app-plus') {
-            // WKWebView
-            if (window.webkit && window.webkit.messageHandlers) {
-              if (src.indexOf('file://') === 0) {
-                loadFile(src)
-                return
-              } else if (src.indexOf('http://') === 0 || src.indexOf('https://') === 0) {
-                loadUrl(src)
-                return
-              }
-            }
-            // 安卓 WebView 本地路径
-            if (src.indexOf('file://') === 0 && navigator.vendor === 'Google Inc.') {
-              image.crossOrigin = 'anonymous'
-            }
+          // 安卓 WebView 本地路径
+          if (__PLATFORM__ === 'app-plus' && navigator.vendor === 'Google Inc.' && src.indexOf('file://') === 0) {
+            image.crossOrigin = 'anonymous'
           }
-
-          image.src = src
+          getSameOriginUrl(src).then(src => {
+            image.src = src
+          }).catch(() => {
+            image.src = src
+          })
         }
       })
     },
@@ -435,16 +395,24 @@ export default {
       context.drawImageByCanvas(canvas, x, y, width, height, 0, 0, destWidth, destHeight, false)
       let result
       try {
+        let compressed
         if (dataType === 'base64') {
           data = newCanvas.toDataURL(`image/${type}`, qualit)
         } else {
           const imgData = context.getImageData(0, 0, destWidth, destHeight)
-          // fix [...]展开TypedArray在低版本手机报错的问题，使用Array.prototype.slice
-          data = Array.prototype.slice.call(imgData.data)
+          if (__PLATFORM__ === 'app-plus') {
+            const pako = require('pako')
+            data = pako.deflateRaw(imgData.data, { to: 'string' })
+            compressed = true
+          } else {
+            // fix [...]展开TypedArray在低版本手机报错的问题，使用Array.prototype.slice
+            data = Array.prototype.slice.call(imgData.data)
+          }
         }
         result = {
           errMsg: 'canvasGetImageData:ok',
           data,
+          compressed,
           width: destWidth,
           height: destHeight
         }
@@ -470,6 +438,7 @@ export default {
       y,
       width,
       height,
+      compressed,
       callbackId
     }) {
       try {
@@ -478,6 +447,10 @@ export default {
         }
         const canvas = getTempCanvas(width, height)
         const context = canvas.getContext('2d')
+        if (__PLATFORM__ === 'app-plus' && compressed) {
+          const pako = require('pako')
+          data = pako.inflateRaw(data)
+        }
         context.putImageData(new ImageData(new Uint8ClampedArray(data), width, height), 0, 0)
         this.$refs.canvas.getContext('2d').drawImage(canvas, x, y, width, height)
         canvas.height = canvas.width = 0

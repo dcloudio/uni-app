@@ -36,6 +36,7 @@ module.exports = function (content, map) {
   this.callback(null,
     `<style>
   view,
+  label,
   swiper-item,
   scroll-view {
     display:flex;
@@ -61,6 +62,9 @@ module.exports = function (content, map) {
   }
   swiper-item {
     position: absolute;
+  }
+  button {
+    margin: 0;
   }
 </style>
 ${content}`,

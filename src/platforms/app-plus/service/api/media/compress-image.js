@@ -6,23 +6,20 @@ import {
   invoke
 } from '../../bridge'
 
-export function compressImage ({
-  src,
-  quality
-}, callbackId) {
-  var dst = TEMP_PATH + '/compressed/' + Date.now() + (src.match(/\.\S+$/) || [''])[0]
-  plus.zip.compressImage({
-    src,
-    dst,
-    quality
-  }, () => {
+import {
+  warpPlusErrorCallback,
+  getFileName
+} from '../util'
+
+export function compressImage (options, callbackId) {
+  const dst = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(options.src)}`
+  const errorCallback = warpPlusErrorCallback(callbackId, 'compressImage')
+  plus.zip.compressImage(Object.assign({}, options, {
+    dst
+  }), () => {
     invoke(callbackId, {
       errMsg: 'compressImage:ok',
       tempFilePath: dst
     })
-  }, () => {
-    invoke(callbackId, {
-      errMsg: 'compressImage:fail'
-    })
-  })
+  }, errorCallback)
 }

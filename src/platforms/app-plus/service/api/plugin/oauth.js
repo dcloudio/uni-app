@@ -1,120 +1,101 @@
 import {
   invoke
 } from '../../bridge'
+import {
+  warpPlusSuccessCallback,
+  warpPlusErrorCallback
+} from '../util'
 
-const loginServices = {}
-
-const loginByService = (provider, callbackId) => {
-  function login () {
-    loginServices[provider].login(res => {
-      const authResult = res.target.authResult
-      invoke(callbackId, {
-        code: authResult.code,
-        authResult: authResult,
-        errMsg: 'login:ok'
-      })
-    }, err => {
-      invoke(callbackId, {
-        code: err.code,
-        errMsg: 'login:fail:' + err.message
-      })
-    }, provider === 'apple' ? { scope: 'email' } : {})
-  }
-  // 先注销再登录
-  // apple登录logout之后无法重新触发获取email,fullname
-  if (provider === 'apple') {
-    login()
-  } else {
-    loginServices[provider].logout(login, login)
-  }
+function getService (provider) {
+  return new Promise((resolve, reject) => {
+    plus.oauth.getServices(services => {
+      const service = services.find(({ id }) => id === provider)
+      service ? resolve(service) : reject(new Error('provider not find'))
+    }, reject)
+  })
 }
+
 /**
  * 微信登录
  */
 export function login (params, callbackId) {
   const provider = params.provider || 'weixin'
-  if (loginServices[provider]) {
-    loginByService(provider, callbackId)
-  } else {
-    plus.oauth.getServices(services => {
-      loginServices[provider] = services.find(({
-        id
-      }) => id === provider)
-      if (!loginServices[provider]) {
+  const errorCallback = warpPlusErrorCallback(callbackId, 'login')
+
+  getService(provider).then(service => {
+    function login () {
+      service.login(res => {
+        const authResult = res.target.authResult
         invoke(callbackId, {
-          code: '',
-          errMsg: 'login:fail:登录服务[' + provider + ']不存在'
+          code: authResult.code,
+          authResult: authResult,
+          errMsg: 'login:ok'
         })
-      } else {
-        loginByService(provider, callbackId)
-      }
-    }, err => {
-      invoke(callbackId, {
-        code: err.code,
-        errMsg: 'login:fail:' + err.message
-      })
-    })
-  }
+      }, errorCallback, provider === 'apple' ? { scope: 'email' } : params.univerifyStyle || {})
+    }
+    // 先注销再登录
+    // apple登录logout之后无法重新触发获取email,fullname；一键登录无logout
+    if (provider === 'apple' || provider === 'univerify') {
+      login()
+    } else {
+      service.logout(login, login)
+    }
+  }).catch(errorCallback)
 }
 
 export function getUserInfo (params, callbackId) {
   const provider = params.provider || 'weixin'
-  const loginService = loginServices[provider]
-  if (!loginService || !loginService.authResult) {
-    return invoke(callbackId, {
-      errMsg: 'operateWXData:fail:请先调用 uni.login'
-    })
-  }
-  loginService.getUserInfo(res => {
-    let userInfo
-    if (provider === 'weixin') {
-      const wechatUserInfo = loginService.userInfo
-      userInfo = {
-        openId: wechatUserInfo.openid,
-        nickName: wechatUserInfo.nickname,
-        gender: wechatUserInfo.sex,
-        city: wechatUserInfo.city,
-        province: wechatUserInfo.province,
-        country: wechatUserInfo.country,
-        avatarUrl: wechatUserInfo.headimgurl,
-        unionId: wechatUserInfo.unionid
+  const errorCallback = warpPlusErrorCallback(callbackId, 'operateWXData')
+  getService(provider).then(loginService => {
+    loginService.getUserInfo(res => {
+      let userInfo
+      if (provider === 'weixin') {
+        const wechatUserInfo = loginService.userInfo
+        userInfo = {
+          openId: wechatUserInfo.openid,
+          nickName: wechatUserInfo.nickname,
+          gender: wechatUserInfo.sex,
+          city: wechatUserInfo.city,
+          province: wechatUserInfo.province,
+          country: wechatUserInfo.country,
+          avatarUrl: wechatUserInfo.headimgurl,
+          unionId: wechatUserInfo.unionid
+        }
+      } else if (provider === 'apple') {
+        const appleInfo = loginService.appleInfo
+        userInfo = {
+          openId: appleInfo.user,
+          fullName: appleInfo.fullName,
+          email: appleInfo.email,
+          authorizationCode: appleInfo.authorizationCode,
+          identityToken: appleInfo.identityToken,
+          realUserStatus: appleInfo.realUserStatus
+        }
+      } else {
+        userInfo = loginService.userInfo
+        userInfo.openId = userInfo.openId || userInfo.openid || loginService.authResult.openid
+        userInfo.nickName = userInfo.nickName || userInfo.nickname
+        userInfo.avatarUrl = userInfo.avatarUrl || userInfo.headimgurl
       }
-    } else if (provider === 'apple') {
-      const appleInfo = loginService.appleInfo
-      userInfo = {
-        openId: appleInfo.user,
-        fullName: appleInfo.fullName,
-        email: appleInfo.email,
-        authorizationCode: appleInfo.authorizationCode,
-        identityToken: appleInfo.identityToken,
-        realUserStatus: appleInfo.realUserStatus
+      const result = {
+        errMsg: 'operateWXData:ok'
       }
-    } else {
-      loginService.userInfo.openId = loginService.userInfo.openId || loginService.userInfo.openid ||
-                loginService.authResult.openid
-      loginService.userInfo.nickName = loginService.userInfo.nickName || loginService.userInfo.nickname
-      loginService.userInfo.avatarUrl = loginService.userInfo.avatarUrl || loginService.userInfo.avatarUrl ||
-                loginService.userInfo.headimgurl
-      userInfo = loginService.userInfo
-    }
-    const result = {
-      errMsg: 'operateWXData:ok'
-    }
-    if (params.data && params.data.api_name === 'webapi_getuserinfo') {
-      result.data = {
-        data: JSON.stringify(userInfo),
-        rawData: '',
-        signature: '',
-        encryptedData: '',
-        iv: ''
+      if (params.data && params.data.api_name === 'webapi_getuserinfo') {
+        result.data = {
+          data: JSON.stringify(userInfo),
+          rawData: '',
+          signature: '',
+          encryptedData: '',
+          iv: ''
+        }
+      } else {
+        result.userInfo = userInfo
       }
-    } else {
-      result.userInfo = userInfo
-    }
-    invoke(callbackId, result)
-  }, err => {
+      invoke(callbackId, result)
+    }, errorCallback)
+  }).catch(() => {
     invoke(callbackId, {
-      errMsg: 'operateWXData:fail:' + err.message
+      errMsg: 'operateWXData:fail:请先调用 uni.login'
     })
   })
 }
@@ -132,4 +113,14 @@ export function operateWXData (params, callbackId) {
         errMsg: 'operateWXData:fail'
       }
   }
+}
+
+export function preLogin (params, callbackId) {
+  const successCallback = warpPlusSuccessCallback(callbackId, 'preLogin')
+  const errorCallback = warpPlusErrorCallback(callbackId, 'preLogin')
+  getService(params.provider).then(service => service.preLogin(successCallback, errorCallback)).catch(errorCallback)
+}
+
+export function closeAuthView () {
+  getService('univerify').then(service => service.closeAuthView())
 }

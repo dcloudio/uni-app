@@ -74,7 +74,8 @@ export default {
   top: 0;
   width: 100%;
   height: 100%;
-  background: black;
+  z-index: 999;
+  background: rgba(0,0,0,0.8);
 }
 .uni-system-preview-image-swiper {
   position: absolute;

@@ -45,9 +45,9 @@
 
 **Tips**
 
-- 如果type属性可extension同时存在，例如`{type:'image',extension:['.png','.jpg']}`，则会选择`image/png,image/jpg`文件
-- 如果只配置extension属性，例如`{extension:['.doc','.xlsx','.docx']}`，则会选择`.doc,.xlsx,.docx`文件
-- 详情见[`accept`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Attributes/accept)属性
+- 如果type属性和extension同时存在，例如`{type:'image',extension:['.png','.jpg']}`，则会选择`image/png,image/jpg`文件
+- 如果只配置extension属性，例如`{extension:['.doc','.xlsx','.docx']}`，则会选择`.doc,.xlsx,.docx`文件，详情见[`accept属性`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Attributes/accept)
+- 在微信环境中，如果`type="all"`，则`extension`属性失效
 
 **success 返回参数说明**
 

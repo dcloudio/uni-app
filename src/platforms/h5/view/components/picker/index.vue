@@ -16,6 +16,7 @@
           v-show="visible"
           class="uni-mask uni-picker-mask"
           @click="_cancel"
+          @mousemove="_fixInputPosition"
         />
       </transition>
       <div
@@ -88,6 +89,7 @@
     <div
       v-if="system"
       class="uni-picker-system"
+      @mousemove="_fixInputPosition"
     >
       <input
         ref="input"
@@ -598,6 +600,15 @@ export default {
       this.$nextTick(() => {
         this._change()
       })
+    },
+    _fixInputPosition ($event) {
+      if (this.system === 'chrome') {
+        const rect = this.$el.getBoundingClientRect()
+        const style = this.$refs.input.style
+        const fontSize = 32
+        style.left = `${$event.clientX - rect.left - fontSize * 1.5}px`
+        style.top = `${$event.clientY - rect.top - fontSize * 0.5}px`
+      }
     }
   }
 }
@@ -738,6 +749,8 @@ uni-picker[disabled] {
   border: none;
   height: 100%;
   opacity: 0;
+  /* Chrome 无效 */
+  cursor: pointer;
 }
 
 .uni-picker-system > input.firefox {
@@ -747,12 +760,12 @@ uni-picker[disabled] {
 }
 
 .uni-picker-system > input.chrome {
-  /* 翻转且使用较大字体保证可点击日历按钮 */
+  /* 日历空白位置宽度 32px */
   top: 0;
-  right: 100%;
-  font-size: 9999px;
-  transform-origin: 100% 0;
-  transform: scaleX(-1);
+  left: 0;
+  width: 2em;
+  font-size: 32px;
+  height: 32px;
 }
 
 @media screen and (min-width: 500px) and (min-height: 500px) {

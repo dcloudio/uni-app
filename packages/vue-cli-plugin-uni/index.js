@@ -91,12 +91,17 @@ module.exports = (api, options) => {
     )
   ) {
     const migrate = require('@dcloudio/uni-migration')
-    const wxcomponents = path.resolve(process.env.UNI_INPUT_DIR, 'wxcomponents')
-    if (fs.existsSync(wxcomponents)) { // 转换 mp-weixin 小程序组件
-      migrate(wxcomponents, false, {
-        silent: true // 不输出日志
-      })
-    }
+    const wxcomponentDirs = [path.resolve(process.env.UNI_INPUT_DIR, 'wxcomponents')]
+    global.uniModules.forEach(module => {
+      wxcomponentDirs.push(path.resolve(process.env.UNI_INPUT_DIR, 'uni_modules', module, 'wxcomponents'))
+    })
+    wxcomponentDirs.forEach(wxcomponentsDir => {
+      if (fs.existsSync(wxcomponentsDir)) { // 转换 mp-weixin 小程序组件
+        migrate(wxcomponentsDir, false, {
+          silent: true // 不输出日志
+        })
+      }
+    })
   }
 }
 

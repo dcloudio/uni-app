@@ -35,6 +35,17 @@ describe('mp:compiler-mp-weixin', () => {
         expect(res.generic[0]).toBe('test-foo-default')
       }
     )
+    assertCodegen(
+      '<uni-clientdb v-slot:default="{data}"><uni-table><uni-tr><uni-th align="center">日期</uni-th></uni-tr></uni-table></uni-clientdb>',
+      '<uni-clientdb generic:scoped-slots-default="test-uni-clientdb-default" data-vue-generic="scoped" vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}"></uni-clientdb>',
+      function (res) {
+        expect(res.generic[0]).toBe('test-uni-clientdb-default')
+        const wxmlKey = Object.keys(res.files)[0]
+        expect(res.files[wxmlKey]).toBe(
+          '<uni-table vue-id="551070e6-2" bind:__l="__l" vue-slots="{{[\'default\']}}"><uni-tr vue-id="{{(\'551070e6-3\')+\',\'+(\'551070e6-2\')}}" bind:__l="__l" vue-slots="{{[\'default\']}}"><uni-th vue-id="{{(\'551070e6-4\')+\',\'+(\'551070e6-3\')}}" align="center" bind:__l="__l" vue-slots="{{[\'default\']}}">日期</uni-th></uni-tr></uni-table>'
+        )
+      }
+    )
   })
 
   it('generate named scoped slot', () => {
@@ -130,8 +141,11 @@ describe('mp:compiler-mp-weixin', () => {
       '<template v-for="(item, key) in { list1, list2 }"></template>',
       '<block wx:for="{{({list1,list2})}}" wx:for-item="item" wx:for-index="key"></block>'
     )
-    assertCodegen('<test :obj="{x:0}"></test>', '<test vue-id="551070e6-1" obj="{{({x:0})}}" bind:__l="__l"></test>')
-    assertCodegen('<test :obj="{\'x\':0}"></test>', '<test vue-id="551070e6-1" obj="{{$root.a0}}" bind:__l="__l"></test>', 'with(this){var a0={"x":0};$mp.data=Object.assign({},{$root:{a0:a0}})}')
+    assertCodegen('<test :obj="{x:0}"></test>',
+      '<test vue-id="551070e6-1" obj="{{({x:0})}}" bind:__l="__l"></test>')
+    assertCodegen('<test :obj="{\'x\':0}"></test>',
+      '<test vue-id="551070e6-1" obj="{{$root.a0}}" bind:__l="__l"></test>',
+      'with(this){var a0={"x":0};$mp.data=Object.assign({},{$root:{a0:a0}})}')
     assertCodegen(
       '<test :obj="{x:{x:0}}"></test>', '<test vue-id="551070e6-1" obj="{{$root.a0}}" bind:__l="__l"></test>',
       'with(this){var a0={x:{x:0}};$mp.data=Object.assign({},{$root:{a0:a0}})}'

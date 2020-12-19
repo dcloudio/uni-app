@@ -180,6 +180,9 @@ export default {
     $route () {
       this.checkMaxWidth()
     },
+    showLayout () {
+      this.checkLayout()
+    },
     showTopWindow (newVal, val) {
       if (newVal) {
         this.$nextTick(this.onTopWindowInit)
@@ -242,6 +245,7 @@ export default {
     this.initMaxWidth()
   },
   mounted () {
+    this.checkLayout()
     this.checkMaxWidth()
   },
   methods: {
@@ -270,10 +274,22 @@ export default {
         }
       }
     },
+    setWindowStyle (type, style) {
+      if (!this[type + 'Window']) {
+        return type + 'Window not found'
+      }
+      if (style) {
+        this[type + 'WindowStyle'] = style
+        this.$nextTick(this['on' + capitalize(type) + 'WindowInit'])
+      }
+    },
     initMaxWidth () {
       window.addEventListener('resize', () => {
         this.checkMaxWidth()
       })
+    },
+    checkLayout () {
+      this.$emit('layout', this.showLayout)
     },
     checkMaxWidth () {
       const windowWidth = document.body.clientWidth
@@ -420,11 +436,7 @@ export default {
 
   .uni-mask+.uni-left-window,
   .uni-mask+.uni-right-window {
-    position: absolute;
-  }
-
-  .uni-app--showlayout+uni-tabbar {
-    display: none;
+    position: fixed;
   }
 
   .uni-top-window {
