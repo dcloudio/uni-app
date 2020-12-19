@@ -896,25 +896,29 @@ const package = require('packageName')
 
 ```javascript
 {
-    "pages": [
-        {
-        	"path": "index/index",
-        	"style": {
-        		"usingComponents": {
-        			// #ifdef APP-PLUS || MP-WEIXIN || MP-QQ
-        			 "custom": "/wxcomponents/custom/index"
-        			// #endif
-        			// #ifdef MP-BAIDU
-        			 "custom": "/swancomponents/custom/index"
-        			// #endif
-        			// #ifdef MP-ALIPAY
-        			 "custom": "/mycomponents/custom/index"
-        			// #endif
-        		}
-        	}
-        }
-    ]
+	"pages": [{
+		"path": "index/index",
+		"style": {
+			// #ifdef APP-PLUS || H5 || MP-WEIXIN || MP-QQ
+			"usingComponents": {
+				"custom": "/wxcomponents/custom/index"
+			},
+			// #endif
+			// #ifdef MP-BAIDU
+			"usingComponents": {
+				"custom": "/swancomponents/custom/index"
+			},
+			// #endif
+			// #ifdef MP-ALIPAY
+			"usingComponents": {
+				"custom": "/mycomponents/custom/index"
+			},
+			// #endif
+			"navigationBarTitleText": "uni-app"
+		}
+	}]
 }
+
 ```
 
 在页面中使用
@@ -1051,13 +1055,12 @@ slide-view.vue
 * 小程序组件需要放在项目特殊文件夹 ``wxcomponents``（或 mycomponents、swancomponents）。HBuilderX 建立的工程 ``wxcomponents`` 文件夹在 项目根目录下。vue-cli 建立的工程 ``wxcomponents`` 文件夹在 ``src`` 目录下。可以在 vue.config.js 中自定义其他目录
 * 小程序组件的性能，不如vue组件。使用小程序组件，需要自己手动setData，很难自动管理差量数据更新。而使用vue组件会自动diff更新差量数据。所以如无明显必要，建议使用vue组件而不是小程序组件。比如某些小程序ui组件，完全可以用更高性能的uni ui替代。
 * 当需要在 `vue` 组件中使用小程序组件时，注意在 `pages.json` 的 `globalStyle` 中配置 `usingComponents`，而不是页面级配置。
-* 注意数据和事件绑定的差异，使用时应按照 `vue` 的数据和事件绑定方式
+* 注意数据和事件绑定的差异，组件使用时应按照 `vue` 的数据和事件绑定方式
 	- 属性绑定从 `attr="{{ a }}"`，改为 `:attr="a"`；从 `title="复选框{{ item }}"` 改为 `:title="'复选框' + item"`
-	- 事件绑定从 `bind:click="toggleActionSheet1"` 改为 `@click="toggleActionSheet1"`
+	- 事件绑定从 `bind:click="toggleActionSheet1"` 改为 `@click="toggleActionSheet1"`，目前支付宝小程序不支持 `vue` 的事件绑定方式，具体参考：[支付宝小程序组件事件监听示例](https://github.com/dcloudio/uni-app/issues/917#issuecomment-653329693)
 	- 阻止事件冒泡 从 `catch:tap="xx"` 改为 `@tap.native.stop="xx"`
 	- `wx:if` 改为 `v-if`
 	- `wx:for="{{ list }}" wx:key="{{ index }}"` 改为`v-for="(item,index) in list"`
-	- 原事件命名以短横线分隔的需要手动修改小程序组件源码为驼峰命名，比如：`this.$emit('left-click')` 修改为 `this.$emit('leftClick')`（HBuilderX 1.9.0+ 不再需要修改此项）
 
 详细的小程序转uni-app语法差异可参考文档[https://ask.dcloud.net.cn/article/35786](https://ask.dcloud.net.cn/article/35786)。
 
