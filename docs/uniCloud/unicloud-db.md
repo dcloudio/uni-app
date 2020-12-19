@@ -28,10 +28,12 @@
 
 |App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|快应用|360小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|√（3.0+）|√|√|√|√|√|√|x|√|
+|√|√|√|√|√|√|√|x|√|
 
+需 HBuilderX 3.0+
 
-`<unicloud-db>` 由原 `<uni-clientdb>` 升级而来，从 HBuilderX 3.0 起`<unicloud-db>`内置到框架，与小程序基础库版本无关，建议升级HBuilderX。如果使用 HBuilderX3.0 以下版本需要从插件市场下载`<uni-clientdb>`，下载地址为：[https://ext.dcloud.net.cn/plugin?id=3256](https://ext.dcloud.net.cn/plugin?id=3256)
+`<unicloud-db>` 由原 `<uni-clientdb>插件` 升级而来，从 HBuilderX 3.0 起`<unicloud-db>`内置到框架，与小程序基础库版本无关。
+如果使用 HBuilderX3.0 以下版本则需要从插件市场单独下载`<uni-clientdb>插件`，下载地址为：[https://ext.dcloud.net.cn/plugin?id=3256](https://ext.dcloud.net.cn/plugin?id=3256)
 
 
 ## 属性
@@ -41,14 +43,14 @@
 |v-slot:default||查询状态（失败、联网中）及结果（data）|
 |ref|string|vue组件引用标记|
 |collection|string|表名。支持输入多个表名，用 `,` 分割|
-|field|string|查询字段，多个字段用 `,` 分割|
+|field|string|查询字段，多个字段用 `,` 分割。不写本属性，即表示查询所有字段|
 |where|string|查询条件，内容较多，另见`jql`文档：[详情](https://uniapp.dcloud.net.cn/uniCloud/uni-clientDB?id=jsquery)|
 |orderby|string|排序字段及正序倒叙设置|
 |page-data|String|分页策略选择。值为 `add` 代表下一页的数据追加到之前的数据中，常用于滚动到底加载下一页；值为 `replace` 时则替换当前data数据，常用于PC式交互，列表底部有页码分页按钮，默认值为`add`|
 |page-current|Number|当前页|
 |page-size|Number|每页数据数量|
 |getcount|Boolean|是否查询总数据条数，默认 `false`，需要分页模式时指定为 `true`|
-|getone|Boolean|指定查询结果是否仅返回数组第一条数据，默认 false。在false情况下返回的是数组，即便只有一条结果，也需要[0]的方式获取。在值为 true 时，直接返回结果数据，少一层数组。一般用于非列表页，比如详情页|
+|getone|Boolean|指定查询结果是否仅返回数组第一条数据，默认 false。在false情况下返回的是数组，即便只有一条结果，也需要[0]的方式获取。在值为 true 时，直接返回结果数据，少一层数组，一般用于非列表页，比如详情页|
 |action|string|云端执行数据库查询的前或后，触发某个action函数操作，进行预处理或后处理，[详情](https://uniapp.dcloud.net.cn/uniCloud/uni-clientDB?id=%e4%ba%91%e7%ab%af%e9%83%a8%e5%88%86)。场景：前端无权操作的数据，比如阅读数+1|
 |manual|Boolean|是否手动加载数据，默认为 false，页面onready时自动联网加载数据。如果设为 true，则需要自行指定时机通过方法`this.$refs.udb.loadData()`来触发联网，其中的`udb`指组件的ref值|
 |@load|EventHandle|成功回调。联网返回结果后，若希望先修改下数据再渲染界面，则在本方法里对data进行修改|
@@ -94,6 +96,17 @@ TODO：暂不支持groupby、in子查询功能。后续会补充
 |options|Object|在小程序中，插槽不能访问外面的数据，需通过此参数传递, 不支持传递函数|
 
 **提示：如果不指定分页模式， `data` 为多次查询的集合**
+
+状态示例：
+```html
+<unicloud-db v-slot:default="{data, loading, error, options}" collection="user">
+				<view v-if="error">加载失败：{{error.message}}</view>
+				<view v-else-if="loading">正在加载...</view>
+				<view v-else>
+					{{data}}
+				</view>
+			</unicloud-db>
+```
 
 
 ## orderby
