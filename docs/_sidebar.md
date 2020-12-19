@@ -22,6 +22,12 @@
 * [混合开发](hybrid.md)
 * [uni小程序sdk](https://nativesupport.dcloud.net.cn/README)
 * [运营服务](cloud.md)
+* 运营服务
+  * [uni一键登录](univerify.md)
+  * [统一推送uniPush](unipush.md)
+  * [uni统计](uni-stat.md)
+  * [广告变现](uni-ad.md)
+  * [统一发行页面](m3w.md)
 * [案例](case.md)
 * [开源项目资源汇总](casecode.md)
 * [选型评估指南](select.md)
