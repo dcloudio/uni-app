@@ -232,13 +232,21 @@ uni.closeAuthView()
 
 #### uni-app项目使用uniCloud.callfuntion的方式调用云函数
 
+如果是未开通过uniCloud的uni-app项目：
+1. 首先开通uniCloud服务空间，[参考](https://unicloud.dcloud.net.cn/)
+2. 对项目点右键，创建uniCloud开发环境，然后绑定到上一步创建的服务空间上
+3. 对uniCloud/cloudfunctions/点右键，创建云函数
+4. 分别在前端和云端复制下列代码
+5. 对云函数点右键，上传到服务空间
+
 客户端示例：
 
 ```js
+// 在得到access_token后，通过callfunction调用云函数
 uniCloud.callFunction({
   name: 'xxx', // 你的云函数名称
   data: {
-    'access_token': 'xxx', // 客户端一键登录接口返回的accessToken
+    'access_token': 'xxx', // 客户端一键登录接口返回的access_token
     'openid': 'xxx' // 客户端一键登录接口返回的openid
   }
 }).then(res => {
@@ -252,20 +260,23 @@ uniCloud.callFunction({
 })
 ```
 
-云函数需要接收示例：
+云函数代码示例：
 ```js
 'use strict';
 exports.main = async (event, context) => {
+  // event里包含着客户端提交的参数
   const res = await uniCloud.getPhoneNumber({
   	provider: 'univerify',
   	apiKey: 'xxx', // 在开发者中心开通服务并获取apiKey
   	apiSecret: 'xxx', // 在开发者中心开通服务并获取apiSecret
-  	accessToken: event.access_token,
+  	access_token: event.access_token,
   	openid: event.openid
   })
   
-  uniCloud.logger.log(res);
+  console.log(res); // res里包含手机号
   // 执行用户信息入库等操作，正常情况下不要把完整手机号返回给前端
+  // 如果数据库在uniCloud上，可以直接入库
+  // 如果数据库不在uniCloud上，可以通过 uniCloud.httpclient API，将手机号通过http方式传递给其他服务器的接口，详见：https://uniapp.dcloud.net.cn/uniCloud/cf-functions?id=httpclient
   return {
     code: 0,
     message: '获取手机号成功'
@@ -273,14 +284,14 @@ exports.main = async (event, context) => {
 }
 ```
 
-
 完整的项目实例源码，可以参考：[https://ext.dcloud.net.cn/plugin?id=13](https://ext.dcloud.net.cn/plugin?id=13)
+
 
 #### 5+（wap2app）项目通过云函数URL化让云函数暴露出普通http接口
 
 5+（wap2app）项目不可使用uniCloud.callFunction请求云函数。
 
-uniCloud云函数提供了[URL化](https://uniapp.dcloud.io/uniCloud/http)方案，可以把云函数暴露出普通http接口。
+uniCloud云函数提供了[URL化](https://uniapp.dcloud.io/uniCloud/http)方案，可以把云函数暴露出普通http接口。设置方法参考：[https://uniapp.dcloud.io/uniCloud/http](https://uniapp.dcloud.io/uniCloud/http)
 
 此时客户端代码使用普通ajax写法。
 
@@ -296,7 +307,7 @@ xhr.onload = function(e) {
 xhr.open( "POST", "https://xxx" ); // url应为云函数Url化之后的地址，可以在uniCloud web控制台云函数详情页面看到
 xhr.setRequestHeader('Content-Type','application/json');
 xhr.send(JSON.stringify({
-  accessToken: 'xxx', // 客户端一键登录接口返回的accessToken
+  access_token: 'xxx', // 客户端一键登录接口返回的access_token
   openid: 'xxx' // 客户端一键登录接口返回的openid
 }));
 ```
@@ -310,7 +321,7 @@ module.exports = async(event){
     body = Buffer.from(body,'base64')
   }
   const {
-    accessToken,
+    access_token,
     openid
   } = JSON.parse(body)
   const res = await uniCloud.getPhoneNumber({
@@ -318,11 +329,13 @@ module.exports = async(event){
     appid: 'xxx', // DCloud appid，不同于callFunction方式调用，使用云函数Url化需要传递DCloud appid参数！！！
   	apiKey: 'xxx', // 在开发者中心开通服务并获取apiKey
   	apiSecret: 'xxx', // 在开发者中心开通服务并获取apiSecret
-  	accessToken: accessToken,
+  	access_token: access_token,
   	openid: openid
   })
-  // 执行入库等操作，正常情况下不要把完整手机号返回给前端
-  return {
+  console.log(res); // res里包含手机号
+  // 如果数据库不在uniCloud上，可以通过 uniCloud.httpclient API，将手机号通过http方式传递给其他服务器的接口，详见：https://uniapp.dcloud.net.cn/uniCloud/cf-functions?id=httpclient
+  
+  return {  // 不建议把完整手机号返回给前端
     code: 0,
     message: '获取手机号成功'
   }
@@ -332,6 +345,8 @@ module.exports = async(event){
 uni-app项目也可以使用普通的uni.request来请求云函数URL化后的http接口，此处不再重复举例。
 
 #### 通过传统服务器连接uniCloud云函数
+
+开发者也可以在客户端获取到access_token等信息后，传给自己的传统服务器。然后由自己的传统服务器，访问uniCloud的云函数（需将云函数URL化）。
 
 写法类似上面5+项目的云函数url化的方式，但是不同的是需要云函数返回手机号给自己服务器，这样就需要确保数据安全。
 
@@ -346,7 +361,7 @@ const hmac = crypto.createHmac('sha256', secret);
 
 // 自有服务器生成签名，并以GET方式发送请求
 const params = {
-  accessToken: 'xxx', // 客户端传到自己服务器的参数
+  access_token: 'xxx', // 客户端传到自己服务器的参数
   openid: 'xxx'
 }
 // 字母顺序排序后拼接签名串
@@ -356,7 +371,7 @@ const signStr = Object.keys(params).sort().map(key => {
 hmac.update(signStr);
 const sign = hmac.digest('hex')
 // 最终请求如下链接，其中https://xxxx/xxx为云函数Url化地址
-// https://xxxx/xxx?accessToken=xxx&openid=xxx&sign=${sign} 其中${sign}为上一步得到的sign值
+// https://xxxx/xxx?access_token=xxx&openid=xxx&sign=${sign} 其中${sign}为上一步得到的sign值
 ```
 
 
@@ -382,7 +397,7 @@ module.exports = async(event){
   }
   
   const {
-    accessToken,
+    access_token,
     openid
   } = params
   const res = await uniCloud.getPhoneNumber({
@@ -390,7 +405,7 @@ module.exports = async(event){
     appid: 'xxx', // DCloud appid，不同于callFunction方式调用，使用云函数Url化需要传递DCloud appid参数
   	apiKey: 'xxx', // 在开发者中心开通服务并获取apiKey
   	apiSecret: 'xxx', // 在开发者中心开通服务并获取apiSecret
-  	accessToken: accessToken,
+  	access_token: access_token,
   	openid: openid
   })
   // 返回手机号给自己服务器
