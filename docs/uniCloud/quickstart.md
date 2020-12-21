@@ -16,44 +16,49 @@
 
 HBuilderX 3.0起目录结构做了调整如下：
 
-```bash
+
+<pre v-pre="" data-lang="">
+	<code class="lang-" style="padding:0">
 ┌──uniCloud-aliyun                    云空间目录，阿里云为uniCloud-aliyun,腾讯云为uniCloud-tcb
 |   |——— cloudfunctions               云函数目录
-|   |   │───common                    云函数公用模块目录 [详情](https://uniapp.dcloud.io/uniCloud/cf-common)
+|   |   │───common                    云函数公用模块目录 <a target="_blank" href="https://uniapp.dcloud.io/uniCloud/cf-common">详情</a>
 |   |   |   └──hello-common           云函数公用模块
 |   |   |      │──index.js            公用模块代码
 |   |   |      └──package.json        公用模块package.json
 |   |   │───uni-clientDB-actions
-|   |   │      └──new_action.js       clientDB action代码 [详情](https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=action)
+|   |   │      └──new_action.js       clientDB action代码 <a target="_blank" href="https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=action">详情</a>
 |   |   └───function-name             云函数目录
 |   |         │──index.js             云函数代码
-|   |         └──package.json         包含云函数的配置信息，如url化、定时设置、内存等内容 [详情](/uniCloud/cf-functions?id=packagejson)
+|   |         └──package.json         包含云函数的配置信息，如url化、定时设置、内存等内容 <a target="_blank" href="https://uniapp.dcloud.io/uniCloud/cf-functions?id=packagejson">详情</a>
 │   └──database                       云数据目录
-│         │──validateFunction         数据库扩展校验函数目录 [详情](https://uniapp.dcloud.net.cn/uniCloud/hellodb?id=db-init)
-│         │   └──new_validation.js    扩展校验函数代码 [详情](https://uniapp.dcloud.net.cn/uniCloud/schema?id=validatefunction)
-│         │──db_init.json             db_init.json初始化数据库文件，其中不再包含schema [详情](https://uniapp.dcloud.net.cn/uniCloud/hellodb?id=db-init)
-│         └──xxx.schema.json          数据表xxx的DB Schema [详情](https://uniapp.dcloud.net.cn/uniCloud/schema)
+│         │──validateFunction         数据库扩展校验函数目录
+│         │   └──new_validation.js    扩展校验函数代码 <a target="_blank" href="https://uniapp.dcloud.net.cn/uniCloud/schema?id=validatefunction">详情</a>
+│         │──db_init.json             db_init.json初始化数据库文件，其中不再包含schema <a target="_blank" href="https://uniapp.dcloud.net.cn/uniCloud/hellodb?id=db-init">详情</a>
+│         └──xxx.schema.json          数据表xxx的DB Schema <a target="_blank" href="https://uniapp.dcloud.net.cn/uniCloud/schema">详情</a>
 根目录
-```
+	</code>
+</pre>
 
 HBuilderX 3.0之前版本目录结构如下
 
-```bash
+<pre v-pre="" data-lang="">
+	<code class="lang-" style="padding:0">
 ┌──cloudfunctions-aliyun            云空间目录，阿里云为cloudfunctions-aliyun,腾讯云为cloudfunctions-tcb
 |   │───function-name               云函数目录
 |   |      │──index.js              云函数代码
 |   |      └──package.json          标准package.json
-|   │───common                      云函数公用模块目录 [详情](https://uniapp.dcloud.io/uniCloud/cf-common)
+|   │───common                      云函数公用模块目录 <a target="_blank" href="https://uniapp.dcloud.io/uniCloud/cf-common">详情</a>
 |   |   └──hello-common             云函数公用模块
 |   |      │──index.js              公用模块代码
 |   |      └──package.json          公用模块package.json
 |   │───uni-clientDB-actions
-|   │      └──new_action.js         clientDB action代码 [详情](https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=action)
-│   │───db_init.json                初始化数据库文件 [详情](https://uniapp.dcloud.net.cn/uniCloud/hellodb?id=db-init)
-│   └───cloudfunctions_init.json    云函数初始化文件 [详情](https://uniapp.dcloud.net.cn/uniCloud/cf-functions?id=init)
+|   │      └──new_action.js         clientDB action代码 <a target="_blank" href="https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=action">详情</a>
+│   │───db_init.json                初始化数据库文件 <a target="_blank" href="https://uniapp.dcloud.net.cn/uniCloud/hellodb?id=db-init">详情</a>
+│   └───cloudfunctions_init.json    云函数初始化文件 <a target="_blank" href="https://uniapp.dcloud.net.cn/uniCloud/cf-functions?id=init">详情</a>
 │
 根目录
-```
+	</code>
+</pre>
 
 
 ## 创建和绑定服务空间
