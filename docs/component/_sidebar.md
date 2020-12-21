@@ -43,6 +43,7 @@
   * [web-view](component/web-view.md)
 * 广告
   * [ad](component/ad.md)
+  * [ad-draw](component/ad-draw.md)
 * 导航类组件
   * [navigation-bar](component/navigation-bar.md)
   * [custom-tab-bar](component/custom-tab-bar.md)
