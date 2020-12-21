@@ -163,7 +163,7 @@ exports.main = async (event, context) => {
 
 **注意**
 
-- HBuilderX 3.0.0版本云函数目录有调整，请参考【链接待补充】
+- HBuilderX 3.0.0版本云函数目录有调整，请参考：[目录结构说明](https://uniapp.dcloud.io/uniCloud/quickstart?id=%e7%9b%ae%e5%bd%95%e7%bb%93%e6%9e%84)
 
 ### 上传并运行云函数@uploadandrun
 
