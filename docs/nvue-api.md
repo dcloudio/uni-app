@@ -529,7 +529,7 @@ BindingX类似一种强化版的css，运行性能高，但没有js那样足够�
 
 
 
-## nvue 和 vue 相互通讯
+## nvue 和 vue 相互通讯@communication
 在 uni-app 中，nvue 和 vue 页面可以混搭使用。
 
 推荐使用 ```uni.$on``` , ```uni.$emit``` 的方式进行页面通讯，旧的通讯方式（uni.postMessage及plus.webview.postMessageToUniNView）不再推荐使用。
@@ -673,7 +673,7 @@ BindingX类似一种强化版的css，运行性能高，但没有js那样足够�
 
 
 
-## vue 和 nvue 共享的变量和数据
+## vue 和 nvue 共享的变量和数据@sharevar
 
 除了通信事件，vue 和 nvue 页面之间还可以共享变量和存储。 ```uni-app```提供的共享变量和数据的方案如下：
 

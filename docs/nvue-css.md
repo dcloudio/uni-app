@@ -711,7 +711,7 @@ flex {number}：值为 number 类型。
 
 
 
-### Android平台：阴影```elevation```
+### Android平台：阴影```elevation```@android-box-shadow
 
 Android平台weex对阴影样式(box-shadow)支持不完善，如设置圆角边框时阴影样式显示不正常、设置动画时在Android7上显示不正常、在Android10上出现闪烁现象等。
 
