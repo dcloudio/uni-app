@@ -39,7 +39,7 @@ HBuilderX 3.0起目录结构做了调整如下：
 	</code>
 </pre>
 
-HBuilderX 3.0之前版本目录结构如下
+HBuilderX 3.0之前版本目录结构如下：
 
 <pre v-pre="" data-lang="">
 	<code class="lang-" style="padding:0">
