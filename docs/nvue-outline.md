@@ -138,7 +138,7 @@ weex 编译模式下支持使用 weex ui ，例子[详见](https://ext.dcloud.ne
 - template： 模板写法、数据绑定同 vue。组件支持2种模式，
 	- weex 组件，同weex写法，参考：[weex 内置组件](https://weex.apache.org/zh/docs/components/a.html)；
 	- uni-app组件，同uni-app写法。
-  - App端nvue专用组件，详见[https://uniapp.dcloud.io/component/barcode](https://uniapp.dcloud.io/component/barcode)。
+	- App端nvue专用组件，详见[https://uniapp.dcloud.io/component/barcode](https://uniapp.dcloud.io/component/barcode)。
 - style：由于采用原生渲染，**并非所有浏览器的 css 均支持，布局模型只支持 flex 布局**，虽然不会造成某些界面布局无法实现，但写法要注意。详见：[样式](/nvue-css)
 - script：写法同 vue，并支持3种API：
 	- nvue API ：仅支持App端，uni-app编译模式也可使用。使用前需先引入对应模块，参考：[模块引入API](/nvue-api)
