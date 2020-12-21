@@ -231,7 +231,7 @@ RBAC：Role-Based Access Control，基于角色的访问控制。
 
 如下为示例：
 
-```
+```js
 {
   {
     "_id":"5f8428181c229600010389f6",
@@ -260,7 +260,7 @@ RBAC：Role-Based Access Control，基于角色的访问控制。
 
 如下是角色在clientDB中的配置示例：
 
-```
+```js
 // db-permission/uni-id-users.js
 
 {
@@ -288,7 +288,7 @@ RBAC：Role-Based Access Control，基于角色的访问控制。
 
 如下为示例内容：
 
-```
+```js
 {
   {
     "_id":"5f8428181c229600010389f6",
@@ -307,7 +307,7 @@ RBAC：Role-Based Access Control，基于角色的访问控制。
 
 如下是权限在clientDB中的配置示例：
 
-```
+```js
 // db-permission/uni-id-users.js
 
 {
@@ -556,6 +556,8 @@ exports.main = async function(event,context) {
 
 ### 生成token@createtoken
 
+注意createToken接口不会将生成的token存库，只是生成token而已
+
 用法：`uniID.createToken(Object CreateTokenParams)`
 
 **passwordInfo参数说明**
@@ -569,8 +571,6 @@ exports.main = async function(event,context) {
 
 | 字段				| 类型	| 必填| 说明										|
 | ---					| ---		| ---	| ---											|
-| code				| Number| 是	|错误码，0表示成功				|
-| message			| String| 是	|详细信息									|
 | token				| String| 是	|生成的token							|
 | tokenExpired| Number| 是	|token过期时间对应的时间戳|
 
