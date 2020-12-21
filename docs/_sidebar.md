@@ -21,7 +21,6 @@
 * [从其他项目转uni-app](translate.md)
 * [混合开发](hybrid.md)
 * [uni小程序sdk](https://nativesupport.dcloud.net.cn/README)
-* [运营服务](cloud.md)
 * 运营服务
   * [uni一键登录](univerify.md)
   * [统一推送uniPush](unipush.md)
