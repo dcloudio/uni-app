@@ -25,6 +25,8 @@
 
 播放开始后提供6秒关闭功能，请注意：这个会对CPM有负向影响。请用开发者帐号的邮箱，将应用名称和APP ID邮件发送到bd@dcloud.io。
 
+### 广告效果
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/23fcff30-441f-11eb-b680-7980c8a877b8.png)
 
 ### 广告创建
 
@@ -385,6 +387,8 @@ rewardedVideoAd.load()
 ```
 
 ### 监听用户关闭广告
+
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/24d1db60-441f-11eb-bd01-97bc1429a9ff.png)
 
 只有在用户点击激励视频广告组件上的 关闭广告 按钮时，广告才会关闭。这个事件可以通过 `RewardedVideoAd.onClose()` 监听。
 
