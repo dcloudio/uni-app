@@ -1,6 +1,16 @@
 
-#### ad
+### ad
+
+### 简介
+
 应用内展示的广告组件，可用于banner或信息流。
+
+### 适用场景
+
+banner或信息流广告展现场景非常灵活，常见的展现场景为：文章页末尾，详情页面底部，信息流顶部等
+
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/b613df50-4420-11eb-bc56-c9cea619f663.png)
+
 
 - app端的广告源由腾讯广点通、头条穿山甲、快手广告联盟、360广告联盟以及部分DCloud直投广告聚合提供，在DCloud的uni-AD后台注册：[https://uniad.dcloud.net.cn/](https://uniad.dcloud.net.cn/)
 - 小程序端的广告由小程序平台提供
