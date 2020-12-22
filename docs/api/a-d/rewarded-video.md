@@ -1,4 +1,4 @@
-## 激励视频广告
+**激励视频广告**
 
 ### 简介
 
@@ -378,7 +378,7 @@ export default new AdHelper()
 ### 显示/隐藏
 激励视频广告组件默认是隐藏的，在用户主动触发广告后，开发者需要调用 RewardedVideoAd.show() 进行显示。
 
-```
+```js
 rewardedVideoAd.show()
 ```
 
@@ -390,7 +390,7 @@ rewardedVideoAd.show()
 
 如果拉取成功，通过 `RewardedVideoAd.onLoad()` 注册的回调函数会执行，`RewardedVideoAd.show()` 返回的 Promise 也会是一个 resolved Promise。两者的回调函数中都没有参数传递。
 
-```
+```js
 rewardedVideoAd.onLoad(() => {
   console.log('激励视频 广告加载成功')
 })
@@ -401,7 +401,7 @@ rewardedVideoAd.show()
 
 如果拉取失败，通过 `RewardedVideoAd.onError()` 注册的回调函数会执行，回调函数的参数是一个包含错误信息的对象。常见异常错误参考文档
 
-```
+```js
 rewardedVideoAd.onError(err => {
   console.log(err)
 })
@@ -409,7 +409,7 @@ rewardedVideoAd.onError(err => {
 
 `RewardedVideoAd.show()` 返回的 Promise 也会是一个 rejected Promise。
 
-```
+```js
 rewardedVideoAd.show()
 .catch(err => console.log(err))
 ```
@@ -418,7 +418,7 @@ rewardedVideoAd.show()
 
 如果组件的某次自动拉取失败，那么之后调用的 show() 将会被 reject。此时可以调用 `RewardedVideoAd.load()` 手动重新拉取广告。
 
-```
+```js
 rewardedVideoAd.show()
 .catch(() => {
     rewardedVideoAd.load()
@@ -431,7 +431,7 @@ rewardedVideoAd.show()
 
 如果组件的自动拉取是成功的，那么调用 `load()` 方法会直接返回一个 resolved Promise，而不会去拉取广告。
 
-```
+```js
 rewardedVideoAd.load()
 .then(() => rewardedVideoAd.show())
 ```
@@ -452,7 +452,7 @@ rewardedVideoAd.load()
 
 开发者需要根据 res.isEnded 判断是否视频是否播放结束，如果成功播放完毕则应该向用户发放奖励。
 
-```
+```js
 rewardedVideoAd.onClose(res => {
     // 用户点击了【关闭广告】按钮
     if (res && res.isEnded) {
@@ -480,7 +480,7 @@ App平台 2.6.8+ **仅穿山甲支持。优量汇和快手自身不支持**
 
 urlCallback示例
 
-```
+```js
 rewardedVideoAd = uni.createRewardedVideoAd({
   adpid: '',
   urlCallback: {
@@ -495,7 +495,7 @@ rewardedVideoAd = uni.createRewardedVideoAd({
 ### 服务器回调事件
 - HBuilderX 2.6.8+
 
-```
+```js
 rewardedVideoAd.onVerify(e => {
   // 广告商调用开发者服务器返回结果
   console.log(e.isValid);
@@ -567,7 +567,7 @@ isValid|校验结果|Blean|判定结果，是否发放奖励|
 #### 获取广告商名称
 - HBuilderX 2.6.8+
 
-```
+```js
 var rewardedVideoAd = uni.createRewardedVideoAd({
   adpid: ''
 });
@@ -599,7 +599,7 @@ code|message|
 - App端聚合的广点通(Android)：[错误码](https://developers.adnet.qq.com/doc/android/union/union_debug#sdk%20%E9%94%99%E8%AF%AF%E7%A0%81)
 
 
-**注意事项**
+### 注意事项
 - iOS平台配置应用使用广告标识（IDFA）详见：[https://ask.dcloud.net.cn/article/36107](https://ask.dcloud.net.cn/article/36107)
 - 测试期间请使用测试 `adpid`，参考测试代码，如果无法显示换个时间再试
 - 多次调用 `RewardedVideoAd.onLoad()`、`RewardedVideoAd.onError()`、`RewardedVideoAd.onClose()` 等方法监听广告事件会产生多次事件回调，建议在创建广告后监听一次即可。
@@ -607,3 +607,6 @@ code|message|
 - App平台，建议每个广告商每个设备每天调用次数不超过`15`，中间要有间隔时间，否则可能触发系统的反作弊策略导致流量收益下降。
 - 老版非V3编译项目不支持激励视频。
 
+### 案例参考
+- [全民董事长](https://android.myapp.com/myapp/detail.htm?apkName=com.dlt.qmdsz&info=DF3F955B42F0B77FECA41F03E7F77C8D)
+- [萌宠小凤凰](https://android.myapp.com/myapp/detail.htm?apkName=com.yexu.bird&info=F99297EC36071298FFAC45DA7BEEB8E3)
