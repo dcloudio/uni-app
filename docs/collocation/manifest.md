@@ -548,6 +548,13 @@ mp-qq只支持自定义组件模式，不存在usingComponents配置
     "optimization": {
       "subPackages": true // HBuilderX 2.7.12+ 支持
     },
+    // 屏幕方向
+    "screenOrientation": [
+      "portrait-primary",
+      "landscape-primary",
+      "portrait-secondary",
+      "landscape-secondary"
+    ],
 		"modules": {
 			"Contacts": {},
 			"Fingerprint": {},
@@ -684,13 +691,6 @@ mp-qq只支持自定义组件模式，不存在usingComponents配置
 					}
 				}
 			},
-			// 屏幕方向 需要云打包/本地打包/自定义基座生效
-			"orientation": [
-				"portrait-primary",
-				"landscape-primary",
-				"portrait-secondary",
-				"landscape-secondary"
-			],
 			// HBuilderX->manifest.json->图标配置
 			"icons": {
 				"ios": {
