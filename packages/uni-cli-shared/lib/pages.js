@@ -426,20 +426,25 @@ function isPlainObject (obj) {
   return _toString.call(obj) === '[object Object]'
 }
 
+function initBuiltInEasycom (components, usingAutoImportComponents) {
+  components.forEach(name => {
+    const easycomName = `^${name}$`
+    if (!usingAutoImportComponents[easycomName]) {
+      usingAutoImportComponents[easycomName] =
+        '@dcloudio/uni-cli-shared/components/' + name + '.vue'
+    }
+  })
+}
+
 function initAutoImportComponents (easycom = {}) {
   let usingAutoImportComponents = easycom.custom || easycom || {}
   if (!isPlainObject(usingAutoImportComponents)) {
     usingAutoImportComponents = {}
   }
+  initBuiltInEasycom(BUILT_IN_EASYCOMS, usingAutoImportComponents)
   // 目前仅 mp-weixin 内置支持 page-meta 等组件
   if (process.env.UNI_PLATFORM !== 'mp-weixin') {
-    BUILT_IN_COMPONENTS.forEach(name => {
-      const easycomName = `^${name}$`
-      if (!usingAutoImportComponents[easycomName]) {
-        usingAutoImportComponents[easycomName] =
-          '@dcloudio/uni-cli-shared/components/' + name + '.vue'
-      }
-    })
+    initBuiltInEasycom(BUILT_IN_COMPONENTS, usingAutoImportComponents)
   }
 
   const newUsingAutoImportComponentsJson = JSON.stringify(usingAutoImportComponents)
@@ -504,13 +509,18 @@ function parseUsingAutoImportComponents (usingAutoImportComponents) {
   return autoImportComponents
 }
 
-const BUILT_IN_COMPONENTS = ['page-meta', 'navigation-bar', 'uni-match-media', 'unicloud-db']
+const BUILT_IN_COMPONENTS = ['page-meta', 'navigation-bar', 'uni-match-media']
 
-function isBuiltInComponent (name) {
+const BUILT_IN_EASYCOMS = ['unicloud-db']
+
+function isBuiltInComponent (name) { // uni-template-compiler/lib/util.js 识别微信内置组件
   return BUILT_IN_COMPONENTS.includes(name)
 }
 
-function isBuiltInComponentPath (modulePath) {
+function isBuiltInComponentPath (modulePath) { // 内置的 easycom 类组件
+  if (BUILT_IN_EASYCOMS.find(name => modulePath.includes(name))) {
+    return true
+  }
   return !!BUILT_IN_COMPONENTS.find(name => modulePath.includes(name))
 }
 
