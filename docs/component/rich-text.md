@@ -7,7 +7,7 @@
 |:-|:-|:-|:-|:-|
 |nodes|Array / String|[]|节点列表 / HTML String||
 |[space](https://developers.weixin.qq.com/miniprogram/dev/component/rich-text.html)|string||显示连续空格|微信基础库2.4.1+、QQ小程序|
-|selectable|Boolean|false|富文本是否可以长按选中，可用于复制，粘贴等场景|百度APP 11.10+|
+|selectable|Boolean|false|富文本是否可以长按选中，可用于复制，粘贴等场景|百度小程序（真机）|
 
 **注意**
 
