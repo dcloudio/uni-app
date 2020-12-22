@@ -51,7 +51,7 @@
 
 |属性|说明|类型|必填|备注|平台差异说明|
 |:-|:-|:-|:-|:-|:-|
-|id|标记点id|Number|是|marker点击事件回调会返回此id。建议为每个marker设置上Number类型id，保证更新marker时有更好的性能。||
+|id|标记点id|Number|是|marker点击事件回调会返回此id。建议为每个marker设置上Number类型id，保证更新marker时有更好的性能。最大限制9位数||
 |latitude|纬度|Number|是|浮点数，范围 -90 ~ 90||
 |longitude|经度|Number|是|浮点数，范围 -180 ~ 180||
 |title|标注点名|String|否|点击时显示，callout存在时将被忽略|App-nvue 2.1.5+、微信小程序、H5、支付宝小程序、百度小程序|
