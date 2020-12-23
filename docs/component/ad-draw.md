@@ -1,20 +1,20 @@
 
-## 沉浸式视频信息流广告
+## 沉浸视频流广告
 
 ### 简介
 
 也称为Draw视频信息流广告
 
-沉浸视频流广告为媒体提供了竖屏视频信息流广告样式，适合在全屏的竖屏视频中使用。目前仅提供了nvue的方式使用
+沉浸视频流广告为媒体提供了竖屏视频信息流广告样式，适合在全屏的竖屏视频中使用。支持app-nvue页面使用。
 
 ### 适用场景
 
-竖版视频列表页，竖版视频信息流，来电秀、直播间等全屏观看的切换过程中等
+类抖音的竖版视频流，来电秀、直播间等全屏观看的视频。
 
 ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/7ab8d610-4423-11eb-8a36-ebb87efcf8c0.png)
 
 
-- app端的广告源由腾讯广点通、头条穿山甲、快手广告联盟、360广告联盟以及部分DCloud直投广告聚合提供，在DCloud的uni-AD后台注册：[https://uniad.dcloud.net.cn/](https://uniad.dcloud.net.cn/)
+- app端的广告源由腾讯广点通、头条穿山甲、快手广告联盟以及部分DCloud直投广告聚合提供，在DCloud的uni-AD后台注册：[https://uniad.dcloud.net.cn/](https://uniad.dcloud.net.cn/)
 
 **平台差异说明**
 
@@ -145,8 +145,7 @@
 </script>
 ```
 
-**激励视频广告**
-文档地址：[https://uniapp.dcloud.io/api/a-d/rewarded-video](https://uniapp.dcloud.io/api/a-d/rewarded-video)
+沉浸视频流广告不是激励视频广告，激励视频广告另见：[https://uniapp.dcloud.io/api/a-d/rewarded-video](https://uniapp.dcloud.io/api/a-d/rewarded-video)
 
 **注意**
 - iOS平台配置应用使用广告标识（IDFA）详见：[https://ask.dcloud.net.cn/article/36107](https://ask.dcloud.net.cn/article/36107)
