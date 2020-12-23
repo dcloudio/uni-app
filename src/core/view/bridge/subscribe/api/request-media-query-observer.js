@@ -33,19 +33,7 @@ function humpToLine (name) {
 export function requestMediaQueryObserver ({
   reqId,
   options
-}, pageId) {
-  let pageVm
-  if (pageId._isVue) {
-    pageVm = pageId
-  } else {
-    const pages = getCurrentPages() // 跨平台时，View 层也应该实现该方法，举例 App 上，View 层的 getCurrentPages 返回长度为1的当前页面数组
-    const page = pages.find(page => page.$page.id === pageId)
-    if (!page) {
-      throw new Error(`Not Found：Page[${pageId}]`)
-    }
-    pageVm = page.$vm
-  }
-
+}) {
   // 创建一个媒体查询对象
   const mediaQueryObserver = mediaQueryObservers[reqId] = window.matchMedia(handleMediaQueryStr(options))
 
@@ -54,7 +42,7 @@ export function requestMediaQueryObserver ({
     UniViewJSBridge.publishHandler('onRequestMediaQueryObserver', {
       reqId,
       res: e.matches
-    }, pageVm.$page.id)
+    })
   }
 
   listener(mediaQueryObserver) // 监听前执行一次媒体查询
