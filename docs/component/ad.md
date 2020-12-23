@@ -101,7 +101,8 @@ App和微信小程序的ad组件没有type属性，可以用于banner，也可�
   <view class="content">
 
     <!-- App平台 -->
-    <!-- adpid="1111111111" 此广告位标识仅在HBuilderX标准基座中有效，仅用于测试，替换为自己申请获取的广告位标识 -->
+    <!-- adpid="1111111111" 此广告位标识仅在HBuilderX标准基座中有效，仅用于测试 -->
+    <!-- 广告后台申请的广告位(adpid)需要自定义基座/云打包/本地打包后生效 -->
     <!-- 需要时可自定义属性，监听到 error 回调后(e.target可以取到)，开发者可以针对性的处理，比如隐藏广告组件的父容器，以保证用户体验 -->
     <view class="ad-view">
       <ad adpid="1111111111" :data-xx="adItem.id" @load="onload" @close="onclose" @error="onerror"></ad>
