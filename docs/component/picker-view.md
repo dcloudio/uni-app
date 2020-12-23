@@ -93,18 +93,19 @@
     }
 </script>
 <style>
-    .picker-view {
-        width:750rpx;
-        height: 600rpx;
-        margin-top:20rpx;
-    }
-    .item {
+	.picker-view {
+		width: 750rpx;
+		height: 600rpx;
+		margin-top: 20rpx;
+	}
+	.item {
 		height: 50px;
 		align-items: center;
 		justify-content: center;
-        text-align: center;
-    }
+		text-align: center;
+	}
 </style>
+
 ```
 
 ![uniapp](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/img/picker-view.png)
