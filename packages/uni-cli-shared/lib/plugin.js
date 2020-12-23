@@ -74,11 +74,11 @@ function initExtends (name, plugin, plugins) {
       console.error('目前仅支持基于 h5 平台做扩展')
       process.exit(0)
     }
-    const extendsPlugin = plugins.find(plugin => plugin.name === extendsPlatform)
     if (!plugin) {
       console.error(`缺少平台 ${extendsPlatform} 插件`)
       process.exit(0)
     }
+    const extendsPlugin = plugins.find(plugin => plugin.name === extendsPlatform)
     process.env.UNI_SUB_PLATFORM = name
     process.env.UNI_PLATFORM = extendsPlatform
     initPlugin(extendsPlugin)
