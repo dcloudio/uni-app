@@ -3,7 +3,7 @@
 * [组件](component/README.md)
 * [API](api/README.md)
 * [uniCloud](uniCloud/README.md)
-* [其它规范](javascript:;)
+* [其它规范](http://www.html5plus.org/doc/h5p.html)
   - [App扩展规范HTML5 Plus](http://www.html5plus.org/doc/h5p.html)
   - [微信小程序](https://developers.weixin.qq.com/miniprogram/dev/framework/)
   - [支付宝小程序](https://docs.alipay.com/mini/developer/getting-started)
