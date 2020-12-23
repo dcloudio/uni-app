@@ -1024,9 +1024,32 @@ function refreshToken({
   uni.setStorageSync('uni_id_token_expired', tokenExpired)
 }
 // 绑定刷新token事件
-db.auth.on('refreshToken', refreshToken)
+db.on('refreshToken', refreshToken)
 // 解绑刷新token事件
-db.auth.off('refreshToken', refreshToken)
+db.off('refreshToken', refreshToken)
+```
+
+**注意：HBuilderX 3.0.0之前请使用db.auth.on、db.auth.off**
+
+### 错误处理@error
+
+clientDB错误事件，HBuilderX 3.0.0起支持
+
+**用法**
+
+```js
+const db = uniCloud.database()
+
+function onDBError({
+  code,
+  message
+}) {
+  // 处理错误
+}
+// 绑定clientDB错误事件
+db.on('error', onDBError)
+// 解绑clientDB错误事件
+db.off('error', onDBError)
 ```
 
 <!-- ### 处理错误@error
