@@ -23,13 +23,14 @@
 ## clientDB图解
 ![](https://static-eefb4127-9f58-4963-a29b-42856d4205ee.bspapp.com/clientdb.jpg)
 
-`clientDB`的前端部分包括js API和`<uni-clientDB>`组件两部分。
+`clientDB`的前端部分包括js API和`<unicloud-db>`组件两部分。
 
-js API可以执行所有数据库操作。`<uni-clientDB>`组件适用于查询数据库，它是js API的再封装，进一步简化查询的代码量。
+js API可以执行所有数据库操作。`<unicloud-db>`组件是js API的再封装，进一步简化查询等常用数据库操作的代码量。
 
-目前`<uni-clientDB>`组件没有内置，而是作为一个插件单独下载，它的文档另见：[https://uniapp.dcloud.net.cn/uniCloud/uni-clientdb-component](https://uniapp.dcloud.net.cn/uniCloud/uni-clientdb-component)
+- 在HBuilderX 3.0+，`<unicloud-db>`组件已经内置，可以直接使用。文档另见：[<unicloud-db>组件](/uniCloud/unicloud-db)
+- 在HBuilderX 3.0以前的版本，使用该组件需要在插件市场单独引用`<uni-clientDB>插件`，另见：[https://ext.dcloud.net.cn/plugin?id=3256](https://ext.dcloud.net.cn/plugin?id=3256)
 
-以下文章重点介绍`clientDB`的js API，组件的查询语法与js API是一致的。
+以下文章重点介绍`clientDB`的js API。组件的使用语法类似，但请单独查阅组件的文档。
 
 ## clientDB前端API@jssdk
 
