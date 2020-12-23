@@ -567,12 +567,23 @@ isValid|校验结果|Blean|判定结果，是否发放奖励|
 #### 获取广告商名称
 - HBuilderX 2.6.8+
 
+#### 语法
+
+`RewardedVideoAd.getProvider()`
+
+#### 说明
+
+返回值 为 string 类型
+
+|值|描述|
+|:-:|:-:|
+|csj|穿山甲|
+|gdt|腾讯优量汇|
+
+
 ```js
-var rewardedVideoAd = uni.createRewardedVideoAd({
-  adpid: ''
-});
+var rewardedVideoAd = uni.createRewardedVideoAd(Options);
 var provider = rewardedVideoAd.getProvider();
-// csj gdt
 ```
 
 
