@@ -123,8 +123,16 @@ HBuilderX中运行前端项目，在控制台选择连接本地云函数，此�
 
 ### enum属性@enum
 
+enum，即枚举。一个字段设定了enum后，该字段的合法内容，只能在enum设定的数据项中取值。
 
-简单本地数据
+enum支持3种数据格式：
+1. 简单数组
+2. 支持描述的复杂数组
+3. 数据查询
+
+- 简单数组
+
+如下示例的意思是，role字段的合法值域只能是“1”、“2”、“3”中的一个。通过schema2code生成前端表单页面时，该字段会生成uni-data-checkbox组件，该组件在界面上渲染时会生成1、2、3这3个候选的复选框。
 
 ```json
 {
@@ -145,7 +153,9 @@ HBuilderX中运行前端项目，在控制台选择连接本地云函数，此�
 ```
 
 
-复杂本地数据
+- 支持描述的复杂数组
+
+如下示例的意思是，role字段的合法值域只能是“1”、“2”中的一个。但通过schema2code生成前端表单页面时，该字段会生成uni-data-checkbox组件，该组件在界面上渲染时会生成“角色1”、“角色2”这2个候选的复选框。
 
 ```json
 {
@@ -162,11 +172,11 @@ HBuilderX中运行前端项目，在控制台选择连接本地云函数，此�
       "enum": [
         {
           "value": 1,
-          "text": "text1"
+          "text": "角色1"
         },
         {
           "value": 2,
-          "text": "text2"
+          "text": "角色2"
         }
       ]
     }
@@ -175,7 +185,13 @@ HBuilderX中运行前端项目，在控制台选择连接本地云函数，此�
 ```
 
 
-云端数据
+- 数据查询
+
+一个字段的合法值域，可以是从另一个数据查询而来。也即，在enum中可以配置jql查询语句。
+
+例如有一个角色表uni-id-roles，里面已经存在若干个角色。那么在用户表uni-id-users的role字段里，就可以在enum里写jql查询，约定用户的角色字段的值，比如是在角色表中已经存在的值。
+
+通过schema2code生成前端表单页面时，该字段会生成uni-data-checkbox组件，该组件在界面上渲染时会自动从角色表中查询数据并显示所有候选的复选框。
 
 ```json
 {
@@ -185,7 +201,7 @@ HBuilderX中运行前端项目，在控制台选择连接本地云函数，此�
     "_id": {
       "description": "存储文档 ID（用户 ID），系统自动生成"
     },
-    // role 云端数据, enum属性的值和clientdb组件的写法一致，clientdb组件 https://uniapp.dcloud.net.cn/uniCloud/uni-clientdb-component
+    // role 云端数据, enum属性的值为JQL语法。
     // 通过clientdb提交数据时多一次查库请求以校验数据是否有效
     "role": {
       "bsonType": "array",
@@ -193,7 +209,7 @@ HBuilderX中运行前端项目，在控制台选择连接本地云函数，此�
       "label": "角色",
       "enum": {
         "collection": "uni-id-roles", // 表名，这里使用 uni-id-roles表举例，在uniCloud控制台使用 opendb 创建此表
-        "field": "role_name as text, role_id as value", //字段筛选，需要 as 成前端组件支持的字段名 text,value
+        "field": "role_name as text, role_id as value", //字段筛选，需要 as 成前端组件支持的字段名 text、value。text、value是datacom组件规范的标准
         "where": "", // 查询条件
         "orderby": "" // 排序字段及正序倒叙设置
       }
@@ -203,7 +219,7 @@ HBuilderX中运行前端项目，在控制台选择连接本地云函数，此�
 ```
 
 
-### 基本示例
+### schema基本示例
 
 假使一个表有5个字段："name", "year", "major", "address", "gpa"。其中前4个字段是必填字段，然后"address"字段类型为json object，它下面又有若干子字段，其中"city"字段必填。
 
@@ -259,7 +275,7 @@ uniCloud推出了`openDB`开源数据库规范，包括用户表、文章表、�
 
 在实际开发中，forceDefaultValue常用于设置为当前服务器时间、当前登录用户id、客户端ip时。
 
-这些数据都不能通过前端上传，不安全。过去只能在云端写云函数操作。在schema配置后则可以不用写云函数。`clientDB`在新增数据记录时会自动补齐这些数据。
+这些数据都不能通过前端上传，不安全。过去只能在云端写云函数操作。在schema配置后则可以不用写云函数。在前端通过clientDB方式新增数据记录时会自动补齐这些数据（云端操作数据库不识别schema）。
 
 其中uid是和`uni-id`绑定的。如果用户没有登录，则无法获取uid，此时写入数据会报错。
 
