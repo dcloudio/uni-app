@@ -1,6 +1,6 @@
 ## unicloud-db组件简介
 
-`<unicloud-db>` 组件是一个数据库查询组件，它是对`uni-clientDB`的js库的再封装。
+`<unicloud-db>` 组件是一个数据库查询组件，它是对`clientDB`的js库的再封装。
 
 前端通过组件方式直接获取uniCloud的云端数据库中的数据，并绑定在界面上进行渲染。
 
@@ -8,12 +8,12 @@
 
 有了`<unicloud-db>` 组件，**上述工作只需要1行代码**！写组件，设组件的属性，在属性中指定要查什么表、哪些字段、以及查询条件，就OK了！
 
-敲下`udb`代码块，得到如下代码：
+HBuilderX中敲下`udb`代码块，得到如下代码，然后通过collection属性指定要查询表“table1”，通过field属性指定要查询字段“field1”，并且在where属性中指定查询id为1的数据。查询结果data就可以直接渲染在界面上。
 
 ```html
 <unicloud-db v-slot:default="{data, loading, error, options}" collection="table1" field="field1" :getone="true" where="id=='1'">
   <view>
-    {{ data.name}}
+    {{ data}}
   </view>
 </unicloud-db>
 ```
@@ -22,7 +22,7 @@
 
 `<unicloud-db>` 组件的查询语法是`jql`，这是一种比sql语句和nosql语法更简洁、更符合js开发者习惯的查询语法。没学过sql或nosql的前端，也可以轻松掌握。[jql详见](https://uniapp.dcloud.net.cn/uniCloud/uni-clientDB?id=jsquery)
 
-`<unicloud-db>` 组件不仅支持查询。自带了一个封装add、remove、update方法，见下文方法章节
+`<unicloud-db>` 组件不仅支持查询。还自带了add、remove、update方法，见下文方法章节
 
 **平台差异及版本说明**
 
@@ -33,7 +33,8 @@
 需 HBuilderX 3.0+
 
 `<unicloud-db>` 由原 `<uni-clientdb>插件` 升级而来，从 HBuilderX 3.0 起`<unicloud-db>`内置到框架，与小程序基础库版本无关。
-如果使用 HBuilderX3.0 以下版本则需要从插件市场单独下载`<uni-clientdb>插件`，下载地址为：[https://ext.dcloud.net.cn/plugin?id=3256](https://ext.dcloud.net.cn/plugin?id=3256)
+
+如果需要 HBuilderX3.0 以下版本使用clientDB组件，则需要从插件市场单独下载`<uni-clientdb>插件`，下载地址为：[https://ext.dcloud.net.cn/plugin?id=3256](https://ext.dcloud.net.cn/plugin?id=3256)。但仍然推荐升级HBuilderX 3.0+。
 
 
 ## 属性
@@ -139,11 +140,11 @@ handleLoad(data, ended, pagination) {
 }
 ```
 
-数据库里的时间一般是时间戳，不能直接渲染。虽然可以在load事件中对时间格式化，但简单的方式是使用[`<uni-dateformat>`组件](https://ext.dcloud.net.cn/plugin?id=3279)，无需写js处理。
+数据库里的时间一般是时间戳，不能直接渲染。虽然可以在load事件中对时间格式化，但更简单的方式是使用[`<uni-dateformat>`组件](https://ext.dcloud.net.cn/plugin?id=3279)，无需写js处理。
 
 - error事件
 
-error事件在查询报错时触发
+error事件在查询报错时触发，比如联网失败。
 
 ``` html
 ...
@@ -160,7 +161,7 @@ handleError(e) {
 
 ### loadData
 
-当 `<unicloud-db>` 组件的 manual 属性设为为 true 时，不会在页面初始化时联网查询数据，此时需要通过本方法手动加载数据
+当 `<unicloud-db>` 组件的 manual 属性设为 true 时，不会在页面初始化时联网查询数据，此时需要通过本方法在需要的时候手动加载数据。
 
 ```js
 this.$refs.udb.loadData() //udb为unicloud-db组件的ref属性值
@@ -181,9 +182,9 @@ this.$refs.udb.loadMore() //udb为unicloud-db组件的ref属性值
 2. 弹出loading
 3. 调用clientDB的js api删除云端数据
 4. 接收云端删除结果，如果成功则关闭loading
-5. 进一步删除列表的data中对应的item，刷新页面
+5. 进一步删除列表的data中对应的item，自动刷新页面
 
-为减少重复开发，`clientDB`组件提供了remove方法，在列表渲染时绑定好index，直接调用remove方法即可一行代码完成上述5步。
+为减少重复开发，`unicloud-db组件`提供了remove方法，在列表渲染时绑定好index，直接调用remove方法即可一行代码完成上述5步。
 
 首先在列表生成的时候给删除按钮绑定好id：
 
@@ -225,7 +226,7 @@ this.$refs.udb.remove(["5f921826cf447a000151b16d", "5f9dee1ff10d2400016f01a4"])
 在uniCloud的web控制台的`DB Schema`界面，可自助生成数据表的admin管理插件，其中有多行数据批选批删示例。
 
 
-完整实例，第二个是可选参数
+完整实例，第二个是可选参数。
 
 ```js
 var ids = ["5f921826cf447a000151b16d", "5f9dee1ff10d2400016f01a4"]
@@ -276,7 +277,7 @@ this.$refs.udb.add(value, {
 
 ### update
 
-一般用于详情页需要修改数据时
+使用unicloud-db组件的update方法，除了更新云数据库中的数据外，也会同时更新当前页面的unicloud-db组件中的data数据，自然也会自动差量更新页面渲染的内容。同时update方法还封装了修改成功的toast提示。
 
 ```html
 <unicloud-db ref="udb" :collection="collectionName" v-slot:default="{data,pagination,loading,error}" :getone="true">
@@ -312,11 +313,13 @@ this.$refs.udb.update(id, value, {
 
 ### dataList
 
-在js中，可以打印`<unicloud-db>` 组件的data
+在js中，获取`<unicloud-db>` 组件的data的方法如下：
 
 ```js
 console.log(this.$refs.udb.dataList);
 ```
+
+如果修改了dataList的值，组件渲染的界面也会同步变化。
 
 但是在浏览器控制台里无法使用this来打印查看数据，为此特别新增了`unidev.clientDB.data`方法以优化调试体验。
 
@@ -345,7 +348,14 @@ H5平台，开发模式下浏览器控制台输入 `unidev.clientDB.data`，可�
 联表查询详情参考 [https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=lookup](https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=lookup)
 
 ## 列表分页@page
-- 列表分页模式1：上拉加载上一页。下一页的查询结果会追加合并到data里
+
+unicloud-db组件简化了列表分页的写法，只需简单的配置每页需要多少数据（默认是20条），不管是数据库的分页查询还是前端的列表分页展示，都自动封装了。
+
+列表分页有2种模式，一种是手机上常见的拉到底部加载下一页，另一种是pc常见的底部列出页码，点击页码跳转页面。
+
+- 列表分页模式1：拉到底部加载下一页。此时下一页的查询结果会追加合并到data里，列表一直在增长。
+
+下面的示例代码没有使用uList组件，实际开发时建议使用uList组件来避免长列表的性能问题。
 
 ```html
 <template>
@@ -362,7 +372,7 @@ H5平台，开发模式下浏览器控制台输入 `unidev.clientDB.data`，可�
       <view v-if="error" class="error">{{error.message}}</view>
       <view v-else class="list">
         <view v-for="(item, index) in data" :key="index" class="list-item">
-		  {{item.name}}
+		      {{item.name}}
           <!-- 使用日期格式化组件，详情见插件 https://ext.dcloud.net.cn/search?q=date-format -->
           <uni-dateformat :date="item.createTime" />
         </view>
@@ -393,7 +403,7 @@ H5平台，开发模式下浏览器控制台输入 `unidev.clientDB.data`，可�
     },
     methods: {
       onqueryload(data, ended) {
-		// 可在此处预处理数据，然后再渲染界面
+		    // 可在此处预处理数据，然后再渲染界面
       },
       onqueryerror(e) {
         // 加载数据失败
@@ -463,7 +473,7 @@ H5平台，开发模式下浏览器控制台输入 `unidev.clientDB.data`，可�
         options: {}, // 插槽不能访问外面的数据，通过此参数传递, 不支持传递函数
       }
     },
-    onPullDownRefresh() { //下拉刷新
+    onPullDownRefresh() { //下拉刷新（一般此场景下不使用下拉刷新）
       this.$refs.udb.loadData({
         clear: true
       }, () => {
@@ -511,7 +521,7 @@ H5平台，开发模式下浏览器控制台输入 `unidev.clientDB.data`，可�
 
 ```
 
-使用分页控件，常见于PC端。在这个uniCloud Admin的[权限管理插件](https://ext.dcloud.net.cn/plugin?id=3269)插件中，有完整的分页展示数据、新增删除数据的示例代码。
+使用分页控件，常见于PC端。在[uniCloud Admin](https://uniapp.dcloud.net.cn/uniCloud/admin)中，有完整的分页展示数据、新增删除数据的示例代码。
 
 ## 组件嵌套
 
@@ -549,7 +559,7 @@ H5平台，开发模式下浏览器控制台输入 `unidev.clientDB.data`，可�
 ```
 
 
-完整项目示例见插件市场的示例项目: [https://ext.dcloud.net.cn/plugin?id=3256](https://ext.dcloud.net.cn/plugin?id=3256)
+完整项目示例见插件市场的示例项目: [https://ext.dcloud.net.cn/plugin?id=2574](https://ext.dcloud.net.cn/plugin?id=2574)
 
 
 **调试小技巧**
