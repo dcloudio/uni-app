@@ -21,7 +21,9 @@
 
 #### picker-view-column
 
-`<picker-view />` 的子组件，仅可放置于 `<picker-view />` 中，其子节点的高度会自动设置成与 picker-view 的选中框的高度一致
+`<picker-view />` 的子组件，仅可放置于 `<picker-view />` 中，其子节点的高度会自动设置成与 picker-view 的选中框的高度一致。
+
+**注意：**nvue页面子节点未继承 picker-view 的选中框的高度，需要自己设置高度并居中。
 
 **示例** [查看演示](https://hellouniapp.dcloud.net.cn/pages/component/picker-view/picker-view)
 
