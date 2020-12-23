@@ -19437,13 +19437,13 @@ var serviceContext = (function () {
         reqId: this.reqId,
         component: this.component,
         options: this.options
-      });
+      }, checkInWindows(this.component) ? this.component : this.pageId);
     }
 
     disconnect () {
       UniServiceJSBridge.publishHandler('destroyMediaQueryObserver', {
         reqId: this.reqId
-      });
+      }, checkInWindows(this.component) ? this.component : this.pageId);
     }
   }
 
