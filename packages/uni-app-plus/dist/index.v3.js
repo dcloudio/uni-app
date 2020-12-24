@@ -3411,21 +3411,21 @@ var serviceContext = (function () {
     }
   }
 
-  function warpPlusSuccessCallback (callbackId, neme) {
+  function warpPlusSuccessCallback (callbackId, name) {
     return function errorCallback (result) {
       result = result || {};
       invoke$1(callbackId, Object.assign({}, result, {
-        errMsg: `${neme}:ok`
+        errMsg: `${name}:ok`
       }));
     }
   }
 
-  function warpPlusErrorCallback (callbackId, neme, errMsg) {
+  function warpPlusErrorCallback (callbackId, name, errMsg) {
     return function errorCallback (error) {
       error = error || {};
       const code = error.code || 0;
       invoke$1(callbackId, {
-        errMsg: `${neme}:fail ${error.message || errMsg || ''}`,
+        errMsg: `${name}:fail ${error.message || errMsg || ''}`,
         errCode: code,
         code
       });
@@ -6964,7 +6964,7 @@ var serviceContext = (function () {
             authResult: authResult,
             errMsg: 'login:ok'
           });
-        }, errorCallback, provider === 'apple' ? { scope: 'email' } : params.univerifyStyle || {});
+        }, errorCallback, provider === 'apple' ? { scope: 'email' } : { univerifyStyle: params.univerifyStyle } || {});
       }
       // 先注销再登录
       // apple登录logout之后无法重新触发获取email,fullname；一键登录无logout
