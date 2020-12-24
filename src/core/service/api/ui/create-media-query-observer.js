@@ -2,7 +2,9 @@ import createCallbacks from 'uni-helpers/callbacks'
 import {
   getCurrentPageVm
 } from '../../platform'
-
+import {
+  checkInWindows
+} from 'uni-helpers/windows'
 const createMediaQueryObserverCallbacks = createCallbacks('requestMediaQueryObserver')
 
 class ServiceMediaQueryObserver {
@@ -24,13 +26,13 @@ class ServiceMediaQueryObserver {
       reqId: this.reqId,
       component: this.component,
       options: this.options
-    })
+    }, checkInWindows(this.component) ? this.component : this.pageId)
   }
 
   disconnect () {
     UniServiceJSBridge.publishHandler('destroyMediaQueryObserver', {
       reqId: this.reqId
-    })
+    }, checkInWindows(this.component) ? this.component : this.pageId)
   }
 }
 

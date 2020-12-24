@@ -33,7 +33,7 @@ function humpToLine (name) {
 export function requestMediaQueryObserver ({
   reqId,
   options
-}, pageId) {
+}) {
   // 创建一个媒体查询对象
   const mediaQueryObserver = mediaQueryObservers[reqId] = window.matchMedia(handleMediaQueryStr(options))
 
