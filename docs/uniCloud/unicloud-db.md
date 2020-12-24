@@ -177,6 +177,31 @@ this.$refs.udb.loadMore() //udb为unicloud-db组件的ref属性值
 
 ### remove
 
+语法
+
+`this.$refs.udb.remove(id, options)`
+
+udb为unicloud-db组件的ref属性值
+
+
+参数 id
+
+|属性|类型|默认值|描述|
+|:-|:-|:-|:-|
+|id|string&#124;Array||传入数据库的_id|
+
+
+参数 options
+
+|属性|类型|默认值|描述|
+|:-|:-|:-|:-|
+|confirmTitle|string|提示|删除确认框标题|
+|confirmContent|string|是否删除该数据|删除确认框提示|
+|success|function||删除成功后的回调|
+|fail|function||删除失败后的回调|
+|complete|function||完成后的回调|
+
+
 在列表页面，如果想删除一个item，原本要做很多事：
 1. 弹出删除确认框
 2. 弹出loading
@@ -247,7 +272,29 @@ this.$refs.udb.remove(ids, {
 
 ### add
 
-一般用于列表页弹出一个简单的新增输入框
+语法
+
+`this.$refs.udb.add(value, options)`
+
+udb为unicloud-db组件的ref属性值
+
+
+必选参数 value
+
+|属性|类型|默认值|描述|
+|:-|:-|:-|:-|
+|id|Object||新增数据|
+
+
+可选参数 options
+
+|属性|类型|默认值|描述|
+|:-|:-|:-|:-|
+|toastTitle|string|新增成功|新增成功后的toast提示|
+|success|function||新增成功后的回调|
+|fail|function||新增失败后的回调|
+|complete|function||完成后的回调|
+
 
 ```html
 <unicloud-db ref="udb" :collection="collectionName" v-slot:default="{data,pagination,loading,error}">
@@ -259,7 +306,7 @@ this.$refs.udb.add(value)
 ```
 
 
-完整实例，第二个是可选参数
+完整实例
 
 ```js
 this.$refs.udb.add(value, {
@@ -276,6 +323,37 @@ this.$refs.udb.add(value, {
 ```
 
 ### update
+
+语法
+
+`this.$refs.udb.update(id, value, options)`
+
+udb为unicloud-db组件的ref属性值
+
+
+必选参数 id
+
+|属性|类型|默认值|描述|
+|:-|:-|:-|:-|
+|id|string||数据的唯一标识|
+
+
+必选参数 value
+
+|属性|类型|默认值|描述|
+|:-|:-|:-|:-|
+|id|Object||需要修改的新数据|
+
+
+可选参数 options
+
+|属性|类型|默认值|描述|
+|:-|:-|:-|:-|
+|toastTitle|string|修改成功|修改成功后的toast提示|
+|success|function||更新成功后的回调|
+|fail|function||更新失败后的回调|
+|complete|function||完成后的回调|
+
 
 使用unicloud-db组件的update方法，除了更新云数据库中的数据外，也会同时更新当前页面的unicloud-db组件中的data数据，自然也会自动差量更新页面渲染的内容。同时update方法还封装了修改成功的toast提示。
 
