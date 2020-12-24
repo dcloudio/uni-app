@@ -1030,7 +1030,7 @@ db.on('refreshToken', refreshToken)
 db.off('refreshToken', refreshToken)
 ```
 
-**注意：HBuilderX 3.0.0之前请使用db.auth.on、db.auth.off**
+**注意：HBuilderX 3.0.0之前请使用db.auth.on、db.auth.off，HBuilderX 3.0.0以上版本仍兼容旧写法，但是推荐使用新写法db.on**
 
 ### 错误处理@error
 
