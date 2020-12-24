@@ -184,14 +184,14 @@ this.$refs.udb.loadMore() //udb为unicloud-db组件的ref属性值
 udb为unicloud-db组件的ref属性值
 
 
-参数 id
+必选参数 id
 
 |属性|类型|默认值|描述|
 |:-|:-|:-|:-|
 |id|string&#124;Array||传入数据库的_id|
 
 
-参数 options
+可选参数 options
 
 |属性|类型|默认值|描述|
 |:-|:-|:-|:-|
