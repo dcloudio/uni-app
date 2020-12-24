@@ -8,7 +8,7 @@ export function invokeMethod (name, ...args) {
 }
 /**
  * 监听 service 层内部平台方法回调，与 publish 对应
- * @param {Object} name
+ * @param {Object} name11
  * @param {Object} callback
  */
 export function onMethod (name, callback) {
