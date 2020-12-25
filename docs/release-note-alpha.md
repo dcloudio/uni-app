@@ -1,3 +1,15 @@
+#### 3.0.2.20201225-alpha
+  + App平台 修复 一键登录 univerifyStyle 属性不生效的Bug [详情](https://ask.dcloud.net.cn/question/113997)
+* 【uniCloud】
+  + clientDB 新增 数据库错误 error 事件 [详情](https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=error)
+  + clientDB 调整 refreshToken 事件由 db.auth 移至 db ，旧写法仍兼容 [详情](https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=refreshtoken)
+  + uniCloud本地调试插件 修复 本地运行云函数运行结果显示不全的Bug
+* 【App插件(含5+App和uni-app的App端)】
+  + Android平台 更新 支付宝SDK为15.8.00，解决提交 GooglePlay 审核报存在不安全的加密模式的Bug [详情](https://ask.dcloud.net.cn/question/114053)
+  + Android平台 修复 uni-AD 开屏广告在部分设备可能触发崩溃的Bug
+* 【uni小程序SDK】
+  + iOS平台 修复 小程序跳转其他原生页面再返回小程序时，对应生命周期事件 onShow、onHide 没有触发的Bug
+
 #### 3.0.1.20201223-alpha
   + App平台 修复 3.0.0 版本引出的 match-media 组件失效的Bug
   + App-Android平台 修复 nvue image 组件加载图片过多可能引起内存溢出导致页面滚动卡顿的Bug
