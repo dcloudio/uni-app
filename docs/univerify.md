@@ -23,7 +23,7 @@
 
 前置条件：
 + 手机安装有sim卡
-+ 手机开启数据流量
++ 手机开启数据流量（与wifi无关，不要求关闭wifi，但数据流量不能禁用。）
 + 开通uniCloud服务（但不要求所有后台代码都使用uniCloud）
 
 
@@ -33,7 +33,7 @@
 用户体验好，无需等待短信验证码，能有效降低用户流失率，提升用户注册量在App激活量中的占比。
 
 - **便宜**
-使用`uni一键登录`的成本比短信验证码便宜数倍。
+使用`uni一键登录`的成本比短信验证码便宜数倍。（该业务移动运营商需要收费，DCloud在该业务上并不赚钱）
 
 - **安全**
 采用运营商网关认证，避免短信劫持，有效提升安全性
@@ -287,7 +287,9 @@ exports.main = async (event, context) => {
 }
 ```
 
-完整的项目实例源码，可以参考：[https://ext.dcloud.net.cn/plugin?id=13](https://ext.dcloud.net.cn/plugin?id=13)
+完整的项目实例源码，可以参考：
+1. 云端一体项目模板：[https://ext.dcloud.net.cn/plugin?id=13](https://ext.dcloud.net.cn/plugin?id=13)
+2. hello uni-app。打包后直接体验：[https://m3w.cn/uniapp](https://m3w.cn/uniapp)；源码获取：在HBuilderX中新建uni-app项目，选择hello uni-app模板。一键登陆的具体位置在 API - login 栏目中。
 
 
 #### 5+（wap2app）项目通过云函数URL化让云函数暴露出普通http接口
