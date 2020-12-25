@@ -159,7 +159,7 @@ univerifyStyle 数据结构：
     },
     "authButton": {
         "normalColor": "正常状态颜色 #3479f5",
-        "highlightColor": "按下状态颜色 #2861c5",
+        "highlightColor": "按下状态颜色 #2861c5", //仅ios支持
         "disabledColor": "不可点击时颜色 #73aaf5",//仅ios支持
         "width": "宽度 默认 设备屏幕宽度左右各留 32px",
         "height": "高度 默认 94px",
@@ -184,6 +184,7 @@ univerifyStyle 数据结构：
         "suffix": "并使用本机号码登录",
         "fontSize": 12,
         "privacyItems": [
+            // 需要同时设置url和title. 否则不生效
             {
                 "url": "https://",
                 "title": "用户服务协议"
