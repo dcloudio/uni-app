@@ -5,7 +5,11 @@
 * [uni-app的由来](history.md)
 * [如何学习](resource.md)
 * [框架简介](frame.md)
-* [使用 Vue.js 注意事项](use.md)
+* vue教程
+  * [基础](vue-basics.md)
+  * [组件](vue-components.mdd)
+  * [API](vue-api.md)
+  * [vuex](vue-vuex.md)
 * nvue教程
   * [综述](nvue-outline.md)
   * [样式](nvue-css.md)
