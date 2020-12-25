@@ -7,7 +7,7 @@
 * [框架简介](frame.md)
 * vue教程
   * [基础](vue-basics.md)
-  * [组件](vue-components.mdd)
+  * [组件](vue-components.md)
   * [API](vue-api.md)
   * [vuex](vue-vuex.md)
 * nvue教程
