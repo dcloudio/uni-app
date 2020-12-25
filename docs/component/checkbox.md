@@ -133,3 +133,4 @@
 **注意**
 - checkbox的默认颜色，在不同平台不一样。微信小程序、360小程序是绿色的，字节跳动小程序为红色，其他平台是蓝色的。更改颜色使用color属性。
 - 如需调节checkbox大小，可通过css的scale方法调节，如缩小到70%`style="transform:scale(0.7)"`
+- uni-ui提供了uni-data-checkbox组件，使用方式更简洁，并且支持uni-forms的表单验证 [详见](https://ext.dcloud.net.cn/plugin?id=3456)
