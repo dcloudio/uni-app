@@ -484,7 +484,7 @@ uniCloud推出了`openDB`开源数据库规范，包括用户表、文章表、�
 
 `HBuilderX 3.0.0`及以上版本，可以在项目下创建扩展校验云函数并上传，使用方法如下：
 
-1. 在`uniCloud`项目右键，选择`创建database目录`
+1. 在`uniCloud`项目上点右键，选择`创建database目录`
 2. 在第一步创建的database目录右键选择`创建数据库扩展校验函数目录`
 3. 在第二步创建的`validateFunction`目录右键选择`新建数据库扩展校验函数`
 
@@ -553,6 +553,7 @@ uniCloud推出了`openDB`开源数据库规范，包括用户表、文章表、�
 
 `validateFunction`里的代码是可以联网的。一个常见场景是内容的敏感词过滤，可以将内容提交到三方校验服务里，如果校验通过再入库
 
+不建议在`validateFunction`里编写大量的代码，会影响性能。
 
 #### errorMessage自定义错误提示@errormessage
 
