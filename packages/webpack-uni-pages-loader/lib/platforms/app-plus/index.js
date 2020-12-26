@@ -171,6 +171,9 @@ module.exports = function (pagesJson, userManifestJson, isAppView) {
     }
   }
 
+  // 全屏配置
+  manifestJson.fullscreen = manifestJson.plus.fullscreen
+
   // 地图坐标系
   if (manifestJson.permissions && manifestJson.permissions.Maps) {
     manifestJson.permissions.Maps.coordType = 'gcj02'
