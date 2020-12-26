@@ -647,7 +647,7 @@ const db = uniCloud.database()
 
 ### 查询树形结构所有子节点@gettree
 
-自2020-12-26起，clientDB支持在get方法内传入getTree参数对包含父子关系的表查询返回树状结构数据。
+自3.0.3起，clientDB支持在get方法内传入getTree参数对包含父子关系的表查询返回树状结构数据。
 
 ```js
 // get方法示例
