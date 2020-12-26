@@ -37,7 +37,7 @@ H5没有原生组件概念问题，非H5端有原生组件并引发了原生组�
 
 从HBuilderX 2.6起，App端新增了renderjs，这是一种运行在视图层的js，vue页面通过renderjs可以操作浏览器对象，进而可以让基于浏览器的库直接在uni-app的App端运行，诸如echart、threejs，详见：[https://uniapp.dcloud.io/frame?id=renderjs](https://uniapp.dcloud.io/frame?id=renderjs)
 
-3. 使用了非H5端不支持的vue语法，受小程序自定义组件限制的写法，[详见](/use)
+3. 使用了非H5端不支持的vue语法，受小程序自定义组件限制的写法，[详见](/vue-components)
 4. 不要在引用组件的地方在组件属性上直接写 style="xx"，要在组件内部写样式
 5. `url(//alicdn.net)`等路径，改为`url(https://alicdn.net)`，因为在App端//是file协议
 6. 很多人在H5端联网时使用本地测试服务地址(localhost或127.0.0.1)，这样的联网地址手机App端是无法访问的，请使用手机可访问的IP进行联网

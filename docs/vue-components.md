@@ -50,7 +50,6 @@
 
 
 
-
 ## 注册
 
 在注册一个组件的时候，我们始终需要给它一个名字。
@@ -162,13 +161,19 @@
 	</script>
 ```
 
-**easycom是自动开启的**，不需要手动开启，有需求时可以在 `pages.json` 的 `easycom` 节点进行个性化设置，[详见](https://uniapp.dcloud.io/collocation/pages?id=easycom)。
+- **easycom是自动开启的**，不需要手动开启，有需求时可以在 `pages.json` 的 `easycom` 节点进行个性化设置，[详见](https://uniapp.dcloud.io/collocation/pages?id=easycom)。
 
-不管components目录下安装了多少组件，easycom打包后会自动剔除没有使用的组件，对组件库的使用尤为友好。
-
-在[uni-app插件市场](https://ext.dcloud.net.cn/)有很多现成的组件，若下载符合components/组件名称/组件名称.vue目录结构的组件，均可直接使用。
+- 不管components目录下安装了多少组件，easycom打包后会自动剔除没有使用的组件，对组件库的使用尤为友好。
 
 
+
+组件是 `vue` 技术中非常重要的部分，组件使得与ui相关的轮子可以方便的制造和共享，进而使得 `vue` 使用者的开发效率大幅提升。
+
+`uni-app` 搭建了组件的插件市场，有很多现成的组件，若下载符合components/组件名称/组件名称.vue目录结构的组件，均可直接使用。[uni-app插件市场](https://ext.dcloud.net.cn/)
+
+
+
+> `uni-app`只支持 vue单文件组件（.vue 组件）。其他的诸如：动态组件，自定义 `render` ，和 `<script type="text/x-template">` 字符串模版等，在非H5端不支持。
 
 
 ## props
@@ -814,6 +819,18 @@ Vue 实现了一套内容分发的 API，将 `slot` 元素作为承载分发内�
 		{{ user.firstName }}
 	</current-user>
 ```
+
+
+## 小程序不支持列表
+
+
+- 作用域插槽（字节小程序不支持、除支付宝小程序外仅支持解构插槽、不可使用作用域外数据）
+- 动态组件
+- 异步组件
+- `inline-template`
+- `X-Templates`
+- `keep-alive`（App端也未支持）
+- `transition` （可使用 `animation` 或 CSS 动画替代）
 
 
 

@@ -217,6 +217,20 @@ vue 是单页面应用，使页面局部刷新，不用每次跳转页面都要�
 
 
 
+## 在 uni-app 中使用差异
+
+`uni-app` 在发布到H5时支持所有vue的语法；发布到App和小程序时，由于平台限制，无法实现全部vue语法，但 `uni-app` 仍是是对vue语法支持度最高的跨端框架。
+
+相比Web平台， Vue.js 在 `uni-app` 中使用差异主要集中在两个方面：
+
+- 新增：`uni-app` 除了支持Vue实例的生命周期，还支持[应用生命周期](/frame?id=应用生命周期)以及[页面生命周期](/frame?id=页面生命周期)。
+- 受限：相比web平台，在小程序和App端部分功能受限，[具体见](/vue-api)。
+- uni-app 完整支持 Vue 模板语法。
+- App端可以使用更多的vue特性，[详见](https://ask.dcloud.net.cn/article/36599)。
+
+
+
+
 
 ## 模板语法
 
@@ -381,6 +395,8 @@ data 必须声明为返回一个初始数据对象的函数（注意函数内返
 
 [**观看本节视频讲解**](https://learning.dcloud.io/#/?vid=7)
 
+为节约性能，我们将 `Class` 与 `Style` 的表达式通过 `compiler` 硬编码到 `uni-app` 中，支持语法和转换效果见下：
+
 
 ### 对象语法
 
@@ -482,6 +498,41 @@ data 必须声明为返回一个初始数据对象的函数（注意函数内返
 
 **注意：以:style=""这样的方式设置px像素值，其值为实际像素，不会被编译器转换。**
 
+
+此外还可以用 `computed` 方法生成 `class` 或者 `style` 字符串，插入到页面中，举例说明：
+
+
+```html
+  <template>
+      <!-- 支持 -->
+      <view class="container" :class="computedClassStr"></view>
+      <view class="container" :class="{active: isActive}"></view>
+      <!-- 不支持 -->
+      <view class="container" :class="computedClassObject"></view>
+  </template>
+  <script>
+      export default {
+          data () {
+              return {
+                  isActive: true
+              }
+          },
+          computed: {
+              computedClassStr () {
+                  return this.isActive ? 'active' : ''
+              },
+              computedClassObject () {
+                  return { active: this.isActive }
+              }
+          }
+      }
+  </script>
+```
+
+
+
+
+
 > 非H5端不支持 `classObject` 和 `styleObject` 语法。
 
 不支持示例：
@@ -514,12 +565,11 @@ data 必须声明为返回一个初始数据对象的函数（注意函数内返
 
 ### 用在组件上
 
-
-非H5端（非自定义组件编译模式）暂不支持在自定义组件上使用 Class 与 Style 绑定。
-
+非H5端（非自定义组件编译模式）**暂不支持**在自定义组件上使用 `Class` 与 `Style` 绑定。
 
 
-## 条件渲染
+
+## 条件渲染@condition
 
 
 [**观看本节视频讲解**](https://learning.dcloud.io/#/?vid=8)
@@ -634,7 +684,7 @@ data 必须声明为返回一个初始数据对象的函数（注意函数内返
 
 
 
-## 列表渲染
+## 列表渲染@listrendering
 
 [**观看本节视频讲解**](https://learning.dcloud.io/#/?vid=9)
 

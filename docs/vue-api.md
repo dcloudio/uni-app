@@ -164,8 +164,25 @@
 
 
 
+## 全局变量
+
+实现全局变量的方式需要遵循 Vue 单文件模式的开发规范。详细参考：[uni-app全局变量的几种实现方式](https://ask.dcloud.net.cn/article/35021)。
 
 
+## 其他配置
+
+Vue 组件编译到小程序平台的时候会编译为对应平台的组件，部分小程序平台支持 `options` 选项（具体选项参考对应小程序平台文档的自定义组件部分），一般情况默认即可，如有特殊需求可在 Vue 组件中增加 `options` 属性。
+
+
+```js
+  export default {
+    props: ['data'],
+    options: {
+      multipleSlots: false,// 在微信小程序中关闭当前组件的多slot支持，默认启用
+      virtualHost: true // 在微信小程序中将组件节点渲染为虚拟节点，更加接近Vue组件的表现
+    }
+  }
+```
 
 
 
