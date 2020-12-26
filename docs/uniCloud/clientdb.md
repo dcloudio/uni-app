@@ -8,7 +8,7 @@
 
 1个应用开发的一半的工作量，就此直接省去。
 
-当然使用`clientDB`需要扭转传统后台开发观念，不再编写云函数，直接在前端操作数据库。但是为了数据安全，需要在数据库上配置`DB Schema`。
+当然使用`clientDB`需要扭转传统后台开发观念，不再编写服务端代码，直接在前端操作数据库。但是为了数据安全，需要在数据库上配置`DB Schema`。
 
 在`DB Schema`中，配置数据操作的权限和字段值域校验规则，阻止前端不恰当的数据读写。详见：[DB Schema](https://uniapp.dcloud.net.cn/uniCloud/schema)
 
@@ -23,14 +23,14 @@
 ## clientDB图解
 ![](https://static-eefb4127-9f58-4963-a29b-42856d4205ee.bspapp.com/clientdb.jpg)
 
-`clientDB`的前端部分包括js API和`<unicloud-db>`组件两部分。
+`clientDB`的前端，有两种用法，可以用js API操作云数据库，也可以使用`<unicloud-db>`组件。
 
 js API可以执行所有数据库操作。`<unicloud-db>`组件是js API的再封装，进一步简化查询等常用数据库操作的代码量。
 
 - 在HBuilderX 3.0+，`<unicloud-db>`组件已经内置，可以直接使用。文档另见：[<unicloud-db>组件](/uniCloud/unicloud-db)
 - 在HBuilderX 3.0以前的版本，使用该组件需要在插件市场单独引用`<uni-clientDB>插件`，另见：[https://ext.dcloud.net.cn/plugin?id=3256](https://ext.dcloud.net.cn/plugin?id=3256)
 
-以下文章重点介绍`clientDB`的js API。组件的使用语法类似，但请单独查阅组件的文档。
+以下文章重点介绍`clientDB`的js API。至于组件的用法，另见[文档](/uniCloud/unicloud-db)。
 
 ## clientDB前端API@jssdk
 
@@ -108,7 +108,7 @@ db.collection('list')
 ```js
 const db = uniCloud.database()
 let res = await db.collection('table').where({
-  user_id: db.env.uid // 查询当前用户的数据
+  user_id: db.env.uid // 查询当前用户的数据。虽然代码编写在客户端，但环境变量会在云端运算
 }).get()
 ```
 
@@ -116,7 +116,7 @@ let res = await db.collection('table').where({
 
 `jql`，全称javascript query language，是一种js方式操作数据库的语法规范。
 
-`jql`大幅降低了js工程师操作数据库的难度、大幅缩短开发代码量。并利用json数据库的嵌套特点，极大的简化了联表查询的复杂度。
+`jql`大幅降低了js工程师操作数据库的难度、大幅缩短开发代码量。并利用json数据库的嵌套特点，极大的简化了联表查询和树查询的复杂度。
 
 #### jql的诞生背景
 
@@ -139,7 +139,7 @@ let res = await db.collection('table').where({
 
 sql写法，对js工程师而言有学习成本，而且无法处理非关系型的MongoDB数据库，以及sql的联表查询inner join、left join也并不易于学习。
 
-而nosql的写法，实在过于复杂。
+而nosql的写法，实在过于复杂。比如如下3个例子：
 
 1. 运算符需要转码，`>`需要使用`gt`方法、`==`需要使用`eq`方法
 
@@ -645,173 +645,273 @@ const db = uniCloud.database()
 }
 ```
 
-### 查询树形结构所有子节点@gettree
+### 查询树形数据@gettree
 
-自3.0.3起，clientDB支持在get方法内传入getTree参数对包含父子关系的表查询返回树状结构数据。
+HBuilderX 3.0.3+起，clientDB支持在get方法内传入getTree参数查询树状结构数据。（unicloud-db组件还未支持，目前只能通过js方式使用）
 
+树形数据，在数据库里一般不会按照tree的层次来存储，因为按tree结构通过json对象的方式存储不同层级的数据，不利于对tree上的某个节点单独做增删改查。
+
+一般存储树形数据，tree上的每个节点都是一条单独的数据表记录，然后通过类似parent_id来表达父子关系。
+
+如部门的数据表，里面有2条数据，一条数据记录是“总部”，`parent_id`为空；另一条数据记录“一级部门A”，`parent_id`为总部的`_id`
+```json
+{
+    "_id": "5fe77207974b6900018c6c9c",
+    "name": "总部",
+    "parent_id": "",
+}
+```
+```json
+{
+    "_id": "5fe77232974b6900018c6cb1",
+    "name": "一级部门A",
+    "parent_id": "5fe77207974b6900018c6c9c",
+}
+```
+
+虽然存储格式是分条记录的，但查询反馈到前端的数据仍然需要是树形的。这种转换在过去比较复杂。
+
+clientDB提供了一种简单、优雅的方案，在DB Schema里配置parentKey来表达父子关系，然后查询时声明使用Tree查询，就可以直接查出树形数据。
+
+department部门表的schema中，将字段`parent_id`的"parentKey"设为"_id"，即指定了数据之间的父子关系，如下：
+
+```json
+{
+  "bsonType": "object",
+  "required": ["name"],
+  "properties": {
+	"_id": {
+		"description": "ID，系统自动生成"
+	},
+    "name": {
+		"bsonType": "string",
+		"description": "名称"
+	},
+	"parent_id": {
+		"bsonType": "string",
+		"description": "父id",
+		"parentKey": "_id", // 指定父子关系为：如果数据库记录A的_id和数据库记录B的parent_id相等，则A是B的父级。
+	}
+  }
+}
+```
+
+parentKey字段将数据表不同记录的父子关系描述了出来。查询就可以直接写了。
+
+注意一个表内只能有一个父子关系，即一个表的schema里只能配置一份parentKey。
+
+schema里描述好后，查询就变的特别简单。
+
+查询树形数据，分为 查询所有子节点 和 查询父级路径 这2种需求。
+
+#### 查询所有子节点
+
+指定符合条件的记录，然后查询它的所有子节点，并且可以指定层级，返回的结果是以符合条件的记录为一级节点的所有子节点数据，并以树形方式嵌套呈现。
+
+只需要在clientDB的get方法中增加`getTree`参数，如下
 ```js
 // get方法示例
 get({
   getTree: {
-    limitLevel: 10, // 最大查询层级（不包含当前层级），可以省略默认10级，最大15最小1
-    startWith: 'parent_code==null'  // 第一层级条件，此初始条件可以省略，不传startWith时默认从最顶级开始查询
+    limitLevel: 10, // 最大查询层级（不包含当前层级），可以省略默认10级，最大15，最小1
+    startWith: "parent_code==''"  // 第一层级条件，此初始条件可以省略，不传startWith时默认从最顶级开始查询
   }
 })
 ```
 
-以下面的表结构及数据为例
-
+完整的代码如下：
 ```js
-// test-tree 表结构
-{
-  "bsonType": "object",
-  "required": [],
-  "properties": {
-    "parent_code": {
-      "bsonType": "string",
-      "description": "父级code",
-      "parentKey": "code", // 指定父子关系为：如果数据库记录A的code和数据库记录B的parent_code相等，则A是B的父级。一个表内只能有一个父子关系
-    },
-    "code": {
-      "bsonType": "string",
-      "description": "当前code
-    },
-    "name": {
-      "bsonType": "string",
-      "description": "名称"
-    }
-  }
-}
+db.collection("department").get({
+		getTree: {}
+	})
+	.then((res) => {
+		const resdata = res.result.data
+		console.log("resdata", resdata);
+	}).catch((err) => {
+		uni.showModal({
+			content: err.message || '请求服务失败',
+			showCancel: false
+		})
+	}).finally(() => {
+		
+	})
 ```
 
-假设上述表有以下数据
-
-```js
-{
-  name: 'p1',
-  code: '1'
-}
-{
-  parent_code: '1',
-  name: 'c11',
-  code: '11'
-}
-{
-  parent_code: '1',
-  name: 'c12',
-  code: '12'
-}
-{
-  name: 'p2',
-  code: '2'
-}
-{
-  parent_code: '2',
-  name: 'c21',
-  code: '21'
-}
-{
-  parent_code: '2',
-  name: 'c22',
-  code: '22'
-}
+查询的结果如下：
+```json
+"data": [{
+	"_id": "5fe77207974b6900018c6c9c",
+	"name": "总部",
+	"parent_id": "",
+	"children": [{
+		"_id": "5fe77232974b6900018c6cb1",
+		"name": "一级部门A",
+		"parent_id": "5fe77207974b6900018c6c9c",
+		"children": []
+	}]
+}]
 ```
 
-以上面的表结构为例以下两种写法是等价的
+可以看出，每个子节点，被嵌套在父节点的"children"下，这个"children"是一个固定的格式。
 
-```js
-get({
-  getTree: {
-    limitLevel: 10,
-    startWith: 'parent_code==null'
-  }
-})
+如果不指定getTree的参数，会把department表的所有数据都查出来，从总部开始到10级部门，以树形结构提供给客户端。
 
-get({
-  getTree: true
-})
+如果有多个总部，即多行记录的`parent_id`为空，则多个总部会分别作为一级节点，把它们下面的所有children一级一级拉出来。如下：
+
+```json
+"data": [
+	{
+		"_id": "5fe77207974b6900018c6c9c",
+		"name": "总部",
+		"parent_id": "",
+		"children": [{
+				"_id": "5fe77232974b6900018c6cb1",
+				"name": "一级部门A",
+				"parent_id": "5fe77207974b6900018c6c9c",
+				"children": []
+		}]
+	},
+	{
+		"_id": "5fe778a10431ca0001c1e2f8",
+		"name": "总部2",
+		"parent_id": "",
+		"children": [{
+				"_id": "5fe778e064635100013efbc2",
+				"name": "总部2的一级部门B",
+				"parent_id": "5fe778a10431ca0001c1e2f8",
+				"children": []
+		}]
+	}
+]
 ```
 
-如果要查询code为'1'的数据及其在树形结构所有的子节点，可以使用如下写法
 
-```js
-// 完整写法示例
-const res = await db.collection('opendb-china-cities')
-  .field('name as text,code as value')
-  .get({
-    getTree: {
-      startWith: 'code == "1"'
-    }
-  })
-  
-// 查询结果
-{
-  data: [{
-    text:'p1',
-    value:'1',
-    children:[{
-      text:'c11',
-      value:'11',
-      children: []
-    },{
-      text:'c12',
-      value:'12',
-      children: []
-    }]
-  }]
-}
-```
+如果觉得返回的`parent_id`字段多余，也可以指定`.field("_id,name")`，过滤掉该字段。
+
+**getTree的参数limitLevel的说明**
+
+limitLevel表示查询返回的树的最大层级。超过设定层级的节点不会返回。
+
+- limitLevel的默认值为10。
+- limitLevel的合法值域为1-15之间（包含1、15）。如果数据实际层级超过15层，请分层懒加载查询。
+- limitLevel为1，表示向下查一级子节点。假如数据库中有2级、3级部门，如果设limitLevel为1，且查询的是“总部”，那么返回数据包含“总部”和其下的一级部门。
+
+**getTree的参数startWith的说明**
+
+如果只需要查“总部”的子部门，不需要“总部2”，可以在where条件里指定（`.where("name=='总部'")`），也可以在startWith里指定（`getTree: {"startWith":"name=='总部'"}`）。
+
+那么这2种指定方式的区别是什么呢？有的场景下，where条件可能用于描述其他查询条件，和以什么数据为根的描述冲突。此时就需要单独指定starWith。
+
+startWith不填时，默认的条件是 `'parent_id==null||parent_id==""'`，即schema配置parentKey的字段为null（即不存在）或值为空字符串时，这样的节点被默认视为根节点。
+
+getTree一定会返回一个嵌套的树形数据，如果指定的查询条件没有子数据，查询会报错。
+
+**大数据量的树形数据查询**
+
+如果tree的数据量较大，则不建议一次性把所有的树形数据返回给客户端。建议分层查询，即懒加载。
+
+比如地区选择的场景，全国的省市区数据量很大，一次性查询所有数据返回给客户端非常耗时和耗流量。可以先查省，然后根据选择的省再查市，以此类推。
 
 **注意**
 
-- 目前不支持使用getTree的同时使用其他联表查询语法
+- 暂不支持使用getTree的同时使用联表查询
 - 如果使用了where条件会对所有查询的节点生效
-- 不可一次查询量特别大的数据，比如一次性加载所有的省市区。推荐在菜单、部门选择等小数据量的场景下使用
 
-### 查询树形结构所有父节点@gettreepath
+#### 查询树形结构父节点路径@gettreepath
 
-自2020-12-26起，clientDB支持在get方法内传入getTreePath参数对包含父子关系的表查询返回树状结构数据某节点路径。
+getTree是查询子节点，而getTreePath，则是查询父节点。
+
+get方法内传入getTreePath参数对包含父子关系的表查询返回树状结构数据某节点路径。
 
 ```js
 // get方法示例
 get({
   getTreePath: {
-    limitLevel: 10, // 最大查询层级（不包含当前层级），可以省略默认10级，最大15最小1
-    startWith: 'code=="22"'  // 第一层级条件，此初始条件不可以省略
+    limitLevel: 10, // 最大查询层级（不包含当前层级），可以省略默认10级，最大15，最小1
+    startWith: 'name=="一级部门A"'  // 末级节点的条件，此初始条件不可以省略
   }
 })
 ```
 
-仍以上面getTree中的表结构和数据为例
+查询返回的结果为，从“一级部门A”起向上找10级，找到最终节点后，以该节点为根，向下嵌套children，一直到达“一级部门A”。
 
-如果要查询code为'22'的数据的在树形结构中的路径可以使用下面的写法
+返回结果只包括“一级部门A”的直系父，其父节点的兄弟节点不会返回。所以每一层数据均只有一个节点。
+
+仍以上面department的表结构和数据为例
 
 ```js
-// 完整写法示例
-const res = await db.collection('opendb-china-cities')
-  .field('name as text,code as value')
-  .get({
-    getTreePath: {
-      startWith: 'code=="22"'
-    }
-  })
-  
-// 查询返回结果
+db.collection("department").get({
+		getTreePath: {
+			"startWith": "_id=='5fe77232974b6900018c6cb1'"
+		}
+	})
+	.then((res) => {
+		const treepath = res.result.data
+		console.log("treepath", treepath);
+	}).catch((err) => {
+		uni.showModal({
+			content: err.message || '请求服务失败',
+			showCancel: false
+		})
+	}).finally(() => {
+		uni.hideLoading()
+		// console.log("finally")
+	})
+```
+
+查询返回结果
+
+从根节点“总部”开始，返回到“一级部门A”。“总部2”等节点不会返回。
+
+```json
 {
-  data: [{
-      text:'p2',
-      value:'2',
-      children:[{
-        text:'c22',
-        value:'22',
-      }]
-    }]
+  "data": [{
+		"_id": "5fe77207974b6900018c6c9c",
+		"name": "总部",
+		"parent_id": "",
+		"children": [{
+			"_id": "5fe77232974b6900018c6cb1",
+			"name": "一级部门A",
+			"parent_id": "5fe77207974b6900018c6c9c"
+		}]
+	}]
 }
 ```
 
+如果startWith指定的节点没有父节点，则返回自身。
+
+如果startWith匹配的节点不止一个，则以数组的方式，返回每个节点的treepath。
+
+例如“总部”和“总部2”下面都有一个部门的名称叫“销售部”，且`	"startWith": "name=='销售部'"`，则会返回“总部”和“总部2”两条treepath，如下
+
+```json
+{
+	"data": [{
+		"_id": "5fe77207974b6900018c6c9c",
+		"name": "总部",
+		"parent_id": "",
+		"children": [{
+			"_id": "5fe77232974b6900018c6cb1",
+			"name": "销售部",
+			"parent_id": "5fe77207974b6900018c6c9c"
+		}]
+		}, {
+		"_id": "5fe778a10431ca0001c1e2f8",
+		"name": "总部2",
+		"parent_id": "",
+		"children": [{
+			"_id": "5fe79fea23976b0001508a46",
+			"name": "销售部",
+			"parent_id": "5fe778a10431ca0001c1e2f8"
+		}]
+	}]
+}
+```
+
+
 **注意**
 
-- 目前不支持使用getTreePath的同时使用其他联表查询语法
+- 暂不支持使用getTreePath的同时使用其他联表查询语法
 - 如果使用了where条件会对所有查询的节点生效
 
 ### 新增数据记录add
@@ -1158,7 +1258,7 @@ const res = await db.collection('table1').where({
 
 ### 其他数据库操作
 
-clientDB支持使用聚合操作读取数据，关于聚合操作请参考[聚合操作](uniCloud/cf-database.md?id=aggregate)
+clientDB API支持使用聚合操作读取数据，关于聚合操作请参考[聚合操作](uniCloud/cf-database.md?id=aggregate)
 
 例：取status等于1的随机20条数据
 
@@ -1511,7 +1611,7 @@ module.exports = {
   command: {
     // getMethod('where') 获取所有的where方法，返回结果为[{$method:'where',$param: [{a:1}]}]
     getMethod,
-    // getMethod({name:'where',index: 0}) 获取第1个where方法的参数，结果为数组形式，例：[{a:1}]
+    // getParam({name:'where',index: 0}) 获取第1个where方法的参数，结果为数组形式，例：[{a:1}]
     getParam,
     // setParam({name:'where',index: 0, param: [{a:1}]}) 设置第1个where方法的参数，调用之后where方法实际形式为：where({a:1})
     setParam
