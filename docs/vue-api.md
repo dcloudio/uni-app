@@ -11,7 +11,7 @@
 |Vue.config.ignoredElements	| 须使 Vue 忽略在 Vue 之外的自定义元素 [详情](https://cn.vuejs.org/v2/api/#ignoredElements) 	|√	| √	| √		|强烈不推荐，会覆盖uni-app框架配置的内置组件		|
 |Vue.config.keyCodes	| 给 v-on 自定义键位别名 [详情](https://cn.vuejs.org/v2/api/#keyCodes)	|√	| x	| x		|		|
 |Vue.config.performance	| 设置为 true 以在浏览器开发工具的性能/时间线面板中启用对组件初始化、编译、渲染和打补丁的性能追踪 [详情](https://cn.vuejs.org/v2/api/#performance)	|√	|x	| x		|只在Web环境下支持	|
-|Vue.config.productionTip	| 设置为 false 以阻止 vue 在启动时生成生产提示 [详情](https://cn.vuejs.org/v2/api/#productionTip)	|√	| √	| √		|		|
+|Vue.config.productionTip	| 设置为 false 以阻止 vue 在启动时生成生产提示 [详情](https://cn.vuejs.org/v2/api/#productionTip)	|√	| √	| √		|	-	|
 
 
 
@@ -60,7 +60,7 @@
 |functional	| 使组件无状态 (没有 data) 和无实例 (没有 this 上下文) [详情](https://cn.vuejs.org/v2/api/#functional) 	|√	| x	| x		|		|
 |model	| 允许一个自定义组件在使用 v-model 时定制 prop 和 event [详情](https://cn.vuejs.org/v2/api/#model) 	|√	|√	| x		|		|
 |inheritAttrs	| inheritAttrs属性默认值为true，表示允许组件的根节点继承$attrs包含的属性 [详情](https://cn.vuejs.org/v2/api/#inheritAttrs) 	|√	|√	| x		|		|
-|comments	| 当设为 true 时，将会保留且渲染模板中的 HTML 注释 [详情](https://cn.vuejs.org/v2/api/#comments) 	|√	| x	| x		|		|
+|comments	| 当设为 true 时，将会保留且渲染模板中的 HTML 注释 [详情](https://cn.vuejs.org/v2/api/#comments) 	|√	| x	| x		|	-	|
 
 
 
@@ -85,7 +85,7 @@
 |vm.$refs	| 一个对象，持有注册过 ref attribute 的所有 DOM 元素和组件实例[详情](https://cn.vuejs.org/v2/api/#vm-refs) 	|√	| √	| √		|非H5端只能用于获取自定义组件，不能用于获取内置组件实例（如：view、text）		|
 |vm.$isServer	| 当前 Vue 实例是否运行于服务器 [详情](https://cn.vuejs.org/v2/api/#vm-isServer) 	|√	| √	| x		|App端V3总是返回false		|
 |vm.$attrs	| 包含了父作用域中不作为 prop 被识别 (且获取) 的 attribute 绑定 [详情](https://cn.vuejs.org/v2/api/#vm-attrs) 	|√	| √	| x		|		|
-|vm.$listeners	| 包含了父作用域中的 (不含 .native 修饰器的) v-on 事件监听器 [详情](https://cn.vuejs.org/v2/api/#vm-listeners) 	|√	| √	| x		|		|
+|vm.$listeners	| 包含了父作用域中的 (不含 .native 修饰器的) v-on 事件监听器 [详情](https://cn.vuejs.org/v2/api/#vm-listeners) 	|√	| √	| x		|	-	|
 
 
 
@@ -107,7 +107,7 @@
 |vm.$mount()	| 手动地挂载一个未挂载的实例 [详情](https://cn.vuejs.org/v2/api/#vm-mount) 	|√	| x	| x		|		|
 |vm.$forceUpdate()	| 迫使 Vue 实例重新渲染 [详情](https://cn.vuejs.org/v2/api/#vm-forceUpdate) 	|√	| √	| √		|		|
 |vm.$nextTick()	| 将回调延迟到下次 DOM 更新循环之后执行 [详情](https://cn.vuejs.org/v2/api/#vm-nextTick) 	|√	| √	| √		|		|
-|vm.$destroy()	| 完全销毁一个实例 [详情](https://cn.vuejs.org/v2/api/#vm-destroy) 	|√	| √	| √		|		|
+|vm.$destroy()	| 完全销毁一个实例 [详情](https://cn.vuejs.org/v2/api/#vm-destroy) 	|√	| √	| √		|	-	|
 
 
 
@@ -131,7 +131,7 @@
 |v-model| 在表单控件或者组件上创建双向绑定 [详情](https://cn.vuejs.org/v2/api/#v-model) 	|√	| √	| √		|		|
 |v-pre	| 跳过这个元素和它的子元素的编译过程 [详情](https://cn.vuejs.org/v2/api/#v-pre) 	|√	| √	| x		|		|
 |v-cloak| 这个指令保持在元素上直到关联实例结束编译 [详情](https://cn.vuejs.org/v2/api/#v-cloak) 	|√	| x	| x		|		|
-|v-once	| 只渲染元素和组件一次 [详情](https://cn.vuejs.org/v2/api/#v-once) 	|√	| √	| x		|		|
+|v-once	| 只渲染元素和组件一次 [详情](https://cn.vuejs.org/v2/api/#v-once) 	|√	| √	| x		| -	|
 
 
 
@@ -143,7 +143,7 @@
 | --				| --						| --	|--		|--			| --	|
 |key	| 主要用在 Vue 的虚拟 DOM 算法，在新旧 nodes 对比时辨识 VNodes [详情](https://cn.vuejs.org/v2/api/#key) 	|√	| √	| √		|App端旧版不支持表达式		|
 |ref	| ref 被用来给元素或子组件注册引用信息 [详情](https://cn.vuejs.org/v2/api/#ref) 	|√	| √	| √		|		|
-|is	| 用于动态组件且基于 DOM 内模板的限制来工作 [详情](https://cn.vuejs.org/v2/api/#is) 	|√	| √	| x		|		|
+|is	| 用于动态组件且基于 DOM 内模板的限制来工作 [详情](https://cn.vuejs.org/v2/api/#is) 	|√	| √	| x		|	-	|
 
 
 
@@ -159,7 +159,7 @@
 |transition	| 作为单个元素/组件的过渡效果 [详情](https://cn.vuejs.org/v2/api/#transition) 	|√	| x	| x		|		|
 |transition-group	| 作为多个元素/组件的过渡效果 [详情](https://cn.vuejs.org/v2/api/#transition-group) 	|√	| x	| x		|		|
 |keep-alive	| 包裹动态组件时，会缓存不活动的组件实例，而不是销毁它们 [详情](https://cn.vuejs.org/v2/api/#keep-alive) 	|√	|x	| x		|		|	
-|slot	| 作为组件模板之中的内容分发插槽 [详情](https://cn.vuejs.org/v2/api/#slot) 	|√	| √	| √		|		|
+|slot	| 作为组件模板之中的内容分发插槽 [详情](https://cn.vuejs.org/v2/api/#slot) 	|√	| √	| √		|	-	|
 
 
 
@@ -228,7 +228,7 @@ uni-app 内置了 [Vuex](https://vuex.vuejs.org/zh/) ，在app里的使用，可
 ```
 
 
-### 4. 组件属性设置不生效解决办法
+### 4. 组件属性设置不生效解决办法@componentsolutions
 
 当重复设置某些属性为相同的值时，不会同步到view层。 例如：每次将scroll-view组件的scroll-top属性值设置为0，只有第一次能顺利返回顶部。 这和props的单向数据流特性有关，组件内部scroll-top的实际值改动后，其绑定的属性并不会一同变化。
 

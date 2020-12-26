@@ -55,11 +55,12 @@
 
 在注册一个组件的时候，我们始终需要给它一个名字。
 定义组件名的方式有两种：
-##### 使用 kebab-case
+
+- 使用 kebab-case
 
 当使用 kebab-case (短横线分隔命名) 定义一个组件时，你也必须在引用这个自定义元素时使用 kebab-case，例如 `<my-component-name>`。
 
-##### 使用 PascalCase
+- 使用 PascalCase
 
 当使用 PascalCase (首字母大写命名) 定义一个组件时，你在引用这个自定义元素时两种命名法都可以使用。
 也就是说 `<my-component-name>` 和 `<MyComponentName>` 都是可接受的。
@@ -71,18 +72,19 @@
 │─components            	符合vue组件规范的uni-app组件目录
 │  └─componentA         	符合‘components/组件名称/组件名称.vue’目录结构，easycom方式可直接使用组件
 │  		└─componentA.vue    可复用的componentA组件
-│  └─component-a.vue        可复用的component-a组件
+│  └─component-a.vue      可复用的component-a组件
 ```
 
 
 
 ### 全局注册
 
-uni-app 支持配置全局组件，需在 `main.js` 里进行全局注册，注册后就可在所有页面里使用该组件。
+`uni-app` 支持配置全局组件，需在 `main.js` 里进行全局注册，注册后就可在所有页面里使用该组件。
 
 **注意**
+
 - Vue.component 的第一个参数必须是静态的字符串。
-- nvue页面暂不支持全局组件。
+- nvue 页面暂不支持全局组件。
 
 1. `main.js` 里进行全局导入和注册
 
@@ -115,7 +117,6 @@ uni-app 支持配置全局组件，需在 `main.js` 里进行全局注册，注�
 如下通过两种方式导入一个角标的组件库，[详见](https://ext.dcloud.net.cn/plugin?id=21)，推荐使用 `easycom` 方式引入。
 
 1. **传统vue规范：** 在 index.vue 页面中，通过 `import` 方式引入组件 ，在 `components` 选项中定义你想要使用的组件。
-
 
 ```html
 	<!-- 在index.vue引入 uni-badge 组件-->
@@ -254,7 +255,6 @@ uni-app 支持配置全局组件，需在 `main.js` 里进行全局注册，注�
 
 ```html
 	<blog-post v-bind="post"></blog-post>
-
 	<!-- 上面的模板等价于： -->
 	<blog-post
 		v-bind:id="post.id"
@@ -270,7 +270,7 @@ uni-app 支持配置全局组件，需在 `main.js` 里进行全局注册，注�
 
 > 每次父级组件发生变更时，子组件中所有的 prop 都将会刷新为最新的值。这意味着你不应该在一个子组件内部改变 prop。如果你这样做了，Vue 会在浏览器的控制台中发出警告。
 
-1. 这个 `prop` 用来传递一个初始值；这个子组件接下来希望将其作为一个本地的 `prop` 数据来使用。
+- 这个 `prop` 用来传递一个初始值；这个子组件接下来希望将其作为一个本地的 `prop` 数据来使用。
 
 ```html
 	<template>
@@ -304,7 +304,7 @@ uni-app 支持配置全局组件，需在 `main.js` 里进行全局注册，注�
 	</script>
 ```
 
-2. 这个 `prop` 以一种原始的值传入且需要进行转换。在这种情况下，最好使用这个 `prop` 的值来定义一个计算属性： 
+- 这个 `prop` 以一种原始的值传入且需要进行转换。在这种情况下，最好使用这个 `prop` 的值来定义一个计算属性： 
 
 ```html
 	<template>
@@ -539,7 +539,7 @@ Vue 实现了一套内容分发的 API，将 `slot` 元素作为承载分发内�
 ```
 
 
-1. 当我在一个父级组件中使用 `<submit-button>` 并且不提供任何插槽内容时：
+- 当我在一个父级组件中使用 `<submit-button>` 并且不提供任何插槽内容时：
 
 ```html
 	<!-- 父级组件：不提供任何插槽内容-->
@@ -551,7 +551,7 @@ Vue 实现了一套内容分发的 API，将 `slot` 元素作为承载分发内�
 	</button>
 ```
 
-2. 当我在一个父级组件中使用 `<submit-button>` 并且提供插槽内容时：
+- 当我在一个父级组件中使用 `<submit-button>` 并且提供插槽内容时：
 
 ```html
 	<!-- 父级组件：提供插槽内容-->
@@ -573,7 +573,7 @@ Vue 实现了一套内容分发的 API，将 `slot` 元素作为承载分发内�
 需要多个插槽时，可以利用 `<slot>` 元素的一个特殊的特性：`name` 来定义具名插槽
 
 
-1. `<base-layout>` 子组件模板：
+- `<base-layout>` 子组件模板：
 
 ```html
 	<template>
@@ -595,7 +595,7 @@ Vue 实现了一套内容分发的 API，将 `slot` 元素作为承载分发内�
 ```
 
 
-2. 在向具名插槽提供内容的时候，我们可以在一个 `<template>` 元素上使用 `v-slot` 指令，并以 v-slot 的参数的形式提供其名称：
+- 在向具名插槽提供内容的时候，我们可以在一个 `<template>` 元素上使用 `v-slot` 指令，并以 v-slot 的参数的形式提供其名称：
 
 
 ```html
