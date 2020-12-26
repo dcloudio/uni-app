@@ -331,7 +331,12 @@ export default {
         // #ifdef H5
         if (process.env.NODE_ENV === 'development') {
           this._debugDataList.length = 0
-          this._debugDataList.push(...JSON.parse(JSON.stringify(this.dataList)))
+          let formatData = JSON.parse(JSON.stringify(this.dataList))
+          if (Array.isArray(this.dataList)) {
+            this._debugDataList.push(...formatData)
+          } else {
+            this._debugDataList.push(formatData)
+          }
         }
         // #endif
       }).catch((err) => {
