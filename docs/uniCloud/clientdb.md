@@ -86,6 +86,7 @@ db.collection('list')
 |TOKEN_INVALID									|token校验未通过（云端已不包含此token）	|
 |TOKEN_INVALID_TOKEN_EXPIRED		|token校验未通过（token已过期）					|
 |TOKEN_INVALID_WRONG_TOKEN			|token校验未通过（token校验未通过）			|
+|TOKEN_INVALID_ANONYMOUS_USER   |token校验未通过（当前用户为匿名用户）		|
 |SYNTAX_ERROR										|语法错误																|
 |PERMISSION_ERROR								|权限校验未通过													|
 |VALIDATION_ERROR								|数据格式未通过													|
