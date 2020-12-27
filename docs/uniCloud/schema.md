@@ -958,6 +958,7 @@ db.collection('street').where("shop_id=='123123 || shop_id=='456456'").get()
 
 DCloud提供了`uni-forms`前端组件，该组件的表单校验规范完全符合`DB Schema`中的校验规则，实现云端统一。`uni-forms`组件地址：[https://ext.dcloud.net.cn/plugin?id=2773](https://ext.dcloud.net.cn/plugin?id=2773)
 
+schema2code不是简单的一键crud生成接口，它直接生成了可运行的页面。
 
 1. 在schema界面点击 “导出表单页面”
 
