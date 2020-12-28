@@ -659,6 +659,7 @@ HBuilderX 3.0.3+起，clientDB支持在get方法内传入getTree参数查询树�
     "_id": "5fe77207974b6900018c6c9c",
     "name": "总部",
     "parent_id": "",
+    "status": 0
 }
 ```
 ```json
@@ -666,6 +667,7 @@ HBuilderX 3.0.3+起，clientDB支持在get方法内传入getTree参数查询树�
     "_id": "5fe77232974b6900018c6cb1",
     "name": "一级部门A",
     "parent_id": "5fe77207974b6900018c6c9c",
+    "status": 0
 }
 ```
 
@@ -680,18 +682,22 @@ department部门表的schema中，将字段`parent_id`的"parentKey"设为"_id"�
   "bsonType": "object",
   "required": ["name"],
   "properties": {
-	"_id": {
-		"description": "ID，系统自动生成"
-	},
-    "name": {
-		"bsonType": "string",
-		"description": "名称"
-	},
-	"parent_id": {
-		"bsonType": "string",
-		"description": "父id",
-		"parentKey": "_id", // 指定父子关系为：如果数据库记录A的_id和数据库记录B的parent_id相等，则A是B的父级。
-	}
+    "_id": {
+      "description": "ID，系统自动生成"
+    },
+      "name": {
+      "bsonType": "string",
+      "description": "名称"
+    },
+    "parent_id": {
+      "bsonType": "string",
+      "description": "父id",
+      "parentKey": "_id", // 指定父子关系为：如果数据库记录A的_id和数据库记录B的parent_id相等，则A是B的父级。
+    },
+    "status": {
+      "bsonType": "int",
+      "description": "部门状态，0-正常、1-禁用"
+    }
   }
 }
 ```
@@ -743,10 +749,12 @@ db.collection("department").get({
 	"_id": "5fe77207974b6900018c6c9c",
 	"name": "总部",
 	"parent_id": "",
+	"status": 0,
 	"children": [{
 		"_id": "5fe77232974b6900018c6cb1",
 		"name": "一级部门A",
 		"parent_id": "5fe77207974b6900018c6c9c",
+		"status": 0,
 		"children": []
 	}]
 }]
@@ -764,10 +772,12 @@ db.collection("department").get({
 		"_id": "5fe77207974b6900018c6c9c",
 		"name": "总部",
 		"parent_id": "",
+    "status": 0,
 		"children": [{
 				"_id": "5fe77232974b6900018c6cb1",
 				"name": "一级部门A",
 				"parent_id": "5fe77207974b6900018c6c9c",
+				"status": 0,
 				"children": []
 		}]
 	},
@@ -798,13 +808,107 @@ limitLevel表示查询返回的树的最大层级。超过设定层级的节点�
 
 **getTree的参数startWith的说明**
 
-如果只需要查“总部”的子部门，不需要“总部2”，可以在where条件里指定（`.where("name=='总部'")`），也可以在startWith里指定（`getTree: {"startWith":"name=='总部'"}`）。
+如果只需要查“总部”的子部门，不需要“总部2”，可以在startWith里指定（`getTree: {"startWith":"name=='总部'"}`）。
 
-那么这2种指定方式的区别是什么呢？有的场景下，where条件可能用于描述其他查询条件，和以什么数据为根的描述冲突。此时就需要单独指定starWith。
+使用中请注意startWith和where的区别。where用于描述对所有层级的生效的条件（包括第一层级）。而startWith用于描述从哪个或哪些节点开始查询树。
 
 startWith不填时，默认的条件是 `'parent_id==null||parent_id==""'`，即schema配置parentKey的字段为null（即不存在）或值为空字符串时，这样的节点被默认视为根节点。
 
-getTree一定会返回一个嵌套的树形数据，如果指定的查询条件没有子数据，查询会报错。
+假设上述部门表内有以下数据
+
+```js
+{
+    "_id": "1",
+    "name": "总部",
+    "parent_id": "",
+    "status": 0
+}
+{
+    "_id": "11",
+    "name": "一级部门A",
+    "parent_id": "1",
+    "status": 0
+}
+{
+    "_id": "12",
+    "name": "一级部门B",
+    "parent_id": "1",
+    "status": 1
+}
+```
+
+以下查询语句指定startWith为`_id=="1"`、where条件为`status==0`，查询总部下所有status为0的子节点。
+
+```js
+db.collection("department")
+  .where('status==0')
+  .get({
+    getTree: {
+      startWith: '_id=="1"'
+    }
+	})
+	.then((res) => {
+		const resdata = res.result.data
+		console.log("resdata", resdata);
+	}).catch((err) => {
+		uni.showModal({
+			content: err.message || '请求服务失败',
+			showCancel: false
+		})
+	}).finally(() => {
+		
+	})
+```
+
+查询的结果如下：
+```json
+{
+  "data": [{
+    "_id": "1",
+    "name": "总部",
+    "parent_id": "",
+    "status": 0,
+    "children": [{
+      "_id": "11",
+      "name": "一级部门A",
+      "parent_id": "1",
+      "status": 0,
+      "children": []
+    }]
+  }]
+}
+```
+
+**需要注意的是where内的条件也会对第一级数据生效**，例如将上面的查询改成如下写法
+
+```js
+db.collection("department")
+  .where('status==1')
+  .get({
+    getTree: {
+      startWith: '_id=="1"'
+    }
+	})
+	.then((res) => {
+		const resdata = res.result.data
+		console.log("resdata", resdata);
+	}).catch((err) => {
+		uni.showModal({
+			content: err.message || '请求服务失败',
+			showCancel: false
+		})
+	}).finally(() => {
+		
+	})
+```
+
+此时将无法查询到数据，返回结果如下
+
+```js
+{
+  "data": []
+}
+```
 
 **大数据量的树形数据查询**
 
