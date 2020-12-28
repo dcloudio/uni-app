@@ -478,7 +478,7 @@ mp-qq只支持自定义组件模式，不存在usingComponents配置
 ### 关于分包优化的说明
 
 - 在对应平台的配置下添加`"optimization":{"subPackages":true}`开启分包优化
-- 目前只支持`mp-weixin`、`mp-qq`、`mp-baidu`的分包优化
+- 目前只支持`mp-weixin`、`mp-qq`、`mp-baidu`、`mp-toutiao`的分包优化
 - 分包优化具体逻辑：
   + 静态文件：分包下支持 static 等静态资源拷贝，即分包目录内放置的静态资源不会被打包到主包中，也不可在主包中使用
   + js文件：当某个 js 仅被一个分包引用时，该 js 会被打包到该分包内，否则仍打到主包（即被主包引用，或被超过 1 个分包引用）
