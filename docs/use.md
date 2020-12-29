@@ -1,3 +1,9 @@
+## 此文档已迁移
+
+**新文档链接**[https://uniapp.dcloud.io/vue-basics](https://uniapp.dcloud.io/vue-basics)
+
+
+**************************************
 
 ``uni-app`` 在发布到H5时支持所有vue的语法；发布到App和小程序时，由于平台限制，无法实现全部vue语法，但``uni-app``仍是是对vue语法支持度最高的跨端框架。本文将详细讲解差异。
 
