@@ -1649,6 +1649,7 @@ action是一种特殊的云函数，它不占用服务空间的云函数数量�
 在这个js文件的代码里，包括before和after两部分，分别代表clientDB具体操作数据库前和后。
 
 - before在clientDB执行前触发，before里的代码执行完毕后再开始操作数据库。before的常用用途：
+  * 使用throw阻止clientDB运行
 	* 对前端传入的数据进行二次处理
 	* 在此处开启数据库事务，万一操作数据库失败，可以在after里回滚
 	* 如果权限或字段值域校验不想配在schema和validateFunction里，也可以在这里做校验
