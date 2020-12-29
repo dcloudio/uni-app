@@ -117,15 +117,35 @@ exports.main = async (event, context) => {
 
 **示例代码**
 
-```
+```js
 const res = await uniCloud.httpclient.request(apiUrl, {
     method: 'POST',
     data: {
       test: 'testValue'
     },
-    dataType: 'json'
+    contentType: 'json', // 指定以application/json发送data内的数据
+    dataType: 'json' // 指定返回值为json格式，自动进行parse
   })
 console.log(res)
+```
+
+返回数据结构如下
+
+```js
+{
+	"data": {"name": "DCloud"}, // 响应内容
+	"status": 200, // 状态码
+	"headers": { // 响应头，仅作示例，不同服务器返回的有差异
+		"date": "Tue, 29 Dec 2020 08:10:30 GMT",
+		"content-type": "application/json",
+		"content-length": "276",
+		"connection": "keep-alive",
+		"server": "gunicorn/19.9.0",
+		"access-control-allow-origin": "*",
+		"access-control-allow-credentials": "true"
+	}
+}
+
 ```
 
 ## 使用npm
