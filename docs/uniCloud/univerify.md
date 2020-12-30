@@ -73,6 +73,7 @@ uniCloud.callFunction({
 // 云函数
 module.exports = async(event){
   const res = await uniCloud.getPhoneNumber({
+    appid: '_UNI_ABCDEFG', // 替换成自己开通一键登录的应用的DCloud appid，使用callFunction方式调用时可以不传（会自动取当前客户端的appid），如果使用云函数URL化的方式访问必须传此参数
   	provider: 'univerify',
   	apiKey: 'xxx', // 在开发者中心开通服务并获取apiKey
   	apiSecret: 'xxx', // 在开发者中心开通服务并获取apiSecret
@@ -118,12 +119,12 @@ module.exports = async(event){
     openid
   } = JSON.parse(body)
   const res = await uniCloud.getPhoneNumber({
-  	provider: 'univerify',
+    provider: 'univerify',
     appid: 'xxx', // DCloud appid，不同于callFunction方式调用，使用云函数Url化需要传递DCloud appid参数
-  	apiKey: 'xxx', // 在开发者中心开通服务并获取apiKey
-  	apiSecret: 'xxx', // 在开发者中心开通服务并获取apiSecret
-  	access_token: access_token,
-  	openid: openid
+    apiKey: 'xxx', // 在开发者中心开通服务并获取apiKey
+    apiSecret: 'xxx', // 在开发者中心开通服务并获取apiSecret
+    access_token: access_token,
+    openid: openid
   })
   // 执行入库等操作，正常情况下不要把完整手机号返回给前端
   return {
