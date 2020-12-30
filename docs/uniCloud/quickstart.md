@@ -96,6 +96,7 @@ HBuilderX 3.0之前版本目录结构如下：
 - 不同项目使用同一个服务空间时，不可使用同名云函数，可以在uniCloud的web控制台手动删除重名云函数释放函数名。
 - 在HBuilderX创建云函数时，如果新云函数与服务器上已存在同名云函数，会用新函数覆盖。
 - 单个云函数大小限制为10M（包含node_modules）
+- 云函数内使用commonjs规范，不可使用import、export，参考：[commonjs模块](http://nodejs.cn/api/modules.html#modules_modules_commonjs_modules)
 
 ## 编写云函数
 
