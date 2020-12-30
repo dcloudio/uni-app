@@ -354,6 +354,10 @@ collection.orderBy(field, orderType)
 let res = await collection.orderBy("name", "asc").get()
 ```
 
+**注意**
+
+- 排序字段存在多个重复的值时排序后的分页结果，可能会出现某条记录在上一页出现又在下一页出现的情况。这时候可以通过指定额外的排序条件比如`.orderBy("name", "asc").orderBy("_id", "asc")`来规避这种情况。
+
 ### 指定返回字段
 
 collection.field()
