@@ -22,6 +22,11 @@ module.exports = {
     return {
       ignored: [
         /node_modules/,
+        path.resolve(process.env.UNI_INPUT_DIR, '*.md'),
+        path.resolve(process.env.UNI_INPUT_DIR, '.hbuilderx'),
+        path.resolve(process.env.UNI_INPUT_DIR, '.editorconfig'),
+        path.resolve(process.env.UNI_INPUT_DIR, '.gitignore'),
+        path.resolve(process.env.UNI_INPUT_DIR, 'LICENSE'),
         path.resolve(process.env.UNI_INPUT_DIR, 'unpackage'),
         path.resolve(process.env.UNI_INPUT_DIR, 'uniCloud-aliyun'),
         path.resolve(process.env.UNI_INPUT_DIR, 'uniCloud-tcb'),
