@@ -58,7 +58,7 @@ const res = await uniCloud.getPhoneNumber({
 uniCloud.callFunction({
   name: 'xxx', // 你的云函数名称
   data: {
-    accessToken: 'xxx', // 客户端一键登录接口返回的accessToken
+    access_token: 'xxx', // 客户端一键登录接口返回的access_token
     openid: 'xxx' // 客户端一键登录接口返回的openid
   }
 }).then(res => {
@@ -114,7 +114,7 @@ module.exports = async(event){
     body = Buffer.from(body,'base64')
   }
   const {
-    accessToken,
+    access_token,
     openid
   } = JSON.parse(body)
   const res = await uniCloud.getPhoneNumber({
@@ -158,7 +158,7 @@ const signStr = Object.keys(params).sort().map(key => {
 hmac.update(signStr);
 const sign = hmac.digest('hex')
 // 最终请求如下链接，其中https://xxxx/xxx为云函数Url化地址
-// https://xxxx/xxx?accessToken=xxx&openid=xxx&sign=${sign} 其中${sign}为上一步得到的sign值
+// https://xxxx/xxx?access_token=xxx&openid=xxx&sign=${sign} 其中${sign}为上一步得到的sign值
 ```
 
 
@@ -184,7 +184,7 @@ module.exports = async(event){
   }
   
   const {
-    accessToken,
+    access_token,
     openid
   } = params
   const res = await uniCloud.getPhoneNumber({
