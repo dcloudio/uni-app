@@ -1,5 +1,5 @@
 
-[**观看本节视频讲解**](https://learning.dcloud.io/#/?vid=12)
+[观看本节视频讲解](https://learning.dcloud.io/#/?vid=12)
 
 ## 概念
 
@@ -85,7 +85,7 @@
 - Vue.component 的第一个参数必须是静态的字符串。
 - nvue 页面暂不支持全局组件。
 
-1. `main.js` 里进行全局导入和注册
+1.`main.js` 里进行全局导入和注册
 
 ```js
 	import Vue from 'vue'
@@ -93,7 +93,7 @@
 	Vue.component('page-head',pageHead)
 ```
 
-2. `index.vue` 里可直接使用组件
+2.`index.vue` 里可直接使用组件
  
 
 ```html
@@ -115,7 +115,7 @@
 
 如下通过两种方式导入一个角标的组件库，[详见](https://ext.dcloud.net.cn/plugin?id=21)，推荐使用 `easycom` 方式引入。
 
-1. **传统vue规范：** 在 index.vue 页面中，通过 `import` 方式引入组件 ，在 `components` 选项中定义你想要使用的组件。
+1.**传统vue规范：** 在 index.vue 页面中，通过 `import` 方式引入组件 ，在 `components` 选项中定义你想要使用的组件。
 
 ```html
 	<!-- 在index.vue引入 uni-badge 组件-->
@@ -140,7 +140,7 @@
 - 包含了这个组件选项的变量名(仅支持驼峰法命名)
 
 
-2. **通过uni-app的[easycom](https://uniapp.dcloud.io/collocation/pages?id=easycom)：** 将组件引入精简为一步。只要组件安装在项目的 `components` 目录下，并符合 `components/组件名称/组件名称.vue` 目录结构。就可以不用引用、注册，直接在页面中使用。
+2.**通过uni-app的[easycom](https://uniapp.dcloud.io/collocation/pages?id=easycom)：** 将组件引入精简为一步。只要组件安装在项目的 `components` 目录下，并符合 `components/组件名称/组件名称.vue` 目录结构。就可以不用引用、注册，直接在页面中使用。
 
 
 ```html
