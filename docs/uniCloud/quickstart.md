@@ -232,8 +232,9 @@ exports.main = async (event, context) => {
 - 在h5端network面板的会看到一些`Request Method: OPTION`的请求，这些是跨域预检请求，忽略即可。请参考：[HTTP 的 OPTIONS 方法](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Methods/OPTIONS)
 - 云函数超时时间、运行内存配置，再本地调试时不会生效
 - 目前不支持使用了腾讯云自定义登录的场景
+- 开发小程序时如果想使用本地云函数进行调试，请开启小程序的忽略安全域名校验
 - 如果在使用HBuilderX过程中切换了电脑网络则需要重启一次HBuilderX
-- 如果发布成小程序体验版请务必使用发行模式
+- 小程序体验版无法连接本地服务，如果发布成小程序体验版请务必使用发行模式
 
 ### 本地运行云函数@runlocal
 
