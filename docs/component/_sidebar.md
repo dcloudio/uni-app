@@ -89,7 +89,8 @@
   * [SwiperDot 轮播图指示点](https://ext.dcloud.net.cn/plugin?id=284)
   * [Tag 标签](https://ext.dcloud.net.cn/plugin?id=35)
   * [更多插件市场的组件](https://ext.dcloud.net.cn/?cat1=2)
-* [uniCLoud组件](uniCloud/unicloud-db)
+* [uniCloud组件](uniCloud/unicloud-db)
+* [datacom组件规范](component/datacom)
 * [配置小程序插件](component/mp-weixin-plugin.md)
 * [原生组件说明](component/native-component.md)
 <li></li>
