@@ -1007,9 +1007,12 @@ schema2code不是简单的一键crud生成接口，它直接生成了可运行�
 
 - 如果配置了字段的component属性，则严格按component的配置执行。
 - 如果没有配置component属性，那么默认有如下策略：
-	* 字段类型为bool时，默认使用switch组件
+  * 字段类型为bool时，默认使用switch组件
   * 字段类型为Array时，默认使用uni-data-checkbox组件
-	* 其他字段类型，将生成uni-easyinput组件。如果是数字类型，会同时把input的键盘类型设为数字。
+  * 字段类型为int时，满足以下条件，默认使用slider组件
+   - 必填字段
+   - 配置 `minimum` 或 `maximum`
+  * 其他字段类型，将生成uni-easyinput组件。如果是数字类型，会同时把input的键盘类型设为数字。
 - 如果没有配label，则以title作为label，渲染在表单项前面
 - description在渲染为input时会被设为placehold
 
