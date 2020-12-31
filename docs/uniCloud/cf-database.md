@@ -271,6 +271,64 @@ db.collection('user').where({
 })
 ```
 
+**按照数组内的值查询**
+
+mongoDB内按照数组内的值查询可以使用多种写法，以下面的数据为例
+
+```js
+{
+  arr:[{
+    name: 'item-1',
+  },{
+    name: 'item-2',
+  }]
+}
+
+{
+  arr:[{
+    name: 'item-3',
+  },{
+    name: 'item-4',
+  }]
+}
+```
+
+如果想查询arr内第一个元素的name为item-1的记录可以使用如下写法
+
+```js
+const res = await db.collection('test').where({
+  'arr.0.name': 'item-1'
+})
+
+res = {
+  data:[{
+    arr:[{
+      name: 'item-1',
+    },{
+      name: 'item-2',
+    }]
+  }]
+}
+```
+
+如果想查询arr内某个元素的name为item-1的记录（可以是数组内的任意一条name为item-1）可以使用如下写法
+
+```js
+const res = await db.collection('test').where({
+  'arr.name': 'item-1'
+})
+
+res = {
+  data:[{
+    arr:[{
+      name: 'item-1',
+    },{
+      name: 'item-2',
+    }]
+  }]
+}
+```
+
 ### 获取查询数量
 
 collection.count()

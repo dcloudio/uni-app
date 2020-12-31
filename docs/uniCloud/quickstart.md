@@ -478,9 +478,9 @@ web控制台网址：[https://unicloud.dcloud.net.cn](https://unicloud.dcloud.ne
 
 在web控制台可以对数据库进行编辑。在json文档中，输入字符串、数字、bool值都是常规的操作。但有2种特殊数据类型，时间和地理位置，在编辑时有特殊的写法，请注意：
 
-#### 添加日期@editdb_date
+#### 添加日期@editdb-date
 
-在web控制台添加/修改数据时，如果输入"2020-12-02 12:12:12"会变成字符串，而不是日期格式。此时需通过以下方式添加日期类型数据。
+在web控制台添加/修改数据时，如果输入`"2020-12-02 12:12:12"`会变成字符串，而不是日期格式。此时需通过以下方式添加日期类型数据。
 
 <!-- {
   "create_date": {
@@ -496,7 +496,7 @@ web控制台网址：[https://unicloud.dcloud.net.cn](https://unicloud.dcloud.ne
 }
 ```
 
-#### 添加地理位置点@editdb_geopoint
+#### 添加地理位置点@editdb-geopoint
 
 ```js
 // 将location字段设置为经度116、纬度38的地理位置点
