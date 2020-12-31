@@ -223,7 +223,7 @@ vue 是单页面应用，使页面局部刷新，不用每次跳转页面都要�
 
 相比Web平台， Vue.js 在 `uni-app` 中使用差异主要集中在两个方面：
 
-- 新增：`uni-app` 除了支持Vue实例的生命周期，还支持[应用生命周期](/frame?id=应用生命周期)以及[页面生命周期](/frame?id=页面生命周期)。
+- 新增：`uni-app` 除了支持Vue实例的生命周期，还支持[应用生命周期](/collocation/frame/lifecycle?id=应用生命周期)以及[页面生命周期](/collocation/frame/lifecycle?id=页面生命周期)。
 - 受限：相比web平台，在小程序和App端部分功能受限，[具体见](/vue-api)。
 - uni-app 完整支持 Vue 模板语法。
 - App端可以使用更多的vue特性，[详见](https://ask.dcloud.net.cn/article/36599)。

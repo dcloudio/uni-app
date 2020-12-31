@@ -14,7 +14,7 @@
 
 ## 生命周期
 
-``uni-app`` 完整支持 ``Vue`` 实例的生命周期，同时还新增 [应用生命周期](/frame?id=应用生命周期) 及 [页面生命周期](/frame?id=页面生命周期)。
+``uni-app`` 完整支持 ``Vue`` 实例的生命周期，同时还新增 [应用生命周期](/collocation/frame/lifecycle?id=应用生命周期) 及 [页面生命周期](/collocation/frame/lifecycle?id=页面生命周期)。
 
 详见Vue官方文档：[生命周期钩子](https://cn.vuejs.org/v2/api/#%E9%80%89%E9%A1%B9-%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E9%92%A9%E5%AD%90)。
 

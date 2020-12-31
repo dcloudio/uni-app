@@ -16,6 +16,7 @@
 **注意**
 
 - 应用生命周期仅可在``App.vue``中监听，在其它页面监听无效。
+- onlaunch里进行页面跳转，如遇白屏报错，请参考[https://ask.dcloud.net.cn/article/35942](https://ask.dcloud.net.cn/article/35942)
 
 **示例代码**
 ```html
