@@ -315,13 +315,13 @@ export default {
         callback && callback(data2, this._isEnded)
         this._dispatchEvent(events.load, data2)
 
-        if (this.pageData === pageMode.add) {
+        if (this.getone || this.pageData === pageMode.replace) {
+          this.dataList = data2
+        } else {
           this.dataList.push(...data2)
           if (this.dataList.length) {
             this.paginationInternal.current++
           }
-        } else {
-          this.dataList = data2
         }
 
         if (this.getcount) {
@@ -331,7 +331,12 @@ export default {
         // #ifdef H5
         if (process.env.NODE_ENV === 'development') {
           this._debugDataList.length = 0
-          this._debugDataList.push(...JSON.parse(JSON.stringify(this.dataList)))
+          const formatData = JSON.parse(JSON.stringify(this.dataList))
+          if (Array.isArray(this.dataList)) {
+            this._debugDataList.push(...formatData)
+          } else {
+            this._debugDataList.push(formatData)
+          }
         }
         // #endif
       }).catch((err) => {
