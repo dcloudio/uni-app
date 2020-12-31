@@ -1,3 +1,24 @@
+#### 3.0.4.20201230-alpha
+* 【uniCloud】
+  + uniCloud本地调试插件 修复 调试时较早请求云函数且无法连接本地调试服务时报错的Bug
+  + uniCloud本地调试插件 修复 部分日志格式错误的Bug
+  + uniCloud本地调试插件 修复 本地云函数向云数据库插入值为 null 的字段会报错的Bug
+  + uniCloud本地调试插件 调整 输出调整复杂类型时调整最大展示层级为20级
+* 【App插件(含5+App和uni-app的App端)】
+  + Android平台 更新 云端打包 com.android.tools.build:gradle 版本为 4.1.1，适配Android11，修复无法准确检查uni原生插件需要兼容启用AndroidX [详情](https://nativesupport.dcloud.net.cn/NativePlugin/course/android?id=%e6%b3%a8%e6%84%8f)
+  + iOS平台 修复 uni-AD 快手联盟 激励视频广告的奖励倒计时完成后关闭广告事件 onClose 的 isEnded 属性值可能为 false 的Bug
+
+#### 3.0.3.20201228-alpha
+  + App-iOS平台 修复 nvue video 组件动态更新 src 属性无法播放本地视频的Bug [详情](https://ask.dcloud.net.cn/question/113920)
+  + H5平台 修复 unicloud-db 组件 开发环境下 设置属性 :getone="true" 时报错的Bug
+  + 微信小程序平台 修复 unicloud-db 组件某些情况下无效的Bug
+  + 字节小程序平台 新增 支持分包加载 [详情](https://uniapp.dcloud.io/collocation/pages?id=subpackages)
+* 【uniCloud】
+  + clientDB API 新增 树形数据查询 [详情](https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=gettree)
+* 【App插件(含5+App和uni-app的App端)】
+  + iOS平台 修复 保存路径中包含特殊字符的图片到系统相册失败的Bug [详情](https://ask.dcloud.net.cn/question/113990)
+  + iOS平台 修复 一键登录 设置多个自定义服务协议时中文语法不正确的Bug
+
 #### 3.0.2.20201225-alpha
   + App平台 修复 一键登录 univerifyStyle 属性不生效的Bug [详情](https://ask.dcloud.net.cn/question/113997)
 * 【uniCloud】
