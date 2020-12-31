@@ -4,7 +4,14 @@
 
 开发者可在 HBuilderX 中新建服务空间，如下：
 
+HBuilderX 3.0之前版本，在云函数目录cloudfunctions右键菜单创建服务空间
+
 ![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/unicloud-01.png)
+
+HBuilderX 3.0起版本，在云函数目录uniCloud右键菜单创建服务空间
+
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/c4785f90-4b1d-11eb-bdc1-8bd33eb6adaa.jpg)
+
 
 或者在uniCloud的web控制台[https://unicloud.dcloud.net.cn](https://unicloud.dcloud.net.cn) 创建服务空间。
 
