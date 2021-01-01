@@ -99,7 +99,7 @@ HBuilderX 3.0之前版本在 `cloudfunctions` 目录右键创建云函数
 
 HBuilderX 3.0以上版本请在`uniCloud/cloudfunctions`目录右键创建云函数
 
-![新建云函数2](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/04b79310-4b18-11eb-b997-9918a5dda011.png)
+![新建云函数2](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/b16f9740-4c05-11eb-8a36-ebb87efcf8c0.jpg)
 
 
 创建后会以云函数名称为名生成一个特殊目录，该目录下自动生成index.js，是该云函数的入口文件，不可改名。如果该云函数还需要引入其他js，可在index.js入口文件中引用。
