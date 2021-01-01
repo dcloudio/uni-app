@@ -5,7 +5,7 @@
 
 
 
-<img max-width="800px" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/d24d7f30-4b16-11eb-bdc1-8bd33eb6adaa.jpg" />
+<img max-width="500px" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/d24d7f30-4b16-11eb-bdc1-8bd33eb6adaa.jpg" />
 
 
   - 对于老的uni-app项目，也可以对项目点右键，菜单中选择“创建uniCloud云开发环境”
@@ -74,18 +74,19 @@ HBuilderX 3.0之前版本目录结构如下：
 
 服务空间和手机端项目是多对多绑定关系。同账号下，一个项目可以关联到多个服务空间。一个服务空间也可以被多个项目访问。
 
-  - 在云函数目录`cloudfunctions`右键菜单创建服务空间（HBuilderX 3.0以上版本请在uniCloud目录右键），会打开web控制台[https://unicloud.dcloud.net.cn](https://unicloud.dcloud.net.cn) 进行创建
 
-HBuilderX 3.0之前版本请在`cloudfunctions`目录右键
+  - HBuilderX 3.0起版本，在云函数目录`uniCloud`右键菜单创建服务空间，会打开web控制台[https://unicloud.dcloud.net.cn](https://unicloud.dcloud.net.cn) 进行创建
 
-![创建服务空间1](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/create-space.png)
-
-HBuilderX 3.0以上版本请在uniCloud目录右键
-
-![创建服务空间2](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/b16f9740-4c05-11eb-8a36-ebb87efcf8c0.jpg)
+![创建服务空间1](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/b16f9740-4c05-11eb-8a36-ebb87efcf8c0.jpg)
 
 
-  - 创建好服务空间后，对目录`cloudfunctions`点右键（HBuilderX 3.0以上版本请在uniCloud目录右键），菜单中点击`选择云服务空间`，绑定你之前创建的服务空间。
+  - HBuilderX 3.0之前版本，在云函数目录`cloudfunctions`右键菜单创建服务空间，会打开web控制台[https://unicloud.dcloud.net.cn](https://unicloud.dcloud.net.cn) 进行创建
+
+![创建服务空间2](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/create-space.png)
+
+
+  - 创建好服务空间后，HBuilderX 3.0起版本对目录`uniCloud`点右键（HBuilderX 3.0之前版本对目录`cloudfunctions`点右键），菜单中点击`选择云服务空间`，绑定你之前创建的服务空间。
+
   
 **说明**
 
@@ -97,13 +98,15 @@ HBuilderX 3.0以上版本请在uniCloud目录右键
 
 `uniCloud`项目创建并绑定服务空间后，开发者可以创建云函数。
 
+HBuilderX 3.0起版本请在`uniCloud/cloudfunctions`目录右键创建云函数
+
+![新建云函数1](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/04b79310-4b18-11eb-b997-9918a5dda011.png)
+
+
 HBuilderX 3.0之前版本在 `cloudfunctions` 目录右键创建云函数
 
-![新建云函数1](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/unicloud-02.png)
+![新建云函数2](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/unicloud-02.png)
 
-HBuilderX 3.0以上版本请在`uniCloud/cloudfunctions`目录右键创建云函数
-
-![新建云函数2](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/b16f9740-4c05-11eb-8a36-ebb87efcf8c0.jpg)
 
 
 创建后会以云函数名称为名生成一个特殊目录，该目录下自动生成index.js，是该云函数的入口文件，不可改名。如果该云函数还需要引入其他js，可在index.js入口文件中引用。
