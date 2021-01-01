@@ -82,7 +82,8 @@ HBuilderX 3.0之前版本请在`cloudfunctions`目录右键
 
 HBuilderX 3.0以上版本请在uniCloud目录右键
 
-![创建服务空间2](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/7dbcac60-4b17-11eb-b680-7980c8a877b8.jpg)
+![创建服务空间2](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/b16f9740-4c05-11eb-8a36-ebb87efcf8c0.jpg)
+
 
   - 创建好服务空间后，对目录`cloudfunctions`点右键（HBuilderX 3.0以上版本请在uniCloud目录右键），菜单中点击`选择云服务空间`，绑定你之前创建的服务空间。
   
