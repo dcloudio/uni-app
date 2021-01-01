@@ -3,7 +3,7 @@
   - 在 [HBuilderX 2.5.8+](https://www.dcloud.io/hbuilderx.html) 新建项目，选择uni-app项目，并勾选`启用uniCloud`
   - 在右侧选择服务供应商
 
-![创建uniCloud项目](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/create-project.png)
+![创建uniCloud项目](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/d24d7f30-4b16-11eb-bdc1-8bd33eb6adaa.jpg)
 
   - 对于老的uni-app项目，也可以对项目点右键，菜单中选择“创建uniCloud云开发环境”
   - 新建uni-app项目的模板中，有一个`Hello uniCloud`项目模板，演示了各种云函数的使用。
@@ -73,7 +73,13 @@ HBuilderX 3.0之前版本目录结构如下：
 
   - 在云函数目录`cloudfunctions`右键菜单创建服务空间（HBuilderX 3.0以上版本请在uniCloud目录右键），会打开web控制台[https://unicloud.dcloud.net.cn](https://unicloud.dcloud.net.cn) 进行创建
 
-![创建服务空间](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/create-space.png)
+HBuilderX 3.0之前版本请在`cloudfunctions`目录右键
+
+![创建服务空间1](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/create-space.png)
+
+HBuilderX 3.0以上版本请在uniCloud目录右键
+
+![创建服务空间2](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/7dbcac60-4b17-11eb-b680-7980c8a877b8.jpg)
 
   - 创建好服务空间后，对目录`cloudfunctions`点右键（HBuilderX 3.0以上版本请在uniCloud目录右键），菜单中点击`选择云服务空间`，绑定你之前创建的服务空间。
   
@@ -85,9 +91,16 @@ HBuilderX 3.0之前版本目录结构如下：
 
 ## 创建云函数
 
-`uniCloud`项目创建并绑定服务空间后，开发者可以在`cloudfunctions`目录右键创建云函数（HBuilderX 3.0以上版本请在`uniCloud/cloudfunctions`目录右键）。
+`uniCloud`项目创建并绑定服务空间后，开发者可以创建云函数。
 
-![新建云函数](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/unicloud-02.png)
+HBuilderX 3.0之前版本在 `cloudfunctions` 目录右键创建云函数
+
+![新建云函数1](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/unicloud-02.png)
+
+HBuilderX 3.0以上版本请在`uniCloud/cloudfunctions`目录右键创建云函数
+
+![新建云函数2](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/04b79310-4b18-11eb-b997-9918a5dda011.png)
+
 
 创建后会以云函数名称为名生成一个特殊目录，该目录下自动生成index.js，是该云函数的入口文件，不可改名。如果该云函数还需要引入其他js，可在index.js入口文件中引用。
 
@@ -250,15 +263,15 @@ exports.main = async (event, context) => {
 - 如果没有安装本地运行插件，按照提示安装即可
 - 如需配置运行参数请参考：[配置运行测试参数](https://uniapp.dcloud.net.cn/uniCloud/quickstart?id=runparam)
 
-![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/uniCloud-local-1.jpg)
+![本地运行](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/cb5457a0-4b19-11eb-8ff1-d5dcf8779628.jpg)
 
 在云函数编辑器里，按`Ctrl+r`运行快捷键（或点工具栏的运行），可看到运行云函数的若干菜单。`Ctrl+r`然后回车或选`0`，即可高效的在控制台看到运行结果和日志输出。如下图所示：
 
-![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/uniCloud-run-function.png)
+![运行快捷键](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/723ec000-4b1a-11eb-b680-7980c8a877b8.jpg)
 
 云函数目前无法断点debug，只能打印`console.log`看日志。
 
-![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/uniCloud-run-function-2.png)
+![日志](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/caddd2a0-4b1a-11eb-b680-7980c8a877b8.jpg)
 
 运行云函数时，如需要给云函数传参，除了在前端传参外，在调试阶段，可以通过配置json文件来传测试参数。
 
@@ -321,7 +334,7 @@ const hour = getOffsetDate(8).getHours()
 
 可以打开一个json，配置运行参数。配置该json后，运行云函数时会将该json作为云函数调用的上行参数处理，可以在云函数中接收到参数。
 
-![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/uniCloud-run-function-1.png)
+![配置运行参数](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/37245420-4b1b-11eb-b997-9918a5dda011.jpg)
 
 在云函数目录右键运行云函数，也可以在云函数编辑器里，按`Ctrl+r`运行快捷键，或点工具栏的运行
 
@@ -329,7 +342,7 @@ const hour = getOffsetDate(8).getHours()
 
 此时云函数运行会携带所配置的运行参数
 
-![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/run-function-with-param-2.jpg)
+![运行参数](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/84352e10-4b1b-11eb-8ff1-d5dcf8779628.jpg)
 
 **模拟客户端类型**
 
