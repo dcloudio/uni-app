@@ -910,6 +910,11 @@ db.collection("department")
 }
 ```
 
+**示例**
+
+插件市场有一个 家谱 的示例，可以参阅：[https://ext.dcloud.net.cn/plugin?id=3798](https://ext.dcloud.net.cn/plugin?id=3798)
+
+
 **大数据量的树形数据查询**
 
 如果tree的数据量较大，则不建议一次性把所有的树形数据返回给客户端。建议分层查询，即懒加载。
