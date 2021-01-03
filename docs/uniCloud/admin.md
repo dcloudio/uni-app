@@ -416,6 +416,9 @@ pluginId 为你上传插件市场时填的插件id（插件市场每个插件都
 
 虽然也可以通过`db_init.json`来进行菜单初始化，但不建议这么操作。很容易发生和用户的数据库的冲突。仍然推荐使用%pluginId%-menu.json方式。
 
+**关于uni-admin和uni-cloud-router公共模块**
+uniCloud admin自带了一个单路由框架，uni-cloud-router，然后自带了一个uni-admin云函数使用了这个uni-cloud-router。但插件作者的插件，不能写在uni-admin的目录下。插件的云函数，要有插件id前缀，如果你想把你的插件的所有云函数合并成一个云函数，可以新建一个你自己的云函数，在里面引用uni-cloud-router公共模块。
+
 **使用schema2code生成admin页面**
 
 大多数的 admin 插件的表单页面是可以用uniCloud自带的schema2code工具自动生成的，可以直接生成数据库的增删改查的完整页面。所以在 uniCloud admin 中制作一个插件非常简单。
