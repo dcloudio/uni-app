@@ -360,100 +360,71 @@ _使用步骤:_
 
 对于 admin 插件来说，可以项目中开发完成功能，再将这项功能剥离成一个插件。其他开发者使用插件的过程，就是将插件还原成项目中的一项功能。
 
-admin 插件包含云函数、前端页面、pages.json，它必须基于 uni-id 的账户和权限体系，它不限制云函数的开发方式，可以自己写普通云函数、可以用任何三方单路由云函数框架、也可以用 clientDB。
+admin 插件包含云函数、前端页面、pages.json，它必须基于 uni-id 的账户和权限体系，它不限制云函数的开发方式，可以自己写普通云函数、可以用任何单路由云函数框架、也可以用 clientDB。
+
+admin插件不能是整体工程，不能包含manifest。它更类似于页面模板，这里的pages.json也仅仅包括与插件有关的页面。插件里的pages.json内容，导入项目后，会与项目下的pages.json合并。
 
 _admin 插件的目录结构：_
 
 ```bash
-├── cloudfunctions
-│   └── db_init.json            # 云函数
+├── uniCloud
+│   ├── cloudfunctions          # 云函数
+│   └── database
+│       ├── xxx.schema.json     # 数据库schema文件
+│       └── db_init.json        # 数据库初始化文件
 ├── js_sdk                      # js sdk
 ├── pages                       # 页面
 │   └── your-page               # 你的页面
-├── pages.json                  # 插件页面路由等
-└── %pluginId%-menu.json        # 插件菜单，pluginId 为你上传插件市场时填的插件id
+├── pages.json                  # 插件包含的页面的路由配置
+└── %pluginId%-menu.json        # 向uniCloud admin左侧菜单注册新菜单的声明文件。pluginId 为你上传插件市场时填的插件id
 ```
-
-以开发一个【权限插件】为例：
 
 **page.json 配置:**
 
-插件里的 pages.json 内容，导入项目后，会与项目下的 pages.json 合并，只需保留和插件相关的配置，比如：将【权限插件】放置在【系统管理】下：
-
-```json
-{
-  "subPackages": [
-    {
-      "root": "pages/system",
-      "pages": [
-        {
-          "path": "permission/permission",
-          "style": {
-            "navigationBarTitleText": "权限管理"
-          }
-        },
-        {
-          "path": "permission/add",
-          "style": {
-            "navigationBarTitleText": "新增权限"
-          }
-        },
-        {
-          "path": "permission/edit",
-          "style": {
-            "navigationBarTitleText": "编辑权限"
-          }
-        }
-      ]
-    }
-  ]
-}
-```
+插件里的 pages.json 内容，导入项目后，会与项目下的 pages.json 合并，不会整体文件替换。
 
 **%pluginId%-menu.json 配置**
 
-本文件用于插件注册 admin系统左侧的动态菜单。
+本文件用于插件注册 uniCloud admin左侧的动态菜单。
 
 pluginId 为你上传插件市场时填的插件id（插件市场每个插件都有一个唯一id）。
 
-假使你的插件id为“xxx-xxx”，那么在插件的根目录放置 xxx-xxx-menu.json ，按下文格式配置内容。
+假使你的插件id为“xxx-yyy”，那么在插件的根目录放置 xxx-yyy-menu.json ，按下文格式配置内容。
 
 ```json
 [
   {
-    "menu_id": "system_permission",
-    "name": "权限管理",
+    "menu_id": "xxx-yyy",
+    "name": "显示名称",
     "icon": "",
     "url": "/pages/system/permission/list",
-    "sort": 1030,
+    "sort": 1,
     "parent_id": "system_management",
-    "permission": [],
-    "enable": true,
-    "create_date": 1602662469396
+    "permission": []
   }
 ]
 ```
 
-> 注：`system_management` 是 uniCloud admin 内置的一级菜单【系统管理】的菜单 id
+上述示例中：
+- `menu_id` 与之前的admin系统中的menu_id不重复即可。一个admin插件可以注册多个menu
+- `icon` 是uni-ui里的[uni-icons](https://ext.dcloud.net.cn/plugin?id=28)的class名称
+- `sort` 菜单的排序，数字越小排序越靠前
+- `parent_id` 该菜单的父级菜单的`menu_id`。如不需要父菜单，即注册到根菜单中，请删除`parent_id`。示例中的"system_management"是uniCloud admin自带的系统管理菜单的`menu_id`
+- `permission`是权限管理，一般情况下插件作者不配置此项，而是由插件的使用者在其具体项目上决定如何控制权限。
 
-这样的插件导入项目后，运行起来uniCloud admin，菜单管理模块会自动读取这个json文件中的菜单配置，生成【待添加菜单】，配置与 admin【管理动态菜单】同理。
+包含%pluginId%-menu.json的插件导入项目后，运行起来uniCloud admin，菜单管理模块会自动读取这个json文件中的菜单配置，生成【待添加菜单】，配置与 admin【管理动态菜单】同理。插件作者可以在界面上可视化的点击确认添加，即可把菜单加入到他的项目下。
 
-**使用自动工具生成admin页面**
+虽然也可以通过`db_init.json`来进行菜单初始化，但不建议这么操作。很容易发生和用户的数据库的冲突。仍然推荐使用%pluginId%-menu.json方式。
 
-大多数的 admin 插件的表单页面是可以用uniCloud自带的自动工具生成的，可以直接生成数据库的增删改查页面。所以在 uniCloud admin 中制作一个插件非常简单。
+**使用schema2code生成admin页面**
 
-首先在数据库中配好[DB Schema](https://uniapp.dcloud.io/uniCloud/schema)，然后使用 uniCloud web 控制台提供的自动生成代码工具，即可快速的生成数据的展示、新建、修改、删除的页面代码，并且自带表单校验。详见：[https://uniapp.dcloud.io/uniCloud/schema?id=autocode](https://uniapp.dcloud.io/uniCloud/schema?id=autocode)
+大多数的 admin 插件的表单页面是可以用uniCloud自带的schema2code工具自动生成的，可以直接生成数据库的增删改查的完整页面。所以在 uniCloud admin 中制作一个插件非常简单。
 
-> tips：生成的列表页（list），需自行配置【排序字段】和【模糊搜索字段】，了解更多参考[clientDB](https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=jssdk),以内置功能【用户列表页】配置为如下：
+首先在数据库中配好[DB Schema](https://uniapp.dcloud.io/uniCloud/schema)，然后使用 uniCloud web 控制台提供的schema2code生成代码工具，即可快速的生成数据的展示、新建、修改、删除的页面代码，并且自带表单校验。详见：[schema2code](https://uniapp.dcloud.io/uniCloud/schema?id=autocode)
 
-```javascript
-const dbOrderBy = 'register_date desc' // 排序字段，asc(升序)、desc(降序)
-const dbSearchFields = ['username', 'role_name', 'mobile', 'email'] // 模糊搜索字段，支持模糊搜索的字段列表
-```
+为防止和用户工程的文件冲突，插件的页面应该有插件的前缀，比如 pages/xxx-page。自带的数据库schema文件也推荐带上前缀。
 
-为防止和用户工程的文件冲突，插件的页面应该有插件的前缀，比如 xxx-page。
-
-这里有已存的 uniCloud admin 插件列表，可以参考它们：[https://ext.dcloud.net.cn/?cat1=7&cat2=74&orderBy=UpdatedDate](https://ext.dcloud.net.cn/?cat1=7&cat2=74&orderBy=UpdatedDate)
+以下为已存的 uniCloud admin 插件列表，可以参考：[https://ext.dcloud.net.cn/?cat1=7&cat2=74&orderBy=UpdatedDate](https://ext.dcloud.net.cn/?cat1=7&cat2=74&orderBy=UpdatedDate)
 
 **插件开发后如何上传插件市场**
 
@@ -477,3 +448,7 @@ uniCloud admin 支持所有三方的 Vue UI 库，包括 elementUI 等非 uni-ap
 
    Vue.use(elementUI);
    ```
+
+注意：
+1. uni-app的button、input等组件，是在html的button、input等标签的外面包了一层，做法与微信小程序相同。如果使用for html的库，其css元素选择器可能需要调整后才能符合预期。
+2. uniCloud Admin暂不支持vue3的三方库。
