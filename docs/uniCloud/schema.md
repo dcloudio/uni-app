@@ -38,11 +38,13 @@
 1. 在`uniCloud`项目右键，选择`创建database目录`
 2. 在第一步创建的database目录右键选择`新建数据集合schema`
 
+![](https://static-eefb4127-9f58-4963-a29b-42856d4205ee.bspapp.com/hx%E6%8F%90%E7%A4%BAschema.jpg)
+
 **HBuilderX内创建的schema新建和保存时不会自动上传**
 
 **上传schema**
 
-- 在单个schema文件右键可以只上传当前选中的schema
+- 在单个schema文件右键可以只上传当前选中的schema。快捷键是【Ctrl+u】。（Ctrl+u是HBuilderX的通用快捷键，不管是发布App还是上传云函数、schema，都是Ctrl+u）
 - 在database目录右键可以上传全部schema
 
 **下载schema**
@@ -938,14 +940,16 @@ db.collection('street').where("shop_id=='123123'").get()
 db.collection('street').where("shop_id=='123123 || shop_id=='456456'").get()
 ```
 
-### schema2code前端表单生成系统@autocode
+### schema2code代码生成系统@autocode
 
 `DB Schema`里有大量的信息，有了这些信息，前端将无需自己开发表单维护界面，uniCloud可以自动生成新增数据、修改数据的前端表单页面，以及admin端的列表、新增、修改、删除全套功能。
 
 为强化表单的自定义性，`DB Schema`还扩展了label、component、group、order等属性，以控制表单项在界面上的渲染控件。
 
-前端表单生成系统功能包括：
-- 自动生成新增、修改表单的页面文件，分别是add.vue和edit.vue
+`schema2code`不是简单的一键crud生成接口，它直接生成了可运行的页面。
+
+`schema2code`代码生成系统功能包括：
+- 自动生成新增、修改表单的页面文件，分别是add.vue和edit.vue。如果是uniCloud admin，还包括list.vue。
 - 自动生成前端表单校验规则
 
 表单校验工作，在前端和后端都需要做。在过去，这造成重复投入。
@@ -958,7 +962,6 @@ db.collection('street').where("shop_id=='123123 || shop_id=='456456'").get()
 
 DCloud提供了`uni-forms`前端组件，该组件的表单校验规范完全符合`DB Schema`中的校验规则，实现云端统一。`uni-forms`组件地址：[https://ext.dcloud.net.cn/plugin?id=2773](https://ext.dcloud.net.cn/plugin?id=2773)
 
-schema2code不是简单的一键crud生成接口，它直接生成了可运行的页面。
 
 1. 在schema界面点击 “导出表单页面”
 
@@ -996,10 +999,20 @@ schema2code不是简单的一键crud生成接口，它直接生成了可运行�
 
 - 区域G. 文件预览 (仅支持预览 自动生成的页面和校验规则)
 
-2. 然后点击“下载zip”按钮，将导出一个工程源码压缩包。解压导出的zip包，拷贝到已有工程
+2. 点击“导入HBuilderX”或“下载zip”按钮，将生成的代码合并到自己的项目中。
 
 **注意：生成的代码，需HBuilderX2.9.5+方可正常运行。**
 
+在生成uniCloud admin页面时，生成的列表页（list），需自行配置【排序字段】和【模糊搜索字段】。了解更多参考[clientDB](https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=jssdk)。
+
+以uniCloud admin内置页面【用户列表页】为例，要实现列表按注册时间排倒叙，要在列表上方的搜索框搜索，需在生成的list.vue页面的script区域修改如下配置：
+
+```javascript
+const dbOrderBy = 'register_date desc' // 排序字段，asc(升序)、desc(降序)
+const dbSearchFields = ['username', 'role_name', 'mobile', 'email'] // 模糊搜索字段，支持模糊搜索的字段列表
+```
+
+`schema2code`是一个代码辅助生成工具，生成后的代码，经常会有二次开发需求。如果二次开发后又变动schema，建议使用Git等工具管理源码，进行差异比对。
 
 #### 生成页面控件的默认策略
 
@@ -1222,9 +1235,4 @@ schema2code不是简单的一键crud生成接口，它直接生成了可运行�
     <uni-forms-item label="年龄"><input  placeholder="请输入年龄" /></uni-forms-item>
   </uni-group>
 ```
-
-**Bug&Tips**
-
-- schema2code是一个代码辅助生成工具，生成后的代码，经常会有二次开发需求。如果二次开发后又变动schema，建议使用Git等工具管理源码，进行差异比对。
-
 
