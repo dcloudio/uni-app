@@ -69,6 +69,14 @@ export default {
       type: [Boolean, String],
       default: false
     },
+    getone: {
+      type: [Boolean, String],
+      default: false
+    },
+    gettree: {
+      type: [Boolean, String],
+      default: false
+    },
     orderby: {
       type: String,
       default: ''
@@ -76,10 +84,6 @@ export default {
     where: {
       type: [String, Object],
       default: ''
-    },
-    getone: {
-      type: [Boolean, String],
-      default: false
     },
     manual: {
       type: Boolean,
@@ -90,7 +94,7 @@ export default {
     return {
       loading: false,
       hasMore: false,
-      dataList: this.getone ? {} : [],
+      dataList: this.getone ? undefined : [],
       paginationInternal: {
         current: this.pageCurrent,
         size: this.pageSize,
@@ -377,7 +381,8 @@ export default {
         size
       } = this.paginationInternal
       db = db.skip(size * (current - 1)).limit(size).get({
-        getCount: this.getcount
+        getCount: this.getcount,
+        getTree: this.gettree
       })
 
       return db
