@@ -18,7 +18,7 @@
 
 #### 2020-12-10
   + web控制台 新增 阿里云新增稀疏索引 [详情](https://uniapp.dcloud.net.cn/uniCloud/hellodb?id=dbindex)
-  + web控制台 新增 阿里云云存储新增批量删除
+  + web控制台 新增 腾讯云云存储新增批量删除功能
   + web控制台 新增 前端网页托管批量删除
   + web控制台 新增 腾讯云 概览页面新增clientDB资源用量
   + web控制台 新增 导出 db_init.json 新增是否导出 ID
