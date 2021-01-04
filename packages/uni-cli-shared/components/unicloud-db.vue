@@ -53,6 +53,14 @@ export default {
       type: String,
       default: ''
     },
+    orderby: {
+      type: String,
+      default: ''
+    },
+    where: {
+      type: [String, Object],
+      default: ''
+    },
     pageData: {
       type: String,
       default: 'add'
@@ -77,13 +85,13 @@ export default {
       type: [Boolean, String],
       default: false
     },
-    orderby: {
+    startwith: {
       type: String,
       default: ''
     },
-    where: {
-      type: [String, Object],
-      default: ''
+    limitlevel: {
+      type: Number,
+      default: 10
     },
     manual: {
       type: Boolean,
@@ -113,7 +121,7 @@ export default {
       })
       return al
     }, (newValue, oldValue) => {
-      this.paginationInternal.pageSize = this.pageSize
+      this.paginationInternal.size = this.pageSize
 
       let needReset = false
       for (let i = 2; i < newValue.length; i++) {
@@ -380,10 +388,17 @@ export default {
         current,
         size
       } = this.paginationInternal
-      db = db.skip(size * (current - 1)).limit(size).get({
-        getCount: this.getcount,
-        getTree: this.gettree
-      })
+      const getOptions = {}
+      if (this.getcount) {
+        getOptions.getCount = this.getcount
+      }
+      if (this.gettree) {
+        getOptions.getTree = {
+          limitLevel: this.limitlevel,
+          startWith: this.startwith
+        }
+      }
+      db = db.skip(size * (current - 1)).limit(size).get(getOptions)
 
       return db
     },
