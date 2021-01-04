@@ -1634,6 +1634,8 @@ action的作用是在执行前端发起的数据库操作时，额外触发一�
 - 正确：`db.action("someactionname").collection('table1')`
 - 错误：`db.collection('table1').action("someactionname")`
 
+**尽量不要在action中使用全局变量，如果一定要用请务必确保自己已经阅读并理解了[云函数的启动模式](uniCloud/cf-functions.md?id=launchtype)**
+
 如果使用`<uni-clientdb>组件`，该组件也有action属性，设置action="someactionname"即可。
 ```html
 <uni-clientdb ref="udb" collection="table1" action="someactionname" v-slot:default="{data,pagination,loading,error}">
