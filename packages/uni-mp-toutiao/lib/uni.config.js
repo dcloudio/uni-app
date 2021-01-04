@@ -11,7 +11,6 @@ module.exports = {
       style: '.ttss',
       template: '.ttml'
     },
-    subPackages: true,
     project: 'project.tt.json'
   },
   copyWebpackOptions (platformOptions, vueOptions) {
