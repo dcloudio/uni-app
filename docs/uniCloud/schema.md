@@ -1166,7 +1166,7 @@ const dbSearchFields = ['username', 'role_name', 'mobile', 'email'] // 模糊搜
       "label": "自定义children",
       "component": {
         "name": "select",
-        "children": "<option value=\"{item.value}\">{item.label}</option>",
+        "children": "<option value=\"{value}\">{label}</option>",
         "childrenData": [{"label": "中文简体", "value": "zh-cn"}]
       }
     }
