@@ -19,7 +19,7 @@ HBuilderX是通用的前端开发工具，但为`uni-app`做了特别强化。
 
 在点击工具栏里的文件 -> 新建 -> 项目：
 <div align=center>
-  <img src="//img-cdn-qiniu.dcloud.net.cn/uniapp/doc/create1.png"/>
+  <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/b925a1c0-4f19-11eb-97b7-0dc4655d6e68.png"/>
 </div>
 
 选择`uni-app`类型，输入工程名，选择模板，点击创建，即可成功创建。
@@ -27,7 +27,7 @@ HBuilderX是通用的前端开发工具，但为`uni-app`做了特别强化。
 uni-app自带的模板有 Hello uni-app ，是官方的组件和API示例。还有一个重要模板是 uni ui项目模板，日常开发推荐使用该模板，已内置大量常用组件。
 
 <div align=center>
-  <img src="//img.cdn.aliyun.dcloud.net.cn/uni-app/doc/create.png"/>
+  <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/f5d5fa70-4f19-11eb-8ff1-d5dcf8779628.png"/>
 </div>
 
 ## 运行uni-app
@@ -35,12 +35,12 @@ uni-app自带的模板有 Hello uni-app ，是官方的组件和API示例。还�
 
 1. 浏览器运行：进入hello-uniapp项目，点击工具栏的运行 -> 运行到浏览器 -> 选择浏览器，即可在浏览器里面体验uni-app 的 H5 版。
   <div align=center>
-  	<img src="//img-cdn-qiniu.dcloud.net.cn/uniapp/doc/run-chrome.png"/>
+  	<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/1ad34710-4f1a-11eb-8ff1-d5dcf8779628.png"/>
   </div>
 
 2. 真机运行：连接手机，开启USB调试，进入hello-uniapp项目，点击工具栏的运行 -> 真机运行 -> 选择运行的设备，即可在该设备里面体验uni-app。
 	<div align=center>
-		<img src="//img-cdn-qiniu.dcloud.net.cn/uniapp/doc/run-phone.png"/>
+		<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/3a1faaf0-4f1a-11eb-b680-7980c8a877b8.png"/>
 	</div>
 	
 	如手机无法识别，请点击菜单运行-运行到手机或模拟器-真机运行常见故障排查指南。
@@ -49,7 +49,7 @@ uni-app自带的模板有 Hello uni-app ，是官方的组件和API示例。还�
 3. 在微信开发者工具里运行：进入hello-uniapp项目，点击工具栏的运行 -> 运行到小程序模拟器 -> 微信开发者工具，即可在微信开发者工具里面体验uni-app。
     <br/>
     <div align=center>
-    	<img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/uni20190222-1.png"/>
+    	<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/d89fd6f0-4f1a-11eb-97b7-0dc4655d6e68.png"/>
     </div>
     
     **注意：**如果是第一次使用，需要先配置小程序ide的相关路径，才能运行成功。如下图，需在输入框输入微信开发者工具的安装路径。 若HBuilderX不能正常启动微信开发者工具，需要开发者手动启动，然后将uni-app生成小程序工程的路径拷贝到微信开发者工具里面，在HBuilderX里面开发，在微信开发者工具里面就可看到实时的效果。
@@ -57,25 +57,25 @@ uni-app自带的模板有 Hello uni-app ，是官方的组件和API示例。还�
     uni-app默认把项目编译到根目录的unpackage目录。
     <br/>
     <div align=center>
-      <img src="//img-cdn-qiniu.dcloud.net.cn/uniapp/doc/weixin-setting.png"/>
+      <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/a142b6a0-4f1a-11eb-8a36-ebb87efcf8c0.png"/>
     </div>
 		
 4. 在支付宝小程序开发者工具里运行：进入hello-uniapp项目，点击工具栏的运行 -> 运行到小程序模拟器 -> 支付宝小程序开发者工具，即可在支付宝小程序开发者工具里面体验uni-app。
     <br/>
     <div align=center>
-    	<img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/uni20190222-3.png"/>
+    	<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/fee90480-4f1a-11eb-bd01-97bc1429a9ff.png"/>
     </div>
 
 5. 在百度开发者工具里运行：进入hello-uniapp项目，点击工具栏的运行 -> 运行到小程序模拟器 -> 百度开发者工具，即可在百度开发者工具里面体验uni-app。
     <br/>
     <div align=center>
-    	<img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/uni20190222-2.png"/>
+    	<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/1be92e70-4f1b-11eb-8a36-ebb87efcf8c0.png"/>
     </div>
  
 6. 在字节跳动开发者工具里运行：进入hello-uniapp项目，点击工具栏的运行 -> 运行到小程序模拟器 -> 字节跳动开发者工具，即可在字节跳动开发者工具里面体验uni-app。
     <br/>
     <div align=center>
-    	<img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/uni20190222-4.png"/>
+    	<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/42de5370-4f1b-11eb-8ff1-d5dcf8779628.png"/>
     </div>
 
 7. 在360开发工具中导入：进入hello-uniapp项目，点击工具栏的运行 -> 运行到小程序模拟器 -> 360开发工具，即可在360开发工具里面体验uni-app。
