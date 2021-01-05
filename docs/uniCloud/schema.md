@@ -846,6 +846,10 @@ permission的字段级控制，包括读写两种权限，分别称为：read、
 
 如果想获取和判断目标数据记录doc之外的其他数据，则需要使用get方法，见下一章节。
 
+forceDefaultValue属于数据校验的范畴，在数据插入时生效，但是如果配置forceDefaultValue为`{"$env": "uid"}`也会进行用户身份的校验，未登录用户不可插入数据。
+
+例如在news表新增一条记录，权限需求是“未登录用户不能创建新闻”，其实不需要在news表的create权限里写`auth.uid != null`。只需把news表的uid字段的forceDefaultValue设为`"$env": "uid"`，create权限配置为true即可，未登录用户自然无法创建。当然实际使用时你可能需要更复杂的权限，直接使用true作为权限规则时务必注意
+
 **变量action的说明**
 
 action是`clientDB`的一个配套功能。它的作用是在前端发起数据操作请求时，附带一个action的name，则会同时执行一个`uni-clientDB-action`的云函数。[详见](/uniCloud/database?id=action)
