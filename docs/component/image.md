@@ -102,7 +102,7 @@ export default {
                 mode: 'bottom right',
                 text: 'bottom right：不缩放图片，只显示图片的右下边区域'
             }],
-            src: 'https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/shuijiao.jpg'
+            src: 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/6acec660-4f31-11eb-a16f-5b3e54966275.jpg'
         }
     },
     methods: {
@@ -115,52 +115,52 @@ export default {
 
 原图
 
-![uniapp](https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/shuijiao.jpg)
+![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/6acec660-4f31-11eb-a16f-5b3e54966275.jpg)
 
 scaleToFill：不保持纵横比缩放图片，使图片完全适应
 
-![uniapp](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/img/cat-1.png)
+![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/6b971f70-4f31-11eb-bd01-97bc1429a9ff.png)
 
 aspectFit：保持纵横比缩放图片，使图片的长边能完全显示出来
 
-![uniapp](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/img/cat-2.png)
+![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/6c4e3a70-4f31-11eb-8ff1-d5dcf8779628.png)
 
 aspectFill：保持纵横比缩放图片，只保证图片的短边能完全显示出来
 
-![uniapp](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/img/cat-3.png)
+![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/6cfbdf90-4f31-11eb-8ff1-d5dcf8779628.png)
 
 top：不缩放图片，只显示图片的顶部区域
 
-![uniapp](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/img/cat-4.png)
+![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/6dd1f440-4f31-11eb-8ff1-d5dcf8779628.png)
 
 bottom：不缩放图片，只显示图片的底部区域
 
-![uniapp](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/img/cat-5.png)
+![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/649ee9a0-4f31-11eb-8a36-ebb87efcf8c0.png)
 
 center：不缩放图片，只显示图片的中间区域
 
-![uniapp](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/img/cat-6.png)
+![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/65495a70-4f31-11eb-8a36-ebb87efcf8c0.png)
 
 left：不缩放图片，只显示图片的左边区域
 
-![uniapp](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/img/cat-7.png)
+![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/66211cd0-4f31-11eb-bd01-97bc1429a9ff.png)
 
 right：不缩放图片，只显示图片的右边边区域
 
-![uniapp](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/img/cat-8.png)
+![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/66e55730-4f31-11eb-8a36-ebb87efcf8c0.png)
 
 top left：不缩放图片，只显示图片的左上边区域
 
-![uniapp](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/img/cat-9.png)
+![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/67b614b0-4f31-11eb-bd01-97bc1429a9ff.png)
 
 top right：不缩放图片，只显示图片的右上边区域
 
-![uniapp](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/img/cat-10.png)
+![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/6869fb60-4f31-11eb-a16f-5b3e54966275.png)
 
 bottom left：不缩放图片，只显示图片的左下边区域
 
-![uniapp](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/img/cat-11.png)
+![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/693ed790-4f31-11eb-8a36-ebb87efcf8c0.png)
 
 bottom right：不缩放图片，只显示图片的右下边区域
 
-![uniapp](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/img/cat-12.png)
+![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/6a042360-4f31-11eb-a16f-5b3e54966275.png)

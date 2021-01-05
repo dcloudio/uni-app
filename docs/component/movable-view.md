@@ -137,4 +137,4 @@ export default {
 }
 ```
 
- ![uni](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/img/moveable-view.png)
+ ![uni](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/41b00010-4f30-11eb-a16f-5b3e54966275.png)

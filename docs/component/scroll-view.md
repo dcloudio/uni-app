@@ -162,7 +162,7 @@ export default {
 </script>
 
 ```
-![uniapp](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/img/scroll-view.png)
+![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/99567750-4f2f-11eb-a16f-5b3e54966275.png)
  
 **Tips**
 

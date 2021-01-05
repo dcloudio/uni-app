@@ -72,7 +72,7 @@ export default {
 
 ```
  
-![uniapp](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/img/slider.png?t=201857)
+![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/96daf000-4f2f-11eb-b997-9918a5dda011.png)
 
 
 **Tips**

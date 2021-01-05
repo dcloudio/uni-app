@@ -157,15 +157,15 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 <a href="http://ext.dcloud.net.cn/plugin?id=239" target="_blank" class="clear-style"><b>ColorUI：</b></a>ColorUI官方组件库for uni-app，高颜值示例。本项目插件市场地址：[https://ext.dcloud.net.cn/plugin?id=239](https://ext.dcloud.net.cn/plugin?id=239)
 <div style="display:flex;justify-content: space-around;">
 	<a href="http://demo.color-ui.com" target="_blank" class="clear-style barcode-view">
-		<img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/img/color-ui-H5.jpg" width="200"/>
+		<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/42ce11e0-4f3e-11eb-8ff1-d5dcf8779628.jpg" width="200"/>
 		<span style="margin-top:15px;">H5码</span>
 	</a>
 	<a href="http://ext.dcloud.net.cn/plugin?id=239" target="_blank" class="clear-style barcode-view">
-		<img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/img/color-ui-weapp.jpg" width="200"/>
+		<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/43888840-4f3e-11eb-bdc1-8bd33eb6adaa.jpg" width="200"/>
 		<span style="margin-top:15px;">微信小程序码</span>
 	</a>
 	<a href="http://ext.dcloud.net.cn/plugin?id=239" target="_blank" class="clear-style barcode-view">
-		<img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/img/color-ui-alipay.jpg" width="200"/>
+		<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/41d7cb00-4f3e-11eb-8a36-ebb87efcf8c0.jpg" width="200"/>
 		<span style="margin-top:15px;">支付宝小程序码</span>
 	</a>
 </div>
@@ -177,19 +177,19 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 		<span style="margin-top:15px;">App码</span>
 	</a>
 	<a href="https://www.cyb520.com/" target="_blank" class="clear-style barcode-view">
-		<img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/cyb-wx.jpg" width="200"/>
+		<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/46ad6ef0-4f3e-11eb-8ff1-d5dcf8779628.jpg" width="200"/>
 		<span style="margin-top:15px;">微信小程序码</span>
 	</a>
 	<a href="https://www.cyb520.com/" target="_blank" class="clear-style barcode-view">
-		<img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/cyb-baidu.png" width="200"/>
+		<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/44496740-4f3e-11eb-bd01-97bc1429a9ff.png" width="200"/>
 		<span style="margin-top:15px;">百度小程序码</span>
 	</a>
 	<a href="https://www.cyb520.com/" target="_blank" class="clear-style barcode-view">
-		<img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/cyb-qq.jpg" width="200"/>
+		<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/4508bfa0-4f3e-11eb-8ff1-d5dcf8779628.jpg" width="200"/>
 		<span style="margin-top:15px;">QQ小程序码</span>
 	</a>
 	<a href="https://www.cyb520.com/" target="_blank" class="clear-style barcode-view">
-		<img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/cyb-toutiao.png" width="200"/>
+		<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/45dadcb0-4f3e-11eb-8a36-ebb87efcf8c0.png" width="200"/>
 		<span style="margin-top:15px;">头条/抖音小程序码</span>
 	</a>
 </div>
@@ -242,7 +242,7 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
  <strong>vivo会员官方小程序：</strong> 微信小程序搜索 "vivo会员"，<scan-code-text class="scan-code-text">或鼠标移此查看[微信小程序码]</scan-code-text>
  <div class="scan-code-hover">
     <div class="scan-code-hover-box">
-      <img src="https://img.cdn.aliyun.dcloud.net.cn/uni-app/vivovip.jpg" alt="二维码获取失败" />
+      <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/c647c110-4f3e-11eb-bd01-97bc1429a9ff.jpg" alt="二维码获取失败" />
     </div>
  </div>
 </div>
@@ -305,7 +305,7 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
  <strong>昆铁+：</strong> 中国铁路昆明局为乘客提供的应用。[App下载页](https://media.kunming-railway.cn/)、微信小程序搜索“昆铁+”
  <div class="scan-code-hover">
     <div class="scan-code-hover-box">
-      <img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/wxkt.jpg" alt="二维码获取失败" />
+      <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/47774ea0-4f3e-11eb-bdc1-8bd33eb6adaa.jpg" alt="二维码获取失败" />
     </div>
  </div>
 </div>
@@ -632,7 +632,7 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 
 **超英预告：**超级英雄预告，腾讯课堂Next学院的uni-app课程示例，[H5](http://www.imovietrailer.com)、微信小程序搜索“NEXT超英预告”。
 
-**垃圾分类帮帮团：** [微信小程序码地址](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/ljfl.png)
+**垃圾分类帮帮团：** [微信小程序码地址](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/5ae0ada0-4f3f-11eb-8a36-ebb87efcf8c0.png)
 
 **FUNSOLE：**Funsole疯收是一个专业的球鞋交易平台。[App和小程序通用链接](https://m3w.cn/funsole)
 
@@ -671,7 +671,7 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 #### 更多小程序案例（可在微信小程序中搜索）@wx-more
 
 <div>
-<link rel="stylesheet" type="text/css" href="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/wx-icon.css"/>
+<link rel="stylesheet" type="text/css" href="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/5a16cdf0-4f3f-11eb-8ff1-d5dcf8779628.css"/>
 <ul class="wx-icon-group">
     <li class="wx-icon-item"><span class="wx-icon wx-icon0"></span><span>BAT全书</span></li>
     <li class="wx-icon-item"><span class="wx-icon wx-icon1"></span><span>逗图圈</span></li>
@@ -716,22 +716,22 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
         <span class="slider-btn slider-btn-right"></span>
         <div class="slider-group">
             <div class="slider-item">
-                <img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/case/case1.png">
+                <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/3df62400-4f3e-11eb-8ff1-d5dcf8779628.png">
             </div>
             <div class="slider-item">
-                <img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/case/case2.png">
+                <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/3ecf6d00-4f3e-11eb-8ff1-d5dcf8779628.png">
             </div>
             <div class="slider-item">
-                <img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/case/case3.png">
+                <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/3f872440-4f3e-11eb-8a36-ebb87efcf8c0.png">
             </div>
             <div class="slider-item">
-                <img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/case/case4.png">
+                <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/40596860-4f3e-11eb-bdc1-8bd33eb6adaa.png">
             </div>
             <!-- <div class="slider-item">
                 <img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/case/case5.png">
             </div> -->
             <div class="slider-item">
-                <img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/case/case6.png">
+                <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/41136990-4f3e-11eb-8ff1-d5dcf8779628.png">
             </div>
             <!-- <div class="slider-item">
                 <img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/case/case7.png">

@@ -138,4 +138,4 @@ export default {
     }
 }
 ```
- ![uni](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/img/swiper.png)
+ ![uni](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/97ccca10-4f2f-11eb-b997-9918a5dda011.png)

@@ -157,7 +157,7 @@ export default {
 }
 ```
 
-![uniapp](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/img/video.png)
+![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/989ac870-4f2f-11eb-8a36-ebb87efcf8c0.png)
 
 相关api：[uni.createVideoContext](/api/media/video-context?id=createvideocontext)
 
