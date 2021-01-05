@@ -62,7 +62,7 @@ uni.request({
 	})
 
 // Await
-function async request () {
+async function request () {
 	var [error, res] = await uni.request({
 		url: 'https://www.example.com/request'
 	});
