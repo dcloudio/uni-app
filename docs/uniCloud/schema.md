@@ -68,7 +68,7 @@ HBuilderX中运行前端项目，在控制台选择连接本地云函数，此�
 |exclusiveMinimum|boolean|是否排除 minimum|
 |minLength|number|最小长度|
 |maxLength|number|最大长度|
-|trim|String|去除空白字符，支持 none|start|end，默认none，仅bsonType="string"时有效|
+|trim|String|去除空白字符，支持 none&#124;both&#124;start&#124;end，默认none，仅bsonType="string"时有效|
 |format|'url'&#124;'email'|数据格式，不符合格式的数据无法入库。目前只支持'url'和'email'，未来会扩展其他格式|
 |pattern|String|正则表达式，如设置为手机号的正则表达式后，不符合该正则表达式则校验失败，无法入库|
 |validateFunction|string|扩展校验函数名|
@@ -123,6 +123,15 @@ HBuilderX中运行前端项目，在控制台选择连接本地云函数，此�
 - mailto:dcloud@dcloud.io
 - file:\\
 - file:\\\
+
+### trim@trim
+
+|值|描述|
+|:-|:-|
+|none|不处理|
+|both|从一个字符串的两端删除空白字符。在这个上下文中的空白字符是所有的空白字符 (space, tab, no-break space 等) 以及所有行终止符字符（如 LF，CR等）|
+|start|从字符串的开头移除空白字符|
+|end|从一个字符串的末端移除空白字符|
 
 
 ### enum属性@enum
