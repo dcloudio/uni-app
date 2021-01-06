@@ -372,9 +372,11 @@ collection.field()
 使用示例
 
 ```js
-collection.field({ 'age': true }) //只返回age字段，其他字段不返回
+collection.field({ 'age': true }) //只返回age字段、_id字段，其他字段不返回
 ```
 备注：只能指定要返回的字段或者不要返回的字段。即{'a': true, 'b': false}是一种错误的参数格式
+
+**使用白名单模式_id会默认带上，即使没有配置{_id: true}以上面示例为例，返回的字段除age外还包含一个_id。**
 
 ### 查询指令
 

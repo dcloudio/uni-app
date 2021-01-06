@@ -848,7 +848,8 @@ export function canvasPutImageData ({
     invoke(callbackId, data)
   })
   let compressed
-  if (__PLATFORM__ === 'app-plus') {
+  // iOS真机非调试模式压缩太慢暂时排除
+  if (__PLATFORM__ === 'app-plus' && (plus.os.name !== 'iOS' || typeof __WEEX_DEVTOOL__ === 'boolean')) {
     const pako = require('pako')
     data = pako.deflateRaw(data, { to: 'string' })
     compressed = true

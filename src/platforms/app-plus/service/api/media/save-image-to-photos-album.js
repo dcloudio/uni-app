@@ -1,21 +1,13 @@
 import {
-  getRealPath
+  getRealPath,
+  warpPlusSuccessCallback,
+  warpPlusErrorCallback
 } from '../util'
-
-import {
-  invoke
-} from '../../bridge'
 
 export function saveImageToPhotosAlbum ({
   filePath
 } = {}, callbackId) {
-  plus.gallery.save(getRealPath(filePath), e => {
-    invoke(callbackId, {
-      errMsg: 'saveImageToPhotosAlbum:ok'
-    })
-  }, e => {
-    invoke(callbackId, {
-      errMsg: 'saveImageToPhotosAlbum:fail'
-    })
-  })
+  const successCallback = warpPlusSuccessCallback(callbackId, 'saveImageToPhotosAlbum')
+  const errorCallback = warpPlusErrorCallback(callbackId, 'saveImageToPhotosAlbum')
+  plus.gallery.save(getRealPath(filePath), successCallback, errorCallback)
 }

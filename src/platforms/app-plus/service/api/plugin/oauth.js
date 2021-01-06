@@ -31,7 +31,7 @@ export function login (params, callbackId) {
           authResult: authResult,
           errMsg: 'login:ok'
         })
-      }, errorCallback, provider === 'apple' ? { scope: 'email' } : params.univerifyStyle || {})
+      }, errorCallback, provider === 'apple' ? { scope: 'email' } : { univerifyStyle: params.univerifyStyle } || {})
     }
     // 先注销再登录
     // apple登录logout之后无法重新触发获取email,fullname；一键登录无logout

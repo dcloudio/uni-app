@@ -69,6 +69,8 @@ export function previewImagePlus ({
           }
           plus.gallery.save(res.url, function (GallerySaveEvent) {
             plus.nativeUI.toast('保存图片到相册成功')
+          }, function () {
+            plus.nativeUI.toast('保存图片到相册失败')
           })
         } else if (hasLongPressActions) {
           publish(longPressActions.callbackId, {

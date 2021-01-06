@@ -5,6 +5,7 @@
       :data="dataList"
       :pagination="paginationInternal"
       :loading="loading"
+      :hasMore="hasMore"
       :error="errorMessage"
     />
   </view>
@@ -52,6 +53,14 @@ export default {
       type: String,
       default: ''
     },
+    orderby: {
+      type: String,
+      default: ''
+    },
+    where: {
+      type: [String, Object],
+      default: ''
+    },
     pageData: {
       type: String,
       default: 'add'
@@ -68,17 +77,21 @@ export default {
       type: [Boolean, String],
       default: false
     },
-    orderby: {
-      type: String,
-      default: ''
-    },
-    where: {
-      type: [String, Object],
-      default: ''
-    },
     getone: {
       type: [Boolean, String],
       default: false
+    },
+    gettree: {
+      type: [Boolean, String],
+      default: false
+    },
+    startwith: {
+      type: String,
+      default: ''
+    },
+    limitlevel: {
+      type: Number,
+      default: 10
     },
     manual: {
       type: Boolean,
@@ -88,7 +101,8 @@ export default {
   data () {
     return {
       loading: false,
-      dataList: this.getone ? {} : [],
+      hasMore: false,
+      dataList: this.getone ? undefined : [],
       paginationInternal: {
         current: this.pageCurrent,
         size: this.pageSize,
@@ -107,7 +121,7 @@ export default {
       })
       return al
     }, (newValue, oldValue) => {
-      this.paginationInternal.pageSize = this.pageSize
+      this.paginationInternal.size = this.pageSize
 
       let needReset = false
       for (let i = 2; i < newValue.length; i++) {
@@ -309,19 +323,20 @@ export default {
           count
         } = res.result
         this._isEnded = data.length < this.pageSize
+        this.hasMore = !this._isEnded
 
         const data2 = this.getone ? (data.length ? data[0] : undefined) : data
 
         callback && callback(data2, this._isEnded)
         this._dispatchEvent(events.load, data2)
 
-        if (this.pageData === pageMode.add) {
+        if (this.getone || this.pageData === pageMode.replace) {
+          this.dataList = data2
+        } else {
           this.dataList.push(...data2)
           if (this.dataList.length) {
             this.paginationInternal.current++
           }
-        } else {
-          this.dataList = data2
         }
 
         if (this.getcount) {
@@ -331,7 +346,12 @@ export default {
         // #ifdef H5
         if (process.env.NODE_ENV === 'development') {
           this._debugDataList.length = 0
-          this._debugDataList.push(...JSON.parse(JSON.stringify(this.dataList)))
+          const formatData = JSON.parse(JSON.stringify(this.dataList))
+          if (Array.isArray(this.dataList)) {
+            this._debugDataList.push(...formatData)
+          } else {
+            this._debugDataList.push(formatData)
+          }
         }
         // #endif
       }).catch((err) => {
@@ -368,9 +388,17 @@ export default {
         current,
         size
       } = this.paginationInternal
-      db = db.skip(size * (current - 1)).limit(size).get({
-        getCount: this.getcount
-      })
+      const getOptions = {}
+      if (this.getcount) {
+        getOptions.getCount = this.getcount
+      }
+      if (this.gettree) {
+        getOptions.getTree = {
+          limitLevel: this.limitlevel,
+          startWith: this.startwith
+        }
+      }
+      db = db.skip(size * (current - 1)).limit(size).get(getOptions)
 
       return db
     },

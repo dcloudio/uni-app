@@ -19,7 +19,7 @@ H5平台登陆注意事项：
 |provider|String|否|登录服务提供商，通过 [uni.getProvider](/api/plugins/provider) 获取，如果不设置则弹出登录列表选择界面||
 |scopes|String/Array|见平台差异说明|授权类型，默认 auth_base。支持 auth_base（静默授权）/ auth_user（主动授权） / auth_zhima（芝麻信用）|支付宝小程序|
 |timeout|Number|否|超时时间，单位ms|微信小程序、百度小程序|
-|univerifyStyle|Object|否|[一键登录](https://ask.dcloud.net.cn/article/38009)页面样式|App 2.9.11+|
+|univerifyStyle|Object|否|[一键登录](/univerify)页面样式|App 3.0.0+|
 |success|Function|否|接口调用成功的回调||
 |fail|Function|否|接口调用失败的回调函数||
 |complete|Function|否|接口调用结束的回调函数（调用成功、失败都会执行）|&nbsp;|
@@ -39,7 +39,7 @@ H5平台登陆注意事项：
 * [百度小程序登录](https://smartprogram.baidu.com/docs/develop/api/open_log/#%E6%8E%88%E6%9D%83%E6%B5%81%E7%A8%8B%E8%AF%B4%E6%98%8E/)
 * [字节跳动小程序登录](https://developer.toutiao.com/dev/cn/mini-app/develop/open-capacity/log-in/login)
 * [Apple登录、苹果登录、Sign in with Apple](https://ask.dcloud.net.cn/article/36651)
-* [一键登陆](https://ask.dcloud.net.cn/article/38009)
+* [一键登陆](/univerify)
 
 
 **示例**
@@ -169,23 +169,23 @@ uni.login({
 
 |App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|2.9.11+|x|x|x|x|x|x|
+|3.0.0+|x|x|x|x|x|x|
 
 **OBJECT 参数说明**
 
 |参数名|类型|必填|说明|
 |:-|:-|:-|:-|
-|provider|String|否|登录服务提供商，通过 [uni.getProvider](/api/plugins/provider) 获取，目前仅支持[一键登陆](https://ask.dcloud.net.cn/article/38009)|
+|provider|String|否|登录服务提供商，通过 [uni.getProvider](/api/plugins/provider) 获取，目前仅支持[一键登陆](/univerify)|
 |success|Function|否|接口调用成功的回调|
 |fail|Function|否|接口调用失败的回调函数|
 |complete|Function|否|接口调用结束的回调函数（调用成功、失败都会执行）|
 
 
 ### uni.closeAuthView()
-关闭[一键登陆](https://ask.dcloud.net.cn/article/38009)页面。
+关闭[一键登陆](/univerify)页面。
 
 **平台差异说明**
 
 |App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|2.9.11+|x|x|x|x|x|x|
+|3.0.0+|x|x|x|x|x|x|

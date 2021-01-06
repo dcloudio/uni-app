@@ -5,7 +5,7 @@ var {
 } = require('@dcloudio/uni-cli-shared')
 module.exports = function (content, map) {
   this.cacheable && this.cacheable()
-  this.callback(null, 'module.exports = ' + genStyleString(content.replace(/!important/g, ''), this), map)
+  this.callback(null, 'module.exports = ' + genStyleString(content, this), map)
 }
 
 // @todo:

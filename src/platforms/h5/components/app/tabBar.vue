@@ -25,6 +25,7 @@
           :style="_uniTabbarBdStyle(item)"
         >
           <img
+            v-if="item.iconPath"
             :style="{width: item.iconWidth,height:item.iconWidth}"
             :src="_getRealPath(item.iconPath)"
           >

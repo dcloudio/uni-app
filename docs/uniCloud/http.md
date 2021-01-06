@@ -34,8 +34,8 @@
 ![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/cloud-function-urlify.png)
 
 >- 每个服务空间最多绑定1个自定义域名。
->- uniCloud提供默认域名供体验和测试该特性，域名规范如：`${spaceId}.service.tcloudbase.com`。
->- 绑定自定义域名之前，请先设置您默认域名的 CNAME 记录值为`${spaceId}.service.tcloudbase.com`，CNAME 记录不存在时会导致域名绑定失败，另外需要注意的是此域名必须已经备案。
+>- uniCloud提供默认域名供体验和测试该特性。
+>- 绑定自定义域名之前，请先设置您默认域名的 CNAME 记录值为默认域名，CNAME 记录不存在时会导致域名绑定失败，另外需要注意的是此域名必须已经备案。
 >- 单个服务空间可支持被访问的最大 QPS 为5000，单个云函数可支持被访问的最大 QPS 为2000（具体频次受函数并发限制）。
 >- 默认域名可支持被访问的最大 QPS 为200，推荐您绑定自定义域名以获取更大的访问频次。
 
@@ -47,12 +47,12 @@
 
 ### 通过 HTTP URL 方式访问云函数
 
-- 方式一：通过`https://${spaceId}.service.tcloudbase.com/${path}`直接访问函数，其中`${spaceId}`是服务空间 ID，`${path}`是配置的函数触发路径。
+- 方式一：通过`https://${云函数Url化域名}/${path}`直接访问函数，其中`${spaceId}`是服务空间 ID，`${path}`是配置的函数触发路径。
 ```sh
-$ curl https://${spaceId}.service.tcloudbase.com/${path}
+$ curl https://${云函数Url化域名}/${path}
 ```
 
-- 方式二：直接在浏览器内打开`https://${spaceId}.service.tcloudbase.com/${path}`。
+- 方式二：直接在浏览器内打开`https://${云函数Url化域名}/${path}`。
 
 ### 云函数的入参
 
@@ -76,7 +76,7 @@ $ curl https://${spaceId}.service.tcloudbase.com/${path}
     path: '/',
     httpMethod: 'GET',
     headers: {
-        'host': 'env-id.service.tcloudbase.com',
+        'host': 'xxx.service.tcloudbase.com',
         'connection': 'close',
         'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
         'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
@@ -97,7 +97,7 @@ $ curl https://${spaceId}.service.tcloudbase.com/${path}
 
 **示例**
 
-使用GET请求`https://${spaceId}.service.tcloudbase.com/${functionPath}?a=1&b=2`，云函数接收到的`event`为
+使用GET请求`https://${云函数Url化域名}/${functionPath}?a=1&b=2`，云函数接收到的`event`为
 
 ```
 {
@@ -111,13 +111,13 @@ $ curl https://${spaceId}.service.tcloudbase.com/${path}
 ```
 
 
-使用POST请求`https://${spaceId}.service.tcloudbase.com/${functionPath}`，云函数接收到的`event`为请求发送的数据，**uni.request默认content-type为application/json**
+使用POST请求`https://${云函数Url化域名}/${functionPath}`，云函数接收到的`event`为请求发送的数据，**uni.request默认content-type为application/json**
 
 ```js
 // 以uni.request为例
 uni.request({
   method: 'POST',
-  url: 'https://${spaceId}.service.tcloudbase.com/${functionPath}',
+  url: 'https://${云函数Url化域名}/${functionPath}',
   data: {
     a: 1,
     b: 2

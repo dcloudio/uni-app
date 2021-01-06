@@ -204,7 +204,10 @@ function setForData (id, value) {
   if (!hasOwn(value, 'keyIndex')) {
     vForData[forIndex] = key
   } else {
-    (vForData[forIndex] || (vForData[forIndex] = {}))['k' + value.keyIndex] = key
+    if (typeof vForData[forIndex] !== 'object') {
+      vForData[forIndex] = {}
+    }
+    vForData[forIndex]['k' + value.keyIndex] = key
   }
   return key
 }

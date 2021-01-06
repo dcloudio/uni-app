@@ -205,6 +205,19 @@ export default {
           case 'redo':
             quill.history.redo()
             break
+          case 'blur':
+            quill.blur()
+            break
+          case 'getSelectionText':
+            range = quill.selection.savedRange
+            res = { text: '' }
+            if (range && range.length !== 0) {
+              res.text = quill.getText(range.index, range.length)
+            }
+            break
+          case 'scrollIntoView':
+            quill.scrollIntoView()
+            break
           default:
             break
         }

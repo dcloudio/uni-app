@@ -1,8 +1,11 @@
-function setNavigationBar (type, args) {
-  const pages = getCurrentPages()
-  if (pages.length) {
-    const page = pages[pages.length - 1].$holder
+import {
+  isCurrentPage,
+  getPageHolder
+} from '../util.js'
 
+function setNavigationBar (type, args = {}) {
+  const page = getPageHolder(args.__page__)
+  if (page) {
     switch (type) {
       case 'setNavigationBarColor':
         {
@@ -43,7 +46,9 @@ function setNavigationBar (type, args) {
             title
           } = args
           page.navigationBar.titleText = title
-          document.title = title
+          if (isCurrentPage(page)) { // 仅当前页面
+            document.title = title
+          }
           UniServiceJSBridge.emit('onNavigationBarChange', {
             titleText: title
           })
@@ -58,12 +63,12 @@ export function setNavigationBarColor (args) {
   return setNavigationBar('setNavigationBarColor', args)
 }
 
-export function showNavigationBarLoading () {
-  return setNavigationBar('showNavigationBarLoading')
+export function showNavigationBarLoading (args) {
+  return setNavigationBar('showNavigationBarLoading', args)
 }
 
-export function hideNavigationBarLoading () {
-  return setNavigationBar('hideNavigationBarLoading')
+export function hideNavigationBarLoading (args) {
+  return setNavigationBar('hideNavigationBarLoading', args)
 }
 
 export function setNavigationBarTitle (args) {

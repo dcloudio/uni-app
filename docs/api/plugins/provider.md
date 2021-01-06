@@ -46,7 +46,7 @@
 ||qq|QQ登录||
 ||sinaweibo|新浪微博登录||
 ||xiaomi|小米登录||
-||univerify|[一键登录](https://ask.dcloud.net.cn/article/38009)|App 2.9.11+|
+||univerify|[一键登录](/univerify)|App 3.0.0+|
 ||apple|[Apple登录](https://ask.dcloud.net.cn/article/36651)|仅iOS13支持，App 2.4.7+|
 |share|sinaweibo|新浪微博分享||
 ||qq|分享到QQ好友||

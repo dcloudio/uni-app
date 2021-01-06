@@ -27,6 +27,9 @@ uni.onCompassChange(function (res) {
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |HBuilderX 2.9.6+|HBuilderX 2.9.6+|基础库 2.9.3+|x|x|x|x|
 
+**Tips**
+- `CALLBACK`为调用`uni.onCompassChange`时传入的`CALLBACK`
+
 ### uni.startCompass(OBJECT)
 开始监听罗盘数据。
 

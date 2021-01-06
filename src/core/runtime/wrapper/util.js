@@ -542,7 +542,7 @@ export function handleEvent (event) {
             }
             handler.once = true
           }
-          const params = processEventArgs(
+          let params = processEventArgs(
             this.$vm,
             event,
             eventArray[1],
@@ -550,9 +550,13 @@ export function handleEvent (event) {
             isCustom,
             methodName
           )
+          params = Array.isArray(params) ? params : []
           // 参数尾部增加原始事件对象用于复杂表达式内获取额外数据
-          // eslint-disable-next-line no-sparse-arrays
-          ret.push(handler.apply(handlerCtx, (Array.isArray(params) ? params : []).concat([, , , , , , , , , , event])))
+          if (/=\s*\S+\.eventParams\s*\|\|\s*\S+\[['"]event-params['"]\]/.test(handler.toString())) {
+            // eslint-disable-next-line no-sparse-arrays
+            params = params.concat([, , , , , , , , , , event])
+          }
+          ret.push(handler.apply(handlerCtx, params))
         }
       })
     }
