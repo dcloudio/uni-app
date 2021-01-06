@@ -3423,11 +3423,13 @@ var serviceContext = (function () {
   function warpPlusErrorCallback (callbackId, name, errMsg) {
     return function errorCallback (error) {
       error = error || {};
-      const code = error.code || 0;
+      // 一键登录errorCallback新增 appid、metadata、uid 参数返回
+      const { code = 0, message: errorMessage, ...extraData } = error;
       invoke$1(callbackId, {
-        errMsg: `${name}:fail ${error.message || errMsg || ''}`,
+        errMsg: `${name}:fail ${errorMessage || errMsg || ''}`,
         errCode: code,
-        code
+        code,
+        ...extraData
       });
     }
   }
