@@ -647,7 +647,7 @@ const db = uniCloud.database()
 
 ### 查询树形数据@gettree
 
-HBuilderX 3.0.3+起，clientDB支持在get方法内传入getTree参数查询树状结构数据。（unicloud-db组件还未支持，目前只能通过js方式使用）
+HBuilderX 3.0.3+起，clientDB支持在get方法内传入getTree参数查询树状结构数据。（HBuilderX 3.0.5+ unicloud-db组件开始支持，之前版本只能通过js方式使用）
 
 树形数据，在数据库里一般不会按照tree的层次来存储，因为按tree结构通过json对象的方式存储不同层级的数据，不利于对tree上的某个节点单独做增删改查。
 
