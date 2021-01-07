@@ -115,7 +115,7 @@ datacom组件，对服务器数据规范、前端组件的数据输入和输出�
 - 设计更加清晰。服务器端给符合规范的数据，然后接受选择的结果数据。中间的ui交互无需关心。
 - 结合 [uni-forms](https://ext.dcloud.net.cn/plugin?id=2773) 组件，自动实现表单校验。
 - 搭配 uniCloud 的[unicloud-db组件](https://uniapp.dcloud.io/uniCloud/clientdb)，数据库查询结果直接绑定给`datacom组件`，服务器代码直接就不用写了
-- 搭配 uniCloud 的[前端表单生成系统](https://uniapp.dcloud.net.cn/uniCloud/schema?id=autocode)，数据库定义好schema，前端页面就不用写了，自动生成
+- 搭配 uniCloud 的[schema2code页面生成系统](https://uniapp.dcloud.net.cn/uniCloud/schema?id=autocode)，数据库定义好schema，前端页面就不用写了，自动生成
 - 互操作性。可以轻易的切换更好的组件
 
 举个例子，假使我们想实现一个城市选择的业务。
@@ -222,7 +222,7 @@ data数据是可遍历嵌套的数据集合。数组中每条数据如下基本k
 }]
 ```
 
-- 组件示例：uni-data-picker
+- 组件示例：[uni-data-picker](https://ext.dcloud.net.cn/plugin?id=3796)
 
 - 使用示例：
 ```html
