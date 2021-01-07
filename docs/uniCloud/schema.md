@@ -1249,3 +1249,80 @@ const dbSearchFields = ['username', 'role_name', 'mobile', 'email'] // 模糊搜
   </uni-group>
 ```
 
+
+### 生成级联选择
+
+以城市选择举例
+
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/e56e7cc0-50b8-11eb-97b7-0dc4655d6e68.png)
+
+地址表
+```json
+{
+  "schema": {
+    "bsonType": "object",
+    "required": ["city_id"],
+    "properties": {
+      "_id": {
+        "description": "ID，系统自动生成"
+      },
+      "city_id": {
+        "bsonType": "string",
+        "title": "地址",
+        "description": "城市编码",
+        "enumType": "tree",
+        "enum": {
+          "collection": "opendb-city-china",
+          "orderby": "value asc",
+          "field": "code as value, name as text"
+        }
+      }
+    }
+  }
+}
+
+```
+
+关联表 `opendb-city-china`
+
+```
+{
+  "schema": {
+    "bsonType": "object",
+    "required": ["code", "name"],
+    "permission": {
+      "read": true,
+      "create": false,
+      "update": false,
+      "delete": false
+    },
+    "properties": {
+      "_id": {
+        "description": "ID，系统自动生成"
+      },
+      "code": {
+        "bsonType": "string",
+        "description": "编码"
+      },
+      "parent_code": {
+        "bsonType": "string",
+        "description": "父级编码",
+        "parentKey": "code"
+      },
+      "name": {
+        "bsonType": "string",
+        "description": "城市名称",
+        "title": "城市"
+      },
+      "type": {
+        "bsonType": "int",
+        "description": "城市类型；0省，1市，2区"
+      }
+    }
+  }
+}
+
+```
+
+`opendb-city-china` 为树形数据，[树形数据详情](https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=gettree)
+
