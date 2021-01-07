@@ -82,6 +82,7 @@
   * [动画](api/ui/animation?id=unicreateanimationobject)
   * [滚动](api/ui/scroll)
   * [窗口](api/ui/window.md)
+  * [宽屏适配](api/ui/adapt.md)
   * [字体](api/ui/font.md)
   * [下拉刷新](api/ui/pulldown.md)
   * [节点信息](api/ui/nodes-info.md)
