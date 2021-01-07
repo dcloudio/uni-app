@@ -1,4 +1,4 @@
-### uni.setTopWindowStyle(OPTIONS)
+### uni.setTopWindowStyle(OBJECT)
 
 设置 topWindow 的样式
 
@@ -10,11 +10,11 @@
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |x|√|x|x|x|x|x|
 
-**OPTIONS 说明**
+**OBJECT 参数说明**
 
-|属性|类型|说明|
+|参数|类型|说明|
 |---|---|---|
-|OPTIONS|Object|css 样式对象，需写驼峰css属性 ，{height: '100px', backgroundColor: 'red'}|
+|OBJECT|Object|css 样式对象，需写驼峰css属性 ，{height: '100px', backgroundColor: 'red'}|
 
 **代码示例**
 
@@ -25,7 +25,7 @@ uni.setTopWindowStyle({
 })
 ```
 
-### uni.setLeftWindowStyle(OPTIONS)
+### uni.setLeftWindowStyle(OBJECT)
 
 设置 leftWindow 的样式
 
@@ -37,11 +37,11 @@ uni.setTopWindowStyle({
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |x|√|x|x|x|x|x|
 
-**OPTIONS 说明**
+**OBJECT 参数说明**
 
-|属性|类型|说明|
+|参数|类型|说明|
 |---|---|---|
-|OPTIONS|Object|css 样式对象，需写驼峰css属性 ，{width: '500px', backgroundColor: 'blue'}|
+|OBJECT|Object|css 样式对象，需写驼峰css属性 ，{width: '500px', backgroundColor: 'blue'}|
 
 **代码示例**
 
@@ -53,7 +53,7 @@ uni.setLeftWindowStyle({
 ```
 
 
-### uni.setRightWindowStyle(OPTIONS)
+### uni.setRightWindowStyle(OBJECT)
 
 设置 rightWindow 的样式
 
@@ -65,11 +65,11 @@ uni.setLeftWindowStyle({
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |x|√|x|x|x|x|x|
 
-**OPTIONS 说明**
+**OBJECT 参数说明**
 
-|属性|类型|说明|
+|参数|类型|说明|
 |---|---|---|
-|OPTIONS|Object|css 样式对象，需写驼峰css属性 ，{width: '500px', backgroundColor: 'blue'}|
+|OBJECT|Object|css 样式对象，需写驼峰css属性 ，{width: '500px', backgroundColor: 'blue'}|
 
 **代码示例**
 
