@@ -1283,9 +1283,9 @@ const dbSearchFields = ['username', 'role_name', 'mobile', 'email'] // 模糊搜
 
 ```
 
-关联表 `opendb-city-china`
+关联表 `opendb-city-china` 为树形数据，[树形数据详情](https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=gettree)
 
-```
+```json
 {
   "schema": {
     "bsonType": "object",
@@ -1324,5 +1324,5 @@ const dbSearchFields = ['username', 'role_name', 'mobile', 'email'] // 模糊搜
 
 ```
 
-`opendb-city-china` 为树形数据，[树形数据详情](https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=gettree)
+生成的代码中包含级联选择组件 `<uni-data-picker>`，[详情](https://ext.dcloud.net.cn/plugin?id=3796)
 
