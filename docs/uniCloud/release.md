@@ -1,5 +1,11 @@
 # uniCloud 更新日志
 ======================================
+#### 2021-01-08
+  + web控制台 新增 协作者可访问被授权的空间 
+  + web控制台 新增 云函数批量删除
+  + web控制台 新增 数据表批量删除
+  + web控制台 新增 公共模块批量删除
+  + web控制台 新增  action 批量删除
 
 #### 2020-12-20
   + 【重要】调整 前端内置了`<unicloud-db>`组件，无需再人工引入插件市场的[clientDB组件插件](https://ext.dcloud.net.cn/plugin?id=3256) [规范](https://uniapp.dcloud.net.cn/uniCloud/unicloud-db)
@@ -32,7 +38,7 @@
   + uni-id 新增 修改passwordSecret功能 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=modifysecret)
 
 #### 2020-11-13
-  +  阿里云支持事务（startTransaction方式，暂不支持ranTransaction）[详情](https://uniapp.dcloud.net.cn/uniCloud/cf-database?id=starttransaction)
+  +  阿里云支持事务（startTransaction方式，暂不支持runTransaction）[详情](https://uniapp.dcloud.net.cn/uniCloud/cf-database?id=starttransaction)
 
 #### 2020-10-24
   + clientDB 去除schema内permission中的点，例：`.write`改为`write`，旧写法仍然支持。
