@@ -1,3 +1,20 @@
+#### 3.0.5.20210107
+  + H5平台 新增 uni.setLeftWindowStyle、uni.setTopWindowStyle、uni.setRightWindowStyle 三个为窗体（leftWindow、rightWindow、topWindow）设置样式的API [详情](https://uniapp.dcloud.net.cn/api/ui/adapt)
+* 【uniCloud】
+  + DB Schema 新增 支持对 string 类型数据配置 trim ，可自动对字符串去除前后空白字符 [详情](https://uniapp.dcloud.net.cn/uniCloud/schema?id=trim)
+  + DB Schema 修复 部分情况下使用 enum 报错的Bug
+  + DB Schema 修复 exclusiveMinimum、exclusiveMaximum 无效的bug
+  + clientDB 修复 查询树形结构时使用 startWith 某些写法导致报错的Bug
+  + clientDB 修复 field 内使用JQL联表查询语法时多个右花括号连续出现导致报错的Bug
+  + clientDB 修复 field 中包含`-`时报错的Bug
+  + uniCloud本地调试插件 修复 部分日志导致本地调试服务崩溃的Bug
+  + unicloud-db组件 支持tree查询，新增属性 gettree、startwith、limitlevel [详情](https://uniapp.dcloud.net.cn/uniCloud/unicloud-db?id=props)
+  + uni-ui 新增 uni-data-picker 组件 [详情](https://ext.dcloud.net.cn/plugin?id=3796)
+* 【App插件(含5+App和uni-app的App端)】
+  + 一键登录 优化 错误回调返回数据格式，添加 appid、metadata、uid 属性，便于排查错误 [规范](https://www.html5plus.org/doc/zh_cn/oauth.html#plus.oauth.ErrorCallback)
+  + Android平台 修复 native.js 调用 requestPermissions 请求的权限已被允许可能引起其它功能无法正常申请系统权限的Bug [详情](https://ask.dcloud.net.cn/question/114645)
+  + Android平台 修复 云端打包 更新 com.android.tools.build:gradle 版本后可能引起安装包文件变大、运行显示白屏的Bug [详情](https://ask.dcloud.net.cn/question/114496)
+
 #### 3.0.4.20201231
   + App、H5平台 新增 vue 页面中的 input、textarea 在新版浏览器内核（Chrome81+、Safari13.7+）中 confirm-type 即键盘右下角按钮文字，支持更多配置（send、next、done）
   + App、H5平台 新增 网络请求相关接口 uni.request、uni.uploadFile、uni.downloadFile 支持 timeout 参数

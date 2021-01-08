@@ -152,7 +152,7 @@
   + iOS平台 修复 从相册选择视频后调用 uni.navigateBack() 关闭页面时会退出小程序的Bug
 
 #### 2.9.9.20201114-alpha
-  + App、H5平台 新增 vue 页面中的 input、textarea 在新版浏览器内核（Chrome81+、Safari13.7+）中 confirm-type 即键盘右下角按钮文字，支持更多配置（send、next、done）
+  + App、H5平台 新增 vue 页面中的 input、textarea 在新版浏览器内核（Chrome81+、Safari13.7+）中 confirm-type（即键盘右下角按钮文字）支持更多配置（send、next、done）
   + App、H5平台 新增 网络请求相关接口 uni.request、uni.uploadFile、uni.downloadFile 支持 timeout 参数
   + App、H5平台 修复 slider 组件显示最大值时拖动不跟手的Bug
   + App-Android平台 修复 uni 原生插件扩展 Component 组件 bindData 回调不触发的Bug
