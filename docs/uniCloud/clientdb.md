@@ -1413,7 +1413,7 @@ db.off('refreshToken', refreshToken)
 
 ### 错误处理@error
 
-clientDB错误事件，HBuilderX 3.0.0起支持
+全局clientDB错误事件，HBuilderX 3.0.0起支持。
 
 **用法**
 
@@ -1421,7 +1421,7 @@ clientDB错误事件，HBuilderX 3.0.0起支持
 const db = uniCloud.database()
 
 function onDBError({
-  code,
+  code, // 错误码详见https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=returnvalue
   message
 }) {
   // 处理错误
