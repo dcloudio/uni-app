@@ -417,6 +417,27 @@ global.uniPlugin.configureEnv.forEach(configureEnv => {
   configureEnv()
 })
 
+if (
+  process.env.UNI_PLATFORM === 'h5' ||
+  (
+    process.env.UNI_PLATFORM === 'app-plus' &&
+    process.env.UNI_USING_V3
+  )
+) {
+  const migrate = require('@dcloudio/uni-migration')
+  const wxcomponentDirs = [path.resolve(process.env.UNI_INPUT_DIR, 'wxcomponents')]
+  global.uniModules.forEach(module => {
+    wxcomponentDirs.push(path.resolve(process.env.UNI_INPUT_DIR, 'uni_modules', module, 'wxcomponents'))
+  })
+  wxcomponentDirs.forEach(wxcomponentsDir => {
+    if (fs.existsSync(wxcomponentsDir)) { // 转换 mp-weixin 小程序组件
+      migrate(wxcomponentsDir, false, {
+        silent: true // 不输出日志
+      })
+    }
+  })
+}
+
 if (process.env.UNI_PLATFORM.startsWith('mp-')) {
   console.log('小程序各家浏览器内核及自定义组件实现机制存在差异，可能存在样式布局兼容问题，参考：https://uniapp.dcloud.io/matter?id=mp')
 }
