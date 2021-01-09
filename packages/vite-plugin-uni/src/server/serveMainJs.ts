@@ -1,11 +1,11 @@
 import path from 'path'
 
-import { ServerPlugin, readBody } from 'vite'
+import { readBody, ViteDevServer } from 'vite'
 
 import { getRoot, isMainJs, wrapperMainCode } from '../utils'
 
-export const serverPluginMainJs: ServerPlugin = ({ app, root }) => {
-  app.use(async (ctx, next) => {
+export const serveMainJs = (server: ViteDevServer) => {
+  server.app.use(async (ctx, next) => {
     await next()
     if (isMainJs(ctx.path)) {
       const body = await readBody(ctx.body)

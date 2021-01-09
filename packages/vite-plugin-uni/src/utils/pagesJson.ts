@@ -46,7 +46,7 @@ function formatPages(pagesJson: Record<string, any>, jsonStr: string) {
 function removePlatformStyle(globalStyle: Record<string, any>) {
   delete globalStyle['app-plus']
   delete globalStyle['h5']
-  Object.keys(globalStyle).forEach(name => {
+  Object.keys(globalStyle).forEach((name) => {
     if (name.startsWith('mp-') || name.startsWith('quickapp')) {
       delete globalStyle[name]
     }
@@ -85,7 +85,7 @@ function formatSubpackages(subpackages: SubpackagesOptions[]) {
 
 function formatPagesJson(jsonStr: string) {
   let pagesJson: Record<string, any> = {
-    pages: []
+    pages: [],
   }
   //TODO preprocess
   try {
@@ -116,14 +116,14 @@ function generatePageDefineCode(pageOptions: PageOptions) {
 
 function generatePagesDefineCode(pagesJson: Record<string, any>) {
   return (pagesJson.pages as PageOptions[])
-    .map(pageOptions => generatePageDefineCode(pageOptions))
+    .map((pageOptions) => generatePageDefineCode(pageOptions))
     .join('\n')
 }
 
 function formatPagesRoute(pagesJson: Record<string, any>): PageRouteOptions[] {
   const firstPagePath = pagesJson.pages[0].path
   const tabBarList = (pagesJson.tabBar && pagesJson.tabBar.list) || []
-  return (pagesJson.pages as PageOptions[]).map(pageOptions => {
+  return (pagesJson.pages as PageOptions[]).map((pageOptions) => {
     const path = pageOptions.path
     const name = formatPageIdentifier(path)
     const isEntry = firstPagePath === path ? true : undefined
@@ -142,14 +142,14 @@ function formatPagesRoute(pagesJson: Record<string, any>): PageRouteOptions[] {
       windowTop,
       topWindow: props.topWindow,
       leftWindow: props.leftWindow,
-      rightWindow: props.rightWindow
+      rightWindow: props.rightWindow,
     }
     Object.assign(props, meta)
     return {
       name,
       path: pageOptions.path,
       props,
-      meta
+      meta,
     }
   })
 }
@@ -169,13 +169,13 @@ function generatePageRoute({ name, path, props, meta }: PageRouteOptions) {
 }
 
 function generatePagesRoute(pagesRouteOptions: PageRouteOptions[]) {
-  return pagesRouteOptions.map(pageOptions => generatePageRoute(pageOptions))
+  return pagesRouteOptions.map((pageOptions) => generatePageRoute(pageOptions))
 }
 
 function generateRoutes(pagesJson: Record<string, any>) {
   return [
     `{ path: '/${pagesJson.pages[0].path}', redirect: '/' }`,
-    ...generatePagesRoute(formatPagesRoute(pagesJson))
+    ...generatePagesRoute(formatPagesRoute(pagesJson)),
   ]
 }
 

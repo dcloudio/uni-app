@@ -1,7 +1,7 @@
 import path from 'path'
 import slash from 'slash'
 
-import { dynamicImportCode } from './dynamicImportUtils'
+import { dynamicImportCode } from './dynamicImport'
 
 const MAIN_RE = /main.[jt]s/
 

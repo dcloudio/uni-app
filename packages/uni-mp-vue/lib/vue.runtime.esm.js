@@ -3247,7 +3247,7 @@ function defineEmit() {
 }
 
 // Core API ------------------------------------------------------------------
-const version = "3.0.4";
+const version = "3.0.5";
 
 // import deepCopy from './deepCopy'
 /**

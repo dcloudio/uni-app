@@ -1,3 +1,3 @@
-export * from './serverPluginEnv'
-export * from './serverPluginMainJs'
-export * from './serverPluginPagesJson'
+export * from './serveEasycom'
+export * from './serveMainJs'
+export * from './servePagesJson'

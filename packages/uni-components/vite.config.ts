@@ -1,32 +1,40 @@
-import fs from 'fs'
-import path from 'path'
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
 
 import { isCustomElement } from '../uni-shared'
 
-export default {
+export default defineConfig({
   root: '.',
-  minify: false,
-  assetsDir: '.',
-  emitAssets: false,
   define: {
-    __PLATFORM__: JSON.stringify('app-plus')
+    __PLATFORM__: JSON.stringify('app-plus'),
   },
-  vueCompilerOptions: {
-    isCustomElement
+  plugins: [
+    vue({
+      template: {
+        compilerOptions: {
+          isCustomElement,
+        },
+      },
+    }),
+  ],
+  build: {
+    minify: false,
+    assetsDir: '.',
+    rollupOptions: {
+      input: 'src/index.ts',
+      external: ['vue', '@vue/shared', '@dcloudio/uni-shared'],
+      preserveEntrySignatures: 'strict',
+      output: {
+        format: 'es',
+        entryFileNames: 'uni-components.esm.js',
+        assetFileNames(assetInfo) {
+          if (assetInfo.name === 'style.css') {
+            return 'uni-components.css'
+          }
+          return 'assets/[name]-[hash][extname]'
+        },
+      },
+    },
+    // emitAssets: false,
   },
-  rollupInputOptions: {
-    input: 'src/index.ts',
-    external: ['vue', '@vue/shared', '@dcloudio/uni-shared'],
-    preserveEntrySignatures: 'strict'
-  },
-  rollupOutputOptions: {
-    format: 'es',
-    entryFileNames: 'uni-components.esm.js',
-    assetFileNames(assetInfo) {
-      if (assetInfo.name === 'style.css') {
-        return 'uni-components.css'
-      }
-      return 'assets/[name]-[hash][extname]'
-    }
-  }
-}
+})

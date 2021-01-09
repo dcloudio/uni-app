@@ -1,4 +1,4 @@
-import { ServerPlugin, readBody } from 'vite'
+import { ViteDevServer } from 'vite'
 
 import { parsePagesJson } from '../utils'
 
@@ -10,8 +10,8 @@ window.UniViewJSBridge = UniViewJSBridge
 window.UniServiceJSBridge = UniServiceJSBridge
 `
 
-export const serverPluginPagesJson: ServerPlugin = ({ app }) => {
-  app.use(async (ctx, next) => {
+export const servePagesJson = (server: ViteDevServer) => {
+  server.app.use(async (ctx, next) => {
     const isPagesJson = ctx.path.endsWith('pages.json')
     if (isPagesJson) {
       //skip serverPluginJson

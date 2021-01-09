@@ -59,17 +59,21 @@ async function build(target) {
       'vite',
       ['build', '--config', path.resolve(pkgDir, 'vite.config.ts')],
       {
-        stdio: 'inherit'
+        stdio: 'inherit',
       }
     )
   } else if (bundler === 'tsc') {
-    return await execa(
-      'tsc',
-      ['--listEmittedFiles', types ? `--declaration` : '', '-p', pkgDir],
-      {
-        stdio: 'inherit'
-      }
-    )
+    const args = [
+      '--listEmittedFiles',
+      '-p',
+      path.resolve(pkgDir, 'tsconfig.json'),
+    ]
+    if (types) {
+      args.push('--declaration')
+    }
+    return await execa('tsc', args, {
+      stdio: 'inherit',
+    })
   }
 
   await execa(
@@ -79,7 +83,7 @@ async function build(target) {
       '--environment',
       [`NODE_ENV:${env}`, types ? `TYPES:true` : ``, `TARGET:${target}`]
         .filter(Boolean)
-        .join(',')
+        .join(','),
     ],
     { stdio: 'inherit' }
   )

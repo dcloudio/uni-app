@@ -4,14 +4,14 @@ const NodeGlobals = ['module', 'require']
 module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    sourceType: 'module'
+    sourceType: 'module',
   },
   rules: {
     'no-unused-vars': [
       'error',
       // we are only using this rule to check for unused arguments since TS
       // catches unused variables but not args.
-      { varsIgnorePattern: '.*', args: 'after-used', argsIgnorePattern: '^_' }
+      { varsIgnorePattern: '.*', args: 'after-used', argsIgnorePattern: '^_' },
     ],
     // most of the codebase are expected to be env agnostic
     'no-restricted-globals': ['error', ...DOMGlobals, ...NodeGlobals],
@@ -20,8 +20,8 @@ module.exports = {
     'no-restricted-syntax': [
       'error',
       'ObjectExpression > SpreadElement',
-      'ObjectPattern > RestElement'
-    ]
+      'ObjectPattern > RestElement',
+    ],
   },
   overrides: [
     // tests, no restrictions (runs in Node / jest with jsdom)
@@ -29,28 +29,28 @@ module.exports = {
       files: ['**/__tests__/**'],
       rules: {
         'no-restricted-globals': 'off',
-        'no-restricted-syntax': 'off'
-      }
+        'no-restricted-syntax': 'off',
+      },
     },
     // Packages targeting DOM
     {
       files: [
-        'packages/{uni-components,uni-h5,uni-h5-vue,uni-shared,uni-core}/**'
+        'packages/{uni-components,uni-h5,uni-h5-vue,uni-shared,uni-core}/**',
       ],
       rules: {
-        'no-restricted-globals': ['error', ...NodeGlobals]
-      }
+        'no-restricted-globals': ['error', ...NodeGlobals],
+      },
     },
     // Packages targeting Node
     {
       files: [
-        'packages/{vue-cli-plugin-uni,vue-cli-plugin-hbuilderx}/**',
-        'packages/*/vite.config.ts'
+        'packages/{vue-cli-plugin-uni,vue-cli-plugin-hbuilderx,vite-plugin-uni}/**',
+        'packages/*/vite.config.ts',
       ],
       rules: {
         'no-restricted-globals': ['error', ...DOMGlobals],
-        'no-restricted-syntax': 'off'
-      }
-    }
-  ]
+        'no-restricted-syntax': 'off',
+      },
+    },
+  ],
 }
