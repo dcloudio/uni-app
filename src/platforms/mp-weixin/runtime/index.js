@@ -42,6 +42,7 @@ Page = function (options = {}) {
   initHook('onLoad', options)
   return MPPage(options)
 }
+Page.after = MPPage.after
 
 Component = function (options = {}) {
   initHook('created', options)
