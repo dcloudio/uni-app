@@ -111,6 +111,19 @@ module.exports = function generateJson (compilation) {
     }
     delete jsonObj.usingAutoImportComponents
 
+    // 百度小程序插件内组件使用 usingSwanComponents
+    if (process.env.UNI_PLATFORM === 'mp-baidu') {
+      const usingComponents = jsonObj.usingComponents || {}
+      Object.keys(usingComponents).forEach(key => {
+        const value = usingComponents[key]
+        if (value.includes('://')) {
+          delete usingComponents[key]
+          jsonObj.usingSwanComponents = jsonObj.usingSwanComponents || {}
+          jsonObj.usingSwanComponents[key] = value
+        }
+      })
+    }
+
     if (jsonObj.genericComponents && jsonObj.genericComponents.length) { // scoped slots
       // 生成genericComponents json
       const genericComponents = Object.create(null)
