@@ -790,13 +790,13 @@ const package = require('packageName')
 │		├─index.js
 │		├─index.axml
 │		├─index.json
-│		└─index.wxss
+│		└─index.acss
 ├─swancomponents                百度小程序自定义组件存放目录
 │   └──custom                   百度小程序自定义组件
 │		├─index.js
 │		├─index.swan
 │		├─index.json
-│		└─index.wxss
+│		└─index.css
 ├─pages
 │  └─index
 │		└─index.vue
