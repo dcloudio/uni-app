@@ -234,4 +234,14 @@ export default {
 
 **注意**
 - 在picker内容还在滚动时或滚动回弹动画还未结束时，点确定关闭弹出的picker，数据无法及时更新。需等待一下，或手动触停滚动再点确定。所有平台均如此
-- 如果需要在PC端使用`picker`，需注意pc端没有touchmove事件，可以配置[H5模版](https://uniapp.dcloud.io/collocation/manifest?id=h5-template)，并引入[touch-emulator.js](https://github.com/dcloudio/touchemulator)来解决。hello uni-app的pc版也是使用了这个方案。
+
+**扩展**
+- uni ui提供了增强版`<uni-data-picker>`组件，详见：[https://ext.dcloud.net.cn/plugin?id=3796](https://ext.dcloud.net.cn/plugin?id=3796)
+- 该组件优势如下：
+  * 符合[datacom](/component/datacom)规范，只需传入data，就可以自动生成界面
+  * 符合[uni-forms](https://ext.dcloud.net.cn/plugin?id=2773)，表单校验规范
+  * 突破多列picker的3列限制，可以承载更多列数据
+  * 选择区域面积更高更大
+  * 支持多列数据分级加载，比如省市区选择，先选择省，然后动态联网加载该省的市。
+  * uniCloud自带了[opendb](https://gitee.com/dcloud/opendb)表，[opendb-city-china](https://gitee.com/dcloud/opendb/tree/master/collection/opendb-city-china)，包括全国的省市区数据。在`<uni-data-picker>`组件上可直接绑定该数据，生成全端可用的、联网懒加载的省市区选择。
+  * unicloud数据库提供了[DB Schema](https://uniapp.dcloud.io/uniCloud/schema)，还提供了[schema2code](https://uniapp.dcloud.net.cn/uniCloud/schema?id=autocode)自动生成全套表单页面，包括界面、校验逻辑、提交入库。在schema中配置字段的格式，比如在用户地址表[uni-id-address](https://gitee.com/dcloud/opendb/tree/master/collection/uni-id-address)的字段`area_code`配置值域指向[opendb-city-china](https://gitee.com/dcloud/opendb/tree/master/collection/opendb-city-china)表，即可自动生成该用户地址的生成页面
