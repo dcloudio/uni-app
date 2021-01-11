@@ -1583,9 +1583,9 @@ db.collection('order')
   .get()
 ```
 
-在进行数据库操作之前，clientDB会使用permission内配置的规则对客户端操作进行一次预校验，如果预校验不通过还会通过数据库查询再进行一次校验
+在进行数据库操作之前，clientDB会使用permission内配置的规则对客户端操作进行一次校验，如果本次校验不通过还会通过数据库查询再进行一次校验
 
-例：
+例1：
 
 ```js
 // 数据库内news表有以下数据
@@ -1623,6 +1623,57 @@ db.collection('news').doc('1').update({
 ```
 
 此时客户端条件里面只有`doc._id == 1`，schema内又限制的`doc.user_id == auth.uid`，所以第一次预校验无法通过，会进行一次查库校验判断是否有权限进行操作。发现auth.uid确实和doc.user_id一致，上面的数据库操作允许执行。
+
+例2：
+
+```js
+// 数据库内goods表有以下数据
+{
+  _id: "1",
+  name: "n1",
+  status: 1
+}
+{
+  _id: "2",
+  name: "n2",
+  status: 2
+}
+{
+  _id: "3",
+  name: "n3",
+  status: 3
+}
+```
+
+```js
+// news表对应的schema内做如下配置
+{
+  "bsonType": "object",
+  "permission": { // 表级权限
+    "read": "doc.status > 1",
+  },
+  "properties": {
+    "name": {
+      "bsonType": "string"
+    },
+    "status": {
+      "bsonType": "int"
+    }
+  }
+}
+```
+
+```js
+// 用户在客户端使用如下操作，可以通过第一次校验，不会触发查库校验
+db.collection('goods').where('status > 1').get()
+
+// 用户在客户端使用如下操作，无法通过第一次校验，会触发一次查库校验（原理大致是使用name == "n3" && status <= 1作为条件进行一次查询，如果有结果就认为没有权限访问，了解即可，无需深入）
+db.collection('goods').where('name == "n3"').get()
+
+// 用户在客户端使用如下操作，无法通过第一次校验，会触发一次查库校验，查库校验也会无法通过
+db.collection('goods').where('name == "n1"').get()
+```
+
 
 ## action@action
 
