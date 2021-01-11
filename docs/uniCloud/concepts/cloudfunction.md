@@ -6,7 +6,15 @@
 
 开发者可以如在 `Node.js` 环境中使用 `JavaScript` 一样在云函数中进行网络请求等操作，而且还可以通过云函数服务端 SDK 搭配使用多种服务，比如使用云函数 SDK 中提供的数据库和存储 API 进行数据库和存储的操作，这部分可参考数据库和存储后端 API 文档。
 
-开发者可在HBuiderX中，在项目下的`cloudfunctions`目录上右键、新建云函数，如下：
+
+
+HBuilderX 3.0起版本，在`uniCloud/cloudfunctions`目录右键创建云函数，如下：
+
+![新建云函数1](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/a18b3bb0-53d8-11eb-8ff1-d5dcf8779628.jpg)
+
+
+
+HBuilderX 3.0之前版本，在项目下的`cloudfunctions`目录上右键、新建云函数，如下：
 ![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/unicloud-02.png)
 
 注：从HBuilderX 3.0起，`cloudfunctions`目录位于项目下的 `uniCloud` 目录下。
