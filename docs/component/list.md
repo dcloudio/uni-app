@@ -75,7 +75,7 @@ headerHeight|吸顶距离|Number|是|子list吸顶距离最外层滚动容器顶
 - `loadmore` 事件
 如果列表滚动到底部将会立即触发这个事件，你可以在这个事件的处理函数中加载下一页的列表项。 如果未触发，请检查是否设置了loadmoreoffset的值，建议此值设置大于0
 
-如何重置 loadmore
+- 如何重置 loadmore
 ```
 <template>
   <list ref="list">
@@ -120,7 +120,7 @@ headerHeight|吸顶距离|Number|是|子list吸顶距离最外层滚动容器顶
 
 设置嵌套父容器信息
 
-#####参数:
+#### 参数:
 
 args 为要设置的参数为json类型可以包含下列元素
 
@@ -129,9 +129,9 @@ args 为要设置的参数为json类型可以包含下列元素
 id|string|无|是|和list同时滚动的组件id，应为外层的scroller
 headerHeight|float|0|是|要吸顶的header顶部距离scroller顶部的距离，Android暂不支持
 
-#####返回值：无
+#### 返回值：无
 
-#####示例:
+#### 示例:
 
 ```
   <list id="" fixFreezing="true"></list>
