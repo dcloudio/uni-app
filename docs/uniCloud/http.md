@@ -151,6 +151,16 @@ uni.request({
   + 请求Body大小限制，不能超过1M。
   + 响应Body大小限制，不能超过1M。
 
+>在云函数URL化的场景无法获取客户端平台信息，可以在调用依赖客户端平台的接口接口之前（推荐在云函数入口）通过修改context.PLATFORM手动传入客户端平台信息
+
+例：
+
+```js
+exports.main = async (event, context) => {
+	context.PLATFORM = 'app-plus'
+}
+```
+
 云函数接收到的post请求的请求体可能是被转成base64的，如果是这样需要进行一次转化。
 
 以接收application/json格式的post请求为例

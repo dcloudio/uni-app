@@ -101,6 +101,16 @@ DCloud暂无计划开发百度、头条、QQ等小程序的登录，以及Apple 
 - **config.json是一个标准json文件，不支持注释**
 - 如果不希望使用config.json初始化而是想自行传入参数，可以使用`init`方法[uniID.init](/uniCloud/uni-id?id=init)
 
+>在云函数URL化的场景无法获取客户端平台信息，可以在调用uni-id相关接口之前（推荐在云函数入口）通过修改context.PLATFORM手动传入客户端平台信息
+
+例：
+
+```js
+exports.main = async (event, context) => {
+	context.PLATFORM = 'app-plus'
+}
+```
+
 配置项：
 
 + `passwordSecret`为用于加密密码入库的密钥
@@ -1291,7 +1301,6 @@ exports.main = async function(event,context) {
 | 字段				| 类型	| 必填| 说明																																																														|
 | ---					| ---		| ---	| ---																																																															|
 | code				| String| 是	|微信登录返回的code																																																								|
-| platform		|String	| 否	|客户端类型：`mp-weixin`、`app-plus`，默认uni-id会自动取客户端类型，但是在云函数url化等场景无法取到客户端类型，可以使用此参数指定	|
 | myInviteCode|String	| 否	|设置当前注册用户自己的邀请码，type为`register`时生效																																							|
 | needPermission| Boolean	| 否	|设置为true时会在checkToken时返回用户权限（permission），建议在管理控制台中使用	|
 
@@ -1407,7 +1416,6 @@ export default {
 | 字段		| 类型	| 必填| 说明																																																														|
 | ---			| ---		| ---	| ---																																																															|
 | code		| String| 是	|微信登录返回的code																																																								|
-|platform	|String	|否		|客户端类型：`mp-weixin`、`app-plus`，默认uni-id会自动取客户端类型，但是在云函数url化等场景无法取到客户端类型，可以使用此参数指定	|
 
 **响应参数**
 
@@ -1445,7 +1453,6 @@ exports.main = async function(event,context) {
 | ---			| ---		| ---	| ---																																																															|
 | uid			| String| 是	|用户Id，可以通过checkToken返回																																																		|
 | code		| String| 是	|微信登录返回的code																																																								|
-|platform	|String	|否		|客户端类型：`mp-weixin`、`app-plus`，默认uni-id会自动取客户端类型，但是在云函数url化等场景无法取到客户端类型，可以使用此参数指定	|
 
 **响应参数**
 
@@ -1516,7 +1523,6 @@ exports.main = async function(event,context) {
 | 字段				| 类型	| 必填| 说明																																																														|
 | ---					| ---		| ---	| ---																																																															|
 | code				| String| 是	|支付宝登录返回的code																																																							|
-| platform		| String| 否	|客户端类型：`mp-weixin`、`app-plus`，默认uni-id会自动取客户端类型，但是在云函数url化等场景无法取到客户端类型，可以使用此参数指定	|
 | myInviteCode| String| 否	|设置当前注册用户自己的邀请码，type为`register`时生效																																							|
 | needPermission| Boolean	| 否	|设置为true时会在checkToken时返回用户权限（permission），建议在管理控制台中使用	|
 
@@ -1560,7 +1566,6 @@ exports.main = async function(event,context) {
 | 字段		| 类型	| 必填| 说明																																																														|
 | ---			| ---		| ---	| ---																																																															|
 | code		| String| 是	|支付宝登录返回的code																																																								|
-|platform	|String	|否		|客户端类型：`mp-weixin`、`app-plus`，默认uni-id会自动取客户端类型，但是在云函数url化等场景无法取到客户端类型，可以使用此参数指定	|
 
 **响应参数**
 

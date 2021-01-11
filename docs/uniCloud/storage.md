@@ -256,7 +256,7 @@ uniCloud.deleteFile(
 
 在云函数中操作云存储文件（不是在前端），包括在云函数里上传、删除云存储文件。
 
-## uniCloud.uploadFile(Object uploadFileOptions)
+## uniCloud.uploadFile(Object uploadFileOptions)@clouduploadfile
 
 **云函数**内上传文件至云存储。
 
@@ -297,7 +297,7 @@ let result = await uniCloud.uploadFile({
 });
 ```
 
-## uniCloud.getTempFileURL(Object getTempFileURLOptions)
+## uniCloud.getTempFileURL(Object getTempFileURLOptions)@cloudgettempfileurl
 
 **云函数**获取文件下载链接。
 
@@ -344,7 +344,7 @@ let result = await uniCloud.getTempFileURL({
 });
 ```
 
-## uniCloud.deleteFile(Object deleteFileOptions)
+## uniCloud.deleteFile(Object deleteFileOptions)@clouddeletefile
 
 **云函数**删除云存储文件。
 
@@ -382,7 +382,7 @@ let result = await uniCloud.deleteFile({
 });
 ```
 
-## uniCloud.downloadFile(Object downloadFileOptions)
+## uniCloud.downloadFile(Object downloadFileOptions)@clouddownloadfile
 
 **云函数**下载已上传至云开发的文件至本地（默认本地根目录/root）。
 
