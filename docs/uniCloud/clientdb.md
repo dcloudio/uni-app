@@ -53,7 +53,8 @@ db.collection('list')
   .then((res)=>{
     // res 为数据库查询结果
   }).catch((err)=>{
-    
+    console.log(err.code); // 打印错误码
+		console.log(err.message); // 打印错误内容
   })
 ```
 
@@ -66,9 +67,9 @@ db.collection('list')
 - 更新数据库时不可使用更新操作符`db.command.inc`等
 - 更新数据时键值不可使用`{'a.b.c': 1}`的形式，需要写成`{a:{b:{c:1}}}`形式（后续会对此进行优化）
 
-### 返回值说明@returnvalue
+### err返回值说明@returnvalue
 
-`clientDB`云端默认返回值形式如下，开发者可以在[action](uniCloud/database?id=action)的`after`内用js修改返回结果，传入`after`内的result不带code和message。
+`clientDB`如果云端返回错误，err的返回值形式如下，
 
 ```js
 {
@@ -78,7 +79,7 @@ db.collection('list')
 }
 ```
 
-**错误码列表**
+**err.code错误码列表**
 
 |错误码													|描述																		|
 |:-:														|:-:																		|
@@ -92,6 +93,9 @@ db.collection('list')
 |VALIDATION_ERROR								|数据格式未通过													|
 |DUPLICATE_KEY									|索引冲突																|
 |SYSTEM_ERROR										|系统错误																|
+
+如需自定义返回的err对象，可以在clientDB中挂一个[action云函数](uniCloud/database?id=action)，在action云函数的`after`内用js修改返回结果，传入`after`内的result不带code和message。
+
 
 ### 前端环境变量@variable
 
