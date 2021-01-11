@@ -15,39 +15,6 @@ import {
 } from 'uni-mixins'
 import native from '../../mixins/native'
 
-const _adDataCache = {}
-function getAdData (adpid, adWidth, onsuccess, onerror) {
-  const key = adpid + '-' + adWidth
-  const adDataList = _adDataCache[key]
-  if (adDataList && adDataList.length > 0) {
-    onsuccess(adDataList.splice(0, 1)[0])
-    return
-  }
-
-  plus.ad.getAds(
-    {
-      adpid: adpid,
-      count: 10,
-      width: adWidth
-    },
-    (res) => {
-      const list = res.ads
-      onsuccess(list.splice(0, 1)[0])
-      _adDataCache[key] = adDataList ? adDataList.concat(list) : list
-    },
-    (err) => {
-      onerror({
-        errCode: err.code,
-        errMsg: err.message
-      })
-    }
-  )
-}
-
-const methods = [
-  'draw'
-]
-
 const attrs = [
   'adpid',
   'data'
@@ -64,6 +31,10 @@ export default {
     data: {
       type: Object,
       default: null
+    },
+    dataCount: {
+      type: Number,
+      default: 5
     }
   },
   data () {
@@ -98,8 +69,9 @@ export default {
     }
   },
   mounted () {
+    this._adId = 'AdView-' + this._newGUID()
     const adStyle = Object.assign({
-      id: 'AdView' + Date.now()
+      id: this._adId
     }, this.position)
     const adView = this.adView = plus.ad.createAdView(adStyle)
     adView.interceptTouchEvent(false)
@@ -139,6 +111,10 @@ export default {
     adView.setAdClickedListener((data) => {
       this.$trigger('adclicked', {}, data)
     })
+
+    this._callbackId = this.$page.id + this._adId
+    UniViewJSBridge.subscribe(this._callbackId, this._handleAdData.bind(this))
+
     this._request()
   },
   beforeDestroy () {
@@ -146,12 +122,17 @@ export default {
     delete this.adView
   },
   methods: {
-    _handleSubscribe ({
+    _handleAdData ({
       type,
       data = {}
     }) {
-      if (methods.includes(type)) {
-        this.adView && this.adView[type](data)
+      switch (type) {
+        case 'success':
+          this._fillData(data)
+          break
+        case 'fail':
+          this.$trigger('error', {}, data)
+          break
       }
     },
     _request () {
@@ -166,22 +147,34 @@ export default {
       }
     },
     _loadData (adpid) {
-      getAdData(adpid || this.adpid, this.position.width, (data) => {
-        this._fillData(data)
-      }, (err) => {
-        this.$trigger('error', {}, err)
-      })
+      const data = {
+        adpid: adpid || this.adpid,
+        width: this.position.width,
+        count: this.dataCount
+      }
+      UniViewJSBridge.publishHandler('onAdMethodCallback', {
+        callbackId: this._callbackId,
+        data
+      }, this.$page.id)
     },
     _fillData (data) {
       this.adView.renderingBind(data)
-
-      // const height = plus.ad.measureAdHeight(this.position.width.replace('px', ''), data)
-      // this.$refs.container.style.height = height + 'px'
-
       this.$trigger('load', {}, {})
     },
     _updateView () {
       window.dispatchEvent(new CustomEvent('updateview'))
+    },
+    _newGUID () {
+      let guid = ''
+      const format = 'xxxxxxxx-xxxx'
+      for (let i = 0; i < format.length; i++) {
+        if (format[i] === 'x') {
+          guid += (Math.random() * 16 | 0).toString(16)
+        } else {
+          guid += format[i]
+        }
+      }
+      return guid.toUpperCase()
     }
   }
 }
