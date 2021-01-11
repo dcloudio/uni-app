@@ -205,3 +205,7 @@ exports.main = async function(event){
 ### 部署网站到前端网页托管报“The requested file was not found on this server.”
 
 - 部署history模式的uni-app项目时，如果未修改前端网页托管的配置，直接访问子页面时就会遇到上面的错误。如何配置请参考[部署uni-app项目](uniCloud/hosting.md?id=host-uni-app)
+
+### 使用腾讯云报未登录Cloudbase
+
+腾讯云会在本地storage存储一些信息，请不要在应用使用过程中使用clearStorage等接口直接删除storage。
