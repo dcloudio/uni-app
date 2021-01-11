@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/webpack-uni-mp-loader",
-  "version": "2.0.0-alpha-30720210109003",
+  "version": "2.0.0-alpha-30720210109004",
   "description": "webpack-uni-mp-loader",
   "main": "index.js",
   "repository": {
