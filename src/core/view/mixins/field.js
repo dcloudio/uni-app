@@ -28,7 +28,7 @@ const FOCUS_DELAY = 200
 let startTime
 
 export default {
-  name: 'BaseInput',
+  name: 'Field',
   mixins: [emitter, keyboard],
   model: {
     prop: 'value',
