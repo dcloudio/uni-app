@@ -89,6 +89,20 @@ package.json在每个uni_modules插件中都必须存在，包含了插件的基
     }
 }
 ```
-
+#### uni_modules.config.json
+uni_modules.config.json在项目根目录，包含了插件的。以下是uni_modules.config.json的详细配置说明（拷贝代码记得去掉注释！）
+```json
+{
+	"scripts": {
+		"postupdate": "node scripts/upgrade.js" // 每个插件更新后都执行该脚本，可从process.env.UNI_MODULES_ID获取当前被更新的插件ID
+	},
+	"uni_modules": {
+		"uni-id": { // 插件ID
+			"uniCloud": ["aliyun", "tcb"] // 当项目同时存在aliyun，tcb时可手动指定
+		}
+	}
+}
+=
+```
 ### 使用 uni_modules
 ### 开发 uni_modules
