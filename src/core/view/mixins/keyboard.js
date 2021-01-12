@@ -1,6 +1,7 @@
 import {
   plusReady
 } from 'uni-shared'
+import emitter from './emitter'
 
 /**
  * 保证iOS点击输入框外隐藏键盘
@@ -65,15 +66,22 @@ function resetSoftinputNavBar (vm) {
 let resetTimer
 let isAndroid
 let osVersion
+let keyboardHeight
+let keyboardChangeCallback
 if (__PLATFORM__ === 'app-plus') {
   plusReady(() => {
     isAndroid = plus.os.name.toLowerCase() === 'android'
     osVersion = plus.os.version
   })
+  document.addEventListener('keyboardchange', function (event) {
+    keyboardHeight = event.height
+    keyboardChangeCallback && keyboardChangeCallback()
+  }, false)
 }
 
 export default {
   name: 'Keyboard',
+  mixins: [emitter],
   props: {
     cursorSpacing: {
       type: [Number, String],
@@ -102,10 +110,12 @@ export default {
   methods: {
     initKeyboard (el) {
       let focus
-      let keyboardHeight
 
-      const keyboardChange = (event) => {
-        keyboardHeight = event.height
+      const keyboardChange = () => {
+        this.$trigger('keyboardheightchange', {}, {
+          height: keyboardHeight,
+          duration: 0.25
+        })
         // 安卓切换不同键盘类型时会导致键盘收回，需重新设置
         if (focus && keyboardHeight === 0) {
           setSoftinputTemporary(this)
@@ -122,7 +132,13 @@ export default {
         document.addEventListener('click', iosHideKeyboard, false)
 
         if (__PLATFORM__ === 'app-plus') {
-          document.addEventListener('keyboardchange', keyboardChange, false)
+          keyboardChangeCallback = keyboardChange
+          if (keyboardHeight) {
+            this.$trigger('keyboardheightchange', {}, {
+              height: keyboardHeight,
+              duration: 0
+            })
+          }
           setSoftinputNavBar(this)
           setSoftinputTemporary(this)
         }
@@ -149,7 +165,13 @@ export default {
         document.removeEventListener('click', iosHideKeyboard, false)
 
         if (__PLATFORM__ === 'app-plus') {
-          document.removeEventListener('keyboardchange', keyboardChange, false)
+          keyboardChangeCallback = null
+          if (keyboardHeight) {
+            this.$trigger('keyboardheightchange', {}, {
+              height: 0,
+              duration: 0
+            })
+          }
           resetSoftinputNavBar(this)
           if (isAndroid) {
             // 还原安卓软键盘配置，避免影响 web-view 组件
