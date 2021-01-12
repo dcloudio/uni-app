@@ -3,7 +3,8 @@ import {
 } from 'uni-core/service/uni'
 
 import {
-  invokeCallbackHandler
+  invokeCallbackHandler,
+  removeCallbackHandler
 } from 'uni-helpers/api'
 
 import {
@@ -35,6 +36,7 @@ uni.__$wx__ = wx
 
 UniServiceJSBridge.publishHandler = publishHandler
 UniServiceJSBridge.invokeCallbackHandler = invokeCallbackHandler
+UniServiceJSBridge.removeCallbackHandler = removeCallbackHandler
 
 export default {
   __vuePlugin: vuePlugin,

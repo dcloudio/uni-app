@@ -8,7 +8,8 @@ export const once = Emitter.$once.bind(Emitter)
 export const emit = Emitter.$emit.bind(Emitter)
 
 export {
-  invokeCallbackHandler
+  invokeCallbackHandler,
+  removeCallbackHandler
 }
   from 'uni-helpers/api'
 

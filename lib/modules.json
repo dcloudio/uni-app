@@ -162,7 +162,8 @@
     "uni.createIntersectionObserver": true,
     "uni.createMediaQueryObserver": true,
     "uni.hideKeyboard": true,
-    "uni.onKeyboardHeightChange": true
+    "uni.onKeyboardHeightChange": true,
+    "uni.offKeyboardHeightChange": true
   }
 }, {
   "name": "event",

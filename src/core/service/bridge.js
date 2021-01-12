@@ -9,3 +9,7 @@ export function unpack (args) {
 export function invoke (...args) {
   return UniServiceJSBridge.invokeCallbackHandler(...args)
 }
+
+export function remove (args) {
+  return UniServiceJSBridge.removeCallbackHandler(args)
+}
