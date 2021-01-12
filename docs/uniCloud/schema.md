@@ -24,7 +24,7 @@
 - **方式1，在web控制台编写schema**
 1. 登录 [uniCloud控制台](https://unicloud.dcloud.net.cn)，选中一个数据表
 2. 点击表右侧页签 “表结构”，点击 “编辑” 按钮，在编辑区域编写 Schema，编写完毕后点保存按钮即可生效。
-  ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/e237cb60-ff2d-11ea-8a36-ebb87efcf8c0.png)
+  ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/037fc310-549f-11eb-b997-9918a5dda011.png)
 
 **web控制台上编辑`DB Schema`保存后是实时生效的，请注意对现网商用项目的影响。**
 
@@ -1032,7 +1032,8 @@ db.collection('street').where("shop_id=='123123 || shop_id=='456456'").get()
 `schema2code`不是简单的一键crud生成接口，它直接生成了可运行的页面。
 
 `schema2code`代码生成系统功能包括：
-- 自动生成新增、修改表单的页面文件，分别是add.vue和edit.vue。如果是uniCloud admin，还包括list.vue。
+- 自动生成前端页面，新增、修改、列表、详情页面文件，分别是add.vue、edit.vue、list.vue和detail.vue。
+- 自动生成uniCloud admin页面，新增、修改、列表页面文件，分别是add.vue、edit.vue和list.vue。
 - 自动生成前端表单校验规则
 
 表单校验工作，在前端和后端都需要做。在过去，这造成重复投入。
@@ -1046,7 +1047,7 @@ db.collection('street').where("shop_id=='123123 || shop_id=='456456'").get()
 DCloud提供了`uni-forms`前端组件，该组件的表单校验规范完全符合`DB Schema`中的校验规则，实现云端统一。`uni-forms`组件地址：[https://ext.dcloud.net.cn/plugin?id=2773](https://ext.dcloud.net.cn/plugin?id=2773)
 
 
-1. 在uniCloud web控制台，进入一个数据表的表结构schema界面，点击按钮 “导出页面”
+1. 在uniCloud web控制台，进入一个数据表的表结构schema界面，点击按钮 “schema2code”
 
   ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/ba87a6b0-1519-11eb-81ea-f115fe74321c.png)
 

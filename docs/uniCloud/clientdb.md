@@ -53,7 +53,8 @@ db.collection('list')
   .then((res)=>{
     // res 为数据库查询结果
   }).catch((err)=>{
-    
+    console.log(err.code); // 打印错误码
+		console.log(err.message); // 打印错误内容
   })
 ```
 
@@ -66,9 +67,9 @@ db.collection('list')
 - 更新数据库时不可使用更新操作符`db.command.inc`等
 - 更新数据时键值不可使用`{'a.b.c': 1}`的形式，需要写成`{a:{b:{c:1}}}`形式（后续会对此进行优化）
 
-### 返回值说明@returnvalue
+### err返回值说明@returnvalue
 
-`clientDB`云端默认返回值形式如下，开发者可以在[action](uniCloud/database?id=action)的`after`内用js修改返回结果，传入`after`内的result不带code和message。
+`clientDB`如果云端返回错误，err的返回值形式如下，
 
 ```js
 {
@@ -78,7 +79,7 @@ db.collection('list')
 }
 ```
 
-**错误码列表**
+**err.code错误码列表**
 
 |错误码													|描述																		|
 |:-:														|:-:																		|
@@ -92,6 +93,9 @@ db.collection('list')
 |VALIDATION_ERROR								|数据格式未通过													|
 |DUPLICATE_KEY									|索引冲突																|
 |SYSTEM_ERROR										|系统错误																|
+
+如需自定义返回的err对象，可以在clientDB中挂一个[action云函数](uniCloud/database?id=action)，在action云函数的`after`内用js修改返回结果，传入`after`内的result不带code和message。
+
 
 ### 前端环境变量@variable
 
@@ -1583,9 +1587,9 @@ db.collection('order')
   .get()
 ```
 
-在进行数据库操作之前，clientDB会使用permission内配置的规则对客户端操作进行一次预校验，如果预校验不通过还会通过数据库查询再进行一次校验
+在进行数据库操作之前，clientDB会使用permission内配置的规则对客户端操作进行一次校验，如果本次校验不通过还会通过数据库查询再进行一次校验
 
-例：
+例1：
 
 ```js
 // 数据库内news表有以下数据
@@ -1623,6 +1627,57 @@ db.collection('news').doc('1').update({
 ```
 
 此时客户端条件里面只有`doc._id == 1`，schema内又限制的`doc.user_id == auth.uid`，所以第一次预校验无法通过，会进行一次查库校验判断是否有权限进行操作。发现auth.uid确实和doc.user_id一致，上面的数据库操作允许执行。
+
+例2：
+
+```js
+// 数据库内goods表有以下数据
+{
+  _id: "1",
+  name: "n1",
+  status: 1
+}
+{
+  _id: "2",
+  name: "n2",
+  status: 2
+}
+{
+  _id: "3",
+  name: "n3",
+  status: 3
+}
+```
+
+```js
+// news表对应的schema内做如下配置
+{
+  "bsonType": "object",
+  "permission": { // 表级权限
+    "read": "doc.status > 1",
+  },
+  "properties": {
+    "name": {
+      "bsonType": "string"
+    },
+    "status": {
+      "bsonType": "int"
+    }
+  }
+}
+```
+
+```js
+// 用户在客户端使用如下操作，可以通过第一次校验，不会触发查库校验
+db.collection('goods').where('status > 1').get()
+
+// 用户在客户端使用如下操作，无法通过第一次校验，会触发一次查库校验（原理大致是使用name == "n3" && status <= 1作为条件进行一次查询，如果有结果就认为没有权限访问，了解即可，无需深入）
+db.collection('goods').where('name == "n3"').get()
+
+// 用户在客户端使用如下操作，无法通过第一次校验，会触发一次查库校验，查库校验也会无法通过
+db.collection('goods').where('name == "n1"').get()
+```
+
 
 ## action@action
 
