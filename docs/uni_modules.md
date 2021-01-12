@@ -102,7 +102,6 @@ uni_modules.config.json在项目根目录，包含了插件的。以下是uni_mo
 		}
 	}
 }
-=
 ```
 ### 使用 uni_modules
 ### 开发 uni_modules
