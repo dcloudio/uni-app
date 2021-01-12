@@ -1,3 +1,39 @@
+#### 3.0.7.20210109-alpha
+  + App平台 修复 windows 系统部分情况下，查找 Chrome 失败，导致无法正常 debug 的Bug
+  + App平台 修复 包含微信小程序组件时，部分情况下首次编译触发热刷新的Bug
+  + App-Android平台 修复 nvue list 组件调用 setSpecialEffects 设置吸顶后，input 子组件无法获取焦点的Bug [详情](https://ask.dcloud.net.cn/question/114511)
+  + App-Android平台 修复 nvue list/waterfall 组件使用 refresh 并设置 background-color 属性后会出现白边的Bug [详情](https://ask.dcloud.net.cn/question/105800)
+  + App-iOS平台 修复 nvue refresh 组件处于刷新状态时显示位置向下偏移0.5像素的Bug
+  + 快应用 修复 华为快应用IDE V3.0.2无法识别项目类型的Bug
+* 【uniCloud】
+  + DB Schema 新增 支持对 string 类型数据配置 trim ，可自动对字符串去除前后空白字符 [详情](https://uniapp.dcloud.net.cn/uniCloud/schema?id=trim)
+  + DB Schema 修复 部分情况下使用 enum 报错的Bug
+  + DB Schema 修复 exclusiveMinimum、exclusiveMaximum 无效的bug
+  + clientDB 修复 查询树形结构时使用 startWith 某些写法导致报错的Bug
+  + clientDB 修复 field 内使用JQL联表查询语法时多个右花括号连续出现导致报错的Bug
+  + clientDB 修复 field 中包含`-`时报错的Bug
+  + uniCloud本地调试插件 修复 部分日志导致本地调试服务崩溃的Bug
+  + unicloud-db组件 支持tree查询，新增属性 gettree、startwith、limitlevel [详情](https://uniapp.dcloud.net.cn/uniCloud/unicloud-db?id=props)
+* 【App插件(含5+App和uni-app的App端)】
+  + 一键登录 优化 错误回调返回数据格式，添加 appid、metadata、uid 属性，便于排查错误 [规范](https://www.html5plus.org/doc/zh_cn/oauth.html#plus.oauth.ErrorCallback)
+  + Android平台 更新 uni-AD 快手联盟SDK为3.3.6版，腾讯优量汇SDK为4.310.1180版，今日头条穿山甲SDK为3.4.1.0版
+  + Android平台 更新 腾讯X5内核版本为 v4.3.0.67_43967 [详情](https://ask.dcloud.net.cn/article/36806)
+  + Android平台 更新 UniPush 华为厂商推送 SDK 版本为 v4:2.0.0，适配 HMS4.0+ [详情](https://ask.dcloud.net.cn/article/35622#huawei)
+  + Android平台 调整 应用主 Activity 为 FragmentActivity [详情](https://nativesupport.dcloud.net.cn/NativePlugin/course/android?id=%e6%b3%a8%e6%84%8f)
+  + Android平台 修复 native.js 调用 requestPermissions 请求的权限已被允许可能引起其它功能无法正常申请系统权限的Bug [详情](https://ask.dcloud.net.cn/question/114645)
+  + Android平台 修复 云端打包 更新 com.android.tools.build:gradle 版本后可能引起安装包文件变大、运行显示白屏的Bug [详情](https://ask.dcloud.net.cn/question/114496)
+  + Android平台 修复 uploader 上传文件监听上传进度变化返回数据不准确的Bug [详情](https://ask.dcloud.net.cn/question/101035)
+  + Android平台 修复 监听按键事件 keydown、keyup 不触发回调的Bug
+  + Android平台 修复 video 封面图片 poster 拉伸变形显示的Bug [详情](https://ask.dcloud.net.cn/question/114952)
+  + Android平台 修复 video 设置显示默认播放控件 controls 属性为 false 时手势操作失效的Bug
+  + Android平台 修复 previewImage 预览图片可能显示模糊的Bug [详情](https://ask.dcloud.net.cn/question/113520)
+  + Android平台 修复 2.9.9版本引出的 native.js 获取到原生对象可能无法执行器内部函数的Bug [详情](https://ask.dcloud.net.cn/article/38648)
+  + iOS平台 修复 previewImage 预览网络图片地址中包含query参数过多可能无法显示的Bug [详情](https://ask.dcloud.net.cn/question/98259)
+  + iOS平台 修复 audio 音频资源地址中包含中文字符时无法正常播放的Bug [详情](https://ask.dcloud.net.cn/question/103421)
+  + iOS平台 修复 video 动态更新 src 属性值域名相同时无法正常切换视频的Bug [详情](https://ask.dcloud.net.cn/question/110386)
+  + iOS平台 修复 video 视频资源地址中包含中文字符时无法正常播放的Bug
+  + iOS平台 修复 titleNView 标题文字在隐藏软键盘时可能出现抖动的Bug
+
 #### 3.0.4.20201230-alpha
 * 【uniCloud】
   + uniCloud本地调试插件 修复 调试时较早请求云函数且无法连接本地调试服务时报错的Bug
