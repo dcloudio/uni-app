@@ -98,7 +98,7 @@ uni_modules.config.json在项目根目录，包含了插件的。以下是uni_mo
 	},
 	"uni_modules": {
 		"uni-id": { // 插件ID
-			"uniCloud": ["aliyun", "tcb"] // 当项目同时存在aliyun，tcb时可手动指定
+			"uniCloud": ["aliyun", "tcb"] // 当项目同时存在aliyun，tcb时可手动指定该插件所属的服务空间
 		}
 	}
 }
