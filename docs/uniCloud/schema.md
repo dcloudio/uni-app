@@ -24,7 +24,7 @@
 - **方式1，在web控制台编写schema**
 1. 登录 [uniCloud控制台](https://unicloud.dcloud.net.cn)，选中一个数据表
 2. 点击表右侧页签 “表结构”，点击 “编辑” 按钮，在编辑区域编写 Schema，编写完毕后点保存按钮即可生效。
-  ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/e237cb60-ff2d-11ea-8a36-ebb87efcf8c0.png)
+  ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/037fc310-549f-11eb-b997-9918a5dda011.png)
 
 **web控制台上编辑`DB Schema`保存后是实时生效的，请注意对现网商用项目的影响。**
 
