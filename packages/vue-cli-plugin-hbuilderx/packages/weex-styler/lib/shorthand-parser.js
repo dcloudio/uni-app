@@ -57,14 +57,18 @@ function border (declaration) {
   var { value, important } = clearImportant(declaration.value)
   var property = declaration.property
   var position = declaration.position
-  var result = (' ' + value).match(/^(\s+[\d\.]+\S*)?(\s+(?:solid|dashed|dotted))?(\s+\S+)?$/)
-  if (!result) {
-    declaration
+  var splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/)
+  var result = [/^[\d\.]+\S*$/, /^(solid|dashed|dotted)$/, /\S+/].map(item => {
+    var index = splitResult.findIndex(str => item.test(str))
+    return index < 0 ? null : splitResult.splice(index, 1)[0]
+  })
+  if (splitResult.length) {
+    return declaration
   }
   return [
-    generateDeclaration(property + '-width', (result[1] || '0').trim(), important, position),
-    generateDeclaration(property + '-style', (result[2] || 'solid').trim(), important, position),
-    generateDeclaration(property + '-color', (result[3] || '#000000').trim(), important, position)
+    generateDeclaration(property + '-width', (result[0] || '0').trim(), important, position),
+    generateDeclaration(property + '-style', (result[1] || 'solid').trim(), important, position),
+    generateDeclaration(property + '-color', (result[2] || '#000000').trim(), important, position)
   ]
 }
 
@@ -123,13 +127,17 @@ function borderRadius (declaration) {
 function flexFlow (declaration) {
   var { value, important } = clearImportant(declaration.value)
   var position = declaration.position
-  var result = value.match(/^(column|column-reverse|row|row-reverse)?\s*(\bnowrap|\bwrap|\bwrap-reverse)?$/)
-  if (!result) {
-    declaration
+  var splitResult = value.split(/\s+/)
+  var result = [/^(column|column-reverse|row|row-reverse)$/, /^(nowrap|wrap|wrap-reverse)$/].map(item => {
+    var index = splitResult.findIndex(str => item.test(str))
+    return index < 0 ? null : splitResult.splice(index, 1)[0]
+  })
+  if (splitResult.length) {
+    return declaration
   }
   return [
-    generateDeclaration('flex-direction', result[1] || 'column', important, position),
-    generateDeclaration('flex-wrap', result[2] || 'nowrap', important, position)
+    generateDeclaration('flex-direction', result[0] || 'column', important, position),
+    generateDeclaration('flex-wrap', result[1] || 'nowrap', important, position)
   ]
 }
 
