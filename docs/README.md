@@ -79,7 +79,7 @@
 
 <!-- <video id="video" onplay="videoPlay()" preload="none" controls="controls" width="100%" poster="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/poster.png" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/78e4ebc0-54be-11eb-a16f-5b3e54966275.mp4"></video> -->
 
-<video id="video" onplay="videoPlay()" preload="none" controls="controls" width="100%" poster="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/a876efc0-4f35-11eb-97b7-0dc4655d6e68.mp4"></video>
+<video id="video" onplay="videoPlay()" preload="none" controls="controls" width="100%" poster="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/9d299680-555d-11eb-8a36-ebb87efcf8c0.jpg" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/a876efc0-4f35-11eb-97b7-0dc4655d6e68.mp4"></video>
 
 ### 为什么要选择uni-app？
 
