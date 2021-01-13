@@ -266,7 +266,53 @@ sql写法，对js工程师而言有学习成本，而且无法处理非关系型
 
 具体到这个正则 `/abc/.test(content)`，类似于sql中的`content like '%abc%'`，即查询所有字段content包含abc的数据记录。
 
+**云函数中node版本为8.9不支持正则断言**
+
 **注意编写查询条件时，除test外，均为运算符左侧为数据库字段，右侧为常量**
+
+
+#### 常见正则用法@regexp
+
+**搜索用户输入值**
+
+如果使用[unicloud-db组件](uniCloud/unicloud-db.md)写法如下，使用clientDB jssdk同理
+
+```html
+<template>
+	<view class="content">
+		<input @input="onKeyInput" placeholder="请输入搜索值" />
+		<unicloud-db v-slot:default="{data, loading, error, options}" collection="goods" :where=`/${searchVal}/i.test(name)`>
+			<view v-if="error">{{error.message}}</view>
+			<view v-else>
+				
+			</view>
+		</unicloud-db>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+        searchVal: ''
+      }
+		},
+		methods: {
+      onKeyInput(e){
+        // 实际开发中这里应该还有防抖或者节流操作，这里不做演示
+        this.searchVal = e.target.value
+      }
+		}
+	}
+</script>
+
+<style>
+</style>
+
+```
+
+上面的示例中使用了正则修饰符`i`，用于表示忽略大小写，更多修饰符见[MDN 通过标志进行高级搜索](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Regular_Expressions#%E9%80%9A%E8%BF%87%E6%A0%87%E5%BF%97%E8%BF%9B%E8%A1%8C%E9%AB%98%E7%BA%A7%E6%90%9C%E7%B4%A2)
+
 
 ### JQL联表查询@lookup
 

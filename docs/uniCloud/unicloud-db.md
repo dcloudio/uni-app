@@ -68,6 +68,9 @@ TODO：暂不支持groupby、in子查询功能。后续会补充
 **示例**
 
 比如云数据库有个user的表，里面有字段id、name，查询id=1的数据，那么写法如下：
+
+**注意下面示例使用了getone会返回一条对象形式的data，如果不适用getone的话data将会是数组形式**
+
 ```html
 <template>
   <view>
