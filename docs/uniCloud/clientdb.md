@@ -929,6 +929,7 @@ db.collection("department")
 
 - 暂不支持使用getTree的同时使用联表查询
 - 如果使用了where条件会对所有查询的节点生效
+- 如果使用了limit设置最大返回数量仅对根节点生效
 
 #### 查询树形结构父节点路径@gettreepath
 
