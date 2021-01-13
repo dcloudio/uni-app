@@ -794,7 +794,7 @@ Vue 实现了一套内容分发的 API，将 `slot` 元素作为承载分发内�
 ```
 
 这意味着 `v-slot` 的值实际上可以是任何能够作为函数定义中的参数的 `JavaScript` 表达式。
-所以在支持的环境下 ( [单文件组件](https://cn.vuejs.org/v2/guide/single-file-components.html) 或 [现代浏览器](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment#%E6%B5%8F%E8%A7%88%E5%99%A8%E5%85%BC%E5%AE%B9))，你也可以使用 [ES2015 解构](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment#%E8%A7%A3%E6%9E%84%E5%AF%B9%E8%B1%A1) 来传入具体的插槽 `prop`，如下：
+所以在支持的环境下 ( [单文件组件](https://cn.vuejs.org/v2/guide/single-file-components.html) 或 [现代浏览器](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment))，你也可以使用 [ES2015 解构](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment) 来传入具体的插槽 `prop`，如下：
 
 ```html
 	<current-user v-slot="{ user }">
