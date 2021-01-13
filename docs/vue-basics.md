@@ -13,7 +13,7 @@ Vue.js 使用了基于 HTML 的模板语法，允许开发者声明式地将 DOM
 Vue.js 的核心是一个允许采用简洁的模板语法来声明式地将数据渲染进 DOM 的系统，只关注视图层，易于上手。所有东西都是响应式的。
 
 
-我们提供了免费视频教程，在看此文档同时建议结合 [vue入门视频教程](https://learning.dcloud.io/#/?vid=1) ，帮助你更加快速掌握。
+我们提供了免费视频教程，在看此文档同时建议结合 [vue入门视频教程](https://learning.dcloud.io/#/?vid=0) ，帮助你更加快速掌握。
 
 
 
@@ -238,7 +238,7 @@ vue 是单页面应用，使页面局部刷新，不用每次跳转页面都要�
 
 ### 插值
 
-[**观看本节视频讲解**](https://learning.dcloud.io/#/?vid=5)
+[观看本节视频讲解](https://learning.dcloud.io/#/?vid=5)
 
 数据绑定最常见的形式就是文本插值：
 
@@ -264,7 +264,7 @@ vue 是单页面应用，使页面局部刷新，不用每次跳转页面都要�
 ### 指令
 
 
-[**观看本节视频讲解**](https://learning.dcloud.io/#/?vid=6)
+[观看本节视频讲解](https://learning.dcloud.io/#/?vid=6)
 
 指令是带有 v- 前缀的特殊属性。
 
@@ -393,7 +393,7 @@ data 必须声明为返回一个初始数据对象的函数（注意函数内返
 ## Class 与 Style 绑定
 
 
-[**观看本节视频讲解**](https://learning.dcloud.io/#/?vid=7)
+[观看本节视频讲解](https://learning.dcloud.io/#/?vid=7)
 
 为节约性能，我们将 `Class` 与 `Style` 的表达式通过 `compiler` 硬编码到 `uni-app` 中，支持语法和转换效果见下：
 
@@ -572,7 +572,7 @@ data 必须声明为返回一个初始数据对象的函数（注意函数内返
 ## 条件渲染@condition
 
 
-[**观看本节视频讲解**](https://learning.dcloud.io/#/?vid=8)
+[观看本节视频讲解](https://learning.dcloud.io/#/?vid=8)
 
 
 ### v-if和v-else
@@ -686,7 +686,7 @@ data 必须声明为返回一个初始数据对象的函数（注意函数内返
 
 ## 列表渲染@listrendering
 
-[**观看本节视频讲解**](https://learning.dcloud.io/#/?vid=9)
+[观看本节视频讲解](https://learning.dcloud.io/#/?vid=9)
 
 
 ### 在 v-for 里使用数组
@@ -852,7 +852,7 @@ v-for 指令可以实现基于一个数组来渲染一个列表。
 ## 事件处理器@eventhandler
 
 
-[**观看本节视频讲解**](https://learning.dcloud.io/#/?vid=10)
+[观看本节视频讲解](https://learning.dcloud.io/#/?vid=10)
 
 ### 监听事件
 
@@ -1037,7 +1037,7 @@ v-on 提供了事件修饰符:
 
 ## 表单控件绑定
 
-[**观看本节视频讲解**](https://learning.dcloud.io/#/?vid=11)
+[观看本节视频讲解](https://learning.dcloud.io/#/?vid=11)
 
 
 ### v-model
