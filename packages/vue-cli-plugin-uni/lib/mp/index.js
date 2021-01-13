@@ -4,14 +4,12 @@ const webpack = require('webpack')
 const {
   parseEntry,
   getMainEntry,
-  normalizePath,
+  // normalizePath,
   getPlatformExts,
   getPlatformCssnano
 } = require('@dcloudio/uni-cli-shared')
 
 const WebpackUniAppPlugin = require('../../packages/webpack-uni-app-loader/plugin/index')
-
-const CustomModuleIdsPlugin = require('../../packages/webpack-custom-module-ids-plugin/index')
 
 const modifyVueLoader = require('../vue-loader')
 
@@ -66,86 +64,67 @@ function getProvides () {
   return provides
 }
 
+function processWxss (name, assets) {
+  const dirname = path.dirname(name)
+  const mainWxssCode = `@import "${path.relative(dirname, 'common/main.wxss')}";`
+  const code = `${mainWxssCode}` + assets[name].source().toString()
+  assets[name] = {
+    size () {
+      return Buffer.byteLength(code, 'utf8')
+    },
+    source () {
+      return code
+    }
+  }
+}
+
+function procssJs (name, assets, hasVendor) {
+  const dirname = path.dirname(name)
+  const runtimeJsCode = `require('${path.relative(dirname, 'common/runtime.js')}');`
+  const vendorJsCode = hasVendor ? `require('${path.relative(dirname, 'common/vendor.js')}');` : ''
+  const mainJsCode = `require('${path.relative(dirname, 'common/main.js')}');`
+  const code = `${runtimeJsCode}${vendorJsCode}${mainJsCode}` + assets[name].source().toString()
+  assets[name] = {
+    size () {
+      return Buffer.byteLength(code, 'utf8')
+    },
+    source () {
+      return code
+    }
+  }
+}
+
 class PreprocessAssetsPlugin {
   apply (compiler) {
     compiler.hooks.emit.tap('PreprocessAssetsPlugin', compilation => {
       const assets = compilation.assets
+      const hasMainWxss = assets['common/main.wxss']
       const hasVendor = assets['common/vendor.js']
       Object.keys(assets).forEach(name => {
-        const extname = path.extname(name)
-        if (extname !== '.js') {
-          return
-        }
         if (name.startsWith('common')) {
           return
         }
-        const dirname = path.dirname(name)
-        const runtimeJsCode = `require('${path.relative(dirname, 'common/runtime.js')}');`
-        const vendorJsCode = hasVendor ? `require('${path.relative(dirname, 'common/vendor.js')}');` : ''
-        const code = `${runtimeJsCode}${vendorJsCode}` + assets[name].source().toString()
-        assets[name] = {
-          size () {
-            return Buffer.byteLength(code, 'utf8')
-          },
-          source () {
-            return code
-          }
-
+        const extname = path.extname(name)
+        if (extname === '.wxss' && hasMainWxss && process.UNI_ENTRY[name.replace(extname, '')]) {
+          processWxss(name, assets)
+        } else if (extname === '.js') {
+          procssJs(name, assets, hasVendor)
         }
       })
-      delete assets['common/main.js']
+      // delete assets['common/main.js']
       delete assets['app.js']
       delete assets['app.json']
       delete assets['app.wxss']
       delete assets['project.config.json']
-      console.log(Object.keys(assets))
     })
   }
 }
 
 function initSubpackageConfig (webpackConfig, vueOptions) {
-  webpackConfig.node.set('global', false)
-  webpackConfig.plugins.delete('hash-module-ids')
-  // 与子包共享的模块
-  const sharedModules = {
-    'uni-mp-weixin/dist/index.js': 'uniWeixin',
-    'mp-vue/dist/mp.runtime.esm.js': 'uniVue'
-  }
-  const sharedModulePaths = Object.keys(sharedModules)
-  webpackConfig
-    .plugin('custom-hash-module-ids')
-    .use(CustomModuleIdsPlugin, [{
-      prefix: process.env.UNI_SUBPACKGE,
-      custom (libIdent) {
-        if (!libIdent) {
-          return
-        }
-        const normalizedLibIdent = normalizePath(libIdent)
-        const name = sharedModulePaths.find(p => normalizedLibIdent.endsWith(p))
-        if (name) {
-          return sharedModules[name]
-        }
-      }
-    }])
-  if (process.env.UNI_SUBPACKGE !== 'main') { // 非主包
-    process.env.UNI_OUTPUT_DIR = path.resolve(process.env.UNI_OUTPUT_DIR, process.env.UNI_SUBPACKGE)
-    vueOptions.outputDir = process.env.UNI_OUTPUT_DIR
-    webpackConfig.output.path(process.env.UNI_OUTPUT_DIR)
-    webpackConfig.output.jsonpFunction('webpackJsonp_' + process.env.UNI_SUBPACKGE)
-    webpackConfig.externals([
-      function (context, request, callback) {
-        if (request === 'vue') {
-          return callback(null, 'root global["webpackMain"]["uniVue"]')
-        }
-        const normalizedRequest = normalizePath(request)
-        const name = sharedModulePaths.find(p => normalizedRequest.endsWith(p))
-        if (name) {
-          return callback(null, `root global["webpackMain"]["${sharedModules[name]}"]`)
-        }
-        callback()
-      }
-    ])
-  }
+  process.env.UNI_OUTPUT_DIR = path.resolve(process.env.UNI_OUTPUT_DIR, process.env.UNI_SUBPACKGE)
+  vueOptions.outputDir = process.env.UNI_OUTPUT_DIR
+  webpackConfig.output.path(process.env.UNI_OUTPUT_DIR)
+  webpackConfig.output.jsonpFunction('webpackJsonp_' + process.env.UNI_SUBPACKGE)
 }
 
 module.exports = {
@@ -169,13 +148,7 @@ module.exports = {
 
     const statCode = process.env.UNI_USING_STAT ? 'import \'@dcloudio/uni-stat\';' : ''
 
-    let beforeCode = 'import \'uni-pages\';'
-
-    if (process.env.UNI_SUBPACKGE === 'main') {
-      const uniPath = require('@dcloudio/uni-cli-shared/lib/platform').getMPRuntimePath()
-      beforeCode +=
-        `import uniVue from 'vue';import * as uniWeixin from '${uniPath}';global['webpackMain']={uniVue,uniWeixin};`
-    }
+    const beforeCode = 'import \'uni-pages\';'
 
     const plugins = [
       new WebpackUniAppPlugin(),

@@ -179,10 +179,8 @@ module.exports = function generateJson (compilation) {
       delete jsonObj.navigationBarShadow
     }
 
-    if (process.env.UNI_SUBPACKGE && process.env.UNI_SUBPACKGE !== 'main') {
-      if (jsonObj.usingComponents) {
-        jsonObj.usingComponents = normalizeUsingComponents(name, jsonObj.usingComponents)
-      }
+    if (process.env.UNI_SUBPACKGE && jsonObj.usingComponents) {
+      jsonObj.usingComponents = normalizeUsingComponents(name, jsonObj.usingComponents)
     }
     const source = JSON.stringify(jsonObj, null, 2)
 

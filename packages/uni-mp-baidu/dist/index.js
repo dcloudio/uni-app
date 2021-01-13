@@ -976,16 +976,19 @@ function initHook (name, options) {
     };
   }
 }
+if (!MPPage.__$wrappered) {
+  MPPage.__$wrappered = true;
+  Page = function (options = {}) {
+    initHook('onLoad', options);
+    return MPPage(options)
+  };
+  Page.after = MPPage.after;
 
-Page = function (options = {}) {
-  initHook('onLoad', options);
-  return MPPage(options)
-};
-
-Component = function (options = {}) {
-  initHook('created', options);
-  return MPComponent(options)
-};
+  Component = function (options = {}) {
+    initHook('created', options);
+    return MPComponent(options)
+  };
+}
 
 const PAGE_EVENT_HOOKS = [
   'onPullDownRefresh',
@@ -1522,7 +1525,7 @@ function handleEvent (event) {
             }
             handler.once = true;
           }
-          const params = processEventArgs(
+          let params = processEventArgs(
             this.$vm,
             event,
             eventArray[1],
@@ -1530,9 +1533,13 @@ function handleEvent (event) {
             isCustom,
             methodName
           );
+          params = Array.isArray(params) ? params : [];
           // 参数尾部增加原始事件对象用于复杂表达式内获取额外数据
-          // eslint-disable-next-line no-sparse-arrays
-          ret.push(handler.apply(handlerCtx, (Array.isArray(params) ? params : []).concat([, , , , , , , , , , event])));
+          if (/=\s*\S+\.eventParams\s*\|\|\s*\S+\[['"]event-params['"]\]/.test(handler.toString())) {
+            // eslint-disable-next-line no-sparse-arrays
+            params = params.concat([, , , , , , , , , , event]);
+          }
+          ret.push(handler.apply(handlerCtx, params));
         }
       });
     }
@@ -1891,10 +1898,17 @@ function parseComponent (vueOptions) {
   // 关于百度小程序生命周期的说明(组件作为页面时):
   // lifetimes:attached --> methods:onShow --> methods:onLoad --> methods:onReady
   // 这里在强制将onShow挪到onLoad之后触发,另外一处修改在page-parser.js
-  const oldAttached = componentOptions.lifetimes.attached;
+  let oldAttached = componentOptions.lifetimes.attached;
+  // 百度小程序基础库 3.260 以上支持页面 onInit 生命周期，提前创建 vm 实例
+  componentOptions.lifetimes.onInit = function onInit (query) {
+    oldAttached.call(this);
+    oldAttached = noop;
+    this.pageinstance.$vm = this.$vm;
+    this.$vm.__call_hook('onInit', query);
+  };
   componentOptions.lifetimes.attached = function attached () {
     oldAttached.call(this);
-    if (isPage.call(this)) { // 百度 onLoad 在 attached 之前触发
+    if (isPage.call(this)) { // 百度 onLoad 在 attached 之前触发（基础库小于 3.70）
       // 百度 当组件作为页面时 pageinstancce 不是原来组件的 instance
       this.pageinstance.$vm = this.$vm;
       if (hasOwn(this.pageinstance, '_$args')) {
@@ -1994,7 +2008,7 @@ function parsePage (vuePageOptions) {
   };
 
   pageOptions.methods.onLoad = function onLoad (query) {
-    // 百度 onLoad 在 attached 之前触发，先存储 args, 在 attached 里边触发 onLoad
+    // 百度 onLoad 在 attached 之前触发（基础库小于 3.70），先存储 args, 在 attached 里边触发 onLoad
     if (this.$vm) {
       const copyQuery = Object.assign({}, query);
       delete copyQuery.__id__;
