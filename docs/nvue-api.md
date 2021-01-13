@@ -320,7 +320,7 @@
 - Android 的callback 函数不支持result参数。
 
 
-> 如果需要使用CSS动画，参考[transition](/nvue-css?id=transition)和[transition](/nvue-css?id=transform)。
+> 如果需要使用CSS动画，参考[transition](/nvue-css?id=transition)和[transform](/nvue-css?id=transform)。
 
 
 
