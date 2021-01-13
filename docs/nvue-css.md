@@ -679,9 +679,9 @@ flex {number}：值为 number 类型。
 <img width="300px" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/8f70e4e0-308b-11eb-97b7-0dc4655d6e68.PNG" />
 
 
-## 阴影
+## 阴影@boxshadow
 
-### IOS平台：阴影```box-shadow```
+### IOS平台：阴影```box-shadow```@ios-box-shadow
 
 	
 	{box-shadow:inset offset-x offset-y blur-radius color}

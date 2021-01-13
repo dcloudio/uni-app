@@ -9,10 +9,12 @@
 
 同时```uni-app```扩展了weex原生渲染引擎的很多排版能力，修复了很多bug。比如
 
-- Android端良好支持边框阴影，[详情](/nvue-css?id=android平台：阴影elevation)
+- Android端良好支持边框阴影，[详情](/nvue-css?id=android-box-shadow)
 - iOS端支持高斯模糊，<a href="https://ask.dcloud.net.cn/article/36617#view" target="_blank">详情</a>
 - 可实现区域滚动长列表+左右拖动列表+吸顶的复杂排版效果
 - 优化圆角边框绘制性能
+
+
 
 ## 适用场景
 
@@ -99,7 +101,9 @@ weex的组件和JS API，与uni-app不同。uni-app与微信小程序相同。
 	}
 ```
 
-如果没有在manifest里明确配置，默认是```weex模式```。这是为了向下兼容。
+
+在 `manifest.json` 配置文件中，HBuilderX2.4之前版本，默认值为 `weex` 模式，2.4起版本默认值改为 `uni-app` 模式。
+
 
 weex 编译模式不支持 ```onNavigationBarButtonTap``` 生命周期函数的写法。在 nvue 中监听原生标题栏按钮点击事件，详见：[uni.onNavigationBarButtonTap](https://uniapp.dcloud.net.cn/frame?id=%e9%a1%b5%e9%9d%a2%e7%94%9f%e5%91%bd%e5%91%a8%e6%9c%9f)。
 
