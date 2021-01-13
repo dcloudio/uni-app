@@ -270,6 +270,26 @@ sql写法，对js工程师而言有学习成本，而且无法处理非关系型
 
 **注意编写查询条件时，除test外，均为运算符左侧为数据库字段，右侧为常量**
 
+#### 查询数组字段@querywitharr
+
+如果数据库存在以下记录
+
+```js
+{
+  "_id": "1",
+  "students": ["li","wang"]
+}
+{
+  "_id": "2",
+  "students": ["wang","li"]
+}
+{
+  "_id": "3",
+  "students": ["zhao","qian"]
+}
+```
+
+使用jql查询语法时，可以直接使用`student=='wang'`作为查询条件来查询students内包含wang的记录。
 
 #### 常见正则用法@regexp
 
@@ -281,7 +301,7 @@ sql写法，对js工程师而言有学习成本，而且无法处理非关系型
 <template>
 	<view class="content">
 		<input @input="onKeyInput" placeholder="请输入搜索值" />
-		<unicloud-db v-slot:default="{data, loading, error, options}" collection="goods" :where=`/${searchVal}/i.test(name)`>
+		<unicloud-db v-slot:default="{data, loading, error, options}" collection="goods" :where=`${new RegExp(searchVal, 'i')}.test(name)`>
 			<view v-if="error">{{error.message}}</view>
 			<view v-else>
 				
