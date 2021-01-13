@@ -195,7 +195,7 @@ Vue 组件编译到小程序平台的时候会编译为对应平台的组件，�
 
 ### 2. 如何设置全局的数据和全局的方法
 
-uni-app 内置了 [Vuex](https://vuex.vuejs.org/zh/) ，在app里的使用，可参考 `hello-uniapp` ` store/index.js`。
+uni-app 内置了 [Vuex](https://uniapp.dcloud.io/vue-vuex) ，在app里的使用，可参考 `hello-uniapp` ` store/index.js`。
 
 
 ```javaScript
@@ -251,7 +251,7 @@ uni-app 内置了 [Vuex](https://vuex.vuejs.org/zh/) ，在app里的使用，可
 
 解决办法有两种（以scroll-view组件为例）：
 
-1. 监听scroll事件，记录组件内部变化的值，在设置新值之前先设置为记录的当前值
+1.监听scroll事件，记录组件内部变化的值，在设置新值之前先设置为记录的当前值
 
 
 
@@ -285,7 +285,7 @@ export default {
 
 ```
 
-2. 监听scroll事件，获取组件内部变化的值，实时更新其绑定值
+2.监听scroll事件，获取组件内部变化的值，实时更新其绑定值
 
 ```html
 	<scroll-view scroll-y="true" :scroll-top="scrollTop" @scroll="scroll"></scroll-view>
