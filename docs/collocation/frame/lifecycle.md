@@ -8,7 +8,7 @@
 |onShow|当 ``uni-app`` 启动，或从后台进入前台显示|
 |onHide|当 ``uni-app`` 从前台进入后台|
 |onError|当 ``uni-app`` 报错时触发|
-|onUniNViewMessage|对 ``nvue`` 页面发送的数据进行监听，可参考 [nvue 向 vue 通讯](/nvue-api?id=nvue-和-vue-相互通讯)|
+|onUniNViewMessage|对 ``nvue`` 页面发送的数据进行监听，可参考 [nvue 向 vue 通讯](https://uniapp.dcloud.io/nvue-api?id=communication)|
 |onUnhandledRejection|对未处理的 Promise 拒绝事件监听函数（2.8.1+）|
 |onPageNotFound|页面不存在监听函数|
 |onThemeChange|监听系统主题变化|
@@ -137,7 +137,7 @@ export default {
 
 **注意**
 
-- nvue 页面weex编译模式支持的生命周期同weex，具体参考：[weex生命周期介绍](/nvue-outline?id=生命周期)。
+- nvue 页面weex编译模式支持的生命周期同weex，具体参考：[weex生命周期介绍](https://uniapp.dcloud.io/nvue-outline?id=%e7%bc%96%e8%af%91%e6%a8%a1%e5%bc%8f)。
 - 支付宝小程序真机可以监听到非`navigateBack`引发的返回事件（使用小程序开发工具时不会触发`onBackPress`），不可以阻止默认返回行为
 
 ### 组件生命周期
