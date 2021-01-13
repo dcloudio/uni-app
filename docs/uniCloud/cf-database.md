@@ -893,6 +893,131 @@ db.collection('articles').where({
 })
 ```
 
+### 查询数组字段@querywitharr
+
+假设数据表class内有以下数据，可以使用下面两种方式查询数组内包含指定值
+
+```js
+{
+  "_id": "1",
+  "students": ["li","wang"]
+}
+{
+  "_id": "2",
+  "students": ["wang","li"]
+}
+{
+  "_id": "3",
+  "students": ["zhao","qian"]
+}
+```
+
+#### 指定下标查询
+
+```js
+const index = 1
+const res = await db.collection('class').where({
+  ['students.' + index]: 'wang'
+})
+.get()
+```
+
+```js
+// 查询结果如下
+{
+  data: [{
+    "_id": "1",
+    "students": ["li","wang"]
+  }]
+}
+```
+
+#### 不指定下标查询
+
+```js
+const res = await db.collection('class').where({
+  students: 'wang'
+})
+.get()
+```
+
+查询结果如下
+
+```js
+{
+  data: [{
+    "_id": "1",
+    "students": ["li","wang"]
+  },{
+    "_id": "1",
+    "students": ["wang","li"]
+  }]
+}
+```
+
+#### 数组内是对象
+
+如果将上面class内的数据改为如下形式
+
+```js
+{
+  "_id": "1",
+  "students": [{
+    name: "li"
+  },{
+    name: "wang"
+  }]
+}
+{
+  "_id": "2",
+  "students": [{
+    name: "wang"
+  },{
+    name: "li"
+  }]
+}
+{
+  "_id": "3",
+  "students": [{
+    name: "zhao"
+  },{
+    name: "qian"
+  }]
+}
+```
+
+不指定下标查询的写法可以修改为
+
+```js
+const res = await db.collection('class').where({
+  'students.name': 'wang'
+})
+.get()
+```
+
+查询结果如下
+
+```js
+{
+  data: [{
+    "_id": "1",
+    "students": [{
+      name: "li"
+    },{
+      name: "wang"
+    }]
+  },
+  {
+    "_id": "2",
+    "students": [{
+      name: "wang"
+    },{
+      name: "li"
+    }]
+  }]
+}
+```
+
 ## 删除文档
 
 **方式1 通过指定文档ID删除**

@@ -281,7 +281,7 @@ sql写法，对js工程师而言有学习成本，而且无法处理非关系型
 <template>
 	<view class="content">
 		<input @input="onKeyInput" placeholder="请输入搜索值" />
-		<unicloud-db v-slot:default="{data, loading, error, options}" collection="goods" :where=`/${searchVal}/i.test(name)`>
+		<unicloud-db v-slot:default="{data, loading, error, options}" collection="goods" :where=`${new RegExp(searchVal, 'i')}.test(name)`>
 			<view v-if="error">{{error.message}}</view>
 			<view v-else>
 				
