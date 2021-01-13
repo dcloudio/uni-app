@@ -85,6 +85,18 @@ function analyzeUsingComponents () {
   //   }, {})
 }
 
+function normalizeUsingComponents (file, usingComponents) {
+  const names = Object.keys(usingComponents)
+  if (!names.length) {
+    return usingComponents
+  }
+  file = path.dirname('/' + file)
+  names.forEach(name => {
+    usingComponents[name] = path.relative(file, usingComponents[name])
+  })
+  return usingComponents
+}
+
 module.exports = function generateJson (compilation) {
   analyzeUsingComponents()
 
@@ -167,6 +179,11 @@ module.exports = function generateJson (compilation) {
       delete jsonObj.navigationBarShadow
     }
 
+    if (process.env.UNI_SUBPACKGE && process.env.UNI_SUBPACKGE !== 'main') {
+      if (jsonObj.usingComponents) {
+        jsonObj.usingComponents = normalizeUsingComponents(name, jsonObj.usingComponents)
+      }
+    }
     const source = JSON.stringify(jsonObj, null, 2)
 
     const jsFile = name.replace('.json', '.js')

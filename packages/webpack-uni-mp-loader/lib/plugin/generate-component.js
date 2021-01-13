@@ -61,7 +61,7 @@ function findComponentModuleId (modules, concatenatedModules, resource, altResou
 
 let lastComponents = []
 // TODO 解决方案不太理想
-module.exports = function generateComponent (compilation) {
+module.exports = function generateComponent (compilation, jsonpFunction = 'webpackJsonp') {
   const curComponents = []
   const components = getComponentSet()
   if (components.size) {
@@ -69,7 +69,9 @@ module.exports = function generateComponent (compilation) {
     const modules = compilation.modules
 
     const concatenatedModules = modules.filter(module => module.modules)
-    const uniModuleId = modules.find(module => module.resource && normalizePath(module.resource) === uniPath).id
+    const uniModule = !process.env.UNI_SUBPACKAGE && modules.find(module => module.resource && normalizePath(module.resource) ===
+      uniPath)
+    const uniModuleId = uniModule && uniModule.id
     const styleImports = {}
     const fixSlots = {}
 
@@ -107,13 +109,19 @@ module.exports = function generateComponent (compilation) {
           if (process.env.UNI_PLATFORM === 'mp-alipay') {
             beforeCode = ';my.defineComponent || (my.defineComponent = Component);'
           }
+          let requireCode =
+            `__webpack_require__('${uniModuleId}')['createComponent'](__webpack_require__(${JSON.stringify(moduleId)}))`
+          if (process.env.UNI_SUBPACKGE) {
+            requireCode =
+              `global['webpackMain']['uniWeixin']['createComponent'](__webpack_require__(${JSON.stringify(moduleId)}))`
+          }
           const source = beforeCode + origSource +
             `
-;(${globalVar}["webpackJsonp"] = ${globalVar}["webpackJsonp"] || []).push([
+;(${globalVar}["${jsonpFunction}"] = ${globalVar}["${jsonpFunction}"] || []).push([
     '${chunkName}',
     {
         '${chunkName}':(function(module, exports, __webpack_require__){
-            __webpack_require__('${uniModuleId}')['createComponent'](__webpack_require__(${JSON.stringify(moduleId)}))
+            ${requireCode}
         })
     },
     [['${chunkName}']]

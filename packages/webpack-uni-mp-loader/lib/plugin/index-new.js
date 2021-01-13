@@ -81,7 +81,7 @@ class WebpackUniMPPlugin {
               source
             }) => emitFile(file, source, compilation))
 
-          generateComponent(compilation)
+          generateComponent(compilation, compiler.options.output.jsonpFunction)
 
           resolve()
         })
