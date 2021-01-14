@@ -31,32 +31,7 @@ import {
 
 import parseComponentCreateOptions from './parse-component-create-options'
 
-// TODO 临时通过序列化,反序列化传递dataset,后续可以全部保留在service,不做传递
-function parseDataset (dataset) {
-  const ret = Object.create(null)
-  Object.keys(dataset).forEach(name => {
-    try {
-      ret[name] = JSON.parse(dataset[name])
-    } catch (e) { // dataset 存在两种,一种是被JSON.stringify的,一种是原始的
-      ret[name] = dataset[name]
-    }
-  })
-  return ret
-}
-
-function parseTargets (event) {
-  const targetDataset = event.target && event.target.dataset
-  if (targetDataset) {
-    event.target.dataset = parseDataset(targetDataset)
-  }
-  const currentTargetDataset = event.currentTarget && event.currentTarget.dataset
-  if (currentTargetDataset) {
-    event.currentTarget.dataset = parseDataset(currentTargetDataset)
-  }
-}
-
 function wrapperEvent (event) {
-  parseTargets(event)
   event.preventDefault = noop
   event.stopPropagation = noop
   return wrapperMPEvent(event)

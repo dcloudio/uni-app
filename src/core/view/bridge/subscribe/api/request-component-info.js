@@ -1,5 +1,5 @@
 import {
-  normalizeDataset
+  getTargetDataset
 } from 'uni-helpers/index'
 
 import getWindowOffset from 'uni-platform/helpers/get-window-offset'
@@ -46,7 +46,7 @@ function getNodeInfo (el, fields) {
     info.id = el.id
   }
   if (fields.dataset) {
-    info.dataset = normalizeDataset(el.dataset || {})
+    info.dataset = getTargetDataset(el)
   }
   if (fields.rect || fields.size) {
     const rect = el.getBoundingClientRect()

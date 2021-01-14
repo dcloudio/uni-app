@@ -1,7 +1,7 @@
 import 'intersection-observer'
 
 import {
-  normalizeDataset
+  getTargetDataset
 } from 'uni-helpers/index'
 
 import {
@@ -49,7 +49,7 @@ export function requestComponentObserver ({
           boundingClientRect: getRect(entrie.boundingClientRect),
           relativeRect: getRect(entrie.rootBounds),
           time: Date.now(),
-          dataset: normalizeDataset(entrie.target.dataset || {}),
+          dataset: getTargetDataset(entrie.target),
           id: entrie.target.id
         }
       })
