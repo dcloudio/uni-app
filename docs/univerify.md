@@ -227,13 +227,13 @@ uni.closeAuthView()
 客户端获取到 `access_token` 后，传递给uniCloud云函数，云函数中通过`uniCloud.getPhoneNumber`方法获取真正的手机号。
 
 这一步有3种方式：
-1. uni-app项目开通[uniCloud](https://unicloud.dcloud.net.cn/)服务，在前端直接写 `uniCloud.callfuntion` ，将 `access_token` 传给指定的云函数。
+1. uni-app项目开通[uniCloud](https://unicloud.dcloud.net.cn/)服务，在前端直接写 `uniCloud.callFunction` ，将 `access_token` 传给指定的云函数。
 2. 使用普通ajax请求提交 `access_token` 给uniCloud的云函数。这种方式uni-app和5+App、wap2app均可使用，但uniCloud上的云函数需要做URL化。
 3. 使用普通ajax请求提交 `access_token` 给自己的传统服务器，通过自己的传统服务器再转发给 uniCloud 云函数。这种方式uni-app和5+App、wap2app均可使用，但uniCloud上的云函数需要做URL化。
 
 下面分别提供示例代码：
 
-#### uni-app项目使用uniCloud.callfuntion的方式调用云函数
+#### uni-app项目使用uniCloud.callFunction的方式调用云函数
 
 如果是未开通过uniCloud的uni-app项目：
 1. 首先开通uniCloud服务空间，[参考](https://unicloud.dcloud.net.cn/)
