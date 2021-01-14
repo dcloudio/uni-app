@@ -583,6 +583,53 @@ db.collection('order,book')
 - 上面的查询指令中，上一阶段处理结果输出到下一阶段，上面的例子中表现为where中使用的是原名，orderBy中使用的是别名
 - 目前不支持对联表查询的关联字段使用别名，即上述示例中的book_id不可设置别名
 
+#### 对字段操作后返回@operator
+
+自`HBuilderX 3.0.8`起，clientDB支持对字段进行一定的操作之后再返回，详细可用的方法列表请参考：[聚合操作符](uniCloud/cf-database.md?id=aggregate-operator)
+
+例：数据表class内有以下数据
+
+```js
+{
+  "_id": "1",
+  "grade": 6,
+  "class": "A"
+}
+{
+  "_id": "1",
+  "grade": 2,
+  "class": "A"
+}
+```
+
+如下写法可以由grade计算得到一个isTopGrade来表示是否为最高年级
+
+```js
+const res = await db.collection('class')
+.field('class,eq(["$grade",6]) as isTopGrade')
+.get()
+```
+
+返回结果如下
+
+```js
+{
+  "_id": "1",
+  "class": "A",
+  "isTopGrade": true
+}
+{
+  "_id": "1",
+  "class": "A",
+  "isTopGrade": false
+}
+```
+
+**注意**
+
+- 方法内的字段名应使用$前缀
+- 在进行权限校验时，会计算field内访问的所有字段计算权限。上面的例子中会使用表的read权限和grade、class字段的权限，来进行权限校验。
+
 ### 排序orderBy@orderby
 
 传统的MongoDB的排序参数是json格式，jql支持类sql的字符串格式，书写更为简单。
@@ -1093,6 +1140,324 @@ db.collection("department").get({
 
 - 暂不支持使用getTreePath的同时使用其他联表查询语法
 - 如果使用了where条件会对所有查询的节点生效
+
+### 分组统计@groupby
+
+自`HBuilderX 3.0.8`起，clientDB支持分组对数据进行分组统计（groupBy）
+
+如果数据库`score`表为某次比赛统计的分数数据，每条记录为一个学生的分数
+
+```js
+{
+  _id: "1",
+  grade: "1",
+  class: "A",
+  name: "zhao",
+  score: 5
+}
+{
+  _id: "2",
+  grade: "1",
+  class: "A",
+  name: "qian",
+  score: 15
+}
+{
+  _id: "3",
+  grade: "1",
+  class: "B",
+  name: "li",
+  score: 15
+}
+{
+  _id: "4",
+  grade: "1",
+  class: "B",
+  name: "zhou",
+  score: 25
+}
+{
+  _id: "5",
+  grade: "2",
+  class: "A",
+  name: "wu",
+  score: 25
+}
+{
+  _id: "6",
+  grade: "2",
+  class: "A",
+  name: "zheng",
+  score: 35
+}
+```
+
+#### 求和、求均值等累计操作
+
+所有可用的累计方法请参考[累计器操作符](uniCloud/cf-database.md?id=accumulator)，下面以sum（求和）和avg（求均值）为例介绍如何使用
+
+使用sum方法可以对数据进行求和统计。以上述数据为例，如下写法对不同班级进行分数统计
+
+```js
+const res = await db.collection('score')
+.groupBy('grade,class')
+.groupField('sum("$score") as totalScore')
+.get()
+```
+
+返回结果如下
+
+```js
+{
+  data: [{
+    grade: "1",
+    class: "A",
+    totalScore: 20
+  },{
+    grade: "1",
+    class: "B",
+    totalScore: 40
+  },{
+    grade: "2",
+    class: "A",
+    totalScore: 60
+  }]
+}
+```
+
+求均值方法与求和类似，将上面sum方法换成avg方法即可
+
+```js
+const res = await db.collection('score')
+.groupBy('grade,class')
+.groupField('avg("$score") as avgScore')
+.get()
+```
+
+返回结果如下
+
+```js
+{
+  data: [{
+    grade: "1",
+    class: "A",
+    avgScore: 10
+  },{
+    grade: "1",
+    class: "B",
+    avgScore: 20
+  },{
+    grade: "2",
+    class: "A",
+    avgScore: 30
+  }]
+}
+```
+
+**注意**
+
+- 方法内使用数据库字段时，为避免歧义需要使用带上$的字符串
+- 在不使用field，仅使用group和groupBy的情况下，会以group和groupBy内访问的所有字段的权限来校验访问是否合法。上面的例子中会使用表的read权限和grade、class、score三个字段的权限，来进行权限校验。
+- 在groupBy之前使用了field的情况下会使用field方法内的所有的字段的权限校验访问是否合法
+
+如果额外还在groupBy之前使用了field方法，此field不是用于决定最终的返回值而是用于决定将哪些数据传给groupBy和groupField使用
+
+例：如果上述数据中score是一个数组
+
+```js
+{
+  _id: "1",
+  grade: "1",
+  class: "A",
+  name: "zhao",
+  score: [1,1,1,1,1]
+}
+{
+  _id: "2",
+  grade: "1",
+  class: "A",
+  name: "qian",
+  score: [3,3,3,3,3]
+}
+{
+  _id: "3",
+  grade: "1",
+  class: "B",
+  name: "li",
+  score: [3,3,3,3,3]
+}
+{
+  _id: "4",
+  grade: "1",
+  class: "B",
+  name: "zhou",
+  score: [5,5,5,5,5]
+}
+{
+  _id: "5",
+  grade: "2",
+  class: "A",
+  name: "wu",
+  score: [5,5,5,5,5]
+}
+{
+  _id: "6",
+  grade: "2",
+  class: "A",
+  name: "zheng",
+  score: [7,7,7,7,7]
+}
+```
+
+如下field写法将上面的score数组求和之后传递给groupBy和groupField使用。在field内没出现的字段（比如name），在后面的方法里面不能使用
+
+```js
+const res = await db.collection('score')
+.field('grade,class,sum("$score") as userTotalScore')
+.groupBy('grade,class')
+.groupField('avg("$userTotalScore") as avgScore')
+.get()
+```
+
+返回结果如下
+
+```js
+{
+  data: [{
+    grade: "1",
+    class: "A",
+    avgScore: 10
+  },{
+    grade: "1",
+    class: "B",
+    avgScore: 20
+  },{
+    grade: "2",
+    class: "A",
+    avgScore: 30
+  }]
+}
+```
+
+**注意**
+
+- 在上面使用field方法的情况下，会计算field内访问的所有字段计算权限。上面的例子中会使用表的read权限和grade、class、score三个字段的权限，来进行权限校验。
+
+#### 统计数量
+
+使用count方法可以对记录数量进行统计。以上述数据为例，如下写法对不同班级统计参赛人数
+
+```js
+const res = await db.collection('score')
+.groupBy('grade,class')
+.groupField('count(*) as totalStudents')
+.get()
+```
+
+返回结果如下
+
+```js
+{
+  data: [{
+    grade: "1",
+    class: "A",
+    totalStudents: 2
+  },{
+    grade: "1",
+    class: "B",
+    totalStudents: 2
+  },{
+    grade: "2",
+    class: "A",
+    totalStudents: 2
+  }]
+}
+```
+
+**注意**
+
+- `count(*)`为固定写法，*可以省略
+
+### 数据去重@distinct
+
+自`HBuilderX 3.0.8`起，clientDB支持使用distinct方法对数据进行去重操作
+
+例：如果数据库`score`表为某次比赛统计的分数数据，每条记录为一个学生的分数
+
+```js
+{
+  _id: "1",
+  grade: "1",
+  class: "A",
+  name: "zhao",
+  score: 5
+}
+{
+  _id: "2",
+  grade: "1",
+  class: "A",
+  name: "qian",
+  score: 15
+}
+{
+  _id: "3",
+  grade: "1",
+  class: "B",
+  name: "li",
+  score: 15
+}
+{
+  _id: "4",
+  grade: "1",
+  class: "B",
+  name: "zhou",
+  score: 25
+}
+{
+  _id: "5",
+  grade: "2",
+  class: "A",
+  name: "wu",
+  score: 25
+}
+{
+  _id: "6",
+  grade: "2",
+  class: "A",
+  name: "zheng",
+  score: 35
+}
+```
+
+以下代码可以按照grade、class两字段去重，获取所有参赛班级
+
+```js
+const res = await db.collection('score')
+.field('grade,class')
+.distinct() // 注意distinct方法没有参数
+.get()
+```
+
+返回结果如下
+
+```js
+{
+  data: [{
+    grade:"1",
+    class: "A"
+  },{
+    grade:"1",
+    class: "B"
+  },{
+    grade:"2",
+    class: "A"
+  }]
+}
+```
+
+**注意**
+
+- distinct必须搭配field方法使用
 
 ### 新增数据记录add
 

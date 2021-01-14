@@ -9348,7 +9348,7 @@ let res = await db
 { "result": "LI" }
 ```
 
-### 累计器操作符
+### 累计器操作符@accumulator
 
 #### addToSet
 
