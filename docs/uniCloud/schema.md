@@ -1349,7 +1349,7 @@ const dbSearchFields = ['username', 'role_name', 'mobile', 'email'] // 模糊搜
         "enum": {
           "collection": "opendb-city-china",
           "orderby": "value asc",
-          "field": "code as value, name as text"
+          "field": "code as value, name as text, eq(['$type', 2]) as isleaf"
         }
       }
     }
