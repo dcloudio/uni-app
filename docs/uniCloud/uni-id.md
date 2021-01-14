@@ -294,7 +294,7 @@ RBAC：Role-Based Access Control，基于角色的访问控制。
 | comment					| String		| 否	| 备注																	|
 | created_date		| Timestamp	| 是	| 权限创建时间													|
 
-其中，`permission_id`为权限标志，全局唯一，可用于clientDB中的权限配置，建议按照语义化命名，例如：`USER_DEL`、`BRANCH_ADD`。
+其中，`permission_id`为权限标志，全局唯一，可用于clientDB中的权限配置，建议按照语义化命名，例如：`USER_DEL`、`BRANCH_ADD`。**权限总数量不得超过500**
 
 如下为示例内容：
 
