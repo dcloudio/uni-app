@@ -88,6 +88,10 @@ module.exports = async(event){
 }
 ```
 
+**注意**
+
+- 开发期间如果重新获取过appid需要重新编译uni-app项目
+
 ### 5+项目
 
 5+项目不可使用callFunction请求云函数，这时候可以使用云函数URL化让5+项目通过http请求的方式访问云函数

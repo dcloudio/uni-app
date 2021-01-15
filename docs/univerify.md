@@ -292,6 +292,9 @@ exports.main = async (event, context) => {
 1. 云端一体项目模板：[https://ext.dcloud.net.cn/plugin?id=13](https://ext.dcloud.net.cn/plugin?id=13)
 2. hello uni-app。打包后直接体验：[https://m3w.cn/uniapp](https://m3w.cn/uniapp)；源码获取：在HBuilderX中新建uni-app项目，选择hello uni-app模板。一键登陆的具体位置在 API - login 栏目中。
 
+**注意**
+
+- 开发期间如果重新获取过appid需要重新编译uni-app项目
 
 #### 5+（wap2app）项目通过云函数URL化让云函数暴露出普通http接口
 
