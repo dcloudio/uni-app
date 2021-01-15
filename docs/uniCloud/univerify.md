@@ -170,7 +170,7 @@ const sign = hmac.digest('hex')
 ```js
 // 云函数验证签名，此示例中以接受GET请求为例作演示
 const crypto = require('crypto')
-module.exports = async(event){
+module.exports = async(event)=>{
   
   const secret = 'your-secret-string' // 自己的密钥不要直接使用示例值，且注意不要泄露
   const hmac = crypto.createHmac('sha256', secret);
