@@ -354,7 +354,7 @@ function hasPermission(token, permission) {
 
 **注意**
 
-- 注册成功之后会返回token，在获取token之后应进行持久化存储，键值为：`uni_id_token`，`uni.setStorageSync('uni_id_token',res.result.token)`
+- 注册成功之后会返回token，在获取token之后应进行持久化存储，键值为：`uni_id_token、uni_id_token_expired`，例：`uni.setStorageSync('uni_id_token',res.result.token)`
 
 **user参数说明**
 
@@ -420,6 +420,7 @@ uniCloud.callFunction({
 		if(res.result.code === 0) {
 			// 2.8.0版本起调整为蛇形uni_id_token（调整后在一段时间内兼容驼峰uniIdToken）
 			uni.setStorageSync('uni_id_token',res.result.token)
+			uni.setStorageSync('uni_id_token_expired', res.result.tokenExpired)
 			// 其他业务代码，如跳转到首页等
 			uni.showToast({
 				title: '注册成功',
@@ -448,7 +449,7 @@ uniCloud.callFunction({
 
 **注意**
 
-- 登录成功之后会返回token，在获取token之后应进行持久化存储，键值为：`uni_id_token`，`uni.setStorageSync('uni_id_token',res.result.token)`
+- 登录成功之后会返回token，在获取token之后应进行持久化存储，键值为：`uni_id_token、uni_id_token_expired`，例：`uni.setStorageSync('uni_id_token',res.result.token)`
 - 登录时请注意自行验证数据有效性
 
 **user参数说明**
@@ -498,6 +499,11 @@ exports.main = async function(event,context) {
 **注意**
 
 - 登出成功之后应删除持久化存储的token，键值为：`uni_id_token`，`uni.removeStorageSync('uni_id_token')`
+
+```js
+  uni.removeStorageSync('uni_id_token')
+  uni.removeStorageSync('uni_id_token_expired')
+```
 
 **参数说明**
 
@@ -557,11 +563,42 @@ exports.main = async function(event,context) {
 **示例代码**
 
 ```js
+// 云函数list-news代码
 const uniID = require('uni-id')
 exports.main = async function(event,context) {
 	const payload = await uniID.checkToken(event.uniIdToken)
-	return payload
+  const {
+    code,
+    token,
+    tokenExpired
+  } = payload
+  if(code) { // code不为0代表token校验未通过
+    return payload
+  }
+  // 其他业务代码
+  return {
+    token,
+    tokenExpired
+  }
 }
+
+// 下面仅为简单示例，可以参考uniCloud admin里面的request进行封装 https://ext.dcloud.net.cn/plugin?id=3268
+// 客户端代码
+uniCloud.callFunction({
+  name: 'list-news',
+  data : {}
+}).then(res => {
+  const {
+    token,
+    tokenExpired
+  } = res.result
+  if(token) {
+    uni.setStorageSync('uni_id_token', token)
+    uni.setStorageSync('uni_id_token_expired', tokenExpired)
+  }
+  // 其他逻辑...
+})
+
 ```
 
 ### 生成token@createtoken
@@ -626,8 +663,7 @@ exports.main = async function(event,context) {
 	const res = await uniID.updatePwd({
     uid: payload.uid,
 		oldPassword,
-		newPassword,
-		passwordConfirmation
+		newPassword
 	})
 	return res
 }
@@ -1293,7 +1329,7 @@ exports.main = async function(event,context) {
 
 - 需要在config.json内使用微信登录的平台下配置appid和appsecret
 - uniId会自动判断客户端平台
-- 登录成功之后应持久化存储token，键值为：`uni_id_token`，`uni.setStorageSync('uni_id_token', res.result.token)`
+- 登录成功之后应持久化存储token、token过期时间，键值为：`uni_id_token、uni_id_token_expired`，例：`uni.setStorageSync('uni_id_token', res.result.token)`
 - App端获取code不可直接调用`uni.login`，详细用法可以看下面示例
 
 **参数说明**
@@ -1394,6 +1430,7 @@ export default {
         })
         if (res.result.code === 0) {
           uni.setStorageSync('uni_id_token', res.result.token)
+          uni.setStorageSync('uni_id_token_expired', res.result.tokenExpired)
         }
       }).catch(() => {
         uni.showModal({
@@ -1516,7 +1553,7 @@ exports.main = async function(event,context) {
 **注意**
 
 - 需要在config.json内支付宝平台下配置appid和privateKey（应用私钥）
-- 登录成功之后应持久化存储token，键值为：`uni_id_token`，`uni.setStorageSync('uni_id_token', res.result.token)`
+- 登录成功之后应持久化存储token，键值为：`uni_id_token、uni_id_token_expired`，例：`uni.setStorageSync('uni_id_token', res.result.token)`
 
 **参数说明**
 
