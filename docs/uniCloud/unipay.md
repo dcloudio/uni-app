@@ -555,7 +555,24 @@ exports.main = async function (event) {
 ```js
 exports.main = async function (event) {
   let res = await unipayIns.verifyPaymentNotify(event)
-  return res
+  // 处理完毕其他业务
+  // 注意如果处理成功需要严格按照下面的格式进行返回，否则厂商会持续通知
+  // 微信处理成功之后 
+  return {  
+    statusCode: 200,  
+    headers: {  
+        'content-type': 'text/xml;charset=utf-8'  
+    },  
+    body: `<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>`  
+  }
+  // 支付宝处理成功后  
+  return {  
+    statusCode: 200,
+    headers: {  
+      'content-type': 'text/plain'  
+    },  
+    body: "success"
+  }
 }
 ```
 
@@ -588,6 +605,22 @@ exports.main = async function (event) {
 ```js
 exports.main = async function (event) {
   let res = await unipayIns.verifyRefundNotify(event)
-  return res
+  // 注意如果处理成功需要严格按照下面的格式进行返回，否则厂商会持续通知
+  // 微信处理成功之后 
+  return {  
+    statusCode: 200,  
+    headers: {  
+        'content-type': 'text/xml;charset=utf-8'  
+    },  
+    body: `<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>`  
+  }
+  // 支付宝处理成功后  
+  return {  
+    statusCode: 200,
+    headers: {  
+      'content-type': 'text/plain'  
+    },  
+    body: "success"
+  }
 }
 ```

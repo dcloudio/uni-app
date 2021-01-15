@@ -22,18 +22,13 @@ function init(options):uniCloud
 
 |参数名				|类型		|必填				|默认值	|说明																								|
 |:-:					|:-:		|:-:				|:-:		|:-:																								|
-|provider			|String	|是					|-			|目前仅支持aliyun					|
+|provider			|String	|是					|-			|aliyun、tencent					|
 |spaceId			|String	|是					|-			|服务空间ID，**注意是服务空间ID，不是服务空间名称**	|
 |clientSecret	|String	|是	|-			|仅阿里云支持，可以在[uniCloud控制台](https://unicloud.dcloud.net.cn)服务空间列表中查看				|
-|debugFunction|Boolean|否					|true										|是否启用云函数日志输出，仅开发阶段生效，平台支持：APP、H5(使用`HBuilderX`内置浏览器获得更好的调试体验)	|
 |endpoint			|String	|否					|`https://api.bspapp.com`	|服务空间地址，仅阿里云侧支持																			|	
 
 <!-- |autoSignIn		|Boolean|否					|true										|是否自动匿名登录																	|仅腾讯云侧支持																																	| -->
 
-**关于debugFunction的说明**
-
-- 设置为`true`时，腾讯云访问云函数为通过管理端调用（即通过DCloud服务器调用）以便同步返回运行日志。阿里云访问云函数依然为直连。
-- 发行时此字段自动失效，变为false。
 
 **示例代码**
 
