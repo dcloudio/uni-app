@@ -2,12 +2,29 @@
 
 ### 什么是 uni_modules
 ### 目录结构
+```bash
+uni_modules
+└── [plugin_id] // 插件 ID，
+    ├── uniCloud                            
+           ├── cloudfunctions
+           └── database
+    ├── common                              
+    ├── components                          
+    ├── hybrid                              
+    ├── pages                               
+    ├── static
+    └── wxcomponents
+    ├── license.md
+    ├── package.json                        必选(除此之外均`可选`)
+    ├── pages.json                          
+    ├── readme.md                           
+    ├── changelog.md
+```
 ### 配置
 #### package.json
 
-package.json在每个uni_modules插件中都必须存在，包含了插件的基本信息。以下是package.json的详细配置说明（拷贝代码记得去掉注释！）
+package.json在每个uni_modules插件中都必须存在，包含了插件的基本信息。以下是package.json的详细配置说明
 ```json
-// 注意，不能直接拷贝本段代码到编辑器中，package.json目前不支持注释。本段代码加的注释只是用于解释代码。
 {
     "id": "作者ID-插件英文名称", // 必填，插件ID，格式为：'作者ID-插件英文名称'，例如：'xx-yy'，其中作者ID和插件名称只能包含英文、数字，作者ID不能使用'DCloud'、'uni'等关键字
     "displayName": "插件显示名称", // 必填，用于展示在插件市场的显示名称
@@ -20,13 +37,12 @@ package.json在每个uni_modules插件中都必须存在，包含了插件的基
     },
     "dcloudext": { // DCloud插件市场配置
       "category": ["前端组件", "通用组件"], // 必填， 插件市场分类
-      "screenshots": [], // 插件截图说明，仅支持插件内相对路径
       "sale": { // 销售
           "regular": { // 普通授权版价格，单位为元，如果为免费插件，设置普通授权版价格为 0 即可。
-              "price": 0.00
+              "price": "0.00"
           },
           "sourcecode": { // 源码授权版价格，单位为元
-              "price": 0.00
+              "price": "0.00"
           }
       },
       "contact": { // 插件作者 QQ，方便管理员审核时与作者快速沟通。
@@ -90,11 +106,11 @@ package.json在每个uni_modules插件中都必须存在，包含了插件的基
 }
 ```
 #### uni_modules.config.json
-uni_modules.config.json在项目根目录，包含了插件的。以下是uni_modules.config.json的详细配置说明（拷贝代码记得去掉注释！）
+uni_modules.config.json在项目根目录，包含了插件的。以下是uni_modules.config.json的详细配置说明
 ```json
 {
 	"scripts": {
-		"postupdate": "node scripts/upgrade.js" // 每个插件更新后都执行该脚本，可从process.env.UNI_MODULES_ID获取当前被更新的插件ID
+		"postupdate": "node scripts/upgrade.js" // 更新插件后执行该脚本，可从process.env.UNI_MODULES_ID获取当前被更新的插件ID，如果存在多个，以,隔开
 	},
 	"uni_modules": {
 		"uni-id": { // 插件ID
