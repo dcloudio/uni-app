@@ -91,7 +91,7 @@ export default {
 
 |参数名|类型|默认值|必填|说明|
 |:-|:-|:-|:-|:-|
-|count|Number|9|否|最多可以选择的文件个数|
+|count|Number|9（注意：ios不可大于9）|否|最多可以选择的文件个数|
 |mediaType|Array.&lt;string&gt;|['image', 'video']|否|文件类型|
 |sourceType|Array.&lt;string&gt;|['album', 'camera']|否|图片和视频选择的来源|
 |maxDuration|Number|10|否|拍摄视频最长拍摄时间，单位秒。时间范围为 3s 至 30s 之间|
@@ -160,6 +160,7 @@ uni.chooseMedia({
 **Tips**
 
 * 如需上传到cdn，可使用uniCloud.uploadFile API，uniCloud提供了免费cdn给开发者使用，详见[https://uniapp.dcloud.io/uniCloud/storage?id=uploadfile](https://uniapp.dcloud.io/uniCloud/storage?id=uploadfile)
+* 经开发者提醒，微信小程序ios真机可以选择的文件个数不能大于9，详见帖子[https://ask.dcloud.net.cn/question/115561](https://ask.dcloud.net.cn/question/115561)
 
 
 ### uni.saveVideoToPhotosAlbum(OBJECT)
