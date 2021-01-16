@@ -47,6 +47,7 @@ exports.main = async (event, context) => {
 **注意事项**
 
 - 服务商为阿里云时，暂不可使用相对路径读取文件（比如`fs.readFileSync('./info.txt')`），可以使用绝对路径`fs.readFileSync(path.resolve(__dirname,'./info.txt'))`
+- event大小不可超过100kb
 
 ## API列表
 
