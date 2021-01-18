@@ -27,11 +27,12 @@
 
 ### 绑定自定义域名
 
-**目前阿里云不支持绑定自定义域名，只能使用其默认提供的域名，但是需要手动在【云函数URL化】处开启云函数Url化开关**
+**目前阿里云不支持绑定自定义域名，只能使用其默认提供的域名，但是需要手动在【云函数域名绑定】处开启云函数Url化开关**
 
 1. 单击左侧菜单栏【云函数】，进入云函数页面。
-2. 单击【云函数URL化】，在弹出的配置窗口中进行配置。
-![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/cloud-function-urlify.png)
+2. 单击【云函数域名绑定】，在弹出的配置窗口中进行配置。
+
+<img style="max-width:800px;height:auto;" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/55897b30-5993-11eb-8ff1-d5dcf8779628.jpg"></img>
 
 >- 每个服务空间最多绑定1个自定义域名。
 >- uniCloud提供默认域名供体验和测试该特性，域名规范如：`${spaceId}.service.tcloudbase.com`。
