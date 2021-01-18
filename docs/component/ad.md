@@ -217,6 +217,78 @@ export default {
 </style>
 ```
 
+
+使用 ad/ad-draw 模拟插屏广告效果
+
+```html
+<template>
+  <view>
+    <!-- 使用 ad/ad-draw 模拟插屏广告效果 -->
+    <view>
+      <button @click="showInterstitialAd">显示插屏广告</button>
+    </view>
+    <view class="ad-interstitial" v-if="isShowInterstitialAd">
+      <view class="ad-view">
+        <ad class="ad" adpid="1111111111" @error="onerror"></ad>
+
+        <!-- ad-draw 仅在nvue页面生效 -->
+        <!-- <ad-draw class="ad-draw" adpid="1507000690"></ad-draw> -->
+      </view>
+      <view class="close-area">
+        <!-- 根据z自己页面风格设置关闭按钮的样式 -->
+        <button @click="hideInterstitialAd">X</button>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  export default {
+    data() {
+      return {
+        isShowInterstitialAd: false
+      }
+    },
+    methods: {
+      showInterstitialAd() {
+        this.isShowInterstitialAd = true
+      },
+      hideInterstitialAd() {
+        this.isShowInterstitialAd = false
+      },
+      onerror(e) {
+        console.log(e);
+      }
+    }
+  }
+</script>
+
+<style>
+  .ad-interstitial {
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    /* #ifndef APP-NVUE */
+    display: flex;
+    z-index: 1000;
+    /* #endif */
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .ad-draw {
+    width: 700rpx;
+    height: 400px;
+  }
+</style>
+
+```
+
+
 **激励视频广告**
 文档地址：[https://uniapp.dcloud.io/api/a-d/rewarded-video](https://uniapp.dcloud.io/api/a-d/rewarded-video)
 
