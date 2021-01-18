@@ -13,8 +13,13 @@ import {
   PAGE_CREATE,
   PAGE_CREATED,
   MOUNTED_DATA,
-  UPDATED_DATA
+  UPDATED_DATA,
+  VD_SYNC_VERSION
 } from '../../../constants'
+
+import {
+  generateId
+} from '../../../helpers/util'
 
 import {
   removeVdSync,
@@ -113,7 +118,18 @@ export class VDomSync {
   }
 
   addVm (vm) {
-    this.vms[vm._$id] = vm
+    const id = vm._$id
+    const oldVm = this.vms[id]
+    if (oldVm) {
+      const newId = generateId(oldVm, oldVm.$parent, VD_SYNC_VERSION)
+      oldVm._$id = newId
+      this.vms[newId] = oldVm
+      this.elements.forEach(element => {
+        const cid = element.cid
+        element.cid = cid === id ? newId : cid
+      })
+    }
+    this.vms[id] = vm
   }
 
   removeVm (vm) {
