@@ -23,7 +23,7 @@
 2. 单击左侧菜单栏【云函数】，进入云函数页面。
 3. 点击需要配置的云函数的【详情】按钮，配置访问路径。
 
-![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/edit-function-config.png)
+<img style="max-width:800px;height:auto;" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/b79d1dc0-5a21-11eb-8a36-ebb87efcf8c0.jpg"></img>
 
 ### 绑定自定义域名
 
