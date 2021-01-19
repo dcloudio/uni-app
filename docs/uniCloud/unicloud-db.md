@@ -44,17 +44,17 @@ HBuilderX中敲下`udb`代码块，得到如下代码，然后通过collection�
 |v-slot:default||查询状态（失败、联网中）及结果（data）|
 |ref|string|vue组件引用标记|
 |collection|string|表名。支持输入多个表名，用 `,` 分割|
-|field|string|查询字段，多个字段用 `,` 分割。不写本属性，即表示查询所有字段|
-|where|string|查询条件，内容较多，另见`jql`文档：[详情](https://uniapp.dcloud.net.cn/uniCloud/uni-clientDB?id=jsquery)|
+|field|string|指定要查询的字段，多个字段用 `,` 分割。不写本属性，即表示查询所有字段。支持用 oldname as newname方式对返回字段重命名|
+|where|string|查询条件，对记录进行过滤。[见下](/uniCloud/unicloud-db?id=where)|
 |orderby|string|排序字段及正序倒叙设置|
 |page-data|String|分页策略选择。值为 `add` 代表下一页的数据追加到之前的数据中，常用于滚动到底加载下一页；值为 `replace` 时则替换当前data数据，常用于PC式交互，列表底部有页码分页按钮，默认值为`add`|
 |page-current|Number|当前页|
 |page-size|Number|每页数据数量|
 |getcount|Boolean|是否查询总数据条数，默认 `false`，需要分页模式时指定为 `true`|
 |getone|Boolean|指定查询结果是否仅返回数组第一条数据，默认 false。在false情况下返回的是数组，即便只有一条结果，也需要[0]的方式获取。在值为 true 时，直接返回结果数据，少一层数组，一般用于非列表页，比如详情页|
-|action|string|云端执行数据库查询的前或后，触发某个action函数操作，进行预处理或后处理，[详情](https://uniapp.dcloud.net.cn/uniCloud/uni-clientDB?id=%e4%ba%91%e7%ab%af%e9%83%a8%e5%88%86)。场景：前端无权操作的数据，比如阅读数+1|
+|action|string|云端执行数据库查询的前或后，触发某个action函数操作，进行预处理或后处理，[详情](/uniCloud/uni-clientDB?id=%e4%ba%91%e7%ab%af%e9%83%a8%e5%88%86)。场景：前端无权操作的数据，比如阅读数+1|
 |manual|Boolean|是否手动加载数据，默认为 false，页面onready时自动联网加载数据。如果设为 true，则需要自行指定时机通过方法`this.$refs.udb.loadData()`来触发联网，其中的`udb`指组件的ref值|
-|gettree|Boolean|是否查询树状结构数据，HBuilderX3.0.5+ [详情](https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=gettree)|
+|gettree|Boolean|是否查询树状结构数据，HBuilderX3.0.5+ [详情](/uniCloud/clientdb?id=gettree)|
 |startwith|String|gettree的第一层级条件，此初始条件可以省略，不传startWith时默认从最顶级开始查询，HBuilderX3.0.5+|
 |limitlevel|Number|gettree查询返回的树的最大层级。超过设定层级的节点不会返回。默认10级，最大15，最小1，HBuilderX3.0.5+|
 |@load|EventHandle|成功回调。联网返回结果后，若希望先修改下数据再渲染界面，则在本方法里对data进行修改|
@@ -69,7 +69,7 @@ TODO：暂不支持groupby、in子查询功能。后续会补充
 
 比如云数据库有个user的表，里面有字段id、name，查询id=1的数据，那么写法如下：
 
-**注意下面示例使用了getone会返回一条对象形式的data，如果不适用getone的话data将会是数组形式**
+**注意下面示例使用了getone会返回一条对象形式的data，如不使用getone，data将会是数组形式，即多一层**
 
 ```html
 <template>
@@ -84,11 +84,11 @@ TODO：暂不支持groupby、in子查询功能。后续会补充
 
 ```
 
-**注意：除非使用admin账户登录操作，否则需要在 uniCloud 控制台对要查询的表增加 Schema 权限配置。至少配置读取权限，否则无权查询**，详情 [https://uniapp.dcloud.net.cn/uniCloud/schema](https://uniapp.dcloud.net.cn/uniCloud/schema)
+**注意：除非使用admin账户登录操作，否则需要在 uniCloud 控制台对要查询的表增加 Schema 权限配置。至少配置读取权限，否则无权在前端查询**，详见 [DB Schema](/uniCloud/schema)
 
 ## v-slot:default
 
-```
+```html
 <unicloud-db v-slot:default="{data, pagination, loading, hasMore, error, options}"></unicloud-db>
 ```
 
@@ -116,6 +116,59 @@ TODO：暂不支持groupby、in子查询功能。后续会补充
 
 ```
 
+## where@where
+
+where中指定要查询的条件。比如只查询某个字段的值符合一定条件的记录。
+
+组件的where属性，与clientDB的JS API是一致的，且内容较多，所以详见js API中相关`jql`文档：[详情](/uniCloud/uni-clientDB?id=jsquery)
+
+但组件与js API有一个差别，就是组件的属性中若使用js中的变量，需额外注意。
+
+例如查询uni-id-users表，字段username的值由js变量指定，有如下几种方式：
+
+方式1. 使用模板字符串，用${}包裹变量
+```html
+<template>
+	<view>
+		<unicloud-db collection="uni-id-users" :where="`username=='${tempstr}'`"></unicloud-db>
+	</view>
+</template>
+<script>
+	export default {
+		data() {
+			return {
+				tempstr: '123'
+			}
+		}
+	}
+</script>
+```
+
+方式2. 不在属性中写，而在js中拼接字符串
+```html
+<template>
+	<view>
+		<unicloud-db collection="uni-id-users" :where="sWhere"></unicloud-db>
+	</view>
+</template>
+<script>
+	export default {
+		data() {
+			return {
+				tempstr: '123',
+				sWhere: ''
+			}
+		}
+		onLoad() {
+			this.sWhere = "id=='" + this.tempstr + "'"
+		},
+	}
+</script>
+```
+
+上述示例使用的是==比较符，如需进行模糊搜索，则使用正则表达式。插件市场提供了完整的云端一体搜索模板，搜索类页面无需自行开发，可直接使用。[详见](https://ext.dcloud.net.cn/plugin?id=3851)
+
+再次强调，where条件内容较多，组件和api用法相同，完整的where条件文档在api文档中，另见：[JQL文档](/uniCloud/uni-clientDB?id=jsquery)
 
 ## orderby
 
@@ -124,7 +177,7 @@ TODO：暂不支持groupby、in子查询功能。后续会补充
 <!-- 升序可以不写，不写默认就是升序。 -->
 
 示例代码
-```
+```html
 <unicloud-db orderby="createTime desc"></unicloud-db>
 ```
 
