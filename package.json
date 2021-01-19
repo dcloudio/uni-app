@@ -17,7 +17,7 @@
     "directory": "test-dts"
   },
   "gitHooks": {
-    "pre-commit": "ls-lint && lint-staged",
+    "pre-commit": "lint-staged",
     "commit-msg": "node scripts/verifyCommit.js"
   },
   "lint-staged": {
@@ -34,7 +34,6 @@
   },
   "devDependencies": {
     "@dcloudio/types": "^2.0.20",
-    "@ls-lint/ls-lint": "^1.9.2",
     "@microsoft/api-extractor": "^7.12.1",
     "@rollup/plugin-alias": "^3.1.1",
     "@rollup/plugin-commonjs": "^17.0.0",
