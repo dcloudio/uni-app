@@ -1720,17 +1720,18 @@ exports.main = async function(event,context) {
 
 **注意**
 
+- 需要在config.json内的 app-plus > oauth > apple 下配置 bundleId
 - 登录成功之后应持久化存储token，键值为：uni_id_token，`uni.setStorageSync('uni_id_token', res.result.token)`
 
 **参数说明**
 
 | 字段				| 类型	| 必填| 说明																																						   						|
 | ---					| ---		| ---	| ---																																     	     			|
-| openId				| String| 是	|uni.login使用apple登录后，uni.getUserInfo返回的openId													  			|
-| fullName  |String	| 否	|uni.login使用apple登录后，uni.getUserInfo返回的fullName												     			|
-| identityToken  |String	| 否	|uni.login使用apple登录后，uni.getUserInfo返回的identityToken								  					|
-| type				| String| 否	|指定操作类型，可选值为`login`、`register`，不传此参数时表现为已注册则登录，未注册则进行注册|
-| myInviteCode| String| 否	|设置当前注册用户自己的邀请码，type为`register`时生效					          							|
+| identityToken  |String	| 是	|uni.login使用apple登录后，uni.getUserInfo返回的identityToken								  					|
+| nickName  |String	| 否	| 若无nickName，则读取fullName，若fullName也无效，则使用email												     			|
+| fullName  |Object	| 否	| uni.login使用apple登录后，uni.getUserInfo返回的fullName												     			|
+| type				| String| 否	| 指定操作类型，可选值为`login`、`register`，不传此参数时表现为已注册则登录，未注册则进行注册|
+| myInviteCode| String| 否	| 设置当前注册用户自己的邀请码，type为`register`时生效					          							|
 | needPermission| Boolean	| 否	|设置为true时会在checkToken时返回用户权限（permission），建议在管理控制台中使用	|
 
 **响应参数**
@@ -2458,7 +2459,7 @@ exports.main = async function(event,context) {
 |一键登录/注册					|106		|01				|（10601）手机号已存在（传入type='register'且手机号已注册时触发）								|
 |					    |106		|02				|（10602）此手机号尚未注册（传入type='login'且手机号未注册时触发）																						|
 |Apple登录/注册					|107		|01				|（10701）获取用户唯一标识符失败																						|
-|					    |107		|02				|（10702）校验用户唯一标识符失败																						|
+|					    |107		|02				|（10702）bundleId校验失败，请确认配置后重试																						|
 |					    |107		|03				|（10703）此账户已注册																						|
 |					    |107		|04				|（10704）此账户尚未注册																						|
 |					    |107		|05				|（10705）identityToken校验失败																						|
