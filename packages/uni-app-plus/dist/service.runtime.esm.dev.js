@@ -2671,7 +2671,7 @@ function renderList (
       var result = iterator.next();
       i = 0;
       while (!result.done) {
-        ret.push(render(result.value, ret.length, i++, i));
+        ret.push(render(result.value, ret.length, i, i++)); // fixed by xxxxxx
         result = iterator.next();
       }
     } else {
