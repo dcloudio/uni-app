@@ -753,7 +753,7 @@ errorMessage支持字符串，也支持json object。类型为object时，可定
 }
 ```
 
-Tips：为方便演示，上述json代码包含了注释。如要复制到`DB Schema`中时，需删除这些注释。在HBuilderX中，可以批选注释，批量删除（选中一个//，然后按选择所有相同词【win：ctrl+alt+e、mac：ctrl+alt+d】，然后【shift+end】选到行尾即可删除掉全部注释）
+
 
 #### 字段级权限控制
 
