@@ -1,6 +1,6 @@
 ## 此文档已迁移
 
-**新文档链接**[https://uniapp.dcloud.io/vue-basics](https://uniapp.dcloud.io/vue-basics)
+**新文档链接：[Vue教程](/vue-basics)**
 
 
 **************************************
