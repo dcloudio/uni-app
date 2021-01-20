@@ -98,25 +98,21 @@ const collection = db.collection('user');
 
 ### 时间 Date
 
-**使用阿里云时请存储日期字符串或者时间戳，比如`new Date().toISOString()`。数据库存储Date类型数据仅腾讯云支持**
+Date 类型用于表示时间，精确到毫秒，可以用 JavaScript 内置 Date 对象创建。需要特别注意的是，用此方法创建的时间是客户端时间，不是服务端时间。如果需要使用服务端时间，应该用 API 中提供的 serverDate 对象来创建一个服务端当前时间的标记，当使用了 serverDate 对象的请求抵达服务端处理时，该字段会被转换成服务端当前的时间，更棒的是，我们在构造 serverDate 对象时还可通过传入一个有 offset 字段的对象来标记一个与当前服务端时间偏移 offset 毫秒的时间，这样我们就可以达到比如如下效果：指定一个字段为服务端时间往后一个小时。
 
-<!-- 我们推荐无论是腾讯云还是阿里云都以时间戳的方式存储时间字段 -->
+```js
+// 服务端当前时间
+new db.serverDate()
+// 在云函数内使用new Date()和new db.serverDate()效果一样
+```
 
-  Date 类型用于表示时间，精确到毫秒，可以用 JavaScript 内置 Date 对象创建。需要特别注意的是，用此方法创建的时间是客户端时间，不是服务端时间。如果需要使用服务端时间，应该用 API 中提供的 serverDate 对象来创建一个服务端当前时间的标记，当使用了 serverDate 对象的请求抵达服务端处理时，该字段会被转换成服务端当前的时间，更棒的是，我们在构造 serverDate 对象时还可通过传入一个有 offset 字段的对象来标记一个与当前服务端时间偏移 offset 毫秒的时间，这样我们就可以达到比如如下效果：指定一个字段为服务端时间往后一个小时。
-
-  <!-- 那么当我们需要使用客户端时间时，存放 Date 对象和存放毫秒数是否是一样的效果呢？不是的，我们的数据库有针对日期类型的优化，建议大家使用时都用 Date 或 serverDate 构造时间对象。 -->
-
-  ```js
-  //服务端当前时间
-  new db.serverDate()
-  ```
-
-  ```js
-  //服务端当前时间加1S
-  new db.serverDate({
-    offset: 1000
-  })
-  ```
+```js
+//服务端当前时间加1S
+new db.serverDate({
+  offset: 1000
+})
+// 在云函数内使用new Date(1000)和上面的用法效果一样
+```
   
 如果需要对日期进行比较操作，可以使用聚合操作符将日期进行转化，比如以下示例查询所有time字段在`2020-02-02`以后的记录
   
@@ -7391,10 +7387,6 @@ db.command.aggregate.dateFromParts({
 })
 ```
 
-**说明**
-
-- `timezone`字段请参考[Olson Timezone Identifier](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)，形式类似：`Asia/Shanghai`
-
 #####  示例代码
  
 ```js
@@ -7624,11 +7616,14 @@ let res = await db
 
       
 #####  API 说明
- 语法如下：  
+
+该接口有以下两种用法，语法如下：  
 
  
 ```js
 db.command.aggregate.dayOfMonth(<日期字段>)
+
+db.command.aggregate.dayOfMonth({date:<日期字段>,timezone:<时区>})
 ```
 
 #####  示例代码
@@ -7670,14 +7665,16 @@ let res = await db
 
       
 #####  API 说明
- *注意：周日是每周的第 1 天**  
 
- 语法如下：  
+**注意：周日是每周的第 1 天**  
 
+该接口有以下两种用法，语法如下：  
  
 ```js
 db.command.aggregate.dayOfWeek(<日期字段>)
-```
+
+db.command.aggregate.dayOfWeek({date:<日期字段>,timezone:<时区>})
+``` 
 
 #####  示例代码
  假设集合 `dates` 有以下文档：  
@@ -7718,11 +7715,13 @@ let res = await db
 
       
 #####  API 说明
- 语法如下：  
 
- 
+该接口有以下两种用法，语法如下：  
+  
 ```js
 db.command.aggregate.dayOfYear(<日期字段>)
+
+db.command.aggregate.dayOfYear({date:<日期字段>,timezone:<时区>})
 ```
 
 #####  示例代码
@@ -7764,11 +7763,13 @@ let res = await db
 
       
 #####  API 说明
- 语法如下：  
 
- 
+该接口有以下两种用法，语法如下：  
+  
 ```js
 db.command.aggregate.hour(<日期字段>)
+
+db.command.aggregate.hour({date:<日期字段>,timezone:<时区>})
 ```
 
 #####  示例代码
@@ -7808,18 +7809,19 @@ let res = await db
 
 聚合操作符。返回日期字段对应的 ISO 8601 标准的天数（一周中的第几天），是一个介于 1（周一）到 7（周日）之间的整数。  
 
-      
 #####  API 说明
- 语法如下：  
 
- 
+该接口有以下两种用法，语法如下：  
+  
 ```js
-db.command.aggregate.month(<日期字段>)
+db.command.aggregate.isoDayOfWeek(<日期字段>)
+
+db.command.aggregate.isoDayOfWeek({date:<日期字段>,timezone:<时区>})
 ```
 
 #####  示例代码
- 假设集合 `dates` 有以下文档：  
 
+假设集合 `dates` 有以下文档：
  
 ```js
 {
@@ -7827,7 +7829,7 @@ db.command.aggregate.month(<日期字段>)
     "date": ISODate("2019-05-14T09:38:51.686Z")
 }
 ```
-我们使用 `month()` 对 `date` 字段进行投影，获取对应的 ISO 8601 标准的天数（一周中的第几天）：  
+我们使用 `isoDayOfWeek()` 对 `date` 字段进行投影，获取对应的 ISO 8601 标准的天数（一周中的第几天）：  
 
  
 ```js
@@ -7841,9 +7843,9 @@ let res = await db
   })
   .end()
 ```
-输出如下：  
 
- 
+输出如下：
+
 ```js
 {
     "isoDayOfWeek": 2
@@ -7856,20 +7858,22 @@ let res = await db
 
       
 #####  API 说明
- 根据 ISO 8601 标准，周一到周日视为一周，本年度第一个周四所在的那周，视为本年度的第 1 周。  
 
- 例如：2016 年 1 月 7 日是那年的第一个周四，那么 2016.01.04（周一）到 2016.01.10（周日） 即为第 1 周。同理，2016 年 1 月 1 日的周数为 53。  
+根据 ISO 8601 标准，周一到周日视为一周，本年度第一个周四所在的那周，视为本年度的第 1 周。  
 
- 语法如下：  
+例如：2016 年 1 月 7 日是那年的第一个周四，那么 2016.01.04（周一）到 2016.01.10（周日） 即为第 1 周。同理，2016 年 1 月 1 日的周数为 53。  
 
- 
+该接口有以下两种用法，语法如下：  
+  
 ```js
 db.command.aggregate.isoWeek(<日期字段>)
+
+db.command.aggregate.isoWeek({date:<日期字段>,timezone:<时区>})
 ```
 
 #####  示例代码
- 假设集合 `dates` 有以下文档：  
 
+假设集合 `dates` 有以下文档：  
  
 ```js
 {
@@ -7877,6 +7881,7 @@ db.command.aggregate.isoWeek(<日期字段>)
     "date": ISODate("2019-05-14T09:38:51.686Z")
 }
 ```
+
 我们使用 `isoWeek()` 对 `date` 字段进行投影，获取对应的 ISO 8601 标准的周数（一年中的第几周）：  
 
  
@@ -7891,9 +7896,9 @@ let res = await db
   })
   .end()
 ```
+
 输出如下：  
 
- 
 ```js
 {
     "isoWeek": 20
@@ -7903,21 +7908,22 @@ let res = await db
 #### isoWeekYear
 
 聚合操作符。返回日期字段对应的 ISO 8601 标准的天数（一年中的第几天）。  
-
       
 #####  API 说明
- 此处的“年”以第一周的周一为开始，以最后一周的周日为结束。  
 
- 语法如下：  
+此处的“年”以第一周的周一为开始，以最后一周的周日为结束。  
 
- 
+该接口有以下两种用法，语法如下：  
+  
 ```js
 db.command.aggregate.isoWeekYear(<日期字段>)
+
+db.command.aggregate.isoWeekYear({date:<日期字段>,timezone:<时区>})
 ```
 
 #####  示例代码
- 假设集合 `dates` 有以下文档：  
 
+假设集合 `dates` 有以下文档：  
  
 ```js
 {
@@ -7925,8 +7931,8 @@ db.command.aggregate.isoWeekYear(<日期字段>)
     "date": ISODate("2019-05-14T09:38:51.686Z")
 }
 ```
-我们使用 `isoWeekYear()` 对 `date` 字段进行投影，获取对应的 ISO 8601 标准的天数（一年中的第几天）：  
 
+我们使用 `isoWeekYear()` 对 `date` 字段进行投影，获取对应的 ISO 8601 标准的天数（一年中的第几天）：  
  
 ```js
 const $ = db.command.aggregate
@@ -7939,9 +7945,9 @@ let res = await db
   })
   .end()
 ```
+
 输出如下：  
 
- 
 ```js
 {
     "isoWeekYear": 2019
@@ -7952,18 +7958,19 @@ let res = await db
 
 聚合操作符。返回日期字段对应的毫秒数，是一个介于 0 到 999 之间的整数。  
 
-      
 #####  API 说明
- 语法如下：  
 
- 
+该接口有以下两种用法，语法如下：  
+  
 ```js
 db.command.aggregate.millisecond(<日期字段>)
+
+db.command.aggregate.millisecond({date:<日期字段>,timezone:<时区>})
 ```
 
 #####  示例代码
- 假设集合 `dates` 有以下文档：  
 
+假设集合 `dates` 有以下文档：
  
 ```js
 {
@@ -7971,9 +7978,9 @@ db.command.aggregate.millisecond(<日期字段>)
     "date": ISODate("2019-05-14T09:38:51.686Z")
 }
 ```
+
 我们使用 `millisecond()` 对 `date` 字段进行投影，获取对应的毫秒数：  
 
- 
 ```js
 const $ = db.command.aggregate
 let res = await db
@@ -7985,9 +7992,9 @@ let res = await db
   })
   .end()
 ```
+
 输出如下：  
 
- 
 ```js
 {
     "millisecond": 686
@@ -7998,27 +8005,28 @@ let res = await db
 
 聚合操作符。返回日期字段对应的分钟数，是一个介于 0 到 59 之间的整数。  
 
-      
 #####  API 说明
- 语法如下：  
 
- 
+该接口有以下两种用法，语法如下：  
+  
 ```js
 db.command.aggregate.minute(<日期字段>)
+
+db.command.aggregate.minute({date:<日期字段>,timezone:<时区>})
 ```
 
 #####  示例代码
- 假设集合 `dates` 有以下文档：  
 
- 
+假设集合 `dates` 有以下文档：
+
 ```js
 {
     "_id": 1,
     "date": ISODate("2019-05-14T09:38:51.686Z")
 }
 ```
-我们使用 `minute()` 对 `date` 字段进行投影，获取对应的分钟数：  
 
+我们使用 `minute()` 对 `date` 字段进行投影，获取对应的分钟数：
  
 ```js
 const $ = db.command.aggregate
@@ -8031,9 +8039,9 @@ let res = await db
   })
   .end()
 ```
+
 输出如下：  
 
- 
 ```js
 {
     "minute": 38
@@ -8044,13 +8052,14 @@ let res = await db
 
 聚合操作符。返回日期字段对应的月份，是一个介于 1 到 12 之间的整数。  
 
-      
 #####  API 说明
- 语法如下：  
 
- 
+该接口有以下两种用法，语法如下：  
+  
 ```js
 db.command.aggregate.month(<日期字段>)
+
+db.command.aggregate.month({date:<日期字段>,timezone:<时区>})
 ```
 
 #####  示例代码
@@ -8063,9 +8072,9 @@ db.command.aggregate.month(<日期字段>)
     "date": ISODate("2019-05-14T09:38:51.686Z")
 }
 ```
+
 我们使用 `month()` 对 `date` 字段进行投影，获取对应的月份：  
 
- 
 ```js
 const $ = db.command.aggregate
 let res = await db
@@ -8077,9 +8086,9 @@ let res = await db
   })
   .end()
 ```
+
 输出如下：  
 
- 
 ```js
 {
     "month": 5
@@ -8090,28 +8099,29 @@ let res = await db
 
 聚合操作符。返回日期字段对应的秒数，是一个介于 0 到 59 之间的整数，在特殊情况下（闰秒）可能等于 60。  
 
-      
 #####  API 说明
- 语法如下：  
 
- 
+该接口有以下两种用法，语法如下：  
+  
 ```js
 db.command.aggregate.second(<日期字段>)
+
+db.command.aggregate.second({date:<日期字段>,timezone:<时区>})
 ```
 
 #####  示例代码
- 假设集合 `dates` 有以下文档：  
 
- 
+假设集合 `dates` 有以下文档：
+
 ```js
 {
     "_id": 1,
     "date": ISODate("2019-05-14T09:38:51.686Z")
 }
 ```
+
 我们使用 `second()` 对 `date` 字段进行投影，获取对应的秒数：  
 
- 
 ```js
 const $ = db.command.aggregate
 let res = await db
@@ -8123,9 +8133,9 @@ let res = await db
   })
   .end()
 ```
+
 输出如下：  
 
- 
 ```js
 {
     "second": 51
@@ -8136,30 +8146,31 @@ let res = await db
 
 聚合操作符。返回日期字段对应的周数（一年中的第几周），是一个介于 0 到 53 之间的整数。  
 
-      
 #####  API 说明
- 每周以周日为开头，**每年的第一个周日**即为 `week 1` 的开始，这天之前是 `week 0`。  
 
- 语法如下：  
+每周以周日为开头，**每年的第一个周日**即为 `week 1` 的开始，这天之前是 `week 0`。  
 
- 
+该接口有以下两种用法，语法如下：  
+  
 ```js
 db.command.aggregate.week(<日期字段>)
+
+db.command.aggregate.week({date:<日期字段>,timezone:<时区>})
 ```
 
 #####  示例代码
- 假设集合 `dates` 有以下文档：  
 
- 
+假设集合 `dates` 有以下文档：  
+
 ```js
 {
     "_id": 1,
     "date": ISODate("2019-05-14T09:38:51.686Z")
 }
 ```
+
 我们使用 `week()` 对 `date` 字段进行投影，获取对应的周数（一年中的第几周）：  
 
- 
 ```js
 const $ = db.command.aggregate
 let res = await db
@@ -8171,9 +8182,9 @@ let res = await db
   })
   .end()
 ```
+
 输出如下：  
 
- 
 ```js
 {
     "week": 19
@@ -8184,28 +8195,29 @@ let res = await db
 
 聚合操作符。返回日期字段对应的年份。  
 
-      
 #####  API 说明
- 语法如下：  
 
- 
+该接口有以下两种用法，语法如下：  
+  
 ```js
 db.command.aggregate.year(<日期字段>)
+
+db.command.aggregate.year({date:<日期字段>,timezone:<时区>})
 ```
 
 #####  示例代码
- 假设集合 `dates` 有以下文档：  
 
- 
+假设集合 `dates` 有以下文档：
+
 ```js
 {
     "_id": 1,
     "date": ISODate("2019-05-14T09:38:51.686Z")
 }
 ```
-我们使用 `year()` 对 `date` 字段进行投影，获取对应的年份：  
 
- 
+我们使用 `year()` 对 `date` 字段进行投影，获取对应的年份：
+
 ```js
 const $ = db.command.aggregate
 let res = await db
@@ -8217,9 +8229,9 @@ let res = await db
   })
   .end()
 ```
-输出如下：  
 
- 
+输出如下：
+
 ```js
 {
     "year": 2019
@@ -8364,7 +8376,7 @@ let res = await db.collection('sales').aggregate()
 
 **一般用法**
 
- 假设集合 `test` 存在以下文档：  
+假设集合 `test` 存在以下文档：  
 
  
 ```js
@@ -8402,19 +8414,18 @@ let res = await db.collection('sales').aggregate()
 
 聚合操作符。输入一个数组，或者数组字段的表达式。如果数组中所有元素均为真值，那么返回 `true`，否则返回 `false`。空数组永远返回 `true`。  
 
-      
 #####  API 说明
- 语法如下：  
 
+语法如下：
  
 ```js
 allElementsTrue([<expression>])
 ```
 
 #####  示例代码
- 假设集合 `test` 有如下记录：  
 
- 
+假设集合 `test` 有如下记录：  
+
 ```js
 { "_id": 1, "array": [ true ] }
 { "_id": 2, "array": [ ] }
