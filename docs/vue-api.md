@@ -77,9 +77,9 @@
 |vm.$props	| 当前组件接收到的 props 对象 [详情](https://cn.vuejs.org/v2/api/#vm-props) 	|√	| √	| √		|		|
 |vm.$el	| Vue 实例使用的根 DOM 元素 [详情](https://cn.vuejs.org/v2/api/#vm-el) 	|√	| x	| x		|		|
 |vm.$options	| 用于当前 Vue 实例的初始化选项 [详情](https://cn.vuejs.org/v2/api/#vm-options) 	|√	| √	| √		|		|
-|vm.$parent	| 父实例，如果当前实例有的话 [详情](https://cn.vuejs.org/v2/api/#vm-parent) 	|√	|√	| √		|H5端 view、text 等内置标签是以 Vue 组件方式实现，$parent 会获取这些内置组件		|
+|vm.$parent	| 父实例，如果当前实例有的话 [详情](https://cn.vuejs.org/v2/api/#vm-parent) 	|√	|√	| √		|H5端 `view`、`text` 等内置标签是以 Vue 组件方式实现，`$parent` 会获取这些到内置组件，导致的问题是 `this.$parent` 与其他平台不一致，解决方式是使用 `this.$parent.$parent` 获取或自定义组件根节点由 `view` 改为 `div`|
 |vm.$root	| 当前组件树的根 Vue 实例 [详情](https://cn.vuejs.org/v2/api/#vm-root) 	|√	| √	| √		|		|
-|vm.$children	| 当前实例的直接子组件 [详情](https://cn.vuejs.org/v2/api/#vm-children) 	|√	| √	| √		|H5端 view、text 等内置标签是以 Vue 组件方式实现，$children 会获取这些内置组件		|
+|vm.$children	| 当前实例的直接子组件 [详情](https://cn.vuejs.org/v2/api/#vm-children) 	|√	| √	| √		|H5端 `view`、`text` 等内置标签是以 Vue 组件方式实现，`$children` 会获取到这些内置组件，导致的问题是 `this.$children` 与其他平台不一致，解决方式是使用 `this.$children.$children` 获取或自定义组件根节点由 `view` 改为 `div`|
 |vm.$slots	| 用来访问被插槽分发的内容 [详情](https://cn.vuejs.org/v2/api/#vm-slots) 	|√	| x	| √		|App端旧版获取值为{'slotName':true/false}比如：{"footer":true}		|
 |vm.$scopedSlots	| 用来访问作用域插槽 [详情](https://cn.vuejs.org/v2/api/#vm-scopedSlots) 	|√	| √	| √		|App端旧版获取值为{'slotName':true/false}比如：{"footer":true}		|
 |vm.$refs	| 一个对象，持有注册过 ref attribute 的所有 DOM 元素和组件实例[详情](https://cn.vuejs.org/v2/api/#vm-refs) 	|√	| √	| √		|非H5端只能用于获取自定义组件，不能用于获取内置组件实例（如：view、text）		|
