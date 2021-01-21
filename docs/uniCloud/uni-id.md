@@ -541,7 +541,7 @@ exports.main = async function(event,context) {
 ```
 
 
-### token校验@checkToken
+### token校验@checktoken
 
 用法：`uniID.checkToken(String token, Object checkTokenOptions)`
 
