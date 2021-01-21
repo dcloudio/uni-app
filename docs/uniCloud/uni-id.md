@@ -146,6 +146,9 @@ exports.main = async (event, context) => {
 			"weixin": {
 				"appid": "weixin appid",
 				"appsecret": "weixin appsecret"
+			},
+			"apple": {
+				"bundleId": "your bundleId"
 			}
 		}
 	},
@@ -176,6 +179,11 @@ exports.main = async (event, context) => {
 			"codeExpiresIn": 180, // 验证码过期时间，单位为秒，注意一定要是60的整数倍
 			"smsKey": "your sms key", // 短信密钥key，开通短信服务处可以看到
 			"smsSecret": "your sms secret" // 短信密钥secret，开通短信服务处可以看到
+		},
+		"univerify": {
+      "appid": "your appid", // 当前应用的appid，使用云函数URL化，此项必须配置
+			"apiKey": "your apiKey",// apiKey 和 apiSecret 在开发者中心获取，开发者中心：https://dev.dcloud.net.cn/uniLogin/index?type=0，文档：https://ask.dcloud.net.cn/article/37965
+			"apiSecret": "your apiSecret"
 		}
 	}
 }
@@ -1747,6 +1755,165 @@ exports.main = async function(event,context) {
   	return payload
   }
 	const res = await uniID.unbindAlipay(payload.uid)
+	return res
+}
+```
+
+## Apple（苹果）
+
+### Apple登录@loginbyapple
+
+用法：`uniID.loginByApple(Object LoginByAppleParams);`
+
+**注意**
+
+- 需要在config.json内的 app-plus > oauth > apple 下配置 bundleId
+- 登录成功之后应持久化存储token，键值为：uni_id_token，`uni.setStorageSync('uni_id_token', res.result.token)`
+
+**参数说明**
+
+| 字段				| 类型	| 必填| 说明																																						   						|
+| ---					| ---		| ---	| ---																																     	     			|
+| identityToken  |String	| 是	|uni.login使用apple登录后，uni.getUserInfo返回的identityToken								  					|
+| nickName  |String	| 否	| 若无nickName，则读取fullName，若fullName也无效，则使用email												     			|
+| fullName  |Object	| 否	| uni.login使用apple登录后，uni.getUserInfo返回的fullName												     			|
+| type				| String| 否	| 指定操作类型，可选值为`login`、`register`，不传此参数时表现为已注册则登录，未注册则进行注册|
+| myInviteCode| String| 否	| 设置当前注册用户自己的邀请码，type为`register`时生效					          							|
+| needPermission| Boolean	| 否	|设置为true时会在checkToken时返回用户权限（permission），建议在管理控制台中使用	|
+
+**响应参数**
+
+| 字段						| 类型		| 说明																		|
+| ---							| ---			| ---																			|
+| code						| Number	|错误码，0表示成功												|
+| message							| String	|详细信息																	|
+| uid							| String	|用户uid																	|
+| type						| String	|操作类型，`login`为登录、`register`为注册|
+| openid					| String	|用户openid																|
+| token						| String	|登录成功之后返回的token信息							|
+| userInfo		| Object|用户全部信息								|
+| tokenExpired		| String	|token过期时间														|
+
+**示例代码**
+
+```js
+// 云函数login-by-apple代码
+const uniID = require('uni-id')
+exports.main = async function(event,context) {
+	const res = await uniID.loginByApple(event)
+	return res
+}
+
+// 客户端代码
+// 代码较长建议直接参考插件市场示例项目：https://ext.dcloud.net.cn/plugin?id=2116
+let AuthService
+const Provider = 'apple'
+export default {
+  data() {
+    return {
+      haAuth: false
+    }
+  },
+  onLoad() {
+    uni.getProvider({
+      service: 'oauth',
+      success: (result) => {
+        if(result.provider.indexOf(Provider) !== -1){
+          this.haAuth = true
+        }
+      },
+      fail: (error) => {
+        console.log('获取登录通道失败', error);
+      }
+    });
+  },
+  methods: {
+    async loginByApple() {
+      if(!this.haAuth) return;
+      const [loginErr, loginData] = await uni.login({
+        provider: Provider
+      });
+      if (loginErr) {
+        uni.showModal({
+          showCancel: false,
+          content: '苹果登录失败，请稍后再试'
+        })
+        return;
+      }
+      // 获取用户信息
+      const [getUserInfoErr, result] = await uni.getUserInfo({
+        provider: Provider
+      });
+      console.log("getUserInfo result: ",result);
+      if (getUserInfoErr) {
+        let content = getUserInfoErr.errMsg;
+        if (~content.indexOf('uni.login')) {
+          content = '请先完成登录操作';
+        }
+        uni.showModal({
+          title: '获取用户信息失败',
+          content: '错误原因' + content,
+          showCancel: false
+        });
+        return;
+      }
+      // uni-id 苹果登录
+      uniCloud.callFunction({
+        name: 'login-by-apple',
+        data: result.userInfo,
+        success: (res) => {
+          console.log('uniid login success', res);
+          uni.showModal({
+            showCancel: false,
+            content: JSON.stringify(res.result)
+          })
+        },
+        fail: (e) => {
+          uni.showModal({
+            content: `苹果登录失败: ${JSON.stringify(e)}`,
+            showCancel: false
+          })
+        }
+      })
+    }
+  }
+}
+
+```
+
+### Apple登录校验identityToken
+
+用法：`uniID.verifyAppleIdentityToken(Object Code2SessionAppleParams);`
+
+**参数说明**
+
+| 字段		| 类型	| 必填| 说明																																																										|
+| ---			| ---		| ---	| ---																																																											|
+| identityToken  |String	| 否	|uni.login使用apple登录后，uni.getUserInfo返回的identityToken								  					|
+
+**响应参数**
+
+| 字段				| 类型	| 说明																													|
+| ---					| ---		| ---																														|
+| code				| Number|错误码，0表示成功																							|
+| message					| String|详细信息																												|
+| iss			| String|发行人注册的索赔标识了发行身份令牌的委托人。由于Apple生成令牌，因此值为。https://appleid.apple.com																											|
+| sub	| String|主题注册的权利要求标识作为身份令牌主题的主体。由于此令牌用于您的应用程序，因此该值是用户的唯一标识符。																							|
+| aud		| String|观众注册的声明标识了身份令牌所针对的收件人。由于令牌是针对您的应用程序的，因此该值是您开发者帐户中的。client_id |
+| iat| String|在注册时发出的声明中，以自Epoch以来的秒数（单位为UTC）来指示Apple发行身份令牌的时间。													|
+| exp	| String|注册的到期时间以UTC中的自Epoch以来的秒数来标识身份令牌将在其上或之后到期的时间。验证令牌时，该值必须大于当前日期/时间。																|
+| email	| String|一个字符串值，代表用户的电子邮件地址。电子邮件地址将是用户的真实电子邮件地址或代理地址，具体取决于他们的状态私人电子邮件中继服务。					|
+| email_verified	| String|字符串或布尔值，指示服务是否已验证电子邮件。此声明的值始终为true，因为服务器仅返回经过验证的电子邮件地址。该值可以是字符串（”true”）或布尔值（true）。|
+| is_private_email	| String|字符串或布尔值，指示用户共享的电子邮件是否是代理地址。该值可以是字符串（”true”或“false”）或布尔值（true或false）。|
+| real_user_status	| String|一个整数值，指示用户是否看起来是真实的人。使用此索赔的价值来减轻欺诈。可能的值为：（0或Unsupported）。1 （或Unknown），2 （或）。有关更多信息，请参见。仅在iOS 14和更高版本，macOS 11和更高版本，watchOS 7和更高版本，tvOS 14和更高版本上才存在此声明；基于Web的应用程序不存在或不支持该声明。|
+
+```js
+// 云函数代码
+const uniID = require('uni-id')
+exports.main = async function(event,context) {
+	const res = await uniID.verifyAppleIdentityToken({
+    identityToken: event.identityToken
+  })
 	return res
 }
 ```
