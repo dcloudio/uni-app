@@ -506,7 +506,7 @@ ctx.draw(true)
 
 |参数|类型	|说明				|
 |---	|---|---	|
-|imageResource	|String	|所要绘制的图片资源				|
+|imageResource	|String	|所要绘制的图片资源**【不支持网络图片资源,APP端必须使用downloadFile下载到本地再使用】**				|
 |dx	|Number	|图像的左上角在目标canvas上 X 轴的位置		|
 |dy	|Number	|图像的左上角在目标canvas上 Y 轴的位置		|
 |dWidth|Number	|在目标画布上绘制图像的宽度，允许对绘制的图像进行缩放	|
