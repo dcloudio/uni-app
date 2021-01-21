@@ -531,6 +531,8 @@ db.collection('order')
 
 查询时可以使用field方法指定返回字段，在`<uni-clientDB>`组件中也支持field属性。不使用field方法时会返回所有字段
 
+field内使用jql指定返回字段，即使没有指定_id也一定会返回_id字段
+
 ### 别名@alias
 
 自`2020-11-20`起clientDB jql写法支持字段别名，主要用于在前端需要的字段名和数据库字段名称不一致的情况下对字段进行重命名。
@@ -1338,6 +1340,7 @@ const res = await db.collection('score')
 
 - 在上面使用preField方法的情况下，会计算preField内访问的所有字段计算权限。上面的例子中会使用表的read权限和grade、class、score三个字段的权限，来进行权限校验。
 - 在不使用preField，仅使用groupBy和groupField的情况下，会以groupBy和groupField内访问的所有字段的权限来校验访问是否合法。
+- 与field不同groupBy不会包含_id，除非你手动指定
 
 #### 统计数量
 
@@ -1377,6 +1380,8 @@ const res = await db.collection('score')
 ### 数据去重@distinct
 
 通过.distinct()方法，对数据查询结果中重复的记录进行去重。
+
+distinct方法将按照field方法指定的字段进行去重（如果field内未指定_id，不会按照_id去重）
 
 > `HBuilderX 3.0.8`+
 

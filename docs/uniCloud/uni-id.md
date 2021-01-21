@@ -147,7 +147,7 @@ exports.main = async (event, context) => {
 				"appid": "weixin appid",
 				"appsecret": "weixin appsecret"
 			},
-			"apple": {
+			"apple": { // 使用苹果登录时需要
 				"bundleId": "your bundleId"
 			}
 		}
@@ -188,6 +188,14 @@ exports.main = async (event, context) => {
 	}
 }
 ```
+
+**关于token自动刷新**
+
+tokenExpiresThreshold用于指定token还有多长时间过期时自动刷新token。
+
+例：指定`tokenExpiresThreshold:600,tokenExpiresIn:7200`，token过期时间为2小时，在token有效期不足10分钟时自动刷新token
+
+在token还有5分钟过期时调用checkToken接口会返回新的token和新的token的过期时间（新token有效时间也是2小时），需要前端主动保存此新token。
 
 # 用户角色权限@rbac
 
