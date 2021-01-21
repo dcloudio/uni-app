@@ -179,19 +179,11 @@ exports.main = async (event, context) => {
 			"codeExpiresIn": 180, // 验证码过期时间，单位为秒，注意一定要是60的整数倍
 			"smsKey": "your sms key", // 短信密钥key，开通短信服务处可以看到
 			"smsSecret": "your sms secret" // 短信密钥secret，开通短信服务处可以看到
-<<<<<<< HEAD
 		},
 		"univerify": {
       "appid": "your appid", // 当前应用的appid，使用云函数URL化，此项必须配置
 			"apiKey": "your apiKey",// apiKey 和 apiSecret在开发者中心获取，开发者中心：https://dev.dcloud.net.cn/uniLogin/index?type=0，文档：https://ask.dcloud.net.cn/article/37965
 			"apiSecret": "your apiSecret"
-=======
-		},
-		"univerify": {
-      "appid": "your appid", // 当前应用的appid，使用云函数URL化，此项必须配置
-			"apiKey": "your apiKey",// apiKey 和 apiSecret 在开发者中心获取，开发者中心：https://dev.dcloud.net.cn/uniLogin/index?type=0，文档：https://ask.dcloud.net.cn/article/37965
-			"apiSecret": "your apiSecret"
->>>>>>> master
 		}
 	}
 }
@@ -664,19 +656,12 @@ uniCloud.callFunction({
 
 **响应参数**
 
-<<<<<<< HEAD
 | 字段				| 类型	| 说明										|
 | ---					| ---		| ---											|
 | code				| Number|错误码，0表示成功				|
 | message			| String|详细信息									|
 | token				| String|生成的token							|
 | tokenExpired| Number|token过期时间对应的时间戳|
-=======
-| 字段				| 类型	| 必填| 说明										|
-| ---					| ---		| ---	| ---											|
-| token				| String| 是	|生成的token							|
-| tokenExpired| Number| 是	|token过期时间对应的时间戳|
->>>>>>> master
 
 ### 修改密码 @update-password
 
@@ -1489,19 +1474,11 @@ exports.main = async function(event,context) {
 | type						| String	|操作类型，`login`为登录、`register`为注册|
 | openid					| String	|用户openid																|
 | unionid					| String	| 否	|用户unionid，能取到此参数时会返回				|
-<<<<<<< HEAD
 | token						| String	|登录成功之后返回的token信息							|
 | userInfo		| Object|用户全部信息								|
 | tokenExpired		| String	|token过期时间														|
 | mobileConfirmed	| Boolean	|是否已验证手机号													|
 | emailConfirmed	| Boolean	|是否已验证邮箱														|
-=======
-| token						| String	| 是	|登录成功之后返回的token信息							|
-| userInfo		    | Object  | 否	|用户全部信息，`type`为`login`时返回								|
-| tokenExpired		| String	| 是	|token过期时间														|
-| mobileConfirmed	| Boolean	| 是	|是否已验证手机号													|
-| emailConfirmed	| Boolean	| 是	|是否已验证邮箱														|
->>>>>>> master
 
 **示例代码**
 
@@ -1712,7 +1689,6 @@ exports.main = async function(event,context) {
 
 **响应参数**
 
-<<<<<<< HEAD
 | 字段						| 类型		| 说明																		|
 | ---							| ---			| ---																			|
 | code						| Number	|错误码，0表示成功												|
@@ -1725,20 +1701,6 @@ exports.main = async function(event,context) {
 | tokenExpired		| String	|token过期时间														|
 | mobileConfirmed	| Boolean	|是否已验证手机号													|
 | emailConfirmed	| Boolean	|是否已验证邮箱														|
-=======
-| 字段						| 类型		| 必填| 说明																		|
-| ---							| ---			| ---	| ---																			|
-| code						| Number	| 是	|错误码，0表示成功												|
-| message							| String	| 是	|详细信息																	|
-| uid							| String	| 是	|用户uid																	|
-| type						| String	| 是	|操作类型，`login`为登录、`register`为注册|
-| openid					| String	| 是	|用户openid																|
-| token						| String	| 是	|登录成功之后返回的token信息							|
-| userInfo		| Object| 是	|用户全部信息，`type`为`login`时返回								|
-| tokenExpired		| String	| 是	|token过期时间														|
-| mobileConfirmed	| Boolean	| 是	|是否已验证手机号													|
-| emailConfirmed	| Boolean	| 是	|是否已验证邮箱														|
->>>>>>> master
 
 **示例代码**
 
