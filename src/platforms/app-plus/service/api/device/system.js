@@ -97,6 +97,7 @@ export function getSystemInfo () {
       right: safeAreaInsets.right,
       bottom: safeAreaInsets.bottom,
       left: safeAreaInsets.left
-    }
+    },
+    uuid: plus.runtime.getDCloudId()
   }
 }

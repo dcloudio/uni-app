@@ -3,6 +3,7 @@ import {
 } from 'uni-shared'
 import navigateTo from 'uni-helpers/navigate-to'
 import redirectTo from '../../../mp-weixin/helpers/redirect-to'
+import getSystemInfo from '../../helpers/system-info'
 
 // 不支持的 API 列表
 const todos = [
@@ -71,14 +72,6 @@ function _handleNetworkInfo (result) {
       break
   }
   return {}
-}
-
-function _handleSystemInfo (result) {
-  let platform = result.platform ? result.platform.toLowerCase() : 'devtools'
-  if (!~['android', 'ios'].indexOf(platform)) {
-    platform = 'devtools'
-  }
-  result.platform = platform
 }
 
 const protocols = { // 需要做转换的 API 列表
@@ -426,12 +419,8 @@ const protocols = { // 需要做转换的 API 列表
   stopGyroscope: {
     name: 'offGyroscopeChange'
   },
-  getSystemInfo: {
-    returnValue: _handleSystemInfo
-  },
-  getSystemInfoSync: {
-    returnValue: _handleSystemInfo
-  },
+  getSystemInfo: getSystemInfo,
+  getSystemInfoSync: getSystemInfo,
   // 文档没提到，但是实测可用。
   canvasToTempFilePath: {
     returnValue (result) {
