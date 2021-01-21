@@ -176,10 +176,17 @@ where中指定要查询的条件。比如只查询某个字段的值符合一定
 
 <!-- 升序可以不写，不写默认就是升序。 -->
 
-示例代码
+单字段排序，示例代码
 ```html
 <unicloud-db orderby="createTime desc"></unicloud-db>
 ```
+
+多字段排序，示例代码
+```html
+<unicloud-db orderby="createTime1 asc,createTime2 desc"></unicloud-db>
+```
+
+
 
 ## 事件
 
