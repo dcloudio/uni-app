@@ -53,7 +53,7 @@ const unipay = require('@dcloudio/unipay')
 | :--------: | :-----: | :----: | :--------------------------------------------------: | :------------------------------------: |
 |   appId    | String  |   是   |                          -                           |     当前应用在对应支付平台的 appId     |
 |   mchId    | String  |   是   |                          -                           |                 商户号                 |
-|    key     | String  |   是   |                          -                           |            支付商户 md5 key            |
+|    key     | String  |   是   |                          -                           |            支付商户 key （API密钥）           |
 |    pfx     | String  | Buffer |                   使用退款功能必填                   |       微信支付商户 API 证书，主要用于退款 |
 |  timeout   | Number  |   否   |                         5000                         |        请求超时时间，单位：毫秒        |
 |  signType  | String  |   否   |                         MD5                          |                签名类型                |
@@ -555,7 +555,24 @@ exports.main = async function (event) {
 ```js
 exports.main = async function (event) {
   let res = await unipayIns.verifyPaymentNotify(event)
-  return res
+  // 处理完毕其他业务
+  // 注意如果处理成功需要严格按照下面的格式进行返回，否则厂商会持续通知
+  // 微信处理成功之后 
+  return {  
+    statusCode: 200,  
+    headers: {  
+        'content-type': 'text/xml;charset=utf-8'  
+    },  
+    body: `<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>`  
+  }
+  // 支付宝处理成功后  
+  return {  
+    statusCode: 200,
+    headers: {  
+      'content-type': 'text/plain'  
+    },  
+    body: "success"
+  }
 }
 ```
 
@@ -588,6 +605,22 @@ exports.main = async function (event) {
 ```js
 exports.main = async function (event) {
   let res = await unipayIns.verifyRefundNotify(event)
-  return res
+  // 注意如果处理成功需要严格按照下面的格式进行返回，否则厂商会持续通知
+  // 微信处理成功之后 
+  return {  
+    statusCode: 200,  
+    headers: {  
+        'content-type': 'text/xml;charset=utf-8'  
+    },  
+    body: `<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>`  
+  }
+  // 支付宝处理成功后  
+  return {  
+    statusCode: 200,
+    headers: {  
+      'content-type': 'text/plain'  
+    },  
+    body: "success"
+  }
 }
 ```

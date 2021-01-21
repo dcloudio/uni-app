@@ -58,6 +58,7 @@
 - windowHeight不包含NavigationBar和TabBar的高度
 - H5端，windowTop等于NavigationBar高度，windowBottom等于TabBar高度
 - App端，windowTop等于透明状态NavigationBar高度，windowBottom等于透明状态TabBar高度
+- 高度相关信息，要放在 onReady 里获取
 
 **safeArea 的结构**
 

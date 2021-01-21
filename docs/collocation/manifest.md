@@ -1,4 +1,4 @@
-`manifest.json` 文件是应用的配置文件，用于指定应用的名称、图标、权限等。
+`manifest.json` 文件是应用的配置文件，用于指定应用的名称、图标、权限等。HBuilderX 创建的工程此文件在根目录，CLI 创建的工程此文件在 src 目录。
 
 ### 配置项列表
 
@@ -6,6 +6,7 @@
 |:-|:-|:-|:-|:-|
 |name|String||应用名称||
 |appid|String|新建 uni-app 项目时，DCloud 云端分配。用途[详见](https://ask.dcloud.net.cn/article/35907)|应用标识|| 
+|screenOrientation|Array||重力感应、横竖屏配置，可取值："portrait-primary"：竖屏正方向；"portrait-secondary"：竖屏反方向；"landscape-primary"：横屏正方向；"landscape-secondary"：横屏反方向。||
 |description|String||应用描述||
 |versionName|String||版本名称，例如：1.0.0。详见下方Tips说明||
 |versionCode|String||版本号，例如：36||
@@ -125,7 +126,7 @@ splash（启动封面）是App必然存在的、不可取消的。
 |android|Object|Android 应用配置，详见: [完整 manifest.json](/collocation/manifest?id=完整-manifestjson)|
 |ios|Object|iOS 应用配置，详见: [完整 manifest.json](/collocation/manifest?id=完整-manifestjson)|
 |sdkConfigs|Object|SDK配置，仅打包生效 [详见](/collocation/manifest?id=sdkConfigs)|
-|orientation|Array|重力感应、横竖屏配置，可取值："portrait-primary"：竖屏正方向；"portrait-secondary"：竖屏反方向；"landscape-primary"：横屏正方向；"landscape-secondary"：横屏反方向。|
+|orientation|Array|同 screenOrientation 配置，仅打包生效，推荐使用 screenOrientation|
 
 ##### App SdkConfigs@sdkConfigs
 
@@ -210,6 +211,11 @@ splash（启动封面）是App必然存在的、不可取消的。
 		<title>
 			<%= htmlWebpackPlugin.options.title %>
 		</title>
+		<!-- Open Graph data -->
+		<!-- <meta property="og:title" content="Title Here" /> -->
+		<!-- <meta property="og:url" content="http://www.example.com/" /> -->
+		<!-- <meta property="og:image" content="http://example.com/image.jpg" /> -->
+		<!-- <meta property="og:description" content="Description Here" /> -->
 		<script>
 			var coverSupport = 'CSS' in window && typeof CSS.supports === 'function' && (CSS.supports('top: env(a)') || CSS.supports('top: constant(a)'))
 			document.write('<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' + (coverSupport ? ', viewport-fit=cover' : '') + '" />')
@@ -296,7 +302,7 @@ Tips：`uni-app` 中 `manifest.json->h5->devServer` 实际上对应 `webpack` �
 	"sdkConfigs": {
 		"maps": {
 			"qqmap": {
-				//腾讯地图秘钥（key）
+				// 腾讯地图秘钥（key）https://lbs.qq.com/dev/console/key/manage
 				"key": ""
 			}
 		}
@@ -543,6 +549,13 @@ mp-qq只支持自定义组件模式，不存在usingComponents配置
     "optimization": {
       "subPackages": true // HBuilderX 2.7.12+ 支持
     },
+    // 屏幕方向
+    "screenOrientation": [
+      "portrait-primary",
+      "landscape-primary",
+      "portrait-secondary",
+      "landscape-secondary"
+    ],
 		"modules": {
 			"Contacts": {},
 			"Fingerprint": {},
@@ -679,13 +692,6 @@ mp-qq只支持自定义组件模式，不存在usingComponents配置
 					}
 				}
 			},
-			// 屏幕方向 需要云打包/本地打包/自定义基座生效
-			"orientation": [
-				"portrait-primary",
-				"landscape-primary",
-				"portrait-secondary",
-				"landscape-secondary"
-			],
 			// HBuilderX->manifest.json->图标配置
 			"icons": {
 				"ios": {
@@ -758,8 +764,7 @@ mp-qq只支持自定义组件模式，不存在usingComponents配置
 		// HBuilderX->manifest.json->启动图配置->启动界面选项
 		"splashscreen": {
 			"waiting": true,
-			"autoclose": true,
-			"delay": 0
+			"autoclose": true
 		},
 		"error": {
 			"url": "页面加载错误时打开的页面地址，可以是网络地址，也可以是本地地址"

@@ -3,7 +3,7 @@
 * [组件](component/README.md)
 * [API](api/README.md)
 * [uniCloud](uniCloud/README.md)
-* [其它规范](javascript:;)
+* [其它规范](http://www.html5plus.org/doc/h5p.html)
   - [App扩展规范HTML5 Plus](http://www.html5plus.org/doc/h5p.html)
   - [微信小程序](https://developers.weixin.qq.com/miniprogram/dev/framework/)
   - [支付宝小程序](https://docs.alipay.com/mini/developer/getting-started)
@@ -17,11 +17,11 @@
 <ul class="nav-href">
 	<li class="ext-link"><a href="//ext.dcloud.net.cn/" target="__blank">插件市场</a></li>
 	<li><a href="//dev.dcloud.net.cn/wish/?channel=uniapp" target="__blank">需求墙</a></li>
-	<li><a href="//dev.dcloud.net.cn/sponsor/?channel=uniapp" target="__blank" style="color:#FF6600!important;"><img src="//img-cdn-qiniu.dcloud.net.cn/uniapp/doc/heart.png" class="heart">赞助我们</a></li>
+	<li><a href="//dev.dcloud.net.cn/sponsor/?channel=uniapp" target="__blank" style="color:#FF6600!important;"><img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/45e691f0-4f3d-11eb-b680-7980c8a877b8.png" class="heart">赞助我们</a></li>
 </ul>
 
 <div class="github">
 	<a href="//github.com/dcloudio/uni-app" target="_blank">
-		<img src="//img-cdn-qiniu.dcloud.net.cn/uniapp/doc/github.svg">
+		<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/44f8d690-4f3d-11eb-b680-7980c8a877b8.svg">
 	</a>
 </div>

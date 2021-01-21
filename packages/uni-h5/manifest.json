@@ -783,6 +783,18 @@
         "/platforms/h5/service/api/ui/windows.js",
         []
     ],
+    "setTopWindowStyle": [
+        "/platforms/h5/service/api/ui/windows.js",
+        []
+    ],
+    "setLeftWindowStyle": [
+        "/platforms/h5/service/api/ui/windows.js",
+        []
+    ],
+    "setRightWindowStyle": [
+        "/platforms/h5/service/api/ui/windows.js",
+        []
+    ],
     "$emit": [
         "/platforms/h5/service/api/base/event-bus.js",
         [

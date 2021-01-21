@@ -7,7 +7,8 @@
 
 |属性名		|类型	|默认值	|说明			|平台差异说明				|
 |:-|:-			|:-		|:-		|:-				|:-						|
-|selectable	|Boolean|false	|文本是否可选	|						|
+|selectable	|Boolean|false	|文本是否可选	|	App、H5	|
+|user-select	|Boolean|false	|文本是否可选	| 微信小程序 |
 |space		|String	|		|显示连续空格	|App、H5、微信小程序	|
 |decode		|Boolean|false	|是否解码		|App、H5、微信小程序	|
 
@@ -93,4 +94,4 @@ export default {
 
 ```
 
-![uniapp](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/img/text.png)
+![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/245b9110-4f2f-11eb-97b7-0dc4655d6e68.png)

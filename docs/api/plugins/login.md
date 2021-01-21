@@ -41,6 +41,10 @@ H5平台登陆注意事项：
 * [Apple登录、苹果登录、Sign in with Apple](https://ask.dcloud.net.cn/article/36651)
 * [一键登陆](/univerify)
 
+如果服务端使用`uniCloud`，那么官方提供了[uni-id](https://uniapp.dcloud.net.cn/uniCloud/uni-id)云端统一登录服务，把微信登录、短信验证码登录及角色权限管理等服务端登录开发，进行了统一的封装。
+
+前端统一的`uni.login`和云端统一的`uni-id`搭配，可以极大提升登录业务的开发效率，强烈推荐给开发者使用。uni-id的文档另见：https://uniapp.dcloud.net.cn/uniCloud/uni-id
+
 
 **示例**
 

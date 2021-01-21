@@ -28,7 +28,7 @@ uni-app提供的屏幕适配方案，包括3部分：
 
 __H5 宽屏下 tabBar(选项卡) 与窗体的关系__
 
-> 目前做如下调整：leftWindow、rightWindow、topWindow 中有其一存在，则 tabBar 隐藏；不存在，则隐藏。
+> 目前做如下调整：leftWindow、rightWindow、topWindow 中有其一存在，则 tabBar 隐藏；不存在，则不隐藏。
 
 leftWindow等配置，在pages.json里进行。文档见：[https://uniapp.dcloud.net.cn/collocation/pages?id=topwindow](https://uniapp.dcloud.net.cn/collocation/pages?id=topwindow)
 

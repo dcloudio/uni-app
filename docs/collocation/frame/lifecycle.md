@@ -8,7 +8,7 @@
 |onShow|当 ``uni-app`` 启动，或从后台进入前台显示|
 |onHide|当 ``uni-app`` 从前台进入后台|
 |onError|当 ``uni-app`` 报错时触发|
-|onUniNViewMessage|对 ``nvue`` 页面发送的数据进行监听，可参考 [nvue 向 vue 通讯](/use-weex?id=nvue-向-vue-通讯)|
+|onUniNViewMessage|对 ``nvue`` 页面发送的数据进行监听，可参考 [nvue 向 vue 通讯](https://uniapp.dcloud.io/nvue-api?id=communication)|
 |onUnhandledRejection|对未处理的 Promise 拒绝事件监听函数（2.8.1+）|
 |onPageNotFound|页面不存在监听函数|
 |onThemeChange|监听系统主题变化|
@@ -16,6 +16,7 @@
 **注意**
 
 - 应用生命周期仅可在``App.vue``中监听，在其它页面监听无效。
+- onlaunch里进行页面跳转，如遇白屏报错，请参考[https://ask.dcloud.net.cn/article/35942](https://ask.dcloud.net.cn/article/35942)
 
 **示例代码**
 ```html
@@ -82,7 +83,7 @@
 - `onPageScroll`里不要写交互复杂的js，比如频繁修改页面。因为这个生命周期是在渲染层触发的，在非h5端，js是在逻辑层执行的，两层之间通信是有损耗的。如果在滚动过程中，频发触发两层之间的数据交换，可能会造成卡顿。
 - 如果想实现滚动时标题栏透明渐变，在App和H5下，可在pages.json中配置titleNView下的type为transparent，[参考](https://uniapp.dcloud.io/collocation/pages?id=app-titlenview)。
 - 如果需要滚动吸顶固定某些元素，推荐使用css的粘性布局，参考[插件市场](https://ext.dcloud.net.cn/plugin?id=715)。插件市场也有其他js实现的吸顶插件，但性能不佳，需要时可自行搜索。
-- 在App、微信小程序、H5中，也可以使用wxs监听滚动，[参考](https://uniapp.dcloud.io/frame?id=wxs)；在app-nvue中，可以使用bindingx监听滚动，[参考](https://uniapp.dcloud.io/use-weex?id=nvue-%e9%87%8c%e4%bd%bf%e7%94%a8-bindingx)。
+- 在App、微信小程序、H5中，也可以使用wxs监听滚动，[参考](https://uniapp.dcloud.io/frame?id=wxs)；在app-nvue中，可以使用bindingx监听滚动，[参考](https://uniapp.dcloud.io/nvue-api?id=nvue-%e9%87%8c%e4%bd%bf%e7%94%a8-bindingx)。
 - `onBackPress`上不可使用`async`，会导致无法阻止默认返回
 
 ```js
@@ -142,7 +143,7 @@ export default {
 
 **注意**
 
-- nvue 页面weex编译模式支持的生命周期同weex，具体参考：[weex生命周期介绍](/use-weex?id=生命周期)。
+- nvue 页面weex编译模式支持的生命周期同weex，具体参考：[weex生命周期介绍](https://uniapp.dcloud.io/nvue-outline?id=%e7%bc%96%e8%af%91%e6%a8%a1%e5%bc%8f)。
 - 支付宝小程序真机可以监听到非`navigateBack`引发的返回事件（使用小程序开发工具时不会触发`onBackPress`），不可以阻止默认返回行为
 
 ### 组件生命周期

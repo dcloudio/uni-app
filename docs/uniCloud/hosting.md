@@ -13,8 +13,9 @@ DCloud为开发者提供了`uni发布平台`，包括网站发布、App发布和
 
 ## 案例
 
-- HBuilderX插件开发网站，是一个基于markdown的文档系统，域名：[https://hx.dcloud.net.cn/](https://hx.dcloud.net.cn/)。
-- hello uni-app项目现已部署到uniCloud，线上地址：[https://hellouniapp.dcloud.net.cn](https://hellouniapp.dcloud.net.cn)
+- `HBuilderX`插件开发网站，是一个基于`markdown`的文档系统，域名：[https://hx.dcloud.net.cn/](https://hx.dcloud.net.cn/)
+- `uni统计`官网现已部署到uniCloud，一份报表，掌握业务全景，域名：[https://tongji.dcloud.net.cn](https://tongji.dcloud.net.cn)
+- `hello uni-app`项目现已部署到uniCloud，线上地址：[https://hellouniapp.dcloud.net.cn](https://hellouniapp.dcloud.net.cn)
 
 ## 开通
 
@@ -66,7 +67,7 @@ DCloud为开发者提供了`uni发布平台`，包括网站发布、App发布和
 4. 如果开发者需要做a/b test或灰度新功能，需要自己在js里写代码实现，不能通过路由到不同服务器实现。
 5. uni-app项目编译为h5时，在项目的manifest中配置二级目录。上传时无需重复设置二级目录。
 6. 一个`前端网页托管`的空间里，可以上传多个网站，用不同目录区分开，访问时使用同一个域名后加不同目录的方式访问。不支持每个目录单独设置不同域名。
-7. 部署到不同的服务空间的`前端网页托管`内的网站，也是可以访问同一个服务空间内的云函数的，只需要在部署云函数的服务空间的`h5域名配置`内添加部署前端页面的域名即可
+7. 部署到不同的服务空间的`前端网页托管`内的网站，也是可以访问同一个服务空间内的云函数的，只需要在部署云函数的服务空间的`跨域配置`内添加部署前端页面的域名即可
 
 ## 基础配置@base-config
 
@@ -74,30 +75,36 @@ DCloud为开发者提供了`uni发布平台`，包括网站发布、App发布和
 
 ### 配置域名@domain
 
-`前端网页托管`，自带一个测试域名，该域名限速。如商用，请配置自己的域名。
-
-测试域名具体限制：
+`前端网页托管`，自带一个测试域名，可快速体验前端网页部署的完整流程，但该域名有如下限制：
   + 阿里云每分钟最多300次请求
-  + 腾讯云默认域名限速100K/s
+  + 腾讯云限速100K/s
 
-绑定自己的正式域名后不受上述测试域名的限制影响
+业务如要上线商用，请配置自己的正式域名，配置自己的正式域名后，将不受上述测试域名的限制。
 
-1. 登录[uniCloud控制台](https://unicloud.dcloud.net.cn/)。
-2. 进入前端网页托管页面，选择【基础设置】，单击【添加域名】，进行域名添加，如下图所示：
+前端网页托管配置自己域名的步骤如下：
 
-![](https://dcloud-img.oss-cn-hangzhou.aliyuncs.com/uni-app/uniCloud/uniCloud-hosting-domain-add.jpg)
+1、登录[uniCloud控制台](https://unicloud.dcloud.net.cn/)。
+2、进入前端网页托管页面，选择【基础设置】，单击【添加域名】，进行域名添加，如下图所示：
 
-3. 添加后，系统会自动分配一个 CNAME 域名，CNAME 域名不能直接访问，您需要在域名服务提供商处完成 CNAME 配置（将添加的域名CNAME到此域名），配置生效后，新域名即可使用。
+ ![](https://dcloud-img.oss-cn-hangzhou.aliyuncs.com/uni-app/uniCloud/uniCloud-hosting-domain-add.jpg)
+
+3、添加后，系统会自动分配一个 CNAME 域名，CNAME 域名不能直接访问，您需要在域名服务提供商处完成 CNAME 配置（将添加的域名CNAME到此域名），配置生效后，新域名即可使用。
+
+阿里云现已支持http强制跳转https，在上述添加界面打开对应开关即可
 
 **关于证书内容与私钥**
 
-申请证书时通常会有下载选项，下载到证书之后找到对应Nginx的证书（包含一个crt文件和一个key文件），以文本形式打开crt文件即可看到证书内容，同样的key文件对应着私钥。
+证书签发后，可下载到本地，然后将内容复制黏贴到uniCloud web控制台。
+
+注意：各运营商下载证书的后缀可能不同，一般来说，`.key`文件对应私钥，`.pem`或`.crt`文件对应证书。这几种类型文件都是文本内容，可选择记事本打开查看内容。
+
+如果您还没有SSL证书，点此[快速获取](https://cloud.tencent.com/act/cps/redirect?redirect=33848&cps_key=c858f748f10419214b870236b5bb94c6)。
 
 **注意事项**
 
 - 阿里云新增域名之后可能需要几个小时才能让其他配置对新域名生效，后续会优化此问题
 - 使用阿里云时遇到绑定的域名访问网址会下载html文件的情况，也是由上一条导致的，可以等待一段时间再看看。阿里云正在优化此问题，近期可以完成
-- 在阿里云开启了泛域名加速的情况下，对应的子域名可能无法配置到前端网页托管
+- 在阿里云开启了泛域名加速的情况下，对应的子域名可能无法配置到前端网页托管，**这种情况下可能会提示：该域名已被添加过，不能重复添加**
 - 暂不支持绑定中文域名
 
 ### 路由规则@routing

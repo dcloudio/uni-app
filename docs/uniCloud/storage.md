@@ -15,6 +15,8 @@
 
 文件上传成功后，系统会自动生成一个https链接或临时文件id，开发者应保存该文件地址供后续业务下载使用。
 
+在使用腾讯云时如果访问云存储文件提示`The requested URL '/1123.jpg' was not found on this server`这种错误，一般是cdn流量用尽导致的。可以升级配置或转为按量计费（目前仅支持企业类型认证的账号可以使用按量计费的服务空间）。
+
 # 客户端API
 
 在uni-app前端进行云存储的操作（不是在云函数里操作），包括在前端上传、删除文件。
@@ -30,23 +32,6 @@
 **支付宝小程序开发工具上传文件到腾讯云时可能会返回失败，请以真机为准**
 
 **各个小程序平台运行时，网络相关的 API 在使用前需要配置域名白名单。[参考](https://uniapp.dcloud.io/uniCloud/quickstart?id=%e5%b0%8f%e7%a8%8b%e5%ba%8f%e4%b8%ad%e4%bd%bf%e7%94%a8unicloud%e7%9a%84%e7%99%bd%e5%90%8d%e5%8d%95%e9%85%8d%e7%bd%ae)**
-
-阿里云uploadFile API方式只允许上传以下文件类型，如果要上传其他类型可以通过web控制台上传（**HBuilderX 2.8.10-alpha及以后版本已去除此限制**）。腾讯云没有文件类型限制。
-
-```js
-{
-  jpg: 'image/jpeg',
-  jpeg: 'image/jpeg',
-  png: 'image/png',
-  gif: 'image/gif',
-  webp: 'image/webp',
-  svg: 'image/svg+xml',
-  mp3: 'audio/mp3',
-  mp4: 'video/mp4',
-  ogg: 'audio/ogg',
-  webm: 'video/webm'
-}
-```
 
 #### 请求参数
 **Object object**
@@ -256,7 +241,7 @@ uniCloud.deleteFile(
 
 在云函数中操作云存储文件（不是在前端），包括在云函数里上传、删除云存储文件。
 
-## uniCloud.uploadFile(Object uploadFileOptions)
+## uniCloud.uploadFile(Object uploadFileOptions)@clouduploadfile
 
 **云函数**内上传文件至云存储。
 
@@ -297,7 +282,7 @@ let result = await uniCloud.uploadFile({
 });
 ```
 
-## uniCloud.getTempFileURL(Object getTempFileURLOptions)
+## uniCloud.getTempFileURL(Object getTempFileURLOptions)@cloudgettempfileurl
 
 **云函数**获取文件下载链接。
 
@@ -344,7 +329,7 @@ let result = await uniCloud.getTempFileURL({
 });
 ```
 
-## uniCloud.deleteFile(Object deleteFileOptions)
+## uniCloud.deleteFile(Object deleteFileOptions)@clouddeletefile
 
 **云函数**删除云存储文件。
 
@@ -382,7 +367,7 @@ let result = await uniCloud.deleteFile({
 });
 ```
 
-## uniCloud.downloadFile(Object downloadFileOptions)
+## uniCloud.downloadFile(Object downloadFileOptions)@clouddownloadfile
 
 **云函数**下载已上传至云开发的文件至本地（默认本地根目录/root）。
 

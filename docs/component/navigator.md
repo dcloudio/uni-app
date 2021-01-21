@@ -1,6 +1,10 @@
 #### navigator
 
-页面链接。
+页面跳转。
+
+该组件类似HTML中的`<a>`组件，但只能跳转本地页面。目标页面必须在pages.json中注册。
+
+该组件的功能有API方式，另见：[https://uniapp.dcloud.io/api/router?id=navigateto](https://uniapp.dcloud.io/api/router?id=navigateto)
 
 **属性说明**
 
@@ -28,10 +32,13 @@
 |navigateBack|对应 uni.navigateBack 的功能||
 |exit|退出小程序，target="miniProgram"时生效|微信2.1.0+、百度2.5.2+、QQ1.4.7+|
 
+
 **注意**
+- 跳转tabbar页面，必须设置open-type="switchTab"
 - navigator-hover 默认为 {background-color: rgba(0, 0, 0, 0.1); opacity: 0.7;}, ``<navigator>`` 的子节点背景色应为透明色。
 - app-nvue 平台只有纯nvue项目（render为native）才支持 `<navigator>`。非render为native的情况下，nvue暂不支持navigator组件，请使用API跳转。
-- app下退出应用，Android平台可以使用[plus.runtime.quit](https://www.html5plus.org/doc/zh_cn/runtime.html#plus.runtime.quit)
+- app下退出应用，Android平台可以使用[plus.runtime.quit](https://www.html5plus.org/doc/zh_cn/runtime.html#plus.runtime.quit)。iOS没有退出应用的概念。
+- 如果想实现web外链跳转，可参考[uLink组件](https://ext.dcloud.net.cn/plugin?id=1182)
 
 **示例** [查看示例](https://hellouniapp.dcloud.net.cn/pages/component/navigator/navigator)
  
@@ -76,5 +83,3 @@ onLoad: function (option) {
 }
 ```
 
-**注意**
-- 跳转tabbar页面，必须设置open-type="switchTab"

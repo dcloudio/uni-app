@@ -45,7 +45,7 @@
 
 #### 在页面中使用
 
-在页面内使用插件需要在`pages.json`内对应页面的`style`节点下配置对应平台的`usingComponents`，示例如下。
+在页面内使用插件内包含的组件需要在`pages.json`内对应页面的`style`节点下配置对应平台的`usingComponents`或`usingSwanComponents`，示例如下。
 
 以`"hello-component": "plugin://myPlugin/hello-component"`为例，`key`（冒号前的`hello-component`）为在页面内使用的组件名称。`value`分为三段，`plugin`为协议（在百度小程序内为`dynamicLib`），`myPlugin`为插件名称即引入插件时的名称，`hello-component`为插件暴露的组件名称。
 
@@ -74,12 +74,12 @@
   }
 }
 
-// 百度小程序
+// 百度小程序 注意是 usingSwanComponents 不是 usingComponents（HBuilder 3.0.8+ 可以使写为 usingComponents）
 {
   "path": "pages/index/index",
   "style": {
     "mp-baidu": {
-      "usingComponents": {
+      "usingSwanComponents": {
         "my-special-list": "dynamicLib://myDynamicLib/special-list"
       }
     }

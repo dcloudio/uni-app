@@ -7,7 +7,7 @@
 |:-|:-|:-|:-|:-|
 |nodes|Array / String|[]|节点列表 / HTML String||
 |[space](https://developers.weixin.qq.com/miniprogram/dev/component/rich-text.html)|string||显示连续空格|微信基础库2.4.1+、QQ小程序|
-|selectable|Boolean|false|富文本是否可以长按选中，可用于复制，粘贴等场景|百度APP 11.10+|
+|selectable|Boolean|false|富文本是否可以长按选中，可用于复制，粘贴等场景|百度小程序（真机）|
 
 **注意**
 
@@ -131,12 +131,13 @@ export default {
                     text: 'Hello&nbsp;uni-app!'
                 }]
             }],
-            strings: '<div style="text-align:center;"><img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/uni@2x.png"/></div>'
+            strings: '<div style="text-align:center;"><img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/d8590190-4f28-11eb-b680-7980c8a877b8.png"/></div>'
         }
     }
 }
 ```
-![uniapp](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/img/rich-text.png)
+
+![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/ef5ba530-4f2f-11eb-bdc1-8bd33eb6adaa.png)
 
 **Tips**
 

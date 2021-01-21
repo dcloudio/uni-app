@@ -98,25 +98,21 @@ const collection = db.collection('user');
 
 ### 时间 Date
 
-**使用阿里云时请存储日期字符串或者时间戳，比如`new Date().toISOString()`。数据库存储Date类型数据仅腾讯云支持**
+Date 类型用于表示时间，精确到毫秒，可以用 JavaScript 内置 Date 对象创建。需要特别注意的是，用此方法创建的时间是客户端时间，不是服务端时间。如果需要使用服务端时间，应该用 API 中提供的 serverDate 对象来创建一个服务端当前时间的标记，当使用了 serverDate 对象的请求抵达服务端处理时，该字段会被转换成服务端当前的时间，更棒的是，我们在构造 serverDate 对象时还可通过传入一个有 offset 字段的对象来标记一个与当前服务端时间偏移 offset 毫秒的时间，这样我们就可以达到比如如下效果：指定一个字段为服务端时间往后一个小时。
 
-<!-- 我们推荐无论是腾讯云还是阿里云都以时间戳的方式存储时间字段 -->
+```js
+// 服务端当前时间
+new db.serverDate()
+// 在云函数内使用new Date()和new db.serverDate()效果一样
+```
 
-  Date 类型用于表示时间，精确到毫秒，可以用 JavaScript 内置 Date 对象创建。需要特别注意的是，用此方法创建的时间是客户端时间，不是服务端时间。如果需要使用服务端时间，应该用 API 中提供的 serverDate 对象来创建一个服务端当前时间的标记，当使用了 serverDate 对象的请求抵达服务端处理时，该字段会被转换成服务端当前的时间，更棒的是，我们在构造 serverDate 对象时还可通过传入一个有 offset 字段的对象来标记一个与当前服务端时间偏移 offset 毫秒的时间，这样我们就可以达到比如如下效果：指定一个字段为服务端时间往后一个小时。
-
-  <!-- 那么当我们需要使用客户端时间时，存放 Date 对象和存放毫秒数是否是一样的效果呢？不是的，我们的数据库有针对日期类型的优化，建议大家使用时都用 Date 或 serverDate 构造时间对象。 -->
-
-  ```js
-  //服务端当前时间
-  new db.serverDate()
-  ```
-
-  ```js
-  //服务端当前时间加1S
-  new db.serverDate({
-    offset: 1000
-  })
-  ```
+```js
+//服务端当前时间加1S
+new db.serverDate({
+  offset: 1000
+})
+// 在云函数内使用new Date(1000)和上面的用法效果一样
+```
   
 如果需要对日期进行比较操作，可以使用聚合操作符将日期进行转化，比如以下示例查询所有time字段在`2020-02-02`以后的记录
   
@@ -223,7 +219,13 @@ let res = await collection.doc('doc-id').set({
 
 只有当调用`get()`时才会真正发送查询请求。
 
-注：默认取前100条数据，最大取前100条数据。
+limit，即返回记录的最大数量，默认值为100，也就是不设置limit的情况下默认返回100条数据。
+
+设置limit有最大值，腾讯云限制为最大1000条，阿里云限制为最大500条。
+
+如需查询更多数据，需要分页多次查询。
+
+如果使用clientDB传入getTree参数以返回树形数据也受上面的规则限制，不过此时limit方法仅对根节点生效（大量数据建议使用分层加载，不要使用getTree一次返回所有数据）
 
 **get响应参数**
 
@@ -271,6 +273,64 @@ db.collection('user').where({
 })
 ```
 
+**按照数组内的值查询**
+
+mongoDB内按照数组内的值查询可以使用多种写法，以下面的数据为例
+
+```js
+{
+  arr:[{
+    name: 'item-1',
+  },{
+    name: 'item-2',
+  }]
+}
+
+{
+  arr:[{
+    name: 'item-3',
+  },{
+    name: 'item-4',
+  }]
+}
+```
+
+如果想查询arr内第一个元素的name为item-1的记录可以使用如下写法
+
+```js
+const res = await db.collection('test').where({
+  'arr.0.name': 'item-1'
+})
+
+res = {
+  data:[{
+    arr:[{
+      name: 'item-1',
+    },{
+      name: 'item-2',
+    }]
+  }]
+}
+```
+
+如果想查询arr内某个元素的name为item-1的记录（可以是数组内的任意一条name为item-1）可以使用如下写法
+
+```js
+const res = await db.collection('test').where({
+  'arr.name': 'item-1'
+})
+
+res = {
+  data:[{
+    arr:[{
+      name: 'item-1',
+    },{
+      name: 'item-2',
+    }]
+  }]
+}
+```
+
 ### 获取查询数量
 
 collection.count()
@@ -284,24 +344,15 @@ let res = await db.collection('goods').where({
 }).count()
 ```
 
-**注意**
-
-使用阿里云时，count必须搭配where使用，此问题阿里云正在修复。如果要count所有记录可以使用一个必然满足的条件，比如下面这样：
-
-```js
-const dbCmd = db.command
-let res = await db.collection('goods').where({
-  _id: dbCmd.exists(true)
-}).count()
-```
-
 响应参数
 
 | 字段      | 类型    | 必填 | 说明                     |
 | --------- | ------- | ---- | ------------------------ |
 | total     | Number | 否   | 计数结果                 |
 
+**注意：**
 
+- 数据量很大的情况下，带条件运算count全表的性能会很差，尽量使用其他方式替代，比如新增一个字段专门用来存放总数。不加条件时count全表不存在性能问题。
 
 ### 设置记录数量
 
@@ -319,6 +370,10 @@ collection.limit()
 let res = await collection.limit(1).get() // 只返回第一条记录
 ```
 
+**注意**
+
+- limit不设置的情况下默认返回100条数据；设置limit有最大值，腾讯云限制为最大1000条，阿里云限制为最大500条。
+
 ### 设置起始位置
 
 collection.skip(value)
@@ -334,6 +389,8 @@ collection.skip(value)
 ```js
 let res = await collection.skip(4).get()
 ```
+
+**注意：数据量很大的情况下，skip性能会很差，尽量使用其他方式替代**
 
 ### 对结果排序
 
@@ -357,6 +414,10 @@ collection.orderBy(field, orderType)
 let res = await collection.orderBy("name", "asc").get()
 ```
 
+**注意**
+
+- 排序字段存在多个重复的值时排序后的分页结果，可能会出现某条记录在上一页出现又在下一页出现的情况。这时候可以通过指定额外的排序条件比如`.orderBy("name", "asc").orderBy("_id", "asc")`来规避这种情况。
+
 ### 指定返回字段
 
 collection.field()
@@ -374,9 +435,11 @@ collection.field()
 ```js
 collection.field({ 'age': true }) //只返回age字段、_id字段，其他字段不返回
 ```
-备注：只能指定要返回的字段或者不要返回的字段。即{'a': true, 'b': false}是一种错误的参数格式
 
-**使用白名单模式_id会默认带上，即使没有配置{_id: true}以上面示例为例，返回的字段除age外还包含一个_id。**
+**注意**
+
+- 只能指定要返回的字段或者不要返回的字段。即{'a': true, 'b': false}是一种错误的参数格式
+- field内如果使用白名单模式，一定会返回_id字段
 
 ### 查询指令
 
@@ -828,6 +891,131 @@ db.collection('articles').where({
     options: 'i'    // i表示忽略大小写
   }) 
 })
+```
+
+### 查询数组字段@querywitharr
+
+假设数据表class内有以下数据，可以使用下面两种方式查询数组内包含指定值
+
+```js
+{
+  "_id": "1",
+  "students": ["li","wang"]
+}
+{
+  "_id": "2",
+  "students": ["wang","li"]
+}
+{
+  "_id": "3",
+  "students": ["zhao","qian"]
+}
+```
+
+#### 指定下标查询
+
+```js
+const index = 1
+const res = await db.collection('class').where({
+  ['students.' + index]: 'wang'
+})
+.get()
+```
+
+```js
+// 查询结果如下
+{
+  data: [{
+    "_id": "1",
+    "students": ["li","wang"]
+  }]
+}
+```
+
+#### 不指定下标查询
+
+```js
+const res = await db.collection('class').where({
+  students: 'wang'
+})
+.get()
+```
+
+查询结果如下
+
+```js
+{
+  data: [{
+    "_id": "1",
+    "students": ["li","wang"]
+  },{
+    "_id": "1",
+    "students": ["wang","li"]
+  }]
+}
+```
+
+#### 数组内是对象
+
+如果将上面class内的数据改为如下形式
+
+```js
+{
+  "_id": "1",
+  "students": [{
+    name: "li"
+  },{
+    name: "wang"
+  }]
+}
+{
+  "_id": "2",
+  "students": [{
+    name: "wang"
+  },{
+    name: "li"
+  }]
+}
+{
+  "_id": "3",
+  "students": [{
+    name: "zhao"
+  },{
+    name: "qian"
+  }]
+}
+```
+
+不指定下标查询的写法可以修改为
+
+```js
+const res = await db.collection('class').where({
+  'students.name': 'wang'
+})
+.get()
+```
+
+查询结果如下
+
+```js
+{
+  data: [{
+    "_id": "1",
+    "students": [{
+      name: "li"
+    },{
+      name: "wang"
+    }]
+  },
+  {
+    "_id": "2",
+    "students": [{
+      name: "wang"
+    },{
+      name: "li"
+    }]
+  }]
+}
 ```
 
 ## 删除文档
@@ -1610,9 +1798,14 @@ db.runTransaction(callback: function, times: number)
 
 事务操作时为保障效率和并发性，只允许进行单记录操作，不允许进行批量操作，但可以在一个事务进行多次数据库操作。
 
+- 对于修改和删除仅支持使用doc方法，不支持使用where方法。
+- 新增时使用add方法一次只可以新增单条，不可新增多条，即不支持在add方法内传入数组
+- 腾讯云没有限制where的使用，但是使用where修改或删除多条会导致无法回滚
+
 **注意事项**
 
-开发者提供的事务执行函数正常返回时，uniCloud 会自动提交（`commit`）事务，请勿在事务执行函数内调用 `transaction.commit` 方法，该方法仅在通过 `db.startTransaction` 进行事务操作时使用
+- 开发者提供的事务执行函数正常返回时，uniCloud 会自动提交（`commit`）事务，请勿在事务执行函数内调用 `transaction.commit` 方法，该方法仅在通过 `db.startTransaction` 进行事务操作时使用
+- 请注意transaction.doc().get()返回的data不是数组形式
 
 **示例代码**
 
@@ -1626,8 +1819,7 @@ exports.main = async (event) => {
     const result = await db.runTransaction(async transaction => {
       const aaaRes = await transaction.collection('account').doc('aaa').get()
       const bbbRes = await transaction.collection('account').doc('bbb').get()
-
-      if (aaaRes.data && bbbRes.data) {
+      if(aaaRes.data && bbbRes.data) {
         try {
           const updateAAARes = await transaction.collection('account').doc('aaa').update({
             amount: dbCmd.inc(-10)
@@ -1636,19 +1828,19 @@ exports.main = async (event) => {
           const updateBBBRes = await transaction.collection('account').doc('bbb').update({
             amount: dbCmd.inc(10)
           })
-
-          console.log(`transaction succeeded`)
-
+          const aaaEndRes = await transaction.collection('account').doc('aaa').get()
+          if (aaaEndRes.data.amount < 0) { // 请注意transaction.doc().get()返回的data不是数组形式
+            transaction.rollback(-100)
+          }
           // 会作为 runTransaction resolve 的结果返回
           return {
-            aaaAccount: aaaRes.data.amount - 10,
+            aaaAccount: aaaEndRes.data.amount,
           }
         } catch(e) {
           // 会作为 runTransaction reject 的结果出去
           await transaction.rollback(-100)
         }
       } else {
-        // 会作为 runTransaction reject 的结果出去
         await transaction.rollback(-100)
       }
     })
@@ -1687,6 +1879,14 @@ db.startTransaction()
 
 事务操作时为保障效率和并发性，只允许进行单记录操作，不允许进行批量操作，但可以在一个事务进行多次数据库操作。
 
+- 对于修改和删除仅支持使用doc方法，不支持使用where方法。
+- 新增时使用add方法一次只可以新增单条，不可新增多条，即不支持在add方法内传入数组
+- 腾讯云没有限制where的使用，但是使用where修改或删除多条会导致无法回滚
+
+**注意**
+
+- 请注意transaction.doc().get()返回的data不是数组形式
+
 **示例代码**
 
 两个账户之间进行转账的简易示例
@@ -1710,15 +1910,25 @@ exports.main = async (event) => {
       const updateBBBRes = await transaction.collection('account').doc('bbb').update({
         amount: dbCmd.inc(10)
       })
+      
+      const aaaEndRes = await transaction.collection('account').doc('aaa').get()
+      if (aaaEndRes.data.amount < 0) { // 请注意transaction.doc().get()返回的data不是数组形式
+        transaction.rollback(-100)
+        return {
+          success: false,
+          error: `rollback`,
+          rollbackCode: -100,
+        }
+      } else {
+        await transaction.commit()
+        console.log(`transaction succeeded`)
 
-      await transaction.commit()
-
-      console.log(`transaction succeeded`)
-
-      return {
-        success: true,
-        aaaAccount: aaaRes.data.amount - 10,
+        return {
+          success: true,
+          aaaAccount: aaaRes.data.amount - 10,
+        }
       }
+
     } else {
 
       return {
@@ -1782,7 +1992,7 @@ exports.main = async (event) => {
  -->
 
 
-## 聚合操作
+## 聚合操作@aggregate
 
 有时候我们需要对数据进行分析操作，比如一些统计操作、联表查询等，这个时候简单的查询操作就搞不定这些需求，因此就需要使用聚合操作来完成。
 
@@ -5780,7 +5990,7 @@ let res = await db.collection('shops').aggregate()
 
  
 ```js
-db.command.aggregate.arrayToObject([ <array1>, <array2>, ... ])
+db.command.aggregate.concatArrays([ <array1>, <array2>, ... ])
 ```
 参数可以是任意解析为数组的表达式。  
 
@@ -7128,6 +7338,17 @@ let res = await db.collection('items').aggregate()
 
 ### 日期操作符
 
+**注意**
+
+- 以下日期操作符中`timezone`均支持以下几种形式
+
+```js
+timezone: "Asia/Shanghai" // Asia/Shanghai时区
+timezone: "+08" // utc+8时区
+timezone: "+08:30" // 时区偏移8小时30分
+timezone: "+0830" // 时区偏移8小时30分，同上
+```
+
 #### dateFromParts
 
 聚合操作符。给定日期的相关信息，构建并返回一个日期对象。  
@@ -7169,10 +7390,6 @@ db.command.aggregate.dateFromParts({
     timezone: <tzExpression>
 })
 ```
-
-**说明**
-
-- `timezone`字段请参考[Olson Timezone Identifier](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)，形式类似：`Asia/Shanghai`
 
 #####  示例代码
  
@@ -7403,11 +7620,14 @@ let res = await db
 
       
 #####  API 说明
- 语法如下：  
+
+该接口有以下两种用法，语法如下：  
 
  
 ```js
 db.command.aggregate.dayOfMonth(<日期字段>)
+
+db.command.aggregate.dayOfMonth({date:<日期字段>,timezone:<时区>})
 ```
 
 #####  示例代码
@@ -7449,14 +7669,16 @@ let res = await db
 
       
 #####  API 说明
- *注意：周日是每周的第 1 天**  
 
- 语法如下：  
+**注意：周日是每周的第 1 天**  
 
+该接口有以下两种用法，语法如下：  
  
 ```js
 db.command.aggregate.dayOfWeek(<日期字段>)
-```
+
+db.command.aggregate.dayOfWeek({date:<日期字段>,timezone:<时区>})
+``` 
 
 #####  示例代码
  假设集合 `dates` 有以下文档：  
@@ -7497,11 +7719,13 @@ let res = await db
 
       
 #####  API 说明
- 语法如下：  
 
- 
+该接口有以下两种用法，语法如下：  
+  
 ```js
 db.command.aggregate.dayOfYear(<日期字段>)
+
+db.command.aggregate.dayOfYear({date:<日期字段>,timezone:<时区>})
 ```
 
 #####  示例代码
@@ -7543,11 +7767,13 @@ let res = await db
 
       
 #####  API 说明
- 语法如下：  
 
- 
+该接口有以下两种用法，语法如下：  
+  
 ```js
 db.command.aggregate.hour(<日期字段>)
+
+db.command.aggregate.hour({date:<日期字段>,timezone:<时区>})
 ```
 
 #####  示例代码
@@ -7587,18 +7813,19 @@ let res = await db
 
 聚合操作符。返回日期字段对应的 ISO 8601 标准的天数（一周中的第几天），是一个介于 1（周一）到 7（周日）之间的整数。  
 
-      
 #####  API 说明
- 语法如下：  
 
- 
+该接口有以下两种用法，语法如下：  
+  
 ```js
-db.command.aggregate.month(<日期字段>)
+db.command.aggregate.isoDayOfWeek(<日期字段>)
+
+db.command.aggregate.isoDayOfWeek({date:<日期字段>,timezone:<时区>})
 ```
 
 #####  示例代码
- 假设集合 `dates` 有以下文档：  
 
+假设集合 `dates` 有以下文档：
  
 ```js
 {
@@ -7606,7 +7833,7 @@ db.command.aggregate.month(<日期字段>)
     "date": ISODate("2019-05-14T09:38:51.686Z")
 }
 ```
-我们使用 `month()` 对 `date` 字段进行投影，获取对应的 ISO 8601 标准的天数（一周中的第几天）：  
+我们使用 `isoDayOfWeek()` 对 `date` 字段进行投影，获取对应的 ISO 8601 标准的天数（一周中的第几天）：  
 
  
 ```js
@@ -7620,9 +7847,9 @@ let res = await db
   })
   .end()
 ```
-输出如下：  
 
- 
+输出如下：
+
 ```js
 {
     "isoDayOfWeek": 2
@@ -7635,20 +7862,22 @@ let res = await db
 
       
 #####  API 说明
- 根据 ISO 8601 标准，周一到周日视为一周，本年度第一个周四所在的那周，视为本年度的第 1 周。  
 
- 例如：2016 年 1 月 7 日是那年的第一个周四，那么 2016.01.04（周一）到 2016.01.10（周日） 即为第 1 周。同理，2016 年 1 月 1 日的周数为 53。  
+根据 ISO 8601 标准，周一到周日视为一周，本年度第一个周四所在的那周，视为本年度的第 1 周。  
 
- 语法如下：  
+例如：2016 年 1 月 7 日是那年的第一个周四，那么 2016.01.04（周一）到 2016.01.10（周日） 即为第 1 周。同理，2016 年 1 月 1 日的周数为 53。  
 
- 
+该接口有以下两种用法，语法如下：  
+  
 ```js
 db.command.aggregate.isoWeek(<日期字段>)
+
+db.command.aggregate.isoWeek({date:<日期字段>,timezone:<时区>})
 ```
 
 #####  示例代码
- 假设集合 `dates` 有以下文档：  
 
+假设集合 `dates` 有以下文档：  
  
 ```js
 {
@@ -7656,6 +7885,7 @@ db.command.aggregate.isoWeek(<日期字段>)
     "date": ISODate("2019-05-14T09:38:51.686Z")
 }
 ```
+
 我们使用 `isoWeek()` 对 `date` 字段进行投影，获取对应的 ISO 8601 标准的周数（一年中的第几周）：  
 
  
@@ -7670,9 +7900,9 @@ let res = await db
   })
   .end()
 ```
+
 输出如下：  
 
- 
 ```js
 {
     "isoWeek": 20
@@ -7682,21 +7912,22 @@ let res = await db
 #### isoWeekYear
 
 聚合操作符。返回日期字段对应的 ISO 8601 标准的天数（一年中的第几天）。  
-
       
 #####  API 说明
- 此处的“年”以第一周的周一为开始，以最后一周的周日为结束。  
 
- 语法如下：  
+此处的“年”以第一周的周一为开始，以最后一周的周日为结束。  
 
- 
+该接口有以下两种用法，语法如下：  
+  
 ```js
 db.command.aggregate.isoWeekYear(<日期字段>)
+
+db.command.aggregate.isoWeekYear({date:<日期字段>,timezone:<时区>})
 ```
 
 #####  示例代码
- 假设集合 `dates` 有以下文档：  
 
+假设集合 `dates` 有以下文档：  
  
 ```js
 {
@@ -7704,8 +7935,8 @@ db.command.aggregate.isoWeekYear(<日期字段>)
     "date": ISODate("2019-05-14T09:38:51.686Z")
 }
 ```
-我们使用 `isoWeekYear()` 对 `date` 字段进行投影，获取对应的 ISO 8601 标准的天数（一年中的第几天）：  
 
+我们使用 `isoWeekYear()` 对 `date` 字段进行投影，获取对应的 ISO 8601 标准的天数（一年中的第几天）：  
  
 ```js
 const $ = db.command.aggregate
@@ -7718,9 +7949,9 @@ let res = await db
   })
   .end()
 ```
+
 输出如下：  
 
- 
 ```js
 {
     "isoWeekYear": 2019
@@ -7731,18 +7962,19 @@ let res = await db
 
 聚合操作符。返回日期字段对应的毫秒数，是一个介于 0 到 999 之间的整数。  
 
-      
 #####  API 说明
- 语法如下：  
 
- 
+该接口有以下两种用法，语法如下：  
+  
 ```js
 db.command.aggregate.millisecond(<日期字段>)
+
+db.command.aggregate.millisecond({date:<日期字段>,timezone:<时区>})
 ```
 
 #####  示例代码
- 假设集合 `dates` 有以下文档：  
 
+假设集合 `dates` 有以下文档：
  
 ```js
 {
@@ -7750,9 +7982,9 @@ db.command.aggregate.millisecond(<日期字段>)
     "date": ISODate("2019-05-14T09:38:51.686Z")
 }
 ```
+
 我们使用 `millisecond()` 对 `date` 字段进行投影，获取对应的毫秒数：  
 
- 
 ```js
 const $ = db.command.aggregate
 let res = await db
@@ -7764,9 +7996,9 @@ let res = await db
   })
   .end()
 ```
+
 输出如下：  
 
- 
 ```js
 {
     "millisecond": 686
@@ -7777,27 +8009,28 @@ let res = await db
 
 聚合操作符。返回日期字段对应的分钟数，是一个介于 0 到 59 之间的整数。  
 
-      
 #####  API 说明
- 语法如下：  
 
- 
+该接口有以下两种用法，语法如下：  
+  
 ```js
 db.command.aggregate.minute(<日期字段>)
+
+db.command.aggregate.minute({date:<日期字段>,timezone:<时区>})
 ```
 
 #####  示例代码
- 假设集合 `dates` 有以下文档：  
 
- 
+假设集合 `dates` 有以下文档：
+
 ```js
 {
     "_id": 1,
     "date": ISODate("2019-05-14T09:38:51.686Z")
 }
 ```
-我们使用 `minute()` 对 `date` 字段进行投影，获取对应的分钟数：  
 
+我们使用 `minute()` 对 `date` 字段进行投影，获取对应的分钟数：
  
 ```js
 const $ = db.command.aggregate
@@ -7810,9 +8043,9 @@ let res = await db
   })
   .end()
 ```
+
 输出如下：  
 
- 
 ```js
 {
     "minute": 38
@@ -7823,13 +8056,14 @@ let res = await db
 
 聚合操作符。返回日期字段对应的月份，是一个介于 1 到 12 之间的整数。  
 
-      
 #####  API 说明
- 语法如下：  
 
- 
+该接口有以下两种用法，语法如下：  
+  
 ```js
 db.command.aggregate.month(<日期字段>)
+
+db.command.aggregate.month({date:<日期字段>,timezone:<时区>})
 ```
 
 #####  示例代码
@@ -7842,9 +8076,9 @@ db.command.aggregate.month(<日期字段>)
     "date": ISODate("2019-05-14T09:38:51.686Z")
 }
 ```
+
 我们使用 `month()` 对 `date` 字段进行投影，获取对应的月份：  
 
- 
 ```js
 const $ = db.command.aggregate
 let res = await db
@@ -7856,9 +8090,9 @@ let res = await db
   })
   .end()
 ```
+
 输出如下：  
 
- 
 ```js
 {
     "month": 5
@@ -7869,28 +8103,29 @@ let res = await db
 
 聚合操作符。返回日期字段对应的秒数，是一个介于 0 到 59 之间的整数，在特殊情况下（闰秒）可能等于 60。  
 
-      
 #####  API 说明
- 语法如下：  
 
- 
+该接口有以下两种用法，语法如下：  
+  
 ```js
 db.command.aggregate.second(<日期字段>)
+
+db.command.aggregate.second({date:<日期字段>,timezone:<时区>})
 ```
 
 #####  示例代码
- 假设集合 `dates` 有以下文档：  
 
- 
+假设集合 `dates` 有以下文档：
+
 ```js
 {
     "_id": 1,
     "date": ISODate("2019-05-14T09:38:51.686Z")
 }
 ```
+
 我们使用 `second()` 对 `date` 字段进行投影，获取对应的秒数：  
 
- 
 ```js
 const $ = db.command.aggregate
 let res = await db
@@ -7902,9 +8137,9 @@ let res = await db
   })
   .end()
 ```
+
 输出如下：  
 
- 
 ```js
 {
     "second": 51
@@ -7915,30 +8150,31 @@ let res = await db
 
 聚合操作符。返回日期字段对应的周数（一年中的第几周），是一个介于 0 到 53 之间的整数。  
 
-      
 #####  API 说明
- 每周以周日为开头，**每年的第一个周日**即为 `week 1` 的开始，这天之前是 `week 0`。  
 
- 语法如下：  
+每周以周日为开头，**每年的第一个周日**即为 `week 1` 的开始，这天之前是 `week 0`。  
 
- 
+该接口有以下两种用法，语法如下：  
+  
 ```js
 db.command.aggregate.week(<日期字段>)
+
+db.command.aggregate.week({date:<日期字段>,timezone:<时区>})
 ```
 
 #####  示例代码
- 假设集合 `dates` 有以下文档：  
 
- 
+假设集合 `dates` 有以下文档：  
+
 ```js
 {
     "_id": 1,
     "date": ISODate("2019-05-14T09:38:51.686Z")
 }
 ```
+
 我们使用 `week()` 对 `date` 字段进行投影，获取对应的周数（一年中的第几周）：  
 
- 
 ```js
 const $ = db.command.aggregate
 let res = await db
@@ -7950,9 +8186,9 @@ let res = await db
   })
   .end()
 ```
+
 输出如下：  
 
- 
 ```js
 {
     "week": 19
@@ -7963,28 +8199,29 @@ let res = await db
 
 聚合操作符。返回日期字段对应的年份。  
 
-      
 #####  API 说明
- 语法如下：  
 
- 
+该接口有以下两种用法，语法如下：  
+  
 ```js
 db.command.aggregate.year(<日期字段>)
+
+db.command.aggregate.year({date:<日期字段>,timezone:<时区>})
 ```
 
 #####  示例代码
- 假设集合 `dates` 有以下文档：  
 
- 
+假设集合 `dates` 有以下文档：
+
 ```js
 {
     "_id": 1,
     "date": ISODate("2019-05-14T09:38:51.686Z")
 }
 ```
-我们使用 `year()` 对 `date` 字段进行投影，获取对应的年份：  
 
- 
+我们使用 `year()` 对 `date` 字段进行投影，获取对应的年份：
+
 ```js
 const $ = db.command.aggregate
 let res = await db
@@ -7996,9 +8233,9 @@ let res = await db
   })
   .end()
 ```
-输出如下：  
 
- 
+输出如下：
+
 ```js
 {
     "year": 2019
@@ -8143,7 +8380,7 @@ let res = await db.collection('sales').aggregate()
 
 **一般用法**
 
- 假设集合 `test` 存在以下文档：  
+假设集合 `test` 存在以下文档：  
 
  
 ```js
@@ -8181,19 +8418,18 @@ let res = await db.collection('sales').aggregate()
 
 聚合操作符。输入一个数组，或者数组字段的表达式。如果数组中所有元素均为真值，那么返回 `true`，否则返回 `false`。空数组永远返回 `true`。  
 
-      
 #####  API 说明
- 语法如下：  
 
+语法如下：
  
 ```js
 allElementsTrue([<expression>])
 ```
 
 #####  示例代码
- 假设集合 `test` 有如下记录：  
 
- 
+假设集合 `test` 有如下记录：  
+
 ```js
 { "_id": 1, "array": [ true ] }
 { "_id": 2, "array": [ ] }
@@ -9127,7 +9363,7 @@ let res = await db
 { "result": "LI" }
 ```
 
-### 累计器操作符
+### 累计器操作符@accumulator
 
 #### addToSet
 

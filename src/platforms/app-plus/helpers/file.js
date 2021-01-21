@@ -28,6 +28,7 @@ function download (url) {
   return new Promise(function (resolve, reject) {
     if (url.indexOf('http://') !== 0 && url.indexOf('https://') !== 0) {
       resolve(url)
+      return
     }
     plus.downloader.createDownload(url, {
       filename: '_doc/uniapp_temp/download/'
