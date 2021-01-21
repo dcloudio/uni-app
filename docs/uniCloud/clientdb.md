@@ -1376,9 +1376,20 @@ const res = await db.collection('score')
 
 ### 数据去重@distinct
 
-自`HBuilderX 3.0.8`起，clientDB支持使用distinct方法对数据进行去重操作
+通过.distinct()方法，对数据查询结果中重复的记录进行去重。
+
+> `HBuilderX 3.0.8`+
+
+```js
+const res = await db.collection('table1')
+.field('field1')
+.distinct() // 注意distinct方法没有参数
+.get()
+```
 
 例：如果数据库`score`表为某次比赛统计的分数数据，每条记录为一个学生的分数
+
+`score`表的数据：
 
 ```js
 {
@@ -1434,7 +1445,7 @@ const res = await db.collection('score')
 .get()
 ```
 
-返回结果如下
+查询返回结果如下
 
 ```js
 {
@@ -1453,7 +1464,7 @@ const res = await db.collection('score')
 
 **注意**
 
-- distinct必须搭配field方法使用
+- distinct指对返回结果中完全相同的记录进行去重，重复的记录只保留一条。因为`_id`字段是必然不同的，所以使用distinct时必须同时指定field，且field中不可存在`_id`字段
 
 ### 新增数据记录add
 
