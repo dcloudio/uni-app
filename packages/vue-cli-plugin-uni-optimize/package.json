@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/vue-cli-plugin-uni-optimize",
-  "version": "2.0.0-alpha-30820210122001",
+  "version": "2.0.0-alpha-30820210122002",
   "description": "uni-app optimize plugin for vue-cli 3",
   "main": "index.js",
   "repository": {
@@ -13,5 +13,5 @@
   },
   "author": "fxy060608",
   "license": "Apache-2.0",
-  "gitHead": "4dee4c8937221eedfff79ae0e3dac9e73537224a"
+  "gitHead": "8bcae55457e9b55e92ef64c89bf1b29bf31ac17c"
 }
