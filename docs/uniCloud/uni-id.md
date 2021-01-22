@@ -382,6 +382,7 @@ function hasPermission(token, permission) {
 | password			| String	| 是	|密码																																						|
 | needPermission| Boolean	| 否	|设置为true时会在checkToken时返回用户权限（permission）。`uni-id 3.0.0`起，如果配置`"removePermissionAndRoleFromToken": false`此选项不再生效	|
 | myInviteCode	| String	| 否	|自行设置用户的邀请码																														|
+| role	| Array	| 否	|设定用户角色												|
 
 username可以是字符串、可以是email、可以是手机号，本插件不约束，开发者可以自己定。
 
@@ -1133,6 +1134,7 @@ exports.main = async function(event,context) {
 | inviteCode	|String	| 否	|邀请人的邀请码，type为`register`时生效																																	|
 | myInviteCode|String	| 否	|设置当前注册用户自己的邀请码，type为`register`时生效																										|
 | needPermission| Boolean	| 否	|设置为true时会在checkToken时返回用户权限（permission），建议在管理控制台中使用	|
+| role	| Array	| 否	|设定用户角色	，当前用户为新注册时生效											|
 
 **响应参数**
 
@@ -1163,6 +1165,55 @@ exports.main = async function(event,context) {
 	return res
 }
 
+```
+
+### 手机一键登录@univerify
+
+用法：`uniID.loginByUniverify(Object loginByUniverifyParams)`
+
+> 需再[开发者控制台](https://dev.dcloud.net.cn/uniLogin)开通一键登录并在config.json内配置univerify相关信息
+
+**参数说明**
+
+| 字段				| 类型	| 必填| 说明																																																	|
+| ---					| ---		| ---	| ---																																																		|
+| access_token			| String| 是	|uni.login登录成功后，返回的`access_token`参数
+| openid				| String| 是	|uni.login登录成功后，返回的`openid`参数			|
+| type				| String| 否	|指定操作类型，可选值为`login`、`register`，不传此参数时表现为手机号已注册则登录，手机号未注册则进行注册|
+| password		|String	| 否	|密码，type为`register`时生效																																						|
+| inviteCode	|String	| 否	|邀请人的邀请码，type为`register`时生效																																	|
+| myInviteCode|String	| 否	|设置当前注册用户自己的邀请码，type为`register`时生效																										|
+| needPermission| Boolean	| 否	|设置为true时会在checkToken时返回用户权限（permission），建议在管理控制台中使用	|
+
+**响应参数**
+
+| 字段				| 类型	| 说明																		|
+| ---					| ---		| ---																			|
+| code				| Number| 错误码，0表示成功												|
+| message					| String|详细信息																|
+| uid					| String|用户`uid`																|
+| type				| String|操作类型，`login`为登录、`register`为注册|
+| mobile		| String|登录者手机号							|
+| userInfo		| Object|用户全部信息								|
+| token				| String|登录成功之后返回的`token`信息							|
+| tokenExpired| String|`token`过期时间														|
+
+**示例代码**
+
+```js
+// 云函数代码
+const uniID = require('uni-id')
+exports.main = async function(event,context) {
+	const {
+		access_token,
+    openid
+	} = event
+	const res = await uniID.loginByUniverify({
+		access_token,
+    openid
+	})
+	return res
+}
 ```
 
 ### 绑定手机号
@@ -1267,6 +1318,7 @@ exports.main = async function(event,context) {
 | password			|String	| 否	|密码，type为`register`时生效																										|
 | myInviteCode	|String	| 否	|设置当前注册用户自己的邀请码，type为`register`时生效														|
 | needPermission| Boolean	| 否	|设置为true时会在checkToken时返回用户权限（permission），建议在管理控制台中使用	|
+| role	| Array	| 否	|设定用户角色	，当前用户为新注册时生效											|
 
 **响应参数**
 
@@ -1413,6 +1465,7 @@ exports.main = async function(event,context) {
 | code				| String| 是	|微信登录返回的code																																																								|
 | myInviteCode|String	| 否	|设置当前注册用户自己的邀请码，type为`register`时生效																																							|
 | needPermission| Boolean	| 否	|设置为true时会在checkToken时返回用户权限（permission），建议在管理控制台中使用	|
+| role	| Array	| 否	|设定用户角色	，当前用户为新注册时生效											|
 
 **响应参数**
 
@@ -1636,6 +1689,7 @@ exports.main = async function(event,context) {
 | code				| String| 是	|支付宝登录返回的code																																																							|
 | myInviteCode| String| 否	|设置当前注册用户自己的邀请码，type为`register`时生效																																							|
 | needPermission| Boolean	| 否	|设置为true时会在checkToken时返回用户权限（permission），建议在管理控制台中使用	|
+| role	| Array	| 否	|设定用户角色	，当前用户为新注册时生效											|
 
 **响应参数**
 
@@ -1788,6 +1842,7 @@ exports.main = async function(event,context) {
 | type				| String| 否	| 指定操作类型，可选值为`login`、`register`，不传此参数时表现为已注册则登录，未注册则进行注册|
 | myInviteCode| String| 否	| 设置当前注册用户自己的邀请码，type为`register`时生效					          							|
 | needPermission| Boolean	| 否	|设置为true时会在checkToken时返回用户权限（permission），建议在管理控制台中使用	|
+| role	| Array	| 否	|设定用户角色	，当前用户为新注册时生效											|
 
 **响应参数**
 
@@ -2521,6 +2576,14 @@ exports.main = async function(event,context) {
 |													|103		|02				|（10302）此邮箱尚未注册（传入type='login'且邮箱未注册时触发）			|
 |微信登录/注册						|104		|01				|（10401）获取openid失败																						|
 |支付宝登录/注册					|105		|01				|（10501）获取openid失败																						|
+|一键登录/注册					|106		|01				|（10601）手机号已存在（传入type='register'且手机号已注册时触发）								|
+|					    |106		|02				|（10602）此手机号尚未注册（传入type='login'且手机号未注册时触发）																						|
+|Apple登录/注册					|107		|01				|（10701）获取用户唯一标识符失败																						|
+|					    |107		|02				|（10702）bundleId校验失败，请确认配置后重试																						|
+|					    |107		|03				|（10703）此账户已注册																						|
+|					    |107		|04				|（10704）此账户尚未注册																						|
+|					    |107		|05				|（10705）identityToken校验失败																						|
+|					    |107		|06				|（10706）签发机构检验失败																						|
 |注册通用模块							|200		|-				|-																												|
 |账号、邮箱、手机+密码注册|201		|01				|（20101）用户名、邮箱、手机号必填一项															|
 |													|				|02				|（20102）用户名、邮箱、手机号冲突																	|
@@ -2676,6 +2739,24 @@ uni-id-users表内存储的password字段为使用hmac-sha1生成的hash值，�
 
 - 由于角色权限缓存在token内，可能会存在权限已经更新但是用户token未过期之前依然是旧版角色权限的情况。可以调短一些token过期时间来减少这种情况的影响。
 - admin角色token内不包含permission，如需自行判断用户是否有某个权限，要注意admin角色需要额外判断一下
+
+# 迁移指南@migration
+
+## 自1.x.x版本升级到2.x.x@m1to2
+
+自2.0.0版本起uni-id调整了验证码表名（这个调整导致了与旧版不兼容），如果要使用2.0.0以上版本需要在数据库中创建opendb-verify-code表（建议直接选择opendb内uni-id下的opendb-verify-code表，会自动创建索引以及表结构）
+
+## 自2.x.x版本升级到3.x.x@m2to3
+
+- 3.0.0版本起移除了为兼容旧版保留的msg返回值，统一改用message作为返回信息
+- 3.0.0版本起checkToken接口不再返回userInfo字段
+- 3.0.0版本起uni-id默认将缓存用户角色权限到token内，关于缓存角色权限的说明请参考：[缓存角色权限](uniCloud/uni-id?id=cachepermissionintoken)。从2.x.x版本升级到3.x.x版本需要根据自己需求分别处理。
+  + 如果不希望缓存角色权限到token内，需要在config.json内配置`"removePermissionAndRoleFromToken": true`。配置后还需要注意3.0.0起uni-id的checkToken方法将不再返回用户信息（userInfo字段）。需要额外调用接口`uniID.getUserInfo`去获取。
+  + 如果希望升级为缓存角色权限到token内的方案，可以按照以下步骤迁移
+    - checkToken方法需要传入`needPermission: true`来使新旧token均返回角色权限信息（尤其使用uniCloud admin需要注意此项）。
+    - checkToken方法不再返回用户信息，需要额外调用接口`uniID.getUserInfo`去获取。
+    - 各登录接口的needPermission参数不再生效
+    - 所有注册用户行为均支持传入角色（role）字段，指定创建用户的角色（需要使用3.0.2版本，此前只有uniID.register接口支持）
 
 # FAQ
 
