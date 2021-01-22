@@ -33,6 +33,8 @@ exports.main = async (event, context) => {
 }
 ```
 
+云函数url化的场景下无法获取`context.OS`、`context.PLATFORM`、`context.APPID`
+
 >在云函数URL化的场景无法获取客户端平台信息，可以在调用依赖客户端平台的接口接口之前（推荐在云函数入口）通过修改context.PLATFORM手动传入客户端平台信息
 
 例：
