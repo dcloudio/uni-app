@@ -84,6 +84,7 @@ var serviceContext = (function () {
     'onMemoryWarning',
     'getNetworkType',
     'onNetworkStatusChange',
+    'offNetworkStatusChange',
     'onAccelerometerChange',
     'offAccelerometerChange',
     'startAccelerometer',
@@ -141,6 +142,7 @@ var serviceContext = (function () {
   const keyboard = [
     'hideKeyboard',
     'onKeyboardHeightChange',
+    'offKeyboardHeightChange',
     'getSelectedTextRange'
   ];
 
@@ -2834,6 +2836,10 @@ var serviceContext = (function () {
     return res
   }
 
+  function removeCallbackHandler (invokeCallbackId) {
+    delete invokeCallbacks[invokeCallbackId];
+  }
+
   function wrapperUnimplemented (name) {
     return function todo (args) {
       console.error('API `' + name + '` is not yet implemented');
@@ -3154,6 +3160,10 @@ var serviceContext = (function () {
     return UniServiceJSBridge.invokeCallbackHandler(...args)
   }
 
+  function remove (args) {
+    return UniServiceJSBridge.removeCallbackHandler(args)
+  }
+
   function requireNativePlugin (name) {
     return uni.requireNativePlugin(name)
   }
@@ -3246,6 +3256,13 @@ var serviceContext = (function () {
       ret.errMsg = ret.errMsg.replace(name, alias);
     }
     return ret
+  }
+
+  function getWebview (__page__) {
+    if (__page__) {
+      return __page__.$getAppWebview()
+    }
+    return getLastWebview()
   }
 
   function getLastWebview () {
@@ -4923,6 +4940,7 @@ var serviceContext = (function () {
           }] : []
         },
         popGesture: 'close',
+        background: '#000000',
         backButtonAutoControl: 'close'
       },
       onMessage ({
@@ -5462,7 +5480,8 @@ var serviceContext = (function () {
         right: safeAreaInsets.right,
         bottom: safeAreaInsets.bottom,
         left: safeAreaInsets.left
-      }
+      },
+      uuid: plus.runtime.getDCloudId()
     }
   }
 
@@ -6278,6 +6297,8 @@ var serviceContext = (function () {
             }
             plus.gallery.save(res.url, function (GallerySaveEvent) {
               plus.nativeUI.toast('保存图片到相册成功');
+            }, function () {
+              plus.nativeUI.toast('保存图片到相册失败');
             });
           } else if (hasLongPressActions) {
             publish(longPressActions.callbackId, {
@@ -6365,15 +6386,9 @@ var serviceContext = (function () {
   function saveImageToPhotosAlbum$1 ({
     filePath
   } = {}, callbackId) {
-    plus.gallery.save(getRealPath$1(filePath), e => {
-      invoke$1(callbackId, {
-        errMsg: 'saveImageToPhotosAlbum:ok'
-      });
-    }, e => {
-      invoke$1(callbackId, {
-        errMsg: 'saveImageToPhotosAlbum:fail'
-      });
-    });
+    const successCallback = warpPlusSuccessCallback(callbackId, 'saveImageToPhotosAlbum');
+    const errorCallback = warpPlusErrorCallback(callbackId, 'saveImageToPhotosAlbum');
+    plus.gallery.save(getRealPath$1(filePath), successCallback, errorCallback);
   }
 
   function saveVideoToPhotosAlbum ({
@@ -7656,12 +7671,13 @@ var serviceContext = (function () {
       always: 'float'
     };
 
+    const navigationBarBackgroundColor = windowOptions.navigationBarBackgroundColor;
     const ret = {
       autoBackButton: !routeOptions.meta.isQuit,
       titleText: titleImage === '' ? windowOptions.navigationBarTitleText || '' : '',
       titleColor: windowOptions.navigationBarTextStyle === 'black' ? '#000000' : '#ffffff',
       type: titleNViewTypeList[transparentTitle],
-      backgroundColor: windowOptions.navigationBarBackgroundColor || '#f8f8f8',
+      backgroundColor: (/^#[a-z0-9]{6}$/i.test(navigationBarBackgroundColor) || navigationBarBackgroundColor === 'transparent') ? navigationBarBackgroundColor : '#f7f7f7',
       tags: titleImage === '' ? [] : [{
         tag: 'img',
         src: titleImage,
@@ -7781,7 +7797,7 @@ var serviceContext = (function () {
     });
 
     const backgroundColor = routeOptions.window.backgroundColor;
-    if (backgroundColor) {
+    if (/^#[a-z0-9]{6}$/i.test(backgroundColor) || backgroundColor === 'transparent') {
       if (!webviewStyle.background) {
         webviewStyle.background = backgroundColor;
       }
@@ -9384,9 +9400,10 @@ var serviceContext = (function () {
   }
 
   function setNavigationBarTitle$1 ({
+    __page__,
     title = ''
   } = {}) {
-    const webview = getLastWebview();
+    const webview = getWebview(__page__);
     if (webview) {
       const style = webview.getStyle();
       if (style && style.titleNView) {
@@ -9431,10 +9448,11 @@ var serviceContext = (function () {
   }
 
   function setNavigationBarColor$1 ({
+    __page__,
     frontColor,
     backgroundColor
   } = {}) {
-    const webview = getLastWebview();
+    const webview = getWebview(__page__);
     if (webview) {
       const styles = {};
       if (frontColor) {
@@ -9878,6 +9896,55 @@ var serviceContext = (function () {
     pageVm.$page.meta.isNVue
       ? requestComponentInfo$1(pageVm, queue, callback)
       : requestComponentInfo(pageVm, queue, callback);
+  }
+
+  function operateAdView (pageId, id, type, data) {
+    UniServiceJSBridge.publishHandler(id, {
+      type,
+      data
+    }, pageId);
+  }
+
+  UniServiceJSBridge.subscribe('onAdMethodCallback', ({
+    callbackId,
+    data
+  }, pageId) => {
+    const { adpid, width, count } = data;
+    getAdData(adpid, width, count, (res) => {
+      operateAdView(pageId, callbackId, 'success', res);
+    }, (err) => {
+      operateAdView(pageId, callbackId, 'fail', err);
+    });
+  });
+
+  const _adDataCache = {};
+
+  function getAdData (adpid, width, count, onsuccess, onerror) {
+    const key = adpid + '-' + width;
+    const adDataList = _adDataCache[key];
+    if (adDataList && adDataList.length > 0) {
+      onsuccess(adDataList.splice(0, 1)[0]);
+      return
+    }
+
+    plus.ad.getAds(
+      {
+        adpid,
+        count,
+        width
+      },
+      (res) => {
+        const list = res.ads;
+        onsuccess(list.splice(0, 1)[0]);
+        _adDataCache[key] = adDataList ? adDataList.concat(list) : list;
+      },
+      (err) => {
+        onerror({
+          errCode: err.code,
+          errMsg: err.message
+        });
+      }
+    );
   }
 
   const eventNames = [
@@ -18306,7 +18373,7 @@ var serviceContext = (function () {
     callback.invoke(callbackId, data);
   });
 
-  const methods$1 = ['insertDivider', 'insertImage', 'insertText', 'setContents', 'getContents', 'clear', 'removeFormat', 'undo', 'redo'];
+  const methods$1 = ['insertDivider', 'insertImage', 'insertText', 'setContents', 'getContents', 'clear', 'removeFormat', 'undo', 'redo', 'blur', 'getSelectionText', 'scrollIntoView'];
 
   class EditorContext {
     constructor (id, pageId) {
@@ -18540,9 +18607,20 @@ var serviceContext = (function () {
     callbacks$6.push(callbackId);
   }
 
+  function offNetworkStatusChange (callbackId) {
+    // 暂不支持移除所有监听
+    if (callbackId) {
+      const index = callbacks$6.indexOf(callbackId);
+      if (index >= 0) {
+        callbacks$6.splice(index, 1);
+      }
+    }
+  }
+
   var require_context_module_1_11 = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    onNetworkStatusChange: onNetworkStatusChange
+    onNetworkStatusChange: onNetworkStatusChange,
+    offNetworkStatusChange: offNetworkStatusChange
   });
 
   const callbacks$7 = [];
@@ -18612,12 +18690,20 @@ var serviceContext = (function () {
   });
 
   function onKeyboardHeightChange (callbackId) {
+    // 与微信小程序一致仅保留最后一次监听
+    remove(callback$1);
     callback$1 = callbackId;
+  }
+
+  function offKeyboardHeightChange () {
+    // 与微信小程序一致移除最后一次监听
+    callback$1 = null;
   }
 
   var require_context_module_1_14 = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    onKeyboardHeightChange: onKeyboardHeightChange
+    onKeyboardHeightChange: onKeyboardHeightChange,
+    offKeyboardHeightChange: offKeyboardHeightChange
   });
 
   const longPressActionsCallbackId = 'longPressActionsCallback';
@@ -20593,6 +20679,26 @@ var serviceContext = (function () {
     return event
   }
 
+  function generateId (vm, parent, version) {
+    if (!vm.$parent) {
+      return '-1'
+    }
+    const vnode = vm.$vnode;
+    const context = vnode.context;
+    let id = vnode.data.attrs._i;
+    if (version && hasOwn(vnode.data, 'key')) { // 补充 key 值
+      id = id + ';' + vnode.data.key;
+    }
+    // slot 内的组件，需要补充 context 的 id，否则可能与内部组件索引值一致，导致 id 冲突
+    if (context && context !== parent && context._$id) {
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('generateId:' + context._$id + ';' + parent._$id + ',' + id);
+      }
+      return context._$id + ';' + parent._$id + ',' + id
+    }
+    return parent._$id + ',' + id
+  }
+
   const isAndroid = plus.os.name.toLowerCase() === 'android';
   const FOCUS_TIMEOUT = isAndroid ? 300 : 700;
   let keyboardHeight = 0;
@@ -20639,32 +20745,7 @@ var serviceContext = (function () {
     // }
   }
 
-  // TODO 临时通过序列化,反序列化传递dataset,后续可以全部保留在service,不做传递
-  function parseDataset$1 (dataset) {
-    const ret = Object.create(null);
-    Object.keys(dataset).forEach(name => {
-      try {
-        ret[name] = JSON.parse(dataset[name]);
-      } catch (e) { // dataset 存在两种,一种是被JSON.stringify的,一种是原始的
-        ret[name] = dataset[name];
-      }
-    });
-    return ret
-  }
-
-  function parseTargets (event) {
-    const targetDataset = event.target && event.target.dataset;
-    if (targetDataset) {
-      event.target.dataset = parseDataset$1(targetDataset);
-    }
-    const currentTargetDataset = event.currentTarget && event.currentTarget.dataset;
-    if (currentTargetDataset) {
-      event.currentTarget.dataset = parseDataset$1(currentTargetDataset);
-    }
-  }
-
   function wrapperEvent (event) {
-    parseTargets(event);
     event.preventDefault = noop;
     event.stopPropagation = noop;
     return wrapperMPEvent(event)
@@ -20746,7 +20827,18 @@ var serviceContext = (function () {
     }
 
     addVm (vm) {
-      this.vms[vm._$id] = vm;
+      const id = vm._$id;
+      const oldVm = this.vms[id];
+      if (oldVm) {
+        const newId = generateId(oldVm, oldVm.$parent, VD_SYNC_VERSION);
+        oldVm._$id = newId;
+        this.vms[newId] = oldVm;
+        this.elements.forEach(element => {
+          const cid = element.cid;
+          element.cid = cid === id ? newId : cid;
+        });
+      }
+      this.vms[id] = vm;
     }
 
     removeVm (vm) {
@@ -20857,26 +20949,6 @@ var serviceContext = (function () {
       this.elements.length = 0;
       removeVdSync(this.pageId);
     }
-  }
-
-  function generateId (vm, parent, version) {
-    if (!vm.$parent) {
-      return '-1'
-    }
-    const vnode = vm.$vnode;
-    const context = vnode.context;
-    let id = vnode.data.attrs._i;
-    if (version && hasOwn(vnode.data, 'key')) { // 补充 key 值
-      id = id + ';' + vnode.data.key;
-    }
-    // slot 内的组件，需要补充 context 的 id，否则可能与内部组件索引值一致，导致 id 冲突
-    if (context && context !== parent && context._$id) {
-      if (process.env.NODE_ENV !== 'production') {
-        console.log('generateId:' + context._$id + ';' + parent._$id + ',' + id);
-      }
-      return context._$id + ';' + parent._$id + ',' + id
-    }
-    return parent._$id + ',' + id
   }
 
   function setResult (data, k, v) {
@@ -21013,10 +21085,6 @@ var serviceContext = (function () {
     return clazz
   }
 
-  function isNotSafeString (value) {
-    return value === 'null' || value === 'true' || value === 'false' || !isNaN(Number(value)) || (value.startsWith('[') && value.endsWith(']')) || (value.startsWith('{') && value.endsWith('}'))
-  }
-
   function setData (id, name, value) {
     switch (name) {
       case B_CLASS:
@@ -21035,12 +21103,6 @@ var serviceContext = (function () {
         break
       case V_FOR:
         return setForData.call(this, id, value)
-    }
-    // TODO 暂时先传递 dataset 至 view 层(理论上不需要)
-    if (name.indexOf('a-data-') === 0 && (typeof value !== 'string' || isNotSafeString(value))) {
-      try {
-        value = JSON.stringify(value);
-      } catch (e) {}
     }
 
     return ((this._$newData[id] || (this._$newData[id] = {}))[name] = value)
@@ -21080,7 +21142,10 @@ var serviceContext = (function () {
     if (!hasOwn(value, 'keyIndex')) {
       vForData[forIndex] = key;
     } else {
-      (vForData[forIndex] || (vForData[forIndex] = {}))['k' + value.keyIndex] = key;
+      if (typeof vForData[forIndex] !== 'object') {
+        vForData[forIndex] = {};
+      }
+      vForData[forIndex]['k' + value.keyIndex] = key;
     }
     return key
   }
@@ -21098,6 +21163,7 @@ var serviceContext = (function () {
     'onError',
     'onUnhandledRejection',
     // Page
+    'onInit',
     'onLoad',
     // 'onShow',
     'onReady',
@@ -21349,6 +21415,7 @@ var serviceContext = (function () {
 
   UniServiceJSBridge.publishHandler = publishHandler;
   UniServiceJSBridge.invokeCallbackHandler = invokeCallbackHandler;
+  UniServiceJSBridge.removeCallbackHandler = removeCallbackHandler;
 
   var index$1 = {
     __vuePlugin: vuePlugin,
