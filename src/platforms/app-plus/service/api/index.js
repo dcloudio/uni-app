@@ -76,5 +76,6 @@ export * from './ui/tab-bar'
 
 export * from './ui/request-component-info'
 
+export * from './ad/ad'
 export * from './ad/rewarded-video-ad'
 export * from './ad/full-screen-video-ad'

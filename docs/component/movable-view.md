@@ -75,7 +75,7 @@
 
 **Tips**
 - movable-view必须在`<movable-area/>`组件中，并且必须是直接子节点，否则不能移动。
-- 如果遇到x、y、scale属性设置不生效的问题参考：[组件属性设置不生效解决办法](/use?id=%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98)
+- 如果遇到x、y、scale属性设置不生效的问题参考：[组件属性设置不生效解决办法](/vue-api?id=_4-组件属性设置不生效解决办法)
 - 除了H5端和app-nvue端，其他平台不支持内嵌video、map等原生组件。更新：微信基础库2.4.4起支持了原生组件在 scroll-view、swiper、movable-view 中的使用
 
 **示例**[查看演示](https://hellouniapp.dcloud.net.cn/pages/component/movable-view/movable-view)
@@ -137,4 +137,4 @@ export default {
 }
 ```
 
- ![uni](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/img/moveable-view.png)
+ ![uni](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/41b00010-4f30-11eb-a16f-5b3e54966275.png)

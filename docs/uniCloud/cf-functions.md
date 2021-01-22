@@ -5,7 +5,7 @@
 
 如下是将传入的两个参数求和并返回客户端的云函数代码示例：
 
-```
+```js
 'use strict';
 exports.main = async (event, context) => {
 	//event为客户端上传的参数
@@ -17,7 +17,7 @@ exports.main = async (event, context) => {
 
 云函数的传入参数有两个，一个是`event`对象，一个是`context`对象。`event`指的是触发云函数的事件，当客户端调用云函数时，`event`就是客户端调用云函数时传入的参数。`context` 对象包含了此处调用的调用信息和运行状态，可以用它来了解服务运行的情况。`uniCloud`会自动将客户端的操作系统（`os`）、运行平台（`platform`）、应用信息（`appid`）等注入`context`中，开发者可通过`context`获取每次调用的上下文，如下是一个示例：
 
-```
+```js
 'use strict';
 exports.main = async (event, context) => {
 	//event为客户端上传的参数
@@ -32,17 +32,22 @@ exports.main = async (event, context) => {
 }
 ```
 
-**关于CLIENTIP、CLIENTUA**
+>在云函数URL化的场景无法获取客户端平台信息，可以在调用依赖客户端平台的接口接口之前（推荐在云函数入口）通过修改context.PLATFORM手动传入客户端平台信息
 
-- 通过管理端调用云函数（云函数上传并运行、腾讯云开发调试期间），使用腾讯云时想临时调试UA、IP等可以通过自行初始化`uniCloud`的方式（[同时连多服务空间](uniCloud/init.md)
-）传入`debugFunction: false`来实现客户端直连调用，需要注意的是此时控制台将不会打印云函数日志。
+例：
 
+```js
+exports.main = async (event, context) => {
+	context.PLATFORM = 'app-plus'
+}
+```
 
 云函数中如果要使用其他服务（比如mysql数据库、redis等），可以按照nodejs的写法即可。但注意这些非uniCloud数据库和云函数运行环境不在一起，访问速度受影响。
 
 **注意事项**
 
 - 服务商为阿里云时，暂不可使用相对路径读取文件（比如`fs.readFileSync('./info.txt')`），可以使用绝对路径`fs.readFileSync(path.resolve(__dirname,'./info.txt'))`
+- event大小不可超过100kb
 
 ## API列表
 
@@ -52,10 +57,10 @@ exports.main = async (event, context) => {
 |--							|--																						|
 |uniCloud.callFunction()	|云函数中调用另一个云函数 [见下](uniCloud/cf-functions?id=callbyfunction)				|
 |uniCloud.database()		|云数据库对象 [详情](uniCloud/cf-database.md)											|
-|uniCloud.uploadFile()		|云函数上传文件到云存储 [详情](uniCloud/storage?id=uploadfile)							|
+|uniCloud.uploadFile()		|云函数上传文件到云存储 [详情](uniCloud/storage?id=clouduploadfile)							|
 |uniCloud.downloadFile()	|云函数下载云存储的文件到云函数运行环境 [详情](uniCloud/storage?id=clouddownloadfile)	|
-|uniCloud.deleteFile()		|云函数删除云存储的文件 [详情](uniCloud/storage?id=deletefile)							|
-|uniCloud.getTempFileURL()	|获取云存储文件的临时路径 [详情](uniCloud/storage?id=gettempfileurl)					|
+|uniCloud.deleteFile()		|云函数删除云存储的文件 [详情](uniCloud/storage?id=clouddeletefile)							|
+|uniCloud.getTempFileURL()	|获取云存储文件的临时路径 [详情](uniCloud/storage?id=cloudgettempfileurl)					|
 |uniCloud.httpclient		|云函数中通过http连接其他系统 [见下](uniCloud/cf-functions?id=httpclient)				|
 |uniCloud.logger			|云函数中打印日志到uniCloud日志记录系统（非HBuilderX控制台）[详情](uniCloud/cf-logger)	|
 |uniCloud.sendSms()			|发送短信 [详见](uniCloud/send-sms.md)													|
@@ -117,31 +122,53 @@ exports.main = async (event, context) => {
 
 **示例代码**
 
-```
+```js
 const res = await uniCloud.httpclient.request(apiUrl, {
     method: 'POST',
     data: {
       test: 'testValue'
     },
-    dataType: 'json'
+    contentType: 'json', // 指定以application/json发送data内的数据
+    dataType: 'json' // 指定返回值为json格式，自动进行parse
   })
 console.log(res)
+```
+
+返回数据结构如下
+
+```js
+{
+	"data": {"name": "DCloud"}, // 响应内容
+	"status": 200, // 状态码
+	"headers": { // 响应头，仅作示例，不同服务器返回的有差异
+		"date": "Tue, 29 Dec 2020 08:10:30 GMT",
+		"content-type": "application/json",
+		"content-length": "276",
+		"connection": "keep-alive",
+		"server": "gunicorn/19.9.0",
+		"access-control-allow-origin": "*",
+		"access-control-allow-credentials": "true"
+	}
+}
+
 ```
 
 ## 使用npm
 
 云函数的运行环境是 `Node.js`，因此我们可以使用 `npm` 安装第三方依赖。
 
-注意：鉴于阿里云的限制，目前仅支持全量上传云函数（整个 node_modules文件夹全部上传），因此提醒大家，精简依赖，否则可能会每次上传时间很慢，影响开发体验。并且太大的npm库影响云函数的运行性能。
+注意：阿里云目前仅支持全量上传云函数（整个 node_modules文件夹全部上传），因此提醒开发者精简依赖，否则可能会每次上传时间很慢，影响开发体验。并且太大的npm库影响云函数的运行性能。
+
+腾讯云会在上传云函数后自动安装需要的npm依赖。
 
 Tips:
-- 目前每个云函数上传包大小限制为10M。
+- 目前每个云函数上传包大小限制为10M。如果npm包很大，阿里云的整体上传机制会无法满足需求。此时只能选择腾讯云，交给腾讯云自动安装依赖。
 
 ## 公共模块
 
 云函数支持公共模块。多个云函数的共享部分，可以抽离为公共模块，然后被多个云函数引用。[详见](uniCloud/cf-common)
 
-## 客户端调用云函数
+## 客户端调用云函数@clientcallfunction
 
 前端代码（H5前端、App、小程序），不再执行uni.request联网，而是通过`uniCloud.callFunction`调用云函数，`callFunction`定义如下：
 
@@ -219,6 +246,12 @@ let callFunctionResult = await uniCloud.callFunction({
 
 ## 云函数配置
 
+### 超时时间
+
+**注意**
+
+- 目前阿里云的超时时间和腾讯云有区别，如果在阿里云云函数运行超过10秒那么客户端没法同步接收返回结果，但是云函数仍会运行到配置的超时时间。腾讯云在云函数运行到配置的超时时间之前客户端都是可以收到返回结果的。
+
 ### 固定出口IP@eip
 
 serverless默认是没有固定的服务器IP的，因为有很多服务器在后面供随时调用，每次调用到哪个服务器、哪个ip都不固定。
@@ -227,18 +260,129 @@ serverless默认是没有固定的服务器IP的，因为有很多服务器在�
 
 目前腾讯云的收费版，提供了云函数的固定出口ip。ip属于有价资源，阿里云和腾讯云的免费版不提供这方面的能力。
 
-在uniCloud Web控制台，创建付费的腾讯云服务空间，在云函数设置界面，可以开启固定ip。开启后界面上会显示可用的固定ip。拿着这个ip去微信公众号管理界面配置即可。
+在uniCloud [Web控制台](https://unicloud.dcloud.net.cn)，创建付费的腾讯云服务空间，选择一个云函数，在云函数的详情界面可以开启固定出口ip。开启后界面上会显示可用的固定ip。拿着这个ip去需要固定ip的界面（如微信公众号管理界面）配置即可。
 
 **注意**
 
 - 同一个服务空间内所有开启固定出口IP的云函数使用的是同一个IP。
 - 如果你是免费版升配到付费版，开启`固定IP`功能后，会导致付费版到期无法自动降级到免费版，请注意按时续费
 
+## 云函数package.json@packagejson
+
+HBuilderX 3.0版本之前，package.json只是一个标准的package.json，一般来说安装依赖或公共模块才需要。HBuilderX 3.0及以上版本，package.json也可以用来配置云函数。
+
+uniCloud web控制台提供了很多云函数的设置，比如内存大小、url化、定时触发等，从HBuilderX 3.0起，在云函数的package.json里也可以编写这些设置。
+
+开发者在本地编写云函数的设置，上传云函数，这些设置会自动在云端生效。（本地不生效）
+
+在云端设置了非默认参数后，HBuilderX下载云函数到本地时，也会自动把设置项放入package.json中下载下来。
+
+package.json是一个标准json文件，不可带注释。下面是一个package.json示例。
+
+```json
+{
+  "name": "add-article",
+  "version": "1.0.0",
+  "description": "新增文章",
+  "main": "index.js",
+  "dependencies": {
+    
+  },
+  "cloudfunction-config": {
+      "memorySize": 256,
+      "timeout": 5,
+      "triggers": [{
+          "name": "myTrigger",
+          "type": "timer",
+          "config": "0 0 2 1 * * *"
+      }],
+      "path": ""
+    }
+}
+```
+
+其中cloudfunction-config字段是云函数配置，支持的配置如下
+
+```js
+{
+  "memorySize": 256, // 函数的最大可用内存，单位MB，可选值： 128|256|512|1024|2048，默认值256
+  "timeout": 5, // 函数的超时时间，单位秒，默认值5。最长为60秒，阿里云在定时触发时最长可以是600秒
+  // triggers 字段是触发器数组，目前仅支持一个触发器，即数组只能填写一个，不可添加多个
+  "triggers": [{
+      // name: 触发器的名字，规则见https://uniapp.dcloud.net.cn/uniCloud/trigger，name不对阿里云生效
+      "name": "myTrigger",
+      // type: 触发器类型，目前仅支持 timer (即 定时触发器)，type不对阿里云生效
+      "type": "timer",
+      // config: 触发器配置，在定时触发器下，config 格式为 cron 表达式，规则见https://uniapp.dcloud.net.cn/uniCloud/trigger。使用阿里云时会自动忽略最后一位，即代表年份的一位在阿里云不生效
+      "config": "0 0 2 1 * * *"
+  }],
+  // 云函数Url化path部分，阿里云需要以/http/开头
+  "path": ""
+}
+```
+
+**注意**
+
+- 插件作者在发布插件时，如果云函数有特殊设置，应该放入package.json中，然后发布到插件市场。这样就不用再通过说明文档一步一步引导用户去配置云函数定时触发器、内存、url化路径等
+- 在web控制台修改云函数配置后，通过HBuilderX的下载云函数菜单会在package.json内添加修改后的云函数配置
+- 上传云函数时，如果项目下的package.json内包含云函数配置会同时进行云函数的配置更新
+- package.json只有云端部署才生效，本地运行不生效。
+
 ## 使用cloudfunctions_init初始化云函数@init
 
-自`HBuilderX 2.9`起`uniCloud`提供了`cloudfunctions_init.json`来方便开发者快速进行云函数的初始化操作，即在HBuilderX工具中，一次性完成所有云函数的配置。
+`HBuilderX 2.9`版本，`uniCloud`提供了`cloudfunctions_init.json`来方便开发者快速进行云函数的初始化操作，即在HBuilderX工具中，一次性完成所有云函数的配置。
 
-这个功能尤其适合插件作者，不用再使用说明文档一步一步引导用户去配置云函数定时触发器、内存、url化路径等。
+**注意：HBuilderX 3.0.0版本起不再使用cloudfunctions_init.json来初始化云函数。改为使用在云函数目录下通过package.json进行配置，具体见上个章节**
+
+详细调整如下：
+
+不再使用cloudfunctions_init.json，内容被分散到每个云函数的package.json的`cloudfunction-config`字段下
+
+package.json是一个标准json文件，不可带注释。下面是一个package.json示例
+
+```json
+{
+  "name": "add-article",
+  "version": "1.0.0",
+  "description": "新增文章",
+  "main": "index.js",
+  "dependencies": {
+    
+  },
+  "cloudfunction-config": {
+      "memorySize": 256,
+      "timeout": 5,
+      "triggers": [{
+          "name": "myTrigger",
+          "type": "timer",
+          "config": "0 0 2 1 * * *"
+      }],
+      "path": ""
+    }
+}
+```
+
+cloudfunction-config说明如下
+
+```js
+{
+  "memorySize": 256, // 函数的最大可用内存，单位MB，可选值： 128|256|512|1024|2048，默认值256
+  "timeout": 5, // 函数的超时时间，单位秒，默认值5。最长为60秒，阿里云在定时触发时最长可以是600秒
+  // triggers 字段是触发器数组，目前仅支持一个触发器，即数组只能填写一个，不可添加多个
+  "triggers": [{
+      // name: 触发器的名字，规则见https://uniapp.dcloud.net.cn/uniCloud/trigger，name不对阿里云生效
+      "name": "myTrigger",
+      // type: 触发器类型，目前仅支持 timer (即 定时触发器)，type不对阿里云生效
+      "type": "timer",
+      // config: 触发器配置，在定时触发器下，config 格式为 cron 表达式，规则见https://uniapp.dcloud.net.cn/uniCloud/trigger。使用阿里云时会自动忽略最后一位，即代表年份的一位在阿里云不生效
+      "config": "0 0 2 1 * * *"
+  }],
+  // 云函数Url化path部分，阿里云需要以/http/开头
+  "path": ""
+}
+```
+
+**HBuilderX 3.0.0之前版本，请继续阅读下面文档**
 
 **使用方式**
 - 在`cloudfucntions`目录右键即可创建`cloudfunctions_init.json`，
@@ -257,7 +401,7 @@ serverless默认是没有固定的服务器IP的，因为有很多服务器在�
             "name": "myTrigger",
             // type: 触发器类型，目前仅支持 timer (即 定时触发器)，type不对阿里云生效
             "type": "timer",
-            // config: 触发器配置，在定时触发器下，config 格式为 cron 表达式，规则见https://uniapp.dcloud.net.cn/uniCloud/trigger。使用阿里云时会自动忽略最后一位，即代表年份的一位
+            // config: 触发器配置，在定时触发器下，config 格式为 cron 表达式，规则见https://uniapp.dcloud.net.cn/uniCloud/trigger。使用阿里云时会自动忽略最后一位，即代表年份的一位在阿里云不生效
             "config": "0 0 2 1 * * *"
         }],
         // 云函数Url化path部分，阿里云需要以/http/开头
@@ -269,7 +413,7 @@ serverless默认是没有固定的服务器IP的，因为有很多服务器在�
 
 ## 注意事项
 
-### 云函数的启动模式（冷启动、热启动）
+### 云函数的启动模式（冷启动、热启动）@launchtype
 
 基于云函数按需执行的特点, 函数在不被触发的时候, 计算资源是不被激活的。
 
@@ -288,9 +432,9 @@ serverless默认是没有固定的服务器IP的，因为有很多服务器在�
 
 不同云厂商的函数实例回收时间，以及优化冷启动的建议，[参考](https://uniapp.dcloud.io/uniCloud/faq?id=%e4%ba%91%e5%87%bd%e6%95%b0%e8%ae%bf%e9%97%ae%e6%97%b6%e5%bf%ab%e6%97%b6%e6%85%a2%e6%80%8e%e4%b9%88%e5%9b%9e%e4%ba%8b%ef%bc%9f)
 
-因为存在冷热启动的差异，云函数中的全局变量就可能出现每次不一样的情况。
+因为存在冷热启动的差异，云函数中的全局变量就可能出现每次不一样的情况。也就是云函数是无状态的。
 
-以如下代码为例，`count`作为全局变量，当多次调用该云函数时，可能会出现变量累加的情况（实例未复用时，每次返回0，若实例被复用，则可能返回1、2、3等各种意外情况）
+以如下代码为例，`count`作为全局变量，当多次调用该云函数时，可能会出现变量累加的情况（实例未复用时，每次返回0，若实例被复用，则可能返回1、2、3等各种意外情况）。所以不要这么使用。
 
 
 ```javascript
@@ -302,6 +446,8 @@ module.exports = async (event) => {
   //若实例被复用，则可能返回1、2、3等各种意外情况
 }
 ```
+
+**require由于存在缓存，也存在同样的问题。尽量不要直接修改require返回的内容**
 
 ### 临时存储空间
 
@@ -355,5 +501,5 @@ exports.main = async function() {
 
 - 云函数中使用的时区是 `UTC+0`，而不是 `UTC+8`，在云函数中使用时间时需特别注意。
 - 使用阿里云作为服务商时，暂时无法使用相对路径读取文件，如：`fs.readFileSync('./info')`，可以替换为`fs.readFileSync(path.resolve(__dirname,'./info'))`
-
+- 阿里云目前能同步返回数据的最大超时时间为10秒，即云函数运行超过10秒时客户端会收到超时报错。如果你在uniCloud web控制台配置了10秒以上的超时时间，云函数是可以运行到10秒以上的，只是客户端无法接收到返回值，腾讯云没有此限制。
 

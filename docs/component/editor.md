@@ -16,11 +16,11 @@
 
 **平台差异说明**
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|快应用|360小程序|
-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|2.0+，app-vue|2.4.5+|基础库 2.7.0+|x|x|x|x|
+|App					|H5			|微信小程序		|支付宝小程序|百度小程序		|字节跳动小程序|QQ小程序		|快应用					|360小程序|
+|:-:					|:-:		|:-:					|:-:		    |:-:					|:-:					|:-:				|:-:						|:-:			|
+|2.0+，app-vue|2.4.5+	|基础库 2.7.0+|x						|需引入动态库[引入方式](/api/media/editor-context)					|x							|x				|x				|x				|
 
-editor组件目前只有H5、App的vue页面和微信支持，其他端平台自身未提供editor组件，只能使用web-view加载web页面，也可搜索[插件市场](https://ext.dcloud.net.cn/search?q=%E5%AF%8C%E6%96%87%E6%9C%AC%E7%BC%96%E8%BE%91) 获取简单的markdown富文本编辑器
+editor组件目前只有H5、App的vue页面、微信小程序、百度小程序支持，其他端平台自身未提供editor组件，只能使用web-view加载web页面，也可搜索[插件市场](https://ext.dcloud.net.cn/search?q=%E5%AF%8C%E6%96%87%E6%9C%AC%E7%BC%96%E8%BE%91) 获取简单的markdown富文本编辑器
 
 | 属性 | 类型 | 默认值 | 必填 | 说明 |
 | --- | --- | --- | --- | --- |
@@ -63,6 +63,7 @@ editor组件目前只有H5、App的vue页面和微信支持，其他端平台自
 * 插入 html 到编辑器内时，编辑器会删除一些不必要的标签，以保证内容的统一。例如`<p><span>xxx</span></p>`会改写为`<p>xxx</p>`
 * 编辑器聚焦时页面会被上推，系统行为以保证编辑区可见
 * H5端会动态引入依赖 [quill.min.js](https://unpkg.com/quill@1.3.7/dist/quill.min.js)、[image-resize.min.js](https://unpkg.com/quill-image-resize-mp@3.0.1/image-resize.min.js)，依赖从 [unpkg.com](https://unpkg.com) 加载，如过依赖加载较慢，可以下载下来放在自己的服务器或 CDN 服务商，然后在 [自定义模板](/collocation/manifest?id=h5-template) head 内引入。
+* 不能直接插入视频，编辑时可以采用视频封面占位，并在图片属性中保存视频信息，预览时再还原为视频。
 
 
 **示例代码** [查看演示](https://hellouniapp.dcloud.net.cn/pages/component/editor/editor)
@@ -84,9 +85,15 @@ editor组件目前只有H5、App的vue页面和微信支持，其他端平台自
 		},
 		methods: {
 			onEditorReady() {
-				uni.createSelectorQuery().select('#editor').context((res) => {
-					this.editorCtx = res.context
-				}).exec()
+			    // #ifdef MP-BAIDU
+			    this.editorCtx = requireDynamicLib('editorLib').createEditorContext('editorId');
+			    // #endif
+			    
+			    // #ifdef APP-PLUS || H5 ||MP-WEIXIN
+			    uni.createSelectorQuery().select('#editor').context((res) => {
+			      this.editorCtx = res.context
+			    }).exec()
+			    // #endif
 			},
 			undo() {
 				this.editorCtx.undo()

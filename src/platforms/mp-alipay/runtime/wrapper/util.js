@@ -112,6 +112,36 @@ export function handleRef (ref) {
   if (!ref) {
     return
   }
+  if (ref.props['data-com-type'] === 'wx') {
+    const eventProps = {}
+    let refProps = ref.props
+    // 初始化支付宝小程序组件事件
+    Object.keys(refProps).forEach(key => {
+      const handler = refProps[key]
+      const res = key.match(/^on([A-Z])(\S*)/)
+      if (res && typeof handler === 'function' && handler.name === 'bound handleEvent') {
+        const event = res && (res[1].toLowerCase() + res[2])
+        refProps[key] = eventProps[key] = function () {
+          const props = Object.assign({}, refProps)
+          props[key] = handler
+          // 由于支付宝事件可能包含多个参数，不使用微信小程序事件格式
+          delete props['data-com-type']
+          triggerEvent.bind({ props })(event, {
+            __args__: [...arguments]
+          })
+        }
+      }
+    })
+    // 处理 props 重写
+    Object.defineProperty(ref, 'props', {
+      get () {
+        return refProps
+      },
+      set (value) {
+        refProps = Object.assign(value, eventProps)
+      }
+    })
+  }
   const refName = ref.props['data-ref']
   const refInForName = ref.props['data-ref-in-for']
   if (refName) {
@@ -129,11 +159,13 @@ export function triggerEvent (type, detail, options) {
 
   const eventOpts = this.props['data-event-opts']
   const eventParams = this.props['data-event-params']
+  const comType = this.props['data-com-type']
 
   const target = {
     dataset: {
       eventOpts,
-      eventParams
+      eventParams,
+      comType
     }
   }
 

@@ -275,6 +275,10 @@ export function invokeCallbackHandler (invokeCallbackId, res, extras) {
   return res
 }
 
+export function removeCallbackHandler (invokeCallbackId) {
+  delete invokeCallbacks[invokeCallbackId]
+}
+
 export function wrapperUnimplemented (name) {
   return function todo (args) {
     console.error('API `' + name + '` is not yet implemented')

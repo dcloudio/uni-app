@@ -54,12 +54,13 @@ export function parseTitleNView (routeOptions) {
     always: 'float'
   }
 
+  const navigationBarBackgroundColor = windowOptions.navigationBarBackgroundColor
   const ret = {
     autoBackButton: !routeOptions.meta.isQuit,
     titleText: titleImage === '' ? windowOptions.navigationBarTitleText || '' : '',
     titleColor: windowOptions.navigationBarTextStyle === 'black' ? '#000000' : '#ffffff',
     type: titleNViewTypeList[transparentTitle],
-    backgroundColor: windowOptions.navigationBarBackgroundColor || '#f8f8f8',
+    backgroundColor: (/^#[a-z0-9]{6}$/i.test(navigationBarBackgroundColor) || navigationBarBackgroundColor === 'transparent') ? navigationBarBackgroundColor : '#f7f7f7',
     tags: titleImage === '' ? [] : [{
       tag: 'img',
       src: titleImage,

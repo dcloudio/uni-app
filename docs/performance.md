@@ -60,7 +60,7 @@ uni-app支持把wxs编译到微信小程序、App和H5中。
 
 在app-nvue里，逻辑层和视图层的折损一样存在。包括react native也有这个问题。所以也千万别以为原生渲染就多么高级。
 
-weex提供了一套[bindingx](https://uniapp.dcloud.io/use-weex?id=nvue-%e9%87%8c%e4%bd%bf%e7%94%a8-bindingx)机制，可以在js里一次性传一个表达式给原生层，由原生层解析后根据指令操作原生的视图层，避免反复跨层通信。这个技术在uni-app里也可以使用。
+weex提供了一套[bindingx](https://uniapp.dcloud.io/nvue-api?id=nvue-%e9%87%8c%e4%bd%bf%e7%94%a8-bindingx)机制，可以在js里一次性传一个表达式给原生层，由原生层解析后根据指令操作原生的视图层，避免反复跨层通信。这个技术在uni-app里也可以使用。
 
 bindingx作为一种表达式，它的功能不及js强大，但手势监听、动画还是可以实现的，比如uni ui的swiperAction组件在app-nvue下运行时会自动启用bindingx，以实现流畅跟手。
 
@@ -140,7 +140,7 @@ Android上popin动画时，老窗体会有一个半透明消失的效果。这�
 
 ##### 使用nvue代替vue
 
-在 App 端 ```uni-app``` 的 nvue 页面可是基于weex升级改造的原生渲染引擎，实现了页面原生渲染能力、提高了页面流畅性。若对页面性能要求较高可以使用此方式开发，详见：[nvue](/use-weex)。
+在 App 端 ```uni-app``` 的 nvue 页面可是基于weex升级改造的原生渲染引擎，实现了页面原生渲染能力、提高了页面流畅性。若对页面性能要求较高可以使用此方式开发，详见：[nvue](/nvue-outline)。
 
 ##### 优化启动速度
 

@@ -30,7 +30,7 @@
 ├─static                存放应用引用静态资源（如图片、视频等）的目录，<b>注意：</b>静态资源只能存放于此
 ├─wxcomponents          存放小程序组件的目录，<a href="/frame?id=%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%BB%84%E4%BB%B6%E6%94%AF%E6%8C%81">详见</a>
 ├─main.js               Vue初始化入口文件
-├─App.vue               应用配置，用来配置App全局样式以及监听 <a href="/frame?id=应用生命周期">应用生命周期</a>
+├─App.vue               应用配置，用来配置App全局样式以及监听 <a href="/collocation/frame/lifecycle?id=应用生命周期">应用生命周期</a>
 ├─manifest.json         配置应用名称、appid、logo、版本等打包信息，<a href="/collocation/manifest">详见</a>
 └─pages.json            配置页面路由、导航条、选项卡等页面类信息，<a href="/collocation/pages">详见</a>
 	</code>
@@ -129,94 +129,11 @@ background-image: url(../../static/logo.png);
 
 ### 应用生命周期
 
-``uni-app`` 支持如下应用生命周期函数：
-
-|函数名|说明|
-|:-|:-|
-|onLaunch|当``uni-app`` 初始化完成时触发（全局只触发一次）|
-|onShow|当 ``uni-app`` 启动，或从后台进入前台显示|
-|onHide|当 ``uni-app`` 从前台进入后台|
-|onError|当 `uni-app` 报错时触发	|
-|onUniNViewMessage|对 ``nvue`` 页面发送的数据进行监听，可参考 [nvue 向 vue 通讯](/use-weex?id=nvue-向-vue-通讯)|
-|onUnhandledRejection|对未处理的 Promise 拒绝事件监听函数（2.8.1+）|
-|onPageNotFound|页面不存在监听函数|
-|onThemeChange|监听系统主题变化|
-
-**注意**
-
-- 应用生命周期仅可在``App.vue``中监听，在其它页面监听无效。
-- onlaunch里进行页面跳转，如遇白屏报错，请参考[https://ask.dcloud.net.cn/article/35942](https://ask.dcloud.net.cn/article/35942)
+``uni-app`` 支持 onLaunch、onShow、onHide 等应用生命周期函数，详情请参考[应用生命周期](/collocation/frame/lifecycle?id=应用生命周期)
 
 ### 页面生命周期
 
-``uni-app`` 支持如下页面生命周期函数：
-
-|函数名|说明|平台差异说明|最低版本|
-|:-|:-|:-|:-|
-|onLoad|监听页面加载，其参数为上个页面传递的数据，参数类型为Object（用于页面传参），参考[示例](/api/router?id=navigateto)|||
-|onShow|监听页面显示。页面每次出现在屏幕上都触发，包括从下级页面点返回露出当前页面|||
-|onReady|监听页面初次渲染完成。注意如果渲染速度快，会在页面进入动画完成前触发|||
-|onHide|监听页面隐藏|||
-|onUnload|监听页面卸载|||
-|onResize|监听窗口尺寸变化|App、微信小程序||
-|onPullDownRefresh|监听用户下拉动作，一般用于下拉刷新，参考[示例](api/ui/pulldown)|||
-|onReachBottom|页面上拉触底事件的处理函数|||
-|onTabItemTap|点击 tab 时触发，参数为Object，具体见下方注意事项|微信小程序、百度小程序、H5、App（自定义组件模式）||
-|onShareAppMessage|用户点击右上角分享|微信小程序、百度小程序、字节跳动小程序、支付宝小程序||
-|onPageScroll|监听页面滚动，参数为Object|||
-|onNavigationBarButtonTap|监听原生标题栏按钮点击事件，参数为Object|5+ App、H5||
-|onBackPress|监听页面返回，返回 event = {from:backbutton、 navigateBack} ，backbutton 表示来源是左上角返回按钮或 android 返回键；navigateBack表示来源是 uni.navigateBack ；详细说明及使用：[onBackPress 详解](http://ask.dcloud.net.cn/article/35120)|App、H5||
-|onNavigationBarSearchInputChanged|监听原生标题栏搜索输入框输入内容变化事件|App、H5|1.6.0|
-|onNavigationBarSearchInputConfirmed|监听原生标题栏搜索输入框搜索事件，用户点击软键盘上的“搜索”按钮时触发。|App、H5|1.6.0|
-|onNavigationBarSearchInputClicked|监听原生标题栏搜索输入框点击事件|App、H5|1.6.0|
-|onShareTimeline|监听用户点击右上角转发到朋友圈|微信小程序|2.8.1+|
-|onAddToFavorites|监听用户点击右上角收藏|微信小程序|2.8.1+|
-
-``onPageScroll`` 参数说明：
-
-|属性|类型|说明|
-|---|---|---|
-|scrollTop|Number|页面在垂直方向已滚动的距离（单位px）|
-
-``onTabItemTap`` 参数说明：
-
-|属性|类型|说明|
-|---|---|---|
-|index|String|被点击tabItem的序号，从0开始|
-|pagePath|String|被点击tabItem的页面路径|
-|text|String|被点击tabItem的按钮文字|
-
-**注意**
-- onTabItemTap常用于点击当前tabitem，滚动或刷新当前页面。如果是点击不同的tabitem，一定会触发页面切换。
-- 如果想在App端实现点击某个tabitem不跳转页面，不能使用onTabItemTap，可以使用[plus.nativeObj.view](http://www.html5plus.org/doc/zh_cn/nativeobj.html)放一个区块盖住原先的tabitem，并拦截点击事件。
-- onTabItemTap在App端，从HBuilderX 1.9 的自定义组件编译模式开始支持。
-- 避免在 onShow 里使用需要权限的 API（比如 setScreenBrightness() 等需要手机权限）, 可能会再次触发onShow造成死循环。
-
-``onNavigationBarButtonTap`` 参数说明：
-
-|属性|类型|说明|
-|---|---|---|
-|index|Number|原生标题栏按钮数组的下标|
-
-`onBackPress` 回调参数对象说明：
-
-|属性|类型|说明|
-|---|---|---|
-|from|String|触发返回行为的来源：'backbutton'——左上角导航栏按钮及安卓返回键；'navigateBack'——uni.navigateBack() 方法。|
-```javascript
-export default {
-	data() {
-		return {};
-	},
-	onBackPress(options) {
-		console.log('from:' + options.from)
-	}
-}
-```
-
-**注意**
-
-- nvue 页面支持的生命周期参考：[nvue 生命周期介绍](/use-weex?id=生命周期)。
+``uni-app`` 支持 onLoad、onShow、onReady 等生命周期函数，详情请参考[页面生命周期](/collocation/frame/lifecycle?id=页面生命周期)
 
 ## 路由
 
@@ -410,14 +327,15 @@ rpx 是相对于基准宽度的单位，可以根据屏幕宽度进行自适应�
 
 **注意：** 
 - 在 ```uni-app``` 中不能使用 ```*``` 选择器。
-- ```page``` 相当于 ```body``` 节点，例如：
 - 微信小程序自定义组件中仅支持 class 选择器
-```css
-<!-- 设置页面背景颜色 -->
-page {
-	background-color:#ccc;
-}
-```
+- ```page``` 相当于 ```body``` 节点，例如：
+
+  ```css
+  <!-- 设置页面背景颜色，使用 scoped 会导致失效 -->
+  page {
+    background-color:#ccc;
+  }
+  ```
 
 
 ### 全局样式与局部样式
@@ -600,9 +518,10 @@ domModule.addRule('fontFace', {
 </style>
 ```
 
+
 ## ``<template/>`` 和 ``<block/>`` @template-block
 
-``uni-app`` 支持在 template 模板中嵌套 ``<template/>`` 和 ``<block/>``，用来进行 [列表渲染](/use?id=列表渲染) 和 [条件渲染](/use?id=条件渲染)。
+``uni-app`` 支持在 template 模板中嵌套 ``<template/>`` 和 ``<block/>``，用来进行 [列表渲染](/vue-basics?id=列表渲染) 和 [条件渲染](/vue-basics?id=条件渲染)。
 
  ``<template/>`` 和 ``<block/>`` 并不是一个组件，它们仅仅是一个包装元素，不会在页面中做任何渲染，只接受控制属性。
  
@@ -871,13 +790,13 @@ const package = require('packageName')
 │		├─index.js
 │		├─index.axml
 │		├─index.json
-│		└─index.wxss
+│		└─index.acss
 ├─swancomponents                百度小程序自定义组件存放目录
 │   └──custom                   百度小程序自定义组件
 │		├─index.js
 │		├─index.swan
 │		├─index.json
-│		└─index.wxss
+│		└─index.css
 ├─pages
 │  └─index
 │		└─index.vue
@@ -896,25 +815,29 @@ const package = require('packageName')
 
 ```javascript
 {
-    "pages": [
-        {
-        	"path": "index/index",
-        	"style": {
-        		"usingComponents": {
-        			// #ifdef APP-PLUS || MP-WEIXIN || MP-QQ
-        			 "custom": "/wxcomponents/custom/index"
-        			// #endif
-        			// #ifdef MP-BAIDU
-        			 "custom": "/swancomponents/custom/index"
-        			// #endif
-        			// #ifdef MP-ALIPAY
-        			 "custom": "/mycomponents/custom/index"
-        			// #endif
-        		}
-        	}
-        }
-    ]
+	"pages": [{
+		"path": "index/index",
+		"style": {
+			// #ifdef APP-PLUS || H5 || MP-WEIXIN || MP-QQ
+			"usingComponents": {
+				"custom": "/wxcomponents/custom/index"
+			},
+			// #endif
+			// #ifdef MP-BAIDU
+			"usingComponents": {
+				"custom": "/swancomponents/custom/index"
+			},
+			// #endif
+			// #ifdef MP-ALIPAY
+			"usingComponents": {
+				"custom": "/mycomponents/custom/index"
+			},
+			// #endif
+			"navigationBarTitleText": "uni-app"
+		}
+	}]
 }
+
 ```
 
 在页面中使用
@@ -1051,13 +974,12 @@ slide-view.vue
 * 小程序组件需要放在项目特殊文件夹 ``wxcomponents``（或 mycomponents、swancomponents）。HBuilderX 建立的工程 ``wxcomponents`` 文件夹在 项目根目录下。vue-cli 建立的工程 ``wxcomponents`` 文件夹在 ``src`` 目录下。可以在 vue.config.js 中自定义其他目录
 * 小程序组件的性能，不如vue组件。使用小程序组件，需要自己手动setData，很难自动管理差量数据更新。而使用vue组件会自动diff更新差量数据。所以如无明显必要，建议使用vue组件而不是小程序组件。比如某些小程序ui组件，完全可以用更高性能的uni ui替代。
 * 当需要在 `vue` 组件中使用小程序组件时，注意在 `pages.json` 的 `globalStyle` 中配置 `usingComponents`，而不是页面级配置。
-* 注意数据和事件绑定的差异，使用时应按照 `vue` 的数据和事件绑定方式
+* 注意数据和事件绑定的差异，组件使用时应按照 `vue` 的数据和事件绑定方式
 	- 属性绑定从 `attr="{{ a }}"`，改为 `:attr="a"`；从 `title="复选框{{ item }}"` 改为 `:title="'复选框' + item"`
-	- 事件绑定从 `bind:click="toggleActionSheet1"` 改为 `@click="toggleActionSheet1"`
+	- 事件绑定从 `bind:click="toggleActionSheet1"` 改为 `@click="toggleActionSheet1"`，目前支付宝小程序不支持 `vue` 的事件绑定方式，具体参考：[支付宝小程序组件事件监听示例](https://github.com/dcloudio/uni-app/issues/917#issuecomment-653329693)
 	- 阻止事件冒泡 从 `catch:tap="xx"` 改为 `@tap.native.stop="xx"`
 	- `wx:if` 改为 `v-if`
 	- `wx:for="{{ list }}" wx:key="{{ index }}"` 改为`v-for="(item,index) in list"`
-	- 原事件命名以短横线分隔的需要手动修改小程序组件源码为驼峰命名，比如：`this.$emit('left-click')` 修改为 `this.$emit('leftClick')`（HBuilderX 1.9.0+ 不再需要修改此项）
 
 详细的小程序转uni-app语法差异可参考文档[https://ask.dcloud.net.cn/article/35786](https://ask.dcloud.net.cn/article/35786)。
 

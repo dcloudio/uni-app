@@ -61,7 +61,7 @@ function findComponentModuleId (modules, concatenatedModules, resource, altResou
 
 let lastComponents = []
 // TODO 解决方案不太理想
-module.exports = function generateComponent (compilation) {
+module.exports = function generateComponent (compilation, jsonpFunction = 'webpackJsonp') {
   const curComponents = []
   const components = getComponentSet()
   if (components.size) {
@@ -109,7 +109,7 @@ module.exports = function generateComponent (compilation) {
           }
           const source = beforeCode + origSource +
             `
-;(${globalVar}["webpackJsonp"] = ${globalVar}["webpackJsonp"] || []).push([
+;(${globalVar}["${jsonpFunction}"] = ${globalVar}["${jsonpFunction}"] || []).push([
     '${chunkName}',
     {
         '${chunkName}':(function(module, exports, __webpack_require__){

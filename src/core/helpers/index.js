@@ -1,3 +1,7 @@
+import {
+  camelize
+} from 'uni-shared'
+
 const components = ['SystemAsyncLoading', 'SystemAsyncError']
 export function isPage (vm) {
   if (vm.$parent && vm.$parent.$options.name === 'PageBody') {
@@ -33,6 +37,21 @@ export function normalizeDataset (dataset = {}) {
     }
   }
   return result
+}
+
+export function getTargetDataset (target) {
+  let dataset = {}
+  if (target.__vue__) {
+    const $attrs = target.__vue__.$attrs
+    for (const key in $attrs) {
+      if (key.startsWith('data-')) {
+        dataset[camelize(key.substr(5))] = $attrs[key]
+      }
+    }
+  } else {
+    dataset = target.dataset || {}
+  }
+  return normalizeDataset(dataset)
 }
 
 export function upx2px (str) {

@@ -52,12 +52,14 @@
 |wifiEnabled	|	Wi-Fi 的系统开关	|微信小程序|
 |safeArea|在竖屏正方向下的安全区域|App、H5、微信小程序|
 |safeAreaInsets|在竖屏正方向下的安全区域插入位置（2.5.3+）|App、H5、微信小程序|
+|uuid|通用唯一识别码|非 App 端清空 Storage 会导致改变|
 
 **Tips**
 - 屏幕高度 = 原生NavigationBar高度（含状态栏高度）+ 可使用窗口高度 + 原生TabBar高度
 - windowHeight不包含NavigationBar和TabBar的高度
 - H5端，windowTop等于NavigationBar高度，windowBottom等于TabBar高度
 - App端，windowTop等于透明状态NavigationBar高度，windowBottom等于透明状态TabBar高度
+- 高度相关信息，要放在 onReady 里获取
 
 **safeArea 的结构**
 
@@ -142,6 +144,7 @@ uni.getSystemInfo({
 |wifiEnabled	|	Wi-Fi 的系统开关	|微信小程序|
 |safeArea|在竖屏正方向下的安全区域|App、H5、微信小程序|
 |safeAreaInsets|在竖屏正方向下的安全区域插入位置（2.5.3+）|App、H5、微信小程序|
+|uuid|通用唯一识别码|非 App 端清空 Storage 会导致改变|
 
 **Tips**
 - 使用注意同上getSystemInfo

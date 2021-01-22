@@ -130,8 +130,8 @@
 |navigationStyle|String|default|导航栏样式，仅支持 default/custom。custom即取消默认的原生导航栏，需看[使用注意](/collocation/pages?id=customnav)|微信小程序 7.0+、百度小程序、H5、App（2.0.3+）|
 |backgroundColor|HexColor|#ffffff|下拉显示出来的窗口的背景色|微信小程序|
 |backgroundTextStyle|String|dark|下拉 loading 的样式，仅支持 dark / light|微信小程序|
-|enablePullDownRefresh|Boolean|false|是否开启下拉刷新，详见[页面生命周期](/use?id=页面生命周期)。||
-|onReachBottomDistance|Number|50|页面上拉触底事件触发时距页面底部距离，单位只支持px，详见[页面生命周期](/use?id=页面生命周期)||
+|enablePullDownRefresh|Boolean|false|是否开启下拉刷新，详见[页面生命周期](/collocation/frame/lifecycle?id=页面生命周期)。||
+|onReachBottomDistance|Number|50|页面上拉触底事件触发时距页面底部距离，单位只支持px，详见[页面生命周期](/collocation/frame/lifecycle?id=页面生命周期)||
 |backgroundColorTop|HexColor|#ffffff|顶部窗口的背景色（bounce回弹区域）|仅 iOS 平台|
 |backgroundColorBottom|HexColor|#ffffff|底部窗口的背景色（bounce回弹区域）|仅 iOS 平台|
 |titleImage|String||导航栏图片地址（替换当前文字标题），支付宝小程序内必须使用https的图片链接地址|支付宝小程序、H5、APP|
@@ -224,7 +224,7 @@ uni-app 2.9+ 新增 leftWindow, topWindow, rightWindow 配置。用于解决宽�
 }
 ```
 
-案例演示：HBuilderX 2.9+，新建项目选择新闻模块，或直接浏览：[https://static-7d133019-9a7e-474a-b7c2-c01751f00ca5.bspapp.com/#/](https://static-7d133019-9a7e-474a-b7c2-c01751f00ca5.bspapp.com/#/)
+案例演示：HBuilderX 2.9.9+，新建项目选择hello uni-app或新闻模板，或直接浏览：[https://hellouniapp.dcloud.net.cn/](https://hellouniapp.dcloud.net.cn/)
 
 # leftWindow
 
@@ -302,8 +302,8 @@ uni-app 2.9+ 新增 leftWindow, topWindow, rightWindow 配置。用于解决宽�
 |disableScroll|Boolean|false|设置为 true 则页面整体不能上下滚动（bounce效果），只在页面配置中有效，在globalStyle中设置无效|微信小程序（iOS）、百度小程序（iOS）|
 |backgroundColor|HexColor|#ffffff|窗口的背景色|微信小程序、百度小程序、字节跳动小程序|
 |backgroundTextStyle|String|dark|下拉 loading 的样式，仅支持 dark/light||
-|enablePullDownRefresh|Boolean|false|是否开启下拉刷新，详见[页面生命周期](/use?id=页面生命周期)。||
-|onReachBottomDistance|Number|50|页面上拉触底事件触发时距页面底部距离，单位只支持px，详见[页面生命周期](/use?id=页面生命周期)||
+|enablePullDownRefresh|Boolean|false|是否开启下拉刷新，详见[页面生命周期](/collocation/frame/lifecycle?id=页面生命周期)。||
+|onReachBottomDistance|Number|50|页面上拉触底事件触发时距页面底部距离，单位只支持px，详见[页面生命周期](/collocation/frame/lifecycle?id=页面生命周期)||
 |backgroundColorTop|HexColor|#ffffff|顶部窗口的背景色（bounce回弹区域）|仅 iOS 平台|
 |backgroundColorBottom|HexColor|#ffffff|底部窗口的背景色（bounce回弹区域）|仅 iOS 平台|
 |titleImage|String||导航栏图片地址（替换当前文字标题），支付宝小程序内必须使用https的图片链接地址|支付宝小程序、H5|
@@ -391,7 +391,8 @@ uni-app 2.9+ 新增 leftWindow, topWindow, rightWindow 配置。用于解决宽�
 |titleNView|Object||导航栏 ，详见:[导航栏](/collocation/pages?id=app-titleNView)|App、H5|
 |subNVues|Object||原生子窗体，详见:[原生子窗体](/collocation/pages?id=app-subNVues)|App 1.9.10+|
 |bounce|String||页面回弹效果，设置为 "none" 时关闭效果。|App（nvue Android无页面级bounce效果，仅list、recycle-list、waterfall等滚动组件有bounce效果）|
-|softinputNavBar|String|auto|iOS软键盘上完成工具栏的显示模式，设置为 "none" 时关闭工具栏。|仅ios生效|
+|popGesture|String|close|侧滑返回功能，可选值："close"（启用侧滑返回）、"none"（禁用侧滑返回）|App-iOS|
+|softinputNavBar|String|auto|iOS软键盘上完成工具栏的显示模式，设置为 "none" 时关闭工具栏。|App-iOS|
 |softinputMode|String|adjustPan|软键盘弹出模式，支持 adjustResize、adjustPan 两种模式|App|
 |pullToRefresh|Object||下拉刷新|App|
 |scrollIndicator|String||滚动条显示策略，设置为 "none" 时不显示滚动条。|App|
@@ -440,8 +441,8 @@ uni-app 2.9+ 新增 leftWindow, topWindow, rightWindow 配置。用于解决宽�
 - 页面支持通过配置 navigationStyle为custom，或titleNView为false，来禁用原生导航栏。一旦禁用原生导航，请注意阅读[自定义导航注意事项](/collocation/pages?id=customnav)。
 - `titleNView` 的 `type` 值为 `transparent` 时，导航栏为滚动透明渐变导航栏，默认只有button，滚动后标题栏底色和title文字会渐变出现； `type` 为 `float` 时，导航栏为悬浮标题栏，此时页面内容上顶到了屏幕顶部，包括状态栏，但导航栏悬浮盖在页面上方，一般这种场景会同时设置导航栏的背景色为rgba半透明颜色。
 - `titleNView` 的 `type` 值为 `transparent` 时，App-nvue 2.4.4+ 支持
-- 在 `titleNView` 配置 `buttons` 后，监听按钮的点击事件，vue 页面及 nvue 的weex编译模式参考：[uni.onNavigationBarButtonTap](/use-weex?id=onnavigationbarbuttontap)
-- 在 `titleNView` 配置 `searchInput` 后，相关的事件监听参考：[onNavigationBarSearchInputChanged 等](/frame?id=页面生命周期)
+- 在 `titleNView` 配置 `buttons` 后，监听按钮的点击事件，vue 页面及 nvue 的weex编译模式参考：[uni.onNavigationBarButtonTap](/nvue-outline?id=onnavigationbarbuttontap)
+- 在 `titleNView` 配置 `searchInput` 后，相关的事件监听参考：[onNavigationBarSearchInputChanged 等](/collocation/frame/lifecycle?id=页面生命周期)
 - 可通过 `[<navigation-bar>(/component/navigation-bar)]` 配置
 - App下原生导航栏的按钮如果使用字体图标，注意检查字体库的名字（font-family）是否使用了默认的 iconfont，这个名字是保留字，不能作为外部引入的字体库的名字，需要调整为自定义的名称，否则无法显示。
 - 想了解各种导航栏的开发方法，请详读[导航栏开发指南](https://ask.dcloud.net.cn/article/34921)
@@ -621,6 +622,7 @@ searchInput的点击输入框onNavigationBarSearchInputClicked、文本变化onN
 |right|String||原生子窗体水平向右的偏移量，支持百分比、像素值，默认无值（根据left和width属性值来自动计算）。 当设置了left和width值时，忽略此属性值； 当未设置width值时，可通过left和bottom属性值来确定原生子窗体的宽度。|
 |margin|String||原生子窗体的边距，用于定位原生子窗体的位置，支持auto，auto表示居中。若设置了left、right、top、bottom则对应的边距值失效。|
 |zindex|Number||原生子窗体的窗口的堆叠顺序值，拥有更高堆叠顺序的窗口总是会处于堆叠顺序较低的窗口的前面，拥有相同堆叠顺序的窗口后调用show方法则在前面。|
+|background|String|#FFFFFF|窗口的背景颜色,Android平台4.0以上系统才支持“transparent”背景透明样式。比如subnvue为圆角时需要设置为transparent才能看到正确的效果|
 
 **代码示例**
 
@@ -894,7 +896,10 @@ h5 平台下拉刷新动画，只有 circle 类型。
 - `nvue`页面里引用`.vue`后缀的组件，会按照nvue方式使用原生渲染，其中不支持的css会被忽略掉。这种情况同样支持`easycom`
 
 # tabBar
-如果应用是一个多 tab 应用，可以通过 tabBar 配置项指定 tab 栏的表现，以及 tab 切换时显示的对应页。
+
+如果应用是一个多 tab 应用，可以通过 tabBar 配置项指定一级导航栏，以及 tab 切换时显示的对应页。
+
+在 pages.json 中提供 tabBar 配置，不仅仅是为了方便快速开发导航，更重要的是在App和小程序端提升性能。在这两个平台，底层原生引擎在启动时无需等待js引擎初始化，即可直接读取 pages.json 中配置的 tabBar 信息，渲染原生tab。
 
 **Tips**
 
@@ -944,18 +949,16 @@ h5 平台下拉刷新动画，只有 circle 类型。
 midButton没有pagePath，需监听点击事件，自行处理点击后的行为逻辑。监听点击事件为调用API：uni.onTabBarMidButtonTap，详见[https://uniapp.dcloud.io/api/ui/tabbar?id=ontabbarmidbuttontap](https://uniapp.dcloud.io/api/ui/tabbar?id=ontabbarmidbuttontap)
 
 #### **tabbar常见问题** @tips-tabbar
-- tabbar 的默认高度，在不同平台不一样。App端的默认高度在HBuilderX 2.3.4起从56px调整为50px，与H5端统一。开发者也可以自行设定高度，调回56px。[详见](https://uniapp.dcloud.io/frame?id=%e5%9b%ba%e5%ae%9a%e5%80%bc)
 - tabbar 的 js api 见[接口-界面-tabbar](https://uniapp.dcloud.io/api/ui/tabbar)，可实现动态显示隐藏（如弹出层无法覆盖tabbar）、内容修改（如国际化）、item加角标等功能。hello uni-app中也有示例。
 - tabbar 的 item 点击事件见[页面生命周期的onTabItemTap](https://uniapp.dcloud.io/frame?id=%E9%A1%B5%E9%9D%A2%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F)。
-- 代码跳转到tabbar页面，api只能使用[uni.switchTab](https://uniapp.dcloud.io/api/router?id=switchtab)，不能使用uni.navigateTo、uni.redirectTo；使用navigator组件跳转时必须设置[open-type="switchTab"](https://uniapp.dcloud.io/component/navigator)
+- 代码跳转到 tabbar 页面，api只能使用[uni.switchTab](https://uniapp.dcloud.io/api/router?id=switchtab)，不能使用uni.navigateTo、uni.redirectTo；使用navigator组件跳转时必须设置[open-type="switchTab"](https://uniapp.dcloud.io/component/navigator)
+- tabbar 的默认高度，在不同平台不一样。App端的默认高度在HBuilderX 2.3.4起从56px调整为50px，与H5端统一。开发者也可以自行设定高度，调回56px。[详见](https://uniapp.dcloud.io/frame?id=%e5%9b%ba%e5%ae%9a%e5%80%bc)
 - tabbar 在H5端是div模拟的，属于前端屏幕窗口的一部分，如果要使用bottom居底定位方式，应该使用css变量`--window-bottom`，比如悬浮在tabbar上方10px的按钮，样式如下`bottom: calc(var(--window-bottom) + 10px)`
 - 中间带+号的tabbar模板例子，[参考](https://ext.dcloud.net.cn/plugin?id=98)。可跨端，但+号不凸起。如需中间凸起，配置tabbar的midButton。
-- 原生的tabbar有且只有一个且在首页。二级页如需的tab，前端自行实现。
-- 若App端自定义tabbar，建议使用nvue并做成单页方式，即所有tabbar的页面内容其实写在一个nvue页面里，这样的性能体验更好。
-- 微信通过webview自定义tabbar，在uni-app也支持，但仅支持微信。因该功能体验不佳，app上没有实现这个方式，而是推荐使用app提供的自定义tabbar方式，不管是原生tabbar额外的自定义配置还是nvue的单页自定义tabbar。
 - 如果是需要先登录、后进入tab页面，不需要把登陆页设为首页，首页仍然是tabbar页，可参考HBuilderX新建uni-app项目时的登陆模板
 - 前端弹出遮罩层挡不住tabbar的问题，跨端处理方式时动态隐藏tabbar。App端可以使用plus.nativeObj.view或subNVue做弹出和遮罩，可参考这个[底部原生图标分享菜单例子](https://ext.dcloud.net.cn/plugin?id=69)
 - 微信小程序模拟器1.02.1904090版有bug，在缩放模拟器页面百分比后，tabbar点击多次后就会卡死。真机无碍，使用时注意。[详见](https://developers.weixin.qq.com/community/develop/doc/0002e6e6bf0d602d8c783e10756400)
+- PC宽屏上，当页面存在topWindow或leftWindow或rightWindow等多窗体结构时，tabBar自动隐藏（HBuilderX 2.9.9），请使用 [custom-tab-bar组件](https://uniapp.dcloud.io/component/custom-tab-bar) 配置 tabBar 的位置。
 
 **代码示例**
 ```json
@@ -978,6 +981,18 @@ midButton没有pagePath，需监听点击事件，自行处理点击后的行为
 }
 ```
 
+#### 自定义tabbar @custom-tab-bar
+
+原生tabBar是相对固定的配置方式，可能无法满足所有场景，这就涉及到自定义tabBar。
+
+但注意除了H5端，自定义tabBar的性能体验会低于原生tabBar。App和小程序端非必要不要自定义。
+
+- H5端的自定义tabBar组件：H5端不存在原生tabBar性能更高的概念，并且宽屏下常见的tabBar在顶部而不是底部，此时可以使用 [custom-tab-bar组件](https://uniapp.dcloud.io/component/custom-tab-bar) 来自定义
+- 普通自定义tabBar：使用view自行绘制tabBar。如果页面是多页方式，切换tabBar将无法保持底部tabBar一直显示。所以这种情况建议使用单页方式。单页方式，如果是复杂页面，应用性能会下降明显，需减少页面复杂度。如果是App端，nvue单页的性能会显著高于vue页面
+- 微信小程序自定义tabbar：微信提供一直基于webview自定义tabBar的方案。该功能体验不佳，不太推荐使用。如果要使用，参考[微信文档](https://developers.weixin.qq.com/miniprogram/dev/framework/ability/custom-tabbar.html)，项目根创建 custom-tab-bar 目录，注意里边的代码是 wxml,wxss，不是 vue，uni-app编译器会直接拷贝该目录到微信小程序中
+- 原生的tabbar有且只有一个且在首页。二级页如需的tab，需自行编写view来实现。一般二级页面更适合的导航是 [segement组件](https://ext.dcloud.net.cn/plugin?id=54)
+
+
 # condition
 启动模式配置，仅开发期间生效，用于模拟直达页面的场景，如：小程序转发后，用户点击所打开的页面。
 
@@ -994,12 +1009,12 @@ midButton没有pagePath，需监听点击事件，自行处理点击后的行为
 |:-|:-|:-|:-|
 |name|String|是|启动模式名称|
 |path|String|是|启动页面路径|
-|query|String|否|启动参数，可在页面的 [onLoad](use?id=页面生命周期) 函数里获得|
+|query|String|否|启动参数，可在页面的 [onLoad](/collocation/frame/lifecycle?id=页面生命周期) 函数里获得|
 
 **注意：** 在 App 里真机运行可直接打开配置的页面，微信开发者工具里需要手动改变编译模式，如下图：
 
 <div style="text-align:center;">
-	<img src="//img-cdn-qiniu.dcloud.net.cn/uniapp/doc/condition.png" />
+	<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/a4ceac70-4f2e-11eb-b680-7980c8a877b8.png" />
 </div>
 
 **代码示例：**
@@ -1046,8 +1061,9 @@ subPackages 节点接收一个数组，数组每一项都是应用的子包，�
 - 百度小程序每个分包的大小是2M，总体积一共不能超过8M。
 - 支付宝小程序每个分包的大小是2M，总体积一共不能超过4M。
 - QQ小程序每个分包的大小是2M，总体积一共不能超过24M。
+- 字节小程序每个分包的大小是2M，总体积一共不能超过16M（字节小程序基础库 1.88.0 及以上版本开始支持，字节小程序开发者工具请使用大于等于 2.0.6 且小于 3.0.0 的版本）。
 - 分包下支持独立的 ```static``` 目录，用来对静态资源进行分包。
-- `uni-app`内支持对微信小程序、QQ小程序、百度小程序分包优化，即将静态资源或者js文件放入分包内不占用主包大小。详情请参考：[关于分包优化的说明](/collocation/manifest?id=关于分包优化的说明)
+- `uni-app`内支持对`微信小程序`、`QQ小程序`、`百度小程序`、`支付宝小程序`、`字节小程序(HBuilderX 3.0.3+)`分包优化，即将静态资源或者js文件放入分包内不占用主包大小。详情请参考：[关于分包优化的说明](/collocation/manifest?id=关于分包优化的说明)
 - 针对`vendor.js`过大的情况可以使用运行时压缩代码
   + `HBuilderX`创建的项目勾选`运行-->运行到小程序模拟器-->运行时是否压缩代码`
   + `cli`创建的项目可以在`pacakge.json`中添加参数`--minimize`，示例：`"dev:mp-weixin": "cross-env NODE_ENV=development UNI_PLATFORM=mp-weixin vue-cli-service uni-build --watch --minimize"`
@@ -1125,7 +1141,7 @@ subPackages 节点接收一个数组，数组每一项都是应用的子包，�
 
 |字段|类型|必填|默认值|说明|
 |---|---|---|---|---|
-|packages|StringArray	|是|无|进入页面后预下载分包的 root 或 name。__APP__ 表示主包。|
+|packages|StringArray	|是|无|进入页面后预下载分包的 `root` 或 `name`。`__APP__` 表示主包。|
 |network|String|否	|wifi|在指定网络下预下载，可选值为：all（不限网络）、wifi（仅wifi下预下载）|
 
 app的分包，同样支持preloadRule，但网络规则无效。

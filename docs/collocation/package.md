@@ -57,6 +57,12 @@ Tips：
 
 开发者可在代码中使用`MP-DINGTALK`进行条件编译，如下：
 ```javascript
+// #ifdef MP
+小程序平台通用代码（含钉钉）
+// #endif
+// #ifdef MP-ALIPAY
+支付宝平台通用代码（含钉钉）
+// #endif
 // #ifdef MP-DINGTALK
 钉钉平台特有代码
 // #endif
@@ -100,6 +106,9 @@ Tips：钉钉小程序编译目录依然是`mp-alipay`，需通过支付宝开�
 开发者可在代码块中使用`H5-WEIXIN`变量，如下：
 
 ```
+// #ifdef H5
+H5平台通用代码（含微信服务号）
+// #endif
 // #ifdef H5-WEIXIN
 微信服务号特有代码
 // #endif

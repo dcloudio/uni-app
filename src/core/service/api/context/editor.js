@@ -17,7 +17,7 @@ UniServiceJSBridge.subscribe('onEditorMethodCallback', ({
   callback.invoke(callbackId, data)
 })
 
-const methods = ['insertDivider', 'insertImage', 'insertText', 'setContents', 'getContents', 'clear', 'removeFormat', 'undo', 'redo']
+const methods = ['insertDivider', 'insertImage', 'insertText', 'setContents', 'getContents', 'clear', 'removeFormat', 'undo', 'redo', 'blur', 'getSelectionText', 'scrollIntoView']
 
 export class EditorContext {
   constructor (id, pageId) {

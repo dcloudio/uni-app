@@ -447,7 +447,8 @@ export default {
       return val[0] * 60 + val[1]
     },
     _getDateValue (val) {
-      return val[0] * 366 + (val[1] || 0) * 31 + (val[2] || 0)
+      const DAY = 31
+      return val[0] * DAY * 12 + (val[1] || 0) * DAY + (val[2] || 0)
     },
     /**
      * 将右侧数组值同步到左侧（交集部分）

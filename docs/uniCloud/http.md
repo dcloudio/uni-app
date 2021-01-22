@@ -23,23 +23,24 @@
 2. 单击左侧菜单栏【云函数】，进入云函数页面。
 3. 点击需要配置的云函数的【详情】按钮，配置访问路径。
 
-![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/edit-function-config.png)
+<img style="max-width:800px;height:auto;" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/b79d1dc0-5a21-11eb-8a36-ebb87efcf8c0.jpg"></img>
 
 ### 绑定自定义域名
 
-**目前阿里云不支持绑定自定义域名，只能使用其默认提供的域名，但是需要手动在【云函数URL化】处开启云函数Url化开关**
+**目前阿里云不支持绑定自定义域名，只能使用其默认提供的域名，但是需要手动在【云函数域名绑定】处开启云函数Url化开关**
 
 1. 单击左侧菜单栏【云函数】，进入云函数页面。
-2. 单击【云函数URL化】，在弹出的配置窗口中进行配置。
-![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/cloud-function-urlify.png)
+2. 单击【云函数域名绑定】，在弹出的配置窗口中进行配置。
+
+<img style="max-width:800px;height:auto;" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/55897b30-5993-11eb-8ff1-d5dcf8779628.jpg"></img>
 
 >- 每个服务空间最多绑定1个自定义域名。
->- uniCloud提供默认域名供体验和测试该特性，域名规范如：`${spaceId}.service.tcloudbase.com`。
->- 绑定自定义域名之前，请先设置您默认域名的 CNAME 记录值为`${spaceId}.service.tcloudbase.com`，CNAME 记录不存在时会导致域名绑定失败，另外需要注意的是此域名必须已经备案。
+>- uniCloud提供默认域名供体验和测试该特性。
+>- 绑定自定义域名之前，请先设置您默认域名的 CNAME 记录值为默认域名，CNAME 记录不存在时会导致域名绑定失败，另外需要注意的是此域名必须已经备案。
 >- 单个服务空间可支持被访问的最大 QPS 为5000，单个云函数可支持被访问的最大 QPS 为2000（具体频次受函数并发限制）。
 >- 默认域名可支持被访问的最大 QPS 为200，推荐您绑定自定义域名以获取更大的访问频次。
 
-如需要更高的QPS支持，请发邮件到service@dcloud.io申请。
+如需要更高的QPS支持，请发邮件到service@dcloud.io申请。若您还没有SSL证书，点此[快速获取](https://cloud.tencent.com/act/cps/redirect?redirect=33848&cps_key=c858f748f10419214b870236b5bb94c6)
 
 **关于证书内容与私钥**
 
@@ -47,12 +48,12 @@
 
 ### 通过 HTTP URL 方式访问云函数
 
-- 方式一：通过`https://${spaceId}.service.tcloudbase.com/${path}`直接访问函数，其中`${spaceId}`是服务空间 ID，`${path}`是配置的函数触发路径。
+- 方式一：通过`https://${云函数Url化域名}/${path}`直接访问函数，其中`${spaceId}`是服务空间 ID，`${path}`是配置的函数触发路径。
 ```sh
-$ curl https://${spaceId}.service.tcloudbase.com/${path}
+$ curl https://${云函数Url化域名}/${path}
 ```
 
-- 方式二：直接在浏览器内打开`https://${spaceId}.service.tcloudbase.com/${path}`。
+- 方式二：直接在浏览器内打开`https://${云函数Url化域名}/${path}`。
 
 ### 云函数的入参
 
@@ -76,7 +77,7 @@ $ curl https://${spaceId}.service.tcloudbase.com/${path}
     path: '/',
     httpMethod: 'GET',
     headers: {
-        'host': 'env-id.service.tcloudbase.com',
+        'host': 'xxx.service.tcloudbase.com',
         'connection': 'close',
         'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
         'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
@@ -97,7 +98,7 @@ $ curl https://${spaceId}.service.tcloudbase.com/${path}
 
 **示例**
 
-使用GET请求`https://${spaceId}.service.tcloudbase.com/${functionPath}?a=1&b=2`，云函数接收到的`event`为
+使用GET请求`https://${云函数Url化域名}/${functionPath}?a=1&b=2`，云函数接收到的`event`为
 
 ```
 {
@@ -111,13 +112,13 @@ $ curl https://${spaceId}.service.tcloudbase.com/${path}
 ```
 
 
-使用POST请求`https://${spaceId}.service.tcloudbase.com/${functionPath}`，云函数接收到的`event`为请求发送的数据，**uni.request默认content-type为application/json**
+使用POST请求`https://${云函数Url化域名}/${functionPath}`，云函数接收到的`event`为请求发送的数据，**uni.request默认content-type为application/json**
 
 ```js
 // 以uni.request为例
 uni.request({
   method: 'POST',
-  url: 'https://${spaceId}.service.tcloudbase.com/${functionPath}',
+  url: 'https://${云函数Url化域名}/${functionPath}',
   data: {
     a: 1,
     b: 2
@@ -150,6 +151,16 @@ uni.request({
 - 阿里云目前请求与响应有如下限制
   + 请求Body大小限制，不能超过1M。
   + 响应Body大小限制，不能超过1M。
+
+>在云函数URL化的场景无法获取客户端平台信息，可以在调用依赖客户端平台的接口接口之前（推荐在云函数入口）通过修改context.PLATFORM手动传入客户端平台信息
+
+例：
+
+```js
+exports.main = async (event, context) => {
+	context.PLATFORM = 'app-plus'
+}
+```
 
 云函数接收到的post请求的请求体可能是被转成base64的，如果是这样需要进行一次转化。
 
@@ -307,4 +318,23 @@ content-type: image/png
 content-length: 9897
 
 <binary payload...>
+```
+
+##### 返回不同的状态码
+
+如需重定向或返回4xx，5xx等自定义状态码等，可以使用如下方式
+
+**注意：阿里云暂不支持在返回的header里面使用location**
+
+```js
+exports.main = function() {
+    return {
+        mpserverlessComposedResponse: false, // 使用阿里云返回集成响应是需要此字段为true
+        isBase64Encoded: false,
+        statusCode: 301,
+        headers: {
+            'location': 'http://www.baidu.com'
+        }
+    }
+}
 ```

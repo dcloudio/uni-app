@@ -1,3 +1,4 @@
+import { v4 } from 'uuid';
 import Vue from 'vue';
 
 const _toString = Object.prototype.toString;
@@ -527,10 +528,45 @@ var previewImage = {
   }
 };
 
+const UUID_KEY = '__DC_UUID';
+let uuid;
+function addUuid (result) {
+  uuid = uuid || wx.getStorageSync(UUID_KEY);
+  if (!uuid) {
+    uuid = v4();
+    wx.setStorage({
+      key: UUID_KEY,
+      data: uuid
+    });
+  }
+  result.uuid = uuid;
+}
+
+function addSafeAreaInsets (result) {
+  if (result.safeArea) {
+    const safeArea = result.safeArea;
+    result.safeAreaInsets = {
+      top: safeArea.top,
+      left: safeArea.left,
+      right: result.windowWidth - safeArea.right,
+      bottom: result.windowHeight - safeArea.bottom
+    };
+  }
+}
+
+var getSystemInfo = {
+  returnValue: function (result) {
+    addUuid(result);
+    addSafeAreaInsets(result);
+  }
+};
+
 const protocols = {
   navigateTo,
   redirectTo,
-  previewImage
+  previewImage,
+  getSystemInfo,
+  getSystemInfoSync: getSystemInfo
 };
 const todos = [
   'preloadPage',
@@ -915,16 +951,19 @@ function initHook (name, options) {
     };
   }
 }
+if (!MPPage.__$wrappered) {
+  MPPage.__$wrappered = true;
+  Page = function (options = {}) {
+    initHook('onLoad', options);
+    return MPPage(options)
+  };
+  Page.after = MPPage.after;
 
-Page = function (options = {}) {
-  initHook('onLoad', options);
-  return MPPage(options)
-};
-
-Component = function (options = {}) {
-  initHook('created', options);
-  return MPComponent(options)
-};
+  Component = function (options = {}) {
+    initHook('created', options);
+    return MPComponent(options)
+  };
+}
 
 const PAGE_EVENT_HOOKS = [
   'onPullDownRefresh',
@@ -1435,7 +1474,7 @@ function handleEvent (event) {
             }
             handler.once = true;
           }
-          const params = processEventArgs(
+          let params = processEventArgs(
             this.$vm,
             event,
             eventArray[1],
@@ -1443,9 +1482,13 @@ function handleEvent (event) {
             isCustom,
             methodName
           );
+          params = Array.isArray(params) ? params : [];
           // 参数尾部增加原始事件对象用于复杂表达式内获取额外数据
-          // eslint-disable-next-line no-sparse-arrays
-          ret.push(handler.apply(handlerCtx, (Array.isArray(params) ? params : []).concat([, , , , , , , , , , event])));
+          if (/=\s*\S+\.eventParams\s*\|\|\s*\S+\[['"]event-params['"]\]/.test(handler.toString())) {
+            // eslint-disable-next-line no-sparse-arrays
+            params = params.concat([, , , , , , , , , , event]);
+          }
+          ret.push(handler.apply(handlerCtx, params));
         }
       });
     }

@@ -1,14 +1,16 @@
 #### custom-tab-bar
 
-自定义tabBar。
+自定义tabBar组件。
 
-该组件目前支持 ``pages.json`` 中 ``tabBar`` 相关配置（兼容性和 H5 保持一致）， 其中不支持 ``borderStyle`` 配置
+在小程序和App端，为提升性能，在 `pages.json` 里配置固定的原生tabBar。但在H5端，这一设计并不会提升性能。
 
-该组件保留了原生 ``tabBar`` 相关功能，例如设置 tab 徽标、显示红点等，支持所有 ``tabBar`` 相关 API。
+同时，H5端尤其是PC宽屏，对tabBar的位置和样式有更灵活的需求，tabBar作为一级导航，更多的时候是在PC网页顶部而不是底部。
 
-**使用场景**
+自定义tabBar组件应需而生，它仍然读取 `pages.json` 里配置的tabBar信息，但这个组件可以自定义摆放的位置，可以灵活的配置各种css。
 
-适用于 PC 宽屏适配等场景，可用 custom-tab-bar 组件将原来的 tabBar 的功能和逻辑快速转换为网页顶部的导航或侧边栏（见文章尾部截图），实现快速适配 pc 网页，当页面路由跳转到tabBar页面时，自动高亮。
+该组件支持 ``pages.json`` 中 ``tabBar`` 相关配置（兼容性和 H5 保持一致）， 其中不支持 ``borderStyle`` 配置。
+
+该组件支持所有 ``tabBar`` 相关 API，例如设置 tab 徽标、显示红点、以及 switchTab 等。
 
 **平台兼容性**
 
@@ -31,9 +33,11 @@ __仅 H5 支持__，HBuilderX 2.9.9 + 。
 |pagePath|String|被点击tabItem的页面路径|
 |text|String|被点击tabItem的按钮文字|
 
+本组件无需配置 tabBar 的 list，每个 tabItem 仍然从 `pages.json` 中读取。避免多端编写重复代码。
+
 **示例**
 
-如下为`hello uni-app`中的源码示例，展现效果见下方截图：
+在`hello uni-app`中，在 topWindow 中放置自定义tabBar组件，将页面一级导航放置在网页顶部。
 
 ```html
 <!-- 本示例未包含完整css，获取外链css请参考上文，在hello uni-app项目中的 top-window 查看 -->
@@ -43,6 +47,12 @@ __仅 H5 支持__，HBuilderX 2.9.9 + 。
     </view>
 </template>
 ```
+
+示例体验：使用PC浏览器打开[https://hellouniapp.dcloud.net.cn/](https://hellouniapp.dcloud.net.cn/)
+
+源码获取：HBuilderX 2.9.9+起新建uni-app项目，选择hello uni-app模板。
+
+展现效果见下方截图：
 
 custom-tab-bar 水平布局（horizontal）：
 

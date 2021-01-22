@@ -37,7 +37,7 @@ H5没有原生组件概念问题，非H5端有原生组件并引发了原生组�
 
 从HBuilderX 2.6起，App端新增了renderjs，这是一种运行在视图层的js，vue页面通过renderjs可以操作浏览器对象，进而可以让基于浏览器的库直接在uni-app的App端运行，诸如echart、threejs，详见：[https://uniapp.dcloud.io/frame?id=renderjs](https://uniapp.dcloud.io/frame?id=renderjs)
 
-3. 使用了非H5端不支持的vue语法，受小程序自定义组件限制的写法，[详见](/use)
+3. 使用了非H5端不支持的vue语法，受小程序自定义组件限制的写法，[详见](/vue-components)
 4. 不要在引用组件的地方在组件属性上直接写 style="xx"，要在组件内部写样式
 5. `url(//alicdn.net)`等路径，改为`url(https://alicdn.net)`，因为在App端//是file协议
 6. 很多人在H5端联网时使用本地测试服务地址(localhost或127.0.0.1)，这样的联网地址手机App端是无法访问的，请使用手机可访问的IP进行联网
@@ -132,7 +132,7 @@ vue页面在App端的渲染引擎默认是系统webview（不是手机自带浏�
 * H5 发布到服务器注意：
     1. 配置发行后的路径（发行在网站根目录可不配置），比如发行网站路径是 www.xxx.com/html5，在 `manifest.json` 文件内编辑 h5 节点，router 下增加 base 属性为 html5
 <div>
-<img src="https://img-cdn-qiniu.dcloud.net.cn/uploads/article/20181116/6ab94f68e109bb07e4f422c95a2c9015.png" width="500">
+<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/9f026b20-4f3c-11eb-b680-7980c8a877b8.png" width="500">
 </div>
     2. 点击菜单 发行-> H5
     3. 在当下项目下的 ``unpackage/dist/build/h5`` 目录找到出的资源，部署服务器（或者使用本地服务器预览），如需部署到相对路径（支持本地file协议打开）参考：https://ask.dcloud.net.cn/article/37432。

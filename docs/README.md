@@ -77,7 +77,9 @@
 
 我们精心准备了一个简单的十分钟介绍视频，方便你快速了解```uni-app```的主要特征：
 
-<video id="video" onplay="videoPlay()" preload="none" controls="controls" width="100%" poster="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/poster.png" src="https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/%E7%AC%AC1%E8%AE%B2%EF%BC%88uni-app%E4%BA%A7%E5%93%81%E4%BB%8B%E7%BB%8D%EF%BC%89-%20DCloud%E5%AE%98%E6%96%B9%E8%A7%86%E9%A2%91%E6%95%99%E7%A8%8B@20200317.mp4"></video>
+<!-- <video id="video" onplay="videoPlay()" preload="none" controls="controls" width="100%" poster="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/poster.png" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/78e4ebc0-54be-11eb-a16f-5b3e54966275.mp4"></video> -->
+
+<video id="video" onplay="videoPlay()" preload="none" controls="controls" width="100%" poster="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/9d299680-555d-11eb-8a36-ebb87efcf8c0.jpg" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/a876efc0-4f35-11eb-97b7-0dc4655d6e68.mp4"></video>
 
 ### 为什么要选择uni-app？
 
@@ -86,7 +88,7 @@
 <div class="uniapp-home-content">
     <div class="uniapp-home-content-item">
       <div class="uniapp-home-content-item-image">
-        <img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/12x.png">
+        <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/9c70d280-4f36-11eb-8a36-ebb87efcf8c0.png">
       </div>
       <div class="uniapp-home-content-item-header">
         <h5 class="uniapp-home-content-item-title">开发者/案例数量更多</h5>
@@ -96,7 +98,7 @@
     </div>
     <div class="uniapp-home-content-item">
       <div class="uniapp-home-content-item-image">
-        <img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/22x.png">
+        <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/9d2b6ff0-4f36-11eb-b680-7980c8a877b8.png">
       </div>
       <div class="uniapp-home-content-item-header">
         <h5 class="uniapp-home-content-item-title">平台能力不受限</h5>
@@ -106,7 +108,7 @@
     </div>
     <div class="uniapp-home-content-item">
       <div class="uniapp-home-content-item-image">
-        <img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/32x.png">
+        <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/9e0d6b80-4f36-11eb-97b7-0dc4655d6e68.png">
       </div>
       <div class="uniapp-home-content-item-header">
         <h5 class="uniapp-home-content-item-title">性能体验优秀</h5>
@@ -117,7 +119,7 @@
     </div>
     <div class="uniapp-home-content-item">
       <div class="uniapp-home-content-item-image">
-        <img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/42x.png">
+        <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/9f01dda0-4f36-11eb-8a36-ebb87efcf8c0.png">
       </div>
       <div class="uniapp-home-content-item-header">
         <h5 class="uniapp-home-content-item-title">周边生态丰富</h5>
@@ -128,7 +130,7 @@
     </div>
     <div class="uniapp-home-content-item">
       <div class="uniapp-home-content-item-image">
-        <img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/52x.png">
+        <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/9fc22060-4f36-11eb-bdc1-8bd33eb6adaa.png">
       </div>
       <div class="uniapp-home-content-item-header">
         <h5 class="uniapp-home-content-item-title">学习成本低</h5>
@@ -137,7 +139,7 @@
     </div>
     <div class="uniapp-home-content-item">
       <div class="uniapp-home-content-item-image">
-        <img src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/62x.png">
+        <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/a09723a0-4f36-11eb-97b7-0dc4655d6e68.png">
       </div>
       <div class="uniapp-home-content-item-header">
         <h5 class="uniapp-home-content-item-title">开发成本低</h5>

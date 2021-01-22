@@ -85,6 +85,7 @@ export default {
   created () {
     const pages = getCurrentPages()
     const page = pages[pages.length - 1]
+    this.__$page = page
     this.$watch('title', () => {
       this.setNavigationBarTitle()
     })
@@ -101,7 +102,7 @@ export default {
       this.setNavigationBarColor()
     })
     // #ifdef APP-PLUS
-    this._webview = page.$getAppWebview()
+    this.__$webview = page.$getAppWebview()
     attrs.forEach(key => {
       const titleNView = {}
       if (this[key] || this[key].length > 0) {
@@ -124,14 +125,18 @@ export default {
   methods: {
     setNavigationBarTitle () {
       uni.setNavigationBarTitle({
+        __page__: this.__$page,
         title: this.title
       })
     },
     setNavigationBarLoading () {
-      uni[(this.loading ? 'show' : 'hide') + 'NavigationBarLoading']()
+      uni[(this.loading ? 'show' : 'hide') + 'NavigationBarLoading']({
+        __page__: this.__$page
+      })
     },
     setNavigationBarColor () {
       uni.setNavigationBarColor({
+        __page__: this.__$page,
         frontColor: this.frontColor,
         backgroundColor: this.backgroundColor,
         animation: {
@@ -141,7 +146,7 @@ export default {
       })
     },
     setTitleNView (titleNView) {
-      const webview = this._webview
+      const webview = this.__$webview
       const style = webview.getStyle()
       if (style && style.titleNView) {
         webview.setStyle({

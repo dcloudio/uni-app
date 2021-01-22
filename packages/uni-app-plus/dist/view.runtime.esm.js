@@ -1,6 +1,6 @@
 /*!
  * Vue.js v2.6.10
- * (c) 2014-2019 Evan You
+ * (c) 2014-2021 Evan You
  * Released under the MIT License.
  */
 /*  */
@@ -2641,7 +2641,7 @@ function renderList (
       var result = iterator.next();
       i = 0;
       while (!result.done) {
-        ret.push(render(result.value, ret.length, i++, i));
+        ret.push(render(result.value, ret.length, i, i++)); // fixed by xxxxxx
         result = iterator.next();
       }
     } else {

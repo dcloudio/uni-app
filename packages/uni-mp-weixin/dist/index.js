@@ -676,16 +676,19 @@ function initHook (name, options) {
     };
   }
 }
+if (!MPPage.__$wrappered) {
+  MPPage.__$wrappered = true;
+  Page = function (options = {}) {
+    initHook('onLoad', options);
+    return MPPage(options)
+  };
+  Page.after = MPPage.after;
 
-Page = function (options = {}) {
-  initHook('onLoad', options);
-  return MPPage(options)
-};
-
-Component = function (options = {}) {
-  initHook('created', options);
-  return MPComponent(options)
-};
+  Component = function (options = {}) {
+    initHook('created', options);
+    return MPComponent(options)
+  };
+}
 
 const PAGE_EVENT_HOOKS = [
   'onPullDownRefresh',
@@ -1196,7 +1199,7 @@ function handleEvent (event) {
             }
             handler.once = true;
           }
-          const params = processEventArgs(
+          let params = processEventArgs(
             this.$vm,
             event,
             eventArray[1],
@@ -1204,9 +1207,13 @@ function handleEvent (event) {
             isCustom,
             methodName
           );
+          params = Array.isArray(params) ? params : [];
           // 参数尾部增加原始事件对象用于复杂表达式内获取额外数据
-          // eslint-disable-next-line no-sparse-arrays
-          ret.push(handler.apply(handlerCtx, (Array.isArray(params) ? params : []).concat([, , , , , , , , , , event])));
+          if (/=\s*\S+\.eventParams\s*\|\|\s*\S+\[['"]event-params['"]\]/.test(handler.toString())) {
+            // eslint-disable-next-line no-sparse-arrays
+            params = params.concat([, , , , , , , , , , event]);
+          }
+          ret.push(handler.apply(handlerCtx, params));
         }
       });
     }

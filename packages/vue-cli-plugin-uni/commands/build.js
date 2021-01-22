@@ -27,13 +27,21 @@ module.exports = (api, options) => {
       '--watch': 'watch for changes',
       '--minimize': 'Tell webpack to minimize the bundle using the TerserPlugin.',
       '--auto-host': 'specify automator host',
-      '--auto-port': 'specify automator port'
+      '--auto-port': 'specify automator port',
+      '--subpackage': 'specify subpackage'
     }
   }, async (args) => {
     for (const key in defaults) {
       if (args[key] == null) {
         args[key] = defaults[key]
       }
+    }
+
+    if (
+      args.subpackage &&
+      process.env.UNI_PLATFORM === 'mp-weixin'
+    ) {
+      process.env.UNI_SUBPACKGE = args.subpackage
     }
 
     require('./util').initAutomator(args)

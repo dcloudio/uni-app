@@ -15,6 +15,13 @@ export function callApiSync (api, args, name, alias) {
   return ret
 }
 
+export function getWebview (__page__) {
+  if (__page__) {
+    return __page__.$getAppWebview()
+  }
+  return getLastWebview()
+}
+
 export function getLastWebview () {
   try {
     const pages = getCurrentPages()

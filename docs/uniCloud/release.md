@@ -1,7 +1,44 @@
 # uniCloud 更新日志
 ======================================
+#### 2021-01-08
+  + web控制台 新增 协作者可访问被授权的空间 
+  + web控制台 新增 云函数批量删除
+  + web控制台 新增 数据表批量删除
+  + web控制台 新增 公共模块批量删除
+  + web控制台 新增  action 批量删除
+
+#### 2020-12-20
+  + 【重要】调整 前端内置了`<unicloud-db>`组件，无需再人工引入插件市场的[clientDB组件插件](https://ext.dcloud.net.cn/plugin?id=3256) [规范](https://uniapp.dcloud.net.cn/uniCloud/unicloud-db)
+  + 【重要】新增 uniCloud 本地服务。支持前端项目在控制台切换连接云环境还是本地服务。本地修改直接生效，不用上传即可联调 [详情](https://uniapp.dcloud.net.cn/uniCloud/quickstart?id=calllocalfunction)
+  + 【重要】调整 uniCloud 项目目录结构调整。根目录下为uniCloud目录，其下有二级目录 cloudfunctions 和 database。database目录存放数据表schema和扩展验证函数。并提供了目录结构迁移向导 [详情](https://ask.dcloud.net.cn/article/38028)
+  + 【重要】新增 HBuilderX 本地编写 DB Schema，即数据表的表结构。支持新建、上传、下载表结构，支持代码提示。
+  + 【重要】新增 `<unicloud-db>`组件（即之前的clientDB组件）支持代码提示。可提示JQL语法，在本地有schema的情况下可提示数据库表名字段。大幅提升开发效率 
+  + 阿里云 前端网页托管 新增 支持http强制跳转https
+  + HBuilderX 新增 编写 validateFunction，即数据库扩展校验函数。支持新建、上传、下载validateFunction
+  + HBuilderX 优化 uniCloud 关联云服务空间的选择方式。并支持关联其它项目服务空间，实现多个项目连接一个服务空间 [详情](https://ask.dcloud.net.cn/article/37949)
+  + HBuilderX 新增 可视化管理公共模块依赖 （对云函数点右键->管理公共模块依赖）
+  + HBuilderX 优化 上传uni-id公共模块时，增加校验，对比配置密钥是否一致
+  + HBuilderX 修复 云函数本地运行 控制台日志打印`null`和`undefined`值错误的Bug
+  + HBuilderX 修复 前端网页托管 某些情况下，上传网站到服务器，控制台显示(0 MB)大于上传限制(0 MB)的Bug [详情](https://ask.dcloud.net.cn/question/111228)
+  + uni-id 新增 App端一键登录 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=univerify)
+
+#### 2020-12-10
+  + web控制台 新增 阿里云新增稀疏索引 [详情](https://uniapp.dcloud.net.cn/uniCloud/hellodb?id=dbindex)
+  + web控制台 新增 腾讯云云存储新增批量删除功能
+  + web控制台 新增 前端网页托管批量删除
+  + web控制台 新增 腾讯云 概览页面新增clientDB资源用量
+  + web控制台 新增 导出 db_init.json 新增是否导出 ID
+  + web控制台 新增 云函数、公共模块、action 列表新增操作者邮箱
+  + web控制台 优化 数据库记录编辑窗口
+  + web控制台 修复 腾讯云 云存储文件夹过多时上拉加载错误的BUG
+
+#### 2020-11-14
+  + uni-id 调整 2.0.0版本起验证码表名改为`opendb-verify-codes`
+  + uni-id 调整 2.0.0版本起encryptPwd接口返回值调整 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=encrypt-password)
+  + uni-id 新增 修改passwordSecret功能 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=modifysecret)
+
 #### 2020-11-13
-  +  阿里云支持事务（startTransaction方式，暂不支持ranTransaction）[详情](https://uniapp.dcloud.net.cn/uniCloud/cf-database?id=starttransaction)
+  +  阿里云支持事务（startTransaction方式，暂不支持runTransaction）[详情](https://uniapp.dcloud.net.cn/uniCloud/cf-database?id=starttransaction)
 
 #### 2020-10-24
   + clientDB 去除schema内permission中的点，例：`.write`改为`write`，旧写法仍然支持。

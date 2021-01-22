@@ -46,7 +46,7 @@ export default {
         if (n.onTouchStart) {
           n.onTouchStart()
         }
-        event.preventDefault()
+        e.preventDefault()
       }
     },
     _handleTouchMove: function (event) {

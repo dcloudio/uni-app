@@ -29,11 +29,6 @@ export default function parsePage (vuePageOptions) {
     initRelation
   })
 
-  const onInit = (vuePageOptions.default || vuePageOptions).onInit
-  if (onInit) {
-    pageOptions.methods.onInit = onInit
-  }
-
   // 纠正百度小程序生命周期methods:onShow在methods:onLoad之前触发的问题
   pageOptions.methods.onShow = function onShow () {
     if (this.$vm && this.$vm.$mp.query) {
@@ -42,7 +37,7 @@ export default function parsePage (vuePageOptions) {
   }
 
   pageOptions.methods.onLoad = function onLoad (query) {
-    // 百度 onLoad 在 attached 之前触发，先存储 args, 在 attached 里边触发 onLoad
+    // 百度 onLoad 在 attached 之前触发（基础库小于 3.70），先存储 args, 在 attached 里边触发 onLoad
     if (this.$vm) {
       const copyQuery = Object.assign({}, query)
       delete copyQuery.__id__

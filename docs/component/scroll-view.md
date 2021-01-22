@@ -162,7 +162,7 @@ export default {
 </script>
 
 ```
-![uniapp](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/img/scroll-view.png)
+![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/99567750-4f2f-11eb-a16f-5b3e54966275.png)
  
 **Tips**
 
@@ -171,5 +171,5 @@ export default {
 - scroll-into-view 的优先级高于 scroll-top。
 - scroll-view是区域滚动，不会触发页面滚动，无法触发pages.json配置的下拉刷新、页面触底onReachBottomDistance、titleNView的transparent透明渐变。
 - 若要使用下拉刷新，建议使用页面的滚动，而不是 scroll-view 。插件市场有前端模拟的基于scroll-view的下拉刷新，但性能不佳。如必需使用前端下拉刷新，推荐使用基于wxs的下拉刷新，性能会比基于js监听方式更高。
-- 如果遇到scroll-top、scroll-left属性设置不生效的问题参考：[组件属性设置不生效解决办法](/use?id=%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98)
+- 如果遇到scroll-top、scroll-left属性设置不生效的问题参考：[组件属性设置不生效解决办法](/vue-api?id=componentsolutions)
 - scroll-view的滚动条设置，可通过css的-webkit-scrollbar自定义，包括隐藏滚动条。（app-nvue无此css）

@@ -21,11 +21,37 @@
 
 #### 如何编写DB Schema
 
+- **方式1，在web控制台编写schema**
 1. 登录 [uniCloud控制台](https://unicloud.dcloud.net.cn)，选中一个数据表
 2. 点击表右侧页签 “表结构”，点击 “编辑” 按钮，在编辑区域编写 Schema，编写完毕后点保存按钮即可生效。
-  ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/e237cb60-ff2d-11ea-8a36-ebb87efcf8c0.png)
+  ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/037fc310-549f-11eb-b997-9918a5dda011.png)
 
-`DB Schema`在保存后是实时生效的，请注意对现网商用项目的影响。
+**web控制台上编辑`DB Schema`保存后是实时生效的，请注意对现网商用项目的影响。**
+
+- **方式2，在HBuilderX中编写schema**
+> 需HBuilderX 3.0+版本
+
+在HBuilderX中编写schema，有良好的语法提示和语法校验，还可以在前端连本地云函数功能中免上传联调测试，是更为推荐的schema编写方案。
+
+**创建schema**
+
+1. 在`uniCloud`项目右键，选择`创建database目录`
+2. 在第一步创建的database目录右键选择`新建数据集合schema`
+
+![](https://static-eefb4127-9f58-4963-a29b-42856d4205ee.bspapp.com/hx%E6%8F%90%E7%A4%BAschema.jpg)
+
+**HBuilderX内创建的schema新建和保存时不会自动上传**
+
+**上传schema**
+
+- 在单个schema文件右键可以只上传当前选中的schema。快捷键是【Ctrl+u】。（Ctrl+u是HBuilderX的通用快捷键，不管是发布App还是上传云函数、schema，都是Ctrl+u）
+- 在database目录右键可以上传全部schema
+
+**下载schema**
+
+- database目录右键可以下载所有schema及扩展校验函数
+
+HBuilderX中运行前端项目，在控制台选择连接本地云函数，此时本地编写的schema可直接生效，无需上传。方便编写调试。
 
 ### Schema字段@segment
 
@@ -36,40 +62,27 @@
 |description|string|描述，开发者维护时自用。在生成前端表单代码时，如果字段未设置component，且字段被渲染为input，那么input的placehold将默认为本描述|
 |required|array|是否必填。支持填写必填的下级字段名称。required可以在表级的描述出现，约定该表有哪些字段必填。也可以在某个字段中出现，如果该字段是一个json，可以对这个json中的哪些字段必填进行描述。详见下方示例|
 |enum|Array|字段值枚举范围，数组中至少要有一个元素，且数组内的每一个元素都是唯一的。|
+|enumType|String|字段值枚举类型，可选值tree。设为tree时，代表enum里的数据为树形结构。此时schema2code可生成多级级联选择组件|
 |maximum|number|如果bsonType为数字时，可接受的最大值|
 |exclusiveMaximum|boolean|是否排除 maximum|
 |minimum|number|如果bsonType为数字时，可接受的最小值|
 |exclusiveMinimum|boolean|是否排除 minimum|
 |minLength|number|最小长度|
 |maxLength|number|最大长度|
+|trim|String|去除空白字符，支持 none&#124;both&#124;start&#124;end，默认none，仅bsonType="string"时有效|
 |format|'url'&#124;'email'|数据格式，不符合格式的数据无法入库。目前只支持'url'和'email'，未来会扩展其他格式|
 |pattern|String|正则表达式，如设置为手机号的正则表达式后，不符合该正则表达式则校验失败，无法入库|
 |validateFunction|string|扩展校验函数名|
 |errorMessage|string&#124;Object |当数据写入或更新时，校验数据合法性失败后，返回的错误提示|
 |defaultValue|string&#124;Object|默认值|
 |forceDefaultValue|string&#124;Object|强制默认值，不可通过clientDB的代码修改，常用于存放用户id、时间、客户端ip等固定值。具体参考下表的defaultValue|
-|foreignKey|String|关联字段。表示该字段的原始定义指向另一个表的某个字段，值的格式为`表名.字段名`，比如订单表的下单用户uid字段指向uni-id-users表的_id字段，那么值为`uni-id-users._id`。关联字段定义后可用于[联表查询](https://uniapp.dcloud.net.cn/uniCloud/database?id=lookup)，通过关联字段合成虚拟表，极大的简化了联表查询的复杂度|
+|foreignKey|String|关联字段。表示该字段的原始定义指向另一个表的某个字段，值的格式为`表名.字段名`，比如订单表的下单用户uid字段指向uni-id-users表的_id字段，那么值为`uni-id-users._id`。关联字段定义后可用于[联表查询](https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=lookup)，通过关联字段合成虚拟表，极大的简化了联表查询的复杂度|
+|parentKey|String|同一个数据表内父级的字段。详情参考：[树状数据查询](https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=gettree)|
 |permission|Object|数据库权限，控制什么角色可以对什么数据进行读/写，可控制表和字段，可设置where条件。见下文[详述](uniCloud/schema?id=permission)|
 |label|string|字段标题。生成前端表单代码时，渲染表单项前面的label标题|
 |group|string|分组id。生成前端表单代码时，多个字段对应的表单项可以合并显示在一个uni-group组件中|
 |order|int|表单项排序序号。生成前端表单代码时，默认是以schema中的字段顺序从上到下排布表单项的，但如果指定了order，则按order规定的顺序进行排序。如果表单项被包含在uni-group中，则同组内按order排序|
 |component|Object&#124;Array|生成前端表单代码时，使用什么组件渲染这个表单项。比如使用input输入框。详见下方示例|
-
-**url格式**
-
-`http://` | `https://` | `ftp://` 开头, `//` 后必须包含一个 `.`(localhost除外)
-
-有效格式
-- http://dcloud.io
-- https://dcloud.io
-- http://localhost
-
-无效格式
-- http://dcloud
-- https://dcloud
-- mailto:dcloud@dcloud.io
-- file:\\
-- file:\\\
 
 
 **注意：**
@@ -85,13 +98,171 @@
 - object （地理位置属于object）
 - array
 - bool
-- timestamp
+- timestamp （时间戳）
+- password （所有用户都不能通过clientDB读写，即使是admin管理员）
 
-注：timestamp是一串数字的时间戳，不合适直接渲染到界面上。推荐的做法是在前端渲染时使用[`<uni-dateformat>`组件](https://ext.dcloud.net.cn/plugin?id=3279)。
+注意：
+- timestamp是一串数字的时间戳，一般通过如下js获取`var timestamp = new Date().getTime()；`。它的好处是屏蔽了时区差异。阿里云和腾讯云的云端时区是0，但在HBuilderX本地运行云函数时，如果是中国的电脑，时区则会变成8，导致显示错乱。所以推荐使用时间戳。但时间戳是一串记录毫秒的数字，不合适直接渲染到前端界面上。推荐的做法是在前端渲染时使用[`<uni-dateformat>`组件](https://ext.dcloud.net.cn/plugin?id=3279)。
+- 时间戳和地理位置在web控制台的数据库管理界面上无法直接在引号里录入值，需参考[文档](uniCloud/quickstart?id=editdb)
+- double类型慎重，由于js不能精准处理浮点运算，0.1+0.2=0.30000000000000004。所以涉及金额时，建议使用int而不是double，以分为单位而不是以元为单位存储。比如微信支付默认就是以分为单位。如果使用[uniPay](uniCloud/unipay)处理支付的话，它的默认单位也是分。
 
 <!-- schema里时间格式只允许时间戳是不够的 -->
 
-### 基本示例
+
+### url格式@url
+
+`http://` | `https://` | `ftp://` 开头, `//` 后必须包含一个 `.`(localhost除外)
+
+有效格式
+- http://dcloud.io
+- https://dcloud.io
+- http://localhost
+
+无效格式
+- http://dcloud
+- https://dcloud
+- mailto:dcloud@dcloud.io
+- file:\\
+- file:\\\
+
+### trim@trim
+
+|值|描述|
+|:-|:-|
+|none|不处理|
+|both|从一个字符串的两端删除空白字符。在这个上下文中的空白字符是所有的空白字符 (space, tab, no-break space 等) 以及所有行终止符字符（如 LF，CR等）|
+|start|从字符串的开头移除空白字符|
+|end|从一个字符串的末端移除空白字符|
+
+
+### enum属性@enum
+
+enum，即枚举。一个字段设定了enum后，该字段的合法内容，只能在enum设定的数据项中取值。
+
+enum支持3种数据格式：
+1. 简单数组
+2. 支持描述的复杂数组
+3. 数据查询
+
+
+- 简单数组
+
+如下示例的意思是，role字段的合法值域只能是“1”、“2”、“3”中的一个。通过schema2code生成前端表单页面时，该字段会生成uni-data-checkbox组件，该组件在界面上渲染时会生成1、2、3这3个候选的复选框。
+
+```json
+{
+  "bsonType": "object",
+  "required": [],
+  "properties": {
+    "_id": {
+      "description": "存储文档 ID（用户 ID），系统自动生成"
+    },
+    "role": {
+      "bsonType": "array",
+      "description": "角色，不允许重复",
+      "label": "角色",
+      "enum": [1, 2, 3]
+    }
+  }
+}
+```
+
+
+- 支持描述的复杂数组
+
+如下示例的意思是，role字段的合法值域只能是“1”、“2”中的一个。但通过schema2code生成前端表单页面时，该字段会生成uni-data-checkbox组件，该组件在界面上渲染时会生成“角色1”、“角色2”这2个候选的复选框。
+
+```json
+{
+  "bsonType": "object",
+  "required": [],
+  "properties": {
+    "_id": {
+      "description": "存储文档 ID（用户 ID），系统自动生成"
+    },
+    "role": {
+      "bsonType": "array",
+      "description": "角色，不允许重复",
+      "label": "角色",
+      "enum": [
+        {
+          "value": 1,
+          "text": "角色1"
+        },
+        {
+          "value": 2,
+          "text": "角色2"
+        }
+      ]
+    }
+  }
+}
+```
+
+
+- 数据查询
+
+一个字段的合法值域，可以是从另一个数据查询而来。也即，在enum中可以配置jql查询语句。
+
+例如有一个角色表uni-id-roles，里面已经存在若干个角色。那么在用户表uni-id-users的role字段里，就可以在enum里写jql查询，约定用户的角色字段的值，比如是在角色表中已经存在的值。
+
+通过schema2code生成前端表单页面时，该字段会生成uni-data-checkbox组件，该组件在界面上渲染时会自动从角色表中查询数据并显示所有候选的复选框。
+
+```json
+{
+  "bsonType": "object",
+  "required": [],
+  "properties": {
+    "_id": {
+      "description": "存储文档 ID（用户 ID），系统自动生成"
+    },
+    // role 云端数据, enum属性的值为JQL语法。
+    // 通过clientdb提交数据时多一次查库请求以校验数据是否有效
+    "role": {
+      "bsonType": "array",
+      "description": "角色",
+      "label": "角色",
+      "enum": {
+        "collection": "uni-id-roles", // 表名，这里使用 uni-id-roles表举例，在uniCloud控制台使用 opendb 创建此表
+        "field": "role_name as text, role_id as value", //字段筛选，需要 as 成前端组件支持的字段名 text、value。text、value是datacom组件规范的标准
+        "where": "", // 查询条件
+        "orderby": "" // 排序字段及正序倒叙设置
+      }
+    }
+  }
+}
+```
+
+除了普通的二维数据表，enum还支持tree型数据。
+
+设置`enumType`为"tree"，代表enum里的数据为树形结构，比如下面的例子，代表opendb-city-china表以getTree方式查询。在schema2code时，可自动生成多级级联选择组件，[详见](/uniCloud/schema?id=schema2picker)
+```json
+{
+  "schema": {
+    "bsonType": "object",
+    "required": ["city_id"],
+    "properties": {
+      "_id": {
+        "description": "ID，系统自动生成"
+      },
+      "city_id": {
+        "bsonType": "string",
+        "title": "地址",
+        "description": "城市编码",
+        "enumType": "tree",
+        "enum": {
+          "collection": "opendb-city-china",
+          "orderby": "value asc",
+          "field": "code as value, name as text"
+        }
+      }
+    }
+  }
+}
+
+```
+
+### schema基本示例
 
 假使一个表有5个字段："name", "year", "major", "address", "gpa"。其中前4个字段是必填字段，然后"address"字段类型为json object，它下面又有若干子字段，其中"city"字段必填。
 
@@ -140,14 +311,14 @@
 
 uniCloud推出了`openDB`开源数据库规范，包括用户表、文章表、商品表等很多模板表，这些模板表均已经内置`DB Schema`，可学习参考。[详见](https://gitee.com/dcloud/opendb)
 
-### 默认值defaultValue/forceDefaultValue
+### 默认值defaultValue/forceDefaultValue@defaultvalue
 
 - defaultValue指定新增时当前字段默认值，客户端可以修改此值。
 - forceDefaultValue也是指定新增时当前字段的默认值，与defaultValue不一样，forceDefaultValue不可被客户端修改。
 
 在实际开发中，forceDefaultValue常用于设置为当前服务器时间、当前登录用户id、客户端ip时。
 
-这些数据都不能通过前端上传，不安全。过去只能在云端写云函数操作。在schema配置后则可以不用写云函数。`clientDB`在新增数据记录时会自动补齐这些数据。
+这些数据都不能通过前端上传，不安全。过去只能在云端写云函数操作。在schema配置后则可以不用写云函数。在前端通过clientDB方式新增数据记录时会自动补齐这些数据（云端操作数据库不识别schema）。
 
 其中uid是和`uni-id`绑定的。如果用户没有登录，则无法获取uid，此时写入数据会报错。
 
@@ -233,12 +404,14 @@ uniCloud推出了`openDB`开源数据库规范，包括用户表、文章表、�
 
 与字段值域校验相关的配置，不符合配置的数据无法入库。
 
-`DB Schema`里的字段值域校验系统由3部分组成。
-1. 各种属性配置：是否必填（required）、数据类型（bsonType）、数字范围（maximum、minimum）、字符串长度范围（minLength、maxLength）、format、pattern正则表达式
-2. 扩展校验函数：validateFunction。当属性配置不满足需求，需要写js函数进行校验时，使用本功能
+注意只有要对数据库写入内容时（新增记录或修改记录）才涉及字段值域的校验问题。
+
+`DB Schema`里的字段值域校验系统由3部分组成：
+1. 属性配置：是否必填（required）、数据类型（bsonType）、数字范围（maximum、minimum）、字符串长度范围（minLength、maxLength）、format、pattern正则表达式
+2. 扩展校验函数：validateFunction。当属性配置不满足需求，需要写js编程进行校验时，使用本功能
 3. 错误提示：errorMessage。常见错误有默认的错误提示语。开发者也可以自定义错误提示语
 
-#### 各种校验属性配置
+#### 属性配置
 
 - 必填字段，`"required": ["name"]`
 
@@ -340,34 +513,84 @@ uniCloud推出了`openDB`开源数据库规范，包括用户表、文章表、�
 ```
 
 
-#### validateFunction扩展校验函数@validateFunction
+#### validateFunction扩展校验函数@validatefunction
 
 扩展校验函数
 
 当属性配置不满足需求，需要写js函数进行校验时，使用本功能。
 
+**注意**
+
+- 扩展校验函数不能有其他依赖
+- 尽量不要在扩展校验函数中使用全局变量，如果一定要用请务必确保自己已经阅读并理解了[云函数的启动模式](uniCloud/cf-functions.md?id=launchtype)
+
 如何使用
 
-1. uniCloud 控制台，选择服务空间，切换到数据表
-
+- 方式一：在uniCloud web控制台创建
+1. uniCloud 控制台，选择服务空间，切换到数据库视图
 2. 底部 “扩展校验函数” 点击 “+” 增加校验函数 ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/2f4d0230-12a2-11eb-b244-a9f5e5565f30.png)
+3. 给函数起个名字，比如叫“checkabc”
 
-  给函数起个名字，比如叫“checkabc”，然后写具体的js代码，如下
+- 方式二：在HBuilderX中创建
+`HBuilderX 3.0.0`及以上版本，可以在项目下创建扩展校验云函数并上传，使用方法如下：
+
+1. 在左侧项目管理器选择工程，对其下的`uniCloud`目录点右键，选择`创建database目录`（如果已有该目录则忽略本步骤）
+2. 在第一步创建的database目录右键选择`创建数据库扩展校验函数目录`
+3. 在第二步创建的`validateFunction`目录右键选择`新建数据库扩展校验函数`
+
+对`validateFunction`目录右键，还可以上传和下载`validateFunction`，和uniCloud web控制台进行同步。
+
+扩展校验函数示例如下
 
   ```js
   // 扩展校验函数示例
-  exports = function (rule, value, data, callback) {
+  module.exports = function (rule, value, data, callback) {
     // rule  当前规则
     // value 当前规则校验数据
     // data  全部校验数据
     // callback 可选，一般用于自定义 errorMessage，如果执行了callback return 值无效，callback 传入的 message 将替换 errorMessage
-    // callback(new Error('message')) 传入 Error 类型时校验不通过
-    // callback('message') 传入 String 类型时通过
+    // callback('message') 传入错误消息时校验不通过
+    // callback() 无参时通过
+    // 注意 callback 不支持异步调用，异步请使用 Promise/await/async
     return value.length < 10
+  }
+
+  // 异步校验 Promise
+  module.exports = function (rule, value, data) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (value > 10) {
+          // 校验通过
+          resolve()
+        } else {
+          // 校验失败
+          resolve('error') // 等于 reject(new Error('error'))
+          // reject(new Error('error'))
+        }
+      }, 3000);
+    })
+  }
+
+  // 异步校验 await/async
+  module.exports = async function (rule, value, data) {
+    let result = await uni.request({...})
+    if (result > 10) {
+      // 校验通过
+      return true
+    } else {
+      // 校验失败
+      return 'error message'
+    }
   }
   ```
 
-3. 在表结构 schema 编辑页面中的`validateFunction`属性中配置上面编写的 扩展校验函数 的名称，保存生效
+在HBuilderX中编写好`validateFunction`后，按Ctrl+u可以快捷上传`validateFunction`到uniCloud云端。
+
+3. 在需要的字段中引用写好的`validateFunction`
+
+编写`扩展校验函数`后，在表结构 schema 中确定要配置的字段，在该字段的`validateFunction`属性上，配置上面编写的`扩展校验函数`的名称。
+
+如下例中，当name字段的内容要入库前，就会触发执行 "checkabc" 这个 `扩展校验函数` 。如果"checkabc"校验没有返回true，则该次数据库操作会失败。
 
   ```json
   {
@@ -386,12 +609,41 @@ uniCloud推出了`openDB`开源数据库规范，包括用户表、文章表、�
   }
   ```
 
-`validateFunction`里的代码是可以联网的。一个常见场景是内容的敏感词过滤，可以将内容提交到三方校验服务里，如果校验通过再入库
+`扩展校验函数`是服务空间级的，一个`扩展校验函数`可以被这个服务空间下的任意表中的任意字段引用。
 
+`扩展校验函数`里的代码是可以联网的。一个常见场景是内容的敏感词过滤，可以将内容提交到三方校验服务里，如果校验通过再入库。
 
-#### errorMessage自定义错误提示
+不建议在`扩展校验函数`里编写大量的代码，会影响性能。
 
-数据不符合schema配置的规范时，无法入库，此时会根据errorMessage的定义报出错误提示。
+**扩展校验函数 的运行环境注意事项**
+
+`扩展校验函数`的默认运行环境与普通云函数的环境相同，可以调用云函数里可用的各种API。
+	* 如果要连接外网，要调用[uniCloud.httpclient](https://uniapp.dcloud.net.cn/uniCloud/cf-functions?id=httpclient)；
+	* 如果要调用数据库，需使用云函数里操作数据库的方式，即不支持JQL，[详见](https://uniapp.dcloud.net.cn/uniCloud/cf-database)
+
+但是，在[schema2code](/uniCloud/schema?id=autocode)中，`扩展校验函数`也会被生成到前端页面的校验规则里。
+
+也就是说，如果使用[schema2code](/uniCloud/schema?id=autocode)生成前端页面，那么写`扩展校验函数`需要多一层注意。
+
+比如调用了uniCloud.httpclient这样在前端并不存在的API时，前端的表单校验会出错。
+
+此时就需要在`扩展校验函数`中多写一个if判断，避免undefined的问题。
+
+```js
+if (uniCloud.httpclient) {
+	console.log("此处运行在云函数环境里。前端没有这个API");
+}
+// 或者另一种写法
+if (uni) {
+	console.log("此处运行在前端环境里。云函数没有uni对象，除非你在validateFunction里自己定义了这个对象");
+}
+```
+
+#### errorMessage自定义错误提示@errormessage
+
+数据不符合schema配置的规范时，无法入库，此时会报错。
+
+uniCloud有一些基本错误提示语的格式化，如需自定义错误提示语，就需要使用本功能，根据errorMessage的定义报出错误提示。
 
 errorMessage支持字符串，也支持json object。类型为object时，可定义多个校验提示。
 
@@ -439,7 +691,7 @@ errorMessage支持字符串，也支持json object。类型为object时，可定
 
 **其他注意事项**
 
-“数据库中某字段值不能在多条记录中重复”，这个需求一般不是在字段值域校验里实现，而是在数据库索引里配置该字段为唯一索引。
+“数据库中某字段值不能在多条记录中重复”，这个需求一般不是在字段值域校验里实现，而是在数据库索引里配置该字段为唯一索引。[详见](/uniCloud/hellodb?id=dbindex)
 
 可以在web控制台配置索引，db_init.json也可以创建索引。注意如果数据库中多条记录中该字段已经有重复内容，那么设该字段为唯一索引时会报错，需先把重复数据去掉。
 
@@ -468,7 +720,7 @@ errorMessage支持字符串，也支持json object。类型为object时，可定
 	* 开发者可以在`uni-id`中自定义各种角色，比如部门管理员，然后在`DB Schema`的permission中配置其可操作的数据。详见[uni-id的角色权限](/uniCloud/uni-id?id=rbac)
 	* 默认自带一个特殊角色是自己（auth.uid），该角色仍然基于`uni-id`，但无需额外在`uni-id`的角色表中配置。只要登录的身份是自己即可。后面会详解用法
 
-**注意**：如果登录用户是`uni-id`的admin角色，则不受`DB Schema`的配置限制的，admin角色拥有对所有数据的读写权限。
+**注意**：如果登录用户是`uni-id`的admin角色，即超级管理员，则不受`DB Schema`的配置限制的，admin角色拥有对所有数据的读写权限。
 
 例如在`uniCloud admin`等管理端系统，只要使用admin用户登录就可以在前端操作数据库。
 
@@ -501,7 +753,7 @@ errorMessage支持字符串，也支持json object。类型为object时，可定
 }
 ```
 
-Tips：为方便演示，上述json代码包含了注释。如要复制到`DB Schema`中时，需删除这些注释。在HBuilderX中，可以批选注释，批量删除（选中一个//，然后按选择所有相同词【win：ctrl+alt+e、mac：ctrl+alt+d】，然后【shift+end】选到行尾即可删除掉全部注释）
+
 
 #### 字段级权限控制
 
@@ -524,17 +776,17 @@ permission的字段级控制，包括读写两种权限，分别称为：read、
   },
   "properties": {
     "_id":{
-	},
-	"name":{
-	},
-    "pwd": {
-      "bsonType": "string",
-      "title": "密码",
-      "permission": {
-        "read": false, // 禁止读取 pwd 字段的数据（admin权限用户不受限）
-        "write": false // 禁止写入 pwd 字段的数据（admin权限用户不受限）
-      }
+  },
+  "name":{
+  },
+  "pwd": {
+    "bsonType": "string",
+    "title": "密码",
+    "permission": {
+      "read": false, // 禁止读取 pwd 字段的数据（admin权限用户不受限）
+      "write": false // 禁止写入 pwd 字段的数据（admin权限用户不受限）
     }
+  }
   }
 }
 ```
@@ -564,9 +816,9 @@ permission的字段级控制，包括读写两种权限，分别称为：read、
   },
   "properties": {
     "_id":{
-	},
-	"name":{
-	},
+    },
+    "name":{
+    },
     "pwd": {
       "bsonType": "string",
       "title": "密码",
@@ -575,11 +827,11 @@ permission的字段级控制，包括读写两种权限，分别称为：read、
         "write": false // 禁止写入 pwd 字段的数据（admin权限用户不受限）
       }
     },
-	"status": {
-		"bsonType": "bool",
-		"title": "用户状态",
-		"description": "true代表用户正常。false代表用户被禁用"
-	}
+    "status": {
+      "bsonType": "bool",
+      "title": "用户状态",
+      "description": "true代表用户正常。false代表用户被禁用"
+    }
   }
 }
 ```
@@ -605,6 +857,7 @@ permission的字段级控制，包括读写两种权限，分别称为：read、
 
 - `uni-id`的角色和权限，也即auth.role和auth.permission是不一样的概念。注意阅读[uni-id 角色权限](/uniCloud/uni-id?id=rbac)
 - 如果想支持使用多个`action`的用法，可以通过`"'actionRequired' in action"`的形式配置权限，限制客户端使用的action内必须包含名为`actionRequired`的action
+- doc是有客户端条件里面提取的变量，因此create权限内不可使用doc变量，建议使用forceDefaultValue或自定义校验函数实现插入数据的校验。
 
 **权限规则内可以使用的运算符**
 
@@ -673,9 +926,9 @@ permission的字段级控制，包括读写两种权限，分别称为：read、
 
 如果想获取和判断目标数据记录doc之外的其他数据，则需要使用get方法，见下一章节。
 
-很多需求貌似属于 数据权限校验 ，但实际不用写权限规则：
-- 例如在news表新增一条记录，权限需求是“未登录用户不能创建新闻”，其实不需要在news表的create权限里写`auth.uid != null`。只需把news表的uid字段的forceDefaultValue设为`"$env": "uid"`即可，未登录用户自然无法创建。
+forceDefaultValue属于数据校验的范畴，在数据插入时生效，但是如果配置forceDefaultValue为`{"$env": "uid"}`也会进行用户身份的校验，未登录用户不可插入数据。
 
+例如在news表新增一条记录，权限需求是“未登录用户不能创建新闻”，其实不需要在news表的create权限里写`auth.uid != null`。只需把news表的uid字段的forceDefaultValue设为`"$env": "uid"`，create权限配置为true即可，未登录用户自然无法创建。当然实际使用时你可能需要更复杂的权限，直接使用true作为权限规则时务必注意
 
 **变量action的说明**
 
@@ -727,7 +980,7 @@ action是`clientDB`的一个配套功能。它的作用是在前端发起数据�
 前端提交代码，必须带上action参数
 ```js
 const db = uniCloud.database();
-db.collection("user").action("changenamelog").doc("xxx").update({
+db.action("changenamelog").collection("user").doc("xxx").update({
 	name:"newname"
 })
 ```
@@ -770,14 +1023,17 @@ db.collection('street').where("shop_id=='123123'").get()
 db.collection('street').where("shop_id=='123123 || shop_id=='456456'").get()
 ```
 
-### 前端表单生成系统@autocode
+### schema2code代码生成系统@autocode
 
-`DB Schema`里有大量的信息，有了这些信息，前端将无需自己开发表单维护界面，uniCloud可以自动生成新增数据、修改数据的表单页面。
+`DB Schema`里有大量的信息，其实有了这些信息，前端将无需自己开发表单维护界面，uniCloud可以自动生成新增数据、修改数据的前端页面，以及admin端的列表、新增、修改、删除全套功能。
 
 为强化表单的自定义性，`DB Schema`还扩展了label、component、group、order等属性，以控制表单项在界面上的渲染控件。
 
-前端表单生成系统功能包括：
-- 自动生成新增、修改表单的页面文件，分别是add.vue和edit.vue
+`schema2code`不是简单的一键crud生成接口，它直接生成了可运行的页面。
+
+`schema2code`代码生成系统功能包括：
+- 自动生成前端页面，新增、修改、列表、详情页面文件，分别是add.vue、edit.vue、list.vue和detail.vue。
+- 自动生成uniCloud admin页面，新增、修改、列表页面文件，分别是add.vue、edit.vue和list.vue。
 - 自动生成前端表单校验规则
 
 表单校验工作，在前端和后端都需要做。在过去，这造成重复投入。
@@ -788,10 +1044,10 @@ db.collection('street').where("shop_id=='123123 || shop_id=='456456'").get()
 
 然后开发者需要把这套校验规则导入到前端项目中。即利用本功能。
 
-DCloud提供了`uni-forms`前端组件，该组件的校验规范完全符合`DB Schema`中的校验规则，实现云端统一。`uni-forms`组件地址：[https://ext.dcloud.net.cn/plugin?id=2773](https://ext.dcloud.net.cn/plugin?id=2773)
+DCloud提供了`uni-forms`前端组件，该组件的表单校验规范完全符合`DB Schema`中的校验规则，实现云端统一。`uni-forms`组件地址：[https://ext.dcloud.net.cn/plugin?id=2773](https://ext.dcloud.net.cn/plugin?id=2773)
 
 
-1. 在schema界面点击 “导出表单页面”
+1. 在uniCloud web控制台，进入一个数据表的表结构schema界面，点击按钮 “schema2code”
 
   ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/ba87a6b0-1519-11eb-81ea-f115fe74321c.png)
 
@@ -827,10 +1083,20 @@ DCloud提供了`uni-forms`前端组件，该组件的校验规范完全符合`DB
 
 - 区域G. 文件预览 (仅支持预览 自动生成的页面和校验规则)
 
-2. 然后点击“下载zip”按钮，将导出一个工程源码压缩包。解压导出的zip包，拷贝到已有工程
+2. 点击“导入HBuilderX”或“下载zip”按钮，将生成的代码合并到自己的项目中。
 
 **注意：生成的代码，需HBuilderX2.9.5+方可正常运行。**
 
+在生成uniCloud admin页面时，生成的列表页（list），需自行配置【排序字段】和【模糊搜索字段】。了解更多参考[clientDB](https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=jssdk)。
+
+以uniCloud admin内置页面【用户列表页】为例，要实现列表按注册时间排倒叙，要在列表上方的搜索框搜索，需在生成的list.vue页面的script区域修改如下配置：
+
+```javascript
+const dbOrderBy = 'register_date desc' // 排序字段，asc(升序)、desc(降序)
+const dbSearchFields = ['username', 'role_name', 'mobile', 'email'] // 模糊搜索字段，支持模糊搜索的字段列表
+```
+
+`schema2code`是一个代码辅助生成工具，生成后的代码，经常会有二次开发需求。如果二次开发后又变动schema，建议使用Git等工具管理源码，进行差异比对。
 
 #### 生成页面控件的默认策略
 
@@ -838,8 +1104,12 @@ DCloud提供了`uni-forms`前端组件，该组件的校验规范完全符合`DB
 
 - 如果配置了字段的component属性，则严格按component的配置执行。
 - 如果没有配置component属性，那么默认有如下策略：
-	* 字段类型为bool时，默认使用switch组件
-	* 其他字段类型，将生成input组件。如果是数字类型，会同时把input的键盘类型设为数字。
+  * 字段类型为bool时，默认使用switch组件
+  * 字段类型为Array时，默认使用uni-data-checkbox组件
+  * 字段类型为int时，满足以下2个条件时，使用slider组件
+   - 必填字段
+   - 配置 `minimum` 或 `maximum`
+  * 其他情况，将生成uni-easyinput组件。如果是数字类型，会同时把input的键盘类型设为数字。
 - 如果没有配label，则以title作为label，渲染在表单项前面
 - description在渲染为input时会被设为placehold
 
@@ -857,7 +1127,7 @@ DCloud提供了`uni-forms`前端组件，该组件的校验规范完全符合`DB
 
 如果未设置label属性，但配置了title属性，生成前端表单页面时会取title作为前端的label。
 
-#### component属性
+#### component属性@component
 
 定义该字段在表单中使用什么样的组件进行渲染，可设置前端的组件名和初始属性。
 
@@ -930,44 +1200,39 @@ DCloud提供了`uni-forms`前端组件，该组件的校验规范完全符合`DB
       "bsonType": "array",
       "description": "爱好",
       "label": "爱好",
-      "component": {
-        "name": "checkbox-group",
-        "childrenData": [{
-            "label": "游泳",
-            "value": 1
-          },
-          {
-            "label": "骑行",
-            "value": 2
-          },
-          {
-            "label": "音乐",
-            "value": 3
-          },
-          {
-            "label": "美术",
-            "value": 4
-          }
-        ]
-      }
+      "enum": [
+        {
+          "text": "游泳",
+          "value": 1
+        },
+        {
+          "text": "骑行",
+          "value": 2
+        },
+        {
+          "text": "音乐",
+          "value": 3
+        },
+        {
+          "text": "美术",
+          "value": 4
+        }
+      ]
     },
     "gender": {
       "bsonType": "int",
-      "enum": [0, 1, 2],
       "description": "用户性别：0 未知 1 男性 2 女性",
       "label": "性别",
-      "component": {
-        "name": "radio-group",
-        "childrenData": [{
-            "label": "男",
-            "value": 1
-          },
-          {
-            "label": "女",
-            "value": 2
-          }
-        ]
-      },
+      "enum": [{
+        "text": "未知",
+        "value": 0
+      }, {
+        "text": "男",
+        "value": 1
+      }, {
+        "text": "女",
+        "value": 2
+      }],
       "errorMessage": "{label}无效"
     },
     "email": {
@@ -982,39 +1247,9 @@ DCloud提供了`uni-forms`前端组件，该组件的校验规范完全符合`DB
       "label": "自定义children",
       "component": {
         "name": "select",
-        "children": "<option value="{item.value}">{item.label}</option>",
+        "children": "<option value=\"{value}\">{label}</option>",
         "childrenData": [{"label": "中文简体", "value": "zh-cn"}]
       }
-    }
-  }
-}
-```
-
-
-component 类型为数组
-
-```json
-{
-  "bsonType": "object",
-  "required": [],
-  "properties": {
-    "mobile": {
-      "bsonType": "string",
-      "label": "多个组件",
-      "component": [
-        {
-          "name": "input",
-          "props": {
-            "placeholder": "电话1"
-          }
-        },
-        {
-          "name": "input",
-          "props": {
-            "placeholder": "电话2"
-          }
-        }
-      ]
     }
   }
 }
@@ -1085,7 +1320,88 @@ component 类型为数组
   </uni-group>
 ```
 
-**Bug&Tips**
 
-- 表单验证是可商用的。而生成前端表单页面，只是一个代码辅助生成工具，生成后的代码，免不了二次开发调整。
-- 已知生成代码功能在处理字段类型为时间、枚举时有问题，需要对生成的代码再修改调整
+#### 生成级联选择@schema2picker
+
+以城市选择举例。
+
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/e56e7cc0-50b8-11eb-97b7-0dc4655d6e68.png)
+
+在这个业务里涉及2个表，一个是用户的地址信息表[uni-id-address](https://gitee.com/dcloud/opendb/tree/master/collection/uni-id-address)，一个是候选的省市区数据表[opendb-city-china](https://gitee.com/dcloud/opendb/tree/master/collection/opendb-city-china)。
+
+在用户地址信息表的schema配置enumType和enum。如下：
+
+用户地址表（完整的opendb表为[uni-id-address](https://gitee.com/dcloud/opendb/tree/master/collection/uni-id-address)，以下略做简化）
+```json
+{
+  "schema": {
+    "bsonType": "object",
+    "required": ["city_id"],
+    "properties": {
+      "_id": {
+        "description": "ID，系统自动生成"
+      },
+      "city_id": {
+        "bsonType": "string",
+        "title": "地址",
+        "description": "城市编码",
+        "enumType": "tree",
+        "enum": {
+          "collection": "opendb-city-china",
+          "orderby": "value asc",
+          "field": "code as value, name as text, eq(['$type', 2]) as isleaf"
+        }
+      }
+    }
+  }
+}
+
+```
+
+省市区数据表 [opendb-city-china](https://gitee.com/dcloud/opendb/tree/master/collection/opendb-city-china) 的schema如下。树形数据查询另有详细文档，[详见](https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=gettree)
+
+```json
+{
+  "schema": {
+    "bsonType": "object",
+    "required": ["code", "name"],
+    "permission": {
+      "read": true,
+      "create": false,
+      "update": false,
+      "delete": false
+    },
+    "properties": {
+      "_id": {
+        "description": "ID，系统自动生成"
+      },
+      "code": {
+        "bsonType": "string",
+        "description": "编码"
+      },
+      "parent_code": {
+        "bsonType": "string",
+        "description": "父级编码",
+        "parentKey": "code"
+      },
+      "name": {
+        "bsonType": "string",
+        "description": "城市名称",
+        "title": "城市"
+      },
+      "type": {
+        "bsonType": "int",
+        "description": "城市类型；0省，1市，2区"
+      }
+    }
+  }
+}
+
+```
+
+这2个表都是[opendb](https://gitee.com/dcloud/opendb)表，在uniCloud web控制台新建表时可以选择。opendb-city-china表自带全国省市区数据。
+
+在web控制台的 用户地址表，选择表结构schema，点schema2code生成页面，在生成的代码中会使用多级联选择组件 `<uni-data-picker>`，效果是懒加载的，选择省后，会根据省的选择去拉取市的数据。
+
+`<uni-data-picker>` 组件的文档另见：[https://ext.dcloud.net.cn/plugin?id=3796](https://ext.dcloud.net.cn/plugin?id=3796)
+

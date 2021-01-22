@@ -7,7 +7,7 @@
 |关系型					|JSON 文档型							|
 |:-							|:-												|
 |数据库 database|数据库 database					|
-|表 table				|集合 collection					|
+|表 table				|集合 collection。但行业里也经常称之为“表”。无需特意区分					|
 |行 row					|记录 record / doc				|
 |字段 column		|字段 field								|
 |使用sql语法操作|使用MongoDB语法或jql操作	|
@@ -151,7 +151,7 @@ db.createCollection("table1")
 
 在uniCloud的web控制台可以看到一个集合的3部分内容。
 
-### 数据内容
+### 数据内容@dbdata
 
 data很简单，就是存放的数据记录(record)。
 
@@ -159,7 +159,7 @@ data很简单，就是存放的数据记录(record)。
 
 `_id`字段是每个集合默认自带且不可删除的字段。同时，它也是集合的索引。
 
-### 数据库索引
+### 数据库索引@dbindex
 
 所谓索引，是指在集合的众多字段中挑选一个或多个字段，让数据库引擎优先处理这些字段。设置为索引的字段，在通过该字段查询记录时可以获得更快的查询速度。
 
@@ -174,6 +174,10 @@ data很简单，就是存放的数据记录(record)。
 如果我们要根据name字段来查询，为了提升查询速度，此时可以把name字段设为非唯一索引。
 
 还有“组合索引”的概念，可以把多个字段组合成一个“组合索引”。例如一个文章点赞记录明细表，设置文章id和用户id为组合索引，且将此组合索引设为唯一型索引，就可以限制同一用户对一篇文章多次点赞。
+
+**稀疏索引**
+
+稀疏索引适用于需要某个字段唯一，但是这个字段又可能为空的场景。以`uni-id-users`表为例，用户可能是通过邮箱注册、也可能是通过手机号注册，所以需要保证邮箱、手机号唯一且允许为空，这时候就可以分别将邮箱、手机号的索引设置为稀疏索引来处理这种场景。
 
 **在web控制台添加上述索引**
 
@@ -207,7 +211,7 @@ data很简单，就是存放的数据记录(record)。
 - 如果已经设置某字段为唯一索引，在新增和修改记录时如果该字段的值之前在其他记录已存在，会失败。
 - 假如记录中不存在某个字段，则对索引字段来说其值默认为 null，如果该索引字段设为唯一型索引，则不允许存在两个或以上的该字段为null或不存在该字段的记录。
 
-### 数据表格式定义
+### 数据表格式定义@dbschema
 
 `DB Schema`是集合的表结构描述。描述集合有哪些字段、值域类型是什么、是否必填、数据操作权限等很多内容。
 
@@ -249,7 +253,7 @@ collection对象的方法可以增和查数据，删和改不能直接操作，�
 - [云函数使用传统MongoDB语法操作数据库](uniCloud/cf-database)
 - [前端操作数据库，clientDB和jql](uniCloud/clientdb)
 
-## 数据导入导出和备份
+## 数据导入导出和备份@dbmigration
 
 uniCloud数据库提供了多种数据导入导出和备份方案。
 
@@ -263,9 +267,9 @@ uniCloud数据库提供了多种数据导入导出和备份方案。
 
 ### `db_init.json`初始化数据库@db-init
 
-`db_init.json`定义了一个json格式，里面包含了表名、表数据、表索引、表schema等表的所有数据。
+`db_init.json`定义了一个json格式，里面包含了表名、表数据、表索引等表的相关数据。
 
-在HBuilderX中，项目的cloudfunctions的根目录可以放置`db_init.json`文件，对文件点右键，可以按`db_init.json`的描述，在云服务空间创建相应的表、初始化表中的数据。（需HBuilderX 2.5.11+）
+在HBuilderX中，项目的cloudfunctions目录（HBuilderX 2.5.11 - 2.9.11版本） 或 uniCloud/database 目录（HBuilderX 3.0+版本），可以放置`db_init.json`文件，对该文件点右键，可以按`db_init.json`的描述，在云服务空间创建相应的表、初始化表中的数据、索引和schema。
 
 这个功能尤其适合插件作者，可以快速初始化插件所需的数据库环境。
 
@@ -273,61 +277,73 @@ uniCloud数据库提供了多种数据导入导出和备份方案。
 
 `db_init.json`包含三部分：数据内容(data)、数据表索引(index)、数据表结构(schema)，形式如下
 
+**注意：HBuilderX 3.0.0以上版本schema不再放在db_init.json内，而是独立放在uniCloud/database/目录下。**
+
+详细调整如下：
+
+- db_init.json位置由`cloudfunctions/db_init.json`移至`uniCloud/database/db_init.json`
+- schema不再放在db_init.json内，每个表都有一个单独的schema文件，比如news表对应的schema为`uniCloud/database/news.schema.json`
+- schema可以在`uniCloud/database`目录上右键创建
+- db_init.json文件右键初始化云数据库时依然会带上schema进行数据库的初始化，除schema外HBuilderX3.0.0以上版本使用db_init.json初始化数据库还会带上扩展校验函数，扩展校验函数位于`uniCloud/database/validateFunction`目录下，扩展校验函数文档详见：[validateFunction](https://uniapp.dcloud.net.cn/uniCloud/schema?id=validatefunction)
+
+**HBuilderX 3.0.0版本之前的db_init.json示例**
+
 ```json
 {
-    "collection_test": { // 集合（表名）
-        "data": [ // 数据
-           {
-                "_id": "da51bd8c5e37ac14099ea43a2505a1a5", // 一般不带_id字段，防止导入时数据冲突。
-               "name": "tom"
-           }
-        ],
-        "index": [{ // 索引
-            "IndexName": "index_a", // 索引名称
-            "MgoKeySchema": { // 索引规则
-                "MgoIndexKeys": [{
-                    "Name": "index", // 索引字段
-                    "Direction": "1" // 索引方向，1：ASC-升序，-1：DESC-降序，2dsphere：地理位置
-                }],
-                "MgoIsUnique": false // 索引是否唯一
-            }
+  "collection_test": { // 集合（表名）
+    "data": [ // 数据
+      {
+        "_id": "da51bd8c5e37ac14099ea43a2505a1a5", // 一般不带_id字段，防止导入时数据冲突。
+        "name": "tom"
+      }
+    ],
+    "index": [{ // 索引
+      "IndexName": "index_a", // 索引名称
+      "MgoKeySchema": { // 索引规则
+        "MgoIndexKeys": [{
+          "Name": "index", // 索引字段
+          "Direction": "1" // 索引方向，1：ASC-升序，-1：DESC-降序，2dsphere：地理位置
         }],
-		"schema": {
-		    "bsonType": "object",
-		    "permission": {
-		        ".read": true,
-		        ".create": false,
-		        ".update": false,
-		        ".delete": false
-		    },
-		    "required": [
-		        "image_url"
-		    ],
-		    "properties": {
-		        "_id": {
-		            "description": "ID，系统自动生成"
-		        },
-		        "image_url": {
-		            "bsonType": "string",
-		            "description": "可以是在线地址，也支持本地地址",
-		            "label": "图片url"
-		        }
-		    }
-		}
+        "MgoIsUnique": false // 索引是否唯一
+      }
+    }],
+    "schema": {
+      "bsonType": "object",
+      "permission": {
+        ".read": true,
+        ".create": false,
+        ".update": false,
+        ".delete": false
+      },
+      "required": [
+        "image_url"
+      ],
+      "properties": {
+        "_id": {
+          "description": "ID，系统自动生成"
+        },
+        "image_url": {
+          "bsonType": "string",
+          "description": "可以是在线地址，也支持本地地址",
+          "label": "图片url"
+        }
+      }
     }
+  }
 }
+
 ```
 
 在HBuilderX中对上述`db_init.json`点右键，可初始化数据库到云服务空间，创建`collection_test`表，并按上述json配置设置该表的index索引和schema，以及插入data下的数据。
 
-一般opendb的表，在`db_init.json`中初始化时，不建议自定义index和schema。系统会自动从opendb规范中读取最新的index和schema。
+[opendb](https://gitee.com/dcloud/opendb)的表，在`db_init.json`中初始化时，不建议自定义index和schema。系统会自动从opendb规范中读取最新的index和schema。
 
 **使用`db_init.json`导入数据库**
 
 在HBuilderX中，对项目下的cloudfunctions目录下的`db_init.json`点右键，即可选择`初始化云数据库`。将`db_init.json`里的内容导入云端。
 
 注意事项：
-- 目前`db_init.json`为同步导入形式，无法导入大量数据，后续会实现异步导入方案。
+- 目前`db_init.json`为同步导入形式，无法导入大量数据。导入大量数据请使用web控制台的数据库的导入功能。
 - 如果`db_init.json`中的表名与opendb中任意表名相同，且`db_init.json`中该表名内没有编写schema和index，则在初始化时会自动拉取最新的opendb规范内对应表的schema和index。
 - 如果`db_init.json`中的数据表在服务空间已存在，且`db_init.json`中该表含有schema和index，则在初始化时schema会被替换，新增索引会被添加，已存在索引不受影响。
 

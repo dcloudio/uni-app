@@ -55,7 +55,7 @@ export default {
 }
 ```
 
-![uniapp](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/img/switch.png?t=201857)
+![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/51f6fb50-4f2f-11eb-b680-7980c8a877b8.png)
 
 示例代码说明：以上示例代码从hello uni-app示例中复制，涉及的css样式在hello uni-app的app.vue和uni.css中
 

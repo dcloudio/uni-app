@@ -37,13 +37,16 @@ function initHook (name, options) {
     }
   }
 }
+if (!MPPage.__$wrappered) {
+  MPPage.__$wrappered = true
+  Page = function (options = {}) {
+    initHook('onLoad', options)
+    return MPPage(options)
+  }
+  Page.after = MPPage.after
 
-Page = function (options = {}) {
-  initHook('onLoad', options)
-  return MPPage(options)
-}
-
-Component = function (options = {}) {
-  initHook('created', options)
-  return MPComponent(options)
+  Component = function (options = {}) {
+    initHook('created', options)
+    return MPComponent(options)
+  }
 }

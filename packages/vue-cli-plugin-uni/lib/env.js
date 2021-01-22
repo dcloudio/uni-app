@@ -242,6 +242,10 @@ if (isNVueCompiler) {
   process.env.UNI_USING_NVUE_COMPILER = true
 }
 
+if (platformOptions.nvueStyleCompiler !== 'weex') {
+  process.env.UNI_USING_NVUE_STYLE_COMPILER = true
+}
+
 if (platformOptions.usingComponents === true) {
   if (process.env.UNI_PLATFORM !== 'h5') {
     process.env.UNI_USING_COMPONENTS = true

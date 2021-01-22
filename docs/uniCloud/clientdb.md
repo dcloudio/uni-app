@@ -8,7 +8,7 @@
 
 1个应用开发的一半的工作量，就此直接省去。
 
-当然使用`clientDB`需要扭转传统后台开发观念，不再编写云函数，直接在前端操作数据库。但是为了数据安全，需要在数据库上配置`DB Schema`。
+当然使用`clientDB`需要扭转传统后台开发观念，不再编写服务端代码，直接在前端操作数据库。但是为了数据安全，需要在数据库上配置`DB Schema`。
 
 在`DB Schema`中，配置数据操作的权限和字段值域校验规则，阻止前端不恰当的数据读写。详见：[DB Schema](https://uniapp.dcloud.net.cn/uniCloud/schema)
 
@@ -23,13 +23,14 @@
 ## clientDB图解
 ![](https://static-eefb4127-9f58-4963-a29b-42856d4205ee.bspapp.com/clientdb.jpg)
 
-`clientDB`的前端部分包括js API和`<uni-clientDB>`组件两部分。
+`clientDB`的前端，有两种用法，可以用js API操作云数据库，也可以使用`<unicloud-db>`组件。
 
-js API可以执行所有数据库操作。`<uni-clientDB>`组件适用于查询数据库，它是js API的再封装，进一步简化查询的代码量。
+js API可以执行所有数据库操作。`<unicloud-db>`组件是js API的再封装，进一步简化查询等常用数据库操作的代码量。
 
-目前`<uni-clientDB>`组件没有内置，而是作为一个插件单独下载，它的文档另见：[https://uniapp.dcloud.net.cn/uniCloud/uni-clientdb-component](https://uniapp.dcloud.net.cn/uniCloud/uni-clientdb-component)
+- 在HBuilderX 3.0+，`<unicloud-db>`组件已经内置，可以直接使用。文档另见：[<unicloud-db>组件](/uniCloud/unicloud-db)
+- 在HBuilderX 3.0以前的版本，使用该组件需要在插件市场单独引用`<uni-clientDB>插件`，另见：[https://ext.dcloud.net.cn/plugin?id=3256](https://ext.dcloud.net.cn/plugin?id=3256)
 
-以下文章重点介绍`clientDB`的js API，组件的查询语法与js API是一致的。
+以下文章重点介绍`clientDB`的js API。至于组件的用法，另见[文档](/uniCloud/unicloud-db)。
 
 ## clientDB前端API@jssdk
 
@@ -52,7 +53,8 @@ db.collection('list')
   .then((res)=>{
     // res 为数据库查询结果
   }).catch((err)=>{
-    
+    console.log(err.code); // 打印错误码
+		console.log(err.message); // 打印错误内容
   })
 ```
 
@@ -65,9 +67,9 @@ db.collection('list')
 - 更新数据库时不可使用更新操作符`db.command.inc`等
 - 更新数据时键值不可使用`{'a.b.c': 1}`的形式，需要写成`{a:{b:{c:1}}}`形式（后续会对此进行优化）
 
-### 返回值说明@returnvalue
+### err返回值说明@returnvalue
 
-`clientDB`云端默认返回值形式如下，开发者可以在[action](uniCloud/database?id=action)的`after`内用js修改返回结果，传入`after`内的result不带code和message。
+`clientDB`如果云端返回错误，err的返回值形式如下，
 
 ```js
 {
@@ -77,7 +79,7 @@ db.collection('list')
 }
 ```
 
-**错误码列表**
+**err.code错误码列表**
 
 |错误码													|描述																		|
 |:-:														|:-:																		|
@@ -85,11 +87,15 @@ db.collection('list')
 |TOKEN_INVALID									|token校验未通过（云端已不包含此token）	|
 |TOKEN_INVALID_TOKEN_EXPIRED		|token校验未通过（token已过期）					|
 |TOKEN_INVALID_WRONG_TOKEN			|token校验未通过（token校验未通过）			|
+|TOKEN_INVALID_ANONYMOUS_USER   |token校验未通过（当前用户为匿名用户）		|
 |SYNTAX_ERROR										|语法错误																|
 |PERMISSION_ERROR								|权限校验未通过													|
 |VALIDATION_ERROR								|数据格式未通过													|
 |DUPLICATE_KEY									|索引冲突																|
 |SYSTEM_ERROR										|系统错误																|
+
+如需自定义返回的err对象，可以在clientDB中挂一个[action云函数](uniCloud/database?id=action)，在action云函数的`after`内用js修改返回结果，传入`after`内的result不带code和message。
+
 
 ### 前端环境变量@variable
 
@@ -106,7 +112,7 @@ db.collection('list')
 ```js
 const db = uniCloud.database()
 let res = await db.collection('table').where({
-  user_id: db.env.uid // 查询当前用户的数据
+  user_id: db.env.uid // 查询当前用户的数据。虽然代码编写在客户端，但环境变量会在云端运算
 }).get()
 ```
 
@@ -114,7 +120,7 @@ let res = await db.collection('table').where({
 
 `jql`，全称javascript query language，是一种js方式操作数据库的语法规范。
 
-`jql`大幅降低了js工程师操作数据库的难度、大幅缩短开发代码量。并利用json数据库的嵌套特点，极大的简化了联表查询的复杂度。
+`jql`大幅降低了js工程师操作数据库的难度、大幅缩短开发代码量。并利用json数据库的嵌套特点，极大的简化了联表查询和树查询的复杂度。
 
 #### jql的诞生背景
 
@@ -137,7 +143,7 @@ let res = await db.collection('table').where({
 
 sql写法，对js工程师而言有学习成本，而且无法处理非关系型的MongoDB数据库，以及sql的联表查询inner join、left join也并不易于学习。
 
-而nosql的写法，实在过于复杂。
+而nosql的写法，实在过于复杂。比如如下3个例子：
 
 1. 运算符需要转码，`>`需要使用`gt`方法、`==`需要使用`eq`方法
 
@@ -260,7 +266,73 @@ sql写法，对js工程师而言有学习成本，而且无法处理非关系型
 
 具体到这个正则 `/abc/.test(content)`，类似于sql中的`content like '%abc%'`，即查询所有字段content包含abc的数据记录。
 
+**云函数中node版本为8.9不支持正则断言**
+
 **注意编写查询条件时，除test外，均为运算符左侧为数据库字段，右侧为常量**
+
+#### 查询数组字段@querywitharr
+
+如果数据库存在以下记录
+
+```js
+{
+  "_id": "1",
+  "students": ["li","wang"]
+}
+{
+  "_id": "2",
+  "students": ["wang","li"]
+}
+{
+  "_id": "3",
+  "students": ["zhao","qian"]
+}
+```
+
+使用jql查询语法时，可以直接使用`student=='wang'`作为查询条件来查询students内包含wang的记录。
+
+#### 常见正则用法@regexp
+
+**搜索用户输入值**
+
+如果使用[unicloud-db组件](uniCloud/unicloud-db.md)写法如下，使用clientDB jssdk同理
+
+```html
+<template>
+	<view class="content">
+		<input @input="onKeyInput" placeholder="请输入搜索值" />
+		<unicloud-db v-slot:default="{data, loading, error, options}" collection="goods" :where=`${new RegExp(searchVal, 'i')}.test(name)`>
+			<view v-if="error">{{error.message}}</view>
+			<view v-else>
+				
+			</view>
+		</unicloud-db>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+        searchVal: ''
+      }
+		},
+		methods: {
+      onKeyInput(e){
+        // 实际开发中这里应该还有防抖或者节流操作，这里不做演示
+        this.searchVal = e.target.value
+      }
+		}
+	}
+</script>
+
+<style>
+</style>
+
+```
+
+上面的示例中使用了正则修饰符`i`，用于表示忽略大小写，更多修饰符见[MDN 通过标志进行高级搜索](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Regular_Expressions#%E9%80%9A%E8%BF%87%E6%A0%87%E5%BF%97%E8%BF%9B%E8%A1%8C%E9%AB%98%E7%BA%A7%E6%90%9C%E7%B4%A2)
+
 
 ### JQL联表查询@lookup
 
@@ -364,7 +436,7 @@ book表的db schema也要保持正确
 }
 ```
 
-schema保存至云端后，即可在前端直接查询。查询表设为order和book这2个表名后，即可自动按照一个合并虚拟表来查询，filed、where等设置均按合并虚拟表来设置。
+schema保存至云端后，即可在前端直接查询。查询表设为order和book这2个表名后，即可自动按照一个合并虚拟表来查询，field、where等设置均按合并虚拟表来设置。
 
 ```js
 // 客户端联表查询
@@ -442,7 +514,9 @@ db.collection('order')
 **注意**
 
 - field参数字符串内没有冒号，{}为联表查询标志
+- 联表查询时关联字段会被替换成被关联表的内容，因此不可在where内使用关联字段作为条件。举个例子，在上面的示例，`where({book_id:"1"})`，但是可以使用`where({'book_id._id':"1"})`
 - 上述示例中如果order表的`book_id`字段是数组形式存放多个book_id，也跟上述写法一致，clientDB会自动根据字段类型进行联表查询
+- 各个表的_id字段会默认带上，即使没有指定返回
 
 ### 查询列表分页
 
@@ -452,6 +526,112 @@ db.collection('order')
 2. 点击页码按钮切换不同页
 
 推荐通过`<uni-clientDB>`组件渲染分页列表，详见：[https://uniapp.dcloud.net.cn/uniCloud/uni-clientdb-component?id=page](https://uniapp.dcloud.net.cn/uniCloud/uni-clientdb-component?id=page)
+
+
+### 指定返回字段@field
+
+查询时可以使用field方法指定返回字段，在`<uni-clientDB>`组件中也支持field属性。不使用field方法时会返回所有字段
+
+field内使用jql指定返回字段，即使没有指定_id也一定会返回_id字段
+
+### 别名@alias
+
+自`2020-11-20`起clientDB jql写法支持字段别名，主要用于在前端需要的字段名和数据库字段名称不一致的情况下对字段进行重命名。
+
+用法形如：`author as book_author`，意思是将数据库的author字段重命名为book_author。
+
+仍以上面的order表和book表为例
+
+```js
+// 客户端联表查询
+const db = uniCloud.database()
+db.collection('order,book')
+  .where('book_id.title == "三国演义"')
+  .field('book_id{title as book_title,author as book_author},quantity as order_quantity') // 这里联表查询book表返回book表内的title、book表内的author、order表内的quantity，并将title重命名为book_title，author重命名为book_author，quantity重命名为order_quantity
+  .orderBy('order_quantity desc') // 按照order_quantity降序排列
+  .get()
+  .then(res => {
+    console.log(res);
+  }).catch(err => {
+    console.error(err)
+  })
+```
+
+上述请求返回的res如下
+
+```js
+{
+	"code": "",
+	"message": "",
+	"data": [{
+		"_id": "b8df3bd65f8f0d06018fdc250a5688bb",
+		"book_id": [{
+			"book_author": "罗贯中",
+			"book_title": "三国演义"
+		}],
+		"order_quantity": 555
+	}, {
+		"_id": "b8df3bd65f8f0d06018fdc2315af05ec",
+		"book_id": [{
+			"book_author": "罗贯中",
+			"book_title": "三国演义"
+		}],
+		"order_quantity": 333
+	}]
+}
+```
+
+**注意**
+
+- 上面的查询指令中，上一阶段处理结果输出到下一阶段，上面的例子中表现为where中使用的是原名，orderBy中使用的是别名
+- 目前不支持对联表查询的关联字段使用别名，即上述示例中的book_id不可设置别名
+
+### 对字段操作后返回@operator
+
+自`HBuilderX 3.0.8`起，clientDB支持对字段进行一定的操作之后再返回，详细可用的方法列表请参考：[聚合操作符](uniCloud/clientdb.md?id=aggregate-operator)
+
+例：数据表class内有以下数据
+
+```js
+{
+  "_id": "1",
+  "grade": 6,
+  "class": "A"
+}
+{
+  "_id": "1",
+  "grade": 2,
+  "class": "A"
+}
+```
+
+如下写法可以由grade计算得到一个isTopGrade来表示是否为最高年级
+
+```js
+const res = await db.collection('class')
+.field('class,eq(grade,6) as isTopGrade')
+.get()
+```
+
+返回结果如下
+
+```js
+{
+  "_id": "1",
+  "class": "A",
+  "isTopGrade": true
+}
+{
+  "_id": "1",
+  "class": "A",
+  "isTopGrade": false
+}
+```
+
+**注意**
+
+- 如果要访问数组的某一项请使用arrayElemAt操作符，形如：`arrayElemAt(arr,1)`
+- 在进行权限校验时，会计算field内访问的所有字段计算权限。上面的例子中会使用表的read权限和grade、class字段的权限，来进行权限校验。
 
 ### 排序orderBy@orderby
 
@@ -584,6 +764,713 @@ const db = uniCloud.database()
   }
 }
 ```
+
+### 查询树形数据@gettree
+
+HBuilderX 3.0.3+起，clientDB支持在get方法内传入getTree参数查询树状结构数据。（HBuilderX 3.0.5+ unicloud-db组件开始支持，之前版本只能通过js方式使用）
+
+树形数据，在数据库里一般不会按照tree的层次来存储，因为按tree结构通过json对象的方式存储不同层级的数据，不利于对tree上的某个节点单独做增删改查。
+
+一般存储树形数据，tree上的每个节点都是一条单独的数据表记录，然后通过类似parent_id来表达父子关系。
+
+如部门的数据表，里面有2条数据，一条数据记录是“总部”，`parent_id`为空；另一条数据记录“一级部门A”，`parent_id`为总部的`_id`
+```json
+{
+    "_id": "5fe77207974b6900018c6c9c",
+    "name": "总部",
+    "parent_id": "",
+    "status": 0
+}
+```
+```json
+{
+    "_id": "5fe77232974b6900018c6cb1",
+    "name": "一级部门A",
+    "parent_id": "5fe77207974b6900018c6c9c",
+    "status": 0
+}
+```
+
+虽然存储格式是分条记录的，但查询反馈到前端的数据仍然需要是树形的。这种转换在过去比较复杂。
+
+clientDB提供了一种简单、优雅的方案，在DB Schema里配置parentKey来表达父子关系，然后查询时声明使用Tree查询，就可以直接查出树形数据。
+
+department部门表的schema中，将字段`parent_id`的"parentKey"设为"_id"，即指定了数据之间的父子关系，如下：
+
+```json
+{
+  "bsonType": "object",
+  "required": ["name"],
+  "properties": {
+    "_id": {
+      "description": "ID，系统自动生成"
+    },
+      "name": {
+      "bsonType": "string",
+      "description": "名称"
+    },
+    "parent_id": {
+      "bsonType": "string",
+      "description": "父id",
+      "parentKey": "_id", // 指定父子关系为：如果数据库记录A的_id和数据库记录B的parent_id相等，则A是B的父级。
+    },
+    "status": {
+      "bsonType": "int",
+      "description": "部门状态，0-正常、1-禁用"
+    }
+  }
+}
+```
+
+parentKey字段将数据表不同记录的父子关系描述了出来。查询就可以直接写了。
+
+注意一个表内只能有一个父子关系，即一个表的schema里只能配置一份parentKey。
+
+schema里描述好后，查询就变的特别简单。
+
+查询树形数据，分为 查询所有子节点 和 查询父级路径 这2种需求。
+
+#### 查询所有子节点
+
+指定符合条件的记录，然后查询它的所有子节点，并且可以指定层级，返回的结果是以符合条件的记录为一级节点的所有子节点数据，并以树形方式嵌套呈现。
+
+只需要在clientDB的get方法中增加`getTree`参数，如下
+```js
+// get方法示例
+get({
+  getTree: {
+    limitLevel: 10, // 最大查询层级（不包含当前层级），可以省略默认10级，最大15，最小1
+    startWith: "parent_code==''"  // 第一层级条件，此初始条件可以省略，不传startWith时默认从最顶级开始查询
+  }
+})
+```
+
+完整的代码如下：
+```js
+db.collection("department").get({
+		getTree: {}
+	})
+	.then((res) => {
+		const resdata = res.result.data
+		console.log("resdata", resdata);
+	}).catch((err) => {
+		uni.showModal({
+			content: err.message || '请求服务失败',
+			showCancel: false
+		})
+	}).finally(() => {
+		
+	})
+```
+
+查询的结果如下：
+```json
+"data": [{
+	"_id": "5fe77207974b6900018c6c9c",
+	"name": "总部",
+	"parent_id": "",
+	"status": 0,
+	"children": [{
+		"_id": "5fe77232974b6900018c6cb1",
+		"name": "一级部门A",
+		"parent_id": "5fe77207974b6900018c6c9c",
+		"status": 0,
+		"children": []
+	}]
+}]
+```
+
+可以看出，每个子节点，被嵌套在父节点的"children"下，这个"children"是一个固定的格式。
+
+如果不指定getTree的参数，会把department表的所有数据都查出来，从总部开始到10级部门，以树形结构提供给客户端。
+
+如果有多个总部，即多行记录的`parent_id`为空，则多个总部会分别作为一级节点，把它们下面的所有children一级一级拉出来。如下：
+
+```json
+"data": [
+	{
+		"_id": "5fe77207974b6900018c6c9c",
+		"name": "总部",
+		"parent_id": "",
+    "status": 0,
+		"children": [{
+				"_id": "5fe77232974b6900018c6cb1",
+				"name": "一级部门A",
+				"parent_id": "5fe77207974b6900018c6c9c",
+				"status": 0,
+				"children": []
+		}]
+	},
+	{
+		"_id": "5fe778a10431ca0001c1e2f8",
+		"name": "总部2",
+		"parent_id": "",
+		"children": [{
+				"_id": "5fe778e064635100013efbc2",
+				"name": "总部2的一级部门B",
+				"parent_id": "5fe778a10431ca0001c1e2f8",
+				"children": []
+		}]
+	}
+]
+```
+
+
+如果觉得返回的`parent_id`字段多余，也可以指定`.field("_id,name")`，过滤掉该字段。
+
+**getTree的参数limitLevel的说明**
+
+limitLevel表示查询返回的树的最大层级。超过设定层级的节点不会返回。
+
+- limitLevel的默认值为10。
+- limitLevel的合法值域为1-15之间（包含1、15）。如果数据实际层级超过15层，请分层懒加载查询。
+- limitLevel为1，表示向下查一级子节点。假如数据库中有2级、3级部门，如果设limitLevel为1，且查询的是“总部”，那么返回数据包含“总部”和其下的一级部门。
+
+**getTree的参数startWith的说明**
+
+如果只需要查“总部”的子部门，不需要“总部2”，可以在startWith里指定（`getTree: {"startWith":"name=='总部'"}`）。
+
+使用中请注意startWith和where的区别。where用于描述对所有层级的生效的条件（包括第一层级）。而startWith用于描述从哪个或哪些节点开始查询树。
+
+startWith不填时，默认的条件是 `'parent_id==null||parent_id==""'`，即schema配置parentKey的字段为null（即不存在）或值为空字符串时，这样的节点被默认视为根节点。
+
+假设上述部门表内有以下数据
+
+```js
+{
+    "_id": "1",
+    "name": "总部",
+    "parent_id": "",
+    "status": 0
+}
+{
+    "_id": "11",
+    "name": "一级部门A",
+    "parent_id": "1",
+    "status": 0
+}
+{
+    "_id": "12",
+    "name": "一级部门B",
+    "parent_id": "1",
+    "status": 1
+}
+```
+
+以下查询语句指定startWith为`_id=="1"`、where条件为`status==0`，查询总部下所有status为0的子节点。
+
+```js
+db.collection("department")
+  .where('status==0')
+  .get({
+    getTree: {
+      startWith: '_id=="1"'
+    }
+	})
+	.then((res) => {
+		const resdata = res.result.data
+		console.log("resdata", resdata);
+	}).catch((err) => {
+		uni.showModal({
+			content: err.message || '请求服务失败',
+			showCancel: false
+		})
+	}).finally(() => {
+		
+	})
+```
+
+查询的结果如下：
+```json
+{
+  "data": [{
+    "_id": "1",
+    "name": "总部",
+    "parent_id": "",
+    "status": 0,
+    "children": [{
+      "_id": "11",
+      "name": "一级部门A",
+      "parent_id": "1",
+      "status": 0,
+      "children": []
+    }]
+  }]
+}
+```
+
+**需要注意的是where内的条件也会对第一级数据生效**，例如将上面的查询改成如下写法
+
+```js
+db.collection("department")
+  .where('status==1')
+  .get({
+    getTree: {
+      startWith: '_id=="1"'
+    }
+	})
+	.then((res) => {
+		const resdata = res.result.data
+		console.log("resdata", resdata);
+	}).catch((err) => {
+		uni.showModal({
+			content: err.message || '请求服务失败',
+			showCancel: false
+		})
+	}).finally(() => {
+		
+	})
+```
+
+此时将无法查询到数据，返回结果如下
+
+```js
+{
+  "data": []
+}
+```
+
+**示例**
+
+插件市场有一个 家谱 的示例，可以参阅：[https://ext.dcloud.net.cn/plugin?id=3798](https://ext.dcloud.net.cn/plugin?id=3798)
+
+
+**大数据量的树形数据查询**
+
+如果tree的数据量较大，则不建议一次性把所有的树形数据返回给客户端。建议分层查询，即懒加载。
+
+比如地区选择的场景，全国的省市区数据量很大，一次性查询所有数据返回给客户端非常耗时和耗流量。可以先查省，然后根据选择的省再查市，以此类推。
+
+**注意**
+
+- 暂不支持使用getTree的同时使用联表查询
+- 如果使用了where条件会对所有查询的节点生效
+- 如果使用了limit设置最大返回数量仅对根节点生效
+
+#### 查询树形结构父节点路径@gettreepath
+
+getTree是查询子节点，而getTreePath，则是查询父节点。
+
+get方法内传入getTreePath参数对包含父子关系的表查询返回树状结构数据某节点路径。
+
+```js
+// get方法示例
+get({
+  getTreePath: {
+    limitLevel: 10, // 最大查询层级（不包含当前层级），可以省略默认10级，最大15，最小1
+    startWith: 'name=="一级部门A"'  // 末级节点的条件，此初始条件不可以省略
+  }
+})
+```
+
+查询返回的结果为，从“一级部门A”起向上找10级，找到最终节点后，以该节点为根，向下嵌套children，一直到达“一级部门A”。
+
+返回结果只包括“一级部门A”的直系父，其父节点的兄弟节点不会返回。所以每一层数据均只有一个节点。
+
+仍以上面department的表结构和数据为例
+
+```js
+db.collection("department").get({
+		getTreePath: {
+			"startWith": "_id=='5fe77232974b6900018c6cb1'"
+		}
+	})
+	.then((res) => {
+		const treepath = res.result.data
+		console.log("treepath", treepath);
+	}).catch((err) => {
+		uni.showModal({
+			content: err.message || '请求服务失败',
+			showCancel: false
+		})
+	}).finally(() => {
+		uni.hideLoading()
+		// console.log("finally")
+	})
+```
+
+查询返回结果
+
+从根节点“总部”开始，返回到“一级部门A”。“总部2”等节点不会返回。
+
+```json
+{
+  "data": [{
+		"_id": "5fe77207974b6900018c6c9c",
+		"name": "总部",
+		"parent_id": "",
+		"children": [{
+			"_id": "5fe77232974b6900018c6cb1",
+			"name": "一级部门A",
+			"parent_id": "5fe77207974b6900018c6c9c"
+		}]
+	}]
+}
+```
+
+如果startWith指定的节点没有父节点，则返回自身。
+
+如果startWith匹配的节点不止一个，则以数组的方式，返回每个节点的treepath。
+
+例如“总部”和“总部2”下面都有一个部门的名称叫“销售部”，且`	"startWith": "name=='销售部'"`，则会返回“总部”和“总部2”两条treepath，如下
+
+```json
+{
+	"data": [{
+		"_id": "5fe77207974b6900018c6c9c",
+		"name": "总部",
+		"parent_id": "",
+		"children": [{
+			"_id": "5fe77232974b6900018c6cb1",
+			"name": "销售部",
+			"parent_id": "5fe77207974b6900018c6c9c"
+		}]
+		}, {
+		"_id": "5fe778a10431ca0001c1e2f8",
+		"name": "总部2",
+		"parent_id": "",
+		"children": [{
+			"_id": "5fe79fea23976b0001508a46",
+			"name": "销售部",
+			"parent_id": "5fe778a10431ca0001c1e2f8"
+		}]
+	}]
+}
+```
+
+
+**注意**
+
+- 暂不支持使用getTreePath的同时使用其他联表查询语法
+- 如果使用了where条件会对所有查询的节点生效
+
+### 分组统计@groupby
+
+自`HBuilderX 3.0.8`起，clientDB支持分组对数据进行分组统计（groupBy）
+
+如果数据库`score`表为某次比赛统计的分数数据，每条记录为一个学生的分数
+
+```js
+{
+  _id: "1",
+  grade: "1",
+  class: "A",
+  name: "zhao",
+  score: 5
+}
+{
+  _id: "2",
+  grade: "1",
+  class: "A",
+  name: "qian",
+  score: 15
+}
+{
+  _id: "3",
+  grade: "1",
+  class: "B",
+  name: "li",
+  score: 15
+}
+{
+  _id: "4",
+  grade: "1",
+  class: "B",
+  name: "zhou",
+  score: 25
+}
+{
+  _id: "5",
+  grade: "2",
+  class: "A",
+  name: "wu",
+  score: 25
+}
+{
+  _id: "6",
+  grade: "2",
+  class: "A",
+  name: "zheng",
+  score: 35
+}
+```
+
+#### 求和、求均值等累计操作
+
+所有可用的累计方法请参考[累计器操作符](uniCloud/clientdb.md?id=accumulator)，下面以sum（求和）和avg（求均值）为例介绍如何使用
+
+使用sum方法可以对数据进行求和统计。以上述数据为例，如下写法对不同班级进行分数统计
+
+```js
+const res = await db.collection('score')
+.groupBy('grade,class')
+.groupField('sum(score) as totalScore')
+.get()
+```
+
+返回结果如下
+
+```js
+{
+  data: [{
+    grade: "1",
+    class: "A",
+    totalScore: 20
+  },{
+    grade: "1",
+    class: "B",
+    totalScore: 40
+  },{
+    grade: "2",
+    class: "A",
+    totalScore: 60
+  }]
+}
+```
+
+求均值方法与求和类似，将上面sum方法换成avg方法即可
+
+```js
+const res = await db.collection('score')
+.groupBy('grade,class')
+.groupField('avg(score) as avgScore')
+.get()
+```
+
+返回结果如下
+
+```js
+{
+  data: [{
+    grade: "1",
+    class: "A",
+    avgScore: 10
+  },{
+    grade: "1",
+    class: "B",
+    avgScore: 20
+  },{
+    grade: "2",
+    class: "A",
+    avgScore: 30
+  }]
+}
+```
+
+
+如果额外还在groupBy之前使用了preField方法，此preField用于决定将哪些数据传给groupBy和groupField使用
+
+例：如果上述数据中score是一个数组
+
+```js
+{
+  _id: "1",
+  grade: "1",
+  class: "A",
+  name: "zhao",
+  score: [1,1,1,1,1]
+}
+{
+  _id: "2",
+  grade: "1",
+  class: "A",
+  name: "qian",
+  score: [3,3,3,3,3]
+}
+{
+  _id: "3",
+  grade: "1",
+  class: "B",
+  name: "li",
+  score: [3,3,3,3,3]
+}
+{
+  _id: "4",
+  grade: "1",
+  class: "B",
+  name: "zhou",
+  score: [5,5,5,5,5]
+}
+{
+  _id: "5",
+  grade: "2",
+  class: "A",
+  name: "wu",
+  score: [5,5,5,5,5]
+}
+{
+  _id: "6",
+  grade: "2",
+  class: "A",
+  name: "zheng",
+  score: [7,7,7,7,7]
+}
+```
+
+如下preField写法将上面的score数组求和之后传递给groupBy和groupField使用。在preField内没出现的字段（比如name），在后面的方法里面不能使用
+
+```js
+const res = await db.collection('score')
+.preField('grade,class,sum(score) as userTotalScore')
+.groupBy('grade,class')
+.groupField('avg(userTotalScore) as avgScore')
+.get()
+```
+
+返回结果如下
+
+```js
+{
+  data: [{
+    grade: "1",
+    class: "A",
+    avgScore: 10
+  },{
+    grade: "1",
+    class: "B",
+    avgScore: 20
+  },{
+    grade: "2",
+    class: "A",
+    avgScore: 30
+  }]
+}
+```
+
+**注意**
+
+- 在上面使用preField方法的情况下，会计算preField内访问的所有字段计算权限。上面的例子中会使用表的read权限和grade、class、score三个字段的权限，来进行权限校验。
+- 在不使用preField，仅使用groupBy和groupField的情况下，会以groupBy和groupField内访问的所有字段的权限来校验访问是否合法。
+- 与field不同groupBy不会包含_id，除非你手动指定
+
+#### 统计数量
+
+使用count方法可以对记录数量进行统计。以上述数据为例，如下写法对不同班级统计参赛人数
+
+```js
+const res = await db.collection('score')
+.groupBy('grade,class')
+.groupField('count(*) as totalStudents')
+.get()
+```
+
+返回结果如下
+
+```js
+{
+  data: [{
+    grade: "1",
+    class: "A",
+    totalStudents: 2
+  },{
+    grade: "1",
+    class: "B",
+    totalStudents: 2
+  },{
+    grade: "2",
+    class: "A",
+    totalStudents: 2
+  }]
+}
+```
+
+**注意**
+
+- `count(*)`为固定写法，*可以省略
+
+### 数据去重@distinct
+
+通过.distinct()方法，对数据查询结果中重复的记录进行去重。
+
+distinct方法将按照field方法指定的字段进行去重（如果field内未指定_id，不会按照_id去重）
+
+> `HBuilderX 3.0.8`+
+
+```js
+const res = await db.collection('table1')
+.field('field1')
+.distinct() // 注意distinct方法没有参数
+.get()
+```
+
+例：如果数据库`score`表为某次比赛统计的分数数据，每条记录为一个学生的分数
+
+`score`表的数据：
+
+```js
+{
+  _id: "1",
+  grade: "1",
+  class: "A",
+  name: "zhao",
+  score: 5
+}
+{
+  _id: "2",
+  grade: "1",
+  class: "A",
+  name: "qian",
+  score: 15
+}
+{
+  _id: "3",
+  grade: "1",
+  class: "B",
+  name: "li",
+  score: 15
+}
+{
+  _id: "4",
+  grade: "1",
+  class: "B",
+  name: "zhou",
+  score: 25
+}
+{
+  _id: "5",
+  grade: "2",
+  class: "A",
+  name: "wu",
+  score: 25
+}
+{
+  _id: "6",
+  grade: "2",
+  class: "A",
+  name: "zheng",
+  score: 35
+}
+```
+
+以下代码可以按照grade、class两字段去重，获取所有参赛班级
+
+```js
+const res = await db.collection('score')
+.field('grade,class')
+.distinct() // 注意distinct方法没有参数
+.get()
+```
+
+查询返回结果如下
+
+```js
+{
+  data: [{
+    grade:"1",
+    class: "A"
+  },{
+    grade:"1",
+    class: "B"
+  },{
+    grade:"2",
+    class: "A"
+  }]
+}
+```
+
+**注意**
+
+- distinct指对返回结果中完全相同的记录进行去重，重复的记录只保留一条。因为`_id`字段是必然不同的，所以使用distinct时必须同时指定field，且field中不可存在`_id`字段
 
 ### 新增数据记录add
 
@@ -927,6 +1814,28 @@ const res = await db.collection('table1').where({
 - 更新数据库时不可使用更新操作符`db.command.inc`等
 - 更新数据时键值不可使用`{'a.b.c': 1}`的形式，需要写成`{a:{b:{c:1}}}`形式（后续会对此进行优化）
 
+### 其他数据库操作
+
+clientDB API支持使用聚合操作读取数据，关于聚合操作请参考[聚合操作](uniCloud/cf-database.md?id=aggregate)
+
+例：取status等于1的随机20条数据
+
+```js
+const db = uniCloud.database()
+const res = await db.collection('test').aggregate()
+.match({
+  status: 1
+})
+.sample({
+  size: 20
+})
+.end()
+```
+
+**注意**
+
+- 目前`<uni-clientdb>`组件暂不支持使用聚合操作读取数据
+
 ### 刷新token@refreshtoken
 
 透传uni-id自动刷新的token给客户端
@@ -944,10 +1853,57 @@ function refreshToken({
   uni.setStorageSync('uni_id_token_expired', tokenExpired)
 }
 // 绑定刷新token事件
-db.auth.on('refreshToken', refreshToken)
+db.on('refreshToken', refreshToken)
 // 解绑刷新token事件
-db.auth.off('refreshToken', refreshToken)
+db.off('refreshToken', refreshToken)
 ```
+
+**注意：HBuilderX 3.0.0之前请使用db.auth.on、db.auth.off，HBuilderX 3.0.0以上版本仍兼容旧写法，但是推荐使用新写法db.on**
+
+### 错误处理@error
+
+全局clientDB错误事件，HBuilderX 3.0.0起支持。
+
+**用法**
+
+```js
+const db = uniCloud.database()
+
+function onDBError({
+  code, // 错误码详见https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=returnvalue
+  message
+}) {
+  // 处理错误
+}
+// 绑定clientDB错误事件
+db.on('error', onDBError)
+// 解绑clientDB错误事件
+db.off('error', onDBError)
+```
+
+<!-- ### 处理错误@error
+
+clientDB出现错误时触发，`HBuilderX 2.9.12+` 支持
+
+**用法**
+
+```js
+const db = uniCloud.database()
+
+function onError({
+  code, // 错误码详见https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=returnvalue
+  message
+}) {
+  uni.showModal({
+    content: message,
+    showCancel: false
+  })
+}
+// 绑定错误处理事件
+db.auth.on('error', onError)
+// 解绑错误处理事件
+db.auth.off('error', onError)
+``` -->
 
 ## DBSchema@schema
 
@@ -1076,9 +2032,9 @@ db.collection('order')
   .get()
 ```
 
-在进行数据库操作之前，clientDB会使用permission内配置的规则对客户端操作进行一次预校验，如果预校验不通过还会通过数据库查询再进行一次校验
+在进行数据库操作之前，clientDB会使用permission内配置的规则对客户端操作进行一次校验，如果本次校验不通过还会通过数据库查询再进行一次校验
 
-例：
+例1：
 
 ```js
 // 数据库内news表有以下数据
@@ -1117,6 +2073,57 @@ db.collection('news').doc('1').update({
 
 此时客户端条件里面只有`doc._id == 1`，schema内又限制的`doc.user_id == auth.uid`，所以第一次预校验无法通过，会进行一次查库校验判断是否有权限进行操作。发现auth.uid确实和doc.user_id一致，上面的数据库操作允许执行。
 
+例2：
+
+```js
+// 数据库内goods表有以下数据
+{
+  _id: "1",
+  name: "n1",
+  status: 1
+}
+{
+  _id: "2",
+  name: "n2",
+  status: 2
+}
+{
+  _id: "3",
+  name: "n3",
+  status: 3
+}
+```
+
+```js
+// news表对应的schema内做如下配置
+{
+  "bsonType": "object",
+  "permission": { // 表级权限
+    "read": "doc.status > 1",
+  },
+  "properties": {
+    "name": {
+      "bsonType": "string"
+    },
+    "status": {
+      "bsonType": "int"
+    }
+  }
+}
+```
+
+```js
+// 用户在客户端使用如下操作，可以通过第一次校验，不会触发查库校验
+db.collection('goods').where('status > 1').get()
+
+// 用户在客户端使用如下操作，无法通过第一次校验，会触发一次查库校验（原理大致是使用name == "n3" && status <= 1作为条件进行一次查询，如果有结果就认为没有权限访问，了解即可，无需深入）
+db.collection('goods').where('name == "n3"').get()
+
+// 用户在客户端使用如下操作，无法通过第一次校验，会触发一次查库校验，查库校验也会无法通过
+db.collection('goods').where('name == "n1"').get()
+```
+
+
 ## action@action
 
 action的作用是在执行前端发起的数据库操作时，额外触发一段云函数逻辑。它是一个可选模块。action是运行于云函数内的，可以使用云函数内的所有接口。
@@ -1126,6 +2133,8 @@ action的作用是在执行前端发起的数据库操作时，额外触发一�
 **注意action方法是db对象的方法，只能跟在db后面，不能跟在collection()后面**
 - 正确：`db.action("someactionname").collection('table1')`
 - 错误：`db.collection('table1').action("someactionname")`
+
+**尽量不要在action中使用全局变量，如果一定要用请务必确保自己已经阅读并理解了[云函数的启动模式](uniCloud/cf-functions.md?id=launchtype)**
 
 如果使用`<uni-clientdb>组件`，该组件也有action属性，设置action="someactionname"即可。
 ```html
@@ -1149,9 +2158,10 @@ action是一种特殊的云函数，它不占用服务空间的云函数数量�
 - before在clientDB执行前触发，before里的代码执行完毕后再开始操作数据库。before的常用用途：
 	* 对前端传入的数据进行二次处理
 	* 在此处开启数据库事务，万一操作数据库失败，可以在after里回滚
+	* 使用throw阻止运行
 	* 如果权限或字段值域校验不想配在schema和validateFunction里，也可以在这里做校验
 	
-- after在clientDB执行后触发，clientDB操作数据库后触发before里的代码。after的常用用途：
+- after在clientDB执行后触发，clientDB操作数据库后触发after里的代码。after的常用用途：
 	* 对将要返回给前端的数据进行二次处理
 	* 也可以在此处处理错误，回滚数据库事务
 	* 对数据库进行二次操作，比如前端查询一篇文章详情后，在此处对文章的阅读数+1。因为permission里定义，一般是要禁止前端操作文章的阅读数字段的，此时就应该通过action，在云函数里对阅读数+1
@@ -1213,7 +2223,7 @@ module.exports = {
   command: {
     // getMethod('where') 获取所有的where方法，返回结果为[{$method:'where',$param: [{a:1}]}]
     getMethod,
-    // getMethod({name:'where',index: 0}) 获取第1个where方法的参数，结果为数组形式，例：[{a:1}]
+    // getParam({name:'where',index: 0}) 获取第1个where方法的参数，结果为数组形式，例：[{a:1}]
     getParam,
     // setParam({name:'where',index: 0, param: [{a:1}]}) 设置第1个where方法的参数，调用之后where方法实际形式为：where({a:1})
     setParam
@@ -1234,3 +2244,169 @@ module.exports = {
   type
 }
 ```
+
+## 可用聚合操作符列表@aggregate-operator
+
+为方便书写，clientDB内将聚合操作符的用法进行了简化（相对于云函数内使用聚合操作符而言）。以下是可以在clientDB中使用的聚合操作符
+
+|操作符						|详细文档																												|用法																																																				|说明															|
+|---							|---																														|---																																																				|---															|
+|abs							|[abs](uniCloud/cf-database.md?id=abs)													|abs(<表达式>)																																															|-																|
+|add							|[add](uniCloud/cf-database.md?id=add-1)												|add(<表达式1>,<表达式2>)																																										|-																|
+|ceil							|[ceil](uniCloud/cf-database.md?id=ceil)												|ceil(<表达式>)																																															|-																|
+|divide						|[divide](uniCloud/cf-database.md?id=divide)										|divide(<表达式1>,<表达式2>)																																								|-																|
+|exp							|[exp](uniCloud/cf-database.md?id=exp)													|exp(<表达式>)																																															|-																|
+|floor						|[floor](uniCloud/cf-database.md?id=floor)											|floor(<表达式>)																																														|-																|
+|ln								|[ln](uniCloud/cf-database.md?id=ln)														|ln(<表达式>)																																																|-																|
+|log							|[log](uniCloud/cf-database.md?id=log)													|log(<表达式1>,<表达式2>)																																										|-																|
+|log10						|[log10](uniCloud/cf-database.md?id=log10)											|log10(<表达式>)																																														|-																|
+|mod							|[mod](uniCloud/cf-database.md?id=mod)													|mod(<表达式1>,<表达式2>)																																										|-																|
+|multiply					|[multiply](uniCloud/cf-database.md?id=multiply)								|multiply(<表达式1>,<表达式2>)																																							|-																|
+|pow							|[pow](uniCloud/cf-database.md?id=pow)													|pow(<表达式1>,<表达式2>)																																										|-																|
+|sqrt							|[sqrt](uniCloud/cf-database.md?id=sqrt)												|sqrt(<表达式1>,<表达式2>)																																									|-																|
+|subtract					|[subtract](uniCloud/cf-database.md?id=subtract)								|subtract(<表达式1>,<表达式2>)																																							|-																|
+|trunc						|[trunc](uniCloud/cf-database.md?id=trunc)											|trunc(<表达式>)																																														|-																|
+|arrayElemAt			|[arrayElemAt](uniCloud/cf-database.md?id=arrayelemat)					|arrayElemAt(<表达式1>,<表达式2>)																																						|-																|
+|arrayToObject		|[arrayToObject](uniCloud/cf-database.md?id=arraytoobject)			|arrayToObject(<表达式>)																																										|-																|
+|concatArrays			|[concatArrays](uniCloud/cf-database.md?id=concatarrays)				|concatArrays(<表达式1>,<表达式2>)																																					|-																|
+|filter						|[filter](uniCloud/cf-database.md?id=filter)										|filter(<input>,<as>,<cond>)																																								|-																|
+|in								|[in](uniCloud/cf-database.md?id=in)														|in(<表达式1>,<表达式2>)																																										|-																|
+|indexOfArray			|[indexOfArray](uniCloud/cf-database.md?id=indexofarray)				|indexOfArray(<表达式1>,<表达式2>)																																					|-																|
+|isArray					|[isArray](uniCloud/cf-database.md?id=isarray)									|isArray(<表达式>)																																													|-																|
+|map							|[map](uniCloud/cf-database.md?id=map)													|map(<input>,<as>,<in>)																																											|-																|
+|objectToArray		|[objectToArray](uniCloud/cf-database.md?id=objecttoarray)			|objectToArray(<表达式>)																																										|-																|
+|range						|[range](uniCloud/cf-database.md?id=range)											|range(<表达式1>,<表达式2>)																																									|-																|
+|reduce						|[reduce](uniCloud/cf-database.md?id=reduce)										|reduce(<input>,<initialValue>,<in>)																																				|-																|
+|reverseArray			|[reverseArray](uniCloud/cf-database.md?id=reversearray)				|reverseArray(<表达式>)																																											|-																|
+|size							|[size](uniCloud/cf-database.md?id=size)												|size(<表达式>)																																															|-																|
+|slice						|[slice](uniCloud/cf-database.md?id=slice)											|slice(<表达式1>,<表达式2>)																																									|-																|
+|zip							|[zip](uniCloud/cf-database.md?id=zip)													|zip(<inputs>,<useLongestLength>,<defaults>)																																|-																|
+|and							|[and](uniCloud/cf-database.md?id=and)													|and(<表达式1>,<表达式2>)																																										|-																|
+|not							|[not](uniCloud/cf-database.md?id=not)													|not(<表达式>)																																															|-																|
+|or								|[or](uniCloud/cf-database.md?id=or)														|or(<表达式1>,<表达式2>)																																										|-																|
+|cmp							|[cmp](uniCloud/cf-database.md?id=cmp)													|cmp(<表达式1>,<表达式2>)																																										|-																|
+|eq								|[eq](uniCloud/cf-database.md?id=eq)														|eq(<表达式1>,<表达式2>)																																										|-																|
+|gt								|[gt](uniCloud/cf-database.md?id=gt)														|gt(<表达式1>,<表达式2>)																																										|-																|
+|gte							|[gte](uniCloud/cf-database.md?id=gte)													|gte(<表达式1>,<表达式2>)																																										|-																|
+|lt								|[lt](uniCloud/cf-database.md?id=lt)														|lt(<表达式1>,<表达式2>)																																										|-																|
+|lte							|[lte](uniCloud/cf-database.md?id=lte)													|lte(<表达式1>,<表达式2>)																																										|-																|
+|neq							|[neq](uniCloud/cf-database.md?id=neq)													|neq(<表达式1>,<表达式2>)																																										|-																|
+|cond							|[cond](uniCloud/cf-database.md?id=cond)												|cond(<表达式1>,<表达式2>)																																									|-																|
+|ifNull						|[ifNull](uniCloud/cf-database.md?id=ifnull)										|ifNull(<表达式1>,<表达式2>)																																								|-																|
+|switch						|[switch](uniCloud/cf-database.md?id=switch)										|switch(<branches>,<default>)																																								|-																|
+|dateFromParts		|[dateFromParts](uniCloud/cf-database.md?id=datefromparts)			|dateFromParts(<year>,<month>,<day>,<hour>,<minute>,<second>,<millisecond>,<timezone>)											|-																|
+|isoDateFromParts	|[isoDateFromParts](uniCloud/cf-database.md?id=isodatefromparts)|isoDateFromParts(<isoWeekYear>,<isoWeek>,<isoDayOfWeek>,<hour>,<minute>,<second>,<millisecond>,<timezone>)	|云函数内此操作符对应dateFromParts|
+|dateFromString		|[dateFromString](uniCloud/cf-database.md?id=datefromstring)		|dateFromString(<dateString>,<format>,<timezone>,<onError>,<onNull>)																				|-																|
+|dateToString			|[dateToString](uniCloud/cf-database.md?id=datetostring)				|dateToString(<date>,<format>,<timezone>,<onNull>)																													|-																|
+|dayOfMonth				|[dayOfMonth](uniCloud/cf-database.md?id=dayofmonth)						|dayOfMonth(<date>,<timezone>)																																							|-																|
+|dayOfWeek				|[dayOfWeek](uniCloud/cf-database.md?id=dayofweek)							|dayOfWeek(<date>,<timezone>)																																								|-																|
+|dayOfYear				|[dayOfYear](uniCloud/cf-database.md?id=dayofyear)							|dayOfYear(<date>,<timezone>)																																								|-																|
+|hour							|[hour](uniCloud/cf-database.md?id=hour)												|hour(<date>,<timezone>)																																										|-																|
+|isoDayOfWeek			|[isoDayOfWeek](uniCloud/cf-database.md?id=isodayofweek)				|isoDayOfWeek(<date>,<timezone>)																																						|-																|
+|isoWeek					|[isoWeek](uniCloud/cf-database.md?id=isoweek)									|isoWeek(<date>,<timezone>)																																									|-																|
+|isoWeekYear			|[isoWeekYear](uniCloud/cf-database.md?id=isoweekyear)					|isoWeekYear(<date>,<timezone>)																																							|-																|
+|millisecond			|[millisecond](uniCloud/cf-database.md?id=millisecond)					|millisecond(<date>,<timezone>)																																							|-																|
+|minute						|[minute](uniCloud/cf-database.md?id=minute)										|minute(<date>,<timezone>)																																									|-																|
+|month						|[month](uniCloud/cf-database.md?id=month)											|month(<date>,<timezone>)																																										|-																|
+|second						|[second](uniCloud/cf-database.md?id=second)										|second(<date>,<timezone>)																																									|-																|
+|week							|[week](uniCloud/cf-database.md?id=week)												|week(<date>,<timezone>)																																										|-																|
+|year							|[year](uniCloud/cf-database.md?id=year)												|year(<date>,<timezone>)																																										|-																|
+|literal					|[literal](uniCloud/cf-database.md?id=literal)									|literal(<表达式>)																																													|-																|
+|mergeObjects			|[mergeObjects](uniCloud/cf-database.md?id=mergeobjects)				|mergeObjects(<表达式1>,<表达式2>)																																					|-																|
+|allElementsTrue	|[allElementsTrue](uniCloud/cf-database.md?id=allelementstrue)	|allElementsTrue(<表达式1>,<表达式2>)																																				|-																|
+|anyElementTrue		|[anyElementTrue](uniCloud/cf-database.md?id=anyelementtrue)		|anyElementTrue(<表达式1>,<表达式2>)																																				|-																|
+|setDifference		|[setDifference](uniCloud/cf-database.md?id=setdifference)			|setDifference(<表达式1>,<表达式2>)																																					|-																|
+|setEquals				|[setEquals](uniCloud/cf-database.md?id=setequals)							|setEquals(<表达式1>,<表达式2>)																																							|-																|
+|setIntersection	|[setIntersection](uniCloud/cf-database.md?id=setintersection)	|setIntersection(<表达式1>,<表达式2>)																																				|-																|
+|setIsSubset			|[setIsSubset](uniCloud/cf-database.md?id=setissubset)					|setIsSubset(<表达式1>,<表达式2>)																																						|-																|
+|setUnion					|[setUnion](uniCloud/cf-database.md?id=setunion)								|setUnion(<表达式1>,<表达式2>)																																							|-																|
+|concat						|[concat](uniCloud/cf-database.md?id=concat)										|concat(<表达式1>,<表达式2>)																																								|-																|
+|indexOfBytes			|[indexOfBytes](uniCloud/cf-database.md?id=indexofbytes)				|indexOfBytes(<表达式1>,<表达式2>)																																					|-																|
+|indexOfCP				|[indexOfCP](uniCloud/cf-database.md?id=indexofcp)							|indexOfCP(<表达式1>,<表达式2>)																																							|-																|
+|split						|[split](uniCloud/cf-database.md?id=split)											|split(<表达式1>,<表达式2>)																																									|-																|
+|strLenBytes			|[strLenBytes](uniCloud/cf-database.md?id=strlenbytes)					|strLenBytes(<表达式>)																																											|-																|
+|strLenCP					|[strLenCP](uniCloud/cf-database.md?id=strlencp)								|strLenCP(<表达式>)																																													|-																|
+|strcasecmp				|[strcasecmp](uniCloud/cf-database.md?id=strcasecmp)						|strcasecmp(<表达式1>,<表达式2>)																																						|-																|
+|substr						|[substr](uniCloud/cf-database.md?id=substr)										|substr(<表达式1>,<表达式2>)																																								|-																|
+|substrBytes			|[substrBytes](uniCloud/cf-database.md?id=substrbytes)					|substrBytes(<表达式1>,<表达式2>)																																						|-																|
+|substrCP					|[substrCP](uniCloud/cf-database.md?id=substrcp)								|substrCP(<表达式1>,<表达式2>)																																							|-																|
+|toLower					|[toLower](uniCloud/cf-database.md?id=tolower)									|toLower(<表达式>)																																													|-																|
+|toUpper					|[toUpper](uniCloud/cf-database.md?id=toupper)									|toUpper(<表达式>)																																													|-																|
+|addToSet					|[addToSet](uniCloud/cf-database.md?id=addtoset)								|addToSet(<表达式>)																																													|-																|
+|avg							|[avg](uniCloud/cf-database.md?id=avg)													|avg(<表达式>)																																															|-																|
+|first						|[first](uniCloud/cf-database.md?id=first)											|first(<表达式>)																																														|-																|
+|last							|[last](uniCloud/cf-database.md?id=last)												|last(<表达式>)																																															|-																|
+|max							|[max](uniCloud/cf-database.md?id=max)													|max(<表达式>)																																															|-																|
+|min							|[min](uniCloud/cf-database.md?id=min)													|min(<表达式>)																																															|-																|
+|push							|[push](uniCloud/cf-database.md?id=push)												|push(<表达式>)																																															|-																|
+|stdDevPop				|[stdDevPop](uniCloud/cf-database.md?id=stddevpop)							|stdDevPop(<表达式>)																																												|-																|
+|stdDevSamp				|[stdDevSamp](uniCloud/cf-database.md?id=stddevsamp)						|stdDevSamp(<表达式>)																																												|-																|
+|sum							|[sum](uniCloud/cf-database.md?id=sum)													|sum(<表达式>)																																															|-																|
+|let							|[let](uniCloud/cf-database.md?id=let)													|let(<vars>,<in>)																																														|-																|
+
+以上操作符还可以组合使用
+
+例：数据表article内有以下数据
+
+```js
+{
+  "_id": "1",
+  "publish_date": 1611141512751,
+  "content": "hello uniCloud content 01",
+  "content": "hello uniCloud title 01",
+}
+
+{
+  "_id": "2",
+  "publish_date": 1611141512752,
+  "content": "hello uniCloud content 02",
+  "content": "hello uniCloud title 02",
+}
+
+{
+  "_id": "3",
+  "publish_date": 1611141512753,
+  "content": "hello uniCloud content 03",
+  "content": "hello uniCloud title 03",
+}
+```
+
+可以通过以下查询将publish_date转为`2021-01-20`形式，然后进行分组统计
+
+```js
+const res = await db.collection('article')
+.groupBy('dateToString(add(new Date(0),publish_date),"%Y-%m-%d","+0800") as publish_date_str')
+.groupField('count(*) as total')
+.get()
+```
+
+上述代码使用add将publish_date时间戳转为日期类型，再用dateToString将上一步的日期按照时区'+0800'（北京时间），格式化为`4位年-2位月-2位日`格式，完整格式化参数请参考[dateToString](uniCloud/cf-database.md?id=datetostring)。
+
+上述代码执行结果为
+
+```js
+res = {
+  result: {
+    data: [{
+      publish_date_str: '2021-01-20',
+      total: 3
+    }]
+  }
+}
+```
+
+### 累计器操作符@accumulator
+
+|操作符				|详细文档																								|用法										|说明																|
+|---					|---																										|---										|---																|
+|addToSet			|[addToSet](uniCloud/cf-database.md?id=addtoset)				|addToSet(<表达式>)			|-																	|
+|avg					|[avg](uniCloud/cf-database.md?id=avg)									|avg(<表达式>)					|-																	|
+|first				|[first](uniCloud/cf-database.md?id=first)							|first(<表达式>)				|-																	|
+|last					|[last](uniCloud/cf-database.md?id=last)								|last(<表达式>)					|-																	|
+|max					|[max](uniCloud/cf-database.md?id=max)									|max(<表达式>)					|-																	|
+|min					|[min](uniCloud/cf-database.md?id=min)									|min(<表达式>)					|-																	|
+|push					|[push](uniCloud/cf-database.md?id=push)								|push(<表达式>)					|-																	|
+|stdDevPop		|[stdDevPop](uniCloud/cf-database.md?id=stddevpop)			|stdDevPop(<表达式>)		|-																	|
+|stdDevSamp		|[stdDevSamp](uniCloud/cf-database.md?id=stddevsamp)		|stdDevSamp(<表达式>)		|-																	|
+|sum					|[sum](uniCloud/cf-database.md?id=sum)									|sum(<表达式>)					|-																	|
+|mergeObjects	|[mergeObjects](uniCloud/cf-database.md?id=mergeobjects)|mergeObjects(<表达式1>)|在groupField内使用时仅接收一个参数	|

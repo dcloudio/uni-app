@@ -396,7 +396,7 @@ function initAutoComponents () {
           usedFile = file
         }
         return file
-      }).join(',') + ']，优先使用：' + usedFile)
+      }).join(',') + ']')
       console.log('\n')
     })
   }

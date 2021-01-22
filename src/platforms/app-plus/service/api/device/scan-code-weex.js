@@ -44,6 +44,7 @@ export function scanCode (options, callbackId) {
         }] : []
       },
       popGesture: 'close',
+      background: '#000000',
       backButtonAutoControl: 'close'
     },
     onMessage ({

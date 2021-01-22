@@ -365,12 +365,10 @@ export default {
     }) {
       const canvas = this.$refs.canvas
       let data
-      if (!width) {
-        width = canvas.offsetWidth - x
-      }
-      if (!height) {
-        height = canvas.offsetHeight - y
-      }
+      const maxWidth = canvas.offsetWidth - x
+      width = width ? Math.min(width, maxWidth) : maxWidth
+      const maxHeight = canvas.offsetHeight - y
+      height = height ? Math.min(height, maxWidth) : maxHeight
       if (!hidpi) {
         if (!destWidth && !destHeight) {
           destWidth = Math.round(width * pixelRatio)

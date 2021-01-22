@@ -1,6 +1,16 @@
 
-#### ad
+## 信息流广告
+
+### 简介
+
 应用内展示的广告组件，可用于banner或信息流。
+
+### 适用场景
+
+banner或信息流广告展现场景非常灵活，常见的展现场景为：文章页末尾，详情页面底部，信息流顶部等
+
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/b613df50-4420-11eb-bc56-c9cea619f663.png)
+
 
 - app端的广告源由腾讯广点通、头条穿山甲、快手广告联盟、360广告联盟以及部分DCloud直投广告聚合提供，在DCloud的uni-AD后台注册：[https://uniad.dcloud.net.cn/](https://uniad.dcloud.net.cn/)
 - 小程序端的广告由小程序平台提供
@@ -90,24 +100,12 @@ App和微信小程序的ad组件没有type属性，可以用于banner，也可�
 <template>
   <view class="content">
 
-    <!-- App平台 示例 1 -->
-    <!-- adpid="1111111111" 此广告位标识仅在HBuilderX标准基座中有效，仅用于测试，替换为自己申请获取的广告位标识 -->
-    <view class="ad-view">
-      <ad adpid="1111111111" @load="onload" @close="onclose" @error="onerror"></ad>
-    </view>
-
-    <!-- App平台 示例 2 -->
+    <!-- App平台 -->
+    <!-- adpid="1111111111" 此广告位标识仅在HBuilderX标准基座中有效，仅用于测试 -->
+    <!-- 广告后台申请的广告位(adpid)需要自定义基座/云打包/本地打包后生效 -->
     <!-- 需要时可自定义属性，监听到 error 回调后(e.target可以取到)，开发者可以针对性的处理，比如隐藏广告组件的父容器，以保证用户体验 -->
-    <view class="ad-view" v-for="adItem in adList" :key="adItem.id">
-      <ad :adpid="adItem.adpid" :data-xx="adItem.id"></ad>
-    </view>
-
-    <!-- App平台 示例 3 (手动请求广告数据 仅App平台支持) -->
-    <view>
-      <button @click="getAdData">Get ad data</button>
-    </view>
     <view class="ad-view">
-      <ad :data="adData"></ad>
+      <ad adpid="1111111111" :data-xx="adItem.id" @load="onload" @close="onclose" @error="onerror"></ad>
     </view>
 
     <!-- 微信小程序 -->
@@ -127,25 +125,63 @@ App和微信小程序的ad组件没有type属性，可以用于banner，也可�
 
   </view>
 </template>
-```
 
-```javascript
+<script>
 export default {
   data() {
     return {
-      title: 'uni-app ad',
-      adList: [],
+      title: 'ad'
+    }
+  },
+  methods: {
+    onload(e) {
+      console.log("onload");
+    },
+    onclose(e) {
+      console.log("onclose: " + e.detail);
+    },
+    onerror(e) {
+      console.log("onerror: " + e.detail.errCode + " message:: " + e.detail.errMsg);
+    }
+  }
+}
+</script>
+
+<style>
+  .content {
+    background-color: #DBDBDB;
+    padding: 10px;
+  }
+
+  .ad-view {
+    background-color: #FFFFFF;
+    margin-bottom: 10px;
+  }
+</style>
+```
+
+
+api的方式(仅app平台支持)
+
+``` html
+<template>
+  <view class="content">
+    <view class="ad-view">
+      <ad :data="adData"></ad>
+    </view>
+  </view>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      title: 'ad',
       adData: {}
     }
   },
   onReady: function (e) {
-    // 显示 4 个广告
-    for (let i = 0; i < 4; i++) {
-      this.adList.push({
-        id: i,
-        adpid: "1111111111"
-      })
-    }
+    this.getAdData()
   },
   methods: {
     getAdData: function (e) {
@@ -163,21 +199,11 @@ export default {
           console.log(err);
         }
       )
-    },
-    onload(e) {
-      console.log("onload");
-    },
-    onclose(e) {
-      console.log("onclose: " + e.detail);
-    },
-    onerror(e) {
-      console.log("onerror: " + e.detail.errCode + " message:: " + e.detail.errMsg);
     }
   }
 }
-```
+</script>
 
-``` css
 <style>
   .content {
     background-color: #DBDBDB;
@@ -191,11 +217,84 @@ export default {
 </style>
 ```
 
+
+使用 ad/ad-draw 模拟插屏广告效果
+
+```html
+<template>
+  <view>
+    <!-- 使用 ad/ad-draw 模拟插屏广告效果 -->
+    <view>
+      <button @click="showInterstitialAd">显示插屏广告</button>
+    </view>
+    <view class="ad-interstitial" v-if="isShowInterstitialAd">
+      <view class="ad-view">
+        <ad class="ad" adpid="1111111111" @error="onerror"></ad>
+
+        <!-- ad-draw 仅在nvue页面生效 -->
+        <!-- <ad-draw class="ad-draw" adpid="1507000690"></ad-draw> -->
+      </view>
+      <view class="close-area">
+        <!-- 根据z自己页面风格设置关闭按钮的样式 -->
+        <button @click="hideInterstitialAd">X</button>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  export default {
+    data() {
+      return {
+        isShowInterstitialAd: false
+      }
+    },
+    methods: {
+      showInterstitialAd() {
+        this.isShowInterstitialAd = true
+      },
+      hideInterstitialAd() {
+        this.isShowInterstitialAd = false
+      },
+      onerror(e) {
+        console.log(e);
+      }
+    }
+  }
+</script>
+
+<style>
+  .ad-interstitial {
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    /* #ifndef APP-NVUE */
+    display: flex;
+    z-index: 1000;
+    /* #endif */
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .ad-draw {
+    width: 700rpx;
+    height: 400px;
+  }
+</style>
+
+```
+
+
 **激励视频广告**
 文档地址：[https://uniapp.dcloud.io/api/a-d/rewarded-video](https://uniapp.dcloud.io/api/a-d/rewarded-video)
 
 **注意**
+- iOS平台配置应用使用广告标识（IDFA）详见：[https://ask.dcloud.net.cn/article/36107](https://ask.dcloud.net.cn/article/36107)
 - App端广告开通指南和收益相关问题：[https://ask.dcloud.net.cn/article/36769](https://ask.dcloud.net.cn/article/36769)
 - App端除了ad组件，还支持开屏、激励视频等多种广告形式。详见[uni-AD官网](https://uniad.dcloud.net.cn/)
 - App端uni-AD聚合了腾讯广点通、头条穿山甲、360广告联盟等服务，打包时必须勾选相应的sdk，详见：[https://ask.dcloud.net.cn/article/36718](https://ask.dcloud.net.cn/article/36718)
-![](https://img-cdn-qiniu.dcloud.net.cn/uploads/article/20200115/10b714ce030ce2032a9d9b0bdd0ae03a.jpg)
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/f21eb570-4f32-11eb-b680-7980c8a877b8.jpg)
