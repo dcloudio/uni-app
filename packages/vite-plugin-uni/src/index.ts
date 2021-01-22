@@ -2,6 +2,7 @@ import path from 'path'
 
 import { Plugin, ViteDevServer } from 'vite'
 
+import { initEnv } from './env'
 import { createLoad } from './load'
 import { createConfig } from './config'
 import { createResolveId } from './resolveId'
@@ -28,6 +29,7 @@ export default function uniPlugin(
     root: process.cwd(),
     inputDir: rawOptions.inputDir || path.resolve(process.cwd(), 'src'),
   }
+  initEnv(options)
   return {
     name: 'vite:uni',
     config: createConfig(options),

@@ -2,12 +2,13 @@ import debug from 'debug'
 import { Plugin } from 'vite'
 
 import { VitePluginUniResolvedOptions } from '..'
+import { app } from './app'
 import { main } from './main'
 import { pages } from './pages'
 
 const debugLoad = debug('uni:load')
 
-const loads = [main, pages]
+const loads = [app, main, pages]
 
 export function createLoad(
   options: VitePluginUniResolvedOptions

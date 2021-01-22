@@ -5,7 +5,8 @@
   "main": "dist/uni-h5.esm.js",
   "module": "dist/uni-h5.esm.js",
   "files": [
-    "dist"
+    "dist",
+    "style"
   ],
   "sideEffects": [
     "dist/uni-h5.css"

@@ -2,14 +2,13 @@ import { CompilerOptions } from '@vue/compiler-sfc'
 
 import {
   COMPONENT_PREFIX,
-  isBuiltInComponent,
   isNativeTag,
+  isBuiltInComponent,
 } from '@dcloudio/uni-shared'
 
-import { transformBuiltInComponent } from './transforms/transformBuiltInComponent'
-import { transformBuiltInEasycom } from './transforms/transformBuiltInEasycom'
-import { transformEasycom } from './transforms/transformEasycom'
-import { isEasycomTag } from './easycom'
+import { isEasycomTag } from '../easycom'
+import { transformEasycom, transformBuiltInEasycom } from './transforms/easycom'
+import { transformBuiltInComponent } from './transforms/builtInComponent'
 
 interface CodegenContext {
   push: (code: string, node: any) => void

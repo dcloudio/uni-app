@@ -177,3 +177,12 @@ uni-page {
 [nvue] uni-swiper-item {
   position: absolute;
 }
+
+
+
+uni-app {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+}

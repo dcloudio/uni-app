@@ -132,13 +132,3 @@ export default {
   }
 }
 </script>
-
-<style>
-@import url('./index.css');
-uni-app {
-  display: block;
-  box-sizing: border-box;
-  width: 100%;
-  height: 100%;
-}
-</style>

@@ -16,7 +16,7 @@ import {
   matchEasycom,
   addAutoImport,
   isComponentNode,
-} from '../easycom'
+} from '../../easycom'
 
 function createImportItem(path: string, node: ComponentNode) {
   const tag = node.tag
@@ -67,5 +67,14 @@ export const transformEasycom: NodeTransform = (node, context) => {
   if (path) {
     addEasycomTag(tag)
     addAutoImport(createImportItem(path, node), context)
+  }
+}
+
+export const transformBuiltInEasycom: NodeTransform = (node) => {
+  if (!isComponentNode(node)) {
+    return
+  }
+  if (node.tag === 'match-media' && process.env.UNI_PLATFORM !== 'mp-weixin') {
+    node.tag = 'uni-match-media'
   }
 }
