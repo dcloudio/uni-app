@@ -531,7 +531,7 @@ db.collection('order')
 
 查询时可以使用field方法指定返回字段，在`<uni-clientDB>`组件中也支持field属性。不使用field方法时会返回所有字段
 
-field内使用jql指定返回字段，即使没有指定_id也一定会返回_id字段
+只有使用传统MongoDB的写法{ '_id': false }明确指定不要返回_id，否则_id字段一定会返回。
 
 ### 别名@alias
 
@@ -1340,7 +1340,7 @@ const res = await db.collection('score')
 
 - 在上面使用preField方法的情况下，会计算preField内访问的所有字段计算权限。上面的例子中会使用表的read权限和grade、class、score三个字段的权限，来进行权限校验。
 - 在不使用preField，仅使用groupBy和groupField的情况下，会以groupBy和groupField内访问的所有字段的权限来校验访问是否合法。
-- 与field不同，groupBy不会包含_id，除非你手动指定
+- 与field不同，使用groupField时返回结果不会包含_id字段
 
 #### 统计数量
 
