@@ -412,6 +412,10 @@
         "/platforms/h5/service/api/device/network-info.js",
         []
     ],
+    "offNetworkStatusChange": [
+        "/platforms/h5/service/api/device/network-info.js",
+        []
+    ],
     "onAccelerometerChange": [
         "/platforms/h5/service/api/device/accelerometer.js",
         []
@@ -474,6 +478,10 @@
         []
     ],
     "onKeyboardHeightChange": [
+        "/core/service/api/keyboard/keyboard.js",
+        []
+    ],
+    "offKeyboardHeightChange": [
         "/core/service/api/keyboard/keyboard.js",
         []
     ],
