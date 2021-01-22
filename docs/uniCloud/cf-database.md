@@ -135,10 +135,6 @@ exports.main = async (event, context) => {
 
 参考：[GEO地理位置](#GEO地理位置)
 
-### Null
-
-Null 相当于一个占位符，表示一个字段存在但是值为空。
-
 ## 新增文档@add
 
 方法1： collection.add(data)
