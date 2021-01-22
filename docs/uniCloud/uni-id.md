@@ -2770,7 +2770,7 @@ uni-id-users表内存储的password字段为使用hmac-sha1生成的hash值，�
 
 #### uniCloud admin升级uni-id@m2to3-uni-admin
 
-uniCloud admin可以平滑升级到uni-id 3.0.0。如果要缓存角色权限到token内，那还有几点可以优化。详细调整如下
+uniCloud admin可以平滑升级到uni-id 3.0.0。如果要缓存角色权限到token内（uni-id 3.0.0的默认行为），那还有几点可以优化。详细调整如下
 
 1. `uniCloud-aliyun\cloudfunctions\uni-admin\middleware\auth.js`
 
