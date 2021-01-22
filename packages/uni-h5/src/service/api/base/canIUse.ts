@@ -9,7 +9,7 @@ function cssSupports(css: string) {
 const SCHEMA_CSS = {
   'css.var': cssSupports('--a:0'),
   'css.env': cssSupports('top:env(a)'),
-  'css.constant': cssSupports('top:constant(a)')
+  'css.constant': cssSupports('top:constant(a)'),
 }
 
 export const canIUse = createApi<typeof uni.canIUse>(

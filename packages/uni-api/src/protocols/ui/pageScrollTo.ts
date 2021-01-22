@@ -3,10 +3,10 @@ import { ApiProtocol } from '../type'
 export const PageScrollToProtocol: ApiProtocol = {
   scrollTop: {
     type: Number,
-    required: true
+    required: true,
   },
   duration: {
     type: Number,
-    default: 300
-  }
+    default: 300,
+  },
 }

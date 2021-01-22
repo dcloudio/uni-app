@@ -1,7 +1,7 @@
 import {
   initCreateApp,
   initCreatePage,
-  initCreateComponent
+  initCreateComponent,
 } from '@dcloudio/uni-mp-core'
 
 import '@dcloudio/uni-mp-polyfill'

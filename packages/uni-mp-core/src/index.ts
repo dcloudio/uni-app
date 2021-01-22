@@ -20,7 +20,7 @@ export { initProps } from './runtime/componentProps'
 export {
   PAGE_HOOKS,
   initHooks,
-  initUnknownHooks
+  initUnknownHooks,
 } from './runtime/componentHooks'
 export { initMocks, initComponentInstance } from './runtime/componentInstance'
 export { handleEvent } from './runtime/componentEvents'
@@ -29,7 +29,7 @@ export {
   initVueIds,
   initRefs,
   initWxsCallMethods,
-  findVmByVueId
+  findVmByVueId,
 } from './runtime/util'
 
 // protocols
@@ -38,7 +38,7 @@ export {
   previewImage,
   getSystemInfo,
   getSystemInfoSync,
-  addSafeAreaInsets
+  addSafeAreaInsets,
 } from './api/protocols'
 // types
 export { MiniProgramAppOptions, MiniProgramAppInstance } from './runtime/app'
@@ -46,7 +46,7 @@ export {
   RelationOptions,
   MPComponentOptions,
   MPComponentInstance,
-  CreateLifetimesOptions
+  CreateLifetimesOptions,
 } from './runtime/component'
 export { MPProtocols } from './api/protocols'
 // mp-alipay

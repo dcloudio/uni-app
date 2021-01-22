@@ -1,3 +1,5 @@
+import path from 'path'
+
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
@@ -21,7 +23,7 @@ export default defineConfig({
     minify: false,
     assetsDir: '.',
     rollupOptions: {
-      input: 'src/index.ts',
+      input: path.resolve(__dirname, 'src/index.ts'),
       external: ['vue', '@vue/shared', '@dcloudio/uni-shared'],
       preserveEntrySignatures: 'strict',
       output: {

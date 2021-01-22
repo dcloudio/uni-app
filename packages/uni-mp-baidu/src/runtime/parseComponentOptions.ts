@@ -52,7 +52,7 @@ export function parse(componentOptions: MPComponentOptions) {
     delete lifetimes.ready
   }
   ;(componentOptions as any).messages = {
-    __l: methods.__l
+    __l: methods.__l,
   }
   delete methods.__l
 }

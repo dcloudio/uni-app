@@ -17,5 +17,5 @@ export default {
     initSystemComponents(app)
 
     initRouter(app)
-  }
+  },
 }

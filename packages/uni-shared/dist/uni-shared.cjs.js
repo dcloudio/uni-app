@@ -35,7 +35,7 @@ const encode = encodeURIComponent;
 function stringifyQuery(obj, encodeStr = encode) {
     const res = obj
         ? Object.keys(obj)
-            .map(key => {
+            .map((key) => {
             let val = obj[key];
             if (typeof val === undefined || val === null) {
                 val = '';
@@ -45,7 +45,7 @@ function stringifyQuery(obj, encodeStr = encode) {
             }
             return encodeStr(key) + '=' + encodeStr(val);
         })
-            .filter(x => x.length > 0)
+            .filter((x) => x.length > 0)
             .join('&')
         : null;
     return res ? `?${res}` : '';
@@ -92,7 +92,7 @@ const BUILT_IN_TAGS = [
     'uni-textarea',
     'uni-video',
     'uni-view',
-    'uni-web-view'
+    'uni-web-view',
 ];
 const TAGS = [
     'uni-app',
@@ -112,7 +112,7 @@ const TAGS = [
     'uni-modal',
     'uni-toast',
     'uni-resize-sensor',
-    'uni-shadow-root'
+    'uni-shadow-root',
 ];
 function isBuiltInComponent(tag) {
     return BUILT_IN_TAGS.indexOf('uni-' + tag) !== -1;

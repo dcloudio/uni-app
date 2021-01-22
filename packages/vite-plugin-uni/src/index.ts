@@ -1,87 +1,39 @@
-import { Plugin } from 'vite'
+import path from 'path'
 
-import { vueCompilerOptions } from '@dcloudio/uni-cli-shared'
+import { Plugin, ViteDevServer } from 'vite'
 
-import {
-  serverPluginEnv,
-  serverPluginMainJs,
-  serverPluginPagesJson,
-} from './server'
+import { createLoad } from './load'
+import { createConfig } from './config'
+import { createResolveId } from './resolveId'
+import { createConfigResolved } from './configResolved'
+import { createConfigureServer } from './configureServer'
 
-import {
-  buildPluginCopy,
-  buildPluginInject,
-  buildPluginMainJs,
-  buildPluginPagesJson,
-  buildPluginDynamicImport,
-} from './build'
-
-import { initEasycoms, dynamicImportCode, transform } from './utils'
-
-const VUES = ['vue', 'vue.js', './vue.js', 'dist/vue.runtime.esm-bundler.js']
-
-const plugins = [
-  buildPluginMainJs,
-  buildPluginPagesJson,
-  buildPluginInject,
-  buildPluginCopy,
-]
-
-if (dynamicImportCode) {
-  plugins.push(buildPluginDynamicImport)
+const { vueCompilerOptions } = require('@dcloudio/uni-cli-shared')
+export interface VitePluginUniOptions {
+  inputDir?: string
+}
+export interface VitePluginUniResolvedOptions extends VitePluginUniOptions {
+  root: string
+  inputDir: string
+  devServer?: ViteDevServer
 }
 
-const plugin: Plugin = {
-  configureServer: [serverPluginEnv, serverPluginMainJs, serverPluginPagesJson],
-  rollupInputOptions: {
-    plugins,
-  },
-  vueCompilerOptions,
-  configureBuild({ root }) {
-    initEasycoms(root)
-  },
-}
-// TODO 等待 vite 升级支持以下配置
-Object.assign(plugin, {
-  optimizeDeps: {
-    exclude: [
-      'vue',
-      'vue-router',
-      '@dcloudio/uni-h5',
-      '@dcloudio/uni-h5-vue',
-      '@dcloudio/uni-shared',
-    ],
-  },
-  chokidarWatchOptions: {
-    ignored: [
-      '**/node_modules/**',
-      '**/.git/**',
-      '**/uniCloud-aliyun/**',
-      '**/uniCloud-tcb/**',
-    ],
-  },
-})
-interface Options {}
-export default function uniPlugin(_rawOptions: Options = {}): Plugin {
+export const uniVueCompilerOptions = vueCompilerOptions
+
+export default function uniPlugin(
+  rawOptions: VitePluginUniOptions = {}
+): Plugin {
+  const options: VitePluginUniResolvedOptions = {
+    ...rawOptions,
+    root: process.cwd(),
+    inputDir: rawOptions.inputDir || path.resolve(process.cwd(), 'src'),
+  }
   return {
     name: 'vite:uni',
-    config(config) {
-      config.define = {
-        __UNI_WX_API__: true,
-        __UNI_WXS_API__: true,
-        __UNI_ROUTER_MODE__: JSON.stringify('hash'),
-        ...config.define,
-      }
-    },
-    async resolveId(id) {
-      if (VUES.includes(id)) {
-        return '@dcloudio/uni-h5-vue'
-      }
-      if (id.startsWith('@/')) {
-        return id.replace('@/', '/src/')
-      }
-    },
-    transform,
-    configureServer() {},
+    config: createConfig(options),
+    configResolved: createConfigResolved(options),
+    configureServer: createConfigureServer(options),
+    resolveId: createResolveId(options),
+    load: createLoad(options),
   }
 }

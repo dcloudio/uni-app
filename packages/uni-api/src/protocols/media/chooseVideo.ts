@@ -5,13 +5,13 @@ export const ChooseVideoOptions: ApiOptions = {
   formatArgs: {
     sourceType(sourceType, params) {
       params.sourceType = normalizeStrArray(sourceType, CHOOSE_SOURCE_TYPES)
-    }
-  }
+    },
+  },
 }
 
 export const ChooseVideoProtocol: ApiProtocol = {
   sourceType: {
     type: Array,
-    default: CHOOSE_SOURCE_TYPES
-  }
+    default: CHOOSE_SOURCE_TYPES,
+  },
 }

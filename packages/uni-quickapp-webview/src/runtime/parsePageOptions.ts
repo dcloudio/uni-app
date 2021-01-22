@@ -2,9 +2,9 @@ export {
   mocks,
   isPage,
   initRelation,
-  handleLink
+  handleLink,
 } from './parseComponentOptions'
 export {
   parsePage as parse,
-  initPageLifetimes as initLifetimes
+  initPageLifetimes as initLifetimes,
 } from '@dcloudio/uni-mp-toutiao'

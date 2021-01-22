@@ -13,7 +13,7 @@ export const mocks = [
   '__route__',
   '__webviewId__',
   '__nodeId__',
-  '__nodeid__' /* @Deprecated */
+  '__nodeid__' /* @Deprecated */,
 ]
 
 export function isPage(mpInstance: MPComponentInstance) {
@@ -40,14 +40,14 @@ export function initRelation(mpInstance: MPComponentInstance, detail: Object) {
   mpInstance.triggerEvent('__l', {
     vuePid: (detail as any).vuePid,
     nodeId,
-    webviewId
+    webviewId,
   })
 }
 
 export function handleLink(
   this: MPComponentInstance,
   {
-    detail: { vuePid, nodeId, webviewId }
+    detail: { vuePid, nodeId, webviewId },
   }: {
     detail: RelationOptions
   }

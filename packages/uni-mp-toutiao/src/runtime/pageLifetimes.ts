@@ -2,7 +2,7 @@ import { extend } from '@vue/shared'
 
 import {
   MPComponentInstance,
-  CreateLifetimesOptions
+  CreateLifetimesOptions,
 } from '@dcloudio/uni-mp-core'
 
 import { $destroyComponent } from '@dcloudio/uni-mp-core'
@@ -29,11 +29,11 @@ export function initLifetimes(lifetimesOptions: CreateLifetimesOptions) {
       // 清理
       const webviewId = this.__webviewId__
       webviewId &&
-        Object.keys(instances).forEach(key => {
+        Object.keys(instances).forEach((key) => {
           if (key.indexOf(webviewId + '_') === 0) {
             delete instances[key]
           }
         })
-    }
+    },
   })
 }

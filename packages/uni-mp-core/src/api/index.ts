@@ -4,7 +4,7 @@ import {
   upx2px,
   addInterceptor,
   removeInterceptor,
-  promisify
+  promisify,
 } from '@dcloudio/uni-api'
 
 import { initWrapper } from './wrapper'
@@ -28,7 +28,7 @@ export function initUni(api: Record<string, any>, protocols: MPProtocols) {
       // event-api
       // provider-api?
       return promisify(key, wrapper(key, __GLOBAL__[key]))
-    }
+    },
   }
   return new Proxy({}, UniProxyHandlers)
 }

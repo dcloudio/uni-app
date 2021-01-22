@@ -49,7 +49,7 @@ export default defineConfig({
     minify: false,
     assetsDir: '.',
     rollupOptions: {
-      input: 'src/index.ts',
+      input: path.resolve(__dirname, 'src/index.ts'),
       external: ['vue', 'vue-router', '@vue/shared', '@dcloudio/uni-shared'],
       preserveEntrySignatures: 'strict',
       plugins: [

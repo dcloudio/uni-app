@@ -7,7 +7,7 @@ import { initEasycom, matchEasycom, vueCompilerOptions } from '../src'
 const rootDir = path.resolve(__dirname, 'example')
 const dirs = [
   path.resolve(__dirname, 'example/components'),
-  path.resolve(__dirname, 'example/uni_modules/plugin/components')
+  path.resolve(__dirname, 'example/uni_modules/plugin/components'),
 ]
 
 const template = `<template><test/><test1/><test1/><test2/><some-other-comp/><checkbox-group/><checkbox-group/></template>`
@@ -31,16 +31,16 @@ describe('easycom', () => {
     expect(initEasycom({ dirs, rootDir })).toEqual([
       {
         pattern: new RegExp('^test$'),
-        replacement: '@/components/test/test.vue'
+        replacement: '@/components/test/test.vue',
       },
       {
         pattern: new RegExp('^test1$'),
-        replacement: '@/components/test1/test1.vue'
+        replacement: '@/components/test1/test1.vue',
       },
       {
         pattern: new RegExp('^test2$'),
-        replacement: '@/uni_modules/plugin/components/test2/test2.vue'
-      }
+        replacement: '@/uni_modules/plugin/components/test2/test2.vue',
+      },
     ])
     expect(matchEasycom('test')).toBe('@/components/test/test.vue')
     expect(matchEasycom('test1')).toBe('@/components/test1/test1.vue')
@@ -54,8 +54,8 @@ describe('easycom', () => {
     ).toEqual([
       {
         pattern: new RegExp('^uni-(.*)'),
-        replacement: '@/components/uni-$1.vue'
-      }
+        replacement: '@/components/uni-$1.vue',
+      },
     ])
     expect(matchEasycom('test')).toBe(false)
     expect(matchEasycom('uni-test1')).toBe('@/components/uni-test1.vue')
@@ -65,21 +65,21 @@ describe('easycom', () => {
       initEasycom({
         dirs,
         rootDir,
-        custom: { '^test$': '@/components/uni-test.vue' }
+        custom: { '^test$': '@/components/uni-test.vue' },
       })
     ).toEqual([
       {
         pattern: new RegExp('^test$'),
-        replacement: '@/components/uni-test.vue'
+        replacement: '@/components/uni-test.vue',
       },
       {
         pattern: new RegExp('^test1$'),
-        replacement: '@/components/test1/test1.vue'
+        replacement: '@/components/test1/test1.vue',
       },
       {
         pattern: new RegExp('^test2$'),
-        replacement: '@/uni_modules/plugin/components/test2/test2.vue'
-      }
+        replacement: '@/uni_modules/plugin/components/test2/test2.vue',
+      },
     ])
     expect(matchEasycom('test')).toBe('@/components/uni-test.vue')
   })
@@ -87,17 +87,17 @@ describe('easycom', () => {
     initEasycom({
       dirs,
       rootDir,
-      custom: { '^test$': '@/components/uni-test.vue' }
+      custom: { '^test$': '@/components/uni-test.vue' },
     })
     const { code } = compileTemplate(
       Object.assign(sfcParseRes.descriptor, {
         id,
         compilerOptions: Object.assign(
           {
-            bindingMetadata: sfcScriptBlock.bindings
+            bindingMetadata: sfcScriptBlock.bindings,
           },
           vueCompilerOptions
-        )
+        ),
       })
     )
     expect(code).toMatch(`  // const _component_test = _resolveComponent("test")
@@ -117,7 +117,7 @@ import _style_v_uni_checkbox_group from '@dcloudio/uni-h5/style/checkbox-group.c
     initEasycom({
       dirs,
       rootDir,
-      custom: { '^test$': '@/components/uni-test.vue' }
+      custom: { '^test$': '@/components/uni-test.vue' },
     })
     const { code } = compileTemplate(
       Object.assign(sfcParseResWithSetup.descriptor, {
@@ -125,7 +125,7 @@ import _style_v_uni_checkbox_group from '@dcloudio/uni-h5/style/checkbox-group.c
         compilerOptions: Object.assign(
           { bindingMetadata: sfcScriptBlockWithSetup.bindings },
           vueCompilerOptions
-        )
+        ),
       })
     )
     expect(code)

@@ -46,7 +46,7 @@ async function build(target) {
   }
 
   const bundler = pkg.buildOptions && pkg.buildOptions.bundler
-  const types = buildTypes && pkg.types
+  const types = target === 'uni-shared' || (buildTypes && pkg.types)
   // if building a specific format, do not remove dist.
   if (!formats && bundler !== 'vite') {
     await fs.remove(`${pkgDir}/dist`)

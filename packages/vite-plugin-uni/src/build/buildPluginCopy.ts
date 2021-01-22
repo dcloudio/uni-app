@@ -17,5 +17,5 @@ export const buildPluginCopy: Plugin = {
     //     }
     //   }
     // }, 100)
-  }
+  },
 }

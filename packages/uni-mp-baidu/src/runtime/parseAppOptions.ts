@@ -1,6 +1,6 @@
 import {
   MiniProgramAppOptions,
-  MiniProgramAppInstance
+  MiniProgramAppInstance,
 } from '@dcloudio/uni-mp-core'
 
 export function parse(appOptions: MiniProgramAppOptions) {

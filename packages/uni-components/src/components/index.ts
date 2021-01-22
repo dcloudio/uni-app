@@ -56,5 +56,5 @@ export {
   Switch,
   //   Text,
   Textarea,
-  View
+  View,
 }

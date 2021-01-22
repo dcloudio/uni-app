@@ -3,7 +3,7 @@ import { RouteRecordRaw } from 'vue-router'
 import {
   createRouter,
   createWebHashHistory,
-  createWebHistory
+  createWebHistory,
 } from 'vue-router'
 
 export function initRouter(app: App) {
@@ -21,7 +21,7 @@ export function initRouter(app: App) {
           return savedPosition
         }
         // TODO tabBar?
-      }
+      },
     })
   )
 }

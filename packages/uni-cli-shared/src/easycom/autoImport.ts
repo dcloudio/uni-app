@@ -1,7 +1,7 @@
 import {
   ExpressionNode,
   SimpleExpressionNode,
-  TransformContext
+  TransformContext,
 } from '@vue/compiler-core'
 
 interface ImportItem {
@@ -17,7 +17,7 @@ export function addAutoImport(
   const importContent = (importItem.exp as SimpleExpressionNode).content
   const importsArray = Array.from(context.imports)
   const existing = importsArray.find(
-    i =>
+    (i) =>
       i.path === importPath &&
       (i.exp as SimpleExpressionNode).content === importContent
   )

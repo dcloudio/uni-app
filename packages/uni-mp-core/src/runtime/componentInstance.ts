@@ -4,7 +4,7 @@ import {
   isArray,
   toNumber,
   isObject,
-  isPlainObject
+  isPlainObject,
 } from '@vue/shared'
 
 import { ComponentPublicInstance, ComponentInternalInstance } from 'vue'
@@ -74,7 +74,7 @@ const MP_METHODS = [
   'createSelectorQuery',
   'createIntersectionObserver',
   'selectAllComponents',
-  'selectComponent'
+  'selectComponent',
 ]
 
 function createEmitFn(oldEmit: Function, ctx: Record<string, any>) {
@@ -130,12 +130,12 @@ export function initBaseInstance(
     Object.defineProperty(instance, 'slots', {
       get() {
         return this.$scope && this.$scope.props.$slots
-      }
+      },
     })
   } else {
     instance.slots = {}
     if (isArray(options.slots) && options.slots.length) {
-      options.slots.forEach(name => {
+      options.slots.forEach((name) => {
         instance.slots[name] = true as any
       })
     }
@@ -152,8 +152,8 @@ export function initComponentInstance(
   initBaseInstance(instance, options)
 
   const ctx = (instance as any).ctx
-  MP_METHODS.forEach(method => {
-    ctx[method] = function(...args: any[]) {
+  MP_METHODS.forEach((method) => {
+    ctx[method] = function (...args: any[]) {
       const mpInstance = ctx.$scope as MPComponentInstance
       if (mpInstance && mpInstance[method]) {
         return (mpInstance[method] as Function).apply(mpInstance, args)
@@ -179,7 +179,7 @@ export function initMocks(
   mocks: string[]
 ) {
   const ctx = (instance as any).ctx
-  mocks.forEach(mock => {
+  mocks.forEach((mock) => {
     if (hasOwn(mpInstance, mock)) {
       ctx[mock] = mpInstance[mock]
     }

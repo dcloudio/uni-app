@@ -6,7 +6,7 @@ import {
   handleEvent,
   $destroyComponent,
   initVueIds,
-  initWxsCallMethods
+  initWxsCallMethods,
 } from '@dcloudio/uni-mp-core'
 import {
   initBehavior,
@@ -20,7 +20,7 @@ import {
   initChildVues,
   createVueComponent,
   RelationOptions,
-  createObserver
+  createObserver,
 } from './util'
 
 declare function Component<P, D, M extends tinyapp.IComponentMethods>(
@@ -29,14 +29,14 @@ declare function Component<P, D, M extends tinyapp.IComponentMethods>(
 
 function initComponentProps(rawProps: Record<string, any>) {
   const propertiesOptions = {
-    properties: {}
+    properties: {},
   }
   initProps(propertiesOptions, rawProps, false)
   const properties = propertiesOptions.properties as Record<string, any>
   const props: Record<string, any> = {
-    onVueInit: function() {}
+    onVueInit: function () {},
   }
-  Object.keys(properties).forEach(key => {
+  Object.keys(properties).forEach((key) => {
     if (key !== 'vueSlots') {
       props[key] = properties[key].value
     }
@@ -57,7 +57,7 @@ function initVm(
   const relationOptions: RelationOptions = {
     vuePid: mpInstance._$vuePid,
     mpInstance,
-    createComponent
+    createComponent,
   }
   if (isComponent2) {
     // 处理父子关系
@@ -106,8 +106,8 @@ export function createComponent(vueOptions: ComponentOptions) {
       __r: handleRef,
       __e: handleEvent,
       __l: handleLink,
-      triggerEvent
-    }
+      triggerEvent,
+    },
   }
   if (__VUE_OPTIONS_API__) {
     mpComponentOptions.data = initData(vueOptions)

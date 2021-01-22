@@ -5,7 +5,7 @@ import { stringifyQuery } from '@dcloudio/uni-shared'
 import {
   ParseComponentOptions,
   parseComponent,
-  CustomComponentInstanceProperty
+  CustomComponentInstanceProperty,
 } from './component'
 import { PAGE_HOOKS, initHooks, initUnknownHooks } from './componentHooks'
 
@@ -19,22 +19,22 @@ function parsePage(
     isPage,
     initRelation,
     handleLink,
-    initLifetimes
+    initLifetimes,
   } = parseOptions
   const miniProgramPageOptions = parseComponent(vueOptions, {
     mocks,
     isPage,
     initRelation,
     handleLink,
-    initLifetimes
+    initLifetimes,
   })
 
   const methods = miniProgramPageOptions.methods as WechatMiniprogram.Component.MethodOption
 
-  methods.onLoad = function(this: CustomComponentInstanceProperty, query) {
+  methods.onLoad = function (this: CustomComponentInstanceProperty, query) {
     ;(this as any).options = query
     ;(this as any).$page = {
-      fullPath: '/' + (this as any).route + stringifyQuery(query)
+      fullPath: '/' + (this as any).route + stringifyQuery(query),
     }
     return this.$vm && this.$vm.$callHook('onLoad', query)
   }

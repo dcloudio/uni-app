@@ -3,23 +3,23 @@ import { initHooks, initUnknownHooks } from '../src/runtime/componentHooks'
 
 const vueBasicOptions = defineComponent({
   onLoad() {},
-  beforeCreate() {}
+  beforeCreate() {},
 })
 
 const vueExtendsOptions = defineComponent({
   extends: vueBasicOptions,
-  onShow() {}
+  onShow() {},
 })
 
 const vueMixinsOptions = defineComponent({
   mixins: [vueExtendsOptions],
-  onHide() {}
+  onHide() {},
 })
 
 const vueExtendsANdMixinsOptions = defineComponent({
   extends: vueBasicOptions,
   mixins: [vueMixinsOptions],
-  onReady() {}
+  onReady() {},
 })
 
 describe('hooks', () => {

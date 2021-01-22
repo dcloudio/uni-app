@@ -23,8 +23,8 @@ const Upx2pxProtocol = [
     {
         name: 'upx',
         type: [Number, String],
-        required: true
-    }
+        required: true,
+    },
 ];
 
 const EPS = 1e-4;
@@ -92,7 +92,7 @@ function queue(hooks, data) {
             if (res === false) {
                 return {
                     then() { },
-                    catch() { }
+                    catch() { },
                 };
             }
         }
@@ -101,11 +101,11 @@ function queue(hooks, data) {
         then(callback) {
             return callback(data);
         },
-        catch() { }
+        catch() { },
     });
 }
 function wrapperOptions(interceptors, options = {}) {
-    [HOOKS.SUCCESS, HOOKS.FAIL, HOOKS.COMPLETE].forEach(name => {
+    [HOOKS.SUCCESS, HOOKS.FAIL, HOOKS.COMPLETE].forEach((name) => {
         const hooks = interceptors[name];
         if (!isArray(hooks)) {
             return;
@@ -128,21 +128,21 @@ function wrapperReturnValue(method, returnValue) {
     if (interceptor && isArray(interceptor.returnValue)) {
         returnValueHooks.push(...interceptor.returnValue);
     }
-    returnValueHooks.forEach(hook => {
+    returnValueHooks.forEach((hook) => {
         returnValue = hook(returnValue) || returnValue;
     });
     return returnValue;
 }
 function getApiInterceptorHooks(method) {
     const interceptor = Object.create(null);
-    Object.keys(globalInterceptors).forEach(hook => {
+    Object.keys(globalInterceptors).forEach((hook) => {
         if (hook !== 'returnValue') {
             interceptor[hook] = globalInterceptors[hook].slice();
         }
     });
     const scopedInterceptor = scopedInterceptors[method];
     if (scopedInterceptor) {
-        Object.keys(scopedInterceptor).forEach(hook => {
+        Object.keys(scopedInterceptor).forEach((hook) => {
             if (hook !== 'returnValue') {
                 interceptor[hook] = (interceptor[hook] || []).concat(scopedInterceptor[hook]);
             }
@@ -155,7 +155,7 @@ function invokeApi(method, api, options, ...params) {
     if (interceptor && Object.keys(interceptor).length) {
         if (isArray(interceptor.invoke)) {
             const res = queue(interceptor.invoke, options);
-            return res.then(options => {
+            return res.then((options) => {
                 return api(wrapperOptions(interceptor, options), ...params);
             });
         }
@@ -170,13 +170,13 @@ const AddInterceptorProtocol = [
     {
         name: 'method',
         type: [String, Object],
-        required: true
-    }
+        required: true,
+    },
 ];
 const RemoveInterceptorProtocol = AddInterceptorProtocol;
 
 function mergeInterceptorHook(interceptors, interceptor) {
-    Object.keys(interceptor).forEach(hook => {
+    Object.keys(interceptor).forEach((hook) => {
         if (isFunction(interceptor[hook])) {
             interceptors[hook] = mergeHook(interceptors[hook], interceptor[hook]);
         }
@@ -186,7 +186,7 @@ function removeInterceptorHook(interceptors, interceptor) {
     if (!interceptors || !interceptor) {
         return;
     }
-    Object.keys(interceptor).forEach(hook => {
+    Object.keys(interceptor).forEach((hook) => {
         if (isFunction(interceptor[hook])) {
             removeHook(interceptors[hook], interceptor[hook]);
         }
@@ -263,10 +263,10 @@ function handlePromise(promise) {
         return promise;
     }
     return promise
-        .then(data => {
+        .then((data) => {
         return [null, data];
     })
-        .catch(err => [err]);
+        .catch((err) => [err]);
 }
 function shouldPromise(name) {
     if (isContextApi(name) || isSyncApi(name) || isCallbackApi(name)) {
@@ -278,7 +278,7 @@ function shouldPromise(name) {
 if (!Promise.prototype.finally) {
     Promise.prototype.finally = function (onfinally) {
         const promise = this.constructor;
-        return this.then(value => promise.resolve(onfinally && onfinally()).then(() => value), reason => promise.resolve(onfinally && onfinally()).then(() => {
+        return this.then((value) => promise.resolve(onfinally && onfinally()).then(() => value), (reason) => promise.resolve(onfinally && onfinally()).then(() => {
             throw reason;
         }));
     };
@@ -299,7 +299,7 @@ function promisify(name, api) {
         return wrapperReturnValue(name, handlePromise(new Promise((resolve, reject) => {
             invokeApi(name, api, Object.assign({}, options, {
                 success: resolve,
-                fail: reject
+                fail: reject,
             }), ...params);
         })));
     };
@@ -413,25 +413,25 @@ function initUni(api, protocols) {
             // event-api
             // provider-api?
             return promisify(key, wrapper(key, my[key]));
-        }
+        },
     };
     return new Proxy({}, UniProxyHandlers);
 }
 
 function initGetProvider(providers) {
-    return function getProvider({ service, success, fail, complete }) {
+    return function getProvider({ service, success, fail, complete, }) {
         let res;
         if (providers[service]) {
             res = {
                 errMsg: 'getProvider:ok',
                 service,
-                provider: providers[service]
+                provider: providers[service],
             };
             isFunction(success) && success(res);
         }
         else {
             res = {
-                errMsg: 'getProvider:fail:服务[' + service + ']不存在'
+                errMsg: 'getProvider:fail:服务[' + service + ']不存在',
             };
             isFunction(fail) && fail(res);
         }
@@ -446,7 +446,7 @@ function addSafeAreaInsets(fromRes, toRes) {
             top: safeArea.top,
             left: safeArea.left,
             right: fromRes.windowWidth - safeArea.right,
-            bottom: fromRes.windowHeight - safeArea.bottom
+            bottom: fromRes.windowHeight - safeArea.bottom,
         };
     }
 }
@@ -456,24 +456,24 @@ const getProvider = initGetProvider({
     oauth: ['alipay'],
     share: ['alipay'],
     payment: ['alipay'],
-    push: ['alipay']
+    push: ['alipay'],
 });
 function setStorageSync(key, data) {
     return my.setStorageSync({
         key,
-        data
+        data,
     });
 }
 function getStorageSync(key) {
     const result = my.getStorageSync({
-        key
+        key,
     });
     // 支付宝平台会返回一个 success 值，但是目前测试的结果这个始终是 true。当没有存储数据的时候，其它平台会返回空字符串。
     return result.data !== null ? result.data : '';
 }
 function removeStorageSync(key) {
     return my.removeStorageSync({
-        key
+        key,
     });
 }
 function startGyroscope(args) {
@@ -482,11 +482,11 @@ function startGyroscope(args) {
     }
     args.success &&
         args.success({
-            errMsg: 'startGyroscope:ok'
+            errMsg: 'startGyroscope:ok',
         });
     args.complete &&
         args.complete({
-            errMsg: 'startGyroscope:ok'
+            errMsg: 'startGyroscope:ok',
         });
 }
 function createExecCallback(execCallback) {
@@ -609,16 +609,16 @@ const request = {
             fromArgs.header = {};
         }
         const headers = {
-            'content-type': 'application/json'
+            'content-type': 'application/json',
         };
-        Object.keys(fromArgs.header).forEach(key => {
+        Object.keys(fromArgs.header).forEach((key) => {
             headers[key.toLocaleLowerCase()] = fromArgs.header[key];
         });
         return {
             header() {
                 return {
                     name: 'headers',
-                    value: headers
+                    value: headers,
                 };
             },
             data(data) {
@@ -629,32 +629,32 @@ const request = {
                     isPlainObject(data)) {
                     return {
                         name: 'data',
-                        value: JSON.stringify(data)
+                        value: JSON.stringify(data),
                     };
                 }
                 return {
                     name: 'data',
-                    value: data
+                    value: data,
                 };
             },
             method: 'method',
-            responseType: false
+            responseType: false,
         };
     },
     returnValue: {
         status: 'statusCode',
-        headers: 'header'
-    }
+        headers: 'header',
+    },
 };
 const setNavigationBarColor = {
     name: 'setNavigationBar',
     args: {
         frontColor: false,
-        animation: false
-    }
+        animation: false,
+    },
 };
 const setNavigationBarTitle = {
-    name: 'setNavigationBar'
+    name: 'setNavigationBar',
 };
 function showModal({ showCancel = true } = {}) {
     if (showCancel) {
@@ -664,24 +664,24 @@ function showModal({ showCancel = true } = {}) {
                 cancelColor: false,
                 confirmColor: false,
                 cancelText: 'cancelButtonText',
-                confirmText: 'confirmButtonText'
+                confirmText: 'confirmButtonText',
             },
             returnValue(fromRes, toRes) {
                 toRes.confirm = fromRes.confirm;
                 toRes.cancel = !fromRes.confirm;
-            }
+            },
         };
     }
     return {
         name: 'alert',
         args: {
             confirmColor: false,
-            confirmText: 'buttonText'
+            confirmText: 'buttonText',
         },
         returnValue(fromRes, toRes) {
             toRes.confirm = true;
             toRes.cancel = false;
-        }
+        },
     };
 }
 function showToast({ icon = 'success' } = {}) {
@@ -690,50 +690,49 @@ function showToast({ icon = 'success' } = {}) {
         icon: 'type',
         duration: false,
         image: false,
-        mask: false
+        mask: false,
     };
     if (icon === 'loading') {
         return {
             name: 'showLoading',
-            args
+            args,
         };
     }
     return {
         name: 'showToast',
-        args
+        args,
     };
 }
 const showActionSheet = {
     name: 'showActionSheet',
     args: {
         itemList: 'items',
-        itemColor: false
+        itemColor: false,
     },
     returnValue: {
-        index: 'tapIndex'
-    }
+        index: 'tapIndex',
+    },
 };
 const showLoading = {
     args: {
         title: 'content',
-        mask: false
-    }
+        mask: false,
+    },
 };
 const uploadFile = {
     args: {
-        name: 'fileName'
-    }
-    // 从测试结果看，是有返回对象的，文档上没有说明。
+        name: 'fileName',
+    },
 };
 const downloadFile = {
     returnValue: {
-        apFilePath: 'tempFilePath'
-    }
+        apFilePath: 'tempFilePath',
+    },
 };
 const getFileInfo = {
     args: {
-        filePath: 'apFilePath'
-    }
+        filePath: 'apFilePath',
+    },
 };
 const compressImage = {
     args(fromArgs, toArgs) {
@@ -750,25 +749,24 @@ const compressImage = {
         if (apFilePaths && apFilePaths.length) {
             toRes.tempFilePath = apFilePaths[0];
         }
-    }
+    },
 };
 const chooseVideo = {
     // 支付宝小程序文档中未找到（仅在getSetting处提及），但实际可用
     returnValue: {
-        apFilePath: 'tempFilePath'
-    }
+        apFilePath: 'tempFilePath',
+    },
 };
 const connectSocket = {
     args: {
         method: false,
-        protocols: false
-    }
-    // TODO 有没有返回值还需要测试下
+        protocols: false,
+    },
 };
 const chooseImage = {
     returnValue: {
-        apFilePaths: 'tempFilePaths'
-    }
+        apFilePaths: 'tempFilePaths',
+    },
 };
 const previewImage = {
     args(fromArgs, toArgs) {
@@ -785,93 +783,93 @@ const previewImage = {
         }
         return {
             indicator: false,
-            loop: false
+            loop: false,
         };
-    }
+    },
 };
 const saveFile = {
     args: {
-        tempFilePath: 'apFilePath'
+        tempFilePath: 'apFilePath',
     },
     returnValue: {
-        apFilePath: 'savedFilePath'
-    }
+        apFilePath: 'savedFilePath',
+    },
 };
 const getSavedFileInfo = {
     args: {
-        filePath: 'apFilePath'
-    }
+        filePath: 'apFilePath',
+    },
 };
 const getSavedFileList = {
     returnValue(fromRes, toRes) {
-        toRes.fileList = fromRes.fileList.map(file => {
+        toRes.fileList = fromRes.fileList.map((file) => {
             return {
                 filePath: file.apFilePath,
                 createTime: file.createTime,
-                size: file.size
+                size: file.size,
             };
         });
-    }
+    },
 };
 const removeSavedFile = {
     args: {
-        filePath: 'apFilePath'
-    }
+        filePath: 'apFilePath',
+    },
 };
 const getLocation = {
     args: {
         type: false,
-        altitude: false
-    }
+        altitude: false,
+    },
 };
 const openLocation = {
     args: {
     // TODO address 参数在阿里上是必传的
-    }
+    },
 };
 const getNetworkType = {
-    returnValue: handleNetworkInfo
+    returnValue: handleNetworkInfo,
 };
 const onNetworkStatusChange = {
-    returnValue: handleNetworkInfo
+    returnValue: handleNetworkInfo,
 };
 const stopAccelerometer = {
-    name: 'offAccelerometerChange'
+    name: 'offAccelerometerChange',
 };
 const stopCompass = {
-    name: 'offCompassChange'
+    name: 'offCompassChange',
 };
 const scanCode = {
     name: 'scan',
     args: {
-        onlyFromCamera: 'hideAlbum'
+        onlyFromCamera: 'hideAlbum',
     },
     returnValue: {
-        code: 'result'
-    }
+        code: 'result',
+    },
 };
 const setClipboardData = {
     name: 'setClipboard',
     args: {
-        data: 'text'
-    }
+        data: 'text',
+    },
 };
 const getClipboardData = {
     name: 'getClipboard',
     returnValue: {
-        text: 'data'
-    }
+        text: 'data',
+    },
 };
 const pageScrollTo = {
     args: {
-        duration: false
-    }
+        duration: false,
+    },
 };
 const login = {
     name: 'getAuthCode',
     returnValue: {
-        authCode: 'code'
-    }
+        authCode: 'code',
+    },
 };
 const getUserInfo = {
     name: my.canIUse('getOpenUserInfo') ? 'getOpenUserInfo' : 'getAuthUserInfo',
@@ -892,86 +890,86 @@ const getUserInfo = {
             toRes.userInfo = {
                 openId: '',
                 nickName: fromRes.nickName,
-                avatarUrl: fromRes.avatar
+                avatarUrl: fromRes.avatar,
             };
         }
-    }
+    },
 };
 const requestPayment = {
     name: 'tradePay',
     args: {
-        orderInfo: 'tradeNO'
-    }
+        orderInfo: 'tradeNO',
+    },
 };
 const getBLEDeviceServices = {
     returnValue(fromRes, toRes) {
-        toRes.services = fromRes.services.map(item => {
+        toRes.services = fromRes.services.map((item) => {
             return {
                 uuid: item.serviceId,
-                isPrimary: item.isPrimary
+                isPrimary: item.isPrimary,
             };
         });
-    }
+    },
 };
 const createBLEConnection = {
     name: 'connectBLEDevice',
     args: {
-        timeout: false
-    }
+        timeout: false,
+    },
 };
 const closeBLEConnection = {
-    name: 'disconnectBLEDevice'
+    name: 'disconnectBLEDevice',
 };
 const onBLEConnectionStateChange = {
-    name: 'onBLEConnectionStateChanged'
+    name: 'onBLEConnectionStateChanged',
 };
 const makePhoneCall = {
     args: {
-        phoneNumber: 'number'
-    }
+        phoneNumber: 'number',
+    },
 };
 const stopGyroscope = {
-    name: 'offGyroscopeChange'
+    name: 'offGyroscopeChange',
 };
 const getSystemInfo = {
-    returnValue: handleSystemInfo
+    returnValue: handleSystemInfo,
 };
 const getSystemInfoSync = {
-    returnValue: handleSystemInfo
+    returnValue: handleSystemInfo,
 };
 // 文档没提到，但是实测可用。
 const canvasToTempFilePath = {
     returnValue(fromRes, toRes) {
         // 真机的情况下会有 tempFilePath 这个值，因此需要主动修改。
         toRes.tempFilePath = fromRes.apFilePath;
-    }
+    },
 };
 const setScreenBrightness = {
     args: {
-        value: 'brightness'
-    }
+        value: 'brightness',
+    },
 };
 const getScreenBrightness = {
     returnValue: {
-        brightness: 'value'
-    }
+        brightness: 'value',
+    },
 };
 const showShareMenu = {
-    name: 'showSharePanel'
+    name: 'showSharePanel',
 };
 const hideHomeButton = {
-    name: 'hideBackHome'
+    name: 'hideBackHome',
 };
 const saveImageToPhotosAlbum = {
     name: 'saveImage',
     args: {
-        filePath: 'url'
-    }
+        filePath: 'url',
+    },
 };
 const saveVideoToPhotosAlbum = {
     args: {
-        filePath: 'src'
-    }
+        filePath: 'src',
+    },
 };
 const chooseAddress = {
     name: 'getAddress',
@@ -984,7 +982,7 @@ const chooseAddress = {
         toRes.detailInfo = info.address;
         toRes.telNumber = info.mobilePhone;
         toRes.errMsg = toRes.errMsg + ' ' + fromRes.resultStatus;
-    }
+    },
 };
 
 var protocols = /*#__PURE__*/Object.freeze({

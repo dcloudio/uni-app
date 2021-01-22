@@ -9,13 +9,13 @@ import {
   Identifier,
   MemberExpression,
   MethodDefinition,
-  ExportSpecifier
+  ExportSpecifier,
 } from 'estree'
 
 import {
   attachScopes,
   createFilter,
-  makeLegalIdentifier
+  makeLegalIdentifier,
 } from '@rollup/pluginutils'
 
 import { walk } from 'estree-walker'
@@ -107,7 +107,7 @@ function inject(options: InjectOptions) {
 
   const modulesMap = new Map<string, string | [string, string]>()
   const namespaceModulesMap = new Map<string, string | [string, string]>()
-  Object.keys(modules).forEach(name => {
+  Object.keys(modules).forEach((name) => {
     if (name.endsWith('.')) {
       namespaceModulesMap.set(name, modules[name])
     }
@@ -122,9 +122,7 @@ function inject(options: InjectOptions) {
   }
 
   const firstpass = new RegExp(
-    `(?:${Array.from(modulesMap.keys())
-      .map(escape)
-      .join('|')})`,
+    `(?:${Array.from(modulesMap.keys()).map(escape).join('|')})`,
     'g'
   )
   const sourceMap = options.sourceMap !== false
@@ -142,7 +140,7 @@ function inject(options: InjectOptions) {
       } catch (err) {
         this.warn({
           code: 'PARSE_ERROR',
-          message: `plugin-inject: failed to parse ${id}. Consider restricting the plugin to particular files via options.include`
+          message: `plugin-inject: failed to parse ${id}. Consider restricting the plugin to particular files via options.include`,
         })
       }
       if (!ast) {
@@ -150,9 +148,9 @@ function inject(options: InjectOptions) {
       }
 
       const imports = new Set()
-      ast.body.forEach(node => {
+      ast.body.forEach((node) => {
         if (node.type === 'ImportDeclaration') {
-          node.specifiers.forEach(specifier => {
+          node.specifiers.forEach((specifier) => {
             imports.add(specifier.local.name)
           })
         }
@@ -205,7 +203,7 @@ function inject(options: InjectOptions) {
               (node as AcornNode).end,
               importLocalName,
               {
-                storeName: true
+                storeName: true,
               }
             )
           }
@@ -246,14 +244,14 @@ function inject(options: InjectOptions) {
           if ((node as any).scope) {
             scope = scope.parent
           }
-        }
+        },
       })
 
       if (newImports.size === 0) {
         return {
           code,
           ast,
-          map: sourceMap ? magicString.generateMap({ hires: true }) : null
+          map: sourceMap ? magicString.generateMap({ hires: true }) : null,
         }
       }
       const importBlock = Array.from(newImports.values()).join('\n\n')
@@ -262,9 +260,9 @@ function inject(options: InjectOptions) {
 
       return {
         code: magicString.toString(),
-        map: sourceMap ? magicString.generateMap({ hires: true }) : null
+        map: sourceMap ? magicString.generateMap({ hires: true }) : null,
       }
-    }
+    },
   } as Plugin
 }
 
@@ -274,5 +272,5 @@ export const buildPluginInject: Plugin = inject({
   'uni.': '@dcloudio/uni-h5',
   getApp: ['@dcloudio/uni-h5', 'getApp'],
   getCurrentPages: ['@dcloudio/uni-h5', 'getCurrentPages'],
-  UniServiceJSBridge: ['@dcloudio/uni-h5', 'UniServiceJSBridge']
+  UniServiceJSBridge: ['@dcloudio/uni-h5', 'UniServiceJSBridge'],
 })

@@ -74,7 +74,7 @@ export const getSystemInfoSync = createApi<typeof uni.getSystemInfoSync>(
         /\/[\d\.,]+$/,
         /^\s?[\d\.,]+$/,
         /\bBrowser\b/i,
-        /\bMobile\b/i
+        /\bMobile\b/i,
       ]
       for (let i = 0; i < infos.length; i++) {
         const info = infos[i]
@@ -107,7 +107,7 @@ export const getSystemInfoSync = createApi<typeof uni.getSystemInfoSync>(
       top: safeAreaInsets.top,
       bottom: windowHeight - safeAreaInsets.bottom,
       width: windowWidth - safeAreaInsets.left - safeAreaInsets.right,
-      height: windowHeight - safeAreaInsets.top - safeAreaInsets.bottom
+      height: windowHeight - safeAreaInsets.top - safeAreaInsets.bottom,
     }
 
     const { top: windowTop, bottom: windowBottom } = getWindowOffset()
@@ -133,8 +133,8 @@ export const getSystemInfoSync = createApi<typeof uni.getSystemInfoSync>(
         top: safeAreaInsets.top,
         right: safeAreaInsets.right,
         bottom: safeAreaInsets.bottom,
-        left: safeAreaInsets.left
-      }
+        left: safeAreaInsets.left,
+      },
     } as UniApp.GetSystemInfoResult
   }
 )

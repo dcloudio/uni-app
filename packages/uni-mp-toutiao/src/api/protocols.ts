@@ -1,72 +1,72 @@
 export { redirectTo, previewImage } from '@dcloudio/uni-mp-core'
 export const chooseImage = {
   args: {
-    sizeType: false
-  }
+    sizeType: false,
+  },
 }
 export const connectSocket = {
   args: {
-    method: false
-  }
+    method: false,
+  },
 }
 export const chooseVideo = {
   args: {
-    camera: false
-  }
+    camera: false,
+  },
 }
 export const scanCode = {
   args: {
     onlyFromCamera: false,
-    scanType: false
-  }
+    scanType: false,
+  },
 }
 export const startAccelerometer = {
   args: {
-    interval: false
-  }
+    interval: false,
+  },
 }
 export const showToast = {
   args: {
     image: false,
-    mask: false
-  }
+    mask: false,
+  },
 }
 export const showLoading = {
   args: {
-    mask: false
-  }
+    mask: false,
+  },
 }
 export const showModal = {
   args: {
     cancelColor: false,
-    confirmColor: false
-  }
+    confirmColor: false,
+  },
 }
 export const showActionSheet = {
   args: {
-    itemColor: false
-  }
+    itemColor: false,
+  },
 }
 export const login = {
   args: {
     scopes: false,
-    timeout: false
-  }
+    timeout: false,
+  },
 }
 export const getUserInfo = {
   args: {
     lang: false,
-    timeout: false
-  }
+    timeout: false,
+  },
 }
 export const requestPayment = {
   name: tt.pay ? 'pay' : 'requestPayment',
   args: {
-    orderInfo: tt.pay ? 'orderInfo' : 'data'
-  }
+    orderInfo: tt.pay ? 'orderInfo' : 'data',
+  },
 }
 export const getFileInfo = {
   args: {
-    digestAlgorithm: false
-  }
+    digestAlgorithm: false,
+  },
 }

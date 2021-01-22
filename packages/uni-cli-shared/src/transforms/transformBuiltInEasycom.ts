@@ -1,7 +1,7 @@
 import { NodeTransform } from '@vue/compiler-core'
 import { isComponentNode } from '../easycom/index'
 
-export const transformBuiltInEasycom: NodeTransform = node => {
+export const transformBuiltInEasycom: NodeTransform = (node) => {
   if (!isComponentNode(node)) {
     return
   }

@@ -20,7 +20,7 @@ export const PAGE_HOOKS = [
   'onPullDownRefresh',
 
   // 'onShareTimeline', // 右上角菜单，开发者手动注册
-  'onAddToFavorites'
+  'onAddToFavorites',
   // 'onShareAppMessage' // 右上角菜单，开发者手动注册
 ]
 
@@ -29,7 +29,7 @@ function findHooks(
   hooks = new Set<string>()
 ): Set<string> {
   if (vueOptions) {
-    Object.keys(vueOptions).forEach(name => {
+    Object.keys(vueOptions).forEach((name) => {
       if (name.indexOf('on') === 0 && isFunction(vueOptions[name])) {
         hooks.add(name)
       }
@@ -37,7 +37,7 @@ function findHooks(
     if (__VUE_OPTIONS_API__) {
       const { extends: extendsOptions, mixins } = vueOptions
       if (mixins) {
-        mixins.forEach(mixin => findHooks(mixin, hooks))
+        mixins.forEach((mixin) => findHooks(mixin, hooks))
       }
       if (extendsOptions) {
         findHooks(extendsOptions, hooks)
@@ -53,7 +53,7 @@ function initHook(
   excludes: string[]
 ) {
   if (excludes.indexOf(hook) === -1 && !hasOwn(mpOptions, hook)) {
-    mpOptions[hook] = function(
+    mpOptions[hook] = function (
       this: CustomAppInstanceProperty | CustomComponentInstanceProperty,
       args: unknown
     ) {
@@ -72,7 +72,7 @@ export function initHooks(
   hooks: string[],
   excludes: string[] = EXCLUDE_HOOKS
 ) {
-  hooks.forEach(hook => initHook(mpOptions, hook, excludes))
+  hooks.forEach((hook) => initHook(mpOptions, hook, excludes))
 }
 
 export function initUnknownHooks(
@@ -80,5 +80,5 @@ export function initUnknownHooks(
   vueOptions: ComponentOptions,
   excludes: string[] = EXCLUDE_HOOKS
 ) {
-  findHooks(vueOptions).forEach(hook => initHook(mpOptions, hook, excludes))
+  findHooks(vueOptions).forEach((hook) => initHook(mpOptions, hook, excludes))
 }

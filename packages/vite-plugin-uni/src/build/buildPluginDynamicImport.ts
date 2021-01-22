@@ -5,7 +5,7 @@ export const buildPluginDynamicImport: Plugin = {
   renderDynamicImport() {
     return {
       left: 'dynamicImportPolyfill(',
-      right: ')'
+      right: ')',
     }
-  }
+  },
 }

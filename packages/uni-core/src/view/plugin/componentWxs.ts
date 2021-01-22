@@ -20,20 +20,20 @@ function getWxsClsArr(
 ) {
   const wxsClsArr: string[] = []
 
-  let checkClassList: (cls: string) => boolean = function(cls: string) {
+  let checkClassList: (cls: string) => boolean = function (cls: string) {
     if (isAdd) {
-      checkClassList = function(cls) {
+      checkClassList = function (cls) {
         return !classList.contains(cls)
       }
     } else {
-      checkClassList = function(cls) {
+      checkClassList = function (cls) {
         return classList.contains(cls)
       }
     }
     return checkClassList(cls)
   }
 
-  clsArr.forEach(cls => {
+  clsArr.forEach((cls) => {
     cls = cls.replace(CLASS_RE, '')
     checkClassList(cls) && wxsClsArr.push(cls)
   })
@@ -44,7 +44,7 @@ function parseStyleText(cssText: string) {
   const res: Record<string, string> = {}
   const listDelimiter = /;(?![^(]*\))/g
   const propertyDelimiter = /:(.+)/
-  cssText.split(listDelimiter).forEach(function(item) {
+  cssText.split(listDelimiter).forEach(function (item) {
     if (item) {
       const tmp = item.split(propertyDelimiter)
       tmp.length > 1 && (res[tmp[0].trim()] = tmp[1].trim())
@@ -124,7 +124,7 @@ class ComponentDescriptor {
     const wxsClsArr = getWxsClsArr(clsArr, classList, false)
     if (wxsClsArr.length) {
       const removeWxsClsArr: string[] = []
-      wxsClsArr.forEach(cls => {
+      wxsClsArr.forEach((cls) => {
         const clsIndex = addWxsClsArr.findIndex(
           (oldCls: string) => oldCls === cls
         )
@@ -165,7 +165,7 @@ class ComponentDescriptor {
       UniViewJSBridge.publishHandler('onWxsInvokeCallMethod', {
         cid: (this.$vm as any)._$id,
         method: funcName,
-        args
+        args,
       })
     }
   }
@@ -231,10 +231,10 @@ export function handleWxsEvent(this: ComponentPublicInstance, $event: Event) {
     $origEvent.currentTarget as HTMLElement
   ) as Event
   ;($event as any).instance = instance
-  $event.preventDefault = function() {
+  $event.preventDefault = function () {
     return $origEvent.preventDefault()
   }
-  $event.stopPropagation = function() {
+  $event.stopPropagation = function () {
     return $origEvent.stopPropagation()
   }
 }

@@ -7,10 +7,10 @@ export const SetNavigationBarColorOptions: ApiOptions = {
     animation(animation = {}, params) {
       params.animation = {
         duration: animation.duration || 0,
-        timingFunc: animation.timingFunc || 'linear'
+        timingFunc: animation.timingFunc || 'linear',
       }
-    }
-  }
+    },
+  },
 }
 
 export const SetNavigationBarColorProtocol: ApiProtocol = {
@@ -21,26 +21,26 @@ export const SetNavigationBarColorProtocol: ApiProtocol = {
       if (FRONT_COLORS.indexOf(frontColor) === -1) {
         return `invalid frontColor "${frontColor}"`
       }
-    }
+    },
   },
   backgroundColor: {
     type: String,
-    required: true
+    required: true,
   },
   animation: {
     type: Object,
     default() {
       return {
         duration: 0,
-        timingFunc: 'linear'
+        timingFunc: 'linear',
       }
-    }
-  }
+    },
+  },
 }
 
 export const SetNavigationBarTitleProtocol: ApiProtocol = {
   title: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
 }

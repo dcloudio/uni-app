@@ -5,7 +5,7 @@ import {
   createSimpleExpression,
   toValidAssetId,
   ComponentNode,
-  TransformContext
+  TransformContext,
 } from '@vue/compiler-core'
 
 import { COMPONENT_PREFIX } from '@dcloudio/uni-shared'
@@ -15,7 +15,7 @@ import {
   debugEasycom,
   matchEasycom,
   addAutoImport,
-  isComponentNode
+  isComponentNode,
 } from '../easycom'
 
 function createImportItem(path: string, node: ComponentNode) {
@@ -27,7 +27,7 @@ function createImportItem(path: string, node: ComponentNode) {
       false,
       node.loc,
       ConstantTypes.CAN_HOIST
-    )
+    ),
   }
 }
 

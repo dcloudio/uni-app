@@ -11,7 +11,7 @@ function querySelector(
 function querySelectorAll(vm: ComponentPublicInstance, selector: string) {
   const nodeList = vm.$el.querySelectorAll(selector)
   if (nodeList) {
-    return [...nodeList].map(node => node.__vue__).filter(Boolean)
+    return [...nodeList].map((node) => node.__vue__).filter(Boolean)
   }
   return []
 }

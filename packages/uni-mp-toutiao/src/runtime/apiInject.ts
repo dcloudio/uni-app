@@ -3,7 +3,7 @@ import { isArray, isObject, isFunction } from '@vue/shared'
 import {
   InjectionKey,
   ComponentPublicInstance,
-  ComponentInternalInstance
+  ComponentInternalInstance,
 } from 'vue'
 
 function provide<T>(

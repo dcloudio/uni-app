@@ -31,7 +31,7 @@ export type MPComponentInstance = Component.Instance<
   CustomComponentInstanceProperty
 >
 
-export interface RelationOptions {
+export interface RelationOptions extends Record<string, unknown> {
   vuePid: string | undefined
   parent?: ComponentPublicInstance
 }
@@ -74,14 +74,14 @@ export function parseComponent(
     isPage,
     initRelation,
     handleLink,
-    initLifetimes
+    initLifetimes,
   }: ParseComponentOptions
 ) {
   vueOptions = vueOptions.default || vueOptions
 
   const options: Component.ComponentOptions = {
     multipleSlots: true,
-    addGlobalClass: true
+    addGlobalClass: true,
   }
 
   if (vueOptions.options) {
@@ -100,12 +100,12 @@ export function parseComponent(
       },
       resize(size) {
         this.$vm && this.$vm.$callHook('onPageResize', size)
-      }
+      },
     },
     methods: {
       __l: handleLink,
-      __e: handleEvent
-    }
+      __e: handleEvent,
+    },
   }
 
   if (__VUE_OPTIONS_API__) {

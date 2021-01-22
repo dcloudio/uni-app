@@ -2,7 +2,7 @@ import { hasOwn, NOOP, isArray, isPlainObject, isFunction } from '@vue/shared'
 import { ComponentPublicInstance } from 'vue'
 import { MPComponentInstance } from './component'
 
-interface Event extends WechatMiniprogram.Event {
+interface Event extends WechatMiniprogram.BaseEvent {
   detail: Record<string, any>
   stopPropagation: () => void
   preventDefault: () => void
@@ -26,7 +26,7 @@ function getExtraValue(
   dataPathsArray: string[]
 ) {
   let context: unknown = instance
-  dataPathsArray.forEach(dataPathArray => {
+  dataPathsArray.forEach((dataPathArray) => {
     const dataPath = dataPathArray[0]
     const value = dataPathArray[2]
     if (dataPath || typeof value !== 'undefined') {
@@ -53,11 +53,11 @@ function getExtraValue(
         context = vFor[value]
       } else {
         if (isArray(vFor)) {
-          context = vFor.find(vForItem => {
+          context = vFor.find((vForItem) => {
             return getValue(vForItem, propPath) === value
           })
         } else if (isPlainObject(vFor)) {
-          context = Object.keys(vFor).find(vForKey => {
+          context = Object.keys(vFor).find((vForKey) => {
             return getValue(vFor[vForKey], propPath) === value
           })
         } else {
@@ -162,7 +162,7 @@ function processEventArgs(
   const extraObj = processEventExtra(instance, extra, event)
 
   const ret: any[] = []
-  args.forEach(arg => {
+  args.forEach((arg) => {
     if (arg === '$event') {
       if (methodName === '__set_model' && !isCustom) {
         // input v-model value

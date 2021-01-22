@@ -66,18 +66,17 @@ export const previewImage: MPProtocol = {
     }
     if (currentIndex > 0) {
       toArgs.current = urls[currentIndex]
-      toArgs.urls = urls.filter(
-        (item, index) =>
-          index < currentIndex ? item !== urls[currentIndex] : true
+      toArgs.urls = urls.filter((item, index) =>
+        index < currentIndex ? item !== urls[currentIndex] : true
       )
     } else {
       toArgs.current = urls[0]
     }
     return {
       indicator: false,
-      loop: false
+      loop: false,
     }
-  }
+  },
 }
 
 export function addSafeAreaInsets(
@@ -90,13 +89,13 @@ export function addSafeAreaInsets(
       top: safeArea.top,
       left: safeArea.left,
       right: fromRes.windowWidth - safeArea.right,
-      bottom: fromRes.windowHeight - safeArea.bottom
+      bottom: fromRes.windowHeight - safeArea.bottom,
     }
   }
 }
 
 export const getSystemInfo = {
-  returnValue: addSafeAreaInsets
+  returnValue: addSafeAreaInsets,
 }
 
 export const getSystemInfoSync = getSystemInfo

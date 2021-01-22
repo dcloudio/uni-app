@@ -12,19 +12,19 @@ export function initGetProvider(providers: PROVIDERS) {
     service,
     success,
     fail,
-    complete
+    complete,
   }: UniApp.GetProviderOptions) {
     let res
     if (providers[service]) {
       res = {
         errMsg: 'getProvider:ok',
         service,
-        provider: providers[service]
+        provider: providers[service],
       } as UniApp.GetProviderRes
       isFunction(success) && success(res)
     } else {
       res = {
-        errMsg: 'getProvider:fail:服务[' + service + ']不存在'
+        errMsg: 'getProvider:fail:服务[' + service + ']不存在',
       }
       isFunction(fail) && fail(res)
     }

@@ -4,5 +4,5 @@ export const getProvider = initGetProvider({
   oauth: ['toutiao'],
   share: ['toutiao'],
   payment: ['toutiao'],
-  push: ['toutiao']
+  push: ['toutiao'],
 })

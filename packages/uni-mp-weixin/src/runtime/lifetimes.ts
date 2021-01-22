@@ -4,7 +4,7 @@ import {
   RelationOptions,
   MPComponentInstance,
   CreateComponentOptions,
-  CreateLifetimesOptions
+  CreateLifetimesOptions,
 } from '@dcloudio/uni-mp-core'
 
 import {
@@ -13,21 +13,21 @@ import {
   initVueIds,
   $createComponent,
   $destroyComponent,
-  initComponentInstance
+  initComponentInstance,
 } from '@dcloudio/uni-mp-core'
 
 export function initLifetimes({
   mocks,
   isPage,
   initRelation,
-  vueOptions
+  vueOptions,
 }: CreateLifetimesOptions) {
   return {
     attached(this: MPComponentInstance) {
       const properties = this.properties
       initVueIds(properties.vueId, this)
       const relationOptions: RelationOptions = {
-        vuePid: this._$vuePid
+        vuePid: this._$vuePid,
       }
       // 处理父子关系
       initRelation(this, relationOptions)
@@ -36,7 +36,7 @@ export function initLifetimes({
       this.$vm = $createComponent(
         {
           type: vueOptions,
-          props: properties
+          props: properties,
         },
         {
           mpType: isPage(mpInstance) ? 'page' : 'component',
@@ -50,7 +50,7 @@ export function initLifetimes({
             initRefs(instance, mpInstance)
             initMocks(instance, mpInstance, mocks)
             initComponentInstance(instance, options)
-          }
+          },
         }
       ) as ComponentPublicInstance
     },
@@ -66,6 +66,6 @@ export function initLifetimes({
     },
     detached(this: MPComponentInstance) {
       this.$vm && $destroyComponent(this.$vm)
-    }
+    },
   }
 }

@@ -12,9 +12,5 @@ export * from './service/bridge'
 export { getApp, getCurrentPages } from './framework'
 
 export { default as PageComponent } from './framework/components/page/index.vue'
-export {
-  default as AsyncErrorComponent
-} from './framework/components/async-error/index.vue'
-export {
-  default as AsyncLoadingComponent
-} from './framework/components/async-loading/index.vue'
+export { default as AsyncErrorComponent } from './framework/components/async-error/index.vue'
+export { default as AsyncLoadingComponent } from './framework/components/async-loading/index.vue'

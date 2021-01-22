@@ -5,7 +5,7 @@ import {
   NodeTransform,
   ElementNode,
   createSimpleExpression,
-  toValidAssetId
+  toValidAssetId,
 } from '@vue/compiler-core'
 
 import { COMPONENT_PREFIX, isBuiltInComponent } from '@dcloudio/uni-shared'
@@ -28,7 +28,7 @@ function createComponentImportItem(oldTag: string, node: ElementNode) {
       false,
       node.loc,
       ConstantTypes.CAN_HOIST
-    )
+    ),
   }
 }
 function createStyleImportItem(oldTag: string, node: ElementNode) {
@@ -39,7 +39,7 @@ function createStyleImportItem(oldTag: string, node: ElementNode) {
       false,
       node.loc,
       ConstantTypes.CAN_HOIST
-    )
+    ),
   }
 }
 

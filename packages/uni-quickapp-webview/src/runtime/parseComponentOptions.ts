@@ -3,14 +3,14 @@ import { MPComponentInstance } from '@dcloudio/uni-mp-core'
 import {
   instances,
   initProvide,
-  initInjections
+  initInjections,
 } from '@dcloudio/uni-mp-toutiao'
 
 export { mocks, isPage } from '@dcloudio/uni-mp-baidu'
 
 export {
   parseComponent as parse,
-  initComponentLifetimes as initLifetimes
+  initComponentLifetimes as initLifetimes,
 } from '@dcloudio/uni-mp-toutiao'
 
 interface RelationOptions {
@@ -25,14 +25,14 @@ export function initRelation(mpInstance: MPComponentInstance) {
   instances[webviewId + '_' + nodeId] = mpInstance.$vm
   mpInstance.triggerEvent('__l', {
     nodeId,
-    webviewId
+    webviewId,
   })
 }
 
 export function handleLink(
   this: MPComponentInstance,
   {
-    detail: { nodeId, webviewId }
+    detail: { nodeId, webviewId },
   }: {
     detail: RelationOptions
   }
@@ -48,7 +48,7 @@ export function handleLink(
 
   vm.$.parent = parentVm.$
 
-  const createdVm = function() {
+  const createdVm = function () {
     if (__VUE_OPTIONS_API__) {
       ;(parentVm as any).$children.push(vm)
       const parent = parentVm.$ as any
@@ -60,7 +60,7 @@ export function handleLink(
     }
     vm.$callSyncHook('created')
   }
-  const mountedVm = function() {
+  const mountedVm = function () {
     // 处理当前 vm 子
     if (vm._$childVues) {
       vm._$childVues.forEach(([createdVm]: Function[]) => createdVm())
@@ -77,7 +77,7 @@ export function handleLink(
   } else {
     ;(parentVm._$childVues || (parentVm._$childVues = [])).push([
       createdVm,
-      mountedVm
+      mountedVm,
     ])
   }
 }

@@ -19,7 +19,7 @@ const HOOKS = [
   'onError',
   'onThemeChange',
   'onPageNotFound',
-  'onUnhandledRejection'
+  'onUnhandledRejection',
 ]
 
 export interface ParseAppOptions {
@@ -44,12 +44,12 @@ function parseApp(
       initBaseInstance(internalInstance, {
         mpType: 'app',
         mpInstance: this,
-        slots: []
+        slots: [],
       })
 
       ctx.globalData = this.globalData
       instance.$callHook('onLaunch', options)
-    }
+    },
   }
 
   const vueOptions = instance.$.type as ComponentOptions

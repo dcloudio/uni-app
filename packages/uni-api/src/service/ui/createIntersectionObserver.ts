@@ -8,7 +8,7 @@ import { getCurrentPageVm } from '../utils'
 const defaultOptions = {
   thresholds: [0],
   initialRatio: 0,
-  observeAll: false
+  observeAll: false,
 }
 
 interface Margins {
@@ -74,7 +74,7 @@ class ServiceIntersectionObserver {
     }
     this._relativeInfo.push({
       selector,
-      margins
+      margins,
     })
     return this
   }
@@ -103,7 +103,7 @@ class ServiceIntersectionObserver {
         reqId: this._reqId,
         component: this._component,
         options: this._options,
-        relativeInfo: this._relativeInfo
+        relativeInfo: this._relativeInfo,
       },
       this._pageId
     )
@@ -113,7 +113,7 @@ class ServiceIntersectionObserver {
     UniServiceJSBridge.publishHandler(
       'removeIntersectionObserver',
       {
-        reqId: this._reqId
+        reqId: this._reqId,
       },
       this._pageId
     )

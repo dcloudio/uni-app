@@ -23,8 +23,8 @@ const Upx2pxProtocol = [
     {
         name: 'upx',
         type: [Number, String],
-        required: true
-    }
+        required: true,
+    },
 ];
 
 const EPS = 1e-4;
@@ -92,7 +92,7 @@ function queue(hooks, data) {
             if (res === false) {
                 return {
                     then() { },
-                    catch() { }
+                    catch() { },
                 };
             }
         }
@@ -101,11 +101,11 @@ function queue(hooks, data) {
         then(callback) {
             return callback(data);
         },
-        catch() { }
+        catch() { },
     });
 }
 function wrapperOptions(interceptors, options = {}) {
-    [HOOKS.SUCCESS, HOOKS.FAIL, HOOKS.COMPLETE].forEach(name => {
+    [HOOKS.SUCCESS, HOOKS.FAIL, HOOKS.COMPLETE].forEach((name) => {
         const hooks = interceptors[name];
         if (!isArray(hooks)) {
             return;
@@ -128,21 +128,21 @@ function wrapperReturnValue(method, returnValue) {
     if (interceptor && isArray(interceptor.returnValue)) {
         returnValueHooks.push(...interceptor.returnValue);
     }
-    returnValueHooks.forEach(hook => {
+    returnValueHooks.forEach((hook) => {
         returnValue = hook(returnValue) || returnValue;
     });
     return returnValue;
 }
 function getApiInterceptorHooks(method) {
     const interceptor = Object.create(null);
-    Object.keys(globalInterceptors).forEach(hook => {
+    Object.keys(globalInterceptors).forEach((hook) => {
         if (hook !== 'returnValue') {
             interceptor[hook] = globalInterceptors[hook].slice();
         }
     });
     const scopedInterceptor = scopedInterceptors[method];
     if (scopedInterceptor) {
-        Object.keys(scopedInterceptor).forEach(hook => {
+        Object.keys(scopedInterceptor).forEach((hook) => {
             if (hook !== 'returnValue') {
                 interceptor[hook] = (interceptor[hook] || []).concat(scopedInterceptor[hook]);
             }
@@ -155,7 +155,7 @@ function invokeApi(method, api, options, ...params) {
     if (interceptor && Object.keys(interceptor).length) {
         if (isArray(interceptor.invoke)) {
             const res = queue(interceptor.invoke, options);
-            return res.then(options => {
+            return res.then((options) => {
                 return api(wrapperOptions(interceptor, options), ...params);
             });
         }
@@ -170,13 +170,13 @@ const AddInterceptorProtocol = [
     {
         name: 'method',
         type: [String, Object],
-        required: true
-    }
+        required: true,
+    },
 ];
 const RemoveInterceptorProtocol = AddInterceptorProtocol;
 
 function mergeInterceptorHook(interceptors, interceptor) {
-    Object.keys(interceptor).forEach(hook => {
+    Object.keys(interceptor).forEach((hook) => {
         if (isFunction(interceptor[hook])) {
             interceptors[hook] = mergeHook(interceptors[hook], interceptor[hook]);
         }
@@ -186,7 +186,7 @@ function removeInterceptorHook(interceptors, interceptor) {
     if (!interceptors || !interceptor) {
         return;
     }
-    Object.keys(interceptor).forEach(hook => {
+    Object.keys(interceptor).forEach((hook) => {
         if (isFunction(interceptor[hook])) {
             removeHook(interceptors[hook], interceptor[hook]);
         }
@@ -263,10 +263,10 @@ function handlePromise(promise) {
         return promise;
     }
     return promise
-        .then(data => {
+        .then((data) => {
         return [null, data];
     })
-        .catch(err => [err]);
+        .catch((err) => [err]);
 }
 function shouldPromise(name) {
     if (isContextApi(name) || isSyncApi(name) || isCallbackApi(name)) {
@@ -278,7 +278,7 @@ function shouldPromise(name) {
 if (!Promise.prototype.finally) {
     Promise.prototype.finally = function (onfinally) {
         const promise = this.constructor;
-        return this.then(value => promise.resolve(onfinally && onfinally()).then(() => value), reason => promise.resolve(onfinally && onfinally()).then(() => {
+        return this.then((value) => promise.resolve(onfinally && onfinally()).then(() => value), (reason) => promise.resolve(onfinally && onfinally()).then(() => {
             throw reason;
         }));
     };
@@ -299,7 +299,7 @@ function promisify(name, api) {
         return wrapperReturnValue(name, handlePromise(new Promise((resolve, reject) => {
             invokeApi(name, api, Object.assign({}, options, {
                 success: resolve,
-                fail: reject
+                fail: reject,
             }), ...params);
         })));
     };
@@ -413,25 +413,25 @@ function initUni(api, protocols) {
             // event-api
             // provider-api?
             return promisify(key, wrapper(key, wx[key]));
-        }
+        },
     };
     return new Proxy({}, UniProxyHandlers);
 }
 
 function initGetProvider(providers) {
-    return function getProvider({ service, success, fail, complete }) {
+    return function getProvider({ service, success, fail, complete, }) {
         let res;
         if (providers[service]) {
             res = {
                 errMsg: 'getProvider:ok',
                 service,
-                provider: providers[service]
+                provider: providers[service],
             };
             isFunction(success) && success(res);
         }
         else {
             res = {
-                errMsg: 'getProvider:fail:服务[' + service + ']不存在'
+                errMsg: 'getProvider:fail:服务[' + service + ']不存在',
             };
             isFunction(fail) && fail(res);
         }
@@ -468,9 +468,9 @@ const previewImage = {
         }
         return {
             indicator: false,
-            loop: false
+            loop: false,
         };
-    }
+    },
 };
 function addSafeAreaInsets(fromRes, toRes) {
     if (fromRes.safeArea) {
@@ -479,12 +479,12 @@ function addSafeAreaInsets(fromRes, toRes) {
             top: safeArea.top,
             left: safeArea.left,
             right: fromRes.windowWidth - safeArea.right,
-            bottom: fromRes.windowHeight - safeArea.bottom
+            bottom: fromRes.windowHeight - safeArea.bottom,
         };
     }
 }
 const getSystemInfo = {
-    returnValue: addSafeAreaInsets
+    returnValue: addSafeAreaInsets,
 };
 const getSystemInfoSync = getSystemInfo;
 const redirectTo = {};
@@ -493,7 +493,7 @@ const getProvider = initGetProvider({
     oauth: ['weixin'],
     share: ['weixin'],
     payment: ['wxpay'],
-    push: ['weixin']
+    push: ['weixin'],
 });
 
 var shims = /*#__PURE__*/Object.freeze({

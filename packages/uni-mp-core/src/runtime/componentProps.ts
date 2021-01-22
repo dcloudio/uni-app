@@ -39,27 +39,27 @@ function initDefaultProps(isBehavior: boolean = false) {
   if (!isBehavior) {
     properties.vueId = {
       type: String,
-      value: ''
+      value: '',
     }
     if (__PLATFORM__ === 'mp-toutiao') {
       // 用于字节跳动小程序模拟抽象节点
       properties.generic = {
-        type: Object
+        type: Object,
       }
     }
     // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
     properties.vueSlots = {
       type: null,
       value: [],
-      observer: function(this: MPComponentInstance, newVal) {
+      observer: function (this: MPComponentInstance, newVal) {
         const $slots = Object.create(null)
         newVal.forEach((slotName: string) => {
           $slots[slotName] = true
         })
         this.setData({
-          $slots
+          $slots,
         })
-      }
+      },
     }
   }
   return properties
@@ -81,13 +81,13 @@ export function initProps(
   const properties = initDefaultProps(isBehavior)
 
   if (isArray(rawProps)) {
-    rawProps.forEach(key => {
+    rawProps.forEach((key) => {
       properties[key] = createProperty(key, {
-        type: null
+        type: null,
       })
     })
   } else if (isPlainObject(rawProps)) {
-    Object.keys(rawProps).forEach(key => {
+    Object.keys(rawProps).forEach((key) => {
       const opts = rawProps[key]
       if (isPlainObject(opts)) {
         // title:{type:String,default:''}
@@ -99,13 +99,13 @@ export function initProps(
         ;(opts as any).type = parsePropType(key, type, value)
         properties[key] = createProperty(key, {
           type: PROP_TYPES.indexOf(type) !== -1 ? type : null,
-          value
+          value,
         })
       } else {
         // content:String
         const type = parsePropType(key, opts, null)
         properties[key] = createProperty(key, {
-          type: PROP_TYPES.indexOf(type) !== -1 ? type : null
+          type: PROP_TYPES.indexOf(type) !== -1 ? type : null,
         })
       }
     })

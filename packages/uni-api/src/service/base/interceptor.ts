@@ -5,21 +5,21 @@ import {
   scopedInterceptors,
   globalInterceptors,
   Interceptors,
-  HOOKS
+  HOOKS,
 } from '../../helpers/interceptor'
 
 import { API_TYPE_SYNC, createApi } from '../../helpers/api'
 
 import {
   AddInterceptorProtocol,
-  RemoveInterceptorProtocol
+  RemoveInterceptorProtocol,
 } from '../../protocols/base/interceptor'
 
 function mergeInterceptorHook(
   interceptors: Interceptors,
   interceptor: Interceptor
 ) {
-  Object.keys(interceptor).forEach(hook => {
+  Object.keys(interceptor).forEach((hook) => {
     if (isFunction(interceptor[hook as HOOKS])) {
       interceptors[hook as HOOKS] = mergeHook(
         interceptors[hook as HOOKS],
@@ -36,11 +36,12 @@ function removeInterceptorHook(
   if (!interceptors || !interceptor) {
     return
   }
-  Object.keys(interceptor).forEach(hook => {
+  Object.keys(interceptor).forEach((hook) => {
     if (isFunction(interceptor[hook as HOOKS])) {
-      removeHook(interceptors[hook as HOOKS], interceptor[
-        hook as HOOKS
-      ] as Function)
+      removeHook(
+        interceptors[hook as HOOKS],
+        interceptor[hook as HOOKS] as Function
+      )
     }
   })
 }
@@ -53,8 +54,8 @@ function mergeHook(
     ? parentVal
       ? parentVal.concat(childVal)
       : isArray(childVal)
-        ? childVal
-        : [childVal]
+      ? childVal
+      : [childVal]
     : parentVal
   return res ? dedupeHooks(res) : res
 }
@@ -116,11 +117,11 @@ export const promiseInterceptor = {
       return res
     }
     return res
-      .then(res => {
+      .then((res) => {
         return res[1]
       })
-      .catch(res => {
+      .catch((res) => {
         return res[0]
       })
-  }
+  },
 }

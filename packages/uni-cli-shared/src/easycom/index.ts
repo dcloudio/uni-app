@@ -7,7 +7,7 @@ import {
   ElementNode,
   ElementTypes,
   ComponentNode,
-  TemplateChildNode
+  TemplateChildNode,
 } from '@vue/compiler-core'
 
 interface EasycomOption {
@@ -26,7 +26,7 @@ interface EasycomCustom {
 
 export * from './autoImport'
 
-export const debugEasycom = debug('easycom')
+export const debugEasycom = debug('uni:easycom')
 
 const easycoms: EasycomMatcher[] = []
 
@@ -62,7 +62,7 @@ export function initEasycom({
   dirs,
   rootDir,
   custom,
-  extensions = ['.vue']
+  extensions = ['.vue'],
 }: EasycomOption) {
   debugEasycom(dirs, rootDir, custom, extensions)
   clearEasycom()
@@ -73,10 +73,10 @@ export function initEasycom({
   if (custom) {
     Object.assign(easycomsObj, custom)
   }
-  Object.keys(easycomsObj).forEach(name => {
+  Object.keys(easycomsObj).forEach((name) => {
     easycoms.push({
       pattern: new RegExp(name),
-      replacement: easycomsObj[name]
+      replacement: easycomsObj[name],
     })
   })
   debugEasycom(easycoms)
@@ -95,7 +95,7 @@ export function matchEasycom(tag: string) {
   if (easycomsInvalidCache.has(tag)) {
     return false
   }
-  const matcher = easycoms.find(matcher => matcher.pattern.test(tag))
+  const matcher = easycoms.find((matcher) => matcher.pattern.test(tag))
   if (!matcher) {
     easycomsInvalidCache.add(tag)
     return false
@@ -120,7 +120,7 @@ function initAutoScanEasycom(
   if (!fs.existsSync(dir)) {
     return easycoms
   }
-  fs.readdirSync(dir).forEach(name => {
+  fs.readdirSync(dir).forEach((name) => {
     const folder = path.resolve(dir, name)
     if (!isDir(folder)) {
       return
@@ -147,7 +147,7 @@ function initAutoScanEasycoms(
   return dirs.reduce<Record<string, string>>(
     (easycoms: Record<string, string>, dir: string) => {
       const curEasycoms = initAutoScanEasycom(dir, rootDir, extensions)
-      Object.keys(curEasycoms).forEach(name => {
+      Object.keys(curEasycoms).forEach((name) => {
         // Use the first component when name conflict
         if (!easycoms[name]) {
           easycoms[name] = curEasycoms[name]

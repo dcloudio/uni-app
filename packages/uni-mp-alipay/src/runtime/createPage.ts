@@ -7,7 +7,7 @@ import {
   initHooks,
   initUnknownHooks,
   $destroyComponent,
-  initWxsCallMethods
+  initWxsCallMethods,
 } from '@dcloudio/uni-mp-core'
 
 import { stringifyQuery } from '@dcloudio/uni-shared'
@@ -17,7 +17,7 @@ import {
   handleLink,
   initChildVues,
   initSpecialMethods,
-  createVueComponent
+  createVueComponent,
 } from './util'
 
 declare function Page<D>(options: tinyapp.PageOptions<D>): void
@@ -28,7 +28,7 @@ export function createPage(vueOptions: ComponentOptions) {
     onLoad(query) {
       this.options = query
       this.$page = {
-        fullPath: '/' + this.route + stringifyQuery(query)
+        fullPath: '/' + this.route + stringifyQuery(query),
       }
       // 初始化 vue 实例
       this.$vm = createVueComponent('page', this, vueOptions)
@@ -50,11 +50,11 @@ export function createPage(vueOptions: ComponentOptions) {
       // 支付宝小程序有些页面事件只能放在events下
       onBack() {
         this.$vm.$callHook('onBackPress')
-      }
+      },
     },
     __r: handleRef,
     __e: handleEvent,
-    __l: handleLink
+    __l: handleLink,
   }
   if (__VUE_OPTIONS_API__) {
     pageOptions.data = initData(vueOptions)

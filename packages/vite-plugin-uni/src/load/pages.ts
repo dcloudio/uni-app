@@ -1,10 +1,25 @@
+import fs from 'fs'
 import path from 'path'
-
 import slash from 'slash'
 
 import { camelize, capitalize } from '@vue/shared'
+import { VitePluginUniResolvedOptions } from '..'
 
-import { parseJson } from '@dcloudio/uni-cli-shared'
+const { parseJson } = require('@dcloudio/uni-cli-shared')
+
+export const pages = {
+  test(id: string, _inputDir: string) {
+    return id.endsWith('pages.json.js')
+  },
+  load(filename: string, options: VitePluginUniResolvedOptions) {
+    return (
+      (options.devServer ? registerGlobalCode : '') +
+      parsePagesJson(
+        fs.readFileSync(filename.substr(0, filename.length - 3), 'utf-8')
+      )
+    )
+  },
+}
 
 interface PageOptions {
   path: string
@@ -30,6 +45,38 @@ interface PageRouteOptions {
     rightWindow: boolean | undefined
   }
 }
+
+function parsePagesJson(jsonStr: string) {
+  const pagesJson = formatPagesJson(jsonStr)
+  const definePagesCode = generatePagesDefineCode(pagesJson)
+  const uniRoutesCode = generateRoutes(pagesJson).join(',')
+  const uniConfigCode = generateConfig(pagesJson)
+  return `
+    import {
+        defineAsyncComponent,
+        resolveComponent,
+        createVNode,
+        withCtx,
+        openBlock,
+        createBlock
+    } from 'vue'
+    
+    import {
+        PageComponent
+    } from '@dcloudio/uni-h5'
+    ${definePagesCode}
+    window.__uniConfig=${uniConfigCode}
+    window.__uniRoutes=[${uniRoutesCode}]
+    `
+}
+
+const registerGlobalCode = `import {uni,getCurrentPages,getApp,UniServiceJSBridge,UniViewJSBridge} from '@dcloudio/uni-h5'
+    window.getApp = getApp
+    window.getCurrentPages = getCurrentPages
+    window.uni = window.__GLOBAL__ = uni
+    window.UniViewJSBridge = UniViewJSBridge
+    window.UniServiceJSBridge = UniServiceJSBridge
+    `
 
 function formatPages(pagesJson: Record<string, any>, jsonStr: string) {
   if (!Array.isArray(pagesJson.pages)) {
@@ -87,7 +134,7 @@ function formatPagesJson(jsonStr: string) {
   let pagesJson: Record<string, any> = {
     pages: [],
   }
-  //TODO preprocess
+  // preprocess
   try {
     pagesJson = parseJson(jsonStr, true)
   } catch (e) {
@@ -156,16 +203,16 @@ function formatPagesRoute(pagesJson: Record<string, any>): PageRouteOptions[] {
 
 function generatePageRoute({ name, path, props, meta }: PageRouteOptions) {
   return `{
-  path:'/${meta.isEntry ? '' : path}',
-  component:{
-    render() {
-      return (openBlock(), createBlock(PageComponent, Object.assign({}, __uniConfig.globalStyle, ${JSON.stringify(
-        props
-      )}), {page: withCtx(() => [createVNode(${name})]), _: 1}, 16))
-    }
-  },
-  meta: ${JSON.stringify(meta)}
-}`
+    path:'/${meta.isEntry ? '' : path}',
+    component:{
+      render() {
+        return (openBlock(), createBlock(PageComponent, Object.assign({}, __uniConfig.globalStyle, ${JSON.stringify(
+          props
+        )}), {page: withCtx(() => [createVNode(${name})]), _: 1}, 16))
+      }
+    },
+    meta: ${JSON.stringify(meta)}
+  }`
 }
 
 function generatePagesRoute(pagesRouteOptions: PageRouteOptions[]) {
@@ -185,28 +232,4 @@ function generateConfig(pagesJson: Record<string, any>) {
   delete pagesJson.subpackages
   pagesJson.router = {} // TODO
   return JSON.stringify(pagesJson)
-}
-
-export function parsePagesJson(jsonStr: string) {
-  const pagesJson = formatPagesJson(jsonStr)
-  const definePagesCode = generatePagesDefineCode(pagesJson)
-  const uniRoutesCode = generateRoutes(pagesJson).join(',')
-  const uniConfigCode = generateConfig(pagesJson)
-  return `
-import {
-    defineAsyncComponent,
-    resolveComponent,
-    createVNode,
-    withCtx,
-    openBlock,
-    createBlock
-} from 'vue'
-
-import {
-    PageComponent
-} from '@dcloudio/uni-h5'
-${definePagesCode}
-window.__uniConfig=${uniConfigCode}
-window.__uniRoutes=[${uniRoutesCode}]
-`
 }

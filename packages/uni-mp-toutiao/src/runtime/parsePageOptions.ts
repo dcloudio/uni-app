@@ -3,6 +3,6 @@ export {
   isPage,
   initRelation,
   handleLink,
-  parse
+  parse,
 } from './parseComponentOptions'
 export { initLifetimes } from './pageLifetimes'

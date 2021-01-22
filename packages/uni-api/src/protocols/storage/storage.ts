@@ -3,38 +3,38 @@ import { ApiProtocol, ProtocolOptions } from '../type'
 export const GetStorageProtocol: ApiProtocol = {
   key: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
 }
 
 export const GetStorageSyncProtocol: ProtocolOptions[] = [
   {
     name: 'key',
     type: String,
-    required: true
-  }
+    required: true,
+  },
 ]
 
 export const SetStorageProtocol: ApiProtocol = {
   key: {
     type: String,
-    required: true
+    required: true,
   },
   data: {
-    required: true
-  }
+    required: true,
+  },
 }
 
 export const SetStorageSyncProtocol: ProtocolOptions[] = [
   {
     name: 'key',
     type: String,
-    required: true
+    required: true,
   },
   {
     name: 'data',
-    required: true
-  }
+    required: true,
+  },
 ]
 
 export const RemoveStorageProtocol = GetStorageProtocol

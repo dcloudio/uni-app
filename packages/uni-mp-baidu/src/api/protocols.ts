@@ -2,7 +2,7 @@ export {
   redirectTo,
   previewImage,
   getSystemInfo,
-  getSystemInfoSync
+  getSystemInfoSync,
 } from '@dcloudio/uni-mp-core'
 
 function createTodoMethod(contextName: string, methodName: string) {
@@ -23,17 +23,17 @@ export const request = {
       dataType(type: string) {
         return {
           name: 'dataType',
-          value: type === 'json' ? type : 'string'
+          value: type === 'json' ? type : 'string',
         }
-      }
+      },
     }
-  }
+  },
 }
 
 export const connectSocket = {
   args: {
-    method: false
-  }
+    method: false,
+  },
 }
 
 export const getRecorderManager = {
@@ -42,48 +42,48 @@ export const getRecorderManager = {
       'RecorderManager',
       'onFrameRecorded'
     )
-  }
+  },
 }
 
 export const getBackgroundAudioManager = {
   returnValue(fromRes: Data, toRes: UniApp.BackgroundAudioManager) {
     toRes.onPrev = createTodoMethod('BackgroundAudioManager', 'onPrev')
     toRes.onNext = createTodoMethod('BackgroundAudioManager', 'onNext')
-  }
+  },
 }
 
 export const scanCode = {
   args: {
     onlyFromCamera: false,
-    scanType: false
-  }
+    scanType: false,
+  },
 }
 
 export const navigateToMiniProgram = {
   name: 'navigateToSmartProgram',
   args: {
     appId: 'appKey',
-    envVersion: false
-  }
+    envVersion: false,
+  },
 }
 
 export const navigateBackMiniProgram = {
-  name: 'navigateBackSmartProgram'
+  name: 'navigateBackSmartProgram',
 }
 
 export const showShareMenu = {
-  name: 'openShare'
+  name: 'openShare',
 }
 
 export const getAccountInfoSync = {
   name: 'getEnvInfoSync',
   returnValue(fromRes: Data, toRes: UniApp.AccountInfo) {
     toRes.miniProgram = {
-      appId: fromRes.appKey
+      appId: fromRes.appKey,
     } as UniApp.MiniProgram
     toRes.plugin = {
       appId: '',
-      version: fromRes.sdkVersion
+      version: fromRes.sdkVersion,
     }
-  }
+  },
 }

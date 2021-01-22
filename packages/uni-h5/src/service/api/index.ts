@@ -24,5 +24,5 @@ export {
   arrayBufferToBase64,
   base64ToArrayBuffer,
   createIntersectionObserver,
-  createSelectorQuery
+  createSelectorQuery,
 } from '@dcloudio/uni-api'

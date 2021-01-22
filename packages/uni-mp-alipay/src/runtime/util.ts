@@ -3,14 +3,14 @@ import { hasOwn, isFunction, camelize, EMPTY_OBJ } from '@vue/shared'
 import {
   ComponentPublicInstance,
   ComponentOptions,
-  ComponentInternalInstance
+  ComponentInternalInstance,
 } from 'vue'
 
 import {
   initMocks,
   $createComponent,
   initComponentInstance,
-  CreateComponentOptions
+  CreateComponentOptions,
 } from '@dcloudio/uni-mp-core'
 
 import { handleLink as handleBaseLink } from '@dcloudio/uni-mp-weixin'
@@ -35,11 +35,11 @@ function customize(str: string) {
 
 export function initBehavior({ properties }: Record<string, any>) {
   const props: Record<string, any> = {}
-  Object.keys(properties).forEach(key => {
+  Object.keys(properties).forEach((key) => {
     props[key] = properties[key].value
   })
   return {
-    props
+    props,
   }
 }
 
@@ -68,7 +68,7 @@ export function initSpecialMethods(
   if (specialMethods) {
     specialMethods.forEach((method: string) => {
       if (isFunction(mpInstance.$vm[method])) {
-        mpInstance[method] = function(event: Record<string, any>) {
+        mpInstance[method] = function (event: Record<string, any>) {
           if (hasOwn(event, 'markerId')) {
             event.detail = typeof event.detail === 'object' ? event.detail : {}
             event.detail.markerId = event.markerId
@@ -97,10 +97,10 @@ export function initChildVues(
   }
   const childVues = mpInstance._$childVues as RelationOptions[]
   if (childVues) {
-    childVues.forEach(relationOptions => {
+    childVues.forEach((relationOptions) => {
       // 父子关系
       handleBaseLink.call(mpInstance as any, {
-        detail: relationOptions
+        detail: relationOptions,
       })
 
       const { mpInstance: childMPInstance, createComponent } = relationOptions
@@ -157,15 +157,15 @@ export function triggerEvent(
 
   const target = {
     dataset: {
-      eventOpts
-    }
+      eventOpts,
+    },
   }
 
   handler({
     type: customize(type),
     target,
     currentTarget: target,
-    detail
+    detail,
   })
 }
 
@@ -181,7 +181,7 @@ export function createObserver(isDidUpdate: boolean = false) {
     if (deepEqual(prevProps, nextProps)) {
       return
     }
-    Object.keys(prevProps).forEach(name => {
+    Object.keys(prevProps).forEach((name) => {
       if (IGNORES.indexOf(name) === -1) {
         const prevValue = prevProps[name]
         const nextValue = nextProps[name]
@@ -197,14 +197,14 @@ export function createObserver(isDidUpdate: boolean = false) {
   }
 }
 
-export const handleLink = (function() {
+export const handleLink = (function () {
   if (isComponent2) {
     return function handleLink(
       this: MPComponentInstance,
       detail: RelationOptions
     ) {
       return handleBaseLink.call(this as any, {
-        detail
+        detail,
       })
     }
   }
@@ -215,7 +215,7 @@ export const handleLink = (function() {
     if (this.$vm && this.$vm.$.isMounted) {
       // 父已初始化
       return handleBaseLink.call(this as any, {
-        detail
+        detail,
       })
     }
     // 支付宝通过 didMount 来实现，先子后父，故等父 ready 之后，统一初始化
@@ -232,7 +232,7 @@ export function createVueComponent(
   return $createComponent(
     {
       type: vueOptions,
-      props: mpInstance.props
+      props: mpInstance.props,
     },
     {
       mpType,
@@ -244,7 +244,7 @@ export function createVueComponent(
       ) {
         initMocks(instance, mpInstance as any, mocks)
         initComponentInstance(instance, options)
-      }
+      },
     }
   ) as ComponentPublicInstance
 }

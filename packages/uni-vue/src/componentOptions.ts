@@ -3,7 +3,7 @@ import { isFunction } from '@vue/shared'
 import {
   ComponentOptions,
   ComponentInternalInstance,
-  ComponentPublicInstance
+  ComponentPublicInstance,
 } from '@vue/runtime-core'
 // @ts-ignore
 import { injectHook } from 'vue'
@@ -13,7 +13,7 @@ export function applyOptions(
   instance: ComponentInternalInstance,
   publicThis: ComponentPublicInstance
 ) {
-  Object.keys(options).forEach(name => {
+  Object.keys(options).forEach((name) => {
     if (name.indexOf('on') === 0) {
       const hook = options[name]
       if (isFunction(hook)) {

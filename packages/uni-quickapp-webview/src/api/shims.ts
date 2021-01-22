@@ -4,7 +4,7 @@ const providers = {
   oauth: [] as string[],
   share: [],
   payment: [] as string[],
-  push: []
+  push: [],
 }
 
 if (qa.canIUse('getAccountProvider')) {

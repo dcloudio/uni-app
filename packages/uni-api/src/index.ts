@@ -27,6 +27,6 @@ export {
   API_TYPE_ON,
   API_TYPE_SYNC,
   API_TYPE_ASYNC,
-  API_TYPE_RETURN
+  API_TYPE_RETURN,
 } from './helpers/api'
 export { isSyncApi, isContextApi, promisify } from './helpers/promise'

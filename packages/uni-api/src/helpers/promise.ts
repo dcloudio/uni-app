@@ -36,10 +36,10 @@ function handlePromise(promise: Promise<any>) {
     return promise
   }
   return promise
-    .then(data => {
+    .then((data) => {
       return [null, data]
     })
-    .catch(err => [err])
+    .catch((err) => [err])
 }
 
 export function shouldPromise(name: string) {
@@ -51,13 +51,13 @@ export function shouldPromise(name: string) {
 
 /* eslint-disable no-extend-native */
 if (!Promise.prototype.finally) {
-  Promise.prototype.finally = function(
+  Promise.prototype.finally = function (
     onfinally?: (() => void) | undefined | null
   ) {
     const promise = this.constructor as PromiseConstructor
     return this.then(
-      value => promise.resolve(onfinally && onfinally()).then(() => value),
-      reason =>
+      (value) => promise.resolve(onfinally && onfinally()).then(() => value),
+      (reason) =>
         promise.resolve(onfinally && onfinally()).then(() => {
           throw reason
         })
@@ -89,7 +89,7 @@ export function promisify(name: string, api: unknown) {
             api,
             Object.assign({}, options, {
               success: resolve,
-              fail: reject
+              fail: reject,
             }),
             ...params
           )

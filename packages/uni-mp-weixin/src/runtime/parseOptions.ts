@@ -10,7 +10,10 @@ export function isPage(mpInstance: MPComponentInstance) {
   return !!mpInstance.route
 }
 
-export function initRelation(mpInstance: MPComponentInstance, detail: object) {
+export function initRelation(
+  mpInstance: MPComponentInstance,
+  detail: Record<string, unknown>
+) {
   mpInstance.triggerEvent('__l', detail)
 }
 

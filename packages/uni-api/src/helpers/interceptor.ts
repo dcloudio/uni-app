@@ -5,7 +5,7 @@ export enum HOOKS {
   SUCCESS = 'success',
   FAIL = 'fail',
   COMPLETE = 'complete',
-  RETURN_VALUE = 'returnValue'
+  RETURN_VALUE = 'returnValue',
 }
 
 export type Interceptor = { [P in HOOKS]?: Function }
@@ -16,7 +16,7 @@ export const globalInterceptors: Interceptors = {}
 export const scopedInterceptors: { [key: string]: Interceptors } = {}
 
 function wrapperHook(hook: Function) {
-  return function(data: unknown) {
+  return function (data: unknown) {
     return hook(data) || data
   }
 }
@@ -35,7 +35,7 @@ function queue(hooks: Function[], data: unknown): Promise<any> {
       if (res === false) {
         return {
           then() {},
-          catch() {}
+          catch() {},
         } as Promise<undefined>
       }
     }
@@ -45,7 +45,7 @@ function queue(hooks: Function[], data: unknown): Promise<any> {
       then(callback: Function) {
         return callback(data)
       },
-      catch() {}
+      catch() {},
     }
   )
 }
@@ -54,7 +54,7 @@ function wrapperOptions(
   interceptors: Interceptors,
   options: Record<string, any> = {}
 ) {
-  ;[HOOKS.SUCCESS, HOOKS.FAIL, HOOKS.COMPLETE].forEach(name => {
+  ;[HOOKS.SUCCESS, HOOKS.FAIL, HOOKS.COMPLETE].forEach((name) => {
     const hooks = interceptors[name]
     if (!isArray(hooks)) {
       return
@@ -78,7 +78,7 @@ export function wrapperReturnValue(method: string, returnValue: unknown) {
   if (interceptor && isArray(interceptor.returnValue)) {
     returnValueHooks.push(...interceptor.returnValue)
   }
-  returnValueHooks.forEach(hook => {
+  returnValueHooks.forEach((hook) => {
     returnValue = hook(returnValue) || returnValue
   })
   return returnValue
@@ -86,7 +86,7 @@ export function wrapperReturnValue(method: string, returnValue: unknown) {
 
 function getApiInterceptorHooks(method: string) {
   const interceptor = Object.create(null)
-  Object.keys(globalInterceptors).forEach(hook => {
+  Object.keys(globalInterceptors).forEach((hook) => {
     if (hook !== 'returnValue') {
       interceptor[hook] = (globalInterceptors[
         hook as HOOKS
@@ -95,7 +95,7 @@ function getApiInterceptorHooks(method: string) {
   })
   const scopedInterceptor = scopedInterceptors[method]
   if (scopedInterceptor) {
-    Object.keys(scopedInterceptor).forEach(hook => {
+    Object.keys(scopedInterceptor).forEach((hook) => {
       if (hook !== 'returnValue') {
         interceptor[hook] = (interceptor[hook] || []).concat(
           scopedInterceptor[hook as HOOKS]
@@ -116,7 +116,7 @@ export function invokeApi(
   if (interceptor && Object.keys(interceptor).length) {
     if (isArray(interceptor.invoke)) {
       const res = queue(interceptor.invoke, options)
-      return res.then(options => {
+      return res.then((options) => {
         return api(wrapperOptions(interceptor, options), ...params)
       })
     } else {

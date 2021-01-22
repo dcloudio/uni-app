@@ -2,7 +2,7 @@ import { ApiOptions, ApiProtocol } from '../type'
 import {
   CHOOSE_SIZE_TYPES,
   CHOOSE_SOURCE_TYPES,
-  normalizeStrArray
+  normalizeStrArray,
 } from '../../helpers/protocol'
 
 export const ChooseImageOptions: ApiOptions = {
@@ -17,21 +17,21 @@ export const ChooseImageOptions: ApiOptions = {
     },
     sourceType(sourceType, params) {
       params.sourceType = normalizeStrArray(sourceType, CHOOSE_SOURCE_TYPES)
-    }
-  }
+    },
+  },
 }
 
 export const ChooseImageProtocol: ApiProtocol = {
   count: {
     type: Number,
-    default: 9
+    default: 9,
   },
   sizeType: {
     type: [Array, String],
-    default: CHOOSE_SIZE_TYPES
+    default: CHOOSE_SIZE_TYPES,
   },
   sourceType: {
     type: Array,
-    default: CHOOSE_SOURCE_TYPES
-  }
+    default: CHOOSE_SOURCE_TYPES,
+  },
 }

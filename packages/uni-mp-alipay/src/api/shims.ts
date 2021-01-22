@@ -6,19 +6,19 @@ export const getProvider = initGetProvider({
   oauth: ['alipay'],
   share: ['alipay'],
   payment: ['alipay'],
-  push: ['alipay']
+  push: ['alipay'],
 })
 
 export function setStorageSync(key: string, data: any) {
   return my.setStorageSync({
     key,
-    data
+    data,
   })
 }
 
 export function getStorageSync(key: string) {
   const result = my.getStorageSync({
-    key
+    key,
   })
   // 支付宝平台会返回一个 success 值，但是目前测试的结果这个始终是 true。当没有存储数据的时候，其它平台会返回空字符串。
   return result.data !== null ? result.data : ''
@@ -26,7 +26,7 @@ export function getStorageSync(key: string) {
 
 export function removeStorageSync(key: string) {
   return my.removeStorageSync({
-    key
+    key,
   })
 }
 
@@ -36,11 +36,11 @@ export function startGyroscope(args: UniApp.StartGyroscopeOptions) {
   }
   args.success &&
     args.success({
-      errMsg: 'startGyroscope:ok'
+      errMsg: 'startGyroscope:ok',
     })
   args.complete &&
     args.complete({
-      errMsg: 'startGyroscope:ok'
+      errMsg: 'startGyroscope:ok',
     })
 }
 
@@ -87,7 +87,7 @@ export function createSelectorQuery() {
   }
 
   if (!(query as any).fields) {
-    ;(query as any).fields = function(
+    ;(query as any).fields = function (
       { rect, size, scrollOffset }: UniApp.NodeField,
       callback: Function
     ) {
@@ -103,7 +103,7 @@ export function createSelectorQuery() {
   }
 
   if (!(query as any).in) {
-    ;(query as any).in = function() {
+    ;(query as any).in = function () {
       return this
     }
   }

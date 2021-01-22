@@ -13,7 +13,7 @@ export function initAppConfig(appConfig: AppConfig) {
     Object.defineProperty(globalProperties, '$ownerInstance', {
       get() {
         return this.$getComponentDescriptor(this)
-      }
+      },
     })
     globalProperties.$handleWxsEvent = handleWxsEvent
   }

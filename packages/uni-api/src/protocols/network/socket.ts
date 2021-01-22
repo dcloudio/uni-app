@@ -17,35 +17,35 @@ export const ConnectSocketOptions: ApiOptions = {
       if (typeof protocols === 'string') {
         params.protocols = [protocols]
       }
-    }
-  }
+    },
+  },
 }
 
 export const ConnectSocketProtocol: ApiProtocol = {
   url: {
     type: String,
-    required: true
+    required: true,
   },
   header: {
-    type: Object
+    type: Object,
   },
   method: {
-    type: String
+    type: String,
   },
   protocols: {
-    type: [Array, String] // 微信文档虽然写的是数组，但是可以正常传递字符串
-  }
+    type: [Array, String], // 微信文档虽然写的是数组，但是可以正常传递字符串
+  },
 }
 export const sendSocketMessage = {
   data: {
-    type: [String, ArrayBuffer]
-  }
+    type: [String, ArrayBuffer],
+  },
 }
 export const closeSocket = {
   code: {
-    type: Number
+    type: Number,
   },
   reason: {
-    type: String
-  }
+    type: String,
+  },
 }

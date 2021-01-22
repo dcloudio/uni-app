@@ -2,5 +2,5 @@ export {
   redirectTo,
   previewImage,
   getSystemInfo,
-  getSystemInfoSync
+  getSystemInfoSync,
 } from '@dcloudio/uni-mp-core'

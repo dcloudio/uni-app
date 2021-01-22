@@ -26,5 +26,5 @@ export default {
       createMiniProgramApp(instance)
       return instance
     }
-  }
+  },
 }

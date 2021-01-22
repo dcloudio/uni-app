@@ -3247,7 +3247,7 @@ function defineEmit() {
 }
 
 // Core API ------------------------------------------------------------------
-const version = "3.0.4";
+const version = "3.0.5";
 
 // import deepCopy from './deepCopy'
 /**
@@ -3661,7 +3661,7 @@ function createVueApp(rootComponent, rootProps = null) {
 }
 
 function applyOptions$1(options, instance, publicThis) {
-    Object.keys(options).forEach(name => {
+    Object.keys(options).forEach((name) => {
         if (name.indexOf('on') === 0) {
             const hook = options[name];
             if (isFunction(hook)) {
@@ -3737,7 +3737,7 @@ var plugin = {
             createMiniProgramApp(instance);
             return instance;
         };
-    }
+    },
 };
 
 // @ts-ignore

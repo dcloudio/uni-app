@@ -11,7 +11,7 @@ export function initBridge(namespace: 'service' | 'view') {
     },
     emit(event: string, ...args: any[]) {
       console.log(event, args)
-    }
+    },
   }
   return {
     on,
@@ -32,6 +32,6 @@ export function initBridge(namespace: 'service' | 'view') {
         )
       }
       return emit(`${namespace}.${event}`, args, pageId)
-    }
+    },
   }
 }

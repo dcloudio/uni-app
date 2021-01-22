@@ -4,8 +4,8 @@ export const Base64ToArrayBufferProtocol: ProtocolOptions<String>[] = [
   {
     name: 'base64',
     type: String,
-    required: true
-  }
+    required: true,
+  },
 ]
 
 export const ArrayBufferToBase64Protocol: ProtocolOptions<
@@ -14,6 +14,6 @@ export const ArrayBufferToBase64Protocol: ProtocolOptions<
   {
     name: 'arrayBuffer',
     type: [ArrayBuffer, Uint8Array],
-    required: true
-  }
+    required: true,
+  },
 ]

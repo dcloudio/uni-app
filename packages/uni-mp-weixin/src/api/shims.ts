@@ -4,5 +4,5 @@ export const getProvider = initGetProvider({
   oauth: ['weixin'],
   share: ['weixin'],
   payment: ['wxpay'],
-  push: ['weixin']
+  push: ['weixin'],
 })

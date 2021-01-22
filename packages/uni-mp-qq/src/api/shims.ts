@@ -4,5 +4,5 @@ export const getProvider = initGetProvider({
   oauth: ['qq'],
   share: ['qq'],
   payment: ['qqpay'],
-  push: ['qq']
+  push: ['qq'],
 })

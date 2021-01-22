@@ -4,16 +4,16 @@ export const DownloadFileOptions: ApiOptions = {
   formatArgs: {
     header(value, params) {
       params.header = value || {}
-    }
-  }
+    },
+  },
 }
 
 export const DownloadFileProtocol: ApiProtocol = {
   url: {
     type: String,
-    required: true
+    required: true,
   },
   header: {
-    type: Object
-  }
+    type: Object,
+  },
 }

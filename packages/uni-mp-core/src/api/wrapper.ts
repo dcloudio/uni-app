@@ -6,7 +6,7 @@ import {
   MPProtocols,
   MPProtocolArgsValue,
   MPProtocolArgs,
-  MPProtocolObject
+  MPProtocolObject,
 } from './protocols'
 
 const CALLBACKS = ['success', 'fail', 'cancel', 'complete']
@@ -17,7 +17,7 @@ export function initWrapper(protocols: MPProtocols) {
     method: Function,
     returnValue: unknown
   ) {
-    return function(res: Record<string, any>) {
+    return function (res: Record<string, any>) {
       return method(processReturnValue(methodName, res, returnValue))
     }
   }
@@ -99,11 +99,11 @@ export function initWrapper(protocols: MPProtocols) {
     const protocol = protocols[methodName] as MPProtocolObject
     if (!protocol) {
       // 暂不支持的 api
-      return function() {
+      return function () {
         console.error(`__PLATFORM_TITLE__ 暂不支持${methodName}`)
       }
     }
-    return function(arg1: unknown, arg2: unknown) {
+    return function (arg1: unknown, arg2: unknown) {
       // 目前 api 最多两个参数
       let options = protocol
       if (isFunction(protocol)) {

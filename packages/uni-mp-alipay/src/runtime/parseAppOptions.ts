@@ -35,7 +35,7 @@ function onAliGetAuthorize(
       $event.type = 'getphonenumber'
       $event.detail.errMsg = 'getPhoneNumber:fail'
       ;(this as any)[method]($event)
-    }
+    },
   })
 }
 

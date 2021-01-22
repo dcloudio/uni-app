@@ -40,7 +40,7 @@ export function normalizeEvent(
     const { top } = getWindowOffset()
     detail = {
       x: $event.x,
-      y: $event.y - top
+      y: $event.y - top,
     }
     normalizeClickEvent($event)
   }
@@ -55,13 +55,13 @@ export function normalizeEvent(
     touches: normalizeTouchList(($event as any).touches),
     changedTouches: normalizeTouchList(($event as any).changedTouches),
     preventDefault() {},
-    stopPropagation() {}
+    stopPropagation() {},
   }
 
   if (__PLATFORM__ === 'app-plus' && currentTarget) {
     const nid = currentTarget.getAttribute('_i')
     ;(ret as any).options = {
-      nid
+      nid,
     }
     // 保留原始 currentTarget 方便后续对比
     ;(ret as any).$origCurrentTarget = currentTarget
@@ -78,8 +78,8 @@ function normalizeClickEvent($event: MouseEvent) {
       clientX: $event.clientX,
       clientY: $event.clientY,
       pageX: $event.pageX,
-      pageY: $event.pageY
-    }
+      pageY: $event.pageY,
+    },
   ]
 }
 
@@ -98,7 +98,7 @@ function normalizeTarget(
     id: target.id,
     offsetLeft: target.offsetLeft,
     offsetTop: target.offsetTop,
-    dataset: normalizeDataset(target.dataset)
+    dataset: normalizeDataset(target.dataset),
   }
   if (detail) {
     extend(res, detail)
@@ -120,7 +120,7 @@ function normalizeTouchList(touches: unknown) {
         pageY: touch.pageY - top,
         clientX: touch.clientX,
         clientY: touch.clientY - top,
-        force: touch.force || 0
+        force: touch.force || 0,
       })
     }
     return res

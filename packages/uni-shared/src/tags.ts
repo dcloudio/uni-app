@@ -41,7 +41,7 @@ export const BUILT_IN_TAGS = [
   'uni-textarea',
   'uni-video',
   'uni-view',
-  'uni-web-view'
+  'uni-web-view',
 ]
 
 export const TAGS = [
@@ -62,7 +62,7 @@ export const TAGS = [
   'uni-modal',
   'uni-toast',
   'uni-resize-sensor',
-  'uni-shadow-root'
+  'uni-shadow-root',
 ]
 
 export function isBuiltInComponent(tag: string) {

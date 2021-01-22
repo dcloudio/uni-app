@@ -3,7 +3,7 @@ import { CompilerOptions } from '@vue/compiler-sfc'
 import {
   COMPONENT_PREFIX,
   isBuiltInComponent,
-  isNativeTag
+  isNativeTag,
 } from '@dcloudio/uni-shared'
 
 import { transformBuiltInComponent } from './transforms/transformBuiltInComponent'
@@ -42,6 +42,6 @@ export const vueCompilerOptions: VueCompilerOptions = {
   nodeTransforms: [
     transformBuiltInComponent,
     transformBuiltInEasycom,
-    transformEasycom
-  ]
+    transformEasycom,
+  ],
 }

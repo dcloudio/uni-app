@@ -1,5 +1,0 @@
-export * from './mainJs'
-export * from './easycom'
-export * from './transform'
-export * from './pagesJson'
-export * from './dynamicImport'

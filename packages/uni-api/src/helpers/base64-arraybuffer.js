@@ -16,7 +16,7 @@ for (var i = 0; i < chars.length; i++) {
   lookup[chars.charCodeAt(i)] = i
 }
 
-exports.encode = function(arraybuffer) {
+export function encode(arraybuffer) {
   var bytes = new Uint8Array(arraybuffer),
     i,
     len = bytes.length,
@@ -38,7 +38,7 @@ exports.encode = function(arraybuffer) {
   return base64
 }
 
-exports.decode = function(base64) {
+export function decode(base64) {
   var bufferLength = base64.length * 0.75,
     len = base64.length,
     i,

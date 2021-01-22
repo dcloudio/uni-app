@@ -56,16 +56,16 @@ export const request = {
       fromArgs.header = {}
     }
     const headers: Record<string, string> = {
-      'content-type': 'application/json'
+      'content-type': 'application/json',
     }
-    Object.keys(fromArgs.header).forEach(key => {
+    Object.keys(fromArgs.header).forEach((key) => {
       headers[key.toLocaleLowerCase()] = fromArgs.header[key]
     })
     return {
       header() {
         return {
           name: 'headers',
-          value: headers
+          value: headers,
         }
       },
       data(data: unknown) {
@@ -78,32 +78,32 @@ export const request = {
         ) {
           return {
             name: 'data',
-            value: JSON.stringify(data)
+            value: JSON.stringify(data),
           }
         }
         return {
           name: 'data',
-          value: data
+          value: data,
         }
       },
       method: 'method', // TODO 支付宝小程序仅支持 get,post
-      responseType: false
+      responseType: false,
     }
   },
   returnValue: {
     status: 'statusCode',
-    headers: 'header'
-  }
+    headers: 'header',
+  },
 }
 export const setNavigationBarColor = {
   name: 'setNavigationBar',
   args: {
     frontColor: false,
-    animation: false
-  }
+    animation: false,
+  },
 }
 export const setNavigationBarTitle = {
-  name: 'setNavigationBar'
+  name: 'setNavigationBar',
 }
 export function showModal({ showCancel = true }: UniApp.ShowModalOptions = {}) {
   if (showCancel) {
@@ -113,7 +113,7 @@ export function showModal({ showCancel = true }: UniApp.ShowModalOptions = {}) {
         cancelColor: false,
         confirmColor: false,
         cancelText: 'cancelButtonText',
-        confirmText: 'confirmButtonText'
+        confirmText: 'confirmButtonText',
       },
       returnValue(
         fromRes: my.IConfirmSuccessResult,
@@ -121,19 +121,19 @@ export function showModal({ showCancel = true }: UniApp.ShowModalOptions = {}) {
       ) {
         toRes.confirm = fromRes.confirm
         toRes.cancel = !fromRes.confirm
-      }
+      },
     }
   }
   return {
     name: 'alert',
     args: {
       confirmColor: false,
-      confirmText: 'buttonText'
+      confirmText: 'buttonText',
     },
     returnValue(fromRes: unknown, toRes: UniApp.ShowModalRes) {
       toRes.confirm = true
       toRes.cancel = false
-    }
+    },
   }
 }
 export function showToast({ icon = 'success' }: UniApp.ShowToastOptions = {}) {
@@ -142,50 +142,50 @@ export function showToast({ icon = 'success' }: UniApp.ShowToastOptions = {}) {
     icon: 'type',
     duration: false,
     image: false,
-    mask: false
+    mask: false,
   }
   if (icon === 'loading') {
     return {
       name: 'showLoading',
-      args
+      args,
     }
   }
   return {
     name: 'showToast',
-    args
+    args,
   }
 }
 export const showActionSheet = {
   name: 'showActionSheet',
   args: {
     itemList: 'items',
-    itemColor: false
+    itemColor: false,
   },
   returnValue: {
-    index: 'tapIndex'
-  }
+    index: 'tapIndex',
+  },
 }
 export const showLoading = {
   args: {
     title: 'content',
-    mask: false
-  }
+    mask: false,
+  },
 }
 export const uploadFile = {
   args: {
-    name: 'fileName'
-  }
+    name: 'fileName',
+  },
   // 从测试结果看，是有返回对象的，文档上没有说明。
 }
 export const downloadFile = {
   returnValue: {
-    apFilePath: 'tempFilePath'
-  }
+    apFilePath: 'tempFilePath',
+  },
 }
 export const getFileInfo = {
   args: {
-    filePath: 'apFilePath'
-  }
+    filePath: 'apFilePath',
+  },
 }
 export const compressImage = {
   args(
@@ -208,25 +208,25 @@ export const compressImage = {
     if (apFilePaths && apFilePaths.length) {
       toRes.tempFilePath = apFilePaths[0]
     }
-  }
+  },
 }
 export const chooseVideo = {
   // 支付宝小程序文档中未找到（仅在getSetting处提及），但实际可用
   returnValue: {
-    apFilePath: 'tempFilePath'
-  }
+    apFilePath: 'tempFilePath',
+  },
 }
 export const connectSocket = {
   args: {
     method: false,
-    protocols: false
-  }
+    protocols: false,
+  },
   // TODO 有没有返回值还需要测试下
 }
 export const chooseImage = {
   returnValue: {
-    apFilePaths: 'tempFilePaths'
-  }
+    apFilePaths: 'tempFilePaths',
+  },
 }
 export const previewImage = {
   args(fromArgs: UniApp.PreviewImageOptions, toArgs: my.IPreviewImageOptions) {
@@ -242,96 +242,96 @@ export const previewImage = {
     }
     return {
       indicator: false,
-      loop: false
+      loop: false,
     }
-  }
+  },
 }
 export const saveFile = {
   args: {
-    tempFilePath: 'apFilePath'
+    tempFilePath: 'apFilePath',
   },
   returnValue: {
-    apFilePath: 'savedFilePath'
-  }
+    apFilePath: 'savedFilePath',
+  },
 }
 export const getSavedFileInfo = {
   args: {
-    filePath: 'apFilePath'
-  }
+    filePath: 'apFilePath',
+  },
 }
 export const getSavedFileList = {
   returnValue(
     fromRes: my.IGetSavedFileListSuccessResult,
     toRes: UniApp.GetSavedFileListSuccess
   ) {
-    toRes.fileList = fromRes.fileList.map(file => {
+    toRes.fileList = fromRes.fileList.map((file) => {
       return {
         filePath: (file as any).apFilePath, // mini-types file.d.ts 不正确
         createTime: file.createTime,
-        size: file.size
+        size: file.size,
       }
     })
-  }
+  },
 }
 export const removeSavedFile = {
   args: {
-    filePath: 'apFilePath'
-  }
+    filePath: 'apFilePath',
+  },
 }
 export const getLocation = {
   args: {
     type: false,
-    altitude: false
-  }
+    altitude: false,
+  },
 }
 export const openLocation = {
   args: {
     // TODO address 参数在阿里上是必传的
-  }
+  },
 }
 export const getNetworkType = {
-  returnValue: handleNetworkInfo
+  returnValue: handleNetworkInfo,
 }
 export const onNetworkStatusChange = {
-  returnValue: handleNetworkInfo
+  returnValue: handleNetworkInfo,
 }
 export const stopAccelerometer = {
-  name: 'offAccelerometerChange'
+  name: 'offAccelerometerChange',
 }
 export const stopCompass = {
-  name: 'offCompassChange'
+  name: 'offCompassChange',
 }
 export const scanCode = {
   name: 'scan',
   args: {
-    onlyFromCamera: 'hideAlbum'
+    onlyFromCamera: 'hideAlbum',
   },
   returnValue: {
-    code: 'result'
-  }
+    code: 'result',
+  },
 }
 export const setClipboardData = {
   name: 'setClipboard',
   args: {
-    data: 'text'
-  }
+    data: 'text',
+  },
 }
 export const getClipboardData = {
   name: 'getClipboard',
   returnValue: {
-    text: 'data'
-  }
+    text: 'data',
+  },
 }
 export const pageScrollTo = {
   args: {
-    duration: false
-  }
+    duration: false,
+  },
 }
 export const login = {
   name: 'getAuthCode',
   returnValue: {
-    authCode: 'code'
-  }
+    authCode: 'code',
+  },
 }
 export const getUserInfo = {
   name: my.canIUse('getOpenUserInfo') ? 'getOpenUserInfo' : 'getAuthUserInfo',
@@ -353,55 +353,55 @@ export const getUserInfo = {
       toRes.userInfo = {
         openId: '',
         nickName: fromRes.nickName,
-        avatarUrl: fromRes.avatar
+        avatarUrl: fromRes.avatar,
       }
     }
-  }
+  },
 }
 export const requestPayment = {
   name: 'tradePay',
   args: {
-    orderInfo: 'tradeNO'
-  }
+    orderInfo: 'tradeNO',
+  },
 }
 export const getBLEDeviceServices = {
   returnValue(
     fromRes: my.IGetBLEDeviceServicesSuccessResult,
     toRes: UniApp.GetBLEDeviceServicesSuccess
   ) {
-    toRes.services = fromRes.services.map(item => {
+    toRes.services = fromRes.services.map((item) => {
       return {
         uuid: item.serviceId,
-        isPrimary: item.isPrimary
+        isPrimary: item.isPrimary,
       }
     })
-  }
+  },
 }
 export const createBLEConnection = {
   name: 'connectBLEDevice',
   args: {
-    timeout: false
-  }
+    timeout: false,
+  },
 }
 export const closeBLEConnection = {
-  name: 'disconnectBLEDevice'
+  name: 'disconnectBLEDevice',
 }
 export const onBLEConnectionStateChange = {
-  name: 'onBLEConnectionStateChanged'
+  name: 'onBLEConnectionStateChanged',
 }
 export const makePhoneCall = {
   args: {
-    phoneNumber: 'number'
-  }
+    phoneNumber: 'number',
+  },
 }
 export const stopGyroscope = {
-  name: 'offGyroscopeChange'
+  name: 'offGyroscopeChange',
 }
 export const getSystemInfo = {
-  returnValue: handleSystemInfo
+  returnValue: handleSystemInfo,
 }
 export const getSystemInfoSync = {
-  returnValue: handleSystemInfo
+  returnValue: handleSystemInfo,
 }
 // 文档没提到，但是实测可用。
 export const canvasToTempFilePath = {
@@ -411,34 +411,34 @@ export const canvasToTempFilePath = {
   ) {
     // 真机的情况下会有 tempFilePath 这个值，因此需要主动修改。
     toRes.tempFilePath = fromRes.apFilePath
-  }
+  },
 }
 export const setScreenBrightness = {
   args: {
-    value: 'brightness'
-  }
+    value: 'brightness',
+  },
 }
 export const getScreenBrightness = {
   returnValue: {
-    brightness: 'value'
-  }
+    brightness: 'value',
+  },
 }
 export const showShareMenu = {
-  name: 'showSharePanel'
+  name: 'showSharePanel',
 }
 export const hideHomeButton = {
-  name: 'hideBackHome'
+  name: 'hideBackHome',
 }
 export const saveImageToPhotosAlbum = {
   name: 'saveImage',
   args: {
-    filePath: 'url'
-  }
+    filePath: 'url',
+  },
 }
 export const saveVideoToPhotosAlbum = {
   args: {
-    filePath: 'src'
-  }
+    filePath: 'src',
+  },
 }
 export const chooseAddress = {
   name: 'getAddress',
@@ -451,5 +451,5 @@ export const chooseAddress = {
     toRes.detailInfo = info.address
     toRes.telNumber = info.mobilePhone
     toRes.errMsg = toRes.errMsg + ' ' + fromRes.resultStatus
-  }
+  },
 }

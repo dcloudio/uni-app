@@ -3,9 +3,9 @@ import { ApiProtocol } from '../type'
 export const OpenDocumentProtocol: ApiProtocol = {
   filePath: {
     type: String,
-    required: true
+    required: true,
   },
   fileType: {
-    type: String
-  }
+    type: String,
+  },
 }

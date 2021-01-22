@@ -11,14 +11,14 @@ export const HTTP_METHODS = {
   PUT: 'PUT',
   DELETE: 'DELETE',
   TRACE: 'TRACE',
-  CONNECT: 'CONNECT'
+  CONNECT: 'CONNECT',
 }
 
 export function normalizeStrArray(strArr: string[], optionalVal: string[]) {
   if (
     !isArray(strArr) ||
     strArr.length === 0 ||
-    strArr.find(val => optionalVal.indexOf(val) === -1)
+    strArr.find((val) => optionalVal.indexOf(val) === -1)
   ) {
     return optionalVal
   }

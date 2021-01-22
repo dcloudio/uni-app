@@ -8,6 +8,6 @@ export const MakePhoneCallProtocol: ApiProtocol = {
       if (!phoneNumber) {
         return 'makePhoneCall:fail parameter error: parameter.phoneNumber should not be empty String;'
       }
-    }
-  }
+    },
+  },
 }

@@ -2,7 +2,7 @@ import { ApiProtocol, ApiOptions } from '../type'
 
 const coordTypes = {
   WGS84: 'WGS84',
-  GCJ02: 'GCJ02'
+  GCJ02: 'GCJ02',
 }
 
 export const GetLocationOptions: ApiOptions = {
@@ -14,17 +14,17 @@ export const GetLocationOptions: ApiOptions = {
         type = coordTypes.WGS84
       }
       params.type = type
-    }
-  }
+    },
+  },
 }
 
 export const GetLocationProtocol: ApiProtocol = {
   type: {
     type: String,
-    default: coordTypes.WGS84
+    default: coordTypes.WGS84,
   },
   altitude: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 }

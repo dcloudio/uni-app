@@ -2,7 +2,7 @@ import { hasOwn, isArray } from '@vue/shared'
 import {
   ComponentOptions,
   ComponentInternalInstance,
-  ComponentPublicInstance
+  ComponentPublicInstance,
 } from 'vue'
 
 import { MPComponentInstance, MPComponentOptions } from './component'
@@ -35,7 +35,7 @@ export function initExtraOptions(
   miniProgramComponentOptions: MPComponentOptions,
   vueOptions: ComponentOptions
 ) {
-  EXTRAS.forEach(name => {
+  EXTRAS.forEach((name) => {
     if (hasOwn(vueOptions, name)) {
       ;(miniProgramComponentOptions as any)[name] = vueOptions[name]
     }
@@ -50,7 +50,7 @@ export function initWxsCallMethods(
     return
   }
   wxsCallMethods.forEach((callMethod: string) => {
-    methods[callMethod] = function(this: MPComponentInstance, args: unknown) {
+    methods[callMethod] = function (this: MPComponentInstance, args: unknown) {
       return (this.$vm as any)[callMethod](args)
     }
   })
@@ -64,12 +64,12 @@ export function initRefs(
     get() {
       const $refs: Record<string, any> = {}
       const components = mpInstance.selectAllComponents('.vue-ref')
-      components.forEach(component => {
+      components.forEach((component) => {
         const ref = component.dataset.ref
         $refs[ref] = component.$vm || component
       })
       const forComponents = mpInstance.selectAllComponents('.vue-ref-in-for')
-      forComponents.forEach(component => {
+      forComponents.forEach((component) => {
         const ref = component.dataset.ref
         if (!$refs[ref]) {
           $refs[ref] = []
@@ -77,7 +77,7 @@ export function initRefs(
         $refs[ref].push(component.$vm || component)
       })
       return $refs
-    }
+    },
   })
 }
 

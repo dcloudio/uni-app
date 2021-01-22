@@ -52,7 +52,7 @@ export function initBehaviors(
 
   const behaviors: string[] = []
   if (isArray(vueBehaviors)) {
-    vueBehaviors.forEach(behavior => {
+    vueBehaviors.forEach((behavior) => {
       behaviors.push(behavior.replace('uni://', `${__PLATFORM_PREFIX__}://`))
       if (behavior === 'uni://form-field') {
         if (isArray(vueProps)) {
@@ -61,11 +61,11 @@ export function initBehaviors(
         } else {
           vueProps.name = {
             type: String,
-            default: ''
+            default: '',
           }
           vueProps.value = {
             type: [String, Number, Boolean, Array, Object, Date],
-            default: ''
+            default: '',
           }
         }
       }
@@ -77,7 +77,7 @@ export function initBehaviors(
     behaviors.push(initBehavior(behavior) as string)
   }
   if (isArray(vueMixins)) {
-    vueMixins.forEach(vueMixin => {
+    vueMixins.forEach((vueMixin) => {
       if (vueMixin.props) {
         const behavior = {}
         initProps(behavior, vueMixin.props, true)

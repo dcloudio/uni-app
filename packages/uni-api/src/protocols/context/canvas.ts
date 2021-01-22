@@ -3,7 +3,7 @@ import { extend } from '@vue/shared'
 import { ApiProtocol, ApiOptions, Data } from '../type'
 
 function getInt(name: string) {
-  return function(value: number, params: Data) {
+  return function (value: number, params: Data) {
     if (value) {
       params[name] = Math.round(value)
     }
@@ -15,31 +15,31 @@ export const CanvasGetImageDataOptions: ApiOptions = {
     x: getInt('x'),
     y: getInt('y'),
     width: getInt('width'),
-    height: getInt('height')
-  }
+    height: getInt('height'),
+  },
 }
 
 export const CanvasGetImageDataProtocol: ApiProtocol = {
   canvasId: {
     type: String,
-    required: true
+    required: true,
   },
   x: {
     type: Number,
-    required: true
+    required: true,
   },
   y: {
     type: Number,
-    required: true
+    required: true,
   },
   width: {
     type: Number,
-    required: true
+    required: true,
   },
   height: {
     type: Number,
-    required: true
-  }
+    required: true,
+  },
 }
 
 export const CanvasPutImageDataOptions = CanvasGetImageDataOptions
@@ -47,33 +47,33 @@ export const CanvasPutImageDataOptions = CanvasGetImageDataOptions
 export const CanvasPutImageDataProtocol: ApiProtocol = {
   canvasId: {
     type: String,
-    required: true
+    required: true,
   },
   data: {
     type: Uint8ClampedArray,
-    required: true
+    required: true,
   },
   x: {
     type: Number,
-    required: true
+    required: true,
   },
   y: {
     type: Number,
-    required: true
+    required: true,
   },
   width: {
     type: Number,
-    required: true
+    required: true,
   },
   height: {
-    type: Number
-  }
+    type: Number,
+  },
 }
 
 const fileTypes = {
   PNG: 'png',
   JPG: 'jpg',
-  JPEG: 'jpg'
+  JPEG: 'jpg',
 }
 
 export const CanvasToTempFilePathOptions: ApiOptions = {
@@ -92,56 +92,56 @@ export const CanvasToTempFilePathOptions: ApiOptions = {
       quality(value: number, params: Data) {
         value = Math.floor(value)
         params.quality = value > 0 && value < 1 ? value : 1
-      }
+      },
     },
     CanvasGetImageDataOptions.formatArgs
-  )
+  ),
 }
 
 export const CanvasToTempFilePathProtocol: ApiProtocol = {
   x: {
     type: Number,
-    default: 0
+    default: 0,
   },
   y: {
     type: Number,
-    default: 0
+    default: 0,
   },
   width: {
-    type: Number
+    type: Number,
   },
   height: {
-    type: Number
+    type: Number,
   },
   destWidth: {
-    type: Number
+    type: Number,
   },
   destHeight: {
-    type: Number
+    type: Number,
   },
   canvasId: {
     type: String,
-    required: true
+    required: true,
   },
   fileType: {
-    type: String
+    type: String,
   },
   quality: {
-    type: Number
-  }
+    type: Number,
+  },
 }
 
 export const DrawCanvasProtocol: ApiProtocol = {
   canvasId: {
     type: String,
-    required: true
+    required: true,
   },
   actions: {
     type: Array,
-    required: true
+    required: true,
   },
   reserve: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 }

@@ -4,8 +4,8 @@ const validator: ProtocolOptions<String>[] = [
   {
     name: 'id',
     type: String,
-    required: true
-  }
+    required: true,
+  },
 ]
 
 export const CreateAudioContextProtocol = validator
@@ -15,10 +15,10 @@ export const CreateCanvasContextProtocol: ProtocolOptions<String | Object>[] = [
   {
     name: 'canvasId',
     type: String,
-    required: true
+    required: true,
   },
   {
     name: 'componentInstance',
-    type: Object
-  }
+    type: Object,
+  },
 ]
