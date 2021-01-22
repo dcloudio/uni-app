@@ -1,3 +1,4 @@
+import { v4 } from 'uuid';
 import Vue from 'vue';
 
 const _toString = Object.prototype.toString;
@@ -493,6 +494,67 @@ var redirectTo = {
   }
 };
 
+function setStorageSync (key, data) {
+  return my.setStorageSync({
+    key,
+    data
+  })
+}
+function getStorageSync (key) {
+  const result = my.getStorageSync({
+    key
+  });
+  // 支付宝平台会返回一个 success 值，但是目前测试的结果这个始终是 true。当没有存储数据的时候，其它平台会返回空字符串。
+  return result.data !== null ? result.data : ''
+}
+function removeStorageSync (key) {
+  return my.removeStorageSync({
+    key
+  })
+}
+
+const UUID_KEY = '__DC_UUID';
+let uuid;
+function addUuid (result) {
+  uuid = uuid || getStorageSync(UUID_KEY);
+  if (!uuid) {
+    uuid = v4();
+    my.setStorage({
+      key: UUID_KEY,
+      data: uuid
+    });
+  }
+  result.uuid = uuid;
+}
+
+function addSafeAreaInsets (result) {
+  if (result.safeArea) {
+    const safeArea = result.safeArea;
+    result.safeAreaInsets = {
+      top: safeArea.top,
+      left: safeArea.left,
+      right: result.windowWidth - safeArea.right,
+      bottom: result.windowHeight - safeArea.bottom
+    };
+  }
+}
+
+function normalizePlatform (result) {
+  let platform = result.platform ? result.platform.toLowerCase() : 'devtools';
+  if (!~['android', 'ios'].indexOf(platform)) {
+    platform = 'devtools';
+  }
+  result.platform = platform;
+}
+
+var getSystemInfo = {
+  returnValue: function (result) {
+    addUuid(result);
+    addSafeAreaInsets(result);
+    normalizePlatform(result);
+  }
+};
+
 // 不支持的 API 列表
 const todos = [
   'preloadPage',
@@ -560,14 +622,6 @@ function _handleNetworkInfo (result) {
       break
   }
   return {}
-}
-
-function _handleSystemInfo (result) {
-  let platform = result.platform ? result.platform.toLowerCase() : 'devtools';
-  if (!~['android', 'ios'].indexOf(platform)) {
-    platform = 'devtools';
-  }
-  result.platform = platform;
 }
 
 const protocols = { // 需要做转换的 API 列表
@@ -915,12 +969,8 @@ const protocols = { // 需要做转换的 API 列表
   stopGyroscope: {
     name: 'offGyroscopeChange'
   },
-  getSystemInfo: {
-    returnValue: _handleSystemInfo
-  },
-  getSystemInfoSync: {
-    returnValue: _handleSystemInfo
-  },
+  getSystemInfo: getSystemInfo,
+  getSystemInfoSync: getSystemInfo,
   // 文档没提到，但是实测可用。
   canvasToTempFilePath: {
     returnValue (result) {
@@ -1245,25 +1295,6 @@ function createMediaQueryObserver () {
   return mediaQueryObserver
 }
 
-function setStorageSync (key, data) {
-  return my.setStorageSync({
-    key,
-    data
-  })
-}
-function getStorageSync (key) {
-  const result = my.getStorageSync({
-    key
-  });
-  // 支付宝平台会返回一个 success 值，但是目前测试的结果这个始终是 true。当没有存储数据的时候，其它平台会返回空字符串。
-  return result.data !== null ? result.data : ''
-}
-function removeStorageSync (key) {
-  return my.removeStorageSync({
-    key
-  })
-}
-
 function startGyroscope (params) {
   if (hasOwn(params, 'interval')) {
     console.warn('支付宝小程序 startGyroscope暂不支持interval');
@@ -1349,13 +1380,13 @@ function createIntersectionObserver (component, options) {
 
 var api = /*#__PURE__*/Object.freeze({
   __proto__: null,
-  setStorageSync: setStorageSync,
-  getStorageSync: getStorageSync,
-  removeStorageSync: removeStorageSync,
   startGyroscope: startGyroscope,
   createSelectorQuery: createSelectorQuery,
   createIntersectionObserver: createIntersectionObserver,
-  createMediaQueryObserver: createMediaQueryObserver
+  createMediaQueryObserver: createMediaQueryObserver,
+  setStorageSync: setStorageSync,
+  getStorageSync: getStorageSync,
+  removeStorageSync: removeStorageSync
 });
 
 const PAGE_EVENT_HOOKS = [

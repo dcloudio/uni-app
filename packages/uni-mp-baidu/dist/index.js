@@ -1,3 +1,4 @@
+import { v4 } from 'uuid';
 import Vue from 'vue';
 
 const _toString = Object.prototype.toString;
@@ -527,6 +528,39 @@ var previewImage = {
   }
 };
 
+const UUID_KEY = '__DC_UUID';
+let uuid;
+function addUuid (result) {
+  uuid = uuid || swan.getStorageSync(UUID_KEY);
+  if (!uuid) {
+    uuid = v4();
+    swan.setStorage({
+      key: UUID_KEY,
+      data: uuid
+    });
+  }
+  result.uuid = uuid;
+}
+
+function addSafeAreaInsets (result) {
+  if (result.safeArea) {
+    const safeArea = result.safeArea;
+    result.safeAreaInsets = {
+      top: safeArea.top,
+      left: safeArea.left,
+      right: result.windowWidth - safeArea.right,
+      bottom: result.windowHeight - safeArea.bottom
+    };
+  }
+}
+
+var getSystemInfo = {
+  returnValue: function (result) {
+    addUuid(result);
+    addSafeAreaInsets(result);
+  }
+};
+
 // 不支持的 API 列表
 const todos = [
   'preloadPage',
@@ -611,6 +645,8 @@ const protocols = {
   navigateTo,
   redirectTo,
   previewImage,
+  getSystemInfo,
+  getSystemInfoSync: getSystemInfo,
   getRecorderManager: {
     returnValue (fromRet) {
       fromRet.onFrameRecorded = createTodoMethod('RecorderManager', 'onFrameRecorded');
@@ -1994,11 +2030,6 @@ function parsePage (vuePageOptions) {
     isPage,
     initRelation
   });
-
-  const onInit = (vuePageOptions.default || vuePageOptions).onInit;
-  if (onInit) {
-    pageOptions.methods.onInit = onInit;
-  }
 
   // 纠正百度小程序生命周期methods:onShow在methods:onLoad之前触发的问题
   pageOptions.methods.onShow = function onShow () {

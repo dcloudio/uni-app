@@ -1,3 +1,4 @@
+import { v4 } from 'uuid';
 import Vue from 'vue';
 
 const _toString = Object.prototype.toString;
@@ -527,6 +528,39 @@ var previewImage = {
   }
 };
 
+const UUID_KEY = '__DC_UUID';
+let uuid;
+function addUuid (result) {
+  uuid = uuid || tt.getStorageSync(UUID_KEY);
+  if (!uuid) {
+    uuid = v4();
+    tt.setStorage({
+      key: UUID_KEY,
+      data: uuid
+    });
+  }
+  result.uuid = uuid;
+}
+
+function addSafeAreaInsets (result) {
+  if (result.safeArea) {
+    const safeArea = result.safeArea;
+    result.safeAreaInsets = {
+      top: safeArea.top,
+      left: safeArea.left,
+      right: result.windowWidth - safeArea.right,
+      bottom: result.windowHeight - safeArea.bottom
+    };
+  }
+}
+
+var getSystemInfo = {
+  returnValue: function (result) {
+    addUuid(result);
+    addSafeAreaInsets(result);
+  }
+};
+
 // 不支持的 API 列表
 const todos = [
   'preloadPage',
@@ -629,6 +663,8 @@ const protocols = {
   navigateTo,
   redirectTo,
   previewImage,
+  getSystemInfo,
+  getSystemInfoSync: getSystemInfo,
   connectSocket: {
     args: {
       method: false

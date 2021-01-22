@@ -1,3 +1,4 @@
+import { v4 } from 'uuid';
 import Vue from 'vue';
 
 const _toString = Object.prototype.toString;
@@ -527,10 +528,45 @@ var previewImage = {
   }
 };
 
+const UUID_KEY = '__DC_UUID';
+let uuid;
+function addUuid (result) {
+  uuid = uuid || ks.getStorageSync(UUID_KEY);
+  if (!uuid) {
+    uuid = v4();
+    ks.setStorage({
+      key: UUID_KEY,
+      data: uuid
+    });
+  }
+  result.uuid = uuid;
+}
+
+function addSafeAreaInsets (result) {
+  if (result.safeArea) {
+    const safeArea = result.safeArea;
+    result.safeAreaInsets = {
+      top: safeArea.top,
+      left: safeArea.left,
+      right: result.windowWidth - safeArea.right,
+      bottom: result.windowHeight - safeArea.bottom
+    };
+  }
+}
+
+var getSystemInfo = {
+  returnValue: function (result) {
+    addUuid(result);
+    addSafeAreaInsets(result);
+  }
+};
+
 const protocols = {
   navigateTo,
   redirectTo,
-  previewImage
+  previewImage,
+  getSystemInfo,
+  getSystemInfoSync: getSystemInfo
 };
 const todos = [
   'vibrate'
