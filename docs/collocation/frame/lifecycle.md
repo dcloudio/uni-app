@@ -42,8 +42,8 @@
 
 |函数名|说明|平台差异说明|最低版本|
 |:-|:-|:-|:-|
-|onInit|监听页面初始化，其参数同 onLoad 参数，为上个页面传递的数据，参数类型为Object（用于页面传参）|百度小程序|3.0.5+|
-|onLoad|监听页面加载，其参数为上个页面传递的数据，参数类型为Object（用于页面传参），参考[示例](/api/router?id=navigateto)|||
+|onInit|监听页面初始化，其参数同 onLoad 参数，为上个页面传递的数据，参数类型为 Object（用于页面传参），触发时机早于 onLoad|百度小程序|3.0.8+|
+|onLoad|监听页面加载，其参数为上个页面传递的数据，参数类型为 Object（用于页面传参），参考[示例](/api/router?id=navigateto)|||
 |onShow|监听页面显示。页面每次出现在屏幕上都触发，包括从下级页面点返回露出当前页面|||
 |onReady|监听页面初次渲染完成。注意如果渲染速度快，会在页面进入动画完成前触发|||
 |onHide|监听页面隐藏|||
@@ -63,9 +63,9 @@
 |onAddToFavorites|监听用户点击右上角收藏|微信小程序|2.8.1+|
 
 ``onInit``使用注意
-- 仅百度小程序基础库 3.260 以上支持 onInit 生命周期，如百度开发者工具基础库版本过低可使用真机进行测试。
-- onInit 生命周期早于 beforeCreate 生命周期，如需访问 Vue 实例的数据对象，请在 created 生命周期内访问。
-- 当支持 onInit 生命周期时 Vue 实例会较早创建，故一般情况可使用 created 生命周期替代 onInit 生命周期。
+- 仅百度小程序基础库 3.260 以上支持 onInit 生命周期
+- 其他版本或平台可以同时使用 onLoad 生命周期进行兼容，注意避免重复执行相同逻辑
+- 不依赖页面传参的逻辑可以直接使用 created 生命周期替代
 
 ``onReachBottom``使用注意
 可在pages.json里定义具体页面底部的触发距离[onReachBottomDistance](/collocation/pages)，比如设为50，那么滚动页面到距离底部50px时，就会触发onReachBottom事件。
