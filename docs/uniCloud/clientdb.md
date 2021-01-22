@@ -1340,7 +1340,7 @@ const res = await db.collection('score')
 
 - 在上面使用preField方法的情况下，会计算preField内访问的所有字段计算权限。上面的例子中会使用表的read权限和grade、class、score三个字段的权限，来进行权限校验。
 - 在不使用preField，仅使用groupBy和groupField的情况下，会以groupBy和groupField内访问的所有字段的权限来校验访问是否合法。
-- 与field不同groupBy不会包含_id，除非你手动指定
+- 与field不同，groupBy不会包含_id，除非你手动指定
 
 #### 统计数量
 
