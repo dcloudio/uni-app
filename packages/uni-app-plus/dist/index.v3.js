@@ -5394,6 +5394,13 @@ var serviceContext = (function () {
     return plus.navigator.isImmersedStatusbar() ? Math.round(plus.os.name === 'iOS' ? plus.navigator.getSafeAreaInsets().top : plus.navigator.getStatusbarHeight()) : 0
   }
 
+  let uuid;
+
+  function uuid$1 () {
+    uuid = uuid || plus.runtime.getDCloudId();
+    return uuid
+  }
+
   function getSystemInfoSync () {
     return callApiSync(getSystemInfo, Object.create(null), 'getSystemInfo', 'getSystemInfoSync')
   }
@@ -5481,7 +5488,7 @@ var serviceContext = (function () {
         bottom: safeAreaInsets.bottom,
         left: safeAreaInsets.left
       },
-      uuid: plus.runtime.getDCloudId()
+      uuid: uuid$1()
     }
   }
 
