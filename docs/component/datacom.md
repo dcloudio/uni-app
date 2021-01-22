@@ -352,14 +352,21 @@ datacom组件规范还要求支持绑定 value，且支持双向绑定，即：�
 欢迎开发者们开发这些`datacom组件`，后续插件市场将单列出datacom组件，给予更高的显示权重。
 
 
-### uniCloud.mixinDatacomJql
+### 使用mixinDatacom快速开发datacom
 
-HBuilderX 3.1.0+ 支持
+> 版本要求：HBuilderX 3.1.0+ 
 
-`uniCloud.mixinDatacomJql` 是 `datacom组件` 的 mixin, [mixin详情](https://cn.vuejs.org/v2/api/#Vue-mixin)
+开发一个支持localdata的datacom组件相对容易，但要开发支持云端数据的datacom组件，实现对collection、field、where等属性的解析，工作量还是不小的。
 
+为此官方提供了一个mixin混入库，开发者在自己的datacom组件中混入`uniCloud.mixinDatacom`，即可方便的让自己的组件支持本地和云端的数据绑定，快速完成datacom组件。
 
-`uniCloud.mixinDatacomJql` props
+mixin是vue的技术，不熟悉的可以点此了解[vue官网的mixin文档](https://cn.vuejs.org/v2/api/#Vue-mixin)
+
+#### 语法手册
+
+`uniCloud.mixinDatacom` 的props
+
+与标准的datacom组件相同，除了localdata外，其他都是`uniCloud-db组件`的标准属性。
 
 |属性名						| 类型			| 	默认值		| 说明|
 |:-:						| :-:			| :-:			| :-:	|
@@ -377,92 +384,83 @@ HBuilderX 3.1.0+ 支持
 |gettree					|Boolean		|	false		|是否查询树状数据，默认 `false`|
 
 
-`uniCloud.mixinDatacomJql` data
+`uniCloud.mixinDatacom` 的data
 
 |属性名							| 类型			|	默认值	| 说明|
 |:-:							| :-:			| :-:		| :-:	|
-|mixinDatacomJqlLoading			|Boolean		| 			|加载数据状态|
-|mixinDatacomJqlHasMore			|Boolean		| 			|是否有更多数据|
-|mixinDatacomJqlResData			|Array			| 			|查询返回的数据|
-|mixinDatacomJqlErrorMessage	|String			| 			|错误消息|
-|mixinDatacomJqlPage			|OBject			| 			|分页信息|
+|mixinDatacomLoading			|Boolean		| 			|加载数据状态|
+|mixinDatacomHasMore			|Boolean		| 			|是否有更多数据|
+|mixinDatacomResData			|Array			| 			|查询返回的数据|
+|mixinDatacomErrorMessage	|String			| 			|错误消息|
+|mixinDatacomPage			|OBject			| 			|分页信息|
 
 
-`uniCloud.mixinDatacomJql` methods
+`uniCloud.mixinDatacom` methods
 
 |方法名							| 说明|
 |:-:							| :-:	|
-|mixinDatacomJqlEasyGet			|加载数据，包含 `mixinDatacomJqlLoading` 、`mixinDatacomJqlHasMore`、`mixinDatacomJqlErrorMessage` 逻辑 |
-|mixinDatacomJqlGet				|加载数据|
-|onMixinDatacomJqlPropsChange	|属性发生变化时触发|
+|mixinDatacomEasyGet			|加载数据，包含 `mixinDatacomLoading` 、`mixinDatacomHasMore`、`mixinDatacomErrorMessage` 逻辑 |
+|mixinDatacomGet				|加载数据|
+|onMixinDatacomPropsChange	|属性发生变化时触发|
+
+#### 使用方法
+
+使用 `uniCloud.mixinDatacom` 开发 `datacom` 组件需要以下步骤
+
+1. 在export default下声明`mixin: [uniCloud.mixinDatacom]`
+2. 在template中绑定 `uniCloud.mixinDatacom` 的 `data` 属性，处理状态或数据的展示
+3. 组件的created声明周期中调用 `uniCloud.mixinDatacom` 中的 `mixinDatacomGet()` 或 `mixinDatacomEasyGet()` 方法请求云端数据库。这两种方法的区别如下：
+	- `mixinDatacomGet()` 仅请求数据，自行处理各种状态和异常。
+	- `mixinDatacomEasyGet()` 在 `mixinDatacomGet()` 的基础之上封装了加载状态、分页及错误消息，可通过模板绑定。用起来更简单
 
 
-
-在没有 `uniCloud.mixinDatacomJql` 时开发一个 `datacom` 组件需要一下步骤，如何实现参考 `uniCloud.mixinDatacomJql` [源码](https://uniapp.dcloud.net.cn/component/datacom?id=mixinDatacomJqlsource)
-
-1. 定义 `datacom` 组件 `props`
-2. 定义 `datacom` 组件 `data` 属性
-3. 调用 `uniClientDB` API，传递 `props` 参数
-4. 绑定 `data` 中的数据到模板
-5. 监听组件属性变化，需要根据变化判断是否需要重置并加载数据
-
-
-
-使用 `uniCloud.mixinDatacomJql` 开发 `datacom` 组件需要以下步骤
-
-1. mixin `uniCloud.mixinDatacomJql`
-2. 模板中绑定 `uniCloud.mixinDatacomJql` 的 `data` 属性
-3. 调用 `uniCloud.mixinDatacomJql` 中的 `mixinDatacomJqlEasyGet()` 或 `mixinDatacomJqlGet()` 方法请求云端数据库
-	- `mixinDatacomJqlEasyGet()` 处理了加载状态、分页及错误消息，可通过模板绑定
-	- `mixinDatacomJqlGet()` 仅请求数据，不处理业务逻辑
-
-
-使用 `uniCloud.mixinDatacomJql` 开发 `datacom` 组件的优势
+使用 `uniCloud.mixinDatacom` 开发 `datacom` 组件的优势
 
 - 不需要定义 `datacom` 组件的属性
 - 不需要关心 `uniClinetDB` API
-- 不需要判断哪些属性变化时需要重置已加载数据， 仅判断 `onMixinDatacomJqlPropsChange(needReset, changed) {}` 参数 `needReset` 是否为 `true` 即可
+- 不需要判断哪些属性变化时需要重置已加载数据， 仅判断 `onMixinDatacomPropsChange(needReset, changed) {}` 参数 `needReset` 是否为 `true` 即可
 - 当 `uniClinetDB` 有新增属性时，组件代码也不需要跟随更新
 
 
+例如要开发一个datacom组件，名为uni-data-jql：
 
-组件示例，调用 `mixinDatacomJqlEasyGet()` 加载数据
+- 方法1，使用 `mixinDatacomEasyGet()`
 
 ```html
 <!-- uni-data-jql.vue -->
 <template>
 	<view>
-		<view v-if="mixinDatacomJqlLoading">Loading...</view>
-		<view v-else-if="mixinDatacomJqlErrorMessage"></view>
-		<view else="mixinDatacomJqlResData">
-			{{mixinDatacomJqlResData}}
+		<view v-if="mixinDatacomLoading">Loading...</view>
+		<view v-else-if="mixinDatacomErrorMessage"></view>
+		<view else="mixinDatacomResData">
+			{{mixinDatacomResData}}
 		</view>
 	</view>
 </template>
 
 <script>
 	export default {
-		mixins: [uniCloud.mixinDatacomJql],
+		mixins: [uniCloud.mixinDatacom],
 		data() {
 			return {}
 		},
 		created() {
-			// 调用 uniCloud.mixinDatacomJql 中的方法加载数据
-			this.mixinDatacomJqlEasyGet()
+			// 调用 uniCloud.mixinDatacom 中的方法加载数据
+			this.mixinDatacomEasyGet()
 		},
 		methods: {
 			// 当组件属性发生变化时
-			onMixinDatacomJqlPropsChange(needReset, changed) {
+			onMixinDatacomPropsChange(needReset, changed) {
 				// needReset=true 需要重置已加载数据和分页信息，例如 collection，orderby
 				// changed，变化的属性名，类型为 Array，例如 ['collection', 'orderby']
 				if (needReset) {
 					// 清空已加载的数据
-					this.mixinDatacomJqlResData = []
+					this.mixinDatacomResData = []
 
 					// 重置分页数据，如果没有分页不需要处理
-					this.mixinDatacomJqlPage.size = this.pageSize // 重置分页大小
-					this.mixinDatacomJqlPage.current = 0 // 重置当前分页
-					this.mixinDatacomJqlPage.count = 0 // 重置数据总数
+					this.mixinDatacomPage.size = this.pageSize // 重置分页大小
+					this.mixinDatacomPage.current = 0 // 重置当前分页
+					this.mixinDatacomPage.count = 0 // 重置数据总数
 				}
 			}
 		}
@@ -471,23 +469,25 @@ HBuilderX 3.1.0+ 支持
 ```
 
 
-组件示例，调用 `mixinDatacomJqlGet()` 加载数据
+- 方法2，使用 `mixinDatacomGet()` 
+
+需要多写些代码处理各种状态。如果`mixinDatacomEasyGet`的封装无法灵活满足你的需求，可以使用这种方式。
 
 ```html
 <!-- uni-data-jql.vue -->
 <template>
 	<view>
-		<view v-if="mixinDatacomJqlLoading">Loading...</view>
-		<view v-else-if="mixinDatacomJqlErrorMessage"></view>
-		<view else="mixinDatacomJqlResData">
-			{{mixinDatacomJqlResData}}
+		<view v-if="mixinDatacomLoading">Loading...</view>
+		<view v-else-if="mixinDatacomErrorMessage"></view>
+		<view else="mixinDatacomResData">
+			{{mixinDatacomResData}}
 		</view>
 	</view>
 </template>
 
 <script>
 	export default {
-		mixins: [uniCloud.mixinDatacomJql],
+		mixins: [uniCloud.mixinDatacom],
 		data() {
 			return {}
 		},
@@ -496,35 +496,35 @@ HBuilderX 3.1.0+ 支持
 		},
 		methods: {
 			load() {
-				if (this.mixinDatacomJqlLoading == true) {
+				if (this.mixinDatacomLoading == true) {
 					return
 				}
-				this.mixinDatacomJqlLoading = true
+				this.mixinDatacomLoading = true
 
-				this.mixinDatacomJqlGet().then((res) => {
-					this.mixinDatacomJqlLoading = false
+				this.mixinDatacomGet().then((res) => {
+					this.mixinDatacomLoading = false
 					const {
 						data,
 						count
 					} = res.result
-					this.mixinDatacomJqlResData = data
+					this.mixinDatacomResData = data
 				}).catch((err) => {
-					this.mixinDatacomJqlLoading = false
-					this.mixinDatacomJqlErrorMessage = err
+					this.mixinDatacomLoading = false
+					this.mixinDatacomErrorMessage = err
 				})
 			},
 			// 当组件属性发生变化时
-			onMixinDatacomJqlPropsChange(needReset, changed) {
+			onMixinDatacomPropsChange(needReset, changed) {
 				// needReset=true 需要重置已加载数据和分页信息，例如 collection，orderby
 				// changed，变化的属性名，类型为 Array，例如 ['collection', 'orderby']
 				if (needReset) {
 					// 清空已加载的数据
-					this.mixinDatacomJqlResData = []
+					this.mixinDatacomResData = []
 
 					// 重置分页数据，如果没有分页不需要处理
-					this.mixinDatacomJqlPage.size = this.pageSize // 重置分页大小
-					this.mixinDatacomJqlPage.current = 0 // 重置当前分页
-					this.mixinDatacomJqlPage.count = 0 // 重置数据总数
+					this.mixinDatacomPage.size = this.pageSize // 重置分页大小
+					this.mixinDatacomPage.current = 0 // 重置当前分页
+					this.mixinDatacomPage.count = 0 // 重置数据总数
 				}
 			}
 		}
@@ -533,7 +533,7 @@ HBuilderX 3.1.0+ 支持
 ```
 
 
-在页面中使用 `datacom` 组件
+做好这个uni-data-jql组件后，就可以在页面中使用了：
 
 ```html
 <template>
@@ -544,10 +544,10 @@ HBuilderX 3.1.0+ 支持
 
 <script>
 	// jql.vue 组件
-	import UniDataJql from "./jql.vue"
+	import UniData from "./jql.vue" // 如果符合easycom规范，无需本代码
 	export default {
 		components: {
-			UniDataJql
+			UniData // 如果符合easycom规范，无需本代码
 		},
 		data() {
 			return {}
@@ -558,7 +558,8 @@ HBuilderX 3.1.0+ 支持
 ```
 
 
-`uniCloud.mixinDatacomJql` 源码 @mixinDatacomJqlsource
+#### `uniCloud.mixinDatacom` 源码 @mixinDatacomsource
+为方便开发者理解mixinDatacom的工作原理，这里贴出mixinDatacom的源码：
 
 ```js
 export default {
@@ -618,15 +619,15 @@ export default {
 	},
 	data() {
 		return {
-			mixinDatacomJqlLoading: false, // 网络请求状态
-			mixinDatacomJqlHasMore: false, // 是否有更多数据
-			mixinDatacomJqlResData: [], // 请求返回的数据，调用 loadData 后会更新
-			mixinDatacomJqlErrorMessage: '', // 请求出错时的错误消息
-			mixinDatacomJqlPage: {} // 分页信息，详情见 created 生命周期
+			mixinDatacomLoading: false, // 网络请求状态
+			mixinDatacomHasMore: false, // 是否有更多数据
+			mixinDatacomResData: [], // 请求返回的数据，调用 loadData 后会更新
+			mixinDatacomErrorMessage: '', // 请求出错时的错误消息
+			mixinDatacomPage: {} // 分页信息，详情见 created 生命周期
 		}
 	},
 	created() {
-		this.mixinDatacomJqlPage = {
+		this.mixinDatacomPage = {
 			current: this.pageCurrent, // 当前页面，初始化设置 props中的 pageCurrent
 			size: this.pageSize, // 页面大小，初始化设置 props中的 pageSize
 			count: 0, // 数据总数，getcount=true时有效
@@ -657,56 +658,56 @@ export default {
 				}
 			}
 			if (newValue[0] !== oldValue[0]) {
-				this.mixinDatacomJqlPage.current = this.pageCurrent
+				this.mixinDatacomPage.current = this.pageCurrent
 			}
-			this.mixinDatacomJqlPage.size = this.pageSize
+			this.mixinDatacomPage.size = this.pageSize
 
-			this.onMixinDatacomJqlPropsChange(needReset, changed)
+			this.onMixinDatacomPropsChange(needReset, changed)
 		})
 	},
 	methods: {
 		// props发生变化时被调用，在组件中覆盖此方法
 		// 非 pageCurrent，pageSize 改变时 needReset=true,需要重置数据
 		// changed，发生变化的属性名，类型为Array，例如 ['collection', 'action']
-		onMixinDatacomJqlPropsChange(needReset, changed) {},
+		onMixinDatacomPropsChange(needReset, changed) {},
 		// 加载数据
-		mixinDatacomJqlEasyGet({
+		mixinDatacomEasyGet({
 			getone = false,
 			success,
 			fail
 		} = {}) {
-			if (this.mixinDatacomJqlLoading) {
+			if (this.mixinDatacomLoading) {
 				return
 			}
-			this.mixinDatacomJqlLoading = true
+			this.mixinDatacomLoading = true
 
-			this.mixinDatacomJqlErrorMessage = ''
+			this.mixinDatacomErrorMessage = ''
 
-			this.mixinDatacomJqlGet().then((res) => {
-				this.mixinDatacomJqlLoading = false
+			this.mixinDatacomGet().then((res) => {
+				this.mixinDatacomLoading = false
 				const {
 					data,
 					count
 				} = res.result
 				if (this.getcount) {
-					this.mixinDatacomJqlPage.count = count
+					this.mixinDatacomPage.count = count
 				}
-				this.mixinDatacomJqlHasMore = data.length < this.pageSize
+				this.mixinDatacomHasMore = data.length < this.pageSize
 				const responseData = getone ? (data.length ? data[0] : undefined) : data
 
 				if (success) {
 					success(responseData)
 				} else {
-					this.mixinDatacomJqlResData = responseData
+					this.mixinDatacomResData = responseData
 				}
 			}).catch((err) => {
-				this.mixinDatacomJqlLoading = false
-				this.mixinDatacomJqlErrorMessage = err
+				this.mixinDatacomLoading = false
+				this.mixinDatacomErrorMessage = err
 				fail && fail(err)
 			})
 		},
 		// 调用 uniClientDB 查询数据
-		mixinDatacomJqlGet(options = {}) {
+		mixinDatacomGet(options = {}) {
 			let db = uniCloud.database()
 
 			const action = options.action || this.action
@@ -732,8 +733,8 @@ export default {
 				db = db.orderBy(orderby)
 			}
 
-			const current = options.pageCurrent !== undefined ? options.pageCurrent : this.mixinDatacomJqlPage.current
-			const size = options.pageSize !== undefined ? options.pageSize : this.mixinDatacomJqlPage.size
+			const current = options.pageCurrent !== undefined ? options.pageCurrent : this.mixinDatacomPage.current
+			const size = options.pageSize !== undefined ? options.pageSize : this.mixinDatacomPage.size
 			const getCount = options.getcount !== undefined ? options.getcount : this.getcount
 			const getTree = options.gettree !== undefined ? options.gettree : this.gettree
 
