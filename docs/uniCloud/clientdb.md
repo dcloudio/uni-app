@@ -2244,6 +2244,8 @@ module.exports = {
 }
 ```
 
+**如需在before和after内传参，建议直接在state上挂载。但是切勿覆盖上述属性**
+
 ## 可用聚合操作符列表@aggregate-operator
 
 为方便书写，clientDB内将聚合操作符的用法进行了简化（相对于云函数内使用聚合操作符而言）。以下是可以在clientDB中使用的聚合操作符

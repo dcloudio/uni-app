@@ -565,12 +565,16 @@ exports.main = async function(event,context) {
 
 | 字段					| 类型		| 必填| 默认值|说明													|
 | ---						| ---			| ---	|---		| ---													|
-| needPermission| Boolean	| 否	|-			|是否需要返回角色权限|
+| needPermission| Boolean	| 否	|false		|是否需要返回角色权限，请阅读下方说明|
+| needUserInfo | Boolean	| 否	|true			|是否需要返回用户信息。|
 
 **说明**
 
-- needPermission参数可以覆盖旧版token（config内配置`"removePermissionAndRoleFromToken": true`时生成的token）内的needPermission配置。
+- `needPermission`参数仅对token内未缓存角色权限且token内不包含needPermission的场景生效。
+- 如果在token内缓存角色权限，建议将此`needUserInfo`参数配置为`false`
 - 角色内包含admin时返回的permission是一个空数组，因此判断一个用户是否有权限时应注意admin角色额外进行判断
+
+请务必阅读一下此文档：[关于缓存角色权限的说明](uniCloud/uni-id.md?id=cachepermissionintoken)
 
 **响应参数**
 
@@ -583,7 +587,7 @@ exports.main = async function(event,context) {
 | tokenExpired| TimeStamp	|新增于uni-id 1.1.7版本，新token的过期时间																																								|
 | role				| Array			|新增于uni-id 1.1.9版本，用户角色列表。`uni-id 3.0.0`以上版本传入`needPermission:true`时返回此字段																																											|
 | permission	| Array			|新增于uni-id 1.1.9版本，用户权限列表，只有登录操作时传入needPermission才会返回，否则为空数组。`uni-id 3.0.0`以上版本传入`needPermission:true`时返回此字段															|
-| userInfo		| Object		|用户信息，uid对应的uni-id-users全部字段。`uni-id 3.0.0`以上版本不再返回userInfo字段			|
+| userInfo		| Object		|用户信息，uid对应的uni-id-users全部字段。		|
 
 
 uni-id使用jwt生成token，jwt所生成的token包含三部分，其中存储的信息为明文信息，uni-id只根据tokenSecret来校验客户端token是否合法。
@@ -2738,8 +2742,17 @@ uni-id-users表内存储的password字段为使用hmac-sha1生成的hash值，�
 **注意**
 
 - 由于角色权限缓存在token内，可能会存在权限已经更新但是用户token未过期之前依然是旧版角色权限的情况。可以调短一些token过期时间来减少这种情况的影响。
-- admin角色token内不包含permission，如需自行判断用户是否有某个权限，要注意admin角色需要额外判断一下
-
+- admin角色token内不包含permission，如需自行判断用户是否有某个权限，要注意admin角色需要额外判断一下，写法如下
+  ```js
+  const {
+    role,
+    permission
+  } = await uniID.checkToken(event.uniIdToken)
+  if(role.includes('admin') || permission.includes('your permission id')) {
+    // 当前角色拥有'your permission id'对应的权限
+  }
+  ```
+  
 # 迁移指南@migration
 
 ## 自1.x.x版本升级到2.x.x@m1to2
@@ -2749,14 +2762,13 @@ uni-id-users表内存储的password字段为使用hmac-sha1生成的hash值，�
 ## 自2.x.x版本升级到3.x.x@m2to3
 
 - 3.0.0版本起移除了为兼容旧版保留的msg返回值，统一改用message作为返回信息
-- 3.0.0版本起checkToken接口不再返回userInfo字段
 - 3.0.0版本起uni-id默认将缓存用户角色权限到token内，关于缓存角色权限的说明请参考：[缓存角色权限](uniCloud/uni-id?id=cachepermissionintoken)。从2.x.x版本升级到3.x.x版本需要根据自己需求分别处理。
-  + 如果不希望缓存角色权限到token内，需要在config.json内配置`"removePermissionAndRoleFromToken": true`。配置后还需要注意3.0.0起uni-id的checkToken方法将不再返回用户信息（userInfo字段）。需要额外调用接口`uniID.getUserInfo`去获取。
+  + 如果不希望缓存角色权限到token内，需要在config.json内配置`"removePermissionAndRoleFromToken": true`。
   + 如果希望升级为缓存角色权限到token内的方案，可以按照以下步骤迁移
-    - checkToken方法需要传入`needPermission: true`来使新旧token均返回角色权限信息（尤其使用uniCloud admin需要注意此项）。
-    - checkToken方法不再返回用户信息，需要额外调用接口`uniID.getUserInfo`去获取。
-    - 各登录接口的needPermission参数不再生效
-    - 所有注册用户行为均支持传入角色（role）字段，指定创建用户的角色（需要使用3.0.2版本，此前只有uniID.register接口支持）
+    - 各登录接口的needPermission参数不再生效，checkToken校验新token时总是返回角色权限
+    - 所有注册用户行为均支持传入角色（role）字段，指定创建用户的角色（需要使用3.0.2及以上版本，此前只有uniID.register接口支持）
+
+**角色权限缓存在token内，可能会存在权限已经更新但是用户token未过期之前依然是旧版角色权限的情况。可以调短一些token过期时间来减少这种情况的影响。**
 
 # FAQ
 
