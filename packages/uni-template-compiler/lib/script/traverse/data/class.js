@@ -8,6 +8,9 @@ function processClassArrayExpressionElements (classArrayExpression) {
   let binaryExpression
 
   classArrayExpression.elements.forEach(expr => {
+    if (t.isArrayExpression(expr)) {
+      expr = processClassArrayExpressionElements(expr)
+    }
     if (!binaryExpression) {
       binaryExpression = t.parenthesizedExpression(expr)
     } else {
