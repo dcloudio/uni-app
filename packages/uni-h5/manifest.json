@@ -791,6 +791,18 @@
         "/platforms/h5/service/api/ui/windows.js",
         []
     ],
+    "getTopWindowStyle": [
+        "/platforms/h5/service/api/ui/windows.js",
+        []
+    ],
+    "getLeftWindowStyle": [
+        "/platforms/h5/service/api/ui/windows.js",
+        []
+    ],
+    "getRightWindowStyle": [
+        "/platforms/h5/service/api/ui/windows.js",
+        []
+    ],
     "setTopWindowStyle": [
         "/platforms/h5/service/api/ui/windows.js",
         []
