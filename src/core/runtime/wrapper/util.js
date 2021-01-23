@@ -177,6 +177,9 @@ export function initBehaviors (vueOptions, initBehavior) {
       }
     })
   }
+  if (__PLATFORM__ === 'mp-alipay') { // alipay 重复定义props会报错,下边的代码对于其他平台也没有意义，保险起见，仅对alipay做处理
+    return
+  }
   if (isPlainObject(vueExtends) && vueExtends.props) {
     behaviors.push(
       initBehavior({
