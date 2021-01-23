@@ -97,15 +97,15 @@ db.collection('list')
 如需自定义返回的err对象，可以在clientDB中挂一个[action云函数](uniCloud/database?id=action)，在action云函数的`after`内用js修改返回结果，传入`after`内的result不带code和message。
 
 
-### 前端环境变量@variable
+### 云端环境变量@variable
 
 `clientDB`目前内置了3个变量可以供客户端使用，客户端并非直接获得这三个变量的值，而是需要传递给云端，云数据库在数据入库时会把变量替换为实际值。
 
-|参数名			|说明				|
-|:-:			|:-:				|
-|db.env.uid		|用户uid，依赖uni-id|
-|db.env.now		|服务器时间戳		|
-|db.env.clientIP|当前客户端IP		|
+|参数名					|说明								|
+|:-:						|:-:								|
+|db.env.uid			|用户uid，依赖uni-id|
+|db.env.now			|服务器时间戳				|
+|db.env.clientIP|当前客户端IP				|
 
 使用这些变量，将可以避免过去在服务端代码中写代码获取用户uid、时间和客户端ip的麻烦。
 
@@ -114,6 +114,31 @@ const db = uniCloud.database()
 let res = await db.collection('table').where({
   user_id: db.env.uid // 查询当前用户的数据。虽然代码编写在客户端，但环境变量会在云端运算
 }).get()
+```
+
+自`HBuilderX 3.0.8`起，上述环境变量用法有调整（旧版依然兼容，但是推荐使用新用法），以下示例为在新版HBuilderX下如何获取上述变量
+
+```js
+const db = uniCloud.database()
+const uid = db.getCloudEnv('$cloudEnv_uid')
+const now = db.getCloudEnv('$cloudEnv_now')
+const clientIP = db.getCloudEnv('$cloudEnv_clientIP')
+```
+
+使用JQL查询语法时如需使用上述变量可以使用如下写法
+
+```js
+// HBuilderX 3.0.8及以上版本
+const db = uniCloud.database()
+const res = await db.collection()
+.where('user_id == $cloudEnv_uid')
+.get()
+
+// HBuilderX 3.0.8以下版本
+const db = uniCloud.database()
+const res = await db.collection()
+.where('user_id == $env.uid')  // $env.now、$env.clientIP
+.get()
 ```
 
 ### JQL查询语法@jsquery
@@ -1261,7 +1286,7 @@ const res = await db.collection('score')
 ```
 
 
-如果额外还在groupBy之前使用了preField方法，此preField用于决定将哪些数据传给groupBy和groupField使用
+如果额外还在groupBy之前使用了field方法，此field用于决定将哪些数据传给groupBy和groupField使用
 
 例：如果上述数据中score是一个数组
 
@@ -1310,11 +1335,11 @@ const res = await db.collection('score')
 }
 ```
 
-如下preField写法将上面的score数组求和之后传递给groupBy和groupField使用。在preField内没出现的字段（比如name），在后面的方法里面不能使用
+如下field写法将上面的score数组求和之后传递给groupBy和groupField使用。在field内没出现的字段（比如name），在后面的方法里面不能使用
 
 ```js
 const res = await db.collection('score')
-.preField('grade,class,sum(score) as userTotalScore')
+.field('grade,class,sum(score) as userTotalScore')
 .groupBy('grade,class')
 .groupField('avg(userTotalScore) as avgScore')
 .get()
@@ -1342,8 +1367,8 @@ const res = await db.collection('score')
 
 **注意**
 
-- 在上面使用preField方法的情况下，会计算preField内访问的所有字段计算权限。上面的例子中会使用表的read权限和grade、class、score三个字段的权限，来进行权限校验。
-- 在不使用preField，仅使用groupBy和groupField的情况下，会以groupBy和groupField内访问的所有字段的权限来校验访问是否合法。
+- 在使用field方法的情况下，会计算field内访问的所有字段计算权限。上面的例子中会使用表的read权限和grade、class、score三个字段的权限，来进行权限校验。
+- 在不使用field，仅使用groupBy和groupField的情况下，会以groupBy和groupField内访问的所有字段的权限来校验访问是否合法。
 - 与field不同，使用groupField时返回结果不会包含_id字段
 
 #### 统计数量
