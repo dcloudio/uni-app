@@ -589,6 +589,8 @@ db.collection('order,book')
 
 自`HBuilderX 3.0.8`起，clientDB支持对字段进行一定的操作之后再返回，详细可用的方法列表请参考：[聚合操作符](uniCloud/clientdb.md?id=aggregate-operator)
 
+> 需要注意的是，为方便书写，clientDB内将聚合操作符的用法进行了简化（相对于云函数内使用聚合操作符而言）。用法请参考上述链接
+
 例：数据表class内有以下数据
 
 ```js
@@ -1196,7 +1198,9 @@ db.collection("department").get({
 
 #### 求和、求均值等累计操作
 
-所有可用的累计方法请参考[累计器操作符](uniCloud/clientdb.md?id=accumulator)，下面以sum（求和）和avg（求均值）为例介绍如何使用
+groupBy内也可以使用聚合操作符对数据进行处理，为方便书写，clientDB内将聚合操作符的用法进行了简化（相对于云函数内使用聚合操作符而言）。用法请参考：[聚合操作符](uniCloud/clientdb.md?id=aggregate-operator)
+
+groupField内可以使用累计器操作符对分组结果进行统计，所有可用的累计方法请参考[累计器操作符](uniCloud/clientdb.md?id=accumulator)，下面以sum（求和）和avg（求均值）为例介绍如何使用
 
 使用sum方法可以对数据进行求和统计。以上述数据为例，如下写法对不同班级进行分数统计
 
