@@ -375,6 +375,9 @@ mixin是vue的技术，不熟悉的可以点此了解[vue官网的mixin文档](h
 |field						|String			|				|查询字段，多个字段用 `,` 分割|
 |where						|String			|				|查询条件，内容较多，另见jql文档：[详情](https://uniapp.dcloud.net.cn/uniCloud/uni-clientDB?id=jsquery)|
 |orderby					|String			|				|排序字段及正序倒叙设置|
+|groupby					|String			|				|对数据进行分组|
+|group-field				|String			|				|对数据进行分组统计|
+|distinct					|Boolean		|	false		|是否对数据查询结果中重复的记录进行去重|
 |action						|string			|				|云端执行数据库查询的前或后，触发某个action函数操作，进行预处理或后处理，[详情](https://uniapp.dcloud.net.cn/uniCloud/uni-clientDB?id=%e4%ba%91%e7%ab%af%e9%83%a8%e5%88%86)。场景：前端无权操作的数据，比如阅读数+1|
 |page-data					|String			|	add			|分页策略选择。值为 `add` 代表下一页的数据追加到之前的数据中，常用于滚动到底加载下一页；值为 `replace` 时则替换当前data数据，常用于PC式交互，列表底部有页码分页按钮|
 |page-current				|Number			|	0			|当前页|
@@ -382,15 +385,17 @@ mixin是vue的技术，不熟悉的可以点此了解[vue官网的mixin文档](h
 |getcount					|Boolean		|	false		|是否查询总数据条数，默认 `false`，需要分页模式时指定为 `true`|
 |getone						|Boolean		|	false		|指定查询结果是否仅返回数组第一条数据，默认 false。在false情况下返回的是数组，即便只有一条结果，也需要[0]的方式获取。在值为 true 时，直接返回结果数据，少一层数组。一般用于非列表页，比如详情页|
 |gettree					|Boolean		|	false		|是否查询树状数据，默认 `false`|
+|startwith					|String			|	''			|`gettree`的第一层级条件，此初始条件可以省略，不传startWith时默认从最顶级开始查询|
+|limitlevel					|Number			|	10			|`gettree`查询返回的树的最大层级。超过设定层级的节点不会返回。默认10级，最大15，最小1|
 
 
 `uniCloud.mixinDatacom` 的data
 
 |属性名							| 类型			|	默认值	| 说明|
 |:-:							| :-:			| :-:		| :-:	|
-|mixinDatacomLoading			|Boolean		| 			|加载数据状态|
-|mixinDatacomHasMore			|Boolean		| 			|是否有更多数据|
-|mixinDatacomResData			|Array			| 			|查询返回的数据|
+|mixinDatacomLoading			|Boolean		| 	false	|加载数据状态|
+|mixinDatacomHasMore			|Boolean		| 	false	|是否有更多数据|
+|mixinDatacomResData			|Array			| 	[]		|查询返回的数据|
 |mixinDatacomErrorMessage	|String			| 			|错误消息|
 |mixinDatacomPage			|OBject			| 			|分页信息|
 
@@ -399,8 +404,8 @@ mixin是vue的技术，不熟悉的可以点此了解[vue官网的mixin文档](h
 
 |方法名							| 说明|
 |:-:							| :-:	|
-|mixinDatacomEasyGet			|加载数据，包含 `mixinDatacomLoading` 、`mixinDatacomHasMore`、`mixinDatacomErrorMessage` 逻辑 |
 |mixinDatacomGet				|加载数据|
+|mixinDatacomEasyGet			|加载数据，包含 `mixinDatacomLoading` 、`mixinDatacomHasMore`、`mixinDatacomErrorMessage` 逻辑 |
 |onMixinDatacomPropsChange	|属性发生变化时触发|
 
 #### 使用方法
@@ -408,7 +413,7 @@ mixin是vue的技术，不熟悉的可以点此了解[vue官网的mixin文档](h
 使用 `uniCloud.mixinDatacom` 开发 `datacom` 组件需要以下步骤
 
 1. 在export default下声明`mixin: [uniCloud.mixinDatacom]`
-2. 在template中绑定 `uniCloud.mixinDatacom` 的 `data` 属性，处理状态或数据的展示
+2. 在template中定义三个标签，绑定 `uniCloud.mixinDatacomJql` 的 `data` 状态，加载中`mixinDatacomJqlLoading` 、加载出错提示 `mixinDatacomJqlErrorMessage`、处理数据及相关UI展现 `mixinDatacomJqlResData`
 3. 组件的created声明周期中调用 `uniCloud.mixinDatacom` 中的 `mixinDatacomGet()` 或 `mixinDatacomEasyGet()` 方法请求云端数据库。这两种方法的区别如下：
 	- `mixinDatacomGet()` 仅请求数据，自行处理各种状态和异常。
 	- `mixinDatacomEasyGet()` 在 `mixinDatacomGet()` 的基础之上封装了加载状态、分页及错误消息，可通过模板绑定。用起来更简单
@@ -431,8 +436,11 @@ mixin是vue的技术，不熟悉的可以点此了解[vue官网的mixin文档](h
 <template>
 	<view>
 		<view v-if="mixinDatacomLoading">Loading...</view>
-		<view v-else-if="mixinDatacomErrorMessage"></view>
+		<view v-else-if="mixinDatacomErrorMessage">
+			请求错误：{{mixinDatacomJqlErrorMessage}}
+		</view>
 		<view else="mixinDatacomResData">
+			<!-- 需要自行处理数据及相关UI展现 -->
 			{{mixinDatacomResData}}
 		</view>
 	</view>
@@ -478,8 +486,11 @@ mixin是vue的技术，不熟悉的可以点此了解[vue官网的mixin文档](h
 <template>
 	<view>
 		<view v-if="mixinDatacomLoading">Loading...</view>
-		<view v-else-if="mixinDatacomErrorMessage"></view>
+		<view v-else-if="mixinDatacomErrorMessage">
+			请求错误：{{mixinDatacomJqlErrorMessage}}
+		</view>
 		<view else="mixinDatacomResData">
+			<!-- 需要自行处理数据及相关UI展现 -->
 			{{mixinDatacomResData}}
 		</view>
 	</view>
@@ -615,6 +626,34 @@ export default {
 		gettree: {
 			type: [Boolean, String],
 			default: false
+		},
+		gettreepath: {
+		  type: [Boolean, String],
+		  default: false
+		},
+		startwith: {
+		  type: String,
+		  default: ''
+		},
+		limitlevel: {
+		  type: Number,
+		  default: 10
+		},
+		groupby: {
+		  type: String,
+		  default: ''
+		},
+		groupField: {
+		  type: String,
+		  default: ''
+		},
+		distinct: {
+		  type: [Boolean, String],
+		  default: false
+		},
+		manual: {
+		  type: Boolean,
+		  default: false
 		}
 	},
 	data() {
@@ -728,6 +767,21 @@ export default {
 				db = db.field(field)
 			}
 
+			const groupby = options.groupby || this.groupby
+			if (groupby) {
+				db = db.groupby(groupby)
+			}
+
+			const groupField = options.groupField || this.groupField
+			if (groupField) {
+				db = db.groupField(groupField)
+			}
+
+			const distinct = options.distinct !== undefined ? options.distinct : this.distinct
+			if (distinct === true) {
+				db = db.distinct()
+			}
+
 			const orderby = options.orderby || this.orderby
 			if (orderby) {
 				db = db.orderBy(orderby)
@@ -736,14 +790,22 @@ export default {
 			const current = options.pageCurrent !== undefined ? options.pageCurrent : this.mixinDatacomPage.current
 			const size = options.pageSize !== undefined ? options.pageSize : this.mixinDatacomPage.size
 			const getCount = options.getcount !== undefined ? options.getcount : this.getcount
-			const getTree = options.gettree !== undefined ? options.gettree : this.gettree
+			const gettree = options.gettree !== undefined ? options.gettree : this.gettree
+			const gettreepath = options.gettreepath !== undefined ? options.gettreepath : this.gettreepath
+			const limitlevel = options.limitlevel !== undefined ? options.limitlevel : this.limitlevel
+			const startwith = options.startwith !== undefined ? options.startwith : this.startwith
 
 			const getOptions = {
-				getCount,
-				getTree
+				getCount
 			}
-			if (options.getTreePath) {
-				getOptions.getTreePath = options.getTreePath
+			if (gettree) {
+				getOptions.getTree = {
+					limitLevel: limitlevel,
+					startWith: startwith
+				}
+			}
+			if (gettreepath) {
+				getOptions.getTreePath = gettreepath
 			}
 
 			db = db.skip(size * (current - 1)).limit(size).get(getOptions)
