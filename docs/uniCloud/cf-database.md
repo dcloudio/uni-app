@@ -32,7 +32,7 @@ const collection = db.collection('user');
 
 ### 记录 Record / Document
 
-通过 `db.collection(collectionName).doc(docId)` 可以获取指定集合上指定 id 的记录的引用，在记录上可以进行以下操作
+通过 `db.collection(collectionName).doc(docId)` 可以获取指定集合上指定 _id 的记录的引用，在记录上可以进行以下操作
 
 | 接口| 说明	|												|
 | ----| ------|----										|
@@ -41,6 +41,9 @@ const collection = db.collection('user');
 |			| remove| 删除记录(触发请求)		|
 | 读	| get		| 获取记录(触发请求)		|
 
+doc(docId)方法的参数只能是字符串，即数据库默认的_id字段。
+
+如需要匹配多个`_id`的记录，应使用where方法。可以在where方法里用in指令匹配一个包含`_id`的数组。
 
 ### 查询筛选指令 Query Command
 
