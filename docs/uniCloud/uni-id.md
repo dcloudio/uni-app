@@ -2445,7 +2445,7 @@ exports.main = async function(event,context) {
 | realname_auth		| Object		| 否	| 实名认证信息																							|
 | register_date		| Timestamp	| 否	| 注册时间																									|
 | register_ip			| String		| 否	| 注册时 IP 地址																						|
-| last_login_date	| Timestamp	| 否	| 最后登录时间（注意并非只有登录操作会修改此值，token刷新时也会修改最后登录时间，最后登录IP同理）|
+| last_login_date	| Timestamp	| 否	| 最后登录时间（注意并非只有登录操作会修改此值，token刷新时也会修改最后登录时间。应用启动时若token有效则不会触发登录行为，也不会更新本值。最后登录IP同理）|
 | last_login_ip		| String		| 否	| 最后登录时 IP 地址																				|
 | login_ip_limit	| Array			| 否	| 登录 IP 限制																							|
 | inviter_uid			| Array			| 否	| 邀请人uid，按层级从下往上排列的uid数组，即第一个是直接上级|
