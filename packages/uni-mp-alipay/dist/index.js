@@ -232,7 +232,7 @@ const promiseInterceptor = {
 };
 
 const SYNC_API_RE =
-  /^\$|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
+  /^\$|Window$|WindowStyle$|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -1549,25 +1549,9 @@ function initBehaviors (vueOptions, initBehavior) {
       }
     });
   }
-  if (isPlainObject(vueExtends) && vueExtends.props) {
-    behaviors.push(
-      initBehavior({
-        properties: initProperties(vueExtends.props, true)
-      })
-    );
+  { // alipay 重复定义props会报错,下边的代码对于其他平台也没有意义，保险起见，仅对alipay做处理
+    return
   }
-  if (Array.isArray(vueMixins)) {
-    vueMixins.forEach(vueMixin => {
-      if (isPlainObject(vueMixin) && vueMixin.props) {
-        behaviors.push(
-          initBehavior({
-            properties: initProperties(vueMixin.props, true)
-          })
-        );
-      }
-    });
-  }
-  return behaviors
 }
 
 function parsePropType (key, type, defaultValue, file) {
@@ -2100,20 +2084,6 @@ function initRefs () {
 
 }
 
-function initBehavior ({
-  properties
-}) {
-  const props = {};
-
-  Object.keys(properties).forEach(key => {
-    props[key] = properties[key].value;
-  });
-
-  return {
-    props
-  }
-}
-
 function initRelation (detail) {
   this.props.onVueInit(detail);
 }
@@ -2424,7 +2394,7 @@ function parsePage (vuePageOptions) {
   const [VueComponent, vueOptions] = initVueComponent(Vue, vuePageOptions);
 
   const pageOptions = {
-    mixins: initBehaviors(vueOptions, initBehavior),
+    mixins: initBehaviors(vueOptions),
     data: initData(vueOptions, Vue.prototype),
     onLoad (query) {
       const properties = this.props;
@@ -2562,7 +2532,7 @@ function parseComponent (vueComponentOptions) {
   });
 
   const componentOptions = {
-    mixins: initBehaviors(vueOptions, initBehavior),
+    mixins: initBehaviors(vueOptions),
     data: initData(vueOptions, Vue.prototype),
     props,
     didMount () {

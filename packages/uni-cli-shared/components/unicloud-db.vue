@@ -29,7 +29,10 @@ const attrs = [
   'field',
   'getcount',
   'orderby',
-  'where'
+  'where',
+  'groupby',
+  'groupField',
+  'distinct'
 ]
 
 export default {
@@ -95,6 +98,18 @@ export default {
     },
     manual: {
       type: Boolean,
+      default: false
+    },
+    groupby: {
+      type: String,
+      default: ''
+    },
+    groupField: {
+      type: String,
+      default: ''
+    },
+    distinct: {
+      type: [Boolean, String],
       default: false
     }
   },
@@ -379,6 +394,15 @@ export default {
       }
       if (this.field) {
         db = db.field(this.field)
+      }
+      if (this.groupby) {
+        db = db.groupby(this.groupby)
+      }
+      if (this.groupField) {
+        db = db.groupField(this.groupField)
+      }
+      if (this.distinct === true) {
+        db = db.distinct()
       }
       if (this.orderby) {
         db = db.orderBy(this.orderby)

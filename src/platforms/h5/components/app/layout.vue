@@ -274,6 +274,13 @@ export default {
         }
       }
     },
+    getWindowStyle (type) {
+      if (!this[type + 'Window']) {
+        return type + 'Window not found'
+      }
+      const style = Object.assign({}, this[type + 'WindowStyle'])
+      return style
+    },
     setWindowStyle (type, style) {
       if (!this[type + 'Window']) {
         return type + 'Window not found'
