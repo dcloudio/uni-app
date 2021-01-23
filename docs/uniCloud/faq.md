@@ -39,7 +39,7 @@
 
 ### uniCloud只支持uni-app，怎么开发web界面？
 
-uni-app本来可以开发web界面，详见：[uni-app宽屏适配指南](https://uniapp.dcloud.io/adapt)
+uni-app可以开发web界面，详见：[uni-app宽屏适配指南](https://uniapp.dcloud.io/adapt)
 
 如果是需要pc版admin的话，uniCloud提供了[uniCloud admin](https://uniapp.dcloud.io/uniCloud/admin)
 
@@ -55,15 +55,39 @@ uniCloud提供了`云函数URL化`，来满足上述需求。[详见](https://un
 ### 微信云开发支持客户端直接操作数据库，uniCloud支持吗？
 uniCloud提供了比微信云开发更优秀的前端操作数据库方案，见：[clientDB](https://uniapp.dcloud.net.cn/uniCloud/database)
 
-### 云开发是nodejs+MongoDB组合，对比php+mysql的传统组合怎么样？
-nodejs的性能高于php，MongoDB的性能也优于mysql。
+### 云开发是nodejs+改良版MongoDB组合，对比php+mysql的传统组合怎么样？
+
+nodejs的性能也于php，MongoDB的性能也优于mysql。
 
 对于前端而言，MongoDB这种类json的文档数据库更加易用，且有更高的灵活性。
-操作MongoDB仍然使用js的方法，而无需学习sql语句。
+操作MongoDB仍然使用js的方法。
 
-对于喜欢传统数据库的开发者而言，仍然可以按传统方式设计数据库表结构。对于希望增加数据冗余以提高性能的开发者而言，nosql数据库则是利器。
+MongoDB非常灵活，可以对大数据量的表随便增加字段。而mysql的表数据量一旦变大，每增加一个字段，数据库的体积和性能都会造成负面影响。
 
-uniCloud提供了`JQL`，它更符合js开发者的习惯，并且极大的降低了联表查询的复杂度，其他方案相比`JQL`都复杂很多。[详见](https://uniapp.dcloud.net.cn/uniCloud/database?id=jsquery)
+MongoDB的字段可以嵌套，表达tree型的数据非常方便，扩展起来随心所欲。
+
+对于希望增加数据冗余以提高性能的开发者而言，nosql数据库则是利器。
+
+当然，对于喜欢传统数据库的开发者而言，仍然可以按传统方式设计数据库表结构。
+
+MongoDB的功能要比mysql强大很多。sql太简单的了，一段sql语句其实就是一个字符串，写不了复杂的逻辑。
+
+而MongoDB有非常多的js api，各种聚合运算符，它是可编程的，而不是仅靠一段字符串sql语句来表达。
+
+举个例子，商品数据表中有4个字段：浏览量、收藏量、购买量、评价。需要生成一个近期热门商品列表，4个字段各占25%的权重，加权后排序。这种需求sql是无法直接实现的。而MongoDB里可以一个查询直接返回排序好的结果。
+
+SQL的模糊查询也很弱，like只有前后%，导致很多开发者不得不再使用ElastciSearch这些三方数据库。虽然后期版本的mysql也支持有限正则。但MongoDB的正则查询还是超过开发者预期的强大。
+
+MongoDB虽然强大，但易用性不佳，尤其是聚合运算写起来非常复杂。
+
+uniCloud在MongoDB的基础上改良，进一步提供了`DB Schema`和`JQL`。
+
+`DB Schema`是一个json文件，可以对数据进行描述、约定字段值域、控制操作权限、描述字段之间的关系，让数据库管理更高效，并且大幅降低了服务端的代码开发工作量。[详见](https://uniapp.dcloud.io/uniCloud/schema)
+
+`JQL`是一套操作uniCloud数据库的方法，它更符合js开发者的习惯，并且极大的降低了学习成本和代码量。
+比如联表查询、tree查询，都变的非常简单。像tree查询是以往只有oracle才有的功能。`JQL`文档[详见](https://uniapp.dcloud.net.cn/uniCloud/database?id=jsquery)
+
+曾经DCloud官方也推进过阿里云和腾讯云提供serverless的mysql。但经过对MongoDB的深入研究和改良，DCloud已经放弃了难用的mysql。推荐开发者了解uniCloud的云数据库，用起来更强大和方便。
 
 ### 支持websocket吗？
 websocket的实时特性导致serverless化比较复杂，目前曲线方案有：
@@ -95,20 +119,24 @@ websocket的实时特性导致serverless化比较复杂，目前曲线方案有�
 4. 向service@dcloud.io发邮件，申请预留资源不销毁
 
 ### uniCloud访问速度感觉不如传统服务器？@slow
+有开发者在一台单机上安装php或java，连接同电脑的mysql。然后与uniCloud比较速度，认为uniCloud偏慢。这里需要澄清如下差异：
 
-抛开冷启动，只看热启动，也有开发者反应unicloud的数据不如传统服务器。其实原因如下：
+- 原因1. 冷启动。具体分析见上一问题
 
-在一台单机上安装php或java，同时安装数据库，访问速度确实快。
+- 原因2. 代码和数据库不在一台服务器
+在一台单机上安装php或java，同时安装数据库，访问速度确实快。但在使用云数据库时，即数据库是单独的服务器，和运行代码不在一台服务器上时，就会略微造成些延迟。但商业应用的数据库肯定都是独立服务器。
 
-但在使用云数据库时，即数据库是单独的服务器，和运行代码不在一台服务器上时，本身就会略微造成些延迟。
-
-如果每个请求都要拦截，校验权限，尤其是要查库校验权限的话，访问速度又会进一步延迟。
+- 原因3. 拦截器
+后端开发的请求一般都有路由管理框架或拦截器，每个请求都要拦截，校验权限。使用这类框架肯定会增加耗时。
 
 clientDB就是这种情况，因为clientDB内部有权限校验系统，某些权限的验证还需要数据库查询。
 
-所以虽然clientDB的速度慢一些，但实际上开发者在自己写了路由拦截和权限管理的框架后，速度也下降。
+所以虽然clientDB的速度慢一些，但实际上开发者在自己写了路由拦截和权限管理的框架后，速度也一样会下降。
 
-clientDB也仍然在优化，减少查库校验权限的频次，优化速度。
+从uni-id 3.0起，用户的角色权限缓存在token里，不再查库。clientDB的速度比之前提升了100毫秒左右。如果还未升级，请尽快[升级](https://ext.dcloud.net.cn/plugin?id=2116)。同时注意如果用了uniCloud admin，也要配套升级。如果自己在云函数里编写过相关业务逻辑，请务必阅读升级注意事项。
+
+- 原因4. 数据库索引
+查询表的索引要正确配置，需要在where里查询的字段都建议配上索引。
 
 ### 发布H5时还得自己找个服务器部署前端网页，可以不用自己再找服务器吗？
 
@@ -121,7 +149,9 @@ uniCloud支持[前端网页托管](https://uniapp.dcloud.io/uniCloud/hosting)，
 
 ### uniCloud云数据库如何实现全文检索
 
-查询数据时可以传入正则表达式进行查询，详情请参考[正则表达式查询](https://uniapp.dcloud.io/uniCloud/cf-database?id=regexp)
+uniCloud的云数据库本身就是文档型数据库，可以全文检索，无需额外配置ElastciSearch等三方数据库。
+
+查询数据时可以传入正则表达式。相比sql的like只有前后的%，正则表达式要强大的多。详情请参考[正则表达式查询](https://uniapp.dcloud.io/uniCloud/cf-database?id=regexp)
 
 ### uniCloud内如何使用formdata
 
@@ -156,7 +186,7 @@ uniCloud.httpclient.request('https://example.com',{
 
 其实不需要控制数量，实际开发中不会突破限制。
 
-因为大多数项目，会使用clientDB和单路由云函数框架。
+因为大多数项目，会使用clientDB（不写云函数）和单路由云函数框架（只有一个云函数）。
 
 uniCloud的每个云函数是一个独立进程，不存在云函数级别的多级目录概念。
 
@@ -164,6 +194,7 @@ uniCloud的每个云函数是一个独立进程，不存在云函数级别的多
 
 当然也可以在一个云函数下实现单路由云函数开发框架，插件市场有很多类似框架：[详见](https://ext.dcloud.net.cn/search?q=%E8%B7%AF%E7%94%B1&cat1=7&orderBy=TotalDownload)
 
+另外说明下，clientDB配套的action云函数，不占用云函数数量。
 
 ### 海外用户访问比较慢怎么办
 
