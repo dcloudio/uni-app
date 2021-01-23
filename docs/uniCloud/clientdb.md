@@ -791,7 +791,7 @@ const db = uniCloud.database()
 }
 ```
 
-### 查询树形数据@gettree
+### 查询树形数据gettree@gettree
 
 HBuilderX 3.0.3+起，clientDB支持在get方法内传入getTree参数查询树状结构数据。（HBuilderX 3.0.5+ unicloud-db组件开始支持，之前版本只能通过js方式使用）
 
@@ -1170,7 +1170,7 @@ db.collection("department").get({
 - 暂不支持使用getTreePath的同时使用其他联表查询语法
 - 如果使用了where条件会对所有查询的节点生效
 
-### 分组统计@groupby
+### 分组统计groupby@groupby
 
 自`HBuilderX 3.0.8`起，clientDB支持分组对数据进行分组统计（groupBy）
 
@@ -1402,11 +1402,17 @@ const res = await db.collection('score')
 }
 ```
 
+**注意**
+
+- `count(*)`为固定写法，括号里的*可以省略
+
 **更复杂一些的用法**
 
-假设`uni-id-users`内有以下数据
+按时间段统计是常见的需求，而时间段统计会用到日期运算符。
 
-```js
+假设要统计`uni-id-users`表的每日新增注册用户数量。表内有以下数据：
+
+```json
 {
   "_id": "1",
   "username": "name1",
@@ -1439,43 +1445,48 @@ const res = await db.collection('score')
 }
 ```
 
-以下用法使用add操作符将register_date转化为日期类型，再使用dateToString将add得到的日期格式化为形如`2021-01-21`的字符串，然后根据此字符串进行分组统计，得到每天注册用户量
+由于`register_date`字段是时间戳格式，含有时分秒信息。但统计每日新增注册用户时是需要忽略时分秒的。
 
-add操作符的用法为`add(值1,值2)`
+1. 首先使用add操作符将`register_date`从时间戳转化为日期类型。
 
-dateToString操作符的用法为`dateToString(日期对象,格式化字符串,时区)`
+add操作符的用法为`add(值1,值2)`。`add(new Date(0),register_date)`表示给字段register_date + 0，这个运算没有改变具体的时间，但把`register_date`的格式从时间戳转为了日期类型。
 
-完整操作符列表请参考：[clientDB内可使用的聚合操作符](uniCloud/clientdb.md?id=aggregate-operator)
+2. 然后使用dateToString将add得到的日期格式化为形如`2021-01-21`的字符串，去掉时分秒。
+
+dateToString操作符的用法为`dateToString(日期对象,格式化字符串,时区)`。具体如下：`dateToString(add(new Date(0),register_date),"%Y-%m-%d","+0800")`
+
+3. 然后根据此字符串进行分组统计，得到每天注册用户量。代码如下：
 
 ```js
 const res = await db.collection('uni-id-users')
 .groupBy('dateToString(add(new Date(0),register_date),"%Y-%m-%d","+0800") as date')
-.groupField('count(*) as total')
+.groupField('count(*) as newusercount')
 .get()
+```
 
-// 返回结果
-
+查询返回结果如下：
+```js
 res = {
   result: {
     data: [{
       date: '2021-01-23',
-      total: 3
+      newusercount: 3
     },{
       date: '2021-01-22',
-      total: 2
+      newusercount: 2
     },{
       date: '2021-01-21',
-      total: 1
+      newusercount: 1
     }]
   }
 }
 ```
 
-**注意**
+完整操作符列表请参考：[clientDB内可使用的聚合操作符](uniCloud/clientdb.md?id=aggregate-operator)
 
-- `count(*)`为固定写法，*可以省略
 
-### 数据去重@distinct
+
+### 数据去重distinct@distinct
 
 通过.distinct()方法，对数据查询结果中重复的记录进行去重。
 
