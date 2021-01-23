@@ -2761,12 +2761,12 @@ uni-id-users表内存储的password字段为使用hmac-sha1生成的hash值，�
 
 ## 自2.x.x版本升级到3.x.x@m2to3
 
-- 3.0.0版本起移除了为兼容旧版保留的msg返回值，统一改用message作为返回信息
-- 3.0.0版本起uni-id默认将缓存用户角色权限到token内，关于缓存角色权限的说明请参考：[缓存角色权限](uniCloud/uni-id?id=cachepermissionintoken)。从2.x.x版本升级到3.x.x版本需要根据自己需求分别处理。
-  + 如果不希望缓存角色权限到token内，需要在config.json内配置`"removePermissionAndRoleFromToken": true`。
-  + 如果希望升级为缓存角色权限到token内的方案，可以按照以下步骤迁移
-    - 各登录接口的needPermission参数不再生效，checkToken校验新token时总是返回角色权限
-    - 所有注册用户行为均支持传入角色（role）字段，指定创建用户的角色（需要使用3.0.2及以上版本，此前只有uniID.register接口支持）
+3.0.0版本起uni-id默认将缓存用户角色权限到token内，关于缓存角色权限的说明请参考：[缓存角色权限](uniCloud/uni-id?id=cachepermissionintoken)。从2.x.x版本升级到3.x.x版本需要根据自己需求分别处理。
+
+- 如果不希望缓存角色权限到token内，需要在config.json内配置`"removePermissionAndRoleFromToken": true`。
+- 如果希望升级为缓存角色权限到token内的方案，可以按照以下步骤迁移
+  + 各登录接口的needPermission参数不再生效，checkToken校验新token时总是返回角色权限
+  + 所有注册用户行为均支持传入角色（role）字段，指定创建用户的角色（需要使用3.0.2及以上版本，此前只有uniID.register接口支持）。由于需要初始生成的token内带有角色权限，所以推荐在注册时就给用户设置好角色。
 
 #### uniCloud admin升级uni-id@m2to3-uni-admin
 
