@@ -1402,6 +1402,75 @@ const res = await db.collection('score')
 }
 ```
 
+**更复杂一些的用法**
+
+假设`uni-id-users`内有以下数据
+
+```js
+{
+  "_id": "1",
+  "username": "name1",
+  "register_date": 1611367810000 // 2021-01-23 10:10:10
+}
+{
+  "_id": "2",
+  "username": "name2",
+  "register_date": 1611367810000 // 2021-01-23 10:10:10
+}
+{
+  "_id": "3",
+  "username": "name3",
+  "register_date": 1611367810000 // 2021-01-23 10:10:10
+}
+{
+  "_id": "4",
+  "username": "name4",
+  "register_date": 1611281410000 // 2021-01-22 10:10:10
+}
+{
+  "_id": "5",
+  "username": "name5",
+  "register_date": 1611281410000 // 2021-01-22 10:10:10
+}
+{
+  "_id": "6",
+  "username": "name6",
+  "register_date": 1611195010000 // 2021-01-21 10:10:10
+}
+```
+
+以下用法使用add操作符将register_date转化为日期类型，再使用dateToString将add得到的日期格式化为形如`2021-01-21`的字符串，然后根据此字符串进行分组统计，得到每天注册用户量
+
+add操作符的用法为`add(值1,值2)`
+
+dateToString操作符的用法为`dateToString(日期对象,格式化字符串,时区)`
+
+完整操作符列表请参考：[clientDB内可使用的聚合操作符](uniCloud/clientdb.md?id=aggregate-operator)
+
+```js
+const res = await db.collection('uni-id-users')
+.groupBy('dateToString(add(new Date(0),register_date),"%Y-%m-%d","+0800") as date')
+.groupField('count(*) as total')
+.get()
+
+// 返回结果
+
+res = {
+  result: {
+    data: [{
+      date: '2021-01-23',
+      total: 3
+    },{
+      date: '2021-01-22',
+      total: 2
+    },{
+      date: '2021-01-21',
+      total: 1
+    }]
+  }
+}
+```
+
 **注意**
 
 - `count(*)`为固定写法，*可以省略
@@ -2277,102 +2346,102 @@ module.exports = {
 
 ## 可用聚合操作符列表@aggregate-operator
 
-为方便书写，clientDB内将聚合操作符的用法进行了简化（相对于云函数内使用聚合操作符而言）。以下是可以在clientDB中使用的聚合操作符
+为方便书写，clientDB内将聚合操作符的用法进行了简化（相对于云函数内使用聚合操作符而言），主要是参数摊平、。以下是可以在clientDB中使用的聚合操作符
 
-|操作符						|详细文档																												|用法																																																				|说明															|
-|---							|---																														|---																																																				|---															|
-|abs							|[abs](uniCloud/cf-database.md?id=abs)													|abs(<表达式>)																																															|-																|
-|add							|[add](uniCloud/cf-database.md?id=add-1)												|add(<表达式1>,<表达式2>)																																										|-																|
-|ceil							|[ceil](uniCloud/cf-database.md?id=ceil)												|ceil(<表达式>)																																															|-																|
-|divide						|[divide](uniCloud/cf-database.md?id=divide)										|divide(<表达式1>,<表达式2>)																																								|-																|
-|exp							|[exp](uniCloud/cf-database.md?id=exp)													|exp(<表达式>)																																															|-																|
-|floor						|[floor](uniCloud/cf-database.md?id=floor)											|floor(<表达式>)																																														|-																|
-|ln								|[ln](uniCloud/cf-database.md?id=ln)														|ln(<表达式>)																																																|-																|
-|log							|[log](uniCloud/cf-database.md?id=log)													|log(<表达式1>,<表达式2>)																																										|-																|
-|log10						|[log10](uniCloud/cf-database.md?id=log10)											|log10(<表达式>)																																														|-																|
-|mod							|[mod](uniCloud/cf-database.md?id=mod)													|mod(<表达式1>,<表达式2>)																																										|-																|
-|multiply					|[multiply](uniCloud/cf-database.md?id=multiply)								|multiply(<表达式1>,<表达式2>)																																							|-																|
-|pow							|[pow](uniCloud/cf-database.md?id=pow)													|pow(<表达式1>,<表达式2>)																																										|-																|
-|sqrt							|[sqrt](uniCloud/cf-database.md?id=sqrt)												|sqrt(<表达式1>,<表达式2>)																																									|-																|
-|subtract					|[subtract](uniCloud/cf-database.md?id=subtract)								|subtract(<表达式1>,<表达式2>)																																							|-																|
-|trunc						|[trunc](uniCloud/cf-database.md?id=trunc)											|trunc(<表达式>)																																														|-																|
-|arrayElemAt			|[arrayElemAt](uniCloud/cf-database.md?id=arrayelemat)					|arrayElemAt(<表达式1>,<表达式2>)																																						|-																|
-|arrayToObject		|[arrayToObject](uniCloud/cf-database.md?id=arraytoobject)			|arrayToObject(<表达式>)																																										|-																|
-|concatArrays			|[concatArrays](uniCloud/cf-database.md?id=concatarrays)				|concatArrays(<表达式1>,<表达式2>)																																					|-																|
-|filter						|[filter](uniCloud/cf-database.md?id=filter)										|filter(<input>,<as>,<cond>)																																								|-																|
-|in								|[in](uniCloud/cf-database.md?id=in)														|in(<表达式1>,<表达式2>)																																										|-																|
-|indexOfArray			|[indexOfArray](uniCloud/cf-database.md?id=indexofarray)				|indexOfArray(<表达式1>,<表达式2>)																																					|-																|
-|isArray					|[isArray](uniCloud/cf-database.md?id=isarray)									|isArray(<表达式>)																																													|-																|
-|map							|[map](uniCloud/cf-database.md?id=map)													|map(<input>,<as>,<in>)																																											|-																|
-|objectToArray		|[objectToArray](uniCloud/cf-database.md?id=objecttoarray)			|objectToArray(<表达式>)																																										|-																|
-|range						|[range](uniCloud/cf-database.md?id=range)											|range(<表达式1>,<表达式2>)																																									|-																|
-|reduce						|[reduce](uniCloud/cf-database.md?id=reduce)										|reduce(<input>,<initialValue>,<in>)																																				|-																|
-|reverseArray			|[reverseArray](uniCloud/cf-database.md?id=reversearray)				|reverseArray(<表达式>)																																											|-																|
-|size							|[size](uniCloud/cf-database.md?id=size)												|size(<表达式>)																																															|-																|
-|slice						|[slice](uniCloud/cf-database.md?id=slice)											|slice(<表达式1>,<表达式2>)																																									|-																|
-|zip							|[zip](uniCloud/cf-database.md?id=zip)													|zip(<inputs>,<useLongestLength>,<defaults>)																																|-																|
-|and							|[and](uniCloud/cf-database.md?id=and)													|and(<表达式1>,<表达式2>)																																										|-																|
-|not							|[not](uniCloud/cf-database.md?id=not)													|not(<表达式>)																																															|-																|
-|or								|[or](uniCloud/cf-database.md?id=or)														|or(<表达式1>,<表达式2>)																																										|-																|
-|cmp							|[cmp](uniCloud/cf-database.md?id=cmp)													|cmp(<表达式1>,<表达式2>)																																										|-																|
-|eq								|[eq](uniCloud/cf-database.md?id=eq)														|eq(<表达式1>,<表达式2>)																																										|-																|
-|gt								|[gt](uniCloud/cf-database.md?id=gt)														|gt(<表达式1>,<表达式2>)																																										|-																|
-|gte							|[gte](uniCloud/cf-database.md?id=gte)													|gte(<表达式1>,<表达式2>)																																										|-																|
-|lt								|[lt](uniCloud/cf-database.md?id=lt)														|lt(<表达式1>,<表达式2>)																																										|-																|
-|lte							|[lte](uniCloud/cf-database.md?id=lte)													|lte(<表达式1>,<表达式2>)																																										|-																|
-|neq							|[neq](uniCloud/cf-database.md?id=neq)													|neq(<表达式1>,<表达式2>)																																										|-																|
-|cond							|[cond](uniCloud/cf-database.md?id=cond)												|cond(<表达式1>,<表达式2>)																																									|-																|
-|ifNull						|[ifNull](uniCloud/cf-database.md?id=ifnull)										|ifNull(<表达式1>,<表达式2>)																																								|-																|
-|switch						|[switch](uniCloud/cf-database.md?id=switch)										|switch(<branches>,<default>)																																								|-																|
-|dateFromParts		|[dateFromParts](uniCloud/cf-database.md?id=datefromparts)			|dateFromParts(<year>,<month>,<day>,<hour>,<minute>,<second>,<millisecond>,<timezone>)											|-																|
-|isoDateFromParts	|[isoDateFromParts](uniCloud/cf-database.md?id=isodatefromparts)|isoDateFromParts(<isoWeekYear>,<isoWeek>,<isoDayOfWeek>,<hour>,<minute>,<second>,<millisecond>,<timezone>)	|云函数内此操作符对应dateFromParts|
-|dateFromString		|[dateFromString](uniCloud/cf-database.md?id=datefromstring)		|dateFromString(<dateString>,<format>,<timezone>,<onError>,<onNull>)																				|-																|
-|dateToString			|[dateToString](uniCloud/cf-database.md?id=datetostring)				|dateToString(<date>,<format>,<timezone>,<onNull>)																													|-																|
-|dayOfMonth				|[dayOfMonth](uniCloud/cf-database.md?id=dayofmonth)						|dayOfMonth(<date>,<timezone>)																																							|-																|
-|dayOfWeek				|[dayOfWeek](uniCloud/cf-database.md?id=dayofweek)							|dayOfWeek(<date>,<timezone>)																																								|-																|
-|dayOfYear				|[dayOfYear](uniCloud/cf-database.md?id=dayofyear)							|dayOfYear(<date>,<timezone>)																																								|-																|
-|hour							|[hour](uniCloud/cf-database.md?id=hour)												|hour(<date>,<timezone>)																																										|-																|
-|isoDayOfWeek			|[isoDayOfWeek](uniCloud/cf-database.md?id=isodayofweek)				|isoDayOfWeek(<date>,<timezone>)																																						|-																|
-|isoWeek					|[isoWeek](uniCloud/cf-database.md?id=isoweek)									|isoWeek(<date>,<timezone>)																																									|-																|
-|isoWeekYear			|[isoWeekYear](uniCloud/cf-database.md?id=isoweekyear)					|isoWeekYear(<date>,<timezone>)																																							|-																|
-|millisecond			|[millisecond](uniCloud/cf-database.md?id=millisecond)					|millisecond(<date>,<timezone>)																																							|-																|
-|minute						|[minute](uniCloud/cf-database.md?id=minute)										|minute(<date>,<timezone>)																																									|-																|
-|month						|[month](uniCloud/cf-database.md?id=month)											|month(<date>,<timezone>)																																										|-																|
-|second						|[second](uniCloud/cf-database.md?id=second)										|second(<date>,<timezone>)																																									|-																|
-|week							|[week](uniCloud/cf-database.md?id=week)												|week(<date>,<timezone>)																																										|-																|
-|year							|[year](uniCloud/cf-database.md?id=year)												|year(<date>,<timezone>)																																										|-																|
-|literal					|[literal](uniCloud/cf-database.md?id=literal)									|literal(<表达式>)																																													|-																|
-|mergeObjects			|[mergeObjects](uniCloud/cf-database.md?id=mergeobjects)				|mergeObjects(<表达式1>,<表达式2>)																																					|-																|
-|allElementsTrue	|[allElementsTrue](uniCloud/cf-database.md?id=allelementstrue)	|allElementsTrue(<表达式1>,<表达式2>)																																				|-																|
-|anyElementTrue		|[anyElementTrue](uniCloud/cf-database.md?id=anyelementtrue)		|anyElementTrue(<表达式1>,<表达式2>)																																				|-																|
-|setDifference		|[setDifference](uniCloud/cf-database.md?id=setdifference)			|setDifference(<表达式1>,<表达式2>)																																					|-																|
-|setEquals				|[setEquals](uniCloud/cf-database.md?id=setequals)							|setEquals(<表达式1>,<表达式2>)																																							|-																|
-|setIntersection	|[setIntersection](uniCloud/cf-database.md?id=setintersection)	|setIntersection(<表达式1>,<表达式2>)																																				|-																|
-|setIsSubset			|[setIsSubset](uniCloud/cf-database.md?id=setissubset)					|setIsSubset(<表达式1>,<表达式2>)																																						|-																|
-|setUnion					|[setUnion](uniCloud/cf-database.md?id=setunion)								|setUnion(<表达式1>,<表达式2>)																																							|-																|
-|concat						|[concat](uniCloud/cf-database.md?id=concat)										|concat(<表达式1>,<表达式2>)																																								|-																|
-|indexOfBytes			|[indexOfBytes](uniCloud/cf-database.md?id=indexofbytes)				|indexOfBytes(<表达式1>,<表达式2>)																																					|-																|
-|indexOfCP				|[indexOfCP](uniCloud/cf-database.md?id=indexofcp)							|indexOfCP(<表达式1>,<表达式2>)																																							|-																|
-|split						|[split](uniCloud/cf-database.md?id=split)											|split(<表达式1>,<表达式2>)																																									|-																|
-|strLenBytes			|[strLenBytes](uniCloud/cf-database.md?id=strlenbytes)					|strLenBytes(<表达式>)																																											|-																|
-|strLenCP					|[strLenCP](uniCloud/cf-database.md?id=strlencp)								|strLenCP(<表达式>)																																													|-																|
-|strcasecmp				|[strcasecmp](uniCloud/cf-database.md?id=strcasecmp)						|strcasecmp(<表达式1>,<表达式2>)																																						|-																|
-|substr						|[substr](uniCloud/cf-database.md?id=substr)										|substr(<表达式1>,<表达式2>)																																								|-																|
-|substrBytes			|[substrBytes](uniCloud/cf-database.md?id=substrbytes)					|substrBytes(<表达式1>,<表达式2>)																																						|-																|
-|substrCP					|[substrCP](uniCloud/cf-database.md?id=substrcp)								|substrCP(<表达式1>,<表达式2>)																																							|-																|
-|toLower					|[toLower](uniCloud/cf-database.md?id=tolower)									|toLower(<表达式>)																																													|-																|
-|toUpper					|[toUpper](uniCloud/cf-database.md?id=toupper)									|toUpper(<表达式>)																																													|-																|
-|addToSet					|[addToSet](uniCloud/cf-database.md?id=addtoset)								|addToSet(<表达式>)																																													|-																|
-|avg							|[avg](uniCloud/cf-database.md?id=avg)													|avg(<表达式>)																																															|-																|
-|first						|[first](uniCloud/cf-database.md?id=first)											|first(<表达式>)																																														|-																|
-|last							|[last](uniCloud/cf-database.md?id=last)												|last(<表达式>)																																															|-																|
-|max							|[max](uniCloud/cf-database.md?id=max)													|max(<表达式>)																																															|-																|
-|min							|[min](uniCloud/cf-database.md?id=min)													|min(<表达式>)																																															|-																|
-|push							|[push](uniCloud/cf-database.md?id=push)												|push(<表达式>)																																															|-																|
-|stdDevPop				|[stdDevPop](uniCloud/cf-database.md?id=stddevpop)							|stdDevPop(<表达式>)																																												|-																|
-|stdDevSamp				|[stdDevSamp](uniCloud/cf-database.md?id=stddevsamp)						|stdDevSamp(<表达式>)																																												|-																|
-|sum							|[sum](uniCloud/cf-database.md?id=sum)													|sum(<表达式>)																																															|-																|
-|let							|[let](uniCloud/cf-database.md?id=let)													|let(<vars>,<in>)																																														|-																|
+|操作符						|详细文档（云函数内用法）																				|JQL简化用法																																								|说明															|
+|---							|---																														|---																																												|---															|
+|abs							|[abs](uniCloud/cf-database.md?id=abs)													|abs(表达式)																																								|-																|
+|add							|[add](uniCloud/cf-database.md?id=add-1)												|add(表达式1,表达式2)																																				|-																|
+|ceil							|[ceil](uniCloud/cf-database.md?id=ceil)												|ceil(表达式)																																								|-																|
+|divide						|[divide](uniCloud/cf-database.md?id=divide)										|divide(表达式1,表达式2)																																		|-																|
+|exp							|[exp](uniCloud/cf-database.md?id=exp)													|exp(表达式)																																								|-																|
+|floor						|[floor](uniCloud/cf-database.md?id=floor)											|floor(表达式)																																							|-																|
+|ln								|[ln](uniCloud/cf-database.md?id=ln)														|ln(表达式)																																									|-																|
+|log							|[log](uniCloud/cf-database.md?id=log)													|log(表达式1,表达式2)																																				|-																|
+|log10						|[log10](uniCloud/cf-database.md?id=log10)											|log10(表达式)																																							|-																|
+|mod							|[mod](uniCloud/cf-database.md?id=mod)													|mod(表达式1,表达式2)																																				|-																|
+|multiply					|[multiply](uniCloud/cf-database.md?id=multiply)								|multiply(表达式1,表达式2)																																	|-																|
+|pow							|[pow](uniCloud/cf-database.md?id=pow)													|pow(表达式1,表达式2)																																				|-																|
+|sqrt							|[sqrt](uniCloud/cf-database.md?id=sqrt)												|sqrt(表达式1,表达式2)																																			|-																|
+|subtract					|[subtract](uniCloud/cf-database.md?id=subtract)								|subtract(表达式1,表达式2)																																	|-																|
+|trunc						|[trunc](uniCloud/cf-database.md?id=trunc)											|trunc(表达式)																																							|-																|
+|arrayElemAt			|[arrayElemAt](uniCloud/cf-database.md?id=arrayelemat)					|arrayElemAt(表达式1,表达式2)																																|-																|
+|arrayToObject		|[arrayToObject](uniCloud/cf-database.md?id=arraytoobject)			|arrayToObject(表达式)																																			|-																|
+|concatArrays			|[concatArrays](uniCloud/cf-database.md?id=concatarrays)				|concatArrays(表达式1,表达式2)																															|-																|
+|filter						|[filter](uniCloud/cf-database.md?id=filter)										|filter(input,as,cond)																																			|-																|
+|in								|[in](uniCloud/cf-database.md?id=in)														|in(表达式1,表达式2)																																				|-																|
+|indexOfArray			|[indexOfArray](uniCloud/cf-database.md?id=indexofarray)				|indexOfArray(表达式1,表达式2)																															|-																|
+|isArray					|[isArray](uniCloud/cf-database.md?id=isarray)									|isArray(表达式)																																						|-																|
+|map							|[map](uniCloud/cf-database.md?id=map)													|map(input,as,in)																																						|-																|
+|objectToArray		|[objectToArray](uniCloud/cf-database.md?id=objecttoarray)			|objectToArray(表达式)																																			|-																|
+|range						|[range](uniCloud/cf-database.md?id=range)											|range(表达式1,表达式2)																																			|-																|
+|reduce						|[reduce](uniCloud/cf-database.md?id=reduce)										|reduce(input,initialValue,in)																															|-																|
+|reverseArray			|[reverseArray](uniCloud/cf-database.md?id=reversearray)				|reverseArray(表达式)																																				|-																|
+|size							|[size](uniCloud/cf-database.md?id=size)												|size(表达式)																																								|-																|
+|slice						|[slice](uniCloud/cf-database.md?id=slice)											|slice(表达式1,表达式2)																																			|-																|
+|zip							|[zip](uniCloud/cf-database.md?id=zip)													|zip(inputs,useLongestLength,defaults)																											|-																|
+|and							|[and](uniCloud/cf-database.md?id=and)													|and(表达式1,表达式2)																																				|-																|
+|not							|[not](uniCloud/cf-database.md?id=not)													|not(表达式)																																								|-																|
+|or								|[or](uniCloud/cf-database.md?id=or)														|or(表达式1,表达式2)																																				|-																|
+|cmp							|[cmp](uniCloud/cf-database.md?id=cmp)													|cmp(表达式1,表达式2)																																				|-																|
+|eq								|[eq](uniCloud/cf-database.md?id=eq)														|eq(表达式1,表达式2)																																				|-																|
+|gt								|[gt](uniCloud/cf-database.md?id=gt)														|gt(表达式1,表达式2)																																				|-																|
+|gte							|[gte](uniCloud/cf-database.md?id=gte)													|gte(表达式1,表达式2)																																				|-																|
+|lt								|[lt](uniCloud/cf-database.md?id=lt)														|lt(表达式1,表达式2)																																				|-																|
+|lte							|[lte](uniCloud/cf-database.md?id=lte)													|lte(表达式1,表达式2)																																				|-																|
+|neq							|[neq](uniCloud/cf-database.md?id=neq)													|neq(表达式1,表达式2)																																				|-																|
+|cond							|[cond](uniCloud/cf-database.md?id=cond)												|cond(表达式1,表达式2)																																			|-																|
+|ifNull						|[ifNull](uniCloud/cf-database.md?id=ifnull)										|ifNull(表达式1,表达式2)																																		|-																|
+|switch						|[switch](uniCloud/cf-database.md?id=switch)										|switch(branches,default)																																		|-																|
+|dateFromParts		|[dateFromParts](uniCloud/cf-database.md?id=datefromparts)			|dateFromParts(year,month,day,hour,minute,second,millisecond,timezone)											|-																|
+|isoDateFromParts	|[isoDateFromParts](uniCloud/cf-database.md?id=isodatefromparts)|isoDateFromParts(isoWeekYear,isoWeek,isoDayOfWeek,hour,minute,second,millisecond,timezone)	|云函数内此操作符对应dateFromParts|
+|dateFromString		|[dateFromString](uniCloud/cf-database.md?id=datefromstring)		|dateFromString(dateString,format,timezone,onError,onNull)																	|-																|
+|dateToString			|[dateToString](uniCloud/cf-database.md?id=datetostring)				|dateToString(date,format,timezone,onNull)																									|-																|
+|dayOfMonth				|[dayOfMonth](uniCloud/cf-database.md?id=dayofmonth)						|dayOfMonth(date,timezone)																																	|-																|
+|dayOfWeek				|[dayOfWeek](uniCloud/cf-database.md?id=dayofweek)							|dayOfWeek(date,timezone)																																		|-																|
+|dayOfYear				|[dayOfYear](uniCloud/cf-database.md?id=dayofyear)							|dayOfYear(date,timezone)																																		|-																|
+|hour							|[hour](uniCloud/cf-database.md?id=hour)												|hour(date,timezone)																																				|-																|
+|isoDayOfWeek			|[isoDayOfWeek](uniCloud/cf-database.md?id=isodayofweek)				|isoDayOfWeek(date,timezone)																																|-																|
+|isoWeek					|[isoWeek](uniCloud/cf-database.md?id=isoweek)									|isoWeek(date,timezone)																																			|-																|
+|isoWeekYear			|[isoWeekYear](uniCloud/cf-database.md?id=isoweekyear)					|isoWeekYear(date,timezone)																																	|-																|
+|millisecond			|[millisecond](uniCloud/cf-database.md?id=millisecond)					|millisecond(date,timezone)																																	|-																|
+|minute						|[minute](uniCloud/cf-database.md?id=minute)										|minute(date,timezone)																																			|-																|
+|month						|[month](uniCloud/cf-database.md?id=month)											|month(date,timezone)																																				|-																|
+|second						|[second](uniCloud/cf-database.md?id=second)										|second(date,timezone)																																			|-																|
+|week							|[week](uniCloud/cf-database.md?id=week)												|week(date,timezone)																																				|-																|
+|year							|[year](uniCloud/cf-database.md?id=year)												|year(date,timezone)																																				|-																|
+|literal					|[literal](uniCloud/cf-database.md?id=literal)									|literal(表达式)																																						|-																|
+|mergeObjects			|[mergeObjects](uniCloud/cf-database.md?id=mergeobjects)				|mergeObjects(表达式1,表达式2)																															|-																|
+|allElementsTrue	|[allElementsTrue](uniCloud/cf-database.md?id=allelementstrue)	|allElementsTrue(表达式1,表达式2)																														|-																|
+|anyElementTrue		|[anyElementTrue](uniCloud/cf-database.md?id=anyelementtrue)		|anyElementTrue(表达式1,表达式2)																														|-																|
+|setDifference		|[setDifference](uniCloud/cf-database.md?id=setdifference)			|setDifference(表达式1,表达式2)																															|-																|
+|setEquals				|[setEquals](uniCloud/cf-database.md?id=setequals)							|setEquals(表达式1,表达式2)																																	|-																|
+|setIntersection	|[setIntersection](uniCloud/cf-database.md?id=setintersection)	|setIntersection(表达式1,表达式2)																														|-																|
+|setIsSubset			|[setIsSubset](uniCloud/cf-database.md?id=setissubset)					|setIsSubset(表达式1,表达式2)																																|-																|
+|setUnion					|[setUnion](uniCloud/cf-database.md?id=setunion)								|setUnion(表达式1,表达式2)																																	|-																|
+|concat						|[concat](uniCloud/cf-database.md?id=concat)										|concat(表达式1,表达式2)																																		|-																|
+|indexOfBytes			|[indexOfBytes](uniCloud/cf-database.md?id=indexofbytes)				|indexOfBytes(表达式1,表达式2)																															|-																|
+|indexOfCP				|[indexOfCP](uniCloud/cf-database.md?id=indexofcp)							|indexOfCP(表达式1,表达式2)																																	|-																|
+|split						|[split](uniCloud/cf-database.md?id=split)											|split(表达式1,表达式2)																																			|-																|
+|strLenBytes			|[strLenBytes](uniCloud/cf-database.md?id=strlenbytes)					|strLenBytes(表达式)																																				|-																|
+|strLenCP					|[strLenCP](uniCloud/cf-database.md?id=strlencp)								|strLenCP(表达式)																																						|-																|
+|strcasecmp				|[strcasecmp](uniCloud/cf-database.md?id=strcasecmp)						|strcasecmp(表达式1,表达式2)																																|-																|
+|substr						|[substr](uniCloud/cf-database.md?id=substr)										|substr(表达式1,表达式2)																																		|-																|
+|substrBytes			|[substrBytes](uniCloud/cf-database.md?id=substrbytes)					|substrBytes(表达式1,表达式2)																																|-																|
+|substrCP					|[substrCP](uniCloud/cf-database.md?id=substrcp)								|substrCP(表达式1,表达式2)																																	|-																|
+|toLower					|[toLower](uniCloud/cf-database.md?id=tolower)									|toLower(表达式)																																						|-																|
+|toUpper					|[toUpper](uniCloud/cf-database.md?id=toupper)									|toUpper(表达式)																																						|-																|
+|addToSet					|[addToSet](uniCloud/cf-database.md?id=addtoset)								|addToSet(表达式)																																						|-																|
+|avg							|[avg](uniCloud/cf-database.md?id=avg)													|avg(表达式)																																								|-																|
+|first						|[first](uniCloud/cf-database.md?id=first)											|first(表达式)																																							|-																|
+|last							|[last](uniCloud/cf-database.md?id=last)												|last(表达式)																																								|-																|
+|max							|[max](uniCloud/cf-database.md?id=max)													|max(表达式)																																								|-																|
+|min							|[min](uniCloud/cf-database.md?id=min)													|min(表达式)																																								|-																|
+|push							|[push](uniCloud/cf-database.md?id=push)												|push(表达式)																																								|-																|
+|stdDevPop				|[stdDevPop](uniCloud/cf-database.md?id=stddevpop)							|stdDevPop(表达式)																																					|-																|
+|stdDevSamp				|[stdDevSamp](uniCloud/cf-database.md?id=stddevsamp)						|stdDevSamp(表达式)																																					|-																|
+|sum							|[sum](uniCloud/cf-database.md?id=sum)													|sum(表达式)																																								|-																|
+|let							|[let](uniCloud/cf-database.md?id=let)													|let(vars,in)																																								|-																|
 
 以上操作符还可以组合使用
 
