@@ -1,7 +1,8 @@
 var __assign = Object.assign;
 import {isFunction, extend, isPlainObject, isPromise, isArray, hasOwn, hyphenate} from "@vue/shared";
 import {injectHook, openBlock, createBlock, createVNode, Fragment, renderList, toDisplayString, createCommentVNode, createTextVNode, Transition, withCtx, withModifiers, withDirectives, vShow, resolveComponent, KeepAlive, resolveDynamicComponent, mergeProps, toHandlers, renderSlot, vModelDynamic, vModelText} from "vue";
-import {TABBAR_HEIGHT, COMPONENT_NAME_PREFIX, isCustomElement, plusReady, debounce, NAVBAR_HEIGHT} from "@dcloudio/uni-shared";
+import {o as out} from "./vendor.b81c7b6a.js";
+import {TABBAR_HEIGHT, plusReady, debounce, NAVBAR_HEIGHT, COMPONENT_NAME_PREFIX, isCustomElement} from "@dcloudio/uni-shared";
 import {createWebHistory, createWebHashHistory, createRouter} from "vue-router";
 function applyOptions(options, instance2, publicThis) {
   Object.keys(options).forEach((name) => {
@@ -137,192 +138,6 @@ function initLongPress() {
   window.addEventListener("touchend", clearLongPressTimer, passiveOptions);
   window.addEventListener("touchcancel", clearLongPressTimer, passiveOptions);
 }
-var attrs = ["top", "left", "right", "bottom"];
-var inited;
-var elementComputedStyle = {};
-var support;
-function getSupport() {
-  if (!("CSS" in window) || typeof CSS.supports != "function") {
-    support = "";
-  } else if (CSS.supports("top: env(safe-area-inset-top)")) {
-    support = "env";
-  } else if (CSS.supports("top: constant(safe-area-inset-top)")) {
-    support = "constant";
-  } else {
-    support = "";
-  }
-  return support;
-}
-function init() {
-  support = typeof support === "string" ? support : getSupport();
-  if (!support) {
-    attrs.forEach(function(attr2) {
-      elementComputedStyle[attr2] = 0;
-    });
-    return;
-  }
-  function setStyle(el, style) {
-    var elStyle = el.style;
-    Object.keys(style).forEach(function(key) {
-      var val = style[key];
-      elStyle[key] = val;
-    });
-  }
-  var cbs = [];
-  function parentReady(callback) {
-    if (callback) {
-      cbs.push(callback);
-    } else {
-      cbs.forEach(function(cb) {
-        cb();
-      });
-    }
-  }
-  var passiveEvents = false;
-  try {
-    var opts = Object.defineProperty({}, "passive", {
-      get: function() {
-        passiveEvents = {passive: true};
-      }
-    });
-    window.addEventListener("test", null, opts);
-  } catch (e2) {
-  }
-  function addChild(parent, attr2) {
-    var a1 = document.createElement("div");
-    var a2 = document.createElement("div");
-    var a1Children = document.createElement("div");
-    var a2Children = document.createElement("div");
-    var W = 100;
-    var MAX = 1e4;
-    var aStyle = {
-      position: "absolute",
-      width: W + "px",
-      height: "200px",
-      boxSizing: "border-box",
-      overflow: "hidden",
-      paddingBottom: support + "(safe-area-inset-" + attr2 + ")"
-    };
-    setStyle(a1, aStyle);
-    setStyle(a2, aStyle);
-    setStyle(a1Children, {
-      transition: "0s",
-      animation: "none",
-      width: "400px",
-      height: "400px"
-    });
-    setStyle(a2Children, {
-      transition: "0s",
-      animation: "none",
-      width: "250%",
-      height: "250%"
-    });
-    a1.appendChild(a1Children);
-    a2.appendChild(a2Children);
-    parent.appendChild(a1);
-    parent.appendChild(a2);
-    parentReady(function() {
-      a1.scrollTop = a2.scrollTop = MAX;
-      var a1LastScrollTop = a1.scrollTop;
-      var a2LastScrollTop = a2.scrollTop;
-      function onScroll() {
-        if (this.scrollTop === (this === a1 ? a1LastScrollTop : a2LastScrollTop)) {
-          return;
-        }
-        a1.scrollTop = a2.scrollTop = MAX;
-        a1LastScrollTop = a1.scrollTop;
-        a2LastScrollTop = a2.scrollTop;
-        attrChange(attr2);
-      }
-      a1.addEventListener("scroll", onScroll, passiveEvents);
-      a2.addEventListener("scroll", onScroll, passiveEvents);
-    });
-    var computedStyle = getComputedStyle(a1);
-    Object.defineProperty(elementComputedStyle, attr2, {
-      configurable: true,
-      get: function() {
-        return parseFloat(computedStyle.paddingBottom);
-      }
-    });
-  }
-  var parentDiv = document.createElement("div");
-  setStyle(parentDiv, {
-    position: "absolute",
-    left: "0",
-    top: "0",
-    width: "0",
-    height: "0",
-    zIndex: "-1",
-    overflow: "hidden",
-    visibility: "hidden"
-  });
-  attrs.forEach(function(key) {
-    addChild(parentDiv, key);
-  });
-  document.body.appendChild(parentDiv);
-  parentReady();
-  inited = true;
-}
-function getAttr(attr2) {
-  if (!inited) {
-    init();
-  }
-  return elementComputedStyle[attr2];
-}
-var changeAttrs = [];
-function attrChange(attr2) {
-  if (!changeAttrs.length) {
-    setTimeout(function() {
-      var style = {};
-      changeAttrs.forEach(function(attr3) {
-        style[attr3] = elementComputedStyle[attr3];
-      });
-      changeAttrs.length = 0;
-      callbacks.forEach(function(callback) {
-        callback(style);
-      });
-    }, 0);
-  }
-  changeAttrs.push(attr2);
-}
-var callbacks = [];
-function onChange(callback) {
-  if (!getSupport()) {
-    return;
-  }
-  if (!inited) {
-    init();
-  }
-  if (typeof callback === "function") {
-    callbacks.push(callback);
-  }
-}
-function offChange(callback) {
-  var index2 = callbacks.indexOf(callback);
-  if (index2 >= 0) {
-    callbacks.splice(index2, 1);
-  }
-}
-var safeAreaInsets = {
-  get support() {
-    return (typeof support === "string" ? support : getSupport()).length != 0;
-  },
-  get top() {
-    return getAttr("top");
-  },
-  get left() {
-    return getAttr("left");
-  },
-  get right() {
-    return getAttr("right");
-  },
-  get bottom() {
-    return getAttr("bottom");
-  },
-  onChange,
-  offChange
-};
-var out = safeAreaInsets;
 function getWindowOffset() {
   if (uni.canIUse("css.var")) {
     const style = document.documentElement.style;
@@ -1718,145 +1533,6 @@ var api = /* @__PURE__ */ Object.freeze({
   switchTab,
   getRealPath
 });
-var index_vue_vue_type_style_index_0_lang = `* {
-    margin: 0;
-    -webkit-tap-highlight-color: transparent;
-}
-@font-face {
-    font-weight: normal;
-    font-style: normal;
-    font-family: "uni";
-    src: url('data:application/octet-stream;base64,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') format('truetype');
-}
-@font-face {
-    font-weight: normal;
-    font-style: normal;
-    font-family: "unibtn";
-    src: url('data:application/octet-stream;base64,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') format('truetype')
-}
-html,
-body {
-    -webkit-user-select: none;
-    user-select: none;
-    width: 100%;
-    height: 100%;
-}
-body {
-    overflow-x: hidden;
-}
-[class^="uni-icon-"],
-[class*=" uni-icon-"] {
-    display: inline-block;
-    vertical-align: middle;
-    font: normal normal normal 14px/1 "uni";
-    font-size: inherit;
-    text-rendering: auto;
-    -webkit-font-smoothing: antialiased;
-}
-[class^="uni-btn-icon"],
-[class*=" uni-btn-icon"] {
-    display: inline-block;
-    font: normal normal normal 14px/1 "unibtn";
-    font-size: inherit;
-    text-rendering: auto;
-    -webkit-font-smoothing: antialiased;
-}
-[class^="uni-btn-icon"]:before,
-[class*=" uni-btn-icon"]:before {
-    margin: 0;
-    box-sizing: border-box;
-}
-.uni-icon-success-no-circle:before {
-    content: "\\EA08";
-}
-.uni-loading,
-uni-button[loading]:before {
-    background: transparent url("data:image/svg+xml;base64, PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCI+PHBhdGggZmlsbD0ibm9uZSIgZD0iTTAgMGgxMDB2MTAwSDB6Ii8+PHJlY3Qgd2lkdGg9IjciIGhlaWdodD0iMjAiIHg9IjQ2LjUiIHk9IjQwIiBmaWxsPSIjRTlFOUU5IiByeD0iNSIgcnk9IjUiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAgLTMwKSIvPjxyZWN0IHdpZHRoPSI3IiBoZWlnaHQ9IjIwIiB4PSI0Ni41IiB5PSI0MCIgZmlsbD0iIzk4OTY5NyIgcng9IjUiIHJ5PSI1IiB0cmFuc2Zvcm09InJvdGF0ZSgzMCAxMDUuOTggNjUpIi8+PHJlY3Qgd2lkdGg9IjciIGhlaWdodD0iMjAiIHg9IjQ2LjUiIHk9IjQwIiBmaWxsPSIjOUI5OTlBIiByeD0iNSIgcnk9IjUiIHRyYW5zZm9ybT0icm90YXRlKDYwIDc1Ljk4IDY1KSIvPjxyZWN0IHdpZHRoPSI3IiBoZWlnaHQ9IjIwIiB4PSI0Ni41IiB5PSI0MCIgZmlsbD0iI0EzQTFBMiIgcng9IjUiIHJ5PSI1IiB0cmFuc2Zvcm09InJvdGF0ZSg5MCA2NSA2NSkiLz48cmVjdCB3aWR0aD0iNyIgaGVpZ2h0PSIyMCIgeD0iNDYuNSIgeT0iNDAiIGZpbGw9IiNBQkE5QUEiIHJ4PSI1IiByeT0iNSIgdHJhbnNmb3JtPSJyb3RhdGUoMTIwIDU4LjY2IDY1KSIvPjxyZWN0IHdpZHRoPSI3IiBoZWlnaHQ9IjIwIiB4PSI0Ni41IiB5PSI0MCIgZmlsbD0iI0IyQjJCMiIgcng9IjUiIHJ5PSI1IiB0cmFuc2Zvcm09InJvdGF0ZSgxNTAgNTQuMDIgNjUpIi8+PHJlY3Qgd2lkdGg9IjciIGhlaWdodD0iMjAiIHg9IjQ2LjUiIHk9IjQwIiBmaWxsPSIjQkFCOEI5IiByeD0iNSIgcnk9IjUiIHRyYW5zZm9ybT0icm90YXRlKDE4MCA1MCA2NSkiLz48cmVjdCB3aWR0aD0iNyIgaGVpZ2h0PSIyMCIgeD0iNDYuNSIgeT0iNDAiIGZpbGw9IiNDMkMwQzEiIHJ4PSI1IiByeT0iNSIgdHJhbnNmb3JtPSJyb3RhdGUoLTE1MCA0NS45OCA2NSkiLz48cmVjdCB3aWR0aD0iNyIgaGVpZ2h0PSIyMCIgeD0iNDYuNSIgeT0iNDAiIGZpbGw9IiNDQkNCQ0IiIHJ4PSI1IiByeT0iNSIgdHJhbnNmb3JtPSJyb3RhdGUoLTEyMCA0MS4zNCA2NSkiLz48cmVjdCB3aWR0aD0iNyIgaGVpZ2h0PSIyMCIgeD0iNDYuNSIgeT0iNDAiIGZpbGw9IiNEMkQyRDIiIHJ4PSI1IiByeT0iNSIgdHJhbnNmb3JtPSJyb3RhdGUoLTkwIDM1IDY1KSIvPjxyZWN0IHdpZHRoPSI3IiBoZWlnaHQ9IjIwIiB4PSI0Ni41IiB5PSI0MCIgZmlsbD0iI0RBREFEQSIgcng9IjUiIHJ5PSI1IiB0cmFuc2Zvcm09InJvdGF0ZSgtNjAgMjQuMDIgNjUpIi8+PHJlY3Qgd2lkdGg9IjciIGhlaWdodD0iMjAiIHg9IjQ2LjUiIHk9IjQwIiBmaWxsPSIjRTJFMkUyIiByeD0iNSIgcnk9IjUiIHRyYW5zZm9ybT0icm90YXRlKC0zMCAtNS45OCA2NSkiLz48L3N2Zz4=") no-repeat;
-}
-.uni-loading {
-    width: 20px;
-    height: 20px;
-    display: inline-block;
-    vertical-align: middle;
-    animation: uni-loading 1s steps(12, end) infinite;
-    background-size: 100%;
-}
-@keyframes uni-loading {
-0% {
-        transform: rotate3d(0, 0, 1, 0deg);
-}
-100% {
-        transform: rotate3d(0, 0, 1, 360deg);
-}
-}
-.uni-mask {
-    position: fixed;
-    z-index: 999;
-    top: 0;
-    right: 0;
-    left: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.6);
-}
-.uni-fade-enter-active,
-.uni-fade-leave-active {
-    transition-duration: 0.25s;
-    transition-property: opacity;
-    transition-timing-function: ease;
-}
-.uni-fade-enter,
-.uni-fade-leave-active {
-    opacity: 0
-}
-[nvue] uni-view,
-[nvue] uni-swiper-item,
-[nvue] uni-scroll-view {
-    display: flex;
-    flex-shrink: 0;
-    flex-grow: 0;
-    flex-basis: auto;
-    align-items: stretch;
-    align-content: flex-start;
-}
-[nvue-dir-row] uni-view,
-[nvue-dir-row] uni-swiper-item {
-    flex-direction: row;
-}
-[nvue-dir-column] uni-view,
-[nvue-dir-column] uni-swiper-item {
-    flex-direction: column;
-}
-[nvue-dir-row-reverse] uni-view,
-[nvue-dir-row-reverse] uni-swiper-item {
-    flex-direction: row-reverse;
-}
-[nvue-dir-column-reverse] uni-view,
-[nvue-dir-column-reverse] uni-swiper-item {
-    flex-direction: column-reverse;
-}
-[nvue] uni-view,
-[nvue] uni-image,
-[nvue] uni-input,
-[nvue] uni-scroll-view,
-[nvue] uni-swiper,
-[nvue] uni-swiper-item,
-[nvue] uni-text,
-[nvue] uni-textarea,
-[nvue] uni-video {
-    position: relative;
-    border: 0px solid #000000;
-    box-sizing: border-box;
-}
-[nvue] uni-swiper-item {
-    position: absolute;
-}
-uni-app {\r
-  display: block;\r
-  box-sizing: border-box;\r
-  width: 100%;\r
-  height: 100%;
-}\r
-`;
 const _sfc_main$4 = {
   name: "App",
   components,
@@ -1952,20 +1628,41 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
   ], 2);
 }
 _sfc_main$4.render = _sfc_render$4;
-function initSystemComponents(app) {
-  _sfc_main$4.name = COMPONENT_NAME_PREFIX + _sfc_main$4.name;
-  app.component(_sfc_main$4.name, _sfc_main$4);
-}
-var index = {
-  install(app) {
-    app._context.config.isCustomElement = isCustomElement;
-    initApp(app);
-    initView(app);
-    initService(app);
-    initSystemComponents(app);
-    initRouter(app);
+function mergeTitleNView(navigationBar, titleNView) {
+  if (isPlainObject(titleNView)) {
+    if (hasOwn(titleNView, "backgroundColor")) {
+      navigationBar.backgroundColor = titleNView.backgroundColor;
+    }
+    if (hasOwn(titleNView, "buttons")) {
+      navigationBar.buttons = titleNView.buttons;
+    }
+    if (hasOwn(titleNView, "titleColor")) {
+      navigationBar.textColor = titleNView.titleColor;
+    }
+    if (hasOwn(titleNView, "titleText")) {
+      navigationBar.titleText = titleNView.titleText;
+    }
+    if (hasOwn(titleNView, "titleSize")) {
+      navigationBar.titleSize = titleNView.titleSize;
+    }
+    if (hasOwn(titleNView, "type")) {
+      navigationBar.type = titleNView.type;
+    }
+    if (hasOwn(titleNView, "searchInput") && typeof titleNView.searchInput === "object") {
+      navigationBar.searchInput = Object.assign({
+        autoFocus: false,
+        align: "center",
+        color: "#000000",
+        backgroundColor: "rgba(255,255,255,0.5)",
+        borderRadius: "0px",
+        placeholder: "",
+        placeholderColor: "#CCCCCC",
+        disabled: false
+      }, titleNView.searchInput);
+    }
   }
-};
+  return navigationBar;
+}
 function broadcast(componentName, eventName, ...params) {
   const children = this.$children;
   const len = children.length;
@@ -2645,7 +2342,7 @@ function wrapper(canvas) {
   canvas.height = canvas.offsetHeight * pixelRatio;
   canvas.getContext("2d").__hidpi__ = true;
 }
-var index_vue_vue_type_style_index_0_lang$1 = "\nuni-canvas {\r\n  width: 300px;\r\n  height: 150px;\r\n  display: block;\r\n  position: relative;\n}\nuni-canvas > canvas {\r\n  position: absolute;\r\n  top: 0;\r\n  left: 0;\r\n  width: 100%;\r\n  height: 100%;\n}\r\n";
+var index_vue_vue_type_style_index_0_lang = "\nuni-canvas {\r\n  width: 300px;\r\n  height: 150px;\r\n  display: block;\r\n  position: relative;\n}\nuni-canvas > canvas {\r\n  position: absolute;\r\n  top: 0;\r\n  left: 0;\r\n  width: 100%;\r\n  height: 100%;\n}\r\n";
 function resolveColor(color) {
   color = color.slice(0);
   color[3] = color[3] / 255;
@@ -3280,7 +2977,7 @@ function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
   ], 16, ["disabled"]);
 }
 _sfc_main$7.render = _sfc_render$7;
-var index_vue_vue_type_style_index_0_lang$2 = "\nuni-checkbox-group[hidden] {\r\n        display: none;\n}\r\n";
+var index_vue_vue_type_style_index_0_lang$1 = "\nuni-checkbox-group[hidden] {\r\n        display: none;\n}\r\n";
 const _sfc_main$8 = {
   name: "CheckboxGroup",
   mixins: [emitter, listeners],
@@ -3437,17 +3134,17 @@ function HTMLParser(html, handler) {
       stack.push(tagName);
     }
     if (handler.start) {
-      var attrs2 = [];
+      var attrs = [];
       rest.replace(attr, function(match2, name) {
         var value = arguments[2] ? arguments[2] : arguments[3] ? arguments[3] : arguments[4] ? arguments[4] : fillAttrs[name] ? name : "";
-        attrs2.push({
+        attrs.push({
           name,
           value,
           escaped: value.replace(/(^|[^\\])"/g, '$1\\"')
         });
       });
       if (handler.start) {
-        handler.start(tagName, attrs2, unary);
+        handler.start(tagName, attrs, unary);
       }
     }
   }
@@ -4023,13 +3720,13 @@ const _sfc_main$9 = {
       let content = "";
       let disable;
       HTMLParser(html, {
-        start: function(tag, attrs2, unary) {
+        start: function(tag, attrs, unary) {
           if (!tags.includes(tag)) {
             disable = !unary;
             return;
           }
           disable = false;
-          const arrts = attrs2.map(({name, value}) => `${name}="${value}"`).join(" ");
+          const arrts = attrs.map(({name, value}) => `${name}="${value}"`).join(" ");
           const start = `<${tag} ${arrts} ${unary ? "/" : ""}>`;
           content += start;
         },
@@ -4066,7 +3763,7 @@ function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
   }, _ctx.$attrs), null, 16, ["id"]);
 }
 _sfc_main$9.render = _sfc_render$9;
-var index_vue_vue_type_style_index_0_lang$3 = "\r\n";
+var index_vue_vue_type_style_index_0_lang$2 = "\r\n";
 const _sfc_main$a = {
   name: "Form",
   mixins: [listeners],
@@ -4116,7 +3813,7 @@ function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
   ], 16);
 }
 _sfc_main$a.render = _sfc_render$a;
-var index_vue_vue_type_style_index_0_lang$4 = "\nuni-icon {\r\n  display: inline-block;\r\n  font-size: 0;\r\n  box-sizing: border-box;\n}\nuni-icon[hidden] {\r\n  display: none;\n}\nuni-icon > i {\r\n  font: normal normal normal 14px/1 'weui';\n}\nuni-icon > i:before {\r\n  margin: 0;\r\n  box-sizing: border-box;\n}\n@font-face {\r\n  font-weight: normal;\r\n  font-style: normal;\r\n  font-family: 'weui';\r\n  src: url('data:application/octet-stream;base64,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')\r\n    format('truetype');\n}\n.uni-icon-success:before {\r\n  content: '\\EA06';\n}\n.uni-icon-success_circle:before {\r\n  content: '\\EA07';\n}\n.uni-icon-success_no_circle:before {\r\n  content: '\\EA08';\n}\n.uni-icon-safe_success:before {\r\n  content: '\\EA04';\n}\n.uni-icon-safe_warn:before {\r\n  content: '\\EA05';\n}\n.uni-icon-info:before {\r\n  content: '\\EA03';\n}\n.uni-icon-info_circle:before {\r\n  content: '\\EA0C';\n}\n.uni-icon-warn:before {\r\n  content: '\\EA0B';\n}\n.uni-icon-waiting:before {\r\n  content: '\\EA09';\n}\n.uni-icon-waiting_circle:before {\r\n  content: '\\EA0A';\n}\n.uni-icon-circle:before {\r\n  content: '\\EA01';\n}\n.uni-icon-cancel:before {\r\n  content: '\\EA0D';\n}\n.uni-icon-download:before {\r\n  content: '\\EA02';\n}\n.uni-icon-search:before {\r\n  content: '\\EA0E';\n}\n.uni-icon-clear:before {\r\n  content: '\\EA0F';\n}\n.uni-icon-success {\r\n  color: #007aff;\n}\n.uni-icon-success_circle {\r\n  color: #007aff;\n}\n.uni-icon-success_no_circle {\r\n  color: #007aff;\n}\n.uni-icon-safe_success {\r\n  color: #007aff;\n}\n.uni-icon-safe_warn {\r\n  color: #ffbe00;\n}\n.uni-icon-info {\r\n  color: #10aeff;\n}\n.uni-icon-info_circle {\r\n  color: #007aff;\n}\n.uni-icon-warn {\r\n  color: #f76260;\n}\n.uni-icon-waiting {\r\n  color: #10aeff;\n}\n.uni-icon-waiting_circle {\r\n  color: #10aeff;\n}\n.uni-icon-circle {\r\n  color: #c9c9c9;\n}\n.uni-icon-cancel {\r\n  color: #f43530;\n}\n.uni-icon-download {\r\n  color: #007aff;\n}\n.uni-icon-search {\r\n  color: #b2b2b2;\n}\n.uni-icon-clear {\r\n  color: #b2b2b2;\n}\r\n";
+var index_vue_vue_type_style_index_0_lang$3 = "\nuni-icon {\r\n  display: inline-block;\r\n  font-size: 0;\r\n  box-sizing: border-box;\n}\nuni-icon[hidden] {\r\n  display: none;\n}\nuni-icon > i {\r\n  font: normal normal normal 14px/1 'weui';\n}\nuni-icon > i:before {\r\n  margin: 0;\r\n  box-sizing: border-box;\n}\n@font-face {\r\n  font-weight: normal;\r\n  font-style: normal;\r\n  font-family: 'weui';\r\n  src: url('data:application/octet-stream;base64,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')\r\n    format('truetype');\n}\n.uni-icon-success:before {\r\n  content: '\\EA06';\n}\n.uni-icon-success_circle:before {\r\n  content: '\\EA07';\n}\n.uni-icon-success_no_circle:before {\r\n  content: '\\EA08';\n}\n.uni-icon-safe_success:before {\r\n  content: '\\EA04';\n}\n.uni-icon-safe_warn:before {\r\n  content: '\\EA05';\n}\n.uni-icon-info:before {\r\n  content: '\\EA03';\n}\n.uni-icon-info_circle:before {\r\n  content: '\\EA0C';\n}\n.uni-icon-warn:before {\r\n  content: '\\EA0B';\n}\n.uni-icon-waiting:before {\r\n  content: '\\EA09';\n}\n.uni-icon-waiting_circle:before {\r\n  content: '\\EA0A';\n}\n.uni-icon-circle:before {\r\n  content: '\\EA01';\n}\n.uni-icon-cancel:before {\r\n  content: '\\EA0D';\n}\n.uni-icon-download:before {\r\n  content: '\\EA02';\n}\n.uni-icon-search:before {\r\n  content: '\\EA0E';\n}\n.uni-icon-clear:before {\r\n  content: '\\EA0F';\n}\n.uni-icon-success {\r\n  color: #007aff;\n}\n.uni-icon-success_circle {\r\n  color: #007aff;\n}\n.uni-icon-success_no_circle {\r\n  color: #007aff;\n}\n.uni-icon-safe_success {\r\n  color: #007aff;\n}\n.uni-icon-safe_warn {\r\n  color: #ffbe00;\n}\n.uni-icon-info {\r\n  color: #10aeff;\n}\n.uni-icon-info_circle {\r\n  color: #007aff;\n}\n.uni-icon-warn {\r\n  color: #f76260;\n}\n.uni-icon-waiting {\r\n  color: #10aeff;\n}\n.uni-icon-waiting_circle {\r\n  color: #10aeff;\n}\n.uni-icon-circle {\r\n  color: #c9c9c9;\n}\n.uni-icon-cancel {\r\n  color: #f43530;\n}\n.uni-icon-download {\r\n  color: #007aff;\n}\n.uni-icon-search {\r\n  color: #b2b2b2;\n}\n.uni-icon-clear {\r\n  color: #b2b2b2;\n}\r\n";
 const _sfc_main$b = {
   name: "Icon",
   props: {
@@ -4157,7 +3854,7 @@ function _sfc_render$b(_ctx, _cache, $props, $setup, $data, $options) {
   ], 16);
 }
 _sfc_main$b.render = _sfc_render$b;
-var index_vue_vue_type_style_index_0_lang$5 = "\nuni-image {\r\n		width: 320px;\r\n		height: 240px;\r\n		display: inline-block;\r\n		overflow: hidden;\r\n		position: relative;\n}\nuni-image[hidden] {\r\n		display: none;\n}\nuni-image>div {\r\n		width: 100%;\r\n		height: 100%;\n}\nuni-image>img {\r\n		-webkit-touch-callout: none;\r\n		-webkit-user-select: none;\r\n		-moz-user-select: none;\r\n		display: block;\r\n		position: absolute;\r\n		top: 0;\r\n		left: 0;\r\n		width: 100%;\r\n		height: 100%;\r\n		opacity: 0;\n}\nuni-image>.uni-image-will-change {\r\n		will-change: transform;\n}\r\n";
+var index_vue_vue_type_style_index_0_lang$4 = "\nuni-image {\r\n		width: 320px;\r\n		height: 240px;\r\n		display: inline-block;\r\n		overflow: hidden;\r\n		position: relative;\n}\nuni-image[hidden] {\r\n		display: none;\n}\nuni-image>div {\r\n		width: 100%;\r\n		height: 100%;\n}\nuni-image>img {\r\n		-webkit-touch-callout: none;\r\n		-webkit-user-select: none;\r\n		-moz-user-select: none;\r\n		display: block;\r\n		position: absolute;\r\n		top: 0;\r\n		left: 0;\r\n		width: 100%;\r\n		height: 100%;\r\n		opacity: 0;\n}\nuni-image>.uni-image-will-change {\r\n		will-change: transform;\n}\r\n";
 const _sfc_main$c = {
   name: "Image",
   props: {
@@ -4325,7 +4022,7 @@ function _sfc_render$c(_ctx, _cache, $props, $setup, $data, $options) {
   ], 16);
 }
 _sfc_main$c.render = _sfc_render$c;
-var index_vue_vue_type_style_index_0_lang$6 = '\nuni-input {\r\n  display: block;\r\n  font-size: 16px;\r\n  line-height: 1.4em;\r\n  height: 1.4em;\r\n  min-height: 1.4em;\r\n  overflow: hidden;\n}\nuni-input[hidden] {\r\n  display: none;\n}\n.uni-input-wrapper,\r\n.uni-input-placeholder,\r\n.uni-input-form,\r\n.uni-input-input {\r\n  outline: none;\r\n  border: none;\r\n  padding: 0;\r\n  margin: 0;\r\n  text-decoration: inherit;\n}\n.uni-input-wrapper,\r\n.uni-input-form {\r\n  display: flex;\r\n  position: relative;\r\n  width: 100%;\r\n  height: 100%;\r\n  flex-direction: column;\r\n  justify-content: center;\n}\n.uni-input-placeholder,\r\n.uni-input-input {\r\n  width: 100%;\n}\n.uni-input-placeholder {\r\n  position: absolute;\r\n  top: auto !important;\r\n  left: 0;\r\n  color: gray;\r\n  overflow: hidden;\r\n  text-overflow: clip;\r\n  white-space: pre;\r\n  word-break: keep-all;\r\n  pointer-events: none;\r\n  line-height: inherit;\n}\n.uni-input-input {\r\n  display: block;\r\n  height: 100%;\r\n  background: none;\r\n  color: inherit;\r\n  opacity: 1;\r\n  -webkit-text-fill-color: currentcolor;\r\n  font: inherit;\r\n  line-height: inherit;\r\n  letter-spacing: inherit;\r\n  text-align: inherit;\r\n  text-indent: inherit;\r\n  text-transform: inherit;\r\n  text-shadow: inherit;\n}\n.uni-input-input[type="search"]::-webkit-search-cancel-button {\r\n  display: none;\n}\n.uni-input-input::-webkit-outer-spin-button,\r\n.uni-input-input::-webkit-inner-spin-button {\r\n  -webkit-appearance: none;\r\n  margin: 0;\n}\n.uni-input-input[type="number"] {\r\n  -moz-appearance: textfield;\n}\r\n';
+var index_vue_vue_type_style_index_0_lang$5 = '\nuni-input {\r\n  display: block;\r\n  font-size: 16px;\r\n  line-height: 1.4em;\r\n  height: 1.4em;\r\n  min-height: 1.4em;\r\n  overflow: hidden;\n}\nuni-input[hidden] {\r\n  display: none;\n}\n.uni-input-wrapper,\r\n.uni-input-placeholder,\r\n.uni-input-form,\r\n.uni-input-input {\r\n  outline: none;\r\n  border: none;\r\n  padding: 0;\r\n  margin: 0;\r\n  text-decoration: inherit;\n}\n.uni-input-wrapper,\r\n.uni-input-form {\r\n  display: flex;\r\n  position: relative;\r\n  width: 100%;\r\n  height: 100%;\r\n  flex-direction: column;\r\n  justify-content: center;\n}\n.uni-input-placeholder,\r\n.uni-input-input {\r\n  width: 100%;\n}\n.uni-input-placeholder {\r\n  position: absolute;\r\n  top: auto !important;\r\n  left: 0;\r\n  color: gray;\r\n  overflow: hidden;\r\n  text-overflow: clip;\r\n  white-space: pre;\r\n  word-break: keep-all;\r\n  pointer-events: none;\r\n  line-height: inherit;\n}\n.uni-input-input {\r\n  display: block;\r\n  height: 100%;\r\n  background: none;\r\n  color: inherit;\r\n  opacity: 1;\r\n  -webkit-text-fill-color: currentcolor;\r\n  font: inherit;\r\n  line-height: inherit;\r\n  letter-spacing: inherit;\r\n  text-align: inherit;\r\n  text-indent: inherit;\r\n  text-transform: inherit;\r\n  text-shadow: inherit;\n}\n.uni-input-input[type="search"]::-webkit-search-cancel-button {\r\n  display: none;\n}\n.uni-input-input::-webkit-outer-spin-button,\r\n.uni-input-input::-webkit-inner-spin-button {\r\n  -webkit-appearance: none;\r\n  margin: 0;\n}\n.uni-input-input[type="number"] {\r\n  -moz-appearance: textfield;\n}\r\n';
 const INPUT_TYPES = ["text", "number", "idcard", "digit", "password"];
 const NUMBER_TYPES = ["number", "digit"];
 const _sfc_main$d = {
@@ -4547,7 +4244,7 @@ function _sfc_render$d(_ctx, _cache, $props, $setup, $data, $options) {
   ], 16);
 }
 _sfc_main$d.render = _sfc_render$d;
-var index_vue_vue_type_style_index_0_lang$7 = "\n.uni-label-pointer {\r\n  cursor: pointer;\n}\r\n";
+var index_vue_vue_type_style_index_0_lang$6 = "\n.uni-label-pointer {\r\n  cursor: pointer;\n}\r\n";
 const _sfc_main$e = {
   name: "Label",
   mixins: [emitter],
@@ -5027,7 +4724,7 @@ function disableScrollBounce({disable}) {
     }
   });
 }
-var index_vue_vue_type_style_index_0_lang$8 = "\nuni-movable-view {\n  display: inline-block;\n  width: 10px;\n  height: 10px;\n  top: 0px;\n  left: 0px;\n  position: absolute;\n  cursor: grab;\n}\nuni-movable-view[hidden] {\n  display: none;\n}\n";
+var index_vue_vue_type_style_index_0_lang$7 = "\nuni-movable-view {\n  display: inline-block;\n  width: 10px;\n  height: 10px;\n  top: 0px;\n  left: 0px;\n  position: absolute;\n  cursor: grab;\n}\nuni-movable-view[hidden] {\n  display: none;\n}\n";
 var requesting = false;
 function _requestAnimationFrame(e2) {
   if (!requesting) {
@@ -5654,7 +5351,7 @@ function _sfc_render$f(_ctx, _cache, $props, $setup, $data, $options) {
   ], 16);
 }
 _sfc_main$f.render = _sfc_render$f;
-var index_vue_vue_type_style_index_0_lang$9 = "\nuni-navigator {\r\n    height: auto;\r\n    width: auto;\r\n    display: block;\r\n    cursor: pointer;\n}\nuni-navigator[hidden] {\r\n    display: none;\n}\n.navigator-hover {\r\n    background-color: rgba(0, 0, 0, 0.1);\r\n    opacity: 0.7;\n}\r\n";
+var index_vue_vue_type_style_index_0_lang$8 = "\nuni-navigator {\r\n    height: auto;\r\n    width: auto;\r\n    display: block;\r\n    cursor: pointer;\n}\nuni-navigator[hidden] {\r\n    display: none;\n}\n.navigator-hover {\r\n    background-color: rgba(0, 0, 0, 0.1);\r\n    opacity: 0.7;\n}\r\n";
 const OPEN_TYPES = ["navigate", "redirect", "switchTab", "reLaunch", "navigateBack"];
 const _sfc_main$g = {
   name: "Navigator",
@@ -5863,7 +5560,7 @@ function _sfc_render$h(_ctx, _cache, $props, $setup, $data, $options) {
   ], 16);
 }
 _sfc_main$h.render = _sfc_render$h;
-var index_vue_vue_type_style_index_0_lang$a = '\nuni-radio {\r\n		-webkit-tap-highlight-color: transparent;\r\n		display: inline-block;\r\n		cursor: pointer;\n}\nuni-radio[hidden] {\r\n		display: none;\n}\nuni-radio[disabled] {\r\n		cursor: not-allowed;\n}\nuni-radio .uni-radio-wrapper {\r\n		display: -webkit-inline-flex;\r\n		display: inline-flex;\r\n		-webkit-align-items: center;\r\n		align-items: center;\r\n		vertical-align: middle;\n}\nuni-radio .uni-radio-input {\r\n		-webkit-appearance: none;\r\n		appearance: none;\r\n		margin-right: 5px;\r\n		outline: 0;\r\n		border: 1px solid #D1D1D1;\r\n		background-color: #ffffff;\r\n		border-radius: 50%;\r\n		width: 22px;\r\n		height: 22px;\r\n		position: relative;\n}\nuni-radio:not([disabled]) .uni-radio-input:hover {\r\n		border-color: #007aff;\n}\nuni-radio .uni-radio-input.uni-radio-input-checked:before {\r\n		font: normal normal normal 14px/1 "uni";\r\n		content: "\\EA08";\r\n		color: #ffffff;\r\n		font-size: 18px;\r\n		position: absolute;\r\n		top: 50%;\r\n		left: 50%;\r\n		transform: translate(-50%, -48%) scale(0.73);\r\n		-webkit-transform: translate(-50%, -48%) scale(0.73);\n}\nuni-radio .uni-radio-input.uni-radio-input-disabled {\r\n		background-color: #E1E1E1;\r\n		border-color: #D1D1D1;\n}\nuni-radio .uni-radio-input.uni-radio-input-disabled:before {\r\n		color: #ADADAD;\n}\nuni-radio-group {\r\n		display: block;\n}\r\n';
+var index_vue_vue_type_style_index_0_lang$9 = '\nuni-radio {\r\n		-webkit-tap-highlight-color: transparent;\r\n		display: inline-block;\r\n		cursor: pointer;\n}\nuni-radio[hidden] {\r\n		display: none;\n}\nuni-radio[disabled] {\r\n		cursor: not-allowed;\n}\nuni-radio .uni-radio-wrapper {\r\n		display: -webkit-inline-flex;\r\n		display: inline-flex;\r\n		-webkit-align-items: center;\r\n		align-items: center;\r\n		vertical-align: middle;\n}\nuni-radio .uni-radio-input {\r\n		-webkit-appearance: none;\r\n		appearance: none;\r\n		margin-right: 5px;\r\n		outline: 0;\r\n		border: 1px solid #D1D1D1;\r\n		background-color: #ffffff;\r\n		border-radius: 50%;\r\n		width: 22px;\r\n		height: 22px;\r\n		position: relative;\n}\nuni-radio:not([disabled]) .uni-radio-input:hover {\r\n		border-color: #007aff;\n}\nuni-radio .uni-radio-input.uni-radio-input-checked:before {\r\n		font: normal normal normal 14px/1 "uni";\r\n		content: "\\EA08";\r\n		color: #ffffff;\r\n		font-size: 18px;\r\n		position: absolute;\r\n		top: 50%;\r\n		left: 50%;\r\n		transform: translate(-50%, -48%) scale(0.73);\r\n		-webkit-transform: translate(-50%, -48%) scale(0.73);\n}\nuni-radio .uni-radio-input.uni-radio-input-disabled {\r\n		background-color: #E1E1E1;\r\n		border-color: #D1D1D1;\n}\nuni-radio .uni-radio-input.uni-radio-input-disabled:before {\r\n		color: #ADADAD;\n}\nuni-radio-group {\r\n		display: block;\n}\r\n';
 const _sfc_main$i = {
   name: "Radio",
   mixins: [emitter, listeners],
@@ -5960,7 +5657,7 @@ function _sfc_render$i(_ctx, _cache, $props, $setup, $data, $options) {
   ], 16, ["disabled"]);
 }
 _sfc_main$i.render = _sfc_render$i;
-var index_vue_vue_type_style_index_0_lang$b = "\nuni-radio-group[hidden] {\r\n		display: none;\n}\r\n";
+var index_vue_vue_type_style_index_0_lang$a = "\nuni-radio-group[hidden] {\r\n		display: none;\n}\r\n";
 const _sfc_main$j = {
   name: "RadioGroup",
   mixins: [emitter, listeners],
@@ -6051,7 +5748,7 @@ function _sfc_render$j(_ctx, _cache, $props, $setup, $data, $options) {
   ], 16);
 }
 _sfc_main$j.render = _sfc_render$j;
-var index_vue_vue_type_style_index_0_lang$c = "\n@keyframes once-show {\nfrom {\n    top: 0;\n}\n}\nuni-resize-sensor,\nuni-resize-sensor > div {\n  position: absolute;\n  left: 0;\n  top: 0;\n  right: 0;\n  bottom: 0;\n  overflow: hidden;\n}\nuni-resize-sensor {\n  display: block;\n  z-index: -1;\n  visibility: hidden;\n  animation: once-show 1ms;\n}\nuni-resize-sensor > div > div {\n  position: absolute;\n  left: 0;\n  top: 0;\n}\nuni-resize-sensor > div:first-child > div {\n  width: 100000px;\n  height: 100000px;\n}\nuni-resize-sensor > div:last-child > div {\n  width: 200%;\n  height: 200%;\n}\n";
+var index_vue_vue_type_style_index_0_lang$b = "\n@keyframes once-show {\nfrom {\n    top: 0;\n}\n}\nuni-resize-sensor,\nuni-resize-sensor > div {\n  position: absolute;\n  left: 0;\n  top: 0;\n  right: 0;\n  bottom: 0;\n  overflow: hidden;\n}\nuni-resize-sensor {\n  display: block;\n  z-index: -1;\n  visibility: hidden;\n  animation: once-show 1ms;\n}\nuni-resize-sensor > div > div {\n  position: absolute;\n  left: 0;\n  top: 0;\n}\nuni-resize-sensor > div:first-child > div {\n  width: 100000px;\n  height: 100000px;\n}\nuni-resize-sensor > div:last-child > div {\n  width: 200%;\n  height: 200%;\n}\n";
 const _sfc_main$k = {
   name: "ResizeSensor",
   props: {
@@ -6128,8 +5825,8 @@ const _sfc_main$k = {
 function removeDOCTYPE(html) {
   return html.replace(/<\?xml.*\?>\n/, "").replace(/<!doctype.*>\n/, "").replace(/<!DOCTYPE.*>\n/, "");
 }
-function parseAttrs(attrs2) {
-  return attrs2.reduce(function(pre, attr2) {
+function parseAttrs(attrs) {
+  return attrs.reduce(function(pre, attr2) {
     let value = attr2.value;
     const name = attr2.name;
     if (value.match(/ /) && name !== "style") {
@@ -6155,12 +5852,12 @@ function parseHtml(html) {
     children: []
   };
   HTMLParser(html, {
-    start: function(tag, attrs2, unary) {
+    start: function(tag, attrs, unary) {
       const node = {
         name: tag
       };
-      if (attrs2.length !== 0) {
-        node.attrs = parseAttrs(attrs2);
+      if (attrs.length !== 0) {
+        node.attrs = parseAttrs(attrs);
       }
       if (unary) {
         const parent = stacks[0] || results;
@@ -6301,11 +5998,11 @@ function parseNodes(nodes, parentNode) {
       if (!elem) {
         return;
       }
-      const attrs2 = node.attrs;
-      if (isPlainObject(attrs2)) {
+      const attrs = node.attrs;
+      if (isPlainObject(attrs)) {
         const tagAttrs = TAGS[tagName] || [];
-        Object.keys(attrs2).forEach(function(name) {
-          let value = attrs2[name];
+        Object.keys(attrs).forEach(function(name) {
+          let value = attrs[name];
           switch (name) {
             case "class":
               Array.isArray(value) && (value = value.join(" "));
@@ -7039,7 +6736,7 @@ var scroller = {
     }
   }
 };
-var index_vue_vue_type_style_index_0_lang$d = "\nuni-scroll-view {\n  display: block;\n  width: 100%;\n}\nuni-scroll-view[hidden] {\n  display: none;\n}\n.uni-scroll-view {\n  position: relative;\n  -webkit-overflow-scrolling: touch;\n  width: 100%;\n  \n  height: 100%;\n  max-height: inherit;\n}\n.uni-scroll-view-content {\n  width: 100%;\n  height: 100%;\n}\n.uni-scroll-view-refresher {\n  position: relative;\n  overflow: hidden;\n}\n.uni-scroll-view-refresh {\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  display: flex;\n  flex-direction: row;\n  justify-content: center;\n  align-items: center;\n}\n.uni-scroll-view-refresh-inner {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  line-height: 0;\n  width: 40px;\n  height: 40px;\n  border-radius: 50%;\n  background-color: #fff;\n  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.117647),\n    0 1px 4px rgba(0, 0, 0, 0.117647);\n}\n.uni-scroll-view-refresh__spinner {\n  transform-origin: center center;\n  animation: uni-scroll-view-refresh-rotate 2s linear infinite;\n}\n.uni-scroll-view-refresh__spinner > circle {\n  stroke: currentColor;\n  stroke-linecap: round;\n  animation: uni-scroll-view-refresh-dash 2s linear infinite;\n}\n@keyframes uni-scroll-view-refresh-rotate {\n0% {\n    transform: rotate(0deg);\n}\n100% {\n    transform: rotate(360deg);\n}\n}\n@keyframes uni-scroll-view-refresh-dash {\n0% {\n    stroke-dasharray: 1, 200;\n    stroke-dashoffset: 0;\n}\n50% {\n    stroke-dasharray: 89, 200;\n    stroke-dashoffset: -35px;\n}\n100% {\n    stroke-dasharray: 89, 200;\n    stroke-dashoffset: -124px;\n}\n}\n";
+var index_vue_vue_type_style_index_0_lang$c = "\nuni-scroll-view {\n  display: block;\n  width: 100%;\n}\nuni-scroll-view[hidden] {\n  display: none;\n}\n.uni-scroll-view {\n  position: relative;\n  -webkit-overflow-scrolling: touch;\n  width: 100%;\n  /* display: flex; \u65F6\u5728\u5B89\u5353\u4E0B\u4F1A\u5BFC\u81F4scrollWidth\u548CoffsetWidth\u4E00\u6837 */\n  height: 100%;\n  max-height: inherit;\n}\n.uni-scroll-view-content {\n  width: 100%;\n  height: 100%;\n}\n.uni-scroll-view-refresher {\n  position: relative;\n  overflow: hidden;\n}\n.uni-scroll-view-refresh {\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  display: flex;\n  flex-direction: row;\n  justify-content: center;\n  align-items: center;\n}\n.uni-scroll-view-refresh-inner {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  line-height: 0;\n  width: 40px;\n  height: 40px;\n  border-radius: 50%;\n  background-color: #fff;\n  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.117647),\n    0 1px 4px rgba(0, 0, 0, 0.117647);\n}\n.uni-scroll-view-refresh__spinner {\n  transform-origin: center center;\n  animation: uni-scroll-view-refresh-rotate 2s linear infinite;\n}\n.uni-scroll-view-refresh__spinner > circle {\n  stroke: currentColor;\n  stroke-linecap: round;\n  animation: uni-scroll-view-refresh-dash 2s linear infinite;\n}\n@keyframes uni-scroll-view-refresh-rotate {\n0% {\n    transform: rotate(0deg);\n}\n100% {\n    transform: rotate(360deg);\n}\n}\n@keyframes uni-scroll-view-refresh-dash {\n0% {\n    stroke-dasharray: 1, 200;\n    stroke-dashoffset: 0;\n}\n50% {\n    stroke-dasharray: 89, 200;\n    stroke-dashoffset: -35px;\n}\n100% {\n    stroke-dasharray: 89, 200;\n    stroke-dashoffset: -124px;\n}\n}\n";
 const _sfc_main$m = {
   name: "ScrollView",
   mixins: [scroller],
@@ -7732,7 +7429,7 @@ function _sfc_render$m(_ctx, _cache, $props, $setup, $data, $options) {
   ], 16);
 }
 _sfc_main$n.render = _sfc_render$m;
-var index_vue_vue_type_style_index_0_lang$e = "\nuni-swiper-item {\n  display: block;\n  overflow: hidden;\n  will-change: transform;\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  cursor: grab;\n}\nuni-swiper-item[hidden] {\n  display: none;\n}\n";
+var index_vue_vue_type_style_index_0_lang$d = "\nuni-swiper-item {\n  display: block;\n  overflow: hidden;\n  will-change: transform;\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  cursor: grab;\n}\nuni-swiper-item[hidden] {\n  display: none;\n}\n";
 const _sfc_main$o = {
   name: "SwiperItem",
   props: {
@@ -7746,9 +7443,9 @@ const _sfc_main$o = {
     $el.style.position = "absolute";
     $el.style.width = "100%";
     $el.style.height = "100%";
-    var callbacks2 = this.$vnode._callbacks;
-    if (callbacks2) {
-      callbacks2.forEach((callback) => {
+    var callbacks = this.$vnode._callbacks;
+    if (callbacks) {
+      callbacks.forEach((callback) => {
         callback();
       });
     }
@@ -7760,7 +7457,7 @@ function _sfc_render$n(_ctx, _cache, $props, $setup, $data, $options) {
   ], 16);
 }
 _sfc_main$o.render = _sfc_render$n;
-var index_vue_vue_type_style_index_0_lang$f = '\nuni-switch {\r\n		-webkit-tap-highlight-color: transparent;\r\n		display: inline-block;\r\n		cursor: pointer;\n}\nuni-switch[hidden] {\r\n		display: none;\n}\nuni-switch[disabled] {\r\n		cursor: not-allowed;\n}\nuni-switch .uni-switch-wrapper {\r\n		display: -webkit-inline-flex;\r\n		display: inline-flex;\r\n		-webkit-align-items: center;\r\n		align-items: center;\r\n		vertical-align: middle;\n}\nuni-switch .uni-switch-input {\r\n		-webkit-appearance: none;\r\n		appearance: none;\r\n		position: relative;\r\n		width: 52px;\r\n		height: 32px;\r\n		margin-right: 5px;\r\n		border: 1px solid #DFDFDF;\r\n		outline: 0;\r\n		border-radius: 16px;\r\n		box-sizing: border-box;\r\n		background-color: #DFDFDF;\r\n		transition: background-color 0.1s, border 0.1s;\n}\nuni-switch[disabled] .uni-switch-input {\r\n		opacity: .7;\n}\nuni-switch .uni-switch-input:before {\r\n		content: " ";\r\n		position: absolute;\r\n		top: 0;\r\n		left: 0;\r\n		width: 50px;\r\n		height: 30px;\r\n		border-radius: 15px;\r\n		background-color: #FDFDFD;\r\n		transition: -webkit-transform 0.3s;\r\n		transition: transform 0.3s;\r\n		transition: transform 0.3s, -webkit-transform 0.3s;\n}\nuni-switch .uni-switch-input:after {\r\n		content: " ";\r\n		position: absolute;\r\n		top: 0;\r\n		left: 0;\r\n		width: 30px;\r\n		height: 30px;\r\n		border-radius: 15px;\r\n		background-color: #FFFFFF;\r\n		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);\r\n		transition: -webkit-transform 0.3s;\r\n		transition: transform 0.3s;\r\n		transition: transform 0.3s, -webkit-transform 0.3s;\n}\nuni-switch .uni-switch-input.uni-switch-input-checked {\r\n		border-color: #007aff;\r\n		background-color: #007aff;\n}\nuni-switch .uni-switch-input.uni-switch-input-checked:before {\r\n		-webkit-transform: scale(0);\r\n		transform: scale(0);\n}\nuni-switch .uni-switch-input.uni-switch-input-checked:after {\r\n		-webkit-transform: translateX(20px);\r\n		transform: translateX(20px);\n}\nuni-switch .uni-checkbox-input {\r\n		margin-right: 5px;\r\n		-webkit-appearance: none;\r\n		appearance: none;\r\n		outline: 0;\r\n		border: 1px solid #D1D1D1;\r\n		background-color: #FFFFFF;\r\n		border-radius: 3px;\r\n		width: 22px;\r\n		height: 22px;\r\n		position: relative;\r\n		color: #007aff;\n}\nuni-switch:not([disabled]) .uni-checkbox-input:hover {\r\n		border-color: #007aff;\n}\nuni-switch .uni-checkbox-input.uni-checkbox-input-checked:before {\r\n		font: normal normal normal 14px/1 "uni";\r\n		content: "\\EA08";\r\n		color: inherit;\r\n		font-size: 22px;\r\n		position: absolute;\r\n		top: 50%;\r\n		left: 50%;\r\n		transform: translate(-50%, -48%) scale(0.73);\r\n		-webkit-transform: translate(-50%, -48%) scale(0.73);\n}\nuni-switch .uni-checkbox-input.uni-checkbox-input-disabled {\r\n		background-color: #E1E1E1;\n}\nuni-switch .uni-checkbox-input.uni-checkbox-input-disabled:before {\r\n		color: #ADADAD;\n}\r\n';
+var index_vue_vue_type_style_index_0_lang$e = '\nuni-switch {\r\n		-webkit-tap-highlight-color: transparent;\r\n		display: inline-block;\r\n		cursor: pointer;\n}\nuni-switch[hidden] {\r\n		display: none;\n}\nuni-switch[disabled] {\r\n		cursor: not-allowed;\n}\nuni-switch .uni-switch-wrapper {\r\n		display: -webkit-inline-flex;\r\n		display: inline-flex;\r\n		-webkit-align-items: center;\r\n		align-items: center;\r\n		vertical-align: middle;\n}\nuni-switch .uni-switch-input {\r\n		-webkit-appearance: none;\r\n		appearance: none;\r\n		position: relative;\r\n		width: 52px;\r\n		height: 32px;\r\n		margin-right: 5px;\r\n		border: 1px solid #DFDFDF;\r\n		outline: 0;\r\n		border-radius: 16px;\r\n		box-sizing: border-box;\r\n		background-color: #DFDFDF;\r\n		transition: background-color 0.1s, border 0.1s;\n}\nuni-switch[disabled] .uni-switch-input {\r\n		opacity: .7;\n}\nuni-switch .uni-switch-input:before {\r\n		content: " ";\r\n		position: absolute;\r\n		top: 0;\r\n		left: 0;\r\n		width: 50px;\r\n		height: 30px;\r\n		border-radius: 15px;\r\n		background-color: #FDFDFD;\r\n		transition: -webkit-transform 0.3s;\r\n		transition: transform 0.3s;\r\n		transition: transform 0.3s, -webkit-transform 0.3s;\n}\nuni-switch .uni-switch-input:after {\r\n		content: " ";\r\n		position: absolute;\r\n		top: 0;\r\n		left: 0;\r\n		width: 30px;\r\n		height: 30px;\r\n		border-radius: 15px;\r\n		background-color: #FFFFFF;\r\n		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);\r\n		transition: -webkit-transform 0.3s;\r\n		transition: transform 0.3s;\r\n		transition: transform 0.3s, -webkit-transform 0.3s;\n}\nuni-switch .uni-switch-input.uni-switch-input-checked {\r\n		border-color: #007aff;\r\n		background-color: #007aff;\n}\nuni-switch .uni-switch-input.uni-switch-input-checked:before {\r\n		-webkit-transform: scale(0);\r\n		transform: scale(0);\n}\nuni-switch .uni-switch-input.uni-switch-input-checked:after {\r\n		-webkit-transform: translateX(20px);\r\n		transform: translateX(20px);\n}\nuni-switch .uni-checkbox-input {\r\n		margin-right: 5px;\r\n		-webkit-appearance: none;\r\n		appearance: none;\r\n		outline: 0;\r\n		border: 1px solid #D1D1D1;\r\n		background-color: #FFFFFF;\r\n		border-radius: 3px;\r\n		width: 22px;\r\n		height: 22px;\r\n		position: relative;\r\n		color: #007aff;\n}\nuni-switch:not([disabled]) .uni-checkbox-input:hover {\r\n		border-color: #007aff;\n}\nuni-switch .uni-checkbox-input.uni-checkbox-input-checked:before {\r\n		font: normal normal normal 14px/1 "uni";\r\n		content: "\\EA08";\r\n		color: inherit;\r\n		font-size: 22px;\r\n		position: absolute;\r\n		top: 50%;\r\n		left: 50%;\r\n		transform: translate(-50%, -48%) scale(0.73);\r\n		-webkit-transform: translate(-50%, -48%) scale(0.73);\n}\nuni-switch .uni-checkbox-input.uni-checkbox-input-disabled {\r\n		background-color: #E1E1E1;\n}\nuni-switch .uni-checkbox-input.uni-checkbox-input-disabled:before {\r\n		color: #ADADAD;\n}\r\n';
 const _sfc_main$p = {
   name: "Switch",
   mixins: [emitter, listeners],
@@ -7861,7 +7558,7 @@ function _sfc_render$o(_ctx, _cache, $props, $setup, $data, $options) {
   ], 16, ["disabled"]);
 }
 _sfc_main$p.render = _sfc_render$o;
-var index_vue_vue_type_style_index_0_lang$g = "\nuni-textarea {\n  width: 300px;\n  height: 150px;\n  display: block;\n  position: relative;\n  font-size: 16px;\n  line-height: normal;\n  white-space: pre-wrap;\n  word-break: break-all;\n}\nuni-textarea[hidden] {\n  display: none;\n}\n.uni-textarea-wrapper,\n.uni-textarea-placeholder,\n.uni-textarea-line,\n.uni-textarea-compute,\n.uni-textarea-textarea {\n  outline: none;\n  border: none;\n  padding: 0;\n  margin: 0;\n  text-decoration: inherit;\n}\n.uni-textarea-wrapper {\n  display: block;\n  position: relative;\n  width: 100%;\n  height: 100%;\n}\n.uni-textarea-placeholder,\n.uni-textarea-line,\n.uni-textarea-compute,\n.uni-textarea-textarea {\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  left: 0;\n  top: 0;\n  white-space: inherit;\n  word-break: inherit;\n}\n.uni-textarea-placeholder {\n  color: grey;\n  overflow: hidden;\n}\n.uni-textarea-line,\n.uni-textarea-compute {\n  visibility: hidden;\n  height: auto;\n}\n.uni-textarea-line {\n  width: 1em;\n}\n.uni-textarea-textarea {\n  resize: none;\n  background: none;\n  color: inherit;\n  opacity: 1;\n  -webkit-text-fill-color: currentcolor;\n  font: inherit;\n  line-height: inherit;\n  letter-spacing: inherit;\n  text-align: inherit;\n  text-indent: inherit;\n  text-transform: inherit;\n  text-shadow: inherit;\n}\n.uni-textarea-textarea-fix-margin {\n  width: auto;\n  right: 0;\n  margin: 0 -3px;\n}\n";
+var index_vue_vue_type_style_index_0_lang$f = "\nuni-textarea {\n  width: 300px;\n  height: 150px;\n  display: block;\n  position: relative;\n  font-size: 16px;\n  line-height: normal;\n  white-space: pre-wrap;\n  word-break: break-all;\n}\nuni-textarea[hidden] {\n  display: none;\n}\n.uni-textarea-wrapper,\n.uni-textarea-placeholder,\n.uni-textarea-line,\n.uni-textarea-compute,\n.uni-textarea-textarea {\n  outline: none;\n  border: none;\n  padding: 0;\n  margin: 0;\n  text-decoration: inherit;\n}\n.uni-textarea-wrapper {\n  display: block;\n  position: relative;\n  width: 100%;\n  height: 100%;\n}\n.uni-textarea-placeholder,\n.uni-textarea-line,\n.uni-textarea-compute,\n.uni-textarea-textarea {\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  left: 0;\n  top: 0;\n  white-space: inherit;\n  word-break: inherit;\n}\n.uni-textarea-placeholder {\n  color: grey;\n  overflow: hidden;\n}\n.uni-textarea-line,\n.uni-textarea-compute {\n  visibility: hidden;\n  height: auto;\n}\n.uni-textarea-line {\n  width: 1em;\n}\n.uni-textarea-textarea {\n  resize: none;\n  background: none;\n  color: inherit;\n  opacity: 1;\n  -webkit-text-fill-color: currentcolor;\n  font: inherit;\n  line-height: inherit;\n  letter-spacing: inherit;\n  text-align: inherit;\n  text-indent: inherit;\n  text-transform: inherit;\n  text-shadow: inherit;\n}\n/* \u7528\u4E8E\u89E3\u51B3 iOS textarea \u5185\u90E8\u9ED8\u8BA4\u8FB9\u8DDD */\n.uni-textarea-textarea-fix-margin {\n  width: auto;\n  right: 0;\n  margin: 0 -3px;\n}\n";
 const DARK_TEST_STRING = "(prefers-color-scheme: dark)";
 const _sfc_main$q = {
   name: "Textarea",
@@ -8139,7 +7836,7 @@ function _sfc_render$p(_ctx, _cache, $props, $setup, $data, $options) {
   ], 16);
 }
 _sfc_main$q.render = _sfc_render$p;
-var index_vue_vue_type_style_index_0_lang$h = "\nuni-view {\r\n  display: block;\n}\nuni-view[hidden] {\r\n  display: none;\n}\r\n";
+var index_vue_vue_type_style_index_0_lang$g = "\nuni-view {\r\n  display: block;\n}\nuni-view[hidden] {\r\n  display: none;\n}\r\n";
 const _sfc_main$r = {
   name: "View",
   mixins: [hover],
@@ -8161,59 +7858,6 @@ function _sfc_render$q(_ctx, _cache, $props, $setup, $data, $options) {
   ], 16));
 }
 _sfc_main$r.render = _sfc_render$q;
-const UniViewJSBridge$1 = extend(ViewJSBridge, {
-  publishHandler(event2, args, pageId) {
-    window.UniServiceJSBridge.subscribeHandler(event2, args, pageId);
-  }
-});
-const uni$1 = api;
-const UniServiceJSBridge$1 = extend(ServiceJSBridge, {
-  publishHandler(event2, args, pageId) {
-    window.UniViewJSBridge.subscribeHandler(event2, args, pageId);
-  }
-});
-let appVm;
-function getApp$1() {
-  return appVm;
-}
-function getCurrentPages$1() {
-  return [];
-}
-function mergeTitleNView(navigationBar, titleNView) {
-  if (isPlainObject(titleNView)) {
-    if (hasOwn(titleNView, "backgroundColor")) {
-      navigationBar.backgroundColor = titleNView.backgroundColor;
-    }
-    if (hasOwn(titleNView, "buttons")) {
-      navigationBar.buttons = titleNView.buttons;
-    }
-    if (hasOwn(titleNView, "titleColor")) {
-      navigationBar.textColor = titleNView.titleColor;
-    }
-    if (hasOwn(titleNView, "titleText")) {
-      navigationBar.titleText = titleNView.titleText;
-    }
-    if (hasOwn(titleNView, "titleSize")) {
-      navigationBar.titleSize = titleNView.titleSize;
-    }
-    if (hasOwn(titleNView, "type")) {
-      navigationBar.type = titleNView.type;
-    }
-    if (hasOwn(titleNView, "searchInput") && typeof titleNView.searchInput === "object") {
-      navigationBar.searchInput = Object.assign({
-        autoFocus: false,
-        align: "center",
-        color: "#000000",
-        backgroundColor: "rgba(255,255,255,0.5)",
-        borderRadius: "0px",
-        placeholder: "",
-        placeholderColor: "#CCCCCC",
-        disabled: false
-      }, titleNView.searchInput);
-    }
-  }
-  return navigationBar;
-}
 function appendCss(css, cssId, replace = false) {
   let style = document.getElementById(cssId);
   if (style && replace) {
@@ -8944,7 +8588,7 @@ var pullToRefresh = {
     }
   }
 };
-var index_vue_vue_type_style_index_0_lang$i = "\nuni-page {\r\n  display: block;\r\n  width: 100%;\r\n  height: 100%;\n}\r\n";
+var index_vue_vue_type_style_index_0_lang$h = "\nuni-page {\r\n  display: block;\r\n  width: 100%;\r\n  height: 100%;\n}\r\n";
 const _sfc_main$v = {
   name: "Page",
   mpType: "page",
@@ -9146,7 +8790,7 @@ function _sfc_render$u(_ctx, _cache, $props, $setup, $data, $options) {
   ], 8, ["data-page"]);
 }
 _sfc_main$v.render = _sfc_render$u;
-var index_vue_vue_type_style_index_0_lang$j = "\n.uni-async-error {\r\n		position: absolute;\r\n		left: 0;\r\n		right: 0;\r\n		top: 0;\r\n		bottom: 0;\r\n		color: #999;\r\n		padding: 100px 0;\r\n		text-align: center;\n}\r\n";
+var index_vue_vue_type_style_index_0_lang$i = "\n.uni-async-error {\r\n		position: absolute;\r\n		left: 0;\r\n		right: 0;\r\n		top: 0;\r\n		bottom: 0;\r\n		color: #999;\r\n		padding: 100px 0;\r\n		text-align: center;\n}\r\n";
 const _sfc_main$w = {
   name: "AsyncError",
   methods: {
@@ -9162,7 +8806,7 @@ function _sfc_render$v(_ctx, _cache, $props, $setup, $data, $options) {
   }, " \u8FDE\u63A5\u670D\u52A1\u5668\u8D85\u65F6\uFF0C\u70B9\u51FB\u5C4F\u5E55\u91CD\u8BD5 ");
 }
 _sfc_main$w.render = _sfc_render$v;
-var index_vue_vue_type_style_index_0_lang$k = "\n.uni-async-loading {\n    box-sizing: border-box;\r\n		width: 100%;\r\n		padding: 50px;\r\n		text-align: center;\n}\n.uni-async-loading .uni-loading {\r\n		width: 30px;\r\n		height: 30px;\n}\r\n";
+var index_vue_vue_type_style_index_0_lang$j = "\n.uni-async-loading {\n    box-sizing: border-box;\r\n		width: 100%;\r\n		padding: 50px;\r\n		text-align: center;\n}\n.uni-async-loading .uni-loading {\r\n		width: 30px;\r\n		height: 30px;\n}\r\n";
 const _sfc_main$x = {
   name: "AsyncLoading"
 };
@@ -9174,4 +8818,42 @@ function _sfc_render$w(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 _sfc_main$x.render = _sfc_render$w;
+function initSystemComponents(app) {
+  _sfc_main$4.name = COMPONENT_NAME_PREFIX + _sfc_main$4.name;
+  _sfc_main$v.name = COMPONENT_NAME_PREFIX + _sfc_main$v.name;
+  _sfc_main$w.name = COMPONENT_NAME_PREFIX + _sfc_main$w.name;
+  _sfc_main$x.name = COMPONENT_NAME_PREFIX + _sfc_main$x.name;
+  app.component(_sfc_main$4.name, _sfc_main$4);
+  app.component(_sfc_main$v.name, _sfc_main$v);
+  app.component(_sfc_main$w.name, _sfc_main$w);
+  app.component(_sfc_main$x.name, _sfc_main$x);
+}
+var index = {
+  install(app) {
+    app._context.config.isCustomElement = isCustomElement;
+    initApp(app);
+    initView(app);
+    initService(app);
+    initSystemComponents(app);
+    initRouter(app);
+  }
+};
+const UniViewJSBridge$1 = extend(ViewJSBridge, {
+  publishHandler(event2, args, pageId) {
+    window.UniServiceJSBridge.subscribeHandler(event2, args, pageId);
+  }
+});
+const uni$1 = api;
+const UniServiceJSBridge$1 = extend(ServiceJSBridge, {
+  publishHandler(event2, args, pageId) {
+    window.UniViewJSBridge.subscribeHandler(event2, args, pageId);
+  }
+});
+let appVm;
+function getApp$1() {
+  return appVm;
+}
+function getCurrentPages$1() {
+  return [];
+}
 export {_sfc_main$w as AsyncErrorComponent, _sfc_main$x as AsyncLoadingComponent, _sfc_main$5 as Audio, _sfc_main$6 as Canvas, _sfc_main$7 as Checkbox, _sfc_main$8 as CheckboxGroup, _sfc_main$9 as Editor, _sfc_main$a as Form, _sfc_main$b as Icon, _sfc_main$c as Image, _sfc_main$d as Input, _sfc_main$e as Label, _sfc_main$f as MovableView, _sfc_main$g as Navigator, _sfc_main$v as PageComponent, _sfc_main$h as Progress, _sfc_main$i as Radio, _sfc_main$j as RadioGroup, _sfc_main$k as ResizeSensor, _sfc_main$l as RichText, _sfc_main$m as ScrollView, _sfc_main$n as Slider, _sfc_main$o as SwiperItem, _sfc_main$p as Switch, _sfc_main$q as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$r as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, createIntersectionObserver$1 as createIntersectionObserver, createSelectorQuery$1 as createSelectorQuery, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getImageInfo, getRealPath, getSystemInfo, getSystemInfoSync, makePhoneCall, navigateBack, navigateTo, openDocument, index as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, switchTab, uni$1 as uni, upx2px};

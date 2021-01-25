@@ -8,8 +8,6 @@ import { createConfig } from './config'
 import { createResolveId } from './resolveId'
 import { createConfigResolved } from './configResolved'
 import { createConfigureServer } from './configureServer'
-
-const { vueCompilerOptions } = require('@dcloudio/uni-cli-shared')
 export interface VitePluginUniOptions {
   inputDir?: string
 }
@@ -19,7 +17,7 @@ export interface VitePluginUniResolvedOptions extends VitePluginUniOptions {
   devServer?: ViteDevServer
 }
 
-export const uniVueCompilerOptions = vueCompilerOptions
+export * from './vue'
 
 export default function uniPlugin(
   rawOptions: VitePluginUniOptions = {}

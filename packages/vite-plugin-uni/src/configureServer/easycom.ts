@@ -1,13 +1,10 @@
 import path from 'path'
-import debug from 'debug'
 import { ViteDevServer } from 'vite'
+
 import { VitePluginUniResolvedOptions } from '..'
+import { debugEasycom, initEasycom } from '../easycom'
 
-const { initEasycom } = require('@dcloudio/uni-cli-shared')
-
-const debugEasycom = debug('uni:easycom')
-
-export function initEasycoms(inputDir: string) {
+function initEasycoms(inputDir: string) {
   const dirs = ['components'].map((dir) => path.resolve(inputDir, dir))
   const easycomOptions = { dirs, rootDir: inputDir }
   initEasycom(easycomOptions)

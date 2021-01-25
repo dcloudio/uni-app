@@ -31,7 +31,8 @@
   },
   "peerDependencies": {
     "@dcloudio/uni-cli-shared": "^3.0.0",
-    "vite": "^2.0.0-beta.31"
+    "@dcloudio/uni-shared": "^3.0.0",
+    "vite": "^2.0.0-beta.47"
   },
   "devDependencies": {
     "@types/sass": "^1.16.0"

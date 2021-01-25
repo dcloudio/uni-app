@@ -1,15 +1,6 @@
 import fs from 'fs'
 import path from 'path'
 import debug from 'debug'
-
-import {
-  RootNode,
-  ElementNode,
-  ElementTypes,
-  ComponentNode,
-  TemplateChildNode,
-} from '@vue/compiler-core'
-
 interface EasycomOption {
   dirs?: string[]
   rootDir?: string
@@ -24,8 +15,6 @@ interface EasycomCustom {
   [key: string]: string
 }
 
-export * from './autoImport'
-
 export const debugEasycom = debug('uni:easycom')
 
 const easycoms: EasycomMatcher[] = []
@@ -38,25 +27,9 @@ let hasEasycom = false
 function clearEasycom() {
   easycoms.length = 0
 
-  tags.clear()
   easycomsCache.clear()
   easycomsInvalidCache.clear()
 }
-
-const tags = new Set<string>()
-
-export function isEasycomTag(tag: string) {
-  return tags.has(tag)
-}
-
-export function addEasycomTag(tag: string) {
-  return tags.add(tag)
-}
-
-export const isComponentNode = (
-  node: RootNode | TemplateChildNode
-): node is ComponentNode =>
-  (node as ElementNode).tagType === ElementTypes.COMPONENT
 
 export function initEasycom({
   dirs,
