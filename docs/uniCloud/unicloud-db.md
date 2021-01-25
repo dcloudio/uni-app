@@ -53,7 +53,7 @@ HBuilderX中敲下`udb`代码块，得到如下代码，然后通过collection�
 |getcount|Boolean|是否查询总数据条数，默认 `false`，需要分页模式时指定为 `true`|
 |getone|Boolean|指定查询结果是否仅返回数组第一条数据，默认 false。在false情况下返回的是数组，即便只有一条结果，也需要[0]的方式获取。在值为 true 时，直接返回结果数据，少一层数组，一般用于非列表页，比如详情页|
 |action|string|云端执行数据库查询的前或后，触发某个action函数操作，进行预处理或后处理，[详情](/uniCloud/uni-clientDB?id=%e4%ba%91%e7%ab%af%e9%83%a8%e5%88%86)。场景：前端无权操作的数据，比如阅读数+1|
-|manual|Boolean|是否手动加载数据，默认为 false，页面onready时自动联网加载数据。如果设为 true，则需要自行指定时机通过方法`this.$refs.udb.loadData()`来触发联网，其中的`udb`指组件的ref值|
+|manual|Boolean|是否手动加载数据，默认为 false，页面onready时自动联网加载数据。如果设为 true，则需要自行指定时机通过方法`this.$refs.udb.loadData()`来触发联网，其中的`udb`指组件的ref值。一般onLoad因时机太早取不到this.$refs.udb，在onReady里可以取到|
 |gettree|Boolean|是否查询树状结构数据，HBuilderX3.0.5+ [详情](/uniCloud/clientdb?id=gettree)|
 |startwith|String|gettree的第一层级条件，此初始条件可以省略，不传startWith时默认从最顶级开始查询，HBuilderX3.0.5+|
 |limitlevel|Number|gettree查询返回的树的最大层级。超过设定层级的节点不会返回。默认10级，最大15，最小1，HBuilderX3.0.5+|
@@ -231,6 +231,52 @@ handleError(e) {
 
 ```js
 this.$refs.udb.loadData() //udb为unicloud-db组件的ref属性值
+```
+
+一般onLoad因时机太早取不到this.$refs.udb，在onReady里可以取到。
+
+举例常见场景，页面pagea在url中获取参数id，然后加载数据
+
+请求地址：/pages/pagea?id=123
+
+pagea.vue源码：
+
+```html
+<template>
+	<view>
+		<unicloud-db ref="udb" collection="table1" :where="where" v-slot:default="{data,pagination,loading,error,options}" :options="options" manual>
+			{{data}}
+		</unicloud-db>
+	</view>
+</template>
+<script>
+export default {
+	data() {
+		return {
+			_id:'',
+			where: ''
+		}
+	},
+	onLoad(e) {
+		const id = e.id
+		if (id) {
+			this._id = id
+			this.where = "_id == '" + this._id + "'"
+		}
+		else {
+			uni.showModal({
+				content:"页面参数错误",
+				showCancel:false
+			})
+		}
+	},
+	onReady() {
+		if (this._id) {
+			this.$refs.udb.loadData()
+		}
+	}
+}
+</script>
 ```
 
 ### loadMore
