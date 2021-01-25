@@ -35,6 +35,8 @@
 |vslide-gesture-in-fullscreen|Boolean|true|在全屏模式下，是否开启亮度与音量调节手势|微信小程序|
 |ad-unit-id|String||视频前贴广告单元ID，更多详情可参考开放能力[视频前贴广告](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/ad/video-patch-ad.html)|微信小程序|
 |poster-for-crawler|String||用于给搜索等场景作为视频封面展示，建议使用无播放 icon 的视频封面图，只支持网络地址|微信小程序|
+|codec|String|hardware|解码器选择，hardware：原生解码器，software：ffmpeg解码器|App 3.0.9+|
+|http-cache|Boolean|true|是否对 http、https 链接，开启缓存|App 3.0.9+|
 |@play|EventHandle||当开始/继续播放时触发play事件|字节跳动小程序不支持|
 |@pause|EventHandle||当暂停播放时触发 pause 事件|字节跳动小程序不支持|
 |@ended|EventHandle||当播放到末尾时触发 ended 事件|字节跳动小程序不支持|
