@@ -5886,7 +5886,7 @@ let res = await db.collection('scores').aggregate()
 ```js
 db.command.aggregate.arrayElemAt([<array>, <index>])
 ```
-`<array>` 可以是任意解析为数字的表达式。  
+`<array>` 可以是任意解析为数组的表达式。  
 
  `<index>` 可以是任意解析为整形的表达式。如果是正数，`arrayElemAt` 返回在 `index` 位置的元素，如果是负数，`arrayElemAt` 返回从数组尾部算起的 `index` 位置的元素。  
 
