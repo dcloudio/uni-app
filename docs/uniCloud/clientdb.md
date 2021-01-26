@@ -544,12 +544,30 @@ db.collection('order')
 
 ### 查询列表分页
 
-`jql`提供了更简单的分页方法，包括两种模式：
+可以通过skip+limit来进行分页查询
+
+```js
+// 客户端联表查询
+const db = uniCloud.database()
+db.collection('book')
+  .where('status == "onsale"')
+  .skip(20) // 跳过前20条
+  .limit(20) // 获取20条
+  .get()
+  
+// 上述用法对应的分页条件为：每页20条取第2页
+```
+
+**注意**
+
+- limit不设置的情况下默认返回100条数据；设置limit有最大值，腾讯云限制为最大1000条，阿里云限制为最大500条。
+
+`<unicloud-db>`组件提供了更简单的分页方法，包括两种模式：
 
 1. 滚动到底加载下一页
 2. 点击页码按钮切换不同页
 
-推荐通过`<uni-clientDB>`组件渲染分页列表，详见：[https://uniapp.dcloud.net.cn/uniCloud/uni-clientdb-component?id=page](https://uniapp.dcloud.net.cn/uniCloud/uni-clientdb-component?id=page)
+详见：[https://uniapp.dcloud.net.cn/uniCloud/unicloud-db?id=page](https://uniapp.dcloud.net.cn/uniCloud/unicloud-db?id=page)
 
 
 ### 指定返回字段@field
@@ -1740,7 +1758,7 @@ db.collection("table1")
 
 ### 更新数据记录update
 
-获取到db的表对象，然后指定要删除的记录，通过remove方法删除。
+获取到db的表对象，然后指定要更新的记录，通过update方法更新。
 
 注意：如果是非admin账户修改数据，需要在数据库中待操作表的`db schema`中要配置permission权限，赋予update为true。
 
