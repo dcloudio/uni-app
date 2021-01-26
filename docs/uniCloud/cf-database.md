@@ -8535,9 +8535,9 @@ let res = await db.collection('test')
 
 ```js
 { "_id": 1, "isBOnly": [] }
-{ "_id": 2, "isBOnly": [3] }
+{ "_id": 2, "isBOnly": [] }
 { "_id": 3, "isBOnly": [3] }
-{ "_id": 4, "isBOnly": [5] }
+{ "_id": 4, "isBOnly": [3] }
 { "_id": 5, "isBOnly": [] }
 { "_id": 6, "isBOnly": [{}, []] }
 { "_id": 7, "isBOnly": [] }
