@@ -9,6 +9,7 @@
   * [云数据库入门](uniCloud/hellodb.md)
   * [云函数操作云数据库](uniCloud/cf-database.md)
   * [DB Schema表结构](uniCloud/schema.md)
+  * [数据库索引](uniCloud/db-index.md)
   * [前端操作数据库的API及JQL语法](uniCloud/clientdb.md)
   * [unicloud-db前端组件](uniCloud/unicloud-db.md)
   * [openDB](https://gitee.com/dcloud/opendb)
