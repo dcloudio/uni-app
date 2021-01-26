@@ -6393,7 +6393,7 @@ db.collection('stats').aggregate()
  
 ```js
 { "_id": 1, "points": [0, 10, 20, 30, 40, 50] }
-{ "_id": 2, "points": [0, 10, 20] }
+{ "_id": 2, "points": [0, 10, 20, 30] }
 ```
 
 #### reduce
