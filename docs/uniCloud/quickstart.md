@@ -519,6 +519,7 @@ web控制台网址：[https://unicloud.dcloud.net.cn](https://unicloud.dcloud.ne
   }
 }
 ```
+注：时间戳无需如此复杂。时间戳只需直接输入不加引号的数字即可。
 
 #### 添加地理位置点@editdb-geopoint
 
