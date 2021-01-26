@@ -121,7 +121,9 @@ class PreprocessAssetsPlugin {
 }
 
 function initSubpackageConfig (webpackConfig, vueOptions) {
-  process.env.UNI_OUTPUT_DIR = path.resolve(process.env.UNI_OUTPUT_DIR, process.env.UNI_SUBPACKGE)
+  if (process.env.UNI_OUTPUT_DEFAULT_DIR === process.env.UNI_OUTPUT_DIR) { // 未自定义output
+    process.env.UNI_OUTPUT_DIR = path.resolve(process.env.UNI_OUTPUT_DIR, process.env.UNI_SUBPACKGE)
+  }
   vueOptions.outputDir = process.env.UNI_OUTPUT_DIR
   webpackConfig.output.path(process.env.UNI_OUTPUT_DIR)
   webpackConfig.output.jsonpFunction('webpackJsonp_' + process.env.UNI_SUBPACKGE)
