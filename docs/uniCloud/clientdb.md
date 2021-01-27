@@ -547,7 +547,6 @@ db.collection('order')
 可以通过skip+limit来进行分页查询
 
 ```js
-// 客户端联表查询
 const db = uniCloud.database()
 db.collection('book')
   .where('status == "onsale"')
