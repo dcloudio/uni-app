@@ -20,6 +20,9 @@ export const chooseVideo = {
   },
   extension: {
     type: Array,
-    default: ['*']
+    default: ['*'],
+    validator (extension, params) {
+      if (extension.length === 0) params.extension = ['*']
+    }
   }
 }
