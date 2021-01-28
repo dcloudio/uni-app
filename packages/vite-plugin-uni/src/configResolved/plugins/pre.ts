@@ -21,11 +21,13 @@ export function uniPrePlugin(options: UniPluginFilterOptions): Plugin {
       if (!filter(id)) {
         return code
       }
-      debugPreJsTry(id)
       const extname = path.extname(id)
       const isHtml = PRE_HTML_EXTNAME.includes(extname)
       const isJs = PRE_JS_EXTNAME.includes(extname)
       const isPre = isHtml || isJs
+      if (isPre) {
+        debugPreJsTry(id)
+      }
       const hasEndif = isPre && code.includes('#endif')
       if (isHtml && hasEndif) {
         code = preHtml(code)

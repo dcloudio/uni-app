@@ -26,7 +26,7 @@ export function createResolveId(
     }
     if (id.startsWith('@/')) {
       debugResolve(id)
-      return id.replace('@/', '/src/')
+      return path.join(options.inputDir, id.replace('@/', ''))
     }
   }
 }

@@ -6,6 +6,7 @@ import { uniPrePlugin } from './pre'
 import { uniJsonPlugin } from './json'
 import { uniPreCssPlugin } from './preCss'
 import { uniEasycomPlugin } from './easycom'
+import { InjectOptions, uniInjectPlugin } from './inject'
 const debugPlugin = debug('uni:plugin')
 
 export interface UniPluginFilterOptions extends VitePluginUniResolvedOptions {
@@ -24,6 +25,9 @@ const uniPrePluginOptions: Partial<UniPluginFilterOptions> = {
     /\/vue-router\//,
     /\/vuex\//,
     /@dcloudio\/uni-shared/,
+    /vite\/preload-helper/,
+    /vite\/dynamic-import-polyfill/,
+    /\.html$/,
     UNI_H5_RE,
   ],
 }
@@ -32,7 +36,21 @@ const uniPreCssPluginOptions: Partial<UniPluginFilterOptions> = {
 }
 
 const uniEasycomPluginOptions: Partial<UniPluginFilterOptions> = {
-  exclude: [UNI_H5_RE],
+  exclude: [/App.vue$/, UNI_H5_RE],
+}
+
+const uniInjectPluginOptions: Partial<InjectOptions> = {
+  exclude: [
+    /@dcloudio\/uni-h5-vue/,
+    /@dcloudio\/uni-shared/,
+    /\/vue-router\//,
+    /@vue\/shared/,
+  ],
+  '__GLOBAL__.': '@dcloudio/uni-h5',
+  'uni.': '@dcloudio/uni-h5',
+  getApp: ['@dcloudio/uni-h5', 'getApp'],
+  getCurrentPages: ['@dcloudio/uni-h5', 'getCurrentPages'],
+  UniServiceJSBridge: ['@dcloudio/uni-h5', 'UniServiceJSBridge'],
 }
 
 export function resolvePlugins(
@@ -51,6 +69,13 @@ export function resolvePlugins(
     uniPreCssPlugin(Object.assign(uniPreCssPluginOptions, options)),
     'vite:css'
   )
+  if (!options.devServer) {
+    addPlugin(
+      plugins,
+      uniInjectPlugin(Object.assign(uniInjectPluginOptions, options)),
+      'vite:vue'
+    )
+  }
   addPlugin(
     plugins,
     uniEasycomPlugin(Object.assign(uniEasycomPluginOptions, options)),
