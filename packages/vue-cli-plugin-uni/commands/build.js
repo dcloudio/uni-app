@@ -37,10 +37,8 @@ module.exports = (api, options) => {
       }
     }
 
-    if (
-      args.subpackage &&
-      process.env.UNI_PLATFORM === 'mp-weixin'
-    ) {
+    const platforms = ['mp-weixin', 'mp-qq', 'mp-baidu', 'mp-alipay', 'mp-toutiao']
+    if (args.subpackage && platforms.includes(process.env.UNI_PLATFORM)) {
       process.env.UNI_SUBPACKGE = args.subpackage
     }
 
