@@ -413,7 +413,7 @@ mixin是vue的技术，不熟悉的可以点此了解[vue官网的mixin文档](h
 使用 `uniCloud.mixinDatacom` 开发 `datacom` 组件需要以下步骤
 
 1. 在export default下声明`mixin: [uniCloud.mixinDatacom]`
-2. 在template中定义三个标签，绑定 `uniCloud.mixinDatacomJql` 的 `data` 状态，加载中`mixinDatacomJqlLoading` 、加载出错提示 `mixinDatacomJqlErrorMessage`、处理数据及相关UI展现 `mixinDatacomJqlResData`
+2. 在template中定义三个标签，绑定 `uniCloud.mixinDatacom` 的 `data` 状态，加载中`mixinDatacomLoading` 、加载出错提示 `mixinDatacomErrorMessage`、处理数据及相关UI展现 `mixinDatacomResData`
 3. 组件的created声明周期中调用 `uniCloud.mixinDatacom` 中的 `mixinDatacomGet()` 或 `mixinDatacomEasyGet()` 方法请求云端数据库。这两种方法的区别如下：
 	- `mixinDatacomGet()` 仅请求数据，自行处理各种状态和异常。
 	- `mixinDatacomEasyGet()` 在 `mixinDatacomGet()` 的基础之上封装了加载状态、分页及错误消息，可通过模板绑定。用起来更简单
@@ -437,7 +437,7 @@ mixin是vue的技术，不熟悉的可以点此了解[vue官网的mixin文档](h
 	<view>
 		<view v-if="mixinDatacomLoading">Loading...</view>
 		<view v-else-if="mixinDatacomErrorMessage">
-			请求错误：{{mixinDatacomJqlErrorMessage}}
+			请求错误：{{mixinDatacomErrorMessage}}
 		</view>
 		<view else="mixinDatacomResData">
 			<!-- 需要自行处理数据及相关UI展现 -->
@@ -487,7 +487,7 @@ mixin是vue的技术，不熟悉的可以点此了解[vue官网的mixin文档](h
 	<view>
 		<view v-if="mixinDatacomLoading">Loading...</view>
 		<view v-else-if="mixinDatacomErrorMessage">
-			请求错误：{{mixinDatacomJqlErrorMessage}}
+			请求错误：{{mixinDatacomErrorMessage}}
 		</view>
 		<view else="mixinDatacomResData">
 			<!-- 需要自行处理数据及相关UI展现 -->
@@ -733,11 +733,10 @@ export default {
 				}
 				this.mixinDatacomHasMore = data.length < this.pageSize
 				const responseData = getone ? (data.length ? data[0] : undefined) : data
+				this.mixinDatacomResData = responseData
 
 				if (success) {
 					success(responseData)
-				} else {
-					this.mixinDatacomResData = responseData
 				}
 			}).catch((err) => {
 				this.mixinDatacomLoading = false
@@ -769,7 +768,7 @@ export default {
 
 			const groupby = options.groupby || this.groupby
 			if (groupby) {
-				db = db.groupby(groupby)
+				db = db.groupBy(groupby)
 			}
 
 			const groupField = options.groupField || this.groupField
@@ -792,20 +791,21 @@ export default {
 			const getCount = options.getcount !== undefined ? options.getcount : this.getcount
 			const gettree = options.gettree !== undefined ? options.gettree : this.gettree
 			const gettreepath = options.gettreepath !== undefined ? options.gettreepath : this.gettreepath
-			const limitlevel = options.limitlevel !== undefined ? options.limitlevel : this.limitlevel
-			const startwith = options.startwith !== undefined ? options.startwith : this.startwith
+			const limitLevel = options.limitlevel !== undefined ? options.limitlevel : this.limitlevel
+			const startWith = options.startwith !== undefined ? options.startwith : this.startwith
 
 			const getOptions = {
 				getCount
 			}
+			const treeOptions = {
+				limitLevel,
+				startWith
+			}
 			if (gettree) {
-				getOptions.getTree = {
-					limitLevel: limitlevel,
-					startWith: startwith
-				}
+				getOptions.getTree = treeOptions
 			}
 			if (gettreepath) {
-				getOptions.getTreePath = gettreepath
+				getOptions.getTreePath = treeOptions
 			}
 
 			db = db.skip(size * (current - 1)).limit(size).get(getOptions)
