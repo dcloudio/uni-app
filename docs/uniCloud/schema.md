@@ -250,6 +250,7 @@ enum支持3种数据格式：
         "bsonType": "string",
         "title": "地址",
         "description": "城市编码",
+        "foreignKey": "opendb-city-china.code",
         "enumType": "tree",
         "enum": {
           "collection": "opendb-city-china",
@@ -1346,6 +1347,7 @@ const dbSearchFields = ['username', 'role_name', 'mobile', 'email'] // 模糊搜
         "bsonType": "string",
         "title": "地址",
         "description": "城市编码",
+        "foreignKey": "opendb-city-china.code",
         "enumType": "tree",
         "enum": {
           "collection": "opendb-city-china",
