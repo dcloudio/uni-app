@@ -28,8 +28,6 @@ const dbCmd = db.command
 module.exports = async function(event,context) {
   const {
     lastId,
-    orderField,
-    orderDirection,
     pageSize
   } = event
   if(pageSize > 100){
@@ -38,7 +36,6 @@ module.exports = async function(event,context) {
   const res = await db.collection('book').where({
     _id: dbCmd.gt(lastId)
   })
-  .orderBy(orderField,orderDirection)
   .limit(pageSize)
   .get()
 }
