@@ -72,14 +72,6 @@ function rewrite (attr, name, options) {
       const needRequire = options.service || options.view || options.h5
       if (needRequire) {
         attr.value = urlToRequire(attr.value.slice(1, -1))
-        if (
-          options.h5 &&
-          options.publicPath === './' &&
-          attr.value.startsWith('require("')
-        ) { // require
-          // h5 且 publicPath 为 ./ (仅生产模式可能为./)
-          attr.value = `(${attr.value}).replace(/^\\./,'')`
-        }
       }
       return true
     }

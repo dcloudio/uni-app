@@ -107,10 +107,12 @@ export function debounce (fn, delay) {
 export function throttle (fn, wait) {
   let last = 0
   let timeout
+  let waitCallback
   const newFn = function (...arg) {
     const now = Date.now()
     clearTimeout(timeout)
-    const waitCallback = () => {
+    waitCallback = () => {
+      waitCallback = null
       last = now
       fn.apply(this, arg)
     }
@@ -122,6 +124,11 @@ export function throttle (fn, wait) {
   }
   newFn.cancel = function () {
     clearTimeout(timeout)
+    waitCallback = null
+  }
+  newFn.flush = function () {
+    clearTimeout(timeout)
+    waitCallback && waitCallback()
   }
   return newFn
 }

@@ -1,11 +1,8 @@
 <template>
-  <uni-textarea
-    @change.stop
-    v-on="$listeners"
-  >
+  <uni-textarea v-on="$listeners">
     <div class="uni-textarea-wrapper">
       <div
-        v-show="!(composition || valueSync.length)"
+        v-show="!(composing || valueSync.length)"
         ref="placeholder"
         :style="placeholderStyle"
         :class="placeholderClass"
@@ -33,14 +30,16 @@
         ref="textarea"
         v-model="valueSync"
         v-keyboard
+        v-field
         :disabled="disabled"
         :maxlength="maxlengthNumber"
         :class="{ 'uni-textarea-textarea-fix-margin': fixMargin }"
         :style="{ 'overflow-y': autoHeight ? 'hidden' : 'auto' }"
         :enterkeyhint="confirmType"
         class="uni-textarea-textarea"
-        @compositionstart="_onCompositionstart"
-        @compositionend="_onCompositionend"
+        @change.stop
+        @compositionstart.stop="_onCompositionstart"
+        @compositionend.stop="_onCompositionend"
         @input.stop="_onInput"
         @focus="_onFocus"
         @blur="_onBlur"
@@ -59,7 +58,7 @@
         :class="{ 'uni-textarea-textarea-fix-margin': fixMargin }"
         :style="{ 'overflow-y': autoHeight ? 'hidden' : 'auto' }"
         class="uni-textarea-textarea"
-        @focus="$event=>$event.target.blur()"
+        @focus="($event) => $event.target.blur()"
       />
     </div>
   </uni-textarea>
@@ -121,7 +120,7 @@ export default {
   data () {
     return {
       valueComposition: '',
-      composition: false,
+      composing: false,
       focusSync: this.focus,
       height: 0,
       focusChangeSource: '',
@@ -149,7 +148,7 @@ export default {
       return isNaN(selectionEnd) ? -1 : selectionEnd
     },
     valueCompute () {
-      return (this.composition ? this.valueComposition : this.valueSync).split('\n')
+      return (this.composing ? this.valueComposition : this.valueSync).split('\n')
     },
     isDone () {
       return ['done', 'go', 'next', 'search', 'send'].includes(this.confirmType)
@@ -210,8 +209,6 @@ export default {
       }
       $vm = $vm.$parent
     }
-
-    this._initField('textarea')
   },
   beforeDestroy () {
     this.$dispatch('Form', 'uni-form-group-update', {
@@ -249,6 +246,11 @@ export default {
       }
     },
     _onBlur: function ($event) {
+      // iOS 输入法 compositionend 事件可能晚于 blur
+      if (this.composing) {
+        this.composing = false
+        this._onInput($event, true)
+      }
       this.focusSync = false
       this.$trigger('blur', $event, {
         value: this.valueSync,
@@ -256,12 +258,14 @@ export default {
       })
     },
     _onCompositionstart ($event) {
-      this.composition = true
+      this.composing = true
     },
     _onCompositionend ($event) {
-      this.composition = false
-      // 部分输入法 compositionend 事件可能晚于 input
-      this._onInput($event)
+      if (this.composing) {
+        this.composing = false
+        // 部分输入法 compositionend 事件可能晚于 input
+        this._onInput($event)
+      }
     },
     // 暂无完成按钮，此功能未实现
     _confirm ($event) {
@@ -280,15 +284,15 @@ export default {
     _resize ({ height }) {
       this.height = height
     },
-    _onInput ($event) {
-      if (this.composition) {
+    _onInput ($event, force) {
+      if (this.composing) {
         this.valueComposition = $event.target.value
         return
       }
       this.$triggerInput($event, {
         value: this.valueSync,
         cursor: this.$refs.textarea.selectionEnd
-      })
+      }, force)
     },
     _getFormData () {
       return {

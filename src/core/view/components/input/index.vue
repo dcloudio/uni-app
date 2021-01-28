@@ -1,8 +1,5 @@
 <template>
-  <uni-input
-    @change.stop
-    v-on="$listeners"
-  >
+  <uni-input v-on="$listeners">
     <div
       ref="wrapper"
       class="uni-input-wrapper"
@@ -20,6 +17,7 @@
         ref="input"
         v-model="valueSync"
         v-keyboard
+        v-field
         :disabled="disabled"
         :type="inputType"
         :maxlength="maxlength"
@@ -27,11 +25,12 @@
         :enterkeyhint="confirmType"
         class="uni-input-input"
         autocomplete="off"
+        @change.stop
         @focus="_onFocus"
         @blur="_onBlur"
         @input.stop="_onInput"
-        @compositionstart="_onComposition"
-        @compositionend="_onComposition"
+        @compositionstart.stop="_onComposition"
+        @compositionend.stop="_onComposition"
         @keyup.enter.stop="_onKeyup"
       >
       <!-- fix: 禁止 readonly 状态获取焦点 -->
@@ -45,7 +44,7 @@
         :maxlength="maxlength"
         :step="step"
         class="uni-input-input"
-        @focus="$event=>$event.target.blur()"
+        @focus="($event) => $event.target.blur()"
       >
     </div>
   </uni-input>
@@ -164,8 +163,6 @@ export default {
       }
       $vm = $vm.$parent
     }
-
-    this._initField('input')
   },
   beforeDestroy () {
     this.$dispatch('Form', 'uni-form-group-update', {
@@ -179,7 +176,7 @@ export default {
         value: $event.target.value
       })
     },
-    _onInput ($event) {
+    _onInput ($event, force) {
       if (this.composing) {
         return
       }
@@ -213,7 +210,7 @@ export default {
       }
       this.$triggerInput($event, {
         value: this.valueSync
-      })
+      }, force)
     },
     _onFocus ($event) {
       this.$trigger('focus', $event, {
@@ -221,6 +218,11 @@ export default {
       })
     },
     _onBlur ($event) {
+      // iOS 输入法 compositionend 事件可能晚于 blur
+      if (this.composing) {
+        this.composing = false
+        this._onInput($event, true)
+      }
       this.$trigger('blur', $event, {
         value: $event.target.value
       })
@@ -228,7 +230,7 @@ export default {
     _onComposition ($event) {
       if ($event.type === 'compositionstart') {
         this.composing = true
-      } else {
+      } else if (this.composing) {
         this.composing = false
         // 部分输入法 compositionend 事件可能晚于 input
         this._onInput($event)
