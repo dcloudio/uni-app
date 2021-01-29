@@ -183,17 +183,19 @@ uniCloud.httpclient.request('https://example.com',{
 
 ### 如何控制云函数数量？云函数是否可以按多级目录整理@merge-functions
 
-其实不需要控制数量，实际开发中不会突破限制。
+不需要控制数量，实际开发中不会突破限制。
 
-因为大多数项目，会使用clientDB（不写云函数）和单路由云函数框架（只有一个云函数）。
+因为实际开发中会使用框架而不是真的一个一个开发云函数。
+
+1. 使用[clientDB](https://uniapp.dcloud.net.cn/uniCloud/clientdb)。这种方式是在前端直接操作数据库，此时一个云函数都不需要写。开发效率远超传统开发模式。包括它配套的action云函数是不占用云函数数量的。
+2. 使用[uni-cloud-router单路由云函数框架](https://uniapp.dcloud.net.cn/uniCloud/uni-cloud-router)，这种方式只有一个云函数，所有接口都是这个云函数的不同参数，它有统一的路由管理。
 
 uniCloud的每个云函数是一个独立进程，不存在云函数级别的多级目录概念。
 
 每个云函数下可以有子目录，但它们都属于这个云函数的一部分，而不是另一个云函数。
 
-当然也可以在一个云函数下实现单路由云函数开发框架，插件市场有很多类似框架：[详见](https://ext.dcloud.net.cn/search?q=%E8%B7%AF%E7%94%B1&cat1=7&orderBy=TotalDownload)
+单路由云函数框架不止是官方提供的uni-cloud-router，插件市场有很多类似框架：[详见](https://ext.dcloud.net.cn/search?q=%E8%B7%AF%E7%94%B1&cat1=7&orderBy=TotalDownload)
 
-另外说明下，clientDB配套的action云函数，不占用云函数数量。
 
 ### 海外用户访问比较慢怎么办
 
