@@ -311,9 +311,13 @@ export default {
             image.ready = true
           }
 
-          // 安卓 WebView 本地路径
-          if (__PLATFORM__ === 'app-plus' && navigator.vendor === 'Google Inc.' && src.indexOf('file://') === 0) {
-            image.crossOrigin = 'anonymous'
+          // 安卓 WebView 除本地路径无跨域问题
+          if (__PLATFORM__ === 'app-plus' && navigator.vendor === 'Google Inc.') {
+            if (src.indexOf('file://') === 0) {
+              image.crossOrigin = 'anonymous'
+            }
+            image.src = src
+            return
           }
           getSameOriginUrl(src).then(src => {
             image.src = src
