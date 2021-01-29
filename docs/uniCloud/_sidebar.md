@@ -25,6 +25,7 @@
   * [云存储](uniCloud/storage.md)
   * [腾讯云自定义登录](uniCloud/authentication.md)
   * [腾讯云权限管理](uniCloud/policy-tcb.md)
+* [客户端sdk](uniCloud/client-sdk.md)
 * [uni-id用户体系](uniCloud/uni-id.md)
 * 扩展能力
   * [uniCloud admin](uniCloud/admin.md)

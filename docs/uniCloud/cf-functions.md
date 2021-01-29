@@ -1,5 +1,5 @@
 
-## 简介
+## 简介@intro
 
 云函数是运行在云端的 `JavaScript` 代码，和普通的`Node.js`开发一样，熟悉`Node.js`的开发者可以直接上手。
 
@@ -28,14 +28,15 @@ exports.main = async (event, context) => {
   let appid = context.APPID // manifest.json中配置的appid
   let clientIP = context.CLIENTIP // 客户端ip信息
   let clientUA = context.CLIENTUA // 客户端user-agent
+  let spaceInfo = context.CLIENTUUID // 客户端uuid，同uni-app客户端getSystemInfo接口获取的uuid
   let spaceInfo = context.SPACEINFO // 当前环境信息 {spaceId:'xxx',provider:'tencent'}
 	... //其它业务代码
 }
 ```
 
-云函数url化的场景下无法获取`context.OS`、`context.PLATFORM`、`context.APPID`
+云函数url化的场景下无法获取`context.OS`、`context.PLATFORM`、`context.APPID`、`context.CLIENTUUID`
 
->在云函数URL化的场景无法获取客户端平台信息，可以在调用依赖客户端平台的接口接口之前（推荐在云函数入口）通过修改context.PLATFORM手动传入客户端平台信息
+>在云函数URL化的场景无法获取客户端平台信息，可以在调用依赖客户端平台的接口接口之前（推荐在云函数入口）通过修改context.PLATFORM手动传入客户端平台信息供其他插件（如：uni-id）使用
 
 例：
 

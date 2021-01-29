@@ -657,6 +657,58 @@ if (uni) {
 }
 ```
 
+#### fieldRules校验语句@field-rules
+
+自`HBuilderX 3.1.0`起，支持再schema内配置fieldRules对数据进行校验。
+
+fieldRules的写法等同JQL的where写法（也可以使用各种聚合操作符），参考：[clientDB where](uniCloud/clientdb.md?id=where)
+
+fieldRules内完整配置如下
+
+```js
+{
+  "fieldRules": [{
+    "rule": "end_date == null || end_date != null && create_date < end_date", // 校验规则
+    "errorMessage": "创建时间和结束时间不匹配", // 错误提示信息（仅在新增时生效，更新数据时不会提示此信息）
+    "client": false // 当前规则是否适用于客户端，目前此属性不生效，fieldRules不会在客户端校验数据，仅会在云端进行校验
+  }],
+}
+```
+
+例：在todo表内可以使用fieldRules限制create_date小于end_date
+
+```json
+{
+  "bsonType": "object",
+  "required": ["title","create_date"],
+  "fieldRules": [{
+    "rule": "end_date == null || end_date != null && create_date < end_date",
+    "errorMessage": "创建时间和结束时间不匹配"
+  }],
+  "properties": {
+    "title": {
+      "bsonType": "string",
+      "label": "标题"
+    },
+    "create_date": {
+      "bsonType": "timestamp",
+      "label": "创建时间"
+    },
+    "end_date": {
+      "bsonType": "timestamp",
+      "label": "结束时间"
+    }
+  }
+}
+```
+  
+上述示例中，create_date为必填项只需限制，end_date存在时大于create_date即可
+
+**注意**
+
+- 新增/更新数据时会校验所有新增/更新字段相关联的fieldRules，如上述规则中，如果更新end_date字段或者create_date字段均会触发校验
+- 新增数据时不需要查库进行校验，更新数据时需要进行一次查库校验（有多条fieldRules时也是一次）
+
 #### errorMessage自定义错误提示@errormessage
 
 数据不符合schema配置的规范时，无法入库，此时会报错。
@@ -744,7 +796,7 @@ errorMessage支持字符串，也支持json object。类型为object时，可定
 
 在保存`DB Schema`时，如果发现服务空间下没有`uni-id`公共模块，会自动安装`uni-id`。如果服务空间已经存在`uni-id`，则不会再自动安装。此时需要注意及时升级`uni-id`，避免太老的`uni-id`有兼容问题。
 
-#### 表级权限控制
+#### 表级权限控制@col-permission
 
 表级控制，包括增删改查四种权限，分别称为：create、delete、update、read。（注意这里使用的是行业通用的crud命名，与操作数据库的方法add()、remove()、update()、get()在命名上有差异，但表意是相同的）
 
@@ -761,17 +813,22 @@ errorMessage支持字符串，也支持json object。类型为object时，可定
     "read": true, // 任何用户都可以读
     "create": false, // 禁止新增数据记录（admin权限用户不受限）
     "update": false, // 禁止更新数据（admin权限用户不受限）
-    "delete": false // 禁止删除数据（admin权限用户不受限）
+    "delete": false, // 禁止删除数据（admin权限用户不受限）
+    "count": false // 禁止查询数据条数（admin权限用户不受限），新增于HBuilderX 3.1.0
   },
   "properties": {
     "_id":{},
-	"name":{},
+    "name":{},
     "pwd": {}
   }
 }
 ```
+  
+**关于count权限的说明**
 
-
+- 在HBuilderX 3.1.0之前，count操作都会使用表级的read权限进行验证。HBuilderX 3.1.0及之后的版本，如果配置了count权限则会使用表级的read+count权限进行校验，两条均满足才可以通过校验
+- 如果schema内没有count权限，则只会使用read权限进行校验
+- 所有会统计数量的操作均会触发count权限校验
 
 #### 字段级权限控制
 
