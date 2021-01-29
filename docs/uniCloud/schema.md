@@ -60,10 +60,11 @@ HBuilderX中运行前端项目，在控制台选择连接本地云函数，此�
 |:-|:-|:-|
 |bsonType|any|字段类型，如json object、字符串、数字、bool值，具体见下表bsonType可用类型|
 |title|string|标题，开发者维护时自用。如果不填label属性，将在生成前端表单代码时，默认用于表单项前面的label|
-|description|string|描述，开发者维护时自用。在生成前端表单代码时，如果字段未设置component，且字段被渲染为input，那么input的placehold将默认为本描述|
+|description|string|描述，开发者维护时自用。在生成前端表单代码时，如果字段未设置componentForEdit，且字段被渲染为input，那么input的placehold将默认为本描述|
 |required|array|是否必填。支持填写必填的下级字段名称。required可以在表级的描述出现，约定该表有哪些字段必填。也可以在某个字段中出现，如果该字段是一个json，可以对这个json中的哪些字段必填进行描述。详见下方示例|
 |enum|Array|字段值枚举范围，数组中至少要有一个元素，且数组内的每一个元素都是唯一的。|
 |enumType|String|字段值枚举类型，可选值tree。设为tree时，代表enum里的数据为树形结构。此时schema2code可生成多级级联选择组件|
+|arrayType|String|数组项类型，bsonType="array" 时有效，HBuilderX 3.1.0+ 支持，具体见下表arrayType可用类型|
 |maximum|number|如果bsonType为数字时，可接受的最大值|
 |exclusiveMaximum|boolean|是否排除 maximum|
 |minimum|number|如果bsonType为数字时，可接受的最小值|
@@ -84,12 +85,15 @@ HBuilderX中运行前端项目，在控制台选择连接本地云函数，此�
 |group|string|分组id。生成前端表单代码时，多个字段对应的表单项可以合并显示在一个uni-group组件中|
 |order|int|表单项排序序号。生成前端表单代码时，默认是以schema中的字段顺序从上到下排布表单项的，但如果指定了order，则按order规定的顺序进行排序。如果表单项被包含在uni-group中，则同组内按order排序|
 |component|Object&#124;Array|生成前端表单代码时，使用什么组件渲染这个表单项。比如使用input输入框。详见下方示例|
+|componentForEdit|Object&#124;Array|HBuilderX 3.1.0+, 生成前端编辑页面文件时(分别是 add.vue、edit.vue)，使用什么组件渲染这个表单项。比如使用input输入框。|
+|componentForShow|Object&#124;Array|HBuilderX 3.1.0+, 生成前端展示页面时(分别是 list.vue、detail.vue)，使用什么组件渲染。比如使用uni-dateformat格式化日期。|
 
 
 **注意：**
 1. `DB Schema`的各种功能均只支持`clientDB`。如果使用云函数操作数据库，schema的作用仅仅是描述字段信息。同时强烈推荐使用HBuilderX 2.9.5以上版本使用`clientDB`。
 2. 生成表单页面的功能，入口在uniCloud web控制台的数据库schema界面，注意该功能需搭配HBuilderX 2.9.5+版本。
 3. 暂不支持子属性校验
+4. HBuilderX 3.1.0+  `component` 属性升级为 `componentForEdit`，以支持更灵活的配置不同类型的页面使用的组件，仍然兼容`component`
 
 ### 字段类型bsonType
 
@@ -101,6 +105,18 @@ HBuilderX中运行前端项目，在控制台选择连接本地云函数，此�
 - bool
 - timestamp （时间戳）
 - password （所有用户都不能通过clientDB读写，即使是admin管理员）
+
+### 字段类型arrayType
+
+- string
+- double
+- int
+- object （地理位置属于object）
+- array
+- bool
+- timestamp （时间戳）
+- file 文件类型
+
 
 注意：
 - timestamp是一串数字的时间戳，一般通过如下js获取`var timestamp = new Date().getTime()；`。它的好处是屏蔽了时区差异。阿里云和腾讯云的云端时区是0，但在HBuilderX本地运行云函数时，如果是中国的电脑，时区则会变成8，导致显示错乱。所以推荐使用时间戳。但时间戳是一串记录毫秒的数字，不合适直接渲染到前端界面上。推荐的做法是在前端渲染时使用[`<uni-dateformat>`组件](https://ext.dcloud.net.cn/plugin?id=3279)。
@@ -1029,7 +1045,7 @@ db.collection('street').where("shop_id=='123123 || shop_id=='456456'").get()
 
 `DB Schema`里有大量的信息，其实有了这些信息，前端将无需自己开发表单维护界面，uniCloud可以自动生成新增数据、修改数据的前端页面，以及admin端的列表、新增、修改、删除全套功能。
 
-为强化表单的自定义性，`DB Schema`还扩展了label、component、group、order等属性，以控制表单项在界面上的渲染控件。
+为强化表单的自定义性，`DB Schema`还扩展了label、componentForEdit、componentForShow、group、order等属性，以控制表单项在界面上的渲染控件。
 
 `schema2code`不是简单的一键crud生成接口，它直接生成了可运行的页面。
 
@@ -1336,70 +1352,64 @@ const dbSearchFields = ['username', 'role_name', 'mobile', 'email'] // 模糊搜
 用户地址表（完整的opendb表为[uni-id-address](https://gitee.com/dcloud/opendb/tree/master/collection/uni-id-address)，以下略做简化）
 ```json
 {
-  "schema": {
-    "bsonType": "object",
-    "required": ["city_id"],
-    "properties": {
-      "_id": {
-        "description": "ID，系统自动生成"
-      },
-      "city_id": {
-        "bsonType": "string",
-        "title": "地址",
-        "description": "城市编码",
-        "foreignKey": "opendb-city-china.code",
-        "enumType": "tree",
-        "enum": {
-          "collection": "opendb-city-china",
-          "orderby": "value asc",
-          "field": "code as value, name as text, eq(['$type', 2]) as isleaf"
-        }
+  "bsonType": "object",
+  "required": ["city_id"],
+  "properties": {
+    "_id": {
+      "description": "ID，系统自动生成"
+    },
+    "city_id": {
+      "bsonType": "string",
+      "title": "地址",
+      "description": "城市编码",
+      "foreignKey": "opendb-city-china.code",
+      "enumType": "tree",
+      "enum": {
+        "collection": "opendb-city-china",
+        "orderby": "value asc",
+        "field": "code as value, name as text, eq(type, 2) as isleaf"
       }
     }
   }
 }
-
 ```
 
 省市区数据表 [opendb-city-china](https://gitee.com/dcloud/opendb/tree/master/collection/opendb-city-china) 的schema如下。树形数据查询另有详细文档，[详见](https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=gettree)
 
 ```json
 {
-  "schema": {
-    "bsonType": "object",
-    "required": ["code", "name"],
-    "permission": {
-      "read": true,
-      "create": false,
-      "update": false,
-      "delete": false
+  "bsonType": "object",
+  "required": ["code", "name"],
+  "permission": {
+    "read": true,
+    "create": false,
+    "update": false,
+    "delete": false
+  },
+  "properties": {
+    "_id": {
+      "description": "ID，系统自动生成"
     },
-    "properties": {
-      "_id": {
-        "description": "ID，系统自动生成"
-      },
-      "code": {
-        "bsonType": "string",
-        "description": "编码"
-      },
-      "parent_code": {
-        "bsonType": "string",
-        "description": "父级编码",
-        "parentKey": "code"
-      },
-      "name": {
-        "bsonType": "string",
-        "description": "城市名称",
-        "title": "城市"
-      },
-      "type": {
-        "bsonType": "int",
-        "description": "城市类型；0省，1市，2区"
-      }
+    "code": {
+      "bsonType": "string",
+      "description": "编码"
+    },
+    "parent_code": {
+      "bsonType": "string",
+      "description": "父级编码",
+      "parentKey": "code"
+    },
+    "name": {
+      "bsonType": "string",
+      "description": "城市名称",
+      "title": "城市"
+    },
+    "type": {
+      "bsonType": "int",
+      "description": "城市类型；0省，1市，2区"
     }
   }
 }
-
 ```
 
 这2个表都是[opendb](https://gitee.com/dcloud/opendb)表，在uniCloud web控制台新建表时可以选择。opendb-city-china表自带全国省市区数据。
@@ -1408,3 +1418,50 @@ const dbSearchFields = ['username', 'role_name', 'mobile', 'email'] // 模糊搜
 
 `<uni-data-picker>` 组件的文档另见：[https://ext.dcloud.net.cn/plugin?id=3796](https://ext.dcloud.net.cn/plugin?id=3796)
 
+
+
+#### 生成文件上传示例@filepicker
+
+> HBuilderX 3.1.0+ 支持
+
+```json
+{
+  "schema": {
+    "bsonType": "object",
+    "required": [],
+    "properties": {
+      "_id": {
+        "description": "ID，系统自动生成"
+      },
+      "image": {
+        "bsonType": "array",
+        "title": "图片",
+        "description": "图片",
+        "arrayType": "file",
+        "fileMediaType":"image", // 可选值 all|image|video 默认值为all,表示所有文件，image表示图片类型文件，video表示视频类型文件
+        "fileExtName":"jpg,png", // 扩展名过滤，多个用 , 分割
+        "maxLength": 3, // 限制最大数量
+      }
+    }
+  }
+}
+
+```
+
+上传后的file对象
+```json
+{
+	"name": "filename.jpg",
+	"extname": "jpg",
+	"fileType": "image",
+	"url": "https://xxxx",
+	"size": 0, //单位是字节
+	"image": {
+		"width":10,//单位是像素
+		"height":10
+	}
+}
+```
+
+
+`<uni-file-picker>` 组件的文档另见：[https://ext.dcloud.net.cn/plugin?id=](https://ext.dcloud.net.cn/plugin?id=)
