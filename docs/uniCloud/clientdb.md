@@ -2497,7 +2497,7 @@ module.exports = {
 
 ## 可用聚合操作符列表@aggregate-operator
 
-为方便书写，clientDB内将聚合操作符的用法进行了简化（相对于云函数内使用聚合操作符而言），主要是参数摊平、。以下是可以在clientDB中使用的聚合操作符
+为方便书写，clientDB内将聚合操作符的用法进行了简化（相对于云函数内使用聚合操作符而言），主要是参数摊平。以下是可以在clientDB中使用的聚合操作符
 
 |操作符						|详细文档（云函数内用法）																			|JQL简化用法																																								|说明																									|
 |---							|---																													|---																																												|---																									|
@@ -2622,7 +2622,7 @@ module.exports = {
 }
 ```
 
-可以通过以下查询将publish_date转为`2021-01-20`形式，然后进行分组统计
+可以通过以下查询将publish_date字段从时间戳转为`2021-01-20`形式，然后进行按天进行统计
 
 ```js
 const res = await db.collection('article')
@@ -2631,7 +2631,7 @@ const res = await db.collection('article')
 .get()
 ```
 
-上述代码使用add将publish_date时间戳转为日期类型，再用dateToString将上一步的日期按照时区'+0800'（北京时间），格式化为`4位年-2位月-2位日`格式，完整格式化参数请参考[dateToString](uniCloud/cf-database.md?id=datetostring)。
+上述代码使用add方法将publish_date时间戳转为日期类型，再用dateToString将上一步的日期按照时区'+0800'（北京时间），格式化为`4位年-2位月-2位日`格式，完整格式化参数请参考[dateToString](uniCloud/cf-database.md?id=datetostring)。
 
 上述代码执行结果为
 
