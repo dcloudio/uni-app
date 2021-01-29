@@ -17,11 +17,11 @@
 
 在使用腾讯云时如果访问云存储文件提示`The requested URL '/1123.jpg' was not found on this server`这种错误，一般是cdn流量用尽导致的。可以升级配置或转为按量计费（目前仅支持企业类型认证的账号可以使用按量计费的服务空间）。
 
-# 客户端API
+## 客户端API
 
 在uni-app前端进行云存储的操作（不是在云函数里操作），包括在前端上传、删除文件。
 
-## uploadFile(Object object)
+### uploadFile(Object object)@uploadfile
 
 直接上传文件到云存储。
 
@@ -131,15 +131,15 @@ uni.chooseImage({
 
 - 阿里云返回的fileID为链接形式可以直接使用，腾讯云返回的为cloud://形式，如需展示需要调用getTempFileURL获取链接
 
-## getTempFileURL(Object object)
-
-腾讯云获取文件临时下载链接。
+### getTempFileURL(Object object)
 
 **平台兼容性**
 
-|阿里云	|腾讯云	|
-|----		|----		|
-|×			|√			|
+|阿里云						|腾讯云	|
+|----							|----		|
+|HBuilderX 3.1.0+	|√			|
+
+腾讯云获取文件临时下载链接。自HBuilderX 3.1.0起阿里云也支持此接口，仅为抹平和腾讯云的接口差异
 
 #### 请求参数
 
@@ -177,7 +177,7 @@ uniCloud.getTempFileURL({
 	})
 	.then(res => {});
 
-// callback方式，与promise方式二选一即可
+// callback方式，与promise方式二选一
 uniCloud.getTempFileURL({
 	fileList: ['cloud://test-28farb/a.png'],
 	success() {},
@@ -186,7 +186,107 @@ uniCloud.getTempFileURL({
 });
 ```
 
-## deleteFile(Object object)
+### chooseAndUploadFile(Object object)@chooseanduploadfile
+
+> HBuilderX 3.1.0起支持
+
+选择文件/图片/视频并上传。
+
+#### 请求参数
+
+此接口根据type不同接收不同参数
+
+**选择图片，type:'image'**
+
+|字段				|类型		|必填	|说明																															|
+|:-:				|:-:		|----	|:-:																															|
+|type				|String	|是		|文件类型，image（图片）、video（视频）、all（任意文件）					|
+|count			|Number	|否		|文件数量																													|
+|extension	|Array	|否		|文件后缀																													|
+|sizeType		|Array	|否		|original 原图，compressed 压缩图，默认二者都有，type为image时生效|
+|sourceType	|Array	|否		|album 从相册选图，camera 使用相机，默认二者都有									|
+
+**选择视频，type:'video'**
+
+|字段				|类型		|必填	|说明																										|
+|:-:				|:-:		|----	|:-:																										|
+|type				|String	|是		|文件类型，image（图片）、video（视频）、all（任意文件）|
+|extension	|Array	|否		|文件后缀																								|
+|camera			|String	|否		|摄像切换，front（前置摄像头）、back（后置摄像头）			|
+|compressed	|Boolean|否		|是否压缩所选的视频源文件，默认值为true，需要压缩，type	|
+|sourceType	|Array	|否		|album 从相册选图，camera 使用相机，默认二者都有				|
+
+**选择文件，type:all**
+
+|字段			|类型		|必填	|说明																										|
+|:-:			|:-:		|----	|:-:																										|
+|type			|String	|是		|文件类型，image（图片）、video（视频）、all（任意文件）|
+|count		|Number	|否		|文件数量																								|
+|extension|Array	|否		|文件后缀																								|
+
+#### 回调方法
+
+**onChooseFile(Object OnChooseFileRes)**
+
+选择图片的回调
+
+OnChooseFileRes结构如下
+
+```js
+{
+  errMsg: '',
+  tempFilePaths: [], // 临时文件路径数组，chooseVideo/chooseImage/chooseFile接口返回的tempFilePath组成的数组
+  tempFiles: [] // 临时文件组成的数组
+}
+```
+
+**OnUploadProgress(Object OnUploadProgressRes)**
+
+上传进度的回调
+
+OnUploadProgressRes结构如下
+
+```js
+{
+  index: 0, // 触发此回调的文件序号
+  loaded: 256, // 已上传大小
+  total: 1024, // 总大小
+  tempFilePath: '', // 本地临时文件路径
+  tempFile: {} // 本地文件对象
+}
+```
+
+#### 响应参数
+
+成功回调内的响应参数形式如下
+
+```js
+{
+  errMsg: '', // 错误信息
+  tempFilePaths: [], // 本地临时文件路径组成的数组
+  tempFiles: [] // 文件对象数组，每项上都被追加了一个url属性，值为文件上传得到的fileID
+}
+```
+
+#### 示例
+
+```js
+// promise方式
+uniCloud.chooseAndUploadFile({
+		type: 'image'
+	})
+	.then(res => {});
+
+// callback方式，与promise方式二选一
+uniCloud.chooseAndUploadFile({
+	type: 'image',
+	success(res) {},
+	fail() {},
+	complete() {}
+});
+```
+
+### deleteFile(Object object)
 
 客户端删除云存储文件。
 
@@ -237,11 +337,11 @@ uniCloud.deleteFile(
 );
 ```
 
-# 云函数API
+## 云函数API
 
 在云函数中操作云存储文件（不是在前端），包括在云函数里上传、删除云存储文件。
 
-## uniCloud.uploadFile(Object uploadFileOptions)@clouduploadfile
+### uniCloud.uploadFile(Object uploadFileOptions)@clouduploadfile
 
 **云函数**内上传文件至云存储。
 
@@ -249,19 +349,25 @@ uniCloud.deleteFile(
 
 **平台兼容性**
 
-|阿里云	|腾讯云	|
-|----		|----		|
-|×			|√			|
+|阿里云						|腾讯云	|
+|----							|----		|
+|HBuilderX 3.1.0+	|√			|
 
-如使用阿里云，请在客户端通过`uniCloud.uploadFile`进行上传
+HBuilderX 3.1.0之前版本如使用阿里云，请在客户端通过`uniCloud.uploadFile`进行上传
 
 #### 请求参数
+
 **uploadFileOptions参数说明**
 
-| 字段				| 类型					| 必填| 说明																																															|
-| ---					| ---						| ---	| ---																																																|
-| cloudPath		| string				| 是	| 文件的绝对路径，包含文件名。例如 foo/bar.jpg、foo/bar/baz.jpg 等。																|
-| fileContent	| fs.ReadStream	| 是	| buffer或要上传的文件 [可读流](https://nodejs.org/api/stream.html#stream_class_stream_readable) 。	|
+| 字段				| 类型	| 必填| 说明																															|
+| ---					| ---		| ---	| ---																																|
+| cloudPath		| string| 是	| 文件的绝对路径，包含文件名。例如 foo/bar.jpg、foo/bar/baz.jpg 等。|
+| fileContent	| -			| 是	| 文件内容，请看下方说明																						|
+
+**说明**
+
+- 腾讯云支持在fileContent内传[可读流](https://nodejs.org/api/stream.html#stream_class_stream_readable) 或buffer
+- 阿里云支持在fileContent内传文件绝对路径或buffer
 
 #### 响应参数
 
@@ -282,7 +388,7 @@ let result = await uniCloud.uploadFile({
 });
 ```
 
-## uniCloud.getTempFileURL(Object getTempFileURLOptions)@cloudgettempfileurl
+### uniCloud.getTempFileURL(Object getTempFileURLOptions)@cloudgettempfileurl
 
 **云函数**获取文件下载链接。
 
@@ -329,7 +435,7 @@ let result = await uniCloud.getTempFileURL({
 });
 ```
 
-## uniCloud.deleteFile(Object deleteFileOptions)@clouddeletefile
+### uniCloud.deleteFile(Object deleteFileOptions)@clouddeletefile
 
 **云函数**删除云存储文件。
 
@@ -367,7 +473,7 @@ let result = await uniCloud.deleteFile({
 });
 ```
 
-## uniCloud.downloadFile(Object downloadFileOptions)@clouddownloadfile
+### uniCloud.downloadFile(Object downloadFileOptions)@clouddownloadfile
 
 **云函数**下载已上传至云开发的文件至本地（默认本地根目录/root）。
 
@@ -402,7 +508,7 @@ let result = await uniCloud.downloadFile({
 });
 ```
 
-# 数据处理
+## 数据处理
 
 **仅阿里云支持**
 
