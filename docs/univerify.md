@@ -127,7 +127,7 @@ uni.login({
     //参考`univerifyStyle 数据结构`
   },
 	success(res){ // 登录成功
-		console.log(res.authResult);  // {openid:'deviceIDlength+deviceID+gyuid',access_token:'接口返回的 token'}
+		console.log(res.authResult);  // {openid:'登录授权唯一标识',access_token:'接口返回的 token'}
 	},
 	fail(res){  // 登录失败
 		console.log(res.errCode)
