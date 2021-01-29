@@ -59,7 +59,8 @@ const attrs = [
   'showCenterPlayBtn',
   'showLoading',
   'codec',
-  'httpCache'
+  'httpCache',
+  'playStrategy'
 ]
 
 export default {
@@ -159,6 +160,10 @@ export default {
     httpCache: {
       type: [Boolean, String],
       default: false
+    },
+    playStrategy: {
+      type: [Number, String],
+      default: 0
     }
   },
   computed: {
