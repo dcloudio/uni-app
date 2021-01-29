@@ -51,6 +51,7 @@
 
 - `<map>` 组件的宽/高推荐写直接量，比如：750rpx，不要设置百分比值。
 - `uni-app` 只支持 `gcj02` 坐标
+- App平台 `layer-style` 属性需要在地图服务商后台创建，[详情](https://developer.amap.com/api/android-sdk/guide/create-map/custom)
 
 **markers**
 
