@@ -190,6 +190,13 @@ uniCloud.httpclient.request('https://example.com',{
 1. 使用[clientDB](https://uniapp.dcloud.net.cn/uniCloud/clientdb)。这种方式是在前端直接操作数据库，此时一个云函数都不需要写。开发效率远超传统开发模式。包括它配套的action云函数是不占用云函数数量的。
 2. 使用[uni-cloud-router单路由云函数框架](https://uniapp.dcloud.net.cn/uniCloud/uni-cloud-router)，这种方式只有一个云函数，所有接口都是这个云函数的不同参数，它有统一的路由管理。
 
+以免费空间的48个云函数举例，一般情况下：
+- 后台管理系统使用[uniCloud admin](https://uniapp.dcloud.net.cn/uniCloud/admin)，会自带一个uni-admin的云函数；
+- 前端项目，会有一个[uni-id](https://uniapp.dcloud.net.cn/uniCloud/uni-id)配套的user-center云函数。如果和uniCloud admin复用一个服务空间，此云函数也不需要；
+- 如果有热搜词统计跑批，[uni-search](https://ext.dcloud.net.cn/plugin?id=3851)配套一个云函数uni-analyse-searchhot；
+
+上述几个是官方推荐的几个常用框架所带的云函数，然后开发者自己的代码里，大多数业务使用clientDB开发，不写云函数，或者写了配套的action云函数也不占用云函数数量；如果还需要自己写一些云函数，再加上uni-cloud-router，用这个单路由云函数搞定剩余需求；另外如果有跑批数据的需求可以再来一个云函数。所以无论如何48个云函数都占不满。
+
 uniCloud的每个云函数是一个独立进程，不存在云函数级别的多级目录概念。
 
 每个云函数下可以有子目录，但它们都属于这个云函数的一部分，而不是另一个云函数。
