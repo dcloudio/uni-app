@@ -35,8 +35,9 @@
 |vslide-gesture-in-fullscreen|Boolean|true|在全屏模式下，是否开启亮度与音量调节手势|微信小程序|
 |ad-unit-id|String||视频前贴广告单元ID，更多详情可参考开放能力[视频前贴广告](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/ad/video-patch-ad.html)|微信小程序|
 |poster-for-crawler|String||用于给搜索等场景作为视频封面展示，建议使用无播放 icon 的视频封面图，只支持网络地址|微信小程序|
-|codec|String|hardware|解码器选择，hardware：原生解码器，software：ffmpeg解码器|App 3.0.9+|
-|http-cache|Boolean|true|是否对 http、https 链接，开启缓存|App 3.0.9+|
+|codec|String|hardware|解码器选择，hardware：硬解码（硬解码可以增加解码算力，提高视频清晰度。部分硬件可能存在兼容性问题）；software：ffmpeg 软解码；|App 3.1.0+|
+|http-cache|Boolean|true|是否对 http、https 视频源开启本地缓存。缓存策略:开启了此开关的视频源，在视频播放时会在本地保存缓存文件，如果本地缓存池已超过100M，在进行缓存前会清空之前的缓存|App 3.1.0+|
+|play-strategy|Number|0| 播放策略，0：默认策略；1：平滑播放模式（开启了此模式的视频源 会加大缓冲力度，采用open sl解码音频，避免音视频脱轨的问题，可能会降低首屏展现速度。 适用于在线播放高清视频的场景。）；|App 3.1.0+|
 |@play|EventHandle||当开始/继续播放时触发play事件|字节跳动小程序不支持|
 |@pause|EventHandle||当暂停播放时触发 pause 事件|字节跳动小程序不支持|
 |@ended|EventHandle||当播放到末尾时触发 ended 事件|字节跳动小程序不支持|

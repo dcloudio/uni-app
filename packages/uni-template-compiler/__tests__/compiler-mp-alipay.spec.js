@@ -100,7 +100,11 @@ describe('mp:compiler-mp-alipay', () => {
     )
     assertCodegen(
       '<p class="static" :class="[{ active: isActive }, errorClass]">5</p>',
-      '<view class="{{(((\'static _p\')+\' \'+[(isActive)?\'active\':\'\'])+\' \'+errorClass)}}">5</view>'
+      '<view class="{{(((\'static _p\')+\' \'+((isActive)?\'active\':\'\'))+\' \'+errorClass)}}">5</view>'
+    )
+    assertCodegen(
+      '<p class="static" :class="[{ active: isActive, disabled: isDisabled }, errorClass]">52</p>',
+      '<view class="{{(((\'static _p\')+\' \'+(((isActive)?\'active\':\'\')+\' \'+((isDisabled)?\'disabled\':\'\')))+\' \'+errorClass)}}">52</view>'
     )
     assertCodegen(
       '<div class="container" :class="computedClassObject">6</div>',
@@ -122,6 +126,10 @@ describe('mp:compiler-mp-alipay', () => {
     assertCodegen(
       '<p :class="classStr1 || classStr2" class="bg">9</p>',
       '<view class="{{((\'bg _p\')+\' \'+(classStr1||classStr2))}}">9</view>'
+    )
+    assertCodegen(
+      '<p class="static" :class="[{ active: isActive }, errorClass, [flex, \'flex-row\']]">10</p>',
+      '<view class="{{((((\'static _p\')+\' \'+((isActive)?\'active\':\'\'))+\' \'+errorClass)+\' \'+((flex)+\' \'+\'flex-row\'))}}">10</view>'
     )
   })
 

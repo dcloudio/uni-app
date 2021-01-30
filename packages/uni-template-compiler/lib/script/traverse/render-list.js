@@ -16,7 +16,8 @@ const {
   traverseKey,
   processMemberExpression,
   getForIndexIdentifier,
-  isSimpleObjectExpression
+  isSimpleObjectExpression,
+  traverseFilter
 } = require('../../util')
 
 const getMemberExpr = require('./member-expr')
@@ -185,7 +186,7 @@ module.exports = function traverseRenderList (path, state) {
         }
       })
     }
-  } else if (forPath.isCallExpression() || (forPath.isObjectExpression() && !isSimpleObjectExpression(forPath.node))) {
+  } else if ((forPath.isCallExpression() && !traverseFilter(forPath.node.callee, state)) || (forPath.isObjectExpression() && !isSimpleObjectExpression(forPath.node))) {
     forPath.replaceWith(getMemberExpr(forPath, IDENTIFIER_FOR, forPath.node, forState))
   } else {
     forPath.traverse(require('./visitor'), forState)

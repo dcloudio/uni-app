@@ -27,6 +27,17 @@ describe('mp:compiler-extra', () => {
         }
       }
     )
+    assertCodegen(
+      /* eslint-disable no-template-curly-in-string */
+      '<view v-for="(item, index) in a.test()" :key="index">{{item}}</view>',
+      '<block wx:for="{{a.test()}}" wx:for-item="item" wx:for-index="index" wx:key="index"><view>{{item}}</view></block>',
+      'with(this){}', {
+        filterModules: {
+          t: {},
+          a: {}
+        }
+      }
+    )
   })
 
   it('generate scopeId', () => {

@@ -74,7 +74,7 @@
   }
 }
 
-// 百度小程序 注意是 usingSwanComponents 不是 usingComponents（HBuilder 3.0.8+ 可以使写为 usingComponents）
+// 百度小程序 注意是 usingSwanComponents 不是 usingComponents（HBuilder 3.1.0+ 可以使写为 usingComponents）
 {
   "path": "pages/index/index",
   "style": {
