@@ -12,7 +12,9 @@ uni_modules是uni-app的插件模块化规范（HBuilderX 3.1.0+支持），通�
 相对于node_modules（node.js模块），uni_modules的三方依赖安装时默认最新版本，插件均直接安装在uni_modules目录下，不做嵌套，当然，如果开发者希望固定某个版本的依赖，可以将该三方依赖包含到自己的插件包内。
 
 ### 目录结构
-```bash
+一个uni_modules插件，可以包含如下目录及文件：
+<pre v-pre="" data-lang="">
+	<code class="lang-" style="padding:0">
 uni_modules                                项目根目录下
 └── [plugin_id] // 插件 ID
     ├── uniCloud                           插件内的uniCloud内容会被虚拟合并到项目根目录的uniCloud中（注意：插件内的uniCloud目录，没有-aliyun,-tcb后缀）
@@ -25,7 +27,8 @@ uni_modules                                项目根目录下
     ├── package.json                       插件配置，必选(除此之外均`可选`)                          
     ├── readme.md                          插件文档
     ├── changelog.md                       插件更新日志
-```
+	</code>
+</pre>
 **Tips**
 - 插件目录不支持pages.json、App.vue、main.js、manifest.json、uni.scss文件，如果需要插件使用者修改这些文件内容，请在插件文档(readme.md)中详细说明。
 - 在插件内部引用资源、跳转页面时，请尽量使用相对路径。
