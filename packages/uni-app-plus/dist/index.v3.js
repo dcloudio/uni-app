@@ -4126,7 +4126,7 @@ var serviceContext = (function () {
   }
 
   const DEVICE_FREQUENCY = 200;
-  const NETWORK_TYPES = ['unknown', 'none', 'ethernet', 'wifi', '2g', '3g', '4g'];
+  const NETWORK_TYPES = ['unknown', 'none', 'ethernet', 'wifi', '2g', '3g', '4g', '5g'];
 
   const MAP_ID = '__UNIAPP_MAP';
 
@@ -4548,7 +4548,7 @@ var serviceContext = (function () {
   function getNetworkType () {
     return {
       errMsg: 'getNetworkType:ok',
-      networkType: NETWORK_TYPES[plus.networkinfo.getCurrentType()]
+      networkType: NETWORK_TYPES[plus.networkinfo.getCurrentType()] || 'unknown'
     }
   }
 
@@ -20358,7 +20358,7 @@ var serviceContext = (function () {
     });
 
     plus.globalEvent.addEventListener('netchange', () => {
-      const networkType = NETWORK_TYPES[plus.networkinfo.getCurrentType()];
+      const networkType = NETWORK_TYPES[plus.networkinfo.getCurrentType()] || 'unknown';
       publish('onNetworkStatusChange', {
         isConnected: networkType !== 'none',
         networkType
