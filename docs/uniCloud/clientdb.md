@@ -1312,9 +1312,30 @@ db.collection("department").get({
 
 ### 分组统计groupby@groupby
 
-自`HBuilderX 3.1.0`起，clientDB支持分组对数据进行分组统计（groupBy）
+> 本地调试支持：`HBuilderX 3.1.0`+；云端支持：2021-1-26日后更新一次云端 DB Schema 生效
 
-如果数据库`score`表为某次比赛统计的分数数据，每条记录为一个学生的分数
+数据分组统计，即根据某个字段进行分组（groupBy），然后对其他字段分组后的值进行求和、求数量、求均值。
+
+比如统计每日新增用户数，就是按时间进行分组，对每日的用户记录进行count运算。
+
+分组统计有groupBy和groupField。和传统sql略有不同，传统sql没有单独的groupField。
+
+JQL的groupField里不能直接写field字段，只能使用[累计器操作符](uniCloud/clientdb.md?id=accumulator)来处理字段，常见的累积器计算符包括：count(*)、sum(字段名称)、avg(字段名称)。更多累计器操作符[详见](uniCloud/clientdb.md?id=accumulator)
+
+其中count(*)是固定写法。
+
+分组统计的写法如下：
+
+```js
+const res = await db.collection('table1').groupBy('field1,field2').groupField('sum(field3) as field4').get()
+```
+
+如果额外还在groupBy之前使用了field方法，那么此field的含义并不是最终返回的字段，而是用于对字段预处理，然后将预处理的字段传给groupBy和groupField使用。
+
+与field不同，使用groupField时返回结果不会默认包含`_id`字段。同时开发者也不应该在groupBy和groupField里使用`_id`字段，`_id`是唯一的，没有统一意义。
+
+举例：
+如果数据库`score`表为某次比赛统计的分数数据，每条记录为一个学生的分数。学生有所在的年级（grade）、班级（class）、姓名（name）、分数（score）等字段属性。
 
 ```js
 {
@@ -1361,7 +1382,9 @@ db.collection("department").get({
 }
 ```
 
-#### 求和、求均值等累计操作
+接下来我们对这批数据进行分组统计，分别演示如何使用求和、求均值和计数。
+
+#### 求和、求均值示例
 
 groupBy内也可以使用聚合操作符对数据进行处理，为方便书写，clientDB内将聚合操作符的用法进行了简化（相对于云函数内使用聚合操作符而言）。用法请参考：[聚合操作符](uniCloud/clientdb.md?id=aggregate-operator)
 
@@ -1395,6 +1418,8 @@ const res = await db.collection('score')
   }]
 }
 ```
+
+1年级A班、1年级B班、2年级A班，3个班级的总分分别是20、40、60。
 
 求均值方法与求和类似，将上面sum方法换成avg方法即可
 
@@ -1505,13 +1530,8 @@ const res = await db.collection('score')
 }
 ```
 
-**注意**
 
-- 在使用field方法的情况下，会计算field内访问的所有字段计算权限。上面的例子中会使用表的read权限和grade、class、score三个字段的权限，来进行权限校验。
-- 在不使用field，仅使用groupBy和groupField的情况下，会以groupBy和groupField内访问的所有字段的权限来校验访问是否合法。
-- 与field不同，使用groupField时返回结果不会包含_id字段
-
-#### 统计数量
+#### 统计数量示例
 
 使用count方法可以对记录数量进行统计。以上述数据为例，如下写法对不同班级统计参赛人数
 
@@ -1546,11 +1566,11 @@ const res = await db.collection('score')
 
 - `count(*)`为固定写法，括号里的*可以省略
 
-**更复杂一些的用法**
+#### 按日分组统计示例
 
 按时间段统计是常见的需求，而时间段统计会用到日期运算符。
 
-假设要统计`uni-id-users`表的每日新增注册用户数量。表内有以下数据：
+假设要统计[uni-id-users](https://gitee.com/dcloud/opendb/blob/master/collection/uni-id-users/collection.json)表的每日新增注册用户数量。表内有以下数据：
 
 ```json
 {
@@ -1622,17 +1642,31 @@ res = {
 }
 ```
 
-完整操作符列表请参考：[clientDB内可使用的聚合操作符](uniCloud/clientdb.md?id=aggregate-operator)
+完整聚合操作符列表请参考：[clientDB内可使用的聚合操作符](uniCloud/clientdb.md?id=aggregate-operator)
 
+#### count权限控制
 
+在使用普通的累积器操作符，如sum、avg时，权限控制与常规的权限控制并无不同。
+
+但使用count时，可以单独配置表级的count权限。
+
+请不要轻率的把[uni-id-users](https://gitee.com/dcloud/opendb/blob/master/collection/uni-id-users/collection.json)表的count权限设为true，即任何人都可以count。这意味着游客将可以获取到你的用户总数量。
+
+count权限的控制逻辑如下：
+
+- 在不使用field，仅使用groupBy和groupField的情况下，会以groupBy和groupField内访问的所有字段的权限来校验访问是否合法。
+- 在额外使用field方法的情况下，会计算field内访问的所有字段计算权限。上面的例子中会使用表的read权限和grade、class、score三个字段的权限，来进行权限校验。
+- 在HBuilderX 3.1.0之前，count操作都会使用表级的read权限进行验证。HBuilderX 3.1.0及之后的版本，如果配置了count权限则会使用表级的read+count权限进行校验，两条均满足才可以通过校验
+- 如果schema内没有count权限，则只会使用read权限进行校验
+- 所有会统计数量的操作均会触发count权限校验
 
 ### 数据去重distinct@distinct
 
 通过.distinct()方法，对数据查询结果中重复的记录进行去重。
 
-distinct方法将按照field方法指定的字段进行去重（如果field内未指定_id，不会按照_id去重）
+distinct方法将按照field方法指定的字段进行去重（如果field内未指定`_id`，不会按照`_id`去重）
 
-> `HBuilderX 3.1.0`+
+> 本地调试支持：`HBuilderX 3.1.0`+；云端支持：2021-1-26日后更新一次云端 DB Schema生效
 
 ```js
 const res = await db.collection('table1')
@@ -2221,6 +2255,7 @@ db.auth.off('error', onError)
     "create": false, // 禁止新增数据记录（不配置时等同于false）
     "update": false, // 禁止更新数据（不配置时等同于false）
     "delete": false, // 禁止删除数据（不配置时等同于false）
+	"count": false, // 禁止对本表进行count计数
   },
   "properties": { // 字段列表，注意这里是对象
     "secret_field": { // 字段名
