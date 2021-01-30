@@ -1,17 +1,15 @@
-import { v4 as uuidv4 } from 'uuid'
-
-const UUID_KEY = '__DC_UUID'
-let uuid
+const UUID_KEY = '__DC_STAT_UUID'
+let deviceId
 function addUuid (result) {
-  uuid = uuid || __GLOBAL__.getStorageSync(UUID_KEY)
-  if (!uuid) {
-    uuid = uuidv4()
+  deviceId = deviceId || __GLOBAL__.getStorageSync(UUID_KEY)
+  if (!deviceId) {
+    deviceId = Date.now() + '' + Math.floor(Math.random() * 1e7)
     __GLOBAL__.setStorage({
       key: UUID_KEY,
-      data: uuid
+      data: deviceId
     })
   }
-  result.uuid = uuid
+  result.deviceId = deviceId
 }
 
 function addSafeAreaInsets (result) {

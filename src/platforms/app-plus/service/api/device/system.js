@@ -11,7 +11,7 @@ import tabBar from '../../framework/tab-bar'
 
 import { getStatusbarHeight } from 'uni-platform/helpers/status-bar'
 
-import uuid from 'uni-platform/helpers/uuid'
+import deviceId from 'uni-platform/helpers/uuid'
 
 export function getSystemInfoSync () {
   return callApiSync(getSystemInfo, Object.create(null), 'getSystemInfo', 'getSystemInfoSync')
@@ -100,6 +100,6 @@ export function getSystemInfo () {
       bottom: safeAreaInsets.bottom,
       left: safeAreaInsets.left
     },
-    uuid: uuid()
+    deviceId: deviceId()
   }
 }

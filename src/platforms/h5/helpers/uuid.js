@@ -1,18 +1,16 @@
-import { v4 as uuidv4 } from 'uuid'
-
-const UUID_KEY = '__DC_UUID'
+const UUID_KEY = '__DC_STAT_UUID'
 const storage = window.localStorage || window.sessionStorage || {}
-let uuid
+let deviceId
 
 export default function () {
-  uuid = uuid || storage[UUID_KEY]
-  if (!uuid) {
-    uuid = uuidv4()
+  deviceId = deviceId || storage[UUID_KEY]
+  if (!deviceId) {
+    deviceId = Date.now() + '' + Math.floor(Math.random() * 1e7)
     try {
-      storage[UUID_KEY] = uuid
+      storage[UUID_KEY] = deviceId
     } catch (error) {
 
     }
   }
-  return uuid
+  return deviceId
 }
