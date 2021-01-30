@@ -43,7 +43,7 @@ uni.onKeyboardHeightChange(res => {
 
 |App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|HBuilderX 3.0.8+|x|基础库2.9.2+|x|x|x|x|
+|HBuilderX 3.1.0+|x|基础库2.9.2+|x|x|x|x|
 
 **示例代码**
 

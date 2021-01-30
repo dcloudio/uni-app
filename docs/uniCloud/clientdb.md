@@ -588,7 +588,7 @@ db.collection('order,book')
 
 ### 对字段操作后返回@operator
 
-自`HBuilderX 3.0.8`起，clientDB支持对字段进行一定的操作之后再返回，详细可用的方法列表请参考：[聚合操作符](uniCloud/clientdb.md?id=aggregate-operator)
+自`HBuilderX 3.1.0`起，clientDB支持对字段进行一定的操作之后再返回，详细可用的方法列表请参考：[聚合操作符](uniCloud/clientdb.md?id=aggregate-operator)
 
 例：数据表class内有以下数据
 
@@ -1146,7 +1146,7 @@ db.collection("department").get({
 
 ### 分组统计@groupby
 
-自`HBuilderX 3.0.8`起，clientDB支持分组对数据进行分组统计（groupBy）
+自`HBuilderX 3.1.0`起，clientDB支持分组对数据进行分组统计（groupBy）
 
 如果数据库`score`表为某次比赛统计的分数数据，每条记录为一个学生的分数
 
@@ -1384,7 +1384,7 @@ const res = await db.collection('score')
 
 distinct方法将按照field方法指定的字段进行去重（如果field内未指定_id，不会按照_id去重）
 
-> `HBuilderX 3.0.8`+
+> `HBuilderX 3.1.0`+
 
 ```js
 const res = await db.collection('table1')
