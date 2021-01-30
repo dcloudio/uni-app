@@ -1,5 +1,5 @@
 export const DEVICE_FREQUENCY = 200
-export const NETWORK_TYPES = ['unknown', 'none', 'ethernet', 'wifi', '2g', '3g', '4g']
+export const NETWORK_TYPES = ['unknown', 'none', 'ethernet', 'wifi', '2g', '3g', '4g', '5g']
 
 export const MAP_ID = '__UNIAPP_MAP'
 
