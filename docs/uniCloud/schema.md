@@ -176,7 +176,7 @@ properties里的字段列表，每个字段都有很多可以设置的属性，�
 uniCloud推出了`openDB`开源数据库规范，包括用户表、文章表、商品表等很多模板表，这些模板表均已经内置`DB Schema`，可学习参考。[详见](https://gitee.com/dcloud/opendb)
 
 
-#### 字段类型bsonType
+#### 字段类型bsonType@bsontype
 
 - bool （布尔值）
 - string （字符串）
@@ -195,7 +195,7 @@ uniCloud推出了`openDB`开源数据库规范，包括用户表、文章表、�
 - double类型慎重，由于js不能精准处理浮点运算，0.1+0.2=0.30000000000000004。所以涉及金额时，建议使用int而不是double，以分为单位而不是以元为单位存储。比如微信支付默认就是以分为单位。如果使用[uniPay](uniCloud/unipay)处理支付的话，它的默认单位也是分。
 
 
-#### 数组字段类型的子类型arrayType
+#### 数组字段类型的子类型arrayType@arraytype
 
 一个字段如果bsonType是array，那么它可以进一步通过arrayType指定这个数组里每个数组项目的bsonType，值域仍然是所有的字段类型。
 
@@ -1597,4 +1597,4 @@ const dbSearchFields = ['username', 'role_name', 'mobile', 'email'] // 模糊搜
 ```
 
 
-`<uni-file-picker>` 组件的文档另见：[https://ext.dcloud.net.cn/plugin?id=](https://ext.dcloud.net.cn/plugin?id=)
+`<uni-file-picker>` 组件的文档另见：[https://ext.dcloud.net.cn/plugin?id=4079](https://ext.dcloud.net.cn/plugin?id=4079)
