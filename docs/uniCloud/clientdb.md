@@ -2096,7 +2096,7 @@ const res = await db.collection('table1').where({
 - 更新数据库时不可使用更新操作符`db.command.inc`等
 - 更新数据时键值不可使用`{'a.b.c': 1}`的形式，需要写成`{a:{b:{c:1}}}`形式（后续会对此进行优化）
 
-### 其他数据库操作
+### MongoDB聚合操作
 
 clientDB API支持使用聚合操作读取数据，关于聚合操作请参考[聚合操作](uniCloud/cf-database.md?id=aggregate)
 
@@ -2116,7 +2116,7 @@ const res = await db.collection('test').aggregate()
 
 **注意**
 
-- 目前`<uni-clientdb>`组件暂不支持使用聚合操作读取数据
+- 目前`<uni-clientdb>`组件暂不支持使用直接aggregate方法进行聚合操作，但是可以使用JQL进行联表查询、分组统计、数据去重等功能
 
 ### 刷新token@refreshtoken
 
