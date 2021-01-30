@@ -190,7 +190,9 @@ uniCloud.getTempFileURL({
 
 > HBuilderX 3.1.0起支持
 
-选择文件/图片/视频并上传。
+通过ui界面选择文件（图片/视频）并直接上传到云存储。
+
+同时提供了选择回调事件，方便对选择后的图片进行压缩等二次处理，然后再上传。
 
 #### 客户端平台兼容性
 
@@ -255,7 +257,7 @@ uniCloud.getTempFileURL({
 
 **onChooseFile(Object OnChooseFileRes)**
 
-选择图片的回调
+选择图片的回调事件。方便对选择后的图片进行压缩、裁剪等二次处理，然后再上传。
 
 OnChooseFileRes结构如下
 
