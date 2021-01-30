@@ -1,4 +1,3 @@
-import { v4 } from 'uuid';
 import Vue from 'vue';
 
 const _toString = Object.prototype.toString;
@@ -528,18 +527,18 @@ var previewImage = {
   }
 };
 
-const UUID_KEY = '__DC_UUID';
-let uuid;
+const UUID_KEY = '__DC_STAT_UUID';
+let deviceId;
 function addUuid (result) {
-  uuid = uuid || wx.getStorageSync(UUID_KEY);
-  if (!uuid) {
-    uuid = v4();
+  deviceId = deviceId || wx.getStorageSync(UUID_KEY);
+  if (!deviceId) {
+    deviceId = Date.now() + '' + Math.floor(Math.random() * 1e7);
     wx.setStorage({
       key: UUID_KEY,
-      data: uuid
+      data: deviceId
     });
   }
-  result.uuid = uuid;
+  result.deviceId = deviceId;
 }
 
 function addSafeAreaInsets (result) {
