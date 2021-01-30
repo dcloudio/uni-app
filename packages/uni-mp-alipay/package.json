@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-mp-alipay",
-  "version": "2.0.0-alpha-31020210130002",
+  "version": "2.0.0-alpha-31020210130003",
   "description": "uni-app mp-alipay",
   "main": "dist/index.js",
   "repository": {
@@ -17,5 +17,5 @@
     "name": "mp-alipay",
     "title": "支付宝小程序"
   },
-  "gitHead": "8bcae55457e9b55e92ef64c89bf1b29bf31ac17c"
+  "gitHead": "e43df719e16464b00873adb52ac6a64c91036a79"
 }
