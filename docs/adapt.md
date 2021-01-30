@@ -37,7 +37,7 @@ pages.json 配置样例
 ```json
 {
   "globalStyle": {
-    
+
   },
   "topWindow": {
     "path": "responsive/top-window.vue", // 指定 topWindow 页面文件
@@ -197,7 +197,8 @@ uni-app的屏幕适配推荐方案是运行时动态适配，而不是为PC版�
   "globalStyle": {
     "rpxCalcMaxDeviceWidth": 960, // rpx 计算所支持的最大设备宽度，单位 px，默认值为 960
     "rpxCalcBaseDeviceWidth": 375, // rpx 计算使用的基准设备宽度，设备实际宽度超出 rpx 计算所支持的最大设备宽度时将按基准宽度计算，单位 px，默认值为 375
-    "rpxCalcIncludeWidth": 750 // rpx 计算特殊处理的值，始终按实际的设备宽度计算，单位 rpx，默认值为 750
+    "rpxCalcIncludeWidth": 750, // rpx 计算特殊处理的值，始终按实际的设备宽度计算，单位 rpx，默认值为 750
+    "ignoreBaseWidth": false // 是否需要忽略超过最大值时按rpxCalcBaseDeviceWidth基准值进行计算, 默认false, 为true时, 在超过最大值且横屏时会按2048的设计稿进行换算, 即 750rpx ---> 750 * windowWidth / 2048(假设屏幕宽度为1024, 则换算后为 375px)
   },
 }
 ```
@@ -207,6 +208,8 @@ uni-app的屏幕适配推荐方案是运行时动态适配，而不是为PC版�
 但是，rpx的最大适配宽度被限定后，会带来一个新问题：如果您的代码中把750rpx当做100%来使用（官方强烈不推荐这种写法，即便是nvue不支持百分比，也应该使用flex来解决撑满问题），此时不管屏幕宽度为多少，哪怕超过了960px，您的预期仍然是要占满整个屏幕宽度，但如果按rpxCalcBaseDeviceWidth的375px的策略执行将不再占满屏宽。
 
 此时您有两种解决方案，一种是修改代码，将里面把rpx当做百分比的代码改掉；另一种是配置rpxCalcIncludeWidth，设置某个特定数值不受rpxCalcMaxDeviceWidth约束。如上述例子中的"rpxCalcIncludeWidth": 750，代表着如果写了 750rpx，始终将按屏幕宽度百分百占满来计算。
+
+若不启用ignoreBaseWidth, 则在超过最大宽度后, 不管多宽的屏幕都是只按设定的 rpxCalcBaseDeviceWidth 基准值计算, 无法适配缩放; 启用ignoreBaseWidth后, 则可在小屏幕时按750设计稿尺寸适配换算, 大屏幕且横屏时按2048设计稿尺寸适配换算
 
 - 关于 rpx 转 px
 

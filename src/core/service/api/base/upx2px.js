@@ -1,17 +1,21 @@
 const EPS = 1e-4
 const BASE_DEVICE_WIDTH = 750
+const BASE_DEVICE_PAD_WIDTH = 2048
 let isIOS = false
 let deviceWidth = 0
+let deviceHeight = 0
 let deviceDPR = 0
 
 function checkDeviceWidth () {
   const {
     platform,
     pixelRatio,
-    windowWidth
+    windowWidth,
+    windowHeight
   } = uni.getSystemInfoSync()
 
   deviceWidth = windowWidth
+  deviceHeight = windowHeight
   deviceDPR = pixelRatio
   isIOS = platform === 'ios'
 }
@@ -34,9 +38,10 @@ export function upx2px (number, newDeviceWidth) {
   const maxWidth = checkValue(config.rpxCalcMaxDeviceWidth, 960)
   const baseWidth = checkValue(config.rpxCalcBaseDeviceWidth, 375)
   const includeWidth = checkValue(config.rpxCalcIncludeWidth, 750)
+  const ignoreBaseWidth = config.ignoreBaseWidth || false
   let width = newDeviceWidth || deviceWidth
-  width = number === includeWidth || width <= maxWidth ? width : baseWidth
-  let result = (number / BASE_DEVICE_WIDTH) * width
+  width = number === includeWidth || width <= maxWidth || ignoreBaseWidth ? width : baseWidth
+  let result = (number / (width >= maxWidth && deviceWidth > deviceHeight && ignoreBaseWidth ? BASE_DEVICE_PAD_WIDTH : BASE_DEVICE_WIDTH)) * width
   if (result < 0) {
     result = -result
   }

@@ -57,7 +57,8 @@
 		"pageOrientation": "portrait", //横屏配置，全局屏幕旋转设置(仅 APP/微信/QQ小程序)，支持 auto / portrait / landscape
 		"rpxCalcMaxDeviceWidth": 960,
 		"rpxCalcBaseDeviceWidth": 375,
-		"rpxCalcIncludeWidth": 750
+		"rpxCalcIncludeWidth": 750,
+		"ignoreBaseWidth": false
 	},
 	"tabBar": {
 		"color": "#7A7E83",
@@ -240,7 +241,7 @@ uni-app 2.9+ 新增 leftWindow, topWindow, rightWindow 配置。用于解决宽�
 # pages
 
 `uni-app` 通过 pages 节点配置应用由哪些页面组成，pages 节点接收一个数组，数组每个项都是一个对象，其属性值如下：
- 
+
 |属性|类型|默认值|描述|
 |:-|:-|:-|:-|
 |path|String||配置页面路径|
@@ -257,16 +258,16 @@ uni-app 2.9+ 新增 leftWindow, topWindow, rightWindow 配置。用于解决宽�
 开发目录为：
 <pre v-pre="" data-lang="">
 	<code class="lang-" style="padding:0">
-┌─pages               
+┌─pages
 │  ├─index
-│  │  └─index.vue    
+│  │  └─index.vue
 │  └─login
-│     └─login.vue    
-├─static             
-├─main.js       
-├─App.vue          
-├─manifest.json  
-└─pages.json            
+│     └─login.vue
+├─static
+├─main.js
+├─App.vue
+├─manifest.json
+└─pages.json
 	</code>
 </pre>
 
@@ -276,10 +277,10 @@ uni-app 2.9+ 新增 leftWindow, topWindow, rightWindow 配置。用于解决宽�
 {
     "pages": [
         {
-            "path": "pages/index/index", 
+            "path": "pages/index/index",
             "style": { ... }
         }, {
-            "path": "pages/login/login", 
+            "path": "pages/login/login",
             "style": { ... }
         }
     ]
@@ -358,7 +359,7 @@ uni-app 2.9+ 新增 leftWindow, topWindow, rightWindow 配置。用于解决宽�
         </view>
         <view> 状态栏下的文字 </view>
     </view>
-</template>    
+</template>
 <style>
     .status_bar {
         height: var(--status-bar-height);
@@ -378,7 +379,7 @@ uni-app 2.9+ 新增 leftWindow, topWindow, rightWindow 配置。用于解决宽�
 	* titleNView：给原生导航栏提供更多配置，包括自定义按钮、滚动渐变效果、搜索框等，详见[titleNView](/collocation/pages?id=app-titleNView)
 	* subNView：使用nvue原生渲染，所有布局自己开发，具备一切自定义灵活度。详见[subNVue](/collocation/pages?id=app-subNVues)
 - 页面禁用原生导航栏后，想要改变状态栏的前景字体样式，仍可设置页面的 navigationBarTextStyle 属性（只能设置为 black或white）。如果想单独设置状态栏颜色，App端可使用[plus.navigator.setStatusBarStyle](http://www.html5plus.org/doc/zh_cn/navigator.html#plus.navigator.setStatusBarStyle)设置。注意部分低端Android手机（4.4）自身不支持设置状态栏前景色。
- 
+
 鉴于以上问题，在原生导航能解决业务需求的情况下，尽量使用原生导航。甚至有时需要牺牲一些不是很重要的需求。在App和H5下，uni-app提供了灵活的处理方案：[titleNView](/collocation/pages?id=app-titleNView)、[subNVue](/collocation/pages?id=app-subNVues)、或整页使用nvue。但在小程序下，因为其自身的限制，没有太好的方案。有必要的话，也可以用条件编译分端处理。
 
 ### app-plus
@@ -853,7 +854,7 @@ h5 平台下拉刷新动画，只有 circle 类型。
 	export default {
 		data() {
 			return {
-				
+
 			}
 		}
 	}
@@ -1054,7 +1055,7 @@ subPackages 节点接收一个数组，数组每一项都是应用的子包，�
 |root|String|是|子包的根目录|
 |pages|Array|是|子包由哪些页面组成，参数同 [pages](/collocation/pages?id=pages)|
 
-**注意：** 
+**注意：**
 
 - ```subPackages``` 里的pages的路径是 ``root`` 下的相对路径，不是全路径。
 - 微信小程序每个分包的大小是2M，总体积一共不能超过16M。
@@ -1073,24 +1074,24 @@ subPackages 节点接收一个数组，数组每一项都是应用的子包，�
 假设支持分包的 ```uni-app``` 目录结构如下：
 <pre v-pre="" data-lang="">
 	<code class="lang-" style="padding:0">
-┌─pages               
+┌─pages
 │  ├─index
-│  │  └─index.vue    
+│  │  └─index.vue
 │  └─login
-│     └─login.vue    
-├─pagesA   
+│     └─login.vue
+├─pagesA
 │  ├─static
 │  └─list
-│     └─list.vue 
-├─pagesB    
+│     └─list.vue
+├─pagesB
 │  ├─static
 │  └─detail
-│     └─detail.vue  
-├─static             
-├─main.js       
-├─App.vue          
-├─manifest.json  
-└─pages.json            
+│     └─detail.vue
+├─static
+├─main.js
+├─App.vue
+├─manifest.json
+└─pages.json
 	</code>
 </pre>
 
@@ -1131,7 +1132,7 @@ subPackages 节点接收一个数组，数组每一项都是应用的子包，�
 }
 ```
 
-# preloadRule 
+# preloadRule
 
 分包预载配置。
 
