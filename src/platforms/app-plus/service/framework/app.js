@@ -86,7 +86,7 @@ function initGlobalListeners () {
   })
 
   plus.globalEvent.addEventListener('netchange', () => {
-    const networkType = NETWORK_TYPES[plus.networkinfo.getCurrentType()]
+    const networkType = NETWORK_TYPES[plus.networkinfo.getCurrentType()] || 'unknown'
     publish('onNetworkStatusChange', {
       isConnected: networkType !== 'none',
       networkType
