@@ -743,9 +743,10 @@ fieldRules内配置如下，数组内可以配置多个rule，每个rule都有ru
 rule表达式，是一组js，返回值必须为true或false。返回false则触发提示错误，错误提示显示的是errorMessage的内容。
 
 rule表达式里支持：
+
 1. 字段名称
 2. 字段的聚合运算方法
-3. js语法和基本内置对象，如new date()，以及三目运算符、正则表达式
+3. js语法和基本内置对象，一般来说仅需使用`new Date()`来获取云端的时间，暂不支持`Date.now()、Math`。需要注意的是不同于聚合运算符，js内置方法不可传入数据库字段作为参数
 
 上述配置中，`end_date`为字段名称。schema内也支持写字段操作方法，如add方法。
 
@@ -782,6 +783,7 @@ rule表达式里支持：
 
 - 新增/更新数据时会校验所有新增/更新字段相关联的fieldRules。如上述规则中，如果更新`end_date`字段或者`create_date`字段均会触发校验
 - 新增数据时不需要查库进行校验，更新数据时需要进行一次查库校验（有多条fieldRules时也是一次）
+- fieldRules内不支持使用正则
 
 #### 4. errorMessage自定义错误提示@errormessage
 
