@@ -55,7 +55,7 @@
 
 HBuilderX中运行前端项目，在控制台选择连接本地云函数，此时本地编写的schema可直接生效，无需上传。方便编写调试。
 
-### Schema的一级节点
+### Schema的一级节点@schema-root
 ```json
 {
 	"bsonType": "object", // 固定节点
@@ -66,7 +66,7 @@ HBuilderX中运行前端项目，在控制台选择连接本地云函数，此�
 		"create": false, // 前端非admin的新增记录权限控制。默认值是false，即可以不写。可以简单的true/false，也可以写表达式 
 		"update": false, // 前端非admin的更新记录权限控制。默认值是false，即可以不写。可以简单的true/false，也可以写表达式
 		"delete": false, // 前端非admin的删除记录权限控制。默认值是false，即可以不写。可以简单的true/false，也可以写表达式
-		"count": false // 前端非admin的求数权限控制。默认值是false，即可以不写。可以简单的true/false，也可以写表达式
+		"count": false // 前端非admin的求数权限控制。默认值是true，即可以不写。可以简单的true/false，也可以写表达式
 	},
 	"properties": { // 表的字段清单
 		"_id": { // 字段名称，每个表都会带有_id字段
@@ -79,6 +79,10 @@ HBuilderX中运行前端项目，在控制台选择连接本地云函数，此�
 	]
 }
 ```
+
+**注意**
+
+- 对数据进行数量统计时（包括count方法、及groupField内的count操作）均会同时触发表级的count权限及read权限
 
 ### 字段的属性清单@segment
 
