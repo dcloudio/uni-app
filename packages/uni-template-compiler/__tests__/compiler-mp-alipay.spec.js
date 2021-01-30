@@ -103,6 +103,10 @@ describe('mp:compiler-mp-alipay', () => {
       '<view class="{{(((\'static _p\')+\' \'+((isActive)?\'active\':\'\'))+\' \'+errorClass)}}">5</view>'
     )
     assertCodegen(
+      '<p class="static" :class="[{ active: isActive, disabled: isDisabled }, errorClass]">52</p>',
+      '<view class="{{(((\'static _p\')+\' \'+(((isActive)?\'active\':\'\')+\' \'+((isDisabled)?\'disabled\':\'\')))+\' \'+errorClass)}}">52</view>'
+    )
+    assertCodegen(
       '<div class="container" :class="computedClassObject">6</div>',
       '<view class="{{((\'container _div\')+\' \'+computedClassObject)}}">6</view>'
     )
