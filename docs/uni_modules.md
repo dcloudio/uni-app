@@ -32,7 +32,7 @@ uni_modules                                项目根目录下
 **Tips**
 - 插件目录不支持pages.json、App.vue、main.js、manifest.json、uni.scss文件，如果需要插件使用者修改这些文件内容，请在插件文档(readme.md)中详细说明。
 - 在插件内部引用资源、跳转页面时，请尽量使用相对路径。
-- 插件内components目录同样支持easycom规范，插件使用者可以直接在项目中使用插件内符合easycom规范的组件。
+- 插件内components目录同样支持easycom规范，插件使用者可以直接在项目中使用插件内符合easycom规范的组件，当项目或插件内存在easycom组件冲突，编译时会给予提示，您可以通过修改组件目录及组件文件名称来解决冲突问题。
 ### 配置
 #### package.json
 
@@ -132,6 +132,13 @@ uni_modules.config.json在项目根目录，可以配置插件更新后的触发
 	}
 }
 ```
+
+**Tips**
+- 当项目内仅关联了一个服务空间，此时uni_modules插件内的uniCloud相关资源会自动归属与该服务空间，无需在uni_modules.config.json中配置uniCloud所属服务空间
+- 当项目内关联了两个服务空间（阿里云和腾讯云同时存在）
+  * 若未在uni_modules.config.json中配置平台，则上传该插件uniCloud资源时，会提示上传至选择哪个服务空间
+  * 若已在uni_modules.config.json中配置平台，则上传时以配置为准，自动归属至支持的服务空间
+
 
 ### 开发 uni_modules 插件
 #### 新建uni_modules目录
