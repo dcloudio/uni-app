@@ -192,6 +192,28 @@ uniCloud.getTempFileURL({
 
 选择文件/图片/视频并上传。
 
+#### 客户端平台兼容性
+
+此接口根据type不同接收兼容性也略有差异
+
+**选择图片，type:'image'**
+
+|App|H5	|微信小程序	|支付宝小程序	  |百度小程序	|字节小程序	|QQ小程序	|
+|:-:|:-:|:-:				|:-:					|:-:				|:-:				|:-:			|
+|√	|√	|√					|√						|√					|√					|√				|
+
+**选择视频，type:'video'**
+
+|App|H5	|微信小程序	|支付宝小程序	  |百度小程序	|字节小程序	|QQ小程序	|
+|:-:|:-:|:-:				|:-:					|:-:				|:-:				|:-:			|
+|√	|√	|√					|√						|√					|√					|√				|
+
+**选择任意文件，type:'all'**
+
+|App|H5	|微信小程序								|支付宝小程序	|百度小程序	|字节小程序	|QQ小程序	|
+|:-:|:-:|:-:											|:-:					|:-:				|:-:				|:-:			|
+|×	|√	|√（仅支持选择聊天文件）	|×						|×					|×					|×				|
+
 #### 请求参数
 
 此接口根据type不同接收不同参数
@@ -201,7 +223,7 @@ uniCloud.getTempFileURL({
 |字段				|类型		|必填	|说明																															|
 |:-:				|:-:		|----	|:-:																															|
 |type				|String	|是		|文件类型，image（图片）、video（视频）、all（任意文件）					|
-|count			|Number	|否		|文件数量																													|
+|count			|Number	|否		|文件数量，默认9																													|
 |extension	|Array	|否		|文件后缀																													|
 |sizeType		|Array	|否		|original 原图，compressed 压缩图，默认二者都有，type为image时生效|
 |sourceType	|Array	|否		|album 从相册选图，camera 使用相机，默认二者都有									|
@@ -224,6 +246,11 @@ uniCloud.getTempFileURL({
 |count		|Number	|否		|文件数量																								|
 |extension|Array	|否		|文件后缀																								|
 
+**说明**
+
+- 选择视频时没有count参数，表现为一次仅能选择一个
+- count 值在 H5 平台的表现，基于浏览器本身的规范。目前测试的结果来看，只能限制单选/多选，并不能限制数量。并且，在实际的手机浏览器很少有能够支持多选的。
+
 #### 回调方法
 
 **onChooseFile(Object OnChooseFileRes)**
@@ -239,6 +266,70 @@ OnChooseFileRes结构如下
   tempFiles: [] // 临时文件组成的数组
 }
 ```
+
+如果onChooseFile回调有返回值，此返回值会用来替换实际选择的文件，用以上传。可以在此回调内对文件进行额外的处理，通过在onChooseFile内返回一个promise来阻塞上传，在此期间可以对文件进行额外处理。
+
+例：
+
+```js
+function cropImg(file) {
+  return new Promise((resolve, reject) => {
+    let ext
+    let filePathProcessed = file.path // 处理结果
+    // #ifdef H5
+    ext = file.name.split('.').pop()
+    resolve({
+      path: filePathProcessed,
+      ext,
+      fileType: file.fileType
+    })
+    // #endif
+    // #ifndef H5
+    uni.getImageInfo({
+      src: file.path,
+      success(info) {
+        ext = info.type.toLowerCase()
+        resolve({
+          path: filePathProcessed,
+          ext,
+          fileType: file.fileType
+        })
+      },
+      fail(err) {
+        reject(new Error(err.errMsg || '未能获取图片类型'))
+      }
+    })
+    // #endif
+  })
+}
+
+uniCloud.chooseAndUploadFile({
+  type: 'image',
+  onChooseFile(res) {
+    const processAll = []
+    for (let i = 0; i < res.tempFiles.length; i++) {
+      processAll.push(cropImg(res.tempFiles[i]))
+    }
+    return Promise.all(processAll).then((fileList) => {
+      let result = {
+        tempFilePaths: []
+      }
+      result.tempFiles = fileList.map((fileItem, index) => {
+        result.tempFilePaths.push(fileItem.path)
+        return {
+          path: fileItem.path,
+          cloudPath: '' + Date.now() + index + '.' + fileItem.ext, // 云端路径，这里随便生成了一个
+          fileType: fileItem.fileType
+        }
+      })
+      return result
+    })
+  }
+}).then(res => {
+  console.log(res)
+})
+```
+
 
 **OnUploadProgress(Object OnUploadProgressRes)**
 
