@@ -1831,7 +1831,7 @@ exports.main = async (event) => {
           })
           const aaaEndRes = await transaction.collection('account').doc('aaa').get()
           if (aaaEndRes.data.amount < 0) { // 请注意transaction.doc().get()返回的data不是数组形式
-            transaction.rollback(-100)
+            await transaction.rollback(-100)
           }
           // 会作为 runTransaction resolve 的结果返回
           return {
@@ -1914,7 +1914,7 @@ exports.main = async (event) => {
       
       const aaaEndRes = await transaction.collection('account').doc('aaa').get()
       if (aaaEndRes.data.amount < 0) { // 请注意transaction.doc().get()返回的data不是数组形式
-        transaction.rollback(-100)
+        await transaction.rollback(-100)
         return {
           success: false,
           error: `rollback`,
