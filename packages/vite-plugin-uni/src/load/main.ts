@@ -19,7 +19,7 @@ export const main = {
     if (!pagesJsPath) {
       pagesJsPath = slash(path.resolve(options.inputDir, 'pages.json.js'))
     }
-    return `import '@dcloudio/uni-h5/style/base.css';import '${pagesJsPath}';${fs
+    return `import '${pagesJsPath}';${fs
       .readFileSync(filename, 'utf-8')
       .toString()}`
   },

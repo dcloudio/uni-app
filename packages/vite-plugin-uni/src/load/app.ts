@@ -12,9 +12,7 @@ export const app = {
     return id === appVuePath
   },
   load(filename: string, _options: VitePluginUniResolvedOptions) {
-    // TODO 等待plugin-vue修复node_modules中资源引用失败的Bug
-    // <style src="@dcloudio/uni-h5/style/base.css"/>
-    return `<template><VUniApp/></template>${fs
+    return `<template><VUniApp/></template><style src="@dcloudio/uni-h5/style/base.css"/>${fs
       .readFileSync(filename, 'utf-8')
       .toString()}`
   },
