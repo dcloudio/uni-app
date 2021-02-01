@@ -1346,7 +1346,7 @@ db.collection("department").get({
 
 分组统计有groupBy和groupField。和传统sql略有不同，传统sql没有单独的groupField。
 
-JQL的groupField里不能直接写field字段，只能使用[累计器操作符](uniCloud/clientdb.md?id=accumulator)来处理字段，常见的累积器计算符包括：count(*)、sum(字段名称)、avg(字段名称)。更多累计器操作符[详见](uniCloud/clientdb.md?id=accumulator)
+JQL的groupField里不能直接写field字段，只能使用[分组运算方法](uniCloud/clientdb.md?id=accumulator)来处理字段，常见的累积器计算符包括：count(*)、sum(字段名称)、avg(字段名称)。更多分组运算方法[详见](uniCloud/clientdb.md?id=accumulator)
 
 其中count(*)是固定写法。
 
@@ -1414,7 +1414,7 @@ const res = await db.collection('table1').groupBy('field1,field2').groupField('s
 
 groupBy内也可以使用数据库运算方法对数据进行处理，为方便书写，clientDB内将数据库运算方法的用法进行了简化（相对于云函数内使用数据库运算方法而言）。用法请参考：[数据库运算方法](uniCloud/clientdb.md?id=aggregate-operator)
 
-groupField内可以使用累计器操作符对分组结果进行统计，所有可用的累计方法请参考[累计器操作符](uniCloud/clientdb.md?id=accumulator)，下面以sum（求和）和avg（求均值）为例介绍如何使用
+groupField内可以使用分组运算方法对分组结果进行统计，所有可用的累计方法请参考[分组运算方法](uniCloud/clientdb.md?id=accumulator)，下面以sum（求和）和avg（求均值）为例介绍如何使用
 
 使用sum方法可以对数据进行求和统计。以上述数据为例，如下写法对不同班级进行分数统计
 
@@ -2558,6 +2558,8 @@ module.exports = {
 
 ## 可用数据库运算方法列表@aggregate-operator
 
+**等同于mongoDB聚合操作符概念**
+
 为方便书写，clientDB内将数据库运算方法的用法进行了简化（相对于云函数内使用数据库运算方法而言），主要是参数摊平。以下是可以在clientDB中使用的数据库运算方法
 
 |操作符						|详细文档（云函数内用法）																			|JQL简化用法																																								|说明																									|
@@ -2707,9 +2709,11 @@ res = {
 }
 ```
 
-### 累计器操作符@accumulator
+### 分组运算方法@accumulator
 
-累计器操作符一般用于统计汇总，一般在groupField内使用
+**等同于mongoDB累计器操作符概念**
+
+分组运算方法一般用于统计汇总，一般在groupField内使用
 
 |操作符				|详细文档																								|用法										|说明																|
 |---					|---																										|---										|---																|
