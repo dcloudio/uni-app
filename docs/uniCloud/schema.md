@@ -726,7 +726,7 @@ if (uni) {
 
 自`HBuilderX 3.1.0`起，支持schema内配置一级节点fieldRules对字段之间的关系进行约束和校验。当然只校验一个字段也可以。
 
-fieldRules的写法等同JQL的where写法（也可以使用各种聚合操作符），参考：[clientDB where](uniCloud/clientdb.md?id=where)
+fieldRules的写法等同JQL的where写法（也可以使用各种数据库运算方法），参考：[clientDB where](uniCloud/clientdb.md?id=where)
 
 fieldRules内配置如下，数组内可以配置多个rule，每个rule都有rule表达式、错误提示语、运行兼容环境这3部分。
 
@@ -745,8 +745,9 @@ rule表达式，是一组js，返回值必须为true或false。返回false则触
 rule表达式里支持：
 
 1. 字段名称
-2. 字段的聚合运算方法
-3. js语法和基本内置对象，一般来说仅需使用`new Date()`来获取云端的时间，暂不支持`Date.now()、Math`。需要注意的是不同于聚合运算符，js内置方法不可传入数据库字段作为参数
+2. 数据库运算方法
+3. js语法
+4. 另外还支持`new Date()`来获取时间。需要注意的是不同于数据库运算方法，`new Date()`内不可传入数据库字段作为参数
 
 上述配置中，`end_date`为字段名称。schema内也支持写字段操作方法，如add方法。
 

@@ -591,7 +591,7 @@ where内还支持使用云端环境变量，详情参考：[云端环境变量](
 
 > HBuilderX 3.1.0起支持
 
-复杂查询对应着[聚合操作符](uniCloud/clientdb.md?id=aggregate-operator)。需要注意的是，与云函数内使用聚合操作符不同jql内对聚合操作符的用法进行了简化。
+复杂查询内可以使用[数据库运算方法](uniCloud/clientdb.md?id=aggregate-operator)。需要注意的是，与云函数内使用聚合操作符不同jql内对数据库运算方法的用法进行了简化。
 
 例：数据表test内有以下数据
 
@@ -778,9 +778,9 @@ db.collection('order,book')
 
 ### 对字段操作后返回@operator
 
-自`HBuilderX 3.1.0`起，clientDB支持对字段进行一定的操作之后再返回，详细可用的方法列表请参考：[聚合操作符](uniCloud/clientdb.md?id=aggregate-operator)
+自`HBuilderX 3.1.0`起，clientDB支持对字段进行一定的操作之后再返回，详细可用的方法列表请参考：[数据库运算方法](uniCloud/clientdb.md?id=aggregate-operator)
 
-> 需要注意的是，为方便书写，clientDB内将聚合操作符的用法进行了简化（相对于云函数内使用聚合操作符而言）。用法请参考上述链接
+> 需要注意的是，为方便书写，clientDB内将数据库运算方法的用法进行了简化（相对于云函数内使用数据库运算方法而言）。用法请参考上述链接
 
 例：数据表class内有以下数据
 
@@ -1412,7 +1412,7 @@ const res = await db.collection('table1').groupBy('field1,field2').groupField('s
 
 #### 求和、求均值示例
 
-groupBy内也可以使用聚合操作符对数据进行处理，为方便书写，clientDB内将聚合操作符的用法进行了简化（相对于云函数内使用聚合操作符而言）。用法请参考：[聚合操作符](uniCloud/clientdb.md?id=aggregate-operator)
+groupBy内也可以使用数据库运算方法对数据进行处理，为方便书写，clientDB内将数据库运算方法的用法进行了简化（相对于云函数内使用数据库运算方法而言）。用法请参考：[数据库运算方法](uniCloud/clientdb.md?id=aggregate-operator)
 
 groupField内可以使用累计器操作符对分组结果进行统计，所有可用的累计方法请参考[累计器操作符](uniCloud/clientdb.md?id=accumulator)，下面以sum（求和）和avg（求均值）为例介绍如何使用
 
@@ -1668,7 +1668,7 @@ res = {
 }
 ```
 
-完整聚合操作符列表请参考：[clientDB内可使用的聚合操作符](uniCloud/clientdb.md?id=aggregate-operator)
+完整数据库运算方法列表请参考：[clientDB内可使用的数据库运算方法](uniCloud/clientdb.md?id=aggregate-operator)
 
 #### count权限控制
 
@@ -2556,9 +2556,9 @@ module.exports = {
 
 **如需在before和after内传参，建议直接在state上挂载。但是切勿覆盖上述属性**
 
-## 可用聚合操作符列表@aggregate-operator
+## 可用数据库运算方法列表@aggregate-operator
 
-为方便书写，clientDB内将聚合操作符的用法进行了简化（相对于云函数内使用聚合操作符而言），主要是参数摊平。以下是可以在clientDB中使用的聚合操作符
+为方便书写，clientDB内将数据库运算方法的用法进行了简化（相对于云函数内使用数据库运算方法而言），主要是参数摊平。以下是可以在clientDB中使用的数据库运算方法
 
 |操作符						|详细文档（云函数内用法）																			|JQL简化用法																																								|说明																									|
 |---							|---																													|---																																												|---																									|
