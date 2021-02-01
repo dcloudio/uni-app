@@ -34,7 +34,7 @@
   * [发送短信](uniCloud/send-sms.md)
   * [uni一键登录](uniCloud/univerify.md)
   * [云端一体搜索](https://ext.dcloud.net.cn/plugin?id=3851)
-  * [uni-captcha](https://ext.dcloud.net.cn/plugin?id=4048)
+  * [uni-captcha图形验证码](https://ext.dcloud.net.cn/plugin?id=4048)
 * [前端网页托管](uniCloud/hosting.md)
 * [日志输出](uniCloud/cf-logger.md)
 * [同时连多服务空间](uniCloud/init.md)
