@@ -314,6 +314,7 @@ udb为unicloud-db组件的ref属性值
 
 |属性|类型|默认值|描述|
 |:-|:-|:-|:-|
+|action|string||云端执行数据库查询的前或后，触发某个action函数操作，进行预处理或后处理，详情。场景：前端无权操作的数据，比如阅读数+1|
 |confirmTitle|string|提示|删除确认框标题|
 |confirmContent|string|是否删除该数据|删除确认框提示|
 |success|function||删除成功后的回调|
@@ -409,6 +410,7 @@ udb为unicloud-db组件的ref属性值
 
 |属性|类型|默认值|描述|
 |:-|:-|:-|:-|
+|action|string||云端执行数据库查询的前或后，触发某个action函数操作，进行预处理或后处理，详情。HBuilder 3.1.0+|
 |toastTitle|string|新增成功|新增成功后的toast提示|
 |success|function||新增成功后的回调|
 |fail|function||新增失败后的回调|
@@ -468,6 +470,7 @@ udb为unicloud-db组件的ref属性值
 
 |属性|类型|默认值|描述|
 |:-|:-|:-|:-|
+|action|string||云端执行数据库查询的前或后，触发某个action函数操作，进行预处理或后处理，详情。HBuilder 3.1.0+|
 |toastTitle|string|修改成功|修改成功后的toast提示|
 |success|function||更新成功后的回调|
 |fail|function||更新失败后的回调|
