@@ -180,6 +180,8 @@ module.exports = function getSplitChunks () {
               }
               return true
             }
+          } else {
+            return hasMainPackageComponent(m.module, subPackageRoot)
           }
         }
       }
