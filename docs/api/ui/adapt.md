@@ -7,7 +7,7 @@
 
 获取 topWindow 的样式
 
-> 未发布
+> 3.1.0 新增
 
 **平台差异说明**
 
@@ -25,7 +25,7 @@ uni.getTopWindowStyle()
 
 获取 leftWindow 的样式
 
-> 未发布
+> 3.1.0 新增
 
 **平台差异说明**
 
@@ -43,7 +43,7 @@ uni.getLeftWindowStyle()
 
 获取 rightWindow 的样式
 
-> 未发布
+> 3.1.0 新增
 
 **平台差异说明**
 
