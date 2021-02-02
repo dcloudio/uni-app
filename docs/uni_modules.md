@@ -1,18 +1,29 @@
 # uni_modules
 
 ### 什么是 uni_modules
-uni_modules是uni-app的插件模块化规范（HBuilderX 3.1.0+支持），通常是对一组js sdk、组件、页面、uniCloud云函数、数据库等的封装，用于嵌入到uni-app项目中使用，也支持直接封装为项目模板；适合用来封装特定的功能或服务，提供给第三方开发者使用。
+`uni_modules`是uni-app的插件模块化规范（HBuilderX 3.1.0+支持），通常是对一组js sdk、组件、页面、uniCloud云函数、公共模块等的封装，用于嵌入到uni-app项目中使用，也支持直接封装为项目模板。
 
-插件开发者可以像开发uni-app项目一样编写一个uni_modules插件并上传至[插件市场](https://ext.dcloud.net.cn/)，发布后，其他开发者可以免费或付费使用。
+插件开发者，可以像开发uni-app项目一样编写一个`uni_modules`插件，并在HBuilderX中直接上传至[插件市场](https://ext.dcloud.net.cn/)。
 
-插件使用者可以在[插件市场](https://ext.dcloud.net.cn/)查找符合自己需求的uni_modules插件，使用HBuilderX 3.1.0+直接导入到自己的uni-app项目中。
+插件使用者，可以在[插件市场](https://ext.dcloud.net.cn/)查找符合自己需求的`uni_modules`插件，使用HBuilderX 3.1.0+直接导入到自己的uni-app项目中。后续还可以在HBuilderX中直接点右键升级插件。
 
-相对于普通的插件，uni_modules插件拥有更强的独立性，拥有独立的目录结构，可以更加方便的发布，更新，卸载（HBuilderX 3.1.0+对uni_modules插件提供了右键菜单，支持发布，更新，安装依赖等）
+相对于普通的插件，`uni_modules`插件拥有更强的独立性，拥有独立的目录结构，可以更加方便的发布，更新，卸载（HBuilderX 3.1.0+对`uni_modules`插件提供了右键菜单，支持发布，更新，安装依赖等）
 
-相对于node_modules（node.js模块），uni_modules的三方依赖安装时默认最新版本，插件均直接安装在uni_modules目录下，不做嵌套，当然，如果开发者希望固定某个版本的依赖，可以将该三方依赖包含到自己的插件包内。
+相对于node_modules（node.js模块），`uni_modules`的三方依赖安装时默认最新版本，插件均直接安装在`uni_modules`目录下，不做嵌套，当然，如果开发者希望固定某个版本的依赖，可以将该三方依赖包含到自己的插件包内。
+
+为什么有了`node_modules`，还需要再发明一个`uni_modules`的轮子？
+1. `node_modules` 不满足云端一体的需求。uniCloud的云函数、公共模块、schema和前端的各种js_sdk、组件、页面、项目，无法在`node_modules`模式下有效融合。
+2. `uni_modules`有付费和商业的插件，DCloud插件市场提供了版权保护。而`node_modules`不支持付费和版权保护。
+3. `node_modules` 是开发者友好而影响终端用户性能的模式。开发者为了省事，层层嵌套`node_modules`，造成数量惊人的文件数目。`uni_modules`不支持module嵌套，鼓励开发者优化包体积
+4. `uni_modules`鼓励开发者总是使用最新版。并在HBuilderX中提供了版本内容对比工具
+
+与之前插件市场的普通插件相比，`uni_modules`有何优势？
+1. 支持在HBuilderX里直接发布、更新、删除
+2. 支持依赖（在package.json中配置）
+3. 插件文件位置统一，不会造成下载一个插件，不知道给工程下多少个目录写入了多少个文件。删除插件时也可以一点删除
 
 ### 目录结构
-一个uni_modules插件，可以包含如下目录及文件：
+一个`uni_modules`插件，可以包含如下目录及文件：
 <pre v-pre="" data-lang="">
 	<code class="lang-" style="padding:0">
 uni_modules                                项目根目录下
@@ -36,7 +47,7 @@ uni_modules                                项目根目录下
 ### 配置
 #### package.json
 
-package.json在每个uni_modules插件中都必须存在，包含了插件的基本信息。以下是package.json的详细配置说明
+package.json在每个`uni_modules`插件中都必须存在，包含了插件的基本信息。以下是package.json的详细配置说明
 ```json
 {
     // 注意，不能直接拷贝本段代码到编辑器中，package.json 目前不支持注释。本段代码加的注释只是用于解释代码。
@@ -119,7 +130,7 @@ package.json在每个uni_modules插件中都必须存在，包含了插件的基
 - 上述配置基于npm [package.json](https://docs.npmjs.com/cli/v6/configuring-npm/package-json)规范扩展，故标准的package.json属性也同样支持，比如可以通过files来控制要上传的插件包内容
 
 #### uni_modules.config.json
-uni_modules.config.json在项目根目录，可以配置插件更新后的触发脚本（通常用于执行自定义的自动化任务），插件uniCloud支持的服务空间。以下是uni_modules.config.json的详细配置说明
+`uni_modules.config.json`在项目根目录，可以配置插件更新后的触发脚本（通常用于执行自定义的自动化任务），插件uniCloud支持的服务空间。以下是`uni_modules.config.json`的详细配置说明
 ```json
 {
 	"scripts": {
@@ -158,7 +169,7 @@ uni_modules.config.json在项目根目录，可以配置插件更新后的触发
 - 插件名称需直观表达插件的作用，例如：tag、button等
 
 **Tips**
-- uni_modules插件可以在package.json的`uni_modules->dependencies`节点配置三方依赖（依赖的插件也必须是uni_modules插件），如果是依赖了三方的npm插件，可以使用标准的dependencies节点配置。
+- `uni_modules`插件可以在package.json的`uni_modules->dependencies`节点配置三方依赖（依赖的插件也必须是`uni_modules`插件），如果是依赖了三方的npm插件，可以使用标准的dependencies节点配置。
 
 #### 发布到插件市场
 当您的插件开发完毕，可以直接发布到[插件市场](https://ext.dcloud.net.cn/)供其他人免费或付费使用，插件市场提供了变现、评价等机制，优秀的插件作者，可以做到月入好几万。
