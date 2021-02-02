@@ -1,5 +1,6 @@
 import {
-  invoke
+  invoke,
+  remove
 } from 'uni-core/service/bridge'
 
 import {
@@ -15,5 +16,12 @@ onMethod('onKeyboardHeightChange', res => {
 })
 
 export function onKeyboardHeightChange (callbackId) {
+  // 与微信小程序一致仅保留最后一次监听
+  remove(callback)
   callback = callbackId
+}
+
+export function offKeyboardHeightChange () {
+  // 与微信小程序一致移除最后一次监听
+  callback = null
 }

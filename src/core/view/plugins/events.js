@@ -3,7 +3,7 @@ import {
 } from 'uni-shared'
 
 import {
-  normalizeDataset
+  getTargetDataset
 } from 'uni-helpers/index'
 
 import {
@@ -17,7 +17,7 @@ function processTarget (target, detail, checkShadowRoot = false) {
     id: target.id,
     offsetLeft: target.offsetLeft,
     offsetTop: target.offsetTop,
-    dataset: normalizeDataset(target.dataset)
+    dataset: getTargetDataset(target)
   }
   if (detail) {
     Object.assign(res, detail)

@@ -171,6 +171,9 @@ module.exports = function (pagesJson, userManifestJson, isAppView) {
     }
   }
 
+  // 全屏配置
+  manifestJson.fullscreen = manifestJson.plus.fullscreen
+
   // 地图坐标系
   if (manifestJson.permissions && manifestJson.permissions.Maps) {
     manifestJson.permissions.Maps.coordType = 'gcj02'
@@ -270,6 +273,8 @@ module.exports = function (pagesJson, userManifestJson, isAppView) {
   } else {
     appJson.nvueCompiler = 'weex'
   }
+
+  appJson.nvueStyleCompiler = process.env.UNI_USING_NVUE_STYLE_COMPILER ? 'uni-app' : 'weex'
 
   if (manifestJson.plus.renderer === 'native') {
     appJson.renderer = 'native'

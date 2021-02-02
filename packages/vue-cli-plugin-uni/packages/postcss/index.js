@@ -57,8 +57,8 @@ if (process.env.UNI_USING_V3) {
     )
   }
 
-  const tranformValue = function (decl, opts) {
-    return valueParser(decl.value)
+  const tranformValue = function (value, opts) {
+    return valueParser(value)
       .walk(node => {
         if (node.type === 'word') {
           parseWord(node, opts)
@@ -205,8 +205,14 @@ if (process.env.UNI_USING_V3) {
               }
             }
             // Transform each property declaration here
-            decl.value = tranformValue(decl, opts)
+            decl.value = tranformValue(decl.value, opts)
           })
+        })
+
+        root.walkAtRules(rule => {
+          if (rule.name === 'media') {
+            rule.params = tranformValue(rule.params, opts)
+          }
         })
 
         if (bgDecls.length) {
@@ -240,7 +246,7 @@ if (process.env.UNI_USING_V3) {
               }
             }
             // Transform each property declaration here
-            decl.value = tranformValue(decl, opts)
+            decl.value = tranformValue(decl.value, opts)
           })
           if (process.env.UNI_PLATFORM !== 'quickapp-native') {
             rule.selectors = rule.selectors.map(complexSelector => {

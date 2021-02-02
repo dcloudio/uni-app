@@ -231,7 +231,7 @@ const promiseInterceptor = {
 };
 
 const SYNC_API_RE =
-  /^\$|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
+  /^\$|Window$|WindowStyle$|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -527,6 +527,39 @@ var previewImage = {
   }
 };
 
+const UUID_KEY = '__DC_STAT_UUID';
+let deviceId;
+function addUuid (result) {
+  deviceId = deviceId || swan.getStorageSync(UUID_KEY);
+  if (!deviceId) {
+    deviceId = Date.now() + '' + Math.floor(Math.random() * 1e7);
+    swan.setStorage({
+      key: UUID_KEY,
+      data: deviceId
+    });
+  }
+  result.deviceId = deviceId;
+}
+
+function addSafeAreaInsets (result) {
+  if (result.safeArea) {
+    const safeArea = result.safeArea;
+    result.safeAreaInsets = {
+      top: safeArea.top,
+      left: safeArea.left,
+      right: result.windowWidth - safeArea.right,
+      bottom: result.windowHeight - safeArea.bottom
+    };
+  }
+}
+
+var getSystemInfo = {
+  returnValue: function (result) {
+    addUuid(result);
+    addSafeAreaInsets(result);
+  }
+};
+
 // 不支持的 API 列表
 const todos = [
   'preloadPage',
@@ -611,6 +644,8 @@ const protocols = {
   navigateTo,
   redirectTo,
   previewImage,
+  getSystemInfo,
+  getSystemInfoSync: getSystemInfo,
   getRecorderManager: {
     returnValue (fromRet) {
       fromRet.onFrameRecorded = createTodoMethod('RecorderManager', 'onFrameRecorded');
@@ -976,16 +1011,19 @@ function initHook (name, options) {
     };
   }
 }
+if (!MPPage.__$wrappered) {
+  MPPage.__$wrappered = true;
+  Page = function (options = {}) {
+    initHook('onLoad', options);
+    return MPPage(options)
+  };
+  Page.after = MPPage.after;
 
-Page = function (options = {}) {
-  initHook('onLoad', options);
-  return MPPage(options)
-};
-
-Component = function (options = {}) {
-  initHook('created', options);
-  return MPComponent(options)
-};
+  Component = function (options = {}) {
+    initHook('created', options);
+    return MPComponent(options)
+  };
+}
 
 const PAGE_EVENT_HOOKS = [
   'onPullDownRefresh',
@@ -1522,7 +1560,7 @@ function handleEvent (event) {
             }
             handler.once = true;
           }
-          const params = processEventArgs(
+          let params = processEventArgs(
             this.$vm,
             event,
             eventArray[1],
@@ -1530,9 +1568,13 @@ function handleEvent (event) {
             isCustom,
             methodName
           );
+          params = Array.isArray(params) ? params : [];
           // 参数尾部增加原始事件对象用于复杂表达式内获取额外数据
-          // eslint-disable-next-line no-sparse-arrays
-          ret.push(handler.apply(handlerCtx, (Array.isArray(params) ? params : []).concat([, , , , , , , , , , event])));
+          if (/=\s*\S+\.eventParams\s*\|\|\s*\S+\[['"]event-params['"]\]/.test(handler.toString())) {
+            // eslint-disable-next-line no-sparse-arrays
+            params = params.concat([, , , , , , , , , , event]);
+          }
+          ret.push(handler.apply(handlerCtx, params));
         }
       });
     }
@@ -1892,9 +1934,17 @@ function parseComponent (vueOptions) {
   // lifetimes:attached --> methods:onShow --> methods:onLoad --> methods:onReady
   // 这里在强制将onShow挪到onLoad之后触发,另外一处修改在page-parser.js
   const oldAttached = componentOptions.lifetimes.attached;
-  componentOptions.lifetimes.attached = function attached () {
+  // 百度小程序基础库 3.260 以上支持页面 onInit 生命周期，提前创建 vm 实例
+  componentOptions.lifetimes.onInit = function onInit (query) {
     oldAttached.call(this);
-    if (isPage.call(this)) { // 百度 onLoad 在 attached 之前触发
+    this.pageinstance.$vm = this.$vm;
+    this.$vm.__call_hook('onInit', query);
+  };
+  componentOptions.lifetimes.attached = function attached () {
+    if (!this.$vm) {
+      oldAttached.call(this);
+    }
+    if (isPage.call(this)) { // 百度 onLoad 在 attached 之前触发（基础库小于 3.70）
       // 百度 当组件作为页面时 pageinstancce 不是原来组件的 instance
       this.pageinstance.$vm = this.$vm;
       if (hasOwn(this.pageinstance, '_$args')) {
@@ -1981,11 +2031,6 @@ function parsePage (vuePageOptions) {
     initRelation
   });
 
-  const onInit = (vuePageOptions.default || vuePageOptions).onInit;
-  if (onInit) {
-    pageOptions.methods.onInit = onInit;
-  }
-
   // 纠正百度小程序生命周期methods:onShow在methods:onLoad之前触发的问题
   pageOptions.methods.onShow = function onShow () {
     if (this.$vm && this.$vm.$mp.query) {
@@ -1994,7 +2039,7 @@ function parsePage (vuePageOptions) {
   };
 
   pageOptions.methods.onLoad = function onLoad (query) {
-    // 百度 onLoad 在 attached 之前触发，先存储 args, 在 attached 里边触发 onLoad
+    // 百度 onLoad 在 attached 之前触发（基础库小于 3.70），先存储 args, 在 attached 里边触发 onLoad
     if (this.$vm) {
       const copyQuery = Object.assign({}, query);
       delete copyQuery.__id__;

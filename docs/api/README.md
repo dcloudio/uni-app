@@ -220,6 +220,7 @@ async function request () {
 |:-|:-|
 |[uni.getNetworkType](api/system/network?id=getnetworktype)|获取网络类型|
 |[uni.onNetworkStatusChange](api/system/network?id=onnetworkstatuschange)|监听网络状态变化|
+|[uni.offNetworkStatusChange](api/system/network?id=offnetworkstatuschange)|取消监听网络状态变化|
 ##### 加速度计
 
 |API|说明|

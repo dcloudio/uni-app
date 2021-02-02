@@ -27,13 +27,19 @@ module.exports = (api, options) => {
       '--watch': 'watch for changes',
       '--minimize': 'Tell webpack to minimize the bundle using the TerserPlugin.',
       '--auto-host': 'specify automator host',
-      '--auto-port': 'specify automator port'
+      '--auto-port': 'specify automator port',
+      '--subpackage': 'specify subpackage'
     }
   }, async (args) => {
     for (const key in defaults) {
       if (args[key] == null) {
         args[key] = defaults[key]
       }
+    }
+
+    const platforms = ['mp-weixin', 'mp-qq', 'mp-baidu', 'mp-alipay', 'mp-toutiao']
+    if (args.subpackage && platforms.includes(process.env.UNI_PLATFORM)) {
+      process.env.UNI_SUBPACKGE = args.subpackage
     }
 
     require('./util').initAutomator(args)

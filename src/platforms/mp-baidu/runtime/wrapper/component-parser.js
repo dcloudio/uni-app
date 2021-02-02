@@ -25,9 +25,17 @@ export default function parseComponent (vueOptions) {
   // lifetimes:attached --> methods:onShow --> methods:onLoad --> methods:onReady
   // 这里在强制将onShow挪到onLoad之后触发,另外一处修改在page-parser.js
   const oldAttached = componentOptions.lifetimes.attached
-  componentOptions.lifetimes.attached = function attached () {
+  // 百度小程序基础库 3.260 以上支持页面 onInit 生命周期，提前创建 vm 实例
+  componentOptions.lifetimes.onInit = function onInit (query) {
     oldAttached.call(this)
-    if (isPage.call(this)) { // 百度 onLoad 在 attached 之前触发
+    this.pageinstance.$vm = this.$vm
+    this.$vm.__call_hook('onInit', query)
+  }
+  componentOptions.lifetimes.attached = function attached () {
+    if (!this.$vm) {
+      oldAttached.call(this)
+    }
+    if (isPage.call(this)) { // 百度 onLoad 在 attached 之前触发（基础库小于 3.70）
       // 百度 当组件作为页面时 pageinstancce 不是原来组件的 instance
       this.pageinstance.$vm = this.$vm
       if (hasOwn(this.pageinstance, '_$args')) {

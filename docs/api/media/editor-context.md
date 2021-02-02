@@ -231,3 +231,64 @@ editor 组件对应的 editorContext 实例，可通过 [uni.createSelectorQuery
 | success | Function |  | 否 | 接口调用成功的回调函数 |
 | fail | Function |  | 否 | 接口调用失败的回调函数 |
 | complete | Function |  | 否 | 接口调用结束的回调函数（调用成功、失败都会执行） |
+
+## editorContext.blur(OBJECT)
+
+编辑器失焦，同时收起键盘。
+
+**平台差异说明**
+
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|√`HBuilderX 3.0.3`|√`HBuilderX 3.0.3`|√`基础库2.8.3`|x|x|x|x|
+
+**OBJECT 参数说明**
+
+| 属性 | 类型 | 默认值 | 必填 | 说明 |
+| --- | --- | --- | --- | --- |
+| success | Function |  | 否 | 接口调用成功的回调函数 |
+| fail | Function |  | 否 | 接口调用失败的回调函数 |
+| complete | Function |  | 否 | 接口调用结束的回调函数（调用成功、失败都会执行） |
+
+## editorContext.scrollIntoView(OBJECT)
+
+使得编辑器光标处滚动到窗口可视区域内。
+
+**平台差异说明**
+
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|√`HBuilderX 3.0.3`|√`HBuilderX 3.0.3`|√`基础库2.8.3`|x|x|x|x|
+
+**OBJECT 参数说明**
+
+| 属性 | 类型 | 默认值 | 必填 | 说明 |
+| --- | --- | --- | --- | --- |
+| success | Function |  | 否 | 接口调用成功的回调函数 |
+| fail | Function |  | 否 | 接口调用失败的回调函数 |
+| complete | Function |  | 否 | 接口调用结束的回调函数（调用成功、失败都会执行） |
+
+## editorContext.getSelectionText(OBJECT)
+
+获取编辑器已选区域内的纯文本内容。当编辑器失焦或未选中一段区间时，返回内容为空。
+
+**平台差异说明**
+
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|√`HBuilderX 3.0.3`|√`HBuilderX 3.0.3`|√`基础库2.10.2`|x|x|x|x|
+
+**OBJECT 参数说明**
+
+| 属性 | 类型 | 默认值 | 必填 | 说明 |
+| --- | --- | --- | --- | --- |
+| success | Function |  | 否 | 接口调用成功的回调函数 |
+| fail | Function |  | 否 | 接口调用失败的回调函数 |
+| complete | Function |  | 否 | 接口调用结束的回调函数（调用成功、失败都会执行） |
+
+**success 返回参数说明：**
+
+|参数|类型|说明|
+|:-|:-|:-|
+|errMsg|String|接口调用结果|
+|text|String|纯文本内容|

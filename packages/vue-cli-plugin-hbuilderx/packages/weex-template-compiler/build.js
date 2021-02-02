@@ -4560,8 +4560,8 @@ var props = {
 
 // The "unitary tag" means that the tag node and its children
 // must be sent to the native together.
-var isUnitaryTag = makeMap('cell,header,cell-slot,recycle-list', true);
-
+var isUnitaryTag = makeMap('cell,header,cell-slot,recycle-list,text,u-text', true);
+// fixed by xxxxxx
 function preTransformNode (el) {
   if (isUnitaryTag(el.tag) && !el.attrsList.some(function (item) { return item.name === 'append'; })) {
     el.attrsMap.append = 'tree';

@@ -152,6 +152,7 @@ export default {
 		white-space: pre-wrap;
 		color: #999999;
 		max-height: 400px;
+		overflow-x: hidden;
 		overflow-y: auto;
 	}
 

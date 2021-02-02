@@ -1063,7 +1063,7 @@ subPackages 节点接收一个数组，数组每一项都是应用的子包，�
 - QQ小程序每个分包的大小是2M，总体积一共不能超过24M。
 - 字节小程序每个分包的大小是2M，总体积一共不能超过16M（字节小程序基础库 1.88.0 及以上版本开始支持，字节小程序开发者工具请使用大于等于 2.0.6 且小于 3.0.0 的版本）。
 - 分包下支持独立的 ```static``` 目录，用来对静态资源进行分包。
-- `uni-app`内支持对微信小程序、QQ小程序、百度小程序、支付宝小程序、头条小程序分包优化，即将静态资源或者js文件放入分包内不占用主包大小。详情请参考：[关于分包优化的说明](/collocation/manifest?id=关于分包优化的说明)
+- `uni-app`内支持对`微信小程序`、`QQ小程序`、`百度小程序`、`支付宝小程序`、`字节小程序(HBuilderX 3.0.3+)`分包优化，即将静态资源或者js文件放入分包内不占用主包大小。详情请参考：[关于分包优化的说明](/collocation/manifest?id=关于分包优化的说明)
 - 针对`vendor.js`过大的情况可以使用运行时压缩代码
   + `HBuilderX`创建的项目勾选`运行-->运行到小程序模拟器-->运行时是否压缩代码`
   + `cli`创建的项目可以在`pacakge.json`中添加参数`--minimize`，示例：`"dev:mp-weixin": "cross-env NODE_ENV=development UNI_PLATFORM=mp-weixin vue-cli-service uni-build --watch --minimize"`
@@ -1141,7 +1141,7 @@ subPackages 节点接收一个数组，数组每一项都是应用的子包，�
 
 |字段|类型|必填|默认值|说明|
 |---|---|---|---|---|
-|packages|StringArray	|是|无|进入页面后预下载分包的 root 或 name。__APP__ 表示主包。|
+|packages|StringArray	|是|无|进入页面后预下载分包的 `root` 或 `name`。`__APP__` 表示主包。|
 |network|String|否	|wifi|在指定网络下预下载，可选值为：all（不限网络）、wifi（仅wifi下预下载）|
 
 app的分包，同样支持preloadRule，但网络规则无效。

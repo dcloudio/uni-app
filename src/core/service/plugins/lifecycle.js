@@ -11,6 +11,7 @@ const LIFECYCLE_HOOKS = [
   'onError',
   'onUnhandledRejection',
   // Page
+  'onInit',
   'onLoad',
   // 'onShow',
   'onReady',

@@ -13,8 +13,13 @@ import {
   PAGE_CREATE,
   PAGE_CREATED,
   MOUNTED_DATA,
-  UPDATED_DATA
+  UPDATED_DATA,
+  VD_SYNC_VERSION
 } from '../../../constants'
+
+import {
+  generateId
+} from '../../../helpers/util'
 
 import {
   removeVdSync,
@@ -31,32 +36,7 @@ import {
 
 import parseComponentCreateOptions from './parse-component-create-options'
 
-// TODO 临时通过序列化,反序列化传递dataset,后续可以全部保留在service,不做传递
-function parseDataset (dataset) {
-  const ret = Object.create(null)
-  Object.keys(dataset).forEach(name => {
-    try {
-      ret[name] = JSON.parse(dataset[name])
-    } catch (e) { // dataset 存在两种,一种是被JSON.stringify的,一种是原始的
-      ret[name] = dataset[name]
-    }
-  })
-  return ret
-}
-
-function parseTargets (event) {
-  const targetDataset = event.target && event.target.dataset
-  if (targetDataset) {
-    event.target.dataset = parseDataset(targetDataset)
-  }
-  const currentTargetDataset = event.currentTarget && event.currentTarget.dataset
-  if (currentTargetDataset) {
-    event.currentTarget.dataset = parseDataset(currentTargetDataset)
-  }
-}
-
 function wrapperEvent (event) {
-  parseTargets(event)
   event.preventDefault = noop
   event.stopPropagation = noop
   return wrapperMPEvent(event)
@@ -138,7 +118,18 @@ export class VDomSync {
   }
 
   addVm (vm) {
-    this.vms[vm._$id] = vm
+    const id = vm._$id
+    const oldVm = this.vms[id]
+    if (oldVm) {
+      const newId = generateId(oldVm, oldVm.$parent, VD_SYNC_VERSION)
+      oldVm._$id = newId
+      this.vms[newId] = oldVm
+      this.elements.forEach(element => {
+        const cid = element.cid
+        element.cid = cid === id ? newId : cid
+      })
+    }
+    this.vms[id] = vm
   }
 
   removeVm (vm) {

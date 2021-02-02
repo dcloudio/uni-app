@@ -5,6 +5,6 @@ import {
 export function getNetworkType () {
   return {
     errMsg: 'getNetworkType:ok',
-    networkType: NETWORK_TYPES[plus.networkinfo.getCurrentType()]
+    networkType: NETWORK_TYPES[plus.networkinfo.getCurrentType()] || 'unknown'
   }
 }

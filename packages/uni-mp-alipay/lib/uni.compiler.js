@@ -31,11 +31,21 @@ const EVENTS = {
   callouttap: 'calloutTap',
   controltap: 'controlTap',
   regionchange: 'regionChange',
+  paneltap: 'panelTap',
   // scroll-view
   scrolltoupper: 'scrollToUpper',
   scrolltolower: 'scrollToLower',
   // movable-view
-  changeend: 'changeEnd'
+  changeend: 'changeEnd',
+  // video
+  timeupdate: 'timeUpdate',
+  waiting: 'loading',
+  fullscreenchange: 'fullScreenChange',
+  useraction: 'userAction',
+  renderstart: 'renderStart',
+  loadedmetadata: 'renderStart',
+  // swiper
+  animationfinish: 'animationEnd'
 }
 
 module.exports = {

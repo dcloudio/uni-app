@@ -35,6 +35,17 @@ export class VDomSync {
     this.updateBatchVData.push([cid, data])
   }
 
+  addVm (vm) {
+    const id = vm._$id
+    const oldVm = this.vms[id]
+    if (oldVm) {
+      const newId = generateId(oldVm, findParent(oldVm), this.version)
+      oldVm._$id = newId
+      this.vms[newId] = oldVm
+    }
+    this.vms[id] = vm
+  }
+
   initVm (vm) {
     vm._$id = generateId(vm, findParent(vm), this.version)
     let vData = this.addBatchVData[vm._$id]
@@ -50,7 +61,7 @@ export class VDomSync {
     const [data, options] = vData
     Object.assign(vm.$options, options)
     vm.$r = data || Object.create(null)
-    this.vms[vm._$id] = vm
+    this.addVm(vm)
   }
 
   sendUIEvent (cid, nid, event) {

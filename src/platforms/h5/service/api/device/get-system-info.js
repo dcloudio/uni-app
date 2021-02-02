@@ -1,4 +1,5 @@
 import getWindowOffset from 'uni-platform/helpers/get-window-offset'
+import deviceId from 'uni-platform/helpers/uuid'
 import safeAreaInsets from 'safe-area-insets'
 
 const ua = navigator.userAgent
@@ -111,7 +112,8 @@ export function getSystemInfoSync () {
       right: safeAreaInsets.right,
       bottom: safeAreaInsets.bottom,
       left: safeAreaInsets.left
-    }
+    },
+    deviceId: deviceId()
   }
 }
 /**

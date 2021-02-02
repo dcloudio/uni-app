@@ -390,13 +390,9 @@ function initAutoComponents () {
   })
   if (conflictFiles.length > 0) {
     conflictFiles.forEach(files => {
-      let usedFile
       console.warn('easycom组件冲突：[' + files.map((file, index) => {
-        if (index === 0) {
-          usedFile = file
-        }
         return file
-      }).join(',') + ']，优先使用：' + usedFile)
+      }).join(',') + ']')
       console.log('\n')
     })
   }

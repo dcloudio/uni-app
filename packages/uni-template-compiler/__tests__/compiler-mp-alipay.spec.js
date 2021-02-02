@@ -1,14 +1,14 @@
 const compiler = require('../lib')
 
-function assertCodegen (template, templateCode, renderCode = 'with(this){}', options = {}) {
-  const res = compiler.compile(template, {
+function assertCodegen (template, templateCode, renderCode = 'with(this){}', mpOptions = {}, baseOptions = {}) {
+  const res = compiler.compile(template, Object.assign({
     resourcePath: 'test.wxml',
     mp: Object.assign({
       minified: true,
       isTest: true,
       platform: 'mp-alipay'
-    }, options)
-  })
+    }, mpOptions)
+  }, baseOptions))
 
   expect(res.template).toBe(templateCode)
   expect(res.render).toBe(renderCode)
@@ -44,6 +44,15 @@ describe('mp:compiler-mp-alipay', () => {
     assertCodegen(
       '<component1 v-for="item in items" :ref="c4"></component1>',
       '<component1 vue-id="{{\'551070e6-1-\'+__i0__}}" ref="__r" data-ref-in-for="{{c4}}" a:for="{{items}}" a:for-item="item" a:for-index="__i0__" onVueInit="__l"></component1>'
+    )
+    assertCodegen(
+      '<component1 @change="onChange">text</component1>',
+      '<component1 onChange="__e" vue-id="551070e6-1" data-event-opts="{{[[\'^change\',[[\'onChange\']]]]}}" data-com-type="wx" ref="__r" onVueInit="__l">text</component1>',
+      undefined,
+      undefined,
+      {
+        wxComponents: { component1: '/mycomponents/component1' }
+      }
     )
   })
   it('generate default slot', () => {
@@ -91,7 +100,11 @@ describe('mp:compiler-mp-alipay', () => {
     )
     assertCodegen(
       '<p class="static" :class="[{ active: isActive }, errorClass]">5</p>',
-      '<view class="{{(((\'static _p\')+\' \'+[(isActive)?\'active\':\'\'])+\' \'+errorClass)}}">5</view>'
+      '<view class="{{(((\'static _p\')+\' \'+((isActive)?\'active\':\'\'))+\' \'+errorClass)}}">5</view>'
+    )
+    assertCodegen(
+      '<p class="static" :class="[{ active: isActive, disabled: isDisabled }, errorClass]">52</p>',
+      '<view class="{{(((\'static _p\')+\' \'+(((isActive)?\'active\':\'\')+\' \'+((isDisabled)?\'disabled\':\'\')))+\' \'+errorClass)}}">52</view>'
     )
     assertCodegen(
       '<div class="container" :class="computedClassObject">6</div>',
@@ -113,6 +126,10 @@ describe('mp:compiler-mp-alipay', () => {
     assertCodegen(
       '<p :class="classStr1 || classStr2" class="bg">9</p>',
       '<view class="{{((\'bg _p\')+\' \'+(classStr1||classStr2))}}">9</view>'
+    )
+    assertCodegen(
+      '<p class="static" :class="[{ active: isActive }, errorClass, [flex, \'flex-row\']]">10</p>',
+      '<view class="{{((((\'static _p\')+\' \'+((isActive)?\'active\':\'\'))+\' \'+errorClass)+\' \'+((flex)+\' \'+\'flex-row\'))}}">10</view>'
     )
   })
 

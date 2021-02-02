@@ -28,7 +28,7 @@ const FOCUS_DELAY = 200
 let startTime
 
 export default {
-  name: 'BaseInput',
+  name: 'Field',
   mixins: [emitter, keyboard],
   model: {
     prop: 'value',
@@ -79,21 +79,31 @@ export default {
       this.$emit('update:value', detail.value)
       this.$trigger('input', $event, detail)
     }, 100)
-    this.$triggerInput = ($event, detail) => {
+    this.$triggerInput = ($event, detail, force) => {
       this.__valueChange.cancel()
       this.__triggerInput($event, detail)
+      if (force) {
+        this.__triggerInput.flush()
+      }
     }
   },
   beforeDestroy () {
     this.__valueChange.cancel()
     this.__triggerInput.cancel()
   },
+  directives: {
+    field: {
+      inserted (el, binding, vnode) {
+        vnode.context._initField(el)
+      }
+    }
+  },
   methods: {
     _getValueString (value) {
       return value === null ? '' : String(value)
     },
-    _initField (ref) {
-      this._fieldRef = ref
+    _initField (el) {
+      this._field = el
       startTime = startTime || Date.now()
       if (this.needFocus) {
         this._focus()
@@ -103,7 +113,7 @@ export default {
       if (!this.needFocus) {
         return
       }
-      const field = this.$refs[this._fieldRef]
+      const field = this._field
       if (!field || (__PLATFORM__ === 'app-plus' && !window.plus)) {
         setTimeout(this._focus.bind(this), 100)
         return
@@ -121,7 +131,7 @@ export default {
       }
     },
     _blur () {
-      const field = this.$refs[this._fieldRef]
+      const field = this._field
       field && field.blur()
     }
   }

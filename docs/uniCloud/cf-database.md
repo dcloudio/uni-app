@@ -432,7 +432,7 @@ collection.field()
 使用示例
 
 ```js
-collection.field({ 'age': true }) //只返回age字段，其他字段不返回
+collection.field({ 'age': true }) //只返回age字段、_id字段，其他字段不返回
 ```
 
 **注意**
@@ -1757,6 +1757,8 @@ let res = await db.collection('user').where({
 ## 事务
 
 事务通常用来在某个数据库操作失败之后进行回滚。
+
+> 事务因为要锁行，是有时间限制的。从事务开始到事务提交/回滚，时间不可超过10s。
 
 > 事务因为要锁行，是有时间限制的。从事务开始到事务提交/回滚，时间不可超过10s。
 

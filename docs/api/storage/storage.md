@@ -224,6 +224,7 @@ uni-app的Storage在不同端的实现不同：
 - 微信小程序单个 key 允许存储的最大数据长度为 1MB，所有数据存储上限为 10MB。
 - 支付宝小程序单条数据转换成字符串后，字符串长度最大200*1024。同一个支付宝用户，同一个小程序缓存总上限为10MB。
 - 百度、字节跳动小程序文档未说明大小限制
+- 非App平台清空Storage会导致uni.getSystemInfo获取到的deviceId改变
 
 除此之外，其他数据存储方案：
 - H5端还支持websql、indexedDB、sessionStorage

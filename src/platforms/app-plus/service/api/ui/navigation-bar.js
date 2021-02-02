@@ -1,11 +1,12 @@
 import {
-  getLastWebview
+  getWebview
 } from '../util'
 
 export function setNavigationBarTitle ({
+  __page__,
   title = ''
 } = {}) {
-  const webview = getLastWebview()
+  const webview = getWebview(__page__)
   if (webview) {
     const style = webview.getStyle()
     if (style && style.titleNView) {
@@ -50,10 +51,11 @@ function setPageMeta (statusBarStyle) {
 }
 
 export function setNavigationBarColor ({
+  __page__,
   frontColor,
   backgroundColor
 } = {}) {
-  const webview = getLastWebview()
+  const webview = getWebview(__page__)
   if (webview) {
     const styles = {}
     if (frontColor) {

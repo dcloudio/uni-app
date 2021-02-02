@@ -48,6 +48,6 @@ export function getSameOriginUrl (url) {
     if (window.webkit && window.webkit.messageHandlers) {
       return getBase64(url)
     }
-    return url
+    return plus.io.convertLocalFileSystemURL(url)
   })
 }

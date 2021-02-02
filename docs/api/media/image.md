@@ -220,6 +220,7 @@ uni.chooseImage({
 
 |参数名|类型|说明|
 |:-|:-|:-|
+|path|String|保存到相册的图片路径，仅 App 3.0.5+ 支持|
 |errMsg|String|调用结果|
 
 **注意**

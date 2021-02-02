@@ -77,10 +77,12 @@
     "uni.onMemoryWarning": true,
     "uni.getNetworkType": true,
     "uni.onNetworkStatusChange": true,
+    "uni.offNetworkStatusChange": true,
     "uni.onAccelerometerChange": true,
     "uni.startAccelerometer": true,
     "uni.stopAccelerometer": true,
     "uni.onCompassChange": true,
+    "uni.offCompassChange": true,
     "uni.startCompass": true,
     "uni.stopCompass": true,
     "uni.onGyroscopeChange": true,
@@ -160,7 +162,8 @@
     "uni.createIntersectionObserver": true,
     "uni.createMediaQueryObserver": true,
     "uni.hideKeyboard": true,
-    "uni.onKeyboardHeightChange": true
+    "uni.onKeyboardHeightChange": true,
+    "uni.offKeyboardHeightChange": true
   }
 }, {
   "name": "event",

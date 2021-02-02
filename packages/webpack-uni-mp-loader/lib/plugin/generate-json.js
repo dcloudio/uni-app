@@ -85,6 +85,18 @@ function analyzeUsingComponents () {
   //   }, {})
 }
 
+function normalizeUsingComponents (file, usingComponents) {
+  const names = Object.keys(usingComponents)
+  if (!names.length) {
+    return usingComponents
+  }
+  file = path.dirname('/' + file)
+  names.forEach(name => {
+    usingComponents[name] = path.relative(file, usingComponents[name])
+  })
+  return usingComponents
+}
+
 module.exports = function generateJson (compilation) {
   analyzeUsingComponents()
 
@@ -110,6 +122,19 @@ module.exports = function generateJson (compilation) {
       jsonObj.usingComponents = Object.assign(jsonObj.usingAutoImportComponents, jsonObj.usingComponents)
     }
     delete jsonObj.usingAutoImportComponents
+
+    // 百度小程序插件内组件使用 usingSwanComponents
+    if (process.env.UNI_PLATFORM === 'mp-baidu') {
+      const usingComponents = jsonObj.usingComponents || {}
+      Object.keys(usingComponents).forEach(key => {
+        const value = usingComponents[key]
+        if (value.includes('://')) {
+          delete usingComponents[key]
+          jsonObj.usingSwanComponents = jsonObj.usingSwanComponents || {}
+          jsonObj.usingSwanComponents[key] = value
+        }
+      })
+    }
 
     if (jsonObj.genericComponents && jsonObj.genericComponents.length) { // scoped slots
       // 生成genericComponents json
@@ -154,6 +179,9 @@ module.exports = function generateJson (compilation) {
       delete jsonObj.navigationBarShadow
     }
 
+    if (process.env.UNI_SUBPACKGE && jsonObj.usingComponents) {
+      jsonObj.usingComponents = normalizeUsingComponents(name, jsonObj.usingComponents)
+    }
     const source = JSON.stringify(jsonObj, null, 2)
 
     const jsFile = name.replace('.json', '.js')

@@ -10,6 +10,7 @@ module.exports = function (pagesJson, manifestJson) {
   } = require('../mp')(pagesJson, manifestJson, require('./project.config.json'))
 
   const baseJson = {
+    appType: 'webapp', // 华为IDE V3.0.2+ 需要此属性，否则无法导入
     minPlatformVersion: 1070
   }
   manifestJson.name && (baseJson.name = manifestJson.name)

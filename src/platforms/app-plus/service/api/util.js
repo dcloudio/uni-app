@@ -15,6 +15,13 @@ export function callApiSync (api, args, name, alias) {
   return ret
 }
 
+export function getWebview (__page__) {
+  if (__page__) {
+    return __page__.$getAppWebview()
+  }
+  return getLastWebview()
+}
+
 export function getLastWebview () {
   try {
     const pages = getCurrentPages()
@@ -190,11 +197,13 @@ export function warpPlusSuccessCallback (callbackId, name) {
 export function warpPlusErrorCallback (callbackId, name, errMsg) {
   return function errorCallback (error) {
     error = error || {}
-    const code = error.code || 0
+    // 一键登录errorCallback新增 appid、metadata、uid 参数返回
+    const { code = 0, message: errorMessage, ...extraData } = error
     invoke(callbackId, {
-      errMsg: `${name}:fail ${error.message || errMsg || ''}`,
+      errMsg: `${name}:fail ${errorMessage || errMsg || ''}`,
       errCode: code,
-      code
+      code,
+      ...extraData
     })
   }
 }

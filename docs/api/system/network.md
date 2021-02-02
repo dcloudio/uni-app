@@ -23,6 +23,7 @@
 |2g|2g 网络||
 |3g|3g 网络||
 |4g|4g 网络||
+|5g|5g 网络||
 |ethernet|有线网络|App|
 |unknown|Android 下不常见的网络类型||
 |none|无网络|&nbsp;|
@@ -38,7 +39,7 @@ uni.getNetworkType({
 ```
 
 ### uni.onNetworkStatusChange(CALLBACK)
-监听网络状态变化。
+监听网络状态变化。可使用`uni.offNetworkStatusChange`取消监听。
 
 **CALLBACK 返回参数**
 
@@ -55,3 +56,14 @@ uni.onNetworkStatusChange(function (res) {
 	console.log(res.networkType);
 });
 ```
+### uni.offNetworkStatusChange(CALLBACK)
+取消监听网络状态变化。
+
+**平台差异说明**
+
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|HBuilderX 3.0.1+|HBuilderX 3.0.1+|基础库 2.9.3+|x|x|x|x|
+
+**Tips**
+- `CALLBACK`为调用`uni.onNetworkStatusChange`时传入的`CALLBACK`
