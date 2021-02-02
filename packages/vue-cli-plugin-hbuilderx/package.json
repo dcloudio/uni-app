@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/vue-cli-plugin-hbuilderx",
-  "version": "2.0.0-alpha-31020210202001",
+  "version": "2.0.0-alpha-31020210202002",
   "description": "HBuilderX plugin for vue-cli 3",
   "main": "index.js",
   "repository": {
@@ -18,5 +18,5 @@
     "css": "~2.2.1",
     "escodegen": "^1.8.1"
   },
-  "gitHead": "e43df719e16464b00873adb52ac6a64c91036a79"
+  "gitHead": "ce6d49856fd1f11c6b7bef39015520184bbddb0c"
 }
