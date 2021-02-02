@@ -36,7 +36,11 @@ function getProvides () {
   }
 
   if (process.env.UNI_USING_COMPONENTS) {
-    provides.createApp = [uniPath, 'createApp']
+    if (process.env.UNI_SUBPACKGE) {
+      provides.createApp = [uniPath, 'createSubpackageApp']
+    } else {
+      provides.createApp = [uniPath, 'createApp']
+    }
     provides.createPage = [uniPath, 'createPage']
     provides.createComponent = [uniPath, 'createComponent']
   }
