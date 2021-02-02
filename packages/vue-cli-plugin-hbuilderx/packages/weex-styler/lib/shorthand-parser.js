@@ -76,7 +76,7 @@ function borderProperty (declaration) {
   var { value, important } = clearImportant(declaration.value)
   var position = declaration.position
   var property = declaration.property.split('-')[1]
-  var splitResult = value.split(/\s+/)
+  var splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/)
   var result = []
   switch (splitResult.length) {
     case 1:
