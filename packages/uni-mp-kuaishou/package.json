@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-mp-kuaishou",
-  "version": "2.0.0-alpha-31020210202002",
+  "version": "2.0.0-alpha-31020210202003",
   "description": "uni-app mp-kuaishou",
   "main": "dist/index.js",
   "repository": {
@@ -17,5 +17,5 @@
     "name": "mp-kuaishou",
     "title": "快手小程序"
   },
-  "gitHead": "ce6d49856fd1f11c6b7bef39015520184bbddb0c"
+  "gitHead": "8d2a6d77eec322a5dde2df98b79a6751b4d7689c"
 }
