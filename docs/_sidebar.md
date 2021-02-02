@@ -22,6 +22,7 @@
 * [性能优化建议](performance.md)
 * [宽屏适配指南](adapt.md)
 * [开放生态](ecosystem.md)
+* [uni_modules插件规范](uni_modules.md)
 * [从其他项目转uni-app](translate.md)
 * [混合开发](hybrid.md)
 * [uni小程序sdk](https://nativesupport.dcloud.net.cn/README)
@@ -32,7 +33,6 @@
   * [广告变现](uni-ad.md)
   * [统一发行页面](m3w.md)
 * [案例](case.md)
-* [开源项目资源汇总](casecode.md)
 * [选型评估指南](select.md)
 * [常见问题](faq.md)
 * 更新日志
