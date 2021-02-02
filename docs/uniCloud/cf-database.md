@@ -8498,7 +8498,7 @@ let res = await db.collection('price')
 
 #### setDifference
 
-聚合操作符，输入两个集合，输出只存在于第一个集合中的元素。  
+输入两个集合，输出只存在于第一个集合中的元素。  
 
       
 #####  API 说明
@@ -8548,7 +8548,7 @@ let res = await db.collection('test')
 
 #### setEquals
 
-聚合操作符，输入两个集合，判断两个集合中包含的元素是否相同（不考虑顺序、去重）。  
+输入两个集合，判断两个集合中包含的元素是否相同（不考虑顺序、去重）。  
 
       
 #####  API 说明
@@ -8598,7 +8598,7 @@ let res = await db.collection('test')
 
 #### setIntersection
 
-聚合操作符，输入两个集合，输出两个集合的交集。  
+输入两个集合，输出两个集合的交集。  
 
       
 #####  API 说明
@@ -8650,7 +8650,7 @@ let res = await db.collection('test')
 
 #### setIsSubset
 
-聚合操作符，输入两个集合，判断第一个集合是否是第二个集合的子集。  
+输入两个集合，判断第一个集合是否是第二个集合的子集。  
 
       
 #####  API 说明
@@ -8700,7 +8700,7 @@ let res = await db.collection('test')
 
 #### setUnion
 
-聚合操作符，输入两个集合，输出两个集合的并集。  
+输入两个集合，输出两个集合的并集。  
 
       
 #####  API 说明
