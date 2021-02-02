@@ -1,11 +1,12 @@
 import { Plugin } from 'vite'
 
 import { VitePluginUniResolvedOptions } from '..'
+import { createCss } from './css'
 import { createAlias } from './alias'
 import { createDefine } from './define'
 import { createServer } from './server'
+import { createBuild } from './build'
 import { createOptimizeDeps } from './optimizeDeps'
-import { createCss } from './css'
 
 export function createConfig(
   options: VitePluginUniResolvedOptions
@@ -16,6 +17,7 @@ export function createConfig(
       alias: createAlias(options),
       optimizeDeps: createOptimizeDeps(options),
       server: createServer(options),
+      build: createBuild(options),
       css: createCss(options),
     }
   }

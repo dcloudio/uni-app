@@ -14,6 +14,7 @@ export interface VitePluginUniOptions {
 export interface VitePluginUniResolvedOptions extends VitePluginUniOptions {
   root: string
   inputDir: string
+  assetsDir: string
   devServer?: ViteDevServer
 }
 
@@ -25,6 +26,7 @@ export default function uniPlugin(
   const options: VitePluginUniResolvedOptions = {
     ...rawOptions,
     root: process.cwd(),
+    assetsDir: 'assets',
     inputDir: rawOptions.inputDir || path.resolve(process.cwd(), 'src'),
   }
   initEnv(options)
