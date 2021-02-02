@@ -145,10 +145,10 @@ package.json在每个`uni_modules`插件中都必须存在，包含了插件的�
 ```
 
 **Tips**
-- 当项目内仅关联了一个服务空间，此时uni_modules插件内的uniCloud相关资源会自动归属与该服务空间，无需在uni_modules.config.json中配置uniCloud所属服务空间
+- 当项目内仅关联了一个服务空间，此时uni_modules插件内的uniCloud相关资源会自动归属至该服务空间，无需在uni_modules.config.json中配置uniCloud所属服务空间
 - 当项目内关联了两个服务空间（阿里云和腾讯云同时存在）
   * 若未在uni_modules.config.json中配置平台，则上传该插件uniCloud资源时，会提示上传至选择哪个服务空间
-  * 若已在uni_modules.config.json中配置平台，则上传时以配置为准，自动归属至支持的服务空间
+  * 若已在uni_modules.config.json中配置平台，则上传时以配置为准，自动归属至指定的服务空间
 
 
 ### 开发 uni_modules 插件
