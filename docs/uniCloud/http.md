@@ -112,7 +112,7 @@ $ curl https://${云函数Url化域名}/${path}
 ```
 
 
-使用POST请求`https://${云函数Url化域名}/${functionPath}`，云函数接收到的`event`为请求发送的数据，**uni.request默认content-type为application/json**
+使用POST请求`https://${spaceId}.service.tcloudbase.com/${functionPath}`，云函数接收到的`event.body`为请求发送的数据，**uni.request默认content-type为application/json**
 
 ```js
 // 以uni.request为例
@@ -142,7 +142,7 @@ uni.request({
     queryStringParameters: {a: "1", b: "2"},
     requestContext: {云开发相关信息},
     isBase64Encoded: false,
-    body: '{"a":1,"b":2}',
+    body: '{"a":1,"b":2}', // 注意此处可能是base64，需要根据isBase64Encoded判断
 }
 ```
 
