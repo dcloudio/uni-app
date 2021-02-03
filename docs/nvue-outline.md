@@ -40,6 +40,41 @@ nvue的组件和API写法与vue页面一致，其内置组件还比vue页面内�
 2. 动态横竖屏。nvue页面的css不支持媒体查询，所以横竖屏动态切换、动态适配屏幕是很困难的。
 
 
+
+
+## render-whole
+
+在HBuilder X 3.1.0起版本，nvue 新增 `render-whole`属性，类型`Boolean`。
+
+- 设置render-whole="true"时，视图层将组件以及子组件的信息结构一次性和原生层通讯，通过整个节点的重绘提升了排版渲染性能。
+- 设置render-whole="false"时，视图层将以子节点一个接着一个和原生层通讯再重绘。总体的渲染时间可能更久。
+
+默认启用`render-whole`为`true`的组件列表
+
+- `text`
+- `cell`
+- `header`
+- `cell-slot`
+- `recycle-list`
+
+**使用**
+
+```html
+<swiper :render-whole="true"></swiper>
+```
+
+**演示**
+
+ > 此演示在Android 5.1版本手机上的效果，高版本手机效果没有这么明显
+ 
+<img style="width:300px;" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/29c0c580-55ab-11eb-a16f-5b3e54966275.gif"></img>
+ 
+
+示例工程[点击下载](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/d5adb160-55af-11eb-bd01-97bc1429a9ff.zip)
+ 
+
+
+
 ## 纯原生渲染模式
 uni-app在App端，支持vue页面和nvue页面混搭、互相跳转。也支持纯nvue原生渲染。
 
