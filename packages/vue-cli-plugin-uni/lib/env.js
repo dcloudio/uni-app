@@ -243,8 +243,10 @@ if (isNVueCompiler) {
   process.env.UNI_USING_NVUE_COMPILER = true
 }
 
-if (platformOptions.nvueStyleCompiler !== 'weex') {
+if (platformOptions.nvueStyleCompiler === 'uni-app') {
   process.env.UNI_USING_NVUE_STYLE_COMPILER = true
+} else {
+  platformOptions.nvueStyleCompiler = 'weex'
 }
 
 if (platformOptions.usingComponents === true) {
