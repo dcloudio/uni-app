@@ -8,6 +8,7 @@ const addListenerToElement = function (element, type, callback, capture) {
       }
     }
   }, {
+    capture,
     passive: false
   })
 }
@@ -48,6 +49,7 @@ export default {
       }
 
       let $eventOld = null
+      let hasClickListenerOld
       let hasTouchStart
       let hasMouseDown
       addListenerToElement(element, 'touchstart', function ($event) {
@@ -77,8 +79,20 @@ export default {
           return res
         }
       })
+
+      // 阻止点击事件传播，处理拖拽和点击冲突，鼠标移动则添加监听，停止移动则移除监听
+      const clickEventListener = this.__clickEventListener = function ($event) {
+        $event.preventDefault()
+        $event.stopPropagation()
+      }
+
       const mouseMoveEventListener = this.__mouseMoveEventListener = function ($event) {
         if (!hasTouchStart && hasMouseDown && $eventOld) {
+          // 存在鼠标移动，则在 document 上添加点击监听（好处是不用管具体使用拖拽的是什么元素）
+          if (!hasClickListenerOld && (Math.abs(x1 - x0) > 2 || Math.abs(y1 - y0) > 2)) {
+            document.addEventListener('click', clickEventListener, true)
+            hasClickListenerOld = true
+          }
           // TODO target currentTarget touches changedTouches
           const res = fn($event, 'move', $event.pageX, $event.pageY)
           x1 = $event.pageX
@@ -94,15 +108,23 @@ export default {
           return fn($event, 'end', $event.changedTouches[0].pageX, $event.changedTouches[0].pageY)
         }
       })
-      const mouseUpEventListener = this.__mouseUpEventListener = function ($event) {
+      const mouseUpEventListener = this.__mouseUpEventListener = ($event) => {
         hasMouseDown = false
         if (!hasTouchStart && $eventOld) {
+          // 鼠标抬起，存在监听，则 mouseup 结束后移除就监听事件
+          if (hasClickListenerOld) {
+            setTimeout(() => {
+              document.removeEventListener('click', this.__clickEventListener, true)
+              hasClickListenerOld = false
+            }, 0)
+          }
           // TODO target currentTarget touches changedTouches
           $eventOld = null
           return fn($event, 'end', $event.pageX, $event.pageY)
         }
       }
       document.addEventListener('mouseup', mouseUpEventListener)
+
       addListenerToElement(element, 'touchcancel', function ($event) {
         if ($eventOld) {
           hasTouchStart = false

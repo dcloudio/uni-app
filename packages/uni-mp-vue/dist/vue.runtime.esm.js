@@ -2990,6 +2990,7 @@ function createComponentInstance(vnode, parent, suspense) {
     return instance;
 }
 let currentInstance = null;
+const getCurrentInstance = () => currentInstance || currentRenderingInstance;
 const setCurrentInstance = (instance) => {
     currentInstance = instance;
 };
@@ -3247,7 +3248,7 @@ function defineEmit() {
 }
 
 // Core API ------------------------------------------------------------------
-const version = "3.0.4";
+const version = "3.0.5";
 
 // import deepCopy from './deepCopy'
 /**
@@ -3661,7 +3662,7 @@ function createVueApp(rootComponent, rootProps = null) {
 }
 
 function applyOptions$1(options, instance, publicThis) {
-    Object.keys(options).forEach(name => {
+    Object.keys(options).forEach((name) => {
         if (name.indexOf('on') === 0) {
             const hook = options[name];
             if (isFunction(hook)) {
@@ -3737,7 +3738,7 @@ var plugin = {
             createMiniProgramApp(instance);
             return instance;
         };
-    }
+    },
 };
 
 // @ts-ignore
@@ -3773,4 +3774,4 @@ function createApp(rootComponent, rootProps = null) {
     return createVueApp(rootComponent, rootProps).use(plugin);
 }
 
-export { callWithAsyncErrorHandling, callWithErrorHandling, computed$1 as computed, createApp, createHook$1 as createHook, createVueApp, customRef, defineComponent, defineEmit, defineProps, inject, injectHook, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, logError, markRaw, nextTick, onActivated, onAddToFavorites, onBackPress, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onError, onErrorCaptured, onHide, onLaunch, onLoad, onMounted, onNavigationBarButtonTap, onNavigationBarSearchInputChanged, onNavigationBarSearchInputClicked, onNavigationBarSearchInputConfirmed, onNavigationBarSearchInputFocusChanged, onPageNotFound, onPageScroll, onPullDownRefresh, onReachBottom, onReady, onRenderTracked, onRenderTriggered, onResize, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, onUnmounted, onUpdated, provide, reactive, readonly, ref, resolveDirective, shallowReactive, shallowReadonly, shallowRef, toRaw, toRef, toRefs, triggerRef, unref, version, warn, watch, watchEffect, withDirectives };
+export { callWithAsyncErrorHandling, callWithErrorHandling, computed$1 as computed, createApp, createHook$1 as createHook, createVueApp, customRef, defineComponent, defineEmit, defineProps, getCurrentInstance, inject, injectHook, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, logError, markRaw, nextTick, onActivated, onAddToFavorites, onBackPress, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onError, onErrorCaptured, onHide, onLaunch, onLoad, onMounted, onNavigationBarButtonTap, onNavigationBarSearchInputChanged, onNavigationBarSearchInputClicked, onNavigationBarSearchInputConfirmed, onNavigationBarSearchInputFocusChanged, onPageNotFound, onPageScroll, onPullDownRefresh, onReachBottom, onReady, onRenderTracked, onRenderTriggered, onResize, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, onUnmounted, onUpdated, provide, reactive, readonly, ref, resolveDirective, shallowReactive, shallowReadonly, shallowRef, toRaw, toRef, toRefs, triggerRef, unref, version, warn, watch, watchEffect, withDirectives };

@@ -69,6 +69,7 @@ module.exports = function (content, map) {
   }
 
   Object.assign(appJson.globalStyle, appJson.globalStyle['app-plus'] || {})
+  pageJson.style = pageJson.style || {}
   Object.assign(pageJson.style, pageJson.style['app-plus'] || {})
   const pageJsonStyle = Object.assign(appJson.globalStyle, pageJson.style)
   if (pageJsonStyle.disableScroll === true) {
