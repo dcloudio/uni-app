@@ -1356,7 +1356,10 @@ var serviceContext = (function () {
     },
     extension: {
       type: Array,
-      default: ['']
+      default: [''],
+      validator (extension, params) {
+        if (extension.length === 0) { return 'param extension should not be empty.' }
+      }
     }
   };
 
@@ -1402,7 +1405,7 @@ var serviceContext = (function () {
       type: Array,
       default: ['*'],
       validator (extension, params) {
-        if (extension.length === 0) params.extension = ['*'];
+        if (extension.length === 0) { return 'param extension should not be empty.' }
       }
     }
   };
@@ -1436,7 +1439,7 @@ var serviceContext = (function () {
       type: Array,
       default: ['*'],
       validator (extension, params) {
-        if (extension.length === 0) params.extension = ['*'];
+        if (extension.length === 0) { return 'param extension should not be empty.' }
       }
     }
   };
