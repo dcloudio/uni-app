@@ -35,7 +35,7 @@ export const chooseImage = {
     type: Array,
     default: ['*'],
     validator (extension, params) {
-      if (extension.length === 0) params.extension = ['*']
+      if (extension.length === 0) { return 'param extension should not be empty.' }
     }
   }
 }
