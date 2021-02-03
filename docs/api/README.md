@@ -336,7 +336,7 @@ async function request () {
 |[uni.showToast](api/ui/prompt?id=showtoast)|显示提示框|
 |[uni.showLoading](api/ui/prompt?id=showloading)|显示加载提示框|
 |[uni.hideToast](api/ui/prompt?id=hidetoast)|隐藏提示框|
-|[uni.hideLoading](api/ui/prompt?id=hideloading)|隐藏提示框|
+|[uni.hideLoading](api/ui/prompt?id=hideloading)|隐藏加载提示框|
 |[uni.showModal](api/ui/prompt?id=showmodal)|显示模态弹窗|
 |[uni.showActionSheet](api/ui/prompt?id=showactionsheet)|显示菜单列表|
 ##### 设置导航条
