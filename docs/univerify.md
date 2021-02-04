@@ -151,11 +151,9 @@ univerifyStyle 数据结构：
   },  
   "phoneNum": {  
       "color": "#000000",  // 手机号文字颜色 默认值：#000000   
-      "fontSize": "18" // 手机号字体大小 默认值：18  
   },  
   "slogan": {  
       "color": "#8a8b90",  //  slogan 字体颜色 默认值：#8a8b90  
-      "fontSize": "12" // slogan 字体大小 默认值：12  
   },  
   "authButton": {  
       "normalColor": "#3479f5", // 授权按钮正常状态背景颜色 默认值：#3479f5  
@@ -179,7 +177,6 @@ univerifyStyle 数据结构：
       "termsColor": "#1d4788", //  协议文字颜色 默认值： #1d4788  
       "prefix": "我已阅读并同意", // 条款前的文案 默认值：“我已阅读并同意”  
       "suffix": "并使用本机号码登录", // 条款后的文案 默认值：“并使用本机号码登录”  
-      "fontSize": "12", // 字体大小 默认值：12,  
       "privacyItems": [  
           // 自定义协议条款，最大支持2个，需要同时设置url和title. 否则不生效  
           {  
