@@ -1754,6 +1754,20 @@ function createSubpackageApp (vm) {
       app[name] = appOptions[name];
     }
   });
+  if (isFn(appOptions.onShow) && ks.onAppShow) {
+    ks.onAppShow((...args) => {
+      appOptions.onShow.apply(app, args);
+    });
+  }
+  if (isFn(appOptions.onHide) && ks.onAppHide) {
+    ks.onAppHide((...args) => {
+      appOptions.onHide.apply(app, args);
+    });
+  }
+  if (isFn(appOptions.onLaunch)) {
+    const args = ks.getLaunchOptionsSync && ks.getLaunchOptionsSync();
+    appOptions.onLaunch.call(app, args);
+  }
   return vm
 }
 
