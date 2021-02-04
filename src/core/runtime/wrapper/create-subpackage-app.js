@@ -1,6 +1,7 @@
 import 'uni-platform/runtime/index'
 
 import {
+  isFn,
   hasOwn
 } from 'uni-shared'
 
@@ -24,5 +25,19 @@ export default function createSubpackageApp (vm) {
       app[name] = appOptions[name]
     }
   })
+  if (isFn(appOptions.onShow) && __GLOBAL__.onAppShow) {
+    __GLOBAL__.onAppShow((...args) => {
+      appOptions.onShow.apply(app, args)
+    })
+  }
+  if (isFn(appOptions.onHide) && __GLOBAL__.onAppHide) {
+    __GLOBAL__.onAppHide((...args) => {
+      appOptions.onHide.apply(app, args)
+    })
+  }
+  if (isFn(appOptions.onLaunch)) {
+    const args = __GLOBAL__.getLaunchOptionsSync && __GLOBAL__.getLaunchOptionsSync()
+    appOptions.onLaunch.call(app, args)
+  }
   return vm
 }

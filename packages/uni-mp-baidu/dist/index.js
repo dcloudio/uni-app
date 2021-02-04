@@ -2096,6 +2096,20 @@ function createSubpackageApp (vm) {
       app[name] = appOptions[name];
     }
   });
+  if (isFn(appOptions.onShow) && swan.onAppShow) {
+    swan.onAppShow((...args) => {
+      appOptions.onShow.apply(app, args);
+    });
+  }
+  if (isFn(appOptions.onHide) && swan.onAppHide) {
+    swan.onAppHide((...args) => {
+      appOptions.onHide.apply(app, args);
+    });
+  }
+  if (isFn(appOptions.onLaunch)) {
+    const args = swan.getLaunchOptionsSync && swan.getLaunchOptionsSync();
+    appOptions.onLaunch.call(app, args);
+  }
   return vm
 }
 

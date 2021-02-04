@@ -2610,6 +2610,20 @@ function createSubpackageApp (vm) {
       app[name] = appOptions[name];
     }
   });
+  if (isFn(appOptions.onShow) && my.onAppShow) {
+    my.onAppShow((...args) => {
+      appOptions.onShow.apply(app, args);
+    });
+  }
+  if (isFn(appOptions.onHide) && my.onAppHide) {
+    my.onAppHide((...args) => {
+      appOptions.onHide.apply(app, args);
+    });
+  }
+  if (isFn(appOptions.onLaunch)) {
+    const args = my.getLaunchOptionsSync && my.getLaunchOptionsSync();
+    appOptions.onLaunch.call(app, args);
+  }
   return vm
 }
 
