@@ -264,3 +264,13 @@ exports.main = async function(event){
 ### 使用腾讯云报未登录Cloudbase
 
 腾讯云会在本地storage存储一些信息，请不要在应用使用过程中使用clearStorage等接口直接删除storage。
+
+### 阿里云前端网页托管域名报错指引@ali-hosting-domain
+
+1. 错误信息：`该域名已经被添加过，不能重复添加`
+
+  前端网页托管会和阿里云上其他的CDN业务（包括但不限于CDN）冲突，如需绑定到前端网页托管请先将此域名与其他业务解除关联。
+  
+2. 错误信息：`The root domain of your domain is reserved by another account`
+
+  当前域名有在阿里云开通全站加速相关业务（可能配置了泛域名加速），与前端网页托管冲突。可以考虑使用三级域名或去除泛域名加速改为单独配置需要加速的域名。
