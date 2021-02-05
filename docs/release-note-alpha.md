@@ -1,3 +1,16 @@
+#### 3.1.1.20210204-alpha
+  + 【重要】App平台 新增 nvue 组件支持 render-whole 属性。可以按组件整体渲染，而不是从上到下逐行渲染 [详情](https://uniapp.dcloud.io/nvue-css)
+  + App平台 新增 manifest.json 支持 nvue css 编译新旧版本配置 app-plus -> nvueStyleCompiler。可切换老版的nvue css 编译器 [详情](https://ask.dcloud.net.cn/article/38751)
+  + App平台 修复 纯 nvue 编译模式下 pages.json 缺少 style 节点编译报错的Bug
+  + App平台 修复 3.1.0 版本引出的 nvue 页面中样式与 app.vue 样式冲突的Bug [详情](https://ask.dcloud.net.cn/question/116787)
+  + App平台 修复 3.1.0 版本引出的 nvue 页面中 border-color 使用 rgb 类型时解析报错的Bug [详情](https://ask.dcloud.net.cn/question/116746)
+  + H5平台 新增 image 组件支持 draggable 属性
+  + H5平台 优化 swiper、movable 组件拖动时禁止 click 事件触发
+* 【uniCloud】
+  + 修复 uniCloud.getCurrentUserInfo 报错的Bug
+* 【App插件(含5+App和uni-app的App端)】
+  + Android平台 更新 uni-AD 腾讯优量汇SDK为4.332.1202版
+
 #### 3.1.0.20210202-alpha
   + 新增 uni.getSystemInfo 支持获取 deviceId 作为设备标识。App 端根据设备信息生成，非 App 端由 uni-app 框架生成基于随机数的 id
   + App平台、H5平台 优化 dataset 获取逻辑，完善非 string 类型支持
@@ -43,11 +56,11 @@
   + H5平台 修复 特定情况下 uni.showModal 内容区域出现横向滚动条的Bug
   + H5平台 修复 image 组件使用 require 方式引用的资源在配置基础路径为相对路径时，编译后不显示的Bug
   + 【重要】小程序平台 新增 发行时支持混合分包模式，将 uni-app 项目发行为小程序分包，集成到已有的原生开发的小程序 [详情](https://uniapp.dcloud.net.cn/hybrid)
-  + 小程序平台 修复 事件回调内 arguments 获取到多余参数的Bug [#2320](https://github.com/dcloudio/uni-app/issues/2320)
+  + 小程序平台 修复 事件回调内 arguments 获取到多余参数的Bug [#2270](https://github.com/dcloudio/uni-app/issues/2270)
   + 小程序平台 修复 修复 v-for 循环 wxs 模块内容报错的Bug [详情](https://ask.dcloud.net.cn/question/115658)
   + 支付宝平台、头条小程序平台 修复 部分情况下无法正确编译模板中 class 的Bug [#2294](https://github.com/dcloudio/uni-app/pull/2294)
   + 支付宝小程序平台 优化 组件支持 vue 事件监听方式（需启用 component2）[详情](https://ask.dcloud.net.cn/question/110978)
-  + 支付宝小程序平台 修复 内置组件部分事件无法监听的Bug [#2320](https://github.com/dcloudio/uni-app/issues/2185)
+  + 支付宝小程序平台 修复 内置组件部分事件无法监听的Bug [#2185](https://github.com/dcloudio/uni-app/issues/2185)
   + 【重要】百度小程序平台 新增 支持 onInit 生命周期
   + 百度小程序平台 优化 支持使用 usingComponents 引入插件（原名称 usingSwanComponents 仍然保留）
   + 【重要】uni-ui 新增 所有组件适配 PC 端，适配宽屏、拖动、支持enter和esc按键响应 [详情](https://hellouniapp.dcloud.net.cn/pages/extUI/badge/badge)
