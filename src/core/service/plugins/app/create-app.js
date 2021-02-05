@@ -25,7 +25,8 @@ export function getCurrentPages (isAll = false, ignoreError = false) {
     childrenVm.$children.forEach(vm => {
       if (tabBarVm !== vm && vm.$children.length && vm.$children[0].$options.name === 'Page' && vm.$children[0].$slots.page) {
         // vm.$children[0]=Page->PageBody->RealPage
-        const pageVm = vm.$children[0].$children.find(vm => vm.$options.name === 'PageBody').$children.find(vm => !!vm.$page)
+        const pageBody = vm.$children[0].$children.find(vm => vm.$options.name === 'PageBody')
+        const pageVm = pageBody && pageBody.$children.find(vm => !!vm.$page)
         if (pageVm) {
           let isActive = true
           if (!isAll && tabBarVm && pageVm.$page && pageVm.$page.meta.isTabBar) { // 选项卡仅列出活动的
