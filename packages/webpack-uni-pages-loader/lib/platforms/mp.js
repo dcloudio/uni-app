@@ -113,7 +113,8 @@ const platformJson2ProjectJson = {
   projectname: defaultCopy,
   packOptions: defaultCopy,
   debugOptions: defaultCopy,
-  scripts: defaultCopy
+  scripts: defaultCopy,
+  cloudbaseRoot: defaultCopy
 }
 
 function copyToJson (json, fromJson, options) {
