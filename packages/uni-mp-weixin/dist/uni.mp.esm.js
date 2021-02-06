@@ -1,4 +1,4 @@
-import { isArray, hasOwn, toNumber, isPlainObject, isObject, isFunction, extend, NOOP, camelize } from '@vue/shared';
+import { isArray, hasOwn, toNumber, isPlainObject, isObject, isFunction, extend, NOOP, camelize, hyphenate, normalizeStyle } from '@vue/shared';
 
 function setModel(target, key, value, modifiers) {
     if (isArray(modifiers)) {
@@ -25,6 +25,20 @@ function getOrig(data) {
         return data.$orig || data;
     }
     return data;
+}
+function getStyle(dynamicStyle, staticStyle) {
+  if (!dynamicStyle && !staticStyle) {
+    return ''
+  }
+  var dynamicStyleObj = normalizeStyle(dynamicStyle)
+  var styleObj = staticStyle
+    ? extend(staticStyle, dynamicStyleObj)
+    : dynamicStyleObj
+  return Object.keys(styleObj)
+    .map(function (name) {
+      return hyphenate(name) + ':' + styleObj[name]
+    })
+    .join(';')
 }
 function map(val, iteratee) {
     let ret, i, l, keys, key;
@@ -101,7 +115,7 @@ function initComponentInstance(instance, options) {
     ctx.__set_sync = setSync;
     ctx.__get_orig = getOrig;
     // TODO
-    // ctx.__get_style = getStyle
+    ctx.__get_style = getStyle
     ctx.__map = map;
 }
 function initMocks(instance, mpInstance, mocks) {
