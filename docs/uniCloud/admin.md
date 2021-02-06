@@ -6,25 +6,34 @@ uniCloud admin 框架，是基于 uni-app 和 uniCloud 的应用后台管理的�
 
 对于uniCloud的开发者而言，其后台管理系统应该使用本框架。
 
-版本支持：HBuilderX 2.9.5+
+版本支持：HBuilderX 3.0+
 
 - 它基于 uni-app 的宽屏适配，可自动适配 PC 宽屏和手机各端。了解[宽屏适配](https://uniapp.dcloud.io/adapt)
 - 它基于 uniCloud，是 serverless 的云开发。了解[uniCloud](https://uniapp.dcloud.io/uniCloud/README)
 - 它基于 uni-id，使用 uni-id 的用户账户、角色、权限系统。了解[uni-id](https://uniapp.dcloud.io/uniCloud/uni-id)
 
-### 内置的功能
+### uniCloud admin 功能介绍
+uniCloud admin有预置功能、插件生态和数据表管理的代码生成工具。
 
+有这套组合，管理端系统的开发变的前所未有的简单、高效、低成本。
+
+1. 预置功能
 - 管理员账户初始化、登录、修改密码
 - 基于uni-id的用户管理（注册、修改信息、停用启用、删除）、角色管理、权限管理
 - 顶部 topWindow 的设置：比如 logo 更换、右上角部分链接更换。详见项目根目录的`admin.config.js`文件
 - 左侧 leftWindow 的菜单设置：菜单包括两类，一类是动态菜单，具备业务和权限功能；另一类是静态菜单，不会根据登录用户角色变化
+- 动态菜单的数据存储在数据库表opendb-admin-menus中，基于uni-id角色权限，在菜单管理中可以对菜单进行增删改查
 - 开发模式下的 debug 功能，帮助开发者及时发现报错和搜索错误信息，可在`admin.config.js`文件中配置
+2. 扩展插件
+- uniCloud admin支持插件生态，包括cms插件、banner管理插件、日志管理插件、图表示例等，详见[插件市场](https://ext.dcloud.net.cn/?cat1=7&cat2=74&orderBy=UpdatedDate)
+3. 数据表管理的代码生成工具
+- 对于数据表的管理，如列表浏览、分页搜索、详情修改、新增删除，这些代码都无需自己开发。建好数据表的schema表结构，利用schema2code工具，即可自动生成该表的管理页面的代码。详见[schema2code](https://uniapp.dcloud.net.cn/uniCloud/schema?id=autocode)
 
-除了内置功能，uniCloud admin支持插件生态，在[插件市场](https://ext.dcloud.net.cn/?cat1=7&cat2=74&orderBy=UpdatedDate)可以找到更多现成的轮子拿来即用，比如cms等。
+uniCloud admin是完整开源的一个uni-app项目，任何熟悉uni-app的工程师都可以自行开发扩展功能。
 
 ### 支持响应式布局
 
-uniCloud admin 同时支持 PC 端 和移动端。
+uniCloud admin 同时支持 PC 端 和移动端。基础模块是全端可用的，但注意有的插件不是全端的。
 
 PC 端如下图：
 
@@ -40,7 +49,7 @@ PC 端如下图：
 
 #### 创建
 
-[HBuilderX](https://www.dcloud.io/hbuilderx.html) 2.9.5+版本新建 uni-app 项目，选择 uniCloud admin 项目模板，如下图
+[HBuilderX](https://www.dcloud.io/hbuilderx.html) 3.0+版本新建 uni-app 项目，选择 uniCloud admin 项目模板，如下图
 
 ![download-admin](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/c2085840-15db-11eb-880a-0db19f4f74bb.png)
 
@@ -48,20 +57,21 @@ PC 端如下图：
 
 ![download-admin](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/2baaddd0-11f5-11eb-81ea-f115fe74321c.png)
 
-除了可视化向导外，也可以从[https://github.com/dcloudio/uniCloud-admin](https://github.com/dcloudio/uniCloud-admin)获取代码。
+<!-- 除了可视化向导外，也可以从[https://github.com/dcloudio/uniCloud-admin](https://github.com/dcloudio/uniCloud-admin)获取代码。 -->
 
 #### 运行
 
 1. 进入 admin 项目
-2. 在/cloudfunctions-aliyun/common/uni-id/config.json 文件中填写 `passwordSecret` 字段 (用于加密密码入库的密钥) 和 `tokenSecret` 字段 (为生成 token 需要的密钥)
-3. 右键 cloudfuntions 运行云服务空间初始化向导（如已创建并绑定云服务空间，则跳过此步）
-4. 点击HBuilderX工具栏的运行【Ctrl+r】 -> 运行到浏览器
+2. 在uniCloud/cloudfunctions/common/uni-id/config.json 文件中填写自己的 `passwordSecret` 字段 (用于加密密码入库的密钥) 和 `tokenSecret` 字段 (为生成 token 需要的密钥，测试期间跳过本条也可以)
+3. 右键 uniCloud目录 运行云服务空间初始化向导，初始化数据库和上传部署云函数（如已创建并绑定云服务空间，则跳过此步）
+4. 点击HBuilderX工具栏的运行【Ctrl+r】 -> 运行到浏览器。如果是连接本地云函数调试环境，上一步可以不上传云函数，但数据库仍需初始化。
 5. 从启动后的登录页面的底部，进入创建管理员页面（仅允许注册一次管理员账号）
 
 **注意**：
 
 - 在 HBuilderX 中运行需在插件市场在安装 [sass 插件](https://ext.dcloud.net.cn/plugin?id=2046)
-- 手机端报 `request：fail`，需要去云服务空间的`跨域配置`配置跨域域名，需带端口
+- 浏览器联网失败，报 `request：fail`，需要去云服务空间的`跨域配置`配置跨域域名，需带端口。[详见](https://uniapp.dcloud.net.cn/uniCloud/quickstart?id=useinh5)
+- 如从未接触过uniCloud，是无法直接上手uniCloud admin的，建议先通读下uniCloud文档的概念介绍和快速上手章节。[详见](https://uniapp.dcloud.net.cn/uniCloud/README)
 
 ### 目录结构
 
@@ -177,11 +187,11 @@ export default {
 
 ##### 管理动态菜单
 
-在云后台数据库的 `opendb-admin-menus` 表中管理菜单， 对菜单增删改查。如下图：
+在左侧导航菜单中，找到`系统管理 -> 菜单管理`，可视化的维护菜单。
 
-![add-menu](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/aa7adb00-152a-11eb-81ea-f115fe74321c.png)
+菜单数据存储在云数据库的 `opendb-admin-menus` 表中。该表字段说明如下：
 
-_菜单字段解释:_
+_菜单表字段解释:_
 
 | 字段        | 类型      | 必填 | 描述                                                 |
 | :---------- | :-------- | :--- | :--------------------------------------------------- |
@@ -197,51 +207,11 @@ _菜单字段解释:_
 
 _添加菜单记录需要注意：_
 
-- 无子菜单，则需 `url` 字段不能为空，该菜单才能在页面显示
-- 有子菜单，则需至少一个子菜单的 `url` 字段不能为空，该菜单才能在页面显示
+菜单项分目录菜单和页面菜单。
 
-例如，如需增加如下菜单：
+- 目录菜单项：非叶子节点，点击后展开子菜单，自身没有 `URL` 。需至少一个子菜单的 `url` 字段不能为空，该菜单才能在页面显示
+- 页面菜单项：叶子节点，无子菜单，且 `url` 字段不能为空，点击该菜单项会转到`url`页面。如果 `url` 为空则该菜单无法显示。
 
-```bash
-订单管理                  # 父菜单
-└── 手机                 # 子菜单
-```
-
-**step 1:**添加一条父菜单记录
-
-菜单的 `parent_id` 字段为空, 即为一级菜单
-
-```json
-{
-  "menu_id": "order",
-  "name": "订单管理",
-  "icon": "uni-icons-cart-filled",
-  "url": "",
-  "sort": 2,
-  "parent_id": "",
-  "permission": [],
-  "enable": true,
-  "create_date": "1602662469396"
-}
-```
-
-**step 2:**添加一条子菜单记录
-
-将子菜单的 `parent_id` 指向父菜单的 `menu_id`即可，孙菜单就是将子菜单的 `menu_id` 当做父菜单
-
-```json
-{
-  "menu_id": "phone",
-  "name": "手机",
-  "icon": "uni-icons-phone",
-  "url": "pages/phone",
-  "sort": 3,
-  "parent_id": "order",
-  "permission": [],
-  "enable": true,
-  "create_date": "1602662469492"
-}
-```
 
 ##### 侧边栏样式管理
 
@@ -266,11 +236,9 @@ $menu-text-color-actived: #409eff; /* 菜单激活前景色 */
 
 ### icon 图标
 
-admin 框架内置了一套 icon 图标，在静态功能演示-图标菜单中，点击图标即可复制图标的 class 定义，或者直接到`common/uni-icons.css`中查看定义，然后以如下方式使用：
+admin 框架内置了一套 icon 图标，在`静态功能演示-图标`菜单中，点击图标即可复制图标的 class 定义。
 
-```
-<view class="uni-icons-gear"></view>
-```
+选中样式后，在新建菜单页面的表单中输入样式名称。没有样式的菜单项将没有图标。
 
 当然，你也可以使用三方 icon 库。以使用 `elementUI` 的图标为例，在 `app.vue` 中导入图标库的样式文件：
 
@@ -332,10 +300,11 @@ admin 提供了两个内置方法，方便在页面中鉴定登录用户权限�
 开发页面不局限开发方式：
 
 - 可以新增普通的页面，在前端 callfunction，后台搭配云函数操作
-- 可以使用 uni-clientdb，在前端直接操作数据库，后台配置 db schema 进行权限和格式校验
 - 可以使用云函数单文件路由，在项目中默认包含了一个[uni-cloud-router](https://uniapp.dcloud.io/uniCloud/uni-cloud-router) 的单文件路由，也可以使用插件市场的其他单文件路由
+- 可以使用 clientdb，在前端直接操作数据库，后台配置 db schema 进行权限和格式校验
+- 可以使用schema2code生成uniCloud admin页面。这是最为常用、最高效的页面开发模式。[详见](https://uniapp.dcloud.net.cn/uniCloud/schema?id=autocode)
 
-> 注意：在搭配云函数操作，controller 下的文件夹和文件，不要命名相同，例如：app/room 这个写法目前分辨不了 `app` 是文件 `app.js`，还是文件夹 `app`
+> 注意：在使用 uni-cloud-router 时，controller 下的文件夹和文件，不要命名相同，例如：app/room 这个写法目前分辨不了 `app` 是文件 `app.js`，还是文件夹 `app`
 
 #### 自己开发页面
 
@@ -346,11 +315,10 @@ admin 中开发页面，和 uni-app 开发 vue 页面是一致的。
 _使用步骤:_
 
 1. 从[插件市场](https://ext.dcloud.net.cn/)导入插件
-2. 在 HBuilder X 2.9.5 中选择添加插件的项目
-3. 覆盖项目的 db_init.json 文件, 点击“确定覆盖”
-4. 在 db_init.json 文件上右键，点击“初始化云数据库”
-5. 在菜单管理中的添加【待添加菜单】
-6. 刷新 admin 即可在菜单栏看到新增的菜单
+2. 在 HBuilder X 3.1+ 中选择添加插件的项目
+3. 在插件的 db_init.json 文件上右键，点击“初始化云数据库”
+4. 在菜单管理中的添加【待添加菜单】
+5. 刷新 admin 即可在菜单栏看到新增的菜单
 
 ---------------------------------- 分割线 ----------------------------------------
 
@@ -376,7 +344,7 @@ _admin 插件的目录结构：_
 ├── pages                       # 页面
 │   └── your-page               # 你的页面
 ├── pages.json                  # 插件包含的页面的路由配置
-└── %pluginId%-menu.json        # 向uniCloud admin左侧菜单注册新菜单的声明文件。pluginId 为你上传插件市场时填的插件id
+└── %pluginId%-menu.json        # 向uniCloud admin左侧菜单注册新菜单的声明文件。pluginId 为你上传插件市场时填的插件id。uni_module下不需要pluginId，直接就是menu.json
 ```
 
 **page.json 配置:**
@@ -389,7 +357,7 @@ _admin 插件的目录结构：_
 
 pluginId 为你上传插件市场时填的插件id（插件市场每个插件都有一个唯一id）。
 
-假使你的插件id为“xxx-yyy”，那么在插件的根目录放置 xxx-yyy-menu.json ，按下文格式配置内容。
+假使你的插件id为“xxx-yyy”，那么在插件的根目录放置 xxx-yyy-menu.json ，按下文格式配置内容。（uni_module下不需要pluginId，直接就是menu.json）
 
 ```json
 [
@@ -427,7 +395,7 @@ uniCloud admin自带了一个单路由框架，uni-cloud-router，然后自带�
 
 为防止和用户工程的文件冲突，插件的页面应该有插件的前缀，比如 pages/xxx-page。自带的数据库schema文件也推荐带上前缀。
 
-以下为已存的 uniCloud admin 插件列表，可以参考：[https://ext.dcloud.net.cn/?cat1=7&cat2=74&orderBy=UpdatedDate](https://ext.dcloud.net.cn/?cat1=7&cat2=74&orderBy=UpdatedDate)
+以下为已存在的 uniCloud admin 插件列表，可以参考：[https://ext.dcloud.net.cn/?cat1=7&cat2=74&orderBy=UpdatedDate](https://ext.dcloud.net.cn/?cat1=7&cat2=74&orderBy=UpdatedDate)
 
 **插件开发后如何上传插件市场**
 
