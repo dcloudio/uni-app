@@ -1,5 +1,9 @@
+#### 3.1.2.20210206-alpha
+  + App平台 修复 nvueStyleCompiler 配置为 uni-app 时 list 组件内 class 动态更新失效的Bug [详情](https://ask.dcloud.net.cn/question/116913)
+  + H5平台 修复 应用初始化以前调用 uni.getSystemInfoSync 报错的Bug [详情](https://ask.dcloud.net.cn/question/116612)
+
 #### 3.1.1.20210204-alpha
-  + 【重要】App平台 新增 nvue 组件支持 render-whole 属性。可以按组件整体渲染，而不是从上到下逐行渲染 [详情](https://uniapp.dcloud.io/nvue-css)
+  + 【重要】App平台 新增 nvue 组件支持 render-whole 属性。可以按组件整体渲染，而不是从上到下逐行渲染 [详情](https://uniapp.dcloud.io/nvue-outline?id=render-whole)
   + App平台 新增 manifest.json 支持 nvue css 编译新旧版本配置 app-plus -> nvueStyleCompiler。可切换老版的nvue css 编译器 [详情](https://ask.dcloud.net.cn/article/38751)
   + App平台 修复 纯 nvue 编译模式下 pages.json 缺少 style 节点编译报错的Bug
   + App平台 修复 3.1.0 版本引出的 nvue 页面中样式与 app.vue 样式冲突的Bug [详情](https://ask.dcloud.net.cn/question/116787)
@@ -70,7 +74,7 @@
   + 【重要】新增 uni-captcha 基于uniCloud的图片验证码 [详情](https://ext.dcloud.net.cn/plugin?id=4048)
   + 【重要】新增 网赚游戏合成猫项目模板 [详情](https://ext.dcloud.net.cn/plugin?id=4095)
   + 【重要】hello uniCloud 新增 clientDB、schema2code示例 [详情](https://ext.dcloud.net.cn/plugin?id=4082)
-  + 新增 uniCloud-banner模板 支持管理员上传修改banner [详情](https://gitee.com/dcloud/uniCloud-banner)
+  + 新增 uniCloud-banner模板 支持管理员上传修改banner [详情](https://ext.dcloud.net.cn/plugin?id=4117)
   + 云端一体登录模板 新增 用户名密码连续登录失败时要求输入图形验证码
 * 【uniCloud】
   + 【重要】客户端 新增 uniCloud.mixinDatacom 混入，方便快速开发datacom组件，无需自行处理云数据绑定 [详情](https://uniapp.dcloud.net.cn/component/datacom?id=mixindatacom)
