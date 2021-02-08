@@ -14,6 +14,7 @@
 **使用限制**
 
 - 腾讯云免费服务空间最多只支持配置10个云函数URL化地址
+- 阿里云暂不支持修改响应头中的content-disposition，即无法返回html并在浏览器中展示，只可以触发下载
 
 ## 操作步骤
 
@@ -240,6 +241,8 @@ content-length: 13
 ##### 使用集成响应返回 HTML
 
 将`content-type`设置为`text/html`，即可在`body`中返回 HTML，会被浏览器自动解析：
+
+**阿里云目前无法返回html并在浏览器中展示，只可以触发下载**
 
 ```js
 exports.main = function() {
