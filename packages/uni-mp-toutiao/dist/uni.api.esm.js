@@ -83,6 +83,7 @@ function createAsyncApiCallback(name, args = {}, { beforeAll, beforeSuccess } = 
     const hasComplete = isFunction(complete);
     const callbackId = invokeCallbackId++;
     addInvokeCallback(callbackId, createInvokeCallbackName(name, callbackId), (res) => {
+        res = res || {};
         res.errMsg = normalizeErrMsg(res.errMsg, name);
         isFunction(beforeAll) && beforeAll(res);
         if (res.errMsg === name + ':ok') {
@@ -97,10 +98,21 @@ function createAsyncApiCallback(name, args = {}, { beforeAll, beforeSuccess } = 
     return callbackId;
 }
 
+function handlePromise(promise) {
+    if (__UNI_PROMISE_API__) {
+        return promise
+            .then((data) => {
+            return [null, data];
+        })
+            .catch((err) => [err]);
+    }
+    return promise;
+}
+
 const API_TYPE_ON = 0;
-const API_TYPE_SYNC = 1;
-const API_TYPE_ASYNC = 2;
-const API_TYPE_RETURN = 3;
+const API_TYPE_TASK = 1;
+const API_TYPE_SYNC = 2;
+const API_TYPE_ASYNC = 3;
 function validateProtocol(_name, _args, _protocol) {
     return true;
 }
@@ -110,17 +122,20 @@ function formatApiArgs(args, options) {
 function wrapperOnApi(name, fn) {
     return (callback) => fn.apply(null, createKeepAliveApiCallback(name, callback));
 }
+function wrapperTaskApi(name, fn, options) {
+    return (args) => fn.apply(null, [args, createAsyncApiCallback(name, args, options)]);
+}
 function wrapperSyncApi(fn) {
     return (...args) => fn.apply(null, args);
 }
 function wrapperAsyncApi(name, fn, options) {
     return (args) => {
         const callbackId = createAsyncApiCallback(name, args, options);
-        return invokeCallback(callbackId, fn.apply(null, [args, callbackId]));
+        const res = fn.apply(null, [args, callbackId]);
+        if (res) {
+            invokeCallback(callbackId, res);
+        }
     };
-}
-function wrapperReturnApi(name, fn, options) {
-    return (args) => fn.apply(null, [args, createAsyncApiCallback(name, args, options)]);
 }
 function wrapperApi(fn, name, protocol, options) {
     return function (...args) {
@@ -136,12 +151,12 @@ function createApi(type, name, fn, protocol, options) {
     switch (type) {
         case API_TYPE_ON:
             return wrapperApi(wrapperOnApi(name, fn), name, protocol);
+        case API_TYPE_TASK:
+            return wrapperApi(wrapperTaskApi(name, fn), name, protocol);
         case API_TYPE_SYNC:
             return wrapperApi(wrapperSyncApi(fn), name, protocol);
         case API_TYPE_ASYNC:
             return wrapperApi(wrapperAsyncApi(name, fn, options), name, protocol);
-        case API_TYPE_RETURN:
-            return wrapperApi(wrapperReturnApi(name, fn), name, protocol);
     }
 }
 
@@ -384,16 +399,6 @@ function isSyncApi(name) {
 function isCallbackApi(name) {
     return CALLBACK_API_RE.test(name) && name !== 'onPush';
 }
-function handlePromise(promise) {
-    if (!__UNI_PROMISE_API__) {
-        return promise;
-    }
-    return promise
-        .then((data) => {
-        return [null, data];
-    })
-        .catch((err) => [err]);
-}
 function shouldPromise(name) {
     if (isContextApi(name) || isSyncApi(name) || isCallbackApi(name)) {
         return false;
@@ -416,17 +421,17 @@ function promisify(name, api) {
     if (!isFunction(api)) {
         return api;
     }
-    return function promiseApi(options = {}, ...params) {
+    return function promiseApi(options = {}) {
         if (isFunction(options.success) ||
             isFunction(options.fail) ||
             isFunction(options.complete)) {
-            return wrapperReturnValue(name, invokeApi(name, api, options, ...params));
+            return wrapperReturnValue(name, invokeApi(name, api, options));
         }
         return wrapperReturnValue(name, handlePromise(new Promise((resolve, reject) => {
             invokeApi(name, api, Object.assign({}, options, {
                 success: resolve,
                 fail: reject,
-            }), ...params);
+            }));
         })));
     };
 }

@@ -18,24 +18,26 @@ export default defineConfig({
     __DEV__: `(process.env.NODE_ENV !== 'production')`,
     __PLATFORM__: JSON.stringify('h5'),
   },
-  alias: [
-    {
-      find: '@dcloudio/uni-api',
-      replacement: resolve('../uni-api/src/index.ts'),
-    },
-    {
-      find: '@dcloudio/uni-vue',
-      replacement: resolve('../uni-vue/src/index.ts'),
-    },
-    {
-      find: '@dcloudio/uni-core',
-      replacement: resolve('../uni-core/src/index.ts'),
-    },
-    {
-      find: '@dcloudio/uni-components',
-      replacement: resolve('../uni-components/src/index.ts'),
-    },
-  ],
+  resolve: {
+    alias: [
+      {
+        find: '@dcloudio/uni-api',
+        replacement: resolve('../uni-api/src/index.ts'),
+      },
+      {
+        find: '@dcloudio/uni-vue',
+        replacement: resolve('../uni-vue/src/index.ts'),
+      },
+      {
+        find: '@dcloudio/uni-core',
+        replacement: resolve('../uni-core/src/index.ts'),
+      },
+      {
+        find: '@dcloudio/uni-components',
+        replacement: resolve('../uni-components/src/index.ts'),
+      },
+    ],
+  },
   plugins: [
     vue({
       template: {
@@ -54,7 +56,10 @@ export default defineConfig({
       preserveEntrySignatures: 'strict',
       plugins: [
         replace({
-          createApi: `/*#__PURE__*/ createApi`,
+          createOnApi: `/*#__PURE__*/ createOnApi`,
+          createTaskApi: `/*#__PURE__*/ createTaskApi`,
+          createSyncApi: `/*#__PURE__*/ createSyncApi`,
+          createAsyncApi: `/*#__PURE__*/ createAsyncApi`,
         }),
       ],
       output: {

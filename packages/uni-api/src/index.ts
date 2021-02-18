@@ -24,8 +24,10 @@ export * from './protocols/media/getImageInfo'
 // helpers
 export {
   createOnApi,
+  createTaskApi,
   createSyncApi,
   createAsyncApi,
-  createReturnApi,
 } from './helpers/api'
-export { isSyncApi, isContextApi, promisify } from './helpers/promise'
+
+export { handlePromise } from './helpers/api/promise'
+export { invokeApi, wrapperReturnValue } from './helpers/interceptor'

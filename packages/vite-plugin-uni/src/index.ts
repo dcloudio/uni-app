@@ -10,6 +10,9 @@ import { createConfigResolved } from './configResolved'
 import { createConfigureServer } from './configureServer'
 export interface VitePluginUniOptions {
   inputDir?: string
+  feature?: {
+    promise: boolean
+  }
 }
 export interface VitePluginUniResolvedOptions extends VitePluginUniOptions {
   root: string

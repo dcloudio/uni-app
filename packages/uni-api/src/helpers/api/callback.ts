@@ -70,11 +70,11 @@ export function createKeepAliveApiCallback(name: string, callback: Function) {
   )
 }
 
-const API_SUCCSS = 'success'
-const API_FAIL = 'fail'
-const API_COMPLETE = 'complete'
+export const API_SUCCESS = 'success'
+export const API_FAIL = 'fail'
+export const API_COMPLETE = 'complete'
 
-type CALLBACK_TYPES = typeof API_SUCCSS | typeof API_FAIL | typeof API_COMPLETE
+type CALLBACK_TYPES = typeof API_SUCCESS | typeof API_FAIL | typeof API_COMPLETE
 
 type ApiCallbacks = {
   [key in CALLBACK_TYPES]?: Function
@@ -121,6 +121,7 @@ export function createAsyncApiCallback(
     callbackId,
     createInvokeCallbackName(name, callbackId),
     (res: ApiRes) => {
+      res = res || {}
       res.errMsg = normalizeErrMsg(res.errMsg, name)
       isFunction(beforeAll) && beforeAll(res)
       if (res.errMsg === name + ':ok') {

@@ -1335,6 +1335,9 @@ function createKeepAliveApiCallback(name, callback) {
   const id2 = invokeCallbackId++;
   return addInvokeCallback(id2, createInvokeCallbackName(name, id2), callback, true);
 }
+const API_SUCCESS = "success";
+const API_FAIL = "fail";
+const API_COMPLETE = "complete";
 function getApiCallbacks(args) {
   const apiCallbacks = {};
   for (const name in args) {
@@ -1362,6 +1365,7 @@ function createAsyncApiCallback(name, args = {}, {beforeAll, beforeSuccess} = {}
   const hasComplete = isFunction(complete);
   const callbackId = invokeCallbackId++;
   addInvokeCallback(callbackId, createInvokeCallbackName(name, callbackId), (res) => {
+    res = res || {};
     res.errMsg = normalizeErrMsg(res.errMsg, name);
     isFunction(beforeAll) && beforeAll(res);
     if (res.errMsg === name + ":ok") {
@@ -1374,10 +1378,35 @@ function createAsyncApiCallback(name, args = {}, {beforeAll, beforeSuccess} = {}
   });
   return callbackId;
 }
+const callbacks$1 = [API_SUCCESS, API_FAIL, API_COMPLETE];
+function hasCallback(args) {
+  if (isPlainObject(args) && callbacks$1.find((cb) => isFunction(args[cb]))) {
+    return true;
+  }
+  return false;
+}
+function handlePromise(promise) {
+  if (__UNI_PROMISE_API__) {
+    return promise.then((data) => {
+      return [null, data];
+    }).catch((err) => [err]);
+  }
+  return promise;
+}
+function promisify(fn) {
+  return (args = {}) => {
+    if (hasCallback(args)) {
+      return fn(args);
+    }
+    return handlePromise(new Promise((resolve, reject) => {
+      fn(Object.assign(args, {success: resolve, fail: reject}));
+    }));
+  };
+}
 const API_TYPE_ON = 0;
-const API_TYPE_SYNC = 1;
-const API_TYPE_ASYNC = 2;
-const API_TYPE_RETURN = 3;
+const API_TYPE_TASK = 1;
+const API_TYPE_SYNC = 2;
+const API_TYPE_ASYNC = 3;
 function validateProtocol(_name, _args, _protocol) {
   return true;
 }
@@ -1387,17 +1416,20 @@ function formatApiArgs(args, options) {
 function wrapperOnApi(name, fn) {
   return (callback) => fn.apply(null, createKeepAliveApiCallback(name, callback));
 }
+function wrapperTaskApi(name, fn, options) {
+  return (args) => fn.apply(null, [args, createAsyncApiCallback(name, args, options)]);
+}
 function wrapperSyncApi(fn) {
   return (...args) => fn.apply(null, args);
 }
 function wrapperAsyncApi(name, fn, options) {
   return (args) => {
     const callbackId = createAsyncApiCallback(name, args, options);
-    return invokeCallback(callbackId, fn.apply(null, [args, callbackId]));
+    const res = fn.apply(null, [args, callbackId]);
+    if (res) {
+      invokeCallback(callbackId, res);
+    }
   };
-}
-function wrapperReturnApi(name, fn, options) {
-  return (args) => fn.apply(null, [args, createAsyncApiCallback(name, args, options)]);
 }
 function wrapperApi(fn, name, protocol, options) {
   return function(...args) {
@@ -1407,24 +1439,21 @@ function wrapperApi(fn, name, protocol, options) {
   };
 }
 function createSyncApi(name, fn, protocol, options) {
-  return /* @__PURE__ */ createApi(API_TYPE_SYNC, name, fn, protocol, options);
+  return createApi(API_TYPE_SYNC, name, fn, protocol, options);
 }
 function createAsyncApi(name, fn, protocol, options) {
-  return /* @__PURE__ */ createApi(API_TYPE_ASYNC, name, fn, protocol, options);
-}
-function createReturnApi(name, fn, protocol, options) {
-  return /* @__PURE__ */ createApi(API_TYPE_RETURN, name, fn, protocol, options);
+  return promisify(createApi(API_TYPE_ASYNC, name, fn, protocol, options));
 }
 function createApi(type, name, fn, protocol, options) {
   switch (type) {
     case API_TYPE_ON:
       return wrapperApi(wrapperOnApi(name, fn), name, protocol);
+    case API_TYPE_TASK:
+      return wrapperApi(wrapperTaskApi(name, fn), name, protocol);
     case API_TYPE_SYNC:
       return wrapperApi(wrapperSyncApi(fn), name, protocol);
     case API_TYPE_ASYNC:
       return wrapperApi(wrapperAsyncApi(name, fn, options), name, protocol);
-    case API_TYPE_RETURN:
-      return wrapperApi(wrapperReturnApi(name, fn), name, protocol);
   }
 }
 const Base64ToArrayBufferProtocol = [
@@ -1441,10 +1470,10 @@ const ArrayBufferToBase64Protocol = [
     required: true
   }
 ];
-const base64ToArrayBuffer = createSyncApi("base64ToArrayBuffer", (base64) => {
+const base64ToArrayBuffer = /* @__PURE__ */ createSyncApi("base64ToArrayBuffer", (base64) => {
   return decode(base64);
 }, Base64ToArrayBufferProtocol);
-const arrayBufferToBase64 = createSyncApi("arrayBufferToBase64", (arrayBuffer) => {
+const arrayBufferToBase64 = /* @__PURE__ */ createSyncApi("arrayBufferToBase64", (arrayBuffer) => {
   return encode(arrayBuffer);
 }, ArrayBufferToBase64Protocol);
 const Upx2pxProtocol = [
@@ -1465,7 +1494,7 @@ function checkDeviceWidth() {
   deviceDPR = pixelRatio2;
   isIOS = platform === "ios";
 }
-const upx2px = createSyncApi("upx2px", (number, newDeviceWidth) => {
+const upx2px = /* @__PURE__ */ createSyncApi("upx2px", (number, newDeviceWidth) => {
   if (deviceWidth === 0) {
     checkDeviceWidth();
   }
@@ -1544,14 +1573,14 @@ function removeHook(hooks, hook) {
     hooks.splice(index2, 1);
   }
 }
-const addInterceptor = createSyncApi("addInterceptor", (method, interceptor) => {
+const addInterceptor = /* @__PURE__ */ createSyncApi("addInterceptor", (method, interceptor) => {
   if (typeof method === "string" && isPlainObject(interceptor)) {
     mergeInterceptorHook(scopedInterceptors[method] || (scopedInterceptors[method] = {}), interceptor);
   } else if (isPlainObject(method)) {
     mergeInterceptorHook(globalInterceptors, method);
   }
 }, AddInterceptorProtocol);
-const removeInterceptor = createSyncApi("removeInterceptor", (method, interceptor) => {
+const removeInterceptor = /* @__PURE__ */ createSyncApi("removeInterceptor", (method, interceptor) => {
   if (typeof method === "string") {
     if (isPlainObject(interceptor)) {
       removeInterceptorHook(scopedInterceptors[method], interceptor);
@@ -1639,7 +1668,7 @@ class ServiceIntersectionObserver {
     }, this._pageId);
   }
 }
-const createIntersectionObserver$1 = createReturnApi("createIntersectionObserver", (context, options) => {
+const createIntersectionObserver$1 = /* @__PURE__ */ createSyncApi("createIntersectionObserver", (context, options) => {
   if (!context) {
     context = getCurrentPageVm();
   }
@@ -1687,14 +1716,6 @@ const GetImageInfoProtocol = {
     required: true
   }
 };
-if (!Promise.prototype.finally) {
-  Promise.prototype.finally = function(onfinally) {
-    const promise = this.constructor;
-    return this.then((value) => promise.resolve(onfinally && onfinally()).then(() => value), (reason) => promise.resolve(onfinally && onfinally()).then(() => {
-      throw reason;
-    }));
-  };
-}
 function cssSupports(css) {
   return window.CSS && window.CSS.supports && window.CSS.supports(css);
 }
@@ -1703,19 +1724,19 @@ const SCHEMA_CSS = {
   "css.env": cssSupports("top:env(a)"),
   "css.constant": cssSupports("top:constant(a)")
 };
-const canIUse = createSyncApi("canIUse", (schema) => {
+const canIUse = /* @__PURE__ */ createSyncApi("canIUse", (schema) => {
   if (hasOwn(SCHEMA_CSS, schema)) {
     return SCHEMA_CSS[schema];
   }
   return true;
 }, CanIUseProtocol);
-const makePhoneCall = createAsyncApi("makePhoneCall", (option) => {
+const makePhoneCall = /* @__PURE__ */ createAsyncApi("makePhoneCall", (option) => {
   window.location.href = `tel:${option.phoneNumber}`;
 }, MakePhoneCallProtocol);
 const ua = navigator.userAgent;
 const isAndroid = /android/i.test(ua);
 const isIOS$1 = /iphone|ipad|ipod/i.test(ua);
-const getSystemInfoSync = createSyncApi("getSystemInfoSync", () => {
+const getSystemInfoSync = /* @__PURE__ */ createSyncApi("getSystemInfoSync", () => {
   var screen = window.screen;
   var pixelRatio2 = window.devicePixelRatio;
   const screenFix = /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
@@ -1816,16 +1837,16 @@ const getSystemInfoSync = createSyncApi("getSystemInfoSync", () => {
     }
   };
 });
-const getSystemInfo = createAsyncApi("getSystemInfo", () => {
+const getSystemInfo = /* @__PURE__ */ createAsyncApi("getSystemInfo", () => {
   return getSystemInfoSync();
 });
-const openDocument = createAsyncApi("openDocument", (option) => {
+const openDocument = /* @__PURE__ */ createAsyncApi("openDocument", (option) => {
   window.open(option.filePath);
 }, OpenDocumentProtocol);
 function _getServiceAddress() {
   return window.location.protocol + "//" + window.location.host;
 }
-const getImageInfo = createAsyncApi("getImageInfo", ({src}, callback) => {
+const getImageInfo = /* @__PURE__ */ createAsyncApi("getImageInfo", ({src}, callback) => {
   const img = new Image();
   img.onload = function() {
     callback({
@@ -1842,9 +1863,9 @@ const getImageInfo = createAsyncApi("getImageInfo", ({src}, callback) => {
   };
   img.src = src;
 }, GetImageInfoProtocol, GetImageInfoOptions);
-const navigateBack = createAsyncApi("navigateBack", () => {
+const navigateBack = /* @__PURE__ */ createAsyncApi("navigateBack", () => {
 });
-const navigateTo = createAsyncApi("navigateTo", (options) => {
+const navigateTo = /* @__PURE__ */ createAsyncApi("navigateTo", (options) => {
   const router = getApp().$router;
   router.push({
     path: options.url,
@@ -1852,13 +1873,13 @@ const navigateTo = createAsyncApi("navigateTo", (options) => {
     state: createPageState("navigateTo")
   });
 });
-const redirectTo = createAsyncApi("redirectTo", () => {
+const redirectTo = /* @__PURE__ */ createAsyncApi("redirectTo", () => {
 });
-const reLaunch = createAsyncApi("reLaunch", () => {
+const reLaunch = /* @__PURE__ */ createAsyncApi("reLaunch", () => {
 });
-const switchTab = createAsyncApi("switchTab", () => {
+const switchTab = /* @__PURE__ */ createAsyncApi("switchTab", () => {
 });
-const getRealPath = createSyncApi("getRealPath", (path) => {
+const getRealPath = /* @__PURE__ */ createSyncApi("getRealPath", (path) => {
   return path;
 });
 var api = /* @__PURE__ */ Object.freeze({

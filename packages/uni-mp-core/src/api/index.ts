@@ -1,13 +1,10 @@
 import { hasOwn } from '@vue/shared'
 
-import {
-  upx2px,
-  addInterceptor,
-  removeInterceptor,
-  promisify,
-} from '@dcloudio/uni-api'
+import { upx2px, addInterceptor, removeInterceptor } from '@dcloudio/uni-api'
 
+import { promisify } from './promise'
 import { initWrapper } from './wrapper'
+
 import { MPProtocols } from './protocols'
 
 const baseApis = { upx2px, addInterceptor, removeInterceptor }

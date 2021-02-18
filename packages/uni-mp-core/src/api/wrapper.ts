@@ -1,13 +1,13 @@
 import { isFunction, isString, hasOwn, isPlainObject } from '@vue/shared'
 
-import { isSyncApi, isContextApi } from '@dcloudio/uni-api'
-
 import {
   MPProtocols,
   MPProtocolArgsValue,
   MPProtocolArgs,
   MPProtocolObject,
 } from './protocols'
+
+import { isSyncApi, isContextApi } from './promise'
 
 const CALLBACKS = ['success', 'fail', 'cancel', 'complete']
 

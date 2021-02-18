@@ -34,7 +34,12 @@ type Injectment = string | [string, string]
 
 export interface InjectOptions extends UniPluginFilterOptions {
   sourceMap?: boolean
-  [str: string]: Injectment | InjectOptions['include'] | Boolean | ViteDevServer
+  [str: string]:
+    | Injectment
+    | InjectOptions['include']
+    | Boolean
+    | ViteDevServer
+    | any
 }
 
 const debugInject = debug('uni:inject')

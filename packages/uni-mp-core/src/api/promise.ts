@@ -1,6 +1,6 @@
 import { isFunction } from '@vue/shared'
 
-import { invokeApi, wrapperReturnValue } from './interceptor'
+import { invokeApi, handlePromise, wrapperReturnValue } from '@dcloudio/uni-api'
 
 const SYNC_API_RE = /^\$|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/
 
@@ -29,17 +29,6 @@ export function isCallbackApi(name: string) {
 
 export function isTaskApi(name: string) {
   return TASK_APIS.indexOf(name) !== -1
-}
-
-function handlePromise(promise: Promise<any>) {
-  if (!__UNI_PROMISE_API__) {
-    return promise
-  }
-  return promise
-    .then((data) => {
-      return [null, data]
-    })
-    .catch((err) => [err])
 }
 
 export function shouldPromise(name: string) {
@@ -72,13 +61,13 @@ export function promisify(name: string, api: unknown) {
   if (!isFunction(api)) {
     return api
   }
-  return function promiseApi(options: Record<string, any> = {}, ...params: []) {
+  return function promiseApi(options: Record<string, any> = {}) {
     if (
       isFunction(options.success) ||
       isFunction(options.fail) ||
       isFunction(options.complete)
     ) {
-      return wrapperReturnValue(name, invokeApi(name, api, options, ...params))
+      return wrapperReturnValue(name, invokeApi(name, api, options))
     }
     return wrapperReturnValue(
       name,
@@ -90,8 +79,7 @@ export function promisify(name: string, api: unknown) {
             Object.assign({}, options, {
               success: resolve,
               fail: reject,
-            }),
-            ...params
+            })
           )
         })
       )
